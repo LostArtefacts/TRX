@@ -1,0 +1,2 @@
+#!/bin/sh
+i686-w64-mingw32-gcc -shared *.c -ldbghelp -o ~/TOMBATI/TR1Main.dll
