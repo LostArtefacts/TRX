@@ -13,6 +13,8 @@ You may download patched tombati.exe, TR1Main.dll from [releases](https://github
 - i686-w64-mingw32-gcc - C/C++ compiler
 - Vim @ WSL - IDE
 
+To compile the project with Docker, just run `./compile`.
+
 ## License
 
 This project is licensed under the GNU General Public License - see the COPYING.md file for details
