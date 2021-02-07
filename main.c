@@ -93,6 +93,42 @@ typedef struct RoomInfo_t {
     __int16 flags;
 } ROOM_INFO;
 
+typedef struct Phd3dPos_t {
+    int x;
+    int y;
+    int z;
+    __int16 rotX;
+    __int16 rotY;
+    __int16 rotZ;
+} PHD_3DPOS;
+
+typedef struct ItemInfo_t {
+    int floor;
+    DWORD touchBits;
+    DWORD meshBits;
+    __int16 objectID;
+    __int16 currentAnimState;
+    __int16 goalAnimState;
+    __int16 requiredAnimState;
+    __int16 animNumber;
+    __int16 frameNumber;
+    __int16 roomNumber;
+    __int16 nextItem;
+    __int16 nextActive;
+    __int16 speed;
+    __int16 fallSpeed;
+    __int16 hitPoints;
+    __int16 boxNumber;
+    __int16 timer;
+    UINT16 flags; // see IFL_* defines
+    __int16 shade1;
+    //__int16 shade2;
+    //__int16 carriedItem;
+    LPVOID data;
+    PHD_3DPOS pos;
+    UINT16 moreFlags;
+} ITEM_INFO;
+
 #pragma pop
 
 HINSTANCE hInstance = NULL;
@@ -133,15 +169,20 @@ typedef struct {
 #define FloorData               VAR_U_(0x0045F1BC, __int16*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define MeshPtr                 VAR_U_(0x00461F34, __int16**)
-
+#define LevelItemCount          VAR_U_(0x0045A0E0, __int32)
+#define Items                   VAR_U_(0x00462CEC, ITEM_INFO*)
 #define GameAllocMemPointer     VAR_U_(0x0045E32C, __int32)
 #define GameAllocMemUsed        VAR_U_(0x0045E330, __int32)
 #define GameAllocMemFree        VAR_U_(0x0045E334, __int32)
 #define GameMemoryPointer       VAR_U_(0x0045A034, __int32)
 #define GameMemorySize          VAR_U_(0x0045EEF8, __int32)
 
+// foreign game functions
 #define game_malloc     ((void __cdecl*(*)(int, int))0x0041E2F0)
 #define _fread          ((size_t __cdecl(*)(void *a1, size_t a2, size_t a3, FILE *a4))0x00442C20)
+#define InitialiseItemArray ((void __cdecl(*)(int itemCount))0x00421B10)
+#define S_ExitSystem ((void __cdecl(*)(const char *))0x0041E260)
+#define InitialiseItem ((void __cdecl(*)(__int16))0x00421CC0)
 
 void __cdecl init_game_malloc() {
     GameAllocMemPointer = GameMemoryPointer;
@@ -299,6 +340,52 @@ int LoadRooms(FILE *fp) {
     return 1;
 }
 
+int __cdecl LoadItems(FILE *handle)
+{
+    int itemCount = 0;
+    _fread(&itemCount, 4u, 1u, handle);
+
+    TRACE("Item count: %d", itemCount);
+
+    if (itemCount) {
+        if (itemCount > 256) {
+            strcpy(StringToShow, "LoadItems(): Too Many Items being Loaded!!");
+            return 0;
+        }
+
+        Items = game_malloc(17408, 18);
+        if (!Items) {
+            strcpy(StringToShow, "LoadItems(): Unable to allocate memory for 'items'");
+            return 0;
+        }
+
+        LevelItemCount = itemCount;
+        InitialiseItemArray(256);
+
+        for (int i = 0; i < itemCount; ++i) {
+            ITEM_INFO *currentItem = &Items[i];
+            _fread(&currentItem->objectID, 2u, 1u, handle);
+            _fread(&currentItem->roomNumber, 2u, 1u, handle);
+            _fread(&currentItem->pos.x, 4u, 1u, handle);
+            _fread(&currentItem->pos.y, 4u, 1u, handle);
+            _fread(&currentItem->pos.z, 4u, 1u, handle);
+            _fread(&currentItem->pos.rotY, 2u, 1u, handle);
+            _fread(&currentItem->shade1, 2u, 1u, handle);
+            _fread(&currentItem->flags, 2u, 1u, handle);
+            TRACE("Items[%d].objectID: %d", i, currentItem->objectID);
+            int objectID = currentItem->objectID;
+            if ( objectID < 0 || objectID >= 191 )
+            {
+                sprintf(StringToShow, "LoadItems(): Bad Object number (%d) on Item %d", objectID, i);
+                S_ExitSystem(StringToShow);
+            }
+            InitialiseItem(i);
+        }
+    }
+
+    return 1;
+}
+
 static void Inject() {
     INJECT(0x0042A2C0, DB_Log);
     INJECT(0x0041C020, FindCdDrive);
@@ -306,6 +393,8 @@ static void Inject() {
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);
+
+    INJECT(0x0041BC60, LoadItems);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
