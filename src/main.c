@@ -1,9 +1,11 @@
 #include <windows.h>
 #include <stdio.h>
 
+#include "json_utils.h"
 #include "struct.h"
 #include "util.h"
 #include "func.h"
+#include "mod.h"
 
 HINSTANCE hInstance = NULL;
 
@@ -26,10 +28,34 @@ static void Inject() {
     //INJECT(0x00430450, S_DrawAirBar);
 }
 
+static int ReadConfig() {
+    FILE *fp = fopen("TR1Main.json", "rb");
+    if (!fp) {
+        return 0;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int cfg_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    char *cfg_data = malloc(cfg_size);
+    fread(cfg_data, 1, cfg_size, fp);
+
+    json_value *json = json_parse((const json_char*)cfg_data, cfg_size);
+
+    TR1MConfig.keep_health_between_levels = get_json_boolean_field_value(json, "keep_health_between_levels");
+    TR1MConfig.disable_medpacks = get_json_boolean_field_value(json, "disable_medpacks");
+
+    json_value_free(json);
+    free(cfg_data);
+    return 1;
+}
+
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
             freopen("./TR1Main.log", "w", stdout);
+            ReadConfig();
             TRACE("Attached");
             hInstance = hinstDLL;
             Inject();

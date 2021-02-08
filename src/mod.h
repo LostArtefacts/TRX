@@ -3,8 +3,13 @@
 
 #include "util.h"
 
-#ifdef FEATURE_KEEP_HEALTH_BETWEEN_LEVELS
-static int TR1MStoredLaraHealth = 1000;
-#endif
+struct {
+    int keep_health_between_levels;
+    int disable_medpacks;
+} TR1MConfig;
+
+struct {
+    int stored_lara_health;
+} TR1MData;
 
 #endif

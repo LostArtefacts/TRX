@@ -168,12 +168,9 @@ int LoadRooms(FILE *fp) {
 void __cdecl LevelStats(int levelID) {
     TRACE("");
 
-    #ifdef FEATURE_KEEP_HEALTH_BETWEEN_LEVELS
-        // store Lara health
-        TR1MStoredLaraHealth = LaraItem ? LaraItem->hitPoints : 1000;
-        TRACE("Lara pointers: %p/%d", LaraItem, Lara.itemNumber);
-        TRACE("Storing Lara health: %d", LaraItem ? LaraItem->hitPoints : -1);
-    #endif
+    if (TR1MConfig.keep_health_between_levels) {
+        TR1MData.stored_lara_health = LaraItem ? LaraItem->hitPoints : 1000;
+    }
 
     static char buf[100];
 
@@ -280,7 +277,7 @@ int __cdecl LoadLevelByID(int levelID) {
     TRACE("%d", levelID);
     int ret = LoadLevel(LevelNames[levelID], levelID);
 
-    #ifdef FEATURE_KEEP_HEALTH_BETWEEN_LEVELS
+    if (TR1MConfig.keep_health_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
         int laraFound = 0;
@@ -292,9 +289,9 @@ int __cdecl LoadLevelByID(int levelID) {
 
         if (!laraFound) {
             TRACE("Resetting stored Lara health");
-            TR1MStoredLaraHealth = 1000;
+            TR1MData.stored_lara_health = 1000;
         }
-    #endif
+    }
 
     return ret;
 }
@@ -372,14 +369,14 @@ int __cdecl LoadItems(FILE *handle)
                 S_ExitSystem(StringToShow);
             }
 
-            #ifdef FEATURE_DISABLE_MEDPACKS
+            if (TR1MConfig.disable_medpacks) {
                 if (objectID == ID_LARGE_MEDIPACK_ITEM || objectID == ID_SMALL_MEDIPACK_ITEM) {
                     currentItem->pos.x = -1;
                     currentItem->pos.y = -1;
                     currentItem->pos.z = -1;
                     currentItem->roomNumber = 0;
                 }
-            #endif
+            }
 
             InitialiseItem(i);
         }
@@ -392,13 +389,13 @@ void __cdecl InitialiseLara(void) {
     TRACE("");
     LaraItem->moreFlags &= 0xFFDFu;
     LaraItem->data = &Lara;
-    #ifdef FEATURE_KEEP_HEALTH_BETWEEN_LEVELS
-        TRACE("Restoring Lara health: %d", TR1MStoredLaraHealth);
-        LaraItem->hitPoints = TR1MStoredLaraHealth;
-    #else
+    if (TR1MConfig.keep_health_between_levels) {
+        TRACE("Restoring Lara health: %d", TR1MData.stored_lara_health);
+        LaraItem->hitPoints = TR1MData.stored_lara_health;
+    } else {
         TRACE("Restoring Lara health: default");
         LaraItem->hitPoints = 1000;
-    #endif
+    }
 
     Lara.air = 1800;
     Lara.field_8 = 0;
