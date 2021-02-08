@@ -6,7 +6,10 @@ This project is inspired by Arsunt's [TR2Main](https://github.com/Arsunt/TR2Main
 
 ## Getting Started
 
-You may download patched tombati.exe, TR1Main.dll from [releases](https://github.com/rr-/TR1Main/releases), put them in your game folder and just launch. Also you may build TR1Main.dll yourself and use it with patched tombati.exe from here.
+For TR1Main to work, you will need a patched `tombati.exe` from [here](https://github.com/rr-/TR1Main/tree/master/bin).
+Then you should download TR1Main.dll from [releases](https://github.com/rr-/TR1Main/releases).
+
+Both files should be put in your game folder. Then you can launch the game by running the patched `tombati.exe`.
 
 ## Building
 
