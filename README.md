@@ -11,6 +11,15 @@ Then you should download TR1Main.dll from [releases](https://github.com/rr-/TR1M
 
 Both files should be put in your game folder. Then you can launch the game by running the patched `tombati.exe`.
 
+## Configuring
+
+TR1Main supports configuration. To configure TR1Main, copy TR1Main.json from this repository to your game folder, then edit the settings.
+
+Currently the following configuration options are supported:
+
+- `disable_medpacks`: hides all the medpacks (for No Meds challenge runs).
+- `keep_health_between_levels": disables healing Lara between level reloads (for No Heal challenge runs).
+
 ## Building
 
 - i686-w64-mingw32-gcc - C/C++ compiler
