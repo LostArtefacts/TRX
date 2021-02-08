@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "util.h"
 
-void InjectFunc(void *from, void *to) {
+void tr1m_inject_func(void *from, void *to) {
     DWORD tmp;
     TRACE("Patching %p to %p", from, to);
     VirtualProtect(from, sizeof(JMP), PAGE_EXECUTE_READWRITE, &tmp);
@@ -14,12 +14,12 @@ void InjectFunc(void *from, void *to) {
     buf.offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP));
     WriteProcessMemory(hCurrentProcess, from, &buf, sizeof(JMP), &tmp);
     CloseHandle(hCurrentProcess);
-    // arsunt style
+    // arsunt style - doesn't work because of GLRage calling VirtualProtect
     //((JMP*)(from))->opCode = 0xE9;
     //((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP));
 }
 
-void PrintStackTrace() {
+void tr1m_print_stack_trace() {
     const size_t MaxNameLen = 255;
     BOOL result;
     HANDLE process;

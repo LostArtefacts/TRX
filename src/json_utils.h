@@ -3,7 +3,13 @@
 
 #include "json-parser/json.h"
 
-json_value *get_json_field(json_value *root, json_type fieldType, const char *name, int *pIndex);
-int get_json_boolean_field_value(json_value *root, const char *name);
+json_value *tr1m_json_get_field(
+    json_value *root,
+    json_type field_type,
+    const char *name,
+    int *pIndex
+);
+
+int tr1m_json_get_boolean_value(json_value *root, const char *name);
 
 #endif

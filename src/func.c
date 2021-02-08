@@ -84,14 +84,20 @@ int LoadRooms(FILE *fp) {
         return 0;
     }
 
-    RoomInfo = (ROOM_INFO *)game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_RoomInfos);
+    RoomInfo = (ROOM_INFO *)game_malloc(
+        sizeof(ROOM_INFO) * RoomCount, GBUF_RoomInfos
+    );
     if (!RoomInfo) {
         strcpy(StringToShow, "LoadRoom(): Could not allocate memory for rooms");
         return 0;
     }
 
     int i = 0;
-    for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount; ++i, ++current_room_info) {
+    for (
+        ROOM_INFO *current_room_info = RoomInfo;
+        i < RoomCount;
+        ++i, ++current_room_info
+    ) {
         // Room position
         _fread(&current_room_info->x, sizeof(__int32), 1, fp);
         current_room_info->y = 0;
@@ -103,7 +109,9 @@ int LoadRooms(FILE *fp) {
 
         // Room mesh
         _fread(&dwCount, sizeof(__int32), 1, fp);
-        current_room_info->data = (__int16 *)game_malloc(sizeof(__int16) * dwCount, GBUF_RoomMesh);
+        current_room_info->data = (__int16 *)game_malloc(
+            sizeof(__int16) * dwCount, GBUF_RoomMesh
+        );
         _fread(current_room_info->data, sizeof(__int16), dwCount, fp);
 
         // Doors
@@ -111,7 +119,9 @@ int LoadRooms(FILE *fp) {
         if (!wCount) {
             current_room_info->doors = NULL;
         } else {
-            current_room_info->doors = (DOOR_INFOS *)game_malloc(sizeof(__int16) + sizeof(DOOR_INFO) * wCount, GBUF_RoomDoor);
+            current_room_info->doors = (DOOR_INFOS *)game_malloc(
+                sizeof(__int16) + sizeof(DOOR_INFO) * wCount, GBUF_RoomDoor
+            );
             current_room_info->doors->count = wCount;
             _fread(&current_room_info->doors->door, sizeof(DOOR_INFO), wCount, fp);
         }
@@ -120,7 +130,9 @@ int LoadRooms(FILE *fp) {
         _fread(&current_room_info->xSize, sizeof(__int16), 1, fp);
         _fread(&current_room_info->ySize, sizeof(__int16), 1, fp);
         dwCount = current_room_info->ySize * current_room_info->xSize;
-        current_room_info->floor = (FLOOR_INFO *)game_malloc(sizeof(FLOOR_INFO) * dwCount, GBUF_RoomFloor);
+        current_room_info->floor = (FLOOR_INFO *)game_malloc(
+            sizeof(FLOOR_INFO) * dwCount, GBUF_RoomFloor
+        );
         _fread(current_room_info->floor, sizeof(FLOOR_INFO), dwCount, fp);
 
         // Room lights
@@ -129,8 +141,16 @@ int LoadRooms(FILE *fp) {
         if (!current_room_info->numLights) {
             current_room_info->light = NULL;
         } else {
-            current_room_info->light = (LIGHT_INFO *)game_malloc(sizeof(LIGHT_INFO) * current_room_info->numLights, GBUF_RoomLights);
-            _fread(current_room_info->light, sizeof(LIGHT_INFO), current_room_info->numLights, fp);
+            current_room_info->light = (LIGHT_INFO *)game_malloc(
+                sizeof(LIGHT_INFO) * current_room_info->numLights,
+                GBUF_RoomLights
+            );
+            _fread(
+                current_room_info->light,
+                sizeof(LIGHT_INFO),
+                current_room_info->numLights,
+                fp
+            );
         }
 
         // Static mesh infos
@@ -138,8 +158,16 @@ int LoadRooms(FILE *fp) {
         if (!current_room_info->numMeshes) {
             current_room_info->mesh = NULL;
         } else {
-            current_room_info->mesh = (MESH_INFO *)game_malloc(sizeof(MESH_INFO) * current_room_info->numMeshes, GBUF_RoomStaticMeshInfos);
-            _fread(current_room_info->mesh, sizeof(MESH_INFO), current_room_info->numMeshes, fp);
+            current_room_info->mesh = (MESH_INFO *)game_malloc(
+                sizeof(MESH_INFO) * current_room_info->numMeshes,
+                GBUF_RoomStaticMeshInfos
+            );
+            _fread(
+                current_room_info->mesh,
+                sizeof(MESH_INFO),
+                current_room_info->numMeshes,
+                fp
+            );
         }
 
         // Flipped (alternative) room
@@ -219,7 +247,14 @@ void __cdecl LevelStats(int levelID) {
         --secretsTotal;
     }
     while (secretsTotal);
-    sprintf(buf, "%s %d %s %d", "SECRETS", secretsTaken, "OF", SecretCounts[levelID]);
+    sprintf(
+        buf,
+        "%s %d %s %d",
+        "SECRETS",
+        secretsTaken,
+        "OF",
+        SecretCounts[levelID]
+    );
     txt = T_Print(0, 40, 0, buf);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -345,7 +380,10 @@ int __cdecl LoadItems(FILE *handle)
 
         Items = game_malloc(17408, 18);
         if (!Items) {
-            strcpy(StringToShow, "LoadItems(): Unable to allocate memory for 'items'");
+            strcpy(
+                StringToShow,
+                "LoadItems(): Unable to allocate memory for 'items'"
+            );
             return 0;
         }
 
@@ -365,17 +403,23 @@ int __cdecl LoadItems(FILE *handle)
 
             int objectID = currentItem->objectID;
             if (objectID < 0 || objectID >= ID_NUMBER_OBJECTS) {
-                sprintf(StringToShow, "LoadItems(): Bad Object number (%d) on Item %d", objectID, i);
+                sprintf(
+                    StringToShow,
+                    "LoadItems(): Bad Object number (%d) on Item %d",
+                    objectID,
+                    i
+                );
                 S_ExitSystem(StringToShow);
             }
 
-            if (TR1MConfig.disable_medpacks) {
-                if (objectID == ID_LARGE_MEDIPACK_ITEM || objectID == ID_SMALL_MEDIPACK_ITEM) {
-                    currentItem->pos.x = -1;
-                    currentItem->pos.y = -1;
-                    currentItem->pos.z = -1;
-                    currentItem->roomNumber = 0;
-                }
+            if (TR1MConfig.disable_medpacks && (
+                objectID == ID_LARGE_MEDIPACK_ITEM ||
+                objectID == ID_SMALL_MEDIPACK_ITEM
+            )) {
+                currentItem->pos.x = -1;
+                currentItem->pos.y = -1;
+                currentItem->pos.z = -1;
+                currentItem->roomNumber = 0;
             }
 
             InitialiseItem(i);

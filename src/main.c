@@ -9,7 +9,7 @@
 
 HINSTANCE hInstance = NULL;
 
-static void Inject() {
+static void tr1m_inject() {
     INJECT(0x0042A2C0, DB_Log);
     INJECT(0x0041C020, FindCdDrive);
     INJECT(0x0041BFC0, GetFullPath);
@@ -28,7 +28,7 @@ static void Inject() {
     //INJECT(0x00430450, S_DrawAirBar);
 }
 
-static int ReadConfig() {
+static int tr1m_read_config() {
     FILE *fp = fopen("TR1Main.json", "rb");
     if (!fp) {
         return 0;
@@ -39,26 +39,37 @@ static int ReadConfig() {
     fseek(fp, 0, SEEK_SET);
 
     char *cfg_data = malloc(cfg_size);
+    if (!cfg_data) {
+        fclose(fp);
+        return 0;
+    }
     fread(cfg_data, 1, cfg_size, fp);
+    fclose(fp);
 
     json_value *json = json_parse((const json_char*)cfg_data, cfg_size);
 
-    TR1MConfig.keep_health_between_levels = get_json_boolean_field_value(json, "keep_health_between_levels");
-    TR1MConfig.disable_medpacks = get_json_boolean_field_value(json, "disable_medpacks");
+    TR1MConfig.keep_health_between_levels = tr1m_json_get_boolean_value(
+        json, "keep_health_between_levels"
+    );
+    TR1MConfig.disable_medpacks = tr1m_json_get_boolean_value(
+        json, "disable_medpacks"
+    );
 
     json_value_free(json);
     free(cfg_data);
     return 1;
 }
 
-BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+BOOL APIENTRY DllMain(
+    HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved
+) {
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
             freopen("./TR1Main.log", "w", stdout);
-            ReadConfig();
+            tr1m_read_config();
             TRACE("Attached");
             hInstance = hinstDLL;
-            Inject();
+            tr1m_inject();
             break;
 
         case DLL_PROCESS_DETACH:
