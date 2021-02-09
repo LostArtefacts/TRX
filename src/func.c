@@ -75,10 +75,10 @@ int FindCdDrive() {
 
 int LoadRooms(FILE *fp) {
     TRACE("");
-    __int16 wCount;
-    __int32 dwCount;
+    uint16_t count2;
+    uint32_t count4;
 
-    _fread(&RoomCount, sizeof(__int16), 1, fp);
+    _fread(&RoomCount, sizeof(uint16_t), 1, fp);
     if (RoomCount > 1024) {
         strcpy(StringToShow, "LoadRoom(): Too many rooms");
         return 0;
@@ -99,96 +99,98 @@ int LoadRooms(FILE *fp) {
         ++i, ++current_room_info
     ) {
         // Room position
-        _fread(&current_room_info->x, sizeof(__int32), 1, fp);
+        _fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
         current_room_info->y = 0;
-        _fread(&current_room_info->z, sizeof(__int32), 1, fp);
+        _fread(&current_room_info->z, sizeof(uint32_t), 1, fp);
 
         // Room floor/ceiling
-        _fread(&current_room_info->minFloor, sizeof(__int32), 1, fp);
-        _fread(&current_room_info->maxCeiling, sizeof(__int32), 1, fp);
+        _fread(&current_room_info->min_floor, sizeof(uint32_t), 1, fp);
+        _fread(&current_room_info->max_ceiling, sizeof(uint32_t), 1, fp);
 
         // Room mesh
-        _fread(&dwCount, sizeof(__int32), 1, fp);
-        current_room_info->data = (__int16 *)game_malloc(
-            sizeof(__int16) * dwCount, GBUF_RoomMesh
+        _fread(&count4, sizeof(uint32_t), 1, fp);
+        current_room_info->data = (uint16_t *)game_malloc(
+            sizeof(uint16_t) * count4, GBUF_RoomMesh
         );
-        _fread(current_room_info->data, sizeof(__int16), dwCount, fp);
+        _fread(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
-        _fread(&wCount, sizeof(__int16), 1, fp);
-        if (!wCount) {
+        _fread(&count2, sizeof(uint16_t), 1, fp);
+        if (!count2) {
             current_room_info->doors = NULL;
         } else {
             current_room_info->doors = (DOOR_INFOS *)game_malloc(
-                sizeof(__int16) + sizeof(DOOR_INFO) * wCount, GBUF_RoomDoor
+                sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_RoomDoor
             );
-            current_room_info->doors->count = wCount;
-            _fread(&current_room_info->doors->door, sizeof(DOOR_INFO), wCount, fp);
+            current_room_info->doors->count = count2;
+            _fread(
+                &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp
+            );
         }
 
         // Room floor
-        _fread(&current_room_info->xSize, sizeof(__int16), 1, fp);
-        _fread(&current_room_info->ySize, sizeof(__int16), 1, fp);
-        dwCount = current_room_info->ySize * current_room_info->xSize;
+        _fread(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
+        _fread(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
+        count4 = current_room_info->y_size * current_room_info->x_size;
         current_room_info->floor = (FLOOR_INFO *)game_malloc(
-            sizeof(FLOOR_INFO) * dwCount, GBUF_RoomFloor
+            sizeof(FLOOR_INFO) * count4, GBUF_RoomFloor
         );
-        _fread(current_room_info->floor, sizeof(FLOOR_INFO), dwCount, fp);
+        _fread(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
 
         // Room lights
-        _fread(&current_room_info->ambient, sizeof(__int16), 1, fp);
-        _fread(&current_room_info->numLights, sizeof(__int16), 1, fp);
-        if (!current_room_info->numLights) {
+        _fread(&current_room_info->ambient, sizeof(uint16_t), 1, fp);
+        _fread(&current_room_info->num_lights, sizeof(uint16_t), 1, fp);
+        if (!current_room_info->num_lights) {
             current_room_info->light = NULL;
         } else {
             current_room_info->light = (LIGHT_INFO *)game_malloc(
-                sizeof(LIGHT_INFO) * current_room_info->numLights,
+                sizeof(LIGHT_INFO) * current_room_info->num_lights,
                 GBUF_RoomLights
             );
             _fread(
                 current_room_info->light,
                 sizeof(LIGHT_INFO),
-                current_room_info->numLights,
+                current_room_info->num_lights,
                 fp
             );
         }
 
         // Static mesh infos
-        _fread(&current_room_info->numMeshes, sizeof(__int16), 1, fp);
-        if (!current_room_info->numMeshes) {
+        _fread(&current_room_info->num_meshes, sizeof(uint16_t), 1, fp);
+        if (!current_room_info->num_meshes) {
             current_room_info->mesh = NULL;
         } else {
             current_room_info->mesh = (MESH_INFO *)game_malloc(
-                sizeof(MESH_INFO) * current_room_info->numMeshes,
+                sizeof(MESH_INFO) * current_room_info->num_meshes,
                 GBUF_RoomStaticMeshInfos
             );
             _fread(
                 current_room_info->mesh,
                 sizeof(MESH_INFO),
-                current_room_info->numMeshes,
+                current_room_info->num_meshes,
                 fp
             );
         }
 
         // Flipped (alternative) room
-        _fread(&current_room_info->flippedRoom, sizeof(__int16), 1, fp);
+        _fread(&current_room_info->flipped_room, sizeof(uint16_t), 1, fp);
 
         // Room flags
-        _fread(&current_room_info->flags, sizeof(__int16), 1, fp);
+        _fread(&current_room_info->flags, sizeof(uint16_t), 1, fp);
 
         // Initialise some variables
-        current_room_info->boundActive = 0;
-        current_room_info->boundLeft = PhdWinMaxX;
-        current_room_info->boundTop = PhdWinMaxY;
-        current_room_info->boundBottom = 0;
-        current_room_info->boundRight = 0;
-        current_room_info->itemNumber = -1;
-        current_room_info->fxNumber = -1;
+        current_room_info->bound_active = 0;
+        current_room_info->bound_left = PhdWinMaxX;
+        current_room_info->bound_top = PhdWinMaxY;
+        current_room_info->bound_bottom = 0;
+        current_room_info->bound_right = 0;
+        current_room_info->item_number = -1;
+        current_room_info->fx_number = -1;
     }
 
-    _fread(&dwCount, sizeof(__int32), 1, fp);
-    FloorData = game_malloc(sizeof(__int16) * dwCount, GBUF_FloorData);
-    _fread(FloorData, sizeof(__int16), dwCount, fp);
+    _fread(&count4, sizeof(uint32_t), 1, fp);
+    FloorData = game_malloc(sizeof(uint16_t) * count4, GBUF_FloorData);
+    _fread(FloorData, sizeof(uint16_t), count4, fp);
 
     return 1;
 }
@@ -197,7 +199,7 @@ void __cdecl LevelStats(int levelID) {
     TRACE("");
 
     if (TR1MConfig.keep_health_between_levels) {
-        TR1MData.stored_lara_health = LaraItem ? LaraItem->hitPoints : 1000;
+        TR1MData.stored_lara_health = LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
     }
 
     static char buf[100];
@@ -317,14 +319,13 @@ int __cdecl LoadLevelByID(int levelID) {
         // currently loaded level.
         int laraFound = 0;
         for (int i = 0; i < LevelItemCount; i++) {
-            if (Items[i].objectID == ID_LARA) {
+            if (Items[i].object_id == ID_LARA) {
                 laraFound = 1;
             }
         }
 
         if (!laraFound) {
-            TRACE("Resetting stored Lara health");
-            TR1MData.stored_lara_health = 1000;
+            TR1MData.stored_lara_health = LARA_HITPOINTS;
         }
     }
 
@@ -392,34 +393,34 @@ int __cdecl LoadItems(FILE *handle)
 
         for (int i = 0; i < itemCount; ++i) {
             ITEM_INFO *currentItem = &Items[i];
-            _fread(&currentItem->objectID, 2u, 1u, handle);
-            _fread(&currentItem->roomNumber, 2u, 1u, handle);
+            _fread(&currentItem->object_id, 2u, 1u, handle);
+            _fread(&currentItem->room_number, 2u, 1u, handle);
             _fread(&currentItem->pos.x, 4u, 1u, handle);
             _fread(&currentItem->pos.y, 4u, 1u, handle);
             _fread(&currentItem->pos.z, 4u, 1u, handle);
-            _fread(&currentItem->pos.rotY, 2u, 1u, handle);
+            _fread(&currentItem->pos.rot_y, 2u, 1u, handle);
             _fread(&currentItem->shade1, 2u, 1u, handle);
             _fread(&currentItem->flags, 2u, 1u, handle);
 
-            int objectID = currentItem->objectID;
-            if (objectID < 0 || objectID >= ID_NUMBER_OBJECTS) {
+            int object_id = currentItem->object_id;
+            if (object_id < 0 || object_id >= ID_NUMBER_OBJECTS) {
                 sprintf(
                     StringToShow,
                     "LoadItems(): Bad Object number (%d) on Item %d",
-                    objectID,
+                    object_id,
                     i
                 );
                 S_ExitSystem(StringToShow);
             }
 
             if (TR1MConfig.disable_medpacks && (
-                objectID == ID_LARGE_MEDIPACK_ITEM ||
-                objectID == ID_SMALL_MEDIPACK_ITEM
+                object_id == ID_LARGE_MEDIPACK_ITEM ||
+                object_id == ID_SMALL_MEDIPACK_ITEM
             )) {
                 currentItem->pos.x = -1;
                 currentItem->pos.y = -1;
                 currentItem->pos.z = -1;
-                currentItem->roomNumber = 0;
+                currentItem->room_number = 0;
             }
 
             InitialiseItem(i);
@@ -429,57 +430,58 @@ int __cdecl LoadItems(FILE *handle)
     return 1;
 }
 
-void __cdecl InitialiseLara(void) {
+void __cdecl InitialiseLara() {
     TRACE("");
-    LaraItem->moreFlags &= 0xFFDFu;
+    LaraItem->more_flags &= 0xFFDFu;
     LaraItem->data = &Lara;
-    if (TR1MConfig.keep_health_between_levels) {
-        TRACE("Restoring Lara health: %d", TR1MData.stored_lara_health);
-        LaraItem->hitPoints = TR1MData.stored_lara_health;
+
+    LaraItem->hit_points = TR1MConfig.keep_health_between_levels
+        ? TR1MData.stored_lara_health
+        : LARA_HITPOINTS;
+
+    Lara.air = LARA_AIR;
+    Lara.torso_z_rot = 0;
+    Lara.torso_x_rot = 0;
+    Lara.torso_y_rot = 0;
+    Lara.head_z_rot = 0;
+    Lara.head_y_rot = 0;
+    Lara.head_x_rot = 0;
+    Lara.calc_fallspeed = 0;
+    Lara.mesh_effects = 0;
+    Lara.hit_frames = 0;
+    Lara.hit_direction = 0;
+    Lara.death_count = 0;
+    Lara.target = 0;
+    Lara.spaz_effect = 0;
+    Lara.spaz_effect_count = 0;
+    Lara.turn_rate = 0;
+    Lara.move_angle = 0;
+    Lara.right_arm.flash_gun = 0;
+    Lara.left_arm.flash_gun = 0;
+    Lara.right_arm.lock = 0;
+    Lara.left_arm.lock = 0;
+
+    if (RoomInfo[LaraItem->room_number].flags & 1) {
+        Lara.water_status = LARA_UNDERWATER;
+        LaraItem->fall_speed = 0;
+        LaraItem->goal_anim_state = AS_TREAD;
+        LaraItem->current_anim_state = AS_TREAD;
+        LaraItem->anim_number = TREAD_A;
+        LaraItem->frame_number = TREAD_F;
     } else {
-        TRACE("Restoring Lara health: default");
-        LaraItem->hitPoints = 1000;
+        Lara.water_status = LARA_ABOVEWATER;
+        LaraItem->goal_anim_state = AS_STOP;
+        LaraItem->current_anim_state = AS_STOP;
+        LaraItem->anim_number = STOP_A;
+        LaraItem->frame_number = STOP_F;
     }
 
-    Lara.air = 1800;
-    Lara.field_8 = 0;
-    Lara.field_20 = 0;
-    Lara.field_E = 0;
-    Lara.field_10 = 0;
-    Lara.field_16 = 0;
-    Lara.field_60 = 0;
-    Lara.field_1C = 0;
-    Lara.field_1A = 0;
-    Lara.field_96 = 0;
-    Lara.field_86 = 0;
-    Lara.field_8E = 0;
-    Lara.field_7E = 0;
-    Lara.field_6C = 0;
-    Lara.field_68 = 0;
-    Lara.field_74 = 0;
-    Lara.field_70 = 0;
+    Lara.current_active = 0;
 
-    TRACE("%x\n", &Lara.field_4 - &Lara.itemNumber);
+    InitialiseLOT(&Lara.LOT);
+    Lara.LOT.step = WALL_L * 20;
+    Lara.LOT.drop = -WALL_L * 20;
+    Lara.LOT.fly = STEP_L;
 
-    if (RoomInfo[LaraItem->roomNumber].flags & 1) {
-        Lara.waterStatus = 1;
-        LaraItem->fallSpeed = 0;
-        LaraItem->goalAnimState = 13;
-        LaraItem->currentAnimState = 13;
-        LaraItem->animNumber = 108;
-        LaraItem->frameNumber = 1736;
-    } else {
-        Lara.waterStatus = 0;
-        LaraItem->goalAnimState = 2;
-        LaraItem->currentAnimState = 2;
-        LaraItem->animNumber = 11;
-        LaraItem->frameNumber = 185;
-    }
-
-    Lara.field_18 = 0;
-    InitialiseLOT(&Lara.field_C8);
-    Lara.field_D4 = 20480;
-    Lara.field_D6 = -20480;
-    Lara.field_D8 = 256;
     InitialiseLaraInventory(CurrentLevel);
 }
