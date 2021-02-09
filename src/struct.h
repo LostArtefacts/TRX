@@ -293,7 +293,12 @@ typedef struct {
     /* 002A */ uint16_t shade1;
     /* 002C */ void *data;
     /* 0030 */ PHD_3DPOS pos;
-    /* 0042 */ uint16_t more_flags;
+    /* 0042 */ uint16_t active : 1;
+    /*      */ uint16_t status : 2;
+    /*      */ uint16_t gravity_status : 1;
+    /*      */ uint16_t hit_status : 1;
+    /*      */ uint16_t collidable : 1;
+    /*      */ uint16_t looked_at : 1;
     /* 0044 end */
 } ITEM_INFO;
 

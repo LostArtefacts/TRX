@@ -457,9 +457,8 @@ int __cdecl LoadItems(FILE *handle)
 
 void __cdecl InitialiseLara() {
     TRACE("");
-    LaraItem->more_flags &= 0xFFDFu;
+    LaraItem->collidable = 0;
     LaraItem->data = &Lara;
-
     LaraItem->hit_points = TR1MConfig.disable_healing_between_levels
         ? TR1MData.stored_lara_health
         : LARA_HITPOINTS;
