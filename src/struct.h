@@ -8,6 +8,8 @@ typedef uint16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
+#define MAX_ROOMS           1024
+#define NUMBER_ITEMS        256
 #define MAX_SECRETS         16
 #define MAX_SAVEGAME_BUFFER (10*1024)
 #define SAVEGAME_VERSION    0x1
@@ -105,6 +107,7 @@ typedef enum {
     GBUF_RoomLights          = 15,
     GBUF_RoomStaticMeshInfos = 16,
     GBUF_FloorData           = 17,
+    GBUF_Items               = 18,
 } GAMEALLOC_BUFFER;
 
 typedef enum {
@@ -234,29 +237,29 @@ typedef struct {
 } MESH_INFO;
 
 typedef struct {
-    /* 0000 */ uint16_t *data;
+    /* 0000 */ int16_t *data;
     /* 0004 */ DOOR_INFOS *doors;
     /* 0008 */ FLOOR_INFO *floor;
     /* 000C */ LIGHT_INFO *light;
     /* 0010 */ MESH_INFO *mesh;
-    /* 0014 */ uint32_t x;
-    /* 0018 */ uint32_t y;
-    /* 001C */ uint32_t z;
-    /* 0020 */ uint32_t min_floor;
-    /* 0024 */ uint32_t max_ceiling;
-    /* 0028 */ uint16_t x_size;
-    /* 002A */ uint16_t y_size;
-    /* 002C */ uint16_t ambient;
-    /* 002E */ uint16_t num_lights;
-    /* 0030 */ uint16_t num_meshes;
-    /* 0032 */ uint16_t bound_left;
-    /* 0034 */ uint16_t bound_right;
-    /* 0036 */ uint16_t bound_top;
-    /* 0038 */ uint16_t bound_bottom;
-    /* 003A */ uint16_t bound_active;
-    /* 003C */ uint16_t item_number;
-    /* 003E */ uint16_t fx_number;
-    /* 0040 */ uint16_t flipped_room;
+    /* 0014 */ int32_t x;
+    /* 0018 */ int32_t y;
+    /* 001C */ int32_t z;
+    /* 0020 */ int32_t min_floor;
+    /* 0024 */ int32_t max_ceiling;
+    /* 0028 */ int16_t x_size;
+    /* 002A */ int16_t y_size;
+    /* 002C */ int16_t ambient;
+    /* 002E */ int16_t num_lights;
+    /* 0030 */ int16_t num_meshes;
+    /* 0032 */ int16_t bound_left;
+    /* 0034 */ int16_t bound_right;
+    /* 0036 */ int16_t bound_top;
+    /* 0038 */ int16_t bound_bottom;
+    /* 003A */ int16_t bound_active;
+    /* 003C */ int16_t item_number;
+    /* 003E */ int16_t fx_number;
+    /* 0040 */ int16_t flipped_room;
     /* 0042 */ uint16_t flags;
     /* 0044 end */
 } ROOM_INFO;
@@ -272,25 +275,25 @@ typedef struct {
 } PHD_3DPOS;
 
 typedef struct {
-    /* 0000 */ uint32_t floor;
+    /* 0000 */ int32_t floor;
     /* 0004 */ uint32_t touch_bits;
     /* 0008 */ uint32_t mesh_bits;
-    /* 000C */ uint16_t object_id;
-    /* 000E */ uint16_t current_anim_state;
-    /* 0010 */ uint16_t goal_anim_state;
-    /* 0012 */ uint16_t required_anim_state;
-    /* 0014 */ uint16_t anim_number;
-    /* 0016 */ uint16_t frame_number;
-    /* 0018 */ uint16_t room_number;
-    /* 001A */ uint16_t next_item;
-    /* 001C */ uint16_t next_active;
-    /* 001E */ uint16_t speed;
-    /* 0020 */ uint16_t fall_speed;
-    /* 0022 */ uint16_t hit_points;
-    /* 0024 */ uint16_t box_number;
-    /* 0026 */ uint16_t timer;
-    /* 0028 */ uint16_t flags;
-    /* 002A */ uint16_t shade1;
+    /* 000C */ int16_t object_number;
+    /* 000E */ int16_t current_anim_state;
+    /* 0010 */ int16_t goal_anim_state;
+    /* 0012 */ int16_t required_anim_state;
+    /* 0014 */ int16_t anim_number;
+    /* 0016 */ int16_t frame_number;
+    /* 0018 */ int16_t room_number;
+    /* 001A */ int16_t next_item;
+    /* 001C */ int16_t next_active;
+    /* 001E */ int16_t speed;
+    /* 0020 */ int16_t fall_speed;
+    /* 0022 */ int16_t hit_points;
+    /* 0024 */ int16_t box_number;
+    /* 0026 */ int16_t timer;
+    /* 0028 */ int16_t flags;
+    /* 002A */ int16_t shade;
     /* 002C */ void *data;
     /* 0030 */ PHD_3DPOS pos;
     /* 0042 */ uint16_t active : 1;

@@ -22,13 +22,13 @@ void __cdecl game_free(int free_size) {
 
 void __cdecl DB_Log(char *a1, ...) {
     va_list va;
-    char buf[256];
+    char buffer[256] = {0};
 
     va_start(va, a1);
     if (!dword_45A1F0) {
-        vsprintf(buf, a1, va);
-        TRACE(buf);
-        OutputDebugStringA(buf);
+        vsprintf(buffer, a1, va);
+        TRACE(buffer);
+        OutputDebugStringA(buffer);
         OutputDebugStringA("\n");
     }
 }
@@ -69,7 +69,7 @@ int FindCdDrive() {
             }
         }
     }
-    ((void(*)(const char*))0x43D770)("ERROR: Please insert TombRaider CD");
+    ShowFatalError("ERROR: Please insert TombRaider CD");
     return 0;
 }
 
@@ -79,7 +79,7 @@ int LoadRooms(FILE *fp) {
     uint32_t count4;
 
     _fread(&RoomCount, sizeof(uint16_t), 1, fp);
-    if (RoomCount > 1024) {
+    if (RoomCount > MAX_ROOMS) {
         strcpy(StringToShow, "LoadRoom(): Too many rooms");
         return 0;
     }
@@ -344,7 +344,7 @@ int __cdecl S_LoadLevel(int level_id) {
         // currently loaded level.
         int lara_found = 0;
         for (int i = 0; i < LevelItemCount; i++) {
-            if (Items[i].object_id == ID_LARA) {
+            if (Items[i].object_number == ID_LARA) {
                 lara_found = 1;
             }
         }
@@ -393,18 +393,18 @@ int __cdecl S_DrawHealthBar(int percent) {
 
 int __cdecl LoadItems(FILE *handle)
 {
-    int item_count = 0;
-    _fread(&item_count, 4u, 1u, handle);
+    int32_t item_count = 0;
+    _fread(&item_count, sizeof(int32_t), 1u, handle);
 
     TRACE("Item count: %d", item_count);
 
     if (item_count) {
-        if (item_count > 256) {
+        if (item_count > NUMBER_ITEMS) {
             strcpy(StringToShow, "LoadItems(): Too Many Items being Loaded!!");
             return 0;
         }
 
-        Items = game_malloc(17408, 18);
+        Items = game_malloc(sizeof(ITEM_INFO) * NUMBER_ITEMS, GBUF_Items);
         if (!Items) {
             strcpy(
                 StringToShow,
@@ -414,38 +414,39 @@ int __cdecl LoadItems(FILE *handle)
         }
 
         LevelItemCount = item_count;
-        InitialiseItemArray(256);
+        InitialiseItemArray(NUMBER_ITEMS);
 
         for (int i = 0; i < item_count; ++i) {
-            ITEM_INFO *current_item = &Items[i];
-            _fread(&current_item->object_id, 2u, 1u, handle);
-            _fread(&current_item->room_number, 2u, 1u, handle);
-            _fread(&current_item->pos.x, 4u, 1u, handle);
-            _fread(&current_item->pos.y, 4u, 1u, handle);
-            _fread(&current_item->pos.z, 4u, 1u, handle);
-            _fread(&current_item->pos.rot_y, 2u, 1u, handle);
-            _fread(&current_item->shade1, 2u, 1u, handle);
-            _fread(&current_item->flags, 2u, 1u, handle);
+            ITEM_INFO *item = &Items[i];
+            _fread(&item->object_number, 2u, 1u, handle);
+            _fread(&item->room_number, 2u, 1u, handle);
+            _fread(&item->pos.x, 4u, 1u, handle);
+            _fread(&item->pos.y, 4u, 1u, handle);
+            _fread(&item->pos.z, 4u, 1u, handle);
+            _fread(&item->pos.rot_y, 2u, 1u, handle);
+            _fread(&item->shade, 2u, 1u, handle);
+            _fread(&item->flags, 2u, 1u, handle);
 
-            int object_id = current_item->object_id;
-            if (object_id < 0 || object_id >= ID_NUMBER_OBJECTS) {
+            if (item->object_number < 0
+                || item->object_number >= ID_NUMBER_OBJECTS
+            ) {
                 sprintf(
                     StringToShow,
                     "LoadItems(): Bad Object number (%d) on Item %d",
-                    object_id,
+                    item->object_number,
                     i
                 );
                 S_ExitSystem(StringToShow);
             }
 
             if (TR1MConfig.disable_medpacks && (
-                object_id == ID_LARGE_MEDIPACK_ITEM ||
-                object_id == ID_SMALL_MEDIPACK_ITEM
+                item->object_number == ID_LARGE_MEDIPACK_ITEM ||
+                item->object_number == ID_SMALL_MEDIPACK_ITEM
             )) {
-                current_item->pos.x = -1;
-                current_item->pos.y = -1;
-                current_item->pos.z = -1;
-                current_item->room_number = 0;
+                item->pos.x = -1;
+                item->pos.y = -1;
+                item->pos.z = -1;
+                item->room_number = 0;
             }
 
             InitialiseItem(i);

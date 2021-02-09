@@ -2,8 +2,6 @@
 #define TR1MAIN_UTIL_H
 
 #define FEATURE_NOCD_DATA
-#define FEATURE_KEEP_HEALTH_BETWEEN_LEVELS
-#define FEATURE_DISABLE_MEDPACKS
 
 #include <stdio.h>
 #include <stdint.h>

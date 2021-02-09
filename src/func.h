@@ -28,6 +28,7 @@
 #define T_CentreH               ((void          __cdecl(*)(TEXTSTRING *text_string, int16_t enable))0x004399A0)
 #define T_CentreV               ((void          __cdecl(*)(TEXTSTRING *text_string, int16_t enable))0x004399C0)
 #define TempVideoAdjust         ((void          __cdecl(*)(int hires, double sizer))0x00416550)
+#define ShowFatalError          ((void          __cdecl(*)(const char *message))0x0043D770)
 
 void __cdecl init_game_malloc();
 void __cdecl game_free(int free_size);
