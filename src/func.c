@@ -281,16 +281,30 @@ void __cdecl LevelStats(int level_id) {
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    // wait till action key
-    while (InputStatus & IN_SELECT) {
+    // wait till action key release
+    if (TR1MConfig.fix_end_of_level_freeze) {
+        while (InputStatus & IN_SELECT) {
+            S_UpdateInput();
+            S_InitialisePolyList();
+            S_CopyBufferToScreen();
+            S_UpdateInput();
+            T_DrawText();
+            S_OutputPolyList();
+            S_DumpScreen();
+        }
+    } else {
+        while (InputStatus & IN_SELECT) {
+            S_UpdateInput();
+        }
+        S_InitialisePolyList();
+        S_CopyBufferToScreen();
         S_UpdateInput();
+        T_DrawText();
+        S_OutputPolyList();
+        S_DumpScreen();
     }
-    S_InitialisePolyList();
-    S_CopyBufferToScreen();
-    S_UpdateInput();
-    T_DrawText();
-    S_OutputPolyList();
-    S_DumpScreen();
+
+    // wait till action key press
     while (!(InputStatus & IN_SELECT)) {
         if (IsResetFlag) {
             break;

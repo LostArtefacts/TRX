@@ -26,6 +26,8 @@ Currently the following configuration options are supported:
 - `disable_medpacks`: hides all the medpacks (for No Meds challenge runs).
 - `disable_healing_between_levels`: disables healing Lara between level reloads
   (for No Heal challenge runs).
+- `fix_end_of_level_freeze`: fix game freeze when ending the level with the
+  Action key held
 
 ## Building
 

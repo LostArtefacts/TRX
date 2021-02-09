@@ -55,6 +55,9 @@ static int tr1m_read_config() {
     TR1MConfig.disable_medpacks = tr1m_json_get_boolean_value(
         json, "disable_medpacks"
     );
+    TR1MConfig.fix_end_of_level_freeze = tr1m_json_get_boolean_value(
+        json, "fix_end_of_level_freeze"
+    );
 
     json_value_free(json);
     free(cfg_data);
