@@ -5,11 +5,15 @@
 #include <stdint.h>
 
 typedef uint16_t PHD_ANGLE;
+typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
-#define LARA_HITPOINTS 1000
-#define LARA_AIR       1800
-#define NO_ITEM        -1
+#define MAX_SECRETS         16
+#define MAX_SAVEGAME_BUFFER (10*1024)
+#define SAVEGAME_VERSION    0x1
+#define LARA_HITPOINTS      1000
+#define LARA_AIR            1800
+#define NO_ITEM             -1
 
 #define NUM_EFFECTS 100
 
@@ -102,6 +106,66 @@ typedef enum {
     GBUF_RoomStaticMeshInfos = 16,
     GBUF_FloorData           = 17,
 } GAMEALLOC_BUFFER;
+
+typedef enum {
+    GYM              = 0,
+    LEVEL1           = 1, // Peru 1: Caves
+    LEVEL2           = 2, // Peru 2: City of Vilcabamba
+    LEVEL3A          = 3, // Peru 3: The Lost Valley
+    LEVEL3B          = 4, // Peru 4: Tomb of Qualopec
+    LEVEL4           = 5, // Greece 1: St Francis Folly
+    LEVEL5           = 6, // Greece 2: Colosseum
+    LEVEL6           = 7, // Greece 3: Place Midas
+    LEVEL7A          = 8, // Greece 4: Cistern
+    LEVEL7B          = 9, // Greece 5: Tomb of Tihocan
+    LEVEL8A          = 10, // Egypt 1: City of Khamoon
+    LEVEL8B          = 11, // Egypt 2: Obelisk of Khamoon
+    LEVEL8C          = 12, // Egypt 3: Sanctuary of Scion
+    LEVEL10A         = 13, // Lost island 1: Natla's Mines
+    LEVEL10B         = 14, // Lost island 2: Atlantis
+    LEVEL10C         = 15, // Lost island 3: The great pyramid
+    CUTSCENE1        = 16,
+    CUTSCENE2        = 17,
+    CUTSCENE3        = 18,
+    CUTSCENE4        = 19,
+    TITLE            = 20,
+    CURRENT          = 21,
+    // UB_LEVEL1     = 22, // TRUB - Egypt
+    // UB_LEVEL2     = 23, // TRUB - Temple of Cat
+    // UB_LEVEL3     = 24,
+    // UB_LEVEL4     = 25,
+    NUMBER_OF_LEVELS = 22,
+} GAME_LEVELS;
+
+#define IN_FORWARD     (1<<0)
+#define IN_BACK        (1<<1)
+#define IN_LEFT        (1<<2)
+#define IN_RIGHT       (1<<3)
+#define IN_JUMP        (1<<4)
+#define IN_DRAW        (1<<5)
+#define IN_ACTION      (1<<6)
+#define IN_SLOW        (1<<7)
+#define IN_OPTION      (1<<8)
+#define IN_LOOK        (1<<9)
+#define IN_STEPL       (1<<10)
+#define IN_STEPR       (1<<11)
+#define IN_ROLL        (1<<12)
+#define IN_PAUSE       (1<<13)
+#define IN_A           (1<<14) // A to F are Debug thingys..
+#define IN_B           (1<<15)
+#define IN_C           (1<<16)
+#define IN_MENUBACK    (1<<17)
+#define IN_UP          (1<<18)
+#define IN_DOWN        (1<<19)
+#define IN_SELECT      (1<<20)
+#define IN_DESELECT    (1<<21)
+#define IN_SAVE        (1<<22)
+#define IN_LOAD        (1<<23)
+#define IN_ACTION_AUTO (1<<24)
+#define IN_CHEAT       (1<<25)
+#define IN_D           (1<<26)
+#define IN_E           (1<<27)
+#define IN_F           (1<<28)
 
 #pragma pack(push, 1)
 
@@ -326,6 +390,75 @@ typedef struct {
     /* 0022 */ int16_t shade;
     /* 0024 end */
 } FX_INFO;
+
+typedef struct {
+    /* 0000 */ uint16_t pistol_ammo;
+    /* 0002 */ uint16_t magnum_ammo;
+    /* 0004 */ uint16_t uzi_ammo;
+    /* 0006 */ uint16_t shotgun_ammo;
+    /* 0008 */ uint8_t num_medis;
+    /* 0009 */ uint8_t num_big_medis;
+    /* 000A */ uint8_t num_scions;
+    /* 000B */ int8_t gun_status;
+    /* 000C */ int8_t gun_type;
+    /* 000D */ uint16_t available : 1;
+    /*      */ uint16_t got_pistols : 1;
+    /*      */ uint16_t got_magnums : 1;
+    /*      */ uint16_t got_uzis : 1;
+    /*      */ uint16_t got_shotgun : 1;
+    /* 000F end */
+} START_INFO;
+
+typedef struct {
+    /* 0000 */ START_INFO start[NUMBER_OF_LEVELS];
+    /* 014A */ uint32_t timer;
+    /* 014E */ uint32_t kills;
+    /* 0152 */ uint16_t secrets;
+    /* 0154 */ uint16_t current_level;
+    /* 0156 */ uint8_t pickups;
+    /* 0157 */ uint8_t bonus_flag;
+    /* 0158 */ uint8_t num_pickup1;
+    /* 0159 */ uint8_t num_pickup2;
+    /* 015A */ uint8_t num_puzzle1;
+    /* 015B */ uint8_t num_puzzle2;
+    /* 015C */ uint8_t num_puzzle3;
+    /* 015D */ uint8_t num_puzzle4;
+    /* 015E */ uint8_t num_key1;
+    /* 015F */ uint8_t num_key2;
+    /* 0160 */ uint8_t num_key3;
+    /* 0161 */ uint8_t num_key4;
+    /* 0162 */ uint8_t num_leadbar;
+    /* 0163 */ uint8_t challenge_failed;
+    /* 0164 */ char buffer[MAX_SAVEGAME_BUFFER];
+    /* 2964 end */
+} SAVEGAME_INFO;
+
+typedef struct {
+    /* 0000 */ uint32_t flags;
+    /* 0004 */ uint16_t textflags;
+    /* 0006 */ uint16_t bgndflags;
+    /* 0008 */ uint16_t outlflags;
+    /* 000A */ int16_t xpos;
+    /* 000C */ int16_t ypos;
+    /* 000E */ int16_t zpos;
+    /* 0010 */ int16_t letter_spacing;
+    /* 0012 */ int16_t word_spacing;
+    /* 0014 */ int16_t flash_rate;
+    /* 0016 */ int16_t flash_count;
+    /* 0018 */ int16_t bgnd_colour;
+    /* 001A */ SG_COL *bgnd_gour;
+    /* 001E */ int16_t outl_colour;
+    /* 0020 */ SG_COL *outl_gour;
+    /* 0024 */ int16_t bgnd_size_x;
+    /* 0026 */ int16_t bgnd_size_y;
+    /* 0028 */ int16_t bgnd_off_x;
+    /* 002A */ int16_t bgnd_off_y;
+    /* 002C */ int16_t bgnd_off_z;
+    /* 002E */ int32_t scale_h;
+    /* 0032 */ int32_t scale_v;
+    /* 0034 */ char *string;
+    /* 0038 end */
+} TEXTSTRING;
 
 #pragma pop
 

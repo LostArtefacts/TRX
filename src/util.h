@@ -6,11 +6,12 @@
 #define FEATURE_DISABLE_MEDPACKS
 
 #include <stdio.h>
+#include <stdint.h>
 
 #pragma pack(push, 1)
 typedef struct {
-    __int8 opCode;    // must be 0xE9;
-    __int32 offset;   // jump offset
+    int8_t opcode; // must be 0xE9
+    uint32_t offset;
 } JMP;
 #pragma pack(pop)
 

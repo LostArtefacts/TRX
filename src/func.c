@@ -13,11 +13,11 @@ void __cdecl init_game_malloc() {
     GameAllocMemUsed = 0;
 }
 
-void __cdecl game_free(int freeSize) {
+void __cdecl game_free(int free_size) {
     TRACE("");
-    GameAllocMemPointer -= freeSize;
-    GameAllocMemFree += freeSize;
-    GameAllocMemUsed -= freeSize;
+    GameAllocMemPointer -= free_size;
+    GameAllocMemFree += free_size;
+    GameAllocMemUsed -= free_size;
 }
 
 void __cdecl DB_Log(char *a1, ...) {
@@ -195,83 +195,94 @@ int LoadRooms(FILE *fp) {
     return 1;
 }
 
-void __cdecl LevelStats(int levelID) {
+void __cdecl LevelStats(int level_id) {
     TRACE("");
 
     if (TR1MConfig.keep_health_between_levels) {
-        TR1MData.stored_lara_health = LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
+        TR1MData.stored_lara_health = LaraItem
+            ? LaraItem->hit_points
+            : LARA_HITPOINTS;
     }
 
-    static char buf[100];
+    static char string[100];
+    TEXTSTRING *txt;
 
     TempVideoAdjust(HiRes, 1.0);
     T_InitPrint();
 
-    sprintf(buf, "%s", LevelTitles[levelID]);
-    unsigned int *txt = T_Print(0, -50, 0, buf);
+    // heading
+    sprintf(string, "%s", LevelTitles[level_id]); // TODO: translation
+    txt = T_Print(0, -50, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    int timeTakenInSeconds = TimeTaken / 0x1Eu;
-    if (timeTakenInSeconds / 3600) {
+    // time taken
+    int seconds = SaveGame[0].timer / 30;
+    int hours = seconds / 3600;
+    int minutes = (seconds / 60) % 60;
+    seconds %= 60;
+    if (hours) {
         sprintf(
-            buf,
+            string,
             "%s %d:%d%d:%d%d",
-            "TIME TAKEN",
-            timeTakenInSeconds / 3600,
-            ((timeTakenInSeconds / 60) % 60) / 10,
-            ((timeTakenInSeconds / 60) % 60) % 10,
-            (timeTakenInSeconds % 60) / 10,
-            (timeTakenInSeconds % 60) % 10
+            "TIME TAKEN", // TODO: translation
+            hours,
+            minutes / 10,
+            minutes % 10,
+            seconds / 10,
+            seconds % 10
         );
     } else {
         sprintf(
-            buf,
+            string,
             "%s %d:%d%d",
-            "TIME TAKEN",
-            (timeTakenInSeconds / 60) % 60,
-            (timeTakenInSeconds % 60) / 10,
-            (timeTakenInSeconds % 60) % 10
+            "TIME TAKEN", // TODO: translation
+            minutes,
+            seconds / 10,
+            seconds % 10
         );
     }
-
-    txt = T_Print(0, 70, 0, buf);
+    txt = T_Print(0, 70, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    int secretsTaken = 0;
-    int secretsTotal = 16;
+    // secrets
+    int secrets_taken = 0;
+    int secrets_total = MAX_SECRETS;
     do {
-        if (SecretsTaken & 1) {
-            ++secretsTaken;
+        if (SaveGame[0].secrets & 1) {
+            ++secrets_taken;
         }
-        SecretsTaken >>= 1;
-        --secretsTotal;
+        SaveGame[0].secrets >>= 1;
+        --secrets_total;
     }
-    while (secretsTotal);
+    while (secrets_total);
     sprintf(
-        buf,
+        string,
         "%s %d %s %d",
-        "SECRETS",
-        secretsTaken,
-        "OF",
-        SecretCounts[levelID]
+        "SECRETS", // TODO: translation
+        secrets_taken,
+        "OF", // TODO: translation
+        SecretTotals[level_id] // TODO: calculate this automatically
     );
-    txt = T_Print(0, 40, 0, buf);
+    txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    sprintf(buf, "%s %d", "PICKUPS", PickupsTaken);
-    txt = T_Print(0, 10, 0, buf);
+    // pickups
+    sprintf(string, "%s %d", "PICKUPS", SaveGame[0].pickups); // TODO: translation
+    txt = T_Print(0, 10, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    sprintf(buf, "%s %d", "KILLS", Kills);
-    txt = T_Print(0, -20, 0, buf);
+    // kills
+    sprintf(string, "%s %d", "KILLS", SaveGame[0].kills); // TODO: translation
+    txt = T_Print(0, -20, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
-    while (InputStatus & 0x100000) {
+    // wait till action key
+    while (InputStatus & IN_SELECT) {
         S_UpdateInput();
     }
     S_InitialisePolyList();
@@ -280,7 +291,7 @@ void __cdecl LevelStats(int levelID) {
     T_DrawText();
     S_OutputPolyList();
     S_DumpScreen();
-    while (!(InputStatus & 0x100000)) {
+    while (!(InputStatus & IN_SELECT)) {
         if (IsResetFlag) {
             break;
         }
@@ -292,39 +303,39 @@ void __cdecl LevelStats(int levelID) {
         S_DumpScreen();
     }
 
-    if (levelID == 15) {
-        Byte45BB17 = 1;
-        int tmp = 1;
-        do
-            sub_434520(tmp++);
-        while ( tmp <= 15 );
-        Word45BB14 = 1;
+    // go to next level
+    if (level_id == LEVEL10C) {
+        SaveGame[0].bonus_flag = 1;
+        for (int level = LEVEL1; level <= LEVEL10C; level++) {
+            ModifyStartInfo(level);
+        }
+        SaveGame[0].current_level = 1;
     } else {
-        CreateStartInfo(levelID + 1);
-        sub_434520(levelID + 1);
-        Word45BB14 = levelID + 1;
+        CreateStartInfo(level_id + 1);
+        ModifyStartInfo(level_id + 1);
+        SaveGame[0].current_level = level_id + 1;
     }
 
-    Word45BB08 &= 0xFFFEu;
-    sub_41CD10();
+    SaveGame[0].start[CURRENT].available = 0;
+    S_FadeToBlack();
     TempVideoRemove();
 }
 
-int __cdecl S_LoadLevel(int levelID) {
-    TRACE("%d", levelID);
-    int ret = LoadLevel(LevelNames[levelID], levelID);
+int __cdecl S_LoadLevel(int level_id) {
+    TRACE("%d", level_id);
+    int ret = LoadLevel(LevelNames[level_id], level_id);
 
     if (TR1MConfig.keep_health_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
-        int laraFound = 0;
+        int lara_found = 0;
         for (int i = 0; i < LevelItemCount; i++) {
             if (Items[i].object_id == ID_LARA) {
-                laraFound = 1;
+                lara_found = 1;
             }
         }
 
-        if (!laraFound) {
+        if (!lara_found) {
             TR1MData.stored_lara_health = LARA_HITPOINTS;
         }
     }
@@ -368,13 +379,13 @@ int __cdecl S_DrawHealthBar(int percent) {
 
 int __cdecl LoadItems(FILE *handle)
 {
-    int itemCount = 0;
-    _fread(&itemCount, 4u, 1u, handle);
+    int item_count = 0;
+    _fread(&item_count, 4u, 1u, handle);
 
-    TRACE("Item count: %d", itemCount);
+    TRACE("Item count: %d", item_count);
 
-    if (itemCount) {
-        if (itemCount > 256) {
+    if (item_count) {
+        if (item_count > 256) {
             strcpy(StringToShow, "LoadItems(): Too Many Items being Loaded!!");
             return 0;
         }
@@ -388,21 +399,21 @@ int __cdecl LoadItems(FILE *handle)
             return 0;
         }
 
-        LevelItemCount = itemCount;
+        LevelItemCount = item_count;
         InitialiseItemArray(256);
 
-        for (int i = 0; i < itemCount; ++i) {
-            ITEM_INFO *currentItem = &Items[i];
-            _fread(&currentItem->object_id, 2u, 1u, handle);
-            _fread(&currentItem->room_number, 2u, 1u, handle);
-            _fread(&currentItem->pos.x, 4u, 1u, handle);
-            _fread(&currentItem->pos.y, 4u, 1u, handle);
-            _fread(&currentItem->pos.z, 4u, 1u, handle);
-            _fread(&currentItem->pos.rot_y, 2u, 1u, handle);
-            _fread(&currentItem->shade1, 2u, 1u, handle);
-            _fread(&currentItem->flags, 2u, 1u, handle);
+        for (int i = 0; i < item_count; ++i) {
+            ITEM_INFO *current_item = &Items[i];
+            _fread(&current_item->object_id, 2u, 1u, handle);
+            _fread(&current_item->room_number, 2u, 1u, handle);
+            _fread(&current_item->pos.x, 4u, 1u, handle);
+            _fread(&current_item->pos.y, 4u, 1u, handle);
+            _fread(&current_item->pos.z, 4u, 1u, handle);
+            _fread(&current_item->pos.rot_y, 2u, 1u, handle);
+            _fread(&current_item->shade1, 2u, 1u, handle);
+            _fread(&current_item->flags, 2u, 1u, handle);
 
-            int object_id = currentItem->object_id;
+            int object_id = current_item->object_id;
             if (object_id < 0 || object_id >= ID_NUMBER_OBJECTS) {
                 sprintf(
                     StringToShow,
@@ -417,10 +428,10 @@ int __cdecl LoadItems(FILE *handle)
                 object_id == ID_LARGE_MEDIPACK_ITEM ||
                 object_id == ID_SMALL_MEDIPACK_ITEM
             )) {
-                currentItem->pos.x = -1;
-                currentItem->pos.y = -1;
-                currentItem->pos.z = -1;
-                currentItem->room_number = 0;
+                current_item->pos.x = -1;
+                current_item->pos.y = -1;
+                current_item->pos.z = -1;
+                current_item->room_number = 0;
             }
 
             InitialiseItem(i);
