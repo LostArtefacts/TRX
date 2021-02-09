@@ -9,6 +9,9 @@ typedef void UNKNOWN_STRUCT;
 
 #define LARA_HITPOINTS 1000
 #define LARA_AIR       1800
+#define NO_ITEM        -1
+
+#define NUM_EFFECTS 100
 
 #define TREAD_A 108
 #define TREAD_F 1736
@@ -309,6 +312,20 @@ typedef struct {
     /* 00C8 */ LOT_INFO LOT;
     /* 00E6 end */
 } LARA_INFO;
+
+typedef struct {
+    /* 0000 */ PHD_3DPOS pos;
+    /* 0012 */ int16_t room_number;
+    /* 0014 */ int16_t object_number;
+    /* 0016 */ int16_t next_fx;
+    /* 0018 */ int16_t next_active;
+    /* 001A */ int16_t speed;
+    /* 001C */ int16_t fallspeed;
+    /* 001E */ int16_t frame_number;
+    /* 0020 */ int16_t counter;
+    /* 0022 */ int16_t shade;
+    /* 0024 end */
+} FX_INFO;
 
 #pragma pop
 

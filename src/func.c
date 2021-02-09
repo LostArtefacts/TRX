@@ -310,7 +310,7 @@ void __cdecl LevelStats(int levelID) {
     TempVideoRemove();
 }
 
-int __cdecl LoadLevelByID(int levelID) {
+int __cdecl S_LoadLevel(int levelID) {
     TRACE("%d", levelID);
     int ret = LoadLevel(LevelNames[levelID], levelID);
 
@@ -484,4 +484,15 @@ void __cdecl InitialiseLara() {
     Lara.LOT.fly = STEP_L;
 
     InitialiseLaraInventory(CurrentLevel);
+}
+
+void __cdecl InitialiseFXArray() {
+    TRACE("");
+    NextFxActive = NO_ITEM;
+    NextFxFree = 0;
+    FX_INFO *fx = Effects;
+    for (int i = 1; i < NUM_EFFECTS; i++, fx++) {
+        fx->next_fx = i;
+    }
+    fx->next_fx = NO_ITEM;
 }

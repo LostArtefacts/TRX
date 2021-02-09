@@ -39,5 +39,8 @@
 #define PickupsTaken            VAR_U_(0x0045BB16, int)
 #define SecretsTaken            VAR_U_(0x0045BB12, int)
 #define HiRes                   VAR_U_(0x00459F64, int)
+#define Effects                 VAR_U_(0x0045EE70, FX_INFO*)
+#define NextFxFree              VAR_U_(0x0045EE74, int16_t)
+#define NextFxActive            VAR_U_(0x0045EE7A, int16_t)
 
 #endif

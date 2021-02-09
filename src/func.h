@@ -36,9 +36,10 @@ const char* __cdecl GetFullPath(const char *filename);
 int __cdecl FindCdDrive();
 int __cdecl LoadRooms(FILE *fp);
 void __cdecl LevelStats(int levelID);
-int __cdecl LoadLevelByID(int levelID);
+int __cdecl S_LoadLevel(int levelID);
 int __cdecl S_DrawHealthBar(int percent);
 int __cdecl LoadItems(FILE *handle);
 void __cdecl InitialiseLara();
+void __cdecl InitialiseFXArray();
 
 #endif

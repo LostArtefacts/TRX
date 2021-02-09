@@ -19,8 +19,9 @@ static void tr1m_inject() {
 
     INJECT(0x0041BC60, LoadItems);
     INJECT(0x00428020, InitialiseLara);
-    INJECT(0x0041AF90, LoadLevelByID);
+    INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041D5A0, LevelStats);
+    INJECT(0x00422250, InitialiseFXArray);
 
     //INJECT(0x00402710, my_ins_line);
 
