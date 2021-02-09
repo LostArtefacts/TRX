@@ -521,3 +521,18 @@ void __cdecl InitialiseFXArray() {
     }
     fx->next_fx = NO_ITEM;
 }
+
+void __cdecl InitialiseLOTArray() {
+    TRACE("");
+    BaddieSlots = game_malloc(
+        NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CreatureData
+    );
+    CREATURE_INFO *creature = BaddieSlots;
+    for (int i = 0; i < NUM_SLOTS; i++, creature++) {
+        creature->item_num = NO_ITEM;
+        creature->LOT.node = game_malloc(
+            sizeof(BOX_NODE) * NumberBoxes, GBUF_CreatureLot
+        );
+    }
+    SlotsUsed = 0;
+}

@@ -8,6 +8,7 @@ typedef uint16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
+#define NUM_SLOTS           8
 #define MAX_ROOMS           1024
 #define NUMBER_ITEMS        256
 #define MAX_SECRETS         16
@@ -100,6 +101,13 @@ typedef enum {
 } LARA_STATES;
 
 typedef enum {
+    BORED_MOOD,
+    ATTACK_MOOD,
+    ESCAPE_MOOD,
+    STALK_MOOD
+} MOOD_TYPE;
+
+typedef enum {
     GBUF_RoomInfos           = 11,
     GBUF_RoomMesh            = 12,
     GBUF_RoomDoor            = 13,
@@ -108,6 +116,8 @@ typedef enum {
     GBUF_RoomStaticMeshInfos = 16,
     GBUF_FloorData           = 17,
     GBUF_Items               = 18,
+    GBUF_CreatureData        = 33,
+    GBUF_CreatureLot         = 34,
 } GAMEALLOC_BUFFER;
 
 typedef enum {
@@ -467,6 +477,19 @@ typedef struct {
     /* 0034 */ char *string;
     /* 0038 end */
 } TEXTSTRING;
+
+typedef struct {
+    /* 0000 */ int16_t head_rotation;
+    /* 0002 */ int16_t neck_rotation;
+    /* 0004 */ int16_t maximum_turn;
+    /* 0006 */ uint16_t flags;
+    /* 0008 */ int16_t item_num;
+    /* 000A */ int32_t mood;
+    /* 000E */ LOT_INFO LOT;
+    /* 002C */ PHD_VECTOR target;
+    /* 0032 */ uint8_t pad[12];
+    /* 003E end */
+} CREATURE_INFO;
 
 #pragma pop
 

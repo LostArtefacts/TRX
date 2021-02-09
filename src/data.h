@@ -36,5 +36,8 @@
 #define NextFxFree              VAR_U_(0x0045EE74, int16_t)
 #define NextFxActive            VAR_U_(0x0045EE7A, int16_t)
 #define SaveGame                ARRAY_(0x0045B9C0, SAVEGAME_INFO, [2])
+#define BaddieSlots             VAR_U_(0x0045ED64, CREATURE_INFO*)
+#define SlotsUsed               VAR_U_(0x0045A1F8, int)
+#define NumberBoxes             VAR_U_(0x00462DA0, int)
 
 #endif

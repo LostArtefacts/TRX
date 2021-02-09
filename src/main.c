@@ -22,6 +22,7 @@ static void tr1m_inject() {
     INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x00422250, InitialiseFXArray);
+    INJECT(0x0042A300, InitialiseLOTArray);
 
     //INJECT(0x00402710, my_ins_line);
 

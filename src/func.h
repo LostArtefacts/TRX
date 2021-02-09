@@ -42,5 +42,6 @@ int __cdecl S_DrawHealthBar(int percent);
 int __cdecl LoadItems(FILE *handle);
 void __cdecl InitialiseLara();
 void __cdecl InitialiseFXArray();
+void __cdecl InitialiseLOTArray();
 
 #endif
