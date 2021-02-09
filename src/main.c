@@ -49,8 +49,8 @@ static int tr1m_read_config() {
 
     json_value *json = json_parse((const json_char*)cfg_data, cfg_size);
 
-    TR1MConfig.keep_health_between_levels = tr1m_json_get_boolean_value(
-        json, "keep_health_between_levels"
+    TR1MConfig.disable_healing_between_levels = tr1m_json_get_boolean_value(
+        json, "disable_healing_between_levels"
     );
     TR1MConfig.disable_medpacks = tr1m_json_get_boolean_value(
         json, "disable_medpacks"

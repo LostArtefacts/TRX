@@ -4,7 +4,7 @@
 #include "util.h"
 
 struct {
-    int keep_health_between_levels;
+    int disable_healing_between_levels;
     int disable_medpacks;
 } TR1MConfig;
 

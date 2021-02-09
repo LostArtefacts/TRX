@@ -24,7 +24,7 @@ as Notepad.
 Currently the following configuration options are supported:
 
 - `disable_medpacks`: hides all the medpacks (for No Meds challenge runs).
-- `keep_health_between_levels`: disables healing Lara between level reloads
+- `disable_healing_between_levels`: disables healing Lara between level reloads
   (for No Heal challenge runs).
 
 ## Building

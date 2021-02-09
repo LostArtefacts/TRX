@@ -198,7 +198,7 @@ int LoadRooms(FILE *fp) {
 void __cdecl LevelStats(int level_id) {
     TRACE("");
 
-    if (TR1MConfig.keep_health_between_levels) {
+    if (TR1MConfig.disable_healing_between_levels) {
         TR1MData.stored_lara_health = LaraItem
             ? LaraItem->hit_points
             : LARA_HITPOINTS;
@@ -325,7 +325,7 @@ int __cdecl S_LoadLevel(int level_id) {
     TRACE("%d", level_id);
     int ret = LoadLevel(LevelNames[level_id], level_id);
 
-    if (TR1MConfig.keep_health_between_levels) {
+    if (TR1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
         int lara_found = 0;
@@ -446,7 +446,7 @@ void __cdecl InitialiseLara() {
     LaraItem->more_flags &= 0xFFDFu;
     LaraItem->data = &Lara;
 
-    LaraItem->hit_points = TR1MConfig.keep_health_between_levels
+    LaraItem->hit_points = TR1MConfig.disable_healing_between_levels
         ? TR1MData.stored_lara_health
         : LARA_HITPOINTS;
 
