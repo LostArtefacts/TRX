@@ -44,12 +44,18 @@ static void TR1MRenderBar(int value, int value_max, int bar_type)
     int percent = value * 100 / value_max;
 
 #define COLOR_BAR_SIZE 5
-    const int color_bar[TRM1_BAR_NUMBER][COLOR_BAR_SIZE] = {
+    int color_bar[TRM1_BAR_NUMBER][COLOR_BAR_SIZE] = {
         { 8, 11, 8, 6, 24 },
         { 32, 41, 32, 19, 21 },
-        //{ 29, 30, 29, 28, 26 },
         { 18, 17, 18, 19, 21 },
     };
+    if (TR1MConfig.enable_red_healthbar) {
+        color_bar[TRM1_BAR_LARA_HEALTH][0] = 29;
+        color_bar[TRM1_BAR_LARA_HEALTH][1] = 30;
+        color_bar[TRM1_BAR_LARA_HEALTH][2] = 29;
+        color_bar[TRM1_BAR_LARA_HEALTH][3] = 28;
+        color_bar[TRM1_BAR_LARA_HEALTH][4] = 26;
+    }
 
     const int color_border_1 = 19;
     const int color_border_2 = 17;

@@ -1,6 +1,7 @@
 {
     "disable_healing_between_levels": false,
     "disable_medpacks": false
+    "enable_red_healthbar": false,
     "enable_enemy_healthbar": false,
     "fix_end_of_level_freeze": false
 }
