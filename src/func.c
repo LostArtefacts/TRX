@@ -7,6 +7,13 @@
 #include <stdio.h>
 #include <windows.h>
 
+typedef enum {
+    TRM1_BAR_LARA_HEALTH = 0,
+    TRM1_BAR_LARA_AIR = 1,
+    TRM1_BAR_ENEMY_HEALTH = 2,
+    TRM1_BAR_NUMBER = 3,
+} TR1M_BAR;
+
 static int TR1MGetOverlayScale(int base)
 {
     double result = PhdWinWidth;
@@ -21,7 +28,7 @@ static int TR1MGetOverlayScale(int base)
     return round(result);
 }
 
-static void TR1MRenderBar(int percent, int air)
+static void TR1MRenderBar(int value, int value_max, int bar_type)
 {
     const int p1 = -100;
     const int p2 = -200;
@@ -29,10 +36,19 @@ static void TR1MRenderBar(int percent, int air)
     const int p4 = -400;
     const int percent_max = 100;
 
+    if (value < 0) {
+        value = 0;
+    } else if (value > value_max) {
+        value = value_max;
+    }
+    int percent = value * 100 / value_max;
+
 #define COLOR_BAR_SIZE 5
-    const int color_bar[2][COLOR_BAR_SIZE] = {
+    const int color_bar[TRM1_BAR_NUMBER][COLOR_BAR_SIZE] = {
         { 8, 11, 8, 6, 24 },
         { 32, 41, 32, 19, 21 },
+        //{ 29, 30, 29, 28, 26 },
+        { 18, 17, 18, 19, 21 },
     };
 
     const int color_border_1 = 19;
@@ -46,9 +62,12 @@ static void TR1MRenderBar(int percent, int air)
     int x = 8 * scale;
     int y = 8 * scale;
 
-    // place air bar on the right
-    if (air) {
+    if (bar_type == TRM1_BAR_LARA_AIR) {
+        // place air bar on the right
         x = PhdWinWidth - width - x;
+    } else if (bar_type == TRM1_BAR_ENEMY_HEALTH) {
+        // place enemy bar on the bottom
+        y = PhdWinHeight - height - y;
     }
 
     int padding = 2;
@@ -70,9 +89,9 @@ static void TR1MRenderBar(int percent, int air)
     Insert2DLine(left + 1, bottom, right, bottom, p2, color_border_2);
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
-    const int32_t blink_interval = 20;
-    const int32_t blink_threshold = 20;
-    int32_t blink_time = SaveGame[0].timer % blink_interval;
+    const int blink_interval = 20;
+    const int blink_threshold = bar_type == TRM1_BAR_ENEMY_HEALTH ? 0 : 20;
+    int blink_time = SaveGame[0].timer % blink_interval;
     int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
 
     if (percent && !blink) {
@@ -84,11 +103,10 @@ static void TR1MRenderBar(int percent, int air)
         right = left + width;
 
         for (int i = 0; i < height; i++) {
-            int color_type = air ? 1 : 0;
             int color_index = i * COLOR_BAR_SIZE / height;
             Insert2DLine(
                 left, top + i, right, top + i, p4,
-                color_bar[color_type][color_index]);
+                color_bar[bar_type][color_index]);
         }
     }
 }
@@ -426,12 +444,12 @@ int __cdecl S_LoadLevel(int level_id)
 
 void __cdecl S_DrawHealthBar(int32_t percent)
 {
-    TR1MRenderBar(percent, 0);
+    TR1MRenderBar(percent, 100, TRM1_BAR_LARA_HEALTH);
 }
 
 void __cdecl S_DrawAirBar(int32_t percent)
 {
-    TR1MRenderBar(percent, 1);
+    TR1MRenderBar(percent, 100, TRM1_BAR_LARA_AIR);
 }
 
 int __cdecl LoadItems(FILE* handle)
@@ -647,6 +665,14 @@ void __cdecl DrawGameInfo()
         DrawHealthBar();
         DrawAirBar();
         DrawPickups();
+
+        if (TR1MConfig.enable_enemy_healthbar && Lara.target) {
+            TR1MRenderBar(
+                Lara.target->hit_points,
+                Objects[Lara.target->object_number].hit_points,
+                TRM1_BAR_ENEMY_HEALTH);
+        }
     }
+
     T_DrawText();
 }

@@ -2,8 +2,8 @@
 #define TR1MAIN_DATA_H
 
 #include "util.h"
+#include "struct.h"
 
-// data
 // clang-format off
 #define cd_drive                VAR_I_(0x0045A010, char, '.')
 #define DEMO                    VAR_I_(0x0045F1C0, uint32_t, 0)
@@ -17,6 +17,7 @@
 #define FloorData               VAR_U_(0x0045F1BC, uint16_t*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define MeshPtr                 VAR_U_(0x00461F34, uint16_t**)
+#define Objects                 ARRAY_(0x0045F9E0, OBJECT_INFO, [ID_NUMBER_OBJECTS])
 #define LevelItemCount          VAR_U_(0x0045A0E0, int32_t)
 #define Items                   VAR_U_(0x00462CEC, ITEM_INFO*)
 #define GameAllocMemPointer     VAR_U_(0x0045E32C, uint32_t)

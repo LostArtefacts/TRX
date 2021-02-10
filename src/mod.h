@@ -6,6 +6,7 @@
 struct {
     int disable_healing_between_levels;
     int disable_medpacks;
+    int enable_enemy_healthbar;
     int fix_end_of_level_freeze;
 } TR1MConfig;
 

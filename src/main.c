@@ -54,6 +54,8 @@ static int tr1m_read_config()
         tr1m_json_get_boolean_value(json, "disable_healing_between_levels");
     TR1MConfig.disable_medpacks =
         tr1m_json_get_boolean_value(json, "disable_medpacks");
+    TR1MConfig.enable_enemy_healthbar =
+        tr1m_json_get_boolean_value(json, "enable_enemy_healthbar");
     TR1MConfig.fix_end_of_level_freeze =
         tr1m_json_get_boolean_value(json, "fix_end_of_level_freeze");
 

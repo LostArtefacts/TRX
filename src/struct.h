@@ -506,6 +506,70 @@ typedef struct {
     /* 0004 end */
 } DISPLAYPU;
 
+typedef struct {
+    /* 0000 */ int32_t mid_floor;
+    /* 0004 */ int32_t mid_ceiling;
+    /* 0008 */ int32_t mid_type;
+    /* 000C */ int32_t front_floor;
+    /* 0010 */ int32_t front_ceiling;
+    /* 0014 */ int32_t front_type;
+    /* 0018 */ int32_t left_floor;
+    /* 001C */ int32_t left_ceiling;
+    /* 0020 */ int32_t left_type;
+    /* 0024 */ int32_t right_floor;
+    /* 0028 */ int32_t right_ceiling;
+    /* 002C */ int32_t right_type;
+    /* 0030 */ int32_t radius;
+    /* 0034 */ int32_t bad_pos;
+    /* 0038 */ int32_t bad_neg;
+    /* 003C */ int32_t bad_ceiling;
+    /* 0040 */ PHD_VECTOR shift;
+    /* 0046 */ PHD_VECTOR old;
+    /* 004C */ int16_t facing;
+    /* 004E */ int16_t quadrant;
+    /* 0050 */ int16_t coll_type;
+    /* 0052 */ int16_t* trigger;
+    /* 0056 */ int8_t tilt_x;
+    /* 0057 */ int8_t tilt_z;
+    /* 0058 */ int8_t hit_by_baddie;
+    /* 0059 */ int8_t hit_static;
+    /* 005A */ uint16_t slopes_are_walls : 1;
+    /*      */ uint16_t slopes_are_pits : 1;
+    /*      */ uint16_t lava_is_pit : 1;
+    /*      */ uint16_t enable_baddie_push : 1;
+    /*      */ uint16_t enable_spaz : 1;
+    /* 005C end */
+} COLL_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t nmeshes;
+    /* 0002 */ int16_t mesh_index;
+    /* 0004 */ int32_t bone_index;
+    /* 0008 */ int16_t* frame_base;
+    /* 000C */ void(__cdecl* initialise)(int16_t);
+    /* 0010 */ void(__cdecl* control)(int16_t);
+    /* 0014 */ void(__cdecl* floor)(
+        ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    /* 0018 */ void(__cdecl* ceiling)(
+        ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    /* 001C */ void(__cdecl* draw_routine)(ITEM_INFO* item);
+    /* 0020 */ void(__cdecl* collision)(
+        int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+    /* 0024 */ int16_t anim_index;
+    /* 0026 */ int16_t hit_points;
+    /* 0028 */ int16_t pivot_length;
+    /* 002A */ int16_t radius;
+    /* 002C */ int16_t smartness;
+    /* 002E */ int16_t shadow_size;
+    /* 0030 */ uint16_t loaded : 1;
+    /*      */ uint16_t intelligent : 1;
+    /*      */ uint16_t save_position : 1;
+    /*      */ uint16_t save_hitpoints : 1;
+    /*      */ uint16_t save_flags : 1;
+    /*      */ uint16_t save_anim : 1;
+    /* 0032 end */
+} OBJECT_INFO;
+
 #pragma pop
 
 #endif
