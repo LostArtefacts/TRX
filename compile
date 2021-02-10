@@ -1,3 +1,0 @@
-#!/bin/sh
-docker build -t tr1main .
-docker run -v $(pwd)/entrypoint.sh:/entrypoint.sh -v $(pwd)/build:/build tr1main

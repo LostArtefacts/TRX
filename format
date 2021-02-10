@@ -1,3 +1,0 @@
-#!/bin/bash
-shopt -s globstar
-clang-format-10 **/*.{c,h} -i

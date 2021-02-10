@@ -34,7 +34,8 @@ Currently the following configuration options are supported:
 - i686-w64-mingw32-gcc - C/C++ compiler
 - Vim @ WSL - IDE
 
-To compile the project with Docker, just run `./compile`.
+To compile the project, run `make build`.  
+To compile the project with Docker, run `make docker_build`.
 
 ## License
 
