@@ -14,7 +14,7 @@
 #define InitialiseLOT           ((void          __cdecl(*)())0x0042A780)
 #define LoadLevel               ((int           __cdecl(*)(const char *path, int level_id))0x0041AFB0)
 #define T_DrawText              ((void          __cdecl(*)())0x00439B00)
-#define S_DumpScreen            ((__int32       __cdecl(*)())0x0042FC70)
+#define S_DumpScreen            ((void          __cdecl(*)())0x0042FC70)
 #define S_InitialisePolyList    ((void          __cdecl(*)())0x0042FC60)
 #define S_UpdateInput           ((void          __cdecl(*)())0x0041E550)
 #define S_CopyBufferToScreen    ((void          __cdecl(*)())0x00416A60)
@@ -29,6 +29,9 @@
 #define T_CentreV               ((void          __cdecl(*)(TEXTSTRING *text_string, int16_t enable))0x004399C0)
 #define TempVideoAdjust         ((void          __cdecl(*)(int hires, double sizer))0x00416550)
 #define ShowFatalError          ((void          __cdecl(*)(const char *message))0x0043D770)
+#define DrawAmmoInfo            ((void          __cdecl(*)())0x0041DF50)
+#define S_DrawScreenSprite2d    ((void          __cdecl(*)(int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t brightness))0x00435D80)
+#define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
 
 void __cdecl init_game_malloc();
 void __cdecl game_free(int free_size);
@@ -38,10 +41,15 @@ int __cdecl FindCdDrive();
 int __cdecl LoadRooms(FILE *fp);
 void __cdecl LevelStats(int level_id);
 int __cdecl S_LoadLevel(int level_id);
-int __cdecl S_DrawHealthBar(int percent);
+void __cdecl S_DrawHealthBar(int percent);
+void __cdecl S_DrawAirBar(int percent);
 int __cdecl LoadItems(FILE *handle);
 void __cdecl InitialiseLara();
 void __cdecl InitialiseFXArray();
 void __cdecl InitialiseLOTArray();
+void __cdecl DrawGameInfo();
+void __cdecl DrawHealthBar();
+void __cdecl DrawAirBar();
+void __cdecl DrawPickups();
 
 #endif

@@ -8,6 +8,7 @@ typedef uint16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
+#define NUM_PU              3
 #define NUM_SLOTS           8
 #define MAX_ROOMS           1024
 #define NUMBER_ITEMS        256
@@ -38,73 +39,81 @@ typedef enum {
 typedef enum {
     LARA_ABOVEWATER = 0,
     LARA_UNDERWATER = 1,
-    LARA_SURFACE = 2,
+    LARA_SURFACE    = 2,
 } LARA_WATER_STATES;
 
 typedef enum {
-    AS_WALK        = 0,
-    AS_RUN         = 1,
-    AS_STOP        = 2,
-    AS_FORWARDJUMP = 3,
-    AS_POSE        = 4,
-    AS_FASTBACK    = 5,
-    AS_TURN_R      = 6,
-    AS_TURN_L      = 7,
-    AS_DEATH       = 8,
-    AS_FASTFALL    = 9,
-    AS_HANG        = 10,
-    AS_REACH       = 11,
-    AS_SPLAT       = 12,
-    AS_TREAD       = 13,
-    AS_LAND        = 14,
-    AS_COMPRESS    = 15,
-    AS_BACK        = 16,
-    AS_SWIM        = 17,
-    AS_GLIDE       = 18,
-    AS_NULL        = 19,
-    AS_FASTTURN    = 20,
-    AS_STEPRIGHT   = 21,
-    AS_STEPLEFT    = 22,
-    AS_HIT         = 23,
-    AS_SLIDE       = 24,
-    AS_BACKJUMP    = 25,
-    AS_RIGHTJUMP   = 26,
-    AS_LEFTJUMP    = 27,
-    AS_UPJUMP      = 28,
-    AS_FALLBACK    = 29,
-    AS_HANGLEFT    = 30,
-    AS_HANGRIGHT   = 31,
-    AS_SLIDEBACK   = 32,
-    AS_SURFTREAD   = 33,
-    AS_SURFSWIM    = 34,
-    AS_DIVE        = 35,
-    AS_PUSHBLOCK   = 36,
-    AS_PULLBLOCK   = 37,
-    AS_PPREADY     = 38,
-    AS_PICKUP      = 39,
-    AS_SWITCHON    = 40,
-    AS_SWITCHOFF   = 41,
-    AS_USEKEY      = 42,
-    AS_USEPUZZLE   = 43,
-    AS_UWDEATH     = 44,
-    AS_ROLL        = 45,
-    AS_SPECIAL     = 46,
-    AS_SURFBACK    = 47,
-    AS_SURFLEFT    = 48,
-    AS_SURFRIGHT   = 49,
-    AS_USEMIDAS    = 50,
-    AS_DIEMIDAS    = 51,
-    AS_SWANDIVE    = 52,
-    AS_FASTDIVE    = 53,
-    AS_GYMNAST     = 54,
-    AS_WATEROU     = 55,
+    AS_WALK         = 0,
+    AS_RUN          = 1,
+    AS_STOP         = 2,
+    AS_FORWARDJUMP  = 3,
+    AS_POSE         = 4,
+    AS_FASTBACK     = 5,
+    AS_TURN_R       = 6,
+    AS_TURN_L       = 7,
+    AS_DEATH        = 8,
+    AS_FASTFALL     = 9,
+    AS_HANG         = 10,
+    AS_REACH        = 11,
+    AS_SPLAT        = 12,
+    AS_TREAD        = 13,
+    AS_LAND         = 14,
+    AS_COMPRESS     = 15,
+    AS_BACK         = 16,
+    AS_SWIM         = 17,
+    AS_GLIDE        = 18,
+    AS_NULL         = 19,
+    AS_FASTTURN     = 20,
+    AS_STEPRIGHT    = 21,
+    AS_STEPLEFT     = 22,
+    AS_HIT          = 23,
+    AS_SLIDE        = 24,
+    AS_BACKJUMP     = 25,
+    AS_RIGHTJUMP    = 26,
+    AS_LEFTJUMP     = 27,
+    AS_UPJUMP       = 28,
+    AS_FALLBACK     = 29,
+    AS_HANGLEFT     = 30,
+    AS_HANGRIGHT    = 31,
+    AS_SLIDEBACK    = 32,
+    AS_SURFTREAD    = 33,
+    AS_SURFSWIM     = 34,
+    AS_DIVE         = 35,
+    AS_PUSHBLOCK    = 36,
+    AS_PULLBLOCK    = 37,
+    AS_PPREADY      = 38,
+    AS_PICKUP       = 39,
+    AS_SWITCHON     = 40,
+    AS_SWITCHOFF    = 41,
+    AS_USEKEY       = 42,
+    AS_USEPUZZLE    = 43,
+    AS_UWDEATH      = 44,
+    AS_ROLL         = 45,
+    AS_SPECIAL      = 46,
+    AS_SURFBACK     = 47,
+    AS_SURFLEFT     = 48,
+    AS_SURFRIGHT    = 49,
+    AS_USEMIDAS     = 50,
+    AS_DIEMIDAS     = 51,
+    AS_SWANDIVE     = 52,
+    AS_FASTDIVE     = 53,
+    AS_GYMNAST      = 54,
+    AS_WATEROU      = 55,
 } LARA_STATES;
 
 typedef enum {
-    BORED_MOOD,
-    ATTACK_MOOD,
-    ESCAPE_MOOD,
-    STALK_MOOD
+    LG_ARMLESS      = 0,
+    LG_HANDSBUSY    = 1,
+    LG_DRAW         = 2,
+    LG_UNDRAW       = 3,
+    LG_READY        = 4,
+} LARA_GUN_STATES;
+
+typedef enum {
+    BORED_MOOD      = 0,
+    ATTACK_MOOD     = 1,
+    ESCAPE_MOOD     = 2,
+    STALK_MOOD      = 3,
 } MOOD_TYPE;
 
 typedef enum {
@@ -490,6 +499,12 @@ typedef struct {
     /* 0032 */ uint8_t pad[12];
     /* 003E end */
 } CREATURE_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t duration;
+    /* 0002 */ int16_t sprnum;
+    /* 0004 end */
+} DISPLAYPU;
 
 #pragma pop
 

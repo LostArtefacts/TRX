@@ -1,10 +1,100 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <math.h>
 #include "data.h"
 #include "func.h"
 #include "mod.h"
 #include "struct.h"
+
+static int TR1MGetOverlayScale(int base) {
+    double result = PhdWinWidth;
+    result *= base;
+    result /= 800.0;
+
+    // only scale up, not down
+    if (result < base) {
+        result = base;
+    }
+
+    return round(result);
+}
+
+static void TR1MRenderBar(int percent, int air) {
+    const int p1 = -100;
+    const int p2 = -200;
+    const int p3 = -300;
+    const int p4 = -400;
+    const int percent_max = 100;
+
+    #define COLOR_BAR_SIZE 5
+    const int color_bar[2][COLOR_BAR_SIZE] = {
+        {8, 11, 8, 6, 24},
+        {32, 41, 32, 19, 21},
+    };
+
+    const int color_border_1 = 19;
+    const int color_border_2 = 17;
+    const int color_bgnd = 0;
+
+    int scale = TR1MGetOverlayScale(1.0);
+    int width = percent_max * scale;
+    int height = 5 * scale;
+
+    int x = 8 * scale;
+    int y = 8 * scale;
+
+    // place air bar on the right
+    if (air) {
+        x = PhdWinWidth - width - x;
+    }
+
+    int padding = 2;
+    int top = y - padding;
+    int left = x - padding;
+    int bottom = top + height + padding + 1;
+    int right = left + width + padding + 1;
+
+    // background
+    for (int i = 1; i < height + 3; i++) {
+        Insert2DLine(left + 1, top + i, right, top + i, p1, color_bgnd);
+    }
+
+    // top / left border
+    Insert2DLine(left, top, right + 1, top, p2, color_border_1);
+    Insert2DLine(left, top, left, bottom, p2, color_border_1);
+
+    // bottom / right border
+    Insert2DLine(left + 1, bottom, right, bottom, p2, color_border_2);
+    Insert2DLine(right, top, right, bottom, p2, color_border_2);
+
+    const int32_t blink_interval = 20;
+    const int32_t blink_threshold = 20;
+    int32_t blink_time = SaveGame[0].timer % blink_interval;
+    int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
+
+    if (percent && !blink) {
+        width -= (percent_max - percent) * scale;
+
+        top = y;
+        left = x;
+        bottom = top + height;
+        right = left + width;
+
+        for (int i = 0; i < height; i++) {
+            int color_type = air ? 1 : 0;
+            int color_index = i * COLOR_BAR_SIZE / height;
+            Insert2DLine(
+                left,
+                top + i,
+                right,
+                top + i,
+                p4,
+                color_bar[color_type][color_index]
+            );
+        }
+    }
+}
 
 void __cdecl init_game_malloc() {
     TRACE("");
@@ -357,42 +447,15 @@ int __cdecl S_LoadLevel(int level_id) {
     return ret;
 }
 
-int __cdecl S_DrawHealthBar(int percent) {
-    TRACE("");
-    int v1; // esi
-    int result; // eax
-    int v3; // esi
-
-    v1 = 100 * percent / 100;
-    ins_line(7, 7, 109, 7, -100, 0);
-    ins_line(7, 8, 109, 8, -100, 0);
-    ins_line(7, 9, 109, 9, -100, 0);
-    ins_line(7, 10, 109, 10, -100, 0);
-    ins_line(7, 11, 109, 11, -100, 0);
-    ins_line(7, 12, 109, 12, -100, 0);
-    ins_line(7, 13, 109, 13, -100, 0);
-    ins_line(6, 14, 110, 14, -200, 17);
-    ins_line(110, 6, 110, 14, -200, 17);
-    ins_line(6, 6, 110, 6, -300, 19);
-    result = ins_line(6, 6, 6, 14, -300, 19);
-    if ( v1 ) {
-        v3 = v1 + 8;
-        ins_line(8, 8, v3, 8, -400, 8);
-        ins_line(8, 9, v3, 9, -400, 11);
-        ins_line(8, 10, v3, 10, -400, 8);
-        ins_line(8, 11, v3, 11, -400, 6);
-        result = ins_line(8, 12, v3, 12, -400, 24);
-    }
-    return result;
+void __cdecl S_DrawHealthBar(int32_t percent) {
+    TR1MRenderBar(percent, 0);
 }
 
-// int __cdecl my_ins_line(int a1, int a2, int a3, int a4, int a5, char a6) {
-//     TRACE("");
-//     return 0;
-// }
+void __cdecl S_DrawAirBar(int32_t percent) {
+    TR1MRenderBar(percent, 1);
+}
 
-int __cdecl LoadItems(FILE *handle)
-{
+int __cdecl LoadItems(FILE *handle) {
     int32_t item_count = 0;
     _fread(&item_count, sizeof(int32_t), 1u, handle);
 
@@ -535,4 +598,75 @@ void __cdecl InitialiseLOTArray() {
         );
     }
     SlotsUsed = 0;
+}
+
+void __cdecl DrawHealthBar() {
+    int hit_points = LaraItem->hit_points;
+    if (hit_points < 0) {
+        hit_points = 0;
+    } else if (hit_points > LARA_HITPOINTS) {
+        hit_points = LARA_HITPOINTS;
+    }
+
+    if (OldHitPoints != hit_points) {
+        OldHitPoints = hit_points;
+        HealthBarTimer = 40;
+    }
+
+    if (HealthBarTimer < 0) {
+        HealthBarTimer = 0;
+    }
+
+    if (HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LG_READY) {
+        S_DrawHealthBar(hit_points * 100 / LARA_HITPOINTS);
+    }
+}
+
+void __cdecl DrawAirBar() {
+    if (Lara.water_status != LARA_UNDERWATER && Lara.water_status != LARA_SURFACE) {
+        return;
+    }
+
+    int air = Lara.air;
+    if (air < 0) {
+        air = 0;
+    } else if (Lara.air > LARA_AIR) {
+        air = LARA_AIR;
+    }
+
+    S_DrawAirBar(air * 100 / LARA_AIR);
+}
+
+void __cdecl DrawPickups() {
+    int old_game_timer = OldGameTimer;
+    OldGameTimer = SaveGame[0].timer;
+    int16_t time = SaveGame[0].timer - old_game_timer;
+
+    if (time > 0 && time < 60) {
+        int y = PhdWinHeight - PhdWinWidth / 10;
+        int x = PhdWinWidth - PhdWinWidth / 10;
+        int sprite_width = 4 * (PhdWinWidth / 10) / 3;
+        for (int i = 0; i < NUM_PU; i++) {
+            DISPLAYPU *pu = &Pickups[i];
+            pu->duration -= time;
+            if (pu->duration <= 0) {
+                pu->duration = 0;
+            } else {
+                S_DrawScreenSprite2d(
+                    x, y, TR1MGetOverlayScale(12288), pu->sprnum, 4096
+                );
+                x -= sprite_width;
+            }
+        }
+    }
+}
+
+void __cdecl DrawGameInfo() {
+    DrawAmmoInfo();
+    if (OverlayStatus > 0) {
+        DrawHealthBar();
+        DrawAirBar();
+        DrawPickups();
+    }
+    T_DrawText();
 }

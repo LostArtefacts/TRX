@@ -39,5 +39,12 @@
 #define BaddieSlots             VAR_U_(0x0045ED64, CREATURE_INFO*)
 #define SlotsUsed               VAR_U_(0x0045A1F8, int)
 #define NumberBoxes             VAR_U_(0x00462DA0, int)
+#define Pickups                 ARRAY_(0x0045EF00, DISPLAYPU, [NUM_PU])
+#define OverlayStatus           VAR_U_(0x004546B4, int32_t)
+#define HealthBarTimer          VAR_U_(0x0045A0E4, int32_t)
+#define OldGameTimer            VAR_U_(0x0045A028, int32_t)
+#define OldHitPoints            VAR_U_(0x0045A02C, int32_t)
+#define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
+#define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
 
 #endif
