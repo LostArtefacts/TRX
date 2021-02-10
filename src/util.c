@@ -1,8 +1,8 @@
 #include "util.h"
-#include <dbghelp.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <windows.h>
+#include <dbghelp.h>
 
 void tr1m_inject_func(void* from, void* to)
 {
