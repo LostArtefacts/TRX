@@ -4,6 +4,7 @@
 #include "util.h"
 
 // data
+// clang-format off
 #define cd_drive                VAR_I_(0x0045A010, char, '.')
 #define DEMO                    VAR_I_(0x0045F1C0, uint32_t, 0)
 #define dword_45A1F0            VAR_U_(0x0045A1F0, uint32_t)
@@ -46,5 +47,6 @@
 #define OldHitPoints            VAR_U_(0x0045A02C, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
+// clang-format on
 
 #endif

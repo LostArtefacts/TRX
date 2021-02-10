@@ -1,0 +1,7 @@
+---
+BasedOnStyle: Webkit
+IndentPPDirectives: BeforeHash
+ColumnLimit: 80
+AllowShortFunctionsOnASingleLine: InlineOnly
+BreakBeforeBinaryOperators: NonAssignment
+AlignAfterOpenBracket: AlwaysBreak

@@ -1,13 +1,14 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <math.h>
-#include "data.h"
 #include "func.h"
+#include "data.h"
 #include "mod.h"
 #include "struct.h"
+#include <math.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <windows.h>
 
-static int TR1MGetOverlayScale(int base) {
+static int TR1MGetOverlayScale(int base)
+{
     double result = PhdWinWidth;
     result *= base;
     result /= 800.0;
@@ -20,17 +21,18 @@ static int TR1MGetOverlayScale(int base) {
     return round(result);
 }
 
-static void TR1MRenderBar(int percent, int air) {
+static void TR1MRenderBar(int percent, int air)
+{
     const int p1 = -100;
     const int p2 = -200;
     const int p3 = -300;
     const int p4 = -400;
     const int percent_max = 100;
 
-    #define COLOR_BAR_SIZE 5
+#define COLOR_BAR_SIZE 5
     const int color_bar[2][COLOR_BAR_SIZE] = {
-        {8, 11, 8, 6, 24},
-        {32, 41, 32, 19, 21},
+        { 8, 11, 8, 6, 24 },
+        { 32, 41, 32, 19, 21 },
     };
 
     const int color_border_1 = 19;
@@ -85,34 +87,32 @@ static void TR1MRenderBar(int percent, int air) {
             int color_type = air ? 1 : 0;
             int color_index = i * COLOR_BAR_SIZE / height;
             Insert2DLine(
-                left,
-                top + i,
-                right,
-                top + i,
-                p4,
-                color_bar[color_type][color_index]
-            );
+                left, top + i, right, top + i, p4,
+                color_bar[color_type][color_index]);
         }
     }
 }
 
-void __cdecl init_game_malloc() {
+void __cdecl init_game_malloc()
+{
     TRACE("");
     GameAllocMemPointer = GameMemoryPointer;
     GameAllocMemFree = GameMemorySize;
     GameAllocMemUsed = 0;
 }
 
-void __cdecl game_free(int free_size) {
+void __cdecl game_free(int free_size)
+{
     TRACE("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
     GameAllocMemUsed -= free_size;
 }
 
-void __cdecl DB_Log(char *a1, ...) {
+void __cdecl DB_Log(char* a1, ...)
+{
     va_list va;
-    char buffer[256] = {0};
+    char buffer[256] = { 0 };
 
     va_start(va, a1);
     if (!dword_45A1F0) {
@@ -123,26 +123,28 @@ void __cdecl DB_Log(char *a1, ...) {
     }
 }
 
-const char *GetFullPath(const char *filename) {
+const char* GetFullPath(const char* filename)
+{
     TRACE(filename);
-    #if defined FEATURE_NOCD_DATA
-        sprintf(newpath, ".\\%s", filename);
-    #else
-        if (DEMO)
-            sprintf(newpath, "%c:\\tomb\\%s", cd_drive, filename);
-        else
-            sprintf(newpath, "%c:\\%s", cd_drive, filename);
-    #endif
+#if defined FEATURE_NOCD_DATA
+    sprintf(newpath, ".\\%s", filename);
+#else
+    if (DEMO)
+        sprintf(newpath, "%c:\\tomb\\%s", cd_drive, filename);
+    else
+        sprintf(newpath, "%c:\\%s", cd_drive, filename);
+#endif
     return newpath;
 }
 
-int FindCdDrive() {
+int FindCdDrive()
+{
     TRACE("");
-    FILE *fp;
+    FILE* fp;
     char root[5] = "C:\\";
     char tmp_path[MAX_PATH];
 
-    for (cd_drive = 'C'; cd_drive <= 'Z'; cd_drive ++) {
+    for (cd_drive = 'C'; cd_drive <= 'Z'; cd_drive++) {
         root[0] = cd_drive;
         if (GetDriveType(root) == DRIVE_CDROM) {
             sprintf(tmp_path, "%c:\\tomb\\data\\title.phd", cd_drive);
@@ -163,7 +165,8 @@ int FindCdDrive() {
     return 0;
 }
 
-int LoadRooms(FILE *fp) {
+int LoadRooms(FILE* fp)
+{
     TRACE("");
     uint16_t count2;
     uint32_t count4;
@@ -174,20 +177,15 @@ int LoadRooms(FILE *fp) {
         return 0;
     }
 
-    RoomInfo = (ROOM_INFO *)game_malloc(
-        sizeof(ROOM_INFO) * RoomCount, GBUF_RoomInfos
-    );
+    RoomInfo = game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_RoomInfos);
     if (!RoomInfo) {
         strcpy(StringToShow, "LoadRoom(): Could not allocate memory for rooms");
         return 0;
     }
 
     int i = 0;
-    for (
-        ROOM_INFO *current_room_info = RoomInfo;
-        i < RoomCount;
-        ++i, ++current_room_info
-    ) {
+    for (ROOM_INFO* current_room_info = RoomInfo; i < RoomCount;
+         ++i, ++current_room_info) {
         // Room position
         _fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
         current_room_info->y = 0;
@@ -199,9 +197,8 @@ int LoadRooms(FILE *fp) {
 
         // Room mesh
         _fread(&count4, sizeof(uint32_t), 1, fp);
-        current_room_info->data = (uint16_t *)game_malloc(
-            sizeof(uint16_t) * count4, GBUF_RoomMesh
-        );
+        current_room_info->data =
+            game_malloc(sizeof(uint16_t) * count4, GBUF_RoomMesh);
         _fread(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
@@ -209,22 +206,19 @@ int LoadRooms(FILE *fp) {
         if (!count2) {
             current_room_info->doors = NULL;
         } else {
-            current_room_info->doors = (DOOR_INFOS *)game_malloc(
-                sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_RoomDoor
-            );
+            current_room_info->doors = game_malloc(
+                sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_RoomDoor);
             current_room_info->doors->count = count2;
             _fread(
-                &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp
-            );
+                &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp);
         }
 
         // Room floor
         _fread(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
         _fread(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
         count4 = current_room_info->y_size * current_room_info->x_size;
-        current_room_info->floor = (FLOOR_INFO *)game_malloc(
-            sizeof(FLOOR_INFO) * count4, GBUF_RoomFloor
-        );
+        current_room_info->floor =
+            game_malloc(sizeof(FLOOR_INFO) * count4, GBUF_RoomFloor);
         _fread(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
 
         // Room lights
@@ -233,16 +227,12 @@ int LoadRooms(FILE *fp) {
         if (!current_room_info->num_lights) {
             current_room_info->light = NULL;
         } else {
-            current_room_info->light = (LIGHT_INFO *)game_malloc(
+            current_room_info->light = game_malloc(
                 sizeof(LIGHT_INFO) * current_room_info->num_lights,
-                GBUF_RoomLights
-            );
+                GBUF_RoomLights);
             _fread(
-                current_room_info->light,
-                sizeof(LIGHT_INFO),
-                current_room_info->num_lights,
-                fp
-            );
+                current_room_info->light, sizeof(LIGHT_INFO),
+                current_room_info->num_lights, fp);
         }
 
         // Static mesh infos
@@ -250,16 +240,12 @@ int LoadRooms(FILE *fp) {
         if (!current_room_info->num_meshes) {
             current_room_info->mesh = NULL;
         } else {
-            current_room_info->mesh = (MESH_INFO *)game_malloc(
+            current_room_info->mesh = game_malloc(
                 sizeof(MESH_INFO) * current_room_info->num_meshes,
-                GBUF_RoomStaticMeshInfos
-            );
+                GBUF_RoomStaticMeshInfos);
             _fread(
-                current_room_info->mesh,
-                sizeof(MESH_INFO),
-                current_room_info->num_meshes,
-                fp
-            );
+                current_room_info->mesh, sizeof(MESH_INFO),
+                current_room_info->num_meshes, fp);
         }
 
         // Flipped (alternative) room
@@ -285,17 +271,17 @@ int LoadRooms(FILE *fp) {
     return 1;
 }
 
-void __cdecl LevelStats(int level_id) {
+void __cdecl LevelStats(int level_id)
+{
     TRACE("");
 
     if (TR1MConfig.disable_healing_between_levels) {
-        TR1MData.stored_lara_health = LaraItem
-            ? LaraItem->hit_points
-            : LARA_HITPOINTS;
+        TR1MData.stored_lara_health =
+            LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
     }
 
     static char string[100];
-    TEXTSTRING *txt;
+    TEXTSTRING* txt;
 
     TempVideoAdjust(HiRes, 1.0);
     T_InitPrint();
@@ -313,24 +299,14 @@ void __cdecl LevelStats(int level_id) {
     seconds %= 60;
     if (hours) {
         sprintf(
-            string,
-            "%s %d:%d%d:%d%d",
+            string, "%s %d:%d%d:%d%d",
             "TIME TAKEN", // TODO: translation
-            hours,
-            minutes / 10,
-            minutes % 10,
-            seconds / 10,
-            seconds % 10
-        );
+            hours, minutes / 10, minutes % 10, seconds / 10, seconds % 10);
     } else {
         sprintf(
-            string,
-            "%s %d:%d%d",
+            string, "%s %d:%d%d",
             "TIME TAKEN", // TODO: translation
-            minutes,
-            seconds / 10,
-            seconds % 10
-        );
+            minutes, seconds / 10, seconds % 10);
     }
     txt = T_Print(0, 70, 0, string);
     T_CentreH(txt, 1);
@@ -345,11 +321,9 @@ void __cdecl LevelStats(int level_id) {
         }
         SaveGame[0].secrets >>= 1;
         --secrets_total;
-    }
-    while (secrets_total);
+    } while (secrets_total);
     sprintf(
-        string,
-        "%s %d %s %d",
+        string, "%s %d %s %d",
         "SECRETS", // TODO: translation
         secrets_taken,
         "OF", // TODO: translation
@@ -360,7 +334,9 @@ void __cdecl LevelStats(int level_id) {
     T_CentreV(txt, 1);
 
     // pickups
-    sprintf(string, "%s %d", "PICKUPS", SaveGame[0].pickups); // TODO: translation
+    sprintf(
+        string, "%s %d", "PICKUPS",
+        SaveGame[0].pickups); // TODO: translation
     txt = T_Print(0, 10, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -425,7 +401,8 @@ void __cdecl LevelStats(int level_id) {
     TempVideoRemove();
 }
 
-int __cdecl S_LoadLevel(int level_id) {
+int __cdecl S_LoadLevel(int level_id)
+{
     TRACE("%d", level_id);
     int ret = LoadLevel(LevelNames[level_id], level_id);
 
@@ -447,15 +424,18 @@ int __cdecl S_LoadLevel(int level_id) {
     return ret;
 }
 
-void __cdecl S_DrawHealthBar(int32_t percent) {
+void __cdecl S_DrawHealthBar(int32_t percent)
+{
     TR1MRenderBar(percent, 0);
 }
 
-void __cdecl S_DrawAirBar(int32_t percent) {
+void __cdecl S_DrawAirBar(int32_t percent)
+{
     TR1MRenderBar(percent, 1);
 }
 
-int __cdecl LoadItems(FILE *handle) {
+int __cdecl LoadItems(FILE* handle)
+{
     int32_t item_count = 0;
     _fread(&item_count, sizeof(int32_t), 1u, handle);
 
@@ -471,8 +451,7 @@ int __cdecl LoadItems(FILE *handle) {
         if (!Items) {
             strcpy(
                 StringToShow,
-                "LoadItems(): Unable to allocate memory for 'items'"
-            );
+                "LoadItems(): Unable to allocate memory for 'items'");
             return 0;
         }
 
@@ -480,7 +459,7 @@ int __cdecl LoadItems(FILE *handle) {
         InitialiseItemArray(NUMBER_ITEMS);
 
         for (int i = 0; i < item_count; ++i) {
-            ITEM_INFO *item = &Items[i];
+            ITEM_INFO* item = &Items[i];
             _fread(&item->object_number, 2u, 1u, handle);
             _fread(&item->room_number, 2u, 1u, handle);
             _fread(&item->pos.x, 4u, 1u, handle);
@@ -491,21 +470,17 @@ int __cdecl LoadItems(FILE *handle) {
             _fread(&item->flags, 2u, 1u, handle);
 
             if (item->object_number < 0
-                || item->object_number >= ID_NUMBER_OBJECTS
-            ) {
+                || item->object_number >= ID_NUMBER_OBJECTS) {
                 sprintf(
                     StringToShow,
                     "LoadItems(): Bad Object number (%d) on Item %d",
-                    item->object_number,
-                    i
-                );
+                    item->object_number, i);
                 S_ExitSystem(StringToShow);
             }
 
-            if (TR1MConfig.disable_medpacks && (
-                item->object_number == ID_LARGE_MEDIPACK_ITEM ||
-                item->object_number == ID_SMALL_MEDIPACK_ITEM
-            )) {
+            if (TR1MConfig.disable_medpacks
+                && (item->object_number == ID_LARGE_MEDIPACK_ITEM
+                    || item->object_number == ID_SMALL_MEDIPACK_ITEM)) {
                 item->pos.x = -1;
                 item->pos.y = -1;
                 item->pos.z = -1;
@@ -519,7 +494,8 @@ int __cdecl LoadItems(FILE *handle) {
     return 1;
 }
 
-void __cdecl InitialiseLara() {
+void __cdecl InitialiseLara()
+{
     TRACE("");
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
@@ -574,33 +550,34 @@ void __cdecl InitialiseLara() {
     InitialiseLaraInventory(CurrentLevel);
 }
 
-void __cdecl InitialiseFXArray() {
+void __cdecl InitialiseFXArray()
+{
     TRACE("");
     NextFxActive = NO_ITEM;
     NextFxFree = 0;
-    FX_INFO *fx = Effects;
+    FX_INFO* fx = Effects;
     for (int i = 1; i < NUM_EFFECTS; i++, fx++) {
         fx->next_fx = i;
     }
     fx->next_fx = NO_ITEM;
 }
 
-void __cdecl InitialiseLOTArray() {
+void __cdecl InitialiseLOTArray()
+{
     TRACE("");
-    BaddieSlots = game_malloc(
-        NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CreatureData
-    );
-    CREATURE_INFO *creature = BaddieSlots;
+    BaddieSlots =
+        game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CreatureData);
+    CREATURE_INFO* creature = BaddieSlots;
     for (int i = 0; i < NUM_SLOTS; i++, creature++) {
         creature->item_num = NO_ITEM;
-        creature->LOT.node = game_malloc(
-            sizeof(BOX_NODE) * NumberBoxes, GBUF_CreatureLot
-        );
+        creature->LOT.node =
+            game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CreatureLot);
     }
     SlotsUsed = 0;
 }
 
-void __cdecl DrawHealthBar() {
+void __cdecl DrawHealthBar()
+{
     int hit_points = LaraItem->hit_points;
     if (hit_points < 0) {
         hit_points = 0;
@@ -622,8 +599,10 @@ void __cdecl DrawHealthBar() {
     }
 }
 
-void __cdecl DrawAirBar() {
-    if (Lara.water_status != LARA_UNDERWATER && Lara.water_status != LARA_SURFACE) {
+void __cdecl DrawAirBar()
+{
+    if (Lara.water_status != LARA_UNDERWATER
+        && Lara.water_status != LARA_SURFACE) {
         return;
     }
 
@@ -637,7 +616,8 @@ void __cdecl DrawAirBar() {
     S_DrawAirBar(air * 100 / LARA_AIR);
 }
 
-void __cdecl DrawPickups() {
+void __cdecl DrawPickups()
+{
     int old_game_timer = OldGameTimer;
     OldGameTimer = SaveGame[0].timer;
     int16_t time = SaveGame[0].timer - old_game_timer;
@@ -647,21 +627,21 @@ void __cdecl DrawPickups() {
         int x = PhdWinWidth - PhdWinWidth / 10;
         int sprite_width = 4 * (PhdWinWidth / 10) / 3;
         for (int i = 0; i < NUM_PU; i++) {
-            DISPLAYPU *pu = &Pickups[i];
+            DISPLAYPU* pu = &Pickups[i];
             pu->duration -= time;
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
                 S_DrawScreenSprite2d(
-                    x, y, TR1MGetOverlayScale(12288), pu->sprnum, 4096
-                );
+                    x, y, TR1MGetOverlayScale(12288), pu->sprnum, 4096);
                 x -= sprite_width;
             }
         }
     }
 }
 
-void __cdecl DrawGameInfo() {
+void __cdecl DrawGameInfo()
+{
     DrawAmmoInfo();
     if (OverlayStatus > 0) {
         DrawHealthBar();

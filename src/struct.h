@@ -1,30 +1,30 @@
 #ifndef TR1MAIN_STRUCT_H
 #define TR1MAIN_STRUCT_H
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 typedef uint16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
-#define NUM_PU              3
-#define NUM_SLOTS           8
-#define MAX_ROOMS           1024
-#define NUMBER_ITEMS        256
-#define MAX_SECRETS         16
-#define MAX_SAVEGAME_BUFFER (10*1024)
-#define SAVEGAME_VERSION    0x1
-#define LARA_HITPOINTS      1000
-#define LARA_AIR            1800
-#define NO_ITEM             -1
+#define NUM_PU 3
+#define NUM_SLOTS 8
+#define MAX_ROOMS 1024
+#define NUMBER_ITEMS 256
+#define MAX_SECRETS 16
+#define MAX_SAVEGAME_BUFFER (10 * 1024)
+#define SAVEGAME_VERSION 0x1
+#define LARA_HITPOINTS 1000
+#define LARA_AIR 1800
+#define NO_ITEM -1
 
 #define NUM_EFFECTS 100
 
 #define TREAD_A 108
 #define TREAD_F 1736
-#define STOP_A  11
-#define STOP_F  185
+#define STOP_A 11
+#define STOP_F 185
 
 #define WALL_L 1024
 #define STEP_L 256
@@ -39,119 +39,119 @@ typedef enum {
 typedef enum {
     LARA_ABOVEWATER = 0,
     LARA_UNDERWATER = 1,
-    LARA_SURFACE    = 2,
+    LARA_SURFACE = 2,
 } LARA_WATER_STATES;
 
 typedef enum {
-    AS_WALK         = 0,
-    AS_RUN          = 1,
-    AS_STOP         = 2,
-    AS_FORWARDJUMP  = 3,
-    AS_POSE         = 4,
-    AS_FASTBACK     = 5,
-    AS_TURN_R       = 6,
-    AS_TURN_L       = 7,
-    AS_DEATH        = 8,
-    AS_FASTFALL     = 9,
-    AS_HANG         = 10,
-    AS_REACH        = 11,
-    AS_SPLAT        = 12,
-    AS_TREAD        = 13,
-    AS_LAND         = 14,
-    AS_COMPRESS     = 15,
-    AS_BACK         = 16,
-    AS_SWIM         = 17,
-    AS_GLIDE        = 18,
-    AS_NULL         = 19,
-    AS_FASTTURN     = 20,
-    AS_STEPRIGHT    = 21,
-    AS_STEPLEFT     = 22,
-    AS_HIT          = 23,
-    AS_SLIDE        = 24,
-    AS_BACKJUMP     = 25,
-    AS_RIGHTJUMP    = 26,
-    AS_LEFTJUMP     = 27,
-    AS_UPJUMP       = 28,
-    AS_FALLBACK     = 29,
-    AS_HANGLEFT     = 30,
-    AS_HANGRIGHT    = 31,
-    AS_SLIDEBACK    = 32,
-    AS_SURFTREAD    = 33,
-    AS_SURFSWIM     = 34,
-    AS_DIVE         = 35,
-    AS_PUSHBLOCK    = 36,
-    AS_PULLBLOCK    = 37,
-    AS_PPREADY      = 38,
-    AS_PICKUP       = 39,
-    AS_SWITCHON     = 40,
-    AS_SWITCHOFF    = 41,
-    AS_USEKEY       = 42,
-    AS_USEPUZZLE    = 43,
-    AS_UWDEATH      = 44,
-    AS_ROLL         = 45,
-    AS_SPECIAL      = 46,
-    AS_SURFBACK     = 47,
-    AS_SURFLEFT     = 48,
-    AS_SURFRIGHT    = 49,
-    AS_USEMIDAS     = 50,
-    AS_DIEMIDAS     = 51,
-    AS_SWANDIVE     = 52,
-    AS_FASTDIVE     = 53,
-    AS_GYMNAST      = 54,
-    AS_WATEROU      = 55,
+    AS_WALK = 0,
+    AS_RUN = 1,
+    AS_STOP = 2,
+    AS_FORWARDJUMP = 3,
+    AS_POSE = 4,
+    AS_FASTBACK = 5,
+    AS_TURN_R = 6,
+    AS_TURN_L = 7,
+    AS_DEATH = 8,
+    AS_FASTFALL = 9,
+    AS_HANG = 10,
+    AS_REACH = 11,
+    AS_SPLAT = 12,
+    AS_TREAD = 13,
+    AS_LAND = 14,
+    AS_COMPRESS = 15,
+    AS_BACK = 16,
+    AS_SWIM = 17,
+    AS_GLIDE = 18,
+    AS_NULL = 19,
+    AS_FASTTURN = 20,
+    AS_STEPRIGHT = 21,
+    AS_STEPLEFT = 22,
+    AS_HIT = 23,
+    AS_SLIDE = 24,
+    AS_BACKJUMP = 25,
+    AS_RIGHTJUMP = 26,
+    AS_LEFTJUMP = 27,
+    AS_UPJUMP = 28,
+    AS_FALLBACK = 29,
+    AS_HANGLEFT = 30,
+    AS_HANGRIGHT = 31,
+    AS_SLIDEBACK = 32,
+    AS_SURFTREAD = 33,
+    AS_SURFSWIM = 34,
+    AS_DIVE = 35,
+    AS_PUSHBLOCK = 36,
+    AS_PULLBLOCK = 37,
+    AS_PPREADY = 38,
+    AS_PICKUP = 39,
+    AS_SWITCHON = 40,
+    AS_SWITCHOFF = 41,
+    AS_USEKEY = 42,
+    AS_USEPUZZLE = 43,
+    AS_UWDEATH = 44,
+    AS_ROLL = 45,
+    AS_SPECIAL = 46,
+    AS_SURFBACK = 47,
+    AS_SURFLEFT = 48,
+    AS_SURFRIGHT = 49,
+    AS_USEMIDAS = 50,
+    AS_DIEMIDAS = 51,
+    AS_SWANDIVE = 52,
+    AS_FASTDIVE = 53,
+    AS_GYMNAST = 54,
+    AS_WATEROU = 55,
 } LARA_STATES;
 
 typedef enum {
-    LG_ARMLESS      = 0,
-    LG_HANDSBUSY    = 1,
-    LG_DRAW         = 2,
-    LG_UNDRAW       = 3,
-    LG_READY        = 4,
+    LG_ARMLESS = 0,
+    LG_HANDSBUSY = 1,
+    LG_DRAW = 2,
+    LG_UNDRAW = 3,
+    LG_READY = 4,
 } LARA_GUN_STATES;
 
 typedef enum {
-    BORED_MOOD      = 0,
-    ATTACK_MOOD     = 1,
-    ESCAPE_MOOD     = 2,
-    STALK_MOOD      = 3,
+    BORED_MOOD = 0,
+    ATTACK_MOOD = 1,
+    ESCAPE_MOOD = 2,
+    STALK_MOOD = 3,
 } MOOD_TYPE;
 
 typedef enum {
-    GBUF_RoomInfos           = 11,
-    GBUF_RoomMesh            = 12,
-    GBUF_RoomDoor            = 13,
-    GBUF_RoomFloor           = 14,
-    GBUF_RoomLights          = 15,
+    GBUF_RoomInfos = 11,
+    GBUF_RoomMesh = 12,
+    GBUF_RoomDoor = 13,
+    GBUF_RoomFloor = 14,
+    GBUF_RoomLights = 15,
     GBUF_RoomStaticMeshInfos = 16,
-    GBUF_FloorData           = 17,
-    GBUF_Items               = 18,
-    GBUF_CreatureData        = 33,
-    GBUF_CreatureLot         = 34,
+    GBUF_FloorData = 17,
+    GBUF_Items = 18,
+    GBUF_CreatureData = 33,
+    GBUF_CreatureLot = 34,
 } GAMEALLOC_BUFFER;
 
 typedef enum {
-    GYM              = 0,
-    LEVEL1           = 1, // Peru 1: Caves
-    LEVEL2           = 2, // Peru 2: City of Vilcabamba
-    LEVEL3A          = 3, // Peru 3: The Lost Valley
-    LEVEL3B          = 4, // Peru 4: Tomb of Qualopec
-    LEVEL4           = 5, // Greece 1: St Francis Folly
-    LEVEL5           = 6, // Greece 2: Colosseum
-    LEVEL6           = 7, // Greece 3: Place Midas
-    LEVEL7A          = 8, // Greece 4: Cistern
-    LEVEL7B          = 9, // Greece 5: Tomb of Tihocan
-    LEVEL8A          = 10, // Egypt 1: City of Khamoon
-    LEVEL8B          = 11, // Egypt 2: Obelisk of Khamoon
-    LEVEL8C          = 12, // Egypt 3: Sanctuary of Scion
-    LEVEL10A         = 13, // Lost island 1: Natla's Mines
-    LEVEL10B         = 14, // Lost island 2: Atlantis
-    LEVEL10C         = 15, // Lost island 3: The great pyramid
-    CUTSCENE1        = 16,
-    CUTSCENE2        = 17,
-    CUTSCENE3        = 18,
-    CUTSCENE4        = 19,
-    TITLE            = 20,
-    CURRENT          = 21,
+    GYM = 0,
+    LEVEL1 = 1, // Peru 1: Caves
+    LEVEL2 = 2, // Peru 2: City of Vilcabamba
+    LEVEL3A = 3, // Peru 3: The Lost Valley
+    LEVEL3B = 4, // Peru 4: Tomb of Qualopec
+    LEVEL4 = 5, // Greece 1: St Francis Folly
+    LEVEL5 = 6, // Greece 2: Colosseum
+    LEVEL6 = 7, // Greece 3: Place Midas
+    LEVEL7A = 8, // Greece 4: Cistern
+    LEVEL7B = 9, // Greece 5: Tomb of Tihocan
+    LEVEL8A = 10, // Egypt 1: City of Khamoon
+    LEVEL8B = 11, // Egypt 2: Obelisk of Khamoon
+    LEVEL8C = 12, // Egypt 3: Sanctuary of Scion
+    LEVEL10A = 13, // Lost island 1: Natla's Mines
+    LEVEL10B = 14, // Lost island 2: Atlantis
+    LEVEL10C = 15, // Lost island 3: The great pyramid
+    CUTSCENE1 = 16,
+    CUTSCENE2 = 17,
+    CUTSCENE3 = 18,
+    CUTSCENE4 = 19,
+    TITLE = 20,
+    CURRENT = 21,
     // UB_LEVEL1     = 22, // TRUB - Egypt
     // UB_LEVEL2     = 23, // TRUB - Temple of Cat
     // UB_LEVEL3     = 24,
@@ -159,35 +159,35 @@ typedef enum {
     NUMBER_OF_LEVELS = 22,
 } GAME_LEVELS;
 
-#define IN_FORWARD     (1<<0)
-#define IN_BACK        (1<<1)
-#define IN_LEFT        (1<<2)
-#define IN_RIGHT       (1<<3)
-#define IN_JUMP        (1<<4)
-#define IN_DRAW        (1<<5)
-#define IN_ACTION      (1<<6)
-#define IN_SLOW        (1<<7)
-#define IN_OPTION      (1<<8)
-#define IN_LOOK        (1<<9)
-#define IN_STEPL       (1<<10)
-#define IN_STEPR       (1<<11)
-#define IN_ROLL        (1<<12)
-#define IN_PAUSE       (1<<13)
-#define IN_A           (1<<14) // A to F are Debug thingys..
-#define IN_B           (1<<15)
-#define IN_C           (1<<16)
-#define IN_MENUBACK    (1<<17)
-#define IN_UP          (1<<18)
-#define IN_DOWN        (1<<19)
-#define IN_SELECT      (1<<20)
-#define IN_DESELECT    (1<<21)
-#define IN_SAVE        (1<<22)
-#define IN_LOAD        (1<<23)
-#define IN_ACTION_AUTO (1<<24)
-#define IN_CHEAT       (1<<25)
-#define IN_D           (1<<26)
-#define IN_E           (1<<27)
-#define IN_F           (1<<28)
+#define IN_FORWARD (1 << 0)
+#define IN_BACK (1 << 1)
+#define IN_LEFT (1 << 2)
+#define IN_RIGHT (1 << 3)
+#define IN_JUMP (1 << 4)
+#define IN_DRAW (1 << 5)
+#define IN_ACTION (1 << 6)
+#define IN_SLOW (1 << 7)
+#define IN_OPTION (1 << 8)
+#define IN_LOOK (1 << 9)
+#define IN_STEPL (1 << 10)
+#define IN_STEPR (1 << 11)
+#define IN_ROLL (1 << 12)
+#define IN_PAUSE (1 << 13)
+#define IN_A (1 << 14)
+#define IN_B (1 << 15)
+#define IN_C (1 << 16)
+#define IN_MENUBACK (1 << 17)
+#define IN_UP (1 << 18)
+#define IN_DOWN (1 << 19)
+#define IN_SELECT (1 << 20)
+#define IN_DESELECT (1 << 21)
+#define IN_SAVE (1 << 22)
+#define IN_LOAD (1 << 23)
+#define IN_ACTION_AUTO (1 << 24)
+#define IN_CHEAT (1 << 25)
+#define IN_D (1 << 26)
+#define IN_E (1 << 27)
+#define IN_F (1 << 28)
 
 #pragma pack(push, 1)
 
@@ -256,11 +256,11 @@ typedef struct {
 } MESH_INFO;
 
 typedef struct {
-    /* 0000 */ int16_t *data;
-    /* 0004 */ DOOR_INFOS *doors;
-    /* 0008 */ FLOOR_INFO *floor;
-    /* 000C */ LIGHT_INFO *light;
-    /* 0010 */ MESH_INFO *mesh;
+    /* 0000 */ int16_t* data;
+    /* 0004 */ DOOR_INFOS* doors;
+    /* 0008 */ FLOOR_INFO* floor;
+    /* 000C */ LIGHT_INFO* light;
+    /* 0010 */ MESH_INFO* mesh;
     /* 0014 */ int32_t x;
     /* 0018 */ int32_t y;
     /* 001C */ int32_t z;
@@ -313,7 +313,7 @@ typedef struct {
     /* 0026 */ int16_t timer;
     /* 0028 */ int16_t flags;
     /* 002A */ int16_t shade;
-    /* 002C */ void *data;
+    /* 002C */ void* data;
     /* 0030 */ PHD_3DPOS pos;
     /* 0042 */ uint16_t active : 1;
     /*      */ uint16_t status : 2;
@@ -325,7 +325,7 @@ typedef struct {
 } ITEM_INFO;
 
 typedef struct {
-    /* 0000 */ uint16_t *frame_base;
+    /* 0000 */ uint16_t* frame_base;
     /* 0004 */ uint16_t frame_number;
     /* 0006 */ uint16_t lock;
     /* 0008 */ PHD_ANGLE y_rot;
@@ -351,7 +351,7 @@ typedef struct {
 } BOX_NODE;
 
 typedef struct {
-    /* 0000 */ BOX_NODE *node;
+    /* 0000 */ BOX_NODE* node;
     /* 0004 */ int16_t head;
     /* 0006 */ int16_t tail;
     /* 0008 */ uint16_t search_number;
@@ -381,10 +381,10 @@ typedef struct {
     /* 0016 */ int16_t death_count;
     /* 0018 */ int16_t current_active;
     /* 001A */ int16_t spaz_effect_count;
-    /* 001C */ UNKNOWN_STRUCT *spaz_effect;
+    /* 001C */ UNKNOWN_STRUCT* spaz_effect;
     /* 0020 */ int32_t mesh_effects;
-    /* 0024 */ int16_t *mesh_ptrs[15];
-    /* 0060 */ ITEM_INFO *target;
+    /* 0024 */ int16_t* mesh_ptrs[15];
+    /* 0060 */ ITEM_INFO* target;
     /* 0064 */ PHD_ANGLE target_angles[2];
     /* 0068 */ int16_t turn_rate;
     /* 006A */ int16_t move_angle;
@@ -473,9 +473,9 @@ typedef struct {
     /* 0014 */ int16_t flash_rate;
     /* 0016 */ int16_t flash_count;
     /* 0018 */ int16_t bgnd_colour;
-    /* 001A */ SG_COL *bgnd_gour;
+    /* 001A */ SG_COL* bgnd_gour;
     /* 001E */ int16_t outl_colour;
-    /* 0020 */ SG_COL *outl_gour;
+    /* 0020 */ SG_COL* outl_gour;
     /* 0024 */ int16_t bgnd_size_x;
     /* 0026 */ int16_t bgnd_size_y;
     /* 0028 */ int16_t bgnd_off_x;
@@ -483,7 +483,7 @@ typedef struct {
     /* 002C */ int16_t bgnd_off_z;
     /* 002E */ int32_t scale_h;
     /* 0032 */ int32_t scale_v;
-    /* 0034 */ char *string;
+    /* 0034 */ char* string;
     /* 0038 end */
 } TEXTSTRING;
 

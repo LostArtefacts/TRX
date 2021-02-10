@@ -1,10 +1,11 @@
-#include <windows.h>
+#include "util.h"
 #include <dbghelp.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include "util.h"
+#include <windows.h>
 
-void tr1m_inject_func(void *from, void *to) {
+void tr1m_inject_func(void* from, void* to)
+{
     DWORD tmp;
     TRACE("Patching %p to %p", from, to);
     VirtualProtect(from, sizeof(JMP), PAGE_EXECUTE_READWRITE, &tmp);
@@ -19,7 +20,8 @@ void tr1m_inject_func(void *from, void *to) {
     //((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP));
 }
 
-void tr1m_print_stack_trace() {
+void tr1m_print_stack_trace()
+{
     const size_t MaxNameLen = 255;
     BOOL result;
     HANDLE process;
@@ -28,10 +30,9 @@ void tr1m_print_stack_trace() {
     STACKFRAME64 stack;
     ULONG frame;
     DWORD64 displacement;
-    IMAGEHLP_SYMBOL64 *pSymbol = malloc(
-        sizeof(IMAGEHLP_SYMBOL64) + (MaxNameLen + 1) * sizeof(TCHAR)
-    );
-    char *name = malloc(MaxNameLen + 1);
+    IMAGEHLP_SYMBOL64* pSymbol =
+        malloc(sizeof(IMAGEHLP_SYMBOL64) + (MaxNameLen + 1) * sizeof(TCHAR));
+    char* name = malloc(MaxNameLen + 1);
 
     RtlCaptureContext(&context);
     memset(&stack, 0, sizeof(STACKFRAME64));
@@ -46,42 +47,28 @@ void tr1m_print_stack_trace() {
     stack.AddrFrame.Offset = context.Ebp;
     stack.AddrFrame.Mode = AddrModeFlat;
 
-    for (frame = 0; ; frame++) {
+    for (frame = 0;; frame++) {
         result = StackWalk64(
-             IMAGE_FILE_MACHINE_I386,
-             process,
-             thread,
-             &stack,
-             &context,
-             NULL,
-             SymFunctionTableAccess64,
-             SymGetModuleBase64,
-             NULL
-         );
+            IMAGE_FILE_MACHINE_I386, process, thread, &stack, &context, NULL,
+            SymFunctionTableAccess64, SymGetModuleBase64, NULL);
 
         pSymbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
         pSymbol->MaxNameLength = MaxNameLen;
 
         SymGetSymFromAddr64(
-            process, (ULONG64)stack.AddrPC.Offset, &displacement, pSymbol
-        );
+            process, (ULONG64)stack.AddrPC.Offset, &displacement, pSymbol);
         UnDecorateSymbolName(
-            pSymbol->Name, ( PSTR )name, MaxNameLen, UNDNAME_COMPLETE
-        );
+            pSymbol->Name, (PSTR)name, MaxNameLen, UNDNAME_COMPLETE);
 
         TRACE(
-             "Frame %lu:\n"
-             "    Symbol name:    %s\n"
-             "    PC address:     0x%08LX\n"
-             "    Stack address:  0x%08LX\n"
-             "    Frame address:  0x%08LX\n"
-             "\n",
-             frame,
-             pSymbol->Name,
-             (ULONG64)stack.AddrPC.Offset,
-             (ULONG64)stack.AddrStack.Offset,
-             (ULONG64)stack.AddrFrame.Offset
-         );
+            "Frame %lu:\n"
+            "    Symbol name:    %s\n"
+            "    PC address:     0x%08LX\n"
+            "    Stack address:  0x%08LX\n"
+            "    Frame address:  0x%08LX\n"
+            "\n",
+            frame, pSymbol->Name, (ULONG64)stack.AddrPC.Offset,
+            (ULONG64)stack.AddrStack.Offset, (ULONG64)stack.AddrFrame.Offset);
 
         if (!result) {
             break;

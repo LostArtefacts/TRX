@@ -1,9 +1,10 @@
 #ifndef TR1MAIN_FUNC_H
 #define TR1MAIN_FUNC_H
 
-#include <stdio.h>
 #include "util.h"
+#include <stdio.h>
 
+// clang-format off
 #define game_malloc             ((void          __cdecl*(*)(uint32_t length, int type))0x0041E2F0)
 #define ins_line                ((int           __cdecl(*)(int, int, int, int, int, char))0x00402710)
 #define _fread                  ((size_t        __cdecl(*)(void *, size_t, size_t, FILE *))0x00442C20)
@@ -24,7 +25,7 @@
 #define ModifyStartInfo         ((void          __cdecl(*)(int level_id))0x00434520)
 #define TempVideoRemove         ((void          __cdecl(*)())0x004167D0)
 #define T_InitPrint             ((void          __cdecl(*)())0x00439750)
-#define T_Print                 ((TEXTSTRING    *__cdecl(*)(int16_t xpos, int16_t ypos, int16_t zpos, const char *string))0x00439780)
+#define T_Print                 ((TEXTSTRING*   __cdecl(*)(int16_t xpos, int16_t ypos, int16_t zpos, const char *string))0x00439780)
 #define T_CentreH               ((void          __cdecl(*)(TEXTSTRING *text_string, int16_t enable))0x004399A0)
 #define T_CentreV               ((void          __cdecl(*)(TEXTSTRING *text_string, int16_t enable))0x004399C0)
 #define TempVideoAdjust         ((void          __cdecl(*)(int hires, double sizer))0x00416550)
@@ -32,18 +33,19 @@
 #define DrawAmmoInfo            ((void          __cdecl(*)())0x0041DF50)
 #define S_DrawScreenSprite2d    ((void          __cdecl(*)(int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t brightness))0x00435D80)
 #define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
+// clang-format on
 
 void __cdecl init_game_malloc();
 void __cdecl game_free(int free_size);
-void __cdecl DB_Log(char *a1, ...);
-const char* __cdecl GetFullPath(const char *filename);
+void __cdecl DB_Log(char* a1, ...);
+const char* __cdecl GetFullPath(const char* filename);
 int __cdecl FindCdDrive();
-int __cdecl LoadRooms(FILE *fp);
+int __cdecl LoadRooms(FILE* fp);
 void __cdecl LevelStats(int level_id);
 int __cdecl S_LoadLevel(int level_id);
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
-int __cdecl LoadItems(FILE *handle);
+int __cdecl LoadItems(FILE* handle);
 void __cdecl InitialiseLara();
 void __cdecl InitialiseFXArray();
 void __cdecl InitialiseLOTArray();
