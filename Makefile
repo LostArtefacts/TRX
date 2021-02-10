@@ -11,4 +11,7 @@ docker_build:
 lint:
 	clang-format-10 -i $(wildcard **/*.h **/*.c)
 
-.PHONY: build docker_build lint
+docs:
+	python3 docs/render_progress.py
+
+.PHONY: build docker_build lint docs

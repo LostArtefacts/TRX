@@ -27,9 +27,9 @@ Currently the following configuration options are supported:
 - `disable_healing_between_levels`: disables healing Lara between level reloads
   (for No Heal challenge runs).
 - `enable_red_healthbar`: replaces the default golden healthbar with a red one.
-- `enable_enemy_healthbar`: enables showing healthbar for the active enemy
+- `enable_enemy_healthbar`: enables showing healthbar for the active enemy.
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
-  Action key held
+  Action key held.
 
 ## Building
 
@@ -38,6 +38,14 @@ Currently the following configuration options are supported:
 
 To compile the project, run `make build`.  
 To compile the project with Docker, run `make docker_build`.
+
+## Decompilation progress
+
+![](docs/progress.svg)
+
+Green squares represent TombATI functions that are fully decompiled and
+reimplemented by TR1Main. Light red squares represent functions that still need
+to be ported.
 
 ## License
 

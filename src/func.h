@@ -6,7 +6,6 @@
 
 // clang-format off
 #define game_malloc             ((void          __cdecl*(*)(uint32_t length, int type))0x0041E2F0)
-#define ins_line                ((int           __cdecl(*)(int, int, int, int, int, char))0x00402710)
 #define _fread                  ((size_t        __cdecl(*)(void *, size_t, size_t, FILE *))0x00442C20)
 #define InitialiseItemArray     ((void          __cdecl(*)(int item_count))0x00421B10)
 #define S_ExitSystem            ((void          __cdecl(*)(const char *message))0x0041E260)
