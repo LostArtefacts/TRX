@@ -683,7 +683,7 @@ void __cdecl DrawGameInfo()
     T_DrawText();
 }
 
-void MakeAmmoString(char* string)
+void __cdecl MakeAmmoString(char* string)
 {
     char* c;
 

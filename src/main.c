@@ -24,6 +24,7 @@ static void tr1m_inject()
     INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041DD00, DrawGameInfo);
     INJECT(0x0041DEA0, DrawHealthBar);
+    INJECT(0x0041DF20, MakeAmmoString);
     INJECT(0x0041DF50, DrawAmmoInfo);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);

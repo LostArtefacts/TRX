@@ -50,6 +50,7 @@ int __cdecl LoadItems(FILE* handle);
 void __cdecl InitialiseLara();
 void __cdecl InitialiseFXArray();
 void __cdecl InitialiseLOTArray();
+void __cdecl MakeAmmoString(char* string);
 void __cdecl DrawGameInfo();
 void __cdecl DrawAmmoInfo();
 void __cdecl DrawHealthBar();

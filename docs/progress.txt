@@ -270,8 +270,8 @@ sub_41DA20                      0x0041DA20  0x00000141  -
 sub_41DB70                      0x0041DB70  0x000000FD  -
 sub_41DC70                      0x0041DC70  0x00000086  -
 DrawGameInfo                    0x0041DD00  0x00000199  +
-DrawHealthBar                   0x0041DEA0  0x00000075  -
-sub_41DF20                      0x0041DF20  0x00000028  -
+DrawHealthBar                   0x0041DEA0  0x00000075  +
+MakeAmmoString                  0x0041DF20  0x00000028  +
 DrawAmmoInfo                    0x0041DF50  0x00000133  +
 InitialisePickUpDisplay         0x0041E0A0  0x00000015  -
 sub_41E0C0                      0x0041E0C0  0x0000003F  -
