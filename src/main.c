@@ -17,9 +17,11 @@ static void tr1m_inject()
     INJECT(0x0041BFC0, GetFullPath);
     INJECT(0x0041C020, FindCdDrive);
     INJECT(0x0041D5A0, LevelStats);
+    INJECT(0x0041D8F0, GetRandomControl);
+    INJECT(0x0041D910, SeedRandomControl);
     INJECT(0x0041DD00, DrawGameInfo);
-    INJECT(0x0041DF50, DrawAmmoInfo);
     INJECT(0x0041DEA0, DrawHealthBar);
+    INJECT(0x0041DF50, DrawAmmoInfo);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);
     INJECT(0x00422250, InitialiseFXArray);
@@ -28,7 +30,6 @@ static void tr1m_inject()
     INJECT(0x0042A300, InitialiseLOTArray);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
-    INJECT(0x0041D910, SeedRandomControl);
 }
 
 static int tr1m_read_config()

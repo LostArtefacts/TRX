@@ -256,7 +256,7 @@
 <rect width="10" height="10" x="48" y="60" fill="pink"/>
 <rect width="10" height="10" x="60" y="60" fill="pink"/>
 <rect width="10" height="10" x="72" y="60" fill="green"/>
-<rect width="10" height="10" x="84" y="60" fill="pink"/>
+<rect width="10" height="10" x="84" y="60" fill="green"/>
 <rect width="10" height="10" x="96" y="60" fill="green"/>
 <rect width="10" height="10" x="108" y="60" fill="pink"/>
 <rect width="10" height="10" x="120" y="60" fill="pink"/>
@@ -698,6 +698,6 @@
 <rect width="10" height="10" x="552" y="156" fill="pink"/>
 <rect width="10" height="10" x="564" y="156" fill="pink"/>
 <rect width="10" height="10" x="576" y="156" fill="pink"/>
-<text x="0" y="181" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 2.43%</text>
-<text x="0" y="198" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 1.81%</text>
+<text x="0" y="181" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 2.58%</text>
+<text x="0" y="198" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 1.82%</text>
 </svg>

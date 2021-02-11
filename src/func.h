@@ -56,5 +56,6 @@ void __cdecl DrawHealthBar();
 void __cdecl DrawAirBar();
 void __cdecl DrawPickups();
 void __cdecl SeedRandomControl(int32_t seed);
+int32_t __cdecl GetRandomControl();
 
 #endif

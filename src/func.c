@@ -742,3 +742,9 @@ void __cdecl SeedRandomControl(int32_t seed)
     TRACE("%d", seed);
     Rand1 = seed;
 }
+
+int32_t __cdecl GetRandomControl()
+{
+    Rand1 = 0x41C64E6D * Rand1 + 0x3039;
+    return (Rand1 >> 10) & 0x7FFF;
+}
