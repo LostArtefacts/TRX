@@ -4,15 +4,14 @@ This is a dynamic library for the classic Tomb Raider I game (TombATI version).
 The purpose of the library is to reimplement all the routines performed by the
 game and enhance the gameplay with new options.
 
-This project is inspired by Arsunt's [TR2Main](https://github.com/Arsunt/TR2Main/) project.
+This project is inspired by Arsunt's
+[TR2Main](https://github.com/Arsunt/TR2Main/) project.
 
-## Getting Started
+## Installing
 
-For TR1Main to work, you will need a patched `tombati.exe` from
-[here](https://github.com/rr-/TR1Main/tree/master/bin). Then you should
-download TR1Main.dll from [releases](https://github.com/rr-/TR1Main/releases).
-Both files should be put in your game folder. Then you can launch the game by
-running the patched `tombati.exe`.
+Get a copy of the latest release from
+[here](https://github.com/rr-/TR1Main/releases) and unpack the contents to your
+game directory. Make sure you overwrite existing files.
 
 ## Configuring
 
