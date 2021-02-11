@@ -55,6 +55,7 @@ void __cdecl DrawGameInfo();
 void __cdecl DrawAmmoInfo();
 void __cdecl DrawHealthBar();
 void __cdecl DrawAirBar();
+void __cdecl InitialisePickUpDisplay();
 void __cdecl DrawPickups();
 void __cdecl SeedRandomControl(int32_t seed);
 int32_t __cdecl GetRandomControl();

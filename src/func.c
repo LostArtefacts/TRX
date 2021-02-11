@@ -640,6 +640,13 @@ void __cdecl DrawAirBar()
     S_DrawAirBar(air * 100 / LARA_AIR);
 }
 
+void __cdecl InitialisePickUpDisplay()
+{
+    for (int i = 0; i < NUM_PU; i++) {
+        Pickups[i].duration = 0;
+    }
+}
+
 void __cdecl DrawPickups()
 {
     int old_game_timer = OldGameTimer;
