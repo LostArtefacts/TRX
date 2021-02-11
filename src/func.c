@@ -671,6 +671,17 @@ void __cdecl DrawPickups()
     }
 }
 
+void __cdecl AddDisplayPickup(int16_t objnum)
+{
+    for (int i = 0; i < NUM_PU; i++) {
+        if (Pickups[i].duration <= 0) {
+            Pickups[i].duration = 75;
+            Pickups[i].sprnum = Objects[objnum].mesh_index;
+            return;
+        }
+    }
+}
+
 void __cdecl DrawGameInfo()
 {
     DrawAmmoInfo();

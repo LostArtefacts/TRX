@@ -27,6 +27,7 @@ static void tr1m_inject()
     INJECT(0x0041DF20, MakeAmmoString);
     INJECT(0x0041DF50, DrawAmmoInfo);
     INJECT(0x0041E0A0, InitialisePickUpDisplay);
+    INJECT(0x0041E0C0, AddDisplayPickup);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);
     INJECT(0x00422250, InitialiseFXArray);

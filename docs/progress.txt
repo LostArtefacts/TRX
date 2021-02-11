@@ -274,7 +274,7 @@ DrawHealthBar                   0x0041DEA0  0x00000075  +
 MakeAmmoString                  0x0041DF20  0x00000028  +
 DrawAmmoInfo                    0x0041DF50  0x00000133  +
 InitialisePickUpDisplay         0x0041E0A0  0x00000015  +
-sub_41E0C0                      0x0041E0C0  0x0000003F  -
+AddDisplayPickup                0x0041E0C0  0x0000003F  +
 sub_41E100                      0x0041E100  0x0000015B  -
 S_ExitSystem                    0x0041E260  0x00000051  -
 init_game_malloc                0x0041E2C0  0x00000021  +

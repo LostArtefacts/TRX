@@ -51,6 +51,7 @@ void __cdecl InitialiseLara();
 void __cdecl InitialiseFXArray();
 void __cdecl InitialiseLOTArray();
 void __cdecl MakeAmmoString(char* string);
+void __cdecl AddDisplayPickup(int16_t objnum);
 void __cdecl DrawGameInfo();
 void __cdecl DrawAmmoInfo();
 void __cdecl DrawHealthBar();
