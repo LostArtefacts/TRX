@@ -18,6 +18,7 @@ typedef void UNKNOWN_STRUCT;
 #define LARA_HITPOINTS 1000
 #define LARA_AIR 1800
 #define NO_ITEM -1
+#define SHOTGUN_AMMO_CLIP 6
 
 #define NUM_EFFECTS 100
 
@@ -108,6 +109,15 @@ typedef enum {
     LG_UNDRAW = 3,
     LG_READY = 4,
 } LARA_GUN_STATES;
+
+typedef enum {
+    LG_UNARMED = 0,
+    LG_PISTOLS = 1,
+    LG_MAGNUMS = 2,
+    LG_UZIS = 3,
+    LG_SHOTGUN = 4,
+    NUM_WEAPONS = 5
+} LARA_GUN_TYPES;
 
 typedef enum {
     BORED_MOOD = 0,

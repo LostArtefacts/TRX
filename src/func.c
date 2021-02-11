@@ -682,3 +682,57 @@ void __cdecl DrawGameInfo()
 
     T_DrawText();
 }
+
+void MakeAmmoString(char* string)
+{
+    char* c;
+
+    for (c = string; *c != 0; c++) {
+        if (*c == 32) {
+            continue;
+        } else if (*c - 'A' >= 0) {
+            *c += 12 - 'A';
+        } else {
+            *c += 1 - '0';
+        }
+    }
+}
+
+void __cdecl DrawAmmoInfo()
+{
+    char ammostring[80] = "";
+
+    if (Lara.gun_status != LG_READY || OverlayStatus <= 0
+        || SaveGame[0].bonus_flag) {
+        if (AmmoText) {
+            T_RemovePrint(AmmoText);
+            AmmoText = 0;
+        }
+        return;
+    }
+
+    switch (Lara.gun_type) {
+    case LG_PISTOLS:
+        return;
+    case LG_MAGNUMS:
+        sprintf(ammostring, "%5d B", Lara.magnums.ammo);
+        break;
+    case LG_UZIS:
+        sprintf(ammostring, "%5d C", Lara.uzis.ammo);
+        break;
+    case LG_SHOTGUN:
+        sprintf(ammostring, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+        break;
+    default:
+        return;
+    }
+
+    MakeAmmoString(ammostring);
+
+    if (AmmoText) {
+        T_ChangeText(AmmoText, ammostring);
+    } else {
+        AmmoText = T_Print(-17, 22, 0, ammostring);
+        T_RightAlign(AmmoText, 1);
+    }
+}

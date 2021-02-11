@@ -18,6 +18,7 @@ static void tr1m_inject()
     INJECT(0x0041C020, FindCdDrive);
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041DD00, DrawGameInfo);
+    INJECT(0x0041DF50, DrawAmmoInfo);
     INJECT(0x0041DEA0, DrawHealthBar);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);

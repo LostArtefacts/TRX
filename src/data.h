@@ -48,6 +48,7 @@
 #define OldHitPoints            VAR_U_(0x0045A02C, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
+#define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
 // clang-format on
 
 #endif

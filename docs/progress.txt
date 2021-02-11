@@ -272,7 +272,7 @@ sub_41DC70                      0x0041DC70  0x00000086  -
 DrawGameInfo                    0x0041DD00  0x00000199  +
 DrawHealthBar                   0x0041DEA0  0x00000075  -
 sub_41DF20                      0x0041DF20  0x00000028  -
-DrawAmmoInfo                    0x0041DF50  0x00000133  -
+DrawAmmoInfo                    0x0041DF50  0x00000133  +
 InitialisePickUpDisplay         0x0041E0A0  0x00000015  -
 sub_41E0C0                      0x0041E0C0  0x0000003F  -
 sub_41E100                      0x0041E100  0x0000015B  -
@@ -607,7 +607,7 @@ sub_439550                      0x00439550  0x0000019C  -
 sub_4396F0                      0x004396F0  0x0000005D  -
 T_InitPrint                     0x00439750  0x00000022  -
 T_Print                         0x00439780  0x000000E0  -
-sub_439860                      0x00439860  0x0000003F  -
+T_ChangeText                    0x00439860  0x0000003F  -
 sub_4398A0                      0x004398A0  0x00000013  -
 T_FlashText                     0x004398C0  0x00000027  -
 sub_4398F0                      0x004398F0  0x00000052  -
@@ -616,7 +616,7 @@ sub_439960                      0x00439960  0x00000025  -
 sub_439990                      0x00439990  0x0000000C  -
 T_CentreH                       0x004399A0  0x0000001A  -
 T_CentreV                       0x004399C0  0x0000001A  -
-sub_4399E0                      0x004399E0  0x0000001A  -
+T_RightAlign                    0x004399E0  0x0000001A  -
 sub_439A00                      0x00439A00  0x0000001A  -
 sub_439A20                      0x00439A20  0x000000AC  -
 T_RemovePrint                   0x00439AD0  0x00000025  -
