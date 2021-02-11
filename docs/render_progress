@@ -1,11 +1,12 @@
 #!/usr/bin/python3
+import re
 import typing as T
 from dataclasses import dataclass
-import re
 from pathlib import Path
 
 MAX_X = 50
 SQUARE_SIZE = 10
+TEXT_SIZE = 15
 SQUARE_MARGIN = 2
 DOCS_DIR = Path(__file__).parent
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
@@ -44,9 +45,11 @@ def main() -> None:
         min(MAX_X, len(functions)) * (SQUARE_SIZE + SQUARE_MARGIN)
         + SQUARE_MARGIN
     )
-    svg_height = ((len(functions) + MAX_X - 1) // MAX_X) * (
-        SQUARE_SIZE + SQUARE_MARGIN
-    ) + SQUARE_MARGIN
+    svg_height = (
+        ((len(functions) + MAX_X - 1) // MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
+        + SQUARE_MARGIN * 2
+        + TEXT_SIZE * 2
+    )
 
     with PROGRESS_SVG_FILE.open("w") as handle:
         print(
@@ -70,6 +73,31 @@ def main() -> None:
                 f'fill="{color}"/>',
                 file=handle,
             )
+
+        y += SQUARE_SIZE
+        y += TEXT_SIZE
+        ready_functions = sum(function.decompiled for function in functions)
+        total_functions = len(functions)
+        ready_size = sum(
+            function.size for function in functions if function.decompiled
+        )
+        total_size = sum(function.size for function in functions)
+        print(
+            f'<text x="0" y="{y}" '
+            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
+            f'Functions decompiled (count): '
+            f'{ready_functions/total_functions:.02%}'
+            f'</text>',
+            file=handle,
+        )
+        y += TEXT_SIZE + SQUARE_MARGIN
+        print(
+            f'<text x="0" y="{y}" '
+            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
+            f'Functions decompiled (bytesize): {ready_size/total_size:.02%}'
+            f'</text>',
+            file=handle,
+        )
 
         print("</svg>", file=handle)
 
