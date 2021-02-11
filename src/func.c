@@ -748,3 +748,8 @@ int32_t __cdecl GetRandomControl()
     Rand1 = 0x41C64E6D * Rand1 + 0x3039;
     return (Rand1 >> 10) & 0x7FFF;
 }
+
+void __cdecl SeedRandomDraw(int32_t seed)
+{
+    Rand2 = seed;
+}
