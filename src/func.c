@@ -753,3 +753,9 @@ void __cdecl SeedRandomDraw(int32_t seed)
 {
     Rand2 = seed;
 }
+
+int32_t GetRandomDraw()
+{
+    Rand2 = 0x41C64E6D * Rand2 + 0x3039;
+    return (Rand2 >> 10) & 0x7FFF;
+}
