@@ -51,6 +51,6 @@ This project is licensed under the GNU General Public License - see the
 
 ## Copyright
 
-(c) 2020 Marcin Kurczewski. All rights reserved. Original game is created by
+(c) 2021 Marcin Kurczewski. All rights reserved. Original game is created by
 Core Design Ltd. in 1996. Lara Croft and Tomb Raider are trademarks of Square
 Enix Ltd.
