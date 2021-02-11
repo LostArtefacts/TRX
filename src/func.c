@@ -736,3 +736,9 @@ void __cdecl DrawAmmoInfo()
         T_RightAlign(AmmoText, 1);
     }
 }
+
+void __cdecl SeedRandomControl(int32_t seed)
+{
+    TRACE("%d", seed);
+    Rand1 = seed;
+}

@@ -261,7 +261,7 @@ GameLoop                        0x0041D2C0  0x00000065  -
 LevelCompleteSequence           0x0041D330  0x0000021C  -
 LevelStats                      0x0041D5A0  0x00000346  +
 sub_41D8F0                      0x0041D8F0  0x0000001E  -
-SeedRandomControl               0x0041D910  0x0000000A  -
+SeedRandomControl               0x0041D910  0x0000000A  +
 sub_41D920                      0x0041D920  0x0000001E  -
 SeedRandomDraw                  0x0041D940  0x0000000A  -
 sub_41D950                      0x0041D950  0x0000005C  -
