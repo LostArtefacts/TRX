@@ -759,3 +759,21 @@ int32_t GetRandomDraw()
     Rand2 = 0x41C64E6D * Rand2 + 0x3039;
     return (Rand2 >> 10) & 0x7FFF;
 }
+
+int __cdecl LevelIsValid(int16_t level_number)
+{
+    TRACE("%d", level_number);
+    int number_valid = 0;
+    for (;;) {
+        if (ValidLevels[number_valid] == -1) {
+            break;
+        }
+        number_valid++;
+    }
+    for (int i = 0; i < number_valid; i++) {
+        if (ValidLevels[i] == level_number) {
+            return 1;
+        }
+    }
+    return 0;
+}

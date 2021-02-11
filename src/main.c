@@ -21,6 +21,7 @@ static void tr1m_inject()
     INJECT(0x0041D910, SeedRandomControl);
     INJECT(0x0041D920, GetRandomDraw);
     INJECT(0x0041D940, SeedRandomDraw);
+    INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041DD00, DrawGameInfo);
     INJECT(0x0041DEA0, DrawHealthBar);
     INJECT(0x0041DF50, DrawAmmoInfo);

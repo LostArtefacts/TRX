@@ -264,7 +264,7 @@ GetRandomControl                0x0041D8F0  0x0000001E  +
 SeedRandomControl               0x0041D910  0x0000000A  +
 GetRandomDraw                   0x0041D920  0x0000001E  +
 SeedRandomDraw                  0x0041D940  0x0000000A  +
-sub_41D950                      0x0041D950  0x0000005C  -
+LevelIsValid                    0x0041D950  0x0000005C  +
 sub_41D9B0                      0x0041D9B0  0x00000060  -
 sub_41DA20                      0x0041DA20  0x00000141  -
 sub_41DB70                      0x0041DB70  0x000000FD  -

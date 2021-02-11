@@ -59,5 +59,6 @@ void __cdecl SeedRandomControl(int32_t seed);
 int32_t __cdecl GetRandomControl();
 void __cdecl SeedRandomDraw(int32_t seed);
 int32_t GetRandomDraw();
+int __cdecl LevelIsValid(int16_t level_number);
 
 #endif

@@ -51,6 +51,7 @@
 #define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
+#define ValidLevels             ARRAY_(0x00453C80, int16_t, [])
 // clang-format on
 
 #endif
