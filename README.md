@@ -15,10 +15,8 @@ game directory. Make sure you overwrite existing files.
 
 ## Configuring
 
-To configure TR1Main, copy
-[TR1Main.json](https://raw.githubusercontent.com/rr-/TR1Main/master/TR1Main.json)
-from this repository to your game folder, then edit it in your text editor such
-as Notepad.
+To configure TR1Main, edit the `TR1Main.json` file in your text editor such as
+Notepad.
 
 Currently the following configuration options are supported:
 
