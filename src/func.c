@@ -396,7 +396,7 @@ void __cdecl LevelStats(int level_id)
 
     // wait till action key press
     while (!(InputStatus & IN_SELECT)) {
-        if (IsResetFlag) {
+        if (ResetFlag) {
             break;
         }
         S_InitialisePolyList();
@@ -435,7 +435,7 @@ int __cdecl S_LoadLevel(int level_id)
         // currently loaded level.
         int lara_found = 0;
         for (int i = 0; i < LevelItemCount; i++) {
-            if (Items[i].object_number == ID_LARA) {
+            if (Items[i].object_number == O_LARA) {
                 lara_found = 1;
             }
         }
@@ -494,7 +494,7 @@ int __cdecl LoadItems(FILE* handle)
             _fread(&item->flags, 2u, 1u, handle);
 
             if (item->object_number < 0
-                || item->object_number >= ID_NUMBER_OBJECTS) {
+                || item->object_number >= NUMBER_OBJECTS) {
                 sprintf(
                     StringToShow,
                     "LoadItems(): Bad Object number (%d) on Item %d",
@@ -503,8 +503,8 @@ int __cdecl LoadItems(FILE* handle)
             }
 
             if (TR1MConfig.disable_medpacks
-                && (item->object_number == ID_LARGE_MEDIPACK_ITEM
-                    || item->object_number == ID_SMALL_MEDIPACK_ITEM)) {
+                && (item->object_number == O_BIGMEDI_ITEM
+                    || item->object_number == O_MEDI_ITEM)) {
                 item->pos.x = -1;
                 item->pos.y = -1;
                 item->pos.z = -1;
@@ -794,4 +794,61 @@ int __cdecl LevelIsValid(int16_t level_number)
         }
     }
     return 0;
+}
+
+void __cdecl UseItem(__int16 object_num)
+{
+    TRACE("%d", object_num);
+    switch (object_num) {
+    case O_GUN_ITEM:
+    case O_GUN_OPTION:
+        Lara.request_gun_type = LG_PISTOLS;
+        if (!Lara.gun_status && Lara.gun_type == LG_PISTOLS) {
+            Lara.gun_type = LG_UNARMED;
+        }
+        break;
+    case O_SHOTGUN_ITEM:
+    case O_SHOTGUN_OPTION:
+        Lara.request_gun_type = LG_SHOTGUN;
+        if (!Lara.gun_status && Lara.gun_type == LG_SHOTGUN) {
+            Lara.gun_type = LG_UNARMED;
+        }
+        break;
+    case O_MAGNUM_ITEM:
+    case O_MAGNUM_OPTION:
+        Lara.request_gun_type = LG_MAGNUMS;
+        if (!Lara.gun_status && Lara.gun_type == LG_MAGNUMS) {
+            Lara.gun_type = LG_UNARMED;
+        }
+        break;
+    case O_UZI_ITEM:
+    case O_UZI_OPTION:
+        Lara.request_gun_type = LG_UZIS;
+        if (!Lara.gun_status && Lara.gun_type == LG_UZIS) {
+            Lara.gun_type = LG_UNARMED;
+        }
+        break;
+    case O_MEDI_ITEM:
+    case O_MEDI_OPTION:
+        if (LaraItem->hit_points <= 0
+            || LaraItem->hit_points >= LARA_HITPOINTS) {
+            return;
+        }
+        LaraItem->hit_points += LARA_HITPOINTS / 2;
+        if (LaraItem->hit_points > LARA_HITPOINTS)
+            LaraItem->hit_points = LARA_HITPOINTS;
+        Inv_RemoveItem(O_MEDI_ITEM);
+        SoundEffect(116, 0, SFX_ALWAYS);
+        break;
+    case O_BIGMEDI_ITEM:
+    case O_BIGMEDI_OPTION:
+        if (LaraItem->hit_points > 0 && LaraItem->hit_points < LARA_HITPOINTS) {
+            LaraItem->hit_points = LaraItem->hit_points + LARA_HITPOINTS;
+            if (LaraItem->hit_points > LARA_HITPOINTS)
+                LaraItem->hit_points = LARA_HITPOINTS;
+            Inv_RemoveItem(O_BIGMEDI_ITEM);
+            SoundEffect(116, 0, SFX_ALWAYS);
+        }
+        break;
+    }
 }

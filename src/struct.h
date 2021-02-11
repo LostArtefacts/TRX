@@ -19,7 +19,7 @@ typedef void UNKNOWN_STRUCT;
 #define LARA_AIR 1800
 #define NO_ITEM -1
 #define SHOTGUN_AMMO_CLIP 6
-
+#define SFX_ALWAYS 2
 #define NUM_EFFECTS 100
 
 #define TREAD_A 108
@@ -31,10 +31,20 @@ typedef void UNKNOWN_STRUCT;
 #define STEP_L 256
 
 typedef enum {
-    ID_LARA = 0,
-    ID_SMALL_MEDIPACK_ITEM = 93,
-    ID_LARGE_MEDIPACK_ITEM = 94,
-    ID_NUMBER_OBJECTS = 191,
+    O_LARA = 0,
+    O_GUN_ITEM = 84,
+    O_SHOTGUN_ITEM = 85,
+    O_MAGNUM_ITEM = 86,
+    O_UZI_ITEM = 87,
+    O_MEDI_ITEM = 93,
+    O_BIGMEDI_ITEM = 94,
+    O_GUN_OPTION = 99,
+    O_SHOTGUN_OPTION = 100,
+    O_MAGNUM_OPTION = 101,
+    O_UZI_OPTION = 102,
+    O_MEDI_OPTION = 108,
+    O_BIGMEDI_OPTION = 109,
+    NUMBER_OBJECTS = 191,
 } GAME_OBJECT_ID;
 
 typedef enum {

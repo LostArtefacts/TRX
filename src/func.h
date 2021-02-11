@@ -34,6 +34,8 @@
 #define ShowFatalError          ((void          __cdecl(*)(const char *message))0x0043D770)
 #define S_DrawScreenSprite2d    ((void          __cdecl(*)(int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t brightness))0x00435D80)
 #define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
+#define SoundEffect             ((int32_t       __cdecl(*)(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags))0x0042AA30)
+#define Inv_RemoveItem          ((void          __cdecl(*)(int16_t item_num))0x004212A0)
 // clang-format on
 
 void __cdecl init_game_malloc();
@@ -63,5 +65,6 @@ int32_t __cdecl GetRandomControl();
 void __cdecl SeedRandomDraw(int32_t seed);
 int32_t GetRandomDraw();
 int __cdecl LevelIsValid(int16_t level_number);
+void __cdecl UseItem(__int16 object_num);
 
 #endif

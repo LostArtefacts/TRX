@@ -295,7 +295,7 @@ Inv_AddItem                     0x004209C0  0x00000620  -
 sub_4210D0                      0x004210D0  0x00000129  -
 Inv_RequestItem                 0x00421200  0x00000077  -
 Inv_RemoveAllItems              0x00421280  0x0000001E  -
-sub_4212A0                      0x004212A0  0x00000110  -
+Inv_RemoveItem                  0x004212A0  0x00000110  -
 sub_4213B0                      0x004213B0  0x000000A7  -
 sub_421580                      0x00421580  0x0000017E  -
 sub_421700                      0x00421700  0x00000060  -
@@ -417,7 +417,7 @@ sub_427730                      0x00427730  0x000000E5  -
 sub_427850                      0x00427850  0x00000372  -
 sub_427BD0                      0x00427BD0  0x00000030  -
 sub_427C00                      0x00427C00  0x00000244  -
-sub_427E80                      0x00427E80  0x000000F8  -
+UseItem                         0x00427E80  0x000000F8  +
 sub_427FD0                      0x00427FD0  0x0000001F  -
 InitialiseLaraLoad              0x00427FF0  0x00000024  -
 InitialiseLara                  0x00428020  0x00000150  +
@@ -469,7 +469,7 @@ sub_42A871                      0x0042A871  0x0000001A  -
 sub_42A8A0                      0x0042A8A0  0x00000055  -
 sub_42A900                      0x0042A900  0x0000003A  -
 mn_reset_sound_effects          0x0042A940  0x000000EC  -
-sub_42AA30                      0x0042AA30  0x000004C2  -
+SoundEffect                     0x0042AA30  0x000004C2  -
 sub_42AF00                      0x0042AF00  0x000000CE  -
 sub_42AFD0                      0x0042AFD0  0x00000030  -
 sub_42B000                      0x0042B000  0x0000007E  -
