@@ -169,20 +169,19 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
 
     y += GRID_SQUARE_SIZE + LEGEND_MARGIN
 
-    ready_functions = sum(function.is_decompiled for function in functions)
-    named_functions = sum(function.is_named for function in functions)
-    total_functions = len(functions)
-    ready_size = sum(
-        function.size for function in functions if function.is_decompiled
-    )
-    total_size = sum(function.size for function in functions)
+    ready_count = sum(func.is_decompiled for func in functions)
+    named_count = sum(func.is_named for func in functions)
+    total_count = len(functions)
+    ready_size = sum(func.size for func in functions if func.is_decompiled)
+    named_size = sum(func.size for func in functions if func.is_named)
+    total_size = sum(func.size for func in functions)
 
     for (color, text) in [
         (
             COLOR_DECOMPILED,
             (
                 f"Functions decompiled (count): "
-                f"{ready_functions/total_functions:.02%}"
+                f"{ready_count/total_count:.02%}"
             ),
         ),
         (
@@ -192,22 +191,29 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
         (
             COLOR_NAMED,
             (
-                f"Functions with known names: "
-                f"{named_functions/total_functions:.02%}"
+                f"Functions not decompiled, but with known names (count): "
+                f"{named_count/total_count:.02%}"
+            ),
+        ),
+        (
+            COLOR_NAMED,
+            (
+                f"Functions not decompiled, but with known names (bytesize): "
+                f"{named_size/total_size:.02%}"
             ),
         ),
         (
             COLOR_TODO,
             (
-                f"Functions remaining (count): "
-                f"{(total_functions-ready_functions)/total_functions:.02%}"
+                f"Functions not decompiled, with unknown names (count): "
+                f"{(total_count-ready_count-named_count)/total_count:.02%}"
             ),
         ),
         (
             COLOR_TODO,
             (
-                f"Functions remaining (bytesize): "
-                f"{(total_size-ready_size)/total_size:.02%}"
+                f"Functions not decompiled, with unknown names (bytesize): "
+                f"{(total_size-ready_size-named_size)/total_size:.02%}"
             ),
         ),
     ]:

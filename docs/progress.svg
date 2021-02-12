@@ -1,4 +1,4 @@
-<svg version="1.1" width="698" height="310" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="698" height="328" xmlns="http://www.w3.org/2000/svg">
 <rect width="12" height="12" x="0" y="0" fill="mistyrose"/>
 <rect width="12" height="12" x="14" y="0" fill="mistyrose"/>
 <rect width="12" height="12" x="28" y="0" fill="mistyrose"/>
@@ -702,7 +702,8 @@
 <rect width="12" height="12" x="0" y="196" fill="lightpink"/>
 <rect width="12" height="12" x="0" y="224.5" fill="forestgreen"/><text alignment-baseline="central" x="17" y="230.5" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 3.85%</text>
 <rect width="12" height="12" x="0" y="242.5" fill="forestgreen"/><text alignment-baseline="central" x="17" y="248.5" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 2.35%</text>
-<rect width="12" height="12" x="0" y="260.5" fill="lightpink"/><text alignment-baseline="central" x="17" y="266.5" style="font-family: sans-serif; font-size: 15px">Functions with known names: 17.69%</text>
-<rect width="12" height="12" x="0" y="278.5" fill="mistyrose"/><text alignment-baseline="central" x="17" y="284.5" style="font-family: sans-serif; font-size: 15px">Functions remaining (count): 96.15%</text>
-<rect width="12" height="12" x="0" y="296.5" fill="mistyrose"/><text alignment-baseline="central" x="17" y="302.5" style="font-family: sans-serif; font-size: 15px">Functions remaining (bytesize): 97.65%</text>
+<rect width="12" height="12" x="0" y="260.5" fill="lightpink"/><text alignment-baseline="central" x="17" y="266.5" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 17.69%</text>
+<rect width="12" height="12" x="0" y="278.5" fill="lightpink"/><text alignment-baseline="central" x="17" y="284.5" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 20.24%</text>
+<rect width="12" height="12" x="0" y="296.5" fill="mistyrose"/><text alignment-baseline="central" x="17" y="302.5" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (count): 78.46%</text>
+<rect width="12" height="12" x="0" y="314.5" fill="mistyrose"/><text alignment-baseline="central" x="17" y="320.5" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (bytesize): 77.41%</text>
 </svg>
