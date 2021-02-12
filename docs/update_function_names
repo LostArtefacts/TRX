@@ -1,0 +1,54 @@
+#!/usr/bin/python3
+import sys
+import re
+import typing as T
+from dataclasses import dataclass
+from pathlib import Path
+
+
+DOCS_DIR = Path(__file__).parent
+PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
+
+
+@dataclass
+class IdaFunction:
+    name: str
+    offset: int
+
+
+def collect_ida_functions() -> T.Iterable[IdaFunction]:
+    for line in sys.stdin:
+        line = line.strip()
+        if not line.startswith("#") and line:
+            name, _section, offset_str, *_unused = re.split(r"\s+", line)
+            yield IdaFunction(name=name, offset=int(offset_str, 16))
+
+
+def update_function_names(ida_functions: T.Iterable[IdaFunction]) -> int:
+    ida_func_map = {func.offset: func for func in ida_functions}
+    updated = 0
+    lines = []
+    for line in PROGRESS_TXT_FILE.open("r", encoding="utf-8"):
+        line = line.strip()
+        if not line.startswith("#") and line:
+            name, offset_str, size_str, flags = re.split(r"\s+", line)
+            offset = int(offset_str, 16)
+            size = int(size_str, 16)
+            ida_func = ida_func_map.get(offset)
+            if ida_func and ida_func.name!= name:
+                name = ida_func.name
+                line = re.sub(r"^\w+\s+", "%-31s " % name, line)
+                updated += 1
+        lines.append(line)
+    PROGRESS_TXT_FILE.write_text("\n".join(lines) + "\n")
+    return updated
+
+
+def main() -> None:
+    ida_functions = list(collect_ida_functions())
+    updated = update_function_names(ida_functions)
+    print(updated, 'names updated')
+
+
+if __name__ == "__main__":
+    main()

@@ -663,7 +663,7 @@ void __cdecl DrawPickups()
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
-                S_DrawScreenSprite2d(
+                S_DrawUISprite(
                     x, y, TR1MGetOverlayScale(12288), pu->sprnum, 4096);
                 x -= sprite_width;
             }
