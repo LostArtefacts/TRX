@@ -12,6 +12,9 @@ DOCS_DIR = Path(__file__).parent
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 
+COLOR_DECOMPILED = "green"
+COLOR_TODO = "pink"
+
 
 @dataclass
 class Function:
@@ -21,7 +24,7 @@ class Function:
     flags: str
 
     @property
-    def decompiled(self):
+    def is_decompiled(self):
         return "+" in self.flags
 
 
@@ -38,20 +41,95 @@ def collect_functions() -> T.Iterable[Function]:
         )
 
 
+class Shape:
+    @property
+    def bounds(self) -> T.Tuple[int, int, int, int]:
+        raise NotImplementedError("not implemented")
+
+    def render(self) -> str:
+        raise NotImplementedError("not implemented")
+
+
+@dataclass
+class Square(Shape):
+    x: int
+    y: int
+    color: str
+
+    @property
+    def bounds(self) -> T.Tuple[int, int, int, int]:
+        return (self.x, self.y, self.x + SQUARE_SIZE, self.y + SQUARE_SIZE)
+
+    def render(self) -> str:
+        return (
+            f"<rect "
+            f'width="{SQUARE_SIZE}" '
+            f'height="{SQUARE_SIZE}" '
+            f'x="{self.x}" '
+            f'y="{self.y}" '
+            f'fill="{self.color}"/>'
+        )
+
+
+@dataclass
+class Text(Shape):
+    x: int
+    y: int
+    text: str
+
+    @property
+    def bounds(self) -> T.Tuple[int, int, int, int]:
+        return (self.x, self.y, self.x, self.y + TEXT_SIZE)
+
+    def render(self) -> str:
+        return (
+            f'<text x="{self.x}" y="{self.y}" '
+            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
+            f"{self.text}"
+            f"</text>"
+        )
+
+
+def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
+    for i, function in enumerate(functions):
+        x = (i % MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
+        y = (i // MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
+        if function.is_decompiled:
+            color = COLOR_DECOMPILED
+        else:
+            color = COLOR_TODO
+        yield Square(x=x, y=y, color=color)
+
+    y += SQUARE_SIZE
+    y += TEXT_SIZE
+    ready_functions = sum(function.is_decompiled for function in functions)
+    total_functions = len(functions)
+    ready_size = sum(
+        function.size for function in functions if function.is_decompiled
+    )
+    total_size = sum(function.size for function in functions)
+
+    yield Text(
+        x=0,
+        y=y,
+        text=f"Functions decompiled (count): {ready_functions/total_functions:.02%}",
+    )
+    y += TEXT_SIZE + SQUARE_MARGIN
+
+    yield Text(
+        x=0,
+        y=y,
+        text=f"Functions decompiled (bytesize): {ready_size/total_size:.02%}",
+    )
+
+
 def main() -> None:
     functions = list(collect_functions())
-
-    svg_width = (
-        min(MAX_X, len(functions)) * (SQUARE_SIZE + SQUARE_MARGIN)
-        + SQUARE_MARGIN
-    )
-    svg_height = (
-        ((len(functions) + MAX_X - 1) // MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
-        + SQUARE_MARGIN * 2
-        + TEXT_SIZE * 2
-    )
-
     with PROGRESS_SVG_FILE.open("w") as handle:
+        shapes = list(render_svg(functions))
+        svg_width = max(shape.bounds[2] for shape in shapes)
+        svg_height = max(shape.bounds[3] for shape in shapes)
+
         print(
             f'<svg version="1.1" '
             f'width="{svg_width}" '
@@ -60,44 +138,8 @@ def main() -> None:
             file=handle,
         )
 
-        for i, function in enumerate(functions):
-            x = (i % MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
-            y = (i // MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
-            color = "green" if function.decompiled else "pink"
-            print(
-                f"<rect "
-                f'width="{SQUARE_SIZE}" '
-                f'height="{SQUARE_SIZE}" '
-                f'x="{x}" '
-                f'y="{y}" '
-                f'fill="{color}"/>',
-                file=handle,
-            )
-
-        y += SQUARE_SIZE
-        y += TEXT_SIZE
-        ready_functions = sum(function.decompiled for function in functions)
-        total_functions = len(functions)
-        ready_size = sum(
-            function.size for function in functions if function.decompiled
-        )
-        total_size = sum(function.size for function in functions)
-        print(
-            f'<text x="0" y="{y}" '
-            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
-            f'Functions decompiled (count): '
-            f'{ready_functions/total_functions:.02%}'
-            f'</text>',
-            file=handle,
-        )
-        y += TEXT_SIZE + SQUARE_MARGIN
-        print(
-            f'<text x="0" y="{y}" '
-            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
-            f'Functions decompiled (bytesize): {ready_size/total_size:.02%}'
-            f'</text>',
-            file=handle,
-        )
+        for shape in shapes:
+            print(shape.render(), file=handle)
 
         print("</svg>", file=handle)
 
