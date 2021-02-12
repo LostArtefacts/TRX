@@ -40,10 +40,6 @@ To compile the project with Docker, run `make docker_build`.
 
 ![](docs/progress.svg)
 
-Green squares represent TombATI functions that are fully decompiled and
-reimplemented by TR1Main. Light red squares represent functions that still need
-to be ported.
-
 ## License
 
 This project is licensed under the GNU General Public License - see the

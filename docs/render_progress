@@ -4,16 +4,21 @@ import typing as T
 from dataclasses import dataclass
 from pathlib import Path
 
-MAX_X = 50
-SQUARE_SIZE = 10
+GRID_MAX_SQUARES = 50
+GRID_SQUARE_SIZE = 12
+GRID_SQUARE_MARGIN = 2
+LEGEND_SQUARE_SIZE = 12
+LEGEND_SQUARE_MARGIN = 2
+LEGEND_ROW_PADDING = 3
+LEGEND_MARGIN = 15
 TEXT_SIZE = 15
-SQUARE_MARGIN = 2
+TEXT_MARGIN = 5
 DOCS_DIR = Path(__file__).parent
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 
 COLOR_DECOMPILED = "green"
-COLOR_TODO = "pink"
+COLOR_TODO = "lightpink"
 
 
 @dataclass
@@ -41,13 +46,30 @@ def collect_functions() -> T.Iterable[Function]:
         )
 
 
+@dataclass
+class BoundingBox:
+    x1: int
+    y1: int
+    x2: int
+    y2: int
+
+
 class Shape:
     @property
-    def bounds(self) -> T.Tuple[int, int, int, int]:
+    def bounds(self) -> BoundingBox:
         raise NotImplementedError("not implemented")
 
     def render(self) -> str:
         raise NotImplementedError("not implemented")
+
+
+def get_common_bbox(shapes: T.List[Shape]) -> BoundingBox:
+    return BoundingBox(
+        x1=min(shape.bounds.x1 for shape in shapes),
+        y1=min(shape.bounds.y1 for shape in shapes),
+        x2=max(shape.bounds.x2 for shape in shapes),
+        y2=max(shape.bounds.y2 for shape in shapes),
+    )
 
 
 @dataclass
@@ -55,16 +77,19 @@ class Square(Shape):
     x: int
     y: int
     color: str
+    size: int = GRID_SQUARE_SIZE
 
     @property
-    def bounds(self) -> T.Tuple[int, int, int, int]:
-        return (self.x, self.y, self.x + SQUARE_SIZE, self.y + SQUARE_SIZE)
+    def bounds(self) -> BoundingBox:
+        return BoundingBox(
+            x1=self.x, y1=self.y, x2=self.x + self.size, y2=self.y + self.size
+        )
 
     def render(self) -> str:
         return (
             f"<rect "
-            f'width="{SQUARE_SIZE}" '
-            f'height="{SQUARE_SIZE}" '
+            f'width="{self.size}" '
+            f'height="{self.size}" '
             f'x="{self.x}" '
             f'y="{self.y}" '
             f'fill="{self.color}"/>'
@@ -78,30 +103,65 @@ class Text(Shape):
     text: str
 
     @property
-    def bounds(self) -> T.Tuple[int, int, int, int]:
-        return (self.x, self.y, self.x, self.y + TEXT_SIZE)
+    def bounds(self) -> BoundingBox:
+        return BoundingBox(
+            x1=self.x, y1=self.y, x2=self.x, y2=self.y + TEXT_SIZE
+        )
 
     def render(self) -> str:
         return (
-            f'<text x="{self.x}" y="{self.y}" '
+            f'<text alignment-baseline="central" '
+            f'x="{self.x}" y="{self.y + TEXT_SIZE/2}" '
             f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
             f"{self.text}"
             f"</text>"
         )
 
 
+@dataclass
+class LegendText(Shape):
+    x: int
+    y: int
+    color: str
+    text: str
+
+    @property
+    def _square(self) -> Square:
+        return Square(
+            x=self.x,
+            y=self.y + (TEXT_SIZE - LEGEND_SQUARE_SIZE) / 2,
+            color=self.color,
+            size=LEGEND_SQUARE_SIZE,
+        )
+
+    @property
+    def _text(self) -> Text:
+        return Text(
+            x=LEGEND_SQUARE_SIZE + TEXT_MARGIN,
+            y=self.y,
+            text=self.text,
+        )
+
+    @property
+    def bounds(self) -> BoundingBox:
+        return get_common_bbox([self._square, self._text])
+
+    def render(self) -> str:
+        return self._square.render() + self._text.render()
+
+
 def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
     for i, function in enumerate(functions):
-        x = (i % MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
-        y = (i // MAX_X) * (SQUARE_SIZE + SQUARE_MARGIN)
+        x = (i % GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
+        y = (i // GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         if function.is_decompiled:
             color = COLOR_DECOMPILED
         else:
             color = COLOR_TODO
         yield Square(x=x, y=y, color=color)
 
-    y += SQUARE_SIZE
-    y += TEXT_SIZE
+    y += GRID_SQUARE_SIZE + LEGEND_MARGIN
+
     ready_functions = sum(function.is_decompiled for function in functions)
     total_functions = len(functions)
     ready_size = sum(
@@ -109,31 +169,52 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
     )
     total_size = sum(function.size for function in functions)
 
-    yield Text(
-        x=0,
-        y=y,
-        text=f"Functions decompiled (count): {ready_functions/total_functions:.02%}",
-    )
-    y += TEXT_SIZE + SQUARE_MARGIN
-
-    yield Text(
-        x=0,
-        y=y,
-        text=f"Functions decompiled (bytesize): {ready_size/total_size:.02%}",
-    )
+    for (color, text) in [
+        (
+            COLOR_DECOMPILED,
+            (
+                f"Functions decompiled (count): "
+                f"{ready_functions/total_functions:.02%}"
+            ),
+        ),
+        (
+            COLOR_DECOMPILED,
+            f"Functions decompiled (bytesize): {ready_size/total_size:.02%}",
+        ),
+        (
+            COLOR_TODO,
+            (
+                f"Functions remaining (count): "
+                f"{(total_functions-ready_functions)/total_functions:.02%}"
+            ),
+        ),
+        (
+            COLOR_TODO,
+            (
+                f"Functions remaining (bytesize): "
+                f"{(total_size-ready_size)/total_size:.02%}"
+            ),
+        ),
+    ]:
+        yield LegendText(
+            x=0,
+            y=y,
+            color=color,
+            text=text,
+        )
+        y += TEXT_SIZE + LEGEND_ROW_PADDING
 
 
 def main() -> None:
     functions = list(collect_functions())
     with PROGRESS_SVG_FILE.open("w") as handle:
         shapes = list(render_svg(functions))
-        svg_width = max(shape.bounds[2] for shape in shapes)
-        svg_height = max(shape.bounds[3] for shape in shapes)
+        bbox = get_common_bbox(shapes)
 
         print(
             f'<svg version="1.1" '
-            f'width="{svg_width}" '
-            f'height="{svg_height}" '
+            f'width="{bbox.x2}" '
+            f'height="{bbox.y2}" '
             f'xmlns="http://www.w3.org/2000/svg">',
             file=handle,
         )
