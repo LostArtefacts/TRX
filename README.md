@@ -28,14 +28,6 @@ Currently the following configuration options are supported:
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 
-## Building
-
-- i686-w64-mingw32-gcc - C/C++ compiler
-- Vim @ WSL - IDE
-
-To compile the project, run `make build`.  
-To compile the project with Docker, run `make docker_build`.
-
 ## Decompilation progress
 
 ![](docs/progress.svg)
