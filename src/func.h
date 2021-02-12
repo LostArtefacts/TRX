@@ -36,6 +36,16 @@
 #define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
 #define SoundEffect             ((int32_t       __cdecl(*)(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags))0x0042AA30)
 #define Inv_RemoveItem          ((void          __cdecl(*)(int16_t item_num))0x004212A0)
+#define WriteTombAtiSettings    ((void          __cdecl(*)())0x0045A084)
+#define CheckCheatMode          ((void          __cdecl(*)())0x00438920)
+#define GetDemoInput            ((void          __cdecl(*)())0x00415D70)
+#define Display_Inventory       ((int32_t       __cdecl(*)(int32_t inventory_mode))0x0041E760)
+#define CreateSaveGameInfo      ((void          __cdecl(*)())0x00434720)
+#define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
+#define CalculateCamera         ((void          __cdecl(*)())0x00410B40)
+#define S_SaveGame              ((void          __cdecl(*)())0x0041DB70)
+#define S_CDLoop                ((void          __cdecl(*)())0x004380B0)
+#define SoundEffects            ((void          __cdecl(*)())0x0041A2A0)
 // clang-format on
 
 void __cdecl init_game_malloc();
@@ -66,5 +76,6 @@ void __cdecl SeedRandomDraw(int32_t seed);
 int32_t GetRandomDraw();
 int __cdecl LevelIsValid(int16_t level_number);
 void __cdecl UseItem(__int16 object_num);
+int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode);
 
 #endif

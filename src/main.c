@@ -11,6 +11,7 @@ HINSTANCE hInstance = NULL;
 
 static void tr1m_inject()
 {
+    INJECT(0x004133B0, ControlPhase);
     INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041BC60, LoadItems);

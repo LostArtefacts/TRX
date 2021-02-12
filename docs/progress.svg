@@ -1,4 +1,4 @@
-<svg version="1.1" width="602" height="202" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="602" height="214" xmlns="http://www.w3.org/2000/svg">
 <rect width="10" height="10" x="0" y="0" fill="pink"/>
 <rect width="10" height="10" x="12" y="0" fill="pink"/>
 <rect width="10" height="10" x="24" y="0" fill="pink"/>
@@ -148,7 +148,7 @@
 <rect width="10" height="10" x="552" y="24" fill="pink"/>
 <rect width="10" height="10" x="564" y="24" fill="pink"/>
 <rect width="10" height="10" x="576" y="24" fill="pink"/>
-<rect width="10" height="10" x="588" y="24" fill="pink"/>
+<rect width="10" height="10" x="588" y="24" fill="green"/>
 <rect width="10" height="10" x="0" y="36" fill="pink"/>
 <rect width="10" height="10" x="12" y="36" fill="pink"/>
 <rect width="10" height="10" x="24" y="36" fill="pink"/>
@@ -698,6 +698,8 @@
 <rect width="10" height="10" x="552" y="156" fill="pink"/>
 <rect width="10" height="10" x="564" y="156" fill="pink"/>
 <rect width="10" height="10" x="576" y="156" fill="pink"/>
-<text x="0" y="181" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 3.72%</text>
-<text x="0" y="198" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 2.07%</text>
+<rect width="10" height="10" x="588" y="156" fill="pink"/>
+<rect width="10" height="10" x="0" y="168" fill="pink"/>
+<text x="0" y="193" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 3.85%</text>
+<text x="0" y="210" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 2.35%</text>
 </svg>

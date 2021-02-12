@@ -32,9 +32,10 @@
 #define LevelTitles             ARRAY_(0x00453DF8, const char*, [NUMBER_OF_LEVELS])
 #define SecretTotals            ARRAY_(0x00453CB0, __int8, [MAX_SECRETS])
 #define ResetFlag               VAR_U_(0x00459F50, int)
-#define InputStatus             VAR_U_(0x0045EEF4, int)
+#define Input                   VAR_U_(0x0045EEF4, int)
 #define HiRes                   VAR_U_(0x00459F64, int)
 #define Effects                 VAR_U_(0x0045EE70, FX_INFO*)
+#define NextItemActive          VAR_U_(0x0045EE78, int16_t)
 #define NextFxFree              VAR_U_(0x0045EE74, int16_t)
 #define NextFxActive            VAR_U_(0x0045EE7A, int16_t)
 #define SaveGame                ARRAY_(0x0045B9C0, SAVEGAME_INFO, [2])
@@ -42,7 +43,7 @@
 #define SlotsUsed               VAR_U_(0x0045A1F8, int)
 #define NumberBoxes             VAR_U_(0x00462DA0, int)
 #define Pickups                 ARRAY_(0x0045EF00, DISPLAYPU, [NUM_PU])
-#define OverlayStatus           VAR_U_(0x004546B4, int32_t)
+#define OverlayFlag             VAR_U_(0x004546B4, int32_t)
 #define HealthBarTimer          VAR_U_(0x0045A0E4, int32_t)
 #define OldGameTimer            VAR_U_(0x0045A028, int32_t)
 #define OldHitPoints            VAR_U_(0x0045A02C, int32_t)
@@ -52,6 +53,12 @@
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
 #define ValidLevels             ARRAY_(0x00453C80, int16_t, [])
+#define FrameCount              VAR_I_(0x00459F58, int32_t, 0)
+#define AnimationRate           VAR_I_(0x004534E0, int32_t, 0x8000)
+#define InventoryExtraData      ARRAY_(0x0045A080, int32_t, [8])
+#define LevelComplete           VAR_U_(0x0045A014, int32_t)
+#define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
+#define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
 // clang-format on
 
 #endif

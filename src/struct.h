@@ -11,6 +11,7 @@ typedef void UNKNOWN_STRUCT;
 #define NUM_PU 3
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
+#define MAX_FRAMES 10
 #define NUMBER_ITEMS 256
 #define MAX_SECRETS 16
 #define MAX_SAVEGAME_BUFFER (10 * 1024)
@@ -21,6 +22,8 @@ typedef void UNKNOWN_STRUCT;
 #define SHOTGUN_AMMO_CLIP 6
 #define SFX_ALWAYS 2
 #define NUM_EFFECTS 100
+#define DEATH_WAIT (10 * 30)
+#define DEATH_WAIT_MIN (0 * 30)
 
 #define TREAD_A 108
 #define TREAD_F 1736
@@ -150,34 +153,65 @@ typedef enum {
 } GAMEALLOC_BUFFER;
 
 typedef enum {
-    GYM = 0,
-    LEVEL1 = 1, // Peru 1: Caves
-    LEVEL2 = 2, // Peru 2: City of Vilcabamba
-    LEVEL3A = 3, // Peru 3: The Lost Valley
-    LEVEL3B = 4, // Peru 4: Tomb of Qualopec
-    LEVEL4 = 5, // Greece 1: St Francis Folly
-    LEVEL5 = 6, // Greece 2: Colosseum
-    LEVEL6 = 7, // Greece 3: Place Midas
-    LEVEL7A = 8, // Greece 4: Cistern
-    LEVEL7B = 9, // Greece 5: Tomb of Tihocan
-    LEVEL8A = 10, // Egypt 1: City of Khamoon
-    LEVEL8B = 11, // Egypt 2: Obelisk of Khamoon
-    LEVEL8C = 12, // Egypt 3: Sanctuary of Scion
-    LEVEL10A = 13, // Lost island 1: Natla's Mines
-    LEVEL10B = 14, // Lost island 2: Atlantis
-    LEVEL10C = 15, // Lost island 3: The great pyramid
-    CUTSCENE1 = 16,
-    CUTSCENE2 = 17,
-    CUTSCENE3 = 18,
-    CUTSCENE4 = 19,
-    TITLE = 20,
-    CURRENT = 21,
+    LV_GYM = 0,
+    LV_FIRSTLEVEL,
+    LV_LEVEL1 = 1, // Peru 1: Caves
+    LV_LEVEL2 = 2, // Peru 2: City of Vilcabamba
+    LV_LEVEL3A = 3, // Peru 3: The Lost Valley
+    LV_LEVEL3B = 4, // Peru 4: Tomb of Qualopec
+    LV_LEVEL4 = 5, // Greece 1: St Francis Folly
+    LV_LEVEL5 = 6, // Greece 2: Colosseum
+    LV_LEVEL6 = 7, // Greece 3: Place Midas
+    LV_LEVEL7A = 8, // Greece 4: Cistern
+    LV_LEVEL7B = 9, // Greece 5: Tomb of Tihocan
+    LV_LEVEL8A = 10, // Egypt 1: City of Khamoon
+    LV_LEVEL8B = 11, // Egypt 2: Obelisk of Khamoon
+    LV_LEVEL8C = 12, // Egypt 3: Sanctuary of Scion
+    LV_LEVEL10A = 13, // Lost island 1: Natla's Mines
+    LV_LEVEL10B = 14, // Lost island 2: Atlantis
+    LV_LEVEL10C = 15, // Lost island 3: The great pyramid
+    LV_CUTSCENE1 = 16,
+    LV_CUTSCENE2 = 17,
+    LV_CUTSCENE3 = 18,
+    LV_CUTSCENE4 = 19,
+    LV_TITLE = 20,
+    LV_CURRENT = 21,
     // UB_LEVEL1     = 22, // TRUB - Egypt
     // UB_LEVEL2     = 23, // TRUB - Temple of Cat
     // UB_LEVEL3     = 24,
     // UB_LEVEL4     = 25,
     NUMBER_OF_LEVELS = 22,
 } GAME_LEVELS;
+
+typedef enum {
+    INV_GAME_MODE = 0,
+    INV_TITLE_MODE = 1,
+    INV_KEYS_MODE = 2,
+    INV_SAVE_MODE = 3,
+    INV_LOAD_MODE = 4,
+    INV_DEATH_MODE = 5,
+} INV_MODES;
+
+typedef enum {
+    STARTGAME = 0,
+    STARTCINE = 1 << 6,
+    STARTFMV = 2 << 6,
+    STARTDEMO = 3 << 6,
+    EXIT_TO_TITLE = 4 << 6,
+    LEVELCOMPLETE = 5 << 6,
+    EXITGAME = 6 << 6,
+    EXIT_TO_OPTION = 7 << 6,
+    TITLE_DESELECT = 8 << 6,
+    STARTMENU = 9 << 6,
+    LOOPINV = 10 << 6,
+    LOOPGAME = 11 << 6,
+    ENDGAME = 12 << 6,
+    INTRO = 13 << 6,
+    PLAYFMV = 14 << 6,
+    CREDITS = 15 << 6,
+    PREWARMGAME = 16 << 6,
+    LOOPCINE = 17 << 6
+} TITLE_OPTIONS;
 
 #define IN_FORWARD (1 << 0)
 #define IN_BACK (1 << 1)
@@ -589,6 +623,19 @@ typedef struct {
     /*      */ uint16_t save_anim : 1;
     /* 0032 end */
 } OBJECT_INFO;
+
+typedef struct {
+    /* 0000 */ unsigned __int8 keymap[128];
+    /* 0080 */ unsigned __int8 oldkeymap[128];
+    /* 0100 */ unsigned __int8 keybuf[64];
+    /* 0140 */ unsigned __int8 bufin;
+    /* 0141 */ unsigned __int8 bufout;
+    /* 0142 */ unsigned __int8 bufchars;
+    /* 0143 */ unsigned __int8 extended;
+    /* 0144 */ unsigned __int8 last_key;
+    /* 0145 */ unsigned __int8 keys_held;
+    /* 0146 end */
+} KEYSTUFF;
 
 #pragma pop
 
