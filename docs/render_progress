@@ -17,8 +17,9 @@ DOCS_DIR = Path(__file__).parent
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 
-COLOR_DECOMPILED = "green"
-COLOR_TODO = "lightpink"
+COLOR_DECOMPILED = "forestgreen"
+COLOR_NAMED = "lightpink"
+COLOR_TODO = "mistyrose"
 
 
 @dataclass
@@ -31,6 +32,10 @@ class Function:
     @property
     def is_decompiled(self):
         return "+" in self.flags
+
+    @property
+    def is_named(self):
+        return not self.name.startswith("sub_")
 
 
 def collect_functions() -> T.Iterable[Function]:
@@ -156,6 +161,8 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
         y = (i // GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         if function.is_decompiled:
             color = COLOR_DECOMPILED
+        elif function.is_named:
+            color = COLOR_NAMED
         else:
             color = COLOR_TODO
         yield Square(x=x, y=y, color=color)
@@ -163,6 +170,7 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
     y += GRID_SQUARE_SIZE + LEGEND_MARGIN
 
     ready_functions = sum(function.is_decompiled for function in functions)
+    named_functions = sum(function.is_named for function in functions)
     total_functions = len(functions)
     ready_size = sum(
         function.size for function in functions if function.is_decompiled
@@ -180,6 +188,13 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
         (
             COLOR_DECOMPILED,
             f"Functions decompiled (bytesize): {ready_size/total_size:.02%}",
+        ),
+        (
+            COLOR_NAMED,
+            (
+                f"Functions with known names: "
+                f"{named_functions/total_functions:.02%}"
+            ),
         ),
         (
             COLOR_TODO,
