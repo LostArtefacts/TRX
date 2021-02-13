@@ -4,7 +4,7 @@
 #include "func.h"
 #include "json_utils.h"
 #include "mod.h"
-#include "struct.h"
+#include "types.h"
 #include "util.h"
 
 HINSTANCE hInstance = NULL;

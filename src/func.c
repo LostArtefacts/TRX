@@ -1,7 +1,7 @@
 #include "func.h"
 #include "data.h"
 #include "mod.h"
-#include "struct.h"
+#include "types.h"
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>

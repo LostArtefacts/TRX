@@ -2,7 +2,7 @@
 #define TR1MAIN_DATA_H
 
 #include "util.h"
-#include "struct.h"
+#include "types.h"
 
 // clang-format off
 #define cd_drive                VAR_I_(0x0045A010, char, '.')

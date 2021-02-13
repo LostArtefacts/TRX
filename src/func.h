@@ -1,6 +1,7 @@
 #ifndef TR1MAIN_FUNC_H
 #define TR1MAIN_FUNC_H
 
+#include "types.h"
 #include "util.h"
 #include <stdio.h>
 
