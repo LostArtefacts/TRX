@@ -497,6 +497,13 @@ void __cdecl LaraAsHangRight(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsSlideBack(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (Input & IN_JUMP) {
+        item->goal_anim_state = AS_BACKJUMP;
+    }
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -533,4 +540,5 @@ void TR1MInjectLara()
     INJECT(0x004230F0, LaraAsFallBack);
     INJECT(0x00423120, LaraAsHangLeft);
     INJECT(0x00423160, LaraAsHangRight);
+    INJECT(0x004231A0, LaraAsSlideBack);
 }
