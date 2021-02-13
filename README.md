@@ -20,7 +20,10 @@ Notepad.
 
 Currently the following configuration options are supported:
 
-- `disable_medpacks`: hides all the medpacks (for No Meds challenge runs).
+- `disable_medpacks`: removes all medpacks (for No Meds challenge runs).
+- `disable_magnums`: removes all magnum guns and ammo pickups.
+- `disable_uzis`: removes all UZI guns and ammo pickups.
+- `disable_shotgun`: removes all shotgun and shotgun shells pickups.
 - `disable_healing_between_levels`: disables healing Lara between level reloads
   (for No Heal challenge runs).
 - `enable_red_healthbar`: replaces the default golden healthbar with a red one.

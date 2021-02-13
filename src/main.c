@@ -56,6 +56,11 @@ static int TR1MReadConfig()
         tr1m_json_get_boolean_value(json, "disable_healing_between_levels");
     TR1MConfig.disable_medpacks =
         tr1m_json_get_boolean_value(json, "disable_medpacks");
+    TR1MConfig.disable_magnums =
+        tr1m_json_get_boolean_value(json, "disable_magnums");
+    TR1MConfig.disable_uzis = tr1m_json_get_boolean_value(json, "disable_uzis");
+    TR1MConfig.disable_shotgun =
+        tr1m_json_get_boolean_value(json, "disable_shotgun");
     TR1MConfig.enable_red_healthbar =
         tr1m_json_get_boolean_value(json, "enable_red_healthbar");
     TR1MConfig.enable_enemy_healthbar =

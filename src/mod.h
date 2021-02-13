@@ -13,6 +13,9 @@ typedef enum {
 struct {
     int disable_healing_between_levels;
     int disable_medpacks;
+    int disable_magnums;
+    int disable_uzis;
+    int disable_shotgun;
     int enable_red_healthbar;
     int enable_enemy_healthbar;
     int enable_look_while_running;

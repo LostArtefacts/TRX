@@ -1,6 +1,9 @@
 {
     "disable_healing_between_levels": false,
     "disable_medpacks": false,
+    "disable_magnums": false,
+    "disable_uzis": false,
+    "disable_shotgun": false,
     "enable_red_healthbar": true,
     "enable_enemy_healthbar": true,
     "enable_look_while_running": true,

@@ -365,7 +365,7 @@ typedef enum {
     AS_SWANDIVE = 52,
     AS_FASTDIVE = 53,
     AS_GYMNAST = 54,
-    AS_WATEROU = 55,
+    AS_WATEROUT = 55,
 } LARA_STATES;
 
 typedef enum {

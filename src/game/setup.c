@@ -48,6 +48,54 @@ void __cdecl InitialiseObjects()
         Objects[O_BIGMEDI_ITEM].ceiling = NULL;
         Objects[O_BIGMEDI_ITEM].floor = NULL;
     }
+
+    if (TR1MConfig.disable_magnums) {
+        Objects[O_MAGNUM_ITEM].initialise = NULL;
+        Objects[O_MAGNUM_ITEM].collision = NULL;
+        Objects[O_MAGNUM_ITEM].control = NULL;
+        Objects[O_MAGNUM_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_MAGNUM_ITEM].ceiling = NULL;
+        Objects[O_MAGNUM_ITEM].floor = NULL;
+
+        Objects[O_MAG_AMMO_ITEM].initialise = NULL;
+        Objects[O_MAG_AMMO_ITEM].collision = NULL;
+        Objects[O_MAG_AMMO_ITEM].control = NULL;
+        Objects[O_MAG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
+        Objects[O_MAG_AMMO_ITEM].floor = NULL;
+    }
+
+    if (TR1MConfig.disable_uzis) {
+        Objects[O_UZI_ITEM].initialise = NULL;
+        Objects[O_UZI_ITEM].collision = NULL;
+        Objects[O_UZI_ITEM].control = NULL;
+        Objects[O_UZI_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_UZI_ITEM].ceiling = NULL;
+        Objects[O_UZI_ITEM].floor = NULL;
+
+        Objects[O_UZI_AMMO_ITEM].initialise = NULL;
+        Objects[O_UZI_AMMO_ITEM].collision = NULL;
+        Objects[O_UZI_AMMO_ITEM].control = NULL;
+        Objects[O_UZI_AMMO_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
+        Objects[O_UZI_AMMO_ITEM].floor = NULL;
+    }
+
+    if (TR1MConfig.disable_shotgun) {
+        Objects[O_SHOTGUN_ITEM].initialise = NULL;
+        Objects[O_SHOTGUN_ITEM].collision = NULL;
+        Objects[O_SHOTGUN_ITEM].control = NULL;
+        Objects[O_SHOTGUN_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_SHOTGUN_ITEM].ceiling = NULL;
+        Objects[O_SHOTGUN_ITEM].floor = NULL;
+
+        Objects[O_SG_AMMO_ITEM].initialise = NULL;
+        Objects[O_SG_AMMO_ITEM].collision = NULL;
+        Objects[O_SG_AMMO_ITEM].control = NULL;
+        Objects[O_SG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_SG_AMMO_ITEM].ceiling = NULL;
+        Objects[O_SG_AMMO_ITEM].floor = NULL;
+    }
 }
 
 void TR1MInjectSetup()
