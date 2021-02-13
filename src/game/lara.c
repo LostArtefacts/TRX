@@ -228,6 +228,35 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+
+    Lara.turn_rate -= LARA_TURN_RATE;
+    if (Lara.gun_status == LG_READY) {
+        item->goal_anim_state = AS_FASTTURN;
+    } else if (Lara.turn_rate < -LARA_SLOW_TURN) {
+        if (Input & IN_SLOW) {
+            Lara.turn_rate = -LARA_SLOW_TURN;
+        } else {
+            item->goal_anim_state = AS_FASTTURN;
+        }
+    }
+
+    if (Input & IN_FORWARD) {
+        if (Input & IN_SLOW) {
+            item->goal_anim_state = AS_WALK;
+        } else {
+            item->goal_anim_state = AS_RUN;
+        }
+    } else if (!(Input & IN_LEFT)) {
+        item->goal_anim_state = AS_STOP;
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
@@ -236,4 +265,5 @@ void TR1MInjectLara()
     INJECT(0x00422970, LaraAsForwardJump);
     INJECT(0x00422A30, LaraAsFastBack);
     INJECT(0x00422A90, LaraAsTurnR);
+    INJECT(0x00422B10, LaraAsTurnL);
 }
