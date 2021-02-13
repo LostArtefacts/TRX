@@ -285,6 +285,14 @@ void __cdecl LaraAsHang(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsReach(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Camera.target_angle = 85 * ONE_DEGREE;
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+        item->goal_anim_state = AS_FASTFALL;
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
@@ -296,4 +304,5 @@ void TR1MInjectLara()
     INJECT(0x00422B10, LaraAsTurnL);
     INJECT(0x00422B90, LaraAsFastFall);
     INJECT(0x00422BD0, LaraAsHang);
+    INJECT(0x00422C20, LaraAsReach);
 }
