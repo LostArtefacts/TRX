@@ -1,6 +1,7 @@
 #ifndef TR1MAIN_GAME_CONST_H
 #define TR1MAIN_GAME_CONST_H
 
+#define ONE_DEGREE 182
 #define NUM_PU 3
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
@@ -22,7 +23,10 @@
 #define NUM_EFFECTS 100
 #define DEATH_WAIT (10 * 30)
 #define DEATH_WAIT_MIN (0 * 30)
-
+#define MAX_HEAD_ROTATION (50 * ONE_DEGREE)
+#define MAX_HEAD_TILT (22 * ONE_DEGREE)
+#define HEAD_TURN (4 * ONE_DEGREE)
+#define MIN_HEAD_TILT (-42 * ONE_DEGREE)
 #define WALL_L 1024
 #define STEP_L 256
 

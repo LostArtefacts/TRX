@@ -16,12 +16,12 @@ void __cdecl InitialiseLara()
         : LARA_HITPOINTS;
 
     Lara.air = LARA_AIR;
-    Lara.torso_z_rot = 0;
-    Lara.torso_x_rot = 0;
     Lara.torso_y_rot = 0;
-    Lara.head_z_rot = 0;
+    Lara.torso_x_rot = 0;
+    Lara.torso_z_rot = 0;
     Lara.head_y_rot = 0;
     Lara.head_x_rot = 0;
+    Lara.head_z_rot = 0;
     Lara.calc_fallspeed = 0;
     Lara.mesh_effects = 0;
     Lara.hit_frames = 0;

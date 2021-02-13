@@ -9,6 +9,15 @@ typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
 typedef enum {
+    CHASE_CAMERA = 0,
+    FIXED_CAMERA = 1,
+    LOOK_CAMERA = 2,
+    COMBAT_CAMERA = 3,
+    CINEMATIC_CAMERA = 4,
+    HEAVY_CAMERA = 5,
+} CAMERA_TYPE;
+
+typedef enum {
     O_LARA = 0,
     O_PISTOLS = 1,
     O_SHOTGUN = 2,
@@ -880,6 +889,50 @@ typedef struct {
     /* 0145 */ unsigned __int8 keys_held;
     /* 0146 end */
 } KEYSTUFF;
+
+typedef struct {
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int16_t data;
+    /* 000E */ int16_t flags;
+    /* 0010 end */
+} GAME_VECTOR;
+
+typedef struct {
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int16_t data;
+    /* 000E */ int16_t flags;
+    /* 0010 end */
+} OBJECT_VECTOR;
+
+typedef struct {
+    /* 0000 */ GAME_VECTOR pos;
+    /* 0010 */ GAME_VECTOR target;
+    /* 0020 */ int32_t type;
+    /* 0024 */ int32_t shift;
+    /* 0028 */ int32_t flags;
+    /* 002C */ int32_t fixed_camera;
+    /* 0030 */ int32_t number_frames;
+    /* 0034 */ int32_t bounce;
+    /* 0038 */ int32_t underwater;
+    /* 003C */ int32_t target_distance;
+    /* 0040 */ int32_t target_square;
+    /* 0044 */ int16_t target_angle;
+    /* 0046 */ int16_t actual_angle;
+    /* 0048 */ int16_t target_elevation;
+    /* 004A */ int16_t box;
+    /* 004C */ int16_t number;
+    /* 004E */ int16_t last;
+    /* 0050 */ int16_t timer;
+    /* 0052 */ int16_t speed;
+    /* 0054 */ ITEM_INFO* item;
+    /* 0058 */ ITEM_INFO* last_item;
+    /* 005C */ OBJECT_VECTOR* fixed;
+    /* 0060 end */
+} CAMERA_INFO;
 
 #pragma pop
 

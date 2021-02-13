@@ -328,7 +328,7 @@ EffectNewRoom                   0x004223E0  0x00000096  -
 LaraAboveWater                  0x00422480  0x0000016B  -
 LaraAsWalk                      0x004225F0  0x0000007A  +
 LaraAsRun                       0x00422670  0x000000ED  +
-LaraAsStop                      0x00422760  0x00000207  -
+LaraAsStop                      0x00422760  0x00000207  +
 LaraAsForwardJump               0x00422970  0x000000B7  -
 LaraAsFastback                  0x00422A30  0x00000057  -
 LaraAsTurnR                     0x00422A90  0x00000076  -

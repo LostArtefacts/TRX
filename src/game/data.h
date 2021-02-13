@@ -59,6 +59,7 @@
 #define LevelComplete           VAR_U_(0x0045A014, int32_t)
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
+#define Camera                  VAR_U_(0x00462D20, CAMERA_INFO)
 // clang-format on
 
 #endif
