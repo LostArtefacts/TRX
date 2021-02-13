@@ -257,6 +257,12 @@ void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsDeath(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
