@@ -155,8 +155,8 @@ class LegendText(Shape):
         return self._square.render() + self._text.render()
 
 
-def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
-    for i, function in enumerate(functions):
+def render_svg(all_functions: T.List[Function]) -> T.Iterable[Shape]:
+    for i, function in enumerate(all_functions):
         x = (i % GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         y = (i // GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         if function.is_decompiled:
@@ -169,59 +169,47 @@ def render_svg(functions: T.List[Function]) -> T.Iterable[Shape]:
 
     y += GRID_SQUARE_SIZE + LEGEND_MARGIN
 
-    ready_count = sum(func.is_decompiled for func in functions)
-    named_count = sum(func.is_named for func in functions)
-    total_count = len(functions)
-    ready_size = sum(func.size for func in functions if func.is_decompiled)
-    named_size = sum(func.size for func in functions if func.is_named)
-    total_size = sum(func.size for func in functions)
+    ready_functions = [func for func in all_functions if func.is_decompiled]
+    named_functions = [
+        func
+        for func in all_functions
+        if func.is_named and func not in ready_functions
+    ]
+    todo_functions = [
+        func
+        for func in all_functions
+        if func not in ready_functions and func not in named_functions
+    ]
 
-    for (color, text) in [
-        (
-            COLOR_DECOMPILED,
-            (
-                f"Functions decompiled (count): "
-                f"{ready_count/total_count:.02%}"
-            ),
-        ),
-        (
-            COLOR_DECOMPILED,
-            f"Functions decompiled (bytesize): {ready_size/total_size:.02%}",
-        ),
+    def sum_size(functions: T.Iterable[Function]) -> int:
+        return sum(func.size for func in functions)
+
+    for (color, text, functions) in [
+        (COLOR_DECOMPILED, "Functions decompiled", ready_functions),
         (
             COLOR_NAMED,
-            (
-                f"Functions not decompiled, but with known names (count): "
-                f"{named_count/total_count:.02%}"
-            ),
-        ),
-        (
-            COLOR_NAMED,
-            (
-                f"Functions not decompiled, but with known names (bytesize): "
-                f"{named_size/total_size:.02%}"
-            ),
+            "Functions not decompiled, but with known names",
+            named_functions,
         ),
         (
             COLOR_TODO,
-            (
-                f"Functions not decompiled, with unknown names (count): "
-                f"{(total_count-ready_count-named_count)/total_count:.02%}"
-            ),
-        ),
-        (
-            COLOR_TODO,
-            (
-                f"Functions not decompiled, with unknown names (bytesize): "
-                f"{(total_size-ready_size-named_size)/total_size:.02%}"
-            ),
+            "Functions not decompiled, with unknown names",
+            todo_functions,
         ),
     ]:
         yield LegendText(
             x=0,
             y=y,
             color=color,
-            text=text,
+            text=f"{text} (count): {len(functions)/len(all_functions):.02%}",
+        )
+        y += TEXT_SIZE + LEGEND_ROW_PADDING
+
+        yield LegendText(
+            x=0,
+            y=y,
+            color=color,
+            text=f"{text} (bytesize): {sum_size(functions)/sum_size(all_functions):.02%}",
         )
         y += TEXT_SIZE + LEGEND_ROW_PADDING
 
