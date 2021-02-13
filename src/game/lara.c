@@ -704,6 +704,13 @@ void __cdecl LaraAsSwanDive(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 1;
+    item->speed = (item->speed * 95) / 100;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -750,4 +757,5 @@ void TR1MInjectLara()
     INJECT(0x004232D0, LaraAsUseMidas);
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
+    INJECT(0x00423750, LaraAsFastDive);
 }
