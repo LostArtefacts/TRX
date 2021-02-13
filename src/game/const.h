@@ -18,9 +18,11 @@
 #define LARA_JUMP_TURN ((ONE_DEGREE * 1) + LARA_TURN_UNDO) // = 546
 #define LARA_MED_TURN ((ONE_DEGREE * 4) + LARA_TURN_UNDO) // = 1092
 #define LARA_FAST_TURN ((ONE_DEGREE * 6) + LARA_TURN_UNDO) // = 1456
+#define LARA_LEAN_UNDO ONE_DEGREE
 #define LARA_LEAN_RATE 273
-#define LARA_LEAN_MAX 2002
+#define LARA_LEAN_MAX ((10 * ONE_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_FASTFALL_SPEED 131
+#define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14

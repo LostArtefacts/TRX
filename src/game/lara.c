@@ -1,3 +1,4 @@
+#include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
 #include "game/data.h"
@@ -7,6 +8,66 @@
 #include "game/shell.h"
 #include "mod.h"
 #include "util.h"
+
+void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->old.x = item->pos.x;
+    coll->old.y = item->pos.y;
+    coll->old.z = item->pos.z;
+    coll->radius = LARA_RAD;
+    coll->trigger = NULL;
+
+    coll->lava_is_pit = 0;
+    coll->slopes_are_walls = 0;
+    coll->slopes_are_pits = 0;
+    coll->enable_spaz = 1;
+    coll->enable_baddie_push = 1;
+
+    (LaraControlRoutines[item->current_anim_state])(item, coll);
+
+    if (Camera.type != LOOK_CAMERA) {
+        if (Lara.head_x_rot > -HEAD_TURN / 2
+            && Lara.head_x_rot < HEAD_TURN / 2) {
+            Lara.head_x_rot = 0;
+        } else {
+            Lara.head_x_rot -= Lara.head_x_rot / 8;
+        }
+        Lara.torso_x_rot = Lara.head_x_rot;
+
+        if (Lara.head_y_rot > -HEAD_TURN / 2
+            && Lara.head_y_rot < HEAD_TURN / 2) {
+            Lara.head_y_rot = 0;
+        } else {
+            Lara.head_y_rot -= Lara.head_y_rot / 8;
+        }
+        Lara.torso_y_rot = Lara.head_y_rot;
+    }
+
+    if (item->pos.z_rot >= -LARA_LEAN_UNDO
+        && item->pos.z_rot <= LARA_LEAN_UNDO) {
+        item->pos.z_rot = 0;
+    } else if (item->pos.z_rot < -LARA_LEAN_UNDO) {
+        item->pos.z_rot += LARA_LEAN_UNDO;
+    } else {
+        item->pos.z_rot -= LARA_LEAN_UNDO;
+    }
+
+    if (Lara.turn_rate >= -LARA_TURN_UNDO && Lara.turn_rate <= LARA_TURN_UNDO) {
+        Lara.turn_rate = 0;
+    } else if (Lara.turn_rate < -LARA_TURN_UNDO) {
+        Lara.turn_rate += LARA_TURN_UNDO;
+    } else {
+        Lara.turn_rate -= LARA_TURN_UNDO;
+    }
+    item->pos.y_rot += Lara.turn_rate;
+
+    AnimateLara(item);
+    LaraBaddieCollision(item, coll);
+    (LaraCollisionRoutines[item->current_anim_state])(item, coll);
+    UpdateLaraRoom(item, -LARA_HITE / 2);
+    LaraGun();
+    TestTriggers(coll->trigger, 0);
+}
 
 void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -210,21 +271,6 @@ void __cdecl LaraAsForwardJump(ITEM_INFO* item, COLL_INFO* coll)
         }
     }
 
-    if (item->goal_anim_state == AS_SWANDIVE
-        || item->goal_anim_state == AS_REACH) {
-        item->goal_anim_state = AS_FORWARDJUMP;
-    }
-    if (item->goal_anim_state != AS_DEATH && item->goal_anim_state != AS_STOP) {
-        if ((Input & IN_ACTION) && Lara.gun_status == LG_ARMLESS) {
-            item->goal_anim_state = AS_REACH;
-        }
-        if ((Input & IN_SLOW) && Lara.gun_status == LG_ARMLESS) {
-            item->goal_anim_state = AS_SWANDIVE;
-        }
-        if (item->fall_speed > LARA_FASTFALL_SPEED) {
-            item->goal_anim_state = AS_FASTFALL;
-        }
-    }
     if (Input & IN_LEFT) {
         Lara.turn_rate -= LARA_TURN_RATE;
         if (Lara.turn_rate < -LARA_JUMP_TURN) {
@@ -798,6 +844,7 @@ int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 
 void TR1MInjectLara()
 {
+    INJECT(0x00422480, LaraAboveWater);
     INJECT(0x004225F0, LaraAsWalk);
     INJECT(0x00422670, LaraAsRun);
     INJECT(0x00422760, LaraAsStop);

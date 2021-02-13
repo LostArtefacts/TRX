@@ -7,6 +7,9 @@
 // clang-format off
 #define InitialiseLaraInventory ((void          __cdecl(*)(int level_id))0x00428170)
 #define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
+#define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
+#define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
+#define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 // clang-format on
 
 void __cdecl InitialiseLara();

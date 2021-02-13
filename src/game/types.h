@@ -988,4 +988,7 @@ typedef struct {
 
 #pragma pop
 
+typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);
+typedef void(__cdecl* CollisionRoutine)(ITEM_INFO*, COLL_INFO*);
+
 #endif

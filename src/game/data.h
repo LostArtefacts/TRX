@@ -75,6 +75,8 @@
 #define JoyXPos                 VAR_U_(0x0045B958, int32_t)
 #define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
+#define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
+#define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
 // clang-format on
 
 #endif
