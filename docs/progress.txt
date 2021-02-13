@@ -339,7 +339,7 @@ LaraAsReach                     0x00422C20  0x0000001C  +
 LaraAsCompress                  0x00422C40  0x0000026D  +
 LaraAsBack                      0x00422EB0  0x0000007D  +
 LaraAsFastTurn                  0x00422F30  0x0000004B  +
-LaraAsStepRight                 0x00422F80  0x00000073  -
+LaraAsStepRight                 0x00422F80  0x00000073  +
 LaraAsStepLeft                  0x00423000  0x00000073  -
 LaraAsSlide                     0x00423080  0x00000027  -
 LaraAsBackJump                  0x004230B0  0x0000001C  -
