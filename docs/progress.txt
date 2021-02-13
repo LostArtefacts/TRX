@@ -344,7 +344,7 @@ LaraAsStepLeft                  0x00423000  0x00000073  +
 LaraAsSlide                     0x00423080  0x00000027  +
 LaraAsBackJump                  0x004230B0  0x0000001C  +
 LaraAsRightJump                 0x004230D0  0x00000013  +
-LaraAsFallback                  0x004230F0  0x0000002C  -
+LaraAsFallBack                  0x004230F0  0x0000002C  +
 LaraAsHangLeft                  0x00423120  0x00000035  -
 LaraAsHangRight                 0x00423160  0x00000035  -
 LaraAsSlideBack                 0x004231A0  0x00000014  -
