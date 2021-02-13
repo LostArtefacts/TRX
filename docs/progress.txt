@@ -359,7 +359,7 @@ LaraAsDieMidas                  0x004232F0  0x0000030C  +
 LaraAsSwanDive                  0x00423720  0x00000028  +
 LaraAsFastDive                  0x00423750  0x0000003D  +
 LaraAsDeath                     0x00423790  0x0000000B  +
-LaraAsWaterOut                  0x004237A0  0x00000015  -
+LaraAsWaterOut                  0x004237A0  0x00000015  +
 LaraColWalk                     0x004237C0  0x00000228  -
 LaraColRun                      0x004239F0  0x00000210  -
 LaraColStop                     0x00423C00  0x000000FC  -

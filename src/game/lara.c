@@ -717,6 +717,13 @@ void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_baddie_push = 0;
 }
 
+void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+    Camera.flags = FOLLOW_CENTRE;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -764,4 +771,5 @@ void TR1MInjectLara()
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
+    INJECT(0x004237A0, LaraAsWaterOut);
 }
