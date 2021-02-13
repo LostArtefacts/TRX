@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <dbghelp.h>
 
-void tr1m_inject_func(void* from, void* to)
+void TR1MInjectFunc(void* from, void* to)
 {
     DWORD tmp;
     TRACE("Patching %p to %p", from, to);
@@ -20,7 +20,7 @@ void tr1m_inject_func(void* from, void* to)
     //((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP));
 }
 
-void tr1m_print_stack_trace()
+void TR1MPrintStackTrace()
 {
     const size_t MaxNameLen = 255;
     BOOL result;

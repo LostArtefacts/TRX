@@ -25,12 +25,12 @@ typedef struct {
 #define VAR_I_(address, type, value) (*(type*)(address))
 #define ARRAY_(address, type, length) (*(type(*) length)(address))
 
-void tr1m_inject_func(void* from, void* to);
-void tr1m_print_stack_trace();
+void TR1MInjectFunc(void* from, void* to);
+void TR1MPrintStackTrace();
 
 #define INJECT(from, to)                                                       \
     {                                                                          \
-        tr1m_inject_func((void*)from, (void*)to);                              \
+        TR1MInjectFunc((void*)from, (void*)to);                                \
     }
 
 #endif

@@ -1,9 +1,8 @@
-#ifndef TR1MAIN_TYPES_H
-#define TR1MAIN_TYPES_H
+#ifndef TR1MAIN_GAME_TYPES_H
+#define TR1MAIN_GAME_TYPES_H
 
 #include "const.h"
 #include <stdint.h>
-#include <stdio.h>
 
 typedef uint16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
@@ -203,6 +202,97 @@ typedef enum {
     O_ALPHABET = 190,
     NUMBER_OBJECTS = 191,
 } GAME_OBJECT_ID;
+
+typedef enum {
+    AF_VAULT12 = 759,
+    AF_VAULT34 = 614,
+    AF_FASTFALL = 481,
+    AF_STOP = 185,
+    AF_FALLDOWN = 492,
+    AF_STOP_LEFT = 58,
+    AF_STOP_RIGHT = 74,
+    AF_HITWALLLEFT = 800,
+    AF_HITWALLRIGHT = 815,
+    AF_RUNSTEPUP_LEFT = 837,
+    AF_RUNSTEPUP_RIGHT = 830,
+    AF_WALKSTEPUP_LEFT = 844,
+    AF_WALKSTEPUP_RIGHT = 858,
+    AF_WALKSTEPD_LEFT = 887,
+    AF_WALKSTEPD_RIGHT = 874,
+    AF_BACKSTEPD_LEFT = 899,
+    AF_BACKSTEPD_RIGHT = 930,
+    AF_LANDFAR = 358,
+    AF_GRABLEDGE = 1493,
+    AF_GRABLEDGE_OLD = 621,
+    AF_SWIMGLIDE = 1431,
+    AF_FALLBACK = 1473,
+    AF_HANG = 1514,
+    AF_HANG_OLD = 642,
+    AF_STARTHANG = 1505,
+    AF_STARTHANG_OLD = 634,
+    AF_STOPHANG = 448,
+    AF_SLIDE = 1133,
+    AF_SLIDEBACK = 1677,
+    AF_TREAD = 1736,
+    AF_SURFTREAD = 1937,
+    AF_SURFDIVE = 2041,
+    AF_SURFCLIMB = 1849,
+    AF_JUMPIN = 1895,
+    AF_ROLL = 3857,
+    AF_RBALL_DEATH = 3561,
+    AF_SPIKE_DEATH = 3887,
+    AF_GRABLEDGEIN = 3974,
+    AF_PPREADY = 2091,
+    AF_PICKUP = 3443,
+    AF_PICKUP_UW = 2970,
+    AF_PICKUPSCION = 44,
+    AF_USEPUZZLE = 3372,
+} LARA_ANIMATION_FRAMES;
+
+typedef enum {
+    AA_VAULT12 = 50,
+    AA_VAULT34 = 42,
+    AA_FASTFALL = 32,
+    AA_STOP = 11,
+    AA_FALLDOWN = 34,
+    AA_STOP_LEFT = 2,
+    AA_STOP_RIGHT = 3,
+    AA_HITWALLLEFT = 53,
+    AA_HITWALLRIGHT = 54,
+    AA_RUNSTEPUP_LEFT = 56,
+    AA_RUNSTEPUP_RIGHT = 55,
+    AA_WALKSTEPUP_LEFT = 57,
+    AA_WALKSTEPUP_RIGHT = 58,
+    AA_WALKSTEPD_LEFT = 60,
+    AA_WALKSTEPD_RIGHT = 59,
+    AA_BACKSTEPD_LEFT = 61,
+    AA_BACKSTEPD_RIGHT = 62,
+    AA_LANDFAR = 24,
+    AA_GRABLEDGE = 96,
+    AA_GRABLEDGE_OLD = 32,
+    AA_SWIMGLIDE = 87,
+    AA_FALLBACK = 93,
+    AA_HANG = 96,
+    AA_HANG_OLD = 33,
+    AA_STARTHANG = 96,
+    AA_STARTHANG_OLD = 33,
+    AA_STOPHANG = 28,
+    AA_SLIDE = 70,
+    AA_SLIDEBACK = 104,
+    AA_TREAD = 108,
+    AA_SURFTREAD = 114,
+    AA_SURFDIVE = 119,
+    AA_SURFCLIMB = 111,
+    AA_JUMPIN = 112,
+    AA_ROLL = 146,
+    AA_RBALL_DEATH = 139,
+    AA_SPIKE_DEATH = 149,
+    AA_GRABLEDGEIN = 150,
+    AA_SPAZ_FORWARD = 125,
+    AA_SPAZ_BACK = 126,
+    AA_SPAZ_RIGHT = 127,
+    AA_SPAZ_LEFT = 128,
+} LARA_ANIMATION_ANIMS;
 
 typedef enum {
     LARA_ABOVEWATER = 0,
@@ -495,9 +585,9 @@ typedef struct {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
-    /* 000C */ uint16_t rot_x;
-    /* 000E */ uint16_t rot_y;
-    /* 0010 */ uint16_t rot_z;
+    /* 000C */ int16_t x_rot;
+    /* 000E */ int16_t y_rot;
+    /* 0010 */ int16_t z_rot;
     /* 0012 end */
 } PHD_3DPOS;
 

@@ -1,47 +1,33 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "func.h"
 #include "json_utils.h"
 #include "mod.h"
-#include "types.h"
 #include "util.h"
+
+#include "game/control.h"
+#include "game/game.h"
+#include "game/health.h"
+#include "game/items.h"
+#include "game/lara.h"
+#include "game/lot.h"
+#include "game/shell.h"
 
 HINSTANCE hInstance = NULL;
 
-static void tr1m_inject()
+static void TR1MInject()
 {
-    INJECT(0x004133B0, ControlPhase);
-    INJECT(0x0041AF90, S_LoadLevel);
-    INJECT(0x0041B3F0, LoadRooms);
-    INJECT(0x0041BC60, LoadItems);
-    INJECT(0x0041BFC0, GetFullPath);
-    INJECT(0x0041C020, FindCdDrive);
-    INJECT(0x0041D5A0, LevelStats);
-    INJECT(0x0041D8F0, GetRandomControl);
-    INJECT(0x0041D910, SeedRandomControl);
-    INJECT(0x0041D920, GetRandomDraw);
-    INJECT(0x0041D940, SeedRandomDraw);
-    INJECT(0x0041D950, LevelIsValid);
-    INJECT(0x0041DD00, DrawGameInfo);
-    INJECT(0x0041DEA0, DrawHealthBar);
-    INJECT(0x0041DF20, MakeAmmoString);
-    INJECT(0x0041DF50, DrawAmmoInfo);
-    INJECT(0x0041E0A0, InitialisePickUpDisplay);
-    INJECT(0x0041E0C0, AddDisplayPickup);
-    INJECT(0x0041E2C0, init_game_malloc);
-    INJECT(0x0041E3B0, game_free);
-    INJECT(0x00422250, InitialiseFXArray);
-    INJECT(0x00427E80, UseItem);
-    INJECT(0x00428020, InitialiseLara);
-    INJECT(0x0042A2C0, DB_Log);
-    INJECT(0x0042A300, InitialiseLOTArray);
-    INJECT(0x004302D0, S_DrawHealthBar);
-    INJECT(0x00430450, S_DrawAirBar);
-    INJECT(0x004225F0, LaraAsWalk);
+    TR1MInjectControl();
+    TR1MInjectGame();
+    TR1MInjectHealth();
+    TR1MInjectItems();
+    TR1MInjectLara();
+    TR1MInjectLaraMisc();
+    TR1MInjectLOT();
+    TR1MInjectShell();
 }
 
-static int tr1m_read_config()
+static int TR1MReadConfig()
 {
     FILE* fp = fopen("TR1Main.json", "rb");
     if (!fp) {
@@ -83,10 +69,10 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
         freopen("./TR1Main.log", "w", stdout);
-        tr1m_read_config();
+        TR1MReadConfig();
         TRACE("Attached");
         hInstance = hinstDLL;
-        tr1m_inject();
+        TR1MInject();
         break;
 
     case DLL_PROCESS_DETACH:

@@ -1,8 +1,8 @@
-#ifndef TR1MAIN_DATA_H
-#define TR1MAIN_DATA_H
+#ifndef TR1MAIN_GAME_DATA_H
+#define TR1MAIN_GAME_DATA_H
 
+#include "game/types.h"
 #include "util.h"
-#include "types.h"
 
 // clang-format off
 #define cd_drive                VAR_I_(0x0045A010, char, '.')

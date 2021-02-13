@@ -3,6 +3,13 @@
 
 #include "util.h"
 
+typedef enum {
+    TRM1_BAR_LARA_HEALTH = 0,
+    TRM1_BAR_LARA_AIR = 1,
+    TRM1_BAR_ENEMY_HEALTH = 2,
+    TRM1_BAR_NUMBER = 3,
+} TR1M_BAR;
+
 struct {
     int disable_healing_between_levels;
     int disable_medpacks;
@@ -14,5 +21,8 @@ struct {
 struct {
     int stored_lara_health;
 } TR1MData;
+
+int TR1MGetOverlayScale(int base);
+void TR1MRenderBar(int value, int value_max, int bar_type);
 
 #endif
