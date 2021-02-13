@@ -15,6 +15,23 @@ void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll)
         return;
     }
 
+    if (TR1MConfig.enable_look_while_running) {
+        if (Input & IN_LOOK) {
+            Camera.type = LOOK_CAMERA;
+            if ((Input & IN_LEFT) && Lara.head_y_rot > -MAX_HEAD_ROTATION) {
+                Lara.head_y_rot -= HEAD_TURN / 2;
+            } else if (
+                (Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION) {
+                Lara.head_y_rot += HEAD_TURN / 2;
+            }
+            Lara.torso_y_rot = Lara.head_y_rot;
+            return;
+        }
+        if (Camera.type == LOOK_CAMERA) {
+            Camera.type = CHASE_CAMERA;
+        }
+    }
+
     if (Input & IN_LEFT) {
         Lara.turn_rate -= LARA_TURN_RATE;
         if (Lara.turn_rate < -LARA_SLOW_TURN) {
@@ -51,6 +68,28 @@ void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll)
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
         return;
+    }
+
+    if (TR1MConfig.enable_look_while_running) {
+        if (Input & IN_LOOK) {
+            Camera.type = LOOK_CAMERA;
+            if ((Input & IN_LEFT) && Lara.head_y_rot > -MAX_HEAD_ROTATION) {
+                Lara.head_y_rot -= HEAD_TURN / 2;
+            } else if (
+                (Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION) {
+                Lara.head_y_rot += HEAD_TURN / 2;
+            }
+            Lara.torso_y_rot = Lara.head_y_rot;
+
+            if ((Input & IN_JUMP) && !item->gravity_status) {
+                item->goal_anim_state = AS_FORWARDJUMP;
+            }
+
+            return;
+        }
+        if (Camera.type == LOOK_CAMERA) {
+            Camera.type = CHASE_CAMERA;
+        }
     }
 
     if (Input & IN_LEFT) {
@@ -154,6 +193,23 @@ void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsForwardJump(ITEM_INFO* item, COLL_INFO* coll)
 {
+    if (TR1MConfig.enable_look_while_running) {
+        if (Input & IN_LOOK) {
+            Camera.type = LOOK_CAMERA;
+            if ((Input & IN_LEFT) && Lara.head_y_rot > -MAX_HEAD_ROTATION) {
+                Lara.head_y_rot -= HEAD_TURN / 2;
+            } else if (
+                (Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION) {
+                Lara.head_y_rot += HEAD_TURN / 2;
+            }
+            Lara.torso_y_rot = Lara.head_y_rot;
+            return;
+        }
+        if (Camera.type == LOOK_CAMERA) {
+            Camera.type = CHASE_CAMERA;
+        }
+    }
+
     if (item->goal_anim_state == AS_SWANDIVE
         || item->goal_anim_state == AS_REACH) {
         item->goal_anim_state = AS_FORWARDJUMP;
@@ -204,7 +260,8 @@ void __cdecl LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0) {
+    if (item->hit_points <= 0
+        || (TR1MConfig.enable_look_while_running && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -233,7 +290,8 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0) {
+    if (item->hit_points <= 0
+        || (TR1MConfig.enable_look_while_running && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -361,7 +419,8 @@ void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0) {
+    if (item->hit_points <= 0
+        || (TR1MConfig.enable_look_while_running && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }

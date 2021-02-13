@@ -56,6 +56,8 @@ static int TR1MReadConfig()
         tr1m_json_get_boolean_value(json, "enable_red_healthbar");
     TR1MConfig.enable_enemy_healthbar =
         tr1m_json_get_boolean_value(json, "enable_enemy_healthbar");
+    TR1MConfig.enable_look_while_running =
+        tr1m_json_get_boolean_value(json, "enable_look_while_running");
     TR1MConfig.fix_end_of_level_freeze =
         tr1m_json_get_boolean_value(json, "fix_end_of_level_freeze");
 

@@ -15,6 +15,7 @@ struct {
     int disable_medpacks;
     int enable_red_healthbar;
     int enable_enemy_healthbar;
+    int enable_look_while_running;
     int fix_end_of_level_freeze;
 } TR1MConfig;
 

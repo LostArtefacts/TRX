@@ -25,6 +25,8 @@ Currently the following configuration options are supported:
   (for No Heal challenge runs).
 - `enable_red_healthbar`: replaces the default golden healthbar with a red one.
 - `enable_enemy_healthbar`: enables showing healthbar for the active enemy.
+- `enable_look_while_running`: allows the player to look while running, jumping
+  etc. (similar to TR2 style).
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 
