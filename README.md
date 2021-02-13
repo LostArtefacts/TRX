@@ -30,6 +30,13 @@ Currently the following configuration options are supported:
 - `enable_enemy_healthbar`: enables showing healthbar for the active enemy.
 - `enable_look_while_running`: allows the player to look while running, jumping
   etc. (similar to TR2 style).
+- `enable_numeric_keys`: enables quick weapon draws and medpack usage.
+    - <kbd>1</kbd>: draw pistols
+    - <kbd>2</kbd>: draw shotgun
+    - <kbd>3</kbd>: draw magnums
+    - <kbd>4</kbd>: draw UZI
+    - <kbd>8</kbd>: use small medpack
+    - <kbd>9</kbd>: use large medpack
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing

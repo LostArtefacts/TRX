@@ -7,6 +7,7 @@
     "enable_red_healthbar": true,
     "enable_enemy_healthbar": true,
     "enable_look_while_running": true,
+    "enable_numeric_keys": true,
     "fix_end_of_level_freeze": true,
     "fix_tihocan_secret_sound": true
 }

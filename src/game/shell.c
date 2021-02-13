@@ -1,5 +1,7 @@
 #include "game/data.h"
+#include "game/inv.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/shell.h"
 #include "mod.h"
 #include <stdarg.h>
@@ -334,6 +336,31 @@ void __cdecl S_UpdateInput()
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
         linput |= IN_ROLL;
+    }
+
+    if (TR1MConfig.enable_numeric_keys) {
+        if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
+            Lara.request_gun_type = LG_PISTOLS;
+        } else if (KeyData->keymap[DIK_2] && Inv_RequestItem(O_SHOTGUN_ITEM)) {
+            Lara.request_gun_type = LG_SHOTGUN;
+        } else if (KeyData->keymap[DIK_3] && Inv_RequestItem(O_MAGNUM_ITEM)) {
+            Lara.request_gun_type = LG_MAGNUMS;
+        } else if (KeyData->keymap[DIK_4] && Inv_RequestItem(O_UZI_ITEM)) {
+            Lara.request_gun_type = LG_UZIS;
+        }
+
+        if (TR1MData.medipack_cooldown > 0) {
+            --TR1MData.medipack_cooldown;
+        } else {
+            if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
+                UseItem(O_MEDI_OPTION);
+                TR1MData.medipack_cooldown = 15; // half a second
+            } else if (
+                KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
+                UseItem(O_BIGMEDI_OPTION);
+                TR1MData.medipack_cooldown = 15;
+            }
+        }
     }
 
     if (KeyData->keymap[DIK_RETURN] || (linput & IN_ACTION)) {
