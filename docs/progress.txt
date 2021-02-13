@@ -326,7 +326,7 @@ CreateEffect                    0x00422280  0x00000069  -
 KillEffect                      0x004222F0  0x000000E4  -
 EffectNewRoom                   0x004223E0  0x00000096  -
 LaraAboveWater                  0x00422480  0x0000016B  -
-LaraAsWalk                      0x004225F0  0x0000007A  -
+LaraAsWalk                      0x004225F0  0x0000007A  +
 LaraAsRun                       0x00422670  0x000000ED  -
 LaraAsStop                      0x00422760  0x00000207  -
 LaraAsForwardJump               0x00422970  0x000000B7  -

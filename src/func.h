@@ -78,5 +78,6 @@ int32_t GetRandomDraw();
 int __cdecl LevelIsValid(int16_t level_number);
 void __cdecl UseItem(__int16 object_num);
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode);
+void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll);
 
 #endif

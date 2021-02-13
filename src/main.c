@@ -38,6 +38,7 @@ static void tr1m_inject()
     INJECT(0x0042A300, InitialiseLOTArray);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
+    INJECT(0x004225F0, LaraAsWalk);
 }
 
 static int tr1m_read_config()
