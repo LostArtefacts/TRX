@@ -386,6 +386,24 @@ typedef enum {
 } LARA_GUN_TYPES;
 
 typedef enum {
+    LM_HIPS = 0,
+    LM_THIGH_L = 1,
+    LM_CALF_L = 2,
+    LM_FOOT_L = 3,
+    LM_THIGH_R = 4,
+    LM_CALF_R = 5,
+    LM_FOOT_R = 6,
+    LM_TORSO = 7,
+    LM_UARM_R = 8,
+    LM_LARM_R = 9,
+    LM_HAND_R = 10,
+    LM_UARM_L = 11,
+    LM_LARM_L = 12,
+    LM_HAND_L = 13,
+    LM_HEAD = 14,
+} LARA_MESHES;
+
+typedef enum {
     BORED_MOOD = 0,
     ATTACK_MOOD = 1,
     ESCAPE_MOOD = 2,
