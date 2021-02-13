@@ -331,7 +331,7 @@ LaraAsRun                       0x00422670  0x000000ED  +
 LaraAsStop                      0x00422760  0x00000207  +
 LaraAsForwardJump               0x00422970  0x000000B7  +
 LaraAsFastBack                  0x00422A30  0x00000057  +
-LaraAsTurnR                     0x00422A90  0x00000076  -
+LaraAsTurnR                     0x00422A90  0x00000076  +
 LaraAsTurnL                     0x00422B10  0x00000076  -
 LaraAsFastfall                  0x00422B90  0x00000040  -
 LaraAsHang                      0x00422BD0  0x00000049  -
