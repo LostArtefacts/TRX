@@ -356,7 +356,7 @@ LaraAsUseKey                    0x00423280  0x00000027  +
 LaraAsSpecial                   0x004232B0  0x0000001D  +
 LaraAsUseMidas                  0x004232D0  0x0000001D  +
 LaraAsDieMidas                  0x004232F0  0x0000030C  +
-LaraAsSwanDive                  0x00423720  0x00000028  -
+LaraAsSwanDive                  0x00423720  0x00000028  +
 LaraAsFastDive                  0x00423750  0x0000003D  -
 LaraAsDeath                     0x00423790  0x0000000B  -
 LaraAsWaterOut                  0x004237A0  0x00000015  -
