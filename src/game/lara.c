@@ -149,9 +149,40 @@ void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsForwardJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->goal_anim_state == AS_SWANDIVE
+        || item->goal_anim_state == AS_REACH) {
+        item->goal_anim_state = AS_FORWARDJUMP;
+    }
+    if (item->goal_anim_state != AS_DEATH && item->goal_anim_state != AS_STOP) {
+        if ((Input & IN_ACTION) && Lara.gun_status == LG_ARMLESS) {
+            item->goal_anim_state = AS_REACH;
+        }
+        if ((Input & IN_SLOW) && Lara.gun_status == LG_ARMLESS) {
+            item->goal_anim_state = AS_SWANDIVE;
+        }
+        if (item->fall_speed > LARA_FASTFALL_SPEED) {
+            item->goal_anim_state = AS_FASTFALL;
+        }
+    }
+    if (Input & IN_LEFT) {
+        Lara.turn_rate -= LARA_TURN_RATE;
+        if (Lara.turn_rate < -LARA_JUMP_TURN) {
+            Lara.turn_rate = -LARA_JUMP_TURN;
+        }
+    } else if (Input & IN_RIGHT) {
+        Lara.turn_rate += LARA_TURN_RATE;
+        if (Lara.turn_rate > LARA_JUMP_TURN) {
+            Lara.turn_rate = LARA_JUMP_TURN;
+        }
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
     INJECT(0x00422670, LaraAsRun);
     INJECT(0x00422760, LaraAsStop);
+    INJECT(0x00422970, LaraAsForwardJump);
 }
