@@ -427,6 +427,15 @@ void __cdecl LaraAsStepLeft(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsSlide(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Camera.flags = NO_CHUNKY;
+    Camera.target_elevation = -45 * ONE_DEGREE;
+    if (Input & IN_JUMP) {
+        item->goal_anim_state = AS_FORWARDJUMP;
+    }
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -457,4 +466,5 @@ void TR1MInjectLara()
     INJECT(0x00422F30, LaraAsFastTurn);
     INJECT(0x00422F80, LaraAsStepRight);
     INJECT(0x00423000, LaraAsStepLeft);
+    INJECT(0x00423080, LaraAsSlide);
 }

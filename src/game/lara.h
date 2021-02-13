@@ -29,6 +29,7 @@ void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsStepRight(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsStepLeft(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsSlide(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 
