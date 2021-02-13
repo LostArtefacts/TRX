@@ -31,9 +31,9 @@
 #define LevelNames              ARRAY_(0x00453648, const char*, [NUMBER_OF_LEVELS])
 #define LevelTitles             ARRAY_(0x00453DF8, const char*, [NUMBER_OF_LEVELS])
 #define SecretTotals            ARRAY_(0x00453CB0, __int8, [MAX_SECRETS])
-#define ResetFlag               VAR_U_(0x00459F50, int)
+#define ResetFlag               VAR_I_(0x00459F50, int32_t, 0)
 #define Input                   VAR_U_(0x0045EEF4, int)
-#define HiRes                   VAR_U_(0x00459F64, int)
+#define HiRes                   VAR_I_(0x00459F64, int32_t, 0)
 #define Effects                 VAR_U_(0x0045EE70, FX_INFO*)
 #define NextItemActive          VAR_U_(0x0045EE78, int16_t)
 #define NextFxFree              VAR_U_(0x0045EE74, int16_t)
@@ -67,6 +67,8 @@
 #define CameraUnderwater        VAR_U_(0x00462BEC, int32_t)
 #define PhdMatrixPtr            VAR_U_(0x006CAD14, int32_t)
 #define Anims                   VAR_U_(0x00462574, ANIM_STRUCT*)
+#define FlipTimer               VAR_I_(0x00459F54, int32_t, 0)
+#define FlipEffect              VAR_I_(0x004534E4, int32_t, -1)
 // clang-format on
 
 #endif

@@ -6,6 +6,7 @@
 #include "util.h"
 
 #include "game/control.h"
+#include "game/effects.h"
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/health.h"
@@ -21,6 +22,7 @@ static void TR1MInject()
 {
     TR1MInjectControl();
     TR1MInjectDraw();
+    TR1MInjectEffects();
     TR1MInjectGame();
     TR1MInjectHealth();
     TR1MInjectItems();

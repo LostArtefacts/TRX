@@ -10,4 +10,8 @@
 #define ItemSparkle             ((void          __cdecl(*)(ITEM_INFO* item, int meshmask))0x0041A550)
 // clang-format on
 
+void __cdecl FxChainBlock(ITEM_INFO* item);
+
+void TR1MInjectEffects();
+
 #endif

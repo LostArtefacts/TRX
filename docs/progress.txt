@@ -226,7 +226,7 @@ FxLaraNormal                    0x0041AB90  0x00000035  -
 FxEarthQuake                    0x0041ABD0  0x00000076  -
 FxFlood                         0x0041AC50  0x0000008F  -
 FxRaisingBlock                  0x0041ACE0  0x00000019  -
-FxChainBlock                    0x0041AD00  0x00000043  -
+FxChainBlock                    0x0041AD00  0x00000043  +
 FxStairs2Slope                  0x0041AD50  0x00000028  -
 FxSand                          0x0041AD80  0x0000007F  -
 FxPowerUp                       0x0041AE00  0x0000006A  -
