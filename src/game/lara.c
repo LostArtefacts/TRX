@@ -475,6 +475,17 @@ void __cdecl LaraAsFallBack(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsHangLeft(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+    Camera.target_angle = CAM_A_HANG;
+    Camera.target_elevation = CAM_E_HANG;
+    if (!(Input & IN_LEFT) && !(Input & IN_STEPL)) {
+        item->goal_anim_state = AS_HANG;
+    }
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -509,4 +520,5 @@ void TR1MInjectLara()
     INJECT(0x004230B0, LaraAsBackJump);
     INJECT(0x004230D0, LaraAsRightJump);
     INJECT(0x004230F0, LaraAsFallBack);
+    INJECT(0x00423120, LaraAsHangLeft);
 }
