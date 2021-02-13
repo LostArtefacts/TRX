@@ -17,6 +17,7 @@
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define Meshes                  VAR_U_(0x00461F34, uint16_t**)
 #define Objects                 ARRAY_(0x0045F9E0, OBJECT_INFO, [NUMBER_OBJECTS])
+#define StaticObjects           ARRAY_(0x00462660, STATIC_INFO, [])
 #define LevelItemCount          VAR_U_(0x0045A0E0, int32_t)
 #define Items                   VAR_U_(0x00462CEC, ITEM_INFO*)
 #define GameAllocMemPointer     VAR_U_(0x0045E32C, uint32_t)
@@ -46,6 +47,10 @@
 #define HealthBarTimer          VAR_U_(0x0045A0E4, int32_t)
 #define OldGameTimer            VAR_U_(0x0045A028, int32_t)
 #define OldHitPoints            VAR_U_(0x0045A02C, int32_t)
+#define PhdLeft                 VAR_U_(0x00695190, int32_t)
+#define PhdBottom               VAR_U_(0x00695188, int32_t)
+#define PhdRight                VAR_U_(0x006E80E0, int32_t)
+#define PhdTop                  VAR_U_(0x0068D380, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
 #define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
@@ -59,6 +64,8 @@
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
 #define Camera                  VAR_U_(0x00462D20, CAMERA_INFO)
+#define CameraUnderwater        VAR_U_(0x00462BEC, int32_t)
+#define PhdMatrixPtr            VAR_U_(0x006CAD14, int32_t)
 #define Anims                   VAR_U_(0x00462574, ANIM_STRUCT*)
 // clang-format on
 

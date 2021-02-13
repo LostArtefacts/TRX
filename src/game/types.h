@@ -574,7 +574,7 @@ typedef struct {
     /* 0000 */ uint32_t x;
     /* 0004 */ uint32_t y;
     /* 0008 */ uint32_t z;
-    /* 000C */ uint16_t y_rot;
+    /* 000C */ PHD_ANGLE y_rot;
     /* 000E */ uint16_t shade;
     /* 0010 */ uint16_t static_number;
     /* 0012 end */
@@ -895,6 +895,24 @@ typedef struct {
     /*      */ uint16_t save_anim : 1;
     /* 0032 end */
 } OBJECT_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t mesh_number;
+    /* 0002 */ int16_t flags;
+    /* 0004 */ int16_t x_minp;
+    /* 0006 */ int16_t x_maxp;
+    /* 0008 */ int16_t y_minp;
+    /* 000A */ int16_t y_maxp;
+    /* 000C */ int16_t z_minp;
+    /* 000E */ int16_t z_maxp;
+    /* 0010 */ int16_t x_minc;
+    /* 0012 */ int16_t x_maxc;
+    /* 0014 */ int16_t y_minc;
+    /* 0016 */ int16_t y_maxc;
+    /* 0018 */ int16_t z_minc;
+    /* 001A */ int16_t z_maxc;
+    /* 001C end */
+} STATIC_INFO;
 
 typedef struct {
     /* 0000 */ unsigned __int8 keymap[128];

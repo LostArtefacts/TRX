@@ -276,6 +276,11 @@ void __cdecl S_DrawAirBar(int32_t percent)
     TR1MRenderBar(percent, 100, TRM1_BAR_LARA_AIR);
 }
 
+void __cdecl phd_PopMatrix()
+{
+    PhdMatrixPtr -= 48;
+}
+
 void TR1MInjectShell()
 {
     INJECT(0x0041E2C0, init_game_malloc);

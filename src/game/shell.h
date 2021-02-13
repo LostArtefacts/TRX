@@ -24,6 +24,17 @@
 #define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
 #define phd_sin                 ((int32_t       __cdecl(*)(int32_t angle))0x0042A850)
 #define phd_cos                 ((int32_t       __cdecl(*)(int32_t angle))0x0042A7F0)
+#define phd_PushMatrix          ((void          __cdecl(*)())0x0043EA01)
+#define phd_TranslateAbs        ((void          __cdecl(*)())0x004019A0)
+#define phd_RotX                ((void          __cdecl(*)(PHD_ANGLE angle))0x004012F0)
+#define phd_RotY                ((void          __cdecl(*)(PHD_ANGLE angle))0x004013A0)
+#define phd_RotZ                ((void          __cdecl(*)(PHD_ANGLE angle))0x00401450)
+#define phd_PutPolygons         ((void          __cdecl(*)(const int16_t* objptr, int clip))0x00401AD0)
+#define S_SetupAboveWater       ((void          __cdecl(*)(int underwater))0x00430640)
+#define S_SetupBelowWater       ((void          __cdecl(*)(int underwater))0x004305E0)
+#define S_InsertRoom            ((void          __cdecl(*)(int16_t* objptr))0x00401BD0)
+#define S_CalculateStaticLight  ((void          __cdecl(*)(int16_t adder))0x00430290)
+#define S_GetObjectBounds       ((int32_t       __cdecl(*)(int16_t* bptr))0x0042FD30)
 // clang-format on
 
 void __cdecl init_game_malloc();
@@ -36,6 +47,7 @@ void __cdecl DB_Log(char* a1, ...);
 int __cdecl S_LoadLevel(int level_id);
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
+void __cdecl phd_PopMatrix();
 
 void TR1MInjectShell();
 

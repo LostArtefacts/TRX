@@ -6,6 +6,7 @@
 #include "util.h"
 
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/game.h"
 #include "game/health.h"
 #include "game/items.h"
@@ -18,12 +19,13 @@ HINSTANCE hInstance = NULL;
 static void TR1MInject()
 {
     TR1MInjectControl();
+    TR1MInjectDraw();
     TR1MInjectGame();
     TR1MInjectHealth();
     TR1MInjectItems();
+    TR1MInjectLOT();
     TR1MInjectLara();
     TR1MInjectLaraMisc();
-    TR1MInjectLOT();
     TR1MInjectShell();
 }
 
