@@ -504,6 +504,15 @@ void __cdecl LaraAsSlideBack(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsPushBlock(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+    Camera.flags = FOLLOW_CENTRE;
+    Camera.target_angle = 35 * ONE_DEGREE;
+    Camera.target_elevation = -25 * ONE_DEGREE;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -541,4 +550,5 @@ void TR1MInjectLara()
     INJECT(0x00423120, LaraAsHangLeft);
     INJECT(0x00423160, LaraAsHangRight);
     INJECT(0x004231A0, LaraAsSlideBack);
+    INJECT(0x004231C0, LaraAsPushBlock);
 }
