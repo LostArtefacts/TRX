@@ -444,6 +444,13 @@ void __cdecl LaraAsBackJump(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsRightJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+        item->goal_anim_state = AS_FASTFALL;
+    }
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -476,4 +483,5 @@ void TR1MInjectLara()
     INJECT(0x00423000, LaraAsStepLeft);
     INJECT(0x00423080, LaraAsSlide);
     INJECT(0x004230B0, LaraAsBackJump);
+    INJECT(0x004230D0, LaraAsRightJump);
 }
