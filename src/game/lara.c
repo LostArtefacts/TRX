@@ -1,5 +1,6 @@
 #include "game/const.h"
 #include "game/data.h"
+#include "game/effects.h"
 #include "game/lara.h"
 #include "game/lot.h"
 #include "mod.h"
@@ -263,6 +264,14 @@ void __cdecl LaraAsDeath(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_baddie_push = 0;
 }
 
+void __cdecl LaraAsFastFall(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->speed = (item->speed * 95) / 100;
+    if (item->fall_speed >= DAMAGE_START + DAMAGE_LENGTH) {
+        SoundEffect(30, &item->pos, 0);
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
@@ -272,4 +281,5 @@ void TR1MInjectLara()
     INJECT(0x00422A30, LaraAsFastBack);
     INJECT(0x00422A90, LaraAsTurnR);
     INJECT(0x00422B10, LaraAsTurnL);
+    INJECT(0x00422B90, LaraAsFastFall);
 }
