@@ -350,7 +350,7 @@ LaraAsHangRight                 0x00423160  0x00000035  +
 LaraAsSlideBack                 0x004231A0  0x00000014  +
 LaraAsPushBlock                 0x004231C0  0x00000027  +
 LaraAsPPReady                   0x004231F0  0x00000027  +
-LaraAsPickup                    0x00423220  0x00000027  -
+LaraAsPickup                    0x00423220  0x00000027  +
 LaraAsSwitchOn                  0x00423250  0x00000027  -
 LaraAsUseKey                    0x00423280  0x00000027  -
 LaraAsSpecial                   0x004232B0  0x0000001D  -
