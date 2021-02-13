@@ -20,6 +20,7 @@ struct {
     int enable_enemy_healthbar;
     int enable_look_while_running;
     int fix_end_of_level_freeze;
+    int fix_tihocan_secret_sound;
 } TR1MConfig;
 
 struct {

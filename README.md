@@ -32,6 +32,8 @@ Currently the following configuration options are supported:
   etc. (similar to TR2 style).
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
+- `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing
+  during using the golden key in Tomb of Tihocan.
 
 ## Decompilation progress
 
