@@ -53,6 +53,7 @@ void __cdecl LaraAsUseMidas(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsDieMidas(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSwanDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 
