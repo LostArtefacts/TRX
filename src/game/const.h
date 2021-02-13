@@ -35,5 +35,7 @@
 #define MIN_HEAD_TILT (-42 * ONE_DEGREE) // = 7644
 #define WALL_L 1024
 #define STEP_L 256
+#define CAM_A_HANG 0
+#define CAM_E_HANG (-60 * ONE_DEGREE) // = -10920
 
 #endif

@@ -272,6 +272,19 @@ void __cdecl LaraAsFastFall(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsHang(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+    Camera.target_angle = CAM_A_HANG;
+    Camera.target_elevation = CAM_E_HANG;
+    if (Input & (IN_LEFT | IN_STEPL)) {
+        item->goal_anim_state = AS_HANGLEFT;
+    } else if (Input & (IN_RIGHT | IN_STEPR)) {
+        item->goal_anim_state = AS_HANGRIGHT;
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
@@ -282,4 +295,5 @@ void TR1MInjectLara()
     INJECT(0x00422A90, LaraAsTurnR);
     INJECT(0x00422B10, LaraAsTurnL);
     INJECT(0x00422B90, LaraAsFastFall);
+    INJECT(0x00422BD0, LaraAsHang);
 }

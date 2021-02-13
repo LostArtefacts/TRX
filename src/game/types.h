@@ -674,6 +674,20 @@ typedef struct {
 } LOT_INFO;
 
 typedef struct {
+    /* 0000 */ PHD_3DPOS pos;
+    /* 0012 */ int16_t room_number;
+    /* 0014 */ int16_t object_number;
+    /* 0016 */ int16_t next_fx;
+    /* 0018 */ int16_t next_active;
+    /* 001A */ int16_t speed;
+    /* 001C */ int16_t fallspeed;
+    /* 001E */ int16_t frame_number;
+    /* 0020 */ int16_t counter;
+    /* 0022 */ int16_t shade;
+    /* 0024 end */
+} FX_INFO;
+
+typedef struct {
     /* 0000 */ int16_t item_number;
     /* 0002 */ int16_t gun_status;
     /* 0004 */ int16_t gun_type;
@@ -688,7 +702,7 @@ typedef struct {
     /* 0016 */ int16_t death_count;
     /* 0018 */ int16_t current_active;
     /* 001A */ int16_t spaz_effect_count;
-    /* 001C */ UNKNOWN_STRUCT* spaz_effect;
+    /* 001C */ FX_INFO* spaz_effect;
     /* 0020 */ int32_t mesh_effects;
     /* 0024 */ int16_t* mesh_ptrs[15];
     /* 0060 */ ITEM_INFO* target;
@@ -710,20 +724,6 @@ typedef struct {
     /* 00C8 */ LOT_INFO LOT;
     /* 00E6 end */
 } LARA_INFO;
-
-typedef struct {
-    /* 0000 */ PHD_3DPOS pos;
-    /* 0012 */ int16_t room_number;
-    /* 0014 */ int16_t object_number;
-    /* 0016 */ int16_t next_fx;
-    /* 0018 */ int16_t next_active;
-    /* 001A */ int16_t speed;
-    /* 001C */ int16_t fallspeed;
-    /* 001E */ int16_t frame_number;
-    /* 0020 */ int16_t counter;
-    /* 0022 */ int16_t shade;
-    /* 0024 end */
-} FX_INFO;
 
 typedef struct {
     /* 0000 */ uint16_t pistol_ammo;
@@ -803,7 +803,7 @@ typedef struct {
     /* 000A */ int32_t mood;
     /* 000E */ LOT_INFO LOT;
     /* 002C */ PHD_VECTOR target;
-    /* 0032 */ uint8_t pad[12];
+    /* 0032 */ uint8_t pad[12]; // TODO: ?????
     /* 003E end */
 } CREATURE_INFO;
 
@@ -840,6 +840,7 @@ typedef struct {
     /* 0057 */ int8_t tilt_z;
     /* 0058 */ int8_t hit_by_baddie;
     /* 0059 */ int8_t hit_static;
+    /* 005A */ int8_t pad[12]; // TODO: ?????
     /* 005A */ uint16_t slopes_are_walls : 1;
     /*      */ uint16_t slopes_are_pits : 1;
     /*      */ uint16_t lava_is_pit : 1;
