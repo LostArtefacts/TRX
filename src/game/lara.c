@@ -333,6 +333,32 @@ void __cdecl LaraAsCompress(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_FASTFALL;
 }
 
+void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+
+    if ((Input & IN_BACK) && (Input & IN_SLOW)) {
+        item->goal_anim_state = AS_BACK;
+    } else {
+        item->goal_anim_state = AS_STOP;
+    }
+
+    if (Input & IN_LEFT) {
+        Lara.turn_rate -= LARA_TURN_RATE;
+        if (Lara.turn_rate < -LARA_SLOW_TURN) {
+            Lara.turn_rate = -LARA_SLOW_TURN;
+        }
+    } else if (Input & IN_RIGHT) {
+        Lara.turn_rate += LARA_TURN_RATE;
+        if (Lara.turn_rate > LARA_SLOW_TURN) {
+            Lara.turn_rate = LARA_SLOW_TURN;
+        }
+    }
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -359,4 +385,5 @@ void TR1MInjectLara()
     INJECT(0x00422BD0, LaraAsHang);
     INJECT(0x00422C20, LaraAsReach);
     INJECT(0x00422C40, LaraAsCompress);
+    INJECT(0x00422EB0, LaraAsBack);
 }

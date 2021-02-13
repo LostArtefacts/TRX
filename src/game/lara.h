@@ -7,7 +7,6 @@
 // clang-format off
 #define InitialiseLaraInventory ((void          __cdecl(*)(int level_id))0x00428170)
 #define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
-#define LaraAsBack              ((void          __cdecl(*)(ITEM_INFO*, COLL_INFO*))0x00422EB0)
 // clang-format on
 
 void __cdecl InitialiseLara();
@@ -26,6 +25,7 @@ void __cdecl LaraAsReach(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSplat(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsLand(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsCompress(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 
