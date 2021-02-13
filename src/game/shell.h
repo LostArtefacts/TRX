@@ -20,7 +20,7 @@
 #define TempVideoRemove         ((void          __cdecl(*)())0x004167D0)
 #define TempVideoAdjust         ((void          __cdecl(*)(int hires, double sizer))0x00416550)
 #define ShowFatalError          ((void          __cdecl(*)(const char *message))0x0043D770)
-#define WriteTombAtiSettings    ((void          __cdecl(*)())0x0045A084)
+#define WriteTombAtiSettings    ((void          __cdecl(*)())0x00438B60)
 #define Insert2DLine            ((void          __cdecl(*)(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color))0x00402710)
 #define phd_sin                 ((int32_t       __cdecl(*)(int32_t angle))0x0042A850)
 #define phd_cos                 ((int32_t       __cdecl(*)(int32_t angle))0x0042A7F0)
