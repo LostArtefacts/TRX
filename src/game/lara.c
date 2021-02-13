@@ -513,6 +513,15 @@ void __cdecl LaraAsPushBlock(ITEM_INFO* item, COLL_INFO* coll)
     Camera.target_elevation = -25 * ONE_DEGREE;
 }
 
+void __cdecl LaraAsPullBlock(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+    Camera.flags = FOLLOW_CENTRE;
+    Camera.target_angle = 35 * ONE_DEGREE;
+    Camera.target_elevation = -25 * ONE_DEGREE;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
