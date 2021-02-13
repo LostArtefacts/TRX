@@ -530,10 +530,10 @@ typedef struct {
 } POS_3D;
 
 typedef struct {
-    /* 0000 */ int16_t x;
-    /* 0002 */ int16_t y;
-    /* 0004 */ int16_t z;
-    /* 0006 end */
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C end */
 } PHD_VECTOR;
 
 typedef struct {
@@ -821,7 +821,6 @@ typedef struct {
     /* 000A */ int32_t mood;
     /* 000E */ LOT_INFO LOT;
     /* 002C */ PHD_VECTOR target;
-    /* 0032 */ uint8_t pad[12]; // TODO: ?????
     /* 003E end */
 } CREATURE_INFO;
 
@@ -858,7 +857,6 @@ typedef struct {
     /* 0057 */ int8_t tilt_z;
     /* 0058 */ int8_t hit_by_baddie;
     /* 0059 */ int8_t hit_static;
-    /* 005A */ int8_t pad[12]; // TODO: ?????
     /* 005A */ uint16_t slopes_are_walls : 1;
     /*      */ uint16_t slopes_are_pits : 1;
     /*      */ uint16_t lava_is_pit : 1;
