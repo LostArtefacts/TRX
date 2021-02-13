@@ -953,6 +953,23 @@ typedef struct {
     /* 0060 end */
 } CAMERA_INFO;
 
+typedef struct {
+    /* 0000 */ int16_t* frame_ptr;
+    /* 0004 */ int16_t interpolation;
+    /* 0006 */ int16_t current_anim_state;
+    /* 0008 */ int32_t velocity;
+    /* 000C */ int32_t acceleration;
+    /* 0010 */ int16_t frame_base;
+    /* 0012 */ int16_t frame_end;
+    /* 0014 */ int16_t jump_anim_num;
+    /* 0016 */ int16_t jump_frame_num;
+    /* 0018 */ int16_t number_changes;
+    /* 001A */ int16_t change_index;
+    /* 001C */ int16_t number_commands;
+    /* 001E */ int16_t command_index;
+    /* 0020 end */
+} ANIM_STRUCT;
+
 #pragma pop
 
 #endif

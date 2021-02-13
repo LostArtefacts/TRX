@@ -13,10 +13,9 @@
 #define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
 #define PhdWinMaxX              VAR_I_(0x006CAD00, int32_t, 0)
 #define PhdWinMaxY              VAR_I_(0x006CAD10, int32_t, 0)
-#define Meshes                  VAR_U_(0x0045F1B8, uint16_t*)
 #define FloorData               VAR_U_(0x0045F1BC, uint16_t*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
-#define MeshPtr                 VAR_U_(0x00461F34, uint16_t**)
+#define Meshes                  VAR_U_(0x00461F34, uint16_t**)
 #define Objects                 ARRAY_(0x0045F9E0, OBJECT_INFO, [NUMBER_OBJECTS])
 #define LevelItemCount          VAR_U_(0x0045A0E0, int32_t)
 #define Items                   VAR_U_(0x00462CEC, ITEM_INFO*)
@@ -60,6 +59,7 @@
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
 #define Camera                  VAR_U_(0x00462D20, CAMERA_INFO)
+#define Anims                   VAR_U_(0x00462574, ANIM_STRUCT*)
 // clang-format on
 
 #endif

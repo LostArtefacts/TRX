@@ -599,6 +599,102 @@ void __cdecl LaraAsUseMidas(ITEM_INFO* item, COLL_INFO* coll)
     ItemSparkle(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
 }
 
+void __cdecl LaraAsDieMidas(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->gravity_status = 0;
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+
+    int frm = item->frame_number - Anims[item->anim_number].frame_base;
+    switch (frm) {
+    case 5:
+        Lara.mesh_effects |= (1 << LM_FOOT_L);
+        Lara.mesh_effects |= (1 << LM_FOOT_R);
+        Lara.mesh_ptrs[LM_FOOT_L] =
+            Meshes[Objects[O_LARA_EXTRA].mesh_index + LM_FOOT_L];
+        Lara.mesh_ptrs[LM_FOOT_R] =
+            Meshes[Objects[O_LARA_EXTRA].mesh_index + LM_FOOT_R];
+        break;
+
+    case 70:
+        Lara.mesh_effects |= (1 << LM_CALF_L);
+        Lara.mesh_ptrs[LM_CALF_L] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_CALF_L];
+        break;
+
+    case 90:
+        Lara.mesh_effects |= (1 << LM_THIGH_L);
+        Lara.mesh_ptrs[LM_THIGH_L] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_THIGH_L];
+        break;
+
+    case 100:
+        Lara.mesh_effects |= (1 << LM_CALF_R);
+        Lara.mesh_ptrs[LM_CALF_R] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_CALF_R];
+        break;
+
+    case 120:
+        Lara.mesh_effects |= (1 << LM_HIPS);
+        Lara.mesh_effects |= (1 << LM_THIGH_R);
+        Lara.mesh_ptrs[LM_HIPS] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_HIPS];
+        Lara.mesh_ptrs[LM_THIGH_R] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_THIGH_R];
+        break;
+
+    case 135:
+        Lara.mesh_effects |= (1 << LM_TORSO);
+        Lara.mesh_ptrs[LM_TORSO] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_TORSO];
+        break;
+
+    case 150:
+        Lara.mesh_effects |= (1 << LM_UARM_L);
+        Lara.mesh_ptrs[LM_UARM_L] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_UARM_L];
+        break;
+
+    case 163:
+        Lara.mesh_effects |= (1 << LM_LARM_L);
+        Lara.mesh_ptrs[LM_LARM_L] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_LARM_L];
+        break;
+
+    case 174:
+        Lara.mesh_effects |= (1 << LM_HAND_L);
+        Lara.mesh_ptrs[LM_HAND_L] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_HAND_L];
+        break;
+
+    case 186:
+        Lara.mesh_effects |= (1 << LM_UARM_R);
+        Lara.mesh_ptrs[LM_UARM_R] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_UARM_R];
+        break;
+
+    case 195:
+        Lara.mesh_effects |= (1 << LM_LARM_R);
+        Lara.mesh_ptrs[LM_LARM_R] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_LARM_R];
+        break;
+
+    case 218:
+        Lara.mesh_effects |= (1 << LM_HAND_R);
+        Lara.mesh_ptrs[LM_HAND_R] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_HAND_R];
+        break;
+
+    case 225:
+        Lara.mesh_effects |= (1 << LM_HEAD);
+        Lara.mesh_ptrs[LM_HEAD] =
+            Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + LM_HEAD];
+        break;
+    }
+
+    ItemSparkle(item, Lara.mesh_effects);
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -643,4 +739,5 @@ void TR1MInjectLara()
     INJECT(0x00423280, LaraAsUseKey);
     INJECT(0x004232B0, LaraAsSpecial);
     INJECT(0x004232D0, LaraAsUseMidas);
+    INJECT(0x004232F0, LaraAsDieMidas);
 }
