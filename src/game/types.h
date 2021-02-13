@@ -730,8 +730,8 @@ typedef struct {
     /* 006C */ int16_t head_y_rot;
     /* 006E */ int16_t head_x_rot;
     /* 0070 */ int16_t head_z_rot;
-    /* 0072 */ int16_t torso_x_rot;
-    /* 0074 */ int16_t torso_y_rot;
+    /* 0072 */ int16_t torso_y_rot;
+    /* 0074 */ int16_t torso_x_rot;
     /* 0076 */ int16_t torso_z_rot;
     /* 0078 */ LARA_ARM left_arm;
     /* 0088 */ LARA_ARM right_arm;
