@@ -15,6 +15,7 @@ void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsForwardJump(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsPose(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl UseItem(__int16 object_num);
 
 void TR1MInjectLara();
