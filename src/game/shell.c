@@ -4,6 +4,7 @@
 #include "mod.h"
 #include <stdarg.h>
 #include <windows.h>
+#include <dinput.h>
 
 void __cdecl init_game_malloc()
 {
@@ -272,6 +273,115 @@ void __cdecl phd_PopMatrix()
     PhdMatrixPtr -= 48;
 }
 
+void __cdecl S_UpdateInput()
+{
+    int32_t linput = 0;
+
+    WinInReadJoystick();
+    if (JoyYPos >= -8) {
+        if (JoyYPos > 8) {
+            linput = IN_RIGHT;
+        }
+    } else {
+        linput = IN_LEFT;
+    }
+    if (JoyXPos <= 8) {
+        if (JoyXPos < -8) {
+            linput |= IN_FORWARD;
+        }
+    } else {
+        linput |= IN_BACK;
+    }
+
+    if (Key_(0)) {
+        linput |= IN_FORWARD;
+    }
+    if (Key_(1)) {
+        linput |= IN_BACK;
+    }
+    if (Key_(2)) {
+        linput |= IN_LEFT;
+    }
+    if (Key_(3)) {
+        linput |= IN_RIGHT;
+    }
+    if (Key_(4)) {
+        linput |= IN_STEPL;
+    }
+    if (Key_(5)) {
+        linput |= IN_STEPR;
+    }
+    if (Key_(6)) {
+        linput |= IN_SLOW;
+    }
+    if (Key_(7)) {
+        linput |= IN_JUMP;
+    }
+    if (Key_(8)) {
+        linput |= IN_ACTION;
+    }
+    if (Key_(9)) {
+        linput |= IN_DRAW;
+    }
+    if (Key_(10)) {
+        linput |= IN_LOOK;
+    }
+    if (Key_(11)) {
+        linput |= IN_ROLL;
+    }
+    if (Key_(12) && Camera.type != CINEMATIC_CAMERA) {
+        linput |= IN_OPTION;
+    }
+    if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
+        linput |= IN_ROLL;
+    }
+
+    if (KeyData->keymap[DIK_RETURN] || (linput & IN_ACTION)) {
+        linput |= IN_SELECT;
+    }
+    if (KeyData->keymap[DIK_ESCAPE]) {
+        linput |= IN_DESELECT;
+    }
+
+    if ((linput & (IN_RIGHT | IN_LEFT)) == (IN_RIGHT | IN_LEFT)) {
+        linput &= ~(IN_RIGHT | IN_LEFT);
+    }
+
+    if (!ModeLock && Camera.type != CINEMATIC_CAMERA) {
+        if (KeyData->keymap[DIK_F5]) {
+            linput |= IN_SAVE;
+        } else if (KeyData->keymap[DIK_F6]) {
+            linput |= IN_LOAD;
+        }
+    }
+
+    if (IsSoftwareRenderer) {
+        if (KeyData->keymap[DIK_F3]) {
+            AppSettings ^= 2u;
+            do
+                WinVidSpinMessageLoop();
+            while (KeyData->keymap[DIK_F3]);
+        }
+
+        if (KeyData->keymap[DIK_F4]) {
+            AppSettings ^= 1u;
+            do {
+                WinVidSpinMessageLoop();
+            } while (KeyData->keymap[DIK_F4]);
+        }
+
+        if (KeyData->keymap[DIK_F2]) {
+            AppSettings ^= 4u;
+            do {
+                WinVidSpinMessageLoop();
+            } while (KeyData->keymap[DIK_F2]);
+        }
+    }
+
+    Input = linput;
+    return;
+}
+
 void TR1MInjectShell()
 {
     INJECT(0x0041E2C0, init_game_malloc);
@@ -284,4 +394,5 @@ void TR1MInjectShell()
     INJECT(0x0042A2C0, DB_Log);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
+    INJECT(0x0041E550, S_UpdateInput);
 }

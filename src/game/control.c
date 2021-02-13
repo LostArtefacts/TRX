@@ -12,8 +12,6 @@
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
 {
     int32_t return_val = 0;
-    TRACE("%d %d", nframes, demo_mode);
-
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }

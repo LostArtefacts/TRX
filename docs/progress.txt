@@ -103,7 +103,7 @@ sub_40D056                      0x0040D056  0x000000A1  -
 sub_40D0F7                      0x0040D0F7  0x00000049  -
 sub_40D140                      0x0040D140  0x000001A0  -
 sub_40D2E0                      0x0040D2E0  0x00000185  -
-sub_40D465                      0x0040D465  0x00000005  -
+DoNothing                       0x0040D465  0x00000005  -
 BatControl                      0x0040D470  0x00000184  -
 BearControl                     0x0040D600  0x00000416  -
 InitialiseCreature              0x0040DA60  0x00000033  -
@@ -281,7 +281,7 @@ init_game_malloc                0x0041E2C0  0x00000021  +
 game_malloc                     0x0041E2F0  0x000000B1  -
 game_free                       0x0041E3B0  0x0000002F  +
 Key                             0x0041E3E0  0x00000166  -
-S_UpdateInput                   0x0041E550  0x00000210  -
+S_UpdateInput                   0x0041E550  0x00000210  +
 Display_Inventory               0x0041E760  0x00001159  -
 Construct_Inventory             0x0041F980  0x0000012D  -
 AnimateInventoryItem            0x0041FAB0  0x00000089  -
@@ -568,8 +568,8 @@ TrapObjects                     0x00437010  0x00000356  -
 ObjectObjects                   0x00437370  0x000006D3  -
 InitialiseObjects               0x00437A50  0x00000063  +
 sub_437AC0                      0x00437AC0  0x00000006  -
-sub_437AD0                      0x00437AD0  0x00000029  -
-sub_437B00                      0x00437B00  0x00000070  -
+WinVidSpinMessageLoop           0x00437AD0  0x00000029  -
+WinInReadJoystick               0x00437B00  0x00000070  -
 OnKeyPress                      0x00437B70  0x00000045  -
 sub_437BC0                      0x00437BC0  0x00000003  -
 sub_437BD0                      0x00437BD0  0x00000029  -

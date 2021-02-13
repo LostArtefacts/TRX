@@ -10,7 +10,6 @@
 #define S_ExitSystem            ((void          __cdecl(*)(const char *message))0x0041E260)
 #define S_DumpScreen            ((void          __cdecl(*)())0x0042FC70)
 #define S_InitialisePolyList    ((void          __cdecl(*)())0x0042FC60)
-#define S_UpdateInput           ((void          __cdecl(*)())0x0041E550)
 #define S_CopyBufferToScreen    ((void          __cdecl(*)())0x00416A60)
 #define S_OutputPolyList        ((void          __cdecl(*)())0x0042FD10)
 #define S_FadeToBlack           ((void          __cdecl(*)())0x0041CD10)
@@ -35,6 +34,9 @@
 #define S_InsertRoom            ((void          __cdecl(*)(int16_t* objptr))0x00401BD0)
 #define S_CalculateStaticLight  ((void          __cdecl(*)(int16_t adder))0x00430290)
 #define S_GetObjectBounds       ((int32_t       __cdecl(*)(int16_t* bptr))0x0042FD30)
+#define Key_                    ((int           __cdecl(*)(int number))0x0041E3E0)
+#define WinInReadJoystick       ((void          __cdecl(*)())0x00437B00)
+#define WinVidSpinMessageLoop   ((void          __cdecl(*)())0x00437AD0)
 // clang-format on
 
 void __cdecl init_game_malloc();
@@ -48,6 +50,7 @@ int __cdecl S_LoadLevel(int level_id);
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
 void __cdecl phd_PopMatrix();
+void __cdecl S_UpdateInput();
 
 void TR1MInjectShell();
 

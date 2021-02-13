@@ -69,6 +69,12 @@
 #define Anims                   VAR_U_(0x00462574, ANIM_STRUCT*)
 #define FlipTimer               VAR_I_(0x00459F54, int32_t, 0)
 #define FlipEffect              VAR_I_(0x004534E4, int32_t, -1)
+#define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
+#define IsSoftwareRenderer      VAR_U_(0x00463610, int32_t)
+#define AppSettings             VAR_U_(0x0045A240, uint32_t)
+#define JoyXPos                 VAR_U_(0x0045B958, int32_t)
+#define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
+#define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 // clang-format on
 
 #endif
