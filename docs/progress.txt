@@ -566,7 +566,7 @@ InitialiseLevelFlags            0x004363C0  0x00000018  -
 BaddyObjects                    0x004363E0  0x00000C2F  -
 TrapObjects                     0x00437010  0x00000356  -
 ObjectObjects                   0x00437370  0x000006D3  -
-InitialiseObjects               0x00437A50  0x00000063  -
+InitialiseObjects               0x00437A50  0x00000063  +
 sub_437AC0                      0x00437AC0  0x00000006  -
 sub_437AD0                      0x00437AD0  0x00000029  -
 sub_437B00                      0x00437B00  0x00000070  -

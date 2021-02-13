@@ -46,6 +46,8 @@
 #define FOLLOW_CENTRE 1
 #define NO_CHUNKY 2
 #define CHASE_OBJECT 3
+#define DEFAULT_RADIUS 10
+#define DONT_TARGET (-16384)
 
 #define NOT_ACTIVE 0
 #define ACTIVE 1

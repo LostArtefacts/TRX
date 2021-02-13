@@ -12,6 +12,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/setup.h"
 #include "game/shell.h"
 
 HINSTANCE hInstance = NULL;
@@ -26,6 +27,7 @@ static void TR1MInject()
     TR1MInjectLOT();
     TR1MInjectLara();
     TR1MInjectLaraMisc();
+    TR1MInjectSetup();
     TR1MInjectShell();
 }
 
