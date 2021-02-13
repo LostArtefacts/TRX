@@ -213,15 +213,6 @@ int __cdecl LoadItems(FILE* handle)
                 S_ExitSystem(StringToShow);
             }
 
-            if (TR1MConfig.disable_medpacks
-                && (item->object_number == O_BIGMEDI_ITEM
-                    || item->object_number == O_MEDI_ITEM)) {
-                item->pos.x = -1;
-                item->pos.y = -1;
-                item->pos.z = -1;
-                item->room_number = 0;
-            }
-
             InitialiseItem(i);
         }
     }

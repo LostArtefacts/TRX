@@ -2,7 +2,12 @@
 #include "game/draw.h"
 #include "game/setup.h"
 #include "game/types.h"
+#include "mod.h"
 #include "util.h"
+
+void __cdecl DrawDummyItem(ITEM_INFO* item)
+{
+}
 
 void __cdecl InitialiseObjects()
 {
@@ -27,6 +32,22 @@ void __cdecl InitialiseObjects()
     BaddyObjects();
     TrapObjects();
     ObjectObjects();
+
+    if (TR1MConfig.disable_medpacks) {
+        Objects[O_MEDI_ITEM].initialise = NULL;
+        Objects[O_MEDI_ITEM].collision = NULL;
+        Objects[O_MEDI_ITEM].control = NULL;
+        Objects[O_MEDI_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_MEDI_ITEM].ceiling = NULL;
+        Objects[O_MEDI_ITEM].floor = NULL;
+
+        Objects[O_BIGMEDI_ITEM].initialise = NULL;
+        Objects[O_BIGMEDI_ITEM].collision = NULL;
+        Objects[O_BIGMEDI_ITEM].control = NULL;
+        Objects[O_BIGMEDI_ITEM].draw_routine = DrawDummyItem;
+        Objects[O_BIGMEDI_ITEM].ceiling = NULL;
+        Objects[O_BIGMEDI_ITEM].floor = NULL;
+    }
 }
 
 void TR1MInjectSetup()
