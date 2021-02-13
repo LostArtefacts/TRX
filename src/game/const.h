@@ -21,6 +21,7 @@
 #define LARA_LEAN_RATE 273
 #define LARA_LEAN_MAX 2002
 #define LARA_FASTFALL_SPEED 131
+#define LARA_HITE 762 // global height of Lara - less than 3/4 block
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
 #define NO_ITEM -1
@@ -34,8 +35,12 @@
 #define HEAD_TURN (4 * ONE_DEGREE) // = 728
 #define MIN_HEAD_TILT (-42 * ONE_DEGREE) // = 7644
 #define WALL_L 1024
+#define NO_HEIGHT (-0x7F00)
 #define STEP_L 256
+#define STEPUP_HEIGHT ((STEP_L * 3) / 2)
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * ONE_DEGREE) // = -10920
+#define W2V_SHIFT 14
+#define W2V_SCALE (1 << W2V_SHIFT)
 
 #endif

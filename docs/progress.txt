@@ -336,7 +336,7 @@ LaraAsTurnL                     0x00422B10  0x00000076  +
 LaraAsFastFall                  0x00422B90  0x00000040  +
 LaraAsHang                      0x00422BD0  0x00000049  +
 LaraAsReach                     0x00422C20  0x0000001C  +
-LaraAsCompress                  0x00422C40  0x0000026D  -
+LaraAsCompress                  0x00422C40  0x0000026D  +
 LaraAsBack                      0x00422EB0  0x0000007D  -
 LaraAsFastTurn                  0x00422F30  0x0000004B  -
 LaraAsStepRight                 0x00422F80  0x00000073  -

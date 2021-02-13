@@ -25,6 +25,8 @@ void __cdecl LaraAsHang(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsReach(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSplat(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsLand(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsCompress(ITEM_INFO* item, COLL_INFO* coll);
+int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 
 void TR1MInjectLara();
