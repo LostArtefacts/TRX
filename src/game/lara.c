@@ -183,10 +183,27 @@ void __cdecl LaraAsPose(ITEM_INFO* item, COLL_INFO* coll)
 {
 }
 
+void __cdecl LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->goal_anim_state = AS_STOP;
+    if (Input & IN_LEFT) {
+        Lara.turn_rate -= LARA_TURN_RATE;
+        if (Lara.turn_rate < -LARA_MED_TURN) {
+            Lara.turn_rate = -LARA_MED_TURN;
+        }
+    } else if (Input & IN_RIGHT) {
+        Lara.turn_rate += LARA_TURN_RATE;
+        if (Lara.turn_rate > LARA_MED_TURN) {
+            Lara.turn_rate = LARA_MED_TURN;
+        }
+    }
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);
     INJECT(0x00422670, LaraAsRun);
     INJECT(0x00422760, LaraAsStop);
     INJECT(0x00422970, LaraAsForwardJump);
+    INJECT(0x00422A30, LaraAsFastBack);
 }
