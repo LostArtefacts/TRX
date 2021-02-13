@@ -297,6 +297,10 @@ void __cdecl LaraAsSplat(ITEM_INFO* item, COLL_INFO* coll)
 {
 }
 
+void __cdecl LaraAsLand(ITEM_INFO* item, COLL_INFO* coll)
+{
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x004225F0, LaraAsWalk);

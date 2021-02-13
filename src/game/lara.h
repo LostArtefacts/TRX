@@ -24,6 +24,7 @@ void __cdecl LaraAsFastFall(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsHang(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsReach(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSplat(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsLand(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl UseItem(__int16 object_num);
 
 void TR1MInjectLara();
