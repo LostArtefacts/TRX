@@ -29,7 +29,7 @@
 #define SFX_ALWAYS 2
 #define NUM_EFFECTS 100
 #define DEATH_WAIT (10 * 30)
-#define DEATH_WAIT_MIN (0 * 30)
+#define DEATH_WAIT_MIN (2 * 30)
 #define MAX_HEAD_ROTATION (50 * ONE_DEGREE) // = 9100
 #define MAX_HEAD_TILT (22 * ONE_DEGREE) // = 4004
 #define HEAD_TURN (4 * ONE_DEGREE) // = 728
