@@ -353,7 +353,7 @@ LaraAsPPReady                   0x004231F0  0x00000027  +
 LaraAsPickup                    0x00423220  0x00000027  +
 LaraAsSwitchOn                  0x00423250  0x00000027  +
 LaraAsUseKey                    0x00423280  0x00000027  +
-LaraAsSpecial                   0x004232B0  0x0000001D  -
+LaraAsSpecial                   0x004232B0  0x0000001D  +
 LaraAsUseMidas                  0x004232D0  0x0000001D  -
 LaraAsDieMidas                  0x004232F0  0x0000030C  -
 LaraAsSwanDive                  0x00423720  0x00000028  -

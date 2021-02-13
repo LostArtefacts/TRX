@@ -585,6 +585,13 @@ void __cdecl LaraAsRoll2(ITEM_INFO* item, COLL_INFO* coll)
 {
 }
 
+void __cdecl LaraAsSpecial(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Camera.flags = FOLLOW_CENTRE;
+    Camera.target_angle = 170 * ONE_DEGREE;
+    Camera.target_elevation = -25 * ONE_DEGREE;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -627,4 +634,5 @@ void TR1MInjectLara()
     INJECT(0x00423220, LaraAsPickup);
     INJECT(0x00423250, LaraAsSwitchOn);
     INJECT(0x00423280, LaraAsUseKey);
+    INJECT(0x004232B0, LaraAsSpecial);
 }
