@@ -77,6 +77,16 @@ void __cdecl T_RemoveBackground(TEXTSTRING* textstring)
     textstring->flags &= ~TF_BGND;
 }
 
+void __cdecl T_AddOutline(
+    TEXTSTRING* textstring, int b, int16_t colour, SG_COL* gourptr,
+    int16_t flags)
+{
+    textstring->flags |= TF_OUTLINE;
+    textstring->outl_gour = gourptr;
+    textstring->outl_colour = colour;
+    textstring->outl_flags = flags;
+}
+
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
@@ -172,6 +182,7 @@ void TR1MInjectText()
     INJECT(0x004398C0, T_FlashText);
     INJECT(0x004398F0, T_AddBackground);
     INJECT(0x00439950, T_RemoveBackground);
+    INJECT(0x00439960, T_AddOutline);
     INJECT(0x004399A0, T_CentreH);
     INJECT(0x004399C0, T_CentreV);
     INJECT(0x004399E0, T_RightAlign);
