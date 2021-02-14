@@ -4,8 +4,8 @@
 #include "game/types.h"
 
 // clang-format off
-#define T_DrawText              ((void          __cdecl(*)())0x00439B00)
 #define T_InitPrint             ((void          __cdecl(*)())0x00439750)
+#define T_DrawThisText          ((void          __cdecl(*)(TEXTSTRING *textstring))0x00439C60)
 // clang-format on
 
 TEXTSTRING* __cdecl T_Print(
@@ -28,6 +28,7 @@ void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b);
 int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring);
 void __cdecl T_RemovePrint(TEXTSTRING* textstring);
+void __cdecl T_DrawText();
 
 void TR1MInjectText();
 

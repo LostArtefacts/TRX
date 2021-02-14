@@ -16,7 +16,7 @@ void __cdecl DrawGameInfo()
             TR1MRenderBar(
                 Lara.target->hit_points,
                 Objects[Lara.target->object_number].hit_points,
-                TRM1_BAR_ENEMY_HEALTH);
+                TR1M_BAR_ENEMY_HEALTH);
         }
     }
 

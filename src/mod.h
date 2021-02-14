@@ -4,10 +4,10 @@
 #include "util.h"
 
 typedef enum {
-    TRM1_BAR_LARA_HEALTH = 0,
-    TRM1_BAR_LARA_AIR = 1,
-    TRM1_BAR_ENEMY_HEALTH = 2,
-    TRM1_BAR_NUMBER = 3,
+    TR1M_BAR_LARA_HEALTH = 0,
+    TR1M_BAR_LARA_AIR = 1,
+    TR1M_BAR_ENEMY_HEALTH = 2,
+    TR1M_BAR_NUMBER = 3,
 } TR1M_BAR;
 
 struct {
@@ -27,6 +27,9 @@ struct {
 struct {
     int stored_lara_health;
     int medipack_cooldown;
+    // replicate glrage patch FPS counter repositioning
+    int fps_x;
+    int fps_y;
 } TR1MData;
 
 int TR1MGetOverlayScale(int base);

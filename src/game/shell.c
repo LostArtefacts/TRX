@@ -262,12 +262,12 @@ void __cdecl DB_Log(char* a1, ...)
 
 void __cdecl S_DrawHealthBar(int32_t percent)
 {
-    TR1MRenderBar(percent, 100, TRM1_BAR_LARA_HEALTH);
+    TR1MRenderBar(percent, 100, TR1M_BAR_LARA_HEALTH);
 }
 
 void __cdecl S_DrawAirBar(int32_t percent)
 {
-    TR1MRenderBar(percent, 100, TRM1_BAR_LARA_AIR);
+    TR1MRenderBar(percent, 100, TR1M_BAR_LARA_AIR);
 }
 
 void __cdecl phd_PopMatrix()

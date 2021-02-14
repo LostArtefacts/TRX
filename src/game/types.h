@@ -531,6 +531,10 @@ typedef enum {
     TF_MULTILINE = (1 << 11),
 } TEXTSTRING_FLAGS;
 
+typedef enum {
+    ASF_FPS = 1 << 2,
+} APP_SETTINGS_FLAGS;
+
 #pragma pack(push, 1)
 
 typedef struct {

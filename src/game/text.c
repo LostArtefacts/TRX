@@ -2,6 +2,7 @@
 #include "game/text.h"
 #include "types.h"
 #include "util.h"
+#include "mod.h"
 #include <string.h>
 
 static int8_t TextSpacing[110] = {
@@ -257,6 +258,63 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
     }
 }
 
+void __cdecl T_DrawText()
+{
+    // TombATI FPS counter, pretty pointless IMO as it always shows 30 for me.
+    // Additionally, it's not present in TR2+.
+    static TEXTSTRING* fps_text = NULL;
+    static char fps_buf[20];
+    static int fps_counter1 = 0;
+    static int fps_counter2 = 0;
+
+    if (AppSettings & ASF_FPS) {
+        int fps = ++fps_counter1;
+        int tmp = Camera.number_frames + fps_counter2;
+        fps_counter2 += Camera.number_frames;
+        if (tmp >= 60) {
+            sprintf(fps_buf, "%d FPS", fps);
+            if (fps_text) {
+                T_ChangeText(fps_text, fps_buf);
+                fps_counter1 = 0;
+                fps_counter2 = 0;
+            } else {
+                int fps_x;
+                int fps_y;
+                if (TR1MGetOverlayScale(1) > 1) {
+                    fps_x = TR1MData.fps_x;
+                    fps_y = TR1MData.fps_y;
+                } else {
+                    fps_x = 10;
+                    fps_y = 30;
+                }
+                fps_text = T_Print(fps_x, fps_y, 0, fps_buf);
+                fps_counter1 = 0;
+                fps_counter2 = 0;
+            }
+        }
+        if (Camera.number_frames > 30 && fps_text) {
+            if (fps_text->flags & TF_ACTIVE) {
+                fps_text->flags &= ~TF_ACTIVE;
+                --TextStringCount;
+            }
+            fps_text = NULL;
+        }
+    } else if (fps_text) {
+        if (fps_text->flags & TF_ACTIVE) {
+            fps_text->flags &= ~TF_ACTIVE;
+            --TextStringCount;
+        }
+        fps_text = NULL;
+    }
+
+    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
+        TEXTSTRING* textstring = &TextInfoTable[i];
+        if (textstring->flags & TF_ACTIVE) {
+            T_DrawThisText(textstring);
+        }
+    }
+}
+
 void TR1MInjectText()
 {
     INJECT(0x00439780, T_Print);
@@ -273,4 +331,5 @@ void TR1MInjectText()
     INJECT(0x00439A00, T_BottomAlign);
     INJECT(0x00439A20, T_GetTextWidth);
     INJECT(0x00439AD0, T_RemovePrint);
+    INJECT(0x00439B00, T_DrawText);
 }

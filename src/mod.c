@@ -33,17 +33,17 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     int percent = value * 100 / value_max;
 
 #define COLOR_BAR_SIZE 5
-    int color_bar[TRM1_BAR_NUMBER][COLOR_BAR_SIZE] = {
+    int color_bar[TR1M_BAR_NUMBER][COLOR_BAR_SIZE] = {
         { 8, 11, 8, 6, 24 },
         { 32, 41, 32, 19, 21 },
         { 18, 17, 18, 19, 21 },
     };
     if (TR1MConfig.enable_red_healthbar) {
-        color_bar[TRM1_BAR_LARA_HEALTH][0] = 29;
-        color_bar[TRM1_BAR_LARA_HEALTH][1] = 30;
-        color_bar[TRM1_BAR_LARA_HEALTH][2] = 29;
-        color_bar[TRM1_BAR_LARA_HEALTH][3] = 28;
-        color_bar[TRM1_BAR_LARA_HEALTH][4] = 26;
+        color_bar[TR1M_BAR_LARA_HEALTH][0] = 29;
+        color_bar[TR1M_BAR_LARA_HEALTH][1] = 30;
+        color_bar[TR1M_BAR_LARA_HEALTH][2] = 29;
+        color_bar[TR1M_BAR_LARA_HEALTH][3] = 28;
+        color_bar[TR1M_BAR_LARA_HEALTH][4] = 26;
     }
 
     const int color_border_1 = 19;
@@ -57,10 +57,10 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     int x = 8 * scale;
     int y = 8 * scale;
 
-    if (bar_type == TRM1_BAR_LARA_AIR) {
+    if (bar_type == TR1M_BAR_LARA_AIR) {
         // place air bar on the right
         x = PhdWinWidth - width - x;
-    } else if (bar_type == TRM1_BAR_ENEMY_HEALTH) {
+    } else if (bar_type == TR1M_BAR_ENEMY_HEALTH) {
         // place enemy bar on the bottom
         y = PhdWinHeight - height - y;
     }
@@ -70,6 +70,11 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     int left = x - padding;
     int bottom = top + height + padding + 1;
     int right = left + width + padding + 1;
+
+    if (bar_type == TR1M_BAR_LARA_HEALTH) {
+        TR1MData.fps_x = left;
+        TR1MData.fps_y = bottom + 24;
+    }
 
     // background
     for (int i = 1; i < height + 3; i++) {
@@ -85,7 +90,7 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int blink_interval = 20;
-    const int blink_threshold = bar_type == TRM1_BAR_ENEMY_HEALTH ? 0 : 20;
+    const int blink_threshold = bar_type == TR1M_BAR_ENEMY_HEALTH ? 0 : 20;
     int blink_time = SaveGame[0].timer % blink_interval;
     int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
 
