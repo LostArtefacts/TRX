@@ -50,6 +50,14 @@ int __cdecl T_GetStringLen(const char* string)
     return len;
 }
 
+void __cdecl T_InitPrint()
+{
+    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
+        TextInfoTable[i].flags = 0;
+    }
+    TextStringCount = 0;
+}
+
 TEXTSTRING* __cdecl T_Print(
     int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
 {
@@ -317,6 +325,7 @@ void __cdecl T_DrawText()
 
 void TR1MInjectText()
 {
+    INJECT(0x00439750, T_InitPrint);
     INJECT(0x00439780, T_Print);
     INJECT(0x00439860, T_ChangeText);
     INJECT(0x004398A0, T_SetScale);
