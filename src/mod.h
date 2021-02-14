@@ -18,7 +18,7 @@ struct {
     int disable_shotgun;
     int enable_red_healthbar;
     int enable_enemy_healthbar;
-    int enable_look_while_running;
+    int enable_enhanced_look;
     int enable_numeric_keys;
     int fix_end_of_level_freeze;
     int fix_tihocan_secret_sound;

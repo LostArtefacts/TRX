@@ -22,7 +22,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    if (TR1MConfig.enable_look_while_running) {
+    if (TR1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             TR1MLookLeftRight();
         } else {
