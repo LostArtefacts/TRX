@@ -1,3 +1,4 @@
+#include "game/data.h"
 #include "game/text.h"
 #include "types.h"
 #include "util.h"
@@ -115,6 +116,18 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
     return width;
 }
 
+void __cdecl T_RemovePrint(TEXTSTRING* textstring)
+{
+    if (!textstring) {
+        return;
+    }
+
+    if (textstring->flags & TF_ACTIVE) {
+        textstring->flags &= ~TF_ACTIVE;
+        --TextStringCount;
+    }
+}
+
 void TR1MInjectText()
 {
     INJECT(0x004399A0, T_CentreH);
@@ -122,4 +135,5 @@ void TR1MInjectText()
     INJECT(0x004399E0, T_RightAlign);
     INJECT(0x00439A00, T_BottomAlign);
     INJECT(0x00439A20, T_GetTextWidth);
+    INJECT(0x00439AD0, T_RemovePrint);
 }

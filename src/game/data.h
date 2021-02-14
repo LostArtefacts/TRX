@@ -77,6 +77,7 @@
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
+#define TextStringCount         VAR_U_(0x0045B120, int16_t)
 // clang-format on
 
 #endif
