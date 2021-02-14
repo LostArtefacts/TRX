@@ -40,7 +40,9 @@ def update_function_names(ida_functions: T.Iterable[IdaFunction]) -> int:
                 line = re.sub(r"^\w+\s+", "%-31s " % name, line)
                 updated += 1
         lines.append(line)
-    PROGRESS_TXT_FILE.write_text("\n".join(lines) + "\n")
+    new_text = "\n".join(lines) + "\n"
+    if new_text != PROGRESS_TXT_FILE.read_text():
+        PROGRESS_TXT_FILE.write_text(new_text)
     return updated
 
 
