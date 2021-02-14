@@ -48,6 +48,7 @@
 #define CAM_E_HANG (-60 * ONE_DEGREE) // = -10920
 #define W2V_SHIFT 14
 #define W2V_SCALE (1 << W2V_SHIFT)
+#define PHD_ONE 0x10000
 #define FOLLOW_CENTRE 1
 #define NO_CHUNKY 2
 #define CHASE_OBJECT 3
@@ -61,5 +62,6 @@
 #define INVISIBLE 3
 #define MAX_STRING_SIZE 64
 #define MAX_TEXT_STRINGS 32
+#define TEXT_HEIGHT 11
 
 #endif

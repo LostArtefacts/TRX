@@ -81,6 +81,10 @@
 #define TextStringCount         VAR_U_(0x0045B120, int16_t)
 #define TextInfoTable           ARRAY_(0x0045A9E0, TEXTSTRING, [MAX_TEXT_STRINGS])
 #define TextStrings             ARRAY_(0x0045B140, char, [MAX_STRING_SIZE][MAX_TEXT_STRINGS])
+#define DumpX                   VAR_I_(0x004546E0, int16_t, 0)
+#define DumpY                   VAR_I_(0x004546E2, int16_t, 0)
+#define DumpWidth               VAR_I_(0x004546E4, int16_t, 0)
+#define DumpHeight              VAR_I_(0x004546E6, int16_t, 0)
 // clang-format on
 
 #endif

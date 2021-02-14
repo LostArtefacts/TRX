@@ -528,7 +528,6 @@ typedef enum {
     TF_BOTTOM = (1 << 8),
     TF_BGND = (1 << 9),
     TF_OUTLINE = (1 << 10),
-    TF_MULTILINE = (1 << 11),
 } TEXTSTRING_FLAGS;
 
 typedef enum {

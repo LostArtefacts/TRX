@@ -1,8 +1,9 @@
 #include "game/data.h"
+#include "game/shell.h"
 #include "game/text.h"
+#include "mod.h"
 #include "types.h"
 #include "util.h"
-#include "mod.h"
 #include <string.h>
 
 static int8_t TextSpacing[110] = {
@@ -91,8 +92,8 @@ TEXTSTRING* __cdecl T_Print(
     result->zpos = zpos;
     result->letter_spacing = 1;
     result->word_spacing = 6;
-    result->scale_h = 0x10000;
-    result->scale_v = 0x10000;
+    result->scale_h = PHD_ONE;
+    result->scale_v = PHD_ONE;
 
     result->string = TextStrings[n];
     memcpy(result->string, string, length + 1);
@@ -223,7 +224,7 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
         }
 
         if (letter == ' ') {
-            if (textstring->scale_h == 0x10000) {
+            if (textstring->scale_h == PHD_ONE) {
                 width += textstring->word_spacing;
             } else {
                 width += (textstring->word_spacing * textstring->scale_h) >> 16;
@@ -231,16 +232,15 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
             continue;
         }
 
-        if (letter >= 11) {
-            if (letter >= 16)
-                letter = TextRemapASCII[letter - 32];
-            else
-                letter = letter + 91;
+        if (letter >= 16) {
+            letter = TextRemapASCII[letter - 32];
+        } else if (letter >= 11) {
+            letter = letter + 91;
         } else {
             letter = letter + 81;
         }
 
-        if (textstring->scale_h == 0x10000) {
+        if (textstring->scale_h == PHD_ONE) {
             width += textstring->letter_spacing + TextSpacing[letter];
         } else {
             width +=
@@ -323,6 +323,134 @@ void __cdecl T_DrawText()
     }
 }
 
+void __cdecl T_DrawThisText(TEXTSTRING* textstring)
+{
+    if (textstring->flags & TF_FLASH) {
+        textstring->flash_count -= (int16_t)Camera.number_frames;
+        if (textstring->flash_count <= -textstring->flash_rate) {
+            textstring->flash_count = textstring->flash_rate;
+        } else if (textstring->flash_count < 0) {
+            return;
+        }
+    }
+
+    char* string = textstring->string;
+    int xpos = textstring->xpos;
+    int ypos = textstring->ypos;
+    int zpos = textstring->zpos;
+    int textwidth = T_GetTextWidth(textstring);
+
+    if (textstring->flags & TF_CENTRE_H) {
+        xpos += (DumpWidth - textwidth) / 2;
+    } else if (textstring->flags & TF_RIGHT) {
+        xpos += DumpWidth - textwidth;
+    }
+
+    if (textstring->flags & TF_CENTRE_V) {
+        ypos += DumpHeight / 2;
+    } else if (textstring->flags & TF_BOTTOM) {
+        ypos += DumpHeight;
+    }
+
+    int bxpos = textstring->bgnd_off_x + xpos - 2;
+    int bypos = textstring->bgnd_off_y + ypos - 4 - TEXT_HEIGHT;
+
+    int letter = '\0';
+    while (*string) {
+        letter = *string++;
+        if (letter > 15 && letter < 32) {
+            continue;
+        }
+
+        if (letter == ' ') {
+            xpos += (textstring->word_spacing * textstring->scale_h) >> 16;
+            continue;
+        }
+
+        int sprite = letter;
+        if (letter >= 16) {
+            sprite = TextRemapASCII[letter - 32];
+        } else if (letter >= 11) {
+            sprite = letter + 91;
+        } else {
+            sprite = letter + 81;
+        }
+
+        S_DrawScreenSprite2d(
+            xpos, ypos, zpos, textstring->scale_h, textstring->scale_v,
+            Objects[O_ALPHABET].mesh_index + sprite, 16 << 8,
+            textstring->text_flags, 0);
+
+        if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
+            continue;
+        }
+
+        if (textstring->scale_h == PHD_ONE) {
+            xpos += textstring->letter_spacing + TextSpacing[sprite];
+        } else {
+            xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite])
+                     * textstring->scale_h)
+                >> 16;
+        }
+    }
+
+    int bwidth = 0;
+    int bheight = 0;
+    if ((textstring->flags & TF_BGND) || (textstring->flags & TF_OUTLINE)) {
+        if (textstring->bgnd_size_x) {
+            bxpos += textwidth / 2;
+            bxpos -= textstring->bgnd_size_x / 2;
+            bwidth = textstring->bgnd_size_x + 4;
+        } else {
+            bwidth = textwidth + 4;
+        }
+        if (textstring->bgnd_size_y) {
+            bheight = textstring->bgnd_size_y;
+        } else {
+            bheight = TEXT_HEIGHT + 7;
+        }
+    }
+
+    if (textstring->flags & TF_BGND) {
+        if (textstring->bgnd_gour) {
+            int bhw = bwidth / 2;
+            int bhh = bheight / 2;
+            int bhw2 = bwidth - bhw;
+            int bhh2 = bheight - bhh;
+            S_DrawScreenFBox(
+                bxpos, bypos, zpos + textstring->bgnd_off_z + 8, bhw, bhh,
+                textstring->bgnd_colour, textstring->bgnd_gour,
+                textstring->bgnd_flags);
+            S_DrawScreenFBox(
+                bxpos + bhw, bypos, zpos + textstring->bgnd_off_z + 8, bhw2,
+                bhh, textstring->bgnd_colour, textstring->bgnd_gour + 4,
+                textstring->bgnd_flags);
+            S_DrawScreenFBox(
+                bxpos + bhw, bypos + bhh, zpos + textstring->bgnd_off_z + 8,
+                bhw, bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 8,
+                textstring->bgnd_flags);
+            S_DrawScreenFBox(
+                bxpos, bypos + bhh, zpos + textstring->bgnd_off_z + 8, bhw2,
+                bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 12,
+                textstring->bgnd_flags);
+        } else {
+            S_DrawScreenFBox(
+                bxpos, bypos, zpos + textstring->bgnd_off_z + 8, bwidth,
+                bheight, textstring->bgnd_colour, 0, textstring->bgnd_flags);
+            S_DrawScreenBox(
+                bxpos, bypos, textstring->bgnd_off_z + zpos, bwidth, bheight, 0,
+                0, 0);
+        }
+    }
+
+    if (textstring->flags & TF_OUTLINE) {
+        S_DrawScreenBox(
+            bxpos, bypos, zpos + textstring->bgnd_off_z, bwidth, bheight,
+            textstring->outl_colour, textstring->outl_gour,
+            textstring->outl_flags);
+    }
+}
+
 void TR1MInjectText()
 {
     INJECT(0x00439750, T_InitPrint);
@@ -341,4 +469,5 @@ void TR1MInjectText()
     INJECT(0x00439A20, T_GetTextWidth);
     INJECT(0x00439AD0, T_RemovePrint);
     INJECT(0x00439B00, T_DrawText);
+    INJECT(0x00439C60, T_DrawThisText);
 }

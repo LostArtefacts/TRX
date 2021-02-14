@@ -622,7 +622,7 @@ T_BottomAlign                   0x00439A00  0x0000001A  +
 T_GetTextWidth                  0x00439A20  0x000000AC  +
 T_RemovePrint                   0x00439AD0  0x00000025  +
 T_DrawText                      0x00439B00  0x00000153  +
-T_DrawThisText                  0x00439C60  0x000003A2  -
+T_DrawThisText                  0x00439C60  0x000003A2  +
 InitialiseRollingBall           0x0043A010  0x00000040  -
 RollingBallControl              0x0043A050  0x0000025D  -
 SpikeCollision                  0x0043A520  0x0000014E  -
