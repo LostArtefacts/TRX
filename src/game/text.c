@@ -2,6 +2,7 @@
 #include "game/text.h"
 #include "types.h"
 #include "util.h"
+#include <string.h>
 
 static int8_t TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
@@ -38,6 +39,81 @@ static int8_t TextRemapASCII[95] = {
     45 /*t*/,  46 /*u*/,  47 /*v*/,  48 /*w*/, 49 /*x*/, 50 /*y*/, 51 /*z*/,
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
+
+int __cdecl T_GetStringLen(const char* string)
+{
+    int len = 1;
+    while (*string++) {
+        len++;
+    }
+    return len;
+}
+
+TEXTSTRING* __cdecl T_Print(
+    int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
+{
+    if (TextStringCount == MAX_TEXT_STRINGS) {
+        return NULL;
+    }
+
+    TEXTSTRING* result = &TextInfoTable[0];
+    int n;
+    for (n = 0; n < MAX_TEXT_STRINGS; n++) {
+        if (!(result->flags & TF_ACTIVE)) {
+            break;
+        }
+        result++;
+    }
+    if (n >= MAX_TEXT_STRINGS) {
+        return NULL;
+    }
+
+    if (!string) {
+        return NULL;
+    }
+
+    int length = T_GetStringLen(string);
+    if (length >= MAX_STRING_SIZE) {
+        length = MAX_STRING_SIZE - 1;
+    }
+
+    result->xpos = xpos;
+    result->ypos = ypos;
+    result->zpos = zpos;
+    result->letter_spacing = 1;
+    result->word_spacing = 6;
+    result->scale_h = 0x10000;
+    result->scale_v = 0x10000;
+
+    result->string = TextStrings[n];
+    memcpy(result->string, string, length + 1);
+
+    result->flags = TF_ACTIVE;
+    result->text_flags = 0;
+    result->outl_flags = 0;
+    result->bgnd_flags = 0;
+
+    result->bgnd_size_x = 0;
+    result->bgnd_size_y = 0;
+    result->bgnd_off_x = 0;
+    result->bgnd_off_y = 0;
+    result->bgnd_off_z = 0;
+
+    TextStringCount++;
+
+    return result;
+}
+
+void __cdecl T_ChangeText(TEXTSTRING* textstring, const char* string)
+{
+    if (!(textstring->flags & TF_ACTIVE)) {
+        return;
+    }
+    strncpy(textstring->string, string, MAX_STRING_SIZE);
+    if (T_GetStringLen(string) > MAX_STRING_SIZE) {
+        textstring->string[MAX_STRING_SIZE - 1] = '\0';
+    }
+}
 
 void __cdecl T_SetScale(
     TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v)
@@ -183,6 +259,8 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
 
 void TR1MInjectText()
 {
+    INJECT(0x00439780, T_Print);
+    INJECT(0x00439860, T_ChangeText);
     INJECT(0x004398A0, T_SetScale);
     INJECT(0x004398C0, T_FlashText);
     INJECT(0x004398F0, T_AddBackground);

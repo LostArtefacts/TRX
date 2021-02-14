@@ -607,8 +607,8 @@ GetSpheres                      0x00439260  0x000002EF  -
 GetJointAbsPosition             0x00439550  0x0000019C  -
 BaddieBiteEffect                0x004396F0  0x0000005D  -
 T_InitPrint                     0x00439750  0x00000022  -
-T_Print                         0x00439780  0x000000E0  -
-T_ChangeText                    0x00439860  0x0000003F  -
+T_Print                         0x00439780  0x000000E0  +
+T_ChangeText                    0x00439860  0x0000003F  +
 T_SetScale                      0x004398A0  0x00000013  +
 T_FlashText                     0x004398C0  0x00000027  +
 T_AddBackground                 0x004398F0  0x00000052  +

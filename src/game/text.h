@@ -6,10 +6,11 @@
 // clang-format off
 #define T_DrawText              ((void          __cdecl(*)())0x00439B00)
 #define T_InitPrint             ((void          __cdecl(*)())0x00439750)
-#define T_Print                 ((TEXTSTRING*   __cdecl(*)(int16_t xpos, int16_t ypos, int16_t zpos, const char *string))0x00439780)
-#define T_ChangeText            ((void          __cdecl(*)(TEXTSTRING *text_string, const char *string))0x00439860)
 // clang-format on
 
+TEXTSTRING* __cdecl T_Print(
+    int16_t xpos, int16_t ypos, int16_t zpos, const char* string);
+void __cdecl T_ChangeText(TEXTSTRING* textstring, const char* string);
 void __cdecl T_SetScale(
     TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v);
 void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate);

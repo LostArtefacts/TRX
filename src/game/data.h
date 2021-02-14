@@ -1,6 +1,7 @@
 #ifndef TR1MAIN_GAME_DATA_H
 #define TR1MAIN_GAME_DATA_H
 
+#include "game/const.h"
 #include "game/types.h"
 #include "util.h"
 
@@ -78,6 +79,8 @@
 #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
 #define TextStringCount         VAR_U_(0x0045B120, int16_t)
+#define TextInfoTable           ARRAY_(0x0045A9E0, TEXTSTRING, [MAX_TEXT_STRINGS])
+#define TextStrings             ARRAY_(0x0045B140, char, [MAX_STRING_SIZE][MAX_TEXT_STRINGS])
 // clang-format on
 
 #endif
