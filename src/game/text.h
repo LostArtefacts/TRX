@@ -15,6 +15,7 @@ void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b);
+int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring);
 
 void TR1MInjectText();
 
