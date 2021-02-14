@@ -3,15 +3,57 @@
 #include "mod.h"
 #include <math.h>
 
-int TR1MGetOverlayScale(int base)
+int MulDiv(int x, int y, int z)
 {
+    return (x * y) / z;
+}
+
+int TR1MGetRenderHeightDownscaled()
+{
+    return PhdWinHeight * PHD_ONE / TR1MGetRenderScale(PHD_ONE);
+}
+
+int TR1MGetRenderWidthDownscaled()
+{
+    return PhdWinWidth * PHD_ONE / TR1MGetRenderScale(PHD_ONE);
+}
+
+int TR1MGetRenderHeight()
+{
+    return PhdWinHeight;
+}
+
+int TR1MGetRenderWidth()
+{
+    return PhdWinWidth;
+}
+
+int TR1MGetRenderScale(int unit)
+{
+    // TR2Main-style UI scaler
+    int baseWidth = 800;
+    int baseHeight = 600;
+    int scaleX =
+        (PhdWinWidth > baseWidth) ? MulDiv(PhdWinWidth, unit, baseWidth) : unit;
+    int scaleY = (PhdWinHeight > baseHeight)
+        ? MulDiv(PhdWinHeight, unit, baseHeight)
+        : unit;
+    if (scaleX < scaleY) {
+        return scaleX;
+    }
+    return scaleY;
+}
+
+int TR1MGetRenderScaleGLRage(int unit)
+{
+    // GLRage-style UI scaler
     double result = PhdWinWidth;
-    result *= base;
+    result *= unit;
     result /= 800.0;
 
     // only scale up, not down
-    if (result < base) {
-        result = base;
+    if (result < unit) {
+        result = unit;
     }
 
     return round(result);
@@ -50,7 +92,7 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     const int color_border_2 = 17;
     const int color_bgnd = 0;
 
-    int scale = TR1MGetOverlayScale(1.0);
+    int scale = TR1MGetRenderScaleGLRage(1);
     int width = percent_max * scale;
     int height = 5 * scale;
 

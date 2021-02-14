@@ -19,6 +19,7 @@ struct {
     int enable_red_healthbar;
     int enable_enemy_healthbar;
     int enable_enhanced_look;
+    int enable_enhanced_ui;
     int enable_numeric_keys;
     int fix_end_of_level_freeze;
     int fix_tihocan_secret_sound;
@@ -32,7 +33,12 @@ struct {
     int fps_y;
 } TR1MData;
 
-int TR1MGetOverlayScale(int base);
+int TR1MGetRenderScale(int base);
+int TR1MGetRenderScaleGLRage(int unit);
 void TR1MRenderBar(int value, int value_max, int bar_type);
+int TR1MGetRenderHeightDownscaled();
+int TR1MGetRenderWidthDownscaled();
+int TR1MGetRenderHeight();
+int TR1MGetRenderWidth();
 
 #endif

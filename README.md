@@ -30,6 +30,8 @@ Currently the following configuration options are supported:
 - `enable_enemy_healthbar`: enables showing healthbar for the active enemy.
 - `enable_enhanced_look`: allows the player to look while running, jumping
   etc. (similar to TR2 style).
+- `enable_enhanced_ui`: enables UI scaling of in-game inventory text and ammo
+  text (useful for 4k screens).
 - `enable_numeric_keys`: enables quick weapon draws and medpack usage.
     - <kbd>1</kbd>: draw pistols
     - <kbd>2</kbd>: draw shotgun

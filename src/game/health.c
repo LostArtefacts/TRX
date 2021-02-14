@@ -141,7 +141,7 @@ void __cdecl DrawPickups()
                 pu->duration = 0;
             } else {
                 S_DrawUISprite(
-                    x, y, TR1MGetOverlayScale(12288), pu->sprnum, 4096);
+                    x, y, TR1MGetRenderScale(12288), pu->sprnum, 4096);
                 x -= sprite_width;
             }
         }

@@ -74,6 +74,8 @@ static int TR1MReadConfig()
         tr1m_json_get_boolean_value(json, "enable_enemy_healthbar");
     TR1MConfig.enable_enhanced_look =
         tr1m_json_get_boolean_value(json, "enable_enhanced_look");
+    TR1MConfig.enable_enhanced_ui =
+        tr1m_json_get_boolean_value(json, "enable_enhanced_ui");
     TR1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");
     TR1MConfig.fix_end_of_level_freeze =

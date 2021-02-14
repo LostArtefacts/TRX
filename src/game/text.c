@@ -6,6 +6,8 @@
 #include "util.h"
 #include <string.h>
 
+#define TEXT_BOX_OFFSET 2
+
 static int8_t TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
     13 /*H*/,  8 /*I*/,  11 /*J*/, 12 /*K*/, 11 /*L*/, 13 /*M*/, 13 /*N*/,
@@ -224,11 +226,7 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
         }
 
         if (letter == ' ') {
-            if (textstring->scale_h == PHD_ONE) {
-                width += textstring->word_spacing;
-            } else {
-                width += (textstring->word_spacing * textstring->scale_h) >> 16;
-            }
+            width += textstring->word_spacing * textstring->scale_h / PHD_ONE;
             continue;
         }
 
@@ -240,14 +238,9 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
             letter = letter + 81;
         }
 
-        if (textstring->scale_h == PHD_ONE) {
-            width += textstring->letter_spacing + TextSpacing[letter];
-        } else {
-            width +=
-                (((int32_t)textstring->letter_spacing + TextSpacing[letter])
-                 * textstring->scale_h)
-                >> 16;
-        }
+        width += ((TextSpacing[letter] + textstring->letter_spacing)
+                  * textstring->scale_h)
+            / PHD_ONE;
     }
     width -= textstring->letter_spacing;
     width &= 0xFFFE;
@@ -288,7 +281,8 @@ void __cdecl T_DrawText()
             } else {
                 int fps_x;
                 int fps_y;
-                if (TR1MGetOverlayScale(1) > 1) {
+                if (!TR1MConfig.enable_enhanced_ui
+                    && TR1MGetRenderScaleGLRage(1) > 1) {
                     fps_x = TR1MData.fps_x;
                     fps_y = TR1MData.fps_y;
                 } else {
@@ -325,6 +319,7 @@ void __cdecl T_DrawText()
 
 void __cdecl T_DrawThisText(TEXTSTRING* textstring)
 {
+    int sx, sy, sh, sv;
     if (textstring->flags & TF_FLASH) {
         textstring->flash_count -= (int16_t)Camera.number_frames;
         if (textstring->flash_count <= -textstring->flash_rate) {
@@ -340,20 +335,35 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     int zpos = textstring->zpos;
     int textwidth = T_GetTextWidth(textstring);
 
-    if (textstring->flags & TF_CENTRE_H) {
-        xpos += (DumpWidth - textwidth) / 2;
-    } else if (textstring->flags & TF_RIGHT) {
-        xpos += DumpWidth - textwidth;
+    if (TR1MConfig.enable_enhanced_ui) {
+        if (textstring->flags & TF_CENTRE_H) {
+            xpos += (TR1MGetRenderWidthDownscaled() - textwidth) / 2;
+        } else if (textstring->flags & TF_RIGHT) {
+            xpos += TR1MGetRenderWidthDownscaled() - textwidth;
+        }
+
+        if (textstring->flags & TF_CENTRE_V) {
+            ypos += TR1MGetRenderHeightDownscaled() / 2;
+        } else if (textstring->flags & TF_BOTTOM) {
+            ypos += TR1MGetRenderHeightDownscaled();
+        }
+    } else {
+        if (textstring->flags & TF_CENTRE_H) {
+            xpos += (DumpWidth - textwidth) / 2;
+        } else if (textstring->flags & TF_RIGHT) {
+            xpos += DumpWidth - textwidth;
+        }
+
+        if (textstring->flags & TF_CENTRE_V) {
+            ypos += DumpHeight / 2;
+        } else if (textstring->flags & TF_BOTTOM) {
+            ypos += DumpHeight;
+        }
     }
 
-    if (textstring->flags & TF_CENTRE_V) {
-        ypos += DumpHeight / 2;
-    } else if (textstring->flags & TF_BOTTOM) {
-        ypos += DumpHeight;
-    }
-
-    int bxpos = textstring->bgnd_off_x + xpos - 2;
-    int bypos = textstring->bgnd_off_y + ypos - 4 - TEXT_HEIGHT;
+    int bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
+    int bypos =
+        textstring->bgnd_off_y + ypos - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
     int letter = '\0';
     while (*string) {
@@ -363,7 +373,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         }
 
         if (letter == ' ') {
-            xpos += (textstring->word_spacing * textstring->scale_h) >> 16;
+            xpos += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
             continue;
         }
 
@@ -376,22 +386,27 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
             sprite = letter + 81;
         }
 
+        sx = xpos;
+        sy = ypos;
+        sh = textstring->scale_h;
+        sv = textstring->scale_v;
+        if (TR1MConfig.enable_enhanced_ui) {
+            sx = TR1MGetRenderScale(sx);
+            sy = TR1MGetRenderScale(sy);
+            sh = TR1MGetRenderScale(sh);
+            sv = TR1MGetRenderScale(sv);
+        }
         S_DrawScreenSprite2d(
-            xpos, ypos, zpos, textstring->scale_h, textstring->scale_v,
-            Objects[O_ALPHABET].mesh_index + sprite, 16 << 8,
-            textstring->text_flags, 0);
+            sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite,
+            16 << 8, textstring->text_flags, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
-        if (textstring->scale_h == PHD_ONE) {
-            xpos += textstring->letter_spacing + TextSpacing[sprite];
-        } else {
-            xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite])
-                     * textstring->scale_h)
-                >> 16;
-        }
+        xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite])
+                 * textstring->scale_h)
+            / PHD_ONE;
     }
 
     int bwidth = 0;
@@ -400,9 +415,9 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         if (textstring->bgnd_size_x) {
             bxpos += textwidth / 2;
             bxpos -= textstring->bgnd_size_x / 2;
-            bwidth = textstring->bgnd_size_x + 4;
+            bwidth = textstring->bgnd_size_x + TEXT_BOX_OFFSET * 2;
         } else {
-            bwidth = textwidth + 4;
+            bwidth = textwidth + TEXT_BOX_OFFSET * 2;
         }
         if (textstring->bgnd_size_y) {
             bheight = textstring->bgnd_size_y;
@@ -411,41 +426,65 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         }
     }
 
+    sx = bxpos;
+    sy = bypos;
+    sh = bwidth;
+    sv = bheight;
+    if (TR1MConfig.enable_enhanced_ui) {
+        sx = TR1MGetRenderScale(sx);
+        sy = TR1MGetRenderScale(sy);
+        sh = TR1MGetRenderScale(sh);
+        sv = TR1MGetRenderScale(sv);
+    }
+
     if (textstring->flags & TF_BGND) {
         if (textstring->bgnd_gour) {
-            int bhw = bwidth / 2;
-            int bhh = bheight / 2;
-            int bhw2 = bwidth - bhw;
-            int bhh2 = bheight - bhh;
+            int bhw = sh / 2;
+            int bhh = sv / 2;
+            int bhw2 = sh - bhw;
+            int bhh2 = sv - bhh;
+
             S_DrawScreenFBox(
-                bxpos, bypos, zpos + textstring->bgnd_off_z + 8, bhw, bhh,
+                sx, sy, zpos + textstring->bgnd_off_z + 8, bhw, bhh,
                 textstring->bgnd_colour, textstring->bgnd_gour,
                 textstring->bgnd_flags);
+
             S_DrawScreenFBox(
-                bxpos + bhw, bypos, zpos + textstring->bgnd_off_z + 8, bhw2,
-                bhh, textstring->bgnd_colour, textstring->bgnd_gour + 4,
+                sx + bhw, sy, zpos + textstring->bgnd_off_z + 8, bhw2, bhh,
+                textstring->bgnd_colour, textstring->bgnd_gour + 4,
                 textstring->bgnd_flags);
+
             S_DrawScreenFBox(
-                bxpos + bhw, bypos + bhh, zpos + textstring->bgnd_off_z + 8,
-                bhw, bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 8,
+                sx + bhw, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw,
+                bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 8,
                 textstring->bgnd_flags);
+
             S_DrawScreenFBox(
-                bxpos, bypos + bhh, zpos + textstring->bgnd_off_z + 8, bhw2,
-                bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 12,
+                sx, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw2, bhh2,
+                textstring->bgnd_colour, textstring->bgnd_gour + 12,
                 textstring->bgnd_flags);
         } else {
             S_DrawScreenFBox(
-                bxpos, bypos, zpos + textstring->bgnd_off_z + 8, bwidth,
-                bheight, textstring->bgnd_colour, 0, textstring->bgnd_flags);
+                sx, sy, zpos + textstring->bgnd_off_z + 8, sh, sv,
+                textstring->bgnd_colour, 0, textstring->bgnd_flags);
             S_DrawScreenBox(
-                bxpos, bypos, textstring->bgnd_off_z + zpos, bwidth, bheight, 0,
-                0, 0);
+                sx, sy, textstring->bgnd_off_z + zpos, sh, sv, 0, 0, 0);
         }
     }
 
     if (textstring->flags & TF_OUTLINE) {
+        sx = bxpos;
+        sy = bypos;
+        sh = bwidth;
+        sv = bheight;
+        if (TR1MConfig.enable_enhanced_ui) {
+            sx = TR1MGetRenderScale(sx);
+            sy = TR1MGetRenderScale(sy);
+            sh = TR1MGetRenderScale(sh);
+            sv = TR1MGetRenderScale(sv);
+        }
         S_DrawScreenBox(
-            bxpos, bypos, zpos + textstring->bgnd_off_z, bwidth, bheight,
+            sx, sy, zpos + textstring->bgnd_off_z, sh, sv,
             textstring->outl_colour, textstring->outl_gour,
             textstring->outl_flags);
     }
