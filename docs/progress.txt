@@ -615,7 +615,7 @@ T_AddBackground                 0x004398F0  0x00000052  -
 T_RemoveBackground              0x00439950  0x0000000C  -
 T_AddOutline                    0x00439960  0x00000025  -
 T_RemoveOutline                 0x00439990  0x0000000C  -
-T_CentreH                       0x004399A0  0x0000001A  -
+T_CentreH                       0x004399A0  0x0000001A  +
 T_CentreV                       0x004399C0  0x0000001A  -
 T_RightAlign                    0x004399E0  0x0000001A  -
 T_BottomAlign                   0x00439A00  0x0000001A  -

@@ -6,8 +6,8 @@
 #include "util.h"
 
 #include "game/control.h"
-#include "game/effects.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/game.h"
 #include "game/health.h"
 #include "game/items.h"
@@ -15,6 +15,7 @@
 #include "game/lot.h"
 #include "game/setup.h"
 #include "game/shell.h"
+#include "game/text.h"
 
 HINSTANCE hInstance = NULL;
 
@@ -32,6 +33,7 @@ static void TR1MInject()
     TR1MInjectLaraSwim();
     TR1MInjectSetup();
     TR1MInjectShell();
+    TR1MInjectText();
 }
 
 static int TR1MReadConfig()

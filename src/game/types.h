@@ -517,6 +517,20 @@ typedef enum {
     IN_F = (1 << 28),
 } INPUT_STATE;
 
+typedef enum {
+    TF_ACTIVE = (1 << 0),
+    TF_FLASH_T = (1 << 1),
+    TF_ROTATE_H = (1 << 2),
+    TF_ROTATE_V = (1 << 3),
+    TF_CENTRE_H = (1 << 4),
+    TF_CENTRE_V = (1 << 5),
+    TF_RIGHT = (1 << 7),
+    TF_BOTTOM = (1 << 8),
+    TF_BGND = (1 << 9),
+    TF_OUTLINE = (1 << 10),
+    TF_MULTILINE = (1 << 11),
+} TEXTSTRING_FLAGS;
+
 #pragma pack(push, 1)
 
 typedef struct {

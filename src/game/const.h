@@ -55,7 +55,6 @@
 #define DONT_TARGET (-16384)
 #define NO_HEIGHT (-0x7F00)
 #define NO_BAD_POS (-NO_HEIGHT)
-
 #define NOT_ACTIVE 0
 #define ACTIVE 1
 #define DEACTIVATED 2
