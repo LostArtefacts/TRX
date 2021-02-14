@@ -29,9 +29,19 @@ void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b)
     }
 }
 
+void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b)
+{
+    if (b) {
+        textstring->flags |= TF_BOTTOM;
+    } else {
+        textstring->flags &= ~TF_BOTTOM;
+    }
+}
+
 void TR1MInjectText()
 {
     INJECT(0x004399A0, T_CentreH);
     INJECT(0x004399C0, T_CentreV);
     INJECT(0x004399E0, T_RightAlign);
+    INJECT(0x00439A00, T_BottomAlign);
 }
