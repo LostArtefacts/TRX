@@ -519,7 +519,7 @@ typedef enum {
 
 typedef enum {
     TF_ACTIVE = (1 << 0),
-    TF_FLASH_T = (1 << 1),
+    TF_FLASH = (1 << 1),
     TF_ROTATE_H = (1 << 2),
     TF_ROTATE_V = (1 << 3),
     TF_CENTRE_H = (1 << 4),

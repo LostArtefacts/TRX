@@ -46,6 +46,17 @@ void __cdecl T_SetScale(
     textstring->scale_v = scale_v;
 }
 
+void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
+{
+    if (b) {
+        textstring->flags |= TF_FLASH;
+        textstring->flash_rate = rate;
+        textstring->flash_count = rate;
+    } else {
+        textstring->flags &= ~TF_FLASH;
+    }
+}
+
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
@@ -138,6 +149,7 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
 void TR1MInjectText()
 {
     INJECT(0x004398A0, T_SetScale);
+    INJECT(0x004398C0, T_FlashText);
     INJECT(0x004399A0, T_CentreH);
     INJECT(0x004399C0, T_CentreV);
     INJECT(0x004399E0, T_RightAlign);

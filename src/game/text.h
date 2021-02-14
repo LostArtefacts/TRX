@@ -12,6 +12,7 @@
 
 void __cdecl T_SetScale(
     TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v);
+void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate);
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);
