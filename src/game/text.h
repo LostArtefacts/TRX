@@ -20,6 +20,7 @@ void __cdecl T_RemoveBackground(TEXTSTRING* textstring);
 void __cdecl T_AddOutline(
     TEXTSTRING* textstring, int b, int16_t colour, SG_COL* gourptr,
     int16_t flags);
+void __cdecl T_RemoveOutline(TEXTSTRING* textstring);
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);
