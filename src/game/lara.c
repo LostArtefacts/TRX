@@ -9,7 +9,7 @@
 #include "mod.h"
 #include "util.h"
 
-void __cdecl TR1MLookLeftRight()
+void TR1MLookLeftRight()
 {
     Camera.type = LOOK_CAMERA;
     if (Input & IN_LEFT) {

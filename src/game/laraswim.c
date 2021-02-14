@@ -4,6 +4,7 @@
 #include "game/data.h"
 #include "game/lara.h"
 #include "game/shell.h"
+#include "mod.h"
 
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -21,7 +22,16 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
+    if (TR1MConfig.enable_look_while_running) {
+        if (Input & IN_LOOK) {
+            TR1MLookLeftRight();
+        } else {
+            TR1MResetLook();
+        }
+    }
+
     LaraControlRoutines[item->current_anim_state](item, coll);
+
     if (item->pos.z_rot >= -(2 * LARA_LEAN_UNDO)
         && item->pos.z_rot <= 2 * LARA_LEAN_UNDO) {
         item->pos.z_rot = 0;
