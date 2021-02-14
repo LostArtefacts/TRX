@@ -57,6 +57,21 @@ void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
     }
 }
 
+void __cdecl T_AddBackground(
+    TEXTSTRING* textstring, int16_t xsize, int16_t ysize, int16_t xoff,
+    int16_t yoff, int16_t zoff, int16_t colour, SG_COL* gourptr, int16_t flags)
+{
+    textstring->flags |= TF_BGND;
+    textstring->bgnd_size_x = xsize;
+    textstring->bgnd_size_y = ysize;
+    textstring->bgnd_off_x = xoff;
+    textstring->bgnd_off_y = yoff;
+    textstring->bgnd_off_z = zoff;
+    textstring->bgnd_colour = colour;
+    textstring->bgnd_gour = gourptr;
+    textstring->bgnd_flags = flags;
+}
+
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
@@ -150,6 +165,7 @@ void TR1MInjectText()
 {
     INJECT(0x004398A0, T_SetScale);
     INJECT(0x004398C0, T_FlashText);
+    INJECT(0x004398F0, T_AddBackground);
     INJECT(0x004399A0, T_CentreH);
     INJECT(0x004399C0, T_CentreV);
     INJECT(0x004399E0, T_RightAlign);

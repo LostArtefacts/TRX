@@ -804,9 +804,9 @@ typedef struct {
 
 typedef struct {
     /* 0000 */ uint32_t flags;
-    /* 0004 */ uint16_t textflags;
-    /* 0006 */ uint16_t bgndflags;
-    /* 0008 */ uint16_t outlflags;
+    /* 0004 */ uint16_t text_flags;
+    /* 0006 */ uint16_t bgnd_flags;
+    /* 0008 */ uint16_t outl_flags;
     /* 000A */ int16_t xpos;
     /* 000C */ int16_t ypos;
     /* 000E */ int16_t zpos;
