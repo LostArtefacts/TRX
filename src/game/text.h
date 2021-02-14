@@ -10,6 +10,8 @@
 #define T_ChangeText            ((void          __cdecl(*)(TEXTSTRING *text_string, const char *string))0x00439860)
 // clang-format on
 
+void __cdecl T_SetScale(
+    TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v);
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);

@@ -39,6 +39,13 @@ static int8_t TextRemapASCII[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
+void __cdecl T_SetScale(
+    TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v)
+{
+    textstring->scale_h = scale_h;
+    textstring->scale_v = scale_v;
+}
+
 void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
@@ -130,6 +137,7 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
 
 void TR1MInjectText()
 {
+    INJECT(0x004398A0, T_SetScale);
     INJECT(0x004399A0, T_CentreH);
     INJECT(0x004399C0, T_CentreV);
     INJECT(0x004399E0, T_RightAlign);
