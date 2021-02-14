@@ -307,6 +307,7 @@ typedef enum {
     LARA_ABOVEWATER = 0,
     LARA_UNDERWATER = 1,
     LARA_SURFACE = 2,
+    LARA_CHEAT = 3,
 } LARA_WATER_STATES;
 
 typedef enum {

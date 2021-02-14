@@ -29,6 +29,7 @@ static void TR1MInject()
     TR1MInjectLOT();
     TR1MInjectLara();
     TR1MInjectLaraMisc();
+    TR1MInjectLaraSwim();
     TR1MInjectSetup();
     TR1MInjectShell();
 }

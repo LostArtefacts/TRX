@@ -10,9 +10,12 @@
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
 #define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
+#define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
 // clang-format on
 
 void __cdecl InitialiseLara();
+void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll);
@@ -63,5 +66,6 @@ void __cdecl UseItem(__int16 object_num);
 
 void TR1MInjectLara();
 void TR1MInjectLaraMisc();
+void TR1MInjectLaraSwim();
 
 #endif

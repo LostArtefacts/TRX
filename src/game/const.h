@@ -21,9 +21,12 @@
 #define LARA_LEAN_UNDO ONE_DEGREE
 #define LARA_LEAN_RATE 273
 #define LARA_LEAN_MAX ((10 * ONE_DEGREE) + LARA_LEAN_UNDO) // = 2002
+#define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
 #define LARA_FASTFALL_SPEED 131
 #define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
+#define UW_RADIUS 300
+#define UW_HITE 400
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
 #define NO_ITEM -1
@@ -50,6 +53,8 @@
 #define CHASE_OBJECT 3
 #define DEFAULT_RADIUS 10
 #define DONT_TARGET (-16384)
+#define NO_HEIGHT (-0x7F00)
+#define NO_BAD_POS (-NO_HEIGHT)
 
 #define NOT_ACTIVE 0
 #define ACTIVE 1

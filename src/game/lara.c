@@ -70,7 +70,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
         }
     }
 
-    (LaraControlRoutines[item->current_anim_state])(item, coll);
+    LaraControlRoutines[item->current_anim_state](item, coll);
 
     if (Camera.type != LOOK_CAMERA) {
         if (Lara.head_x_rot > -HEAD_TURN / 2
@@ -110,7 +110,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 
     AnimateLara(item);
     LaraBaddieCollision(item, coll);
-    (LaraCollisionRoutines[item->current_anim_state])(item, coll);
+    LaraCollisionRoutines[item->current_anim_state](item, coll);
     UpdateLaraRoom(item, -LARA_HITE / 2);
     LaraGun();
     TestTriggers(coll->trigger, 0);
