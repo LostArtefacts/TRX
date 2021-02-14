@@ -53,7 +53,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
         item->pos.z_rot = LARA_LEAN_MAX_UW;
     }
 
-    if (Lara.current_active && Lara.water_status != LARA_CHEAT) {
+    if (Lara.current_active && Lara.water_status != LWS_CHEAT) {
         LaraWaterCurrent(coll);
     }
 
@@ -71,7 +71,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
          * phd_cos(item->pos.x_rot))
         >> W2V_SHIFT;
 
-    if (Lara.water_status != LARA_CHEAT) {
+    if (Lara.water_status != LWS_CHEAT) {
         LaraBaddieCollision(item, coll);
     }
 

@@ -11,7 +11,7 @@
 
 void TR1MLookLeftRight()
 {
-    Camera.type = LOOK_CAMERA;
+    Camera.type = CAM_LOOK;
     if (Input & IN_LEFT) {
         Input -= IN_LEFT;
         if (Lara.head_y_rot > -MAX_HEAD_ROTATION) {
@@ -23,14 +23,14 @@ void TR1MLookLeftRight()
             Lara.head_y_rot += HEAD_TURN / 2;
         }
     }
-    if (Lara.gun_status != LG_HANDSBUSY) {
+    if (Lara.gun_status != LGS_HANDSBUSY) {
         Lara.torso_y_rot = Lara.head_y_rot;
     }
 }
 
 void TR1MResetLook()
 {
-    if (Camera.type == LOOK_CAMERA) {
+    if (Camera.type == CAM_LOOK) {
         return;
     }
     if (Lara.head_x_rot <= -HEAD_TURN / 2 || Lara.head_x_rot >= HEAD_TURN / 2) {
@@ -72,7 +72,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 
     LaraControlRoutines[item->current_anim_state](item, coll);
 
-    if (Camera.type != LOOK_CAMERA) {
+    if (Camera.type != CAM_LOOK) {
         if (Lara.head_x_rot > -HEAD_TURN / 2
             && Lara.head_x_rot < HEAD_TURN / 2) {
             Lara.head_x_rot = 0;
@@ -211,7 +211,7 @@ void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
 
     item->goal_anim_state = AS_STOP;
     if (Input & IN_LOOK) {
-        Camera.type = LOOK_CAMERA;
+        Camera.type = CAM_LOOK;
         if ((Input & IN_LEFT) && Lara.head_y_rot > -MAX_HEAD_ROTATION) {
             Lara.head_y_rot -= HEAD_TURN / 2;
         } else if ((Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION) {
@@ -227,8 +227,8 @@ void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
         Lara.torso_x_rot = Lara.head_x_rot;
         return;
     }
-    if (Camera.type == LOOK_CAMERA) {
-        Camera.type = CHASE_CAMERA;
+    if (Camera.type == CAM_LOOK) {
+        Camera.type = CAM_CHASE;
     }
 
     if (Input & IN_STEPL) {
@@ -267,10 +267,10 @@ void __cdecl LaraAsForwardJump(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_FORWARDJUMP;
     }
     if (item->goal_anim_state != AS_DEATH && item->goal_anim_state != AS_STOP) {
-        if ((Input & IN_ACTION) && Lara.gun_status == LG_ARMLESS) {
+        if ((Input & IN_ACTION) && Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = AS_REACH;
         }
-        if ((Input & IN_SLOW) && Lara.gun_status == LG_ARMLESS) {
+        if ((Input & IN_SLOW) && Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = AS_SWANDIVE;
         }
         if (item->fall_speed > LARA_FASTFALL_SPEED) {
@@ -320,7 +320,7 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     Lara.turn_rate += LARA_TURN_RATE;
-    if (Lara.gun_status == LG_READY) {
+    if (Lara.gun_status == LGS_READY) {
         item->goal_anim_state = AS_FASTTURN;
     } else if (Lara.turn_rate > LARA_SLOW_TURN) {
         if (Input & IN_SLOW) {
@@ -350,7 +350,7 @@ void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     Lara.turn_rate -= LARA_TURN_RATE;
-    if (Lara.gun_status == LG_READY) {
+    if (Lara.gun_status == LGS_READY) {
         item->goal_anim_state = AS_FASTTURN;
     } else if (Lara.turn_rate < -LARA_SLOW_TURN) {
         if (Input & IN_SLOW) {
@@ -582,7 +582,7 @@ void __cdecl LaraAsFallBack(ITEM_INFO* item, COLL_INFO* coll)
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
-    if ((Input & IN_ACTION) && Lara.gun_status == LG_ARMLESS) {
+    if ((Input & IN_ACTION) && Lara.gun_status == LGS_ARMLESS) {
         item->goal_anim_state = AS_REACH;
     }
 }

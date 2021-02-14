@@ -38,14 +38,14 @@ void __cdecl InitialiseLara()
     Lara.left_arm.lock = 0;
 
     if (RoomInfo[LaraItem->room_number].flags & 1) {
-        Lara.water_status = LARA_UNDERWATER;
+        Lara.water_status = LWS_UNDERWATER;
         LaraItem->fall_speed = 0;
         LaraItem->goal_anim_state = AS_TREAD;
         LaraItem->current_anim_state = AS_TREAD;
         LaraItem->anim_number = AA_TREAD;
         LaraItem->frame_number = AF_TREAD;
     } else {
-        Lara.water_status = LARA_ABOVEWATER;
+        Lara.water_status = LWS_ABOVEWATER;
         LaraItem->goal_anim_state = AS_STOP;
         LaraItem->current_anim_state = AS_STOP;
         LaraItem->anim_number = AA_STOP;
@@ -68,30 +68,30 @@ void __cdecl UseItem(__int16 object_num)
     switch (object_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
-        Lara.request_gun_type = LG_PISTOLS;
-        if (!Lara.gun_status && Lara.gun_type == LG_PISTOLS) {
-            Lara.gun_type = LG_UNARMED;
+        Lara.request_gun_type = LGT_PISTOLS;
+        if (!Lara.gun_status && Lara.gun_type == LGT_PISTOLS) {
+            Lara.gun_type = LGT_UNARMED;
         }
         break;
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
-        Lara.request_gun_type = LG_SHOTGUN;
-        if (!Lara.gun_status && Lara.gun_type == LG_SHOTGUN) {
-            Lara.gun_type = LG_UNARMED;
+        Lara.request_gun_type = LGT_SHOTGUN;
+        if (!Lara.gun_status && Lara.gun_type == LGT_SHOTGUN) {
+            Lara.gun_type = LGT_UNARMED;
         }
         break;
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
-        Lara.request_gun_type = LG_MAGNUMS;
-        if (!Lara.gun_status && Lara.gun_type == LG_MAGNUMS) {
-            Lara.gun_type = LG_UNARMED;
+        Lara.request_gun_type = LGT_MAGNUMS;
+        if (!Lara.gun_status && Lara.gun_type == LGT_MAGNUMS) {
+            Lara.gun_type = LGT_UNARMED;
         }
         break;
     case O_UZI_ITEM:
     case O_UZI_OPTION:
-        Lara.request_gun_type = LG_UZIS;
-        if (!Lara.gun_status && Lara.gun_type == LG_UZIS) {
-            Lara.gun_type = LG_UNARMED;
+        Lara.request_gun_type = LGT_UZIS;
+        if (!Lara.gun_status && Lara.gun_type == LGT_UZIS) {
+            Lara.gun_type = LGT_UNARMED;
         }
         break;
     case O_MEDI_ITEM:

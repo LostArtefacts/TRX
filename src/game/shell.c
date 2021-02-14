@@ -331,7 +331,7 @@ void __cdecl S_UpdateInput()
     if (Key_(11)) {
         linput |= IN_ROLL;
     }
-    if (Key_(12) && Camera.type != CINEMATIC_CAMERA) {
+    if (Key_(12) && Camera.type != CAM_CINEMATIC) {
         linput |= IN_OPTION;
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
@@ -340,13 +340,13 @@ void __cdecl S_UpdateInput()
 
     if (TR1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
-            Lara.request_gun_type = LG_PISTOLS;
+            Lara.request_gun_type = LGT_PISTOLS;
         } else if (KeyData->keymap[DIK_2] && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Lara.request_gun_type = LG_SHOTGUN;
+            Lara.request_gun_type = LGT_SHOTGUN;
         } else if (KeyData->keymap[DIK_3] && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Lara.request_gun_type = LG_MAGNUMS;
+            Lara.request_gun_type = LGT_MAGNUMS;
         } else if (KeyData->keymap[DIK_4] && Inv_RequestItem(O_UZI_ITEM)) {
-            Lara.request_gun_type = LG_UZIS;
+            Lara.request_gun_type = LGT_UZIS;
         }
 
         if (TR1MData.medipack_cooldown > 0) {
@@ -374,7 +374,7 @@ void __cdecl S_UpdateInput()
         linput &= ~(IN_RIGHT | IN_LEFT);
     }
 
-    if (!ModeLock && Camera.type != CINEMATIC_CAMERA) {
+    if (!ModeLock && Camera.type != CAM_CINEMATIC) {
         if (KeyData->keymap[DIK_F5]) {
             linput |= IN_SAVE;
         } else if (KeyData->keymap[DIK_F6]) {

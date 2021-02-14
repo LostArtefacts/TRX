@@ -41,15 +41,15 @@ void __cdecl DrawHealthBar()
         HealthBarTimer = 0;
     }
 
-    if (HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LG_READY) {
+    if (HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LGS_READY) {
         S_DrawHealthBar(hit_points * 100 / LARA_HITPOINTS);
     }
 }
 
 void __cdecl DrawAirBar()
 {
-    if (Lara.water_status != LARA_UNDERWATER
-        && Lara.water_status != LARA_SURFACE) {
+    if (Lara.water_status != LWS_UNDERWATER
+        && Lara.water_status != LWS_SURFACE) {
         return;
     }
 
@@ -67,7 +67,7 @@ void __cdecl DrawAmmoInfo()
 {
     char ammostring[80] = "";
 
-    if (Lara.gun_status != LG_READY || OverlayFlag <= 0
+    if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
         || SaveGame[0].bonus_flag) {
         if (AmmoText) {
             T_RemovePrint(AmmoText);
@@ -77,15 +77,15 @@ void __cdecl DrawAmmoInfo()
     }
 
     switch (Lara.gun_type) {
-    case LG_PISTOLS:
+    case LGT_PISTOLS:
         return;
-    case LG_MAGNUMS:
+    case LGT_MAGNUMS:
         sprintf(ammostring, "%5d B", Lara.magnums.ammo);
         break;
-    case LG_UZIS:
+    case LGT_UZIS:
         sprintf(ammostring, "%5d C", Lara.uzis.ammo);
         break;
-    case LG_SHOTGUN:
+    case LGT_SHOTGUN:
         sprintf(ammostring, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
         break;
     default:

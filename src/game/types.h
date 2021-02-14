@@ -9,12 +9,12 @@ typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 
 typedef enum {
-    CHASE_CAMERA = 0,
-    FIXED_CAMERA = 1,
-    LOOK_CAMERA = 2,
-    COMBAT_CAMERA = 3,
-    CINEMATIC_CAMERA = 4,
-    HEAVY_CAMERA = 5,
+    CAM_CHASE = 0,
+    CAM_FIXED = 1,
+    CAM_LOOK = 2,
+    CAM_COMBAT = 3,
+    CAM_CINEMATIC = 4,
+    CAM_HEAVY = 5,
 } CAMERA_TYPE;
 
 typedef enum {
@@ -304,10 +304,10 @@ typedef enum {
 } LARA_ANIMATION_ANIMS;
 
 typedef enum {
-    LARA_ABOVEWATER = 0,
-    LARA_UNDERWATER = 1,
-    LARA_SURFACE = 2,
-    LARA_CHEAT = 3,
+    LWS_ABOVEWATER = 0,
+    LWS_UNDERWATER = 1,
+    LWS_SURFACE = 2,
+    LWS_CHEAT = 3,
 } LARA_WATER_STATES;
 
 typedef enum {
@@ -370,19 +370,19 @@ typedef enum {
 } LARA_STATES;
 
 typedef enum {
-    LG_ARMLESS = 0,
-    LG_HANDSBUSY = 1,
-    LG_DRAW = 2,
-    LG_UNDRAW = 3,
-    LG_READY = 4,
+    LGS_ARMLESS = 0,
+    LGS_HANDSBUSY = 1,
+    LGS_DRAW = 2,
+    LGS_UNDRAW = 3,
+    LGS_READY = 4,
 } LARA_GUN_STATES;
 
 typedef enum {
-    LG_UNARMED = 0,
-    LG_PISTOLS = 1,
-    LG_MAGNUMS = 2,
-    LG_UZIS = 3,
-    LG_SHOTGUN = 4,
+    LGT_UNARMED = 0,
+    LGT_PISTOLS = 1,
+    LGT_MAGNUMS = 2,
+    LGT_UZIS = 3,
+    LGT_SHOTGUN = 4,
     NUM_WEAPONS = 5
 } LARA_GUN_TYPES;
 
@@ -405,10 +405,10 @@ typedef enum {
 } LARA_MESHES;
 
 typedef enum {
-    BORED_MOOD = 0,
-    ATTACK_MOOD = 1,
-    ESCAPE_MOOD = 2,
-    STALK_MOOD = 3,
+    MOOD_BORED = 0,
+    MOOD_ATTACK = 1,
+    MOOD_ESCAPE = 2,
+    MOOD_STALK = 3,
 } MOOD_TYPE;
 
 typedef enum {
@@ -465,55 +465,57 @@ typedef enum {
 } INV_MODES;
 
 typedef enum {
-    STARTGAME = 0,
-    STARTCINE = 1 << 6,
-    STARTFMV = 2 << 6,
-    STARTDEMO = 3 << 6,
-    EXIT_TO_TITLE = 4 << 6,
-    LEVELCOMPLETE = 5 << 6,
-    EXITGAME = 6 << 6,
-    EXIT_TO_OPTION = 7 << 6,
-    TITLE_DESELECT = 8 << 6,
-    STARTMENU = 9 << 6,
-    LOOPINV = 10 << 6,
-    LOOPGAME = 11 << 6,
-    ENDGAME = 12 << 6,
-    INTRO = 13 << 6,
-    PLAYFMV = 14 << 6,
-    CREDITS = 15 << 6,
-    PREWARMGAME = 16 << 6,
-    LOOPCINE = 17 << 6
+    GF_STARTGAME = 0,
+    GF_STARTCINE = 1 << 6,
+    GF_STARTFMV = 2 << 6,
+    GF_STARTDEMO = 3 << 6,
+    GF_EXIT_TO_TITLE = 4 << 6,
+    GF_LEVELCOMPLETE = 5 << 6,
+    GF_EXITGAME = 6 << 6,
+    GF_EXIT_TO_OPTION = 7 << 6,
+    GF_TITLE_DESELECT = 8 << 6,
+    GF_STARTMENU = 9 << 6,
+    GF_LOOPINV = 10 << 6,
+    GF_LOOPGAME = 11 << 6,
+    GF_ENDGAME = 12 << 6,
+    GF_INTRO = 13 << 6,
+    GF_PLAYFMV = 14 << 6,
+    GF_CREDITS = 15 << 6,
+    GF_PREWARMGAME = 16 << 6,
+    GF_LOOPCINE = 17 << 6
 } TITLE_OPTIONS;
 
-#define IN_FORWARD (1 << 0)
-#define IN_BACK (1 << 1)
-#define IN_LEFT (1 << 2)
-#define IN_RIGHT (1 << 3)
-#define IN_JUMP (1 << 4)
-#define IN_DRAW (1 << 5)
-#define IN_ACTION (1 << 6)
-#define IN_SLOW (1 << 7)
-#define IN_OPTION (1 << 8)
-#define IN_LOOK (1 << 9)
-#define IN_STEPL (1 << 10)
-#define IN_STEPR (1 << 11)
-#define IN_ROLL (1 << 12)
-#define IN_PAUSE (1 << 13)
-#define IN_A (1 << 14)
-#define IN_B (1 << 15)
-#define IN_C (1 << 16)
-#define IN_MENUBACK (1 << 17)
-#define IN_UP (1 << 18)
-#define IN_DOWN (1 << 19)
-#define IN_SELECT (1 << 20)
-#define IN_DESELECT (1 << 21)
-#define IN_SAVE (1 << 22)
-#define IN_LOAD (1 << 23)
-#define IN_ACTION_AUTO (1 << 24)
-#define IN_CHEAT (1 << 25)
-#define IN_D (1 << 26)
-#define IN_E (1 << 27)
-#define IN_F (1 << 28)
+typedef enum {
+    IN_FORWARD = (1 << 0),
+    IN_BACK = (1 << 1),
+    IN_LEFT = (1 << 2),
+    IN_RIGHT = (1 << 3),
+    IN_JUMP = (1 << 4),
+    IN_DRAW = (1 << 5),
+    IN_ACTION = (1 << 6),
+    IN_SLOW = (1 << 7),
+    IN_OPTION = (1 << 8),
+    IN_LOOK = (1 << 9),
+    IN_STEPL = (1 << 10),
+    IN_STEPR = (1 << 11),
+    IN_ROLL = (1 << 12),
+    IN_PAUSE = (1 << 13),
+    IN_A = (1 << 14),
+    IN_B = (1 << 15),
+    IN_C = (1 << 16),
+    IN_MENUBACK = (1 << 17),
+    IN_UP = (1 << 18),
+    IN_DOWN = (1 << 19),
+    IN_SELECT = (1 << 20),
+    IN_DESELECT = (1 << 21),
+    IN_SAVE = (1 << 22),
+    IN_LOAD = (1 << 23),
+    IN_ACTION_AUTO = (1 << 24),
+    IN_CHEAT = (1 << 25),
+    IN_D = (1 << 26),
+    IN_E = (1 << 27),
+    IN_F = (1 << 28),
+} INPUT_STATE;
 
 #pragma pack(push, 1)
 

@@ -32,7 +32,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
         S_UpdateInput();
 
         if (ResetFlag) {
-            return EXIT_TO_TITLE;
+            return GF_EXIT_TO_TITLE;
         }
 
         if (demo_mode) {
@@ -87,7 +87,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
                         return return_val;
                     }
                     if (CurrentLevel == LV_GYM) {
-                        return STARTGAME | LV_FIRSTLEVEL;
+                        return GF_STARTGAME | LV_FIRSTLEVEL;
                     }
 
                     CreateSaveGameInfo();
