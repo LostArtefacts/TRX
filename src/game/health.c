@@ -15,7 +15,8 @@ void __cdecl DrawGameInfo()
         if (TR1MConfig.enable_enemy_healthbar && Lara.target) {
             TR1MRenderBar(
                 Lara.target->hit_points,
-                Objects[Lara.target->object_number].hit_points,
+                Objects[Lara.target->object_number].hit_points
+                    * (SaveGame[0].bonus_flag ? 2 : 1),
                 TR1M_BAR_ENEMY_HEALTH);
         }
     }

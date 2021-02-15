@@ -295,17 +295,11 @@ void __cdecl T_DrawText()
             }
         }
         if (Camera.number_frames > 30 && fps_text) {
-            if (fps_text->flags & TF_ACTIVE) {
-                fps_text->flags &= ~TF_ACTIVE;
-                --TextStringCount;
-            }
+            T_RemovePrint(fps_text);
             fps_text = NULL;
         }
     } else if (fps_text) {
-        if (fps_text->flags & TF_ACTIVE) {
-            fps_text->flags &= ~TF_ACTIVE;
-            --TextStringCount;
-        }
+        T_RemovePrint(fps_text);
         fps_text = NULL;
     }
 
