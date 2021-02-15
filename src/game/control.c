@@ -7,6 +7,7 @@
 #include "game/lara.h"
 #include "game/savegame.h"
 #include "game/shell.h"
+#include "mod.h"
 #include "util.h"
 
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
@@ -120,6 +121,19 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
         SoundEffects();
         ++SaveGame[0].timer;
         --HealthBarTimer;
+
+        if (TR1MConfig.disable_healing_between_levels) {
+            int lara_found = 0;
+            for (int i = 0; i < LevelItemCount; i++) {
+                if (Items[i].object_number == O_LARA) {
+                    lara_found = 1;
+                }
+            }
+            if (lara_found) {
+                TR1MData.stored_lara_health =
+                    LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
+            }
+        }
     }
     return 0;
 }

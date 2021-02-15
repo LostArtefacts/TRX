@@ -225,20 +225,26 @@ int __cdecl LoadItems(FILE* handle)
 
 int __cdecl S_LoadLevel(int level_id)
 {
-    TRACE("%d", level_id);
+    TRACE("%d (%s)", level_id, LevelNames[level_id]);
     int ret = LoadLevel(LevelNames[level_id], level_id);
 
     if (TR1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
         int lara_found = 0;
+        int in_cutscene = 0;
         for (int i = 0; i < LevelItemCount; i++) {
             if (Items[i].object_number == O_LARA) {
                 lara_found = 1;
             }
+            if (Items[i].object_number == O_PLAYER_1
+                || Items[i].object_number == O_PLAYER_2
+                || Items[i].object_number == O_PLAYER_3
+                || Items[i].object_number == O_PLAYER_4) {
+                in_cutscene = 1;
+            }
         }
-
-        if (!lara_found) {
+        if (!lara_found && !in_cutscene) {
             TR1MData.stored_lara_health = LARA_HITPOINTS;
         }
     }

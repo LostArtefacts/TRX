@@ -49,13 +49,6 @@ int32_t GetRandomDraw()
 
 void __cdecl LevelStats(int level_id)
 {
-    TRACE("");
-
-    if (TR1MConfig.disable_healing_between_levels) {
-        TR1MData.stored_lara_health =
-            LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
-    }
-
     static char string[100];
     TEXTSTRING* txt;
 
