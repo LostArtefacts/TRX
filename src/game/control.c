@@ -134,6 +134,13 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
                     LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
             }
         }
+
+        if (TR1MConfig.healthbar_showing_mode == TR1M_BSM_ALWAYS
+            || (TR1MConfig.healthbar_showing_mode == TR1M_BSM_FLASHING
+                && LaraItem
+                && LaraItem->hit_points < (LARA_HITPOINTS * 20) / 100)) {
+            HealthBarTimer = 1;
+        }
     }
     return 0;
 }

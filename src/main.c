@@ -76,6 +76,18 @@ static int TR1MReadConfig()
         tr1m_json_get_boolean_value(json, "enable_enhanced_look");
     TR1MConfig.enable_enhanced_ui =
         tr1m_json_get_boolean_value(json, "enable_enhanced_ui");
+
+    const char* healthbar_showing_mode =
+        tr1m_json_get_string_value(json, "healthbar_showing_mode");
+    TR1MConfig.healthbar_showing_mode = TR1M_BSM_DEFAULT;
+    if (healthbar_showing_mode) {
+        if (!strcmp(healthbar_showing_mode, "flashing")) {
+            TR1MConfig.healthbar_showing_mode = TR1M_BSM_FLASHING;
+        } else if (!strcmp(healthbar_showing_mode, "always")) {
+            TR1MConfig.healthbar_showing_mode = TR1M_BSM_ALWAYS;
+        }
+    }
+
     TR1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");
     TR1MConfig.fix_end_of_level_freeze =

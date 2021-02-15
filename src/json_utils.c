@@ -31,3 +31,9 @@ int tr1m_json_get_boolean_value(json_value* root, const char* name)
     json_value* field = tr1m_json_get_field(root, json_boolean, name, NULL);
     return field ? field->u.boolean : 0;
 }
+
+const char* tr1m_json_get_string_value(json_value* root, const char* name)
+{
+    json_value* field = tr1m_json_get_field(root, json_string, name, NULL);
+    return field ? field->u.string.ptr : NULL;
+}

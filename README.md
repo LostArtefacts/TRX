@@ -39,6 +39,11 @@ Currently the following configuration options are supported:
     - <kbd>4</kbd>: draw UZI
     - <kbd>8</kbd>: use small medpack
     - <kbd>9</kbd>: use large medpack
+- `healthbar_showing_mode`: change when the healthbar is displayed. Possible values:
+    - `always`: always show the healthbar
+    - `flashing`: show the healthbar only when Lara's health is 20% or below
+    - `default`: show the healthbar at the beginning of a level, after
+      getting hit or while having weapons equipped (as in OG)
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing
