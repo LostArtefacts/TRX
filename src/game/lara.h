@@ -12,7 +12,6 @@
 #define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
-#define LaraDeflectEdgeJump     ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x004255A0)
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
 #define LaraTestHangJump        ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425890)
 #define LaraTestHangJumpUp      ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425AE0)
@@ -107,6 +106,7 @@ void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);

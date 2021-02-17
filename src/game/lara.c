@@ -442,8 +442,9 @@ void __cdecl LaraAsCompress(ITEM_INFO* item, COLL_INFO* coll)
         Lara.move_angle = item->pos.y_rot - 0x8000;
     }
 
-    if (item->fall_speed > LARA_FASTFALL_SPEED)
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
+    }
 }
 
 void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
@@ -1728,6 +1729,49 @@ int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
     return 0;
 }
 
+void __cdecl LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    ShiftItem(item, coll);
+    switch (coll->coll_type) {
+    case COLL_LEFT:
+        item->pos.y_rot += LARA_DEF_ADD_EDGE;
+        break;
+
+    case COLL_RIGHT:
+        item->pos.y_rot -= LARA_DEF_ADD_EDGE;
+        break;
+
+    case COLL_FRONT:
+    case COLL_TOPFRONT:
+        item->goal_anim_state = AS_FASTFALL;
+        item->current_anim_state = AS_FASTFALL;
+        item->anim_number = AA_FASTFALL;
+        item->frame_number = AF_FASTFALL;
+        item->speed /= 4;
+        Lara.move_angle += -PHD_ONE / 2;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 1;
+        }
+        break;
+
+    case COLL_TOP:
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 1;
+        }
+        break;
+
+    case COLL_CLAMP:
+        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->speed = 0;
+        coll->mid_floor = 0;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 16;
+        }
+        break;
+    }
+}
+
 void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
 {
     ShiftItem(item, coll);
@@ -1843,4 +1887,5 @@ void TR1MInjectLara()
 
     INJECT(0x004251D0, LaraSlideSlope);
     INJECT(0x00425350, LaraHangTest);
+    INJECT(0x004255A0, LaraDeflectEdgeJump);
 }
