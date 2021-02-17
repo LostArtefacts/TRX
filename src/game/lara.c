@@ -1020,7 +1020,7 @@ void __cdecl LaraColForwardJump(ITEM_INFO* item, COLL_INFO* coll)
 
     LaraDeflectEdgeJump(item, coll);
 
-    if (coll->mid_floor <= 0 && item->fall_speed > 0) {
+    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
         if (LaraLandedBad(item, coll)) {
             item->goal_anim_state = AS_DEATH;
         } else if (Input & IN_FORWARD && !(Input & IN_SLOW)) {
@@ -1329,6 +1329,12 @@ void __cdecl LaraColBackJump(ITEM_INFO* item, COLL_INFO* coll)
     LaraColJumper(item, coll);
 }
 
+void __cdecl LaraColRightJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot + 16384;
+    LaraColJumper(item, coll);
+}
+
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -1496,6 +1502,7 @@ void TR1MInjectLara()
     INJECT(0x004247D0, LaraColStepLeft);
     INJECT(0x00424910, LaraColSlide);
     INJECT(0x00424930, LaraColBackJump);
+    INJECT(0x004249E0, LaraColRightJump);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }

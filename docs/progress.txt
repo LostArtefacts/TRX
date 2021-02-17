@@ -378,7 +378,7 @@ LaraColStepRight                0x00424690  0x00000136  +
 LaraColStepLeft                 0x004247D0  0x00000136  +
 LaraColSlide                    0x00424910  0x0000001E  +
 LaraColBackJump                 0x00424930  0x000000A2  +
-LaraColRightJump                0x004249E0  0x000000A2  -
+LaraColRightJump                0x004249E0  0x000000A2  +
 LaraColLeftJump                 0x00424A90  0x000000A2  -
 LaraColUpJump                   0x00424B40  0x00000149  -
 LaraColFallback                 0x00424CD0  0x000000A3  -
