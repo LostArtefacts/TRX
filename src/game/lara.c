@@ -1422,6 +1422,39 @@ void __cdecl LaraColDefault(ITEM_INFO* item, COLL_INFO* coll)
     GetLaraCollisionInfo(item, coll);
 }
 
+void __cdecl LaraColRoll(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
+    }
+
+    if (coll->mid_floor > 200) {
+        item->current_anim_state = AS_FORWARDJUMP;
+        item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
+        item->gravity_status = 1;
+        item->fall_speed = 0;
+        return;
+    }
+
+    ShiftItem(item, coll);
+    item->pos.y += coll->mid_floor;
+}
+
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -1597,6 +1630,7 @@ void TR1MInjectLara()
     INJECT(0x00424DC0, LaraColHangRight);
     INJECT(0x00424E00, LaraColSlideBack);
     INJECT(0x00424E30, LaraColDefault);
+    INJECT(0x00424E90, LaraColRoll);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
