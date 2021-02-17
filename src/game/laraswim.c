@@ -146,10 +146,40 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_UWDEATH;
+        return;
+    }
+
+    if (Input & IN_FORWARD) {
+        item->pos.x_rot -= 2 * ONE_DEGREE;
+    } else if (Input & IN_BACK) {
+        item->pos.x_rot += 2 * ONE_DEGREE;
+    }
+    if (Input & IN_LEFT) {
+        item->pos.y_rot -= LARA_MED_TURN;
+        item->pos.z_rot -= LARA_LEAN_RATE * 2;
+    } else if (Input & IN_RIGHT) {
+        item->pos.y_rot += LARA_MED_TURN;
+        item->pos.z_rot += LARA_LEAN_RATE * 2;
+    }
+    if (Input & IN_JUMP) {
+        item->goal_anim_state = AS_SWIM;
+    }
+
+    item->fall_speed -= WATER_FRICTION;
+    if (item->fall_speed < 0) {
+        item->fall_speed = 0;
+    }
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
 
     INJECT(0x004290C0, LaraAsSwim);
     INJECT(0x00429140, LaraAsGlide);
+    INJECT(0x004291D0, LaraAsTread);
 }
