@@ -384,7 +384,7 @@ LaraColUpJump                   0x00424B40  0x00000149  +
 LaraColFallback                 0x00424CD0  0x000000A3  +
 LaraColHangLeft                 0x00424D80  0x00000033  +
 LaraColHangRight                0x00424DC0  0x00000033  +
-LaraColSlideBack                0x00424E00  0x00000023  -
+LaraColSlideBack                0x00424E00  0x00000023  +
 LaraColNull                     0x00424E30  0x00000056  -
 LaraColRoll                     0x00424E90  0x00000100  -
 LaraColRoll2                    0x00424F90  0x00000104  -
