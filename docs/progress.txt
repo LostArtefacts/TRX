@@ -374,7 +374,7 @@ LaraColSplat                    0x004243F0  0x00000064  +
 LaraColLand                     0x00424460  0x00000013  +
 LaraColCompress                 0x00424480  0x00000096  +
 LaraColBack                     0x00424520  0x00000170  +
-LaraColStepRight                0x00424690  0x00000136  -
+LaraColStepRight                0x00424690  0x00000136  +
 LaraColStepLeft                 0x004247D0  0x00000136  -
 LaraColSlide                    0x00424910  0x0000001E  -
 LaraColBackJump                 0x00424930  0x000000A2  -
