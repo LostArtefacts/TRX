@@ -12,7 +12,6 @@
 #define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
-#define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
 // clang-format on
 
 void __cdecl InitialiseLara();
@@ -110,6 +109,7 @@ int32_t __cdecl LaraTestHangJumpUp(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl TestHangSwingIn(ITEM_INFO* item, PHD_ANGLE angle);
 int32_t __cdecl TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
+int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl UseItem(__int16 object_num);
 
 void TR1MLookLeftRight();

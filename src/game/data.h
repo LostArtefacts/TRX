@@ -86,6 +86,7 @@
 #define DumpY                   VAR_I_(0x004546E2, int16_t, 0)
 #define DumpWidth               VAR_I_(0x004546E4, int16_t, 0)
 #define DumpHeight              VAR_I_(0x004546E6, int16_t, 0)
+#define TriggerIndex            VAR_U_(0x00462CE8, int16_t*)
 // clang-format on
 
 #endif

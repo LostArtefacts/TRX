@@ -2097,6 +2097,38 @@ int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
     return height;
 }
 
+int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
+{
+    int16_t room_num = item->room_number;
+
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    int oy = item->pos.y;
+    int height =
+        GetHeight(floor, item->pos.x, item->pos.y - LARA_HITE, item->pos.z);
+
+    item->floor = height;
+    item->pos.y = height;
+    TestTriggers(TriggerIndex, 0);
+    item->pos.y = oy;
+
+    int landspeed = item->fall_speed - DAMAGE_START;
+    if (landspeed <= 0) {
+        return 0;
+    } else if (landspeed > DAMAGE_LENGTH) {
+        item->hit_points = -1;
+    } else {
+        item->hit_points -= (LARA_HITPOINTS * landspeed * landspeed)
+            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
+    }
+
+    if (item->hit_points < 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void TR1MInjectLara()
 {
     INJECT(0x00422480, LaraAboveWater);
@@ -2173,4 +2205,5 @@ void TR1MInjectLara()
     INJECT(0x00425890, LaraTestHangJump);
     INJECT(0x00425AE0, LaraTestHangJumpUp);
     INJECT(0x00425C50, TestLaraSlide);
+    INJECT(0x00425D70, LaraLandedBad);
 }
