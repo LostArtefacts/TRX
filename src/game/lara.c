@@ -1411,6 +1411,17 @@ void __cdecl LaraColSlideBack(ITEM_INFO* item, COLL_INFO* coll)
     LaraSlideSlope(item, coll);
 }
 
+void __cdecl LaraColDefault(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    GetLaraCollisionInfo(item, coll);
+}
+
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -1585,6 +1596,7 @@ void TR1MInjectLara()
     INJECT(0x00424D80, LaraColHangLeft);
     INJECT(0x00424DC0, LaraColHangRight);
     INJECT(0x00424E00, LaraColSlideBack);
+    INJECT(0x00424E30, LaraColDefault);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
