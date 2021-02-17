@@ -154,10 +154,10 @@ void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (Input & IN_ROLL) {
-        item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL;
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
+        item->anim_number = AA_ROLL;
+        item->frame_number = AF_ROLL;
         return;
     }
 
@@ -202,10 +202,10 @@ void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (Input & IN_ROLL) {
-        item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL;
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
+        item->anim_number = AA_ROLL;
+        item->frame_number = AF_ROLL;
         return;
     }
 
@@ -872,10 +872,10 @@ void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (coll->mid_floor > STEPUP_HEIGHT) {
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -946,10 +946,10 @@ void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (coll->mid_floor > STEPUP_HEIGHT) {
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -993,10 +993,10 @@ void __cdecl LaraColStop(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (coll->mid_floor > 100) {
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -1051,10 +1051,10 @@ void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (coll->mid_floor > 200) {
-        item->anim_number = AA_FALLBACK;
-        item->frame_number = AF_FALLBACK;
         item->current_anim_state = AS_FALLBACK;
         item->goal_anim_state = AS_FALLBACK;
+        item->anim_number = AA_FALLBACK;
+        item->frame_number = AF_FALLBACK;
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -1063,6 +1063,35 @@ void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP;
+    }
+
+    item->pos.y += coll->mid_floor;
+}
+
+void __cdecl LaraColTurnR(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (coll->mid_floor > 100) {
+        item->current_anim_state = AS_FORWARDJUMP;
+        item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
+        item->gravity_status = 1;
+        item->fall_speed = 0;
+        return;
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
     }
 
     item->pos.y += coll->mid_floor;
@@ -1168,5 +1197,6 @@ void TR1MInjectLara()
     INJECT(0x00423C00, LaraColStop);
     INJECT(0x00423D00, LaraColForwardJump);
     INJECT(0x00423DD0, LaraColFastBack);
+    INJECT(0x00423F40, LaraColTurnR);
     INJECT(0x004237A0, LaraAsWaterOut);
 }
