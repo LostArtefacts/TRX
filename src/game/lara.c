@@ -1196,6 +1196,11 @@ void __cdecl LaraColSplat(ITEM_INFO* item, COLL_INFO* coll)
     ShiftItem(item, coll);
 }
 
+void __cdecl LaraColLand(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColStop(item, coll);
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1335,6 +1340,7 @@ void TR1MInjectLara()
     INJECT(0x004241F0, LaraColHang);
     INJECT(0x00424260, LaraColReach);
     INJECT(0x004243F0, LaraColSplat);
+    INJECT(0x00424460, LaraColLand);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }

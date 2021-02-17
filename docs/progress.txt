@@ -371,7 +371,7 @@ LaraColFastFall                 0x00424070  0x00000148  +
 LaraColHang                     0x004241F0  0x0000006A  +
 LaraColReach                    0x00424260  0x0000014D  +
 LaraColSplat                    0x004243F0  0x00000064  +
-LaraColPose                     0x00424460  0x00000013  -
+LaraColPose                     0x00424460  0x00000013  +
 LaraColCompress                 0x00424480  0x00000096  -
 LaraColBack                     0x00424520  0x00000170  -
 LaraColStepRight                0x00424690  0x00000136  -
