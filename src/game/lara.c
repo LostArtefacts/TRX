@@ -5,6 +5,7 @@
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/misc.h"
 #include "game/shell.h"
 #include "mod.h"
 #include "util.h"
@@ -1557,6 +1558,44 @@ void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
         LARA_HITE);
 }
 
+void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -512;
+    coll->bad_ceiling = 0;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+
+    LaraDeflectEdge(item, coll);
+
+    if (coll->mid_floor > 200) {
+        if (item->current_anim_state == AS_SLIDE) {
+            item->current_anim_state = AS_FORWARDJUMP;
+            item->goal_anim_state = AS_FORWARDJUMP;
+            item->anim_number = AA_FALLDOWN;
+            item->frame_number = AF_FALLDOWN;
+        } else {
+            item->current_anim_state = AS_FALLBACK;
+            item->goal_anim_state = AS_FALLBACK;
+            item->anim_number = AA_FALLBACK;
+            item->frame_number = AF_FALLBACK;
+        }
+        item->gravity_status = 1;
+        item->fall_speed = 0;
+        return;
+    }
+
+    TestLaraSlide(item, coll);
+    item->pos.y += coll->mid_floor;
+
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
+        item->goal_anim_state = AS_STOP;
+    }
+}
+
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_CLAMP) {
@@ -1676,6 +1715,7 @@ void TR1MInjectLara()
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
+    INJECT(0x004237A0, LaraAsWaterOut);
 
     INJECT(0x004237C0, LaraColWalk);
     INJECT(0x004239F0, LaraColRun);
@@ -1707,6 +1747,5 @@ void TR1MInjectLara()
     INJECT(0x00424F90, LaraColRoll2);
     INJECT(0x004250A0, LaraColSwanDive);
     INJECT(0x00425130, LaraColFastDive);
-
-    INJECT(0x004237A0, LaraAsWaterOut);
+    INJECT(0x004251D0, LaraSlideSlope);
 }
