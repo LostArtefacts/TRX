@@ -30,6 +30,25 @@ void TR1MLookLeftRight()
     }
 }
 
+void __cdecl TR1MLookUpDown()
+{
+    Camera.type = CAM_LOOK;
+    if (Input & IN_FORWARD) {
+        Input -= IN_FORWARD;
+        if (Lara.head_x_rot > MIN_HEAD_TILT) {
+            Lara.head_x_rot -= HEAD_TURN / 2;
+        }
+    } else if (Input & IN_BACK) {
+        Input -= IN_BACK;
+        if (Lara.head_x_rot < MAX_HEAD_TILT) {
+            Lara.head_x_rot += HEAD_TURN / 2;
+        }
+    }
+    if (Lara.gun_status != LGS_HANDSBUSY) {
+        Lara.torso_x_rot = Lara.head_x_rot;
+    }
+}
+
 void TR1MResetLook()
 {
     if (Camera.type == CAM_LOOK) {

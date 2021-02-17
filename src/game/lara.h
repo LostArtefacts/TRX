@@ -121,6 +121,7 @@ void __cdecl LaraWaterCurrent(COLL_INFO* coll);
 void __cdecl UseItem(__int16 object_num);
 
 void TR1MLookLeftRight();
+void TR1MLookUpDown();
 void TR1MResetLook();
 
 void TR1MInjectLara();

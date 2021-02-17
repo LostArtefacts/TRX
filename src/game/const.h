@@ -44,7 +44,7 @@
 #define MAX_HEAD_ROTATION (50 * ONE_DEGREE) // = 9100
 #define MAX_HEAD_TILT (22 * ONE_DEGREE) // = 4004
 #define HEAD_TURN (4 * ONE_DEGREE) // = 728
-#define MIN_HEAD_TILT (-42 * ONE_DEGREE) // = 7644
+#define MIN_HEAD_TILT (-42 * ONE_DEGREE) // = -7644
 #define WALL_L 1024
 #define WALL_SHIFT 10
 #define NO_HEIGHT (-0x7F00)

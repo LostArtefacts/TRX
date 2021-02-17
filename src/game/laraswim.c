@@ -149,6 +149,12 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
+    if (TR1MConfig.enable_enhanced_look) {
+        if (Input & IN_LOOK) {
+            TR1MLookUpDown();
+        }
+    }
+
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
         return;
