@@ -1137,6 +1137,24 @@ void __cdecl LaraColFastFall(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColHang(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraHangTest(item, coll);
+    if (item->goal_anim_state == AS_HANG && (Input & IN_FORWARD)) {
+        if (coll->front_floor > -850 && coll->front_floor < -650
+            && coll->front_floor - coll->front_ceiling >= 0
+            && coll->left_floor - coll->left_ceiling >= 0
+            && coll->right_floor - coll->right_ceiling >= 0
+            && !coll->hit_static) {
+            if (Input & IN_SLOW) {
+                item->goal_anim_state = AS_GYMNAST;
+            } else {
+                item->goal_anim_state = AS_NULL;
+            }
+        }
+    }
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1273,6 +1291,7 @@ void TR1MInjectLara()
     INJECT(0x00423F40, LaraColTurnR);
     INJECT(0x00423FF0, LaraColDeath);
     INJECT(0x00424070, LaraColFastFall);
+    INJECT(0x004241F0, LaraColHang);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
