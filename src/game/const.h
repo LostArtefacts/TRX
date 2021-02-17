@@ -27,6 +27,7 @@
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
 #define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
+#define UW_MAXSPEED 200
 #define UW_RADIUS 300
 #define UW_HITE 400
 #define DAMAGE_START 140

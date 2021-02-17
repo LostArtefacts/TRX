@@ -82,7 +82,40 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     TestTriggers(coll->trigger, 0);
 }
 
+void __cdecl LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_UWDEATH;
+        return;
+    }
+
+    if (Input & IN_FORWARD) {
+        item->pos.x_rot -= 2 * ONE_DEGREE;
+    }
+    if (Input & IN_BACK) {
+        item->pos.x_rot += 2 * ONE_DEGREE;
+    }
+    if (Input & IN_LEFT) {
+        item->pos.y_rot -= LARA_MED_TURN;
+        item->pos.z_rot -= LARA_LEAN_RATE * 2;
+    } else if (Input & IN_RIGHT) {
+        item->pos.y_rot += LARA_MED_TURN;
+        item->pos.z_rot += LARA_LEAN_RATE * 2;
+    }
+
+    item->fall_speed += 8;
+    if (item->fall_speed > UW_MAXSPEED) {
+        item->fall_speed = UW_MAXSPEED;
+    }
+
+    if (!(Input & IN_JUMP)) {
+        item->goal_anim_state = AS_GLIDE;
+    }
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
+
+    INJECT(0x004290C0, LaraAsSwim);
 }
