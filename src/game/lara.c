@@ -1201,6 +1201,28 @@ void __cdecl LaraColLand(ITEM_INFO* item, COLL_INFO* coll)
     LaraColStop(item, coll);
 }
 
+void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = NO_BAD_NEG;
+    coll->bad_ceiling = 0;
+    GetLaraCollisionInfo(item, coll);
+    if (coll->mid_ceiling > -100) {
+        item->goal_anim_state = AS_STOP;
+        item->current_anim_state = AS_STOP;
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+        item->speed = 0;
+        item->pos.x = coll->old.x;
+        item->pos.y = coll->old.y;
+        item->pos.z = coll->old.z;
+    }
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1341,6 +1363,7 @@ void TR1MInjectLara()
     INJECT(0x00424260, LaraColReach);
     INJECT(0x004243F0, LaraColSplat);
     INJECT(0x00424460, LaraColLand);
+    INJECT(0x00424480, LaraColCompress);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
