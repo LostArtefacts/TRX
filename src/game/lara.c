@@ -1803,6 +1803,73 @@ void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (coll->coll_type != COLL_FRONT || !(Input & IN_ACTION)
+        || Lara.gun_status != LGS_ARMLESS
+        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        return 0;
+    }
+
+    int angle = item->pos.y_rot;
+    if (angle >= 0 - VAULT_ANGLE && angle <= 0 + VAULT_ANGLE) {
+        angle = 0;
+    } else if (angle >= 16384 - VAULT_ANGLE && angle <= 16384 + VAULT_ANGLE) {
+        angle = PHD_ONE / 4;
+    } else if (angle >= 32767 - VAULT_ANGLE || angle <= -32767 + VAULT_ANGLE) {
+        angle = -PHD_ONE / 2;
+    } else if (angle >= -16384 - VAULT_ANGLE && angle <= -16384 + VAULT_ANGLE) {
+        angle = -PHD_ONE / 4;
+    }
+
+    if (angle & ((PHD_ONE / 4) - 1)) {
+        return 0;
+    }
+
+    int hdif = coll->front_floor;
+    if (hdif >= -STEP_L * 2 - STEP_L / 2 && hdif <= -STEP_L * 2 + STEP_L / 2) {
+        if (hdif - coll->front_ceiling < 0
+            || coll->left_floor - coll->left_ceiling < 0
+            || coll->right_floor - coll->right_ceiling < 0) {
+            return 0;
+        }
+        item->current_anim_state = AS_NULL;
+        item->goal_anim_state = AS_STOP;
+        item->anim_number = AA_VAULT12;
+        item->frame_number = AF_VAULT12;
+        item->pos.y += STEP_L * 2 + hdif;
+        Lara.gun_status = LGS_HANDSBUSY;
+    } else if (
+        hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 - STEP_L / 2) {
+        if (hdif - coll->front_ceiling < 0
+            || coll->left_floor - coll->left_ceiling < 0
+            || coll->right_floor - coll->right_ceiling < 0) {
+            return 0;
+        }
+        item->current_anim_state = AS_NULL;
+        item->goal_anim_state = AS_STOP;
+        item->anim_number = AA_VAULT34;
+        item->frame_number = AF_VAULT34;
+        item->pos.y += STEP_L * 3 + hdif;
+        Lara.gun_status = LGS_HANDSBUSY;
+    } else if (
+        hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
+        item->goal_anim_state = AS_UPJUMP;
+        item->current_anim_state = AS_STOP;
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+        Lara.calc_fallspeed =
+            -(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
+        AnimateLara(item);
+    } else {
+        return 0;
+    }
+
+    item->pos.y_rot = angle;
+    ShiftItem(item, coll);
+    return 1;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -1888,4 +1955,5 @@ void TR1MInjectLara()
     INJECT(0x004251D0, LaraSlideSlope);
     INJECT(0x00425350, LaraHangTest);
     INJECT(0x004255A0, LaraDeflectEdgeJump);
+    INJECT(0x004256C0, TestLaraVault);
 }

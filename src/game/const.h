@@ -9,7 +9,8 @@
 #define NUMBER_ITEMS 256
 #define MAX_SECRETS 16
 #define MAX_SAVEGAME_BUFFER (10 * 1024)
-#define SAVEGAME_VERSION 0x1
+#define GRAVITY 6
+#define FASTFALL_SPEED 128
 #define LARA_HITPOINTS 1000
 #define LARA_AIR 1800
 #define LARA_TURN_UNDO (2 * ONE_DEGREE)
@@ -23,7 +24,7 @@
 #define LARA_LEAN_RATE 273
 #define LARA_LEAN_MAX ((10 * ONE_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
-#define LARA_FASTFALL_SPEED 131
+#define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
 #define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
 #define UW_RADIUS 300
@@ -76,5 +77,6 @@
 #define FRAME_POS_Y 7
 #define FRAME_POS_Z 8
 #define SLOPE_DIF 60
+#define VAULT_ANGLE (30 * ONE_DEGREE)
 
 #endif

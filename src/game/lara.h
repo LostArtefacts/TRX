@@ -15,7 +15,6 @@
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
 #define LaraTestHangJump        ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425890)
 #define LaraTestHangJumpUp      ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425AE0)
-#define TestLaraVault           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x004256C0)
 #define TestLaraSlide           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425C50)
 // clang-format on
 
@@ -108,6 +107,7 @@ void __cdecl LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
+int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 

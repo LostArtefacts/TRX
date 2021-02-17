@@ -393,7 +393,7 @@ LaraColFastDive                 0x00425130  0x00000099  +
 LaraSlideSlope                  0x004251D0  0x00000176  +
 LaraHangTest                    0x00425350  0x00000229  +
 LaraDeflectEdgeJump             0x004255A0  0x000000E4  +
-TestLaraVault                   0x004256C0  0x000001C8  -
+TestLaraVault                   0x004256C0  0x000001C8  +
 LaraTestHangJump                0x00425890  0x0000024B  -
 LaraTestHangJumpUp              0x00425AE0  0x0000016A  -
 TestLaraSlide                   0x00425C50  0x0000011A  -
