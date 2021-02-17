@@ -1017,7 +1017,9 @@ void __cdecl LaraColForwardJump(ITEM_INFO* item, COLL_INFO* coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
     GetLaraCollisionInfo(item, coll);
+
     LaraDeflectEdgeJump(item, coll);
+
     if (coll->mid_floor <= 0 && item->fall_speed > 0) {
         if (LaraLandedBad(item, coll)) {
             item->goal_anim_state = AS_DEATH;
@@ -1167,20 +1169,17 @@ void __cdecl LaraColReach(ITEM_INFO* item, COLL_INFO* coll)
     if (LaraTestHangJump(item, coll)) {
         return;
     }
-
     LaraSlideEdgeJump(item, coll);
 
-    if (item->fall_speed > 0) {
-        if (coll->mid_floor <= 0) {
-            if (LaraLandedBad(item, coll)) {
-                item->goal_anim_state = AS_DEATH;
-            } else {
-                item->goal_anim_state = AS_STOP;
-            }
-            item->pos.y += coll->mid_floor;
-            item->gravity_status = 0;
-            item->fall_speed = 0;
+    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+        if (LaraLandedBad(item, coll)) {
+            item->goal_anim_state = AS_DEATH;
+        } else {
+            item->goal_anim_state = AS_STOP;
         }
+        item->pos.y += coll->mid_floor;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
     }
 }
 
@@ -1322,6 +1321,33 @@ void __cdecl LaraColSlide(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot;
     LaraSlideSlope(item, coll);
+}
+
+void __cdecl LaraColBackJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot - 32768;
+    LaraColJumper(item, coll);
+}
+
+void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+    GetLaraCollisionInfo(item, coll);
+
+    LaraDeflectEdgeJump(item, coll);
+
+    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+        if (LaraLandedBad(item, coll)) {
+            item->goal_anim_state = AS_DEATH;
+        } else {
+            item->goal_anim_state = AS_STOP;
+        }
+        item->pos.y += coll->mid_floor;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+    }
 }
 
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
@@ -1469,6 +1495,7 @@ void TR1MInjectLara()
     INJECT(0x00424690, LaraColStepRight);
     INJECT(0x004247D0, LaraColStepLeft);
     INJECT(0x00424910, LaraColSlide);
+    INJECT(0x00424930, LaraColBackJump);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
