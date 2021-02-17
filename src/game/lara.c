@@ -1335,6 +1335,12 @@ void __cdecl LaraColRightJump(ITEM_INFO* item, COLL_INFO* coll)
     LaraColJumper(item, coll);
 }
 
+void __cdecl LaraColLeftJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot - 16384;
+    LaraColJumper(item, coll);
+}
+
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -1503,6 +1509,7 @@ void TR1MInjectLara()
     INJECT(0x00424910, LaraColSlide);
     INJECT(0x00424930, LaraColBackJump);
     INJECT(0x004249E0, LaraColRightJump);
+    INJECT(0x00424A90, LaraColLeftJump);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
