@@ -1,7 +1,8 @@
+#include "3dsystem/scalespr.h"
 #include "game/data.h"
-#include "game/shell.h"
 #include "game/text.h"
 #include "mod.h"
+#include "specific/frontend.h"
 #include "types.h"
 #include "util.h"
 #include <string.h>
@@ -484,7 +485,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     }
 }
 
-void TR1MInjectText()
+void TR1MInjectGameText()
 {
     INJECT(0x00439750, T_InitPrint);
     INJECT(0x00439780, T_Print);

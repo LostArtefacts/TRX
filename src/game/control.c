@@ -6,7 +6,10 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/savegame.h"
-#include "game/shell.h"
+#include "specific/game.h"
+#include "specific/shed.h"
+#include "specific/input.h"
+#include "specific/sndpc.h"
 #include "mod.h"
 #include "util.h"
 
@@ -145,7 +148,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
     return 0;
 }
 
-void TR1MInjectControl()
+void TR1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
 }

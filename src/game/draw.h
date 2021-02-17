@@ -11,6 +11,6 @@
 
 void __cdecl PrintRooms(int16_t room_number);
 
-void TR1MInjectDraw();
+void TR1MInjectGameDraw();
 
 #endif

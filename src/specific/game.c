@@ -1,8 +1,11 @@
 #include "game/data.h"
-#include "game/game.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/text.h"
+#include "specific/display.h"
+#include "specific/frontend.h"
+#include "specific/game.h"
+#include "specific/input.h"
+#include "specific/output.h"
 #include "mod.h"
 #include "util.h"
 
@@ -170,7 +173,7 @@ void __cdecl LevelStats(int level_id)
     TempVideoRemove();
 }
 
-void TR1MInjectGame()
+void TR1MInjectSpecificGame()
 {
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D950, LevelIsValid);

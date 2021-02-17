@@ -98,7 +98,7 @@ void __cdecl InitialiseObjects()
     }
 }
 
-void TR1MInjectSetup()
+void TR1MInjectGameSetup()
 {
     INJECT(0x00437A50, InitialiseObjects);
 }

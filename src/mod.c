@@ -1,5 +1,5 @@
+#include "3dsystem/3d_insert.h"
 #include "game/data.h"
-#include "game/shell.h"
 #include "mod.h"
 #include <math.h>
 

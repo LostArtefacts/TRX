@@ -1,73 +1,13 @@
 #include "game/data.h"
-#include "game/inv.h"
 #include "game/items.h"
-#include "game/lara.h"
-#include "game/shell.h"
+#include "specific/file.h"
+#include "specific/init.h"
+#include "specific/shed.h"
 #include "mod.h"
 #include "util.h"
-#include <stdarg.h>
 #include <windows.h>
-#include <dinput.h>
 
-void __cdecl init_game_malloc()
-{
-    TRACE("");
-    GameAllocMemPointer = GameMemoryPointer;
-    GameAllocMemFree = GameMemorySize;
-    GameAllocMemUsed = 0;
-}
-
-void __cdecl game_free(int free_size)
-{
-    TRACE("");
-    GameAllocMemPointer -= free_size;
-    GameAllocMemFree += free_size;
-    GameAllocMemUsed -= free_size;
-}
-
-const char* __cdecl GetFullPath(const char* filename)
-{
-    TRACE(filename);
-#if defined FEATURE_NOCD_DATA
-    sprintf(newpath, ".\\%s", filename);
-#else
-    if (DEMO)
-        sprintf(newpath, "%c:\\tomb\\%s", cd_drive, filename);
-    else
-        sprintf(newpath, "%c:\\%s", cd_drive, filename);
-#endif
-    return newpath;
-}
-
-int __cdecl FindCdDrive()
-{
-    TRACE("");
-    FILE* fp;
-    char root[5] = "C:\\";
-    char tmp_path[MAX_PATH];
-
-    for (cd_drive = 'C'; cd_drive <= 'Z'; cd_drive++) {
-        root[0] = cd_drive;
-        if (GetDriveType(root) == DRIVE_CDROM) {
-            sprintf(tmp_path, "%c:\\tomb\\data\\title.phd", cd_drive);
-            fp = fopen(tmp_path, "rb");
-            if (fp) {
-                DEMO = 1;
-                return fclose(fp);
-            }
-            sprintf(tmp_path, "%c:\\data\\title.phd", cd_drive);
-            fp = fopen(tmp_path, "rb");
-            if (fp) {
-                DEMO = 0;
-                return fclose(fp);
-            }
-        }
-    }
-    ShowFatalError("ERROR: Please insert TombRaider CD");
-    return 0;
-}
-
-int __cdecl LoadRooms(FILE* fp)
+int32_t __cdecl LoadRooms(FILE* fp)
 {
     TRACE("");
     uint16_t count2;
@@ -173,7 +113,7 @@ int __cdecl LoadRooms(FILE* fp)
     return 1;
 }
 
-int __cdecl LoadItems(FILE* handle)
+int32_t __cdecl LoadItems(FILE* handle)
 {
     int32_t item_count = 0;
     _fread(&item_count, sizeof(int32_t), 1, handle);
@@ -223,8 +163,7 @@ int __cdecl LoadItems(FILE* handle)
 
     return 1;
 }
-
-int __cdecl S_LoadLevel(int level_id)
+int32_t __cdecl S_LoadLevel(int level_id)
 {
     TRACE("%d (%s)", level_id, LevelNames[level_id]);
     int ret = LoadLevel(LevelNames[level_id], level_id);
@@ -253,180 +192,54 @@ int __cdecl S_LoadLevel(int level_id)
     return ret;
 }
 
-void __cdecl DB_Log(char* a1, ...)
+const char* __cdecl GetFullPath(const char* filename)
 {
-    va_list va;
-    char buffer[256] = { 0 };
-
-    va_start(va, a1);
-    if (!dword_45A1F0) {
-        vsprintf(buffer, a1, va);
-        TRACE(buffer);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-}
-
-void __cdecl S_DrawHealthBar(int32_t percent)
-{
-    TR1MRenderBar(percent, 100, TR1M_BAR_LARA_HEALTH);
-}
-
-void __cdecl S_DrawAirBar(int32_t percent)
-{
-    TR1MRenderBar(percent, 100, TR1M_BAR_LARA_AIR);
-}
-
-void __cdecl phd_PopMatrix()
-{
-    PhdMatrixPtr -= 48;
-}
-
-void __cdecl S_UpdateInput()
-{
-    int32_t linput = 0;
-
-    WinInReadJoystick();
-    if (JoyYPos >= -8) {
-        if (JoyYPos > 8) {
-            linput = IN_RIGHT;
-        }
+    TRACE(filename);
+#if defined FEATURE_NOCD_DATA
+    sprintf(newpath, ".\\%s", filename);
+#else
+    if (DEMO) {
+        sprintf(newpath, "%c:\\tomb\\%s", cd_drive, filename);
     } else {
-        linput = IN_LEFT;
+        sprintf(newpath, "%c:\\%s", cd_drive, filename);
     }
-    if (JoyXPos <= 8) {
-        if (JoyXPos < -8) {
-            linput |= IN_FORWARD;
-        }
-    } else {
-        linput |= IN_BACK;
-    }
+#endif
+    return newpath;
+}
 
-    if (Key_(0)) {
-        linput |= IN_FORWARD;
-    }
-    if (Key_(1)) {
-        linput |= IN_BACK;
-    }
-    if (Key_(2)) {
-        linput |= IN_LEFT;
-    }
-    if (Key_(3)) {
-        linput |= IN_RIGHT;
-    }
-    if (Key_(4)) {
-        linput |= IN_STEPL;
-    }
-    if (Key_(5)) {
-        linput |= IN_STEPR;
-    }
-    if (Key_(6)) {
-        linput |= IN_SLOW;
-    }
-    if (Key_(7)) {
-        linput |= IN_JUMP;
-    }
-    if (Key_(8)) {
-        linput |= IN_ACTION;
-    }
-    if (Key_(9)) {
-        linput |= IN_DRAW;
-    }
-    if (Key_(10)) {
-        linput |= IN_LOOK;
-    }
-    if (Key_(11)) {
-        linput |= IN_ROLL;
-    }
-    if (Key_(12) && Camera.type != CAM_CINEMATIC) {
-        linput |= IN_OPTION;
-    }
-    if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
-        linput |= IN_ROLL;
-    }
+int32_t __cdecl FindCdDrive()
+{
+    TRACE("");
+    FILE* fp;
+    char root[5] = "C:\\";
+    char tmp_path[MAX_PATH];
 
-    if (TR1MConfig.enable_numeric_keys) {
-        if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
-            Lara.request_gun_type = LGT_PISTOLS;
-        } else if (KeyData->keymap[DIK_2] && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Lara.request_gun_type = LGT_SHOTGUN;
-        } else if (KeyData->keymap[DIK_3] && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Lara.request_gun_type = LGT_MAGNUMS;
-        } else if (KeyData->keymap[DIK_4] && Inv_RequestItem(O_UZI_ITEM)) {
-            Lara.request_gun_type = LGT_UZIS;
-        }
-
-        if (TR1MData.medipack_cooldown > 0) {
-            --TR1MData.medipack_cooldown;
-        } else {
-            if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
-                UseItem(O_MEDI_OPTION);
-                TR1MData.medipack_cooldown = 15; // half a second
-            } else if (
-                KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
-                UseItem(O_BIGMEDI_OPTION);
-                TR1MData.medipack_cooldown = 15;
+    for (cd_drive = 'C'; cd_drive <= 'Z'; cd_drive++) {
+        root[0] = cd_drive;
+        if (GetDriveType(root) == DRIVE_CDROM) {
+            sprintf(tmp_path, "%c:\\tomb\\data\\title.phd", cd_drive);
+            fp = fopen(tmp_path, "rb");
+            if (fp) {
+                DEMO = 1;
+                return fclose(fp);
+            }
+            sprintf(tmp_path, "%c:\\data\\title.phd", cd_drive);
+            fp = fopen(tmp_path, "rb");
+            if (fp) {
+                DEMO = 0;
+                return fclose(fp);
             }
         }
     }
-
-    if (KeyData->keymap[DIK_RETURN] || (linput & IN_ACTION)) {
-        linput |= IN_SELECT;
-    }
-    if (KeyData->keymap[DIK_ESCAPE]) {
-        linput |= IN_DESELECT;
-    }
-
-    if ((linput & (IN_RIGHT | IN_LEFT)) == (IN_RIGHT | IN_LEFT)) {
-        linput &= ~(IN_RIGHT | IN_LEFT);
-    }
-
-    if (!ModeLock && Camera.type != CAM_CINEMATIC) {
-        if (KeyData->keymap[DIK_F5]) {
-            linput |= IN_SAVE;
-        } else if (KeyData->keymap[DIK_F6]) {
-            linput |= IN_LOAD;
-        }
-    }
-
-    if (IsSoftwareRenderer) {
-        if (KeyData->keymap[DIK_F3]) {
-            AppSettings ^= 2u;
-            do
-                WinVidSpinMessageLoop();
-            while (KeyData->keymap[DIK_F3]);
-        }
-
-        if (KeyData->keymap[DIK_F4]) {
-            AppSettings ^= 1u;
-            do {
-                WinVidSpinMessageLoop();
-            } while (KeyData->keymap[DIK_F4]);
-        }
-
-        if (KeyData->keymap[DIK_F2]) {
-            AppSettings ^= 4u;
-            do {
-                WinVidSpinMessageLoop();
-            } while (KeyData->keymap[DIK_F2]);
-        }
-    }
-
-    Input = linput;
-    return;
+    ShowFatalError("ERROR: Please insert TombRaider CD");
+    return 0;
 }
 
-void TR1MInjectShell()
+void TR1MInjectSpecificFile()
 {
-    INJECT(0x0041E2C0, init_game_malloc);
-    INJECT(0x0041E3B0, game_free);
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041BC60, LoadItems);
+    INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041BFC0, GetFullPath);
     INJECT(0x0041C020, FindCdDrive);
-    INJECT(0x0041AF90, S_LoadLevel);
-    INJECT(0x0042A2C0, DB_Log);
-    INJECT(0x004302D0, S_DrawHealthBar);
-    INJECT(0x00430450, S_DrawAirBar);
-    INJECT(0x0041E550, S_UpdateInput);
 }

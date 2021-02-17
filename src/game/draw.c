@@ -1,7 +1,8 @@
+#include "3dsystem/3d_gen.h"
 #include "game/const.h"
 #include "game/data.h"
 #include "game/draw.h"
-#include "game/shell.h"
+#include "specific/output.h"
 #include "util.h"
 
 void __cdecl PrintRooms(int16_t room_number)
@@ -62,7 +63,7 @@ void __cdecl PrintRooms(int16_t room_number)
     r->bound_top = PhdWinMaxY;
 }
 
-void TR1MInjectDraw()
+void TR1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
 }

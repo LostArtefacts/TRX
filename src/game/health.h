@@ -10,6 +10,6 @@ void __cdecl AddDisplayPickup(int16_t objnum);
 void __cdecl InitialisePickUpDisplay();
 void __cdecl DrawPickups();
 
-void TR1MInjectHealth();
+void TR1MInjectGameHealth();
 
 #endif

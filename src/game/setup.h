@@ -9,6 +9,6 @@
 
 void __cdecl InitialiseObjects();
 
-void TR1MInjectSetup();
+void TR1MInjectGameSetup();
 
 #endif

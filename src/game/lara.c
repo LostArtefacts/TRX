@@ -1,3 +1,4 @@
+#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
@@ -7,7 +8,7 @@
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/misc.h"
-#include "game/shell.h"
+#include "specific/init.h"
 #include "mod.h"
 #include "util.h"
 
@@ -2153,7 +2154,7 @@ int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
     return 0;
 }
 
-void TR1MInjectLara()
+void TR1MInjectGameLara()
 {
     INJECT(0x00422480, LaraAboveWater);
 

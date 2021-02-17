@@ -1,7 +1,11 @@
-#ifndef TR1MAIN_GAME_GAME_H
-#define TR1MAIN_GAME_GAME_H
+#ifndef TR1MAIN_SPECIFIC_GAME_H
+#define TR1MAIN_SPECIFIC_GAME_H
 
 #include <stdint.h>
+
+// clang-format off
+#define S_SaveGame              ((void          __cdecl(*)())0x0041DB70)
+// clang-format on
 
 int __cdecl LevelIsValid(int16_t level_number);
 void __cdecl SeedRandomControl(int32_t seed);
@@ -10,6 +14,6 @@ int32_t __cdecl GetRandomControl();
 int32_t __cdecl GetRandomDraw();
 void __cdecl LevelStats(int level_id);
 
-void TR1MInjectGame();
+void TR1MInjectSpecificGame();
 
 #endif

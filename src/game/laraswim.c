@@ -1,10 +1,10 @@
+#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/box.h"
 #include "game/const.h"
 #include "game/control.h"
 #include "game/data.h"
 #include "game/lara.h"
-#include "game/shell.h"
 #include "mod.h"
 #include "util.h"
 
@@ -360,7 +360,7 @@ void __cdecl LaraWaterCurrent(COLL_INFO* coll)
     coll->old.z = item->pos.z;
 }
 
-void TR1MInjectLaraSwim()
+void TR1MInjectGameLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
 

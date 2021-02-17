@@ -119,7 +119,7 @@ void __cdecl UseItem(__int16 object_num)
     }
 }
 
-void TR1MInjectLaraMisc()
+void TR1MInjectGameLaraMisc()
 {
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00427E80, UseItem);

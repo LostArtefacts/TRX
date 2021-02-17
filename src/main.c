@@ -8,32 +8,38 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
-#include "game/game.h"
 #include "game/health.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/setup.h"
-#include "game/shell.h"
 #include "game/text.h"
+#include "specific/file.h"
+#include "specific/game.h"
+#include "specific/init.h"
+#include "specific/input.h"
+#include "specific/output.h"
 
 HINSTANCE hInstance = NULL;
 
 static void TR1MInject()
 {
-    TR1MInjectControl();
-    TR1MInjectDraw();
-    TR1MInjectEffects();
-    TR1MInjectGame();
-    TR1MInjectHealth();
-    TR1MInjectItems();
-    TR1MInjectLOT();
-    TR1MInjectLara();
-    TR1MInjectLaraMisc();
-    TR1MInjectLaraSwim();
-    TR1MInjectSetup();
-    TR1MInjectShell();
-    TR1MInjectText();
+    TR1MInjectGameControl();
+    TR1MInjectGameDraw();
+    TR1MInjectGameEffects();
+    TR1MInjectGameHealth();
+    TR1MInjectGameItems();
+    TR1MInjectGameLOT();
+    TR1MInjectGameLara();
+    TR1MInjectGameLaraMisc();
+    TR1MInjectGameLaraSwim();
+    TR1MInjectGameSetup();
+    TR1MInjectGameText();
+    TR1MInjectSpecificFile();
+    TR1MInjectSpecificGame();
+    TR1MInjectSpecificInit();
+    TR1MInjectSpecificInput();
+    TR1MInjectSpecificOutput();
 }
 
 static int TR1MReadConfig()

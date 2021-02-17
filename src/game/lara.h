@@ -124,8 +124,8 @@ void TR1MLookLeftRight();
 void TR1MLookUpDown();
 void TR1MResetLook();
 
-void TR1MInjectLara();
-void TR1MInjectLaraMisc();
-void TR1MInjectLaraSwim();
+void TR1MInjectGameLara();
+void TR1MInjectGameLaraMisc();
+void TR1MInjectGameLaraSwim();
 
 #endif

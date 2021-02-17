@@ -14,6 +14,6 @@
 
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode);
 
-void TR1MInjectControl();
+void TR1MInjectGameControl();
 
 #endif

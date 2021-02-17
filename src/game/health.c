@@ -1,7 +1,8 @@
+#include "3dsystem/scalespr.h"
 #include "game/data.h"
 #include "game/health.h"
-#include "game/shell.h"
 #include "game/text.h"
+#include "specific/output.h"
 #include "mod.h"
 #include "util.h"
 
@@ -161,7 +162,7 @@ void __cdecl AddDisplayPickup(int16_t objnum)
     }
 }
 
-void TR1MInjectHealth()
+void TR1MInjectGameHealth()
 {
     INJECT(0x0041DD00, DrawGameInfo);
     INJECT(0x0041DEA0, DrawHealthBar);

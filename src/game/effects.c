@@ -21,7 +21,7 @@ void __cdecl FxChainBlock(ITEM_INFO* item)
     }
 }
 
-void TR1MInjectEffects()
+void TR1MInjectGameEffects()
 {
     INJECT(0x0041AD00, FxChainBlock);
 }

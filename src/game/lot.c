@@ -1,6 +1,6 @@
 #include "game/data.h"
 #include "game/lot.h"
-#include "game/shell.h"
+#include "specific/init.h"
 #include "util.h"
 
 void __cdecl InitialiseLOTArray()
@@ -17,7 +17,7 @@ void __cdecl InitialiseLOTArray()
     SlotsUsed = 0;
 }
 
-void TR1MInjectLOT()
+void TR1MInjectGameLOT()
 {
     INJECT(0x0042A300, InitialiseLOTArray);
 }
