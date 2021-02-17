@@ -1097,6 +1097,21 @@ void __cdecl LaraColTurnR(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColDeath(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->radius = LARA_RAD * 4;
+    GetLaraCollisionInfo(item, coll);
+
+    ShiftItem(item, coll);
+    item->pos.y += coll->mid_floor;
+    item->hit_points = -1;
+    Lara.air = -1;
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1160,6 +1175,7 @@ int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 void TR1MInjectLara()
 {
     INJECT(0x00422480, LaraAboveWater);
+
     INJECT(0x004225F0, LaraAsWalk);
     INJECT(0x00422670, LaraAsRun);
     INJECT(0x00422760, LaraAsStop);
@@ -1192,11 +1208,14 @@ void TR1MInjectLara()
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
+
     INJECT(0x004237C0, LaraColWalk);
     INJECT(0x004239F0, LaraColRun);
     INJECT(0x00423C00, LaraColStop);
     INJECT(0x00423D00, LaraColForwardJump);
     INJECT(0x00423DD0, LaraColFastBack);
     INJECT(0x00423F40, LaraColTurnR);
+    INJECT(0x00423FF0, LaraColDeath);
+
     INJECT(0x004237A0, LaraAsWaterOut);
 }
