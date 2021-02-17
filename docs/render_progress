@@ -183,6 +183,10 @@ class Function:
         return "+" in self.flags
 
     @property
+    def is_called(self) -> bool:
+        return "*" in self.flags
+
+    @property
     def is_named(self) -> bool:
         return not self.name.startswith("sub_")
 
