@@ -99,6 +99,7 @@ void __cdecl LaraColDefault(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColRoll(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColRoll2(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSwanDive(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
