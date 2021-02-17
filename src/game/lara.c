@@ -838,9 +838,9 @@ void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll)
 {
+    Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
     item->fall_speed = 0;
-    Lara.move_angle = item->pos.y_rot;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -978,9 +978,9 @@ void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColStop(ITEM_INFO* item, COLL_INFO* coll)
 {
+    Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
     item->fall_speed = 0;
-    Lara.move_angle = item->pos.y_rot;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1036,9 +1036,9 @@ void __cdecl LaraColForwardJump(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
 {
+    Lara.move_angle = item->pos.y_rot + -32768;
     item->gravity_status = 0;
     item->fall_speed = 0;
-    Lara.move_angle = item->pos.y_rot + -32768;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1070,9 +1070,9 @@ void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
+    Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
     item->fall_speed = 0;
-    Lara.move_angle = item->pos.y_rot;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1209,6 +1209,7 @@ void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll)
     coll->bad_neg = NO_BAD_NEG;
     coll->bad_ceiling = 0;
     GetLaraCollisionInfo(item, coll);
+
     if (coll->mid_ceiling > -100) {
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
@@ -1221,6 +1222,44 @@ void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll)
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
     }
+}
+
+void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot + -32768;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+
+    if (LaraDeflectEdge(item, coll)) {
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+    }
+
+    if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
+        if (item->frame_number >= 964 && item->frame_number <= 993) {
+            item->anim_number = AA_BACKSTEPD_RIGHT;
+            item->frame_number = AF_BACKSTEPD_RIGHT;
+        } else {
+            item->anim_number = AA_BACKSTEPD_LEFT;
+            item->frame_number = AF_BACKSTEPD_LEFT;
+        }
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += coll->mid_floor;
 }
 
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
@@ -1364,6 +1403,7 @@ void TR1MInjectLara()
     INJECT(0x004243F0, LaraColSplat);
     INJECT(0x00424460, LaraColLand);
     INJECT(0x00424480, LaraColCompress);
+    INJECT(0x00424520, LaraColBack);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }

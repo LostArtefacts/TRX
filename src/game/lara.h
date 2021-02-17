@@ -81,6 +81,7 @@ void __cdecl LaraColReach(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSplat(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColLand(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
