@@ -13,6 +13,7 @@
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
 #define LaraDeflectEdgeJump     ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x004255A0)
+#define LaraSlideSlope          ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO* coll))0x004251D0)
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
 #define LaraHangTest            ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425350)
 #define LaraTestHangJump        ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425890)
@@ -84,6 +85,7 @@ void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColStepLeft(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColSlide(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);

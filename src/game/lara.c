@@ -1318,6 +1318,12 @@ void __cdecl LaraColStepLeft(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColSlide(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    LaraSlideSlope(item, coll);
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1462,6 +1468,7 @@ void TR1MInjectLara()
     INJECT(0x00424520, LaraColBack);
     INJECT(0x00424690, LaraColStepRight);
     INJECT(0x004247D0, LaraColStepLeft);
+    INJECT(0x00424910, LaraColSlide);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
