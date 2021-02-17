@@ -1112,6 +1112,31 @@ void __cdecl LaraColDeath(ITEM_INFO* item, COLL_INFO* coll)
     Lara.air = -1;
 }
 
+void __cdecl LaraColFastFall(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->gravity_status = 1;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+    GetLaraCollisionInfo(item, coll);
+
+    LaraSlideEdgeJump(item, coll);
+    if (coll->mid_floor <= 0) {
+        if (LaraLandedBad(item, coll)) {
+            item->goal_anim_state = AS_DEATH;
+        } else {
+            item->goal_anim_state = AS_STOP;
+            item->current_anim_state = AS_STOP;
+            item->anim_number = AA_LANDFAR;
+            item->frame_number = AF_LANDFAR;
+        }
+        StopSoundEffect(30, NULL);
+        item->pos.y += coll->mid_floor;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+    }
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1157,6 +1182,37 @@ int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
         item->pos.y_rot -= LARA_DEF_ADD_EDGE;
     }
     return 0;
+}
+
+void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    ShiftItem(item, coll);
+    switch (coll->coll_type) {
+    case COLL_LEFT:
+        item->pos.y_rot += LARA_DEF_ADD_EDGE;
+        break;
+
+    case COLL_RIGHT:
+        item->pos.y_rot -= LARA_DEF_ADD_EDGE;
+        break;
+
+    case COLL_TOP:
+    case COLL_TOPFRONT:
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 1;
+        }
+        break;
+
+    case COLL_CLAMP:
+        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->speed = 0;
+        coll->mid_floor = 0;
+        if (item->fall_speed <= 0) {
+            item->fall_speed = 16;
+        }
+        break;
+    }
 }
 
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
@@ -1216,6 +1272,7 @@ void TR1MInjectLara()
     INJECT(0x00423DD0, LaraColFastBack);
     INJECT(0x00423F40, LaraColTurnR);
     INJECT(0x00423FF0, LaraColDeath);
+    INJECT(0x00424070, LaraColFastFall);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
