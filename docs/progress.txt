@@ -396,7 +396,7 @@ LaraDeflectEdgeJump             0x004255A0  0x000000E4  +
 TestLaraVault                   0x004256C0  0x000001C8  +
 LaraTestHangJump                0x00425890  0x0000024B  +
 LaraTestHangJumpUp              0x00425AE0  0x0000016A  +
-TestLaraSlide                   0x00425C50  0x0000011A  -
+TestLaraSlide                   0x00425C50  0x0000011A  +
 LaraLandedBad                   0x00425D70  0x000000BE  -
 draw_shotgun                    0x00425E30  0x00000113  -
 undraw_shotgun                  0x00425F50  0x00000160  -

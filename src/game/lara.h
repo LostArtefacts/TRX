@@ -13,7 +13,6 @@
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
-#define TestLaraSlide           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425C50)
 // clang-format on
 
 void __cdecl InitialiseLara();
@@ -109,6 +108,7 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraTestHangJump(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraTestHangJumpUp(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl TestHangSwingIn(ITEM_INFO* item, PHD_ANGLE angle);
+int32_t __cdecl TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 
