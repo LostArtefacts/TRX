@@ -217,6 +217,62 @@ void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
     LaraSwimCollision(item, coll);
 }
 
+void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->pos.x_rot >= -PHD_ONE / 4 && item->pos.x_rot <= PHD_ONE / 4) {
+        Lara.move_angle = coll->facing = item->pos.y_rot;
+    } else {
+        Lara.move_angle = coll->facing = item->pos.y_rot - PHD_ONE / 2;
+    }
+    GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
+        item->room_number, UW_HITE);
+
+    ShiftItem(item, coll);
+
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+        if (item->pos.x_rot > 35 * ONE_DEGREE) {
+            item->pos.x_rot = item->pos.x_rot + UW_WALLDEFLECT;
+            break;
+        }
+        if (item->pos.x_rot < -35 * ONE_DEGREE) {
+            item->pos.x_rot = item->pos.x_rot - UW_WALLDEFLECT;
+            break;
+        }
+        item->fall_speed = 0;
+        break;
+
+    case COLL_TOP:
+        if (item->pos.x_rot >= -45 * ONE_DEGREE) {
+            item->pos.x_rot -= UW_WALLDEFLECT;
+        }
+        break;
+
+    case COLL_TOPFRONT:
+        item->fall_speed = 0;
+        break;
+
+    case COLL_LEFT:
+        item->pos.y_rot += 5 * ONE_DEGREE;
+        break;
+
+    case COLL_RIGHT:
+        item->pos.y_rot -= 5 * ONE_DEGREE;
+        break;
+
+    case COLL_CLAMP:
+        item->fall_speed = 0;
+        return;
+        break;
+    }
+
+    if (coll->mid_floor < 0) {
+        item->pos.y += coll->mid_floor;
+        item->pos.x_rot += UW_WALLDEFLECT;
+    }
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -229,4 +285,6 @@ void TR1MInjectLaraSwim()
 
     INJECT(0x004292C0, LaraColSwim);
     INJECT(0x004292E0, LaraColUWDeath);
+
+    INJECT(0x00429340, LaraSwimCollision);
 }

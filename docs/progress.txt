@@ -446,7 +446,7 @@ LaraAsDive                      0x00429250  0x00000014  +
 LaraAsUWDeath                   0x00429270  0x0000004A  +
 LaraColSwim                     0x004292C0  0x00000013  +
 LaraColUWDeath                  0x004292E0  0x0000005E  +
-LaraSwimCollision               0x00429340  0x000000FA  -
+LaraSwimCollision               0x00429340  0x000000FA  +
 LaraWaterCurrent                0x00429440  0x000001DB  -
 DrawLightning                   0x00429620  0x000004D1  -
 InitialiseLightning             0x00429B00  0x0000007E  -
