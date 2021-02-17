@@ -204,6 +204,19 @@ void __cdecl LaraColSwim(ITEM_INFO* item, COLL_INFO* coll)
     LaraSwimCollision(item, coll);
 }
 
+void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->hit_points = -1;
+    Lara.air = -1;
+    Lara.gun_status = LGS_HANDSBUSY;
+    int wh = GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
+        item->pos.y -= 5;
+    }
+    LaraSwimCollision(item, coll);
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -215,4 +228,5 @@ void TR1MInjectLaraSwim()
     INJECT(0x00429270, LaraAsUWDeath);
 
     INJECT(0x004292C0, LaraColSwim);
+    INJECT(0x004292E0, LaraColUWDeath);
 }

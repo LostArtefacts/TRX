@@ -102,6 +102,7 @@ void __cdecl LaraColSwanDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColTread(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll);
