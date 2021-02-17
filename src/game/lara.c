@@ -1038,7 +1038,7 @@ void __cdecl LaraColForwardJump(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + -32768;
+    Lara.move_angle = item->pos.y_rot + -PHD_ONE / 2;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
@@ -1225,7 +1225,7 @@ void __cdecl LaraColCompress(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + -32768;
+    Lara.move_angle = item->pos.y_rot + -PHD_ONE / 2;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
@@ -1263,7 +1263,7 @@ void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + 16384;
+    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEP_L / 2;
@@ -1291,7 +1291,7 @@ void __cdecl LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColStepLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - 16384;
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = 128;
@@ -1325,19 +1325,19 @@ void __cdecl LaraColSlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColBackJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - 32768;
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
     LaraColJumper(item, coll);
 }
 
 void __cdecl LaraColRightJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + 16384;
+    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
     LaraColJumper(item, coll);
 }
 
 void __cdecl LaraColLeftJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - 16384;
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
     LaraColJumper(item, coll);
 }
 
@@ -1371,7 +1371,7 @@ void __cdecl LaraColUpJump(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraColFallback(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - 32768;
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
@@ -1389,6 +1389,13 @@ void __cdecl LaraColFallback(ITEM_INFO* item, COLL_INFO* coll)
         item->gravity_status = 0;
         item->fall_speed = 0;
     }
+}
+
+void __cdecl LaraColHangLeft(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    LaraHangTest(item, coll);
+    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
 }
 
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
@@ -1562,6 +1569,7 @@ void TR1MInjectLara()
     INJECT(0x00424A90, LaraColLeftJump);
     INJECT(0x00424B40, LaraColUpJump);
     INJECT(0x00424CD0, LaraColFallback);
+    INJECT(0x00424D80, LaraColHangLeft);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
