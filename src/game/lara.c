@@ -1290,6 +1290,34 @@ void __cdecl LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColStepLeft(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot - 16384;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    coll->bad_pos = 128;
+    coll->bad_neg = -128;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+
+    if (LaraDeflectEdge(item, coll)) {
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += coll->mid_floor;
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1433,6 +1461,7 @@ void TR1MInjectLara()
     INJECT(0x00424480, LaraColCompress);
     INJECT(0x00424520, LaraColBack);
     INJECT(0x00424690, LaraColStepRight);
+    INJECT(0x004247D0, LaraColStepLeft);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
