@@ -1830,7 +1830,7 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         return 0;
     }
 
-    int angle = item->pos.y_rot;
+    PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= 0 - VAULT_ANGLE && angle <= 0 + VAULT_ANGLE) {
         angle = 0;
     } else if (
@@ -1851,7 +1851,7 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         return 0;
     }
 
-    int hdif = coll->front_floor;
+    int32_t hdif = coll->front_floor;
     if (hdif >= -STEP_L * 2 - STEP_L / 2 && hdif <= -STEP_L * 2 + STEP_L / 2) {
         if (hdif - coll->front_ceiling < 0
             || coll->left_floor - coll->left_ceiling < 0
@@ -1864,8 +1864,11 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         item->frame_number = AF_VAULT12;
         item->pos.y += STEP_L * 2 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
+        item->pos.y_rot = angle;
+        ShiftItem(item, coll);
+        return 1;
     } else if (
-        hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 - STEP_L / 2) {
+        hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 + STEP_L / 2) {
         if (hdif - coll->front_ceiling < 0
             || coll->left_floor - coll->left_ceiling < 0
             || coll->right_floor - coll->right_ceiling < 0) {
@@ -1877,6 +1880,9 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         item->frame_number = AF_VAULT34;
         item->pos.y += STEP_L * 3 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
+        item->pos.y_rot = angle;
+        ShiftItem(item, coll);
+        return 1;
     } else if (
         hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
         item->goal_anim_state = AS_UPJUMP;
@@ -1886,13 +1892,12 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         Lara.calc_fallspeed =
             -(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         AnimateLara(item);
-    } else {
-        return 0;
+        item->pos.y_rot = angle;
+        ShiftItem(item, coll);
+        return 1;
     }
 
-    item->pos.y_rot = angle;
-    ShiftItem(item, coll);
-    return 1;
+    return 0;
 }
 
 int32_t __cdecl LaraTestHangJump(ITEM_INFO* item, COLL_INFO* coll)
