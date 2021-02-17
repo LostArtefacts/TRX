@@ -15,6 +15,7 @@
 #define LaraDeflectEdgeJump     ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x004255A0)
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
 #define LaraHangTest            ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425350)
+#define LaraTestHangJump        ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425890)
 #define TestLaraVault           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x004256C0)
 #define TestLaraSlide           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425C50)
 // clang-format on
@@ -76,6 +77,7 @@ void __cdecl LaraColTurnR(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColDeath(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColFastFall(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColHang(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColReach(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
