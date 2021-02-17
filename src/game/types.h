@@ -4,7 +4,7 @@
 #include "const.h"
 #include <stdint.h>
 
-typedef uint16_t PHD_ANGLE;
+typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 typedef void UNKNOWN_STRUCT;
 

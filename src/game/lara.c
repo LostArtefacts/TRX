@@ -1668,8 +1668,8 @@ void __cdecl LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
         item->gravity_status = 1;
-        item->speed = 2;
         item->fall_speed = 1;
+        item->speed = 2;
         Lara.gun_status = LGS_ARMLESS;
         return;
     }
@@ -1814,11 +1814,17 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
     int angle = item->pos.y_rot;
     if (angle >= 0 - VAULT_ANGLE && angle <= 0 + VAULT_ANGLE) {
         angle = 0;
-    } else if (angle >= 16384 - VAULT_ANGLE && angle <= 16384 + VAULT_ANGLE) {
+    } else if (
+        angle >= PHD_ONE / 4 - VAULT_ANGLE
+        && angle <= PHD_ONE / 4 + VAULT_ANGLE) {
         angle = PHD_ONE / 4;
-    } else if (angle >= 32767 - VAULT_ANGLE || angle <= -32767 + VAULT_ANGLE) {
+    } else if (
+        angle >= (PHD_ONE / 2 - 1) - VAULT_ANGLE
+        || angle <= -(PHD_ONE / 2 - 1) + VAULT_ANGLE) {
         angle = -PHD_ONE / 2;
-    } else if (angle >= -16384 - VAULT_ANGLE && angle <= -16384 + VAULT_ANGLE) {
+    } else if (
+        angle >= -PHD_ONE / 4 - VAULT_ANGLE
+        && angle <= -PHD_ONE / 4 + VAULT_ANGLE) {
         angle = -PHD_ONE / 4;
     }
 
@@ -1868,6 +1874,107 @@ int32_t __cdecl TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y_rot = angle;
     ShiftItem(item, coll);
     return 1;
+}
+
+int32_t __cdecl LaraTestHangJump(ITEM_INFO* item, COLL_INFO* coll)
+{
+    int hdif;
+    int16_t* bounds;
+
+    if (coll->coll_type != COLL_FRONT || !(Input & IN_ACTION)
+        || Lara.gun_status != LGS_ARMLESS
+        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        return 0;
+    }
+
+    if (coll->front_ceiling > 0 || coll->mid_ceiling > -384
+        || coll->mid_floor < 200) {
+        return 0;
+    }
+
+    bounds = GetBoundsAccurate(item);
+    hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    if (hdif < 0 && hdif + item->fall_speed < 0) {
+        return 0;
+    }
+    if (hdif > 0 && hdif + item->fall_speed > 0) {
+        return 0;
+    }
+
+    int angle = item->pos.y_rot;
+    if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
+        angle = 0;
+    } else if (
+        angle >= PHD_ONE / 4 - HANG_ANGLE
+        && angle <= PHD_ONE / 4 + HANG_ANGLE) {
+        angle = PHD_ONE / 4;
+    } else if (
+        angle >= (PHD_ONE / 2 - 1) - HANG_ANGLE
+        || angle <= -(PHD_ONE / 2 - 1) + HANG_ANGLE) {
+        angle = -PHD_ONE / 2;
+    } else if (
+        angle >= -PHD_ONE / 4 - HANG_ANGLE
+        && angle <= -PHD_ONE / 4 + HANG_ANGLE) {
+        angle = -PHD_ONE / 4;
+    }
+
+    if (angle & ((PHD_ONE / 4) - 1)) {
+        return 0;
+    }
+
+    if (TestHangSwingIn(item, angle)) {
+        item->anim_number = AA_GRABLEDGEIN;
+        item->frame_number = AF_GRABLEDGEIN;
+    } else {
+        item->anim_number = AA_GRABLEDGE;
+        item->frame_number = AF_GRABLEDGE;
+    }
+    item->current_anim_state = AS_HANG;
+    item->goal_anim_state = AS_HANG;
+
+    // bounds = GetBoundsAccurate(item);
+    item->pos.y += hdif;
+    item->pos.x += coll->shift.x;
+    item->pos.z += coll->shift.z;
+    item->pos.y_rot = angle;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    item->speed = 0;
+    Lara.gun_status = LGS_HANDSBUSY;
+    return 1;
+}
+
+int32_t __cdecl TestHangSwingIn(ITEM_INFO* item, PHD_ANGLE angle)
+{
+    int x = item->pos.x;
+    int y = item->pos.y;
+    int z = item->pos.z;
+    int16_t room_num = item->room_number;
+    switch (angle) {
+    case 0:
+        z += 256;
+        break;
+    case PHD_ONE / 4:
+        x += 256;
+        break;
+    case -PHD_ONE / 4:
+        x -= 256;
+        break;
+    case -PHD_ONE / 2:
+        z -= 256;
+        break;
+    }
+
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    int h = GetHeight(floor, x, y, z);
+    int c = GetCeiling(floor, x, y, z);
+
+    if (h != NO_HEIGHT) {
+        if ((h - y) > 0 && (c - y) < -400) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
@@ -1956,4 +2063,5 @@ void TR1MInjectLara()
     INJECT(0x00425350, LaraHangTest);
     INJECT(0x004255A0, LaraDeflectEdgeJump);
     INJECT(0x004256C0, TestLaraVault);
+    INJECT(0x00425890, LaraTestHangJump);
 }

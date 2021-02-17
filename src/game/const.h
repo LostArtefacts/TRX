@@ -78,5 +78,6 @@
 #define FRAME_POS_Z 8
 #define SLOPE_DIF 60
 #define VAULT_ANGLE (30 * ONE_DEGREE)
+#define HANG_ANGLE (35 * ONE_DEGREE)
 
 #endif
