@@ -199,6 +199,11 @@ void __cdecl LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColSwim(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraSwimCollision(item, coll);
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -208,4 +213,6 @@ void TR1MInjectLaraSwim()
     INJECT(0x004291D0, LaraAsTread);
     INJECT(0x00429250, LaraAsDive);
     INJECT(0x00429270, LaraAsUWDeath);
+
+    INJECT(0x004292C0, LaraColSwim);
 }
