@@ -182,6 +182,23 @@ void __cdecl LaraAsDive(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->fall_speed -= 8;
+    if (item->fall_speed <= 0) {
+        item->fall_speed = 0;
+    }
+
+    if (item->pos.x_rot >= -2 * ONE_DEGREE
+        && item->pos.x_rot <= 2 * ONE_DEGREE) {
+        item->pos.x_rot = 0;
+    } else if (item->pos.x_rot < 0) {
+        item->pos.x_rot += 2 * ONE_DEGREE;
+    } else {
+        item->pos.x_rot -= 2 * ONE_DEGREE;
+    }
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -190,4 +207,5 @@ void TR1MInjectLaraSwim()
     INJECT(0x00429140, LaraAsGlide);
     INJECT(0x004291D0, LaraAsTread);
     INJECT(0x00429250, LaraAsDive);
+    INJECT(0x00429270, LaraAsUWDeath);
 }
