@@ -175,6 +175,13 @@ void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsDive(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (Input & AS_RUN) {
+        item->pos.x_rot -= ONE_DEGREE;
+    }
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -182,4 +189,5 @@ void TR1MInjectLaraSwim()
     INJECT(0x004290C0, LaraAsSwim);
     INJECT(0x00429140, LaraAsGlide);
     INJECT(0x004291D0, LaraAsTread);
+    INJECT(0x00429250, LaraAsDive);
 }
