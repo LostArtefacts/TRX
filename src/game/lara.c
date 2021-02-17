@@ -1184,6 +1184,18 @@ void __cdecl LaraColReach(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColSplat(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    GetLaraCollisionInfo(item, coll);
+    ShiftItem(item, coll);
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1322,6 +1334,7 @@ void TR1MInjectLara()
     INJECT(0x00424070, LaraColFastFall);
     INJECT(0x004241F0, LaraColHang);
     INJECT(0x00424260, LaraColReach);
+    INJECT(0x004243F0, LaraColSplat);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
