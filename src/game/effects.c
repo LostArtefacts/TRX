@@ -1,6 +1,7 @@
 #include "data.h"
 #include "effects.h"
 #include "mod.h"
+#include "util.h"
 
 void __cdecl FxChainBlock(ITEM_INFO* item)
 {

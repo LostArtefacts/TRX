@@ -3,6 +3,7 @@
 #include "game/shell.h"
 #include "game/text.h"
 #include "mod.h"
+#include "util.h"
 
 void __cdecl DrawGameInfo()
 {

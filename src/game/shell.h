@@ -2,6 +2,7 @@
 #define TR1M_GAME_SHELL_H
 
 #include "util.h"
+#include <stdio.h>
 
 // clang-format off
 #define game_malloc             ((void          __cdecl*(*)(uint32_t length, int type))0x0041E2F0)

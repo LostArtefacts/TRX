@@ -25,6 +25,7 @@
 void __cdecl InitialiseLara();
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);
+
 void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsStop(ITEM_INFO* item, COLL_INFO* coll);
@@ -70,6 +71,7 @@ void __cdecl LaraAsSwanDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll);
+
 void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColStop(ITEM_INFO* item, COLL_INFO* coll);
@@ -101,6 +103,7 @@ void __cdecl LaraColRoll2(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSwanDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll);
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);

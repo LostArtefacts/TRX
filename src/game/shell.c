@@ -4,6 +4,7 @@
 #include "game/lara.h"
 #include "game/shell.h"
 #include "mod.h"
+#include "util.h"
 #include <stdarg.h>
 #include <windows.h>
 #include <dinput.h>

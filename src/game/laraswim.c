@@ -5,6 +5,7 @@
 #include "game/lara.h"
 #include "game/shell.h"
 #include "mod.h"
+#include "util.h"
 
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 {

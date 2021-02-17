@@ -2,6 +2,7 @@
 #include "game/data.h"
 #include "game/draw.h"
 #include "game/shell.h"
+#include "util.h"
 
 void __cdecl PrintRooms(int16_t room_number)
 {

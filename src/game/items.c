@@ -1,6 +1,7 @@
 #include "game/const.h"
 #include "game/data.h"
 #include "game/items.h"
+#include "util.h"
 
 void __cdecl InitialiseFXArray()
 {
