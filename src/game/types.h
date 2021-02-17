@@ -411,6 +411,12 @@ typedef enum {
     MOOD_STALK = 3,
 } MOOD_TYPE;
 
+enum {
+    TARGET_NONE = 0,
+    TARGET_PRIMARY = 1,
+    TARGET_SECONDARY = 2,
+} TARGET_TYPE;
+
 typedef enum {
     GBUF_RoomInfos = 11,
     GBUF_RoomMesh = 12,

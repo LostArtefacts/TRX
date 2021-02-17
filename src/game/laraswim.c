@@ -1,4 +1,5 @@
 #include "game/collide.h"
+#include "game/box.h"
 #include "game/const.h"
 #include "game/control.h"
 #include "game/data.h"
@@ -273,6 +274,86 @@ void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraWaterCurrent(COLL_INFO* coll)
+{
+    PHD_VECTOR target; // [esp+Ch] [ebp-Ch]
+
+    ITEM_INFO* item = LaraItem;
+    ROOM_INFO* r = &RoomInfo[item->room_number];
+    FLOOR_INFO* floor =
+        &r->floor
+             [((item->pos.z - r->z) >> WALL_SHIFT)
+              + ((item->pos.x - r->x) >> WALL_SHIFT) * r->x_size];
+    item->box_number = floor->box;
+
+    if (CalculateTarget(&target, item, &Lara.LOT) == TARGET_NONE) {
+        return;
+    }
+
+    target.x -= item->pos.x;
+    if (target.x > Lara.current_active) {
+        item->pos.x += Lara.current_active;
+    } else if (target.x < -Lara.current_active) {
+        item->pos.x -= Lara.current_active;
+    } else {
+        item->pos.x += target.x;
+    }
+
+    target.z -= item->pos.z;
+    if (target.z > Lara.current_active) {
+        item->pos.z += Lara.current_active;
+    } else if (target.z < -Lara.current_active) {
+        item->pos.z -= Lara.current_active;
+    } else {
+        item->pos.z += target.z;
+    }
+
+    target.y -= item->pos.y;
+    if (target.y > Lara.current_active) {
+        item->pos.y += Lara.current_active;
+    } else if (target.y < -Lara.current_active) {
+        item->pos.y -= Lara.current_active;
+    } else {
+        item->pos.y += target.y;
+    }
+
+    Lara.current_active = 0;
+
+    coll->facing =
+        (int16_t)phd_atan(item->pos.z - coll->old.z, item->pos.x - coll->old.x);
+    GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
+        item->room_number, UW_HITE);
+
+    if (coll->coll_type == COLL_FRONT) {
+        if (item->pos.x_rot > 35 * ONE_DEGREE) {
+            item->pos.x_rot += UW_WALLDEFLECT;
+        } else if (item->pos.x_rot < -35 * ONE_DEGREE) {
+            item->pos.x_rot -= UW_WALLDEFLECT;
+        } else {
+            item->fall_speed = 0;
+        }
+    } else if (coll->coll_type == COLL_TOP) {
+        item->pos.x_rot -= UW_WALLDEFLECT;
+    } else if (coll->coll_type == COLL_TOPFRONT) {
+        item->fall_speed = 0;
+    } else if (coll->coll_type == COLL_LEFT) {
+        item->pos.y_rot += 5 * ONE_DEGREE;
+    } else if (coll->coll_type == COLL_RIGHT) {
+        item->pos.y_rot -= 5 * ONE_DEGREE;
+    }
+
+    if (coll->mid_floor < 0) {
+        item->pos.y += coll->mid_floor;
+        item->pos.x_rot += UW_WALLDEFLECT;
+    }
+    ShiftItem(item, coll);
+
+    coll->old.x = item->pos.x;
+    coll->old.y = item->pos.y;
+    coll->old.z = item->pos.z;
+}
+
 void TR1MInjectLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
@@ -287,4 +368,5 @@ void TR1MInjectLaraSwim()
     INJECT(0x004292E0, LaraColUWDeath);
 
     INJECT(0x00429340, LaraSwimCollision);
+    INJECT(0x00429440, LaraWaterCurrent);
 }
