@@ -14,7 +14,6 @@
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
 #define LaraDeflectEdgeJump     ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x004255A0)
 #define LaraLandedBad           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO* coll))0x00425D70)
-#define LaraHangTest            ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425350)
 #define LaraTestHangJump        ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425890)
 #define LaraTestHangJumpUp      ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425AE0)
 #define TestLaraVault           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x004256C0)
@@ -106,6 +105,7 @@ void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);

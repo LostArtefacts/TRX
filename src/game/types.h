@@ -550,6 +550,13 @@ typedef enum {
     HT_BIG_SLOPE = 2,
 } HEIGHT_TYPES;
 
+typedef enum {
+    DIR_NORTH = 0,
+    DIR_WEST = 1,
+    DIR_SOUTH = 2,
+    DIR_EAST = 3,
+} DIRECTION;
+
 #pragma pack(push, 1)
 
 typedef struct {

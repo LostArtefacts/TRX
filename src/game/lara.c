@@ -2,6 +2,7 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/data.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/lot.h"
@@ -1614,6 +1615,98 @@ int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
     return 0;
 }
 
+void __cdecl LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
+{
+    int flag = 0;
+    int16_t* bounds;
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = NO_BAD_NEG;
+    coll->bad_ceiling = 0;
+    GetLaraCollisionInfo(item, coll);
+    if (coll->front_floor < 200) {
+        flag = 1;
+    }
+
+    Lara.move_angle = item->pos.y_rot;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+
+    PHD_ANGLE angle =
+        (uint16_t)(item->pos.y_rot + (PHD_ONE / 8)) / (PHD_ONE / 4);
+    switch (angle) {
+    case DIR_NORTH:
+        item->pos.z += 2;
+        break;
+
+    case DIR_WEST:
+        item->pos.x += 2;
+        break;
+
+    case DIR_SOUTH:
+        item->pos.z -= 2;
+        break;
+
+    case DIR_EAST:
+        item->pos.x -= 2;
+        break;
+    }
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    GetLaraCollisionInfo(item, coll);
+
+    if (!(Input & IN_ACTION) || item->hit_points <= 0) {
+        item->goal_anim_state = AS_UPJUMP;
+        item->current_anim_state = AS_UPJUMP;
+        item->anim_number = AA_STOPHANG;
+        item->frame_number = AF_STOPHANG;
+        bounds = GetBoundsAccurate(item);
+        item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
+        item->pos.x += coll->shift.x;
+        item->pos.z += coll->shift.z;
+        item->gravity_status = 1;
+        item->speed = 2;
+        item->fall_speed = 1;
+        Lara.gun_status = LGS_ARMLESS;
+        return;
+    }
+
+    if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
+        || coll->mid_ceiling >= 0 || coll->coll_type != COLL_FRONT || flag) {
+        item->pos.x = coll->old.x;
+        item->pos.y = coll->old.y;
+        item->pos.z = coll->old.z;
+        if (item->current_anim_state == AS_HANGLEFT
+            || item->current_anim_state == AS_HANGRIGHT) {
+            item->goal_anim_state = AS_HANG;
+            item->current_anim_state = AS_HANG;
+            item->anim_number = AA_HANG;
+            item->frame_number = AF_HANG;
+        }
+        return;
+    }
+
+    switch (angle) {
+    case DIR_NORTH:
+    case DIR_SOUTH:
+        item->pos.z += coll->shift.z;
+        break;
+
+    case DIR_WEST:
+    case DIR_EAST:
+        item->pos.x += coll->shift.x;
+        break;
+    }
+
+    bounds = GetBoundsAccurate(item);
+    int hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    if (hdif >= -STEP_L && hdif <= STEP_L) {
+        item->pos.y += hdif;
+    }
+}
+
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOPFRONT) {
@@ -1747,5 +1840,7 @@ void TR1MInjectLara()
     INJECT(0x00424F90, LaraColRoll2);
     INJECT(0x004250A0, LaraColSwanDive);
     INJECT(0x00425130, LaraColFastDive);
+
     INJECT(0x004251D0, LaraSlideSlope);
+    INJECT(0x00425350, LaraHangTest);
 }
