@@ -440,7 +440,7 @@ LaraSurfaceCollision            0x00428C60  0x000000E6  -
 LaraTestWaterClimbOut           0x00428D50  0x000001B1  -
 LaraUnderWater                  0x00428F10  0x000001AD  +
 LaraAsSwim                      0x004290C0  0x00000080  +
-LaraAsGlide                     0x00429140  0x0000008A  -
+LaraAsGlide                     0x00429140  0x0000008A  +
 LaraAsTread                     0x004291D0  0x0000007C  -
 LaraAsDive                      0x00429250  0x00000014  -
 LaraAsUWDeath                   0x00429270  0x0000004A  -

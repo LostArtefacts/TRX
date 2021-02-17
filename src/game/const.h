@@ -30,6 +30,7 @@
 #define UW_MAXSPEED 200
 #define UW_RADIUS 300
 #define UW_HITE 400
+#define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
 #define NO_ITEM -1
