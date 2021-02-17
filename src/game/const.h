@@ -19,6 +19,7 @@
 #define LARA_MED_TURN ((ONE_DEGREE * 4) + LARA_TURN_UNDO) // = 1092
 #define LARA_FAST_TURN ((ONE_DEGREE * 6) + LARA_TURN_UNDO) // = 1456
 #define LARA_LEAN_UNDO ONE_DEGREE
+#define LARA_DEF_ADD_EDGE (5 * ONE_DEGREE) // = 910
 #define LARA_LEAN_RATE 273
 #define LARA_LEAN_MAX ((10 * ONE_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
@@ -43,7 +44,7 @@
 #define WALL_L 1024
 #define NO_HEIGHT (-0x7F00)
 #define STEP_L 256
-#define STEPUP_HEIGHT ((STEP_L * 3) / 2)
+#define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * ONE_DEGREE) // = -10920
 #define W2V_SHIFT 14

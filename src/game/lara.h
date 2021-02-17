@@ -8,9 +8,12 @@
 #define InitialiseLaraInventory ((void          __cdecl(*)(int level_id))0x00428170)
 #define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
+#define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
 #define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 #define LaraWaterCurrent        ((void          __cdecl(*)(COLL_INFO* coll))0x00429440)
+#define TestLaraVault           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x004256C0)
+#define TestLaraSlide           ((int32_t       __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00425C50)
 // clang-format on
 
 void __cdecl InitialiseLara();
@@ -61,6 +64,10 @@ void __cdecl LaraAsSwanDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
+int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
+int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 void __cdecl UseItem(__int16 object_num);
 

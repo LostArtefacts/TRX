@@ -836,6 +836,125 @@ void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll)
     Camera.flags = FOLLOW_CENTRE;
 }
 
+void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    coll->lava_is_pit = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+    if (TestLaraVault(item, coll)) {
+        return;
+    }
+
+    if (LaraDeflectEdge(item, coll)) {
+        if (item->frame_number >= 29 && item->frame_number <= 47) {
+            item->anim_number = AA_STOP_RIGHT;
+            item->frame_number = AF_STOP_RIGHT;
+        } else if (
+            (item->frame_number >= 22 && item->frame_number <= 28)
+            || (item->frame_number >= 48 && item->frame_number <= 57)) {
+            item->anim_number = AA_STOP_LEFT;
+            item->frame_number = AF_STOP_LEFT;
+        } else {
+            item->anim_number = AA_STOP;
+            item->frame_number = AF_STOP;
+        }
+    }
+
+    if (coll->mid_floor > STEPUP_HEIGHT) {
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
+        item->current_anim_state = AS_FORWARDJUMP;
+        item->goal_anim_state = AS_FORWARDJUMP;
+        item->gravity_status = 1;
+        item->fall_speed = 0;
+        return;
+    }
+
+    if (coll->mid_floor > STEP_L / 2) {
+        if (item->frame_number >= 28 && item->frame_number <= 45) {
+            item->anim_number = AA_WALKSTEPD_RIGHT;
+            item->frame_number = AF_WALKSTEPD_RIGHT;
+        } else {
+            item->anim_number = AA_WALKSTEPD_LEFT;
+            item->frame_number = AF_WALKSTEPD_LEFT;
+        }
+    }
+
+    if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
+        if (item->frame_number >= 27 && item->frame_number <= 44) {
+            item->anim_number = AA_WALKSTEPUP_RIGHT;
+            item->frame_number = AF_WALKSTEPUP_RIGHT;
+        } else {
+            item->anim_number = AA_WALKSTEPUP_LEFT;
+            item->frame_number = AF_WALKSTEPUP_LEFT;
+        }
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
+    }
+
+    item->pos.y += coll->mid_floor;
+}
+
+void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->facing = Lara.move_angle;
+    GetCollisionInfo(
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
+        LARA_HITE);
+}
+
+int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_CLAMP) {
+        item->pos.x = coll->old.x;
+        item->pos.y = coll->old.y;
+        item->pos.z = coll->old.z;
+        item->goal_anim_state = AS_STOP;
+        item->current_anim_state = AS_STOP;
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+        item->speed = 0;
+        return 1;
+    }
+    return 0;
+}
+
+int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOPFRONT) {
+        ShiftItem(item, coll);
+        item->goal_anim_state = AS_STOP;
+        item->current_anim_state = AS_STOP;
+        item->gravity_status = 0;
+        item->speed = 0;
+        return 1;
+    }
+
+    if (coll->coll_type == COLL_LEFT) {
+        ShiftItem(item, coll);
+        item->pos.y_rot += LARA_DEF_ADD_EDGE;
+    } else if (coll->coll_type == COLL_RIGHT) {
+        ShiftItem(item, coll);
+        item->pos.y_rot -= LARA_DEF_ADD_EDGE;
+    }
+    return 0;
+}
+
 int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
@@ -884,5 +1003,6 @@ void TR1MInjectLara()
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
+    INJECT(0x004237C0, LaraColWalk);
     INJECT(0x004237A0, LaraAsWaterOut);
 }
