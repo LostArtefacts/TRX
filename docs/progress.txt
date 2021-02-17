@@ -363,7 +363,7 @@ LaraAsWaterOut                  0x004237A0  0x00000015  +
 LaraColWalk                     0x004237C0  0x00000228  +
 LaraColRun                      0x004239F0  0x00000210  +
 LaraColStop                     0x00423C00  0x000000FC  +
-LaraColForwardJump              0x00423D00  0x000000C3  -
+LaraColForwardJump              0x00423D00  0x000000C3  +
 LaraColFastBack                 0x00423DD0  0x0000016D  -
 LaraColTurnR                    0x00423F40  0x000000AA  -
 LaraColDeath                    0x00423FF0  0x0000007E  -
