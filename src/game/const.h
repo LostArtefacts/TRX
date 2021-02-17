@@ -58,7 +58,7 @@
 #define NO_HEIGHT (-0x7F00)
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT
-#define BAD_JUMP_CEILING ((STEP_L * 3) / 4)
+#define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 #define NOT_ACTIVE 0
 #define ACTIVE 1
 #define DEACTIVATED 2

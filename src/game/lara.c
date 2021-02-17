@@ -1488,6 +1488,24 @@ void __cdecl LaraColRoll2(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColSwanDive(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = BAD_JUMP_CEILING;
+    GetLaraCollisionInfo(item, coll);
+
+    LaraDeflectEdgeJump(item, coll);
+
+    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+        item->goal_anim_state = AS_STOP;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+        item->pos.y += coll->mid_floor;
+    }
+}
+
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -1665,6 +1683,7 @@ void TR1MInjectLara()
     INJECT(0x00424E30, LaraColDefault);
     INJECT(0x00424E90, LaraColRoll);
     INJECT(0x00424F90, LaraColRoll2);
+    INJECT(0x004250A0, LaraColSwanDive);
 
     INJECT(0x004237A0, LaraAsWaterOut);
 }
