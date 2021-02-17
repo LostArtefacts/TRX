@@ -908,6 +908,74 @@ void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    GetLaraCollisionInfo(item, coll);
+
+    if (LaraHitCeiling(item, coll)) {
+        return;
+    }
+    if (TestLaraVault(item, coll)) {
+        return;
+    }
+
+    if (LaraDeflectEdge(item, coll)) {
+        item->pos.z_rot = 0;
+
+        if (coll->front_type == HT_WALL
+            && coll->front_floor < -(STEP_L * 5) / 2) {
+            item->current_anim_state = AS_SPLAT;
+            if (item->frame_number >= 0 && item->frame_number <= 9) {
+                item->anim_number = AA_HITWALLLEFT;
+                item->frame_number = AF_HITWALLLEFT;
+                return;
+            }
+            if (item->frame_number >= 10 && item->frame_number <= 21) {
+                item->anim_number = AA_HITWALLRIGHT;
+                item->frame_number = AF_HITWALLRIGHT;
+                return;
+            }
+        }
+        item->anim_number = AA_STOP;
+        item->frame_number = AF_STOP;
+    }
+
+    if (coll->mid_floor > STEPUP_HEIGHT) {
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
+        item->current_anim_state = AS_FORWARDJUMP;
+        item->goal_anim_state = AS_FORWARDJUMP;
+        item->gravity_status = 1;
+        item->fall_speed = 0;
+        return;
+    }
+
+    if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
+        if (item->frame_number >= 3 && item->frame_number <= 14) {
+            item->anim_number = AA_RUNSTEPUP_LEFT;
+            item->frame_number = AF_RUNSTEPUP_LEFT;
+        } else {
+            item->anim_number = AA_RUNSTEPUP_RIGHT;
+            item->frame_number = AF_RUNSTEPUP_RIGHT;
+        }
+    }
+
+    if (TestLaraSlide(item, coll)) {
+        return;
+    }
+
+    if (coll->mid_floor >= 50) {
+        item->pos.y += 50;
+    } else {
+        item->pos.y += coll->mid_floor;
+    }
+}
+
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
@@ -1004,5 +1072,6 @@ void TR1MInjectLara()
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
     INJECT(0x004237C0, LaraColWalk);
+    INJECT(0x004239F0, LaraColRun);
     INJECT(0x004237A0, LaraAsWaterOut);
 }

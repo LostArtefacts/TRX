@@ -65,6 +65,7 @@ void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsWaterOut(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);

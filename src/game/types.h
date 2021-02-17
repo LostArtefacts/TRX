@@ -544,6 +544,12 @@ typedef enum {
     COLL_CLAMP = 32,
 } COLL_TYPES;
 
+typedef enum {
+    HT_WALL = 0,
+    HT_SMALL_SLOPE = 1,
+    HT_BIG_SLOPE = 2,
+} HEIGHT_TYPES;
+
 #pragma pack(push, 1)
 
 typedef struct {
