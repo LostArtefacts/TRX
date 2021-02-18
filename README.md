@@ -11,7 +11,8 @@ This project is inspired by Arsunt's
 
 Get a copy of the latest release from
 [here](https://github.com/rr-/TR1Main/releases) and unpack the contents to your
-game directory. Make sure you overwrite existing files.
+game directory. Make sure you overwrite existing files. Currently TR1Main
+requires you to have the TombATI patch installed to work.
 
 ## Configuring
 
