@@ -111,6 +111,7 @@ void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSurfBack(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColSurfLeft(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColSurfRight(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll);

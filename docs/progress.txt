@@ -436,7 +436,7 @@ LaraAsSurfTread                 0x00428A30  0x00000178  +
 LaraColSurfTread                0x00428BB0  0x0000001E  +
 LaraColSurfBack                 0x00428BD0  0x00000023  +
 LaraColSurfLeft                 0x00428C00  0x00000023  +
-LaraColSurfRight                0x00428C30  0x00000023  -
+LaraColSurfRight                0x00428C30  0x00000023  +
 LaraSurfaceCollision            0x00428C60  0x000000E6  -
 LaraTestWaterClimbOut           0x00428D50  0x000001B1  -
 LaraUnderWater                  0x00428F10  0x000001AD  +
