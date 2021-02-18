@@ -260,6 +260,46 @@ void __cdecl LaraColSurfRight(ITEM_INFO* item, COLL_INFO* coll)
     LaraSurfaceCollision(item, coll);
 }
 
+void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->facing = Lara.move_angle;
+
+    GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + SURF_HITE, item->pos.z,
+        item->room_number, SURF_HITE);
+
+    ShiftItem(item, coll);
+
+    if ((coll->coll_type
+         & (COLL_FRONT | COLL_LEFT | COLL_RIGHT | COLL_TOP | COLL_TOPFRONT
+            | COLL_CLAMP))
+        || coll->mid_floor < 0) {
+        item->fall_speed = 0;
+        item->pos.x = coll->old.x;
+        item->pos.y = coll->old.y;
+        item->pos.z = coll->old.z;
+    } else if (coll->coll_type == COLL_LEFT) {
+        item->pos.y_rot += 5 * ONE_DEGREE;
+    } else if (coll->coll_type == COLL_RIGHT) {
+        item->pos.y_rot -= 5 * ONE_DEGREE;
+    }
+
+    int wh = GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (wh - item->pos.y <= -100) {
+        item->goal_anim_state = AS_SWIM;
+        item->current_anim_state = AS_DIVE;
+        item->anim_number = AA_SURFDIVE;
+        item->frame_number = AF_SURFDIVE;
+        item->pos.x_rot = -45 * ONE_DEGREE;
+        item->fall_speed = 80;
+        Lara.water_status = LWS_UNDERWATER;
+        return;
+    }
+
+    LaraTestWaterClimbOut(item, coll);
+}
+
 void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
@@ -274,4 +314,6 @@ void Tomb1MInjectGameLaraSurf()
     INJECT(0x00428BD0, LaraColSurfBack);
     INJECT(0x00428C00, LaraColSurfLeft);
     INJECT(0x00428C30, LaraColSurfRight);
+
+    INJECT(0x00428C60, LaraSurfaceCollision);
 }
