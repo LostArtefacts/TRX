@@ -44,10 +44,10 @@
 #define MAX_HEAD_ROTATION (50 * ONE_DEGREE) // = 9100
 #define MAX_HEAD_TILT (22 * ONE_DEGREE) // = 4004
 #define HEAD_TURN (4 * ONE_DEGREE) // = 728
+#define HEAD_TURN_SURF (3 * ONE_DEGREE) // = 546
 #define MIN_HEAD_TILT (-42 * ONE_DEGREE) // = -7644
 #define WALL_L 1024
 #define WALL_SHIFT 10
-#define NO_HEIGHT (-0x7F00)
 #define STEP_L 256
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define CAM_A_HANG 0
@@ -60,7 +60,7 @@
 #define CHASE_OBJECT 3
 #define DEFAULT_RADIUS 10
 #define DONT_TARGET (-16384)
-#define NO_HEIGHT (-0x7F00)
+#define NO_HEIGHT (-32512)
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192

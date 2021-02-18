@@ -16,6 +16,7 @@
 void __cdecl InitialiseLara();
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsRun(ITEM_INFO* item, COLL_INFO* coll);
@@ -126,6 +127,7 @@ void TR1MResetLook();
 
 void TR1MInjectGameLara();
 void TR1MInjectGameLaraMisc();
+void TR1MInjectGameLaraSurf();
 void TR1MInjectGameLaraSwim();
 
 #endif

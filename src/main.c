@@ -32,6 +32,7 @@ static void TR1MInject()
     TR1MInjectGameLOT();
     TR1MInjectGameLara();
     TR1MInjectGameLaraMisc();
+    TR1MInjectGameLaraSurf();
     TR1MInjectGameLaraSwim();
     TR1MInjectGameSetup();
     TR1MInjectGameText();

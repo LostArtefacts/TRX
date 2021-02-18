@@ -60,14 +60,13 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     AnimateLara(item);
+
     item->pos.y -=
         (phd_sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
-
     item->pos.x +=
         (((phd_sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
          * phd_cos(item->pos.x_rot))
         >> W2V_SHIFT;
-
     item->pos.z +=
         (((phd_cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
          * phd_cos(item->pos.x_rot))
