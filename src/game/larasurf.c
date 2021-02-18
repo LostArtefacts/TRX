@@ -14,7 +14,7 @@ void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
-    coll->radius = LARA_RAD;
+    coll->radius = SURF_RADIUS;
     coll->trigger = NULL;
     coll->slopes_are_walls = 0;
     coll->slopes_are_pits = 0;
@@ -69,7 +69,35 @@ void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
     TestTriggers(coll->trigger, 0);
 }
 
+void __cdecl LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_UWDEATH;
+        return;
+    }
+
+    Lara.dive_count = 0;
+    if (Input & IN_LEFT) {
+        item->pos.y_rot -= LARA_SLOW_TURN;
+    } else if (Input & IN_RIGHT) {
+        item->pos.y_rot += LARA_SLOW_TURN;
+    }
+
+    if (!(Input & IN_FORWARD)) {
+        item->goal_anim_state = AS_SURFTREAD;
+    }
+    if (Input & IN_JUMP) {
+        item->goal_anim_state = AS_SURFTREAD;
+    }
+
+    item->fall_speed += 8;
+    if (item->fall_speed > SURF_MAXSPEED) {
+        item->fall_speed = SURF_MAXSPEED;
+    }
+}
+
 void TR1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
+    INJECT(0x004288A0, LaraAsSurfSwim);
 }

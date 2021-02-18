@@ -31,6 +31,9 @@
 #define UW_RADIUS 300
 #define UW_HITE 400
 #define UW_WALLDEFLECT (2 * ONE_DEGREE) // = 364
+#define SURF_MAXSPEED 60
+#define SURF_RADIUS 100
+#define SURF_HITE 700
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14

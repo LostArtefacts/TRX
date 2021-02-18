@@ -428,7 +428,7 @@ InitialiseEvilLara              0x00428420  0x00000025  -
 ControlEvilLara                 0x00428450  0x00000221  -
 DrawEvilLara                    0x00428680  0x00000058  -
 LaraSurface                     0x004286E0  0x000001B2  +
-LaraAsSurfSwim                  0x004288A0  0x00000070  -
+LaraAsSurfSwim                  0x004288A0  0x00000070  +
 LaraAsSurfBack                  0x00428910  0x0000005E  -
 LaraAsSurfLeft                  0x00428970  0x00000060  -
 LaraAsSurfRight                 0x004289D0  0x00000060  -
