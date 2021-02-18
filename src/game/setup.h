@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_SETUP_H
-#define TR1MAIN_GAME_SETUP_H
+#ifndef TOMB1MAIN_GAME_SETUP_H
+#define TOMB1MAIN_GAME_SETUP_H
 
 // clang-format off
 #define BaddyObjects            ((void          __cdecl(*)())0x004363E0)
@@ -9,6 +9,6 @@
 
 void __cdecl InitialiseObjects();
 
-void TR1MInjectGameSetup();
+void Tomb1MInjectGameSetup();
 
 #endif

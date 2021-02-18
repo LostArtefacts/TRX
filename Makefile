@@ -2,7 +2,7 @@ CC=i686-w64-mingw32-gcc
 CFLAGS=-W -static -shared -Isrc
 
 build: $(shell find src)
-	$(CC) $(CFLAGS) $(shell find src -type f -iname '*.c') -ldbghelp -o build/TR1Main.dll
+	$(CC) $(CFLAGS) $(shell find src -type f -iname '*.c') -ldbghelp -o build/Tomb1Main.dll
 
 docker_build:
 	docker build -t tr1main .

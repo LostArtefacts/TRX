@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_SPECIFIC_FILE_H
-#define TR1MAIN_SPECIFIC_FILE_H
+#ifndef TOMB1MAIN_SPECIFIC_FILE_H
+#define TOMB1MAIN_SPECIFIC_FILE_H
 
 #include <stdio.h>
 
@@ -14,6 +14,6 @@ int32_t __cdecl S_LoadLevel(int level_id);
 const char* __cdecl GetFullPath(const char* filename);
 int32_t __cdecl FindCdDrive();
 
-void TR1MInjectSpecificFile();
+void Tomb1MInjectSpecificFile();
 
 #endif

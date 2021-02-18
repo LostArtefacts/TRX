@@ -1,4 +1,4 @@
-# TR1Main
+# Tomb1Main
 
 This is a dynamic library for the classic Tomb Raider I game (TombATI version).
 The purpose of the library is to reimplement all the routines performed by the
@@ -10,13 +10,13 @@ This project is inspired by Arsunt's
 ## Installing
 
 Get a copy of the latest release from
-[here](https://github.com/rr-/TR1Main/releases) and unpack the contents to your
-game directory. Make sure you overwrite existing files. Currently TR1Main
+[here](https://github.com/rr-/Tomb1Main/releases) and unpack the contents to your
+game directory. Make sure you overwrite existing files. Currently Tomb1Main
 requires you to have the TombATI patch installed to work.
 
 ## Configuring
 
-To configure TR1Main, edit the `TR1Main.json` file in your text editor such as
+To configure Tomb1Main, edit the `Tomb1Main.json` file in your text editor such as
 Notepad.
 
 Currently the following configuration options are supported:

@@ -168,7 +168,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
     TRACE("%d (%s)", level_id, LevelNames[level_id]);
     int ret = LoadLevel(LevelNames[level_id], level_id);
 
-    if (TR1MConfig.disable_healing_between_levels) {
+    if (Tomb1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
         int lara_found = 0;
@@ -185,7 +185,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
             }
         }
         if (!lara_found && !in_cutscene) {
-            TR1MData.stored_lara_health = LARA_HITPOINTS;
+            Tomb1MData.stored_lara_health = LARA_HITPOINTS;
         }
     }
 
@@ -235,7 +235,7 @@ int32_t __cdecl FindCdDrive()
     return 0;
 }
 
-void TR1MInjectSpecificFile()
+void Tomb1MInjectSpecificFile()
 {
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041BC60, LoadItems);

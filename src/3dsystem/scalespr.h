@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_3DSYSTEM_SCALESPR_H
-#define TR1MAIN_3DSYSTEM_SCALESPR_H
+#ifndef TOMB1MAIN_3DSYSTEM_SCALESPR_H
+#define TOMB1MAIN_3DSYSTEM_SCALESPR_H
 
 // clang-format off
 #define S_DrawUISprite          ((void          __cdecl(*)(int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t brightness))0x00435D80)

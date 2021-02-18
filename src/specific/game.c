@@ -120,7 +120,7 @@ void __cdecl LevelStats(int level_id)
     T_CentreV(txt, 1);
 
     // wait till action key release
-    if (TR1MConfig.fix_end_of_level_freeze) {
+    if (Tomb1MConfig.fix_end_of_level_freeze) {
         while (Input & IN_SELECT) {
             S_UpdateInput();
             S_InitialisePolyList();
@@ -173,7 +173,7 @@ void __cdecl LevelStats(int level_id)
     TempVideoRemove();
 }
 
-void TR1MInjectSpecificGame()
+void Tomb1MInjectSpecificGame()
 {
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D950, LevelIsValid);

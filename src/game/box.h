@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_BOX_H
-#define TR1MAIN_GAME_BOX_H
+#ifndef TOMB1MAIN_GAME_BOX_H
+#define TOMB1MAIN_GAME_BOX_H
 
 #include "game/types.h"
 

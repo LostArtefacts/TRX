@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_COLLIDE_H
-#define TR1MAIN_GAME_COLLIDE_H
+#ifndef TOMB1MAIN_GAME_COLLIDE_H
+#define TOMB1MAIN_GAME_COLLIDE_H
 
 #include "types.h"
 

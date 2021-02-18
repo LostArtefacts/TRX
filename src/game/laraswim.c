@@ -24,11 +24,11 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    if (TR1MConfig.enable_enhanced_look) {
+    if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
-            TR1MLookLeftRight();
+            Tomb1MLookLeftRight();
         } else {
-            TR1MResetLook();
+            Tomb1MResetLook();
         }
     }
 
@@ -148,9 +148,9 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (TR1MConfig.enable_enhanced_look) {
+    if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
-            TR1MLookUpDown();
+            Tomb1MLookUpDown();
         }
     }
 
@@ -359,7 +359,7 @@ void __cdecl LaraWaterCurrent(COLL_INFO* coll)
     coll->old.z = item->pos.z;
 }
 
-void TR1MInjectGameLaraSwim()
+void Tomb1MInjectGameLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
 

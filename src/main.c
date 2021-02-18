@@ -22,30 +22,30 @@
 
 HINSTANCE hInstance = NULL;
 
-static void TR1MInject()
+static void Tomb1MInject()
 {
-    TR1MInjectGameControl();
-    TR1MInjectGameDraw();
-    TR1MInjectGameEffects();
-    TR1MInjectGameHealth();
-    TR1MInjectGameItems();
-    TR1MInjectGameLOT();
-    TR1MInjectGameLara();
-    TR1MInjectGameLaraMisc();
-    TR1MInjectGameLaraSurf();
-    TR1MInjectGameLaraSwim();
-    TR1MInjectGameSetup();
-    TR1MInjectGameText();
-    TR1MInjectSpecificFile();
-    TR1MInjectSpecificGame();
-    TR1MInjectSpecificInit();
-    TR1MInjectSpecificInput();
-    TR1MInjectSpecificOutput();
+    Tomb1MInjectGameControl();
+    Tomb1MInjectGameDraw();
+    Tomb1MInjectGameEffects();
+    Tomb1MInjectGameHealth();
+    Tomb1MInjectGameItems();
+    Tomb1MInjectGameLOT();
+    Tomb1MInjectGameLara();
+    Tomb1MInjectGameLaraMisc();
+    Tomb1MInjectGameLaraSurf();
+    Tomb1MInjectGameLaraSwim();
+    Tomb1MInjectGameSetup();
+    Tomb1MInjectGameText();
+    Tomb1MInjectSpecificFile();
+    Tomb1MInjectSpecificGame();
+    Tomb1MInjectSpecificInit();
+    Tomb1MInjectSpecificInput();
+    Tomb1MInjectSpecificOutput();
 }
 
-static int TR1MReadConfig()
+static int Tomb1MReadConfig()
 {
-    FILE* fp = fopen("TR1Main.json", "rb");
+    FILE* fp = fopen("Tomb1Main.json", "rb");
     if (!fp) {
         return 0;
     }
@@ -64,42 +64,43 @@ static int TR1MReadConfig()
 
     json_value* json = json_parse((const json_char*)cfg_data, cfg_size);
 
-    TR1MData.medipack_cooldown = 0;
+    Tomb1MData.medipack_cooldown = 0;
 
-    TR1MConfig.disable_healing_between_levels =
+    Tomb1MConfig.disable_healing_between_levels =
         tr1m_json_get_boolean_value(json, "disable_healing_between_levels");
-    TR1MConfig.disable_medpacks =
+    Tomb1MConfig.disable_medpacks =
         tr1m_json_get_boolean_value(json, "disable_medpacks");
-    TR1MConfig.disable_magnums =
+    Tomb1MConfig.disable_magnums =
         tr1m_json_get_boolean_value(json, "disable_magnums");
-    TR1MConfig.disable_uzis = tr1m_json_get_boolean_value(json, "disable_uzis");
-    TR1MConfig.disable_shotgun =
+    Tomb1MConfig.disable_uzis =
+        tr1m_json_get_boolean_value(json, "disable_uzis");
+    Tomb1MConfig.disable_shotgun =
         tr1m_json_get_boolean_value(json, "disable_shotgun");
-    TR1MConfig.enable_red_healthbar =
+    Tomb1MConfig.enable_red_healthbar =
         tr1m_json_get_boolean_value(json, "enable_red_healthbar");
-    TR1MConfig.enable_enemy_healthbar =
+    Tomb1MConfig.enable_enemy_healthbar =
         tr1m_json_get_boolean_value(json, "enable_enemy_healthbar");
-    TR1MConfig.enable_enhanced_look =
+    Tomb1MConfig.enable_enhanced_look =
         tr1m_json_get_boolean_value(json, "enable_enhanced_look");
-    TR1MConfig.enable_enhanced_ui =
+    Tomb1MConfig.enable_enhanced_ui =
         tr1m_json_get_boolean_value(json, "enable_enhanced_ui");
 
     const char* healthbar_showing_mode =
         tr1m_json_get_string_value(json, "healthbar_showing_mode");
-    TR1MConfig.healthbar_showing_mode = TR1M_BSM_DEFAULT;
+    Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_DEFAULT;
     if (healthbar_showing_mode) {
         if (!strcmp(healthbar_showing_mode, "flashing")) {
-            TR1MConfig.healthbar_showing_mode = TR1M_BSM_FLASHING;
+            Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_FLASHING;
         } else if (!strcmp(healthbar_showing_mode, "always")) {
-            TR1MConfig.healthbar_showing_mode = TR1M_BSM_ALWAYS;
+            Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_ALWAYS;
         }
     }
 
-    TR1MConfig.enable_numeric_keys =
+    Tomb1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");
-    TR1MConfig.fix_end_of_level_freeze =
+    Tomb1MConfig.fix_end_of_level_freeze =
         tr1m_json_get_boolean_value(json, "fix_end_of_level_freeze");
-    TR1MConfig.fix_tihocan_secret_sound =
+    Tomb1MConfig.fix_tihocan_secret_sound =
         tr1m_json_get_boolean_value(json, "fix_tihocan_secret_sound");
 
     json_value_free(json);
@@ -111,11 +112,11 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
-        freopen("./TR1Main.log", "w", stdout);
-        TR1MReadConfig();
+        freopen("./Tomb1Main.log", "w", stdout);
+        Tomb1MReadConfig();
         TRACE("Attached");
         hInstance = hinstDLL;
-        TR1MInject();
+        Tomb1MInject();
         break;
 
     case DLL_PROCESS_DETACH:

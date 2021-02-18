@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_INV_H
-#define TR1MAIN_GAME_INV_H
+#ifndef TOMB1MAIN_GAME_INV_H
+#define TOMB1MAIN_GAME_INV_H
 
 // clang-format off
 #define Inv_RemoveItem          ((void          __cdecl(*)(int16_t item_num))0x004212A0)

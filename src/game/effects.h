@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_EFFECTS_H
-#define TR1MAIN_GAME_EFFECTS_H
+#ifndef TOMB1MAIN_GAME_EFFECTS_H
+#define TOMB1MAIN_GAME_EFFECTS_H
 
 #include <stdint.h>
 #include "game/types.h"
@@ -13,6 +13,6 @@
 
 void __cdecl FxChainBlock(ITEM_INFO* item);
 
-void TR1MInjectGameEffects();
+void Tomb1MInjectGameEffects();
 
 #endif

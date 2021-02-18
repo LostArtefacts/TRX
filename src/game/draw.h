@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_DRAW_H
-#define TR1MAIN_GAME_DRAW_H
+#ifndef TOMB1MAIN_GAME_DRAW_H
+#define TOMB1MAIN_GAME_DRAW_H
 
 #include <stdint.h>
 
@@ -11,6 +11,6 @@
 
 void __cdecl PrintRooms(int16_t room_number);
 
-void TR1MInjectGameDraw();
+void Tomb1MInjectGameDraw();
 
 #endif

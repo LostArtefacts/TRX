@@ -34,7 +34,7 @@ void __cdecl game_free(int free_size)
     GameAllocMemUsed -= free_size;
 }
 
-void TR1MInjectSpecificInit()
+void Tomb1MInjectSpecificInit()
 {
     INJECT(0x0042A2C0, DB_Log);
     INJECT(0x0041E2C0, init_game_malloc);

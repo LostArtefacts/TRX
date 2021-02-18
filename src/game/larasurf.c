@@ -96,7 +96,7 @@ void __cdecl LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void TR1MInjectGameLaraSurf()
+void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
     INJECT(0x004288A0, LaraAsSurfSwim);

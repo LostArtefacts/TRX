@@ -17,7 +17,7 @@ void __cdecl InitialiseLOTArray()
     SlotsUsed = 0;
 }
 
-void TR1MInjectGameLOT()
+void Tomb1MInjectGameLOT()
 {
     INJECT(0x0042A300, InitialiseLOTArray);
 }

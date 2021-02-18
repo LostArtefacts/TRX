@@ -14,12 +14,12 @@ void __cdecl DrawGameInfo()
         DrawAirBar();
         DrawPickups();
 
-        if (TR1MConfig.enable_enemy_healthbar && Lara.target) {
-            TR1MRenderBar(
+        if (Tomb1MConfig.enable_enemy_healthbar && Lara.target) {
+            Tomb1MRenderBar(
                 Lara.target->hit_points,
                 Objects[Lara.target->object_number].hit_points
                     * (SaveGame[0].bonus_flag ? 2 : 1),
-                TR1M_BAR_ENEMY_HEALTH);
+                Tomb1M_BAR_ENEMY_HEALTH);
         }
     }
 
@@ -144,7 +144,7 @@ void __cdecl DrawPickups()
                 pu->duration = 0;
             } else {
                 S_DrawUISprite(
-                    x, y, TR1MGetRenderScale(12288), pu->sprnum, 4096);
+                    x, y, Tomb1MGetRenderScale(12288), pu->sprnum, 4096);
                 x -= sprite_width;
             }
         }
@@ -162,7 +162,7 @@ void __cdecl AddDisplayPickup(int16_t objnum)
     }
 }
 
-void TR1MInjectGameHealth()
+void Tomb1MInjectGameHealth()
 {
     INJECT(0x0041DD00, DrawGameInfo);
     INJECT(0x0041DEA0, DrawHealthBar);

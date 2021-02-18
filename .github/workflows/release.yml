@@ -18,7 +18,7 @@ jobs:
       - name: Build project
         run: |
           make build
-          7z a release.zip ./bin/tombati.exe ./build/TR1Main.dll TR1Main.json
+          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll Tomb1Main.json
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -40,5 +40,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release.zip
-          asset_name: TR1Main-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip

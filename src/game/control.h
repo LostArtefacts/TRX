@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_CONTROL_H
-#define TR1MAIN_GAME_CONTROL_H
+#ifndef TOMB1MAIN_GAME_CONTROL_H
+#define TOMB1MAIN_GAME_CONTROL_H
 
 #include <stdint.h>
 
@@ -14,6 +14,6 @@
 
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode);
 
-void TR1MInjectGameControl();
+void Tomb1MInjectGameControl();
 
 #endif

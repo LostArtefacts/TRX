@@ -8,27 +8,27 @@ int MulDiv(int x, int y, int z)
     return (x * y) / z;
 }
 
-int TR1MGetRenderHeightDownscaled()
+int Tomb1MGetRenderHeightDownscaled()
 {
-    return PhdWinHeight * PHD_ONE / TR1MGetRenderScale(PHD_ONE);
+    return PhdWinHeight * PHD_ONE / Tomb1MGetRenderScale(PHD_ONE);
 }
 
-int TR1MGetRenderWidthDownscaled()
+int Tomb1MGetRenderWidthDownscaled()
 {
-    return PhdWinWidth * PHD_ONE / TR1MGetRenderScale(PHD_ONE);
+    return PhdWinWidth * PHD_ONE / Tomb1MGetRenderScale(PHD_ONE);
 }
 
-int TR1MGetRenderHeight()
+int Tomb1MGetRenderHeight()
 {
     return PhdWinHeight;
 }
 
-int TR1MGetRenderWidth()
+int Tomb1MGetRenderWidth()
 {
     return PhdWinWidth;
 }
 
-int TR1MGetRenderScale(int unit)
+int Tomb1MGetRenderScale(int unit)
 {
     // TR2Main-style UI scaler
     int baseWidth = 800;
@@ -44,7 +44,7 @@ int TR1MGetRenderScale(int unit)
     return scaleY;
 }
 
-int TR1MGetRenderScaleGLRage(int unit)
+int Tomb1MGetRenderScaleGLRage(int unit)
 {
     // GLRage-style UI scaler
     double result = PhdWinWidth;
@@ -59,7 +59,7 @@ int TR1MGetRenderScaleGLRage(int unit)
     return round(result);
 }
 
-void TR1MRenderBar(int value, int value_max, int bar_type)
+void Tomb1MRenderBar(int value, int value_max, int bar_type)
 {
     const int p1 = -100;
     const int p2 = -200;
@@ -75,34 +75,34 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     int percent = value * 100 / value_max;
 
 #define COLOR_BAR_SIZE 5
-    int color_bar[TR1M_BAR_NUMBER][COLOR_BAR_SIZE] = {
+    int color_bar[Tomb1M_BAR_NUMBER][COLOR_BAR_SIZE] = {
         { 8, 11, 8, 6, 24 },
         { 32, 41, 32, 19, 21 },
         { 18, 17, 18, 19, 21 },
     };
-    if (TR1MConfig.enable_red_healthbar) {
-        color_bar[TR1M_BAR_LARA_HEALTH][0] = 29;
-        color_bar[TR1M_BAR_LARA_HEALTH][1] = 30;
-        color_bar[TR1M_BAR_LARA_HEALTH][2] = 29;
-        color_bar[TR1M_BAR_LARA_HEALTH][3] = 28;
-        color_bar[TR1M_BAR_LARA_HEALTH][4] = 26;
+    if (Tomb1MConfig.enable_red_healthbar) {
+        color_bar[Tomb1M_BAR_LARA_HEALTH][0] = 29;
+        color_bar[Tomb1M_BAR_LARA_HEALTH][1] = 30;
+        color_bar[Tomb1M_BAR_LARA_HEALTH][2] = 29;
+        color_bar[Tomb1M_BAR_LARA_HEALTH][3] = 28;
+        color_bar[Tomb1M_BAR_LARA_HEALTH][4] = 26;
     }
 
     const int color_border_1 = 19;
     const int color_border_2 = 17;
     const int color_bgnd = 0;
 
-    int scale = TR1MGetRenderScaleGLRage(1);
+    int scale = Tomb1MGetRenderScaleGLRage(1);
     int width = percent_max * scale;
     int height = 5 * scale;
 
     int x = 8 * scale;
     int y = 8 * scale;
 
-    if (bar_type == TR1M_BAR_LARA_AIR) {
+    if (bar_type == Tomb1M_BAR_LARA_AIR) {
         // place air bar on the right
         x = PhdWinWidth - width - x;
-    } else if (bar_type == TR1M_BAR_ENEMY_HEALTH) {
+    } else if (bar_type == Tomb1M_BAR_ENEMY_HEALTH) {
         // place enemy bar on the bottom
         y = PhdWinHeight - height - y;
     }
@@ -113,9 +113,9 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     int bottom = top + height + padding + 1;
     int right = left + width + padding + 1;
 
-    if (bar_type == TR1M_BAR_LARA_HEALTH) {
-        TR1MData.fps_x = left;
-        TR1MData.fps_y = bottom + 24;
+    if (bar_type == Tomb1M_BAR_LARA_HEALTH) {
+        Tomb1MData.fps_x = left;
+        Tomb1MData.fps_y = bottom + 24;
     }
 
     // background
@@ -132,7 +132,7 @@ void TR1MRenderBar(int value, int value_max, int bar_type)
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int blink_interval = 20;
-    const int blink_threshold = bar_type == TR1M_BAR_ENEMY_HEALTH ? 0 : 20;
+    const int blink_threshold = bar_type == Tomb1M_BAR_ENEMY_HEALTH ? 0 : 20;
     int blink_time = SaveGame[0].timer % blink_interval;
     int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
 

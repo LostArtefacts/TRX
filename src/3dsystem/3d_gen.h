@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_3DSYSTEM_3D_GEN_H
-#define TR1MAIN_3DSYSTEM_3D_GEN_H
+#ifndef TOMB1MAIN_3DSYSTEM_3D_GEN_H
+#define TOMB1MAIN_3DSYSTEM_3D_GEN_H
 
 // clang-format off
 #define S_InsertRoom            ((void          __cdecl(*)(int16_t* objptr))0x00401BD0)

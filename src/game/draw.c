@@ -63,7 +63,7 @@ void __cdecl PrintRooms(int16_t room_number)
     r->bound_top = PhdWinMaxY;
 }
 
-void TR1MInjectGameDraw()
+void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
 }

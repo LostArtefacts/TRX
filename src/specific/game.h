@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_SPECIFIC_GAME_H
-#define TR1MAIN_SPECIFIC_GAME_H
+#ifndef TOMB1MAIN_SPECIFIC_GAME_H
+#define TOMB1MAIN_SPECIFIC_GAME_H
 
 #include <stdint.h>
 
@@ -14,6 +14,6 @@ int32_t __cdecl GetRandomControl();
 int32_t __cdecl GetRandomDraw();
 void __cdecl LevelStats(int level_id);
 
-void TR1MInjectSpecificGame();
+void Tomb1MInjectSpecificGame();
 
 #endif

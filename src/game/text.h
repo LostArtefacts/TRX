@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_TEXT_H
-#define TR1MAIN_GAME_TEXT_H
+#ifndef TOMB1MAIN_GAME_TEXT_H
+#define TOMB1MAIN_GAME_TEXT_H
 
 #include "game/types.h"
 
@@ -27,6 +27,6 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring);
 void __cdecl T_DrawText();
 void __cdecl T_DrawThisText(TEXTSTRING* textstring);
 
-void TR1MInjectGameText();
+void Tomb1MInjectGameText();
 
 #endif

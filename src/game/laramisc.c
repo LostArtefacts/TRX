@@ -11,8 +11,8 @@ void __cdecl InitialiseLara()
     TRACE("");
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
-    LaraItem->hit_points = TR1MConfig.disable_healing_between_levels
-        ? TR1MData.stored_lara_health
+    LaraItem->hit_points = Tomb1MConfig.disable_healing_between_levels
+        ? Tomb1MData.stored_lara_health
         : LARA_HITPOINTS;
 
     Lara.air = LARA_AIR;
@@ -119,7 +119,7 @@ void __cdecl UseItem(__int16 object_num)
     }
 }
 
-void TR1MInjectGameLaraMisc()
+void Tomb1MInjectGameLaraMisc()
 {
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00427E80, UseItem);

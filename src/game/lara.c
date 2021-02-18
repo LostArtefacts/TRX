@@ -12,7 +12,7 @@
 #include "mod.h"
 #include "util.h"
 
-void TR1MLookLeftRight()
+void Tomb1MLookLeftRight()
 {
     Camera.type = CAM_LOOK;
     if (Input & IN_LEFT) {
@@ -31,7 +31,7 @@ void TR1MLookLeftRight()
     }
 }
 
-void __cdecl TR1MLookUpDown()
+void __cdecl Tomb1MLookUpDown()
 {
     Camera.type = CAM_LOOK;
     if (Input & IN_FORWARD) {
@@ -50,7 +50,7 @@ void __cdecl TR1MLookUpDown()
     }
 }
 
-void TR1MResetLook()
+void Tomb1MResetLook()
 {
     if (Camera.type == CAM_LOOK) {
         return;
@@ -84,11 +84,11 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 1;
     coll->enable_baddie_push = 1;
 
-    if (TR1MConfig.enable_enhanced_look) {
+    if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
-            TR1MLookLeftRight();
+            Tomb1MLookLeftRight();
         } else {
-            TR1MResetLook();
+            Tomb1MResetLook();
         }
     }
 
@@ -336,7 +336,7 @@ void __cdecl LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0
-        || (TR1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -366,7 +366,7 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0
-        || (TR1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -496,7 +496,7 @@ void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0
-        || (TR1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -2154,7 +2154,7 @@ int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
     return 0;
 }
 
-void TR1MInjectGameLara()
+void Tomb1MInjectGameLara()
 {
     INJECT(0x00422480, LaraAboveWater);
 

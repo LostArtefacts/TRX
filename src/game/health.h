@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_HEALTH_H
-#define TR1MAIN_GAME_HEALTH_H
+#ifndef TOMB1MAIN_GAME_HEALTH_H
+#define TOMB1MAIN_GAME_HEALTH_H
 
 void __cdecl MakeAmmoString(char* string);
 void __cdecl DrawAmmoInfo();
@@ -10,6 +10,6 @@ void __cdecl AddDisplayPickup(int16_t objnum);
 void __cdecl InitialisePickUpDisplay();
 void __cdecl DrawPickups();
 
-void TR1MInjectGameHealth();
+void Tomb1MInjectGameHealth();
 
 #endif

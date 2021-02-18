@@ -125,7 +125,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
         ++SaveGame[0].timer;
         --HealthBarTimer;
 
-        if (TR1MConfig.disable_healing_between_levels) {
+        if (Tomb1MConfig.disable_healing_between_levels) {
             int lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
                 if (Items[i].object_number == O_LARA) {
@@ -133,13 +133,13 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
                 }
             }
             if (lara_found) {
-                TR1MData.stored_lara_health =
+                Tomb1MData.stored_lara_health =
                     LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
             }
         }
 
-        if (TR1MConfig.healthbar_showing_mode == TR1M_BSM_ALWAYS
-            || (TR1MConfig.healthbar_showing_mode == TR1M_BSM_FLASHING
+        if (Tomb1MConfig.healthbar_showing_mode == Tomb1M_BSM_ALWAYS
+            || (Tomb1MConfig.healthbar_showing_mode == Tomb1M_BSM_FLASHING
                 && LaraItem
                 && LaraItem->hit_points < (LARA_HITPOINTS * 20) / 100)) {
             HealthBarTimer = 1;
@@ -148,7 +148,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
     return 0;
 }
 
-void TR1MInjectGameControl()
+void Tomb1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
 }

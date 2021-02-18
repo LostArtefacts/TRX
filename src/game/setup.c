@@ -33,7 +33,7 @@ void __cdecl InitialiseObjects()
     TrapObjects();
     ObjectObjects();
 
-    if (TR1MConfig.disable_medpacks) {
+    if (Tomb1MConfig.disable_medpacks) {
         Objects[O_MEDI_ITEM].initialise = NULL;
         Objects[O_MEDI_ITEM].collision = NULL;
         Objects[O_MEDI_ITEM].control = NULL;
@@ -49,7 +49,7 @@ void __cdecl InitialiseObjects()
         Objects[O_BIGMEDI_ITEM].floor = NULL;
     }
 
-    if (TR1MConfig.disable_magnums) {
+    if (Tomb1MConfig.disable_magnums) {
         Objects[O_MAGNUM_ITEM].initialise = NULL;
         Objects[O_MAGNUM_ITEM].collision = NULL;
         Objects[O_MAGNUM_ITEM].control = NULL;
@@ -65,7 +65,7 @@ void __cdecl InitialiseObjects()
         Objects[O_MAG_AMMO_ITEM].floor = NULL;
     }
 
-    if (TR1MConfig.disable_uzis) {
+    if (Tomb1MConfig.disable_uzis) {
         Objects[O_UZI_ITEM].initialise = NULL;
         Objects[O_UZI_ITEM].collision = NULL;
         Objects[O_UZI_ITEM].control = NULL;
@@ -81,7 +81,7 @@ void __cdecl InitialiseObjects()
         Objects[O_UZI_AMMO_ITEM].floor = NULL;
     }
 
-    if (TR1MConfig.disable_shotgun) {
+    if (Tomb1MConfig.disable_shotgun) {
         Objects[O_SHOTGUN_ITEM].initialise = NULL;
         Objects[O_SHOTGUN_ITEM].collision = NULL;
         Objects[O_SHOTGUN_ITEM].control = NULL;
@@ -98,7 +98,7 @@ void __cdecl InitialiseObjects()
     }
 }
 
-void TR1MInjectGameSetup()
+void Tomb1MInjectGameSetup()
 {
     INJECT(0x00437A50, InitialiseObjects);
 }

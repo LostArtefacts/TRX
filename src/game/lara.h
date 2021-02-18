@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_LARA_H
-#define TR1MAIN_GAME_LARA_H
+#ifndef TOMB1MAIN_GAME_LARA_H
+#define TOMB1MAIN_GAME_LARA_H
 
 #include "game/types.h"
 #include "util.h"
@@ -122,13 +122,13 @@ void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraWaterCurrent(COLL_INFO* coll);
 void __cdecl UseItem(__int16 object_num);
 
-void TR1MLookLeftRight();
-void TR1MLookUpDown();
-void TR1MResetLook();
+void Tomb1MLookLeftRight();
+void Tomb1MLookUpDown();
+void Tomb1MResetLook();
 
-void TR1MInjectGameLara();
-void TR1MInjectGameLaraMisc();
-void TR1MInjectGameLaraSurf();
-void TR1MInjectGameLaraSwim();
+void Tomb1MInjectGameLara();
+void Tomb1MInjectGameLaraMisc();
+void Tomb1MInjectGameLaraSurf();
+void Tomb1MInjectGameLaraSwim();
 
 #endif

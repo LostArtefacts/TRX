@@ -5,7 +5,7 @@
 
 void __cdecl FxChainBlock(ITEM_INFO* item)
 {
-    if (TR1MConfig.fix_tihocan_secret_sound) {
+    if (Tomb1MConfig.fix_tihocan_secret_sound) {
         SoundEffect(33, NULL, 0);
         FlipEffect = -1;
     } else {
@@ -21,7 +21,7 @@ void __cdecl FxChainBlock(ITEM_INFO* item)
     }
 }
 
-void TR1MInjectGameEffects()
+void Tomb1MInjectGameEffects()
 {
     INJECT(0x0041AD00, FxChainBlock);
 }

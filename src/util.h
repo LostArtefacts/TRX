@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_UTIL_H
-#define TR1MAIN_UTIL_H
+#ifndef TOMB1MAIN_UTIL_H
+#define TOMB1MAIN_UTIL_H
 
 #define FEATURE_NOCD_DATA
 
@@ -25,12 +25,12 @@ typedef struct {
 #define VAR_I_(address, type, value) (*(type*)(address))
 #define ARRAY_(address, type, length) (*(type(*) length)(address))
 
-void TR1MInjectFunc(void* from, void* to);
-void TR1MPrintStackTrace();
+void Tomb1MInjectFunc(void* from, void* to);
+void Tomb1MPrintStackTrace();
 
 #define INJECT(from, to)                                                       \
     {                                                                          \
-        TR1MInjectFunc((void*)from, (void*)to);                                \
+        Tomb1MInjectFunc((void*)from, (void*)to);                              \
     }
 
 #endif

@@ -70,7 +70,7 @@ void __cdecl S_UpdateInput()
         linput |= IN_ROLL;
     }
 
-    if (TR1MConfig.enable_numeric_keys) {
+    if (Tomb1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
         } else if (KeyData->keymap[DIK_2] && Inv_RequestItem(O_SHOTGUN_ITEM)) {
@@ -81,16 +81,16 @@ void __cdecl S_UpdateInput()
             Lara.request_gun_type = LGT_UZIS;
         }
 
-        if (TR1MData.medipack_cooldown > 0) {
-            --TR1MData.medipack_cooldown;
+        if (Tomb1MData.medipack_cooldown > 0) {
+            --Tomb1MData.medipack_cooldown;
         } else {
             if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
                 UseItem(O_MEDI_OPTION);
-                TR1MData.medipack_cooldown = 15; // half a second
+                Tomb1MData.medipack_cooldown = 15; // half a second
             } else if (
                 KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
                 UseItem(O_BIGMEDI_OPTION);
-                TR1MData.medipack_cooldown = 15;
+                Tomb1MData.medipack_cooldown = 15;
             }
         }
     }
@@ -141,7 +141,7 @@ void __cdecl S_UpdateInput()
     return;
 }
 
-void TR1MInjectSpecificInput()
+void Tomb1MInjectSpecificInput()
 {
     INJECT(0x0041E550, S_UpdateInput);
 }

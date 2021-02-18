@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_SPECIFIC_OUTPUT_H
-#define TR1MAIN_SPECIFIC_OUTPUT_H
+#ifndef TOMB1MAIN_SPECIFIC_OUTPUT_H
+#define TOMB1MAIN_SPECIFIC_OUTPUT_H
 
 // clang-format off
 #define S_DumpScreen            ((void          __cdecl(*)())0x0042FC70)
@@ -15,6 +15,6 @@
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
 
-void TR1MInjectSpecificOutput();
+void Tomb1MInjectSpecificOutput();
 
 #endif

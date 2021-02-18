@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_ITEMS_H
-#define TR1MAIN_GAME_ITEMS_H
+#ifndef TOMB1MAIN_GAME_ITEMS_H
+#define TOMB1MAIN_GAME_ITEMS_H
 
 // clang-format off
 #define InitialiseItemArray     ((void          __cdecl(*)(int item_count))0x00421B10)
@@ -8,6 +8,6 @@
 
 void __cdecl InitialiseFXArray();
 
-void TR1MInjectGameItems();
+void Tomb1MInjectGameItems();
 
 #endif

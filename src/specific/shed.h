@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_SPECIFIC_SHED_H
-#define TR1MAIN_SPECIFIC_SHED_H
+#ifndef TOMB1MAIN_SPECIFIC_SHED_H
+#define TOMB1MAIN_SPECIFIC_SHED_H
 
 // a place for odd functions that have no place to go yet
 

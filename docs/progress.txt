@@ -1,6 +1,6 @@
 # Flags:
 # - to do
-# * to do, called by TR1Main
+# * to do, called by Tomb1Main
 # + fully decompiled
 #
 # Name                          Offset      Size        Flags

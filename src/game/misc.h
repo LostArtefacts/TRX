@@ -1,5 +1,5 @@
-#ifndef TR1MAIN_GAME_MISC_H
-#define TR1MAIN_GAME_MISC_H
+#ifndef TOMB1MAIN_GAME_MISC_H
+#define TOMB1MAIN_GAME_MISC_H
 
 #define SQUARE(A) ((A) * (A))
 #ifndef ABS
