@@ -70,6 +70,7 @@ void __cdecl LaraAsDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraAsSurfBack(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraAsSurfLeft(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl LaraColWalk(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColRun(ITEM_INFO* item, COLL_INFO* coll);

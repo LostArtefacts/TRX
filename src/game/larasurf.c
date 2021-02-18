@@ -120,9 +120,34 @@ void __cdecl LaraAsSurfBack(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_UWDEATH;
+        return;
+    }
+
+    Lara.dive_count = 0;
+    if (Input & IN_LEFT) {
+        item->pos.y_rot -= LARA_SLOW_TURN / 2;
+    } else if (Input & IN_RIGHT) {
+        item->pos.y_rot += LARA_SLOW_TURN / 2;
+    }
+
+    if (!(Input & IN_STEPL)) {
+        item->goal_anim_state = AS_SURFTREAD;
+    }
+
+    item->fall_speed += 8;
+    if (item->fall_speed > SURF_MAXSPEED) {
+        item->fall_speed = SURF_MAXSPEED;
+    }
+}
+
 void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
     INJECT(0x004288A0, LaraAsSurfSwim);
     INJECT(0x00428910, LaraAsSurfBack);
+    INJECT(0x00428970, LaraAsSurfLeft);
 }
