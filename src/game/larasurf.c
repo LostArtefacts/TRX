@@ -236,12 +236,21 @@ void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    LaraSurfaceCollision(item, coll);
+}
+
 void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
+
     INJECT(0x004288A0, LaraAsSurfSwim);
     INJECT(0x00428910, LaraAsSurfBack);
     INJECT(0x00428970, LaraAsSurfLeft);
     INJECT(0x004289D0, LaraAsSurfRight);
     INJECT(0x00428A30, LaraAsSurfTread);
+
+    INJECT(0x00428BB0, LaraColSurfTread);
 }

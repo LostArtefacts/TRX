@@ -11,6 +11,7 @@
 #define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
 #define AnimateLara             ((void          __cdecl(*)(ITEM_INFO* item))0x00427C00)
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
+#define LaraSurfaceCollision    ((void          __cdecl(*)(ITEM_INFO *item, COLL_INFO *coll))0x00428C60)
 // clang-format on
 
 void __cdecl InitialiseLara();
@@ -107,6 +108,7 @@ void __cdecl LaraColFastDive(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColTread(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll);
+void __cdecl LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSlideSlope(ITEM_INFO* item, COLL_INFO* coll);
