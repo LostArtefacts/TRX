@@ -133,7 +133,7 @@ void Tomb1MRenderBar(int value, int value_max, int bar_type)
 
     const int blink_interval = 20;
     const int blink_threshold = bar_type == Tomb1M_BAR_ENEMY_HEALTH ? 0 : 20;
-    int blink_time = SaveGame[0].timer % blink_interval;
+    int blink_time = Ticks % blink_interval;
     int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
 
     if (percent && !blink) {
