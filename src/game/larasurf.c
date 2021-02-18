@@ -3,6 +3,7 @@
 #include "game/control.h"
 #include "game/data.h"
 #include "game/lara.h"
+#include "game/misc.h"
 
 void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -300,6 +301,79 @@ void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
     LaraTestWaterClimbOut(item, coll);
 }
 
+int32_t __cdecl LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
+{
+    if (item->pos.y_rot != Lara.move_angle) {
+        return 0;
+    }
+
+    if (coll->coll_type != COLL_FRONT || !(Input & IN_ACTION)
+        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        return 0;
+    }
+
+    if (coll->front_ceiling > 0 || coll->mid_ceiling > -STEPUP_HEIGHT) {
+        return 0;
+    }
+
+    int hdif = coll->front_floor + 700;
+    if (hdif < -512 || hdif > 100) {
+        return 0;
+    }
+
+    PHD_ANGLE angle = item->pos.y_rot;
+    if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
+        angle = 0;
+    } else if (
+        angle >= PHD_ONE / 4 - HANG_ANGLE
+        && angle <= PHD_ONE / 4 + HANG_ANGLE) {
+        angle = PHD_ONE / 4;
+    } else if (
+        angle >= ((PHD_ONE / 2) - 1) - HANG_ANGLE
+        || angle <= -((PHD_ONE / 2) - 1) + HANG_ANGLE) {
+        angle = -PHD_ONE / 2;
+    } else if (
+        angle >= -PHD_ONE / 4 - HANG_ANGLE
+        && angle <= -PHD_ONE / 4 + HANG_ANGLE) {
+        angle = -PHD_ONE / 4;
+    }
+    if (angle & ((PHD_ONE / 4) - 1)) {
+        return 0;
+    }
+
+    item->pos.y += hdif - 5;
+    UpdateLaraRoom(item, -LARA_HITE / 2);
+
+    switch (angle) {
+    case 0:
+        item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RAD;
+        break;
+    case PHD_ONE / 4:
+        item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RAD;
+        break;
+    case -PHD_ONE / 2:
+        item->pos.z = (item->pos.z & -WALL_L) - LARA_RAD;
+        break;
+    case -PHD_ONE / 4:
+        item->pos.x = (item->pos.x & -WALL_L) - LARA_RAD;
+        break;
+    }
+
+    item->anim_number = AA_SURFCLIMB;
+    item->frame_number = AF_SURFCLIMB;
+    item->current_anim_state = AS_WATEROUT;
+    item->goal_anim_state = AS_STOP;
+    item->pos.x_rot = 0;
+    item->pos.y_rot = angle;
+    item->pos.z_rot = 0;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    item->speed = 0;
+    Lara.gun_status = LGS_HANDSBUSY;
+    Lara.water_status = LWS_ABOVEWATER;
+    return 1;
+}
+
 void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
@@ -316,4 +390,5 @@ void Tomb1MInjectGameLaraSurf()
     INJECT(0x00428C30, LaraColSurfRight);
 
     INJECT(0x00428C60, LaraSurfaceCollision);
+    INJECT(0x00428D50, LaraTestWaterClimbOut);
 }

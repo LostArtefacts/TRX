@@ -1926,8 +1926,8 @@ int32_t __cdecl LaraTestHangJump(ITEM_INFO* item, COLL_INFO* coll)
         return 0;
     }
 
-    int angle = item->pos.y_rot;
-    if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
+    PHD_ANGLE angle = item->pos.y_rot;
+    if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
         angle = 0;
     } else if (
         angle >= PHD_ONE / 4 - HANG_ANGLE
@@ -2114,8 +2114,8 @@ int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist)
     int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
     int32_t y = item->pos.y - LARA_HITE;
     int32_t z = item->pos.z + ((phd_cos(ang) * dist) >> W2V_SHIFT);
-    int16_t room = item->room_number;
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room);
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
     int32_t height = GetHeight(floor, x, y, z);
     if (height != NO_HEIGHT)
         height -= item->pos.y;
