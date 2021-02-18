@@ -168,6 +168,74 @@ void __cdecl LaraAsSurfRight(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->fall_speed -= 4;
+    if (item->fall_speed < 0) {
+        item->fall_speed = 0;
+    }
+
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_UWDEATH;
+        return;
+    }
+
+    if (Input & IN_LOOK) {
+        Camera.type = CAM_LOOK;
+        if (Input & IN_LEFT && Lara.head_y_rot > -MAX_HEAD_ROTATION_SURF) {
+            Lara.head_y_rot -= HEAD_TURN_SURF;
+        } else if (
+            (Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION_SURF) {
+            Lara.head_y_rot += HEAD_TURN_SURF;
+        }
+        Lara.torso_y_rot = Lara.head_y_rot / 2;
+
+        if ((Input & IN_FORWARD) && Lara.head_x_rot > MIN_HEAD_TILT_SURF) {
+            Lara.head_x_rot -= HEAD_TURN_SURF;
+        } else if ((Input & IN_BACK) && Lara.head_x_rot < MAX_HEAD_TILT_SURF) {
+            Lara.head_x_rot += HEAD_TURN_SURF;
+        }
+        Lara.torso_x_rot = 0;
+        return;
+    }
+    if (Camera.type == CAM_LOOK) {
+        Camera.type = CAM_CHASE;
+    }
+
+    if (Input & IN_LEFT) {
+        item->pos.y_rot -= LARA_SLOW_TURN;
+    } else if (Input & IN_RIGHT) {
+        item->pos.y_rot += LARA_SLOW_TURN;
+    }
+
+    if (Input & IN_FORWARD) {
+        item->goal_anim_state = AS_SURFSWIM;
+    } else if (Input & IN_BACK) {
+        item->goal_anim_state = AS_SURFBACK;
+    }
+
+    if (Input & IN_STEPL) {
+        item->goal_anim_state = AS_SURFLEFT;
+    } else if (Input & IN_STEPR) {
+        item->goal_anim_state = AS_SURFRIGHT;
+    }
+
+    if (Input & IN_JUMP) {
+        Lara.dive_count++;
+        if (Lara.dive_count == DIVE_COUNT) {
+            item->goal_anim_state = AS_SWIM;
+            item->current_anim_state = AS_DIVE;
+            item->anim_number = AA_SURFDIVE;
+            item->frame_number = AF_SURFDIVE;
+            item->pos.x_rot = -45 * ONE_DEGREE;
+            item->fall_speed = 80;
+            Lara.water_status = LWS_UNDERWATER;
+        }
+    } else {
+        Lara.dive_count = 0;
+    }
+}
+
 void Tomb1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
@@ -175,4 +243,5 @@ void Tomb1MInjectGameLaraSurf()
     INJECT(0x00428910, LaraAsSurfBack);
     INJECT(0x00428970, LaraAsSurfLeft);
     INJECT(0x004289D0, LaraAsSurfRight);
+    INJECT(0x00428A30, LaraAsSurfTread);
 }
