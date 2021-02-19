@@ -10,6 +10,7 @@
 #define GetHeight               ((int16_t       __cdecl(*)(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z))0x00413D60)
 #define GetWaterHeight          ((int16_t       __cdecl(*)(int32_t x, int32_t y, int32_t z, int16_t room_number))0x00413C60)
 #define TestTriggers            ((void          __cdecl(*)(int16_t* data, int heavy))0x00414080)
+#define AnimateItem             ((void          __cdecl(*)(ITEM_INFO *item))0x00413660)
 // clang-format on
 
 int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode);

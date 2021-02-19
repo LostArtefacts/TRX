@@ -154,7 +154,7 @@ AlignLaraPosition               0x00413070  0x000000C1  -
 MoveLaraPosition                0x00413140  0x000000E4  -
 Move3DPosTo3DPos                0x00413230  0x00000172  -
 ControlPhase                    0x004133B0  0x000002B0  +
-AnimateItem                     0x00413660  0x000002C6  -
+AnimateItem                     0x00413660  0x000002C6  *
 GetChange                       0x00413960  0x000000AB  -
 TranslateItem                   0x00413A10  0x00000067  -
 GetFloor                        0x00413A80  0x000001D4  *
@@ -419,7 +419,7 @@ LaraControl                     0x00427850  0x00000372  *
 LaraSwapMeshExtra               0x00427BD0  0x00000030  -
 AnimateLara                     0x00427C00  0x00000244  *
 UseItem                         0x00427E80  0x000000F8  +
-ControlLaraExtra                0x00427FD0  0x0000001F  -
+ControlLaraExtra                0x00427FD0  0x0000001F  +
 InitialiseLaraLoad              0x00427FF0  0x00000024  +
 InitialiseLara                  0x00428020  0x00000150  +
 InitialiseLaraInventory         0x00428170  0x000001C8  *

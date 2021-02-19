@@ -1,3 +1,4 @@
+#include "game/control.h"
 #include "game/data.h"
 #include "game/effects.h"
 #include "game/inv.h"
@@ -5,6 +6,11 @@
 #include "game/lot.h"
 #include "mod.h"
 #include "util.h"
+
+void __cdecl ControlLaraExtra(int16_t item_num)
+{
+    AnimateItem(&Items[item_num]);
+}
 
 void __cdecl InitialiseLaraLoad(int16_t item_num)
 {
@@ -161,6 +167,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427FD0, ControlLaraExtra);
     INJECT(0x00427FF0, InitialiseLaraLoad);
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00427E80, UseItem);
