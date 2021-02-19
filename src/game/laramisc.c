@@ -8,6 +8,16 @@
 #include "mod.h"
 #include "util.h"
 
+void __cdecl LaraSwapMeshExtra()
+{
+    if (!Objects[O_LARA_EXTRA].loaded) {
+        return;
+    }
+    for (int i = 0; i < 15; i++) {
+        Lara.mesh_ptrs[i] = Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + i];
+    }
+}
+
 void __cdecl AnimateLara(ITEM_INFO* item)
 {
     int16_t* command;
@@ -280,6 +290,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427BD0, LaraSwapMeshExtra);
     INJECT(0x00427C00, AnimateLara);
     INJECT(0x00427E80, UseItem);
     INJECT(0x00427FD0, ControlLaraExtra);

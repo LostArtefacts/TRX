@@ -416,7 +416,7 @@ AimWeapon                       0x00427360  0x000000C1  -
 FireWeapon                      0x00427430  0x000002F2  -
 HitTarget                       0x00427730  0x000000E5  -
 LaraControl                     0x00427850  0x00000372  *
-LaraSwapMeshExtra               0x00427BD0  0x00000030  -
+LaraSwapMeshExtra               0x00427BD0  0x00000030  +
 AnimateLara                     0x00427C00  0x00000244  +
 UseItem                         0x00427E80  0x000000F8  +
 ControlLaraExtra                0x00427FD0  0x0000001F  +

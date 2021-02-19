@@ -12,6 +12,7 @@
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 // clang-format on
 
+void __cdecl LaraSwapMeshExtra();
 void __cdecl AnimateLara(ITEM_INFO* item);
 void __cdecl UseItem(int16_t object_num);
 void __cdecl ControlLaraExtra(int16_t item_num);
