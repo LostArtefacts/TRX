@@ -815,6 +815,34 @@ void __cdecl InterpolateArmMatrix()
     }
 }
 
+int32_t __cdecl GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
+{
+    ANIM_STRUCT* anim = &Anims[item->anim_number];
+    frmptr[0] = anim->frame_ptr;
+    frmptr[1] = anim->frame_ptr;
+
+    *rate = anim->interpolation;
+
+    int32_t frm = item->frame_number - anim->frame_base;
+    int32_t first = frm / anim->interpolation;
+    int32_t frame_size = Objects[item->object_number].nmeshes * 2 + 10;
+
+    frmptr[0] += first * frame_size;
+    frmptr[1] = frmptr[0] + frame_size;
+
+    int32_t interp = frm % anim->interpolation;
+    if (!interp) {
+        return 0;
+    }
+
+    int32_t second = anim->interpolation * (first + 1);
+    if (second > anim->frame_end) {
+        *rate = anim->frame_end + anim->interpolation - second;
+    }
+
+    return interp;
+}
+
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
@@ -822,4 +850,5 @@ void Tomb1MInjectGameDraw()
     INJECT(0x00418680, DrawLaraInt);
     INJECT(0x00419A60, InterpolateMatrix);
     INJECT(0x00419C30, InterpolateArmMatrix);
+    INJECT(0x00419D30, GetFrames);
 }
