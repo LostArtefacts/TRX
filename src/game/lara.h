@@ -13,10 +13,10 @@
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 // clang-format on
 
+void __cdecl UseItem(int16_t object_num);
 void __cdecl ControlLaraExtra(int16_t item_num);
 void __cdecl InitialiseLaraLoad(int16_t item_num);
 void __cdecl InitialiseLara();
-void __cdecl UseItem(int16_t object_num);
 
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);

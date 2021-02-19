@@ -7,6 +7,72 @@
 #include "mod.h"
 #include "util.h"
 
+void __cdecl UseItem(int16_t object_num)
+{
+    TRACE("%d", object_num);
+    switch (object_num) {
+    case O_GUN_ITEM:
+    case O_GUN_OPTION:
+        Lara.request_gun_type = LGT_PISTOLS;
+        if (Lara.gun_status == LGS_ARMLESS && Lara.gun_type == LGT_PISTOLS) {
+            Lara.gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_SHOTGUN_ITEM:
+    case O_SHOTGUN_OPTION:
+        Lara.request_gun_type = LGT_SHOTGUN;
+        if (Lara.gun_status == LGS_ARMLESS && Lara.gun_type == LGT_SHOTGUN) {
+            Lara.gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_MAGNUM_ITEM:
+    case O_MAGNUM_OPTION:
+        Lara.request_gun_type = LGT_MAGNUMS;
+        if (Lara.gun_status == LGS_ARMLESS && Lara.gun_type == LGT_MAGNUMS) {
+            Lara.gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_UZI_ITEM:
+    case O_UZI_OPTION:
+        Lara.request_gun_type = LGT_UZIS;
+        if (Lara.gun_status == LGS_ARMLESS && Lara.gun_type == LGT_UZIS) {
+            Lara.gun_type = LGT_UNARMED;
+        }
+        break;
+
+    case O_MEDI_ITEM:
+    case O_MEDI_OPTION:
+        if (LaraItem->hit_points <= 0
+            || LaraItem->hit_points >= LARA_HITPOINTS) {
+            return;
+        }
+        LaraItem->hit_points += LARA_HITPOINTS / 2;
+        if (LaraItem->hit_points > LARA_HITPOINTS) {
+            LaraItem->hit_points = LARA_HITPOINTS;
+        }
+        Inv_RemoveItem(O_MEDI_ITEM);
+        SoundEffect(116, NULL, SFX_ALWAYS);
+        break;
+
+    case O_BIGMEDI_ITEM:
+    case O_BIGMEDI_OPTION:
+        if (LaraItem->hit_points <= 0
+            || LaraItem->hit_points >= LARA_HITPOINTS) {
+            return;
+        }
+        LaraItem->hit_points = LaraItem->hit_points + LARA_HITPOINTS;
+        if (LaraItem->hit_points > LARA_HITPOINTS) {
+            LaraItem->hit_points = LARA_HITPOINTS;
+        }
+        Inv_RemoveItem(O_BIGMEDI_ITEM);
+        SoundEffect(116, NULL, SFX_ALWAYS);
+        break;
+    }
+}
+
 void __cdecl ControlLaraExtra(int16_t item_num)
 {
     AnimateItem(&Items[item_num]);
@@ -74,63 +140,6 @@ void __cdecl InitialiseLara()
     InitialiseLaraInventory(CurrentLevel);
 }
 
-void __cdecl UseItem(int16_t object_num)
-{
-    TRACE("%d", object_num);
-    switch (object_num) {
-    case O_GUN_ITEM:
-    case O_GUN_OPTION:
-        Lara.request_gun_type = LGT_PISTOLS;
-        if (!Lara.gun_status && Lara.gun_type == LGT_PISTOLS) {
-            Lara.gun_type = LGT_UNARMED;
-        }
-        break;
-    case O_SHOTGUN_ITEM:
-    case O_SHOTGUN_OPTION:
-        Lara.request_gun_type = LGT_SHOTGUN;
-        if (!Lara.gun_status && Lara.gun_type == LGT_SHOTGUN) {
-            Lara.gun_type = LGT_UNARMED;
-        }
-        break;
-    case O_MAGNUM_ITEM:
-    case O_MAGNUM_OPTION:
-        Lara.request_gun_type = LGT_MAGNUMS;
-        if (!Lara.gun_status && Lara.gun_type == LGT_MAGNUMS) {
-            Lara.gun_type = LGT_UNARMED;
-        }
-        break;
-    case O_UZI_ITEM:
-    case O_UZI_OPTION:
-        Lara.request_gun_type = LGT_UZIS;
-        if (!Lara.gun_status && Lara.gun_type == LGT_UZIS) {
-            Lara.gun_type = LGT_UNARMED;
-        }
-        break;
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
-        if (LaraItem->hit_points <= 0
-            || LaraItem->hit_points >= LARA_HITPOINTS) {
-            return;
-        }
-        LaraItem->hit_points += LARA_HITPOINTS / 2;
-        if (LaraItem->hit_points > LARA_HITPOINTS)
-            LaraItem->hit_points = LARA_HITPOINTS;
-        Inv_RemoveItem(O_MEDI_ITEM);
-        SoundEffect(116, 0, SFX_ALWAYS);
-        break;
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
-        if (LaraItem->hit_points > 0 && LaraItem->hit_points < LARA_HITPOINTS) {
-            LaraItem->hit_points = LaraItem->hit_points + LARA_HITPOINTS;
-            if (LaraItem->hit_points > LARA_HITPOINTS)
-                LaraItem->hit_points = LARA_HITPOINTS;
-            Inv_RemoveItem(O_BIGMEDI_ITEM);
-            SoundEffect(116, 0, SFX_ALWAYS);
-        }
-        break;
-    }
-}
-
 void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
@@ -167,8 +176,8 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427E80, UseItem);
     INJECT(0x00427FD0, ControlLaraExtra);
     INJECT(0x00427FF0, InitialiseLaraLoad);
     INJECT(0x00428020, InitialiseLara);
-    INJECT(0x00427E80, UseItem);
 }
