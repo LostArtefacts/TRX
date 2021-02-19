@@ -91,6 +91,10 @@
 #define AnimCommands            VAR_U_(0x0046257C, int16_t*)
 #define AnimBones               VAR_U_(0x00462648, int32_t*)
 #define EffectRoutines          ARRAY_(0x00453600, EffectRoutine, [])
+#define IMRate                  VAR_U_(0x00462BE0, int32_t)
+#define IMFrac                  VAR_U_(0x00462570, int32_t)
+#define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
+#define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [32])
 // clang-format on
 
 #endif

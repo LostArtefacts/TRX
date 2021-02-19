@@ -197,7 +197,7 @@ DrawSpriteItem                  0x00417510  0x00000035  -
 DrawAnimatingItem               0x00417550  0x00000541  *
 DrawLara                        0x00417AA0  0x00000AEF  +
 CalculateObjectLighting         0x004185B0  0x000000C9  *
-DrawLaraInt                     0x00418680  0x000013C6  *
+DrawLaraInt                     0x00418680  0x000013C6  +
 InterpolateMatrix               0x00419A60  0x000001CD  -
 InterpolateArmMatrix            0x00419C30  0x000000FC  -
 GetFrames                       0x00419D30  0x00000099  *
