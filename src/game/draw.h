@@ -9,6 +9,7 @@
 // clang-format on
 
 void __cdecl PrintRooms(int16_t room_number);
+void __cdecl DrawSpriteItem(ITEM_INFO* item);
 void __cdecl DrawAnimatingItem(ITEM_INFO* item);
 void __cdecl DrawLara(ITEM_INFO* item);
 void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip);

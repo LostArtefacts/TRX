@@ -193,7 +193,7 @@ GetRoomBounds                   0x00416E30  0x0000007D  -
 SetRoomBounds                   0x00416EB0  0x0000032E  -
 PrintRooms                      0x004171E0  0x0000021A  +
 DrawEffect                      0x00417400  0x00000107  *
-DrawSpriteItem                  0x00417510  0x00000035  -
+DrawSpriteItem                  0x00417510  0x00000035  +
 DrawAnimatingItem               0x00417550  0x00000541  +
 DrawLara                        0x00417AA0  0x00000AEF  +
 CalculateObjectLighting         0x004185B0  0x000000C9  +
@@ -557,7 +557,7 @@ ModifyStartInfo                 0x00434520  0x000000BF  *
 CreateStartInfo                 0x004345E0  0x00000139  *
 CreateSaveGameInfo              0x00434720  0x00000866  *
 ExtractSaveGameInfo             0x00434F90  0x00000971  -
-S_DrawSpriteAbs                 0x00435910  0x0000025E  -
+S_DrawSprite                    0x00435910  0x0000025E  -
 S_DrawSpriteRel                 0x00435B70  0x00000207  -
 S_DrawUISprite                  0x00435D80  0x0000014D  -
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -

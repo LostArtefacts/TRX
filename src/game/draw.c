@@ -1,5 +1,6 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/3d_insert.h"
+#include "3dsystem/scalespr.h"
 #include "game/const.h"
 #include "game/data.h"
 #include "game/draw.h"
@@ -63,6 +64,14 @@ void __cdecl PrintRooms(int16_t room_number)
     r->bound_bottom = 0;
     r->bound_right = 0;
     r->bound_top = PhdWinMaxY;
+}
+
+void __cdecl DrawSpriteItem(ITEM_INFO* item)
+{
+    S_DrawSprite(
+        item->pos.x, item->pos.y, item->pos.z,
+        Objects[item->object_number].mesh_index - item->frame_number,
+        item->shade);
 }
 
 void __cdecl DrawAnimatingItem(ITEM_INFO* item)
@@ -1052,6 +1061,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
+    INJECT(0x00417510, DrawSpriteItem);
     INJECT(0x00417550, DrawAnimatingItem);
     INJECT(0x00417AA0, DrawLara);
     INJECT(0x004185B0, CalculateObjectLighting);
