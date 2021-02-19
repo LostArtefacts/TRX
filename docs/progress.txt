@@ -196,7 +196,7 @@ DrawEffect                      0x00417400  0x00000107  *
 DrawSpriteItem                  0x00417510  0x00000035  -
 DrawAnimatingItem               0x00417550  0x00000541  *
 DrawLara                        0x00417AA0  0x00000AEF  +
-CalculateObjectLighting         0x004185B0  0x000000C9  *
+CalculateObjectLighting         0x004185B0  0x000000C9  +
 DrawLaraInt                     0x00418680  0x000013C6  +
 InterpolateMatrix               0x00419A60  0x000001CD  +
 InterpolateArmMatrix            0x00419C30  0x000000FC  +
@@ -513,7 +513,7 @@ S_InitialiseScreen              0x0042FCE0  0x00000027  -
 S_OutputPolyList                0x0042FD10  0x00000018  *
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
 S_PrintShadow                   0x0042FFA0  0x0000015B  *
-S_CalculateLight                0x00430100  0x00000183  -
+S_CalculateLight                0x00430100  0x00000183  *
 S_CalculateStaticLight          0x00430290  0x00000031  *
 S_DrawHealthBar                 0x004302D0  0x00000180  +
 S_DrawAirBar                    0x00430450  0x00000188  +
@@ -671,7 +671,7 @@ InitialiseWolf                  0x0043DF20  0x00000024  -
 WolfControl                     0x0043DF50  0x0000040B  -
 LionControl                     0x0043E390  0x000002BD  -
 phd_PushMatrix                  0x0043EA01  0x00000020  -
-phd_PushUnitMatrix              0x0043EA21  0x00000035  -
+phd_PushUnitMatrix              0x0043EA21  0x00000035  *
 flatA                           0x0043EA80  0x00000064  -
 transA                          0x0043EAE4  0x00000139  -
 gourA                           0x0043EC1D  0x00000185  -

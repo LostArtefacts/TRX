@@ -401,6 +401,33 @@ void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
 }
 
+void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
+{
+    if (item->shade >= 0) {
+        S_CalculateStaticLight(item->shade);
+        return;
+    }
+
+    phd_PushUnitMatrix();
+    PhdMatrixPtr->_23 = 0;
+    PhdMatrixPtr->_13 = 0;
+    PhdMatrixPtr->_03 = 0;
+
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    phd_TranslateRel(
+        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
+        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
+        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+
+    int32_t x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+
+    phd_PopMatrix();
+
+    S_CalculateLight(x, y, z, item->room_number);
+}
+
 void __cdecl DrawLaraInt(
     ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int frac, int rate)
 {
@@ -877,6 +904,7 @@ void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
     INJECT(0x00417AA0, DrawLara);
+    INJECT(0x004185B0, CalculateObjectLighting);
     INJECT(0x00418680, DrawLaraInt);
     INJECT(0x00419A60, InterpolateMatrix);
     INJECT(0x00419C30, InterpolateArmMatrix);

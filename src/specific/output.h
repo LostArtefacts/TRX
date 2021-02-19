@@ -9,6 +9,7 @@
 #define S_OutputPolyList        ((void          __cdecl(*)())0x0042FD10)
 #define S_CopyBufferToScreen    ((void          __cdecl(*)())0x00416A60)
 #define S_GetObjectBounds       ((int32_t       __cdecl(*)(int16_t* bptr))0x0042FD30)
+#define S_CalculateLight        ((void          __cdecl(*)(int32_t x, int32_t y, int32_t z, int16_t room_num))0x00430100)
 #define S_CalculateStaticLight  ((void          __cdecl(*)(int16_t adder))0x00430290)
 // clang-format on
 

@@ -7,12 +7,12 @@
 // clang-format off
 #define DrawEffect              ((void          __cdecl(*)(int16_t fx_num))0x00417400)
 #define DrawAnimatingItem       ((void          __cdecl(*)(ITEM_INFO *item))0x00417550)
-#define CalculateObjectLighting ((void          __cdecl(*)(ITEM_INFO* item, int16_t* frame))0x004185B0)
 // clang-format on
 
 void __cdecl PrintRooms(int16_t room_number);
 void __cdecl DrawLara(ITEM_INFO* item);
 void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip);
+void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);
 void __cdecl DrawLaraInt(
     ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int frac, int rate);
 void __cdecl InitInterpolate(int32_t frac, int32_t rate);
