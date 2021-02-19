@@ -4,6 +4,7 @@
 #include "game/types.h"
 #include <stdint.h>
 
+int32_t __cdecl DrawPhaseGame();
 void __cdecl DrawRooms(int16_t current_room);
 void __cdecl GetRoomBounds(int16_t room_num);
 int32_t __cdecl SetRoomBounds(

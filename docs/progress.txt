@@ -187,7 +187,7 @@ sub_416B10                      0x00416B10  0x00000010  -
 S_FadeInInventory               0x00416B20  0x00000082  -
 S_FadeOutInventory              0x00416BB0  0x00000027  -
 DrawPhaseCinematic              0x00416BE0  0x00000090  -
-DrawPhaseGame                   0x00416C70  0x00000037  -
+DrawPhaseGame                   0x00416C70  0x00000037  +
 DrawRooms                       0x00416CB0  0x00000173  +
 GetRoomBounds                   0x00416E30  0x0000007D  +
 SetRoomBounds                   0x00416EB0  0x0000032E  +
@@ -519,7 +519,7 @@ S_DrawHealthBar                 0x004302D0  0x00000180  +
 S_DrawAirBar                    0x00430450  0x00000188  +
 S_SetupBelowWater               0x004305E0  0x00000054  *
 S_SetupAboveWater               0x00430640  0x00000019  *
-S_CopyFadeIn                    0x00430660  0x000000D3  -
+S_AnimateTextures               0x00430660  0x000000D3  *
 S_DrawLightningSegment          0x00430740  0x00000446  -
 decomp_pcx                      0x00430B90  0x00000141  -
 S_DisplayPicture                0x00430CE0  0x00000094  -

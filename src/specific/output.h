@@ -2,7 +2,8 @@
 #define TOMB1MAIN_SPECIFIC_OUTPUT_H
 
 // clang-format off
-#define S_DumpScreen            ((void          __cdecl(*)())0x0042FC70)
+#define S_AniamteTextures       ((void          __cdecl(*)(int32_t nframes))0x00430660)
+#define S_DumpScreen            ((int32_t       __cdecl(*)())0x0042FC70)
 #define S_ClearScreen           ((void          __cdecl(*)())0x0042FCC0)
 #define S_SetupAboveWater       ((void          __cdecl(*)(int underwater))0x00430640)
 #define S_SetupBelowWater       ((void          __cdecl(*)(int underwater))0x004305E0)

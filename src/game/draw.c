@@ -4,9 +4,21 @@
 #include "game/const.h"
 #include "game/data.h"
 #include "game/draw.h"
+#include "game/health.h"
 #include "specific/game.h"
 #include "specific/output.h"
 #include "util.h"
+
+int32_t __cdecl DrawPhaseGame()
+{
+    S_InitialisePolyList();
+    DrawRooms(Camera.pos.room_number);
+    DrawGameInfo();
+    S_OutputPolyList();
+    Camera.number_frames = S_DumpScreen();
+    S_AniamteTextures(Camera.number_frames);
+    return Camera.number_frames;
+}
 
 void __cdecl DrawRooms(int16_t current_room)
 {
@@ -1294,6 +1306,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 
 void Tomb1MInjectGameDraw()
 {
+    INJECT(0x00416C70, DrawPhaseGame);
     INJECT(0x00416CB0, DrawRooms);
     INJECT(0x00416E30, GetRoomBounds);
     INJECT(0x00416EB0, SetRoomBounds);

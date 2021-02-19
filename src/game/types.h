@@ -1000,8 +1000,8 @@ typedef struct {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
-    /* 000C */ int16_t data;
-    /* 000E */ int16_t flags;
+    /* 000C */ int16_t room_number;
+    /* 000E */ int16_t box_number;
     /* 0010 end */
 } GAME_VECTOR;
 
