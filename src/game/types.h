@@ -6,7 +6,6 @@
 
 typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
-typedef void UNKNOWN_STRUCT;
 
 typedef enum {
     CAM_CHASE = 0,
@@ -418,16 +417,24 @@ enum {
 } TARGET_TYPE;
 
 typedef enum {
-    GBUF_RoomInfos = 11,
-    GBUF_RoomMesh = 12,
-    GBUF_RoomDoor = 13,
-    GBUF_RoomFloor = 14,
-    GBUF_RoomLights = 15,
-    GBUF_RoomStaticMeshInfos = 16,
-    GBUF_FloorData = 17,
-    GBUF_Items = 18,
-    GBUF_CreatureData = 33,
-    GBUF_CreatureLot = 34,
+    GBUF_MESH_POINTERS = 2,
+    GBUF_MESHES = 3,
+    GBUF_ANIMS = 4,
+    GBUF_ANIM_CHANGES = 5,
+    GBUF_ANIM_RANGES = 6,
+    GBUF_ANIM_COMMANDS = 7,
+    GBUF_ANIM_BONES = 8,
+    GBUF_ANIM_FRAMES = 9,
+    GBUF_ROOM_INFOS = 11,
+    GBUF_ROOM_MESH = 12,
+    GBUF_ROOM_DOOR = 13,
+    GBUF_ROOM_FLOOR = 14,
+    GBUF_ROOM_LIGHTS = 15,
+    GBUF_ROOM_STATIC_MESH_INFOS = 16,
+    GBUF_FLOOR_DATA = 17,
+    GBUF_ITEMS = 18,
+    GBUF_CREATURE_DATA = 33,
+    GBUF_CREATURE_LOT = 34,
 } GAMEALLOC_BUFFER;
 
 typedef enum {
@@ -1058,6 +1065,21 @@ typedef struct {
 } ANIM_STRUCT;
 
 typedef struct {
+    /* 0000 */ int16_t goal_anim_state;
+    /* 0004 */ int16_t number_ranges;
+    /* 0006 */ int16_t range_index;
+    /* 0008 end */
+} ANIM_CHANGE_STRUCT;
+
+typedef struct {
+    /* 0000 */ int16_t start_frame;
+    /* 0004 */ int16_t end_frame;
+    /* 0006 */ int16_t link_anim_num;
+    /* 0008 */ int16_t link_frame_num;
+    /* 000A end */
+} ANIM_RANGE_STRUCT;
+
+typedef struct {
     /* 0000 */ int32_t _00;
     /* 0004 */ int32_t _01;
     /* 0008 */ int32_t _02;
@@ -1079,6 +1101,20 @@ typedef struct {
     /* 0008 */ int32_t zv;
     /* 000C end */
 } DOOR_VBUF;
+
+typedef struct {
+    /* 0000 */ uint16_t drawtype;
+    /* 0002 */ uint16_t tpage;
+    /* 0004 */ uint16_t u1;
+    /* 0006 */ uint16_t v1;
+    /* 0008 */ uint16_t u2;
+    /* 000A */ uint16_t v2;
+    /* 000C */ uint16_t u3;
+    /* 000E */ uint16_t v3;
+    /* 0010 */ uint16_t u4;
+    /* 0012 */ uint16_t v4;
+    /* 0014 end */
+} PHDTEXTURESTRUCT;
 
 #pragma pop
 

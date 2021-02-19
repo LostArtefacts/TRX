@@ -7,12 +7,12 @@ void __cdecl InitialiseLOTArray()
 {
     TRACE("");
     BaddieSlots =
-        game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CreatureData);
+        game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_DATA);
     CREATURE_INFO* creature = BaddieSlots;
     for (int i = 0; i < NUM_SLOTS; i++, creature++) {
         creature->item_num = NO_ITEM;
         creature->LOT.node =
-            game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CreatureLot);
+            game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
     }
     SlotsUsed = 0;
 }

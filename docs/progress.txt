@@ -239,7 +239,7 @@ FxDrawRightGun                  0x0041AF10  0x0000007E  -
 S_LoadLevel                     0x0041AF90  0x00000016  +
 LoadLevel                       0x0041AFB0  0x00000432  *
 LoadRooms                       0x0041B3F0  0x00000311  +
-LoadObjects                     0x0041B710  0x0000043F  -
+LoadObjects                     0x0041B710  0x0000043F  +
 LoadSprites                     0x0041BB50  0x00000102  -
 LoadItems                       0x0041BC60  0x0000019D  +
 LoadBoxes                       0x0041BE00  0x000001B5  -

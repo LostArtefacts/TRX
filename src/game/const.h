@@ -6,6 +6,7 @@
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
 #define MAX_FRAMES 10
+#define MAX_TEXTURES 1024
 #define NUMBER_ITEMS 256
 #define MAX_SECRETS 16
 #define MAX_SAVEGAME_BUFFER (10 * 1024)

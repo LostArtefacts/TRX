@@ -1,5 +1,6 @@
 #include "game/data.h"
 #include "game/items.h"
+#include "game/setup.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/shed.h"
@@ -19,7 +20,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
         return 0;
     }
 
-    RoomInfo = game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_RoomInfos);
+    RoomInfo = game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_ROOM_INFOS);
     if (!RoomInfo) {
         strcpy(StringToShow, "LoadRoom(): Could not allocate memory for rooms");
         return 0;
@@ -40,7 +41,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
         // Room mesh
         _fread(&count4, sizeof(uint32_t), 1, fp);
         current_room_info->data =
-            game_malloc(sizeof(uint16_t) * count4, GBUF_RoomMesh);
+            game_malloc(sizeof(uint16_t) * count4, GBUF_ROOM_MESH);
         _fread(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
@@ -49,7 +50,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
             current_room_info->doors = NULL;
         } else {
             current_room_info->doors = game_malloc(
-                sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_RoomDoor);
+                sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_ROOM_DOOR);
             current_room_info->doors->count = count2;
             _fread(
                 &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp);
@@ -60,7 +61,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
         _fread(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
         count4 = current_room_info->y_size * current_room_info->x_size;
         current_room_info->floor =
-            game_malloc(sizeof(FLOOR_INFO) * count4, GBUF_RoomFloor);
+            game_malloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
         _fread(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
 
         // Room lights
@@ -71,7 +72,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
         } else {
             current_room_info->light = game_malloc(
                 sizeof(LIGHT_INFO) * current_room_info->num_lights,
-                GBUF_RoomLights);
+                GBUF_ROOM_LIGHTS);
             _fread(
                 current_room_info->light, sizeof(LIGHT_INFO),
                 current_room_info->num_lights, fp);
@@ -84,7 +85,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
         } else {
             current_room_info->mesh = game_malloc(
                 sizeof(MESH_INFO) * current_room_info->num_meshes,
-                GBUF_RoomStaticMeshInfos);
+                GBUF_ROOM_STATIC_MESH_INFOS);
             _fread(
                 current_room_info->mesh, sizeof(MESH_INFO),
                 current_room_info->num_meshes, fp);
@@ -107,8 +108,107 @@ int32_t __cdecl LoadRooms(FILE* fp)
     }
 
     _fread(&count4, sizeof(uint32_t), 1, fp);
-    FloorData = game_malloc(sizeof(uint16_t) * count4, GBUF_FloorData);
+    FloorData = game_malloc(sizeof(uint16_t) * count4, GBUF_FLOOR_DATA);
     _fread(FloorData, sizeof(uint16_t), count4, fp);
+
+    return 1;
+}
+
+int32_t __cdecl LoadObjects(FILE* handle)
+{
+    int32_t mesh_count;
+    int32_t mesh_ptr_count;
+    int32_t anim_count;
+    int32_t anim_range_count;
+    int32_t anim_change_count;
+    int32_t anim_command_count;
+    int32_t anim_bone_count;
+    int32_t anim_frame_count;
+    int32_t object_count;
+    int32_t static_count;
+    int32_t texture_count;
+
+    _fread(&mesh_count, sizeof(int32_t), 1, handle);
+    MeshBase = game_malloc(sizeof(int16_t) * mesh_count, GBUF_MESHES);
+    _fread(MeshBase, sizeof(int16_t), mesh_count, handle);
+
+    _fread(&mesh_ptr_count, sizeof(int32_t), 1, handle);
+    uint32_t* mesh_indices =
+        game_malloc(sizeof(uint32_t) * mesh_ptr_count, GBUF_MESH_POINTERS);
+    _fread(mesh_indices, sizeof(uint32_t), mesh_ptr_count, handle);
+
+    Meshes = game_malloc(sizeof(int16_t*) * mesh_ptr_count, GBUF_MESH_POINTERS);
+    for (int i = 0; i < mesh_ptr_count; i++) {
+        Meshes[i] = &MeshBase[mesh_indices[i] / 2];
+    }
+
+    _fread(&anim_count, sizeof(int32_t), 1, handle);
+    Anims = game_malloc(sizeof(ANIM_STRUCT) * anim_count, GBUF_ANIMS);
+    _fread(Anims, sizeof(ANIM_STRUCT), anim_count, handle);
+
+    _fread(&anim_change_count, sizeof(int32_t), 1, handle);
+    AnimChanges = game_malloc(
+        sizeof(ANIM_CHANGE_STRUCT) * anim_change_count, GBUF_ANIM_CHANGES);
+    _fread(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), anim_change_count, handle);
+
+    _fread(&anim_range_count, sizeof(int32_t), 1, handle);
+    AnimRanges = game_malloc(
+        sizeof(ANIM_RANGE_STRUCT) * anim_range_count, GBUF_ANIM_RANGES);
+    _fread(AnimRanges, sizeof(ANIM_RANGE_STRUCT), anim_range_count, handle);
+
+    _fread(&anim_command_count, sizeof(int32_t), 1, handle);
+    AnimCommands =
+        game_malloc(sizeof(int16_t) * anim_command_count, GBUF_ANIM_COMMANDS);
+    _fread(AnimCommands, sizeof(int16_t), anim_command_count, handle);
+
+    _fread(&anim_bone_count, sizeof(int32_t), 1, handle);
+    AnimBones = game_malloc(sizeof(int32_t) * anim_bone_count, GBUF_ANIM_BONES);
+    _fread(AnimBones, sizeof(int32_t), anim_bone_count, handle);
+
+    _fread(&anim_frame_count, sizeof(int32_t), 1, handle);
+    AnimFrames =
+        game_malloc(sizeof(int16_t) * anim_frame_count, GBUF_ANIM_FRAMES);
+    _fread(AnimFrames, sizeof(int16_t), anim_frame_count, handle);
+    for (int i = 0; i < anim_count; i++) {
+        Anims[i].frame_ptr = &AnimFrames[(size_t)Anims[i].frame_ptr / 2];
+    }
+
+    _fread(&object_count, sizeof(int32_t), 1, handle);
+    for (int i = 0; i < object_count; i++) {
+        int32_t tmp;
+        _fread(&tmp, sizeof(int32_t), 1, handle);
+        OBJECT_INFO* object = &Objects[tmp];
+
+        _fread(&object->nmeshes, sizeof(int16_t), 1, handle);
+        _fread(&object->mesh_index, sizeof(int16_t), 1, handle);
+        _fread(&object->bone_index, sizeof(int32_t), 1, handle);
+
+        _fread(&tmp, sizeof(int32_t), 1, handle);
+        object->frame_base = &AnimFrames[tmp / 2];
+        _fread(&object->anim_index, sizeof(int16_t), 1, handle);
+        object->loaded = 1;
+    }
+
+    InitialiseObjects();
+
+    _fread(&static_count, sizeof(int32_t), 1, handle);
+    for (int i = 0; i < static_count; i++) {
+        int32_t tmp;
+        _fread(&tmp, sizeof(int32_t), 1, handle);
+        STATIC_INFO* object = &StaticObjects[tmp];
+
+        _fread(&object->mesh_number, sizeof(int16_t), 1, handle);
+        _fread(&object->x_minp, sizeof(int16_t), 6, handle);
+        _fread(&object->x_minc, sizeof(int16_t), 6, handle);
+        _fread(&object->flags, sizeof(int16_t), 1, handle);
+    }
+
+    _fread(&texture_count, sizeof(int32_t), 1, handle);
+    if (texture_count > MAX_TEXTURES) {
+        sprintf(StringToShow, "Too many Textures in level");
+        return 0;
+    }
+    _fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), texture_count, handle);
 
     return 1;
 }
@@ -126,7 +226,7 @@ int32_t __cdecl LoadItems(FILE* handle)
             return 0;
         }
 
-        Items = game_malloc(sizeof(ITEM_INFO) * NUMBER_ITEMS, GBUF_Items);
+        Items = game_malloc(sizeof(ITEM_INFO) * NUMBER_ITEMS, GBUF_ITEMS);
         if (!Items) {
             strcpy(
                 StringToShow,
@@ -238,6 +338,7 @@ int32_t __cdecl FindCdDrive()
 void Tomb1MInjectSpecificFile()
 {
     INJECT(0x0041B3F0, LoadRooms);
+    INJECT(0x0041B710, LoadObjects);
     INJECT(0x0041BC60, LoadItems);
     INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041BFC0, GetFullPath);
