@@ -66,6 +66,36 @@ void __cdecl PrintRooms(int16_t room_number)
     r->bound_top = PhdWinMaxY;
 }
 
+void __cdecl DrawEffect(int16_t fxnum)
+{
+    FX_INFO* fx = &Effects[fxnum];
+    OBJECT_INFO* object = &Objects[fx->object_number];
+    if (!object->loaded) {
+        return;
+    }
+
+    if (object->nmeshes < 0) {
+        S_DrawSprite(
+            fx->pos.x, fx->pos.y, fx->pos.z,
+            object->mesh_index - fx->frame_number, 4096);
+    } else {
+        phd_PushMatrix();
+        phd_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
+        if (PhdMatrixPtr->_23 > PhdNearZ && PhdMatrixPtr->_23 < PhdFarZ) {
+            phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
+            if (object->nmeshes) {
+                S_CalculateStaticLight(fx->shade);
+                phd_PutPolygons(Meshes[object->mesh_index], -1);
+            } else {
+                S_CalculateLight(
+                    fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
+                phd_PutPolygons(Meshes[fx->frame_number], -1);
+            }
+        }
+        phd_PopMatrix();
+    }
+}
+
 void __cdecl DrawSpriteItem(ITEM_INFO* item)
 {
     S_DrawSprite(
@@ -1065,6 +1095,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
+    INJECT(0x00417400, DrawEffect);
     INJECT(0x00417510, DrawSpriteItem);
     INJECT(0x00417550, DrawAnimatingItem);
     INJECT(0x00417AA0, DrawLara);

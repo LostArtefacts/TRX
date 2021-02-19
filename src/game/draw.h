@@ -4,11 +4,8 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define DrawEffect              ((void          __cdecl(*)(int16_t fx_num))0x00417400)
-// clang-format on
-
 void __cdecl PrintRooms(int16_t room_number);
+void __cdecl DrawEffect(int16_t fxnum);
 void __cdecl DrawSpriteItem(ITEM_INFO* item);
 void __cdecl DrawDummyItem(ITEM_INFO* item);
 void __cdecl DrawAnimatingItem(ITEM_INFO* item);
