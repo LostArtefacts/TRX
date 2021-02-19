@@ -563,6 +563,16 @@ typedef enum {
     DIR_EAST = 3,
 } DIRECTION;
 
+typedef enum {
+    AC_NULL = 0,
+    AC_MOVE_ORIGIN = 1,
+    AC_JUMP_VELOCITY = 2,
+    AC_ATTACK_READY = 3,
+    AC_DEACTIVATE = 4,
+    AC_SOUND_FX = 5,
+    AC_EFFECT = 6,
+} ANIM_COMMAND;
+
 #pragma pack(push, 1)
 
 typedef struct {
@@ -1039,5 +1049,6 @@ typedef struct {
 
 typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);
 typedef void(__cdecl* CollisionRoutine)(ITEM_INFO*, COLL_INFO*);
+typedef void(__cdecl* EffectRoutine)(ITEM_INFO* item);
 
 #endif

@@ -1,3 +1,4 @@
+#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/data.h"
 #include "game/effects.h"
@@ -6,6 +7,109 @@
 #include "game/lot.h"
 #include "mod.h"
 #include "util.h"
+
+void __cdecl AnimateLara(ITEM_INFO* item)
+{
+    int16_t* command;
+    ANIM_STRUCT* anim;
+
+    item->frame_number++;
+    anim = &Anims[item->anim_number];
+    if (anim->number_changes > 0 && GetChange(item, anim)) {
+        anim = &Anims[item->anim_number];
+        item->current_anim_state = anim->current_anim_state;
+    }
+
+    if (item->frame_number > anim->frame_end) {
+        if (anim->number_commands > 0) {
+            command = &AnimCommands[anim->command_index];
+            for (int i = 0; i < anim->number_commands; i++) {
+                switch (*command++) {
+                case AC_MOVE_ORIGIN:
+                    TranslateItem(item, command[0], command[1], command[2]);
+                    command += 3;
+                    break;
+
+                case AC_JUMP_VELOCITY:
+                    item->fall_speed = command[0];
+                    item->speed = command[1];
+                    command += 2;
+                    item->gravity_status = 1;
+                    if (Lara.calc_fallspeed) {
+                        item->fall_speed = Lara.calc_fallspeed;
+                        Lara.calc_fallspeed = 0;
+                    }
+                    break;
+
+                case AC_ATTACK_READY:
+                    Lara.gun_status = LGS_ARMLESS;
+                    break;
+
+                case AC_SOUND_FX:
+                case AC_EFFECT:
+                    command += 2;
+                    break;
+                }
+            }
+        }
+
+        item->anim_number = anim->jump_anim_num;
+        item->frame_number = anim->jump_frame_num;
+
+        anim = &Anims[anim->jump_anim_num];
+        item->current_anim_state = anim->current_anim_state;
+    }
+
+    if (anim->number_commands > 0) {
+        command = &AnimCommands[anim->command_index];
+        for (int i = 0; i < anim->number_commands; i++) {
+            switch (*command++) {
+            case AC_MOVE_ORIGIN:
+                command += 3;
+                break;
+
+            case AC_JUMP_VELOCITY:
+                command += 2;
+                break;
+
+            case AC_SOUND_FX:
+                if (item->frame_number == command[0]) {
+                    SoundEffect(command[1], &item->pos, SFX_ALWAYS);
+                }
+                command += 2;
+                break;
+
+            case AC_EFFECT:
+                if (item->frame_number == command[0]) {
+                    EffectRoutines[command[1]](item);
+                }
+                command += 2;
+                break;
+            }
+        }
+    }
+
+    if (item->gravity_status) {
+        int32_t speed = anim->velocity
+            + anim->acceleration * (item->frame_number - anim->frame_base - 1);
+        item->speed -= (int16_t)(speed >> 16);
+        speed += anim->acceleration;
+        item->speed += (int16_t)(speed >> 16);
+
+        item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY : 1;
+        item->pos.y += item->fall_speed;
+    } else {
+        int32_t speed = anim->velocity;
+        if (anim->acceleration) {
+            speed +=
+                anim->acceleration * (item->frame_number - anim->frame_base);
+        }
+        item->speed = (int16_t)(speed >> 16);
+    }
+
+    item->pos.x += (phd_sin(Lara.move_angle) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
+}
 
 void __cdecl UseItem(int16_t object_num)
 {
@@ -176,6 +280,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427C00, AnimateLara);
     INJECT(0x00427E80, UseItem);
     INJECT(0x00427FD0, ControlLaraExtra);
     INJECT(0x00427FF0, InitialiseLaraLoad);
