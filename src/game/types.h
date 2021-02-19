@@ -581,6 +581,10 @@ typedef enum {
     BEB_ROT_Z = 1 << 4,
 } BONE_EXTRA_BITS;
 
+typedef enum {
+    RF_UNDERWATER = 1,
+} ROOM_FLAGS;
+
 #pragma pack(push, 1)
 
 typedef struct {

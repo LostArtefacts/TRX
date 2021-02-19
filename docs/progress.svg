@@ -184,7 +184,7 @@
 <rect width="12.00" height="12.00" x="434.00" y="59.00" fill="lightpink"/>
 <rect width="12.00" height="12.00" x="448.00" y="59.00" fill="lightpink"/>
 <rect width="12.00" height="12.00" x="462.00" y="59.00" fill="lightpink"/>
-<rect width="12.00" height="12.00" x="476.00" y="59.00" fill="lightpink"/>
+<rect width="12.00" height="12.00" x="476.00" y="59.00" fill="forestgreen"/>
 <rect width="12.00" height="12.00" x="490.00" y="59.00" fill="forestgreen"/>
 <rect width="12.00" height="12.00" x="504.00" y="59.00" fill="forestgreen"/>
 <rect width="12.00" height="12.00" x="518.00" y="59.00" fill="forestgreen"/>
@@ -898,7 +898,7 @@
 <rect width="14.32" height="15.48" x="616.73" y="305.45" fill="forestgreen"/>
 <rect width="14.32" height="15.48" x="633.04" y="305.45" fill="lightpink"/>
 <rect width="14.32" height="15.48" x="649.36" y="305.45" fill="mistyrose"/>
-<rect width="14.18" height="15.48" x="665.68" y="305.45" fill="lightpink"/>
+<rect width="14.18" height="15.48" x="665.68" y="305.45" fill="forestgreen"/>
 <rect width="14.14" height="15.48" x="681.86" y="305.45" fill="lightpink"/>
 <rect width="14.52" height="14.99" x="465.66" y="322.93" fill="forestgreen"/>
 <rect width="14.52" height="14.95" x="465.66" y="339.92" fill="lightpink"/>
@@ -1403,10 +1403,10 @@
 <rect width="-0.56" height="0.65" x="696.56" y="534.29" fill="mistyrose"/>
 <rect width="0.16" height="-0.94" x="695.12" y="536.94" fill="mistyrose"/>
 <rect width="-1.28" height="-0.94" x="697.28" y="536.94" fill="lightpink"/>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 22.82%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 15.82%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 61.77%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 67.06%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 22.97%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 15.97%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 61.63%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 66.91%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="642.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (count): 15.41%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="660.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (bytesize): 17.12%</text>
 </svg>

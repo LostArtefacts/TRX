@@ -39,7 +39,6 @@
 #define DAMAGE_LENGTH 14
 #define NO_ITEM -1
 #define SHOTGUN_AMMO_CLIP 6
-#define UNDERWATER 1
 #define SFX_ALWAYS 2
 #define NUM_EFFECTS 100
 #define DEATH_WAIT (10 * 30)

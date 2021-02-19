@@ -8,6 +8,52 @@
 #include "specific/output.h"
 #include "util.h"
 
+void __cdecl DrawRooms(int16_t current_room)
+{
+    PhdLeft = 0;
+    PhdTop = 0;
+    PhdRight = PhdWinMaxX;
+    PhdBottom = PhdWinMaxY;
+
+    ROOM_INFO* r = &RoomInfo[current_room];
+    r->left = PhdLeft;
+    r->top = PhdTop;
+    r->right = PhdRight;
+    r->bottom = PhdBottom;
+    r->bound_active = 1;
+
+    RoomsToDrawNum = 0;
+    RoomsToDraw[RoomsToDrawNum++] = current_room;
+
+    CameraUnderwater = r->flags & RF_UNDERWATER;
+
+    phd_PushMatrix();
+    phd_TranslateAbs(r->x, r->y, r->z);
+    if (r->doors) {
+        for (int i = 0; i < r->doors->count; i++) {
+            DOOR_INFO* door = &r->doors->door[i];
+            if (SetRoomBounds(&door->x, door->room_num, r)) {
+                GetRoomBounds(door->room_num);
+            }
+        }
+    }
+    phd_PopMatrix();
+    S_ClearScreen();
+
+    for (int i = 0; i < RoomsToDrawNum; i++) {
+        PrintRooms(RoomsToDraw[i]);
+    }
+
+    if (Objects[O_LARA].loaded) {
+        if (RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER) {
+            S_SetupBelowWater(CameraUnderwater);
+        } else {
+            S_SetupAboveWater(CameraUnderwater);
+        }
+        DrawLara(LaraItem);
+    }
+}
+
 void __cdecl GetRoomBounds(int16_t room_num)
 {
     ROOM_INFO* r = &RoomInfo[room_num];
@@ -165,7 +211,7 @@ int32_t __cdecl SetRoomBounds(
 void __cdecl PrintRooms(int16_t room_number)
 {
     ROOM_INFO* r = &RoomInfo[room_number];
-    if (r->flags & UNDERWATER) {
+    if (r->flags & RF_UNDERWATER) {
         S_SetupBelowWater(CameraUnderwater);
     } else {
         S_SetupAboveWater(CameraUnderwater);
@@ -1248,6 +1294,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 
 void Tomb1MInjectGameDraw()
 {
+    INJECT(0x00416CB0, DrawRooms);
     INJECT(0x00416E30, GetRoomBounds);
     INJECT(0x00416EB0, SetRoomBounds);
     INJECT(0x004171E0, PrintRooms);
