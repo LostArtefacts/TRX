@@ -237,6 +237,12 @@ void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
+{
+    Lara.move_angle = item->pos.y_rot;
+    LaraSurfaceCollision(item, coll);
+}
+
 void __cdecl LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot;

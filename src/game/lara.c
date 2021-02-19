@@ -846,6 +846,12 @@ void __cdecl LaraAsFastDive(ITEM_INFO* item, COLL_INFO* coll)
     item->speed = (item->speed * 95) / 100;
 }
 
+void __cdecl LaraAsNull(ITEM_INFO* item, COLL_INFO* coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+}
+
 void __cdecl LaraAsGymnast(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
@@ -1059,6 +1065,11 @@ void __cdecl LaraColForwardJump(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
+void __cdecl LaraColPose(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColStop(item, coll);
+}
+
 void __cdecl LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
@@ -1120,6 +1131,11 @@ void __cdecl LaraColTurnR(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     item->pos.y += coll->mid_floor;
+}
+
+void __cdecl LaraColTurnL(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColTurnR(item, coll);
 }
 
 void __cdecl LaraColDeath(ITEM_INFO* item, COLL_INFO* coll)
@@ -1284,6 +1300,16 @@ void __cdecl LaraColBack(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColNull(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColFastTurn(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColStop(item, coll);
+}
+
 void __cdecl LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
@@ -1392,7 +1418,7 @@ void __cdecl LaraColUpJump(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraColFallback(ITEM_INFO* item, COLL_INFO* coll)
+void __cdecl LaraColFallBack(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
     coll->bad_pos = NO_BAD_POS;
@@ -1443,6 +1469,46 @@ void __cdecl LaraColDefault(ITEM_INFO* item, COLL_INFO* coll)
     coll->slopes_are_pits = 1;
     coll->slopes_are_walls = 1;
     GetLaraCollisionInfo(item, coll);
+}
+
+void __cdecl LaraColPushBlock(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColPullBlock(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColPPReady(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColPickup(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColSwitchOn(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColSwitchOff(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColUseKey(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColUsePuzzle(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
 }
 
 void __cdecl LaraColRoll(ITEM_INFO* item, COLL_INFO* coll)
@@ -1511,6 +1577,20 @@ void __cdecl LaraColRoll2(ITEM_INFO* item, COLL_INFO* coll)
     item->pos.y += coll->mid_floor;
 }
 
+void __cdecl LaraColSpecial(ITEM_INFO* item, COLL_INFO* coll)
+{
+}
+
+void __cdecl LaraColUseMidas(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColDieMidas(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
 void __cdecl LaraColSwanDive(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot;
@@ -1549,6 +1629,16 @@ void __cdecl LaraColFastDive(ITEM_INFO* item, COLL_INFO* coll)
         item->fall_speed = 0;
         item->pos.y += coll->mid_floor;
     }
+}
+
+void __cdecl LaraColGymnast(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void __cdecl LaraColWaterOut(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraColDefault(item, coll);
 }
 
 void __cdecl LaraColJumper(ITEM_INFO* item, COLL_INFO* coll)
@@ -2213,7 +2303,7 @@ void Tomb1MInjectGameLara()
     INJECT(0x004249E0, LaraColRightJump);
     INJECT(0x00424A90, LaraColLeftJump);
     INJECT(0x00424B40, LaraColUpJump);
-    INJECT(0x00424CD0, LaraColFallback);
+    INJECT(0x00424CD0, LaraColFallBack);
     INJECT(0x00424D80, LaraColHangLeft);
     INJECT(0x00424DC0, LaraColHangRight);
     INJECT(0x00424E00, LaraColSlideBack);

@@ -66,7 +66,7 @@ sub_4079E9                      0x004079E9  0x00000060  -
 sub_407A49                      0x00407A49  0x00000048  -
 sub_407A91                      0x00407A91  0x00000141  -
 SetHardwareVideoMode            0x00407BD2  0x00000433  -
-sub_408005                      0x00408005  0x0000031E  -
+InitialiseHardware              0x00408005  0x0000031E  -
 sub_408323                      0x00408323  0x00000029  -
 sub_40834C                      0x0040834C  0x0000001C  -
 sub_408368                      0x00408368  0x00000017  -
@@ -276,7 +276,7 @@ MakeAmmoString                  0x0041DF20  0x00000028  +
 DrawAmmoInfo                    0x0041DF50  0x00000133  +
 InitialisePickUpDisplay         0x0041E0A0  0x00000015  +
 AddDisplayPickup                0x0041E0C0  0x0000003F  +
-sub_41E100                      0x0041E100  0x0000015B  -
+S_InitialiseSystem              0x0041E100  0x0000015B  -
 S_ExitSystem                    0x0041E260  0x00000051  *
 init_game_malloc                0x0041E2C0  0x00000021  +
 game_malloc                     0x0041E2F0  0x000000B1  *
@@ -382,7 +382,7 @@ LaraColBackJump                 0x00424930  0x000000A2  +
 LaraColRightJump                0x004249E0  0x000000A2  +
 LaraColLeftJump                 0x00424A90  0x000000A2  +
 LaraColUpJump                   0x00424B40  0x00000149  +
-LaraColFallback                 0x00424CD0  0x000000A3  +
+LaraColFallBack                 0x00424CD0  0x000000A3  +
 LaraColHangLeft                 0x00424D80  0x00000033  +
 LaraColHangRight                0x00424DC0  0x00000033  +
 LaraColSlideBack                0x00424E00  0x00000023  +
@@ -591,7 +591,7 @@ sub_438340                      0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  -
 CheckCheatMode                  0x00438920  0x00000213  *
-WriteTombAtiSettings            0x00438B60  0x00000090  *
+S_WriteSettings                 0x00438B60  0x00000090  *
 S_SoundPlaySample               0x00438BF0  0x0000004B  -
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
 sub_438CA0                      0x00438CA0  0x00000015  -

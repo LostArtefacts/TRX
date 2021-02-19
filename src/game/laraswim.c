@@ -210,6 +210,21 @@ void __cdecl LaraColSwim(ITEM_INFO* item, COLL_INFO* coll)
     LaraSwimCollision(item, coll);
 }
 
+void __cdecl LaraColGlide(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraSwimCollision(item, coll);
+}
+
+void __cdecl LaraColTread(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraSwimCollision(item, coll);
+}
+
+void __cdecl LaraColDive(ITEM_INFO* item, COLL_INFO* coll)
+{
+    LaraSwimCollision(item, coll);
+}
+
 void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
 {
     item->hit_points = -1;

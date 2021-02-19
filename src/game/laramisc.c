@@ -119,6 +119,40 @@ void __cdecl UseItem(__int16 object_num)
     }
 }
 
+void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+    LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
+    LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
+    LaraAsDeath,     LaraAsFastFall,  LaraAsHang,      LaraAsReach,
+    LaraAsSplat,     LaraAsTread,     LaraAsLand,      LaraAsCompress,
+    LaraAsBack,      LaraAsSwim,      LaraAsGlide,     LaraAsNull,
+    LaraAsFastTurn,  LaraAsStepRight, LaraAsStepLeft,  LaraAsRoll2,
+    LaraAsSlide,     LaraAsBackJump,  LaraAsRightJump, LaraAsLeftJump,
+    LaraAsUpJump,    LaraAsFallBack,  LaraAsHangLeft,  LaraAsHangRight,
+    LaraAsSlideBack, LaraAsSurfTread, LaraAsSurfSwim,  LaraAsDive,
+    LaraAsPushBlock, LaraAsPullBlock, LaraAsPPReady,   LaraAsPickup,
+    LaraAsSwitchOn,  LaraAsSwitchOff, LaraAsUseKey,    LaraAsUsePuzzle,
+    LaraAsUWDeath,   LaraAsRoll,      LaraAsSpecial,   LaraAsSurfBack,
+    LaraAsSurfLeft,  LaraAsSurfRight, LaraAsUseMidas,  LaraAsDieMidas,
+    LaraAsSwanDive,  LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
+};
+
+void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+    LaraColWalk,      LaraColRun,       LaraColStop,      LaraColForwardJump,
+    LaraColPose,      LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
+    LaraColDeath,     LaraColFastFall,  LaraColHang,      LaraColReach,
+    LaraColSplat,     LaraColTread,     LaraColLand,      LaraColCompress,
+    LaraColBack,      LaraColSwim,      LaraColGlide,     LaraColNull,
+    LaraColFastTurn,  LaraColStepRight, LaraColStepLeft,  LaraColRoll2,
+    LaraColSlide,     LaraColBackJump,  LaraColRightJump, LaraColLeftJump,
+    LaraColUpJump,    LaraColFallBack,  LaraColHangLeft,  LaraColHangRight,
+    LaraColSlideBack, LaraColSurfTread, LaraColSurfSwim,  LaraColDive,
+    LaraColPushBlock, LaraColPullBlock, LaraColPPReady,   LaraColPickup,
+    LaraColSwitchOn,  LaraColSwitchOff, LaraColUseKey,    LaraColUsePuzzle,
+    LaraColUWDeath,   LaraColRoll,      LaraColSpecial,   LaraColSurfBack,
+    LaraColSurfLeft,  LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
+    LaraColSwanDive,  LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
+};
+
 void Tomb1MInjectGameLaraMisc()
 {
     INJECT(0x00428020, InitialiseLara);
