@@ -6,10 +6,10 @@
 
 // clang-format off
 #define DrawEffect              ((void          __cdecl(*)(int16_t fx_num))0x00417400)
-#define DrawAnimatingItem       ((void          __cdecl(*)(ITEM_INFO *item))0x00417550)
 // clang-format on
 
 void __cdecl PrintRooms(int16_t room_number);
+void __cdecl DrawAnimatingItem(ITEM_INFO* item);
 void __cdecl DrawLara(ITEM_INFO* item);
 void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip);
 void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);
@@ -22,6 +22,9 @@ void __cdecl phd_PopMatrix_I();
 void __cdecl phd_TranslateRel_I(int32_t x, int32_t y, int32_t z);
 void __cdecl phd_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2);
+void __cdecl phd_RotY_I(int16_t ang);
+void __cdecl phd_RotX_I(int16_t ang);
+void __cdecl phd_RotZ_I(int16_t ang);
 void __cdecl phd_RotYXZ_I(int16_t y, int16_t x, int16_t z);
 void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2);
 void __cdecl phd_PutPolygons_I(int16_t* ptr, int clip);

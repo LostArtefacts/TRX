@@ -65,6 +65,128 @@ void __cdecl PrintRooms(int16_t room_number)
     r->bound_top = PhdWinMaxY;
 }
 
+void __cdecl DrawAnimatingItem(ITEM_INFO* item)
+{
+    static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+    int16_t* frmptr[2];
+    int32_t rate;
+    int32_t frac = GetFrames(item, frmptr, &rate);
+    OBJECT_INFO* object = &Objects[item->object_number];
+
+    if (object->shadow_size) {
+        S_PrintShadow(object->shadow_size, frmptr[0], item);
+    }
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    int32_t clip = S_GetObjectBounds(frmptr[0]);
+    if (!clip) {
+        phd_PopMatrix();
+        return;
+    }
+
+    CalculateObjectLighting(item, frmptr[0]);
+    int16_t* extra_rotation = item->data ? item->data : &null_rotation;
+
+    int32_t bit = 1;
+    int16_t** meshpp = &Meshes[object->mesh_index];
+    int32_t* bone = &AnimBones[object->bone_index];
+
+    if (!frac) {
+        phd_TranslateRel(
+            frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+            frmptr[0][FRAME_POS_Z]);
+
+        int32_t* packed_rotation = (int32_t*)(frmptr[0] + FRAME_ROT);
+        phd_RotYXZpack(*packed_rotation++);
+
+        if (item->mesh_bits & bit) {
+            phd_PutPolygons(*meshpp++, clip);
+        }
+
+        for (int i = 1; i < object->nmeshes; i++) {
+            int32_t bone_extra_flags = *bone;
+            if (bone_extra_flags & BEB_POP) {
+                phd_PopMatrix();
+            }
+
+            if (bone_extra_flags & BEB_PUSH) {
+                phd_PushMatrix();
+            }
+
+            phd_TranslateRel(bone[1], bone[2], bone[3]);
+            phd_RotYXZpack(*packed_rotation++);
+
+            if (bone_extra_flags & BEB_ROT_Y) {
+                phd_RotY(*extra_rotation++);
+            }
+            if (bone_extra_flags & BEB_ROT_X) {
+                phd_RotX(*extra_rotation++);
+            }
+            if (bone_extra_flags & BEB_ROT_Z) {
+                phd_RotZ(*extra_rotation++);
+            }
+
+            bit <<= 1;
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons(*meshpp, clip);
+            }
+
+            bone += 4;
+            meshpp++;
+        }
+    } else {
+        InitInterpolate(frac, rate);
+        phd_TranslateRel_ID(
+            frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+            frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
+            frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
+        int32_t* packed_rotation1 = (int32_t*)(frmptr[0] + FRAME_ROT);
+        int32_t* packed_rotation2 = (int32_t*)(frmptr[1] + FRAME_ROT);
+        phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+        if (item->mesh_bits & bit) {
+            phd_PutPolygons_I(*meshpp++, clip);
+        }
+
+        for (int i = 1; i < object->nmeshes; i++) {
+            int32_t bone_extra_flags = *bone;
+            if (bone_extra_flags & BEB_POP) {
+                phd_PopMatrix_I();
+            }
+
+            if (bone_extra_flags & BEB_PUSH) {
+                phd_PushMatrix_I();
+            }
+
+            phd_TranslateRel_I(bone[1], bone[2], bone[3]);
+            phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+            if (bone_extra_flags & BEB_ROT_Y) {
+                phd_RotY_I(*extra_rotation++);
+            }
+            if (bone_extra_flags & BEB_ROT_X) {
+                phd_RotX_I(*extra_rotation++);
+            }
+            if (bone_extra_flags & BEB_ROT_Z) {
+                phd_RotZ_I(*extra_rotation++);
+            }
+
+            bit <<= 1;
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons_I(*meshpp, clip);
+            }
+
+            bone += 4;
+            meshpp++;
+        }
+    }
+
+    phd_PopMatrix();
+}
+
 void __cdecl DrawLara(ITEM_INFO* item)
 {
     OBJECT_INFO* object;
@@ -748,7 +870,34 @@ void __cdecl phd_TranslateRel_ID(
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotYXZ_I(int16_t y, int16_t x, int16_t z)
+void __cdecl phd_RotY_I(PHD_ANGLE ang)
+{
+    phd_RotY(ang);
+    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PhdMatrixPtr = IMMatrixPtr;
+    phd_RotY(ang);
+    PhdMatrixPtr = old_matrix;
+}
+
+void __cdecl phd_RotX_I(PHD_ANGLE ang)
+{
+    phd_RotX(ang);
+    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PhdMatrixPtr = IMMatrixPtr;
+    phd_RotX(ang);
+    PhdMatrixPtr = old_matrix;
+}
+
+void __cdecl phd_RotZ_I(PHD_ANGLE ang)
+{
+    phd_RotZ(ang);
+    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PhdMatrixPtr = IMMatrixPtr;
+    phd_RotZ(ang);
+    PhdMatrixPtr = old_matrix;
+}
+
+void __cdecl phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
 {
     phd_RotYXZ(y, x, z);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -903,6 +1052,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
+    INJECT(0x00417550, DrawAnimatingItem);
     INJECT(0x00417AA0, DrawLara);
     INJECT(0x004185B0, CalculateObjectLighting);
     INJECT(0x00418680, DrawLaraInt);

@@ -17,7 +17,7 @@
 #define PhdWinMaxY              VAR_I_(0x006CAD10, int32_t, 0)
 #define FloorData               VAR_U_(0x0045F1BC, uint16_t*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
-#define Meshes                  VAR_U_(0x00461F34, uint16_t**)
+#define Meshes                  VAR_U_(0x00461F34, int16_t**)
 #define Objects                 ARRAY_(0x0045F9E0, OBJECT_INFO, [NUMBER_OBJECTS])
 #define StaticObjects           ARRAY_(0x00462660, STATIC_INFO, [])
 #define LevelItemCount          VAR_U_(0x0045A0E0, int32_t)
