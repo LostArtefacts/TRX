@@ -67,7 +67,7 @@
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
 #define Camera                  VAR_U_(0x00462D20, CAMERA_INFO)
 #define CameraUnderwater        VAR_U_(0x00462BEC, int32_t)
-#define PhdMatrixPtr            VAR_U_(0x006CAD14, int32_t)
+#define PhdMatrixPtr            VAR_U_(0x006CAD14, PHD_MATRIX*)
 #define Anims                   VAR_U_(0x00462574, ANIM_STRUCT*)
 #define FlipTimer               VAR_I_(0x00459F54, int32_t, 0)
 #define FlipEffect              VAR_I_(0x004534E4, int32_t, -1)
@@ -89,6 +89,7 @@
 #define TriggerIndex            VAR_U_(0x00462CE8, int16_t*)
 #define Ticks                   VAR_U_(0x0045A318, int32_t)
 #define AnimCommands            VAR_U_(0x0046257C, int16_t*)
+#define AnimBones               VAR_U_(0x00462648, int32_t*)
 #define EffectRoutines          ARRAY_(0x00453600, EffectRoutine, [])
 // clang-format on
 

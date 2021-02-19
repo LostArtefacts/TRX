@@ -90,5 +90,6 @@
 #define SLOPE_DIF 60
 #define VAULT_ANGLE (30 * ONE_DEGREE)
 #define HANG_ANGLE (35 * ONE_DEGREE)
+#define FRAME_ROT 10
 
 #endif

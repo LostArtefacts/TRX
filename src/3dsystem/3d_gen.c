@@ -3,5 +3,5 @@
 
 void __cdecl phd_PopMatrix()
 {
-    PhdMatrixPtr -= 48;
+    PhdMatrixPtr--;
 }

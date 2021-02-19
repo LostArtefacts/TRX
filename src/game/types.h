@@ -972,15 +972,15 @@ typedef struct {
 } STATIC_INFO;
 
 typedef struct {
-    /* 0000 */ unsigned __int8 keymap[128];
-    /* 0080 */ unsigned __int8 oldkeymap[128];
-    /* 0100 */ unsigned __int8 keybuf[64];
-    /* 0140 */ unsigned __int8 bufin;
-    /* 0141 */ unsigned __int8 bufout;
-    /* 0142 */ unsigned __int8 bufchars;
-    /* 0143 */ unsigned __int8 extended;
-    /* 0144 */ unsigned __int8 last_key;
-    /* 0145 */ unsigned __int8 keys_held;
+    /* 0000 */ uint8_t keymap[128];
+    /* 0080 */ uint8_t oldkeymap[128];
+    /* 0100 */ uint8_t keybuf[64];
+    /* 0140 */ uint8_t bufin;
+    /* 0141 */ uint8_t bufout;
+    /* 0142 */ uint8_t bufchars;
+    /* 0143 */ uint8_t extended;
+    /* 0144 */ uint8_t last_key;
+    /* 0145 */ uint8_t keys_held;
     /* 0146 end */
 } KEYSTUFF;
 
@@ -1044,6 +1044,22 @@ typedef struct {
     /* 001E */ int16_t command_index;
     /* 0020 end */
 } ANIM_STRUCT;
+
+typedef struct {
+    /* 0000 */ int32_t _00;
+    /* 0004 */ int32_t _01;
+    /* 0008 */ int32_t _02;
+    /* 000C */ int32_t _03;
+    /* 0010 */ int32_t _10;
+    /* 0014 */ int32_t _11;
+    /* 0018 */ int32_t _12;
+    /* 001C */ int32_t _13;
+    /* 0020 */ int32_t _20;
+    /* 0024 */ int32_t _21;
+    /* 0028 */ int32_t _22;
+    /* 002C */ int32_t _23;
+    /* 0030 end */
+} PHD_MATRIX;
 
 #pragma pop
 
