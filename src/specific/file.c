@@ -98,10 +98,10 @@ int32_t __cdecl LoadRooms(FILE* fp)
 
         // Initialise some variables
         current_room_info->bound_active = 0;
-        current_room_info->bound_left = PhdWinMaxX;
-        current_room_info->bound_top = PhdWinMaxY;
-        current_room_info->bound_bottom = 0;
-        current_room_info->bound_right = 0;
+        current_room_info->left = PhdWinMaxX;
+        current_room_info->top = PhdWinMaxY;
+        current_room_info->bottom = 0;
+        current_room_info->right = 0;
         current_room_info->item_number = -1;
         current_room_info->fx_number = -1;
     }

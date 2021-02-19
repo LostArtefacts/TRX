@@ -4,6 +4,8 @@
 #include "game/types.h"
 #include <stdint.h>
 
+int32_t __cdecl SetRoomBounds(
+    int16_t* objptr, int16_t room_num, ROOM_INFO* parent);
 void __cdecl PrintRooms(int16_t room_number);
 void __cdecl DrawEffect(int16_t fxnum);
 void __cdecl DrawSpriteItem(ITEM_INFO* item);

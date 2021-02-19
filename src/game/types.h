@@ -663,10 +663,10 @@ typedef struct {
     /* 002C */ int16_t ambient;
     /* 002E */ int16_t num_lights;
     /* 0030 */ int16_t num_meshes;
-    /* 0032 */ int16_t bound_left;
-    /* 0034 */ int16_t bound_right;
-    /* 0036 */ int16_t bound_top;
-    /* 0038 */ int16_t bound_bottom;
+    /* 0032 */ int16_t left;
+    /* 0034 */ int16_t right;
+    /* 0036 */ int16_t top;
+    /* 0038 */ int16_t bottom;
     /* 003A */ int16_t bound_active;
     /* 003C */ int16_t item_number;
     /* 003E */ int16_t fx_number;
@@ -1068,6 +1068,13 @@ typedef struct {
     /* 002C */ int32_t _23;
     /* 0030 end */
 } PHD_MATRIX;
+
+typedef struct {
+    /* 0000 */ int32_t xv;
+    /* 0004 */ int32_t yv;
+    /* 0008 */ int32_t zv;
+    /* 000C end */
+} DOOR_VBUF;
 
 #pragma pop
 

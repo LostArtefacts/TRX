@@ -8,6 +8,141 @@
 #include "specific/output.h"
 #include "util.h"
 
+int32_t __cdecl SetRoomBounds(
+    int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
+{
+    if ((objptr[0] * (parent->x + objptr[3] - W2VMatrix._03))
+            + (objptr[1] * (parent->y + objptr[4] - W2VMatrix._13))
+            + (objptr[2] * (parent->z + objptr[5] - W2VMatrix._23))
+        >= 0) {
+        return 0;
+    }
+
+    int32_t left = parent->right;
+    int32_t right = parent->left;
+    int32_t top = parent->bottom;
+    int32_t bottom = parent->top;
+
+    objptr += 3;
+    int32_t z_toofar = 0;
+    int32_t z_behind = 0;
+
+    const PHD_MATRIX* mptr = PhdMatrixPtr;
+    for (int i = 0; i < 4; i++) {
+        int32_t xv = mptr->_00 * objptr[0] + mptr->_01 * objptr[1]
+            + mptr->_02 * objptr[2] + mptr->_03;
+        int32_t yv = mptr->_10 * objptr[0] + mptr->_11 * objptr[1]
+            + mptr->_12 * objptr[2] + mptr->_13;
+        int32_t zv = mptr->_20 * objptr[0] + mptr->_21 * objptr[1]
+            + mptr->_22 * objptr[2] + mptr->_23;
+        DoorVBuf[i].xv = xv;
+        DoorVBuf[i].yv = yv;
+        DoorVBuf[i].zv = zv;
+        objptr += 3;
+
+        if (zv > 0) {
+            if (zv > PhdFarZ) {
+                z_toofar++;
+            }
+
+            zv /= PhdPersp;
+            int32_t xs, ys;
+            if (zv) {
+                xs = PhdWinCenterX + xv / zv;
+                ys = PhdWinCenterY + yv / zv;
+            } else {
+                xs = xv >= 0 ? PhdRight : PhdLeft;
+                ys = yv >= 0 ? PhdBottom : PhdTop;
+            }
+
+            if (xs < left) {
+                left = xs;
+            }
+            if (xs > right) {
+                right = xs;
+            }
+            if (ys < top) {
+                top = ys;
+            }
+            if (ys > bottom) {
+                bottom = ys;
+            }
+        } else {
+            z_behind++;
+        }
+    }
+
+    if (z_behind == 4 || z_toofar == 4) {
+        return 0;
+    }
+
+    if (z_behind > 0) {
+        DOOR_VBUF* dest = &DoorVBuf[0];
+        DOOR_VBUF* last = &DoorVBuf[3];
+        for (int i = 0; i < 4; i++) {
+            if ((dest->zv < 0) ^ (last->zv < 0)) {
+                if (dest->xv < 0 && last->xv < 0) {
+                    left = 0;
+                } else if (dest->xv > 0 && last->xv > 0) {
+                    right = PhdWinMaxX;
+                } else {
+                    left = 0;
+                    right = PhdWinMaxX;
+                }
+
+                if (dest->yv < 0 && last->yv < 0) {
+                    top = 0;
+                } else if (dest->yv > 0 && last->yv > 0) {
+                    bottom = PhdWinMaxY;
+                } else {
+                    top = 0;
+                    bottom = PhdWinMaxY;
+                }
+            }
+
+            last = dest;
+            dest++;
+        }
+    }
+
+    if (left < parent->left) {
+        left = parent->left;
+    }
+    if (right > parent->right) {
+        right = parent->right;
+    }
+    if (top < parent->top) {
+        top = parent->top;
+    }
+    if (bottom > parent->bottom) {
+        bottom = parent->bottom;
+    }
+
+    if (left >= right || top >= bottom) {
+        return 0;
+    }
+
+    ROOM_INFO* r = &RoomInfo[room_num];
+    if (left < r->left) {
+        r->left = left;
+    }
+    if (top < r->top) {
+        r->top = top;
+    }
+    if (right > r->right) {
+        r->right = right;
+    }
+    if (bottom > r->bottom) {
+        r->bottom = bottom;
+    }
+
+    if (!r->bound_active) {
+        RoomsToDraw[RoomsToDrawNum++] = room_num;
+        r->bound_active = 1;
+    }
+    return 1;
+}
+
 void __cdecl PrintRooms(int16_t room_number)
 {
     ROOM_INFO* r = &RoomInfo[room_number];
@@ -22,10 +157,10 @@ void __cdecl PrintRooms(int16_t room_number)
     phd_PushMatrix();
     phd_TranslateAbs(r->x, r->y, r->z);
 
-    PhdLeft = r->bound_left;
-    PhdRight = r->bound_right;
-    PhdTop = r->bound_top;
-    PhdBottom = r->bound_bottom;
+    PhdLeft = r->left;
+    PhdRight = r->right;
+    PhdTop = r->top;
+    PhdBottom = r->bottom;
 
     S_InsertRoom(r->data);
 
@@ -60,10 +195,10 @@ void __cdecl PrintRooms(int16_t room_number)
 
     phd_PopMatrix();
 
-    r->bound_left = PhdWinMaxX;
-    r->bound_bottom = 0;
-    r->bound_right = 0;
-    r->bound_top = PhdWinMaxY;
+    r->left = PhdWinMaxX;
+    r->bottom = 0;
+    r->right = 0;
+    r->top = PhdWinMaxY;
 }
 
 void __cdecl DrawEffect(int16_t fxnum)
@@ -1094,6 +1229,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 
 void Tomb1MInjectGameDraw()
 {
+    INJECT(0x00416EB0, SetRoomBounds);
     INJECT(0x004171E0, PrintRooms);
     INJECT(0x00417400, DrawEffect);
     INJECT(0x00417510, DrawSpriteItem);

@@ -15,6 +15,9 @@
 #define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
 #define PhdWinMaxX              VAR_I_(0x006CAD00, int32_t, 0)
 #define PhdWinMaxY              VAR_I_(0x006CAD10, int32_t, 0)
+#define PhdWinCenterX           VAR_U_(0x0068F3AC, int32_t)
+#define PhdWinCenterY           VAR_U_(0x0068F3B0, int32_t)
+#define PhdPersp                VAR_U_(0x0069518C, int32_t)
 #define PhdFarZ                 VAR_U_(0x00695184, int32_t)
 #define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
 #define FloorData               VAR_U_(0x0045F1BC, uint16_t*)
@@ -98,6 +101,10 @@
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [32])
 #define InterpolatedBounds      ARRAY_(0x00462BF0, int16_t, [6])
+#define W2VMatrix               VAR_U_(0x006CADA0, PHD_MATRIX)
+#define DoorVBuf                ARRAY_(0x00462540, DOOR_VBUF, [4])
+#define RoomsToDraw             ARRAY_(0x00462580, int16_t, [100])
+#define RoomsToDrawNum          VAR_U_(0x00461F38, int32_t)
 // clang-format on
 
 #endif

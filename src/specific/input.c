@@ -70,6 +70,13 @@ void __cdecl S_UpdateInput()
         linput |= IN_ROLL;
     }
 
+    if (KeyData->keymap[DIK_F11]) {
+        LevelComplete = 1;
+    }
+    if (KeyData->keymap[DIK_F12] && LaraItem) {
+        LaraItem->hit_points -= 20;
+    }
+
     if (Tomb1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
