@@ -186,7 +186,7 @@ S_CopyBufferToScreen            0x00416A60  0x000000A7  *
 sub_416B10                      0x00416B10  0x00000010  -
 S_FadeInInventory               0x00416B20  0x00000082  -
 S_FadeOutInventory              0x00416BB0  0x00000027  -
-DrawPhaseCinematic              0x00416BE0  0x00000090  -
+DrawPhaseCinematic              0x00416BE0  0x00000090  +
 DrawPhaseGame                   0x00416C70  0x00000037  +
 DrawRooms                       0x00416CB0  0x00000173  +
 GetRoomBounds                   0x00416E30  0x0000007D  +

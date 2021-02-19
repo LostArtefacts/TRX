@@ -9,6 +9,26 @@
 #include "specific/output.h"
 #include "util.h"
 
+int32_t __cdecl DrawPhaseCinematic()
+{
+    S_InitialisePolyList();
+    S_ClearScreen();
+    CameraUnderwater = 0;
+    for (int i = 0; i < RoomsToDrawNum; i++) {
+        int32_t room_num = RoomsToDraw[i];
+        ROOM_INFO* r = &RoomInfo[room_num];
+        r->top = 0;
+        r->left = 0;
+        r->right = PhdWinMaxX;
+        r->bottom = PhdWinMaxY;
+        PrintRooms(room_num);
+    }
+    S_OutputPolyList();
+    Camera.number_frames = S_DumpScreen();
+    S_AniamteTextures(Camera.number_frames);
+    return Camera.number_frames;
+}
+
 int32_t __cdecl DrawPhaseGame()
 {
     S_InitialisePolyList();
@@ -1306,6 +1326,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 
 void Tomb1MInjectGameDraw()
 {
+    INJECT(0x00416BE0, DrawPhaseCinematic);
     INJECT(0x00416C70, DrawPhaseGame);
     INJECT(0x00416CB0, DrawRooms);
     INJECT(0x00416E30, GetRoomBounds);
