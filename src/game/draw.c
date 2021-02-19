@@ -861,6 +861,18 @@ int16_t* __cdecl GetBoundsAccurate(ITEM_INFO* item)
     return InterpolatedBounds;
 }
 
+int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
+{
+    int16_t* frmptr[2];
+    int32_t rate;
+    int32_t frac = GetFrames(item, frmptr, &rate);
+    if (frac <= rate / 2) {
+        return frmptr[0];
+    } else {
+        return frmptr[1];
+    }
+}
+
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
@@ -870,4 +882,5 @@ void Tomb1MInjectGameDraw()
     INJECT(0x00419C30, InterpolateArmMatrix);
     INJECT(0x00419D30, GetFrames);
     INJECT(0x00419DD0, GetBoundsAccurate);
+    INJECT(0x00419E50, GetBestFrame);
 }
