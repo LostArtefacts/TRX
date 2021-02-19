@@ -604,7 +604,7 @@ typedef struct {
 } PHD_VECTOR;
 
 typedef struct {
-    /* 0000 */ uint16_t room;
+    /* 0000 */ uint16_t room_num;
     /* 0002 */ uint16_t x;
     /* 0004 */ uint16_t y;
     /* 0006 */ uint16_t z;

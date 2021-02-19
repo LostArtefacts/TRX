@@ -189,7 +189,7 @@ S_FadeOutInventory              0x00416BB0  0x00000027  -
 DrawPhaseCinematic              0x00416BE0  0x00000090  -
 DrawPhaseGame                   0x00416C70  0x00000037  -
 DrawRooms                       0x00416CB0  0x00000173  -
-GetRoomBounds                   0x00416E30  0x0000007D  -
+GetRoomBounds                   0x00416E30  0x0000007D  +
 SetRoomBounds                   0x00416EB0  0x0000032E  +
 PrintRooms                      0x004171E0  0x0000021A  +
 DrawEffect                      0x00417400  0x00000107  +

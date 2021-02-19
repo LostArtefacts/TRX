@@ -8,9 +8,28 @@
 #include "specific/output.h"
 #include "util.h"
 
+void __cdecl GetRoomBounds(int16_t room_num)
+{
+    ROOM_INFO* r = &RoomInfo[room_num];
+    phd_PushMatrix();
+    phd_TranslateAbs(r->x, r->y, r->z);
+    if (r->doors) {
+        for (int i = 0; i < r->doors->count; i++) {
+            DOOR_INFO* door = &r->doors->door[i];
+            if (SetRoomBounds(&door->x, door->room_num, r)) {
+                GetRoomBounds(door->room_num);
+            }
+        }
+    }
+    phd_PopMatrix();
+}
+
 int32_t __cdecl SetRoomBounds(
     int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
 {
+    // TODO: the way the game passes the objptr is dangerous and relies on
+    // layout of DOOR_INFO
+
     if ((objptr[0] * (parent->x + objptr[3] - W2VMatrix._03))
             + (objptr[1] * (parent->y + objptr[4] - W2VMatrix._13))
             + (objptr[2] * (parent->z + objptr[5] - W2VMatrix._23))
@@ -1229,6 +1248,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
 
 void Tomb1MInjectGameDraw()
 {
+    INJECT(0x00416E30, GetRoomBounds);
     INJECT(0x00416EB0, SetRoomBounds);
     INJECT(0x004171E0, PrintRooms);
     INJECT(0x00417400, DrawEffect);
