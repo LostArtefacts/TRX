@@ -201,7 +201,7 @@ DrawLaraInt                     0x00418680  0x000013C6  +
 InterpolateMatrix               0x00419A60  0x000001CD  +
 InterpolateArmMatrix            0x00419C30  0x000000FC  +
 GetFrames                       0x00419D30  0x00000099  +
-GetBoundsAccurate               0x00419DD0  0x0000007C  *
+GetBoundsAccurate               0x00419DD0  0x0000007C  +
 GetBestFrame                    0x00419E50  0x00000035  -
 sub_419E90                      0x00419E90  0x000000C0  -
 WinSndMakeSample                0x00419F50  0x000001CA  -

@@ -95,6 +95,7 @@
 #define IMFrac                  VAR_U_(0x00462570, int32_t)
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [32])
+#define InterpolatedBounds      ARRAY_(0x00462BF0, int16_t, [6])
 // clang-format on
 
 #endif
