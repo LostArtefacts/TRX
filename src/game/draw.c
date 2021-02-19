@@ -747,7 +747,6 @@ void __cdecl phd_PutPolygons_I(int16_t* ptr, int clip)
     phd_PopMatrix();
 }
 
-#if 1
 void __cdecl InterpolateMatrix()
 {
     PHD_MATRIX* mptr = PhdMatrixPtr;
@@ -782,10 +781,45 @@ void __cdecl InterpolateMatrix()
     }
 }
 
+void __cdecl InterpolateArmMatrix()
+{
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX* iptr = IMMatrixPtr;
+
+    if (IMRate == 2) {
+        mptr->_00 = mptr[-2]._00;
+        mptr->_01 = mptr[-2]._01;
+        mptr->_02 = mptr[-2]._02;
+        mptr->_03 = (mptr->_03 + iptr->_03) / 2;
+        mptr->_10 = mptr[-2]._10;
+        mptr->_11 = mptr[-2]._11;
+        mptr->_12 = mptr[-2]._12;
+        mptr->_13 = (mptr->_13 + iptr->_13) / 2;
+        mptr->_20 = mptr[-2]._20;
+        mptr->_21 = mptr[-2]._21;
+        mptr->_22 = mptr[-2]._22;
+        mptr->_23 = (mptr->_23 + iptr->_23) / 2;
+    } else {
+        mptr->_00 = mptr[-2]._00;
+        mptr->_01 = mptr[-2]._01;
+        mptr->_02 = mptr[-2]._02;
+        mptr->_03 += ((iptr->_03 - mptr->_03) * IMFrac) / IMRate;
+        mptr->_10 = mptr[-2]._10;
+        mptr->_11 = mptr[-2]._11;
+        mptr->_12 = mptr[-2]._12;
+        mptr->_13 += ((iptr->_13 - mptr->_13) * IMFrac) / IMRate;
+        mptr->_20 = mptr[-2]._20;
+        mptr->_21 = mptr[-2]._21;
+        mptr->_22 = mptr[-2]._22;
+        mptr->_23 += ((iptr->_23 - mptr->_23) * IMFrac) / IMRate;
+    }
+}
+
 void Tomb1MInjectGameDraw()
 {
     INJECT(0x004171E0, PrintRooms);
     INJECT(0x00417AA0, DrawLara);
     INJECT(0x00418680, DrawLaraInt);
     INJECT(0x00419A60, InterpolateMatrix);
+    INJECT(0x00419C30, InterpolateArmMatrix);
 }
