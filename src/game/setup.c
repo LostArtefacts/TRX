@@ -5,10 +5,6 @@
 #include "mod.h"
 #include "util.h"
 
-void __cdecl DrawDummyItem(ITEM_INFO* item)
-{
-}
-
 void __cdecl InitialiseObjects()
 {
     for (int i = 0; i < NUMBER_OBJECTS; i++) {

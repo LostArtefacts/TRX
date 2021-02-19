@@ -74,6 +74,10 @@ void __cdecl DrawSpriteItem(ITEM_INFO* item)
         item->shade);
 }
 
+void __cdecl DrawDummyItem(ITEM_INFO* item)
+{
+}
+
 void __cdecl DrawAnimatingItem(ITEM_INFO* item)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
