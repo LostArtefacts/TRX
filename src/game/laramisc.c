@@ -6,6 +6,12 @@
 #include "mod.h"
 #include "util.h"
 
+void __cdecl InitialiseLaraLoad(int16_t item_num)
+{
+    Lara.item_number = item_num;
+    LaraItem = &Items[item_num];
+}
+
 void __cdecl InitialiseLara()
 {
     TRACE("");
@@ -62,7 +68,7 @@ void __cdecl InitialiseLara()
     InitialiseLaraInventory(CurrentLevel);
 }
 
-void __cdecl UseItem(__int16 object_num)
+void __cdecl UseItem(int16_t object_num)
 {
     TRACE("%d", object_num);
     switch (object_num) {
@@ -155,6 +161,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427FF0, InitialiseLaraLoad);
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00427E80, UseItem);
 }

@@ -13,7 +13,10 @@
 #define LaraGun                 ((void          __cdecl(*)())0x00426BD0)
 // clang-format on
 
+void __cdecl InitialiseLaraLoad(int16_t item_num);
 void __cdecl InitialiseLara();
+void __cdecl UseItem(int16_t object_num);
+
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll);
@@ -151,7 +154,6 @@ int16_t __cdecl LaraFloorFront(ITEM_INFO* item, PHD_ANGLE ang, int32_t dist);
 int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraWaterCurrent(COLL_INFO* coll);
-void __cdecl UseItem(__int16 object_num);
 void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll);
 int32_t __cdecl LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll);
 
