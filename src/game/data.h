@@ -110,6 +110,7 @@
 #define DoorVBuf                ARRAY_(0x00462540, DOOR_VBUF, [4])
 #define RoomsToDraw             ARRAY_(0x00462580, int16_t, [100])
 #define RoomsToDrawNum          VAR_U_(0x00461F38, int32_t)
+#define Weapons                 ARRAY_(0x004563A8, WEAPON_INFO, [NUM_WEAPONS])
 // clang-format on
 
 #endif

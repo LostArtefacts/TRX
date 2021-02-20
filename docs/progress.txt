@@ -401,7 +401,7 @@ TestLaraSlide                   0x00425C50  0x0000011A  +
 LaraLandedBad                   0x00425D70  0x000000BE  +
 draw_shotgun                    0x00425E30  0x00000113  -
 undraw_shotgun                  0x00425F50  0x00000160  -
-RifleHandler                    0x004260F0  0x00000373  -
+RifleHandler                    0x004260F0  0x00000373  +
 draw_pistols                    0x00426470  0x00000147  -
 undraw_pistols                  0x004265C0  0x00000261  -
 draw_pistol_meshes              0x00426830  0x00000061  -
@@ -409,11 +409,11 @@ PistolHandler                   0x004268A0  0x0000012E  -
 AnimatePistols                  0x004269D0  0x000001F5  -
 LaraGun                         0x00426BD0  0x00000271  *
 InitialiseNewWeapon             0x00426E60  0x000000B9  -
-LaraTargetInfo                  0x00426F20  0x00000194  -
-LaraGetNewTarget                0x004270C0  0x000001D9  -
+LaraTargetInfo                  0x00426F20  0x00000194  *
+LaraGetNewTarget                0x004270C0  0x000001D9  *
 find_target_point               0x004272A0  0x000000B2  -
-AimWeapon                       0x00427360  0x000000C1  -
-FireWeapon                      0x00427430  0x000002F2  -
+AimWeapon                       0x00427360  0x000000C1  *
+FireWeapon                      0x00427430  0x000002F2  *
 HitTarget                       0x00427730  0x000000E5  -
 LaraControl                     0x00427850  0x00000372  *
 LaraSwapMeshExtra               0x00427BD0  0x00000030  +

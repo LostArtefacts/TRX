@@ -255,6 +255,12 @@ typedef enum {
     AF_PICKUP_UW = 2970,
     AF_PICKUPSCION = 44,
     AF_USEPUZZLE = 3372,
+    AF_SG_AIM = 0,
+    AF_SG_DRAW = 13,
+    AF_SG_RECOIL = 47,
+    AF_SG_UNDRAW = 80,
+    AF_SG_UNAIM = 114,
+    AF_SG_END = 127,
 } LARA_ANIMATION_FRAMES;
 
 typedef enum {
@@ -1115,6 +1121,21 @@ typedef struct {
     /* 0012 */ uint16_t v4;
     /* 0014 end */
 } PHDTEXTURESTRUCT;
+
+typedef struct {
+    /* 0000 */ PHD_ANGLE lock_angles[4];
+    /* 0008 */ PHD_ANGLE left_angles[4];
+    /* 0010 */ PHD_ANGLE right_angles[4];
+    /* 0018 */ PHD_ANGLE aim_speed;
+    /* 001A */ PHD_ANGLE shot_accuracy;
+    /* 001C */ int32_t gun_height;
+    /* 0020 */ int32_t damage;
+    /* 0024 */ int32_t target_dist;
+    /* 0028 */ int16_t recoil_frame;
+    /* 002A */ int16_t flash_time;
+    /* 002C */ int16_t sample_num;
+    /* 002E end */
+} WEAPON_INFO;
 
 #pragma pop
 
