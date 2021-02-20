@@ -6,7 +6,7 @@
 # Name                          Offset      Size        Flags
 phd_GenerateW2V                 0x00401000  0x00000197  -
 phd_LookAt                      0x004011A0  0x000000C9  -
-phd_GetVectorAngles             0x00401270  0x0000007E  -
+phd_GetVectorAngles             0x00401270  0x0000007E  *
 phd_RotX                        0x004012F0  0x000000AE  -
 phd_RotY                        0x004013A0  0x000000AC  -
 phd_RotZ                        0x00401450  0x000000AC  -
@@ -165,7 +165,7 @@ TestTriggers                    0x00414080  0x0000074E  *
 TriggerActive                   0x00414820  0x00000055  -
 GetCeiling                      0x00414880  0x0000024B  *
 GetDoor                         0x00414AE0  0x0000004E  -
-LOS                             0x00414B30  0x000000A0  -
+LOS                             0x00414B30  0x000000A0  *
 xLOS                            0x00414BD0  0x00000272  -
 zLOS                            0x00414E50  0x00000270  -
 ClipTarget                      0x004150C0  0x000000DC  -
@@ -409,9 +409,9 @@ PistolHandler                   0x004268A0  0x0000012E  +
 AnimatePistols                  0x004269D0  0x000001F5  +
 LaraGun                         0x00426BD0  0x00000271  +
 InitialiseNewWeapon             0x00426E60  0x000000B9  +
-LaraTargetInfo                  0x00426F20  0x00000194  *
+LaraTargetInfo                  0x00426F20  0x00000194  +
 LaraGetNewTarget                0x004270C0  0x000001D9  *
-find_target_point               0x004272A0  0x000000B2  -
+find_target_point               0x004272A0  0x000000B2  *
 AimWeapon                       0x00427360  0x000000C1  *
 FireWeapon                      0x00427430  0x000002F2  *
 HitTarget                       0x00427730  0x000000E5  -

@@ -1,3 +1,5 @@
+#include "3dsystem/3d_gen.h"
+#include "game/control.h"
 #include "game/data.h"
 #include "game/lara.h"
 #include "util.h"
@@ -185,8 +187,64 @@ void __cdecl InitialiseNewWeapon()
     }
 }
 
+void __cdecl LaraTargetInfo(WEAPON_INFO* winfo)
+{
+    if (!Lara.target) {
+        Lara.right_arm.lock = 0;
+        Lara.left_arm.lock = 0;
+        Lara.target_angles[1] = 0;
+        Lara.target_angles[0] = 0;
+        return;
+    }
+
+    GAME_VECTOR src;
+    GAME_VECTOR target;
+    src.x = LaraItem->pos.x;
+    src.y = LaraItem->pos.y - 650;
+    src.z = LaraItem->pos.z;
+    src.room_number = LaraItem->room_number;
+    find_target_point(Lara.target, &target);
+
+    int16_t ang[2];
+    phd_GetVectorAngles(
+        target.x - src.x, target.y - src.y, target.z - src.z, ang);
+    ang[0] -= LaraItem->pos.y_rot;
+    ang[1] -= LaraItem->pos.x_rot;
+
+    if (LOS(&src, &target)) {
+        if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
+            && ang[1] >= winfo->lock_angles[2]
+            && ang[1] <= winfo->lock_angles[3]) {
+            Lara.left_arm.lock = 1;
+            Lara.right_arm.lock = 1;
+        } else {
+            if (Lara.left_arm.lock
+                && (ang[0] < winfo->left_angles[0]
+                    || ang[0] > winfo->left_angles[1]
+                    || ang[1] < winfo->left_angles[2]
+                    || ang[1] > winfo->left_angles[3])) {
+                Lara.left_arm.lock = 0;
+            }
+            if (Lara.right_arm.lock
+                && (ang[0] < winfo->right_angles[0]
+                    || ang[0] > winfo->right_angles[1]
+                    || ang[1] < winfo->right_angles[2]
+                    || ang[1] > winfo->right_angles[3])) {
+                Lara.right_arm.lock = 0;
+            }
+        }
+    } else {
+        Lara.right_arm.lock = 0;
+        Lara.left_arm.lock = 0;
+    }
+
+    Lara.target_angles[0] = ang[0];
+    Lara.target_angles[1] = ang[1];
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
     INJECT(0x00426E60, InitialiseNewWeapon);
+    INJECT(0x00426F20, LaraTargetInfo);
 }

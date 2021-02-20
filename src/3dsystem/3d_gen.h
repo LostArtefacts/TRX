@@ -13,6 +13,7 @@
 #define phd_RotYXZpack          ((void          __cdecl(*)(int32_t rots))0x004016F0)
 #define phd_PutPolygons         ((void          __cdecl(*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_TranslateRel        ((int32_t       __cdecl(*)(int32_t x, int32_t y, int32_t z))0x004018F0)
+#define phd_GetVectorAngles     ((void          __cdecl(*)(int32_t x, int32_t y, int32_t z, PHD_ANGLE* dest))0x00401270)
 // clang-format on
 
 void __cdecl phd_PopMatrix();
