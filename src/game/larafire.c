@@ -143,7 +143,50 @@ void __cdecl LaraGun()
     }
 }
 
+void __cdecl InitialiseNewWeapon()
+{
+    Lara.left_arm.x_rot = 0;
+    Lara.left_arm.y_rot = 0;
+    Lara.left_arm.z_rot = 0;
+    Lara.left_arm.lock = 0;
+    Lara.left_arm.flash_gun = 0;
+    Lara.left_arm.frame_number = AF_G_AIM;
+    Lara.right_arm.x_rot = 0;
+    Lara.right_arm.y_rot = 0;
+    Lara.right_arm.z_rot = 0;
+    Lara.right_arm.lock = 0;
+    Lara.right_arm.flash_gun = 0;
+    Lara.right_arm.frame_number = AF_G_AIM;
+    Lara.target = NULL;
+
+    switch (Lara.gun_type) {
+    case LGT_PISTOLS:
+    case LGT_MAGNUMS:
+    case LGT_UZIS:
+        Lara.right_arm.frame_base = Objects[O_PISTOLS].frame_base;
+        Lara.left_arm.frame_base = Objects[O_PISTOLS].frame_base;
+        if (Lara.gun_status != LGS_ARMLESS) {
+            draw_pistol_meshes(Lara.gun_type);
+        }
+        break;
+
+    case LGT_SHOTGUN:
+        Lara.right_arm.frame_base = Objects[O_SHOTGUN].frame_base;
+        Lara.left_arm.frame_base = Objects[O_SHOTGUN].frame_base;
+        if (Lara.gun_status != LGS_ARMLESS) {
+            draw_shotgun_meshes();
+        }
+        break;
+
+    default:
+        Lara.right_arm.frame_base = Objects[O_LARA].frame_base;
+        Lara.left_arm.frame_base = Objects[O_LARA].frame_base;
+        break;
+    }
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
+    INJECT(0x00426E60, InitialiseNewWeapon);
 }

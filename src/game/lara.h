@@ -13,7 +13,6 @@
 #define LaraGetNewTarget        ((void          __cdecl(*)(WEAPON_INFO* winfo))0x004270C0)
 #define AimWeapon               ((void          __cdecl(*)(WEAPON_INFO* winfo, LARA_ARM* arm))0x00427360)
 #define FireWeapon              ((int32_t       __cdecl(*)(int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles))0x00427430)
-#define InitialiseNewWeapon     ((int32_t       __cdecl(*)())0x00426E60)
 // clang-format on
 
 void __cdecl LaraSwapMeshExtra();
@@ -167,6 +166,7 @@ extern void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll);
 extern void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl LaraGun();
+void __cdecl InitialiseNewWeapon();
 
 void __cdecl draw_shotgun();
 void __cdecl undraw_shotgun();
