@@ -399,7 +399,7 @@ LaraTestHangJump                0x00425890  0x0000024B  +
 LaraTestHangJumpUp              0x00425AE0  0x0000016A  +
 TestLaraSlide                   0x00425C50  0x0000011A  +
 LaraLandedBad                   0x00425D70  0x000000BE  +
-draw_shotgun                    0x00425E30  0x00000113  -
+draw_shotgun                    0x00425E30  0x00000113  +
 undraw_shotgun                  0x00425F50  0x00000160  -
 RifleHandler                    0x004260F0  0x00000373  +
 draw_pistols                    0x00426470  0x00000147  -

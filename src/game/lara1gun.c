@@ -5,6 +5,53 @@
 #include "specific/input.h"
 #include "mod.h"
 
+void __cdecl draw_shotgun()
+{
+    int16_t ani = Lara.left_arm.frame_number;
+    ani++;
+
+    if (ani < AF_SG_DRAW || ani > AF_SG_RECOIL) {
+        ani = AF_SG_DRAW;
+    } else if (ani == AF_SG_DRAW + 10) {
+        draw_shotgun_meshes();
+        SoundEffect(6, &LaraItem->pos, 0);
+    } else if (ani == AF_SG_RECOIL) {
+        ready_shotgun();
+        ani = AF_SG_AIM;
+    }
+    Lara.left_arm.frame_number = ani;
+    Lara.right_arm.frame_number = ani;
+}
+
+void __cdecl draw_shotgun_meshes()
+{
+    Lara.mesh_ptrs[LM_HAND_L] =
+        Meshes[Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
+    Lara.mesh_ptrs[LM_HAND_R] =
+        Meshes[Objects[O_SHOTGUN].mesh_index + LM_HAND_R];
+    Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
+}
+
+void __cdecl ready_shotgun()
+{
+    Lara.gun_status = LGS_READY;
+    Lara.left_arm.x_rot = 0;
+    Lara.left_arm.y_rot = 0;
+    Lara.left_arm.z_rot = 0;
+    Lara.left_arm.lock = 0;
+    Lara.right_arm.x_rot = 0;
+    Lara.right_arm.y_rot = 0;
+    Lara.right_arm.z_rot = 0;
+    Lara.right_arm.lock = 0;
+    Lara.target = NULL;
+    Lara.torso_x_rot = 0;
+    Lara.torso_y_rot = 0;
+    Lara.head_x_rot = 0;
+    Lara.head_y_rot = 0;
+    Lara.right_arm.frame_base = Objects[O_SHOTGUN].frame_base;
+    Lara.left_arm.frame_base = Objects[O_SHOTGUN].frame_base;
+}
+
 void __cdecl RifleHandler(int32_t weapon_type)
 {
     WEAPON_INFO* winfo = &Weapons[LGT_SHOTGUN];
@@ -128,5 +175,6 @@ void __cdecl FireShotgun()
 
 void Tomb1MInjectGameLaraGun1()
 {
+    INJECT(0x00425E30, draw_shotgun);
     INJECT(0x004260F0, RifleHandler);
 }
