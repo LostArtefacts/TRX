@@ -39,10 +39,17 @@ int32_t __cdecl StartDemo()
         SeedRandomDraw(0xD371F947);
         SeedRandomControl(0xD371F947);
 
+#ifdef TOMB1M_FEAT_UI
+        txt = T_Print(0, -16, 0, "Demo Mode");
+        T_FlashText(txt, 1, 20);
+        T_BottomAlign(txt, 1);
+        T_CentreH(txt, 1);
+#else
         txt = T_Print(0, DumpHeight / 2 - 16, 0, "Demo Mode");
         T_FlashText(txt, 1, 20);
         T_CentreV(txt, 1);
         T_CentreH(txt, 1);
+#endif
 
         GameLoop(1);
 
