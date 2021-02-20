@@ -31,6 +31,7 @@ static void Tomb1MInject()
     Tomb1MInjectGameItems();
     Tomb1MInjectGameLOT();
     Tomb1MInjectGameLara();
+    Tomb1MInjectGameLaraFire();
     Tomb1MInjectGameLaraGun1();
     Tomb1MInjectGameLaraGun2();
     Tomb1MInjectGameLaraMisc();
