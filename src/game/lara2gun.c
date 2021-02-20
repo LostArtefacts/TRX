@@ -146,9 +146,46 @@ void __cdecl undraw_pistol_mesh_right(int32_t weapon_type)
     SoundEffect(7, &LaraItem->pos, 0);
 }
 
+void __cdecl PistolHandler(int32_t weapon_type)
+{
+    WEAPON_INFO* winfo = &Weapons[weapon_type];
+
+    if (Input & IN_ACTION) {
+        LaraTargetInfo(winfo);
+    } else {
+        Lara.target = NULL;
+    }
+    if (!Lara.target) {
+        LaraGetNewTarget(winfo);
+    }
+
+    AimWeapon(winfo, &Lara.left_arm);
+    AimWeapon(winfo, &Lara.right_arm);
+
+    if (Lara.left_arm.lock && !Lara.right_arm.lock) {
+        Lara.head_x_rot = Lara.left_arm.x_rot / 2;
+        Lara.head_y_rot = Lara.left_arm.y_rot / 2;
+        Lara.torso_x_rot = Lara.left_arm.x_rot / 2;
+        Lara.torso_y_rot = Lara.left_arm.y_rot / 2;
+    } else if (!Lara.left_arm.lock && Lara.right_arm.lock) {
+        Lara.head_x_rot = Lara.right_arm.x_rot / 2;
+        Lara.head_y_rot = Lara.right_arm.y_rot / 2;
+        Lara.torso_x_rot = Lara.right_arm.x_rot / 2;
+        Lara.torso_y_rot = Lara.right_arm.y_rot / 2;
+    } else if (Lara.left_arm.lock && Lara.right_arm.lock) {
+        Lara.head_x_rot = (Lara.right_arm.x_rot + Lara.left_arm.x_rot) / 4;
+        Lara.head_y_rot = (Lara.right_arm.y_rot + Lara.left_arm.y_rot) / 4;
+        Lara.torso_x_rot = (Lara.right_arm.x_rot + Lara.left_arm.x_rot) / 4;
+        Lara.torso_y_rot = (Lara.right_arm.y_rot + Lara.left_arm.y_rot) / 4;
+    }
+
+    AnimatePistols(weapon_type);
+}
+
 void Tomb1MInjectGameLaraGun2()
 {
     INJECT(0x00426470, draw_pistols);
     INJECT(0x00426830, draw_pistol_meshes);
     INJECT(0x004265C0, undraw_pistols);
+    INJECT(0x004268A0, PistolHandler);
 }
