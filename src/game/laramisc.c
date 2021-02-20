@@ -454,6 +454,63 @@ void __cdecl InitialiseLaraInventory(int32_t level_num)
     InitialiseNewWeapon();
 }
 
+void __cdecl LaraInitialiseMeshes(int32_t level_num)
+{
+    START_INFO* start = &SaveGame[0].start[level_num];
+
+    if (start->costume) {
+        for (int i = 0; i < 15; i++) {
+            int32_t use_orig_mesh = i == LM_HEAD;
+            Lara.mesh_ptrs[i] = Meshes
+                [Objects[use_orig_mesh ? O_LARA : O_LARA_EXTRA].mesh_index + i];
+        }
+        return;
+    }
+
+    for (int i = 0; i < 15; i++) {
+        Lara.mesh_ptrs[i] = Meshes[Objects[O_LARA].mesh_index + i];
+    }
+
+    int16_t gun_type = start->gun_type;
+    if (gun_type == LGT_SHOTGUN) {
+        if (start->got_uzis || start->got_magnums || start->got_pistols) {
+            gun_type = LGT_PISTOLS;
+        } else {
+            gun_type = LGT_UNARMED;
+        }
+    }
+
+    int16_t holster_object_num = -1;
+    switch (gun_type) {
+    case LGT_PISTOLS:
+        holster_object_num = O_PISTOLS;
+        break;
+    case LGT_MAGNUMS:
+        holster_object_num = O_MAGNUM;
+        break;
+    case LGT_UZIS:
+        holster_object_num = O_UZI;
+        break;
+    }
+
+    int16_t back_object_num = -1;
+    if (start->got_shotgun) {
+        back_object_num = O_SHOTGUN;
+    }
+
+    if (holster_object_num != -1) {
+        Lara.mesh_ptrs[LM_THIGH_L] =
+            Meshes[Objects[holster_object_num].mesh_index + LM_THIGH_L];
+        Lara.mesh_ptrs[LM_THIGH_R] =
+            Meshes[Objects[holster_object_num].mesh_index + LM_THIGH_R];
+    }
+
+    if (back_object_num != -1) {
+        Lara.mesh_ptrs[LM_TORSO] =
+            Meshes[Objects[back_object_num].mesh_index + LM_TORSO];
+    }
+}
+
 void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
@@ -498,4 +555,5 @@ void Tomb1MInjectGameLaraMisc()
     INJECT(0x00427FF0, InitialiseLaraLoad);
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00428170, InitialiseLaraInventory);
+    INJECT(0x00428340, LaraInitialiseMeshes);
 }

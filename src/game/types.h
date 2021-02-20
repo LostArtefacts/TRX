@@ -855,6 +855,7 @@ typedef struct {
     /*      */ uint16_t got_magnums : 1;
     /*      */ uint16_t got_uzis : 1;
     /*      */ uint16_t got_shotgun : 1;
+    /*      */ uint16_t costume : 1;
     /* 000F end */
 } START_INFO;
 

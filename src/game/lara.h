@@ -7,7 +7,6 @@
 // clang-format off
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
 #define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
-#define LaraInitialiseMeshes    ((void          __cdecl(*)(int32_t level_num))0x00428340)
 // clang-format on
 
 void __cdecl LaraControl(int16_t item_num);
@@ -18,6 +17,7 @@ void __cdecl ControlLaraExtra(int16_t item_num);
 void __cdecl InitialiseLaraLoad(int16_t item_num);
 void __cdecl InitialiseLara();
 void __cdecl InitialiseLaraInventory(int32_t level_num);
+void __cdecl LaraInitialiseMeshes(int32_t level_num);
 
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll);
