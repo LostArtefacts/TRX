@@ -255,13 +255,16 @@ typedef enum {
     AF_PICKUP_UW = 2970,
     AF_PICKUPSCION = 44,
     AF_USEPUZZLE = 3372,
+} LARA_ANIMATION_FRAMES;
+
+typedef enum {
     AF_SG_AIM = 0,
     AF_SG_DRAW = 13,
     AF_SG_RECOIL = 47,
     AF_SG_UNDRAW = 80,
     AF_SG_UNAIM = 114,
     AF_SG_END = 127,
-} LARA_ANIMATION_FRAMES;
+} LARA_SHOTGUN_ANIMATION_FRAMES;
 
 typedef enum {
     AA_VAULT12 = 50,

@@ -167,7 +167,9 @@ extern void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll);
 extern void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll);
 
 void __cdecl draw_shotgun();
+void __cdecl undraw_shotgun();
 void __cdecl draw_shotgun_meshes();
+void __cdecl undraw_shotgun_meshes();
 void __cdecl ready_shotgun();
 void __cdecl RifleHandler(int32_t weapon_type);
 void __cdecl AnimateShotgun();

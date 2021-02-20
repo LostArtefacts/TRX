@@ -23,6 +23,52 @@ void __cdecl draw_shotgun()
     Lara.right_arm.frame_number = ani;
 }
 
+void __cdecl undraw_shotgun()
+{
+    int16_t ani = ani = Lara.left_arm.frame_number;
+    if (ani == AF_SG_AIM) {
+        ani = AF_SG_UNDRAW;
+    } else if (ani >= AF_SG_AIM && ani < AF_SG_DRAW) {
+        ani++;
+        if (ani == AF_SG_DRAW) {
+            ani = AF_SG_UNAIM;
+        }
+    } else if (ani == AF_SG_RECOIL) {
+        ani = AF_SG_UNAIM;
+    } else if (ani >= AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
+        ani++;
+        if (ani == AF_SG_RECOIL + 12) {
+            ani = AF_SG_AIM;
+        } else if (ani == AF_SG_UNDRAW) {
+            ani = AF_SG_UNAIM;
+        }
+    } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
+        ani++;
+        if (ani == AF_SG_END) {
+            ani = AF_SG_UNDRAW;
+        }
+    } else if (ani >= AF_SG_UNDRAW && ani < AF_SG_UNAIM) {
+        ani++;
+        if (ani == AF_SG_UNDRAW + 20) {
+            undraw_shotgun_meshes();
+            SoundEffect(6, &LaraItem->pos, 0);
+        } else if (ani == AF_SG_UNAIM) {
+            ani = AF_SG_AIM;
+            Lara.gun_status = LGS_ARMLESS;
+            Lara.target = NULL;
+            Lara.right_arm.lock = 0;
+            Lara.left_arm.lock = 0;
+        }
+    }
+
+    Lara.head_x_rot = 0;
+    Lara.head_y_rot = 0;
+    Lara.torso_x_rot += Lara.torso_x_rot / -2;
+    Lara.torso_y_rot += Lara.torso_y_rot / -2;
+    Lara.right_arm.frame_number = ani;
+    Lara.left_arm.frame_number = ani;
+}
+
 void __cdecl draw_shotgun_meshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] =
@@ -30,6 +76,13 @@ void __cdecl draw_shotgun_meshes()
     Lara.mesh_ptrs[LM_HAND_R] =
         Meshes[Objects[O_SHOTGUN].mesh_index + LM_HAND_R];
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
+}
+
+void __cdecl undraw_shotgun_meshes()
+{
+    Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
+    Lara.mesh_ptrs[LM_HAND_R] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_R];
+    Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
 void __cdecl ready_shotgun()
@@ -43,11 +96,11 @@ void __cdecl ready_shotgun()
     Lara.right_arm.y_rot = 0;
     Lara.right_arm.z_rot = 0;
     Lara.right_arm.lock = 0;
-    Lara.target = NULL;
-    Lara.torso_x_rot = 0;
-    Lara.torso_y_rot = 0;
     Lara.head_x_rot = 0;
     Lara.head_y_rot = 0;
+    Lara.torso_x_rot = 0;
+    Lara.torso_y_rot = 0;
+    Lara.target = NULL;
     Lara.right_arm.frame_base = Objects[O_SHOTGUN].frame_base;
     Lara.left_arm.frame_base = Objects[O_SHOTGUN].frame_base;
 }
@@ -176,5 +229,6 @@ void __cdecl FireShotgun()
 void Tomb1MInjectGameLaraGun1()
 {
     INJECT(0x00425E30, draw_shotgun);
+    INJECT(0x00425F50, undraw_shotgun);
     INJECT(0x004260F0, RifleHandler);
 }
