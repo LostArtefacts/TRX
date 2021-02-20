@@ -119,8 +119,8 @@ int32_t __cdecl LoadObjects(FILE* handle)
     int32_t mesh_count;
     int32_t mesh_ptr_count;
     int32_t anim_count;
-    int32_t anim_range_count;
     int32_t anim_change_count;
+    int32_t anim_range_count;
     int32_t anim_command_count;
     int32_t anim_bone_count;
     int32_t anim_frame_count;
