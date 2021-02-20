@@ -125,6 +125,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
         ++SaveGame[0].timer;
         --HealthBarTimer;
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
         if (Tomb1MConfig.disable_healing_between_levels) {
             int lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
@@ -144,6 +145,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
                 && LaraItem->hit_points < (LARA_HITPOINTS * 20) / 100)) {
             HealthBarTimer = 1;
         }
+#endif
     }
     return 0;
 }

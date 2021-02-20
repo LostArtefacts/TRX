@@ -264,11 +264,13 @@ int32_t __cdecl LoadItems(FILE* handle)
 
     return 1;
 }
+
 int32_t __cdecl S_LoadLevel(int level_id)
 {
     TRACE("%d (%s)", level_id, LevelNames[level_id]);
-    int ret = LoadLevel(LevelNames[level_id], level_id);
+    int32_t ret = LoadLevel(LevelNames[level_id], level_id);
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
     if (Tomb1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
@@ -289,13 +291,16 @@ int32_t __cdecl S_LoadLevel(int level_id)
             Tomb1MData.stored_lara_health = LARA_HITPOINTS;
         }
     }
+#endif
 
+#ifdef TOMB1M_FEAT_LEVEL_FIXES
     if (Tomb1MConfig.fix_pyramid_secret_trigger) {
         Tomb1MFixPyramidSecretTrigger();
     }
     if (Tomb1MConfig.fix_hardcoded_secret_counts) {
         SecretTotals[level_id] = Tomb1MGetSecretCount();
     }
+#endif
 
     return ret;
 }
@@ -303,7 +308,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
 const char* __cdecl GetFullPath(const char* filename)
 {
     TRACE(filename);
-#if defined FEATURE_NOCD_DATA
+#ifdef TOMB1M_FEAT_NOCD
     sprintf(newpath, ".\\%s", filename);
 #else
     if (DEMO) {

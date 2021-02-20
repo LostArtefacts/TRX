@@ -24,6 +24,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
     if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             Tomb1MLookLeftRight();
@@ -31,6 +32,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
             Tomb1MResetLook();
         }
     }
+#endif
 
     LaraControlRoutines[item->current_anim_state](item, coll);
 
@@ -148,11 +150,13 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
+#ifdef TOMB1M_FEAT_GAMEPLAY
     if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             Tomb1MLookUpDown();
         }
     }
+#endif
 
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;

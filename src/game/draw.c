@@ -719,9 +719,11 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+#ifdef TOMB1M_FEAT_UI
+        if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
+#endif
 
         phd_PopMatrix();
 
@@ -741,10 +743,12 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+#ifdef TOMB1M_FEAT_UI
+        if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
+#endif
 
         phd_PopMatrix();
         break;
@@ -777,17 +781,19 @@ void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
         off = 55;
         break;
 
+#ifdef TOMB1M_FEAT_UI
+    case LGT_SHOTGUN:
+        light = 10 * 256;
+        len = 285;
+        off = 0;
+        break;
+#endif
+
     default:
         light = 20 * 256;
         len = 155;
         off = 55;
         break;
-    }
-
-    if (Tomb1MConfig.enable_shotgun_flash && weapon_type == LGT_SHOTGUN) {
-        light = 10 * 256;
-        len = 285;
-        off = 0;
     }
 
     phd_TranslateRel(0, len, off);
@@ -1033,9 +1039,11 @@ void __cdecl DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+#ifdef TOMB1M_FEAT_UI
+        if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
+#endif
 
         phd_PopMatrix();
 
@@ -1055,10 +1063,12 @@ void __cdecl DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+#ifdef TOMB1M_FEAT_UI
+        if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
+#endif
 
         phd_PopMatrix_I();
         break;

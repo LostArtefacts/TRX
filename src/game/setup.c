@@ -25,10 +25,12 @@ void __cdecl InitialiseObjects()
         obj->shadow_size = 0;
         obj->hit_points = DONT_TARGET;
     }
+
     BaddyObjects();
     TrapObjects();
     ObjectObjects();
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
     if (Tomb1MConfig.disable_medpacks) {
         Objects[O_MEDI_ITEM].initialise = NULL;
         Objects[O_MEDI_ITEM].collision = NULL;
@@ -92,6 +94,7 @@ void __cdecl InitialiseObjects()
         Objects[O_SG_AMMO_ITEM].ceiling = NULL;
         Objects[O_SG_AMMO_ITEM].floor = NULL;
     }
+#endif
 }
 
 void Tomb1MInjectGameSetup()

@@ -14,6 +14,7 @@ void __cdecl DrawGameInfo()
         DrawAirBar();
         DrawPickups();
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
         if (Tomb1MConfig.enable_enemy_healthbar && Lara.target) {
             Tomb1MRenderBar(
                 Lara.target->hit_points,
@@ -21,6 +22,7 @@ void __cdecl DrawGameInfo()
                     * (SaveGame[0].bonus_flag ? 2 : 1),
                 Tomb1M_BAR_ENEMY_HEALTH);
         }
+#endif
     }
 
     T_DrawText();

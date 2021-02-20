@@ -77,6 +77,7 @@ void __cdecl S_UpdateInput()
         LaraItem->hit_points -= 20;
     }
 
+#ifdef TOMB1M_FEAT_UI
     if (Tomb1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
@@ -101,6 +102,7 @@ void __cdecl S_UpdateInput()
             }
         }
     }
+#endif
 
     if (KeyData->keymap[DIK_RETURN] || (linput & IN_ACTION)) {
         linput |= IN_SELECT;

@@ -84,6 +84,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 1;
     coll->enable_baddie_push = 1;
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
     if (Tomb1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             Tomb1MLookLeftRight();
@@ -91,6 +92,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
             Tomb1MResetLook();
         }
     }
+#endif
 
     LaraControlRoutines[item->current_anim_state](item, coll);
 
@@ -335,8 +337,14 @@ void __cdecl LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0
-        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+#ifdef TOMB1M_FEAT_GAMEPLAY
+    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
+    if (item->hit_points <= 0) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -365,8 +373,14 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0
-        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+#ifdef TOMB1M_FEAT_GAMEPLAY
+    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
+    if (item->hit_points <= 0) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -495,8 +509,14 @@ void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->hit_points <= 0
-        || (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK))) {
+#ifdef TOMB1M_FEAT_GAMEPLAY
+    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
+    if (item->hit_points <= 0) {
         item->goal_anim_state = AS_STOP;
         return;
     }

@@ -167,7 +167,7 @@ int Tomb1MGetSecretCount()
                 continue;
             }
 
-            while (k < FloorDataSize) {
+            while (1) {
                 uint16_t floor = FloorData[k++];
 
                 switch (floor & DATA_TYPE) {
@@ -237,7 +237,7 @@ void Tomb1MFixPyramidSecretTrigger()
                 continue;
             }
 
-            while (k < FloorDataSize) {
+            while (1) {
                 uint16_t floor = FloorData[k++];
 
                 switch (floor & DATA_TYPE) {

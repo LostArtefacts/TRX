@@ -336,9 +336,12 @@ void __cdecl InitialiseLara()
     TRACE("");
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
-    LaraItem->hit_points = Tomb1MConfig.disable_healing_between_levels
-        ? Tomb1MData.stored_lara_health
-        : LARA_HITPOINTS;
+    LaraItem->hit_points = LARA_HITPOINTS;
+#ifdef TOMB1M_FEAT_GAMEPLAY
+    if (Tomb1MConfig.disable_healing_between_levels) {
+        LaraItem->hit_points = Tomb1MData.stored_lara_health;
+    }
+#endif
 
     Lara.air = LARA_AIR;
     Lara.torso_y_rot = 0;
