@@ -6,11 +6,11 @@
 
 // clang-format off
 #define InitialiseLaraInventory ((void          __cdecl(*)(int level_id))0x00428170)
-#define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
 #define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
 // clang-format on
 
+void __cdecl LaraControl(int16_t item_num);
 void __cdecl LaraSwapMeshExtra();
 void __cdecl AnimateLara(ITEM_INFO* item);
 void __cdecl UseItem(int16_t object_num);

@@ -5,8 +5,140 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/misc.h"
+#include "specific/sndpc.h"
 #include "mod.h"
 #include "util.h"
+
+void __cdecl LaraControl(int16_t item_num)
+{
+    COLL_INFO coll = { 0 };
+
+    ITEM_INFO* item = LaraItem;
+    ROOM_INFO* r = &RoomInfo[item->room_number];
+    int32_t room_submerged = r->flags & RF_UNDERWATER;
+
+    if (Lara.water_status == LWS_ABOVEWATER && room_submerged) {
+        Lara.water_status = LWS_UNDERWATER;
+        Lara.air = LARA_AIR;
+        item->pos.y += 100;
+        item->gravity_status = 0;
+        UpdateLaraRoom(item, 0);
+        StopSoundEffect(30, 0);
+        if (item->current_anim_state == AS_SWANDIVE) {
+            item->goal_anim_state = AS_DIVE;
+            item->pos.x_rot = -45 * ONE_DEGREE;
+            AnimateLara(item);
+            item->fall_speed *= 2;
+        } else if (item->current_anim_state == AS_FASTDIVE) {
+            item->goal_anim_state = AS_DIVE;
+            item->pos.x_rot = -85 * ONE_DEGREE;
+            AnimateLara(item);
+            item->fall_speed *= 2;
+        } else {
+            item->current_anim_state = AS_DIVE;
+            item->goal_anim_state = AS_SWIM;
+            item->anim_number = AA_JUMPIN;
+            item->frame_number = AF_JUMPIN;
+            item->pos.x_rot = -45 * ONE_DEGREE;
+            item->fall_speed = (item->fall_speed * 3) / 2;
+        }
+        Lara.head_x_rot = 0;
+        Lara.head_y_rot = 0;
+        Lara.torso_x_rot = 0;
+        Lara.torso_y_rot = 0;
+        Splash(item);
+    } else if (Lara.water_status == LWS_UNDERWATER && !room_submerged) {
+        int16_t wh = GetWaterHeight(
+            item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
+            Lara.water_status = LWS_SURFACE;
+            Lara.dive_count = DIVE_COUNT + 1;
+            item->current_anim_state = AS_SURFTREAD;
+            item->goal_anim_state = AS_SURFTREAD;
+            item->anim_number = AA_SURFTREAD;
+            item->frame_number = AF_SURFTREAD;
+            item->fall_speed = 0;
+            item->pos.y = wh + 1;
+            item->pos.x_rot = 0;
+            item->pos.z_rot = 0;
+            Lara.head_x_rot = 0;
+            Lara.head_y_rot = 0;
+            Lara.torso_x_rot = 0;
+            Lara.torso_y_rot = 0;
+            UpdateLaraRoom(item, -LARA_HITE / 2);
+            SoundEffect(36, &item->pos, SFX_ALWAYS);
+        } else {
+            Lara.water_status = LWS_ABOVEWATER;
+            Lara.gun_status = LGS_ARMLESS;
+            item->current_anim_state = AS_FORWARDJUMP;
+            item->goal_anim_state = AS_FORWARDJUMP;
+            item->anim_number = AA_FALLDOWN;
+            item->frame_number = AF_FALLDOWN;
+            item->speed = item->fall_speed / 4;
+            item->fall_speed = 0;
+            item->gravity_status = 1;
+            item->pos.x_rot = 0;
+            item->pos.z_rot = 0;
+            Lara.head_x_rot = 0;
+            Lara.head_y_rot = 0;
+            Lara.torso_x_rot = 0;
+            Lara.torso_y_rot = 0;
+        }
+    } else if (Lara.water_status == LWS_SURFACE && !room_submerged) {
+        Lara.water_status = LWS_ABOVEWATER;
+        Lara.gun_status = LGS_ARMLESS;
+        item->current_anim_state = AS_FORWARDJUMP;
+        item->goal_anim_state = AS_FORWARDJUMP;
+        item->anim_number = AA_FALLDOWN;
+        item->frame_number = AF_FALLDOWN;
+        item->speed = item->fall_speed / 4;
+        item->fall_speed = 0;
+        item->gravity_status = 1;
+        item->pos.x_rot = 0;
+        item->pos.z_rot = 0;
+        Lara.head_x_rot = 0;
+        Lara.head_y_rot = 0;
+        Lara.torso_x_rot = 0;
+        Lara.torso_y_rot = 0;
+    }
+
+    if (item->hit_points <= 0) {
+        item->hit_points = -1;
+        if (!Lara.death_count) {
+            S_CDStop();
+        }
+        Lara.death_count++;
+    }
+
+    switch (Lara.water_status) {
+    case LWS_ABOVEWATER:
+        Lara.air = LARA_AIR;
+        LaraAboveWater(item, &coll);
+        break;
+
+    case LWS_UNDERWATER:
+        if (item->hit_points >= 0) {
+            Lara.air--;
+            if (Lara.air < 0) {
+                Lara.air = -1;
+                item->hit_points -= 5;
+            }
+        }
+        LaraUnderWater(item, &coll);
+        break;
+
+    case LWS_SURFACE:
+        if (item->hit_points >= 0) {
+            Lara.air += 10;
+            if (Lara.air > LARA_AIR) {
+                Lara.air = LARA_AIR;
+            }
+        }
+        LaraSurface(item, &coll);
+        break;
+    }
+}
 
 void __cdecl LaraSwapMeshExtra()
 {
@@ -290,6 +422,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
 
 void Tomb1MInjectGameLaraMisc()
 {
+    INJECT(0x00427850, LaraControl);
     INJECT(0x00427BD0, LaraSwapMeshExtra);
     INJECT(0x00427C00, AnimateLara);
     INJECT(0x00427E80, UseItem);
