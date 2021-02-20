@@ -26,6 +26,7 @@ void __cdecl draw_shotgun()
 void __cdecl undraw_shotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
+
     if (ani == AF_SG_AIM) {
         ani = AF_SG_UNDRAW;
     } else if (ani >= AF_SG_AIM && ani < AF_SG_DRAW) {
@@ -133,7 +134,6 @@ void __cdecl RifleHandler(int32_t weapon_type)
 void __cdecl AnimateShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
-
     if (Lara.left_arm.lock) {
         if (ani >= AF_SG_AIM && ani < AF_SG_DRAW) {
             ani++;

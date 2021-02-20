@@ -176,8 +176,11 @@ void __cdecl AnimateShotgun();
 void __cdecl FireShotgun();
 
 void __cdecl draw_pistols(int32_t weapon_type);
+void __cdecl undraw_pistols(int32_t weapon_type);
 void __cdecl ready_pistols();
 void __cdecl draw_pistol_meshes(int32_t weapon_type);
+void __cdecl undraw_pistol_mesh_left(int32_t weapon_type);
+void __cdecl undraw_pistol_mesh_right(int32_t weapon_type);
 
 void Tomb1MLookLeftRight();
 void Tomb1MLookUpDown();
