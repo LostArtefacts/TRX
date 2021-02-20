@@ -1,6 +1,8 @@
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/data.h"
+#include "game/draw.h"
 #include "game/lara.h"
 #include "game/misc.h"
 #include "util.h"
@@ -302,10 +304,25 @@ void __cdecl LaraGetNewTarget(WEAPON_INFO* winfo)
     LaraTargetInfo(winfo);
 }
 
+void __cdecl find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
+{
+    int16_t* bounds = GetBestFrame(item);
+    int32_t x = (bounds[0] + bounds[1]) / 2;
+    int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
+    int32_t z = (bounds[5] + bounds[4]) / 2;
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+    target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
+    target->y = item->pos.y + y;
+    target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);
+    target->room_number = item->room_number;
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
     INJECT(0x00426E60, InitialiseNewWeapon);
     INJECT(0x00426F20, LaraTargetInfo);
     INJECT(0x004270C0, LaraGetNewTarget);
+    INJECT(0x004272A0, find_target_point);
 }

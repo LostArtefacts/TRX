@@ -411,7 +411,7 @@ LaraGun                         0x00426BD0  0x00000271  +
 InitialiseNewWeapon             0x00426E60  0x000000B9  +
 LaraTargetInfo                  0x00426F20  0x00000194  +
 LaraGetNewTarget                0x004270C0  0x000001D9  +
-find_target_point               0x004272A0  0x000000B2  *
+find_target_point               0x004272A0  0x000000B2  +
 AimWeapon                       0x00427360  0x000000C1  *
 FireWeapon                      0x00427430  0x000002F2  *
 HitTarget                       0x00427730  0x000000E5  -
