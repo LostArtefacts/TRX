@@ -111,6 +111,9 @@
 #define RoomsToDraw             ARRAY_(0x00462580, int16_t, [100])
 #define RoomsToDrawNum          VAR_U_(0x00461F38, int32_t)
 #define Weapons                 ARRAY_(0x004563A8, WEAPON_INFO, [NUM_WEAPONS])
+#define DemoLevels              ARRAY_(0x00453538, int8_t, [])
+#define TitleLoaded             VAR_U_(0x0045A324, int32_t)
+#define DemoLevel               VAR_I_(0x00453530, int32_t, 1)
 // clang-format on
 
 extern int32_t MeshCount;

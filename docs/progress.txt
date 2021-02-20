@@ -173,8 +173,8 @@ FlipMap                         0x004151A0  0x0000016F  -
 TriggerCDTrack                  0x00415310  0x000001D2  -
 AlligatorControl                0x00415520  0x00000326  -
 CrocControl                     0x00415850  0x0000030C  -
-StartDemo                       0x00415B70  0x00000140  -
-LoadLaraDemoPos                 0x00415CB0  0x000000BF  -
+StartDemo                       0x00415B70  0x00000140  +
+LoadLaraDemoPos                 0x00415CB0  0x000000BF  *
 GetDemoInput                    0x00415D70  0x0000002D  *
 RaptorControl                   0x00415DA0  0x00000330  -
 DinoControl                     0x004160F0  0x0000028F  -
@@ -258,7 +258,7 @@ SoundStart                      0x0041CDA0  0x00000045  -
 WinPlayFMV                      0x0041CDF0  0x0000024A  -
 S_PlayFMV                       0x0041D040  0x0000007C  -
 sub_41D0C0                      0x0041D0C0  0x000001CA  -
-GameLoop                        0x0041D2C0  0x00000065  -
+GameLoop                        0x0041D2C0  0x00000065  *
 LevelCompleteSequence           0x0041D330  0x0000021C  -
 LevelStats                      0x0041D5A0  0x00000346  +
 GetRandomControl                0x0041D8F0  0x0000001E  +
@@ -562,7 +562,7 @@ S_DrawSpriteRel                 0x00435B70  0x00000207  -
 S_DrawUISprite                  0x00435D80  0x0000014D  -
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
 draw_scaled_spriteC             0x004360A0  0x000001FB  -
-InitialiseLevel                 0x004362A0  0x00000119  -
+InitialiseLevel                 0x004362A0  0x00000119  *
 InitialiseLevelFlags            0x004363C0  0x00000018  -
 BaddyObjects                    0x004363E0  0x00000C2F  *
 TrapObjects                     0x00437010  0x00000356  *

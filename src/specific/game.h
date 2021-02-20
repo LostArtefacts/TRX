@@ -5,6 +5,7 @@
 
 // clang-format off
 #define S_SaveGame              ((void          __cdecl(*)())0x0041DB70)
+#define GameLoop                ((int32_t       __cdecl(*)(int32_t demo_mode))0x0041D2C0)
 // clang-format on
 
 int __cdecl LevelIsValid(int16_t level_number);
