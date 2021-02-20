@@ -2,6 +2,7 @@
 #include "game/control.h"
 #include "game/data.h"
 #include "game/lara.h"
+#include "game/misc.h"
 #include "util.h"
 
 void __cdecl LaraGun()
@@ -242,9 +243,69 @@ void __cdecl LaraTargetInfo(WEAPON_INFO* winfo)
     Lara.target_angles[1] = ang[1];
 }
 
+void __cdecl LaraGetNewTarget(WEAPON_INFO* winfo)
+{
+    ITEM_INFO* bestitem = NULL;
+    int16_t bestyrot = 0x7FFF;
+
+    int32_t maxdist = winfo->target_dist;
+    int32_t maxdist2 = maxdist * maxdist;
+    GAME_VECTOR src;
+    src.x = LaraItem->pos.x;
+    src.y = LaraItem->pos.y - 650;
+    src.z = LaraItem->pos.z;
+    src.room_number = LaraItem->room_number;
+
+    ITEM_INFO* item = NULL;
+    for (int16_t item_num = NextItemActive; item_num != NO_ITEM;
+         item_num = item->next_active) {
+        item = &Items[item_num];
+        if (item->hit_points <= 0) {
+            continue;
+        }
+
+        int32_t x = item->pos.x - src.x;
+        int32_t y = item->pos.y - src.y;
+        int32_t z = item->pos.z - src.z;
+        if (ABS(x) > maxdist || ABS(y) > maxdist || ABS(z) > maxdist) {
+            continue;
+        }
+
+        int32_t dist = x * x + y * y + z * z;
+        if (dist >= maxdist2) {
+            continue;
+        }
+
+        GAME_VECTOR target;
+        find_target_point(item, &target);
+        if (!LOS(&src, &target)) {
+            continue;
+        }
+
+        PHD_ANGLE ang[2];
+        phd_GetVectorAngles(
+            target.x - src.x, target.y - src.y, target.z - src.z, ang);
+        ang[0] -= Lara.torso_y_rot + LaraItem->pos.y_rot;
+        ang[1] -= Lara.torso_x_rot + LaraItem->pos.x_rot;
+        if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
+            && ang[1] >= winfo->lock_angles[2]
+            && ang[1] <= winfo->lock_angles[3]) {
+            int16_t yrot = ABS(ang[0]);
+            if (yrot < bestyrot) {
+                bestyrot = yrot;
+                bestitem = item;
+            }
+        }
+    }
+
+    Lara.target = bestitem;
+    LaraTargetInfo(winfo);
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
     INJECT(0x00426E60, InitialiseNewWeapon);
     INJECT(0x00426F20, LaraTargetInfo);
+    INJECT(0x004270C0, LaraGetNewTarget);
 }
