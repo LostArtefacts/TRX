@@ -318,6 +318,44 @@ void __cdecl find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
     target->room_number = item->room_number;
 }
 
+void __cdecl AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
+{
+    PHD_ANGLE destx;
+    PHD_ANGLE desty;
+    PHD_ANGLE curr;
+    PHD_ANGLE speed = winfo->aim_speed;
+
+    if (arm->lock) {
+        desty = Lara.target_angles[0];
+        destx = Lara.target_angles[1];
+    } else {
+        destx = 0;
+        desty = 0;
+    }
+
+    curr = arm->y_rot;
+    if (curr >= desty - speed && curr <= speed + desty) {
+        curr = desty;
+    } else if (curr < desty) {
+        curr += speed;
+    } else {
+        curr -= speed;
+    }
+    arm->y_rot = curr;
+
+    curr = arm->x_rot;
+    if (curr >= destx - speed && curr <= speed + destx) {
+        curr = destx;
+    } else if (curr < destx) {
+        curr += speed;
+    } else {
+        curr -= speed;
+    }
+    arm->x_rot = curr;
+
+    arm->z_rot = 0;
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
@@ -325,4 +363,5 @@ void Tomb1MInjectGameLaraFire()
     INJECT(0x00426F20, LaraTargetInfo);
     INJECT(0x004270C0, LaraGetNewTarget);
     INJECT(0x004272A0, find_target_point);
+    INJECT(0x00427360, AimWeapon);
 }
