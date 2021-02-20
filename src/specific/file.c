@@ -290,6 +290,9 @@ int32_t __cdecl S_LoadLevel(int level_id)
         }
     }
 
+    if (Tomb1MConfig.fix_pyramid_secret_trigger) {
+        Tomb1MFixPyramidSecretTrigger();
+    }
     if (Tomb1MConfig.fix_hardcoded_secret_counts) {
         SecretTotals[level_id] = Tomb1MGetSecretCount();
     }

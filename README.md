@@ -41,7 +41,8 @@ Currently the following configuration options are supported:
     - <kbd>4</kbd>: draw UZI
     - <kbd>8</kbd>: use small medpack
     - <kbd>9</kbd>: use large medpack
-- `healthbar_showing_mode`: change when the healthbar is displayed. Possible values:
+- `healthbar_showing_mode`: change when the healthbar is displayed.
+  Possible values:
     - `always`: always show the healthbar
     - `flashing`: show the healthbar only when Lara's health is 20% or below
     - `default`: show the healthbar at the beginning of a level, after
@@ -50,6 +51,8 @@ Currently the following configuration options are supported:
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing
   during using the golden key in Tomb of Tihocan.
+- `fix_pyramid_secret_trigger`: fix the secret trigger in the final level not
+  working.
 - `fix_hardcoded_secret_counts`: calculate the number of secrets based on a
   trigger count within a file rather than using hardcoded values.
 
