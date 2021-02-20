@@ -267,6 +267,16 @@ typedef enum {
 } LARA_SHOTGUN_ANIMATION_FRAMES;
 
 typedef enum {
+    AF_G_AIM = 0,
+    AF_G_AIM_L = 4,
+    AF_G_DRAW1 = 5,
+    AF_G_DRAW1_L = 12,
+    AF_G_DRAW2 = 13,
+    AF_G_DRAW2_L = 23,
+    AF_G_RECOIL = 24,
+} LARA_GUN_ANIMATION_FRAMES;
+
+typedef enum {
     AA_VAULT12 = 50,
     AA_VAULT34 = 42,
     AA_FASTFALL = 32,

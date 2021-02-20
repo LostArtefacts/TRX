@@ -175,6 +175,10 @@ void __cdecl RifleHandler(int32_t weapon_type);
 void __cdecl AnimateShotgun();
 void __cdecl FireShotgun();
 
+void __cdecl draw_pistols(int32_t weapon_type);
+void __cdecl ready_pistols();
+void __cdecl draw_pistol_meshes(int32_t weapon_type);
+
 void Tomb1MLookLeftRight();
 void Tomb1MLookUpDown();
 void Tomb1MResetLook();
@@ -184,5 +188,6 @@ void Tomb1MInjectGameLaraMisc();
 void Tomb1MInjectGameLaraSurf();
 void Tomb1MInjectGameLaraSwim();
 void Tomb1MInjectGameLaraGun1();
+void Tomb1MInjectGameLaraGun2();
 
 #endif
