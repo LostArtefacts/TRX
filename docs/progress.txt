@@ -292,10 +292,10 @@ RingIsOpen                      0x00420000  0x0000014D  -
 RingIsNotOpen                   0x00420150  0x00000076  -
 RingNotActive                   0x004201D0  0x0000069E  -
 RingActive                      0x00420980  0x00000039  -
-Inv_AddItem                     0x004209C0  0x00000620  -
+Inv_AddItem                     0x004209C0  0x00000620  *
 Inv_InsertItem                  0x004210D0  0x00000129  -
 Inv_RequestItem                 0x00421200  0x00000077  *
-Inv_RemoveAllItems              0x00421280  0x0000001E  -
+Inv_RemoveAllItems              0x00421280  0x0000001E  *
 Inv_RemoveItem                  0x004212A0  0x00000110  *
 Inv_GetItemOption               0x004213B0  0x000000A7  -
 Inv_RingInit                    0x00421580  0x0000017E  -
@@ -321,7 +321,7 @@ RemoveDrawnItem                 0x00421F60  0x00000080  -
 AddActiveItem                   0x00421FE0  0x00000080  -
 ItemNewRoom                     0x00422060  0x000000A4  -
 SpawnItem                       0x00422110  0x000000B6  -
-GlobalItemReplace               0x004221D0  0x00000080  -
+GlobalItemReplace               0x004221D0  0x00000080  *
 InitialiseFXArray               0x00422250  0x00000030  +
 CreateEffect                    0x00422280  0x00000069  -
 KillEffect                      0x004222F0  0x000000E4  -
@@ -422,8 +422,8 @@ UseItem                         0x00427E80  0x000000F8  +
 ControlLaraExtra                0x00427FD0  0x0000001F  +
 InitialiseLaraLoad              0x00427FF0  0x00000024  +
 InitialiseLara                  0x00428020  0x00000150  +
-InitialiseLaraInventory         0x00428170  0x000001C8  *
-LaraInitialiseMeshes            0x00428340  0x000000DD  -
+InitialiseLaraInventory         0x00428170  0x000001C8  +
+LaraInitialiseMeshes            0x00428340  0x000000DD  *
 InitialiseEvilLara              0x00428420  0x00000025  -
 ControlEvilLara                 0x00428450  0x00000221  -
 DrawEvilLara                    0x00428680  0x00000058  -

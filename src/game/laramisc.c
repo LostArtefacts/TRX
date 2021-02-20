@@ -3,6 +3,7 @@
 #include "game/data.h"
 #include "game/effects.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/misc.h"
@@ -386,6 +387,73 @@ void __cdecl InitialiseLara()
     InitialiseLaraInventory(CurrentLevel);
 }
 
+void __cdecl InitialiseLaraInventory(int32_t level_num)
+{
+    Inv_RemoveAllItems();
+
+    START_INFO* start = &SaveGame[0].start[level_num];
+
+    Lara.pistols.ammo = 1000;
+    if (start->got_pistols) {
+        Inv_AddItem(O_GUN_ITEM);
+    }
+
+    if (start->got_magnums) {
+        Inv_AddItem(O_MAGNUM_ITEM);
+        Lara.magnums.ammo = start->magnum_ammo;
+        GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+    } else {
+        int32_t ammo = start->magnum_ammo / MAGNUM_AMMO_QTY;
+        for (int i = 0; i < ammo; i++) {
+            Inv_AddItem(O_MAG_AMMO_ITEM);
+        }
+        Lara.magnums.ammo = 0;
+    }
+
+    if (start->got_uzis) {
+        Inv_AddItem(O_UZI_ITEM);
+        Lara.uzis.ammo = start->uzi_ammo;
+        GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+    } else {
+        int32_t ammo = start->uzi_ammo / UZI_AMMO_QTY;
+        for (int i = 0; i < ammo; i++) {
+            Inv_AddItem(O_UZI_AMMO_ITEM);
+        }
+        Lara.uzis.ammo = 0;
+    }
+
+    if (start->got_shotgun) {
+        Inv_AddItem(O_SHOTGUN_ITEM);
+        Lara.shotgun.ammo = start->shotgun_ammo;
+        GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+    } else {
+        int32_t ammo = start->shotgun_ammo / SHOTGUN_AMMO_QTY;
+        for (int i = 0; i < ammo; i++) {
+            Inv_AddItem(O_SG_AMMO_ITEM);
+        }
+        Lara.shotgun.ammo = 0;
+    }
+
+    for (int i = 0; i < start->num_scions; i++) {
+        Inv_AddItem(O_SCION_ITEM);
+    }
+
+    for (int i = 0; i < start->num_medis; i++) {
+        Inv_AddItem(O_MEDI_ITEM);
+    }
+
+    for (int i = 0; i < start->num_big_medis; i++) {
+        Inv_AddItem(O_BIGMEDI_ITEM);
+    }
+
+    Lara.gun_status = start->gun_status;
+    Lara.gun_type = start->gun_type;
+    Lara.request_gun_type = start->gun_type;
+
+    LaraInitialiseMeshes(level_num);
+    InitialiseNewWeapon();
+}
+
 void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
@@ -429,4 +497,5 @@ void Tomb1MInjectGameLaraMisc()
     INJECT(0x00427FD0, ControlLaraExtra);
     INJECT(0x00427FF0, InitialiseLaraLoad);
     INJECT(0x00428020, InitialiseLara);
+    INJECT(0x00428170, InitialiseLaraInventory);
 }
