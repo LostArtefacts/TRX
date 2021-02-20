@@ -9,6 +9,7 @@
 #define SoundEffects            ((void          __cdecl(*)())0x0041A2A0)
 #define StopSoundEffect         ((void          __cdecl(*)(int32_t sfx_num, PHD_3DPOS *pos))0x0042B300)
 #define ItemSparkle             ((void          __cdecl(*)(ITEM_INFO* item, int meshmask))0x0041A550)
+#define Richochet               ((void          __cdecl(*)(GAME_VECTOR* pos))0x0041A450)
 // clang-format on
 
 void __cdecl FxChainBlock(ITEM_INFO* item);

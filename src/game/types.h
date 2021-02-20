@@ -1150,6 +1150,13 @@ typedef struct {
     /* 002E end */
 } WEAPON_INFO;
 
+typedef struct {
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t r;
+} SPHERE;
+
 #pragma pop
 
 typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);

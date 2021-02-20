@@ -14,6 +14,7 @@
 #define phd_PutPolygons         ((void          __cdecl(*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_TranslateRel        ((int32_t       __cdecl(*)(int32_t x, int32_t y, int32_t z))0x004018F0)
 #define phd_GetVectorAngles     ((void          __cdecl(*)(int32_t x, int32_t y, int32_t z, PHD_ANGLE* dest))0x00401270)
+#define phd_GenerateW2V         ((void          __cdecl(*)(PHD_3DPOS* viewpos))0x00401000)
 // clang-format on
 
 void __cdecl phd_PopMatrix();

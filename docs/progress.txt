@@ -4,7 +4,7 @@
 # + fully decompiled
 #
 # Name                          Offset      Size        Flags
-phd_GenerateW2V                 0x00401000  0x00000197  -
+phd_GenerateW2V                 0x00401000  0x00000197  *
 phd_LookAt                      0x004011A0  0x000000C9  -
 phd_GetVectorAngles             0x00401270  0x0000007E  *
 phd_RotX                        0x004012F0  0x000000AE  -
@@ -213,7 +213,7 @@ SoundEffects                    0x0041A2A0  0x0000006D  *
 DoBloodSplat                    0x0041A310  0x00000059  -
 ControlBlood1                   0x0041A370  0x0000008B  -
 ControlExplosion1               0x0041A400  0x0000004C  -
-Ricochet                        0x0041A450  0x00000072  -
+Richochet                       0x0041A450  0x00000072  *
 ControlRicochet1                0x0041A4D0  0x00000030  -
 ControlTwinkle                  0x0041A500  0x0000004C  -
 ItemSparkle                     0x0041A550  0x00000115  *
@@ -413,8 +413,8 @@ LaraTargetInfo                  0x00426F20  0x00000194  +
 LaraGetNewTarget                0x004270C0  0x000001D9  +
 find_target_point               0x004272A0  0x000000B2  +
 AimWeapon                       0x00427360  0x000000C1  +
-FireWeapon                      0x00427430  0x000002F2  *
-HitTarget                       0x00427730  0x000000E5  -
+FireWeapon                      0x00427430  0x000002F2  +
+HitTarget                       0x00427730  0x000000E5  *
 LaraControl                     0x00427850  0x00000372  *
 LaraSwapMeshExtra               0x00427BD0  0x00000030  +
 AnimateLara                     0x00427C00  0x00000244  +
@@ -604,7 +604,7 @@ SampleLoader                    0x00438E90  0x00000005  -
 LoadSamples                     0x00438EA0  0x00000189  -
 sub_439030                      0x00439030  0x000000FC  -
 TestCollision                   0x00439130  0x00000128  -
-GetSpheres                      0x00439260  0x000002EF  -
+GetSpheres                      0x00439260  0x000002EF  *
 GetJointAbsPosition             0x00439550  0x0000019C  -
 BaddieBiteEffect                0x004396F0  0x0000005D  -
 T_InitPrint                     0x00439750  0x00000022  +

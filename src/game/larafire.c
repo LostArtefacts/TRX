@@ -3,8 +3,11 @@
 #include "game/control.h"
 #include "game/data.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/lara.h"
 #include "game/misc.h"
+#include "game/sphere.h"
+#include "specific/game.h"
 #include "util.h"
 
 void __cdecl LaraGun()
@@ -356,6 +359,103 @@ void __cdecl AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
     arm->z_rot = 0;
 }
 
+int32_t __cdecl FireWeapon(
+    int32_t weapon_type, ITEM_INFO* target, ITEM_INFO* src, PHD_ANGLE* angles)
+{
+    WEAPON_INFO* winfo = &Weapons[weapon_type];
+
+    AMMO_INFO* ammo;
+    switch (weapon_type) {
+    case LGT_MAGNUMS:
+        ammo = &Lara.magnums;
+        if (SaveGame[0].bonus_flag) {
+            ammo->ammo = 1000;
+        }
+        break;
+
+    case LGT_UZIS:
+        ammo = &Lara.uzis;
+        if (SaveGame[0].bonus_flag) {
+            ammo->ammo = 1000;
+        }
+        break;
+
+    case LGT_SHOTGUN:
+        ammo = &Lara.shotgun;
+        if (SaveGame[0].bonus_flag) {
+            ammo->ammo = 1000;
+        }
+        break;
+
+    default:
+        ammo = &Lara.pistols;
+        ammo->ammo = 1000;
+        break;
+    }
+
+    if (ammo->ammo <= 0) {
+        ammo->ammo = 0;
+        SoundEffect(48, &src->pos, 0);
+        Lara.request_gun_type = LGT_PISTOLS;
+        return 0;
+    }
+
+    ammo->ammo--;
+
+    PHD_3DPOS view;
+    view.x = src->pos.x;
+    view.y = src->pos.y - winfo->gun_height;
+    view.z = src->pos.z;
+    view.x_rot = angles[1]
+        + (winfo->shot_accuracy * (GetRandomControl() - (PHD_ONE / 4)))
+            / PHD_ONE;
+    view.y_rot = angles[0]
+        + (winfo->shot_accuracy * (GetRandomControl() - (PHD_ONE / 4)))
+            / PHD_ONE;
+    view.z_rot = 0;
+    phd_GenerateW2V(&view);
+
+    SPHERE slist[33];
+    int32_t nums = GetSpheres(target, slist, 0);
+
+    int32_t best = -1;
+    int32_t bestdist = 0x7FFFFFFF;
+    for (int i = 0; i < nums; i++) {
+        SPHERE* sptr = &slist[i];
+        int32_t r = sptr->r;
+        if (ABS(sptr->x) < r && ABS(sptr->y) < r && sptr->z > r
+            && (sptr->x * sptr->x) + (sptr->y * sptr->y) <= (r * r)
+            && (sptr->z - r < bestdist)) {
+            bestdist = sptr->z - r;
+            best = i;
+        }
+    }
+
+    GAME_VECTOR vsrc;
+    vsrc.room_number = src->room_number;
+    vsrc.x = view.x;
+    vsrc.y = view.y;
+    vsrc.z = view.z;
+
+    GAME_VECTOR vdest;
+    if (best >= 0) {
+        ammo->hit++;
+        vdest.x = view.x + ((bestdist * PhdMatrixPtr->_20) >> W2V_SHIFT);
+        vdest.y = view.y + ((bestdist * PhdMatrixPtr->_21) >> W2V_SHIFT);
+        vdest.z = view.z + ((bestdist * PhdMatrixPtr->_22) >> W2V_SHIFT);
+        HitTarget(target, &vdest, winfo->damage);
+        return 1;
+    }
+
+    ammo->miss++;
+    vdest.x = vsrc.x + PhdMatrixPtr->_20;
+    vdest.y = vsrc.y + PhdMatrixPtr->_21;
+    vdest.z = vsrc.z + PhdMatrixPtr->_22;
+    LOS(&vsrc, &vdest);
+    Richochet(&vdest);
+    return -1;
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
@@ -364,4 +464,5 @@ void Tomb1MInjectGameLaraFire()
     INJECT(0x004270C0, LaraGetNewTarget);
     INJECT(0x004272A0, find_target_point);
     INJECT(0x00427360, AimWeapon);
+    INJECT(0x00427430, FireWeapon);
 }
