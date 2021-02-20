@@ -3,6 +3,7 @@
 #include "game/lara.h"
 #include "specific/game.h"
 #include "specific/input.h"
+#include "mod.h"
 
 void __cdecl RifleHandler(int32_t weapon_type)
 {
@@ -118,6 +119,9 @@ void __cdecl FireShotgun()
         }
     }
     if (fired) {
+        if (Tomb1MConfig.enable_shotgun_flash) {
+            Lara.right_arm.flash_gun = Weapons[LGT_SHOTGUN].flash_time;
+        }
         SoundEffect(Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, 0);
     }
 }

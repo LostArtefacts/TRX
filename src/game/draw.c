@@ -7,6 +7,7 @@
 #include "game/health.h"
 #include "specific/game.h"
 #include "specific/output.h"
+#include "mod.h"
 #include "util.h"
 
 int32_t __cdecl DrawPhaseCinematic()
@@ -656,18 +657,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (Lara.right_arm.flash_gun) {
-            saved_matrix._00 = PhdMatrixPtr->_00;
-            saved_matrix._01 = PhdMatrixPtr->_01;
-            saved_matrix._02 = PhdMatrixPtr->_02;
-            saved_matrix._03 = PhdMatrixPtr->_03;
-            saved_matrix._10 = PhdMatrixPtr->_10;
-            saved_matrix._11 = PhdMatrixPtr->_11;
-            saved_matrix._12 = PhdMatrixPtr->_12;
-            saved_matrix._13 = PhdMatrixPtr->_13;
-            saved_matrix._20 = PhdMatrixPtr->_20;
-            saved_matrix._21 = PhdMatrixPtr->_21;
-            saved_matrix._22 = PhdMatrixPtr->_22;
-            saved_matrix._23 = PhdMatrixPtr->_23;
+            saved_matrix = *PhdMatrixPtr;
         }
 
         phd_PopMatrix();
@@ -705,18 +695,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
             DrawGunFlash(fire_arms, clip);
         }
         if (Lara.right_arm.flash_gun) {
-            PhdMatrixPtr->_00 = saved_matrix._00;
-            PhdMatrixPtr->_01 = saved_matrix._01;
-            PhdMatrixPtr->_02 = saved_matrix._02;
-            PhdMatrixPtr->_03 = saved_matrix._03;
-            PhdMatrixPtr->_10 = saved_matrix._10;
-            PhdMatrixPtr->_11 = saved_matrix._11;
-            PhdMatrixPtr->_12 = saved_matrix._12;
-            PhdMatrixPtr->_13 = saved_matrix._13;
-            PhdMatrixPtr->_20 = saved_matrix._20;
-            PhdMatrixPtr->_21 = saved_matrix._21;
-            PhdMatrixPtr->_22 = saved_matrix._22;
-            PhdMatrixPtr->_23 = saved_matrix._23;
+            *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
@@ -740,6 +719,10 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
+        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+            saved_matrix = *PhdMatrixPtr;
+        }
+
         phd_PopMatrix();
 
         phd_PushMatrix();
@@ -758,6 +741,11 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
+        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+            *PhdMatrixPtr = saved_matrix;
+            DrawGunFlash(fire_arms, clip);
+        }
+
         phd_PopMatrix();
         break;
     }
@@ -772,27 +760,37 @@ void __cdecl DrawLara(ITEM_INFO* item)
 
 void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
 {
-    int light;
-    int g_len;
+    int32_t light;
+    int32_t len;
+    int32_t off;
 
     switch (weapon_type) {
     case LGT_MAGNUMS:
         light = 16 * 256;
-        g_len = 155;
+        len = 155;
+        off = 55;
         break;
 
     case LGT_UZIS:
         light = 10 * 256;
-        g_len = 180;
+        len = 180;
+        off = 55;
         break;
 
     default:
         light = 20 * 256;
-        g_len = 155;
+        len = 155;
+        off = 55;
         break;
     }
 
-    phd_TranslateRel(0, g_len, 55);
+    if (Tomb1MConfig.enable_shotgun_flash && weapon_type == LGT_SHOTGUN) {
+        light = 10 * 256;
+        len = 285;
+        off = 0;
+    }
+
+    phd_TranslateRel(0, len, off);
     phd_RotYXZ(0, -90 * ONE_DEGREE, (PHD_ANGLE)(GetRandomDraw() * 2));
     S_CalculateStaticLight(light);
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
@@ -980,18 +978,7 @@ void __cdecl DrawLaraInt(
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (Lara.right_arm.flash_gun) {
-            saved_matrix._00 = PhdMatrixPtr->_00;
-            saved_matrix._01 = PhdMatrixPtr->_01;
-            saved_matrix._02 = PhdMatrixPtr->_02;
-            saved_matrix._03 = PhdMatrixPtr->_03;
-            saved_matrix._10 = PhdMatrixPtr->_10;
-            saved_matrix._11 = PhdMatrixPtr->_11;
-            saved_matrix._12 = PhdMatrixPtr->_12;
-            saved_matrix._13 = PhdMatrixPtr->_13;
-            saved_matrix._20 = PhdMatrixPtr->_20;
-            saved_matrix._21 = PhdMatrixPtr->_21;
-            saved_matrix._22 = PhdMatrixPtr->_22;
-            saved_matrix._23 = PhdMatrixPtr->_23;
+            saved_matrix = *PhdMatrixPtr;
         }
 
         phd_PopMatrix_I();
@@ -1021,18 +1008,7 @@ void __cdecl DrawLaraInt(
         }
 
         if (Lara.right_arm.flash_gun) {
-            PhdMatrixPtr->_00 = saved_matrix._00;
-            PhdMatrixPtr->_01 = saved_matrix._01;
-            PhdMatrixPtr->_02 = saved_matrix._02;
-            PhdMatrixPtr->_03 = saved_matrix._03;
-            PhdMatrixPtr->_10 = saved_matrix._10;
-            PhdMatrixPtr->_11 = saved_matrix._11;
-            PhdMatrixPtr->_12 = saved_matrix._12;
-            PhdMatrixPtr->_13 = saved_matrix._13;
-            PhdMatrixPtr->_20 = saved_matrix._20;
-            PhdMatrixPtr->_21 = saved_matrix._21;
-            PhdMatrixPtr->_22 = saved_matrix._22;
-            PhdMatrixPtr->_23 = saved_matrix._23;
+            *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
@@ -1057,6 +1033,10 @@ void __cdecl DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
+        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+            saved_matrix = *PhdMatrixPtr;
+        }
+
         phd_PopMatrix();
 
         phd_PushMatrix();
@@ -1074,6 +1054,11 @@ void __cdecl DrawLaraInt(
         phd_TranslateRel(bone[49], bone[50], bone[51]);
         phd_RotYXZpack(packed_rotation1[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
+
+        if (Tomb1MConfig.enable_shotgun_flash && Lara.right_arm.flash_gun) {
+            *PhdMatrixPtr = saved_matrix;
+            DrawGunFlash(fire_arms, clip);
+        }
 
         phd_PopMatrix_I();
         break;

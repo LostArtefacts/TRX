@@ -33,6 +33,7 @@ Currently the following configuration options are supported:
   etc. (similar to TR2 style).
 - `enable_enhanced_ui`: enables UI scaling of in-game inventory text and ammo
   text (useful for 4k screens).
+- `enable_shotgun_flash`: draws flame when firing a shotgun, like for other guns.
 - `enable_numeric_keys`: enables quick weapon draws and medpack usage.
     - <kbd>1</kbd>: draw pistols
     - <kbd>2</kbd>: draw shotgun

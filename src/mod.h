@@ -17,19 +17,20 @@ typedef enum {
 } Tomb1M_BAR_SHOW_MODE;
 
 struct {
-    int disable_healing_between_levels;
-    int disable_medpacks;
-    int disable_magnums;
-    int disable_uzis;
-    int disable_shotgun;
-    int enable_red_healthbar;
-    int enable_enemy_healthbar;
-    int enable_enhanced_look;
-    int enable_enhanced_ui;
-    int enable_numeric_keys;
-    int healthbar_showing_mode;
-    int fix_end_of_level_freeze;
-    int fix_tihocan_secret_sound;
+    int8_t disable_healing_between_levels;
+    int8_t disable_medpacks;
+    int8_t disable_magnums;
+    int8_t disable_uzis;
+    int8_t disable_shotgun;
+    int8_t enable_red_healthbar;
+    int8_t enable_enemy_healthbar;
+    int8_t enable_enhanced_look;
+    int8_t enable_enhanced_ui;
+    int8_t enable_numeric_keys;
+    int8_t enable_shotgun_flash;
+    int8_t healthbar_showing_mode;
+    int8_t fix_end_of_level_freeze;
+    int8_t fix_tihocan_secret_sound;
 } Tomb1MConfig;
 
 struct {

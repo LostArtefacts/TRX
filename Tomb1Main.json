@@ -8,6 +8,7 @@
     "enable_enemy_healthbar": true,
     "enable_enhanced_look": true,
     "enable_enhanced_ui": true,
+    "enable_shotgun_flash": true,
     "enable_numeric_keys": true,
     "healthbar_showing_mode": "flashing",
     "fix_end_of_level_freeze": true,
