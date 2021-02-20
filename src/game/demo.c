@@ -1,9 +1,9 @@
 #include "game/data.h"
 #include "game/demo.h"
+#include "game/game.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "specific/frontend.h"
-#include "specific/game.h"
 #include "util.h"
 
 int32_t __cdecl StartDemo()

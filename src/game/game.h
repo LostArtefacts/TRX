@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_SPECIFIC_GAME_H
-#define TOMB1MAIN_SPECIFIC_GAME_H
+#ifndef TOMB1MAIN_GAME_GAME_H
+#define TOMB1MAIN_GAME_GAME_H
 
 #include <stdint.h>
 

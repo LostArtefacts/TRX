@@ -1,7 +1,7 @@
-#include "game/effects.h"
 #include "game/data.h"
+#include "game/effects.h"
+#include "game/game.h"
 #include "game/lara.h"
-#include "specific/game.h"
 #include "specific/input.h"
 #include "mod.h"
 

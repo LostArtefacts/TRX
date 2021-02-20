@@ -4,10 +4,10 @@
 #include "game/data.h"
 #include "game/draw.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/lara.h"
 #include "game/misc.h"
 #include "game/sphere.h"
-#include "specific/game.h"
 #include "util.h"
 
 void __cdecl LaraGun()
