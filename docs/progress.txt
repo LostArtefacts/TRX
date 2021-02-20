@@ -406,7 +406,7 @@ draw_pistols                    0x00426470  0x00000147  +
 undraw_pistols                  0x004265C0  0x00000261  +
 draw_pistol_meshes              0x00426830  0x00000061  +
 PistolHandler                   0x004268A0  0x0000012E  +
-AnimatePistols                  0x004269D0  0x000001F5  -
+AnimatePistols                  0x004269D0  0x000001F5  +
 LaraGun                         0x00426BD0  0x00000271  *
 InitialiseNewWeapon             0x00426E60  0x000000B9  -
 LaraTargetInfo                  0x00426F20  0x00000194  *

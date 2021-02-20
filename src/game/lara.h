@@ -14,7 +14,6 @@
 #define LaraGetNewTarget        ((void          __cdecl(*)(WEAPON_INFO* winfo))0x004270C0)
 #define AimWeapon               ((void          __cdecl(*)(WEAPON_INFO* winfo, LARA_ARM* arm))0x00427360)
 #define FireWeapon              ((int32_t       __cdecl(*)(int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles))0x00427430)
-#define AnimatePistols          ((void          __cdecl(*)(int32_t weapon_type))0x004269D0)
 // clang-format on
 
 void __cdecl LaraSwapMeshExtra();
@@ -183,6 +182,7 @@ void __cdecl draw_pistol_meshes(int32_t weapon_type);
 void __cdecl undraw_pistol_mesh_left(int32_t weapon_type);
 void __cdecl undraw_pistol_mesh_right(int32_t weapon_type);
 void __cdecl PistolHandler(int32_t weapon_type);
+void __cdecl AnimatePistols(int32_t weapon_type);
 
 void Tomb1MLookLeftRight();
 void Tomb1MLookUpDown();
