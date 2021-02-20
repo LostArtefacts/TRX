@@ -149,5 +149,6 @@ void __cdecl undraw_pistol_mesh_right(int32_t weapon_type)
 void Tomb1MInjectGameLaraGun2()
 {
     INJECT(0x00426470, draw_pistols);
+    INJECT(0x00426830, draw_pistol_meshes);
     INJECT(0x004265C0, undraw_pistols);
 }
