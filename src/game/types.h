@@ -611,6 +611,41 @@ typedef enum {
     RF_UNDERWATER = 1,
 } ROOM_FLAGS;
 
+typedef enum {
+    FT_FLOOR = 0,
+    FT_DOOR = 1,
+    FT_TILT = 2,
+    FT_ROOF = 3,
+    FT_TRIGGER = 4,
+    FT_LAVA = 5,
+} FLOOR_TYPES;
+
+typedef enum {
+    TT_TRIGGER = 0,
+    TT_PAD = 1,
+    TT_SWITCH = 2,
+    TT_KEY = 3,
+    TT_PICKUP = 4,
+    TT_HEAVY = 5,
+    TT_ANTIPAD = 6,
+    TT_COMBAT = 7,
+    TT_DUMMY = 8,
+} TRIGGER_TYPES;
+
+typedef enum {
+    TO_OBJECT,
+    TO_CAMERA,
+    TO_SINK,
+    TO_FLIPMAP,
+    TO_FLIPON,
+    TO_FLIPOFF,
+    TO_TARGET,
+    TO_FINISH,
+    TO_CD,
+    TO_FLIPEFFECT,
+    TO_SECRET
+} TRIGGER_OBJECTS;
+
 #pragma pack(push, 1)
 
 typedef struct {

@@ -107,6 +107,8 @@ static int Tomb1MReadConfig()
         tr1m_json_get_boolean_value(json, "fix_end_of_level_freeze");
     Tomb1MConfig.fix_tihocan_secret_sound =
         tr1m_json_get_boolean_value(json, "fix_tihocan_secret_sound");
+    Tomb1MConfig.fix_hardcoded_secret_counts =
+        tr1m_json_get_boolean_value(json, "fix_hardcoded_secret_counts");
 
     json_value_free(json);
     free(cfg_data);

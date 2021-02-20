@@ -50,6 +50,8 @@ Currently the following configuration options are supported:
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing
   during using the golden key in Tomb of Tihocan.
+- `fix_hardcoded_secret_counts`: calculate the number of secrets based on a
+  trigger count within a file rather than using hardcoded values.
 
 ## Decompilation progress
 

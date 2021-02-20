@@ -12,5 +12,6 @@
     "enable_numeric_keys": true,
     "healthbar_showing_mode": "flashing",
     "fix_end_of_level_freeze": true,
-    "fix_tihocan_secret_sound": true
+    "fix_tihocan_secret_sound": true,
+    "fix_hardcoded_secret_counts": true
 }

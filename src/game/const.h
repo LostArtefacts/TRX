@@ -100,5 +100,9 @@
 #define VAULT_ANGLE (30 * ONE_DEGREE)
 #define HANG_ANGLE (35 * ONE_DEGREE)
 #define FRAME_ROT 10
+#define END_BIT 0x8000
+#define DATA_TYPE 0x00FF
+#define VALUE_BITS 0x03FF
+#define TRIG_BITS(T) ((T & 0x3FFF) >> 10)
 
 #endif

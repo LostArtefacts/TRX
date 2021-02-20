@@ -290,6 +290,10 @@ int32_t __cdecl S_LoadLevel(int level_id)
         }
     }
 
+    if (Tomb1MConfig.fix_hardcoded_secret_counts) {
+        SecretTotals[level_id] = Tomb1MGetSecretCount();
+    }
+
     return ret;
 }
 

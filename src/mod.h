@@ -31,6 +31,7 @@ struct {
     int8_t healthbar_showing_mode;
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
+    int8_t fix_hardcoded_secret_counts;
 } Tomb1MConfig;
 
 struct {
@@ -48,5 +49,6 @@ int Tomb1MGetRenderHeightDownscaled();
 int Tomb1MGetRenderWidthDownscaled();
 int Tomb1MGetRenderHeight();
 int Tomb1MGetRenderWidth();
+int Tomb1MGetSecretCount();
 
 #endif

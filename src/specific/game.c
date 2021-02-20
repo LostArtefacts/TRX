@@ -99,8 +99,7 @@ void __cdecl LevelStats(int level_id)
         "SECRETS", // TODO: translation
         secrets_taken,
         "OF", // TODO: translation
-        SecretTotals[level_id] // TODO: calculate this automatically
-    );
+        SecretTotals[level_id]);
     txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
