@@ -963,7 +963,7 @@ void __cdecl DrawLaraInt(
         InterpolateArmMatrix();
 
         packed_rotation1 =
-            (int32_t*)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t*)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.right_arm.y_rot, Lara.right_arm.x_rot, Lara.right_arm.z_rot);
         phd_RotYXZpack(packed_rotation1[LM_UARM_R]);
