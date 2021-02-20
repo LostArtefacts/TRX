@@ -8,6 +8,19 @@
 #include "util.h"
 #include <windows.h>
 
+int32_t MeshCount = 0;
+int32_t MeshPtrCount = 0;
+int32_t AnimCount = 0;
+int32_t AnimChangeCount = 0;
+int32_t AnimRangeCount = 0;
+int32_t AnimCommandCount = 0;
+int32_t AnimBoneCount = 0;
+int32_t AnimFrameCount = 0;
+int32_t ObjectCount = 0;
+int32_t StaticCount = 0;
+int32_t TextureCount = 0;
+int32_t FloorDataSize = 0;
+
 int32_t __cdecl LoadRooms(FILE* fp)
 {
     TRACE("");
@@ -107,74 +120,62 @@ int32_t __cdecl LoadRooms(FILE* fp)
         current_room_info->fx_number = -1;
     }
 
-    _fread(&count4, sizeof(uint32_t), 1, fp);
-    FloorData = game_malloc(sizeof(uint16_t) * count4, GBUF_FLOOR_DATA);
-    _fread(FloorData, sizeof(uint16_t), count4, fp);
+    _fread(&FloorDataSize, sizeof(uint32_t), 1, fp);
+    FloorData = game_malloc(sizeof(uint16_t) * FloorDataSize, GBUF_FLOOR_DATA);
+    _fread(FloorData, sizeof(uint16_t), FloorDataSize, fp);
 
     return 1;
 }
 
 int32_t __cdecl LoadObjects(FILE* handle)
 {
-    int32_t mesh_count;
-    int32_t mesh_ptr_count;
-    int32_t anim_count;
-    int32_t anim_change_count;
-    int32_t anim_range_count;
-    int32_t anim_command_count;
-    int32_t anim_bone_count;
-    int32_t anim_frame_count;
-    int32_t object_count;
-    int32_t static_count;
-    int32_t texture_count;
+    _fread(&MeshCount, sizeof(int32_t), 1, handle);
+    MeshBase = game_malloc(sizeof(int16_t) * MeshCount, GBUF_MESHES);
+    _fread(MeshBase, sizeof(int16_t), MeshCount, handle);
 
-    _fread(&mesh_count, sizeof(int32_t), 1, handle);
-    MeshBase = game_malloc(sizeof(int16_t) * mesh_count, GBUF_MESHES);
-    _fread(MeshBase, sizeof(int16_t), mesh_count, handle);
-
-    _fread(&mesh_ptr_count, sizeof(int32_t), 1, handle);
+    _fread(&MeshPtrCount, sizeof(int32_t), 1, handle);
     uint32_t* mesh_indices =
-        game_malloc(sizeof(uint32_t) * mesh_ptr_count, GBUF_MESH_POINTERS);
-    _fread(mesh_indices, sizeof(uint32_t), mesh_ptr_count, handle);
+        game_malloc(sizeof(uint32_t) * MeshPtrCount, GBUF_MESH_POINTERS);
+    _fread(mesh_indices, sizeof(uint32_t), MeshPtrCount, handle);
 
-    Meshes = game_malloc(sizeof(int16_t*) * mesh_ptr_count, GBUF_MESH_POINTERS);
-    for (int i = 0; i < mesh_ptr_count; i++) {
+    Meshes = game_malloc(sizeof(int16_t*) * MeshPtrCount, GBUF_MESH_POINTERS);
+    for (int i = 0; i < MeshPtrCount; i++) {
         Meshes[i] = &MeshBase[mesh_indices[i] / 2];
     }
 
-    _fread(&anim_count, sizeof(int32_t), 1, handle);
-    Anims = game_malloc(sizeof(ANIM_STRUCT) * anim_count, GBUF_ANIMS);
-    _fread(Anims, sizeof(ANIM_STRUCT), anim_count, handle);
+    _fread(&AnimCount, sizeof(int32_t), 1, handle);
+    Anims = game_malloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
+    _fread(Anims, sizeof(ANIM_STRUCT), AnimCount, handle);
 
-    _fread(&anim_change_count, sizeof(int32_t), 1, handle);
+    _fread(&AnimChangeCount, sizeof(int32_t), 1, handle);
     AnimChanges = game_malloc(
-        sizeof(ANIM_CHANGE_STRUCT) * anim_change_count, GBUF_ANIM_CHANGES);
-    _fread(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), anim_change_count, handle);
+        sizeof(ANIM_CHANGE_STRUCT) * AnimChangeCount, GBUF_ANIM_CHANGES);
+    _fread(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, handle);
 
-    _fread(&anim_range_count, sizeof(int32_t), 1, handle);
+    _fread(&AnimRangeCount, sizeof(int32_t), 1, handle);
     AnimRanges = game_malloc(
-        sizeof(ANIM_RANGE_STRUCT) * anim_range_count, GBUF_ANIM_RANGES);
-    _fread(AnimRanges, sizeof(ANIM_RANGE_STRUCT), anim_range_count, handle);
+        sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
+    _fread(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, handle);
 
-    _fread(&anim_command_count, sizeof(int32_t), 1, handle);
+    _fread(&AnimCommandCount, sizeof(int32_t), 1, handle);
     AnimCommands =
-        game_malloc(sizeof(int16_t) * anim_command_count, GBUF_ANIM_COMMANDS);
-    _fread(AnimCommands, sizeof(int16_t), anim_command_count, handle);
+        game_malloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
+    _fread(AnimCommands, sizeof(int16_t), AnimCommandCount, handle);
 
-    _fread(&anim_bone_count, sizeof(int32_t), 1, handle);
-    AnimBones = game_malloc(sizeof(int32_t) * anim_bone_count, GBUF_ANIM_BONES);
-    _fread(AnimBones, sizeof(int32_t), anim_bone_count, handle);
+    _fread(&AnimBoneCount, sizeof(int32_t), 1, handle);
+    AnimBones = game_malloc(sizeof(int32_t) * AnimBoneCount, GBUF_ANIM_BONES);
+    _fread(AnimBones, sizeof(int32_t), AnimBoneCount, handle);
 
-    _fread(&anim_frame_count, sizeof(int32_t), 1, handle);
+    _fread(&AnimFrameCount, sizeof(int32_t), 1, handle);
     AnimFrames =
-        game_malloc(sizeof(int16_t) * anim_frame_count, GBUF_ANIM_FRAMES);
-    _fread(AnimFrames, sizeof(int16_t), anim_frame_count, handle);
-    for (int i = 0; i < anim_count; i++) {
+        game_malloc(sizeof(int16_t) * AnimFrameCount, GBUF_ANIM_FRAMES);
+    _fread(AnimFrames, sizeof(int16_t), AnimFrameCount, handle);
+    for (int i = 0; i < AnimCount; i++) {
         Anims[i].frame_ptr = &AnimFrames[(size_t)Anims[i].frame_ptr / 2];
     }
 
-    _fread(&object_count, sizeof(int32_t), 1, handle);
-    for (int i = 0; i < object_count; i++) {
+    _fread(&ObjectCount, sizeof(int32_t), 1, handle);
+    for (int i = 0; i < ObjectCount; i++) {
         int32_t tmp;
         _fread(&tmp, sizeof(int32_t), 1, handle);
         OBJECT_INFO* object = &Objects[tmp];
@@ -191,8 +192,8 @@ int32_t __cdecl LoadObjects(FILE* handle)
 
     InitialiseObjects();
 
-    _fread(&static_count, sizeof(int32_t), 1, handle);
-    for (int i = 0; i < static_count; i++) {
+    _fread(&StaticCount, sizeof(int32_t), 1, handle);
+    for (int i = 0; i < StaticCount; i++) {
         int32_t tmp;
         _fread(&tmp, sizeof(int32_t), 1, handle);
         STATIC_INFO* object = &StaticObjects[tmp];
@@ -203,12 +204,12 @@ int32_t __cdecl LoadObjects(FILE* handle)
         _fread(&object->flags, sizeof(int16_t), 1, handle);
     }
 
-    _fread(&texture_count, sizeof(int32_t), 1, handle);
-    if (texture_count > MAX_TEXTURES) {
+    _fread(&TextureCount, sizeof(int32_t), 1, handle);
+    if (TextureCount > MAX_TEXTURES) {
         sprintf(StringToShow, "Too many Textures in level");
         return 0;
     }
-    _fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), texture_count, handle);
+    _fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), TextureCount, handle);
 
     return 1;
 }

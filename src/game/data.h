@@ -113,4 +113,17 @@
 #define Weapons                 ARRAY_(0x004563A8, WEAPON_INFO, [NUM_WEAPONS])
 // clang-format on
 
+extern int32_t MeshCount;
+extern int32_t MeshPtrCount;
+extern int32_t AnimCount;
+extern int32_t AnimChangeCount;
+extern int32_t AnimRangeCount;
+extern int32_t AnimCommandCount;
+extern int32_t AnimBoneCount;
+extern int32_t AnimFrameCount;
+extern int32_t ObjectCount;
+extern int32_t StaticCount;
+extern int32_t TextureCount;
+extern int32_t FloorDataSize;
+
 #endif
