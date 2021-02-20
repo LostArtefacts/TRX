@@ -456,6 +456,48 @@ int32_t __cdecl FireWeapon(
     return -1;
 }
 
+void __cdecl HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
+{
+    if (item->hit_points > 0 && item->hit_points <= damage) {
+        SaveGame[0].kills++;
+    }
+    item->hit_points -= damage;
+    item->hit_status = 1;
+
+    DoBloodSplat(
+        hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot,
+        item->room_number);
+
+    if (item->hit_points > 0) {
+        switch (item->object_number) {
+        case O_WOLF:
+            SoundEffect(20, &item->pos, 0);
+            break;
+
+        case O_BEAR:
+            SoundEffect(16, &item->pos, 0);
+            break;
+
+        case O_LION:
+        case O_LIONESS:
+            SoundEffect(85, &item->pos, 0);
+            break;
+
+        case O_RAT:
+            SoundEffect(95, &item->pos, 0);
+            break;
+
+        case O_MERCENARY1:
+            SoundEffect(132, &item->pos, 0);
+            break;
+
+        case O_EVIL_NATLA:
+            SoundEffect(142, &item->pos, 0);
+            break;
+        }
+    }
+}
+
 void Tomb1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
@@ -465,4 +507,5 @@ void Tomb1MInjectGameLaraFire()
     INJECT(0x004272A0, find_target_point);
     INJECT(0x00427360, AimWeapon);
     INJECT(0x00427430, FireWeapon);
+    INJECT(0x00427730, HitTarget);
 }

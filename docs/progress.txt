@@ -210,7 +210,7 @@ sub_41A1D0                      0x0041A1D0  0x00000027  -
 sub_41A200                      0x0041A200  0x0000000F  -
 ItemNearLara                    0x0041A210  0x0000008C  -
 SoundEffects                    0x0041A2A0  0x0000006D  *
-DoBloodSplat                    0x0041A310  0x00000059  -
+DoBloodSplat                    0x0041A310  0x00000059  *
 ControlBlood1                   0x0041A370  0x0000008B  -
 ControlExplosion1               0x0041A400  0x0000004C  -
 Richochet                       0x0041A450  0x00000072  *
@@ -414,7 +414,7 @@ LaraGetNewTarget                0x004270C0  0x000001D9  +
 find_target_point               0x004272A0  0x000000B2  +
 AimWeapon                       0x00427360  0x000000C1  +
 FireWeapon                      0x00427430  0x000002F2  +
-HitTarget                       0x00427730  0x000000E5  *
+HitTarget                       0x00427730  0x000000E5  +
 LaraControl                     0x00427850  0x00000372  *
 LaraSwapMeshExtra               0x00427BD0  0x00000030  +
 AnimateLara                     0x00427C00  0x00000244  +

@@ -9,7 +9,6 @@
 #define LaraControl             ((void          __cdecl(*)(int16_t item_num))0x00427850)
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
 #define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
-#define HitTarget               ((void          __cdecl(*)(ITEM_INFO* item, GAME_VECTOR* hitpos, int damage))0x00427730)
 // clang-format on
 
 void __cdecl LaraSwapMeshExtra();
@@ -170,6 +169,7 @@ void __cdecl find_target_point(ITEM_INFO* item, GAME_VECTOR* target);
 void __cdecl AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm);
 int32_t __cdecl FireWeapon(
     int32_t weapon_type, ITEM_INFO* target, ITEM_INFO* src, PHD_ANGLE* angles);
+void __cdecl HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage);
 
 void __cdecl draw_shotgun();
 void __cdecl undraw_shotgun();
