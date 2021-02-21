@@ -264,7 +264,7 @@ void __cdecl PrintRooms(int16_t room_number)
 
     for (int i = r->item_number; i != NO_ITEM; i = Items[i].next_item) {
         ITEM_INFO* item = &Items[i];
-        if (item->status != INVISIBLE) {
+        if (item->status != IS_INVISIBLE) {
             Objects[item->object_number].draw_routine(item);
         }
     }

@@ -5,6 +5,7 @@
 #include "mod.h"
 #include "util.h"
 
+#include "game/bat.h"
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
@@ -25,6 +26,7 @@ HINSTANCE hInstance = NULL;
 
 static void Tomb1MInject()
 {
+    Tomb1MInjectGameBat();
     Tomb1MInjectGameControl();
     Tomb1MInjectGameDemo();
     Tomb1MInjectGameDraw();

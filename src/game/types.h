@@ -614,6 +614,13 @@ typedef enum {
 } BONE_EXTRA_BITS;
 
 typedef enum {
+    IS_NOT_ACTIVE = 0,
+    IS_ACTIVE = 1,
+    IS_DEACTIVATED = 2,
+    IS_INVISIBLE = 3,
+} ITEM_STATUS;
+
+typedef enum {
     RF_UNDERWATER = 1,
 } ROOM_FLAGS;
 
@@ -1193,11 +1200,31 @@ typedef struct {
 } WEAPON_INFO;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-    int32_t r;
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int32_t r;
+    /* 0010 end */
 } SPHERE;
+
+typedef struct {
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int32_t mesh_num;
+    /* 0010 end */
+} BITE_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t zone_number;
+    /* 0002 */ int16_t enemy_zone;
+    /* 0004 */ int32_t distance;
+    /* 0008 */ int32_t ahead;
+    /* 000C */ int32_t bite;
+    /* 000E */ int16_t angle;
+    /* 0010 */ int16_t enemy_facing;
+    /* 0012 end */
+} AI_INFO;
 
 #pragma pop
 
