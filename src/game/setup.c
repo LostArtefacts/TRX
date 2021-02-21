@@ -12,6 +12,7 @@
 #include "game/people.h"
 #include "game/rat.h"
 #include "game/setup.h"
+#include "game/traps.h"
 #include "game/types.h"
 #include "game/warrior.h"
 #include "game/wolf.h"
@@ -478,6 +479,142 @@ void __cdecl BaddyObjects()
     }
 }
 
+void __cdecl TrapObjects()
+{
+    Objects[O_FALLING_BLOCK].control = FallingBlockControl;
+    Objects[O_FALLING_BLOCK].floor = FallingBlockFloor;
+    Objects[O_FALLING_BLOCK].ceiling = FallingBlockCeiling;
+    Objects[O_FALLING_BLOCK].save_position = 1;
+    Objects[O_FALLING_BLOCK].save_anim = 1;
+    Objects[O_FALLING_BLOCK].save_flags = 1;
+
+    Objects[O_PENDULUM].control = PendulumControl;
+    Objects[O_PENDULUM].collision = TrapCollision;
+    Objects[O_PENDULUM].shadow_size = UNIT_SHADOW / 2;
+    Objects[O_PENDULUM].save_flags = 1;
+    Objects[O_PENDULUM].save_anim = 1;
+
+    Objects[O_TEETH_TRAP].control = TeethTrapControl;
+    Objects[O_TEETH_TRAP].collision = TrapCollision;
+    Objects[O_TEETH_TRAP].save_flags = 1;
+    Objects[O_TEETH_TRAP].save_anim = 1;
+
+    Objects[O_ROLLING_BALL].initialise = InitialiseRollingBall;
+    Objects[O_ROLLING_BALL].control = RollingBallControl;
+    Objects[O_ROLLING_BALL].collision = RollingBallCollision;
+    Objects[O_ROLLING_BALL].save_position = 1;
+    Objects[O_ROLLING_BALL].save_anim = 1;
+    Objects[O_ROLLING_BALL].save_flags = 1;
+
+    Objects[O_SPIKES].collision = SpikeCollision;
+
+    Objects[O_FALLING_CEILING1].control = FallingCeilingControl;
+    Objects[O_FALLING_CEILING1].collision = TrapCollision;
+    Objects[O_FALLING_CEILING1].save_position = 1;
+    Objects[O_FALLING_CEILING1].save_anim = 1;
+    Objects[O_FALLING_CEILING1].save_flags = 1;
+
+    Objects[O_FALLING_CEILING2].control = FallingCeilingControl;
+    Objects[O_FALLING_CEILING2].collision = TrapCollision;
+    Objects[O_FALLING_CEILING2].save_position = 1;
+    Objects[O_FALLING_CEILING2].save_anim = 1;
+    Objects[O_FALLING_CEILING2].save_flags = 1;
+
+    Objects[O_DAMOCLES_SWORD].initialise = InitialiseDamoclesSword;
+    Objects[O_DAMOCLES_SWORD].control = DamoclesSwordControl;
+    Objects[O_DAMOCLES_SWORD].collision = DamoclesSwordCollision;
+    Objects[O_DAMOCLES_SWORD].shadow_size = UNIT_SHADOW;
+    Objects[O_DAMOCLES_SWORD].save_position = 1;
+    Objects[O_DAMOCLES_SWORD].save_anim = 1;
+    Objects[O_DAMOCLES_SWORD].save_flags = 1;
+
+    Objects[O_MOVABLE_BLOCK].initialise = InitialiseMovableBlock;
+    Objects[O_MOVABLE_BLOCK].control = MovableBlockControl;
+    Objects[O_MOVABLE_BLOCK].draw_routine = DrawMovableBlock;
+    Objects[O_MOVABLE_BLOCK].collision = MovableBlockCollision;
+    Objects[O_MOVABLE_BLOCK].save_position = 1;
+    Objects[O_MOVABLE_BLOCK].save_anim = 1;
+    Objects[O_MOVABLE_BLOCK].save_flags = 1;
+
+    Objects[O_MOVABLE_BLOCK2].initialise = InitialiseMovableBlock;
+    Objects[O_MOVABLE_BLOCK2].control = MovableBlockControl;
+    Objects[O_MOVABLE_BLOCK2].draw_routine = DrawMovableBlock;
+    Objects[O_MOVABLE_BLOCK2].collision = MovableBlockCollision;
+    Objects[O_MOVABLE_BLOCK2].save_position = 1;
+    Objects[O_MOVABLE_BLOCK2].save_anim = 1;
+    Objects[O_MOVABLE_BLOCK2].save_flags = 1;
+
+    Objects[O_MOVABLE_BLOCK3].initialise = InitialiseMovableBlock;
+    Objects[O_MOVABLE_BLOCK3].draw_routine = DrawMovableBlock;
+    Objects[O_MOVABLE_BLOCK3].control = MovableBlockControl;
+    Objects[O_MOVABLE_BLOCK3].collision = MovableBlockCollision;
+    Objects[O_MOVABLE_BLOCK3].save_position = 1;
+    Objects[O_MOVABLE_BLOCK3].save_anim = 1;
+    Objects[O_MOVABLE_BLOCK3].save_flags = 1;
+
+    Objects[O_MOVABLE_BLOCK4].initialise = InitialiseMovableBlock;
+    Objects[O_MOVABLE_BLOCK4].control = MovableBlockControl;
+    Objects[O_MOVABLE_BLOCK4].draw_routine = DrawMovableBlock;
+    Objects[O_MOVABLE_BLOCK4].collision = MovableBlockCollision;
+    Objects[O_MOVABLE_BLOCK4].save_position = 1;
+    Objects[O_MOVABLE_BLOCK4].save_anim = 1;
+    Objects[O_MOVABLE_BLOCK4].save_flags = 1;
+
+    Objects[O_ROLLING_BLOCK].initialise = InitialiseRollingBlock;
+    Objects[O_ROLLING_BLOCK].control = RollingBlockControl;
+    Objects[O_ROLLING_BLOCK].save_position = 1;
+    Objects[O_ROLLING_BLOCK].save_anim = 1;
+    Objects[O_ROLLING_BLOCK].save_flags = 1;
+
+    Objects[O_LIGHTNING_EMITTER].initialise = InitialiseLightning;
+    Objects[O_LIGHTNING_EMITTER].control = LightningControl;
+    Objects[O_LIGHTNING_EMITTER].draw_routine = DrawLightning;
+    Objects[O_LIGHTNING_EMITTER].collision = LightningCollision;
+    Objects[O_LIGHTNING_EMITTER].save_flags = 1;
+
+    Objects[O_THORS_HANDLE].initialise = InitialiseThorsHandle;
+    Objects[O_THORS_HANDLE].control = ThorsHandleControl;
+    Objects[O_THORS_HANDLE].draw_routine = DrawUnclippedItem;
+    Objects[O_THORS_HANDLE].collision = ThorsHandleCollision;
+    Objects[O_THORS_HANDLE].save_flags = 1;
+    Objects[O_THORS_HANDLE].save_anim = 1;
+
+    Objects[O_THORS_HEAD].collision = ThorsHeadCollision;
+    Objects[O_THORS_HEAD].draw_routine = DrawUnclippedItem;
+    Objects[O_THORS_HEAD].save_flags = 1;
+    Objects[O_THORS_HEAD].save_anim = 1;
+
+    Objects[O_MIDAS_TOUCH].collision = MidasCollision;
+    Objects[O_MIDAS_TOUCH].draw_routine = DrawDummyItem;
+
+    Objects[O_DART_EMITTER].control = DartEmitterControl;
+
+    Objects[O_DARTS].collision = ObjectCollision;
+    Objects[O_DARTS].control = DartsControl;
+    Objects[O_DARTS].shadow_size = UNIT_SHADOW / 2;
+    Objects[O_DARTS].save_flags = 1;
+
+    Objects[O_DART_EFFECT].control = DartEffectControl;
+    Objects[O_DART_EFFECT].draw_routine = DrawSpriteItem;
+
+    Objects[O_FLAME_EMITTER].control = FlameEmitterControl;
+    Objects[O_FLAME_EMITTER].draw_routine = DrawDummyItem;
+
+    Objects[O_FLAME].control = FlameControl;
+
+    Objects[O_LAVA_EMITTER].control = LavaEmitterControl;
+    Objects[O_LAVA_EMITTER].draw_routine = DrawDummyItem;
+    Objects[O_LAVA_EMITTER].collision = ObjectCollision;
+
+    Objects[O_LAVA].control = LavaControl;
+
+    Objects[O_LAVA_WEDGE].control = LavaWedgeControl;
+    Objects[O_LAVA_WEDGE].collision = CreatureCollision;
+    Objects[O_LAVA_WEDGE].save_position = 1;
+    Objects[O_LAVA_WEDGE].save_anim = 1;
+    Objects[O_LAVA_WEDGE].save_flags = 1;
+}
+
 void __cdecl InitialiseObjects()
 {
     for (int i = 0; i < NUMBER_OBJECTS; i++) {
@@ -573,5 +710,6 @@ void __cdecl InitialiseObjects()
 void Tomb1MInjectGameSetup()
 {
     INJECT(0x004363E0, BaddyObjects);
+    INJECT(0x00437010, TrapObjects);
     INJECT(0x00437A50, InitialiseObjects);
 }
