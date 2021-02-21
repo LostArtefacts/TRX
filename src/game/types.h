@@ -682,10 +682,10 @@ typedef struct {
 } PHD_VECTOR;
 
 typedef struct {
-    /* 0000 */ uint16_t room_num;
-    /* 0002 */ uint16_t x;
-    /* 0004 */ uint16_t y;
-    /* 0006 */ uint16_t z;
+    /* 0000 */ int16_t room_num;
+    /* 0002 */ int16_t x;
+    /* 0004 */ int16_t y;
+    /* 0006 */ int16_t z;
     /* 0008 */ POS_3D vertex[4];
     /* 0020 end */
 } DOOR_INFO;
@@ -795,9 +795,9 @@ typedef struct {
 } ITEM_INFO;
 
 typedef struct {
-    /* 0000 */ uint16_t* frame_base;
-    /* 0004 */ uint16_t frame_number;
-    /* 0006 */ uint16_t lock;
+    /* 0000 */ int16_t* frame_base;
+    /* 0004 */ int16_t frame_number;
+    /* 0006 */ int16_t lock;
     /* 0008 */ PHD_ANGLE y_rot;
     /* 000A */ PHD_ANGLE x_rot;
     /* 000C */ PHD_ANGLE z_rot;
@@ -1226,7 +1226,7 @@ typedef struct {
     /* 0012 end */
 } AI_INFO;
 
-#pragma pop
+#pragma pack(pop)
 
 typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);
 typedef void(__cdecl* CollisionRoutine)(ITEM_INFO*, COLL_INFO*);

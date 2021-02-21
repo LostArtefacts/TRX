@@ -20,7 +20,7 @@
 #define PhdPersp                VAR_U_(0x0069518C, int32_t)
 #define PhdFarZ                 VAR_U_(0x00695184, int32_t)
 #define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
-#define FloorData               VAR_U_(0x0045F1BC, uint16_t*)
+#define FloorData               VAR_U_(0x0045F1BC, int16_t*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define MeshBase                VAR_U_(0x0045F1B8, int16_t*)
 #define Meshes                  VAR_U_(0x00461F34, int16_t**)

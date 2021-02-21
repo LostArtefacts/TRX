@@ -4,6 +4,16 @@
 #include <windows.h>
 #include <dbghelp.h>
 
+void Tomb1MTraceFunc(
+    const char* file, int line, const char* func, const char* fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    printf("%s %d %s ", file, line, func);
+    vprintf(fmt, va);
+    printf("\n");
+}
+
 void Tomb1MInjectFunc(void* from, void* to)
 {
     DWORD tmp;

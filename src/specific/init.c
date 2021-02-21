@@ -10,14 +10,14 @@
 #include <time.h>
 #include <windows.h>
 
-void __cdecl DB_Log(char* a1, ...)
+void __cdecl DB_Log(char* fmt, ...)
 {
     va_list va;
     char buffer[256] = { 0 };
 
-    va_start(va, a1);
+    va_start(va, fmt);
     if (!dword_45A1F0) {
-        vsprintf(buffer, a1, va);
+        vsprintf(buffer, fmt, va);
         TRACE(buffer);
         OutputDebugStringA(buffer);
         OutputDebugStringA("\n");

@@ -63,8 +63,7 @@ void Tomb1MRenderBar(int value, int value_max, int bar_type)
 {
     const int p1 = -100;
     const int p2 = -200;
-    const int p3 = -300;
-    const int p4 = -400;
+    const int p3 = -400;
     const int percent_max = 100;
 
     if (value < 0) {
@@ -147,7 +146,7 @@ void Tomb1MRenderBar(int value, int value_max, int bar_type)
         for (int i = 0; i < height; i++) {
             int color_index = i * COLOR_BAR_SIZE / height;
             Insert2DLine(
-                left, top + i, right, top + i, p4,
+                left, top + i, right, top + i, p3,
                 color_bar[bar_type][color_index]);
         }
     }

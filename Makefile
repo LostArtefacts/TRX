@@ -1,5 +1,5 @@
 CC=i686-w64-mingw32-gcc
-CFLAGS=-W -Isrc
+CFLAGS=-Wall -Isrc
 
 C_FILES = $(shell find src/ -type f -name '*.c')
 O_FILES = $(patsubst src/%.c, build/%.o, $(C_FILES))

@@ -202,7 +202,7 @@ void __cdecl AnimateShotgun()
 
 void __cdecl FireShotgun()
 {
-    int i, r, fired;
+    int r, fired;
     PHD_ANGLE angles[2];
     PHD_ANGLE dangles[2];
 

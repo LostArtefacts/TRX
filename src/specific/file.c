@@ -307,7 +307,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
 
 const char* __cdecl GetFullPath(const char* filename)
 {
-    TRACE(filename);
+    TRACE("%s", filename);
 #ifdef TOMB1M_FEAT_NOCD
     sprintf(newpath, ".\\%s", filename);
 #else

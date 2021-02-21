@@ -228,11 +228,11 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
     int width = 0;
     char* ptr = textstring->string;
     for (char letter = *ptr; *ptr; letter = *ptr++) {
-        if (letter == '\x7F' || letter > 10 && letter < 32) {
+        if (letter == 0x7F || (letter > 10 && letter < 32)) {
             continue;
         }
 
-        if (letter == ' ') {
+        if (letter == 32) {
             width += textstring->word_spacing * textstring->scale_h / PHD_ONE;
             continue;
         }
@@ -245,7 +245,7 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
             letter = letter + 81;
         }
 
-        width += ((TextSpacing[letter] + textstring->letter_spacing)
+        width += ((TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
                   * textstring->scale_h)
             / PHD_ONE;
     }
