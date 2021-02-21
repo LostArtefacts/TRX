@@ -9,6 +9,12 @@
 
 #define TEXT_BOX_OFFSET 2
 
+#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+int16_t TextStringCount = 0;
+TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
+char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+#endif
+
 static int8_t TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
     13 /*H*/,  8 /*I*/,  11 /*J*/, 12 /*K*/, 11 /*L*/, 13 /*M*/, 13 /*N*/,

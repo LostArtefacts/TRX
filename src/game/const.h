@@ -84,8 +84,15 @@
 #define ACTIVE 1
 #define DEACTIVATED 2
 #define INVISIBLE 3
-#define MAX_STRING_SIZE 64
-#define MAX_TEXT_STRINGS 32
+
+#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+    #define MAX_STRING_SIZE 100
+    #define MAX_TEXT_STRINGS 64
+#else
+    #define MAX_STRING_SIZE 64
+    #define MAX_TEXT_STRINGS 32
+#endif
+
 #define TEXT_HEIGHT 11
 #define FRAME_BOUND_MIN_X 0
 #define FRAME_BOUND_MAX_X 1

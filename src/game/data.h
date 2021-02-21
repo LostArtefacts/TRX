@@ -38,9 +38,10 @@
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
 #define LevelNames              ARRAY_(0x00453648, const char*, [NUMBER_OF_LEVELS])
 #define LevelTitles             ARRAY_(0x00453DF8, const char*, [NUMBER_OF_LEVELS])
-#define SecretTotals            ARRAY_(0x00453CB0, __int8, [MAX_SECRETS])
+#define SecretTotals            ARRAY_(0x00453CB0, int8_t, [MAX_SECRETS])
 #define ResetFlag               VAR_I_(0x00459F50, int32_t, 0)
-#define Input                   VAR_U_(0x0045EEF4, int)
+#define Input                   VAR_U_(0x0045EEF4, int32_t)
+#define InputDB                 VAR_U_(0x0045A06C, int32_t)
 #define HiRes                   VAR_I_(0x00459F64, int32_t, 0)
 #define Effects                 VAR_U_(0x0045EE70, FX_INFO*)
 #define NextItemActive          VAR_U_(0x0045EE78, int16_t)
@@ -48,8 +49,8 @@
 #define NextFxActive            VAR_U_(0x0045EE7A, int16_t)
 #define SaveGame                ARRAY_(0x0045B9C0, SAVEGAME_INFO, [2])
 #define BaddieSlots             VAR_U_(0x0045ED64, CREATURE_INFO*)
-#define SlotsUsed               VAR_U_(0x0045A1F8, int)
-#define NumberBoxes             VAR_U_(0x00462DA0, int)
+#define SlotsUsed               VAR_U_(0x0045A1F8, int32_t)
+#define NumberBoxes             VAR_U_(0x00462DA0, int32_t)
 #define Pickups                 ARRAY_(0x0045EF00, DISPLAYPU, [NUM_PU])
 #define OverlayFlag             VAR_U_(0x004546B4, int32_t)
 #define HealthBarTimer          VAR_U_(0x0045A0E4, int32_t)
@@ -91,9 +92,17 @@
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
+
+#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+extern int16_t TextStringCount;
+extern TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
+extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+#else
 #define TextStringCount         VAR_U_(0x0045B120, int16_t)
 #define TextInfoTable           ARRAY_(0x0045A9E0, TEXTSTRING, [MAX_TEXT_STRINGS])
 #define TextStrings             ARRAY_(0x0045B140, char, [MAX_TEXT_STRINGS][MAX_STRING_SIZE])
+#endif
+
 #define DumpX                   VAR_I_(0x004546E0, int16_t, 0)
 #define DumpY                   VAR_I_(0x004546E2, int16_t, 0)
 #define DumpWidth               VAR_I_(0x004546E4, int16_t, 0)
