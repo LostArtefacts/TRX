@@ -28,6 +28,7 @@ struct {
     int8_t enable_enhanced_ui;
     int8_t enable_numeric_keys;
     int8_t enable_shotgun_flash;
+    int8_t enable_cheats;
     int8_t healthbar_showing_mode;
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;

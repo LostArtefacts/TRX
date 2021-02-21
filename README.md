@@ -47,6 +47,9 @@ Currently the following configuration options are supported:
     - `flashing`: show the healthbar only when Lara's health is 20% or below
     - `default`: show the healthbar at the beginning of a level, after
       getting hit or while having weapons equipped (as in OG)
+- `enable_cheats`: enables various cheats:
+    - <kbd>F10</kbd>: immediately end the level.
+    - <kbd>F11</kbd>: heal Lara. Hold <kbd>WALK</kbd> key to hurt instead.
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing

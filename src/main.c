@@ -91,6 +91,8 @@ static int Tomb1MReadConfig()
         tr1m_json_get_boolean_value(json, "enable_enhanced_ui");
     Tomb1MConfig.enable_shotgun_flash =
         tr1m_json_get_boolean_value(json, "enable_shotgun_flash");
+    Tomb1MConfig.enable_cheats =
+        tr1m_json_get_boolean_value(json, "enable_cheats");
 
     const char* healthbar_showing_mode =
         tr1m_json_get_string_value(json, "healthbar_showing_mode");
