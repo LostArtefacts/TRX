@@ -70,12 +70,20 @@ void __cdecl S_UpdateInput()
         linput |= IN_ROLL;
     }
 
-    if (KeyData->keymap[DIK_F11]) {
+#ifdef TOMB1M_FEAT_CHEATS
+    if (KeyData->keymap[DIK_F10]) {
         LevelComplete = 1;
     }
-    if (KeyData->keymap[DIK_F12] && LaraItem) {
-        LaraItem->hit_points -= 20;
+    if (KeyData->keymap[DIK_F11] && LaraItem) {
+        LaraItem->hit_points += linput & IN_SLOW ? -20 : 20;
+        if (LaraItem->hit_points < 0) {
+            LaraItem->hit_points = 0;
+        }
+        if (LaraItem->hit_points > LARA_HITPOINTS) {
+            LaraItem->hit_points = LARA_HITPOINTS;
+        }
     }
+#endif
 
 #ifdef TOMB1M_FEAT_UI
     if (Tomb1MConfig.enable_numeric_keys) {
