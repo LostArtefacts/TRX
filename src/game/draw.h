@@ -23,7 +23,8 @@ void __cdecl DrawLara(ITEM_INFO* item);
 void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip);
 void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);
 void __cdecl DrawLaraInt(
-    ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int frac, int rate);
+    ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int32_t frac,
+    int32_t rate);
 void __cdecl InitInterpolate(int32_t frac, int32_t rate);
 
 void __cdecl phd_PushMatrix_I();
@@ -36,7 +37,7 @@ void __cdecl phd_RotX_I(int16_t ang);
 void __cdecl phd_RotZ_I(int16_t ang);
 void __cdecl phd_RotYXZ_I(int16_t y, int16_t x, int16_t z);
 void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2);
-void __cdecl phd_PutPolygons_I(int16_t* ptr, int clip);
+void __cdecl phd_PutPolygons_I(int16_t* ptr, int32_t clip);
 
 void __cdecl InterpolateMatrix();
 void __cdecl InterpolateArmMatrix();

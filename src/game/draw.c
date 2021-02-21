@@ -470,10 +470,10 @@ void __cdecl DrawLara(ITEM_INFO* item)
     int16_t* frmptr[2];
     PHD_MATRIX saved_matrix;
 
-    int top = PhdTop;
-    int left = PhdLeft;
-    int bottom = PhdBottom;
-    int right = PhdRight;
+    int32_t top = PhdTop;
+    int32_t left = PhdLeft;
+    int32_t bottom = PhdBottom;
+    int32_t right = PhdRight;
     PhdBottom = PhdWinMaxY;
     PhdTop = 0;
     PhdLeft = 0;
@@ -495,6 +495,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
     object = &Objects[item->object_number];
     if (Lara.hit_direction >= 0) {
         switch (Lara.hit_direction) {
+        default:
         case DIR_NORTH:
             frame = Anims[AA_SPAZ_FORWARD].frame_ptr;
             break;
@@ -583,7 +584,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
 
     phd_PopMatrix();
 
-    int fire_arms = 0;
+    int32_t fire_arms = 0;
     if (Lara.gun_status == LGS_READY || Lara.gun_status == LGS_DRAW
         || Lara.gun_status == LGS_UNDRAW) {
         fire_arms = Lara.gun_type;
@@ -830,7 +831,8 @@ void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
 }
 
 void __cdecl DrawLaraInt(
-    ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int frac, int rate)
+    ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int32_t frac,
+    int32_t rate)
 {
     PHD_MATRIX saved_matrix;
 
@@ -913,7 +915,7 @@ void __cdecl DrawLaraInt(
 
     phd_PopMatrix_I();
 
-    int fire_arms = 0;
+    int32_t fire_arms = 0;
     if (Lara.gun_status == LGS_READY || Lara.gun_status == LGS_DRAW
         || Lara.gun_status == LGS_UNDRAW) {
         fire_arms = Lara.gun_type;
@@ -1185,7 +1187,7 @@ void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_PutPolygons_I(int16_t* ptr, int clip)
+void __cdecl phd_PutPolygons_I(int16_t* ptr, int32_t clip)
 {
     phd_PushMatrix();
     InterpolateMatrix();
