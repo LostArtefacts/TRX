@@ -797,7 +797,7 @@ void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
     }
 
     phd_TranslateRel(0, len, off);
-    phd_RotYXZ(0, -90 * ONE_DEGREE, (PHD_ANGLE)(GetRandomDraw() * 2));
+    phd_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(GetRandomDraw() * 2));
     S_CalculateStaticLight(light);
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
 }

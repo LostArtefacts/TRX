@@ -7,7 +7,7 @@
 
 void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Camera.target_elevation = -22 * ONE_DEGREE;
+    Camera.target_elevation = -22 * PHD_DEGREE;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -100;
@@ -228,7 +228,7 @@ void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
             item->current_anim_state = AS_DIVE;
             item->anim_number = AA_SURFDIVE;
             item->frame_number = AF_SURFDIVE;
-            item->pos.x_rot = -45 * ONE_DEGREE;
+            item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = 80;
             Lara.water_status = LWS_UNDERWATER;
         }
@@ -286,9 +286,9 @@ void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
     } else if (coll->coll_type == COLL_LEFT) {
-        item->pos.y_rot += 5 * ONE_DEGREE;
+        item->pos.y_rot += 5 * PHD_DEGREE;
     } else if (coll->coll_type == COLL_RIGHT) {
-        item->pos.y_rot -= 5 * ONE_DEGREE;
+        item->pos.y_rot -= 5 * PHD_DEGREE;
     }
 
     int wh = GetWaterHeight(
@@ -298,7 +298,7 @@ void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
         item->current_anim_state = AS_DIVE;
         item->anim_number = AA_SURFDIVE;
         item->frame_number = AF_SURFDIVE;
-        item->pos.x_rot = -45 * ONE_DEGREE;
+        item->pos.x_rot = -45 * PHD_DEGREE;
         item->fall_speed = 80;
         Lara.water_status = LWS_UNDERWATER;
         return;

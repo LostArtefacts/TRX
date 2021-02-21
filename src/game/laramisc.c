@@ -28,12 +28,12 @@ void __cdecl LaraControl(int16_t item_num)
         StopSoundEffect(30, 0);
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
-            item->pos.x_rot = -45 * ONE_DEGREE;
+            item->pos.x_rot = -45 * PHD_DEGREE;
             AnimateLara(item);
             item->fall_speed *= 2;
         } else if (item->current_anim_state == AS_FASTDIVE) {
             item->goal_anim_state = AS_DIVE;
-            item->pos.x_rot = -85 * ONE_DEGREE;
+            item->pos.x_rot = -85 * PHD_DEGREE;
             AnimateLara(item);
             item->fall_speed *= 2;
         } else {
@@ -41,7 +41,7 @@ void __cdecl LaraControl(int16_t item_num)
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_JUMPIN;
             item->frame_number = AF_JUMPIN;
-            item->pos.x_rot = -45 * ONE_DEGREE;
+            item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
         }
         Lara.head_x_rot = 0;

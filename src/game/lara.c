@@ -436,7 +436,7 @@ void __cdecl LaraAsHang(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsReach(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Camera.target_angle = 85 * ONE_DEGREE;
+    Camera.target_angle = 85 * PHD_DEGREE;
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
@@ -585,7 +585,7 @@ void __cdecl LaraAsStepLeft(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsSlide(ITEM_INFO* item, COLL_INFO* coll)
 {
     Camera.flags = NO_CHUNKY;
-    Camera.target_elevation = -45 * ONE_DEGREE;
+    Camera.target_elevation = -45 * PHD_DEGREE;
     if (Input & IN_JUMP) {
         item->goal_anim_state = AS_FORWARDJUMP;
     }
@@ -593,7 +593,7 @@ void __cdecl LaraAsSlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsBackJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Camera.target_angle = ONE_DEGREE * 135;
+    Camera.target_angle = PHD_DEGREE * 135;
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
@@ -664,8 +664,8 @@ void __cdecl LaraAsPushBlock(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
     Camera.flags = FOLLOW_CENTRE;
-    Camera.target_angle = 35 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = 35 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
 }
 
 void __cdecl LaraAsPullBlock(ITEM_INFO* item, COLL_INFO* coll)
@@ -673,15 +673,15 @@ void __cdecl LaraAsPullBlock(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
     Camera.flags = FOLLOW_CENTRE;
-    Camera.target_angle = 35 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = 35 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
 }
 
 void __cdecl LaraAsPPReady(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = 75 * ONE_DEGREE;
+    Camera.target_angle = 75 * PHD_DEGREE;
     if (!(Input & IN_ACTION)) {
         item->goal_anim_state = AS_STOP;
     }
@@ -691,8 +691,8 @@ void __cdecl LaraAsPickup(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = -130 * ONE_DEGREE;
-    Camera.target_elevation = -15 * ONE_DEGREE;
+    Camera.target_angle = -130 * PHD_DEGREE;
+    Camera.target_elevation = -15 * PHD_DEGREE;
     Camera.target_distance = WALL_L;
 }
 
@@ -700,8 +700,8 @@ void __cdecl LaraAsSwitchOn(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = 80 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = 80 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
     Camera.target_distance = WALL_L;
 }
 
@@ -709,8 +709,8 @@ void __cdecl LaraAsSwitchOff(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = 80 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = 80 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
     Camera.target_distance = WALL_L;
 }
 
@@ -718,8 +718,8 @@ void __cdecl LaraAsUseKey(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = -80 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = -80 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
     Camera.target_distance = WALL_L;
 }
 
@@ -727,8 +727,8 @@ void __cdecl LaraAsUsePuzzle(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    Camera.target_angle = -80 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = -80 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
     Camera.target_distance = WALL_L;
 }
 
@@ -743,8 +743,8 @@ void __cdecl LaraAsRoll2(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsSpecial(ITEM_INFO* item, COLL_INFO* coll)
 {
     Camera.flags = FOLLOW_CENTRE;
-    Camera.target_angle = 170 * ONE_DEGREE;
-    Camera.target_elevation = -25 * ONE_DEGREE;
+    Camera.target_angle = 170 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
 }
 
 void __cdecl LaraAsUseMidas(ITEM_INFO* item, COLL_INFO* coll)
