@@ -4,6 +4,10 @@
 #include "game/types.h"
 #include <stdint.h>
 
+// clang-format off
+#define DrawUnclippedItem       ((void          __cdecl(*)(ITEM_INFO *item))0x0042BDF0)
+// clang-format on
+
 int32_t __cdecl DrawPhaseCinematic();
 int32_t __cdecl DrawPhaseGame();
 void __cdecl DrawRooms(int16_t current_room);

@@ -1003,8 +1003,8 @@ typedef struct {
     /* 0002 */ int16_t mesh_index;
     /* 0004 */ int32_t bone_index;
     /* 0008 */ int16_t* frame_base;
-    /* 000C */ void(__cdecl* initialise)(int16_t);
-    /* 0010 */ void(__cdecl* control)(int16_t);
+    /* 000C */ void(__cdecl* initialise)(int16_t item_num);
+    /* 0010 */ void(__cdecl* control)(int16_t item_num);
     /* 0014 */ void(__cdecl* floor)(
         ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
     /* 0018 */ void(__cdecl* ceiling)(

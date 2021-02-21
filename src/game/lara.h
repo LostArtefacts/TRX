@@ -7,6 +7,9 @@
 // clang-format off
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int height))0x004126A0)
 #define ShiftItem               ((void          __cdecl(*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
+#define InitialiseEvilLara      ((void          __cdecl(*)(int16_t item_num))0x00428420)
+#define ControlEvilLara         ((void          __cdecl(*)(int16_t item_num))0x00428450)
+#define DrawEvilLara            ((void          __cdecl(*)(ITEM_INFO *lara_item))0x00428680)
 // clang-format on
 
 void __cdecl LaraControl(int16_t item_num);
