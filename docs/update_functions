@@ -1,0 +1,139 @@
+#!/usr/bin/python3
+import sys
+import re
+import typing as T
+from dataclasses import dataclass
+from pathlib import Path
+
+
+DOCS_DIR = Path(__file__).parent
+PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
+
+
+@dataclass
+class IdaFunction:
+    name: str
+    offset: int
+    size: int
+    flags: str
+
+
+class BaseProgressLine:
+    def to_progress_line() -> str:
+        raise NotImplementedError("not implemented")
+
+
+@dataclass
+class MyFunction(BaseProgressLine):
+    name: str
+    offset: int
+    size: int
+    flags: str
+
+    def to_progress_line(self) -> str:
+        return f"{self.name:31s} 0x{self.offset:08X}  0x{self.size:08X}  {self.flags}"
+
+
+@dataclass
+class MyComment(BaseProgressLine):
+    text: str
+
+    def to_progress_line(self) -> str:
+        return self.text
+
+
+def collect_ida_functions() -> T.Iterable[IdaFunction]:
+    for line in sys.stdin:
+        line = line.strip()
+        if not line.startswith("#") and line:
+            (
+                name,
+                _section,
+                offset_str,
+                size_str,
+                _locals,
+                _arguments,
+                flags,
+            ) = re.split(r"\s+", line, maxsplit=6)
+            flags = re.sub(r"\s+", "", flags)
+            if "L" not in flags:
+                yield IdaFunction(
+                    name=name,
+                    offset=int(offset_str, 16),
+                    size=int(size_str, 16),
+                    flags=flags,
+                )
+
+
+def collect_my_functions() -> T.Iterable[BaseProgressLine]:
+    for line in PROGRESS_TXT_FILE.open("r", encoding="utf-8"):
+        line = line.strip()
+        if line.startswith("#") or not line:
+            yield MyComment(text=line)
+            continue
+
+        name, offset_str, size_str, flags = re.split(r"\s+", line)
+        yield MyFunction(
+            name=name,
+            offset=int(offset_str, 16),
+            size=int(size_str, 16),
+            flags=flags,
+        )
+
+
+def update_functions(
+    ida_functions: T.Iterable[IdaFunction],
+    my_functions: T.Iterable[BaseProgressLine],
+) -> int:
+    results = list(my_functions)
+
+    # update names
+    ida_func_map = {func.offset: func for func in ida_functions}
+    for my_function in results:
+        if isinstance(my_function, MyFunction):
+            ida_func = ida_func_map.get(my_function.offset)
+            if ida_func and ida_func.name != my_function.name:
+                my_function.name = ida_func.name
+
+    # insert missing functions
+    my_func_map = {
+        func.offset: i
+        for i, func in enumerate(results)
+        if isinstance(func, MyFunction)
+    }
+    last_i = -1
+    for ida_function in reversed(ida_functions):
+        if ida_function.offset not in my_func_map:
+            results.insert(
+                last_i,
+                MyFunction(
+                    name=ida_function.name,
+                    offset=ida_function.offset,
+                    size=ida_function.size,
+                    flags="-",
+                ),
+            )
+        else:
+            last_i = my_func_map[ida_function.offset]
+
+    return results
+
+
+def main() -> None:
+    ida_functions = list(collect_ida_functions())
+    my_functions = list(collect_my_functions())
+    updated_functions = list(update_functions(ida_functions, my_functions))
+
+    new_text = (
+        "\n".join(
+            function.to_progress_line() for function in updated_functions
+        )
+        + "\n"
+    )
+    if new_text != PROGRESS_TXT_FILE.read_text():
+        PROGRESS_TXT_FILE.write_text(new_text)
+        print("changed")
+
+
+if __name__ == "__main__":
+    main()
