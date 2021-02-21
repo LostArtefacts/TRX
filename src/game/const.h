@@ -84,6 +84,9 @@
 #define ACTIVE 1
 #define DEACTIVATED 2
 #define INVISIBLE 3
+#define WIBBLE_SIZE 32
+#define MAX_WIBBLE 2
+#define MAX_SHADE 0x300
 
 #ifdef TOMB1M_FEAT_EXTENDED_MEMORY
     #define MAX_STRING_SIZE 100

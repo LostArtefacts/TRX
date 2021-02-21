@@ -33,6 +33,8 @@
 #define GameAllocMemFree        VAR_U_(0x0045E334, uint32_t)
 #define GameMemoryPointer       VAR_U_(0x0045A034, uint32_t)
 #define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
+#define GameVidWidth            VAR_I_(0x004546D0, int16_t, 320)
+#define GameVidHeight           VAR_I_(0x004546D2, int16_t, 200)
 #define CurrentLevel            VAR_U_(0x00453C4C, uint32_t)
 #define Lara                    VAR_U_(0x0045ED80, LARA_INFO)
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
@@ -90,6 +92,11 @@
 #define JoyXPos                 VAR_U_(0x0045B958, int32_t)
 #define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
+#define WibbleTable             ARRAY_(0x006E8060, int32_t, [WIBBLE_SIZE])
+#define ShadeTable              ARRAY_(0x006D4E00, int32_t, [WIBBLE_SIZE])
+#define RandTable               ARRAY_(0x006CAD20, int32_t, [WIBBLE_SIZE])
+#define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
+
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
 

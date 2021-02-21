@@ -13,7 +13,7 @@ int32_t __cdecl LoadObjects(FILE* fp);
 int32_t __cdecl LoadItems(FILE* handle);
 int32_t __cdecl S_LoadLevel(int level_id);
 const char* __cdecl GetFullPath(const char* filename);
-int32_t __cdecl FindCdDrive();
+void _cdecl FindCdDrive();
 
 void Tomb1MInjectSpecificFile();
 

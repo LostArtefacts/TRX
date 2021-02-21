@@ -66,7 +66,7 @@ sub_4079E9                      0x004079E9  0x00000060  -
 sub_407A49                      0x00407A49  0x00000048  -
 sub_407A91                      0x00407A91  0x00000141  -
 SetHardwareVideoMode            0x00407BD2  0x00000433  -
-InitialiseHardware              0x00408005  0x0000031E  -
+InitialiseHardware              0x00408005  0x0000031E  *
 sub_408323                      0x00408323  0x00000029  -
 sub_40834C                      0x0040834C  0x0000001C  -
 sub_408368                      0x00408368  0x00000017  -
@@ -254,7 +254,7 @@ S_DrawScreenFBox                0x0041CBB0  0x00000101  *
 S_FinishInventory               0x0041CCC0  0x00000047  -
 S_FadeToBlack                   0x0041CD10  0x0000003F  *
 S_Wait                          0x0041CD50  0x0000004D  -
-SoundStart                      0x0041CDA0  0x00000045  -
+SoundStart                      0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x0000024A  -
 S_PlayFMV                       0x0041D040  0x0000007C  -
 sub_41D0C0                      0x0041D0C0  0x000001CA  -
@@ -276,7 +276,7 @@ MakeAmmoString                  0x0041DF20  0x00000028  +
 DrawAmmoInfo                    0x0041DF50  0x00000133  +
 InitialisePickUpDisplay         0x0041E0A0  0x00000015  +
 AddDisplayPickup                0x0041E0C0  0x0000003F  +
-S_InitialiseSystem              0x0041E100  0x0000015B  -
+S_InitialiseSystem              0x0041E100  0x0000015B  +
 S_ExitSystem                    0x0041E260  0x00000051  *
 init_game_malloc                0x0041E2C0  0x00000021  +
 game_malloc                     0x0041E2F0  0x000000B1  *
@@ -573,10 +573,10 @@ WinVidSpinMessageLoop           0x00437AD0  0x00000029  *
 WinInReadJoystick               0x00437B00  0x00000070  *
 OnKeyPress                      0x00437B70  0x00000045  -
 sub_437BC0                      0x00437BC0  0x00000003  -
-sub_437BD0                      0x00437BD0  0x00000029  -
+KeyClearBuffer                  0x00437BD0  0x00000029  -
 WinSndLoadSamples               0x00437C00  0x000000A5  -
 SoundLoadSample                 0x00437CB0  0x0000014B  -
-sub_437E00                      0x00437E00  0x0000000D  -
+SoundInit                       0x00437E00  0x0000000D  *
 sub_437E10                      0x00437E10  0x000000C3  -
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
@@ -586,7 +586,7 @@ sub_437F80                      0x00437F80  0x00000026  -
 CDPlay                          0x00437FB0  0x000000F5  -
 S_CDLoop                        0x004380B0  0x0000000B  *
 sub_4380C0                      0x004380C0  0x00000018  -
-sub_4380E0                      0x004380E0  0x00000255  -
+sub_4380E0                      0x004380E0  0x00000255  *
 sub_438340                      0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  -

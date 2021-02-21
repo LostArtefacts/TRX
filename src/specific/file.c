@@ -320,9 +320,12 @@ const char* __cdecl GetFullPath(const char* filename)
     return newpath;
 }
 
-int32_t __cdecl FindCdDrive()
+void __cdecl FindCdDrive()
 {
     TRACE("");
+#ifdef TOMB1M_FEAT_NOCD
+    return;
+#endif
     FILE* fp;
     char root[5] = "C:\\";
     char tmp_path[MAX_PATH];
@@ -334,18 +337,21 @@ int32_t __cdecl FindCdDrive()
             fp = fopen(tmp_path, "rb");
             if (fp) {
                 DEMO = 1;
-                return fclose(fp);
+                fclose(fp);
+                return;
             }
+
             sprintf(tmp_path, "%c:\\data\\title.phd", cd_drive);
             fp = fopen(tmp_path, "rb");
             if (fp) {
                 DEMO = 0;
-                return fclose(fp);
+                fclose(fp);
+                return;
             }
         }
     }
+
     ShowFatalError("ERROR: Please insert TombRaider CD");
-    return 0;
 }
 
 void Tomb1MInjectSpecificFile()
