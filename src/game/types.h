@@ -546,6 +546,7 @@ typedef enum {
     IN_ACTION_AUTO = (1 << 24),
 #ifdef TOMB1M_FEAT_CHEATS
     IN_DOZYCHEAT = (1 << 25),
+    IN_STUFFCHEAT = (1 << 26),
 #else
     IN_CHEAT = (1 << 25),
     IN_D = (1 << 26),

@@ -196,6 +196,7 @@ void __cdecl AnimatePistols(int32_t weapon_type);
 void Tomb1MLookLeftRight();
 void Tomb1MLookUpDown();
 void Tomb1MResetLook();
+void Tomb1MLaraCheatGetStuff();
 
 void Tomb1MInjectGameLara();
 void Tomb1MInjectGameLaraMisc();

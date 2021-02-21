@@ -50,6 +50,8 @@ Currently the following configuration options are supported:
 - `enable_cheats`: enables various cheats:
     - <kbd>F10</kbd>: immediately end the level.
     - <kbd>F11</kbd>: heal Lara. Hold <kbd>WALK</kbd> key to hurt instead.
+    - <kbd>I</kbd>: gives Lara all the guns, ammo, medpacks and plot items for
+      the current level.
     - <kbd>O</kbd>: enable DOZY cheat (swimming midair). Press the
       <kbd>WALK</kbd> key to exit.
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the

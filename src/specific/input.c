@@ -72,6 +72,17 @@ void __cdecl S_UpdateInput()
 
 #ifdef TOMB1M_FEAT_CHEATS
     if (Tomb1MConfig.enable_cheats) {
+        static int is_stuff_cheat_key_pressed = 0;
+        if (KeyData->keymap[DIK_I]) {
+            if (!is_stuff_cheat_key_pressed) {
+                is_stuff_cheat_key_pressed = 1;
+                TRACE("enabling stuff cheat");
+                linput |= IN_STUFFCHEAT;
+            }
+        } else {
+            is_stuff_cheat_key_pressed = 0;
+        }
+
         if (KeyData->keymap[DIK_O]) {
             linput |= IN_DOZYCHEAT;
         }
