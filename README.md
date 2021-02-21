@@ -50,6 +50,8 @@ Currently the following configuration options are supported:
 - `enable_cheats`: enables various cheats:
     - <kbd>F10</kbd>: immediately end the level.
     - <kbd>F11</kbd>: heal Lara. Hold <kbd>WALK</kbd> key to hurt instead.
+    - <kbd>O</kbd>: enable DOZY cheat (swimming midair). Press the
+      <kbd>WALK</kbd> key to exit.
 - `fix_end_of_level_freeze`: fix game freeze when ending the level with the
   Action key held.
 - `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing

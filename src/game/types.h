@@ -2,6 +2,7 @@
 #define TOMB1MAIN_GAME_TYPES_H
 
 #include "const.h"
+#include "util.h"
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;
@@ -543,10 +544,14 @@ typedef enum {
     IN_SAVE = (1 << 22),
     IN_LOAD = (1 << 23),
     IN_ACTION_AUTO = (1 << 24),
+#ifdef TOMB1M_FEAT_CHEATS
+    IN_DOZYCHEAT = (1 << 25),
+#else
     IN_CHEAT = (1 << 25),
     IN_D = (1 << 26),
     IN_E = (1 << 27),
     IN_F = (1 << 28),
+#endif
 } INPUT_STATE;
 
 typedef enum {

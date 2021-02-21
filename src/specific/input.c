@@ -72,6 +72,9 @@ void __cdecl S_UpdateInput()
 
 #ifdef TOMB1M_FEAT_CHEATS
     if (Tomb1MConfig.enable_cheats) {
+        if (KeyData->keymap[DIK_O]) {
+            linput |= IN_DOZYCHEAT;
+        }
         if (KeyData->keymap[DIK_F10]) {
             LevelComplete = 1;
         }

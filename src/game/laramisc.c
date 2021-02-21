@@ -19,6 +19,32 @@ void __cdecl LaraControl(int16_t item_num)
     ROOM_INFO* r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
+#ifdef TOMB1M_FEAT_CHEATS
+    if (Lara.water_status != LWS_CHEAT && (Input & IN_DOZYCHEAT)) {
+        if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
+            item->pos.y -= 0x80;
+            item->current_anim_state = AS_SWIM;
+            item->goal_anim_state = AS_SWIM;
+            item->anim_number = AA_SWIMGLIDE;
+            item->frame_number = Anims[item->anim_number].frame_base;
+            item->gravity_status = 0;
+            item->pos.x_rot = 30 * PHD_DEGREE;
+            item->fall_speed = 30;
+            Lara.head_x_rot = 0;
+            Lara.head_y_rot = 0;
+            Lara.torso_x_rot = 0;
+            Lara.torso_y_rot = 0;
+        }
+        Lara.water_status = LWS_CHEAT;
+        Lara.spaz_effect_count = 0;
+        Lara.spaz_effect = NULL;
+        Lara.hit_frames = 0;
+        Lara.hit_direction = -1;
+        Lara.air = LARA_AIR;
+        Lara.death_count = 0;
+    }
+#endif
+
     if (Lara.water_status == LWS_ABOVEWATER && room_submerged) {
         Lara.water_status = LWS_UNDERWATER;
         Lara.air = LARA_AIR;
@@ -138,6 +164,31 @@ void __cdecl LaraControl(int16_t item_num)
         }
         LaraSurface(item, &coll);
         break;
+
+#ifdef TOMB1M_FEAT_CHEATS
+    case LWS_CHEAT:
+        item->hit_points = LARA_HITPOINTS;
+        Lara.death_count = 0;
+        LaraUnderWater(item, &coll);
+        if ((Input & IN_SLOW) && !(Input & IN_LOOK)) {
+            int16_t wh = GetWaterHeight(
+                item->pos.x, item->pos.y, item->pos.z, item->room_number);
+            if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
+                Lara.water_status = LWS_UNDERWATER;
+            } else {
+                Lara.water_status = LWS_ABOVEWATER;
+                item->anim_number = AA_STOP;
+                item->frame_number = Anims[item->anim_number].frame_base;
+                item->pos.x_rot = item->pos.z_rot = 0;
+                Lara.head_x_rot = 0;
+                Lara.head_y_rot = 0;
+                Lara.torso_x_rot = 0;
+                Lara.torso_y_rot = 0;
+            }
+            Lara.gun_status = LGS_ARMLESS;
+        }
+        break;
+#endif
     }
 }
 
@@ -147,7 +198,7 @@ void __cdecl LaraSwapMeshExtra()
         return;
     }
     for (int i = 0; i < 15; i++) {
-        Lara.mesh_ptrs[i] = Meshes[(&Objects[O_LARA_EXTRA])->mesh_index + i];
+        Lara.mesh_ptrs[i] = Meshes[Objects[O_LARA_EXTRA].mesh_index + i];
     }
 }
 
@@ -355,7 +406,7 @@ void __cdecl InitialiseLara()
     Lara.hit_frames = 0;
     Lara.hit_direction = 0;
     Lara.death_count = 0;
-    Lara.target = 0;
+    Lara.target = NULL;
     Lara.spaz_effect = 0;
     Lara.spaz_effect_count = 0;
     Lara.turn_rate = 0;
