@@ -7,6 +7,7 @@
 
 #include "game/bat.h"
 #include "game/bear.h"
+#include "game/box.h"
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
@@ -29,6 +30,7 @@ static void Tomb1MInject()
 {
     Tomb1MInjectGameBat();
     Tomb1MInjectGameBear();
+    Tomb1MInjectGameBox();
     Tomb1MInjectGameControl();
     Tomb1MInjectGameDemo();
     Tomb1MInjectGameDraw();
