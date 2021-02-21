@@ -26,11 +26,13 @@ class BaseProgressLine:
 @dataclass
 class MyFunction(BaseProgressLine):
     name: str
-    offset: int
-    size: int
+    offset: T.Optional[int]
+    size: T.Optional[int]
     flags: str
 
     def to_progress_line(self) -> str:
+        if not self.offset:
+            return f"{self.name:31s} ----------  ----------  {self.flags}"
         return f"{self.name:31s} 0x{self.offset:08X}  0x{self.size:08X}  {self.flags}"
 
 
@@ -72,11 +74,16 @@ def collect_my_functions() -> T.Iterable[BaseProgressLine]:
             yield MyComment(text=line)
             continue
 
-        name, offset_str, size_str, flags = re.split(r"\s+", line)
+        try:
+            name, offset_str, size_str, flags = re.split(r"\s+", line)
+        except ValueError:
+            print(line)
+            yield MyComment(text=line)
+            continue
         yield MyFunction(
             name=name,
-            offset=int(offset_str, 16),
-            size=int(size_str, 16),
+            offset=int(offset_str, 16) if offset_str.replace('-', '') else None,
+            size=int(size_str, 16) if size_str.replace('-', '') else None,
             flags=flags,
         )
 

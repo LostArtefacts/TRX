@@ -193,9 +193,12 @@ class Function:
 
 def collect_functions() -> T.Iterable[Function]:
     for line in PROGRESS_TXT_FILE.open():
-        if line.startswith("#"):
+        line = line.strip()
+        if line.startswith("#") or not line:
             continue
-        func_name, offset, size, flags = re.split(r"\s+", line.strip())
+        func_name, offset, size, flags = re.split(r"\s+", line)
+        if not offset.replace("-", ""):
+            continue
         yield Function(
             name=func_name,
             offset=int(offset, 16),
