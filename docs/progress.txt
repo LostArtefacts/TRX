@@ -121,7 +121,7 @@ DoNothing                       0x0040D465  0x00000005  -
 BatControl                      0x0040D470  0x00000184  +
 
 # bear.cpp
-BearControl                     0x0040D600  0x00000416  *
+BearControl                     0x0040D600  0x00000416  +
 
 # box.cpp
 InitialiseCreature              0x0040DA60  0x00000033  *
@@ -139,7 +139,7 @@ BadFloor                        0x0040EE40  0x00000092  -
 CreatureAnimation               0x0040EEE0  0x00000863  *
 CreatureTurn                    0x0040F750  0x000000D5  *
 CreatureTilt                    0x0040F830  0x00000035  -
-CreatureHead                    0x0040F870  0x00000049  -
+CreatureHead                    0x0040F870  0x00000049  *
 CreatureEffect                  0x0040F8C0  0x0000005C  *
 
 # camera.cpp
