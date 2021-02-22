@@ -91,6 +91,7 @@
 #define GroundZone              ARRAY_(0x00462D88, int16_t*, [2])
 #define GroundZone2             ARRAY_(0x00462D80, int16_t*, [2])
 #define FlyZone                 ARRAY_(0x00462D90, int16_t*, [2])
+#define Overlap                 VAR_U_(0x00462D98, uint16_t*)
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 #define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define KeyChange               VAR_U_(0x0045A234, int32_t)

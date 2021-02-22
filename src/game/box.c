@@ -71,8 +71,88 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         && (LaraItem->pos.y < item->pos.y + STEP_L);
 }
 
+int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
+{
+    int16_t* zone;
+    if (LOT->fly) {
+        zone = FlyZone[FlipStatus];
+    } else if (LOT->step == STEP_L) {
+        zone = GroundZone[FlipStatus];
+    } else {
+        zone = GroundZone2[FlipStatus];
+    }
+
+    int16_t search_zone = zone[LOT->head];
+    for (int i = 0; i < expansion; i++) {
+        if (LOT->head == NO_BOX) {
+            return 0;
+        }
+
+        BOX_NODE* node = &LOT->node[LOT->head];
+        BOX_INFO* box = &Boxes[LOT->head];
+
+        int done = 0;
+        int index = box->overlap_index & OVERLAP_INDEX;
+        do {
+            int16_t box_number = Overlap[index++];
+            if (box_number & END_BIT) {
+                done = 1;
+                box_number &= BOX_NUMBER;
+            }
+
+            if (search_zone != zone[box_number]) {
+                continue;
+            }
+
+            int change = Boxes[box_number].height - box->height;
+            if (change > LOT->step || change < LOT->drop) {
+                continue;
+            }
+
+            BOX_NODE* expand = &LOT->node[box_number];
+            if ((node->search_number & SEARCH_NUMBER)
+                < (expand->search_number & SEARCH_NUMBER)) {
+                continue;
+            }
+
+            if (node->search_number & BLOCKED_SEARCH) {
+                if ((node->search_number & SEARCH_NUMBER)
+                    == (expand->search_number & SEARCH_NUMBER)) {
+                    continue;
+                }
+                expand->search_number = node->search_number;
+            } else {
+                if ((node->search_number & SEARCH_NUMBER)
+                        == (expand->search_number & SEARCH_NUMBER)
+                    && !(expand->search_number & BLOCKED_SEARCH)) {
+                    continue;
+                }
+
+                if (Boxes[box_number].overlap_index & LOT->block_mask) {
+                    expand->search_number =
+                        node->search_number | BLOCKED_SEARCH;
+                } else {
+                    expand->search_number = node->search_number;
+                    expand->exit_box = LOT->head;
+                }
+            }
+
+            if (expand->next_expansion == NO_BOX && box_number != LOT->tail) {
+                LOT->node[LOT->tail].next_expansion = box_number;
+                LOT->tail = box_number;
+            }
+        } while (!done);
+
+        LOT->head = node->next_expansion;
+        node->next_expansion = NO_BOX;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
     INJECT(0x0040DAA0, CreatureAIInfo);
+    INJECT(0x0040DCD0, SearchLOT);
 }

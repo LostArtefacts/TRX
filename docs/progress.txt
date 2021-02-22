@@ -126,8 +126,8 @@ BearControl                     0x0040D600  0x00000416  +
 # box.cpp
 InitialiseCreature              0x0040DA60  0x00000033  +
 CreatureAIInfo                  0x0040DAA0  0x00000224  +
-SearchLOT                       ----------  ----------  -
-UpdateLOT                       0x0040DCD0  0x000001F9  -
+SearchLOT                       0x0040DCD0  0x000001F9  +
+UpdateLOT                       ----------  ----------  -
 TargetBox                       ----------  ----------  -
 StalkBox                        ----------  ----------  -
 EscapeBox                       0x0040DED0  0x000000CE  -
