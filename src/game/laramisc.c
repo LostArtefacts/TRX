@@ -571,6 +571,10 @@ void __cdecl LaraInitialiseMeshes(int32_t level_num)
 
 void Tomb1MLaraCheatGetStuff()
 {
+    if (CurrentLevel == LV_GYM) {
+        return;
+    }
+
     // play istols drawing sound
     SoundEffect(6, &LaraItem->pos, 0);
 
