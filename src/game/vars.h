@@ -157,4 +157,8 @@ extern int32_t StaticCount;
 extern int32_t TextureCount;
 extern int32_t FloorDataSize;
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
+extern int16_t StoredLaraHealth;
+#endif
+
 #endif

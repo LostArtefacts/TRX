@@ -288,7 +288,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
             }
         }
         if (!lara_found && !in_cutscene) {
-            Tomb1MData.stored_lara_health = LARA_HITPOINTS;
+            StoredLaraHealth = LARA_HITPOINTS;
         }
     }
 #endif

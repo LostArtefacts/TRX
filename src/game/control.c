@@ -134,7 +134,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
                 }
             }
             if (lara_found) {
-                Tomb1MData.stored_lara_health =
+                StoredLaraHealth =
                     LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
             }
         }
