@@ -106,9 +106,19 @@ void __cdecl LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     item->fall_speed += 8;
+#ifdef TOMB1M_FEAT_CHEATS
+    if (Lara.water_status == LWS_CHEAT) {
+        if (item->fall_speed > UW_MAXSPEED * 2) {
+            item->fall_speed = UW_MAXSPEED * 2;
+        }
+    } else if (item->fall_speed > UW_MAXSPEED) {
+        item->fall_speed = UW_MAXSPEED;
+    }
+#else
     if (item->fall_speed > UW_MAXSPEED) {
         item->fall_speed = UW_MAXSPEED;
     }
+#endif
 
     if (!(Input & IN_JUMP)) {
         item->goal_anim_state = AS_GLIDE;
