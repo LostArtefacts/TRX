@@ -40,10 +40,4 @@ struct {
     int8_t fix_hardcoded_secret_counts;
 } T1MConfig;
 
-struct {
-    // replicate glrage patch FPS counter repositioning
-    int fps_x;
-    int fps_y;
-} Tomb1MData;
-
 #endif

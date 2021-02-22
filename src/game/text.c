@@ -292,16 +292,7 @@ void __cdecl T_DrawText()
                 fps_counter1 = 0;
                 fps_counter2 = 0;
             } else {
-                int fps_x = 10;
-                int fps_y = 30;
-#ifdef TOMB1M_FEAT_UI
-                if (!T1MConfig.enable_enhanced_ui
-                    && GetRenderScaleGLRage(1) > 1) {
-                    fps_x = Tomb1MData.fps_x;
-                    fps_y = Tomb1MData.fps_y;
-                }
-#endif
-                fps_text = T_Print(fps_x, fps_y, 0, fps_buf);
+                fps_text = T_Print(10, 30, 0, fps_buf);
                 fps_counter1 = 0;
                 fps_counter2 = 0;
             }

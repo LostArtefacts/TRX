@@ -142,11 +142,6 @@ void RenderBar(int value, int value_max, int bar_type)
     int bottom = top + height + padding + 1;
     int right = left + width + padding + 1;
 
-    if (bar_type == BT_LARA_HEALTH) {
-        Tomb1MData.fps_x = left;
-        Tomb1MData.fps_y = bottom + 24;
-    }
-
     // background
     for (int i = 1; i < height + 3; i++) {
         Insert2DLine(left + 1, top + i, right, top + i, p1, color_bgnd);
