@@ -12,6 +12,7 @@ void Tomb1MTraceFunc(
     printf("%s %d %s ", file, line, func);
     vprintf(fmt, va);
     printf("\n");
+    fflush(stdout);
 }
 
 void Tomb1MInjectFunc(void* from, void* to)
