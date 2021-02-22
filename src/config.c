@@ -30,17 +30,17 @@ static int8_t ReadBarLocationConfig(
     if (!value_str) {
         return default_value;
     } else if (!strcmp(value_str, "top-left")) {
-        return T1M_BL_VTOP | T1M_BL_HLEFT;
+        return T1M_BL_TOP_LEFT;
     } else if (!strcmp(value_str, "top-center")) {
-        return T1M_BL_VTOP | T1M_BL_HCENTER;
+        return T1M_BL_TOP_CENTER;
     } else if (!strcmp(value_str, "top-right")) {
-        return T1M_BL_VTOP | T1M_BL_HRIGHT;
+        return T1M_BL_TOP_RIGHT;
     } else if (!strcmp(value_str, "bottom-left")) {
-        return T1M_BL_VBOTTOM | T1M_BL_HLEFT;
+        return T1M_BL_BOTTOM_LEFT;
     } else if (!strcmp(value_str, "bottom-center")) {
-        return T1M_BL_VBOTTOM | T1M_BL_HCENTER;
+        return T1M_BL_BOTTOM_CENTER;
     } else if (!strcmp(value_str, "bottom-right")) {
-        return T1M_BL_VBOTTOM | T1M_BL_HRIGHT;
+        return T1M_BL_BOTTOM_RIGHT;
     }
     return default_value;
 }
@@ -87,12 +87,12 @@ int T1MReadConfig()
     T1MConfig.healthbar_showing_mode =
         ReadBarShowingMode(json, "healthbar_showing_mode");
 
-    T1MConfig.healthbar_location = ReadBarLocationConfig(
-        json, "healthbar_location", T1M_BL_VTOP | T1M_BL_HLEFT);
-    T1MConfig.airbar_location = ReadBarLocationConfig(
-        json, "airbar_location", T1M_BL_VTOP | T1M_BL_HRIGHT);
+    T1MConfig.healthbar_location =
+        ReadBarLocationConfig(json, "healthbar_location", T1M_BL_TOP_LEFT);
+    T1MConfig.airbar_location =
+        ReadBarLocationConfig(json, "airbar_location", T1M_BL_TOP_RIGHT);
     T1MConfig.enemy_healthbar_location = ReadBarLocationConfig(
-        json, "enemy_healthbar_location", T1M_BL_VBOTTOM | T1M_BL_HLEFT);
+        json, "enemy_healthbar_location", T1M_BL_BOTTOM_LEFT);
 
     free(json);
     free(cfg_data);

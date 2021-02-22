@@ -161,4 +161,8 @@ extern int32_t FloorDataSize;
 extern int16_t StoredLaraHealth;
 #endif
 
+#ifdef T1M_FEAT_UI
+extern int16_t BarOffsetY[6];
+#endif
+
 #endif

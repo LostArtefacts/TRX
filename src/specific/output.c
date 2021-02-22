@@ -14,10 +14,6 @@ static int color_bar[][COLOR_BAR_SIZE] = {
 };
 
 #ifdef T1M_FEAT_UI
-static int BarOffsetY = 0;
-#endif
-
-#ifdef T1M_FEAT_UI
 int MulDiv(int x, int y, int z)
 {
     return (x * y) / z;
@@ -63,25 +59,24 @@ void BarLocation(
     int8_t bar_location, int32_t scale, int32_t width, int32_t height,
     int32_t* x, int32_t* y)
 {
-    if (bar_location & T1M_BL_HCENTER) {
-        *x = (PhdWinWidth - width) / 2;
-    } else if (bar_location & T1M_BL_HLEFT) {
+    if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_BOTTOM_LEFT) {
         *x = 8 * scale;
-    } else if (bar_location & T1M_BL_HRIGHT) {
+    } else if (
+        bar_location == T1M_BL_TOP_RIGHT
+        || bar_location == T1M_BL_BOTTOM_RIGHT) {
         *x = PhdWinWidth - width - 8 * scale;
     } else {
         *x = (PhdWinWidth - width) / 2;
     }
 
-    if (bar_location & T1M_BL_VTOP) {
-        *y = 8 * scale + BarOffsetY;
-    } else if (bar_location & T1M_BL_VBOTTOM) {
-        *y = PhdWinHeight - height - 8 * scale - BarOffsetY;
+    if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_TOP_CENTER
+        || bar_location == T1M_BL_TOP_RIGHT) {
+        *y = 8 * scale + BarOffsetY[bar_location];
     } else {
-        *y = (PhdWinHeight - height) / 2 + BarOffsetY;
+        *y = PhdWinHeight - height - 8 * scale - BarOffsetY[bar_location];
     }
 
-    BarOffsetY += height + 4 * scale;
+    BarOffsetY[bar_location] += height + 4 * scale;
 }
 #endif
 
@@ -119,7 +114,6 @@ void RenderBar(int value, int value_max, int bar_type)
     int x;
     int y;
     if (bar_type == BT_LARA_HEALTH) {
-        BarOffsetY = 0;
         BarLocation(T1MConfig.healthbar_location, scale, width, height, &x, &y);
     } else if (bar_type == BT_LARA_AIR) {
         BarLocation(T1MConfig.airbar_location, scale, width, height, &x, &y);

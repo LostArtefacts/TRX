@@ -4,11 +4,12 @@
 #include <stdint.h>
 
 typedef enum {
-    T1M_BL_HCENTER = 1 << 0,
-    T1M_BL_HLEFT = 1 << 1,
-    T1M_BL_HRIGHT = 1 << 2,
-    T1M_BL_VTOP = 1 << 3,
-    T1M_BL_VBOTTOM = 1 << 4,
+    T1M_BL_TOP_LEFT = 0,
+    T1M_BL_TOP_CENTER = 1,
+    T1M_BL_TOP_RIGHT = 2,
+    T1M_BL_BOTTOM_LEFT = 3,
+    T1M_BL_BOTTOM_CENTER = 4,
+    T1M_BL_BOTTOM_RIGHT = 5,
 } T1M_BAR_LOCATION;
 
 typedef enum {

@@ -8,6 +8,12 @@
 
 void DrawGameInfo()
 {
+#ifdef T1M_FEAT_UI
+    for (int i = 0; i < 6; i++) {
+        BarOffsetY[i] = 0;
+    }
+#endif
+
     DrawAmmoInfo();
     if (OverlayFlag > 0) {
         DrawHealthBar();
