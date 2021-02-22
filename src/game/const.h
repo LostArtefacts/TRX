@@ -67,6 +67,7 @@
 #define WALL_SHIFT 10
 #define STEP_L 256
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
+#define FRONT_ARC 16384
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * PHD_DEGREE) // = -10920
 #define W2V_SHIFT 14
@@ -84,6 +85,18 @@
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE 2
 #define MAX_SHADE 0x300
+#define MAX_EXPANSION 5
+#define NO_BOX -1
+#define BOX_NUMBER 0x7fff
+#define EXPAND_LEFT 0x1
+#define EXPAND_RIGHT 0x2
+#define EXPAND_TOP 0x4
+#define EXPAND_BOTTOM 0x8
+#define BLOCKABLE 0x8000
+#define BLOCKED 0x4000
+#define OVERLAP_INDEX 0x3fff
+#define SEARCH_NUMBER 0x7fff
+#define BLOCKED_SEARCH 0x8000
 
 #ifdef TOMB1M_FEAT_EXTENDED_MEMORY
     #define MAX_STRING_SIZE 100

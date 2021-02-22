@@ -1226,6 +1226,16 @@ typedef struct {
     /* 0012 end */
 } AI_INFO;
 
+typedef struct {
+    /* 0000 */ int32_t left;
+    /* 0004 */ int32_t right;
+    /* 0008 */ int32_t top;
+    /* 000C */ int32_t bottom;
+    /* 0010 */ int16_t height;
+    /* 0012 */ int16_t overlap_index;
+    /* 0014 end */
+} BOX_INFO;
+
 #pragma pack(pop)
 
 typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);
