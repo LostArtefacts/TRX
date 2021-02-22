@@ -24,6 +24,7 @@ void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b);
 void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b);
 int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring);
 void __cdecl T_RemovePrint(TEXTSTRING* textstring);
+void __cdecl T_RemoveAllPrints();
 void __cdecl T_DrawText();
 void __cdecl T_DrawThisText(TEXTSTRING* textstring);
 

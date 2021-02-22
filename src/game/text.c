@@ -266,6 +266,11 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
     }
 }
 
+void __cdecl T_RemoveAllPrints()
+{
+    T_InitPrint();
+}
+
 void __cdecl T_DrawText()
 {
     // TombATI FPS counter, pretty pointless IMO as it always shows 30 for me.
