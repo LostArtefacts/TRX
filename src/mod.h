@@ -1,14 +1,7 @@
 #ifndef TOMB1MAIN_MOD_H
 #define TOMB1MAIN_MOD_H
 
-#include "util.h"
-
-typedef enum {
-    Tomb1M_BAR_LARA_HEALTH = 0,
-    Tomb1M_BAR_LARA_AIR = 1,
-    Tomb1M_BAR_ENEMY_HEALTH = 2,
-    Tomb1M_BAR_NUMBER = 3,
-} Tomb1M_BAR;
+#include <stdint.h>
 
 typedef enum {
     Tomb1M_BL_HCENTER = 1 << 0,

@@ -72,7 +72,7 @@ void __cdecl DrawEnemyBar()
         Lara.target->hit_points,
         Objects[Lara.target->object_number].hit_points
             * (SaveGame[0].bonus_flag ? 2 : 1),
-        Tomb1M_BAR_ENEMY_HEALTH);
+        BT_ENEMY_HEALTH);
 }
 #endif
 

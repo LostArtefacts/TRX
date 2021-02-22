@@ -18,6 +18,14 @@
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
 
+typedef enum {
+    BT_LARA_HEALTH = 0,
+    BT_LARA_AIR = 1,
+#if defined(TOMB1M_FEAT_UI) || defined(TOMB1M_FEAT_GAMEPLAY)
+    BT_ENEMY_HEALTH = 2,
+#endif
+} BAR_TYPE;
+
 int GetRenderScaleGLRage(int unit);
 void RenderBar(int value, int value_max, int bar_type);
 

@@ -7,7 +7,7 @@
 
 #define COLOR_BAR_SIZE 5
 
-static int color_bar[Tomb1M_BAR_NUMBER][COLOR_BAR_SIZE] = {
+static int color_bar[][COLOR_BAR_SIZE] = {
     { 8, 11, 8, 6, 24 },
     { 32, 41, 32, 19, 21 },
     { 18, 17, 18, 19, 21 },
@@ -83,7 +83,6 @@ void BarLocation(
 
     BarOffsetY += height + 4 * scale;
 }
-
 #endif
 
 void RenderBar(int value, int value_max, int bar_type)
@@ -101,11 +100,11 @@ void RenderBar(int value, int value_max, int bar_type)
     int percent = value * 100 / value_max;
 
     if (Tomb1MConfig.enable_red_healthbar) {
-        color_bar[Tomb1M_BAR_LARA_HEALTH][0] = 29;
-        color_bar[Tomb1M_BAR_LARA_HEALTH][1] = 30;
-        color_bar[Tomb1M_BAR_LARA_HEALTH][2] = 29;
-        color_bar[Tomb1M_BAR_LARA_HEALTH][3] = 28;
-        color_bar[Tomb1M_BAR_LARA_HEALTH][4] = 26;
+        color_bar[BT_LARA_HEALTH][0] = 29;
+        color_bar[BT_LARA_HEALTH][1] = 30;
+        color_bar[BT_LARA_HEALTH][2] = 29;
+        color_bar[BT_LARA_HEALTH][3] = 28;
+        color_bar[BT_LARA_HEALTH][4] = 26;
     }
 
     const int color_border_1 = 19;
@@ -119,13 +118,13 @@ void RenderBar(int value, int value_max, int bar_type)
 #ifdef TOMB1M_FEAT_UI
     int x;
     int y;
-    if (bar_type == Tomb1M_BAR_LARA_HEALTH) {
+    if (bar_type == BT_LARA_HEALTH) {
         BarOffsetY = 0;
         BarLocation(
             Tomb1MConfig.healthbar_location, scale, width, height, &x, &y);
-    } else if (bar_type == Tomb1M_BAR_LARA_AIR) {
+    } else if (bar_type == BT_LARA_AIR) {
         BarLocation(Tomb1MConfig.airbar_location, scale, width, height, &x, &y);
-    } else if (bar_type == Tomb1M_BAR_ENEMY_HEALTH) {
+    } else if (bar_type == BT_ENEMY_HEALTH) {
         BarLocation(
             Tomb1MConfig.enemy_healthbar_location, scale, width, height, &x,
             &y);
@@ -133,7 +132,7 @@ void RenderBar(int value, int value_max, int bar_type)
 #else
     int x = 8 * scale;
     int y = 8 * scale;
-    if (bar_type == Tomb1M_BAR_LARA_AIR) {
+    if (bar_type == BT_LARA_AIR) {
         // place air bar on the right
         x = PhdWinWidth - width - x;
     }
@@ -145,7 +144,7 @@ void RenderBar(int value, int value_max, int bar_type)
     int bottom = top + height + padding + 1;
     int right = left + width + padding + 1;
 
-    if (bar_type == Tomb1M_BAR_LARA_HEALTH) {
+    if (bar_type == BT_LARA_HEALTH) {
         Tomb1MData.fps_x = left;
         Tomb1MData.fps_y = bottom + 24;
     }
@@ -164,7 +163,11 @@ void RenderBar(int value, int value_max, int bar_type)
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int blink_interval = 20;
-    const int blink_threshold = bar_type == Tomb1M_BAR_ENEMY_HEALTH ? 0 : 20;
+#ifdef TOMB1M_FEAT_UI
+    const int blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
+#else
+    const int blink_threshold = 20;
+#endif
     int blink_time = Ticks % blink_interval;
     int blink = percent <= blink_threshold && blink_time > blink_interval / 2;
 
@@ -202,12 +205,12 @@ int GetRenderScaleGLRage(int unit)
 
 void __cdecl S_DrawHealthBar(int32_t percent)
 {
-    RenderBar(percent, 100, Tomb1M_BAR_LARA_HEALTH);
+    RenderBar(percent, 100, BT_LARA_HEALTH);
 }
 
 void __cdecl S_DrawAirBar(int32_t percent)
 {
-    RenderBar(percent, 100, Tomb1M_BAR_LARA_AIR);
+    RenderBar(percent, 100, BT_LARA_AIR);
 }
 
 void Tomb1MInjectSpecificOutput()
