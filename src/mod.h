@@ -55,15 +55,4 @@ struct {
     int fps_y;
 } Tomb1MData;
 
-void Tomb1MRenderBar(int value, int value_max, int bar_type);
-
-int Tomb1MGetRenderScale(int base);
-int Tomb1MGetRenderScaleGLRage(int unit);
-int Tomb1MGetRenderHeightDownscaled();
-int Tomb1MGetRenderWidthDownscaled();
-int Tomb1MGetRenderHeight();
-int Tomb1MGetRenderWidth();
-int Tomb1MGetSecretCount();
-void Tomb1MFixPyramidSecretTrigger();
-
 #endif

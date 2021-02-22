@@ -18,6 +18,17 @@
 void __cdecl S_DrawHealthBar(int percent);
 void __cdecl S_DrawAirBar(int percent);
 
+int GetRenderScaleGLRage(int unit);
+void RenderBar(int value, int value_max, int bar_type);
+
+#ifdef TOMB1M_FEAT_UI
+int GetRenderScale(int base);
+int GetRenderHeightDownscaled();
+int GetRenderWidthDownscaled();
+int GetRenderHeight();
+int GetRenderWidth();
+#endif
+
 void Tomb1MInjectSpecificOutput();
 
 #endif

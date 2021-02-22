@@ -295,10 +295,10 @@ int32_t __cdecl S_LoadLevel(int level_id)
 
 #ifdef TOMB1M_FEAT_LEVEL_FIXES
     if (Tomb1MConfig.fix_pyramid_secret_trigger) {
-        Tomb1MFixPyramidSecretTrigger();
+        FixPyramidSecretTrigger();
     }
     if (Tomb1MConfig.fix_hardcoded_secret_counts) {
-        SecretTotals[level_id] = Tomb1MGetSecretCount();
+        SecretTotals[level_id] = GetSecretCount();
     }
 #endif
 
@@ -353,6 +353,146 @@ void __cdecl FindCdDrive()
 
     ShowFatalError("ERROR: Please insert TombRaider CD");
 }
+
+#ifdef TOMB1M_FEAT_LEVEL_FIXES
+int GetSecretCount()
+{
+    int count = 0;
+    uint32_t secrets = 0;
+
+    for (int i = 0; i < RoomCount; i++) {
+        ROOM_INFO* r = &RoomInfo[i];
+        FLOOR_INFO* floor = &r->floor[0];
+        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
+            int k = floor->index;
+            if (!k) {
+                continue;
+            }
+
+            while (1) {
+                uint16_t floor = FloorData[k++];
+
+                switch (floor & DATA_TYPE) {
+                case FT_DOOR:
+                case FT_ROOF:
+                case FT_TILT:
+                    k++;
+                    break;
+
+                case FT_LAVA:
+                    break;
+
+                case FT_TRIGGER: {
+                    uint16_t trig_type = (floor & 0x3F00) >> 8;
+                    k++; // skip basic trigger stuff
+
+                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                        || trig_type == TT_PICKUP) {
+                        k++;
+                    }
+
+                    while (1) {
+                        int16_t command = FloorData[k++];
+                        if (TRIG_BITS(command) == TO_CAMERA) {
+                            k++;
+                        } else if (TRIG_BITS(command) == TO_SECRET) {
+                            int16_t number = command & VALUE_BITS;
+                            if (!(secrets & (1 << number))) {
+                                secrets |= (1 << number);
+                                count++;
+                            }
+                        }
+
+                        if (command & END_BIT) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+
+                if (floor & END_BIT) {
+                    break;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
+void FixPyramidSecretTrigger()
+{
+    if (CurrentLevel != LV_LEVEL10C) {
+        return;
+    }
+
+    uint32_t global_secrets = 0;
+
+    for (int i = 0; i < RoomCount; i++) {
+        uint32_t room_secrets = 0;
+        ROOM_INFO* r = &RoomInfo[i];
+        FLOOR_INFO* floor = &r->floor[0];
+        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
+            int k = floor->index;
+            if (!k) {
+                continue;
+            }
+
+            while (1) {
+                uint16_t floor = FloorData[k++];
+
+                switch (floor & DATA_TYPE) {
+                case FT_DOOR:
+                case FT_ROOF:
+                case FT_TILT:
+                    k++;
+                    break;
+
+                case FT_LAVA:
+                    break;
+
+                case FT_TRIGGER: {
+                    uint16_t trig_type = (floor & 0x3F00) >> 8;
+                    k++; // skip basic trigger stuff
+
+                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                        || trig_type == TT_PICKUP) {
+                        k++;
+                    }
+
+                    while (1) {
+                        int16_t* command = &FloorData[k++];
+                        if (TRIG_BITS(*command) == TO_CAMERA) {
+                            k++;
+                        } else if (TRIG_BITS(*command) == TO_SECRET) {
+                            int16_t number = *command & VALUE_BITS;
+                            if (global_secrets & (1 << number) && number == 0) {
+                                // the secret number was already used.
+                                // update the number to 2.
+                                *command |= 2;
+                            } else {
+                                room_secrets |= (1 << number);
+                            }
+                        }
+
+                        if (*command & END_BIT) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+
+                if (floor & END_BIT) {
+                    break;
+                }
+            }
+        }
+        global_secrets |= room_secrets;
+    }
+}
+#endif
 
 void Tomb1MInjectSpecificFile()
 {

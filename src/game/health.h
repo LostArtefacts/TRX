@@ -12,6 +12,10 @@ void __cdecl AddDisplayPickup(int16_t objnum);
 void __cdecl InitialisePickUpDisplay();
 void __cdecl DrawPickups();
 
+#ifdef TOMB1M_FEAT_GAMEPLAY
+void __cdecl DrawEnemyBar();
+#endif
+
 void Tomb1MInjectGameHealth();
 
 #endif

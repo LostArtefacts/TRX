@@ -1,13 +1,14 @@
 #include "game/option.h"
 #include "game/text.h"
 #include "game/vars.h"
+#include "specific/output.h"
 #include "mod.h"
 #include "util.h"
 
 void S_ShowControls()
 {
 #ifdef TOMB1M_FEAT_UI
-    int16_t centre = Tomb1MGetRenderWidthDownscaled() / 2;
+    int16_t centre = GetRenderWidthDownscaled() / 2;
 #else
     int16_t centre = PhdWinWidth / 2;
 #endif

@@ -3,6 +3,7 @@
 #include "game/vars.h"
 #include "game/types.h"
 #include "specific/frontend.h"
+#include "specific/output.h"
 #include "mod.h"
 #include "util.h"
 #include <string.h>
@@ -295,7 +296,7 @@ void __cdecl T_DrawText()
                 int fps_y = 30;
 #ifdef TOMB1M_FEAT_UI
                 if (!Tomb1MConfig.enable_enhanced_ui
-                    && Tomb1MGetRenderScaleGLRage(1) > 1) {
+                    && GetRenderScaleGLRage(1) > 1) {
                     fps_x = Tomb1MData.fps_x;
                     fps_y = Tomb1MData.fps_y;
                 }
@@ -343,15 +344,15 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
 #ifdef TOMB1M_FEAT_UI
     if (Tomb1MConfig.enable_enhanced_ui) {
         if (textstring->flags & TF_CENTRE_H) {
-            xpos += (Tomb1MGetRenderWidthDownscaled() - textwidth) / 2;
+            xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
         } else if (textstring->flags & TF_RIGHT) {
-            xpos += Tomb1MGetRenderWidthDownscaled() - textwidth;
+            xpos += GetRenderWidthDownscaled() - textwidth;
         }
 
         if (textstring->flags & TF_CENTRE_V) {
-            ypos += Tomb1MGetRenderHeightDownscaled() / 2;
+            ypos += GetRenderHeightDownscaled() / 2;
         } else if (textstring->flags & TF_BOTTOM) {
-            ypos += Tomb1MGetRenderHeightDownscaled();
+            ypos += GetRenderHeightDownscaled();
         }
     } else {
 #else
@@ -401,10 +402,10 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sv = textstring->scale_v;
 #ifdef TOMB1M_FEAT_UI
         if (Tomb1MConfig.enable_enhanced_ui) {
-            sx = Tomb1MGetRenderScale(sx);
-            sy = Tomb1MGetRenderScale(sy);
-            sh = Tomb1MGetRenderScale(sh);
-            sv = Tomb1MGetRenderScale(sv);
+            sx = GetRenderScale(sx);
+            sy = GetRenderScale(sy);
+            sh = GetRenderScale(sh);
+            sv = GetRenderScale(sv);
         }
 #endif
         S_DrawScreenSprite2d(
@@ -443,10 +444,10 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     sv = bheight;
 #ifdef TOMB1M_FEAT_UI
     if (Tomb1MConfig.enable_enhanced_ui) {
-        sx = Tomb1MGetRenderScale(sx);
-        sy = Tomb1MGetRenderScale(sy);
-        sh = Tomb1MGetRenderScale(sh);
-        sv = Tomb1MGetRenderScale(sv);
+        sx = GetRenderScale(sx);
+        sy = GetRenderScale(sy);
+        sh = GetRenderScale(sh);
+        sv = GetRenderScale(sv);
     }
 #endif
 
@@ -492,10 +493,10 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sv = bheight;
 #ifdef TOMB1M_FEAT_UI
         if (Tomb1MConfig.enable_enhanced_ui) {
-            sx = Tomb1MGetRenderScale(sx);
-            sy = Tomb1MGetRenderScale(sy);
-            sh = Tomb1MGetRenderScale(sh);
-            sv = Tomb1MGetRenderScale(sv);
+            sx = GetRenderScale(sx);
+            sy = GetRenderScale(sy);
+            sh = GetRenderScale(sh);
+            sv = GetRenderScale(sv);
         }
 #endif
         S_DrawScreenBox(

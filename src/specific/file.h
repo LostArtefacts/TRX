@@ -13,7 +13,12 @@ int32_t __cdecl LoadObjects(FILE* fp);
 int32_t __cdecl LoadItems(FILE* handle);
 int32_t __cdecl S_LoadLevel(int level_id);
 const char* __cdecl GetFullPath(const char* filename);
-void _cdecl FindCdDrive();
+void __cdecl FindCdDrive();
+
+#ifdef TOMB1M_FEAT_LEVEL_FIXES
+void FixPyramidSecretTrigger();
+int32_t GetSecretCount();
+#endif
 
 void Tomb1MInjectSpecificFile();
 
