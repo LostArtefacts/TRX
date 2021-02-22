@@ -8,7 +8,6 @@
 
 void DrawGameInfo()
 {
-    DrawAmmoInfo();
     if (OverlayFlag > 0) {
         DrawHealthBar();
         DrawAirBar();
@@ -17,6 +16,11 @@ void DrawGameInfo()
 #endif
         DrawPickups();
     }
+
+    // NOTE: this was drawn before the healthbars in the original code.
+    // In T1M it's called after drawing the healthbars, as it updates the
+    // healthbars position and thus vertical offset for the ammo text.
+    DrawAmmoInfo();
 
     T_DrawText();
 }
@@ -119,6 +123,12 @@ void DrawAmmoInfo()
         AmmoText = T_Print(-17, 22, 0, ammostring);
         T_RightAlign(AmmoText, 1);
     }
+
+#ifdef T1M_FEAT_UI
+    AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
+        ? 30 + (int)(BarOffsetY[T1M_BL_TOP_RIGHT] * 10 / GetRenderScale(10))
+        : 22;
+#endif
 }
 
 void MakeAmmoString(char* string)
