@@ -153,7 +153,11 @@ void __cdecl DrawPickups()
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
+#ifdef TOMB1M_FEAT_UI
                 S_DrawUISprite(x, y, GetRenderScale(12288), pu->sprnum, 4096);
+#else
+                S_DrawUISprite(x, y, 12288, pu->sprnum, 4096);
+#endif
                 x -= sprite_width;
             }
         }
