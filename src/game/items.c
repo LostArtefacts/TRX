@@ -15,7 +15,7 @@ void __cdecl InitialiseFXArray()
     fx->next_fx = NO_ITEM;
 }
 
-void Tomb1MInjectGameItems()
+void T1MInjectGameItems()
 {
     INJECT(0x00422250, InitialiseFXArray);
 }

@@ -10,6 +10,6 @@
 
 int32_t __cdecl StartDemo();
 
-void Tomb1MInjectGameDemo();
+void T1MInjectGameDemo();
 
 #endif

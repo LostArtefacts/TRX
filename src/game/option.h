@@ -3,6 +3,6 @@
 
 void __cdecl S_ShowControls();
 
-void Tomb1MInjectGameOption();
+void T1MInjectGameOption();
 
 #endif

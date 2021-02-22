@@ -16,6 +16,6 @@
 
 void __cdecl FxChainBlock(ITEM_INFO* item);
 
-void Tomb1MInjectGameEffects();
+void T1MInjectGameEffects();
 
 #endif

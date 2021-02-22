@@ -1007,7 +1007,7 @@ void __cdecl InitialiseObjects()
 #endif
 }
 
-void Tomb1MInjectGameSetup()
+void T1MInjectGameSetup()
 {
     INJECT(0x004363E0, BaddyObjects);
     INJECT(0x00437010, TrapObjects);

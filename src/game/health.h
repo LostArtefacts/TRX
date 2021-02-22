@@ -16,6 +16,6 @@ void __cdecl DrawPickups();
 void __cdecl DrawEnemyBar();
 #endif
 
-void Tomb1MInjectGameHealth();
+void T1MInjectGameHealth();
 
 #endif

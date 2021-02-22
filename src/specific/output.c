@@ -206,7 +206,7 @@ void __cdecl S_DrawAirBar(int32_t percent)
     RenderBar(percent, 100, BT_LARA_AIR);
 }
 
-void Tomb1MInjectSpecificOutput()
+void T1MInjectSpecificOutput()
 {
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);

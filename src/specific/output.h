@@ -37,6 +37,6 @@ int GetRenderHeight();
 int GetRenderWidth();
 #endif
 
-void Tomb1MInjectSpecificOutput();
+void T1MInjectSpecificOutput();
 
 #endif

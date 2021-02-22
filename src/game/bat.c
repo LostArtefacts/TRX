@@ -81,7 +81,7 @@ void __cdecl BatControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void Tomb1MInjectGameBat()
+void T1MInjectGameBat()
 {
     INJECT(0x0040D470, BatControl);
 }

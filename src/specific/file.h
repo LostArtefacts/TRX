@@ -20,6 +20,6 @@ void FixPyramidSecretTrigger();
 int32_t GetSecretCount();
 #endif
 
-void Tomb1MInjectSpecificFile();
+void T1MInjectSpecificFile();
 
 #endif

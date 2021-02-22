@@ -5,6 +5,6 @@
 
 void __cdecl BatControl(int16_t item_num);
 
-void Tomb1MInjectGameBat();
+void T1MInjectGameBat();
 
 #endif

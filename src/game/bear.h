@@ -5,6 +5,6 @@
 
 void __cdecl BearControl(int16_t item_num);
 
-void Tomb1MInjectGameBear();
+void T1MInjectGameBear();
 
 #endif

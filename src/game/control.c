@@ -149,7 +149,7 @@ int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
     return 0;
 }
 
-void Tomb1MInjectGameControl()
+void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
 }

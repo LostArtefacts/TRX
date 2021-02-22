@@ -29,6 +29,6 @@ void __cdecl T_RemoveAllPrints();
 void __cdecl T_DrawText();
 void __cdecl T_DrawThisText(TEXTSTRING* textstring);
 
-void Tomb1MInjectGameText();
+void T1MInjectGameText();
 
 #endif

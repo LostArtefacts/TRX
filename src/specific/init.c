@@ -92,7 +92,7 @@ void __cdecl S_SeedRandom()
     SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-void Tomb1MInjectSpecificInit()
+void T1MInjectSpecificInit()
 {
     INJECT(0x0041E100, S_InitialiseSystem);
     INJECT(0x0041E2C0, init_game_malloc);

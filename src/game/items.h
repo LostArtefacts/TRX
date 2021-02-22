@@ -11,6 +11,6 @@
 
 void __cdecl InitialiseFXArray();
 
-void Tomb1MInjectGameItems();
+void T1MInjectGameItems();
 
 #endif

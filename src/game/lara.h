@@ -198,12 +198,12 @@ void Tomb1MLookUpDown();
 void Tomb1MResetLook();
 void Tomb1MLaraCheatGetStuff();
 
-void Tomb1MInjectGameLara();
-void Tomb1MInjectGameLaraMisc();
-void Tomb1MInjectGameLaraSurf();
-void Tomb1MInjectGameLaraSwim();
-void Tomb1MInjectGameLaraFire();
-void Tomb1MInjectGameLaraGun1();
-void Tomb1MInjectGameLaraGun2();
+void T1MInjectGameLara();
+void T1MInjectGameLaraMisc();
+void T1MInjectGameLaraSurf();
+void T1MInjectGameLaraSwim();
+void T1MInjectGameLaraFire();
+void T1MInjectGameLaraGun1();
+void T1MInjectGameLaraGun2();
 
 #endif

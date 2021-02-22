@@ -212,7 +212,7 @@ void __cdecl BearControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void Tomb1MInjectGameBear()
+void T1MInjectGameBear()
 {
     INJECT(0x0040D600, BearControl);
 }

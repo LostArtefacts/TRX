@@ -1321,7 +1321,7 @@ int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
     }
 }
 
-void Tomb1MInjectGameDraw()
+void T1MInjectGameDraw()
 {
     INJECT(0x00416BE0, DrawPhaseCinematic);
     INJECT(0x00416C70, DrawPhaseGame);

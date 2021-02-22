@@ -681,7 +681,7 @@ void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraColSwanDive,  LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
 };
 
-void Tomb1MInjectGameLaraMisc()
+void T1MInjectGameLaraMisc()
 {
     INJECT(0x00427850, LaraControl);
     INJECT(0x00427BD0, LaraSwapMeshExtra);

@@ -238,7 +238,7 @@ void __cdecl AnimatePistols(int32_t weapon_type)
     Lara.left_arm.frame_number = anil;
 }
 
-void Tomb1MInjectGameLaraGun2()
+void T1MInjectGameLaraGun2()
 {
     INJECT(0x00426470, draw_pistols);
     INJECT(0x00426830, draw_pistol_meshes);

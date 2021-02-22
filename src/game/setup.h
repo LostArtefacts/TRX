@@ -12,6 +12,6 @@ void __cdecl TrapObjects();
 void __cdecl ObjectObjects();
 void __cdecl InitialiseObjects();
 
-void Tomb1MInjectGameSetup();
+void T1MInjectGameSetup();
 
 #endif

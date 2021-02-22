@@ -497,7 +497,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     }
 }
 
-void Tomb1MInjectGameText()
+void T1MInjectGameText()
 {
     INJECT(0x00439750, T_InitPrint);
     INJECT(0x00439780, T_Print);

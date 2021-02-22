@@ -388,7 +388,7 @@ void __cdecl LaraWaterCurrent(COLL_INFO* coll)
     coll->old.z = item->pos.z;
 }
 
-void Tomb1MInjectGameLaraSwim()
+void T1MInjectGameLaraSwim()
 {
     INJECT(0x00428F10, LaraUnderWater);
 

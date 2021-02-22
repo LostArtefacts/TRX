@@ -15,7 +15,7 @@ void Tomb1MTraceFunc(
     fflush(stdout);
 }
 
-void Tomb1MInjectFunc(void* from, void* to)
+void T1MInjectFunc(void* from, void* to)
 {
     DWORD tmp;
     TRACE("Patching %p to %p", from, to);

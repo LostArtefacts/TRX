@@ -2264,7 +2264,7 @@ int32_t __cdecl LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
     return 0;
 }
 
-void Tomb1MInjectGameLara()
+void T1MInjectGameLara()
 {
     INJECT(0x00422480, LaraAboveWater);
 

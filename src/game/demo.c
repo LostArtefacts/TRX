@@ -62,7 +62,7 @@ int32_t __cdecl StartDemo()
     return GF_EXIT_TO_TITLE;
 }
 
-void Tomb1MInjectGameDemo()
+void T1MInjectGameDemo()
 {
     INJECT(0x00415B70, StartDemo);
 }

@@ -176,7 +176,7 @@ void __cdecl LevelStats(int level_id)
     TempVideoRemove();
 }
 
-void Tomb1MInjectSpecificGame()
+void T1MInjectSpecificGame()
 {
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D950, LevelIsValid);

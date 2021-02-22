@@ -175,7 +175,7 @@ void __cdecl AddDisplayPickup(int16_t objnum)
     }
 }
 
-void Tomb1MInjectGameHealth()
+void T1MInjectGameHealth()
 {
     INJECT(0x0041DD00, DrawGameInfo);
     INJECT(0x0041DEA0, DrawHealthBar);

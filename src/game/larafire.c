@@ -498,7 +498,7 @@ void __cdecl HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
     }
 }
 
-void Tomb1MInjectGameLaraFire()
+void T1MInjectGameLaraFire()
 {
     INJECT(0x00426BD0, LaraGun);
     INJECT(0x00426E60, InitialiseNewWeapon);

@@ -71,7 +71,7 @@ void __cdecl CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         && (LaraItem->pos.y < item->pos.y + STEP_L);
 }
 
-void Tomb1MInjectGameBox()
+void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
     INJECT(0x0040DAA0, CreatureAIInfo);

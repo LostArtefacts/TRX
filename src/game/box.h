@@ -16,6 +16,6 @@
 void __cdecl InitialiseCreature(int16_t item_num);
 void __cdecl CreatureAIInfo(ITEM_INFO* item, AI_INFO* info);
 
-void Tomb1MInjectGameBox();
+void T1MInjectGameBox();
 
 #endif

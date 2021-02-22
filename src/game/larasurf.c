@@ -381,7 +381,7 @@ int32_t __cdecl LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
     return 1;
 }
 
-void Tomb1MInjectGameLaraSurf()
+void T1MInjectGameLaraSurf()
 {
     INJECT(0x004286E0, LaraSurface);
 

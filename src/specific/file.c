@@ -494,7 +494,7 @@ void FixPyramidSecretTrigger()
 }
 #endif
 
-void Tomb1MInjectSpecificFile()
+void T1MInjectSpecificFile()
 {
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041B710, LoadObjects);

@@ -18,12 +18,12 @@ typedef struct {
 
 void Tomb1MTraceFunc(
     const char* file, int line, const char* func, const char* fmt, ...);
-void Tomb1MInjectFunc(void* from, void* to);
+void T1MInjectFunc(void* from, void* to);
 void Tomb1MPrintStackTrace();
 
 #define INJECT(from, to)                                                       \
     {                                                                          \
-        Tomb1MInjectFunc((void*)from, (void*)to);                              \
+        T1MInjectFunc((void*)from, (void*)to);                                 \
     }
 
 #endif

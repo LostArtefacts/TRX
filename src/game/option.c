@@ -147,7 +147,7 @@ void S_ShowControls()
     }
 }
 
-void Tomb1MInjectGameOption()
+void T1MInjectGameOption()
 {
     INJECT(0x0042F230, S_ShowControls);
 }

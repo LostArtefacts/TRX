@@ -11,6 +11,6 @@ void __cdecl game_free(int free_size);
 void __cdecl CalculateWibbleTable();
 void __cdecl S_SeedRandom();
 
-void Tomb1MInjectSpecificInit();
+void T1MInjectSpecificInit();
 
 #endif

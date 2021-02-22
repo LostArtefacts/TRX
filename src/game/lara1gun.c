@@ -228,7 +228,7 @@ void __cdecl FireShotgun()
     }
 }
 
-void Tomb1MInjectGameLaraGun1()
+void T1MInjectGameLaraGun1()
 {
     INJECT(0x00425E30, draw_shotgun);
     INJECT(0x00425F50, undraw_shotgun);

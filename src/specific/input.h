@@ -8,6 +8,6 @@
 
 void __cdecl S_UpdateInput();
 
-void Tomb1MInjectSpecificInput();
+void T1MInjectSpecificInput();
 
 #endif

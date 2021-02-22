@@ -45,6 +45,6 @@ int32_t __cdecl GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate);
 int16_t* __cdecl GetBoundsAccurate(ITEM_INFO* item);
 int16_t* __cdecl GetBestFrame(ITEM_INFO* item);
 
-void Tomb1MInjectGameDraw();
+void T1MInjectGameDraw();
 
 #endif

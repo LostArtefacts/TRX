@@ -15,6 +15,6 @@ int32_t __cdecl GetRandomControl();
 int32_t __cdecl GetRandomDraw();
 void __cdecl LevelStats(int level_id);
 
-void Tomb1MInjectSpecificGame();
+void T1MInjectSpecificGame();
 
 #endif

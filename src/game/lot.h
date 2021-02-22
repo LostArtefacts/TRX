@@ -10,6 +10,6 @@
 
 void __cdecl InitialiseLOTArray();
 
-void Tomb1MInjectGameLOT();
+void T1MInjectGameLOT();
 
 #endif

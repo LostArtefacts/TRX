@@ -178,7 +178,7 @@ void __cdecl S_UpdateInput()
     return;
 }
 
-void Tomb1MInjectSpecificInput()
+void T1MInjectSpecificInput()
 {
     INJECT(0x0041E550, S_UpdateInput);
 }
