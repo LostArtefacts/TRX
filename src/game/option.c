@@ -108,22 +108,22 @@ void S_ShowControls()
     if (!CtrlTextA[0]) {
         switch (HiRes) {
 #ifndef TOMB1M_FEAT_UI
-            case 0:
-                hpos = centre - 70;
-                break;
+        case 0:
+            hpos = centre - 70;
+            break;
 
-            case 1:
-                hpos = centre - 100;
-                break;
+        case 1:
+            hpos = centre - 100;
+            break;
 
-            case 3:
-                hpos = centre - 150;
-                break;
+        case 3:
+            hpos = centre - 150;
+            break;
 #endif
 
-            default:
-                hpos = centre - 130;
-                break;
+        default:
+            hpos = centre - 130;
+            break;
         }
 
         CtrlTextA[0] = T_Print(hpos, -25, 0, "Run");
