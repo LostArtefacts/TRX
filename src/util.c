@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <dbghelp.h>
 
-void Tomb1MTraceFunc(
+void T1MTraceFunc(
     const char* file, int line, const char* func, const char* fmt, ...)
 {
     va_list va;
@@ -31,7 +31,7 @@ void T1MInjectFunc(void* from, void* to)
     //((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP));
 }
 
-void Tomb1MPrintStackTrace()
+void T1MPrintStackTrace()
 {
     const size_t MaxNameLen = 255;
     BOOL result;

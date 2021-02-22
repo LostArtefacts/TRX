@@ -12,7 +12,8 @@
 #include "config.h"
 #include "util.h"
 
-void Tomb1MLookLeftRight()
+#ifdef TOMB1M_FEAT_GAMEPLAY
+void LookLeftRight()
 {
     Camera.type = CAM_LOOK;
     if (Input & IN_LEFT) {
@@ -31,7 +32,7 @@ void Tomb1MLookLeftRight()
     }
 }
 
-void __cdecl Tomb1MLookUpDown()
+void __cdecl LookUpDown()
 {
     Camera.type = CAM_LOOK;
     if (Input & IN_FORWARD) {
@@ -50,7 +51,7 @@ void __cdecl Tomb1MLookUpDown()
     }
 }
 
-void Tomb1MResetLook()
+void ResetLook()
 {
     if (Camera.type == CAM_LOOK) {
         return;
@@ -69,6 +70,7 @@ void Tomb1MResetLook()
     }
     Lara.torso_y_rot = Lara.head_y_rot;
 }
+#endif
 
 void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -87,9 +89,9 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 #ifdef TOMB1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
-            Tomb1MLookLeftRight();
+            LookLeftRight();
         } else {
-            Tomb1MResetLook();
+            ResetLook();
         }
     }
 #endif

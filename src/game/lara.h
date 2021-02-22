@@ -193,10 +193,15 @@ void __cdecl undraw_pistol_mesh_right(int32_t weapon_type);
 void __cdecl PistolHandler(int32_t weapon_type);
 void __cdecl AnimatePistols(int32_t weapon_type);
 
-void Tomb1MLookLeftRight();
-void Tomb1MLookUpDown();
-void Tomb1MResetLook();
-void Tomb1MLaraCheatGetStuff();
+#ifdef TOMB1M_FEAT_GAMEPLAY
+void LookLeftRight();
+void LookUpDown();
+void ResetLook();
+#endif
+
+#ifdef TOMB1M_FEAT_CHEATS
+void LaraCheatGetStuff();
+#endif
 
 void T1MInjectGameLara();
 void T1MInjectGameLaraMisc();

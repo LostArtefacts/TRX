@@ -27,9 +27,9 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 #ifdef TOMB1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
-            Tomb1MLookLeftRight();
+            LookLeftRight();
         } else {
-            Tomb1MResetLook();
+            ResetLook();
         }
     }
 #endif
@@ -163,7 +163,7 @@ void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 #ifdef TOMB1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
-            Tomb1MLookUpDown();
+            LookUpDown();
         }
     }
 #endif

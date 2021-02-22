@@ -21,7 +21,7 @@ void __cdecl LaraControl(int16_t item_num)
 
 #ifdef TOMB1M_FEAT_CHEATS
     if (Input & IN_STUFFCHEAT) {
-        Tomb1MLaraCheatGetStuff();
+        LaraCheatGetStuff();
     }
 
     if (Lara.water_status != LWS_CHEAT && (Input & IN_DOZYCHEAT)) {
@@ -569,7 +569,7 @@ void __cdecl LaraInitialiseMeshes(int32_t level_num)
     }
 }
 
-void Tomb1MLaraCheatGetStuff()
+void LaraCheatGetStuff()
 {
     if (CurrentLevel == LV_GYM) {
         return;
