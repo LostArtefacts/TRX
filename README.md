@@ -16,61 +16,8 @@ requires you to have the TombATI patch installed to work.
 
 ## Configuring
 
-To configure Tomb1Main, edit the `Tomb1Main.json` file in your text editor such as
-Notepad.
-
-Currently the following configuration options are supported:
-
-- `disable_medpacks`: removes all medpacks (for No Meds challenge runs).
-- `disable_magnums`: removes all magnum guns and ammo pickups.
-- `disable_uzis`: removes all UZI guns and ammo pickups.
-- `disable_shotgun`: removes all shotgun and shotgun shells pickups.
-- `disable_healing_between_levels`: disables healing Lara between level reloads
-  (for No Heal challenge runs).
-- `enable_red_healthbar`: replaces the default golden healthbar with a red one.
-- `enable_enemy_healthbar`: enables showing healthbar for the active enemy.
-- `enable_enhanced_look`: allows the player to look while running, jumping
-  etc. (similar to TR2 style).
-- `enable_enhanced_ui`: enables UI scaling of in-game inventory text and ammo
-  text (useful for 4k screens).
-- `enable_shotgun_flash`: draws flame when firing a shotgun, like for other guns.
-- `enable_numeric_keys`: enables quick weapon draws and medpack usage.
-    - <kbd>1</kbd>: draw pistols
-    - <kbd>2</kbd>: draw shotgun
-    - <kbd>3</kbd>: draw magnums
-    - <kbd>4</kbd>: draw UZI
-    - <kbd>8</kbd>: use small medpack
-    - <kbd>9</kbd>: use large medpack
-- `healthbar_location`: location where the healthbar is displayed. Possible values:
-    - `top-left`
-    - `top-center`
-    - `top-right`
-    - `bottom-left`
-    - `bottom-center`
-    - `bottom-right`
-- `airbar_location`: location where the airbar is displayed.
-- `enemy_healthbar_location`: location where the enemy healthbar is displayed.
-- `healthbar_showing_mode`: change when the healthbar is displayed.
-  Possible values:
-    - `always`: always show the healthbar
-    - `flashing`: show the healthbar only when Lara's health is 20% or below
-    - `default`: show the healthbar at the beginning of a level, after
-      getting hit or while having weapons equipped (as in OG)
-- `enable_cheats`: enables various cheats:
-    - <kbd>F10</kbd>: immediately end the level.
-    - <kbd>F11</kbd>: heal Lara. Hold <kbd>WALK</kbd> key to hurt instead.
-    - <kbd>I</kbd>: gives Lara all the guns, ammo, medpacks and plot items for
-      the current level.
-    - <kbd>O</kbd>: enable DOZY cheat (swimming midair). Press the
-      <kbd>WALK</kbd> key to exit.
-- `fix_end_of_level_freeze`: fix game freeze when ending the level with the
-  Action key held.
-- `fix_tihocan_secret_sound`: disable the secret sound incorrectly playing
-  during using the golden key in Tomb of Tihocan.
-- `fix_pyramid_secret_trigger`: fix the secret trigger in the final level not
-  working.
-- `fix_hardcoded_secret_counts`: calculate the number of secrets based on a
-  trigger count within a file rather than using hardcoded values.
+To configure Tomb1Main, edit the `Tomb1Main.json` file in your text editor such
+as Notepad. All the configuration is explained in that file.
 
 ## Decompilation progress
 

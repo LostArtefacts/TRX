@@ -1,22 +1,86 @@
 {
+    // Disables healing Lara between level reloads (for No Heal challenge runs).
     "disable_healing_between_levels": false,
+
+    // Removes all medpacks (for No Meds challenge runs).
     "disable_medpacks": false,
+
+    // Removes all magnum guns and ammo pickups.
     "disable_magnums": false,
+
+    // Removes all UZI guns and ammo pickups.
     "disable_uzis": false,
+
+    // Removes all shotgun and shotgun shells pickups.
     "disable_shotgun": false,
+
+    // Replaces the default golden healthbar with a red one.
     "enable_red_healthbar": true,
+
+    // Enables showing healthbar for the active enemy.
     "enable_enemy_healthbar": true,
+
+    // Allows the player to look while running, jumping etc.
+    // (similar to TR2 style).
     "enable_enhanced_look": true,
+
+    // Enables UI scaling of in-game inventory text and ammo text (useful for
+    // 4k screens).
     "enable_enhanced_ui": true,
+
+    // Draws flame when firing a shotgun, like for other guns.
     "enable_shotgun_flash": true,
+
+    // Enables quick weapon draws and medpack usage.
+    // - 1: draw pistols
+    // - 2: draw shotgun
+    // - 3: draw magnums
+    // - 4: draw UZI
+    // - 8: use small medpack
+    // - 9: use large medpack
     "enable_numeric_keys": true,
+
+    // Enables various cheats:
+    // - F10: immediately end the level.
+    // - F11: heal Lara. Hold WALK key to hurt instead.
+    // - I: gives Lara all the guns, ammo, medpacks and plot items for the
+    //   current level.
+    // - O: enable DOZY cheat (swimming midair). Press the WALK key to exit.
     "enable_cheats": false,
+
+    // Changes how the healthbar is displayed. Possible values:
+    // - always: always show the healthbar
+    // - flashing: show the healthbar only when Lara's health is 20% or below
+    // - default: show the healthbar at the beginning of a level, after
+    //   getting hit or while having weapons equipped (as in OG)
     "healthbar_showing_mode": "flashing",
+
+    // Location where the healthbar is displayed. Possible values:
+    // - top-left
+    // - top-center
+    // - top-right
+    // - bottom-left
+    // - bottom-center
+    // - bottom-right
     "healthbar_location": "top-left",
+
+    // Location where the airbar is displayed.
     "airbar_location": "top-right",
+
+    // Location where the enemy healthbar is displayed.
     "enemy_healthbar_location": "bottom-left",
+
+    // Fixes game freeze when ending the level with the Action key held.
     "fix_end_of_level_freeze": true,
+
+    // Disables the secret sound incorrectly playing during using the golden
+    // key in Tomb of Tihocan.
     "fix_tihocan_secret_sound": true,
+
+    // Fixes the secret trigger in the final level not working.
     "fix_pyramid_secret_trigger": true,
+
+    // Enables calculating the number of secrets based on a trigger count
+    // within a file rather than using hardcoded values.
     "fix_hardcoded_secret_counts": true
 }
