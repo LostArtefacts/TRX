@@ -1,7 +1,7 @@
-#include "game/data.h"
 #include "game/game.h"
 #include "game/savegame.h"
 #include "game/text.h"
+#include "game/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/input.h"

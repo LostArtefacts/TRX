@@ -1,4 +1,4 @@
-#include "game/data.h"
+#include "game/vars.h"
 #include "game/items.h"
 #include "game/setup.h"
 #include "specific/file.h"

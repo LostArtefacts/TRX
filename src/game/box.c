@@ -1,8 +1,8 @@
 #include "3dsystem/phd_math.h"
-#include "game/draw.h"
 #include "game/box.h"
-#include "game/data.h"
+#include "game/draw.h"
 #include "game/game.h"
+#include "game/vars.h"
 #include "util.h"
 
 void __cdecl InitialiseCreature(int16_t item_num)

@@ -1,6 +1,6 @@
-#include "game/data.h"
 #include "game/option.h"
 #include "game/text.h"
+#include "game/vars.h"
 #include "mod.h"
 #include "util.h"
 

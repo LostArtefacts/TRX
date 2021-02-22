@@ -1,9 +1,9 @@
 #include "game/bat.h"
 #include "game/box.h"
-#include "game/data.h"
 #include "game/effects.h"
 #include "game/lot.h"
 #include "game/types.h"
+#include "game/vars.h"
 #include "util.h"
 
 #define BAT_ATTACK_DAMAGE 2

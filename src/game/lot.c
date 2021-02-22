@@ -1,5 +1,5 @@
-#include "game/data.h"
 #include "game/lot.h"
+#include "game/vars.h"
 #include "specific/init.h"
 #include "util.h"
 

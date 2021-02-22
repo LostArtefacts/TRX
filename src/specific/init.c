@@ -1,5 +1,5 @@
 #include "3dsystem/phd_math.h"
-#include "game/data.h"
+#include "game/vars.h"
 #include "game/game.h"
 #include "specific/file.h"
 #include "specific/init.h"

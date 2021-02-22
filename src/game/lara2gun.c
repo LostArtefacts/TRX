@@ -1,6 +1,6 @@
-#include "game/data.h"
 #include "game/effects.h"
 #include "game/lara.h"
+#include "game/vars.h"
 #include "util.h"
 
 void __cdecl draw_pistols(int32_t weapon_type)

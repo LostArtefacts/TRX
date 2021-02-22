@@ -1,13 +1,13 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "game/data.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/lara.h"
 #include "game/misc.h"
 #include "game/sphere.h"
+#include "game/vars.h"
 #include "util.h"
 
 void __cdecl LaraGun()

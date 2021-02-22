@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_DATA_H
-#define TOMB1MAIN_GAME_DATA_H
+#ifndef TOMB1MAIN_GAME_VARS_H
+#define TOMB1MAIN_GAME_VARS_H
 
 #include "game/const.h"
 #include "game/types.h"

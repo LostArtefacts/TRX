@@ -1,7 +1,7 @@
 #include "3dsystem/scalespr.h"
-#include "game/data.h"
 #include "game/health.h"
 #include "game/text.h"
+#include "game/vars.h"
 #include "specific/output.h"
 #include "mod.h"
 #include "util.h"

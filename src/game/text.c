@@ -1,9 +1,8 @@
 #include "3dsystem/scalespr.h"
-#include "game/data.h"
 #include "game/text.h"
-#include "mod.h"
+#include "game/vars.h"
 #include "specific/frontend.h"
-#include "types.h"
+#include "mod.h"
 #include "util.h"
 #include <string.h>
 

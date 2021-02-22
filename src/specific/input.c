@@ -1,4 +1,4 @@
-#include "game/data.h"
+#include "game/vars.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "mod.h"

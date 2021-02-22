@@ -1,11 +1,11 @@
 #include "game/bear.h"
 #include "game/box.h"
-#include "game/data.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/misc.h"
 #include "game/types.h"
+#include "game/vars.h"
 #include "util.h"
 
 #define BEAR_CHARGE_DAMAGE 3

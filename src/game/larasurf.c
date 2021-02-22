@@ -1,9 +1,10 @@
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/data.h"
 #include "game/lara.h"
 #include "game/misc.h"
+#include "game/vars.h"
+#include "util.h"
 
 void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 {
