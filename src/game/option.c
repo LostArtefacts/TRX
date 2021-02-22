@@ -2,7 +2,7 @@
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/output.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 void S_ShowControls()

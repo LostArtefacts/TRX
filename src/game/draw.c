@@ -7,7 +7,7 @@
 #include "game/health.h"
 #include "game/vars.h"
 #include "specific/output.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 int32_t __cdecl DrawPhaseCinematic()

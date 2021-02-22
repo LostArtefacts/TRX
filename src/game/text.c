@@ -4,7 +4,7 @@
 #include "game/types.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 #include <string.h>
 

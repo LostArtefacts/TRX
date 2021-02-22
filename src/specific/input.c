@@ -1,9 +1,9 @@
-#include "game/vars.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "mod.h"
+#include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
+#include "config.h"
 #include "util.h"
 #include <dinput.h>
 

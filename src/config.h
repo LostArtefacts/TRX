@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_MOD_H
-#define TOMB1MAIN_MOD_H
+#ifndef TOMB1MAIN_CONFIG_H
+#define TOMB1MAIN_CONFIG_H
 
 #include <stdint.h>
 
@@ -39,5 +39,7 @@ struct {
     int8_t fix_pyramid_secret_trigger;
     int8_t fix_hardcoded_secret_counts;
 } T1MConfig;
+
+int T1MReadConfig();
 
 #endif

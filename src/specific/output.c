@@ -1,7 +1,7 @@
 #include "3dsystem/3d_insert.h"
 #include "game/vars.h"
 #include "specific/output.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 #include <math.h>
 

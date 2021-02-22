@@ -8,7 +8,7 @@
 #include "game/misc.h"
 #include "game/vars.h"
 #include "specific/sndpc.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 void __cdecl LaraControl(int16_t item_num)

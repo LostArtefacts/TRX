@@ -17,7 +17,7 @@
 #include "game/vars.h"
 #include "game/warrior.h"
 #include "game/wolf.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 void __cdecl BaddyObjects()

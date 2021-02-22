@@ -1,6 +1,6 @@
 #include "game/effects.h"
 #include "game/vars.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 void __cdecl FxChainBlock(ITEM_INFO* item)

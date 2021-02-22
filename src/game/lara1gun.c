@@ -3,7 +3,7 @@
 #include "game/lara.h"
 #include "game/vars.h"
 #include "specific/input.h"
-#include "mod.h"
+#include "config.h"
 
 void __cdecl draw_shotgun()
 {

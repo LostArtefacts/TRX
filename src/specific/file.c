@@ -4,7 +4,7 @@
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/shed.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 #include <windows.h>
 

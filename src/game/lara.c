@@ -9,7 +9,7 @@
 #include "game/misc.h"
 #include "game/vars.h"
 #include "specific/init.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 void Tomb1MLookLeftRight()

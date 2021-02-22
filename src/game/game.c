@@ -6,7 +6,7 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "mod.h"
+#include "config.h"
 #include "util.h"
 
 int __cdecl LevelIsValid(int16_t level_number)
