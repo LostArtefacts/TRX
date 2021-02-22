@@ -147,7 +147,7 @@ void __cdecl S_UpdateInput()
         }
     }
 
-    if (IsSoftwareRenderer) {
+    if (IsHardwareRenderer) {
         if (KeyData->keymap[DIK_F3]) {
             AppSettings ^= 2u;
             do

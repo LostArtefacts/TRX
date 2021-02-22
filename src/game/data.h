@@ -92,7 +92,7 @@
 #define GroundZone2             ARRAY_(0x00462D80, int16_t*, [2])
 #define FlyZone                 ARRAY_(0x00462D90, int16_t*, [2])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
-#define IsSoftwareRenderer      VAR_U_(0x00463610, int32_t)
+#define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define AppSettings             VAR_U_(0x0045A240, uint32_t)
 #define JoyXPos                 VAR_U_(0x0045B958, int32_t)
 #define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
