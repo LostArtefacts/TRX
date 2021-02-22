@@ -13,6 +13,18 @@ typedef enum {
 } T1M_BAR_LOCATION;
 
 typedef enum {
+    T1M_BC_GOLD = 0,
+    T1M_BC_BLUE = 1,
+    T1M_BC_GREY = 2,
+    T1M_BC_RED = 3,
+    T1M_BC_SILVER = 4,
+    T1M_BC_GREEN = 5,
+    T1M_BC_GOLD2 = 6,
+    T1M_BC_BLUE2 = 7,
+    T1M_BC_PINK = 8,
+} T1M_BAR_COLOR;
+
+typedef enum {
     T1M_BSM_DEFAULT = 0,
     T1M_BSM_FLASHING = 1,
     T1M_BSM_ALWAYS = 2,
@@ -24,7 +36,6 @@ struct {
     int8_t disable_magnums;
     int8_t disable_uzis;
     int8_t disable_shotgun;
-    int8_t enable_red_healthbar;
     int8_t enable_enemy_healthbar;
     int8_t enable_enhanced_look;
     int8_t enable_enhanced_ui;
@@ -33,8 +44,11 @@ struct {
     int8_t enable_cheats;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
+    int8_t healthbar_color;
     int8_t airbar_location;
+    int8_t airbar_color;
     int8_t enemy_healthbar_location;
+    int8_t enemy_healthbar_color;
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;

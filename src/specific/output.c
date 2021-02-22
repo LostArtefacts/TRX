@@ -7,10 +7,18 @@
 
 #define COLOR_BAR_SIZE 5
 
-static int color_bar[][COLOR_BAR_SIZE] = {
-    { 8, 11, 8, 6, 24 },
-    { 32, 41, 32, 19, 21 },
-    { 18, 17, 18, 19, 21 },
+static int8_t color_bar_map[][COLOR_BAR_SIZE] = {
+    { 8, 11, 8, 6, 24 }, // gold
+    { 32, 41, 32, 19, 21 }, // blue
+#ifdef T1M_FEAT_UI
+    { 18, 17, 18, 19, 21 }, // grey
+    { 29, 30, 29, 28, 26 }, // red
+    { 76, 77, 76, 75, 74 }, // silver
+    { 141, 143, 141, 139, 136 }, // green
+    { 119, 118, 119, 121, 123 }, // gold2
+    { 113, 112, 113, 114, 115 }, // blue2
+    { 193, 194, 192, 191, 189 }, // pink
+#endif
 };
 
 #ifdef T1M_FEAT_UI
@@ -94,14 +102,6 @@ void RenderBar(int value, int value_max, int bar_type)
     }
     int percent = value * 100 / value_max;
 
-    if (T1MConfig.enable_red_healthbar) {
-        color_bar[BT_LARA_HEALTH][0] = 29;
-        color_bar[BT_LARA_HEALTH][1] = 30;
-        color_bar[BT_LARA_HEALTH][2] = 29;
-        color_bar[BT_LARA_HEALTH][3] = 28;
-        color_bar[BT_LARA_HEALTH][4] = 26;
-    }
-
     const int color_border_1 = 19;
     const int color_border_2 = 17;
     const int color_bgnd = 0;
@@ -109,17 +109,21 @@ void RenderBar(int value, int value_max, int bar_type)
     int32_t scale = GetRenderScaleGLRage(1);
     int32_t width = percent_max * scale;
     int32_t height = 5 * scale;
+    int16_t bar_color = bar_type;
 
 #ifdef T1M_FEAT_UI
     int x;
     int y;
     if (bar_type == BT_LARA_HEALTH) {
         BarLocation(T1MConfig.healthbar_location, scale, width, height, &x, &y);
+        bar_color = T1MConfig.healthbar_color;
     } else if (bar_type == BT_LARA_AIR) {
         BarLocation(T1MConfig.airbar_location, scale, width, height, &x, &y);
+        bar_color = T1MConfig.airbar_color;
     } else if (bar_type == BT_ENEMY_HEALTH) {
         BarLocation(
             T1MConfig.enemy_healthbar_location, scale, width, height, &x, &y);
+        bar_color = T1MConfig.enemy_healthbar_color;
     }
 #else
     int x = 8 * scale;
@@ -170,7 +174,7 @@ void RenderBar(int value, int value_max, int bar_type)
             int color_index = i * COLOR_BAR_SIZE / height;
             Insert2DLine(
                 left, top + i, right, top + i, p3,
-                color_bar[bar_type][color_index]);
+                color_bar_map[bar_color][color_index]);
         }
     }
 }

@@ -14,9 +14,6 @@
     // Removes all shotgun and shotgun shells pickups.
     "disable_shotgun": false,
 
-    // Replaces the default golden healthbar with a red one.
-    "enable_red_healthbar": true,
-
     // Enables showing healthbar for the active enemy.
     "enable_enemy_healthbar": true,
 
@@ -64,11 +61,29 @@
     // - bottom-right
     "healthbar_location": "top-left",
 
+    // Color of the healthbar. Possible values:
+    // - gold (game default)
+    // - red
+    // - grey
+    // - blue
+    // - silver
+    // - green
+    // - gold2
+    // - blue2
+    // - pink
+    "healthbar_color": "red",
+
     // Location where the airbar is displayed.
     "airbar_location": "top-right",
 
+    // Color of the airbar.
+    "airbar_color": "blue",
+
     // Location where the enemy healthbar is displayed.
     "enemy_healthbar_location": "bottom-left",
+
+    // Color of the enemy healthbar.
+    "enemy_healthbar_color": "grey",
 
     // Fixes game freeze when ending the level with the Action key held.
     "fix_end_of_level_freeze": true,

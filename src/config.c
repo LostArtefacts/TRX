@@ -23,6 +23,34 @@ static int8_t ReadBarShowingMode(struct json_value_s* root, const char* name)
     return T1M_BSM_DEFAULT;
 }
 
+static int8_t ReadBarColorConfig(
+    struct json_value_s* root, const char* name, int8_t default_value)
+{
+    const char* value_str = JSONGetStringValue(root, name);
+    if (!value_str) {
+        return default_value;
+    } else if (!strcmp(value_str, "gold")) {
+        return T1M_BC_GOLD;
+    } else if (!strcmp(value_str, "blue")) {
+        return T1M_BC_BLUE;
+    } else if (!strcmp(value_str, "grey")) {
+        return T1M_BC_GREY;
+    } else if (!strcmp(value_str, "red")) {
+        return T1M_BC_RED;
+    } else if (!strcmp(value_str, "silver")) {
+        return T1M_BC_SILVER;
+    } else if (!strcmp(value_str, "green")) {
+        return T1M_BC_GREEN;
+    } else if (!strcmp(value_str, "gold2")) {
+        return T1M_BC_GOLD2;
+    } else if (!strcmp(value_str, "blue2")) {
+        return T1M_BC_BLUE2;
+    } else if (!strcmp(value_str, "pink")) {
+        return T1M_BC_PINK;
+    }
+    return default_value;
+}
+
 static int8_t ReadBarLocationConfig(
     struct json_value_s* root, const char* name, int8_t default_value)
 {
@@ -72,7 +100,6 @@ int T1MReadConfig()
     READ_BOOL(disable_magnums);
     READ_BOOL(disable_uzis);
     READ_BOOL(disable_shotgun);
-    READ_BOOL(enable_red_healthbar);
     READ_BOOL(enable_enemy_healthbar);
     READ_BOOL(enable_enhanced_look);
     READ_BOOL(enable_enhanced_ui);
@@ -93,6 +120,13 @@ int T1MReadConfig()
         ReadBarLocationConfig(json, "airbar_location", T1M_BL_TOP_RIGHT);
     T1MConfig.enemy_healthbar_location = ReadBarLocationConfig(
         json, "enemy_healthbar_location", T1M_BL_BOTTOM_LEFT);
+
+    T1MConfig.healthbar_color =
+        ReadBarColorConfig(json, "healthbar_color", T1M_BC_RED);
+    T1MConfig.airbar_color =
+        ReadBarColorConfig(json, "airbar_color", T1M_BC_BLUE);
+    T1MConfig.enemy_healthbar_color =
+        ReadBarColorConfig(json, "enemy_healthbar_color", T1M_BC_GREY);
 
     free(json);
     free(cfg_data);
