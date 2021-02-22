@@ -10,7 +10,7 @@
 
 #define TEXT_BOX_OFFSET 2
 
-#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+#ifdef T1M_FEAT_EXTENDED_MEMORY
 int16_t TextStringCount = 0;
 TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
 char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
@@ -332,7 +332,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     int zpos = textstring->zpos;
     int textwidth = T_GetTextWidth(textstring);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     if (T1MConfig.enable_enhanced_ui) {
         if (textstring->flags & TF_CENTRE_H) {
             xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
@@ -391,7 +391,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sy = ypos;
         sh = textstring->scale_h;
         sv = textstring->scale_v;
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (T1MConfig.enable_enhanced_ui) {
             sx = GetRenderScale(sx);
             sy = GetRenderScale(sy);
@@ -433,7 +433,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     sy = bypos;
     sh = bwidth;
     sv = bheight;
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     if (T1MConfig.enable_enhanced_ui) {
         sx = GetRenderScale(sx);
         sy = GetRenderScale(sy);
@@ -482,7 +482,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sy = bypos;
         sh = bwidth;
         sv = bheight;
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (T1MConfig.enable_enhanced_ui) {
             sx = GetRenderScale(sx);
             sy = GetRenderScale(sy);

@@ -7,7 +7,7 @@
 
 void S_ShowControls()
 {
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     int16_t centre = GetRenderWidthDownscaled() / 2;
 #else
     int16_t centre = PhdWinWidth / 2;
@@ -16,7 +16,7 @@ void S_ShowControls()
     int16_t vpos;
 
     switch (HiRes) {
-#ifndef TOMB1M_FEAT_UI
+#ifndef T1M_FEAT_UI
     case 0:
         ControlText[1] = T_Print(0, -55, 0, " ");
         break;
@@ -35,7 +35,7 @@ void S_ShowControls()
     T_CentreV(ControlText[1], 1);
 
     switch (HiRes) {
-#ifndef TOMB1M_FEAT_UI
+#ifndef T1M_FEAT_UI
     case 0:
         for (int i = 0; i < 13; i++) {
             T_SetScale(CtrlTextA[i], PHD_ONE / 2, PHD_ONE);
@@ -67,7 +67,7 @@ void S_ShowControls()
         int16_t* layout = Layout[IConfig];
 
         switch (HiRes) {
-#ifndef TOMB1M_FEAT_UI
+#ifndef T1M_FEAT_UI
         case 0:
             hpos = centre - 140;
             break;
@@ -108,7 +108,7 @@ void S_ShowControls()
 
     if (!CtrlTextA[0]) {
         switch (HiRes) {
-#ifndef TOMB1M_FEAT_UI
+#ifndef T1M_FEAT_UI
         case 0:
             hpos = centre - 70;
             break;

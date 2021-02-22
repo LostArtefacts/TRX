@@ -7,7 +7,7 @@
 #include "util.h"
 #include <dinput.h>
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
 static int32_t medipack_cooldown = 0;
 #endif
 
@@ -74,7 +74,7 @@ void __cdecl S_UpdateInput()
         linput |= IN_ROLL;
     }
 
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
     if (T1MConfig.enable_cheats) {
         static int is_stuff_cheat_key_pressed = 0;
         if (KeyData->keymap[DIK_I]) {
@@ -105,7 +105,7 @@ void __cdecl S_UpdateInput()
     }
 #endif
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     if (T1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;

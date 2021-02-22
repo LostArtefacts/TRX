@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_OBJECTS_H
-#define TOMB1MAIN_GAME_OBJECTS_H
+#ifndef T1M_GAME_OBJECTS_H
+#define T1M_GAME_OBJECTS_H
 
 #include "game/types.h"
 #include <stdint.h>

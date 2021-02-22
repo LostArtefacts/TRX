@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_CROC_H
-#define TOMB1MAIN_GAME_CROC_H
+#ifndef T1M_GAME_CROC_H
+#define T1M_GAME_CROC_H
 
 #include <stdint.h>
 

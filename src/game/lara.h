@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_LARA_H
-#define TOMB1MAIN_GAME_LARA_H
+#ifndef T1M_GAME_LARA_H
+#define T1M_GAME_LARA_H
 
 #include "game/types.h"
 #include <stdint.h>
@@ -193,13 +193,13 @@ void __cdecl undraw_pistol_mesh_right(int32_t weapon_type);
 void __cdecl PistolHandler(int32_t weapon_type);
 void __cdecl AnimatePistols(int32_t weapon_type);
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
 void LookLeftRight();
 void LookUpDown();
 void ResetLook();
 #endif
 
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
 void LaraCheatGetStuff();
 #endif
 

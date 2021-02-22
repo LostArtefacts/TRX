@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_SPECIFIC_INPUT_H
-#define TOMB1MAIN_SPECIFIC_INPUT_H
+#ifndef T1M_SPECIFIC_INPUT_H
+#define T1M_SPECIFIC_INPUT_H
 
 // clang-format off
 #define Key_                    ((int           __cdecl(*)(int number))0x0041E3E0)

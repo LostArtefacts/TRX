@@ -720,7 +720,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
@@ -744,7 +744,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
@@ -782,7 +782,7 @@ void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
         off = 55;
         break;
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     case LGT_SHOTGUN:
         light = 10 * 256;
         len = 285;
@@ -1041,7 +1041,7 @@ void __cdecl DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
@@ -1065,7 +1065,7 @@ void __cdecl DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);

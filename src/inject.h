@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_INJECT_H
-    #define TOMB1MAIN_INEJCT_H
+#ifndef T1M_INJECT_H
+    #define T1M_INEJCT_H
 
 void T1MInject();
 

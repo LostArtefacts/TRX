@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_SPECIFIC_FRONTEND_H
-#define TOMB1MAIN_SPECIFIC_FRONTEND_H
+#ifndef T1M_SPECIFIC_FRONTEND_H
+#define T1M_SPECIFIC_FRONTEND_H
 
 // clang-format off
 #define S_FadeToBlack           ((void          __cdecl(*)())0x0041CD10)

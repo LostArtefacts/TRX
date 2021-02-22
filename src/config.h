@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_CONFIG_H
-#define TOMB1MAIN_CONFIG_H
+#ifndef T1M_CONFIG_H
+#define T1M_CONFIG_H
 
 #include <stdint.h>
 

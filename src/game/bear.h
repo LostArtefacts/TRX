@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_BEAR_H
-#define TOMB1MAIN_GAME_BEAR_H
+#ifndef T1M_GAME_BEAR_H
+#define T1M_GAME_BEAR_H
 
 #include <stdint.h>
 

@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_JSON_UTILS_H
-#define TOMB1MAIN_JSON_UTILS_H
+#ifndef T1M_JSON_UTILS_H
+#define T1M_JSON_UTILS_H
 
 #include "json-parser/json.h"
 

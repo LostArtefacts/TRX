@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_EFFECTS_H
-#define TOMB1MAIN_GAME_EFFECTS_H
+#ifndef T1M_GAME_EFFECTS_H
+#define T1M_GAME_EFFECTS_H
 
 #include "game/types.h"
 #include <stdint.h>

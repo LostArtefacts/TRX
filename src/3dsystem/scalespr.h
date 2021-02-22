@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_3DSYSTEM_SCALESPR_H
-#define TOMB1MAIN_3DSYSTEM_SCALESPR_H
+#ifndef T1M_3DSYSTEM_SCALESPR_H
+#define T1M_3DSYSTEM_SCALESPR_H
 
 // clang-format off
 #define S_DrawSprite            ((void          __cdecl(*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435910)

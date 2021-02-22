@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_HEALTH_H
-#define TOMB1MAIN_GAME_HEALTH_H
+#ifndef T1M_GAME_HEALTH_H
+#define T1M_GAME_HEALTH_H
 
 #include <stdint.h>
 
@@ -12,7 +12,7 @@ void __cdecl AddDisplayPickup(int16_t objnum);
 void __cdecl InitialisePickUpDisplay();
 void __cdecl DrawPickups();
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
 void __cdecl DrawEnemyBar();
 #endif
 

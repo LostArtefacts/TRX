@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_SAVEGAME_H
-#define TOMB1MAIN_GAME_SAVEGAME_H
+#ifndef T1M_GAME_SAVEGAME_H
+#define T1M_GAME_SAVEGAME_H
 
 // clang-format off
 #define CreateStartInfo         ((void          __cdecl(*)(int level_id))0x004345E0)

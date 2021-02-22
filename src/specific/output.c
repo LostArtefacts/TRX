@@ -13,11 +13,11 @@ static int color_bar[][COLOR_BAR_SIZE] = {
     { 18, 17, 18, 19, 21 },
 };
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
 static int BarOffsetY = 0;
 #endif
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
 int MulDiv(int x, int y, int z)
 {
     return (x * y) / z;
@@ -115,7 +115,7 @@ void RenderBar(int value, int value_max, int bar_type)
     int32_t width = percent_max * scale;
     int32_t height = 5 * scale;
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     int x;
     int y;
     if (bar_type == BT_LARA_HEALTH) {
@@ -156,7 +156,7 @@ void RenderBar(int value, int value_max, int bar_type)
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int blink_interval = 20;
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
     const int blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
 #else
     const int blink_threshold = 20;

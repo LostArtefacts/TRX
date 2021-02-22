@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_WARRIOR_H
-#define TOMB1MAIN_GAME_WARRIOR_H
+#ifndef T1M_GAME_WARRIOR_H
+#define T1M_GAME_WARRIOR_H
 
 #include <stdint.h>
 

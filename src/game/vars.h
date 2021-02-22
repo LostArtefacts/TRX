@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_VARS_H
-#define TOMB1MAIN_GAME_VARS_H
+#ifndef T1M_GAME_VARS_H
+#define T1M_GAME_VARS_H
 
 #include "game/const.h"
 #include "game/types.h"
@@ -112,7 +112,7 @@
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
 
-#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+#ifdef T1M_FEAT_EXTENDED_MEMORY
 extern int16_t TextStringCount;
 extern TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
 extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
@@ -157,7 +157,7 @@ extern int32_t StaticCount;
 extern int32_t TextureCount;
 extern int32_t FloorDataSize;
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;
 #endif
 

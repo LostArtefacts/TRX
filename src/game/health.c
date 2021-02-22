@@ -12,7 +12,7 @@ void __cdecl DrawGameInfo()
     if (OverlayFlag > 0) {
         DrawHealthBar();
         DrawAirBar();
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
         DrawEnemyBar();
 #endif
         DrawPickups();
@@ -61,7 +61,7 @@ void __cdecl DrawAirBar()
     S_DrawAirBar(air * 100 / LARA_AIR);
 }
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
 void __cdecl DrawEnemyBar()
 {
     if (!T1MConfig.enable_enemy_healthbar || !Lara.target) {
@@ -153,7 +153,7 @@ void __cdecl DrawPickups()
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
                 S_DrawUISprite(x, y, GetRenderScale(12288), pu->sprnum, 4096);
 #else
                 S_DrawUISprite(x, y, 12288, pu->sprnum, 4096);

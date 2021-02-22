@@ -5,7 +5,7 @@
 
 void __cdecl FxChainBlock(ITEM_INFO* item)
 {
-#ifdef TOMB1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_LEVEL_FIXES
     if (T1MConfig.fix_tihocan_secret_sound) {
         SoundEffect(33, NULL, 0);
         FlipEffect = -1;

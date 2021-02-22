@@ -270,7 +270,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
     TRACE("%d (%s)", level_id, LevelNames[level_id]);
     int32_t ret = LoadLevel(LevelNames[level_id], level_id);
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
@@ -293,7 +293,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
     }
 #endif
 
-#ifdef TOMB1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_LEVEL_FIXES
     if (T1MConfig.fix_pyramid_secret_trigger) {
         FixPyramidSecretTrigger();
     }
@@ -308,7 +308,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
 const char* __cdecl GetFullPath(const char* filename)
 {
     TRACE("%s", filename);
-#ifdef TOMB1M_FEAT_NOCD
+#ifdef T1M_FEAT_NOCD
     sprintf(newpath, ".\\%s", filename);
 #else
     if (DEMO) {
@@ -323,7 +323,7 @@ const char* __cdecl GetFullPath(const char* filename)
 void __cdecl FindCdDrive()
 {
     TRACE("");
-#ifdef TOMB1M_FEAT_NOCD
+#ifdef T1M_FEAT_NOCD
     return;
 #endif
     FILE* fp;
@@ -354,7 +354,7 @@ void __cdecl FindCdDrive()
     ShowFatalError("ERROR: Please insert TombRaider CD");
 }
 
-#ifdef TOMB1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_LEVEL_FIXES
 int GetSecretCount()
 {
     int count = 0;

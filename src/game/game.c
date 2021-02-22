@@ -119,7 +119,7 @@ void __cdecl LevelStats(int level_id)
     T_CentreV(txt, 1);
 
     // wait till action key release
-#ifdef TOMB1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_LEVEL_FIXES
     if (T1MConfig.fix_end_of_level_freeze) {
         while (Input & IN_SELECT) {
             S_UpdateInput();

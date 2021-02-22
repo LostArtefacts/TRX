@@ -940,7 +940,7 @@ void __cdecl InitialiseObjects()
     TrapObjects();
     ObjectObjects();
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_medpacks) {
         Objects[O_MEDI_ITEM].initialise = NULL;
         Objects[O_MEDI_ITEM].collision = NULL;

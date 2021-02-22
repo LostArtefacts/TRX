@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_TYPES_H
-#define TOMB1MAIN_GAME_TYPES_H
+#ifndef T1M_GAME_TYPES_H
+#define T1M_GAME_TYPES_H
 
 #include "const.h"
 #include <stdint.h>
@@ -543,7 +543,7 @@ typedef enum {
     IN_SAVE = (1 << 22),
     IN_LOAD = (1 << 23),
     IN_ACTION_AUTO = (1 << 24),
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
     IN_DOZYCHEAT = (1 << 25),
     IN_STUFFCHEAT = (1 << 26),
 #else

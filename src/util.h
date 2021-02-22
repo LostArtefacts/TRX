@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_UTIL_H
-#define TOMB1MAIN_UTIL_H
+#ifndef T1M_UTIL_H
+#define T1M_UTIL_H
 
 #include <stdint.h>
 #include <stdio.h>

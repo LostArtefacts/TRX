@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_SPECIFIC_FILE_H
-#define TOMB1MAIN_SPECIFIC_FILE_H
+#ifndef T1M_SPECIFIC_FILE_H
+#define T1M_SPECIFIC_FILE_H
 
 #include <stdio.h>
 
@@ -15,7 +15,7 @@ int32_t __cdecl S_LoadLevel(int level_id);
 const char* __cdecl GetFullPath(const char* filename);
 void __cdecl FindCdDrive();
 
-#ifdef TOMB1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_LEVEL_FIXES
 void FixPyramidSecretTrigger();
 int32_t GetSecretCount();
 #endif

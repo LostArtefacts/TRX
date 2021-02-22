@@ -24,7 +24,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
             LookLeftRight();
@@ -106,7 +106,7 @@ void __cdecl LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     item->fall_speed += 8;
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT) {
         if (item->fall_speed > UW_MAXSPEED * 2) {
             item->fall_speed = UW_MAXSPEED * 2;
@@ -160,7 +160,7 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             LookUpDown();

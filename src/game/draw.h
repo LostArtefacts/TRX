@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_GAME_DRAW_H
-#define TOMB1MAIN_GAME_DRAW_H
+#ifndef T1M_GAME_DRAW_H
+#define T1M_GAME_DRAW_H
 
 #include "game/types.h"
 #include <stdint.h>

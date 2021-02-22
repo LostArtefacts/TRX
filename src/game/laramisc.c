@@ -19,7 +19,7 @@ void __cdecl LaraControl(int16_t item_num)
     ROOM_INFO* r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
     if (Input & IN_STUFFCHEAT) {
         LaraCheatGetStuff();
     }
@@ -169,7 +169,7 @@ void __cdecl LaraControl(int16_t item_num)
         LaraSurface(item, &coll);
         break;
 
-#ifdef TOMB1M_FEAT_CHEATS
+#ifdef T1M_FEAT_CHEATS
     case LWS_CHEAT:
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
@@ -392,7 +392,7 @@ void __cdecl InitialiseLara()
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
-#ifdef TOMB1M_FEAT_GAMEPLAY
+#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = StoredLaraHealth;
     }

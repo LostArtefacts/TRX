@@ -46,7 +46,7 @@ void __cdecl S_InitialiseSystem()
 
     CalculateWibbleTable();
 
-#ifdef TOMB1M_FEAT_EXTENDED_MEMORY
+#ifdef T1M_FEAT_EXTENDED_MEMORY
     // TODO: for this to work, the value also needs to be updated in
     // GameMain and S_PlayFMV. Since exceeding this limit causes the game
     // to brutally crash anyway, I'm leaving it unfinished here.

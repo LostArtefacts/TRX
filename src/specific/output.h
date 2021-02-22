@@ -1,5 +1,5 @@
-#ifndef TOMB1MAIN_SPECIFIC_OUTPUT_H
-#define TOMB1MAIN_SPECIFIC_OUTPUT_H
+#ifndef T1M_SPECIFIC_OUTPUT_H
+#define T1M_SPECIFIC_OUTPUT_H
 
 // clang-format off
 #define S_AniamteTextures       ((void          __cdecl(*)(int32_t nframes))0x00430660)
@@ -21,7 +21,7 @@ void __cdecl S_DrawAirBar(int percent);
 typedef enum {
     BT_LARA_HEALTH = 0,
     BT_LARA_AIR = 1,
-#if defined(TOMB1M_FEAT_UI) || defined(TOMB1M_FEAT_GAMEPLAY)
+#if defined(T1M_FEAT_UI) || defined(TOMB1M_FEAT_GAMEPLAY)
     BT_ENEMY_HEALTH = 2,
 #endif
 } BAR_TYPE;
@@ -29,7 +29,7 @@ typedef enum {
 int GetRenderScaleGLRage(int unit);
 void RenderBar(int value, int value_max, int bar_type);
 
-#ifdef TOMB1M_FEAT_UI
+#ifdef T1M_FEAT_UI
 int GetRenderScale(int base);
 int GetRenderHeightDownscaled();
 int GetRenderWidthDownscaled();
