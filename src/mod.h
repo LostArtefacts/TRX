@@ -11,6 +11,14 @@ typedef enum {
 } Tomb1M_BAR;
 
 typedef enum {
+    Tomb1M_BL_HCENTER = 1 << 0,
+    Tomb1M_BL_HLEFT = 1 << 1,
+    Tomb1M_BL_HRIGHT = 1 << 2,
+    Tomb1M_BL_VTOP = 1 << 3,
+    Tomb1M_BL_VBOTTOM = 1 << 4,
+} Tomb1M_BAR_LOCATION;
+
+typedef enum {
     Tomb1M_BSM_DEFAULT = 0,
     Tomb1M_BSM_FLASHING = 1,
     Tomb1M_BSM_ALWAYS = 2,
@@ -30,6 +38,9 @@ struct {
     int8_t enable_shotgun_flash;
     int8_t enable_cheats;
     int8_t healthbar_showing_mode;
+    int8_t healthbar_location;
+    int8_t airbar_location;
+    int8_t enemy_healthbar_location;
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;

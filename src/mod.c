@@ -3,6 +3,8 @@
 #include "mod.h"
 #include <math.h>
 
+static int BarOffsetY = 0;
+
 int MulDiv(int x, int y, int z)
 {
     return (x * y) / z;
@@ -59,6 +61,31 @@ int Tomb1MGetRenderScaleGLRage(int unit)
     return round(result);
 }
 
+void Tomb1MBarLocation(
+    int8_t bar_location, int32_t scale, int32_t width, int32_t height,
+    int32_t* x, int32_t* y)
+{
+    if (bar_location & Tomb1M_BL_HCENTER) {
+        *x = (PhdWinWidth - width) / 2;
+    } else if (bar_location & Tomb1M_BL_HLEFT) {
+        *x = 8 * scale;
+    } else if (bar_location & Tomb1M_BL_HRIGHT) {
+        *x = PhdWinWidth - width - 8 * scale;
+    } else {
+        *x = (PhdWinWidth - width) / 2;
+    }
+
+    if (bar_location & Tomb1M_BL_VTOP) {
+        *y = 8 * scale + BarOffsetY;
+    } else if (bar_location & Tomb1M_BL_VBOTTOM) {
+        *y = PhdWinHeight - height - 8 * scale - BarOffsetY;
+    } else {
+        *y = (PhdWinHeight - height) / 2 + BarOffsetY;
+    }
+
+    BarOffsetY += height + 4 * scale;
+}
+
 void Tomb1MRenderBar(int value, int value_max, int bar_type)
 {
     const int p1 = -100;
@@ -91,20 +118,33 @@ void Tomb1MRenderBar(int value, int value_max, int bar_type)
     const int color_border_2 = 17;
     const int color_bgnd = 0;
 
-    int scale = Tomb1MGetRenderScaleGLRage(1);
-    int width = percent_max * scale;
-    int height = 5 * scale;
+    int32_t scale = Tomb1MGetRenderScaleGLRage(1);
+    int32_t width = percent_max * scale;
+    int32_t height = 5 * scale;
 
+#ifdef TOMB1M_FEAT_UI
+    int x;
+    int y;
+    if (bar_type == Tomb1M_BAR_LARA_HEALTH) {
+        BarOffsetY = 0;
+        Tomb1MBarLocation(
+            Tomb1MConfig.healthbar_location, scale, width, height, &x, &y);
+    } else if (bar_type == Tomb1M_BAR_LARA_AIR) {
+        Tomb1MBarLocation(
+            Tomb1MConfig.airbar_location, scale, width, height, &x, &y);
+    } else if (bar_type == Tomb1M_BAR_ENEMY_HEALTH) {
+        Tomb1MBarLocation(
+            Tomb1MConfig.enemy_healthbar_location, scale, width, height, &x,
+            &y);
+    }
+#else
     int x = 8 * scale;
     int y = 8 * scale;
-
     if (bar_type == Tomb1M_BAR_LARA_AIR) {
         // place air bar on the right
         x = PhdWinWidth - width - x;
-    } else if (bar_type == Tomb1M_BAR_ENEMY_HEALTH) {
-        // place enemy bar on the bottom
-        y = PhdWinHeight - height - y;
     }
+#endif
 
     int padding = 2;
     int top = y - padding;

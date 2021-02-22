@@ -56,6 +56,29 @@ static void Tomb1MInject()
     Tomb1MInjectSpecificOutput();
 }
 
+static int8_t Tomb1MReadHealthbarLocationConfig(
+    json_value* root, const char* name, int8_t default_value)
+{
+    const char* value_str = tr1m_json_get_string_value(root, name);
+    if (!value_str) {
+        return default_value;
+    }
+    if (!strcmp(value_str, "top-left")) {
+        return Tomb1M_BL_VTOP | Tomb1M_BL_HLEFT;
+    } else if (!strcmp(value_str, "top-center")) {
+        return Tomb1M_BL_VTOP | Tomb1M_BL_HCENTER;
+    } else if (!strcmp(value_str, "top-right")) {
+        return Tomb1M_BL_VTOP | Tomb1M_BL_HRIGHT;
+    } else if (!strcmp(value_str, "bottom-left")) {
+        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HLEFT;
+    } else if (!strcmp(value_str, "bottom-center")) {
+        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HCENTER;
+    } else if (!strcmp(value_str, "bottom-right")) {
+        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HRIGHT;
+    }
+    return default_value;
+}
+
 static int Tomb1MReadConfig()
 {
     FILE* fp = fopen("Tomb1Main.json", "rb");
@@ -112,6 +135,13 @@ static int Tomb1MReadConfig()
             Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_ALWAYS;
         }
     }
+
+    Tomb1MConfig.healthbar_location = Tomb1MReadHealthbarLocationConfig(
+        json, "healthbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HLEFT);
+    Tomb1MConfig.airbar_location = Tomb1MReadHealthbarLocationConfig(
+        json, "airbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HRIGHT);
+    Tomb1MConfig.enemy_healthbar_location = Tomb1MReadHealthbarLocationConfig(
+        json, "enemy_healthbar_location", Tomb1M_BL_VBOTTOM | Tomb1M_BL_HLEFT);
 
     Tomb1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");

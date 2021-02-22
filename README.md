@@ -41,6 +41,15 @@ Currently the following configuration options are supported:
     - <kbd>4</kbd>: draw UZI
     - <kbd>8</kbd>: use small medpack
     - <kbd>9</kbd>: use large medpack
+- `healthbar_location`: location where the healthbar is displayed. Possible values:
+    - `top-left`
+    - `top-center`
+    - `top-right`
+    - `bottom-left`
+    - `bottom-center`
+    - `bottom-right`
+- `airbar_location`: location where the airbar is displayed.
+- `enemy_healthbar_location`: location where the enemy healthbar is displayed.
 - `healthbar_showing_mode`: change when the healthbar is displayed.
   Possible values:
     - `always`: always show the healthbar
