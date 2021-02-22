@@ -8,12 +8,6 @@
 
 void DrawGameInfo()
 {
-#ifdef T1M_FEAT_UI
-    for (int i = 0; i < 6; i++) {
-        BarOffsetY[i] = 0;
-    }
-#endif
-
     DrawAmmoInfo();
     if (OverlayFlag > 0) {
         DrawHealthBar();
@@ -29,6 +23,12 @@ void DrawGameInfo()
 
 void DrawHealthBar()
 {
+#ifdef T1M_FEAT_UI
+    for (int i = 0; i < 6; i++) {
+        BarOffsetY[i] = 0;
+    }
+#endif
+
     int hit_points = LaraItem->hit_points;
     if (hit_points < 0) {
         hit_points = 0;
