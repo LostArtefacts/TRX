@@ -3,10 +3,8 @@
 
 #include "json-parser/json.h"
 
-json_value* JSONGetField(
-    json_value* root, json_type field_type, const char* name, int* pIndex);
-
-int JSONGetBooleanValue(json_value* root, const char* name);
-const char* JSONGetStringValue(json_value* root, const char* name);
+struct json_value_s* JSONGetField(struct json_value_s* root, const char* name);
+int8_t JSONGetBooleanValue(struct json_value_s* root, const char* name);
+const char* JSONGetStringValue(struct json_value_s* root, const char* name);
 
 #endif

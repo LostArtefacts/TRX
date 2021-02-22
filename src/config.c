@@ -10,7 +10,7 @@
         T1MConfig.OPT = JSONGetBooleanValue(json, QUOTE(OPT));                 \
     } while (0)
 
-static int8_t ReadBarShowingMode(json_value* root, const char* name)
+static int8_t ReadBarShowingMode(struct json_value_s* root, const char* name)
 {
     const char* value_str = JSONGetStringValue(root, name);
     if (!value_str) {
@@ -23,8 +23,8 @@ static int8_t ReadBarShowingMode(json_value* root, const char* name)
     return T1M_BSM_DEFAULT;
 }
 
-static int8_t
-ReadBarLocationConfig(json_value* root, const char* name, int8_t default_value)
+static int8_t ReadBarLocationConfig(
+    struct json_value_s* root, const char* name, int8_t default_value)
 {
     const char* value_str = JSONGetStringValue(root, name);
     if (!value_str) {
@@ -64,7 +64,8 @@ int T1MReadConfig()
     fread(cfg_data, 1, cfg_size, fp);
     fclose(fp);
 
-    json_value* json = json_parse((const json_char*)cfg_data, cfg_size);
+    struct json_value_s* json = json_parse_ex(
+        cfg_data, cfg_size, json_parse_flags_allow_json5, NULL, NULL, NULL);
 
     READ_BOOL(disable_healing_between_levels);
     READ_BOOL(disable_medpacks);
@@ -93,7 +94,7 @@ int T1MReadConfig()
     T1MConfig.enemy_healthbar_location = ReadBarLocationConfig(
         json, "enemy_healthbar_location", T1M_BL_VBOTTOM | T1M_BL_HLEFT);
 
-    json_value_free(json);
+    free(json);
     free(cfg_data);
     return 1;
 }
