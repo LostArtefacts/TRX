@@ -17,6 +17,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/option.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "specific/file.h"
@@ -45,6 +46,7 @@ static void Tomb1MInject()
     Tomb1MInjectGameLaraMisc();
     Tomb1MInjectGameLaraSurf();
     Tomb1MInjectGameLaraSwim();
+    Tomb1MInjectGameOption();
     Tomb1MInjectGameSetup();
     Tomb1MInjectGameText();
     Tomb1MInjectSpecificFile();

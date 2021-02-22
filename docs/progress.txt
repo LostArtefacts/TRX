@@ -715,7 +715,7 @@ do_compass_option               ----------  ----------  -
 FlashConflicts                  ----------  ----------  -
 DefaultConflict                 ----------  ----------  -
 do_control_option               0x0042EAC0  0x0000075D  -
-S_ShowControls                  0x0042F230  0x000004B1  -
+S_ShowControls                  0x0042F230  0x000004B1  +
 S_ChangeCtrlText                ----------  ----------  -
 S_RemoveCtrlText                ----------  ----------  -
 S_RemoveCtrl                    ----------  ----------  -
