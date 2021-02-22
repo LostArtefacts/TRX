@@ -3,6 +3,13 @@
 #include "json_utils.h"
 #include "config.h"
 
+#define Q(x) #x
+#define QUOTE(x) Q(x)
+#define READ_BOOL(OPT)                                                         \
+    do {                                                                       \
+        T1MConfig.OPT = JSONGetBooleanValue(json, QUOTE(OPT));                 \
+    } while (0)
+
 static int8_t ReadBarShowingMode(json_value* root, const char* name)
 {
     const char* value_str = JSONGetStringValue(root, name);
@@ -59,23 +66,22 @@ int T1MReadConfig()
 
     json_value* json = json_parse((const json_char*)cfg_data, cfg_size);
 
-    T1MConfig.disable_healing_between_levels =
-        JSONGetBooleanValue(json, "disable_healing_between_levels");
-    T1MConfig.disable_medpacks = JSONGetBooleanValue(json, "disable_medpacks");
-    T1MConfig.disable_magnums = JSONGetBooleanValue(json, "disable_magnums");
-    T1MConfig.disable_uzis = JSONGetBooleanValue(json, "disable_uzis");
-    T1MConfig.disable_shotgun = JSONGetBooleanValue(json, "disable_shotgun");
-    T1MConfig.enable_red_healthbar =
-        JSONGetBooleanValue(json, "enable_red_healthbar");
-    T1MConfig.enable_enemy_healthbar =
-        JSONGetBooleanValue(json, "enable_enemy_healthbar");
-    T1MConfig.enable_enhanced_look =
-        JSONGetBooleanValue(json, "enable_enhanced_look");
-    T1MConfig.enable_enhanced_ui =
-        JSONGetBooleanValue(json, "enable_enhanced_ui");
-    T1MConfig.enable_shotgun_flash =
-        JSONGetBooleanValue(json, "enable_shotgun_flash");
-    T1MConfig.enable_cheats = JSONGetBooleanValue(json, "enable_cheats");
+    READ_BOOL(disable_healing_between_levels);
+    READ_BOOL(disable_medpacks);
+    READ_BOOL(disable_magnums);
+    READ_BOOL(disable_uzis);
+    READ_BOOL(disable_shotgun);
+    READ_BOOL(enable_red_healthbar);
+    READ_BOOL(enable_enemy_healthbar);
+    READ_BOOL(enable_enhanced_look);
+    READ_BOOL(enable_enhanced_ui);
+    READ_BOOL(enable_shotgun_flash);
+    READ_BOOL(enable_cheats);
+    READ_BOOL(enable_numeric_keys);
+    READ_BOOL(fix_end_of_level_freeze);
+    READ_BOOL(fix_tihocan_secret_sound);
+    READ_BOOL(fix_pyramid_secret_trigger);
+    READ_BOOL(fix_hardcoded_secret_counts);
 
     T1MConfig.healthbar_showing_mode =
         ReadBarShowingMode(json, "healthbar_showing_mode");
@@ -86,17 +92,6 @@ int T1MReadConfig()
         json, "airbar_location", T1M_BL_VTOP | T1M_BL_HRIGHT);
     T1MConfig.enemy_healthbar_location = ReadBarLocationConfig(
         json, "enemy_healthbar_location", T1M_BL_VBOTTOM | T1M_BL_HLEFT);
-
-    T1MConfig.enable_numeric_keys =
-        JSONGetBooleanValue(json, "enable_numeric_keys");
-    T1MConfig.fix_end_of_level_freeze =
-        JSONGetBooleanValue(json, "fix_end_of_level_freeze");
-    T1MConfig.fix_tihocan_secret_sound =
-        JSONGetBooleanValue(json, "fix_tihocan_secret_sound");
-    T1MConfig.fix_pyramid_secret_trigger =
-        JSONGetBooleanValue(json, "fix_pyramid_secret_trigger");
-    T1MConfig.fix_hardcoded_secret_counts =
-        JSONGetBooleanValue(json, "fix_hardcoded_secret_counts");
 
     json_value_free(json);
     free(cfg_data);
