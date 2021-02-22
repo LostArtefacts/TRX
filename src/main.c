@@ -100,8 +100,6 @@ static int Tomb1MReadConfig()
 
     json_value* json = json_parse((const json_char*)cfg_data, cfg_size);
 
-    Tomb1MData.medipack_cooldown = 0;
-
     T1MConfig.disable_healing_between_levels =
         tr1m_json_get_boolean_value(json, "disable_healing_between_levels");
     T1MConfig.disable_medpacks =

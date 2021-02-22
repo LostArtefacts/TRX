@@ -41,7 +41,6 @@ struct {
 } T1MConfig;
 
 struct {
-    int medipack_cooldown;
     // replicate glrage patch FPS counter repositioning
     int fps_x;
     int fps_y;

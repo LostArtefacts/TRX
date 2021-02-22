@@ -7,6 +7,10 @@
 #include "util.h"
 #include <dinput.h>
 
+#ifdef TOMB1M_FEAT_UI
+static int32_t medipack_cooldown = 0;
+#endif
+
 void __cdecl S_UpdateInput()
 {
     int32_t linput = 0;
@@ -113,16 +117,16 @@ void __cdecl S_UpdateInput()
             Lara.request_gun_type = LGT_UZIS;
         }
 
-        if (Tomb1MData.medipack_cooldown > 0) {
-            --Tomb1MData.medipack_cooldown;
+        if (medipack_cooldown > 0) {
+            --medipack_cooldown;
         } else {
             if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
                 UseItem(O_MEDI_OPTION);
-                Tomb1MData.medipack_cooldown = 15; // half a second
+                medipack_cooldown = 15; // half a second
             } else if (
                 KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
                 UseItem(O_BIGMEDI_OPTION);
-                Tomb1MData.medipack_cooldown = 15;
+                medipack_cooldown = 15;
             }
         }
     }
