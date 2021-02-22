@@ -64,17 +64,17 @@ static int8_t Tomb1MReadHealthbarLocationConfig(
         return default_value;
     }
     if (!strcmp(value_str, "top-left")) {
-        return Tomb1M_BL_VTOP | Tomb1M_BL_HLEFT;
+        return T1M_BL_VTOP | T1M_BL_HLEFT;
     } else if (!strcmp(value_str, "top-center")) {
-        return Tomb1M_BL_VTOP | Tomb1M_BL_HCENTER;
+        return T1M_BL_VTOP | T1M_BL_HCENTER;
     } else if (!strcmp(value_str, "top-right")) {
-        return Tomb1M_BL_VTOP | Tomb1M_BL_HRIGHT;
+        return T1M_BL_VTOP | T1M_BL_HRIGHT;
     } else if (!strcmp(value_str, "bottom-left")) {
-        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HLEFT;
+        return T1M_BL_VBOTTOM | T1M_BL_HLEFT;
     } else if (!strcmp(value_str, "bottom-center")) {
-        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HCENTER;
+        return T1M_BL_VBOTTOM | T1M_BL_HCENTER;
     } else if (!strcmp(value_str, "bottom-right")) {
-        return Tomb1M_BL_VBOTTOM | Tomb1M_BL_HRIGHT;
+        return T1M_BL_VBOTTOM | T1M_BL_HRIGHT;
     }
     return default_value;
 }
@@ -124,21 +124,21 @@ static int Tomb1MReadConfig()
 
     const char* healthbar_showing_mode =
         tr1m_json_get_string_value(json, "healthbar_showing_mode");
-    T1MConfig.healthbar_showing_mode = Tomb1M_BSM_DEFAULT;
+    T1MConfig.healthbar_showing_mode = T1M_BSM_DEFAULT;
     if (healthbar_showing_mode) {
         if (!strcmp(healthbar_showing_mode, "flashing")) {
-            T1MConfig.healthbar_showing_mode = Tomb1M_BSM_FLASHING;
+            T1MConfig.healthbar_showing_mode = T1M_BSM_FLASHING;
         } else if (!strcmp(healthbar_showing_mode, "always")) {
-            T1MConfig.healthbar_showing_mode = Tomb1M_BSM_ALWAYS;
+            T1MConfig.healthbar_showing_mode = T1M_BSM_ALWAYS;
         }
     }
 
     T1MConfig.healthbar_location = Tomb1MReadHealthbarLocationConfig(
-        json, "healthbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HLEFT);
+        json, "healthbar_location", T1M_BL_VTOP | T1M_BL_HLEFT);
     T1MConfig.airbar_location = Tomb1MReadHealthbarLocationConfig(
-        json, "airbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HRIGHT);
+        json, "airbar_location", T1M_BL_VTOP | T1M_BL_HRIGHT);
     T1MConfig.enemy_healthbar_location = Tomb1MReadHealthbarLocationConfig(
-        json, "enemy_healthbar_location", Tomb1M_BL_VBOTTOM | Tomb1M_BL_HLEFT);
+        json, "enemy_healthbar_location", T1M_BL_VBOTTOM | T1M_BL_HLEFT);
 
     T1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");

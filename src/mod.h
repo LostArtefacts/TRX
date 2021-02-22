@@ -4,18 +4,18 @@
 #include <stdint.h>
 
 typedef enum {
-    Tomb1M_BL_HCENTER = 1 << 0,
-    Tomb1M_BL_HLEFT = 1 << 1,
-    Tomb1M_BL_HRIGHT = 1 << 2,
-    Tomb1M_BL_VTOP = 1 << 3,
-    Tomb1M_BL_VBOTTOM = 1 << 4,
-} Tomb1M_BAR_LOCATION;
+    T1M_BL_HCENTER = 1 << 0,
+    T1M_BL_HLEFT = 1 << 1,
+    T1M_BL_HRIGHT = 1 << 2,
+    T1M_BL_VTOP = 1 << 3,
+    T1M_BL_VBOTTOM = 1 << 4,
+} T1M_BAR_LOCATION;
 
 typedef enum {
-    Tomb1M_BSM_DEFAULT = 0,
-    Tomb1M_BSM_FLASHING = 1,
-    Tomb1M_BSM_ALWAYS = 2,
-} Tomb1M_BAR_SHOW_MODE;
+    T1M_BSM_DEFAULT = 0,
+    T1M_BSM_FLASHING = 1,
+    T1M_BSM_ALWAYS = 2,
+} T1M_BAR_SHOW_MODE;
 
 struct {
     int8_t disable_healing_between_levels;

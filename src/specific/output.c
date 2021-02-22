@@ -63,19 +63,19 @@ void BarLocation(
     int8_t bar_location, int32_t scale, int32_t width, int32_t height,
     int32_t* x, int32_t* y)
 {
-    if (bar_location & Tomb1M_BL_HCENTER) {
+    if (bar_location & T1M_BL_HCENTER) {
         *x = (PhdWinWidth - width) / 2;
-    } else if (bar_location & Tomb1M_BL_HLEFT) {
+    } else if (bar_location & T1M_BL_HLEFT) {
         *x = 8 * scale;
-    } else if (bar_location & Tomb1M_BL_HRIGHT) {
+    } else if (bar_location & T1M_BL_HRIGHT) {
         *x = PhdWinWidth - width - 8 * scale;
     } else {
         *x = (PhdWinWidth - width) / 2;
     }
 
-    if (bar_location & Tomb1M_BL_VTOP) {
+    if (bar_location & T1M_BL_VTOP) {
         *y = 8 * scale + BarOffsetY;
-    } else if (bar_location & Tomb1M_BL_VBOTTOM) {
+    } else if (bar_location & T1M_BL_VBOTTOM) {
         *y = PhdWinHeight - height - 8 * scale - BarOffsetY;
     } else {
         *y = (PhdWinHeight - height) / 2 + BarOffsetY;
