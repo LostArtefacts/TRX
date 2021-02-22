@@ -2,6 +2,7 @@
 #include "game/box.h"
 #include "game/draw.h"
 #include "game/game.h"
+#include "game/misc.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -150,9 +151,39 @@ int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
     return 1;
 }
 
+int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
+{
+    BOX_INFO* box = &Boxes[box_number];
+    int32_t z = ((box->left + box->right) >> 1) - LaraItem->pos.z;
+    int32_t x = ((box->top + box->bottom) >> 1) - LaraItem->pos.x;
+
+    if (x > STALK_DIST || x < -STALK_DIST || z > STALK_DIST
+        || z < -STALK_DIST) {
+        return 0;
+    }
+
+    int enemy_quad = (LaraItem->pos.y_rot >> 14) + 2;
+    int box_quad = (z > 0) ? ((x > 0) ? 2 : 1) : ((x > 0) ? 3 : 0);
+
+    if (enemy_quad == box_quad) {
+        return 0;
+    }
+
+    int baddie_quad = (item->pos.z > LaraItem->pos.z)
+        ? ((item->pos.x > LaraItem->pos.x) ? 2 : 1)
+        : ((item->pos.x > LaraItem->pos.x) ? 3 : 0);
+
+    if (enemy_quad == baddie_quad && ABS(enemy_quad - box_quad) == 2) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
     INJECT(0x0040DAA0, CreatureAIInfo);
     INJECT(0x0040DCD0, SearchLOT);
+    INJECT(0x0040DED0, StalkBox);
 }

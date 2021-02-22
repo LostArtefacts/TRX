@@ -129,8 +129,8 @@ CreatureAIInfo                  0x0040DAA0  0x00000224  +
 SearchLOT                       0x0040DCD0  0x000001F9  +
 UpdateLOT                       ----------  ----------  -
 TargetBox                       ----------  ----------  -
-StalkBox                        ----------  ----------  -
-EscapeBox                       0x0040DED0  0x000000CE  -
+StalkBox                        0x0040DED0  0x000000CE  +
+EscapeBox                       ----------  ----------  -
 ValidBox                        0x0040DFA0  0x00000097  -
 CreatureMood                    0x0040E040  0x000007D5  *
 CalculateTarget                 0x0040E850  0x000004D1  *
