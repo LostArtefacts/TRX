@@ -25,7 +25,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_baddie_push = 0;
 
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look && item->hit_points > 0) {
+    if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
             Tomb1MLookLeftRight();
         } else {
@@ -161,7 +161,7 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look) {
+    if (T1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             Tomb1MLookUpDown();
         }

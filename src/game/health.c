@@ -64,7 +64,7 @@ void __cdecl DrawAirBar()
 #ifdef TOMB1M_FEAT_GAMEPLAY
 void __cdecl DrawEnemyBar()
 {
-    if (!Tomb1MConfig.enable_enemy_healthbar || !Lara.target) {
+    if (!T1MConfig.enable_enemy_healthbar || !Lara.target) {
         return;
     }
 

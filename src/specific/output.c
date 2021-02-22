@@ -99,7 +99,7 @@ void RenderBar(int value, int value_max, int bar_type)
     }
     int percent = value * 100 / value_max;
 
-    if (Tomb1MConfig.enable_red_healthbar) {
+    if (T1MConfig.enable_red_healthbar) {
         color_bar[BT_LARA_HEALTH][0] = 29;
         color_bar[BT_LARA_HEALTH][1] = 30;
         color_bar[BT_LARA_HEALTH][2] = 29;
@@ -120,14 +120,12 @@ void RenderBar(int value, int value_max, int bar_type)
     int y;
     if (bar_type == BT_LARA_HEALTH) {
         BarOffsetY = 0;
-        BarLocation(
-            Tomb1MConfig.healthbar_location, scale, width, height, &x, &y);
+        BarLocation(T1MConfig.healthbar_location, scale, width, height, &x, &y);
     } else if (bar_type == BT_LARA_AIR) {
-        BarLocation(Tomb1MConfig.airbar_location, scale, width, height, &x, &y);
+        BarLocation(T1MConfig.airbar_location, scale, width, height, &x, &y);
     } else if (bar_type == BT_ENEMY_HEALTH) {
         BarLocation(
-            Tomb1MConfig.enemy_healthbar_location, scale, width, height, &x,
-            &y);
+            T1MConfig.enemy_healthbar_location, scale, width, height, &x, &y);
     }
 #else
     int x = 8 * scale;

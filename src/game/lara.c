@@ -85,7 +85,7 @@ void __cdecl LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_baddie_push = 1;
 
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look && item->hit_points > 0) {
+    if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
             Tomb1MLookLeftRight();
         } else {
@@ -338,7 +338,7 @@ void __cdecl LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+    if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -374,7 +374,7 @@ void __cdecl LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 {
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+    if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -510,7 +510,7 @@ void __cdecl LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
 void __cdecl LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 {
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+    if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }

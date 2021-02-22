@@ -295,7 +295,7 @@ void __cdecl T_DrawText()
                 int fps_x = 10;
                 int fps_y = 30;
 #ifdef TOMB1M_FEAT_UI
-                if (!Tomb1MConfig.enable_enhanced_ui
+                if (!T1MConfig.enable_enhanced_ui
                     && GetRenderScaleGLRage(1) > 1) {
                     fps_x = Tomb1MData.fps_x;
                     fps_y = Tomb1MData.fps_y;
@@ -342,7 +342,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     int textwidth = T_GetTextWidth(textstring);
 
 #ifdef TOMB1M_FEAT_UI
-    if (Tomb1MConfig.enable_enhanced_ui) {
+    if (T1MConfig.enable_enhanced_ui) {
         if (textstring->flags & TF_CENTRE_H) {
             xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
         } else if (textstring->flags & TF_RIGHT) {
@@ -401,7 +401,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sh = textstring->scale_h;
         sv = textstring->scale_v;
 #ifdef TOMB1M_FEAT_UI
-        if (Tomb1MConfig.enable_enhanced_ui) {
+        if (T1MConfig.enable_enhanced_ui) {
             sx = GetRenderScale(sx);
             sy = GetRenderScale(sy);
             sh = GetRenderScale(sh);
@@ -443,7 +443,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
     sh = bwidth;
     sv = bheight;
 #ifdef TOMB1M_FEAT_UI
-    if (Tomb1MConfig.enable_enhanced_ui) {
+    if (T1MConfig.enable_enhanced_ui) {
         sx = GetRenderScale(sx);
         sy = GetRenderScale(sy);
         sh = GetRenderScale(sh);
@@ -492,7 +492,7 @@ void __cdecl T_DrawThisText(TEXTSTRING* textstring)
         sh = bwidth;
         sv = bheight;
 #ifdef TOMB1M_FEAT_UI
-        if (Tomb1MConfig.enable_enhanced_ui) {
+        if (T1MConfig.enable_enhanced_ui) {
             sx = GetRenderScale(sx);
             sy = GetRenderScale(sy);
             sh = GetRenderScale(sh);

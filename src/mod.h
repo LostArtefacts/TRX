@@ -38,7 +38,7 @@ struct {
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;
     int8_t fix_hardcoded_secret_counts;
-} Tomb1MConfig;
+} T1MConfig;
 
 struct {
     int stored_lara_health;

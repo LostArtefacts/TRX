@@ -102,56 +102,55 @@ static int Tomb1MReadConfig()
 
     Tomb1MData.medipack_cooldown = 0;
 
-    Tomb1MConfig.disable_healing_between_levels =
+    T1MConfig.disable_healing_between_levels =
         tr1m_json_get_boolean_value(json, "disable_healing_between_levels");
-    Tomb1MConfig.disable_medpacks =
+    T1MConfig.disable_medpacks =
         tr1m_json_get_boolean_value(json, "disable_medpacks");
-    Tomb1MConfig.disable_magnums =
+    T1MConfig.disable_magnums =
         tr1m_json_get_boolean_value(json, "disable_magnums");
-    Tomb1MConfig.disable_uzis =
-        tr1m_json_get_boolean_value(json, "disable_uzis");
-    Tomb1MConfig.disable_shotgun =
+    T1MConfig.disable_uzis = tr1m_json_get_boolean_value(json, "disable_uzis");
+    T1MConfig.disable_shotgun =
         tr1m_json_get_boolean_value(json, "disable_shotgun");
-    Tomb1MConfig.enable_red_healthbar =
+    T1MConfig.enable_red_healthbar =
         tr1m_json_get_boolean_value(json, "enable_red_healthbar");
-    Tomb1MConfig.enable_enemy_healthbar =
+    T1MConfig.enable_enemy_healthbar =
         tr1m_json_get_boolean_value(json, "enable_enemy_healthbar");
-    Tomb1MConfig.enable_enhanced_look =
+    T1MConfig.enable_enhanced_look =
         tr1m_json_get_boolean_value(json, "enable_enhanced_look");
-    Tomb1MConfig.enable_enhanced_ui =
+    T1MConfig.enable_enhanced_ui =
         tr1m_json_get_boolean_value(json, "enable_enhanced_ui");
-    Tomb1MConfig.enable_shotgun_flash =
+    T1MConfig.enable_shotgun_flash =
         tr1m_json_get_boolean_value(json, "enable_shotgun_flash");
-    Tomb1MConfig.enable_cheats =
+    T1MConfig.enable_cheats =
         tr1m_json_get_boolean_value(json, "enable_cheats");
 
     const char* healthbar_showing_mode =
         tr1m_json_get_string_value(json, "healthbar_showing_mode");
-    Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_DEFAULT;
+    T1MConfig.healthbar_showing_mode = Tomb1M_BSM_DEFAULT;
     if (healthbar_showing_mode) {
         if (!strcmp(healthbar_showing_mode, "flashing")) {
-            Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_FLASHING;
+            T1MConfig.healthbar_showing_mode = Tomb1M_BSM_FLASHING;
         } else if (!strcmp(healthbar_showing_mode, "always")) {
-            Tomb1MConfig.healthbar_showing_mode = Tomb1M_BSM_ALWAYS;
+            T1MConfig.healthbar_showing_mode = Tomb1M_BSM_ALWAYS;
         }
     }
 
-    Tomb1MConfig.healthbar_location = Tomb1MReadHealthbarLocationConfig(
+    T1MConfig.healthbar_location = Tomb1MReadHealthbarLocationConfig(
         json, "healthbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HLEFT);
-    Tomb1MConfig.airbar_location = Tomb1MReadHealthbarLocationConfig(
+    T1MConfig.airbar_location = Tomb1MReadHealthbarLocationConfig(
         json, "airbar_location", Tomb1M_BL_VTOP | Tomb1M_BL_HRIGHT);
-    Tomb1MConfig.enemy_healthbar_location = Tomb1MReadHealthbarLocationConfig(
+    T1MConfig.enemy_healthbar_location = Tomb1MReadHealthbarLocationConfig(
         json, "enemy_healthbar_location", Tomb1M_BL_VBOTTOM | Tomb1M_BL_HLEFT);
 
-    Tomb1MConfig.enable_numeric_keys =
+    T1MConfig.enable_numeric_keys =
         tr1m_json_get_boolean_value(json, "enable_numeric_keys");
-    Tomb1MConfig.fix_end_of_level_freeze =
+    T1MConfig.fix_end_of_level_freeze =
         tr1m_json_get_boolean_value(json, "fix_end_of_level_freeze");
-    Tomb1MConfig.fix_tihocan_secret_sound =
+    T1MConfig.fix_tihocan_secret_sound =
         tr1m_json_get_boolean_value(json, "fix_tihocan_secret_sound");
-    Tomb1MConfig.fix_pyramid_secret_trigger =
+    T1MConfig.fix_pyramid_secret_trigger =
         tr1m_json_get_boolean_value(json, "fix_pyramid_secret_trigger");
-    Tomb1MConfig.fix_hardcoded_secret_counts =
+    T1MConfig.fix_hardcoded_secret_counts =
         tr1m_json_get_boolean_value(json, "fix_hardcoded_secret_counts");
 
     json_value_free(json);

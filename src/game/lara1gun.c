@@ -220,7 +220,7 @@ void __cdecl FireShotgun()
     }
     if (fired) {
 #ifdef TOMB1M_FEAT_UI
-        if (Tomb1MConfig.enable_shotgun_flash) {
+        if (T1MConfig.enable_shotgun_flash) {
             Lara.right_arm.flash_gun = Weapons[LGT_SHOTGUN].flash_time;
         }
 #endif

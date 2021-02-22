@@ -271,7 +271,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
     int32_t ret = LoadLevel(LevelNames[level_id], level_id);
 
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.disable_healing_between_levels) {
+    if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
         int lara_found = 0;
@@ -294,10 +294,10 @@ int32_t __cdecl S_LoadLevel(int level_id)
 #endif
 
 #ifdef TOMB1M_FEAT_LEVEL_FIXES
-    if (Tomb1MConfig.fix_pyramid_secret_trigger) {
+    if (T1MConfig.fix_pyramid_secret_trigger) {
         FixPyramidSecretTrigger();
     }
-    if (Tomb1MConfig.fix_hardcoded_secret_counts) {
+    if (T1MConfig.fix_hardcoded_secret_counts) {
         SecretTotals[level_id] = GetSecretCount();
     }
 #endif

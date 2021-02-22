@@ -393,7 +393,7 @@ void __cdecl InitialiseLara()
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.disable_healing_between_levels) {
+    if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = Tomb1MData.stored_lara_health;
     }
 #endif

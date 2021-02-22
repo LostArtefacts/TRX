@@ -941,7 +941,7 @@ void __cdecl InitialiseObjects()
     ObjectObjects();
 
 #ifdef TOMB1M_FEAT_GAMEPLAY
-    if (Tomb1MConfig.disable_medpacks) {
+    if (T1MConfig.disable_medpacks) {
         Objects[O_MEDI_ITEM].initialise = NULL;
         Objects[O_MEDI_ITEM].collision = NULL;
         Objects[O_MEDI_ITEM].control = NULL;
@@ -957,7 +957,7 @@ void __cdecl InitialiseObjects()
         Objects[O_BIGMEDI_ITEM].ceiling = NULL;
     }
 
-    if (Tomb1MConfig.disable_magnums) {
+    if (T1MConfig.disable_magnums) {
         Objects[O_MAGNUM_ITEM].initialise = NULL;
         Objects[O_MAGNUM_ITEM].collision = NULL;
         Objects[O_MAGNUM_ITEM].control = NULL;
@@ -973,7 +973,7 @@ void __cdecl InitialiseObjects()
         Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
     }
 
-    if (Tomb1MConfig.disable_uzis) {
+    if (T1MConfig.disable_uzis) {
         Objects[O_UZI_ITEM].initialise = NULL;
         Objects[O_UZI_ITEM].collision = NULL;
         Objects[O_UZI_ITEM].control = NULL;
@@ -989,7 +989,7 @@ void __cdecl InitialiseObjects()
         Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
     }
 
-    if (Tomb1MConfig.disable_shotgun) {
+    if (T1MConfig.disable_shotgun) {
         Objects[O_SHOTGUN_ITEM].initialise = NULL;
         Objects[O_SHOTGUN_ITEM].collision = NULL;
         Objects[O_SHOTGUN_ITEM].control = NULL;

@@ -71,7 +71,7 @@ void __cdecl S_UpdateInput()
     }
 
 #ifdef TOMB1M_FEAT_CHEATS
-    if (Tomb1MConfig.enable_cheats) {
+    if (T1MConfig.enable_cheats) {
         static int is_stuff_cheat_key_pressed = 0;
         if (KeyData->keymap[DIK_I]) {
             if (!is_stuff_cheat_key_pressed) {
@@ -102,7 +102,7 @@ void __cdecl S_UpdateInput()
 #endif
 
 #ifdef TOMB1M_FEAT_UI
-    if (Tomb1MConfig.enable_numeric_keys) {
+    if (T1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
         } else if (KeyData->keymap[DIK_2] && Inv_RequestItem(O_SHOTGUN_ITEM)) {
