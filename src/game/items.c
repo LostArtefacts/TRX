@@ -3,7 +3,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-void __cdecl InitialiseFXArray()
+void InitialiseFXArray()
 {
     TRACE("");
     NextFxActive = NO_ITEM;

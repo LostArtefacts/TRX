@@ -11,7 +11,7 @@
 #include "config.h"
 #include "util.h"
 
-void __cdecl LaraControl(int16_t item_num)
+void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
 
@@ -196,7 +196,7 @@ void __cdecl LaraControl(int16_t item_num)
     }
 }
 
-void __cdecl LaraSwapMeshExtra()
+void LaraSwapMeshExtra()
 {
     if (!Objects[O_LARA_EXTRA].loaded) {
         return;
@@ -206,7 +206,7 @@ void __cdecl LaraSwapMeshExtra()
     }
 }
 
-void __cdecl AnimateLara(ITEM_INFO* item)
+void AnimateLara(ITEM_INFO* item)
 {
     int16_t* command;
     ANIM_STRUCT* anim;
@@ -309,7 +309,7 @@ void __cdecl AnimateLara(ITEM_INFO* item)
     item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
-void __cdecl UseItem(int16_t object_num)
+void UseItem(int16_t object_num)
 {
     TRACE("%d", object_num);
     switch (object_num) {
@@ -375,18 +375,18 @@ void __cdecl UseItem(int16_t object_num)
     }
 }
 
-void __cdecl ControlLaraExtra(int16_t item_num)
+void ControlLaraExtra(int16_t item_num)
 {
     AnimateItem(&Items[item_num]);
 }
 
-void __cdecl InitialiseLaraLoad(int16_t item_num)
+void InitialiseLaraLoad(int16_t item_num)
 {
     Lara.item_number = item_num;
     LaraItem = &Items[item_num];
 }
 
-void __cdecl InitialiseLara()
+void InitialiseLara()
 {
     TRACE("");
     LaraItem->collidable = 0;
@@ -445,7 +445,7 @@ void __cdecl InitialiseLara()
     InitialiseLaraInventory(CurrentLevel);
 }
 
-void __cdecl InitialiseLaraInventory(int32_t level_num)
+void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
@@ -512,7 +512,7 @@ void __cdecl InitialiseLaraInventory(int32_t level_num)
     InitialiseNewWeapon();
 }
 
-void __cdecl LaraInitialiseMeshes(int32_t level_num)
+void LaraInitialiseMeshes(int32_t level_num)
 {
     START_INFO* start = &SaveGame[0].start[level_num];
 

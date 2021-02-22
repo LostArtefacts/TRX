@@ -5,7 +5,7 @@
 #include "specific/input.h"
 #include "config.h"
 
-void __cdecl draw_shotgun()
+void draw_shotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
@@ -23,7 +23,7 @@ void __cdecl draw_shotgun()
     Lara.right_arm.frame_number = ani;
 }
 
-void __cdecl undraw_shotgun()
+void undraw_shotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
 
@@ -70,7 +70,7 @@ void __cdecl undraw_shotgun()
     Lara.left_arm.frame_number = ani;
 }
 
-void __cdecl draw_shotgun_meshes()
+void draw_shotgun_meshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] =
         Meshes[Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
@@ -79,14 +79,14 @@ void __cdecl draw_shotgun_meshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-void __cdecl undraw_shotgun_meshes()
+void undraw_shotgun_meshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
     Lara.mesh_ptrs[LM_HAND_R] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_R];
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-void __cdecl ready_shotgun()
+void ready_shotgun()
 {
     Lara.gun_status = LGS_READY;
     Lara.left_arm.x_rot = 0;
@@ -106,7 +106,7 @@ void __cdecl ready_shotgun()
     Lara.left_arm.frame_base = Objects[O_SHOTGUN].frame_base;
 }
 
-void __cdecl RifleHandler(int32_t weapon_type)
+void RifleHandler(int32_t weapon_type)
 {
     WEAPON_INFO* winfo = &Weapons[LGT_SHOTGUN];
 
@@ -131,7 +131,7 @@ void __cdecl RifleHandler(int32_t weapon_type)
     AnimateShotgun();
 }
 
-void __cdecl AnimateShotgun()
+void AnimateShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
     if (Lara.left_arm.lock) {
@@ -200,7 +200,7 @@ void __cdecl AnimateShotgun()
     Lara.left_arm.frame_number = ani;
 }
 
-void __cdecl FireShotgun()
+void FireShotgun()
 {
     int r, fired;
     PHD_ANGLE angles[2];

@@ -10,7 +10,7 @@
 #include "config.h"
 #include "util.h"
 
-int32_t __cdecl DrawPhaseCinematic()
+int32_t DrawPhaseCinematic()
 {
     S_InitialisePolyList();
     S_ClearScreen();
@@ -30,7 +30,7 @@ int32_t __cdecl DrawPhaseCinematic()
     return Camera.number_frames;
 }
 
-int32_t __cdecl DrawPhaseGame()
+int32_t DrawPhaseGame()
 {
     S_InitialisePolyList();
     DrawRooms(Camera.pos.room_number);
@@ -41,7 +41,7 @@ int32_t __cdecl DrawPhaseGame()
     return Camera.number_frames;
 }
 
-void __cdecl DrawRooms(int16_t current_room)
+void DrawRooms(int16_t current_room)
 {
     PhdLeft = 0;
     PhdTop = 0;
@@ -87,7 +87,7 @@ void __cdecl DrawRooms(int16_t current_room)
     }
 }
 
-void __cdecl GetRoomBounds(int16_t room_num)
+void GetRoomBounds(int16_t room_num)
 {
     ROOM_INFO* r = &RoomInfo[room_num];
     phd_PushMatrix();
@@ -103,8 +103,7 @@ void __cdecl GetRoomBounds(int16_t room_num)
     phd_PopMatrix();
 }
 
-int32_t __cdecl SetRoomBounds(
-    int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
+int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
 {
     // TODO: the way the game passes the objptr is dangerous and relies on
     // layout of DOOR_INFO
@@ -241,7 +240,7 @@ int32_t __cdecl SetRoomBounds(
     return 1;
 }
 
-void __cdecl PrintRooms(int16_t room_number)
+void PrintRooms(int16_t room_number)
 {
     ROOM_INFO* r = &RoomInfo[room_number];
     if (r->flags & RF_UNDERWATER) {
@@ -299,7 +298,7 @@ void __cdecl PrintRooms(int16_t room_number)
     r->top = PhdWinMaxY;
 }
 
-void __cdecl DrawEffect(int16_t fxnum)
+void DrawEffect(int16_t fxnum)
 {
     FX_INFO* fx = &Effects[fxnum];
     OBJECT_INFO* object = &Objects[fx->object_number];
@@ -329,7 +328,7 @@ void __cdecl DrawEffect(int16_t fxnum)
     }
 }
 
-void __cdecl DrawSpriteItem(ITEM_INFO* item)
+void DrawSpriteItem(ITEM_INFO* item)
 {
     S_DrawSprite(
         item->pos.x, item->pos.y, item->pos.z,
@@ -337,11 +336,11 @@ void __cdecl DrawSpriteItem(ITEM_INFO* item)
         item->shade);
 }
 
-void __cdecl DrawDummyItem(ITEM_INFO* item)
+void DrawDummyItem(ITEM_INFO* item)
 {
 }
 
-void __cdecl DrawAnimatingItem(ITEM_INFO* item)
+void DrawAnimatingItem(ITEM_INFO* item)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -463,7 +462,7 @@ void __cdecl DrawAnimatingItem(ITEM_INFO* item)
     phd_PopMatrix();
 }
 
-void __cdecl DrawLara(ITEM_INFO* item)
+void DrawLara(ITEM_INFO* item)
 {
     OBJECT_INFO* object;
     int16_t* frame;
@@ -763,7 +762,7 @@ void __cdecl DrawLara(ITEM_INFO* item)
     PhdBottom = bottom;
 }
 
-void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
+void DrawGunFlash(int32_t weapon_type, int32_t clip)
 {
     int32_t light;
     int32_t len;
@@ -803,7 +802,7 @@ void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip)
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
 }
 
-void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
+void CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
 {
     if (item->shade >= 0) {
         S_CalculateStaticLight(item->shade);
@@ -830,7 +829,7 @@ void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
     S_CalculateLight(x, y, z, item->room_number);
 }
 
-void __cdecl DrawLaraInt(
+void DrawLaraInt(
     ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int32_t frac,
     int32_t rate)
 {
@@ -1080,7 +1079,7 @@ void __cdecl DrawLaraInt(
     phd_PopMatrix();
 }
 
-void __cdecl InitInterpolate(int32_t frac, int32_t rate)
+void InitInterpolate(int32_t frac, int32_t rate)
 {
     IMFrac = frac;
     IMRate = rate;
@@ -1099,7 +1098,7 @@ void __cdecl InitInterpolate(int32_t frac, int32_t rate)
     IMMatrixPtr->_23 = PhdMatrixPtr->_23;
 }
 
-void __cdecl phd_PushMatrix_I()
+void phd_PushMatrix_I()
 {
     phd_PushMatrix();
     IMMatrixPtr[1]._00 = IMMatrixPtr[0]._00;
@@ -1117,13 +1116,13 @@ void __cdecl phd_PushMatrix_I()
     IMMatrixPtr++;
 }
 
-void __cdecl phd_PopMatrix_I()
+void phd_PopMatrix_I()
 {
     phd_PopMatrix();
     IMMatrixPtr--;
 }
 
-void __cdecl phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
+void phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
 {
     phd_TranslateRel(x, y, z);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1132,7 +1131,7 @@ void __cdecl phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_TranslateRel_ID(
+void phd_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2)
 {
     phd_TranslateRel(x, y, z);
@@ -1142,7 +1141,7 @@ void __cdecl phd_TranslateRel_ID(
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotY_I(PHD_ANGLE ang)
+void phd_RotY_I(PHD_ANGLE ang)
 {
     phd_RotY(ang);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1151,7 +1150,7 @@ void __cdecl phd_RotY_I(PHD_ANGLE ang)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotX_I(PHD_ANGLE ang)
+void phd_RotX_I(PHD_ANGLE ang)
 {
     phd_RotX(ang);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1160,7 +1159,7 @@ void __cdecl phd_RotX_I(PHD_ANGLE ang)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotZ_I(PHD_ANGLE ang)
+void phd_RotZ_I(PHD_ANGLE ang)
 {
     phd_RotZ(ang);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1169,7 +1168,7 @@ void __cdecl phd_RotZ_I(PHD_ANGLE ang)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
+void phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
 {
     phd_RotYXZ(y, x, z);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1178,7 +1177,7 @@ void __cdecl phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2)
+void phd_RotYXZpack_I(int32_t r1, int32_t r2)
 {
     phd_RotYXZpack(r1);
     PHD_MATRIX* old_matrix = PhdMatrixPtr;
@@ -1187,7 +1186,7 @@ void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2)
     PhdMatrixPtr = old_matrix;
 }
 
-void __cdecl phd_PutPolygons_I(int16_t* ptr, int32_t clip)
+void phd_PutPolygons_I(int16_t* ptr, int32_t clip)
 {
     phd_PushMatrix();
     InterpolateMatrix();
@@ -1195,7 +1194,7 @@ void __cdecl phd_PutPolygons_I(int16_t* ptr, int32_t clip)
     phd_PopMatrix();
 }
 
-void __cdecl InterpolateMatrix()
+void InterpolateMatrix()
 {
     PHD_MATRIX* mptr = PhdMatrixPtr;
     PHD_MATRIX* iptr = IMMatrixPtr;
@@ -1229,7 +1228,7 @@ void __cdecl InterpolateMatrix()
     }
 }
 
-void __cdecl InterpolateArmMatrix()
+void InterpolateArmMatrix()
 {
     PHD_MATRIX* mptr = PhdMatrixPtr;
     PHD_MATRIX* iptr = IMMatrixPtr;
@@ -1263,7 +1262,7 @@ void __cdecl InterpolateArmMatrix()
     }
 }
 
-int32_t __cdecl GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
+int32_t GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
 {
     ANIM_STRUCT* anim = &Anims[item->anim_number];
     frmptr[0] = anim->frame_ptr;
@@ -1291,7 +1290,7 @@ int32_t __cdecl GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
     return interp;
 }
 
-int16_t* __cdecl GetBoundsAccurate(ITEM_INFO* item)
+int16_t* GetBoundsAccurate(ITEM_INFO* item)
 {
     int32_t rate;
     int16_t* frmptr[2];
@@ -1309,7 +1308,7 @@ int16_t* __cdecl GetBoundsAccurate(ITEM_INFO* item)
     return InterpolatedBounds;
 }
 
-int16_t* __cdecl GetBestFrame(ITEM_INFO* item)
+int16_t* GetBestFrame(ITEM_INFO* item)
 {
     int16_t* frmptr[2];
     int32_t rate;

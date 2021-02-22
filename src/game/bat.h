@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void __cdecl BatControl(int16_t item_num);
+void BatControl(int16_t item_num);
 
 void T1MInjectGameBat();
 

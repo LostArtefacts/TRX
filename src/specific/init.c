@@ -10,7 +10,7 @@
 #include <time.h>
 #include <windows.h>
 
-void __cdecl DB_Log(char* fmt, ...)
+void DB_Log(char* fmt, ...)
 {
     va_list va;
     char buffer[256] = { 0 };
@@ -24,7 +24,7 @@ void __cdecl DB_Log(char* fmt, ...)
     }
 }
 
-void __cdecl S_InitialiseSystem()
+void S_InitialiseSystem()
 {
     TRACE("");
     FindCdDrive();
@@ -58,7 +58,7 @@ void __cdecl S_InitialiseSystem()
     InitialiseHardware();
 }
 
-void __cdecl init_game_malloc()
+void init_game_malloc()
 {
     TRACE("");
     GameAllocMemPointer = GameMemoryPointer;
@@ -66,7 +66,7 @@ void __cdecl init_game_malloc()
     GameAllocMemUsed = 0;
 }
 
-void __cdecl game_free(int free_size)
+void game_free(int free_size)
 {
     TRACE("");
     GameAllocMemPointer -= free_size;
@@ -74,7 +74,7 @@ void __cdecl game_free(int free_size)
     GameAllocMemUsed -= free_size;
 }
 
-void __cdecl CalculateWibbleTable()
+void CalculateWibbleTable()
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * 65536) / WIBBLE_SIZE;
@@ -84,7 +84,7 @@ void __cdecl CalculateWibbleTable()
     }
 }
 
-void __cdecl S_SeedRandom()
+void S_SeedRandom()
 {
     time_t lt = time(0);
     struct tm* tptr = localtime(&lt);

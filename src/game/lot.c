@@ -3,7 +3,7 @@
 #include "specific/init.h"
 #include "util.h"
 
-void __cdecl InitialiseLOTArray()
+void InitialiseLOTArray()
 {
     TRACE("");
     BaddieSlots =

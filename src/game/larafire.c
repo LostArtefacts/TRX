@@ -10,7 +10,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-void __cdecl LaraGun()
+void LaraGun()
 {
     if (Lara.left_arm.flash_gun > 0) {
         --Lara.left_arm.flash_gun;
@@ -151,7 +151,7 @@ void __cdecl LaraGun()
     }
 }
 
-void __cdecl InitialiseNewWeapon()
+void InitialiseNewWeapon()
 {
     Lara.left_arm.x_rot = 0;
     Lara.left_arm.y_rot = 0;
@@ -193,7 +193,7 @@ void __cdecl InitialiseNewWeapon()
     }
 }
 
-void __cdecl LaraTargetInfo(WEAPON_INFO* winfo)
+void LaraTargetInfo(WEAPON_INFO* winfo)
 {
     if (!Lara.target) {
         Lara.right_arm.lock = 0;
@@ -248,7 +248,7 @@ void __cdecl LaraTargetInfo(WEAPON_INFO* winfo)
     Lara.target_angles[1] = ang[1];
 }
 
-void __cdecl LaraGetNewTarget(WEAPON_INFO* winfo)
+void LaraGetNewTarget(WEAPON_INFO* winfo)
 {
     ITEM_INFO* bestitem = NULL;
     int16_t bestyrot = 0x7FFF;
@@ -307,7 +307,7 @@ void __cdecl LaraGetNewTarget(WEAPON_INFO* winfo)
     LaraTargetInfo(winfo);
 }
 
-void __cdecl find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
+void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
 {
     int16_t* bounds = GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
@@ -321,7 +321,7 @@ void __cdecl find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
     target->room_number = item->room_number;
 }
 
-void __cdecl AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
+void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
 {
     PHD_ANGLE destx;
     PHD_ANGLE desty;
@@ -359,7 +359,7 @@ void __cdecl AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
     arm->z_rot = 0;
 }
 
-int32_t __cdecl FireWeapon(
+int32_t FireWeapon(
     int32_t weapon_type, ITEM_INFO* target, ITEM_INFO* src, PHD_ANGLE* angles)
 {
     WEAPON_INFO* winfo = &Weapons[weapon_type];
@@ -456,7 +456,7 @@ int32_t __cdecl FireWeapon(
     return -1;
 }
 
-void __cdecl HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
+void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         SaveGame[0].kills++;

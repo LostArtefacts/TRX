@@ -13,7 +13,7 @@
 #include "config.h"
 #include "util.h"
 
-int32_t __cdecl ControlPhase(int32_t nframes, int demo_mode)
+int32_t ControlPhase(int32_t nframes, int demo_mode)
 {
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {

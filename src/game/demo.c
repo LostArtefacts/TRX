@@ -6,7 +6,7 @@
 #include "specific/frontend.h"
 #include "util.h"
 
-int32_t __cdecl StartDemo()
+int32_t StartDemo()
 {
     TRACE("");
     TEXTSTRING* txt;

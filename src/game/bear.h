@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void __cdecl BearControl(int16_t item_num);
+void BearControl(int16_t item_num);
 
 void T1MInjectGameBear();
 

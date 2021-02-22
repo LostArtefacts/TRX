@@ -3,7 +3,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-void __cdecl draw_pistols(int32_t weapon_type)
+void draw_pistols(int32_t weapon_type)
 {
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
@@ -22,7 +22,7 @@ void __cdecl draw_pistols(int32_t weapon_type)
     Lara.right_arm.frame_number = ani;
 }
 
-void __cdecl undraw_pistols(int32_t weapon_type)
+void undraw_pistols(int32_t weapon_type)
 {
     int16_t anil = Lara.left_arm.frame_number;
     if (anil >= AF_G_RECOIL) {
@@ -79,7 +79,7 @@ void __cdecl undraw_pistols(int32_t weapon_type)
     Lara.torso_y_rot = (Lara.right_arm.y_rot + Lara.left_arm.y_rot) / 4;
 }
 
-void __cdecl ready_pistols()
+void ready_pistols()
 {
     Lara.gun_status = LGS_READY;
     Lara.left_arm.x_rot = 0;
@@ -99,7 +99,7 @@ void __cdecl ready_pistols()
     Lara.left_arm.frame_base = Objects[O_PISTOLS].frame_base;
 }
 
-void __cdecl draw_pistol_meshes(int32_t weapon_type)
+void draw_pistol_meshes(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -118,7 +118,7 @@ void __cdecl draw_pistol_meshes(int32_t weapon_type)
         Meshes[Objects[O_LARA].mesh_index + LM_THIGH_R];
 }
 
-void __cdecl undraw_pistol_mesh_left(int32_t weapon_type)
+void undraw_pistol_mesh_left(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -132,7 +132,7 @@ void __cdecl undraw_pistol_mesh_left(int32_t weapon_type)
     SoundEffect(7, &LaraItem->pos, 0);
 }
 
-void __cdecl undraw_pistol_mesh_right(int32_t weapon_type)
+void undraw_pistol_mesh_right(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -146,7 +146,7 @@ void __cdecl undraw_pistol_mesh_right(int32_t weapon_type)
     SoundEffect(7, &LaraItem->pos, 0);
 }
 
-void __cdecl PistolHandler(int32_t weapon_type)
+void PistolHandler(int32_t weapon_type)
 {
     WEAPON_INFO* winfo = &Weapons[weapon_type];
 
@@ -182,7 +182,7 @@ void __cdecl PistolHandler(int32_t weapon_type)
     AnimatePistols(weapon_type);
 }
 
-void __cdecl AnimatePistols(int32_t weapon_type)
+void AnimatePistols(int32_t weapon_type)
 {
     PHD_ANGLE angles[2];
     WEAPON_INFO* winfo = &Weapons[weapon_type];

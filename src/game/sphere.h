@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // clang-format off
-#define GetSpheres          ((int32_t       __cdecl(*)(ITEM_INFO* item, SPHERE* ptr, int32_t world_space))0x00439260)
+#define GetSpheres          ((int32_t      (*)(ITEM_INFO* item, SPHERE* ptr, int32_t world_space))0x00439260)
 // clang-format on
 
 #endif

@@ -6,7 +6,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
+void LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 {
     Camera.target_elevation = -22 * PHD_DEGREE;
 
@@ -71,7 +71,7 @@ void __cdecl LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
     TestTriggers(coll->trigger, 0);
 }
 
-void __cdecl LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -98,7 +98,7 @@ void __cdecl LaraAsSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsSurfBack(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSurfBack(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -122,7 +122,7 @@ void __cdecl LaraAsSurfBack(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -146,7 +146,7 @@ void __cdecl LaraAsSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsSurfRight(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSurfRight(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -170,7 +170,7 @@ void __cdecl LaraAsSurfRight(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
 {
     item->fall_speed -= 4;
     if (item->fall_speed < 0) {
@@ -238,37 +238,37 @@ void __cdecl LaraAsSurfTread(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraColSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSurfSwim(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot;
     LaraSurfaceCollision(item, coll);
 }
 
-void __cdecl LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot;
     LaraSurfaceCollision(item, coll);
 }
 
-void __cdecl LaraColSurfBack(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSurfBack(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
     LaraSurfaceCollision(item, coll);
 }
 
-void __cdecl LaraColSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
     LaraSurfaceCollision(item, coll);
 }
 
-void __cdecl LaraColSurfRight(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSurfRight(ITEM_INFO* item, COLL_INFO* coll)
 {
     Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
     LaraSurfaceCollision(item, coll);
 }
 
-void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
+void LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->facing = Lara.move_angle;
 
@@ -308,7 +308,7 @@ void __cdecl LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
     LaraTestWaterClimbOut(item, coll);
 }
 
-int32_t __cdecl LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
+int32_t LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->pos.y_rot != Lara.move_angle) {
         return 0;

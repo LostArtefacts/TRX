@@ -52,7 +52,7 @@ static int8_t TextRemapASCII[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-int __cdecl T_GetStringLen(const char* string)
+int T_GetStringLen(const char* string)
 {
     int len = 1;
     while (*string++) {
@@ -61,7 +61,7 @@ int __cdecl T_GetStringLen(const char* string)
     return len;
 }
 
-void __cdecl T_InitPrint()
+void T_InitPrint()
 {
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
         TextInfoTable[i].flags = 0;
@@ -69,8 +69,8 @@ void __cdecl T_InitPrint()
     TextStringCount = 0;
 }
 
-TEXTSTRING* __cdecl T_Print(
-    int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
+TEXTSTRING*
+T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
 {
     if (TextStringCount == MAX_TEXT_STRINGS) {
         return NULL;
@@ -124,7 +124,7 @@ TEXTSTRING* __cdecl T_Print(
     return result;
 }
 
-void __cdecl T_ChangeText(TEXTSTRING* textstring, const char* string)
+void T_ChangeText(TEXTSTRING* textstring, const char* string)
 {
     if (!(textstring->flags & TF_ACTIVE)) {
         return;
@@ -135,14 +135,13 @@ void __cdecl T_ChangeText(TEXTSTRING* textstring, const char* string)
     }
 }
 
-void __cdecl T_SetScale(
-    TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v)
+void T_SetScale(TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v)
 {
     textstring->scale_h = scale_h;
     textstring->scale_v = scale_v;
 }
 
-void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
+void T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
 {
     if (b) {
         textstring->flags |= TF_FLASH;
@@ -153,7 +152,7 @@ void __cdecl T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
     }
 }
 
-void __cdecl T_AddBackground(
+void T_AddBackground(
     TEXTSTRING* textstring, int16_t xsize, int16_t ysize, int16_t xoff,
     int16_t yoff, int16_t zoff, int16_t colour, SG_COL* gourptr, int16_t flags)
 {
@@ -168,12 +167,12 @@ void __cdecl T_AddBackground(
     textstring->bgnd_flags = flags;
 }
 
-void __cdecl T_RemoveBackground(TEXTSTRING* textstring)
+void T_RemoveBackground(TEXTSTRING* textstring)
 {
     textstring->flags &= ~TF_BGND;
 }
 
-void __cdecl T_AddOutline(
+void T_AddOutline(
     TEXTSTRING* textstring, int b, int16_t colour, SG_COL* gourptr,
     int16_t flags)
 {
@@ -183,12 +182,12 @@ void __cdecl T_AddOutline(
     textstring->outl_flags = flags;
 }
 
-void __cdecl T_RemoveOutline(TEXTSTRING* textstring)
+void T_RemoveOutline(TEXTSTRING* textstring)
 {
     textstring->flags &= ~TF_OUTLINE;
 }
 
-void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
+void T_CentreH(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
         textstring->flags |= TF_CENTRE_H;
@@ -197,7 +196,7 @@ void __cdecl T_CentreH(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b)
+void T_CentreV(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
         textstring->flags |= TF_CENTRE_V;
@@ -206,7 +205,7 @@ void __cdecl T_CentreV(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b)
+void T_RightAlign(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
         textstring->flags |= TF_RIGHT;
@@ -215,7 +214,7 @@ void __cdecl T_RightAlign(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b)
+void T_BottomAlign(TEXTSTRING* textstring, int16_t b)
 {
     if (b) {
         textstring->flags |= TF_BOTTOM;
@@ -224,7 +223,7 @@ void __cdecl T_BottomAlign(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
+int32_t T_GetTextWidth(TEXTSTRING* textstring)
 {
     int width = 0;
     char* ptr = textstring->string;
@@ -255,7 +254,7 @@ int32_t __cdecl T_GetTextWidth(TEXTSTRING* textstring)
     return width;
 }
 
-void __cdecl T_RemovePrint(TEXTSTRING* textstring)
+void T_RemovePrint(TEXTSTRING* textstring)
 {
     if (!textstring) {
         return;
@@ -267,12 +266,12 @@ void __cdecl T_RemovePrint(TEXTSTRING* textstring)
     }
 }
 
-void __cdecl T_RemoveAllPrints()
+void T_RemoveAllPrints()
 {
     T_InitPrint();
 }
 
-void __cdecl T_DrawText()
+void T_DrawText()
 {
     // TombATI FPS counter, pretty pointless IMO as it always shows 30 for me.
     // Additionally, it's not present in TR2+.
@@ -314,7 +313,7 @@ void __cdecl T_DrawText()
     }
 }
 
-void __cdecl T_DrawThisText(TEXTSTRING* textstring)
+void T_DrawThisText(TEXTSTRING* textstring)
 {
     int sx, sy, sh, sv;
     if (textstring->flags & TF_FLASH) {

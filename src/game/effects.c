@@ -3,7 +3,7 @@
 #include "config.h"
 #include "util.h"
 
-void __cdecl FxChainBlock(ITEM_INFO* item)
+void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_LEVEL_FIXES
     if (T1MConfig.fix_tihocan_secret_sound) {

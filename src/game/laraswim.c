@@ -8,7 +8,7 @@
 #include "config.h"
 #include "util.h"
 
-void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
+void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 {
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -UW_HITE;
@@ -84,7 +84,7 @@ void __cdecl LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     TestTriggers(coll->trigger, 0);
 }
 
-void __cdecl LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -125,7 +125,7 @@ void __cdecl LaraAsSwim(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -158,7 +158,7 @@ void __cdecl LaraAsGlide(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
 {
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look) {
@@ -195,14 +195,14 @@ void __cdecl LaraAsTread(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraAsDive(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsDive(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (Input & AS_RUN) {
         item->pos.x_rot -= PHD_DEGREE;
     }
 }
 
-void __cdecl LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll)
+void LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll)
 {
     item->fall_speed -= 8;
     if (item->fall_speed <= 0) {
@@ -219,27 +219,27 @@ void __cdecl LaraAsUWDeath(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraColSwim(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColSwim(ITEM_INFO* item, COLL_INFO* coll)
 {
     LaraSwimCollision(item, coll);
 }
 
-void __cdecl LaraColGlide(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColGlide(ITEM_INFO* item, COLL_INFO* coll)
 {
     LaraSwimCollision(item, coll);
 }
 
-void __cdecl LaraColTread(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColTread(ITEM_INFO* item, COLL_INFO* coll)
 {
     LaraSwimCollision(item, coll);
 }
 
-void __cdecl LaraColDive(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColDive(ITEM_INFO* item, COLL_INFO* coll)
 {
     LaraSwimCollision(item, coll);
 }
 
-void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
+void LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
 {
     item->hit_points = -1;
     Lara.air = -1;
@@ -252,7 +252,7 @@ void __cdecl LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
     LaraSwimCollision(item, coll);
 }
 
-void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
+void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 {
     if (item->pos.x_rot >= -PHD_ONE / 4 && item->pos.x_rot <= PHD_ONE / 4) {
         Lara.move_angle = coll->facing = item->pos.y_rot;
@@ -308,7 +308,7 @@ void __cdecl LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
     }
 }
 
-void __cdecl LaraWaterCurrent(COLL_INFO* coll)
+void LaraWaterCurrent(COLL_INFO* coll)
 {
     PHD_VECTOR target; // [esp+Ch] [ebp-Ch]
 

@@ -11,7 +11,7 @@
 static int32_t medipack_cooldown = 0;
 #endif
 
-void __cdecl S_UpdateInput()
+void S_UpdateInput()
 {
     int32_t linput = 0;
 

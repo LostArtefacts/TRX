@@ -9,7 +9,7 @@
 #include "config.h"
 #include "util.h"
 
-int __cdecl LevelIsValid(int16_t level_number)
+int LevelIsValid(int16_t level_number)
 {
     TRACE("%d", level_number);
     int number_valid = 0;
@@ -27,19 +27,19 @@ int __cdecl LevelIsValid(int16_t level_number)
     return 0;
 }
 
-void __cdecl SeedRandomControl(int32_t seed)
+void SeedRandomControl(int32_t seed)
 {
     TRACE("%d", seed);
     Rand1 = seed;
 }
 
-int32_t __cdecl GetRandomControl()
+int32_t GetRandomControl()
 {
     Rand1 = 0x41C64E6D * Rand1 + 0x3039;
     return (Rand1 >> 10) & 0x7FFF;
 }
 
-void __cdecl SeedRandomDraw(int32_t seed)
+void SeedRandomDraw(int32_t seed)
 {
     Rand2 = seed;
 }
@@ -50,7 +50,7 @@ int32_t GetRandomDraw()
     return (Rand2 >> 10) & 0x7FFF;
 }
 
-void __cdecl LevelStats(int level_id)
+void LevelStats(int level_id)
 {
     static char string[100];
     TEXTSTRING* txt;

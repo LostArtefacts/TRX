@@ -5,7 +5,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-void __cdecl InitialiseCreature(int16_t item_num)
+void InitialiseCreature(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
 
@@ -14,7 +14,7 @@ void __cdecl InitialiseCreature(int16_t item_num)
     item->data = NULL;
 }
 
-void __cdecl CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
+void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
 {
     CREATURE_INFO* creature = item->data;
     if (!creature) {

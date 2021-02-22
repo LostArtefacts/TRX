@@ -20,7 +20,7 @@
 #include "config.h"
 #include "util.h"
 
-void __cdecl BaddyObjects()
+void BaddyObjects()
 {
     Objects[O_LARA].initialise = InitialiseLaraLoad;
     Objects[O_LARA].draw_routine = DrawDummyItem;
@@ -480,7 +480,7 @@ void __cdecl BaddyObjects()
     }
 }
 
-void __cdecl TrapObjects()
+void TrapObjects()
 {
     Objects[O_FALLING_BLOCK].control = FallingBlockControl;
     Objects[O_FALLING_BLOCK].floor = FallingBlockFloor;
@@ -616,7 +616,7 @@ void __cdecl TrapObjects()
     Objects[O_LAVA_WEDGE].save_flags = 1;
 }
 
-void __cdecl ObjectObjects()
+void ObjectObjects()
 {
     Objects[O_CAMERA_TARGET].draw_routine = DrawDummyItem;
 
@@ -915,7 +915,7 @@ void __cdecl ObjectObjects()
     Objects[O_GUN_FLASH].control = ControlGunShot;
 }
 
-void __cdecl InitialiseObjects()
+void InitialiseObjects()
 {
     for (int i = 0; i < NUMBER_OBJECTS; i++) {
         OBJECT_INFO* obj = &Objects[i];

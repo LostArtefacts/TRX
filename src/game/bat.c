@@ -20,7 +20,7 @@ typedef enum {
 
 BITE_INFO BatBite = { 0, 16, 45, 4 };
 
-void __cdecl BatControl(int16_t item_num)
+void BatControl(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
 

@@ -21,7 +21,7 @@ int32_t StaticCount = 0;
 int32_t TextureCount = 0;
 int32_t FloorDataSize = 0;
 
-int32_t __cdecl LoadRooms(FILE* fp)
+int32_t LoadRooms(FILE* fp)
 {
     TRACE("");
     uint16_t count2;
@@ -127,7 +127,7 @@ int32_t __cdecl LoadRooms(FILE* fp)
     return 1;
 }
 
-int32_t __cdecl LoadObjects(FILE* handle)
+int32_t LoadObjects(FILE* handle)
 {
     _fread(&MeshCount, sizeof(int32_t), 1, handle);
     MeshBase = game_malloc(sizeof(int16_t) * MeshCount, GBUF_MESHES);
@@ -214,7 +214,7 @@ int32_t __cdecl LoadObjects(FILE* handle)
     return 1;
 }
 
-int32_t __cdecl LoadItems(FILE* handle)
+int32_t LoadItems(FILE* handle)
 {
     int32_t item_count = 0;
     _fread(&item_count, sizeof(int32_t), 1, handle);
@@ -265,7 +265,7 @@ int32_t __cdecl LoadItems(FILE* handle)
     return 1;
 }
 
-int32_t __cdecl S_LoadLevel(int level_id)
+int32_t S_LoadLevel(int level_id)
 {
     TRACE("%d (%s)", level_id, LevelNames[level_id]);
     int32_t ret = LoadLevel(LevelNames[level_id], level_id);
@@ -305,7 +305,7 @@ int32_t __cdecl S_LoadLevel(int level_id)
     return ret;
 }
 
-const char* __cdecl GetFullPath(const char* filename)
+const char* GetFullPath(const char* filename)
 {
     TRACE("%s", filename);
 #ifdef T1M_FEAT_NOCD
@@ -320,7 +320,7 @@ const char* __cdecl GetFullPath(const char* filename)
     return newpath;
 }
 
-void __cdecl FindCdDrive()
+void FindCdDrive()
 {
     TRACE("");
 #ifdef T1M_FEAT_NOCD

@@ -6,7 +6,7 @@
 #include "config.h"
 #include "util.h"
 
-void __cdecl DrawGameInfo()
+void DrawGameInfo()
 {
     DrawAmmoInfo();
     if (OverlayFlag > 0) {
@@ -21,7 +21,7 @@ void __cdecl DrawGameInfo()
     T_DrawText();
 }
 
-void __cdecl DrawHealthBar()
+void DrawHealthBar()
 {
     int hit_points = LaraItem->hit_points;
     if (hit_points < 0) {
@@ -44,7 +44,7 @@ void __cdecl DrawHealthBar()
     }
 }
 
-void __cdecl DrawAirBar()
+void DrawAirBar()
 {
     if (Lara.water_status != LWS_UNDERWATER
         && Lara.water_status != LWS_SURFACE) {
@@ -62,7 +62,7 @@ void __cdecl DrawAirBar()
 }
 
 #ifdef T1M_FEAT_GAMEPLAY
-void __cdecl DrawEnemyBar()
+void DrawEnemyBar()
 {
     if (!T1MConfig.enable_enemy_healthbar || !Lara.target) {
         return;
@@ -76,7 +76,7 @@ void __cdecl DrawEnemyBar()
 }
 #endif
 
-void __cdecl DrawAmmoInfo()
+void DrawAmmoInfo()
 {
     char ammostring[80] = "";
 
@@ -115,7 +115,7 @@ void __cdecl DrawAmmoInfo()
     }
 }
 
-void __cdecl MakeAmmoString(char* string)
+void MakeAmmoString(char* string)
 {
     char* c;
 
@@ -130,14 +130,14 @@ void __cdecl MakeAmmoString(char* string)
     }
 }
 
-void __cdecl InitialisePickUpDisplay()
+void InitialisePickUpDisplay()
 {
     for (int i = 0; i < NUM_PU; i++) {
         Pickups[i].duration = 0;
     }
 }
 
-void __cdecl DrawPickups()
+void DrawPickups()
 {
     int old_game_timer = OldGameTimer;
     OldGameTimer = SaveGame[0].timer;
@@ -164,7 +164,7 @@ void __cdecl DrawPickups()
     }
 }
 
-void __cdecl AddDisplayPickup(int16_t objnum)
+void AddDisplayPickup(int16_t objnum)
 {
     for (int i = 0; i < NUM_PU; i++) {
         if (Pickups[i].duration <= 0) {

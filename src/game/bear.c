@@ -38,7 +38,7 @@ typedef enum {
 
 BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
 
-void __cdecl BearControl(int16_t item_num)
+void BearControl(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
 

@@ -196,12 +196,12 @@ int GetRenderScaleGLRage(int unit)
     return round(result);
 }
 
-void __cdecl S_DrawHealthBar(int32_t percent)
+void S_DrawHealthBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_HEALTH);
 }
 
-void __cdecl S_DrawAirBar(int32_t percent)
+void S_DrawAirBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_AIR);
 }

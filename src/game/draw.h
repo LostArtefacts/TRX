@@ -5,45 +5,44 @@
 #include <stdint.h>
 
 // clang-format off
-#define DrawUnclippedItem       ((void          __cdecl(*)(ITEM_INFO *item))0x0042BDF0)
+#define DrawUnclippedItem       ((void         (*)(ITEM_INFO *item))0x0042BDF0)
 // clang-format on
 
-int32_t __cdecl DrawPhaseCinematic();
-int32_t __cdecl DrawPhaseGame();
-void __cdecl DrawRooms(int16_t current_room);
-void __cdecl GetRoomBounds(int16_t room_num);
-int32_t __cdecl SetRoomBounds(
-    int16_t* objptr, int16_t room_num, ROOM_INFO* parent);
-void __cdecl PrintRooms(int16_t room_number);
-void __cdecl DrawEffect(int16_t fxnum);
-void __cdecl DrawSpriteItem(ITEM_INFO* item);
-void __cdecl DrawDummyItem(ITEM_INFO* item);
-void __cdecl DrawAnimatingItem(ITEM_INFO* item);
-void __cdecl DrawLara(ITEM_INFO* item);
-void __cdecl DrawGunFlash(int32_t weapon_type, int32_t clip);
-void __cdecl CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);
-void __cdecl DrawLaraInt(
+int32_t DrawPhaseCinematic();
+int32_t DrawPhaseGame();
+void DrawRooms(int16_t current_room);
+void GetRoomBounds(int16_t room_num);
+int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent);
+void PrintRooms(int16_t room_number);
+void DrawEffect(int16_t fxnum);
+void DrawSpriteItem(ITEM_INFO* item);
+void DrawDummyItem(ITEM_INFO* item);
+void DrawAnimatingItem(ITEM_INFO* item);
+void DrawLara(ITEM_INFO* item);
+void DrawGunFlash(int32_t weapon_type, int32_t clip);
+void CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);
+void DrawLaraInt(
     ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int32_t frac,
     int32_t rate);
-void __cdecl InitInterpolate(int32_t frac, int32_t rate);
+void InitInterpolate(int32_t frac, int32_t rate);
 
-void __cdecl phd_PushMatrix_I();
-void __cdecl phd_PopMatrix_I();
-void __cdecl phd_TranslateRel_I(int32_t x, int32_t y, int32_t z);
-void __cdecl phd_TranslateRel_ID(
+void phd_PushMatrix_I();
+void phd_PopMatrix_I();
+void phd_TranslateRel_I(int32_t x, int32_t y, int32_t z);
+void phd_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2);
-void __cdecl phd_RotY_I(int16_t ang);
-void __cdecl phd_RotX_I(int16_t ang);
-void __cdecl phd_RotZ_I(int16_t ang);
-void __cdecl phd_RotYXZ_I(int16_t y, int16_t x, int16_t z);
-void __cdecl phd_RotYXZpack_I(int32_t r1, int32_t r2);
-void __cdecl phd_PutPolygons_I(int16_t* ptr, int32_t clip);
+void phd_RotY_I(int16_t ang);
+void phd_RotX_I(int16_t ang);
+void phd_RotZ_I(int16_t ang);
+void phd_RotYXZ_I(int16_t y, int16_t x, int16_t z);
+void phd_RotYXZpack_I(int32_t r1, int32_t r2);
+void phd_PutPolygons_I(int16_t* ptr, int32_t clip);
 
-void __cdecl InterpolateMatrix();
-void __cdecl InterpolateArmMatrix();
-int32_t __cdecl GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate);
-int16_t* __cdecl GetBoundsAccurate(ITEM_INFO* item);
-int16_t* __cdecl GetBestFrame(ITEM_INFO* item);
+void InterpolateMatrix();
+void InterpolateArmMatrix();
+int32_t GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate);
+int16_t* GetBoundsAccurate(ITEM_INFO* item);
+int16_t* GetBestFrame(ITEM_INFO* item);
 
 void T1MInjectGameDraw();
 
