@@ -1,15 +1,21 @@
 #include "game/data.h"
 #include "game/option.h"
 #include "game/text.h"
+#include "mod.h"
 #include "util.h"
 
 void S_ShowControls()
 {
+#ifdef TOMB1M_FEAT_UI
+    int16_t centre = Tomb1MGetRenderWidthDownscaled() / 2;
+#else
     int16_t centre = PhdWinWidth / 2;
+#endif
     int16_t hpos;
     int16_t vpos;
 
     switch (HiRes) {
+#ifndef TOMB1M_FEAT_UI
     case 0:
         ControlText[1] = T_Print(0, -55, 0, " ");
         break;
@@ -19,6 +25,7 @@ void S_ShowControls()
     case 3:
         ControlText[1] = T_Print(0, -62, 0, " ");
         break;
+#endif
     default:
         ControlText[1] = T_Print(0, -60, 0, " ");
         break;
@@ -27,10 +34,11 @@ void S_ShowControls()
     T_CentreV(ControlText[1], 1);
 
     switch (HiRes) {
+#ifndef TOMB1M_FEAT_UI
     case 0:
         for (int i = 0; i < 13; i++) {
-            T_SetScale(CtrlTextA[i], 0x8000, 0x10000);
-            T_SetScale(CtrlTextB[i], 0x8000, 0x10000);
+            T_SetScale(CtrlTextA[i], PHD_ONE / 2, PHD_ONE);
+            T_SetScale(CtrlTextB[i], PHD_ONE / 2, PHD_ONE);
         }
         hpos = 300;
         vpos = 140;
@@ -46,6 +54,7 @@ void S_ShowControls()
         vpos = 155;
         break;
 
+#endif
     default:
         hpos = 420;
         vpos = 150;
@@ -57,15 +66,20 @@ void S_ShowControls()
         int16_t* layout = Layout[IConfig];
 
         switch (HiRes) {
+#ifndef TOMB1M_FEAT_UI
         case 0:
             hpos = centre - 140;
             break;
+
         case 1:
             hpos = centre - 170;
             break;
+
         case 3:
             hpos = centre - 230;
             break;
+#endif
+
         default:
             hpos = centre - 200;
             break;
@@ -93,6 +107,7 @@ void S_ShowControls()
 
     if (!CtrlTextA[0]) {
         switch (HiRes) {
+#ifndef TOMB1M_FEAT_UI
             case 0:
                 hpos = centre - 70;
                 break;
@@ -104,6 +119,7 @@ void S_ShowControls()
             case 3:
                 hpos = centre - 150;
                 break;
+#endif
 
             default:
                 hpos = centre - 130;
