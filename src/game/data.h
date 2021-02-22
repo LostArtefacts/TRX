@@ -89,7 +89,7 @@
 #define FlipEffect              VAR_I_(0x004534E4, int32_t, -1)
 #define FlipStatus              VAR_U_(0x00462CA0, int32_t)
 #define GroundZone              ARRAY_(0x00462D88, int16_t*, [2])
-#define GroundZone2             ARRAY_(0x0462D800, int16_t*, [2])
+#define GroundZone2             ARRAY_(0x00462D80, int16_t*, [2])
 #define FlyZone                 ARRAY_(0x00462D90, int16_t*, [2])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 #define IsSoftwareRenderer      VAR_U_(0x00463610, int32_t)
