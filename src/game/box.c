@@ -180,10 +180,41 @@ int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
     return 1;
 }
 
+int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number)
+{
+    CREATURE_INFO* creature = item->data;
+
+    int16_t* zone;
+    if (creature->LOT.fly) {
+        zone = FlyZone[FlipStatus];
+    } else if (creature->LOT.step == STEP_L) {
+        zone = GroundZone[FlipStatus];
+    } else {
+        zone = GroundZone2[FlipStatus];
+    }
+
+    if (zone[box_number] != zone_number) {
+        return 0;
+    }
+
+    BOX_INFO* box = &Boxes[box_number];
+    if (box->overlap_index & creature->LOT.block_mask) {
+        return 0;
+    }
+
+    if (item->pos.z > box->left && item->pos.z < box->right
+        && item->pos.x > box->top && item->pos.x < box->bottom) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
     INJECT(0x0040DAA0, CreatureAIInfo);
     INJECT(0x0040DCD0, SearchLOT);
     INJECT(0x0040DED0, StalkBox);
+    INJECT(0x0040DFA0, ValidBox);
 }

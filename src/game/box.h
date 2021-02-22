@@ -17,6 +17,7 @@ void InitialiseCreature(int16_t item_num);
 void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info);
 int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion);
 int32_t StalkBox(ITEM_INFO* item, int16_t box_number);
+int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number);
 
 void T1MInjectGameBox();
 
