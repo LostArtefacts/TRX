@@ -1,6 +1,7 @@
 #ifndef TOMB1MAIN_GAME_CONTROL_H
 #define TOMB1MAIN_GAME_CONTROL_H
 
+#include "game/types.h"
 #include <stdint.h>
 
 // clang-format off

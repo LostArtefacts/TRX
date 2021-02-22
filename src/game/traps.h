@@ -1,6 +1,9 @@
 #ifndef TOMB1MAIN_GAME_TRAPS_H
 #define TOMB1MAIN_GAME_TRAPS_H
 
+#include "game/types.h"
+#include <stdint.h>
+
 // clang-format off
 #define InitialiseLightning     ((void          __cdecl(*)(int16_t item_num))0x00429B00)
 #define DrawLightning           ((void          __cdecl(*)(ITEM_INFO *item))0x00429620)

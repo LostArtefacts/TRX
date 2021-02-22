@@ -1,13 +1,6 @@
 #ifndef TOMB1MAIN_UTIL_H
 #define TOMB1MAIN_UTIL_H
 
-#define TOMB1M_FEAT_CHEATS
-#define TOMB1M_FEAT_EXTENDED_MEMORY
-#define TOMB1M_FEAT_UI
-#define TOMB1M_FEAT_GAMEPLAY
-#define TOMB1M_FEAT_LEVEL_FIXES
-#define TOMB1M_FEAT_NOCD
-
 #include <stdint.h>
 #include <stdio.h>
 

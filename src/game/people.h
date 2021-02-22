@@ -1,6 +1,9 @@
 #ifndef TOMB1MAIN_GAME_PEOPLE_H
 #define TOMB1MAIN_GAME_PEOPLE_H
 
+#include "game/types.h"
+#include <stdint.h>
+
 // clang-format off
 #define PeopleControl           ((void          __cdecl(*)(int16_t item_num))0x00431090)
 #define PierreControl           ((void          __cdecl(*)(int16_t item_num))0x00431550)

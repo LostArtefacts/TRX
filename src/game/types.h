@@ -2,7 +2,6 @@
 #define TOMB1MAIN_GAME_TYPES_H
 
 #include "const.h"
-#include "util.h"
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;

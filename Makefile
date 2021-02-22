@@ -1,5 +1,11 @@
 CC=i686-w64-mingw32-gcc
-CFLAGS=-Wall -Isrc
+CFLAGS=-Wall -Isrc \
+	-DTOMB1M_FEAT_CHEATS \
+	-DTOMB1M_FEAT_EXTENDED_MEMORY \
+	-DTOMB1M_FEAT_UI \
+	-DTOMB1M_FEAT_GAMEPLAY \
+	-DTOMB1M_FEAT_LEVEL_FIXES \
+	-DTOMB1M_FEAT_NOCD
 
 C_FILES = $(shell find src/ -type f -name '*.c')
 O_FILES = $(patsubst src/%.c, build/%.o, $(C_FILES))

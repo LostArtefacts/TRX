@@ -1,5 +1,5 @@
-#include "game/vars.h"
 #include "game/effects.h"
+#include "game/vars.h"
 #include "mod.h"
 #include "util.h"
 

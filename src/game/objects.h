@@ -1,6 +1,7 @@
 #ifndef TOMB1MAIN_GAME_OBJECTS_H
 #define TOMB1MAIN_GAME_OBJECTS_H
 
+#include "game/types.h"
 #include <stdint.h>
 
 // clang-format off

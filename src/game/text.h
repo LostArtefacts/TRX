@@ -2,6 +2,7 @@
 #define TOMB1MAIN_GAME_TEXT_H
 
 #include "game/types.h"
+#include <stdint.h>
 
 void __cdecl T_InitPrint();
 TEXTSTRING* __cdecl T_Print(

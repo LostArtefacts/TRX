@@ -1,6 +1,8 @@
 #ifndef TOMB1MAIN_GAME_INV_H
 #define TOMB1MAIN_GAME_INV_H
 
+#include <stdint.h>
+
 // clang-format off
 #define Inv_AddItem             ((int32_t       __cdecl(*)(int16_t item_num))0x004209C0)
 #define Inv_RemoveAllItems      ((void          __cdecl(*)())0x00421280)

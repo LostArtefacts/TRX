@@ -2,7 +2,7 @@
 #define TOMB1MAIN_GAME_LARA_H
 
 #include "game/types.h"
-#include "util.h"
+#include <stdint.h>
 
 // clang-format off
 #define UpdateLaraRoom          ((void          __cdecl(*)(ITEM_INFO* item, int32_t height))0x004126A0)

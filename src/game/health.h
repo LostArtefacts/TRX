@@ -1,6 +1,8 @@
 #ifndef TOMB1MAIN_GAME_HEALTH_H
 #define TOMB1MAIN_GAME_HEALTH_H
 
+#include <stdint.h>
+
 void __cdecl MakeAmmoString(char* string);
 void __cdecl DrawAmmoInfo();
 void __cdecl DrawGameInfo();

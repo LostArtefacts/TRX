@@ -1,8 +1,8 @@
 #ifndef TOMB1MAIN_GAME_EFFECTS_H
 #define TOMB1MAIN_GAME_EFFECTS_H
 
-#include <stdint.h>
 #include "game/types.h"
+#include <stdint.h>
 
 // clang-format off
 #define SoundEffect             ((int32_t       __cdecl(*)(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags))0x0042AA30)

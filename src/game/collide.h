@@ -2,6 +2,7 @@
 #define TOMB1MAIN_GAME_COLLIDE_H
 
 #include "types.h"
+#include <stdint.h>
 
 // clang-format off
 #define GetCollisionInfo        ((void          __cdecl(*)(COLL_INFO* coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_number, int32_t objheight))0x00411780)

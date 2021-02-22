@@ -2,6 +2,7 @@
 #define TOMB1MAIN_GAME_BOX_H
 
 #include "game/types.h"
+#include <stdint.h>
 
 // clang-format off
 #define CreatureMood            ((void          __cdecl(*)(ITEM_INFO* item, AI_INFO* info, int32_t violent))0x0040E040)
