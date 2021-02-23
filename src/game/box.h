@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define CreatureMood            ((void         (*)(ITEM_INFO* item, AI_INFO* info, int32_t violent))0x0040E040)
 #define CalculateTarget         ((int32_t      (*)(PHD_VECTOR* target, ITEM_INFO* item, LOT_INFO* LOT))0x0040E850)
 #define CreatureAnimation       ((int32_t      (*)(int16_t item_num, PHD_ANGLE angle, int16_t tilt))0x0040EEE0)
 #define CreatureTurn            ((PHD_ANGLE    (*)(ITEM_INFO *item, PHD_ANGLE maximum_turn))0x0040F750)
@@ -16,8 +15,11 @@
 void InitialiseCreature(int16_t item_num);
 void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info);
 int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion);
+void TargetBox(LOT_INFO* LOT, int16_t box_number);
 int32_t StalkBox(ITEM_INFO* item, int16_t box_number);
+int32_t EscapeBox(ITEM_INFO* item, int16_t box_number);
 int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number);
+void CreatureMood(ITEM_INFO* item, AI_INFO* info, int32_t violent);
 
 void T1MInjectGameBox();
 

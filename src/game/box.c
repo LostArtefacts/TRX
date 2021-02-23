@@ -151,6 +151,25 @@ int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
     return 1;
 }
 
+void TargetBox(LOT_INFO* LOT, int16_t box_number)
+{
+    box_number &= BOX_NUMBER;
+
+    BOX_INFO* box = &Boxes[box_number];
+
+    LOT->target.z = box->left + WALL_L / 2
+        + (GetRandomControl() * (box->right - box->left - WALL_L) >> 15);
+    LOT->target.x = box->top + WALL_L / 2
+        + (GetRandomControl() * (box->bottom - box->top - WALL_L) >> 15);
+    LOT->required_box = box_number;
+
+    if (LOT->fly) {
+        LOT->target.y = box->height - STEP_L * 3 / 2;
+    } else {
+        LOT->target.y = box->height;
+    }
+}
+
 int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
 {
     BOX_INFO* box = &Boxes[box_number];
@@ -174,6 +193,25 @@ int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
         : ((item->pos.x > LaraItem->pos.x) ? 3 : 0);
 
     if (enemy_quad == baddie_quad && ABS(enemy_quad - box_quad) == 2) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int32_t EscapeBox(ITEM_INFO* item, int16_t box_number)
+{
+    BOX_INFO* box = &Boxes[box_number];
+    int32_t z = ((box->left + box->right) >> 1) - LaraItem->pos.z;
+    int32_t x = ((box->top + box->bottom) >> 1) - LaraItem->pos.x;
+
+    if (x > -ESCAPE_DIST && x < ESCAPE_DIST && z > -ESCAPE_DIST
+        && z < ESCAPE_DIST) {
+        return 0;
+    }
+
+    if (((z > 0) ^ (item->pos.z > LaraItem->pos.z))
+        && ((x > 0) ^ (item->pos.x > LaraItem->pos.x))) {
         return 0;
     }
 
@@ -210,6 +248,171 @@ int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number)
     return 1;
 }
 
+void CreatureMood(ITEM_INFO* item, AI_INFO* info, int32_t violent)
+{
+    CREATURE_INFO* creature = item->data;
+    if (!creature) {
+        return;
+    }
+
+    LOT_INFO* LOT = &creature->LOT;
+    if (LOT->node[item->box_number].search_number
+        == (LOT->search_number | BLOCKED_SEARCH)) {
+        LOT->required_box = NO_BOX;
+    }
+
+    if (creature->mood != MOOD_ATTACK && LOT->required_box != NO_BOX
+        && !ValidBox(item, info->zone_number, LOT->target_box)) {
+        if (info->zone_number == info->enemy_zone) {
+            creature->mood = MOOD_BORED;
+        }
+        LOT->required_box = NO_BOX;
+    }
+
+    MOOD_TYPE mood = creature->mood;
+
+    if (LaraItem->hit_points <= 0) {
+        creature->mood = MOOD_BORED;
+    } else if (violent) {
+        switch (mood) {
+        case MOOD_ATTACK:
+            if (info->zone_number != info->enemy_zone) {
+                creature->mood = MOOD_BORED;
+            }
+            break;
+
+        case MOOD_BORED:
+        case MOOD_STALK:
+            if (info->zone_number == info->enemy_zone) {
+                creature->mood = MOOD_ATTACK;
+            } else if (item->hit_status) {
+                creature->mood = MOOD_ESCAPE;
+            }
+            break;
+
+        case MOOD_ESCAPE:
+            if (info->zone_number == info->enemy_zone) {
+                creature->mood = MOOD_ATTACK;
+            }
+            break;
+        }
+    } else {
+        switch (mood) {
+        case MOOD_ATTACK:
+            if (item->hit_status
+                && (GetRandomControl() < ESCAPE_CHANCE
+                    || info->zone_number != info->enemy_zone)) {
+                creature->mood = MOOD_ESCAPE;
+            } else if (info->zone_number != info->enemy_zone) {
+                creature->mood = MOOD_BORED;
+            }
+            break;
+
+        case MOOD_BORED:
+        case MOOD_STALK:
+            if (item->hit_status
+                && (GetRandomControl() < ESCAPE_CHANCE
+                    || info->zone_number != info->enemy_zone)) {
+                creature->mood = MOOD_ESCAPE;
+            } else if (info->zone_number == info->enemy_zone) {
+                if (info->distance < ATTACK_RANGE
+                    || (creature->mood == MOOD_STALK
+                        && LOT->required_box == NO_BOX)) {
+                    creature->mood = MOOD_ATTACK;
+                } else {
+                    creature->mood = MOOD_STALK;
+                }
+            }
+            break;
+
+        case MOOD_ESCAPE:
+            if (info->zone_number == info->enemy_zone
+                && GetRandomControl() < RECOVER_CHANCE) {
+                creature->mood = MOOD_STALK;
+            }
+            break;
+        }
+    }
+
+    if (mood != creature->mood) {
+        if (mood == MOOD_ATTACK) {
+            TargetBox(LOT, LOT->target_box);
+        }
+        LOT->required_box = NO_BOX;
+    }
+
+    switch (creature->mood) {
+    case MOOD_ATTACK:
+        if (GetRandomControl() < Objects[item->object_number].smartness) {
+            LOT->target.x = LaraItem->pos.x;
+            LOT->target.y = LaraItem->pos.y;
+            LOT->target.z = LaraItem->pos.z;
+            LOT->required_box = LaraItem->box_number;
+            if (LOT->fly && Lara.water_status == LWS_ABOVEWATER) {
+                int16_t* bounds = GetBestFrame(LaraItem);
+                LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
+            }
+        }
+        break;
+
+    case MOOD_BORED: {
+        int box_number =
+            LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF].box_number;
+        if (ValidBox(item, info->zone_number, box_number)) {
+            if (StalkBox(item, box_number)) {
+                TargetBox(LOT, box_number);
+                creature->mood = MOOD_STALK;
+            } else if (LOT->required_box == NO_BOX) {
+                TargetBox(LOT, box_number);
+            }
+        }
+        break;
+    }
+
+    case MOOD_STALK: {
+        if (LOT->required_box == NO_BOX || !StalkBox(item, LOT->required_box)) {
+            int box_number =
+                LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF]
+                    .box_number;
+            if (ValidBox(item, info->zone_number, box_number)) {
+                if (StalkBox(item, box_number)) {
+                    TargetBox(LOT, box_number);
+                } else if (LOT->required_box == NO_BOX) {
+                    TargetBox(LOT, box_number);
+                    if (info->zone_number != info->enemy_zone) {
+                        creature->mood = MOOD_BORED;
+                    }
+                }
+            }
+        }
+        break;
+    }
+
+    case MOOD_ESCAPE: {
+        int box_number =
+            LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF].box_number;
+        if (ValidBox(item, info->zone_number, box_number)
+            && LOT->required_box == NO_BOX) {
+            if (EscapeBox(item, box_number)) {
+                TargetBox(LOT, box_number);
+            } else if (
+                info->zone_number == info->enemy_zone
+                && StalkBox(item, box_number)) {
+                TargetBox(LOT, box_number);
+                creature->mood = MOOD_STALK;
+            }
+        }
+        break;
+    }
+    }
+
+    if (LOT->target_box == NO_BOX) {
+        TargetBox(LOT, item->box_number);
+    }
+
+    CalculateTarget(&creature->target, item, &creature->LOT);
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
@@ -217,4 +420,5 @@ void T1MInjectGameBox()
     INJECT(0x0040DCD0, SearchLOT);
     INJECT(0x0040DED0, StalkBox);
     INJECT(0x0040DFA0, ValidBox);
+    INJECT(0x0040E040, CreatureMood);
 }

@@ -832,7 +832,7 @@ typedef struct {
     /* 0014 */ int16_t target_box;
     /* 0016 */ int16_t required_box;
     /* 0018 */ PHD_VECTOR target;
-    /* 001E end */
+    /* 0024 end */
 } LOT_INFO;
 
 typedef struct {
