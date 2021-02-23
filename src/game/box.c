@@ -652,6 +652,37 @@ int32_t CalculateTarget(PHD_VECTOR* target, ITEM_INFO* item, LOT_INFO* LOT)
     return TARGET_NONE;
 }
 
+int32_t CreatureCreature(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int32_t radius = SQUARE(Objects[item->object_number].radius);
+
+    int16_t link = RoomInfo[item->room_number].item_number;
+    do {
+        item = &Items[link];
+
+        if (link == item_num) {
+            return 0;
+        }
+
+        if (item != LaraItem && item->status == IS_ACTIVE && item->speed != 0) {
+            int32_t distance = SQUARE(item->pos.x - x) + SQUARE(item->pos.y - y)
+                + SQUARE(item->pos.z - z);
+            if (distance < radius) {
+                return 1;
+            }
+        }
+
+        link = item->next_item;
+    } while (link != NO_ITEM);
+
+    return 0;
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
@@ -661,4 +692,5 @@ void T1MInjectGameBox()
     INJECT(0x0040DFA0, ValidBox);
     INJECT(0x0040E040, CreatureMood);
     INJECT(0x0040E850, CalculateTarget);
+    INJECT(0x0040ED30, CreatureCreature);
 }

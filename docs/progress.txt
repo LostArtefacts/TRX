@@ -134,7 +134,7 @@ EscapeBox                       ----------  ----------  +
 ValidBox                        0x0040DFA0  0x00000097  +
 CreatureMood                    0x0040E040  0x000007D5  +
 CalculateTarget                 0x0040E850  0x000004D1  +
-CreatureCreature                0x0040ED30  0x00000107  -
+CreatureCreature                0x0040ED30  0x00000107  +
 BadFloor                        0x0040EE40  0x00000092  -
 CreatureAnimation               0x0040EEE0  0x00000863  *
 CreatureTurn                    0x0040F750  0x000000D5  *
