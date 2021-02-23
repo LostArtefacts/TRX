@@ -315,35 +315,15 @@ void BaddyObjects()
     }
 
     if (Objects[O_WARRIOR2].loaded) {
+        Objects[O_WARRIOR2] = Objects[O_WARRIOR1];
         Objects[O_WARRIOR2].initialise = InitialiseWarrior2;
-        Objects[O_WARRIOR2].control = FlyerControl;
-        Objects[O_WARRIOR2].collision = CreatureCollision;
-        Objects[O_WARRIOR2].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_WARRIOR2].hit_points = FLYER_HITPOINTS;
-        Objects[O_WARRIOR2].pivot_length = 150;
-        Objects[O_WARRIOR2].radius = FLYER_RADIUS;
         Objects[O_WARRIOR2].smartness = WARRIOR2_SMARTNESS;
-        Objects[O_WARRIOR2].intelligent = 1;
-        Objects[O_WARRIOR2].save_position = 1;
-        Objects[O_WARRIOR2].save_hitpoints = 1;
-        Objects[O_WARRIOR2].save_anim = 1;
-        Objects[O_WARRIOR2].save_flags = 1;
     }
 
     if (Objects[O_WARRIOR3].loaded) {
+        Objects[O_WARRIOR3] = Objects[O_WARRIOR1];
         Objects[O_WARRIOR3].initialise = InitialiseWarrior2;
-        Objects[O_WARRIOR3].control = FlyerControl;
-        Objects[O_WARRIOR3].collision = CreatureCollision;
-        Objects[O_WARRIOR3].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_WARRIOR3].hit_points = FLYER_HITPOINTS;
-        Objects[O_WARRIOR3].pivot_length = 150;
-        Objects[O_WARRIOR3].radius = FLYER_RADIUS;
-        Objects[O_WARRIOR3].smartness = FLYER_SMARTNESS;
-        Objects[O_WARRIOR3].intelligent = 1;
-        Objects[O_WARRIOR3].save_position = 1;
-        Objects[O_WARRIOR3].save_hitpoints = 1;
-        Objects[O_WARRIOR3].save_anim = 1;
-        Objects[O_WARRIOR3].save_flags = 1;
+        Objects[O_WARRIOR2].smartness = WARRIOR2_SMARTNESS; // sic
     }
 
     if (Objects[O_CENTAUR].loaded) {
