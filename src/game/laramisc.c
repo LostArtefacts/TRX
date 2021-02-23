@@ -46,6 +46,10 @@ void LaraControl(int16_t item_num)
         Lara.hit_direction = -1;
         Lara.air = LARA_AIR;
         Lara.death_count = 0;
+        Lara.mesh_effects = 0;
+        for (int i = 0; i < 15; i++) {
+            Lara.mesh_ptrs[i] = Meshes[Objects[O_LARA].mesh_index + i];
+        }
     }
 #endif
 
