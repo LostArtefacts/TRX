@@ -1,5 +1,6 @@
 #include "3dsystem/phd_math.h"
 #include "game/box.h"
+#include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/misc.h"
@@ -683,6 +684,35 @@ int32_t CreatureCreature(int16_t item_num)
     return 0;
 }
 
+int32_t BadFloor(
+    int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
+    int16_t room_number, LOT_INFO* LOT)
+{
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_number);
+    if (floor->box == NO_BOX) {
+        return 1;
+    }
+
+    if (Boxes[floor->box].overlap_index & LOT->block_mask) {
+        return 1;
+    }
+
+    int32_t height = Boxes[floor->box].height;
+    if (box_height - height > LOT->step || box_height - height < LOT->drop) {
+        return 1;
+    }
+
+    if (box_height - height < -LOT->step && height > next_height) {
+        return 1;
+    }
+
+    if (LOT->fly && y > height + LOT->fly) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
@@ -693,4 +723,5 @@ void T1MInjectGameBox()
     INJECT(0x0040E040, CreatureMood);
     INJECT(0x0040E850, CalculateTarget);
     INJECT(0x0040ED30, CreatureCreature);
+    INJECT(0x0040EE40, BadFloor);
 }
