@@ -342,6 +342,50 @@ void ChaseCamera(ITEM_INFO* item)
     }
 }
 
+int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp)
+{
+    int32_t x = pos->x;
+    int32_t y = pos->y;
+    int32_t z = pos->z;
+
+    FLOOR_INFO* floor = GetFloor(x, y, z, &pos->room_number);
+
+    BOX_INFO* box = &Boxes[floor->box];
+    if (z < box->left + clamp
+        && BadPosition(x, y, z - clamp, pos->room_number)) {
+        pos->z = box->left + clamp;
+    } else if (
+        z > box->right - clamp
+        && BadPosition(x, y, z + clamp, pos->room_number)) {
+        pos->z = box->right - clamp;
+    }
+
+    if (x < box->top + clamp
+        && BadPosition(x - clamp, y, z, pos->room_number)) {
+        pos->x = box->top + clamp;
+    } else if (
+        x > box->bottom - clamp
+        && BadPosition(x + clamp, y, z, pos->room_number)) {
+        pos->x = box->bottom - clamp;
+    }
+
+    int32_t height = GetHeight(floor, x, y, z) - clamp;
+    int32_t ceiling = GetCeiling(floor, x, y, z) + clamp;
+
+    if (height < ceiling) {
+        ceiling = (height + ceiling) >> 1;
+        height = ceiling;
+    }
+
+    if (y > height) {
+        return height - y;
+    } else if (pos->y < ceiling) {
+        return ceiling - y;
+    } else {
+        return 0;
+    }
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
@@ -350,4 +394,5 @@ void T1MInjectGameCamera()
     INJECT(0x0040FD40, ShiftCamera);
     INJECT(0x0040FEA0, SmartShift);
     INJECT(0x00410410, ChaseCamera);
+    INJECT(0x00410530, ShiftClamp);
 }
