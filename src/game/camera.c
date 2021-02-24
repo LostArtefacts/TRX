@@ -421,6 +421,55 @@ void CombatCamera(ITEM_INFO* item)
     MoveCamera(&ideal, Camera.speed);
 }
 
+void LookCamera(ITEM_INFO* item)
+{
+    GAME_VECTOR old;
+    GAME_VECTOR ideal;
+
+    old.z = Camera.target.z;
+    old.x = Camera.target.x;
+
+    Camera.target.z = item->pos.z;
+    Camera.target.x = item->pos.x;
+
+    Camera.target_angle = item->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+    Camera.target_elevation =
+        item->pos.x_rot + Lara.torso_x_rot + Lara.head_x_rot;
+    Camera.target_distance = WALL_L * 3 / 2;
+
+    int32_t distance =
+        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
+
+    Camera.shift = -STEP_L * 2 * phd_sin(Camera.target_elevation) >> W2V_SHIFT;
+    Camera.target.z += Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
+    Camera.target.x += Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+
+    if (BadPosition(
+            Camera.target.x, Camera.target.y, Camera.target.z,
+            Camera.target.room_number)) {
+        Camera.target.x = item->pos.x;
+        Camera.target.z = item->pos.z;
+    }
+
+    Camera.target.y += ShiftClamp(&Camera.target, STEP_L + 50);
+
+    ideal.x = Camera.target.x
+        - (distance * phd_sin(Camera.target_angle) >> W2V_SHIFT);
+    ideal.y = Camera.target.y
+        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+           >> W2V_SHIFT);
+    ideal.z = Camera.target.z
+        - (distance * phd_cos(Camera.target_angle) >> W2V_SHIFT);
+    ideal.room_number = Camera.pos.room_number;
+
+    SmartShift(&ideal, ClipCamera);
+
+    Camera.target.z = old.z + (Camera.target.z - old.z) / Camera.speed;
+    Camera.target.x = old.x + (Camera.target.x - old.x) / Camera.speed;
+
+    MoveCamera(&ideal, Camera.speed);
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
@@ -431,4 +480,5 @@ void T1MInjectGameCamera()
     INJECT(0x00410410, ChaseCamera);
     INJECT(0x00410530, ShiftClamp);
     INJECT(0x004107B0, CombatCamera);
+    INJECT(0x004108F0, LookCamera);
 }
