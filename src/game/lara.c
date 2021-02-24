@@ -1773,7 +1773,7 @@ void LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
         break;
 
     case DIR_WEST:
-        item->pos.x += 2;
+        item->pos.x -= 2;
         break;
 
     case DIR_SOUTH:
@@ -1781,7 +1781,7 @@ void LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
         break;
 
     case DIR_EAST:
-        item->pos.x -= 2;
+        item->pos.x += 2;
         break;
     }
 

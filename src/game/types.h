@@ -589,9 +589,9 @@ typedef enum {
 
 typedef enum {
     DIR_NORTH = 0,
-    DIR_WEST = 1,
+    DIR_EAST = 1,
     DIR_SOUTH = 2,
-    DIR_EAST = 3,
+    DIR_WEST = 3,
 } DIRECTION;
 
 typedef enum {
