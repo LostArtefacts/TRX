@@ -531,20 +531,20 @@ int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return 0;
 }
 
-void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll)
+void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll)
 {
-    laraitem->hit_status = 0;
+    lara_item->hit_status = 0;
     Lara.hit_direction = -1;
-    if (laraitem->hit_points <= 0) {
+    if (lara_item->hit_points <= 0) {
         return;
     }
 
     int16_t numroom = 0;
     int16_t roomies[12];
 
-    roomies[numroom++] = laraitem->room_number;
+    roomies[numroom++] = lara_item->room_number;
 
-    DOOR_INFOS* door = RoomInfo[laraitem->room_number].doors;
+    DOOR_INFOS* door = RoomInfo[lara_item->room_number].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
             // NOTE: this access violation check was not present in the original
@@ -563,13 +563,13 @@ void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll)
             if (item->collidable && item->status != IS_INVISIBLE) {
                 OBJECT_INFO* object = &Objects[item->object_number];
                 if (object->collision) {
-                    int32_t x = laraitem->pos.x - item->pos.x;
-                    int32_t y = laraitem->pos.y - item->pos.y;
-                    int32_t z = laraitem->pos.z - item->pos.z;
+                    int32_t x = lara_item->pos.x - item->pos.x;
+                    int32_t y = lara_item->pos.y - item->pos.y;
+                    int32_t z = lara_item->pos.z - item->pos.z;
                     if (x > -TARGET_DIST && x < TARGET_DIST && y > -TARGET_DIST
                         && y < TARGET_DIST && z > -TARGET_DIST
                         && z < TARGET_DIST) {
-                        object->collision(item_num, laraitem, coll);
+                        object->collision(item_num, lara_item, coll);
                     }
                 }
             }
@@ -578,7 +578,7 @@ void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll)
     }
 
     if (Lara.spaz_effect_count) {
-        EffectSpaz(laraitem, coll);
+        EffectSpaz(lara_item, coll);
     }
 
     if (Lara.hit_direction == -1) {
@@ -588,14 +588,14 @@ void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll)
     InventoryChosen = -1;
 }
 
-void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll)
+void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll)
 {
-    int32_t x = Lara.spaz_effect->pos.x - laraitem->pos.x;
-    int32_t z = Lara.spaz_effect->pos.z - laraitem->pos.z;
-    PHD_ANGLE hitang = laraitem->pos.y_rot - (0x8000 + phd_atan(z, x));
+    int32_t x = Lara.spaz_effect->pos.x - lara_item->pos.x;
+    int32_t z = Lara.spaz_effect->pos.z - lara_item->pos.z;
+    PHD_ANGLE hitang = lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
     Lara.hit_direction = (hitang + 0x2000) / 0x4000;
     if (!Lara.hit_frame) {
-        SoundEffect(27, &laraitem->pos, 0);
+        SoundEffect(27, &lara_item->pos, 0);
     }
 
     Lara.hit_frame++;
@@ -607,11 +607,11 @@ void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll)
 }
 
 void ItemPushLara(
-    ITEM_INFO* item, ITEM_INFO* laraitem, COLL_INFO* coll, int32_t spazon,
+    ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush)
 {
-    int32_t x = laraitem->pos.x - item->pos.x;
-    int32_t z = laraitem->pos.z - item->pos.z;
+    int32_t x = lara_item->pos.x - item->pos.x;
+    int32_t z = lara_item->pos.z - item->pos.z;
     int32_t c = phd_cos(item->pos.y_rot);
     int32_t s = phd_sin(item->pos.y_rot);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
@@ -649,8 +649,8 @@ void ItemPushLara(
         int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
         int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
 
-        laraitem->pos.x = item->pos.x + ax;
-        laraitem->pos.z = item->pos.z + az;
+        lara_item->pos.x = item->pos.x + ax;
+        lara_item->pos.z = item->pos.z + az;
 
         rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
         rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
@@ -659,10 +659,10 @@ void ItemPushLara(
 
         if (spazon) {
             PHD_ANGLE hitang =
-                laraitem->pos.y_rot - (0x8000 + phd_atan(z, x));
+                lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
             Lara.hit_direction = (hitang + 0x2000) / 0x4000;
             if (!Lara.hit_frame) {
-                SoundEffect(27, &laraitem->pos, 0);
+                SoundEffect(27, &lara_item->pos, 0);
             }
 
             Lara.hit_frame++;
@@ -677,39 +677,39 @@ void ItemPushLara(
 
         int16_t old_facing = coll->facing;
         coll->facing = phd_atan(
-            laraitem->pos.z - coll->old.z, laraitem->pos.x - coll->old.x);
+            lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
         GetCollisionInfo(
-            coll, laraitem->pos.x, laraitem->pos.y, laraitem->pos.z,
-            laraitem->room_number, LARA_HITE);
+            coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
+            lara_item->room_number, LARA_HITE);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {
-            laraitem->pos.x = coll->old.x;
-            laraitem->pos.z = coll->old.z;
+            lara_item->pos.x = coll->old.x;
+            lara_item->pos.z = coll->old.z;
         } else {
-            coll->old.x = laraitem->pos.x;
-            coll->old.y = laraitem->pos.y;
-            coll->old.z = laraitem->pos.z;
-            UpdateLaraRoom(laraitem, -10);
+            coll->old.x = lara_item->pos.x;
+            coll->old.y = lara_item->pos.y;
+            coll->old.z = lara_item->pos.z;
+            UpdateLaraRoom(lara_item, -10);
         }
     }
 }
 
-int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* laraitem, int32_t radius)
+int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius)
 {
     int16_t* bounds = GetBestFrame(item);
-    int16_t* larabounds = GetBestFrame(laraitem);
+    int16_t* larabounds = GetBestFrame(lara_item);
     if (item->pos.y + bounds[FRAME_BOUND_MAX_Y]
-            <= laraitem->pos.y + larabounds[FRAME_BOUND_MIN_Y]
+            <= lara_item->pos.y + larabounds[FRAME_BOUND_MIN_Y]
         || item->pos.y + bounds[FRAME_BOUND_MIN_Y]
-            >= laraitem->pos.y + larabounds[FRAME_BOUND_MAX_Y]) {
+            >= lara_item->pos.y + larabounds[FRAME_BOUND_MAX_Y]) {
         return 0;
     }
 
     int32_t c = phd_cos(item->pos.y_rot);
     int32_t s = phd_sin(item->pos.y_rot);
-    int32_t x = laraitem->pos.x - item->pos.x;
-    int32_t z = laraitem->pos.z - item->pos.z;
+    int32_t x = lara_item->pos.x - item->pos.x;
+    int32_t z = lara_item->pos.z - item->pos.z;
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
     int32_t minx = bounds[FRAME_BOUND_MIN_X] - radius;

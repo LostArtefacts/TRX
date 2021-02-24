@@ -24,12 +24,12 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void ShiftItem(ITEM_INFO* item, COLL_INFO* coll);
 void UpdateLaraRoom(ITEM_INFO* item, int32_t height);
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
-void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll);
-void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll);
+void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll);
+void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll);
 void ItemPushLara(
-    ITEM_INFO* item, ITEM_INFO* laraitem, COLL_INFO* coll, int32_t spazon,
+    ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush);
-int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* laraitem, int32_t radius);
+int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius);
 
 void T1MInjectGameCollide();
 
