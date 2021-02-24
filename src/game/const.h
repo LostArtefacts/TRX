@@ -39,7 +39,8 @@
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
-#define NO_ITEM -1
+#define NO_ITEM (-1)
+#define NO_CAMERA (-1)
 #define PELLET_SCATTER (20 * PHD_DEGREE)
 #define NUM_SG_SHELLS 2
 #define GUN_AMMO_CLIP 16
@@ -88,7 +89,7 @@
 #define MAX_WIBBLE 2
 #define MAX_SHADE 0x300
 #define MAX_EXPANSION 5
-#define NO_BOX -1
+#define NO_BOX (-1)
 #define BOX_NUMBER 0x7FFF
 #define EXPAND_LEFT 0x1
 #define EXPAND_RIGHT 0x2

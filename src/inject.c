@@ -3,6 +3,7 @@
 #include "game/bat.h"
 #include "game/bear.h"
 #include "game/box.h"
+#include "game/camera.h"
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
@@ -25,6 +26,7 @@ void T1MInject()
     T1MInjectGameBat();
     T1MInjectGameBear();
     T1MInjectGameBox();
+    T1MInjectGameCamera();
     T1MInjectGameControl();
     T1MInjectGameDemo();
     T1MInjectGameDraw();

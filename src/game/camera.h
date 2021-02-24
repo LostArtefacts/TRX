@@ -5,4 +5,8 @@
 #define CalculateCamera         ((void         (*)())0x00410B40)
 // clang-format on
 
+void InitialiseCamera();
+
+void T1MInjectGameCamera();
+
 #endif
