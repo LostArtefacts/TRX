@@ -283,6 +283,42 @@ int32_t FindGridShift(int32_t src, int32_t dst)
     }
 }
 
+void GetNearByRooms(
+    int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
+{
+    RoomsToDraw[0] = room_num;
+    RoomsToDrawNum = 1;
+    GetNewRoom(x + r, y, z + r, room_num);
+    GetNewRoom(x - r, y, z + r, room_num);
+    GetNewRoom(x + r, y, z - r, room_num);
+    GetNewRoom(x - r, y, z - r, room_num);
+    GetNewRoom(x + r, y - h, z + r, room_num);
+    GetNewRoom(x - r, y - h, z + r, room_num);
+    GetNewRoom(x + r, y - h, z - r, room_num);
+    GetNewRoom(x - r, y - h, z - r, room_num);
+}
+
+void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
+{
+    GetFloor(x, y, z, &room_num);
+
+    int i;
+    for (i = 0; i < RoomsToDrawNum; i++) {
+        if (RoomsToDraw[i] == room_num) {
+            break;
+        }
+    }
+
+    // NOTE: this access violation check was not present in the original code
+    if (i >= MAX_ROOMS_TO_DRAW) {
+        return;
+    }
+
+    if (i == RoomsToDrawNum) {
+        RoomsToDraw[RoomsToDrawNum++] = room_num;
+    }
+}
+
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
 {
     ROOM_INFO* r;
@@ -311,4 +347,5 @@ int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
+    INJECT(0x00412390, GetNearByRooms);
 }

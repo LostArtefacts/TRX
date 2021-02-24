@@ -138,7 +138,7 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define InterpolatedBounds      ARRAY_(0x00462BF0, int16_t, [6])
 #define W2VMatrix               VAR_U_(0x006CADA0, PHD_MATRIX)
 #define DoorVBuf                ARRAY_(0x00462540, DOOR_VBUF, [4])
-#define RoomsToDraw             ARRAY_(0x00462580, int16_t, [100])
+#define RoomsToDraw             ARRAY_(0x00462580, int16_t, [MAX_ROOMS_TO_DRAW])
 #define RoomsToDrawNum          VAR_U_(0x00461F38, int32_t)
 #define Weapons                 ARRAY_(0x004563A8, WEAPON_INFO, [NUM_WEAPONS])
 #define DemoLevels              ARRAY_(0x00453538, int8_t, [])

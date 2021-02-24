@@ -17,6 +17,9 @@ void GetCollisionInfo(
     COLL_INFO* coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight);
 int32_t FindGridShift(int32_t src, int32_t dst);
+void GetNearByRooms(
+    int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
+void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 
 void T1MInjectGameCollide();

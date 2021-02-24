@@ -6,6 +6,7 @@
 #define NUM_PU 3
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
+#define MAX_ROOMS_TO_DRAW 100
 #define MAX_FRAMES 10
 #define MAX_TEXTURES 2048
 #define NUMBER_ITEMS 256
