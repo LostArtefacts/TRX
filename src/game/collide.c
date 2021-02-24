@@ -1,7 +1,8 @@
 #include "3dsystem/phd_math.h"
+#include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
-#include "game/collide.h"
+#include "game/items.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -490,6 +491,19 @@ void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
     coll->shift.z = 0;
 }
 
+void UpdateLaraRoom(ITEM_INFO* item, int32_t height)
+{
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y + height;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    item->floor = GetHeight(floor, x, y, z);
+    if (item->room_number != room_num) {
+        ItemNewRoom(Lara.item_number, room_num);
+    }
+}
+
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
 {
     ROOM_INFO* r;
@@ -521,4 +535,5 @@ void T1MInjectGameCollide()
     INJECT(0x00412390, GetNearByRooms);
     INJECT(0x00411FA0, CollideStaticObjects);
     INJECT(0x00412660, ShiftItem);
+    INJECT(0x004126A0, UpdateLaraRoom);
 }

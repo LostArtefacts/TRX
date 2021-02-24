@@ -1,4 +1,5 @@
 #include "3dsystem/phd_math.h"
+#include "game/collide.h"
 #include "game/control.h"
 #include "game/effects.h"
 #include "game/inv.h"
