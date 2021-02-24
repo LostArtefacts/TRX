@@ -169,14 +169,14 @@ InitialiseGenPlayer             0x004115C0  0x00000027  *
 InGameCinematicCamera           0x004115F0  0x00000190  *
 
 # collide.cpp
-GetCollisionInfo                0x00411780  0x000007DD  *
-FindGridShift                   ----------  ----------  -
-CollideStaticObjects            0x00411FA0  0x000003D6  -
+GetCollisionInfo                0x00411780  0x000007DD  +
+FindGridShift                   ----------  ----------  +
+CollideStaticObjects            0x00411FA0  0x000003D6  *
 GetNearByRooms                  0x00412390  0x000002CC  -
 GetNewRoom                      ----------  ----------  -
 ShiftItem                       0x00412660  0x00000037  *
 UpdateLaraRoom                  0x004126A0  0x0000005F  *
-GetTiltType                     ----------  ----------  -
+GetTiltType                     ----------  ----------  +
 LaraBaddieCollision             0x00412700  0x00000209  *
 EffectSpaz                      ----------  ----------  -
 CreatureCollision               0x00412910  0x00000078  *

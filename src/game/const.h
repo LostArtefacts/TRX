@@ -69,6 +69,7 @@
 #define WALL_L 1024
 #define WALL_SHIFT 10
 #define STEP_L 256
+#define NO_ROOM 0xFF
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define FRONT_ARC 16384
 #define MAX_HEAD_CHANGE (PHD_DEGREE * 5) // = 910
