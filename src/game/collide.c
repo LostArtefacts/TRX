@@ -2,6 +2,7 @@
 #include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
+#include "game/effects.h"
 #include "game/items.h"
 #include "game/vars.h"
 #include "util.h"
@@ -529,6 +530,81 @@ int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return 0;
 }
 
+void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+    laraitem->hit_status = 0;
+    Lara.hit_direction = -1;
+    if (laraitem->hit_points <= 0) {
+        return;
+    }
+
+    int16_t numroom = 0;
+    int16_t roomies[12];
+
+    roomies[numroom++] = laraitem->room_number;
+
+    DOOR_INFOS* door = RoomInfo[laraitem->room_number].doors;
+    if (door) {
+        for (int i = 0; i < door->count; i++) {
+            // NOTE: this access violation check was not present in the original
+            // code
+            if (numroom >= 12) {
+                break;
+            }
+            roomies[numroom++] = door->door[i].room_num;
+        }
+    }
+
+    for (int i = 0; i < numroom; i++) {
+        int16_t item_num = RoomInfo[roomies[i]].item_number;
+        while (item_num != NO_ITEM) {
+            ITEM_INFO* item = &Items[item_num];
+            if (item->collidable && item->status != IS_INVISIBLE) {
+                OBJECT_INFO* object = &Objects[item->object_number];
+                if (object->collision) {
+                    int32_t x = laraitem->pos.x - item->pos.x;
+                    int32_t y = laraitem->pos.y - item->pos.y;
+                    int32_t z = laraitem->pos.z - item->pos.z;
+                    if (x > -TARGET_DIST && x < TARGET_DIST && y > -TARGET_DIST
+                        && y < TARGET_DIST && z > -TARGET_DIST
+                        && z < TARGET_DIST) {
+                        object->collision(item_num, laraitem, coll);
+                    }
+                }
+            }
+            item_num = item->next_item;
+        }
+    }
+
+    if (Lara.spaz_effect_count) {
+        EffectSpaz(laraitem, coll);
+    }
+
+    if (Lara.hit_direction == -1) {
+        Lara.hit_frame = 0;
+    }
+
+    InventoryChosen = -1;
+}
+
+void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+    int32_t x = Lara.spaz_effect->pos.x - laraitem->pos.x;
+    int32_t z = Lara.spaz_effect->pos.z - laraitem->pos.z;
+    PHD_ANGLE hitang = laraitem->pos.y_rot - (0x8000 + phd_atan(z, x));
+    Lara.hit_direction = (hitang + 0x2000) / 0x4000;
+    if (!Lara.hit_frame) {
+        SoundEffect(27, &laraitem->pos, 0);
+    }
+
+    Lara.hit_frame++;
+    if (Lara.hit_frame > 34) {
+        Lara.hit_frame = 34;
+    }
+
+    Lara.spaz_effect_count--;
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -536,4 +612,5 @@ void T1MInjectGameCollide()
     INJECT(0x00411FA0, CollideStaticObjects);
     INJECT(0x00412660, ShiftItem);
     INJECT(0x004126A0, UpdateLaraRoom);
+    INJECT(0x00412700, LaraBaddieCollision);
 }

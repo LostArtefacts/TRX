@@ -177,8 +177,8 @@ GetNewRoom                      ----------  ----------  +
 ShiftItem                       0x00412660  0x00000037  +
 UpdateLaraRoom                  0x004126A0  0x0000005F  +
 GetTiltType                     ----------  ----------  +
-LaraBaddieCollision             0x00412700  0x00000209  *
-EffectSpaz                      ----------  ----------  -
+LaraBaddieCollision             0x00412700  0x00000209  +
+EffectSpaz                      ----------  ----------  +
 CreatureCollision               0x00412910  0x00000078  *
 ObjectCollision                 0x00412990  0x00000059  *
 DoorCollision                   0x004129F0  0x0000007B  *

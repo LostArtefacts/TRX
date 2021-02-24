@@ -43,7 +43,7 @@ void LaraControl(int16_t item_num)
         Lara.water_status = LWS_CHEAT;
         Lara.spaz_effect_count = 0;
         Lara.spaz_effect = NULL;
-        Lara.hit_frames = 0;
+        Lara.hit_frame = 0;
         Lara.hit_direction = -1;
         Lara.air = LARA_AIR;
         Lara.death_count = 0;
@@ -412,7 +412,7 @@ void InitialiseLara()
     Lara.head_z_rot = 0;
     Lara.calc_fallspeed = 0;
     Lara.mesh_effects = 0;
-    Lara.hit_frames = 0;
+    Lara.hit_frame = 0;
     Lara.hit_direction = 0;
     Lara.death_count = 0;
     Lara.target = NULL;

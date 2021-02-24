@@ -857,7 +857,7 @@ typedef struct {
     /* 0008 */ int16_t calc_fallspeed;
     /* 000A */ int16_t water_status;
     /* 000C */ int16_t pose_count;
-    /* 000E */ int16_t hit_frames;
+    /* 000E */ int16_t hit_frame;
     /* 0010 */ int16_t hit_direction;
     /* 0012 */ int16_t air;
     /* 0014 */ int16_t dive_count;

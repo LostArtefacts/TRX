@@ -509,7 +509,7 @@ void DrawLara(ITEM_INFO* item)
             break;
         }
 
-        frame += Lara.hit_frames * (object->nmeshes * 2 + FRAME_ROT);
+        frame += Lara.hit_frame * (object->nmeshes * 2 + FRAME_ROT);
     } else {
         frame = frmptr[0];
     }
