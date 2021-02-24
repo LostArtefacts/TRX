@@ -24,6 +24,7 @@ void SmartShift(
         int32_t left, int32_t top, int32_t right, int32_t bottom));
 void ChaseCamera(ITEM_INFO* item);
 int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp);
+void CombatCamera(ITEM_INFO* item);
 
 void T1MInjectGameCamera();
 

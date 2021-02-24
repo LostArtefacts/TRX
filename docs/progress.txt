@@ -151,7 +151,7 @@ BadPosition                     ----------  ----------  +
 SmartShift                      0x0040FEA0  0x00000567  +
 ChaseCamera                     0x00410410  0x00000118  +
 ShiftClamp                      0x00410530  0x00000279  +
-CombatCamera                    0x004107B0  0x00000138  -
+CombatCamera                    0x004107B0  0x00000138  +
 LookCamera                      0x004108F0  0x0000024B  -
 FixedCamera                     ----------  ----------  -
 CalculateCamera                 0x00410B40  0x0000055D  *

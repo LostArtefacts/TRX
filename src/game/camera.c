@@ -386,6 +386,41 @@ int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp)
     }
 }
 
+void CombatCamera(ITEM_INFO* item)
+{
+    GAME_VECTOR ideal;
+
+    Camera.target.z = item->pos.z;
+    Camera.target.x = item->pos.x;
+
+    if (Lara.target) {
+        Camera.target_angle = item->pos.y_rot + Lara.target_angles[0];
+        Camera.target_elevation = item->pos.x_rot + Lara.target_angles[1];
+    } else {
+        Camera.target_angle =
+            item->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+        Camera.target_elevation =
+            item->pos.x_rot + Lara.torso_x_rot + Lara.head_x_rot;
+    }
+
+    Camera.target_distance = COMBAT_DISTANCE;
+
+    int32_t distance =
+        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
+
+    ideal.x = Camera.target.x
+        - (distance * phd_sin(Camera.target_angle) >> W2V_SHIFT);
+    ideal.y = Camera.target.y
+        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+           >> W2V_SHIFT);
+    ideal.z = Camera.target.z
+        - (distance * phd_cos(Camera.target_angle) >> W2V_SHIFT);
+    ideal.room_number = Camera.pos.room_number;
+
+    SmartShift(&ideal, ShiftCamera);
+    MoveCamera(&ideal, Camera.speed);
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
@@ -395,4 +430,5 @@ void T1MInjectGameCamera()
     INJECT(0x0040FEA0, SmartShift);
     INJECT(0x00410410, ChaseCamera);
     INJECT(0x00410530, ShiftClamp);
+    INJECT(0x004107B0, CombatCamera);
 }

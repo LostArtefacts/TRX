@@ -79,6 +79,7 @@
 #define NO_CHUNKY 2
 #define CHASE_OBJECT 3
 #define CHASE_SPEED 12
+#define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define MAX_ELEVATION (85 * PHD_DEGREE) // = 15470
 #define DEFAULT_RADIUS 10
 #define DONT_TARGET (-16384)
