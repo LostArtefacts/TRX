@@ -137,7 +137,7 @@ CalculateTarget                 0x0040E850  0x000004D1  +
 CreatureCreature                0x0040ED30  0x00000107  +
 BadFloor                        0x0040EE40  0x00000092  +
 CreatureAnimation               0x0040EEE0  0x00000863  +
-CreatureTurn                    0x0040F750  0x000000D5  *
+CreatureTurn                    0x0040F750  0x000000D5  +
 CreatureTilt                    0x0040F830  0x00000035  -
 CreatureHead                    0x0040F870  0x00000049  *
 CreatureEffect                  0x0040F8C0  0x0000005C  *
@@ -422,7 +422,7 @@ InitialiseItem                  0x00421CC0  0x000001EE  *
 RemoveActiveItem                0x00421EB0  0x000000A6  *
 RemoveDrawnItem                 0x00421F60  0x00000080  -
 AddActiveItem                   0x00421FE0  0x00000080  -
-ItemNewRoom                     0x00422060  0x000000A4  -
+ItemNewRoom                     0x00422060  0x000000A4  *
 SpawnItem                       0x00422110  0x000000B6  -
 GlobalItemReplace               0x004221D0  0x00000080  *
 InitialiseFXArray               0x00422250  0x00000030  +
