@@ -283,6 +283,167 @@ int32_t FindGridShift(int32_t src, int32_t dst)
     }
 }
 
+int32_t __cdecl CollideStaticObjects(
+    COLL_INFO* coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
+    int32_t hite)
+{
+    PHD_VECTOR shifter;
+
+    coll->hit_static = 0;
+    int32_t inxmin = x - coll->radius;
+    int32_t inxmax = x + coll->radius;
+    int32_t inymin = y - hite;
+    int32_t inymax = y;
+    int32_t inzmin = z - coll->radius;
+    int32_t inzmax = z + coll->radius;
+
+    shifter.x = 0;
+    shifter.y = 0;
+    shifter.z = 0;
+
+    GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
+
+    for (int i = 0; i < RoomsToDrawNum; i++) {
+        ROOM_INFO* r = &RoomInfo[RoomsToDraw[i]];
+        MESH_INFO* mesh = r->mesh;
+
+        for (int j = 0; j < r->num_meshes; j++, mesh++) {
+            STATIC_INFO* sinfo = &StaticObjects[mesh->static_number];
+            if (sinfo->flags & 1) {
+                continue;
+            }
+
+            int32_t ymin = mesh->y + sinfo->y_minc;
+            int32_t ymax = mesh->y + sinfo->y_maxc;
+            int32_t xmin;
+            int32_t xmax;
+            int32_t zmin;
+            int32_t zmax;
+            switch (mesh->y_rot) {
+            case 16384:
+                xmin = mesh->x + sinfo->z_minc;
+                xmax = mesh->x + sinfo->z_maxc;
+                zmin = mesh->z - sinfo->x_maxc;
+                zmax = mesh->z - sinfo->x_minc;
+                break;
+
+            case -32768:
+                xmin = mesh->x - sinfo->x_maxc;
+                xmax = mesh->x - sinfo->x_minc;
+                zmin = mesh->z - sinfo->z_maxc;
+                zmax = mesh->z - sinfo->z_minc;
+                break;
+
+            case -16384:
+                xmin = mesh->x - sinfo->z_maxc;
+                xmax = mesh->x - sinfo->z_minc;
+                zmin = mesh->z + sinfo->x_minc;
+                zmax = mesh->z + sinfo->x_maxc;
+                break;
+
+            default:
+                xmin = mesh->x + sinfo->x_minc;
+                xmax = mesh->x + sinfo->x_maxc;
+                zmin = mesh->z + sinfo->z_minc;
+                zmax = mesh->z + sinfo->z_maxc;
+                break;
+            }
+
+            if (inxmax <= xmin || inxmin >= xmax || inymax <= ymin
+                || inymin >= ymax || inzmax <= zmin || inzmin >= zmax) {
+                continue;
+            }
+
+            int32_t shl = inxmax - xmin;
+            int32_t shr = xmax - inxmin;
+            if (shl < shr) {
+                shifter.x = -shl;
+            } else {
+                shifter.x = shr;
+            }
+
+            shl = inzmax - zmin;
+            shr = zmax - inzmin;
+            if (shl < shr) {
+                shifter.z = -shl;
+            } else {
+                shifter.z = shr;
+            }
+
+            switch (coll->quadrant) {
+            case DIR_NORTH:
+                if (shifter.x > coll->radius || shifter.x < -coll->radius) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = coll->old.x - x;
+                    coll->coll_type = COLL_FRONT;
+                } else if (shifter.x > 0) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = 0;
+                    coll->coll_type = COLL_LEFT;
+                } else if (shifter.x < 0) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = 0;
+                    coll->coll_type = COLL_RIGHT;
+                }
+                break;
+
+            case DIR_EAST:
+                if (shifter.z > coll->radius || shifter.z < -coll->radius) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = coll->old.z - z;
+                    coll->coll_type = COLL_FRONT;
+                } else if (shifter.z > 0) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = 0;
+                    coll->coll_type = COLL_RIGHT;
+                } else if (shifter.z < 0) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = 0;
+                    coll->coll_type = COLL_LEFT;
+                }
+                break;
+
+            case DIR_SOUTH:
+                if (shifter.x > coll->radius || shifter.x < -coll->radius) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = coll->old.x - x;
+                    coll->coll_type = COLL_FRONT;
+                } else if (shifter.x > 0) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = 0;
+                    coll->coll_type = COLL_RIGHT;
+                } else if (shifter.x < 0) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = 0;
+                    coll->coll_type = COLL_LEFT;
+                }
+                break;
+
+            case DIR_WEST:
+                if (shifter.z > coll->radius || shifter.z < -coll->radius) {
+                    coll->shift.x = shifter.x;
+                    coll->shift.z = coll->old.z - z;
+                    coll->coll_type = COLL_FRONT;
+                } else if (shifter.z > 0) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = 0;
+                    coll->coll_type = COLL_LEFT;
+                } else if (shifter.z < 0) {
+                    coll->shift.z = shifter.z;
+                    coll->shift.x = 0;
+                    coll->coll_type = COLL_RIGHT;
+                }
+                break;
+            }
+
+            coll->hit_static = 1;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
 {
@@ -348,4 +509,5 @@ void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
     INJECT(0x00412390, GetNearByRooms);
+    INJECT(0x00411FA0, CollideStaticObjects);
 }

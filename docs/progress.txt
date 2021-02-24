@@ -171,7 +171,7 @@ InGameCinematicCamera           0x004115F0  0x00000190  *
 # collide.cpp
 GetCollisionInfo                0x00411780  0x000007DD  +
 FindGridShift                   ----------  ----------  +
-CollideStaticObjects            0x00411FA0  0x000003D6  *
+CollideStaticObjects            0x00411FA0  0x000003D6  +
 GetNearByRooms                  0x00412390  0x000002CC  +
 GetNewRoom                      ----------  ----------  +
 ShiftItem                       0x00412660  0x00000037  *
