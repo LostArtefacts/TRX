@@ -1,4 +1,5 @@
 CC=i686-w64-mingw32-gcc
+WINDRES=i686-w64-mingw32-windres
 CFLAGS=-Wall -Isrc \
 	-DT1M_FEAT_CHEATS \
 	-DT1M_FEAT_EXTENDED_MEMORY \
@@ -7,13 +8,18 @@ CFLAGS=-Wall -Isrc \
 	-DT1M_FEAT_LEVEL_FIXES \
 	-DT1M_FEAT_NOCD
 
+VERSION = $(shell git describe --abbrev=7 --tags master)
 C_FILES = $(shell find src/ -type f -name '*.c')
 O_FILES = $(patsubst src/%.c, build/%.o, $(C_FILES))
 
-build: all
-	$(CC) $(CFLAGS) $(shell find build -type f -iname '*.o') -static -ldbghelp -shared -o build/Tomb1Main.dll
+build: all version
+	$(CC) $(CFLAGS) $(shell find build -type f -iname '*.o') build/version.res -static -ldbghelp -shared -o build/Tomb1Main.dll
 
 all: $(O_FILES)
+
+version:
+	sed s/{version}/$(VERSION)/g src/version.rc >build/version.rc
+	$(WINDRES) build/version.rc -O coff -o build/version.res
 
 clean:
 	find build -type f -iname '*.o' -delete
