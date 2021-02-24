@@ -1,6 +1,7 @@
 CC=i686-w64-mingw32-gcc
 WINDRES=i686-w64-mingw32-windres
 CFLAGS=-Wall -Isrc \
+	-DT1M_FEAT_HAIR \
 	-DT1M_FEAT_CHEATS \
 	-DT1M_FEAT_EXTENDED_MEMORY \
 	-DT1M_FEAT_UI \

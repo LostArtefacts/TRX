@@ -5,6 +5,7 @@
 #include "game/croc.h"
 #include "game/dino.h"
 #include "game/draw.h"
+#include "game/hair.h"
 #include "game/lara.h"
 #include "game/lion.h"
 #include "game/natla.h"
@@ -919,6 +920,10 @@ void InitialiseObjects()
     BaddyObjects();
     TrapObjects();
     ObjectObjects();
+
+#ifdef T1M_FEAT_HAIR
+    InitialiseHair();
+#endif
 
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_medpacks) {

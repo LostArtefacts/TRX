@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/draw.h"
 #include "game/game.h"
+#include "game/hair.h"
 #include "game/health.h"
 #include "game/vars.h"
 #include "specific/output.h"
@@ -514,6 +515,11 @@ void DrawLara(ITEM_INFO* item)
         frame = frmptr[0];
     }
 
+#ifdef T1M_FEAT_HAIR
+    // save matrix for hair
+    saved_matrix = *PhdMatrixPtr;
+#endif
+
     S_PrintShadow(object->shadow_size, frame, item);
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
@@ -580,6 +586,11 @@ void DrawLara(ITEM_INFO* item)
     phd_RotYXZpack(packed_rotation[LM_HEAD]);
     phd_RotYXZ(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons(Lara.mesh_ptrs[LM_HEAD], clip);
+
+#ifdef T1M_FEAT_HAIR
+    *PhdMatrixPtr = saved_matrix;
+    DrawHair();
+#endif
 
     phd_PopMatrix();
 
@@ -838,6 +849,10 @@ void DrawLaraInt(
     OBJECT_INFO* object = &Objects[item->object_number];
     int16_t* bounds = GetBoundsAccurate(item);
 
+#ifdef T1M_FEAT_HAIR
+    saved_matrix = *PhdMatrixPtr;
+#endif
+
     S_PrintShadow(object->shadow_size, bounds, item);
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
@@ -911,6 +926,11 @@ void DrawLaraInt(
     phd_RotYXZpack_I(packed_rotation1[LM_HEAD], packed_rotation2[LM_HEAD]);
     phd_RotYXZ_I(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons_I(Lara.mesh_ptrs[LM_HEAD], clip);
+
+#ifdef T1M_FEAT_HAIR
+    *PhdMatrixPtr = saved_matrix;
+    DrawHair();
+#endif
 
     phd_PopMatrix_I();
 
