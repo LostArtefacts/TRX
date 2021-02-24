@@ -153,8 +153,8 @@ ChaseCamera                     0x00410410  0x00000118  +
 ShiftClamp                      0x00410530  0x00000279  +
 CombatCamera                    0x004107B0  0x00000138  +
 LookCamera                      0x004108F0  0x0000024B  +
-FixedCamera                     ----------  ----------  -
-CalculateCamera                 0x00410B40  0x0000055D  *
+FixedCamera                     ----------  ----------  +
+CalculateCamera                 0x00410B40  0x0000055D  +
 
 # cinema.cpp
 LoopCinematic                   ----------  ----------  -
@@ -166,7 +166,7 @@ ControlCinematicPlayer          0x004114A0  0x00000045  *
 ControlCinematicPlayer4         ----------  ----------  -
 InitialisePlayer1               0x004114F0  0x000000CD  *
 InitialiseGenPlayer             0x004115C0  0x00000027  *
-InGameCinematicCamera           0x004115F0  0x00000190  -
+InGameCinematicCamera           0x004115F0  0x00000190  *
 
 # collide.cpp
 GetCollisionInfo                0x00411780  0x000007DD  *
@@ -836,7 +836,7 @@ SoundInit                       0x00437E00  0x0000000D  *
 sub_437E10                      0x00437E10  0x000000C3  -
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
-S_CDVolume                      0x00437F30  0x00000001  -
+S_CDVolume                      0x00437F30  0x00000001  *
 TestCdDrive                     0x00437F40  0x00000039  -
 sub_437F80                      0x00437F80  0x00000026  -
 CDPlay                          0x00437FB0  0x000000F5  -

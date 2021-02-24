@@ -1,11 +1,15 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/camera.h"
+#include "game/cinema.h"
 #include "game/const.h"
 #include "game/control.h"
+#include "game/draw.h"
+#include "game/effects.h"
 #include "game/game.h"
 #include "game/misc.h"
 #include "game/vars.h"
+#include "specific/sndpc.h"
 #include "util.h"
 
 void InitialiseCamera()
@@ -470,6 +474,192 @@ void LookCamera(ITEM_INFO* item)
     MoveCamera(&ideal, Camera.speed);
 }
 
+void FixedCamera()
+{
+    GAME_VECTOR ideal;
+    OBJECT_VECTOR* fixed;
+
+    fixed = &Camera.fixed[Camera.number];
+    ideal.x = fixed->x;
+    ideal.y = fixed->y;
+    ideal.z = fixed->z;
+    ideal.room_number = fixed->data;
+
+    if (!LOS(&Camera.target, &ideal)) {
+        ShiftClamp(&ideal, STEP_L);
+    }
+
+    Camera.fixed_camera = 1;
+
+    MoveCamera(&ideal, Camera.speed);
+
+    if (Camera.timer) {
+        Camera.timer--;
+        if (!Camera.timer) {
+            Camera.timer = -1;
+        }
+    }
+}
+
+void CalculateCamera()
+{
+    if (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER) {
+        if (!Camera.underwater) {
+            SoundEffect(60, NULL, SFX_ALWAYS);
+            S_CDVolume(0);
+            Camera.underwater = 1;
+        }
+    } else if (Camera.underwater) {
+        StopSoundEffect(60, NULL);
+        if (OptionMusicVolume) {
+            S_CDVolume(OptionMusicVolume * 25 + 5);
+        }
+        Camera.underwater = 0;
+    }
+
+    if (Camera.type == CAM_CINEMATIC) {
+        InGameCinematicCamera();
+        return;
+    }
+
+    if (Camera.flags != NO_CHUNKY) {
+        ChunkyFlag = 1;
+    }
+
+    int32_t fixed_camera =
+        Camera.item && (Camera.type == CAM_FIXED || Camera.type == CAM_HEAVY);
+    ITEM_INFO* item = fixed_camera ? Camera.item : LaraItem;
+
+    int16_t* bounds = GetBoundsAccurate(item);
+
+    int32_t y = item->pos.y;
+    if (!fixed_camera) {
+        y += bounds[FRAME_BOUND_MAX_Y]
+            + ((bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3
+               >> 2);
+    } else {
+        y += (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y]) / 2;
+    }
+
+    if (Camera.item && !fixed_camera) {
+        bounds = GetBoundsAccurate(Camera.item);
+        int16_t shift = phd_sqrt(
+            SQUARE(Camera.item->pos.z - item->pos.z)
+            + SQUARE(Camera.item->pos.x - item->pos.x));
+        int16_t angle = phd_atan(
+                            Camera.item->pos.z - item->pos.z,
+                            Camera.item->pos.x - item->pos.x)
+            - item->pos.y_rot;
+        int16_t tilt = phd_atan(
+            shift,
+            y
+                - (Camera.item->pos.y
+                   + (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y])
+                       / 2));
+        angle >>= 1;
+        tilt >>= 1;
+
+        if (angle > -MAX_HEAD_ROTATION && angle < MAX_HEAD_ROTATION
+            && tilt > MIN_HEAD_TILT_CAM && tilt < MAX_HEAD_TILT_CAM) {
+            int16_t change = angle - Lara.head_y_rot;
+            if (change > HEAD_TURN) {
+                Lara.head_y_rot += HEAD_TURN;
+            } else if (change < -HEAD_TURN) {
+                Lara.head_y_rot -= HEAD_TURN;
+            } else {
+                Lara.head_y_rot += change;
+            }
+
+            change = tilt - Lara.head_x_rot;
+            if (change > HEAD_TURN) {
+                Lara.head_x_rot += HEAD_TURN;
+            } else if (change < -HEAD_TURN) {
+                Lara.head_x_rot -= HEAD_TURN;
+            } else {
+                Lara.head_x_rot += change;
+            }
+
+            Lara.torso_y_rot = Lara.head_y_rot;
+            Lara.torso_x_rot = Lara.head_x_rot;
+
+            Camera.type = CAM_LOOK;
+            Camera.item->looked_at = 1;
+        }
+    }
+
+    if (Camera.type == CAM_LOOK || Camera.type == CAM_COMBAT) {
+        y -= STEP_L;
+        Camera.target.room_number = item->room_number;
+
+        if (Camera.fixed_camera) {
+            Camera.target.y = y;
+            Camera.speed = 1;
+        } else {
+            Camera.target.y += (y - Camera.target.y) >> 2;
+            Camera.speed = Camera.type == CAM_LOOK ? LOOK_SPEED : COMBAT_SPEED;
+        }
+
+        Camera.fixed_camera = 0;
+
+        if (Camera.type == CAM_LOOK) {
+            LookCamera(item);
+        } else {
+            CombatCamera(item);
+        }
+    } else {
+        Camera.target.x = item->pos.x;
+        Camera.target.z = item->pos.z;
+
+        if (Camera.flags == FOLLOW_CENTRE) {
+            int16_t shift =
+                (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
+            Camera.target.z += phd_cos(item->pos.y_rot) * shift >> W2V_SHIFT;
+            Camera.target.x += phd_sin(item->pos.y_rot) * shift >> W2V_SHIFT;
+        }
+
+        Camera.target.room_number = item->room_number;
+
+        if (Camera.fixed_camera != fixed_camera) {
+            Camera.target.y = y;
+            Camera.fixed_camera = 1;
+            Camera.speed = 1;
+        } else {
+            Camera.target.y += (y - Camera.target.y) / 4;
+            Camera.fixed_camera = 0;
+        }
+
+        FLOOR_INFO* floor = GetFloor(
+            Camera.target.x, Camera.target.y, Camera.target.z,
+            &Camera.target.room_number);
+        if (Camera.target.y > GetHeight(
+                floor, Camera.target.x, Camera.target.y, Camera.target.z)) {
+            ChunkyFlag = 0;
+        }
+
+        if (Camera.type == CAM_CHASE || Camera.flags == CHASE_OBJECT) {
+            ChaseCamera(item);
+        } else {
+            FixedCamera();
+        }
+    }
+
+    Camera.last = Camera.number;
+    Camera.fixed_camera = fixed_camera;
+
+    if (Camera.type != CAM_HEAVY || Camera.timer == -1) {
+        Camera.type = CAM_CHASE;
+        Camera.number = NO_CAMERA;
+        Camera.last_item = Camera.item;
+        Camera.item = NULL;
+        Camera.target_angle = 0;
+        Camera.target_elevation = 0;
+        Camera.target_distance = WALL_L * 3 / 2;
+        Camera.flags = 0;
+    }
+
+    ChunkyFlag = 0;
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
@@ -481,4 +671,5 @@ void T1MInjectGameCamera()
     INJECT(0x00410530, ShiftClamp);
     INJECT(0x004107B0, CombatCamera);
     INJECT(0x004108F0, LookCamera);
+    INJECT(0x00410B40, CalculateCamera);
 }

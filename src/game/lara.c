@@ -37,12 +37,12 @@ void LookUpDown()
     Camera.type = CAM_LOOK;
     if (Input & IN_FORWARD) {
         Input -= IN_FORWARD;
-        if (Lara.head_x_rot > MIN_HEAD_TILT) {
+        if (Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
             Lara.head_x_rot -= HEAD_TURN / 2;
         }
     } else if (Input & IN_BACK) {
         Input -= IN_BACK;
-        if (Lara.head_x_rot < MAX_HEAD_TILT) {
+        if (Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
             Lara.head_x_rot += HEAD_TURN / 2;
         }
     }
@@ -245,9 +245,9 @@ void LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
         }
         Lara.torso_y_rot = Lara.head_y_rot;
 
-        if ((Input & IN_FORWARD) && Lara.head_x_rot > MIN_HEAD_TILT) {
+        if ((Input & IN_FORWARD) && Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
             Lara.head_x_rot -= HEAD_TURN / 2;
-        } else if ((Input & IN_BACK) && Lara.head_x_rot < MAX_HEAD_TILT) {
+        } else if ((Input & IN_BACK) && Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
             Lara.head_x_rot += HEAD_TURN / 2;
         }
         Lara.torso_x_rot = Lara.head_x_rot;

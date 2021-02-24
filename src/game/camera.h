@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define CalculateCamera         ((void         (*)())0x00410B40)
-// clang-format on
-
 void InitialiseCamera();
 void MoveCamera(GAME_VECTOR* ideal, int32_t speed);
 void ClipCamera(
@@ -26,6 +22,8 @@ void ChaseCamera(ITEM_INFO* item);
 int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp);
 void CombatCamera(ITEM_INFO* item);
 void LookCamera(ITEM_INFO* item);
+void FixedCamera();
+void CalculateCamera();
 
 void T1MInjectGameCamera();
 
