@@ -695,6 +695,34 @@ void ItemPushLara(
     }
 }
 
+int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* laraitem, int32_t radius)
+{
+    int16_t* bounds = GetBestFrame(item);
+    int16_t* larabounds = GetBestFrame(laraitem);
+    if (item->pos.y + bounds[FRAME_BOUND_MAX_Y]
+            <= laraitem->pos.y + larabounds[FRAME_BOUND_MIN_Y]
+        || item->pos.y + bounds[FRAME_BOUND_MIN_Y]
+            >= laraitem->pos.y + larabounds[FRAME_BOUND_MAX_Y]) {
+        return 0;
+    }
+
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t x = laraitem->pos.x - item->pos.x;
+    int32_t z = laraitem->pos.z - item->pos.z;
+    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
+    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
+    int32_t minx = bounds[FRAME_BOUND_MIN_X] - radius;
+    int32_t maxx = bounds[FRAME_BOUND_MAX_X] + radius;
+    int32_t minz = bounds[FRAME_BOUND_MIN_Z] - radius;
+    int32_t maxz = bounds[FRAME_BOUND_MAX_Z] + radius;
+    if (rx >= minx && rx <= maxx && rz >= minz && rz <= maxz) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -704,4 +732,5 @@ void T1MInjectGameCollide()
     INJECT(0x004126A0, UpdateLaraRoom);
     INJECT(0x00412700, LaraBaddieCollision);
     INJECT(0x00412B10, ItemPushLara);
+    INJECT(0x00412E50, TestBoundsCollide);
 }

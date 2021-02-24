@@ -29,6 +29,7 @@ void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll);
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* laraitem, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush);
+int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* laraitem, int32_t radius);
 
 void T1MInjectGameCollide();
 
