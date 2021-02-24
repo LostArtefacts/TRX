@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/game.h"
+#include "game/misc.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -119,9 +120,59 @@ void ClipCamera(
     }
 }
 
+void ShiftCamera(
+    int32_t* x, int32_t* y, int32_t target_x, int32_t target_y, int32_t left,
+    int32_t top, int32_t right, int32_t bottom)
+{
+    int32_t shift;
+
+    int32_t TL_square = SQUARE(target_x - left) + SQUARE(target_y - top);
+    int32_t BL_square = SQUARE(target_x - left) + SQUARE(target_y - bottom);
+    int32_t TR_square = SQUARE(target_x - right) + SQUARE(target_y - top);
+
+    if (Camera.target_square < TL_square) {
+        *x = left;
+        shift = Camera.target_square - SQUARE(target_x - left);
+        if (shift < 0) {
+            return;
+        }
+
+        shift = phd_sqrt(shift);
+        *y = target_y + ((top < bottom) ? -shift : shift);
+    } else if (TL_square > MIN_SQUARE) {
+        *x = left;
+        *y = top;
+    } else if (Camera.target_square < BL_square) {
+        *x = left;
+        shift = Camera.target_square - SQUARE(target_x - left);
+        if (shift < 0) {
+            return;
+        }
+
+        shift = phd_sqrt(shift);
+        *y = target_y + ((top < bottom) ? shift : -shift);
+    } else if (BL_square > MIN_SQUARE) {
+        *x = left;
+        *y = bottom;
+    } else if (Camera.target_square < TR_square) {
+        shift = Camera.target_square - SQUARE(target_y - top);
+        if (shift < 0) {
+            return;
+        }
+
+        shift = phd_sqrt(shift);
+        *x = target_x + ((left < right) ? shift : -shift);
+        *y = top;
+    } else {
+        *x = right;
+        *y = top;
+    }
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
     INJECT(0x0040F9B0, MoveCamera);
     INJECT(0x0040FCA0, ClipCamera);
+    INJECT(0x0040FD40, ShiftCamera);
 }
