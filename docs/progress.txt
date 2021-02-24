@@ -188,7 +188,7 @@ TestBoundsCollide               0x00412E50  0x000000D1  +
 TestLaraPosition                0x00412F30  0x00000137  +
 AlignLaraPosition               0x00413070  0x000000C1  +
 MoveLaraPosition                0x00413140  0x000000E4  +
-Move3DPosTo3DPos                0x00413230  0x00000172  *
+Move3DPosTo3DPos                0x00413230  0x00000172  +
 
 # control.cpp
 ControlPhase                    0x004133B0  0x000002B0  +

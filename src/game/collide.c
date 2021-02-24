@@ -6,6 +6,7 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
+#include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
@@ -875,6 +876,57 @@ int32_t MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
     return Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
 }
 
+int32_t Move3DPosTo3DPos(
+    PHD_3DPOS* srcpos, PHD_3DPOS* destpos, int32_t velocity, PHD_ANGLE angadd)
+{
+    PHD_ANGLE angdif;
+
+    int32_t x = destpos->x - srcpos->x;
+    int32_t y = destpos->y - srcpos->y;
+    int32_t z = destpos->z - srcpos->z;
+    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+    if (velocity >= dist) {
+        srcpos->x = destpos->x;
+        srcpos->y = destpos->y;
+        srcpos->z = destpos->z;
+    } else {
+        srcpos->x += (x * velocity) / dist;
+        srcpos->y += (y * velocity) / dist;
+        srcpos->z += (z * velocity) / dist;
+    }
+
+    angdif = destpos->x_rot - srcpos->x_rot;
+    if (angdif > angadd) {
+        srcpos->x_rot += angadd;
+    } else if (angdif < -angadd) {
+        srcpos->x_rot -= angadd;
+    } else {
+        srcpos->x_rot = destpos->x_rot;
+    }
+
+    angdif = destpos->y_rot - srcpos->y_rot;
+    if (angdif > angadd) {
+        srcpos->y_rot += angadd;
+    } else if (angdif < -angadd) {
+        srcpos->y_rot -= angadd;
+    } else {
+        srcpos->y_rot = destpos->y_rot;
+    }
+
+    angdif = destpos->z_rot - srcpos->z_rot;
+    if (angdif > angadd) {
+        srcpos->z_rot += angadd;
+    } else if (angdif < -angadd) {
+        srcpos->z_rot -= angadd;
+    } else {
+        srcpos->z_rot = destpos->z_rot;
+    }
+
+    return srcpos->x == destpos->x && srcpos->y == destpos->y
+        && srcpos->z == destpos->z && srcpos->x_rot == destpos->x_rot
+        && srcpos->y_rot == destpos->y_rot && srcpos->z_rot == destpos->z_rot;
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -892,4 +944,5 @@ void T1MInjectGameCollide()
     INJECT(0x00412F30, TestLaraPosition);
     INJECT(0x00413070, AlignLaraPosition);
     INJECT(0x00413230, MoveLaraPosition);
+    INJECT(0x00413230, Move3DPosTo3DPos);
 }
