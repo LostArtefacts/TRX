@@ -26,6 +26,9 @@ void UpdateLaraRoom(ITEM_INFO* item, int32_t height);
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 void LaraBaddieCollision(ITEM_INFO* laraitem, COLL_INFO* coll);
 void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll);
+void ItemPushLara(
+    ITEM_INFO* item, ITEM_INFO* laraitem, COLL_INFO* coll, int32_t spazon,
+    int32_t bigpush);
 
 void T1MInjectGameCollide();
 

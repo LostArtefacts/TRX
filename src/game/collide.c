@@ -2,6 +2,7 @@
 #include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/vars.h"
@@ -605,12 +606,102 @@ void EffectSpaz(ITEM_INFO* laraitem, COLL_INFO* coll)
     Lara.spaz_effect_count--;
 }
 
+void ItemPushLara(
+    ITEM_INFO* item, ITEM_INFO* laraitem, COLL_INFO* coll, int32_t spazon,
+    int32_t bigpush)
+{
+    int32_t x = laraitem->pos.x - item->pos.x;
+    int32_t z = laraitem->pos.z - item->pos.z;
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
+    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
+
+    int16_t* bounds = GetBestFrame(item);
+    int32_t minx = bounds[FRAME_BOUND_MIN_X];
+    int32_t maxx = bounds[FRAME_BOUND_MAX_X];
+    int32_t minz = bounds[FRAME_BOUND_MIN_Z];
+    int32_t maxz = bounds[FRAME_BOUND_MAX_Z];
+
+    if (bigpush) {
+        minx -= coll->radius;
+        maxx += coll->radius;
+        minz -= coll->radius;
+        maxz += coll->radius;
+    }
+
+    if (rx >= minx && rx <= maxx && rz >= minz && rz <= maxz) {
+        int32_t l = rx - minx;
+        int32_t r = maxx - rx;
+        int32_t t = maxz - rz;
+        int32_t b = rz - minz;
+
+        if (l <= r && l <= t && l <= b) {
+            rx -= l;
+        } else if (r <= l && r <= t && r <= b) {
+            rx += r;
+        } else if (t <= l && t <= r && t <= b) {
+            rz += t;
+        } else {
+            rz -= b;
+        }
+
+        int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
+        int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
+
+        laraitem->pos.x = item->pos.x + ax;
+        laraitem->pos.z = item->pos.z + az;
+
+        rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
+        rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
+        x -= (c * rx + s * rz) >> W2V_SHIFT;
+        z -= (c * rz - s * rx) >> W2V_SHIFT;
+
+        if (spazon) {
+            PHD_ANGLE hitang =
+                laraitem->pos.y_rot - (0x8000 + phd_atan(z, x));
+            Lara.hit_direction = (hitang + 0x2000) / 0x4000;
+            if (!Lara.hit_frame) {
+                SoundEffect(27, &laraitem->pos, 0);
+            }
+
+            Lara.hit_frame++;
+            if (Lara.hit_frame > 34) {
+                Lara.hit_frame = 34;
+            }
+        }
+
+        coll->bad_pos = NO_BAD_POS;
+        coll->bad_neg = -STEPUP_HEIGHT;
+        coll->bad_ceiling = 0;
+
+        int16_t old_facing = coll->facing;
+        coll->facing = phd_atan(
+            laraitem->pos.z - coll->old.z, laraitem->pos.x - coll->old.x);
+        GetCollisionInfo(
+            coll, laraitem->pos.x, laraitem->pos.y, laraitem->pos.z,
+            laraitem->room_number, LARA_HITE);
+        coll->facing = old_facing;
+
+        if (coll->coll_type != COLL_NONE) {
+            laraitem->pos.x = coll->old.x;
+            laraitem->pos.z = coll->old.z;
+        } else {
+            coll->old.x = laraitem->pos.x;
+            coll->old.y = laraitem->pos.y;
+            coll->old.z = laraitem->pos.z;
+            UpdateLaraRoom(laraitem, -10);
+        }
+    }
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
-    INJECT(0x00412390, GetNearByRooms);
     INJECT(0x00411FA0, CollideStaticObjects);
+    INJECT(0x00412390, GetNearByRooms);
     INJECT(0x00412660, ShiftItem);
     INJECT(0x004126A0, UpdateLaraRoom);
     INJECT(0x00412700, LaraBaddieCollision);
+    INJECT(0x00412B10, ItemPushLara);
 }

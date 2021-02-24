@@ -183,7 +183,7 @@ CreatureCollision               0x00412910  0x00000078  *
 ObjectCollision                 0x00412990  0x00000059  *
 DoorCollision                   0x004129F0  0x0000007B  *
 TrapCollision                   0x00412A70  0x00000096  *
-ItemPushLara                    0x00412B10  0x00000335  -
+ItemPushLara                    0x00412B10  0x00000335  +
 TestBoundsCollide               0x00412E50  0x000000D1  -
 TestLaraPosition                0x00412F30  0x00000137  -
 AlignLaraPosition               0x00413070  0x000000C1  -
