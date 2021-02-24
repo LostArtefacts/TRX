@@ -6,6 +6,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/misc.h"
+#include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -1042,6 +1043,21 @@ void CreatureHead(ITEM_INFO* item, int16_t required)
     }
 }
 
+int16_t CreatureEffect(
+    ITEM_INFO* item, BITE_INFO* bite,
+    int16_t (*generate)(
+        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
+        int16_t room_num))
+{
+    PHD_VECTOR pos;
+    pos.x = bite->x;
+    pos.y = bite->y;
+    pos.z = bite->z;
+    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    return generate(
+        pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
@@ -1057,4 +1073,5 @@ void T1MInjectGameBox()
     INJECT(0x0040F750, CreatureTurn);
     INJECT(0x0040F830, CreatureTilt);
     INJECT(0x0040F870, CreatureHead);
+    INJECT(0x0040F8C0, CreatureEffect);
 }

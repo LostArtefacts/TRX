@@ -140,7 +140,7 @@ CreatureAnimation               0x0040EEE0  0x00000863  +
 CreatureTurn                    0x0040F750  0x000000D5  +
 CreatureTilt                    0x0040F830  0x00000035  +
 CreatureHead                    0x0040F870  0x00000049  +
-CreatureEffect                  0x0040F8C0  0x0000005C  *
+CreatureEffect                  0x0040F8C0  0x0000005C  +
 
 # camera.cpp
 InitialiseCamera                0x0040F920  0x0000008B  -
@@ -863,7 +863,7 @@ sub_439030                      0x00439030  0x000000FC  -
 # sphere.cpp
 TestCollision                   0x00439130  0x00000128  -
 GetSpheres                      0x00439260  0x000002EF  *
-GetJointAbsPosition             0x00439550  0x0000019C  -
+GetJointAbsPosition             0x00439550  0x0000019C  *
 BaddieBiteEffect                0x004396F0  0x0000005D  -
 
 # text.cpp

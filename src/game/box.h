@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define CreatureEffect          ((int16_t      (*)(ITEM_INFO* item, BITE_INFO* bite, int16_t(*generate)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_number)))0x0040F8C0)
-// clang-format on
-
 void InitialiseCreature(int16_t item_num);
 void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info);
 int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion);
@@ -26,6 +22,11 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt);
 int16_t CreatureTurn(ITEM_INFO* item, int16_t maximum_turn);
 void CreatureTilt(ITEM_INFO* item, int16_t angle);
 void CreatureHead(ITEM_INFO* item, int16_t required);
+int16_t CreatureEffect(
+    ITEM_INFO* item, BITE_INFO* bite,
+    int16_t (*generate)(
+        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
+        int16_t room_num));
 
 void T1MInjectGameBox();
 
