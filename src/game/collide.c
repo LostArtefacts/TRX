@@ -643,6 +643,26 @@ void ObjectCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void DoorCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+    if (!TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        if (item->current_anim_state != item->goal_anim_state) {
+            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 1);
+        } else {
+            ItemPushLara(item, lara_item, coll, 0, 1);
+        }
+    }
+}
+
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush)
@@ -770,6 +790,7 @@ void T1MInjectGameCollide()
     INJECT(0x00412700, LaraBaddieCollision);
     INJECT(0x00412910, CreatureCollision);
     INJECT(0x00412990, ObjectCollision);
+    INJECT(0x004129F0, DoorCollision);
     INJECT(0x00412B10, ItemPushLara);
     INJECT(0x00412E50, TestBoundsCollide);
 }
