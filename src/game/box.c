@@ -1033,4 +1033,5 @@ void T1MInjectGameBox()
     INJECT(0x0040EE40, BadFloor);
     INJECT(0x0040EEE0, CreatureAnimation);
     INJECT(0x0040F750, CreatureTurn);
+    INJECT(0x0040F830, CreatureTilt);
 }
