@@ -4,6 +4,10 @@
 #include "types.h"
 #include <stdint.h>
 
+// clang-format off
+#define Move3DPosTo3DPos    ((int32_t   (*)(PHD_3DPOS* srcpos, PHD_3DPOS* destpos, int32_t velocity, PHD_ANGLE angadd))0x00413230)
+// clang-format on
+
 void GetCollisionInfo(
     COLL_INFO* coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight);
@@ -31,6 +35,8 @@ TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius);
 int32_t
 TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item);
 void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item);
+int32_t
+MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item);
 
 void T1MInjectGameCollide();
 

@@ -853,6 +853,28 @@ void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
     phd_PopMatrix();
 }
 
+int32_t MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
+{
+    PHD_3DPOS dest;
+    dest.x_rot = item->pos.x_rot;
+    dest.y_rot = item->pos.y_rot;
+    dest.z_rot = item->pos.z_rot;
+    phd_PushUnitMatrix();
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    dest.x = item->pos.x
+        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
+           >> W2V_SHIFT);
+    dest.y = item->pos.y
+        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
+           >> W2V_SHIFT);
+    dest.z = item->pos.z
+        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
+           >> W2V_SHIFT);
+    phd_PopMatrix();
+    return Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -869,4 +891,5 @@ void T1MInjectGameCollide()
     INJECT(0x00412E50, TestBoundsCollide);
     INJECT(0x00412F30, TestLaraPosition);
     INJECT(0x00413070, AlignLaraPosition);
+    INJECT(0x00413230, MoveLaraPosition);
 }
