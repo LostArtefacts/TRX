@@ -143,6 +143,7 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define DemoLevels              ARRAY_(0x00453538, int8_t, [])
 #define TitleLoaded             VAR_U_(0x0045A324, int32_t)
 #define DemoLevel               VAR_I_(0x00453530, int32_t, 1)
+#define ChunkyFlag              VAR_I_(0x00459F44, int32_t, 0)
 // clang-format on
 
 extern int32_t MeshCount;

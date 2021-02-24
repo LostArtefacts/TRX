@@ -141,6 +141,8 @@
 #define VALUE_BITS 0x03FF
 #define TRIG_BITS(T) ((T & 0x3FFF) >> 10)
 
+#define GROUND_SHIFT (STEP_L)
+
 #define DEFAULT_RADIUS 10
 #define BEAR_HITPOINTS 20
 #define BEAR_RADIUS (WALL_L / 3) // = 341

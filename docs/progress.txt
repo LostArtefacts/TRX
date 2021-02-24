@@ -8,7 +8,7 @@
 
 # ???
 phd_GenerateW2V                 0x00401000  0x00000197  *
-phd_LookAt                      0x004011A0  0x000000C9  -
+phd_LookAt                      0x004011A0  0x000000C9  *
 phd_GetVectorAngles             0x00401270  0x0000007E  *
 phd_RotX                        0x004012F0  0x000000AE  -
 phd_RotY                        0x004013A0  0x000000AC  -
@@ -144,7 +144,7 @@ CreatureEffect                  0x0040F8C0  0x0000005C  +
 
 # camera.cpp
 InitialiseCamera                0x0040F920  0x0000008B  +
-MoveCamera                      0x0040F9B0  0x000002E5  -
+MoveCamera                      0x0040F9B0  0x000002E5  +
 ClipCamera                      0x0040FCA0  0x00000096  -
 ShiftCamera                     0x0040FD40  0x0000015C  -
 BadPosition                     ----------  ----------  -
