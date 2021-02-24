@@ -309,6 +309,39 @@ void SmartShift(
     }
 }
 
+void ChaseCamera(ITEM_INFO* item)
+{
+    GAME_VECTOR ideal;
+
+    Camera.target_elevation += item->pos.x_rot;
+    if (Camera.target_elevation > MAX_ELEVATION) {
+        Camera.target_elevation = MAX_ELEVATION;
+    } else if (Camera.target_elevation < -MAX_ELEVATION) {
+        Camera.target_elevation = -MAX_ELEVATION;
+    }
+
+    int32_t distance =
+        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
+    ideal.y = Camera.target.y
+        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+           >> W2V_SHIFT);
+
+    Camera.target_square = SQUARE(distance);
+
+    PHD_ANGLE angle = item->pos.y_rot + Camera.target_angle;
+    ideal.x = Camera.target.x - (distance * phd_sin(angle) >> W2V_SHIFT);
+    ideal.z = Camera.target.z - (distance * phd_cos(angle) >> W2V_SHIFT);
+    ideal.room_number = Camera.pos.room_number;
+
+    SmartShift(&ideal, ShiftCamera);
+
+    if (Camera.fixed_camera) {
+        MoveCamera(&ideal, Camera.speed);
+    } else {
+        MoveCamera(&ideal, CHASE_SPEED);
+    }
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
@@ -316,4 +349,5 @@ void T1MInjectGameCamera()
     INJECT(0x0040FCA0, ClipCamera);
     INJECT(0x0040FD40, ShiftCamera);
     INJECT(0x0040FEA0, SmartShift);
+    INJECT(0x00410410, ChaseCamera);
 }

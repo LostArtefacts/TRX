@@ -78,6 +78,8 @@
 #define FOLLOW_CENTRE 1
 #define NO_CHUNKY 2
 #define CHASE_OBJECT 3
+#define CHASE_SPEED 12
+#define MAX_ELEVATION (85 * PHD_DEGREE) // = 15470
 #define DEFAULT_RADIUS 10
 #define DONT_TARGET (-16384)
 #define UNIT_SHADOW 256

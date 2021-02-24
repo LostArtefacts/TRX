@@ -22,6 +22,7 @@ void SmartShift(
     void (*shift)(
         int32_t* x, int32_t* y, int32_t target_x, int32_t target_y,
         int32_t left, int32_t top, int32_t right, int32_t bottom));
+void ChaseCamera(ITEM_INFO* item);
 
 void T1MInjectGameCamera();
 
