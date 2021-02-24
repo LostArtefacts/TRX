@@ -103,8 +103,25 @@ void MoveCamera(GAME_VECTOR* ideal, int32_t speed)
         Camera.target.z - Camera.pos.z, Camera.target.x - Camera.pos.x);
 }
 
+void ClipCamera(
+    int32_t* x, int32_t* y, int32_t target_x, int32_t target_y, int32_t left,
+    int32_t top, int32_t right, int32_t bottom)
+{
+    if ((right > left) != (target_x < left)) {
+        *y = target_y + (*y - target_y) * (left - target_x) / (*x - target_x);
+        *x = left;
+    }
+
+    if ((bottom > top && target_y > top && *y < top)
+        || (bottom < top && target_y < top && (*y) > top)) {
+        *x = target_x + (*x - target_x) * (top - target_y) / (*y - target_y);
+        *y = top;
+    }
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
     INJECT(0x0040F9B0, MoveCamera);
+    INJECT(0x0040FCA0, ClipCamera);
 }

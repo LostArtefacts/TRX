@@ -145,7 +145,7 @@ CreatureEffect                  0x0040F8C0  0x0000005C  +
 # camera.cpp
 InitialiseCamera                0x0040F920  0x0000008B  +
 MoveCamera                      0x0040F9B0  0x000002E5  +
-ClipCamera                      0x0040FCA0  0x00000096  -
+ClipCamera                      0x0040FCA0  0x00000096  +
 ShiftCamera                     0x0040FD40  0x0000015C  -
 BadPosition                     ----------  ----------  -
 SmartShift                      0x0040FEA0  0x00000567  -
