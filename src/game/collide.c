@@ -663,6 +663,19 @@ void DoorCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void TrapCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (item->status == IS_ACTIVE) {
+        if (TestBoundsCollide(item, lara_item, coll->radius)) {
+            TestCollision(item, lara_item);
+        }
+    } else if (item->status != IS_INVISIBLE) {
+        ObjectCollision(item_num, lara_item, coll);
+    }
+}
+
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush)
@@ -791,6 +804,7 @@ void T1MInjectGameCollide()
     INJECT(0x00412910, CreatureCollision);
     INJECT(0x00412990, ObjectCollision);
     INJECT(0x004129F0, DoorCollision);
+    INJECT(0x00412A70, TrapCollision);
     INJECT(0x00412B10, ItemPushLara);
     INJECT(0x00412E50, TestBoundsCollide);
 }

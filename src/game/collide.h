@@ -4,10 +4,6 @@
 #include "types.h"
 #include <stdint.h>
 
-// clang-format off
-#define TrapCollision           ((void          (*)(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll))0x00412A70)
-// clang-format on
-
 void GetCollisionInfo(
     COLL_INFO* coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight);
@@ -26,6 +22,7 @@ void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll);
 void CreatureCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void ObjectCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void DoorCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+void TrapCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush);
