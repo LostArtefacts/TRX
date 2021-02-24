@@ -169,10 +169,151 @@ void ShiftCamera(
     }
 }
 
+int32_t BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
+{
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    if (y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z)) {
+        return 1;
+    }
+    return 0;
+}
+
+void SmartShift(
+    GAME_VECTOR* ideal,
+    void (*shift)(
+        int32_t* x, int32_t* y, int32_t target_x, int32_t target_y,
+        int32_t left, int32_t top, int32_t right, int32_t bottom))
+{
+    LOS(&Camera.target, ideal);
+
+    ROOM_INFO* r = &RoomInfo[Camera.target.room_number];
+    int32_t x_floor = (Camera.target.z - r->z) >> WALL_SHIFT;
+    int32_t y_floor = (Camera.target.x - r->x) >> WALL_SHIFT;
+
+    int16_t item_box = r->floor[x_floor + y_floor * r->x_size].box;
+    BOX_INFO* box = &Boxes[item_box];
+
+    r = &RoomInfo[ideal->room_number];
+    x_floor = (ideal->z - r->z) >> WALL_SHIFT;
+    y_floor = (ideal->x - r->x) >> WALL_SHIFT;
+
+    int16_t camera_box = r->floor[x_floor + y_floor * r->x_size].box;
+    if (camera_box != NO_BOX
+        && (ideal->z < box->left || ideal->z > box->right || ideal->x < box->top
+            || ideal->x > box->bottom)) {
+        box = &Boxes[camera_box];
+    }
+
+    int32_t left = box->left;
+    int32_t right = box->right;
+    int32_t top = box->top;
+    int32_t bottom = box->bottom;
+
+    int32_t test = (ideal->z - WALL_L) | (WALL_L - 1);
+    int32_t bad_left =
+        BadPosition(ideal->x, ideal->y, test, ideal->room_number);
+    if (!bad_left) {
+        camera_box = r->floor[x_floor - 1 + y_floor * r->x_size].box;
+        if (camera_box != NO_ITEM && Boxes[camera_box].left < left) {
+            left = Boxes[camera_box].left;
+        }
+    }
+
+    test = (ideal->z + WALL_L) & (~(WALL_L - 1));
+    int32_t bad_right =
+        BadPosition(ideal->x, ideal->y, test, ideal->room_number);
+    if (!bad_right) {
+        camera_box = r->floor[x_floor + 1 + y_floor * r->x_size].box;
+        if (camera_box != NO_ITEM && Boxes[camera_box].right > right) {
+            right = Boxes[camera_box].right;
+        }
+    }
+
+    test = (ideal->x - WALL_L) | (WALL_L - 1);
+    int32_t bad_top = BadPosition(test, ideal->y, ideal->z, ideal->room_number);
+    if (!bad_top) {
+        camera_box = r->floor[x_floor + (y_floor - 1) * r->x_size].box;
+        if (camera_box != NO_ITEM && Boxes[camera_box].top < top) {
+            top = Boxes[camera_box].top;
+        }
+    }
+
+    test = (ideal->x + WALL_L) & (~(WALL_L - 1));
+    int32_t bad_bottom =
+        BadPosition(test, ideal->y, ideal->z, ideal->room_number);
+    if (!bad_bottom) {
+        camera_box = r->floor[x_floor + (y_floor + 1) * r->x_size].box;
+        if (camera_box != NO_ITEM && Boxes[camera_box].bottom > bottom) {
+            bottom = Boxes[camera_box].bottom;
+        }
+    }
+
+    left += STEP_L;
+    right -= STEP_L;
+    top += STEP_L;
+    bottom -= STEP_L;
+
+    int32_t noclip = 1;
+    if (ideal->z < left && bad_left) {
+        noclip = 0;
+        if (ideal->x < Camera.target.x) {
+            shift(
+                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, left,
+                top, right, bottom);
+        } else {
+            shift(
+                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, left,
+                bottom, right, top);
+        }
+    } else if (ideal->z > right && bad_right) {
+        noclip = 0;
+        if (ideal->x < Camera.target.x) {
+            shift(
+                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, right,
+                top, left, bottom);
+        } else {
+            shift(
+                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, right,
+                bottom, left, top);
+        }
+    }
+
+    if (noclip) {
+        if (ideal->x < top && bad_top) {
+            noclip = 0;
+            if (ideal->z < Camera.target.z) {
+                shift(
+                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z, top,
+                    left, bottom, right);
+            } else {
+                shift(
+                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z, top,
+                    right, bottom, left);
+            }
+        } else if (ideal->x > bottom && bad_bottom) {
+            noclip = 0;
+            if (ideal->z < Camera.target.z) {
+                shift(
+                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z,
+                    bottom, left, top, right);
+            } else {
+                shift(
+                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z,
+                    bottom, right, top, left);
+            }
+        }
+    }
+
+    if (!noclip) {
+        GetFloor(ideal->x, ideal->y, ideal->z, &ideal->room_number);
+    }
+}
+
 void T1MInjectGameCamera()
 {
     INJECT(0x0040F920, InitialiseCamera);
     INJECT(0x0040F9B0, MoveCamera);
     INJECT(0x0040FCA0, ClipCamera);
     INJECT(0x0040FD40, ShiftCamera);
+    INJECT(0x0040FEA0, SmartShift);
 }
