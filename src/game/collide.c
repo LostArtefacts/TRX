@@ -832,6 +832,27 @@ int32_t TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item)
     return 1;
 }
 
+void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
+{
+    lara_item->pos.x_rot = item->pos.x_rot;
+    lara_item->pos.y_rot = item->pos.y_rot;
+    lara_item->pos.z_rot = item->pos.z_rot;
+
+    phd_PushUnitMatrix();
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    lara_item->pos.x = item->pos.x
+        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
+           >> W2V_SHIFT);
+    lara_item->pos.y = item->pos.y
+        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
+           >> W2V_SHIFT);
+    lara_item->pos.z = item->pos.z
+        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
+           >> W2V_SHIFT);
+    phd_PopMatrix();
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -847,4 +868,5 @@ void T1MInjectGameCollide()
     INJECT(0x00412B10, ItemPushLara);
     INJECT(0x00412E50, TestBoundsCollide);
     INJECT(0x00412F30, TestLaraPosition);
+    INJECT(0x00413070, AlignLaraPosition);
 }
