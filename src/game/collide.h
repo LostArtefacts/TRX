@@ -22,6 +22,7 @@ int32_t CollideStaticObjects(
 void GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
 void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
+void ShiftItem(ITEM_INFO* item, COLL_INFO* coll);
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 
 void T1MInjectGameCollide();

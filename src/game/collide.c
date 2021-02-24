@@ -480,6 +480,16 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
+void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
+{
+    item->pos.x += coll->shift.x;
+    item->pos.y += coll->shift.y;
+    item->pos.z += coll->shift.z;
+    coll->shift.x = 0;
+    coll->shift.y = 0;
+    coll->shift.z = 0;
+}
+
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
 {
     ROOM_INFO* r;
@@ -510,4 +520,5 @@ void T1MInjectGameCollide()
     INJECT(0x00411780, GetCollisionInfo);
     INJECT(0x00412390, GetNearByRooms);
     INJECT(0x00411FA0, CollideStaticObjects);
+    INJECT(0x00412660, ShiftItem);
 }

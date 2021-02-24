@@ -6,7 +6,6 @@
 
 // clang-format off
 #define UpdateLaraRoom          ((void          (*)(ITEM_INFO* item, int32_t height))0x004126A0)
-#define ShiftItem               ((void          (*)(ITEM_INFO* item, COLL_INFO *coll))0x00412660)
 #define InitialiseEvilLara      ((void          (*)(int16_t item_num))0x00428420)
 #define ControlEvilLara         ((void          (*)(int16_t item_num))0x00428450)
 #define DrawEvilLara            ((void          (*)(ITEM_INFO *lara_item))0x00428680)
