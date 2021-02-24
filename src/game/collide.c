@@ -1,3 +1,4 @@
+#include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/const.h"
@@ -793,6 +794,44 @@ int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius)
     return 0;
 }
 
+int32_t TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item)
+{
+    PHD_ANGLE xrotrel = lara_item->pos.x_rot - item->pos.x_rot;
+    PHD_ANGLE yrotrel = lara_item->pos.y_rot - item->pos.y_rot;
+    PHD_ANGLE zrotrel = lara_item->pos.z_rot - item->pos.z_rot;
+    if (xrotrel < bounds[6] || xrotrel > bounds[7]) {
+        return 0;
+    }
+    if (yrotrel < bounds[8] || yrotrel > bounds[9]) {
+        return 0;
+    }
+    if (zrotrel < bounds[10] || zrotrel > bounds[11]) {
+        return 0;
+    }
+
+    int32_t x = lara_item->pos.x - item->pos.x;
+    int32_t y = lara_item->pos.y - item->pos.y;
+    int32_t z = lara_item->pos.z - item->pos.z;
+    phd_PushUnitMatrix();
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
+    int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
+    int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
+    phd_PopMatrix();
+    if (rx < bounds[0] || rx > bounds[1]) {
+        return 0;
+    }
+    if (ry < bounds[2] || ry > bounds[3]) {
+        return 0;
+    }
+    if (rz < bounds[4] || rz > bounds[5]) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameCollide()
 {
     INJECT(0x00411780, GetCollisionInfo);
@@ -807,4 +846,5 @@ void T1MInjectGameCollide()
     INJECT(0x00412A70, TrapCollision);
     INJECT(0x00412B10, ItemPushLara);
     INJECT(0x00412E50, TestBoundsCollide);
+    INJECT(0x00412F30, TestLaraPosition);
 }

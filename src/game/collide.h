@@ -28,6 +28,8 @@ void ItemPushLara(
     int32_t bigpush);
 int32_t
 TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius);
+int32_t
+TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item);
 
 void T1MInjectGameCollide();
 
