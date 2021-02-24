@@ -978,7 +978,6 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
 int16_t CreatureTurn(ITEM_INFO* item, int16_t maximum_turn)
 {
     CREATURE_INFO* creature = item->data;
-
     if (!creature) {
         return 0;
     }
@@ -1020,6 +1019,29 @@ void CreatureTilt(ITEM_INFO* item, int16_t angle)
     item->pos.z_rot += angle;
 }
 
+void CreatureHead(ITEM_INFO* item, int16_t required)
+{
+    CREATURE_INFO* creature = item->data;
+    if (!creature) {
+        return;
+    }
+
+    int16_t change = required - creature->head_rotation;
+    if (change > MAX_HEAD_CHANGE) {
+        change = MAX_HEAD_CHANGE;
+    } else if (change < -MAX_HEAD_CHANGE) {
+        change = -MAX_HEAD_CHANGE;
+    }
+
+    creature->head_rotation += change;
+
+    if (creature->head_rotation > FRONT_ARC) {
+        creature->head_rotation = FRONT_ARC;
+    } else if (creature->head_rotation < -FRONT_ARC) {
+        creature->head_rotation = -FRONT_ARC;
+    }
+}
+
 void T1MInjectGameBox()
 {
     INJECT(0x0040DA60, InitialiseCreature);
@@ -1034,4 +1056,5 @@ void T1MInjectGameBox()
     INJECT(0x0040EEE0, CreatureAnimation);
     INJECT(0x0040F750, CreatureTurn);
     INJECT(0x0040F830, CreatureTilt);
+    INJECT(0x0040F870, CreatureHead);
 }

@@ -139,7 +139,7 @@ BadFloor                        0x0040EE40  0x00000092  +
 CreatureAnimation               0x0040EEE0  0x00000863  +
 CreatureTurn                    0x0040F750  0x000000D5  +
 CreatureTilt                    0x0040F830  0x00000035  +
-CreatureHead                    0x0040F870  0x00000049  *
+CreatureHead                    0x0040F870  0x00000049  +
 CreatureEffect                  0x0040F8C0  0x0000005C  *
 
 # camera.cpp
