@@ -68,6 +68,7 @@
 #define STEP_L 256
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define FRONT_ARC 16384
+#define MAX_TILT (PHD_DEGREE * 3) // = 546
 #define CAM_A_HANG 0
 #define CAM_E_HANG (-60 * PHD_DEGREE) // = -10920
 #define W2V_SHIFT 14

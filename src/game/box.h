@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define CreatureAnimation       ((int32_t      (*)(int16_t item_num, PHD_ANGLE angle, int16_t tilt))0x0040EEE0)
 #define CreatureTurn            ((PHD_ANGLE    (*)(ITEM_INFO *item, PHD_ANGLE maximum_turn))0x0040F750)
 #define CreatureHead            ((void         (*)(ITEM_INFO* item, int16_t required))0x0040F870)
 #define CreatureEffect          ((int16_t      (*)(ITEM_INFO* item, BITE_INFO* bite, int16_t(*generate)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_number)))0x0040F8C0)
@@ -25,6 +24,8 @@ int32_t CreatureCreature(int16_t item_num);
 int32_t BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO* LOT);
+int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt);
+void CreatureTilt(ITEM_INFO* item, int16_t angle);
 
 void T1MInjectGameBox();
 

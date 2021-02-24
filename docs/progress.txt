@@ -136,7 +136,7 @@ CreatureMood                    0x0040E040  0x000007D5  +
 CalculateTarget                 0x0040E850  0x000004D1  +
 CreatureCreature                0x0040ED30  0x00000107  +
 BadFloor                        0x0040EE40  0x00000092  +
-CreatureAnimation               0x0040EEE0  0x00000863  *
+CreatureAnimation               0x0040EEE0  0x00000863  +
 CreatureTurn                    0x0040F750  0x000000D5  *
 CreatureTilt                    0x0040F830  0x00000035  -
 CreatureHead                    0x0040F870  0x00000049  *
@@ -419,7 +419,7 @@ InitialiseItemArray             0x00421B10  0x00000040  *
 KillItem                        0x00421B50  0x00000121  -
 CreateItem                      0x00421C80  0x0000003D  -
 InitialiseItem                  0x00421CC0  0x000001EE  *
-RemoveActiveItem                0x00421EB0  0x000000A6  -
+RemoveActiveItem                0x00421EB0  0x000000A6  *
 RemoveDrawnItem                 0x00421F60  0x00000080  -
 AddActiveItem                   0x00421FE0  0x00000080  -
 ItemNewRoom                     0x00422060  0x000000A4  -
@@ -632,7 +632,7 @@ DB_Log                          0x0042A2C0  0x00000037  +
 
 # lot.cpp
 InitialiseLOTArray              0x0042A300  0x00000053  +
-DisableBaddieAI                 0x0042A360  0x00000036  -
+DisableBaddieAI                 0x0042A360  0x00000036  *
 EnableBaddieAI                  0x0042A3A0  0x000001D0  *
 InitialiseSlot                  0x0042A570  0x000000FC  -
 CreateZone                      0x0042A6B0  0x000000C4  -

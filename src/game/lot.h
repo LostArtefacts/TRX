@@ -4,8 +4,9 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseLOT           ((void         (*)())0x0042A780)
-#define EnableBaddieAI          ((int32_t      (*)(int16_t item_num, int32_t))0x0042A3A0)
+#define InitialiseLOT           ((void          (*)())0x0042A780)
+#define EnableBaddieAI          ((int32_t       (*)(int16_t item_num, int32_t))0x0042A3A0)
+#define DisableBaddieAI         ((void          (*)(int16_t item_num))0x0042A360)
 // clang-format on
 
 void InitialiseLOTArray();
