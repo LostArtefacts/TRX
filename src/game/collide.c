@@ -5,6 +5,7 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
+#include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -606,6 +607,27 @@ void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll)
     Lara.spaz_effect_count--;
 }
 
+void CreatureCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+
+    if (!TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        if (item->hit_points <= 0) {
+            ItemPushLara(item, lara_item, coll, 0, 0);
+        } else {
+            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 0);
+        }
+    }
+}
+
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush)
@@ -731,6 +753,7 @@ void T1MInjectGameCollide()
     INJECT(0x00412660, ShiftItem);
     INJECT(0x004126A0, UpdateLaraRoom);
     INJECT(0x00412700, LaraBaddieCollision);
+    INJECT(0x00412910, CreatureCollision);
     INJECT(0x00412B10, ItemPushLara);
     INJECT(0x00412E50, TestBoundsCollide);
 }

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define CreatureCollision       ((void          (*)(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll))0x00412910)
 #define ObjectCollision         ((void          (*)(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll))0x00412990)
 #define DoorCollision           ((void          (*)(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll))0x004129F0)
 #define TrapCollision           ((void          (*)(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll))0x00412A70)
@@ -26,10 +25,12 @@ void UpdateLaraRoom(ITEM_INFO* item, int32_t height);
 int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll);
 void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll);
+void CreatureCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void ItemPushLara(
     ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
     int32_t bigpush);
-int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius);
+int32_t
+TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius);
 
 void T1MInjectGameCollide();
 
