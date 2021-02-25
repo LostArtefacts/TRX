@@ -697,11 +697,11 @@ typedef struct {
 
 typedef struct {
     /* 0000 */ uint16_t index;
-    /* 0002 */ uint16_t box;
+    /* 0002 */ int16_t box;
     /* 0004 */ uint8_t pit_room;
-    /* 0005 */ uint8_t floor;
+    /* 0005 */ int8_t floor;
     /* 0006 */ uint8_t sky_room;
-    /* 0007 */ uint8_t ceiling;
+    /* 0007 */ int8_t ceiling;
     /* 0008 end */
 } FLOOR_INFO;
 

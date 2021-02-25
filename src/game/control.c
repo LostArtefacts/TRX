@@ -291,6 +291,76 @@ void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
+FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
+{
+    int16_t data;
+    FLOOR_INFO* floor;
+    ROOM_INFO* r = &RoomInfo[*room_num];
+    do {
+        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+
+        if (x_floor <= 0) {
+            x_floor = 0;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (x_floor >= r->x_size - 1) {
+            x_floor = r->x_size - 1;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (y_floor < 0) {
+            y_floor = 0;
+        } else if (y_floor >= r->y_size) {
+            y_floor = r->y_size - 1;
+        }
+
+        int32_t index = x_floor + y_floor * r->x_size;
+        floor = &r->floor[index];
+        if (!floor->index) {
+            break;
+        }
+        data = GetDoor(floor);
+        if (data != NO_ROOM) {
+            *room_num = data;
+            r = &RoomInfo[data];
+        }
+    } while (data != NO_ROOM);
+
+    if (y >= ((int32_t)floor->floor << 8)) {
+        do {
+            if (floor->pit_room == NO_ROOM) {
+                break;
+            }
+
+            *room_num = floor->pit_room;
+            r = &RoomInfo[floor->pit_room];
+            floor = &r->floor
+                         [((z - r->z) >> WALL_SHIFT)
+                          + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+        } while (y >= ((int32_t)floor->floor << 8));
+    } else if (y < ((int32_t)floor->ceiling << 8)) {
+        do {
+            if (floor->sky_room == NO_ROOM) {
+                break;
+            }
+
+            *room_num = floor->sky_room;
+            r = &RoomInfo[floor->sky_room];
+            floor = &r->floor
+                         [((z - r->z) >> WALL_SHIFT)
+                          + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+        } while (y < ((int32_t)floor->ceiling << 8));
+    }
+
+    return floor;
+}
+
 int16_t GetDoor(FLOOR_INFO* floor)
 {
     if (!floor->index) {
@@ -323,5 +393,6 @@ void T1MInjectGameControl()
     INJECT(0x00413660, AnimateItem);
     INJECT(0x00413960, GetChange);
     INJECT(0x00413A10, TranslateItem);
+    INJECT(0x00413A80, GetFloor);
     INJECT(0x00414AE0, GetDoor);
 }
