@@ -684,8 +684,32 @@ int16_t GetDoor(FLOOR_INFO* floor)
     if ((type & DATA_TYPE) == FT_DOOR) {
         return *data;
     }
-
     return NO_ROOM;
+}
+
+int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor)
+{
+    int32_t dx = target->x - start->x;
+    int32_t dy = target->y - start->y;
+    int32_t dz = target->z - start->z;
+
+    int32_t height = GetHeight(floor, target->x, target->y, target->z);
+    if (target->y > height && start->y < height) {
+        target->y = height;
+        target->x = start->x + dx * (height - start->y) / dy;
+        target->z = start->z + dz * (height - start->y) / dy;
+        return 0;
+    }
+
+    int32_t ceiling = GetCeiling(floor, target->x, target->y, target->z);
+    if (target->y < ceiling && start->y > ceiling) {
+        target->y = ceiling;
+        target->x = start->x + dx * (ceiling - start->y) / dy;
+        target->z = start->z + dz * (ceiling - start->y) / dy;
+        return 0;
+    }
+
+    return 1;
 }
 
 void T1MInjectGameControl()
@@ -701,4 +725,5 @@ void T1MInjectGameControl()
     INJECT(0x00414820, TriggerActive);
     INJECT(0x00414880, GetCeiling);
     INJECT(0x00414AE0, GetDoor);
+    INJECT(0x004150C0, ClipTarget);
 }
