@@ -257,6 +257,30 @@ void AnimateItem(ITEM_INFO* item)
     item->pos.z += (phd_cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
 }
 
+int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
+{
+    if (item->current_anim_state == item->goal_anim_state) {
+        return 0;
+    }
+
+    ANIM_CHANGE_STRUCT* change = &AnimChanges[anim->change_index];
+    for (int i = 0; i < anim->number_changes; i++, change++) {
+        if (change->goal_anim_state == item->goal_anim_state) {
+            ANIM_RANGE_STRUCT* range = &AnimRanges[change->range_index];
+            for (int j = 0; j < change->number_ranges; j++, range++) {
+                if (item->frame_number >= range->start_frame
+                    && item->frame_number <= range->end_frame) {
+                    item->anim_number = range->link_anim_num;
+                    item->frame_number = range->link_frame_num;
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
 void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
 {
     int32_t c = phd_cos(item->pos.y_rot);
@@ -271,5 +295,6 @@ void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
     INJECT(0x00413660, AnimateItem);
+    INJECT(0x00413960, GetChange);
     INJECT(0x00413A10, TranslateItem);
 }
