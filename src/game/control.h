@@ -19,6 +19,7 @@ FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num);
 int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 void RefreshCamera(int16_t type, int16_t* data);
+int32_t TriggerActive(ITEM_INFO* item);
 int16_t GetDoor(FLOOR_INFO* floor);
 
 void T1MInjectGameControl();

@@ -658,6 +658,14 @@ typedef enum {
     TO_SECRET = 10,
 } TRIGGER_OBJECTS;
 
+typedef enum {
+    IF_ONESHOT = 0x0100,
+    IF_CODE_BITS = 0x3E00,
+    IF_REVERSE = 0x4000,
+    IF_NOT_VISIBLE = 0x0100,
+    IF_KILLED_ITEM = 0x8000,
+} ITEM_FLAGS;
+
 #pragma pack(push, 1)
 
 typedef struct {

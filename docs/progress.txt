@@ -200,7 +200,7 @@ GetWaterHeight                  0x00413C60  0x000000FE  +
 GetHeight                       0x00413D60  0x0000022A  +
 RefreshCamera                   0x00413FA0  0x000000D4  +
 TestTriggers                    0x00414080  0x0000074E  *
-TriggerActive                   0x00414820  0x00000055  -
+TriggerActive                   0x00414820  0x00000055  +
 GetCeiling                      0x00414880  0x0000024B  *
 GetDoor                         0x00414AE0  0x0000004E  +
 LOS                             0x00414B30  0x000000A0  *

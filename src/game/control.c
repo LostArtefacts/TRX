@@ -535,6 +535,31 @@ void RefreshCamera(int16_t type, int16_t* data)
     }
 }
 
+int32_t TriggerActive(ITEM_INFO* item)
+{
+    int32_t ok = (item->flags & IF_REVERSE) ? 0 : 1;
+
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return !ok;
+    }
+
+    if (!item->timer) {
+        return ok;
+    }
+
+    if (item->timer == -1) {
+        return !ok;
+    }
+
+    item->timer--;
+
+    if (!item->timer) {
+        item->timer = -1;
+    }
+
+    return ok;
+}
+
 int16_t GetDoor(FLOOR_INFO* floor)
 {
     if (!floor->index) {
@@ -571,5 +596,6 @@ void T1MInjectGameControl()
     INJECT(0x00413C60, GetWaterHeight);
     INJECT(0x00413D60, GetHeight);
     INJECT(0x00413FA0, RefreshCamera);
+    INJECT(0x00414820, TriggerActive);
     INJECT(0x00414AE0, GetDoor);
 }
