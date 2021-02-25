@@ -151,7 +151,7 @@
 #define END_BIT 0x8000
 #define DATA_TYPE 0x00FF
 #define VALUE_BITS 0x03FF
-#define TRIG_BITS(T) ((T & 0x3FFF) >> 10)
+#define TRIG_BITS(T) ((T & 0x3C00) >> 10)
 
 #define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
 #define GROUND_SHIFT (STEP_L)

@@ -645,17 +645,17 @@ typedef enum {
 } TRIGGER_TYPES;
 
 typedef enum {
-    TO_OBJECT,
-    TO_CAMERA,
-    TO_SINK,
-    TO_FLIPMAP,
-    TO_FLIPON,
-    TO_FLIPOFF,
-    TO_TARGET,
-    TO_FINISH,
-    TO_CD,
-    TO_FLIPEFFECT,
-    TO_SECRET
+    TO_OBJECT = 0,
+    TO_CAMERA = 1,
+    TO_SINK = 2,
+    TO_FLIPMAP = 3,
+    TO_FLIPON = 4,
+    TO_FLIPOFF = 5,
+    TO_TARGET = 6,
+    TO_FINISH = 7,
+    TO_CD = 8,
+    TO_FLIPEFFECT = 9,
+    TO_SECRET = 10,
 } TRIGGER_OBJECTS;
 
 #pragma pack(push, 1)

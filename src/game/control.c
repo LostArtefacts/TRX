@@ -1,4 +1,5 @@
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/demo.h"
@@ -6,12 +7,12 @@
 #include "game/game.h"
 #include "game/inv.h"
 #include "game/lara.h"
+#include "game/misc.h"
 #include "game/savegame.h"
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
 
 int32_t ControlPhase(int32_t nframes, int demo_mode)
@@ -394,6 +395,101 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     return NO_HEIGHT;
 }
 
+int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+{
+    HeightType = HT_WALL;
+    while (floor->pit_room != NO_ROOM) {
+        ROOM_INFO* r = &RoomInfo[floor->pit_room];
+        floor = &r->floor
+                     [((z - r->z) >> WALL_SHIFT)
+                      + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+    }
+
+    int16_t height = floor->floor << 8;
+
+    TriggerIndex = NULL;
+
+    if (!floor->index) {
+        return height;
+    }
+
+    int16_t* data = &FloorData[floor->index];
+    int16_t type;
+    do {
+        type = *data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_TILT: {
+            int16_t xoff = data[0] >> 8;
+            int16_t yoff = (int8_t)data[0];
+
+            if (!ChunkyFlag || (ABS(xoff) <= 2 && ABS(yoff) <= 2)) {
+                if (ABS(xoff) > 2 || ABS(yoff) > 2) {
+                    HeightType = HT_BIG_SLOPE;
+                } else {
+                    HeightType = HT_SMALL_SLOPE;
+                }
+
+                if (xoff < 0) {
+                    height -= (int16_t)(((z & (WALL_L - 1)) * xoff) >> 2);
+                } else {
+                    height += (int16_t)(
+                        (((WALL_L - 1 - z) & (WALL_L - 1)) * xoff) >> 2);
+                }
+
+                if (yoff < 0) {
+                    height -= (int16_t)(((x & (WALL_L - 1)) * yoff) >> 2);
+                } else {
+                    height += (int16_t)(
+                        (((WALL_L - 1 - x) & (WALL_L - 1)) * yoff) >> 2);
+                }
+            }
+
+            data++;
+            break;
+        }
+
+        case FT_ROOF:
+        case FT_DOOR:
+            data++;
+            break;
+
+        case FT_LAVA:
+            TriggerIndex = data - 1;
+            break;
+
+        case FT_TRIGGER:
+            if (!TriggerIndex) {
+                TriggerIndex = data - 1;
+            }
+
+            data++;
+            int16_t trigger;
+            do {
+                trigger = *data++;
+                if (TRIG_BITS(trigger) != TO_OBJECT) {
+                    if (TRIG_BITS(trigger) == TO_CAMERA) {
+                        trigger = *data++;
+                    }
+                } else {
+                    ITEM_INFO* item = &Items[trigger & VALUE_BITS];
+                    OBJECT_INFO* object = &Objects[item->object_number];
+                    if (object->floor) {
+                        object->floor(item, x, y, z, &height);
+                    }
+                }
+            } while (!(trigger & END_BIT));
+            break;
+
+        default:
+            S_ExitSystem("GetHeight(): Unknown type");
+            break;
+        }
+    } while (!(type & END_BIT));
+
+    return height;
+}
+
 int16_t GetDoor(FLOOR_INFO* floor)
 {
     if (!floor->index) {
@@ -427,6 +523,7 @@ void T1MInjectGameControl()
     INJECT(0x00413960, GetChange);
     INJECT(0x00413A10, TranslateItem);
     INJECT(0x00413A80, GetFloor);
-    INJECT(0x00414AE0, GetDoor);
     INJECT(0x00413C60, GetWaterHeight);
+    INJECT(0x00413D60, GetHeight);
+    INJECT(0x00414AE0, GetDoor);
 }
