@@ -203,7 +203,7 @@ TestTriggers                    0x00414080  0x0000074E  *
 TriggerActive                   0x00414820  0x00000055  +
 GetCeiling                      0x00414880  0x0000024B  +
 GetDoor                         0x00414AE0  0x0000004E  +
-LOS                             0x00414B30  0x000000A0  *
+LOS                             0x00414B30  0x000000A0  +
 zLOS                            0x00414BD0  0x00000272  +
 xLOS                            0x00414E50  0x00000270  +
 ClipTarget                      0x004150C0  0x000000DC  +

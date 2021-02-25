@@ -7,7 +7,6 @@
 // clang-format off
 #define CheckCheatMode          ((void         (*)())0x00438920)
 #define TestTriggers            ((void         (*)(int16_t* data, int heavy))0x00414080)
-#define LOS                     ((int32_t      (*)(GAME_VECTOR* start, GAME_VECTOR* target))0x00414B30)
 // clang-format on
 
 int32_t ControlPhase(int32_t nframes, int demo_mode);
@@ -21,6 +20,7 @@ void RefreshCamera(int16_t type, int16_t* data);
 int32_t TriggerActive(ITEM_INFO* item);
 int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z);
 int16_t GetDoor(FLOOR_INFO* floor);
+int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int32_t xLOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor);

@@ -687,6 +687,33 @@ int16_t GetDoor(FLOOR_INFO* floor)
     return NO_ROOM;
 }
 
+int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
+{
+    int32_t los1;
+    int32_t los2;
+
+    if (ABS(target->z - start->z) > ABS(target->x - start->x)) {
+        los1 = xLOS(start, target);
+        los2 = zLOS(start, target);
+    } else {
+        los1 = zLOS(start, target);
+        los2 = xLOS(start, target);
+    }
+
+    if (!los2) {
+        return 0;
+    }
+
+    FLOOR_INFO* floor =
+        GetFloor(target->x, target->y, target->z, &target->room_number);
+
+    if (ClipTarget(start, target, floor) && los1 == 1 && los2 == 1) {
+        return 1;
+    }
+
+    return 0;
+}
+
 int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
     FLOOR_INFO* floor;
@@ -895,6 +922,7 @@ void T1MInjectGameControl()
     INJECT(0x00414820, TriggerActive);
     INJECT(0x00414880, GetCeiling);
     INJECT(0x00414AE0, GetDoor);
+    INJECT(0x00414B30, LOS);
     INJECT(0x00414BD0, zLOS);
     INJECT(0x00414E50, xLOS);
     INJECT(0x004150C0, ClipTarget);
