@@ -687,6 +687,91 @@ int16_t GetDoor(FLOOR_INFO* floor)
     return NO_ROOM;
 }
 
+int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+{
+    FLOOR_INFO* floor;
+
+    int32_t dz = target->z - start->z;
+    if (dz == 0) {
+        return 1;
+    }
+
+    int32_t dx = ((target->x - start->x) << WALL_SHIFT) / dz;
+    int32_t dy = ((target->y - start->y) << WALL_SHIFT) / dz;
+
+    int16_t room_num = start->room_number;
+    int16_t last_room;
+
+    if (dz < 0) {
+        int32_t z = start->z & ~(WALL_L - 1);
+        int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
+        int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
+
+        while (z > target->z) {
+            floor = GetFloor(x, y, z, &room_num);
+            if (y > GetHeight(floor, x, y, z)
+                || y < GetCeiling(floor, x, y, z)) {
+                target->x = x;
+                target->y = y;
+                target->z = z;
+                target->room_number = room_num;
+                return -1;
+            }
+
+            last_room = room_num;
+
+            floor = GetFloor(x, y, z - 1, &room_num);
+            if (y > GetHeight(floor, x, y, z - 1)
+                || y < GetCeiling(floor, x, y, z - 1)) {
+                target->x = x;
+                target->y = y;
+                target->z = z;
+                target->room_number = last_room;
+                return 0;
+            }
+
+            z -= WALL_L;
+            x -= dx;
+            y -= dy;
+        }
+    } else {
+        int32_t z = start->z | (WALL_L - 1);
+        int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
+        int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
+
+        while (z < target->z) {
+            floor = GetFloor(x, y, z, &room_num);
+            if (y > GetHeight(floor, x, y, z)
+                || y < GetCeiling(floor, x, y, z)) {
+                target->x = x;
+                target->y = y;
+                target->z = z;
+                target->room_number = room_num;
+                return -1;
+            }
+
+            last_room = room_num;
+
+            floor = GetFloor(x, y, z + 1, &room_num);
+            if (y > GetHeight(floor, x, y, z + 1)
+                || y < GetCeiling(floor, x, y, z + 1)) {
+                target->x = x;
+                target->y = y;
+                target->z = z;
+                target->room_number = last_room;
+                return 0;
+            }
+
+            z += WALL_L;
+            x += dx;
+            y += dy;
+        }
+    }
+
+    target->room_number = room_num;
+    return 1;
+}
+
 int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor)
 {
     int32_t dx = target->x - start->x;
@@ -725,5 +810,6 @@ void T1MInjectGameControl()
     INJECT(0x00414820, TriggerActive);
     INJECT(0x00414880, GetCeiling);
     INJECT(0x00414AE0, GetDoor);
+    INJECT(0x00414BD0, zLOS);
     INJECT(0x004150C0, ClipTarget);
 }
