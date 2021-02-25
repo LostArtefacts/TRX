@@ -18,6 +18,7 @@ int32_t ControlPhase(int32_t nframes, int demo_mode);
 void AnimateItem(ITEM_INFO* item);
 int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim);
 void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z);
+int16_t GetDoor(FLOOR_INFO* floor);
 
 void T1MInjectGameControl();
 

@@ -291,10 +291,37 @@ void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
+int16_t GetDoor(FLOOR_INFO* floor)
+{
+    if (!floor->index) {
+        return NO_ROOM;
+    }
+
+    int16_t* data = &FloorData[floor->index];
+    int16_t type = *data++;
+
+    if (type == FT_TILT) {
+        data++;
+        type = *data++;
+    }
+
+    if (type == FT_ROOF) {
+        data++;
+        type = *data++;
+    }
+
+    if ((type & DATA_TYPE) == FT_DOOR) {
+        return *data;
+    }
+
+    return NO_ROOM;
+}
+
 void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
     INJECT(0x00413660, AnimateItem);
     INJECT(0x00413960, GetChange);
     INJECT(0x00413A10, TranslateItem);
+    INJECT(0x00414AE0, GetDoor);
 }
