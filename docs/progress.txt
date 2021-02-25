@@ -196,7 +196,7 @@ AnimateItem                     0x00413660  0x000002C6  +
 GetChange                       0x00413960  0x000000AB  +
 TranslateItem                   0x00413A10  0x00000067  +
 GetFloor                        0x00413A80  0x000001D4  +
-GetWaterHeight                  0x00413C60  0x000000FE  *
+GetWaterHeight                  0x00413C60  0x000000FE  +
 GetHeight                       0x00413D60  0x0000022A  *
 RefreshCamera                   0x00413FA0  0x000000D4  -
 TestTriggers                    0x00414080  0x0000074E  *

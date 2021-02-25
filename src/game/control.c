@@ -361,6 +361,39 @@ FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
     return floor;
 }
 
+int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+{
+    ROOM_INFO* r = &RoomInfo[room_num];
+    FLOOR_INFO* floor = &r->floor
+                             [((z - r->z) >> WALL_SHIFT)
+                              + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+
+    if (r->flags & RF_UNDERWATER) {
+        while (floor->sky_room != NO_ROOM) {
+            r = &RoomInfo[floor->sky_room];
+            if (!(r->flags & RF_UNDERWATER)) {
+                break;
+            }
+            floor = &r->floor
+                         [((z - r->z) >> WALL_SHIFT)
+                          + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+        }
+        return floor->ceiling << 8;
+    } else {
+        while (floor->pit_room != NO_ROOM) {
+            r = &RoomInfo[floor->pit_room];
+            if (r->flags & RF_UNDERWATER) {
+                return floor->floor << 8;
+            }
+            floor = &r->floor
+                         [((z - r->z) >> WALL_SHIFT)
+                          + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+        }
+    }
+
+    return NO_HEIGHT;
+}
+
 int16_t GetDoor(FLOOR_INFO* floor)
 {
     if (!floor->index) {
@@ -395,4 +428,5 @@ void T1MInjectGameControl()
     INJECT(0x00413A10, TranslateItem);
     INJECT(0x00413A80, GetFloor);
     INJECT(0x00414AE0, GetDoor);
+    INJECT(0x00413C60, GetWaterHeight);
 }
