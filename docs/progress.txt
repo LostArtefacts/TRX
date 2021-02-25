@@ -207,9 +207,9 @@ LOS                             0x00414B30  0x000000A0  +
 zLOS                            0x00414BD0  0x00000272  +
 xLOS                            0x00414E50  0x00000270  +
 ClipTarget                      0x004150C0  0x000000DC  +
-FlipMap                         0x004151A0  0x0000016F  -
-RemoveRoomFlipItems             ----------  ----------  -
-AddRoomFlipItems                ----------  ----------  -
+FlipMap                         0x004151A0  0x0000016F  +
+RemoveRoomFlipItems             ----------  ----------  +
+AddRoomFlipItems                ----------  ----------  +
 TriggerCDTrack                  0x00415310  0x000001D2  -
 TriggerNormalCDTrack            ----------  ----------  -
 
@@ -652,7 +652,7 @@ mn_reset_sound_effects          0x0042A940  0x000000EC  -
 SoundEffect                     0x0042AA30  0x000004C2  *
 mn_get_fx_slot                  0x0042AF00  0x000000CE  -
 mn_reset_ambient_loudness       0x0042AFD0  0x00000030  -
-mn_stop_ambient_samples         0x0042B000  0x0000007E  -
+mn_stop_ambient_samples         0x0042B000  0x0000007E  *
 mn_update_sound_effects         0x0042B080  0x0000027D  -
 mn_get_sound_params             ----------  ----------  -
 StopSoundEffect                 0x0042B300  0x0000010E  *
@@ -671,7 +671,7 @@ TestBlockPush                   0x0042B7E0  0x00000142  -
 TestBlockPull                   0x0042B940  0x00000239  -
 InitialiseRollingBlock          0x0042BB90  0x00000024  *
 RollingBlockControl             0x0042BBC0  0x000000DA  *
-AlterFloorHeight                0x0042BCA0  0x000000BE  -
+AlterFloorHeight                0x0042BCA0  0x000000BE  *
 DrawMovableBlock                0x0042BD60  0x00000081  *
 DrawUnclippedItem               0x0042BDF0  0x00000068  *
 

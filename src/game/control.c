@@ -1,5 +1,4 @@
 #include "3dsystem/phd_math.h"
-#include "config.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/demo.h"
@@ -8,11 +7,13 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/misc.h"
+#include "game/moveblock.h"
 #include "game/savegame.h"
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+#include "config.h"
 #include "util.h"
 
 int32_t ControlPhase(int32_t nframes, int demo_mode)
@@ -909,6 +910,78 @@ int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor)
     return 1;
 }
 
+void FlipMap()
+{
+    mn_stop_ambient_samples();
+
+    for (int i = 0; i < RoomCount; i++) {
+        ROOM_INFO* r = &RoomInfo[i];
+        if (r->flipped_room < 0) {
+            continue;
+        }
+
+        RemoveRoomFlipItems(r);
+
+        ROOM_INFO* flipped = &RoomInfo[r->flipped_room];
+        ROOM_INFO temp = *r;
+        *r = *flipped;
+        *flipped = temp;
+
+        r->flipped_room = flipped->flipped_room;
+        flipped->flipped_room = -1;
+
+        // XXX: is this really necessary given the assignments above?
+        r->item_number = flipped->item_number;
+        r->fx_number = flipped->fx_number;
+
+        AddRoomFlipItems(r);
+    }
+
+    FlipStatus = !FlipStatus;
+}
+
+void RemoveRoomFlipItems(ROOM_INFO* r)
+{
+    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+         item_num = Items[item_num].next_item) {
+        ITEM_INFO* item = &Items[item_num];
+
+        switch (item->object_number) {
+        case O_MOVABLE_BLOCK:
+        case O_MOVABLE_BLOCK2:
+        case O_MOVABLE_BLOCK3:
+        case O_MOVABLE_BLOCK4:
+            AlterFloorHeight(item, 1024);
+            break;
+
+        case O_ROLLING_BLOCK:
+            AlterFloorHeight(item, 2048);
+            break;
+        }
+    }
+}
+
+void AddRoomFlipItems(ROOM_INFO* r)
+{
+    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+         item_num = Items[item_num].next_item) {
+        ITEM_INFO* item = &Items[item_num];
+
+        switch (item->object_number) {
+        case O_MOVABLE_BLOCK:
+        case O_MOVABLE_BLOCK2:
+        case O_MOVABLE_BLOCK3:
+        case O_MOVABLE_BLOCK4:
+            AlterFloorHeight(item, -1024);
+            break;
+
+        case O_ROLLING_BLOCK:
+            AlterFloorHeight(item, -2048);
+            break;
+        }
+    }
+}
+
 void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
@@ -926,4 +999,5 @@ void T1MInjectGameControl()
     INJECT(0x00414BD0, zLOS);
     INJECT(0x00414E50, xLOS);
     INJECT(0x004150C0, ClipTarget);
+    INJECT(0x004151A0, FlipMap);
 }
