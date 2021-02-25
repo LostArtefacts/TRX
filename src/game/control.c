@@ -490,6 +490,51 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
+void RefreshCamera(int16_t type, int16_t* data)
+{
+    int16_t trigger;
+    int16_t target_ok = 2;
+    do {
+        trigger = *data++;
+        int16_t value = trigger & VALUE_BITS;
+
+        switch (TRIG_BITS(trigger)) {
+        case TO_CAMERA:
+            data++;
+
+            if (value == Camera.last) {
+                Camera.number = value;
+
+                if (Camera.timer < 0 || Camera.type == CAM_LOOK
+                    || Camera.type == CAM_COMBAT) {
+                    Camera.timer = -1;
+                    target_ok = 0;
+                } else {
+                    Camera.type = CAM_FIXED;
+                    target_ok = 1;
+                }
+            } else {
+                target_ok = 0;
+            }
+            break;
+
+        case TO_TARGET:
+            if (Camera.type != CAM_LOOK && Camera.type != CAM_COMBAT) {
+                Camera.item = &Items[value];
+            }
+            break;
+        }
+    } while (!(trigger & END_BIT));
+
+    if (Camera.item != NULL) {
+        if (!target_ok
+            || (target_ok == 2 && Camera.item->looked_at
+                && Camera.item != Camera.last_item)) {
+            Camera.item = NULL;
+        }
+    }
+}
+
 int16_t GetDoor(FLOOR_INFO* floor)
 {
     if (!floor->index) {
@@ -525,5 +570,6 @@ void T1MInjectGameControl()
     INJECT(0x00413A80, GetFloor);
     INJECT(0x00413C60, GetWaterHeight);
     INJECT(0x00413D60, GetHeight);
+    INJECT(0x00413FA0, RefreshCamera);
     INJECT(0x00414AE0, GetDoor);
 }
