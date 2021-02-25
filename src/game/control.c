@@ -1,3 +1,4 @@
+#include "3dsystem/phd_math.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/demo.h"
@@ -149,7 +150,18 @@ int32_t ControlPhase(int32_t nframes, int demo_mode)
     return 0;
 }
 
+void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
+{
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+
+    item->pos.x += (c * x + s * z) >> W2V_SHIFT;
+    item->pos.y += y;
+    item->pos.z += (c * z - s * x) >> W2V_SHIFT;
+}
+
 void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
+    INJECT(0x00413A10, TranslateItem);
 }

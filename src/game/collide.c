@@ -730,8 +730,7 @@ void ItemPushLara(
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (spazon) {
-            PHD_ANGLE hitang =
-                lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
+            PHD_ANGLE hitang = lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
             Lara.hit_direction = (hitang + 0x2000) / 0x4000;
             if (!Lara.hit_frame) {
                 SoundEffect(27, &lara_item->pos, 0);

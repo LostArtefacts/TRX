@@ -13,11 +13,11 @@
 #define TestTriggers            ((void         (*)(int16_t* data, int heavy))0x00414080)
 #define AnimateItem             ((void         (*)(ITEM_INFO *item))0x00413660)
 #define GetChange               ((int32_t      (*)(ITEM_INFO* item, ANIM_STRUCT* anim))0x00413960)
-#define TranslateItem           ((void         (*)(ITEM_INFO* item, int32_t x, int32_t y, int32_t z))0x00413A10)
 #define LOS                     ((int32_t      (*)(GAME_VECTOR* start, GAME_VECTOR* target))0x00414B30)
 // clang-format on
 
 int32_t ControlPhase(int32_t nframes, int demo_mode);
+void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z);
 
 void T1MInjectGameControl();
 
