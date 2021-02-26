@@ -982,6 +982,88 @@ void AddRoomFlipItems(ROOM_INFO* r)
     }
 }
 
+void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
+{
+    if (value <= 1 || value >= MAX_CD_TRACKS) {
+        return;
+    }
+
+    switch (value) {
+    case 28:
+        if ((CDFlags[value] & IF_ONESHOT)
+            && LaraItem->current_anim_state == AS_UPJUMP) {
+            value = 29;
+        }
+        break;
+
+    case 37:
+        if (LaraItem->current_anim_state != AS_HANG) {
+            return;
+        }
+        break;
+
+    case 41:
+        if (LaraItem->current_anim_state != AS_HANG) {
+            return;
+        }
+        break;
+
+    case 42:
+        if ((CDFlags[value] & IF_ONESHOT)
+            && LaraItem->current_anim_state == AS_HANG) {
+            value = 43;
+        }
+        break;
+
+    case 49:
+        if (LaraItem->current_anim_state != AS_SURFTREAD) {
+            return;
+        }
+        break;
+
+    case 50:
+        if (CDFlags[value] & IF_ONESHOT) {
+            static int16_t gym_completion_counter = 0;
+            gym_completion_counter++;
+            if (gym_completion_counter == 30 * 4) {
+                LevelComplete = 1;
+                gym_completion_counter = 0;
+            }
+        } else if (LaraItem->current_anim_state != AS_WATEROUT) {
+            return;
+        }
+        break;
+    }
+
+    TriggerNormalCDTrack(value, flags, type);
+}
+
+void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
+{
+    if (CDFlags[value] & IF_ONESHOT) {
+        return;
+    }
+
+    if (type == TT_SWITCH) {
+        CDFlags[value] ^= flags & IF_CODE_BITS;
+    } else if (type == TT_ANTIPAD) {
+        CDFlags[value] &= -1 - (flags & IF_CODE_BITS);
+    } else if (flags & IF_CODE_BITS) {
+        CDFlags[value] |= flags & IF_CODE_BITS;
+    }
+
+    if ((CDFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
+        if (flags & IF_ONESHOT) {
+            CDFlags[value] |= IF_ONESHOT;
+        }
+        if (value != CDTrack) {
+            S_CDPlay(value);
+        }
+    } else {
+        S_CDStop();
+    }
+}
+
 void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);
@@ -1000,4 +1082,5 @@ void T1MInjectGameControl()
     INJECT(0x00414E50, xLOS);
     INJECT(0x004150C0, ClipTarget);
     INJECT(0x004151A0, FlipMap);
+    INJECT(0x00415310, TriggerCDTrack);
 }

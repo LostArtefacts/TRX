@@ -110,6 +110,7 @@
 #define ControlText             ARRAY_(0x0045A2F8, TEXTSTRING*, [2])
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)
+#define CDFlags                 ARRAY_(0x00462C20, int16_t, [MAX_CD_TRACKS])
 
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])

@@ -210,8 +210,8 @@ ClipTarget                      0x004150C0  0x000000DC  +
 FlipMap                         0x004151A0  0x0000016F  +
 RemoveRoomFlipItems             ----------  ----------  +
 AddRoomFlipItems                ----------  ----------  +
-TriggerCDTrack                  0x00415310  0x000001D2  -
-TriggerNormalCDTrack            ----------  ----------  -
+TriggerCDTrack                  0x00415310  0x000001D2  +
+TriggerNormalCDTrack            ----------  ----------  +
 
 # croc.cpp
 AlligatorControl                0x00415520  0x00000326  *
@@ -854,7 +854,7 @@ sub_438CA0                      0x00438CA0  0x00000015  -
 S_SoundStopAllSamples           0x00438CC0  0x0000000F  -
 S_SoundStopSample               0x00438CD0  0x0000001B  -
 sub_438CF0                      0x00438CF0  0x00000044  -
-S_CDPlay                        0x00438D40  0x000000FD  -
+S_CDPlay                        0x00438D40  0x000000FD  *
 S_CDStop                        0x00438E40  0x00000043  *
 SampleLoader                    0x00438E90  0x00000005  -
 LoadSamples                     0x00438EA0  0x00000189  -
