@@ -53,7 +53,11 @@ int32_t ControlPhase(int32_t nframes, int demo_mode)
         }
 
         if (Lara.death_count > DEATH_WAIT
+#ifdef T1M_FEAT_CHEATS
+            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_DOZYCHEAT))
+#else
             || (Lara.death_count > DEATH_WAIT_MIN && Input)
+#endif
             || OverlayFlag == 2) {
             if (demo_mode) {
                 return 1;
