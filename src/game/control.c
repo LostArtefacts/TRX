@@ -375,9 +375,49 @@ FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
 int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     ROOM_INFO* r = &RoomInfo[room_num];
+
+#ifdef T1M_FEAT_OG_FIXES
+    // TR2 code. Fixes infinite loops and crashes when x, y, z are outside of
+    // room_num's coordinates.
+    int16_t data;
+    FLOOR_INFO* floor;
+    int32_t x_floor, y_floor;
+
+    do {
+        x_floor = (z - r->z) >> WALL_SHIFT;
+        y_floor = (x - r->x) >> WALL_SHIFT;
+
+        if (x_floor <= 0) {
+            x_floor = 0;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (x_floor >= r->x_size - 1) {
+            x_floor = r->x_size - 1;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (y_floor < 0) {
+            y_floor = 0;
+        } else if (y_floor >= r->y_size) {
+            y_floor = r->y_size - 1;
+        }
+
+        floor = &r->floor[x_floor + y_floor * r->x_size];
+        data = GetDoor(floor);
+        if (data != NO_ROOM) {
+            r = &RoomInfo[data];
+        }
+    } while (data != NO_ROOM);
+#else
     int32_t x_floor = (z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (x - r->x) >> WALL_SHIFT;
     FLOOR_INFO* floor = &r->floor[x_floor + y_floor * r->x_size];
+#endif
 
     if (r->flags & RF_UNDERWATER) {
         while (floor->sky_room != NO_ROOM) {
@@ -385,8 +425,8 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             if (!(r->flags & RF_UNDERWATER)) {
                 break;
             }
-            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+            x_floor = (z - r->z) >> WALL_SHIFT;
+            y_floor = (x - r->x) >> WALL_SHIFT;
             floor = &r->floor[x_floor + y_floor * r->x_size];
         }
         return floor->ceiling << 8;
@@ -396,13 +436,12 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             if (r->flags & RF_UNDERWATER) {
                 return floor->floor << 8;
             }
-            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+            x_floor = (z - r->z) >> WALL_SHIFT;
+            y_floor = (x - r->x) >> WALL_SHIFT;
             floor = &r->floor[x_floor + y_floor * r->x_size];
         }
+        return NO_HEIGHT;
     }
-
-    return NO_HEIGHT;
 }
 
 int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
