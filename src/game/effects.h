@@ -20,6 +20,7 @@ void ControlBlood1(int16_t fx_num);
 void ControlExplosion1(int16_t fx_num);
 void Richochet(GAME_VECTOR* pos);
 void ControlRicochet1(int16_t fx_num);
+void ControlTwinkle(int16_t fx_num);
 void FxLaraBubbles(ITEM_INFO* item);
 void ControlBubble1(int16_t fx_num);
 void FxChainBlock(ITEM_INFO* item);
