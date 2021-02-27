@@ -10,6 +10,8 @@
 #include "config.h"
 #include "util.h"
 
+#define WF_RANGE (WALL_L * 10) // = 10240
+
 int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
 {
     int32_t x = pos->x - LaraItem->pos.x;
@@ -254,6 +256,35 @@ void ControlSplash1(int16_t fx_num)
     fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
 
+// original name: WaterFall
+void ControlWaterFall(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return;
+    }
+
+    int32_t x = item->pos.x - LaraItem->pos.x;
+    int32_t y = item->pos.y - LaraItem->pos.y;
+    int32_t z = item->pos.z - LaraItem->pos.z;
+
+    if (x >= -WF_RANGE && x <= WF_RANGE && z >= -WF_RANGE && z <= WF_RANGE
+        && y >= -WF_RANGE && y <= WF_RANGE) {
+        int16_t fx_num = CreateEffect(item->room_number);
+        if (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            fx->pos.x = item->pos.x
+                + ((GetRandomDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+            fx->pos.z = item->pos.z
+                + ((GetRandomDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+            fx->pos.y = item->pos.y;
+            fx->speed = 0;
+            fx->frame_number = 0;
+            fx->object_number = O_SPLASH1;
+        }
+    }
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -288,5 +319,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041A860, Splash);
     INJECT(0x0041A930, ControlSplash1);
+    INJECT(0x0041A9B0, ControlWaterFall);
     INJECT(0x0041AD00, FxChainBlock);
 }

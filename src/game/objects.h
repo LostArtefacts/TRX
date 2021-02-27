@@ -32,7 +32,6 @@
 #define InitialisePlayer1               ((void          (*)(int16_t item_num))0x004114F0)
 #define ControlCinematicPlayer          ((void          (*)(int16_t item_num))0x004114A0)
 #define InitialiseGenPlayer             ((void          (*)(int16_t item_num))0x004115C0)
-#define ControlWaterFall                ((void          (*)(int16_t item_num))0x0041A9B0)
 #define ControlBodyPart                 ((void          (*)(int16_t item_num))0x0043CAD0)
 #define ControlNatlaGun                 ((void          (*)(int16_t item_num))0x0042C910)
 #define ControlMissile                  ((void          (*)(int16_t item_num))0x0043C1C0)
