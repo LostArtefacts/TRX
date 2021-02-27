@@ -40,10 +40,10 @@ int16_t DoBloodSplat(
         fx->pos.y = y;
         fx->pos.z = z;
         fx->pos.y_rot = direction;
-        fx->speed = speed;
-        fx->frame_number = 0;
         fx->object_number = O_BLOOD1;
+        fx->frame_number = 0;
         fx->counter = 0;
+        fx->speed = speed;
     }
     return fx_num;
 }
@@ -73,6 +73,21 @@ void ControlExplosion1(int16_t fx_num)
         if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
             KillEffect(fx_num);
         }
+    }
+}
+
+void Richochet(GAME_VECTOR* pos)
+{
+    int16_t fx_num = CreateEffect(pos->room_number);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = pos->x;
+        fx->pos.y = pos->y;
+        fx->pos.z = pos->z;
+        fx->counter = 4;
+        fx->object_number = O_RICOCHET1;
+        fx->frame_number = -3 * GetRandomDraw() / 32768;
+        SoundEffect(10, &fx->pos, 0);
     }
 }
 
@@ -106,9 +121,9 @@ void FxLaraBubbles(ITEM_INFO* item)
             fx->pos.x = offset.x;
             fx->pos.y = offset.y;
             fx->pos.z = offset.z;
-            fx->speed = 10 + ((GetRandomDraw() * 6) / 0x8000);
-            fx->frame_number = -((GetRandomDraw() * 3) / 0x8000);
             fx->object_number = O_BUBBLES1;
+            fx->frame_number = -((GetRandomDraw() * 3) / 0x8000);
+            fx->speed = 10 + ((GetRandomDraw() * 6) / 0x8000);
         }
     }
 }
