@@ -323,6 +323,26 @@ void FxLaraNormal(ITEM_INFO* item)
     AlterFOV(GAME_FOV * PHD_DEGREE);
 }
 
+// original name: EarthQuakeFX
+void FxEarthQuake(ITEM_INFO* item)
+{
+    if (FlipTimer == 0) {
+        SoundEffect(99, NULL, 0);
+        Camera.bounce = -250;
+    } else if (FlipTimer == 3) {
+        SoundEffect(147, NULL, 0);
+    } else if (FlipTimer == 35) {
+        SoundEffect(99, NULL, 0);
+    } else if (FlipTimer == 20 || FlipTimer == 50 || FlipTimer == 70) {
+        SoundEffect(70, NULL, 0);
+    }
+
+    FlipTimer++;
+    if (FlipTimer == 105) {
+        FlipEffect = -1;
+    }
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -362,5 +382,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041AAE0, FxTurn180);
     INJECT(0x0041AAF0, FxDinoStomp);
     INJECT(0x0041AB90, FxLaraNormal);
+    INJECT(0x0041ABD0, FxEarthQuake);
     INJECT(0x0041AD00, FxChainBlock);
 }
