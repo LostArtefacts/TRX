@@ -177,7 +177,8 @@ void LaraControl(int16_t item_num)
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
-        if ((Input & IN_SLOW) && !(Input & IN_LOOK)) {
+        if (CHK_ANY(Input, IN_SLOW)
+            && !CHK_ANY(Input, IN_LOOK | IN_DOZYCHEAT)) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
