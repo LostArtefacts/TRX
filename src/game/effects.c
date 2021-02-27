@@ -148,6 +148,7 @@ void ItemSparkle(ITEM_INFO* item, int meshmask)
     }
 }
 
+// original name: LaraBubbles
 void FxLaraBubbles(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_CHEATS
@@ -216,6 +217,30 @@ void ControlBubble1(int16_t fx_num)
     fx->pos.z = z;
 }
 
+void Splash(ITEM_INFO* item)
+{
+    int16_t wh = GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    int16_t room_num = item->room_number;
+    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    SoundEffect(33, &item->pos, 0);
+
+    for (int i = 0; i < 10; i++) {
+        int16_t fx_num = CreateEffect(room_num);
+        if (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            fx->pos.x = item->pos.x;
+            fx->pos.y = wh;
+            fx->pos.z = item->pos.z;
+            fx->pos.y_rot = 2 * GetRandomDraw() + 0x8000;
+            fx->object_number = O_SPLASH1;
+            fx->frame_number = 0;
+            fx->speed = GetRandomDraw() / 256;
+        }
+    }
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -248,5 +273,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A550, ItemSparkle);
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
+    INJECT(0x0041A860, Splash);
     INJECT(0x0041AD00, FxChainBlock);
 }

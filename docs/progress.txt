@@ -294,7 +294,7 @@ ControlTwinkle                  0x0041A500  0x0000004C  +
 ItemSparkle                     0x0041A550  0x00000115  +
 FxLaraBubbles                   0x0041A670  0x000000E8  +
 ControlBubble1                  0x0041A760  0x000000FF  +
-Splash                          0x0041A860  0x000000CD  *
+Splash                          0x0041A860  0x000000CD  +
 ControlSplash1                  0x0041A930  0x0000007A  *
 ControlWaterFall                0x0041A9B0  0x00000120  *
 fxVoid                          ----------  ----------  -
