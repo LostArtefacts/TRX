@@ -343,6 +343,27 @@ void FxEarthQuake(ITEM_INFO* item)
     }
 }
 
+// original name: FloodFX
+void FxFlood(ITEM_INFO* item)
+{
+    PHD_3DPOS pos;
+
+    if (FlipTimer > 120) {
+        FlipEffect = -1;
+    } else {
+        pos.x = LaraItem->pos.x;
+        if (FlipTimer < 30) {
+            pos.y = Camera.target.y + (30 - FlipTimer) * 100;
+        } else {
+            pos.y = Camera.target.y + (FlipTimer - 30) * 100;
+        }
+        pos.z = LaraItem->pos.z;
+        SoundEffect(81, &pos, 0);
+    }
+
+    FlipTimer++;
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -383,5 +404,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041AAF0, FxDinoStomp);
     INJECT(0x0041AB90, FxLaraNormal);
     INJECT(0x0041ABD0, FxEarthQuake);
+    INJECT(0x0041AC50, FxFlood);
     INJECT(0x0041AD00, FxChainBlock);
 }

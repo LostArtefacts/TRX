@@ -307,7 +307,7 @@ FxTurn180                       0x0041AAE0  0x0000000B  +
 FxDinoStomp                     0x0041AAF0  0x00000096  +
 FxLaraNormal                    0x0041AB90  0x00000035  +
 FxEarthQuake                    0x0041ABD0  0x00000076  +
-FxFlood                         0x0041AC50  0x0000008F  -
+FxFlood                         0x0041AC50  0x0000008F  +
 FxRaisingBlock                  0x0041ACE0  0x00000019  -
 FxChainBlock                    0x0041AD00  0x00000043  +
 FxStairs2Slope                  0x0041AD50  0x00000028  -
