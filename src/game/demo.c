@@ -85,8 +85,21 @@ void LoadLaraDemoPos()
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 
+void GetDemoInput()
+{
+    if (DemoCount >= DEMO_COUNT_MAX) {
+        Input = -1;
+    } else {
+        Input = DemoPtr[DemoCount];
+    }
+    if (Input != -1) {
+        DemoCount++;
+    }
+}
+
 void T1MInjectGameDemo()
 {
     INJECT(0x00415B70, StartDemo);
     INJECT(0x00415CB0, LoadLaraDemoPos);
+    INJECT(0x00415D70, GetDemoInput);
 }
