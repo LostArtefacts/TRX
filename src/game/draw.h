@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // clang-format off
-#define DrawUnclippedItem       ((void         (*)(ITEM_INFO *item))0x0042BDF0)
+#define DrawUnclippedItem       ((void          (*)(ITEM_INFO *item))0x0042BDF0)
 // clang-format on
 
 int32_t DrawPhaseCinematic();

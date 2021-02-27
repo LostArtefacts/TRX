@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // clang-format off
-#define LionControl             ((void         (*)(int16_t item_num))0x0043E390)
+#define LionControl             ((void          (*)(int16_t item_num))0x0043E390)
 // clang-format on
 
 #endif

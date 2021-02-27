@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseLevel         ((int32_t      (*)(int32_t level_number))0x004362A0)
+#define InitialiseLevel         ((int32_t       (*)(int32_t level_number))0x004362A0)
 // clang-format on
 
 void BaddyObjects();

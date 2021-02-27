@@ -4,16 +4,16 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_SaveGame              ((void         (*)())0x0041DB70)
-#define GameLoop                ((int32_t      (*)(int32_t demo_mode))0x0041D2C0)
+#define S_SaveGame              ((void          (*)())0x0041DB70)
+#define GameLoop                ((int32_t       (*)(int32_t demo_mode))0x0041D2C0)
 // clang-format on
 
-int LevelIsValid(int16_t level_number);
+int32_t LevelIsValid(int16_t level_num);
 void SeedRandomControl(int32_t seed);
 void SeedRandomDraw(int32_t seed);
 int32_t GetRandomControl();
 int32_t GetRandomDraw();
-void LevelStats(int level_id);
+void LevelStats(int32_t level_num);
 
 void T1MInjectSpecificGame();
 

@@ -265,17 +265,17 @@ int32_t LoadItems(FILE* handle)
     return 1;
 }
 
-int32_t S_LoadLevel(int level_id)
+int32_t S_LoadLevel(int level_num)
 {
-    TRACE("%d (%s)", level_id, LevelNames[level_id]);
-    int32_t ret = LoadLevel(LevelNames[level_id], level_id);
+    TRACE("%d (%s)", level_num, LevelNames[level_num]);
+    int32_t ret = LoadLevel(LevelNames[level_num], level_num);
 
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
-        int lara_found = 0;
-        int in_cutscene = 0;
+        int8_t lara_found = 0;
+        int8_t in_cutscene = 0;
         for (int i = 0; i < LevelItemCount; i++) {
             if (Items[i].object_number == O_LARA) {
                 lara_found = 1;
@@ -298,7 +298,7 @@ int32_t S_LoadLevel(int level_id)
         FixPyramidSecretTrigger();
     }
     if (T1MConfig.fix_hardcoded_secret_counts) {
-        SecretTotals[level_id] = GetSecretCount();
+        SecretTotals[level_num] = GetSecretCount();
     }
 #endif
 

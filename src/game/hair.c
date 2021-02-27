@@ -21,17 +21,14 @@ static PHD_VECTOR hvel[HAIR_SEGMENTS + 1];
 
 void InitialiseHair()
 {
-    int i;
-    int32_t* bone;
-
     first_hair = 1;
 
-    bone = &AnimBones[Objects[O_HAIR].bone_index];
+    int32_t* bone = &AnimBones[Objects[O_HAIR].bone_index];
 
     hair[0].y_rot = 0;
     hair[0].x_rot = -0x4000;
 
-    for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
+    for (int i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
         hair[i].x = *(bone + 1);
         hair[i].y = *(bone + 2);
         hair[i].z = *(bone + 3);

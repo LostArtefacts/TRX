@@ -21,7 +21,7 @@
 #include "config.h"
 #include "util.h"
 
-int32_t ControlPhase(int32_t nframes, int demo_mode)
+int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
@@ -117,7 +117,7 @@ int32_t ControlPhase(int32_t nframes, int demo_mode)
 
         int16_t item_num = NextItemActive;
         while (item_num != NO_ITEM) {
-            int nex = Items[item_num].next_active;
+            int16_t nex = Items[item_num].next_active;
             if (Objects[Items[item_num].object_number].control)
                 (*Objects[Items[item_num].object_number].control)(item_num);
             item_num = nex;
@@ -125,7 +125,7 @@ int32_t ControlPhase(int32_t nframes, int demo_mode)
 
         item_num = NextFxActive;
         while (item_num != NO_ITEM) {
-            int nex = Effects[item_num].next_active;
+            int16_t nex = Effects[item_num].next_active;
             if (Objects[Effects[item_num].object_number].control)
                 (*Objects[Effects[item_num].object_number].control)(item_num);
             item_num = nex;
@@ -143,7 +143,7 @@ int32_t ControlPhase(int32_t nframes, int demo_mode)
 
 #ifdef T1M_FEAT_GAMEPLAY
         if (T1MConfig.disable_healing_between_levels) {
-            int lara_found = 0;
+            int8_t lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
                 if (Items[i].object_number == O_LARA) {
                     lara_found = 1;
@@ -584,7 +584,7 @@ void RefreshCamera(int16_t type, int16_t* data)
     }
 }
 
-void TestTriggers(int16_t* data, int heavy)
+void TestTriggers(int16_t* data, int32_t heavy)
 {
     if (!data) {
         return;

@@ -9,10 +9,10 @@
 #include "config.h"
 #include "util.h"
 
-int LevelIsValid(int16_t level_number)
+int32_t LevelIsValid(int16_t level_num)
 {
-    TRACE("%d", level_number);
-    int number_valid = 0;
+    TRACE("%d", level_num);
+    int32_t number_valid = 0;
     for (;;) {
         if (ValidLevels[number_valid] == -1) {
             break;
@@ -20,7 +20,7 @@ int LevelIsValid(int16_t level_number)
         number_valid++;
     }
     for (int i = 0; i < number_valid; i++) {
-        if (ValidLevels[i] == level_number) {
+        if (ValidLevels[i] == level_num) {
             return 1;
         }
     }
@@ -50,7 +50,7 @@ int32_t GetRandomDraw()
     return (Rand2 >> 10) & 0x7FFF;
 }
 
-void LevelStats(int level_id)
+void LevelStats(int32_t level_num)
 {
     static char string[100];
     TEXTSTRING* txt;
@@ -59,7 +59,7 @@ void LevelStats(int level_id)
     T_InitPrint();
 
     // heading
-    sprintf(string, "%s", LevelTitles[level_id]); // TODO: translation
+    sprintf(string, "%s", LevelTitles[level_num]); // TODO: translation
     txt = T_Print(0, -50, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -99,7 +99,7 @@ void LevelStats(int level_id)
         "SECRETS", // TODO: translation
         secrets_taken,
         "OF", // TODO: translation
-        SecretTotals[level_id]);
+        SecretTotals[level_num]);
     txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -159,16 +159,16 @@ void LevelStats(int level_id)
     }
 
     // go to next level
-    if (level_id == LV_LEVEL10C) {
+    if (level_num == LV_LEVEL10C) {
         SaveGame[0].bonus_flag = 1;
         for (int level = LV_LEVEL1; level <= LV_LEVEL10C; level++) {
             ModifyStartInfo(level);
         }
         SaveGame[0].current_level = 1;
     } else {
-        CreateStartInfo(level_id + 1);
-        ModifyStartInfo(level_id + 1);
-        SaveGame[0].current_level = level_id + 1;
+        CreateStartInfo(level_num + 1);
+        ModifyStartInfo(level_num + 1);
+        SaveGame[0].current_level = level_num + 1;
     }
 
     SaveGame[0].start[LV_CURRENT].available = 0;

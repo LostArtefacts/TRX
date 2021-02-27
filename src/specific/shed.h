@@ -11,7 +11,7 @@
 #define sub_4380E0              ((void          (*)(int16_t *unk))0x004380E0)
 #define InitialiseHardware      ((void          (*)())0x00408005)
 #define mn_stop_ambient_samples ((void          (*)())0x0042B000)
-#define CheckCheatMode          ((void         (*)())0x00438920)
+#define CheckCheatMode          ((void          (*)())0x00438920)
 // clang-format on
 
 #endif

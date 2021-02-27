@@ -173,7 +173,7 @@ void T_RemoveBackground(TEXTSTRING* textstring)
 }
 
 void T_AddOutline(
-    TEXTSTRING* textstring, int b, int16_t colour, SG_COL* gourptr,
+    TEXTSTRING* textstring, int16_t b, int16_t colour, SG_COL* gourptr,
     int16_t flags)
 {
     textstring->flags |= TF_OUTLINE;

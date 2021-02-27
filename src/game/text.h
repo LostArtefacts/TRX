@@ -15,7 +15,7 @@ void T_AddBackground(
     int16_t yoff, int16_t zoff, int16_t colour, SG_COL* gourptr, int16_t flags);
 void T_RemoveBackground(TEXTSTRING* textstring);
 void T_AddOutline(
-    TEXTSTRING* textstring, int b, int16_t colour, SG_COL* gourptr,
+    TEXTSTRING* textstring, int16_t b, int16_t colour, SG_COL* gourptr,
     int16_t flags);
 void T_RemoveOutline(TEXTSTRING* textstring);
 void T_CentreH(TEXTSTRING* textstring, int16_t b);

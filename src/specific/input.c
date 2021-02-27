@@ -76,7 +76,7 @@ void S_UpdateInput()
 
 #ifdef T1M_FEAT_CHEATS
     if (T1MConfig.enable_cheats) {
-        static int is_stuff_cheat_key_pressed = 0;
+        static int8_t is_stuff_cheat_key_pressed = 0;
         if (KeyData->keymap[DIK_I]) {
             if (!is_stuff_cheat_key_pressed) {
                 is_stuff_cheat_key_pressed = 1;

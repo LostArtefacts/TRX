@@ -244,7 +244,7 @@ void LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
     item->hit_points = -1;
     Lara.air = -1;
     Lara.gun_status = LGS_HANDSBUSY;
-    int wh = GetWaterHeight(
+    int16_t wh = GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
         item->pos.y -= 5;
