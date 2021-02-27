@@ -288,7 +288,7 @@ DoBloodSplat                    0x0041A310  0x00000059  +
 ControlBlood1                   0x0041A370  0x0000008B  +
 ControlExplosion1               0x0041A400  0x0000004C  +
 Richochet                       0x0041A450  0x00000072  +
-ControlRicochet1                0x0041A4D0  0x00000030  *
+ControlRicochet1                0x0041A4D0  0x00000030  +
 Twinkle                         ----------  ----------  -
 ControlTwinkle                  0x0041A500  0x0000004C  *
 ItemSparkle                     0x0041A550  0x00000115  *
