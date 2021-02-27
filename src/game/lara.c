@@ -264,9 +264,25 @@ void LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
     }
 
     if (Input & IN_LEFT) {
+#ifdef T1M_FEAT_INPUT
+        if (T1MConfig.enable_tr3_sidesteps && (Input & IN_SLOW)) {
+            item->goal_anim_state = AS_STEPLEFT;
+        } else {
+            item->goal_anim_state = AS_TURN_L;
+        }
+#else
         item->goal_anim_state = AS_TURN_L;
+#endif
     } else if (Input & IN_RIGHT) {
+#ifdef T1M_FEAT_INPUT
+        if (T1MConfig.enable_tr3_sidesteps && (Input & IN_SLOW)) {
+            item->goal_anim_state = AS_STEPRIGHT;
+        } else {
+            item->goal_anim_state = AS_TURN_R;
+        }
+#else
         item->goal_anim_state = AS_TURN_R;
+#endif
     }
 
     if (Input & IN_JUMP) {
@@ -351,6 +367,13 @@ void LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
     }
 #endif
 
+#ifdef T1M_FEAT_INPUT
+    if (T1MConfig.enable_tr3_sidesteps && CHK_ANY(Input, IN_SLOW)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
     Lara.turn_rate += LARA_TURN_RATE;
     if (Lara.gun_status == LGS_READY) {
         item->goal_anim_state = AS_FASTTURN;
@@ -382,6 +405,13 @@ void LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
+#ifdef T1M_FEAT_INPUT
+    if (T1MConfig.enable_tr3_sidesteps && CHK_ANY(Input, IN_SLOW)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -429,9 +459,9 @@ void LaraAsHang(ITEM_INFO* item, COLL_INFO* coll)
     coll->enable_baddie_push = 0;
     Camera.target_angle = CAM_A_HANG;
     Camera.target_elevation = CAM_E_HANG;
-    if (Input & (IN_LEFT | IN_STEPL)) {
+    if (CHK_ANY(Input, IN_LEFT | IN_STEPL)) {
         item->goal_anim_state = AS_HANGLEFT;
-    } else if (Input & (IN_RIGHT | IN_STEPR)) {
+    } else if (CHK_ANY(Input, IN_RIGHT | IN_STEPR)) {
         item->goal_anim_state = AS_HANGRIGHT;
     }
 }
@@ -523,6 +553,13 @@ void LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
     }
 #endif
 
+#ifdef T1M_FEAT_INPUT
+    if (T1MConfig.enable_tr3_sidesteps && CHK_ANY(Input, IN_SLOW)) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+#endif
+
     if (Lara.turn_rate >= 0) {
         Lara.turn_rate = LARA_FAST_TURN;
         if (!(Input & IN_RIGHT)) {
@@ -542,6 +579,12 @@ void LaraAsStepRight(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_STOP;
         return;
     }
+
+#ifdef T1M_FEAT_INPUT
+    if (T1MConfig.enable_tr3_sidesteps && CHK_ALL(Input, IN_RIGHT | IN_SLOW)) {
+        return;
+    }
+#endif
 
     if (!(Input & IN_STEPR)) {
         item->goal_anim_state = AS_STOP;
@@ -566,6 +609,12 @@ void LaraAsStepLeft(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_STOP;
         return;
     }
+
+#ifdef T1M_FEAT_INPUT
+    if (T1MConfig.enable_tr3_sidesteps && CHK_ALL(Input, IN_LEFT | IN_SLOW)) {
+        return;
+    }
+#endif
 
     if (!(Input & IN_STEPL)) {
         item->goal_anim_state = AS_STOP;

@@ -37,6 +37,10 @@
     // - 9: use large medpack
     "enable_numeric_keys": true,
 
+    // Enables TR3+ style sidesteps, e.g. shift+directional arrows (you still
+    // can use dedicated sidestep buttons).
+    "enable_tr3_sidesteps": true,
+
     // Enables various cheats:
     // - F10: immediately end the level.
     // - F11: heal Lara. Hold WALK key to hurt instead.

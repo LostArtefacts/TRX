@@ -106,6 +106,7 @@ int T1MReadConfig()
     READ_BOOL(enable_shotgun_flash);
     READ_BOOL(enable_cheats);
     READ_BOOL(enable_numeric_keys);
+    READ_BOOL(enable_tr3_sidesteps);
     READ_BOOL(fix_key_triggers);
     READ_BOOL(fix_end_of_level_freeze);
     READ_BOOL(fix_tihocan_secret_sound);
