@@ -215,7 +215,7 @@ TriggerNormalCDTrack            ----------  ----------  +
 
 # croc.cpp
 AlligatorControl                0x00415520  0x00000326  +
-CrocControl                     0x00415850  0x0000030C  *
+CrocControl                     0x00415850  0x0000030C  +
 
 # demo.cpp
 StartDemo                       0x00415B70  0x00000140  +
