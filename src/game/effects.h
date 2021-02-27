@@ -8,7 +8,6 @@
 #define SoundEffect             ((int32_t       (*)(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags))0x0042AA30)
 #define SoundEffects            ((void          (*)())0x0041A2A0)
 #define StopSoundEffect         ((void          (*)(int32_t sfx_num, PHD_3DPOS *pos))0x0042B300)
-#define ItemSparkle             ((void          (*)(ITEM_INFO* item, int32_t meshmask))0x0041A550)
 #define Splash                  ((void          (*)(ITEM_INFO* item))0x0041A860)
 // clang-format on
 
@@ -20,7 +19,9 @@ void ControlBlood1(int16_t fx_num);
 void ControlExplosion1(int16_t fx_num);
 void Richochet(GAME_VECTOR* pos);
 void ControlRicochet1(int16_t fx_num);
+void Twinkle(GAME_VECTOR* pos);
 void ControlTwinkle(int16_t fx_num);
+void ItemSparkle(ITEM_INFO* item, int meshmask);
 void FxLaraBubbles(ITEM_INFO* item);
 void ControlBubble1(int16_t fx_num);
 void FxChainBlock(ITEM_INFO* item);

@@ -86,7 +86,7 @@ void Richochet(GAME_VECTOR* pos)
         fx->pos.z = pos->z;
         fx->counter = 4;
         fx->object_number = O_RICOCHET1;
-        fx->frame_number = -3 * GetRandomDraw() / 32768;
+        fx->frame_number = -3 * GetRandomDraw() / 0x8000;
         SoundEffect(10, &fx->pos, 0);
     }
 }
@@ -100,6 +100,20 @@ void ControlRicochet1(int16_t fx_num)
     }
 }
 
+void Twinkle(GAME_VECTOR* pos)
+{
+    int16_t fx_num = CreateEffect(pos->room_number);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = pos->x;
+        fx->pos.y = pos->y;
+        fx->pos.z = pos->z;
+        fx->counter = 0;
+        fx->object_number = O_TWINKLE;
+        fx->frame_number = 0;
+    }
+}
+
 void ControlTwinkle(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -109,6 +123,27 @@ void ControlTwinkle(int16_t fx_num)
         fx->frame_number--;
         if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
             KillEffect(fx_num);
+        }
+    }
+}
+
+void ItemSparkle(ITEM_INFO* item, int meshmask)
+{
+    SPHERE slist[34];
+    GAME_VECTOR effect_pos;
+
+    int32_t num = GetSpheres(item, slist, 1);
+    effect_pos.room_number = item->room_number;
+    for (int i = 0; i < num; i++) {
+        if (meshmask & (1 << i)) {
+            SPHERE* sptr = &slist[i];
+            effect_pos.x =
+                sptr->x + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+            effect_pos.y =
+                sptr->y + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+            effect_pos.z =
+                sptr->z + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+            Twinkle(&effect_pos);
         }
     }
 }
@@ -210,6 +245,7 @@ void T1MInjectGameEffects()
     INJECT(0x0041A400, ControlExplosion1);
     INJECT(0x0041A4D0, ControlRicochet1);
     INJECT(0x0041A500, ControlTwinkle);
+    INJECT(0x0041A550, ItemSparkle);
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041AD00, FxChainBlock);
