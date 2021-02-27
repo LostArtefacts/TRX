@@ -17,6 +17,9 @@ void T1MTraceFunc(
 
 void T1MInjectFunc(void* from, void* to)
 {
+    if (from == to) {
+        return;
+    }
     DWORD tmp;
     TRACE("Patching %p to %p", from, to);
     VirtualProtect(from, sizeof(JMP), PAGE_EXECUTE_READWRITE, &tmp);
