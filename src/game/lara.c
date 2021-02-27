@@ -339,17 +339,17 @@ void LaraAsFastBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 {
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
 #endif
-
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
 
     Lara.turn_rate += LARA_TURN_RATE;
     if (Lara.gun_status == LGS_READY) {
@@ -375,17 +375,17 @@ void LaraAsTurnR(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraAsTurnL(ITEM_INFO* item, COLL_INFO* coll)
 {
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
 #endif
-
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
 
     Lara.turn_rate -= LARA_TURN_RATE;
     if (Lara.gun_status == LGS_READY) {
@@ -511,17 +511,17 @@ void LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 {
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = AS_STOP;
+        return;
+    }
+
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && (Input & IN_LOOK)) {
         item->goal_anim_state = AS_STOP;
         return;
     }
 #endif
-
-    if (item->hit_points <= 0) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
 
     if (Lara.turn_rate >= 0) {
         Lara.turn_rate = LARA_FAST_TURN;
