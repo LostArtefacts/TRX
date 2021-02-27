@@ -24,6 +24,7 @@ void ItemSparkle(ITEM_INFO* item, int meshmask);
 void FxLaraBubbles(ITEM_INFO* item);
 void ControlBubble1(int16_t fx_num);
 void Splash(ITEM_INFO* item);
+void ControlSplash1(int16_t fx_num);
 void FxChainBlock(ITEM_INFO* item);
 
 void T1MInjectGameEffects();

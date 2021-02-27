@@ -41,7 +41,6 @@
 #define PickUpScion4Collision           ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004333B0)
 #define BoatControl                     ((void          (*)(int16_t item_num))0x0042D520)
 #define Scion3Control                   ((void          (*)(int16_t item_num))0x0042D580)
-#define ControlSplash1                  ((void          (*)(int16_t item_num))0x0041A930)
 // clang-format on
 
 #endif

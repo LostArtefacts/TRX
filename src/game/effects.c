@@ -241,6 +241,19 @@ void Splash(ITEM_INFO* item)
     }
 }
 
+void ControlSplash1(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->frame_number--;
+    if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
+        KillEffect(fx_num);
+        return;
+    }
+
+    fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -274,5 +287,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041A860, Splash);
+    INJECT(0x0041A930, ControlSplash1);
     INJECT(0x0041AD00, FxChainBlock);
 }
