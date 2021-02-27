@@ -146,6 +146,8 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define DemoLevels              ARRAY_(0x00453538, int8_t, [])
 #define TitleLoaded             VAR_U_(0x0045A324, int32_t)
 #define DemoLevel               VAR_I_(0x00453530, int32_t, 1)
+#define DemoPtr                 VAR_U_(0x00462BFC, int32_t*)
+#define DemoCount               VAR_U_(0x00462C00, int32_t)
 #define ChunkyFlag              VAR_I_(0x00459F44, int32_t, 0)
 #define HeightType              VAR_I_(0x00459F48, int32_t, 0)
 #define InventoryChosen         VAR_I_(0x00456328, int16_t, -1)

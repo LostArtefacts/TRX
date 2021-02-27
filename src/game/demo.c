@@ -1,5 +1,7 @@
+#include "game/control.h"
 #include "game/demo.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "game/vars.h"
@@ -62,7 +64,29 @@ int32_t StartDemo()
     return GF_EXIT_TO_TITLE;
 }
 
+void LoadLaraDemoPos()
+{
+    ITEM_INFO* item = LaraItem;
+    item->pos.x = DemoPtr[0];
+    item->pos.y = DemoPtr[1];
+    item->pos.z = DemoPtr[2];
+    item->pos.x_rot = DemoPtr[3];
+    item->pos.y_rot = DemoPtr[4];
+    item->pos.z_rot = DemoPtr[5];
+    int16_t room_num = DemoPtr[6];
+    DemoCount += 7;
+
+    if (item->room_number != room_num) {
+        ItemNewRoom(Lara.item_number, room_num);
+    }
+
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+}
+
 void T1MInjectGameDemo()
 {
     INJECT(0x00415B70, StartDemo);
+    INJECT(0x00415CB0, LoadLaraDemoPos);
 }

@@ -219,7 +219,7 @@ CrocControl                     0x00415850  0x0000030C  +
 
 # demo.cpp
 StartDemo                       0x00415B70  0x00000140  +
-LoadLaraDemoPos                 0x00415CB0  0x000000BF  *
+LoadLaraDemoPos                 0x00415CB0  0x000000BF  +
 GetDemoInput                    0x00415D70  0x0000002D  *
 
 # dino.cpp
