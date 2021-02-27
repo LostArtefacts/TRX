@@ -29,10 +29,29 @@ int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
     return 0;
 }
 
+int16_t DoBloodSplat(
+    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction,
+    int16_t room_num)
+{
+    int16_t fx_num = CreateEffect(room_num);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = x;
+        fx->pos.y = y;
+        fx->pos.z = z;
+        fx->pos.y_rot = direction;
+        fx->speed = speed;
+        fx->frame_number = 0;
+        fx->object_number = O_BLOOD1;
+        fx->counter = 0;
+    }
+    return fx_num;
+}
+
 void FxLaraBubbles(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_CHEATS
-    // NOTE: until we get Robolara, it makes sense for her to breath underwater
+    // NOTE: until we get Robolara, it makes sense for her to breathe underwater
     if (Lara.water_status == LWS_CHEAT
         && !(RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER)) {
         return;
@@ -121,6 +140,7 @@ void FxChainBlock(ITEM_INFO* item)
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
+    INJECT(0x0041A310, DoBloodSplat);
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041AD00, FxChainBlock);

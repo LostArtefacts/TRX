@@ -11,10 +11,12 @@
 #define ItemSparkle             ((void          (*)(ITEM_INFO* item, int32_t meshmask))0x0041A550)
 #define Richochet               ((void          (*)(GAME_VECTOR* pos))0x0041A450)
 #define Splash                  ((void          (*)(ITEM_INFO* item))0x0041A860)
-#define DoBloodSplat            ((int16_t       (*)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE direction, int16_t room_num))0x0041A310)
 // clang-format on
 
 int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance);
+int16_t DoBloodSplat(
+    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction,
+    int16_t room_num);
 void FxLaraBubbles(ITEM_INFO* item);
 void ControlBubble1(int16_t fx_num);
 void FxChainBlock(ITEM_INFO* item);
