@@ -10,6 +10,14 @@
 
 void FxLaraBubbles(ITEM_INFO* item)
 {
+#ifdef T1M_FEAT_CHEATS
+    // NOTE: until we get Robolara, it makes sense for her to breath underwater
+    if (Lara.water_status == LWS_CHEAT
+        && !(RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER)) {
+        return;
+    }
+#endif
+
     int32_t count = (GetRandomDraw() * 3) / 0x8000;
     if (!count) {
         return;
