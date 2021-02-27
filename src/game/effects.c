@@ -10,6 +10,7 @@
 #include "config.h"
 #include "util.h"
 
+#define MAX_BOUNCE 100
 #define WF_RANGE (WALL_L * 10) // = 10240
 
 int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
@@ -297,6 +298,19 @@ void FxTurn180(ITEM_INFO* item)
     item->pos.y_rot += 0x8000;
 }
 
+// original name: dino_stomp_effect
+void FxDinoStomp(ITEM_INFO* item)
+{
+    int32_t dx = item->pos.x - Camera.pos.x;
+    int32_t dy = item->pos.y - Camera.pos.y;
+    int32_t dz = item->pos.z - Camera.pos.z;
+    int32_t limit = 16 * WALL_L;
+    if (ABS(dx) < limit && ABS(dy) < limit && ABS(dz) < limit) {
+        int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) / 256;
+        Camera.bounce = ((SQUARE(WALL_L) - dist) * MAX_BOUNCE) / SQUARE(WALL_L);
+    }
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -334,5 +348,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A9B0, ControlWaterFall);
     INJECT(0x0041AAD0, FxFinishLevel);
     INJECT(0x0041AAE0, FxTurn180);
+    INJECT(0x0041AAF0, FxDinoStomp);
     INJECT(0x0041AD00, FxChainBlock);
 }
