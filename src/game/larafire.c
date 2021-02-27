@@ -9,6 +9,7 @@
 #include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
+#include "config.h"
 #include "util.h"
 
 void LaraGun()
@@ -415,7 +416,13 @@ int32_t FireWeapon(
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
         SoundEffect(48, &src->pos, 0);
+#ifdef T1M_FEAT_OG_FIXES
+        if (!T1MConfig.fix_illegal_gun_equip || Inv_RequestItem(O_GUN_ITEM)) {
+            Lara.request_gun_type = LGT_PISTOLS;
+        }
+#else
         Lara.request_gun_type = LGT_PISTOLS;
+#endif
         return 0;
     }
 

@@ -115,6 +115,7 @@ int T1MReadConfig()
     READ_BOOL(fix_tihocan_secret_sound);
     READ_BOOL(fix_pyramid_secret_trigger);
     READ_BOOL(fix_hardcoded_secret_counts);
+    READ_BOOL(fix_illegal_gun_equip);
 
     T1MConfig.healthbar_showing_mode =
         ReadBarShowingMode(json, "healthbar_showing_mode");

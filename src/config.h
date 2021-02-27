@@ -58,6 +58,7 @@ struct {
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;
     int8_t fix_hardcoded_secret_counts;
+    int8_t fix_illegal_gun_equip;
 } T1MConfig;
 
 int T1MReadConfig();
