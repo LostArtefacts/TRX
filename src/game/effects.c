@@ -364,6 +364,13 @@ void FxFlood(ITEM_INFO* item)
     FlipTimer++;
 }
 
+// original name: RaisingBlockFX
+void FxRaisingBlock(ITEM_INFO* item)
+{
+    SoundEffect(117, NULL, 0);
+    FlipEffect = -1;
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -405,5 +412,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041AB90, FxLaraNormal);
     INJECT(0x0041ABD0, FxEarthQuake);
     INJECT(0x0041AC50, FxFlood);
+    INJECT(0x0041ACE0, FxRaisingBlock);
     INJECT(0x0041AD00, FxChainBlock);
 }

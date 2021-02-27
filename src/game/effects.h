@@ -32,6 +32,7 @@ void FxDinoStomp(ITEM_INFO* item);
 void FxLaraNormal(ITEM_INFO* item);
 void FxEarthQuake(ITEM_INFO* item);
 void FxFlood(ITEM_INFO* item);
+void FxRaisingBlock(ITEM_INFO* item);
 void FxChainBlock(ITEM_INFO* item);
 
 void T1MInjectGameEffects();
