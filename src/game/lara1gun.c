@@ -202,7 +202,7 @@ void AnimateShotgun()
 
 void FireShotgun()
 {
-    int r, fired;
+    int32_t fired = 0;
     PHD_ANGLE angles[2];
     PHD_ANGLE dangles[2];
 
@@ -210,10 +210,10 @@ void FireShotgun()
     angles[1] = Lara.left_arm.x_rot;
 
     for (int i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
-        r = (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
-        dangles[0] = angles[0] + r;
-        r = (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
-        dangles[1] = angles[1] + r;
+        dangles[0] = angles[0]
+            + (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
+        dangles[1] = angles[1]
+            + (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
         if (FireWeapon(LGT_SHOTGUN, Lara.target, LaraItem, dangles)) {
             fired = 1;
         }
