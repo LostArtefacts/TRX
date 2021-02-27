@@ -49,6 +49,7 @@ struct {
     int8_t airbar_color;
     int8_t enemy_healthbar_location;
     int8_t enemy_healthbar_color;
+    int8_t fix_key_triggers;
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;

@@ -85,6 +85,10 @@
     // Color of the enemy healthbar.
     "enemy_healthbar_color": "grey",
 
+    // Fixes key and puzzle triggers not activating when Lara draws guns
+    // immediately after using them.
+    "fix_key_triggers": true,
+
     // Fixes game freeze when ending the level with the Action key held.
     "fix_end_of_level_freeze": true,
 
