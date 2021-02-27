@@ -36,17 +36,15 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
     }
 
     ROOM_INFO* r = &RoomInfo[item->room_number];
-    item->box_number = r->floor
-                           [((item->pos.z - r->z) >> WALL_SHIFT)
-                            + ((item->pos.x - r->x) >> WALL_SHIFT) * r->x_size]
-                               .box;
+    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+    item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
     info->zone_number = zone[item->box_number];
 
-    LaraItem->box_number =
-        r->floor
-            [((LaraItem->pos.z - r->z) >> WALL_SHIFT)
-             + r->x_size * ((LaraItem->pos.x - r->x) >> WALL_SHIFT)]
-                .box;
+    r = &RoomInfo[LaraItem->room_number];
+    x_floor = (LaraItem->pos.z - r->z) >> WALL_SHIFT;
+    y_floor = (LaraItem->pos.x - r->x) >> WALL_SHIFT;
+    LaraItem->box_number = r->floor[x_floor + y_floor * r->x_size].box;
     info->enemy_zone = zone[LaraItem->box_number];
 
     if (Boxes[LaraItem->box_number].overlap_index & creature->LOT.block_mask) {
@@ -68,9 +66,9 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         - item->pos.x;
 
     PHD_ANGLE angle = phd_atan(z, x);
-    info->distance = x * x + z * z;
+    info->distance = SQUARE(x) + SQUARE(z);
     info->angle = angle - item->pos.y_rot;
-    info->enemy_facing = angle - LaraItem->pos.y_rot - PHD_ONE / 2;
+    info->enemy_facing = angle - LaraItem->pos.y_rot + 0x8000;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
     info->bite = info->ahead && (LaraItem->pos.y > item->pos.y - STEP_L)
         && (LaraItem->pos.y < item->pos.y + STEP_L);
