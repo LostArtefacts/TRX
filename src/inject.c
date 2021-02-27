@@ -18,6 +18,7 @@
 #include "game/pickup.h"
 #include "game/setup.h"
 #include "game/text.h"
+#include "game/traps.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/input.h"
@@ -48,6 +49,7 @@ void T1MInject()
     T1MInjectGamePickup();
     T1MInjectGameSetup();
     T1MInjectGameText();
+    T1MInjectGameTraps();
     T1MInjectSpecificFile();
     T1MInjectSpecificGame();
     T1MInjectSpecificInit();
