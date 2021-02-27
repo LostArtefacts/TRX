@@ -28,6 +28,7 @@ typedef enum {
     T1M_BSM_DEFAULT = 0,
     T1M_BSM_FLASHING = 1,
     T1M_BSM_ALWAYS = 2,
+    T1M_BSM_NEVER = 3,
 } T1M_BAR_SHOW_MODE;
 
 struct {

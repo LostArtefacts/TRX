@@ -54,6 +54,7 @@
     // - flashing: show the healthbar only when Lara's health is 20% or below
     // - default: show the healthbar at the beginning of a level, after
     //   getting hit or while having weapons equipped (as in OG)
+    // - never: never display the healthbar (for challenge runs)
     "healthbar_showing_mode": "flashing",
 
     // Location where the healthbar is displayed. Possible values:

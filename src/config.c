@@ -19,6 +19,8 @@ static int8_t ReadBarShowingMode(struct json_value_s* root, const char* name)
         return T1M_BSM_FLASHING;
     } else if (!strcmp(value_str, "always")) {
         return T1M_BSM_ALWAYS;
+    } else if (!strcmp(value_str, "never")) {
+        return T1M_BSM_NEVER;
     }
     return T1M_BSM_DEFAULT;
 }

@@ -49,9 +49,32 @@ void DrawHealthBar()
         HealthBarTimer = 0;
     }
 
-    if (HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LGS_READY) {
-        S_DrawHealthBar(hit_points * 100 / LARA_HITPOINTS);
+#ifdef T1M_FEAT_GAMEPLAY
+    int32_t show =
+        HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LGS_READY;
+    switch (T1MConfig.healthbar_showing_mode) {
+    case T1M_BSM_ALWAYS:
+        show = 1;
+        break;
+    case T1M_BSM_NEVER:
+        show = 0;
+        return;
+    case T1M_BSM_FLASHING:
+        if (hit_points <= (LARA_HITPOINTS * 20) / 100) {
+            show = 1;
+        }
+        break;
     }
+    if (!show) {
+        return;
+    }
+#else
+    if (HealthBarTimer <= 0 && hit_points > 0 && Lara.gun_status != LGS_READY) {
+        return;
+    }
+#endif
+
+    S_DrawHealthBar(hit_points * 100 / LARA_HITPOINTS);
 }
 
 void DrawAirBar()
