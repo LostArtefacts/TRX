@@ -285,6 +285,12 @@ void ControlWaterFall(int16_t item_num)
     }
 }
 
+// original name: finish_level_effect
+void FxFinishLevel(ITEM_INFO* item)
+{
+    LevelComplete = 1;
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -320,5 +326,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A860, Splash);
     INJECT(0x0041A930, ControlSplash1);
     INJECT(0x0041A9B0, ControlWaterFall);
+    INJECT(0x0041AAD0, FxFinishLevel);
     INJECT(0x0041AD00, FxChainBlock);
 }
