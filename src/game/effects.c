@@ -371,6 +371,7 @@ void FxRaisingBlock(ITEM_INFO* item)
     FlipEffect = -1;
 }
 
+// original name: ChainBlockFX
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -390,6 +391,16 @@ void FxChainBlock(ITEM_INFO* item)
         SoundEffect(33, NULL, 0);
         FlipEffect = -1;
     }
+}
+
+// original name: Stairs2SlopeFX
+void FxStairs2Slope(ITEM_INFO* item)
+{
+    if (FlipTimer == 5) {
+        SoundEffect(119, NULL, 0);
+        FlipEffect = -1;
+    }
+    FlipTimer++;
 }
 
 void T1MInjectGameEffects()
@@ -414,4 +425,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AC50, FxFlood);
     INJECT(0x0041ACE0, FxRaisingBlock);
     INJECT(0x0041AD00, FxChainBlock);
+    INJECT(0x0041AD50, FxStairs2Slope);
 }
