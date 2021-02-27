@@ -299,7 +299,7 @@ ControlSplash1                  0x0041A930  0x0000007A  +
 ControlWaterFall                0x0041A9B0  0x00000120  +
 FxVoid                          ----------  ----------  -
 FxFinishLevel                   0x0041AAD0  0x0000000B  +
-FxTurn180                       0x0041AAE0  0x0000000B  -
+FxTurn180                       0x0041AAE0  0x0000000B  +
 FxDinoStomp                     0x0041AAF0  0x00000096  -
 FxLaraNormal                    0x0041AB90  0x00000035  -
 FxEarthQuake                    0x0041ABD0  0x00000076  -

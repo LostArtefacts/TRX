@@ -27,6 +27,7 @@ void Splash(ITEM_INFO* item);
 void ControlSplash1(int16_t fx_num);
 void ControlWaterFall(int16_t item_num);
 void FxFinishLevel(ITEM_INFO* item);
+void FxTurn180(ITEM_INFO* item);
 void FxChainBlock(ITEM_INFO* item);
 
 void T1MInjectGameEffects();

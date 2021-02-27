@@ -291,6 +291,12 @@ void FxFinishLevel(ITEM_INFO* item)
     LevelComplete = 1;
 }
 
+// original name: turn180_effect
+void FxTurn180(ITEM_INFO* item)
+{
+    item->pos.y_rot += 0x8000;
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -327,5 +333,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041A930, ControlSplash1);
     INJECT(0x0041A9B0, ControlWaterFall);
     INJECT(0x0041AAD0, FxFinishLevel);
+    INJECT(0x0041AAE0, FxTurn180);
     INJECT(0x0041AD00, FxChainBlock);
 }
