@@ -18,6 +18,14 @@ void FlameControl(int16_t fx_num)
     }
 
     if (fx->counter < 0) {
+#ifdef T1M_FEAT_CHEATS
+        if (Lara.water_status == LWS_CHEAT) {
+            fx->counter = 0;
+            StopSoundEffect(150, NULL);
+            KillEffect(fx_num);
+        }
+#endif
+
         fx->pos.x = 0;
         fx->pos.y = 0;
         if (fx->counter == -1) {
@@ -53,6 +61,12 @@ void FlameControl(int16_t fx_num)
     if (fx->counter) {
         fx->counter--;
     } else if (ItemNearLara(&fx->pos, 600)) {
+#ifdef T1M_FEAT_CHEATS
+        if (Lara.water_status == LWS_CHEAT) {
+            return;
+        }
+#endif
+
         int32_t x = LaraItem->pos.x - fx->pos.x;
         int32_t z = LaraItem->pos.z - fx->pos.z;
         int32_t distance = SQUARE(x) + SQUARE(z);
@@ -76,6 +90,12 @@ void FlameControl(int16_t fx_num)
 
 void LavaBurn(ITEM_INFO* item)
 {
+#ifdef T1M_FEAT_CHEATS
+    if (Lara.water_status == LWS_CHEAT) {
+        return;
+    }
+#endif
+
     if (item->hit_points < 0) {
         return;
     }
