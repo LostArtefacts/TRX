@@ -15,6 +15,7 @@
 #define DoBloodSplat            ((int16_t       (*)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE direction, int16_t room_num))0x0041A310)
 // clang-format on
 
+void ControlBubble1(int16_t fx_num);
 void FxChainBlock(ITEM_INFO* item);
 
 void T1MInjectGameEffects();

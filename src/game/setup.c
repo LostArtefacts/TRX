@@ -5,6 +5,7 @@
 #include "game/croc.h"
 #include "game/dino.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/hair.h"
 #include "game/lara.h"
 #include "game/lion.h"
