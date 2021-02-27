@@ -1,3 +1,4 @@
+#include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -311,6 +312,17 @@ void FxDinoStomp(ITEM_INFO* item)
     }
 }
 
+// original name: lara_normal_effect
+void FxLaraNormal(ITEM_INFO* item)
+{
+    item->current_anim_state = AS_STOP;
+    item->goal_anim_state = AS_STOP;
+    item->anim_number = AA_STOP;
+    item->frame_number = AF_STOP;
+    Camera.type = CAM_CHASE;
+    AlterFOV(GAME_FOV * PHD_DEGREE);
+}
+
 void FxChainBlock(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_OG_FIXES
@@ -349,5 +361,6 @@ void T1MInjectGameEffects()
     INJECT(0x0041AAD0, FxFinishLevel);
     INJECT(0x0041AAE0, FxTurn180);
     INJECT(0x0041AAF0, FxDinoStomp);
+    INJECT(0x0041AB90, FxLaraNormal);
     INJECT(0x0041AD00, FxChainBlock);
 }

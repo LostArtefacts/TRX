@@ -6,10 +6,12 @@
 #
 # Name                          Offset      Size        Flags
 
-# ???
+# 3dsystem/3d_gen.cpp
 phd_GenerateW2V                 0x00401000  0x00000197  *
 phd_LookAt                      0x004011A0  0x000000C9  *
 phd_GetVectorAngles             0x00401270  0x0000007E  *
+phd_NormaliseVector             ----------  ----------  -
+phd_GetMatrixAngles             ----------  ----------  -
 phd_RotX                        0x004012F0  0x000000AE  -
 phd_RotY                        0x004013A0  0x000000AC  -
 phd_RotZ                        0x00401450  0x000000AC  -
@@ -24,11 +26,13 @@ calc_object_vertices            0x00401C40  0x000001B6  -
 calc_vertice_light              0x00401E00  0x00000165  -
 calc_roomvert                   0x00401F70  0x00000428  -
 phd_RotateLight                 0x004023A0  0x000000CF  -
+phd_PointLight                  ----------  ----------  -
 phd_InitPolyList                0x00402470  0x0000002D  -
-phd_sortPolyList                0x004024A0  0x0000002F  -
+phd_SortPolyList                0x004024A0  0x0000002F  -
 do_quickysorty                  0x004024D0  0x000000C5  -
+phd_PrintPolyList               ----------  ----------  -
 phd_InitWindow                  0x004025D0  0x000000F2  -
-AlterFOV                        0x004026D0  0x0000003F  -
+AlterFOV                        0x004026D0  0x0000003F  *
 
 # 3dsystem/3d_line.cpp
 Insert2DLine                    0x00402710  0x000000CA  -
@@ -301,7 +305,7 @@ FxVoid                          ----------  ----------  -
 FxFinishLevel                   0x0041AAD0  0x0000000B  +
 FxTurn180                       0x0041AAE0  0x0000000B  +
 FxDinoStomp                     0x0041AAF0  0x00000096  +
-FxLaraNormal                    0x0041AB90  0x00000035  -
+FxLaraNormal                    0x0041AB90  0x00000035  +
 FxEarthQuake                    0x0041ABD0  0x00000076  -
 FxFlood                         0x0041AC50  0x0000008F  -
 FxRaisingBlock                  0x0041ACE0  0x00000019  -
@@ -639,7 +643,7 @@ CreateZone                      0x0042A6B0  0x000000C4  -
 InitialiseLOT                   0x0042A780  0x00000065  *
 ClearLOT                        ----------  ----------  -
 
-# ???
+# math.cpp (3dsystem/phd_math.h)
 phd_cos                         0x0042A7F0  0x0000002C  -
 cosf                            0x0042A81C  0x0000001A  -
 phd_sin                         0x0042A850  0x00000021  -

@@ -29,6 +29,7 @@ void ControlWaterFall(int16_t item_num);
 void FxFinishLevel(ITEM_INFO* item);
 void FxTurn180(ITEM_INFO* item);
 void FxDinoStomp(ITEM_INFO* item);
+void FxLaraNormal(ITEM_INFO* item);
 void FxChainBlock(ITEM_INFO* item);
 
 void T1MInjectGameEffects();

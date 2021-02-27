@@ -127,6 +127,7 @@
 #define ATTACK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define ESCAPE_CHANCE 2048
 #define RECOVER_CHANCE 256
+#define GAME_FOV 80
 
 #define BIFF (WALL_L >> 1)
 
