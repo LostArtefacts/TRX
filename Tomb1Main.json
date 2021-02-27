@@ -49,6 +49,9 @@
     // - O: enable DOZY cheat (swimming midair). Press the WALK key to exit.
     "enable_cheats": false,
 
+    // Enables braid animation. Currently works only in the Lost Valley level.
+    "enable_braid": false,
+
     // Changes how the healthbar is displayed. Possible values:
     // - always: always show the healthbar
     // - flashing: show the healthbar only when Lara's health is 20% or below

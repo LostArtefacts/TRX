@@ -207,6 +207,9 @@ typedef enum {
     O_TEMP8 = 187,
     O_TEMP9 = 188,
     O_TEMP10 = 189,
+#ifdef T1M_FEAT_HAIR
+    O_HAIR = O_TEMP10,
+#endif
     O_ALPHABET = 190,
     NUMBER_OBJECTS = 191,
 } GAME_OBJECT_ID;

@@ -44,6 +44,7 @@ struct {
     int8_t enable_shotgun_flash;
     int8_t enable_cheats;
     int8_t enable_tr3_sidesteps;
+    int8_t enable_braid;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;

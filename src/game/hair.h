@@ -4,9 +4,6 @@
 #include <stdint.h>
 
 #ifdef T1M_FEAT_HAIR
-
-    #define O_HAIR O_TEMP10
-
 void InitialiseHair();
 void HairControl(int32_t in_cutscene);
 void DrawHair();
