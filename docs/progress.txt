@@ -282,7 +282,7 @@ sub_41A1D0                      0x0041A1D0  0x00000027  -
 sub_41A200                      0x0041A200  0x0000000F  -
 
 # effects.cpp
-ItemNearLara                    0x0041A210  0x0000008C  *
+ItemNearLara                    0x0041A210  0x0000008C  +
 SoundEffects                    0x0041A2A0  0x0000006D  *
 DoBloodSplat                    0x0041A310  0x00000059  *
 ControlBlood1                   0x0041A370  0x0000008B  *

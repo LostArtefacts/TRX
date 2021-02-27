@@ -1,12 +1,33 @@
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
+#include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "config.h"
 #include "util.h"
+
+int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
+{
+    int32_t x = pos->x - LaraItem->pos.x;
+    int32_t y = pos->y - LaraItem->pos.y;
+    int32_t z = pos->z - LaraItem->pos.z;
+
+    if (x >= -distance && x <= distance && z >= -distance && z <= distance
+        && y >= -WALL_L * 3 && y <= WALL_L * 3
+        && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
+        int16_t* bounds = GetBoundsAccurate(LaraItem);
+        if (y >= bounds[FRAME_BOUND_MIN_Y]
+            && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 void FxLaraBubbles(ITEM_INFO* item)
 {
@@ -99,6 +120,7 @@ void FxChainBlock(ITEM_INFO* item)
 
 void T1MInjectGameEffects()
 {
+    INJECT(0x0041A210, ItemNearLara);
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041AD00, FxChainBlock);
