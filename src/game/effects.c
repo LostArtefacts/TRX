@@ -1,10 +1,41 @@
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/items.h"
+#include "game/sphere.h"
 #include "game/vars.h"
 #include "config.h"
 #include "util.h"
+
+void FxLaraBubbles(ITEM_INFO* item)
+{
+    int32_t count = (GetRandomDraw() * 3) / 0x8000;
+    if (!count) {
+        return;
+    }
+
+    SoundEffect(37, &item->pos, SFX_UNDERWATER);
+
+    PHD_VECTOR offset;
+    offset.x = 0;
+    offset.y = 0;
+    offset.z = 50;
+    GetJointAbsPosition(item, &offset, LM_HEAD);
+
+    for (int i = 0; i < count; i++) {
+        int16_t fx_num = CreateEffect(item->room_number);
+        if (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            fx->pos.x = offset.x;
+            fx->pos.y = offset.y;
+            fx->pos.z = offset.z;
+            fx->speed = 10 + ((GetRandomDraw() * 6) / 0x8000);
+            fx->frame_number = -((GetRandomDraw() * 3) / 0x8000);
+            fx->object_number = O_BUBBLES1;
+        }
+    }
+}
 
 void ControlBubble1(int16_t fx_num)
 {
@@ -60,6 +91,7 @@ void FxChainBlock(ITEM_INFO* item)
 
 void T1MInjectGameEffects()
 {
+    INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041AD00, FxChainBlock);
 }
