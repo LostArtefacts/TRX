@@ -37,12 +37,12 @@
 #define DartsControl            ((void          (*)(int16_t item_num))0x0043B060)
 #define DartEffectControl       ((void          (*)(int16_t item_num))0x0043B1A0)
 #define FlameEmitterControl     ((void          (*)(int16_t item_num))0x0043B1F0)
-#define FlameControl            ((void          (*)(int16_t item_num))0x0043B2A0)
 #define LavaEmitterControl      ((void          (*)(int16_t item_num))0x0043B520)
 #define LavaControl             ((void          (*)(int16_t item_num))0x0043B5F0)
 #define LavaWedgeControl        ((void          (*)(int16_t item_num))0x0043B710)
 // clang-format on
 
+void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 
 void T1MInjectGameTraps();

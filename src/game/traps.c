@@ -1,9 +1,70 @@
 #include "game/control.h"
+#include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
+#include "game/misc.h"
+#include "game/sphere.h"
 #include "game/traps.h"
 #include "game/vars.h"
 #include "util.h"
+
+void FlameControl(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+
+    fx->frame_number--;
+    if (fx->frame_number <= Objects[O_FLAME].nmeshes) {
+        fx->frame_number = 0;
+    }
+
+    if (fx->counter < 0) {
+        fx->pos.x = 0;
+        fx->pos.y = 0;
+        if (fx->counter == -1) {
+            fx->pos.z = -100;
+        } else {
+            fx->pos.z = 0;
+        }
+        GetJointAbsPosition(LaraItem, (PHD_VECTOR*)&fx->pos, -1 - fx->counter);
+
+        int32_t y =
+            GetWaterHeight(fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
+        if (y != NO_HEIGHT && fx->pos.y > y) {
+            fx->counter = 0;
+            StopSoundEffect(150, NULL);
+            KillEffect(fx_num);
+        } else {
+            SoundEffect(150, &fx->pos, 0);
+            LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
+            LaraItem->hit_status = 1;
+        }
+        return;
+    }
+
+    SoundEffect(150, &fx->pos, 0);
+    if (fx->counter) {
+        fx->counter--;
+    } else if (ItemNearLara(&fx->pos, 600)) {
+        int32_t x = LaraItem->pos.x - fx->pos.x;
+        int32_t z = LaraItem->pos.z - fx->pos.z;
+        int32_t distance = SQUARE(x) + SQUARE(z);
+
+        LaraItem->hit_points -= FLAME_TOONEAR_DAMAGE;
+        LaraItem->hit_status = 1;
+
+        if (distance < SQUARE(300)) {
+            fx->counter = 100;
+
+            fx_num = CreateEffect(LaraItem->room_number);
+            if (fx_num != -1) {
+                fx = &Effects[fx_num];
+                fx->frame_number = 0;
+                fx->object_number = O_FLAME;
+                fx->counter = -1;
+            }
+        }
+    }
+}
 
 void LavaBurn(ITEM_INFO* item)
 {
@@ -34,5 +95,6 @@ void LavaBurn(ITEM_INFO* item)
 
 void T1MInjectGameTraps()
 {
+    INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

@@ -11,6 +11,7 @@
 #define RemoveActiveItem        ((void          (*)(int16_t item_num))0x00421EB0)
 #define ItemNewRoom             ((void          (*)(int16_t item_num, int16_t room_num))0x00422060)
 #define CreateEffect            ((int16_t       (*)(int16_t room_num))0x00422280)
+#define KillEffect              ((void          (*)(int16_t fx_num))0x004222F0)
 // clang-format on
 
 void InitialiseFXArray();

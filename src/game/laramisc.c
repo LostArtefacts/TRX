@@ -58,7 +58,7 @@ void LaraControl(int16_t item_num)
         item->pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
-        StopSoundEffect(30, 0);
+        StopSoundEffect(30, NULL);
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;

@@ -225,4 +225,7 @@
 #define NATLA_RADIUS (WALL_L / 5) // = 204
 #define NATLA_SMARTNESS 0x7fff
 
+#define FLAME_ONFIRE_DAMAGE 5
+#define FLAME_TOONEAR_DAMAGE 3
+
 #endif
