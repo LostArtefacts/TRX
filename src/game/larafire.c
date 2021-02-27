@@ -4,6 +4,7 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
+#include "game/inv.h"
 #include "game/lara.h"
 #include "game/misc.h"
 #include "game/sphere.h"
@@ -41,6 +42,12 @@ void LaraGun()
                 draw = 1;
             }
         } else if (Input & IN_DRAW) {
+#ifdef T1M_FEAT_OG_FIXES
+            if (Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
+                Lara.gun_type = LGT_PISTOLS;
+                InitialiseNewWeapon();
+            }
+#endif
             draw = 1;
 #ifdef T1M_FEAT_INPUT
             Lara.request_gun_type = LGT_UNARMED;
