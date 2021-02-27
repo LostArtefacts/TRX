@@ -5,7 +5,7 @@ CFLAGS=-Wall -Isrc \
 	-DT1M_FEAT_EXTENDED_MEMORY \
 	-DT1M_FEAT_UI \
 	-DT1M_FEAT_GAMEPLAY \
-	-DT1M_FEAT_LEVEL_FIXES \
+	-DT1M_FEAT_OG_FIXES \
 	-DT1M_FEAT_NOCD
 
 VERSION = $(shell git describe --abbrev=7 --tags master)

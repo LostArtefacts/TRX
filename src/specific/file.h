@@ -15,7 +15,7 @@ int32_t S_LoadLevel(int level_id);
 const char* GetFullPath(const char* filename);
 void FindCdDrive();
 
-#ifdef T1M_FEAT_LEVEL_FIXES
+#ifdef T1M_FEAT_OG_FIXES
 void FixPyramidSecretTrigger();
 int32_t GetSecretCount();
 #endif
