@@ -7,7 +7,7 @@
 #include "util.h"
 #include <dinput.h>
 
-#ifdef T1M_FEAT_UI
+#ifdef T1M_FEAT_INPUT
 static int32_t medipack_cooldown = 0;
 #endif
 
@@ -105,7 +105,7 @@ void S_UpdateInput()
     }
 #endif
 
-#ifdef T1M_FEAT_UI
+#ifdef T1M_FEAT_INPUT
     if (T1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
