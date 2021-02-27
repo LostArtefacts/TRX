@@ -1023,14 +1023,14 @@ typedef struct {
     /* 0002 */ int16_t mesh_index;
     /* 0004 */ int32_t bone_index;
     /* 0008 */ int16_t* frame_base;
-    /* 000C */ void(__cdecl* initialise)(int16_t item_num);
-    /* 0010 */ void(__cdecl* control)(int16_t item_num);
-    /* 0014 */ void(__cdecl* floor)(
+    /* 000C */ void (*initialise)(int16_t item_num);
+    /* 0010 */ void (*control)(int16_t item_num);
+    /* 0014 */ void (*floor)(
         ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
-    /* 0018 */ void(__cdecl* ceiling)(
+    /* 0018 */ void (*ceiling)(
         ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
-    /* 001C */ void(__cdecl* draw_routine)(ITEM_INFO* item);
-    /* 0020 */ void(__cdecl* collision)(
+    /* 001C */ void (*draw_routine)(ITEM_INFO* item);
+    /* 0020 */ void (*collision)(
         int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
     /* 0024 */ int16_t anim_index;
     /* 0026 */ int16_t hit_points;
@@ -1245,8 +1245,8 @@ typedef struct {
 
 #pragma pack(pop)
 
-typedef void(__cdecl* ControlRoutine)(ITEM_INFO*, COLL_INFO*);
-typedef void(__cdecl* CollisionRoutine)(ITEM_INFO*, COLL_INFO*);
-typedef void(__cdecl* EffectRoutine)(ITEM_INFO* item);
+typedef void (*ControlRoutine)(ITEM_INFO*, COLL_INFO*);
+typedef void (*CollisionRoutine)(ITEM_INFO*, COLL_INFO*);
+typedef void (*EffectRoutine)(ITEM_INFO* item);
 
 #endif

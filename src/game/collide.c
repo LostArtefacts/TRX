@@ -289,7 +289,7 @@ int32_t FindGridShift(int32_t src, int32_t dst)
     }
 }
 
-int32_t __cdecl CollideStaticObjects(
+int32_t CollideStaticObjects(
     COLL_INFO* coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t hite)
 {

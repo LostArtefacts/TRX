@@ -15,6 +15,7 @@
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/option.h"
+#include "game/pickup.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "specific/file.h"
@@ -44,6 +45,7 @@ void T1MInject()
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
     T1MInjectGameOption();
+    T1MInjectGamePickup();
     T1MInjectGameSetup();
     T1MInjectGameText();
     T1MInjectSpecificFile();
