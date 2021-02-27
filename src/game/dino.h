@@ -4,8 +4,11 @@
 #include <stdint.h>
 
 // clang-format off
-#define RaptorControl           ((void         (*)(int16_t item_num))0x00415DA0)
 #define DinoControl             ((void         (*)(int16_t item_num))0x004160F0)
 // clang-format on
+
+void RaptorControl(int16_t item_num);
+
+void T1MInjectGameDino();
 
 #endif

@@ -8,6 +8,7 @@
 #include "game/control.h"
 #include "game/croc.h"
 #include "game/demo.h"
+#include "game/dino.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -35,6 +36,7 @@ void T1MInject()
     T1MInjectGameControl();
     T1MInjectGameCroc();
     T1MInjectGameDemo();
+    T1MInjectGameDino();
     T1MInjectGameDraw();
     T1MInjectGameEffects();
     T1MInjectGameHealth();
