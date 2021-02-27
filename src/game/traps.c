@@ -25,10 +25,18 @@ void FlameControl(int16_t fx_num)
         } else {
             fx->pos.z = 0;
         }
+
         GetJointAbsPosition(LaraItem, (PHD_VECTOR*)&fx->pos, -1 - fx->counter);
 
+#ifdef T1M_FEAT_OG_FIXES
+        int32_t y = GetWaterHeight(
+            LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z,
+            LaraItem->room_number);
+#else
         int32_t y =
             GetWaterHeight(fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
+#endif
+
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
             StopSoundEffect(150, NULL);
