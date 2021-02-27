@@ -509,7 +509,11 @@ void InitialiseLaraInventory(int32_t level_num)
 
     Lara.gun_status = start->gun_status;
     Lara.gun_type = start->gun_type;
+#ifdef T1M_FEAT_INPUT
+    Lara.request_gun_type = LGT_UNARMED;
+#else
     Lara.request_gun_type = start->gun_type;
+#endif
 
     LaraInitialiseMeshes(level_num);
     InitialiseNewWeapon();

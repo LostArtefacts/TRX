@@ -20,19 +20,31 @@ void LaraGun()
     }
 
     int32_t draw = 0;
-    if (LaraItem->hit_points <= AF_G_AIM) {
+    if (LaraItem->hit_points <= 0) {
         Lara.gun_status = LGS_ARMLESS;
     } else if (Lara.water_status == LWS_ABOVEWATER) {
+#ifdef T1M_FEAT_INPUT
+        if (Lara.request_gun_type != LGT_UNARMED
+            && (Lara.request_gun_type != Lara.gun_type
+                || Lara.gun_status == LGS_ARMLESS)) {
+#else
         if (Lara.request_gun_type != Lara.gun_type) {
+#endif
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_type = Lara.request_gun_type;
                 InitialiseNewWeapon();
                 draw = 1;
+#ifdef T1M_FEAT_INPUT
+                Lara.request_gun_type = LGT_UNARMED;
+#endif
             } else if (Lara.gun_status == LGS_READY) {
                 draw = 1;
             }
         } else if (Input & IN_DRAW) {
             draw = 1;
+#ifdef T1M_FEAT_INPUT
+            Lara.request_gun_type = LGT_UNARMED;
+#endif
         }
     } else if (Lara.gun_status == LGS_READY) {
         draw = 1;
