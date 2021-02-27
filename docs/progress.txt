@@ -199,7 +199,7 @@ GetFloor                        0x00413A80  0x000001D4  +
 GetWaterHeight                  0x00413C60  0x000000FE  +
 GetHeight                       0x00413D60  0x0000022A  +
 RefreshCamera                   0x00413FA0  0x000000D4  +
-TestTriggers                    0x00414080  0x0000074E  *
+TestTriggers                    0x00414080  0x0000074E  +
 TriggerActive                   0x00414820  0x00000055  +
 GetCeiling                      0x00414880  0x0000024B  +
 GetDoor                         0x00414AE0  0x0000004E  +
@@ -421,7 +421,7 @@ CreateItem                      0x00421C80  0x0000003D  -
 InitialiseItem                  0x00421CC0  0x000001EE  *
 RemoveActiveItem                0x00421EB0  0x000000A6  *
 RemoveDrawnItem                 0x00421F60  0x00000080  -
-AddActiveItem                   0x00421FE0  0x00000080  -
+AddActiveItem                   0x00421FE0  0x00000080  *
 ItemNewRoom                     0x00422060  0x000000A4  *
 SpawnItem                       0x00422110  0x000000B6  -
 GlobalItemReplace               0x004221D0  0x00000080  *
@@ -775,8 +775,8 @@ PuzzleOnAfterInventory          ----------  ----------  -
 PuzzleHoleCollision             0x00433B40  0x00000277  *
 SwitchControl                   0x00433DE0  0x0000003D  *
 SwitchTrigger                   0x00433E20  0x00000078  -
-KeyTrigger                      0x00433EA0  0x00000042  -
-PickupTrigger                   0x00433EF0  0x00000038  -
+KeyTrigger                      0x00433EA0  0x00000042  *
+PickupTrigger                   0x00433EF0  0x00000038  *
 PickUpSaveGameCollision         ----------  ----------  -
 InitialiseSaveGameItem          0x00433F30  0x0000001C  *
 ControlSavegameItem             ----------  ----------  -
@@ -915,7 +915,7 @@ DartsControl                    0x0043B060  0x00000140  *
 DartEffectControl               0x0043B1A0  0x0000004C  *
 FlameEmitterControl             0x0043B1F0  0x000000A3  *
 FlameControl                    0x0043B2A0  0x00000185  *
-LavaBurn                        0x0043B430  0x000000E8  -
+LavaBurn                        0x0043B430  0x000000E8  *
 LavaEmitterControl              0x0043B520  0x000000C7  *
 LavaControl                     0x0043B5F0  0x00000119  *
 LavaWedgeControl                0x0043B710  0x00000139  *

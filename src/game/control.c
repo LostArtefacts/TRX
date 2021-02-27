@@ -5,10 +5,14 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/lara.h"
+#include "game/lot.h"
 #include "game/misc.h"
 #include "game/moveblock.h"
+#include "game/pickup.h"
 #include "game/savegame.h"
+#include "game/traps.h"
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
@@ -538,6 +542,277 @@ void RefreshCamera(int16_t type, int16_t* data)
             || (target_ok == 2 && Camera.item->looked_at
                 && Camera.item != Camera.last_item)) {
             Camera.item = NULL;
+        }
+    }
+}
+
+void TestTriggers(int16_t* data, int heavy)
+{
+    if (!data) {
+        return;
+    }
+
+    if ((*data & DATA_TYPE) == FT_LAVA) {
+        if (!heavy && LaraItem->pos.y == LaraItem->floor) {
+            LavaBurn(LaraItem);
+        }
+
+        if (*data & END_BIT) {
+            return;
+        }
+
+        data++;
+    }
+
+    int16_t type = (*data++ >> 8) & 0x3F;
+    int32_t switch_off = 0;
+    int32_t flip = 0;
+    int32_t new_effect = -1;
+    int16_t flags = *data++;
+    int16_t timer = flags & 0xFF;
+
+    if (Camera.type != CAM_HEAVY) {
+        RefreshCamera(type, data);
+    }
+
+    if (heavy) {
+        if (type != TT_HEAVY) {
+            return;
+        }
+    } else {
+        switch (type) {
+        case TT_SWITCH: {
+            int16_t value = *data++ & VALUE_BITS;
+            if (!SwitchTrigger(value, timer)) {
+                return;
+            }
+            switch_off = Items[value].current_anim_state == AS_RUN;
+            break;
+        }
+
+        case TT_PAD:
+        case TT_ANTIPAD:
+            if (LaraItem->pos.y != LaraItem->floor) {
+                return;
+            }
+            break;
+
+        case TT_KEY: {
+            int16_t value = *data++ & VALUE_BITS;
+            if (!KeyTrigger(value)) {
+                return;
+            }
+            break;
+        }
+
+        case TT_PICKUP: {
+            int16_t value = *data++ & VALUE_BITS;
+            if (!PickupTrigger(value)) {
+                return;
+            }
+            break;
+        }
+
+        case TT_HEAVY:
+        case TT_DUMMY:
+            return;
+
+        case TT_COMBAT:
+            if (Lara.gun_status != LGS_READY) {
+                return;
+            }
+            break;
+        }
+    }
+
+    ITEM_INFO* camera_item = NULL;
+    int16_t trigger;
+    do {
+        trigger = *data++;
+        int16_t value = trigger & VALUE_BITS;
+
+        switch (TRIG_BITS(trigger)) {
+        case TO_OBJECT: {
+            ITEM_INFO* item = &Items[value];
+
+            if (item->flags & IF_ONESHOT) {
+                break;
+            }
+
+            item->timer = timer;
+            if (timer != 1) {
+                item->timer *= 30;
+            }
+
+            if (type == TT_SWITCH) {
+                item->flags ^= flags & IF_CODE_BITS;
+            } else if (type == TT_ANTIPAD) {
+                item->flags &= -1 - (flags & IF_CODE_BITS);
+            } else if (flags & IF_CODE_BITS) {
+                item->flags |= flags & IF_CODE_BITS;
+            }
+
+            if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+                break;
+            }
+
+            if (flags & IF_ONESHOT) {
+                item->flags |= IF_ONESHOT;
+            }
+
+            if (!item->active) {
+                if (Objects[item->object_number].intelligent) {
+                    if (item->status == IS_NOT_ACTIVE) {
+                        item->touch_bits = 0;
+                        item->status = IS_ACTIVE;
+                        AddActiveItem(value);
+                        EnableBaddieAI(value, 1);
+                    } else if (item->status == IS_INVISIBLE) {
+                        item->touch_bits = 0;
+                        if (EnableBaddieAI(value, 0)) {
+                            item->status = IS_ACTIVE;
+                        } else {
+                            item->status = IS_INVISIBLE;
+                        }
+                        AddActiveItem(value);
+                    }
+                } else {
+                    item->touch_bits = 0;
+                    item->status = IS_ACTIVE;
+                    AddActiveItem(value);
+                }
+            }
+            break;
+        }
+
+        case TO_CAMERA: {
+            trigger = *data++;
+            int16_t camera_flags = trigger;
+            int16_t camera_timer = trigger & 0xFF;
+
+            if (Camera.fixed[value].flags & IF_ONESHOT) {
+                break;
+            }
+
+            Camera.number = value;
+
+            if (Camera.type == CAM_LOOK || Camera.type == CAM_COMBAT) {
+                break;
+            }
+
+            if (type == TT_COMBAT) {
+                break;
+            }
+
+            if (type == TT_SWITCH && timer && switch_off) {
+                break;
+            }
+
+            if (Camera.number == Camera.last && type != TT_SWITCH) {
+                break;
+            }
+
+            Camera.timer = camera_timer;
+            if (Camera.timer != 1) {
+                Camera.timer *= 30;
+            }
+
+            if (camera_flags & IF_ONESHOT) {
+                Camera.fixed[Camera.number].flags |= IF_ONESHOT;
+            }
+
+            Camera.speed = ((camera_flags & IF_CODE_BITS) >> 6) + 1;
+            Camera.type = heavy ? CAM_HEAVY : CAM_FIXED;
+            break;
+        }
+
+        case TO_TARGET:
+            camera_item = &Items[value];
+            break;
+
+        case TO_SINK: {
+            OBJECT_VECTOR* obvector = &Camera.fixed[value];
+
+            if (Lara.LOT.required_box != obvector->flags) {
+                Lara.LOT.target.x = obvector->x;
+                Lara.LOT.target.y = obvector->y;
+                Lara.LOT.target.z = obvector->z;
+                Lara.LOT.required_box = obvector->flags;
+            }
+
+            Lara.current_active = obvector->data * 6;
+            break;
+        }
+
+        case TO_FLIPMAP:
+            if (FlipMapTable[value] & IF_ONESHOT) {
+                break;
+            }
+
+            if (type == TT_SWITCH) {
+                FlipMapTable[value] ^= flags & IF_CODE_BITS;
+            } else if (flags & IF_CODE_BITS) {
+                FlipMapTable[value] |= flags & IF_CODE_BITS;
+            }
+
+            if ((FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS) {
+                if (flags & IF_ONESHOT) {
+                    FlipMapTable[value] |= IF_ONESHOT;
+                }
+
+                if (!FlipStatus) {
+                    flip = 1;
+                }
+            } else if (FlipStatus) {
+                flip = 1;
+            }
+            break;
+
+        case TO_FLIPON:
+            if ((FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS
+                && !FlipStatus) {
+                flip = 1;
+            }
+            break;
+
+        case TO_FLIPOFF:
+            if ((FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS
+                && FlipStatus) {
+                flip = 1;
+            }
+            break;
+
+        case TO_FLIPEFFECT:
+            new_effect = value;
+            break;
+
+        case TO_FINISH:
+            LevelComplete = 1;
+            break;
+
+        case TO_CD:
+            TriggerCDTrack(value, flags, type);
+            break;
+
+        case TO_SECRET:
+            if ((SaveGame[0].secrets & (1 << value))) {
+                break;
+            }
+            SaveGame[0].secrets |= 1 << value;
+            S_CDPlay(13);
+            break;
+        }
+    } while (!(trigger & END_BIT));
+
+    if (camera_item && (Camera.type == CAM_FIXED || Camera.type == CAM_HEAVY)) {
+        Camera.item = camera_item;
+    }
+
+    if (flip) {
+        FlipMap();
+        if (new_effect != -1) {
+            FlipEffect = new_effect;
+            FlipTimer = 0;
         }
     }
 }
@@ -1078,6 +1353,7 @@ void T1MInjectGameControl()
     INJECT(0x00413C60, GetWaterHeight);
     INJECT(0x00413D60, GetHeight);
     INJECT(0x00413FA0, RefreshCamera);
+    INJECT(0x00414080, TestTriggers);
     INJECT(0x00414820, TriggerActive);
     INJECT(0x00414880, GetCeiling);
     INJECT(0x00414AE0, GetDoor);
