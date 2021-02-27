@@ -63,6 +63,19 @@ void ControlBlood1(int16_t fx_num)
     }
 }
 
+void ControlExplosion1(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->counter++;
+    if (fx->counter == 2) {
+        fx->counter = 0;
+        fx->frame_number--;
+        if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
+            KillEffect(fx_num);
+        }
+    }
+}
+
 void FxLaraBubbles(ITEM_INFO* item)
 {
 #ifdef T1M_FEAT_CHEATS
@@ -157,6 +170,7 @@ void T1MInjectGameEffects()
     INJECT(0x0041A210, ItemNearLara);
     INJECT(0x0041A310, DoBloodSplat);
     INJECT(0x0041A370, ControlBlood1);
+    INJECT(0x0041A400, ControlExplosion1);
     INJECT(0x0041A670, FxLaraBubbles);
     INJECT(0x0041A760, ControlBubble1);
     INJECT(0x0041AD00, FxChainBlock);

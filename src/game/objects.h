@@ -39,7 +39,6 @@
 #define ControlMissile                  ((void          (*)(int16_t item_num))0x0043C1C0)
 #define ControlGunShot                  ((void          (*)(int16_t item_num))0x00430E00)
 #define ControlTwinkle                  ((void          (*)(int16_t item_num))0x0041A500)
-#define ControlExplosion1               ((void          (*)(int16_t item_num))0x0041A400)
 #define PickUpScionCollision            ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433240)
 #define PickUpScion4Collision           ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004333B0)
 #define BoatControl                     ((void          (*)(int16_t item_num))0x0042D520)
