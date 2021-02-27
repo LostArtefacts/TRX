@@ -78,6 +78,13 @@
     // - pink
     "healthbar_color": "red",
 
+    // Changes how the airbar is displayed. Possible values:
+    // - always: always show the airbar
+    // - flashing: show the airbar only when Lara's oxygen is 20% or below
+    // - default: show the airbar only in the water
+    // - never: never display the airbar (for challenge runs)
+    "airbar_showing_mode": "default",
+
     // Location where the airbar is displayed.
     "airbar_location": "top-right",
 

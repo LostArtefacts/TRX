@@ -47,6 +47,7 @@ struct {
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
+    int8_t airbar_showing_mode;
     int8_t airbar_location;
     int8_t airbar_color;
     int8_t enemy_healthbar_location;

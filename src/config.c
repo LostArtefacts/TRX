@@ -117,6 +117,8 @@ int T1MReadConfig()
 
     T1MConfig.healthbar_showing_mode =
         ReadBarShowingMode(json, "healthbar_showing_mode");
+    T1MConfig.airbar_showing_mode =
+        ReadBarShowingMode(json, "airbar_showing_mode");
 
     T1MConfig.healthbar_location =
         ReadBarLocationConfig(json, "healthbar_location", T1M_BL_TOP_LEFT);

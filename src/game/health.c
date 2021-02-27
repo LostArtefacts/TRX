@@ -79,10 +79,31 @@ void DrawHealthBar()
 
 void DrawAirBar()
 {
+#ifdef T1M_FEAT_GAMEPLAY
+    int32_t show =
+        Lara.water_status == LWS_UNDERWATER || Lara.water_status == LWS_SURFACE;
+    switch (T1MConfig.airbar_showing_mode) {
+    case T1M_BSM_ALWAYS:
+        show = 1;
+        break;
+    case T1M_BSM_NEVER:
+        show = 0;
+        return;
+    case T1M_BSM_FLASHING:
+        if (Lara.air > (LARA_AIR * 20) / 100) {
+            show = 0;
+        }
+        break;
+    }
+    if (!show) {
+        return;
+    }
+#else
     if (Lara.water_status != LWS_UNDERWATER
         && Lara.water_status != LWS_SURFACE) {
         return;
     }
+#endif
 
     int air = Lara.air;
     if (air < 0) {
