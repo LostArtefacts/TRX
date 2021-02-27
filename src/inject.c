@@ -6,6 +6,7 @@
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/croc.h"
 #include "game/demo.h"
 #include "game/draw.h"
 #include "game/effects.h"
@@ -32,6 +33,7 @@ void T1MInject()
     T1MInjectGameCamera();
     T1MInjectGameCollide();
     T1MInjectGameControl();
+    T1MInjectGameCroc();
     T1MInjectGameDemo();
     T1MInjectGameDraw();
     T1MInjectGameEffects();
