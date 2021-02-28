@@ -112,7 +112,7 @@ void ControlExplosion1(int16_t fx_num)
     }
 }
 
-void Richochet(GAME_VECTOR* pos)
+void Ricochet(GAME_VECTOR* pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {

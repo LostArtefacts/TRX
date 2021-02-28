@@ -16,7 +16,7 @@ int16_t DoBloodSplat(
     int16_t room_num);
 void ControlBlood1(int16_t fx_num);
 void ControlExplosion1(int16_t fx_num);
-void Richochet(GAME_VECTOR* pos);
+void Ricochet(GAME_VECTOR* pos);
 void ControlRicochet1(int16_t fx_num);
 void Twinkle(GAME_VECTOR* pos);
 void ControlTwinkle(int16_t fx_num);

@@ -478,7 +478,7 @@ int32_t FireWeapon(
     vdest.y = vsrc.y + PhdMatrixPtr->_21;
     vdest.z = vsrc.z + PhdMatrixPtr->_22;
     LOS(&vsrc, &vdest);
-    Richochet(&vdest);
+    Ricochet(&vdest);
     return -1;
 }
 
