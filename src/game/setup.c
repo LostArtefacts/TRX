@@ -74,6 +74,13 @@ int32_t InitialiseLevel(int level_num)
         ExtractSaveGameInfo();
     }
 
+#ifdef T1M_FEAT_INPUT
+    // LaraGun() expects request_gun_type to be set only when it really is
+    // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
+    // times.
+    Lara.request_gun_type = LGT_UNARMED;
+#endif
+
     if (LevelMusic[CurrentLevel]) {
         S_CDPlay(LevelMusic[CurrentLevel]);
     }
