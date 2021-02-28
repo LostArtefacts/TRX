@@ -22,6 +22,23 @@
 #define LOW_LIGHT 0x1400
 #define HIGH_LIGHT 0x1000
 
+typedef enum {
+    PSPINE = 1,
+    PFRONT = 2,
+    PINFRONT = 4,
+    PPAGE2 = 8,
+    PBACK = 16,
+    PINBACK = 32,
+    PPAGE1 = 64
+} PASS_PAGES;
+
+#define PASS_PT_XROT 0x1220
+#define PASS_ZTRANS 0x180
+#define PASS_YTRANS 0
+#define PASS_X_ROT -0x10e0
+#define PASS_Y_ROT 0
+#define PASS_MESH (PFRONT | PSPINE | PBACK)
+
 static int OldInputDB = 0;
 
 int32_t Display_Inventory(int inv_mode)
@@ -711,6 +728,33 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
     return 1;
 }
 
+void SelectMeshes(INVENTORY_ITEM* inv_item)
+{
+    if (inv_item->object_number == O_PASSPORT_OPTION) {
+        if (inv_item->current_frame <= 14) {
+            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1;
+        } else if (inv_item->current_frame < 19) {
+            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1 | PPAGE2;
+        } else if (inv_item->current_frame == 19) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2;
+        } else if (inv_item->current_frame < 24) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2 | PINBACK;
+        } else if (inv_item->current_frame < 29) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE2 | PINBACK;
+        } else if (inv_item->current_frame == 29) {
+            inv_item->drawn_meshes = PASS_MESH;
+        }
+    } else if (inv_item->object_number == O_MAP_OPTION) {
+        if (inv_item->current_frame && inv_item->current_frame < 18) {
+            inv_item->drawn_meshes = -1;
+        } else {
+            inv_item->drawn_meshes = inv_item->which_meshes;
+        }
+    } else {
+        inv_item->drawn_meshes = -1;
+    }
+}
+
 int32_t GetDebouncedInput(int32_t input)
 {
     if (input && !OldInputDB) {
@@ -727,4 +771,5 @@ void T1MInjectGameInvEntry()
 {
     INJECT(0x0041E760, Display_Inventory);
     INJECT(0x0041F980, Construct_Inventory);
+    INJECT(0x0041FAB0, SelectMeshes);
 }

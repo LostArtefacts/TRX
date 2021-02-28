@@ -7,7 +7,6 @@
 // clang-format off
 #define InitColours                 ((void          (*)())0x0041FEF0)
 #define DrawInventoryItem           ((void          (*)(INVENTORY_ITEM* inv_item))0x0041FB40)
-#define SelectMeshes                ((int32_t       (*)(INVENTORY_ITEM* inv_item))0x0041FAB0)
 #define RingIsOpen                  ((void          (*)(RING_INFO* ring))0x00420000)
 #define RingIsNotOpen               ((void          (*)(RING_INFO* ring))0x00420150)
 #define RingNotActive               ((void          (*)(INVENTORY_ITEM* inv_item))0x004201D0)
@@ -35,6 +34,7 @@
 
 int32_t Display_Inventory(int inv_mode);
 void Construct_Inventory();
+void SelectMeshes(INVENTORY_ITEM* inv_item);
 int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item);
 int32_t GetDebouncedInput(int32_t input);
 
