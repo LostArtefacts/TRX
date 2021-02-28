@@ -15,8 +15,10 @@ static int8_t ReadBarShowingMode(struct json_value_s* root, const char* name)
     const char* value_str = JSONGetStringValue(root, name);
     if (!value_str) {
         return T1M_BSM_DEFAULT;
-    } else if (!strcmp(value_str, "flashing")) {
-        return T1M_BSM_FLASHING;
+    } else if (!strcmp(value_str, "flashing-or-default")) {
+        return T1M_BSM_FLASHING_OR_DEFAULT;
+    } else if (!strcmp(value_str, "flashing-only")) {
+        return T1M_BSM_FLASHING_ONLY;
     } else if (!strcmp(value_str, "always")) {
         return T1M_BSM_ALWAYS;
     } else if (!strcmp(value_str, "never")) {

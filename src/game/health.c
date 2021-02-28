@@ -58,11 +58,12 @@ void DrawHealthBar()
         break;
     case T1M_BSM_NEVER:
         show = 0;
-        return;
-    case T1M_BSM_FLASHING:
-        if (hit_points <= (LARA_HITPOINTS * 20) / 100) {
-            show = 1;
-        }
+        break;
+    case T1M_BSM_FLASHING_OR_DEFAULT:
+        show |= hit_points <= (LARA_HITPOINTS * 20) / 100;
+        break;
+    case T1M_BSM_FLASHING_ONLY:
+        show = hit_points <= (LARA_HITPOINTS * 20) / 100;
         break;
     }
     if (!show) {
@@ -88,11 +89,12 @@ void DrawAirBar()
         break;
     case T1M_BSM_NEVER:
         show = 0;
-        return;
-    case T1M_BSM_FLASHING:
-        if (Lara.air > (LARA_AIR * 20) / 100) {
-            show = 0;
-        }
+        break;
+    case T1M_BSM_FLASHING_OR_DEFAULT:
+        show |= Lara.air <= (LARA_AIR * 20) / 100;
+        break;
+    case T1M_BSM_FLASHING_ONLY:
+        show = Lara.air <= (LARA_AIR * 20) / 100;
         break;
     }
     if (!show) {
