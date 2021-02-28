@@ -17,6 +17,7 @@
 #define CROC_FASTTURN_TURN (6 * PHD_DEGREE) // = 1092
 #define CROC_TOUCH 0x3FC
 #define CROC_TURN (3 * PHD_DEGREE) // = 546
+
 #define GATOR_BITE_DAMAGE 100
 #define GATOR_DIE_ANIM 4
 #define GATOR_FLOAT_SPEED (WALL_L / 32) // = 32
