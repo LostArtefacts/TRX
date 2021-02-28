@@ -317,7 +317,7 @@ FxExplosion                     0x0041AE70  0x00000026  +
 FxFlicker                       0x0041AEA0  0x0000004A  +
 FxLaraHandsFree                 0x0041AEF0  0x0000000A  +
 FxFlipMap                       0x0041AF00  0x00000005  +
-FxDrawRightGun                  0x0041AF10  0x0000007E  -
+FxDrawRightGun                  0x0041AF10  0x0000007E  +
 
 # ???
 S_LoadLevel                     0x0041AF90  0x00000016  +

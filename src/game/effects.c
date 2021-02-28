@@ -470,6 +470,21 @@ void FxFlipMap(ITEM_INFO* item)
     FlipMap();
 }
 
+// original name: draw_right_gun
+void FxDrawRightGun(ITEM_INFO* item)
+{
+    int16_t* tmp_mesh;
+    OBJECT_INFO* obj = &Objects[item->object_number];
+    tmp_mesh = Meshes[obj->mesh_index + LM_THIGH_R];
+    Meshes[obj->mesh_index + LM_THIGH_R] =
+        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R];
+    Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R] = tmp_mesh;
+    tmp_mesh = Meshes[obj->mesh_index + LM_HAND_R];
+    Meshes[obj->mesh_index + LM_HAND_R] =
+        Meshes[Objects[O_PISTOLS].mesh_index + LM_HAND_R];
+    Meshes[Objects[O_PISTOLS].mesh_index + LM_HAND_R] = tmp_mesh;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -499,4 +514,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AEA0, FxFlicker);
     INJECT(0x0041AEF0, FxLaraHandsFree);
     INJECT(0x0041AF00, FxFlipMap);
+    INJECT(0x0041AF10, FxDrawRightGun);
 }
