@@ -6,21 +6,102 @@
 #include "game/dino.h"
 #include "game/draw.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/hair.h"
+#include "game/health.h"
+#include "game/inv.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/lion.h"
+#include "game/lot.h"
 #include "game/natla.h"
 #include "game/objects.h"
 #include "game/people.h"
 #include "game/rat.h"
+#include "game/savegame.h"
 #include "game/setup.h"
+#include "game/text.h"
 #include "game/traps.h"
 #include "game/types.h"
 #include "game/vars.h"
 #include "game/warrior.h"
 #include "game/wolf.h"
+#include "specific/file.h"
+#include "specific/init.h"
+#include "specific/output.h"
+#include "specific/shed.h"
+#include "specific/sndpc.h"
 #include "config.h"
 #include "util.h"
+
+int32_t InitialiseLevel(int level_num)
+{
+    TRACE("");
+    if (level_num == LV_CURRENT) {
+        CurrentLevel = SaveGame[0].current_level;
+    } else {
+        CurrentLevel = level_num;
+    }
+
+    S_CDVolume(CurrentLevel); // NOTE: this argument makes no sense!
+
+    InitialiseGameFlags();
+
+    Lara.item_number = NO_ITEM;
+
+    S_InitialiseScreen();
+
+    if (!S_LoadLevel(CurrentLevel)) {
+        return 0;
+    }
+
+    if (Lara.item_number != NO_ITEM) {
+        InitialiseLara();
+    }
+
+    Effects = game_malloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
+    InitialiseFXArray();
+    InitialiseLOTArray();
+
+    InitColours();
+    T_InitPrint();
+    InitialisePickUpDisplay();
+
+    HealthBarTimer = 100;
+    mn_reset_sound_effects();
+
+    if (level_num == LV_CURRENT) {
+        ExtractSaveGameInfo();
+    }
+
+    if (LevelMusic[CurrentLevel]) {
+        S_CDPlay(LevelMusic[CurrentLevel]);
+    }
+    Camera.underwater = 0;
+    return 1;
+}
+
+void InitialiseGameFlags()
+{
+    FlipStatus = 0;
+    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+        FlipMapTable[i] = 0;
+    }
+
+    for (int i = 0; i < MAX_CD_TRACKS; i++) {
+        CDFlags[i] = 0;
+    }
+
+    /* Clear Object Loaded flags */
+    for (int i = 0; i < NUMBER_OBJECTS; i++) {
+        Objects[i].loaded = 0;
+    }
+
+    AmmoText = NULL;
+    LevelComplete = 0;
+    FlipEffect = -1;
+    PierreItem = NO_ITEM;
+}
 
 void BaddyObjects()
 {
@@ -995,6 +1076,7 @@ void InitialiseObjects()
 
 void T1MInjectGameSetup()
 {
+    INJECT(0x004362A0, InitialiseLevel);
     INJECT(0x004363E0, BaddyObjects);
     INJECT(0x00437010, TrapObjects);
     INJECT(0x00437370, ObjectObjects);

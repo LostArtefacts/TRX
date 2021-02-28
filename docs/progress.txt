@@ -391,7 +391,7 @@ DrawInventoryItem               0x0041FB40  0x000003A0  -
 GetDebouncedInput               ----------  ----------  -
 
 # invfunc.cpp
-InitColours                     0x0041FEF0  0x0000010A  -
+InitColours                     0x0041FEF0  0x0000010A  *
 RingIsOpen                      0x00420000  0x0000014D  -
 RingIsNotOpen                   0x00420150  0x00000076  -
 RingNotActive                   0x004201D0  0x0000069E  -
@@ -654,7 +654,7 @@ phd_atan                        0x0042A8A0  0x00000055  -
 phd_sqrt                        0x0042A900  0x0000003A  -
 
 # mnsound.cpp
-mn_reset_sound_effects          0x0042A940  0x000000EC  -
+mn_reset_sound_effects          0x0042A940  0x000000EC  *
 SoundEffect                     0x0042AA30  0x000004C2  *
 mn_get_fx_slot                  0x0042AF00  0x000000CE  -
 mn_reset_ambient_loudness       0x0042AFD0  0x00000030  *
@@ -733,7 +733,7 @@ Display_Requester               0x0042F6F0  0x0000056B  -
 S_InitialisePolyList            0x0042FC60  0x00000005  *
 S_DumpScreen                    0x0042FC70  0x00000044  *
 S_ClearScreen                   0x0042FCC0  0x00000013  *
-S_InitialiseScreen              0x0042FCE0  0x00000027  -
+S_InitialiseScreen              0x0042FCE0  0x00000027  *
 S_OutputPolyList                0x0042FD10  0x00000018  *
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
 S_PrintShadow                   0x0042FFA0  0x0000015B  *
@@ -806,7 +806,7 @@ InitialiseStartInfo             0x004344D0  0x00000042  -
 ModifyStartInfo                 0x00434520  0x000000BF  *
 CreateStartInfo                 0x004345E0  0x00000139  *
 CreateSaveGameInfo              0x00434720  0x00000866  *
-ExtractSaveGameInfo             0x00434F90  0x00000971  -
+ExtractSaveGameInfo             0x00434F90  0x00000971  *
 ResetSG                         ----------  ----------  -
 WriteSG                         ----------  ----------  -
 ReadSG                          ----------  ----------  -
@@ -821,7 +821,7 @@ ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
 draw_scaled_spriteC             0x004360A0  0x000001FB  -
 
 # setup.cpp
-InitialiseLevel                 0x004362A0  0x00000119  *
+InitialiseLevel                 0x004362A0  0x00000119  +
 InitialiseGameFlags             ----------  ----------  -
 InitialiseLevelFlags            0x004363C0  0x00000018  -
 BaddyObjects                    0x004363E0  0x00000C2F  +

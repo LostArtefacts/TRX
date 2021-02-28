@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/setup.h"
+#include "game/setup.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/frontend.h"

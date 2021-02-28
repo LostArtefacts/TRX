@@ -3,6 +3,7 @@
 
 // clang-format off
 #define S_AniamteTextures       ((void          (*)(int32_t nframes))0x00430660)
+#define S_InitialiseScreen      ((void          (*)())0x0042FCE0)
 #define S_DumpScreen            ((int32_t       (*)())0x0042FC70)
 #define S_ClearScreen           ((void          (*)())0x0042FCC0)
 #define S_SetupAboveWater       ((void          (*)(int32_t underwater))0x00430640)

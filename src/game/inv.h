@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 // clang-format off
+#define InitColours             ((void          (*)())0x0041FEF0)
 #define Inv_AddItem             ((int32_t       (*)(int16_t item_num))0x004209C0)
 #define Inv_RemoveAllItems      ((void          (*)())0x00421280)
 #define Inv_RemoveItem          ((void          (*)(int16_t item_num))0x004212A0)
