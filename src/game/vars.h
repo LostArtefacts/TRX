@@ -10,7 +10,6 @@
 #define cd_drive                VAR_I_(0x0045A010, char, '.')
 #define DEMO                    VAR_I_(0x0045F1C0, uint32_t, 0)
 #define dword_45A1F0            VAR_U_(0x0045A1F0, uint32_t)
-#define newpath                 ARRAY_(0x00459F90, char, [128])
 #define RoomCount               VAR_U_(0x00462BDC, uint16_t)
 #define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
 #define PhdWinMaxX              VAR_I_(0x006CAD00, int32_t, 0)
@@ -20,6 +19,7 @@
 #define PhdPersp                VAR_U_(0x0069518C, int32_t)
 #define PhdFarZ                 VAR_U_(0x00695184, int32_t)
 #define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
+#define PhdWet                  VAR_U_(0x0045A300, int32_t)
 #define FloorData               VAR_U_(0x0045F1BC, int16_t*)
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define MeshBase                VAR_U_(0x0045F1B8, int16_t*)
@@ -148,13 +148,23 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define DemoLevels              ARRAY_(0x00453538, int8_t, [])
 #define TitleLoaded             VAR_U_(0x0045A324, int32_t)
 #define DemoLevel               VAR_I_(0x00453530, int32_t, 1)
-#define DemoPtr                 VAR_U_(0x00462BFC, int32_t*)
+#define DemoPtr                 VAR_U_(0x00462BFC, uint32_t*)
 #define DemoCount               VAR_U_(0x00462C00, int32_t)
 #define ChunkyFlag              VAR_I_(0x00459F44, int32_t, 0)
 #define HeightType              VAR_I_(0x00459F48, int32_t, 0)
 #define InventoryChosen         VAR_I_(0x00456328, int16_t, -1)
 #define NumberSoundEffects      VAR_U_(0x0045F1C4, int32_t)
 #define SoundEffectsTable       VAR_U_(0x0045F1C8, OBJECT_VECTOR*)
+#define DepthQTable             ARRAY_(0x006D5600, uint8_t, [32][256])
+#define GouraudTable            ARRAY_(0x0068B380, uint8_t, [256][32])
+#define AnimTextureRanges       VAR_U_(0x0045E640, int16_t*)
+#define NumCineFrames           VAR_U_(0x00462CF0, int16_t)
+#define Cine                    VAR_U_(0x00462CF4, int16_t*)
+#define CDDrive                 VAR_U_(0x0045A010, char)
+#define GamePalette             ARRAY_(0x0045E660, uint8_t, [256 * 3])
+#define WaterPalette            ARRAY_(0x0045E33D, uint8_t, [256 * 3])
+#define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
+#define NumberCameras           VAR_U_(0x0045A314, int32_t)
 // clang-format on
 
 extern int32_t MeshCount;
@@ -169,6 +179,8 @@ extern int32_t ObjectCount;
 extern int32_t StaticCount;
 extern int32_t TextureCount;
 extern int32_t FloorDataSize;
+extern int32_t TexturePageCount;
+extern int32_t AnimTextureRangeCount;
 
 #ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;

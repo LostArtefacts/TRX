@@ -15,6 +15,8 @@
 #define mn_reset_ambient_loudness ((void        (*)())0x0042AFD0)
 #define mn_update_sound_effects ((void          (*)())0x0042B080)
 #define CheckCheatMode          ((void          (*)())0x00438920)
+#define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
+#define PaletteSetHardware      ((void          (*)())0x004087EA)
 // clang-format on
 
 #endif
