@@ -1,5 +1,6 @@
 on:
   push:
+    branch: master
     tags:
     - 'v?[0-9]*'
 
@@ -15,6 +16,10 @@ jobs:
           sudo apt-get install -y gcc-mingw-w64-i686 make
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - run: git checkout master
       - name: Build project
         run: |
           make build
