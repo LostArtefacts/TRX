@@ -311,7 +311,7 @@ FxFlood                         0x0041AC50  0x0000008F  +
 FxRaisingBlock                  0x0041ACE0  0x00000019  +
 FxChainBlock                    0x0041AD00  0x00000043  +
 FxStairs2Slope                  0x0041AD50  0x00000028  +
-FxSand                          0x0041AD80  0x0000007F  -
+FxSand                          0x0041AD80  0x0000007F  +
 FxPowerUp                       0x0041AE00  0x0000006A  -
 FxExplosion                     0x0041AE70  0x00000026  -
 FxFlicker                       0x0041AEA0  0x0000004A  -

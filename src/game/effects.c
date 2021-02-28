@@ -403,6 +403,24 @@ void FxStairs2Slope(ITEM_INFO* item)
     FlipTimer++;
 }
 
+// original name: SandFX
+void FxSand(ITEM_INFO* item)
+{
+    PHD_3DPOS pos;
+    if (FlipTimer > 120) {
+        FlipEffect = -1;
+    } else {
+        if (!FlipTimer) {
+            SoundEffect(161, NULL, 0);
+        }
+        pos.x = Camera.target.x;
+        pos.y = Camera.target.y + FlipTimer * 100;
+        pos.z = Camera.target.z;
+        SoundEffect(118, &pos, 0);
+    }
+    FlipTimer++;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -426,4 +444,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041ACE0, FxRaisingBlock);
     INJECT(0x0041AD00, FxChainBlock);
     INJECT(0x0041AD50, FxStairs2Slope);
+    INJECT(0x0041AD80, FxSand);
 }
