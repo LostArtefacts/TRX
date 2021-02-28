@@ -436,6 +436,14 @@ void FxPowerUp(ITEM_INFO* item)
     FlipTimer++;
 }
 
+// original name: ExplosionFX
+void FxExplosion(ITEM_INFO* item)
+{
+    SoundEffect(170, NULL, 0);
+    Camera.bounce = -75;
+    FlipEffect = -1;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -461,4 +469,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AD50, FxStairs2Slope);
     INJECT(0x0041AD80, FxSand);
     INJECT(0x0041AE00, FxPowerUp);
+    INJECT(0x0041AE70, FxExplosion);
 }
