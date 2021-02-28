@@ -458,6 +458,12 @@ void FxFlicker(ITEM_INFO* item)
     FlipTimer++;
 }
 
+// original name: lara_hands_free
+void FxLaraHandsFree(ITEM_INFO* item)
+{
+    Lara.gun_status = LGS_ARMLESS;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -485,4 +491,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AE00, FxPowerUp);
     INJECT(0x0041AE70, FxExplosion);
     INJECT(0x0041AEA0, FxFlicker);
+    INJECT(0x0041AEF0, FxLaraHandsFree);
 }
