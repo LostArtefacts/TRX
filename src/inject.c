@@ -5,6 +5,7 @@
 #include "game/bear.h"
 #include "game/box.h"
 #include "game/camera.h"
+#include "game/cinema.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/croc.h"
@@ -35,6 +36,7 @@ void T1MInject()
     T1MInjectGameBear();
     T1MInjectGameBox();
     T1MInjectGameCamera();
+    T1MInjectGameCinema();
     T1MInjectGameCollide();
     T1MInjectGameControl();
     T1MInjectGameCroc();
