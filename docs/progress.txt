@@ -225,7 +225,7 @@ GetDemoInput                    0x00415D70  0x0000002D  +
 # dino.cpp
 RaptorControl                   0x00415DA0  0x00000330  +
 DinoControl                     0x004160F0  0x0000028F  +
-LaraDinoDeath                   0x004163A0  0x000000C1  *
+LaraDinoDeath                   0x004163A0  0x000000C1  +
 
 # shell/display.cpp
 IncreaseScreenSize              ----------  ----------  -

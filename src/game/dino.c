@@ -2,6 +2,8 @@
 #include "game/dino.h"
 #include "game/effects.h"
 #include "game/game.h"
+#include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/misc.h"
 #include "game/types.h"
@@ -288,8 +290,39 @@ void DinoControl(int16_t item_num)
     item->collidable = 1;
 }
 
+void LaraDinoDeath(ITEM_INFO* item)
+{
+    item->goal_anim_state = DINO_KILL;
+    if (LaraItem->room_number != item->room_number) {
+        ItemNewRoom(Lara.item_number, item->room_number);
+    }
+
+    LaraItem->pos.x = item->pos.x;
+    LaraItem->pos.y = item->pos.y;
+    LaraItem->pos.z = item->pos.z;
+    LaraItem->pos.x_rot = 0;
+    LaraItem->pos.y_rot = item->pos.y_rot;
+    LaraItem->pos.z_rot = 0;
+    LaraItem->gravity_status = 0;
+    LaraItem->current_anim_state = AS_SPECIAL;
+    LaraItem->goal_anim_state = AS_SPECIAL;
+    LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index + 1;
+    LaraItem->frame_number = Anims[LaraItem->anim_number].frame_base;
+    LaraSwapMeshExtra();
+
+    LaraItem->hit_points = -1;
+    Lara.air = -1;
+    Lara.gun_status = LGS_HANDSBUSY;
+    Lara.gun_type = LGT_UNARMED;
+
+    Camera.flags = FOLLOW_CENTRE;
+    Camera.target_angle = 170 * PHD_DEGREE;
+    Camera.target_elevation = -25 * PHD_DEGREE;
+}
+
 void T1MInjectGameDino()
 {
     INJECT(0x00415DA0, RaptorControl);
     INJECT(0x004160F0, DinoControl);
+    INJECT(0x004163A0, LaraDinoDeath);
 }
