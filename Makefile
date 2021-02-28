@@ -33,8 +33,8 @@ build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c "$<" -o "$@"
 
 docker_build:
-	docker build -t tr1main .
-	docker run -v $(shell pwd)/build:/build tr1main
+	docker build -t tomb1main .
+	docker run -v $(shell pwd)/build:/build tomb1main
 
 lint:
 	clang-format-10 -i $(shell find src -type f -iname '*.c' -or -iname '*.h')
