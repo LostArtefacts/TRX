@@ -1,6 +1,7 @@
 #ifndef T1M_3DSYSTEM_3D_GEN_H
 #define T1M_3DSYSTEM_3D_GEN_H
 
+#include "game/types.h"
 #include <stdint.h>
 
 // clang-format off
@@ -18,7 +19,6 @@
 #define phd_GetVectorAngles     ((void          (*)(int32_t x, int32_t y, int32_t z, PHD_ANGLE* dest))0x00401270)
 #define phd_GenerateW2V         ((void          (*)(PHD_3DPOS* viewpos))0x00401000)
 #define phd_LookAt              ((void          (*)(int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar, int32_t ztar, PHD_ANGLE roll))0x004011A0)
-#define AlterFOV                ((void          (*)(PHD_ANGLE fov))0x004026D0)
 // clang-format on
 
 void phd_PopMatrix();
@@ -26,6 +26,7 @@ void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
     uint8_t* scrptr);
+void AlterFOV(PHD_ANGLE fov);
 
 void T1MInject3DSystem3DGen();
 

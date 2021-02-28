@@ -1,4 +1,5 @@
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/phd_math.h"
 #include "game/vars.h"
 
 void phd_InitWindow(
@@ -29,6 +30,13 @@ void phd_InitWindow(
     PhdMatrixPtr = &MatrixStack;
 }
 
+void AlterFOV(PHD_ANGLE fov)
+{
+    int16_t c = phd_cos(fov / 2);
+    int16_t s = phd_sin(fov / 2);
+    PhdPersp = (c * (PhdWinWidth / 2)) / s;
+}
+
 void phd_PopMatrix()
 {
     PhdMatrixPtr--;
@@ -37,4 +45,5 @@ void phd_PopMatrix()
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x004025D0, phd_InitWindow);
+    INJECT(0x004026D0, AlterFOV);
 }
