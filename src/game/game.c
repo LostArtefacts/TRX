@@ -379,7 +379,7 @@ void LevelStats(int32_t level_num)
     TempVideoRemove();
 }
 
-int32_t S_LoadGame(void* data, int32_t size, int slot)
+int32_t S_LoadGame(void* data, int32_t size, int32_t slot)
 {
     char filename[80];
     sprintf(filename, "saveati.%d", slot);
@@ -388,9 +388,10 @@ int32_t S_LoadGame(void* data, int32_t size, int slot)
     if (!fp) {
         return 0;
     }
-    fread(filename, 1u, 75u, fp);
-    fread(&slot, 4u, 1u, fp);
-    fread(data, size, 1u, fp);
+    fread(filename, sizeof(char), 75, fp);
+    int32_t counter;
+    fread(&counter, sizeof(int32_t), 1, fp);
+    fread(data, size, 1, fp);
     fclose(fp);
     return 1;
 }
@@ -469,6 +470,33 @@ int32_t S_FrontEndCheck()
     return 1;
 }
 
+int32_t S_SaveGame(void* data, int32_t size, int32_t slot)
+{
+    char filename[75];
+    sprintf(filename, "saveati.%d", slot);
+    TRACE("%s", filename);
+
+    FILE* fp = fopen(filename, "wb");
+    if (!fp) {
+        return 0;
+    }
+
+    sprintf(filename, "%s", LevelTitles[SaveGame[0].current_level]);
+    fwrite(filename, sizeof(char), 75, fp);
+    fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
+    fwrite(data, size, 1, fp);
+    fclose(fp);
+
+    REQUEST_INFO* req = &LoadGameRequester;
+    sprintf(
+        &req->item_texts[req->item_text_len * slot], "%s %d", filename,
+        SaveCounter);
+    SaveSlotFlags[slot] = 1;
+    SavedGamesCount++;
+    SaveCounter++;
+    return 1;
+}
+
 void T1MInjectGameGame()
 {
     INJECT(0x0041D0C0, StartGame);
@@ -483,4 +511,5 @@ void T1MInjectGameGame()
     INJECT(0x0041D9B0, GetSavedGamesList);
     INJECT(0x0041DA20, S_FrontEndCheck);
     INJECT(0x0041DC70, S_LoadGame);
+    INJECT(0x0041DB70, S_SaveGame);
 }
