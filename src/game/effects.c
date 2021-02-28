@@ -444,6 +444,20 @@ void FxExplosion(ITEM_INFO* item)
     FlipEffect = -1;
 }
 
+// original name: FlickerFX
+void FxFlicker(ITEM_INFO* item)
+{
+    if (FlipTimer > 125) {
+        FlipMap();
+        FlipEffect = -1;
+    } else if (
+        FlipTimer == 90 || FlipTimer == 92 || FlipTimer == 105
+        || FlipTimer == 107) {
+        FlipMap();
+    }
+    FlipTimer++;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -470,4 +484,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AD80, FxSand);
     INJECT(0x0041AE00, FxPowerUp);
     INJECT(0x0041AE70, FxExplosion);
+    INJECT(0x0041AEA0, FxFlicker);
 }

@@ -38,6 +38,7 @@ void FxStairs2Slope(ITEM_INFO* item);
 void FxSand(ITEM_INFO* item);
 void FxPowerUp(ITEM_INFO* item);
 void FxExplosion(ITEM_INFO* item);
+void FxFlicker(ITEM_INFO* item);
 
 void T1MInjectGameEffects();
 
