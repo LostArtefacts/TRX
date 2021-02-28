@@ -351,7 +351,11 @@ void FxLaraNormal(ITEM_INFO* item)
     item->anim_number = AA_STOP;
     item->frame_number = AF_STOP;
     Camera.type = CAM_CHASE;
+#ifdef T1M_FEAT_UI
+    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+#else
     AlterFOV(GAME_FOV * PHD_DEGREE);
+#endif
 }
 
 // original name: EarthQuakeFX

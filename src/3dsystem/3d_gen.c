@@ -26,7 +26,11 @@ void phd_InitWindow(
     PhdScrHeight = scrheight;
     PhdScrWidth = scrwidth;
 
-    AlterFOV(view_angle * 182);
+#ifdef T1M_FEAT_UI
+    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+#else
+    AlterFOV(view_angle * PHD_DEGREE);
+#endif
 
     PhdLeft = 0;
     PhdTop = 0;
@@ -39,10 +43,10 @@ void phd_InitWindow(
 void AlterFOV(PHD_ANGLE fov)
 {
 #ifdef T1M_FEAT_UI
-    // NOTE: every caller GAME_FOV anyway, apart from GLRage which we override
-    // here.
-    fov = T1MConfig.fov_value * PHD_DEGREE;
-
+    // NOTE: in places that use GAME_FOV, it can be safely changed to user's
+    // choice. But for cinematics, the FOV value chosen by devs needs to stay
+    // unchanged, otherwise the game renders the low camera in the Lost Valley
+    // cutscene wrong.
     if (T1MConfig.fov_vertical) {
         double aspect_ratio = GetRenderWidth() / (double)GetRenderHeight();
         double fov_rad_h = fov * M_PI / 32760;
@@ -53,7 +57,7 @@ void AlterFOV(PHD_ANGLE fov)
 
     int16_t c = phd_cos(fov / 2);
     int16_t s = phd_sin(fov / 2);
-    PhdPersp = (c * (PhdWinWidth / 2)) / s;
+    PhdPersp = ((PhdWinWidth / 2) * c) / s;
 }
 
 void phd_PopMatrix()

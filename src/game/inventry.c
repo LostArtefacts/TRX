@@ -12,6 +12,7 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+#include "config.h"
 #include "util.h"
 #include <string.h>
 
@@ -61,7 +62,11 @@ int32_t Display_Inventory(int inv_mode)
         AmmoText = 0;
     }
 
+#ifdef T1M_FEAT_UI
+    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+#else
     AlterFOV(GAME_FOV * PHD_DEGREE);
+#endif
     InventoryMode = inv_mode;
 
     InvNFrames = 2;
