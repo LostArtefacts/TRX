@@ -36,6 +36,7 @@ void FxRaisingBlock(ITEM_INFO* item);
 void FxChainBlock(ITEM_INFO* item);
 void FxStairs2Slope(ITEM_INFO* item);
 void FxSand(ITEM_INFO* item);
+void FxPowerUp(ITEM_INFO* item);
 
 void T1MInjectGameEffects();
 

@@ -421,6 +421,21 @@ void FxSand(ITEM_INFO* item)
     FlipTimer++;
 }
 
+// original name: PowerUpFX
+void FxPowerUp(ITEM_INFO* item)
+{
+    PHD_3DPOS pos;
+    if (FlipTimer > 120) {
+        FlipEffect = -1;
+    } else {
+        pos.x = Camera.target.x;
+        pos.y = Camera.target.y + FlipTimer * 100;
+        pos.z = Camera.target.z;
+        SoundEffect(155, &pos, 0);
+    }
+    FlipTimer++;
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -445,4 +460,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AD00, FxChainBlock);
     INJECT(0x0041AD50, FxStairs2Slope);
     INJECT(0x0041AD80, FxSand);
+    INJECT(0x0041AE00, FxPowerUp);
 }
