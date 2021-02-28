@@ -354,7 +354,7 @@ S_PlayFMV                       0x0041D040  0x0000007C  -
 sub_41D0C0                      0x0041D0C0  0x000001CA  -
 
 # game.cpp
-GameLoop                        0x0041D2C0  0x00000065  *
+GameLoop                        0x0041D2C0  0x00000065  +
 LevelCompleteSequence           0x0041D330  0x0000021C  -
 LevelStats                      0x0041D5A0  0x00000346  +
 GetRandomControl                0x0041D8F0  0x0000001E  +
@@ -867,7 +867,7 @@ S_WriteSettings                 0x00438B60  0x00000090  *
 S_SoundPlaySample               0x00438BF0  0x0000004B  -
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
 sub_438CA0                      0x00438CA0  0x00000015  -
-S_SoundStopAllSamples           0x00438CC0  0x0000000F  -
+S_SoundStopAllSamples           0x00438CC0  0x0000000F  *
 S_SoundStopSample               0x00438CD0  0x0000001B  -
 sub_438CF0                      0x00438CF0  0x00000044  -
 S_CDPlay                        0x00438D40  0x000000FD  *

@@ -1,3 +1,6 @@
+#include "game/camera.h"
+#include "game/control.h"
+#include "game/draw.h"
 #include "game/game.h"
 #include "game/savegame.h"
 #include "game/text.h"
@@ -6,8 +9,27 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
+#include "specific/sndpc.h"
 #include "config.h"
 #include "util.h"
+
+void GameLoop(int demo_mode)
+{
+    TRACE("");
+    OverlayFlag = 1;
+    InitialiseCamera();
+
+    int32_t nframes = 1;
+    while (!ControlPhase(nframes, demo_mode)) {
+        nframes = DrawPhaseGame();
+    }
+
+    S_SoundStopAllSamples();
+    S_CDStop();
+    if (OptionMusicVolume) {
+        S_CDVolume(OptionMusicVolume * 25 + 5);
+    }
+}
 
 int32_t LevelIsValid(int16_t level_num)
 {
@@ -192,8 +214,9 @@ int32_t S_LoadGame(void* data, int32_t size, int slot)
     return 1;
 }
 
-void T1MInjectSpecificGame()
+void T1MInjectGameGame()
 {
+    INJECT(0x0041D2C0, GameLoop);
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D8F0, GetRandomControl);
     INJECT(0x0041D910, SeedRandomControl);

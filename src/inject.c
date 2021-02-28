@@ -39,6 +39,7 @@ void T1MInject()
     T1MInjectGameDino();
     T1MInjectGameDraw();
     T1MInjectGameEffects();
+    T1MInjectGameGame();
     T1MInjectGameHealth();
     T1MInjectGameItems();
     T1MInjectGameLOT();
@@ -55,7 +56,6 @@ void T1MInject()
     T1MInjectGameText();
     T1MInjectGameTraps();
     T1MInjectSpecificFile();
-    T1MInjectSpecificGame();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
     T1MInjectSpecificOutput();

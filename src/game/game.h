@@ -5,9 +5,9 @@
 
 // clang-format off
 #define S_SaveGame              ((void          (*)())0x0041DB70)
-#define GameLoop                ((int32_t       (*)(int32_t demo_mode))0x0041D2C0)
 // clang-format on
 
+void GameLoop(int demo_mode);
 int32_t LevelIsValid(int16_t level_num);
 void SeedRandomControl(int32_t seed);
 void SeedRandomDraw(int32_t seed);
@@ -16,6 +16,6 @@ int32_t GetRandomDraw();
 void LevelStats(int32_t level_num);
 int32_t S_LoadGame(void* data, int32_t size, int slot);
 
-void T1MInjectSpecificGame();
+void T1MInjectGameGame();
 
 #endif
