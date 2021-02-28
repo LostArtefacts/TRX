@@ -1,8 +1,9 @@
+#include "config.h"
+#include "game/const.h"
+#include "json_utils.h"
+#include "util.h"
 #include <stdio.h>
 #include <string.h>
-#include "json_utils.h"
-#include "config.h"
-#include "utils.h"
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
@@ -119,6 +120,7 @@ int T1MReadConfig()
     READ_BOOL(fix_pyramid_secret_trigger);
     READ_BOOL(fix_hardcoded_secret_counts);
     READ_BOOL(fix_illegal_gun_equip);
+    READ_BOOL(fov_vertical);
 
     T1MConfig.healthbar_showing_mode =
         ReadBarShowingMode(json, "healthbar_showing_mode");
@@ -138,6 +140,12 @@ int T1MReadConfig()
         ReadBarColorConfig(json, "airbar_color", T1M_BC_BLUE);
     T1MConfig.enemy_healthbar_color =
         ReadBarColorConfig(json, "enemy_healthbar_color", T1M_BC_GREY);
+
+    T1MConfig.fov_value = JSONGetIntegerValue(json, "fov_value");
+    if (!T1MConfig.fov_value) {
+        T1MConfig.fov_value = GAME_FOV;
+    }
+    CLAMP(T1MConfig.fov_value, 30, 255);
 
     free(json);
     free(cfg_data);

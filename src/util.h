@@ -13,6 +13,30 @@
 #define CHK_ALL(a, b) (((a) & (b)) == (b))
 #define CHK_ANY(a, b) (((a) & (b)) != 0)
 
+#define CLAMPL(a, b)                                                           \
+    do {                                                                       \
+        if ((a) < (b))                                                         \
+            (a) = (b);                                                         \
+    } while (0)
+#define CLAMPG(a, b)                                                           \
+    do {                                                                       \
+        if ((a) > (b))                                                         \
+            (a) = (b);                                                         \
+    } while (0)
+#define CLAMP(a, b, c)                                                         \
+    do {                                                                       \
+        if ((a) < (b))                                                         \
+            (a) = (b);                                                         \
+        else if ((a) > (c))                                                    \
+            (a) = (c);                                                         \
+    } while (0)
+#define SWAP(a, b, c)                                                          \
+    do {                                                                       \
+        (c) = (a);                                                             \
+        (a) = (b);                                                             \
+        (b) = (c);                                                             \
+    } while (0)
+
 #pragma pack(push, 1)
 typedef struct {
     uint8_t opcode; // must be 0xE9

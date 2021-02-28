@@ -1,5 +1,6 @@
 #include "json_utils.h"
 #include <string.h>
+#include "util.h"
 
 struct json_value_s* JSONGetField(struct json_value_s* root, const char* name)
 {
@@ -25,6 +26,19 @@ int8_t JSONGetBooleanValue(struct json_value_s* root, const char* name)
         return 0;
     }
     return field->type == json_type_true;
+}
+
+int32_t JSONGetIntegerValue(struct json_value_s* root, const char* name)
+{
+    struct json_value_s* field = JSONGetField(root, name);
+    if (!field) {
+        return 0;
+    }
+    struct json_number_s* number = json_value_as_number(field);
+    if (!number) {
+        return 0;
+    }
+    return atoi(number->number);
 }
 
 const char* JSONGetStringValue(struct json_value_s* root, const char* name)

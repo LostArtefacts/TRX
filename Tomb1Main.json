@@ -130,5 +130,15 @@
     // Fixes ability to obtain pistols by running out of ammo with other guns.
     // (Happens if you get to shotgun before obtaining pistols in Natla's
     // Mines)
-    "fix_illegal_gun_equip": true
+    "fix_illegal_gun_equip": true,
+
+    // The desired field of view in degrees, which overrides the hardcoded
+    // default. The default values are 80 (horizontal) and 65 (vertical).
+    "fov_value": 65,
+
+    // Interprets fov_value as vertical instead of horizontal field of view.
+    // May be advantageous for widescreen resolutions, especially for
+    // multi-screen setups, since it distorts the left and right side instead
+    // of cropping away the top and bottom part of the screen.
+    "fov_vertical": true,
 }
