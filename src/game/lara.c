@@ -149,6 +149,22 @@ void LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll)
         return;
     }
 
+#ifdef T1M_FEAT_INPUT
+    if (!T1MConfig.enable_tr3_sidesteps
+        || (CHK_ANY(Input, IN_SLOW) && CHK_ANY(Input, IN_FORWARD))) {
+        if (Input & IN_LEFT) {
+            Lara.turn_rate -= LARA_TURN_RATE;
+            if (Lara.turn_rate < -LARA_SLOW_TURN) {
+                Lara.turn_rate = -LARA_SLOW_TURN;
+            }
+        } else if (Input & IN_RIGHT) {
+            Lara.turn_rate += LARA_TURN_RATE;
+            if (Lara.turn_rate > LARA_SLOW_TURN) {
+                Lara.turn_rate = LARA_SLOW_TURN;
+            }
+        }
+    }
+#else
     if (Input & IN_LEFT) {
         Lara.turn_rate -= LARA_TURN_RATE;
         if (Lara.turn_rate < -LARA_SLOW_TURN) {
@@ -160,6 +176,7 @@ void LaraAsWalk(ITEM_INFO* item, COLL_INFO* coll)
             Lara.turn_rate = LARA_SLOW_TURN;
         }
     }
+#endif
 
     if (Input & IN_FORWARD) {
         if (Input & IN_SLOW) {
@@ -263,27 +280,27 @@ void LaraAsStop(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_STEPRIGHT;
     }
 
-    if (Input & IN_LEFT) {
 #ifdef T1M_FEAT_INPUT
+    if (Input & IN_LEFT) {
         if (T1MConfig.enable_tr3_sidesteps && (Input & IN_SLOW)) {
             item->goal_anim_state = AS_STEPLEFT;
         } else {
             item->goal_anim_state = AS_TURN_L;
         }
-#else
-        item->goal_anim_state = AS_TURN_L;
-#endif
     } else if (Input & IN_RIGHT) {
-#ifdef T1M_FEAT_INPUT
         if (T1MConfig.enable_tr3_sidesteps && (Input & IN_SLOW)) {
             item->goal_anim_state = AS_STEPRIGHT;
         } else {
             item->goal_anim_state = AS_TURN_R;
         }
-#else
-        item->goal_anim_state = AS_TURN_R;
-#endif
     }
+#else
+    if (Input & IN_LEFT) {
+        item->goal_anim_state = AS_TURN_L;
+    } else if (Input & IN_RIGHT) {
+        item->goal_anim_state = AS_TURN_R;
+    }
+#endif
 
     if (Input & IN_JUMP) {
         item->goal_anim_state = AS_COMPRESS;
@@ -526,6 +543,22 @@ void LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
         item->goal_anim_state = AS_STOP;
     }
 
+#ifdef T1M_FEAT_INPUT
+    if (!T1MConfig.enable_tr3_sidesteps
+        || (CHK_ANY(Input, IN_SLOW) && CHK_ANY(Input, IN_BACK))) {
+        if (Input & IN_LEFT) {
+            Lara.turn_rate -= LARA_TURN_RATE;
+            if (Lara.turn_rate < -LARA_SLOW_TURN) {
+                Lara.turn_rate = -LARA_SLOW_TURN;
+            }
+        } else if (Input & IN_RIGHT) {
+            Lara.turn_rate += LARA_TURN_RATE;
+            if (Lara.turn_rate > LARA_SLOW_TURN) {
+                Lara.turn_rate = LARA_SLOW_TURN;
+            }
+        }
+    }
+#else
     if (Input & IN_LEFT) {
         Lara.turn_rate -= LARA_TURN_RATE;
         if (Lara.turn_rate < -LARA_SLOW_TURN) {
@@ -537,6 +570,7 @@ void LaraAsBack(ITEM_INFO* item, COLL_INFO* coll)
             Lara.turn_rate = LARA_SLOW_TURN;
         }
     }
+#endif
 }
 
 void LaraAsFastTurn(ITEM_INFO* item, COLL_INFO* coll)
