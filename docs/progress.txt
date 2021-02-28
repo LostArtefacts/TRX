@@ -330,7 +330,7 @@ LoadDepthQ                      ----------  ----------  +
 LoadPalette                     ----------  ----------  +
 LoadCameras                     ----------  ----------  +
 LoadSoundEffects                ----------  ----------  +
-LoadBoxes                       0x0041BE00  0x000001B5  *
+LoadBoxes                       0x0041BE00  0x000001B5  +
 LoadAnimatedTextures            ----------  ----------  +
 LoadCinematic                   ----------  ----------  +
 LoadDemo                        ----------  ----------  +

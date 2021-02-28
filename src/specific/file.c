@@ -24,6 +24,7 @@ int32_t TexturePageCount = 0;
 int32_t AnimTextureRangeCount = 0;
 int32_t SpriteInfoCount = 0;
 int32_t SpriteCount = 0;
+int32_t OverlapCount = 0;
 
 int32_t LoadLevel(const char* filename, int32_t level_num)
 {
@@ -462,6 +463,49 @@ int32_t LoadSoundEffects(FILE* fp)
     return 1;
 }
 
+int32_t LoadBoxes(FILE* fp)
+{
+    _fread(&NumberBoxes, sizeof(int32_t), 1, fp);
+    Boxes = game_malloc(sizeof(BOX_INFO) * NumberBoxes, GBUF_BOXES);
+    if (!_fread(Boxes, sizeof(BOX_INFO), NumberBoxes, fp)) {
+        sprintf(StringToShow, "LoadBoxes(): Unable to load boxes");
+        return 0;
+    }
+
+    _fread(&OverlapCount, sizeof(int32_t), 1, fp);
+    Overlap = (uint16_t*)game_malloc(2 * OverlapCount, 22);
+    if (!_fread(Overlap, sizeof(int16_t), OverlapCount, fp)) {
+        sprintf(StringToShow, "LoadBoxes(): Unable to load box overlaps");
+        return 0;
+    }
+
+    for (int i = 0; i < 2; i++) {
+        GroundZone[i] =
+            game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
+        if (!GroundZone[i]
+            || !_fread(GroundZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground_zone'");
+            return 0;
+        }
+
+        GroundZone2[i] = game_malloc(2 * NumberBoxes, GBUF_GROUNDZONE);
+        if (!GroundZone2[i]
+            || !_fread(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
+            sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground2_zone'");
+            return 0;
+        }
+
+        FlyZone[i] = game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_FLYZONE);
+        if (!FlyZone[i]
+            || !_fread(FlyZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            sprintf(StringToShow, "LoadBoxes(): Unable to load 'fly_zone'");
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int32_t LoadAnimatedTextures(FILE* fp)
 {
     _fread(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
@@ -754,6 +798,7 @@ void T1MInjectSpecificFile()
     INJECT(0x0041B710, LoadObjects);
     INJECT(0x0041BB50, LoadSprites);
     INJECT(0x0041BC60, LoadItems);
+    INJECT(0x0041BE00, LoadBoxes);
     INJECT(0x0041BFC0, GetFullPath);
     INJECT(0x0041C020, FindCdDrive);
 }

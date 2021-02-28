@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 // clang-format off
-#define LoadBoxes               ((int32_t       (*)(FILE* fp))0x0041BE00)
 #define LoadSamples             ((int32_t       (*)(FILE* fp))0x00438EA0)
 // clang-format on
 
@@ -27,6 +26,7 @@ int32_t LoadDepthQ(FILE* fp);
 int32_t LoadPalette(FILE* fp);
 int32_t LoadCameras(FILE* fp);
 int32_t LoadSoundEffects(FILE* fp);
+int32_t LoadBoxes(FILE* fp);
 int32_t LoadAnimatedTextures(FILE* fp);
 int32_t LoadCinematic(FILE* fp);
 int32_t LoadDemo(FILE* fp);

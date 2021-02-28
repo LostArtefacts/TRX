@@ -184,6 +184,7 @@ extern int32_t TexturePageCount;
 extern int32_t AnimTextureRangeCount;
 extern int32_t SpriteInfoCount;
 extern int32_t SpriteCount;
+extern int32_t OverlapCount;
 
 #ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;
