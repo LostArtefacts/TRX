@@ -5,10 +5,10 @@
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/hair.h"
-#include "game/misc.h"
 #include "game/types.h"
 #include "game/vars.h"
 #include "config.h"
+#include "util.h"
 
 #define HAIR_SEGMENTS 6
 #define HAIR_OFFSET_X (0) // left-right

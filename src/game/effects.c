@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "specific/shed.h"

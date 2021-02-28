@@ -6,7 +6,6 @@
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/misc.h"
 #include "game/vars.h"
 #include "specific/init.h"
 #include "config.h"

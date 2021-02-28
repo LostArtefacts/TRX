@@ -4,7 +4,6 @@
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/misc.h"
 #include "game/types.h"
 #include "game/vars.h"
 #include "util.h"

@@ -3,7 +3,6 @@
 #include "game/effects.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/misc.h"
 #include "game/option.h"
 #include "game/text.h"
 #include "game/vars.h"

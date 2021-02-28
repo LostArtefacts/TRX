@@ -5,7 +5,6 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"

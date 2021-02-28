@@ -6,7 +6,6 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/misc.h"
 #include "game/vars.h"
 #include "specific/sndpc.h"
 #include "config.h"

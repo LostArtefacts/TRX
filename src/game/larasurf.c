@@ -2,7 +2,6 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/lara.h"
-#include "game/misc.h"
 #include "game/vars.h"
 #include "config.h"
 #include "util.h"

@@ -6,7 +6,6 @@
 #include "game/game.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "config.h"

@@ -7,7 +7,6 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
-#include "game/misc.h"
 #include "game/vars.h"
 #include "specific/sndpc.h"
 #include "util.h"

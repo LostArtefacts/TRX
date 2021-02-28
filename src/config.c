@@ -2,6 +2,7 @@
 #include <string.h>
 #include "json_utils.h"
 #include "config.h"
+#include "utils.h"
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
