@@ -427,6 +427,48 @@ void GetSavedGamesList(REQUEST_INFO* req)
     }
 }
 
+int32_t S_FrontEndCheck()
+{
+    REQUEST_INFO* req = &LoadGameRequester;
+
+    req->items = 0;
+    SavedGamesCount = 0;
+    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+        char filename[75];
+        sprintf(filename, "saveati.%d", i);
+
+        FILE* fp = fopen(filename, "rb");
+        if (fp) {
+            fread(filename, 1, 75, fp);
+            int32_t counter;
+            fread(&counter, sizeof(int32_t), 1, fp);
+            fclose(fp);
+
+            sprintf(
+                &req->item_texts[req->items * req->item_text_len], "%s %d",
+                filename, counter);
+
+            if (counter > SaveCounter) {
+                SaveCounter = counter;
+                req->requested = i;
+            }
+
+            SaveSlotFlags[i] = 1;
+            SavedGamesCount++;
+        } else {
+            sprintf(
+                &req->item_texts[req->items * req->item_text_len],
+                "- EMPTY SLOT %d -", i + 1);
+            SaveSlotFlags[i] = 0;
+        }
+
+        req->items++;
+    }
+
+    SaveCounter++;
+    return 1;
+}
+
 void T1MInjectGameGame()
 {
     INJECT(0x0041D0C0, StartGame);
@@ -439,5 +481,6 @@ void T1MInjectGameGame()
     INJECT(0x0041D940, SeedRandomDraw);
     INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041D9B0, GetSavedGamesList);
+    INJECT(0x0041DA20, S_FrontEndCheck);
     INJECT(0x0041DC70, S_LoadGame);
 }

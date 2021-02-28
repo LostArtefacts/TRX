@@ -365,7 +365,7 @@ GetRandomDraw                   0x0041D920  0x0000001E  +
 SeedRandomDraw                  0x0041D940  0x0000000A  +
 LevelIsValid                    0x0041D950  0x0000005C  +
 GetSavedGamesList               0x0041D9B0  0x00000060  +
-S_FrontEndCheck                 0x0041DA20  0x00000141  -
+S_FrontEndCheck                 0x0041DA20  0x00000141  +
 S_SaveGame                      0x0041DB70  0x000000FD  *
 S_LoadGame                      0x0041DC70  0x00000086  -
 
