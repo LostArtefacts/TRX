@@ -233,6 +233,15 @@
 #define NATLA_RADIUS (WALL_L / 5) // = 204
 #define NATLA_SMARTNESS 0x7fff
 
+/* Inventory Static Values */
+#define OPEN_FRAMES 32
+#define CLOSE_FRAMES 32
+#define OPEN_ROTATION -0x8000
+#define CLOSE_ROTATION -0x8000
+#define ROTATE_DURATION 24
+#define RINGSWITCH_FRAMES 48
+#define SELECTING_FRAMES 16
+
 #define FLAME_ONFIRE_DAMAGE 5
 #define FLAME_TOONEAR_DAMAGE 3
 

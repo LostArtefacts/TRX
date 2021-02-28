@@ -242,7 +242,7 @@ S_CopyScreenToBuffer            ----------  ----------  -
 S_CopyBufferToScreen            0x00416A60  0x000000A7  *
 S_NoFade                        0x00416B10  0x00000010  *
 S_FadeInInventory               0x00416B20  0x00000082  -
-S_FadeOutInventory              0x00416BB0  0x00000027  -
+S_FadeOutInventory              0x00416BB0  0x00000027  *
 FadeToPal                       ----------  ----------  -
 ScreenPartialDump               ----------  ----------  -
 
@@ -345,7 +345,7 @@ S_DrawScreenSprite              0x0041C2D0  0x00000163  -
 S_DrawScreenLine                0x0041C440  0x000000D3  -
 S_DrawScreenBox                 0x0041C520  0x00000688  *
 S_DrawScreenFBox                0x0041CBB0  0x00000101  *
-S_FinishInventory               0x0041CCC0  0x00000047  -
+S_FinishInventory               0x0041CCC0  0x00000047  *
 S_FadeToBlack                   0x0041CD10  0x0000003F  *
 S_Wait                          0x0041CD50  0x0000004D  *
 SoundStart                      0x0041CDA0  0x00000045  *
@@ -395,19 +395,19 @@ JoyRead                         ----------  ----------  -
 S_UpdateInput                   0x0041E550  0x00000210  +
 
 # inventry.cpp
-Display_Inventory               0x0041E760  0x00001159  *
-Construct_Inventory             0x0041F980  0x0000012D  -
-SelectMeshes                    ----------  ----------  -
-AnimateInventoryItem            0x0041FAB0  0x00000089  -
+Display_Inventory               0x0041E760  0x00001159  +
+Construct_Inventory             0x0041F980  0x0000012D  *
+SelectMeshes                    0x0041FAB0  0x00000089  *
+AnimateInventoryItem            ----------  ----------  +
 DrawInventoryItem               0x0041FB40  0x000003A0  -
-GetDebouncedInput               ----------  ----------  -
+GetDebouncedInput               ----------  ----------  +
 
 # invfunc.cpp
 InitColours                     0x0041FEF0  0x0000010A  *
-RingIsOpen                      0x00420000  0x0000014D  -
-RingIsNotOpen                   0x00420150  0x00000076  -
-RingNotActive                   0x004201D0  0x0000069E  -
-RingActive                      0x00420980  0x00000039  -
+RingIsOpen                      0x00420000  0x0000014D  *
+RingIsNotOpen                   0x00420150  0x00000076  *
+RingNotActive                   0x004201D0  0x0000069E  *
+RingActive                      0x00420980  0x00000039  *
 Inv_AddItem                     0x004209C0  0x00000620  *
 Inv_InsertItem                  0x004210D0  0x00000129  -
 Inv_RequestItem                 0x00421200  0x00000077  *
@@ -415,22 +415,22 @@ Inv_RemoveAllItems              0x00421280  0x0000001E  *
 Inv_RemoveItem                  0x004212A0  0x00000110  *
 Inv_GetCount                    ----------  ----------  -
 Inv_GetItemOption               0x004213B0  0x000000A7  -
-RemoveInventoryText             0x00421550  0x00000028  -
-Inv_RingInit                    0x00421580  0x0000017E  -
-Inv_RingGetView                 0x00421700  0x00000060  -
-Inv_RingLight                   0x00421760  0x00000040  -
-Inv_RingCalcAdders              0x004217A0  0x0000002C  -
-Inv_RingDoMotions               0x004217D0  0x0000013E  -
-Inv_RingRotateLeft              0x00421910  0x0000002F  -
-Inv_RingRotateRight             0x00421940  0x0000002F  -
+RemoveInventoryText             0x00421550  0x00000028  *
+Inv_RingInit                    0x00421580  0x0000017E  *
+Inv_RingGetView                 0x00421700  0x00000060  *
+Inv_RingLight                   0x00421760  0x00000040  *
+Inv_RingCalcAdders              0x004217A0  0x0000002C  *
+Inv_RingDoMotions               0x004217D0  0x0000013E  *
+Inv_RingRotateLeft              0x00421910  0x0000002F  *
+Inv_RingRotateRight             0x00421940  0x0000002F  *
 Inv_RingMotionInit              ----------  ----------  -
-Inv_RingMotionSetup             0x00421970  0x0000002C  -
-Inv_RingMotionRadius            0x004219A0  0x00000026  -
-Inv_RingMotionRotation          0x004219D0  0x00000022  -
-Inv_RingMotionCameraPos         0x00421A00  0x00000025  -
-Inv_RingMotionCameraPitch       0x00421A30  0x00000020  -
-Inv_RingMotionItemSelect        0x00421A50  0x00000057  -
-Inv_RingMotionItemDeselect      0x00421AB0  0x00000055  -
+Inv_RingMotionSetup             0x00421970  0x0000002C  *
+Inv_RingMotionRadius            0x004219A0  0x00000026  *
+Inv_RingMotionRotation          0x004219D0  0x00000022  *
+Inv_RingMotionCameraPos         0x00421A00  0x00000025  *
+Inv_RingMotionCameraPitch       0x00421A30  0x00000020  *
+Inv_RingMotionItemSelect        0x00421A50  0x00000057  *
+Inv_RingMotionItemDeselect      0x00421AB0  0x00000055  *
 
 # items.cpp
 InitialiseItemArray             0x00421B10  0x00000040  *
@@ -724,7 +724,7 @@ EarthQuakeControl               0x0042D700  0x0000006F  *
 
 # option.cpp
 GetScancodeName                 ----------  ----------  -
-do_inventory_options            0x0042D770  0x00000180  -
+do_inventory_options            0x0042D770  0x00000180  *
 do_passport_option              0x0042D9C0  0x000004D0  -
 do_detail_option_hw             0x0042DE90  0x00000435  -
 do_detail_option                0x0042E2D0  0x000002E8  -

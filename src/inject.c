@@ -13,6 +13,7 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/health.h"
+#include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
@@ -41,6 +42,7 @@ void T1MInject()
     T1MInjectGameEffects();
     T1MInjectGameGame();
     T1MInjectGameHealth();
+    T1MInjectGameInvEntry();
     T1MInjectGameItems();
     T1MInjectGameLOT();
     T1MInjectGameLara();

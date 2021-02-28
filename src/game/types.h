@@ -501,15 +501,6 @@ typedef enum {
 } GAME_LEVELS;
 
 typedef enum {
-    INV_GAME_MODE = 0,
-    INV_TITLE_MODE = 1,
-    INV_KEYS_MODE = 2,
-    INV_SAVE_MODE = 3,
-    INV_LOAD_MODE = 4,
-    INV_DEATH_MODE = 5,
-} INV_MODES;
-
-typedef enum {
     GF_STARTGAME = 0,
     GF_STARTCINE = 1 << 6,
     GF_STARTFMV = 2 << 6,
@@ -693,6 +684,38 @@ typedef enum {
     FMV_ESCAPE = 9,
     NUMBER_OF_FMV
 } FMV_SEQUENCE;
+
+typedef enum {
+    RNG_OPENING = 0,
+    RNG_OPEN = 1,
+    RNG_CLOSING = 2,
+    RNG_MAIN2OPTION = 3,
+    RNG_MAIN2KEYS = 4,
+    RNG_KEYS2MAIN = 5,
+    RNG_OPTION2MAIN = 6,
+    RNG_SELECTING = 7,
+    RNG_SELECTED = 8,
+    RNG_DESELECTING = 9,
+    RNG_DESELECT = 10,
+    RNG_CLOSING_ITEM = 11,
+    RNG_EXITING_INVENTORY = 12,
+    RNG_DONE = 13,
+} RING_STATUS;
+
+typedef enum {
+    INV_GAME_MODE = 0,
+    INV_TITLE_MODE = 1,
+    INV_KEYS_MODE = 2,
+    INV_SAVE_MODE = 3,
+    INV_LOAD_MODE = 4,
+    INV_DEATH_MODE = 5,
+} INV_MODE;
+
+typedef enum {
+    RM_MAIN = 0,
+    RM_OPTION = 1,
+    RM_KEYS = 2,
+} RING_MODE;
 
 #pragma pack(push, 1)
 
@@ -1299,6 +1322,90 @@ typedef struct {
     /* 001C */ int16_t item_text_len;
     /* 0020 end */
 } REQUEST_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t count;
+    /* 0002 */ int16_t status;
+    /* 0004 */ int16_t status_target;
+    /* 0006 */ int16_t radius_target;
+    /* 0008 */ int16_t radius_rate;
+    /* 000A */ int16_t camera_ytarget;
+    /* 000C */ int16_t camera_yrate;
+    /* 000E */ int16_t camera_pitch_target;
+    /* 0010 */ int16_t camera_pitch_rate;
+    /* 0012 */ int16_t rotate_target;
+    /* 0014 */ int16_t rotate_rate;
+    /* 0016 */ PHD_ANGLE item_ptxrot_target;
+    /* 0018 */ PHD_ANGLE item_ptxrot_rate;
+    /* 001A */ PHD_ANGLE item_xrot_target;
+    /* 001C */ PHD_ANGLE item_xrot_rate;
+    /* 001E */ int32_t item_ytrans_target;
+    /* 0022 */ int32_t item_ytrans_rate;
+    /* 0026 */ int32_t item_ztrans_target;
+    /* 002A */ int32_t item_ztrans_rate;
+    /* 002E */ int32_t misc;
+    /* 0032 end */
+} IMOTION_INFO;
+
+typedef struct {
+    /* 0000 */ int16_t shape;
+    /* 0002 */ int16_t x;
+    /* 0004 */ int16_t y;
+    /* 0006 */ int16_t z;
+    /* 0008 */ int32_t param1;
+    /* 000C */ int32_t param2;
+    /* 0010 */ SG_COL* grdptr;
+    /* 0014 */ int16_t sprnum;
+    /* 0016 end */
+} INVENTORY_SPRITE;
+
+typedef struct {
+    /* 0000 */ int32_t item_id;
+    /* 0004 */ int16_t object_number;
+    /* 0006 */ int16_t frames_total;
+    /* 0008 */ int16_t current_frame;
+    /* 000A */ int16_t goal_frame;
+    /* 000C */ int16_t open_frame;
+    /* 000E */ int16_t anim_direction;
+    /* 0010 */ int16_t anim_speed;
+    /* 0012 */ int16_t anim_count;
+    /* 0014 */ PHD_ANGLE pt_xrot_sel;
+    /* 0016 */ PHD_ANGLE pt_xrot;
+    /* 0018 */ PHD_ANGLE x_rot_sel;
+    /* 001A */ PHD_ANGLE x_rot;
+    /* 001C */ PHD_ANGLE y_rot_sel;
+    /* 001E */ PHD_ANGLE y_rot;
+    /* 0020 */ int32_t ytrans_sel;
+    /* 0024 */ int32_t ytrans;
+    /* 0028 */ int32_t ztrans_sel;
+    /* 002C */ int32_t ztrans;
+    /* 0030 */ uint32_t which_meshes;
+    /* 0034 */ uint32_t drawn_meshes;
+    /* 0038 */ int16_t inv_pos;
+    /* 003A */ INVENTORY_SPRITE** sprlist;
+    /* 003E end */
+} INVENTORY_ITEM;
+
+typedef struct {
+    /* 0000 */ INVENTORY_ITEM** list;
+    /* 0004 */ int16_t type;
+    /* 0006 */ int16_t radius;
+    /* 0008 */ int16_t camera_pitch;
+    /* 000A */ int16_t rotating;
+    /* 000C */ int16_t rot_count;
+    /* 000E */ int16_t current_object;
+    /* 0010 */ int16_t target_object;
+    /* 0012 */ int16_t number_of_objects;
+    /* 0014 */ int16_t angle_adder;
+    /* 0016 */ int16_t rot_adder;
+    /* 0018 */ int16_t rot_adderL;
+    /* 001A */ int16_t rot_adderR;
+    /* 001C */ PHD_3DPOS ringpos;
+    /* 002E */ PHD_3DPOS camera;
+    /* 0040 */ PHD_VECTOR light;
+    /* 004C */ IMOTION_INFO* imo;
+    /* 0050 end */
+} RING_INFO;
 
 #pragma pack(pop)
 
