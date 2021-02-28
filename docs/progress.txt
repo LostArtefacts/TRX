@@ -396,7 +396,7 @@ S_UpdateInput                   0x0041E550  0x00000210  +
 
 # inventry.cpp
 Display_Inventory               0x0041E760  0x00001159  +
-Construct_Inventory             0x0041F980  0x0000012D  *
+Construct_Inventory             0x0041F980  0x0000012D  +
 SelectMeshes                    0x0041FAB0  0x00000089  *
 AnimateInventoryItem            ----------  ----------  +
 DrawInventoryItem               0x0041FB40  0x000003A0  -

@@ -590,7 +590,7 @@ int32_t Display_Inventory(int inv_mode)
     RemoveInventoryText();
     S_FinishInventory();
 
-    Inventory_Displaying = 0;
+    InventoryDisplaying = 0;
 
     if (ResetFlag) {
         return GF_EXIT_TO_TITLE;
@@ -639,6 +639,57 @@ int32_t Display_Inventory(int inv_mode)
     return 0;
 }
 
+void Construct_Inventory()
+{
+    S_SetupAboveWater(0);
+    if (InventoryMode != INV_TITLE_MODE) {
+        TempVideoAdjust(HiRes, 1.0);
+    }
+
+    PhdLeft = 0;
+    PhdTop = 0;
+    PhdBottom = PhdWinMaxY;
+    PhdRight = PhdWinMaxX;
+
+    for (int i = 0; i < 8; i++) {
+        InventoryExtraData[i] = 0;
+    }
+
+    InventoryDisplaying = 1;
+    InventoryChosen = 0;
+    if (InventoryMode == INV_TITLE_MODE) {
+        InvOptionObjects = TITLE_RING_OBJECTS;
+    } else {
+        InvOptionObjects = OPTION_RING_OBJECTS;
+    }
+
+    for (int i = 0; i < InvMainObjects; i++) {
+        INVENTORY_ITEM* inv_item = InvMainList[i];
+        inv_item->drawn_meshes = inv_item->which_meshes;
+        if ((inv_item->object_number == O_MAP_OPTION) && CompassStatus) {
+            inv_item->current_frame = inv_item->open_frame;
+            inv_item->drawn_meshes = -1;
+        } else {
+            inv_item->current_frame = 0;
+        }
+        inv_item->goal_frame = inv_item->current_frame;
+        inv_item->anim_count = 0;
+        inv_item->y_rot = 0;
+    }
+
+    for (int i = 0; i < InvOptionObjects; i++) {
+        INVENTORY_ITEM* inv_item = InvOptionList[i];
+        inv_item->current_frame = 0;
+        inv_item->goal_frame = 0;
+        inv_item->anim_count = 0;
+        inv_item->y_rot = 0;
+    }
+
+    InvMainCurrent = 0;
+    InvOptionCurrent = 0;
+    Item_Data = 0;
+}
+
 int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
@@ -675,4 +726,5 @@ int32_t GetDebouncedInput(int32_t input)
 void T1MInjectGameInvEntry()
 {
     INJECT(0x0041E760, Display_Inventory);
+    INJECT(0x0041F980, Construct_Inventory);
 }
