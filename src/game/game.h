@@ -7,7 +7,7 @@
 #define S_SaveGame              ((void          (*)())0x0041DB70)
 // clang-format on
 
-void GameLoop(int demo_mode);
+int32_t GameLoop(int demo_mode);
 int32_t LevelIsValid(int16_t level_num);
 void SeedRandomControl(int32_t seed);
 void SeedRandomDraw(int32_t seed);

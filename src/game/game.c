@@ -3,25 +3,102 @@
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/savegame.h"
+#include "game/setup.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
+#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "config.h"
 #include "util.h"
 
-void GameLoop(int demo_mode)
+int32_t StartGame(int level_num)
+{
+    switch (level_num) {
+    case LV_GYM:
+        S_PlayFMV(FMV_GYM, 1);
+        break;
+
+    case LV_LEVEL1:
+        S_PlayFMV(FMV_SNOW, 1);
+        break;
+
+    case LV_LEVEL4:
+        S_PlayFMV(FMV_LIFT, 1);
+        break;
+
+    case LV_LEVEL8A:
+        S_PlayFMV(FMV_VISION, 1);
+        break;
+
+    case LV_LEVEL10A:
+        S_PlayFMV(FMV_CANYON, 1);
+        break;
+
+    case LV_LEVEL10B:
+        S_PlayFMV(FMV_PYRAMID, 1);
+        break;
+    }
+
+    // TODO: this probably doesn't belong here
+    CurrentLevel = level_num;
+    TitleLoaded = 0;
+    if (level_num != LV_CURRENT) {
+        InitialiseLevelFlags();
+    }
+
+    if (!InitialiseLevel(level_num)) {
+        CurrentLevel = 0;
+        return GF_EXIT_TO_TITLE;
+    }
+
+    if (GameLoop(0) == GF_EXIT_TO_TITLE) {
+        return GF_EXIT_TO_TITLE;
+    }
+
+    if (LevelComplete) {
+        if (CurrentLevel) {
+            S_FadeInInventory(1);
+            return GF_LEVELCOMPLETE | CurrentLevel;
+        }
+
+        S_FadeToBlack();
+        return GF_EXIT_TO_TITLE;
+    }
+
+    S_FadeToBlack();
+    if (!InventoryChosen) {
+        return GF_EXIT_TO_TITLE;
+    }
+
+    if (InventoryExtraData[0]) {
+        if (InventoryExtraData[0] == 1) {
+            return GF_STARTGAME | LV_LEVEL1;
+        }
+        return GF_EXIT_TO_TITLE;
+    }
+
+    S_LoadGame(SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
+    return GF_STARTGAME | LV_CURRENT;
+}
+
+int32_t GameLoop(int demo_mode)
 {
     TRACE("");
     OverlayFlag = 1;
     InitialiseCamera();
 
     int32_t nframes = 1;
-    while (!ControlPhase(nframes, demo_mode)) {
-        nframes = DrawPhaseGame();
+    int32_t ret;
+    while (1) {
+        ret = ControlPhase(nframes, demo_mode);
+        if (ret) {
+            break;
+        }
+        nframes = DrawPhaseGame(ret);
     }
 
     S_SoundStopAllSamples();
@@ -29,6 +106,8 @@ void GameLoop(int demo_mode)
     if (OptionMusicVolume) {
         S_CDVolume(OptionMusicVolume * 25 + 5);
     }
+
+    return ret;
 }
 
 int32_t LevelIsValid(int16_t level_num)
@@ -216,6 +295,7 @@ int32_t S_LoadGame(void* data, int32_t size, int slot)
 
 void T1MInjectGameGame()
 {
+    INJECT(0x0041D0C0, StartGame);
     INJECT(0x0041D2C0, GameLoop);
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D8F0, GetRandomControl);

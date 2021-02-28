@@ -679,6 +679,21 @@ typedef enum {
     IF_KILLED_ITEM = 0x8000,
 } ITEM_FLAGS;
 
+typedef enum {
+    FMV_INTRO = 0,
+    FMV_GYM = 1,
+    FMV_SNOW = 2,
+    FMV_LIFT = 3,
+    FMV_VISION = 3,
+    FMV_CANYON = 4,
+    FMV_PYRAMID = 5,
+    FMV_PRISON = 6,
+    FMV_ENDSEQ = 7,
+    FMV_CORE = 8,
+    FMV_ESCAPE = 9,
+    NUMBER_OF_FMV
+} FMV_SEQUENCE;
+
 #pragma pack(push, 1)
 
 typedef struct {

@@ -350,10 +350,12 @@ S_FadeToBlack                   0x0041CD10  0x0000003F  *
 S_Wait                          0x0041CD50  0x0000004D  -
 SoundStart                      0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x0000024A  -
-S_PlayFMV                       0x0041D040  0x0000007C  -
-sub_41D0C0                      0x0041D0C0  0x000001CA  -
+sub_41D00B                      0x0041D00B  0x0000002F  -
+S_PlayFMV                       0x0041D040  0x0000007C  *
+sub_41D078                      0x0041D078  0x00000044  -
 
 # game.cpp
+StartGame                       0x0041D0C0  0x000001CA  +
 GameLoop                        0x0041D2C0  0x00000065  +
 LevelCompleteSequence           0x0041D330  0x0000021C  -
 LevelStats                      0x0041D5A0  0x00000346  +
@@ -832,8 +834,8 @@ draw_scaled_spriteC             0x004360A0  0x000001FB  -
 
 # setup.cpp
 InitialiseLevel                 0x004362A0  0x00000119  +
-InitialiseGameFlags             ----------  ----------  -
-InitialiseLevelFlags            0x004363C0  0x00000018  -
+InitialiseGameFlags             ----------  ----------  +
+InitialiseLevelFlags            0x004363C0  0x00000018  *
 BaddyObjects                    0x004363E0  0x00000C2F  +
 TrapObjects                     0x00437010  0x00000356  +
 ObjectObjects                   0x00437370  0x000006D3  +
