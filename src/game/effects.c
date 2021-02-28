@@ -8,11 +8,21 @@
 #include "game/misc.h"
 #include "game/sphere.h"
 #include "game/vars.h"
+#include "specific/shed.h"
 #include "config.h"
 #include "util.h"
 
 #define MAX_BOUNCE 100
 #define WF_RANGE (WALL_L * 10) // = 10240
+#define FLIPFLAG 0x40
+#define UNFLIPFLAG 0x80
+
+void (*effect_routines[])(ITEM_INFO* item) = {
+    FxTurn180,    FxDinoStomp, FxLaraNormal,    FxLaraBubbles,  FxFinishLevel,
+    FxEarthQuake, FxFlood,     FxRaisingBlock,  FxStairs2Slope, FxSand,
+    FxPowerUp,    FxExplosion, FxLaraHandsFree, FxFlipMap,      FxDrawRightGun,
+    FxChainBlock, FxFlicker,
+};
 
 int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
 {
@@ -31,6 +41,28 @@ int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
     }
 
     return 0;
+}
+
+void SoundEffects()
+{
+    mn_reset_ambient_loudness();
+
+    for (int i = 0; i < NumberSoundEffects; i++) {
+        OBJECT_VECTOR* sound = &SoundEffectsTable[i];
+        if (FlipStatus && (sound->flags & FLIPFLAG)) {
+            SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
+        } else if (!FlipStatus && (sound->flags & UNFLIPFLAG)) {
+            SoundEffect(sound->data, (PHD_3DPOS*)&sound->x, 0);
+        }
+    }
+
+    // NOTE: why are we firing this here?
+    // Some of the FX routines rely on the item to be not null!
+    if (FlipEffect != -1) {
+        effect_routines[FlipEffect](NULL);
+    }
+
+    mn_update_sound_effects();
 }
 
 int16_t DoBloodSplat(
@@ -488,6 +520,7 @@ void FxDrawRightGun(ITEM_INFO* item)
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
+    INJECT(0x0041A2A0, SoundEffects);
     INJECT(0x0041A310, DoBloodSplat);
     INJECT(0x0041A370, ControlBlood1);
     INJECT(0x0041A400, ControlExplosion1);

@@ -6,11 +6,11 @@
 
 // clang-format off
 #define SoundEffect             ((int32_t       (*)(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags))0x0042AA30)
-#define SoundEffects            ((void          (*)())0x0041A2A0)
 #define StopSoundEffect         ((void          (*)(int32_t sfx_num, PHD_3DPOS *pos))0x0042B300)
 // clang-format on
 
 int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance);
+void SoundEffects();
 int16_t DoBloodSplat(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction,
     int16_t room_num);

@@ -287,7 +287,7 @@ sub_41A200                      0x0041A200  0x0000000F  -
 
 # effects.cpp
 ItemNearLara                    0x0041A210  0x0000008C  +
-SoundEffects                    0x0041A2A0  0x0000006D  *
+SoundEffects                    0x0041A2A0  0x0000006D  +
 DoBloodSplat                    0x0041A310  0x00000059  +
 ControlBlood1                   0x0041A370  0x0000008B  +
 ControlExplosion1               0x0041A400  0x0000004C  +
@@ -301,7 +301,7 @@ ControlBubble1                  0x0041A760  0x000000FF  +
 Splash                          0x0041A860  0x000000CD  +
 ControlSplash1                  0x0041A930  0x0000007A  +
 ControlWaterFall                0x0041A9B0  0x00000120  +
-FxVoid                          ----------  ----------  -
+FxVoid                          ----------  ----------  x
 FxFinishLevel                   0x0041AAD0  0x0000000B  +
 FxTurn180                       0x0041AAE0  0x0000000B  +
 FxDinoStomp                     0x0041AAF0  0x00000096  +
@@ -655,9 +655,9 @@ phd_sqrt                        0x0042A900  0x0000003A  -
 mn_reset_sound_effects          0x0042A940  0x000000EC  -
 SoundEffect                     0x0042AA30  0x000004C2  *
 mn_get_fx_slot                  0x0042AF00  0x000000CE  -
-mn_reset_ambient_loudness       0x0042AFD0  0x00000030  -
+mn_reset_ambient_loudness       0x0042AFD0  0x00000030  *
 mn_stop_ambient_samples         0x0042B000  0x0000007E  *
-mn_update_sound_effects         0x0042B080  0x0000027D  -
+mn_update_sound_effects         0x0042B080  0x0000027D  *
 mn_get_sound_params             ----------  ----------  -
 StopSoundEffect                 0x0042B300  0x0000010E  *
 adjust_master_volume            0x0042B410  0x00000012  -
