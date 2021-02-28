@@ -76,7 +76,7 @@ int32_t StartGame(int level_num)
 
     if (InventoryExtraData[0]) {
         if (InventoryExtraData[0] == 1) {
-            return GF_STARTGAME | LV_LEVEL1;
+            return GF_STARTGAME | LV_FIRSTLEVEL;
         }
         return GF_EXIT_TO_TITLE;
     }
@@ -108,6 +108,108 @@ int32_t GameLoop(int demo_mode)
     }
 
     return ret;
+}
+
+int32_t LevelCompleteSequence(int level_num)
+{
+    TRACE("");
+    switch (level_num) {
+    case LV_GYM:
+        return GF_EXIT_TO_OPTION;
+
+    case LV_LEVEL1:
+        LevelStats(LV_LEVEL1);
+        return GF_STARTGAME | LV_LEVEL2;
+
+    case LV_LEVEL2:
+        LevelStats(LV_LEVEL2);
+        return GF_STARTGAME | LV_LEVEL3A;
+
+    case LV_LEVEL3A:
+        LevelStats(LV_LEVEL3A);
+        return GF_STARTGAME | LV_LEVEL3B;
+
+    case LV_LEVEL3B:
+        return GF_STARTCINE | LV_CUTSCENE1;
+
+    case LV_LEVEL4:
+        LevelStats(LV_LEVEL4);
+        return GF_STARTGAME | LV_LEVEL5;
+
+    case LV_LEVEL5:
+        LevelStats(LV_LEVEL5);
+        return GF_STARTGAME | LV_LEVEL6;
+
+    case LV_LEVEL6:
+        LevelStats(LV_LEVEL6);
+        return GF_STARTGAME | LV_LEVEL7A;
+
+    case LV_LEVEL7A:
+        LevelStats(LV_LEVEL7A);
+        return GF_STARTGAME | LV_LEVEL7B;
+
+    case LV_LEVEL7B:
+        return GF_STARTCINE | LV_CUTSCENE2;
+
+    case LV_LEVEL8A:
+        LevelStats(LV_LEVEL8A);
+        return GF_STARTGAME | LV_LEVEL8B;
+
+    case LV_LEVEL8B:
+        LevelStats(LV_LEVEL8B);
+        return GF_STARTGAME | LV_LEVEL8C;
+
+    case LV_LEVEL8C:
+        LevelStats(LV_LEVEL8C);
+        return GF_STARTGAME | LV_LEVEL10A;
+
+    case LV_LEVEL10A:
+        LevelStats(LV_LEVEL10A);
+        return GF_STARTCINE | LV_CUTSCENE3;
+
+    case LV_LEVEL10B:
+        S_PlayFMV(FMV_ENDSEQ, 1);
+        return GF_STARTCINE | LV_CUTSCENE4;
+
+    case LV_LEVEL10C:
+        LevelStats(LV_LEVEL10C);
+        S_PlayFMV(FMV_CORE, 1);
+        TempVideoAdjust(2, 1.0);
+        S_DisplayPicture("data\\end");
+        sub_408E41();
+        S_Wait(450);
+        S_FadeToBlack();
+        S_DisplayPicture("data\\cred1");
+        sub_408E41();
+        S_Wait(450);
+        S_DisplayPicture("data\\cred2");
+        sub_408E41();
+        S_Wait(450);
+        S_FadeToBlack();
+        S_DisplayPicture("data\\cred3");
+        sub_408E41();
+        S_Wait(450);
+        S_FadeToBlack();
+        S_NoFade();
+        return GF_EXIT_TO_TITLE;
+
+    case LV_CUTSCENE1:
+        LevelStats(LV_LEVEL3B);
+        return GF_STARTGAME | LV_LEVEL4;
+
+    case LV_CUTSCENE2:
+        LevelStats(LV_LEVEL7B);
+        return GF_STARTGAME | LV_LEVEL8A;
+
+    case LV_CUTSCENE3:
+        return GF_STARTGAME | LV_LEVEL10B;
+
+    case LV_CUTSCENE4:
+        LevelStats(LV_LEVEL10B);
+        return GF_STARTGAME | LV_LEVEL10C;
+    }
+
+    return GF_EXIT_TO_TITLE;
 }
 
 int32_t LevelIsValid(int16_t level_num)
@@ -297,6 +399,7 @@ void T1MInjectGameGame()
 {
     INJECT(0x0041D0C0, StartGame);
     INJECT(0x0041D2C0, GameLoop);
+    INJECT(0x0041D330, LevelCompleteSequence);
     INJECT(0x0041D5A0, LevelStats);
     INJECT(0x0041D8F0, GetRandomControl);
     INJECT(0x0041D910, SeedRandomControl);

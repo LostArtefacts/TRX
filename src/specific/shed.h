@@ -18,6 +18,8 @@
 #define CheckCheatMode          ((void          (*)())0x00438920)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
 #define PaletteSetHardware      ((void          (*)())0x004087EA)
+#define S_Wait                  ((int32_t       (*)(int32_t nframes))0x0041CD50)
+#define sub_408E41              ((void          (*)())0x00408E41)
 // clang-format on
 
 #endif

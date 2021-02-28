@@ -14,6 +14,7 @@
 #define S_GetObjectBounds       ((int32_t       (*)(int16_t* bptr))0x0042FD30)
 #define S_CalculateLight        ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t room_num))0x00430100)
 #define S_CalculateStaticLight  ((void          (*)(int16_t adder))0x00430290)
+#define S_DisplayPicture        ((void          (*)(const char* filename))0x00430CE0)
 // clang-format on
 
 void S_DrawHealthBar(int32_t percent);

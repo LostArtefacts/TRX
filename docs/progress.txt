@@ -96,7 +96,7 @@ CopyPictureHardware             0x00408B85  0x000000B5  -
 DownloadPictureHardware         0x00408C3A  0x000001D4  -
 sub_408E0E                      0x00408E0E  0x00000024  -
 sub_408E32                      0x00408E32  0x0000000F  -
-sub_408E41                      0x00408E41  0x0000002C  -
+sub_408E41                      0x00408E41  0x0000002C  *
 sub_408E6D                      0x00408E6D  0x0000006B  -
 sub_408ED8                      0x00408ED8  0x00000118  -
 sub_408FF0                      0x00408FF0  0x0000005D  -
@@ -240,7 +240,7 @@ TempVideoAdjust                 0x00416550  0x00000277  *
 TempVideoRemove                 0x004167D0  0x00000289  *
 S_CopyScreenToBuffer            ----------  ----------  -
 S_CopyBufferToScreen            0x00416A60  0x000000A7  *
-S_NoFade                        0x00416B10  0x00000010  -
+S_NoFade                        0x00416B10  0x00000010  *
 S_FadeInInventory               0x00416B20  0x00000082  -
 S_FadeOutInventory              0x00416BB0  0x00000027  -
 FadeToPal                       ----------  ----------  -
@@ -347,7 +347,7 @@ S_DrawScreenBox                 0x0041C520  0x00000688  *
 S_DrawScreenFBox                0x0041CBB0  0x00000101  *
 S_FinishInventory               0x0041CCC0  0x00000047  -
 S_FadeToBlack                   0x0041CD10  0x0000003F  *
-S_Wait                          0x0041CD50  0x0000004D  -
+S_Wait                          0x0041CD50  0x0000004D  *
 SoundStart                      0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x0000024A  -
 sub_41D00B                      0x0041D00B  0x0000002F  -
@@ -357,7 +357,7 @@ sub_41D078                      0x0041D078  0x00000044  -
 # game.cpp
 StartGame                       0x0041D0C0  0x000001CA  +
 GameLoop                        0x0041D2C0  0x00000065  +
-LevelCompleteSequence           0x0041D330  0x0000021C  -
+LevelCompleteSequence           0x0041D330  0x0000021C  +
 LevelStats                      0x0041D5A0  0x00000346  +
 GetRandomControl                0x0041D8F0  0x0000001E  +
 SeedRandomControl               0x0041D910  0x0000000A  +
@@ -759,7 +759,7 @@ S_SetupAboveWater               0x00430640  0x00000019  *
 S_AnimateTextures               0x00430660  0x000000D3  *
 S_DrawLightningSegment          0x00430740  0x00000446  -
 decomp_pcx                      0x00430B90  0x00000141  -
-S_DisplayPicture                0x00430CE0  0x00000094  -
+S_DisplayPicture                0x00430CE0  0x00000094  *
 
 # people.cpp
 Targetable                      0x00430D80  0x0000007B  -
