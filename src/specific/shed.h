@@ -21,6 +21,9 @@
 #define PaletteSetHardware      ((void          (*)())0x004087EA)
 #define S_Wait                  ((int32_t       (*)(int32_t nframes))0x0041CD50)
 #define sub_408E41              ((void          (*)())0x00408E41)
+#define S_DrawSpriteRel         ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435B70)
+#define S_DrawScreenSprite      ((void          (*)(int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v, int16_t sprnum, int16_t shade, uint16_t flags))0x0041C2D0)
+#define S_DrawScreenLine        ((void          (*)(int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col, SG_COL* grdptr, uint16_t flags))0x0041C440)
 // clang-format on
 
 #endif

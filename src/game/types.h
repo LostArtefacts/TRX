@@ -717,6 +717,13 @@ typedef enum {
     RM_KEYS = 2,
 } RING_MODE;
 
+typedef enum {
+    SHAPE_SPRITE = 1,
+    SHAPE_LINE = 2,
+    SHAPE_BOX = 3,
+    SHAPE_FBOX = 4
+} SHAPE;
+
 #pragma pack(push, 1)
 
 typedef struct {

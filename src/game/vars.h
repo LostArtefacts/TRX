@@ -198,6 +198,8 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define InventoryMode           VAR_I_(0x0045632C, int16_t, INV_TITLE_MODE)
 #define InventoryDisplaying     VAR_U_(0x0045A078, int16_t)
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
+#define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
+#define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define NoInputCount            VAR_I_(0x00459F4C, int32_t, 0)
 #define IDelay                  VAR_U_(0x0045A0B0, int32_t)
 #define IDCount                 VAR_U_(0x0045A0B4, int32_t)

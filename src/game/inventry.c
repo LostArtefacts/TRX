@@ -7,6 +7,7 @@
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/display.h"
+#include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/shed.h"
@@ -755,6 +756,112 @@ void SelectMeshes(INVENTORY_ITEM* inv_item)
     }
 }
 
+void DrawInventoryItem(INVENTORY_ITEM* inv_item)
+{
+    phd_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
+    phd_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
+
+    OBJECT_INFO* obj = &Objects[inv_item->object_number];
+    if (obj->nmeshes < 0) {
+        S_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
+        return;
+    }
+
+    if (inv_item->sprlist) {
+        int32_t zv = PhdMatrixPtr->_23;
+        int32_t zp = zv / PhdPersp;
+        int32_t sx = PhdCenterX + PhdMatrixPtr->_03 / zp;
+        int32_t sy = PhdCenterY + PhdMatrixPtr->_13 / zp;
+
+        INVENTORY_SPRITE** sprlist = inv_item->sprlist;
+        INVENTORY_SPRITE* spr;
+        while ((spr = *sprlist++)) {
+            if (zv < PhdNearZ || zv > PhdFarZ) {
+                break;
+            }
+
+            while (spr->shape) {
+                switch (spr->shape) {
+                case SHAPE_SPRITE:
+                    S_DrawScreenSprite(
+                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
+                        spr->param2,
+                        StaticObjects[O_ALPHABET].mesh_number + spr->sprnum,
+                        4096, 0);
+                    break;
+                case SHAPE_LINE:
+                    S_DrawScreenLine(
+                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
+                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                    break;
+                case SHAPE_BOX:
+                    S_DrawScreenBox(
+                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
+                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                    break;
+                case SHAPE_FBOX:
+                    S_DrawScreenFBox(
+                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
+                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                    break;
+                }
+                spr++;
+            }
+        }
+    }
+
+    int16_t* frame =
+        &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
+
+    phd_PushMatrix();
+
+    int32_t clip = S_GetObjectBounds(frame);
+    if (clip) {
+        phd_TranslateRel(
+            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+        int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+        phd_RotYXZpack(*packed_rotation++);
+
+        int32_t mesh_num = 1;
+
+        int32_t* bone = &AnimBones[obj->bone_index];
+        if (inv_item->drawn_meshes & mesh_num) {
+            phd_PutPolygons(Meshes[obj->mesh_index], clip);
+        }
+
+        for (int i = 1; i < obj->nmeshes; i++) {
+            mesh_num *= 2;
+
+            int32_t bone_extra_flags = bone[0];
+            if (bone_extra_flags & BEB_POP) {
+                phd_PopMatrix();
+            }
+            if (bone_extra_flags & BEB_PUSH) {
+                phd_PushMatrix();
+            }
+
+            phd_TranslateRel(bone[1], bone[2], bone[3]);
+            phd_RotYXZpack(*packed_rotation++);
+
+            if (inv_item->object_number == O_MAP_OPTION && i == 1) {
+                CompassSpeed = CompassSpeed * 19 / 20;
+                CompassSpeed +=
+                    (-inv_item->y_rot - LaraItem->pos.y_rot - CompassNeedle)
+                    / 50;
+                CompassNeedle += CompassSpeed;
+                phd_RotY(CompassNeedle);
+            }
+
+            if (inv_item->drawn_meshes & mesh_num) {
+                phd_PutPolygons(Meshes[obj->mesh_index + i], clip);
+            }
+
+            bone += 4;
+        }
+    }
+    phd_PopMatrix();
+}
+
 int32_t GetDebouncedInput(int32_t input)
 {
     if (input && !OldInputDB) {
@@ -772,4 +879,5 @@ void T1MInjectGameInvEntry()
     INJECT(0x0041E760, Display_Inventory);
     INJECT(0x0041F980, Construct_Inventory);
     INJECT(0x0041FAB0, SelectMeshes);
+    INJECT(0x0041FB40, DrawInventoryItem);
 }
