@@ -324,7 +324,7 @@ S_LoadLevel                     0x0041AF90  0x00000016  +
 LoadLevel                       0x0041AFB0  0x00000432  +
 LoadRooms                       0x0041B3F0  0x00000311  +
 LoadObjects                     0x0041B710  0x0000043F  +
-LoadSprites                     0x0041BB50  0x00000102  *
+LoadSprites                     0x0041BB50  0x00000102  +
 LoadItems                       0x0041BC60  0x0000019D  +
 LoadDepthQ                      ----------  ----------  +
 LoadPalette                     ----------  ----------  +

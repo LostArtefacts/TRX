@@ -1202,6 +1202,18 @@ typedef struct {
 } PHDTEXTURESTRUCT;
 
 typedef struct {
+    /* 0000 */ uint16_t tpage;
+    /* 0002 */ uint16_t offset;
+    /* 0004 */ uint16_t width;
+    /* 0006 */ uint16_t height;
+    /* 0008 */ int16_t x1;
+    /* 000A */ int16_t y1;
+    /* 000C */ int16_t x2;
+    /* 000E */ int16_t y2;
+    /* 0010 end */
+} PHDSPRITESTRUCT;
+
+typedef struct {
     /* 0000 */ PHD_ANGLE lock_angles[4];
     /* 0008 */ PHD_ANGLE left_angles[4];
     /* 0010 */ PHD_ANGLE right_angles[4];

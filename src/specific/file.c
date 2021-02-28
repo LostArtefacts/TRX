@@ -22,6 +22,8 @@ int32_t TextureCount = 0;
 int32_t FloorDataSize = 0;
 int32_t TexturePageCount = 0;
 int32_t AnimTextureRangeCount = 0;
+int32_t SpriteInfoCount = 0;
+int32_t SpriteCount = 0;
 
 int32_t LoadLevel(const char* filename, int32_t level_num)
 {
@@ -317,6 +319,29 @@ int32_t LoadObjects(FILE* fp)
     }
     _fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), TextureCount, fp);
 
+    return 1;
+}
+
+int32_t LoadSprites(FILE* fp)
+{
+    _fread(&SpriteInfoCount, sizeof(int32_t), 1, fp);
+    _fread(&PhdSpriteInfo, sizeof(PHDSPRITESTRUCT), SpriteInfoCount, fp);
+
+    _fread(&SpriteCount, sizeof(int32_t), 1, fp);
+    for (int i = 0; i < SpriteCount; i++) {
+        int32_t obj_num;
+        _fread(&obj_num, sizeof(int32_t), 1, fp);
+        if (obj_num < NUMBER_OBJECTS) {
+            _fread(&Objects[obj_num], sizeof(int16_t), 1, fp);
+            _fread(&Objects[obj_num].mesh_index, sizeof(int16_t), 1, fp);
+            Objects[obj_num].loaded = 1;
+        } else {
+            int32_t static_num = obj_num - NUMBER_OBJECTS;
+            _fseek(fp, 2, 1);
+            _fread(
+                &StaticObjects[static_num].mesh_number, sizeof(int16_t), 1, fp);
+        }
+    }
     return 1;
 }
 
@@ -723,11 +748,12 @@ void FixPyramidSecretTrigger()
 
 void T1MInjectSpecificFile()
 {
+    INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041AFB0, LoadLevel);
     INJECT(0x0041B3F0, LoadRooms);
     INJECT(0x0041B710, LoadObjects);
+    INJECT(0x0041BB50, LoadSprites);
     INJECT(0x0041BC60, LoadItems);
-    INJECT(0x0041AF90, S_LoadLevel);
     INJECT(0x0041BFC0, GetFullPath);
     INJECT(0x0041C020, FindCdDrive);
 }

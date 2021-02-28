@@ -67,6 +67,7 @@
 #define PhdTop                  VAR_U_(0x0068D380, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
+#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHDSPRITESTRUCT, [MAX_SPRITES_PAGE][MAX_SPRITES])
 #define PhdTextInfo             ARRAY_(0x006CADE0, PHDTEXTURESTRUCT, [MAX_TEXTURES])
 #define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
@@ -181,6 +182,8 @@ extern int32_t TextureCount;
 extern int32_t FloorDataSize;
 extern int32_t TexturePageCount;
 extern int32_t AnimTextureRangeCount;
+extern int32_t SpriteInfoCount;
+extern int32_t SpriteCount;
 
 #ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;
