@@ -143,6 +143,11 @@ void LaraControl(int16_t item_num)
             S_CDStop();
         }
         Lara.death_count++;
+#ifdef T1M_FEAT_GAMEPLAY
+        // make sure the enemy healthbar is no longer rendered. If Lara later
+        // is resurrected with DOZY, she should no longer aim at the target.
+        Lara.target = NULL;
+#endif
     }
 
     switch (Lara.water_status) {
