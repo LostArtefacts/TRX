@@ -1,6 +1,8 @@
 #ifndef T1M_3DSYSTEM_3D_GEN_H
 #define T1M_3DSYSTEM_3D_GEN_H
 
+#include <stdint.h>
+
 // clang-format off
 #define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
 #define phd_PushMatrix          ((void          (*)())0x0043EA01)
@@ -20,5 +22,11 @@
 // clang-format on
 
 void phd_PopMatrix();
+void phd_InitWindow(
+    int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
+    int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
+    uint8_t* scrptr);
+
+void T1MInject3DSystem3DGen();
 
 #endif

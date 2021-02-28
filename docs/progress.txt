@@ -31,7 +31,7 @@ phd_InitPolyList                0x00402470  0x0000002D  -
 phd_SortPolyList                0x004024A0  0x0000002F  -
 do_quickysorty                  0x004024D0  0x000000C5  -
 phd_PrintPolyList               ----------  ----------  -
-phd_InitWindow                  0x004025D0  0x000000F2  -
+phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  *
 
 # 3dsystem/3d_line.cpp

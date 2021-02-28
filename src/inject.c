@@ -1,5 +1,6 @@
 #include "inject.h"
 
+#include "3dsystem/3d_gen.h"
 #include "game/bat.h"
 #include "game/bear.h"
 #include "game/box.h"
@@ -29,6 +30,7 @@
 
 void T1MInject()
 {
+    T1MInject3DSystem3DGen();
     T1MInjectGameBat();
     T1MInjectGameBear();
     T1MInjectGameBox();
