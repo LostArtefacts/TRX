@@ -12,7 +12,8 @@ This project is inspired by Arsunt's
 Get a copy of the latest release from
 [here](https://github.com/rr-/Tomb1Main/releases) and unpack the contents to your
 game directory. Make sure you overwrite existing files. Currently Tomb1Main
-requires you to have the TombATI patch installed to work.
+requires you to have the [TombATI patch](http://www.glidos.net/tombati.html)
+installed to work.
 
 ## Configuring
 
