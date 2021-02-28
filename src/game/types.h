@@ -1283,6 +1283,20 @@ typedef struct {
     /* 0014 end */
 } BOX_INFO;
 
+typedef struct {
+    /* 0000 */ uint16_t unk1;
+    /* 0002 */ uint16_t requested;
+    /* 0004 */ uint16_t vis_lines;
+    /* 0006 */ uint16_t line_offset;
+    /* 0008 */ uint16_t unk5;
+    /* 000A */ uint16_t unk6;
+    /* 000C */ uint16_t unk7;
+    /* 000E */ int16_t x;
+    /* 0010 */ int16_t y;
+    /* 0012 */ int16_t z;
+    /* 0014 end */
+} REQUEST_INFO;
+
 #pragma pack(pop)
 
 typedef void (*ControlRoutine)(ITEM_INFO*, COLL_INFO*);

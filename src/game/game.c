@@ -395,6 +395,38 @@ int32_t S_LoadGame(void* data, int32_t size, int slot)
     return 1;
 }
 
+void GetSavedGamesList(REQUEST_INFO* req)
+{
+    switch (HiRes) {
+    case 0:
+        req->y = -32;
+        req->vis_lines = 5;
+        break;
+
+    case 1:
+        req->y = -62;
+        req->vis_lines = 8;
+        break;
+
+    case 2:
+        req->y = -90;
+        req->vis_lines = 10;
+        break;
+
+    case 3:
+        req->y = -100;
+        req->vis_lines = 12;
+        break;
+
+    default:
+        break;
+    }
+
+    if (req->requested >= req->vis_lines) {
+        req->line_offset = req->requested - req->vis_lines + 1;
+    }
+}
+
 void T1MInjectGameGame()
 {
     INJECT(0x0041D0C0, StartGame);
@@ -406,5 +438,6 @@ void T1MInjectGameGame()
     INJECT(0x0041D920, GetRandomDraw);
     INJECT(0x0041D940, SeedRandomDraw);
     INJECT(0x0041D950, LevelIsValid);
+    INJECT(0x0041D9B0, GetSavedGamesList);
     INJECT(0x0041DC70, S_LoadGame);
 }

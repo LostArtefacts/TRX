@@ -1,6 +1,7 @@
 #ifndef T1M_GAME_CONST_H
 #define T1M_GAME_CONST_H
 
+#define MAX_REQLINES 16
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
 #define NUM_PU 3
