@@ -34,7 +34,7 @@ build/%.o: src/%.c
 
 docker_build:
 	docker build -t tomb1main .
-	docker run -v $(shell pwd)/build:/build tomb1main
+	docker run -v $(shell pwd)/.git:/app/.git -v $(shell pwd)/build:/app/build tomb1main
 
 lint:
 	clang-format-10 -i $(shell find src -type f -iname '*.c' -or -iname '*.h')
