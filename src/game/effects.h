@@ -40,6 +40,7 @@ void FxPowerUp(ITEM_INFO* item);
 void FxExplosion(ITEM_INFO* item);
 void FxFlicker(ITEM_INFO* item);
 void FxLaraHandsFree(ITEM_INFO* item);
+void FxFlipMap(ITEM_INFO* item);
 
 void T1MInjectGameEffects();
 

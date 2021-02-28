@@ -464,6 +464,12 @@ void FxLaraHandsFree(ITEM_INFO* item)
     Lara.gun_status = LGS_ARMLESS;
 }
 
+// original name: flip_map_effect
+void FxFlipMap(ITEM_INFO* item)
+{
+    FlipMap();
+}
+
 void T1MInjectGameEffects()
 {
     INJECT(0x0041A210, ItemNearLara);
@@ -492,4 +498,5 @@ void T1MInjectGameEffects()
     INJECT(0x0041AE70, FxExplosion);
     INJECT(0x0041AEA0, FxFlicker);
     INJECT(0x0041AEF0, FxLaraHandsFree);
+    INJECT(0x0041AF00, FxFlipMap);
 }
