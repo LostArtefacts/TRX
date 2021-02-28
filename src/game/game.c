@@ -176,12 +176,29 @@ void LevelStats(int32_t level_num)
     TempVideoRemove();
 }
 
+int32_t S_LoadGame(void* data, int32_t size, int slot)
+{
+    char filename[80];
+    sprintf(filename, "saveati.%d", slot);
+    TRACE("%s", filename);
+    FILE* fp = fopen(filename, "rb");
+    if (!fp) {
+        return 0;
+    }
+    fread(filename, 1u, 75u, fp);
+    fread(&slot, 4u, 1u, fp);
+    fread(data, size, 1u, fp);
+    fclose(fp);
+    return 1;
+}
+
 void T1MInjectSpecificGame()
 {
     INJECT(0x0041D5A0, LevelStats);
-    INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041D8F0, GetRandomControl);
     INJECT(0x0041D910, SeedRandomControl);
     INJECT(0x0041D920, GetRandomDraw);
     INJECT(0x0041D940, SeedRandomDraw);
+    INJECT(0x0041D950, LevelIsValid);
+    INJECT(0x0041DC70, S_LoadGame);
 }

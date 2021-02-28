@@ -342,6 +342,8 @@ SoundStart                      0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x0000024A  -
 S_PlayFMV                       0x0041D040  0x0000007C  -
 sub_41D0C0                      0x0041D0C0  0x000001CA  -
+
+# game.cpp
 GameLoop                        0x0041D2C0  0x00000065  *
 LevelCompleteSequence           0x0041D330  0x0000021C  -
 LevelStats                      0x0041D5A0  0x00000346  +
