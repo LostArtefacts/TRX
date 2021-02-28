@@ -123,6 +123,7 @@
 #define FlipMapTable            ARRAY_(0x00462CC0, int32_t, [MAX_FLIP_MAPS])
 #define Cine                    VAR_U_(0x00462CF4, int16_t*)
 #define CineFrame               VAR_U_(0x00462D14, int16_t)
+#define CinematicPosition       VAR_U_(0x00462D00, PHD_3DPOS)
 
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])

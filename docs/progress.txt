@@ -170,7 +170,7 @@ ControlCinematicPlayer          0x004114A0  0x00000045  *
 ControlCinematicPlayer4         ----------  ----------  -
 InitialisePlayer1               0x004114F0  0x000000CD  *
 InitialiseGenPlayer             0x004115C0  0x00000027  *
-InGameCinematicCamera           0x004115F0  0x00000190  *
+InGameCinematicCamera           0x004115F0  0x00000190  +
 
 # collide.cpp
 GetCollisionInfo                0x00411780  0x000007DD  +
