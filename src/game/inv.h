@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define Inv_RingMotionCameraPitch   ((void          (*)(RING_INFO* ring, int16_t target))0x00421A30)
 #define Inv_RingMotionItemSelect    ((void          (*)(RING_INFO* ring, INVENTORY_ITEM* inv_item))0x00421A50)
 #define Inv_RingMotionItemDeselect  ((void          (*)(RING_INFO* ring, INVENTORY_ITEM* inv_item))0x00421AB0)
 // clang-format on
@@ -46,6 +45,7 @@ void Inv_RingMotionSetup(
 void Inv_RingMotionRadius(RING_INFO* ring, int16_t target);
 void Inv_RingMotionRotation(RING_INFO* ring, int16_t rotation, int16_t target);
 void Inv_RingMotionCameraPos(RING_INFO* ring, int16_t target);
+void Inv_RingMotionCameraPitch(RING_INFO* ring, int16_t target);
 
 void T1MInjectGameInvEntry();
 void T1MInjectGameInvFunc();
