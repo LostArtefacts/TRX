@@ -861,6 +861,17 @@ void Inv_RingMotionInit(
     ring->imo->misc = 0;
 }
 
+void Inv_RingMotionSetup(
+    RING_INFO* ring, int16_t status, int16_t status_target, int16_t frames)
+{
+    IMOTION_INFO* imo = ring->imo;
+    imo->count = frames;
+    imo->status = status;
+    imo->status_target = status_target;
+    imo->radius_rate = 0;
+    imo->camera_yrate = 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -882,4 +893,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004217D0, Inv_RingDoMotions);
     INJECT(0x00421910, Inv_RingRotateLeft);
     INJECT(0x00421940, Inv_RingRotateRight);
+    INJECT(0x00421970, Inv_RingMotionSetup);
 }
