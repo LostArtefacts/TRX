@@ -424,7 +424,7 @@ Inv_RingRotateLeft              0x00421910  0x0000002F  +
 Inv_RingRotateRight             0x00421940  0x0000002F  +
 Inv_RingMotionInit              ----------  ----------  +
 Inv_RingMotionSetup             0x00421970  0x0000002C  +
-Inv_RingMotionRadius            0x004219A0  0x00000026  *
+Inv_RingMotionRadius            0x004219A0  0x00000026  +
 Inv_RingMotionRotation          0x004219D0  0x00000022  *
 Inv_RingMotionCameraPos         0x00421A00  0x00000025  *
 Inv_RingMotionCameraPitch       0x00421A30  0x00000020  *
