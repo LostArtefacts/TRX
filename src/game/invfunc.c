@@ -563,6 +563,102 @@ int32_t Inv_RemoveItem(int32_t item_num)
     return 0;
 }
 
+int32_t Inv_GetItemOption(int32_t item_num)
+{
+    switch (item_num) {
+    case O_GUN_ITEM:
+    case O_GUN_OPTION:
+        return O_GUN_OPTION;
+
+    case O_SHOTGUN_ITEM:
+    case O_SHOTGUN_OPTION:
+        return O_SHOTGUN_OPTION;
+
+    case O_MAGNUM_ITEM:
+    case O_MAGNUM_OPTION:
+        return O_MAGNUM_OPTION;
+
+    case O_UZI_ITEM:
+    case O_UZI_OPTION:
+        return O_UZI_OPTION;
+
+    case O_SG_AMMO_ITEM:
+    case O_SG_AMMO_OPTION:
+        return O_SG_AMMO_OPTION;
+
+    case O_MAG_AMMO_ITEM:
+    case O_MAG_AMMO_OPTION:
+        return O_MAG_AMMO_OPTION;
+
+    case O_UZI_AMMO_ITEM:
+    case O_UZI_AMMO_OPTION:
+        return O_UZI_AMMO_OPTION;
+
+    case O_EXPLOSIVE_ITEM:
+    case O_EXPLOSIVE_OPTION:
+        return O_EXPLOSIVE_OPTION;
+
+    case O_MEDI_ITEM:
+    case O_MEDI_OPTION:
+        return O_MEDI_OPTION;
+
+    case O_BIGMEDI_ITEM:
+    case O_BIGMEDI_OPTION:
+        return O_BIGMEDI_OPTION;
+
+    case O_PUZZLE_ITEM1:
+    case O_PUZZLE_OPTION1:
+        return O_PUZZLE_OPTION1;
+
+    case O_PUZZLE_ITEM2:
+    case O_PUZZLE_OPTION2:
+        return O_PUZZLE_OPTION2;
+
+    case O_PUZZLE_ITEM3:
+    case O_PUZZLE_OPTION3:
+        return O_PUZZLE_OPTION3;
+
+    case O_PUZZLE_ITEM4:
+    case O_PUZZLE_OPTION4:
+        return O_PUZZLE_OPTION4;
+
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION:
+        return O_LEADBAR_OPTION;
+
+    case O_KEY_ITEM1:
+    case O_KEY_OPTION1:
+        return O_KEY_OPTION1;
+
+    case O_KEY_ITEM2:
+    case O_KEY_OPTION2:
+        return O_KEY_OPTION2;
+
+    case O_KEY_ITEM3:
+    case O_KEY_OPTION3:
+        return O_KEY_OPTION3;
+
+    case O_KEY_ITEM4:
+    case O_KEY_OPTION4:
+        return O_KEY_OPTION4;
+
+    case O_PICKUP_ITEM1:
+    case O_PICKUP_OPTION1:
+        return O_PICKUP_OPTION1;
+
+    case O_PICKUP_ITEM2:
+    case O_PICKUP_OPTION2:
+        return O_PICKUP_OPTION2;
+
+    case O_SCION_ITEM:
+    case O_SCION_ITEM2:
+    case O_SCION_OPTION:
+        return O_SCION_OPTION;
+    }
+
+    return -1;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -575,4 +671,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421200, Inv_RequestItem);
     INJECT(0x00421280, Inv_RemoveAllItems);
     INJECT(0x004212A0, Inv_RemoveItem);
+    INJECT(0x004213B0, Inv_GetItemOption);
 }
