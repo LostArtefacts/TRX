@@ -278,10 +278,23 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
     }
 }
 
+void RingActive()
+{
+    if (InvItemText[IT_NAME]) {
+        T_RemovePrint(InvItemText[IT_NAME]);
+        InvItemText[IT_NAME] = NULL;
+    }
+    if (InvItemText[IT_QTY]) {
+        T_RemovePrint(InvItemText[IT_QTY]);
+        InvItemText[IT_QTY] = NULL;
+    }
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
     INJECT(0x00420000, RingIsOpen);
     INJECT(0x00420150, RingIsNotOpen);
     INJECT(0x004201D0, RingNotActive);
+    INJECT(0x00420980, RingActive);
 }
