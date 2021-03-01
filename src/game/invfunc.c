@@ -70,8 +70,32 @@ void RingIsOpen(RING_INFO* ring)
     }
 }
 
+void RingIsNotOpen(RING_INFO* ring)
+{
+    if (!InvRingText) {
+        return;
+    }
+
+    T_RemovePrint(InvRingText);
+    InvRingText = NULL;
+
+    if (InvUpArrow1) {
+        T_RemovePrint(InvUpArrow1);
+        T_RemovePrint(InvUpArrow2);
+        InvUpArrow1 = NULL;
+        InvUpArrow2 = NULL;
+    }
+    if (InvDownArrow1) {
+        T_RemovePrint(InvDownArrow1);
+        T_RemovePrint(InvDownArrow2);
+        InvDownArrow1 = NULL;
+        InvDownArrow2 = NULL;
+    }
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
     INJECT(0x00420000, RingIsOpen);
+    INJECT(0x00420150, RingIsNotOpen);
 }

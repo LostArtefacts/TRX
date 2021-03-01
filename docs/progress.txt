@@ -405,7 +405,7 @@ GetDebouncedInput               ----------  ----------  +
 # invfunc.cpp
 InitColours                     0x0041FEF0  0x0000010A  +
 RingIsOpen                      0x00420000  0x0000014D  +
-RingIsNotOpen                   0x00420150  0x00000076  *
+RingIsNotOpen                   0x00420150  0x00000076  +
 RingNotActive                   0x004201D0  0x0000069E  *
 RingActive                      0x00420980  0x00000039  *
 Inv_AddItem                     0x004209C0  0x00000620  *
