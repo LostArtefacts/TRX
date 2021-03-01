@@ -428,7 +428,7 @@ Inv_RingMotionRadius            0x004219A0  0x00000026  +
 Inv_RingMotionRotation          0x004219D0  0x00000022  +
 Inv_RingMotionCameraPos         0x00421A00  0x00000025  +
 Inv_RingMotionCameraPitch       0x00421A30  0x00000020  +
-Inv_RingMotionItemSelect        0x00421A50  0x00000057  *
+Inv_RingMotionItemSelect        0x00421A50  0x00000057  +
 Inv_RingMotionItemDeselect      0x00421AB0  0x00000055  *
 
 # items.cpp
