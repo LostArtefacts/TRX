@@ -5,12 +5,12 @@
 #include <stdint.h>
 
 // clang-format off
-#define RingNotActive               ((void          (*)(INVENTORY_ITEM* inv_item))0x004201D0)
 #define RingActive                  ((void          (*)())0x00420980)
 #define RemoveInventoryText         ((void          (*)())0x00421550)
 #define Inv_AddItem                 ((int32_t       (*)(int16_t item_num))0x004209C0)
 #define Inv_RemoveAllItems          ((void          (*)())0x00421280)
 #define Inv_RemoveItem              ((void          (*)(int16_t item_num))0x004212A0)
+#define Inv_GetItemOption           ((int32_t       (*)(int32_t item_num))0x004213B0)
 #define Inv_RequestItem             ((int32_t       (*)(int16_t item_num))0x00421200)
 #define Inv_RingInit                ((void          (*)(RING_INFO* ring, int16_t type, INVENTORY_ITEM** list, int16_t qty, int16_t current, IMOTION_INFO* imo))0x00421580)
 #define Inv_RingGetView             ((void          (*)(RING_INFO* ring, PHD_3DPOS* viewer))0x00421700)
@@ -38,6 +38,7 @@ int32_t GetDebouncedInput(int32_t input);
 void InitColours();
 void RingIsOpen(RING_INFO* ring);
 void RingIsNotOpen(RING_INFO* ring);
+void RingNotActive(INVENTORY_ITEM* inv_item);
 
 void T1MInjectGameInvEntry();
 void T1MInjectGameInvFunc();

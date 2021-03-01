@@ -207,6 +207,17 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 #define InvNFrames              VAR_U_(0x004550A0, int32_t)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
+#define Key1Strings             ARRAY_(0x00454178, char*, [NUMBER_OF_LEVELS])
+#define Key2Strings             ARRAY_(0x004541D0, char*, [NUMBER_OF_LEVELS])
+#define Key3Strings             ARRAY_(0x00454228, char*, [NUMBER_OF_LEVELS])
+#define Key4Strings             ARRAY_(0x00454280, char*, [NUMBER_OF_LEVELS])
+#define Pickup1Strings          ARRAY_(0x004540C8, char*, [NUMBER_OF_LEVELS])
+#define Pickup2Strings          ARRAY_(0x00454120, char*, [NUMBER_OF_LEVELS])
+#define Puzzle1Strings          ARRAY_(0x00453F68, char*, [NUMBER_OF_LEVELS])
+#define Puzzle2Strings          ARRAY_(0x00453FC0, char*, [NUMBER_OF_LEVELS])
+#define Puzzle3Strings          ARRAY_(0x00454018, char*, [NUMBER_OF_LEVELS])
+#define Puzzle4Strings          ARRAY_(0x00454070, char*, [NUMBER_OF_LEVELS])
+
 // clang-format on
 
 extern int32_t MeshCount;

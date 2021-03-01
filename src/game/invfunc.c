@@ -1,7 +1,12 @@
+#include "game/health.h"
+#include "game/inv.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/shed.h"
 #include "util.h"
+
+#define IT_NAME 0
+#define IT_QTY 1
 
 void InitColours()
 {
@@ -93,9 +98,190 @@ void RingIsNotOpen(RING_INFO* ring)
     }
 }
 
+void RingNotActive(INVENTORY_ITEM* inv_item)
+{
+    if (!InvItemText[IT_NAME]) {
+        switch (inv_item->object_number) {
+        case O_PUZZLE_OPTION1:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Puzzle1Strings[CurrentLevel]);
+            break;
+
+        case O_PUZZLE_OPTION2:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Puzzle2Strings[CurrentLevel]);
+            break;
+
+        case O_PUZZLE_OPTION3:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Puzzle3Strings[CurrentLevel]);
+            break;
+
+        case O_PUZZLE_OPTION4:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Puzzle4Strings[CurrentLevel]);
+            break;
+
+        case O_KEY_OPTION1:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Key1Strings[CurrentLevel]);
+            break;
+
+        case O_KEY_OPTION2:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Key2Strings[CurrentLevel]);
+            break;
+
+        case O_KEY_OPTION3:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Key3Strings[CurrentLevel]);
+            break;
+
+        case O_KEY_OPTION4:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Key4Strings[CurrentLevel]);
+            break;
+
+        case O_PICKUP_OPTION1:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Pickup1Strings[CurrentLevel]);
+            break;
+
+        case O_PICKUP_OPTION2:
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, Pickup2Strings[CurrentLevel]);
+            break;
+
+        case O_PASSPORT_OPTION:
+            break;
+
+        default:
+            // XXX: terrible hack
+            InvItemText[IT_NAME] = T_Print(0, -16, 0, (char*)inv_item->item_id);
+            break;
+        }
+
+        if (InvItemText[IT_NAME]) {
+            T_BottomAlign(InvItemText[IT_NAME], 1);
+            T_CentreH(InvItemText[IT_NAME], 1);
+        }
+    }
+
+    char temp_text[64];
+    int32_t qty = Inv_RequestItem(inv_item->object_number);
+
+    switch (inv_item->object_number) {
+    case O_SHOTGUN_OPTION:
+        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+            sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_MAGNUM_OPTION:
+        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+            sprintf(temp_text, "%5d B", Lara.magnums.ammo);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_UZI_OPTION:
+        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+            sprintf(temp_text, "%5d C", Lara.uzis.ammo);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_SG_AMMO_OPTION:
+        if (!InvItemText[IT_QTY]) {
+            sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_MAG_AMMO_OPTION:
+        if (!InvItemText[IT_QTY]) {
+            sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_UZI_AMMO_OPTION:
+        if (!InvItemText[IT_QTY]) {
+            sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_MEDI_OPTION:
+        HealthBarTimer = 40;
+        DrawHealthBar();
+        if (!InvItemText[IT_QTY] && qty > 1) {
+            sprintf(temp_text, "%d", qty);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_BIGMEDI_OPTION:
+        HealthBarTimer = 40;
+        DrawHealthBar();
+        if (!InvItemText[IT_QTY] && qty > 1) {
+            sprintf(temp_text, "%d", qty);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+
+    case O_KEY_OPTION1:
+    case O_KEY_OPTION2:
+    case O_KEY_OPTION3:
+    case O_KEY_OPTION4:
+    case O_LEADBAR_OPTION:
+    case O_PICKUP_OPTION1:
+    case O_PICKUP_OPTION2:
+    case O_PUZZLE_OPTION1:
+    case O_PUZZLE_OPTION2:
+    case O_PUZZLE_OPTION3:
+    case O_PUZZLE_OPTION4:
+    case O_SCION_OPTION:
+        if (!InvItemText[IT_QTY] && qty > 1) {
+            sprintf(temp_text, "%d", qty);
+            MakeAmmoString(temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            T_BottomAlign(InvItemText[IT_QTY], 1);
+            T_CentreH(InvItemText[IT_QTY], 1);
+        }
+        break;
+    }
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
     INJECT(0x00420000, RingIsOpen);
     INJECT(0x00420150, RingIsNotOpen);
+    INJECT(0x004201D0, RingNotActive);
 }

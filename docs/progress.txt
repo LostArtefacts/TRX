@@ -406,7 +406,7 @@ GetDebouncedInput               ----------  ----------  +
 InitColours                     0x0041FEF0  0x0000010A  +
 RingIsOpen                      0x00420000  0x0000014D  +
 RingIsNotOpen                   0x00420150  0x00000076  +
-RingNotActive                   0x004201D0  0x0000069E  *
+RingNotActive                   0x004201D0  0x0000069E  +
 RingActive                      0x00420980  0x00000039  *
 Inv_AddItem                     0x004209C0  0x00000620  *
 Inv_InsertItem                  0x004210D0  0x00000129  -
@@ -414,7 +414,7 @@ Inv_RequestItem                 0x00421200  0x00000077  *
 Inv_RemoveAllItems              0x00421280  0x0000001E  *
 Inv_RemoveItem                  0x004212A0  0x00000110  *
 Inv_GetCount                    ----------  ----------  -
-Inv_GetItemOption               0x004213B0  0x000000A7  -
+Inv_GetItemOption               0x004213B0  0x000000A7  *
 RemoveInventoryText             0x00421550  0x00000028  *
 Inv_RingInit                    0x00421580  0x0000017E  *
 Inv_RingGetView                 0x00421700  0x00000060  *
