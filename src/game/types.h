@@ -745,6 +745,12 @@ typedef enum {
     IC_NUMBER_OF = 17,
 } INV_COLOUR;
 
+typedef enum {
+    IT_NAME = 0,
+    IT_QTY = 1,
+    IT_NUMBER_OF = 2,
+} INV_TEXT;
+
 #pragma pack(push, 1)
 
 typedef struct {

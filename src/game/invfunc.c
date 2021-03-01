@@ -6,9 +6,6 @@
 #include "specific/shed.h"
 #include "util.h"
 
-#define IT_NAME 0
-#define IT_QTY 1
-
 void InitColours()
 {
     InvColours[IC_BLACK] = S_Colour(0, 0, 0);
@@ -659,6 +656,16 @@ int32_t Inv_GetItemOption(int32_t item_num)
     return -1;
 }
 
+void RemoveInventoryText()
+{
+    for (int i = 0; i < IT_NUMBER_OF; i++) {
+        if (InvItemText[i]) {
+            T_RemovePrint(InvItemText[i]);
+            InvItemText[i] = NULL;
+        }
+    }
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -672,4 +679,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421280, Inv_RemoveAllItems);
     INJECT(0x004212A0, Inv_RemoveItem);
     INJECT(0x004213B0, Inv_GetItemOption);
+    INJECT(0x00421550, RemoveInventoryText);
 }
