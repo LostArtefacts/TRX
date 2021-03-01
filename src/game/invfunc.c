@@ -518,6 +518,15 @@ int32_t Inv_RequestItem(int item_num)
     return 0;
 }
 
+void Inv_RemoveAllItems()
+{
+    InvMainObjects = 1;
+    InvMainCurrent = 0;
+
+    InvKeysObjects = 0;
+    InvKeysCurrent = 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -528,4 +537,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004209C0, Inv_AddItem);
     INJECT(0x004210D0, Inv_InsertItem);
     INJECT(0x00421200, Inv_RequestItem);
+    INJECT(0x00421280, Inv_RemoveAllItems);
 }
