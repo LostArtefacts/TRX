@@ -814,6 +814,17 @@ void Inv_RingDoMotions(RING_INFO* ring)
     }
 }
 
+void Inv_RingRotateLeft(RING_INFO* ring)
+{
+    ring->rotating = 1;
+    ring->target_object = ring->current_object - 1;
+    if (ring->target_object < 0) {
+        ring->target_object = ring->number_of_objects - 1;
+    }
+    ring->rot_count = ROTATE_DURATION;
+    ring->rot_adder = ring->rot_adder_l;
+}
+
 void Inv_RingMotionInit(
     RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
 {
@@ -858,4 +869,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421760, Inv_RingLight);
     INJECT(0x004217A0, Inv_RingCalcAdders);
     INJECT(0x004217D0, Inv_RingDoMotions);
+    INJECT(0x00421910, Inv_RingRotateLeft);
 }

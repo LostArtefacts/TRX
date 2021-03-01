@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define Inv_RingRotateLeft          ((void          (*)(RING_INFO* ring))0x00421910)
 #define Inv_RingRotateRight         ((void          (*)(RING_INFO* ring))0x00421940)
 #define Inv_RingMotionSetup         ((void          (*)(RING_INFO* ring, int16_t status, int16_t status_target, int16_t frames))0x00421970)
 #define Inv_RingMotionRadius        ((void          (*)(RING_INFO* ring, int16_t target))0x004219A0)
@@ -43,6 +42,7 @@ void Inv_RingGetView(RING_INFO* a1, PHD_3DPOS* viewer);
 void Inv_RingLight(RING_INFO* ring);
 void Inv_RingCalcAdders(RING_INFO* ring, int16_t rotation_duration);
 void Inv_RingDoMotions(RING_INFO* ring);
+void Inv_RingRotateLeft(RING_INFO* ring);
 void Inv_RingMotionInit(
     RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target);
 
