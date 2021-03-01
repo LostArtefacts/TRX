@@ -298,7 +298,7 @@ int32_t Inv_AddItem(int32_t item_num)
     for (int i = 0; i < InvMainObjects; i++) {
         INVENTORY_ITEM* inv_item = InvMainList[i];
         if (inv_item->object_number == item_num_option) {
-            ++InvMainQtys[i];
+            InvMainQtys[i]++;
             return 1;
         }
     }
@@ -306,7 +306,7 @@ int32_t Inv_AddItem(int32_t item_num)
     for (int i = 0; i < InvKeysObjects; i++) {
         INVENTORY_ITEM* inv_item = InvKeysList[i];
         if (inv_item->object_number == item_num_option) {
-            ++InvKeysQtys[i];
+            InvKeysQtys[i]++;
             return 1;
         }
     }
@@ -452,6 +452,53 @@ int32_t Inv_AddItem(int32_t item_num)
     return 0;
 }
 
+void Inv_InsertItem(INVENTORY_ITEM* inv_item)
+{
+    int n;
+
+    if (inv_item->inv_pos < 100) {
+        for (n = 0; n < InvMainObjects; n++) {
+            if (InvMainList[n]->inv_pos > inv_item->inv_pos) {
+                break;
+            }
+        }
+
+        if (n == InvMainObjects) {
+            InvMainList[InvMainObjects] = inv_item;
+            InvMainQtys[InvMainObjects] = 1;
+            InvMainObjects++;
+        } else {
+            for (int i = InvMainObjects; i > n - 1; i--) {
+                InvMainList[i + 1] = InvMainList[i];
+                InvMainQtys[i + 1] = InvMainQtys[i];
+            }
+            InvMainList[n] = inv_item;
+            InvMainQtys[n] = 1;
+            InvMainObjects++;
+        }
+    } else {
+        for (n = 0; n < InvKeysObjects; n++) {
+            if (InvKeysList[n]->inv_pos > inv_item->inv_pos) {
+                break;
+            }
+        }
+
+        if (n == InvKeysObjects) {
+            InvKeysList[InvKeysObjects] = inv_item;
+            InvKeysQtys[InvKeysObjects] = 1;
+            InvKeysObjects++;
+        } else {
+            for (int i = InvKeysObjects; i > n - 1; i--) {
+                InvKeysList[i + 1] = InvKeysList[i];
+                InvKeysQtys[i + 1] = InvKeysQtys[i];
+            }
+            InvKeysList[n] = inv_item;
+            InvKeysQtys[n] = 1;
+            InvKeysObjects++;
+        }
+    }
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -460,4 +507,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004201D0, RingNotActive);
     INJECT(0x00420980, RingActive);
     INJECT(0x004209C0, Inv_AddItem);
+    INJECT(0x004210D0, Inv_InsertItem);
 }
