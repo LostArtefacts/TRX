@@ -412,8 +412,7 @@ Inv_AddItem                     0x004209C0  0x00000620  +
 Inv_InsertItem                  0x004210D0  0x00000129  +
 Inv_RequestItem                 0x00421200  0x00000077  +
 Inv_RemoveAllItems              0x00421280  0x0000001E  +
-Inv_RemoveItem                  0x004212A0  0x00000110  *
-Inv_GetCount                    ----------  ----------  -
+Inv_RemoveItem                  0x004212A0  0x00000110  +
 Inv_GetItemOption               0x004213B0  0x000000A7  *
 RemoveInventoryText             0x00421550  0x00000028  *
 Inv_RingInit                    0x00421580  0x0000017E  *

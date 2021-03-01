@@ -527,6 +527,42 @@ void Inv_RemoveAllItems()
     InvKeysCurrent = 0;
 }
 
+int32_t Inv_RemoveItem(int32_t item_num)
+{
+    int32_t item_num_option = Inv_GetItemOption(item_num);
+
+    for (int i = 0; i < InvMainObjects; i++) {
+        if (InvMainList[i]->object_number == item_num_option) {
+            InvMainQtys[i]--;
+            if (InvMainQtys[i] > 0) {
+                return 1;
+            }
+            InvMainObjects--;
+            for (int j = i; j < InvMainObjects; j++) {
+                InvMainList[j] = InvMainList[j + 1];
+                InvMainQtys[j] = InvMainQtys[j + 1];
+            }
+        }
+    }
+
+    for (int i = 0; i < InvKeysObjects; i++) {
+        if (InvKeysList[i]->object_number == item_num_option) {
+            InvKeysQtys[i]--;
+            if (InvKeysQtys[i] > 0) {
+                return 1;
+            }
+            InvKeysObjects--;
+            for (int j = i; j < InvKeysObjects; j++) {
+                InvKeysList[j] = InvKeysList[j + 1];
+                InvKeysQtys[j] = InvKeysQtys[j + 1];
+            }
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -538,4 +574,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004210D0, Inv_InsertItem);
     INJECT(0x00421200, Inv_RequestItem);
     INJECT(0x00421280, Inv_RemoveAllItems);
+    INJECT(0x004212A0, Inv_RemoveItem);
 }
