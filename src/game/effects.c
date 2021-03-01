@@ -528,6 +528,7 @@ void T1MInjectGameEffects()
     INJECT(0x0041A370, ControlBlood1);
     INJECT(0x0041A400, ControlExplosion1);
     INJECT(0x0041A4D0, ControlRicochet1);
+    INJECT(0x0041A450, Ricochet);
     INJECT(0x0041A500, ControlTwinkle);
     INJECT(0x0041A550, ItemSparkle);
     INJECT(0x0041A670, FxLaraBubbles);

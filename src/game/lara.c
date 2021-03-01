@@ -2384,6 +2384,7 @@ void T1MInjectGameLara()
     INJECT(0x004232F0, LaraAsDieMidas);
     INJECT(0x00423720, LaraAsSwanDive);
     INJECT(0x00423750, LaraAsFastDive);
+    INJECT(0x00423790, LaraAsGymnast);
     INJECT(0x004237A0, LaraAsWaterOut);
 
     INJECT(0x004237C0, LaraColWalk);

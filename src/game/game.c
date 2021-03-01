@@ -510,6 +510,6 @@ void T1MInjectGameGame()
     INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041D9B0, GetSavedGamesList);
     INJECT(0x0041DA20, S_FrontEndCheck);
-    INJECT(0x0041DC70, S_LoadGame);
     INJECT(0x0041DB70, S_SaveGame);
+    INJECT(0x0041DC70, S_LoadGame);
 }
