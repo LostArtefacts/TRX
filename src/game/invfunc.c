@@ -1,5 +1,6 @@
 #include "game/health.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/shed.h"
@@ -290,6 +291,167 @@ void RingActive()
     }
 }
 
+int32_t Inv_AddItem(int32_t item_num)
+{
+    int32_t item_num_option = Inv_GetItemOption(item_num);
+
+    for (int i = 0; i < InvMainObjects; i++) {
+        INVENTORY_ITEM* inv_item = InvMainList[i];
+        if (inv_item->object_number == item_num_option) {
+            ++InvMainQtys[i];
+            return 1;
+        }
+    }
+
+    for (int i = 0; i < InvKeysObjects; i++) {
+        INVENTORY_ITEM* inv_item = InvKeysList[i];
+        if (inv_item->object_number == item_num_option) {
+            ++InvKeysQtys[i];
+            return 1;
+        }
+    }
+
+    switch (item_num) {
+    case O_GUN_ITEM:
+    case O_GUN_OPTION:
+        Inv_InsertItem(&IPistolsOption);
+        return 1;
+
+    case O_SHOTGUN_ITEM:
+    case O_SHOTGUN_OPTION:
+        for (int i = Inv_RequestItem(O_SG_AMMO_ITEM); i > 0; i--) {
+            Inv_RemoveItem(O_SG_AMMO_ITEM);
+            Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+        }
+        Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+        Inv_InsertItem(&IShotgunOption);
+        GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+        return 0;
+
+    case O_MAGNUM_ITEM:
+    case O_MAGNUM_OPTION:
+        for (int i = Inv_RequestItem(O_MAG_AMMO_ITEM); i > 0; i--) {
+            Inv_RemoveItem(O_MAG_AMMO_ITEM);
+            Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+        }
+        Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+        Inv_InsertItem(&IMagnumOption);
+        GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+        return 0;
+
+    case O_UZI_ITEM:
+    case O_UZI_OPTION:
+        for (int i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
+            Inv_RemoveItem(O_UZI_AMMO_ITEM);
+            Lara.uzis.ammo += UZI_AMMO_QTY;
+        }
+        Lara.uzis.ammo += UZI_AMMO_QTY;
+        Inv_InsertItem(&IUziOption);
+        GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        return 0;
+
+    case O_SG_AMMO_ITEM:
+    case O_SG_AMMO_OPTION:
+        if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+            Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+        } else {
+            Inv_InsertItem(&IShotgunAmmoOption);
+        }
+        return 0;
+
+    case O_MAG_AMMO_ITEM:
+    case O_MAG_AMMO_OPTION:
+        if (Inv_RequestItem(O_MAGNUM_ITEM)) {
+            Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+        } else {
+            Inv_InsertItem(&IMagnumAmmoOption);
+        }
+        return 0;
+
+    case O_UZI_AMMO_ITEM:
+    case O_UZI_AMMO_OPTION:
+        if (Inv_RequestItem(O_UZI_ITEM)) {
+            Lara.uzis.ammo += UZI_AMMO_QTY;
+        } else {
+            Inv_InsertItem(&IUziAmmoOption);
+        }
+        return 0;
+
+    case O_MEDI_ITEM:
+    case O_MEDI_OPTION:
+        Inv_InsertItem(&IMediOption);
+        return 1;
+
+    case O_BIGMEDI_ITEM:
+    case O_BIGMEDI_OPTION:
+        Inv_InsertItem(&IBigMediOption);
+        return 1;
+
+    case O_PUZZLE_ITEM1:
+    case O_PUZZLE_OPTION1:
+        Inv_InsertItem(&IPuzzle1Option);
+        return 1;
+
+    case O_PUZZLE_ITEM2:
+    case O_PUZZLE_OPTION2:
+        Inv_InsertItem(&IPuzzle2Option);
+        return 1;
+
+    case O_PUZZLE_ITEM3:
+    case O_PUZZLE_OPTION3:
+        Inv_InsertItem(&IPuzzle3Option);
+        return 1;
+
+    case O_PUZZLE_ITEM4:
+    case O_PUZZLE_OPTION4:
+        Inv_InsertItem(&IPuzzle4Option);
+        return 1;
+
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION:
+        Inv_InsertItem(&ILeadBarOption);
+        return 1;
+
+    case O_KEY_ITEM1:
+    case O_KEY_OPTION1:
+        Inv_InsertItem(&IKey1Option);
+        return 1;
+
+    case O_KEY_ITEM2:
+    case O_KEY_OPTION2:
+        Inv_InsertItem(&IKey2Option);
+        return 1;
+
+    case O_KEY_ITEM3:
+    case O_KEY_OPTION3:
+        Inv_InsertItem(&IKey3Option);
+        return 1;
+
+    case O_KEY_ITEM4:
+    case O_KEY_OPTION4:
+        Inv_InsertItem(&IKey4Option);
+        return 1;
+
+    case O_PICKUP_ITEM1:
+    case O_PICKUP_OPTION1:
+        Inv_InsertItem(&IPickup1Option);
+        return 1;
+
+    case O_PICKUP_ITEM2:
+    case O_PICKUP_OPTION2:
+        Inv_InsertItem(&IPickup2Option);
+        return 1;
+
+    case O_SCION_ITEM:
+    case O_SCION_ITEM2:
+    case O_SCION_OPTION:
+        Inv_InsertItem(&IScionOption);
+        return 1;
+    }
+
+    return 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -297,4 +459,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00420150, RingIsNotOpen);
     INJECT(0x004201D0, RingNotActive);
     INJECT(0x00420980, RingActive);
+    INJECT(0x004209C0, Inv_AddItem);
 }

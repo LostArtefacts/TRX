@@ -6,7 +6,7 @@
 
 // clang-format off
 #define RemoveInventoryText         ((void          (*)())0x00421550)
-#define Inv_AddItem                 ((int32_t       (*)(int16_t item_num))0x004209C0)
+#define Inv_InsertItem              ((void          (*)(INVENTORY_ITEM* inv_item))0x004210D0)
 #define Inv_RemoveAllItems          ((void          (*)())0x00421280)
 #define Inv_RemoveItem              ((void          (*)(int16_t item_num))0x004212A0)
 #define Inv_GetItemOption           ((int32_t       (*)(int32_t item_num))0x004213B0)
@@ -39,6 +39,8 @@ void RingIsOpen(RING_INFO* ring);
 void RingIsNotOpen(RING_INFO* ring);
 void RingNotActive(INVENTORY_ITEM* inv_item);
 void RingActive();
+
+int32_t Inv_AddItem(int32_t item_num);
 
 void T1MInjectGameInvEntry();
 void T1MInjectGameInvFunc();
