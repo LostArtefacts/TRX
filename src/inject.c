@@ -47,6 +47,7 @@ void T1MInject()
     T1MInjectGameGame();
     T1MInjectGameHealth();
     T1MInjectGameInvEntry();
+    T1MInjectGameInvFunc();
     T1MInjectGameItems();
     T1MInjectGameLOT();
     T1MInjectGameLara();

@@ -197,6 +197,7 @@ extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
 #define Inv_UpArrow2            VAR_U_(0x0045A060, TEXTSTRING*)
 #define InventoryMode           VAR_I_(0x0045632C, int16_t, INV_TITLE_MODE)
 #define InventoryDisplaying     VAR_U_(0x0045A078, int16_t)
+#define InvColours              ARRAY_(0x0045EE80, int16_t, [IC_NUMBER_OF])
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
 #define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)

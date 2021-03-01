@@ -724,6 +724,27 @@ typedef enum {
     SHAPE_FBOX = 4
 } SHAPE;
 
+typedef enum {
+    IC_BLACK = 0,
+    IC_GREY = 1,
+    IC_WHITE = 2,
+    IC_RED = 3,
+    IC_ORANGE = 4,
+    IC_YELLOW = 5,
+    IC_GREEN1 = 6,
+    IC_GREEN2 = 7,
+    IC_GREEN3 = 8,
+    IC_GREEN4 = 9,
+    IC_GREEN5 = 10,
+    IC_GREEN6 = 11,
+    IC_DARKGREEN = 12,
+    IC_GREEN = 13,
+    IC_CYAN = 14,
+    IC_BLUE = 15,
+    IC_MAGENTA = 16,
+    IC_NUMBER_OF = 17,
+} INV_COLOUR;
+
 #pragma pack(push, 1)
 
 typedef struct {

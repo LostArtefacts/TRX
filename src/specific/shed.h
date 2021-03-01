@@ -24,6 +24,7 @@
 #define S_DrawSpriteRel         ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435B70)
 #define S_DrawScreenSprite      ((void          (*)(int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v, int16_t sprnum, int16_t shade, uint16_t flags))0x0041C2D0)
 #define S_DrawScreenLine        ((void          (*)(int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col, SG_COL* grdptr, uint16_t flags))0x0041C440)
+#define S_Colour                ((SG_COL        (*)(int32_t red, int32_t green, int32_t blue))0x0041C0F0)
 // clang-format on
 
 #endif

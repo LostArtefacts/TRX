@@ -849,9 +849,11 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
             phd_RotYXZpack(*packed_rotation++);
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
-                CompassSpeed = CompassSpeed * 19 / 20 +
-                    (int16_t)(-inv_item->y_rot - LaraItem->pos.y_rot - CompassNeedle)
-                    / 50;
+                CompassSpeed = CompassSpeed * 19 / 20
+                    + (int16_t)(
+                          -inv_item->y_rot - LaraItem->pos.y_rot
+                          - CompassNeedle)
+                        / 50;
                 CompassNeedle += CompassSpeed;
                 phd_RotY(CompassNeedle);
             }

@@ -339,7 +339,7 @@ GetFullPath                     0x0041BFC0  0x00000053  +
 FindCdDrive                     0x0041C020  0x000000C7  +
 
 # ???
-S_Colour                        0x0041C0F0  0x00000089  -
+S_Colour                        0x0041C0F0  0x00000089  *
 S_DrawScreenSprite2d            0x0041C180  0x00000150  -
 S_DrawScreenSprite              0x0041C2D0  0x00000163  *
 S_DrawScreenLine                0x0041C440  0x000000D3  *
@@ -403,7 +403,7 @@ DrawInventoryItem               0x0041FB40  0x000003A0  +
 GetDebouncedInput               ----------  ----------  +
 
 # invfunc.cpp
-InitColours                     0x0041FEF0  0x0000010A  *
+InitColours                     0x0041FEF0  0x0000010A  +
 RingIsOpen                      0x00420000  0x0000014D  *
 RingIsNotOpen                   0x00420150  0x00000076  *
 RingNotActive                   0x004201D0  0x0000069E  *
