@@ -1,3 +1,4 @@
+#include "3dsystem/3d_gen.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -717,6 +718,21 @@ void Inv_RingInit(
     ring->light.z = 1024;
 }
 
+void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
+{
+    PHD_ANGLE angles[2];
+
+    phd_GetVectorAngles(
+        -ring->camera.x, CAMERA_YOFFSET - ring->camera.y,
+        ring->radius - ring->camera.z, angles);
+    viewer->x = ring->camera.x;
+    viewer->y = ring->camera.y;
+    viewer->z = ring->camera.z;
+    viewer->x_rot = angles[1] + ring->camera_pitch;
+    viewer->y_rot = angles[0];
+    viewer->z_rot = 0;
+}
+
 void Inv_RingMotionInit(
     RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
 {
@@ -757,4 +773,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004213B0, Inv_GetItemOption);
     INJECT(0x00421550, RemoveInventoryText);
     INJECT(0x00421580, Inv_RingInit);
+    INJECT(0x00421700, Inv_RingGetView);
 }

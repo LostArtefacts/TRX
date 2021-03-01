@@ -252,6 +252,7 @@
 #define MAX_MAP_SHAPES (32 * 32) // = 1024
 #define RING_RADIUS 688
 #define CAMERA_STARTHEIGHT (-0x600) // = -1536
+#define CAMERA_YOFFSET (-96)
 #define CAMERA_HEIGHT (-0x100) // = -256
 #define NOINPUT_TIME 480
 #define CAMERA_2_RING 598
