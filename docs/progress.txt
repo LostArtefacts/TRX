@@ -418,7 +418,7 @@ RemoveInventoryText             0x00421550  0x00000028  +
 Inv_RingInit                    0x00421580  0x0000017E  +
 Inv_RingGetView                 0x00421700  0x00000060  +
 Inv_RingLight                   0x00421760  0x00000040  +
-Inv_RingCalcAdders              0x004217A0  0x0000002C  *
+Inv_RingCalcAdders              0x004217A0  0x0000002C  +
 Inv_RingDoMotions               0x004217D0  0x0000013E  *
 Inv_RingRotateLeft              0x00421910  0x0000002F  *
 Inv_RingRotateRight             0x00421940  0x0000002F  *

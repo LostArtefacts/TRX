@@ -741,6 +741,13 @@ void Inv_RingLight(RING_INFO* ring)
     phd_RotateLight(angles[1], angles[0]);
 }
 
+void Inv_RingCalcAdders(RING_INFO* ring, int16_t rotation_duration)
+{
+    ring->angle_adder = 0x10000 / ring->number_of_objects;
+    ring->rot_adder_l = ring->angle_adder / rotation_duration;
+    ring->rot_adder_r = -ring->rot_adder_l;
+}
+
 void Inv_RingMotionInit(
     RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
 {
@@ -783,4 +790,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421580, Inv_RingInit);
     INJECT(0x00421700, Inv_RingGetView);
     INJECT(0x00421760, Inv_RingLight);
+    INJECT(0x004217A0, Inv_RingCalcAdders);
 }
