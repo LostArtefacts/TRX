@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define RingIsOpen                  ((void          (*)(RING_INFO* ring))0x00420000)
 #define RingIsNotOpen               ((void          (*)(RING_INFO* ring))0x00420150)
 #define RingNotActive               ((void          (*)(INVENTORY_ITEM* inv_item))0x004201D0)
 #define RingActive                  ((void          (*)())0x00420980)
@@ -36,7 +35,9 @@ void SelectMeshes(INVENTORY_ITEM* inv_item);
 int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item);
 void DrawInventoryItem(INVENTORY_ITEM* inv_item);
 int32_t GetDebouncedInput(int32_t input);
+
 void InitColours();
+void RingIsOpen(RING_INFO* ring);
 
 void T1MInjectGameInvEntry();
 void T1MInjectGameInvFunc();
