@@ -410,7 +410,7 @@ RingNotActive                   0x004201D0  0x0000069E  +
 RingActive                      0x00420980  0x00000039  +
 Inv_AddItem                     0x004209C0  0x00000620  +
 Inv_InsertItem                  0x004210D0  0x00000129  +
-Inv_RequestItem                 0x00421200  0x00000077  *
+Inv_RequestItem                 0x00421200  0x00000077  +
 Inv_RemoveAllItems              0x00421280  0x0000001E  *
 Inv_RemoveItem                  0x004212A0  0x00000110  *
 Inv_GetCount                    ----------  ----------  -

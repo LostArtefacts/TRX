@@ -9,7 +9,6 @@
 #define Inv_RemoveAllItems          ((void          (*)())0x00421280)
 #define Inv_RemoveItem              ((void          (*)(int16_t item_num))0x004212A0)
 #define Inv_GetItemOption           ((int32_t       (*)(int32_t item_num))0x004213B0)
-#define Inv_RequestItem             ((int32_t       (*)(int16_t item_num))0x00421200)
 #define Inv_RingInit                ((void          (*)(RING_INFO* ring, int16_t type, INVENTORY_ITEM** list, int16_t qty, int16_t current, IMOTION_INFO* imo))0x00421580)
 #define Inv_RingGetView             ((void          (*)(RING_INFO* ring, PHD_3DPOS* viewer))0x00421700)
 #define Inv_RingLight               ((void          (*)(RING_INFO* ring))0x00421760)
@@ -41,6 +40,7 @@ void RingActive();
 
 int32_t Inv_AddItem(int32_t item_num);
 void Inv_InsertItem(INVENTORY_ITEM* inv_item);
+int32_t Inv_RequestItem(int item_num);
 
 void T1MInjectGameInvEntry();
 void T1MInjectGameInvFunc();

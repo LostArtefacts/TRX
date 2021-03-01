@@ -499,6 +499,25 @@ void Inv_InsertItem(INVENTORY_ITEM* inv_item)
     }
 }
 
+int32_t Inv_RequestItem(int item_num)
+{
+    int32_t item_num_option = Inv_GetItemOption(item_num);
+
+    for (int i = 0; i < InvMainObjects; i++) {
+        if (InvMainList[i]->object_number == item_num_option) {
+            return InvMainQtys[i];
+        }
+    }
+
+    for (int i = 0; i < InvKeysObjects; i++) {
+        if (InvKeysList[i]->object_number == item_num_option) {
+            return InvKeysQtys[i];
+        }
+    }
+
+    return 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -508,4 +527,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00420980, RingActive);
     INJECT(0x004209C0, Inv_AddItem);
     INJECT(0x004210D0, Inv_InsertItem);
+    INJECT(0x00421200, Inv_RequestItem);
 }
