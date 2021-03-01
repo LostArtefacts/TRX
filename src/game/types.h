@@ -1432,8 +1432,8 @@ typedef struct {
     /* 0012 */ int16_t number_of_objects;
     /* 0014 */ int16_t angle_adder;
     /* 0016 */ int16_t rot_adder;
-    /* 0018 */ int16_t rot_adderL;
-    /* 001A */ int16_t rot_adderR;
+    /* 0018 */ int16_t rot_adder_l;
+    /* 001A */ int16_t rot_adder_r;
     /* 001C */ PHD_3DPOS ringpos;
     /* 002E */ PHD_3DPOS camera;
     /* 0040 */ PHD_VECTOR light;

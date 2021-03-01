@@ -415,14 +415,14 @@ Inv_RemoveAllItems              0x00421280  0x0000001E  +
 Inv_RemoveItem                  0x004212A0  0x00000110  +
 Inv_GetItemOption               0x004213B0  0x000000A7  +
 RemoveInventoryText             0x00421550  0x00000028  +
-Inv_RingInit                    0x00421580  0x0000017E  *
+Inv_RingInit                    0x00421580  0x0000017E  +
 Inv_RingGetView                 0x00421700  0x00000060  *
 Inv_RingLight                   0x00421760  0x00000040  *
 Inv_RingCalcAdders              0x004217A0  0x0000002C  *
 Inv_RingDoMotions               0x004217D0  0x0000013E  *
 Inv_RingRotateLeft              0x00421910  0x0000002F  *
 Inv_RingRotateRight             0x00421940  0x0000002F  *
-Inv_RingMotionInit              ----------  ----------  -
+Inv_RingMotionInit              ----------  ----------  +
 Inv_RingMotionSetup             0x00421970  0x0000002C  *
 Inv_RingMotionRadius            0x004219A0  0x00000026  *
 Inv_RingMotionRotation          0x004219D0  0x00000022  *

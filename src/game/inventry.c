@@ -16,14 +16,6 @@
 #include "util.h"
 #include <string.h>
 
-#define RING_RADIUS 688
-#define CAMERA_STARTHEIGHT -0x600
-#define CAMERA_HEIGHT -0x100
-#define NOINPUT_TIME 480
-#define CAMERA_2_RING 598
-#define LOW_LIGHT 0x1400
-#define HIGH_LIGHT 0x1000
-
 typedef enum {
     PSPINE = 1,
     PFRONT = 2,
@@ -33,13 +25,6 @@ typedef enum {
     PINBACK = 32,
     PPAGE1 = 64
 } PASS_PAGES;
-
-#define PASS_PT_XROT 0x1220
-#define PASS_ZTRANS 0x180
-#define PASS_YTRANS 0
-#define PASS_X_ROT -0x10e0
-#define PASS_Y_ROT 0
-#define PASS_MESH (PFRONT | PSPINE | PBACK)
 
 static int OldInputDB = 0;
 

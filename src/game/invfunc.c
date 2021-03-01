@@ -666,6 +666,82 @@ void RemoveInventoryText()
     }
 }
 
+void Inv_RingInit(
+    RING_INFO* ring, int16_t type, INVENTORY_ITEM** list, int16_t qty,
+    int16_t current, IMOTION_INFO* imo)
+{
+    ring->type = type;
+    ring->radius = 0;
+    ring->list = list;
+    ring->number_of_objects = qty;
+    ring->current_object = current;
+    ring->angle_adder = 0x10000 / qty;
+
+    if (InventoryMode == INV_TITLE_MODE) {
+        ring->camera_pitch = 1024;
+    } else {
+        ring->camera_pitch = 0;
+    }
+    ring->rotating = 0;
+    ring->rot_count = 0;
+    ring->target_object = 0;
+    ring->rot_adder = 0;
+    ring->rot_adder_l = 0;
+    ring->rot_adder_r = 0;
+
+    ring->imo = imo;
+
+    ring->camera.x = 0;
+    ring->camera.y = CAMERA_STARTHEIGHT;
+    ring->camera.z = 896;
+    ring->camera.x_rot = 0;
+    ring->camera.y_rot = 0;
+    ring->camera.z_rot = 0;
+
+    Inv_RingMotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
+    Inv_RingMotionRadius(ring, RING_RADIUS);
+    Inv_RingMotionCameraPos(ring, CAMERA_HEIGHT);
+    Inv_RingMotionRotation(
+        ring, OPEN_ROTATION,
+        0xC000 - (ring->current_object * ring->angle_adder));
+
+    ring->ringpos.x = 0;
+    ring->ringpos.y = 0;
+    ring->ringpos.z = 0;
+    ring->ringpos.x_rot = 0;
+    ring->ringpos.y_rot = imo->rotate_target - OPEN_ROTATION;
+    ring->ringpos.z_rot = 0;
+
+    ring->light.x = -1536;
+    ring->light.y = 256;
+    ring->light.z = 1024;
+}
+
+void Inv_RingMotionInit(
+    RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
+{
+    ring->imo->status_target = status_target;
+    ring->imo->count = frames;
+    ring->imo->status = status;
+    ring->imo->radius_target = 0;
+    ring->imo->radius_rate = 0;
+    ring->imo->camera_ytarget = 0;
+    ring->imo->camera_yrate = 0;
+    ring->imo->camera_pitch_target = 0;
+    ring->imo->camera_pitch_rate = 0;
+    ring->imo->rotate_target = 0;
+    ring->imo->rotate_rate = 0;
+    ring->imo->item_ptxrot_target = 0;
+    ring->imo->item_ptxrot_rate = 0;
+    ring->imo->item_xrot_target = 0;
+    ring->imo->item_xrot_rate = 0;
+    ring->imo->item_ytrans_target = 0;
+    ring->imo->item_ytrans_rate = 0;
+    ring->imo->item_ztrans_target = 0;
+    ring->imo->item_ztrans_rate = 0;
+    ring->imo->misc = 0;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -680,4 +756,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x004212A0, Inv_RemoveItem);
     INJECT(0x004213B0, Inv_GetItemOption);
     INJECT(0x00421550, RemoveInventoryText);
+    INJECT(0x00421580, Inv_RingInit);
 }
