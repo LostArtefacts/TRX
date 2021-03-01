@@ -879,6 +879,13 @@ void Inv_RingMotionRadius(RING_INFO* ring, int16_t target)
     imo->radius_rate = (target - ring->radius) / imo->count;
 }
 
+void Inv_RingMotionRotation(RING_INFO* ring, int16_t rotation, int16_t target)
+{
+    IMOTION_INFO* imo = ring->imo;
+    imo->rotate_target = target;
+    imo->rotate_rate = rotation / imo->count;
+}
+
 void T1MInjectGameInvFunc()
 {
     INJECT(0x0041FEF0, InitColours);
@@ -902,4 +909,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421940, Inv_RingRotateRight);
     INJECT(0x00421970, Inv_RingMotionSetup);
     INJECT(0x004219A0, Inv_RingMotionRadius);
+    INJECT(0x004219D0, Inv_RingMotionRotation);
 }
