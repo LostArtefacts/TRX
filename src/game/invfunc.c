@@ -733,6 +733,14 @@ void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
     viewer->z_rot = 0;
 }
 
+void Inv_RingLight(RING_INFO* ring)
+{
+    PHD_ANGLE angles[2];
+    LsDivider = 0x6000;
+    phd_GetVectorAngles(ring->light.x, ring->light.y, ring->light.z, angles);
+    phd_RotateLight(angles[1], angles[0]);
+}
+
 void Inv_RingMotionInit(
     RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
 {
@@ -774,4 +782,5 @@ void T1MInjectGameInvFunc()
     INJECT(0x00421550, RemoveInventoryText);
     INJECT(0x00421580, Inv_RingInit);
     INJECT(0x00421700, Inv_RingGetView);
+    INJECT(0x00421760, Inv_RingLight);
 }

@@ -75,6 +75,7 @@
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
 #define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHDSPRITESTRUCT, [MAX_SPRITES_PAGE][MAX_SPRITES])
 #define PhdTextInfo             ARRAY_(0x006CADE0, PHDTEXTURESTRUCT, [MAX_TEXTURES])
+#define LsDivider               VAR_U_(0x006D7604, int32_t)
 #define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
