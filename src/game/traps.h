@@ -5,14 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseLightning     ((void          (*)(int16_t item_num))0x00429B00)
-#define DrawLightning           ((void          (*)(ITEM_INFO *item))0x00429620)
-#define LightningControl        ((void          (*)(int16_t item_num))0x00429B80)
-#define LightningCollision      ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00429E30)
-#define InitialiseThorsHandle   ((void          (*)(int16_t item_num))0x00429EA0)
-#define ThorsHandleControl      ((void          (*)(int16_t item_num))0x00429F30)
-#define ThorsHandleCollision    ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042A1F0)
-#define ThorsHeadCollision      ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042A240)
 #define MidasCollision          ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004334C0)
 #define InitialiseMovableBlock  ((void          (*)(int16_t item_num))0x0042B430)
 #define MovableBlockControl     ((void          (*)(int16_t item_num))0x0042B460)

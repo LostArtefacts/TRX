@@ -12,6 +12,7 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/lightning.h"
 #include "game/lion.h"
 #include "game/lot.h"
 #include "game/natla.h"

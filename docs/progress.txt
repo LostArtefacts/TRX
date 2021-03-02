@@ -632,7 +632,7 @@ LaraColUWDeath                  0x004292E0  0x0000005E  +
 LaraSwimCollision               0x00429340  0x000000FA  +
 LaraWaterCurrent                0x00429440  0x000001DB  +
 
-# lightnnin.cpp
+# lightning.cpp
 DrawLightning                   0x00429620  0x000004D1  *
 InitialiseLightning             0x00429B00  0x0000007E  *
 LightningControl                0x00429B80  0x000002AF  *
