@@ -53,6 +53,16 @@ void KillItem(int16_t item_num)
     }
 }
 
+int16_t CreateItem()
+{
+    int16_t item_num = NextItemFree;
+    if (item_num != NO_ITEM) {
+        Items[item_num].flags = 0;
+        NextItemFree = Items[item_num].next_item;
+    }
+    return item_num;
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -67,5 +77,6 @@ void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);
     INJECT(0x00421B50, KillItem);
+    INJECT(0x00421C80, CreateItem);
     INJECT(0x00422250, InitialiseFXArray);
 }
