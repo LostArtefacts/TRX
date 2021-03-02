@@ -4,6 +4,7 @@
 #include "game/game.h"
 #include "game/lightning.h"
 #include "game/vars.h"
+#include "specific/init.h"
 #include "specific/output.h"
 #include "util.h"
 
@@ -152,7 +153,25 @@ void DrawLightning(ITEM_INFO* item)
     phd_PopMatrix();
 }
 
+void InitialiseLightning(int16_t item_num)
+{
+    LIGHTNING* l = game_malloc(sizeof(LIGHTNING), 0);
+    Items[item_num].data = l;
+
+    if (Objects[Items[item_num].object_number].nmeshes > 1) {
+        Items[item_num].mesh_bits = 1;
+        l->notarget = 0;
+    } else {
+        l->notarget = 1;
+    }
+
+    l->onstate = 0;
+    l->count = 1;
+    l->zapped = 0;
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
+    INJECT(0x00429B00, InitialiseLightning);
 }

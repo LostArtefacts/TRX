@@ -634,7 +634,7 @@ LaraWaterCurrent                0x00429440  0x000001DB  +
 
 # lightning.cpp
 DrawLightning                   0x00429620  0x000004D1  +
-InitialiseLightning             0x00429B00  0x0000007E  *
+InitialiseLightning             0x00429B00  0x0000007E  +
 LightningControl                0x00429B80  0x000002AF  *
 LightningCollision              0x00429E30  0x00000061  *
 InitialiseThorsHandle           0x00429EA0  0x00000086  *
