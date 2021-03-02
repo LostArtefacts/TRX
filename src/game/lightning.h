@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define DrawLightning           ((void          (*)(ITEM_INFO *item))0x00429620)
 #define InitialiseLightning     ((void          (*)(int16_t item_num))0x00429B00)
 #define LightningControl        ((void          (*)(int16_t item_num))0x00429B80)
 #define LightningCollision      ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00429E30)
@@ -14,5 +13,9 @@
 #define ThorsHandleCollision    ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042A1F0)
 #define ThorsHeadCollision      ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042A240)
 // clang-format on
+
+void DrawLightning(ITEM_INFO* item);
+
+void T1MInjectGameLightning();
 
 #endif

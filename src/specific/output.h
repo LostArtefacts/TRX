@@ -15,6 +15,8 @@
 #define S_CalculateLight        ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t room_num))0x00430100)
 #define S_CalculateStaticLight  ((void          (*)(int16_t adder))0x00430290)
 #define S_DisplayPicture        ((void          (*)(const char* filename))0x00430CE0)
+#define S_DrawLightningSegment  ((void     (*)(int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t width))0x00430740)
+
 // clang-format on
 
 void S_DrawHealthBar(int32_t percent);

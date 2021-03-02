@@ -633,7 +633,7 @@ LaraSwimCollision               0x00429340  0x000000FA  +
 LaraWaterCurrent                0x00429440  0x000001DB  +
 
 # lightning.cpp
-DrawLightning                   0x00429620  0x000004D1  *
+DrawLightning                   0x00429620  0x000004D1  +
 InitialiseLightning             0x00429B00  0x0000007E  *
 LightningControl                0x00429B80  0x000002AF  *
 LightningCollision              0x00429E30  0x00000061  *
@@ -756,7 +756,7 @@ AnimateTextures                 ----------  ----------  -
 S_SetupBelowWater               0x004305E0  0x00000054  *
 S_SetupAboveWater               0x00430640  0x00000019  *
 S_AnimateTextures               0x00430660  0x000000D3  *
-S_DrawLightningSegment          0x00430740  0x00000446  -
+S_DrawLightningSegment          0x00430740  0x00000446  *
 decomp_pcx                      0x00430B90  0x00000141  -
 S_DisplayPicture                0x00430CE0  0x00000094  *
 

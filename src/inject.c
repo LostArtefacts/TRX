@@ -18,6 +18,7 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/lightning.h"
 #include "game/lot.h"
 #include "game/option.h"
 #include "game/pickup.h"
@@ -57,6 +58,7 @@ void T1MInject()
     T1MInjectGameLaraMisc();
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
+    T1MInjectGameLightning();
     T1MInjectGameOption();
     T1MInjectGamePickup();
     T1MInjectGameSetup();
