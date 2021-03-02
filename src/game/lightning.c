@@ -1,8 +1,12 @@
 #include "3dsystem/3d_gen.h"
 #include "game/const.h"
+#include "game/control.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/lightning.h"
+#include "game/sphere.h"
 #include "game/vars.h"
 #include "specific/init.h"
 #include "specific/output.h"
@@ -170,8 +174,98 @@ void InitialiseLightning(int16_t item_num)
     l->zapped = 0;
 }
 
+void LightningControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    LIGHTNING* l = item->data;
+
+    if (!TriggerActive(item)) {
+        l->count = 1;
+        l->onstate = 0;
+        l->zapped = 0;
+
+        if (FlipStatus) {
+            FlipMap();
+        }
+
+        RemoveActiveItem(item_num);
+        item->status = IS_NOT_ACTIVE;
+        return;
+    }
+
+    l->count--;
+    if (l->count > 0) {
+        return;
+    }
+
+    if (l->onstate) {
+        l->onstate = 0;
+        l->count = 35 + (GetRandomControl() * 45) / 0x8000;
+        l->zapped = 0;
+        if (FlipStatus) {
+            FlipMap();
+        }
+    } else {
+        l->onstate = 1;
+        l->count = 20;
+
+        for (int i = 0; i < LIGHTNING_STEPS; i++) {
+            l->wibble[i].x = 0;
+            l->wibble[i].y = 0;
+            l->wibble[i].z = 0;
+        }
+
+        int32_t radius = l->notarget ? WALL_L : WALL_L * 5 / 2;
+        if (ItemNearLara(&item->pos, radius)) {
+            l->target.x = LaraItem->pos.x;
+            l->target.y = LaraItem->pos.y;
+            l->target.z = LaraItem->pos.z;
+
+            LaraItem->hit_points -= LIGHTNING_DAMAGE;
+            LaraItem->hit_status = 1;
+
+            l->zapped = 1;
+        } else if (l->notarget) {
+            FLOOR_INFO* floor = GetFloor(
+                item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+            int32_t h = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            l->target.x = item->pos.x;
+            l->target.y = h;
+            l->target.z = item->pos.z;
+            l->zapped = 0;
+        } else {
+            l->target.x = 0;
+            l->target.y = 0;
+            l->target.z = 0;
+            GetJointAbsPosition(
+                item, &l->target, 1 + (GetRandomControl() * 5) / 0x7FFF);
+            l->zapped = 0;
+        }
+
+        for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
+            l->start[i] = GetRandomControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
+            l->end[i].x = l->target.x + (GetRandomControl() * WALL_L) / 0x7FFF;
+            l->end[i].y = l->target.y;
+            l->end[i].z = l->target.z + (GetRandomControl() * WALL_L) / 0x7FFF;
+
+            for (int j = 0; j < LIGHTNING_STEPS; j++) {
+                l->shoot[i][j].x = 0;
+                l->shoot[i][j].y = 0;
+                l->shoot[i][j].z = 0;
+            }
+        }
+
+        if (!FlipStatus) {
+            FlipMap();
+        }
+    }
+
+    SoundEffect(98, &item->pos, 0);
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
     INJECT(0x00429B00, InitialiseLightning);
+    INJECT(0x00429B80, LightningControl);
 }
