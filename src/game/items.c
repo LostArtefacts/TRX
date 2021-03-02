@@ -298,6 +298,29 @@ void KillEffect(int16_t fx_num)
     NextFxFree = fx_num;
 }
 
+void EffectNewRoom(int16_t fx_num, int16_t room_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    ROOM_INFO* r = &RoomInfo[fx->room_number];
+
+    int16_t linknum = r->fx_number;
+    if (linknum == fx_num) {
+        r->fx_number = fx->next_fx;
+    } else {
+        for (; linknum != NO_ITEM; linknum = Effects[linknum].next_fx) {
+            if (Effects[linknum].next_fx == fx_num) {
+                Effects[linknum].next_fx = fx->next_fx;
+                break;
+            }
+        }
+    }
+
+    r = &RoomInfo[room_num];
+    fx->room_number = room_num;
+    fx->next_fx = r->fx_number;
+    r->fx_number = fx_num;
+}
+
 void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);
@@ -313,4 +336,5 @@ void T1MInjectGameItems()
     INJECT(0x00422250, InitialiseFXArray);
     INJECT(0x00422280, CreateEffect);
     INJECT(0x004222F0, KillEffect);
+    INJECT(0x004223E0, EffectNewRoom);
 }

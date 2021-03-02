@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define EffectNewRoom           ((void          (*)(int16_t fx_num, int16_t room_num))0x004223E0)
-// clang-format on
-
 void InitialiseItemArray(int32_t num_items);
 void KillItem(int16_t item_num);
 int16_t CreateItem();
@@ -21,6 +17,7 @@ int32_t GlobalItemReplace(int32_t src_object_num, int32_t dst_object_num);
 void InitialiseFXArray();
 int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
+void EffectNewRoom(int16_t fx_num, int16_t room_num);
 
 void T1MInjectGameItems();
 
