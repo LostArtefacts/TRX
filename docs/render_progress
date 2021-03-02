@@ -240,6 +240,7 @@ class Rectangle(Shape):
     color: str
     dx: float
     dy: float
+    title: T.Optional[str] = None
 
     @property
     def box(self) -> Box:
@@ -257,15 +258,21 @@ class Rectangle(Shape):
             f'height="{self.dy:.02f}" '
             f'x="{self.x:.02f}" '
             f'y="{self.y:.02f}" '
-            f'fill="{self.color}"/>'
+            f'fill="{self.color}"'
+            + (f"><title>{self.title}</title></rect>" if self.title else "/>")
         )
 
 
 class Square(Rectangle):
     def __init__(
-        self, x: float, y: float, color: str, size: float = GRID_SQUARE_SIZE
+        self,
+        x: float,
+        y: float,
+        color: str,
+        size: float = GRID_SQUARE_SIZE,
+        title: T.Optional[str] = None,
     ) -> None:
-        super().__init__(x=x, y=y, color=color, dx=size, dy=size)
+        super().__init__(x=x, y=y, color=color, dx=size, dy=size, title=title)
 
 
 @dataclass
@@ -326,7 +333,9 @@ def render_grid(
     for i, function in enumerate(all_functions):
         x = (i % GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         y = (i // GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
-        yield Square(x=x, y=by + y, color=get_func_color(function))
+        yield Square(
+            x=x, y=by + y, color=get_func_color(function), title=function.name
+        )
 
 
 def render_tree_grid(
@@ -344,6 +353,7 @@ def render_tree_grid(
             dx=result.dx,
             dy=result.dy,
             color=get_func_color(result.item),
+            title=result.item.name,
         )
 
 
