@@ -1,6 +1,7 @@
 #include "game/const.h"
 #include "game/items.h"
 #include "game/vars.h"
+#include "specific/shed.h"
 #include "util.h"
 
 void InitialiseItemArray(int32_t num_items)
@@ -117,6 +118,28 @@ void InitialiseItem(int16_t item_num)
     }
 }
 
+void RemoveActiveItem(int16_t item_num)
+{
+    if (!Items[item_num].active) {
+        S_ExitSystem("Item already deactive");
+    }
+
+    Items[item_num].active = 0;
+
+    int16_t linknum = NextItemActive;
+    if (linknum == item_num) {
+        NextItemActive = Items[item_num].next_active;
+        return;
+    }
+
+    for (; linknum != NO_ITEM; linknum = Items[linknum].next_active) {
+        if (Items[linknum].next_active == item_num) {
+            Items[linknum].next_active = Items[item_num].next_active;
+            break;
+        }
+    }
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -133,5 +156,6 @@ void T1MInjectGameItems()
     INJECT(0x00421B50, KillItem);
     INJECT(0x00421C80, CreateItem);
     INJECT(0x00421CC0, InitialiseItem);
+    INJECT(0x00421EB0, RemoveActiveItem);
     INJECT(0x00422250, InitialiseFXArray);
 }
