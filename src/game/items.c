@@ -218,6 +218,22 @@ int16_t SpawnItem(ITEM_INFO* item, int16_t object_num)
     return spawn_num;
 }
 
+int32_t GlobalItemReplace(int32_t src_object_num, int32_t dst_object_num)
+{
+    int32_t changed = 0;
+    for (int i = 0; i < RoomCount; i++) {
+        ROOM_INFO* r = &RoomInfo[i];
+        for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+             item_num = Items[item_num].next_item) {
+            if (Items[item_num].object_number == src_object_num) {
+                Items[item_num].object_number = dst_object_num;
+                changed++;
+            }
+        }
+    }
+    return changed;
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -239,5 +255,6 @@ void T1MInjectGameItems()
     INJECT(0x00421FE0, AddActiveItem);
     INJECT(0x00422060, ItemNewRoom);
     INJECT(0x00422110, SpawnItem);
+    INJECT(0x004221D0, GlobalItemReplace);
     INJECT(0x00422250, InitialiseFXArray);
 }
