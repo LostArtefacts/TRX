@@ -17,6 +17,7 @@ void InitialiseItemArray(int32_t num_items)
 void KillItem(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
+    ROOM_INFO* r = &RoomInfo[item->room_number];
 
     int16_t linknum = NextItemActive;
     if (linknum == item_num) {
@@ -30,9 +31,9 @@ void KillItem(int16_t item_num)
         }
     }
 
-    linknum = RoomInfo[item->room_number].item_number;
+    linknum = r->item_number;
     if (linknum == item_num) {
-        RoomInfo[item->room_number].item_number = item->next_item;
+        r->item_number = item->next_item;
     } else {
         for (; linknum != NO_ITEM; linknum = Items[linknum].next_item) {
             if (Items[linknum].next_item == item_num) {
@@ -143,17 +144,17 @@ void RemoveActiveItem(int16_t item_num)
 void RemoveDrawnItem(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
+    ROOM_INFO* r = &RoomInfo[item->room_number];
 
-    int16_t linknum = RoomInfo[item->room_number].item_number;
+    int16_t linknum = r->item_number;
     if (linknum == item_num) {
-        RoomInfo[item->room_number].item_number = item->next_item;
-        return;
-    }
-
-    for (; linknum != NO_ITEM; linknum = Items[linknum].next_item) {
-        if (Items[linknum].next_item == item_num) {
-            Items[linknum].next_item = item->next_item;
-            break;
+        r->item_number = item->next_item;
+    } else {
+        for (; linknum != NO_ITEM; linknum = Items[linknum].next_item) {
+            if (Items[linknum].next_item == item_num) {
+                Items[linknum].next_item = item->next_item;
+                break;
+            }
         }
     }
 }
@@ -179,6 +180,29 @@ void AddActiveItem(int16_t item_num)
     NextItemActive = item_num;
 }
 
+void ItemNewRoom(int16_t item_num, int16_t room_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    ROOM_INFO* r = &RoomInfo[item->room_number];
+
+    int16_t linknum = r->item_number;
+    if (linknum == item_num) {
+        r->item_number = item->next_item;
+    } else {
+        for (; linknum != NO_ITEM; linknum = Items[linknum].next_item) {
+            if (Items[linknum].next_item == item_num) {
+                Items[linknum].next_item = item->next_item;
+                break;
+            }
+        }
+    }
+
+    r = &RoomInfo[room_num];
+    item->room_number = room_num;
+    item->next_item = r->item_number;
+    r->item_number = item_num;
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -198,5 +222,6 @@ void T1MInjectGameItems()
     INJECT(0x00421EB0, RemoveActiveItem);
     INJECT(0x00421F60, RemoveDrawnItem);
     INJECT(0x00421FE0, AddActiveItem);
+    INJECT(0x00422060, ItemNewRoom);
     INJECT(0x00422250, InitialiseFXArray);
 }
