@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define DrawEvilLara            ((void          (*)(ITEM_INFO *lara_item))0x00428680)
-// clang-format on
-
 void LaraControl(int16_t item_num);
 void LaraSwapMeshExtra();
 void AnimateLara(ITEM_INFO* item);
@@ -191,6 +187,7 @@ void AnimatePistols(int32_t weapon_type);
 
 void InitialiseEvilLara(int16_t item_num);
 void ControlEvilLara(int16_t item_num);
+void DrawEvilLara(ITEM_INFO* item);
 
 #ifdef T1M_FEAT_GAMEPLAY
 void LookLeftRight();

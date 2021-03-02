@@ -1,6 +1,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -209,7 +210,7 @@ void LaraSwapMeshExtra()
     if (!Objects[O_LARA_EXTRA].loaded) {
         return;
     }
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
         Lara.mesh_ptrs[i] = Meshes[Objects[O_LARA_EXTRA].mesh_index + i];
     }
 }
@@ -525,7 +526,7 @@ void LaraInitialiseMeshes(int32_t level_num)
     START_INFO* start = &SaveGame[0].start[level_num];
 
     if (start->costume) {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < LM_NUMBER_OF; i++) {
             int32_t use_orig_mesh = i == LM_HEAD;
             Lara.mesh_ptrs[i] = Meshes
                 [Objects[use_orig_mesh ? O_LARA : O_LARA_EXTRA].mesh_index + i];
@@ -533,7 +534,7 @@ void LaraInitialiseMeshes(int32_t level_num)
         return;
     }
 
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
         Lara.mesh_ptrs[i] = Meshes[Objects[O_LARA].mesh_index + i];
     }
 
@@ -736,6 +737,22 @@ void ControlEvilLara(int16_t item_num)
     }
 }
 
+void DrawEvilLara(ITEM_INFO* item)
+{
+    int16_t* old_mesh_ptrs[LM_NUMBER_OF];
+
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
+        old_mesh_ptrs[i] = Lara.mesh_ptrs[i];
+        Lara.mesh_ptrs[i] = Meshes[Objects[O_EVIL_LARA].mesh_index + i];
+    }
+
+    DrawLara(item);
+
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
+        Lara.mesh_ptrs[i] = old_mesh_ptrs[i];
+    }
+}
+
 void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
@@ -783,4 +800,5 @@ void T1MInjectGameLaraMisc()
     INJECT(0x00428340, LaraInitialiseMeshes);
     INJECT(0x00428420, InitialiseEvilLara);
     INJECT(0x00428450, ControlEvilLara);
+    INJECT(0x00428680, DrawEvilLara);
 }

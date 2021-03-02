@@ -423,6 +423,7 @@ typedef enum {
     LM_LARM_L = 12,
     LM_HAND_L = 13,
     LM_HEAD = 14,
+    LM_NUMBER_OF = 15,
 } LARA_MESHES;
 
 typedef enum {
@@ -959,7 +960,7 @@ typedef struct {
     /* 001A */ int16_t spaz_effect_count;
     /* 001C */ FX_INFO* spaz_effect;
     /* 0020 */ int32_t mesh_effects;
-    /* 0024 */ int16_t* mesh_ptrs[15];
+    /* 0024 */ int16_t* mesh_ptrs[LM_NUMBER_OF];
     /* 0060 */ ITEM_INFO* target;
     /* 0064 */ PHD_ANGLE target_angles[2];
     /* 0068 */ int16_t turn_rate;
