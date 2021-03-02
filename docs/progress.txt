@@ -598,7 +598,7 @@ InitialiseLaraLoad              0x00427FF0  0x00000024  +
 InitialiseLara                  0x00428020  0x00000150  +
 InitialiseLaraInventory         0x00428170  0x000001C8  +
 LaraInitialiseMeshes            0x00428340  0x000000DD  +
-InitialiseEvilLara              0x00428420  0x00000025  *
+InitialiseEvilLara              0x00428420  0x00000025  +
 ControlEvilLara                 0x00428450  0x00000221  *
 DrawEvilLara                    0x00428680  0x00000058  *
 

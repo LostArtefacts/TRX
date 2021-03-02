@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseEvilLara      ((void          (*)(int16_t item_num))0x00428420)
 #define ControlEvilLara         ((void          (*)(int16_t item_num))0x00428450)
 #define DrawEvilLara            ((void          (*)(ITEM_INFO *lara_item))0x00428680)
 // clang-format on
@@ -190,6 +189,8 @@ void undraw_pistol_mesh_left(int32_t weapon_type);
 void undraw_pistol_mesh_right(int32_t weapon_type);
 void PistolHandler(int32_t weapon_type);
 void AnimatePistols(int32_t weapon_type);
+
+void InitialiseEvilLara(int16_t item_num);
 
 #ifdef T1M_FEAT_GAMEPLAY
 void LookLeftRight();

@@ -655,6 +655,12 @@ void LaraCheatGetStuff()
     }
 }
 
+void InitialiseEvilLara(int16_t item_num)
+{
+    Objects[O_EVIL_LARA].frame_base = Objects[O_LARA].frame_base;
+    Items[item_num].data = NULL;
+}
+
 void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
@@ -700,4 +706,5 @@ void T1MInjectGameLaraMisc()
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00428170, InitialiseLaraInventory);
     INJECT(0x00428340, LaraInitialiseMeshes);
+    INJECT(0x00428420, InitialiseEvilLara);
 }
