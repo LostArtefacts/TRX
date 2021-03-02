@@ -330,14 +330,14 @@ int32_t LoadSprites(FILE* fp)
 
     _fread(&SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < SpriteCount; i++) {
-        int32_t obj_num;
-        _fread(&obj_num, sizeof(int32_t), 1, fp);
-        if (obj_num < NUMBER_OBJECTS) {
-            _fread(&Objects[obj_num], sizeof(int16_t), 1, fp);
-            _fread(&Objects[obj_num].mesh_index, sizeof(int16_t), 1, fp);
-            Objects[obj_num].loaded = 1;
+        int32_t object_num;
+        _fread(&object_num, sizeof(int32_t), 1, fp);
+        if (object_num < NUMBER_OBJECTS) {
+            _fread(&Objects[object_num], sizeof(int16_t), 1, fp);
+            _fread(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
+            Objects[object_num].loaded = 1;
         } else {
-            int32_t static_num = obj_num - NUMBER_OBJECTS;
+            int32_t static_num = object_num - NUMBER_OBJECTS;
             _fseek(fp, 2, 1);
             _fread(
                 &StaticObjects[static_num].mesh_number, sizeof(int16_t), 1, fp);

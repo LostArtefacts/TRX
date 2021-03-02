@@ -226,12 +226,12 @@ void DrawPickups()
     }
 }
 
-void AddDisplayPickup(int16_t objnum)
+void AddDisplayPickup(int16_t object_num)
 {
     for (int i = 0; i < NUM_PU; i++) {
         if (Pickups[i].duration <= 0) {
             Pickups[i].duration = 75;
-            Pickups[i].sprnum = Objects[objnum].mesh_index;
+            Pickups[i].sprnum = Objects[object_num].mesh_index;
             return;
         }
     }

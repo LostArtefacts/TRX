@@ -8,7 +8,7 @@ void DrawAmmoInfo();
 void DrawGameInfo();
 void DrawHealthBar();
 void DrawAirBar();
-void AddDisplayPickup(int16_t objnum);
+void AddDisplayPickup(int16_t object_num);
 void InitialisePickUpDisplay();
 void DrawPickups();
 

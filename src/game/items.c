@@ -203,6 +203,21 @@ void ItemNewRoom(int16_t item_num, int16_t room_num)
     r->item_number = item_num;
 }
 
+int16_t SpawnItem(ITEM_INFO* item, int16_t object_num)
+{
+    int16_t spawn_num = CreateItem();
+    if (spawn_num != NO_ITEM) {
+        ITEM_INFO* spawn = &Items[spawn_num];
+        spawn->object_number = object_num;
+        spawn->room_number = item->room_number;
+        spawn->pos = item->pos;
+        InitialiseItem(spawn_num);
+        spawn->status = IS_NOT_ACTIVE;
+        spawn->shade = 4096;
+    }
+    return spawn_num;
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -223,5 +238,6 @@ void T1MInjectGameItems()
     INJECT(0x00421F60, RemoveDrawnItem);
     INJECT(0x00421FE0, AddActiveItem);
     INJECT(0x00422060, ItemNewRoom);
+    INJECT(0x00422110, SpawnItem);
     INJECT(0x00422250, InitialiseFXArray);
 }

@@ -440,7 +440,7 @@ RemoveActiveItem                0x00421EB0  0x000000A6  +
 RemoveDrawnItem                 0x00421F60  0x00000080  +
 AddActiveItem                   0x00421FE0  0x00000080  +
 ItemNewRoom                     0x00422060  0x000000A4  +
-SpawnItem                       0x00422110  0x000000B6  -
+SpawnItem                       0x00422110  0x000000B6  +
 GlobalItemReplace               0x004221D0  0x00000080  *
 InitialiseFXArray               0x00422250  0x00000030  +
 CreateEffect                    0x00422280  0x00000069  *
