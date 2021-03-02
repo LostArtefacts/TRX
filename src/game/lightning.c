@@ -29,6 +29,13 @@ typedef struct {
     PHD_VECTOR shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
+typedef enum {
+    THS_SET = 0,
+    THS_TEASE = 1,
+    THS_ACTIVE = 2,
+    THS_DONE = 3,
+} THOR_HAMMER_STATES;
+
 void DrawLightning(ITEM_INFO* item)
 {
     int16_t* frmptr[2];
@@ -277,10 +284,26 @@ void LightningCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void InitialiseThorsHandle(int16_t item_num)
+{
+    ITEM_INFO* hand_item = &Items[item_num];
+    int16_t head_item_num = CreateItem();
+    ITEM_INFO* head_item = &Items[head_item_num];
+    head_item->object_number = O_THORS_HEAD;
+    head_item->room_number = hand_item->room_number;
+    head_item->pos = hand_item->pos;
+    head_item->shade = hand_item->shade;
+    InitialiseItem(head_item_num);
+    hand_item->data = head_item;
+    LevelItemCount++;
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
     INJECT(0x00429B00, InitialiseLightning);
     INJECT(0x00429B80, LightningControl);
     INJECT(0x00429E30, LightningCollision);
+
+    INJECT(0x00429EA0, InitialiseThorsHandle);
 }
