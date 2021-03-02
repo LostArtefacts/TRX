@@ -244,6 +244,27 @@ void InitialiseFXArray()
     Effects[NUM_EFFECTS - 1].next_fx = NO_ITEM;
 }
 
+int16_t CreateEffect(int16_t room_num)
+{
+    int16_t fx_num = NextFxFree;
+    if (fx_num == NO_ITEM) {
+        return fx_num;
+    }
+
+    FX_INFO* fx = &Effects[fx_num];
+    NextFxFree = fx->next_fx;
+
+    ROOM_INFO* r = &RoomInfo[room_num];
+    fx->room_number = room_num;
+    fx->next_fx = r->fx_number;
+    r->fx_number = fx_num;
+
+    fx->next_active = NextFxActive;
+    NextFxActive = fx_num;
+
+    return fx_num;
+}
+
 void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);
@@ -257,4 +278,5 @@ void T1MInjectGameItems()
     INJECT(0x00422110, SpawnItem);
     INJECT(0x004221D0, GlobalItemReplace);
     INJECT(0x00422250, InitialiseFXArray);
+    INJECT(0x00422280, CreateEffect);
 }
