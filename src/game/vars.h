@@ -54,6 +54,7 @@
 #define InputDB                 VAR_U_(0x0045A06C, int32_t)
 #define HiRes                   VAR_I_(0x00459F64, int32_t, 0)
 #define Effects                 VAR_U_(0x0045EE70, FX_INFO*)
+#define NextItemFree            VAR_U_(0x0045EE76, int16_t)
 #define NextItemActive          VAR_U_(0x0045EE78, int16_t)
 #define NextFxFree              VAR_U_(0x0045EE74, int16_t)
 #define NextFxActive            VAR_U_(0x0045EE7A, int16_t)

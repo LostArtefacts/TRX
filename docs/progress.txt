@@ -432,7 +432,7 @@ Inv_RingMotionItemSelect        0x00421A50  0x00000057  +
 Inv_RingMotionItemDeselect      0x00421AB0  0x00000055  +
 
 # items.cpp
-InitialiseItemArray             0x00421B10  0x00000040  *
+InitialiseItemArray             0x00421B10  0x00000040  +
 KillItem                        0x00421B50  0x00000121  -
 CreateItem                      0x00421C80  0x0000003D  -
 InitialiseItem                  0x00421CC0  0x000001EE  *
