@@ -15,6 +15,7 @@
 // clang-format on
 
 void InitialiseItemArray(int32_t num_items);
+void KillItem(int16_t item_num);
 void InitialiseFXArray();
 
 void T1MInjectGameItems();
