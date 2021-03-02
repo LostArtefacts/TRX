@@ -263,9 +263,24 @@ void LightningControl(int16_t item_num)
     SoundEffect(98, &item->pos, 0);
 }
 
+void LightningCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    LIGHTNING* l = Items[item_num].data;
+    if (!l->zapped) {
+        return;
+    }
+
+    Lara.hit_direction = 1 + (GetRandomControl() * 4) / 0x7FFF;
+    Lara.hit_frame++;
+    if (Lara.hit_frame > 34) {
+        Lara.hit_frame = 34;
+    }
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
     INJECT(0x00429B00, InitialiseLightning);
     INJECT(0x00429B80, LightningControl);
+    INJECT(0x00429E30, LightningCollision);
 }
