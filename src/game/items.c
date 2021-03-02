@@ -265,6 +265,39 @@ int16_t CreateEffect(int16_t room_num)
     return fx_num;
 }
 
+void KillEffect(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+
+    int16_t linknum = NextFxActive;
+    if (linknum == fx_num) {
+        NextFxActive = fx->next_active;
+    } else {
+        for (; linknum != NO_ITEM; linknum = Effects[linknum].next_active) {
+            if (Effects[linknum].next_active == fx_num) {
+                Effects[linknum].next_active = fx->next_active;
+                break;
+            }
+        }
+    }
+
+    ROOM_INFO* r = &RoomInfo[fx->room_number];
+    linknum = r->fx_number;
+    if (linknum == fx_num) {
+        r->fx_number = fx->next_fx;
+    } else {
+        for (; linknum != NO_ITEM; linknum = Effects[linknum].next_fx) {
+            if (Effects[linknum].next_fx == fx_num) {
+                Effects[linknum].next_fx = fx->next_fx;
+                break;
+            }
+        }
+    }
+
+    fx->next_fx = NextFxFree;
+    NextFxFree = fx_num;
+}
+
 void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);
@@ -279,4 +312,5 @@ void T1MInjectGameItems()
     INJECT(0x004221D0, GlobalItemReplace);
     INJECT(0x00422250, InitialiseFXArray);
     INJECT(0x00422280, CreateEffect);
+    INJECT(0x004222F0, KillEffect);
 }
