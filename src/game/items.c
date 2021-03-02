@@ -63,6 +63,60 @@ int16_t CreateItem()
     return item_num;
 }
 
+void InitialiseItem(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    OBJECT_INFO* object = &Objects[item->object_number];
+
+    item->anim_number = object->anim_index;
+    item->frame_number = Anims[item->anim_number].frame_base;
+    item->current_anim_state = Anims[item->anim_number].current_anim_state;
+    item->goal_anim_state = item->current_anim_state;
+    item->required_anim_state = 0;
+    item->pos.x_rot = 0;
+    item->pos.z_rot = 0;
+    item->speed = 0;
+    item->fall_speed = 0;
+    item->status = IS_NOT_ACTIVE;
+    item->active = 0;
+    item->gravity_status = 0;
+    item->hit_status = 0;
+    item->looked_at = 0;
+    item->collidable = 1;
+    item->hit_points = object->hit_points;
+    item->timer = 0;
+    item->mesh_bits = -1;
+    item->touch_bits = 0;
+    item->data = NULL;
+
+    if (item->flags & IF_NOT_VISIBLE) {
+        item->status = IS_INVISIBLE;
+        item->flags -= IF_NOT_VISIBLE;
+    }
+
+    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+        item->flags -= IF_CODE_BITS;
+        item->flags |= IF_REVERSE;
+        AddActiveItem(item_num);
+        item->status = IS_ACTIVE;
+    }
+
+    ROOM_INFO* r = &RoomInfo[item->room_number];
+    item->next_item = r->item_number;
+    r->item_number = item_num;
+    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+    FLOOR_INFO* floor = &r->floor[x_floor + y_floor * r->x_size];
+    item->floor = floor->floor << 8;
+
+    if (SaveGame[0].bonus_flag) {
+        item->hit_points *= 2;
+    }
+    if (object->initialise) {
+        object->initialise(item_num);
+    }
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -78,5 +132,6 @@ void T1MInjectGameItems()
     INJECT(0x00421B10, InitialiseItemArray);
     INJECT(0x00421B50, KillItem);
     INJECT(0x00421C80, CreateItem);
+    INJECT(0x00421CC0, InitialiseItem);
     INJECT(0x00422250, InitialiseFXArray);
 }
