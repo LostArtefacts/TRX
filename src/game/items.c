@@ -140,6 +140,24 @@ void RemoveActiveItem(int16_t item_num)
     }
 }
 
+void RemoveDrawnItem(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    int16_t linknum = RoomInfo[item->room_number].item_number;
+    if (linknum == item_num) {
+        RoomInfo[item->room_number].item_number = item->next_item;
+        return;
+    }
+
+    for (; linknum != NO_ITEM; linknum = Items[linknum].next_item) {
+        if (Items[linknum].next_item == item_num) {
+            Items[linknum].next_item = item->next_item;
+            break;
+        }
+    }
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -157,5 +175,6 @@ void T1MInjectGameItems()
     INJECT(0x00421C80, CreateItem);
     INJECT(0x00421CC0, InitialiseItem);
     INJECT(0x00421EB0, RemoveActiveItem);
+    INJECT(0x00421F60, RemoveDrawnItem);
     INJECT(0x00422250, InitialiseFXArray);
 }
