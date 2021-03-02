@@ -438,7 +438,7 @@ CreateItem                      0x00421C80  0x0000003D  +
 InitialiseItem                  0x00421CC0  0x000001EE  +
 RemoveActiveItem                0x00421EB0  0x000000A6  +
 RemoveDrawnItem                 0x00421F60  0x00000080  +
-AddActiveItem                   0x00421FE0  0x00000080  *
+AddActiveItem                   0x00421FE0  0x00000080  +
 ItemNewRoom                     0x00422060  0x000000A4  *
 SpawnItem                       0x00422110  0x000000B6  -
 GlobalItemReplace               0x004221D0  0x00000080  *

@@ -158,6 +158,27 @@ void RemoveDrawnItem(int16_t item_num)
     }
 }
 
+void AddActiveItem(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!Objects[item->object_number].control) {
+        item->status = IS_NOT_ACTIVE;
+        return;
+    }
+
+    if (item->active) {
+        sprintf(
+            StringToShow, "Item(%d)(Obj%d) already Active\n", item_num,
+            item->object_number);
+        S_ExitSystem(StringToShow);
+    }
+
+    item->active = 1;
+    item->next_active = NextItemActive;
+    NextItemActive = item_num;
+}
+
 void InitialiseFXArray()
 {
     NextFxActive = NO_ITEM;
@@ -176,5 +197,6 @@ void T1MInjectGameItems()
     INJECT(0x00421CC0, InitialiseItem);
     INJECT(0x00421EB0, RemoveActiveItem);
     INJECT(0x00421F60, RemoveDrawnItem);
+    INJECT(0x00421FE0, AddActiveItem);
     INJECT(0x00422250, InitialiseFXArray);
 }

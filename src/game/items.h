@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define AddActiveItem           ((void          (*)(int16_t item_num))0x00421FE0)
 #define GlobalItemReplace       ((int32_t       (*)(int32_t in_objnum, int32_t out_objnum))0x004221D0)
 #define ItemNewRoom             ((void          (*)(int16_t item_num, int16_t room_num))0x00422060)
 #define CreateEffect            ((int16_t       (*)(int16_t room_num))0x00422280)
@@ -18,6 +17,7 @@ int16_t CreateItem();
 void InitialiseItem(int16_t item_num);
 void RemoveActiveItem(int16_t item_num);
 void RemoveDrawnItem(int16_t item_num);
+void AddActiveItem(int16_t item_num);
 void InitialiseFXArray();
 
 void T1MInjectGameItems();
