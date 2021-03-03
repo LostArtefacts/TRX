@@ -662,7 +662,7 @@ cosf                            0x0042A81C  0x0000001A  +
 phd_sin                         0x0042A850  0x00000021  +
 sinf                            0x0042A871  0x0000001A  +
 phd_atan                        0x0042A8A0  0x00000055  +
-phd_sqrt                        0x0042A900  0x0000003A  -
+phd_sqrt                        0x0042A900  0x0000003A  +
 
 # mnsound.cpp
 mn_reset_sound_effects          0x0042A940  0x000000EC  *

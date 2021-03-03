@@ -404,9 +404,33 @@ int32_t phd_atan(int32_t x, int32_t y)
     return result;
 }
 
+uint32_t phd_sqrt(uint32_t n)
+{
+    uint32_t result = 0;
+    uint32_t base = 0x40000000;
+    do {
+        do {
+            uint32_t based_result = base + result;
+            result >>= 1;
+            if (based_result > n) {
+                break;
+            }
+            n -= based_result;
+            result |= base;
+
+            base >>= 2;
+        } while (base);
+
+        base >>= 2;
+    } while (base);
+
+    return result;
+}
+
 void T1MInject3DSystemPHDMath()
 {
     INJECT(0x0042A7F0, phd_cos);
     INJECT(0x0042A850, phd_sin);
     INJECT(0x0042A8A0, phd_atan);
+    INJECT(0x0042A900, phd_sqrt);
 }
