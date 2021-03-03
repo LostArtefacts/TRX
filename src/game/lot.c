@@ -79,9 +79,49 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
     return 1;
 }
 
+void InitialiseSlot(int16_t item_num, int32_t slot)
+{
+    CREATURE_INFO* creature = &BaddieSlots[slot];
+    ITEM_INFO* item = &Items[item_num];
+    item->data = creature;
+    creature->item_num = item_num;
+    creature->mood = MOOD_BORED;
+    creature->head_rotation = 0;
+    creature->neck_rotation = 0;
+    creature->maximum_turn = PHD_DEGREE;
+    creature->flags = 0;
+
+    creature->LOT.step = STEP_L;
+    creature->LOT.drop = -STEP_L;
+    creature->LOT.block_mask = BLOCKED;
+    creature->LOT.fly = 0;
+
+    ClearLOT(&creature->LOT);
+    CreateZone(item);
+
+    SlotsUsed++;
+}
+
+void ClearLOT(LOT_INFO* LOT)
+{
+    LOT->search_number = 0;
+    LOT->head = NO_BOX;
+    LOT->tail = NO_BOX;
+    LOT->target_box = NO_BOX;
+    LOT->required_box = NO_BOX;
+
+    for (int i = 0; i < NumberBoxes; i++) {
+        BOX_NODE* node = &LOT->node[i];
+        node->search_number = 0;
+        node->exit_box = NO_BOX;
+        node->next_expansion = NO_BOX;
+    }
+}
+
 void T1MInjectGameLOT()
 {
     INJECT(0x0042A300, InitialiseLOTArray);
     INJECT(0x0042A360, DisableBaddieAI);
     INJECT(0x0042A3A0, EnableBaddieAI);
+    INJECT(0x0042A570, InitialiseSlot);
 }
