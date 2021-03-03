@@ -230,7 +230,8 @@ void DrawPickups()
                 pu->duration = 0;
             } else {
 #ifdef T1M_FEAT_UI
-                S_DrawUISprite(x, y, GetRenderScale(12288), pu->sprnum, 4096);
+                S_DrawUISprite(
+                    x, y, GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 #else
                 S_DrawUISprite(x, y, 12288, pu->sprnum, 4096);
 #endif
