@@ -102,6 +102,42 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
     SlotsUsed++;
 }
 
+void CreateZone(ITEM_INFO* item)
+{
+    CREATURE_INFO* creature = item->data;
+
+    int16_t* zone;
+    int16_t* flip;
+    if (creature->LOT.fly) {
+        zone = FlyZone[0];
+        flip = FlyZone[1];
+    } else if (creature->LOT.step == STEP_L) {
+        zone = GroundZone[0];
+        flip = GroundZone[1];
+    } else {
+        zone = GroundZone2[1];
+        flip = GroundZone2[1];
+    }
+
+    ROOM_INFO* r = &RoomInfo[item->room_number];
+    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+    item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
+
+    int16_t zone_number = zone[item->box_number];
+    int16_t flip_number = flip[item->box_number];
+
+    creature->LOT.zone_count = 0;
+    BOX_NODE* node = creature->LOT.node;
+    for (int i = 0; i < NumberBoxes; i++) {
+        if (zone[i] == zone_number || flip[i] == flip_number) {
+            node->box_number = i;
+            node++;
+            creature->LOT.zone_count++;
+        }
+    }
+}
+
 void ClearLOT(LOT_INFO* LOT)
 {
     LOT->search_number = 0;
@@ -124,4 +160,5 @@ void T1MInjectGameLOT()
     INJECT(0x0042A360, DisableBaddieAI);
     INJECT(0x0042A3A0, EnableBaddieAI);
     INJECT(0x0042A570, InitialiseSlot);
+    INJECT(0x0042A6B0, CreateZone);
 }
