@@ -414,8 +414,18 @@ void ThorsHandleCollision(
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
-
     if (coll->enable_baddie_push) {
+        ItemPushLara(item, lara_item, coll, 0, 1);
+    }
+}
+
+void ThorsHeadCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+    if (coll->enable_baddie_push && item->current_anim_state != THS_ACTIVE) {
         ItemPushLara(item, lara_item, coll, 0, 1);
     }
 }
@@ -430,4 +440,5 @@ void T1MInjectGameLightning()
     INJECT(0x00429EA0, InitialiseThorsHandle);
     INJECT(0x00429F30, ThorsHandleControl);
     INJECT(0x0042A1F0, ThorsHandleCollision);
+    INJECT(0x0042A240, ThorsHeadCollision);
 }

@@ -640,7 +640,7 @@ LightningCollision              0x00429E30  0x00000061  +
 InitialiseThorsHandle           0x00429EA0  0x00000086  +
 ThorsHandleControl              0x00429F30  0x000002B0  +
 ThorsHandleCollision            0x0042A1F0  0x0000004B  +
-ThorsHeadCollision              0x0042A240  0x00000052  *
+ThorsHeadCollision              0x0042A240  0x00000052  +
 
 # ???
 sub_42A2A0                      0x0042A2A0  0x0000000C  -

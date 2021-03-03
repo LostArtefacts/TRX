@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define ThorsHeadCollision      ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042A240)
-// clang-format on
-
 void DrawLightning(ITEM_INFO* item);
 void InitialiseLightning(int16_t item_num);
 void LightningControl(int16_t item_num);
@@ -17,6 +13,8 @@ void LightningCollision(
 void InitialiseThorsHandle(int16_t item_num);
 void ThorsHandleControl(int16_t item_num);
 void ThorsHandleCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+void ThorsHeadCollision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 
 void T1MInjectGameLightning();
