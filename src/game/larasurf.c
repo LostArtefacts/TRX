@@ -309,19 +309,19 @@ void LaraColSurfTread(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColSurfBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     LaraSurfaceCollision(item, coll);
 }
 
 void LaraColSurfLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot - PHD_90;
     LaraSurfaceCollision(item, coll);
 }
 
 void LaraColSurfRight(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot + PHD_90;
     LaraSurfaceCollision(item, coll);
 }
 
@@ -388,20 +388,16 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
     PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
         angle = 0;
+    } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
+        angle = PHD_90;
     } else if (
-        angle >= PHD_ONE / 4 - HANG_ANGLE
-        && angle <= PHD_ONE / 4 + HANG_ANGLE) {
-        angle = PHD_ONE / 4;
-    } else if (
-        angle >= ((PHD_ONE / 2) - 1) - HANG_ANGLE
-        || angle <= -((PHD_ONE / 2) - 1) + HANG_ANGLE) {
-        angle = -PHD_ONE / 2;
-    } else if (
-        angle >= -PHD_ONE / 4 - HANG_ANGLE
-        && angle <= -PHD_ONE / 4 + HANG_ANGLE) {
-        angle = -PHD_ONE / 4;
+        angle >= (PHD_180 - 1) - HANG_ANGLE
+        || angle <= -(PHD_180 - 1) + HANG_ANGLE) {
+        angle = -PHD_180;
+    } else if (angle >= -PHD_90 - HANG_ANGLE && angle <= -PHD_90 + HANG_ANGLE) {
+        angle = -PHD_90;
     }
-    if (angle & ((PHD_ONE / 4) - 1)) {
+    if (angle & (PHD_90 - 1)) {
         return 0;
     }
 
@@ -412,13 +408,13 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
     case 0:
         item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RAD;
         break;
-    case PHD_ONE / 4:
+    case PHD_90:
         item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RAD;
         break;
-    case -PHD_ONE / 2:
+    case -PHD_180:
         item->pos.z = (item->pos.z & -WALL_L) - LARA_RAD;
         break;
-    case -PHD_ONE / 4:
+    case -PHD_90:
         item->pos.x = (item->pos.x & -WALL_L) - LARA_RAD;
         break;
     }

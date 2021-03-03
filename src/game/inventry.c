@@ -225,7 +225,7 @@ int32_t Display_Inventory(int inv_mode)
             phd_PushMatrix();
             phd_RotYXZ(angle, 0, 0);
             phd_TranslateRel(ring.radius, 0, 0);
-            phd_RotYXZ(0x4000, inv_item->pt_xrot, 0);
+            phd_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
             DrawInventoryItem(inv_item);
             angle += ring.angle_adder;
             phd_PopMatrix();
@@ -318,7 +318,7 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionSetup(
                     &ring, RNG_SELECTING, RNG_SELECTED, SELECTING_FRAMES);
                 Inv_RingMotionRotation(
-                    &ring, 0, -0x4000 - ring.angle_adder * ring.current_object);
+                    &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
                 Inv_RingMotionItemSelect(&ring, inv_item);
                 Input = 0;
                 InputDB = 0;
@@ -428,7 +428,7 @@ int32_t Display_Inventory(int inv_mode)
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
-                -0x4000 - ring.angle_adder * ring.current_object);
+                -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
@@ -448,7 +448,7 @@ int32_t Display_Inventory(int inv_mode)
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
-                -0x4000 - ring.angle_adder * ring.current_object);
+                -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
@@ -467,7 +467,7 @@ int32_t Display_Inventory(int inv_mode)
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
-                -0x4000 - ring.angle_adder * ring.current_object);
+                -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
@@ -487,7 +487,7 @@ int32_t Display_Inventory(int inv_mode)
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
-                -0x4000 - ring.angle_adder * ring.current_object);
+                -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
@@ -556,7 +556,7 @@ int32_t Display_Inventory(int inv_mode)
             Inv_RingMotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
-                &ring, 0, -0x4000 - ring.angle_adder * ring.current_object);
+                &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
             Input = 0;
             InputDB = 0;
             break;

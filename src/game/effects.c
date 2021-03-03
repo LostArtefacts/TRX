@@ -268,7 +268,7 @@ void Splash(ITEM_INFO* item)
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
-            fx->pos.y_rot = 2 * GetRandomDraw() + 0x8000;
+            fx->pos.y_rot = PHD_180 + 2 * GetRandomDraw();
             fx->object_number = O_SPLASH1;
             fx->frame_number = 0;
             fx->speed = GetRandomDraw() / 256;
@@ -327,7 +327,7 @@ void FxFinishLevel(ITEM_INFO* item)
 // original name: turn180_effect
 void FxTurn180(ITEM_INFO* item)
 {
-    item->pos.y_rot += 0x8000;
+    item->pos.y_rot += PHD_180;
 }
 
 // original name: dino_stomp_effect

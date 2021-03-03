@@ -693,7 +693,7 @@ void ControlEvilLara(int16_t item_num)
         item->pos.y = y;
         item->pos.z = z;
         item->pos.x_rot = LaraItem->pos.x_rot;
-        item->pos.y_rot = LaraItem->pos.y_rot - 0x8000;
+        item->pos.y_rot = LaraItem->pos.y_rot - PHD_180;
         item->pos.z_rot = LaraItem->pos.z_rot;
         ItemNewRoom(item_num, LaraItem->room_number);
 

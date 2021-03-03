@@ -506,22 +506,22 @@ void LaraAsCompress(ITEM_INFO* item, COLL_INFO* coll)
         Lara.move_angle = item->pos.y_rot;
     } else if (
         (Input & IN_LEFT)
-        && LaraFloorFront(item, item->pos.y_rot - 0x4000, 256)
+        && LaraFloorFront(item, item->pos.y_rot - PHD_90, 256)
             >= -STEPUP_HEIGHT) {
         item->goal_anim_state = AS_LEFTJUMP;
-        Lara.move_angle = item->pos.y_rot - 0x4000;
+        Lara.move_angle = item->pos.y_rot - PHD_90;
     } else if (
         (Input & IN_RIGHT)
-        && LaraFloorFront(item, item->pos.y_rot + 0x4000, 256)
+        && LaraFloorFront(item, item->pos.y_rot + PHD_90, 256)
             >= -STEPUP_HEIGHT) {
         item->goal_anim_state = AS_RIGHTJUMP;
-        Lara.move_angle = item->pos.y_rot + 0x4000;
+        Lara.move_angle = item->pos.y_rot + PHD_90;
     } else if (
         (Input & IN_BACK)
-        && LaraFloorFront(item, item->pos.y_rot - 0x8000, 256)
+        && LaraFloorFront(item, item->pos.y_rot - PHD_180, 256)
             >= -STEPUP_HEIGHT) {
         item->goal_anim_state = AS_BACKJUMP;
-        Lara.move_angle = item->pos.y_rot - 0x8000;
+        Lara.move_angle = item->pos.y_rot - PHD_180;
     }
 
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
@@ -1176,7 +1176,7 @@ void LaraColPose(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColFastBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
@@ -1368,7 +1368,7 @@ void LaraColCompress(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
@@ -1416,7 +1416,7 @@ void LaraColFastTurn(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot + PHD_90;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEP_L / 2;
@@ -1444,7 +1444,7 @@ void LaraColStepRight(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColStepLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot - PHD_90;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = 128;
@@ -1478,19 +1478,19 @@ void LaraColSlide(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColBackJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     LaraColJumper(item, coll);
 }
 
 void LaraColRightJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot + PHD_90;
     LaraColJumper(item, coll);
 }
 
 void LaraColLeftJump(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot - PHD_90;
     LaraColJumper(item, coll);
 }
 
@@ -1524,7 +1524,7 @@ void LaraColUpJump(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColFallBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
@@ -1546,21 +1546,21 @@ void LaraColFallBack(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColHangLeft(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot - PHD_90;
     LaraHangTest(item, coll);
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot - PHD_90;
 }
 
 void LaraColHangRight(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot + PHD_90;
     LaraHangTest(item, coll);
-    Lara.move_angle = item->pos.y_rot + PHD_ONE / 4;
+    Lara.move_angle = item->pos.y_rot + PHD_90;
 }
 
 void LaraColSlideBack(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     LaraSlideSlope(item, coll);
 }
 
@@ -1650,7 +1650,7 @@ void LaraColRoll(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraColRoll2(ITEM_INFO* item, COLL_INFO* coll)
 {
-    Lara.move_angle = item->pos.y_rot - PHD_ONE / 2;
+    Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
@@ -1847,8 +1847,7 @@ void LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
     item->gravity_status = 0;
     item->fall_speed = 0;
 
-    PHD_ANGLE angle =
-        (uint16_t)(item->pos.y_rot + (PHD_ONE / 8)) / (PHD_ONE / 4);
+    PHD_ANGLE angle = (uint16_t)(item->pos.y_rot + PHD_45) / PHD_90;
     switch (angle) {
     case DIR_NORTH:
         item->pos.z += 2;
@@ -1962,7 +1961,7 @@ void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
         item->anim_number = AA_FASTFALL;
         item->frame_number = AF_FASTFALL;
         item->speed /= 4;
-        Lara.move_angle -= PHD_ONE / 2;
+        Lara.move_angle -= PHD_180;
         if (item->fall_speed <= 0) {
             item->fall_speed = 1;
         }
@@ -2028,21 +2027,18 @@ int32_t TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
     PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= 0 - VAULT_ANGLE && angle <= 0 + VAULT_ANGLE) {
         angle = 0;
+    } else if (angle >= PHD_90 - VAULT_ANGLE && angle <= PHD_90 + VAULT_ANGLE) {
+        angle = PHD_90;
     } else if (
-        angle >= PHD_ONE / 4 - VAULT_ANGLE
-        && angle <= PHD_ONE / 4 + VAULT_ANGLE) {
-        angle = PHD_ONE / 4;
+        angle >= (PHD_180 - 1) - VAULT_ANGLE
+        || angle <= -(PHD_180 - 1) + VAULT_ANGLE) {
+        angle = -PHD_180;
     } else if (
-        angle >= ((PHD_ONE / 2) - 1) - VAULT_ANGLE
-        || angle <= -((PHD_ONE / 2) - 1) + VAULT_ANGLE) {
-        angle = -PHD_ONE / 2;
-    } else if (
-        angle >= -PHD_ONE / 4 - VAULT_ANGLE
-        && angle <= -PHD_ONE / 4 + VAULT_ANGLE) {
-        angle = -PHD_ONE / 4;
+        angle >= -PHD_90 - VAULT_ANGLE && angle <= -PHD_90 + VAULT_ANGLE) {
+        angle = -PHD_90;
     }
 
-    if (angle & ((PHD_ONE / 4) - 1)) {
+    if (angle & (PHD_90 - 1)) {
         return 0;
     }
 
@@ -2123,21 +2119,17 @@ int32_t LaraTestHangJump(ITEM_INFO* item, COLL_INFO* coll)
     PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
         angle = 0;
+    } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
+        angle = PHD_90;
     } else if (
-        angle >= PHD_ONE / 4 - HANG_ANGLE
-        && angle <= PHD_ONE / 4 + HANG_ANGLE) {
-        angle = PHD_ONE / 4;
-    } else if (
-        angle >= ((PHD_ONE / 2) - 1) - HANG_ANGLE
-        || angle <= -((PHD_ONE / 2) - 1) + HANG_ANGLE) {
-        angle = -PHD_ONE / 2;
-    } else if (
-        angle >= -PHD_ONE / 4 - HANG_ANGLE
-        && angle <= -PHD_ONE / 4 + HANG_ANGLE) {
-        angle = -PHD_ONE / 4;
+        angle >= (PHD_180 - 1) - HANG_ANGLE
+        || angle <= -(PHD_180 - 1) + HANG_ANGLE) {
+        angle = -PHD_180;
+    } else if (angle >= -PHD_90 - HANG_ANGLE && angle <= -PHD_90 + HANG_ANGLE) {
+        angle = -PHD_90;
     }
 
-    if (angle & ((PHD_ONE / 4) - 1)) {
+    if (angle & (PHD_90 - 1)) {
         return 0;
     }
 
@@ -2173,13 +2165,13 @@ int32_t TestHangSwingIn(ITEM_INFO* item, PHD_ANGLE angle)
     case 0:
         z += 256;
         break;
-    case PHD_ONE / 4:
+    case PHD_90:
         x += 256;
         break;
-    case -PHD_ONE / 4:
+    case -PHD_90:
         x -= 256;
         break;
-    case -PHD_ONE / 2:
+    case -PHD_180:
         z -= 256;
         break;
     }
@@ -2223,21 +2215,17 @@ int32_t LaraTestHangJumpUp(ITEM_INFO* item, COLL_INFO* coll)
     int angle = item->pos.y_rot;
     if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
         angle = 0;
+    } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
+        angle = PHD_90;
     } else if (
-        angle >= PHD_ONE / 4 - HANG_ANGLE
-        && angle <= PHD_ONE / 4 + HANG_ANGLE) {
-        angle = PHD_ONE / 4;
-    } else if (
-        angle >= ((PHD_ONE / 2) - 1) - HANG_ANGLE
-        || angle <= -((PHD_ONE / 2) - 1) + HANG_ANGLE) {
-        angle = -PHD_ONE / 2;
-    } else if (
-        angle >= -PHD_ONE / 4 - HANG_ANGLE
-        && angle <= -PHD_ONE / 4 + HANG_ANGLE) {
-        angle = -PHD_ONE / 4;
+        angle >= (PHD_180 - 1) - HANG_ANGLE
+        || angle <= -(PHD_180 - 1) + HANG_ANGLE) {
+        angle = -PHD_180;
+    } else if (angle >= -PHD_90 - HANG_ANGLE && angle <= -PHD_90 + HANG_ANGLE) {
+        angle = -PHD_90;
     }
 
-    if (angle & ((PHD_ONE / 4) - 1)) {
+    if (angle & (PHD_90 - 1)) {
         return 0;
     }
 
@@ -2267,19 +2255,19 @@ int32_t TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 
     PHD_ANGLE ang = 0;
     if (coll->tilt_x > 2) {
-        ang = -PHD_ONE / 4;
+        ang = -PHD_90;
     } else if (coll->tilt_x < -2) {
-        ang = PHD_ONE / 4;
+        ang = PHD_90;
     }
     if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
-        ang = -PHD_ONE / 2;
+        ang = -PHD_180;
     } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
         ang = 0;
     }
 
     PHD_ANGLE adif = ang - item->pos.y_rot;
     ShiftItem(item, coll);
-    if (adif >= -PHD_ONE / 4 && adif <= PHD_ONE / 4) {
+    if (adif >= -PHD_90 && adif <= PHD_90) {
         if (item->current_anim_state != AS_SLIDE || old_angle != ang) {
             item->goal_anim_state = AS_SLIDE;
             item->current_anim_state = AS_SLIDE;
@@ -2295,7 +2283,7 @@ int32_t TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
             item->current_anim_state = AS_SLIDEBACK;
             item->anim_number = AA_SLIDEBACK;
             item->frame_number = AF_SLIDEBACK;
-            item->pos.y_rot = ang - PHD_ONE / 2;
+            item->pos.y_rot = ang - PHD_180;
             Lara.move_angle = ang;
             old_angle = ang;
         }

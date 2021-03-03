@@ -432,11 +432,9 @@ int32_t FireWeapon(
     view.y = src->pos.y - winfo->gun_height;
     view.z = src->pos.z;
     view.x_rot = angles[1]
-        + (winfo->shot_accuracy * (GetRandomControl() - (PHD_ONE / 4)))
-            / PHD_ONE;
+        + (winfo->shot_accuracy * (GetRandomControl() - PHD_90)) / PHD_ONE;
     view.y_rot = angles[0]
-        + (winfo->shot_accuracy * (GetRandomControl() - (PHD_ONE / 4)))
-            / PHD_ONE;
+        + (winfo->shot_accuracy * (GetRandomControl() - PHD_90)) / PHD_ONE;
     view.z_rot = 0;
     phd_GenerateW2V(&view);
 

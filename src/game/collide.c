@@ -18,7 +18,7 @@ void GetCollisionInfo(
     coll->shift.x = 0;
     coll->shift.y = 0;
     coll->shift.z = 0;
-    coll->quadrant = (uint16_t)(coll->facing + 0x2000) / 0x4000;
+    coll->quadrant = (uint16_t)(coll->facing + PHD_45) / PHD_90;
 
     int32_t x = xpos;
     int32_t y = ypos - objheight;
@@ -325,21 +325,21 @@ int32_t CollideStaticObjects(
             int32_t zmin;
             int32_t zmax;
             switch (mesh->y_rot) {
-            case 16384:
+            case PHD_90:
                 xmin = mesh->x + sinfo->z_minc;
                 xmax = mesh->x + sinfo->z_maxc;
                 zmin = mesh->z - sinfo->x_maxc;
                 zmax = mesh->z - sinfo->x_minc;
                 break;
 
-            case -32768:
+            case -PHD_180:
                 xmin = mesh->x - sinfo->x_maxc;
                 xmax = mesh->x - sinfo->x_minc;
                 zmin = mesh->z - sinfo->z_maxc;
                 zmax = mesh->z - sinfo->z_minc;
                 break;
 
-            case -16384:
+            case -PHD_90:
                 xmin = mesh->x - sinfo->z_maxc;
                 xmax = mesh->x - sinfo->z_minc;
                 zmin = mesh->z + sinfo->x_minc;
@@ -594,8 +594,8 @@ void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll)
 {
     int32_t x = Lara.spaz_effect->pos.x - lara_item->pos.x;
     int32_t z = Lara.spaz_effect->pos.z - lara_item->pos.z;
-    PHD_ANGLE hitang = lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
-    Lara.hit_direction = (hitang + 0x2000) / 0x4000;
+    PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+    Lara.hit_direction = (hitang + PHD_45) / PHD_90;
     if (!Lara.hit_frame) {
         SoundEffect(27, &lara_item->pos, 0);
     }
@@ -729,8 +729,9 @@ void ItemPushLara(
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (spazon) {
-            PHD_ANGLE hitang = lara_item->pos.y_rot - (0x8000 + phd_atan(z, x));
-            Lara.hit_direction = (hitang + 0x2000) / 0x4000;
+            PHD_ANGLE hitang =
+                lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+            Lara.hit_direction = (hitang + PHD_45) / PHD_90;
             if (!Lara.hit_frame) {
                 SoundEffect(27, &lara_item->pos, 0);
             }

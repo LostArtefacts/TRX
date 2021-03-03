@@ -1,10 +1,15 @@
 #ifndef T1M_GAME_CONST_H
 #define T1M_GAME_CONST_H
 
-#define MAX_REQLINES 16
-#define MAX_SAVE_SLOTS 16
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
+#define PHD_180 (PHD_ONE / 2) // = 32768 = 0x8000
+#define PHD_90 (PHD_ONE / 4) // = 16384 = 0x4000
+#define PHD_45 (PHD_ONE / 8) // = 8192 = 0x2000
+#define PHD_135 (PHD_45 * 3) // = 24576 = 0x6000
+
+#define MAX_REQLINES 16
+#define MAX_SAVE_SLOTS 16
 #define NUM_PU 3
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
@@ -81,7 +86,7 @@
 #define STEP_L 256
 #define NO_ROOM 0xFF
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
-#define FRONT_ARC 16384
+#define FRONT_ARC PHD_90
 #define MAX_HEAD_CHANGE (PHD_DEGREE * 5) // = 910
 #define MAX_TILT (PHD_DEGREE * 3) // = 546
 #define CAM_A_HANG 0

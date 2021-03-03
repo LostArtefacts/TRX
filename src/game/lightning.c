@@ -87,9 +87,9 @@ void DrawLightning(ITEM_INFO* item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         PHD_VECTOR* pos = &l->wibble[i];
-        pos->x += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
-        pos->y += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
-        pos->z += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
+        pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+        pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+        pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
         if (i == LIGHTNING_STEPS - 1) {
             pos->y = 0;
         }
@@ -137,9 +137,9 @@ void DrawLightning(ITEM_INFO* item)
 
         for (j = 0; j < steps; j++) {
             PHD_VECTOR* pos = l->shoot[j];
-            pos->x += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
-            pos->y += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
-            pos->z += (GetRandomDraw() - 0x4000) * LIGHTNING_RND;
+            pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+            pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+            pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
             if (j == steps - 1) {
                 pos->y = 0;
             }
@@ -279,7 +279,7 @@ void LightningCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
         return;
     }
 
-    Lara.hit_direction = 1 + (GetRandomControl() * 4) / 0x7FFF;
+    Lara.hit_direction = 1 + (GetRandomControl() * 4) / (PHD_180 - 1);
     Lara.hit_frame++;
     if (Lara.hit_frame > 34) {
         Lara.hit_frame = 34;
@@ -332,13 +332,13 @@ void ThorsHandleControl(int16_t item_num)
             case 0:
                 z += WALL_L * 3;
                 break;
-            case 0x4000:
+            case PHD_90:
                 x += WALL_L * 3;
                 break;
-            case -0x4000:
+            case -PHD_90:
                 x -= WALL_L * 3;
                 break;
-            case -0x8000:
+            case -PHD_180:
                 z -= WALL_L * 3;
                 break;
             }
@@ -373,13 +373,13 @@ void ThorsHandleControl(int16_t item_num)
         case 0:
             z += WALL_L * 3;
             break;
-        case 0x4000:
+        case PHD_90:
             x += WALL_L * 3;
             break;
-        case -0x4000:
+        case -PHD_90:
             x -= WALL_L * 3;
             break;
-        case -0x8000:
+        case -PHD_180:
             z -= WALL_L * 3;
             break;
         }

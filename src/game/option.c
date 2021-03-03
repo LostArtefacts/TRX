@@ -38,8 +38,8 @@ void S_ShowControls()
 #ifndef T1M_FEAT_UI
     case 0:
         for (int i = 0; i < 13; i++) {
-            T_SetScale(CtrlTextA[i], PHD_ONE / 2, PHD_ONE);
-            T_SetScale(CtrlTextB[i], PHD_ONE / 2, PHD_ONE);
+            T_SetScale(CtrlTextA[i], PHD_180, PHD_ONE);
+            T_SetScale(CtrlTextB[i], PHD_180, PHD_ONE);
         }
         hpos = 300;
         vpos = 140;

@@ -254,10 +254,10 @@ void LaraColUWDeath(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 {
-    if (item->pos.x_rot >= -PHD_ONE / 4 && item->pos.x_rot <= PHD_ONE / 4) {
+    if (item->pos.x_rot >= -PHD_90 && item->pos.x_rot <= PHD_90) {
         Lara.move_angle = coll->facing = item->pos.y_rot;
     } else {
-        Lara.move_angle = coll->facing = item->pos.y_rot - PHD_ONE / 2;
+        Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
     GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,

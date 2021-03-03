@@ -13,7 +13,7 @@ void InitialiseCreature(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
 
-    item->pos.y_rot += (PHD_ANGLE)((GetRandomControl() - 0x4000) >> 1);
+    item->pos.y_rot += (PHD_ANGLE)((GetRandomControl() - PHD_90) >> 1);
     item->collidable = 1;
     item->data = NULL;
 }
@@ -67,7 +67,7 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
     PHD_ANGLE angle = phd_atan(z, x);
     info->distance = SQUARE(x) + SQUARE(z);
     info->angle = angle - item->pos.y_rot;
-    info->enemy_facing = angle - LaraItem->pos.y_rot + 0x8000;
+    info->enemy_facing = angle - LaraItem->pos.y_rot + PHD_180;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
     info->bite = info->ahead && (LaraItem->pos.y > item->pos.y - STEP_L)
         && (LaraItem->pos.y < item->pos.y + STEP_L);
@@ -818,7 +818,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
                 && BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -0x6000 && item->pos.y_rot < 0x2000) {
+                if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
                     shift_z = radius - pos_z;
                 } else {
                     shift_x = radius - pos_x;
@@ -833,7 +833,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
                 && BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -0x2000 && item->pos.y_rot < 0x6000) {
+                if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
                     shift_z = radius - pos_z;
                 } else {
                     shift_x = WALL_L - radius - pos_x;
@@ -854,7 +854,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
                 && BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -0x2000 && item->pos.y_rot < 0x6000) {
+                if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
                     shift_x = radius - pos_x;
                 } else {
                     shift_z = WALL_L - radius - pos_z;
@@ -869,7 +869,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
                 && BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -0x6000 && item->pos.y_rot < 0x2000) {
+                if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
                     shift_x = WALL_L - radius - pos_x;
                 } else {
                     shift_z = WALL_L - radius - pos_z;

@@ -26,13 +26,13 @@ void InitialiseHair()
     int32_t* bone = &AnimBones[Objects[O_HAIR].bone_index];
 
     hair[0].y_rot = 0;
-    hair[0].x_rot = -0x4000;
+    hair[0].x_rot = -PHD_90;
 
     for (int i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
         hair[i].x = *(bone + 1);
         hair[i].y = *(bone + 2);
         hair[i].z = *(bone + 3);
-        hair[i].x_rot = -0x4000;
+        hair[i].x_rot = -PHD_90;
         hair[i].y_rot = hair[i].z_rot = 0;
         hvel[i].x = 0;
         hvel[i].y = 0;
