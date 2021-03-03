@@ -63,7 +63,6 @@
 #define SlotsUsed               VAR_U_(0x0045A1F8, int32_t)
 #define NumberBoxes             VAR_U_(0x00462DA0, int32_t)
 #define Boxes                   VAR_U_(0x00462D9C, BOX_INFO*)
-#define Pickups                 ARRAY_(0x0045EF00, DISPLAYPU, [NUM_PU])
 #define OverlayFlag             VAR_U_(0x004546B4, int32_t)
 #define HealthBarTimer          VAR_U_(0x0045A0E4, int32_t)
 #define OldGameTimer            VAR_U_(0x0045A028, int32_t)
@@ -129,16 +128,6 @@
 
 // #define LaraControlRoutines     ARRAY_(0x00456490, ControlRoutine, [])
 // #define LaraCollisionRoutines   ARRAY_(0x00456570, CollisionRoutine, [])
-
-#ifdef T1M_FEAT_EXTENDED_MEMORY
-extern int16_t TextStringCount;
-extern TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
-extern char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
-#else
-#define TextStringCount         VAR_U_(0x0045B120, int16_t)
-#define TextInfoTable           ARRAY_(0x0045A9E0, TEXTSTRING, [MAX_TEXT_STRINGS])
-#define TextStrings             ARRAY_(0x0045B140, char, [MAX_TEXT_STRINGS][MAX_STRING_SIZE])
-#endif
 
 #define DumpX                   VAR_I_(0x004546E0, int16_t, 0)
 #define DumpY                   VAR_I_(0x004546E2, int16_t, 0)

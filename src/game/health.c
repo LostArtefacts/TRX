@@ -6,6 +6,15 @@
 #include "config.h"
 #include "util.h"
 
+#define MAX_PICKUP_COLUMNS 4
+#ifdef T1M_FEAT_EXTENDED_MEMORY
+    #define MAX_PICKUPS 16
+#else
+    #define MAX_PICKUPS 3
+#endif
+
+static DISPLAYPU Pickups[MAX_PICKUPS];
+
 void DrawGameInfo()
 {
     if (OverlayFlag > 0) {
@@ -194,22 +203,27 @@ void MakeAmmoString(char* string)
 
 void InitialisePickUpDisplay()
 {
-    for (int i = 0; i < NUM_PU; i++) {
+    for (int i = 0; i < MAX_PICKUPS; i++) {
         Pickups[i].duration = 0;
     }
 }
 
 void DrawPickups()
 {
-    int old_game_timer = OldGameTimer;
+    int32_t old_game_timer = OldGameTimer;
     OldGameTimer = SaveGame[0].timer;
     int16_t time = SaveGame[0].timer - old_game_timer;
 
     if (time > 0 && time < 60) {
-        int y = PhdWinHeight - PhdWinWidth / 10;
-        int x = PhdWinWidth - PhdWinWidth / 10;
-        int sprite_width = 4 * (PhdWinWidth / 10) / 3;
-        for (int i = 0; i < NUM_PU; i++) {
+#ifdef T1M_FEAT_UI
+        int32_t sprite_height = MIN(PhdWinWidth, PhdWinHeight * 320 / 200) / 10;
+#else
+        int32_t sprite_height = PhdWinWidth / 10;
+#endif
+        int32_t sprite_width = sprite_height * 4 / 3;
+        int32_t y = PhdWinHeight - sprite_height;
+        int32_t x = PhdWinWidth - sprite_height;
+        for (int i = 0; i < MAX_PICKUPS; i++) {
             DISPLAYPU* pu = &Pickups[i];
             pu->duration -= time;
             if (pu->duration <= 0) {
@@ -220,7 +234,14 @@ void DrawPickups()
 #else
                 S_DrawUISprite(x, y, 12288, pu->sprnum, 4096);
 #endif
-                x -= sprite_width;
+
+                // NOTE: missing in OG
+                if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
+                    x = PhdWinWidth - sprite_height;
+                    y -= sprite_height;
+                } else {
+                    x -= sprite_width;
+                }
             }
         }
     }
@@ -228,7 +249,7 @@ void DrawPickups()
 
 void AddDisplayPickup(int16_t object_num)
 {
-    for (int i = 0; i < NUM_PU; i++) {
+    for (int i = 0; i < MAX_PICKUPS; i++) {
         if (Pickups[i].duration <= 0) {
             Pickups[i].duration = 75;
             Pickups[i].sprnum = Objects[object_num].mesh_index;
