@@ -653,7 +653,7 @@ DisableBaddieAI                 0x0042A360  0x00000036  +
 EnableBaddieAI                  0x0042A3A0  0x000001D0  +
 InitialiseSlot                  0x0042A570  0x000000FC  +
 CreateZone                      0x0042A6B0  0x000000C4  +
-InitialiseLOT                   0x0042A780  0x00000065  *
+InitialiseLOT                   0x0042A780  0x00000065  +
 ClearLOT                        ----------  ----------  +
 
 # math.cpp (3dsystem/phd_math.h)

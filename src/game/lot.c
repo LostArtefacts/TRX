@@ -138,6 +138,13 @@ void CreateZone(ITEM_INFO* item)
     }
 }
 
+int32_t InitialiseLOT(LOT_INFO* LOT)
+{
+    LOT->node = game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
+    ClearLOT(LOT);
+    return 1;
+}
+
 void ClearLOT(LOT_INFO* LOT)
 {
     LOT->search_number = 0;
@@ -161,4 +168,5 @@ void T1MInjectGameLOT()
     INJECT(0x0042A3A0, EnableBaddieAI);
     INJECT(0x0042A570, InitialiseSlot);
     INJECT(0x0042A6B0, CreateZone);
+    INJECT(0x0042A780, InitialiseLOT);
 }
