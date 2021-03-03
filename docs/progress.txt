@@ -657,10 +657,10 @@ InitialiseLOT                   0x0042A780  0x00000065  +
 ClearLOT                        ----------  ----------  +
 
 # math.cpp (3dsystem/phd_math.h)
-phd_cos                         0x0042A7F0  0x0000002C  -
-cosf                            0x0042A81C  0x0000001A  -
-phd_sin                         0x0042A850  0x00000021  -
-sinf                            0x0042A871  0x0000001A  -
+phd_cos                         0x0042A7F0  0x0000002C  +
+cosf                            0x0042A81C  0x0000001A  +
+phd_sin                         0x0042A850  0x00000021  +
+sinf                            0x0042A871  0x0000001A  +
 phd_atan                        0x0042A8A0  0x00000055  -
 phd_sqrt                        0x0042A900  0x0000003A  -
 
