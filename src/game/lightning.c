@@ -1,4 +1,5 @@
 #include "3dsystem/3d_gen.h"
+#include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -406,6 +407,19 @@ void ThorsHandleControl(int16_t item_num)
     head_item->current_anim_state = item->current_anim_state;
 }
 
+void ThorsHandleCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        ItemPushLara(item, lara_item, coll, 0, 1);
+    }
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
@@ -415,4 +429,5 @@ void T1MInjectGameLightning()
 
     INJECT(0x00429EA0, InitialiseThorsHandle);
     INJECT(0x00429F30, ThorsHandleControl);
+    INJECT(0x0042A1F0, ThorsHandleCollision);
 }
