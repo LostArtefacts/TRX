@@ -6,6 +6,7 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lightning.h"
+#include "game/moveblock.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "specific/init.h"
@@ -14,7 +15,7 @@
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8
-#define LIGHTNING_RND ((64 << W2V_SHIFT) / 32768) // = 32
+#define LIGHTNING_RND ((64 << W2V_SHIFT) / 0x8000) // = 32
 #define LIGHTNING_SHOOTS 2
 
 typedef struct {
@@ -298,6 +299,113 @@ void InitialiseThorsHandle(int16_t item_num)
     LevelItemCount++;
 }
 
+void ThorsHandleControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    switch (item->current_anim_state) {
+    case THS_SET:
+        if (TriggerActive(item)) {
+            item->goal_anim_state = THS_TEASE;
+        } else {
+            RemoveActiveItem(item_num);
+            item->status = IS_NOT_ACTIVE;
+        }
+        break;
+
+    case THS_TEASE:
+        if (TriggerActive(item)) {
+            item->goal_anim_state = THS_ACTIVE;
+        } else {
+            item->goal_anim_state = THS_SET;
+        }
+        break;
+
+    case THS_ACTIVE: {
+        int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
+        if (frm > 30) {
+            int32_t x = item->pos.x;
+            int32_t z = item->pos.z;
+
+            switch (item->pos.y_rot) {
+            case 0:
+                z += WALL_L * 3;
+                break;
+            case 0x4000:
+                x += WALL_L * 3;
+                break;
+            case -0x4000:
+                x -= WALL_L * 3;
+                break;
+            case -0x8000:
+                z -= WALL_L * 3;
+                break;
+            }
+
+            if (LaraItem->hit_points >= 0 && LaraItem->pos.x > x - 520
+                && LaraItem->pos.x < x + 520 && LaraItem->pos.z > z - 520
+                && LaraItem->pos.z < z + 520) {
+                LaraItem->hit_points = -1;
+                LaraItem->pos.y = item->pos.y;
+                LaraItem->gravity_status = 0;
+                LaraItem->current_anim_state = AS_SPECIAL;
+                LaraItem->goal_anim_state = AS_SPECIAL;
+                LaraItem->anim_number = AA_RBALL_DEATH;
+                LaraItem->frame_number = AF_RBALL_DEATH;
+            }
+        }
+        break;
+    }
+
+    case THS_DONE: {
+        int32_t x = item->pos.x;
+        int32_t z = item->pos.z;
+        int32_t old_x = x;
+        int32_t old_z = z;
+
+        int16_t room_num = item->room_number;
+        FLOOR_INFO* floor = GetFloor(x, item->pos.y, z, &room_num);
+        GetHeight(floor, x, item->pos.y, z);
+        TestTriggers(TriggerIndex, 1);
+
+        switch (item->pos.y_rot) {
+        case 0:
+            z += WALL_L * 3;
+            break;
+        case 0x4000:
+            x += WALL_L * 3;
+            break;
+        case -0x4000:
+            x -= WALL_L * 3;
+            break;
+        case -0x8000:
+            z -= WALL_L * 3;
+            break;
+        }
+
+        item->pos.x = x;
+        item->pos.z = z;
+        if (LaraItem->hit_points >= 0) {
+            AlterFloorHeight(item, -2 * WALL_L);
+        }
+        item->pos.x = old_x;
+        item->pos.z = old_z;
+
+        RemoveActiveItem(item_num);
+        item->status = IS_DEACTIVATED;
+        break;
+    }
+    }
+    AnimateItem(item);
+
+    ITEM_INFO* head_item = item->data;
+    int32_t anim = item->anim_number - Objects[O_THORS_HANDLE].anim_index;
+    int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
+    head_item->anim_number = Objects[O_THORS_HEAD].anim_index + anim;
+    head_item->frame_number = Anims[head_item->anim_number].frame_base + frm;
+    head_item->current_anim_state = item->current_anim_state;
+}
+
 void T1MInjectGameLightning()
 {
     INJECT(0x00429620, DrawLightning);
@@ -306,4 +414,5 @@ void T1MInjectGameLightning()
     INJECT(0x00429E30, LightningCollision);
 
     INJECT(0x00429EA0, InitialiseThorsHandle);
+    INJECT(0x00429F30, ThorsHandleControl);
 }
