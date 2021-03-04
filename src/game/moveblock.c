@@ -2,9 +2,34 @@
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/moveblock.h"
-#include "game/types.h"
 #include "game/vars.h"
+#include "game/collide.h"
+#include "game/lara.h"
 #include "util.h"
+
+#define MB_MAXOFF 300
+#define MB_MAXOFF_Z (LARA_RAD + 80) // = 180
+
+static int16_t MovingBlockBounds[12] = {
+    -MB_MAXOFF,
+    +MB_MAXOFF,
+    0,
+    0,
+    -WALL_L / 2 - MB_MAXOFF_Z,
+    -WALL_L / 2,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
+typedef enum {
+    MBS_STILL = 1,
+    MBS_PUSH = 2,
+    MBS_PULL = 3,
+} MOVABLE_BLOCK_STATES;
 
 // original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
@@ -59,8 +84,105 @@ void MovableBlockControl(int16_t item_num)
     }
 }
 
+void MovableBlockCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!CHK_ANY(Input, IN_ACTION) || item->status == IS_ACTIVE
+        || lara_item->gravity_status || lara_item->pos.y != item->pos.y) {
+        return;
+    }
+
+    uint16_t quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
+    if (lara_item->current_anim_state == AS_STOP) {
+        if (CHK_ANY(Input, IN_FORWARD | IN_BACK)
+            || Lara.gun_status != LGS_ARMLESS) {
+            return;
+        }
+
+        switch (quadrant) {
+        case DIR_NORTH:
+            item->pos.y_rot = 0;
+            break;
+        case DIR_EAST:
+            item->pos.y_rot = PHD_90;
+            break;
+        case DIR_SOUTH:
+            item->pos.y_rot = -PHD_180;
+            break;
+        case DIR_WEST:
+            item->pos.y_rot = -PHD_90;
+            break;
+        }
+
+        if (!TestLaraPosition(MovingBlockBounds, item, lara_item)) {
+            return;
+        }
+
+        switch (quadrant) {
+        case DIR_NORTH:
+            lara_item->pos.z &= -WALL_L;
+            lara_item->pos.z += WALL_L - LARA_RAD;
+            break;
+        case DIR_SOUTH:
+            lara_item->pos.z &= -WALL_L;
+            lara_item->pos.z += LARA_RAD;
+            break;
+        case DIR_EAST:
+            lara_item->pos.x &= -WALL_L;
+            lara_item->pos.x += WALL_L - LARA_RAD;
+            break;
+        case DIR_WEST:
+            lara_item->pos.x &= -WALL_L;
+            lara_item->pos.x += LARA_RAD;
+            break;
+        }
+
+        lara_item->pos.y_rot = item->pos.y_rot;
+        lara_item->goal_anim_state = AS_PPREADY;
+
+        AnimateLara(lara_item);
+
+        if (lara_item->current_anim_state == AS_PPREADY) {
+            Lara.gun_status = LGS_HANDSBUSY;
+        }
+    } else if (lara_item->current_anim_state == AS_PPREADY) {
+        if (lara_item->frame_number != AF_PPREADY) {
+            return;
+        }
+
+        if (!TestLaraPosition(MovingBlockBounds, item, lara_item)) {
+            return;
+        }
+
+        if (CHK_ANY(Input, IN_FORWARD)) {
+            if (!TestBlockPush(item, 1024, quadrant)) {
+                return;
+            }
+            item->goal_anim_state = MBS_PUSH;
+            lara_item->goal_anim_state = AS_PUSHBLOCK;
+        } else if (CHK_ANY(Input, IN_BACK)) {
+            if (!TestBlockPull(item, 1024, quadrant)) {
+                return;
+            }
+            item->goal_anim_state = MBS_PULL;
+            lara_item->goal_anim_state = AS_PULLBLOCK;
+        } else {
+            return;
+        }
+
+        AddActiveItem(item_num);
+        AlterFloorHeight(item, 1024);
+        item->status = IS_ACTIVE;
+        AnimateItem(item);
+        AnimateLara(lara_item);
+    }
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
     INJECT(0x0042B460, MovableBlockControl);
+    INJECT(0x0042B5B0, MovableBlockCollision);
 }

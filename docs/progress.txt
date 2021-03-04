@@ -682,10 +682,10 @@ mn_clear_handles                ----------  ----------  -
 # moveblok.cpp
 InitialiseMovableBlock          0x0042B430  0x00000030  +
 MovableBlockControl             0x0042B460  0x0000014A  +
-MovableBlockCollision           0x0042B5B0  0x00000208  *
+MovableBlockCollision           0x0042B5B0  0x00000208  +
 TestBlockMovable                ----------  ----------  -
-TestBlockPush                   0x0042B7E0  0x00000142  -
-TestBlockPull                   0x0042B940  0x00000239  -
+TestBlockPush                   0x0042B7E0  0x00000142  *
+TestBlockPull                   0x0042B940  0x00000239  *
 InitialiseRollingBlock          0x0042BB90  0x00000024  *
 RollingBlockControl             0x0042BBC0  0x000000DA  *
 AlterFloorHeight                0x0042BCA0  0x000000BE  *
