@@ -17,6 +17,9 @@ O_FILES = $(patsubst src/%.c, build/%.o, $(C_FILES))
 build: all version
 	$(CC) $(CFLAGS) $(shell find build -type f -iname '*.o') build/version.res -static -ldbghelp -shared -o build/Tomb1Main.dll
 
+debug: CFLAGS += -DDEBUG -g
+debug: build
+
 all: $(O_FILES)
 
 version:
