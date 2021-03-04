@@ -24,6 +24,21 @@ void ShutThatDoor(DOORPOS_DATA* d)
     }
 }
 
+void OpenThatDoor(DOORPOS_DATA* d)
+{
+    FLOOR_INFO* floor = d->floor;
+    if (!floor) {
+        return;
+    }
+
+    *floor = d->data;
+
+    int16_t box_num = d->block;
+    if (box_num != NO_BOX) {
+        Boxes[box_num].overlap_index &= ~BLOCKED;
+    }
+}
+
 void InitialiseDoor(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -147,7 +162,36 @@ void InitialiseDoor(int16_t item_num)
     ShutThatDoor(&door->d2flip);
 }
 
+void DoorControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    DOOR_DATA* door = item->data;
+
+    if (TriggerActive(item)) {
+        if (item->current_anim_state == DOOR_CLOSED) {
+            item->goal_anim_state = DOOR_OPEN;
+        } else {
+            OpenThatDoor(&door->d1);
+            OpenThatDoor(&door->d2);
+            OpenThatDoor(&door->d1flip);
+            OpenThatDoor(&door->d2flip);
+        }
+    } else {
+        if (item->current_anim_state == DOOR_OPEN) {
+            item->goal_anim_state = DOOR_CLOSED;
+        } else {
+            ShutThatDoor(&door->d1);
+            ShutThatDoor(&door->d2);
+            ShutThatDoor(&door->d1flip);
+            ShutThatDoor(&door->d2flip);
+        }
+    }
+
+    AnimateItem(item);
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
+    INJECT(0x0042CEF0, DoorControl);
 }

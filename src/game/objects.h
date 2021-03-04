@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define DoorControl                     ((void          (*)(int16_t item_num))0x0042CEF0)
 #define DrawBridgeFloor                 ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D1F0)
 #define DrawBridgeCeiling               ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D230)
 #define DrawBridgeCollision             ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042D270)
@@ -41,7 +40,9 @@
 // clang-format on
 
 void ShutThatDoor(DOORPOS_DATA* d);
+void OpenThatDoor(DOORPOS_DATA* d);
 void InitialiseDoor(int16_t item_num);
+void DoorControl(int16_t item_num);
 
 void T1MInjectGameObjects();
 

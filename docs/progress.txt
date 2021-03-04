@@ -700,9 +700,9 @@ NatlaGun                        ----------  ----------  x
 
 # objects.cpp
 ShutThatDoor                    ----------  ----------  +
-OpenThatDoor                    ----------  ----------  -
+OpenThatDoor                    ----------  ----------  +
 InitialiseDoor                  0x0042CA40  0x000004AE  +
-DoorControl                     0x0042CEF0  0x0000023B  *
+DoorControl                     0x0042CEF0  0x0000023B  +
 OnDrawBridge                    0x0042D130  0x000000B1  -
 DrawBridgeFloor                 0x0042D1F0  0x0000003B  *
 DrawBridgeCeiling               0x0042D230  0x0000003F  *

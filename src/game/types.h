@@ -763,6 +763,11 @@ typedef enum {
     IT_NUMBER_OF = 2,
 } INV_TEXT;
 
+typedef enum {
+    DOOR_CLOSED = 0,
+    DOOR_OPEN = 1,
+} DOOR_ANIMS;
+
 #pragma pack(push, 1)
 
 typedef struct {
