@@ -36,6 +36,23 @@ void phd_GenerateW2V(PHD_3DPOS* viewpos)
     W2VMatrix = MatrixStack;
 }
 
+void phd_LookAt(
+    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
+    int32_t ztar, int16_t roll)
+{
+    PHD_ANGLE angles[2];
+    phd_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+
+    PHD_3DPOS viewer;
+    viewer.x = xsrc;
+    viewer.y = ysrc;
+    viewer.z = zsrc;
+    viewer.x_rot = angles[1];
+    viewer.y_rot = angles[0];
+    viewer.z_rot = roll;
+    phd_GenerateW2V(&viewer);
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -96,6 +113,7 @@ void phd_PopMatrix()
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
+    INJECT(0x004011A0, phd_LookAt);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
 }
