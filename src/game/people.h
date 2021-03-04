@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 // clang-format off
+#define Targetable              ((int32_t       (*)(ITEM_INFO* item, AI_INFO* info))0x00430D80)
 #define PeopleControl           ((void          (*)(int16_t item_num))0x00431090)
 #define PierreControl           ((void          (*)(int16_t item_num))0x00431550)
 #define ApeControl              ((void          (*)(int16_t item_num))0x00431D40)

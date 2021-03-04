@@ -694,7 +694,7 @@ DrawUnclippedItem               0x0042BDF0  0x00000068  +
 
 # natla.cpp
 AbortionControl                 0x0042BE60  0x0000049E  +
-NatlaControl                    0x0042C330  0x0000059F  *
+NatlaControl                    0x0042C330  0x0000059F  +
 ControlNatlaGun                 0x0042C910  0x00000121  *
 NatlaGun                        ----------  ----------  -
 
@@ -761,7 +761,7 @@ decomp_pcx                      0x00430B90  0x00000141  -
 S_DisplayPicture                0x00430CE0  0x00000094  *
 
 # people.cpp
-Targetable                      0x00430D80  0x0000007B  -
+Targetable                      0x00430D80  0x0000007B  *
 ControlGunShot                  0x00430E00  0x00000037  *
 GunShot                         0x00430E40  0x00000066  -
 GunHit                          0x00430EB0  0x000000ED  -
@@ -943,8 +943,8 @@ InitialiseWarrior2              0x0043BB30  0x00000028  *
 FlyerControl                    0x0043BB60  0x00000625  *
 ControlMissile                  0x0043C1C0  0x0000026D  *
 ShootAtLara                     ----------  ----------  -
-ShardGun                        0x0043C430  0x00000110  -
-RocketGun                       0x0043C540  0x00000110  -
+ShardGun                        0x0043C430  0x00000110  *
+RocketGun                       0x0043C540  0x00000110  *
 InitialiseMummy                 0x0043C650  0x0000003A  *
 MummyControl                    0x0043C690  0x000000A0  *
 ExplodingDeath                  0x0043C730  0x0000039A  *
