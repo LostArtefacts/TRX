@@ -53,6 +53,24 @@ void phd_LookAt(
     phd_GenerateW2V(&viewer);
 }
 
+void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t* dest)
+{
+    dest[0] = phd_atan(z, x);
+
+    while ((int16_t)x != x || (int16_t)y != y || (int16_t)z != z) {
+        x >>= 2;
+        y >>= 2;
+        z >>= 2;
+    }
+
+    PHD_ANGLE pitch = phd_atan(phd_sqrt(SQUARE(x) + SQUARE(z)), y);
+    if ((y > 0 && pitch > 0) || (y < 0 && pitch < 0)) {
+        pitch = -pitch;
+    }
+
+    dest[1] = pitch;
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -114,6 +132,7 @@ void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
     INJECT(0x004011A0, phd_LookAt);
+    INJECT(0x00401270, phd_GetVectorAngles);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
 }

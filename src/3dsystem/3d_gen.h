@@ -16,7 +16,6 @@
 #define phd_RotYXZpack          ((void          (*)(int32_t rots))0x004016F0)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_TranslateRel        ((int32_t       (*)(int32_t x, int32_t y, int32_t z))0x004018F0)
-#define phd_GetVectorAngles     ((void          (*)(int32_t x, int32_t y, int32_t z, PHD_ANGLE* dest))0x00401270)
 #define phd_RotateLight         ((void          (*)(PHD_ANGLE pitch, PHD_ANGLE yaw))0x004023A0)
 // clang-format on
 
@@ -24,6 +23,7 @@ void phd_GenerateW2V(PHD_3DPOS* viewpos);
 void phd_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
     int32_t ztar, int16_t roll);
+void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t* dest);
 void phd_PopMatrix();
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
