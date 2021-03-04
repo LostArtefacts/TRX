@@ -242,10 +242,84 @@ int32_t TestBlockPush(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
     return 1;
 }
 
+int32_t TestBlockPull(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
+{
+    if (!TestBlockMovable(item, blockhite)) {
+        return 0;
+    }
+
+    int32_t x_add = 0;
+    int32_t z_add = 0;
+    switch (quadrant) {
+    case DIR_NORTH:
+        z_add = -WALL_L;
+        break;
+    case DIR_EAST:
+        x_add = -WALL_L;
+        break;
+    case DIR_SOUTH:
+        z_add = WALL_L;
+        break;
+    case DIR_WEST:
+        x_add = WALL_L;
+        break;
+    }
+
+    int32_t x = item->pos.x + x_add;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z + z_add;
+
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    COLL_INFO coll;
+    coll.quadrant = quadrant;
+    coll.radius = 500;
+    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return 0;
+    }
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return 0;
+    }
+
+    floor = GetFloor(x, y - blockhite, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - blockhite) {
+        return 0;
+    }
+
+    x += x_add;
+    z += z_add;
+    room_num = item->room_number;
+    floor = GetFloor(x, y, z, &room_num);
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return 0;
+    }
+
+    floor = GetFloor(x, y - LARA_HITE, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - LARA_HITE) {
+        return 0;
+    }
+
+    x = LaraItem->pos.x + x_add;
+    y = LaraItem->pos.y;
+    z = LaraItem->pos.z + z_add;
+    room_num = LaraItem->room_number;
+    floor = GetFloor(x, y, z, &room_num);
+    coll.radius = LARA_RAD;
+    coll.quadrant = (quadrant + 2) & 3;
+    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HITE)) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
     INJECT(0x0042B460, MovableBlockControl);
     INJECT(0x0042B5B0, MovableBlockCollision);
     INJECT(0x0042B7E0, TestBlockPush);
+    INJECT(0x0042B940, TestBlockPull);
 }
