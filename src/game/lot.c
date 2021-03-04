@@ -96,6 +96,34 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
     creature->LOT.block_mask = BLOCKED;
     creature->LOT.fly = 0;
 
+    switch (item->object_number) {
+    case O_BAT:
+    case O_ALLIGATOR:
+    case O_FISH:
+        creature->LOT.step = WALL_L * 20;
+        creature->LOT.drop = -WALL_L * 20;
+        creature->LOT.fly = STEP_L / 16;
+        break;
+
+    case O_DINOSAUR:
+    case O_WARRIOR1:
+    case O_CENTAUR:
+        creature->LOT.block_mask = BLOCKABLE;
+        break;
+
+    case O_WOLF:
+    case O_LION:
+    case O_LIONESS:
+    case O_PUMA:
+        creature->LOT.drop = -WALL_L;
+        break;
+
+    case O_APE:
+        creature->LOT.step = STEP_L * 2;
+        creature->LOT.drop = -WALL_L;
+        break;
+    }
+
     ClearLOT(&creature->LOT);
     CreateZone(item);
 
