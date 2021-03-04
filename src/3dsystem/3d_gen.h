@@ -8,7 +8,6 @@
 #define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
 #define phd_PushMatrix          ((void          (*)())0x0043EA01)
 #define phd_PushUnitMatrix      ((void          (*)())0x0043EA21)
-#define phd_TranslateAbs        ((void          (*)())0x004019A0)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_RotateLight         ((void          (*)(PHD_ANGLE pitch, PHD_ANGLE yaw))0x004023A0)
 // clang-format on
@@ -24,6 +23,7 @@ void phd_RotZ(PHD_ANGLE rz);
 void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz);
 void phd_RotYXZpack(int32_t rots);
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
+void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
 void phd_PopMatrix();
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
