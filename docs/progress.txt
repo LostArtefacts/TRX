@@ -690,7 +690,7 @@ InitialiseRollingBlock          0x0042BB90  0x00000024  +
 RollingBlockControl             0x0042BBC0  0x000000DA  +
 AlterFloorHeight                0x0042BCA0  0x000000BE  +
 DrawMovableBlock                0x0042BD60  0x00000081  +
-DrawUnclippedItem               0x0042BDF0  0x00000068  *
+DrawUnclippedItem               0x0042BDF0  0x00000068  +
 
 # natla.cpp
 AbortionControl                 0x0042BE60  0x0000049E  *

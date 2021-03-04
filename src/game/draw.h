@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define DrawUnclippedItem       ((void          (*)(ITEM_INFO *item))0x0042BDF0)
-// clang-format on
-
 int32_t DrawPhaseCinematic();
 int32_t DrawPhaseGame();
 void DrawRooms(int16_t current_room);
@@ -18,6 +14,7 @@ void DrawEffect(int16_t fxnum);
 void DrawSpriteItem(ITEM_INFO* item);
 void DrawDummyItem(ITEM_INFO* item);
 void DrawAnimatingItem(ITEM_INFO* item);
+void DrawUnclippedItem(ITEM_INFO* item);
 void DrawLara(ITEM_INFO* item);
 void DrawGunFlash(int32_t weapon_type, int32_t clip);
 void CalculateObjectLighting(ITEM_INFO* item, int16_t* frame);

@@ -463,6 +463,27 @@ void DrawAnimatingItem(ITEM_INFO* item)
     phd_PopMatrix();
 }
 
+// originally in moveblok.c
+void DrawUnclippedItem(ITEM_INFO* item)
+{
+    int32_t left = PhdLeft;
+    int32_t top = PhdTop;
+    int32_t right = PhdRight;
+    int32_t bottom = PhdBottom;
+
+    PhdLeft = 0;
+    PhdTop = 0;
+    PhdRight = PhdWinMaxX;
+    PhdBottom = PhdWinMaxY;
+
+    DrawAnimatingItem(item);
+
+    PhdLeft = left;
+    PhdTop = top;
+    PhdRight = right;
+    PhdBottom = bottom;
+}
+
 void DrawLara(ITEM_INFO* item)
 {
     OBJECT_INFO* object;
@@ -1359,4 +1380,5 @@ void T1MInjectGameDraw()
     INJECT(0x00419D30, GetFrames);
     INJECT(0x00419DD0, GetBoundsAccurate);
     INJECT(0x00419E50, GetBestFrame);
+    INJECT(0x0042BDF0, DrawUnclippedItem);
 }
