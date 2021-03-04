@@ -975,7 +975,7 @@ sub_43E681                      0x0043E681  0x000000CC  -
 sub_43E74D                      0x0043E74D  0x0000015F  -
 sub_43E8AC                      0x0043E8AC  0x00000155  -
 phd_PushMatrix                  0x0043EA01  0x00000020  +
-phd_PushUnitMatrix              0x0043EA21  0x00000035  *
+phd_PushUnitMatrix              0x0043EA21  0x00000035  +
 flatA                           0x0043EA80  0x00000064  -
 transA                          0x0043EAE4  0x00000139  -
 gourA                           0x0043EC1D  0x00000185  -

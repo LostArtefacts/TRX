@@ -387,6 +387,21 @@ void phd_PushMatrix()
     PhdMatrixPtr[0] = PhdMatrixPtr[-1];
 }
 
+// originally in shell.c
+void phd_PushUnitMatrix()
+{
+    PHD_MATRIX* mptr = ++PhdMatrixPtr;
+    mptr->_00 = W2V_SCALE;
+    mptr->_01 = 0;
+    mptr->_02 = 0;
+    mptr->_10 = 0;
+    mptr->_11 = W2V_SCALE;
+    mptr->_12 = 0;
+    mptr->_20 = 0;
+    mptr->_21 = 0;
+    mptr->_22 = W2V_SCALE;
+}
+
 void phd_PopMatrix()
 {
     PhdMatrixPtr--;
@@ -408,4 +423,5 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
     INJECT(0x0043EA01, phd_PushMatrix);
+    INJECT(0x0043EA21, phd_PushUnitMatrix);
 }

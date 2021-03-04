@@ -6,7 +6,6 @@
 
 // clang-format off
 #define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
-#define phd_PushUnitMatrix      ((void          (*)())0x0043EA21)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_RotateLight         ((void          (*)(PHD_ANGLE pitch, PHD_ANGLE yaw))0x004023A0)
 // clang-format on
@@ -31,6 +30,7 @@ void phd_InitWindow(
 void AlterFOV(PHD_ANGLE fov);
 
 void phd_PushMatrix();
+void phd_PushUnitMatrix();
 void phd_PopMatrix();
 
 void T1MInject3DSystem3DGen();
