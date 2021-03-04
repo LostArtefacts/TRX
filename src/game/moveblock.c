@@ -31,6 +31,12 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATES;
 
+typedef enum {
+    RBS_START = 0,
+    RBS_END = 1,
+    RBS_MOVING = 2,
+} ROLLING_BLOCK_STATES;
+
 // original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
 {
@@ -321,6 +327,38 @@ void InitialiseRollingBlock(int16_t item_num)
     AlterFloorHeight(item, -2048);
 }
 
+// original name: RollingBlock
+void RollingBlockControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        if (item->current_anim_state == RBS_START) {
+            item->goal_anim_state = RBS_END;
+            AlterFloorHeight(item, 2048);
+        }
+    } else if (item->current_anim_state == RBS_END) {
+        item->goal_anim_state = RBS_START;
+        AlterFloorHeight(item, 2048);
+    }
+
+    AnimateItem(item);
+
+    int16_t room_num = item->room_number;
+    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (item->room_number != room_num) {
+        ItemNewRoom(item_num, room_num);
+    }
+
+    if (item->status == IS_DEACTIVATED) {
+        item->status = IS_ACTIVE;
+        AlterFloorHeight(item, -2048);
+        item->pos.x &= -WALL_L;
+        item->pos.x += WALL_L / 2;
+        item->pos.z &= -WALL_L;
+        item->pos.z += WALL_L / 2;
+    }
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
@@ -329,4 +367,5 @@ void T1MInjectGameMoveBlock()
     INJECT(0x0042B7E0, TestBlockPush);
     INJECT(0x0042B940, TestBlockPull);
     INJECT(0x0042BB90, InitialiseRollingBlock);
+    INJECT(0x0042BBC0, RollingBlockControl);
 }
