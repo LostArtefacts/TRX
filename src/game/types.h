@@ -687,14 +687,14 @@ typedef enum {
     FMV_GYM = 1,
     FMV_SNOW = 2,
     FMV_LIFT = 3,
-    FMV_VISION = 3,
-    FMV_CANYON = 4,
-    FMV_PYRAMID = 5,
-    FMV_PRISON = 6,
-    FMV_ENDSEQ = 7,
-    FMV_CORE = 8,
-    FMV_ESCAPE = 9,
-    NUMBER_OF_FMV
+    FMV_VISION = 4,
+    FMV_CANYON = 5,
+    FMV_PYRAMID = 6,
+    FMV_PRISON = 7,
+    FMV_ENDSEQ = 8,
+    FMV_CORE = 9,
+    FMV_ESCAPE = 10,
+    NUMBER_OF_FMV = 11,
 } FMV_SEQUENCE;
 
 typedef enum {

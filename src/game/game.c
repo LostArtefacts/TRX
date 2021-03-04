@@ -168,12 +168,12 @@ int32_t LevelCompleteSequence(int level_num)
         return GF_STARTCINE | LV_CUTSCENE3;
 
     case LV_LEVEL10B:
-        S_PlayFMV(FMV_ENDSEQ, 1);
+        S_PlayFMV(FMV_PRISON, 1);
         return GF_STARTCINE | LV_CUTSCENE4;
 
     case LV_LEVEL10C:
         LevelStats(LV_LEVEL10C);
-        S_PlayFMV(FMV_CORE, 1);
+        S_PlayFMV(FMV_ENDSEQ, 1);
         TempVideoAdjust(2, 1.0);
         S_DisplayPicture("data\\end");
         sub_408E41();

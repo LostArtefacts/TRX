@@ -32,8 +32,9 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
     }
 
     for (; FrameCount >= 0; FrameCount -= 0x10000) {
-        if (CDTrack > 0)
+        if (CDTrack > 0) {
             S_CDLoop();
+        }
 
         CheckCheatMode();
         if (LevelComplete) {
