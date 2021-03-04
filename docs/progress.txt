@@ -689,7 +689,7 @@ TestBlockPull                   0x0042B940  0x00000239  +
 InitialiseRollingBlock          0x0042BB90  0x00000024  +
 RollingBlockControl             0x0042BBC0  0x000000DA  +
 AlterFloorHeight                0x0042BCA0  0x000000BE  +
-DrawMovableBlock                0x0042BD60  0x00000081  *
+DrawMovableBlock                0x0042BD60  0x00000081  +
 DrawUnclippedItem               0x0042BDF0  0x00000068  *
 
 # natla.cpp

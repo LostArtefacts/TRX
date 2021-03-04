@@ -1,10 +1,11 @@
+#include "game/collide.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/moveblock.h"
 #include "game/vars.h"
-#include "game/collide.h"
-#include "game/lara.h"
 #include "util.h"
 
 #define MB_MAXOFF 300
@@ -385,6 +386,15 @@ void AlterFloorHeight(ITEM_INFO* item, int32_t height)
     }
 }
 
+void DrawMovableBlock(ITEM_INFO* item)
+{
+    if (item->status == IS_ACTIVE) {
+        DrawUnclippedItem(item);
+    } else {
+        DrawAnimatingItem(item);
+    }
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
@@ -395,4 +405,5 @@ void T1MInjectGameMoveBlock()
     INJECT(0x0042BB90, InitialiseRollingBlock);
     INJECT(0x0042BBC0, RollingBlockControl);
     INJECT(0x0042BCA0, AlterFloorHeight);
+    INJECT(0x0042BD60, DrawMovableBlock);
 }

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define DrawMovableBlock        ((void          (*)(ITEM_INFO *item))0x0042BD60)
 // clang-format on
 
 void InitialiseMovableBlock(int16_t item_num);
@@ -20,6 +19,8 @@ void InitialiseRollingBlock(int16_t item_num);
 void RollingBlockControl(int16_t item_num);
 
 void AlterFloorHeight(ITEM_INFO* item, int32_t height);
+
+void DrawMovableBlock(ITEM_INFO* item);
 
 void T1MInjectGameMoveBlock();
 
