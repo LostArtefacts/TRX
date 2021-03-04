@@ -180,9 +180,72 @@ void MovableBlockCollision(
     }
 }
 
+int32_t TestBlockMovable(ITEM_INFO* item, int32_t blockhite)
+{
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (floor->floor == NO_HEIGHT / 256) {
+        return 1;
+    }
+
+    if ((floor->floor << 8) != item->pos.y - blockhite) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int32_t TestBlockPush(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
+{
+    if (!TestBlockMovable(item, blockhite)) {
+        return 0;
+    }
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_number;
+
+    switch (quadrant) {
+    case DIR_NORTH:
+        z += WALL_L;
+        break;
+    case DIR_EAST:
+        x += WALL_L;
+        break;
+    case DIR_SOUTH:
+        z -= WALL_L;
+        break;
+    case DIR_WEST:
+        x -= WALL_L;
+        break;
+    }
+
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    COLL_INFO coll;
+    coll.quadrant = quadrant;
+    coll.radius = 500;
+    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return 0;
+    }
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return 0;
+    }
+
+    floor = GetFloor(x, y - blockhite, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - blockhite) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
     INJECT(0x0042B460, MovableBlockControl);
     INJECT(0x0042B5B0, MovableBlockCollision);
+    INJECT(0x0042B7E0, TestBlockPush);
 }
