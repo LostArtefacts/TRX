@@ -502,8 +502,47 @@ void NatlaControl(int16_t item_num)
     item->pos.y_rot += facing;
 }
 
+void ControlNatlaGun(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    OBJECT_INFO* object = &Objects[fx->object_number];
+
+    fx->frame_number--;
+    if (fx->frame_number <= object->nmeshes) {
+        KillEffect(fx_num);
+    }
+
+    if (fx->frame_number == -1) {
+        return;
+    }
+
+    int32_t z = fx->pos.z + ((fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT);
+    int32_t x = fx->pos.x + ((fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT);
+    int32_t y = fx->pos.y;
+    int16_t room_num = fx->room_number;
+    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+
+    if (y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z)) {
+        return;
+    }
+
+    fx_num = CreateEffect(room_num);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* newfx = &Effects[fx_num];
+        newfx->pos.x = x;
+        newfx->pos.y = y;
+        newfx->pos.z = z;
+        newfx->pos.y_rot = fx->pos.y_rot;
+        newfx->room_number = room_num;
+        newfx->speed = fx->speed;
+        newfx->frame_number = 0;
+        newfx->object_number = O_MISSILE1;
+    }
+}
+
 void T1MInjectGameNatla()
 {
     INJECT(0x0042BE60, AbortionControl);
     INJECT(0x0042C330, NatlaControl);
+    INJECT(0x0042C910, ControlNatlaGun);
 }

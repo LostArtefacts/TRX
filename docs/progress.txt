@@ -695,8 +695,8 @@ DrawUnclippedItem               0x0042BDF0  0x00000068  +
 # natla.cpp
 AbortionControl                 0x0042BE60  0x0000049E  +
 NatlaControl                    0x0042C330  0x0000059F  +
-ControlNatlaGun                 0x0042C910  0x00000121  *
-NatlaGun                        ----------  ----------  -
+ControlNatlaGun                 0x0042C910  0x00000121  +
+NatlaGun                        ----------  ----------  x
 
 # objects.cpp
 ShutThatDoor                    ----------  ----------  -
