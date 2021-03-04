@@ -484,7 +484,7 @@
 <rect width="12.00" height="12.00" x="434.00" y="143.00" fill="lightpink"><title>StopSoundEffect</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="143.00" fill="lightpink"><title>adjust_master_volume</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="143.00" fill="forestgreen"><title>InitialiseMovableBlock</title></rect>
-<rect width="12.00" height="12.00" x="476.00" y="143.00" fill="lightpink"><title>MovableBlockControl</title></rect>
+<rect width="12.00" height="12.00" x="476.00" y="143.00" fill="forestgreen"><title>MovableBlockControl</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="143.00" fill="lightpink"><title>MovableBlockCollision</title></rect>
 <rect width="12.00" height="12.00" x="504.00" y="143.00" fill="lightpink"><title>TestBlockPush</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="143.00" fill="lightpink"><title>TestBlockPull</title></rect>
@@ -958,7 +958,7 @@
 <rect width="14.06" height="13.50" x="481.33" y="400.09" fill="lightpink"><title>S_DrawUISprite</title></rect>
 <rect width="14.06" height="13.41" x="481.33" y="415.59" fill="lightpink"><title>SoundLoadSample</title></rect>
 <rect width="14.06" height="13.41" x="481.33" y="431.00" fill="lightpink"><title>PendulumControl</title></rect>
-<rect width="14.06" height="13.36" x="481.33" y="446.42" fill="lightpink"><title>MovableBlockControl</title></rect>
+<rect width="14.06" height="13.36" x="481.33" y="446.42" fill="forestgreen"><title>MovableBlockControl</title></rect>
 <rect width="14.06" height="13.32" x="481.33" y="461.78" fill="forestgreen"><title>LaraColUpJump</title></rect>
 <rect width="14.06" height="13.27" x="481.33" y="477.10" fill="forestgreen"><title>LaraColFastFall</title></rect>
 <rect width="14.06" height="13.23" x="481.33" y="492.37" fill="forestgreen"><title>draw_pistols</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" fill="mistyrose"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" fill="mistyrose"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" fill="lightpink"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 50.34%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 46.86%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 35.57%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 37.31%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 50.48%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 47.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 35.43%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 37.18%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="642.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="660.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
