@@ -495,20 +495,20 @@ void BaddyObjects()
         AnimBones[Objects[O_MERCENARY3].bone_index] |= BEB_ROT_Y;
     }
 
-    if (Objects[O_EVIL_NATLA].loaded) {
-        Objects[O_EVIL_NATLA].initialise = InitialiseCreature;
-        Objects[O_EVIL_NATLA].control = AbortionControl;
-        Objects[O_EVIL_NATLA].collision = CreatureCollision;
-        Objects[O_EVIL_NATLA].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_EVIL_NATLA].hit_points = ABORTION_HITPOINTS;
-        Objects[O_EVIL_NATLA].radius = ABORTION_RADIUS;
-        Objects[O_EVIL_NATLA].smartness = ABORTION_SMARTNESS;
-        Objects[O_EVIL_NATLA].intelligent = 1;
-        Objects[O_EVIL_NATLA].save_position = 1;
-        Objects[O_EVIL_NATLA].save_hitpoints = 1;
-        Objects[O_EVIL_NATLA].save_anim = 1;
-        Objects[O_EVIL_NATLA].save_flags = 1;
-        AnimBones[Objects[O_EVIL_NATLA].bone_index + 4] |= BEB_ROT_Y;
+    if (Objects[O_ABORTION].loaded) {
+        Objects[O_ABORTION].initialise = InitialiseCreature;
+        Objects[O_ABORTION].control = AbortionControl;
+        Objects[O_ABORTION].collision = CreatureCollision;
+        Objects[O_ABORTION].shadow_size = UNIT_SHADOW / 3;
+        Objects[O_ABORTION].hit_points = ABORTION_HITPOINTS;
+        Objects[O_ABORTION].radius = ABORTION_RADIUS;
+        Objects[O_ABORTION].smartness = ABORTION_SMARTNESS;
+        Objects[O_ABORTION].intelligent = 1;
+        Objects[O_ABORTION].save_position = 1;
+        Objects[O_ABORTION].save_hitpoints = 1;
+        Objects[O_ABORTION].save_anim = 1;
+        Objects[O_ABORTION].save_flags = 1;
+        AnimBones[Objects[O_ABORTION].bone_index + 4] |= BEB_ROT_Y;
     }
 
     if (Objects[O_NATLA].loaded) {

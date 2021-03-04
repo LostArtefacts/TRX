@@ -693,7 +693,7 @@ DrawMovableBlock                0x0042BD60  0x00000081  +
 DrawUnclippedItem               0x0042BDF0  0x00000068  +
 
 # natla.cpp
-AbortionControl                 0x0042BE60  0x0000049E  *
+AbortionControl                 0x0042BE60  0x0000049E  +
 NatlaControl                    0x0042C330  0x0000059F  *
 ControlNatlaGun                 0x0042C910  0x00000121  *
 NatlaGun                        ----------  ----------  -
@@ -947,7 +947,7 @@ ShardGun                        0x0043C430  0x00000110  -
 RocketGun                       0x0043C540  0x00000110  -
 InitialiseMummy                 0x0043C650  0x0000003A  *
 MummyControl                    0x0043C690  0x000000A0  *
-ExplodingDeath                  0x0043C730  0x0000039A  -
+ExplodingDeath                  0x0043C730  0x0000039A  *
 ControlBodyPart                 0x0043CAD0  0x00000195  *
 InitialisePod                   0x0043CC70  0x000000DC  *
 PodControl                      0x0043CD70  0x00000118  *

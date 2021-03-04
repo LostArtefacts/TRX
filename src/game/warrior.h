@@ -13,6 +13,7 @@
 #define PodControl              ((void          (*)(int16_t item_num))0x0043CD70)
 #define InitialiseStatue        ((void          (*)(int16_t item_num))0x0043CE90)
 #define StatueControl           ((void          (*)(int16_t item_num))0x0043CF80)
+#define ExplodingDeath          ((int32_t       (*)(int16_t item_num, int32_t mesh_bits, int16_t damage))0x0043C730)
 // clang-format on
 
 #endif

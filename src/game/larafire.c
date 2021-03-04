@@ -514,7 +514,7 @@ void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
             SoundEffect(132, &item->pos, 0);
             break;
 
-        case O_EVIL_NATLA:
+        case O_ABORTION:
             SoundEffect(142, &item->pos, 0);
             break;
         }

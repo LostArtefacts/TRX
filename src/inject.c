@@ -22,6 +22,7 @@
 #include "game/lightning.h"
 #include "game/lot.h"
 #include "game/moveblock.h"
+#include "game/natla.h"
 #include "game/option.h"
 #include "game/pickup.h"
 #include "game/setup.h"
@@ -63,6 +64,7 @@ void T1MInject()
     T1MInjectGameLaraSwim();
     T1MInjectGameLightning();
     T1MInjectGameMoveBlock();
+    T1MInjectGameNatla();
     T1MInjectGameOption();
     T1MInjectGamePickup();
     T1MInjectGameSetup();

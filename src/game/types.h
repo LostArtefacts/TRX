@@ -51,7 +51,7 @@ typedef enum {
     O_MERCENARY2 = 31,
     O_MERCENARY3 = 32,
     O_NATLA = 33,
-    O_EVIL_NATLA = 34, // Adam, Torso
+    O_ABORTION = 34, // a.k.a. Adam, Torso or Evil Natla
     O_FALLING_BLOCK = 35,
     O_PENDULUM = 36,
     O_SPIKES = 37,
