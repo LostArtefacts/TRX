@@ -152,6 +152,72 @@ void phd_RotZ(PHD_ANGLE rz)
     mptr->_21 = r1 >> W2V_SHIFT;
 }
 
+void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
+{
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    int32_t r0, r1;
+
+    if (ry) {
+        int32_t sy = phd_sin(ry);
+        int32_t cy = phd_cos(ry);
+
+        r0 = mptr->_00 * cy - mptr->_02 * sy;
+        r1 = mptr->_02 * cy + mptr->_00 * sy;
+        mptr->_00 = r0 >> W2V_SHIFT;
+        mptr->_02 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_10 * cy - mptr->_12 * sy;
+        r1 = mptr->_12 * cy + mptr->_10 * sy;
+        mptr->_10 = r0 >> W2V_SHIFT;
+        mptr->_12 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_20 * cy - mptr->_22 * sy;
+        r1 = mptr->_22 * cy + mptr->_20 * sy;
+        mptr->_20 = r0 >> W2V_SHIFT;
+        mptr->_22 = r1 >> W2V_SHIFT;
+    }
+
+    if (rx) {
+        int32_t sx = phd_sin(rx);
+        int32_t cx = phd_cos(rx);
+
+        r0 = mptr->_01 * cx + mptr->_02 * sx;
+        r1 = mptr->_02 * cx - mptr->_01 * sx;
+        mptr->_01 = r0 >> W2V_SHIFT;
+        mptr->_02 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_11 * cx + mptr->_12 * sx;
+        r1 = mptr->_12 * cx - mptr->_11 * sx;
+        mptr->_11 = r0 >> W2V_SHIFT;
+        mptr->_12 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_21 * cx + mptr->_22 * sx;
+        r1 = mptr->_22 * cx - mptr->_21 * sx;
+        mptr->_21 = r0 >> W2V_SHIFT;
+        mptr->_22 = r1 >> W2V_SHIFT;
+    }
+
+    if (rz) {
+        int32_t sz = phd_sin(rz);
+        int32_t cz = phd_cos(rz);
+
+        r0 = mptr->_00 * cz + mptr->_01 * sz;
+        r1 = mptr->_01 * cz - mptr->_00 * sz;
+        mptr->_00 = r0 >> W2V_SHIFT;
+        mptr->_01 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_10 * cz + mptr->_11 * sz;
+        r1 = mptr->_11 * cz - mptr->_10 * sz;
+        mptr->_10 = r0 >> W2V_SHIFT;
+        mptr->_11 = r1 >> W2V_SHIFT;
+
+        r0 = mptr->_20 * cz + mptr->_21 * sz;
+        r1 = mptr->_21 * cz - mptr->_20 * sz;
+        mptr->_20 = r0 >> W2V_SHIFT;
+        mptr->_21 = r1 >> W2V_SHIFT;
+    }
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -217,6 +283,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004012F0, phd_RotX);
     INJECT(0x004013A0, phd_RotY);
     INJECT(0x00401450, phd_RotZ);
+    INJECT(0x00401500, phd_RotYXZ);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
 }

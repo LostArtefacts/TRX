@@ -9,7 +9,6 @@
 #define phd_PushMatrix          ((void          (*)())0x0043EA01)
 #define phd_PushUnitMatrix      ((void          (*)())0x0043EA21)
 #define phd_TranslateAbs        ((void          (*)())0x004019A0)
-#define phd_RotYXZ              ((void          (*)(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz))0x00401500)
 #define phd_RotYXZpack          ((void          (*)(int32_t rots))0x004016F0)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_TranslateRel        ((int32_t       (*)(int32_t x, int32_t y, int32_t z))0x004018F0)
@@ -24,6 +23,7 @@ void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t* dest);
 void phd_RotX(PHD_ANGLE rx);
 void phd_RotY(PHD_ANGLE ry);
 void phd_RotZ(PHD_ANGLE rz);
+void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz);
 void phd_PopMatrix();
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
