@@ -290,6 +290,16 @@ void phd_RotYXZpack(int32_t rots)
     }
 }
 
+int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
+{
+    PHD_MATRIX* mptr = PhdMatrixPtr;
+    mptr->_03 += mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
+    mptr->_13 += mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
+    mptr->_23 += mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
+    return ABS(mptr->_03) <= PhdFarZ && ABS(mptr->_13) <= PhdFarZ
+        && ABS(mptr->_23) <= PhdFarZ;
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -357,6 +367,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x00401450, phd_RotZ);
     INJECT(0x00401500, phd_RotYXZ);
     INJECT(0x004016F0, phd_RotYXZpack);
+    INJECT(0x004018F0, phd_TranslateRel);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
 }

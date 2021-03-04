@@ -17,7 +17,7 @@ phd_RotY                        0x004013A0  0x000000AC  +
 phd_RotZ                        0x00401450  0x000000AC  +
 phd_RotYXZ                      0x00401500  0x000001E8  +
 phd_RotYXZpack                  0x004016F0  0x000001F3  +
-phd_TranslateRel                0x004018F0  0x000000AB  *
+phd_TranslateRel                0x004018F0  0x000000AB  +
 phd_TranslateAbs                0x004019A0  0x0000007A  -
 visible_zclip                   0x00401A20  0x000000A9  -
 phd_PutPolygons                 0x00401AD0  0x000000F3  -
