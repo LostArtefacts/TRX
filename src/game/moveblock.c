@@ -359,6 +359,32 @@ void RollingBlockControl(int16_t item_num)
     }
 }
 
+void AlterFloorHeight(ITEM_INFO* item, int32_t height)
+{
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    FLOOR_INFO* ceiling = GetFloor(
+        item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
+
+    if (floor->floor == NO_HEIGHT / 256) {
+        floor->floor = ceiling->ceiling + height / 256;
+    } else {
+        floor->floor += height / 256;
+        if (floor->floor == ceiling->ceiling) {
+            floor->floor = NO_HEIGHT / 256;
+        }
+    }
+
+    if (Boxes[floor->box].overlap_index & BLOCKABLE) {
+        if (height < 0) {
+            Boxes[floor->box].overlap_index |= BLOCKED;
+        } else {
+            Boxes[floor->box].overlap_index &= ~BLOCKED;
+        }
+    }
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
@@ -368,4 +394,5 @@ void T1MInjectGameMoveBlock()
     INJECT(0x0042B940, TestBlockPull);
     INJECT(0x0042BB90, InitialiseRollingBlock);
     INJECT(0x0042BBC0, RollingBlockControl);
+    INJECT(0x0042BCA0, AlterFloorHeight);
 }
