@@ -15,6 +15,7 @@
 #include "game/lightning.h"
 #include "game/lion.h"
 #include "game/lot.h"
+#include "game/moveblock.h"
 #include "game/natla.h"
 #include "game/objects.h"
 #include "game/people.h"

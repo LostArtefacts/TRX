@@ -6,12 +6,6 @@
 
 // clang-format off
 #define MidasCollision          ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004334C0)
-#define InitialiseMovableBlock  ((void          (*)(int16_t item_num))0x0042B430)
-#define MovableBlockControl     ((void          (*)(int16_t item_num))0x0042B460)
-#define MovableBlockCollision   ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042B5B0)
-#define InitialiseRollingBlock  ((void          (*)(int16_t item_num))0x0042BB90)
-#define RollingBlockControl     ((void          (*)(int16_t item_num))0x0042BBC0)
-#define DrawMovableBlock        ((void          (*)(ITEM_INFO *item))0x0042BD60)
 #define InitialiseRollingBall   ((void          (*)(int16_t item_num))0x0043A010)
 #define RollingBallControl      ((void          (*)(int16_t item_num))0x0043A050)
 #define RollingBallCollision    ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043A2B0)
