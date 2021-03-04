@@ -811,6 +811,21 @@ typedef struct {
 } FLOOR_INFO;
 
 typedef struct {
+    /* 0000 */ FLOOR_INFO* floor;
+    /* 0004 */ FLOOR_INFO data;
+    /* 000C */ int16_t block;
+    /* 000E end */
+} DOORPOS_DATA;
+
+typedef struct {
+    /* 0000 */ DOORPOS_DATA d1;
+    /* 000E */ DOORPOS_DATA d1flip;
+    /* 001C */ DOORPOS_DATA d2;
+    /* 002A */ DOORPOS_DATA d2flip;
+    /* 0038 end */
+} DOOR_DATA;
+
+typedef struct {
     /* 0000 */ uint32_t x;
     /* 0004 */ uint32_t y;
     /* 0008 */ uint32_t z;

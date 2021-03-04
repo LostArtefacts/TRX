@@ -699,9 +699,9 @@ ControlNatlaGun                 0x0042C910  0x00000121  +
 NatlaGun                        ----------  ----------  x
 
 # objects.cpp
-ShutThatDoor                    ----------  ----------  -
+ShutThatDoor                    ----------  ----------  +
 OpenThatDoor                    ----------  ----------  -
-InitialiseDoor                  0x0042CA40  0x000004AE  *
+InitialiseDoor                  0x0042CA40  0x000004AE  +
 DoorControl                     0x0042CEF0  0x0000023B  *
 OnDrawBridge                    0x0042D130  0x000000B1  -
 DrawBridgeFloor                 0x0042D1F0  0x0000003B  *
