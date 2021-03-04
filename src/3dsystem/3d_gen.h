@@ -25,6 +25,7 @@ void phd_RotYXZpack(int32_t rots);
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
 void phd_PopMatrix();
+int32_t visible_zclip(PHD_VBUF* vn1, PHD_VBUF* vn2, PHD_VBUF* vn3);
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,

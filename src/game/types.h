@@ -1275,6 +1275,20 @@ typedef struct {
 } DOOR_VBUF;
 
 typedef struct {
+    /* 0000 */ int32_t xv;
+    /* 0004 */ int32_t yv;
+    /* 0008 */ int32_t zv;
+    /* 000C */ int32_t xs;
+    /* 0010 */ int32_t ys;
+    /* 0014 */ int32_t dist;
+    /* 0018 */ int16_t clip;
+    /* 001A */ int16_t g;
+    /* 001C */ uint16_t u;
+    /* 001E */ uint16_t v;
+    /* 0020 end */
+} PHD_VBUF;
+
+typedef struct {
     /* 0000 */ uint16_t drawtype;
     /* 0002 */ uint16_t tpage;
     /* 0004 */ uint16_t u1;
