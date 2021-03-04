@@ -695,7 +695,7 @@
 <rect width="12.00" height="12.00" x="588.00" y="199.00" fill="mistyrose"><title>sub_43E681</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="199.00" fill="mistyrose"><title>sub_43E74D</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="199.00" fill="mistyrose"><title>sub_43E8AC</title></rect>
-<rect width="12.00" height="12.00" x="630.00" y="199.00" fill="lightpink"><title>phd_PushMatrix</title></rect>
+<rect width="12.00" height="12.00" x="630.00" y="199.00" fill="forestgreen"><title>phd_PushMatrix</title></rect>
 <rect width="12.00" height="12.00" x="644.00" y="199.00" fill="lightpink"><title>phd_PushUnitMatrix</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="199.00" fill="lightpink"><title>flatA</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="199.00" fill="lightpink"><title>transA</title></rect>
@@ -1377,7 +1377,7 @@
 <rect width="2.75" height="3.20" x="660.73" y="527.76" fill="forestgreen"><title>phd_sin</title></rect>
 <rect width="2.75" height="3.04" x="660.73" y="532.96" fill="forestgreen"><title>Inv_RingMotionCameraPitch</title></rect>
 <rect width="2.84" height="2.94" x="665.48" y="500.82" fill="lightpink"><title>WinSndStopSample</title></rect>
-<rect width="2.84" height="2.94" x="670.32" y="500.82" fill="lightpink"><title>phd_PushMatrix</title></rect>
+<rect width="2.84" height="2.94" x="670.32" y="500.82" fill="forestgreen"><title>phd_PushMatrix</title></rect>
 <rect width="2.69" height="2.94" x="675.16" y="500.82" fill="forestgreen"><title>ControlLaraExtra</title></rect>
 <rect width="2.54" height="2.94" x="679.85" y="500.82" fill="forestgreen"><title>GetRandomControl</title></rect>
 <rect width="2.54" height="2.94" x="684.39" y="500.82" fill="forestgreen"><title>GetRandomDraw</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" fill="mistyrose"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" fill="mistyrose"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" fill="lightpink"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 53.49%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 50.06%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 32.42%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 34.11%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 53.63%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 50.07%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 32.28%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 34.10%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="642.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="660.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>

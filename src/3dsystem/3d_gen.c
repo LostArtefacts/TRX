@@ -380,6 +380,13 @@ void AlterFOV(PHD_ANGLE fov)
     PhdPersp = ((PhdWinWidth / 2) * c) / s;
 }
 
+// originally in shell.c
+void phd_PushMatrix()
+{
+    PhdMatrixPtr++;
+    PhdMatrixPtr[0] = PhdMatrixPtr[-1];
+}
+
 void phd_PopMatrix()
 {
     PhdMatrixPtr--;
@@ -400,4 +407,5 @@ void T1MInject3DSystem3DGen()
     INJECT(0x00401A20, visible_zclip);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
+    INJECT(0x0043EA01, phd_PushMatrix);
 }
