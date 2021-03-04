@@ -136,7 +136,7 @@ void DrawLightning(ITEM_INFO* item)
         dz = (z2 - z1) / steps;
 
         for (j = 0; j < steps; j++) {
-            PHD_VECTOR* pos = l->shoot[j];
+            PHD_VECTOR* pos = l->shoot[i];
             pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
             pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
             pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
