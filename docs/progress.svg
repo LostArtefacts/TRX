@@ -1,6 +1,6 @@
 <svg version="1.1" width="698.00" height="668.00" xmlns="http://www.w3.org/2000/svg">
 <text alignment-baseline="central" x="0.00" y="7.50" style="font-family: sans-serif; font-size: 15px">TombATI functions, arranged according to the physical file layout:</text>
-<rect width="12.00" height="12.00" x="0.00" y="17.00" fill="lightpink"><title>phd_GenerateW2V</title></rect>
+<rect width="12.00" height="12.00" x="0.00" y="17.00" fill="forestgreen"><title>phd_GenerateW2V</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="17.00" fill="lightpink"><title>phd_LookAt</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="17.00" fill="lightpink"><title>phd_GetVectorAngles</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="17.00" fill="lightpink"><title>phd_RotX</title></rect>
@@ -911,7 +911,7 @@
 <rect width="16.23" height="14.90" x="447.25" y="521.10" fill="lightpink"><title>GetJointAbsPosition</title></rect>
 <rect width="15.22" height="15.85" x="465.48" y="287.54" fill="lightpink"><title>DartEmitterControl</title></rect>
 <rect width="15.14" height="15.85" x="482.70" y="287.54" fill="forestgreen"><title>DrawGameInfo</title></rect>
-<rect width="15.05" height="15.85" x="499.83" y="287.54" fill="lightpink"><title>phd_GenerateW2V</title></rect>
+<rect width="15.05" height="15.85" x="499.83" y="287.54" fill="forestgreen"><title>phd_GenerateW2V</title></rect>
 <rect width="14.97" height="15.85" x="516.88" y="287.54" fill="lightpink"><title>ControlBodyPart</title></rect>
 <rect width="14.93" height="15.85" x="533.85" y="287.54" fill="forestgreen"><title>LaraTargetInfo</title></rect>
 <rect width="14.76" height="15.85" x="550.78" y="287.54" fill="forestgreen"><title>InGameCinematicCamera</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" fill="mistyrose"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" fill="mistyrose"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" fill="lightpink"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 51.98%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 48.99%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 33.93%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 35.19%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="570.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (count): 52.12%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" fill="forestgreen"/><text alignment-baseline="central" x="17.00" y="588.50" style="font-family: sans-serif; font-size: 15px">Functions decompiled (bytesize): 49.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="606.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (count): 33.79%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" fill="lightpink"/><text alignment-baseline="central" x="17.00" y="624.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, but with known names (bytesize): 35.02%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="642.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" fill="mistyrose"/><text alignment-baseline="central" x="17.00" y="660.50" style="font-family: sans-serif; font-size: 15px">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>

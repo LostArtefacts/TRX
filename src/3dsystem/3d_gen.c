@@ -8,6 +8,34 @@
     #include <math.h>
 #endif
 
+#define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
+#define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
+
+void phd_GenerateW2V(PHD_3DPOS* viewpos)
+{
+    PhdMatrixPtr = &MatrixStack;
+    int32_t sx = phd_sin(viewpos->x_rot);
+    int32_t cx = phd_cos(viewpos->x_rot);
+    int32_t sy = phd_sin(viewpos->y_rot);
+    int32_t cy = phd_cos(viewpos->y_rot);
+    int32_t sz = phd_sin(viewpos->z_rot);
+    int32_t cz = phd_cos(viewpos->z_rot);
+
+    MatrixStack._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+    MatrixStack._01 = TRIGMULT2(cx, sz);
+    MatrixStack._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+    MatrixStack._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+    MatrixStack._11 = TRIGMULT2(cx, cz);
+    MatrixStack._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+    MatrixStack._20 = TRIGMULT2(cx, sy);
+    MatrixStack._21 = -sx;
+    MatrixStack._22 = TRIGMULT2(cx, cy);
+    MatrixStack._03 = viewpos->x;
+    MatrixStack._13 = viewpos->y;
+    MatrixStack._23 = viewpos->z;
+    W2VMatrix = MatrixStack;
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -67,6 +95,7 @@ void phd_PopMatrix()
 
 void T1MInject3DSystem3DGen()
 {
+    INJECT(0x00401000, phd_GenerateW2V);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
 }
