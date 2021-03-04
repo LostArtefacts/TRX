@@ -315,6 +315,12 @@ int32_t TestBlockPull(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
     return 1;
 }
 
+void InitialiseRollingBlock(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    AlterFloorHeight(item, -2048);
+}
+
 void T1MInjectGameMoveBlock()
 {
     INJECT(0x0042B430, InitialiseMovableBlock);
@@ -322,4 +328,5 @@ void T1MInjectGameMoveBlock()
     INJECT(0x0042B5B0, MovableBlockCollision);
     INJECT(0x0042B7E0, TestBlockPush);
     INJECT(0x0042B940, TestBlockPull);
+    INJECT(0x0042BB90, InitialiseRollingBlock);
 }
