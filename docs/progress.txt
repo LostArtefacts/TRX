@@ -774,7 +774,7 @@ ApeControl                      0x00431D40  0x0000033F  +
 InitialiseSkateKid              0x004320B0  0x00000027  +
 SkateKidControl                 0x004320E0  0x00000458  +
 DrawSkateKid                    0x00432550  0x0000004C  +
-CowboyControl                   0x004325A0  0x000005A7  *
+CowboyControl                   0x004325A0  0x000005A7  +
 InitialiseBaldy                 0x00432B60  0x00000027  *
 BaldyControl                    0x00432B90  0x000004CC  *
 

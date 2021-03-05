@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define CowboyControl           ((void      (*)(int16_t item_num))0x004325A0)
 #define InitialiseBaldy         ((void      (*)(int16_t item_num))0x00432B60)
 #define BaldyControl            ((void      (*)(int16_t item_num))0x00432B90)
 // clang-format on
@@ -33,6 +32,8 @@ void ApeControl(int16_t item_num);
 void InitialiseSkateKid(int16_t item_num);
 void SkateKidControl(int16_t item_num);
 void DrawSkateKid(ITEM_INFO* item);
+
+void CowboyControl(int16_t item_num);
 
 void T1MInjectGamePeople();
 
