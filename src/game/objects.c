@@ -401,6 +401,11 @@ void BoatControl(int16_t item_num)
     AnimateItem(item);
 }
 
+void ScionControl(int16_t item_num)
+{
+    AnimateItem(&Items[item_num]);
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);

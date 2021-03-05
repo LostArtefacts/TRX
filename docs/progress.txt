@@ -717,7 +717,7 @@ BridgeTilt2Ceiling              0x0042D3D0  0x0000004C  +
 CogControl                      0x0042D420  0x00000075  +
 CabinControl                    0x0042D4A0  0x0000007F  +
 BoatControl                     0x0042D520  0x0000005B  +
-ScionControl                    ----------  ----------  -
+ScionControl                    ----------  ----------  +
 Scion3Control                   0x0042D580  0x00000176  *
 EarthQuakeControl               0x0042D700  0x0000006F  *
 

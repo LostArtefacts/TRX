@@ -56,6 +56,7 @@ void BridgeTilt2Ceiling(
 void CogControl(int16_t item_num);
 void CabinControl(int16_t item_num);
 void BoatControl(int16_t item_num);
+void ScionControl(int16_t item_num);
 
 void T1MInjectGameObjects();
 

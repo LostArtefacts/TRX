@@ -894,11 +894,11 @@ void ObjectObjects()
     Objects[O_SCION_ITEM3].hit_points = 5;
     Objects[O_SCION_ITEM3].save_flags = 1;
 
-    Objects[O_SCION_ITEM4].control = ControlLaraExtra;
+    Objects[O_SCION_ITEM4].control = ScionControl;
     Objects[O_SCION_ITEM4].collision = PickUpScion4Collision;
     Objects[O_SCION_ITEM4].save_flags = 1;
 
-    Objects[O_SCION_HOLDER].control = ControlLaraExtra;
+    Objects[O_SCION_HOLDER].control = ScionControl;
     Objects[O_SCION_HOLDER].collision = ObjectCollision;
     Objects[O_SCION_HOLDER].save_anim = 1;
     Objects[O_SCION_HOLDER].save_flags = 1;
