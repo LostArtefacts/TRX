@@ -24,7 +24,6 @@
 #define ControlGunShot                  ((void          (*)(int16_t item_num))0x00430E00)
 #define PickUpScionCollision            ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433240)
 #define PickUpScion4Collision           ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004333B0)
-#define BoatControl                     ((void          (*)(int16_t item_num))0x0042D520)
 #define Scion3Control                   ((void          (*)(int16_t item_num))0x0042D580)
 // clang-format on
 
@@ -56,6 +55,7 @@ void BridgeTilt2Ceiling(
 
 void CogControl(int16_t item_num);
 void CabinControl(int16_t item_num);
+void BoatControl(int16_t item_num);
 
 void T1MInjectGameObjects();
 

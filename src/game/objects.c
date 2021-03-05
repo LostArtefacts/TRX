@@ -14,6 +14,13 @@ typedef enum {
     CABIN_FINISH = 4,
 } CABIN_ANIMS;
 
+typedef enum {
+    BOAT_EMPTY = 0,
+    BOAT_SET = 1,
+    BOAT_MOVE = 2,
+    BOAT_STOP = 3,
+} BOAT_ANIMS;
+
 void ShutThatDoor(DOORPOS_DATA* d)
 {
     FLOOR_INFO* floor = d->floor;
@@ -375,6 +382,25 @@ void CabinControl(int16_t item_num)
     AnimateItem(item);
 }
 
+void BoatControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    switch (item->current_anim_state) {
+    case BOAT_SET:
+        item->goal_anim_state = BOAT_MOVE;
+        break;
+    case BOAT_MOVE:
+        item->goal_anim_state = BOAT_STOP;
+        break;
+    case BOAT_STOP:
+        KillItem(item_num);
+        break;
+    }
+
+    AnimateItem(item);
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -391,4 +417,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D3D0, BridgeTilt2Ceiling);
     INJECT(0x0042D420, CogControl);
     INJECT(0x0042D4A0, CabinControl);
+    INJECT(0x0042D520, BoatControl);
 }
