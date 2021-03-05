@@ -230,10 +230,26 @@ void DrawBridgeFloor(
     }
 }
 
+void DrawBridgeCeiling(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    if (item->current_anim_state != DOOR_OPEN) {
+        return;
+    }
+    if (!OnDrawBridge(item, z, x)) {
+        return;
+    }
+
+    if (y > item->pos.y) {
+        *height = item->pos.y + STEP_L;
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
     INJECT(0x0042CEF0, DoorControl);
     INJECT(0x0042D130, OnDrawBridge);
     INJECT(0x0042D1F0, DrawBridgeFloor);
+    INJECT(0x0042D230, DrawBridgeCeiling);
 }

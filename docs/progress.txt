@@ -705,7 +705,7 @@ InitialiseDoor                  0x0042CA40  0x000004AE  +
 DoorControl                     0x0042CEF0  0x0000023B  +
 OnDrawBridge                    0x0042D130  0x000000B1  +
 DrawBridgeFloor                 0x0042D1F0  0x0000003B  +
-DrawBridgeCeiling               0x0042D230  0x0000003F  *
+DrawBridgeCeiling               0x0042D230  0x0000003F  +
 DrawBridgeCollision             0x0042D270  0x0000002F  *
 BridgeFlatFloor                 0x0042D2A0  0x00000019  *
 BridgeFlatCeiling               0x0042D2C0  0x0000001E  *
