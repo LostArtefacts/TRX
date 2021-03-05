@@ -643,6 +643,25 @@ void SwitchControl(int16_t item_num)
     AnimateItem(item);
 }
 
+int32_t SwitchTrigger(int16_t item_num, int16_t timer)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->status != IS_DEACTIVATED) {
+        return 0;
+    }
+    if (item->current_anim_state == SS_OFF && timer > 0) {
+        item->timer = timer;
+        if (timer != 1) {
+            item->timer *= 30;
+        }
+        item->status = IS_ACTIVE;
+    } else {
+        RemoveActiveItem(item_num);
+        item->status = IS_NOT_ACTIVE;
+    }
+    return 1;
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -673,5 +692,6 @@ void T1MInjectGamePickup()
     INJECT(0x00433900, KeyHoleCollision);
     INJECT(0x00433B40, PuzzleHoleCollision);
     INJECT(0x00433DE0, SwitchControl);
+    INJECT(0x00433E20, SwitchTrigger);
     INJECT(0x00433EA0, KeyTrigger);
 }

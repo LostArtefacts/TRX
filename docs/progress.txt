@@ -792,7 +792,7 @@ KeyHoleCollision                0x00433900  0x00000227  +
 PuzzleOnAfterInventory          ----------  ----------  +
 PuzzleHoleCollision             0x00433B40  0x00000277  +
 SwitchControl                   0x00433DE0  0x0000003D  +
-SwitchTrigger                   0x00433E20  0x00000078  -
+SwitchTrigger                   0x00433E20  0x00000078  +
 KeyTrigger                      0x00433EA0  0x00000042  +
 PickupTrigger                   0x00433EF0  0x00000038  *
 PickUpSaveGameCollision         ----------  ----------  -
