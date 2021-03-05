@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define DrawBridgeCollision             ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0042D270)
 #define CogControl                      ((void          (*)(int16_t item_num))0x0042D420)
 #define BridgeFlatFloor                 ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D2A0)
 #define BridgeFlatCeiling               ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D2C0)
@@ -46,6 +45,8 @@ void DrawBridgeFloor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 void DrawBridgeCeiling(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+void DrawBridgeCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 
 void T1MInjectGameObjects();
 

@@ -1,3 +1,4 @@
+#include "game/collide.h"
 #include "game/control.h"
 #include "game/objects.h"
 #include "game/vars.h"
@@ -245,6 +246,15 @@ void DrawBridgeCeiling(
     }
 }
 
+void DrawBridgeCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->current_anim_state == DOOR_CLOSED) {
+        DoorCollision(item_num, lara_item, coll);
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -252,4 +262,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D130, OnDrawBridge);
     INJECT(0x0042D1F0, DrawBridgeFloor);
     INJECT(0x0042D230, DrawBridgeCeiling);
+    INJECT(0x0042D270, DrawBridgeCollision);
 }

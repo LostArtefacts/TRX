@@ -501,7 +501,7 @@
 <rect width="12.00" height="12.00" x="672.00" y="143.00" class="decompiled"><title>OnDrawBridge</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="143.00" class="decompiled"><title>DrawBridgeFloor</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="157.00" class="decompiled"><title>DrawBridgeCeiling</title></rect>
-<rect width="12.00" height="12.00" x="14.00" y="157.00" class="named"><title>DrawBridgeCollision</title></rect>
+<rect width="12.00" height="12.00" x="14.00" y="157.00" class="decompiled"><title>DrawBridgeCollision</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="157.00" class="named"><title>BridgeFlatFloor</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="157.00" class="named"><title>BridgeFlatCeiling</title></rect>
 <rect width="12.00" height="12.00" x="56.00" y="157.00" class="named"><title>BridgeTilt1Floor</title></rect>
@@ -1324,7 +1324,7 @@
 <rect width="3.81" height="4.05" x="644.02" y="496.56" class="decompiled"><title>game_free</title></rect>
 <rect width="3.81" height="4.05" x="644.02" y="502.61" class="decompiled"><title>Inv_RingRotateLeft</title></rect>
 <rect width="3.81" height="4.05" x="644.02" y="508.66" class="decompiled"><title>Inv_RingRotateRight</title></rect>
-<rect width="3.81" height="4.05" x="644.02" y="514.70" class="named"><title>DrawBridgeCollision</title></rect>
+<rect width="3.81" height="4.05" x="644.02" y="514.70" class="decompiled"><title>DrawBridgeCollision</title></rect>
 <rect width="3.81" height="3.79" x="644.02" y="520.75" class="named"><title>phd_InitPolyList</title></rect>
 <rect width="3.81" height="3.79" x="644.02" y="526.55" class="decompiled"><title>GetDemoInput</title></rect>
 <rect width="3.81" height="3.66" x="644.02" y="532.34" class="todo"><title>sub_408E41</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 54.45%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 50.92%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 31.46%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 33.25%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 54.58%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 50.94%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 31.33%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 33.23%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
