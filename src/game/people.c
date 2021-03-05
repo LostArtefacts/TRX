@@ -67,6 +67,15 @@ typedef enum {
     APE_VAULT = 11,
 } APE_ANIM;
 
+typedef enum {
+    KID_STOP = 0,
+    KID_SHOOT = 1,
+    KID_SKATE = 2,
+    KID_PUSH = 3,
+    KID_SHOOT2 = 4,
+    KID_DEATH = 5,
+} KID_ANIM;
+
 BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
 BITE_INFO PierreGun2 = { -57, 200, 0, 14 };
@@ -672,6 +681,12 @@ void ApeControl(int16_t item_num)
     }
 }
 
+void InitialiseSkateKid(int16_t item_num)
+{
+    InitialiseCreature(item_num);
+    Items[item_num].current_anim_state = KID_SKATE;
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -683,4 +698,5 @@ void T1MInjectGamePeople()
     INJECT(0x00431550, PierreControl);
     INJECT(0x00431C30, ApeVault);
     INJECT(0x00431D40, ApeControl);
+    INJECT(0x004320B0, InitialiseSkateKid);
 }
