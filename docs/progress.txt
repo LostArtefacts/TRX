@@ -966,7 +966,7 @@ WinMain(x,x,x,x)                0x0043DA80  0x0000037D  -
 WndProc                         0x0043DE00  0x0000011F  -
 
 # wolf.cpp
-InitialiseWolf                  0x0043DF20  0x00000024  *
+InitialiseWolf                  0x0043DF20  0x00000024  +
 WolfControl                     0x0043DF50  0x0000040B  *
 LionControl                     0x0043E390  0x000002BD  *
 
