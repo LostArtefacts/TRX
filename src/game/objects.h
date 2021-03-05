@@ -15,7 +15,6 @@
 #define PickUpCollision                 ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433080)
 #define InitialiseSaveGameItem          ((void          (*)(int16_t item_num))0x00433F30)
 #define PuzzleHoleCollision             ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433B40)
-#define EarthQuakeControl               ((void          (*)(int16_t item_num))0x0042D700)
 #define InitialisePlayer1               ((void          (*)(int16_t item_num))0x004114F0)
 #define ControlCinematicPlayer          ((void          (*)(int16_t item_num))0x004114A0)
 #define InitialiseGenPlayer             ((void          (*)(int16_t item_num))0x004115C0)
@@ -57,6 +56,7 @@ void CabinControl(int16_t item_num);
 void BoatControl(int16_t item_num);
 void ScionControl(int16_t item_num);
 void Scion3Control(int16_t item_num);
+void EarthQuakeControl(int16_t item_num);
 
 void T1MInjectGameObjects();
 

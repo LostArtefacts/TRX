@@ -719,7 +719,7 @@ CabinControl                    0x0042D4A0  0x0000007F  +
 BoatControl                     0x0042D520  0x0000005B  +
 ScionControl                    ----------  ----------  +
 Scion3Control                   0x0042D580  0x00000176  +
-EarthQuakeControl               0x0042D700  0x0000006F  *
+EarthQuakeControl               0x0042D700  0x0000006F  +
 
 # option.cpp
 GetScancodeName                 ----------  ----------  -

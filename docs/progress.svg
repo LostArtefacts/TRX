@@ -512,7 +512,7 @@
 <rect width="12.00" height="12.00" x="126.00" y="157.00" class="decompiled"><title>CabinControl</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="157.00" class="decompiled"><title>BoatControl</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="157.00" class="decompiled"><title>Scion3Control</title></rect>
-<rect width="12.00" height="12.00" x="168.00" y="157.00" class="named"><title>EarthQuakeControl</title></rect>
+<rect width="12.00" height="12.00" x="168.00" y="157.00" class="decompiled"><title>EarthQuakeControl</title></rect>
 <rect width="12.00" height="12.00" x="182.00" y="157.00" class="named"><title>do_inventory_options</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="157.00" class="named"><title>do_passport_option</title></rect>
 <rect width="12.00" height="12.00" x="210.00" y="157.00" class="named"><title>do_detail_option_hw</title></rect>
@@ -1182,7 +1182,7 @@
 <rect width="6.87" height="7.61" x="592.43" y="481.66" class="decompiled"><title>Ricochet</title></rect>
 <rect width="6.87" height="7.45" x="592.43" y="491.28" class="decompiled"><title>LaraAsSurfSwim</title></rect>
 <rect width="6.87" height="7.45" x="592.43" y="500.72" class="named"><title>WinInReadJoystick</title></rect>
-<rect width="6.87" height="7.36" x="592.43" y="510.17" class="named"><title>EarthQuakeControl</title></rect>
+<rect width="6.87" height="7.36" x="592.43" y="510.17" class="decompiled"><title>EarthQuakeControl</title></rect>
 <rect width="6.87" height="7.28" x="592.43" y="519.53" class="named"><title>S_InsertRoom</title></rect>
 <rect width="6.87" height="7.19" x="592.43" y="528.81" class="decompiled"><title>SoundEffects</title></rect>
 <rect width="7.11" height="6.78" x="601.29" y="432.58" class="todo"><title>sub_408E6D</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 55.95%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 51.36%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 29.96%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 32.81%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 56.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 51.40%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 29.82%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 32.77%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>

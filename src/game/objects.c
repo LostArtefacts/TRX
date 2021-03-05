@@ -452,6 +452,21 @@ void Scion3Control(int16_t item_num)
     }
 }
 
+// original name: EarthQuake
+void EarthQuakeControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        if (GetRandomDraw() < 0x100) {
+            Camera.bounce = -150;
+            SoundEffect(147, NULL, 0);
+        } else if (GetRandomControl() < 0x400) {
+            Camera.bounce = 50;
+            SoundEffect(70, NULL, 0);
+        }
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -470,4 +485,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D4A0, CabinControl);
     INJECT(0x0042D520, BoatControl);
     INJECT(0x0042D580, Scion3Control);
+    INJECT(0x0042D700, EarthQuakeControl);
 }
