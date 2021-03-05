@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define SwitchControl           ((void      (*)(int16_t item_num))0x00433DE0)
 #define SwitchTrigger           ((int32_t   (*)(int16_t item_num, int16_t timer))0x00433E20)
 #define PickupTrigger           ((int32_t   (*)(int16_t item_num))0x00433EF0)
 #define InitialiseSaveGameItem  ((void      (*)(int16_t item_num))0x00433F30)
@@ -22,6 +21,7 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void KeyHoleCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void PuzzleHoleCollision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+void SwitchControl(int16_t item_num);
 int32_t KeyTrigger(int16_t item_num);
 
 void T1MInjectGamePickup();
