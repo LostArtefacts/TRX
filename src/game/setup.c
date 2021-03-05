@@ -910,6 +910,11 @@ void ObjectObjects()
     Objects[O_LEADBAR_ITEM].save_flags = 1;
 
     Objects[O_SAVEGAME_ITEM].initialise = InitialiseSaveGameItem;
+#ifdef T1M_FEAT_SAVE_CRYSTALS
+    Objects[O_SAVEGAME_ITEM].control = ControlSaveGameItem;
+    Objects[O_SAVEGAME_ITEM].collision = PickUpSaveGameCollision;
+    Objects[O_SAVEGAME_ITEM].save_flags = 1;
+#endif
 
     Objects[O_KEY_HOLE1].collision = KeyHoleCollision;
     Objects[O_KEY_HOLE1].save_flags = 1;

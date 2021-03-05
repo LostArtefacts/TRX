@@ -795,10 +795,10 @@ SwitchControl                   0x00433DE0  0x0000003D  +
 SwitchTrigger                   0x00433E20  0x00000078  +
 KeyTrigger                      0x00433EA0  0x00000042  +
 PickupTrigger                   0x00433EF0  0x00000038  +
-PickUpSaveGameCollision         ----------  ----------  -
-InitialiseSaveGameItem          0x00433F30  0x0000001C  *
-ControlSavegameItem             ----------  ----------  -
-DrawSavegameItem                ----------  ----------  -
+PickUpSaveGameCollision         ----------  ----------  +
+InitialiseSaveGameItem          0x00433F30  0x0000001C  +
+ControlSavegameItem             ----------  ----------  +
+DrawSavegameItem                ----------  ----------  +
 
 # rat.cpp
 RatControl                      0x00433F50  0x000002A8  *

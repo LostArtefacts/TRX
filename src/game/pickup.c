@@ -1,11 +1,13 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/pickup.h"
+#include "game/savegame.h"
 #include "game/vars.h"
 #include "config.h"
 
@@ -689,6 +691,56 @@ int32_t PickupTrigger(int16_t item_num)
     }
     item->status = IS_DEACTIVATED;
     return 1;
+}
+
+void PickUpSaveGameCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+#ifdef T1M_FEAT_SAVE_CRYSTALS
+    ITEM_INFO* item = &Items[item_num];
+    ObjectCollision(item_num, lara_item, coll);
+
+    if (!CHK_ANY(Input, IN_ACTION) || Lara.gun_status != LGS_ARMLESS
+        || lara_item->gravity_status) {
+        return;
+    }
+
+    if (lara_item->current_anim_state != AS_STOP) {
+        return;
+    }
+
+    item->pos.y_rot = lara_item->pos.y_rot;
+    item->pos.z_rot = 0;
+    item->pos.x_rot = 0;
+    if (!TestLaraPosition(PickUpBounds, item, lara_item)) {
+        return;
+    }
+
+    item->status = IS_INVISIBLE;
+    CreateSaveGameInfo();
+    if (S_SaveGame(&SaveGame, sizeof(SAVEGAME_INFO), -1)) {
+        item->status = IS_INVISIBLE;
+        RemoveDrawnItem(item_num);
+    } else {
+        item->status = IS_ACTIVE;
+    }
+#endif
+}
+
+void InitialiseSaveGameItem(int16_t item_num)
+{
+#ifdef T1M_FEAT_SAVE_CRYSTALS
+    AddActiveItem(item_num);
+#else
+    Items[item_num].status = IS_INVISIBLE;
+#endif
+}
+
+void ControlSaveGameItem(int16_t item_num)
+{
+#ifdef T1M_FEAT_SAVE_CRYSTALS
+    AnimateItem(&Items[item_num]);
+#endif
 }
 
 void T1MInjectGamePickup()

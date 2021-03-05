@@ -3,10 +3,6 @@
 
 #include <stdint.h>
 
-// clang-format off
-#define InitialiseSaveGameItem  ((void      (*)(int16_t item_num))0x00433F30)
-// clang-format on
-
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal);
 void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void PickUpScionCollision(
@@ -23,6 +19,10 @@ void SwitchControl(int16_t item_num);
 int32_t SwitchTrigger(int16_t item_num, int16_t timer);
 int32_t KeyTrigger(int16_t item_num);
 int32_t PickupTrigger(int16_t item_num);
+void PickUpSaveGameCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+void InitialiseSaveGameItem(int16_t item_num);
+void ControlSaveGameItem(int16_t item_num);
 
 void T1MInjectGamePickup();
 
