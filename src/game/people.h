@@ -24,6 +24,9 @@ int16_t GunShot(
 int16_t GunHit(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num);
+int16_t GunMiss(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num);
 
 void T1MInjectGamePeople();
 

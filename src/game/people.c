@@ -78,10 +78,26 @@ int16_t GunHit(
     return GunShot(x, y, z, speed, y_rot, room_num);
 }
 
+int16_t GunMiss(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num)
+{
+    GAME_VECTOR pos;
+    pos.x =
+        LaraItem->pos.x + ((GetRandomDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
+    pos.y = LaraItem->floor;
+    pos.z =
+        LaraItem->pos.z + ((GetRandomDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
+    pos.room_number = LaraItem->room_number;
+    Ricochet(&pos);
+    return GunShot(x, y, z, speed, y_rot, room_num);
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
     INJECT(0x00430E00, ControlGunShot);
     INJECT(0x00430E40, GunShot);
     INJECT(0x00430EB0, GunHit);
+    INJECT(0x00430FA0, GunMiss);
 }
