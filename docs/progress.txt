@@ -779,8 +779,8 @@ InitialiseBaldy                 0x00432B60  0x00000027  *
 BaldyControl                    0x00432B90  0x000004CC  *
 
 # pickup.cpp
-AnimateLaraUntil                ----------  ----------  -
-PickUpCollision                 0x00433080  0x000001BF  *
+AnimateLaraUntil                ----------  ----------  +
+PickUpCollision                 0x00433080  0x000001BF  +
 PickUpScionCollision            0x00433240  0x00000164  *
 PickUpScion4Collision           0x004333B0  0x00000108  *
 MidasOnAfterInventory           ----------  ----------  -

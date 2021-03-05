@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define PickUpCollision         ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433080)
 #define PickUpScionCollision    ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433240)
 #define PickUpScion4Collision   ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004333B0)
 #define MidasCollision          ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004334C0)
@@ -18,6 +17,8 @@
 #define InitialiseSaveGameItem  ((void      (*)(int16_t item_num))0x00433F30)
 // clang-format on
 
+void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal);
+void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 int32_t KeyTrigger(int16_t item_num);
 
 void T1MInjectGamePickup();
