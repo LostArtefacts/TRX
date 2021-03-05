@@ -167,21 +167,21 @@ int32_t FireWeapon(
     int32_t weapon_type, ITEM_INFO* target, ITEM_INFO* src, PHD_ANGLE* angles);
 void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage);
 
-void draw_shotgun();
-void undraw_shotgun();
-void draw_shotgun_meshes();
-void undraw_shotgun_meshes();
-void ready_shotgun();
+void DrawShotgun();
+void UndrawShotgun();
+void DrawShotgunMeshes();
+void UndrawShotgunMeshes();
+void ReadyShotgun();
 void RifleHandler(int32_t weapon_type);
 void AnimateShotgun();
 void FireShotgun();
 
-void draw_pistols(int32_t weapon_type);
-void undraw_pistols(int32_t weapon_type);
-void ready_pistols();
-void draw_pistol_meshes(int32_t weapon_type);
-void undraw_pistol_mesh_left(int32_t weapon_type);
-void undraw_pistol_mesh_right(int32_t weapon_type);
+void DrawPistols(int32_t weapon_type);
+void UndrawPistols(int32_t weapon_type);
+void ReadyPistols();
+void DrawPistolMeshes(int32_t weapon_type);
+void UndrawPistolMeshLeft(int32_t weapon_type);
+void UndrawPistolMeshRight(int32_t weapon_type);
 void PistolHandler(int32_t weapon_type);
 void AnimatePistols(int32_t weapon_type);
 

@@ -5,7 +5,8 @@
 #include "specific/input.h"
 #include "config.h"
 
-void draw_shotgun()
+// original name: draw_shotgun
+void DrawShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
@@ -13,17 +14,18 @@ void draw_shotgun()
     if (ani < AF_SG_DRAW || ani > AF_SG_RECOIL) {
         ani = AF_SG_DRAW;
     } else if (ani == AF_SG_DRAW + 10) {
-        draw_shotgun_meshes();
+        DrawShotgunMeshes();
         SoundEffect(6, &LaraItem->pos, 0);
     } else if (ani == AF_SG_RECOIL) {
-        ready_shotgun();
+        ReadyShotgun();
         ani = AF_SG_AIM;
     }
     Lara.left_arm.frame_number = ani;
     Lara.right_arm.frame_number = ani;
 }
 
-void undraw_shotgun()
+// origianl name: undraw_shotgun
+void UndrawShotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
 
@@ -51,7 +53,7 @@ void undraw_shotgun()
     } else if (ani >= AF_SG_UNDRAW && ani < AF_SG_UNAIM) {
         ani++;
         if (ani == AF_SG_UNDRAW + 20) {
-            undraw_shotgun_meshes();
+            UndrawShotgunMeshes();
             SoundEffect(6, &LaraItem->pos, 0);
         } else if (ani == AF_SG_UNAIM) {
             ani = AF_SG_AIM;
@@ -70,7 +72,8 @@ void undraw_shotgun()
     Lara.left_arm.frame_number = ani;
 }
 
-void draw_shotgun_meshes()
+// original name: draw_shotgun_meshes
+void DrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] =
         Meshes[Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
@@ -79,14 +82,16 @@ void draw_shotgun_meshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-void undraw_shotgun_meshes()
+// original name: undraw_shotgun_meshes
+void UndrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
     Lara.mesh_ptrs[LM_HAND_R] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_R];
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-void ready_shotgun()
+// original name: ReadyShotgun
+void ReadyShotgun()
 {
     Lara.gun_status = LGS_READY;
     Lara.left_arm.x_rot = 0;
@@ -230,7 +235,7 @@ void FireShotgun()
 
 void T1MInjectGameLaraGun1()
 {
-    INJECT(0x00425E30, draw_shotgun);
-    INJECT(0x00425F50, undraw_shotgun);
+    INJECT(0x00425E30, DrawShotgun);
+    INJECT(0x00425F50, UndrawShotgun);
     INJECT(0x004260F0, RifleHandler);
 }

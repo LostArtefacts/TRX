@@ -212,7 +212,7 @@ typedef enum {
 #endif
     O_ALPHABET = 190,
     NUMBER_OBJECTS = 191,
-} GAME_OBJECT_ID;
+} OBJECT_ID;
 
 typedef enum {
     AF_VAULT12 = 759,
@@ -258,7 +258,7 @@ typedef enum {
     AF_PICKUP_UW = 2970,
     AF_PICKUPSCION = 44,
     AF_USEPUZZLE = 3372,
-} LARA_ANIMATION_FRAMES;
+} LARA_ANIMATION_FRAME;
 
 typedef enum {
     AF_SG_AIM = 0,
@@ -267,7 +267,7 @@ typedef enum {
     AF_SG_UNDRAW = 80,
     AF_SG_UNAIM = 114,
     AF_SG_END = 127,
-} LARA_SHOTGUN_ANIMATION_FRAMES;
+} LARA_SHOTGUN_ANIMATION_FRAME;
 
 typedef enum {
     AF_G_AIM = 0,
@@ -277,7 +277,7 @@ typedef enum {
     AF_G_DRAW2 = 13,
     AF_G_DRAW2_L = 23,
     AF_G_RECOIL = 24,
-} LARA_GUN_ANIMATION_FRAMES;
+} LARA_GUN_ANIMATION_FRAME;
 
 typedef enum {
     AA_VAULT12 = 50,
@@ -322,14 +322,14 @@ typedef enum {
     AA_SPAZ_BACK = 126,
     AA_SPAZ_RIGHT = 127,
     AA_SPAZ_LEFT = 128,
-} LARA_ANIMATION_ANIMS;
+} LARA_ANIMATION;
 
 typedef enum {
     LWS_ABOVEWATER = 0,
     LWS_UNDERWATER = 1,
     LWS_SURFACE = 2,
     LWS_CHEAT = 3,
-} LARA_WATER_STATES;
+} LARA_WATER_STATUS;
 
 typedef enum {
     AS_WALK = 0,
@@ -388,7 +388,7 @@ typedef enum {
     AS_FASTDIVE = 53,
     AS_GYMNAST = 54,
     AS_WATEROUT = 55,
-} LARA_STATES;
+} LARA_STATE;
 
 typedef enum {
     LGS_ARMLESS = 0,
@@ -396,7 +396,7 @@ typedef enum {
     LGS_DRAW = 2,
     LGS_UNDRAW = 3,
     LGS_READY = 4,
-} LARA_GUN_STATES;
+} LARA_GUN_STATE;
 
 typedef enum {
     LGT_UNARMED = 0,
@@ -405,7 +405,7 @@ typedef enum {
     LGT_UZIS = 3,
     LGT_SHOTGUN = 4,
     NUM_WEAPONS = 5
-} LARA_GUN_TYPES;
+} LARA_GUN_TYPE;
 
 typedef enum {
     LM_HIPS = 0,
@@ -424,7 +424,7 @@ typedef enum {
     LM_HAND_L = 13,
     LM_HEAD = 14,
     LM_NUMBER_OF = 15,
-} LARA_MESHES;
+} LARA_MESH;
 
 typedef enum {
     MOOD_BORED = 0,
@@ -433,7 +433,7 @@ typedef enum {
     MOOD_STALK = 3,
 } MOOD_TYPE;
 
-enum {
+typedef enum {
     TARGET_NONE = 0,
     TARGET_PRIMARY = 1,
     TARGET_SECONDARY = 2,
@@ -509,8 +509,8 @@ typedef enum {
     // UB_LEVEL2     = 23, // TRUB - Temple of Cat
     // UB_LEVEL3     = 24,
     // UB_LEVEL4     = 25,
-    NUMBER_OF_LEVELS = 22,
-} GAME_LEVELS;
+    LV_NUMBER_OF = 22,
+} GAME_LEVEL;
 
 typedef enum {
     GF_STARTGAME = 0,
@@ -531,7 +531,7 @@ typedef enum {
     GF_CREDITS = 15 << 6,
     GF_PREWARMGAME = 16 << 6,
     GF_LOOPCINE = 17 << 6
-} TITLE_OPTIONS;
+} GAMEFLOW_OPTION;
 
 typedef enum {
     IN_FORWARD = (1 << 0),
@@ -581,11 +581,11 @@ typedef enum {
     TF_BOTTOM = (1 << 8),
     TF_BGND = (1 << 9),
     TF_OUTLINE = (1 << 10),
-} TEXTSTRING_FLAGS;
+} TEXTSTRING_FLAG;
 
 typedef enum {
     ASF_FPS = 1 << 2,
-} APP_SETTINGS_FLAGS;
+} APP_SETTINGS_FLAG;
 
 typedef enum {
     COLL_NONE = 0,
@@ -595,13 +595,13 @@ typedef enum {
     COLL_TOP = 8,
     COLL_TOPFRONT = 16,
     COLL_CLAMP = 32,
-} COLL_TYPES;
+} COLL_TYPE;
 
 typedef enum {
     HT_WALL = 0,
     HT_SMALL_SLOPE = 1,
     HT_BIG_SLOPE = 2,
-} HEIGHT_TYPES;
+} HEIGHT_TYPE;
 
 typedef enum {
     DIR_NORTH = 0,
@@ -637,7 +637,7 @@ typedef enum {
 
 typedef enum {
     RF_UNDERWATER = 1,
-} ROOM_FLAGS;
+} ROOM_FLAG;
 
 typedef enum {
     FT_FLOOR = 0,
@@ -646,7 +646,7 @@ typedef enum {
     FT_ROOF = 3,
     FT_TRIGGER = 4,
     FT_LAVA = 5,
-} FLOOR_TYPES;
+} FLOOR_TYPE;
 
 typedef enum {
     TT_TRIGGER = 0,
@@ -658,7 +658,7 @@ typedef enum {
     TT_ANTIPAD = 6,
     TT_COMBAT = 7,
     TT_DUMMY = 8,
-} TRIGGER_TYPES;
+} TRIGGER_TYPE;
 
 typedef enum {
     TO_OBJECT = 0,
@@ -672,7 +672,7 @@ typedef enum {
     TO_CD = 8,
     TO_FLIPEFFECT = 9,
     TO_SECRET = 10,
-} TRIGGER_OBJECTS;
+} TRIGGER_OBJECT;
 
 typedef enum {
     IF_ONESHOT = 0x0100,
@@ -680,7 +680,7 @@ typedef enum {
     IF_REVERSE = 0x4000,
     IF_NOT_VISIBLE = 0x0100,
     IF_KILLED_ITEM = 0x8000,
-} ITEM_FLAGS;
+} ITEM_FLAG;
 
 typedef enum {
     FMV_INTRO = 0,
@@ -724,10 +724,10 @@ typedef enum {
 } INV_MODE;
 
 typedef enum {
-    RM_MAIN = 0,
-    RM_OPTION = 1,
-    RM_KEYS = 2,
-} RING_MODE;
+    RT_MAIN = 0,
+    RT_OPTION = 1,
+    RT_KEYS = 2,
+} RING_TYPE;
 
 typedef enum {
     SHAPE_SPRITE = 1,
@@ -766,7 +766,7 @@ typedef enum {
 typedef enum {
     DOOR_CLOSED = 0,
     DOOR_OPEN = 1,
-} DOOR_ANIMS;
+} DOOR_ANIM;
 
 #pragma pack(push, 1)
 
@@ -1032,7 +1032,7 @@ typedef struct {
 } START_INFO;
 
 typedef struct {
-    /* 0000 */ START_INFO start[NUMBER_OF_LEVELS];
+    /* 0000 */ START_INFO start[LV_NUMBER_OF];
     /* 014A */ uint32_t timer;
     /* 014E */ uint32_t kills;
     /* 0152 */ uint16_t secrets;

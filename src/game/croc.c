@@ -31,16 +31,16 @@ typedef enum {
     CROC_ATTACK1 = 5,
     CROC_ATTACK2 = 6,
     CROC_DEATH = 7,
-} CROC_ANIMS;
+} CROC_ANIM;
 
 typedef enum {
     GATOR_EMPTY = 0,
     GATOR_SWIM = 1,
     GATOR_ATTACK = 2,
     GATOR_DEATH = 3,
-} GATOR_ANIMS;
+} GATOR_ANIM;
 
-BITE_INFO CrocBite = { 5, -21, 467, 9 };
+static BITE_INFO CrocBite = { 5, -21, 467, 9 };
 
 void AlligatorControl(int16_t item_num)
 {

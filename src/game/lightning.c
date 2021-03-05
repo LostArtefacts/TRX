@@ -36,7 +36,7 @@ typedef enum {
     THS_TEASE = 1,
     THS_ACTIVE = 2,
     THS_DONE = 3,
-} THOR_HAMMER_STATES;
+} THOR_HAMMER_STATE;
 
 void DrawLightning(ITEM_INFO* item)
 {

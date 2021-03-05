@@ -3,7 +3,8 @@
 #include "game/vars.h"
 #include "util.h"
 
-void draw_pistols(int32_t weapon_type)
+// original name: draw_pistols
+void DrawPistols(int32_t weapon_type)
 {
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
@@ -11,10 +12,10 @@ void draw_pistols(int32_t weapon_type)
     if (ani < AF_G_DRAW1 || ani > AF_G_DRAW2_L) {
         ani = AF_G_DRAW1;
     } else if (ani == AF_G_DRAW2) {
-        draw_pistol_meshes(weapon_type);
+        DrawPistolMeshes(weapon_type);
         SoundEffect(6, &LaraItem->pos, 0);
     } else if (ani == AF_G_DRAW2_L) {
-        ready_pistols();
+        ReadyPistols();
         ani = AF_G_AIM;
     }
 
@@ -22,7 +23,8 @@ void draw_pistols(int32_t weapon_type)
     Lara.right_arm.frame_number = ani;
 }
 
-void undraw_pistols(int32_t weapon_type)
+// original name: undraw_pistols
+void UndrawPistols(int32_t weapon_type)
 {
     int16_t anil = Lara.left_arm.frame_number;
     if (anil >= AF_G_RECOIL) {
@@ -39,7 +41,7 @@ void undraw_pistols(int32_t weapon_type)
     } else if (anil > AF_G_DRAW1) {
         anil--;
         if (anil == AF_G_DRAW2) {
-            undraw_pistol_mesh_left(weapon_type);
+            UndrawPistolMeshLeft(weapon_type);
         }
     }
     Lara.left_arm.frame_number = anil;
@@ -59,7 +61,7 @@ void undraw_pistols(int32_t weapon_type)
     } else if (anir > AF_G_DRAW1) {
         anir--;
         if (anir == AF_G_DRAW2) {
-            undraw_pistol_mesh_right(weapon_type);
+            UndrawPistolMeshRight(weapon_type);
         }
     }
     Lara.right_arm.frame_number = anir;
@@ -79,7 +81,8 @@ void undraw_pistols(int32_t weapon_type)
     Lara.torso_y_rot = (Lara.right_arm.y_rot + Lara.left_arm.y_rot) / 4;
 }
 
-void ready_pistols()
+// original name: ready_pistols
+void ReadyPistols()
 {
     Lara.gun_status = LGS_READY;
     Lara.left_arm.x_rot = 0;
@@ -99,7 +102,8 @@ void ready_pistols()
     Lara.left_arm.frame_base = Objects[O_PISTOLS].frame_base;
 }
 
-void draw_pistol_meshes(int32_t weapon_type)
+// original name: draw_pistol_meshes
+void DrawPistolMeshes(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -118,7 +122,8 @@ void draw_pistol_meshes(int32_t weapon_type)
         Meshes[Objects[O_LARA].mesh_index + LM_THIGH_R];
 }
 
-void undraw_pistol_mesh_left(int32_t weapon_type)
+// original name: undraw_pistol_mesh_left
+void UndrawPistolMeshLeft(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -132,7 +137,8 @@ void undraw_pistol_mesh_left(int32_t weapon_type)
     SoundEffect(7, &LaraItem->pos, 0);
 }
 
-void undraw_pistol_mesh_right(int32_t weapon_type)
+// original name: undraw_pistol_mesh_right
+void UndrawPistolMeshRight(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
     if (weapon_type == LGT_MAGNUMS) {
@@ -240,9 +246,9 @@ void AnimatePistols(int32_t weapon_type)
 
 void T1MInjectGameLaraGun2()
 {
-    INJECT(0x00426470, draw_pistols);
-    INJECT(0x004265C0, undraw_pistols);
-    INJECT(0x00426830, draw_pistol_meshes);
+    INJECT(0x00426470, DrawPistols);
+    INJECT(0x004265C0, UndrawPistols);
+    INJECT(0x00426830, DrawPistolMeshes);
     INJECT(0x004268A0, PistolHandler);
     INJECT(0x004269D0, AnimatePistols);
 }

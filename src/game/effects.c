@@ -16,7 +16,7 @@
 #define FLIPFLAG 0x40
 #define UNFLIPFLAG 0x80
 
-void (*effect_routines[])(ITEM_INFO* item) = {
+void (*EffectRoutines[])(ITEM_INFO* item) = {
     FxTurn180,    FxDinoStomp, FxLaraNormal,    FxLaraBubbles,  FxFinishLevel,
     FxEarthQuake, FxFlood,     FxRaisingBlock,  FxStairs2Slope, FxSand,
     FxPowerUp,    FxExplosion, FxLaraHandsFree, FxFlipMap,      FxDrawRightGun,
@@ -58,7 +58,7 @@ void SoundEffects()
     // NOTE: why are we firing this here?
     // Some of the FX routines rely on the item to be not null!
     if (FlipEffect != -1) {
-        effect_routines[FlipEffect](NULL);
+        EffectRoutines[FlipEffect](NULL);
     }
 
     mn_update_sound_effects();

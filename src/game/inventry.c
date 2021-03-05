@@ -24,7 +24,7 @@ typedef enum {
     PBACK = 16,
     PINBACK = 32,
     PPAGE1 = 64
-} PASS_PAGES;
+} PASS_PAGE;
 
 static int OldInputDB = 0;
 
@@ -36,7 +36,7 @@ int32_t Display_Inventory(int inv_mode)
     memset(&imo, 0, sizeof(IMOTION_INFO));
     memset(&ring, 0, sizeof(RING_INFO));
 
-    if (inv_mode == RM_KEYS && !InvKeysObjects) {
+    if (inv_mode == RT_KEYS && !InvKeysObjects) {
         InventoryChosen = -1;
         return 0;
     }
@@ -75,29 +75,29 @@ int32_t Display_Inventory(int inv_mode)
     case INV_LOAD_MODE:
     case INV_TITLE_MODE:
         Inv_RingInit(
-            &ring, RM_OPTION, InvOptionList, InvOptionObjects, InvOptionCurrent,
+            &ring, RT_OPTION, InvOptionList, InvOptionObjects, InvOptionCurrent,
             &imo);
         break;
 
     case INV_KEYS_MODE:
         Inv_RingInit(
-            &ring, RM_KEYS, InvKeysList, InvKeysObjects, InvMainCurrent, &imo);
+            &ring, RT_KEYS, InvKeysList, InvKeysObjects, InvMainCurrent, &imo);
         break;
 
     default:
         if (InvMainObjects) {
             Inv_RingInit(
-                &ring, RM_MAIN, InvMainList, InvMainObjects, InvMainCurrent,
+                &ring, RT_MAIN, InvMainList, InvMainObjects, InvMainCurrent,
                 &imo);
         } else {
             Inv_RingInit(
-                &ring, RM_OPTION, InvOptionList, InvOptionObjects,
+                &ring, RT_OPTION, InvOptionList, InvOptionObjects,
                 InvOptionCurrent, &imo);
         }
         break;
     }
 
-    SoundEffect(111, 0, RM_KEYS);
+    SoundEffect(111, 0, RT_KEYS);
 
     InvNFrames = 2;
 
@@ -269,7 +269,7 @@ int32_t Display_Inventory(int inv_mode)
                 SoundEffect(112, 0, SFX_ALWAYS);
                 InventoryChosen = -1;
 
-                if (ring.type == RM_MAIN) {
+                if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
                 } else {
                     InvOptionCurrent = ring.current_object;
@@ -301,10 +301,10 @@ int32_t Display_Inventory(int inv_mode)
                 Item_Data = 0;
 
                 INVENTORY_ITEM* inv_item;
-                if (ring.type == RM_MAIN) {
+                if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
                     inv_item = InvMainList[ring.current_object];
-                } else if (ring.type == RM_OPTION) {
+                } else if (ring.type == RT_OPTION) {
                     InvOptionCurrent = ring.current_object;
                     inv_item = InvOptionList[ring.current_object];
                 } else {
@@ -351,7 +351,7 @@ int32_t Display_Inventory(int inv_mode)
 
             if (CHK_ANY(InputDB, IN_FORWARD) && InventoryMode != INV_TITLE_MODE
                 && InventoryMode != INV_KEYS_MODE) {
-                if (ring.type == RM_MAIN) {
+                if (ring.type == RT_MAIN) {
                     if (InvKeysObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2KEYS,
@@ -365,7 +365,7 @@ int32_t Display_Inventory(int inv_mode)
                     }
                     Input = 0;
                     InputDB = 0;
-                } else if (ring.type == RM_OPTION) {
+                } else if (ring.type == RT_OPTION) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_OPTION2MAIN,
@@ -382,7 +382,7 @@ int32_t Display_Inventory(int inv_mode)
             } else if (
                 CHK_ANY(InputDB, IN_BACK) && InventoryMode != INV_TITLE_MODE
                 && InventoryMode != INV_KEYS_MODE) {
-                if (ring.type == RM_KEYS) {
+                if (ring.type == RT_KEYS) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_KEYS2MAIN,
@@ -396,7 +396,7 @@ int32_t Display_Inventory(int inv_mode)
                     }
                     Input = 0;
                     InputDB = 0;
-                } else if (ring.type == RM_MAIN) {
+                } else if (ring.type == RT_MAIN) {
                     if (InvOptionObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2OPTION,
@@ -422,7 +422,7 @@ int32_t Display_Inventory(int inv_mode)
             imo.camera_pitch_target = 0;
             InvMainCurrent = ring.current_object;
             ring.list = InvOptionList;
-            ring.type = RM_OPTION;
+            ring.type = RT_OPTION;
             ring.number_of_objects = InvOptionObjects;
             ring.current_object = InvOptionCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
@@ -442,7 +442,7 @@ int32_t Display_Inventory(int inv_mode)
             InvMainCurrent = ring.current_object;
             InvMainObjects = ring.number_of_objects;
             ring.list = InvKeysList;
-            ring.type = RM_KEYS;
+            ring.type = RT_KEYS;
             ring.number_of_objects = InvKeysObjects;
             ring.current_object = InvKeysCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
@@ -461,7 +461,7 @@ int32_t Display_Inventory(int inv_mode)
             imo.camera_pitch_target = 0;
             InvKeysCurrent = ring.current_object;
             ring.list = InvMainList;
-            ring.type = RM_MAIN;
+            ring.type = RT_MAIN;
             ring.number_of_objects = InvMainObjects;
             ring.current_object = InvMainCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
@@ -481,7 +481,7 @@ int32_t Display_Inventory(int inv_mode)
             InvOptionObjects = ring.number_of_objects;
             InvOptionCurrent = ring.current_object;
             ring.list = InvMainList;
-            ring.type = RM_MAIN;
+            ring.type = RT_MAIN;
             ring.number_of_objects = InvMainObjects;
             ring.current_object = InvMainCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
@@ -527,7 +527,7 @@ int32_t Display_Inventory(int inv_mode)
                 if (CHK_ANY(InputDB, IN_SELECT)) {
                     inv_item->sprlist = NULL;
                     InventoryChosen = inv_item->object_number;
-                    if (ring.type == RM_MAIN) {
+                    if (ring.type == RT_MAIN) {
                         InvMainCurrent = ring.current_object;
                     } else {
                         InvOptionCurrent = ring.current_object;

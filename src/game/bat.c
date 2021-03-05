@@ -16,9 +16,9 @@ typedef enum {
     BAT_ATTACK = 3,
     BAT_FALL = 4,
     BAT_DEATH = 5,
-} BAT_ANIMS;
+} BAT_ANIM;
 
-BITE_INFO BatBite = { 0, 16, 45, 4 };
+static BITE_INFO BatBite = { 0, 16, 45, 4 };
 
 void BatControl(int16_t item_num)
 {

@@ -14,14 +14,14 @@ typedef enum {
     CABIN_DROP2 = 2,
     CABIN_DROP3 = 3,
     CABIN_FINISH = 4,
-} CABIN_ANIMS;
+} CABIN_ANIM;
 
 typedef enum {
     BOAT_EMPTY = 0,
     BOAT_SET = 1,
     BOAT_MOVE = 2,
     BOAT_STOP = 3,
-} BOAT_ANIMS;
+} BOAT_ANIM;
 
 void ShutThatDoor(DOORPOS_DATA* d)
 {

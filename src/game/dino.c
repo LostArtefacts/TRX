@@ -42,7 +42,7 @@ typedef enum {
     RAPTOR_WARNING = 6,
     RAPTOR_ATTACK2 = 7,
     RAPTOR_ATTACK3 = 8,
-} RAPTOR_ANIMS;
+} RAPTOR_ANIM;
 
 typedef enum {
     DINO_EMPTY = 0,
@@ -54,9 +54,9 @@ typedef enum {
     DINO_ROAR = 6,
     DINO_ATTACK2 = 7,
     DINO_KILL = 8,
-} DINO_ANIMS;
+} DINO_ANIM;
 
-BITE_INFO RaptorBite = { 0, 66, 318, 22 };
+static BITE_INFO RaptorBite = { 0, 66, 318, 22 };
 
 void RaptorControl(int16_t item_num)
 {

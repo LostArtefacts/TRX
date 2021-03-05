@@ -35,7 +35,7 @@
 #define ABORTION_TRIGHT 0x3FF8000
 #define ABORTION_TOUCH (ABORTION_TLEFT | ABORTION_TRIGHT)
 
-enum ABORTION_ANIMS {
+typedef enum {
     ABORTION_EMPTY = 0,
     ABORTION_STOP = 1,
     ABORTION_TURN_L = 2,
@@ -48,22 +48,22 @@ enum ABORTION_ANIMS {
     ABORTION_FALL = 9,
     ABORTION_DEATH = 10,
     ABORTION_KILL = 11,
-};
+} ABORTION_ANIM;
 
 typedef enum {
-    NATLA_EMPTY,
-    NATLA_STOP,
-    NATLA_FLY,
-    NATLA_RUN,
-    NATLA_AIM,
-    NATLA_SEMIDEATH,
-    NATLA_SHOOT,
-    NATLA_FALL,
-    NATLA_STAND,
-    NATLA_DEATH
-} NATLA_ANIMS;
+    NATLA_EMPTY = 0,
+    NATLA_STOP = 1,
+    NATLA_FLY = 2,
+    NATLA_RUN = 3,
+    NATLA_AIM = 4,
+    NATLA_SEMIDEATH = 5,
+    NATLA_SHOOT = 6,
+    NATLA_FALL = 7,
+    NATLA_STAND = 8,
+    NATLA_DEATH = 9,
+} NATLA_ANIM;
 
-BITE_INFO NatlaGun = { 5, 220, 7, 4 };
+static BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 
 void AbortionControl(int16_t item_num)
 {

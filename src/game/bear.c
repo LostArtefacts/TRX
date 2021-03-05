@@ -33,9 +33,9 @@ typedef enum {
     BEAR_ATTACK2 = 7,
     BEAR_EAT = 8,
     BEAR_DEATH = 9,
-} BEAR_ANIMS;
+} BEAR_ANIM;
 
-BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
+static BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
 
 void BearControl(int16_t item_num)
 {

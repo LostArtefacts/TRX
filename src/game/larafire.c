@@ -92,14 +92,14 @@ void LaraGun()
             if (Camera.type != CAM_CINEMATIC && Camera.type != CAM_LOOK) {
                 Camera.type = CAM_COMBAT;
             }
-            draw_pistols(Lara.gun_type);
+            DrawPistols(Lara.gun_type);
             break;
 
         case LGT_SHOTGUN:
             if (Camera.type != CAM_CINEMATIC && Camera.type != CAM_LOOK) {
                 Camera.type = CAM_COMBAT;
             }
-            draw_shotgun();
+            DrawShotgun();
             break;
         }
         break;
@@ -110,11 +110,11 @@ void LaraGun()
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_UZIS:
-            undraw_pistols(Lara.gun_type);
+            UndrawPistols(Lara.gun_type);
             break;
 
         case LGT_SHOTGUN:
-            undraw_shotgun();
+            UndrawShotgun();
             break;
         }
         break;
@@ -193,7 +193,7 @@ void InitialiseNewWeapon()
         Lara.right_arm.frame_base = Objects[O_PISTOLS].frame_base;
         Lara.left_arm.frame_base = Objects[O_PISTOLS].frame_base;
         if (Lara.gun_status != LGS_ARMLESS) {
-            draw_pistol_meshes(Lara.gun_type);
+            DrawPistolMeshes(Lara.gun_type);
         }
         break;
 
@@ -201,7 +201,7 @@ void InitialiseNewWeapon()
         Lara.right_arm.frame_base = Objects[O_SHOTGUN].frame_base;
         Lara.left_arm.frame_base = Objects[O_SHOTGUN].frame_base;
         if (Lara.gun_status != LGS_ARMLESS) {
-            draw_shotgun_meshes();
+            DrawShotgunMeshes();
         }
         break;
 

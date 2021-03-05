@@ -28,7 +28,7 @@ typedef enum {
     PEOPLE_DEATH = 5,
     PEOPLE_POSE = 6,
     PEOPLE_SHOOT = 7,
-} PEOPLE_ANIMS;
+} PEOPLE_ANIM;
 
 BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 

@@ -43,6 +43,8 @@ void FxLaraHandsFree(ITEM_INFO* item);
 void FxFlipMap(ITEM_INFO* item);
 void FxDrawRightGun(ITEM_INFO* item);
 
+extern void (*EffectRoutines[])(ITEM_INFO* item);
+
 void T1MInjectGameEffects();
 
 #endif

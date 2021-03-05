@@ -15,7 +15,7 @@ typedef enum {
     SS_OFF = 0,
     SS_ON = 1,
     SS_LINK = 2,
-} SWITCH_STATES;
+} SWITCH_STATE;
 
 static int16_t PickUpBounds[12] = {
     -256, +256, -100, +100, -256, +100, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
@@ -141,7 +141,9 @@ static PHD_VECTOR Switch2Position = { 0, 0, 108 };
 static PHD_VECTOR KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
 static PHD_VECTOR PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
-static int PickUpX, PickUpY, PickUpZ;
+static int32_t PickUpX;
+static int32_t PickUpY;
+static int32_t PickUpZ;
 
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 {

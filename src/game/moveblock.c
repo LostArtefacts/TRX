@@ -8,15 +8,24 @@
 #include "game/vars.h"
 #include "util.h"
 
-#define MB_MAXOFF 300
-#define MB_MAXOFF_Z (LARA_RAD + 80) // = 180
+typedef enum {
+    MBS_STILL = 1,
+    MBS_PUSH = 2,
+    MBS_PULL = 3,
+} MOVABLE_BLOCK_STATE;
+
+typedef enum {
+    RBS_START = 0,
+    RBS_END = 1,
+    RBS_MOVING = 2,
+} ROLLING_BLOCK_STATE;
 
 static int16_t MovingBlockBounds[12] = {
-    -MB_MAXOFF,
-    +MB_MAXOFF,
+    -300,
+    +300,
     0,
     0,
-    -WALL_L / 2 - MB_MAXOFF_Z,
+    -WALL_L / 2 - (LARA_RAD + 80),
     -WALL_L / 2,
     -10 * PHD_DEGREE,
     +10 * PHD_DEGREE,
@@ -25,18 +34,6 @@ static int16_t MovingBlockBounds[12] = {
     -10 * PHD_DEGREE,
     +10 * PHD_DEGREE,
 };
-
-typedef enum {
-    MBS_STILL = 1,
-    MBS_PUSH = 2,
-    MBS_PULL = 3,
-} MOVABLE_BLOCK_STATES;
-
-typedef enum {
-    RBS_START = 0,
-    RBS_END = 1,
-    RBS_MOVING = 2,
-} ROLLING_BLOCK_STATES;
 
 // original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
