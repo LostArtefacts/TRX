@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define ControlGunShot          ((void      (*)(int16_t item_num))0x00430E00)
 #define PeopleControl           ((void      (*)(int16_t item_num))0x00431090)
 #define PierreControl           ((void      (*)(int16_t item_num))0x00431550)
 #define ApeControl              ((void      (*)(int16_t item_num))0x00431D40)
@@ -18,6 +17,7 @@
 // clang-format on
 
 int32_t Targetable(ITEM_INFO* item, AI_INFO* info);
+void ControlGunShot(int16_t fx_num);
 
 void T1MInjectGamePeople();
 

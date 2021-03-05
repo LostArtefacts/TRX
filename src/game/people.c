@@ -1,4 +1,6 @@
 #include "game/control.h"
+#include "game/game.h"
+#include "game/items.h"
 #include "game/people.h"
 #include "game/vars.h"
 #include "util.h"
@@ -25,7 +27,19 @@ int32_t Targetable(ITEM_INFO* item, AI_INFO* info)
     return LOS(&start, &target);
 }
 
+void ControlGunShot(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->counter--;
+    if (!fx->counter) {
+        KillEffect(fx_num);
+        return;
+    }
+    fx->pos.z_rot = GetRandomControl();
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
+    INJECT(0x00430E00, ControlGunShot);
 }
