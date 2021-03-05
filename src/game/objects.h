@@ -6,7 +6,6 @@
 
 // clang-format off
 #define CogControl                      ((void          (*)(int16_t item_num))0x0042D420)
-#define BridgeTilt2Floor                ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D380)
 #define BridgeTilt2Ceiling              ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D3D0)
 #define SwitchControl                   ((void          (*)(int16_t item_num))0x00433DE0)
 #define SwitchCollision                 ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004336F0)
@@ -51,6 +50,8 @@ int32_t GetOffset(ITEM_INFO* item, int32_t x, int32_t z);
 void BridgeTilt1Floor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 void BridgeTilt1Ceiling(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+void BridgeTilt2Floor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 
 void T1MInjectGameObjects();
