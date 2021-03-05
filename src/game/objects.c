@@ -6,6 +6,14 @@
 #include "specific/init.h"
 #include "util.h"
 
+typedef enum {
+    CABIN_START = 0,
+    CABIN_DROP1 = 1,
+    CABIN_DROP2 = 2,
+    CABIN_DROP3 = 3,
+    CABIN_FINISH = 4,
+} CABIN_ANIMS;
+
 void ShutThatDoor(DOORPOS_DATA* d)
 {
     FLOOR_INFO* floor = d->floor;
@@ -339,6 +347,34 @@ void CogControl(int16_t item_num)
     }
 }
 
+void CabinControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+        switch (item->current_anim_state) {
+        case CABIN_START:
+            item->goal_anim_state = CABIN_DROP1;
+            break;
+        case CABIN_DROP1:
+            item->goal_anim_state = CABIN_DROP2;
+            break;
+        case CABIN_DROP2:
+            item->goal_anim_state = CABIN_DROP3;
+            break;
+        }
+        item->flags = 0;
+    }
+
+    if (item->current_anim_state == CABIN_FINISH) {
+        FlipMapTable[3] = IF_CODE_BITS;
+        FlipMap();
+        KillItem(item_num);
+    }
+
+    AnimateItem(item);
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -354,4 +390,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D380, BridgeTilt2Floor);
     INJECT(0x0042D3D0, BridgeTilt2Ceiling);
     INJECT(0x0042D420, CogControl);
+    INJECT(0x0042D4A0, CabinControl);
 }
