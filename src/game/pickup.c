@@ -34,9 +34,6 @@ static int16_t PickUpBoundsUW[12] = {
     +45 * PHD_DEGREE,
 };
 
-static PHD_VECTOR PickUpPosition = { 0, 0, -100 };
-static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
-
 static int16_t PickUpScionBounds[12] = {
     -256,
     +256,
@@ -51,7 +48,6 @@ static int16_t PickUpScionBounds[12] = {
     0,
     0,
 };
-static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
 
 static int16_t PickUpScion4Bounds[12] = {
     -256,
@@ -67,17 +63,16 @@ static int16_t PickUpScion4Bounds[12] = {
     0,
     0,
 };
-static PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };
 
 static int16_t MidasBounds[12] = {
     -700,
-    700,
-    384 - 100,
-    384 + 100 + 512,
+    +700,
+    +384 - 100,
+    +384 + 100 + 512,
     -700,
-    700,
+    +700,
     -10 * PHD_DEGREE,
-    10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
     -30 * PHD_DEGREE,
     +30 * PHD_DEGREE,
     -10 * PHD_DEGREE,
@@ -87,10 +82,10 @@ static int16_t MidasBounds[12] = {
 static int16_t Switch1Bounds[12] = {
     -200,
     +200,
-    0,
-    0,
-    WALL_L / 2 - 200,
-    WALL_L / 2,
+    +0,
+    +0,
+    +WALL_L / 2 - 200,
+    +WALL_L / 2,
     -10 * PHD_DEGREE,
     +10 * PHD_DEGREE,
     -30 * PHD_DEGREE,
@@ -98,6 +93,18 @@ static int16_t Switch1Bounds[12] = {
     -10 * PHD_DEGREE,
     +10 * PHD_DEGREE,
 };
+
+static int16_t Switch2Bounds[12] = {
+    -WALL_L,          +WALL_L,          -WALL_L,          +WALL_L,
+    -WALL_L,          +WALL_L / 2,      -80 * PHD_DEGREE, +80 * PHD_DEGREE,
+    -80 * PHD_DEGREE, +80 * PHD_DEGREE, -80 * PHD_DEGREE, +80 * PHD_DEGREE,
+};
+
+static PHD_VECTOR PickUpPosition = { 0, 0, -100 };
+static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
+static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
+static PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };
+static PHD_VECTOR Switch2Position = { 0, 0, 108 };
 
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 {
@@ -340,6 +347,43 @@ void SwitchCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void SwitchCollision2(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!CHK_ANY(Input, IN_ACTION) || item->status != IS_NOT_ACTIVE
+        || Lara.water_status != LWS_UNDERWATER) {
+        return;
+    }
+
+    if (lara_item->current_anim_state != AS_TREAD) {
+        return;
+    }
+
+    if (!TestLaraPosition(Switch2Bounds, item, lara_item)) {
+        return;
+    }
+
+    if (item->current_anim_state == SS_ON
+        || item->current_anim_state == SS_OFF) {
+        if (!MoveLaraPosition(&Switch2Position, item, lara_item)) {
+            return;
+        }
+        lara_item->fall_speed = 0;
+        AnimateLaraUntil(lara_item, AS_SWITCHON);
+        lara_item->goal_anim_state = AS_TREAD;
+        Lara.gun_status = LGS_HANDSBUSY;
+        item->status = IS_ACTIVE;
+        if (item->current_anim_state == SS_ON) {
+            item->goal_anim_state = SS_OFF;
+        } else {
+            item->goal_anim_state = SS_ON;
+        }
+        AddActiveItem(item_num);
+        AnimateItem(item);
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -366,5 +410,6 @@ void T1MInjectGamePickup()
     INJECT(0x004333B0, PickUpScion4Collision);
     INJECT(0x004334C0, MidasCollision);
     INJECT(0x004336F0, SwitchCollision);
+    INJECT(0x00433810, SwitchCollision2);
     INJECT(0x00433EA0, KeyTrigger);
 }

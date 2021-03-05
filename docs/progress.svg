@@ -558,7 +558,7 @@
 <rect width="12.00" height="12.00" x="70.00" y="171.00" class="decompiled"><title>PickUpScion4Collision</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="171.00" class="decompiled"><title>MidasCollision</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="171.00" class="decompiled"><title>SwitchCollision</title></rect>
-<rect width="12.00" height="12.00" x="112.00" y="171.00" class="named"><title>SwitchCollision2</title></rect>
+<rect width="12.00" height="12.00" x="112.00" y="171.00" class="decompiled"><title>SwitchCollision2</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="171.00" class="named"><title>KeyHoleCollision</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="171.00" class="named"><title>PuzzleHoleCollision</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="171.00" class="named"><title>SwitchControl</title></rect>
@@ -1029,7 +1029,7 @@
 <rect width="11.03" height="12.00" x="659.07" y="352.13" class="todo"><title>sub_40C25A</title></rect>
 <rect width="10.98" height="12.00" x="672.10" y="352.13" class="named"><title>phd_PutPolygons</title></rect>
 <rect width="10.92" height="12.00" x="685.08" y="352.13" class="decompiled"><title>phd_InitWindow</title></rect>
-<rect width="11.14" height="11.66" x="525.45" y="366.13" class="named"><title>SwitchCollision2</title></rect>
+<rect width="11.14" height="11.66" x="525.45" y="366.13" class="decompiled"><title>SwitchCollision2</title></rect>
 <rect width="11.14" height="11.49" x="525.45" y="379.79" class="decompiled"><title>LaraAsRun</title></rect>
 <rect width="11.14" height="11.49" x="525.45" y="393.28" class="named"><title>GunHit</title></rect>
 <rect width="11.14" height="11.43" x="525.45" y="406.77" class="named"><title>mn_reset_sound_effects</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 56.77%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 52.16%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 29.14%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 32.02%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 56.91%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 52.25%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 29.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 31.92%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
