@@ -787,8 +787,8 @@ MidasOnAfterInventory           ----------  ----------  +
 MidasCollision                  0x004334C0  0x00000217  +
 SwitchCollision                 0x004336F0  0x0000011C  +
 SwitchCollision2                0x00433810  0x000000F0  +
-KeyHoleOnAfterInventory         ----------  ----------  -
-KeyHoleCollision                0x00433900  0x00000227  *
+KeyHoleOnAfterInventory         ----------  ----------  +
+KeyHoleCollision                0x00433900  0x00000227  +
 PuzzleOnAfterInventory          ----------  ----------  -
 PuzzleHoleCollision             0x00433B40  0x00000277  *
 SwitchControl                   0x00433DE0  0x0000003D  *

@@ -1,5 +1,6 @@
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -100,11 +101,29 @@ static int16_t Switch2Bounds[12] = {
     -80 * PHD_DEGREE, +80 * PHD_DEGREE, -80 * PHD_DEGREE, +80 * PHD_DEGREE,
 };
 
+static int16_t KeyHoleBounds[12] = {
+    -200,
+    +200,
+    +0,
+    +0,
+    +WALL_L / 2 - 200,
+    +WALL_L / 2,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
 static PHD_VECTOR PickUpPosition = { 0, 0, -100 };
 static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
 static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
 static PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };
 static PHD_VECTOR Switch2Position = { 0, 0, 108 };
+static PHD_VECTOR KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+
+static int PickUpX, PickUpY, PickUpZ;
 
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 {
@@ -384,6 +403,99 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void KeyHoleCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (lara_item->current_anim_state != AS_STOP) {
+        return;
+    }
+
+    if ((InventoryChosen == -1 && !CHK_ANY(Input, IN_ACTION))
+        || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
+        return;
+    }
+
+    if (!TestLaraPosition(KeyHoleBounds, item, lara_item)) {
+        return;
+    }
+
+    if (item->status != IS_NOT_ACTIVE) {
+        if (lara_item->pos.x != PickUpX || lara_item->pos.y != PickUpY
+            || lara_item->pos.z != PickUpZ) {
+            PickUpX = lara_item->pos.x;
+            PickUpY = lara_item->pos.y;
+            PickUpZ = lara_item->pos.z;
+            SoundEffect(2, &lara_item->pos, 0);
+        }
+        return;
+    }
+
+    if (InventoryChosen == -1) {
+        Display_Inventory(INV_KEYS_MODE);
+    } else {
+        PickUpY = lara_item->pos.y - 1;
+    }
+
+    if (InventoryChosen == -1 && InvKeysObjects) {
+        return;
+    }
+
+    if (InventoryChosen != -1) {
+        PickUpY = lara_item->pos.y - 1;
+    }
+
+    int32_t correct = 0;
+    switch (item->object_number) {
+    case O_KEY_HOLE1:
+        if (InventoryChosen == O_KEY_OPTION1) {
+            Inv_RemoveItem(O_KEY_OPTION1);
+            correct = 1;
+        }
+        break;
+
+    case O_KEY_HOLE2:
+        if (InventoryChosen == O_KEY_OPTION2) {
+            Inv_RemoveItem(O_KEY_OPTION2);
+            correct = 1;
+        }
+        break;
+
+    case O_KEY_HOLE3:
+        if (InventoryChosen == O_KEY_OPTION3) {
+            Inv_RemoveItem(O_KEY_OPTION3);
+            correct = 1;
+        }
+        break;
+
+    case O_KEY_HOLE4:
+        if (InventoryChosen == O_KEY_OPTION4) {
+            Inv_RemoveItem(O_KEY_OPTION4);
+            correct = 1;
+        }
+        break;
+    }
+
+    InventoryChosen = -1;
+    if (correct) {
+        AlignLaraPosition(&KeyHolePosition, item, lara_item);
+        AnimateLaraUntil(lara_item, AS_USEKEY);
+        lara_item->goal_anim_state = AS_STOP;
+        Lara.gun_status = LGS_HANDSBUSY;
+        item->status = IS_ACTIVE;
+        PickUpX = lara_item->pos.x;
+        PickUpY = lara_item->pos.y;
+        PickUpZ = lara_item->pos.z;
+    } else if (
+        lara_item->pos.x != PickUpX || lara_item->pos.y != PickUpY
+        || lara_item->pos.z != PickUpZ) {
+        SoundEffect(2, &lara_item->pos, 0);
+        PickUpX = lara_item->pos.x;
+        PickUpY = lara_item->pos.y;
+        PickUpZ = lara_item->pos.z;
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -411,5 +523,6 @@ void T1MInjectGamePickup()
     INJECT(0x004334C0, MidasCollision);
     INJECT(0x004336F0, SwitchCollision);
     INJECT(0x00433810, SwitchCollision2);
+    INJECT(0x00433900, KeyHoleCollision);
     INJECT(0x00433EA0, KeyTrigger);
 }
