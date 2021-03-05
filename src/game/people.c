@@ -1,5 +1,6 @@
 #include "game/box.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -795,6 +796,20 @@ void SkateKidControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
+void DrawSkateKid(ITEM_INFO* item)
+{
+    DrawAnimatingItem(item);
+    int16_t anim = item->anim_number;
+    int16_t frame = item->frame_number;
+    item->object_number = O_SKATEBOARD;
+    item->anim_number = anim + Objects[O_SKATEBOARD].anim_index
+        - Objects[O_MERCENARY1].anim_index;
+    DrawAnimatingItem(item);
+    item->anim_number = anim;
+    item->frame_number = frame;
+    item->object_number = O_MERCENARY1;
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -808,4 +823,5 @@ void T1MInjectGamePeople()
     INJECT(0x00431D40, ApeControl);
     INJECT(0x004320B0, InitialiseSkateKid);
     INJECT(0x004320E0, SkateKidControl);
+    INJECT(0x00432550, DrawSkateKid);
 }

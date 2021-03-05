@@ -549,7 +549,7 @@
 <rect width="12.00" height="12.00" x="644.00" y="157.00" class="decompiled"><title>ApeControl</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="157.00" class="decompiled"><title>InitialiseSkateKid</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="157.00" class="decompiled"><title>SkateKidControl</title></rect>
-<rect width="12.00" height="12.00" x="686.00" y="157.00" class="named"><title>DrawSkateKid</title></rect>
+<rect width="12.00" height="12.00" x="686.00" y="157.00" class="decompiled"><title>DrawSkateKid</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="171.00" class="named"><title>CowboyControl</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="171.00" class="named"><title>InitialiseBaldy</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="171.00" class="named"><title>BaldyControl</title></rect>
@@ -1240,7 +1240,7 @@
 <rect width="5.09" height="6.02" x="676.74" y="449.79" class="decompiled"><title>ControlExplosion1</title></rect>
 <rect width="5.09" height="6.02" x="683.83" y="449.79" class="decompiled"><title>ControlTwinkle</title></rect>
 <rect width="5.09" height="6.02" x="690.91" y="449.79" class="decompiled"><title>BridgeTilt2Ceiling</title></rect>
-<rect width="5.61" height="5.47" x="617.43" y="457.81" class="named"><title>DrawSkateKid</title></rect>
+<rect width="5.61" height="5.47" x="617.43" y="457.81" class="decompiled"><title>DrawSkateKid</title></rect>
 <rect width="5.61" height="5.47" x="617.43" y="465.28" class="named"><title>DartEffectControl</title></rect>
 <rect width="5.61" height="5.37" x="617.43" y="472.75" class="decompiled"><title>LaraAsFastTurn</title></rect>
 <rect width="5.61" height="5.37" x="617.43" y="480.12" class="decompiled"><title>ThorsHandleCollision</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 59.23%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 55.18%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 26.68%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 29.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 59.37%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 55.21%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 26.54%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 28.97%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
