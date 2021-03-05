@@ -681,6 +681,16 @@ int32_t KeyTrigger(int16_t item_num)
     return 0;
 }
 
+int32_t PickupTrigger(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->status != IS_INVISIBLE) {
+        return 0;
+    }
+    item->status = IS_DEACTIVATED;
+    return 1;
+}
+
 void T1MInjectGamePickup()
 {
     INJECT(0x00433080, PickUpCollision);
@@ -694,4 +704,5 @@ void T1MInjectGamePickup()
     INJECT(0x00433DE0, SwitchControl);
     INJECT(0x00433E20, SwitchTrigger);
     INJECT(0x00433EA0, KeyTrigger);
+    INJECT(0x00433EF0, PickupTrigger);
 }

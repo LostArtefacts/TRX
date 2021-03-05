@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define PickupTrigger           ((int32_t   (*)(int16_t item_num))0x00433EF0)
 #define InitialiseSaveGameItem  ((void      (*)(int16_t item_num))0x00433F30)
 // clang-format on
 
@@ -23,6 +22,7 @@ void PuzzleHoleCollision(
 void SwitchControl(int16_t item_num);
 int32_t SwitchTrigger(int16_t item_num, int16_t timer);
 int32_t KeyTrigger(int16_t item_num);
+int32_t PickupTrigger(int16_t item_num);
 
 void T1MInjectGamePickup();
 
