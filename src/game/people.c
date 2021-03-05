@@ -38,8 +38,31 @@ void ControlGunShot(int16_t fx_num)
     fx->pos.z_rot = GetRandomControl();
 }
 
+int16_t GunShot(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num)
+{
+    int16_t fx_num = CreateEffect(room_num);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = x;
+        fx->pos.y = y;
+        fx->pos.z = z;
+        fx->room_number = room_num;
+        fx->pos.x_rot = 0;
+        fx->pos.y_rot = y_rot;
+        fx->pos.z_rot = 0;
+        fx->counter = 3;
+        fx->frame_number = 0;
+        fx->object_number = O_GUN_FLASH;
+        fx->shade = 4096;
+    }
+    return fx_num;
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
     INJECT(0x00430E00, ControlGunShot);
+    INJECT(0x00430E40, GunShot);
 }

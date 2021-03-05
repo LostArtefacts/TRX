@@ -763,7 +763,7 @@ S_DisplayPicture                0x00430CE0  0x00000094  *
 # people.cpp
 Targetable                      0x00430D80  0x0000007B  +
 ControlGunShot                  0x00430E00  0x00000037  +
-GunShot                         0x00430E40  0x00000066  -
+GunShot                         0x00430E40  0x00000066  +
 GunHit                          0x00430EB0  0x000000ED  -
 GunMiss                         0x00430FA0  0x000000E6  -
 ShotLara                        ----------  ----------  -

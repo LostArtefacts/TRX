@@ -540,7 +540,7 @@
 <rect width="12.00" height="12.00" x="518.00" y="157.00" class="named"><title>S_DisplayPicture</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="157.00" class="decompiled"><title>Targetable</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="157.00" class="decompiled"><title>ControlGunShot</title></rect>
-<rect width="12.00" height="12.00" x="560.00" y="157.00" class="named"><title>GunShot</title></rect>
+<rect width="12.00" height="12.00" x="560.00" y="157.00" class="decompiled"><title>GunShot</title></rect>
 <rect width="12.00" height="12.00" x="574.00" y="157.00" class="named"><title>GunHit</title></rect>
 <rect width="12.00" height="12.00" x="588.00" y="157.00" class="named"><title>GunMiss</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="157.00" class="named"><title>PeopleControl</title></rect>
@@ -1191,7 +1191,7 @@
 <rect width="6.94" height="6.78" x="628.45" y="432.58" class="decompiled"><title>CreateEffect</title></rect>
 <rect width="6.85" height="6.78" x="637.39" y="432.58" class="decompiled"><title>DrawUnclippedItem</title></rect>
 <rect width="6.77" height="6.78" x="646.24" y="432.58" class="decompiled"><title>TranslateItem</title></rect>
-<rect width="6.68" height="6.78" x="655.01" y="432.58" class="named"><title>GunShot</title></rect>
+<rect width="6.68" height="6.78" x="655.01" y="432.58" class="decompiled"><title>GunShot</title></rect>
 <rect width="6.60" height="6.78" x="663.69" y="432.58" class="todo"><title>sub_408AC7</title></rect>
 <rect width="6.60" height="6.78" x="672.29" y="432.58" class="decompiled"><title>GameLoop</title></rect>
 <rect width="6.60" height="6.78" x="680.89" y="432.58" class="decompiled"><title>InitialiseLOT</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 58.00%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 52.90%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 27.91%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 31.27%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 58.14%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 52.94%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 27.77%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 31.23%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
