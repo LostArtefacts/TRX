@@ -21,6 +21,9 @@ void ControlGunShot(int16_t fx_num);
 int16_t GunShot(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num);
+int16_t GunHit(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num);
 
 void T1MInjectGamePeople();
 

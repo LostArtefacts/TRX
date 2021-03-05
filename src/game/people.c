@@ -1,7 +1,9 @@
 #include "game/control.h"
+#include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/people.h"
+#include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -60,9 +62,26 @@ int16_t GunShot(
     return fx_num;
 }
 
+int16_t GunHit(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num)
+{
+    PHD_VECTOR pos;
+    pos.x = 0;
+    pos.y = 0;
+    pos.z = 0;
+    GetJointAbsPosition(LaraItem, &pos, (GetRandomControl() * 25) / 0x7FFF);
+    DoBloodSplat(
+        pos.x, pos.y, pos.z, LaraItem->speed, LaraItem->pos.y_rot,
+        LaraItem->room_number);
+    SoundEffect(50, &LaraItem->pos, 0);
+    return GunShot(x, y, z, speed, y_rot, room_num);
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
     INJECT(0x00430E00, ControlGunShot);
     INJECT(0x00430E40, GunShot);
+    INJECT(0x00430EB0, GunHit);
 }
