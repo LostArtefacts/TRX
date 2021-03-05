@@ -1,4 +1,6 @@
+#include "3dsystem/phd_math.h"
 #include "game/box.h"
+#include "game/control.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -34,6 +36,10 @@
 #define FLYER_BULLET2 2
 #define FLYER_FLYMODE 4
 #define FLYER_TWIST 8
+
+#define SHARD_DAMAGE 30
+#define ROCKET_DAMAGE 100
+#define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
 
 typedef enum {
     CENTAUR_EMPTY = 0,
@@ -432,9 +438,81 @@ void FlyerControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
+void ControlMissile(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+
+    int32_t speed = (fx->speed * phd_cos(fx->pos.x_rot)) >> W2V_SHIFT;
+    fx->pos.y += (fx->speed * phd_sin(-fx->pos.x_rot)) >> W2V_SHIFT;
+    fx->pos.z += (speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+
+    int16_t room_num = fx->room_number;
+    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    int32_t height = GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    int32_t ceiling = GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+
+    if (fx->pos.y >= height || fx->pos.y <= ceiling) {
+        if (fx->object_number == O_MISSILE2) {
+            fx->object_number = O_RICOCHET1;
+            fx->frame_number = -GetRandomControl() / 11000;
+            fx->speed = 0;
+            fx->counter = 6;
+            SoundEffect(10, &fx->pos, 0);
+        } else {
+            fx->object_number = O_EXPLOSION1;
+            fx->frame_number = 0;
+            fx->speed = 0;
+            fx->counter = 0;
+            SoundEffect(104, &fx->pos, 0);
+
+            int32_t x = fx->pos.x - LaraItem->pos.x;
+            int32_t y = fx->pos.y - LaraItem->pos.y;
+            int32_t z = fx->pos.z - LaraItem->pos.z;
+            int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
+            if (range < ROCKET_RANGE) {
+                LaraItem->hit_points -= (int16_t)(
+                    ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
+                LaraItem->hit_status = 1;
+            }
+        }
+        return;
+    }
+
+    if (room_num != fx->room_number) {
+        EffectNewRoom(fx_num, room_num);
+    }
+
+    if (!ItemNearLara(&fx->pos, 200)) {
+        return;
+    }
+
+    if (fx->object_number == O_MISSILE2) {
+        LaraItem->hit_points -= SHARD_DAMAGE;
+        fx->object_number = O_BLOOD1;
+        SoundEffect(50, &fx->pos, 0);
+    } else {
+        LaraItem->hit_points -= ROCKET_DAMAGE;
+        fx->object_number = O_EXPLOSION1;
+        if (LaraItem->hit_points > 0) {
+            SoundEffect(31, &LaraItem->pos, 0);
+            Lara.spaz_effect = fx;
+            Lara.spaz_effect_count = 5;
+        }
+        SoundEffect(104, &fx->pos, 0);
+    }
+    LaraItem->hit_status = 1;
+
+    fx->frame_number = 0;
+    fx->pos.y_rot = LaraItem->pos.y_rot;
+    fx->speed = LaraItem->speed;
+    fx->counter = 0;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
     INJECT(0x0043BB30, InitialiseWarrior2);
     INJECT(0x0043BB60, FlyerControl);
+    INJECT(0x0043C1C0, ControlMissile);
 }
