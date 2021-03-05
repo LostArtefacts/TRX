@@ -968,7 +968,7 @@ WndProc                         0x0043DE00  0x0000011F  -
 # wolf.cpp
 InitialiseWolf                  0x0043DF20  0x00000024  +
 WolfControl                     0x0043DF50  0x0000040B  +
-LionControl                     0x0043E390  0x000002BD  *
+LionControl                     0x0043E390  0x000002BD  +
 
 # ???
 sub_43E670                      0x0043E670  0x00000011  -
