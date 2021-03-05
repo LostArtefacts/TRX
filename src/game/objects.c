@@ -1,5 +1,6 @@
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/items.h"
 #include "game/objects.h"
 #include "game/vars.h"
 #include "specific/init.h"
@@ -320,6 +321,24 @@ void BridgeTilt2Ceiling(
     }
 }
 
+void CogControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        item->goal_anim_state = DOOR_OPEN;
+    } else {
+        item->goal_anim_state = DOOR_CLOSED;
+    }
+
+    AnimateItem(item);
+
+    int16_t room_num = item->room_number;
+    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (room_num != item->room_number) {
+        ItemNewRoom(item_num, room_num);
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -334,4 +353,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D330, BridgeTilt1Ceiling);
     INJECT(0x0042D380, BridgeTilt2Floor);
     INJECT(0x0042D3D0, BridgeTilt2Ceiling);
+    INJECT(0x0042D420, CogControl);
 }

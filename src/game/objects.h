@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define CogControl                      ((void          (*)(int16_t item_num))0x0042D420)
 #define SwitchControl                   ((void          (*)(int16_t item_num))0x00433DE0)
 #define SwitchCollision                 ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004336F0)
 #define SwitchCollision2                ((void          (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433810)
@@ -34,6 +33,7 @@ void ShutThatDoor(DOORPOS_DATA* d);
 void OpenThatDoor(DOORPOS_DATA* d);
 void InitialiseDoor(int16_t item_num);
 void DoorControl(int16_t item_num);
+
 int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y);
 void DrawBridgeFloor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
@@ -54,6 +54,8 @@ void BridgeTilt2Floor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 void BridgeTilt2Ceiling(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+
+void CogControl(int16_t item_num);
 
 void T1MInjectGameObjects();
 
