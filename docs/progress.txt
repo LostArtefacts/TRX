@@ -801,7 +801,7 @@ ControlSavegameItem             ----------  ----------  +
 DrawSavegameItem                ----------  ----------  +
 
 # rat.cpp
-RatControl                      0x00433F50  0x000002A8  *
+RatControl                      0x00433F50  0x000002A8  +
 VoleControl                     0x00434210  0x000002B5  *
 
 # savegame.cpp

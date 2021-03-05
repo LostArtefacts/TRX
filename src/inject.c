@@ -27,6 +27,7 @@
 #include "game/option.h"
 #include "game/people.h"
 #include "game/pickup.h"
+#include "game/rat.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "game/traps.h"
@@ -71,6 +72,7 @@ void T1MInject()
     T1MInjectGameOption();
     T1MInjectGamePeople();
     T1MInjectGamePickup();
+    T1MInjectGameRat();
     T1MInjectGameSetup();
     T1MInjectGameText();
     T1MInjectGameTraps();
