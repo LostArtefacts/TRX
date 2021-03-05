@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define PickUpScion4Collision   ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004333B0)
 #define MidasCollision          ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004334C0)
 #define SwitchCollision         ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x004336F0)
 #define SwitchCollision2        ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x00433810)
@@ -19,6 +18,8 @@
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal);
 void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void PickUpScionCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+void PickUpScion4Collision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 int32_t KeyTrigger(int16_t item_num);
 

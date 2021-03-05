@@ -32,19 +32,35 @@ static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
 
 static int16_t PickUpScionBounds[12] = {
     -256,
-    256,
-    640 - 100,
-    640 + 100,
+    +256,
+    +640 - 100,
+    +640 + 100,
     -350,
     -200,
     -10 * PHD_DEGREE,
-    10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
     0,
     0,
     0,
     0,
 };
 static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
+
+static int16_t PickUpScion4Bounds[12] = {
+    -256,
+    +256,
+    +256 - 50,
+    +256 + 50,
+    -512 - 350,
+    -200,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    0,
+    0,
+    0,
+    0,
+};
+static PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };
 
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 {
@@ -157,6 +173,34 @@ void PickUpScionCollision(
     }
 }
 
+void PickUpScion4Collision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    item->pos.y_rot = lara_item->pos.y_rot;
+    item->pos.x_rot = 0;
+    item->pos.z_rot = 0;
+
+    if (!TestLaraPosition(PickUpScion4Bounds, item, lara_item)) {
+        return;
+    }
+
+    if (CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
+        && !lara_item->gravity_status
+        && lara_item->current_anim_state == AS_STOP) {
+        AlignLaraPosition(&PickUpScion4Position, item, lara_item);
+        lara_item->current_anim_state = AS_PICKUP;
+        lara_item->goal_anim_state = AS_PICKUP;
+        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
+        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        Lara.gun_status = LGS_HANDSBUSY;
+        Camera.type = CAM_CINEMATIC;
+        CineFrame = 0;
+        CinematicPosition = lara_item->pos;
+        CinematicPosition.y_rot -= PHD_90;
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -180,5 +224,6 @@ void T1MInjectGamePickup()
 {
     INJECT(0x00433080, PickUpCollision);
     INJECT(0x00433240, PickUpScionCollision);
+    INJECT(0x004333B0, PickUpScion4Collision);
     INJECT(0x00433EA0, KeyTrigger);
 }
