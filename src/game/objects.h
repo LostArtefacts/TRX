@@ -6,7 +6,6 @@
 
 // clang-format off
 #define CogControl                      ((void          (*)(int16_t item_num))0x0042D420)
-#define BridgeFlatCeiling               ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D2C0)
 #define BridgeTilt1Floor                ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D2E0)
 #define BridgeTilt1Ceiling              ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D330)
 #define BridgeTilt2Floor                ((void          (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0042D380)
@@ -47,6 +46,8 @@ void DrawBridgeCeiling(
 void DrawBridgeCollision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void BridgeFlatFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+void BridgeFlatCeiling(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 
 void T1MInjectGameObjects();
