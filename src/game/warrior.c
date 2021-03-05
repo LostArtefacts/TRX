@@ -1,6 +1,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -38,6 +39,7 @@
 #define FLYER_TWIST 8
 
 #define SHARD_DAMAGE 30
+#define SHARD_SPEED 250
 #define ROCKET_DAMAGE 100
 #define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
 
@@ -509,10 +511,51 @@ void ControlMissile(int16_t fx_num)
     fx->counter = 0;
 }
 
+void ShootAtLara(FX_INFO* fx)
+{
+    int32_t x = LaraItem->pos.x - fx->pos.x;
+    int32_t y = LaraItem->pos.y - fx->pos.y;
+    int32_t z = LaraItem->pos.z - fx->pos.z;
+
+    int16_t* bounds = GetBoundsAccurate(LaraItem);
+    y += bounds[FRAME_BOUND_MAX_Y]
+        + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
+
+    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(z));
+    fx->pos.x_rot = -(PHD_ANGLE)phd_atan(dist, y);
+    fx->pos.y_rot = phd_atan(z, x);
+    fx->pos.x_rot += (GetRandomControl() - 0x4000) / 0x40;
+    fx->pos.y_rot += (GetRandomControl() - 0x4000) / 0x40;
+}
+
+int16_t ShardGun(
+    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
+    int16_t room_num)
+{
+    int16_t fx_num = CreateEffect(room_num);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = x;
+        fx->pos.y = y;
+        fx->pos.z = z;
+        fx->room_number = room_num;
+        fx->pos.x_rot = 0;
+        fx->pos.y_rot = y_rot;
+        fx->pos.z_rot = 0;
+        fx->speed = SHARD_SPEED;
+        fx->frame_number = 0;
+        fx->object_number = O_MISSILE2;
+        fx->shade = 3584;
+        ShootAtLara(fx);
+    }
+    return fx_num;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
     INJECT(0x0043BB30, InitialiseWarrior2);
     INJECT(0x0043BB60, FlyerControl);
     INJECT(0x0043C1C0, ControlMissile);
+    INJECT(0x0043C430, ShardGun);
 }

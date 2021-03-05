@@ -670,7 +670,7 @@
 <rect width="12.00" height="12.00" x="238.00" y="199.00" class="decompiled"><title>InitialiseWarrior2</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="199.00" class="decompiled"><title>FlyerControl</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="199.00" class="decompiled"><title>ControlMissile</title></rect>
-<rect width="12.00" height="12.00" x="280.00" y="199.00" class="named"><title>ShardGun</title></rect>
+<rect width="12.00" height="12.00" x="280.00" y="199.00" class="decompiled"><title>ShardGun</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="199.00" class="named"><title>RocketGun</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="199.00" class="named"><title>InitialiseMummy</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="199.00" class="named"><title>MummyControl</title></rect>
@@ -1001,7 +1001,7 @@
 <rect width="12.23" height="12.55" x="627.71" y="337.58" class="decompiled"><title>ItemSparkle</title></rect>
 <rect width="12.13" height="12.55" x="641.95" y="337.58" class="decompiled"><title>draw_shotgun</title></rect>
 <rect width="11.98" height="12.55" x="656.07" y="337.58" class="decompiled"><title>Inv_RemoveItem</title></rect>
-<rect width="11.98" height="12.55" x="670.05" y="337.58" class="named"><title>ShardGun</title></rect>
+<rect width="11.98" height="12.55" x="670.05" y="337.58" class="decompiled"><title>ShardGun</title></rect>
 <rect width="11.98" height="12.55" x="684.02" y="337.58" class="named"><title>RocketGun</title></rect>
 <rect width="11.59" height="12.86" x="511.85" y="352.13" class="named"><title>StopSoundEffect</title></rect>
 <rect width="11.59" height="12.64" x="511.85" y="366.99" class="decompiled"><title>InitColours</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 61.01%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 58.71%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 24.90%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 25.46%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 61.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 58.82%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 24.76%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 25.36%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 14.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.83%</text>
 </svg>
