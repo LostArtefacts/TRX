@@ -255,6 +255,14 @@ void DrawBridgeCollision(
     }
 }
 
+void BridgeFlatFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    if (y <= item->pos.y) {
+        *height = item->pos.y;
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -263,4 +271,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D1F0, DrawBridgeFloor);
     INJECT(0x0042D230, DrawBridgeCeiling);
     INJECT(0x0042D270, DrawBridgeCollision);
+    INJECT(0x0042D2A0, BridgeFlatFloor);
 }
