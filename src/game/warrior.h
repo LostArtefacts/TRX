@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseWarrior2      ((void      (*)(int16_t item_num))0x0043BB30)
 #define FlyerControl            ((void      (*)(int16_t item_num))0x0043BB60)
 #define ControlMissile          ((void      (*)(int16_t item_num))0x0043C1C0)
 #define ShardGun                ((int16_t   (*)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num))0x0043C430)
@@ -21,6 +20,7 @@
 // clang-format on
 
 void CentaurControl(int16_t item_num);
+void InitialiseWarrior2(int16_t item_num);
 
 void T1MInjectGameWarrior();
 

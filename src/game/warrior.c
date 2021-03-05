@@ -134,7 +134,14 @@ void CentaurControl(int16_t item_num)
     }
 }
 
+void InitialiseWarrior2(int16_t item_num)
+{
+    InitialiseCreature(item_num);
+    Items[item_num].mesh_bits = 0xFFE07FFF;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
+    INJECT(0x0043BB30, InitialiseWarrior2);
 }
