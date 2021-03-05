@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from enum import Enum
 import re
 import typing as T
 from dataclasses import dataclass
@@ -17,9 +18,18 @@ DOCS_DIR = Path(__file__).parent
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 
-COLOR_DECOMPILED = "forestgreen"
-COLOR_NAMED = "lightpink"
-COLOR_TODO = "mistyrose"
+
+class FunctionStatus(Enum):
+    todo = "todo"
+    named = "named"
+    decompiled = "decompiled"
+
+
+COLOR_MAP = {
+    FunctionStatus.decompiled: "forestgreen",
+    FunctionStatus.named: "lightpink",
+    FunctionStatus.todo: "mistyrose",
+}
 
 
 @dataclass
@@ -190,6 +200,14 @@ class Function:
     def is_named(self) -> bool:
         return not self.name.startswith("sub_")
 
+    @property
+    def status(self) -> FunctionStatus:
+        if self.is_decompiled:
+            return FunctionStatus.decompiled
+        elif self.is_named:
+            return FunctionStatus.named
+        return FunctionStatus.todo
+
 
 def collect_functions() -> T.Iterable[Function]:
     for line in PROGRESS_TXT_FILE.open():
@@ -225,19 +243,11 @@ def get_common_bbox(shapes: T.List[Shape]) -> Box:
     )
 
 
-def get_func_color(function: Function) -> str:
-    if function.is_decompiled:
-        return COLOR_DECOMPILED
-    elif function.is_named:
-        return COLOR_NAMED
-    return COLOR_TODO
-
-
 @dataclass
 class Rectangle(Shape):
     x: float
     y: float
-    color: str
+    class_name: str
     dx: float
     dy: float
     title: T.Optional[str] = None
@@ -258,7 +268,7 @@ class Rectangle(Shape):
             f'height="{self.dy:.02f}" '
             f'x="{self.x:.02f}" '
             f'y="{self.y:.02f}" '
-            f'fill="{self.color}"'
+            f'class="{self.class_name}"'
             + (f"><title>{self.title}</title></rect>" if self.title else "/>")
         )
 
@@ -268,11 +278,13 @@ class Square(Rectangle):
         self,
         x: float,
         y: float,
-        color: str,
+        class_name: str,
         size: float = GRID_SQUARE_SIZE,
         title: T.Optional[str] = None,
     ) -> None:
-        super().__init__(x=x, y=y, color=color, dx=size, dy=size, title=title)
+        super().__init__(
+            x=x, y=y, class_name=class_name, dx=size, dy=size, title=title
+        )
 
 
 @dataclass
@@ -287,9 +299,8 @@ class Text(Shape):
 
     def render(self) -> str:
         return (
-            f'<text alignment-baseline="central" '
-            f'x="{self.x:.02f}" y="{self.y + TEXT_SIZE/2:.02f}" '
-            f'style="font-family: sans-serif; font-size: {TEXT_SIZE}px">'
+            f"<text "
+            f'x="{self.x:.02f}" y="{self.y + TEXT_SIZE/2:.02f}">'
             f"{self.text}"
             f"</text>"
         )
@@ -299,7 +310,7 @@ class Text(Shape):
 class LegendText(Shape):
     x: float
     y: float
-    color: str
+    class_name: str
     text: str
 
     @property
@@ -307,7 +318,7 @@ class LegendText(Shape):
         return Square(
             x=self.x,
             y=self.y + (TEXT_SIZE - LEGEND_SQUARE_SIZE) / 2,
-            color=self.color,
+            class_name=self.class_name,
             size=LEGEND_SQUARE_SIZE,
         )
 
@@ -334,7 +345,10 @@ def render_grid(
         x = (i % GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         y = (i // GRID_MAX_SQUARES) * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
         yield Square(
-            x=x, y=by + y, color=get_func_color(function), title=function.name
+            x=x,
+            y=by + y,
+            class_name=function.status.value,
+            title=function.name,
         )
 
 
@@ -352,7 +366,7 @@ def render_tree_grid(
             y=result.y1,
             dx=result.dx,
             dy=result.dy,
-            color=get_func_color(result.item),
+            class_name=result.item.status.value,
             title=result.item.name,
         )
 
@@ -400,15 +414,15 @@ def render_svg(all_functions: T.List[Function]) -> T.Iterable[Shape]:
     def sum_size(functions: T.Iterable[Function]) -> int:
         return sum(func.size for func in functions)
 
-    for (color, text, functions) in [
-        (COLOR_DECOMPILED, "Functions decompiled", ready_functions),
+    for (status, text, functions) in [
+        (FunctionStatus.decompiled, "Functions decompiled", ready_functions),
         (
-            COLOR_NAMED,
+            FunctionStatus.named,
             "Functions not decompiled, but with known names",
             named_functions,
         ),
         (
-            COLOR_TODO,
+            FunctionStatus.todo,
             "Functions not decompiled, with unknown names",
             todo_functions,
         ),
@@ -416,7 +430,7 @@ def render_svg(all_functions: T.List[Function]) -> T.Iterable[Shape]:
         yield LegendText(
             x=0,
             y=y,
-            color=color,
+            class_name=status.value,
             text=f"{text} (count): {len(functions)/len(all_functions):.02%}",
         )
         y += TEXT_SIZE + LEGEND_ROW_PADDING
@@ -424,7 +438,7 @@ def render_svg(all_functions: T.List[Function]) -> T.Iterable[Shape]:
         yield LegendText(
             x=0,
             y=y,
-            color=color,
+            class_name=status.value,
             text=f"{text} (bytesize): {sum_size(functions)/sum_size(all_functions):.02%}",
         )
         y += TEXT_SIZE + LEGEND_ROW_PADDING
@@ -437,11 +451,20 @@ def main() -> None:
         shapes = list(render_svg(functions))
         bbox = get_common_bbox(shapes)
 
-        print(
+        svg = (
             f'<svg version="1.1" '
             f'width="{bbox.dx:.02f}" '
             f'height="{bbox.dy:.02f}" '
-            f'xmlns="http://www.w3.org/2000/svg">',
+            f'xmlns="http://www.w3.org/2000/svg">'
+            f"<style>"
+        )
+        for status in FunctionStatus:
+            svg += f".{status.value}{{fill:{COLOR_MAP[status]}}}"
+        svg += f"text{{alignment-baseline:central;font-family:sans-serif;font-size:{TEXT_SIZE}px}}"
+        svg += "</style>"
+
+        print(
+            svg,
             file=handle,
         )
 
