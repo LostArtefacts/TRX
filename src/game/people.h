@@ -31,6 +31,8 @@ int32_t ShotLara(
 void PeopleControl(int16_t item_num);
 void PierreControl(int16_t item_num);
 
+void ApeVault(int16_t item_num, int16_t angle);
+
 void T1MInjectGamePeople();
 
 #endif

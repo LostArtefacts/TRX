@@ -24,6 +24,11 @@
 #define PIERRE_RUN_HITPOINTS 40
 #define PIERRE_DISAPPEAR 10
 
+#define APE_VAULT_ANIM 19
+#define APE_TURN_L_FLAG 2
+#define APE_TURN_R_FLAG 4
+#define APE_SHIFT 75
+
 typedef enum {
     PEOPLE_EMPTY = 0,
     PEOPLE_STOP = 1,
@@ -34,6 +39,21 @@ typedef enum {
     PEOPLE_POSE = 6,
     PEOPLE_SHOOT = 7,
 } PEOPLE_ANIM;
+
+typedef enum {
+    APE_EMPTY = 0,
+    APE_STOP = 1,
+    APE_WALK = 2,
+    APE_RUN = 3,
+    APE_ATTACK1 = 4,
+    APE_DEATH = 5,
+    APE_WARNING = 6,
+    APE_WARNING2 = 7,
+    APE_RUNLEFT = 8,
+    APE_RUNRIGHT = 9,
+    APE_JUMP = 10,
+    APE_VAULT = 11,
+} APE_ANIM;
 
 BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
@@ -453,6 +473,59 @@ void PierreControl(int16_t item_num)
     }
 }
 
+void ApeVault(int16_t item_num, int16_t angle)
+{
+    ITEM_INFO* item = &Items[item_num];
+    CREATURE_INFO* ape = item->data;
+
+    if (ape->flags & APE_TURN_L_FLAG) {
+        item->pos.y_rot -= PHD_90;
+        ape->flags &= ~APE_TURN_L_FLAG;
+    } else if (item->flags & APE_TURN_R_FLAG) {
+        item->pos.y_rot += PHD_90;
+        ape->flags &= ~APE_TURN_R_FLAG;
+    }
+
+    int32_t xx = item->pos.z >> WALL_SHIFT;
+    int32_t yy = item->pos.x >> WALL_SHIFT;
+    int32_t y = item->pos.y;
+
+    CreatureAnimation(item_num, angle, 0);
+
+    if (item->pos.y > y - STEP_L * 3 / 2) {
+        return;
+    }
+
+    int32_t x_floor = item->pos.z >> WALL_SHIFT;
+    int32_t y_floor = item->pos.x >> WALL_SHIFT;
+    if (xx == x_floor) {
+        if (yy == y_floor) {
+            return;
+        }
+
+        if (yy < y_floor) {
+            item->pos.x = (y_floor << WALL_SHIFT) - APE_SHIFT;
+            item->pos.y_rot = PHD_90;
+        } else {
+            item->pos.x = (yy << WALL_SHIFT) + APE_SHIFT;
+            item->pos.y_rot = -PHD_90;
+        }
+    } else if (yy == y_floor) {
+        if (xx < x_floor) {
+            item->pos.z = (x_floor << WALL_SHIFT) - APE_SHIFT;
+            item->pos.y_rot = 0;
+        } else {
+            item->pos.z = (xx << WALL_SHIFT) + APE_SHIFT;
+            item->pos.y_rot = -PHD_180;
+        }
+    }
+
+    item->pos.y = y;
+    item->current_anim_state = APE_VAULT;
+    item->anim_number = Objects[O_APE].anim_index + APE_VAULT_ANIM;
+    item->frame_number = Anims[item->anim_number].frame_base;
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -462,4 +535,5 @@ void T1MInjectGamePeople()
     INJECT(0x00430FA0, GunMiss);
     INJECT(0x00431090, PeopleControl);
     INJECT(0x00431550, PierreControl);
+    INJECT(0x00431C30, ApeVault);
 }
