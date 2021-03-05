@@ -1,5 +1,7 @@
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects.h"
+#include "game/game.h"
 #include "game/items.h"
 #include "game/objects.h"
 #include "game/vars.h"
@@ -406,6 +408,50 @@ void ScionControl(int16_t item_num)
     AnimateItem(&Items[item_num]);
 }
 
+void Scion3Control(int16_t item_num)
+{
+    static int32_t counter = 0;
+    ITEM_INFO* item = &Items[item_num];
+
+    if (item->hit_points > 0) {
+        counter = 0;
+        AnimateItem(item);
+        return;
+    }
+
+    if (counter == 0) {
+        item->status = IS_INVISIBLE;
+        item->hit_points = DONT_TARGET;
+        int16_t room_num = item->room_number;
+        FLOOR_INFO* floor =
+            GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        TestTriggers(TriggerIndex, 1);
+        RemoveDrawnItem(item_num);
+    }
+
+    if (counter % 10 == 0) {
+        int16_t fx_num = CreateEffect(item->room_number);
+        if (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            fx->pos.x = item->pos.x + (GetRandomControl() - 0x4000) / 32;
+            fx->pos.y = item->pos.y + (GetRandomControl() - 0x4000) / 256 - 500;
+            fx->pos.z = item->pos.z + (GetRandomControl() - 0x4000) / 32;
+            fx->speed = 0;
+            fx->frame_number = 0;
+            fx->object_number = O_EXPLOSION1;
+            fx->counter = 0;
+            SoundEffect(104, &fx->pos, 0);
+            Camera.bounce = -200;
+        }
+    }
+
+    counter++;
+    if (counter == 30 * 3) {
+        RemoveActiveItem(item_num);
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -423,4 +469,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D420, CogControl);
     INJECT(0x0042D4A0, CabinControl);
     INJECT(0x0042D520, BoatControl);
+    INJECT(0x0042D580, Scion3Control);
 }
