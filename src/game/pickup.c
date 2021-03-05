@@ -1,4 +1,5 @@
 #include "game/collide.h"
+#include "game/control.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -6,6 +7,12 @@
 #include "game/pickup.h"
 #include "game/vars.h"
 #include "config.h"
+
+typedef enum {
+    SS_OFF = 0,
+    SS_ON = 1,
+    SS_LINK = 2,
+} SWITCH_STATES;
 
 static int16_t PickUpBounds[12] = {
     -256, +256, -100, +100, -256, +100, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
@@ -71,6 +78,21 @@ static int16_t MidasBounds[12] = {
     700,
     -10 * PHD_DEGREE,
     10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
+static int16_t Switch1Bounds[12] = {
+    -200,
+    +200,
+    0,
+    0,
+    WALL_L / 2 - 200,
+    WALL_L / 2,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
     -30 * PHD_DEGREE,
     +30 * PHD_DEGREE,
     -10 * PHD_DEGREE,
@@ -281,6 +303,43 @@ void MidasCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void SwitchCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (!CHK_ANY(Input, IN_ACTION) || item->status != IS_NOT_ACTIVE
+        || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
+        return;
+    }
+
+    if (lara_item->current_anim_state != AS_STOP) {
+        return;
+    }
+
+    if (!TestLaraPosition(Switch1Bounds, item, lara_item)) {
+        return;
+    }
+
+    lara_item->pos.y_rot = item->pos.y_rot;
+    if (item->current_anim_state == SS_ON) {
+        AnimateLaraUntil(lara_item, AS_SWITCHON);
+        lara_item->goal_anim_state = AS_STOP;
+        Lara.gun_status = LGS_HANDSBUSY;
+        item->status = IS_ACTIVE;
+        item->goal_anim_state = SS_OFF;
+        AddActiveItem(item_num);
+        AnimateItem(item);
+    } else if (item->current_anim_state == SS_OFF) {
+        AnimateLaraUntil(lara_item, AS_SWITCHOFF);
+        lara_item->goal_anim_state = AS_STOP;
+        Lara.gun_status = LGS_HANDSBUSY;
+        item->status = IS_ACTIVE;
+        item->goal_anim_state = SS_ON;
+        AddActiveItem(item_num);
+        AnimateItem(item);
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -306,5 +365,6 @@ void T1MInjectGamePickup()
     INJECT(0x00433240, PickUpScionCollision);
     INJECT(0x004333B0, PickUpScion4Collision);
     INJECT(0x004334C0, MidasCollision);
+    INJECT(0x004336F0, SwitchCollision);
     INJECT(0x00433EA0, KeyTrigger);
 }

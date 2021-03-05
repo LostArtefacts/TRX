@@ -785,7 +785,7 @@ PickUpScionCollision            0x00433240  0x00000164  +
 PickUpScion4Collision           0x004333B0  0x00000108  +
 MidasOnAfterInventory           ----------  ----------  +
 MidasCollision                  0x004334C0  0x00000217  +
-SwitchCollision                 0x004336F0  0x0000011C  *
+SwitchCollision                 0x004336F0  0x0000011C  +
 SwitchCollision2                0x00433810  0x000000F0  *
 KeyHoleOnAfterInventory         ----------  ----------  -
 KeyHoleCollision                0x00433900  0x00000227  *
