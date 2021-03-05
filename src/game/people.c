@@ -7,6 +7,7 @@
 #include "game/people.h"
 #include "game/sphere.h"
 #include "game/vars.h"
+#include "specific/sndpc.h"
 #include "util.h"
 
 #define PEOPLE_POSE_CHANCE 0x60 // = 96
@@ -40,6 +41,16 @@
 #define APE_TURN_L_FLAG 2
 #define APE_TURN_R_FLAG 4
 #define APE_SHIFT 75
+
+#define KID_STOP_SHOT_DAMAGE 50
+#define KID_SKATE_SHOT_DAMAGE 40
+#define KID_STOP_RANGE SQUARE(WALL_L * 4) // = 16777216
+#define KID_DONT_STOP_RANGE SQUARE(WALL_L * 5 / 2) // = 6553600
+#define KID_TOO_CLOSE SQUARE(WALL_L) // = 1048576
+#define KID_SKATE_TURN (PHD_DEGREE * 4) // = 728
+#define KID_PUSH_CHANCE 0x200
+#define KID_SKATE_CHANCE 0x400
+#define KID_DIE_ANIM 13
 
 typedef enum {
     PEOPLE_EMPTY = 0,
@@ -80,6 +91,8 @@ BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
 BITE_INFO PierreGun2 = { -57, 200, 0, 14 };
 BITE_INFO ApeBite = { 0, -19, 75, 15 };
+BITE_INFO KidGun1 = { 0, 150, 34, 7 };
+BITE_INFO KidGun2 = { 0, 150, 37, 4 };
 
 int32_t Targetable(ITEM_INFO* item, AI_INFO* info)
 {
@@ -687,6 +700,101 @@ void InitialiseSkateKid(int16_t item_num)
     Items[item_num].current_anim_state = KID_SKATE;
 }
 
+void SkateKidControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    CREATURE_INFO* kid = item->data;
+    int16_t head = 0;
+    int16_t angle = 0;
+
+    if (item->hit_points <= 0) {
+        if (item->current_anim_state != KID_DEATH) {
+            item->current_anim_state = KID_DEATH;
+            item->anim_number = Objects[O_MERCENARY1].anim_index + KID_DIE_ANIM;
+            item->frame_number = Anims[item->anim_number].frame_base;
+            SpawnItem(item, O_UZI_ITEM);
+        }
+    } else {
+        AI_INFO info;
+        CreatureAIInfo(item, &info);
+
+        if (info.ahead) {
+            head = info.angle;
+        }
+
+        CreatureMood(item, &info, 0);
+
+        angle = CreatureTurn(item, KID_SKATE_TURN);
+
+        if (item->hit_points < 120 && CDTrack != 56) {
+            S_CDPlay(56);
+        }
+
+        switch (item->current_anim_state) {
+        case KID_STOP:
+            kid->flags = 0;
+            if (item->required_anim_state) {
+                item->goal_anim_state = item->required_anim_state;
+            } else if (Targetable(item, &info)) {
+                item->goal_anim_state = KID_SHOOT;
+            } else {
+                item->goal_anim_state = KID_SKATE;
+            }
+            break;
+
+        case KID_SKATE:
+            kid->flags = 0;
+            if (GetRandomControl() < KID_PUSH_CHANCE) {
+                item->goal_anim_state = KID_PUSH;
+            } else if (Targetable(item, &info)) {
+                if (info.distance > KID_DONT_STOP_RANGE
+                    && info.distance < KID_STOP_RANGE
+                    && kid->mood != MOOD_ESCAPE) {
+                    item->goal_anim_state = KID_STOP;
+                } else {
+                    item->goal_anim_state = KID_SHOOT2;
+                }
+            }
+            break;
+
+        case KID_PUSH:
+            if (GetRandomControl() < KID_SKATE_CHANCE) {
+                item->goal_anim_state = KID_SKATE;
+            }
+            break;
+
+        case KID_SHOOT:
+        case KID_SHOOT2:
+            if (!kid->flags && Targetable(item, &info)) {
+                if (ShotLara(item, info.distance, &KidGun1, head)) {
+                    LaraItem->hit_points -=
+                        item->current_anim_state == KID_SHOOT
+                        ? KID_STOP_SHOT_DAMAGE
+                        : KID_SKATE_SHOT_DAMAGE;
+                    LaraItem->hit_status = 1;
+                }
+
+                if (ShotLara(item, info.distance, &KidGun2, head)) {
+                    LaraItem->hit_points -=
+                        item->current_anim_state == KID_SHOOT
+                        ? KID_STOP_SHOT_DAMAGE
+                        : KID_SKATE_SHOT_DAMAGE;
+                    LaraItem->hit_status = 1;
+                }
+
+                kid->flags = 1;
+            }
+            if (kid->mood == MOOD_ESCAPE || info.distance < KID_TOO_CLOSE) {
+                item->required_anim_state = KID_SKATE;
+            }
+            break;
+        }
+    }
+
+    CreatureHead(item, head);
+    CreatureAnimation(item_num, angle, 0);
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -699,4 +807,5 @@ void T1MInjectGamePeople()
     INJECT(0x00431C30, ApeVault);
     INJECT(0x00431D40, ApeControl);
     INJECT(0x004320B0, InitialiseSkateKid);
+    INJECT(0x004320E0, SkateKidControl);
 }
