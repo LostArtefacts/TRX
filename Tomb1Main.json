@@ -46,7 +46,9 @@
     // - F11: heal Lara. Hold WALK key to hurt instead.
     // - I: gives Lara all the guns, ammo, medpacks and plot items for the
     //   current level.
-    // - O: enable DOZY cheat (swimming midair). Press the WALK key to exit.
+    // - O: enable DOZY cheat (swimming midair).
+    //      - WALK key: exit DOZY
+    //      - GUN key: open the closest door (doesn't work in certain places)
     "enable_cheats": false,
 
     // Enables braid animation. Currently works only in the Lost Valley level.

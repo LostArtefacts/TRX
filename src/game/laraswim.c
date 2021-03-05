@@ -4,6 +4,7 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/lara.h"
+#include "game/objects.h"
 #include "game/vars.h"
 #include "config.h"
 #include "util.h"
@@ -77,6 +78,12 @@ void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
     if (Lara.water_status != LWS_CHEAT) {
         LaraBaddieCollision(item, coll);
     }
+
+#ifdef T1M_FEAT_CHEATS
+    if (Lara.water_status == LWS_CHEAT && CHK_ANY(Input, IN_DRAW)) {
+        OpenClosestDoors(LaraItem);
+    }
+#endif
 
     LaraCollisionRoutines[item->current_anim_state](item, coll);
     UpdateLaraRoom(item, 0);

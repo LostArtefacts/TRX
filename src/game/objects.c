@@ -58,6 +58,46 @@ void OpenThatDoor(DOORPOS_DATA* d)
     }
 }
 
+#ifdef T1M_FEAT_CHEATS
+void OpenClosestDoors(ITEM_INFO* lara_item)
+{
+    int16_t best_door = NO_ITEM;
+    int32_t best_dist = 0x7FFFFFFF;
+    int32_t max_dist = WALL_L * 2;
+
+    int16_t item_num = RoomInfo[lara_item->room_number].item_number;
+    while (item_num != NO_ITEM) {
+        ITEM_INFO* item = &Items[item_num];
+        int32_t x = (item->pos.x - lara_item->pos.x) >> 8;
+        int32_t y = (item->pos.y - lara_item->pos.y) >> 8;
+        int32_t z = (item->pos.z - lara_item->pos.z) >> 8;
+        int32_t dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
+        TRACE("found item %d: dist=%d", item_num, dist);
+        if (item->object_number >= O_DOOR_TYPE1
+            && item->object_number <= O_DOOR_TYPE8) {
+            TRACE("found door %d: dist=%d", item_num, dist);
+            if (dist < best_dist) {
+                best_door = item_num;
+                best_dist = dist;
+            }
+        }
+        item_num = item->next_item;
+    }
+
+    if (best_door == NO_ITEM || best_dist >= SQUARE(max_dist >> 8)) {
+        return;
+    }
+
+    ITEM_INFO* item = &Items[best_door];
+    if (!item->active) {
+        AddActiveItem(best_door);
+        item->touch_bits = 0;
+        item->flags |= IF_CODE_BITS;
+        item->timer = 0;
+    }
+}
+#endif
+
 void InitialiseDoor(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];

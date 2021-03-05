@@ -9,6 +9,10 @@ void OpenThatDoor(DOORPOS_DATA* d);
 void InitialiseDoor(int16_t item_num);
 void DoorControl(int16_t item_num);
 
+#ifdef T1M_FEAT_CHEATS
+void OpenClosestDoors(ITEM_INFO* lara_item);
+#endif
+
 int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y);
 void DrawBridgeFloor(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
