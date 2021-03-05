@@ -104,6 +104,16 @@ typedef enum {
     COWBOY_SHOOT = 6,
 } COWBOY_ANIM;
 
+typedef enum {
+    BALDY_EMPTY = 0,
+    BALDY_STOP = 1,
+    BALDY_WALK = 2,
+    BALDY_RUN = 3,
+    BALDY_AIM = 4,
+    BALDY_DEATH = 5,
+    BALDY_SHOOT = 6,
+} BALDY_ANIM;
+
 static BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 static BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
 static BITE_INFO PierreGun2 = { -57, 200, 0, 14 };
@@ -949,6 +959,12 @@ void CowboyControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
+void InitialiseBaldy(int16_t item_num)
+{
+    InitialiseCreature(item_num);
+    Items[item_num].current_anim_state = BALDY_RUN;
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -964,4 +980,5 @@ void T1MInjectGamePeople()
     INJECT(0x004320E0, SkateKidControl);
     INJECT(0x00432550, DrawSkateKid);
     INJECT(0x004325A0, CowboyControl);
+    INJECT(0x00432B60, InitialiseBaldy);
 }
