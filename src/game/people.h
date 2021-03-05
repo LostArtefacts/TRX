@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define PierreControl           ((void      (*)(int16_t item_num))0x00431550)
 #define ApeControl              ((void      (*)(int16_t item_num))0x00431D40)
 #define InitialiseSkateKid      ((void      (*)(int16_t item_num))0x004320B0)
 #define SkateKidControl         ((void      (*)(int16_t item_num))0x004320E0)
@@ -30,6 +29,7 @@ int16_t GunMiss(
 int32_t ShotLara(
     ITEM_INFO* item, int32_t distance, BITE_INFO* gun, int16_t extra_rotation);
 void PeopleControl(int16_t item_num);
+void PierreControl(int16_t item_num);
 
 void T1MInjectGamePeople();
 

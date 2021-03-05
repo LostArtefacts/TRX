@@ -768,7 +768,7 @@ GunHit                          0x00430EB0  0x000000ED  +
 GunMiss                         0x00430FA0  0x000000E6  +
 ShotLara                        ----------  ----------  +
 PeopleControl                   0x00431090  0x0000049E  +
-PierreControl                   0x00431550  0x000006BF  *
+PierreControl                   0x00431550  0x000006BF  +
 ApeVault                        0x00431C30  0x00000103  -
 ApeControl                      0x00431D40  0x0000033F  *
 InitialiseSkateKid              0x004320B0  0x00000027  *
