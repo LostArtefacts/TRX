@@ -31,6 +31,7 @@
 #include "game/setup.h"
 #include "game/text.h"
 #include "game/traps.h"
+#include "game/warrior.h"
 #include "game/wolf.h"
 #include "specific/file.h"
 #include "specific/init.h"
@@ -77,6 +78,7 @@ void T1MInject()
     T1MInjectGameSetup();
     T1MInjectGameText();
     T1MInjectGameTraps();
+    T1MInjectGameWarrior();
     T1MInjectGameWolf();
     T1MInjectSpecificFile();
     T1MInjectSpecificInit();

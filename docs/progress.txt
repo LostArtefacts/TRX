@@ -939,7 +939,7 @@ LavaControl                     0x0043B5F0  0x00000119  *
 LavaWedgeControl                0x0043B710  0x00000139  *
 
 # warrior.cpp
-CentaurControl                  0x0043B850  0x000002B9  *
+CentaurControl                  0x0043B850  0x000002B9  +
 InitialiseWarrior2              0x0043BB30  0x00000028  *
 FlyerControl                    0x0043BB60  0x00000625  *
 ControlMissile                  0x0043C1C0  0x0000026D  *
