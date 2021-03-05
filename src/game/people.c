@@ -59,6 +59,12 @@
 #define COWBOY_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define COWBOY_DIE_ANIM 7
 
+#define BALDY_SHOT_DAMAGE 150
+#define BALDY_WALK_TURN (PHD_DEGREE * 3) // = 546
+#define BALDY_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define BALDY_WALK_RANGE SQUARE(WALL_L * 4) // = 16777216
+#define BALDY_DIE_ANIM 14
+
 typedef enum {
     PEOPLE_EMPTY = 0,
     PEOPLE_STOP = 1,
@@ -122,6 +128,7 @@ static BITE_INFO KidGun1 = { 0, 150, 34, 7 };
 static BITE_INFO KidGun2 = { 0, 150, 37, 4 };
 static BITE_INFO CowboyGun1 = { 1, 200, 41, 5 };
 static BITE_INFO CowboyGun2 = { -2, 200, 40, 8 };
+static BITE_INFO BaldyGun = { -20, 440, 20, 9 };
 
 int32_t Targetable(ITEM_INFO* item, AI_INFO* info)
 {
@@ -965,6 +972,114 @@ void InitialiseBaldy(int16_t item_num)
     Items[item_num].current_anim_state = BALDY_RUN;
 }
 
+void BaldyControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (item->status == IS_INVISIBLE) {
+        if (!EnableBaddieAI(item_num, 0)) {
+            return;
+        }
+        item->status = IS_ACTIVE;
+    }
+
+    CREATURE_INFO* baldy = item->data;
+    int16_t head = 0;
+    int16_t angle = 0;
+    int16_t tilt = 0;
+
+    if (item->hit_points <= 0) {
+        if (item->current_anim_state != BALDY_DEATH) {
+            item->current_anim_state = BALDY_DEATH;
+            item->anim_number =
+                Objects[O_MERCENARY3].anim_index + BALDY_DIE_ANIM;
+            item->frame_number = Anims[item->anim_number].frame_base;
+            SpawnItem(item, O_SHOTGUN_ITEM);
+        }
+    } else {
+        AI_INFO info;
+        CreatureAIInfo(item, &info);
+
+        if (info.ahead) {
+            head = info.angle;
+        }
+
+        CreatureMood(item, &info, 1);
+
+        angle = CreatureTurn(item, baldy->maximum_turn);
+
+        switch (item->current_anim_state) {
+        case BALDY_STOP:
+            if (item->required_anim_state) {
+                item->goal_anim_state = item->required_anim_state;
+            } else if (Targetable(item, &info)) {
+                item->goal_anim_state = BALDY_AIM;
+            } else if (baldy->mood == MOOD_BORED) {
+                item->goal_anim_state = BALDY_WALK;
+            } else {
+                item->goal_anim_state = BALDY_RUN;
+            }
+            break;
+
+        case BALDY_WALK:
+            baldy->maximum_turn = BALDY_WALK_TURN;
+            if (baldy->mood == MOOD_ESCAPE || !info.ahead) {
+                item->required_anim_state = BALDY_RUN;
+                item->goal_anim_state = BALDY_STOP;
+            } else if (Targetable(item, &info)) {
+                item->required_anim_state = BALDY_AIM;
+                item->goal_anim_state = BALDY_STOP;
+            } else if (info.distance > BALDY_WALK_RANGE) {
+                item->required_anim_state = BALDY_RUN;
+                item->goal_anim_state = BALDY_STOP;
+            }
+            break;
+
+        case BALDY_RUN:
+            baldy->maximum_turn = BALDY_RUN_TURN;
+            tilt = angle / 2;
+            if (baldy->mood != MOOD_ESCAPE || info.ahead) {
+                if (Targetable(item, &info)) {
+                    item->required_anim_state = BALDY_AIM;
+                    item->goal_anim_state = BALDY_STOP;
+                } else if (info.ahead && info.distance < BALDY_WALK_RANGE) {
+                    item->required_anim_state = BALDY_WALK;
+                    item->goal_anim_state = BALDY_STOP;
+                }
+            }
+            break;
+
+        case BALDY_AIM:
+            baldy->flags = 0;
+            if (item->required_anim_state) {
+                item->goal_anim_state = BALDY_STOP;
+            } else if (Targetable(item, &info)) {
+                item->goal_anim_state = BALDY_SHOOT;
+            } else {
+                item->goal_anim_state = BALDY_STOP;
+            }
+            break;
+
+        case BALDY_SHOOT:
+            if (!baldy->flags) {
+                if (ShotLara(item, info.distance / 2, &BaldyGun, head)) {
+                    LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
+                    LaraItem->hit_status = 1;
+                }
+                baldy->flags = 1;
+            }
+            if (baldy->mood == MOOD_ESCAPE) {
+                item->required_anim_state = BALDY_RUN;
+            }
+            break;
+        }
+    }
+
+    CreatureTilt(item, tilt);
+    CreatureHead(item, head);
+    CreatureAnimation(item_num, angle, 0);
+}
+
 void T1MInjectGamePeople()
 {
     INJECT(0x00430D80, Targetable);
@@ -981,4 +1096,5 @@ void T1MInjectGamePeople()
     INJECT(0x00432550, DrawSkateKid);
     INJECT(0x004325A0, CowboyControl);
     INJECT(0x00432B60, InitialiseBaldy);
+    INJECT(0x00432B90, BaldyControl);
 }

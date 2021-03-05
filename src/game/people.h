@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define BaldyControl            ((void      (*)(int16_t item_num))0x00432B90)
-// clang-format on
-
 int32_t Targetable(ITEM_INFO* item, AI_INFO* info);
 void ControlGunShot(int16_t fx_num);
 int16_t GunShot(
@@ -35,6 +31,7 @@ void DrawSkateKid(ITEM_INFO* item);
 void CowboyControl(int16_t item_num);
 
 void InitialiseBaldy(int16_t item_num);
+void BaldyControl(int16_t item_num);
 
 void T1MInjectGamePeople();
 
