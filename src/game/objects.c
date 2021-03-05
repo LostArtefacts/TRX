@@ -271,6 +271,28 @@ void BridgeFlatCeiling(
     }
 }
 
+int32_t GetOffset(ITEM_INFO* item, int32_t x, int32_t z)
+{
+    if (item->pos.y_rot == 0) {
+        return (WALL_L - x) & (WALL_L - 1);
+    } else if (item->pos.y_rot == -PHD_180) {
+        return x & (WALL_L - 1);
+    } else if (item->pos.y_rot == PHD_90) {
+        return z & (WALL_L - 1);
+    } else {
+        return (WALL_L - z) & (WALL_L - 1);
+    }
+}
+
+void BridgeTilt1Floor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+    if (y <= level) {
+        *height = level;
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -281,4 +303,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D270, DrawBridgeCollision);
     INJECT(0x0042D2A0, BridgeFlatFloor);
     INJECT(0x0042D2C0, BridgeFlatCeiling);
+    INJECT(0x0042D2E0, BridgeTilt1Floor);
 }
