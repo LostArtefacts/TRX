@@ -116,12 +116,28 @@ static int16_t KeyHoleBounds[12] = {
     +10 * PHD_DEGREE,
 };
 
+static int16_t PuzzleHoleBounds[12] = {
+    -200,
+    +200,
+    0,
+    0,
+    WALL_L / 2 - 200,
+    WALL_L / 2,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
 static PHD_VECTOR PickUpPosition = { 0, 0, -100 };
 static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
 static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
 static PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };
 static PHD_VECTOR Switch2Position = { 0, 0, 108 };
 static PHD_VECTOR KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+static PHD_VECTOR PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
 static int PickUpX, PickUpY, PickUpZ;
 
@@ -496,6 +512,126 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void PuzzleHoleCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (lara_item->current_anim_state == AS_USEPUZZLE) {
+        if (!TestLaraPosition(PuzzleHoleBounds, item, lara_item)) {
+            return;
+        }
+
+        if (lara_item->frame_number == AF_USEPUZZLE) {
+            switch (item->object_number) {
+            case O_PUZZLE_HOLE1:
+                item->object_number = O_PUZZLE_DONE1;
+                break;
+
+            case O_PUZZLE_HOLE2:
+                item->object_number = O_PUZZLE_DONE2;
+                break;
+
+            case O_PUZZLE_HOLE3:
+                item->object_number = O_PUZZLE_DONE3;
+                break;
+
+            case O_PUZZLE_HOLE4:
+                item->object_number = O_PUZZLE_DONE4;
+                break;
+            }
+        }
+
+        return;
+    } else if (lara_item->current_anim_state != AS_STOP) {
+        return;
+    }
+
+    if ((InventoryChosen == -1 && !CHK_ANY(Input, IN_ACTION))
+        || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
+        return;
+    }
+
+    if (!TestLaraPosition(PuzzleHoleBounds, item, lara_item)) {
+        return;
+    }
+
+    if (item->status != IS_NOT_ACTIVE) {
+        if (lara_item->pos.x != PickUpX || lara_item->pos.y != PickUpY
+            || lara_item->pos.z != PickUpZ) {
+            PickUpX = lara_item->pos.x;
+            PickUpY = lara_item->pos.y;
+            PickUpZ = lara_item->pos.z;
+            SoundEffect(2, &lara_item->pos, 0);
+        }
+        return;
+    }
+
+    if (InventoryChosen == -1) {
+        Display_Inventory(INV_KEYS_MODE);
+    } else {
+        PickUpY = lara_item->pos.y - 1;
+    }
+
+    if (InventoryChosen == -1 && InvKeysObjects) {
+        return;
+    }
+
+    if (InventoryChosen != -1) {
+        PickUpY = lara_item->pos.y - 1;
+    }
+
+    int32_t correct = 0;
+    switch (item->object_number) {
+    case O_PUZZLE_HOLE1:
+        if (InventoryChosen == O_PUZZLE_OPTION1) {
+            Inv_RemoveItem(O_PUZZLE_OPTION1);
+            correct = 1;
+        }
+        break;
+
+    case O_PUZZLE_HOLE2:
+        if (InventoryChosen == O_PUZZLE_OPTION2) {
+            Inv_RemoveItem(O_PUZZLE_OPTION2);
+            correct = 1;
+        }
+        break;
+
+    case O_PUZZLE_HOLE3:
+        if (InventoryChosen == O_PUZZLE_OPTION3) {
+            Inv_RemoveItem(O_PUZZLE_OPTION3);
+            correct = 1;
+        }
+        break;
+
+    case O_PUZZLE_HOLE4:
+        if (InventoryChosen == O_PUZZLE_OPTION4) {
+            Inv_RemoveItem(O_PUZZLE_OPTION4);
+            correct = 1;
+        }
+        break;
+    }
+
+    InventoryChosen = -1;
+    if (correct) {
+        AlignLaraPosition(&PuzzleHolePosition, item, lara_item);
+        AnimateLaraUntil(lara_item, AS_USEPUZZLE);
+        lara_item->goal_anim_state = AS_STOP;
+        Lara.gun_status = LGS_HANDSBUSY;
+        item->status = IS_ACTIVE;
+        PickUpX = lara_item->pos.x;
+        PickUpY = lara_item->pos.y;
+        PickUpZ = lara_item->pos.z;
+    } else if (
+        lara_item->pos.x != PickUpX || lara_item->pos.y != PickUpY
+        || lara_item->pos.z != PickUpZ) {
+        SoundEffect(2, &lara_item->pos, 0);
+        PickUpX = lara_item->pos.x;
+        PickUpY = lara_item->pos.y;
+        PickUpZ = lara_item->pos.z;
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -524,5 +660,6 @@ void T1MInjectGamePickup()
     INJECT(0x004336F0, SwitchCollision);
     INJECT(0x00433810, SwitchCollision2);
     INJECT(0x00433900, KeyHoleCollision);
+    INJECT(0x00433B40, PuzzleHoleCollision);
     INJECT(0x00433EA0, KeyTrigger);
 }
