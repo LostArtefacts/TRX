@@ -43,6 +43,7 @@ void ShutThatDoor(DOORPOS_DATA* d);
 void OpenThatDoor(DOORPOS_DATA* d);
 void InitialiseDoor(int16_t item_num);
 void DoorControl(int16_t item_num);
+int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y);
 
 void T1MInjectGameObjects();
 

@@ -190,8 +190,34 @@ void DoorControl(int16_t item_num)
     AnimateItem(item);
 }
 
+int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y)
+{
+    int32_t ix = item->pos.z >> WALL_SHIFT;
+    int32_t iy = item->pos.x >> WALL_SHIFT;
+
+    x >>= WALL_SHIFT;
+    y >>= WALL_SHIFT;
+
+    if (item->pos.y_rot == 0 && y == iy && (x == ix - 1 || x == ix - 2)) {
+        return 1;
+    }
+    if (item->pos.y_rot == -PHD_180 && y == iy
+        && (x == ix + 1 || x == ix + 2)) {
+        return 1;
+    }
+    if (item->pos.y_rot == PHD_90 && x == ix && (y == iy - 1 || y == iy - 2)) {
+        return 1;
+    }
+    if (item->pos.y_rot == -PHD_90 && x == ix && (y == iy + 1 || y == iy + 2)) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
     INJECT(0x0042CEF0, DoorControl);
+    INJECT(0x0042D130, OnDrawBridge);
 }
