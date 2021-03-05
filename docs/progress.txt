@@ -713,7 +713,7 @@ GetOffset                       ----------  ----------  +
 BridgeTilt1Floor                0x0042D2E0  0x00000048  +
 BridgeTilt1Ceiling              0x0042D330  0x0000004D  +
 BridgeTilt2Floor                0x0042D380  0x00000047  +
-BridgeTilt2Ceiling              0x0042D3D0  0x0000004C  *
+BridgeTilt2Ceiling              0x0042D3D0  0x0000004C  +
 CogControl                      0x0042D420  0x00000075  *
 CabinControl                    0x0042D4A0  0x0000007F  *
 BoatControl                     0x0042D520  0x0000005B  *

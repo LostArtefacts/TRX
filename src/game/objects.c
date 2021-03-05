@@ -311,6 +311,15 @@ void BridgeTilt2Floor(
     }
 }
 
+void BridgeTilt2Ceiling(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
+    if (y > level) {
+        *height = level + STEP_L;
+    }
+}
+
 void T1MInjectGameObjects()
 {
     INJECT(0x0042CA40, InitialiseDoor);
@@ -324,4 +333,5 @@ void T1MInjectGameObjects()
     INJECT(0x0042D2E0, BridgeTilt1Floor);
     INJECT(0x0042D330, BridgeTilt1Ceiling);
     INJECT(0x0042D380, BridgeTilt2Floor);
+    INJECT(0x0042D3D0, BridgeTilt2Ceiling);
 }
