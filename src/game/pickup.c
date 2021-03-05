@@ -30,6 +30,22 @@ static int16_t PickUpBoundsUW[12] = {
 static PHD_VECTOR PickUpPosition = { 0, 0, -100 };
 static PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
 
+static int16_t PickUpScionBounds[12] = {
+    -256,
+    256,
+    640 - 100,
+    640 + 100,
+    -350,
+    -200,
+    -10 * PHD_DEGREE,
+    10 * PHD_DEGREE,
+    0,
+    0,
+    0,
+    0,
+};
+static PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
+
 void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 {
     lara_item->goal_anim_state = goal;
@@ -104,6 +120,43 @@ void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void PickUpScionCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    item->pos.y_rot = lara_item->pos.y_rot;
+    item->pos.x_rot = 0;
+    item->pos.z_rot = 0;
+
+    if (!TestLaraPosition(PickUpScionBounds, item, lara_item)) {
+        return;
+    }
+
+    if (lara_item->current_anim_state == AS_PICKUP) {
+        if (lara_item->frame_number
+            == Anims[lara_item->anim_number].frame_base + AF_PICKUPSCION) {
+            AddDisplayPickup(item->object_number);
+            Inv_AddItem(item->object_number);
+            item->status = IS_INVISIBLE;
+            RemoveDrawnItem(item_num);
+            SaveGame[0].pickups++;
+        }
+    } else if (
+        CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
+        && !lara_item->gravity_status
+        && lara_item->current_anim_state == AS_STOP) {
+        AlignLaraPosition(&PickUpScionPosition, item, lara_item);
+        lara_item->current_anim_state = AS_PICKUP;
+        lara_item->goal_anim_state = AS_PICKUP;
+        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
+        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        Lara.gun_status = LGS_HANDSBUSY;
+        Camera.type = CAM_CINEMATIC;
+        CineFrame = 0;
+        CinematicPosition = lara_item->pos;
+    }
+}
+
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO* item = &Items[item_num];
@@ -126,5 +179,6 @@ int32_t KeyTrigger(int16_t item_num)
 void T1MInjectGamePickup()
 {
     INJECT(0x00433080, PickUpCollision);
+    INJECT(0x00433240, PickUpScionCollision);
     INJECT(0x00433EA0, KeyTrigger);
 }
