@@ -9,6 +9,7 @@
 #include "game/people.h"
 #include "game/vars.h"
 #include "game/warrior.h"
+#include "specific/init.h"
 #include "util.h"
 
 #define CENTAUR_PART_DAMAGE 100
@@ -575,6 +576,15 @@ int16_t RocketGun(
     return fx_num;
 }
 
+void InitialiseMummy(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    item->touch_bits = 0;
+    item->mesh_bits = 0xFFFF87FF;
+    item->data = game_malloc(sizeof(int16_t), GBUF_MUMMY_HEAD_TURN);
+    *(int16_t*)item->data = 0;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -583,4 +593,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043C1C0, ControlMissile);
     INJECT(0x0043C430, ShardGun);
     INJECT(0x0043C540, RocketGun);
+    INJECT(0x0043C650, InitialiseMummy);
 }
