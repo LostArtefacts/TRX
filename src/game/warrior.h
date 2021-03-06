@@ -4,10 +4,6 @@
 #include "game/types.h"
 #include <stdint.h>
 
-// clang-format off
-#define StatueControl           ((void      (*)(int16_t item_num))0x0043CF80)
-// clang-format on
-
 void CentaurControl(int16_t item_num);
 void InitialiseWarrior2(int16_t item_num);
 void FlyerControl(int16_t item_num);
@@ -31,6 +27,7 @@ void InitialisePod(int16_t item_num);
 void PodControl(int16_t item_num);
 
 void InitialiseStatue(int16_t item_num);
+void StatueControl(int16_t item_num);
 
 void T1MInjectGameWarrior();
 

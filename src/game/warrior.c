@@ -48,6 +48,7 @@
 #define ROCKET_SPEED 220
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
+#define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 
 typedef enum {
     CENTAUR_EMPTY = 0,
@@ -914,6 +915,30 @@ void InitialiseStatue(int16_t item_num)
     LevelItemCount++;
 }
 
+void StatueControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    int32_t x = LaraItem->pos.x - item->pos.x;
+    int32_t y = LaraItem->pos.y - item->pos.y;
+    int32_t z = LaraItem->pos.z - item->pos.z;
+
+    if (y > -WALL_L && y < WALL_L
+        && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
+        ExplodingDeath(item_num, -1, 0);
+        KillItem(item_num);
+        item->status = IS_DEACTIVATED;
+
+        int16_t centaur_item_num = *(int16_t*)item->data;
+        ITEM_INFO* centaur = &Items[centaur_item_num];
+        centaur->touch_bits = 0;
+        AddActiveItem(centaur_item_num);
+        EnableBaddieAI(centaur_item_num, 1);
+        centaur->status = IS_ACTIVE;
+
+        SoundEffect(104, &centaur->pos, 0);
+    }
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -929,4 +954,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043CC70, InitialisePod);
     INJECT(0x0043CD70, PodControl);
     INJECT(0x0043CE90, InitialiseStatue);
+    INJECT(0x0043CF80, StatueControl);
 }
