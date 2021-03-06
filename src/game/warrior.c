@@ -11,6 +11,7 @@
 #include "game/vars.h"
 #include "game/warrior.h"
 #include "specific/init.h"
+#include "specific/shed.h"
 #include "util.h"
 
 #define CENTAUR_PART_DAMAGE 100
@@ -879,6 +880,40 @@ void PodControl(int16_t item_num)
     AnimateItem(item);
 }
 
+void InitialiseStatue(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    int16_t centaur_item_num = CreateItem();
+    if (centaur_item_num == NO_ITEM) {
+        S_ExitSystem("FATAL: Cannot create CENTAUR in STATUE");
+        return;
+    }
+
+    ITEM_INFO* centaur = &Items[centaur_item_num];
+    centaur->object_number = O_CENTAUR;
+    centaur->room_number = item->room_number;
+    centaur->pos.x = item->pos.x;
+    centaur->pos.y = item->pos.y;
+    centaur->pos.z = item->pos.z;
+    centaur->flags = IF_NOT_VISIBLE;
+    centaur->shade = -1;
+
+    InitialiseItem(centaur_item_num);
+
+    centaur->anim_number = Objects[O_CENTAUR].anim_index + 7;
+    centaur->frame_number = Anims[centaur->anim_number].frame_base + 36;
+    centaur->current_anim_state =
+        Anims[centaur->anim_number].current_anim_state;
+    centaur->goal_anim_state = centaur->current_anim_state;
+    centaur->pos.y_rot = item->pos.y_rot;
+
+    item->data = game_malloc(sizeof(int16_t), 0);
+    *(int16_t*)item->data = centaur_item_num;
+
+    LevelItemCount++;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -893,4 +928,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043CAD0, ControlBodyPart);
     INJECT(0x0043CC70, InitialisePod);
     INJECT(0x0043CD70, PodControl);
+    INJECT(0x0043CE90, InitialiseStatue);
 }

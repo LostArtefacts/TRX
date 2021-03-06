@@ -952,7 +952,7 @@ ExplodingDeath                  0x0043C730  0x0000039A  +
 ControlBodyPart                 0x0043CAD0  0x00000195  +
 InitialisePod                   0x0043CC70  0x000000DC  +
 PodControl                      0x0043CD70  0x00000118  +
-InitialiseStatue                0x0043CE90  0x000000E5  *
+InitialiseStatue                0x0043CE90  0x000000E5  +
 StatueControl                   0x0043CF80  0x000000E1  *
 
 # ???
