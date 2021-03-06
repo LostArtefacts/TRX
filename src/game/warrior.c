@@ -42,6 +42,7 @@
 #define SHARD_SPEED 250
 #define ROCKET_DAMAGE 100
 #define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
+#define ROCKET_SPEED 220
 
 typedef enum {
     CENTAUR_EMPTY = 0,
@@ -542,10 +543,33 @@ int16_t ShardGun(
         fx->pos.x_rot = 0;
         fx->pos.y_rot = y_rot;
         fx->pos.z_rot = 0;
-        fx->speed = SHARD_SPEED;
-        fx->frame_number = 0;
         fx->object_number = O_MISSILE2;
+        fx->frame_number = 0;
+        fx->speed = SHARD_SPEED;
         fx->shade = 3584;
+        ShootAtLara(fx);
+    }
+    return fx_num;
+}
+
+int16_t RocketGun(
+    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
+    int16_t room_num)
+{
+    int16_t fx_num = CreateEffect(room_num);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = x;
+        fx->pos.y = y;
+        fx->pos.z = z;
+        fx->room_number = room_num;
+        fx->pos.x_rot = 0;
+        fx->pos.y_rot = y_rot;
+        fx->pos.z_rot = 0;
+        fx->object_number = O_MISSILE3;
+        fx->frame_number = 0;
+        fx->speed = ROCKET_SPEED;
+        fx->shade = 4096;
         ShootAtLara(fx);
     }
     return fx_num;
@@ -558,4 +582,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043BB60, FlyerControl);
     INJECT(0x0043C1C0, ControlMissile);
     INJECT(0x0043C430, ShardGun);
+    INJECT(0x0043C540, RocketGun);
 }
