@@ -808,94 +808,94 @@ void ObjectObjects()
     Objects[O_MOVING_BAR].save_anim = 1;
     Objects[O_MOVING_BAR].save_position = 1;
 
-    Objects[O_PICKUP_ITEM1].draw_routine = DrawSpriteItem;
+    Objects[O_PICKUP_ITEM1].draw_routine = DrawPickupItem;
     Objects[O_PICKUP_ITEM1].collision = PickUpCollision;
     Objects[O_PICKUP_ITEM1].save_flags = 1;
 
-    Objects[O_PICKUP_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_PICKUP_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_PICKUP_ITEM2].collision = PickUpCollision;
     Objects[O_PICKUP_ITEM2].save_flags = 1;
 
-    Objects[O_KEY_ITEM1].draw_routine = DrawSpriteItem;
+    Objects[O_KEY_ITEM1].draw_routine = DrawPickupItem;
     Objects[O_KEY_ITEM1].collision = PickUpCollision;
     Objects[O_KEY_ITEM1].save_flags = 1;
 
-    Objects[O_KEY_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_KEY_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_KEY_ITEM2].collision = PickUpCollision;
     Objects[O_KEY_ITEM2].save_flags = 1;
 
-    Objects[O_KEY_ITEM3].draw_routine = DrawSpriteItem;
+    Objects[O_KEY_ITEM3].draw_routine = DrawPickupItem;
     Objects[O_KEY_ITEM3].collision = PickUpCollision;
     Objects[O_KEY_ITEM3].save_flags = 1;
 
-    Objects[O_KEY_ITEM4].draw_routine = DrawSpriteItem;
+    Objects[O_KEY_ITEM4].draw_routine = DrawPickupItem;
     Objects[O_KEY_ITEM4].collision = PickUpCollision;
     Objects[O_KEY_ITEM4].save_flags = 1;
 
-    Objects[O_PUZZLE_ITEM1].draw_routine = DrawSpriteItem;
+    Objects[O_PUZZLE_ITEM1].draw_routine = DrawPickupItem;
     Objects[O_PUZZLE_ITEM1].collision = PickUpCollision;
     Objects[O_PUZZLE_ITEM1].save_flags = 1;
 
-    Objects[O_PUZZLE_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_PUZZLE_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_PUZZLE_ITEM2].collision = PickUpCollision;
     Objects[O_PUZZLE_ITEM2].save_flags = 1;
 
-    Objects[O_PUZZLE_ITEM3].draw_routine = DrawSpriteItem;
+    Objects[O_PUZZLE_ITEM3].draw_routine = DrawPickupItem;
     Objects[O_PUZZLE_ITEM3].collision = PickUpCollision;
     Objects[O_PUZZLE_ITEM3].save_flags = 1;
 
-    Objects[O_PUZZLE_ITEM4].draw_routine = DrawSpriteItem;
+    Objects[O_PUZZLE_ITEM4].draw_routine = DrawPickupItem;
     Objects[O_PUZZLE_ITEM4].collision = PickUpCollision;
     Objects[O_PUZZLE_ITEM4].save_flags = 1;
 
-    Objects[O_GUN_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_GUN_ITEM].draw_routine = DrawPickupItem;
     Objects[O_GUN_ITEM].collision = PickUpCollision;
     Objects[O_GUN_ITEM].save_flags = 1;
 
-    Objects[O_SHOTGUN_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_SHOTGUN_ITEM].draw_routine = DrawPickupItem;
     Objects[O_SHOTGUN_ITEM].collision = PickUpCollision;
     Objects[O_SHOTGUN_ITEM].save_flags = 1;
 
-    Objects[O_MAGNUM_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_MAGNUM_ITEM].draw_routine = DrawPickupItem;
     Objects[O_MAGNUM_ITEM].collision = PickUpCollision;
     Objects[O_MAGNUM_ITEM].save_flags = 1;
 
-    Objects[O_UZI_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_UZI_ITEM].draw_routine = DrawPickupItem;
     Objects[O_UZI_ITEM].collision = PickUpCollision;
     Objects[O_UZI_ITEM].save_flags = 1;
 
-    Objects[O_GUN_AMMO_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_GUN_AMMO_ITEM].draw_routine = DrawPickupItem;
     Objects[O_GUN_AMMO_ITEM].collision = PickUpCollision;
     Objects[O_GUN_AMMO_ITEM].save_flags = 1;
 
-    Objects[O_SG_AMMO_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_SG_AMMO_ITEM].draw_routine = DrawPickupItem;
     Objects[O_SG_AMMO_ITEM].collision = PickUpCollision;
     Objects[O_SG_AMMO_ITEM].save_flags = 1;
 
-    Objects[O_MAG_AMMO_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_MAG_AMMO_ITEM].draw_routine = DrawPickupItem;
     Objects[O_MAG_AMMO_ITEM].collision = PickUpCollision;
     Objects[O_MAG_AMMO_ITEM].save_flags = 1;
 
-    Objects[O_UZI_AMMO_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_UZI_AMMO_ITEM].draw_routine = DrawPickupItem;
     Objects[O_UZI_AMMO_ITEM].collision = PickUpCollision;
     Objects[O_UZI_AMMO_ITEM].save_flags = 1;
 
-    Objects[O_EXPLOSIVE_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_EXPLOSIVE_ITEM].draw_routine = DrawPickupItem;
     Objects[O_EXPLOSIVE_ITEM].collision = PickUpCollision;
     Objects[O_EXPLOSIVE_ITEM].save_flags = 1;
 
-    Objects[O_MEDI_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_MEDI_ITEM].draw_routine = DrawPickupItem;
     Objects[O_MEDI_ITEM].collision = PickUpCollision;
     Objects[O_MEDI_ITEM].save_flags = 1;
 
-    Objects[O_BIGMEDI_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_BIGMEDI_ITEM].draw_routine = DrawPickupItem;
     Objects[O_BIGMEDI_ITEM].collision = PickUpCollision;
     Objects[O_BIGMEDI_ITEM].save_flags = 1;
 
-    Objects[O_SCION_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM].collision = PickUpScionCollision;
 
-    Objects[O_SCION_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM2].collision = PickUpCollision;
     Objects[O_SCION_ITEM2].save_flags = 1;
 
@@ -912,7 +912,7 @@ void ObjectObjects()
     Objects[O_SCION_HOLDER].save_anim = 1;
     Objects[O_SCION_HOLDER].save_flags = 1;
 
-    Objects[O_LEADBAR_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_LEADBAR_ITEM].draw_routine = DrawPickupItem;
     Objects[O_LEADBAR_ITEM].collision = PickUpCollision;
     Objects[O_LEADBAR_ITEM].save_flags = 1;
 

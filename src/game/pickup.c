@@ -156,11 +156,11 @@ void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
 void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 {
     ITEM_INFO* item = &Items[item_num];
-    item->pos.y_rot = lara_item->pos.y_rot;
+    item->pos.x_rot = 0;
     item->pos.z_rot = 0;
+    item->pos.y_rot = lara_item->pos.y_rot;
 
     if (Lara.water_status == LWS_ABOVEWATER) {
-        item->pos.x_rot = 0;
         if (!TestLaraPosition(PickUpBounds, item, lara_item)) {
             return;
         }
@@ -223,9 +223,9 @@ void PickUpScionCollision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 {
     ITEM_INFO* item = &Items[item_num];
-    item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
+    item->pos.y_rot = lara_item->pos.y_rot;
 
     if (!TestLaraPosition(PickUpScionBounds, item, lara_item)) {
         return;
@@ -260,9 +260,9 @@ void PickUpScion4Collision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 {
     ITEM_INFO* item = &Items[item_num];
-    item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
+    item->pos.y_rot = lara_item->pos.y_rot;
 
     if (!TestLaraPosition(PickUpScion4Bounds, item, lara_item)) {
         return;

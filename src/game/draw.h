@@ -12,6 +12,7 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent);
 void PrintRooms(int16_t room_number);
 void DrawEffect(int16_t fxnum);
 void DrawSpriteItem(ITEM_INFO* item);
+void DrawPickupItem(ITEM_INFO* item);
 void DrawDummyItem(ITEM_INFO* item);
 void DrawAnimatingItem(ITEM_INFO* item);
 void DrawUnclippedItem(ITEM_INFO* item);

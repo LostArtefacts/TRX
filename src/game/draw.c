@@ -6,6 +6,7 @@
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
+#include "game/inv.h"
 #include "game/vars.h"
 #include "specific/output.h"
 #include "config.h"
@@ -335,6 +336,64 @@ void DrawSpriteItem(ITEM_INFO* item)
         item->pos.x, item->pos.y, item->pos.z,
         Objects[item->object_number].mesh_index - item->frame_number,
         item->shade);
+}
+
+void DrawPickupItem(ITEM_INFO* item)
+{
+    int16_t item_num_option = Inv_GetItemOption(item->object_number);
+
+    int16_t current_frame = 0;
+    int32_t drawn_meshes = -1;
+    OBJECT_INFO* obj = &Objects[item_num_option];
+
+    if (obj->nmeshes < 0) {
+        TRACE("no meshes for object %d", item_num_option);
+        DrawSpriteItem(item);
+        return;
+    }
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, item->pos.y - STEP_L / 8, item->pos.z);
+    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+
+    int16_t* frame = &obj->frame_base[current_frame];
+    // CalculateObjectLighting(item, frame);
+    int32_t clip = S_GetObjectBounds(frame);
+    if (clip) {
+        // phd_TranslateRel(
+        //     frame[FRAME_POS_X], frame[FRAME_POS_Y],
+        //     frame[FRAME_POS_Z]);
+        // int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+        // phd_RotYXZpack(*packed_rotation++);
+
+        int32_t mesh_num = 1;
+        int32_t* bone = &AnimBones[obj->bone_index];
+        if (drawn_meshes & mesh_num) {
+            phd_PutPolygons(Meshes[obj->mesh_index], clip);
+        }
+
+        for (int i = 1; i < obj->nmeshes; i++) {
+            mesh_num <<= 1;
+
+            int32_t bone_extra_flags = bone[0];
+            if (bone_extra_flags & BEB_POP) {
+                phd_PopMatrix();
+            }
+            if (bone_extra_flags & BEB_PUSH) {
+                phd_PushMatrix();
+            }
+
+            phd_TranslateRel(bone[1], bone[2], bone[3]);
+            // phd_RotYXZpack(*packed_rotation++);
+
+            if (drawn_meshes & mesh_num) {
+                phd_PutPolygons(Meshes[obj->mesh_index + i], clip);
+            }
+
+            bone += 4;
+        }
+    }
+    phd_PopMatrix();
 }
 
 void DrawDummyItem(ITEM_INFO* item)
