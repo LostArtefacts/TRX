@@ -46,6 +46,8 @@
 #define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
 #define ROCKET_SPEED 220
 
+#define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
+
 typedef enum {
     CENTAUR_EMPTY = 0,
     CENTAUR_STOP = 1,
@@ -73,11 +75,16 @@ enum FLYER_ANIM {
     FLYER_FLY = 13,
 };
 
-enum MUMMY_ANIM {
+typedef enum {
     MUMMY_EMPTY = 0,
     MUMMY_STOP = 1,
     MUMMY_DEATH = 2,
-};
+} MUMMY_ANIM;
+
+typedef enum {
+    POD_SET = 0,
+    POD_EXPLODE = 1,
+} POD_ANIM;
 
 static BITE_INFO CentaurRocket = { 11, 415, 41, 13 };
 static BITE_INFO CentaurRear = { 50, 30, 0, 5 };
@@ -830,6 +837,48 @@ void InitialisePod(int16_t item_num)
     item->mesh_bits = 0xFF0001FF;
 }
 
+void PodControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (item->goal_anim_state != POD_EXPLODE) {
+        int32_t explode = 0;
+
+        if (item->flags & IF_ONESHOT) {
+            explode = 1;
+        } else if (item->object_number == O_BIG_POD) {
+            explode = 1;
+        } else {
+            int32_t x = LaraItem->pos.x - item->pos.x;
+            int32_t y = LaraItem->pos.y - item->pos.y;
+            int32_t z = LaraItem->pos.z - item->pos.z;
+            if (ABS(x) < POD_EXPLODE_DIST && ABS(y) < POD_EXPLODE_DIST
+                && ABS(z) < POD_EXPLODE_DIST) {
+                explode = 1;
+            }
+        }
+
+        if (explode) {
+            item->goal_anim_state = POD_EXPLODE;
+            item->mesh_bits = 0xFFFFFF;
+            item->collidable = 0;
+            ExplodingDeath(item_num, 0xFFFE00, 0);
+
+            int16_t bug_item_num = *(int16_t*)item->data;
+            ITEM_INFO* bug = &Items[bug_item_num];
+            bug->touch_bits = 0;
+            AddActiveItem(bug_item_num);
+            if (EnableBaddieAI(bug_item_num, 0)) {
+                bug->status = IS_ACTIVE;
+            } else {
+                bug->status = IS_INVISIBLE;
+            }
+        }
+    }
+
+    AnimateItem(item);
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -843,4 +892,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043C730, ExplodingDeath);
     INJECT(0x0043CAD0, ControlBodyPart);
     INJECT(0x0043CC70, InitialisePod);
+    INJECT(0x0043CD70, PodControl);
 }
