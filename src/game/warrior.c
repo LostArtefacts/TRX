@@ -72,6 +72,12 @@ enum FLYER_ANIM {
     FLYER_FLY = 13,
 };
 
+enum MUMMY_ANIM {
+    MUMMY_EMPTY = 0,
+    MUMMY_STOP = 1,
+    MUMMY_DEATH = 2,
+};
+
 static BITE_INFO CentaurRocket = { 11, 415, 41, 13 };
 static BITE_INFO CentaurRear = { 50, 30, 0, 5 };
 static BITE_INFO WarriorBite = { -27, 98, 0, 10 };
@@ -585,6 +591,31 @@ void InitialiseMummy(int16_t item_num)
     *(int16_t*)item->data = 0;
 }
 
+void MummyControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    int16_t head = 0;
+
+    if (item->current_anim_state == MUMMY_STOP) {
+        head = phd_atan(
+                   LaraItem->pos.z - item->pos.z, LaraItem->pos.x - item->pos.x)
+            - item->pos.y_rot;
+        CLAMP(head, -FRONT_ARC, FRONT_ARC);
+
+        if (item->hit_points <= 0 || item->touch_bits) {
+            item->goal_anim_state = MUMMY_DEATH;
+        }
+    }
+
+    CreatureHead(item, head);
+    AnimateItem(item);
+
+    if (item->status == IS_DEACTIVATED) {
+        RemoveActiveItem(item_num);
+        item->hit_points = DONT_TARGET;
+    }
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -594,4 +625,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043C430, ShardGun);
     INJECT(0x0043C540, RocketGun);
     INJECT(0x0043C650, InitialiseMummy);
+    INJECT(0x0043C690, MummyControl);
 }

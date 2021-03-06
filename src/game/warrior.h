@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define MummyControl            ((void      (*)(int16_t item_num))0x0043C690)
 #define ExplodingDeath          ((int32_t   (*)(int16_t item_num, int32_t mesh_bits, int16_t damage))0x0043C730)
 #define ControlBodyPart         ((void      (*)(int16_t item_num))0x0043CAD0)
 #define InitialisePod           ((void      (*)(int16_t item_num))0x0043CC70)
@@ -28,6 +27,7 @@ int16_t RocketGun(
     int16_t room_num);
 
 void InitialiseMummy(int16_t item_num);
+void MummyControl(int16_t item_num);
 
 void T1MInjectGameWarrior();
 
