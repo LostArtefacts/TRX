@@ -728,6 +728,62 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - object->nmeshes)));
 }
 
+void ControlBodyPart(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->pos.x_rot += 5 * PHD_DEGREE;
+    fx->pos.z_rot += 10 * PHD_DEGREE;
+    fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->fall_speed += GRAVITY;
+    fx->pos.y += fx->fall_speed;
+
+    int16_t room_num = fx->room_number;
+    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+
+    int32_t ceiling = GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    if (fx->pos.y < ceiling) {
+        fx->fall_speed = -fx->fall_speed;
+        fx->pos.y = ceiling;
+    }
+
+    int32_t height = GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    if (fx->pos.y >= height) {
+        if (fx->counter) {
+            fx->speed = 0;
+            fx->frame_number = 0;
+            fx->counter = 0;
+            fx->object_number = O_EXPLOSION1;
+            SoundEffect(104, &fx->pos, 0);
+        } else {
+            KillEffect(fx_num);
+        }
+        return;
+    }
+
+    if (ItemNearLara(&fx->pos, fx->counter * 2)) {
+        LaraItem->hit_points -= fx->counter;
+        LaraItem->hit_status = 1;
+
+        if (fx->counter) {
+            fx->speed = 0;
+            fx->frame_number = 0;
+            fx->counter = 0;
+            fx->object_number = O_EXPLOSION1;
+            SoundEffect(104, &fx->pos, 0);
+
+            Lara.spaz_effect_count = 5;
+            Lara.spaz_effect = fx;
+        } else {
+            KillEffect(fx_num);
+        }
+    }
+
+    if (room_num != fx->room_number) {
+        EffectNewRoom(fx_num, room_num);
+    }
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -739,4 +795,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043C650, InitialiseMummy);
     INJECT(0x0043C690, MummyControl);
     INJECT(0x0043C730, ExplodingDeath);
+    INJECT(0x0043CAD0, ControlBodyPart);
 }
