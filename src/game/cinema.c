@@ -63,6 +63,16 @@ void InitialisePlayer1(int16_t item_num)
     }
 }
 
+void ControlCinematicPlayer(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    item->pos.y_rot = Camera.target_angle;
+    item->pos.x = Camera.pos.x;
+    item->pos.y = Camera.pos.y;
+    item->pos.z = Camera.pos.z;
+    AnimateItem(item);
+}
+
 void ControlCinematicPlayer4(int16_t item_num)
 {
     AnimateItem(&Items[item_num]);
@@ -112,6 +122,7 @@ void InGameCinematicCamera()
 void T1MInjectGameCinema()
 {
     INJECT(0x00411370, CalculateCinematicCamera);
+    INJECT(0x004114A0, ControlCinematicPlayer);
     INJECT(0x004114F0, InitialisePlayer1);
     INJECT(0x004115C0, InitialiseGenPlayer);
     INJECT(0x004115F0, InGameCinematicCamera);
