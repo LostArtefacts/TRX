@@ -3,10 +3,10 @@
 
 // clang-format off
 #define ControlCinematicPlayer          ((void          (*)(int16_t item_num))0x004114A0)
-#define InitialisePlayer1               ((void          (*)(int16_t item_num))0x004114F0)
 // clang-format on
 
 void CalculateCinematicCamera();
+void InitialisePlayer1(int16_t item_num);
 void InitialiseGenPlayer(int16_t item_num);
 void InGameCinematicCamera();
 

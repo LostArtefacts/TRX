@@ -36,6 +36,33 @@ void CalculateCinematicCamera()
         campos.x, campos.y, campos.z, camtar.x, camtar.y, camtar.z, roll);
 }
 
+void InitialisePlayer1(int16_t item_num)
+{
+    AddActiveItem(item_num);
+
+    ITEM_INFO* item = &Items[item_num];
+    Camera.pos.room_number = item->room_number;
+    Camera.pos.x = item->pos.x;
+    Camera.pos.y = item->pos.y;
+    Camera.pos.z = item->pos.z;
+    Camera.target_angle = 0;
+    item->pos.y_rot = 0;
+
+    if (CinematicLevel == LV_CUTSCENE2 || CinematicLevel == LV_CUTSCENE4) {
+        int16_t* temp;
+
+        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L];
+        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L] =
+            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L];
+        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L] = temp;
+
+        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R];
+        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R] =
+            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R];
+        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R] = temp;
+    }
+}
+
 void InitialiseGenPlayer(int16_t item_num)
 {
     AddActiveItem(item_num);
@@ -80,6 +107,7 @@ void InGameCinematicCamera()
 void T1MInjectGameCinema()
 {
     INJECT(0x00411370, CalculateCinematicCamera);
+    INJECT(0x004114F0, InitialisePlayer1);
     INJECT(0x004115C0, InitialiseGenPlayer);
     INJECT(0x004115F0, InGameCinematicCamera);
 }
