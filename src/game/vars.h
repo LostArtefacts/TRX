@@ -124,6 +124,8 @@
 #define FlipMapTable            ARRAY_(0x00462CC0, int32_t, [MAX_FLIP_MAPS])
 #define Cine                    VAR_U_(0x00462CF4, int16_t*)
 #define CineFrame               VAR_U_(0x00462D14, int16_t)
+#define CinematicAnimationRate  VAR_I_(0x004534D8, int32_t, 0x8000)
+#define CinematicFrameCount     VAR_I_(0x00459F40, int32_t, 0)
 #define CinematicLevel          VAR_U_(0x00462D12, int16_t)
 #define CinematicPosition       VAR_U_(0x00462D00, PHD_3DPOS)
 #define DumpX                   VAR_I_(0x004546E0, int16_t, 0)

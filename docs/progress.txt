@@ -164,7 +164,7 @@ CalculateCamera                 0x00410B40  0x0000055D  +
 LoopCinematic                   ----------  ----------  -
 StartCinematic                  0x004110A0  0x00000183  -
 InitCinematicRooms              ----------  ----------  -
-DoCinematic                     0x00411240  0x0000012B  -
+DoCinematic                     0x00411240  0x0000012B  +
 CalculateCinematicCamera        0x00411370  0x00000124  +
 ControlCinematicPlayer          0x004114A0  0x00000045  +
 ControlCinematicPlayer4         ----------  ----------  +

@@ -26,12 +26,9 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
-    FrameCount += AnimationRate * nframes;
-    if (FrameCount < 0) {
-        return 0;
-    }
 
-    for (; FrameCount >= 0; FrameCount -= 0x10000) {
+    FrameCount += AnimationRate * nframes;
+    while (FrameCount >= 0) {
         if (CDTrack > 0) {
             S_CDLoop();
         }
@@ -155,7 +152,10 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 #endif
+
+        FrameCount -= 0x10000;
     }
+
     return 0;
 }
 

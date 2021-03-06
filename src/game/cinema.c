@@ -4,7 +4,56 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/vars.h"
+#include "specific/input.h"
 #include "util.h"
+
+int32_t DoCinematic(int32_t nframes)
+{
+    CinematicFrameCount += CinematicAnimationRate * nframes;
+    while (CinematicFrameCount >= 0) {
+        S_UpdateInput();
+        if (Input & IN_OPTION) {
+            return 1;
+        }
+
+        int16_t item_num = NextItemActive;
+        while (item_num != NO_ITEM) {
+            ITEM_INFO* item = &Items[item_num];
+            OBJECT_INFO* object = &Objects[item->object_number];
+            int16_t next_item_num = item->next_active;
+
+            if (object->control) {
+                object->control(item_num);
+            }
+
+            item_num = next_item_num;
+        }
+
+        int16_t fx_num = NextFxActive;
+        while (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            OBJECT_INFO* object = &Objects[fx->object_number];
+            int16_t next_fx_num = fx->next_active;
+
+            if (object->control) {
+                object->control(fx_num);
+            }
+
+            fx_num = next_fx_num;
+        }
+
+        CalculateCinematicCamera();
+        CineFrame++;
+
+        if (CineFrame >= NumCineFrames) {
+            return 1;
+        }
+
+        CinematicFrameCount -= 0x10000;
+    }
+
+    return 0;
+}
 
 void CalculateCinematicCamera()
 {
@@ -121,6 +170,7 @@ void InGameCinematicCamera()
 
 void T1MInjectGameCinema()
 {
+    INJECT(0x00411240, DoCinematic);
     INJECT(0x00411370, CalculateCinematicCamera);
     INJECT(0x004114A0, ControlCinematicPlayer);
     INJECT(0x004114F0, InitialisePlayer1);
