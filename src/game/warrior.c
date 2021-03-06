@@ -544,10 +544,10 @@ int16_t ShardGun(
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO* fx = &Effects[fx_num];
+        fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
-        fx->room_number = room_num;
         fx->pos.x_rot = 0;
         fx->pos.y_rot = y_rot;
         fx->pos.z_rot = 0;
@@ -567,10 +567,10 @@ int16_t RocketGun(
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO* fx = &Effects[fx_num];
+        fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
-        fx->room_number = room_num;
         fx->pos.x_rot = 0;
         fx->pos.y_rot = y_rot;
         fx->pos.z_rot = 0;
@@ -649,10 +649,10 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO* fx = &Effects[fx_num];
+            fx->room_number = item->room_number;
             fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-            fx->room_number = item->room_number;
             fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
             if (abortion) {
                 fx->speed = GetRandomControl() >> 7;
@@ -701,10 +701,10 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
             int16_t fx_num = CreateEffect(item->room_number);
             if (fx_num != NO_ITEM) {
                 FX_INFO* fx = &Effects[fx_num];
+                fx->room_number = item->room_number;
                 fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-                fx->room_number = item->room_number;
                 fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
                 if (abortion) {
                     fx->speed = GetRandomControl() >> 7;
@@ -784,6 +784,52 @@ void ControlBodyPart(int16_t fx_num)
     }
 }
 
+void InitialisePod(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    int16_t bug_item_num = CreateItem();
+    if (bug_item_num != NO_ITEM) {
+        ITEM_INFO* bug = &Items[bug_item_num];
+
+        switch ((item->flags & IF_CODE_BITS) >> 9) {
+        case 1:
+            bug->object_number = O_WARRIOR2;
+            break;
+        case 2:
+            bug->object_number = O_CENTAUR;
+            break;
+        case 4:
+            bug->object_number = O_ABORTION;
+            break;
+        case 8:
+            bug->object_number = O_WARRIOR3;
+            break;
+        default:
+            bug->object_number = O_WARRIOR1;
+            break;
+        }
+
+        bug->room_number = item->room_number;
+        bug->pos.x = item->pos.x;
+        bug->pos.y = item->pos.y;
+        bug->pos.z = item->pos.z;
+        bug->pos.y_rot = item->pos.y_rot;
+        bug->flags = IF_NOT_VISIBLE;
+        bug->shade = -1;
+
+        InitialiseItem(bug_item_num);
+
+        item->data = game_malloc(sizeof(int16_t), 0);
+        *(int16_t*)item->data = bug_item_num;
+
+        LevelItemCount++;
+    }
+
+    item->flags = 0;
+    item->mesh_bits = 0xFF0001FF;
+}
+
 void T1MInjectGameWarrior()
 {
     INJECT(0x0043B850, CentaurControl);
@@ -796,4 +842,5 @@ void T1MInjectGameWarrior()
     INJECT(0x0043C690, MummyControl);
     INJECT(0x0043C730, ExplodingDeath);
     INJECT(0x0043CAD0, ControlBodyPart);
+    INJECT(0x0043CC70, InitialisePod);
 }

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialisePod           ((void      (*)(int16_t item_num))0x0043CC70)
 #define PodControl              ((void      (*)(int16_t item_num))0x0043CD70)
 #define InitialiseStatue        ((void      (*)(int16_t item_num))0x0043CE90)
 #define StatueControl           ((void      (*)(int16_t item_num))0x0043CF80)
@@ -29,6 +28,8 @@ void MummyControl(int16_t item_num);
 
 int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage);
 void ControlBodyPart(int16_t fx_num);
+
+void InitialisePod(int16_t item_num);
 
 void T1MInjectGameWarrior();
 
