@@ -113,6 +113,14 @@ void InitialiseGameFlags()
     PierreItem = NO_ITEM;
 }
 
+void InitialiseLevelFlags()
+{
+    SaveGame[0].secrets = 0;
+    SaveGame[0].timer = 0;
+    SaveGame[0].pickups = 0;
+    SaveGame[0].kills = 0;
+}
+
 void BaddyObjects()
 {
     Objects[O_LARA].initialise = InitialiseLaraLoad;
@@ -1092,6 +1100,8 @@ void InitialiseObjects()
 void T1MInjectGameSetup()
 {
     INJECT(0x004362A0, InitialiseLevel);
+    INJECT(0x004363C0, InitialiseLevelFlags);
+
     INJECT(0x004363E0, BaddyObjects);
     INJECT(0x00437010, TrapObjects);
     INJECT(0x00437370, ObjectObjects);

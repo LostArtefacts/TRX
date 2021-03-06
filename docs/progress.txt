@@ -835,7 +835,7 @@ draw_scaled_spriteC             0x004360A0  0x000001FB  -
 # setup.cpp
 InitialiseLevel                 0x004362A0  0x00000119  +
 InitialiseGameFlags             ----------  ----------  +
-InitialiseLevelFlags            0x004363C0  0x00000018  *
+InitialiseLevelFlags            0x004363C0  0x00000018  +
 BaddyObjects                    0x004363E0  0x00000C2F  +
 TrapObjects                     0x00437010  0x00000356  +
 ObjectObjects                   0x00437370  0x000006D3  +

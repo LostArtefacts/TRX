@@ -3,12 +3,10 @@
 
 #include <stdint.h>
 
-// clang-format off
-#define InitialiseLevelFlags    ((void          (*)())0x004363C0)
-// clang-format on
-
 int32_t InitialiseLevel(int32_t level_num);
 void InitialiseGameFlags();
+void InitialiseLevelFlags();
+
 void BaddyObjects();
 void TrapObjects();
 void ObjectObjects();
