@@ -977,7 +977,7 @@ void ObjectObjects()
     Objects[O_PLAYER_3].hit_points = 1;
 
     Objects[O_PLAYER_4].initialise = InitialiseGenPlayer;
-    Objects[O_PLAYER_4].control = ControlLaraExtra;
+    Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
     Objects[O_PLAYER_4].hit_points = 1;
 
     Objects[O_BLOOD1].control = ControlBlood1;

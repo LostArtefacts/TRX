@@ -63,6 +63,11 @@ void InitialisePlayer1(int16_t item_num)
     }
 }
 
+void ControlCinematicPlayer4(int16_t item_num)
+{
+    AnimateItem(&Items[item_num]);
+}
+
 void InitialiseGenPlayer(int16_t item_num)
 {
     AddActiveItem(item_num);

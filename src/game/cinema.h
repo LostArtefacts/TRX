@@ -6,6 +6,7 @@
 // clang-format on
 
 void CalculateCinematicCamera();
+void ControlCinematicPlayer4(int16_t item_num);
 void InitialisePlayer1(int16_t item_num);
 void InitialiseGenPlayer(int16_t item_num);
 void InGameCinematicCamera();
