@@ -967,7 +967,7 @@ typedef struct {
     /* 0016 */ int16_t next_fx;
     /* 0018 */ int16_t next_active;
     /* 001A */ int16_t speed;
-    /* 001C */ int16_t fallspeed;
+    /* 001C */ int16_t fall_speed;
     /* 001E */ int16_t frame_number;
     /* 0020 */ int16_t counter;
     /* 0022 */ int16_t shade;
@@ -979,7 +979,7 @@ typedef struct {
     /* 0002 */ int16_t gun_status;
     /* 0004 */ int16_t gun_type;
     /* 0006 */ int16_t request_gun_type;
-    /* 0008 */ int16_t calc_fallspeed;
+    /* 0008 */ int16_t calc_fall_speed;
     /* 000A */ int16_t water_status;
     /* 000C */ int16_t pose_count;
     /* 000E */ int16_t hit_frame;

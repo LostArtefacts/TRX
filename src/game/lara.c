@@ -2080,7 +2080,7 @@ int32_t TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
         item->current_anim_state = AS_STOP;
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP;
-        Lara.calc_fallspeed =
+        Lara.calc_fall_speed =
             -(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         AnimateLara(item);
         item->pos.y_rot = angle;

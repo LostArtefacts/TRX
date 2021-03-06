@@ -242,9 +242,9 @@ void AnimateLara(ITEM_INFO* item)
                     item->speed = command[1];
                     command += 2;
                     item->gravity_status = 1;
-                    if (Lara.calc_fallspeed) {
-                        item->fall_speed = Lara.calc_fallspeed;
-                        Lara.calc_fallspeed = 0;
+                    if (Lara.calc_fall_speed) {
+                        item->fall_speed = Lara.calc_fall_speed;
+                        Lara.calc_fall_speed = 0;
                     }
                     break;
 
@@ -414,7 +414,7 @@ void InitialiseLara()
     Lara.head_y_rot = 0;
     Lara.head_x_rot = 0;
     Lara.head_z_rot = 0;
-    Lara.calc_fallspeed = 0;
+    Lara.calc_fall_speed = 0;
     Lara.mesh_effects = 0;
     Lara.hit_frame = 0;
     Lara.hit_direction = 0;
