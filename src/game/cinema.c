@@ -2,10 +2,84 @@
 #include "3dsystem/phd_math.h"
 #include "game/cinema.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/items.h"
+#include "game/setup.h"
 #include "game/vars.h"
+#include "specific/display.h"
 #include "specific/input.h"
+#include "specific/sndpc.h"
 #include "util.h"
+
+int32_t StartCinematic(int32_t level_num)
+{
+    CinematicLevel = level_num;
+    if (!InitialiseLevel(level_num)) {
+        return END_ACTION;
+    }
+
+    InitCinematicRooms();
+
+    switch (level_num) {
+    case LV_CUTSCENE1:
+        Camera.pos.x = 36668;
+        Camera.pos.z = 63180;
+        Camera.target_angle = -23312;
+        S_StartSyncedAudio(23);
+        break;
+
+    case LV_CUTSCENE2:
+        Camera.pos.x = 51962;
+        Camera.pos.z = 53760;
+        Camera.target_angle = 16380;
+        S_StartSyncedAudio(25);
+        break;
+
+    case LV_CUTSCENE3:
+        Camera.target_angle = PHD_90;
+        FlipMap();
+        S_StartSyncedAudio(24);
+        break;
+
+    case LV_CUTSCENE4:
+        Camera.target_angle = PHD_90;
+        S_StartSyncedAudio(22);
+        break;
+    }
+
+    SoundIsActive = 0;
+    CineFrame = 0;
+
+    DoCinematic(2);
+    DrawPhaseCinematic();
+    int32_t nframes;
+    do {
+        nframes = DrawPhaseCinematic();
+    } while (!DoCinematic(nframes));
+
+    S_CDStop();
+    S_SoundStopAllSamples();
+    LevelComplete = 1;
+    S_FadeInInventory(1);
+
+    return level_num | GF_LEVELCOMPLETE;
+}
+
+void InitCinematicRooms()
+{
+    for (int i = 0; i < RoomCount; i++) {
+        if (RoomInfo[i].flipped_room >= 0) {
+            RoomInfo[RoomInfo[i].flipped_room].bound_active = 1;
+        }
+    }
+
+    RoomsToDrawNum = 0;
+    for (int i = 0; i < RoomCount; i++) {
+        if (!RoomInfo[i].bound_active) {
+            RoomsToDraw[RoomsToDrawNum++] = i;
+        }
+    }
+}
 
 int32_t DoCinematic(int32_t nframes)
 {
@@ -170,6 +244,7 @@ void InGameCinematicCamera()
 
 void T1MInjectGameCinema()
 {
+    INJECT(0x004110A0, StartCinematic);
     INJECT(0x00411240, DoCinematic);
     INJECT(0x00411370, CalculateCinematicCamera);
     INJECT(0x004114A0, ControlCinematicPlayer);

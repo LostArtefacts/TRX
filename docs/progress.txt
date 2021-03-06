@@ -162,8 +162,8 @@ CalculateCamera                 0x00410B40  0x0000055D  +
 
 # cinema.cpp
 LoopCinematic                   ----------  ----------  -
-StartCinematic                  0x004110A0  0x00000183  -
-InitCinematicRooms              ----------  ----------  -
+StartCinematic                  0x004110A0  0x00000183  +
+InitCinematicRooms              ----------  ----------  +
 DoCinematic                     0x00411240  0x0000012B  +
 CalculateCinematicCamera        0x00411370  0x00000124  +
 ControlCinematicPlayer          0x004114A0  0x00000045  +
@@ -876,7 +876,7 @@ S_CDPlay                        0x00438D40  0x000000FD  *
 S_CDStop                        0x00438E40  0x00000043  *
 SampleLoader                    0x00438E90  0x00000005  -
 LoadSamples                     0x00438EA0  0x00000189  *
-sub_439030                      0x00439030  0x000000FC  -
+S_StartSyncedAudio              0x00439030  0x000000FC  -
 
 # sphere.cpp
 TestCollision                   0x00439130  0x00000128  *
