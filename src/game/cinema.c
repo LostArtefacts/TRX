@@ -2,6 +2,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/cinema.h"
 #include "game/control.h"
+#include "game/items.h"
 #include "game/vars.h"
 #include "util.h"
 
@@ -33,6 +34,12 @@ void CalculateCinematicCamera()
     AlterFOV(fov);
     phd_LookAt(
         campos.x, campos.y, campos.z, camtar.x, camtar.y, camtar.z, roll);
+}
+
+void InitialiseGenPlayer(int16_t item_num)
+{
+    AddActiveItem(item_num);
+    Items[item_num].pos.y_rot = 0;
 }
 
 void InGameCinematicCamera()
@@ -73,5 +80,6 @@ void InGameCinematicCamera()
 void T1MInjectGameCinema()
 {
     INJECT(0x00411370, CalculateCinematicCamera);
+    INJECT(0x004115C0, InitialiseGenPlayer);
     INJECT(0x004115F0, InGameCinematicCamera);
 }
