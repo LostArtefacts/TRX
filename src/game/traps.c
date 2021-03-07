@@ -23,6 +23,11 @@ typedef enum {
     TT_NASTY = 1,
 } TEETH_TRAP_STATE;
 
+typedef enum {
+    DE_IDLE = 0,
+    DE_FIRE = 1,
+} DART_EMITTER_STATE;
+
 static BITE_INFO Teeth1A = { -23, 0, -1718, 0 };
 static BITE_INFO Teeth1B = { 71, 0, -1718, 1 };
 static BITE_INFO Teeth2A = { -23, 10, -1718, 0 };
@@ -490,6 +495,69 @@ void DamoclesSwordCollision(
     }
 }
 
+void DartEmitterControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (TriggerActive(item)) {
+        if (item->current_anim_state == DE_IDLE) {
+            item->goal_anim_state = DE_FIRE;
+        }
+    } else {
+        if (item->current_anim_state == DE_FIRE) {
+            item->goal_anim_state = DE_IDLE;
+        }
+    }
+
+    if (item->current_anim_state == DE_FIRE
+        && item->frame_number == Anims[item->anim_number].frame_base) {
+        int16_t dart_item_num = CreateItem();
+        if (dart_item_num != NO_ITEM) {
+            ITEM_INFO* dart = &Items[dart_item_num];
+            dart->object_number = O_DARTS;
+            dart->room_number = item->room_number;
+            dart->shade = -1;
+            dart->pos.y_rot = item->pos.y_rot;
+            dart->pos.y = item->pos.y - WALL_L / 2;
+
+            int32_t x = 0;
+            int32_t z = 0;
+            switch (dart->pos.y_rot) {
+            case 0:
+                z = -WALL_L / 2 + 100;
+                break;
+            case PHD_90:
+                x = -WALL_L / 2 + 100;
+                break;
+            case -PHD_180:
+                z = WALL_L / 2 - 100;
+                break;
+            case -PHD_90:
+                x = WALL_L / 2 - 100;
+                break;
+            }
+
+            dart->pos.x = item->pos.x + x;
+            dart->pos.z = item->pos.z + z;
+            InitialiseItem(dart_item_num);
+            AddActiveItem(dart_item_num);
+            dart->status = IS_ACTIVE;
+
+            int16_t fx_num = CreateEffect(dart->room_number);
+            if (fx_num != NO_ITEM) {
+                FX_INFO* fx = &Effects[fx_num];
+                fx->pos = dart->pos;
+                fx->speed = 0;
+                fx->frame_number = 0;
+                fx->counter = 0;
+                fx->object_number = O_DART_EFFECT;
+                SoundEffect(151, &fx->pos, 0);
+            }
+        }
+    }
+    AnimateItem(item);
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -622,6 +690,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043AC60, InitialiseDamoclesSword);
     INJECT(0x0043ACA0, DamoclesSwordControl);
     INJECT(0x0043ADD0, DamoclesSwordCollision);
+    INJECT(0x0043AEC0, DartEmitterControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
