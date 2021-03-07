@@ -1,4 +1,5 @@
 #include "3dsystem/phd_math.h"
+#include "game/collide.h"
 #include "game/control.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -8,6 +9,8 @@
 #include "game/vars.h"
 #include "specific/init.h"
 #include "util.h"
+
+#define ROLLINGBALL_DAMAGE_AIR 100
 
 void InitialiseRollingBall(int16_t item_num)
 {
@@ -89,6 +92,73 @@ void RollingBallControl(int16_t item_num)
         item->goal_anim_state = item->current_anim_state;
         item->required_anim_state = TRAP_SET;
         RemoveActiveItem(item_num);
+    }
+}
+
+void RollingBallCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    if (item->status != IS_ACTIVE) {
+        if (item->status != IS_INVISIBLE) {
+            ObjectCollision(item_num, lara_item, coll);
+        }
+        return;
+    }
+
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+    if (!TestCollision(item, lara_item)) {
+        return;
+    }
+
+    int32_t x, y, z, d;
+    if (lara_item->gravity_status) {
+        if (coll->enable_baddie_push) {
+            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 1);
+        }
+        lara_item->hit_points -= ROLLINGBALL_DAMAGE_AIR;
+        x = lara_item->pos.x - item->pos.x;
+        z = lara_item->pos.z - item->pos.z;
+        y = (lara_item->pos.y - 350) - (item->pos.y - WALL_L / 2);
+        d = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+        if (d < WALL_L / 2) {
+            d = WALL_L / 2;
+        }
+        x = item->pos.x + (x << WALL_SHIFT) / 2 / d;
+        z = item->pos.z + (z << WALL_SHIFT) / 2 / d;
+        y = item->pos.y - WALL_L / 2 + (y << WALL_SHIFT) / 2 / d;
+        DoBloodSplat(x, y, z, item->speed, item->pos.y_rot, item->room_number);
+    } else {
+        lara_item->hit_status = 1;
+        if (lara_item->hit_points > 0) {
+            lara_item->hit_points = -1;
+            if (lara_item->room_number != item->room_number) {
+                ItemNewRoom(Lara.item_number, item->room_number);
+            }
+
+            lara_item->pos.x_rot = 0;
+            lara_item->pos.z_rot = 0;
+            lara_item->pos.y_rot = item->pos.y_rot;
+
+            lara_item->current_anim_state = AS_SPECIAL;
+            lara_item->goal_anim_state = AS_SPECIAL;
+            lara_item->anim_number = AA_RBALL_DEATH;
+            lara_item->frame_number = AF_RBALL_DEATH;
+
+            Camera.flags = FOLLOW_CENTRE;
+            Camera.target_angle = 170 * PHD_DEGREE;
+            Camera.target_elevation = -25 * PHD_DEGREE;
+            for (int i = 0; i < 15; i++) {
+                x = lara_item->pos.x + (GetRandomControl() - 0x4000) / 256;
+                z = lara_item->pos.z + (GetRandomControl() - 0x4000) / 256;
+                y = lara_item->pos.y - GetRandomControl() / 64;
+                d = item->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+                DoBloodSplat(x, y, z, item->speed * 2, d, item->room_number);
+            }
+        }
     }
 }
 
@@ -209,6 +279,7 @@ void T1MInjectGameTraps()
 {
     INJECT(0x0043A010, InitialiseRollingBall);
     INJECT(0x0043A050, RollingBallControl);
+    INJECT(0x0043A2B0, RollingBallCollision);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

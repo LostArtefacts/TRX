@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define RollingBallCollision    ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043A2B0)
 #define SpikeCollision          ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043A520)
 #define TrapDoorControl         ((void      (*)(int16_t item_num))0x0043A670)
 #define TrapDoorFloor           ((void      (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0043A6D0)
@@ -30,6 +29,8 @@
 
 void InitialiseRollingBall(int16_t item_num);
 void RollingBallControl(int16_t item_num);
+void RollingBallCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 
