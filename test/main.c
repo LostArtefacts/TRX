@@ -41,20 +41,20 @@ void test_empty_config()
 
 void test_config_override()
 {
-    FILE* fp = fopen("Tomb1Main.json5", "rb");
+    FILE *fp = fopen("Tomb1Main.json5", "rb");
     ASSERT_OK(!!fp);
 
     fseek(fp, 0, SEEK_END);
     int cfg_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char* cfg_data = malloc(cfg_size);
+    char *cfg_data = malloc(cfg_size);
     ASSERT_OK(!!cfg_data);
 
     fread(cfg_data, 1, cfg_size, fp);
     fclose(fp);
 
-    char* tmp = strstr(cfg_data, "enable_cheats\": false");
+    char *tmp = strstr(cfg_data, "enable_cheats\": false");
     ASSERT_OK(!!tmp);
     tmp = strstr(tmp, "false");
     ASSERT_OK(!!tmp);
@@ -69,7 +69,7 @@ void test_config_override()
     free(cfg_data);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     test_empty_config();
     test_config_override();

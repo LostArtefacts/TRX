@@ -38,9 +38,9 @@ typedef enum {
     THS_DONE = 3,
 } THOR_HAMMER_STATE;
 
-void DrawLightning(ITEM_INFO* item)
+void DrawLightning(ITEM_INFO *item)
 {
-    int16_t* frmptr[2];
+    int16_t *frmptr[2];
     int32_t rate;
     GetFrames(item, frmptr, &rate);
 
@@ -67,7 +67,7 @@ void DrawLightning(ITEM_INFO* item)
 
     phd_PopMatrix();
 
-    LIGHTNING* l = item->data;
+    LIGHTNING *l = item->data;
     if (!l->onstate) {
         return;
     }
@@ -86,7 +86,7 @@ void DrawLightning(ITEM_INFO* item)
     int32_t dz = (z2 - z1) / LIGHTNING_STEPS;
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
-        PHD_VECTOR* pos = &l->wibble[i];
+        PHD_VECTOR *pos = &l->wibble[i];
         pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
         pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
         pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
@@ -136,7 +136,7 @@ void DrawLightning(ITEM_INFO* item)
         dz = (z2 - z1) / steps;
 
         for (j = 0; j < steps; j++) {
-            PHD_VECTOR* pos = l->shoot[i];
+            PHD_VECTOR *pos = l->shoot[i];
             pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
             pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
             pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
@@ -168,7 +168,7 @@ void DrawLightning(ITEM_INFO* item)
 
 void InitialiseLightning(int16_t item_num)
 {
-    LIGHTNING* l = game_malloc(sizeof(LIGHTNING), 0);
+    LIGHTNING *l = game_malloc(sizeof(LIGHTNING), 0);
     Items[item_num].data = l;
 
     if (Objects[Items[item_num].object_number].nmeshes > 1) {
@@ -185,8 +185,8 @@ void InitialiseLightning(int16_t item_num)
 
 void LightningControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    LIGHTNING* l = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    LIGHTNING *l = item->data;
 
     if (!TriggerActive(item)) {
         l->count = 1;
@@ -235,7 +235,7 @@ void LightningControl(int16_t item_num)
 
             l->zapped = 1;
         } else if (l->notarget) {
-            FLOOR_INFO* floor = GetFloor(
+            FLOOR_INFO *floor = GetFloor(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_number);
             int32_t h = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             l->target.x = item->pos.x;
@@ -272,9 +272,9 @@ void LightningControl(int16_t item_num)
     SoundEffect(98, &item->pos, 0);
 }
 
-void LightningCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    LIGHTNING* l = Items[item_num].data;
+    LIGHTNING *l = Items[item_num].data;
     if (!l->zapped) {
         return;
     }
@@ -288,9 +288,9 @@ void LightningCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 
 void InitialiseThorsHandle(int16_t item_num)
 {
-    ITEM_INFO* hand_item = &Items[item_num];
+    ITEM_INFO *hand_item = &Items[item_num];
     int16_t head_item_num = CreateItem();
-    ITEM_INFO* head_item = &Items[head_item_num];
+    ITEM_INFO *head_item = &Items[head_item_num];
     head_item->object_number = O_THORS_HEAD;
     head_item->room_number = hand_item->room_number;
     head_item->pos = hand_item->pos;
@@ -302,7 +302,7 @@ void InitialiseThorsHandle(int16_t item_num)
 
 void ThorsHandleControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     switch (item->current_anim_state) {
     case THS_SET:
@@ -365,7 +365,7 @@ void ThorsHandleControl(int16_t item_num)
         int32_t old_z = z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO* floor = GetFloor(x, item->pos.y, z, &room_num);
+        FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
         GetHeight(floor, x, item->pos.y, z);
         TestTriggers(TriggerIndex, 1);
 
@@ -399,7 +399,7 @@ void ThorsHandleControl(int16_t item_num)
     }
     AnimateItem(item);
 
-    ITEM_INFO* head_item = item->data;
+    ITEM_INFO *head_item = item->data;
     int32_t anim = item->anim_number - Objects[O_THORS_HANDLE].anim_index;
     int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
     head_item->anim_number = Objects[O_THORS_HEAD].anim_index + anim;
@@ -408,9 +408,9 @@ void ThorsHandleControl(int16_t item_num)
 }
 
 void ThorsHandleCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
@@ -419,9 +419,9 @@ void ThorsHandleCollision(
     }
 }
 
-void ThorsHeadCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void ThorsHeadCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }

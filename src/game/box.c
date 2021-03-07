@@ -11,21 +11,21 @@
 
 void InitialiseCreature(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     item->pos.y_rot += (PHD_ANGLE)((GetRandomControl() - PHD_90) >> 1);
     item->collidable = 1;
     item->data = NULL;
 }
 
-void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
+void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
     if (!creature) {
         return;
     }
 
-    int16_t* zone;
+    int16_t *zone;
     if (creature->LOT.fly) {
         zone = FlyZone[FlipStatus];
     } else if (creature->LOT.step == STEP_L) {
@@ -34,7 +34,7 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         zone = GroundZone2[FlipStatus];
     }
 
-    ROOM_INFO* r = &RoomInfo[item->room_number];
+    ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
@@ -54,7 +54,7 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         info->enemy_zone |= BLOCKED;
     }
 
-    OBJECT_INFO* object = &Objects[item->object_number];
+    OBJECT_INFO *object = &Objects[item->object_number];
     GetBestFrame(item);
 
     int32_t z = LaraItem->pos.z
@@ -73,9 +73,9 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
         && (LaraItem->pos.y < item->pos.y + STEP_L);
 }
 
-int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
+int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {
-    int16_t* zone;
+    int16_t *zone;
     if (LOT->fly) {
         zone = FlyZone[FlipStatus];
     } else if (LOT->step == STEP_L) {
@@ -90,8 +90,8 @@ int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
             return 0;
         }
 
-        BOX_NODE* node = &LOT->node[LOT->head];
-        BOX_INFO* box = &Boxes[LOT->head];
+        BOX_NODE *node = &LOT->node[LOT->head];
+        BOX_INFO *box = &Boxes[LOT->head];
 
         int done = 0;
         int index = box->overlap_index & OVERLAP_INDEX;
@@ -111,7 +111,7 @@ int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
                 continue;
             }
 
-            BOX_NODE* expand = &LOT->node[box_number];
+            BOX_NODE *expand = &LOT->node[box_number];
             if ((node->search_number & SEARCH_NUMBER)
                 < (expand->search_number & SEARCH_NUMBER)) {
                 continue;
@@ -152,12 +152,12 @@ int32_t SearchLOT(LOT_INFO* LOT, int32_t expansion)
     return 1;
 }
 
-int32_t UpdateLOT(LOT_INFO* LOT, int32_t expansion)
+int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion)
 {
     if (LOT->required_box != NO_BOX && LOT->required_box != LOT->target_box) {
         LOT->target_box = LOT->required_box;
 
-        BOX_NODE* expand = &LOT->node[LOT->target_box];
+        BOX_NODE *expand = &LOT->node[LOT->target_box];
         if (expand->next_expansion == NO_BOX && LOT->tail != LOT->target_box) {
             expand->next_expansion = LOT->head;
 
@@ -175,11 +175,11 @@ int32_t UpdateLOT(LOT_INFO* LOT, int32_t expansion)
     return SearchLOT(LOT, expansion);
 }
 
-void TargetBox(LOT_INFO* LOT, int16_t box_number)
+void TargetBox(LOT_INFO *LOT, int16_t box_number)
 {
     box_number &= BOX_NUMBER;
 
-    BOX_INFO* box = &Boxes[box_number];
+    BOX_INFO *box = &Boxes[box_number];
 
     LOT->target.z = box->left + WALL_L / 2
         + (GetRandomControl() * (box->right - box->left - WALL_L) >> 15);
@@ -194,9 +194,9 @@ void TargetBox(LOT_INFO* LOT, int16_t box_number)
     }
 }
 
-int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
+int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
 {
-    BOX_INFO* box = &Boxes[box_number];
+    BOX_INFO *box = &Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - LaraItem->pos.x;
 
@@ -223,9 +223,9 @@ int32_t StalkBox(ITEM_INFO* item, int16_t box_number)
     return 1;
 }
 
-int32_t EscapeBox(ITEM_INFO* item, int16_t box_number)
+int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
 {
-    BOX_INFO* box = &Boxes[box_number];
+    BOX_INFO *box = &Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - LaraItem->pos.x;
 
@@ -242,11 +242,11 @@ int32_t EscapeBox(ITEM_INFO* item, int16_t box_number)
     return 1;
 }
 
-int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number)
+int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
 
-    int16_t* zone;
+    int16_t *zone;
     if (creature->LOT.fly) {
         zone = FlyZone[FlipStatus];
     } else if (creature->LOT.step == STEP_L) {
@@ -259,7 +259,7 @@ int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number)
         return 0;
     }
 
-    BOX_INFO* box = &Boxes[box_number];
+    BOX_INFO *box = &Boxes[box_number];
     if (box->overlap_index & creature->LOT.block_mask) {
         return 0;
     }
@@ -272,14 +272,14 @@ int32_t ValidBox(ITEM_INFO* item, int16_t zone_number, int16_t box_number)
     return 1;
 }
 
-void CreatureMood(ITEM_INFO* item, AI_INFO* info, int32_t violent)
+void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
     if (!creature) {
         return;
     }
 
-    LOT_INFO* LOT = &creature->LOT;
+    LOT_INFO *LOT = &creature->LOT;
     if (LOT->node[item->box_number].search_number
         == (LOT->search_number | BLOCKED_SEARCH)) {
         LOT->required_box = NO_BOX;
@@ -373,7 +373,7 @@ void CreatureMood(ITEM_INFO* item, AI_INFO* info, int32_t violent)
             LOT->target.z = LaraItem->pos.z;
             LOT->required_box = LaraItem->box_number;
             if (LOT->fly && Lara.water_status == LWS_ABOVEWATER) {
-                int16_t* bounds = GetBestFrame(LaraItem);
+                int16_t *bounds = GetBestFrame(LaraItem);
                 LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
             }
         }
@@ -437,7 +437,7 @@ void CreatureMood(ITEM_INFO* item, AI_INFO* info, int32_t violent)
     CalculateTarget(&creature->target, item, &creature->LOT);
 }
 
-int32_t CalculateTarget(PHD_VECTOR* target, ITEM_INFO* item, LOT_INFO* LOT)
+int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
 {
     int32_t left = 0;
     int32_t right = 0;
@@ -455,7 +455,7 @@ int32_t CalculateTarget(PHD_VECTOR* target, ITEM_INFO* item, LOT_INFO* LOT)
         return TARGET_NONE;
     }
 
-    BOX_INFO* box;
+    BOX_INFO *box;
     int32_t prime_free = ALL_CLIP;
     do {
         box = &Boxes[box_number];
@@ -655,7 +655,7 @@ int32_t CalculateTarget(PHD_VECTOR* target, ITEM_INFO* item, LOT_INFO* LOT)
 
 int32_t CreatureCreature(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
@@ -686,9 +686,9 @@ int32_t CreatureCreature(int16_t item_num)
 
 int32_t BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
-    int16_t room_number, LOT_INFO* LOT)
+    int16_t room_number, LOT_INFO *LOT)
 {
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_number);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_number);
     if (floor->box == NO_BOX) {
         return 1;
     }
@@ -715,12 +715,12 @@ int32_t BadFloor(
 
 int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
 {
-    ITEM_INFO* item = &Items[item_num];
-    CREATURE_INFO* creature = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    CREATURE_INFO *creature = item->data;
     if (!creature) {
         return 0;
     }
-    LOT_INFO* LOT = &creature->LOT;
+    LOT_INFO *LOT = &creature->LOT;
 
     PHD_VECTOR old;
     old.x = item->pos.x;
@@ -729,7 +729,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
 
     int32_t box_height = Boxes[item->box_number].height;
 
-    int16_t* zone;
+    int16_t *zone;
     if (LOT->fly) {
         zone = FlyZone[FlipStatus];
     } else if (LOT->step == STEP_L) {
@@ -747,11 +747,11 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         return 0;
     }
 
-    int16_t* bounds = GetBoundsAccurate(item);
+    int16_t *bounds = GetBoundsAccurate(item);
     int32_t y = item->pos.y + bounds[FRAME_BOUND_MIN_Y];
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor = GetFloor(item->pos.x, y, item->pos.z, &room_num);
+    FLOOR_INFO *floor = GetFloor(item->pos.x, y, item->pos.z, &room_num);
     int32_t height = Boxes[floor->box].height;
     int16_t next_box = LOT->node[floor->box].exit_box;
     int32_t next_height;
@@ -973,9 +973,9 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
     return 1;
 }
 
-int16_t CreatureTurn(ITEM_INFO* item, int16_t maximum_turn)
+int16_t CreatureTurn(ITEM_INFO *item, int16_t maximum_turn)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
     if (!creature) {
         return 0;
     }
@@ -1006,7 +1006,7 @@ int16_t CreatureTurn(ITEM_INFO* item, int16_t maximum_turn)
     return angle;
 }
 
-void CreatureTilt(ITEM_INFO* item, int16_t angle)
+void CreatureTilt(ITEM_INFO *item, int16_t angle)
 {
     angle = angle * 4 - item->pos.z_rot;
     if (angle < -MAX_TILT) {
@@ -1017,9 +1017,9 @@ void CreatureTilt(ITEM_INFO* item, int16_t angle)
     item->pos.z_rot += angle;
 }
 
-void CreatureHead(ITEM_INFO* item, int16_t required)
+void CreatureHead(ITEM_INFO *item, int16_t required)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
     if (!creature) {
         return;
     }
@@ -1041,7 +1041,7 @@ void CreatureHead(ITEM_INFO* item, int16_t required)
 }
 
 int16_t CreatureEffect(
-    ITEM_INFO* item, BITE_INFO* bite,
+    ITEM_INFO *item, BITE_INFO *bite,
     int16_t (*generate)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))

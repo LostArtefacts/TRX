@@ -10,7 +10,7 @@ void InitialiseLOTArray()
     BaddieSlots =
         game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_DATA);
     for (int i = 0; i < NUM_SLOTS; i++) {
-        CREATURE_INFO* creature = &BaddieSlots[i];
+        CREATURE_INFO *creature = &BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->LOT.node =
             game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
@@ -20,8 +20,8 @@ void InitialiseLOTArray()
 
 void DisableBaddieAI(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    CREATURE_INFO* creature = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    CREATURE_INFO *creature = item->data;
     item->data = NULL;
     if (creature) {
         creature->item_num = NO_ITEM;
@@ -37,7 +37,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
 
     if (SlotsUsed < NUM_SLOTS) {
         for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-            CREATURE_INFO* creature = &BaddieSlots[slot];
+            CREATURE_INFO *creature = &BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
                 InitialiseSlot(item_num, slot);
                 return 1;
@@ -48,7 +48,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
 
     int32_t worst_dist = 0;
     if (!always) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
         int32_t x = (item->pos.x - Camera.pos.x) >> 8;
         int32_t y = (item->pos.y - Camera.pos.y) >> 8;
         int32_t z = (item->pos.z - Camera.pos.z) >> 8;
@@ -57,8 +57,8 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
 
     int32_t worst_slot = -1;
     for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-        CREATURE_INFO* creature = &BaddieSlots[slot];
-        ITEM_INFO* item = &Items[creature->item_num];
+        CREATURE_INFO *creature = &BaddieSlots[slot];
+        ITEM_INFO *item = &Items[creature->item_num];
         int32_t x = (item->pos.x - Camera.pos.x) >> 8;
         int32_t y = (item->pos.y - Camera.pos.y) >> 8;
         int32_t z = (item->pos.z - Camera.pos.z) >> 8;
@@ -81,8 +81,8 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
 
 void InitialiseSlot(int16_t item_num, int32_t slot)
 {
-    CREATURE_INFO* creature = &BaddieSlots[slot];
-    ITEM_INFO* item = &Items[item_num];
+    CREATURE_INFO *creature = &BaddieSlots[slot];
+    ITEM_INFO *item = &Items[item_num];
     item->data = creature;
     creature->item_num = item_num;
     creature->mood = MOOD_BORED;
@@ -130,12 +130,12 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
     SlotsUsed++;
 }
 
-void CreateZone(ITEM_INFO* item)
+void CreateZone(ITEM_INFO *item)
 {
-    CREATURE_INFO* creature = item->data;
+    CREATURE_INFO *creature = item->data;
 
-    int16_t* zone;
-    int16_t* flip;
+    int16_t *zone;
+    int16_t *flip;
     if (creature->LOT.fly) {
         zone = FlyZone[0];
         flip = FlyZone[1];
@@ -147,7 +147,7 @@ void CreateZone(ITEM_INFO* item)
         flip = GroundZone2[1];
     }
 
-    ROOM_INFO* r = &RoomInfo[item->room_number];
+    ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
@@ -156,7 +156,7 @@ void CreateZone(ITEM_INFO* item)
     int16_t flip_number = flip[item->box_number];
 
     creature->LOT.zone_count = 0;
-    BOX_NODE* node = creature->LOT.node;
+    BOX_NODE *node = creature->LOT.node;
     for (int i = 0; i < NumberBoxes; i++) {
         if (zone[i] == zone_number || flip[i] == flip_number) {
             node->box_number = i;
@@ -166,14 +166,14 @@ void CreateZone(ITEM_INFO* item)
     }
 }
 
-int32_t InitialiseLOT(LOT_INFO* LOT)
+int32_t InitialiseLOT(LOT_INFO *LOT)
 {
     LOT->node = game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
     ClearLOT(LOT);
     return 1;
 }
 
-void ClearLOT(LOT_INFO* LOT)
+void ClearLOT(LOT_INFO *LOT)
 {
     LOT->search_number = 0;
     LOT->head = NO_BOX;
@@ -182,7 +182,7 @@ void ClearLOT(LOT_INFO* LOT)
     LOT->required_box = NO_BOX;
 
     for (int i = 0; i < NumberBoxes; i++) {
-        BOX_NODE* node = &LOT->node[i];
+        BOX_NODE *node = &LOT->node[i];
         node->search_number = 0;
         node->exit_box = NO_BOX;
         node->next_expansion = NO_BOX;

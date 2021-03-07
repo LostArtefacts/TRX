@@ -43,7 +43,7 @@ static BITE_INFO RatBite = { 0, -11, 108, 3 };
 
 void RatControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -52,7 +52,7 @@ void RatControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* rat = item->data;
+    CREATURE_INFO *rat = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -143,7 +143,7 @@ void RatControl(int16_t item_num)
 
 void VoleControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {

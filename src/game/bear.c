@@ -39,7 +39,7 @@ static BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
 
 void BearControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -48,7 +48,7 @@ void BearControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* bear = (CREATURE_INFO*)item->data;
+    CREATURE_INFO *bear = (CREATURE_INFO *)item->data;
     int16_t head = 0;
     PHD_ANGLE angle = 0;
 

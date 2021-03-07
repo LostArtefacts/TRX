@@ -11,7 +11,7 @@
 #include "util.h"
 
 void GetCollisionInfo(
-    COLL_INFO* coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
+    COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight)
 {
     coll->coll_type = COLL_NONE;
@@ -25,7 +25,7 @@ void GetCollisionInfo(
     int32_t z = zpos;
     int32_t ytop = y - 160;
 
-    FLOOR_INFO* floor = GetFloor(x, ytop, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, ytop, z, &room_num);
     int32_t height = GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
@@ -289,7 +289,7 @@ int32_t FindGridShift(int32_t src, int32_t dst)
 }
 
 int32_t CollideStaticObjects(
-    COLL_INFO* coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t hite)
 {
     PHD_VECTOR shifter;
@@ -309,11 +309,11 @@ int32_t CollideStaticObjects(
     GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
 
     for (int i = 0; i < RoomsToDrawNum; i++) {
-        ROOM_INFO* r = &RoomInfo[RoomsToDraw[i]];
-        MESH_INFO* mesh = r->mesh;
+        ROOM_INFO *r = &RoomInfo[RoomsToDraw[i]];
+        MESH_INFO *mesh = r->mesh;
 
         for (int j = 0; j < r->num_meshes; j++, mesh++) {
-            STATIC_INFO* sinfo = &StaticObjects[mesh->static_number];
+            STATIC_INFO *sinfo = &StaticObjects[mesh->static_number];
             if (sinfo->flags & 1) {
                 continue;
             }
@@ -485,7 +485,7 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
+void ShiftItem(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->pos.x += coll->shift.x;
     item->pos.y += coll->shift.y;
@@ -495,22 +495,22 @@ void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
     coll->shift.z = 0;
 }
 
-void UpdateLaraRoom(ITEM_INFO* item, int32_t height)
+void UpdateLaraRoom(ITEM_INFO *item, int32_t height)
 {
     int32_t x = item->pos.x;
     int32_t y = item->pos.y + height;
     int32_t z = item->pos.z;
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     item->floor = GetHeight(floor, x, y, z);
     if (item->room_number != room_num) {
         ItemNewRoom(Lara.item_number, room_num);
     }
 }
 
-int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+int16_t GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
-    ROOM_INFO* r;
+    ROOM_INFO *r;
 
     while (floor->pit_room != NO_ROOM) {
         r = &RoomInfo[floor->pit_room];
@@ -524,7 +524,7 @@ int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     }
 
     if (floor->index) {
-        int16_t* data = &FloorData[floor->index];
+        int16_t *data = &FloorData[floor->index];
         if ((data[0] & DATA_TYPE) == FT_TILT) {
             return data[1];
         }
@@ -533,7 +533,7 @@ int16_t GetTiltType(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return 0;
 }
 
-void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll)
+void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;
     Lara.hit_direction = -1;
@@ -546,7 +546,7 @@ void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll)
 
     roomies[numroom++] = lara_item->room_number;
 
-    DOOR_INFOS* door = RoomInfo[lara_item->room_number].doors;
+    DOOR_INFOS *door = RoomInfo[lara_item->room_number].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
             // NOTE: this access violation check was not present in the original
@@ -561,9 +561,9 @@ void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll)
     for (int i = 0; i < numroom; i++) {
         int16_t item_num = RoomInfo[roomies[i]].item_number;
         while (item_num != NO_ITEM) {
-            ITEM_INFO* item = &Items[item_num];
+            ITEM_INFO *item = &Items[item_num];
             if (item->collidable && item->status != IS_INVISIBLE) {
-                OBJECT_INFO* object = &Objects[item->object_number];
+                OBJECT_INFO *object = &Objects[item->object_number];
                 if (object->collision) {
                     int32_t x = lara_item->pos.x - item->pos.x;
                     int32_t y = lara_item->pos.y - item->pos.y;
@@ -590,7 +590,7 @@ void LaraBaddieCollision(ITEM_INFO* lara_item, COLL_INFO* coll)
     InventoryChosen = -1;
 }
 
-void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll)
+void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     int32_t x = Lara.spaz_effect->pos.x - lara_item->pos.x;
     int32_t z = Lara.spaz_effect->pos.z - lara_item->pos.z;
@@ -608,9 +608,9 @@ void EffectSpaz(ITEM_INFO* lara_item, COLL_INFO* coll)
     Lara.spaz_effect_count--;
 }
 
-void CreatureCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -628,9 +628,9 @@ void CreatureCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void ObjectCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -644,9 +644,9 @@ void ObjectCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void DoorCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -664,9 +664,9 @@ void DoorCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void TrapCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_ACTIVE) {
         if (TestBoundsCollide(item, lara_item, coll->radius)) {
@@ -678,7 +678,7 @@ void TrapCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 }
 
 void ItemPushLara(
-    ITEM_INFO* item, ITEM_INFO* lara_item, COLL_INFO* coll, int32_t spazon,
+    ITEM_INFO *item, ITEM_INFO *lara_item, COLL_INFO *coll, int32_t spazon,
     int32_t bigpush)
 {
     int32_t x = lara_item->pos.x - item->pos.x;
@@ -688,7 +688,7 @@ void ItemPushLara(
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
-    int16_t* bounds = GetBestFrame(item);
+    int16_t *bounds = GetBestFrame(item);
     int32_t minx = bounds[FRAME_BOUND_MIN_X];
     int32_t maxx = bounds[FRAME_BOUND_MAX_X];
     int32_t minz = bounds[FRAME_BOUND_MIN_Z];
@@ -766,10 +766,10 @@ void ItemPushLara(
     }
 }
 
-int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius)
+int32_t TestBoundsCollide(ITEM_INFO *item, ITEM_INFO *lara_item, int32_t radius)
 {
-    int16_t* bounds = GetBestFrame(item);
-    int16_t* larabounds = GetBestFrame(lara_item);
+    int16_t *bounds = GetBestFrame(item);
+    int16_t *larabounds = GetBestFrame(lara_item);
     if (item->pos.y + bounds[FRAME_BOUND_MAX_Y]
             <= lara_item->pos.y + larabounds[FRAME_BOUND_MIN_Y]
         || item->pos.y + bounds[FRAME_BOUND_MIN_Y]
@@ -794,7 +794,7 @@ int32_t TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* lara_item, int32_t radius)
     return 0;
 }
 
-int32_t TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item)
+int32_t TestLaraPosition(int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     PHD_ANGLE xrotrel = lara_item->pos.x_rot - item->pos.x_rot;
     PHD_ANGLE yrotrel = lara_item->pos.y_rot - item->pos.y_rot;
@@ -814,7 +814,7 @@ int32_t TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item)
     int32_t z = lara_item->pos.z - item->pos.z;
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
     int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
     int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
@@ -832,7 +832,7 @@ int32_t TestLaraPosition(int16_t* bounds, ITEM_INFO* item, ITEM_INFO* lara_item)
     return 1;
 }
 
-void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
+void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     lara_item->pos.x_rot = item->pos.x_rot;
     lara_item->pos.y_rot = item->pos.y_rot;
@@ -840,7 +840,7 @@ void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
 
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     lara_item->pos.x = item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -853,7 +853,7 @@ void AlignLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
     phd_PopMatrix();
 }
 
-int32_t MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
+int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     PHD_3DPOS dest;
     dest.x_rot = item->pos.x_rot;
@@ -861,7 +861,7 @@ int32_t MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
     dest.z_rot = item->pos.z_rot;
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     dest.x = item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -876,7 +876,7 @@ int32_t MoveLaraPosition(PHD_VECTOR* vec, ITEM_INFO* item, ITEM_INFO* lara_item)
 }
 
 int32_t Move3DPosTo3DPos(
-    PHD_3DPOS* srcpos, PHD_3DPOS* destpos, int32_t velocity, PHD_ANGLE angadd)
+    PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd)
 {
     PHD_ANGLE angdif;
 

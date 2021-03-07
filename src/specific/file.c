@@ -26,16 +26,16 @@ int32_t SpriteInfoCount = 0;
 int32_t SpriteCount = 0;
 int32_t OverlapCount = 0;
 
-int32_t LoadLevel(const char* filename, int32_t level_num)
+int32_t LoadLevel(const char *filename, int32_t level_num)
 {
     int32_t version;
     int32_t file_level_num;
 
-    const char* full_path = GetFullPath(filename);
+    const char *full_path = GetFullPath(filename);
     TRACE("%s", full_path);
 
     init_game_malloc();
-    FILE* fp = _fopen(full_path, "rb");
+    FILE *fp = _fopen(full_path, "rb");
     if (!fp) {
         sprintf(StringToShow, "S_LoadLevel(): Could not open %s", full_path);
         S_ExitSystem(StringToShow);
@@ -120,7 +120,7 @@ int32_t LoadLevel(const char* filename, int32_t level_num)
     return 1;
 }
 
-int32_t LoadRooms(FILE* fp)
+int32_t LoadRooms(FILE *fp)
 {
     uint16_t count2;
     uint32_t count4;
@@ -139,7 +139,7 @@ int32_t LoadRooms(FILE* fp)
     }
 
     int i = 0;
-    for (ROOM_INFO* current_room_info = RoomInfo; i < RoomCount;
+    for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount;
          ++i, ++current_room_info) {
         // Room position
         _fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
@@ -226,7 +226,7 @@ int32_t LoadRooms(FILE* fp)
     return 1;
 }
 
-int32_t LoadObjects(FILE* fp)
+int32_t LoadObjects(FILE *fp)
 {
     _fread(&MeshCount, sizeof(int32_t), 1, fp);
     TRACE("%d meshes", MeshCount);
@@ -234,11 +234,11 @@ int32_t LoadObjects(FILE* fp)
     _fread(MeshBase, sizeof(int16_t), MeshCount, fp);
 
     _fread(&MeshPtrCount, sizeof(int32_t), 1, fp);
-    uint32_t* mesh_indices =
+    uint32_t *mesh_indices =
         game_malloc(sizeof(uint32_t) * MeshPtrCount, GBUF_MESH_POINTERS);
     _fread(mesh_indices, sizeof(uint32_t), MeshPtrCount, fp);
 
-    Meshes = game_malloc(sizeof(int16_t*) * MeshPtrCount, GBUF_MESH_POINTERS);
+    Meshes = game_malloc(sizeof(int16_t *) * MeshPtrCount, GBUF_MESH_POINTERS);
     for (int i = 0; i < MeshPtrCount; i++) {
         Meshes[i] = &MeshBase[mesh_indices[i] / 2];
     }
@@ -285,7 +285,7 @@ int32_t LoadObjects(FILE* fp)
     for (int i = 0; i < ObjectCount; i++) {
         int32_t tmp;
         _fread(&tmp, sizeof(int32_t), 1, fp);
-        OBJECT_INFO* object = &Objects[tmp];
+        OBJECT_INFO *object = &Objects[tmp];
 
         _fread(&object->nmeshes, sizeof(int16_t), 1, fp);
         _fread(&object->mesh_index, sizeof(int16_t), 1, fp);
@@ -304,7 +304,7 @@ int32_t LoadObjects(FILE* fp)
     for (int i = 0; i < StaticCount; i++) {
         int32_t tmp;
         _fread(&tmp, sizeof(int32_t), 1, fp);
-        STATIC_INFO* object = &StaticObjects[tmp];
+        STATIC_INFO *object = &StaticObjects[tmp];
 
         _fread(&object->mesh_number, sizeof(int16_t), 1, fp);
         _fread(&object->x_minp, sizeof(int16_t), 6, fp);
@@ -323,7 +323,7 @@ int32_t LoadObjects(FILE* fp)
     return 1;
 }
 
-int32_t LoadSprites(FILE* fp)
+int32_t LoadSprites(FILE *fp)
 {
     _fread(&SpriteInfoCount, sizeof(int32_t), 1, fp);
     _fread(&PhdSpriteInfo, sizeof(PHDSPRITESTRUCT), SpriteInfoCount, fp);
@@ -346,7 +346,7 @@ int32_t LoadSprites(FILE* fp)
     return 1;
 }
 
-int32_t LoadItems(FILE* fp)
+int32_t LoadItems(FILE *fp)
 {
     int32_t item_count = 0;
     _fread(&item_count, sizeof(int32_t), 1, fp);
@@ -371,7 +371,7 @@ int32_t LoadItems(FILE* fp)
         InitialiseItemArray(NUMBER_ITEMS);
 
         for (int i = 0; i < item_count; ++i) {
-            ITEM_INFO* item = &Items[i];
+            ITEM_INFO *item = &Items[i];
             _fread(&item->object_number, sizeof(int16_t), 1, fp);
             _fread(&item->room_number, sizeof(int16_t), 1, fp);
             _fread(&item->pos.x, sizeof(int32_t), 1, fp);
@@ -397,7 +397,7 @@ int32_t LoadItems(FILE* fp)
     return 1;
 }
 
-int32_t LoadDepthQ(FILE* fp)
+int32_t LoadDepthQ(FILE *fp)
 {
     TRACE("");
     _fread(DepthQTable, sizeof(uint8_t), 32 * 256, fp);
@@ -412,7 +412,7 @@ int32_t LoadDepthQ(FILE* fp)
     return 1;
 }
 
-int32_t LoadPalette(FILE* fp)
+int32_t LoadPalette(FILE *fp)
 {
     TRACE("");
     _fread(GamePalette, sizeof(uint8_t), 256 * 3, fp);
@@ -431,7 +431,7 @@ int32_t LoadPalette(FILE* fp)
     return 1;
 }
 
-int32_t LoadCameras(FILE* fp)
+int32_t LoadCameras(FILE *fp)
 {
     _fread(&NumberCameras, sizeof(int32_t), 1, fp);
     TRACE("%d cameras", NumberCameras);
@@ -447,7 +447,7 @@ int32_t LoadCameras(FILE* fp)
     return 1;
 }
 
-int32_t LoadSoundEffects(FILE* fp)
+int32_t LoadSoundEffects(FILE *fp)
 {
     _fread(&NumberSoundEffects, sizeof(int32_t), 1, fp);
     TRACE("%d sound effects", NumberSoundEffects);
@@ -463,7 +463,7 @@ int32_t LoadSoundEffects(FILE* fp)
     return 1;
 }
 
-int32_t LoadBoxes(FILE* fp)
+int32_t LoadBoxes(FILE *fp)
 {
     _fread(&NumberBoxes, sizeof(int32_t), 1, fp);
     Boxes = game_malloc(sizeof(BOX_INFO) * NumberBoxes, GBUF_BOXES);
@@ -473,7 +473,7 @@ int32_t LoadBoxes(FILE* fp)
     }
 
     _fread(&OverlapCount, sizeof(int32_t), 1, fp);
-    Overlap = (uint16_t*)game_malloc(2 * OverlapCount, 22);
+    Overlap = (uint16_t *)game_malloc(2 * OverlapCount, 22);
     if (!_fread(Overlap, sizeof(int16_t), OverlapCount, fp)) {
         sprintf(StringToShow, "LoadBoxes(): Unable to load box overlaps");
         return 0;
@@ -506,7 +506,7 @@ int32_t LoadBoxes(FILE* fp)
     return 1;
 }
 
-int32_t LoadAnimatedTextures(FILE* fp)
+int32_t LoadAnimatedTextures(FILE *fp)
 {
     _fread(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
     TRACE("%d animated textures", AnimTextureRangeCount);
@@ -516,7 +516,7 @@ int32_t LoadAnimatedTextures(FILE* fp)
     return 1;
 }
 
-int32_t LoadCinematic(FILE* fp)
+int32_t LoadCinematic(FILE *fp)
 {
     _fread(&NumCineFrames, sizeof(int16_t), 1, fp);
     TRACE("%d cinematic frames", NumCineFrames);
@@ -532,7 +532,7 @@ int32_t LoadCinematic(FILE* fp)
     return 1;
 }
 
-int32_t LoadDemo(FILE* fp)
+int32_t LoadDemo(FILE *fp)
 {
     DemoCount = 0;
     DemoPtr =
@@ -547,11 +547,11 @@ int32_t LoadDemo(FILE* fp)
     return 1;
 }
 
-int32_t LoadTexturePages(FILE* fp)
+int32_t LoadTexturePages(FILE *fp)
 {
     _fread(&TexturePageCount, sizeof(int32_t), 1, fp);
     TRACE("%d texture pages", TexturePageCount);
-    int8_t* base = game_malloc(TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
+    int8_t *base = game_malloc(TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
     _fread(base, 65536, TexturePageCount, fp);
     for (int i = 0; i < TexturePageCount; i++) {
         TexturePagePtrs[i] = base;
@@ -600,7 +600,7 @@ int32_t S_LoadLevel(int level_num)
     return ret;
 }
 
-const char* GetFullPath(const char* filename)
+const char *GetFullPath(const char *filename)
 {
     static char newpath[128];
     TRACE("%s", filename);
@@ -622,7 +622,7 @@ void FindCdDrive()
 #ifdef T1M_FEAT_NOCD
     return;
 #endif
-    FILE* fp;
+    FILE *fp;
     char root[5] = "C:\\";
     char tmp_path[MAX_PATH];
 
@@ -657,8 +657,8 @@ int GetSecretCount()
     uint32_t secrets = 0;
 
     for (int i = 0; i < RoomCount; i++) {
-        ROOM_INFO* r = &RoomInfo[i];
-        FLOOR_INFO* floor = &r->floor[0];
+        ROOM_INFO *r = &RoomInfo[i];
+        FLOOR_INFO *floor = &r->floor[0];
         for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
             int k = floor->index;
             if (!k) {
@@ -727,8 +727,8 @@ void FixPyramidSecretTrigger()
 
     for (int i = 0; i < RoomCount; i++) {
         uint32_t room_secrets = 0;
-        ROOM_INFO* r = &RoomInfo[i];
-        FLOOR_INFO* floor = &r->floor[0];
+        ROOM_INFO *r = &RoomInfo[i];
+        FLOOR_INFO *floor = &r->floor[0];
         for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
             int k = floor->index;
             if (!k) {
@@ -758,7 +758,7 @@ void FixPyramidSecretTrigger()
                     }
 
                     while (1) {
-                        int16_t* command = &FloorData[k++];
+                        int16_t *command = &FloorData[k++];
                         if (TRIG_BITS(*command) == TO_CAMERA) {
                             k++;
                         } else if (TRIG_BITS(*command) == TO_SECRET) {

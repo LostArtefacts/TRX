@@ -71,7 +71,7 @@ void InitialiseWolf(int16_t item_num)
 
 void WolfControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -80,7 +80,7 @@ void WolfControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* wolf = item->data;
+    CREATURE_INFO *wolf = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -227,7 +227,7 @@ void WolfControl(int16_t item_num)
 
 void LionControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -236,7 +236,7 @@ void LionControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* lion = item->data;
+    CREATURE_INFO *lion = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

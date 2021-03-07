@@ -12,7 +12,7 @@
 int32_t StartDemo()
 {
     TRACE("");
-    TEXTSTRING* txt;
+    TEXTSTRING *txt;
     START_INFO start, *s;
 
     int16_t level_num = DemoLevel;
@@ -67,7 +67,7 @@ int32_t StartDemo()
 
 void LoadLaraDemoPos()
 {
-    ITEM_INFO* item = LaraItem;
+    ITEM_INFO *item = LaraItem;
     item->pos.x = DemoPtr[0];
     item->pos.y = DemoPtr[1];
     item->pos.z = DemoPtr[2];
@@ -81,7 +81,7 @@ void LoadLaraDemoPos()
         ItemNewRoom(Lara.item_number, room_num);
     }
 
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }

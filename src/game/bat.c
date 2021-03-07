@@ -22,7 +22,7 @@ static BITE_INFO BatBite = { 0, 16, 45, 4 };
 
 void BatControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -31,7 +31,7 @@ void BatControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* bat = item->data;
+    CREATURE_INFO *bat = item->data;
     PHD_ANGLE angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {

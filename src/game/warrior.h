@@ -9,7 +9,7 @@ void InitialiseWarrior2(int16_t item_num);
 void FlyerControl(int16_t item_num);
 
 void ControlMissile(int16_t fx_num);
-void ShootAtLara(FX_INFO* fx);
+void ShootAtLara(FX_INFO *fx);
 int16_t ShardGun(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num);

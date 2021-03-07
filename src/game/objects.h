@@ -4,35 +4,35 @@
 #include "game/types.h"
 #include <stdint.h>
 
-void ShutThatDoor(DOORPOS_DATA* d);
-void OpenThatDoor(DOORPOS_DATA* d);
+void ShutThatDoor(DOORPOS_DATA *d);
+void OpenThatDoor(DOORPOS_DATA *d);
 void InitialiseDoor(int16_t item_num);
 void DoorControl(int16_t item_num);
 
 #ifdef T1M_FEAT_CHEATS
-void OpenClosestDoors(ITEM_INFO* lara_item);
+void OpenClosestDoors(ITEM_INFO *lara_item);
 #endif
 
-int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y);
+int32_t OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
 void DrawBridgeFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void DrawBridgeCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void DrawBridgeCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void BridgeFlatFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeFlatCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
-int32_t GetOffset(ITEM_INFO* item, int32_t x, int32_t z);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z);
 void BridgeTilt1Floor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt1Ceiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt2Floor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt2Ceiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 
 void CogControl(int16_t item_num);
 void CabinControl(int16_t item_num);

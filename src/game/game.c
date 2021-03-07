@@ -256,7 +256,7 @@ int32_t GetRandomDraw()
 void LevelStats(int32_t level_num)
 {
     static char string[100];
-    TEXTSTRING* txt;
+    TEXTSTRING *txt;
 
     TempVideoAdjust(HiRes, 1.0);
     T_InitPrint();
@@ -379,12 +379,12 @@ void LevelStats(int32_t level_num)
     TempVideoRemove();
 }
 
-int32_t S_LoadGame(void* data, int32_t size, int32_t slot)
+int32_t S_LoadGame(void *data, int32_t size, int32_t slot)
 {
     char filename[80];
     sprintf(filename, "saveati.%d", slot);
     TRACE("%s", filename);
-    FILE* fp = fopen(filename, "rb");
+    FILE *fp = fopen(filename, "rb");
     if (!fp) {
         return 0;
     }
@@ -396,7 +396,7 @@ int32_t S_LoadGame(void* data, int32_t size, int32_t slot)
     return 1;
 }
 
-void GetSavedGamesList(REQUEST_INFO* req)
+void GetSavedGamesList(REQUEST_INFO *req)
 {
     switch (HiRes) {
     case 0:
@@ -427,7 +427,7 @@ void GetSavedGamesList(REQUEST_INFO* req)
 
 int32_t S_FrontEndCheck()
 {
-    REQUEST_INFO* req = &LoadGameRequester;
+    REQUEST_INFO *req = &LoadGameRequester;
 
     req->items = 0;
     SavedGamesCount = 0;
@@ -435,7 +435,7 @@ int32_t S_FrontEndCheck()
         char filename[75];
         sprintf(filename, "saveati.%d", i);
 
-        FILE* fp = fopen(filename, "rb");
+        FILE *fp = fopen(filename, "rb");
         if (fp) {
             fread(filename, 1, 75, fp);
             int32_t counter;
@@ -467,13 +467,13 @@ int32_t S_FrontEndCheck()
     return 1;
 }
 
-int32_t S_SaveGame(void* data, int32_t size, int32_t slot)
+int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
 {
     char filename[75];
     sprintf(filename, "saveati.%d", slot);
     TRACE("%s", filename);
 
-    FILE* fp = fopen(filename, "wb");
+    FILE *fp = fopen(filename, "wb");
     if (!fp) {
         return 0;
     }
@@ -484,7 +484,7 @@ int32_t S_SaveGame(void* data, int32_t size, int32_t slot)
     fwrite(data, size, 1, fp);
     fclose(fp);
 
-    REQUEST_INFO* req = &LoadGameRequester;
+    REQUEST_INFO *req = &LoadGameRequester;
     sprintf(
         &req->item_texts[req->item_text_len * slot], "%s %d", filename,
         SaveCounter);

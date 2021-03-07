@@ -38,7 +38,7 @@ static int16_t MovingBlockBounds[12] = {
 // original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->status != IS_INVISIBLE) {
         AlterFloorHeight(item, -1024);
     }
@@ -47,7 +47,7 @@ void InitialiseMovableBlock(int16_t item_num)
 // original name: MovableBlock
 void MovableBlockControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->flags & IF_ONESHOT) {
         AlterFloorHeight(item, 1024);
@@ -58,7 +58,7 @@ void MovableBlockControl(int16_t item_num)
     AnimateItem(item);
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     int32_t height = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
@@ -89,9 +89,9 @@ void MovableBlockControl(int16_t item_num)
 }
 
 void MovableBlockCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!CHK_ANY(Input, IN_ACTION) || item->status == IS_ACTIVE
         || lara_item->gravity_status || lara_item->pos.y != item->pos.y) {
@@ -184,10 +184,10 @@ void MovableBlockCollision(
     }
 }
 
-int32_t TestBlockMovable(ITEM_INFO* item, int32_t blockhite)
+int32_t TestBlockMovable(ITEM_INFO *item, int32_t blockhite)
 {
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (floor->floor == NO_HEIGHT / 256) {
         return 1;
@@ -200,7 +200,7 @@ int32_t TestBlockMovable(ITEM_INFO* item, int32_t blockhite)
     return 1;
 }
 
-int32_t TestBlockPush(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
+int32_t TestBlockPush(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
     if (!TestBlockMovable(item, blockhite)) {
         return 0;
@@ -226,7 +226,7 @@ int32_t TestBlockPush(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
         break;
     }
 
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -246,7 +246,7 @@ int32_t TestBlockPush(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
     return 1;
 }
 
-int32_t TestBlockPull(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
+int32_t TestBlockPull(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
     if (!TestBlockMovable(item, blockhite)) {
         return 0;
@@ -274,7 +274,7 @@ int32_t TestBlockPull(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
     int32_t z = item->pos.z + z_add;
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -321,14 +321,14 @@ int32_t TestBlockPull(ITEM_INFO* item, int32_t blockhite, uint16_t quadrant)
 
 void InitialiseRollingBlock(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     AlterFloorHeight(item, -2048);
 }
 
 // original name: RollingBlock
 void RollingBlockControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         if (item->current_anim_state == RBS_START) {
             item->goal_anim_state = RBS_END;
@@ -357,12 +357,12 @@ void RollingBlockControl(int16_t item_num)
     }
 }
 
-void AlterFloorHeight(ITEM_INFO* item, int32_t height)
+void AlterFloorHeight(ITEM_INFO *item, int32_t height)
 {
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    FLOOR_INFO* ceiling = GetFloor(
+    FLOOR_INFO *ceiling = GetFloor(
         item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
 
     if (floor->floor == NO_HEIGHT / 256) {
@@ -383,7 +383,7 @@ void AlterFloorHeight(ITEM_INFO* item, int32_t height)
     }
 }
 
-void DrawMovableBlock(ITEM_INFO* item)
+void DrawMovableBlock(ITEM_INFO *item)
 {
     if (item->status == IS_ACTIVE) {
         DrawUnclippedItem(item);

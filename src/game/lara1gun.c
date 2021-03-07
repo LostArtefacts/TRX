@@ -113,7 +113,7 @@ void ReadyShotgun()
 
 void RifleHandler(int32_t weapon_type)
 {
-    WEAPON_INFO* winfo = &Weapons[LGT_SHOTGUN];
+    WEAPON_INFO *winfo = &Weapons[LGT_SHOTGUN];
 
     if (Input & IN_ACTION) {
         LaraTargetInfo(winfo);

@@ -159,12 +159,12 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
     return 0;
 }
 
-void AnimateItem(ITEM_INFO* item)
+void AnimateItem(ITEM_INFO *item)
 {
     item->touch_bits = 0;
     item->hit_status = 0;
 
-    ANIM_STRUCT* anim = &Anims[item->anim_number];
+    ANIM_STRUCT *anim = &Anims[item->anim_number];
 
     item->frame_number++;
 
@@ -181,7 +181,7 @@ void AnimateItem(ITEM_INFO* item)
 
     if (item->frame_number > anim->frame_end) {
         if (anim->number_commands > 0) {
-            int16_t* command = &AnimCommands[anim->command_index];
+            int16_t *command = &AnimCommands[anim->command_index];
             for (int i = 0; i < anim->number_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
@@ -220,7 +220,7 @@ void AnimateItem(ITEM_INFO* item)
     }
 
     if (anim->number_commands > 0) {
-        int16_t* command = &AnimCommands[anim->command_index];
+        int16_t *command = &AnimCommands[anim->command_index];
         for (int i = 0; i < anim->number_commands; i++) {
             switch (*command++) {
             case AC_MOVE_ORIGIN:
@@ -266,16 +266,16 @@ void AnimateItem(ITEM_INFO* item)
     item->pos.z += (phd_cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
 }
 
-int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
+int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
 {
     if (item->current_anim_state == item->goal_anim_state) {
         return 0;
     }
 
-    ANIM_CHANGE_STRUCT* change = &AnimChanges[anim->change_index];
+    ANIM_CHANGE_STRUCT *change = &AnimChanges[anim->change_index];
     for (int i = 0; i < anim->number_changes; i++, change++) {
         if (change->goal_anim_state == item->goal_anim_state) {
-            ANIM_RANGE_STRUCT* range = &AnimRanges[change->range_index];
+            ANIM_RANGE_STRUCT *range = &AnimRanges[change->range_index];
             for (int j = 0; j < change->number_ranges; j++, range++) {
                 if (item->frame_number >= range->start_frame
                     && item->frame_number <= range->end_frame) {
@@ -290,7 +290,7 @@ int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
     return 0;
 }
 
-void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
+void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
     int32_t c = phd_cos(item->pos.y_rot);
     int32_t s = phd_sin(item->pos.y_rot);
@@ -300,11 +300,11 @@ void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
-FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
+FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
 {
     int16_t data;
-    FLOOR_INFO* floor;
-    ROOM_INFO* r = &RoomInfo[*room_num];
+    FLOOR_INFO *floor;
+    ROOM_INFO *r = &RoomInfo[*room_num];
     do {
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
@@ -374,13 +374,13 @@ FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
 
 int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    ROOM_INFO* r = &RoomInfo[room_num];
+    ROOM_INFO *r = &RoomInfo[room_num];
 
 #ifdef T1M_FEAT_OG_FIXES
     // TR2 code. Fixes infinite loops and crashes when x, y, z are outside of
     // room_num's coordinates.
     int16_t data;
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
     int32_t x_floor, y_floor;
 
     do {
@@ -416,7 +416,7 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 #else
     int32_t x_floor = (z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-    FLOOR_INFO* floor = &r->floor[x_floor + y_floor * r->x_size];
+    FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
 #endif
 
     if (r->flags & RF_UNDERWATER) {
@@ -444,11 +444,11 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     HeightType = HT_WALL;
     while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[floor->pit_room];
+        ROOM_INFO *r = &RoomInfo[floor->pit_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         floor = &r->floor[x_floor + y_floor * r->x_size];
@@ -462,7 +462,7 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
         return height;
     }
 
-    int16_t* data = &FloorData[floor->index];
+    int16_t *data = &FloorData[floor->index];
     int16_t type;
     int16_t trigger;
     do {
@@ -521,8 +521,8 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                         trigger = *data++;
                     }
                 } else {
-                    ITEM_INFO* item = &Items[trigger & VALUE_BITS];
-                    OBJECT_INFO* object = &Objects[item->object_number];
+                    ITEM_INFO *item = &Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &Objects[item->object_number];
                     if (object->floor) {
                         object->floor(item, x, y, z, &height);
                     }
@@ -539,7 +539,7 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
-void RefreshCamera(int16_t type, int16_t* data)
+void RefreshCamera(int16_t type, int16_t *data)
 {
     int16_t trigger;
     int16_t target_ok = 2;
@@ -584,7 +584,7 @@ void RefreshCamera(int16_t type, int16_t* data)
     }
 }
 
-void TestTriggers(int16_t* data, int32_t heavy)
+void TestTriggers(int16_t *data, int32_t heavy)
 {
     if (!data) {
         return;
@@ -663,7 +663,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
         }
     }
 
-    ITEM_INFO* camera_item = NULL;
+    ITEM_INFO *camera_item = NULL;
     int16_t trigger;
     do {
         trigger = *data++;
@@ -671,7 +671,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
 
         switch (TRIG_BITS(trigger)) {
         case TO_OBJECT: {
-            ITEM_INFO* item = &Items[value];
+            ITEM_INFO *item = &Items[value];
 
             if (item->flags & IF_ONESHOT) {
                 break;
@@ -769,7 +769,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
             break;
 
         case TO_SINK: {
-            OBJECT_VECTOR* obvector = &Camera.fixed[value];
+            OBJECT_VECTOR *obvector = &Camera.fixed[value];
 
             if (Lara.LOT.required_box != obvector->flags) {
                 Lara.LOT.target.x = obvector->x;
@@ -855,7 +855,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
     }
 }
 
-int32_t TriggerActive(ITEM_INFO* item)
+int32_t TriggerActive(ITEM_INFO *item)
 {
     int32_t ok = (item->flags & IF_REVERSE) ? 0 : 1;
 
@@ -880,15 +880,15 @@ int32_t TriggerActive(ITEM_INFO* item)
     return ok;
 }
 
-int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+int16_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
-    int16_t* data;
+    int16_t *data;
     int16_t type;
     int16_t trigger;
 
-    FLOOR_INFO* f = floor;
+    FLOOR_INFO *f = floor;
     while (f->sky_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[f->sky_room];
+        ROOM_INFO *r = &RoomInfo[f->sky_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         f = &r->floor[x_floor + y_floor * r->x_size];
@@ -929,7 +929,7 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     }
 
     while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[floor->pit_room];
+        ROOM_INFO *r = &RoomInfo[floor->pit_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         floor = &r->floor[x_floor + y_floor * r->x_size];
@@ -962,8 +962,8 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                         trigger = *data++;
                     }
                 } else {
-                    ITEM_INFO* item = &Items[trigger & VALUE_BITS];
-                    OBJECT_INFO* object = &Objects[item->object_number];
+                    ITEM_INFO *item = &Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &Objects[item->object_number];
                     if (object->ceiling) {
                         object->ceiling(item, x, y, z, &height);
                     }
@@ -980,13 +980,13 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
-int16_t GetDoor(FLOOR_INFO* floor)
+int16_t GetDoor(FLOOR_INFO *floor)
 {
     if (!floor->index) {
         return NO_ROOM;
     }
 
-    int16_t* data = &FloorData[floor->index];
+    int16_t *data = &FloorData[floor->index];
     int16_t type = *data++;
 
     if (type == FT_TILT) {
@@ -1005,7 +1005,7 @@ int16_t GetDoor(FLOOR_INFO* floor)
     return NO_ROOM;
 }
 
-int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
     int32_t los1;
     int32_t los2;
@@ -1022,7 +1022,7 @@ int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
         return 0;
     }
 
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(target->x, target->y, target->z, &target->room_number);
 
     if (ClipTarget(start, target, floor) && los1 == 1 && los2 == 1) {
@@ -1032,9 +1032,9 @@ int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 0;
 }
 
-int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
 
     int32_t dz = target->z - start->z;
     if (dz == 0) {
@@ -1117,9 +1117,9 @@ int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 1;
 }
 
-int32_t xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
 
     int32_t dx = target->x - start->x;
     if (dx == 0) {
@@ -1202,7 +1202,7 @@ int32_t xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 1;
 }
 
-int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor)
+int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
 {
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
@@ -1232,14 +1232,14 @@ void FlipMap()
     mn_stop_ambient_samples();
 
     for (int i = 0; i < RoomCount; i++) {
-        ROOM_INFO* r = &RoomInfo[i];
+        ROOM_INFO *r = &RoomInfo[i];
         if (r->flipped_room < 0) {
             continue;
         }
 
         RemoveRoomFlipItems(r);
 
-        ROOM_INFO* flipped = &RoomInfo[r->flipped_room];
+        ROOM_INFO *flipped = &RoomInfo[r->flipped_room];
         ROOM_INFO temp = *r;
         *r = *flipped;
         *flipped = temp;
@@ -1257,11 +1257,11 @@ void FlipMap()
     FlipStatus = !FlipStatus;
 }
 
-void RemoveRoomFlipItems(ROOM_INFO* r)
+void RemoveRoomFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_number; item_num != NO_ITEM;
          item_num = Items[item_num].next_item) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
 
         switch (item->object_number) {
         case O_MOVABLE_BLOCK:
@@ -1278,11 +1278,11 @@ void RemoveRoomFlipItems(ROOM_INFO* r)
     }
 }
 
-void AddRoomFlipItems(ROOM_INFO* r)
+void AddRoomFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_number; item_num != NO_ITEM;
          item_num = Items[item_num].next_item) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
 
         switch (item->object_number) {
         case O_MOVABLE_BLOCK:

@@ -65,7 +65,7 @@ int32_t GetRenderScale(int32_t unit)
 
 void BarLocation(
     int8_t bar_location, int32_t scale, int32_t width, int32_t height,
-    int32_t* x, int32_t* y)
+    int32_t *x, int32_t *y)
 {
     if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_BOTTOM_LEFT) {
         *x = 8 * scale;

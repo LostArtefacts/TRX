@@ -10,7 +10,7 @@
 #include <time.h>
 #include <windows.h>
 
-void DB_Log(char* fmt, ...)
+void DB_Log(char *fmt, ...)
 {
     va_list va;
     char buffer[256] = { 0 };
@@ -87,7 +87,7 @@ void CalculateWibbleTable()
 void S_SeedRandom()
 {
     time_t lt = time(0);
-    struct tm* tptr = localtime(&lt);
+    struct tm *tptr = localtime(&lt);
     SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
     SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }

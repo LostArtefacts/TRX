@@ -14,7 +14,7 @@
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
 
-void phd_GenerateW2V(PHD_3DPOS* viewpos)
+void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
     PhdMatrixPtr = &MatrixStack;
     int32_t sx = phd_sin(viewpos->x_rot);
@@ -56,7 +56,7 @@ void phd_LookAt(
     phd_GenerateW2V(&viewer);
 }
 
-void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t* dest)
+void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
 {
     dest[0] = phd_atan(z, x);
 
@@ -80,7 +80,7 @@ void phd_RotX(PHD_ANGLE rx)
         return;
     }
 
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t sx = phd_sin(rx);
     int32_t cx = phd_cos(rx);
 
@@ -107,7 +107,7 @@ void phd_RotY(PHD_ANGLE ry)
         return;
     }
 
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t sy = phd_sin(ry);
     int32_t cy = phd_cos(ry);
 
@@ -134,7 +134,7 @@ void phd_RotZ(PHD_ANGLE rz)
         return;
     }
 
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t sz = phd_sin(rz);
     int32_t cz = phd_cos(rz);
 
@@ -157,7 +157,7 @@ void phd_RotZ(PHD_ANGLE rz)
 
 void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t r0, r1;
 
     if (ry) {
@@ -223,7 +223,7 @@ void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 
 void phd_RotYXZpack(int32_t rots)
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     int32_t r0, r1;
 
     PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
@@ -292,7 +292,7 @@ void phd_RotYXZpack(int32_t rots)
 
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     mptr->_03 += mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 += mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 += mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
@@ -302,7 +302,7 @@ int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
 
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
     x -= W2VMatrix._03;
     y -= W2VMatrix._13;
     z -= W2VMatrix._23;
@@ -311,7 +311,7 @@ void phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
     mptr->_23 = mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
 }
 
-int32_t visible_zclip(PHD_VBUF* vn1, PHD_VBUF* vn2, PHD_VBUF* vn3)
+int32_t visible_zclip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 {
     double v1x = vn1->xv;
     double v1y = vn1->yv;
@@ -331,7 +331,7 @@ int32_t visible_zclip(PHD_VBUF* vn1, PHD_VBUF* vn2, PHD_VBUF* vn3)
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
-    uint8_t* scrptr)
+    uint8_t *scrptr)
 {
     PhdWinPtr = &scrptr[x + y * scrwidth];
     PhdWinMaxX = width - 1;
@@ -390,7 +390,7 @@ void phd_PushMatrix()
 // originally in shell.c
 void phd_PushUnitMatrix()
 {
-    PHD_MATRIX* mptr = ++PhdMatrixPtr;
+    PHD_MATRIX *mptr = ++PhdMatrixPtr;
     mptr->_00 = W2V_SCALE;
     mptr->_01 = 0;
     mptr->_02 = 0;

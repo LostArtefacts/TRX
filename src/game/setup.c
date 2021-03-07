@@ -1004,7 +1004,7 @@ void ObjectObjects()
 void InitialiseObjects()
 {
     for (int i = 0; i < NUMBER_OBJECTS; i++) {
-        OBJECT_INFO* obj = &Objects[i];
+        OBJECT_INFO *obj = &Objects[i];
         obj->intelligent = 0;
         obj->save_position = 0;
         obj->save_hitpoints = 0;

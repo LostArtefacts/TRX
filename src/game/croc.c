@@ -44,7 +44,7 @@ static BITE_INFO CrocBite = { 5, -21, 467, 9 };
 
 void AlligatorControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -53,8 +53,8 @@ void AlligatorControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* gator = item->data;
-    FLOOR_INFO* floor;
+    CREATURE_INFO *gator = item->data;
+    FLOOR_INFO *floor;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t room_num;
@@ -161,7 +161,7 @@ void AlligatorControl(int16_t item_num)
 
 void CrocControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -170,7 +170,7 @@ void CrocControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* croc = item->data;
+    CREATURE_INFO *croc = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 

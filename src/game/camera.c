@@ -37,7 +37,7 @@ void InitialiseCamera()
     CalculateCamera();
 }
 
-void MoveCamera(GAME_VECTOR* ideal, int32_t speed)
+void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
 {
     Camera.pos.x += (ideal->x - Camera.pos.x) / speed;
     Camera.pos.z += (ideal->z - Camera.pos.z) / speed;
@@ -46,7 +46,7 @@ void MoveCamera(GAME_VECTOR* ideal, int32_t speed)
 
     ChunkyFlag = 0;
 
-    FLOOR_INFO* floor = GetFloor(
+    FLOOR_INFO *floor = GetFloor(
         Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
     int32_t height = GetHeight(floor, Camera.pos.x, Camera.pos.y, Camera.pos.z)
         - GROUND_SHIFT;
@@ -108,7 +108,7 @@ void MoveCamera(GAME_VECTOR* ideal, int32_t speed)
 }
 
 void ClipCamera(
-    int32_t* x, int32_t* y, int32_t target_x, int32_t target_y, int32_t left,
+    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom)
 {
     if ((right > left) != (target_x < left)) {
@@ -124,7 +124,7 @@ void ClipCamera(
 }
 
 void ShiftCamera(
-    int32_t* x, int32_t* y, int32_t target_x, int32_t target_y, int32_t left,
+    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom)
 {
     int32_t shift;
@@ -174,7 +174,7 @@ void ShiftCamera(
 
 int32_t BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     if (y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z)) {
         return 1;
     }
@@ -182,19 +182,19 @@ int32_t BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
 }
 
 void SmartShift(
-    GAME_VECTOR* ideal,
+    GAME_VECTOR *ideal,
     void (*shift)(
-        int32_t* x, int32_t* y, int32_t target_x, int32_t target_y,
+        int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
         int32_t left, int32_t top, int32_t right, int32_t bottom))
 {
     LOS(&Camera.target, ideal);
 
-    ROOM_INFO* r = &RoomInfo[Camera.target.room_number];
+    ROOM_INFO *r = &RoomInfo[Camera.target.room_number];
     int32_t x_floor = (Camera.target.z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (Camera.target.x - r->x) >> WALL_SHIFT;
 
     int16_t item_box = r->floor[x_floor + y_floor * r->x_size].box;
-    BOX_INFO* box = &Boxes[item_box];
+    BOX_INFO *box = &Boxes[item_box];
 
     r = &RoomInfo[ideal->room_number];
     x_floor = (ideal->z - r->z) >> WALL_SHIFT;
@@ -312,7 +312,7 @@ void SmartShift(
     }
 }
 
-void ChaseCamera(ITEM_INFO* item)
+void ChaseCamera(ITEM_INFO *item)
 {
     GAME_VECTOR ideal;
 
@@ -345,15 +345,15 @@ void ChaseCamera(ITEM_INFO* item)
     }
 }
 
-int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp)
+int32_t ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
 {
     int32_t x = pos->x;
     int32_t y = pos->y;
     int32_t z = pos->z;
 
-    FLOOR_INFO* floor = GetFloor(x, y, z, &pos->room_number);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &pos->room_number);
 
-    BOX_INFO* box = &Boxes[floor->box];
+    BOX_INFO *box = &Boxes[floor->box];
     if (z < box->left + clamp
         && BadPosition(x, y, z - clamp, pos->room_number)) {
         pos->z = box->left + clamp;
@@ -389,7 +389,7 @@ int32_t ShiftClamp(GAME_VECTOR* pos, int32_t clamp)
     }
 }
 
-void CombatCamera(ITEM_INFO* item)
+void CombatCamera(ITEM_INFO *item)
 {
     GAME_VECTOR ideal;
 
@@ -424,7 +424,7 @@ void CombatCamera(ITEM_INFO* item)
     MoveCamera(&ideal, Camera.speed);
 }
 
-void LookCamera(ITEM_INFO* item)
+void LookCamera(ITEM_INFO *item)
 {
     GAME_VECTOR old;
     GAME_VECTOR ideal;
@@ -476,7 +476,7 @@ void LookCamera(ITEM_INFO* item)
 void FixedCamera()
 {
     GAME_VECTOR ideal;
-    OBJECT_VECTOR* fixed;
+    OBJECT_VECTOR *fixed;
 
     fixed = &Camera.fixed[Camera.number];
     ideal.x = fixed->x;
@@ -527,9 +527,9 @@ void CalculateCamera()
 
     int32_t fixed_camera =
         Camera.item && (Camera.type == CAM_FIXED || Camera.type == CAM_HEAVY);
-    ITEM_INFO* item = fixed_camera ? Camera.item : LaraItem;
+    ITEM_INFO *item = fixed_camera ? Camera.item : LaraItem;
 
-    int16_t* bounds = GetBoundsAccurate(item);
+    int16_t *bounds = GetBoundsAccurate(item);
 
     int32_t y = item->pos.y;
     if (!fixed_camera) {
@@ -627,7 +627,7 @@ void CalculateCamera()
             Camera.fixed_camera = 0;
         }
 
-        FLOOR_INFO* floor = GetFloor(
+        FLOOR_INFO *floor = GetFloor(
             Camera.target.x, Camera.target.y, Camera.target.z,
             &Camera.target.room_number);
         if (Camera.target.y > GetHeight(

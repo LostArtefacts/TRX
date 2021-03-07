@@ -22,7 +22,7 @@ void InitColours()
     InvColours[IC_MAGENTA] = S_Colour(255, 0, 255);
 }
 
-void RingIsOpen(RING_INFO* ring)
+void RingIsOpen(RING_INFO *ring)
 {
     if (InventoryMode == INV_TITLE_MODE) {
         return;
@@ -74,7 +74,7 @@ void RingIsOpen(RING_INFO* ring)
     }
 }
 
-void RingIsNotOpen(RING_INFO* ring)
+void RingIsNotOpen(RING_INFO *ring)
 {
     if (!InvRingText) {
         return;
@@ -97,7 +97,7 @@ void RingIsNotOpen(RING_INFO* ring)
     }
 }
 
-void RingNotActive(INVENTORY_ITEM* inv_item)
+void RingNotActive(INVENTORY_ITEM *inv_item)
 {
     if (!InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
@@ -156,7 +156,8 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
 
         default:
             // XXX: terrible hack
-            InvItemText[IT_NAME] = T_Print(0, -16, 0, (char*)inv_item->item_id);
+            InvItemText[IT_NAME] =
+                T_Print(0, -16, 0, (char *)inv_item->item_id);
             break;
         }
 
@@ -294,7 +295,7 @@ int32_t Inv_AddItem(int32_t item_num)
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
     for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvMainList[i];
+        INVENTORY_ITEM *inv_item = InvMainList[i];
         if (inv_item->object_number == item_num_option) {
             InvMainQtys[i]++;
             return 1;
@@ -302,7 +303,7 @@ int32_t Inv_AddItem(int32_t item_num)
     }
 
     for (int i = 0; i < InvKeysObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvKeysList[i];
+        INVENTORY_ITEM *inv_item = InvKeysList[i];
         if (inv_item->object_number == item_num_option) {
             InvKeysQtys[i]++;
             return 1;
@@ -450,7 +451,7 @@ int32_t Inv_AddItem(int32_t item_num)
     return 0;
 }
 
-void Inv_InsertItem(INVENTORY_ITEM* inv_item)
+void Inv_InsertItem(INVENTORY_ITEM *inv_item)
 {
     int n;
 
@@ -668,8 +669,8 @@ void RemoveInventoryText()
 }
 
 void Inv_RingInit(
-    RING_INFO* ring, int16_t type, INVENTORY_ITEM** list, int16_t qty,
-    int16_t current, IMOTION_INFO* imo)
+    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
+    int16_t current, IMOTION_INFO *imo)
 {
     ring->type = type;
     ring->radius = 0;
@@ -718,7 +719,7 @@ void Inv_RingInit(
     ring->light.z = 1024;
 }
 
-void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
+void Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
 {
     PHD_ANGLE angles[2];
 
@@ -733,7 +734,7 @@ void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
     viewer->z_rot = 0;
 }
 
-void Inv_RingLight(RING_INFO* ring)
+void Inv_RingLight(RING_INFO *ring)
 {
     PHD_ANGLE angles[2];
     LsDivider = 0x6000;
@@ -741,16 +742,16 @@ void Inv_RingLight(RING_INFO* ring)
     phd_RotateLight(angles[1], angles[0]);
 }
 
-void Inv_RingCalcAdders(RING_INFO* ring, int16_t rotation_duration)
+void Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration)
 {
     ring->angle_adder = 0x10000 / ring->number_of_objects;
     ring->rot_adder_l = ring->angle_adder / rotation_duration;
     ring->rot_adder_r = -ring->rot_adder_l;
 }
 
-void Inv_RingDoMotions(RING_INFO* ring)
+void Inv_RingDoMotions(RING_INFO *ring)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
 
     if (imo->count) {
         ring->radius += imo->radius_rate;
@@ -758,7 +759,7 @@ void Inv_RingDoMotions(RING_INFO* ring)
         ring->ringpos.y_rot += imo->rotate_rate;
         ring->camera_pitch += imo->camera_pitch_rate;
 
-        INVENTORY_ITEM* inv_item = ring->list[ring->current_object];
+        INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
         inv_item->pt_xrot += imo->item_ptxrot_rate;
         inv_item->x_rot += imo->item_xrot_rate;
         inv_item->ytrans += imo->item_ytrans_rate;
@@ -814,7 +815,7 @@ void Inv_RingDoMotions(RING_INFO* ring)
     }
 }
 
-void Inv_RingRotateLeft(RING_INFO* ring)
+void Inv_RingRotateLeft(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object - 1;
@@ -825,7 +826,7 @@ void Inv_RingRotateLeft(RING_INFO* ring)
     ring->rot_adder = ring->rot_adder_l;
 }
 
-void Inv_RingRotateRight(RING_INFO* ring)
+void Inv_RingRotateRight(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object + 1;
@@ -837,7 +838,7 @@ void Inv_RingRotateRight(RING_INFO* ring)
 }
 
 void Inv_RingMotionInit(
-    RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
+    RING_INFO *ring, int16_t frames, int16_t status, int16_t status_target)
 {
     ring->imo->status_target = status_target;
     ring->imo->count = frames;
@@ -862,9 +863,9 @@ void Inv_RingMotionInit(
 }
 
 void Inv_RingMotionSetup(
-    RING_INFO* ring, int16_t status, int16_t status_target, int16_t frames)
+    RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->count = frames;
     imo->status = status;
     imo->status_target = status_target;
@@ -872,37 +873,37 @@ void Inv_RingMotionSetup(
     imo->camera_yrate = 0;
 }
 
-void Inv_RingMotionRadius(RING_INFO* ring, int16_t target)
+void Inv_RingMotionRadius(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->radius_target = target;
     imo->radius_rate = (target - ring->radius) / imo->count;
 }
 
-void Inv_RingMotionRotation(RING_INFO* ring, int16_t rotation, int16_t target)
+void Inv_RingMotionRotation(RING_INFO *ring, int16_t rotation, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->rotate_target = target;
     imo->rotate_rate = rotation / imo->count;
 }
 
-void Inv_RingMotionCameraPos(RING_INFO* ring, int16_t target)
+void Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->camera_ytarget = target;
     imo->camera_yrate = (target - ring->camera.y) / imo->count;
 }
 
-void Inv_RingMotionCameraPitch(RING_INFO* ring, int16_t target)
+void Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->camera_pitch_target = target;
     imo->camera_pitch_rate = target / imo->count;
 }
 
-void Inv_RingMotionItemSelect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
+void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = inv_item->pt_xrot_sel;
     imo->item_ptxrot_rate = inv_item->pt_xrot_sel / imo->count;
     imo->item_xrot_target = inv_item->x_rot_sel;
@@ -913,9 +914,9 @@ void Inv_RingMotionItemSelect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
     imo->item_ztrans_rate = inv_item->ztrans_sel / imo->count;
 }
 
-void Inv_RingMotionItemDeselect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
+void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = 0;
     imo->item_ptxrot_rate = -inv_item->pt_xrot_sel / imo->count;
     imo->item_xrot_target = 0;

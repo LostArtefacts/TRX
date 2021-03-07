@@ -95,8 +95,8 @@ int32_t DoCinematic(int32_t nframes)
 
         int16_t item_num = NextItemActive;
         while (item_num != NO_ITEM) {
-            ITEM_INFO* item = &Items[item_num];
-            OBJECT_INFO* object = &Objects[item->object_number];
+            ITEM_INFO *item = &Items[item_num];
+            OBJECT_INFO *object = &Objects[item->object_number];
             int16_t next_item_num = item->next_active;
 
             if (object->control) {
@@ -108,8 +108,8 @@ int32_t DoCinematic(int32_t nframes)
 
         int16_t fx_num = NextFxActive;
         while (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
-            OBJECT_INFO* object = &Objects[fx->object_number];
+            FX_INFO *fx = &Effects[fx_num];
+            OBJECT_INFO *object = &Objects[fx->object_number];
             int16_t next_fx_num = fx->next_active;
 
             if (object->control) {
@@ -137,7 +137,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t* ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * CineFrame];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -166,7 +166,7 @@ void InitialisePlayer1(int16_t item_num)
 {
     AddActiveItem(item_num);
 
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     Camera.pos.room_number = item->room_number;
     Camera.pos.x = item->pos.x;
     Camera.pos.y = item->pos.y;
@@ -175,7 +175,7 @@ void InitialisePlayer1(int16_t item_num)
     item->pos.y_rot = 0;
 
     if (CinematicLevel == LV_CUTSCENE2 || CinematicLevel == LV_CUTSCENE4) {
-        int16_t* temp;
+        int16_t *temp;
 
         temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L];
         Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L] =
@@ -191,7 +191,7 @@ void InitialisePlayer1(int16_t item_num)
 
 void ControlCinematicPlayer(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = Camera.target_angle;
     item->pos.x = Camera.pos.x;
     item->pos.y = Camera.pos.y;
@@ -217,7 +217,7 @@ void InGameCinematicCamera()
         CineFrame = NumCineFrames - 1;
     }
 
-    int16_t* ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * CineFrame];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];

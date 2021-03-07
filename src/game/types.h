@@ -823,7 +823,7 @@ typedef struct {
 } FLOOR_INFO;
 
 typedef struct {
-    /* 0000 */ FLOOR_INFO* floor;
+    /* 0000 */ FLOOR_INFO *floor;
     /* 0004 */ FLOOR_INFO data;
     /* 000C */ int16_t block;
     /* 000E end */
@@ -857,11 +857,11 @@ typedef struct {
 } MESH_INFO;
 
 typedef struct {
-    /* 0000 */ int16_t* data;
-    /* 0004 */ DOOR_INFOS* doors;
-    /* 0008 */ FLOOR_INFO* floor;
-    /* 000C */ LIGHT_INFO* light;
-    /* 0010 */ MESH_INFO* mesh;
+    /* 0000 */ int16_t *data;
+    /* 0004 */ DOOR_INFOS *doors;
+    /* 0008 */ FLOOR_INFO *floor;
+    /* 000C */ LIGHT_INFO *light;
+    /* 0010 */ MESH_INFO *mesh;
     /* 0014 */ int32_t x;
     /* 0018 */ int32_t y;
     /* 001C */ int32_t z;
@@ -914,7 +914,7 @@ typedef struct {
     /* 0026 */ int16_t timer;
     /* 0028 */ int16_t flags;
     /* 002A */ int16_t shade;
-    /* 002C */ void* data;
+    /* 002C */ void *data;
     /* 0030 */ PHD_3DPOS pos;
     /* 0042 */ uint16_t active : 1;
     /*      */ uint16_t status : 2;
@@ -926,7 +926,7 @@ typedef struct {
 } ITEM_INFO;
 
 typedef struct {
-    /* 0000 */ int16_t* frame_base;
+    /* 0000 */ int16_t *frame_base;
     /* 0004 */ int16_t frame_number;
     /* 0006 */ int16_t lock;
     /* 0008 */ PHD_ANGLE y_rot;
@@ -952,7 +952,7 @@ typedef struct {
 } BOX_NODE;
 
 typedef struct {
-    /* 0000 */ BOX_NODE* node;
+    /* 0000 */ BOX_NODE *node;
     /* 0004 */ int16_t head;
     /* 0006 */ int16_t tail;
     /* 0008 */ uint16_t search_number;
@@ -996,10 +996,10 @@ typedef struct {
     /* 0016 */ int16_t death_count;
     /* 0018 */ int16_t current_active;
     /* 001A */ int16_t spaz_effect_count;
-    /* 001C */ FX_INFO* spaz_effect;
+    /* 001C */ FX_INFO *spaz_effect;
     /* 0020 */ int32_t mesh_effects;
-    /* 0024 */ int16_t* mesh_ptrs[LM_NUMBER_OF];
-    /* 0060 */ ITEM_INFO* target;
+    /* 0024 */ int16_t *mesh_ptrs[LM_NUMBER_OF];
+    /* 0060 */ ITEM_INFO *target;
     /* 0064 */ PHD_ANGLE target_angles[2];
     /* 0068 */ int16_t turn_rate;
     /* 006A */ int16_t move_angle;
@@ -1075,9 +1075,9 @@ typedef struct {
     /* 0014 */ int16_t flash_rate;
     /* 0016 */ int16_t flash_count;
     /* 0018 */ int16_t bgnd_colour;
-    /* 001A */ SG_COL* bgnd_gour;
+    /* 001A */ SG_COL *bgnd_gour;
     /* 001E */ int16_t outl_colour;
-    /* 0020 */ SG_COL* outl_gour;
+    /* 0020 */ SG_COL *outl_gour;
     /* 0024 */ int16_t bgnd_size_x;
     /* 0026 */ int16_t bgnd_size_y;
     /* 0028 */ int16_t bgnd_off_x;
@@ -1085,7 +1085,7 @@ typedef struct {
     /* 002C */ int16_t bgnd_off_z;
     /* 002E */ int32_t scale_h;
     /* 0032 */ int32_t scale_v;
-    /* 0034 */ char* string;
+    /* 0034 */ char *string;
     /* 0038 end */
 } TEXTSTRING;
 
@@ -1129,7 +1129,7 @@ typedef struct {
     /* 004C */ int16_t facing;
     /* 004E */ int16_t quadrant;
     /* 0050 */ int16_t coll_type;
-    /* 0052 */ int16_t* trigger;
+    /* 0052 */ int16_t *trigger;
     /* 0056 */ int8_t tilt_x;
     /* 0057 */ int8_t tilt_z;
     /* 0058 */ int8_t hit_by_baddie;
@@ -1146,16 +1146,16 @@ typedef struct {
     /* 0000 */ int16_t nmeshes;
     /* 0002 */ int16_t mesh_index;
     /* 0004 */ int32_t bone_index;
-    /* 0008 */ int16_t* frame_base;
+    /* 0008 */ int16_t *frame_base;
     /* 000C */ void (*initialise)(int16_t item_num);
     /* 0010 */ void (*control)(int16_t item_num);
     /* 0014 */ void (*floor)(
-        ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
     /* 0018 */ void (*ceiling)(
-        ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
-    /* 001C */ void (*draw_routine)(ITEM_INFO* item);
+        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+    /* 001C */ void (*draw_routine)(ITEM_INFO *item);
     /* 0020 */ void (*collision)(
-        int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
+        int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
     /* 0024 */ int16_t anim_index;
     /* 0026 */ int16_t hit_points;
     /* 0028 */ int16_t pivot_length;
@@ -1240,14 +1240,14 @@ typedef struct {
     /* 004E */ int16_t last;
     /* 0050 */ int16_t timer;
     /* 0052 */ int16_t speed;
-    /* 0054 */ ITEM_INFO* item;
-    /* 0058 */ ITEM_INFO* last_item;
-    /* 005C */ OBJECT_VECTOR* fixed;
+    /* 0054 */ ITEM_INFO *item;
+    /* 0058 */ ITEM_INFO *last_item;
+    /* 005C */ OBJECT_VECTOR *fixed;
     /* 0060 end */
 } CAMERA_INFO;
 
 typedef struct {
-    /* 0000 */ int16_t* frame_ptr;
+    /* 0000 */ int16_t *frame_ptr;
     /* 0004 */ int16_t interpolation;
     /* 0006 */ int16_t current_anim_state;
     /* 0008 */ int32_t velocity;
@@ -1405,13 +1405,13 @@ typedef struct {
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
     /* 0014 */ int32_t item_heading;
-    /* 0018 */ char* item_texts;
+    /* 0018 */ char *item_texts;
     /* 001C */ int16_t item_text_len;
-    /* 001E */ TEXTSTRING* heading;
-    /* 0022 */ TEXTSTRING* background;
-    /* 0026 */ TEXTSTRING* moreup;
-    /* 002A */ TEXTSTRING* moredown;
-    /* 002E */ TEXTSTRING* texts[MAX_REQLINES];
+    /* 001E */ TEXTSTRING *heading;
+    /* 0022 */ TEXTSTRING *background;
+    /* 0026 */ TEXTSTRING *moreup;
+    /* 002A */ TEXTSTRING *moredown;
+    /* 002E */ TEXTSTRING *texts[MAX_REQLINES];
     /* 006E */ int16_t flags[MAX_REQLINES];
     /* 008E end */
 } REQUEST_INFO;
@@ -1447,7 +1447,7 @@ typedef struct {
     /* 0006 */ int16_t z;
     /* 0008 */ int32_t param1;
     /* 000C */ int32_t param2;
-    /* 0010 */ SG_COL* grdptr;
+    /* 0010 */ SG_COL *grdptr;
     /* 0014 */ int16_t sprnum;
     /* 0016 end */
 } INVENTORY_SPRITE;
@@ -1475,12 +1475,12 @@ typedef struct {
     /* 0030 */ uint32_t which_meshes;
     /* 0034 */ uint32_t drawn_meshes;
     /* 0038 */ int16_t inv_pos;
-    /* 003A */ INVENTORY_SPRITE** sprlist;
+    /* 003A */ INVENTORY_SPRITE **sprlist;
     /* 003E end */
 } INVENTORY_ITEM;
 
 typedef struct {
-    /* 0000 */ INVENTORY_ITEM** list;
+    /* 0000 */ INVENTORY_ITEM **list;
     /* 0004 */ int16_t type;
     /* 0006 */ int16_t radius;
     /* 0008 */ int16_t camera_pitch;
@@ -1496,14 +1496,14 @@ typedef struct {
     /* 001C */ PHD_3DPOS ringpos;
     /* 002E */ PHD_3DPOS camera;
     /* 0040 */ PHD_VECTOR light;
-    /* 004C */ IMOTION_INFO* imo;
+    /* 004C */ IMOTION_INFO *imo;
     /* 0050 end */
 } RING_INFO;
 
 #pragma pack(pop)
 
-typedef void (*ControlRoutine)(ITEM_INFO*, COLL_INFO*);
-typedef void (*CollisionRoutine)(ITEM_INFO*, COLL_INFO*);
-typedef void (*EffectRoutine)(ITEM_INFO* item);
+typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
+typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
+typedef void (*EffectRoutine)(ITEM_INFO *item);
 
 #endif

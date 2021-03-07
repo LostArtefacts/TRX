@@ -41,8 +41,8 @@ static BITE_INFO Teeth3B = { 71, -10, -1718, 1 };
 
 void InitialiseRollingBall(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    GAME_VECTOR* old = game_malloc(sizeof(GAME_VECTOR), GBUF_ROLLINGBALL_STUFF);
+    ITEM_INFO *item = &Items[item_num];
+    GAME_VECTOR *old = game_malloc(sizeof(GAME_VECTOR), GBUF_ROLLINGBALL_STUFF);
     item->data = old;
     old->x = item->pos.x;
     old->y = item->pos.y;
@@ -52,7 +52,7 @@ void InitialiseRollingBall(int16_t item_num)
 
 void RollingBallControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->status == IS_ACTIVE) {
         if (item->pos.y < item->floor) {
             if (!item->gravity_status) {
@@ -68,7 +68,7 @@ void RollingBallControl(int16_t item_num)
         AnimateItem(item);
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO* floor =
+        FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_number != room_num) {
             ItemNewRoom(item_num, room_num);
@@ -100,13 +100,13 @@ void RollingBallControl(int16_t item_num)
         }
     } else if (item->status == IS_DEACTIVATED && !TriggerActive(item)) {
         item->status = IS_NOT_ACTIVE;
-        GAME_VECTOR* old = item->data;
+        GAME_VECTOR *old = item->data;
         item->pos.x = old->x;
         item->pos.y = old->y;
         item->pos.z = old->z;
         if (item->room_number != old->room_number) {
             RemoveDrawnItem(item_num);
-            ROOM_INFO* r = &RoomInfo[old->room_number];
+            ROOM_INFO *r = &RoomInfo[old->room_number];
             item->next_item = r->item_number;
             r->item_number = item_num;
             item->room_number = old->room_number;
@@ -123,9 +123,9 @@ void RollingBallControl(int16_t item_num)
 }
 
 void RollingBallCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
@@ -189,9 +189,9 @@ void RollingBallCollision(
     }
 }
 
-void SpikeCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (lara_item->hit_points < 0) {
         return;
     }
@@ -234,7 +234,7 @@ void SpikeCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 
 void TrapDoorControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
@@ -246,7 +246,7 @@ void TrapDoorControl(int16_t item_num)
 }
 
 void TrapDoorFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (!OnTrapDoor(item, x, z)) {
         return;
@@ -258,7 +258,7 @@ void TrapDoorFloor(
 }
 
 void TrapDoorCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (!OnTrapDoor(item, x, z)) {
         return;
@@ -269,7 +269,7 @@ void TrapDoorCeiling(
     }
 }
 
-int32_t OnTrapDoor(ITEM_INFO* item, int32_t x, int32_t z)
+int32_t OnTrapDoor(ITEM_INFO *item, int32_t x, int32_t z)
 {
     x >>= WALL_SHIFT;
     z >>= WALL_SHIFT;
@@ -293,7 +293,7 @@ int32_t OnTrapDoor(ITEM_INFO* item, int32_t x, int32_t z)
 // original name: Pendulum
 void PendulumControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (TriggerActive(item)) {
         if (item->current_anim_state == TRAP_SET) {
@@ -315,7 +315,7 @@ void PendulumControl(int16_t item_num)
         DoBloodSplat(x, y, z, LaraItem->speed, d, LaraItem->room_number);
     }
 
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
@@ -325,7 +325,7 @@ void PendulumControl(int16_t item_num)
 // original name: FallingBlock
 void FallingBlockControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     switch (item->current_anim_state) {
     case TRAP_SET:
@@ -356,7 +356,7 @@ void FallingBlockControl(int16_t item_num)
     }
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
         ItemNewRoom(item_num, room_num);
@@ -374,7 +374,7 @@ void FallingBlockControl(int16_t item_num)
 }
 
 void FallingBlockFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y <= item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
@@ -384,7 +384,7 @@ void FallingBlockFloor(
 }
 
 void FallingBlockCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y > item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
@@ -396,7 +396,7 @@ void FallingBlockCeiling(
 // original name: TeethTrap
 void TeethTrapControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
@@ -418,7 +418,7 @@ void TeethTrapControl(int16_t item_num)
 // original name: FallingCeiling
 void FallingCeilingControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity_status = 1;
@@ -441,7 +441,7 @@ void FallingCeilingControl(int16_t item_num)
 
 void InitialiseDamoclesSword(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = GetRandomControl();
     item->required_anim_state = (GetRandomControl() - 0x4000) / 16;
     item->fall_speed = 50;
@@ -449,7 +449,7 @@ void InitialiseDamoclesSword(int16_t item_num)
 
 void DamoclesSwordControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->gravity_status) {
         item->pos.y_rot += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
@@ -480,9 +480,9 @@ void DamoclesSwordControl(int16_t item_num)
 }
 
 void DamoclesSwordCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
@@ -501,7 +501,7 @@ void DamoclesSwordCollision(
 
 void DartEmitterControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (TriggerActive(item)) {
         if (item->current_anim_state == DE_IDLE) {
@@ -517,7 +517,7 @@ void DartEmitterControl(int16_t item_num)
         && item->frame_number == Anims[item->anim_number].frame_base) {
         int16_t dart_item_num = CreateItem();
         if (dart_item_num != NO_ITEM) {
-            ITEM_INFO* dart = &Items[dart_item_num];
+            ITEM_INFO *dart = &Items[dart_item_num];
             dart->object_number = O_DARTS;
             dart->room_number = item->room_number;
             dart->shade = -1;
@@ -549,7 +549,7 @@ void DartEmitterControl(int16_t item_num)
 
             int16_t fx_num = CreateEffect(dart->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO* fx = &Effects[fx_num];
+                FX_INFO *fx = &Effects[fx_num];
                 fx->pos = dart->pos;
                 fx->speed = 0;
                 fx->frame_number = 0;
@@ -564,7 +564,7 @@ void DartEmitterControl(int16_t item_num)
 
 void DartsControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->touch_bits) {
         LaraItem->hit_points -= 50;
         LaraItem->hit_status = 1;
@@ -575,7 +575,7 @@ void DartsControl(int16_t item_num)
     AnimateItem(item);
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
         ItemNewRoom(item_num, room_num);
@@ -586,7 +586,7 @@ void DartsControl(int16_t item_num)
         KillItem(item_num);
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->pos = item->pos;
             fx->speed = 0;
             fx->counter = 6;
@@ -598,7 +598,7 @@ void DartsControl(int16_t item_num)
 
 void DartEffectControl(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->counter++;
     if (fx->counter >= 3) {
         fx->counter = 0;
@@ -611,12 +611,12 @@ void DartEffectControl(int16_t fx_num)
 
 void FlameEmitterControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         if (!item->data) {
             int16_t fx_num = CreateEffect(item->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO* fx = &Effects[fx_num];
+                FX_INFO *fx = &Effects[fx_num];
                 fx->pos.x = item->pos.x;
                 fx->pos.y = item->pos.y;
                 fx->pos.z = item->pos.z;
@@ -624,7 +624,7 @@ void FlameEmitterControl(int16_t item_num)
                 fx->object_number = O_FLAME;
                 fx->counter = 0;
             }
-            item->data = (void*)(fx_num + 1);
+            item->data = (void *)(fx_num + 1);
         }
     } else if (item->data) {
         StopSoundEffect(150, NULL);
@@ -635,7 +635,7 @@ void FlameEmitterControl(int16_t item_num)
 
 void FlameControl(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
 
     fx->frame_number--;
     if (fx->frame_number <= Objects[O_FLAME].nmeshes) {
@@ -659,7 +659,7 @@ void FlameControl(int16_t fx_num)
             fx->pos.z = 0;
         }
 
-        GetJointAbsPosition(LaraItem, (PHD_VECTOR*)&fx->pos, -1 - fx->counter);
+        GetJointAbsPosition(LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
 
 #ifdef T1M_FEAT_OG_FIXES
         int32_t y = GetWaterHeight(
@@ -713,7 +713,7 @@ void FlameControl(int16_t fx_num)
     }
 }
 
-void LavaBurn(ITEM_INFO* item)
+void LavaBurn(ITEM_INFO *item)
 {
 #ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT) {
@@ -726,7 +726,7 @@ void LavaBurn(ITEM_INFO* item)
     }
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO* floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
+    FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
 
     if (item->floor != GetHeight(floor, item->pos.x, 32000, item->pos.z)) {
         return;
@@ -737,7 +737,7 @@ void LavaBurn(ITEM_INFO* item)
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->object_number = O_FLAME;
             fx->frame_number =
                 (Objects[O_FLAME].nmeshes * GetRandomControl()) / 0x7FFF;
@@ -749,10 +749,10 @@ void LavaBurn(ITEM_INFO* item)
 // original name: LavaSpray
 void LavaEmitterControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     int16_t fx_num = CreateEffect(item->room_number);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->pos.x = item->pos.x;
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
@@ -768,14 +768,14 @@ void LavaEmitterControl(int16_t item_num)
 // original name: ControlLavaBlob
 void LavaControl(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     if (fx->pos.y >= GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
         || fx->pos.y < GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
         KillEffect(fx_num);
@@ -791,7 +791,7 @@ void LavaControl(int16_t fx_num)
 // original name: LavaWedge
 void LavaWedgeControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     int16_t room_num = item->room_number;
     GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -822,7 +822,7 @@ void LavaWedgeControl(int16_t item_num)
             break;
         }
 
-        FLOOR_INFO* floor = GetFloor(x, item->pos.y, z, &room_num);
+        FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
         if (GetHeight(floor, x, item->pos.y, z) != item->pos.y) {
             item->status = IS_DEACTIVATED;
         }

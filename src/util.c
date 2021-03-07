@@ -5,7 +5,7 @@
 #include <dbghelp.h>
 
 void T1MTraceFunc(
-    const char* file, int line, const char* func, const char* fmt, ...)
+    const char *file, int line, const char *func, const char *fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
@@ -15,7 +15,7 @@ void T1MTraceFunc(
     fflush(stdout);
 }
 
-void T1MInjectFunc(void* from, void* to)
+void T1MInjectFunc(void *from, void *to)
 {
     if (from == to) {
         return;
@@ -44,9 +44,9 @@ void T1MPrintStackTrace()
     STACKFRAME64 stack;
     ULONG frame;
     DWORD64 displacement;
-    IMAGEHLP_SYMBOL64* pSymbol =
+    IMAGEHLP_SYMBOL64 *pSymbol =
         malloc(sizeof(IMAGEHLP_SYMBOL64) + (MaxNameLen + 1) * sizeof(TCHAR));
-    char* name = malloc(MaxNameLen + 1);
+    char *name = malloc(MaxNameLen + 1);
 
     RtlCaptureContext(&context);
     memset(&stack, 0, sizeof(STACKFRAME64));

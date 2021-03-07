@@ -186,9 +186,9 @@ void DrawAmmoInfo()
 #endif
 }
 
-void MakeAmmoString(char* string)
+void MakeAmmoString(char *string)
 {
-    char* c;
+    char *c;
 
     for (c = string; *c != 0; c++) {
         if (*c == 32) {
@@ -224,7 +224,7 @@ void DrawPickups()
         int32_t y = PhdWinHeight - sprite_height;
         int32_t x = PhdWinWidth - sprite_height;
         for (int i = 0; i < MAX_PICKUPS; i++) {
-            DISPLAYPU* pu = &Pickups[i];
+            DISPLAYPU *pu = &Pickups[i];
             pu->duration -= time;
             if (pu->duration <= 0) {
                 pu->duration = 0;

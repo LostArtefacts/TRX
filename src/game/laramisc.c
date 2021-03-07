@@ -16,8 +16,8 @@ void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
 
-    ITEM_INFO* item = LaraItem;
-    ROOM_INFO* r = &RoomInfo[item->room_number];
+    ITEM_INFO *item = LaraItem;
+    ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
 #ifdef T1M_FEAT_CHEATS
@@ -215,10 +215,10 @@ void LaraSwapMeshExtra()
     }
 }
 
-void AnimateLara(ITEM_INFO* item)
+void AnimateLara(ITEM_INFO *item)
 {
-    int16_t* command;
-    ANIM_STRUCT* anim;
+    int16_t *command;
+    ANIM_STRUCT *anim;
 
     item->frame_number++;
     anim = &Anims[item->anim_number];
@@ -458,7 +458,7 @@ void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    START_INFO* start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame[0].start[level_num];
 
     Lara.pistols.ammo = 1000;
     if (start->got_pistols) {
@@ -523,7 +523,7 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO* start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame[0].start[level_num];
 
     if (start->costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
@@ -664,7 +664,7 @@ void InitialiseEvilLara(int16_t item_num)
 
 void ControlEvilLara(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->hit_points < LARA_HITPOINTS) {
         LaraItem->hit_points -= (LARA_HITPOINTS - item->hit_points) * 10;
@@ -677,7 +677,7 @@ void ControlEvilLara(int16_t item_num)
         int32_t z = 2 * 60 * WALL_L - LaraItem->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+        FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
         int32_t h = GetHeight(floor, x, y, z);
         item->floor = h;
 
@@ -705,7 +705,7 @@ void ControlEvilLara(int16_t item_num)
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity_status = 1;
-            item->data = (void*)-1;
+            item->data = (void *)-1;
             item->pos.y += 50;
         }
     }
@@ -718,7 +718,7 @@ void ControlEvilLara(int16_t item_num)
         int32_t z = item->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+        FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
         int32_t h = GetHeight(floor, x, y, z);
         item->floor = h;
 
@@ -737,9 +737,9 @@ void ControlEvilLara(int16_t item_num)
     }
 }
 
-void DrawEvilLara(ITEM_INFO* item)
+void DrawEvilLara(ITEM_INFO *item)
 {
-    int16_t* old_mesh_ptrs[LM_NUMBER_OF];
+    int16_t *old_mesh_ptrs[LM_NUMBER_OF];
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         old_mesh_ptrs[i] = Lara.mesh_ptrs[i];
@@ -753,7 +753,7 @@ void DrawEvilLara(ITEM_INFO* item)
     }
 }
 
-void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
     LaraAsDeath,     LaraAsFastFall,  LaraAsHang,      LaraAsReach,
@@ -770,7 +770,7 @@ void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsSwanDive,  LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
 };
 
-void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraColWalk,      LaraColRun,       LaraColStop,      LaraColForwardJump,
     LaraColPose,      LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
     LaraColDeath,     LaraColFastFall,  LaraColHang,      LaraColReach,

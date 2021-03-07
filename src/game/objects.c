@@ -23,9 +23,9 @@ typedef enum {
     BOAT_STOP = 3,
 } BOAT_ANIM;
 
-void ShutThatDoor(DOORPOS_DATA* d)
+void ShutThatDoor(DOORPOS_DATA *d)
 {
-    FLOOR_INFO* floor = d->floor;
+    FLOOR_INFO *floor = d->floor;
     if (!floor) {
         return;
     }
@@ -43,9 +43,9 @@ void ShutThatDoor(DOORPOS_DATA* d)
     }
 }
 
-void OpenThatDoor(DOORPOS_DATA* d)
+void OpenThatDoor(DOORPOS_DATA *d)
 {
-    FLOOR_INFO* floor = d->floor;
+    FLOOR_INFO *floor = d->floor;
     if (!floor) {
         return;
     }
@@ -59,7 +59,7 @@ void OpenThatDoor(DOORPOS_DATA* d)
 }
 
 #ifdef T1M_FEAT_CHEATS
-void OpenClosestDoors(ITEM_INFO* lara_item)
+void OpenClosestDoors(ITEM_INFO *lara_item)
 {
     int16_t best_door = NO_ITEM;
     int32_t best_dist = 0x7FFFFFFF;
@@ -67,7 +67,7 @@ void OpenClosestDoors(ITEM_INFO* lara_item)
 
     int16_t item_num = RoomInfo[lara_item->room_number].item_number;
     while (item_num != NO_ITEM) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
         int32_t x = (item->pos.x - lara_item->pos.x) >> 8;
         int32_t y = (item->pos.y - lara_item->pos.y) >> 8;
         int32_t z = (item->pos.z - lara_item->pos.z) >> 8;
@@ -88,7 +88,7 @@ void OpenClosestDoors(ITEM_INFO* lara_item)
         return;
     }
 
-    ITEM_INFO* item = &Items[best_door];
+    ITEM_INFO *item = &Items[best_door];
     if (!item->active) {
         AddActiveItem(best_door);
         item->touch_bits = 0;
@@ -100,8 +100,8 @@ void OpenClosestDoors(ITEM_INFO* lara_item)
 
 void InitialiseDoor(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    DOOR_DATA* door = game_malloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
+    ITEM_INFO *item = &Items[item_num];
+    DOOR_DATA *door = game_malloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
     item->data = door;
 
     int32_t dx = 0;
@@ -116,8 +116,8 @@ void InitialiseDoor(int16_t item_num)
         dy++;
     }
 
-    ROOM_INFO* r;
-    ROOM_INFO* b;
+    ROOM_INFO *r;
+    ROOM_INFO *b;
     int32_t x_floor;
     int32_t y_floor;
     int16_t room_num;
@@ -223,8 +223,8 @@ void InitialiseDoor(int16_t item_num)
 
 void DoorControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    DOOR_DATA* door = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    DOOR_DATA *door = item->data;
 
     if (TriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
@@ -249,7 +249,7 @@ void DoorControl(int16_t item_num)
     AnimateItem(item);
 }
 
-int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y)
+int32_t OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y)
 {
     int32_t ix = item->pos.z >> WALL_SHIFT;
     int32_t iy = item->pos.x >> WALL_SHIFT;
@@ -275,7 +275,7 @@ int32_t OnDrawBridge(ITEM_INFO* item, int32_t x, int32_t y)
 }
 
 void DrawBridgeFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return;
@@ -290,7 +290,7 @@ void DrawBridgeFloor(
 }
 
 void DrawBridgeCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return;
@@ -305,16 +305,16 @@ void DrawBridgeCeiling(
 }
 
 void DrawBridgeCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->current_anim_state == DOOR_CLOSED) {
         DoorCollision(item_num, lara_item, coll);
     }
 }
 
 void BridgeFlatFloor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y <= item->pos.y) {
         *height = item->pos.y;
@@ -322,14 +322,14 @@ void BridgeFlatFloor(
 }
 
 void BridgeFlatCeiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y > item->pos.y) {
         *height = item->pos.y + STEP_L;
     }
 }
 
-int32_t GetOffset(ITEM_INFO* item, int32_t x, int32_t z)
+int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z)
 {
     if (item->pos.y_rot == 0) {
         return (WALL_L - x) & (WALL_L - 1);
@@ -343,7 +343,7 @@ int32_t GetOffset(ITEM_INFO* item, int32_t x, int32_t z)
 }
 
 void BridgeTilt1Floor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
     if (y <= level) {
@@ -352,7 +352,7 @@ void BridgeTilt1Floor(
 }
 
 void BridgeTilt1Ceiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
     if (y > level) {
@@ -361,7 +361,7 @@ void BridgeTilt1Ceiling(
 }
 
 void BridgeTilt2Floor(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
     if (y <= level) {
@@ -370,7 +370,7 @@ void BridgeTilt2Floor(
 }
 
 void BridgeTilt2Ceiling(
-    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
     if (y > level) {
@@ -380,7 +380,7 @@ void BridgeTilt2Ceiling(
 
 void CogControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         item->goal_anim_state = DOOR_OPEN;
     } else {
@@ -398,7 +398,7 @@ void CogControl(int16_t item_num)
 
 void CabinControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         switch (item->current_anim_state) {
@@ -426,7 +426,7 @@ void CabinControl(int16_t item_num)
 
 void BoatControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     switch (item->current_anim_state) {
     case BOAT_SET:
@@ -451,7 +451,7 @@ void ScionControl(int16_t item_num)
 void Scion3Control(int16_t item_num)
 {
     static int32_t counter = 0;
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->hit_points > 0) {
         counter = 0;
@@ -463,7 +463,7 @@ void Scion3Control(int16_t item_num)
         item->status = IS_INVISIBLE;
         item->hit_points = DONT_TARGET;
         int16_t room_num = item->room_number;
-        FLOOR_INFO* floor =
+        FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(TriggerIndex, 1);
@@ -473,7 +473,7 @@ void Scion3Control(int16_t item_num)
     if (counter % 10 == 0) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->pos.x = item->pos.x + (GetRandomControl() - 0x4000) / 32;
             fx->pos.y = item->pos.y + (GetRandomControl() - 0x4000) / 256 - 500;
             fx->pos.z = item->pos.z + (GetRandomControl() - 0x4000) / 32;
@@ -495,7 +495,7 @@ void Scion3Control(int16_t item_num)
 // original name: EarthQuake
 void EarthQuakeControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
         if (GetRandomDraw() < 0x100) {
             Camera.bounce = -150;

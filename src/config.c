@@ -31,9 +31,9 @@
     READ_CUSTOM(ReadBarColor, opt, default_value)
 
 static int8_t ReadBarShowingMode(
-    struct json_value_s* root, const char* name, int8_t default_value)
+    struct json_value_s *root, const char *name, int8_t default_value)
 {
-    const char* value_str;
+    const char *value_str;
     if (JSONGetStringValue(root, name, &value_str)) {
         if (!strcmp(value_str, "flashing-or-default")) {
             return T1M_BSM_FLASHING_OR_DEFAULT;
@@ -49,9 +49,9 @@ static int8_t ReadBarShowingMode(
 }
 
 static int8_t ReadBarLocation(
-    struct json_value_s* root, const char* name, int8_t default_value)
+    struct json_value_s *root, const char *name, int8_t default_value)
 {
-    const char* value_str;
+    const char *value_str;
     if (JSONGetStringValue(root, name, &value_str)) {
         if (!strcmp(value_str, "top-left")) {
             return T1M_BL_TOP_LEFT;
@@ -71,9 +71,9 @@ static int8_t ReadBarLocation(
 }
 
 static int8_t
-ReadBarColor(struct json_value_s* root, const char* name, int8_t default_value)
+ReadBarColor(struct json_value_s *root, const char *name, int8_t default_value)
 {
-    const char* value_str;
+    const char *value_str;
     if (JSONGetStringValue(root, name, &value_str)) {
         if (!strcmp(value_str, "gold")) {
             return T1M_BC_GOLD;
@@ -98,9 +98,9 @@ ReadBarColor(struct json_value_s* root, const char* name, int8_t default_value)
     return default_value;
 }
 
-void T1MReadConfigFromJson(const char* cfg_data)
+void T1MReadConfigFromJson(const char *cfg_data)
 {
-    struct json_value_s* json = json_parse_ex(
+    struct json_value_s *json = json_parse_ex(
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
         NULL);
 
@@ -142,7 +142,7 @@ void T1MReadConfigFromJson(const char* cfg_data)
 
 int T1MReadConfig()
 {
-    FILE* fp = fopen("Tomb1Main.json5", "rb");
+    FILE *fp = fopen("Tomb1Main.json5", "rb");
     if (!fp) {
         T1MReadConfigFromJson("");
         return 0;
@@ -152,7 +152,7 @@ int T1MReadConfig()
     int cfg_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char* cfg_data = malloc(cfg_size);
+    char *cfg_data = malloc(cfg_size);
     if (!cfg_data) {
         fclose(fp);
         T1MReadConfigFromJson("");

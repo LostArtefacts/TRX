@@ -16,14 +16,14 @@
 #define FLIPFLAG 0x40
 #define UNFLIPFLAG 0x80
 
-void (*EffectRoutines[])(ITEM_INFO* item) = {
+void (*EffectRoutines[])(ITEM_INFO *item) = {
     FxTurn180,    FxDinoStomp, FxLaraNormal,    FxLaraBubbles,  FxFinishLevel,
     FxEarthQuake, FxFlood,     FxRaisingBlock,  FxStairs2Slope, FxSand,
     FxPowerUp,    FxExplosion, FxLaraHandsFree, FxFlipMap,      FxDrawRightGun,
     FxChainBlock, FxFlicker,
 };
 
-int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
+int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance)
 {
     int32_t x = pos->x - LaraItem->pos.x;
     int32_t y = pos->y - LaraItem->pos.y;
@@ -32,7 +32,7 @@ int32_t ItemNearLara(PHD_3DPOS* pos, int32_t distance)
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        int16_t* bounds = GetBoundsAccurate(LaraItem);
+        int16_t *bounds = GetBoundsAccurate(LaraItem);
         if (y >= bounds[FRAME_BOUND_MIN_Y]
             && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
             return 1;
@@ -47,11 +47,11 @@ void SoundEffects()
     mn_reset_ambient_loudness();
 
     for (int i = 0; i < NumberSoundEffects; i++) {
-        OBJECT_VECTOR* sound = &SoundEffectsTable[i];
+        OBJECT_VECTOR *sound = &SoundEffectsTable[i];
         if (FlipStatus && (sound->flags & FLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
+            SoundEffect(sound->data, (PHD_3DPOS *)sound, 0);
         } else if (!FlipStatus && (sound->flags & UNFLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS*)&sound->x, 0);
+            SoundEffect(sound->data, (PHD_3DPOS *)&sound->x, 0);
         }
     }
 
@@ -70,7 +70,7 @@ int16_t DoBloodSplat(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
@@ -85,7 +85,7 @@ int16_t DoBloodSplat(
 
 void ControlBlood1(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
     fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
     fx->counter++;
@@ -100,7 +100,7 @@ void ControlBlood1(int16_t fx_num)
 
 void ControlExplosion1(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->counter++;
     if (fx->counter == 2) {
         fx->counter = 0;
@@ -111,11 +111,11 @@ void ControlExplosion1(int16_t fx_num)
     }
 }
 
-void Ricochet(GAME_VECTOR* pos)
+void Ricochet(GAME_VECTOR *pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->pos.x = pos->x;
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
@@ -128,18 +128,18 @@ void Ricochet(GAME_VECTOR* pos)
 
 void ControlRicochet1(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->counter--;
     if (!fx->counter) {
         KillEffect(fx_num);
     }
 }
 
-void Twinkle(GAME_VECTOR* pos)
+void Twinkle(GAME_VECTOR *pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->pos.x = pos->x;
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
@@ -151,7 +151,7 @@ void Twinkle(GAME_VECTOR* pos)
 
 void ControlTwinkle(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->counter++;
     if (fx->counter == 1) {
         fx->counter = 0;
@@ -162,7 +162,7 @@ void ControlTwinkle(int16_t fx_num)
     }
 }
 
-void ItemSparkle(ITEM_INFO* item, int meshmask)
+void ItemSparkle(ITEM_INFO *item, int meshmask)
 {
     SPHERE slist[34];
     GAME_VECTOR effect_pos;
@@ -171,7 +171,7 @@ void ItemSparkle(ITEM_INFO* item, int meshmask)
     effect_pos.room_number = item->room_number;
     for (int i = 0; i < num; i++) {
         if (meshmask & (1 << i)) {
-            SPHERE* sptr = &slist[i];
+            SPHERE *sptr = &slist[i];
             effect_pos.x =
                 sptr->x + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
             effect_pos.y =
@@ -184,7 +184,7 @@ void ItemSparkle(ITEM_INFO* item, int meshmask)
 }
 
 // original name: LaraBubbles
-void FxLaraBubbles(ITEM_INFO* item)
+void FxLaraBubbles(ITEM_INFO *item)
 {
 #ifdef T1M_FEAT_CHEATS
     // NOTE: until we get Robolara, it makes sense for her to breathe underwater
@@ -210,7 +210,7 @@ void FxLaraBubbles(ITEM_INFO* item)
     for (int i = 0; i < count; i++) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->pos.x = offset.x;
             fx->pos.y = offset.y;
             fx->pos.z = offset.z;
@@ -223,7 +223,7 @@ void FxLaraBubbles(ITEM_INFO* item)
 
 void ControlBubble1(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->pos.y_rot += 9 * PHD_DEGREE;
     fx->pos.x_rot += 13 * PHD_DEGREE;
 
@@ -232,7 +232,7 @@ void ControlBubble1(int16_t fx_num)
     int32_t z = fx->pos.z + ((phd_cos(fx->pos.x_rot) * 8) >> W2V_SHIFT);
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     if (!floor || !(RoomInfo[room_num].flags & RF_UNDERWATER)) {
         KillEffect(fx_num);
         return;
@@ -252,7 +252,7 @@ void ControlBubble1(int16_t fx_num)
     fx->pos.z = z;
 }
 
-void Splash(ITEM_INFO* item)
+void Splash(ITEM_INFO *item)
 {
     int16_t wh = GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -264,7 +264,7 @@ void Splash(ITEM_INFO* item)
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
@@ -278,7 +278,7 @@ void Splash(ITEM_INFO* item)
 
 void ControlSplash1(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->frame_number--;
     if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
         KillEffect(fx_num);
@@ -292,7 +292,7 @@ void ControlSplash1(int16_t fx_num)
 // original name: WaterFall
 void ControlWaterFall(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         return;
     }
@@ -305,7 +305,7 @@ void ControlWaterFall(int16_t item_num)
         && y >= -WF_RANGE && y <= WF_RANGE) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->pos.x = item->pos.x
                 + ((GetRandomDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
             fx->pos.z = item->pos.z
@@ -319,19 +319,19 @@ void ControlWaterFall(int16_t item_num)
 }
 
 // original name: finish_level_effect
-void FxFinishLevel(ITEM_INFO* item)
+void FxFinishLevel(ITEM_INFO *item)
 {
     LevelComplete = 1;
 }
 
 // original name: turn180_effect
-void FxTurn180(ITEM_INFO* item)
+void FxTurn180(ITEM_INFO *item)
 {
     item->pos.y_rot += PHD_180;
 }
 
 // original name: dino_stomp_effect
-void FxDinoStomp(ITEM_INFO* item)
+void FxDinoStomp(ITEM_INFO *item)
 {
     int32_t dx = item->pos.x - Camera.pos.x;
     int32_t dy = item->pos.y - Camera.pos.y;
@@ -344,7 +344,7 @@ void FxDinoStomp(ITEM_INFO* item)
 }
 
 // original name: lara_normal_effect
-void FxLaraNormal(ITEM_INFO* item)
+void FxLaraNormal(ITEM_INFO *item)
 {
     item->current_anim_state = AS_STOP;
     item->goal_anim_state = AS_STOP;
@@ -359,7 +359,7 @@ void FxLaraNormal(ITEM_INFO* item)
 }
 
 // original name: EarthQuakeFX
-void FxEarthQuake(ITEM_INFO* item)
+void FxEarthQuake(ITEM_INFO *item)
 {
     if (FlipTimer == 0) {
         SoundEffect(99, NULL, 0);
@@ -379,7 +379,7 @@ void FxEarthQuake(ITEM_INFO* item)
 }
 
 // original name: FloodFX
-void FxFlood(ITEM_INFO* item)
+void FxFlood(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
 
@@ -400,14 +400,14 @@ void FxFlood(ITEM_INFO* item)
 }
 
 // original name: RaisingBlockFX
-void FxRaisingBlock(ITEM_INFO* item)
+void FxRaisingBlock(ITEM_INFO *item)
 {
     SoundEffect(117, NULL, 0);
     FlipEffect = -1;
 }
 
 // original name: ChainBlockFX
-void FxChainBlock(ITEM_INFO* item)
+void FxChainBlock(ITEM_INFO *item)
 {
 #ifdef T1M_FEAT_OG_FIXES
     if (T1MConfig.fix_tihocan_secret_sound) {
@@ -429,7 +429,7 @@ void FxChainBlock(ITEM_INFO* item)
 }
 
 // original name: Stairs2SlopeFX
-void FxStairs2Slope(ITEM_INFO* item)
+void FxStairs2Slope(ITEM_INFO *item)
 {
     if (FlipTimer == 5) {
         SoundEffect(119, NULL, 0);
@@ -439,7 +439,7 @@ void FxStairs2Slope(ITEM_INFO* item)
 }
 
 // original name: SandFX
-void FxSand(ITEM_INFO* item)
+void FxSand(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
     if (FlipTimer > 120) {
@@ -457,7 +457,7 @@ void FxSand(ITEM_INFO* item)
 }
 
 // original name: PowerUpFX
-void FxPowerUp(ITEM_INFO* item)
+void FxPowerUp(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
     if (FlipTimer > 120) {
@@ -472,7 +472,7 @@ void FxPowerUp(ITEM_INFO* item)
 }
 
 // original name: ExplosionFX
-void FxExplosion(ITEM_INFO* item)
+void FxExplosion(ITEM_INFO *item)
 {
     SoundEffect(170, NULL, 0);
     Camera.bounce = -75;
@@ -480,7 +480,7 @@ void FxExplosion(ITEM_INFO* item)
 }
 
 // original name: FlickerFX
-void FxFlicker(ITEM_INFO* item)
+void FxFlicker(ITEM_INFO *item)
 {
     if (FlipTimer > 125) {
         FlipMap();
@@ -494,22 +494,22 @@ void FxFlicker(ITEM_INFO* item)
 }
 
 // original name: lara_hands_free
-void FxLaraHandsFree(ITEM_INFO* item)
+void FxLaraHandsFree(ITEM_INFO *item)
 {
     Lara.gun_status = LGS_ARMLESS;
 }
 
 // original name: flip_map_effect
-void FxFlipMap(ITEM_INFO* item)
+void FxFlipMap(ITEM_INFO *item)
 {
     FlipMap();
 }
 
 // original name: draw_right_gun
-void FxDrawRightGun(ITEM_INFO* item)
+void FxDrawRightGun(ITEM_INFO *item)
 {
-    int16_t* tmp_mesh;
-    OBJECT_INFO* obj = &Objects[item->object_number];
+    int16_t *tmp_mesh;
+    OBJECT_INFO *obj = &Objects[item->object_number];
     tmp_mesh = Meshes[obj->mesh_index + LM_THIGH_R];
     Meshes[obj->mesh_index + LM_THIGH_R] =
         Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R];

@@ -5,7 +5,7 @@
 #include "game/vars.h"
 #include "util.h"
 
-int32_t TestCollision(ITEM_INFO* item, ITEM_INFO* lara_item)
+int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     SPHERE slist_baddie[34];
     SPHERE slist_lara[34];
@@ -15,12 +15,12 @@ int32_t TestCollision(ITEM_INFO* item, ITEM_INFO* lara_item)
     int32_t num2 = GetSpheres(lara_item, slist_lara, 1);
 
     for (int i = 0; i < num1; i++) {
-        SPHERE* ptr1 = &slist_baddie[i];
+        SPHERE *ptr1 = &slist_baddie[i];
         if (ptr1->r <= 0) {
             continue;
         }
         for (int j = 0; j < num2; j++) {
-            SPHERE* ptr2 = &slist_lara[j];
+            SPHERE *ptr2 = &slist_lara[j];
             if (ptr2->r <= 0) {
                 continue;
             }
@@ -41,7 +41,7 @@ int32_t TestCollision(ITEM_INFO* item, ITEM_INFO* lara_item)
     return flags;
 }
 
-int32_t GetSpheres(ITEM_INFO* item, SPHERE* ptr, int32_t world_space)
+int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -70,18 +70,18 @@ int32_t GetSpheres(ITEM_INFO* item, SPHERE* ptr, int32_t world_space)
 
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int16_t* frame = GetBestFrame(item);
+    int16_t *frame = GetBestFrame(item);
     phd_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
-    int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    OBJECT_INFO* object = &Objects[item->object_number];
-    int16_t** meshpp = &Meshes[object->mesh_index];
-    int32_t* bone = &AnimBones[object->bone_index];
+    OBJECT_INFO *object = &Objects[item->object_number];
+    int16_t **meshpp = &Meshes[object->mesh_index];
+    int32_t *bone = &AnimBones[object->bone_index];
 
-    int16_t* objptr = *meshpp++;
+    int16_t *objptr = *meshpp++;
     phd_PushMatrix();
     phd_TranslateRel(objptr[0], objptr[1], objptr[2]);
     ptr->x = x + (PhdMatrixPtr->_03 >> W2V_SHIFT);
@@ -91,7 +91,7 @@ int32_t GetSpheres(ITEM_INFO* item, SPHERE* ptr, int32_t world_space)
     ptr++;
     phd_PopMatrix();
 
-    int16_t* extra_rotation = item->data ? item->data : &null_rotation;
+    int16_t *extra_rotation = item->data ? item->data : &null_rotation;
     for (int i = 1; i < object->nmeshes; i++) {
         int32_t bone_extra_flags = bone[0];
         if (bone_extra_flags & BEB_POP) {
@@ -131,9 +131,9 @@ int32_t GetSpheres(ITEM_INFO* item, SPHERE* ptr, int32_t world_space)
     return object->nmeshes;
 }
 
-void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* vec, int32_t joint)
+void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
 {
-    OBJECT_INFO* object = &Objects[item->object_number];
+    OBJECT_INFO *object = &Objects[item->object_number];
 
     phd_PushUnitMatrix();
     PhdMatrixPtr->_03 = 0;
@@ -142,16 +142,16 @@ void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* vec, int32_t joint)
 
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int16_t* frame = GetBestFrame(item);
+    int16_t *frame = GetBestFrame(item);
     phd_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
-    int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    int32_t* bone = &AnimBones[object->bone_index];
+    int32_t *bone = &AnimBones[object->bone_index];
 
-    int16_t* extra_rotation = (int16_t*)item->data;
+    int16_t *extra_rotation = (int16_t *)item->data;
     for (int i = 0; i < joint; i++) {
         int32_t bone_extra_flags = bone[0];
         if (bone_extra_flags & BEB_POP) {
@@ -184,7 +184,7 @@ void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* vec, int32_t joint)
     phd_PopMatrix();
 }
 
-void BaddieBiteEffect(ITEM_INFO* item, BITE_INFO* bite)
+void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 {
     PHD_VECTOR pos;
     pos.x = bite->x;

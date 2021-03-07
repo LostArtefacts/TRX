@@ -96,7 +96,7 @@ static BITE_INFO WarriorShard = { -35, 269, 0, 9 };
 
 void CentaurControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -105,7 +105,7 @@ void CentaurControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* centaur = item->data;
+    CREATURE_INFO *centaur = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -207,7 +207,7 @@ void InitialiseWarrior2(int16_t item_num)
 
 void FlyerControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -216,7 +216,7 @@ void FlyerControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* flyer = item->data;
+    CREATURE_INFO *flyer = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -460,7 +460,7 @@ void FlyerControl(int16_t item_num)
 
 void ControlMissile(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
 
     int32_t speed = (fx->speed * phd_cos(fx->pos.x_rot)) >> W2V_SHIFT;
     fx->pos.y += (fx->speed * phd_sin(-fx->pos.x_rot)) >> W2V_SHIFT;
@@ -468,7 +468,7 @@ void ControlMissile(int16_t fx_num)
     fx->pos.x += (speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     int32_t height = GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     int32_t ceiling = GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
 
@@ -529,13 +529,13 @@ void ControlMissile(int16_t fx_num)
     fx->counter = 0;
 }
 
-void ShootAtLara(FX_INFO* fx)
+void ShootAtLara(FX_INFO *fx)
 {
     int32_t x = LaraItem->pos.x - fx->pos.x;
     int32_t y = LaraItem->pos.y - fx->pos.y;
     int32_t z = LaraItem->pos.z - fx->pos.z;
 
-    int16_t* bounds = GetBoundsAccurate(LaraItem);
+    int16_t *bounds = GetBoundsAccurate(LaraItem);
     y += bounds[FRAME_BOUND_MAX_Y]
         + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
 
@@ -552,7 +552,7 @@ int16_t ShardGun(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
@@ -575,7 +575,7 @@ int16_t RocketGun(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
@@ -594,16 +594,16 @@ int16_t RocketGun(
 
 void InitialiseMummy(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->touch_bits = 0;
     item->mesh_bits = 0xFFFF87FF;
     item->data = game_malloc(sizeof(int16_t), GBUF_MUMMY_HEAD_TURN);
-    *(int16_t*)item->data = 0;
+    *(int16_t *)item->data = 0;
 }
 
 void MummyControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     int16_t head = 0;
 
     if (item->current_anim_state == MUMMY_STOP) {
@@ -628,11 +628,11 @@ void MummyControl(int16_t item_num)
 
 int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
 {
-    ITEM_INFO* item = &Items[item_num];
-    OBJECT_INFO* object = &Objects[item->object_number];
+    ITEM_INFO *item = &Items[item_num];
+    OBJECT_INFO *object = &Objects[item->object_number];
     int32_t abortion = item->object_number == O_ABORTION;
 
-    int16_t* frame = GetBestFrame(item);
+    int16_t *frame = GetBestFrame(item);
 
     phd_PushUnitMatrix();
     PhdMatrixPtr->_03 = 0;
@@ -643,10 +643,10 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
     phd_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
-    int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    int32_t* bone = &AnimBones[object->bone_index];
+    int32_t *bone = &AnimBones[object->bone_index];
 #if 0
     // NOTE: present in OG, removed by GLrage on the grounds that it sometimes
     // crashes.
@@ -657,7 +657,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
+            FX_INFO *fx = &Effects[fx_num];
             fx->room_number = item->room_number;
             fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
@@ -709,7 +709,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
             int16_t fx_num = CreateEffect(item->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO* fx = &Effects[fx_num];
+                FX_INFO *fx = &Effects[fx_num];
                 fx->room_number = item->room_number;
                 fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
@@ -739,7 +739,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
 
 void ControlBodyPart(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->pos.x_rot += 5 * PHD_DEGREE;
     fx->pos.z_rot += 10 * PHD_DEGREE;
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
@@ -748,7 +748,7 @@ void ControlBodyPart(int16_t fx_num)
     fx->pos.y += fx->fall_speed;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
 
     int32_t ceiling = GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     if (fx->pos.y < ceiling) {
@@ -795,11 +795,11 @@ void ControlBodyPart(int16_t fx_num)
 
 void InitialisePod(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     int16_t bug_item_num = CreateItem();
     if (bug_item_num != NO_ITEM) {
-        ITEM_INFO* bug = &Items[bug_item_num];
+        ITEM_INFO *bug = &Items[bug_item_num];
 
         switch ((item->flags & IF_CODE_BITS) >> 9) {
         case 1:
@@ -830,7 +830,7 @@ void InitialisePod(int16_t item_num)
         InitialiseItem(bug_item_num);
 
         item->data = game_malloc(sizeof(int16_t), 0);
-        *(int16_t*)item->data = bug_item_num;
+        *(int16_t *)item->data = bug_item_num;
 
         LevelItemCount++;
     }
@@ -841,7 +841,7 @@ void InitialisePod(int16_t item_num)
 
 void PodControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->goal_anim_state != POD_EXPLODE) {
         int32_t explode = 0;
@@ -866,8 +866,8 @@ void PodControl(int16_t item_num)
             item->collidable = 0;
             ExplodingDeath(item_num, 0xFFFE00, 0);
 
-            int16_t bug_item_num = *(int16_t*)item->data;
-            ITEM_INFO* bug = &Items[bug_item_num];
+            int16_t bug_item_num = *(int16_t *)item->data;
+            ITEM_INFO *bug = &Items[bug_item_num];
             bug->touch_bits = 0;
             AddActiveItem(bug_item_num);
             if (EnableBaddieAI(bug_item_num, 0)) {
@@ -883,7 +883,7 @@ void PodControl(int16_t item_num)
 
 void InitialiseStatue(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     int16_t centaur_item_num = CreateItem();
     if (centaur_item_num == NO_ITEM) {
@@ -891,7 +891,7 @@ void InitialiseStatue(int16_t item_num)
         return;
     }
 
-    ITEM_INFO* centaur = &Items[centaur_item_num];
+    ITEM_INFO *centaur = &Items[centaur_item_num];
     centaur->object_number = O_CENTAUR;
     centaur->room_number = item->room_number;
     centaur->pos.x = item->pos.x;
@@ -910,14 +910,14 @@ void InitialiseStatue(int16_t item_num)
     centaur->pos.y_rot = item->pos.y_rot;
 
     item->data = game_malloc(sizeof(int16_t), 0);
-    *(int16_t*)item->data = centaur_item_num;
+    *(int16_t *)item->data = centaur_item_num;
 
     LevelItemCount++;
 }
 
 void StatueControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     int32_t x = LaraItem->pos.x - item->pos.x;
     int32_t y = LaraItem->pos.y - item->pos.y;
     int32_t z = LaraItem->pos.z - item->pos.z;
@@ -928,8 +928,8 @@ void StatueControl(int16_t item_num)
         KillItem(item_num);
         item->status = IS_DEACTIVATED;
 
-        int16_t centaur_item_num = *(int16_t*)item->data;
-        ITEM_INFO* centaur = &Items[centaur_item_num];
+        int16_t centaur_item_num = *(int16_t *)item->data;
+        ITEM_INFO *centaur = &Items[centaur_item_num];
         centaur->touch_bits = 0;
         AddActiveItem(centaur_item_num);
         EnableBaddieAI(centaur_item_num, 1);

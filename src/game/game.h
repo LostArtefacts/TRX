@@ -11,9 +11,9 @@ void SeedRandomDraw(int32_t seed);
 int32_t GetRandomControl();
 int32_t GetRandomDraw();
 void LevelStats(int32_t level_num);
-int32_t S_LoadGame(void* data, int32_t size, int32_t slot);
-void GetSavedGamesList(REQUEST_INFO* req);
-int32_t S_SaveGame(void* data, int32_t size, int32_t slot);
+int32_t S_LoadGame(void *data, int32_t size, int32_t slot);
+void GetSavedGamesList(REQUEST_INFO *req);
+int32_t S_SaveGame(void *data, int32_t size, int32_t slot);
 
 void T1MInjectGameGame();
 

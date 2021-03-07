@@ -145,7 +145,7 @@ static int32_t PickUpX;
 static int32_t PickUpY;
 static int32_t PickUpZ;
 
-void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
+void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
 {
     lara_item->goal_anim_state = goal;
     do {
@@ -153,9 +153,9 @@ void AnimateLaraUntil(ITEM_INFO* lara_item, int32_t goal)
     } while (lara_item->current_anim_state != goal);
 }
 
-void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.z_rot = 0;
 
@@ -220,9 +220,9 @@ void PickUpCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 }
 
 void PickUpScionCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
@@ -257,9 +257,9 @@ void PickUpScionCollision(
 }
 
 void PickUpScion4Collision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
@@ -284,9 +284,9 @@ void PickUpScion4Collision(
     }
 }
 
-void MidasCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!lara_item->gravity_status && lara_item->current_anim_state == AS_STOP
         && lara_item->pos.x > item->pos.x - 512
@@ -349,9 +349,9 @@ void MidasCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void SwitchCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!CHK_ANY(Input, IN_ACTION) || item->status != IS_NOT_ACTIVE
         || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
@@ -386,9 +386,9 @@ void SwitchCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void SwitchCollision2(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (!CHK_ANY(Input, IN_ACTION) || item->status != IS_NOT_ACTIVE
         || Lara.water_status != LWS_UNDERWATER) {
@@ -423,9 +423,9 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
-void KeyHoleCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (lara_item->current_anim_state != AS_STOP) {
         return;
@@ -517,9 +517,9 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
 }
 
 void PuzzleHoleCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (lara_item->current_anim_state == AS_USEPUZZLE) {
         if (!TestLaraPosition(PuzzleHoleBounds, item, lara_item)) {
@@ -638,7 +638,7 @@ void PuzzleHoleCollision(
 
 void SwitchControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->flags |= IF_CODE_BITS;
     if (!TriggerActive(item)) {
         item->goal_anim_state = SS_ON;
@@ -649,7 +649,7 @@ void SwitchControl(int16_t item_num)
 
 int32_t SwitchTrigger(int16_t item_num, int16_t timer)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->status != IS_DEACTIVATED) {
         return 0;
     }
@@ -668,7 +668,7 @@ int32_t SwitchTrigger(int16_t item_num, int16_t timer)
 
 int32_t KeyTrigger(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 #ifdef T1M_FEAT_OG_FIXES
     if (item->status == IS_ACTIVE
         && (T1MConfig.fix_key_triggers ? Lara.gun_status != LGS_HANDSBUSY
@@ -687,7 +687,7 @@ int32_t KeyTrigger(int16_t item_num)
 
 int32_t PickupTrigger(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     if (item->status != IS_INVISIBLE) {
         return 0;
     }
@@ -696,10 +696,10 @@ int32_t PickupTrigger(int16_t item_num)
 }
 
 void PickUpSaveGameCollision(
-    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
 #ifdef T1M_FEAT_SAVE_CRYSTALS
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     ObjectCollision(item_num, lara_item, coll);
 
     if (!CHK_ANY(Input, IN_ACTION) || Lara.gun_status != LGS_ARMLESS

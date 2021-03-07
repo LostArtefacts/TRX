@@ -13,11 +13,11 @@
 #define PASSPORT_2FRONT IN_LEFT
 #define PASSPORT_2BACK IN_RIGHT
 
-static TEXTSTRING* PassportText1;
+static TEXTSTRING *PassportText1;
 static int32_t PassportMode;
 
 // original name: do_inventory_options
-void DoInventoryOptions(INVENTORY_ITEM* inv_item)
+void DoInventoryOptions(INVENTORY_ITEM *inv_item)
 {
     switch (inv_item->object_number) {
     case O_PASSPORT_OPTION:
@@ -80,7 +80,7 @@ void DoInventoryOptions(INVENTORY_ITEM* inv_item)
     }
 }
 
-void DoPassportOption(INVENTORY_ITEM* inv_item)
+void DoPassportOption(INVENTORY_ITEM *inv_item)
 {
     T_RemovePrint(InvItemText[0]);
     InvItemText[IT_NAME] = NULL;
@@ -283,7 +283,7 @@ void DoPassportOption(INVENTORY_ITEM* inv_item)
 }
 
 // original name: do_gamma_option
-void DoGammaOption(INVENTORY_ITEM* inv_item)
+void DoGammaOption(INVENTORY_ITEM *inv_item)
 {
     if (CHK_ANY(Input, IN_LEFT)) {
         IDelay = 1;
@@ -322,7 +322,7 @@ void DoGammaOption(INVENTORY_ITEM* inv_item)
 }
 
 // original name: do_compass_option
-void DoCompassOption(INVENTORY_ITEM* inv_item)
+void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
     if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
         inv_item->goal_frame = inv_item->frames_total - 1;
@@ -389,7 +389,7 @@ void S_ShowControls()
     T_AddBackground(ControlText[1], hpos, vpos, 0, 0, 48, 0, 0, 0);
 
     if (!CtrlTextB[0]) {
-        int16_t* layout = Layout[IConfig];
+        int16_t *layout = Layout[IConfig];
 
         switch (HiRes) {
 #ifndef T1M_FEAT_UI
@@ -473,7 +473,7 @@ void S_ShowControls()
 }
 
 // original name: Init_Requester
-void InitRequester(REQUEST_INFO* req)
+void InitRequester(REQUEST_INFO *req)
 {
     req->heading = NULL;
     req->background = NULL;

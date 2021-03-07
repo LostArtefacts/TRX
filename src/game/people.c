@@ -130,7 +130,7 @@ static BITE_INFO CowboyGun1 = { 1, 200, 41, 5 };
 static BITE_INFO CowboyGun2 = { -2, 200, 40, 8 };
 static BITE_INFO BaldyGun = { -20, 440, 20, 9 };
 
-int32_t Targetable(ITEM_INFO* item, AI_INFO* info)
+int32_t Targetable(ITEM_INFO *item, AI_INFO *info)
 {
     if (!info->ahead || info->distance >= PEOPLE_SHOOT_RANGE) {
         return 0;
@@ -152,7 +152,7 @@ int32_t Targetable(ITEM_INFO* item, AI_INFO* info)
 
 void ControlGunShot(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
+    FX_INFO *fx = &Effects[fx_num];
     fx->counter--;
     if (!fx->counter) {
         KillEffect(fx_num);
@@ -167,7 +167,7 @@ int16_t GunShot(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO* fx = &Effects[fx_num];
+        FX_INFO *fx = &Effects[fx_num];
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
@@ -215,7 +215,7 @@ int16_t GunMiss(
 }
 
 int32_t ShotLara(
-    ITEM_INFO* item, int32_t distance, BITE_INFO* gun, int16_t extra_rotation)
+    ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation)
 {
     int32_t hit;
     if (distance > PEOPLE_SHOOT_RANGE) {
@@ -242,7 +242,7 @@ int32_t ShotLara(
 
 void PeopleControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -251,7 +251,7 @@ void PeopleControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* person = item->data;
+    CREATURE_INFO *person = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -365,7 +365,7 @@ void PeopleControl(int16_t item_num)
 
 void PierreControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (PierreItem == NO_ITEM) {
         PierreItem = item_num;
@@ -384,7 +384,7 @@ void PierreControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* pierre = item->data;
+    CREATURE_INFO *pierre = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -546,8 +546,8 @@ void PierreControl(int16_t item_num)
 
 void ApeVault(int16_t item_num, int16_t angle)
 {
-    ITEM_INFO* item = &Items[item_num];
-    CREATURE_INFO* ape = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    CREATURE_INFO *ape = item->data;
 
     if (ape->flags & APE_TURN_L_FLAG) {
         item->pos.y_rot -= PHD_90;
@@ -599,7 +599,7 @@ void ApeVault(int16_t item_num, int16_t angle)
 
 void ApeControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -608,7 +608,7 @@ void ApeControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* ape = item->data;
+    CREATURE_INFO *ape = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -738,8 +738,8 @@ void InitialiseSkateKid(int16_t item_num)
 
 void SkateKidControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
-    CREATURE_INFO* kid = item->data;
+    ITEM_INFO *item = &Items[item_num];
+    CREATURE_INFO *kid = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -831,7 +831,7 @@ void SkateKidControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void DrawSkateKid(ITEM_INFO* item)
+void DrawSkateKid(ITEM_INFO *item)
 {
     DrawAnimatingItem(item);
     int16_t anim = item->anim_number;
@@ -847,7 +847,7 @@ void DrawSkateKid(ITEM_INFO* item)
 
 void CowboyControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -856,7 +856,7 @@ void CowboyControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* cowboy = item->data;
+    CREATURE_INFO *cowboy = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -974,7 +974,7 @@ void InitialiseBaldy(int16_t item_num)
 
 void BaldyControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -983,7 +983,7 @@ void BaldyControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* baldy = item->data;
+    CREATURE_INFO *baldy = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

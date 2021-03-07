@@ -145,7 +145,7 @@ int32_t Display_Inventory(int inv_mode)
 
         PHD_ANGLE angle = 0;
         for (int i = 0; i < ring.number_of_objects; i++) {
-            INVENTORY_ITEM* inv_item = ring.list[i];
+            INVENTORY_ITEM *inv_item = ring.list[i];
 
             if (i == ring.current_object) {
                 for (int j = 0; j < InvNFrames; j++) {
@@ -300,7 +300,7 @@ int32_t Display_Inventory(int inv_mode)
 
                 Item_Data = 0;
 
-                INVENTORY_ITEM* inv_item;
+                INVENTORY_ITEM *inv_item;
                 if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
                     inv_item = InvMainList[ring.current_object];
@@ -492,7 +492,7 @@ int32_t Display_Inventory(int inv_mode)
             break;
 
         case RNG_SELECTED: {
-            INVENTORY_ITEM* inv_item = ring.list[ring.current_object];
+            INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
             if (inv_item->object_number == O_PASSPORT_CLOSED) {
                 inv_item->object_number = O_PASSPORT_OPTION;
             }
@@ -562,7 +562,7 @@ int32_t Display_Inventory(int inv_mode)
             break;
 
         case RNG_CLOSING_ITEM: {
-            INVENTORY_ITEM* inv_item = ring.list[ring.current_object];
+            INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
             for (int j = 0; j < InvNFrames; j++) {
                 if (!AnimateInventoryItem(inv_item)) {
                     if (inv_item->object_number == O_PASSPORT_OPTION) {
@@ -672,7 +672,7 @@ void Construct_Inventory()
     }
 
     for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvMainList[i];
+        INVENTORY_ITEM *inv_item = InvMainList[i];
         inv_item->drawn_meshes = inv_item->which_meshes;
         if ((inv_item->object_number == O_MAP_OPTION) && CompassStatus) {
             inv_item->current_frame = inv_item->open_frame;
@@ -686,7 +686,7 @@ void Construct_Inventory()
     }
 
     for (int i = 0; i < InvOptionObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvOptionList[i];
+        INVENTORY_ITEM *inv_item = InvOptionList[i];
         inv_item->current_frame = 0;
         inv_item->goal_frame = 0;
         inv_item->anim_count = 0;
@@ -698,7 +698,7 @@ void Construct_Inventory()
     Item_Data = 0;
 }
 
-int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
+int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
         SelectMeshes(inv_item);
@@ -719,7 +719,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
     return 1;
 }
 
-void SelectMeshes(INVENTORY_ITEM* inv_item)
+void SelectMeshes(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->object_number == O_PASSPORT_OPTION) {
         if (inv_item->current_frame <= 14) {
@@ -746,12 +746,12 @@ void SelectMeshes(INVENTORY_ITEM* inv_item)
     }
 }
 
-void DrawInventoryItem(INVENTORY_ITEM* inv_item)
+void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 {
     phd_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     phd_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
-    OBJECT_INFO* obj = &Objects[inv_item->object_number];
+    OBJECT_INFO *obj = &Objects[inv_item->object_number];
     if (obj->nmeshes < 0) {
         S_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
         return;
@@ -763,8 +763,8 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
         int32_t sx = PhdCenterX + PhdMatrixPtr->_03 / zp;
         int32_t sy = PhdCenterY + PhdMatrixPtr->_13 / zp;
 
-        INVENTORY_SPRITE** sprlist = inv_item->sprlist;
-        INVENTORY_SPRITE* spr;
+        INVENTORY_SPRITE **sprlist = inv_item->sprlist;
+        INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
             if (zv < PhdNearZ || zv > PhdFarZ) {
                 break;
@@ -800,7 +800,7 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
         }
     }
 
-    int16_t* frame =
+    int16_t *frame =
         &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
 
     phd_PushMatrix();
@@ -809,12 +809,12 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
     if (clip) {
         phd_TranslateRel(
             frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-        int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
         phd_RotYXZpack(*packed_rotation++);
 
         int32_t mesh_num = 1;
 
-        int32_t* bone = &AnimBones[obj->bone_index];
+        int32_t *bone = &AnimBones[obj->bone_index];
         if (inv_item->drawn_meshes & mesh_num) {
             phd_PutPolygons(Meshes[obj->mesh_index], clip);
         }

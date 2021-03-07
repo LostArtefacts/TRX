@@ -212,7 +212,7 @@ void InitialiseNewWeapon()
     }
 }
 
-void LaraTargetInfo(WEAPON_INFO* winfo)
+void LaraTargetInfo(WEAPON_INFO *winfo)
 {
     if (!Lara.target) {
         Lara.right_arm.lock = 0;
@@ -267,9 +267,9 @@ void LaraTargetInfo(WEAPON_INFO* winfo)
     Lara.target_angles[1] = ang[1];
 }
 
-void LaraGetNewTarget(WEAPON_INFO* winfo)
+void LaraGetNewTarget(WEAPON_INFO *winfo)
 {
-    ITEM_INFO* bestitem = NULL;
+    ITEM_INFO *bestitem = NULL;
     int16_t bestyrot = 0x7FFF;
 
     int32_t maxdist = winfo->target_dist;
@@ -280,7 +280,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
     src.z = LaraItem->pos.z;
     src.room_number = LaraItem->room_number;
 
-    ITEM_INFO* item = NULL;
+    ITEM_INFO *item = NULL;
     for (int16_t item_num = NextItemActive; item_num != NO_ITEM;
          item_num = item->next_active) {
         item = &Items[item_num];
@@ -326,9 +326,9 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
     LaraTargetInfo(winfo);
 }
 
-void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
+void find_target_point(ITEM_INFO *item, GAME_VECTOR *target)
 {
-    int16_t* bounds = GetBestFrame(item);
+    int16_t *bounds = GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
     int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
     int32_t z = (bounds[5] + bounds[4]) / 2;
@@ -340,7 +340,7 @@ void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
     target->room_number = item->room_number;
 }
 
-void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
+void AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
 {
     PHD_ANGLE destx;
     PHD_ANGLE desty;
@@ -379,11 +379,11 @@ void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
 }
 
 int32_t FireWeapon(
-    int32_t weapon_type, ITEM_INFO* target, ITEM_INFO* src, PHD_ANGLE* angles)
+    int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles)
 {
-    WEAPON_INFO* winfo = &Weapons[weapon_type];
+    WEAPON_INFO *winfo = &Weapons[weapon_type];
 
-    AMMO_INFO* ammo;
+    AMMO_INFO *ammo;
     switch (weapon_type) {
     case LGT_MAGNUMS:
         ammo = &Lara.magnums;
@@ -444,7 +444,7 @@ int32_t FireWeapon(
     int32_t best = -1;
     int32_t bestdist = 0x7FFFFFFF;
     for (int i = 0; i < nums; i++) {
-        SPHERE* sptr = &slist[i];
+        SPHERE *sptr = &slist[i];
         int32_t r = sptr->r;
         if (ABS(sptr->x) < r && ABS(sptr->y) < r && sptr->z > r
             && (sptr->x * sptr->x) + (sptr->y * sptr->y) <= (r * r)
@@ -479,7 +479,7 @@ int32_t FireWeapon(
     return -1;
 }
 
-void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int32_t damage)
+void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         SaveGame[0].kills++;

@@ -17,22 +17,22 @@
 #define _fread                  ((size_t        (*)(void *, size_t, size_t, FILE *))0x00442C20)
 // clang-format on
 
-int32_t LoadLevel(const char* filename, int32_t level_num);
-int32_t LoadRooms(FILE* fp);
-int32_t LoadObjects(FILE* fp);
-int32_t LoadSprites(FILE* fp);
-int32_t LoadItems(FILE* fp);
-int32_t LoadDepthQ(FILE* fp);
-int32_t LoadPalette(FILE* fp);
-int32_t LoadCameras(FILE* fp);
-int32_t LoadSoundEffects(FILE* fp);
-int32_t LoadBoxes(FILE* fp);
-int32_t LoadAnimatedTextures(FILE* fp);
-int32_t LoadCinematic(FILE* fp);
-int32_t LoadDemo(FILE* fp);
-int32_t LoadTexturePages(FILE* fp);
+int32_t LoadLevel(const char *filename, int32_t level_num);
+int32_t LoadRooms(FILE *fp);
+int32_t LoadObjects(FILE *fp);
+int32_t LoadSprites(FILE *fp);
+int32_t LoadItems(FILE *fp);
+int32_t LoadDepthQ(FILE *fp);
+int32_t LoadPalette(FILE *fp);
+int32_t LoadCameras(FILE *fp);
+int32_t LoadSoundEffects(FILE *fp);
+int32_t LoadBoxes(FILE *fp);
+int32_t LoadAnimatedTextures(FILE *fp);
+int32_t LoadCinematic(FILE *fp);
+int32_t LoadDemo(FILE *fp);
+int32_t LoadTexturePages(FILE *fp);
 int32_t S_LoadLevel(int32_t level_num);
-const char* GetFullPath(const char* filename);
+const char *GetFullPath(const char *filename);
 void FindCdDrive();
 
 #ifdef T1M_FEAT_OG_FIXES

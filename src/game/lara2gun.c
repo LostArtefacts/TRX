@@ -154,7 +154,7 @@ void UndrawPistolMeshRight(int32_t weapon_type)
 
 void PistolHandler(int32_t weapon_type)
 {
-    WEAPON_INFO* winfo = &Weapons[weapon_type];
+    WEAPON_INFO *winfo = &Weapons[weapon_type];
 
     if (Input & IN_ACTION) {
         LaraTargetInfo(winfo);
@@ -191,7 +191,7 @@ void PistolHandler(int32_t weapon_type)
 void AnimatePistols(int32_t weapon_type)
 {
     PHD_ANGLE angles[2];
-    WEAPON_INFO* winfo = &Weapons[weapon_type];
+    WEAPON_INFO *winfo = &Weapons[weapon_type];
 
     int16_t anir = Lara.right_arm.frame_number;
     if (Lara.right_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {

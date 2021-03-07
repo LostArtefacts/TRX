@@ -60,7 +60,7 @@ static BITE_INFO RaptorBite = { 0, 66, 318, 22 };
 
 void RaptorControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -69,7 +69,7 @@ void RaptorControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* raptor = item->data;
+    CREATURE_INFO *raptor = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -185,7 +185,7 @@ void RaptorControl(int16_t item_num)
 
 void DinoControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -194,7 +194,7 @@ void DinoControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* dino = item->data;
+    CREATURE_INFO *dino = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -289,7 +289,7 @@ void DinoControl(int16_t item_num)
     item->collidable = 1;
 }
 
-void LaraDinoDeath(ITEM_INFO* item)
+void LaraDinoDeath(ITEM_INFO *item)
 {
     item->goal_anim_state = DINO_KILL;
     if (LaraItem->room_number != item->room_number) {

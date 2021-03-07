@@ -67,7 +67,7 @@ static BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 
 void AbortionControl(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -76,7 +76,7 @@ void AbortionControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* abortion = item->data;
+    CREATURE_INFO *abortion = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -251,7 +251,7 @@ void AbortionControl(int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         SoundEffect(171, &item->pos, 0);
         ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
-        FLOOR_INFO* floor =
+        FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(TriggerIndex, 1);
@@ -264,7 +264,7 @@ void AbortionControl(int16_t item_num)
 void NatlaControl(int16_t item_num)
 {
     static int16_t facing = 0;
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -273,7 +273,7 @@ void NatlaControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO* natla = item->data;
+    CREATURE_INFO *natla = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -326,7 +326,7 @@ void NatlaControl(int16_t item_num)
             if (timer >= 20) {
                 int16_t fx_num = CreatureEffect(item, &NatlaGun, ShardGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
                     SoundEffect(123, &fx->pos, 0);
                 }
@@ -339,7 +339,7 @@ void NatlaControl(int16_t item_num)
             if (timer >= 20) {
                 int16_t fx_num = CreatureEffect(item, &NatlaGun, ShardGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
                     SoundEffect(123, &fx->pos, 0);
                 }
@@ -445,7 +445,7 @@ void NatlaControl(int16_t item_num)
             if (timer >= 30) {
                 int16_t fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
                     SoundEffect(123, &fx->pos, 0);
                 }
@@ -467,17 +467,17 @@ void NatlaControl(int16_t item_num)
             if (!item->required_anim_state) {
                 int16_t fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
                 }
                 fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     fx->pos.y_rot += (GetRandomControl() - 0x4000) / 4;
                 }
                 fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO* fx = &Effects[fx_num];
+                    FX_INFO *fx = &Effects[fx_num];
                     fx->pos.y_rot += (GetRandomControl() - 0x4000) / 4;
                 }
                 item->required_anim_state = NATLA_STOP;
@@ -504,8 +504,8 @@ void NatlaControl(int16_t item_num)
 
 void ControlNatlaGun(int16_t fx_num)
 {
-    FX_INFO* fx = &Effects[fx_num];
-    OBJECT_INFO* object = &Objects[fx->object_number];
+    FX_INFO *fx = &Effects[fx_num];
+    OBJECT_INFO *object = &Objects[fx->object_number];
 
     fx->frame_number--;
     if (fx->frame_number <= object->nmeshes) {
@@ -520,7 +520,7 @@ void ControlNatlaGun(int16_t fx_num)
     int32_t x = fx->pos.x + ((fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
     int16_t room_num = fx->room_number;
-    FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
 
     if (y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z)) {
         return;
@@ -528,7 +528,7 @@ void ControlNatlaGun(int16_t fx_num)
 
     fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO* newfx = &Effects[fx_num];
+        FX_INFO *newfx = &Effects[fx_num];
         newfx->pos.x = x;
         newfx->pos.y = y;
         newfx->pos.z = z;

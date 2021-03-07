@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void MakeAmmoString(char* string);
+void MakeAmmoString(char *string);
 void DrawAmmoInfo();
 void DrawGameInfo();
 void DrawHealthBar();
