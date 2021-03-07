@@ -935,7 +935,7 @@ FlameEmitterControl             0x0043B1F0  0x000000A3  +
 FlameControl                    0x0043B2A0  0x00000185  +
 LavaBurn                        0x0043B430  0x000000E8  +
 LavaEmitterControl              0x0043B520  0x000000C7  +
-LavaControl                     0x0043B5F0  0x00000119  *
+LavaControl                     0x0043B5F0  0x00000119  +
 LavaWedgeControl                0x0043B710  0x00000139  *
 
 # warrior.cpp

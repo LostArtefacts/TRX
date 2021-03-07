@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define LavaControl             ((void      (*)(int16_t item_num))0x0043B5F0)
 #define LavaWedgeControl        ((void      (*)(int16_t item_num))0x0043B710)
 // clang-format on
 
@@ -39,6 +38,7 @@ void FlameEmitterControl(int16_t item_num);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 void LavaEmitterControl(int16_t item_num);
+void LavaControl(int16_t fx_num);
 
 void T1MInjectGameTraps();
 

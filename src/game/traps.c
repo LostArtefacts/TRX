@@ -17,6 +17,7 @@
 #define FALLING_CEILING_DAMAGE 300
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
+#define LAVA_GLOB_DAMAGE 10
 
 typedef enum {
     TT_NICE = 0,
@@ -761,6 +762,29 @@ void LavaEmitterControl(int16_t item_num)
     }
 }
 
+// original name: ControlLavaBlob
+void LavaControl(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->fall_speed += GRAVITY;
+    fx->pos.y += fx->fall_speed;
+
+    int16_t room_num = fx->room_number;
+    FLOOR_INFO* floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    if (fx->pos.y >= GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
+        || fx->pos.y < GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
+        KillEffect(fx_num);
+    } else if (ItemNearLara(&fx->pos, 200)) {
+        LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
+        LaraItem->hit_status = 1;
+        KillEffect(fx_num);
+    } else if (room_num != fx->room_number) {
+        EffectNewRoom(fx_num, room_num);
+    }
+}
+
 void T1MInjectGameTraps()
 {
     INJECT(0x0043A010, InitialiseRollingBall);
@@ -787,4 +811,5 @@ void T1MInjectGameTraps()
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
     INJECT(0x0043B520, LavaEmitterControl);
+    INJECT(0x0043B5F0, LavaControl);
 }
