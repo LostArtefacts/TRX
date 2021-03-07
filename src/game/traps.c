@@ -14,6 +14,7 @@
 #define SPIKE_DAMAGE 15
 #define PENDULUM_DAMAGE 100
 #define TEETH_TRAP_DAMAGE 400
+#define FALLING_CEILING_DAMAGE 300
 
 typedef enum {
     TT_NICE = 0,
@@ -403,6 +404,30 @@ void TeethTrapControl(int16_t item_num)
     AnimateItem(item);
 }
 
+// original name: FallingCeiling
+void FallingCeilingControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->current_anim_state == TRAP_SET) {
+        item->goal_anim_state = TRAP_ACTIVATE;
+        item->gravity_status = 1;
+    } else if (item->current_anim_state == TRAP_ACTIVATE && item->touch_bits) {
+        LaraItem->hit_points -= FALLING_CEILING_DAMAGE;
+        LaraItem->hit_status = 1;
+    }
+    AnimateItem(item);
+    if (item->status == IS_DEACTIVATED) {
+        RemoveActiveItem(item_num);
+    } else if (
+        item->current_anim_state == TRAP_ACTIVATE
+        && item->pos.y >= item->floor) {
+        item->goal_anim_state = TRAP_WORKING;
+        item->pos.y = item->floor;
+        item->fall_speed = 0;
+        item->gravity_status = 0;
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -531,6 +556,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043AA70, FallingBlockFloor);
     INJECT(0x0043AAB0, FallingBlockCeiling);
     INJECT(0x0043AAF0, TeethTrapControl);
+    INJECT(0x0043ABC0, FallingCeilingControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
