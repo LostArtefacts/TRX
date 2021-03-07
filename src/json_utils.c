@@ -18,17 +18,20 @@ struct json_value_s* JSONGetField(struct json_value_s* root, const char* name)
     return NULL;
 }
 
-int8_t JSONGetBooleanValue(struct json_value_s* root, const char* name)
+int JSONGetBooleanValue(
+    struct json_value_s* root, const char* name, int8_t* value)
 {
     struct json_value_s* field = JSONGetField(root, name);
     if (!field
         || (field->type != json_type_true && field->type != json_type_false)) {
         return 0;
     }
-    return field->type == json_type_true;
+    *value = field->type == json_type_true;
+    return 1;
 }
 
-int32_t JSONGetIntegerValue(struct json_value_s* root, const char* name)
+int JSONGetIntegerValue(
+    struct json_value_s* root, const char* name, int32_t* value)
 {
     struct json_value_s* field = JSONGetField(root, name);
     if (!field) {
@@ -38,19 +41,21 @@ int32_t JSONGetIntegerValue(struct json_value_s* root, const char* name)
     if (!number) {
         return 0;
     }
-    return atoi(number->number);
+    *value = atoi(number->number);
+    return 1;
 }
 
-const char* JSONGetStringValue(struct json_value_s* root, const char* name)
+int JSONGetStringValue(
+    struct json_value_s* root, const char* name, const char** value)
 {
     struct json_value_s* field = JSONGetField(root, name);
     if (!field || field->type != json_type_string) {
-        return NULL;
+        return 0;
     }
     struct json_string_s* string = json_value_as_string(field);
     if (!string) {
-        return NULL;
+        return 0;
     }
-    const char* ret = string->string;
-    return ret;
+    *value = string->string;
+    return 1;
 }

@@ -60,10 +60,11 @@ struct {
     int8_t fix_pyramid_secret_trigger;
     int8_t fix_hardcoded_secret_counts;
     int8_t fix_illegal_gun_equip;
-    int8_t fov_value;
+    int32_t fov_value;
     int8_t fov_vertical;
 } T1MConfig;
 
+void T1MReadConfigFromJson(const char* json);
 int T1MReadConfig();
 
 #endif

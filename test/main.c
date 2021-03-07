@@ -1,9 +1,11 @@
 #include "config.h"
 #include "test.h"
+#include <stdlib.h>
+#include <string.h>
 
-void test_reading_config()
+void test_empty_config()
 {
-    T1MReadConfig();
+    T1MReadConfigFromJson("");
 
     ASSERT_INT_EQUAL(T1MConfig.disable_healing_between_levels, 0);
     ASSERT_INT_EQUAL(T1MConfig.disable_medpacks, 0);
@@ -37,8 +39,39 @@ void test_reading_config()
     ASSERT_INT_EQUAL(T1MConfig.fov_vertical, 1);
 }
 
+void test_config_override()
+{
+    FILE* fp = fopen("Tomb1Main.json5", "rb");
+    ASSERT_OK(!!fp);
+
+    fseek(fp, 0, SEEK_END);
+    int cfg_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    char* cfg_data = malloc(cfg_size);
+    ASSERT_OK(!!cfg_data);
+
+    fread(cfg_data, 1, cfg_size, fp);
+    fclose(fp);
+
+    char* tmp = strstr(cfg_data, "enable_cheats\": false");
+    ASSERT_OK(!!tmp);
+    tmp = strstr(tmp, "false");
+    ASSERT_OK(!!tmp);
+    memcpy(tmp, "true ", 5);
+
+    T1MReadConfigFromJson("");
+    ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 0);
+
+    T1MReadConfigFromJson(cfg_data);
+    ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 1);
+
+    free(cfg_data);
+}
+
 int main(int argc, char* argv[])
 {
-    TEST_RUN(test_reading_config);
+    test_empty_config();
+    test_config_override();
     TEST_RESULTS();
 }

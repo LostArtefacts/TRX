@@ -38,7 +38,7 @@ version:
 clean:
 	find build -type f -iname '*.o' -delete
 	find build -type f -iname '*.dll' -delete
-	rm build/version.res build/version.rc
+	rm -f build/version.res build/version.rc
 	find . -type d -empty -delete
 
 docker_build:

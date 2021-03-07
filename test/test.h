@@ -18,17 +18,6 @@ static size_t fails = 0;
         }                                                                      \
     } while (0)
 
-#define TEST_RUN(test)                                                         \
-    do {                                                                       \
-        const size_t ts = tests;                                               \
-        const size_t fs = fails;                                               \
-        const clock_t start = clock();                                         \
-        test();                                                                \
-        printf(                                                                \
-            "pass: %d fail: %d time: %ldms\n", (tests - ts) - (fails - fs),    \
-            fails - fs, (long)((clock() - start) * 1000 / CLOCKS_PER_SEC));    \
-    } while (0)
-
 #define ASSERT_OK(test)                                                        \
     do {                                                                       \
         tests++;                                                               \
