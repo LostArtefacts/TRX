@@ -622,7 +622,7 @@
 <rect width="12.00" height="12.00" x="266.00" y="185.00" class="decompiled"><title>TestCollision</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="185.00" class="decompiled"><title>GetSpheres</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="185.00" class="decompiled"><title>GetJointAbsPosition</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="185.00" class="named"><title>BaddieBiteEffect</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="185.00" class="decompiled"><title>BaddieBiteEffect</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="185.00" class="decompiled"><title>T_InitPrint</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="185.00" class="decompiled"><title>T_Print</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="185.00" class="decompiled"><title>T_ChangeText</title></rect>
@@ -1209,7 +1209,7 @@
 <rect width="6.22" height="6.55" x="601.29" y="529.45" class="decompiled"><title>LaraAsSurfBack</title></rect>
 <rect width="6.34" height="6.43" x="609.51" y="441.36" class="decompiled"><title>LaraColUWDeath</title></rect>
 <rect width="6.25" height="6.43" x="617.85" y="441.36" class="todo"><title>sub_408FF0</title></rect>
-<rect width="6.25" height="6.43" x="626.11" y="441.36" class="named"><title>BaddieBiteEffect</title></rect>
+<rect width="6.25" height="6.43" x="626.11" y="441.36" class="decompiled"><title>BaddieBiteEffect</title></rect>
 <rect width="6.17" height="6.43" x="634.36" y="441.36" class="decompiled"><title>CreatureEffect</title></rect>
 <rect width="6.17" height="6.43" x="642.53" y="441.36" class="decompiled"><title>LevelIsValid</title></rect>
 <rect width="6.08" height="6.43" x="650.69" y="441.36" class="decompiled"><title>BoatControl</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 66.89%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 63.05%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 19.15%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.22%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 67.03%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 63.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 19.02%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.18%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.73%</text>
 </svg>

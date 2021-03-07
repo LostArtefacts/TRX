@@ -1,5 +1,6 @@
 #include "3dsystem/3d_gen.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
@@ -183,9 +184,21 @@ void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* vec, int32_t joint)
     phd_PopMatrix();
 }
 
+void BaddieBiteEffect(ITEM_INFO* item, BITE_INFO* bite)
+{
+    PHD_VECTOR pos;
+    pos.x = bite->x;
+    pos.y = bite->y;
+    pos.z = bite->z;
+    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    DoBloodSplat(
+        pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
+}
+
 void T1MInjectGameSphere()
 {
     INJECT(0x00439130, TestCollision);
     INJECT(0x00439260, GetSpheres);
     INJECT(0x00439550, GetJointAbsPosition);
+    INJECT(0x004396F0, BaddieBiteEffect);
 }

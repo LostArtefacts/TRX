@@ -882,7 +882,7 @@ S_StartSyncedAudio              0x00439030  0x000000FC  -
 TestCollision                   0x00439130  0x00000128  +
 GetSpheres                      0x00439260  0x000002EF  +
 GetJointAbsPosition             0x00439550  0x0000019C  +
-BaddieBiteEffect                0x004396F0  0x0000005D  *
+BaddieBiteEffect                0x004396F0  0x0000005D  +
 
 # text.cpp
 T_InitPrint                     0x00439750  0x00000022  +
