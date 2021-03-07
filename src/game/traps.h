@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define InitialiseRollingBall   ((void      (*)(int16_t item_num))0x0043A010)
 #define RollingBallControl      ((void      (*)(int16_t item_num))0x0043A050)
 #define RollingBallCollision    ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043A2B0)
 #define SpikeCollision          ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043A520)
@@ -30,6 +29,7 @@
 #define LavaWedgeControl        ((void      (*)(int16_t item_num))0x0043B710)
 // clang-format on
 
+void InitialiseRollingBall(int16_t item_num);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 

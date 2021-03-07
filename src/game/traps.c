@@ -5,7 +5,19 @@
 #include "game/sphere.h"
 #include "game/traps.h"
 #include "game/vars.h"
+#include "specific/init.h"
 #include "util.h"
+
+void InitialiseRollingBall(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    GAME_VECTOR* old = game_malloc(sizeof(GAME_VECTOR), GBUF_ROLLINGBALL_STUFF);
+    item->data = old;
+    old->x = item->pos.x;
+    old->y = item->pos.y;
+    old->z = item->pos.z;
+    old->room_number = item->room_number;
+}
 
 void FlameControl(int16_t fx_num)
 {
@@ -122,6 +134,7 @@ void LavaBurn(ITEM_INFO* item)
 
 void T1MInjectGameTraps()
 {
+    INJECT(0x0043A010, InitialiseRollingBall);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
