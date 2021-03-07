@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define DamoclesSwordCollision  ((void      (*)(int16_t item_num, ITEM_INFO* litem, COLL_INFO* coll))0x0043ADD0)
 #define DartEmitterControl      ((void      (*)(int16_t item_num))0x0043AEC0)
 #define DartsControl            ((void      (*)(int16_t item_num))0x0043B060)
 #define DartEffectControl       ((void      (*)(int16_t item_num))0x0043B1A0)
@@ -36,6 +35,8 @@ void TeethTrapControl(int16_t item_num);
 void FallingCeilingControl(int16_t item_num);
 void InitialiseDamoclesSword(int16_t item_num);
 void DamoclesSwordControl(int16_t item_num);
+void DamoclesSwordCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 

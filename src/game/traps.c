@@ -16,6 +16,7 @@
 #define TEETH_TRAP_DAMAGE 400
 #define FALLING_CEILING_DAMAGE 300
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
+#define DAMOCLES_SWORD_DAMAGE 100
 
 typedef enum {
     TT_NICE = 0,
@@ -469,6 +470,26 @@ void DamoclesSwordControl(int16_t item_num)
     }
 }
 
+void DamoclesSwordCollision(
+    int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+    if (coll->enable_baddie_push) {
+        ItemPushLara(item, lara_item, coll, 0, 1);
+    }
+    if (item->gravity_status) {
+        lara_item->hit_points -= DAMOCLES_SWORD_DAMAGE;
+        int32_t x = lara_item->pos.x + (GetRandomControl() - 0x4000) / 256;
+        int32_t z = lara_item->pos.z + (GetRandomControl() - 0x4000) / 256;
+        int32_t y = lara_item->pos.y - GetRandomControl() / 44;
+        int32_t d = lara_item->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+        DoBloodSplat(x, y, z, lara_item->speed, d, lara_item->room_number);
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -600,6 +621,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043ABC0, FallingCeilingControl);
     INJECT(0x0043AC60, InitialiseDamoclesSword);
     INJECT(0x0043ACA0, DamoclesSwordControl);
+    INJECT(0x0043ADD0, DamoclesSwordCollision);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
