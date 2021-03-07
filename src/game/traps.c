@@ -828,6 +828,12 @@ void LavaWedgeControl(int16_t item_num)
         }
     }
 
+#ifdef T1M_FEAT_CHEATS
+    if (Lara.water_status == LWS_CHEAT) {
+        item->touch_bits = 0;
+    }
+#endif
+
     if (item->touch_bits) {
         if (LaraItem->hit_points > 0) {
             LavaBurn(LaraItem);
