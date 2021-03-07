@@ -6,6 +6,7 @@
 #define ModifyStartInfo         ((void          (*)(int32_t level_num))0x00434520)
 #define CreateSaveGameInfo      ((void          (*)())0x00434720)
 #define ExtractSaveGameInfo     ((void          (*)())0x00434F90)
+#define InitialiseStartInfo     ((void          (*)())0x004344D0)
 // clang-format on
 
 #endif

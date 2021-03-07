@@ -38,6 +38,7 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
+#include "specific/shell.h"
 
 void T1MInject()
 {
@@ -86,4 +87,5 @@ void T1MInject()
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
     T1MInjectSpecificOutput();
+    T1MInjectSpecificShell();
 }

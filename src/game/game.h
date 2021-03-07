@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+int32_t StartGame(int level_num);
 int32_t GameLoop(int demo_mode);
 int32_t LevelIsValid(int16_t level_num);
 int32_t LevelCompleteSequence(int level_num);
@@ -13,6 +14,7 @@ int32_t GetRandomDraw();
 void LevelStats(int32_t level_num);
 int32_t S_LoadGame(void *data, int32_t size, int32_t slot);
 void GetSavedGamesList(REQUEST_INFO *req);
+int32_t S_FrontEndCheck();
 int32_t S_SaveGame(void *data, int32_t size, int32_t slot);
 
 void T1MInjectGameGame();

@@ -82,8 +82,8 @@ sub_407A91                      0x00407A91  0x00000141  -
 SetHardwareVideoMode            0x00407BD2  0x00000433  -
 InitialiseHardware              0x00408005  0x0000031E  *
 ShutdownHardware                0x00408323  0x00000029  -
-HardwarePrepareFMV              0x0040834C  0x0000001C  -
-HardwareFMVDone                 0x00408368  0x00000017  -
+HardwarePrepareFMV              0x0040834C  0x0000001C  *
+HardwareFMVDone                 0x00408368  0x00000017  *
 sub_40837F                      0x0040837F  0x0000008A  -
 sub_408409                      0x00408409  0x000000D5  -
 DownloadTexturesToHardware      0x004084DE  0x0000030C  *
@@ -815,7 +815,7 @@ WriteSGARM                      ----------  ----------  -
 WriteSGLOT                      ----------  ----------  -
 WriteSGLara                     ----------  ----------  -
 LoadSaveGameInfo                ----------  ----------  -
-InitialiseStartInfo             0x004344D0  0x00000042  -
+InitialiseStartInfo             0x004344D0  0x00000042  *
 ModifyStartInfo                 0x00434520  0x000000BF  *
 CreateStartInfo                 0x004345E0  0x00000139  *
 CreateSaveGameInfo              0x00434720  0x00000866  *
@@ -864,7 +864,7 @@ sub_4380C0                      0x004380C0  0x00000018  -
 sub_4380E0                      0x004380E0  0x00000255  *
 sub_438340                      0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -
-GameMain                        0x00438410  0x0000050A  -
+GameMain                        0x00438410  0x0000050A  +
 CheckCheatMode                  0x00438920  0x00000213  *
 S_WriteSettings                 0x00438B60  0x00000090  *
 S_SoundPlaySample               0x00438BF0  0x0000004B  -
