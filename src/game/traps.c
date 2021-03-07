@@ -13,6 +13,19 @@
 #define ROLLINGBALL_DAMAGE_AIR 100
 #define SPIKE_DAMAGE 15
 #define PENDULUM_DAMAGE 100
+#define TEETH_TRAP_DAMAGE 400
+
+typedef enum {
+    TT_NICE = 0,
+    TT_NASTY = 1,
+} TEETH_TRAP_STATE;
+
+static BITE_INFO Teeth1A = { -23, 0, -1718, 0 };
+static BITE_INFO Teeth1B = { 71, 0, -1718, 1 };
+static BITE_INFO Teeth2A = { -23, 10, -1718, 0 };
+static BITE_INFO Teeth2B = { 71, 10, -1718, 1 };
+static BITE_INFO Teeth3A = { -23, -10, -1718, 0 };
+static BITE_INFO Teeth3B = { 71, -10, -1718, 1 };
 
 void InitialiseRollingBall(int16_t item_num)
 {
@@ -368,6 +381,28 @@ void FallingBlockCeiling(
     }
 }
 
+// original name: TeethTrap
+void TeethTrapControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        item->goal_anim_state = TT_NASTY;
+        if (item->touch_bits && item->current_anim_state == TT_NASTY) {
+            LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
+            LaraItem->hit_status = 1;
+            BaddieBiteEffect(item, &Teeth1A);
+            BaddieBiteEffect(item, &Teeth1B);
+            BaddieBiteEffect(item, &Teeth2A);
+            BaddieBiteEffect(item, &Teeth2B);
+            BaddieBiteEffect(item, &Teeth3A);
+            BaddieBiteEffect(item, &Teeth3B);
+        }
+    } else {
+        item->goal_anim_state = TT_NICE;
+    }
+    AnimateItem(item);
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -495,6 +530,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A970, FallingBlockControl);
     INJECT(0x0043AA70, FallingBlockFloor);
     INJECT(0x0043AAB0, FallingBlockCeiling);
+    INJECT(0x0043AAF0, TeethTrapControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

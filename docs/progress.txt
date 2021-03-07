@@ -882,7 +882,7 @@ S_StartSyncedAudio              0x00439030  0x000000FC  -
 TestCollision                   0x00439130  0x00000128  *
 GetSpheres                      0x00439260  0x000002EF  *
 GetJointAbsPosition             0x00439550  0x0000019C  *
-BaddieBiteEffect                0x004396F0  0x0000005D  -
+BaddieBiteEffect                0x004396F0  0x0000005D  *
 
 # text.cpp
 T_InitPrint                     0x00439750  0x00000022  +
@@ -923,7 +923,7 @@ PendulumControl                 0x0043A820  0x0000014B  +
 FallingBlockControl             0x0043A970  0x000000F9  +
 FallingBlockFloor               0x0043AA70  0x00000035  +
 FallingBlockCeiling             0x0043AAB0  0x00000034  +
-TeethTrapControl                0x0043AAF0  0x000000C1  *
+TeethTrapControl                0x0043AAF0  0x000000C1  +
 FallingCeilingControl           0x0043ABC0  0x0000009E  *
 InitialiseDamoclesSword         0x0043AC60  0x0000003B  *
 DamoclesSwordControl            0x0043ACA0  0x00000129  *
