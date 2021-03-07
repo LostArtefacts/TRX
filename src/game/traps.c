@@ -219,6 +219,18 @@ void TrapDoorControl(int16_t item_num)
     AnimateItem(item);
 }
 
+void TrapDoorFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    if (!OnTrapDoor(item, x, z)) {
+        return;
+    }
+    if (y <= item->pos.y && item->current_anim_state == DOOR_CLOSED
+        && item->pos.y < *height) {
+        *height = item->pos.y;
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -339,6 +351,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A2B0, RollingBallCollision);
     INJECT(0x0043A520, SpikeCollision);
     INJECT(0x0043A670, TrapDoorControl);
+    INJECT(0x0043A6D0, TrapDoorFloor);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

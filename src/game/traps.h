@@ -5,8 +5,8 @@
 #include <stdint.h>
 
 // clang-format off
-#define TrapDoorFloor           ((void      (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0043A6D0)
 #define TrapDoorCeiling         ((void      (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0043A720)
+#define OnTrapDoor              ((int32_t   (*)(ITEM_INFO* item, int32_t x, int32_t z))0x0043A770)
 #define PendulumControl         ((void      (*)(int16_t item_num))0x0043A820)
 #define FallingBlockControl     ((void      (*)(int16_t item_num))0x0043A970)
 #define FallingBlockFloor       ((void      (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0043AA70)
@@ -31,6 +31,8 @@ void RollingBallCollision(
     int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void SpikeCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll);
 void TrapDoorControl(int16_t item_num);
+void TrapDoorFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
 
