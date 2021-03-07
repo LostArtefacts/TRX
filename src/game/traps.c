@@ -558,6 +558,40 @@ void DartEmitterControl(int16_t item_num)
     AnimateItem(item);
 }
 
+void DartsControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->touch_bits) {
+        LaraItem->hit_points -= 50;
+        LaraItem->hit_status = 1;
+        DoBloodSplat(
+            item->pos.x, item->pos.y, item->pos.z, LaraItem->speed,
+            LaraItem->pos.y_rot, LaraItem->room_number);
+    }
+    AnimateItem(item);
+
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (item->room_number != room_num) {
+        ItemNewRoom(item_num, room_num);
+    }
+
+    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    if (item->pos.y >= item->floor) {
+        KillItem(item_num);
+        int16_t fx_num = CreateEffect(item->room_number);
+        if (fx_num != NO_ITEM) {
+            FX_INFO* fx = &Effects[fx_num];
+            fx->pos = item->pos;
+            fx->speed = 0;
+            fx->counter = 6;
+            fx->frame_number = -3 * GetRandomControl() / 0x8000;
+            fx->object_number = O_RICOCHET1;
+        }
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -628,7 +662,7 @@ void FlameControl(int16_t fx_num)
             fx->counter = 100;
 
             fx_num = CreateEffect(LaraItem->room_number);
-            if (fx_num != -1) {
+            if (fx_num != NO_ITEM) {
                 fx = &Effects[fx_num];
                 fx->frame_number = 0;
                 fx->object_number = O_FLAME;
@@ -691,6 +725,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043ACA0, DamoclesSwordControl);
     INJECT(0x0043ADD0, DamoclesSwordCollision);
     INJECT(0x0043AEC0, DartEmitterControl);
+    INJECT(0x0043B060, DartsControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
