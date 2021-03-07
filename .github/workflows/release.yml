@@ -23,7 +23,7 @@ jobs:
       - name: Build project
         run: |
           make build
-          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll Tomb1Main.json
+          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll Tomb1Main.json5
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

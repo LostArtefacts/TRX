@@ -17,8 +17,8 @@ installed to work.
 
 ## Configuring
 
-To configure Tomb1Main, edit the `Tomb1Main.json` file in your text editor such
-as Notepad. All the configuration is explained in that file.
+To configure Tomb1Main, edit the `Tomb1Main.json5` file in your text editor
+such as Notepad. All the configuration is explained in that file.
 
 ## Decompilation progress
 

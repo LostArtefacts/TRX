@@ -81,7 +81,7 @@ static int8_t ReadBarLocationConfig(
 
 int T1MReadConfig()
 {
-    FILE* fp = fopen("Tomb1Main.json", "rb");
+    FILE* fp = fopen("Tomb1Main.json5", "rb");
     if (!fp) {
         return 0;
     }
