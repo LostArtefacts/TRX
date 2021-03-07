@@ -15,6 +15,7 @@
 #define PENDULUM_DAMAGE 100
 #define TEETH_TRAP_DAMAGE 400
 #define FALLING_CEILING_DAMAGE 300
+#define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 
 typedef enum {
     TT_NICE = 0,
@@ -436,6 +437,38 @@ void InitialiseDamoclesSword(int16_t item_num)
     item->fall_speed = 50;
 }
 
+void DamoclesSwordControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->gravity_status) {
+        item->pos.y_rot += item->required_anim_state;
+        item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
+        item->pos.y += item->fall_speed;
+        item->pos.x += item->current_anim_state;
+        item->pos.z += item->goal_anim_state;
+
+        if (item->pos.y > item->floor) {
+            SoundEffect(103, &item->pos, 0);
+            item->pos.y = item->floor + 10;
+            item->gravity_status = 0;
+            item->status = IS_DEACTIVATED;
+            RemoveActiveItem(item_num);
+        }
+    } else if (item->pos.y != item->floor) {
+        item->pos.y_rot += item->required_anim_state;
+        int32_t x = LaraItem->pos.x - item->pos.x;
+        int32_t y = LaraItem->pos.y - item->pos.y;
+        int32_t z = LaraItem->pos.z - item->pos.z;
+        if (ABS(x) <= DAMOCLES_SWORD_ACTIVATE_DIST
+            && ABS(z) <= DAMOCLES_SWORD_ACTIVATE_DIST && y > 0
+            && y < WALL_L * 3) {
+            item->current_anim_state = x / 32;
+            item->goal_anim_state = z / 32;
+            item->gravity_status = 1;
+        }
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -566,6 +599,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043AAF0, TeethTrapControl);
     INJECT(0x0043ABC0, FallingCeilingControl);
     INJECT(0x0043AC60, InitialiseDamoclesSword);
+    INJECT(0x0043ACA0, DamoclesSwordControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
