@@ -592,6 +592,19 @@ void DartsControl(int16_t item_num)
     }
 }
 
+void DartEffectControl(int16_t fx_num)
+{
+    FX_INFO* fx = &Effects[fx_num];
+    fx->counter++;
+    if (fx->counter >= 3) {
+        fx->counter = 0;
+        fx->frame_number--;
+        if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
+            KillEffect(fx_num);
+        }
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -726,6 +739,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043ADD0, DamoclesSwordCollision);
     INJECT(0x0043AEC0, DartEmitterControl);
     INJECT(0x0043B060, DartsControl);
+    INJECT(0x0043B1A0, DartEffectControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
