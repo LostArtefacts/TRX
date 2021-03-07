@@ -358,6 +358,16 @@ void FallingBlockFloor(
     }
 }
 
+void FallingBlockCeiling(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    if (y > item->pos.y - STEP_L * 2
+        && (item->current_anim_state == TRAP_SET
+            || item->current_anim_state == TRAP_ACTIVATE)) {
+        *height = item->pos.y - STEP_L;
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -484,6 +494,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A820, PendulumControl);
     INJECT(0x0043A970, FallingBlockControl);
     INJECT(0x0043AA70, FallingBlockFloor);
+    INJECT(0x0043AAB0, FallingBlockCeiling);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

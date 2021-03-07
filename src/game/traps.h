@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define FallingBlockCeiling     ((void      (*)(ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height))0x0043AAB0)
 #define TeethTrapControl        ((void      (*)(int16_t item_num))0x0043AAF0)
 #define FallingCeilingControl   ((void      (*)(int16_t item_num))0x0043ABC0)
 #define InitialiseDamoclesSword ((void      (*)(int16_t item_num))0x0043AC60)
@@ -34,6 +33,8 @@ int32_t OnTrapDoor(ITEM_INFO* item, int32_t x, int32_t z);
 void PendulumControl(int16_t item_num);
 void FallingBlockControl(int16_t item_num);
 void FallingBlockFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
+void FallingBlockCeiling(
     ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height);
 void FlameControl(int16_t fx_num);
 void LavaBurn(ITEM_INFO* item);
