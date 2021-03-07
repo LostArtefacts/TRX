@@ -297,6 +297,57 @@ void PendulumControl(int16_t item_num)
     AnimateItem(item);
 }
 
+// original name: FallingBlock
+void FallingBlockControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    switch (item->current_anim_state) {
+    case TRAP_SET:
+        if (LaraItem->pos.y == item->pos.y - (STEP_L * 2)) {
+            item->goal_anim_state = TRAP_ACTIVATE;
+        } else {
+            item->status = IS_NOT_ACTIVE;
+            RemoveActiveItem(item_num);
+            return;
+        }
+        break;
+
+    case TRAP_ACTIVATE:
+        item->goal_anim_state = TRAP_WORKING;
+        break;
+
+    case TRAP_WORKING:
+        if (item->goal_anim_state != TRAP_FINISHED) {
+            item->gravity_status = 1;
+        }
+        break;
+    }
+
+    AnimateItem(item);
+    if (item->status == IS_DEACTIVATED) {
+        RemoveActiveItem(item_num);
+        return;
+    }
+
+    int16_t room_num = item->room_number;
+    FLOOR_INFO* floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (item->room_number != room_num) {
+        ItemNewRoom(item_num, room_num);
+    }
+
+    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    if (item->current_anim_state == TRAP_WORKING
+        && item->pos.y >= item->floor) {
+        item->goal_anim_state = TRAP_FINISHED;
+        item->pos.y = item->floor;
+        item->fall_speed = 0;
+        item->gravity_status = 0;
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -421,6 +472,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A720, TrapDoorCeiling);
     INJECT(0x0043A770, OnTrapDoor);
     INJECT(0x0043A820, PendulumControl);
+    INJECT(0x0043A970, FallingBlockControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
