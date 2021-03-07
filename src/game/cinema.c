@@ -47,6 +47,7 @@ int32_t StartCinematic(int32_t level_num)
         break;
     }
 
+    int32_t old_sound_is_active = SoundIsActive;
     SoundIsActive = 0;
     CineFrame = 0;
 
@@ -59,6 +60,8 @@ int32_t StartCinematic(int32_t level_num)
 
     S_CDStop();
     S_SoundStopAllSamples();
+    SoundIsActive = old_sound_is_active;
+
     LevelComplete = 1;
     S_FadeInInventory(1);
 
