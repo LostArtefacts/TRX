@@ -304,7 +304,7 @@ void FallingBlockControl(int16_t item_num)
 
     switch (item->current_anim_state) {
     case TRAP_SET:
-        if (LaraItem->pos.y == item->pos.y - (STEP_L * 2)) {
+        if (LaraItem->pos.y == item->pos.y - STEP_L * 2) {
             item->goal_anim_state = TRAP_ACTIVATE;
         } else {
             item->status = IS_NOT_ACTIVE;
@@ -345,6 +345,16 @@ void FallingBlockControl(int16_t item_num)
         item->pos.y = item->floor;
         item->fall_speed = 0;
         item->gravity_status = 0;
+    }
+}
+
+void FallingBlockFloor(
+    ITEM_INFO* item, int32_t x, int32_t y, int32_t z, int16_t* height)
+{
+    if (y <= item->pos.y - STEP_L * 2
+        && (item->current_anim_state == TRAP_SET
+            || item->current_anim_state == TRAP_ACTIVATE)) {
+        *height = item->pos.y - STEP_L * 2;
     }
 }
 
@@ -473,6 +483,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A770, OnTrapDoor);
     INJECT(0x0043A820, PendulumControl);
     INJECT(0x0043A970, FallingBlockControl);
+    INJECT(0x0043AA70, FallingBlockFloor);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
