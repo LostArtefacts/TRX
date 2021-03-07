@@ -254,19 +254,19 @@ int32_t Display_Inventory(int inv_mode)
         case RNG_OPEN:
             if (CHK_ANY(Input, IN_RIGHT) && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
-                SoundEffect(108, 0, SFX_ALWAYS);
+                SoundEffect(108, NULL, SFX_ALWAYS);
                 break;
             }
 
             if (CHK_ANY(Input, IN_LEFT) && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
-                SoundEffect(108, 0, SFX_ALWAYS);
+                SoundEffect(108, NULL, SFX_ALWAYS);
                 break;
             }
 
             if ((ResetFlag || CHK_ANY(InputDB, IN_OPTION))
                 && (ResetFlag || InventoryMode != INV_TITLE_MODE)) {
-                SoundEffect(112, 0, SFX_ALWAYS);
+                SoundEffect(112, NULL, SFX_ALWAYS);
                 InventoryChosen = -1;
 
                 if (ring.type == RT_MAIN) {
@@ -325,26 +325,26 @@ int32_t Display_Inventory(int inv_mode)
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
-                    SoundEffect(113, 0, SFX_ALWAYS);
+                    SoundEffect(113, NULL, SFX_ALWAYS);
                     break;
 
                 case O_PHOTO_OPTION:
-                    SoundEffect(109, 0, SFX_ALWAYS);
+                    SoundEffect(109, NULL, SFX_ALWAYS);
                     break;
 
                 case O_CONTROL_OPTION:
-                    SoundEffect(110, 0, SFX_ALWAYS);
+                    SoundEffect(110, NULL, SFX_ALWAYS);
                     break;
 
                 case O_GUN_OPTION:
                 case O_SHOTGUN_OPTION:
                 case O_MAGNUM_OPTION:
                 case O_UZI_OPTION:
-                    SoundEffect(114, 0, SFX_ALWAYS);
+                    SoundEffect(114, NULL, SFX_ALWAYS);
                     break;
 
                 default:
-                    SoundEffect(111, 0, SFX_ALWAYS);
+                    SoundEffect(111, NULL, SFX_ALWAYS);
                     break;
                 }
             }
@@ -506,7 +506,7 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (!busy && !IDelay) {
-                do_inventory_options(inv_item);
+                DoInventoryOptions(inv_item);
 
                 if (CHK_ANY(InputDB, IN_DESELECT)) {
                     inv_item->sprlist = NULL;
@@ -552,7 +552,7 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_DESELECT:
-            SoundEffect(112, 0, SFX_ALWAYS);
+            SoundEffect(112, NULL, SFX_ALWAYS);
             Inv_RingMotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(

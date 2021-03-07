@@ -559,8 +559,8 @@ LaraFloorFront                  ----------  ----------  +
 LaraLandedBad                   0x00425D70  0x000000BE  +
 
 # lara1gun.cpp
-draw_shotgun                    0x00425E30  0x00000113  +
-undraw_shotgun                  0x00425F50  0x00000160  +
+DrawShotgun                     0x00425E30  0x00000113  +
+UndrawShotgun                   0x00425F50  0x00000160  +
 draw_shotgun_meshes             ----------  ----------  +
 undraw_shotgun_meshes           ----------  ----------  +
 ready_shotgun                   ----------  ----------  +
@@ -569,10 +569,10 @@ AnimateShotgun                  ----------  ----------  +
 FireShotgun                     ----------  ----------  +
 
 # lara2gun.cpp
-draw_pistols                    0x00426470  0x00000147  +
-undraw_pistols                  0x004265C0  0x00000261  +
+DrawPistols                     0x00426470  0x00000147  +
+UndrawPistols                   0x004265C0  0x00000261  +
 ready_pistols                   ----------  ----------  +
-draw_pistol_meshes              0x00426830  0x00000061  +
+DrawPistolMeshes                0x00426830  0x00000061  +
 undraw_pistol_mesh_left         ----------  ----------  +
 undraw_pistol_mesh_right        ----------  ----------  +
 PistolHandler                   0x004268A0  0x0000012E  +
@@ -723,22 +723,23 @@ EarthQuakeControl               0x0042D700  0x0000006F  +
 
 # option.cpp
 GetScancodeName                 ----------  ----------  -
-do_inventory_options            0x0042D770  0x00000180  *
-do_passport_option              0x0042D9C0  0x000004D0  -
-do_detail_option_hw             0x0042DE90  0x00000435  -
-do_detail_option                0x0042E2D0  0x000002E8  -
-do_sound_option                 0x0042E5C0  0x000004F2  -
-do_compass_option               ----------  ----------  -
+DoInventoryOptions              0x0042D770  0x00000180  +
+DoPassportOption                0x0042D9C0  0x000004D0  *
+DoGammaOption                   ----------  ----------  +
+DoDetailOptionHW                0x0042DE90  0x00000435  -
+DoDetailOption                  0x0042E2D0  0x000002E8  -
+DoSoundOption                   0x0042E5C0  0x000004F2  -
+DoCompassOption                 ----------  ----------  +
 FlashConflicts                  ----------  ----------  -
 DefaultConflict                 ----------  ----------  -
-do_control_option               0x0042EAC0  0x0000075D  -
+DoControlOption                 0x0042EAC0  0x0000075D  -
 S_ShowControls                  0x0042F230  0x000004B1  +
 S_ChangeCtrlText                ----------  ----------  -
 S_RemoveCtrlText                ----------  ----------  -
 S_RemoveCtrl                    ----------  ----------  -
-Init_Requester                  ----------  ----------  -
-Remove_Requester                ----------  ----------  -
-Display_Requester               0x0042F6F0  0x0000056B  -
+InitRequester                   ----------  ----------  -
+RemoveRequester                 ----------  ----------  -
+DisplayRequester                0x0042F6F0  0x0000056B  *
 
 # shell/output.cpp
 S_InitialisePolyList            0x0042FC60  0x00000005  *
@@ -962,7 +963,7 @@ sub_43D5F0                      0x0043D5F0  0x00000176  -
 ShowFatalError                  0x0043D770  0x00000147  *
 KeyboardHook(x,x,x)             0x0043D8C0  0x00000077  -
 sub_43D940                      0x0043D940  0x00000136  -
-WinMain(x,x,x,x)                0x0043DA80  0x0000037D  -
+WinMain                         0x0043DA80  0x0000037D  -
 WndProc                         0x0043DE00  0x0000011F  -
 
 # wolf.cpp

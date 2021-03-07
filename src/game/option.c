@@ -1,9 +1,127 @@
+#include "game/effects.h"
+#include "game/game.h"
 #include "game/option.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/output.h"
 #include "config.h"
 #include "util.h"
+
+#define GAMMA_MODIFIER 8
+#define MIN_GAMMA_LEVEL -127
+#define MAX_GAMMA_LEVEL 127
+
+// original name: do_inventory_options
+void DoInventoryOptions(INVENTORY_ITEM* inv_item)
+{
+    switch (inv_item->object_number) {
+    case O_PASSPORT_OPTION:
+        DoPassportOption(inv_item);
+        break;
+
+    case O_MAP_OPTION:
+        DoCompassOption(inv_item);
+        break;
+
+    case O_DETAIL_OPTION:
+        DoDetailOption(inv_item);
+        break;
+
+    case O_SOUND_OPTION:
+        DoSoundOption(inv_item);
+        break;
+
+    case O_CONTROL_OPTION:
+        DoControlOption(inv_item);
+        break;
+
+    case O_GAMMA_OPTION:
+        DoGammaOption(inv_item);
+        break;
+
+    case O_GUN_OPTION:
+    case O_SHOTGUN_OPTION:
+    case O_MAGNUM_OPTION:
+    case O_UZI_OPTION:
+    case O_EXPLOSIVE_OPTION:
+    case O_MEDI_OPTION:
+    case O_BIGMEDI_OPTION:
+    case O_PUZZLE_OPTION1:
+    case O_PUZZLE_OPTION2:
+    case O_PUZZLE_OPTION3:
+    case O_PUZZLE_OPTION4:
+    case O_KEY_OPTION1:
+    case O_KEY_OPTION2:
+    case O_KEY_OPTION3:
+    case O_KEY_OPTION4:
+    case O_PICKUP_OPTION1:
+    case O_PICKUP_OPTION2:
+    case O_SCION_OPTION:
+        InputDB |= IN_SELECT;
+        break;
+
+    case O_GUN_AMMO_OPTION:
+    case O_SG_AMMO_OPTION:
+    case O_MAG_AMMO_OPTION:
+    case O_UZI_AMMO_OPTION:
+        break;
+
+    default:
+        if (CHK_ANY(InputDB, (IN_DESELECT | IN_SELECT))) {
+            inv_item->goal_frame = 0;
+            inv_item->anim_direction = -1;
+        }
+        break;
+    }
+}
+
+// original name: do_gamma_option
+void DoGammaOption(INVENTORY_ITEM* inv_item)
+{
+    if (CHK_ANY(Input, IN_LEFT)) {
+        IDelay = 1;
+        IDCount = 10;
+        OptionGammaLevel -= GAMMA_MODIFIER;
+        if (OptionGammaLevel < MIN_GAMMA_LEVEL) {
+            OptionGammaLevel = MIN_GAMMA_LEVEL;
+        }
+    }
+    if (CHK_ANY(Input, IN_RIGHT)) {
+        IDCount = 10;
+        IDelay = 1;
+        OptionGammaLevel += GAMMA_MODIFIER;
+        if (OptionGammaLevel > MAX_GAMMA_LEVEL) {
+            OptionGammaLevel = MAX_GAMMA_LEVEL;
+        }
+    }
+    inv_item->sprlist = InvSprGammaList;
+    InvSprGammaLevel[6].param1 = OptionGammaLevel / 2 + 63;
+    // S_SetGamma(OptionGammaLevel);
+
+    if (CHK_ANY(InputDB, IN_SELECT)) {
+        inv_item->goal_frame = 0;
+        inv_item->anim_direction = -1;
+    }
+
+    if (CHK_ANY(InputDB, IN_DESELECT)) {
+        int32_t gamma = OptionGammaLevel - 64;
+        if (gamma < -255) {
+            gamma = -255;
+        }
+        if (InventoryMode != INV_TITLE_MODE) {
+            // S_SetBackgroundGamma(gamma);
+        }
+    }
+}
+
+// original name: do_compass_option
+void DoCompassOption(INVENTORY_ITEM* inv_item)
+{
+    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+        inv_item->goal_frame = inv_item->frames_total - 1;
+        inv_item->anim_direction = 1;
+    }
+}
 
 void S_ShowControls()
 {
@@ -147,7 +265,20 @@ void S_ShowControls()
     }
 }
 
+// original name: Init_Requester
+void InitRequester(REQUEST_INFO* req)
+{
+    req->heading = NULL;
+    req->background = NULL;
+    req->moreup = NULL;
+    req->moredown = NULL;
+    for (int i = 0; i < MAX_REQLINES; i++) {
+        req->texts[i] = NULL;
+    }
+}
+
 void T1MInjectGameOption()
 {
+    INJECT(0x0042D770, DoInventoryOptions);
     INJECT(0x0042F230, S_ShowControls);
 }

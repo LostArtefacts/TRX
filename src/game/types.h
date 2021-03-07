@@ -1407,7 +1407,13 @@ typedef struct {
     /* 0014 */ int32_t item_heading;
     /* 0018 */ char* item_texts;
     /* 001C */ int16_t item_text_len;
-    /* 0020 end */
+    /* 001E */ TEXTSTRING* heading;
+    /* 0022 */ TEXTSTRING* background;
+    /* 0026 */ TEXTSTRING* moreup;
+    /* 002A */ TEXTSTRING* moredown;
+    /* 002E */ TEXTSTRING* texts[MAX_REQLINES];
+    /* 006E */ int16_t flags[MAX_REQLINES];
+    /* 008E end */
 } REQUEST_INFO;
 
 typedef struct {

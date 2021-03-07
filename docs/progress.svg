@@ -402,12 +402,12 @@
 <rect width="12.00" height="12.00" x="686.00" y="115.00" class="decompiled"><title>LaraTestHangJumpUp</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="129.00" class="decompiled"><title>TestLaraSlide</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="129.00" class="decompiled"><title>LaraLandedBad</title></rect>
-<rect width="12.00" height="12.00" x="28.00" y="129.00" class="decompiled"><title>draw_shotgun</title></rect>
-<rect width="12.00" height="12.00" x="42.00" y="129.00" class="decompiled"><title>undraw_shotgun</title></rect>
+<rect width="12.00" height="12.00" x="28.00" y="129.00" class="decompiled"><title>DrawShotgun</title></rect>
+<rect width="12.00" height="12.00" x="42.00" y="129.00" class="decompiled"><title>UndrawShotgun</title></rect>
 <rect width="12.00" height="12.00" x="56.00" y="129.00" class="decompiled"><title>RifleHandler</title></rect>
-<rect width="12.00" height="12.00" x="70.00" y="129.00" class="decompiled"><title>draw_pistols</title></rect>
-<rect width="12.00" height="12.00" x="84.00" y="129.00" class="decompiled"><title>undraw_pistols</title></rect>
-<rect width="12.00" height="12.00" x="98.00" y="129.00" class="decompiled"><title>draw_pistol_meshes</title></rect>
+<rect width="12.00" height="12.00" x="70.00" y="129.00" class="decompiled"><title>DrawPistols</title></rect>
+<rect width="12.00" height="12.00" x="84.00" y="129.00" class="decompiled"><title>UndrawPistols</title></rect>
+<rect width="12.00" height="12.00" x="98.00" y="129.00" class="decompiled"><title>DrawPistolMeshes</title></rect>
 <rect width="12.00" height="12.00" x="112.00" y="129.00" class="decompiled"><title>PistolHandler</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="129.00" class="decompiled"><title>AnimatePistols</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="129.00" class="decompiled"><title>LaraGun</title></rect>
@@ -513,14 +513,14 @@
 <rect width="12.00" height="12.00" x="140.00" y="157.00" class="decompiled"><title>BoatControl</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="157.00" class="decompiled"><title>Scion3Control</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="157.00" class="decompiled"><title>EarthQuakeControl</title></rect>
-<rect width="12.00" height="12.00" x="182.00" y="157.00" class="named"><title>do_inventory_options</title></rect>
-<rect width="12.00" height="12.00" x="196.00" y="157.00" class="named"><title>do_passport_option</title></rect>
-<rect width="12.00" height="12.00" x="210.00" y="157.00" class="named"><title>do_detail_option_hw</title></rect>
-<rect width="12.00" height="12.00" x="224.00" y="157.00" class="named"><title>do_detail_option</title></rect>
-<rect width="12.00" height="12.00" x="238.00" y="157.00" class="named"><title>do_sound_option</title></rect>
-<rect width="12.00" height="12.00" x="252.00" y="157.00" class="named"><title>do_control_option</title></rect>
+<rect width="12.00" height="12.00" x="182.00" y="157.00" class="decompiled"><title>DoInventoryOptions</title></rect>
+<rect width="12.00" height="12.00" x="196.00" y="157.00" class="named"><title>DoPassportOption</title></rect>
+<rect width="12.00" height="12.00" x="210.00" y="157.00" class="named"><title>DoDetailOptionHW</title></rect>
+<rect width="12.00" height="12.00" x="224.00" y="157.00" class="named"><title>DoDetailOption</title></rect>
+<rect width="12.00" height="12.00" x="238.00" y="157.00" class="named"><title>DoSoundOption</title></rect>
+<rect width="12.00" height="12.00" x="252.00" y="157.00" class="named"><title>DoControlOption</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="157.00" class="decompiled"><title>S_ShowControls</title></rect>
-<rect width="12.00" height="12.00" x="280.00" y="157.00" class="named"><title>Display_Requester</title></rect>
+<rect width="12.00" height="12.00" x="280.00" y="157.00" class="named"><title>DisplayRequester</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="157.00" class="named"><title>S_InitialisePolyList</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="157.00" class="named"><title>S_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="157.00" class="named"><title>S_ClearScreen</title></rect>
@@ -686,7 +686,7 @@
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="named"><title>ShowFatalError</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="199.00" class="named"><title>KeyboardHook(x,x,x)</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="199.00" class="todo"><title>sub_43D940</title></rect>
-<rect width="12.00" height="12.00" x="504.00" y="199.00" class="named"><title>WinMain(x,x,x,x)</title></rect>
+<rect width="12.00" height="12.00" x="504.00" y="199.00" class="named"><title>WinMain</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="199.00" class="named"><title>WndProc</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="199.00" class="decompiled"><title>InitialiseWolf</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="199.00" class="decompiled"><title>WolfControl</title></rect>
@@ -743,7 +743,7 @@
 <rect width="40.86" height="35.46" x="53.68" y="397.53" class="decompiled"><title>CreatureAnimation</title></rect>
 <rect width="40.86" height="33.13" x="53.68" y="435.00" class="decompiled"><title>GetCollisionInfo</title></rect>
 <rect width="40.86" height="32.99" x="53.68" y="470.12" class="decompiled"><title>CreatureMood</title></rect>
-<rect width="40.86" height="30.89" x="53.68" y="505.11" class="named"><title>do_control_option</title></rect>
+<rect width="40.86" height="30.89" x="53.68" y="505.11" class="named"><title>DoControlOption</title></rect>
 <rect width="36.66" height="34.17" x="96.54" y="269.00" class="decompiled"><title>TestTriggers</title></rect>
 <rect width="36.66" height="31.79" x="96.54" y="305.17" class="decompiled"><title>ObjectObjects</title></rect>
 <rect width="36.66" height="31.77" x="96.54" y="338.97" class="todo"><title>sub_40B510</title></rect>
@@ -763,16 +763,16 @@
 <rect width="28.84" height="32.90" x="169.98" y="269.00" class="decompiled"><title>NatlaControl</title></rect>
 <rect width="28.84" height="32.63" x="169.98" y="303.90" class="todo"><title>sub_4059F0</title></rect>
 <rect width="28.84" height="32.51" x="169.98" y="338.52" class="todo"><title>sub_404DA0</title></rect>
-<rect width="28.84" height="31.63" x="169.98" y="373.03" class="named"><title>Display_Requester</title></rect>
+<rect width="28.84" height="31.63" x="169.98" y="373.03" class="named"><title>DisplayRequester</title></rect>
 <rect width="28.84" height="31.54" x="169.98" y="406.66" class="decompiled"><title>SmartShift</title></rect>
 <rect width="28.84" height="31.29" x="169.98" y="440.20" class="decompiled"><title>CalculateCamera</title></rect>
 <rect width="28.84" height="30.62" x="169.98" y="473.50" class="decompiled"><title>DrawAnimatingItem</title></rect>
 <rect width="28.84" height="29.89" x="169.98" y="506.11" class="named"><title>ins_poly_trans8</title></rect>
 <rect width="28.85" height="29.26" x="200.82" y="269.00" class="named"><title>GameMain</title></rect>
-<rect width="28.85" height="28.68" x="200.82" y="300.26" class="named"><title>do_sound_option</title></rect>
+<rect width="28.85" height="28.68" x="200.82" y="300.26" class="named"><title>DoSoundOption</title></rect>
 <rect width="28.85" height="27.88" x="200.82" y="330.95" class="decompiled"><title>CalculateTarget</title></rect>
 <rect width="28.85" height="27.88" x="200.82" y="360.83" class="decompiled"><title>DrawLightning</title></rect>
-<rect width="28.85" height="27.86" x="200.82" y="390.72" class="named"><title>do_passport_option</title></rect>
+<rect width="28.85" height="27.86" x="200.82" y="390.72" class="named"><title>DoPassportOption</title></rect>
 <rect width="28.85" height="27.76" x="200.82" y="420.57" class="decompiled"><title>BaldyControl</title></rect>
 <rect width="28.85" height="27.52" x="200.82" y="450.34" class="named"><title>SoundEffect</title></rect>
 <rect width="28.85" height="27.11" x="200.82" y="479.86" class="decompiled"><title>S_ShowControls</title></rect>
@@ -783,7 +783,7 @@
 <rect width="25.97" height="27.73" x="231.67" y="363.70" class="decompiled"><title>SkateKidControl</title></rect>
 <rect width="25.97" height="27.25" x="231.67" y="393.43" class="named"><title>S_DrawLightningSegment</title></rect>
 <rect width="25.97" height="27.06" x="231.67" y="422.68" class="decompiled"><title>LoadObjects</title></rect>
-<rect width="25.97" height="26.80" x="231.67" y="451.75" class="named"><title>do_detail_option_hw</title></rect>
+<rect width="25.97" height="26.80" x="231.67" y="451.75" class="named"><title>DoDetailOptionHW</title></rect>
 <rect width="25.97" height="26.74" x="231.67" y="480.54" class="named"><title>SetHardwareVideoMode</title></rect>
 <rect width="25.97" height="26.72" x="231.67" y="509.28" class="decompiled"><title>LoadLevel</title></rect>
 <rect width="25.97" height="26.45" x="259.64" y="269.00" class="named"><title>calc_roomvert</title></rect>
@@ -798,7 +798,7 @@
 <rect width="25.97" height="22.87" x="259.64" y="513.13" class="decompiled"><title>T_DrawThisText</title></rect>
 <rect width="24.59" height="24.10" x="287.61" y="269.00" class="decompiled"><title>DrawInventoryItem</title></rect>
 <rect width="24.59" height="23.93" x="287.61" y="295.10" class="decompiled"><title>ExplodingDeath</title></rect>
-<rect width="24.59" height="23.12" x="287.61" y="321.03" class="named"><title>WinMain(x,x,x,x)</title></rect>
+<rect width="24.59" height="23.12" x="287.61" y="321.03" class="named"><title>WinMain</title></rect>
 <rect width="24.59" height="22.84" x="287.61" y="346.15" class="decompiled"><title>RifleHandler</title></rect>
 <rect width="24.59" height="22.81" x="287.61" y="370.99" class="decompiled"><title>LaraControl</title></rect>
 <rect width="24.59" height="22.16" x="287.61" y="395.79" class="todo"><title>sub_4063B0</title></rect>
@@ -820,7 +820,7 @@
 <rect width="22.26" height="21.49" x="314.19" y="514.51" class="todo"><title>sub_448A80</title></rect>
 <rect width="21.97" height="21.52" x="338.45" y="269.00" class="decompiled"><title>FireWeapon</title></rect>
 <rect width="21.97" height="21.43" x="338.45" y="292.52" class="decompiled"><title>GetSpheres</title></rect>
-<rect width="21.97" height="21.21" x="338.45" y="315.95" class="named"><title>do_detail_option</title></rect>
+<rect width="21.97" height="21.21" x="338.45" y="315.95" class="named"><title>DoDetailOption</title></rect>
 <rect width="21.97" height="21.12" x="338.45" y="339.16" class="decompiled"><title>MoveCamera</title></rect>
 <rect width="21.97" height="20.46" x="338.45" y="362.27" class="todo"><title>sub_406FD0</title></rect>
 <rect width="21.97" height="20.34" x="338.45" y="384.74" class="decompiled"><title>GetNearByRooms</title></rect>
@@ -849,7 +849,7 @@
 <rect width="20.07" height="19.04" x="384.40" y="353.56" class="decompiled"><title>ControlMissile</title></rect>
 <rect width="20.07" height="19.01" x="384.40" y="374.60" class="named"><title>S_GetObjectBounds</title></rect>
 <rect width="20.07" height="18.73" x="384.40" y="395.61" class="decompiled"><title>RollingBallCollision</title></rect>
-<rect width="20.07" height="18.63" x="384.40" y="416.34" class="decompiled"><title>undraw_pistols</title></rect>
+<rect width="20.07" height="18.63" x="384.40" y="416.34" class="decompiled"><title>UndrawPistols</title></rect>
 <rect width="20.07" height="18.53" x="384.40" y="436.97" class="named"><title>S_DrawSprite</title></rect>
 <rect width="20.07" height="18.50" x="384.40" y="457.50" class="decompiled"><title>RollingBallControl</title></rect>
 <rect width="20.07" height="18.23" x="384.40" y="478.00" class="todo"><title>sub_4380E0</title></rect>
@@ -924,7 +924,7 @@
 <rect width="14.21" height="15.85" x="665.57" y="287.54" class="decompiled"><title>StartCinematic</title></rect>
 <rect width="14.21" height="15.85" x="681.79" y="287.54" class="named"><title>S_CalculateLight</title></rect>
 <rect width="15.14" height="14.85" x="465.48" y="305.39" class="todo"><title>sub_40CADB</title></rect>
-<rect width="15.05" height="14.85" x="482.61" y="305.39" class="named"><title>do_inventory_options</title></rect>
+<rect width="15.05" height="14.85" x="482.61" y="305.39" class="decompiled"><title>DoInventoryOptions</title></rect>
 <rect width="15.05" height="14.85" x="499.66" y="305.39" class="decompiled"><title>S_DrawHealthBar</title></rect>
 <rect width="14.96" height="14.85" x="516.71" y="305.39" class="decompiled"><title>Inv_RingInit</title></rect>
 <rect width="14.69" height="14.85" x="533.66" y="305.39" class="decompiled"><title>LaraAsSurfTread</title></rect>
@@ -943,7 +943,7 @@
 <rect width="13.85" height="14.84" x="465.48" y="373.19" class="named"><title>calc_vertice_light</title></rect>
 <rect width="13.85" height="14.80" x="465.48" y="390.04" class="decompiled"><title>PickUpScionCollision</title></rect>
 <rect width="13.85" height="14.75" x="465.48" y="406.84" class="named"><title>S_DrawScreenSprite</title></rect>
-<rect width="13.85" height="14.61" x="465.48" y="423.58" class="decompiled"><title>undraw_shotgun</title></rect>
+<rect width="13.85" height="14.61" x="465.48" y="423.58" class="decompiled"><title>UndrawShotgun</title></rect>
 <rect width="13.85" height="14.56" x="465.48" y="440.19" class="todo"><title>sub_43E74D</title></rect>
 <rect width="13.85" height="14.42" x="465.48" y="456.75" class="decompiled"><title>ShiftCamera</title></rect>
 <rect width="13.85" height="14.37" x="465.48" y="473.17" class="decompiled"><title>S_InitialiseSystem</title></rect>
@@ -961,7 +961,7 @@
 <rect width="14.06" height="13.36" x="481.33" y="446.42" class="decompiled"><title>MovableBlockControl</title></rect>
 <rect width="14.06" height="13.32" x="481.33" y="461.78" class="decompiled"><title>LaraColUpJump</title></rect>
 <rect width="14.06" height="13.27" x="481.33" y="477.10" class="decompiled"><title>LaraColFastFall</title></rect>
-<rect width="14.06" height="13.23" x="481.33" y="492.37" class="decompiled"><title>draw_pistols</title></rect>
+<rect width="14.06" height="13.23" x="481.33" y="492.37" class="decompiled"><title>DrawPistols</title></rect>
 <rect width="14.06" height="13.23" x="481.33" y="507.60" class="named"><title>ShowFatalError</title></rect>
 <rect width="14.06" height="13.18" x="481.33" y="522.82" class="named"><title>xgen_xg</title></rect>
 <rect width="13.70" height="13.34" x="497.39" y="322.24" class="decompiled"><title>TestBlockPush</title></rect>
@@ -999,7 +999,7 @@
 <rect width="12.39" height="12.55" x="598.94" y="337.58" class="decompiled"><title>ChaseCamera</title></rect>
 <rect width="12.39" height="12.55" x="613.33" y="337.58" class="decompiled"><title>PodControl</title></rect>
 <rect width="12.23" height="12.55" x="627.71" y="337.58" class="decompiled"><title>ItemSparkle</title></rect>
-<rect width="12.13" height="12.55" x="641.95" y="337.58" class="decompiled"><title>draw_shotgun</title></rect>
+<rect width="12.13" height="12.55" x="641.95" y="337.58" class="decompiled"><title>DrawShotgun</title></rect>
 <rect width="11.98" height="12.55" x="656.07" y="337.58" class="decompiled"><title>Inv_RemoveItem</title></rect>
 <rect width="11.98" height="12.55" x="670.05" y="337.58" class="decompiled"><title>ShardGun</title></rect>
 <rect width="11.98" height="12.55" x="684.02" y="337.58" class="decompiled"><title>RocketGun</title></rect>
@@ -1198,7 +1198,7 @@
 <rect width="6.51" height="6.78" x="689.49" y="432.58" class="decompiled"><title>LaraColSplat</title></rect>
 <rect width="6.22" height="7.10" x="601.29" y="441.36" class="named"><title>flatA</title></rect>
 <rect width="6.22" height="7.01" x="601.29" y="450.46" class="decompiled"><title>InitialiseObjects</title></rect>
-<rect width="6.22" height="6.83" x="601.29" y="459.47" class="decompiled"><title>draw_pistol_meshes</title></rect>
+<rect width="6.22" height="6.83" x="601.29" y="459.47" class="decompiled"><title>DrawPistolMeshes</title></rect>
 <rect width="6.22" height="6.83" x="601.29" y="468.30" class="decompiled"><title>LightningCollision</title></rect>
 <rect width="6.22" height="6.74" x="601.29" y="477.13" class="todo"><title>sub_4079E9</title></rect>
 <rect width="6.22" height="6.74" x="601.29" y="485.86" class="decompiled"><title>GetSavedGamesList</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 67.03%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 63.09%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 19.02%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.18%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 67.17%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 63.24%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 18.88%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.03%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.73%</text>
 </svg>

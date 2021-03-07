@@ -120,6 +120,7 @@
 #define ControlText             ARRAY_(0x0045A2F8, TEXTSTRING*, [2])
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)
+#define OptionGammaLevel        VAR_U_(0x0045A0A0, int16_t)
 #define CDFlags                 ARRAY_(0x00462C20, int16_t, [MAX_CD_TRACKS])
 #define FlipMapTable            ARRAY_(0x00462CC0, int32_t, [MAX_FLIP_MAPS])
 #define Cine                    VAR_U_(0x00462CF4, int16_t*)
@@ -229,6 +230,8 @@
 #define IShotgunAmmoOption      VAR_U_(0x004558E0, INVENTORY_ITEM)
 #define IMagnumAmmoOption       VAR_U_(0x00455920, INVENTORY_ITEM)
 #define IUziAmmoOption          VAR_U_(0x00455960, INVENTORY_ITEM)
+#define InvSprGammaLevel        ARRAY_(0x00455218, INVENTORY_SPRITE, [10])
+#define InvSprGammaList         ARRAY_(0x004552F8, INVENTORY_SPRITE*, [])
 
 // clang-format on
 
