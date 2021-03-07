@@ -914,7 +914,7 @@ T_DrawThisText                  0x00439C60  0x000003A2  +
 InitialiseRollingBall           0x0043A010  0x00000040  +
 RollingBallControl              0x0043A050  0x0000025D  +
 RollingBallCollision            0x0043A2B0  0x00000264  +
-SpikeCollision                  0x0043A520  0x0000014E  *
+SpikeCollision                  0x0043A520  0x0000014E  +
 TrapDoorControl                 0x0043A670  0x00000053  *
 TrapDoorFloor                   0x0043A6D0  0x00000042  *
 TrapDoorCeiling                 0x0043A720  0x00000046  *
