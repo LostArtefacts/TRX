@@ -243,6 +243,27 @@ void TrapDoorCeiling(
     }
 }
 
+int32_t OnTrapDoor(ITEM_INFO* item, int32_t x, int32_t z)
+{
+    x >>= WALL_SHIFT;
+    z >>= WALL_SHIFT;
+    int32_t tx = item->pos.x >> WALL_SHIFT;
+    int32_t tz = item->pos.z >> WALL_SHIFT;
+    if (item->pos.y_rot == 0 && x == tx && (z == tz || z == tz + 1)) {
+        return 1;
+    } else if (
+        item->pos.y_rot == -PHD_180 && x == tx && (z == tz || z == tz - 1)) {
+        return 1;
+    } else if (
+        item->pos.y_rot == PHD_90 && z == tz && (x == tx || x == tx + 1)) {
+        return 1;
+    } else if (
+        item->pos.y_rot == -PHD_90 && z == tz && (x == tx || x == tx - 1)) {
+        return 1;
+    }
+    return 0;
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -365,6 +386,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A670, TrapDoorControl);
     INJECT(0x0043A6D0, TrapDoorFloor);
     INJECT(0x0043A720, TrapDoorCeiling);
+    INJECT(0x0043A770, OnTrapDoor);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
