@@ -1,3 +1,4 @@
+#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -17,6 +18,78 @@ void InitialiseRollingBall(int16_t item_num)
     old->y = item->pos.y;
     old->z = item->pos.z;
     old->room_number = item->room_number;
+}
+
+void RollingBallControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (item->status == IS_ACTIVE) {
+        if (item->pos.y < item->floor) {
+            if (!item->gravity_status) {
+                item->gravity_status = 1;
+                item->fall_speed = -10;
+            }
+        } else if (item->current_anim_state == TRAP_SET) {
+            item->goal_anim_state = TRAP_ACTIVATE;
+        }
+
+        int32_t oldx = item->pos.x;
+        int32_t oldz = item->pos.z;
+        AnimateItem(item);
+
+        int16_t room_num = item->room_number;
+        FLOOR_INFO* floor =
+            GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        if (item->room_number != room_num) {
+            ItemNewRoom(item_num, room_num);
+        }
+
+        item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+        TestTriggers(TriggerIndex, 1);
+
+        if (item->pos.y >= item->floor - STEP_L) {
+            item->gravity_status = 0;
+            item->fall_speed = 0;
+            item->pos.y = item->floor;
+        }
+
+        int32_t x = item->pos.x
+            + (((WALL_L / 2) * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
+        int32_t z = item->pos.z
+            + (((WALL_L / 2) * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
+        floor = GetFloor(x, item->pos.y, z, &room_num);
+        if (GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
+            item->status = IS_DEACTIVATED;
+            item->pos.x = oldx;
+            item->pos.y = item->floor;
+            item->pos.z = oldz;
+            item->speed = 0;
+            item->fall_speed = 0;
+            item->touch_bits = 0;
+        }
+    } else if (item->status == IS_DEACTIVATED && !TriggerActive(item)) {
+        item->status = IS_NOT_ACTIVE;
+        GAME_VECTOR* old = item->data;
+        item->pos.x = old->x;
+        item->pos.y = old->y;
+        item->pos.z = old->z;
+        if (item->room_number != old->room_number) {
+            RemoveDrawnItem(item_num);
+            ROOM_INFO* r = &RoomInfo[old->room_number];
+            item->next_item = r->item_number;
+            r->item_number = item_num;
+            item->room_number = old->room_number;
+        }
+        item->current_anim_state = TRAP_SET;
+        item->goal_anim_state = TRAP_SET;
+        item->anim_number = Objects[item->object_number].anim_index;
+        item->frame_number = Anims[item->anim_number].frame_base;
+        item->current_anim_state = Anims[item->anim_number].current_anim_state;
+        item->goal_anim_state = item->current_anim_state;
+        item->required_anim_state = TRAP_SET;
+        RemoveActiveItem(item_num);
+    }
 }
 
 void FlameControl(int16_t fx_num)
@@ -135,6 +208,7 @@ void LavaBurn(ITEM_INFO* item)
 void T1MInjectGameTraps()
 {
     INJECT(0x0043A010, InitialiseRollingBall);
+    INJECT(0x0043A050, RollingBallControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

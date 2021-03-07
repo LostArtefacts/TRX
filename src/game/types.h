@@ -768,6 +768,13 @@ typedef enum {
     DOOR_OPEN = 1,
 } DOOR_ANIM;
 
+typedef enum {
+    TRAP_SET = 0,
+    TRAP_ACTIVATE = 1,
+    TRAP_WORKING = 2,
+    TRAP_FINISHED = 3,
+} TRAP_ANIM;
+
 #pragma pack(push, 1)
 
 typedef struct {
