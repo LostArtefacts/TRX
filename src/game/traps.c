@@ -428,6 +428,14 @@ void FallingCeilingControl(int16_t item_num)
     }
 }
 
+void InitialiseDamoclesSword(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    item->pos.y_rot = GetRandomControl();
+    item->required_anim_state = (GetRandomControl() - 0x4000) / 16;
+    item->fall_speed = 50;
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -557,6 +565,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043AAB0, FallingBlockCeiling);
     INJECT(0x0043AAF0, TeethTrapControl);
     INJECT(0x0043ABC0, FallingCeilingControl);
+    INJECT(0x0043AC60, InitialiseDamoclesSword);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

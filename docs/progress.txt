@@ -925,7 +925,7 @@ FallingBlockFloor               0x0043AA70  0x00000035  +
 FallingBlockCeiling             0x0043AAB0  0x00000034  +
 TeethTrapControl                0x0043AAF0  0x000000C1  +
 FallingCeilingControl           0x0043ABC0  0x0000009E  +
-InitialiseDamoclesSword         0x0043AC60  0x0000003B  *
+InitialiseDamoclesSword         0x0043AC60  0x0000003B  +
 DamoclesSwordControl            0x0043ACA0  0x00000129  *
 DamoclesSwordCollision          0x0043ADD0  0x000000E8  *
 DartEmitterControl              0x0043AEC0  0x0000019B  *
