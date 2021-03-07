@@ -742,6 +742,25 @@ void LavaBurn(ITEM_INFO* item)
     }
 }
 
+// original name: LavaSpray
+void LavaEmitterControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    int16_t fx_num = CreateEffect(item->room_number);
+    if (fx_num != NO_ITEM) {
+        FX_INFO* fx = &Effects[fx_num];
+        fx->pos.x = item->pos.x;
+        fx->pos.y = item->pos.y;
+        fx->pos.z = item->pos.z;
+        fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
+        fx->speed = GetRandomControl() >> 10;
+        fx->fall_speed = -GetRandomControl() / 200;
+        fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
+        fx->object_number = O_LAVA;
+        SoundEffect(149, &item->pos, 0);
+    }
+}
+
 void T1MInjectGameTraps()
 {
     INJECT(0x0043A010, InitialiseRollingBall);
@@ -767,4 +786,5 @@ void T1MInjectGameTraps()
     INJECT(0x0043B1F0, FlameEmitterControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
+    INJECT(0x0043B520, LavaEmitterControl);
 }
