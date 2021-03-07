@@ -621,7 +621,7 @@
 <rect width="12.00" height="12.00" x="252.00" y="185.00" class="named"><title>S_StartSyncedAudio</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="185.00" class="decompiled"><title>TestCollision</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="185.00" class="decompiled"><title>GetSpheres</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="185.00" class="named"><title>GetJointAbsPosition</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="185.00" class="decompiled"><title>GetJointAbsPosition</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="185.00" class="named"><title>BaddieBiteEffect</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="185.00" class="decompiled"><title>T_InitPrint</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="185.00" class="decompiled"><title>T_Print</title></rect>
@@ -908,7 +908,7 @@
 <rect width="16.23" height="15.11" x="447.25" y="469.97" class="named"><title>draw_poly_line</title></rect>
 <rect width="16.23" height="15.07" x="447.25" y="487.08" class="todo"><title>sub_40D140</title></rect>
 <rect width="16.23" height="14.95" x="447.25" y="504.15" class="decompiled"><title>LoadItems</title></rect>
-<rect width="16.23" height="14.90" x="447.25" y="521.10" class="named"><title>GetJointAbsPosition</title></rect>
+<rect width="16.23" height="14.90" x="447.25" y="521.10" class="decompiled"><title>GetJointAbsPosition</title></rect>
 <rect width="15.22" height="15.85" x="465.48" y="287.54" class="decompiled"><title>DartEmitterControl</title></rect>
 <rect width="15.14" height="15.85" x="482.70" y="287.54" class="decompiled"><title>DrawGameInfo</title></rect>
 <rect width="15.05" height="15.85" x="499.83" y="287.54" class="decompiled"><title>phd_GenerateW2V</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="todo"><title>sub_437BC0</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="named"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 66.76%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 62.89%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 19.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 66.89%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 63.05%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 19.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 21.22%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.73%</text>
 </svg>
