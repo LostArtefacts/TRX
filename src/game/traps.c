@@ -17,7 +17,10 @@
 #define FALLING_CEILING_DAMAGE 300
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
+#define FLAME_ONFIRE_DAMAGE 5
+#define FLAME_TOONEAR_DAMAGE 3
 #define LAVA_GLOB_DAMAGE 10
+#define LAVA_WEDGE_SPEED 25
 
 typedef enum {
     TT_NICE = 0,
@@ -785,6 +788,59 @@ void LavaControl(int16_t fx_num)
     }
 }
 
+// original name: LavaWedge
+void LavaWedgeControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+
+    int16_t room_num = item->room_number;
+    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (room_num != item->room_number) {
+        ItemNewRoom(item_num, room_num);
+    }
+
+    if (item->status != IS_DEACTIVATED) {
+        int32_t x = item->pos.x;
+        int32_t z = item->pos.z;
+
+        switch (item->pos.y_rot) {
+        case 0:
+            item->pos.z += LAVA_WEDGE_SPEED;
+            z += 2 * WALL_L;
+            break;
+        case -PHD_180:
+            item->pos.z -= LAVA_WEDGE_SPEED;
+            z -= 2 * WALL_L;
+            break;
+        case PHD_90:
+            item->pos.x += LAVA_WEDGE_SPEED;
+            x += 2 * WALL_L;
+            break;
+        default:
+            item->pos.x -= LAVA_WEDGE_SPEED;
+            x -= 2 * WALL_L;
+            break;
+        }
+
+        FLOOR_INFO* floor = GetFloor(x, item->pos.y, z, &room_num);
+        if (GetHeight(floor, x, item->pos.y, z) != item->pos.y) {
+            item->status = IS_DEACTIVATED;
+        }
+    }
+
+    if (item->touch_bits) {
+        if (LaraItem->hit_points > 0) {
+            LavaBurn(LaraItem);
+        }
+
+        Camera.item = item;
+        Camera.flags = CHASE_OBJECT;
+        Camera.type = CAM_FIXED;
+        Camera.target_angle = -PHD_180;
+        Camera.target_distance = WALL_L * 3;
+    }
+}
+
 void T1MInjectGameTraps()
 {
     INJECT(0x0043A010, InitialiseRollingBall);
@@ -812,4 +868,5 @@ void T1MInjectGameTraps()
     INJECT(0x0043B430, LavaBurn);
     INJECT(0x0043B520, LavaEmitterControl);
     INJECT(0x0043B5F0, LavaControl);
+    INJECT(0x0043B710, LavaWedgeControl);
 }

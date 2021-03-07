@@ -271,7 +271,4 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define FLAME_ONFIRE_DAMAGE 5
-#define FLAME_TOONEAR_DAMAGE 3
-
 #endif
