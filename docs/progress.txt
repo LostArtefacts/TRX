@@ -919,7 +919,7 @@ TrapDoorControl                 0x0043A670  0x00000053  +
 TrapDoorFloor                   0x0043A6D0  0x00000042  +
 TrapDoorCeiling                 0x0043A720  0x00000046  +
 OnTrapDoor                      0x0043A770  0x000000A3  +
-PendulumControl                 0x0043A820  0x0000014B  *
+PendulumControl                 0x0043A820  0x0000014B  +
 FallingBlockControl             0x0043A970  0x000000F9  *
 FallingBlockFloor               0x0043AA70  0x00000035  *
 FallingBlockCeiling             0x0043AAB0  0x00000034  *
