@@ -206,6 +206,19 @@ void SpikeCollision(int16_t item_num, ITEM_INFO* lara_item, COLL_INFO* coll)
     }
 }
 
+void TrapDoorControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        if (item->current_anim_state == DOOR_CLOSED) {
+            item->goal_anim_state = DOOR_OPEN;
+        }
+    } else if (item->current_anim_state == DOOR_OPEN) {
+        item->goal_anim_state = DOOR_CLOSED;
+    }
+    AnimateItem(item);
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -325,6 +338,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043A050, RollingBallControl);
     INJECT(0x0043A2B0, RollingBallCollision);
     INJECT(0x0043A520, SpikeCollision);
+    INJECT(0x0043A670, TrapDoorControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }
