@@ -724,7 +724,7 @@ EarthQuakeControl               0x0042D700  0x0000006F  +
 # option.cpp
 GetScancodeName                 ----------  ----------  -
 DoInventoryOptions              0x0042D770  0x00000180  +
-DoPassportOption                0x0042D9C0  0x000004D0  *
+DoPassportOption                0x0042D9C0  0x000004D0  +
 DoGammaOption                   ----------  ----------  +
 DoDetailOptionHW                0x0042DE90  0x00000435  -
 DoDetailOption                  0x0042E2D0  0x000002E8  -
@@ -737,7 +737,7 @@ S_ShowControls                  0x0042F230  0x000004B1  +
 S_ChangeCtrlText                ----------  ----------  -
 S_RemoveCtrlText                ----------  ----------  -
 S_RemoveCtrl                    ----------  ----------  -
-InitRequester                   ----------  ----------  -
+InitRequester                   ----------  ----------  +
 RemoveRequester                 ----------  ----------  -
 DisplayRequester                0x0042F6F0  0x0000056B  *
 

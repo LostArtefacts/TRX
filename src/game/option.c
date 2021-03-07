@@ -10,6 +10,11 @@
 #define GAMMA_MODIFIER 8
 #define MIN_GAMMA_LEVEL -127
 #define MAX_GAMMA_LEVEL 127
+#define PASSPORT_2FRONT IN_LEFT
+#define PASSPORT_2BACK IN_RIGHT
+
+static TEXTSTRING* PassportText1;
+static int32_t PassportMode;
 
 // original name: do_inventory_options
 void DoInventoryOptions(INVENTORY_ITEM* inv_item)
@@ -72,6 +77,208 @@ void DoInventoryOptions(INVENTORY_ITEM* inv_item)
             inv_item->anim_direction = -1;
         }
         break;
+    }
+}
+
+void DoPassportOption(INVENTORY_ITEM* inv_item)
+{
+    T_RemovePrint(InvItemText[0]);
+    InvItemText[IT_NAME] = NULL;
+
+    int16_t page = (inv_item->goal_frame - inv_item->open_frame) / 5;
+    if ((inv_item->goal_frame - inv_item->open_frame) % 5) {
+        page = -1;
+    }
+
+    if (InventoryMode == INV_LOAD_MODE || InventoryMode == INV_SAVE_MODE) {
+        InputDB &= ~(PASSPORT_2FRONT | PASSPORT_2BACK);
+    }
+
+    switch (page) {
+    case 0:
+        if (PassportMode == 1) {
+            int32_t select = DisplayRequester(&LoadGameRequester);
+            if (select) {
+                if (select > 0) {
+                    InventoryExtraData[1] = select - 1;
+                } else if (
+                    InventoryMode != INV_SAVE_MODE
+                    && InventoryMode != INV_LOAD_MODE) {
+                    Input = 0;
+                    InputDB = 0;
+                }
+                PassportMode = 0;
+            } else {
+                Input = 0;
+                InputDB = 0;
+            }
+        } else if (PassportMode == 0) {
+            if (!SavedGamesCount || InventoryMode == INV_SAVE_MODE) {
+                InputDB = PASSPORT_2BACK;
+            } else {
+                if (!PassportText1) {
+                    PassportText1 = T_Print(0, -16, 0, "Load Game");
+                    T_BottomAlign(PassportText1, 1);
+                    T_CentreH(PassportText1, 1);
+                }
+                if (CHK_ANY(InputDB, IN_SELECT)
+                    || InventoryMode == INV_LOAD_MODE) {
+                    T_RemovePrint(InvRingText);
+                    InvRingText = NULL;
+                    T_RemovePrint(InvItemText[IT_NAME]);
+                    InvItemText[IT_NAME] = NULL;
+                    GetSavedGamesList(&LoadGameRequester);
+                    InitRequester(&LoadGameRequester);
+                    PassportMode = 1;
+                    Input = 0;
+                    InputDB = 0;
+                }
+            }
+        }
+        break;
+
+    case 1:
+        if (PassportMode == 1) {
+            int32_t select = DisplayRequester(&LoadGameRequester);
+            if (select) {
+                if (select > 0) {
+                    PassportMode = 0;
+                    InventoryExtraData[1] = select - 1;
+                } else {
+                    if (InventoryMode != INV_SAVE_MODE
+                        && InventoryMode != INV_LOAD_MODE) {
+                        Input = 0;
+                        InputDB = 0;
+                    }
+                    PassportMode = 0;
+                }
+            } else {
+                Input = 0;
+                InputDB = 0;
+            }
+        } else if (PassportMode == 0) {
+            if (InventoryMode == INV_DEATH_MODE) {
+                InputDB = inv_item->anim_direction == -1 ? PASSPORT_2FRONT
+                                                         : PASSPORT_2BACK;
+            }
+            if (!PassportText1) {
+                if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
+                    PassportText1 = T_Print(0, -16, 0, "New Game");
+                } else {
+                    PassportText1 = T_Print(0, -16, 0, "Save Game");
+                }
+                T_BottomAlign(PassportText1, 1);
+                T_CentreH(PassportText1, 1);
+            }
+            if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
+                if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
+                    InventoryExtraData[1] = CurrentLevel;
+                } else {
+                    T_RemovePrint(InvRingText);
+                    InvRingText = NULL;
+                    T_RemovePrint(InvItemText[IT_NAME]);
+                    InvItemText[IT_NAME] = NULL;
+                    GetSavedGamesList(&LoadGameRequester);
+                    InitRequester(&LoadGameRequester);
+                    PassportMode = 1;
+                    Input = 0;
+                    InputDB = 0;
+                }
+            }
+        }
+        break;
+
+    case 2:
+        if (!PassportText1) {
+            if (InventoryMode == INV_TITLE_MODE) {
+                PassportText1 = T_Print(0, -16, 0, "Exit Game");
+            } else {
+                PassportText1 = T_Print(0, -16, 0, "Exit to Title");
+            }
+            T_BottomAlign(PassportText1, 1);
+            T_CentreH(PassportText1, 1);
+        }
+        break;
+    }
+
+    if (CHK_ANY(InputDB, PASSPORT_2FRONT)
+        && (InventoryMode != INV_DEATH_MODE || SavedGamesCount)) {
+        inv_item->anim_direction = -1;
+        inv_item->goal_frame -= 5;
+
+        Input = 0;
+        InputDB = 0;
+
+        if (!SavedGamesCount) {
+            if (inv_item->goal_frame < inv_item->open_frame + 5) {
+                inv_item->goal_frame = inv_item->open_frame + 5;
+            } else if (PassportText1) {
+                T_RemovePrint(PassportText1);
+                PassportText1 = NULL;
+            }
+        } else {
+            if (inv_item->goal_frame < inv_item->open_frame) {
+                inv_item->goal_frame = inv_item->open_frame;
+            } else {
+                SoundEffect(115, NULL, SFX_ALWAYS);
+                if (PassportText1) {
+                    T_RemovePrint(PassportText1);
+                    PassportText1 = NULL;
+                }
+            }
+        }
+    }
+
+    if (CHK_ANY(InputDB, PASSPORT_2BACK)) {
+        inv_item->goal_frame += 5;
+        inv_item->anim_direction = 1;
+
+        Input = 0;
+        InputDB = 0;
+
+        if (inv_item->goal_frame > inv_item->frames_total - 6) {
+            inv_item->goal_frame = inv_item->frames_total - 6;
+        } else {
+            SoundEffect(115, NULL, SFX_ALWAYS);
+            if (PassportText1) {
+                T_RemovePrint(PassportText1);
+                PassportText1 = NULL;
+            }
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_DESELECT)) {
+        if (InventoryMode == INV_DEATH_MODE) {
+            Input = 0;
+            InputDB = 0;
+        } else {
+            if (page == 2) {
+                inv_item->anim_direction = 1;
+                inv_item->goal_frame = inv_item->frames_total - 1;
+            } else {
+                inv_item->goal_frame = 0;
+                inv_item->anim_direction = -1;
+            }
+            if (PassportText1) {
+                T_RemovePrint(PassportText1);
+                PassportText1 = 0;
+            }
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_SELECT)) {
+        InventoryExtraData[0] = page;
+        if (page == 2) {
+            inv_item->anim_direction = 1;
+            inv_item->goal_frame = inv_item->frames_total - 1;
+        } else {
+            inv_item->goal_frame = 0;
+            inv_item->anim_direction = -1;
+        }
+        if (PassportText1) {
+            T_RemovePrint(PassportText1);
+            PassportText1 = 0;
+        }
     }
 }
 
@@ -280,5 +487,6 @@ void InitRequester(REQUEST_INFO* req)
 void T1MInjectGameOption()
 {
     INJECT(0x0042D770, DoInventoryOptions);
+    INJECT(0x0042D9C0, DoPassportOption);
     INJECT(0x0042F230, S_ShowControls);
 }

@@ -227,8 +227,6 @@ int json_get_string_size(struct json_parse_state_s* state, size_t is_key)
         data_size++;
 
         switch (src[offset]) {
-        default:
-            break;
         case '\0':
         case '\t':
             state->error = json_parse_error_invalid_string;
@@ -1784,8 +1782,6 @@ json_extract_get_value_size(const struct json_value_s* const value)
     struct json_extract_result_s result = { 0, 0 };
 
     switch (value->type) {
-    default:
-        break;
     case json_type_object:
         result = json_extract_get_object_size(
             (const struct json_object_s*)value->payload);
@@ -2004,8 +2000,6 @@ int json_write_get_number_size(const struct json_number_s* number, size_t* size)
 
     if (number->number_size >= 2) {
         switch (number->number[1]) {
-        default:
-            break;
         case 'x':
         case 'X':
             /* the number is a json_parse_flags_allow_hexadecimal_numbers
@@ -2235,8 +2229,6 @@ char* json_write_number(const struct json_number_s* number, char* data)
 
     if (number->number_size >= 2) {
         switch (number->number[1]) {
-        default:
-            break;
         case 'x':
         case 'X':
             /* The number is a json_parse_flags_allow_hexadecimal_numbers
