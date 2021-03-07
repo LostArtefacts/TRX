@@ -605,6 +605,30 @@ void DartEffectControl(int16_t fx_num)
     }
 }
 
+void FlameEmitterControl(int16_t item_num)
+{
+    ITEM_INFO* item = &Items[item_num];
+    if (TriggerActive(item)) {
+        if (!item->data) {
+            int16_t fx_num = CreateEffect(item->room_number);
+            if (fx_num != NO_ITEM) {
+                FX_INFO* fx = &Effects[fx_num];
+                fx->pos.x = item->pos.x;
+                fx->pos.y = item->pos.y;
+                fx->pos.z = item->pos.z;
+                fx->frame_number = 0;
+                fx->object_number = O_FLAME;
+                fx->counter = 0;
+            }
+            item->data = (void*)(fx_num + 1);
+        }
+    } else if (item->data) {
+        StopSoundEffect(150, NULL);
+        KillEffect((int16_t)(size_t)item->data - 1);
+        item->data = NULL;
+    }
+}
+
 void FlameControl(int16_t fx_num)
 {
     FX_INFO* fx = &Effects[fx_num];
@@ -740,6 +764,7 @@ void T1MInjectGameTraps()
     INJECT(0x0043AEC0, DartEmitterControl);
     INJECT(0x0043B060, DartsControl);
     INJECT(0x0043B1A0, DartEffectControl);
+    INJECT(0x0043B1F0, FlameEmitterControl);
     INJECT(0x0043B2A0, FlameControl);
     INJECT(0x0043B430, LavaBurn);
 }

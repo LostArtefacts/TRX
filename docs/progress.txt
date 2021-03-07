@@ -931,7 +931,7 @@ DamoclesSwordCollision          0x0043ADD0  0x000000E8  +
 DartEmitterControl              0x0043AEC0  0x0000019B  +
 DartsControl                    0x0043B060  0x00000140  +
 DartEffectControl               0x0043B1A0  0x0000004C  +
-FlameEmitterControl             0x0043B1F0  0x000000A3  *
+FlameEmitterControl             0x0043B1F0  0x000000A3  +
 FlameControl                    0x0043B2A0  0x00000185  +
 LavaBurn                        0x0043B430  0x000000E8  +
 LavaEmitterControl              0x0043B520  0x000000C7  *
