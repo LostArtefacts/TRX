@@ -1404,8 +1404,8 @@ typedef struct {
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
-    /* 0014 */ int32_t item_heading;
-    /* 0018 */ char *item_texts;
+    /* 0014 */ char *item_heading;
+    /* 0018 */ char **item_texts;
     /* 001C */ int16_t item_text_len;
     /* 001E */ TEXTSTRING *heading;
     /* 0022 */ TEXTSTRING *background;

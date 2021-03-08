@@ -145,6 +145,10 @@ void GameMain()
                 if (InventoryExtraData[0]) {
                     if (InventoryExtraData[0] == 1) {
                         InitialiseStartInfo();
+#ifdef T1M_FEAT_GAMEPLAY
+                        SaveGame[0].bonus_flag = InventoryExtraData[1];
+                        ModifyStartInfo(LV_FIRSTLEVEL);
+#endif
                         gf_option = GF_STARTGAME | LV_FIRSTLEVEL;
                     } else {
                         gf_option = GF_EXITGAME;

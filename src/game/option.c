@@ -16,6 +16,29 @@
 static TEXTSTRING *PassportText1;
 static int32_t PassportMode;
 
+#ifdef T1M_FEAT_GAMEPLAY
+static char NewGameStrings[][20] = {
+    { "New Game" },
+    { "New Game+" },
+};
+
+static REQUEST_INFO NewGameRequester = {
+    2, // items
+    0, // requested
+    2, // vis_lines
+    0, // line_offset
+    0, // line_old_offset
+    162, // pix_width
+    TEXT_HEIGHT + 7, // line_height
+    0, // x
+    200, // y
+    0, // z
+    "Select Mode", // item_heading
+    NewGameStrings, // item_texts
+    20, // item_text_len
+};
+#endif
+
 // original name: do_inventory_options
 void DoInventoryOptions(INVENTORY_ITEM *inv_item)
 {
@@ -138,7 +161,23 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (PassportMode == 1) {
+#ifdef T1M_FEAT_GAMEPLAY
+        if (PassportMode == 2) {
+            int32_t select = DisplayRequester(&NewGameRequester);
+            if (select) {
+                if (select > 0) {
+                    PassportMode = 0;
+                    InventoryExtraData[1] = select - 1;
+                } else {
+                    PassportMode = 0;
+                }
+            } else {
+                Input = 0;
+                InputDB = 0;
+            }
+        } else
+#endif
+            if (PassportMode == 1) {
             int32_t select = DisplayRequester(&LoadGameRequester);
             if (select) {
                 if (select > 0) {
@@ -172,7 +211,18 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             }
             if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
                 if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
+#ifdef T1M_FEAT_GAMEPLAY
+                    T_RemovePrint(InvRingText);
+                    InvRingText = NULL;
+                    T_RemovePrint(InvItemText[IT_NAME]);
+                    InvItemText[IT_NAME] = NULL;
+                    InitRequester(&NewGameRequester);
+                    PassportMode = 2;
+                    Input = 0;
+                    InputDB = 0;
+#else
                     InventoryExtraData[1] = CurrentLevel;
+#endif
                 } else {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
