@@ -34,7 +34,7 @@ static REQUEST_INFO NewGameRequester = {
     200, // y
     0, // z
     "Select Mode", // item_heading
-    NewGameStrings, // item_texts
+    (char *)NewGameStrings, // item_texts
     20, // item_text_len
 };
 #endif
