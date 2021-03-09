@@ -18,6 +18,7 @@
 #define mn_reset_sound_effects  ((void          (*)())0x0042A940)
 #define mn_reset_ambient_loudness ((void        (*)())0x0042AFD0)
 #define mn_update_sound_effects ((void          (*)())0x0042B080)
+#define adjust_master_volume    ((void          (*)(int32_t new_volume))0x0042B410)
 #define S_FinishInventory       ((void          (*)())0x0041CCC0)
 #define CheckCheatMode          ((void          (*)())0x00438920)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)

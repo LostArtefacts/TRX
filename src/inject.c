@@ -39,6 +39,7 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/shell.h"
+#include "specific/sndpc.h"
 
 void T1MInject()
 {
@@ -88,4 +89,5 @@ void T1MInject()
     T1MInjectSpecificInput();
     T1MInjectSpecificOutput();
     T1MInjectSpecificShell();
+    T1MInjectSpecificSndPC();
 }

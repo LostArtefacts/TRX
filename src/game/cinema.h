@@ -1,6 +1,8 @@
 #ifndef T1M_GAME_CINEMA_H
 #define T1M_GAME_CINEMA_H
 
+#include <stdint.h>
+
 void InitCinematicRooms();
 int32_t StartCinematic(int32_t level_num);
 int32_t DoCinematic(int32_t nframes);

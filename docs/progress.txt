@@ -673,7 +673,7 @@ mn_stop_ambient_samples         0x0042B000  0x0000007E  *
 mn_update_sound_effects         0x0042B080  0x0000027D  *
 mn_get_sound_params             ----------  ----------  -
 StopSoundEffect                 0x0042B300  0x0000010E  *
-adjust_master_volume            0x0042B410  0x00000012  -
+adjust_master_volume            0x0042B410  0x00000012  *
 mn_start_sound_fade             ----------  ----------  -
 mn_set_sound_fade_rate          ----------  ----------  -
 mn_clear_fx_slot                ----------  ----------  -
@@ -855,7 +855,7 @@ SoundInit                       0x00437E00  0x0000000D  *
 sub_437E10                      0x00437E10  0x000000C3  -
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
-S_CDVolume                      0x00437F30  0x00000001  *
+S_CDVolume                      0x00437F30  0x00000001  +
 TestCdDrive                     0x00437F40  0x00000039  -
 sub_437F80                      0x00437F80  0x00000026  -
 CDPlay                          0x00437FB0  0x000000F5  -

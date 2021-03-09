@@ -11,6 +11,7 @@
 #define dword_45E960            VAR_U_(0x0045E960, int32_t)
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
+#define AuxDeviceID             VAR_U_(0x0045B984, uint32_t)
 #define cd_drive                VAR_I_(0x0045A010, char, '.')
 #define DEMO                    VAR_I_(0x0045F1C0, uint32_t, 0)
 #define RoomCount               VAR_U_(0x00462BDC, uint16_t)

@@ -1,6 +1,7 @@
 #ifndef T1M_GAME_GAME_H
 #define T1M_GAME_GAME_H
 
+#include "game/types.h"
 #include <stdint.h>
 
 int32_t StartGame(int level_num);

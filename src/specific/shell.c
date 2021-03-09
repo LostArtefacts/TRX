@@ -1,19 +1,20 @@
-#include "game/text.h"
-#include "game/vars.h"
-#include "specific/sndpc.h"
-#include "specific/display.h"
-#include "specific/shell.h"
-#include "specific/shed.h"
-#include "specific/file.h"
-#include "specific/output.h"
-#include "specific/init.h"
-#include "game/savegame.h"
-#include "specific/frontend.h"
 #include "game/cinema.h"
+#include "game/demo.h"
 #include "game/game.h"
 #include "game/inv.h"
+#include "game/savegame.h"
 #include "game/setup.h"
-#include "game/demo.h"
+#include "game/text.h"
+#include "game/vars.h"
+#include "specific/display.h"
+#include "specific/file.h"
+#include "specific/frontend.h"
+#include "specific/init.h"
+#include "specific/output.h"
+#include "specific/shed.h"
+#include "specific/shed.h"
+#include "specific/shell.h"
+#include "specific/sndpc.h"
 #include "util.h"
 #include <stdio.h>
 
@@ -43,6 +44,12 @@ void GameMain()
             S_CDVolume(25 * OptionMusicVolume + 5);
         } else {
             S_CDVolume(0);
+        }
+        // NOTE: missing in original code
+        if (OptionSoundFXVolume) {
+            adjust_master_volume(6 * OptionSoundFXVolume + 3);
+        } else {
+            adjust_master_volume(0);
         }
         fclose(fp);
     }
