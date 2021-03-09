@@ -1,7 +1,13 @@
 #include "game/inv.h"
 #include "game/savegame.h"
 #include "game/vars.h"
+#include "specific/shed.h"
 #include "util.h"
+
+#define SAVE_CREATURE (1 << 7)
+
+static int SGCount;
+static char *SGPoint;
 
 void InitialiseStartInfo()
 {
@@ -127,9 +133,199 @@ void CreateStartInfo(int level_num)
     }
 }
 
+void CreateSaveGameInfo()
+{
+    SaveGame[0].current_level = CurrentLevel;
+
+    CreateStartInfo(LV_CURRENT);
+
+    SaveGame[0].num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
+    SaveGame[0].num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
+    SaveGame[0].num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
+    SaveGame[0].num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
+    SaveGame[0].num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
+    SaveGame[0].num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
+    SaveGame[0].num_key1 = Inv_RequestItem(O_KEY_ITEM1);
+    SaveGame[0].num_key2 = Inv_RequestItem(O_KEY_ITEM2);
+    SaveGame[0].num_key3 = Inv_RequestItem(O_KEY_ITEM3);
+    SaveGame[0].num_key4 = Inv_RequestItem(O_KEY_ITEM4);
+    SaveGame[0].num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
+
+    ResetSG();
+
+    for (int i = 0; i < MAX_SAVEGAME_BUFFER; i++) {
+        SGPoint[i] = 0;
+    }
+
+    WriteSG(&FlipStatus, sizeof(int32_t));
+    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+        int8_t flag = FlipMapTable[i] >> 8;
+        WriteSG(&flag, sizeof(int8_t));
+    }
+
+    for (int i = 0; i < NumberCameras; i++) {
+        WriteSG(&Camera.fixed[i].flags, sizeof(int16_t));
+    }
+
+    for (int i = 0; i < LevelItemCount; i++) {
+        ITEM_INFO *item = &Items[i];
+        OBJECT_INFO *obj = &Objects[item->object_number];
+
+        if (obj->save_position) {
+            WriteSG(&item->pos, sizeof(PHD_3DPOS));
+            WriteSG(&item->room_number, sizeof(int16_t));
+            WriteSG(&item->speed, sizeof(int16_t));
+            WriteSG(&item->fall_speed, sizeof(int16_t));
+        }
+
+        if (obj->save_anim) {
+            WriteSG(&item->current_anim_state, sizeof(int16_t));
+            WriteSG(&item->goal_anim_state, sizeof(int16_t));
+            WriteSG(&item->required_anim_state, sizeof(int16_t));
+            WriteSG(&item->anim_number, sizeof(int16_t));
+            WriteSG(&item->frame_number, sizeof(int16_t));
+        }
+
+        if (obj->save_hitpoints) {
+            WriteSG(&item->hit_points, sizeof(int16_t));
+        }
+
+        if (obj->save_flags) {
+            uint16_t flags = item->flags + item->active + (item->status << 1)
+                + (item->gravity_status << 3) + (item->collidable << 4);
+            if (obj->intelligent && item->data) {
+                flags |= SAVE_CREATURE;
+            }
+            WriteSG(&flags, sizeof(uint16_t));
+            WriteSG(&item->timer, sizeof(int16_t));
+            if (flags & SAVE_CREATURE) {
+                CREATURE_INFO *creature = item->data;
+                WriteSG(&creature->head_rotation, sizeof(int16_t));
+                WriteSG(&creature->neck_rotation, sizeof(int16_t));
+                WriteSG(&creature->maximum_turn, sizeof(int16_t));
+                WriteSG(&creature->flags, sizeof(int16_t));
+                WriteSG(&creature->mood, sizeof(int32_t));
+            }
+        }
+    }
+
+    WriteSGLara(&Lara);
+
+    WriteSG(&FlipEffect, sizeof(int32_t));
+    WriteSG(&FlipTimer, sizeof(int32_t));
+}
+
+void WriteSG(void *pointer, int size)
+{
+    SGCount += size;
+    if (SGCount >= MAX_SAVEGAME_BUFFER) {
+        S_ExitSystem("FATAL: Savegame is too big to fit in buffer");
+    }
+
+    char *data = (char *)pointer;
+    for (int i = 0; i < size; i++) {
+        *SGPoint++ = *data++;
+    }
+}
+
+void WriteSGLara(LARA_INFO *lara)
+{
+    int32_t tmp32 = 0;
+
+    WriteSG(&lara->item_number, sizeof(int16_t));
+    WriteSG(&lara->gun_status, sizeof(int16_t));
+    WriteSG(&lara->gun_type, sizeof(int16_t));
+    WriteSG(&lara->request_gun_type, sizeof(int16_t));
+    WriteSG(&lara->calc_fall_speed, sizeof(int16_t));
+    WriteSG(&lara->water_status, sizeof(int16_t));
+    WriteSG(&lara->pose_count, sizeof(int16_t));
+    WriteSG(&lara->hit_frame, sizeof(int16_t));
+    WriteSG(&lara->hit_direction, sizeof(int16_t));
+    WriteSG(&lara->air, sizeof(int16_t));
+    WriteSG(&lara->dive_count, sizeof(int16_t));
+    WriteSG(&lara->death_count, sizeof(int16_t));
+    WriteSG(&lara->current_active, sizeof(int16_t));
+    WriteSG(&lara->spaz_effect_count, sizeof(int16_t));
+
+    // NOTE: OG just writes the pointer address (!)
+    if (lara->spaz_effect) {
+        tmp32 = (size_t)lara->spaz_effect - (size_t)Effects;
+    }
+    WriteSG(&tmp32, sizeof(int32_t));
+
+    WriteSG(&lara->mesh_effects, sizeof(int32_t));
+
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
+        tmp32 = (size_t)lara->mesh_ptrs[i] - (size_t)MeshBase;
+        WriteSG(&tmp32, sizeof(int32_t));
+    }
+
+    // NOTE: og just writes the pointer address (!) assuming it's a
+    // non-existing mesh 16 (!!) which happens to be Lara's current target.
+    // Just write NULL.
+    tmp32 = 0;
+    WriteSG(&tmp32, sizeof(int32_t));
+
+    WriteSG(&lara->target_angles[0], sizeof(PHD_ANGLE));
+    WriteSG(&lara->target_angles[1], sizeof(PHD_ANGLE));
+    WriteSG(&lara->turn_rate, sizeof(int16_t));
+    WriteSG(&lara->move_angle, sizeof(int16_t));
+    WriteSG(&lara->head_y_rot, sizeof(int16_t));
+    WriteSG(&lara->head_x_rot, sizeof(int16_t));
+    WriteSG(&lara->head_z_rot, sizeof(int16_t));
+    WriteSG(&lara->torso_y_rot, sizeof(int16_t));
+    WriteSG(&lara->torso_x_rot, sizeof(int16_t));
+    WriteSG(&lara->torso_z_rot, sizeof(int16_t));
+
+    WriteSGARM(&lara->left_arm);
+    WriteSGARM(&lara->right_arm);
+    WriteSG(&lara->pistols, sizeof(AMMO_INFO));
+    WriteSG(&lara->magnums, sizeof(AMMO_INFO));
+    WriteSG(&lara->uzis, sizeof(AMMO_INFO));
+    WriteSG(&lara->shotgun, sizeof(AMMO_INFO));
+    WriteSGLOT(&lara->LOT);
+}
+
+void ResetSG()
+{
+    SGCount = 0;
+    SGPoint = SaveGame[0].buffer;
+}
+
+void WriteSGARM(LARA_ARM *arm)
+{
+    int32_t frame_base = (size_t)arm->frame_base - (size_t)AnimFrames;
+    WriteSG(&frame_base, sizeof(int32_t));
+    WriteSG(&arm->frame_number, sizeof(int16_t));
+    WriteSG(&arm->lock, sizeof(int16_t));
+    WriteSG(&arm->y_rot, sizeof(PHD_ANGLE));
+    WriteSG(&arm->x_rot, sizeof(PHD_ANGLE));
+    WriteSG(&arm->z_rot, sizeof(PHD_ANGLE));
+    WriteSG(&arm->flash_gun, sizeof(int16_t));
+}
+
+void WriteSGLOT(LOT_INFO *lot)
+{
+    // it casually saves a pointer again!
+    WriteSG(&lot->node, sizeof(int32_t));
+
+    WriteSG(&lot->head, sizeof(int16_t));
+    WriteSG(&lot->tail, sizeof(int16_t));
+    WriteSG(&lot->search_number, sizeof(uint16_t));
+    WriteSG(&lot->block_mask, sizeof(uint16_t));
+    WriteSG(&lot->step, sizeof(int16_t));
+    WriteSG(&lot->drop, sizeof(int16_t));
+    WriteSG(&lot->fly, sizeof(int16_t));
+    WriteSG(&lot->zone_count, sizeof(int16_t));
+    WriteSG(&lot->target_box, sizeof(int16_t));
+    WriteSG(&lot->required_box, sizeof(int16_t));
+    WriteSG(&lot->target, sizeof(PHD_VECTOR));
+}
+
 void T1MInjectGameSaveGame()
 {
     INJECT(0x004344D0, InitialiseStartInfo);
     INJECT(0x00434520, ModifyStartInfo);
     INJECT(0x004345E0, CreateStartInfo)
+    INJECT(0x00434720, CreateSaveGameInfo);
 }

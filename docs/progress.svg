@@ -571,7 +571,7 @@
 <rect width="12.00" height="12.00" x="252.00" y="171.00" class="decompiled"><title>InitialiseStartInfo</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="171.00" class="decompiled"><title>ModifyStartInfo</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="171.00" class="decompiled"><title>CreateStartInfo</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="171.00" class="named"><title>CreateSaveGameInfo</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="171.00" class="decompiled"><title>CreateSaveGameInfo</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="171.00" class="named"><title>ExtractSaveGameInfo</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="171.00" class="named"><title>S_DrawSprite</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="171.00" class="named"><title>S_DrawSpriteRel</title></rect>
@@ -739,7 +739,7 @@
 <rect width="51.68" height="39.93" x="0.00" y="496.07" class="todo"><title>sub_40904D</title></rect>
 <rect width="40.86" height="46.84" x="53.68" y="269.00" class="decompiled"><title>DrawLara</title></rect>
 <rect width="40.86" height="40.18" x="53.68" y="317.84" class="named"><title>ExtractSaveGameInfo</title></rect>
-<rect width="40.86" height="35.52" x="53.68" y="360.02" class="named"><title>CreateSaveGameInfo</title></rect>
+<rect width="40.86" height="35.52" x="53.68" y="360.02" class="decompiled"><title>CreateSaveGameInfo</title></rect>
 <rect width="40.86" height="35.46" x="53.68" y="397.53" class="decompiled"><title>CreatureAnimation</title></rect>
 <rect width="40.86" height="33.13" x="53.68" y="435.00" class="decompiled"><title>GetCollisionInfo</title></rect>
 <rect width="40.86" height="32.99" x="53.68" y="470.12" class="decompiled"><title>CreatureMood</title></rect>
@@ -1463,10 +1463,10 @@
 <rect width="-0.06" height="-0.07" x="694.51" y="536.07" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.45" height="-0.55" x="696.45" y="536.07" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-0.45" height="-1.52" x="696.45" y="537.52" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 68.95%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 67.02%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 17.24%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 17.25%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 69.08%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 67.88%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 17.10%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 16.39%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.82%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.73%</text>
 </svg>

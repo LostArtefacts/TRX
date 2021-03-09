@@ -420,7 +420,7 @@ void InitialiseLara()
     Lara.hit_direction = 0;
     Lara.death_count = 0;
     Lara.target = NULL;
-    Lara.spaz_effect = 0;
+    Lara.spaz_effect = NULL;
     Lara.spaz_effect_count = 0;
     Lara.turn_rate = 0;
     Lara.move_angle = 0;
