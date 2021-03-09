@@ -815,7 +815,7 @@ WriteSGARM                      ----------  ----------  -
 WriteSGLOT                      ----------  ----------  -
 WriteSGLara                     ----------  ----------  -
 LoadSaveGameInfo                ----------  ----------  -
-InitialiseStartInfo             0x004344D0  0x00000042  *
+InitialiseStartInfo             0x004344D0  0x00000042  +
 ModifyStartInfo                 0x00434520  0x000000BF  *
 CreateStartInfo                 0x004345E0  0x00000139  *
 CreateSaveGameInfo              0x00434720  0x00000866  *
