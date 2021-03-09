@@ -499,6 +499,7 @@ typedef enum {
     LV_LEVEL10A = 13, // Lost island 1: Natla's Mines
     LV_LEVEL10B = 14, // Lost island 2: Atlantis
     LV_LEVEL10C = 15, // Lost island 3: The great pyramid
+    LV_LASTLEVEL = LV_LEVEL10C,
     LV_CUTSCENE1 = 16,
     LV_CUTSCENE2 = 17,
     LV_CUTSCENE3 = 18,

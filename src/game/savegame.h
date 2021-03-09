@@ -5,12 +5,12 @@
 
 // clang-format off
 #define CreateStartInfo         ((void          (*)(int32_t level_num))0x004345E0)
-#define ModifyStartInfo         ((void          (*)(int32_t level_num))0x00434520)
 #define CreateSaveGameInfo      ((void          (*)())0x00434720)
 #define ExtractSaveGameInfo     ((void          (*)())0x00434F90)
 // clang-format on
 
 void InitialiseStartInfo();
+void ModifyStartInfo(int32_t level_num);
 
 void T1MInjectGameSaveGame();
 

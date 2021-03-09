@@ -17,8 +17,9 @@ int32_t StartDemo()
 
     int16_t level_num = DemoLevel;
     do {
-        if (++level_num > 15) {
-            level_num = 1;
+        level_num++;
+        if (level_num > LV_LASTLEVEL) {
+            level_num = LV_FIRSTLEVEL;
         }
     } while (!DemoLevels[level_num]);
     DemoLevel = level_num;
