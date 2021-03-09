@@ -41,10 +41,27 @@ static REQUEST_INFO NewGameRequester = {
     200, // y
     0, // z
     "Select Mode", // heading_text
-    (char *)NewGameStrings, // item_texts
+    &NewGameStrings[0][0], // item_texts
     20, // item_text_len
 };
 #endif
+
+static char LoadGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
+REQUEST_INFO LoadGameRequester = {
+    1,
+    0,
+    5,
+    0,
+    0,
+    272,
+    TEXT_HEIGHT + 7,
+    0,
+    -32,
+    0,
+    "Select Level",
+    &LoadGameStrings[0][0],
+    MAX_LEVEL_NAME_LENGTH,
+};
 
 // original name: do_inventory_options
 void DoInventoryOptions(INVENTORY_ITEM *inv_item)

@@ -178,7 +178,6 @@
 #define WaterPalette            ARRAY_(0x0045E33D, uint8_t, [256 * 3])
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define NumberCameras           VAR_U_(0x0045A314, int32_t)
-#define LoadGameRequester       VAR_U_(0x00456020, REQUEST_INFO)
 #define SavedGamesCount         VAR_U_(0x0045F1B4, int32_t)
 #define SaveCounter             VAR_U_(0x0045A018, int32_t)
 #define SaveSlotFlags           ARRAY_(0x00453C50, int16_t, [MAX_SAVE_SLOTS])
@@ -272,6 +271,8 @@ extern int32_t AnimTextureRangeCount;
 extern int32_t SpriteInfoCount;
 extern int32_t SpriteCount;
 extern int32_t OverlapCount;
+
+extern REQUEST_INFO LoadGameRequester;
 
 #ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;

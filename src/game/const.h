@@ -10,6 +10,7 @@
 
 #define MAX_REQLINES 16
 #define MAX_SAVE_SLOTS 16
+#define MAX_LEVEL_NAME_LENGTH 48
 #define NUM_SLOTS 8
 #define MAX_ROOMS 1024
 #define MAX_ROOMS_TO_DRAW 100
