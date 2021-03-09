@@ -13,7 +13,8 @@
 #define PASSPORT_2FRONT IN_LEFT
 #define PASSPORT_2BACK IN_RIGHT
 
-static TEXTSTRING *PassportText1;
+static TEXTSTRING *PassportText;
+static TEXTSTRING *DetailText[5];
 static int32_t PassportMode;
 
 #ifdef T1M_FEAT_GAMEPLAY
@@ -139,10 +140,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             if (!SavedGamesCount || InventoryMode == INV_SAVE_MODE) {
                 InputDB = PASSPORT_2BACK;
             } else {
-                if (!PassportText1) {
-                    PassportText1 = T_Print(0, -16, 0, "Load Game");
-                    T_BottomAlign(PassportText1, 1);
-                    T_CentreH(PassportText1, 1);
+                if (!PassportText) {
+                    PassportText = T_Print(0, -16, 0, "Load Game");
+                    T_BottomAlign(PassportText, 1);
+                    T_CentreH(PassportText, 1);
                 }
                 if (CHK_ANY(InputDB, IN_SELECT)
                     || InventoryMode == INV_LOAD_MODE) {
@@ -200,14 +201,14 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = inv_item->anim_direction == -1 ? PASSPORT_2FRONT
                                                          : PASSPORT_2BACK;
             }
-            if (!PassportText1) {
+            if (!PassportText) {
                 if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
-                    PassportText1 = T_Print(0, -16, 0, "New Game");
+                    PassportText = T_Print(0, -16, 0, "New Game");
                 } else {
-                    PassportText1 = T_Print(0, -16, 0, "Save Game");
+                    PassportText = T_Print(0, -16, 0, "Save Game");
                 }
-                T_BottomAlign(PassportText1, 1);
-                T_CentreH(PassportText1, 1);
+                T_BottomAlign(PassportText, 1);
+                T_CentreH(PassportText, 1);
             }
             if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
                 if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
@@ -239,14 +240,14 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 2:
-        if (!PassportText1) {
+        if (!PassportText) {
             if (InventoryMode == INV_TITLE_MODE) {
-                PassportText1 = T_Print(0, -16, 0, "Exit Game");
+                PassportText = T_Print(0, -16, 0, "Exit Game");
             } else {
-                PassportText1 = T_Print(0, -16, 0, "Exit to Title");
+                PassportText = T_Print(0, -16, 0, "Exit to Title");
             }
-            T_BottomAlign(PassportText1, 1);
-            T_CentreH(PassportText1, 1);
+            T_BottomAlign(PassportText, 1);
+            T_CentreH(PassportText, 1);
         }
         break;
     }
@@ -262,18 +263,18 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (!SavedGamesCount) {
             if (inv_item->goal_frame < inv_item->open_frame + 5) {
                 inv_item->goal_frame = inv_item->open_frame + 5;
-            } else if (PassportText1) {
-                T_RemovePrint(PassportText1);
-                PassportText1 = NULL;
+            } else if (PassportText) {
+                T_RemovePrint(PassportText);
+                PassportText = NULL;
             }
         } else {
             if (inv_item->goal_frame < inv_item->open_frame) {
                 inv_item->goal_frame = inv_item->open_frame;
             } else {
                 SoundEffect(115, NULL, SFX_ALWAYS);
-                if (PassportText1) {
-                    T_RemovePrint(PassportText1);
-                    PassportText1 = NULL;
+                if (PassportText) {
+                    T_RemovePrint(PassportText);
+                    PassportText = NULL;
                 }
             }
         }
@@ -290,9 +291,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->goal_frame = inv_item->frames_total - 6;
         } else {
             SoundEffect(115, NULL, SFX_ALWAYS);
-            if (PassportText1) {
-                T_RemovePrint(PassportText1);
-                PassportText1 = NULL;
+            if (PassportText) {
+                T_RemovePrint(PassportText);
+                PassportText = NULL;
             }
         }
     }
@@ -309,9 +310,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 inv_item->goal_frame = 0;
                 inv_item->anim_direction = -1;
             }
-            if (PassportText1) {
-                T_RemovePrint(PassportText1);
-                PassportText1 = 0;
+            if (PassportText) {
+                T_RemovePrint(PassportText);
+                PassportText = NULL;
             }
         }
     }
@@ -325,9 +326,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
         }
-        if (PassportText1) {
-            T_RemovePrint(PassportText1);
-            PassportText1 = 0;
+        if (PassportText) {
+            T_RemovePrint(PassportText);
+            PassportText = NULL;
         }
     }
 }
@@ -367,6 +368,142 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
         }
         if (InventoryMode != INV_TITLE_MODE) {
             // S_SetBackgroundGamma(gamma);
+        }
+    }
+}
+
+// original name: do_detail_option?
+void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
+{
+    static int32_t current_row = 0;
+    static int32_t max_row = 0;
+    char buf[256];
+
+    if (!DetailText[0]) {
+        sprintf(
+            buf, "Perspective     %s",
+            AppSettings & ASF_PERSPECTIVE ? "On" : "Off");
+        DetailText[0] = T_Print(0, 0, 0, buf);
+        sprintf(
+            buf, "Bilinear        %s",
+            AppSettings & ASF_BILINEAR ? "On" : "Off");
+        DetailText[1] = T_Print(0, 25, 0, buf);
+        if (dword_45B940) {
+            DetailText[2] = T_Print(0, 50, 0, " ");
+            max_row = 1;
+        } else {
+            const char *tmp;
+            switch (GameHiRes) {
+            case 0:
+                tmp = "320x200";
+                break;
+            case 1:
+                tmp = "512x384";
+                break;
+            case 3:
+                tmp = "800x600";
+                break;
+            default:
+                tmp = "640x480";
+                break;
+            }
+            sprintf(buf, "Game Video Mode %s", tmp);
+            DetailText[2] = T_Print(0, 50, 0, buf);
+            max_row = 2;
+        }
+
+        DetailText[3] = T_Print(0, -32, 0, " ");
+        DetailText[4] = T_Print(0, -30, 0, "Select Detail");
+
+        if (current_row > max_row) {
+            current_row = max_row;
+        }
+
+        T_AddBackground(DetailText[4], 276, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[4], 1, 4, 0, 0);
+        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
+        T_AddBackground(DetailText[3], 280, 122, 0, 0, 16, 0, 0, 0);
+        T_AddOutline(DetailText[3], 1, 15, 0, 0);
+
+        for (int i = 0; i < 5; i++) {
+            T_CentreH(DetailText[i], 1);
+            T_CentreV(DetailText[i], 1);
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_FORWARD) && current_row > 0) {
+        T_RemoveOutline(DetailText[current_row]);
+        T_RemoveBackground(DetailText[current_row]);
+        current_row--;
+        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
+        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
+    }
+
+    if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
+        T_RemoveOutline(DetailText[current_row]);
+        T_RemoveBackground(DetailText[current_row]);
+        current_row++;
+        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
+        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
+    }
+
+    int8_t reset = 0;
+
+    if (CHK_ANY(InputDB, IN_RIGHT)) {
+        switch (current_row) {
+        case 0:
+            if (!(AppSettings & ASF_PERSPECTIVE)) {
+                AppSettings |= ASF_PERSPECTIVE;
+                reset = 1;
+            }
+            break;
+        case 1:
+            if (!(AppSettings & ASF_BILINEAR)) {
+                AppSettings |= ASF_BILINEAR;
+                reset = 1;
+            }
+            break;
+        case 2:
+            if (GameHiRes < 3) {
+                GameHiRes++;
+                reset = 1;
+            }
+            break;
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_LEFT)) {
+        switch (current_row) {
+        case 0:
+            if (AppSettings & ASF_PERSPECTIVE) {
+                AppSettings &= ~ASF_PERSPECTIVE;
+                reset = 1;
+            }
+            break;
+        case 1:
+            if (AppSettings & ASF_BILINEAR) {
+                AppSettings &= ~ASF_BILINEAR;
+                reset = 1;
+            }
+            break;
+        case 2:
+            if (GameHiRes > 0) {
+                --GameHiRes;
+                reset = 1;
+            }
+            break;
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+        reset = 1;
+    }
+
+    if (reset) {
+        for (int i = 0; i < 5; i++) {
+            T_RemovePrint(DetailText[i]);
+            DetailText[i] = NULL;
         }
     }
 }
@@ -538,5 +675,6 @@ void T1MInjectGameOption()
 {
     INJECT(0x0042D770, DoInventoryOptions);
     INJECT(0x0042D9C0, DoPassportOption);
+    INJECT(0x0042DE90, DoDetailOptionHW);
     INJECT(0x0042F230, S_ShowControls);
 }
