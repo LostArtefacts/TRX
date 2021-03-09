@@ -578,6 +578,14 @@ typedef enum {
 } TEXTSTRING_FLAG;
 
 typedef enum {
+    D_TRANS1 = 1,
+    D_TRANS2 = 2,
+    D_TRANS3 = 3,
+    D_TRANS4 = 4,
+    D_NEXT = 1 << 3,
+} D_flags;
+
+typedef enum {
     ASF_PERSPECTIVE = 1 << 0,
     ASF_BILINEAR = 1 << 1,
     ASF_FPS = 1 << 2,
@@ -1400,7 +1408,7 @@ typedef struct {
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
-    /* 0014 */ char *item_heading;
+    /* 0014 */ char *heading_text;
     /* 0018 */ char *item_texts;
     /* 001C */ int16_t item_text_len;
     /* 001E */ TEXTSTRING *heading;

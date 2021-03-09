@@ -738,8 +738,8 @@ S_ChangeCtrlText                ----------  ----------  +
 S_RemoveCtrlText                ----------  ----------  +
 S_RemoveCtrl                    ----------  ----------  +
 InitRequester                   ----------  ----------  +
-RemoveRequester                 ----------  ----------  -
-DisplayRequester                0x0042F6F0  0x0000056B  *
+RemoveRequester                 ----------  ----------  +
+DisplayRequester                0x0042F6F0  0x0000056B  +
 
 # shell/output.cpp
 S_InitialisePolyList            0x0042FC60  0x00000005  *

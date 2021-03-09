@@ -40,7 +40,7 @@ static REQUEST_INFO NewGameRequester = {
     0, // x
     200, // y
     0, // z
-    "Select Mode", // item_heading
+    "Select Mode", // heading_text
     (char *)NewGameStrings, // item_texts
     20, // item_text_len
 };
@@ -1061,6 +1061,177 @@ void InitRequester(REQUEST_INFO *req)
     }
 }
 
+// original name: Remove_Requester
+void RemoveRequester(REQUEST_INFO *req)
+{
+    T_RemovePrint(req->heading);
+    req->heading = NULL;
+    T_RemovePrint(req->background);
+    req->background = NULL;
+    T_RemovePrint(req->moreup);
+    req->moreup = NULL;
+    T_RemovePrint(req->moredown);
+    req->moredown = NULL;
+    for (int i = 0; i < MAX_REQLINES; i++) {
+        T_RemovePrint(req->texts[i]);
+        req->texts[i] = NULL;
+    }
+}
+
+// original name: Display_Requester
+int32_t DisplayRequester(REQUEST_INFO *req)
+{
+    switch (HiRes) {
+    case 0:
+        req->y = -20;
+        req->vis_lines = 5;
+        break;
+    case 1:
+        req->y = -60;
+        req->vis_lines = 8;
+        break;
+    case 3:
+        req->y = -120;
+        req->vis_lines = 12;
+        break;
+    default:
+        req->y = -80;
+        req->vis_lines = 10;
+        break;
+    }
+
+    int32_t lines_height = req->vis_lines * req->line_height + 10;
+    int32_t line_one_off = req->y - lines_height;
+    int32_t line_qty = req->vis_lines;
+    if (req->items < req->vis_lines) {
+        line_qty = req->items;
+    }
+
+    if (!req->heading) {
+        req->heading = T_Print(
+            req->x, line_one_off - req->line_height - 10, req->z,
+            req->heading_text);
+        T_CentreH(req->heading, 1);
+        T_BottomAlign(req->heading, 1);
+        T_AddBackground(
+            req->heading, req->pix_width - 4, 0, 0, 0, 8, IC_BLACK,
+            ReqMainGour1, D_TRANS2);
+        T_AddOutline(req->heading, 1, IC_ORANGE, ReqMainGour2, 0);
+    }
+
+    if (!req->background) {
+        req->background =
+            T_Print(req->x, line_one_off - req->line_height - 12, 0, " ");
+        T_CentreH(req->background, 1);
+        T_BottomAlign(req->background, 1);
+        T_AddBackground(
+            req->background, req->pix_width,
+            req->line_height + lines_height + 12, 0, 0, 48, IC_BLACK,
+            ReqBgndGour1, D_TRANS1);
+        T_AddOutline(req->background, 1, IC_BLUE, ReqBgndGour2, 0);
+    }
+
+    if (req->line_offset) {
+        if (!req->moreup) {
+            req->moreup =
+                T_Print(req->x, line_one_off - req->line_height, 0, " ");
+            T_CentreH(req->moreup, 1);
+            T_BottomAlign(req->moreup, 1);
+            T_AddBackground(
+                req->moreup, 16, 6, 0, 8, 8, IC_BLACK, ReqBgndMoreUp, D_TRANS1);
+        }
+    } else {
+        T_RemovePrint(req->moreup);
+        req->moreup = NULL;
+    }
+
+    if (req->items > req->vis_lines + req->line_offset) {
+        if (!req->moredown) {
+            req->moredown = T_Print(req->x, req->y - 8, 0, " ");
+            T_CentreH(req->moredown, 1);
+            T_BottomAlign(req->moredown, 1);
+            T_AddBackground(
+                req->moredown, 16, 6, 0, 0, 8, IC_BLACK, ReqBgndMoreDown,
+                D_TRANS1);
+        }
+    } else {
+        T_RemovePrint(req->moredown);
+        req->moredown = NULL;
+    }
+
+    for (int i = 0; i < line_qty; i++) {
+        if (!req->texts[i]) {
+            req->texts[i] = T_Print(
+                0, line_one_off + req->line_height * i, 0,
+                &req->item_texts[req->item_text_len * (req->line_offset + i)]);
+            T_CentreH(req->texts[i], 1);
+            T_BottomAlign(req->texts[i], 1);
+        }
+        if (req->line_offset + i == req->requested) {
+            T_AddBackground(
+                req->texts[i], req->pix_width - 12, 0, 0, 0, 16, IC_BLACK,
+                ReqUnselGour1, D_TRANS1);
+            T_AddOutline(req->texts[i], 1, IC_ORANGE, ReqUnselGour2, 0);
+        } else {
+            T_RemoveBackground(req->texts[i]);
+            T_RemoveOutline(req->texts[i]);
+        }
+    }
+
+    if (req->line_offset != req->line_old_offset) {
+        for (int i = 0; i < line_qty; i++) {
+            if (req->texts[i]) {
+                T_ChangeText(
+                    req->texts[i],
+                    &req->item_texts
+                         [req->item_text_len * (req->line_offset + i)]);
+            }
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_BACK)) {
+        if (req->requested < req->items - 1) {
+            req->requested++;
+        }
+        req->line_old_offset = req->line_offset;
+        if (req->requested > req->line_offset + req->vis_lines - 1) {
+            req->line_offset++;
+            return 0;
+        }
+        return 0;
+    }
+
+    if (CHK_ANY(InputDB, IN_FORWARD)) {
+        if (req->requested) {
+            req->requested--;
+        }
+        req->line_old_offset = req->line_offset;
+        if (req->requested < req->line_offset) {
+            req->line_offset--;
+            return 0;
+        }
+        return 0;
+    }
+
+    if (CHK_ANY(InputDB, IN_SELECT)) {
+        if (!strncmp(
+                req->texts[req->requested - req->line_offset]->string,
+                "- EMPTY SLOT", 12)
+            && !strcmp(PassportText->string, "Load Game")) {
+            Input = 0;
+            return 0;
+        } else {
+            RemoveRequester(req);
+            return req->requested + 1;
+        }
+    } else if (InputDB & IN_DESELECT) {
+        RemoveRequester(req);
+        return -1;
+    }
+
+    return 0;
+}
+
 void T1MInjectGameOption()
 {
     INJECT(0x0042D770, DoInventoryOptions);
@@ -1069,4 +1240,5 @@ void T1MInjectGameOption()
     INJECT(0x0042E2D0, DoDetailOption);
     INJECT(0x0042E5C0, DoSoundOption);
     INJECT(0x0042F230, S_ShowControls);
+    INJECT(0x0042F6F0, DisplayRequester);
 }
