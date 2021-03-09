@@ -13,12 +13,23 @@ static int32_t medipack_cooldown = 0;
 
 int16_t KeyGet()
 {
-    for (int16_t key = 0; key < 256; key++) {
-        if (KeyData->keymap[key]) {
-            return key;
+    if (KeyData) {
+        for (int16_t key = 0; key < 256; key++) {
+            if (KeyData->keymap[key]) {
+                return key;
+            }
         }
     }
     return -1;
+}
+
+void KeyClearBuffer()
+{
+    if (KeyData) {
+        KeyData->bufchars = 0;
+        KeyData->bufout = 0;
+        KeyData->bufin = 0;
+    }
 }
 
 void S_UpdateInput()
@@ -191,4 +202,5 @@ void S_UpdateInput()
 void T1MInjectSpecificInput()
 {
     INJECT(0x0041E550, S_UpdateInput);
+    INJECT(0x00437BD0, KeyClearBuffer);
 }

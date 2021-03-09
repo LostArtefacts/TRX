@@ -848,7 +848,7 @@ WinVidSpinMessageLoop           0x00437AD0  0x00000029  *
 WinInReadJoystick               0x00437B00  0x00000070  *
 OnKeyPress                      0x00437B70  0x00000045  -
 KeyGet                          0x00437BC0  0x00000003  +
-KeyClearBuffer                  0x00437BD0  0x00000029  *
+KeyClearBuffer                  0x00437BD0  0x00000029  +
 WinSndLoadSamples               0x00437C00  0x000000A5  -
 SoundLoadSample                 0x00437CB0  0x0000014B  -
 SoundInit                       0x00437E00  0x0000000D  *
