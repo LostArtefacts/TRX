@@ -43,7 +43,7 @@ clean:
 
 docker_build:
 	docker build -t tomb1main .
-	docker run -v $(CWD)/.git:/app/.git -v $(CWD)/build:/app/build tomb1main
+	docker run --rm -v $(CWD)/.git:/app/.git -v $(CWD)/build:/app/build tomb1main
 
 lint:
 	clang-format-10 -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)

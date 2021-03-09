@@ -8,6 +8,7 @@ RUN mkdir /app
 WORKDIR /app
 ADD .git .git
 ADD src src
+ADD test test
 ADD Makefile Makefile
 
 CMD ["make", "build"]
