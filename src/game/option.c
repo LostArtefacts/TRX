@@ -11,6 +11,8 @@
 #include "util.h"
 #include <dinput.h>
 
+#define BOX_PADDING 10
+#define BOX_BORDER 1
 #define GAMMA_MODIFIER 8
 #define MIN_GAMMA_LEVEL -127
 #define MAX_GAMMA_LEVEL 127
@@ -38,8 +40,9 @@ static REQUEST_INFO NewGameRequester = {
     162, // pix_width
     TEXT_HEIGHT + 7, // line_height
     0, // x
-    200, // y
+    -30, // y
     0, // z
+    RIF_FIXED_HEIGHT,
     "Select Mode", // heading_text
     &NewGameStrings[0][0], // item_texts
     20, // item_text_len
@@ -57,6 +60,7 @@ REQUEST_INFO LoadGameRequester = {
     TEXT_HEIGHT + 7,
     0,
     -32,
+    0,
     0,
     "Select Level",
     &LoadGameStrings[0][0],
@@ -1098,27 +1102,40 @@ void RemoveRequester(REQUEST_INFO *req)
 // original name: Display_Requester
 int32_t DisplayRequester(REQUEST_INFO *req)
 {
-    switch (HiRes) {
-    case 0:
-        req->y = -20;
-        req->vis_lines = 5;
-        break;
-    case 1:
-        req->y = -60;
-        req->vis_lines = 8;
-        break;
-    case 3:
-        req->y = -120;
-        req->vis_lines = 12;
-        break;
-    default:
-        req->y = -80;
-        req->vis_lines = 10;
-        break;
+    int32_t edge_y;
+
+    // NOTE: RIF_FIXED_HEIGHT is missing in original game
+    if (req->flags & RIF_FIXED_HEIGHT) {
+        edge_y = req->y * GetRenderHeightDownscaled() / 100;
+    } else {
+        switch (HiRes) {
+        case 0:
+            req->y = -20;
+            req->vis_lines = 5;
+            break;
+        case 1:
+            req->y = -60;
+            req->vis_lines = 8;
+            break;
+        case 3:
+            req->y = -120;
+            req->vis_lines = 12;
+            break;
+        default:
+            req->y = -80;
+            req->vis_lines = 10;
+            break;
+        }
+        edge_y = req->y;
     }
 
-    int32_t lines_height = req->vis_lines * req->line_height + 10;
-    int32_t line_one_off = req->y - lines_height;
+    int32_t lines_height = req->vis_lines * req->line_height;
+    int32_t box_width = req->pix_width;
+    int32_t box_height =
+        req->line_height + lines_height + BOX_PADDING * 2 + BOX_BORDER * 2;
+
+    int32_t line_one_off = edge_y - lines_height - BOX_PADDING;
+    int32_t box_y = line_one_off - req->line_height - BOX_PADDING - BOX_BORDER;
     int32_t line_qty = req->vis_lines;
     if (req->items < req->vis_lines) {
         line_qty = req->items;
@@ -1126,7 +1143,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
     if (!req->heading) {
         req->heading = T_Print(
-            req->x, line_one_off - req->line_height - 10, req->z,
+            req->x, line_one_off - req->line_height - BOX_PADDING, req->z,
             req->heading_text);
         T_CentreH(req->heading, 1);
         T_BottomAlign(req->heading, 1);
@@ -1137,13 +1154,11 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (!req->background) {
-        req->background =
-            T_Print(req->x, line_one_off - req->line_height - 12, 0, " ");
+        req->background = T_Print(req->x, box_y, 0, " ");
         T_CentreH(req->background, 1);
         T_BottomAlign(req->background, 1);
         T_AddBackground(
-            req->background, req->pix_width,
-            req->line_height + lines_height + 12, 0, 0, 48, IC_BLACK,
+            req->background, box_width, box_height, 0, 0, 48, IC_BLACK,
             ReqBgndGour1, D_TRANS1);
         T_AddOutline(req->background, 1, IC_BLUE, ReqBgndGour2, 0);
     }
@@ -1171,10 +1186,10 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     if (req->items > req->vis_lines + req->line_offset) {
         if (!req->moredown) {
 #if T1M_FEAT_UI
-            req->moredown = T_Print(req->x, req->y - 12, 0, "]");
+            req->moredown = T_Print(req->x, edge_y - 12, 0, "]");
             T_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
 #else
-            req->moredown = T_Print(req->x, req->y - 8, 0, " ");
+            req->moredown = T_Print(req->x, edge_y - 8, 0, " ");
 #endif
             T_CentreH(req->moredown, 1);
             T_BottomAlign(req->moredown, 1);
@@ -1197,8 +1212,8 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         }
         if (req->line_offset + i == req->requested) {
             T_AddBackground(
-                req->texts[i], req->pix_width - 12, 0, 0, 0, 16, IC_BLACK,
-                ReqUnselGour1, D_TRANS1);
+                req->texts[i], req->pix_width - BOX_PADDING - 2 * BOX_BORDER, 0,
+                0, 0, 16, IC_BLACK, ReqUnselGour1, D_TRANS1);
             T_AddOutline(req->texts[i], 1, IC_ORANGE, ReqUnselGour2, 0);
         } else {
             T_RemoveBackground(req->texts[i]);
@@ -1242,6 +1257,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (CHK_ANY(InputDB, IN_SELECT)) {
+        // TODO: refactor me
         if (!strncmp(
                 req->texts[req->requested - req->line_offset]->string,
                 "- EMPTY SLOT", 12)

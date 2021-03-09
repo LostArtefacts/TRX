@@ -779,6 +779,11 @@ typedef enum {
     TRAP_FINISHED = 3,
 } TRAP_ANIM;
 
+// NOTE: missing in original code
+typedef enum {
+    RIF_FIXED_HEIGHT = 1 << 0,
+} REQUEST_INFO_FLAGS;
+
 #pragma pack(push, 1)
 
 typedef struct {
@@ -1408,16 +1413,17 @@ typedef struct {
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
-    /* 0014 */ char *heading_text;
-    /* 0018 */ char *item_texts;
-    /* 001C */ int16_t item_text_len;
-    /* 001E */ TEXTSTRING *heading;
-    /* 0022 */ TEXTSTRING *background;
-    /* 0026 */ TEXTSTRING *moreup;
-    /* 002A */ TEXTSTRING *moredown;
-    /* 002E */ TEXTSTRING *texts[MAX_REQLINES];
-    /* 006E */ int16_t flags[MAX_REQLINES];
-    /* 008E end */
+    /* 0014 */ uint16_t flags; // NOTE: T1M-specific
+    /* 0016 */ char *heading_text;
+    /* 0020 */ char *item_texts;
+    /* 001E */ int16_t item_text_len;
+    /* 0020 */ TEXTSTRING *heading;
+    /* 0024 */ TEXTSTRING *background;
+    /* 0028 */ TEXTSTRING *moreup;
+    /* 002C */ TEXTSTRING *moredown;
+    /* 0030 */ TEXTSTRING *texts[MAX_REQLINES];
+    /* 0070 */ uint16_t item_flags[MAX_REQLINES]; // NOTE: T1M-specific
+    /* 0090 end */
 } REQUEST_INFO;
 
 typedef struct {
