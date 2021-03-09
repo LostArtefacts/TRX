@@ -1150,8 +1150,14 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
     if (req->line_offset) {
         if (!req->moreup) {
+#if T1M_FEAT_UI
+            req->moreup =
+                T_Print(req->x, line_one_off - req->line_height + 2, 0, "[");
+            T_SetScale(req->moreup, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
+#else
             req->moreup =
                 T_Print(req->x, line_one_off - req->line_height, 0, " ");
+#endif
             T_CentreH(req->moreup, 1);
             T_BottomAlign(req->moreup, 1);
             T_AddBackground(
@@ -1164,7 +1170,12 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
     if (req->items > req->vis_lines + req->line_offset) {
         if (!req->moredown) {
+#if T1M_FEAT_UI
+            req->moredown = T_Print(req->x, req->y - 12, 0, "]");
+            T_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
+#else
             req->moredown = T_Print(req->x, req->y - 8, 0, " ");
+#endif
             T_CentreH(req->moredown, 1);
             T_BottomAlign(req->moredown, 1);
             T_AddBackground(
