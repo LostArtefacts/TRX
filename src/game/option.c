@@ -807,7 +807,11 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
+#ifdef T1M_FEAT_INPUT
+        if (!CHK_ANY(Input, IN_SELECT)) {
+#else
         if (!CHK_ANY(InputDB, IN_SELECT)) {
+#endif
             SelectKey = 2;
         }
         KeyClearBuffer();
