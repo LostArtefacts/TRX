@@ -194,11 +194,12 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             int32_t select = DisplayRequester(&NewGameRequester);
             if (select) {
                 if (select > 0) {
-                    PassportMode = 0;
                     InventoryExtraData[1] = select - 1;
-                } else {
-                    PassportMode = 0;
+                } else if (InventoryMode != INV_GAME_MODE) {
+                    Input = 0;
+                    InputDB = 0;
                 }
+                PassportMode = 0;
             } else {
                 Input = 0;
                 InputDB = 0;
