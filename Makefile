@@ -19,6 +19,8 @@ O_FILES = $(patsubst src/%.c, build/src/%.o, $(C_FILES))
 TEST_C_FILES = $(shell find test/ -type f -name '*.c')
 TEST_H_FILES = $(shell find test/ -type f -name '*.h')
 TEST_O_FILES = $(patsubst test/%.c, build/test/%.o, $(TEST_C_FILES))
+HOST_USER_UID = $(shell id -u)
+HOST_USER_GID = $(shell id -g)
 
 build: $(O_FILES) version
 	$(CC) $(CFLAGS) $(O_FILES) build/version.res $(LDFLAGS) -static -shared -o build/Tomb1Main.dll
@@ -43,7 +45,11 @@ clean:
 
 docker_build:
 	docker build -t tomb1main .
-	docker run --rm -v $(CWD)/.git:/app/.git -v $(CWD)/build:/app/build tomb1main
+	docker run --rm \
+		--user $(HOST_USER_UID):$(HOST_USER_GID) \
+		-v $(CWD)/.git:/app/.git \
+		-v $(CWD)/build:/app/build \
+		tomb1main
 
 lint:
 	clang-format-10 -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)
