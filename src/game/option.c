@@ -4,6 +4,8 @@
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/output.h"
+#include "specific/shed.h"
+#include "specific/sndpc.h"
 #include "config.h"
 #include "util.h"
 
@@ -14,7 +16,8 @@
 #define PASSPORT_2BACK IN_RIGHT
 
 static TEXTSTRING *PassportText;
-static TEXTSTRING *DetailText[5];
+static TEXTSTRING *DetailText[5] = { NULL, NULL, NULL, NULL, NULL };
+static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
 static int32_t PassportMode;
 
 #ifdef T1M_FEAT_GAMEPLAY
@@ -565,6 +568,116 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 }
 
+// original name: do_sound_option
+void DoSoundOption(INVENTORY_ITEM *inv_item)
+{
+    char buf[20];
+
+    if (!SoundText[0]) {
+        if (OptionMusicVolume > 10) {
+            OptionMusicVolume = 10;
+        }
+        sprintf(buf, "| %2d", OptionMusicVolume);
+        SoundText[0] = T_Print(0, 0, 0, buf);
+
+        if (OptionSoundFXVolume > 10) {
+            OptionSoundFXVolume = 10;
+        }
+        sprintf(buf, "} %2d", OptionSoundFXVolume);
+        SoundText[1] = T_Print(0, 25, 0, buf);
+
+        SoundText[2] = T_Print(0, -32, 0, " ");
+        SoundText[3] = T_Print(0, -30, 0, "Set Volumes");
+
+        T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(SoundText[0], 1, 4, 0, 0);
+        T_AddBackground(SoundText[2], 140, 85, 0, 0, 48, 0, 0, 0);
+        T_AddOutline(SoundText[2], 1, 15, 0, 0);
+        T_AddBackground(SoundText[3], 136, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(SoundText[3], 1, 15, 0, 0);
+
+        for (int i = 0; i < 4; i++) {
+            T_CentreH(SoundText[i], 1);
+            T_CentreV(SoundText[i], 1);
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_FORWARD) && Item_Data > 0) {
+        T_RemoveOutline(SoundText[Item_Data]);
+        T_RemoveBackground(SoundText[Item_Data]);
+        T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(SoundText[Item_Data], 1, 4, 0, 0);
+    }
+
+    if (CHK_ANY(InputDB, IN_BACK) && Item_Data < 1) {
+        T_RemoveOutline(SoundText[Item_Data]);
+        T_RemoveBackground(SoundText[Item_Data]);
+        T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(SoundText[Item_Data], 1, 4, 0, 0);
+    }
+
+    switch (Item_Data) {
+    case 0:
+        if (CHK_ANY(Input, IN_LEFT) && OptionMusicVolume > 0) {
+            OptionMusicVolume--;
+            IDelay = 1;
+            IDCount = 10;
+            sprintf(buf, "| %2d", OptionMusicVolume);
+            T_ChangeText(SoundText[0], buf);
+        } else if (CHK_ANY(Input, IN_RIGHT) && OptionMusicVolume < 10) {
+            OptionMusicVolume++;
+            IDelay = 1;
+            IDCount = 10;
+            sprintf(buf, "| %2d", OptionMusicVolume);
+            T_ChangeText(SoundText[0], buf);
+        }
+
+        if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
+            if (OptionMusicVolume) {
+                S_CDVolume(25 * OptionMusicVolume + 5);
+            } else {
+                S_CDVolume(0);
+            }
+            SoundEffect(115, NULL, SFX_ALWAYS);
+        }
+        break;
+
+    case 1:
+        if (CHK_ANY(Input, IN_LEFT) && OptionSoundFXVolume > 0) {
+            OptionSoundFXVolume--;
+            IDelay = 1;
+            IDCount = 10;
+            sprintf(buf, "} %2d", OptionSoundFXVolume);
+            T_ChangeText(SoundText[1], buf);
+        } else if (CHK_ANY(Input, IN_RIGHT) && OptionSoundFXVolume < 10) {
+            OptionSoundFXVolume++;
+            IDelay = 1;
+            IDCount = 10;
+            sprintf(buf, "} %2d", OptionSoundFXVolume);
+            T_ChangeText(SoundText[1], buf);
+        }
+
+        if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
+            if (OptionSoundFXVolume) {
+                adjust_master_volume(6 * OptionSoundFXVolume + 3);
+            } else {
+                adjust_master_volume(0);
+            }
+            SoundEffect(115, NULL, SFX_ALWAYS);
+        }
+        break;
+    }
+
+    // NOTE: removed dead code (unused INVENTORY_SPRITE* member assignments)
+
+    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+        for (int i = 0; i < 4; i++) {
+            T_RemovePrint(SoundText[i]);
+            SoundText[i] = NULL;
+        }
+    }
+}
+
 // original name: do_compass_option
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
@@ -734,5 +847,6 @@ void T1MInjectGameOption()
     INJECT(0x0042D9C0, DoPassportOption);
     INJECT(0x0042DE90, DoDetailOptionHW);
     INJECT(0x0042E2D0, DoDetailOption);
+    INJECT(0x0042E5C0, DoSoundOption);
     INJECT(0x0042F230, S_ShowControls);
 }
