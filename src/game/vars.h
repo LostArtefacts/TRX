@@ -113,6 +113,7 @@
 #define KeyChange               VAR_U_(0x0045A234, int32_t)
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
 #define AppSettings             VAR_U_(0x0045A240, uint32_t)
+#define Quality                 VAR_I_(0x00453030, int32_t, 0x3000000)
 #define JoyXPos                 VAR_U_(0x0045B958, int32_t)
 #define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
 #define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)

@@ -727,7 +727,7 @@ DoInventoryOptions              0x0042D770  0x00000180  +
 DoPassportOption                0x0042D9C0  0x000004D0  +
 DoGammaOption                   ----------  ----------  +
 DoDetailOptionHW                0x0042DE90  0x00000435  +
-DoDetailOption                  0x0042E2D0  0x000002E8  -
+DoDetailOption                  0x0042E2D0  0x000002E8  +
 DoSoundOption                   0x0042E5C0  0x000004F2  -
 DoCompassOption                 ----------  ----------  +
 FlashConflicts                  ----------  ----------  -

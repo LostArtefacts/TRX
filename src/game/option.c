@@ -508,6 +508,63 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
     }
 }
 
+void DoDetailOption(INVENTORY_ITEM *inv_item)
+{
+    if (IsHardwareRenderer) {
+        DoDetailOptionHW(inv_item);
+        return;
+    }
+
+    if (!DetailText[0]) {
+        DetailText[2] = T_Print(0, 0, 0, "High");
+        DetailText[1] = T_Print(0, 25, 0, "Medium");
+        DetailText[0] = T_Print(0, 50, 0, "Low");
+        DetailText[3] = T_Print(0, -32, 0, " ");
+        DetailText[4] = T_Print(0, -30, 0, "Select Detail");
+        T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[4], 1, 4, 0, 0);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
+        T_AddBackground(DetailText[3], 160, 107, 0, 0, 16, 0, 0, 0);
+        T_AddOutline(DetailText[3], 1, 15, 0, 0);
+        for (int i = 0; i < 5; i++) {
+            T_CentreH(DetailText[i], 1);
+            T_CentreV(DetailText[i], 1);
+        }
+    }
+
+    if (CHK_ANY(InputDB, IN_BACK) && AppSettings > 0) {
+        T_RemoveOutline(DetailText[AppSettings]);
+        T_RemoveBackground(DetailText[AppSettings]);
+        AppSettings--;
+        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
+    }
+
+    if (CHK_ANY(InputDB, IN_FORWARD) && AppSettings < 2) {
+        T_RemoveOutline(DetailText[AppSettings]);
+        T_RemoveBackground(DetailText[AppSettings]);
+        AppSettings++;
+        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
+    }
+
+    if (AppSettings == 0) {
+        Quality = 0;
+    } else if (AppSettings == 1) {
+        Quality = 0x3000000;
+    } else if (AppSettings == 2) {
+        Quality = 0x6000000;
+    }
+
+    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+        for (int i = 0; i < 5; i++) {
+            T_RemovePrint(DetailText[i]);
+            DetailText[0] = NULL;
+        }
+    }
+}
+
 // original name: do_compass_option
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
@@ -676,5 +733,6 @@ void T1MInjectGameOption()
     INJECT(0x0042D770, DoInventoryOptions);
     INJECT(0x0042D9C0, DoPassportOption);
     INJECT(0x0042DE90, DoDetailOptionHW);
+    INJECT(0x0042E2D0, DoDetailOption);
     INJECT(0x0042F230, S_ShowControls);
 }
