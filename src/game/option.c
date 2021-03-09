@@ -3,11 +3,13 @@
 #include "game/option.h"
 #include "game/text.h"
 #include "game/vars.h"
+#include "specific/input.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "config.h"
 #include "util.h"
+#include <dinput.h>
 
 #define GAMMA_MODIFIER 8
 #define MIN_GAMMA_LEVEL -127
@@ -15,10 +17,11 @@
 #define PASSPORT_2FRONT IN_LEFT
 #define PASSPORT_2BACK IN_RIGHT
 
-static TEXTSTRING *PassportText;
+static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailText[5] = { NULL, NULL, NULL, NULL, NULL };
 static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
-static int32_t PassportMode;
+static int32_t PassportMode = 0;
+static int32_t SelectKey = 0;
 
 #ifdef T1M_FEAT_GAMEPLAY
 static char NewGameStrings[][20] = {
@@ -422,12 +425,13 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             current_row = max_row;
         }
 
-        T_AddBackground(DetailText[4], 276, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(DetailText[4], 1, 4, 0, 0);
-        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
-        T_AddBackground(DetailText[3], 280, 122, 0, 0, 16, 0, 0, 0);
-        T_AddOutline(DetailText[3], 1, 15, 0, 0);
+        T_AddBackground(DetailText[4], 276, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(DetailText[3], 280, 122, 0, 0, 16, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[3], 1, IC_BLUE, NULL, 0);
 
         for (int i = 0; i < 5; i++) {
             T_CentreH(DetailText[i], 1);
@@ -439,16 +443,18 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         T_RemoveOutline(DetailText[current_row]);
         T_RemoveBackground(DetailText[current_row]);
         current_row--;
-        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
-        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
         T_RemoveOutline(DetailText[current_row]);
         T_RemoveBackground(DetailText[current_row]);
         current_row++;
-        T_AddOutline(DetailText[current_row], 1, 4, 0, 0);
-        T_AddBackground(DetailText[current_row], 268, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
     }
 
     int8_t reset = 0;
@@ -524,12 +530,13 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         DetailText[0] = T_Print(0, 50, 0, "Low");
         DetailText[3] = T_Print(0, -32, 0, " ");
         DetailText[4] = T_Print(0, -30, 0, "Select Detail");
-        T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(DetailText[4], 1, 4, 0, 0);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
-        T_AddBackground(DetailText[3], 160, 107, 0, 0, 16, 0, 0, 0);
-        T_AddOutline(DetailText[3], 1, 15, 0, 0);
+        T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(DetailText[3], 160, 107, 0, 0, 16, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[3], 1, IC_BLUE, NULL, 0);
         for (int i = 0; i < 5; i++) {
             T_CentreH(DetailText[i], 1);
             T_CentreV(DetailText[i], 1);
@@ -540,16 +547,18 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         T_RemoveOutline(DetailText[AppSettings]);
         T_RemoveBackground(DetailText[AppSettings]);
         AppSettings--;
-        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
     }
 
     if (CHK_ANY(InputDB, IN_FORWARD) && AppSettings < 2) {
         T_RemoveOutline(DetailText[AppSettings]);
         T_RemoveBackground(DetailText[AppSettings]);
         AppSettings++;
-        T_AddOutline(DetailText[AppSettings], 1, 4, 0, 0);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0, 8, 0, 0, 0);
+        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(
+            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
     }
 
     if (AppSettings == 0) {
@@ -589,12 +598,12 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         SoundText[2] = T_Print(0, -32, 0, " ");
         SoundText[3] = T_Print(0, -30, 0, "Set Volumes");
 
-        T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(SoundText[0], 1, 4, 0, 0);
-        T_AddBackground(SoundText[2], 140, 85, 0, 0, 48, 0, 0, 0);
-        T_AddOutline(SoundText[2], 1, 15, 0, 0);
-        T_AddBackground(SoundText[3], 136, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(SoundText[3], 1, 15, 0, 0);
+        T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(SoundText[0], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(SoundText[2], 140, 85, 0, 0, 48, IC_BLACK, NULL, 0);
+        T_AddOutline(SoundText[2], 1, IC_BLUE, NULL, 0);
+        T_AddBackground(SoundText[3], 136, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(SoundText[3], 1, IC_BLUE, NULL, 0);
 
         for (int i = 0; i < 4; i++) {
             T_CentreH(SoundText[i], 1);
@@ -605,15 +614,17 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     if (CHK_ANY(InputDB, IN_FORWARD) && Item_Data > 0) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1, 4, 0, 0);
+        T_AddBackground(
+            SoundText[--Item_Data], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(SoundText[Item_Data], 1, IC_ORANGE, NULL, 0);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && Item_Data < 1) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0, 8, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1, 4, 0, 0);
+        T_AddBackground(
+            SoundText[++Item_Data], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(SoundText[Item_Data], 1, IC_ORANGE, NULL, 0);
     }
 
     switch (Item_Data) {
@@ -687,6 +698,184 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
     }
 }
 
+void FlashConflicts()
+{
+    for (int i = 0; i < 13; i++) {
+        int16_t key = Layout[IConfig][i];
+        T_FlashText(CtrlTextB[i], 0, 0);
+        for (int j = 0; j < 13; j++) {
+            if (i != j && key == Layout[IConfig][j]) {
+                T_FlashText(CtrlTextB[i], 1, 20);
+                break;
+            }
+        }
+    }
+}
+
+void DefaultConflict()
+{
+    for (int i = 0; i < 13; i++) {
+        int16_t key = Layout[0][i];
+        Conflict[i] = 0;
+        for (int j = 0; j < 13; j++) {
+            if (key == Layout[1][j]) {
+                Conflict[i] = 1;
+                break;
+            }
+        }
+    }
+}
+
+// original name: do_control_option
+void DoControlOption(INVENTORY_ITEM *inv_item)
+{
+    int16_t key;
+
+    if (!ControlText[0]) {
+        ControlText[0] =
+            T_Print(0, -50, 0, IConfig ? "User Keys" : "Default Keys");
+        T_CentreH(ControlText[0], 1);
+        T_CentreV(ControlText[0], 1);
+        S_ShowControls();
+
+        KeyChange = -1;
+        T_AddBackground(ControlText[0], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+    }
+
+    switch (SelectKey) {
+    case 0:
+        if (CHK_ANY(InputDB, IN_LEFT | IN_RIGHT)) {
+            if (KeyChange == -1) {
+                IConfig = IConfig ? 0 : 1;
+                S_ChangeCtrlText();
+                FlashConflicts();
+            } else {
+                T_RemoveBackground(CtrlTextA[KeyChange]);
+                if (KeyChange <= 6) {
+                    KeyChange += 7;
+                    if (KeyChange == 13) {
+                        KeyChange = 12;
+                    }
+                } else if (KeyChange == 12) {
+                    KeyChange = 6;
+                } else {
+                    KeyChange -= 7;
+                }
+                T_AddBackground(
+                    CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+            }
+        } else if (
+            CHK_ANY(InputDB, IN_DESELECT)
+            || (CHK_ANY(InputDB, IN_SELECT) && KeyChange == -1)) {
+            S_RemoveCtrl();
+            DefaultConflict();
+            return;
+        }
+
+        if (IConfig) {
+            if (CHK_ANY(InputDB, IN_SELECT)) {
+                SelectKey = 1;
+                T_RemoveBackground(CtrlTextA[KeyChange]);
+                T_AddBackground(
+                    CtrlTextB[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+            } else if (CHK_ANY(InputDB, IN_FORWARD)) {
+                T_RemoveBackground(
+                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange]);
+
+                KeyChange--;
+                if (KeyChange < -1) {
+                    KeyChange = 12;
+                }
+
+                T_AddBackground(
+                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange], 0,
+                    0, 0, 0, 48, IC_BLACK, NULL, 0);
+            } else if (CHK_ANY(InputDB, IN_BACK)) {
+                T_RemoveBackground(
+                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange]);
+
+                KeyChange++;
+                if (KeyChange > 12) {
+                    KeyChange = -1;
+                }
+
+                T_AddBackground(
+                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange], 0,
+                    0, 0, 0, 48, IC_BLACK, NULL, 0);
+            }
+        }
+        break;
+
+    case 1:
+        if (!CHK_ANY(InputDB, IN_SELECT)) {
+            SelectKey = 2;
+        }
+        KeyClearBuffer();
+        break;
+
+    case 2:
+        if (JoyThrottle) {
+            key = 272;
+        } else if (JoyHat) {
+            key = 256;
+        } else if (JoyFire) {
+            key = JoyFire + 256;
+        } else {
+            key = KeyGet();
+        }
+
+        if (key >= 0 && ScanCodeNames[key] && key != DIK_ESCAPE
+            && key != DIK_RETURN && key != DIK_LEFT && key != DIK_RIGHT
+            && key != DIK_UP && key != DIK_DOWN) {
+            Layout[IConfig][KeyChange] = key;
+            T_ChangeText(CtrlTextB[KeyChange], ScanCodeNames[key]);
+            T_RemoveBackground(CtrlTextB[KeyChange]);
+            T_AddBackground(
+                CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+            SelectKey = 3;
+            FlashConflicts();
+        }
+        break;
+
+    case 3:
+        key = Layout[IConfig][KeyChange];
+
+        if (!CHK_ANY(key, IN_OPTION)) {
+            if (!KeyData->keymap[key]) {
+                SelectKey = 0;
+                if (Layout[IConfig][key] == DIK_LCONTROL) {
+                    Layout[IConfig][key] = DIK_RCONTROL;
+                }
+                if (Layout[IConfig][key] == DIK_LSHIFT) {
+                    Layout[IConfig][key] = DIK_RSHIFT;
+                }
+                if (Layout[IConfig][key] == DIK_LMENU) {
+                    Layout[IConfig][key] = DIK_RMENU;
+                }
+                FlashConflicts();
+            }
+        }
+
+        if (key == 256) {
+            if (!JoyHat) {
+                SelectKey = 0;
+            }
+        } else if (key == 272) {
+            if (!JoyThrottle) {
+                SelectKey = 0;
+            }
+        } else {
+            if (JoyFire != key) {
+                SelectKey = 0;
+            }
+        }
+        break;
+    }
+
+    Input = 0;
+    InputDB = 0;
+}
+
 void S_ShowControls()
 {
 #ifdef T1M_FEAT_UI
@@ -743,7 +932,7 @@ void S_ShowControls()
         vpos = 150;
         break;
     }
-    T_AddBackground(ControlText[1], hpos, vpos, 0, 0, 48, 0, 0, 0);
+    T_AddBackground(ControlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
 
     if (!CtrlTextB[0]) {
         int16_t *layout = Layout[IConfig];
@@ -827,6 +1016,33 @@ void S_ShowControls()
             T_CentreV(CtrlTextA[i], 1);
         }
     }
+}
+
+void S_ChangeCtrlText()
+{
+    T_ChangeText(ControlText[0], IConfig ? "User Keys" : "Default Keys");
+    for (int i = 0; i < 13; ++i) {
+        T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
+    }
+}
+
+void S_RemoveCtrlText()
+{
+    for (int i = 0; i < 13; ++i) {
+        T_RemovePrint(CtrlTextA[i]);
+        T_RemovePrint(CtrlTextB[i]);
+        CtrlTextB[i] = NULL;
+        CtrlTextA[i] = NULL;
+    }
+}
+
+void S_RemoveCtrl()
+{
+    T_RemovePrint(ControlText[0]);
+    T_RemovePrint(ControlText[1]);
+    ControlText[0] = NULL;
+    ControlText[1] = NULL;
+    S_RemoveCtrlText();
 }
 
 // original name: Init_Requester

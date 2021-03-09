@@ -4,7 +4,6 @@
 #include "game/types.h"
 
 // clang-format off
-#define DoControlOption     ((void      (*)(INVENTORY_ITEM* inv_item))0x0042EAC0)
 #define DisplayRequester    ((int32_t   (*)(REQUEST_INFO* req))0x0042F6F0)
 // clang-format on
 
@@ -14,8 +13,15 @@ void DoGammaOption(INVENTORY_ITEM *inv_item);
 void DoCompassOption(INVENTORY_ITEM *inv_item);
 void DoDetailOptionHW(INVENTORY_ITEM *inv_item);
 void DoDetailOption(INVENTORY_ITEM *inv_item);
+void FlashConflicts();
+void DefaultConflict();
+void DoControlOption(INVENTORY_ITEM *inv_item);
 void DoSoundOption(INVENTORY_ITEM *inv_item);
 void S_ShowControls();
+void S_ChangeCtrlText();
+void S_RemoveCtrlText();
+void S_RemoveCtrl();
+
 void InitRequester(REQUEST_INFO *req);
 
 void T1MInjectGameOption();

@@ -11,6 +11,16 @@
 static int32_t medipack_cooldown = 0;
 #endif
 
+int16_t KeyGet()
+{
+    for (int16_t key = 0; key < 256; key++) {
+        if (KeyData->keymap[key]) {
+            return key;
+        }
+    }
+    return -1;
+}
+
 void S_UpdateInput()
 {
     int32_t linput = 0;
