@@ -785,6 +785,12 @@ typedef enum {
     RIF_FIXED_HEIGHT = 1 << 0,
 } REQUEST_INFO_FLAGS;
 
+typedef enum {
+    RBS_START = 0,
+    RBS_END = 1,
+    RBS_MOVING = 2,
+} ROLLING_BLOCK_STATE;
+
 #pragma pack(push, 1)
 
 typedef struct {

@@ -806,25 +806,22 @@ RatControl                      0x00433F50  0x000002A8  +
 VoleControl                     0x00434210  0x000002B5  +
 
 # savegame.cpp
-ReadSGPos                       ----------  ----------  -
+ReadSGPos                       ----------  ----------  +
 WriteSGPos                      ----------  ----------  +
-ReadSGARM                       ----------  ----------  -
-ReadSGLOT                       ----------  ----------  -
-ReadSGLara                      ----------  ----------  -
+ReadSGARM                       ----------  ----------  +
+ReadSGLOT                       ----------  ----------  +
+ReadSGLara                      ----------  ----------  +
 WriteSGARM                      ----------  ----------  +
 WriteSGLOT                      ----------  ----------  +
 WriteSGLara                     ----------  ----------  +
-LoadSaveGameInfo                ----------  ----------  -
 InitialiseStartInfo             0x004344D0  0x00000042  +
 ModifyStartInfo                 0x00434520  0x000000BF  +
 CreateStartInfo                 0x004345E0  0x00000139  +
 CreateSaveGameInfo              0x00434720  0x00000866  +
-ExtractSaveGameInfo             0x00434F90  0x00000971  *
+ExtractSaveGameInfo             0x00434F90  0x00000971  +
 ResetSG                         ----------  ----------  +
 WriteSG                         ----------  ----------  +
-ReadSG                          ----------  ----------  -
-ConfirmSave                     ----------  ----------  -
-CompleteSave                    ----------  ----------  -
+ReadSG                          ----------  ----------  +
 
 # ???
 S_DrawSprite                    0x00435910  0x0000025E  -

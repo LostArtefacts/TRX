@@ -14,12 +14,6 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-typedef enum {
-    RBS_START = 0,
-    RBS_END = 1,
-    RBS_MOVING = 2,
-} ROLLING_BLOCK_STATE;
-
 static int16_t MovingBlockBounds[12] = {
     -300,
     +300,

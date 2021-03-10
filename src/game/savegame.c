@@ -1,6 +1,14 @@
+#include "game/control.h"
 #include "game/inv.h"
+#include "game/items.h"
+#include "game/lara.h"
+#include "game/lot.h"
+#include "game/moveblock.h"
+#include "game/pickup.h"
 #include "game/savegame.h"
+#include "game/traps.h"
 #include "game/vars.h"
+#include "game/warrior.h"
 #include "specific/shed.h"
 #include "util.h"
 
@@ -215,6 +223,236 @@ void CreateSaveGameInfo()
     WriteSG(&FlipTimer, sizeof(int32_t));
 }
 
+void ExtractSaveGameInfo()
+{
+    int8_t tmp8;
+    int16_t tmp16;
+    int32_t tmp32;
+
+    InitialiseLaraInventory(LV_CURRENT);
+
+    for (int i = 0; i < SaveGame[0].num_pickup1; i++) {
+        Inv_AddItem(O_PICKUP_ITEM1);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_pickup2; i++) {
+        Inv_AddItem(O_PICKUP_ITEM2);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_puzzle1; i++) {
+        Inv_AddItem(O_PUZZLE_ITEM1);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_puzzle2; i++) {
+        Inv_AddItem(O_PUZZLE_ITEM2);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_puzzle3; i++) {
+        Inv_AddItem(O_PUZZLE_ITEM3);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_puzzle4; i++) {
+        Inv_AddItem(O_PUZZLE_ITEM4);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_key1; i++) {
+        Inv_AddItem(O_KEY_ITEM1);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_key2; i++) {
+        Inv_AddItem(O_KEY_ITEM2);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_key3; i++) {
+        Inv_AddItem(O_KEY_ITEM3);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_key4; i++) {
+        Inv_AddItem(O_KEY_ITEM4);
+    }
+
+    for (int i = 0; i < SaveGame[0].num_leadbar; i++) {
+        Inv_AddItem(O_LEADBAR_ITEM);
+    }
+
+    ResetSG();
+
+    ReadSG(&tmp32, sizeof(int32_t));
+    if (tmp32) {
+        FlipMap();
+    }
+
+    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+        ReadSG(&tmp8, sizeof(int8_t));
+        FlipMapTable[i] = tmp8 << 8;
+    }
+
+    for (int i = 0; i < NumberCameras; i++) {
+        ReadSG(&Camera.fixed[i].flags, sizeof(int16_t));
+    }
+
+    for (int i = 0; i < LevelItemCount; i++) {
+        ITEM_INFO *item = &Items[i];
+        OBJECT_INFO *obj = &Objects[item->object_number];
+
+        if (obj->control == MovableBlockControl) {
+            AlterFloorHeight(item, 1024);
+        }
+        if (obj->control == RollingBlockControl) {
+            AlterFloorHeight(item, 2048);
+        }
+
+        if (obj->save_position) {
+            ReadSG(&item->pos, sizeof(PHD_3DPOS));
+            ReadSG(&tmp16, sizeof(int16_t));
+            ReadSG(&item->speed, sizeof(int16_t));
+            ReadSG(&item->fall_speed, sizeof(int16_t));
+
+            if (item->room_number != tmp16) {
+                ItemNewRoom(i, tmp16);
+            }
+
+            if (obj->shadow_size) {
+                FLOOR_INFO *floor =
+                    GetFloor(item->pos.x, item->pos.y, item->pos.z, &tmp16);
+                item->floor =
+                    GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            }
+        }
+
+        if (obj->save_anim) {
+            ReadSG(&item->current_anim_state, sizeof(int16_t));
+            ReadSG(&item->goal_anim_state, sizeof(int16_t));
+            ReadSG(&item->required_anim_state, sizeof(int16_t));
+            ReadSG(&item->anim_number, sizeof(int16_t));
+            ReadSG(&item->frame_number, sizeof(int16_t));
+        }
+
+        if (obj->save_hitpoints) {
+            ReadSG(&item->hit_points, sizeof(int16_t));
+        }
+
+        if (obj->save_flags) {
+            ReadSG(&item->flags, sizeof(int16_t));
+            ReadSG(&item->timer, sizeof(int16_t));
+
+            if (item->flags & IF_KILLED_ITEM) {
+                KillItem(i);
+                item->status = IS_DEACTIVATED;
+            } else {
+                if ((item->flags & 1) && !item->active) {
+                    AddActiveItem(i);
+                }
+                item->status = (item->flags & 6) >> 1;
+                if (item->flags & 8) {
+                    item->gravity_status = 1;
+                }
+                if (!(item->flags & 16)) {
+                    item->collidable = 0;
+                }
+            }
+
+            if (item->flags & SAVE_CREATURE) {
+                EnableBaddieAI(i, 1);
+                CREATURE_INFO *creature = item->data;
+                if (creature) {
+                    ReadSG(&creature->head_rotation, sizeof(int16_t));
+                    ReadSG(&creature->neck_rotation, sizeof(int16_t));
+                    ReadSG(&creature->maximum_turn, sizeof(int16_t));
+                    ReadSG(&creature->flags, sizeof(int16_t));
+                    ReadSG(&creature->mood, sizeof(int32_t));
+                } else {
+                    SkipSG(4 * 2 + 4);
+                }
+            } else if (obj->intelligent) {
+                item->data = NULL;
+            }
+
+            item->flags &= 0xFF00;
+
+            if (obj->collision == PuzzleHoleCollision
+                && (item->status == IS_DEACTIVATED
+                    || item->status == IS_ACTIVE)) {
+                item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
+            }
+
+            if (obj->control == PodControl && item->status == IS_DEACTIVATED) {
+                item->mesh_bits = 0x1FF;
+                item->collidable = 0;
+            }
+
+            if (obj->collision == PickUpCollision
+                && item->status == IS_DEACTIVATED) {
+                RemoveDrawnItem(i);
+            }
+        }
+
+        if (obj->control == MovableBlockControl
+            && item->status == IS_NOT_ACTIVE) {
+            AlterFloorHeight(item, -1024);
+        }
+
+        if (obj->control == RollingBlockControl
+            && item->current_anim_state != RBS_MOVING) {
+            AlterFloorHeight(item, -2048);
+        }
+
+        if (item->object_number == O_PIERRE && item->hit_points <= 0
+            && (item->flags & IF_ONESHOT)) {
+            if (Inv_RequestItem(O_SCION_ITEM) == 1) {
+                SpawnItem(item, O_MAGNUM_ITEM);
+                SpawnItem(item, O_SCION_ITEM2);
+                SpawnItem(item, O_KEY_ITEM1);
+            }
+            CDFlags[55] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_UZI_ITEM)) {
+                SpawnItem(item, O_UZI_ITEM);
+            }
+        }
+
+        if (item->object_number == O_MERCENARY2 && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
+                SpawnItem(item, O_MAGNUM_ITEM);
+            }
+            CDFlags[52] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
+                SpawnItem(item, O_SHOTGUN_ITEM);
+            }
+            CDFlags[51] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_LARSON && item->hit_points <= 0) {
+            CDFlags[51] |= IF_ONESHOT;
+        }
+    }
+
+    BOX_NODE *node = Lara.LOT.node;
+    ReadSGLara(&Lara);
+    Lara.LOT.node = node;
+    Lara.LOT.target_box = NO_BOX;
+
+    ReadSG(&FlipEffect, sizeof(int32_t));
+    ReadSG(&FlipTimer, sizeof(int32_t));
+}
+
+void ResetSG()
+{
+    SGCount = 0;
+    SGPoint = SaveGame[0].buffer;
+}
+
+void SkipSG(int size)
+{
+    SGPoint += size;
+    SGCount += size; // missing from OG
+}
+
 void WriteSG(void *pointer, int size)
 {
     SGCount += size;
@@ -286,12 +524,6 @@ void WriteSGLara(LARA_INFO *lara)
     WriteSGLOT(&lara->LOT);
 }
 
-void ResetSG()
-{
-    SGCount = 0;
-    SGPoint = SaveGame[0].buffer;
-}
-
 void WriteSGARM(LARA_ARM *arm)
 {
     int32_t frame_base = (size_t)arm->frame_base - (size_t)AnimFrames;
@@ -322,10 +554,102 @@ void WriteSGLOT(LOT_INFO *lot)
     WriteSG(&lot->target, sizeof(PHD_VECTOR));
 }
 
+void ReadSG(void *pointer, int size)
+{
+    SGCount += size;
+    char *data = (char *)pointer;
+    for (int i = 0; i < size; i++)
+        *data++ = *SGPoint++;
+}
+
+void ReadSGLara(LARA_INFO *lara)
+{
+    int32_t tmp32 = 0;
+
+    ReadSG(&lara->item_number, sizeof(int16_t));
+    ReadSG(&lara->gun_status, sizeof(int16_t));
+    ReadSG(&lara->gun_type, sizeof(int16_t));
+    ReadSG(&lara->request_gun_type, sizeof(int16_t));
+    ReadSG(&lara->calc_fall_speed, sizeof(int16_t));
+    ReadSG(&lara->water_status, sizeof(int16_t));
+    ReadSG(&lara->pose_count, sizeof(int16_t));
+    ReadSG(&lara->hit_frame, sizeof(int16_t));
+    ReadSG(&lara->hit_direction, sizeof(int16_t));
+    ReadSG(&lara->air, sizeof(int16_t));
+    ReadSG(&lara->dive_count, sizeof(int16_t));
+    ReadSG(&lara->death_count, sizeof(int16_t));
+    ReadSG(&lara->current_active, sizeof(int16_t));
+    ReadSG(&lara->spaz_effect_count, sizeof(int16_t));
+
+    lara->spaz_effect = NULL;
+    SkipSG(sizeof(FX_INFO *));
+
+    ReadSG(&lara->mesh_effects, sizeof(int32_t));
+    for (int i = 0; i < LM_NUMBER_OF; i++) {
+        ReadSG(&tmp32, sizeof(int32_t));
+        lara->mesh_ptrs[i] = (int16_t *)((size_t)MeshBase + (size_t)tmp32);
+    }
+
+    lara->target = NULL;
+    SkipSG(sizeof(ITEM_INFO *));
+
+    ReadSG(&lara->target_angles[0], sizeof(PHD_ANGLE));
+    ReadSG(&lara->target_angles[1], sizeof(PHD_ANGLE));
+    ReadSG(&lara->turn_rate, sizeof(int16_t));
+    ReadSG(&lara->move_angle, sizeof(int16_t));
+    ReadSG(&lara->head_y_rot, sizeof(int16_t));
+    ReadSG(&lara->head_x_rot, sizeof(int16_t));
+    ReadSG(&lara->head_z_rot, sizeof(int16_t));
+    ReadSG(&lara->torso_y_rot, sizeof(int16_t));
+    ReadSG(&lara->torso_x_rot, sizeof(int16_t));
+    ReadSG(&lara->torso_z_rot, sizeof(int16_t));
+
+    ReadSGARM(&lara->left_arm);
+    ReadSGARM(&lara->right_arm);
+    ReadSG(&lara->pistols, sizeof(AMMO_INFO));
+    ReadSG(&lara->magnums, sizeof(AMMO_INFO));
+    ReadSG(&lara->uzis, sizeof(AMMO_INFO));
+    ReadSG(&lara->shotgun, sizeof(AMMO_INFO));
+    ReadSGLOT(&lara->LOT);
+}
+
+void ReadSGARM(LARA_ARM *arm)
+{
+    int32_t frame_base;
+    ReadSG(&frame_base, sizeof(int32_t));
+    arm->frame_base = (int16_t *)((size_t)AnimFrames + (size_t)frame_base);
+
+    ReadSG(&arm->frame_number, sizeof(int16_t));
+    ReadSG(&arm->lock, sizeof(int16_t));
+    ReadSG(&arm->y_rot, sizeof(PHD_ANGLE));
+    ReadSG(&arm->x_rot, sizeof(PHD_ANGLE));
+    ReadSG(&arm->z_rot, sizeof(PHD_ANGLE));
+    ReadSG(&arm->flash_gun, sizeof(int16_t));
+}
+
+void ReadSGLOT(LOT_INFO *lot)
+{
+    lot->node = NULL;
+    SkipSG(4);
+
+    ReadSG(&lot->head, sizeof(int16_t));
+    ReadSG(&lot->tail, sizeof(int16_t));
+    ReadSG(&lot->search_number, sizeof(uint16_t));
+    ReadSG(&lot->block_mask, sizeof(uint16_t));
+    ReadSG(&lot->step, sizeof(int16_t));
+    ReadSG(&lot->drop, sizeof(int16_t));
+    ReadSG(&lot->fly, sizeof(int16_t));
+    ReadSG(&lot->zone_count, sizeof(int16_t));
+    ReadSG(&lot->target_box, sizeof(int16_t));
+    ReadSG(&lot->required_box, sizeof(int16_t));
+    ReadSG(&lot->target, sizeof(PHD_VECTOR));
+}
+
 void T1MInjectGameSaveGame()
 {
     INJECT(0x004344D0, InitialiseStartInfo);
     INJECT(0x00434520, ModifyStartInfo);
     INJECT(0x004345E0, CreateStartInfo)
     INJECT(0x00434720, CreateSaveGameInfo);
+    INJECT(0x00434F90, ExtractSaveGameInfo);
 }
