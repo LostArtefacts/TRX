@@ -60,13 +60,13 @@ int32_t StartGame(int level_num)
     }
 
     if (LevelComplete) {
-        if (CurrentLevel) {
-            S_FadeInInventory(1);
-            return GF_LEVELCOMPLETE | CurrentLevel;
+        if (CurrentLevel == LV_GYM) {
+            S_FadeToBlack();
+            return GF_EXIT_TO_TITLE;
         }
 
-        S_FadeToBlack();
-        return GF_EXIT_TO_TITLE;
+        S_FadeInInventory(1);
+        return GF_LEVELCOMPLETE | CurrentLevel;
     }
 
     S_FadeToBlack();
@@ -256,13 +256,14 @@ int32_t GetRandomDraw()
 void LevelStats(int32_t level_num)
 {
     static char string[100];
+    static char time_str[100];
     TEXTSTRING *txt;
 
     TempVideoAdjust(HiRes, 1.0);
     T_InitPrint();
 
     // heading
-    sprintf(string, "%s", LevelTitles[level_num]); // TODO: translation
+    sprintf(string, "%s", LevelTitles[level_num]);
     txt = T_Print(0, -50, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -274,15 +275,12 @@ void LevelStats(int32_t level_num)
     seconds %= 60;
     if (hours) {
         sprintf(
-            string, "%s %d:%d%d:%d%d",
-            "TIME TAKEN", // TODO: translation
-            hours, minutes / 10, minutes % 10, seconds / 10, seconds % 10);
+            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+            seconds / 10, seconds % 10);
     } else {
-        sprintf(
-            string, "%s %d:%d%d",
-            "TIME TAKEN", // TODO: translation
-            minutes, seconds / 10, seconds % 10);
+        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
+    sprintf(string, GF_GameStringTable[GSI_STATS_TIME_TAKEN_FMT], time_str);
     txt = T_Print(0, 70, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -298,10 +296,7 @@ void LevelStats(int32_t level_num)
         --secrets_total;
     } while (secrets_total);
     sprintf(
-        string, "%s %d %s %d",
-        "SECRETS", // TODO: translation
-        secrets_taken,
-        "OF", // TODO: translation
+        string, GF_GameStringTable[GSI_STATS_SECRETS_FMT], secrets_taken,
         SecretTotals[level_num]);
     txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
@@ -309,14 +304,13 @@ void LevelStats(int32_t level_num)
 
     // pickups
     sprintf(
-        string, "%s %d", "PICKUPS",
-        SaveGame[0].pickups); // TODO: translation
+        string, GF_GameStringTable[GSI_STATS_PICKUPS_FMT], SaveGame[0].pickups);
     txt = T_Print(0, 10, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // kills
-    sprintf(string, "%s %d", "KILLS", SaveGame[0].kills); // TODO: translation
+    sprintf(string, GF_GameStringTable[GSI_STATS_KILLS_FMT], SaveGame[0].kills);
     txt = T_Print(0, -20, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -367,7 +361,7 @@ void LevelStats(int32_t level_num)
         for (int level = LV_LEVEL1; level <= LV_LEVEL10C; level++) {
             ModifyStartInfo(level);
         }
-        SaveGame[0].current_level = 1;
+        SaveGame[0].current_level = LV_FIRSTLEVEL;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
@@ -460,7 +454,7 @@ int32_t S_FrontEndCheck()
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
-                "- EMPTY SLOT %d -", i + 1);
+                GF_GameStringTable[GSI_MISC_EMPTY_SLOT_FMT], i + 1);
         }
 
         req->items++;

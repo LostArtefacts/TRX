@@ -46,8 +46,6 @@ int32_t InitialiseLevel(int level_num)
         CurrentLevel = level_num;
     }
 
-    S_CDVolume(CurrentLevel); // NOTE: this argument makes no sense!
-
     InitialiseGameFlags();
 
     Lara.item_number = NO_ITEM;

@@ -31,19 +31,23 @@ void RingIsOpen(RING_INFO *ring)
     if (!InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            InvRingText = T_Print(0, 26, 0, "INVENTORY");
+            InvRingText =
+                T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
             if (InventoryMode == INV_DEATH_MODE) {
-                InvRingText = T_Print(0, 26, 0, "GAME OVER");
+                InvRingText = T_Print(
+                    0, 26, 0, GF_GameStringTable[GSI_HEADING_GAME_OVER]);
             } else {
-                InvRingText = T_Print(0, 26, 0, "OPTION");
+                InvRingText =
+                    T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText = T_Print(0, 26, 0, "ITEMS");
+            InvRingText =
+                T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_ITEMS]);
             break;
         }
 
@@ -155,9 +159,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
             break;
 
         default:
-            // XXX: terrible hack
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, (char *)inv_item->item_id);
+            InvItemText[IT_NAME] = T_Print(0, -16, 0, inv_item->string);
             break;
         }
 
@@ -313,7 +315,7 @@ int32_t Inv_AddItem(int32_t item_num)
     switch (item_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
-        Inv_InsertItem(&IPistolsOption);
+        Inv_InsertItem(&InvItemPistols);
         return 1;
 
     case O_SHOTGUN_ITEM:
@@ -323,7 +325,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         }
         Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        Inv_InsertItem(&IShotgunOption);
+        Inv_InsertItem(&InvItemShotgun);
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         return 0;
 
@@ -334,7 +336,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         }
         Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        Inv_InsertItem(&IMagnumOption);
+        Inv_InsertItem(&InvItemMagnum);
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         return 0;
 
@@ -345,7 +347,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.uzis.ammo += UZI_AMMO_QTY;
         }
         Lara.uzis.ammo += UZI_AMMO_QTY;
-        Inv_InsertItem(&IUziOption);
+        Inv_InsertItem(&InvItemUzi);
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return 0;
 
@@ -354,7 +356,7 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IShotgunAmmoOption);
+            Inv_InsertItem(&InvItemShotgunAmmo);
         }
         return 0;
 
@@ -363,7 +365,7 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
             Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IMagnumAmmoOption);
+            Inv_InsertItem(&InvItemMagnumAmmo);
         }
         return 0;
 
@@ -372,79 +374,79 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_UZI_ITEM)) {
             Lara.uzis.ammo += UZI_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IUziAmmoOption);
+            Inv_InsertItem(&InvItemUziAmmo);
         }
         return 0;
 
     case O_MEDI_ITEM:
     case O_MEDI_OPTION:
-        Inv_InsertItem(&IMediOption);
+        Inv_InsertItem(&InvItemMedi);
         return 1;
 
     case O_BIGMEDI_ITEM:
     case O_BIGMEDI_OPTION:
-        Inv_InsertItem(&IBigMediOption);
+        Inv_InsertItem(&InvItemBigMedi);
         return 1;
 
     case O_PUZZLE_ITEM1:
     case O_PUZZLE_OPTION1:
-        Inv_InsertItem(&IPuzzle1Option);
+        Inv_InsertItem(&InvItemPuzzle1);
         return 1;
 
     case O_PUZZLE_ITEM2:
     case O_PUZZLE_OPTION2:
-        Inv_InsertItem(&IPuzzle2Option);
+        Inv_InsertItem(&InvItemPuzzle2);
         return 1;
 
     case O_PUZZLE_ITEM3:
     case O_PUZZLE_OPTION3:
-        Inv_InsertItem(&IPuzzle3Option);
+        Inv_InsertItem(&InvItemPuzzle3);
         return 1;
 
     case O_PUZZLE_ITEM4:
     case O_PUZZLE_OPTION4:
-        Inv_InsertItem(&IPuzzle4Option);
+        Inv_InsertItem(&InvItemPuzzle4);
         return 1;
 
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
-        Inv_InsertItem(&ILeadBarOption);
+        Inv_InsertItem(&InvItemLeadBar);
         return 1;
 
     case O_KEY_ITEM1:
     case O_KEY_OPTION1:
-        Inv_InsertItem(&IKey1Option);
+        Inv_InsertItem(&InvItemKey1);
         return 1;
 
     case O_KEY_ITEM2:
     case O_KEY_OPTION2:
-        Inv_InsertItem(&IKey2Option);
+        Inv_InsertItem(&InvItemKey2);
         return 1;
 
     case O_KEY_ITEM3:
     case O_KEY_OPTION3:
-        Inv_InsertItem(&IKey3Option);
+        Inv_InsertItem(&InvItemKey3);
         return 1;
 
     case O_KEY_ITEM4:
     case O_KEY_OPTION4:
-        Inv_InsertItem(&IKey4Option);
+        Inv_InsertItem(&InvItemKey4);
         return 1;
 
     case O_PICKUP_ITEM1:
     case O_PICKUP_OPTION1:
-        Inv_InsertItem(&IPickup1Option);
+        Inv_InsertItem(&InvItemPickup1);
         return 1;
 
     case O_PICKUP_ITEM2:
     case O_PICKUP_OPTION2:
-        Inv_InsertItem(&IPickup2Option);
+        Inv_InsertItem(&InvItemPickup2);
         return 1;
 
     case O_SCION_ITEM:
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
-        Inv_InsertItem(&IScionOption);
+        Inv_InsertItem(&InvItemScion);
         return 1;
     }
 

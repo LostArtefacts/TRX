@@ -18,6 +18,10 @@
 #include "util.h"
 #include <stdio.h>
 
+#ifdef T1M_FEAT_GAMEFLOW
+    #include "game/gameflow.h"
+#endif
+
 void GameMain()
 {
     DemoLevel = 1;
@@ -29,6 +33,12 @@ void GameMain()
 
     S_InitialiseSystem();
     InitialiseStartInfo();
+
+#ifdef T1M_FEAT_GAMEFLOW
+    if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
+        TRACE("MAIN: unable to load script file");
+    }
+#endif
 
     S_FrontEndCheck();
 
@@ -81,6 +91,7 @@ void GameMain()
     GameMemoryPointer = _malloc(0x380000);
     if (!GameMemoryPointer) {
         S_ExitSystem("ERROR: Could not allocate enough memory");
+        return;
     }
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
@@ -102,6 +113,7 @@ void GameMain()
             }
             if (gf_param == LV_TITLE) {
                 S_ExitSystem("MAIN: play title");
+                return;
             }
             gf_option = StartGame(gf_param);
             break;
@@ -177,7 +189,7 @@ void GameMain()
                 StringToShow, "MAIN: Unknown request %x %d", gf_direction,
                 gf_param);
             S_ExitSystem(StringToShow);
-            break;
+            return;
         }
     }
 

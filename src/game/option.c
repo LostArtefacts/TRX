@@ -26,15 +26,14 @@ static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
 #ifdef T1M_FEAT_GAMEPLAY
-static char NewGameStrings[][20] = {
-    { "New Game" },
-    { "New Game+" },
-};
+    #define MAX_MODES 2
+    #define MAX_MODE_NAME_LENGTH 20
 
+static char NewGameStrings[MAX_MODES][MAX_MODE_NAME_LENGTH];
 REQUEST_INFO NewGameRequester = {
-    2, // items
+    MAX_MODES, // items
     0, // requested
-    2, // vis_lines
+    MAX_MODES, // vis_lines
     0, // line_offset
     0, // line_old_offset
     162, // pix_width
@@ -43,9 +42,9 @@ REQUEST_INFO NewGameRequester = {
     -30, // y
     0, // z
     RIF_FIXED_HEIGHT,
-    "Select Mode", // heading_text
+    NULL, // heading_text
     &NewGameStrings[0][0], // item_texts
-    20, // item_text_len
+    MAX_MODE_NAME_LENGTH, // item_text_len
 };
 #endif
 
@@ -62,7 +61,7 @@ REQUEST_INFO LoadSaveGameRequester = {
     -32,
     0,
     0,
-    "Select Level",
+    NULL,
     &LoadSaveGameStrings[0][0],
     MAX_LEVEL_NAME_LENGTH,
 };
@@ -172,7 +171,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = PASSPORT_2BACK;
             } else {
                 if (!PassportText) {
-                    PassportText = T_Print(0, -16, 0, "Load Game");
+                    PassportText = T_Print(
+                        0, -16, 0, GF_GameStringTable[GSI_PASSPORT_LOAD_GAME]);
                     T_BottomAlign(PassportText, 1);
                     T_CentreH(PassportText, 1);
                 }
@@ -241,9 +241,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             }
             if (!PassportText) {
                 if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
-                    PassportText = T_Print(0, -16, 0, "New Game");
+                    PassportText = T_Print(
+                        0, -16, 0, GF_GameStringTable[GSI_PASSPORT_NEW_GAME]);
                 } else {
-                    PassportText = T_Print(0, -16, 0, "Save Game");
+                    PassportText = T_Print(
+                        0, -16, 0, GF_GameStringTable[GSI_PASSPORT_SAVE_GAME]);
                 }
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
@@ -280,9 +282,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     case 2:
         if (!PassportText) {
             if (InventoryMode == INV_TITLE_MODE) {
-                PassportText = T_Print(0, -16, 0, "Exit Game");
+                PassportText = T_Print(
+                    0, -16, 0, GF_GameStringTable[GSI_PASSPORT_EXIT_GAME]);
             } else {
-                PassportText = T_Print(0, -16, 0, "Exit to Title");
+                PassportText = T_Print(
+                    0, -16, 0, GF_GameStringTable[GSI_PASSPORT_EXIT_TO_TITLE]);
             }
             T_BottomAlign(PassportText, 1);
             T_CentreH(PassportText, 1);
@@ -419,12 +423,14 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
     if (!DetailText[0]) {
         sprintf(
-            buf, "Perspective     %s",
-            AppSettings & ASF_PERSPECTIVE ? "On" : "Off");
+            buf, GF_GameStringTable[GSI_DETAIL_PERSPECTIVE_FMT],
+            GF_GameStringTable
+                [AppSettings & ASF_PERSPECTIVE ? GSI_MISC_ON : GSI_MISC_OFF]);
         DetailText[0] = T_Print(0, 0, 0, buf);
         sprintf(
-            buf, "Bilinear        %s",
-            AppSettings & ASF_BILINEAR ? "On" : "Off");
+            buf, GF_GameStringTable[GSI_DETAIL_BILINEAR_FMT],
+            GF_GameStringTable
+                [AppSettings & ASF_BILINEAR ? GSI_MISC_ON : GSI_MISC_OFF]);
         DetailText[1] = T_Print(0, 25, 0, buf);
         if (dword_45B940) {
             DetailText[2] = T_Print(0, 50, 0, " ");
@@ -445,13 +451,14 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 tmp = "640x480";
                 break;
             }
-            sprintf(buf, "Game Video Mode %s", tmp);
+            sprintf(buf, GF_GameStringTable[GSI_DETAIL_VIDEO_MODE_FMT], tmp);
             DetailText[2] = T_Print(0, 50, 0, buf);
             max_row = 2;
         }
 
         DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] = T_Print(0, -30, 0, "Select Detail");
+        DetailText[4] =
+            T_Print(0, -30, 0, GF_GameStringTable[GSI_DETAIL_SELECT_DETAIL]);
 
         if (current_row > max_row) {
             current_row = max_row;
@@ -557,11 +564,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 
     if (!DetailText[0]) {
-        DetailText[2] = T_Print(0, 0, 0, "High");
-        DetailText[1] = T_Print(0, 25, 0, "Medium");
-        DetailText[0] = T_Print(0, 50, 0, "Low");
+        DetailText[2] =
+            T_Print(0, 0, 0, GF_GameStringTable[GSI_DETAIL_LEVEL_HIGH]);
+        DetailText[1] =
+            T_Print(0, 25, 0, GF_GameStringTable[GSI_DETAIL_LEVEL_MEDIUM]);
+        DetailText[0] =
+            T_Print(0, 50, 0, GF_GameStringTable[GSI_DETAIL_LEVEL_LOW]);
         DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] = T_Print(0, -30, 0, "Select Detail");
+        DetailText[4] =
+            T_Print(0, -30, 0, GF_GameStringTable[GSI_DETAIL_SELECT_DETAIL]);
         T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, IC_BLACK, NULL, 0);
         T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
@@ -628,7 +639,8 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         SoundText[1] = T_Print(0, 25, 0, buf);
 
         SoundText[2] = T_Print(0, -32, 0, " ");
-        SoundText[3] = T_Print(0, -30, 0, "Set Volumes");
+        SoundText[3] =
+            T_Print(0, -30, 0, GF_GameStringTable[GSI_SOUND_SET_VOLUMES]);
 
         T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
         T_AddOutline(SoundText[0], 1, IC_ORANGE, NULL, 0);
@@ -764,8 +776,10 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     int16_t key;
 
     if (!ControlText[0]) {
-        ControlText[0] =
-            T_Print(0, -50, 0, IConfig ? "User Keys" : "Default Keys");
+        ControlText[0] = T_Print(
+            0, -50, 0,
+            GF_GameStringTable
+                [IConfig ? GSI_CONTROL_USER_KEYS : GSI_CONTROL_DEFAULT_KEYS]);
         T_CentreH(ControlText[0], 1);
         T_CentreV(ControlText[0], 1);
         S_ShowControls();
@@ -1034,19 +1048,31 @@ void S_ShowControls()
             break;
         }
 
-        CtrlTextA[0] = T_Print(hpos, -25, 0, "Run");
-        CtrlTextA[1] = T_Print(hpos, -10, 0, "Back");
-        CtrlTextA[2] = T_Print(hpos, 5, 0, "Left");
-        CtrlTextA[3] = T_Print(hpos, 20, 0, "Right");
-        CtrlTextA[4] = T_Print(hpos, 35, 0, "Step Left");
-        CtrlTextA[5] = T_Print(hpos, 50, 0, "Step Right");
-        CtrlTextA[6] = T_Print(hpos, 65, 0, "Walk");
-        CtrlTextA[7] = T_Print(centre + 90, -25, 0, "Jump");
-        CtrlTextA[8] = T_Print(centre + 90, -10, 0, "Action");
-        CtrlTextA[9] = T_Print(centre + 90, 5, 0, "Draw Weapon");
-        CtrlTextA[10] = T_Print(centre + 90, 20, 0, "Look");
-        CtrlTextA[11] = T_Print(centre + 90, 35, 0, "Roll");
-        CtrlTextA[12] = T_Print(centre + 90, 65, 0, "Inventory");
+        CtrlTextA[0] =
+            T_Print(hpos, -25, 0, GF_GameStringTable[GSI_KEYMAP_RUN]);
+        CtrlTextA[1] =
+            T_Print(hpos, -10, 0, GF_GameStringTable[GSI_KEYMAP_BACK]);
+        CtrlTextA[2] = T_Print(hpos, 5, 0, GF_GameStringTable[GSI_KEYMAP_LEFT]);
+        CtrlTextA[3] =
+            T_Print(hpos, 20, 0, GF_GameStringTable[GSI_KEYMAP_RIGHT]);
+        CtrlTextA[4] =
+            T_Print(hpos, 35, 0, GF_GameStringTable[GSI_KEYMAP_STEP_LEFT]);
+        CtrlTextA[5] =
+            T_Print(hpos, 50, 0, GF_GameStringTable[GSI_KEYMAP_STEP_RIGHT]);
+        CtrlTextA[6] =
+            T_Print(hpos, 65, 0, GF_GameStringTable[GSI_KEYMAP_WALK]);
+        CtrlTextA[7] =
+            T_Print(centre + 90, -25, 0, GF_GameStringTable[GSI_KEYMAP_JUMP]);
+        CtrlTextA[8] =
+            T_Print(centre + 90, -10, 0, GF_GameStringTable[GSI_KEYMAP_ACTION]);
+        CtrlTextA[9] = T_Print(
+            centre + 90, 5, 0, GF_GameStringTable[GSI_KEYMAP_DRAW_WEAPON]);
+        CtrlTextA[10] =
+            T_Print(centre + 90, 20, 0, GF_GameStringTable[GSI_KEYMAP_LOOK]);
+        CtrlTextA[11] =
+            T_Print(centre + 90, 35, 0, GF_GameStringTable[GSI_KEYMAP_ROLL]);
+        CtrlTextA[12] = T_Print(
+            centre + 90, 65, 0, GF_GameStringTable[GSI_KEYMAP_INVENTORY]);
 
         for (int i = 0; i < 13; i++) {
             T_CentreV(CtrlTextA[i], 1);
@@ -1056,7 +1082,10 @@ void S_ShowControls()
 
 void S_ChangeCtrlText()
 {
-    T_ChangeText(ControlText[0], IConfig ? "User Keys" : "Default Keys");
+    T_ChangeText(
+        ControlText[0],
+        GF_GameStringTable
+            [IConfig ? GSI_CONTROL_USER_KEYS : GSI_CONTROL_DEFAULT_KEYS]);
     for (int i = 0; i < 13; ++i) {
         T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
     }
