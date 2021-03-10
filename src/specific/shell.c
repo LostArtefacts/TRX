@@ -22,26 +22,8 @@
     #include "game/gameflow.h"
 #endif
 
-void GameMain()
+void S_ReadUserSettings()
 {
-    DemoLevel = 1;
-    SoundIsActive = 1;
-    HiRes = 0;
-    GameHiRes = 0;
-    ScreenSizer = 1.0;
-    GameSizer = 1.0;
-
-    S_InitialiseSystem();
-    InitialiseStartInfo();
-
-#ifdef T1M_FEAT_GAMEFLOW
-    if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
-        TRACE("MAIN: unable to load script file");
-    }
-#endif
-
-    S_FrontEndCheck();
-
     FILE *fp = fopen("atiset.dat", "rb");
     if (fp) {
         fread(&OptionMusicVolume, sizeof(int16_t), 1, fp);
@@ -63,6 +45,42 @@ void GameMain()
         }
         fclose(fp);
     }
+}
+
+void S_WriteUserSettings()
+{
+    FILE *fp = fopen("atiset.dat", "wb");
+    if (fp) {
+        fwrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
+        fwrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+        fwrite(Layout[1], sizeof(int16_t), 13, fp);
+        fwrite(&AppSettings, sizeof(int32_t), 1, fp);
+        fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
+        fwrite(&GameSizer, sizeof(double), 1, fp);
+        fclose(fp);
+    }
+}
+
+void GameMain()
+{
+    DemoLevel = 1;
+    SoundIsActive = 1;
+    HiRes = 0;
+    GameHiRes = 0;
+    ScreenSizer = 1.0;
+    GameSizer = 1.0;
+
+    S_InitialiseSystem();
+    InitialiseStartInfo();
+
+#ifdef T1M_FEAT_GAMEFLOW
+    if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
+        TRACE("MAIN: unable to load script file");
+    }
+#endif
+
+    S_FrontEndCheck();
+    S_ReadUserSettings();
 
     if (IsHardwareRenderer) {
         GameSizer = 1.0;
@@ -193,16 +211,7 @@ void GameMain()
         }
     }
 
-    fp = fopen("atiset.dat", "wb");
-    if (fp) {
-        fwrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-        fwrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-        fwrite(Layout[1], sizeof(int16_t), 13, fp);
-        fwrite(&AppSettings, sizeof(int32_t), 1, fp);
-        fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
-        fwrite(&GameSizer, sizeof(double), 1, fp);
-        fclose(fp);
-    }
+    S_WriteUserSettings();
 }
 
 void T1MInjectSpecificShell()
