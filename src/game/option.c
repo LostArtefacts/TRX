@@ -146,10 +146,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     switch (page) {
     case 0:
-        // NOTE: S_FrontendCheck was missing in the original code. It is called
-        // to set RIF_BLOCKED for empty slots for the load game handler.
-        S_FrontEndCheck();
-
         if (PassportMode == 1) {
             int32_t select = DisplayRequester(&LoadSaveGameRequester);
             if (select) {
@@ -182,6 +178,12 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
+
+                    // NOTE: S_FrontendCheck was missing in the original code.
+                    // It is called to set RIF_BLOCKED for empty slots for the
+                    // load game handler.
+                    S_FrontEndCheck();
+
                     GetSavedGamesList(&LoadSaveGameRequester);
                     InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
@@ -193,12 +195,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        // NOTE: flag handling was missing in the original code. It is done
-        // to remove RIF_BLOCKED for empty slots for the save game handler.
-        for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-            LoadSaveGameRequester.item_flags[i] &= ~RIF_BLOCKED;
-        }
-
 #ifdef T1M_FEAT_GAMEPLAY
         if (PassportMode == 2) {
             int32_t select = DisplayRequester(&NewGameRequester);
@@ -269,6 +265,14 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
+
+                    // NOTE: flag handling was missing in the original code. It
+                    // is done to remove RIF_BLOCKED for empty slots for the
+                    // save game handler.
+                    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+                        LoadSaveGameRequester.item_flags[i] &= ~RIF_BLOCKED;
+                    }
+
                     GetSavedGamesList(&LoadSaveGameRequester);
                     InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
