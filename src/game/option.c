@@ -31,7 +31,7 @@ static char NewGameStrings[][20] = {
     { "New Game+" },
 };
 
-static REQUEST_INFO NewGameRequester = {
+REQUEST_INFO NewGameRequester = {
     2, // items
     0, // requested
     2, // vis_lines
@@ -49,8 +49,8 @@ static REQUEST_INFO NewGameRequester = {
 };
 #endif
 
-static char LoadGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
-REQUEST_INFO LoadGameRequester = {
+static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
+REQUEST_INFO LoadSaveGameRequester = {
     1,
     0,
     5,
@@ -63,7 +63,7 @@ REQUEST_INFO LoadGameRequester = {
     0,
     0,
     "Select Level",
-    &LoadGameStrings[0][0],
+    &LoadSaveGameStrings[0][0],
     MAX_LEVEL_NAME_LENGTH,
 };
 
@@ -147,8 +147,12 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     switch (page) {
     case 0:
+        // NOTE: S_FrontendCheck was missing in the original code. It is called
+        // to set RIF_BLOCKED for empty slots for the load game handler.
+        S_FrontEndCheck();
+
         if (PassportMode == 1) {
-            int32_t select = DisplayRequester(&LoadGameRequester);
+            int32_t select = DisplayRequester(&LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
                     InventoryExtraData[1] = select - 1;
@@ -178,8 +182,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
-                    GetSavedGamesList(&LoadGameRequester);
-                    InitRequester(&LoadGameRequester);
+                    GetSavedGamesList(&LoadSaveGameRequester);
+                    InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
                     Input = 0;
                     InputDB = 0;
@@ -189,6 +193,12 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
+        // NOTE: flag handling was missing in the original code. It is done
+        // to remove RIF_BLOCKED for empty slots for the save game handler.
+        for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+            LoadSaveGameRequester.item_flags[i] &= ~RIF_BLOCKED;
+        }
+
 #ifdef T1M_FEAT_GAMEPLAY
         if (PassportMode == 2) {
             int32_t select = DisplayRequester(&NewGameRequester);
@@ -207,7 +217,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         } else
 #endif
             if (PassportMode == 1) {
-            int32_t select = DisplayRequester(&LoadGameRequester);
+            int32_t select = DisplayRequester(&LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
                     PassportMode = 0;
@@ -239,7 +249,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 T_CentreH(PassportText, 1);
             }
             if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
-                if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
+                if (InventoryMode == INV_TITLE_MODE || CurrentLevel == LV_GYM) {
 #ifdef T1M_FEAT_GAMEPLAY
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
@@ -257,8 +267,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
-                    GetSavedGamesList(&LoadGameRequester);
-                    InitRequester(&LoadGameRequester);
+                    GetSavedGamesList(&LoadSaveGameRequester);
+                    InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
                     Input = 0;
                     InputDB = 0;
@@ -1258,11 +1268,9 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (CHK_ANY(InputDB, IN_SELECT)) {
-        // TODO: refactor me
-        if (!strncmp(
-                req->texts[req->requested - req->line_offset]->string,
-                "- EMPTY SLOT", 12)
-            && !strcmp(PassportText->string, "Load Game")) {
+        // NOTE: OG was checking the requester heading text and comparing item
+        // text to - EMPTY SLOT rather than checking this flag
+        if (req->item_flags[req->requested] & RIF_BLOCKED) {
             Input = 0;
             return 0;
         } else {

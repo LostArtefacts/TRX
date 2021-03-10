@@ -783,6 +783,7 @@ typedef enum {
 // NOTE: missing in original code
 typedef enum {
     RIF_FIXED_HEIGHT = 1 << 0,
+    RIF_BLOCKED = 1 << 1,
 } REQUEST_INFO_FLAGS;
 
 typedef enum {

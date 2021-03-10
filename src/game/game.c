@@ -427,9 +427,10 @@ void GetSavedGamesList(REQUEST_INFO *req)
 
 int32_t S_FrontEndCheck()
 {
-    REQUEST_INFO *req = &LoadGameRequester;
+    REQUEST_INFO *req = &LoadSaveGameRequester;
 
     req->items = 0;
+    SaveCounter = 0; // NOTE: missing in OG
     SavedGamesCount = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         char filename[75];
@@ -442,6 +443,8 @@ int32_t S_FrontEndCheck()
             fread(&counter, sizeof(int32_t), 1, fp);
             fclose(fp);
 
+            req->item_flags[req->items] &= ~RIF_BLOCKED; // NOTE: missing in OG
+
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
                 filename, counter);
@@ -451,13 +454,13 @@ int32_t S_FrontEndCheck()
                 req->requested = i;
             }
 
-            SaveSlotFlags[i] = 1;
             SavedGamesCount++;
         } else {
+            req->item_flags[req->items] |= RIF_BLOCKED; // NOTE: missing in OG
+
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
                 "- EMPTY SLOT %d -", i + 1);
-            SaveSlotFlags[i] = 0;
         }
 
         req->items++;
@@ -484,11 +487,10 @@ int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
     fwrite(data, size, 1, fp);
     fclose(fp);
 
-    REQUEST_INFO *req = &LoadGameRequester;
+    REQUEST_INFO *req = &LoadSaveGameRequester;
     sprintf(
         &req->item_texts[req->item_text_len * slot], "%s %d", filename,
         SaveCounter);
-    SaveSlotFlags[slot] = 1;
     SavedGamesCount++;
     SaveCounter++;
     return 1;

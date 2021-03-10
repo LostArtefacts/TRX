@@ -180,7 +180,6 @@
 #define NumberCameras           VAR_U_(0x0045A314, int32_t)
 #define SavedGamesCount         VAR_U_(0x0045F1B4, int32_t)
 #define SaveCounter             VAR_U_(0x0045A018, int32_t)
-#define SaveSlotFlags           ARRAY_(0x00453C50, int16_t, [MAX_SAVE_SLOTS])
 #define InvKeysCurrent          VAR_I_(0x0045A048, int16_t, 0)
 #define InvKeysList             ARRAY_(0x00455FA8, INVENTORY_ITEM*, [23])
 #define InvKeysObjects          VAR_I_(0x0045A044, int16_t, 1)
@@ -272,7 +271,10 @@ extern int32_t SpriteInfoCount;
 extern int32_t SpriteCount;
 extern int32_t OverlapCount;
 
-extern REQUEST_INFO LoadGameRequester;
+extern REQUEST_INFO LoadSaveGameRequester;
+#ifdef T1M_FEAT_GAMEPLAY
+extern REQUEST_INFO NewGameRequester;
+#endif
 
 #ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;
