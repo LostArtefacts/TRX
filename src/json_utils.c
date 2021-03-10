@@ -59,3 +59,45 @@ int JSONGetStringValue(
     *value = string->string;
     return 1;
 }
+
+const char *JSONGetErrorDescription(enum json_parse_error_e error)
+{
+    switch (error) {
+    case json_parse_error_none:
+        return "no error";
+
+    case json_parse_error_expected_comma_or_closing_bracket:
+        return "expected comma or closing bracket";
+
+    case json_parse_error_expected_colon:
+        return "expected colon";
+
+    case json_parse_error_expected_opening_quote:
+        return "expected opening quote";
+
+    case json_parse_error_invalid_string_escape_sequence:
+        return "invalid string escape sequence";
+
+    case json_parse_error_invalid_number_format:
+        return "invalid number format";
+
+    case json_parse_error_invalid_value:
+        return "invalid value";
+
+    case json_parse_error_premature_end_of_buffer:
+        return "premature end of buffer";
+
+    case json_parse_error_invalid_string:
+        return "allocator failed";
+
+    case json_parse_error_allocator_failed:
+        return "allocator failed";
+
+    case json_parse_error_unexpected_trailing_characters:
+        return "unexpected trailing characters";
+
+    case json_parse_error_unknown:
+    default:
+        return "unknown";
+    }
+}

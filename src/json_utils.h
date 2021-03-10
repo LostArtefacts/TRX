@@ -11,5 +11,6 @@ int JSONGetIntegerValue(
     struct json_value_s *root, const char *name, int32_t *value);
 int JSONGetStringValue(
     struct json_value_s *root, const char *name, const char **default_value);
+const char *JSONGetErrorDescription(enum json_parse_error_e error);
 
 #endif
