@@ -32,22 +32,21 @@ void RingIsOpen(RING_INFO *ring)
         switch (ring->type) {
         case RT_MAIN:
             InvRingText =
-                T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_INVENTORY]);
+                T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
             if (InventoryMode == INV_DEATH_MODE) {
-                InvRingText = T_Print(
-                    0, 26, 0, GF_GameStringTable[GSI_HEADING_GAME_OVER]);
+                InvRingText =
+                    T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_GAME_OVER]);
             } else {
                 InvRingText =
-                    T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_OPTION]);
+                    T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText =
-                T_Print(0, 26, 0, GF_GameStringTable[GSI_HEADING_ITEMS]);
+            InvRingText = T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_ITEMS]);
             break;
         }
 

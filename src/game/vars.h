@@ -263,7 +263,7 @@
 extern char *GF_LevelTitles[LV_NUMBER_OF];
 extern char *GF_LevelNames[LV_NUMBER_OF];
 // NOTE: missing in original code
-extern char *GF_GameStringTable[GSI_NUMBER_OF];
+extern char *GF_GameStrings[GS_NUMBER_OF];
 
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;
