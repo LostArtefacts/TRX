@@ -207,16 +207,6 @@
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 #define InvNFrames              VAR_U_(0x004550A0, int32_t)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
-#define Key1Strings             ARRAY_(0x00454178, char*, [LV_NUMBER_OF])
-#define Key2Strings             ARRAY_(0x004541D0, char*, [LV_NUMBER_OF])
-#define Key3Strings             ARRAY_(0x00454228, char*, [LV_NUMBER_OF])
-#define Key4Strings             ARRAY_(0x00454280, char*, [LV_NUMBER_OF])
-#define Pickup1Strings          ARRAY_(0x004540C8, char*, [LV_NUMBER_OF])
-#define Pickup2Strings          ARRAY_(0x00454120, char*, [LV_NUMBER_OF])
-#define Puzzle1Strings          ARRAY_(0x00453F68, char*, [LV_NUMBER_OF])
-#define Puzzle2Strings          ARRAY_(0x00453FC0, char*, [LV_NUMBER_OF])
-#define Puzzle3Strings          ARRAY_(0x00454018, char*, [LV_NUMBER_OF])
-#define Puzzle4Strings          ARRAY_(0x00454070, char*, [LV_NUMBER_OF])
 #define InvItemCompass          VAR_U_(0x00455760, INVENTORY_ITEM)
 #define InvItemMedi             VAR_U_(0x004559E0, INVENTORY_ITEM)
 #define InvItemBigMedi          VAR_U_(0x00455A20, INVENTORY_ITEM)
@@ -262,6 +252,16 @@
 
 extern char *GF_LevelTitles[LV_NUMBER_OF];
 extern char *GF_LevelNames[LV_NUMBER_OF];
+extern char *GF_Key1Strings[LV_NUMBER_OF];
+extern char *GF_Key2Strings[LV_NUMBER_OF];
+extern char *GF_Key3Strings[LV_NUMBER_OF];
+extern char *GF_Key4Strings[LV_NUMBER_OF];
+extern char *GF_Pickup1Strings[LV_NUMBER_OF];
+extern char *GF_Pickup2Strings[LV_NUMBER_OF];
+extern char *GF_Puzzle1Strings[LV_NUMBER_OF];
+extern char *GF_Puzzle2Strings[LV_NUMBER_OF];
+extern char *GF_Puzzle3Strings[LV_NUMBER_OF];
+extern char *GF_Puzzle4Strings[LV_NUMBER_OF];
 // NOTE: missing in original code
 extern char *GF_GameStrings[GS_NUMBER_OF];
 

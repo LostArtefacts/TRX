@@ -169,6 +169,16 @@ static void GF_LoadLevels(struct json_value_s *json)
 
     // GF_LevelTitles = malloc(sizeof(char *) * level_count);
     // GV_LevelNames = malloc(sizeof(char *) * level_count);
+    // GF_Key1Strings = malloc(sizeof(char *) * level_count);
+    // GF_Key2Strings = malloc(sizeof(char *) * level_count);
+    // GF_Key3Strings = malloc(sizeof(char *) * level_count);
+    // GF_Key4Strings = malloc(sizeof(char *) * level_count);
+    // GF_Puzzle1Strings = malloc(sizeof(char *) * level_count);
+    // GF_Puzzle2Strings = malloc(sizeof(char *) * level_count);
+    // GF_Puzzle3Strings = malloc(sizeof(char *) * level_count);
+    // GF_Puzzle4Strings = malloc(sizeof(char *) * level_count);
+    // GF_Pickup1Strings = malloc(sizeof(char *) * level_count);
+    // GF_Pickup2Strings = malloc(sizeof(char *) * level_count);
 
     struct json_array_element_s *item = arr->start;
     int level_num = 0;
@@ -188,6 +198,82 @@ static void GF_LoadLevels(struct json_value_s *json)
             strcpy(GF_LevelTitles[level_num], str);
         } else {
             TRACE("level %d: 'title' must be a string", level_num);
+        }
+
+        struct json_value_s *level_strings =
+            JSONGetField(item->value, "strings");
+        if (!level_strings) {
+            TRACE("level %d: 'strings' must be a dictionary", level_num);
+        } else {
+            if (JSONGetStringValue(level_strings, "pickup1", &str)) {
+                GF_Pickup1Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Pickup1Strings[level_num], str);
+            } else {
+                GF_Pickup1Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "pickup2", &str)) {
+                GF_Pickup2Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Pickup2Strings[level_num], str);
+            } else {
+                GF_Pickup2Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "key1", &str)) {
+                GF_Key1Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Key1Strings[level_num], str);
+            } else {
+                GF_Key1Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "key2", &str)) {
+                GF_Key2Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Key2Strings[level_num], str);
+            } else {
+                GF_Key2Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "key3", &str)) {
+                GF_Key3Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Key3Strings[level_num], str);
+            } else {
+                GF_Key3Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "key4", &str)) {
+                GF_Key4Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Key4Strings[level_num], str);
+            } else {
+                GF_Key4Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "puzzle1", &str)) {
+                GF_Puzzle1Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Puzzle1Strings[level_num], str);
+            } else {
+                GF_Puzzle1Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "puzzle2", &str)) {
+                GF_Puzzle2Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Puzzle2Strings[level_num], str);
+            } else {
+                GF_Puzzle2Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "puzzle3", &str)) {
+                GF_Puzzle3Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Puzzle3Strings[level_num], str);
+            } else {
+                GF_Puzzle3Strings[level_num] = NULL;
+            }
+
+            if (JSONGetStringValue(level_strings, "puzzle4", &str)) {
+                GF_Puzzle4Strings[level_num] = malloc(strlen(str) + 1);
+                strcpy(GF_Puzzle4Strings[level_num], str);
+            } else {
+                GF_Puzzle4Strings[level_num] = NULL;
+            }
         }
 
         item = item->next;

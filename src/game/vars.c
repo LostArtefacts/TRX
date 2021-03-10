@@ -44,6 +44,64 @@ char *GF_LevelTitles[LV_NUMBER_OF] = {
     "Current Position",
 };
 
+char *GF_Key1Strings[LV_NUMBER_OF] = {
+    NULL,        NULL, "Silver Key", NULL,       NULL,          "Neptune Key",
+    "Rusty Key", NULL, "Gold Key",   "Gold Key", "Saphire Key", "Saphire Key",
+    "Gold Key",  NULL, NULL,         NULL,       NULL,          NULL,
+    NULL,        NULL, NULL,         NULL,
+};
+
+char *GF_Key2Strings[LV_NUMBER_OF] = {
+    NULL,         NULL,        NULL, NULL, NULL, "Atlas Key", NULL, NULL,
+    "Silver Key", "Rusty Key", NULL, NULL, NULL, NULL,        NULL, NULL,
+    NULL,         NULL,        NULL, NULL, NULL, NULL,
+};
+
+char *GF_Key3Strings[LV_NUMBER_OF] = {
+    NULL,        NULL,        NULL, NULL, NULL, "Damocles Key", NULL, NULL,
+    "Rusty Key", "Rusty Key", NULL, NULL, NULL, NULL,           NULL, NULL,
+    NULL,        NULL,        NULL, NULL, NULL, NULL,
+};
+
+char *GF_Key4Strings[LV_NUMBER_OF] = {
+    NULL, NULL, NULL, NULL, NULL, "Thor Key", NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL,       NULL, NULL, NULL, NULL, NULL,
+};
+
+char *GF_Puzzle1Strings[LV_NUMBER_OF] = {
+    NULL, NULL, "Gold Idol", "Machine Cog",  NULL,   NULL,   NULL, "Gold Bar",
+    NULL, NULL, NULL,        "Eye of Horus", "Ankh", "Fuse", NULL, NULL,
+    NULL, NULL, NULL,        NULL,           NULL,   NULL,
+};
+
+char *GF_Puzzle2Strings[LV_NUMBER_OF] = {
+    NULL, NULL, NULL, NULL,     NULL,     NULL,          NULL, NULL,
+    NULL, NULL, NULL, "Scarab", "Scarab", "Pyramid Key", NULL, NULL,
+    NULL, NULL, NULL, NULL,     NULL,     NULL,
+};
+
+char *GF_Puzzle3Strings[LV_NUMBER_OF] = {
+    NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, "Seal of Anubis",
+    NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL,
+};
+
+char *GF_Puzzle4Strings[LV_NUMBER_OF] = {
+    NULL,   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    "Ankh", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+};
+
+char *GF_Pickup1Strings[LV_NUMBER_OF] = {
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+};
+
+char *GF_Pickup2Strings[LV_NUMBER_OF] = {
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+};
+
 char *GF_GameStrings[GS_NUMBER_OF] = {
     [GS_HEADING_INVENTORY] = "INVENTORY",
     [GS_HEADING_GAME_OVER] = "GAME OVER",

@@ -106,52 +106,52 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         switch (inv_item->object_number) {
         case O_PUZZLE_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Puzzle1Strings[CurrentLevel]);
             break;
 
         case O_PUZZLE_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Puzzle2Strings[CurrentLevel]);
             break;
 
         case O_PUZZLE_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle3Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Puzzle3Strings[CurrentLevel]);
             break;
 
         case O_PUZZLE_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle4Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Puzzle4Strings[CurrentLevel]);
             break;
 
         case O_KEY_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Key1Strings[CurrentLevel]);
             break;
 
         case O_KEY_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Key2Strings[CurrentLevel]);
             break;
 
         case O_KEY_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key3Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Key3Strings[CurrentLevel]);
             break;
 
         case O_KEY_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key4Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Key4Strings[CurrentLevel]);
             break;
 
         case O_PICKUP_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Pickup1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Pickup1Strings[CurrentLevel]);
             break;
 
         case O_PICKUP_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Pickup2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF_Pickup2Strings[CurrentLevel]);
             break;
 
         case O_PASSPORT_OPTION:
