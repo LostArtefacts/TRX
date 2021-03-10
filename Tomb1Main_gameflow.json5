@@ -3,18 +3,21 @@
         {
             "title": "Lara's Home",
             "file": "data\\gym.phd",
+            "music": 0,
             "strings": {}
         },
 
         {
             "title": "Caves",
             "file": "data\\level1.phd",
+            "music": 57,
             "strings": {}
         },
 
         {
             "title": "City of Vilcabamba",
             "file": "data\\level2.phd",
+            "music": 57,
             "strings": {
                 "key1": "Silver Key",
                 "puzzle1": "Gold Idol"
@@ -24,6 +27,7 @@
         {
             "title": "Lost Valley",
             "file": "data\\level3a.phd",
+            "music": 57,
             "strings": {
                 "puzzle1": "Machine Cog"
             }
@@ -32,12 +36,14 @@
         {
             "title": "Tomb of Qualopec",
             "file": "data\\level3b.phd",
+            "music": 57,
             "strings": {}
         },
 
         {
             "title": "St. Francis' Folly",
             "file": "data\\level4.phd",
+            "music": 59,
             "strings": {
                 "key1": "Neptune Key",
                 "key2": "Atlas Key",
@@ -49,6 +55,7 @@
         {
             "title": "Colosseum",
             "file": "data\\level5.phd",
+            "music": 59,
             "strings": {
                 "key1": "Rusty Key"
             }
@@ -57,6 +64,7 @@
         {
             "title": "Palace Midas",
             "file": "data\\level6.phd",
+            "music": 59,
             "strings": {
                 "puzzle1": "Gold Bar"
             }
@@ -65,6 +73,7 @@
         {
             "title": "The Cistern",
             "file": "data\\level7a.phd",
+            "music": 58,
             "strings": {
                 "key1": "Gold Key",
                 "key2": "Silver Key",
@@ -75,6 +84,7 @@
         {
             "title": "Tomb of Tihocan",
             "file": "data\\level7b.phd",
+            "music": 58,
             "strings": {
                 "key1": "Gold Key",
                 "key2": "Rusty Key",
@@ -85,6 +95,7 @@
         {
             "title": "City of Khamoon",
             "file": "data\\level8a.phd",
+            "music": 59,
             "strings": {
                 "key1": "Sapphire Key"
             }
@@ -93,6 +104,7 @@
         {
             "title": "Obelisk of Khamoon",
             "file": "data\\level8b.phd",
+            "music": 59,
             "strings": {
                 "key1": "Sapphire Key",
                 "puzzle1": "Eye of Horus",
@@ -105,6 +117,7 @@
         {
             "title": "Sanctuary of the Scion",
             "file": "data\\level8c.phd",
+            "music": 59,
             "strings": {
                 "key1": "Gold Key",
                 "puzzle1": "Ankh",
@@ -115,6 +128,7 @@
         {
             "title": "Natla's Mines",
             "file": "data\\level10a.phd",
+            "music": 58,
             "strings": {
                 "puzzle1": "Fuse",
                 "puzzle2": "Pyramid Key"
@@ -124,48 +138,56 @@
         {
             "title": "Atlantis",
             "file": "data\\level10b.phd",
+            "music": 60,
             "strings": {}
         },
 
         {
             "title": "The Great Pyramid",
             "file": "data\\level10c.phd",
+            "music": 60,
             "strings": {}
         },
 
         {
             "title": "Cut Scene 1",
             "file": "data\\cut1.phd",
+            "music": 0,
             "strings": {}
         },
 
         {
             "title": "Cut Scene 2",
             "file": "data\\cut2.phd",
+            "music": 0,
             "strings": {}
         },
 
         {
             "title": "Cut Scene 3",
             "file": "data\\cut3.phd",
+            "music": 0,
             "strings": {}
         },
 
         {
             "title": "Cut Scene 4",
             "file": "data\\cut4.phd",
+            "music": 0,
             "strings": {}
         },
 
         {
             "title": "Title",
             "file": "data\\title.phd",
+            "music": 2,
             "strings": {}
         },
 
         {
             "title": "Current Position",
             "file": "data\\current.phd",
+            "music": 0,
             "strings": {}
         }
     ],

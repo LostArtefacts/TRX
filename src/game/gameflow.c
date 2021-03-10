@@ -173,6 +173,7 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
         return 0;
     }
 
+    GF_LevelMusic = malloc(sizeof(int16_t) * level_count);
     GF_LevelTitles = malloc(sizeof(char *) * level_count);
     GF_LevelNames = malloc(sizeof(char *) * level_count);
     GF_Key1Strings = malloc(sizeof(char *) * level_count);
@@ -191,6 +192,14 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
 
     while (item) {
         const char *str;
+        int32_t num;
+
+        if (JSONGetIntegerValue(item->value, "music", &num)) {
+            GF_LevelMusic[level_num] = num;
+        } else {
+            TRACE("level %d: 'music' must be a number", level_num);
+            return 0;
+        }
 
         if (JSONGetStringValue(item->value, "file", &str)) {
             GF_LevelNames[level_num] = malloc(strlen(str) + 1);

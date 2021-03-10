@@ -8,6 +8,7 @@ int16_t StoredLaraHealth = 0;
 int16_t BarOffsetY[6];
 #endif
 
+int16_t *GF_LevelMusic;
 char **GF_LevelTitles;
 char **GF_LevelNames;
 char **GF_Key1Strings;

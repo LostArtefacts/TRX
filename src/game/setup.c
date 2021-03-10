@@ -82,8 +82,8 @@ int32_t InitialiseLevel(int level_num)
     Lara.request_gun_type = LGT_UNARMED;
 #endif
 
-    if (LevelMusic[CurrentLevel]) {
-        S_CDPlay(LevelMusic[CurrentLevel]);
+    if (GF_LevelMusic[CurrentLevel]) {
+        S_CDPlay(GF_LevelMusic[CurrentLevel]);
     }
     Camera.underwater = 0;
     return 1;

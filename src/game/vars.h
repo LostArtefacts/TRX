@@ -49,7 +49,6 @@
 #define Lara                    VAR_U_(0x0045ED80, LARA_INFO)
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
 #define PierreItem              VAR_U_(0x0045E328, int16_t)
-#define LevelMusic              ARRAY_(0x00456A18, int16_t, [LV_NUMBER_OF])
 #define SecretTotals            ARRAY_(0x00453CB0, int8_t, [MAX_SECRETS])
 #define ResetFlag               VAR_I_(0x00459F50, int32_t, 0)
 #define Input                   VAR_U_(0x0045EEF4, int32_t)
@@ -250,6 +249,7 @@
 
 // clang-format on
 
+extern int16_t *GF_LevelMusic;
 extern char **GF_LevelTitles;
 extern char **GF_LevelNames;
 extern char **GF_Key1Strings;
