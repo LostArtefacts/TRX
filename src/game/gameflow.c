@@ -18,6 +18,9 @@ static void SetRequesterHeading(REQUEST_INFO *req, char *text)
 static void
 SetRequesterItemText(REQUEST_INFO *req, int8_t index, const char *text)
 {
+    if (!text) {
+        return;
+    }
     strncpy(
         &req->item_texts[index * req->item_text_len], text, req->item_text_len);
 }
@@ -112,16 +115,16 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
-static void GF_LoadGameStrings(struct json_value_s *json)
+static int8_t GF_LoadGameStrings(struct json_value_s *json)
 {
     struct json_value_s *strings = JSONGetField(json, "strings");
     if (!strings) {
         TRACE("missing 'strings' entry");
-        return;
+        return 0;
     }
     if (strings->type != json_type_object) {
         TRACE("'strings' must be a dictionary");
-        return;
+        return 0;
     }
 
     struct json_object_s *object = json_value_as_object(strings);
@@ -144,17 +147,20 @@ static void GF_LoadGameStrings(struct json_value_s *json)
         strcpy(GF_GameStrings[key], value->string);
         item = item->next;
     }
+
+    return 1;
 }
 
-static void GF_LoadLevels(struct json_value_s *json)
+static int8_t GF_LoadLevels(struct json_value_s *json)
 {
     struct json_value_s *levels = JSONGetField(json, "levels");
     if (!levels) {
         TRACE("missing 'levels' entry");
-        return;
+        return 0;
     }
     if (levels->type != json_type_array) {
         TRACE("'levels' must be a list");
+        return 0;
     }
 
     struct json_array_s *arr = json_value_as_array(levels);
@@ -164,21 +170,21 @@ static void GF_LoadLevels(struct json_value_s *json)
             "currently only fixed number of levels is supported! got "
             "%d, expected %d.",
             level_count, LV_NUMBER_OF);
-        return;
+        return 0;
     }
 
-    // GF_LevelTitles = malloc(sizeof(char *) * level_count);
-    // GV_LevelNames = malloc(sizeof(char *) * level_count);
-    // GF_Key1Strings = malloc(sizeof(char *) * level_count);
-    // GF_Key2Strings = malloc(sizeof(char *) * level_count);
-    // GF_Key3Strings = malloc(sizeof(char *) * level_count);
-    // GF_Key4Strings = malloc(sizeof(char *) * level_count);
-    // GF_Puzzle1Strings = malloc(sizeof(char *) * level_count);
-    // GF_Puzzle2Strings = malloc(sizeof(char *) * level_count);
-    // GF_Puzzle3Strings = malloc(sizeof(char *) * level_count);
-    // GF_Puzzle4Strings = malloc(sizeof(char *) * level_count);
-    // GF_Pickup1Strings = malloc(sizeof(char *) * level_count);
-    // GF_Pickup2Strings = malloc(sizeof(char *) * level_count);
+    GF_LevelTitles = malloc(sizeof(char *) * level_count);
+    GF_LevelNames = malloc(sizeof(char *) * level_count);
+    GF_Key1Strings = malloc(sizeof(char *) * level_count);
+    GF_Key2Strings = malloc(sizeof(char *) * level_count);
+    GF_Key3Strings = malloc(sizeof(char *) * level_count);
+    GF_Key4Strings = malloc(sizeof(char *) * level_count);
+    GF_Puzzle1Strings = malloc(sizeof(char *) * level_count);
+    GF_Puzzle2Strings = malloc(sizeof(char *) * level_count);
+    GF_Puzzle3Strings = malloc(sizeof(char *) * level_count);
+    GF_Puzzle4Strings = malloc(sizeof(char *) * level_count);
+    GF_Pickup1Strings = malloc(sizeof(char *) * level_count);
+    GF_Pickup2Strings = malloc(sizeof(char *) * level_count);
 
     struct json_array_element_s *item = arr->start;
     int level_num = 0;
@@ -191,6 +197,7 @@ static void GF_LoadLevels(struct json_value_s *json)
             strcpy(GF_LevelNames[level_num], str);
         } else {
             TRACE("level %d: 'file' must be a string", level_num);
+            return 0;
         }
 
         if (JSONGetStringValue(item->value, "title", &str)) {
@@ -198,12 +205,14 @@ static void GF_LoadLevels(struct json_value_s *json)
             strcpy(GF_LevelTitles[level_num], str);
         } else {
             TRACE("level %d: 'title' must be a string", level_num);
+            return 0;
         }
 
         struct json_value_s *level_strings =
             JSONGetField(item->value, "strings");
         if (!level_strings) {
             TRACE("level %d: 'strings' must be a dictionary", level_num);
+            return 0;
         } else {
             if (JSONGetStringValue(level_strings, "pickup1", &str)) {
                 GF_Pickup1Strings[level_num] = malloc(strlen(str) + 1);
@@ -279,6 +288,7 @@ static void GF_LoadLevels(struct json_value_s *json)
         item = item->next;
         level_num++;
     }
+    return 1;
 }
 
 static int8_t S_LoadGameFlow(const char *file_name)
@@ -322,9 +332,8 @@ static int8_t S_LoadGameFlow(const char *file_name)
     }
 
     result = 1;
-
-    GF_LoadGameStrings(json);
-    GF_LoadLevels(json);
+    result &= GF_LoadGameStrings(json);
+    result &= GF_LoadLevels(json);
 
 cleanup:
     if (fp) {

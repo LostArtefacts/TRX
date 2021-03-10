@@ -1,6 +1,7 @@
 #include "game/cinema.h"
 #include "game/demo.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/savegame.h"
 #include "game/setup.h"
@@ -17,10 +18,6 @@
 #include "specific/sndpc.h"
 #include "util.h"
 #include <stdio.h>
-
-#ifdef T1M_FEAT_GAMEFLOW
-    #include "game/gameflow.h"
-#endif
 
 void S_ReadUserSettings()
 {
@@ -73,11 +70,11 @@ void GameMain()
     S_InitialiseSystem();
     InitialiseStartInfo();
 
-#ifdef T1M_FEAT_GAMEFLOW
+    // NOTE: not present in original game
     if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
-        TRACE("MAIN: unable to load script file");
+        ShowFatalError("MAIN: unable to load script file");
+        return;
     }
-#endif
 
     S_FrontEndCheck();
     S_ReadUserSettings();

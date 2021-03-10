@@ -250,18 +250,18 @@
 
 // clang-format on
 
-extern char *GF_LevelTitles[LV_NUMBER_OF];
-extern char *GF_LevelNames[LV_NUMBER_OF];
-extern char *GF_Key1Strings[LV_NUMBER_OF];
-extern char *GF_Key2Strings[LV_NUMBER_OF];
-extern char *GF_Key3Strings[LV_NUMBER_OF];
-extern char *GF_Key4Strings[LV_NUMBER_OF];
-extern char *GF_Pickup1Strings[LV_NUMBER_OF];
-extern char *GF_Pickup2Strings[LV_NUMBER_OF];
-extern char *GF_Puzzle1Strings[LV_NUMBER_OF];
-extern char *GF_Puzzle2Strings[LV_NUMBER_OF];
-extern char *GF_Puzzle3Strings[LV_NUMBER_OF];
-extern char *GF_Puzzle4Strings[LV_NUMBER_OF];
+extern char **GF_LevelTitles;
+extern char **GF_LevelNames;
+extern char **GF_Key1Strings;
+extern char **GF_Key2Strings;
+extern char **GF_Key3Strings;
+extern char **GF_Key4Strings;
+extern char **GF_Pickup1Strings;
+extern char **GF_Pickup2Strings;
+extern char **GF_Puzzle1Strings;
+extern char **GF_Puzzle2Strings;
+extern char **GF_Puzzle3Strings;
+extern char **GF_Puzzle4Strings;
 // NOTE: missing in original code
 extern char *GF_GameStrings[GS_NUMBER_OF];
 
