@@ -1,0 +1,248 @@
+{
+    "levels": [
+        {
+            "title": "Lara's Home",
+            "file": "data\\gym.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Caves",
+            "file": "data\\level1.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "City of Vilcabamba",
+            "file": "data\\level2.phd",
+            "strings": {
+                "key1": "Silver Key",
+                "puzzle1": "Gold Idol"
+            }
+        },
+
+        {
+            "title": "Lost Valley",
+            "file": "data\\level3a.phd",
+            "strings": {
+                "puzzle1": "Machine Cog"
+            }
+        },
+
+        {
+            "title": "Tomb of Qualopec",
+            "file": "data\\level3b.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "St. Francis' Folly",
+            "file": "data\\level4.phd",
+            "strings": {
+                "key1": "Neptune Key",
+                "key2": "Atlas Key",
+                "key3": "Damocles Key",
+                "key4": "Thor Key"
+            }
+        },
+
+        {
+            "title": "Colosseum",
+            "file": "data\\level5.phd",
+            "strings": {
+                "key1": "Rusty Key"
+            }
+        },
+
+        {
+            "title": "Palace Midas",
+            "file": "data\\level6.phd",
+            "strings": {
+                "puzzle1": "Gold Bar"
+            }
+        },
+
+        {
+            "title": "The Cistern",
+            "file": "data\\level7a.phd",
+            "strings": {
+                "key1": "Gold Key",
+                "key2": "Silver Key",
+                "key3": "Rusty Key"
+            }
+        },
+
+        {
+            "title": "Tomb of Tihocan",
+            "file": "data\\level7b.phd",
+            "strings": {
+                "key1": "Gold Key",
+                "key2": "Rusty Key",
+                "key3": "Rusty Key"
+            }
+        },
+
+        {
+            "title": "City of Khamoon",
+            "file": "data\\level8a.phd",
+            "strings": {
+                "key1": "Sapphire Key"
+            }
+        },
+
+        {
+            "title": "Obelisk of Khamoon",
+            "file": "data\\level8b.phd",
+            "strings": {
+                "key1": "Sapphire Key",
+                "puzzle1": "Eye of Horus",
+                "puzzle2": "Scarab",
+                "puzzle3": "Seal of Anubis",
+                "puzzle4": "Ankh"
+            }
+        },
+
+        {
+            "title": "Sanctuary of the Scion",
+            "file": "data\\level8c.phd",
+            "strings": {
+                "key1": "Gold Key",
+                "puzzle1": "Ankh",
+                "puzzle2": "Scarab"
+            }
+        },
+
+        {
+            "title": "Natla's Mines",
+            "file": "data\\level10a.phd",
+            "strings": {
+                "puzzle1": "Fuse",
+                "puzzle2": "Pyramid Key"
+            }
+        },
+
+        {
+            "title": "Atlantis",
+            "file": "data\\level10b.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "The Great Pyramid",
+            "file": "data\\level10c.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Cut Scene 1",
+            "file": "data\\cut1.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Cut Scene 2",
+            "file": "data\\cut2.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Cut Scene 3",
+            "file": "data\\cut3.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Cut Scene 4",
+            "file": "data\\cut4.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Title",
+            "file": "data\\title.phd",
+            "strings": {}
+        },
+
+        {
+            "title": "Current Position",
+            "file": "data\\current.phd",
+            "strings": {}
+        }
+    ],
+
+    "strings": {
+        "HEADING_INVENTORY": "INVENTORY",
+        "HEADING_GAME_OVER": "GAME OVER",
+        "HEADING_OPTION": "OPTION",
+        "HEADING_ITEMS": "ITEMS",
+        "PASSPORT_SELECT_LEVEL": "Select Level",
+        "PASSPORT_SELECT_MODE": "Select Mode",
+        "PASSPORT_MODE_NEW_GAME": "New Game",
+        "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
+        "PASSPORT_NEW_GAME": "New Game",
+        "PASSPORT_LOAD_GAME": "Load Game",
+        "PASSPORT_SAVE_GAME": "Save Game",
+        "PASSPORT_EXIT_GAME": "Exit Game",
+        "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
+        "DETAIL_SELECT_DETAIL": "Select Detail",
+        "DETAIL_LEVEL_HIGH": "High",
+        "DETAIL_LEVEL_MEDIUM": "Medium",
+        "DETAIL_LEVEL_LOW": "Low",
+        "DETAIL_PERSPECTIVE_FMT": "Perspective     %s",
+        "DETAIL_BILINEAR_FMT": "Bilinear        %s",
+        "DETAIL_VIDEO_MODE_FMT": "Game Video Mode %s",
+        "SOUND_SET_VOLUMES": "Set Volumes",
+        "CONTROL_DEFAULT_KEYS": "Default Keys",
+        "CONTROL_USER_KEYS": "User Keys",
+        "KEYMAP_RUN": "Run",
+        "KEYMAP_BACK": "Back",
+        "KEYMAP_LEFT": "Left",
+        "KEYMAP_RIGHT": "Right",
+        "KEYMAP_STEP_LEFT": "Step Left",
+        "KEYMAP_STEP_RIGHT": "Step Right",
+        "KEYMAP_WALK": "Walk",
+        "KEYMAP_JUMP": "Jump",
+        "KEYMAP_ACTION": "Action",
+        "KEYMAP_DRAW_WEAPON": "Draw Weapon",
+        "KEYMAP_LOOK": "Look",
+        "KEYMAP_ROLL": "Roll",
+        "KEYMAP_INVENTORY": "Inventory",
+        "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
+        "STATS_SECRETS_FMT": "SECRETS %d OF %d",
+        "STATS_PICKUPS_FMT": "PICKUPS %d",
+        "STATS_KILLS_FMT": "KILLS %d",
+        "MISC_ON": "On",
+        "MISC_OFF": "Off",
+        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
+        "INV_ITEM_MEDI": "Small Medi Pack",
+        "INV_ITEM_BIG_MEDI": "Large Medi Pack",
+        "INV_ITEM_PUZZLE1": "Puzzle",
+        "INV_ITEM_PUZZLE2": "Puzzle",
+        "INV_ITEM_PUZZLE3": "Puzzle",
+        "INV_ITEM_PUZZLE4": "Puzzle",
+        "INV_ITEM_KEY1": "Key",
+        "INV_ITEM_KEY2": "Key",
+        "INV_ITEM_KEY3": "Key",
+        "INV_ITEM_KEY4": "Key",
+        "INV_ITEM_PICKUP1": "Pickup",
+        "INV_ITEM_PICKUP2": "Pickup",
+        "INV_ITEM_LEADBAR": "Lead Bar",
+        "INV_ITEM_SCION": "Scion",
+        "INV_ITEM_PISTOLS": "Pistols",
+        "INV_ITEM_SHOTGUN": "Shotgun",
+        "INV_ITEM_MAGNUM": "Magnums",
+        "INV_ITEM_UZI": "Uzis",
+        "INV_ITEM_GRENADE": "Grenade",
+        "INV_ITEM_PISTOL_AMMO": "Pistol Clips",
+        "INV_ITEM_SHOTGUN_AMMO": "Shotgun Shells",
+        "INV_ITEM_MAGNUM_AMMO": "Magnum Clips",
+        "INV_ITEM_UZI_AMMO": "Uzi Clips",
+        "INV_ITEM_COMPASS": "Compass",
+        "INV_ITEM_GAME": "Game",
+        "INV_ITEM_DETAILS": "Detail Levels",
+        "INV_ITEM_SOUND": "Sound",
+        "INV_ITEM_CONTROLS": "Controls",
+        "INV_ITEM_GAMMA": "Gamma",
+        "INV_ITEM_LARAS_HOME": "Lara's Home",
+    }
+}
