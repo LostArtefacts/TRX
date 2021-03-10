@@ -562,8 +562,8 @@ int32_t LoadTexturePages(FILE *fp)
 
 int32_t S_LoadLevel(int level_num)
 {
-    TRACE("%d (%s)", level_num, LevelNames[level_num]);
-    int32_t ret = LoadLevel(LevelNames[level_num], level_num);
+    TRACE("%d (%s)", level_num, GF_LevelNames[level_num]);
+    int32_t ret = LoadLevel(GF_LevelNames[level_num], level_num);
 
 #ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {

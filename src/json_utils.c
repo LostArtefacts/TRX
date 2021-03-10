@@ -21,6 +21,9 @@ struct json_value_s *JSONGetField(struct json_value_s *root, const char *name)
 int JSONGetBooleanValue(
     struct json_value_s *root, const char *name, int8_t *value)
 {
+    if (!root) {
+        return 0;
+    }
     struct json_value_s *field = JSONGetField(root, name);
     if (!field
         || (field->type != json_type_true && field->type != json_type_false)) {
@@ -33,6 +36,9 @@ int JSONGetBooleanValue(
 int JSONGetIntegerValue(
     struct json_value_s *root, const char *name, int32_t *value)
 {
+    if (!root) {
+        return 0;
+    }
     struct json_value_s *field = JSONGetField(root, name);
     if (!field) {
         return 0;
@@ -48,6 +54,9 @@ int JSONGetIntegerValue(
 int JSONGetStringValue(
     struct json_value_s *root, const char *name, const char **value)
 {
+    if (!root) {
+        return 0;
+    }
     struct json_value_s *field = JSONGetField(root, name);
     if (!field || field->type != json_type_string) {
         return 0;

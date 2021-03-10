@@ -49,7 +49,6 @@
 #define Lara                    VAR_U_(0x0045ED80, LARA_INFO)
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
 #define PierreItem              VAR_U_(0x0045E328, int16_t)
-#define LevelNames              ARRAY_(0x00453648, const char*, [LV_NUMBER_OF])
 #define LevelMusic              ARRAY_(0x00456A18, int16_t, [LV_NUMBER_OF])
 #define SecretTotals            ARRAY_(0x00453CB0, int8_t, [MAX_SECRETS])
 #define ResetFlag               VAR_I_(0x00459F50, int32_t, 0)
@@ -262,6 +261,7 @@
 // clang-format on
 
 extern char *GF_LevelTitles[LV_NUMBER_OF];
+extern char *GF_LevelNames[LV_NUMBER_OF];
 // NOTE: missing in original code
 extern char *GF_GameStringTable[GSI_NUMBER_OF];
 

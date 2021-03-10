@@ -168,22 +168,26 @@ static void GF_LoadLevels(struct json_value_s *json)
     }
 
     // GF_LevelTitles = malloc(sizeof(char *) * level_count);
+    // GV_LevelNames = malloc(sizeof(char *) * level_count);
 
     struct json_array_element_s *item = arr->start;
     int level_num = 0;
 
     while (item) {
-        struct json_value_s *level_title = JSONGetField(item->value, "title");
-        if (!level_title) {
-            TRACE("level %d is missing title", level_num);
+        const char *str;
+
+        if (JSONGetStringValue(item->value, "file", &str)) {
+            GF_LevelNames[level_num] = malloc(strlen(str) + 1);
+            strcpy(GF_LevelNames[level_num], str);
         } else {
-            struct json_string_s *value = json_value_as_string(level_title);
-            if (!value) {
-                TRACE("'title' must be a string", level_num);
-            } else {
-                GF_LevelTitles[level_num] = malloc(strlen(value->string) + 1);
-                strcpy(GF_LevelTitles[level_num], value->string);
-            }
+            TRACE("level %d: 'file' must be a string", level_num);
+        }
+
+        if (JSONGetStringValue(item->value, "title", &str)) {
+            GF_LevelTitles[level_num] = malloc(strlen(str) + 1);
+            strcpy(GF_LevelTitles[level_num], str);
+        } else {
+            TRACE("level %d: 'title' must be a string", level_num);
         }
 
         item = item->next;
