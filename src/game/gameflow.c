@@ -112,6 +112,85 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
+static void GF_LoadGameStrings(struct json_value_s *json)
+{
+    struct json_value_s *strings = JSONGetField(json, "strings");
+    if (!strings) {
+        TRACE("missing 'strings' entry");
+        return;
+    }
+    if (strings->type != json_type_object) {
+        TRACE("'strings' must be a dictionary");
+        return;
+    }
+
+    struct json_object_s *object = json_value_as_object(strings);
+    struct json_object_element_s *item = object->start;
+    while (item) {
+        GAME_STRING_ID key = StringToGameStringID(item->name->string);
+        struct json_string_s *value = json_value_as_string(item->value);
+        if (!value) {
+            TRACE("invalid string key %s", item->name->string);
+            item = item->next;
+            continue;
+        }
+        if (key < 0 || key >= GSI_NUMBER_OF) {
+            TRACE("invalid string key %s", item->name->string);
+            item = item->next;
+            continue;
+        }
+
+        GF_GameStringTable[key] = malloc(strlen(value->string) + 1);
+        strcpy(GF_GameStringTable[key], value->string);
+        item = item->next;
+    }
+}
+
+static void GF_LoadLevels(struct json_value_s *json)
+{
+    struct json_value_s *levels = JSONGetField(json, "levels");
+    if (!levels) {
+        TRACE("missing 'levels' entry");
+        return;
+    }
+    if (levels->type != json_type_array) {
+        TRACE("'levels' must be a list");
+    }
+
+    struct json_array_s *arr = json_value_as_array(levels);
+    int32_t level_count = arr->length;
+    if (level_count != LV_NUMBER_OF) {
+        TRACE(
+            "currently only fixed number of levels is supported! got "
+            "%d, expected %d.",
+            level_count, LV_NUMBER_OF);
+        return;
+    }
+
+    // GF_LevelTitles = malloc(sizeof(char *) * level_count);
+
+    struct json_array_element_s *item = arr->start;
+    int level_num = 0;
+
+    while (item) {
+        struct json_value_s *level_title = JSONGetField(item->value, "title");
+        if (!level_title) {
+            TRACE("level %d is missing title", level_num);
+        } else {
+            struct json_string_s *value = json_value_as_string(level_title);
+            if (!value) {
+                TRACE("'title' must be a string", level_num);
+            } else {
+                GF_LevelTitles[level_num] = malloc(strlen(value->string) + 1);
+                strcpy(GF_LevelTitles[level_num], value->string);
+            }
+        }
+
+        item = item->next;
+        level_num++;
+    }
+}
+
 static int8_t S_LoadGameFlow(const char *file_name)
 {
     int8_t result = 0;
@@ -154,33 +233,8 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
     result = 1;
 
-    {
-        struct json_value_s *strings = JSONGetField(json, "strings");
-        if (strings && strings->type == json_type_object) {
-            struct json_object_s *object = json_value_as_object(strings);
-            struct json_object_element_s *item = object->start;
-            while (item) {
-                GAME_STRING_ID key = StringToGameStringID(item->name->string);
-                struct json_string_s *value = json_value_as_string(item->value);
-                if (!value) {
-                    TRACE("invalid gamestring value for key %d", key);
-                    item = item->next;
-                    continue;
-                }
-                if (key < 0 || key >= GSI_NUMBER_OF) {
-                    TRACE("invalid gamestring key %s", item->value);
-                    item = item->next;
-                    continue;
-                }
-
-                TRACE("setting %d to %s", key, value->string);
-                GF_GameStringTable[key] = malloc(strlen(value->string) + 1);
-                strcpy(GF_GameStringTable[key], value->string);
-                GF_GameStringTable[key][strlen(value->string)] = '\0';
-                item = item->next;
-            }
-        }
-    }
+    GF_LoadGameStrings(json);
+    GF_LoadLevels(json);
 
 cleanup:
     if (fp) {

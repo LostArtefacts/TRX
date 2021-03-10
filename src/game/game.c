@@ -263,7 +263,7 @@ void LevelStats(int32_t level_num)
     T_InitPrint();
 
     // heading
-    sprintf(string, "%s", LevelTitles[level_num]);
+    sprintf(string, "%s", GF_LevelTitles[level_num]);
     txt = T_Print(0, -50, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -475,7 +475,7 @@ int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
         return 0;
     }
 
-    sprintf(filename, "%s", LevelTitles[SaveGame[0].current_level]);
+    sprintf(filename, "%s", GF_LevelTitles[SaveGame[0].current_level]);
     fwrite(filename, sizeof(char), 75, fp);
     fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
     fwrite(data, size, 1, fp);

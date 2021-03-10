@@ -8,6 +8,31 @@ int16_t StoredLaraHealth = 0;
 int16_t BarOffsetY[6];
 #endif
 
+char *GF_LevelTitles[LV_NUMBER_OF] = {
+    "Lara's Home",
+    "Caves",
+    "City of Vilcabamba",
+    "Lost Valley",
+    "Tomb of Qualopec",
+    "St. Francis' Folly",
+    "Colosseum",
+    "Palace Midas",
+    "The Cistern",
+    "Tomb of Tihocan",
+    "City of Khamoon",
+    "Obelisk of Khamoon",
+    "Sanctuary of the Scion",
+    "Natla's Mines",
+    "Atlantis",
+    "The Great Pyramid",
+    "Cut Scene 1",
+    "Cut Scene 2",
+    "Cut Scene 3",
+    "Cut Scene 4",
+    "Title",
+    "Current Position",
+};
+
 char *GF_GameStringTable[GSI_NUMBER_OF] = {
     [GSI_HEADING_INVENTORY] = "INVENTORY",
     [GSI_HEADING_GAME_OVER] = "GAME OVER",
