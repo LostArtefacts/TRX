@@ -8,8 +8,7 @@
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    // NOTE: this check is missing in original game
-    if (T1MConfig.disable_fmv) {
+    if (T1MConfig.disable_fmv) { // T1M
         return -1;
     }
 

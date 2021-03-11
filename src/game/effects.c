@@ -55,8 +55,8 @@ void SoundEffects()
         }
     }
 
-    // NOTE: why are we firing this here?
-    // Some of the FX routines rely on the item to be not null!
+    // XXX: Why are we firing this here? Some of the FX routines rely on the
+    // item to be not null!
     if (FlipEffect != -1) {
         EffectRoutines[FlipEffect](NULL);
     }
@@ -187,7 +187,7 @@ void ItemSparkle(ITEM_INFO *item, int meshmask)
 void FxLaraBubbles(ITEM_INFO *item)
 {
 #ifdef T1M_FEAT_CHEATS
-    // NOTE: until we get Robolara, it makes sense for her to breathe underwater
+    // XXX: until we get Robolara, it makes sense for her to breathe underwater
     if (Lara.water_status == LWS_CHEAT
         && !(RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER)) {
         return;

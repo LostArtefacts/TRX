@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// NOTE: this function is inlined in original code
+// T1M: this function was inlined
 void S_ReadUserSettings()
 {
     FILE *fp = fopen("atiset.dat", "rb");
@@ -36,7 +36,7 @@ void S_ReadUserSettings()
         } else {
             S_CDVolume(0);
         }
-        // NOTE: missing in original code
+        // T1M
         if (OptionSoundFXVolume) {
             adjust_master_volume(6 * OptionSoundFXVolume + 3);
         } else {
@@ -46,7 +46,7 @@ void S_ReadUserSettings()
     }
 }
 
-// NOTE: this function is inlined in original code
+// T1M: this function was inlined
 void S_WriteUserSettings()
 {
     FILE *fp = fopen("atiset.dat", "wb");
@@ -73,7 +73,7 @@ void GameMain()
     S_InitialiseSystem();
     InitialiseStartInfo();
 
-    // NOTE: not present in original game
+    // T1M gameflow support
     if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
         ShowFatalError("MAIN: unable to load script file");
         return;
@@ -92,8 +92,7 @@ void GameMain()
     sub_408E41();
     S_Wait(60);
 
-    // NOTE: this check is missing in original game
-    if (!T1MConfig.disable_fmv) {
+    if (!T1MConfig.disable_fmv) { // T1M
         if (IsHardwareRenderer) {
             HardwarePrepareFMV();
         }

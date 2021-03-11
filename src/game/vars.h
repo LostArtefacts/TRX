@@ -262,8 +262,7 @@ extern char **GF_Puzzle1Strings;
 extern char **GF_Puzzle2Strings;
 extern char **GF_Puzzle3Strings;
 extern char **GF_Puzzle4Strings;
-// NOTE: missing in original code
-extern char *GF_GameStrings[GS_NUMBER_OF];
+extern char *GF_GameStrings[GS_NUMBER_OF]; // T1M
 
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;

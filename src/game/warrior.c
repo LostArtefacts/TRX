@@ -648,7 +648,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
 
     int32_t *bone = &AnimBones[object->bone_index];
 #if 0
-    // NOTE: present in OG, removed by GLrage on the grounds that it sometimes
+    // XXX: present in OG, removed by GLrage on the grounds that it sometimes
     // crashes.
     int16_t *extra_rotation = (int16_t*)item->data;
 #endif

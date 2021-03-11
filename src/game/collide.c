@@ -10,6 +10,8 @@
 #include "game/vars.h"
 #include "util.h"
 
+#define MAX_BADDIE_COLLISION 12
+
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight)
@@ -475,7 +477,7 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
         }
     }
 
-    // NOTE: this access violation check was not present in the original code
+    // T1M: protect against access violation
     if (i >= MAX_ROOMS_TO_DRAW) {
         return;
     }
@@ -542,16 +544,15 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     int16_t numroom = 0;
-    int16_t roomies[12];
+    int16_t roomies[MAX_BADDIE_COLLISION];
 
     roomies[numroom++] = lara_item->room_number;
 
     DOOR_INFOS *door = RoomInfo[lara_item->room_number].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
-            // NOTE: this access violation check was not present in the original
-            // code
-            if (numroom >= 12) {
+            // T1M: protect against access violation
+            if (numroom >= MAX_BADDIE_COLLISION) {
                 break;
             }
             roomies[numroom++] = door->door[i].room_num;

@@ -780,7 +780,7 @@ typedef enum {
     TRAP_FINISHED = 3,
 } TRAP_ANIM;
 
-// NOTE: missing in original code
+// T1M
 typedef enum {
     RIF_FIXED_HEIGHT = 1 << 0,
     RIF_BLOCKED = 1 << 1,
@@ -792,7 +792,7 @@ typedef enum {
     RBS_MOVING = 2,
 } ROLLING_BLOCK_STATE;
 
-// NOTE: missing in original code
+// T1M
 typedef enum {
     GS_HEADING_INVENTORY,
     GS_HEADING_GAME_OVER,
@@ -1515,7 +1515,7 @@ typedef struct {
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
-    /* 0014 */ uint16_t flags; // NOTE: T1M-specific
+    /* 0014 */ uint16_t flags; // T1M
     /* 0016 */ char *heading_text;
     /* 0020 */ char *item_texts;
     /* 001E */ int16_t item_text_len;
@@ -1524,7 +1524,7 @@ typedef struct {
     /* 0028 */ TEXTSTRING *moreup;
     /* 002C */ TEXTSTRING *moredown;
     /* 0030 */ TEXTSTRING *texts[MAX_REQLINES];
-    /* 0070 */ uint16_t item_flags[MAX_REQLINES]; // NOTE: T1M-specific
+    /* 0070 */ uint16_t item_flags[MAX_REQLINES]; // T1M
     /* 0090 end */
 } REQUEST_INFO;
 

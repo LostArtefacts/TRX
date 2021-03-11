@@ -363,8 +363,8 @@ void phd_InitWindow(
 void AlterFOV(PHD_ANGLE fov)
 {
 #ifdef T1M_FEAT_UI
-    // NOTE: in places that use GAME_FOV, it can be safely changed to user's
-    // choice. But for cinematics, the FOV value chosen by devs needs to stay
+    // In places that use GAME_FOV, it can be safely changed to user's choice.
+    // But for cinematics, the FOV value chosen by devs needs to stay
     // unchanged, otherwise the game renders the low camera in the Lost Valley
     // cutscene wrong.
     if (T1MConfig.fov_vertical) {

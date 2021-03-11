@@ -179,9 +179,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
-                    // NOTE: S_FrontendCheck was missing in the original code.
-                    // It is called to set RIF_BLOCKED for empty slots for the
-                    // load game handler.
+                    // T1M: set empty slots as RIF_BLOCKED for the load game
+                    // handler.
                     S_FrontEndCheck();
 
                     GetSavedGamesList(&LoadSaveGameRequester);
@@ -266,9 +265,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
-                    // NOTE: flag handling was missing in the original code. It
-                    // is done to remove RIF_BLOCKED for empty slots for the
-                    // save game handler.
+                    // T1M: remove RIF_BLOCKED for empty slots for the save
+                    // game handler.
                     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
                         LoadSaveGameRequester.item_flags[i] &= ~RIF_BLOCKED;
                     }
@@ -724,7 +722,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    // NOTE: removed dead code (unused INVENTORY_SPRITE* member assignments)
+    // T1M: removed dead code (unused INVENTORY_SPRITE* member assignments)
 
     if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
         for (int i = 0; i < 4; i++) {
@@ -1141,8 +1139,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 {
     int32_t edge_y;
 
-    // NOTE: RIF_FIXED_HEIGHT is missing in original game
-    if (req->flags & RIF_FIXED_HEIGHT) {
+    if (req->flags & RIF_FIXED_HEIGHT) { // T1M
         edge_y = req->y * GetRenderHeightDownscaled() / 100;
     } else {
         switch (HiRes) {
@@ -1294,8 +1291,8 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (CHK_ANY(InputDB, IN_SELECT)) {
-        // NOTE: OG was checking the requester heading text and comparing item
-        // text to - EMPTY SLOT rather than checking this flag
+        // T1M: introduce requester item flags. OG was checking the requester
+        // heading text and comparing the item text to "- EMPTY SLOT" instead.
         if (req->item_flags[req->requested] & RIF_BLOCKED) {
             Input = 0;
             return 0;

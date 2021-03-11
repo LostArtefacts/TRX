@@ -278,7 +278,7 @@ void T_DrawText()
     static int fps_counter1 = 0;
     static int fps_counter2 = 0;
 
-    // in case someone called T_RemoveAllPrints or similar
+    // In case someone called T_RemoveAllPrints or similar.
     if (fps_text && !(fps_text->flags & TF_ACTIVE)) {
         fps_text = NULL;
     }

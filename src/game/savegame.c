@@ -489,7 +489,7 @@ void WriteSGLara(LARA_INFO *lara)
     WriteSG(&lara->current_active, sizeof(int16_t));
     WriteSG(&lara->spaz_effect_count, sizeof(int16_t));
 
-    // NOTE: OG just writes the pointer address (!)
+    // OG just writes the pointer address (!)
     if (lara->spaz_effect) {
         tmp32 = (size_t)lara->spaz_effect - (size_t)Effects;
     }
@@ -502,9 +502,8 @@ void WriteSGLara(LARA_INFO *lara)
         WriteSG(&tmp32, sizeof(int32_t));
     }
 
-    // NOTE: og just writes the pointer address (!) assuming it's a
-    // non-existing mesh 16 (!!) which happens to be Lara's current target.
-    // Just write NULL.
+    // OG just writes the pointer address (!) assuming it's a non-existing mesh
+    // 16 (!!) which happens to be Lara's current target. Just write NULL.
     tmp32 = 0;
     WriteSG(&tmp32, sizeof(int32_t));
 

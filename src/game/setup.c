@@ -37,7 +37,7 @@
 #include "config.h"
 #include "util.h"
 
-int32_t InitialiseLevel(int level_num)
+int32_t InitialiseLevel(int32_t level_num)
 {
     TRACE("");
     if (level_num == LV_CURRENT) {
