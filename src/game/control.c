@@ -100,7 +100,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                         return return_val;
                     }
                     if (CurrentLevel == LV_GYM) {
-                        return GF_STARTGAME | LV_FIRSTLEVEL;
+                        return GF_START_GAME | LV_FIRSTLEVEL;
                     }
 
                     CreateSaveGameInfo();

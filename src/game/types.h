@@ -514,24 +514,14 @@ typedef enum {
 } GAME_LEVEL;
 
 typedef enum {
-    GF_STARTGAME = 0,
-    GF_STARTCINE = 1 << 6,
-    GF_STARTFMV = 2 << 6,
-    GF_STARTDEMO = 3 << 6,
+    GF_START_GAME = 0,
+    GF_START_CINE = 1 << 6,
+    GF_START_FMV = 2 << 6,
+    GF_START_DEMO = 3 << 6,
     GF_EXIT_TO_TITLE = 4 << 6,
-    GF_LEVELCOMPLETE = 5 << 6,
-    GF_EXITGAME = 6 << 6,
+    GF_LEVEL_COMPLETE = 5 << 6,
+    GF_EXIT_GAME = 6 << 6,
     GF_EXIT_TO_OPTION = 7 << 6,
-    GF_TITLE_DESELECT = 8 << 6,
-    GF_STARTMENU = 9 << 6,
-    GF_LOOPINV = 10 << 6,
-    GF_LOOPGAME = 11 << 6,
-    GF_ENDGAME = 12 << 6,
-    GF_INTRO = 13 << 6,
-    GF_PLAYFMV = 14 << 6,
-    GF_CREDITS = 15 << 6,
-    GF_PREWARMGAME = 16 << 6,
-    GF_LOOPCINE = 17 << 6
 } GAMEFLOW_OPTION;
 
 typedef enum {

@@ -608,11 +608,11 @@ int32_t Display_Inventory(int inv_mode)
     switch (InventoryChosen) {
     case O_PASSPORT_OPTION:
         // T1M: there was a removed call to S_CDVolume here.
-        return GF_STARTGAME | LV_FIRSTLEVEL;
+        return GF_START_GAME | LV_FIRSTLEVEL;
 
     case O_PHOTO_OPTION:
         InventoryExtraData[1] = 0;
-        return GF_STARTGAME | LV_FIRSTLEVEL;
+        return GF_START_GAME | LV_FIRSTLEVEL;
 
     case O_GUN_OPTION:
         UseItem(O_GUN_OPTION);

@@ -124,7 +124,7 @@ void GameMain()
         int32_t gf_param = gf_option & ((1 << 6) - 1);
 
         switch (gf_direction) {
-        case GF_STARTGAME:
+        case GF_START_GAME:
             if (!LevelIsValid(gf_param)) {
                 do {
                     ++gf_param;
@@ -137,15 +137,15 @@ void GameMain()
             gf_option = StartGame(gf_param);
             break;
 
-        case GF_STARTCINE:
+        case GF_START_CINE:
             gf_option = StartCinematic(gf_param);
             break;
 
-        case GF_STARTDEMO:
+        case GF_START_DEMO:
             gf_option = StartDemo();
             break;
 
-        case GF_LEVELCOMPLETE:
+        case GF_LEVEL_COMPLETE:
             gf_option = LevelCompleteSequence(gf_param);
             break;
 
@@ -158,7 +158,7 @@ void GameMain()
                 S_CDPlay(2);
             } else {
                 if (!InitialiseLevel(LV_TITLE)) {
-                    gf_option = GF_EXITGAME;
+                    gf_option = GF_EXIT_GAME;
                     break;
                 }
                 TitleLoaded = 1;
@@ -173,33 +173,30 @@ void GameMain()
 
             if (ResetFlag) {
                 ResetFlag = 0;
-                gf_option = GF_STARTDEMO;
+                gf_option = GF_START_DEMO;
             } else if (InventoryChosen == O_PHOTO_OPTION) {
-                gf_option = GF_STARTGAME | LV_GYM;
-            } else {
-                if (InventoryChosen != O_PASSPORT_OPTION) {
-                    gf_option = GF_EXITGAME;
-                }
-                if (InventoryExtraData[0]) {
-                    if (InventoryExtraData[0] == 1) {
-                        InitialiseStartInfo();
-#ifdef T1M_FEAT_GAMEPLAY
-                        SaveGame[0].bonus_flag = InventoryExtraData[1];
-                        ModifyStartInfo(LV_FIRSTLEVEL);
-#endif
-                        gf_option = GF_STARTGAME | LV_FIRSTLEVEL;
-                    } else {
-                        gf_option = GF_EXITGAME;
-                    }
-                } else {
+                gf_option = GF_START_GAME | LV_GYM;
+            } else if (InventoryChosen == O_PASSPORT_OPTION) {
+                if (InventoryExtraData[0] == 0) {
                     S_LoadGame(
                         SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
-                    gf_option = GF_STARTGAME | LV_CURRENT;
+                    gf_option = GF_START_GAME | LV_CURRENT;
+                } else if (InventoryExtraData[0] == 1) {
+                    InitialiseStartInfo();
+#ifdef T1M_FEAT_GAMEPLAY
+                    SaveGame[0].bonus_flag = InventoryExtraData[1];
+                    ModifyStartInfo(LV_FIRSTLEVEL);
+#endif
+                    gf_option = GF_START_GAME | LV_FIRSTLEVEL;
+                } else {
+                    gf_option = GF_EXIT_GAME;
                 }
+            } else {
+                gf_option = GF_EXIT_GAME;
             }
             break;
 
-        case GF_EXITGAME:
+        case GF_EXIT_GAME:
             loop_continue = 0;
             break;
 

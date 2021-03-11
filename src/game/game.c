@@ -15,7 +15,7 @@
 #include "config.h"
 #include "util.h"
 
-int32_t StartGame(int level_num)
+int32_t StartGame(int32_t level_num)
 {
     switch (level_num) {
     case LV_GYM:
@@ -66,7 +66,7 @@ int32_t StartGame(int level_num)
         }
 
         S_FadeInInventory(1);
-        return GF_LEVELCOMPLETE | CurrentLevel;
+        return GF_LEVEL_COMPLETE | CurrentLevel;
     }
 
     S_FadeToBlack();
@@ -74,18 +74,18 @@ int32_t StartGame(int level_num)
         return GF_EXIT_TO_TITLE;
     }
 
-    if (InventoryExtraData[0]) {
-        if (InventoryExtraData[0] == 1) {
-            return GF_STARTGAME | LV_FIRSTLEVEL;
-        }
+    if (InventoryExtraData[0] == 0) {
+        S_LoadGame(SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
+        return GF_START_GAME | LV_CURRENT;
+    } else if (InventoryExtraData[0] == 1) {
+        return GF_START_GAME | LV_FIRSTLEVEL;
+    } else {
         return GF_EXIT_TO_TITLE;
     }
 
-    S_LoadGame(SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
-    return GF_STARTGAME | LV_CURRENT;
 }
 
-int32_t GameLoop(int demo_mode)
+int32_t GameLoop(int32_t demo_mode)
 {
     TRACE("");
     OverlayFlag = 1;
@@ -98,7 +98,7 @@ int32_t GameLoop(int demo_mode)
         if (ret) {
             break;
         }
-        nframes = DrawPhaseGame(ret);
+        nframes = DrawPhaseGame();
     }
 
     S_SoundStopAllSamples();
@@ -110,7 +110,7 @@ int32_t GameLoop(int demo_mode)
     return ret;
 }
 
-int32_t LevelCompleteSequence(int level_num)
+int32_t LevelCompleteSequence(int32_t level_num)
 {
     TRACE("");
     switch (level_num) {
@@ -119,57 +119,57 @@ int32_t LevelCompleteSequence(int level_num)
 
     case LV_LEVEL1:
         LevelStats(LV_LEVEL1);
-        return GF_STARTGAME | LV_LEVEL2;
+        return GF_START_GAME | LV_LEVEL2;
 
     case LV_LEVEL2:
         LevelStats(LV_LEVEL2);
-        return GF_STARTGAME | LV_LEVEL3A;
+        return GF_START_GAME | LV_LEVEL3A;
 
     case LV_LEVEL3A:
         LevelStats(LV_LEVEL3A);
-        return GF_STARTGAME | LV_LEVEL3B;
+        return GF_START_GAME | LV_LEVEL3B;
 
     case LV_LEVEL3B:
-        return GF_STARTCINE | LV_CUTSCENE1;
+        return GF_START_CINE | LV_CUTSCENE1;
 
     case LV_LEVEL4:
         LevelStats(LV_LEVEL4);
-        return GF_STARTGAME | LV_LEVEL5;
+        return GF_START_GAME | LV_LEVEL5;
 
     case LV_LEVEL5:
         LevelStats(LV_LEVEL5);
-        return GF_STARTGAME | LV_LEVEL6;
+        return GF_START_GAME | LV_LEVEL6;
 
     case LV_LEVEL6:
         LevelStats(LV_LEVEL6);
-        return GF_STARTGAME | LV_LEVEL7A;
+        return GF_START_GAME | LV_LEVEL7A;
 
     case LV_LEVEL7A:
         LevelStats(LV_LEVEL7A);
-        return GF_STARTGAME | LV_LEVEL7B;
+        return GF_START_GAME | LV_LEVEL7B;
 
     case LV_LEVEL7B:
-        return GF_STARTCINE | LV_CUTSCENE2;
+        return GF_START_CINE | LV_CUTSCENE2;
 
     case LV_LEVEL8A:
         LevelStats(LV_LEVEL8A);
-        return GF_STARTGAME | LV_LEVEL8B;
+        return GF_START_GAME | LV_LEVEL8B;
 
     case LV_LEVEL8B:
         LevelStats(LV_LEVEL8B);
-        return GF_STARTGAME | LV_LEVEL8C;
+        return GF_START_GAME | LV_LEVEL8C;
 
     case LV_LEVEL8C:
         LevelStats(LV_LEVEL8C);
-        return GF_STARTGAME | LV_LEVEL10A;
+        return GF_START_GAME | LV_LEVEL10A;
 
     case LV_LEVEL10A:
         LevelStats(LV_LEVEL10A);
-        return GF_STARTCINE | LV_CUTSCENE3;
+        return GF_START_CINE | LV_CUTSCENE3;
 
     case LV_LEVEL10B:
         S_PlayFMV(FMV_PRISON, 1);
-        return GF_STARTCINE | LV_CUTSCENE4;
+        return GF_START_CINE | LV_CUTSCENE4;
 
     case LV_LEVEL10C:
         LevelStats(LV_LEVEL10C);
@@ -195,18 +195,18 @@ int32_t LevelCompleteSequence(int level_num)
 
     case LV_CUTSCENE1:
         LevelStats(LV_LEVEL3B);
-        return GF_STARTGAME | LV_LEVEL4;
+        return GF_START_GAME | LV_LEVEL4;
 
     case LV_CUTSCENE2:
         LevelStats(LV_LEVEL7B);
-        return GF_STARTGAME | LV_LEVEL8A;
+        return GF_START_GAME | LV_LEVEL8A;
 
     case LV_CUTSCENE3:
-        return GF_STARTGAME | LV_LEVEL10B;
+        return GF_START_GAME | LV_LEVEL10B;
 
     case LV_CUTSCENE4:
         LevelStats(LV_LEVEL10B);
-        return GF_STARTGAME | LV_LEVEL10C;
+        return GF_START_GAME | LV_LEVEL10C;
     }
 
     return GF_EXIT_TO_TITLE;
@@ -269,9 +269,9 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // time taken
-    int seconds = SaveGame[0].timer / 30;
-    int hours = seconds / 3600;
-    int minutes = (seconds / 60) % 60;
+    int32_t seconds = SaveGame[0].timer / 30;
+    int32_t hours = seconds / 3600;
+    int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
     if (hours) {
         sprintf(
@@ -286,8 +286,8 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // secrets
-    int secrets_taken = 0;
-    int secrets_total = MAX_SECRETS;
+    int32_t secrets_taken = 0;
+    int32_t secrets_total = MAX_SECRETS;
     do {
         if (SaveGame[0].secrets & 1) {
             ++secrets_taken;

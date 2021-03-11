@@ -15,7 +15,7 @@
 int32_t StartCinematic(int32_t level_num)
 {
     if (T1MConfig.disable_cine) { // T1M
-        return level_num | GF_LEVELCOMPLETE;
+        return level_num | GF_LEVEL_COMPLETE;
     }
 
     CinematicLevel = level_num;
@@ -70,7 +70,7 @@ int32_t StartCinematic(int32_t level_num)
     LevelComplete = 1;
     S_FadeInInventory(1);
 
-    return level_num | GF_LEVELCOMPLETE;
+    return level_num | GF_LEVEL_COMPLETE;
 }
 
 void InitCinematicRooms()
