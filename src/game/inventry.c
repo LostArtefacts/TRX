@@ -65,9 +65,8 @@ int32_t Display_Inventory(int inv_mode)
 
     mn_stop_ambient_samples();
     S_SoundStopAllSamples();
-    if (InventoryMode != INV_TITLE_MODE) {
-        S_CDVolume(0);
-    }
+
+    // T1M: there was a removed call to S_CDVolume here.
 
     switch (InventoryMode) {
     case INV_DEATH_MODE:
@@ -606,9 +605,7 @@ int32_t Display_Inventory(int inv_mode)
 
     switch (InventoryChosen) {
     case O_PASSPORT_OPTION:
-        if (InventoryExtraData[0] == 1 && OptionMusicVolume) {
-            S_CDVolume(25 * OptionMusicVolume + 5);
-        }
+        // T1M: there was a removed call to S_CDVolume here.
         return GF_STARTGAME | LV_FIRSTLEVEL;
 
     case O_PHOTO_OPTION:
@@ -640,9 +637,7 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    if (InventoryMode != INV_TITLE_MODE && OptionMusicVolume) {
-        S_CDVolume(25 * OptionMusicVolume + 5);
-    }
+    // T1M: there was a removed call to S_CDVolume here.
 
     return 0;
 }
