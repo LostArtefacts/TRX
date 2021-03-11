@@ -50,17 +50,18 @@ void test_config_override()
     int cfg_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char *cfg_data = malloc(cfg_size);
+    char *cfg_data = malloc(cfg_size + 1);
     ASSERT_OK(!!cfg_data);
 
     fread(cfg_data, 1, cfg_size, fp);
+    cfg_data[cfg_size] = '\0';
     fclose(fp);
 
-    char *tmp = strstr(cfg_data, "enable_cheats\": false");
+    char *tmp = strstr(cfg_data, "enable_cheats\": false,");
     ASSERT_OK(!!tmp);
-    tmp = strstr(tmp, "false");
+    tmp = strstr(tmp, "false,");
     ASSERT_OK(!!tmp);
-    memcpy(tmp, "true ", 5);
+    memcpy(tmp, "true, ", 6);
 
     T1MReadConfigFromJson("{}");
     ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 0);

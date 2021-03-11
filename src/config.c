@@ -169,15 +169,16 @@ int8_t T1MReadConfig()
     }
 
     fseek(fp, 0, SEEK_END);
-    size_t cfg_size = ftell(fp);
+    size_t cfg_data_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    cfg_data = malloc(cfg_size);
+    cfg_data = malloc(cfg_data_size + 1);
     if (!cfg_data) {
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
-    fread(cfg_data, 1, cfg_size, fp);
+    fread(cfg_data, 1, cfg_data_size, fp);
+    cfg_data[cfg_data_size] = '\0';
     fclose(fp);
     fp = NULL;
 
