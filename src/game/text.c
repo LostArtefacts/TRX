@@ -124,6 +124,9 @@ T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char *string)
 
 void T_ChangeText(TEXTSTRING *textstring, const char *string)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (!(textstring->flags & TF_ACTIVE)) {
         return;
     }
@@ -135,12 +138,18 @@ void T_ChangeText(TEXTSTRING *textstring, const char *string)
 
 void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     textstring->scale_h = scale_h;
     textstring->scale_v = scale_v;
 }
 
 void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (b) {
         textstring->flags |= TF_FLASH;
         textstring->flash_rate = rate;
@@ -154,6 +163,9 @@ void T_AddBackground(
     TEXTSTRING *textstring, int16_t xsize, int16_t ysize, int16_t xoff,
     int16_t yoff, int16_t zoff, int16_t colour, SG_COL *gourptr, int16_t flags)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     textstring->flags |= TF_BGND;
     textstring->bgnd_size_x = xsize;
     textstring->bgnd_size_y = ysize;
@@ -167,6 +179,9 @@ void T_AddBackground(
 
 void T_RemoveBackground(TEXTSTRING *textstring)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     textstring->flags &= ~TF_BGND;
 }
 
@@ -174,6 +189,9 @@ void T_AddOutline(
     TEXTSTRING *textstring, int16_t b, int16_t colour, SG_COL *gourptr,
     int16_t flags)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     textstring->flags |= TF_OUTLINE;
     textstring->outl_gour = gourptr;
     textstring->outl_colour = colour;
@@ -182,11 +200,17 @@ void T_AddOutline(
 
 void T_RemoveOutline(TEXTSTRING *textstring)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     textstring->flags &= ~TF_OUTLINE;
 }
 
 void T_CentreH(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (b) {
         textstring->flags |= TF_CENTRE_H;
     } else {
@@ -196,6 +220,9 @@ void T_CentreH(TEXTSTRING *textstring, int16_t b)
 
 void T_CentreV(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (b) {
         textstring->flags |= TF_CENTRE_V;
     } else {
@@ -205,6 +232,9 @@ void T_CentreV(TEXTSTRING *textstring, int16_t b)
 
 void T_RightAlign(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (b) {
         textstring->flags |= TF_RIGHT;
     } else {
@@ -214,6 +244,9 @@ void T_RightAlign(TEXTSTRING *textstring, int16_t b)
 
 void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) { // T1M
+        return;
+    }
     if (b) {
         textstring->flags |= TF_BOTTOM;
     } else {
@@ -223,6 +256,9 @@ void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
 
 int32_t T_GetTextWidth(TEXTSTRING *textstring)
 {
+    if (!textstring) { // T1M
+        return 0;
+    }
     int width = 0;
     char *ptr = textstring->string;
     for (char letter = *ptr; *ptr; letter = *ptr++) {
@@ -257,7 +293,6 @@ void T_RemovePrint(TEXTSTRING *textstring)
     if (!textstring) {
         return;
     }
-
     if (textstring->flags & TF_ACTIVE) {
         textstring->flags &= ~TF_ACTIVE;
         --TextStringCount;
