@@ -63,7 +63,7 @@ void S_WriteUserSettings()
 
 void GameMain()
 {
-    DemoLevel = 1;
+    DemoLevel = LV_FIRSTLEVEL;
     SoundIsActive = 1;
     HiRes = 0;
     GameHiRes = 0;
@@ -122,8 +122,6 @@ void GameMain()
         TempVideoRemove();
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
-
-        TRACE("%d %d", gf_direction >> 6, gf_param);
 
         switch (gf_direction) {
         case GF_STARTGAME:

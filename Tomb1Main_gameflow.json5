@@ -236,6 +236,7 @@
         "MISC_ON": "On",
         "MISC_OFF": "Off",
         "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
+        "MISC_DEMO_MODE": "Demo Mode",
         "INV_ITEM_MEDI": "Small Medi Pack",
         "INV_ITEM_BIG_MEDI": "Large Medi Pack",
         "INV_ITEM_PUZZLE1": "Puzzle",
