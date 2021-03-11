@@ -13,11 +13,11 @@
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
-#include "specific/shed.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
 #include "util.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void S_ReadUserSettings()
 {
@@ -103,7 +103,7 @@ void GameMain()
         }
     }
 
-    GameMemoryPointer = _malloc(0x380000);
+    GameMemoryPointer = malloc(MALLOC_SIZE);
     if (!GameMemoryPointer) {
         S_ExitSystem("ERROR: Could not allocate enough memory");
         return;

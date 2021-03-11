@@ -1,6 +1,7 @@
 #ifndef T1M_GAME_CONST_H
 #define T1M_GAME_CONST_H
 
+#define MALLOC_SIZE 0x380000 // 3.5 MB
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
 #define PHD_180 (PHD_ONE / 2) // = 32768 = 0x8000

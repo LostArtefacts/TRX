@@ -4,7 +4,7 @@
 #include "game/items.h"
 #include "game/text.h"
 #include "game/vars.h"
-#include "specific/shed.h"
+#include "specific/frontend.h"
 #include "util.h"
 
 void InitColours()

@@ -338,7 +338,7 @@ LoadTexturePages                ----------  ----------  +
 GetFullPath                     0x0041BFC0  0x00000053  +
 FindCdDrive                     0x0041C020  0x000000C7  +
 
-# ???
+# shell/frontend.cpp
 S_Colour                        0x0041C0F0  0x00000089  *
 S_DrawScreenSprite2d            0x0041C180  0x00000150  -
 S_DrawScreenSprite              0x0041C2D0  0x00000163  *
@@ -349,10 +349,8 @@ S_FinishInventory               0x0041CCC0  0x00000047  *
 S_FadeToBlack                   0x0041CD10  0x0000003F  *
 S_Wait                          0x0041CD50  0x0000004D  *
 SoundStart                      0x0041CDA0  0x00000045  *
-WinPlayFMV                      0x0041CDF0  0x0000024A  -
-sub_41D00B                      0x0041D00B  0x0000002F  -
-S_PlayFMV                       0x0041D040  0x0000007C  *
-sub_41D078                      0x0041D078  0x00000044  -
+WinPlayFMV                      0x0041CDF0  0x00000250  -
+S_PlayFMV                       0x0041D040  0x0000007C  +
 
 # game.cpp
 StartGame                       0x0041D0C0  0x000001CA  +
@@ -859,7 +857,7 @@ CDPlay                          0x00437FB0  0x000000F5  -
 S_CDLoop                        0x004380B0  0x0000000B  *
 sub_4380C0                      0x004380C0  0x00000018  -
 sub_4380E0                      0x004380E0  0x00000255  *
-sub_438340                      0x00438340  0x0000003B  -
+TerminateGameWithMsg            0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  +
 CheckCheatMode                  0x00438920  0x00000213  *
@@ -955,7 +953,7 @@ StatueControl                   0x0043CF80  0x000000E1  +
 
 # ???
 sub_43D070                      0x0043D070  0x0000049A  -
-sub_43D510                      0x0043D510  0x000000DA  -
+TerminateGame                   0x0043D510  0x000000DA  -
 sub_43D5F0                      0x0043D5F0  0x00000176  -
 ShowFatalError                  0x0043D770  0x00000147  *
 KeyboardHook(x,x,x)             0x0043D8C0  0x00000077  -

@@ -36,6 +36,7 @@
 #include "game/warrior.h"
 #include "game/wolf.h"
 #include "specific/file.h"
+#include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
@@ -87,6 +88,7 @@ void T1MInject()
     T1MInjectGameWarrior();
     T1MInjectGameWolf();
     T1MInjectSpecificFile();
+    T1MInjectSpecificFrontend();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
     T1MInjectSpecificOutput();
