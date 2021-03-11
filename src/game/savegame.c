@@ -39,6 +39,8 @@ void ModifyStartInfo(int32_t level_num)
 
     switch (level_num) {
     case LV_GYM:
+        start->available = 1;
+        start->costume = 1;
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
@@ -55,6 +57,8 @@ void ModifyStartInfo(int32_t level_num)
         break;
 
     case LV_FIRSTLEVEL:
+        start->available = 1;
+        start->costume = 0;
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
