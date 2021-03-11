@@ -62,6 +62,7 @@ struct {
     int8_t fix_illegal_gun_equip;
     int32_t fov_value;
     int8_t fov_vertical;
+    int8_t disable_fmv;
 } T1MConfig;
 
 int8_t T1MReadConfigFromJson(const char *json);

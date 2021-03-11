@@ -3,10 +3,16 @@
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+#include "config.h"
 #include <stdlib.h>
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
+    // NOTE: this check is missing in original game
+    if (T1MConfig.disable_fmv) {
+        return -1;
+    }
+
     if (GameMemoryPointer) {
         free(GameMemoryPointer);
     }

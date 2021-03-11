@@ -15,6 +15,7 @@
 #include "specific/shed.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
+#include "config.h"
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,18 +89,21 @@ void GameMain()
     S_DisplayPicture("data\\eidospc");
     sub_408E41();
 
-    if (IsHardwareRenderer) {
-        HardwarePrepareFMV();
-    }
-    WinPlayFMV(FMV_CORE, 1);
-    WinPlayFMV(FMV_ESCAPE, 1);
-    WinPlayFMV(FMV_INTRO, 1);
-    if (!IsHardwareRenderer) {
-        HiRes = -1;
-    } else {
-        HardwareFMVDone();
+    // NOTE: this check is missing in original game
+    if (!T1MConfig.disable_fmv) {
+        if (IsHardwareRenderer) {
+            HardwarePrepareFMV();
+        }
+        WinPlayFMV(FMV_CORE, 1);
+        WinPlayFMV(FMV_ESCAPE, 1);
+        WinPlayFMV(FMV_INTRO, 1);
         if (!IsHardwareRenderer) {
             HiRes = -1;
+        } else {
+            HardwareFMVDone();
+            if (!IsHardwareRenderer) {
+                HiRes = -1;
+            }
         }
     }
 

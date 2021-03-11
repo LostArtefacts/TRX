@@ -143,4 +143,7 @@
     // multi-screen setups, since it distorts the left and right side instead
     // of cropping away the top and bottom part of the screen.
     "fov_vertical": true,
+
+    // Disables FMVs.
+    "disable_fmv": false,
 }
