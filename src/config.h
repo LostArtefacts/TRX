@@ -64,7 +64,7 @@ struct {
     int8_t fov_vertical;
 } T1MConfig;
 
-void T1MReadConfigFromJson(const char *json);
-int T1MReadConfig();
+int8_t T1MReadConfigFromJson(const char *json);
+int8_t T1MReadConfig();
 
 #endif

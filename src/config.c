@@ -98,11 +98,22 @@ ReadBarColor(struct json_value_s *root, const char *name, int8_t default_value)
     return default_value;
 }
 
-void T1MReadConfigFromJson(const char *cfg_data)
+int8_t T1MReadConfigFromJson(const char *cfg_data)
 {
+    int8_t result = 0;
+
+    struct json_parse_result_s parse_result;
     struct json_value_s *json = json_parse_ex(
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
-        NULL);
+        &parse_result);
+    if (!json) {
+        TRACE(
+            "failed to parse config file: %s in line %d, char %d",
+            JSONGetErrorDescription(parse_result.error),
+            parse_result.error_line_no, parse_result.error_row_no);
+    } else {
+        result = 1;
+    }
 
     READ_BOOL(disable_healing_between_levels, 0);
     READ_BOOL(disable_medpacks, 0);
@@ -137,32 +148,45 @@ void T1MReadConfigFromJson(const char *cfg_data)
 
     CLAMP(T1MConfig.fov_value, 30, 255);
 
-    free(json);
+    if (json) {
+        free(json);
+    }
+    return result;
 }
 
-int T1MReadConfig()
+int8_t T1MReadConfig()
 {
-    FILE *fp = fopen("Tomb1Main.json5", "rb");
+    int8_t result = 0;
+    FILE *fp = NULL;
+    char *cfg_data = NULL;
+
+    fp = fopen("Tomb1Main.json5", "rb");
     if (!fp) {
-        T1MReadConfigFromJson("");
-        return 0;
+        result = T1MReadConfigFromJson("");
+        goto cleanup;
     }
 
     fseek(fp, 0, SEEK_END);
-    int cfg_size = ftell(fp);
+    size_t cfg_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char *cfg_data = malloc(cfg_size);
+    cfg_data = malloc(cfg_size);
     if (!cfg_data) {
-        fclose(fp);
-        T1MReadConfigFromJson("");
-        return 0;
+        result = T1MReadConfigFromJson("");
+        goto cleanup;
     }
     fread(cfg_data, 1, cfg_size, fp);
     fclose(fp);
+    fp = NULL;
 
-    T1MReadConfigFromJson(cfg_data);
+    result = T1MReadConfigFromJson(cfg_data);
 
-    free(cfg_data);
-    return 1;
+cleanup:
+    if (fp) {
+        fclose(fp);
+    }
+    if (cfg_data) {
+        free(cfg_data);
+    }
+    return result;
 }

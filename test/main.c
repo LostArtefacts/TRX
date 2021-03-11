@@ -5,7 +5,7 @@
 
 void test_empty_config()
 {
-    T1MReadConfigFromJson("");
+    T1MReadConfigFromJson("{}");
 
     ASSERT_INT_EQUAL(T1MConfig.disable_healing_between_levels, 0);
     ASSERT_INT_EQUAL(T1MConfig.disable_medpacks, 0);
@@ -60,7 +60,7 @@ void test_config_override()
     ASSERT_OK(!!tmp);
     memcpy(tmp, "true ", 5);
 
-    T1MReadConfigFromJson("");
+    T1MReadConfigFromJson("{}");
     ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 0);
 
     T1MReadConfigFromJson(cfg_data);
