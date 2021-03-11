@@ -144,6 +144,9 @@
     // of cropping away the top and bottom part of the screen.
     "fov_vertical": true,
 
+    // Disables demos in the main menu.
+    "disable_demo": false,
+
     // Disables FMVs.
     "disable_fmv": false,
 }

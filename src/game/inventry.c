@@ -110,9 +110,11 @@ int32_t Display_Inventory(int inv_mode)
             NoInputCount = 0;
             ResetFlag = 0;
         } else {
-            NoInputCount++;
-            if (NoInputCount > NOINPUT_TIME) {
-                ResetFlag = INV_TITLE_MODE;
+            if (!T1MConfig.disable_demo) { // T1M
+                NoInputCount++;
+                if (NoInputCount > NOINPUT_TIME) {
+                    ResetFlag = 1;
+                }
             }
         }
 
