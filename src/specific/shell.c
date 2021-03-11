@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// NOTE: this function is inlined in original code
 void S_ReadUserSettings()
 {
     FILE *fp = fopen("atiset.dat", "rb");
@@ -45,6 +46,7 @@ void S_ReadUserSettings()
     }
 }
 
+// NOTE: this function is inlined in original code
 void S_WriteUserSettings()
 {
     FILE *fp = fopen("atiset.dat", "wb");
@@ -88,6 +90,7 @@ void GameMain()
     TempVideoAdjust(2, 1.0);
     S_DisplayPicture("data\\eidospc");
     sub_408E41();
+    S_Wait(60);
 
     // NOTE: this check is missing in original game
     if (!T1MConfig.disable_fmv) {
