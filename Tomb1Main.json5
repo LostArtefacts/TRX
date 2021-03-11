@@ -149,4 +149,7 @@
 
     // Disables FMVs.
     "disable_fmv": false,
+
+    // Disables ingame cinematics.
+    "disable_cine": false,
 }

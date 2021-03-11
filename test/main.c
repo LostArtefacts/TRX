@@ -39,6 +39,7 @@ void test_empty_config()
     ASSERT_INT_EQUAL(T1MConfig.fov_vertical, 1);
     ASSERT_INT_EQUAL(T1MConfig.disable_demo, 0);
     ASSERT_INT_EQUAL(T1MConfig.disable_fmv, 0);
+    ASSERT_INT_EQUAL(T1MConfig.disable_cine, 0);
 }
 
 void test_config_override()

@@ -64,6 +64,7 @@ struct {
     int8_t fov_vertical;
     int8_t disable_demo;
     int8_t disable_fmv;
+    int8_t disable_cine;
 } T1MConfig;
 
 int8_t T1MReadConfigFromJson(const char *json);

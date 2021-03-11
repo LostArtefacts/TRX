@@ -9,10 +9,15 @@
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
+#include "config.h"
 #include "util.h"
 
 int32_t StartCinematic(int32_t level_num)
 {
+    if (T1MConfig.disable_cine) { // T1M
+        return level_num | GF_LEVELCOMPLETE;
+    }
+
     CinematicLevel = level_num;
     if (!InitialiseLevel(level_num)) {
         return END_ACTION;
