@@ -132,7 +132,6 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(fix_end_of_level_freeze, 1);
     READ_BOOL(fix_tihocan_secret_sound, 1);
     READ_BOOL(fix_pyramid_secret_trigger, 1);
-    READ_BOOL(fix_hardcoded_secret_counts, 1);
     READ_BOOL(fix_illegal_gun_equip, 1);
     READ_INTEGER(fov_value, 65);
     READ_BOOL(fov_vertical, 1);

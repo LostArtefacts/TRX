@@ -125,10 +125,6 @@
     // Fixes the secret trigger in the final level not working.
     "fix_pyramid_secret_trigger": true,
 
-    // Enables calculating the number of secrets based on a trigger count
-    // within a file rather than using hardcoded values.
-    "fix_hardcoded_secret_counts": true,
-
     // Fixes ability to obtain pistols by running out of ammo with other guns.
     // (Happens if you get to shotgun before obtaining pistols in Natla's
     // Mines)

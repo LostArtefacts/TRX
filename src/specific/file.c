@@ -592,10 +592,9 @@ int32_t S_LoadLevel(int level_num)
     if (T1MConfig.fix_pyramid_secret_trigger) {
         FixPyramidSecretTrigger();
     }
-    if (T1MConfig.fix_hardcoded_secret_counts) {
-        SecretTotals[level_num] = GetSecretCount();
-    }
 #endif
+
+    SecretTotals[level_num] = GetSecretCount();
 
     return ret;
 }
@@ -650,7 +649,6 @@ void FindCdDrive()
     ShowFatalError("ERROR: Please insert TombRaider CD");
 }
 
-#ifdef T1M_FEAT_OG_FIXES
 int GetSecretCount()
 {
     int count = 0;
@@ -717,6 +715,7 @@ int GetSecretCount()
     return count;
 }
 
+#ifdef T1M_FEAT_OG_FIXES
 void FixPyramidSecretTrigger()
 {
     if (CurrentLevel != LV_LEVEL10C) {

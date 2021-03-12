@@ -58,7 +58,6 @@ struct {
     int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;
-    int8_t fix_hardcoded_secret_counts;
     int8_t fix_illegal_gun_equip;
     int32_t fov_value;
     int8_t fov_vertical;
