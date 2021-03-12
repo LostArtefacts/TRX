@@ -3,6 +3,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
+#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -456,6 +457,7 @@ void InitialiseLara()
 
 void InitialiseLaraInventory(int32_t level_num)
 {
+    TRACE("%d", level_num);
     Inv_RemoveAllItems();
 
     START_INFO *start = &SaveGame[0].start[level_num];
@@ -580,7 +582,7 @@ void LaraInitialiseMeshes(int32_t level_num)
 
 void LaraCheatGetStuff()
 {
-    if (CurrentLevel == LV_GYM) {
+    if (CurrentLevel == GF.gym_level_num) {
         return;
     }
 

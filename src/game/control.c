@@ -4,6 +4,7 @@
 #include "game/demo.h"
 #include "game/effects.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -67,7 +68,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             if (OverlayFlag == 2) {
                 OverlayFlag = 1;
                 return_val = Display_Inventory(INV_DEATH_MODE);
-                if (return_val) {
+                if (return_val != GF_NOP) {
                     return return_val;
                 }
             } else {
@@ -95,22 +96,20 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                 }
 
                 OverlayFlag = 1;
-                if (return_val) {
+                if (return_val != GF_NOP) {
                     if (InventoryExtraData[0] != 1) {
                         return return_val;
                     }
-                    if (CurrentLevel == LV_GYM) {
+                    if (CurrentLevel == GF.gym_level_num) {
 #ifdef T1M_FEAT_GAMEPLAY
                         SaveGame[0].bonus_flag = InventoryExtraData[1];
                         InitialiseStartInfo();
 #endif
-                        return GF_START_GAME | LV_FIRSTLEVEL;
+                        return GF_START_GAME | GF.first_level_num;
                     }
 
                     CreateSaveGameInfo();
-                    S_SaveGame(
-                        &SaveGame[0], sizeof(SAVEGAME_INFO),
-                        InventoryExtraData[1]);
+                    S_SaveGame(SaveGame, InventoryExtraData[1]);
                     WriteTombAtiSettings();
                 }
             }
@@ -160,7 +159,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         FrameCount -= 0x10000;
     }
 
-    return 0;
+    return GF_NOP;
 }
 
 void AnimateItem(ITEM_INFO *item)

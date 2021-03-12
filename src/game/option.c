@@ -1,5 +1,7 @@
+#include "config.h"
 #include "game/effects.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/option.h"
 #include "game/text.h"
 #include "game/vars.h"
@@ -7,7 +9,6 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
 #include <dinput.h>
 
@@ -232,7 +233,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                                                          : PASSPORT_2BACK;
             }
             if (!PassportText) {
-                if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
+                if (InventoryMode == INV_TITLE_MODE
+                    || CurrentLevel == GF.gym_level_num) {
                     PassportText =
                         T_Print(0, -16, 0, GF.strings[GS_PASSPORT_NEW_GAME]);
                 } else {
@@ -243,7 +245,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 T_CentreH(PassportText, 1);
             }
             if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
-                if (InventoryMode == INV_TITLE_MODE || CurrentLevel == LV_GYM) {
+                if (InventoryMode == INV_TITLE_MODE
+                    || CurrentLevel == GF.gym_level_num) {
 #ifdef T1M_FEAT_GAMEPLAY
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;

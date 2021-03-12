@@ -558,6 +558,17 @@ int32_t Inv_RemoveItem(int32_t item_num)
         }
     }
 
+    // T1M
+    for (int i = 0; i < InvOptionObjects; i++) {
+        if (InvOptionList[i]->object_number == item_num_option) {
+            InvOptionObjects--;
+            for (int j = i; j < InvOptionObjects; j++) {
+                InvOptionList[j] = InvOptionList[j + 1];
+            }
+            return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -652,6 +663,16 @@ int32_t Inv_GetItemOption(int32_t item_num)
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
         return O_SCION_OPTION;
+
+    // T1M
+    case O_DETAIL_OPTION:
+    case O_SOUND_OPTION:
+    case O_CONTROL_OPTION:
+    case O_GAMMA_OPTION:
+    case O_PASSPORT_OPTION:
+    case O_MAP_OPTION:
+    case O_PHOTO_OPTION:
+        return item_num;
     }
 
     return -1;

@@ -1,7 +1,21 @@
+#include "game/cinema.h"
+#include "game/control.h"
+#include "game/game.h"
 #include "game/gameflow.h"
+#include "game/inv.h"
+#include "game/lara.h"
+#include "game/savegame.h"
 #include "game/vars.h"
+#include "specific/display.h"
 #include "specific/file.h"
+#include "specific/frontend.h"
+#include "specific/output.h"
+#include "specific/shed.h"
+#include "specific/sndpc.h"
+
+#include "config.h"
 #include "json_utils.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -9,6 +23,12 @@ typedef struct {
     const char *str;
     const int32_t val;
 } EnumToString;
+
+typedef struct {
+    int32_t object1_num;
+    int32_t object2_num;
+    int32_t mesh_num;
+} GameFlowMeshSwapData;
 
 static void SetRequesterHeading(REQUEST_INFO *req, char *text)
 {
@@ -115,7 +135,20 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
-static int8_t GF_LoadGameStrings(struct json_value_s *json)
+static int8_t S_LoadScriptMeta(struct json_value_s *json)
+{
+    const char *tmp;
+    if (!JSONGetStringValue(json, "savegame_fmt", &tmp)) {
+        TRACE("'savegame_fmt' must be a string");
+        return 0;
+    } else {
+        GF.save_game_fmt = strdup(tmp);
+    }
+
+    return 1;
+}
+
+static int8_t S_LoadScriptGameStrings(struct json_value_s *json)
 {
     struct json_value_s *strings = JSONGetField(json, "strings");
     if (!strings) {
@@ -150,27 +183,233 @@ static int8_t GF_LoadGameStrings(struct json_value_s *json)
     return 1;
 }
 
-static int8_t GF_LoadLevels(struct json_value_s *json)
+static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
 {
-    struct json_value_s *levels = JSONGetField(json, "levels");
-    if (!levels) {
-        TRACE("missing 'levels' entry");
+    struct json_value_s *level_sequence = JSONGetField(json, "sequence");
+    if (!level_sequence || level_sequence->type != json_type_array) {
+        TRACE("level %d: 'sequence' must be a list", level_num);
         return 0;
     }
-    if (levels->type != json_type_array) {
+
+    struct json_array_s *arr = json_value_as_array(level_sequence);
+    struct json_array_element_s *item = arr->start;
+
+    GF.levels[level_num].sequence =
+        malloc(sizeof(GameFlowSequence) * (arr->length + 1));
+
+    GameFlowSequence *seq = GF.levels[level_num].sequence;
+    int32_t i = 0;
+    while (item) {
+        const char *type_str;
+
+        if (!JSONGetStringValue(item->value, "type", &type_str)) {
+            TRACE("level %d: sequence 'type' must be a string", level_num);
+            return 0;
+        }
+
+        if (!strcmp(type_str, "start_game")) {
+            seq->type = GFS_START_GAME;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "stop_game")) {
+            seq->type = GFS_STOP_GAME;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "loop_game")) {
+            seq->type = GFS_LOOP_GAME;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "start_cine")) {
+            seq->type = GFS_START_CINE;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "stop_cine")) {
+            seq->type = GFS_STOP_CINE;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "loop_cine")) {
+            seq->type = GFS_LOOP_CINE;
+            seq->data = (void *)level_num;
+
+        } else if (!strcmp(type_str, "play_fmv")) {
+            seq->type = GFS_PLAY_FMV;
+            if (!JSONGetIntegerValue(
+                    item->value, "fmv_id", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'fmv_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "display_picture")) {
+            seq->type = GFS_DISPLAY_PICTURE;
+            const char *tmp;
+            if (!JSONGetStringValue(item->value, "picture_path", &tmp)) {
+                TRACE(
+                    "level %d, sequence %s: 'picture_path' must be a string",
+                    level_num, type_str);
+                return 0;
+            }
+            seq->data = strdup(tmp);
+            if (!seq->data) {
+                TRACE("failed to allocate memory");
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "level_stats")) {
+            seq->type = GFS_LEVEL_STATS;
+            if (!JSONGetIntegerValue(
+                    item->value, "level_id", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'level_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "exit_to_title")) {
+            seq->type = GFS_EXIT_TO_TITLE;
+
+        } else if (!strcmp(type_str, "exit_to_level")) {
+            seq->type = GFS_EXIT_TO_LEVEL;
+            if (!JSONGetIntegerValue(
+                    item->value, "level_id", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'level_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "exit_to_cine")) {
+            seq->type = GFS_EXIT_TO_CINE;
+            if (!JSONGetIntegerValue(
+                    item->value, "level_id", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'level_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "set_cam_x")) {
+            seq->type = GFS_SET_CAM_X;
+            if (!JSONGetIntegerValue(
+                    item->value, "value", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'value' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "set_cam_y")) {
+            seq->type = GFS_SET_CAM_Y;
+            if (!JSONGetIntegerValue(
+                    item->value, "value", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'value' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "set_cam_z")) {
+            seq->type = GFS_SET_CAM_Z;
+            if (!JSONGetIntegerValue(
+                    item->value, "value", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'value' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "set_cam_angle")) {
+            seq->type = GFS_SET_CAM_ANGLE;
+            if (!JSONGetIntegerValue(
+                    item->value, "value", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'value' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "flip_map")) {
+            seq->type = GFS_FLIP_MAP;
+
+        } else if (!strcmp(type_str, "remove_guns")) {
+            seq->type = GFS_REMOVE_GUNS;
+
+        } else if (!strcmp(type_str, "remove_scions")) {
+            seq->type = GFS_REMOVE_SCIONS;
+
+        } else if (!strcmp(type_str, "play_synced_audio")) {
+            seq->type = GFS_PLAY_SYNCED_AUDIO;
+            if (!JSONGetIntegerValue(
+                    item->value, "audio_id", (int32_t *)&seq->data)) {
+                TRACE(
+                    "level %d, sequence %s: 'audio_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+
+        } else if (!strcmp(type_str, "mesh_swap")) {
+            seq->type = GFS_MESH_SWAP;
+            GameFlowMeshSwapData *swap_data =
+                malloc(sizeof(GameFlowMeshSwapData));
+            if (!swap_data) {
+                TRACE("failed to allocate memory");
+                return 0;
+            }
+            if (!JSONGetIntegerValue(
+                    item->value, "object1_id",
+                    (int32_t *)&swap_data->object1_num)) {
+                TRACE(
+                    "level %d, sequence %s: 'object1_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+            if (!JSONGetIntegerValue(
+                    item->value, "object2_id",
+                    (int32_t *)&swap_data->object2_num)) {
+                TRACE(
+                    "level %d, sequence %s: 'object2_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+            if (!JSONGetIntegerValue(
+                    item->value, "mesh_id", (int32_t *)&swap_data->mesh_num)) {
+                TRACE(
+                    "level %d, sequence %s: 'mesh_id' must be a number",
+                    level_num, type_str);
+                return 0;
+            }
+            seq->data = swap_data;
+
+        } else if (!strcmp(type_str, "fix_pyramid_secret")) {
+            seq->type = GFS_FIX_PYRAMID_SECRET_TRIGGER;
+
+        } else {
+            TRACE("unknown sequence type %s", type_str);
+            return 0;
+        }
+
+        item = item->next;
+        i++;
+        seq++;
+    }
+
+    seq->type = GFS_END;
+    seq->data = NULL;
+
+    return 1;
+}
+
+static int8_t S_LoadScriptLevels(struct json_value_s *json)
+{
+    struct json_value_s *levels = JSONGetField(json, "levels");
+    if (!levels || levels->type != json_type_array) {
         TRACE("'levels' must be a list");
         return 0;
     }
 
     struct json_array_s *arr = json_value_as_array(levels);
     int32_t level_count = arr->length;
-    if (level_count != LV_NUMBER_OF) {
-        TRACE(
-            "currently only fixed number of levels is supported! got "
-            "%d, expected %d.",
-            level_count, LV_NUMBER_OF);
-        return 0;
-    }
 
     GF.levels = malloc(sizeof(GameFlowLevel) * level_count);
     if (!GF.levels) {
@@ -178,13 +417,27 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
         return 0;
     }
 
+    SaveGame[0].start = malloc(sizeof(START_INFO) * level_count);
+    if (!SaveGame[0].start) {
+        TRACE("failed to allocate memory");
+        return 0;
+    }
+
     struct json_array_element_s *item = arr->start;
-    GameFlowLevel *cur = &GF.levels[0];
     int level_num = 0;
 
+    GF.has_demo = 0;
+    GF.gym_level_num = -1;
+    GF.first_level_num = -1;
+    GF.last_level_num = -1;
+    GF.title_level_num = -1;
+    GF.level_count = arr->length;
+
+    GameFlowLevel *cur = &GF.levels[0];
     while (item) {
         const char *str;
         int32_t num;
+        int8_t enabled;
 
         if (JSONGetIntegerValue(item->value, "music", &num)) {
             cur->music = num;
@@ -195,6 +448,10 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
 
         if (JSONGetStringValue(item->value, "file", &str)) {
             cur->level_file = strdup(str);
+            if (!cur->level_file) {
+                TRACE("failed to allocate memory");
+                return 0;
+            }
         } else {
             TRACE("level %d: 'file' must be a string", level_num);
             return 0;
@@ -202,14 +459,56 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
 
         if (JSONGetStringValue(item->value, "title", &str)) {
             cur->level_title = strdup(str);
+            if (!cur->level_title) {
+                TRACE("failed to allocate memory");
+                return 0;
+            }
         } else {
             TRACE("level %d: 'title' must be a string", level_num);
             return 0;
         }
 
+        if (!JSONGetStringValue(item->value, "type", &str)) {
+            TRACE("level %d: 'type' must be a string", level_num);
+            return 0;
+        }
+        if (!strcmp(str, "title")) {
+            cur->level_type = GFL_TITLE;
+            if (GF.title_level_num != -1) {
+                TRACE("level %d: there can be only one title level", level_num);
+                return 0;
+            }
+            GF.title_level_num = level_num;
+        } else if (!strcmp(str, "gym")) {
+            cur->level_type = GFL_GYM;
+            if (GF.gym_level_num != -1) {
+                TRACE("level %d: there can be only one gym level", level_num);
+                return 0;
+            }
+            GF.gym_level_num = level_num;
+        } else if (!strcmp(str, "normal")) {
+            cur->level_type = GFL_NORMAL;
+            if (GF.first_level_num == -1) {
+                GF.first_level_num = level_num;
+            }
+            GF.last_level_num = level_num;
+        } else if (!strcmp(str, "cutscene")) {
+            cur->level_type = GFL_CUTSCENE;
+        } else if (!strcmp(str, "current")) {
+            cur->level_type = GFL_CURRENT;
+        } else {
+            TRACE("level %d: unknown level type %s", level_num, str);
+            return 0;
+        }
+
+        if (JSONGetBooleanValue(item->value, "demo", &enabled)) {
+            cur->demo = enabled;
+            GF.has_demo |= enabled;
+        }
+
         struct json_value_s *level_strings =
             JSONGetField(item->value, "strings");
-        if (!level_strings) {
+        if (!level_strings || level_strings->type != json_type_object) {
             TRACE("level %d: 'strings' must be a dictionary", level_num);
             return 0;
         } else {
@@ -274,10 +573,28 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
             }
         }
 
+        if (!GF_LoadLevelSequence(item->value, level_num)) {
+            return 0;
+        }
+
         item = item->next;
         level_num++;
         cur++;
     }
+
+    if (GF.title_level_num == -1) {
+        TRACE("at least one level must be of title type");
+        return 0;
+    }
+    if (GF.first_level_num == -1 || GF.last_level_num == -1) {
+        TRACE("at least one level must be of normal type");
+        return 0;
+    }
+
+    TRACE("gym: %d", GF.gym_level_num);
+    TRACE("first: %d", GF.first_level_num);
+    TRACE("last: %d", GF.last_level_num);
+    TRACE("title: %d", GF.title_level_num);
     return 1;
 }
 
@@ -301,7 +618,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
     script_data = malloc(script_data_size + 1);
     if (!script_data) {
-        TRACE("failed to allocate script data");
+        TRACE("failed to allocate memory");
         goto cleanup;
     }
     fread(script_data, 1, script_data_size, fp);
@@ -315,15 +632,16 @@ static int8_t S_LoadGameFlow(const char *file_name)
         NULL, &parse_result);
     if (!json) {
         TRACE(
-            "failed to parse script file: %s in line %d, char %d (script: %s)",
+            "failed to parse script file: %s in line %d, char %d",
             JSONGetErrorDescription(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, script_data);
         goto cleanup;
     }
 
     result = 1;
-    result &= GF_LoadGameStrings(json);
-    result &= GF_LoadLevels(json);
+    result &= S_LoadScriptMeta(json);
+    result &= S_LoadScriptGameStrings(json);
+    result &= S_LoadScriptLevels(json);
 
 cleanup:
     if (fp) {
@@ -391,4 +709,244 @@ int8_t GF_LoadScriptFile(const char *file_name)
 #endif
 
     return result;
+}
+
+static void FixPyramidSecretTrigger()
+{
+    TRACE("");
+    uint32_t global_secrets = 0;
+
+    for (int i = 0; i < RoomCount; i++) {
+        uint32_t room_secrets = 0;
+        ROOM_INFO *r = &RoomInfo[i];
+        FLOOR_INFO *floor = &r->floor[0];
+        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
+            int k = floor->index;
+            if (!k) {
+                continue;
+            }
+
+            while (1) {
+                uint16_t floor = FloorData[k++];
+
+                switch (floor & DATA_TYPE) {
+                case FT_DOOR:
+                case FT_ROOF:
+                case FT_TILT:
+                    k++;
+                    break;
+
+                case FT_LAVA:
+                    break;
+
+                case FT_TRIGGER: {
+                    uint16_t trig_type = (floor & 0x3F00) >> 8;
+                    k++; // skip basic trigger stuff
+
+                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                        || trig_type == TT_PICKUP) {
+                        k++;
+                    }
+
+                    while (1) {
+                        int16_t *command = &FloorData[k++];
+                        if (TRIG_BITS(*command) == TO_CAMERA) {
+                            k++;
+                        } else if (TRIG_BITS(*command) == TO_SECRET) {
+                            int16_t number = *command & VALUE_BITS;
+                            if (global_secrets & (1 << number) && number == 0) {
+                                // the secret number was already used.
+                                // update the number to 2.
+                                *command |= 2;
+                            } else {
+                                room_secrets |= (1 << number);
+                            }
+                        }
+
+                        if (*command & END_BIT) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+
+                if (floor & END_BIT) {
+                    break;
+                }
+            }
+        }
+        global_secrets |= room_secrets;
+    }
+
+    GF.levels[CurrentLevel].secrets = GetSecretCount();
+}
+
+GAMEFLOW_OPTION
+GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+{
+    TRACE("%d", level_num);
+
+    GameFlowSequence *seq = GF.levels[level_num].sequence;
+    GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
+    while (seq->type != GFS_END) {
+        TRACE("seq %d %d", seq->type, seq->data);
+
+        if (T1MConfig.disable_cine
+            && GF.levels[level_num].level_type == GFL_CUTSCENE) {
+            int8_t skip;
+            switch (seq->type) {
+            case GFS_EXIT_TO_TITLE:
+            case GFS_EXIT_TO_LEVEL:
+            case GFS_EXIT_TO_CINE:
+            case GFS_PLAY_FMV:
+            case GFS_LEVEL_STATS:
+                skip = 0;
+                break;
+            default:
+                skip = 1;
+                break;
+            }
+            if (skip) {
+                seq++;
+                continue;
+            }
+        }
+
+        switch (seq->type) {
+        case GFS_START_GAME:
+            ret = StartGame((int32_t)seq->data, level_type);
+            break;
+
+        case GFS_LOOP_GAME:
+            ret = GameLoop(0);
+            break;
+
+        case GFS_STOP_GAME:
+            ret = StopGame();
+            if (ret != GF_NOP
+                && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
+                return ret;
+            }
+            if (level_type == GFL_SAVED) {
+                level_type = GFL_NORMAL;
+            }
+            break;
+
+        case GFS_START_CINE:
+            if (level_type != GFL_SAVED) {
+                ret = StartCinematic((int32_t)seq->data);
+            }
+            break;
+
+        case GFS_LOOP_CINE:
+            if (level_type != GFL_SAVED) {
+                ret = CinematicLoop();
+            }
+            break;
+
+        case GFS_STOP_CINE:
+            if (level_type != GFL_SAVED) {
+                ret = StopCinematic((int32_t)seq->data);
+            }
+            break;
+
+        case GFS_PLAY_FMV:
+            if (level_type != GFL_SAVED) {
+                S_PlayFMV((int32_t)seq->data, 1);
+            }
+            break;
+
+        case GFS_LEVEL_STATS:
+            LevelStats((int32_t)seq->data);
+            break;
+
+        case GFS_DISPLAY_PICTURE:
+            if (level_type != GFL_SAVED) {
+                TempVideoAdjust(2, 1.0);
+                S_DisplayPicture((const char *)seq->data);
+                sub_408E41();
+                S_Wait(450);
+                S_FadeToBlack();
+                S_NoFade();
+            }
+            break;
+
+        case GFS_EXIT_TO_TITLE:
+            return GF_EXIT_TO_TITLE;
+
+        case GFS_EXIT_TO_LEVEL:
+            return GF_START_GAME | ((int32_t)seq->data & ((1 << 6) - 1));
+
+        case GFS_EXIT_TO_CINE:
+            return GF_START_CINE | ((int32_t)seq->data & ((1 << 6) - 1));
+
+        case GFS_SET_CAM_X:
+            Camera.pos.x = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_Y:
+            Camera.pos.y = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_Z:
+            Camera.pos.z = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_ANGLE:
+            Camera.target_angle = (int32_t)seq->data;
+            break;
+        case GFS_FLIP_MAP:
+            FlipMap();
+            break;
+        case GFS_PLAY_SYNCED_AUDIO:
+            S_StartSyncedAudio((int32_t)seq->data);
+            break;
+
+        case GFS_REMOVE_GUNS:
+            if (!SaveGame[0].bonus_flag) {
+                SaveGame[0].start[level_num].got_pistols = 0;
+                SaveGame[0].start[level_num].got_shotgun = 0;
+                SaveGame[0].start[level_num].got_magnums = 0;
+                SaveGame[0].start[level_num].got_uzis = 0;
+                SaveGame[0].start[level_num].gun_type = LGT_UNARMED;
+                SaveGame[0].start[level_num].gun_type = LGS_ARMLESS;
+                InitialiseLaraInventory(level_num);
+            }
+            break;
+
+        case GFS_REMOVE_SCIONS:
+            SaveGame[0].start[level_num].num_scions = 0;
+            InitialiseLaraInventory(level_num);
+            break;
+
+        case GFS_MESH_SWAP: {
+            GameFlowMeshSwapData *swap_data = seq->data;
+            int16_t *temp;
+
+            temp = Meshes
+                [Objects[swap_data->object1_num].mesh_index
+                 + swap_data->mesh_num];
+            Meshes
+                [Objects[swap_data->object1_num].mesh_index
+                 + swap_data->mesh_num] = Meshes
+                    [Objects[swap_data->object2_num].mesh_index
+                     + swap_data->mesh_num];
+            Meshes
+                [Objects[swap_data->object2_num].mesh_index
+                 + swap_data->mesh_num] = temp;
+            break;
+        }
+
+        case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+            if (T1MConfig.fix_pyramid_secret_trigger) {
+                FixPyramidSecretTrigger();
+            }
+            break;
+
+        case GFS_END:
+            return ret;
+        }
+
+        seq++;
+    }
+
+    return ret;
 }

@@ -9,3 +9,5 @@ int16_t BarOffsetY[6];
 #endif
 
 GameFlow GF;
+
+int32_t DemoLevel;

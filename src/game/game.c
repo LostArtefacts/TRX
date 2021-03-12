@@ -2,6 +2,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
@@ -15,56 +16,28 @@
 #include "config.h"
 #include "util.h"
 
-int32_t StartGame(int32_t level_num)
+int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    switch (level_num) {
-    case LV_GYM:
-        S_PlayFMV(FMV_GYM, 1);
-        break;
-
-    case LV_LEVEL1:
-        S_PlayFMV(FMV_SNOW, 1);
-        break;
-
-    case LV_LEVEL4:
-        S_PlayFMV(FMV_LIFT, 1);
-        break;
-
-    case LV_LEVEL8A:
-        S_PlayFMV(FMV_VISION, 1);
-        break;
-
-    case LV_LEVEL10A:
-        S_PlayFMV(FMV_CANYON, 1);
-        break;
-
-    case LV_LEVEL10B:
-        S_PlayFMV(FMV_PYRAMID, 1);
-        break;
-    }
-
-    // TODO: this probably doesn't belong here
+    // T1M: level_type argument is missing in OG
+    // T1M: removed hardcoded S_PlayFMV calls
     CurrentLevel = level_num;
     TitleLoaded = 0;
-    if (level_num != LV_CURRENT) {
+    if (level_type != GFL_SAVED) { // T1M: level_id != LV_CURRENT
         InitialiseLevelFlags();
     }
 
-    if (!InitialiseLevel(level_num)) {
+    if (!InitialiseLevel(level_num, level_type)) {
         CurrentLevel = 0;
         return GF_EXIT_TO_TITLE;
     }
 
-    if (GameLoop(0) == GF_EXIT_TO_TITLE) {
-        return GF_EXIT_TO_TITLE;
-    }
+    return GF_NOP;
+}
 
+int32_t StopGame()
+{
     if (LevelComplete) {
-        if (CurrentLevel == LV_GYM) {
-            S_FadeToBlack();
-            return GF_EXIT_TO_TITLE;
-        }
-
+        // T1M: removed hardcoded check for gym
         S_FadeInInventory(1);
         return GF_LEVEL_COMPLETE | CurrentLevel;
     }
@@ -75,10 +48,9 @@ int32_t StartGame(int32_t level_num)
     }
 
     if (InventoryExtraData[0] == 0) {
-        S_LoadGame(SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
-        return GF_START_GAME | LV_CURRENT;
+        return GF_START_SAVED_GAME | InventoryExtraData[1];
     } else if (InventoryExtraData[0] == 1) {
-        return GF_START_GAME | LV_FIRSTLEVEL;
+        return GF_START_GAME | GF.first_level_num;
     } else {
         return GF_EXIT_TO_TITLE;
     }
@@ -94,7 +66,7 @@ int32_t GameLoop(int32_t demo_mode)
     int32_t ret;
     while (1) {
         ret = ControlPhase(nframes, demo_mode);
-        if (ret) {
+        if (ret != GF_NOP) {
             break;
         }
         nframes = DrawPhaseGame();
@@ -111,122 +83,8 @@ int32_t GameLoop(int32_t demo_mode)
 
 int32_t LevelCompleteSequence(int32_t level_num)
 {
-    TRACE("");
-    switch (level_num) {
-    case LV_GYM:
-        return GF_EXIT_TO_OPTION;
-
-    case LV_LEVEL1:
-        LevelStats(LV_LEVEL1);
-        return GF_START_GAME | LV_LEVEL2;
-
-    case LV_LEVEL2:
-        LevelStats(LV_LEVEL2);
-        return GF_START_GAME | LV_LEVEL3A;
-
-    case LV_LEVEL3A:
-        LevelStats(LV_LEVEL3A);
-        return GF_START_GAME | LV_LEVEL3B;
-
-    case LV_LEVEL3B:
-        return GF_START_CINE | LV_CUTSCENE1;
-
-    case LV_LEVEL4:
-        LevelStats(LV_LEVEL4);
-        return GF_START_GAME | LV_LEVEL5;
-
-    case LV_LEVEL5:
-        LevelStats(LV_LEVEL5);
-        return GF_START_GAME | LV_LEVEL6;
-
-    case LV_LEVEL6:
-        LevelStats(LV_LEVEL6);
-        return GF_START_GAME | LV_LEVEL7A;
-
-    case LV_LEVEL7A:
-        LevelStats(LV_LEVEL7A);
-        return GF_START_GAME | LV_LEVEL7B;
-
-    case LV_LEVEL7B:
-        return GF_START_CINE | LV_CUTSCENE2;
-
-    case LV_LEVEL8A:
-        LevelStats(LV_LEVEL8A);
-        return GF_START_GAME | LV_LEVEL8B;
-
-    case LV_LEVEL8B:
-        LevelStats(LV_LEVEL8B);
-        return GF_START_GAME | LV_LEVEL8C;
-
-    case LV_LEVEL8C:
-        LevelStats(LV_LEVEL8C);
-        return GF_START_GAME | LV_LEVEL10A;
-
-    case LV_LEVEL10A:
-        LevelStats(LV_LEVEL10A);
-        return GF_START_CINE | LV_CUTSCENE3;
-
-    case LV_LEVEL10B:
-        S_PlayFMV(FMV_PRISON, 1);
-        return GF_START_CINE | LV_CUTSCENE4;
-
-    case LV_LEVEL10C:
-        LevelStats(LV_LEVEL10C);
-        S_PlayFMV(FMV_ENDSEQ, 1);
-        TempVideoAdjust(2, 1.0);
-        S_DisplayPicture("data\\end");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_DisplayPicture("data\\cred1");
-        sub_408E41();
-        S_Wait(450);
-        S_DisplayPicture("data\\cred2");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_DisplayPicture("data\\cred3");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_NoFade();
-        return GF_EXIT_TO_TITLE;
-
-    case LV_CUTSCENE1:
-        LevelStats(LV_LEVEL3B);
-        return GF_START_GAME | LV_LEVEL4;
-
-    case LV_CUTSCENE2:
-        LevelStats(LV_LEVEL7B);
-        return GF_START_GAME | LV_LEVEL8A;
-
-    case LV_CUTSCENE3:
-        return GF_START_GAME | LV_LEVEL10B;
-
-    case LV_CUTSCENE4:
-        LevelStats(LV_LEVEL10B);
-        return GF_START_GAME | LV_LEVEL10C;
-    }
-
+    // T1M: removed hardcoded S_PlayFMV calls and GF_ returns
     return GF_EXIT_TO_TITLE;
-}
-
-int32_t LevelIsValid(int16_t level_num)
-{
-    TRACE("%d", level_num);
-    int32_t number_valid = 0;
-    for (;;) {
-        if (ValidLevels[number_valid] == -1) {
-            break;
-        }
-        number_valid++;
-    }
-    for (int i = 0; i < number_valid; i++) {
-        if (ValidLevels[i] == level_num) {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 void SeedRandomControl(int32_t seed)
@@ -296,7 +154,7 @@ void LevelStats(int32_t level_num)
     } while (secrets_total);
     sprintf(
         string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
-        SecretTotals[level_num]);
+        GF.levels[level_num].secrets);
     txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -353,28 +211,23 @@ void LevelStats(int32_t level_num)
         S_DumpScreen();
     }
 
-    // go to next level
-    if (level_num == LV_LEVEL10C) {
+    if (level_num == GF.last_level_num) {
         SaveGame[0].bonus_flag = 1;
-        for (int level = LV_LEVEL1; level <= LV_LEVEL10C; level++) {
-            ModifyStartInfo(level);
-        }
-        SaveGame[0].current_level = LV_FIRSTLEVEL;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
-        SaveGame[0].current_level = level_num + 1;
     }
 
-    SaveGame[0].start[LV_CURRENT].available = 0;
+    SaveGame[0].start[CurrentLevel].available = 0;
     S_FadeToBlack();
     TempVideoRemove();
 }
 
-int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
+int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 {
+    // T1M: removed size parameter, more manual data handling
     char filename[80];
-    sprintf(filename, "saveati.%d", slot);
+    sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);
     FILE *fp = fopen(filename, "rb");
     if (!fp) {
@@ -382,9 +235,15 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
     }
     fread(filename, sizeof(char), 75, fp);
     int32_t counter;
+
     fread(&counter, sizeof(int32_t), 1, fp);
 
-    fread(&save->start[0], sizeof(START_INFO), LV_NUMBER_OF, fp);
+    if (!save->start) {
+        S_ExitSystem("null save->start");
+        return 0;
+    }
+    TRACE("%d", GF.level_count);
+    fread(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
     fread(&save->timer, sizeof(uint32_t), 1, fp);
     fread(&save->kills, sizeof(uint32_t), 1, fp);
     fread(&save->secrets, sizeof(uint16_t), 1, fp);
@@ -405,6 +264,13 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
     fread(&save->challenge_failed, sizeof(uint8_t), 1, fp);
     fread(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     fclose(fp);
+
+    for (int i = 0; i < GF.level_count; i++) {
+        if (GF.levels[i].level_type == GFL_CURRENT) {
+            save->start[save->current_level] = save->start[i];
+        }
+    }
+
     return 1;
 }
 
@@ -445,12 +311,12 @@ int32_t S_FrontEndCheck()
     SaveCounter = 0; // T1M
     SavedGamesCount = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        char filename[75];
-        sprintf(filename, "saveati.%d", i);
+        char filename[80];
+        sprintf(filename, GF.save_game_fmt, i);
 
         FILE *fp = fopen(filename, "rb");
         if (fp) {
-            fread(filename, 1, 75, fp);
+            fread(filename, sizeof(char), 75, fp);
             int32_t counter;
             fread(&counter, sizeof(int32_t), 1, fp);
             fclose(fp);
@@ -482,10 +348,11 @@ int32_t S_FrontEndCheck()
     return 1;
 }
 
-int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
+int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
 {
-    char filename[75];
-    sprintf(filename, "saveati.%d", slot);
+    // T1M: removed size parameter, more manual data handling
+    char filename[80];
+    sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);
 
     FILE *fp = fopen(filename, "wb");
@@ -493,11 +360,21 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
         return 0;
     }
 
+    for (int i = 0; i < GF.level_count; i++) {
+        if (GF.levels[i].level_type == GFL_CURRENT) {
+            save->start[i] = save->start[save->current_level];
+        }
+    }
+
     sprintf(filename, "%s", GF.levels[SaveGame[0].current_level].level_title);
     fwrite(filename, sizeof(char), 75, fp);
     fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
 
-    fwrite(&save->start[0], sizeof(START_INFO), LV_NUMBER_OF, fp);
+    if (!save->start) {
+        S_ExitSystem("null save->start");
+        return 0;
+    }
+    fwrite(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
     fwrite(&save->timer, sizeof(uint32_t), 1, fp);
     fwrite(&save->kills, sizeof(uint32_t), 1, fp);
     fwrite(&save->secrets, sizeof(uint16_t), 1, fp);
@@ -517,7 +394,6 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
     fwrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
     fwrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
     fwrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-
     fclose(fp);
 
     REQUEST_INFO *req = &LoadSaveGameRequester;
@@ -540,7 +416,6 @@ void T1MInjectGameGame()
     INJECT(0x0041D910, SeedRandomControl);
     INJECT(0x0041D920, GetRandomDraw);
     INJECT(0x0041D940, SeedRandomDraw);
-    INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041D9B0, GetSavedGamesList);
     INJECT(0x0041DA20, S_FrontEndCheck);
     INJECT(0x0041DB70, S_SaveGame);

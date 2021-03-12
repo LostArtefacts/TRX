@@ -720,7 +720,7 @@ void PickUpSaveGameCollision(
 
     item->status = IS_INVISIBLE;
     CreateSaveGameInfo();
-    if (S_SaveGame(&SaveGame, sizeof(SAVEGAME_INFO), -1)) {
+    if (S_SaveGame(SaveGame, -1)) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
     } else {

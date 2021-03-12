@@ -1,6 +1,7 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/effects.h"
+#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/option.h"
@@ -38,7 +39,7 @@ int32_t Display_Inventory(int inv_mode)
 
     if (inv_mode == RT_KEYS && !InvKeysObjects) {
         InventoryChosen = -1;
-        return 0;
+        return GF_NOP;
     }
 
     int32_t pass_mode_open = 0;
@@ -112,7 +113,7 @@ int32_t Display_Inventory(int inv_mode)
         } else {
             if (!T1MConfig.disable_demo) { // T1M
                 NoInputCount++;
-                if (NoInputCount > NOINPUT_TIME) {
+                if (GF.has_demo && NoInputCount > NOINPUT_TIME) {
                     ResetFlag = 1;
                 }
             }
@@ -608,11 +609,11 @@ int32_t Display_Inventory(int inv_mode)
     switch (InventoryChosen) {
     case O_PASSPORT_OPTION:
         // T1M: there was a removed call to S_CDVolume here.
-        return GF_START_GAME | LV_FIRSTLEVEL;
+        return GF_START_GAME | GF.first_level_num;
 
     case O_PHOTO_OPTION:
         InventoryExtraData[1] = 0;
-        return GF_START_GAME | LV_FIRSTLEVEL;
+        return GF_START_GAME | GF.first_level_num;
 
     case O_GUN_OPTION:
         UseItem(O_GUN_OPTION);
@@ -641,7 +642,7 @@ int32_t Display_Inventory(int inv_mode)
 
     // T1M: there was a removed call to S_CDVolume here.
 
-    return 0;
+    return GF_NOP;
 }
 
 void Construct_Inventory()
@@ -693,6 +694,11 @@ void Construct_Inventory()
     InvMainCurrent = 0;
     InvOptionCurrent = 0;
     Item_Data = 0;
+
+    // T1M
+    if (GF.gym_level_num == -1) {
+        Inv_RemoveItem(O_PHOTO_OPTION);
+    }
 }
 
 int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)

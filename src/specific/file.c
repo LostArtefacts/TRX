@@ -588,13 +588,7 @@ int32_t S_LoadLevel(int level_num)
     }
 #endif
 
-#ifdef T1M_FEAT_OG_FIXES
-    if (T1MConfig.fix_pyramid_secret_trigger) {
-        FixPyramidSecretTrigger();
-    }
-#endif
-
-    SecretTotals[level_num] = GetSecretCount();
+    GF.levels[level_num].secrets = GetSecretCount();
 
     return ret;
 }
@@ -714,80 +708,6 @@ int GetSecretCount()
 
     return count;
 }
-
-#ifdef T1M_FEAT_OG_FIXES
-void FixPyramidSecretTrigger()
-{
-    if (CurrentLevel != LV_LEVEL10C) {
-        return;
-    }
-
-    uint32_t global_secrets = 0;
-
-    for (int i = 0; i < RoomCount; i++) {
-        uint32_t room_secrets = 0;
-        ROOM_INFO *r = &RoomInfo[i];
-        FLOOR_INFO *floor = &r->floor[0];
-        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
-            int k = floor->index;
-            if (!k) {
-                continue;
-            }
-
-            while (1) {
-                uint16_t floor = FloorData[k++];
-
-                switch (floor & DATA_TYPE) {
-                case FT_DOOR:
-                case FT_ROOF:
-                case FT_TILT:
-                    k++;
-                    break;
-
-                case FT_LAVA:
-                    break;
-
-                case FT_TRIGGER: {
-                    uint16_t trig_type = (floor & 0x3F00) >> 8;
-                    k++; // skip basic trigger stuff
-
-                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
-                        || trig_type == TT_PICKUP) {
-                        k++;
-                    }
-
-                    while (1) {
-                        int16_t *command = &FloorData[k++];
-                        if (TRIG_BITS(*command) == TO_CAMERA) {
-                            k++;
-                        } else if (TRIG_BITS(*command) == TO_SECRET) {
-                            int16_t number = *command & VALUE_BITS;
-                            if (global_secrets & (1 << number) && number == 0) {
-                                // the secret number was already used.
-                                // update the number to 2.
-                                *command |= 2;
-                            } else {
-                                room_secrets |= (1 << number);
-                            }
-                        }
-
-                        if (*command & END_BIT) {
-                            break;
-                        }
-                    }
-                    break;
-                }
-                }
-
-                if (floor & END_BIT) {
-                    break;
-                }
-            }
-        }
-        global_secrets |= room_secrets;
-    }
-}
-#endif
 
 void T1MInjectSpecificFile()
 {

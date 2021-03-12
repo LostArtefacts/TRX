@@ -37,10 +37,6 @@ void FindCdDrive();
 
 int32_t GetSecretCount();
 
-#ifdef T1M_FEAT_OG_FIXES
-void FixPyramidSecretTrigger();
-#endif
-
 void T1MInjectSpecificFile();
 
 #endif

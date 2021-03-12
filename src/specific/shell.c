@@ -63,7 +63,6 @@ void S_WriteUserSettings()
 
 void GameMain()
 {
-    DemoLevel = LV_FIRSTLEVEL;
     SoundIsActive = 1;
     HiRes = 0;
     GameHiRes = 0;
@@ -71,7 +70,6 @@ void GameMain()
     GameSizer = 1.0;
 
     S_InitialiseSystem();
-    InitialiseStartInfo();
 
     // T1M gameflow support
     if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
@@ -79,6 +77,7 @@ void GameMain()
         return;
     }
 
+    InitialiseStartInfo();
     S_FrontEndCheck();
     S_ReadUserSettings();
 
@@ -122,23 +121,23 @@ void GameMain()
         TempVideoRemove();
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
+        TRACE("%d %d", gf_direction, gf_param);
 
         switch (gf_direction) {
         case GF_START_GAME:
-            if (!LevelIsValid(gf_param)) {
-                do {
-                    ++gf_param;
-                } while (gf_param <= LV_LEVEL10C && !LevelIsValid(gf_param));
-            }
-            if (gf_param == LV_TITLE) {
-                S_ExitSystem("MAIN: play title");
-                return;
-            }
-            gf_option = StartGame(gf_param);
+            // T1M: StartGame(gf_param)
+            gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
+            break;
+
+        // T1M: GF_START_SAVED_GAME does not exist in OG
+        case GF_START_SAVED_GAME:
+            S_LoadGame(SaveGame, gf_param);
+            gf_option =
+                GF_InterpretSequence(SaveGame[0].current_level, GFL_SAVED);
             break;
 
         case GF_START_CINE:
-            gf_option = StartCinematic(gf_param);
+            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE); // T1M
             break;
 
         case GF_START_DEMO:
@@ -154,15 +153,11 @@ void GameMain()
             TempVideoAdjust(2, 1.0);
             S_DisplayPicture("data\\titleh");
             NoInputCount = 0;
-            if (TitleLoaded) {
-                S_CDPlay(2);
-            } else {
-                if (!InitialiseLevel(LV_TITLE)) {
-                    gf_option = GF_EXIT_GAME;
-                    break;
-                }
-                TitleLoaded = 1;
+            if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
+                gf_option = GF_EXIT_GAME;
+                break;
             }
+            TitleLoaded = 1;
 
             dword_45B940 = 0;
             Display_Inventory(1);
@@ -175,18 +170,16 @@ void GameMain()
                 ResetFlag = 0;
                 gf_option = GF_START_DEMO;
             } else if (InventoryChosen == O_PHOTO_OPTION) {
-                gf_option = GF_START_GAME | LV_GYM;
+                gf_option = GF_START_GAME | GF.gym_level_num;
             } else if (InventoryChosen == O_PASSPORT_OPTION) {
                 if (InventoryExtraData[0] == 0) {
-                    S_LoadGame(
-                        SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
-                    gf_option = GF_START_GAME | LV_CURRENT;
+                    gf_option = GF_START_SAVED_GAME | InventoryExtraData[1];
                 } else if (InventoryExtraData[0] == 1) {
 #ifdef T1M_FEAT_GAMEPLAY
                     SaveGame[0].bonus_flag = InventoryExtraData[1];
 #endif
                     InitialiseStartInfo();
-                    gf_option = GF_START_GAME | LV_FIRSTLEVEL;
+                    gf_option = GF_START_GAME | GF.first_level_num;
                 } else {
                     gf_option = GF_EXIT_GAME;
                 }

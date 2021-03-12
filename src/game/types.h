@@ -482,38 +482,17 @@ typedef enum {
 } GAMEALLOC_BUFFER;
 
 typedef enum {
-    LV_GYM = 0,
-    LV_FIRSTLEVEL,
-    LV_LEVEL1 = 1, // Peru 1: Caves
-    LV_LEVEL2 = 2, // Peru 2: City of Vilcabamba
-    LV_LEVEL3A = 3, // Peru 3: The Lost Valley
-    LV_LEVEL3B = 4, // Peru 4: Tomb of Qualopec
-    LV_LEVEL4 = 5, // Greece 1: St Francis Folly
-    LV_LEVEL5 = 6, // Greece 2: Colosseum
-    LV_LEVEL6 = 7, // Greece 3: Place Midas
-    LV_LEVEL7A = 8, // Greece 4: Cistern
-    LV_LEVEL7B = 9, // Greece 5: Tomb of Tihocan
-    LV_LEVEL8A = 10, // Egypt 1: City of Khamoon
-    LV_LEVEL8B = 11, // Egypt 2: Obelisk of Khamoon
-    LV_LEVEL8C = 12, // Egypt 3: Sanctuary of Scion
-    LV_LEVEL10A = 13, // Lost island 1: Natla's Mines
-    LV_LEVEL10B = 14, // Lost island 2: Atlantis
-    LV_LEVEL10C = 15, // Lost island 3: The great pyramid
-    LV_LASTLEVEL = LV_LEVEL10C,
-    LV_CUTSCENE1 = 16,
-    LV_CUTSCENE2 = 17,
-    LV_CUTSCENE3 = 18,
-    LV_CUTSCENE4 = 19,
-    LV_TITLE = 20,
-    LV_CURRENT = 21,
-    // UB_LEVEL1     = 22, // TRUB - Egypt
-    // UB_LEVEL2     = 23, // TRUB - Temple of Cat
-    // UB_LEVEL3     = 24,
-    // UB_LEVEL4     = 25,
-    LV_NUMBER_OF = 22,
-} GAME_LEVEL;
+    GFL_TITLE = 0,
+    GFL_NORMAL = 1,
+    GFL_SAVED = 2,
+    GFL_DEMO = 3,
+    GFL_CUTSCENE = 4,
+    GFL_GYM = 5,
+    GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
+} GAMEFLOW_LEVEL_TYPE;
 
 typedef enum {
+    GF_NOP = -1,
     GF_START_GAME = 0,
     GF_START_CINE = 1 << 6,
     GF_START_FMV = 2 << 6,
@@ -521,7 +500,7 @@ typedef enum {
     GF_EXIT_TO_TITLE = 4 << 6,
     GF_LEVEL_COMPLETE = 5 << 6,
     GF_EXIT_GAME = 6 << 6,
-    GF_EXIT_TO_OPTION = 7 << 6,
+    GF_START_SAVED_GAME = 7 << 6,
 } GAMEFLOW_OPTION;
 
 typedef enum {
@@ -782,6 +761,33 @@ typedef enum {
     RBS_END = 1,
     RBS_MOVING = 2,
 } ROLLING_BLOCK_STATE;
+
+// T1M
+typedef enum {
+    GFS_END = -1,
+    GFS_START_GAME,
+    GFS_LOOP_GAME,
+    GFS_STOP_GAME,
+    GFS_START_CINE,
+    GFS_LOOP_CINE,
+    GFS_STOP_CINE,
+    GFS_PLAY_FMV,
+    GFS_LEVEL_STATS,
+    GFS_DISPLAY_PICTURE,
+    GFS_EXIT_TO_TITLE,
+    GFS_EXIT_TO_LEVEL,
+    GFS_EXIT_TO_CINE,
+    GFS_SET_CAM_X,
+    GFS_SET_CAM_Y,
+    GFS_SET_CAM_Z,
+    GFS_SET_CAM_ANGLE,
+    GFS_FLIP_MAP,
+    GFS_REMOVE_GUNS,
+    GFS_REMOVE_SCIONS,
+    GFS_PLAY_SYNCED_AUDIO,
+    GFS_MESH_SWAP,
+    GFS_FIX_PYRAMID_SECRET_TRIGGER,
+} GameFlowSequenceType;
 
 // T1M
 typedef enum {
@@ -1141,27 +1147,26 @@ typedef struct {
 } START_INFO;
 
 typedef struct {
-    /* 0000 */ START_INFO start[LV_NUMBER_OF];
-    /* 014A */ uint32_t timer;
-    /* 014E */ uint32_t kills;
-    /* 0152 */ uint16_t secrets;
-    /* 0154 */ uint16_t current_level;
-    /* 0156 */ uint8_t pickups;
-    /* 0157 */ uint8_t bonus_flag;
-    /* 0158 */ uint8_t num_pickup1;
-    /* 0159 */ uint8_t num_pickup2;
-    /* 015A */ uint8_t num_puzzle1;
-    /* 015B */ uint8_t num_puzzle2;
-    /* 015C */ uint8_t num_puzzle3;
-    /* 015D */ uint8_t num_puzzle4;
-    /* 015E */ uint8_t num_key1;
-    /* 015F */ uint8_t num_key2;
-    /* 0160 */ uint8_t num_key3;
-    /* 0161 */ uint8_t num_key4;
-    /* 0162 */ uint8_t num_leadbar;
-    /* 0163 */ uint8_t challenge_failed;
-    /* 0164 */ char buffer[MAX_SAVEGAME_BUFFER];
-    /* 2964 end */
+    START_INFO *start; // T1M. OG: start[LV_NUMBER_OF]
+    uint32_t timer;
+    uint32_t kills;
+    uint16_t secrets;
+    uint16_t current_level;
+    uint8_t pickups;
+    uint8_t bonus_flag;
+    uint8_t num_pickup1;
+    uint8_t num_pickup2;
+    uint8_t num_puzzle1;
+    uint8_t num_puzzle2;
+    uint8_t num_puzzle3;
+    uint8_t num_puzzle4;
+    uint8_t num_key1;
+    uint8_t num_key2;
+    uint8_t num_key3;
+    uint8_t num_key4;
+    uint8_t num_leadbar;
+    uint8_t challenge_failed;
+    char buffer[MAX_SAVEGAME_BUFFER];
 } SAVEGAME_INFO;
 
 typedef struct {
@@ -1605,6 +1610,13 @@ typedef struct {
 
 // T1M
 typedef struct {
+    GameFlowSequenceType type;
+    void *data;
+} GameFlowSequence;
+
+// T1M
+typedef struct {
+    GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
     const char *level_title;
     const char *level_file;
@@ -1618,10 +1630,20 @@ typedef struct {
     const char *puzzle2;
     const char *puzzle3;
     const char *puzzle4;
+    int8_t demo;
+    int16_t secrets;
+    GameFlowSequence *sequence;
 } GameFlowLevel;
 
 // T1M
 typedef struct {
+    int32_t gym_level_num;
+    int32_t first_level_num;
+    int32_t last_level_num;
+    int32_t title_level_num;
+    int32_t level_count;
+    const char *save_game_fmt;
+    int8_t has_demo;
     GameFlowLevel *levels;
     char *strings[GS_NUMBER_OF];
 } GameFlow;

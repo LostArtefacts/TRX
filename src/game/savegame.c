@@ -1,4 +1,5 @@
 #include "game/control.h"
+#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -19,14 +20,15 @@ static char *SGPoint;
 
 void InitialiseStartInfo()
 {
-    if (!SaveGame[0].bonus_flag) {
-        for (int i = 0; i < LV_NUMBER_OF; i++) {
-            ModifyStartInfo(i);
-            SaveGame[0].start[i].available = 0;
-        }
-        SaveGame[0].start[LV_GYM].available = 1;
-        SaveGame[0].start[LV_FIRSTLEVEL].available = 1;
+    TRACE("");
+    // T1M: removed early exit if bonus_flag is on
+
+    for (int i = 0; i < GF.level_count; i++) {
+        ModifyStartInfo(i);
+        SaveGame[0].start[i].available = 0;
     }
+    SaveGame[0].start[GF.gym_level_num].available = 1;
+    SaveGame[0].start[GF.first_level_num].available = 1;
 }
 
 void ModifyStartInfo(int32_t level_num)
@@ -37,8 +39,7 @@ void ModifyStartInfo(int32_t level_num)
     start->gun_type = LGT_PISTOLS;
     start->pistol_ammo = 1000;
 
-    switch (level_num) {
-    case LV_GYM:
+    if (level_num == GF.gym_level_num) {
         start->available = 1;
         start->costume = 1;
         start->num_medis = 0;
@@ -54,9 +55,9 @@ void ModifyStartInfo(int32_t level_num)
         start->got_uzis = 0;
         start->gun_type = LGT_UNARMED;
         start->gun_status = LGS_ARMLESS;
-        break;
+    }
 
-    case LV_FIRSTLEVEL:
+    if (level_num == GF.first_level_num) {
         start->available = 1;
         start->costume = 0;
         start->num_medis = 0;
@@ -69,20 +70,9 @@ void ModifyStartInfo(int32_t level_num)
         start->got_magnums = 0;
         start->got_uzis = 0;
         start->gun_status = LGS_ARMLESS;
-        break;
-
-    case LV_LEVEL10A:
-        start->num_scions = 0;
-        start->got_pistols = 0;
-        start->got_shotgun = 0;
-        start->got_magnums = 0;
-        start->got_uzis = 0;
-        start->gun_type = LGT_UNARMED;
-        start->gun_status = LGS_ARMLESS;
-        break;
     }
 
-    if (SaveGame[0].bonus_flag && level_num != LV_GYM) {
+    if (SaveGame[0].bonus_flag && level_num != GF.gym_level_num) {
         start->got_pistols = 1;
         start->got_shotgun = 1;
         start->got_magnums = 1;
@@ -92,10 +82,12 @@ void ModifyStartInfo(int32_t level_num)
         start->uzi_ammo = 1234;
         start->gun_type = LGT_UZIS;
     }
+    TRACE("%d costume = %d", level_num, start->costume);
 }
 
 void CreateStartInfo(int level_num)
 {
+    TRACE("%d", level_num);
     START_INFO *start = &SaveGame[0].start[level_num];
 
     start->available = 1;
@@ -149,7 +141,7 @@ void CreateSaveGameInfo()
 {
     SaveGame[0].current_level = CurrentLevel;
 
-    CreateStartInfo(LV_CURRENT);
+    CreateStartInfo(CurrentLevel); // T1M: LV_CURRENT
 
     SaveGame[0].num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
     SaveGame[0].num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
@@ -233,7 +225,7 @@ void ExtractSaveGameInfo()
     int16_t tmp16;
     int32_t tmp32;
 
-    InitialiseLaraInventory(LV_CURRENT);
+    InitialiseLaraInventory(CurrentLevel); // T1M: LV_CURRENT
 
     for (int i = 0; i < SaveGame[0].num_pickup1; i++) {
         Inv_AddItem(O_PICKUP_ITEM1);

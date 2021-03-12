@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-int32_t InitialiseLevel(int32_t level_num);
+int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 void InitialiseGameFlags();
 void InitialiseLevelFlags();
 

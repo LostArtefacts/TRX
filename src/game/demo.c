@@ -1,6 +1,7 @@
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/items.h"
 #include "game/setup.h"
 #include "game/setup.h"
@@ -18,10 +19,10 @@ int32_t StartDemo()
     int16_t level_num = DemoLevel;
     do {
         level_num++;
-        if (level_num > LV_LASTLEVEL) {
-            level_num = LV_FIRSTLEVEL;
+        if (level_num > GF.last_level_num) {
+            level_num = GF.first_level_num;
         }
-    } while (!DemoLevels[level_num]);
+    } while (!GF.levels[level_num].demo);
     DemoLevel = level_num;
 
     s = &SaveGame[0].start[DemoLevel];
@@ -36,7 +37,7 @@ int32_t StartDemo()
     SeedRandomControl(0xD371F947);
 
     TRACE("%d", DemoLevel);
-    if (InitialiseLevel(DemoLevel)) {
+    if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         TitleLoaded = 0;
 
         LoadLaraDemoPos();

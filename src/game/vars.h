@@ -49,7 +49,6 @@
 #define Lara                    VAR_U_(0x0045ED80, LARA_INFO)
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
 #define PierreItem              VAR_U_(0x0045E328, int16_t)
-#define SecretTotals            ARRAY_(0x00453CB0, int8_t, [MAX_SECRETS])
 #define ResetFlag               VAR_I_(0x00459F50, int32_t, 0)
 #define Input                   VAR_U_(0x0045EEF4, int32_t)
 #define InputDB                 VAR_U_(0x0045A06C, int32_t)
@@ -91,7 +90,6 @@
 #define AmmoText                VAR_U_(0x0045A030, TEXTSTRING*)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
-#define ValidLevels             ARRAY_(0x00453C80, int16_t, [])
 #define FrameCount              VAR_I_(0x00459F58, int32_t, 0)
 #define AnimationRate           VAR_I_(0x004534E0, int32_t, 0x8000)
 #define InventoryExtraData      ARRAY_(0x0045A080, int32_t, [8])
@@ -155,9 +153,7 @@
 #define RoomsToDraw             ARRAY_(0x00462580, int16_t, [MAX_ROOMS_TO_DRAW])
 #define RoomsToDrawNum          VAR_U_(0x00461F38, int32_t)
 #define Weapons                 ARRAY_(0x004563A8, WEAPON_INFO, [NUM_WEAPONS])
-#define DemoLevels              ARRAY_(0x00453538, int8_t, [])
 #define TitleLoaded             VAR_U_(0x0045A324, int32_t)
-#define DemoLevel               VAR_I_(0x00453530, int32_t, 1)
 #define DemoPtr                 VAR_U_(0x00462BFC, uint32_t*)
 #define DemoCount               VAR_U_(0x00462C00, int32_t)
 #define ChunkyFlag              VAR_I_(0x00459F44, int32_t, 0)
@@ -251,6 +247,7 @@
 
 extern GameFlow GF; // T1M
 
+extern int32_t DemoLevel;
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;
 extern int32_t AnimCount;

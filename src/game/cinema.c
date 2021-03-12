@@ -3,6 +3,7 @@
 #include "game/cinema.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/gameflow.h"
 #include "game/items.h"
 #include "game/setup.h"
 #include "game/vars.h"
@@ -12,60 +13,39 @@
 #include "config.h"
 #include "util.h"
 
+static int32_t OldSoundIsActive;
+
 int32_t StartCinematic(int32_t level_num)
 {
-    if (T1MConfig.disable_cine) { // T1M
-        return level_num | GF_LEVEL_COMPLETE;
-    }
-
     CinematicLevel = level_num;
-    if (!InitialiseLevel(level_num)) {
+    if (!InitialiseLevel(level_num, GFL_CUTSCENE)) {
         return END_ACTION;
     }
 
     InitCinematicRooms();
 
-    switch (level_num) {
-    case LV_CUTSCENE1:
-        Camera.pos.x = 36668;
-        Camera.pos.z = 63180;
-        Camera.target_angle = -23312;
-        S_StartSyncedAudio(23);
-        break;
-
-    case LV_CUTSCENE2:
-        Camera.pos.x = 51962;
-        Camera.pos.z = 53760;
-        Camera.target_angle = 16380;
-        S_StartSyncedAudio(25);
-        break;
-
-    case LV_CUTSCENE3:
-        Camera.target_angle = PHD_90;
-        FlipMap();
-        S_StartSyncedAudio(24);
-        break;
-
-    case LV_CUTSCENE4:
-        Camera.target_angle = PHD_90;
-        S_StartSyncedAudio(22);
-        break;
-    }
-
-    int32_t old_sound_is_active = SoundIsActive;
+    OldSoundIsActive = SoundIsActive;
     SoundIsActive = 0;
     CineFrame = 0;
+    return GF_NOP;
+}
 
+int32_t CinematicLoop()
+{
     DoCinematic(2);
     DrawPhaseCinematic();
     int32_t nframes;
     do {
         nframes = DrawPhaseCinematic();
     } while (!DoCinematic(nframes));
+    return GF_NOP;
+}
 
+int32_t StopCinematic(int32_t level_num)
+{
     S_CDStop();
     S_SoundStopAllSamples();
-    SoundIsActive = old_sound_is_active;
+    SoundIsActive = OldSoundIsActive;
 
     LevelComplete = 1;
     S_FadeInInventory(1);
@@ -178,20 +158,6 @@ void InitialisePlayer1(int16_t item_num)
     Camera.pos.z = item->pos.z;
     Camera.target_angle = 0;
     item->pos.y_rot = 0;
-
-    if (CinematicLevel == LV_CUTSCENE2 || CinematicLevel == LV_CUTSCENE4) {
-        int16_t *temp;
-
-        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L];
-        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L] =
-            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L];
-        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L] = temp;
-
-        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R];
-        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R] =
-            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R];
-        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R] = temp;
-    }
 }
 
 void ControlCinematicPlayer(int16_t item_num)

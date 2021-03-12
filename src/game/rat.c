@@ -165,6 +165,8 @@ void VoleControl(int16_t item_num)
         CreatureHead(item, head);
 
         AnimateItem(item);
+#if 0
+        // T1M: removed some weird logic not present in other creatures
         if (item->status == IS_DEACTIVATED) {
             item->collidable = 0;
             item->hit_points = DONT_TARGET;
@@ -176,6 +178,7 @@ void VoleControl(int16_t item_num)
                 RemoveActiveItem(item_num);
             }
         }
+#endif
 
         int32_t wh = GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
