@@ -1,3 +1,4 @@
+#include "3dsystem/3d_gen.h"
 #include "game/bat.h"
 #include "game/bear.h"
 #include "game/box.h"
@@ -80,6 +81,10 @@ int32_t InitialiseLevel(int32_t level_num)
     // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
     // times.
     Lara.request_gun_type = LGT_UNARMED;
+#endif
+
+#ifdef T1M_FEAT_UI
+    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 #endif
 
     if (GF_LevelMusic[CurrentLevel]) {
