@@ -82,7 +82,6 @@ int32_t StartGame(int32_t level_num)
     } else {
         return GF_EXIT_TO_TITLE;
     }
-
 }
 
 int32_t GameLoop(int32_t demo_mode)
@@ -372,7 +371,7 @@ void LevelStats(int32_t level_num)
     TempVideoRemove();
 }
 
-int32_t S_LoadGame(void *data, int32_t size, int32_t slot)
+int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
 {
     char filename[80];
     sprintf(filename, "saveati.%d", slot);
@@ -384,7 +383,27 @@ int32_t S_LoadGame(void *data, int32_t size, int32_t slot)
     fread(filename, sizeof(char), 75, fp);
     int32_t counter;
     fread(&counter, sizeof(int32_t), 1, fp);
-    fread(data, size, 1, fp);
+
+    fread(&save->start[0], sizeof(START_INFO), LV_NUMBER_OF, fp);
+    fread(&save->timer, sizeof(uint32_t), 1, fp);
+    fread(&save->kills, sizeof(uint32_t), 1, fp);
+    fread(&save->secrets, sizeof(uint16_t), 1, fp);
+    fread(&save->current_level, sizeof(uint16_t), 1, fp);
+    fread(&save->pickups, sizeof(uint8_t), 1, fp);
+    fread(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    fread(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    fread(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    fread(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    fread(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    fread(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    fread(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    fread(&save->num_key1, sizeof(uint8_t), 1, fp);
+    fread(&save->num_key2, sizeof(uint8_t), 1, fp);
+    fread(&save->num_key3, sizeof(uint8_t), 1, fp);
+    fread(&save->num_key4, sizeof(uint8_t), 1, fp);
+    fread(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    fread(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    fread(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     fclose(fp);
     return 1;
 }
@@ -463,7 +482,7 @@ int32_t S_FrontEndCheck()
     return 1;
 }
 
-int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
+int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
 {
     char filename[75];
     sprintf(filename, "saveati.%d", slot);
@@ -477,7 +496,28 @@ int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
     sprintf(filename, "%s", GF_LevelTitles[SaveGame[0].current_level]);
     fwrite(filename, sizeof(char), 75, fp);
     fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
-    fwrite(data, size, 1, fp);
+
+    fwrite(&save->start[0], sizeof(START_INFO), LV_NUMBER_OF, fp);
+    fwrite(&save->timer, sizeof(uint32_t), 1, fp);
+    fwrite(&save->kills, sizeof(uint32_t), 1, fp);
+    fwrite(&save->secrets, sizeof(uint16_t), 1, fp);
+    fwrite(&save->current_level, sizeof(uint16_t), 1, fp);
+    fwrite(&save->pickups, sizeof(uint8_t), 1, fp);
+    fwrite(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_key1, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_key2, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_key3, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_key4, sizeof(uint8_t), 1, fp);
+    fwrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    fwrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    fwrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+
     fclose(fp);
 
     REQUEST_INFO *req = &LoadSaveGameRequester;
