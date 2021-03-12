@@ -179,10 +179,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
-                    // T1M: set empty slots as RIF_BLOCKED for the load game
-                    // handler.
-                    S_FrontEndCheck();
-
+                    LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
                     GetSavedGamesList(&LoadSaveGameRequester);
                     InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
@@ -265,12 +262,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
-                    // T1M: remove RIF_BLOCKED for empty slots for the save
-                    // game handler.
-                    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-                        LoadSaveGameRequester.item_flags[i] &= ~RIF_BLOCKED;
-                    }
-
+                    LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
                     GetSavedGamesList(&LoadSaveGameRequester);
                     InitRequester(&LoadSaveGameRequester);
                     PassportMode = 1;
@@ -1293,7 +1285,8 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     if (CHK_ANY(InputDB, IN_SELECT)) {
         // T1M: introduce requester item flags. OG was checking the requester
         // heading text and comparing the item text to "- EMPTY SLOT" instead.
-        if (req->item_flags[req->requested] & RIF_BLOCKED) {
+        if ((req->item_flags[req->requested] & RIF_BLOCKED)
+            && (req->flags & RIF_BLOCKABLE)) {
             Input = 0;
             return 0;
         } else {

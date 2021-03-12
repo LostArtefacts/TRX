@@ -481,6 +481,7 @@ int32_t S_SaveGame(void *data, int32_t size, int32_t slot)
     fclose(fp);
 
     REQUEST_INFO *req = &LoadSaveGameRequester;
+    req->item_flags[slot] &= ~RIF_BLOCKED;
     sprintf(
         &req->item_texts[req->item_text_len * slot], "%s %d", filename,
         SaveCounter);
