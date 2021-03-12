@@ -182,11 +182,10 @@ void GameMain()
                         SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
                     gf_option = GF_START_GAME | LV_CURRENT;
                 } else if (InventoryExtraData[0] == 1) {
-                    InitialiseStartInfo();
 #ifdef T1M_FEAT_GAMEPLAY
                     SaveGame[0].bonus_flag = InventoryExtraData[1];
-                    ModifyStartInfo(LV_FIRSTLEVEL);
 #endif
+                    InitialiseStartInfo();
                     gf_option = GF_START_GAME | LV_FIRSTLEVEL;
                 } else {
                     gf_option = GF_EXIT_GAME;

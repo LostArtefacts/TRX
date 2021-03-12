@@ -100,6 +100,10 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                         return return_val;
                     }
                     if (CurrentLevel == LV_GYM) {
+#ifdef T1M_FEAT_GAMEPLAY
+                        SaveGame[0].bonus_flag = InventoryExtraData[1];
+                        InitialiseStartInfo();
+#endif
                         return GF_START_GAME | LV_FIRSTLEVEL;
                     }
 
