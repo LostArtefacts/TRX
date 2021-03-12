@@ -1603,6 +1603,29 @@ typedef struct {
     /* 0050 end */
 } RING_INFO;
 
+// T1M
+typedef struct {
+    int16_t music;
+    const char *level_title;
+    const char *level_file;
+    const char *key1;
+    const char *key2;
+    const char *key3;
+    const char *key4;
+    const char *pickup1;
+    const char *pickup2;
+    const char *puzzle1;
+    const char *puzzle2;
+    const char *puzzle3;
+    const char *puzzle4;
+} GameFlowLevel;
+
+// T1M
+typedef struct {
+    GameFlowLevel *levels;
+    char *strings[GS_NUMBER_OF];
+} GameFlow;
+
 #pragma pack(pop)
 
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);

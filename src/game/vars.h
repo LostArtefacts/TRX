@@ -249,20 +249,7 @@
 
 // clang-format on
 
-extern int16_t *GF_LevelMusic;
-extern char **GF_LevelTitles;
-extern char **GF_LevelNames;
-extern char **GF_Key1Strings;
-extern char **GF_Key2Strings;
-extern char **GF_Key3Strings;
-extern char **GF_Key4Strings;
-extern char **GF_Pickup1Strings;
-extern char **GF_Pickup2Strings;
-extern char **GF_Puzzle1Strings;
-extern char **GF_Puzzle2Strings;
-extern char **GF_Puzzle3Strings;
-extern char **GF_Puzzle4Strings;
-extern char *GF_GameStrings[GS_NUMBER_OF]; // T1M
+extern GameFlow GF; // T1M
 
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;

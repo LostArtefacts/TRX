@@ -87,8 +87,8 @@ int32_t InitialiseLevel(int32_t level_num)
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 #endif
 
-    if (GF_LevelMusic[CurrentLevel]) {
-        S_CDPlay(GF_LevelMusic[CurrentLevel]);
+    if (GF.levels[CurrentLevel].music) {
+        S_CDPlay(GF.levels[CurrentLevel].music);
     }
     Camera.underwater = 0;
     return 1;

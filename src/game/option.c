@@ -167,8 +167,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = PASSPORT_2BACK;
             } else {
                 if (!PassportText) {
-                    PassportText = T_Print(
-                        0, -16, 0, GF_GameStrings[GS_PASSPORT_LOAD_GAME]);
+                    PassportText =
+                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_LOAD_GAME]);
                     T_BottomAlign(PassportText, 1);
                     T_CentreH(PassportText, 1);
                 }
@@ -233,11 +233,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             }
             if (!PassportText) {
                 if (InventoryMode == INV_TITLE_MODE || !CurrentLevel) {
-                    PassportText = T_Print(
-                        0, -16, 0, GF_GameStrings[GS_PASSPORT_NEW_GAME]);
+                    PassportText =
+                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_NEW_GAME]);
                 } else {
-                    PassportText = T_Print(
-                        0, -16, 0, GF_GameStrings[GS_PASSPORT_SAVE_GAME]);
+                    PassportText =
+                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_SAVE_GAME]);
                 }
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
@@ -277,10 +277,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (!PassportText) {
             if (InventoryMode == INV_TITLE_MODE) {
                 PassportText =
-                    T_Print(0, -16, 0, GF_GameStrings[GS_PASSPORT_EXIT_GAME]);
+                    T_Print(0, -16, 0, GF.strings[GS_PASSPORT_EXIT_GAME]);
             } else {
-                PassportText = T_Print(
-                    0, -16, 0, GF_GameStrings[GS_PASSPORT_EXIT_TO_TITLE]);
+                PassportText =
+                    T_Print(0, -16, 0, GF.strings[GS_PASSPORT_EXIT_TO_TITLE]);
             }
             T_BottomAlign(PassportText, 1);
             T_CentreH(PassportText, 1);
@@ -417,14 +417,13 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
     if (!DetailText[0]) {
         sprintf(
-            buf, GF_GameStrings[GS_DETAIL_PERSPECTIVE_FMT],
-            GF_GameStrings
+            buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
+            GF.strings
                 [AppSettings & ASF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
         DetailText[0] = T_Print(0, 0, 0, buf);
         sprintf(
-            buf, GF_GameStrings[GS_DETAIL_BILINEAR_FMT],
-            GF_GameStrings
-                [AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
+            buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
+            GF.strings[AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
         DetailText[1] = T_Print(0, 25, 0, buf);
         if (dword_45B940) {
             DetailText[2] = T_Print(0, 50, 0, " ");
@@ -445,14 +444,13 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 tmp = "640x480";
                 break;
             }
-            sprintf(buf, GF_GameStrings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
+            sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
             DetailText[2] = T_Print(0, 50, 0, buf);
             max_row = 2;
         }
 
         DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] =
-            T_Print(0, -30, 0, GF_GameStrings[GS_DETAIL_SELECT_DETAIL]);
+        DetailText[4] = T_Print(0, -30, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
 
         if (current_row > max_row) {
             current_row = max_row;
@@ -558,13 +556,11 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 
     if (!DetailText[0]) {
-        DetailText[2] = T_Print(0, 0, 0, GF_GameStrings[GS_DETAIL_LEVEL_HIGH]);
-        DetailText[1] =
-            T_Print(0, 25, 0, GF_GameStrings[GS_DETAIL_LEVEL_MEDIUM]);
-        DetailText[0] = T_Print(0, 50, 0, GF_GameStrings[GS_DETAIL_LEVEL_LOW]);
+        DetailText[2] = T_Print(0, 0, 0, GF.strings[GS_DETAIL_LEVEL_HIGH]);
+        DetailText[1] = T_Print(0, 25, 0, GF.strings[GS_DETAIL_LEVEL_MEDIUM]);
+        DetailText[0] = T_Print(0, 50, 0, GF.strings[GS_DETAIL_LEVEL_LOW]);
         DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] =
-            T_Print(0, -30, 0, GF_GameStrings[GS_DETAIL_SELECT_DETAIL]);
+        DetailText[4] = T_Print(0, -30, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
         T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, IC_BLACK, NULL, 0);
         T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
@@ -631,7 +627,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         SoundText[1] = T_Print(0, 25, 0, buf);
 
         SoundText[2] = T_Print(0, -32, 0, " ");
-        SoundText[3] = T_Print(0, -30, 0, GF_GameStrings[GS_SOUND_SET_VOLUMES]);
+        SoundText[3] = T_Print(0, -30, 0, GF.strings[GS_SOUND_SET_VOLUMES]);
 
         T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
         T_AddOutline(SoundText[0], 1, IC_ORANGE, NULL, 0);
@@ -769,7 +765,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     if (!ControlText[0]) {
         ControlText[0] = T_Print(
             0, -50, 0,
-            GF_GameStrings
+            GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(ControlText[0], 1);
         T_CentreV(ControlText[0], 1);
@@ -1039,27 +1035,22 @@ void S_ShowControls()
             break;
         }
 
-        CtrlTextA[0] = T_Print(hpos, -25, 0, GF_GameStrings[GS_KEYMAP_RUN]);
-        CtrlTextA[1] = T_Print(hpos, -10, 0, GF_GameStrings[GS_KEYMAP_BACK]);
-        CtrlTextA[2] = T_Print(hpos, 5, 0, GF_GameStrings[GS_KEYMAP_LEFT]);
-        CtrlTextA[3] = T_Print(hpos, 20, 0, GF_GameStrings[GS_KEYMAP_RIGHT]);
-        CtrlTextA[4] =
-            T_Print(hpos, 35, 0, GF_GameStrings[GS_KEYMAP_STEP_LEFT]);
-        CtrlTextA[5] =
-            T_Print(hpos, 50, 0, GF_GameStrings[GS_KEYMAP_STEP_RIGHT]);
-        CtrlTextA[6] = T_Print(hpos, 65, 0, GF_GameStrings[GS_KEYMAP_WALK]);
-        CtrlTextA[7] =
-            T_Print(centre + 90, -25, 0, GF_GameStrings[GS_KEYMAP_JUMP]);
+        CtrlTextA[0] = T_Print(hpos, -25, 0, GF.strings[GS_KEYMAP_RUN]);
+        CtrlTextA[1] = T_Print(hpos, -10, 0, GF.strings[GS_KEYMAP_BACK]);
+        CtrlTextA[2] = T_Print(hpos, 5, 0, GF.strings[GS_KEYMAP_LEFT]);
+        CtrlTextA[3] = T_Print(hpos, 20, 0, GF.strings[GS_KEYMAP_RIGHT]);
+        CtrlTextA[4] = T_Print(hpos, 35, 0, GF.strings[GS_KEYMAP_STEP_LEFT]);
+        CtrlTextA[5] = T_Print(hpos, 50, 0, GF.strings[GS_KEYMAP_STEP_RIGHT]);
+        CtrlTextA[6] = T_Print(hpos, 65, 0, GF.strings[GS_KEYMAP_WALK]);
+        CtrlTextA[7] = T_Print(centre + 90, -25, 0, GF.strings[GS_KEYMAP_JUMP]);
         CtrlTextA[8] =
-            T_Print(centre + 90, -10, 0, GF_GameStrings[GS_KEYMAP_ACTION]);
+            T_Print(centre + 90, -10, 0, GF.strings[GS_KEYMAP_ACTION]);
         CtrlTextA[9] =
-            T_Print(centre + 90, 5, 0, GF_GameStrings[GS_KEYMAP_DRAW_WEAPON]);
-        CtrlTextA[10] =
-            T_Print(centre + 90, 20, 0, GF_GameStrings[GS_KEYMAP_LOOK]);
-        CtrlTextA[11] =
-            T_Print(centre + 90, 35, 0, GF_GameStrings[GS_KEYMAP_ROLL]);
+            T_Print(centre + 90, 5, 0, GF.strings[GS_KEYMAP_DRAW_WEAPON]);
+        CtrlTextA[10] = T_Print(centre + 90, 20, 0, GF.strings[GS_KEYMAP_LOOK]);
+        CtrlTextA[11] = T_Print(centre + 90, 35, 0, GF.strings[GS_KEYMAP_ROLL]);
         CtrlTextA[12] =
-            T_Print(centre + 90, 65, 0, GF_GameStrings[GS_KEYMAP_INVENTORY]);
+            T_Print(centre + 90, 65, 0, GF.strings[GS_KEYMAP_INVENTORY]);
 
         for (int i = 0; i < 13; i++) {
             T_CentreV(CtrlTextA[i], 1);
@@ -1071,8 +1062,7 @@ void S_ChangeCtrlText()
 {
     T_ChangeText(
         ControlText[0],
-        GF_GameStrings
-            [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
+        GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
     for (int i = 0; i < 13; ++i) {
         T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
     }

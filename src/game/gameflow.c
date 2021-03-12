@@ -143,8 +143,7 @@ static int8_t GF_LoadGameStrings(struct json_value_s *json)
             continue;
         }
 
-        GF_GameStrings[key] = malloc(strlen(value->string) + 1);
-        strcpy(GF_GameStrings[key], value->string);
+        GF.strings[key] = strdup(value->string);
         item = item->next;
     }
 
@@ -173,21 +172,14 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
         return 0;
     }
 
-    GF_LevelMusic = malloc(sizeof(int16_t) * level_count);
-    GF_LevelTitles = malloc(sizeof(char *) * level_count);
-    GF_LevelNames = malloc(sizeof(char *) * level_count);
-    GF_Key1Strings = malloc(sizeof(char *) * level_count);
-    GF_Key2Strings = malloc(sizeof(char *) * level_count);
-    GF_Key3Strings = malloc(sizeof(char *) * level_count);
-    GF_Key4Strings = malloc(sizeof(char *) * level_count);
-    GF_Puzzle1Strings = malloc(sizeof(char *) * level_count);
-    GF_Puzzle2Strings = malloc(sizeof(char *) * level_count);
-    GF_Puzzle3Strings = malloc(sizeof(char *) * level_count);
-    GF_Puzzle4Strings = malloc(sizeof(char *) * level_count);
-    GF_Pickup1Strings = malloc(sizeof(char *) * level_count);
-    GF_Pickup2Strings = malloc(sizeof(char *) * level_count);
+    GF.levels = malloc(sizeof(GameFlowLevel) * level_count);
+    if (!GF.levels) {
+        TRACE("failed to allocate memory");
+        return 0;
+    }
 
     struct json_array_element_s *item = arr->start;
+    GameFlowLevel *cur = &GF.levels[0];
     int level_num = 0;
 
     while (item) {
@@ -195,23 +187,21 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
         int32_t num;
 
         if (JSONGetIntegerValue(item->value, "music", &num)) {
-            GF_LevelMusic[level_num] = num;
+            cur->music = num;
         } else {
             TRACE("level %d: 'music' must be a number", level_num);
             return 0;
         }
 
         if (JSONGetStringValue(item->value, "file", &str)) {
-            GF_LevelNames[level_num] = malloc(strlen(str) + 1);
-            strcpy(GF_LevelNames[level_num], str);
+            cur->level_file = strdup(str);
         } else {
             TRACE("level %d: 'file' must be a string", level_num);
             return 0;
         }
 
         if (JSONGetStringValue(item->value, "title", &str)) {
-            GF_LevelTitles[level_num] = malloc(strlen(str) + 1);
-            strcpy(GF_LevelTitles[level_num], str);
+            cur->level_title = strdup(str);
         } else {
             TRACE("level %d: 'title' must be a string", level_num);
             return 0;
@@ -224,78 +214,69 @@ static int8_t GF_LoadLevels(struct json_value_s *json)
             return 0;
         } else {
             if (JSONGetStringValue(level_strings, "pickup1", &str)) {
-                GF_Pickup1Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Pickup1Strings[level_num], str);
+                cur->pickup1 = strdup(str);
             } else {
-                GF_Pickup1Strings[level_num] = NULL;
+                cur->pickup1 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "pickup2", &str)) {
-                GF_Pickup2Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Pickup2Strings[level_num], str);
+                cur->pickup2 = strdup(str);
             } else {
-                GF_Pickup2Strings[level_num] = NULL;
+                cur->pickup2 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "key1", &str)) {
-                GF_Key1Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Key1Strings[level_num], str);
+                cur->key1 = strdup(str);
             } else {
-                GF_Key1Strings[level_num] = NULL;
+                cur->key1 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "key2", &str)) {
-                GF_Key2Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Key2Strings[level_num], str);
+                cur->key2 = strdup(str);
             } else {
-                GF_Key2Strings[level_num] = NULL;
+                cur->key2 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "key3", &str)) {
-                GF_Key3Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Key3Strings[level_num], str);
+                cur->key3 = strdup(str);
             } else {
-                GF_Key3Strings[level_num] = NULL;
+                cur->key3 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "key4", &str)) {
-                GF_Key4Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Key4Strings[level_num], str);
+                cur->key4 = strdup(str);
             } else {
-                GF_Key4Strings[level_num] = NULL;
+                cur->key4 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "puzzle1", &str)) {
-                GF_Puzzle1Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Puzzle1Strings[level_num], str);
+                cur->puzzle1 = strdup(str);
             } else {
-                GF_Puzzle1Strings[level_num] = NULL;
+                cur->puzzle1 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "puzzle2", &str)) {
-                GF_Puzzle2Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Puzzle2Strings[level_num], str);
+                cur->puzzle2 = strdup(str);
             } else {
-                GF_Puzzle2Strings[level_num] = NULL;
+                cur->puzzle2 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "puzzle3", &str)) {
-                GF_Puzzle3Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Puzzle3Strings[level_num], str);
+                cur->puzzle3 = strdup(str);
             } else {
-                GF_Puzzle3Strings[level_num] = NULL;
+                cur->puzzle3 = NULL;
             }
 
             if (JSONGetStringValue(level_strings, "puzzle4", &str)) {
-                GF_Puzzle4Strings[level_num] = malloc(strlen(str) + 1);
-                strcpy(GF_Puzzle4Strings[level_num], str);
+                cur->puzzle4 = strdup(str);
             } else {
-                GF_Puzzle4Strings[level_num] = NULL;
+                cur->puzzle4 = NULL;
             }
         }
 
         item = item->next;
         level_num++;
+        cur++;
     }
     return 1;
 }
@@ -361,53 +342,52 @@ int8_t GF_LoadScriptFile(const char *file_name)
 {
     int8_t result = S_LoadGameFlow(file_name);
 
-    InvItemMedi.string = GF_GameStrings[GS_INV_ITEM_MEDI],
-    InvItemBigMedi.string = GF_GameStrings[GS_INV_ITEM_BIG_MEDI],
+    InvItemMedi.string = GF.strings[GS_INV_ITEM_MEDI],
+    InvItemBigMedi.string = GF.strings[GS_INV_ITEM_BIG_MEDI],
 
-    InvItemPuzzle1.string = GF_GameStrings[GS_INV_ITEM_PUZZLE1],
-    InvItemPuzzle2.string = GF_GameStrings[GS_INV_ITEM_PUZZLE2],
-    InvItemPuzzle3.string = GF_GameStrings[GS_INV_ITEM_PUZZLE3],
-    InvItemPuzzle4.string = GF_GameStrings[GS_INV_ITEM_PUZZLE4],
+    InvItemPuzzle1.string = GF.strings[GS_INV_ITEM_PUZZLE1],
+    InvItemPuzzle2.string = GF.strings[GS_INV_ITEM_PUZZLE2],
+    InvItemPuzzle3.string = GF.strings[GS_INV_ITEM_PUZZLE3],
+    InvItemPuzzle4.string = GF.strings[GS_INV_ITEM_PUZZLE4],
 
-    InvItemKey1.string = GF_GameStrings[GS_INV_ITEM_KEY1],
-    InvItemKey2.string = GF_GameStrings[GS_INV_ITEM_KEY2],
-    InvItemKey3.string = GF_GameStrings[GS_INV_ITEM_KEY3],
-    InvItemKey4.string = GF_GameStrings[GS_INV_ITEM_KEY4],
+    InvItemKey1.string = GF.strings[GS_INV_ITEM_KEY1],
+    InvItemKey2.string = GF.strings[GS_INV_ITEM_KEY2],
+    InvItemKey3.string = GF.strings[GS_INV_ITEM_KEY3],
+    InvItemKey4.string = GF.strings[GS_INV_ITEM_KEY4],
 
-    InvItemPickup1.string = GF_GameStrings[GS_INV_ITEM_PICKUP1],
-    InvItemPickup2.string = GF_GameStrings[GS_INV_ITEM_PICKUP2],
-    InvItemLeadBar.string = GF_GameStrings[GS_INV_ITEM_LEADBAR],
-    InvItemScion.string = GF_GameStrings[GS_INV_ITEM_SCION],
+    InvItemPickup1.string = GF.strings[GS_INV_ITEM_PICKUP1],
+    InvItemPickup2.string = GF.strings[GS_INV_ITEM_PICKUP2],
+    InvItemLeadBar.string = GF.strings[GS_INV_ITEM_LEADBAR],
+    InvItemScion.string = GF.strings[GS_INV_ITEM_SCION],
 
-    InvItemPistols.string = GF_GameStrings[GS_INV_ITEM_PISTOLS],
-    InvItemShotgun.string = GF_GameStrings[GS_INV_ITEM_SHOTGUN],
-    InvItemMagnum.string = GF_GameStrings[GS_INV_ITEM_MAGNUM],
-    InvItemUzi.string = GF_GameStrings[GS_INV_ITEM_UZI],
-    InvItemGrenade.string = GF_GameStrings[GS_INV_ITEM_GRENADE],
+    InvItemPistols.string = GF.strings[GS_INV_ITEM_PISTOLS],
+    InvItemShotgun.string = GF.strings[GS_INV_ITEM_SHOTGUN],
+    InvItemMagnum.string = GF.strings[GS_INV_ITEM_MAGNUM],
+    InvItemUzi.string = GF.strings[GS_INV_ITEM_UZI],
+    InvItemGrenade.string = GF.strings[GS_INV_ITEM_GRENADE],
 
-    InvItemPistolAmmo.string = GF_GameStrings[GS_INV_ITEM_PISTOL_AMMO],
-    InvItemShotgunAmmo.string = GF_GameStrings[GS_INV_ITEM_SHOTGUN_AMMO],
-    InvItemMagnumAmmo.string = GF_GameStrings[GS_INV_ITEM_MAGNUM_AMMO],
-    InvItemUziAmmo.string = GF_GameStrings[GS_INV_ITEM_UZI_AMMO],
+    InvItemPistolAmmo.string = GF.strings[GS_INV_ITEM_PISTOL_AMMO],
+    InvItemShotgunAmmo.string = GF.strings[GS_INV_ITEM_SHOTGUN_AMMO],
+    InvItemMagnumAmmo.string = GF.strings[GS_INV_ITEM_MAGNUM_AMMO],
+    InvItemUziAmmo.string = GF.strings[GS_INV_ITEM_UZI_AMMO],
 
-    InvItemCompass.string = GF_GameStrings[GS_INV_ITEM_COMPASS],
-    InvItemGame.string = GF_GameStrings[GS_INV_ITEM_GAME];
-    InvItemDetails.string = GF_GameStrings[GS_INV_ITEM_DETAILS];
-    InvItemSound.string = GF_GameStrings[GS_INV_ITEM_SOUND];
-    InvItemControls.string = GF_GameStrings[GS_INV_ITEM_CONTROLS];
-    InvItemGamma.string = GF_GameStrings[GS_INV_ITEM_GAMMA];
-    InvItemLarasHome.string = GF_GameStrings[GS_INV_ITEM_LARAS_HOME];
+    InvItemCompass.string = GF.strings[GS_INV_ITEM_COMPASS],
+    InvItemGame.string = GF.strings[GS_INV_ITEM_GAME];
+    InvItemDetails.string = GF.strings[GS_INV_ITEM_DETAILS];
+    InvItemSound.string = GF.strings[GS_INV_ITEM_SOUND];
+    InvItemControls.string = GF.strings[GS_INV_ITEM_CONTROLS];
+    InvItemGamma.string = GF.strings[GS_INV_ITEM_GAMMA];
+    InvItemLarasHome.string = GF.strings[GS_INV_ITEM_LARAS_HOME];
 
     SetRequesterHeading(
-        &LoadSaveGameRequester, GF_GameStrings[GS_PASSPORT_SELECT_LEVEL]);
+        &LoadSaveGameRequester, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
 
 #ifdef T1M_FEAT_GAMEPLAY
-    SetRequesterHeading(
-        &NewGameRequester, GF_GameStrings[GS_PASSPORT_SELECT_MODE]);
+    SetRequesterHeading(&NewGameRequester, GF.strings[GS_PASSPORT_SELECT_MODE]);
     SetRequesterItemText(
-        &NewGameRequester, 0, GF_GameStrings[GS_PASSPORT_MODE_NEW_GAME]);
+        &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME]);
     SetRequesterItemText(
-        &NewGameRequester, 1, GF_GameStrings[GS_PASSPORT_MODE_NEW_GAME_PLUS]);
+        &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS]);
 #endif
 
     return result;

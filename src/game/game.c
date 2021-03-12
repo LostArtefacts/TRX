@@ -262,7 +262,7 @@ void LevelStats(int32_t level_num)
     T_InitPrint();
 
     // heading
-    sprintf(string, "%s", GF_LevelTitles[level_num]);
+    sprintf(string, "%s", GF.levels[level_num].level_title);
     txt = T_Print(0, -50, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -279,7 +279,7 @@ void LevelStats(int32_t level_num)
     } else {
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
-    sprintf(string, GF_GameStrings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
     txt = T_Print(0, 70, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -295,20 +295,20 @@ void LevelStats(int32_t level_num)
         --secrets_total;
     } while (secrets_total);
     sprintf(
-        string, GF_GameStrings[GS_STATS_SECRETS_FMT], secrets_taken,
+        string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
         SecretTotals[level_num]);
     txt = T_Print(0, 40, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // pickups
-    sprintf(string, GF_GameStrings[GS_STATS_PICKUPS_FMT], SaveGame[0].pickups);
+    sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame[0].pickups);
     txt = T_Print(0, 10, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // kills
-    sprintf(string, GF_GameStrings[GS_STATS_KILLS_FMT], SaveGame[0].kills);
+    sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame[0].kills);
     txt = T_Print(0, -20, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -472,7 +472,7 @@ int32_t S_FrontEndCheck()
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
-                GF_GameStrings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
+                GF.strings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
         }
 
         req->items++;
@@ -493,7 +493,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t size, int32_t slot)
         return 0;
     }
 
-    sprintf(filename, "%s", GF_LevelTitles[SaveGame[0].current_level]);
+    sprintf(filename, "%s", GF.levels[SaveGame[0].current_level].level_title);
     fwrite(filename, sizeof(char), 75, fp);
     fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
 

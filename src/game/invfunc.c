@@ -31,22 +31,20 @@ void RingIsOpen(RING_INFO *ring)
     if (!InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            InvRingText =
-                T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_INVENTORY]);
+            InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
             if (InventoryMode == INV_DEATH_MODE) {
                 InvRingText =
-                    T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_GAME_OVER]);
+                    T_Print(0, 26, 0, GF.strings[GS_HEADING_GAME_OVER]);
             } else {
-                InvRingText =
-                    T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_OPTION]);
+                InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText = T_Print(0, 26, 0, GF_GameStrings[GS_HEADING_ITEMS]);
+            InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_ITEMS]);
             break;
         }
 
@@ -106,52 +104,52 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         switch (inv_item->object_number) {
         case O_PUZZLE_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Puzzle1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle1);
             break;
 
         case O_PUZZLE_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Puzzle2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle2);
             break;
 
         case O_PUZZLE_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Puzzle3Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle3);
             break;
 
         case O_PUZZLE_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Puzzle4Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle4);
             break;
 
         case O_KEY_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Key1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].key1);
             break;
 
         case O_KEY_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Key2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].key2);
             break;
 
         case O_KEY_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Key3Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].key3);
             break;
 
         case O_KEY_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Key4Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].key4);
             break;
 
         case O_PICKUP_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Pickup1Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].pickup1);
             break;
 
         case O_PICKUP_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF_Pickup2Strings[CurrentLevel]);
+                T_Print(0, -16, 0, GF.levels[CurrentLevel].pickup2);
             break;
 
         case O_PASSPORT_OPTION:
