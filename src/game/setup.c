@@ -5,6 +5,8 @@
 #include "game/ai/evil_lara.h"
 #include "game/ai/lion.h"
 #include "game/ai/raptor.h"
+#include "game/ai/rat.h"
+#include "game/ai/vole.h"
 #include "game/ai/wolf.h"
 #include "game/box.h"
 #include "game/cinema.h"
@@ -25,7 +27,6 @@
 #include "game/objects.h"
 #include "game/people.h"
 #include "game/pickup.h"
-#include "game/rat.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
@@ -176,40 +177,8 @@ void BaddyObjects()
         AnimBones[Objects[O_PIERRE].bone_index + 24] |= BEB_ROT_Y;
     }
 
-    if (Objects[O_RAT].loaded) {
-        Objects[O_RAT].initialise = InitialiseCreature;
-        Objects[O_RAT].control = RatControl;
-        Objects[O_RAT].collision = CreatureCollision;
-        Objects[O_RAT].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_RAT].hit_points = RAT_HITPOINTS;
-        Objects[O_RAT].pivot_length = 200;
-        Objects[O_RAT].radius = RAT_RADIUS;
-        Objects[O_RAT].smartness = RAT_SMARTNESS;
-        Objects[O_RAT].intelligent = 1;
-        Objects[O_RAT].save_position = 1;
-        Objects[O_RAT].save_hitpoints = 1;
-        Objects[O_RAT].save_anim = 1;
-        Objects[O_RAT].save_flags = 1;
-        AnimBones[Objects[O_RAT].bone_index + 4] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_VOLE].loaded) {
-        Objects[O_VOLE].initialise = InitialiseCreature;
-        Objects[O_VOLE].control = VoleControl;
-        Objects[O_VOLE].collision = CreatureCollision;
-        Objects[O_VOLE].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_VOLE].hit_points = RAT_HITPOINTS;
-        Objects[O_VOLE].pivot_length = 200;
-        Objects[O_VOLE].radius = RAT_RADIUS;
-        Objects[O_VOLE].smartness = RAT_SMARTNESS;
-        Objects[O_VOLE].intelligent = 1;
-        Objects[O_VOLE].save_position = 1;
-        Objects[O_VOLE].save_hitpoints = 1;
-        Objects[O_VOLE].save_anim = 1;
-        Objects[O_VOLE].save_flags = 1;
-        AnimBones[Objects[O_VOLE].bone_index + 4] |= BEB_ROT_Y;
-    }
-
+    SetupRat(&Objects[O_RAT]);
+    SetupVole(&Objects[O_VOLE]);
     SetupLion(&Objects[O_LION]);
     SetupLioness(&Objects[O_LIONESS]);
     SetupPuma(&Objects[O_PUMA]);
