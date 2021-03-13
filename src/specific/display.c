@@ -26,6 +26,12 @@ void SetupScreenSize()
     }
 }
 
+void S_NoFade()
+{
+    FadeValue = 0x100000;
+    FadeLimit = 0x100000;
+}
+
 void S_FadeInInventory(int32_t fade)
 {
     if (IsHardwareRenderer) {
