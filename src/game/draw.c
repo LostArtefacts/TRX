@@ -536,10 +536,8 @@ void DrawLara(ITEM_INFO *item)
         frame = frmptr[0];
     }
 
-#ifdef T1M_FEAT_HAIR
     // save matrix for hair
     saved_matrix = *PhdMatrixPtr;
-#endif
 
     S_PrintShadow(object->shadow_size, frame, item);
     phd_PushMatrix();
@@ -608,10 +606,8 @@ void DrawLara(ITEM_INFO *item)
     phd_RotYXZ(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons(Lara.mesh_ptrs[LM_HEAD], clip);
 
-#ifdef T1M_FEAT_HAIR
     *PhdMatrixPtr = saved_matrix;
     DrawHair();
-#endif
 
     phd_PopMatrix();
 
@@ -754,11 +750,9 @@ void DrawLara(ITEM_INFO *item)
         phd_RotYXZpack(packed_rotation[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
-#endif
 
         phd_PopMatrix();
 
@@ -779,12 +773,10 @@ void DrawLara(ITEM_INFO *item)
         phd_RotYXZpack(packed_rotation[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
-#endif
 
         phd_PopMatrix();
         break;
@@ -817,13 +809,11 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip)
         off = 55;
         break;
 
-#ifdef T1M_FEAT_UI
     case LGT_SHOTGUN:
         light = 10 * 256;
         len = 285;
         off = 0;
         break;
-#endif
 
     default:
         light = 20 * 256;
@@ -874,9 +864,7 @@ void DrawLaraInt(
     OBJECT_INFO *object = &Objects[item->object_number];
     int16_t *bounds = GetBoundsAccurate(item);
 
-#ifdef T1M_FEAT_HAIR
     saved_matrix = *PhdMatrixPtr;
-#endif
 
     S_PrintShadow(object->shadow_size, bounds, item);
     phd_PushMatrix();
@@ -952,10 +940,8 @@ void DrawLaraInt(
     phd_RotYXZ_I(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons_I(Lara.mesh_ptrs[LM_HEAD], clip);
 
-#ifdef T1M_FEAT_HAIR
     *PhdMatrixPtr = saved_matrix;
     DrawHair();
-#endif
 
     phd_PopMatrix_I();
 
@@ -1088,11 +1074,9 @@ void DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
-#endif
 
         phd_PopMatrix();
 
@@ -1113,12 +1097,10 @@ void DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
-#endif
 
         phd_PopMatrix_I();
         break;

@@ -189,15 +189,11 @@ void InitialiseEvilLara(int16_t item_num);
 void ControlEvilLara(int16_t item_num);
 void DrawEvilLara(ITEM_INFO *item);
 
-#ifdef T1M_FEAT_GAMEPLAY
 void LookLeftRight();
 void LookUpDown();
 void ResetLook();
-#endif
 
-#ifdef T1M_FEAT_CHEATS
 void LaraCheatGetStuff();
-#endif
 
 void T1MInjectGameLara();
 void T1MInjectGameLaraMisc();

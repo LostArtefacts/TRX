@@ -10,7 +10,6 @@
 static int8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 8, 11, 8, 6, 24 }, // gold
     { 32, 41, 32, 19, 21 }, // blue
-#ifdef T1M_FEAT_UI
     { 18, 17, 18, 19, 21 }, // grey
     { 29, 30, 29, 28, 26 }, // red
     { 76, 77, 76, 75, 74 }, // silver
@@ -18,10 +17,8 @@ static int8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 119, 118, 119, 121, 123 }, // gold2
     { 113, 112, 113, 114, 115 }, // blue2
     { 193, 194, 192, 191, 189 }, // pink
-#endif
 };
 
-#ifdef T1M_FEAT_UI
 int32_t MulDiv(int32_t x, int32_t y, int32_t z)
 {
     return (x * y) / z;
@@ -86,7 +83,6 @@ void BarLocation(
 
     BarOffsetY[bar_location] += height + 4 * scale;
 }
-#endif
 
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 {
@@ -111,7 +107,6 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t height = 5 * scale;
     int16_t bar_color = bar_type;
 
-#ifdef T1M_FEAT_UI
     int32_t x;
     int32_t y;
     if (bar_type == BT_LARA_HEALTH) {
@@ -125,14 +120,6 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
             T1MConfig.enemy_healthbar_location, scale, width, height, &x, &y);
         bar_color = T1MConfig.enemy_healthbar_color;
     }
-#else
-    int32_t x = 8 * scale;
-    int32_t y = 8 * scale;
-    if (bar_type == BT_LARA_AIR) {
-        // place air bar on the right
-        x = PhdWinWidth - width - x;
-    }
-#endif
 
     int32_t padding = 2;
     int32_t top = y - padding;
@@ -154,11 +141,7 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int32_t blink_interval = 20;
-#ifdef T1M_FEAT_UI
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
-#else
-    const int32_t blink_threshold = 20;
-#endif
     int32_t blink_time = Ticks % blink_interval;
     int32_t blink =
         percent <= blink_threshold && blink_time > blink_interval / 2;

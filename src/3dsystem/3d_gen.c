@@ -1,12 +1,9 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
+#include "specific/output.h"
 #include "game/vars.h"
 #include "config.h"
-
-#ifdef T1M_FEAT_UI
-    #include "specific/output.h"
-    #include <math.h>
-#endif
+#include <math.h>
 
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
@@ -346,11 +343,7 @@ void phd_InitWindow(
     PhdScrHeight = scrheight;
     PhdScrWidth = scrwidth;
 
-#ifdef T1M_FEAT_UI
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-#else
-    AlterFOV(view_angle * PHD_DEGREE);
-#endif
 
     PhdLeft = 0;
     PhdTop = 0;
@@ -362,7 +355,6 @@ void phd_InitWindow(
 
 void AlterFOV(PHD_ANGLE fov)
 {
-#ifdef T1M_FEAT_UI
     // In places that use GAME_FOV, it can be safely changed to user's choice.
     // But for cinematics, the FOV value chosen by devs needs to stay
     // unchanged, otherwise the game renders the low camera in the Lost Valley
@@ -373,7 +365,6 @@ void AlterFOV(PHD_ANGLE fov)
         double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
         fov = round((fov_rad_v / M_PI) * 32760);
     }
-#endif
 
     int16_t c = phd_cos(fov / 2);
     int16_t s = phd_sin(fov / 2);

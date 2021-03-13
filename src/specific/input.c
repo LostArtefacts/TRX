@@ -7,9 +7,7 @@
 #include "util.h"
 #include <dinput.h>
 
-#ifdef T1M_FEAT_INPUT
-static int32_t medipack_cooldown = 0;
-#endif
+static int32_t MedipackCoolDown = 0;
 
 int16_t KeyGet()
 {
@@ -95,7 +93,6 @@ void S_UpdateInput()
         linput |= IN_ROLL;
     }
 
-#ifdef T1M_FEAT_CHEATS
     if (T1MConfig.enable_cheats) {
         static int8_t is_stuff_cheat_key_pressed = 0;
         if (KeyData->keymap[DIK_I]) {
@@ -124,9 +121,7 @@ void S_UpdateInput()
             }
         }
     }
-#endif
 
-#ifdef T1M_FEAT_INPUT
     if (T1MConfig.enable_numeric_keys) {
         if (KeyData->keymap[DIK_1] && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
@@ -138,20 +133,19 @@ void S_UpdateInput()
             Lara.request_gun_type = LGT_UZIS;
         }
 
-        if (medipack_cooldown > 0) {
-            --medipack_cooldown;
+        if (MedipackCoolDown > 0) {
+            --MedipackCoolDown;
         } else {
             if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
                 UseItem(O_MEDI_OPTION);
-                medipack_cooldown = 15; // half a second
+                MedipackCoolDown = 15; // half a second
             } else if (
                 KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
                 UseItem(O_BIGMEDI_OPTION);
-                medipack_cooldown = 15;
+                MedipackCoolDown = 15;
             }
         }
     }
-#endif
 
     if (KeyData->keymap[DIK_RETURN] || (linput & IN_ACTION)) {
         linput |= IN_SELECT;

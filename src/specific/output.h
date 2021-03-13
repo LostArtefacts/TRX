@@ -22,24 +22,14 @@
 void S_DrawHealthBar(int32_t percent);
 void S_DrawAirBar(int32_t percent);
 
-typedef enum {
-    BT_LARA_HEALTH = 0,
-    BT_LARA_AIR = 1,
-#if defined(T1M_FEAT_UI) || defined(TOMB1M_FEAT_GAMEPLAY)
-    BT_ENEMY_HEALTH = 2,
-#endif
-} BAR_TYPE;
-
 int32_t GetRenderScaleGLRage(int32_t unit);
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type);
 
-#ifdef T1M_FEAT_UI
 int32_t GetRenderScale(int32_t unit);
 int32_t GetRenderHeightDownscaled();
 int32_t GetRenderWidthDownscaled();
 int32_t GetRenderHeight();
 int32_t GetRenderWidth();
-#endif
 
 void T1MInjectSpecificOutput();
 

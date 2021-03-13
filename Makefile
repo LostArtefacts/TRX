@@ -1,16 +1,7 @@
 CC=i686-w64-mingw32-gcc
 WINDRES=i686-w64-mingw32-windres
 LDFLAGS=-ldbghelp -lwinmm
-CFLAGS=-Wall -Isrc \
-	-DT1M_FEAT_GAMEFLOW \
-	-DT1M_FEAT_HAIR \
-	-DT1M_FEAT_CHEATS \
-	-DT1M_FEAT_EXTENDED_MEMORY \
-	-DT1M_FEAT_UI \
-	-DT1M_FEAT_INPUT \
-	-DT1M_FEAT_GAMEPLAY \
-	-DT1M_FEAT_OG_FIXES \
-	-DT1M_FEAT_NOCD
+CFLAGS=-Wall -Isrc
 
 VERSION = $(shell git describe --abbrev=7 --tags master)
 CWD = $(shell pwd)

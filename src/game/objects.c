@@ -58,7 +58,6 @@ void OpenThatDoor(DOORPOS_DATA *d)
     }
 }
 
-#ifdef T1M_FEAT_CHEATS
 void OpenClosestDoors(ITEM_INFO *lara_item)
 {
     int16_t best_door = NO_ITEM;
@@ -96,7 +95,6 @@ void OpenClosestDoors(ITEM_INFO *lara_item)
         item->timer = 0;
     }
 }
-#endif
 
 void InitialiseDoor(int16_t item_num)
 {

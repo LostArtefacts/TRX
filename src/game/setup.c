@@ -77,16 +77,12 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         ExtractSaveGameInfo();
     }
 
-#ifdef T1M_FEAT_INPUT
     // LaraGun() expects request_gun_type to be set only when it really is
     // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
     // times.
     Lara.request_gun_type = LGT_UNARMED;
-#endif
 
-#ifdef T1M_FEAT_UI
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-#endif
 
     if (GF.levels[CurrentLevel].music) {
         S_CDPlay(GF.levels[CurrentLevel].music);
@@ -1030,11 +1026,8 @@ void InitialiseObjects()
     TrapObjects();
     ObjectObjects();
 
-#ifdef T1M_FEAT_HAIR
     InitialiseHair();
-#endif
 
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_medpacks) {
         Objects[O_MEDI_ITEM].initialise = NULL;
         Objects[O_MEDI_ITEM].collision = NULL;
@@ -1098,7 +1091,6 @@ void InitialiseObjects()
         Objects[O_SG_AMMO_ITEM].floor = NULL;
         Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }
-#endif
 }
 
 void T1MInjectGameSetup()

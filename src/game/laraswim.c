@@ -25,7 +25,6 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
         if (Input & IN_LOOK) {
             LookLeftRight();
@@ -33,7 +32,6 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
             ResetLook();
         }
     }
-#endif
 
     LaraControlRoutines[item->current_anim_state](item, coll);
 
@@ -79,11 +77,9 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         LaraBaddieCollision(item, coll);
     }
 
-#ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT && CHK_ANY(Input, IN_DRAW)) {
         OpenClosestDoors(LaraItem);
     }
-#endif
 
     LaraCollisionRoutines[item->current_anim_state](item, coll);
     UpdateLaraRoom(item, 0);
@@ -113,7 +109,6 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-#ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT) {
         if (item->fall_speed > UW_MAXSPEED * 2) {
             item->fall_speed = UW_MAXSPEED * 2;
@@ -121,11 +116,6 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
     } else if (item->fall_speed > UW_MAXSPEED) {
         item->fall_speed = UW_MAXSPEED;
     }
-#else
-    if (item->fall_speed > UW_MAXSPEED) {
-        item->fall_speed = UW_MAXSPEED;
-    }
-#endif
 
     if (!(Input & IN_JUMP)) {
         item->goal_anim_state = AS_GLIDE;
@@ -167,13 +157,11 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 {
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.enable_enhanced_look) {
         if (Input & IN_LOOK) {
             LookUpDown();
         }
     }
-#endif
 
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;

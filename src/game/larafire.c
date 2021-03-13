@@ -24,34 +24,24 @@ void LaraGun()
     if (LaraItem->hit_points <= 0) {
         Lara.gun_status = LGS_ARMLESS;
     } else if (Lara.water_status == LWS_ABOVEWATER) {
-#ifdef T1M_FEAT_INPUT
         if (Lara.request_gun_type != LGT_UNARMED
             && (Lara.request_gun_type != Lara.gun_type
                 || Lara.gun_status == LGS_ARMLESS)) {
-#else
-        if (Lara.request_gun_type != Lara.gun_type) {
-#endif
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_type = Lara.request_gun_type;
                 InitialiseNewWeapon();
                 draw = 1;
-#ifdef T1M_FEAT_INPUT
                 Lara.request_gun_type = LGT_UNARMED;
-#endif
             } else if (Lara.gun_status == LGS_READY) {
                 draw = 1;
             }
         } else if (Input & IN_DRAW) {
-#ifdef T1M_FEAT_OG_FIXES
             if (Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
                 Lara.gun_type = LGT_PISTOLS;
                 InitialiseNewWeapon();
             }
-#endif
             draw = 1;
-#ifdef T1M_FEAT_INPUT
             Lara.request_gun_type = LGT_UNARMED;
-#endif
         }
     } else if (Lara.gun_status == LGS_READY) {
         draw = 1;
@@ -415,13 +405,9 @@ int32_t FireWeapon(
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
         SoundEffect(48, &src->pos, 0);
-#ifdef T1M_FEAT_OG_FIXES
         if (!T1MConfig.fix_illegal_gun_equip || Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
         }
-#else
-        Lara.request_gun_type = LGT_PISTOLS;
-#endif
         return 0;
     }
 

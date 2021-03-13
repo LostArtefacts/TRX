@@ -700,13 +700,11 @@ int8_t GF_LoadScriptFile(const char *file_name)
     SetRequesterHeading(
         &LoadSaveGameRequester, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
 
-#ifdef T1M_FEAT_GAMEPLAY
     SetRequesterHeading(&NewGameRequester, GF.strings[GS_PASSPORT_SELECT_MODE]);
     SetRequesterItemText(
         &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME]);
     SetRequesterItemText(
         &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS]);
-#endif
 
     return result;
 }

@@ -207,9 +207,7 @@ typedef enum {
     O_TEMP8 = 187,
     O_TEMP9 = 188,
     O_TEMP10 = 189,
-#ifdef T1M_FEAT_HAIR
     O_HAIR = O_TEMP10,
-#endif
     O_ALPHABET = 190,
     NUMBER_OBJECTS = 191,
 } OBJECT_ID;
@@ -528,10 +526,8 @@ typedef enum {
     IN_DESELECT = 1 << 21,
     IN_SAVE = 1 << 22,
     IN_LOAD = 1 << 23,
-#ifdef T1M_FEAT_CHEATS
     IN_DOZYCHEAT = 1 << 24,
     IN_STUFFCHEAT = 1 << 25,
-#endif
 } INPUT_STATE;
 
 typedef enum {
@@ -882,6 +878,13 @@ typedef enum {
 
     GS_NUMBER_OF,
 } GAME_STRING_ID;
+
+// T1M
+typedef enum {
+    BT_LARA_HEALTH = 0,
+    BT_LARA_AIR = 1,
+    BT_ENEMY_HEALTH = 2,
+} BAR_TYPE;
 
 #pragma pack(push, 1)
 

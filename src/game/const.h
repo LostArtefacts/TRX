@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_CONST_H
 #define T1M_GAME_CONST_H
 
-#define MALLOC_SIZE 0x380000 // 3.5 MB
+#define MALLOC_SIZE 0x1000000 // 16 MB
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
 #define PHD_180 (PHD_ONE / 2) // = 32768 = 0x8000
@@ -149,13 +149,8 @@
 
 #define BIFF (WALL_L >> 1)
 
-#ifdef T1M_FEAT_EXTENDED_MEMORY
-    #define MAX_STRING_SIZE 100
-    #define MAX_TEXT_STRINGS 64
-#else
-    #define MAX_STRING_SIZE 64
-    #define MAX_TEXT_STRINGS 32
-#endif
+#define MAX_STRING_SIZE 100
+#define MAX_TEXT_STRINGS 64
 
 #define TEXT_HEIGHT 11
 #define FRAME_BOUND_MIN_X 0

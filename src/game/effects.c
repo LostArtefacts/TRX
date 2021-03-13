@@ -186,13 +186,11 @@ void ItemSparkle(ITEM_INFO *item, int meshmask)
 // original name: LaraBubbles
 void FxLaraBubbles(ITEM_INFO *item)
 {
-#ifdef T1M_FEAT_CHEATS
     // XXX: until we get Robolara, it makes sense for her to breathe underwater
     if (Lara.water_status == LWS_CHEAT
         && !(RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER)) {
         return;
     }
-#endif
 
     int32_t count = (GetRandomDraw() * 3) / 0x8000;
     if (!count) {
@@ -351,11 +349,7 @@ void FxLaraNormal(ITEM_INFO *item)
     item->anim_number = AA_STOP;
     item->frame_number = AF_STOP;
     Camera.type = CAM_CHASE;
-#ifdef T1M_FEAT_UI
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-#else
-    AlterFOV(GAME_FOV * PHD_DEGREE);
-#endif
 }
 
 // original name: EarthQuakeFX
@@ -409,13 +403,11 @@ void FxRaisingBlock(ITEM_INFO *item)
 // original name: ChainBlockFX
 void FxChainBlock(ITEM_INFO *item)
 {
-#ifdef T1M_FEAT_OG_FIXES
     if (T1MConfig.fix_tihocan_secret_sound) {
         SoundEffect(33, NULL, 0);
         FlipEffect = -1;
         return;
     }
-#endif
 
     if (FlipTimer == 0) {
         SoundEffect(173, NULL, 0);

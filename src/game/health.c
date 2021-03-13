@@ -7,11 +7,7 @@
 #include "util.h"
 
 #define MAX_PICKUP_COLUMNS 4
-#ifdef T1M_FEAT_EXTENDED_MEMORY
-    #define MAX_PICKUPS 16
-#else
-    #define MAX_PICKUPS 3
-#endif
+#define MAX_PICKUPS 16
 
 static DISPLAYPU Pickups[MAX_PICKUPS];
 
@@ -20,9 +16,7 @@ void DrawGameInfo()
     if (OverlayFlag > 0) {
         DrawHealthBar();
         DrawAirBar();
-#ifdef T1M_FEAT_GAMEPLAY
         DrawEnemyBar();
-#endif
         DrawPickups();
     }
 
@@ -36,11 +30,9 @@ void DrawGameInfo()
 
 void DrawHealthBar()
 {
-#ifdef T1M_FEAT_UI
     for (int i = 0; i < 6; i++) {
         BarOffsetY[i] = 0;
     }
-#endif
 
     int hit_points = LaraItem->hit_points;
     if (hit_points < 0) {
@@ -58,7 +50,6 @@ void DrawHealthBar()
         HealthBarTimer = 0;
     }
 
-#ifdef T1M_FEAT_GAMEPLAY
     int32_t show =
         HealthBarTimer > 0 || hit_points <= 0 || Lara.gun_status == LGS_READY;
     switch (T1MConfig.healthbar_showing_mode) {
@@ -78,18 +69,12 @@ void DrawHealthBar()
     if (!show) {
         return;
     }
-#else
-    if (HealthBarTimer <= 0 && hit_points > 0 && Lara.gun_status != LGS_READY) {
-        return;
-    }
-#endif
 
     S_DrawHealthBar(hit_points * 100 / LARA_HITPOINTS);
 }
 
 void DrawAirBar()
 {
-#ifdef T1M_FEAT_GAMEPLAY
     int32_t show =
         Lara.water_status == LWS_UNDERWATER || Lara.water_status == LWS_SURFACE;
     switch (T1MConfig.airbar_showing_mode) {
@@ -109,12 +94,6 @@ void DrawAirBar()
     if (!show) {
         return;
     }
-#else
-    if (Lara.water_status != LWS_UNDERWATER
-        && Lara.water_status != LWS_SURFACE) {
-        return;
-    }
-#endif
 
     int air = Lara.air;
     if (air < 0) {
@@ -126,7 +105,6 @@ void DrawAirBar()
     S_DrawAirBar(air * 100 / LARA_AIR);
 }
 
-#ifdef T1M_FEAT_GAMEPLAY
 void DrawEnemyBar()
 {
     if (!T1MConfig.enable_enemy_healthbar || !Lara.target) {
@@ -139,7 +117,6 @@ void DrawEnemyBar()
             * (SaveGame.bonus_flag ? 2 : 1),
         BT_ENEMY_HEALTH);
 }
-#endif
 
 void DrawAmmoInfo()
 {
@@ -179,11 +156,9 @@ void DrawAmmoInfo()
         T_RightAlign(AmmoText, 1);
     }
 
-#ifdef T1M_FEAT_UI
     AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
         ? 30 + (int)(BarOffsetY[T1M_BL_TOP_RIGHT] * 10 / GetRenderScale(10))
         : 22;
-#endif
 }
 
 void MakeAmmoString(char *string)
@@ -215,11 +190,7 @@ void DrawPickups()
     int16_t time = SaveGame.timer - old_game_timer;
 
     if (time > 0 && time < 60) {
-#ifdef T1M_FEAT_UI
         int32_t sprite_height = MIN(PhdWinWidth, PhdWinHeight * 320 / 200) / 10;
-#else
-        int32_t sprite_height = PhdWinWidth / 10;
-#endif
         int32_t sprite_width = sprite_height * 4 / 3;
         int32_t y = PhdWinHeight - sprite_height;
         int32_t x = PhdWinWidth - sprite_height;
@@ -229,12 +200,8 @@ void DrawPickups()
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
-#ifdef T1M_FEAT_UI
                 S_DrawUISprite(
                     x, y, GetRenderScaleGLRage(12288), pu->sprnum, 4096);
-#else
-                S_DrawUISprite(x, y, 12288, pu->sprnum, 4096);
-#endif
 
                 // T1M - support for more than 3 pickup sprites
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {

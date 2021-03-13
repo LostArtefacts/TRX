@@ -224,11 +224,9 @@ void FireShotgun()
         }
     }
     if (fired) {
-#ifdef T1M_FEAT_UI
         if (T1MConfig.enable_shotgun_flash) {
             Lara.right_arm.flash_gun = Weapons[LGT_SHOTGUN].flash_time;
         }
-#endif
         SoundEffect(Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, 0);
     }
 }

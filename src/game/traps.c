@@ -643,13 +643,11 @@ void FlameControl(int16_t fx_num)
     }
 
     if (fx->counter < 0) {
-#ifdef T1M_FEAT_CHEATS
         if (Lara.water_status == LWS_CHEAT) {
             fx->counter = 0;
             StopSoundEffect(150, NULL);
             KillEffect(fx_num);
         }
-#endif
 
         fx->pos.x = 0;
         fx->pos.y = 0;
@@ -661,14 +659,9 @@ void FlameControl(int16_t fx_num)
 
         GetJointAbsPosition(LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
 
-#ifdef T1M_FEAT_OG_FIXES
         int32_t y = GetWaterHeight(
             LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z,
             LaraItem->room_number);
-#else
-        int32_t y =
-            GetWaterHeight(fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
-#endif
 
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
@@ -686,11 +679,9 @@ void FlameControl(int16_t fx_num)
     if (fx->counter) {
         fx->counter--;
     } else if (ItemNearLara(&fx->pos, 600)) {
-#ifdef T1M_FEAT_CHEATS
         if (Lara.water_status == LWS_CHEAT) {
             return;
         }
-#endif
 
         int32_t x = LaraItem->pos.x - fx->pos.x;
         int32_t z = LaraItem->pos.z - fx->pos.z;
@@ -715,11 +706,9 @@ void FlameControl(int16_t fx_num)
 
 void LavaBurn(ITEM_INFO *item)
 {
-#ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT) {
         return;
     }
-#endif
 
     if (item->hit_points < 0) {
         return;
@@ -828,11 +817,9 @@ void LavaWedgeControl(int16_t item_num)
         }
     }
 
-#ifdef T1M_FEAT_CHEATS
     if (Lara.water_status == LWS_CHEAT) {
         item->touch_bits = 0;
     }
-#endif
 
     if (item->touch_bits) {
         if (LaraItem->hit_points > 0) {

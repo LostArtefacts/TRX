@@ -565,7 +565,6 @@ int32_t S_LoadLevel(int level_num)
     TRACE("%d (%s)", level_num, GF.levels[level_num].level_file);
     int32_t ret = LoadLevel(GF.levels[level_num].level_file, level_num);
 
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
@@ -586,7 +585,6 @@ int32_t S_LoadLevel(int level_num)
             StoredLaraHealth = LARA_HITPOINTS;
         }
     }
-#endif
 
     GF.levels[level_num].secrets = GetSecretCount();
 
@@ -597,50 +595,8 @@ const char *GetFullPath(const char *filename)
 {
     static char newpath[128];
     TRACE("%s", filename);
-#ifdef T1M_FEAT_NOCD
     sprintf(newpath, ".\\%s", filename);
-#else
-    if (DEMO) {
-        sprintf(newpath, "%c:\\tomb\\%s", cd_drive, filename);
-    } else {
-        sprintf(newpath, "%c:\\%s", cd_drive, filename);
-    }
-#endif
     return newpath;
-}
-
-void FindCdDrive()
-{
-    TRACE("");
-#ifdef T1M_FEAT_NOCD
-    return;
-#endif
-    FILE *fp;
-    char root[5] = "C:\\";
-    char tmp_path[MAX_PATH];
-
-    for (cd_drive = 'C'; cd_drive <= 'Z'; cd_drive++) {
-        root[0] = cd_drive;
-        if (GetDriveType(root) == DRIVE_CDROM) {
-            sprintf(tmp_path, "%c:\\tomb\\data\\title.phd", cd_drive);
-            fp = fopen(tmp_path, "rb");
-            if (fp) {
-                DEMO = 1;
-                fclose(fp);
-                return;
-            }
-
-            sprintf(tmp_path, "%c:\\data\\title.phd", cd_drive);
-            fp = fopen(tmp_path, "rb");
-            if (fp) {
-                DEMO = 0;
-                fclose(fp);
-                return;
-            }
-        }
-    }
-
-    ShowFatalError("ERROR: Please insert TombRaider CD");
 }
 
 int GetSecretCount()
@@ -719,5 +675,4 @@ void T1MInjectSpecificFile()
     INJECT(0x0041BC60, LoadItems);
     INJECT(0x0041BE00, LoadBoxes);
     INJECT(0x0041BFC0, GetFullPath);
-    INJECT(0x0041C020, FindCdDrive);
 }

@@ -28,8 +28,6 @@ void DB_Log(char *fmt, ...)
 void S_InitialiseSystem()
 {
     TRACE("");
-    FindCdDrive();
-
     GameVidWidth = 640;
     GameVidHeight = 480;
 
@@ -47,14 +45,7 @@ void S_InitialiseSystem()
 
     CalculateWibbleTable();
 
-#ifdef T1M_FEAT_EXTENDED_MEMORY
-    // TODO: for this to work, the value also needs to be updated in
-    // GameMain and S_PlayFMV. Since exceeding this limit causes the game
-    // to brutally crash anyway, I'm leaving it unfinished here.
-    GameMemorySize = 0x1000000;
-#else
-    GameMemorySize = 0x380000;
-#endif
+    GameMemorySize = MALLOC_SIZE;
 
     InitialiseHardware();
 }

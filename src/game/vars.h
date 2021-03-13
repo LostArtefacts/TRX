@@ -270,16 +270,9 @@ extern int32_t SpriteCount;
 extern int32_t OverlapCount;
 
 extern REQUEST_INFO LoadSaveGameRequester;
-#ifdef T1M_FEAT_GAMEPLAY
 extern REQUEST_INFO NewGameRequester;
-#endif
 
-#ifdef T1M_FEAT_GAMEPLAY
 extern int16_t StoredLaraHealth;
-#endif
-
-#ifdef T1M_FEAT_UI
 extern int16_t BarOffsetY[6];
-#endif
 
 #endif

@@ -21,7 +21,6 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-#ifdef T1M_FEAT_CHEATS
     if (Input & IN_STUFFCHEAT) {
         LaraCheatGetStuff();
     }
@@ -51,7 +50,6 @@ void LaraControl(int16_t item_num)
         Lara.mesh_effects = 0;
         LaraInitialiseMeshes(CurrentLevel);
     }
-#endif
 
     if (Lara.water_status == LWS_ABOVEWATER && room_submerged) {
         Lara.water_status = LWS_UNDERWATER;
@@ -144,11 +142,9 @@ void LaraControl(int16_t item_num)
             S_CDStop();
         }
         Lara.death_count++;
-#ifdef T1M_FEAT_GAMEPLAY
         // make sure the enemy healthbar is no longer rendered. If Lara later
         // is resurrected with DOZY, she should no longer aim at the target.
         Lara.target = NULL;
-#endif
     }
 
     switch (Lara.water_status) {
@@ -178,7 +174,6 @@ void LaraControl(int16_t item_num)
         LaraSurface(item, &coll);
         break;
 
-#ifdef T1M_FEAT_CHEATS
     case LWS_CHEAT:
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
@@ -202,7 +197,6 @@ void LaraControl(int16_t item_num)
             Lara.gun_status = LGS_ARMLESS;
         }
         break;
-#endif
     }
 }
 
@@ -402,11 +396,9 @@ void InitialiseLara()
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = StoredLaraHealth;
     }
-#endif
 
     Lara.air = LARA_AIR;
     Lara.torso_y_rot = 0;

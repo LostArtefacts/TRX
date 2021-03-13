@@ -26,9 +26,8 @@ static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
-#ifdef T1M_FEAT_GAMEPLAY
-    #define MAX_MODES 2
-    #define MAX_MODE_NAME_LENGTH 20
+#define MAX_MODES 2
+#define MAX_MODE_NAME_LENGTH 20
 
 static char NewGameStrings[MAX_MODES][MAX_MODE_NAME_LENGTH];
 REQUEST_INFO NewGameRequester = {
@@ -47,7 +46,6 @@ REQUEST_INFO NewGameRequester = {
     &NewGameStrings[0][0], // item_texts
     MAX_MODE_NAME_LENGTH, // item_text_len
 };
-#endif
 
 static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
 REQUEST_INFO LoadSaveGameRequester = {
@@ -192,7 +190,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-#ifdef T1M_FEAT_GAMEPLAY
         if (PassportMode == 2) {
             int32_t select = DisplayRequester(&NewGameRequester);
             if (select) {
@@ -207,9 +204,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 Input = 0;
                 InputDB = 0;
             }
-        } else
-#endif
-            if (PassportMode == 1) {
+        } else if (PassportMode == 1) {
             int32_t select = DisplayRequester(&LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
@@ -247,7 +242,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
                 if (InventoryMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
-#ifdef T1M_FEAT_GAMEPLAY
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
@@ -256,9 +250,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     PassportMode = 2;
                     Input = 0;
                     InputDB = 0;
-#else
-                    InventoryExtraData[1] = CurrentLevel;
-#endif
                 } else {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
@@ -843,11 +834,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-#ifdef T1M_FEAT_INPUT
         if (!CHK_ANY(Input, IN_SELECT)) {
-#else
-        if (!CHK_ANY(InputDB, IN_SELECT)) {
-#endif
             SelectKey = 2;
         }
         KeyClearBuffer();
@@ -918,84 +905,21 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
 void S_ShowControls()
 {
-#ifdef T1M_FEAT_UI
     int16_t centre = GetRenderWidthDownscaled() / 2;
-#else
-    int16_t centre = PhdWinWidth / 2;
-#endif
     int16_t hpos;
     int16_t vpos;
 
-    switch (HiRes) {
-#ifndef T1M_FEAT_UI
-    case 0:
-        ControlText[1] = T_Print(0, -55, 0, " ");
-        break;
-    case 1:
-        ControlText[1] = T_Print(0, -58, 0, " ");
-        break;
-    case 3:
-        ControlText[1] = T_Print(0, -62, 0, " ");
-        break;
-#endif
-    default:
-        ControlText[1] = T_Print(0, -60, 0, " ");
-        break;
-    }
+    ControlText[1] = T_Print(0, -60, 0, " ");
     T_CentreH(ControlText[1], 1);
     T_CentreV(ControlText[1], 1);
 
-    switch (HiRes) {
-#ifndef T1M_FEAT_UI
-    case 0:
-        for (int i = 0; i < 13; i++) {
-            T_SetScale(CtrlTextA[i], PHD_180, PHD_ONE);
-            T_SetScale(CtrlTextB[i], PHD_180, PHD_ONE);
-        }
-        hpos = 300;
-        vpos = 140;
-        break;
-
-    case 1:
-        hpos = 360;
-        vpos = 145;
-        break;
-
-    case 3:
-        hpos = 440;
-        vpos = 155;
-        break;
-
-#endif
-    default:
-        hpos = 420;
-        vpos = 150;
-        break;
-    }
+    hpos = 420;
+    vpos = 150;
     T_AddBackground(ControlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
 
     if (!CtrlTextB[0]) {
         int16_t *layout = Layout[IConfig];
-
-        switch (HiRes) {
-#ifndef T1M_FEAT_UI
-        case 0:
-            hpos = centre - 140;
-            break;
-
-        case 1:
-            hpos = centre - 170;
-            break;
-
-        case 3:
-            hpos = centre - 230;
-            break;
-#endif
-
-        default:
-            hpos = centre - 200;
-            break;
-        }
+        hpos = centre - 200;
 
         CtrlTextB[0] = T_Print(hpos, -25, 0, ScanCodeNames[layout[0]]);
         CtrlTextB[1] = T_Print(hpos, -10, 0, ScanCodeNames[layout[1]]);
@@ -1018,25 +942,7 @@ void S_ShowControls()
     }
 
     if (!CtrlTextA[0]) {
-        switch (HiRes) {
-#ifndef T1M_FEAT_UI
-        case 0:
-            hpos = centre - 70;
-            break;
-
-        case 1:
-            hpos = centre - 100;
-            break;
-
-        case 3:
-            hpos = centre - 150;
-            break;
-#endif
-
-        default:
-            hpos = centre - 130;
-            break;
-        }
+        hpos = centre - 130;
 
         CtrlTextA[0] = T_Print(hpos, -25, 0, GF.strings[GS_KEYMAP_RUN]);
         CtrlTextA[1] = T_Print(hpos, -10, 0, GF.strings[GS_KEYMAP_BACK]);
@@ -1184,14 +1090,9 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
     if (req->line_offset) {
         if (!req->moreup) {
-#if T1M_FEAT_UI
             req->moreup =
                 T_Print(req->x, line_one_off - req->line_height + 2, 0, "[");
             T_SetScale(req->moreup, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-#else
-            req->moreup =
-                T_Print(req->x, line_one_off - req->line_height, 0, " ");
-#endif
             T_CentreH(req->moreup, 1);
             T_BottomAlign(req->moreup, 1);
             T_AddBackground(
@@ -1204,12 +1105,8 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
     if (req->items > req->vis_lines + req->line_offset) {
         if (!req->moredown) {
-#if T1M_FEAT_UI
             req->moredown = T_Print(req->x, edge_y - 12, 0, "]");
             T_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-#else
-            req->moredown = T_Print(req->x, edge_y - 8, 0, " ");
-#endif
             T_CentreH(req->moredown, 1);
             T_BottomAlign(req->moredown, 1);
             T_AddBackground(

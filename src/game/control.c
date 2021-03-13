@@ -56,11 +56,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (Lara.death_count > DEATH_WAIT
-#ifdef T1M_FEAT_CHEATS
             || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_DOZYCHEAT))
-#else
-            || (Lara.death_count > DEATH_WAIT_MIN && Input)
-#endif
             || OverlayFlag == 2) {
             if (demo_mode) {
                 return 1;
@@ -101,10 +97,8 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                         return return_val;
                     }
                     if (CurrentLevel == GF.gym_level_num) {
-#ifdef T1M_FEAT_GAMEPLAY
                         SaveGame.bonus_flag = InventoryExtraData[1];
                         InitialiseStartInfo();
-#endif
                         return GF_START_GAME | GF.first_level_num;
                     }
 
@@ -132,16 +126,13 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         LaraControl(0);
-#ifdef T1M_FEAT_HAIR
         HairControl(0);
-#endif
 
         CalculateCamera();
         SoundEffects();
         ++SaveGame.timer;
         --HealthBarTimer;
 
-#ifdef T1M_FEAT_GAMEPLAY
         if (T1MConfig.disable_healing_between_levels) {
             int8_t lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
@@ -154,7 +145,6 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                     LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
             }
         }
-#endif
 
         FrameCount -= 0x10000;
     }
@@ -379,9 +369,6 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     ROOM_INFO *r = &RoomInfo[room_num];
 
-#ifdef T1M_FEAT_OG_FIXES
-    // TR2 code. Fixes infinite loops and crashes when x, y, z are outside of
-    // room_num's coordinates.
     int16_t data;
     FLOOR_INFO *floor;
     int32_t x_floor, y_floor;
@@ -416,11 +403,6 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             r = &RoomInfo[data];
         }
     } while (data != NO_ROOM);
-#else
-    int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-    FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
-#endif
 
     if (r->flags & RF_UNDERWATER) {
         while (floor->sky_room != NO_ROOM) {

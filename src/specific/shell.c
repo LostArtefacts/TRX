@@ -174,9 +174,7 @@ void GameMain()
                 if (InventoryExtraData[0] == 0) {
                     gf_option = GF_START_SAVED_GAME | InventoryExtraData[1];
                 } else if (InventoryExtraData[0] == 1) {
-#ifdef T1M_FEAT_GAMEPLAY
                     SaveGame.bonus_flag = InventoryExtraData[1];
-#endif
                     InitialiseStartInfo();
                     gf_option = GF_START_GAME | GF.first_level_num;
                 } else {

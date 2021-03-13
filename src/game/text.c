@@ -369,7 +369,6 @@ void T_DrawThisText(TEXTSTRING *textstring)
     int zpos = textstring->zpos;
     int textwidth = T_GetTextWidth(textstring);
 
-#ifdef T1M_FEAT_UI
     if (textstring->flags & TF_CENTRE_H) {
         xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
     } else if (textstring->flags & TF_RIGHT) {
@@ -381,19 +380,6 @@ void T_DrawThisText(TEXTSTRING *textstring)
     } else if (textstring->flags & TF_BOTTOM) {
         ypos += GetRenderHeightDownscaled();
     }
-#else
-    if (textstring->flags & TF_CENTRE_H) {
-        xpos += (DumpWidth - textwidth) / 2;
-    } else if (textstring->flags & TF_RIGHT) {
-        xpos += DumpWidth - textwidth;
-    }
-
-    if (textstring->flags & TF_CENTRE_V) {
-        ypos += DumpHeight / 2;
-    } else if (textstring->flags & TF_BOTTOM) {
-        ypos += DumpHeight;
-    }
-#endif
 
     int bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
     int bypos =
@@ -420,16 +406,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
             sprite = letter + 81;
         }
 
-        sx = xpos;
-        sy = ypos;
-        sh = textstring->scale_h;
-        sv = textstring->scale_v;
-#ifdef T1M_FEAT_UI
-        sx = GetRenderScale(sx);
-        sy = GetRenderScale(sy);
-        sh = GetRenderScale(sh);
-        sv = GetRenderScale(sv);
-#endif
+        sx = GetRenderScale(xpos);
+        sy = GetRenderScale(ypos);
+        sh = GetRenderScale(textstring->scale_h);
+        sv = GetRenderScale(textstring->scale_v);
         S_DrawScreenSprite2d(
             sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite,
             16 << 8, textstring->text_flags, 0);
@@ -460,16 +440,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
         }
     }
 
-    sx = bxpos;
-    sy = bypos;
-    sh = bwidth;
-    sv = bheight;
-#ifdef T1M_FEAT_UI
-    sx = GetRenderScale(sx);
-    sy = GetRenderScale(sy);
-    sh = GetRenderScale(sh);
-    sv = GetRenderScale(sv);
-#endif
+    sx = GetRenderScale(bxpos);
+    sy = GetRenderScale(bypos);
+    sh = GetRenderScale(bwidth);
+    sv = GetRenderScale(bheight);
 
     if (textstring->flags & TF_BGND) {
         if (textstring->bgnd_gour) {
@@ -507,16 +481,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags & TF_OUTLINE) {
-        sx = bxpos;
-        sy = bypos;
-        sh = bwidth;
-        sv = bheight;
-#ifdef T1M_FEAT_UI
-        sx = GetRenderScale(sx);
-        sy = GetRenderScale(sy);
-        sh = GetRenderScale(sh);
-        sv = GetRenderScale(sv);
-#endif
+        sx = GetRenderScale(bxpos);
+        sy = GetRenderScale(bypos);
+        sh = GetRenderScale(bwidth);
+        sv = GetRenderScale(bheight);
         S_DrawScreenBox(
             sx, sy, zpos + textstring->bgnd_off_z, sh, sv,
             textstring->outl_colour, textstring->outl_gour,
