@@ -13,5 +13,7 @@ void S_CDVolume(int16_t volume)
 
 void T1MInjectSpecificSndPC()
 {
-    INJECT(0x00437F30, S_CDVolume);
+    // NOTE: this is a nullsub in OG and is called in many different places
+    // for many different purposes so it's not injected.
+    // INJECT(0x00437F30, S_CDVolume);
 }
