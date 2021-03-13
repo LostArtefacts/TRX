@@ -24,6 +24,8 @@
 #define S_DrawSpriteRel         ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435B70)
 #define HardwarePrepareFMV      ((void          (*)())0x0040834C)
 #define HardwareFMVDone         ((void          (*)())0x00408368)
+#define CopyPictureHardware     ((void          (*)())0x00408B85)
+#define DownloadPictureHardware ((void          (*)())0x00408C3A)
 // clang-format on
 
 #endif

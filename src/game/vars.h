@@ -206,6 +206,10 @@
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 #define InvNFrames              VAR_U_(0x004550A0, int32_t)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
+#define FadeValue               VAR_I_(0x00453568, int32_t, 0x100000)
+#define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
+#define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)
+
 #define InvItemCompass          VAR_U_(0x00455760, INVENTORY_ITEM)
 #define InvItemMedi             VAR_U_(0x004559E0, INVENTORY_ITEM)
 #define InvItemBigMedi          VAR_U_(0x00455A20, INVENTORY_ITEM)

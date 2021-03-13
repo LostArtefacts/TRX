@@ -26,7 +26,31 @@ void SetupScreenSize()
     }
 }
 
+void S_FadeInInventory(int32_t fade)
+{
+    if (IsHardwareRenderer) {
+        if (CurrentLevel == 20) {
+            DownloadPictureHardware();
+        } else {
+            CopyPictureHardware();
+        }
+    } else if (BackScreen && BackScreenSize) {
+        uint8_t *scrptr = ScrPtr;
+        uint8_t *bkscrptr = BackScreen;
+        for (int i = 0; i < GameVidWidth * GameVidHeight; i++) {
+            *bkscrptr++ = *scrptr++;
+        }
+    }
+
+    if (fade) {
+        FadeValue = 0x100000;
+        FadeLimit = 0x180000;
+        FadeAdder = 0x8000;
+    }
+}
+
 void T1MInjectSpecificDisplay()
 {
     INJECT(0x00416470, SetupScreenSize);
+    INJECT(0x00416B20, S_FadeInInventory);
 }
