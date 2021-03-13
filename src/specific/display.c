@@ -11,8 +11,8 @@ void SetupScreenSize()
     int32_t x = (GameVidWidth - width) / 2;
     int32_t y = (GameVidHeight - height) / 2;
     phd_InitWindow(
-        x, y, width, height, 10, DPQ_END, GAME_FOV, GameVidWidth, GameVidHeight,
-        ScrPtr);
+        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, GameVidWidth,
+        GameVidHeight, ScrPtr);
     DumpX = x;
     DumpY = y;
     DumpWidth = width;
