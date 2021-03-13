@@ -1,41 +1,34 @@
-#include "game/bear.h"
+#include "game/ai/bear.h"
 #include "game/box.h"
+#include "game/collide.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/types.h"
 #include "game/vars.h"
-#include "util.h"
 
-#define BEAR_CHARGE_DAMAGE 3
-#define BEAR_SLAM_DAMAGE 200
-#define BEAR_ATTACK_DAMAGE 200
-#define BEAR_PAT_DAMAGE 400
-#define BEAR_TOUCH 0x2406C
-#define BEAR_ROAR_CHANCE 80
-#define BEAR_REAR_CHANCE 768
-#define BEAR_DROP_CHANCE 1536
-#define BEAR_REAR_RANGE SQUARE(WALL_L * 2) // = 4194304
-#define BEAR_ATTACK_RANGE SQUARE(WALL_L) // = 1048576
-#define BEAR_PAT_RANGE SQUARE(600) // = 360000
-#define BEAR_RUN_TURN (5 * PHD_DEGREE) // = 910
-#define BEAR_WALK_TURN (2 * PHD_DEGREE) // = 364
-#define BEAR_EAT_RANGE SQUARE(WALL_L * 3 / 4) // = 589824
+BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
 
-typedef enum {
-    BEAR_STROLL = 0,
-    BEAR_STOP = 1,
-    BEAR_WALK = 2,
-    BEAR_RUN = 3,
-    BEAR_REAR = 4,
-    BEAR_ROAR = 5,
-    BEAR_ATTACK1 = 6,
-    BEAR_ATTACK2 = 7,
-    BEAR_EAT = 8,
-    BEAR_DEATH = 9,
-} BEAR_ANIM;
-
-static BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
+void SetupBear(OBJECT_INFO *obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise = InitialiseCreature;
+    obj->control = BearControl;
+    obj->collision = CreatureCollision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = BEAR_HITPOINTS;
+    obj->pivot_length = 500;
+    obj->radius = BEAR_RADIUS;
+    obj->smartness = BEAR_SMARTNESS;
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+    AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
+}
 
 void BearControl(int16_t item_num)
 {
@@ -209,9 +202,4 @@ void BearControl(int16_t item_num)
 
     CreatureHead(item, head);
     CreatureAnimation(item_num, angle, 0);
-}
-
-void T1MInjectGameBear()
-{
-    INJECT(0x0040D600, BearControl);
 }

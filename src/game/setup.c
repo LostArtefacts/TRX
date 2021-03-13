@@ -1,8 +1,8 @@
 #include "3dsystem/3d_gen.h"
+#include "game/ai/bear.h"
 #include "game/ai/lion.h"
 #include "game/ai/wolf.h"
 #include "game/bat.h"
-#include "game/bear.h"
 #include "game/box.h"
 #include "game/cinema.h"
 #include "game/collide.h"
@@ -146,23 +146,7 @@ void BaddyObjects()
     Objects[O_EVIL_LARA].save_flags = 1;
 
     SetupWolf(&Objects[O_WOLF]);
-
-    if (Objects[O_BEAR].loaded) {
-        Objects[O_BEAR].initialise = InitialiseCreature;
-        Objects[O_BEAR].control = BearControl;
-        Objects[O_BEAR].collision = CreatureCollision;
-        Objects[O_BEAR].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_BEAR].hit_points = BEAR_HITPOINTS;
-        Objects[O_BEAR].pivot_length = 500;
-        Objects[O_BEAR].radius = BEAR_RADIUS;
-        Objects[O_BEAR].smartness = BEAR_SMARTNESS;
-        Objects[O_BEAR].intelligent = 1;
-        Objects[O_BEAR].save_position = 1;
-        Objects[O_BEAR].save_hitpoints = 1;
-        Objects[O_BEAR].save_anim = 1;
-        Objects[O_BEAR].save_flags = 1;
-        AnimBones[Objects[O_BEAR].bone_index + 52] |= BEB_ROT_Y;
-    }
+    SetupBear(&Objects[O_BEAR]);
 
     if (Objects[O_BAT].loaded) {
         Objects[O_BAT].initialise = InitialiseCreature;
