@@ -185,10 +185,6 @@ void UndrawPistolMeshRight(int32_t weapon_type);
 void PistolHandler(int32_t weapon_type);
 void AnimatePistols(int32_t weapon_type);
 
-void InitialiseEvilLara(int16_t item_num);
-void ControlEvilLara(int16_t item_num);
-void DrawEvilLara(ITEM_INFO *item);
-
 void LookLeftRight();
 void LookUpDown();
 void ResetLook();

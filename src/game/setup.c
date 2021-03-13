@@ -1,6 +1,7 @@
 #include "3dsystem/3d_gen.h"
 #include "game/ai/bear.h"
 #include "game/ai/lion.h"
+#include "game/ai/evil_lara.h"
 #include "game/ai/wolf.h"
 #include "game/bat.h"
 #include "game/box.h"
@@ -135,16 +136,7 @@ void BaddyObjects()
 
     Objects[O_LARA_EXTRA].control = ControlLaraExtra;
 
-    Objects[O_EVIL_LARA].initialise = InitialiseEvilLara;
-    Objects[O_EVIL_LARA].control = ControlEvilLara;
-    Objects[O_EVIL_LARA].draw_routine = DrawEvilLara;
-    Objects[O_EVIL_LARA].collision = CreatureCollision;
-    Objects[O_EVIL_LARA].hit_points = LARA_HITPOINTS;
-    Objects[O_EVIL_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
-    Objects[O_EVIL_LARA].save_position = 1;
-    Objects[O_EVIL_LARA].save_hitpoints = 1;
-    Objects[O_EVIL_LARA].save_flags = 1;
-
+    SetupEvilLara(&Objects[O_EVIL_LARA]);
     SetupWolf(&Objects[O_WOLF]);
     SetupBear(&Objects[O_BEAR]);
 
