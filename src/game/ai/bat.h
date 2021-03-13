@@ -1,0 +1,24 @@
+#ifndef T1M_GAME_AI_BAT_H
+#define T1M_GAME_AI_BAT_H
+
+#include "game/types.h"
+#include <stdint.h>
+
+#define BAT_ATTACK_DAMAGE 2
+#define BAT_TURN (20 * PHD_DEGREE) // = 3640
+
+typedef enum {
+    BAT_EMPTY = 0,
+    BAT_STOP = 1,
+    BAT_FLY = 2,
+    BAT_ATTACK = 3,
+    BAT_FALL = 4,
+    BAT_DEATH = 5,
+} BAT_ANIM;
+
+extern BITE_INFO BatBite;
+
+void SetupBat(OBJECT_INFO *obj);
+void BatControl(int16_t item_num);
+
+#endif

@@ -1,24 +1,31 @@
-#include "game/bat.h"
+#include "game/ai/bat.h"
 #include "game/box.h"
+#include "game/collide.h"
 #include "game/effects.h"
 #include "game/lot.h"
 #include "game/types.h"
 #include "game/vars.h"
-#include "util.h"
 
-#define BAT_ATTACK_DAMAGE 2
-#define BAT_TURN (20 * PHD_DEGREE) // = 3640
+BITE_INFO BatBite = { 0, 16, 45, 4 };
 
-typedef enum {
-    BAT_EMPTY = 0,
-    BAT_STOP = 1,
-    BAT_FLY = 2,
-    BAT_ATTACK = 3,
-    BAT_FALL = 4,
-    BAT_DEATH = 5,
-} BAT_ANIM;
-
-static BITE_INFO BatBite = { 0, 16, 45, 4 };
+void SetupBat(OBJECT_INFO *obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise = InitialiseCreature;
+    obj->control = BatControl;
+    obj->collision = CreatureCollision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = BAT_HITPOINTS;
+    obj->radius = BAT_RADIUS;
+    obj->smartness = BAT_SMARTNESS;
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+}
 
 void BatControl(int16_t item_num)
 {
@@ -79,9 +86,4 @@ void BatControl(int16_t item_num)
     }
 
     CreatureAnimation(item_num, angle, 0);
-}
-
-void T1MInjectGameBat()
-{
-    INJECT(0x0040D470, BatControl);
 }
