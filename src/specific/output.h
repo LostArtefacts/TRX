@@ -9,7 +9,6 @@
 #define S_SetupBelowWater       ((void          (*)(int32_t underwater))0x004305E0)
 #define S_InitialisePolyList    ((void          (*)())0x0042FC60)
 #define S_OutputPolyList        ((void          (*)())0x0042FD10)
-#define S_CopyBufferToScreen    ((void          (*)())0x00416A60)
 #define S_GetObjectBounds       ((int32_t       (*)(int16_t* bptr))0x0042FD30)
 #define S_CalculateLight        ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t room_num))0x00430100)
 #define S_CalculateStaticLight  ((void          (*)(int16_t adder))0x00430290)

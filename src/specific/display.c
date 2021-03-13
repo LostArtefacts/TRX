@@ -55,6 +55,35 @@ void TempVideoAdjust(int hi_res, double sizer)
     }
 }
 
+void TempVideoRemove()
+{
+    ModeLock = 0;
+    if (GameHiRes == HiRes && GameSizer == ScreenSizer) {
+        return;
+    }
+
+    if (IsHardwareRenderer) {
+        HiRes = GameHiRes;
+        SwitchResolution();
+    } else {
+        ScreenSizer = GameSizer;
+
+        if (HiRes != GameHiRes) {
+            if (HiRes == 2) {
+                HiRes = 0;
+                GameVidWidth = 320;
+                GameVidHeight = 200;
+            } else {
+                HiRes = 2;
+                GameVidWidth = 640;
+                GameVidHeight = 480;
+            }
+        }
+
+        SetupScreenSize();
+    }
+}
+
 void S_NoFade()
 {
     FadeValue = 0x100000;
