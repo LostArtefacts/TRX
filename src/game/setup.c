@@ -1,13 +1,20 @@
 #include "3dsystem/3d_gen.h"
 #include "game/ai/alligator.h"
+#include "game/ai/ape.h"
+#include "game/ai/baldy.h"
 #include "game/ai/bat.h"
 #include "game/ai/bear.h"
+#include "game/ai/cowboy.h"
 #include "game/ai/croc.h"
 #include "game/ai/dino.h"
 #include "game/ai/evil_lara.h"
+#include "game/ai/larson.h"
+#include "game/ai/larson.h"
 #include "game/ai/lion.h"
+#include "game/ai/pierre.h"
 #include "game/ai/raptor.h"
 #include "game/ai/rat.h"
+#include "game/ai/skate_kid.h"
 #include "game/ai/vole.h"
 #include "game/ai/wolf.h"
 #include "game/box.h"
@@ -26,7 +33,7 @@
 #include "game/moveblock.h"
 #include "game/natla.h"
 #include "game/objects.h"
-#include "game/people.h"
+#include "game/objects/gunshot.h"
 #include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/setup.h"
@@ -145,38 +152,8 @@ void BaddyObjects()
     SetupBat(&Objects[O_BAT]);
     SetupDino(&Objects[O_DINOSAUR]);
     SetupRaptor(&Objects[O_RAPTOR]);
-
-    if (Objects[O_LARSON].loaded) {
-        Objects[O_LARSON].initialise = InitialiseCreature;
-        Objects[O_LARSON].control = PeopleControl;
-        Objects[O_LARSON].collision = CreatureCollision;
-        Objects[O_LARSON].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_LARSON].hit_points = LARSON_HITPOINTS;
-        Objects[O_LARSON].radius = LARSON_RADIUS;
-        Objects[O_LARSON].smartness = LARSON_SMARTNESS;
-        Objects[O_LARSON].intelligent = 1;
-        Objects[O_LARSON].save_position = 1;
-        Objects[O_LARSON].save_hitpoints = 1;
-        Objects[O_LARSON].save_anim = 1;
-        Objects[O_LARSON].save_flags = 1;
-        AnimBones[Objects[O_LARSON].bone_index + 24] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_PIERRE].loaded) {
-        Objects[O_PIERRE].initialise = InitialiseCreature;
-        Objects[O_PIERRE].control = PierreControl;
-        Objects[O_PIERRE].collision = CreatureCollision;
-        Objects[O_PIERRE].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_PIERRE].hit_points = PIERRE_HITPOINTS;
-        Objects[O_PIERRE].radius = PIERRE_RADIUS;
-        Objects[O_PIERRE].smartness = PIERRE_SMARTNESS;
-        Objects[O_PIERRE].intelligent = 1;
-        Objects[O_PIERRE].save_position = 1;
-        Objects[O_PIERRE].save_hitpoints = 1;
-        Objects[O_PIERRE].save_anim = 1;
-        Objects[O_PIERRE].save_flags = 1;
-        AnimBones[Objects[O_PIERRE].bone_index + 24] |= BEB_ROT_Y;
-    }
+    SetupLarson(&Objects[O_LARSON]);
+    SetupPierre(&Objects[O_PIERRE]);
 
     SetupRat(&Objects[O_RAT]);
     SetupVole(&Objects[O_VOLE]);
@@ -185,23 +162,7 @@ void BaddyObjects()
     SetupPuma(&Objects[O_PUMA]);
     SetupCroc(&Objects[O_CROCODILE]);
     SetupAlligator(&Objects[O_ALLIGATOR]);
-
-    if (Objects[O_APE].loaded) {
-        Objects[O_APE].initialise = InitialiseCreature;
-        Objects[O_APE].control = ApeControl;
-        Objects[O_APE].collision = CreatureCollision;
-        Objects[O_APE].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_APE].hit_points = APE_HITPOINTS;
-        Objects[O_APE].pivot_length = 250;
-        Objects[O_APE].radius = APE_RADIUS;
-        Objects[O_APE].smartness = APE_SMARTNESS;
-        Objects[O_APE].intelligent = 1;
-        Objects[O_APE].save_position = 1;
-        Objects[O_APE].save_hitpoints = 1;
-        Objects[O_APE].save_anim = 1;
-        Objects[O_APE].save_flags = 1;
-        AnimBones[Objects[O_APE].bone_index + 52] |= BEB_ROT_Y;
-    }
+    SetupApe(&Objects[O_APE]);
 
     if (Objects[O_WARRIOR1].loaded) {
         Objects[O_WARRIOR1].initialise = InitialiseCreature;
@@ -261,54 +222,9 @@ void BaddyObjects()
         AnimBones[Objects[O_MUMMY].bone_index + 8] |= BEB_ROT_Y;
     }
 
-    if (Objects[O_MERCENARY1].loaded) {
-        Objects[O_MERCENARY1].initialise = InitialiseSkateKid;
-        Objects[O_MERCENARY1].control = SkateKidControl;
-        Objects[O_MERCENARY1].draw_routine = DrawSkateKid;
-        Objects[O_MERCENARY1].collision = CreatureCollision;
-        Objects[O_MERCENARY1].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_MERCENARY1].hit_points = SKATEKID_HITPOINTS;
-        Objects[O_MERCENARY1].radius = SKATEKID_RADIUS;
-        Objects[O_MERCENARY1].smartness = SKATEKID_SMARTNESS;
-        Objects[O_MERCENARY1].intelligent = 1;
-        Objects[O_MERCENARY1].save_position = 1;
-        Objects[O_MERCENARY1].save_hitpoints = 1;
-        Objects[O_MERCENARY1].save_anim = 1;
-        Objects[O_MERCENARY1].save_flags = 1;
-        AnimBones[Objects[O_MERCENARY1].bone_index] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_MERCENARY2].loaded) {
-        Objects[O_MERCENARY2].initialise = InitialiseCreature;
-        Objects[O_MERCENARY2].control = CowboyControl;
-        Objects[O_MERCENARY2].collision = CreatureCollision;
-        Objects[O_MERCENARY2].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_MERCENARY2].hit_points = COWBOY_HITPOINTS;
-        Objects[O_MERCENARY2].radius = COWBOY_RADIUS;
-        Objects[O_MERCENARY2].smartness = COWBOY_SMARTNESS;
-        Objects[O_MERCENARY2].intelligent = 1;
-        Objects[O_MERCENARY2].save_position = 1;
-        Objects[O_MERCENARY2].save_hitpoints = 1;
-        Objects[O_MERCENARY2].save_anim = 1;
-        Objects[O_MERCENARY2].save_flags = 1;
-        AnimBones[Objects[O_MERCENARY2].bone_index] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_MERCENARY3].loaded) {
-        Objects[O_MERCENARY3].initialise = InitialiseBaldy;
-        Objects[O_MERCENARY3].control = BaldyControl;
-        Objects[O_MERCENARY3].collision = CreatureCollision;
-        Objects[O_MERCENARY3].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_MERCENARY3].hit_points = BALDY_HITPOINTS;
-        Objects[O_MERCENARY3].radius = BALDY_RADIUS;
-        Objects[O_MERCENARY3].smartness = BALDY_SMARTNESS;
-        Objects[O_MERCENARY3].intelligent = 1;
-        Objects[O_MERCENARY3].save_position = 1;
-        Objects[O_MERCENARY3].save_hitpoints = 1;
-        Objects[O_MERCENARY3].save_anim = 1;
-        Objects[O_MERCENARY3].save_flags = 1;
-        AnimBones[Objects[O_MERCENARY3].bone_index] |= BEB_ROT_Y;
-    }
+    SetupSkateKid(&Objects[O_MERCENARY1]);
+    SetupCowboy(&Objects[O_MERCENARY2]);
+    SetupBaldy(&Objects[O_MERCENARY3]);
 
     if (Objects[O_ABORTION].loaded) {
         Objects[O_ABORTION].initialise = InitialiseCreature;
@@ -804,7 +720,7 @@ void ObjectObjects()
     Objects[O_MISSILE2].control = ControlMissile;
     Objects[O_MISSILE3].control = ControlMissile;
 
-    Objects[O_GUN_FLASH].control = ControlGunShot;
+    SetupGunShot(&Objects[O_GUN_FLASH]);
 }
 
 void InitialiseObjects()

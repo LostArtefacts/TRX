@@ -21,7 +21,6 @@
 #include "game/natla.h"
 #include "game/objects.h"
 #include "game/option.h"
-#include "game/people.h"
 #include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/setup.h"
@@ -68,7 +67,6 @@ void T1MInject()
     T1MInjectGameNatla();
     T1MInjectGameObjects();
     T1MInjectGameOption();
-    T1MInjectGamePeople();
     T1MInjectGamePickup();
     T1MInjectGameSaveGame();
     T1MInjectGameSetup();
