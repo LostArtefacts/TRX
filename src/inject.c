@@ -27,7 +27,6 @@
 #include "game/sphere.h"
 #include "game/text.h"
 #include "game/traps.h"
-#include "game/warrior.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
@@ -73,7 +72,6 @@ void T1MInject()
     T1MInjectGameSphere();
     T1MInjectGameText();
     T1MInjectGameTraps();
-    T1MInjectGameWarrior();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();

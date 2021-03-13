@@ -4,6 +4,7 @@
 #include "game/ai/baldy.h"
 #include "game/ai/bat.h"
 #include "game/ai/bear.h"
+#include "game/ai/centaur.h"
 #include "game/ai/cowboy.h"
 #include "game/ai/croc.h"
 #include "game/ai/dino.h"
@@ -11,10 +12,14 @@
 #include "game/ai/larson.h"
 #include "game/ai/larson.h"
 #include "game/ai/lion.h"
+#include "game/ai/mummy.h"
+#include "game/ai/mutant.h"
 #include "game/ai/pierre.h"
+#include "game/ai/pod.h"
 #include "game/ai/raptor.h"
 #include "game/ai/rat.h"
 #include "game/ai/skate_kid.h"
+#include "game/ai/statue.h"
 #include "game/ai/vole.h"
 #include "game/ai/wolf.h"
 #include "game/box.h"
@@ -163,65 +168,11 @@ void BaddyObjects()
     SetupCroc(&Objects[O_CROCODILE]);
     SetupAlligator(&Objects[O_ALLIGATOR]);
     SetupApe(&Objects[O_APE]);
-
-    if (Objects[O_WARRIOR1].loaded) {
-        Objects[O_WARRIOR1].initialise = InitialiseCreature;
-        Objects[O_WARRIOR1].control = FlyerControl;
-        Objects[O_WARRIOR1].collision = CreatureCollision;
-        Objects[O_WARRIOR1].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_WARRIOR1].hit_points = FLYER_HITPOINTS;
-        Objects[O_WARRIOR1].pivot_length = 150;
-        Objects[O_WARRIOR1].radius = FLYER_RADIUS;
-        Objects[O_WARRIOR1].smartness = FLYER_SMARTNESS;
-        Objects[O_WARRIOR1].intelligent = 1;
-        Objects[O_WARRIOR1].save_position = 1;
-        Objects[O_WARRIOR1].save_hitpoints = 1;
-        Objects[O_WARRIOR1].save_anim = 1;
-        Objects[O_WARRIOR1].save_flags = 1;
-        AnimBones[Objects[O_WARRIOR1].bone_index] |= BEB_ROT_Y;
-        AnimBones[Objects[O_WARRIOR1].bone_index + 8] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_WARRIOR2].loaded) {
-        Objects[O_WARRIOR2] = Objects[O_WARRIOR1];
-        Objects[O_WARRIOR2].initialise = InitialiseWarrior2;
-        Objects[O_WARRIOR2].smartness = WARRIOR2_SMARTNESS;
-    }
-
-    if (Objects[O_WARRIOR3].loaded) {
-        Objects[O_WARRIOR3] = Objects[O_WARRIOR1];
-        Objects[O_WARRIOR3].initialise = InitialiseWarrior2;
-        Objects[O_WARRIOR2].smartness = WARRIOR2_SMARTNESS; // sic
-    }
-
-    if (Objects[O_CENTAUR].loaded) {
-        Objects[O_CENTAUR].initialise = InitialiseCreature;
-        Objects[O_CENTAUR].control = CentaurControl;
-        Objects[O_CENTAUR].collision = CreatureCollision;
-        Objects[O_CENTAUR].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_CENTAUR].hit_points = CENTAUR_HITPOINTS;
-        Objects[O_CENTAUR].pivot_length = 400;
-        Objects[O_CENTAUR].radius = CENTAUR_RADIUS;
-        Objects[O_CENTAUR].smartness = CENTAUR_SMARTNESS;
-        Objects[O_CENTAUR].intelligent = 1;
-        Objects[O_CENTAUR].save_position = 1;
-        Objects[O_CENTAUR].save_hitpoints = 1;
-        Objects[O_CENTAUR].save_anim = 1;
-        Objects[O_CENTAUR].save_flags = 1;
-        AnimBones[Objects[O_CENTAUR].bone_index + 40] |= 0xCu;
-    }
-
-    if (Objects[O_MUMMY].loaded) {
-        Objects[O_MUMMY].initialise = InitialiseMummy;
-        Objects[O_MUMMY].control = MummyControl;
-        Objects[O_MUMMY].collision = ObjectCollision;
-        Objects[O_MUMMY].hit_points = MUMMY_HITPOINTS;
-        Objects[O_MUMMY].save_flags = 1;
-        Objects[O_MUMMY].save_hitpoints = 1;
-        Objects[O_MUMMY].save_anim = 1;
-        AnimBones[Objects[O_MUMMY].bone_index + 8] |= BEB_ROT_Y;
-    }
-
+    SetupWarrior(&Objects[O_WARRIOR1]);
+    SetupWarrior2(&Objects[O_WARRIOR2]);
+    SetupWarrior3(&Objects[O_WARRIOR3]);
+    SetupCentaur(&Objects[O_CENTAUR]);
+    SetupMummy(&Objects[O_MUMMY]);
     SetupSkateKid(&Objects[O_MERCENARY1]);
     SetupCowboy(&Objects[O_MERCENARY2]);
     SetupBaldy(&Objects[O_MERCENARY3]);
@@ -258,29 +209,9 @@ void BaddyObjects()
         AnimBones[Objects[O_NATLA].bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
     }
 
-    if (Objects[O_PODS].loaded) {
-        Objects[O_PODS].initialise = InitialisePod;
-        Objects[O_PODS].control = PodControl;
-        Objects[O_PODS].collision = ObjectCollision;
-        Objects[O_PODS].save_anim = 1;
-        Objects[O_PODS].save_flags = 1;
-    }
-
-    if (Objects[O_BIG_POD].loaded) {
-        Objects[O_BIG_POD].initialise = InitialisePod;
-        Objects[O_BIG_POD].control = PodControl;
-        Objects[O_BIG_POD].collision = ObjectCollision;
-        Objects[O_BIG_POD].save_anim = 1;
-        Objects[O_BIG_POD].save_flags = 1;
-    }
-
-    if (Objects[O_STATUE].loaded) {
-        Objects[O_STATUE].initialise = InitialiseStatue;
-        Objects[O_STATUE].control = StatueControl;
-        Objects[O_STATUE].collision = ObjectCollision;
-        Objects[O_STATUE].save_anim = 1;
-        Objects[O_STATUE].save_flags = 1;
-    }
+    SetupPod(&Objects[O_PODS]);
+    SetupBigPod(&Objects[O_BIG_POD]);
+    SetupStatue(&Objects[O_STATUE]);
 }
 
 void TrapObjects()

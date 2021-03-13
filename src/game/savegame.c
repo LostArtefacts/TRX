@@ -1,3 +1,4 @@
+#include "game/ai/pod.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
