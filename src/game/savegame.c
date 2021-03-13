@@ -1,4 +1,5 @@
 #include "game/ai/pod.h"
+#include "game/objects/pickup.h"
 #include "game/traps/movable_block.h"
 #include "game/traps/rolling_block.h"
 #include "game/control.h"

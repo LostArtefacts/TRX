@@ -10,6 +10,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/objects/switch.h"
 #include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/traps/lava.h"

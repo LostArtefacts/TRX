@@ -1,0 +1,10 @@
+#ifndef T1M_GAME_OBJECTS_EARTH_QUAKE_H
+#define T1M_GAME_OBJECTS_EARTH_QUAKE_H
+
+#include "game/types.h"
+#include <stdint.h>
+
+void SetupEarthquake(OBJECT_INFO *obj);
+void EarthQuakeControl(int16_t item_num);
+
+#endif

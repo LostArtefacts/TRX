@@ -11,7 +11,6 @@
 #include "game/ai/dino.h"
 #include "game/ai/evil_lara.h"
 #include "game/ai/larson.h"
-#include "game/ai/larson.h"
 #include "game/ai/lion.h"
 #include "game/ai/mummy.h"
 #include "game/ai/mutant.h"
@@ -36,8 +35,20 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/objects.h"
+#include "game/objects/boat.h"
+#include "game/objects/bridge.h"
+#include "game/objects/cabin.h"
+#include "game/objects/cog.h"
+#include "game/objects/door.h"
+#include "game/objects/earthquake.h"
 #include "game/objects/gunshot.h"
+#include "game/objects/keyhole.h"
+#include "game/objects/misc.h"
+#include "game/objects/pickup.h"
+#include "game/objects/puzzle_hole.h"
+#include "game/objects/savegame_crystal.h"
+#include "game/objects/scion.h"
+#include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
 #include "game/pickup.h"
 #include "game/savegame.h"
@@ -67,6 +78,7 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
 
@@ -228,261 +240,75 @@ void TrapObjects()
 
 void ObjectObjects()
 {
-    Objects[O_CAMERA_TARGET].draw_routine = DrawDummyItem;
-
-    Objects[O_BRIDGE_FLAT].floor = BridgeFlatFloor;
-    Objects[O_BRIDGE_FLAT].ceiling = BridgeFlatCeiling;
-    Objects[O_BRIDGE_TILT1].floor = BridgeTilt1Floor;
-    Objects[O_BRIDGE_TILT1].ceiling = BridgeTilt1Ceiling;
-    Objects[O_BRIDGE_TILT2].floor = BridgeTilt2Floor;
-    Objects[O_BRIDGE_TILT2].ceiling = BridgeTilt2Ceiling;
-
-    if (Objects[O_DRAW_BRIDGE].loaded) {
-        Objects[O_DRAW_BRIDGE].ceiling = DrawBridgeCeiling;
-        Objects[O_DRAW_BRIDGE].collision = DrawBridgeCollision;
-        Objects[O_DRAW_BRIDGE].control = CogControl;
-        Objects[O_DRAW_BRIDGE].save_anim = 1;
-        Objects[O_DRAW_BRIDGE].save_flags = 1;
-        Objects[O_DRAW_BRIDGE].floor = DrawBridgeFloor;
-    }
-
-    Objects[O_SWITCH_TYPE1].control = SwitchControl;
-    Objects[O_SWITCH_TYPE1].collision = SwitchCollision;
-    Objects[O_SWITCH_TYPE1].save_anim = 1;
-    Objects[O_SWITCH_TYPE1].save_flags = 1;
-
-    Objects[O_SWITCH_TYPE2].control = SwitchControl;
-    Objects[O_SWITCH_TYPE2].collision = SwitchCollision2;
-    Objects[O_SWITCH_TYPE2].save_anim = 1;
-    Objects[O_SWITCH_TYPE2].save_flags = 1;
-
-    Objects[O_DOOR_TYPE1].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE1].control = DoorControl;
-    Objects[O_DOOR_TYPE1].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE1].collision = DoorCollision;
-    Objects[O_DOOR_TYPE1].save_anim = 1;
-    Objects[O_DOOR_TYPE1].save_flags = 1;
-
-    Objects[O_DOOR_TYPE2].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE2].control = DoorControl;
-    Objects[O_DOOR_TYPE2].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE2].collision = DoorCollision;
-    Objects[O_DOOR_TYPE2].save_anim = 1;
-    Objects[O_DOOR_TYPE2].save_flags = 1;
-
-    Objects[O_DOOR_TYPE3].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE3].control = DoorControl;
-    Objects[O_DOOR_TYPE3].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE3].collision = DoorCollision;
-    Objects[O_DOOR_TYPE3].save_anim = 1;
-    Objects[O_DOOR_TYPE3].save_flags = 1;
-
-    Objects[O_DOOR_TYPE4].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE4].control = DoorControl;
-    Objects[O_DOOR_TYPE4].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE4].collision = DoorCollision;
-    Objects[O_DOOR_TYPE4].save_anim = 1;
-    Objects[O_DOOR_TYPE4].save_flags = 1;
-
-    Objects[O_DOOR_TYPE5].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE5].control = DoorControl;
-    Objects[O_DOOR_TYPE5].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE5].collision = DoorCollision;
-    Objects[O_DOOR_TYPE5].save_anim = 1;
-    Objects[O_DOOR_TYPE5].save_flags = 1;
-
-    Objects[O_DOOR_TYPE6].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE6].control = DoorControl;
-    Objects[O_DOOR_TYPE6].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE6].collision = DoorCollision;
-    Objects[O_DOOR_TYPE6].save_anim = 1;
-    Objects[O_DOOR_TYPE6].save_flags = 1;
-
-    Objects[O_DOOR_TYPE7].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE7].control = DoorControl;
-    Objects[O_DOOR_TYPE7].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE7].collision = DoorCollision;
-    Objects[O_DOOR_TYPE7].save_anim = 1;
-    Objects[O_DOOR_TYPE7].save_flags = 1;
-
-    Objects[O_DOOR_TYPE8].initialise = InitialiseDoor;
-    Objects[O_DOOR_TYPE8].control = DoorControl;
-    Objects[O_DOOR_TYPE8].draw_routine = DrawUnclippedItem;
-    Objects[O_DOOR_TYPE8].collision = DoorCollision;
-    Objects[O_DOOR_TYPE8].save_anim = 1;
-    Objects[O_DOOR_TYPE8].save_flags = 1;
-
+    SetupCameraTarget(&Objects[O_CAMERA_TARGET]);
+    SetupBridgeFlat(&Objects[O_BRIDGE_FLAT]);
+    SetupBridgeTilt1(&Objects[O_BRIDGE_TILT1]);
+    SetupBridgeTilt2(&Objects[O_BRIDGE_TILT2]);
+    SetupDrawBridge(&Objects[O_DRAW_BRIDGE]);
+    SetupSwitch1(&Objects[O_SWITCH_TYPE1]);
+    SetupSwitch2(&Objects[O_SWITCH_TYPE2]);
+    SetupDoor(&Objects[O_DOOR_TYPE1]);
+    SetupDoor(&Objects[O_DOOR_TYPE2]);
+    SetupDoor(&Objects[O_DOOR_TYPE3]);
+    SetupDoor(&Objects[O_DOOR_TYPE4]);
+    SetupDoor(&Objects[O_DOOR_TYPE5]);
+    SetupDoor(&Objects[O_DOOR_TYPE6]);
+    SetupDoor(&Objects[O_DOOR_TYPE7]);
+    SetupDoor(&Objects[O_DOOR_TYPE8]);
     SetupTrapDoor(&Objects[O_TRAPDOOR]);
     SetupTrapDoor(&Objects[O_TRAPDOOR2]);
+    SetupCog(&Objects[O_COG_1]);
+    SetupCog(&Objects[O_COG_2]);
+    SetupCog(&Objects[O_COG_3]);
+    SetupMovingBar(&Objects[O_MOVING_BAR]);
 
-    Objects[O_COG_1].control = CogControl;
-    Objects[O_COG_1].save_flags = 1;
-    Objects[O_COG_2].control = CogControl;
-    Objects[O_COG_2].save_flags = 1;
-    Objects[O_COG_3].control = CogControl;
-    Objects[O_COG_3].save_flags = 1;
+    SetupPickupObject(&Objects[O_PICKUP_ITEM1]);
+    SetupPickupObject(&Objects[O_PICKUP_ITEM2]);
+    SetupPickupObject(&Objects[O_KEY_ITEM1]);
+    SetupPickupObject(&Objects[O_KEY_ITEM2]);
+    SetupPickupObject(&Objects[O_KEY_ITEM3]);
+    SetupPickupObject(&Objects[O_KEY_ITEM4]);
+    SetupPickupObject(&Objects[O_PUZZLE_ITEM1]);
+    SetupPickupObject(&Objects[O_PUZZLE_ITEM2]);
+    SetupPickupObject(&Objects[O_PUZZLE_ITEM3]);
+    SetupPickupObject(&Objects[O_PUZZLE_ITEM4]);
+    SetupPickupObject(&Objects[O_GUN_ITEM]);
+    SetupPickupObject(&Objects[O_SHOTGUN_ITEM]);
+    SetupPickupObject(&Objects[O_MAGNUM_ITEM]);
+    SetupPickupObject(&Objects[O_UZI_ITEM]);
+    SetupPickupObject(&Objects[O_GUN_AMMO_ITEM]);
+    SetupPickupObject(&Objects[O_SG_AMMO_ITEM]);
+    SetupPickupObject(&Objects[O_MAG_AMMO_ITEM]);
+    SetupPickupObject(&Objects[O_UZI_AMMO_ITEM]);
+    SetupPickupObject(&Objects[O_EXPLOSIVE_ITEM]);
+    SetupPickupObject(&Objects[O_MEDI_ITEM]);
+    SetupPickupObject(&Objects[O_BIGMEDI_ITEM]);
 
-    Objects[O_MOVING_BAR].control = CogControl;
-    Objects[O_MOVING_BAR].collision = ObjectCollision;
-    Objects[O_MOVING_BAR].save_flags = 1;
-    Objects[O_MOVING_BAR].save_anim = 1;
-    Objects[O_MOVING_BAR].save_position = 1;
+    SetupScion1(&Objects[O_SCION_ITEM]);
+    SetupScion2(&Objects[O_SCION_ITEM2]);
+    SetupScion3(&Objects[O_SCION_ITEM3]);
+    SetupScion4(&Objects[O_SCION_ITEM4]);
+    SetupScionHolder(&Objects[O_SCION_HOLDER]);
 
-    Objects[O_PICKUP_ITEM1].draw_routine = DrawSpriteItem;
-    Objects[O_PICKUP_ITEM1].collision = PickUpCollision;
-    Objects[O_PICKUP_ITEM1].save_flags = 1;
+    SetupLeadBar(&Objects[O_LEADBAR_ITEM]);
+    SetupSaveGameCrystal(&Objects[O_SAVEGAME_ITEM]);
+    SetupKeyHole(&Objects[O_KEY_HOLE1]);
+    SetupKeyHole(&Objects[O_KEY_HOLE2]);
+    SetupKeyHole(&Objects[O_KEY_HOLE3]);
+    SetupKeyHole(&Objects[O_KEY_HOLE4]);
 
-    Objects[O_PICKUP_ITEM2].draw_routine = DrawSpriteItem;
-    Objects[O_PICKUP_ITEM2].collision = PickUpCollision;
-    Objects[O_PICKUP_ITEM2].save_flags = 1;
+    SetupPuzzleHole(&Objects[O_PUZZLE_HOLE1]);
+    SetupPuzzleHole(&Objects[O_PUZZLE_HOLE2]);
+    SetupPuzzleHole(&Objects[O_PUZZLE_HOLE3]);
+    SetupPuzzleHole(&Objects[O_PUZZLE_HOLE4]);
+    SetupPuzzleDone(&Objects[O_PUZZLE_DONE1]);
+    SetupPuzzleDone(&Objects[O_PUZZLE_DONE2]);
+    SetupPuzzleDone(&Objects[O_PUZZLE_DONE3]);
+    SetupPuzzleDone(&Objects[O_PUZZLE_DONE4]);
 
-    Objects[O_KEY_ITEM1].draw_routine = DrawSpriteItem;
-    Objects[O_KEY_ITEM1].collision = PickUpCollision;
-    Objects[O_KEY_ITEM1].save_flags = 1;
-
-    Objects[O_KEY_ITEM2].draw_routine = DrawSpriteItem;
-    Objects[O_KEY_ITEM2].collision = PickUpCollision;
-    Objects[O_KEY_ITEM2].save_flags = 1;
-
-    Objects[O_KEY_ITEM3].draw_routine = DrawSpriteItem;
-    Objects[O_KEY_ITEM3].collision = PickUpCollision;
-    Objects[O_KEY_ITEM3].save_flags = 1;
-
-    Objects[O_KEY_ITEM4].draw_routine = DrawSpriteItem;
-    Objects[O_KEY_ITEM4].collision = PickUpCollision;
-    Objects[O_KEY_ITEM4].save_flags = 1;
-
-    Objects[O_PUZZLE_ITEM1].draw_routine = DrawSpriteItem;
-    Objects[O_PUZZLE_ITEM1].collision = PickUpCollision;
-    Objects[O_PUZZLE_ITEM1].save_flags = 1;
-
-    Objects[O_PUZZLE_ITEM2].draw_routine = DrawSpriteItem;
-    Objects[O_PUZZLE_ITEM2].collision = PickUpCollision;
-    Objects[O_PUZZLE_ITEM2].save_flags = 1;
-
-    Objects[O_PUZZLE_ITEM3].draw_routine = DrawSpriteItem;
-    Objects[O_PUZZLE_ITEM3].collision = PickUpCollision;
-    Objects[O_PUZZLE_ITEM3].save_flags = 1;
-
-    Objects[O_PUZZLE_ITEM4].draw_routine = DrawSpriteItem;
-    Objects[O_PUZZLE_ITEM4].collision = PickUpCollision;
-    Objects[O_PUZZLE_ITEM4].save_flags = 1;
-
-    Objects[O_GUN_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_GUN_ITEM].collision = PickUpCollision;
-    Objects[O_GUN_ITEM].save_flags = 1;
-
-    Objects[O_SHOTGUN_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_SHOTGUN_ITEM].collision = PickUpCollision;
-    Objects[O_SHOTGUN_ITEM].save_flags = 1;
-
-    Objects[O_MAGNUM_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_MAGNUM_ITEM].collision = PickUpCollision;
-    Objects[O_MAGNUM_ITEM].save_flags = 1;
-
-    Objects[O_UZI_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_UZI_ITEM].collision = PickUpCollision;
-    Objects[O_UZI_ITEM].save_flags = 1;
-
-    Objects[O_GUN_AMMO_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_GUN_AMMO_ITEM].collision = PickUpCollision;
-    Objects[O_GUN_AMMO_ITEM].save_flags = 1;
-
-    Objects[O_SG_AMMO_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_SG_AMMO_ITEM].collision = PickUpCollision;
-    Objects[O_SG_AMMO_ITEM].save_flags = 1;
-
-    Objects[O_MAG_AMMO_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_MAG_AMMO_ITEM].collision = PickUpCollision;
-    Objects[O_MAG_AMMO_ITEM].save_flags = 1;
-
-    Objects[O_UZI_AMMO_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_UZI_AMMO_ITEM].collision = PickUpCollision;
-    Objects[O_UZI_AMMO_ITEM].save_flags = 1;
-
-    Objects[O_EXPLOSIVE_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_EXPLOSIVE_ITEM].collision = PickUpCollision;
-    Objects[O_EXPLOSIVE_ITEM].save_flags = 1;
-
-    Objects[O_MEDI_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_MEDI_ITEM].collision = PickUpCollision;
-    Objects[O_MEDI_ITEM].save_flags = 1;
-
-    Objects[O_BIGMEDI_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_BIGMEDI_ITEM].collision = PickUpCollision;
-    Objects[O_BIGMEDI_ITEM].save_flags = 1;
-
-    Objects[O_SCION_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_SCION_ITEM].collision = PickUpScionCollision;
-
-    Objects[O_SCION_ITEM2].draw_routine = DrawSpriteItem;
-    Objects[O_SCION_ITEM2].collision = PickUpCollision;
-    Objects[O_SCION_ITEM2].save_flags = 1;
-
-    Objects[O_SCION_ITEM3].control = Scion3Control;
-    Objects[O_SCION_ITEM3].hit_points = 5;
-    Objects[O_SCION_ITEM3].save_flags = 1;
-
-    Objects[O_SCION_ITEM4].control = ScionControl;
-    Objects[O_SCION_ITEM4].collision = PickUpScion4Collision;
-    Objects[O_SCION_ITEM4].save_flags = 1;
-
-    Objects[O_SCION_HOLDER].control = ScionControl;
-    Objects[O_SCION_HOLDER].collision = ObjectCollision;
-    Objects[O_SCION_HOLDER].save_anim = 1;
-    Objects[O_SCION_HOLDER].save_flags = 1;
-
-    Objects[O_LEADBAR_ITEM].draw_routine = DrawSpriteItem;
-    Objects[O_LEADBAR_ITEM].collision = PickUpCollision;
-    Objects[O_LEADBAR_ITEM].save_flags = 1;
-
-    Objects[O_SAVEGAME_ITEM].initialise = InitialiseSaveGameItem;
-#ifdef T1M_FEAT_SAVE_CRYSTALS
-    Objects[O_SAVEGAME_ITEM].control = ControlSaveGameItem;
-    Objects[O_SAVEGAME_ITEM].collision = PickUpSaveGameCollision;
-    Objects[O_SAVEGAME_ITEM].save_flags = 1;
-#endif
-
-    Objects[O_KEY_HOLE1].collision = KeyHoleCollision;
-    Objects[O_KEY_HOLE1].save_flags = 1;
-    Objects[O_KEY_HOLE2].collision = KeyHoleCollision;
-    Objects[O_KEY_HOLE2].save_flags = 1;
-    Objects[O_KEY_HOLE3].collision = KeyHoleCollision;
-    Objects[O_KEY_HOLE3].save_flags = 1;
-    Objects[O_KEY_HOLE4].collision = KeyHoleCollision;
-    Objects[O_KEY_HOLE4].save_flags = 1;
-
-    Objects[O_PUZZLE_HOLE1].collision = PuzzleHoleCollision;
-    Objects[O_PUZZLE_HOLE1].save_flags = 1;
-
-    Objects[O_PUZZLE_HOLE2].collision = PuzzleHoleCollision;
-    Objects[O_PUZZLE_HOLE2].save_flags = 1;
-
-    Objects[O_PUZZLE_HOLE3].collision = PuzzleHoleCollision;
-    Objects[O_PUZZLE_HOLE3].save_flags = 1;
-
-    Objects[O_PUZZLE_HOLE4].collision = PuzzleHoleCollision;
-    Objects[O_PUZZLE_HOLE4].save_flags = 1;
-
-    Objects[O_PUZZLE_DONE1].save_flags = 1;
-    Objects[O_PUZZLE_DONE2].save_flags = 1;
-    Objects[O_PUZZLE_DONE3].save_flags = 1;
-    Objects[O_PUZZLE_DONE4].save_flags = 1;
-
-    Objects[O_PORTACABIN].control = CabinControl;
-    Objects[O_PORTACABIN].draw_routine = DrawUnclippedItem;
-    Objects[O_PORTACABIN].collision = ObjectCollision;
-    Objects[O_PORTACABIN].save_anim = 1;
-    Objects[O_PORTACABIN].save_flags = 1;
-
-    Objects[O_BOAT].control = BoatControl;
-    Objects[O_BOAT].save_flags = 1;
-    Objects[O_BOAT].save_anim = 1;
-    Objects[O_BOAT].save_position = 1;
-
-    Objects[O_EARTHQUAKE].control = EarthQuakeControl;
-    Objects[O_EARTHQUAKE].draw_routine = DrawDummyItem;
-    Objects[O_EARTHQUAKE].save_flags = 1;
+    SetupCabin(&Objects[O_PORTACABIN]);
+    SetupBoat(&Objects[O_BOAT]);
+    SetupEarthquake(&Objects[O_EARTHQUAKE]);
 
     Objects[O_PLAYER_1].initialise = InitialisePlayer1;
     Objects[O_PLAYER_1].control = ControlCinematicPlayer;

@@ -4,7 +4,7 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/lara.h"
-#include "game/objects.h"
+#include "game/objects/door.h"
 #include "game/vars.h"
 #include "config.h"
 #include "util.h"
