@@ -26,6 +26,35 @@ void SetupScreenSize()
     }
 }
 
+void TempVideoAdjust(int hi_res, double sizer)
+{
+    ModeLock = 1;
+    if (hi_res == HiRes && sizer == ScreenSizer) {
+        return;
+    }
+
+    if (IsHardwareRenderer) {
+        HiRes = hi_res;
+        SwitchResolution();
+    } else {
+        ScreenSizer = sizer;
+
+        if (hi_res != HiRes) {
+            if (HiRes == 2) {
+                HiRes = 0;
+                GameVidWidth = 320;
+                GameVidHeight = 200;
+            } else {
+                HiRes = 2;
+                GameVidWidth = 640;
+                GameVidHeight = 480;
+            }
+        }
+
+        SetupScreenSize();
+    }
+}
+
 void S_NoFade()
 {
     FadeValue = 0x100000;
@@ -67,6 +96,7 @@ void S_FadeOutInventory(int32_t fade)
 void T1MInjectSpecificDisplay()
 {
     INJECT(0x00416470, SetupScreenSize);
+    INJECT(0x00416550, TempVideoAdjust);
     INJECT(0x00416B20, S_FadeInInventory);
     INJECT(0x00416BB0, S_FadeOutInventory);
 }

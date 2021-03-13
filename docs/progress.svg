@@ -178,7 +178,7 @@
 <rect width="12.00" height="12.00" x="350.00" y="59.00" class="decompiled"><title>DinoControl</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="59.00" class="decompiled"><title>LaraDinoDeath</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="59.00" class="decompiled"><title>SetupScreenSize</title></rect>
-<rect width="12.00" height="12.00" x="392.00" y="59.00" class="named"><title>TempVideoAdjust</title></rect>
+<rect width="12.00" height="12.00" x="392.00" y="59.00" class="decompiled"><title>TempVideoAdjust</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="59.00" class="named"><title>TempVideoRemove</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="59.00" class="named"><title>S_CopyBufferToScreen</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="59.00" class="decompiled"><title>S_NoFade</title></rect>
@@ -838,7 +838,7 @@
 <rect width="19.98" height="20.08" x="362.58" y="429.75" class="named"><title>TempVideoRemove</title></rect>
 <rect width="19.98" height="19.68" x="362.58" y="451.84" class="named"><title>mn_update_sound_effects</title></rect>
 <rect width="19.98" height="19.54" x="362.58" y="473.51" class="decompiled"><title>ShiftClamp</title></rect>
-<rect width="19.98" height="19.47" x="362.58" y="495.06" class="named"><title>TempVideoAdjust</title></rect>
+<rect width="19.98" height="19.47" x="362.58" y="495.06" class="decompiled"><title>TempVideoAdjust</title></rect>
 <rect width="19.98" height="19.47" x="362.58" y="516.53" class="decompiled"><title>PuzzleHoleCollision</title></rect>
 <rect width="20.10" height="19.19" x="384.57" y="269.00" class="decompiled"><title>zLOS</title></rect>
 <rect width="20.10" height="19.16" x="384.57" y="290.19" class="decompiled"><title>LaraGun</title></rect>
@@ -1459,10 +1459,10 @@
 <rect width="-0.46" height="0.42" x="695.22" y="535.58" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.76" height="-0.18" x="696.76" y="535.58" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-0.76" height="-1.39" x="696.76" y="537.39" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 70.23%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.10%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.46%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.33%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 70.37%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.35%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.32%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.08%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.31%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.58%</text>
 </svg>

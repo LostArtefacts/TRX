@@ -88,7 +88,7 @@ sub_40837F                      0x0040837F  0x0000008A  -
 sub_408409                      0x00408409  0x000000D5  -
 DownloadTexturesToHardware      0x004084DE  0x0000030C  *
 PaletteSetHardware              0x004087EA  0x0000020A  *
-SwitchResolution                0x004089F4  0x0000007C  -
+SwitchResolution                0x004089F4  0x0000007C  *
 sub_408A70                      0x00408A70  0x00000057  -
 sub_408AC7                      0x00408AC7  0x00000065  -
 sub_408B2C                      0x00408B2C  0x00000059  -
@@ -236,7 +236,7 @@ IncreaseScreenSize              ----------  ----------  -
 DecreaseScreenSize              ----------  ----------  -
 SetupScreenSize                 0x00416470  0x000000D4  +
 switch_resolution               ----------  ----------  -
-TempVideoAdjust                 0x00416550  0x00000277  *
+TempVideoAdjust                 0x00416550  0x00000277  +
 TempVideoRemove                 0x004167D0  0x00000289  *
 S_CopyScreenToBuffer            ----------  ----------  -
 S_CopyBufferToScreen            0x00416A60  0x000000A7  *

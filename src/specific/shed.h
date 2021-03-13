@@ -26,6 +26,7 @@
 #define HardwareFMVDone         ((void          (*)())0x00408368)
 #define CopyPictureHardware     ((void          (*)())0x00408B85)
 #define DownloadPictureHardware ((void          (*)())0x00408C3A)
+#define SwitchResolution        ((void          (*)())0x004089F4)
 // clang-format on
 
 #endif
