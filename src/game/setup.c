@@ -1,14 +1,15 @@
 #include "3dsystem/3d_gen.h"
 #include "game/ai/bat.h"
 #include "game/ai/bear.h"
+#include "game/ai/dino.h"
 #include "game/ai/evil_lara.h"
 #include "game/ai/lion.h"
+#include "game/ai/raptor.h"
 #include "game/ai/wolf.h"
 #include "game/box.h"
 #include "game/cinema.h"
 #include "game/collide.h"
 #include "game/croc.h"
-#include "game/dino.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -140,42 +141,8 @@ void BaddyObjects()
     SetupWolf(&Objects[O_WOLF]);
     SetupBear(&Objects[O_BEAR]);
     SetupBat(&Objects[O_BAT]);
-
-    if (Objects[O_DINOSAUR].loaded) {
-        Objects[O_DINOSAUR].initialise = InitialiseCreature;
-        Objects[O_DINOSAUR].control = DinoControl;
-        Objects[O_DINOSAUR].draw_routine = DrawUnclippedItem;
-        Objects[O_DINOSAUR].collision = CreatureCollision;
-        Objects[O_DINOSAUR].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_DINOSAUR].hit_points = DINOSAUR_HITPOINTS;
-        Objects[O_DINOSAUR].pivot_length = 2000;
-        Objects[O_DINOSAUR].radius = DINOSAUR_RADIUS;
-        Objects[O_DINOSAUR].smartness = DINOSAUR_SMARTNESS;
-        Objects[O_DINOSAUR].intelligent = 1;
-        Objects[O_DINOSAUR].save_position = 1;
-        Objects[O_DINOSAUR].save_hitpoints = 1;
-        Objects[O_DINOSAUR].save_anim = 1;
-        Objects[O_DINOSAUR].save_flags = 1;
-        AnimBones[Objects[O_DINOSAUR].bone_index + 40] |= BEB_ROT_Y;
-        AnimBones[Objects[O_DINOSAUR].bone_index + 44] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_RAPTOR].loaded) {
-        Objects[O_RAPTOR].initialise = InitialiseCreature;
-        Objects[O_RAPTOR].control = RaptorControl;
-        Objects[O_RAPTOR].collision = CreatureCollision;
-        Objects[O_RAPTOR].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_RAPTOR].hit_points = RAPTOR_HITPOINTS;
-        Objects[O_RAPTOR].pivot_length = 400;
-        Objects[O_RAPTOR].radius = RAPTOR_RADIUS;
-        Objects[O_RAPTOR].smartness = RAPTOR_SMARTNESS;
-        Objects[O_RAPTOR].intelligent = 1;
-        Objects[O_RAPTOR].save_position = 1;
-        Objects[O_RAPTOR].save_hitpoints = 1;
-        Objects[O_RAPTOR].save_anim = 1;
-        Objects[O_RAPTOR].save_flags = 1;
-        AnimBones[Objects[O_RAPTOR].bone_index + 84] |= BEB_ROT_Y;
-    }
+    SetupDino(&Objects[O_DINOSAUR]);
+    SetupRaptor(&Objects[O_RAPTOR]);
 
     if (Objects[O_LARSON].loaded) {
         Objects[O_LARSON].initialise = InitialiseCreature;
