@@ -58,41 +58,46 @@ void OpenThatDoor(DOORPOS_DATA *d)
     }
 }
 
-void OpenClosestDoors(ITEM_INFO *lara_item)
+void OpenNearestDoors(ITEM_INFO *lara_item)
 {
-    int16_t best_door = NO_ITEM;
-    int32_t best_dist = 0x7FFFFFFF;
-    int32_t max_dist = WALL_L * 2;
+    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
 
-    int16_t item_num = RoomInfo[lara_item->room_number].item_number;
-    while (item_num != NO_ITEM) {
+    for (int item_num = 0; item_num < LevelItemCount; item_num++) {
         ITEM_INFO *item = &Items[item_num];
         int32_t x = (item->pos.x - lara_item->pos.x) >> 8;
         int32_t y = (item->pos.y - lara_item->pos.y) >> 8;
         int32_t z = (item->pos.z - lara_item->pos.z) >> 8;
         int32_t dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
-        TRACE("found item %d: dist=%d", item_num, dist);
-        if (item->object_number >= O_DOOR_TYPE1
-            && item->object_number <= O_DOOR_TYPE8) {
-            TRACE("found door %d: dist=%d", item_num, dist);
-            if (dist < best_dist) {
-                best_door = item_num;
-                best_dist = dist;
-            }
+
+        if (dist > max_dist) {
+            continue;
         }
-        item_num = item->next_item;
-    }
 
-    if (best_door == NO_ITEM || best_dist >= SQUARE(max_dist >> 8)) {
-        return;
-    }
+        TRACE(
+            "found nearby item %d: obj_num=%d, dist=%d, timer=%d, "
+            "touch_bits=%d, flags=%x",
+            item_num, item->object_number, dist, item->timer, item->touch_bits,
+            item->flags);
 
-    ITEM_INFO *item = &Items[best_door];
-    if (!item->active) {
-        AddActiveItem(best_door);
-        item->touch_bits = 0;
-        item->flags |= IF_CODE_BITS;
+        if ((item->object_number < O_DOOR_TYPE1
+             || item->object_number > O_DOOR_TYPE8)
+            && item->object_number != O_TRAPDOOR
+            && item->object_number != O_BIGTRAPDOOR
+            && item->object_number != O_TRAPDOOR2) {
+            continue;
+        }
+
+        TRACE("opening");
+        if (!item->active) {
+            AddActiveItem(item_num);
+            item->flags |= IF_CODE_BITS;
+        } else if (item->flags & IF_CODE_BITS) {
+            item->flags &= ~IF_CODE_BITS;
+        } else {
+            item->flags |= IF_CODE_BITS;
+        }
         item->timer = 0;
+        item->touch_bits = 0;
     }
 }
 

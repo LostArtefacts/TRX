@@ -8,6 +8,8 @@
 #define PHD_90 (PHD_ONE / 4) // = 16384 = 0x4000
 #define PHD_45 (PHD_ONE / 8) // = 8192 = 0x2000
 #define PHD_135 (PHD_45 * 3) // = 24576 = 0x6000
+#define ONE_SECOND 30
+#define HALF_SECOND 15
 
 #define MAX_REQLINES 16
 #define MAX_SAVE_SLOTS 16

@@ -133,16 +133,16 @@ void S_UpdateInput()
             Lara.request_gun_type = LGT_UZIS;
         }
 
-        if (MedipackCoolDown > 0) {
-            --MedipackCoolDown;
+        if (MedipackCoolDown) {
+            MedipackCoolDown--;
         } else {
             if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
                 UseItem(O_MEDI_OPTION);
-                MedipackCoolDown = 15; // half a second
+                MedipackCoolDown = HALF_SECOND;
             } else if (
                 KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
                 UseItem(O_BIGMEDI_OPTION);
-                MedipackCoolDown = 15;
+                MedipackCoolDown = HALF_SECOND;
             }
         }
     }

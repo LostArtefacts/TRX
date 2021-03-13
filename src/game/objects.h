@@ -9,7 +9,7 @@ void OpenThatDoor(DOORPOS_DATA *d);
 void InitialiseDoor(int16_t item_num);
 void DoorControl(int16_t item_num);
 
-void OpenClosestDoors(ITEM_INFO *lara_item);
+void OpenNearestDoors(ITEM_INFO *lara_item);
 
 int32_t OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
 void DrawBridgeFloor(

@@ -9,6 +9,8 @@
 #include "config.h"
 #include "util.h"
 
+static int32_t OpenDoorsCheatCooldown = 0;
+
 void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -77,8 +79,13 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         LaraBaddieCollision(item, coll);
     }
 
-    if (Lara.water_status == LWS_CHEAT && CHK_ANY(Input, IN_DRAW)) {
-        OpenClosestDoors(LaraItem);
+    if (Lara.water_status == LWS_CHEAT) {
+        if (OpenDoorsCheatCooldown) {
+            OpenDoorsCheatCooldown--;
+        } else if (CHK_ANY(Input, IN_DRAW)) {
+            OpenDoorsCheatCooldown = ONE_SECOND;
+            OpenNearestDoors(LaraItem);
+        }
     }
 
     LaraCollisionRoutines[item->current_anim_state](item, coll);
