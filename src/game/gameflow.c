@@ -417,8 +417,8 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
         return 0;
     }
 
-    SaveGame[0].start = malloc(sizeof(START_INFO) * level_count);
-    if (!SaveGame[0].start) {
+    SaveGame.start = malloc(sizeof(START_INFO) * level_count);
+    if (!SaveGame.start) {
         TRACE("failed to allocate memory");
         return 0;
     }
@@ -901,19 +901,19 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_REMOVE_GUNS:
-            if (!SaveGame[0].bonus_flag) {
-                SaveGame[0].start[level_num].got_pistols = 0;
-                SaveGame[0].start[level_num].got_shotgun = 0;
-                SaveGame[0].start[level_num].got_magnums = 0;
-                SaveGame[0].start[level_num].got_uzis = 0;
-                SaveGame[0].start[level_num].gun_type = LGT_UNARMED;
-                SaveGame[0].start[level_num].gun_type = LGS_ARMLESS;
+            if (!SaveGame.bonus_flag) {
+                SaveGame.start[level_num].got_pistols = 0;
+                SaveGame.start[level_num].got_shotgun = 0;
+                SaveGame.start[level_num].got_magnums = 0;
+                SaveGame.start[level_num].got_uzis = 0;
+                SaveGame.start[level_num].gun_type = LGT_UNARMED;
+                SaveGame.start[level_num].gun_type = LGS_ARMLESS;
                 InitialiseLaraInventory(level_num);
             }
             break;
 
         case GFS_REMOVE_SCIONS:
-            SaveGame[0].start[level_num].num_scions = 0;
+            SaveGame.start[level_num].num_scions = 0;
             InitialiseLaraInventory(level_num);
             break;
 

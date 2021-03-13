@@ -131,9 +131,8 @@ void GameMain()
 
         // T1M: GF_START_SAVED_GAME does not exist in OG
         case GF_START_SAVED_GAME:
-            S_LoadGame(SaveGame, gf_param);
-            gf_option =
-                GF_InterpretSequence(SaveGame[0].current_level, GFL_SAVED);
+            S_LoadGame(&SaveGame, gf_param);
+            gf_option = GF_InterpretSequence(SaveGame.current_level, GFL_SAVED);
             break;
 
         case GF_START_CINE:
@@ -176,7 +175,7 @@ void GameMain()
                     gf_option = GF_START_SAVED_GAME | InventoryExtraData[1];
                 } else if (InventoryExtraData[0] == 1) {
 #ifdef T1M_FEAT_GAMEPLAY
-                    SaveGame[0].bonus_flag = InventoryExtraData[1];
+                    SaveGame.bonus_flag = InventoryExtraData[1];
 #endif
                     InitialiseStartInfo();
                     gf_option = GF_START_GAME | GF.first_level_num;

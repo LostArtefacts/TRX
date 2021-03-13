@@ -126,7 +126,7 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // time taken
-    int32_t seconds = SaveGame[0].timer / 30;
+    int32_t seconds = SaveGame.timer / 30;
     int32_t hours = seconds / 3600;
     int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
@@ -146,10 +146,10 @@ void LevelStats(int32_t level_num)
     int32_t secrets_taken = 0;
     int32_t secrets_total = MAX_SECRETS;
     do {
-        if (SaveGame[0].secrets & 1) {
+        if (SaveGame.secrets & 1) {
             ++secrets_taken;
         }
-        SaveGame[0].secrets >>= 1;
+        SaveGame.secrets >>= 1;
         --secrets_total;
     } while (secrets_total);
     sprintf(
@@ -160,13 +160,13 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // pickups
-    sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame[0].pickups);
+    sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
     txt = T_Print(0, 10, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // kills
-    sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame[0].kills);
+    sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
     txt = T_Print(0, -20, 0, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
@@ -212,13 +212,13 @@ void LevelStats(int32_t level_num)
     }
 
     if (level_num == GF.last_level_num) {
-        SaveGame[0].bonus_flag = 1;
+        SaveGame.bonus_flag = 1;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
     }
 
-    SaveGame[0].start[CurrentLevel].available = 0;
+    SaveGame.start[CurrentLevel].available = 0;
     S_FadeToBlack();
     TempVideoRemove();
 }
@@ -366,7 +366,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
         }
     }
 
-    sprintf(filename, "%s", GF.levels[SaveGame[0].current_level].level_title);
+    sprintf(filename, "%s", GF.levels[SaveGame.current_level].level_title);
     fwrite(filename, sizeof(char), 75, fp);
     fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
 

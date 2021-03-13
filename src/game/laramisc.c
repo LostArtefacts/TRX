@@ -460,7 +460,7 @@ void InitialiseLaraInventory(int32_t level_num)
     TRACE("%d", level_num);
     Inv_RemoveAllItems();
 
-    START_INFO *start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     Lara.pistols.ammo = 1000;
     if (start->got_pistols) {
@@ -525,7 +525,7 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO *start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     if (start->costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
@@ -597,21 +597,21 @@ void LaraCheatGetStuff()
         if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddItem(O_SHOTGUN_ITEM);
         }
-        Lara.shotgun.ammo = SaveGame[0].bonus_flag ? 10001 : 300;
+        Lara.shotgun.ammo = SaveGame.bonus_flag ? 10001 : 300;
     }
 
     if (Objects[O_MAGNUM_OPTION].loaded) {
         if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddItem(O_MAGNUM_ITEM);
         }
-        Lara.magnums.ammo = SaveGame[0].bonus_flag ? 10001 : 1000;
+        Lara.magnums.ammo = SaveGame.bonus_flag ? 10001 : 1000;
     }
 
     if (Objects[O_UZI_OPTION].loaded) {
         if (!Inv_RequestItem(O_UZI_ITEM)) {
             Inv_AddItem(O_UZI_ITEM);
         }
-        Lara.uzis.ammo = SaveGame[0].bonus_flag ? 10001 : 2000;
+        Lara.uzis.ammo = SaveGame.bonus_flag ? 10001 : 2000;
     }
 
     for (int i = 0; i < 10; ++i) {

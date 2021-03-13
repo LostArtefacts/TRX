@@ -171,7 +171,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     switch (inv_item->object_number) {
     case O_SHOTGUN_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !SaveGame.bonus_flag) {
             sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
             MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
@@ -181,7 +181,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_MAGNUM_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !SaveGame.bonus_flag) {
             sprintf(temp_text, "%5d B", Lara.magnums.ammo);
             MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
@@ -191,7 +191,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_UZI_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !SaveGame.bonus_flag) {
             sprintf(temp_text, "%5d C", Lara.uzis.ammo);
             MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);

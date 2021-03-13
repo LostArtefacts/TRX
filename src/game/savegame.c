@@ -25,15 +25,15 @@ void InitialiseStartInfo()
 
     for (int i = 0; i < GF.level_count; i++) {
         ModifyStartInfo(i);
-        SaveGame[0].start[i].available = 0;
+        SaveGame.start[i].available = 0;
     }
-    SaveGame[0].start[GF.gym_level_num].available = 1;
-    SaveGame[0].start[GF.first_level_num].available = 1;
+    SaveGame.start[GF.gym_level_num].available = 1;
+    SaveGame.start[GF.first_level_num].available = 1;
 }
 
 void ModifyStartInfo(int32_t level_num)
 {
-    START_INFO *start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     start->got_pistols = 1;
     start->gun_type = LGT_PISTOLS;
@@ -72,7 +72,7 @@ void ModifyStartInfo(int32_t level_num)
         start->gun_status = LGS_ARMLESS;
     }
 
-    if (SaveGame[0].bonus_flag && level_num != GF.gym_level_num) {
+    if (SaveGame.bonus_flag && level_num != GF.gym_level_num) {
         start->got_pistols = 1;
         start->got_shotgun = 1;
         start->got_magnums = 1;
@@ -88,7 +88,7 @@ void ModifyStartInfo(int32_t level_num)
 void CreateStartInfo(int level_num)
 {
     TRACE("%d", level_num);
-    START_INFO *start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     start->available = 1;
     start->costume = 0;
@@ -139,21 +139,21 @@ void CreateStartInfo(int level_num)
 
 void CreateSaveGameInfo()
 {
-    SaveGame[0].current_level = CurrentLevel;
+    SaveGame.current_level = CurrentLevel;
 
     CreateStartInfo(CurrentLevel); // T1M: LV_CURRENT
 
-    SaveGame[0].num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
-    SaveGame[0].num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
-    SaveGame[0].num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
-    SaveGame[0].num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
-    SaveGame[0].num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
-    SaveGame[0].num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
-    SaveGame[0].num_key1 = Inv_RequestItem(O_KEY_ITEM1);
-    SaveGame[0].num_key2 = Inv_RequestItem(O_KEY_ITEM2);
-    SaveGame[0].num_key3 = Inv_RequestItem(O_KEY_ITEM3);
-    SaveGame[0].num_key4 = Inv_RequestItem(O_KEY_ITEM4);
-    SaveGame[0].num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
+    SaveGame.num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
+    SaveGame.num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
+    SaveGame.num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
+    SaveGame.num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
+    SaveGame.num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
+    SaveGame.num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
+    SaveGame.num_key1 = Inv_RequestItem(O_KEY_ITEM1);
+    SaveGame.num_key2 = Inv_RequestItem(O_KEY_ITEM2);
+    SaveGame.num_key3 = Inv_RequestItem(O_KEY_ITEM3);
+    SaveGame.num_key4 = Inv_RequestItem(O_KEY_ITEM4);
+    SaveGame.num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
 
     ResetSG();
 
@@ -227,47 +227,47 @@ void ExtractSaveGameInfo()
 
     InitialiseLaraInventory(CurrentLevel); // T1M: LV_CURRENT
 
-    for (int i = 0; i < SaveGame[0].num_pickup1; i++) {
+    for (int i = 0; i < SaveGame.num_pickup1; i++) {
         Inv_AddItem(O_PICKUP_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame[0].num_pickup2; i++) {
+    for (int i = 0; i < SaveGame.num_pickup2; i++) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame[0].num_puzzle1; i++) {
+    for (int i = 0; i < SaveGame.num_puzzle1; i++) {
         Inv_AddItem(O_PUZZLE_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame[0].num_puzzle2; i++) {
+    for (int i = 0; i < SaveGame.num_puzzle2; i++) {
         Inv_AddItem(O_PUZZLE_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame[0].num_puzzle3; i++) {
+    for (int i = 0; i < SaveGame.num_puzzle3; i++) {
         Inv_AddItem(O_PUZZLE_ITEM3);
     }
 
-    for (int i = 0; i < SaveGame[0].num_puzzle4; i++) {
+    for (int i = 0; i < SaveGame.num_puzzle4; i++) {
         Inv_AddItem(O_PUZZLE_ITEM4);
     }
 
-    for (int i = 0; i < SaveGame[0].num_key1; i++) {
+    for (int i = 0; i < SaveGame.num_key1; i++) {
         Inv_AddItem(O_KEY_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame[0].num_key2; i++) {
+    for (int i = 0; i < SaveGame.num_key2; i++) {
         Inv_AddItem(O_KEY_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame[0].num_key3; i++) {
+    for (int i = 0; i < SaveGame.num_key3; i++) {
         Inv_AddItem(O_KEY_ITEM3);
     }
 
-    for (int i = 0; i < SaveGame[0].num_key4; i++) {
+    for (int i = 0; i < SaveGame.num_key4; i++) {
         Inv_AddItem(O_KEY_ITEM4);
     }
 
-    for (int i = 0; i < SaveGame[0].num_leadbar; i++) {
+    for (int i = 0; i < SaveGame.num_leadbar; i++) {
         Inv_AddItem(O_LEADBAR_ITEM);
     }
 
@@ -440,7 +440,7 @@ void ExtractSaveGameInfo()
 void ResetSG()
 {
     SGCount = 0;
-    SGPoint = SaveGame[0].buffer;
+    SGPoint = SaveGame.buffer;
 }
 
 void SkipSG(int size)

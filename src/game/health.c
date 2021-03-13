@@ -136,7 +136,7 @@ void DrawEnemyBar()
     RenderBar(
         Lara.target->hit_points,
         Objects[Lara.target->object_number].hit_points
-            * (SaveGame[0].bonus_flag ? 2 : 1),
+            * (SaveGame.bonus_flag ? 2 : 1),
         BT_ENEMY_HEALTH);
 }
 #endif
@@ -146,7 +146,7 @@ void DrawAmmoInfo()
     char ammostring[80] = "";
 
     if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
-        || SaveGame[0].bonus_flag) {
+        || SaveGame.bonus_flag) {
         if (AmmoText) {
             T_RemovePrint(AmmoText);
             AmmoText = 0;
@@ -211,8 +211,8 @@ void InitialisePickUpDisplay()
 void DrawPickups()
 {
     int32_t old_game_timer = OldGameTimer;
-    OldGameTimer = SaveGame[0].timer;
-    int16_t time = SaveGame[0].timer - old_game_timer;
+    OldGameTimer = SaveGame.timer;
+    int16_t time = SaveGame.timer - old_game_timer;
 
     if (time > 0 && time < 60) {
 #ifdef T1M_FEAT_UI

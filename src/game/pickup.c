@@ -177,7 +177,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            SaveGame[0].pickups++;
+            SaveGame.pickups++;
             return;
         }
 
@@ -204,7 +204,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            SaveGame[0].pickups++;
+            SaveGame.pickups++;
             return;
         }
 
@@ -238,7 +238,7 @@ void PickUpScionCollision(
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            SaveGame[0].pickups++;
+            SaveGame.pickups++;
         }
     } else if (
         CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
@@ -720,7 +720,7 @@ void PickUpSaveGameCollision(
 
     item->status = IS_INVISIBLE;
     CreateSaveGameInfo();
-    if (S_SaveGame(SaveGame, -1)) {
+    if (S_SaveGame(&SaveGame, -1)) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
     } else {

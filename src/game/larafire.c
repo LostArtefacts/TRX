@@ -387,21 +387,21 @@ int32_t FireWeapon(
     switch (weapon_type) {
     case LGT_MAGNUMS:
         ammo = &Lara.magnums;
-        if (SaveGame[0].bonus_flag) {
+        if (SaveGame.bonus_flag) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
         ammo = &Lara.uzis;
-        if (SaveGame[0].bonus_flag) {
+        if (SaveGame.bonus_flag) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
         ammo = &Lara.shotgun;
-        if (SaveGame[0].bonus_flag) {
+        if (SaveGame.bonus_flag) {
             ammo->ammo = 1000;
         }
         break;
@@ -482,7 +482,7 @@ int32_t FireWeapon(
 void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
-        SaveGame[0].kills++;
+        SaveGame.kills++;
     }
     item->hit_points -= damage;
     item->hit_status = 1;

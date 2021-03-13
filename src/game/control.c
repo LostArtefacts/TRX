@@ -102,14 +102,14 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                     }
                     if (CurrentLevel == GF.gym_level_num) {
 #ifdef T1M_FEAT_GAMEPLAY
-                        SaveGame[0].bonus_flag = InventoryExtraData[1];
+                        SaveGame.bonus_flag = InventoryExtraData[1];
                         InitialiseStartInfo();
 #endif
                         return GF_START_GAME | GF.first_level_num;
                     }
 
                     CreateSaveGameInfo();
-                    S_SaveGame(SaveGame, InventoryExtraData[1]);
+                    S_SaveGame(&SaveGame, InventoryExtraData[1]);
                     WriteTombAtiSettings();
                 }
             }
@@ -138,7 +138,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CalculateCamera();
         SoundEffects();
-        ++SaveGame[0].timer;
+        ++SaveGame.timer;
         --HealthBarTimer;
 
 #ifdef T1M_FEAT_GAMEPLAY
@@ -836,10 +836,10 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((SaveGame[0].secrets & (1 << value))) {
+            if ((SaveGame.secrets & (1 << value))) {
                 break;
             }
-            SaveGame[0].secrets |= 1 << value;
+            SaveGame.secrets |= 1 << value;
             S_CDPlay(13);
             break;
         }

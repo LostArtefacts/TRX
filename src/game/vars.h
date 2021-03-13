@@ -69,7 +69,6 @@
 #define NextItemActive          VAR_U_(0x0045EE78, int16_t)
 #define NextFxFree              VAR_U_(0x0045EE74, int16_t)
 #define NextFxActive            VAR_U_(0x0045EE7A, int16_t)
-#define SaveGame                ARRAY_(0x0045B9C0, SAVEGAME_INFO, [2])
 #define BaddieSlots             VAR_U_(0x0045ED64, CREATURE_INFO*)
 #define SlotsUsed               VAR_U_(0x0045A1F8, int32_t)
 #define NumberBoxes             VAR_U_(0x00462DA0, int32_t)
@@ -245,9 +244,11 @@
 
 // clang-format on
 
+extern SAVEGAME_INFO SaveGame;
+extern int32_t DemoLevel;
+
 extern GameFlow GF; // T1M
 
-extern int32_t DemoLevel;
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;
 extern int32_t AnimCount;

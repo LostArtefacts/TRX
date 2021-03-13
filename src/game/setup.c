@@ -43,7 +43,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     // T1M: level_type argument is missing in OG
     TRACE("%d", level_num);
     if (level_type == GFL_SAVED) { // T1M: level_num == LV_CURRENT
-        CurrentLevel = SaveGame[0].current_level;
+        CurrentLevel = SaveGame.current_level;
     } else {
         CurrentLevel = level_num;
     }
@@ -119,10 +119,10 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    SaveGame[0].secrets = 0;
-    SaveGame[0].timer = 0;
-    SaveGame[0].pickups = 0;
-    SaveGame[0].kills = 0;
+    SaveGame.secrets = 0;
+    SaveGame.timer = 0;
+    SaveGame.pickups = 0;
+    SaveGame.kills = 0;
 }
 
 void BaddyObjects()
