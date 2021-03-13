@@ -183,7 +183,7 @@
 <rect width="12.00" height="12.00" x="420.00" y="59.00" class="named"><title>S_CopyBufferToScreen</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="59.00" class="named"><title>S_NoFade</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="59.00" class="decompiled"><title>S_FadeInInventory</title></rect>
-<rect width="12.00" height="12.00" x="462.00" y="59.00" class="named"><title>S_FadeOutInventory</title></rect>
+<rect width="12.00" height="12.00" x="462.00" y="59.00" class="decompiled"><title>S_FadeOutInventory</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="59.00" class="decompiled"><title>DrawPhaseCinematic</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="59.00" class="decompiled"><title>DrawPhaseGame</title></rect>
 <rect width="12.00" height="12.00" x="504.00" y="59.00" class="decompiled"><title>DrawRooms</title></rect>
@@ -1339,7 +1339,7 @@
 <rect width="3.35" height="3.59" x="661.33" y="490.15" class="decompiled"><title>InitialiseWarrior2</title></rect>
 <rect width="3.22" height="3.59" x="666.69" y="490.15" class="todo"><title>sub_40783B</title></rect>
 <rect width="3.22" height="3.59" x="671.90" y="490.15" class="decompiled"><title>InitialiseGenPlayer</title></rect>
-<rect width="3.22" height="3.59" x="677.12" y="490.15" class="named"><title>S_FadeOutInventory</title></rect>
+<rect width="3.22" height="3.59" x="677.12" y="490.15" class="decompiled"><title>S_FadeOutInventory</title></rect>
 <rect width="3.22" height="3.59" x="682.34" y="490.15" class="todo"><title>sub_41A1D0</title></rect>
 <rect width="3.22" height="3.59" x="687.56" y="490.15" class="decompiled"><title>LaraAsSlide</title></rect>
 <rect width="3.22" height="3.59" x="692.78" y="490.15" class="decompiled"><title>LaraAsPushBlock</title></rect>
@@ -1459,10 +1459,10 @@
 <rect width="-0.46" height="0.42" x="695.22" y="535.58" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.76" height="-0.18" x="696.76" y="535.58" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-0.76" height="-1.39" x="696.76" y="537.39" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 69.96%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.07%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.74%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.35%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 70.10%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.60%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.33%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.31%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.58%</text>
 </svg>

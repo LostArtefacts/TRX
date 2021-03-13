@@ -49,8 +49,18 @@ void S_FadeInInventory(int32_t fade)
     }
 }
 
+void S_FadeOutInventory(int32_t fade)
+{
+    if (fade) {
+        FadeValue = 0x180000;
+        FadeLimit = 0x100000;
+        FadeAdder = -32768;
+    }
+}
+
 void T1MInjectSpecificDisplay()
 {
     INJECT(0x00416470, SetupScreenSize);
     INJECT(0x00416B20, S_FadeInInventory);
+    INJECT(0x00416BB0, S_FadeOutInventory);
 }

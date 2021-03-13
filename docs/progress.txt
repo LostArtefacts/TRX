@@ -242,7 +242,7 @@ S_CopyScreenToBuffer            ----------  ----------  -
 S_CopyBufferToScreen            0x00416A60  0x000000A7  *
 S_NoFade                        0x00416B10  0x00000010  *
 S_FadeInInventory               0x00416B20  0x00000082  +
-S_FadeOutInventory              0x00416BB0  0x00000027  *
+S_FadeOutInventory              0x00416BB0  0x00000027  +
 FadeToPal                       ----------  ----------  -
 ScreenPartialDump               ----------  ----------  -
 
