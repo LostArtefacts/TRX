@@ -40,7 +40,6 @@ struct {
     int8_t disable_shotgun;
     int8_t enable_enemy_healthbar;
     int8_t enable_enhanced_look;
-    int8_t enable_enhanced_ui;
     int8_t enable_numeric_keys;
     int8_t enable_shotgun_flash;
     int8_t enable_cheats;

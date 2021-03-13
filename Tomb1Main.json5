@@ -21,10 +21,6 @@
     // (similar to TR2 style).
     "enable_enhanced_look": true,
 
-    // Enables UI scaling of in-game inventory text and ammo text (useful for
-    // 4k screens).
-    "enable_enhanced_ui": true,
-
     // Draws flame when firing a shotgun, like for other guns.
     "enable_shotgun_flash": true,
 

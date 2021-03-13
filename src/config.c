@@ -122,7 +122,6 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(disable_shotgun, 0);
     READ_BOOL(enable_enemy_healthbar, 1);
     READ_BOOL(enable_enhanced_look, 1);
-    READ_BOOL(enable_enhanced_ui, 1);
     READ_BOOL(enable_shotgun_flash, 1);
     READ_BOOL(enable_cheats, 0);
     READ_BOOL(enable_numeric_keys, 1);

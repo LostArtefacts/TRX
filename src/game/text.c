@@ -370,34 +370,30 @@ void T_DrawThisText(TEXTSTRING *textstring)
     int textwidth = T_GetTextWidth(textstring);
 
 #ifdef T1M_FEAT_UI
-    if (T1MConfig.enable_enhanced_ui) {
-        if (textstring->flags & TF_CENTRE_H) {
-            xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
-        } else if (textstring->flags & TF_RIGHT) {
-            xpos += GetRenderWidthDownscaled() - textwidth;
-        }
-
-        if (textstring->flags & TF_CENTRE_V) {
-            ypos += GetRenderHeightDownscaled() / 2;
-        } else if (textstring->flags & TF_BOTTOM) {
-            ypos += GetRenderHeightDownscaled();
-        }
-    } else {
-#else
-    {
-#endif
-        if (textstring->flags & TF_CENTRE_H) {
-            xpos += (DumpWidth - textwidth) / 2;
-        } else if (textstring->flags & TF_RIGHT) {
-            xpos += DumpWidth - textwidth;
-        }
-
-        if (textstring->flags & TF_CENTRE_V) {
-            ypos += DumpHeight / 2;
-        } else if (textstring->flags & TF_BOTTOM) {
-            ypos += DumpHeight;
-        }
+    if (textstring->flags & TF_CENTRE_H) {
+        xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
+    } else if (textstring->flags & TF_RIGHT) {
+        xpos += GetRenderWidthDownscaled() - textwidth;
     }
+
+    if (textstring->flags & TF_CENTRE_V) {
+        ypos += GetRenderHeightDownscaled() / 2;
+    } else if (textstring->flags & TF_BOTTOM) {
+        ypos += GetRenderHeightDownscaled();
+    }
+#else
+    if (textstring->flags & TF_CENTRE_H) {
+        xpos += (DumpWidth - textwidth) / 2;
+    } else if (textstring->flags & TF_RIGHT) {
+        xpos += DumpWidth - textwidth;
+    }
+
+    if (textstring->flags & TF_CENTRE_V) {
+        ypos += DumpHeight / 2;
+    } else if (textstring->flags & TF_BOTTOM) {
+        ypos += DumpHeight;
+    }
+#endif
 
     int bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
     int bypos =
@@ -429,12 +425,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sh = textstring->scale_h;
         sv = textstring->scale_v;
 #ifdef T1M_FEAT_UI
-        if (T1MConfig.enable_enhanced_ui) {
-            sx = GetRenderScale(sx);
-            sy = GetRenderScale(sy);
-            sh = GetRenderScale(sh);
-            sv = GetRenderScale(sv);
-        }
+        sx = GetRenderScale(sx);
+        sy = GetRenderScale(sy);
+        sh = GetRenderScale(sh);
+        sv = GetRenderScale(sv);
 #endif
         S_DrawScreenSprite2d(
             sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite,
@@ -471,12 +465,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
     sh = bwidth;
     sv = bheight;
 #ifdef T1M_FEAT_UI
-    if (T1MConfig.enable_enhanced_ui) {
-        sx = GetRenderScale(sx);
-        sy = GetRenderScale(sy);
-        sh = GetRenderScale(sh);
-        sv = GetRenderScale(sv);
-    }
+    sx = GetRenderScale(sx);
+    sy = GetRenderScale(sy);
+    sh = GetRenderScale(sh);
+    sv = GetRenderScale(sv);
 #endif
 
     if (textstring->flags & TF_BGND) {
@@ -520,12 +512,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sh = bwidth;
         sv = bheight;
 #ifdef T1M_FEAT_UI
-        if (T1MConfig.enable_enhanced_ui) {
-            sx = GetRenderScale(sx);
-            sy = GetRenderScale(sy);
-            sh = GetRenderScale(sh);
-            sv = GetRenderScale(sv);
-        }
+        sx = GetRenderScale(sx);
+        sy = GetRenderScale(sy);
+        sh = GetRenderScale(sh);
+        sv = GetRenderScale(sv);
 #endif
         S_DrawScreenBox(
             sx, sy, zpos + textstring->bgnd_off_z, sh, sv,
