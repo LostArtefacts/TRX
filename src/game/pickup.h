@@ -9,7 +9,6 @@ void PickUpScionCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void PickUpScion4Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);

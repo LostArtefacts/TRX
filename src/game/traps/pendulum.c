@@ -1,0 +1,47 @@
+#include "game/collide.h"
+#include "game/control.h"
+#include "game/effects.h"
+#include "game/game.h"
+#include "game/traps/pendulum.h"
+#include "game/vars.h"
+
+void SetupPendulum(OBJECT_INFO *obj)
+{
+    obj->control = PendulumControl;
+    obj->collision = TrapCollision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+// original name: Pendulum
+void PendulumControl(int16_t item_num)
+{
+    ITEM_INFO *item = &Items[item_num];
+
+    if (TriggerActive(item)) {
+        if (item->current_anim_state == TRAP_SET) {
+            item->goal_anim_state = TRAP_WORKING;
+        }
+    } else {
+        if (item->current_anim_state == TRAP_WORKING) {
+            item->goal_anim_state = TRAP_SET;
+        }
+    }
+
+    if (item->current_anim_state == TRAP_WORKING && item->touch_bits) {
+        LaraItem->hit_points -= PENDULUM_DAMAGE;
+        LaraItem->hit_status = 1;
+        int32_t x = LaraItem->pos.x + (GetRandomControl() - 0x4000) / 256;
+        int32_t z = LaraItem->pos.z + (GetRandomControl() - 0x4000) / 256;
+        int32_t y = LaraItem->pos.y - GetRandomControl() / 44;
+        int32_t d = LaraItem->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+        DoBloodSplat(x, y, z, LaraItem->speed, d, LaraItem->room_number);
+    }
+
+    FLOOR_INFO *floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    AnimateItem(item);
+}

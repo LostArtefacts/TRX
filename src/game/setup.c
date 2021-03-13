@@ -35,16 +35,30 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/lightning.h"
 #include "game/lot.h"
-#include "game/moveblock.h"
 #include "game/objects.h"
 #include "game/objects/gunshot.h"
+#include "game/objects/trapdoor.h"
 #include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
-#include "game/traps.h"
+#include "game/traps/damocles_sword.h"
+#include "game/traps/dart.h"
+#include "game/traps/dart_emitter.h"
+#include "game/traps/falling_block.h"
+#include "game/traps/falling_ceiling.h"
+#include "game/traps/flame.h"
+#include "game/traps/lava.h"
+#include "game/traps/lightning_emitter.h"
+#include "game/traps/midas_touch.h"
+#include "game/traps/movable_block.h"
+#include "game/traps/pendulum.h"
+#include "game/traps/rolling_ball.h"
+#include "game/traps/rolling_block.h"
+#include "game/traps/spikes.h"
+#include "game/traps/teeth_trap.h"
+#include "game/traps/thors_hammer.h"
 #include "game/types.h"
 #include "game/vars.h"
 #include "game/warrior.h"
@@ -185,138 +199,31 @@ void BaddyObjects()
 
 void TrapObjects()
 {
-    Objects[O_FALLING_BLOCK].control = FallingBlockControl;
-    Objects[O_FALLING_BLOCK].floor = FallingBlockFloor;
-    Objects[O_FALLING_BLOCK].ceiling = FallingBlockCeiling;
-    Objects[O_FALLING_BLOCK].save_position = 1;
-    Objects[O_FALLING_BLOCK].save_anim = 1;
-    Objects[O_FALLING_BLOCK].save_flags = 1;
-
-    Objects[O_PENDULUM].control = PendulumControl;
-    Objects[O_PENDULUM].collision = TrapCollision;
-    Objects[O_PENDULUM].shadow_size = UNIT_SHADOW / 2;
-    Objects[O_PENDULUM].save_flags = 1;
-    Objects[O_PENDULUM].save_anim = 1;
-
-    Objects[O_TEETH_TRAP].control = TeethTrapControl;
-    Objects[O_TEETH_TRAP].collision = TrapCollision;
-    Objects[O_TEETH_TRAP].save_flags = 1;
-    Objects[O_TEETH_TRAP].save_anim = 1;
-
-    Objects[O_ROLLING_BALL].initialise = InitialiseRollingBall;
-    Objects[O_ROLLING_BALL].control = RollingBallControl;
-    Objects[O_ROLLING_BALL].collision = RollingBallCollision;
-    Objects[O_ROLLING_BALL].save_position = 1;
-    Objects[O_ROLLING_BALL].save_anim = 1;
-    Objects[O_ROLLING_BALL].save_flags = 1;
-
-    Objects[O_SPIKES].collision = SpikeCollision;
-
-    Objects[O_FALLING_CEILING1].control = FallingCeilingControl;
-    Objects[O_FALLING_CEILING1].collision = TrapCollision;
-    Objects[O_FALLING_CEILING1].save_position = 1;
-    Objects[O_FALLING_CEILING1].save_anim = 1;
-    Objects[O_FALLING_CEILING1].save_flags = 1;
-
-    Objects[O_FALLING_CEILING2].control = FallingCeilingControl;
-    Objects[O_FALLING_CEILING2].collision = TrapCollision;
-    Objects[O_FALLING_CEILING2].save_position = 1;
-    Objects[O_FALLING_CEILING2].save_anim = 1;
-    Objects[O_FALLING_CEILING2].save_flags = 1;
-
-    Objects[O_DAMOCLES_SWORD].initialise = InitialiseDamoclesSword;
-    Objects[O_DAMOCLES_SWORD].control = DamoclesSwordControl;
-    Objects[O_DAMOCLES_SWORD].collision = DamoclesSwordCollision;
-    Objects[O_DAMOCLES_SWORD].shadow_size = UNIT_SHADOW;
-    Objects[O_DAMOCLES_SWORD].save_position = 1;
-    Objects[O_DAMOCLES_SWORD].save_anim = 1;
-    Objects[O_DAMOCLES_SWORD].save_flags = 1;
-
-    Objects[O_MOVABLE_BLOCK].initialise = InitialiseMovableBlock;
-    Objects[O_MOVABLE_BLOCK].control = MovableBlockControl;
-    Objects[O_MOVABLE_BLOCK].draw_routine = DrawMovableBlock;
-    Objects[O_MOVABLE_BLOCK].collision = MovableBlockCollision;
-    Objects[O_MOVABLE_BLOCK].save_position = 1;
-    Objects[O_MOVABLE_BLOCK].save_anim = 1;
-    Objects[O_MOVABLE_BLOCK].save_flags = 1;
-
-    Objects[O_MOVABLE_BLOCK2].initialise = InitialiseMovableBlock;
-    Objects[O_MOVABLE_BLOCK2].control = MovableBlockControl;
-    Objects[O_MOVABLE_BLOCK2].draw_routine = DrawMovableBlock;
-    Objects[O_MOVABLE_BLOCK2].collision = MovableBlockCollision;
-    Objects[O_MOVABLE_BLOCK2].save_position = 1;
-    Objects[O_MOVABLE_BLOCK2].save_anim = 1;
-    Objects[O_MOVABLE_BLOCK2].save_flags = 1;
-
-    Objects[O_MOVABLE_BLOCK3].initialise = InitialiseMovableBlock;
-    Objects[O_MOVABLE_BLOCK3].draw_routine = DrawMovableBlock;
-    Objects[O_MOVABLE_BLOCK3].control = MovableBlockControl;
-    Objects[O_MOVABLE_BLOCK3].collision = MovableBlockCollision;
-    Objects[O_MOVABLE_BLOCK3].save_position = 1;
-    Objects[O_MOVABLE_BLOCK3].save_anim = 1;
-    Objects[O_MOVABLE_BLOCK3].save_flags = 1;
-
-    Objects[O_MOVABLE_BLOCK4].initialise = InitialiseMovableBlock;
-    Objects[O_MOVABLE_BLOCK4].control = MovableBlockControl;
-    Objects[O_MOVABLE_BLOCK4].draw_routine = DrawMovableBlock;
-    Objects[O_MOVABLE_BLOCK4].collision = MovableBlockCollision;
-    Objects[O_MOVABLE_BLOCK4].save_position = 1;
-    Objects[O_MOVABLE_BLOCK4].save_anim = 1;
-    Objects[O_MOVABLE_BLOCK4].save_flags = 1;
-
-    Objects[O_ROLLING_BLOCK].initialise = InitialiseRollingBlock;
-    Objects[O_ROLLING_BLOCK].control = RollingBlockControl;
-    Objects[O_ROLLING_BLOCK].save_position = 1;
-    Objects[O_ROLLING_BLOCK].save_anim = 1;
-    Objects[O_ROLLING_BLOCK].save_flags = 1;
-
-    Objects[O_LIGHTNING_EMITTER].initialise = InitialiseLightning;
-    Objects[O_LIGHTNING_EMITTER].control = LightningControl;
-    Objects[O_LIGHTNING_EMITTER].draw_routine = DrawLightning;
-    Objects[O_LIGHTNING_EMITTER].collision = LightningCollision;
-    Objects[O_LIGHTNING_EMITTER].save_flags = 1;
-
-    Objects[O_THORS_HANDLE].initialise = InitialiseThorsHandle;
-    Objects[O_THORS_HANDLE].control = ThorsHandleControl;
-    Objects[O_THORS_HANDLE].draw_routine = DrawUnclippedItem;
-    Objects[O_THORS_HANDLE].collision = ThorsHandleCollision;
-    Objects[O_THORS_HANDLE].save_flags = 1;
-    Objects[O_THORS_HANDLE].save_anim = 1;
-
-    Objects[O_THORS_HEAD].collision = ThorsHeadCollision;
-    Objects[O_THORS_HEAD].draw_routine = DrawUnclippedItem;
-    Objects[O_THORS_HEAD].save_flags = 1;
-    Objects[O_THORS_HEAD].save_anim = 1;
-
-    Objects[O_MIDAS_TOUCH].collision = MidasCollision;
-    Objects[O_MIDAS_TOUCH].draw_routine = DrawDummyItem;
-
-    Objects[O_DART_EMITTER].control = DartEmitterControl;
-
-    Objects[O_DARTS].collision = ObjectCollision;
-    Objects[O_DARTS].control = DartsControl;
-    Objects[O_DARTS].shadow_size = UNIT_SHADOW / 2;
-    Objects[O_DARTS].save_flags = 1;
-
-    Objects[O_DART_EFFECT].control = DartEffectControl;
-    Objects[O_DART_EFFECT].draw_routine = DrawSpriteItem;
-
-    Objects[O_FLAME_EMITTER].control = FlameEmitterControl;
-    Objects[O_FLAME_EMITTER].draw_routine = DrawDummyItem;
-
-    Objects[O_FLAME].control = FlameControl;
-
-    Objects[O_LAVA_EMITTER].control = LavaEmitterControl;
-    Objects[O_LAVA_EMITTER].draw_routine = DrawDummyItem;
-    Objects[O_LAVA_EMITTER].collision = ObjectCollision;
-
-    Objects[O_LAVA].control = LavaControl;
-
-    Objects[O_LAVA_WEDGE].control = LavaWedgeControl;
-    Objects[O_LAVA_WEDGE].collision = CreatureCollision;
-    Objects[O_LAVA_WEDGE].save_position = 1;
-    Objects[O_LAVA_WEDGE].save_anim = 1;
-    Objects[O_LAVA_WEDGE].save_flags = 1;
+    SetupFallingBlock(&Objects[O_FALLING_BLOCK]);
+    SetupPendulum(&Objects[O_PENDULUM]);
+    SetupTeethTrap(&Objects[O_TEETH_TRAP]);
+    SetupRollingBall(&Objects[O_ROLLING_BALL]);
+    SetupSpikes(&Objects[O_SPIKES]);
+    SetupFallingCeilling(&Objects[O_FALLING_CEILING1]);
+    SetupFallingCeilling(&Objects[O_FALLING_CEILING2]);
+    SetupDamoclesSword(&Objects[O_DAMOCLES_SWORD]);
+    SetupMovableBlock(&Objects[O_MOVABLE_BLOCK]);
+    SetupMovableBlock(&Objects[O_MOVABLE_BLOCK2]);
+    SetupMovableBlock(&Objects[O_MOVABLE_BLOCK3]);
+    SetupMovableBlock(&Objects[O_MOVABLE_BLOCK4]);
+    SetupRollingBlock(&Objects[O_ROLLING_BLOCK]);
+    SetupLightningEmitter(&Objects[O_LIGHTNING_EMITTER]);
+    SetupThorsHandle(&Objects[O_THORS_HANDLE]);
+    SetupThorsHead(&Objects[O_THORS_HEAD]);
+    SetupMidasTouch(&Objects[O_MIDAS_TOUCH]);
+    SetupDartEmitter(&Objects[O_DART_EMITTER]);
+    SetupDart(&Objects[O_DARTS]);
+    SetupDartEffect(&Objects[O_DART_EFFECT]);
+    SetupFlameEmitter(&Objects[O_FLAME_EMITTER]);
+    SetupFlame(&Objects[O_FLAME]);
+    SetupLavaEmitter(&Objects[O_LAVA_EMITTER]);
+    SetupLava(&Objects[O_LAVA]);
+    SetupLavaWedge(&Objects[O_LAVA_WEDGE]);
 }
 
 void ObjectObjects()
@@ -405,17 +312,8 @@ void ObjectObjects()
     Objects[O_DOOR_TYPE8].save_anim = 1;
     Objects[O_DOOR_TYPE8].save_flags = 1;
 
-    Objects[O_TRAPDOOR].control = TrapDoorControl;
-    Objects[O_TRAPDOOR].floor = TrapDoorFloor;
-    Objects[O_TRAPDOOR].ceiling = TrapDoorCeiling;
-    Objects[O_TRAPDOOR].save_anim = 1;
-    Objects[O_TRAPDOOR].save_flags = 1;
-
-    Objects[O_TRAPDOOR2].control = TrapDoorControl;
-    Objects[O_TRAPDOOR2].floor = TrapDoorFloor;
-    Objects[O_TRAPDOOR2].ceiling = TrapDoorCeiling;
-    Objects[O_TRAPDOOR2].save_anim = 1;
-    Objects[O_TRAPDOOR2].save_flags = 1;
+    SetupTrapDoor(&Objects[O_TRAPDOOR]);
+    SetupTrapDoor(&Objects[O_TRAPDOOR2]);
 
     Objects[O_COG_1].control = CogControl;
     Objects[O_COG_1].save_flags = 1;

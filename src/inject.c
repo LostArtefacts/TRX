@@ -15,9 +15,7 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/lightning.h"
 #include "game/lot.h"
-#include "game/moveblock.h"
 #include "game/objects.h"
 #include "game/option.h"
 #include "game/pickup.h"
@@ -25,7 +23,6 @@
 #include "game/setup.h"
 #include "game/sphere.h"
 #include "game/text.h"
-#include "game/traps.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
@@ -60,8 +57,6 @@ void T1MInject()
     T1MInjectGameLaraMisc();
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
-    T1MInjectGameLightning();
-    T1MInjectGameMoveBlock();
     T1MInjectGameObjects();
     T1MInjectGameOption();
     T1MInjectGamePickup();
@@ -69,7 +64,6 @@ void T1MInject()
     T1MInjectGameSetup();
     T1MInjectGameSphere();
     T1MInjectGameText();
-    T1MInjectGameTraps();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();

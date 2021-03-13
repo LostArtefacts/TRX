@@ -4,30 +4,19 @@
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/moveblock.h"
+#include "game/traps/movable_block.h"
 #include "game/vars.h"
-#include "util.h"
 
-typedef enum {
-    MBS_STILL = 1,
-    MBS_PUSH = 2,
-    MBS_PULL = 3,
-} MOVABLE_BLOCK_STATE;
-
-static int16_t MovingBlockBounds[12] = {
-    -300,
-    +300,
-    0,
-    0,
-    -WALL_L / 2 - (LARA_RAD + 80),
-    -WALL_L / 2,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-};
+void SetupMovableBlock(OBJECT_INFO *obj)
+{
+    obj->initialise = InitialiseMovableBlock;
+    obj->control = MovableBlockControl;
+    obj->draw_routine = DrawMovableBlock;
+    obj->collision = MovableBlockCollision;
+    obj->save_position = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+}
 
 // original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
@@ -178,6 +167,15 @@ void MovableBlockCollision(
     }
 }
 
+void DrawMovableBlock(ITEM_INFO *item)
+{
+    if (item->status == IS_ACTIVE) {
+        DrawUnclippedItem(item);
+    } else {
+        DrawAnimatingItem(item);
+    }
+}
+
 int32_t TestBlockMovable(ITEM_INFO *item, int32_t blockhite)
 {
     int16_t room_num = item->room_number;
@@ -313,44 +311,6 @@ int32_t TestBlockPull(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
     return 1;
 }
 
-void InitialiseRollingBlock(int16_t item_num)
-{
-    ITEM_INFO *item = &Items[item_num];
-    AlterFloorHeight(item, -2048);
-}
-
-// original name: RollingBlock
-void RollingBlockControl(int16_t item_num)
-{
-    ITEM_INFO *item = &Items[item_num];
-    if (TriggerActive(item)) {
-        if (item->current_anim_state == RBS_START) {
-            item->goal_anim_state = RBS_END;
-            AlterFloorHeight(item, 2048);
-        }
-    } else if (item->current_anim_state == RBS_END) {
-        item->goal_anim_state = RBS_START;
-        AlterFloorHeight(item, 2048);
-    }
-
-    AnimateItem(item);
-
-    int16_t room_num = item->room_number;
-    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
-    }
-
-    if (item->status == IS_DEACTIVATED) {
-        item->status = IS_ACTIVE;
-        AlterFloorHeight(item, -2048);
-        item->pos.x &= -WALL_L;
-        item->pos.x += WALL_L / 2;
-        item->pos.z &= -WALL_L;
-        item->pos.z += WALL_L / 2;
-    }
-}
-
 void AlterFloorHeight(ITEM_INFO *item, int32_t height)
 {
     int16_t room_num = item->room_number;
@@ -375,26 +335,4 @@ void AlterFloorHeight(ITEM_INFO *item, int32_t height)
             Boxes[floor->box].overlap_index &= ~BLOCKED;
         }
     }
-}
-
-void DrawMovableBlock(ITEM_INFO *item)
-{
-    if (item->status == IS_ACTIVE) {
-        DrawUnclippedItem(item);
-    } else {
-        DrawAnimatingItem(item);
-    }
-}
-
-void T1MInjectGameMoveBlock()
-{
-    INJECT(0x0042B430, InitialiseMovableBlock);
-    INJECT(0x0042B460, MovableBlockControl);
-    INJECT(0x0042B5B0, MovableBlockCollision);
-    INJECT(0x0042B7E0, TestBlockPush);
-    INJECT(0x0042B940, TestBlockPull);
-    INJECT(0x0042BB90, InitialiseRollingBlock);
-    INJECT(0x0042BBC0, RollingBlockControl);
-    INJECT(0x0042BCA0, AlterFloorHeight);
-    INJECT(0x0042BD60, DrawMovableBlock);
 }
