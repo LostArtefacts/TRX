@@ -1,6 +1,8 @@
 #include "3dsystem/3d_gen.h"
+#include "game/ai/alligator.h"
 #include "game/ai/bat.h"
 #include "game/ai/bear.h"
+#include "game/ai/croc.h"
 #include "game/ai/dino.h"
 #include "game/ai/evil_lara.h"
 #include "game/ai/lion.h"
@@ -11,7 +13,6 @@
 #include "game/box.h"
 #include "game/cinema.h"
 #include "game/collide.h"
-#include "game/croc.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -182,40 +183,8 @@ void BaddyObjects()
     SetupLion(&Objects[O_LION]);
     SetupLioness(&Objects[O_LIONESS]);
     SetupPuma(&Objects[O_PUMA]);
-
-    if (Objects[O_CROCODILE].loaded) {
-        Objects[O_CROCODILE].initialise = InitialiseCreature;
-        Objects[O_CROCODILE].control = CrocControl;
-        Objects[O_CROCODILE].collision = CreatureCollision;
-        Objects[O_CROCODILE].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_CROCODILE].hit_points = CROCODILE_HITPOINTS;
-        Objects[O_CROCODILE].pivot_length = 600;
-        Objects[O_CROCODILE].radius = CROCODILE_RADIUS;
-        Objects[O_CROCODILE].smartness = CROCODILE_SMARTNESS;
-        Objects[O_CROCODILE].intelligent = 1;
-        Objects[O_CROCODILE].save_position = 1;
-        Objects[O_CROCODILE].save_hitpoints = 1;
-        Objects[O_CROCODILE].save_anim = 1;
-        Objects[O_CROCODILE].save_flags = 1;
-        AnimBones[Objects[O_CROCODILE].bone_index + 28] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_ALLIGATOR].loaded) {
-        Objects[O_ALLIGATOR].initialise = InitialiseCreature;
-        Objects[O_ALLIGATOR].control = AlligatorControl;
-        Objects[O_ALLIGATOR].collision = CreatureCollision;
-        Objects[O_ALLIGATOR].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_ALLIGATOR].hit_points = ALLIGATOR_HITPOINTS;
-        Objects[O_ALLIGATOR].pivot_length = 600;
-        Objects[O_ALLIGATOR].radius = ALLIGATOR_RADIUS;
-        Objects[O_ALLIGATOR].smartness = ALLIGATOR_SMARTNESS;
-        Objects[O_ALLIGATOR].intelligent = 1;
-        Objects[O_ALLIGATOR].save_position = 1;
-        Objects[O_ALLIGATOR].save_hitpoints = 1;
-        Objects[O_ALLIGATOR].save_anim = 1;
-        Objects[O_ALLIGATOR].save_flags = 1;
-        AnimBones[Objects[O_ALLIGATOR].bone_index + 28] |= BEB_ROT_Y;
-    }
+    SetupCroc(&Objects[O_CROCODILE]);
+    SetupAlligator(&Objects[O_ALLIGATOR]);
 
     if (Objects[O_APE].loaded) {
         Objects[O_APE].initialise = InitialiseCreature;
