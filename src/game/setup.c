@@ -1,4 +1,5 @@
 #include "3dsystem/3d_gen.h"
+#include "game/ai/abortion.h"
 #include "game/ai/alligator.h"
 #include "game/ai/ape.h"
 #include "game/ai/baldy.h"
@@ -14,6 +15,7 @@
 #include "game/ai/lion.h"
 #include "game/ai/mummy.h"
 #include "game/ai/mutant.h"
+#include "game/ai/natla.h"
 #include "game/ai/pierre.h"
 #include "game/ai/pod.h"
 #include "game/ai/raptor.h"
@@ -36,7 +38,6 @@
 #include "game/lightning.h"
 #include "game/lot.h"
 #include "game/moveblock.h"
-#include "game/natla.h"
 #include "game/objects.h"
 #include "game/objects/gunshot.h"
 #include "game/pickup.h"
@@ -159,7 +160,6 @@ void BaddyObjects()
     SetupRaptor(&Objects[O_RAPTOR]);
     SetupLarson(&Objects[O_LARSON]);
     SetupPierre(&Objects[O_PIERRE]);
-
     SetupRat(&Objects[O_RAT]);
     SetupVole(&Objects[O_VOLE]);
     SetupLion(&Objects[O_LION]);
@@ -176,39 +176,8 @@ void BaddyObjects()
     SetupSkateKid(&Objects[O_MERCENARY1]);
     SetupCowboy(&Objects[O_MERCENARY2]);
     SetupBaldy(&Objects[O_MERCENARY3]);
-
-    if (Objects[O_ABORTION].loaded) {
-        Objects[O_ABORTION].initialise = InitialiseCreature;
-        Objects[O_ABORTION].control = AbortionControl;
-        Objects[O_ABORTION].collision = CreatureCollision;
-        Objects[O_ABORTION].shadow_size = UNIT_SHADOW / 3;
-        Objects[O_ABORTION].hit_points = ABORTION_HITPOINTS;
-        Objects[O_ABORTION].radius = ABORTION_RADIUS;
-        Objects[O_ABORTION].smartness = ABORTION_SMARTNESS;
-        Objects[O_ABORTION].intelligent = 1;
-        Objects[O_ABORTION].save_position = 1;
-        Objects[O_ABORTION].save_hitpoints = 1;
-        Objects[O_ABORTION].save_anim = 1;
-        Objects[O_ABORTION].save_flags = 1;
-        AnimBones[Objects[O_ABORTION].bone_index + 4] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_NATLA].loaded) {
-        Objects[O_NATLA].collision = CreatureCollision;
-        Objects[O_NATLA].initialise = InitialiseCreature;
-        Objects[O_NATLA].control = NatlaControl;
-        Objects[O_NATLA].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_NATLA].hit_points = NATLA_HITPOINTS;
-        Objects[O_NATLA].radius = NATLA_RADIUS;
-        Objects[O_NATLA].smartness = NATLA_SMARTNESS;
-        Objects[O_NATLA].intelligent = 1;
-        Objects[O_NATLA].save_position = 1;
-        Objects[O_NATLA].save_hitpoints = 1;
-        Objects[O_NATLA].save_anim = 1;
-        Objects[O_NATLA].save_flags = 1;
-        AnimBones[Objects[O_NATLA].bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
-    }
-
+    SetupAbortion(&Objects[O_ABORTION]);
+    SetupNatla(&Objects[O_NATLA]);
     SetupPod(&Objects[O_PODS]);
     SetupBigPod(&Objects[O_BIG_POD]);
     SetupStatue(&Objects[O_STATUE]);

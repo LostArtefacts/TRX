@@ -1,264 +1,37 @@
 #include "3dsystem/phd_math.h"
-#include "game/box.h"
 #include "game/control.h"
+#include "game/ai/natla.h"
+#include "game/box.h"
+#include "game/vars.h"
+#include "game/collide.h"
+#include "game/lot.h"
+#include "game/people.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/lot.h"
-#include "game/natla.h"
-#include "game/people.h"
-#include "game/vars.h"
-#include "game/warrior.h"
 #include "specific/sndpc.h"
-#include "util.h"
+#include "game/warrior.h"
 
-#define NATLA_SHOT_DAMAGE 100
-#define NATLA_NEAR_DEATH 200
-#define NATLA_FLY_MODE 0x8000
-#define NATLA_TIMER 0x7FFF
-#define NATLA_FIRE_ARC (PHD_DEGREE * 30) // = 5460
-#define NATLA_FLY_TURN (PHD_DEGREE * 5) // = 910
-#define NATLA_RUN_TURN (PHD_DEGREE * 6) // = 1092
-#define NATLA_LAND_CHANCE 256
-#define NATLA_DIE_TIME 30 * 16 // = 480
-#define NATLA_GUN_SPEED 400
+BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 
-#define ABORTION_DIE_ANIM 13
-#define ABORTION_PART_DAMAGE 250
-#define ABORTION_ATTACK_DAMAGE 500
-#define ABORTION_TOUCH_DAMAGE 5
-#define ABORTION_NEED_TURN (PHD_DEGREE * 45) // = 8190
-#define ABORTION_TURN (PHD_DEGREE * 3) // = 546
-#define ABORTION_ATTACK_RANGE SQUARE(2600) // = 6760000
-#define ABORTION_CLOSE_RANGE SQUARE(2250) // = 5062500
-#define ABORTION_TLEFT 0x7FF0
-#define ABORTION_TRIGHT 0x3FF8000
-#define ABORTION_TOUCH (ABORTION_TLEFT | ABORTION_TRIGHT)
-
-typedef enum {
-    ABORTION_EMPTY = 0,
-    ABORTION_STOP = 1,
-    ABORTION_TURN_L = 2,
-    ABORTION_TURN_R = 3,
-    ABORTION_ATTACK1 = 4,
-    ABORTION_ATTACK2 = 5,
-    ABORTION_ATTACK3 = 6,
-    ABORTION_FORWARD = 7,
-    ABORTION_SET = 8,
-    ABORTION_FALL = 9,
-    ABORTION_DEATH = 10,
-    ABORTION_KILL = 11,
-} ABORTION_ANIM;
-
-typedef enum {
-    NATLA_EMPTY = 0,
-    NATLA_STOP = 1,
-    NATLA_FLY = 2,
-    NATLA_RUN = 3,
-    NATLA_AIM = 4,
-    NATLA_SEMIDEATH = 5,
-    NATLA_SHOOT = 6,
-    NATLA_FALL = 7,
-    NATLA_STAND = 8,
-    NATLA_DEATH = 9,
-} NATLA_ANIM;
-
-static BITE_INFO NatlaGun = { 5, 220, 7, 4 };
-
-void AbortionControl(int16_t item_num)
+void SetupNatla(OBJECT_INFO *obj)
 {
-    ITEM_INFO *item = &Items[item_num];
-
-    if (item->status == IS_INVISIBLE) {
-        if (!EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!obj->loaded) {
+        return;
     }
-
-    CREATURE_INFO *abortion = item->data;
-    int16_t head = 0;
-    int16_t angle = 0;
-
-    if (item->hit_points <= 0) {
-        if (item->current_anim_state != ABORTION_DEATH) {
-            item->current_anim_state = ABORTION_DEATH;
-            item->anim_number =
-                Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
-        }
-    } else {
-        AI_INFO info;
-        CreatureAIInfo(item, &info);
-
-        if (info.ahead) {
-            head = info.angle;
-        }
-
-        CreatureMood(item, &info, 1);
-
-        angle = phd_atan(
-                    abortion->target.z - item->pos.z,
-                    abortion->target.x - item->pos.x)
-            - item->pos.y_rot;
-
-        if (item->touch_bits) {
-            LaraItem->hit_points -= ABORTION_TOUCH_DAMAGE;
-            LaraItem->hit_status = 1;
-        }
-
-        switch (item->current_anim_state) {
-        case ABORTION_SET:
-            item->goal_anim_state = ABORTION_FALL;
-            item->gravity_status = 1;
-            break;
-
-        case ABORTION_STOP:
-            if (LaraItem->hit_points <= 0) {
-                break;
-            }
-
-            abortion->flags = 0;
-            if (angle > ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_TURN_R;
-            } else if (angle < -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_TURN_L;
-            } else if (info.distance >= ABORTION_ATTACK_RANGE) {
-                item->goal_anim_state = ABORTION_FORWARD;
-            } else if (LaraItem->hit_points > ABORTION_ATTACK_DAMAGE) {
-                if (GetRandomControl() < 0x4000) {
-                    item->goal_anim_state = ABORTION_ATTACK1;
-                } else {
-                    item->goal_anim_state = ABORTION_ATTACK2;
-                }
-            } else if (info.distance < ABORTION_CLOSE_RANGE) {
-                item->goal_anim_state = ABORTION_ATTACK3;
-            } else {
-                item->goal_anim_state = ABORTION_FORWARD;
-            }
-            break;
-
-        case ABORTION_FORWARD:
-            if (angle < -ABORTION_TURN) {
-                item->goal_anim_state -= ABORTION_TURN;
-            } else if (angle > ABORTION_TURN) {
-                item->goal_anim_state += ABORTION_TURN;
-            } else {
-                item->goal_anim_state += angle;
-            }
-
-            if (angle > ABORTION_NEED_TURN || angle < -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
-            } else if (info.distance < ABORTION_ATTACK_RANGE) {
-                item->goal_anim_state = ABORTION_STOP;
-            }
-            break;
-
-        case ABORTION_TURN_L:
-            if (!abortion->flags) {
-                abortion->flags = item->frame_number;
-            } else if (
-                item->frame_number - abortion->flags > 13
-                && item->frame_number - abortion->flags < 23) {
-                item->pos.y_rot -= PHD_DEGREE * 9;
-            }
-
-            if (angle > -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
-            }
-            break;
-
-        case ABORTION_TURN_R:
-            if (!abortion->flags) {
-                abortion->flags = item->frame_number;
-            } else if (
-                item->frame_number - abortion->flags > 16
-                && item->frame_number - abortion->flags < 23) {
-                item->pos.y_rot += PHD_DEGREE * 14;
-            }
-
-            if (angle < ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
-            }
-            break;
-
-        case ABORTION_ATTACK1:
-            if (!abortion->flags && (item->touch_bits & ABORTION_TRIGHT)) {
-                LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
-                abortion->flags = 1;
-            }
-            break;
-
-        case ABORTION_ATTACK2:
-            if (!abortion->flags && (item->touch_bits & ABORTION_TOUCH)) {
-                LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
-                abortion->flags = 1;
-            }
-            break;
-
-        case ABORTION_ATTACK3:
-            if ((item->touch_bits & ABORTION_TRIGHT)
-                || LaraItem->hit_points <= 0) {
-                item->goal_anim_state = ABORTION_KILL;
-
-                LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index;
-                LaraItem->frame_number =
-                    Anims[LaraItem->anim_number].frame_base;
-                LaraItem->current_anim_state = AS_SPECIAL;
-                LaraItem->goal_anim_state = AS_SPECIAL;
-                LaraItem->room_number = item->room_number;
-                LaraItem->pos.x = item->pos.x;
-                LaraItem->pos.y = item->pos.y;
-                LaraItem->pos.z = item->pos.z;
-                LaraItem->pos.x_rot = 0;
-                LaraItem->pos.y_rot = item->pos.y_rot;
-                LaraItem->pos.z_rot = 0;
-                LaraItem->gravity_status = 0;
-                LaraItem->hit_points = -1;
-                Lara.air = -1;
-                Lara.gun_status = LGS_HANDSBUSY;
-                Lara.gun_type = LGT_UNARMED;
-
-                Camera.target_distance = WALL_L * 2;
-                Camera.flags = FOLLOW_CENTRE;
-            }
-            break;
-
-        case ABORTION_KILL:
-            Camera.target_distance = WALL_L * 2;
-            Camera.flags = FOLLOW_CENTRE;
-            break;
-        }
-    }
-
-    CreatureHead(item, head);
-
-    if (item->current_anim_state == ABORTION_FALL) {
-        AnimateItem(item);
-
-        if (item->pos.y > item->floor) {
-            item->goal_anim_state = ABORTION_STOP;
-            item->gravity_status = 0;
-            item->pos.y = item->floor;
-            Camera.bounce = 500;
-        }
-    } else {
-        CreatureAnimation(item_num, 0, 0);
-    }
-
-    if (item->status == IS_DEACTIVATED) {
-        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
-        FLOOR_INFO *floor =
-            GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(TriggerIndex, 1);
-
-        KillItem(item_num);
-        item->status = IS_DEACTIVATED;
-    }
+    obj->collision = CreatureCollision;
+    obj->initialise = InitialiseCreature;
+    obj->control = NatlaControl;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = NATLA_HITPOINTS;
+    obj->radius = NATLA_RADIUS;
+    obj->smartness = NATLA_SMARTNESS;
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+    AnimBones[obj->bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
 }
 
 void NatlaControl(int16_t item_num)
@@ -538,11 +311,4 @@ void ControlNatlaGun(int16_t fx_num)
         newfx->frame_number = 0;
         newfx->object_number = O_MISSILE1;
     }
-}
-
-void T1MInjectGameNatla()
-{
-    INJECT(0x0042BE60, AbortionControl);
-    INJECT(0x0042C330, NatlaControl);
-    INJECT(0x0042C910, ControlNatlaGun);
 }
