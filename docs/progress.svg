@@ -522,7 +522,7 @@
 <rect width="12.00" height="12.00" x="266.00" y="157.00" class="named"><title>S_InitialisePolyList</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="157.00" class="named"><title>S_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="157.00" class="named"><title>S_ClearScreen</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="157.00" class="named"><title>S_InitialiseScreen</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="157.00" class="decompiled"><title>S_InitialiseScreen</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="157.00" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="157.00" class="named"><title>S_GetObjectBounds</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="157.00" class="named"><title>S_PrintShadow</title></rect>
@@ -1347,7 +1347,7 @@
 <rect width="3.52" height="3.28" x="650.63" y="501.02" class="decompiled"><title>LaraAsPickup</title></rect>
 <rect width="3.52" height="3.28" x="650.63" y="506.31" class="decompiled"><title>LaraAsSwitchOn</title></rect>
 <rect width="3.52" height="3.28" x="650.63" y="511.59" class="decompiled"><title>LaraAsUseKey</title></rect>
-<rect width="3.52" height="3.28" x="650.63" y="516.87" class="named"><title>S_InitialiseScreen</title></rect>
+<rect width="3.52" height="3.28" x="650.63" y="516.87" class="decompiled"><title>S_InitialiseScreen</title></rect>
 <rect width="3.52" height="3.28" x="650.63" y="522.15" class="decompiled"><title>InitialiseSkateKid</title></rect>
 <rect width="3.52" height="3.28" x="650.63" y="527.44" class="decompiled"><title>InitialiseBaldy</title></rect>
 <rect width="3.52" height="3.28" x="650.63" y="532.72" class="decompiled"><title>T_FlashText</title></rect>
@@ -1459,10 +1459,10 @@
 <rect width="-0.46" height="0.42" x="695.22" y="535.58" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.76" height="-0.18" x="696.76" y="535.58" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-0.76" height="-1.39" x="696.76" y="537.39" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 69.82%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.06%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.87%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.36%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 69.96%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.07%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.74%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 15.35%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.31%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.58%</text>
 </svg>

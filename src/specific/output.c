@@ -1,5 +1,6 @@
 #include "3dsystem/3d_insert.h"
 #include "game/vars.h"
+#include "specific/display.h"
 #include "specific/output.h"
 #include "config.h"
 #include "util.h"
@@ -178,6 +179,13 @@ int32_t GetRenderScaleGLRage(int32_t unit)
     return round(result);
 }
 
+void S_InitialiseScreen()
+{
+    if (CurrentLevel != 20) {
+        TempVideoRemove();
+    }
+}
+
 void S_DrawHealthBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_HEALTH);
@@ -190,6 +198,7 @@ void S_DrawAirBar(int32_t percent)
 
 void T1MInjectSpecificOutput()
 {
+    INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
 }

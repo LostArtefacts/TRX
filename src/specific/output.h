@@ -3,7 +3,6 @@
 
 // clang-format off
 #define S_AniamteTextures       ((void          (*)(int32_t nframes))0x00430660)
-#define S_InitialiseScreen      ((void          (*)())0x0042FCE0)
 #define S_DumpScreen            ((int32_t       (*)())0x0042FC70)
 #define S_ClearScreen           ((void          (*)())0x0042FCC0)
 #define S_SetupAboveWater       ((void          (*)(int32_t underwater))0x00430640)
@@ -16,9 +15,9 @@
 #define S_CalculateStaticLight  ((void          (*)(int16_t adder))0x00430290)
 #define S_DisplayPicture        ((void          (*)(const char* filename))0x00430CE0)
 #define S_DrawLightningSegment  ((void     (*)(int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t width))0x00430740)
-
 // clang-format on
 
+void S_InitialiseScreen();
 void S_DrawHealthBar(int32_t percent);
 void S_DrawAirBar(int32_t percent);
 
