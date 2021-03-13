@@ -1,4 +1,6 @@
 #include "3dsystem/3d_gen.h"
+#include "game/ai/lion.h"
+#include "game/ai/wolf.h"
 #include "game/bat.h"
 #include "game/bear.h"
 #include "game/box.h"
@@ -29,7 +31,6 @@
 #include "game/types.h"
 #include "game/vars.h"
 #include "game/warrior.h"
-#include "game/wolf.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
@@ -144,22 +145,7 @@ void BaddyObjects()
     Objects[O_EVIL_LARA].save_hitpoints = 1;
     Objects[O_EVIL_LARA].save_flags = 1;
 
-    if (Objects[O_WOLF].loaded) {
-        Objects[O_WOLF].initialise = InitialiseWolf;
-        Objects[O_WOLF].control = WolfControl;
-        Objects[O_WOLF].collision = CreatureCollision;
-        Objects[O_WOLF].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_WOLF].hit_points = WOLF_HITPOINTS;
-        Objects[O_WOLF].pivot_length = 375;
-        Objects[O_WOLF].radius = WOLF_RADIUS;
-        Objects[O_WOLF].smartness = WOLF_SMARTNESS;
-        Objects[O_WOLF].intelligent = 1;
-        Objects[O_WOLF].save_position = 1;
-        Objects[O_WOLF].save_hitpoints = 1;
-        Objects[O_WOLF].save_anim = 1;
-        Objects[O_WOLF].save_flags = 1;
-        AnimBones[Objects[O_WOLF].bone_index + 8] |= BEB_ROT_Y;
-    }
+    SetupWolf(&Objects[O_WOLF]);
 
     if (Objects[O_BEAR].loaded) {
         Objects[O_BEAR].initialise = InitialiseCreature;
@@ -295,56 +281,9 @@ void BaddyObjects()
         AnimBones[Objects[O_VOLE].bone_index + 4] |= BEB_ROT_Y;
     }
 
-    if (Objects[O_LION].loaded) {
-        Objects[O_LION].initialise = InitialiseCreature;
-        Objects[O_LION].control = LionControl;
-        Objects[O_LION].collision = CreatureCollision;
-        Objects[O_LION].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_LION].hit_points = LION_HITPOINTS;
-        Objects[O_LION].pivot_length = 400;
-        Objects[O_LION].radius = LION_RADIUS;
-        Objects[O_LION].smartness = LION_SMARTNESS;
-        Objects[O_LION].intelligent = 1;
-        Objects[O_LION].save_position = 1;
-        Objects[O_LION].save_hitpoints = 1;
-        Objects[O_LION].save_anim = 1;
-        Objects[O_LION].save_flags = 1;
-        AnimBones[Objects[O_LION].bone_index + 76] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_LIONESS].loaded) {
-        Objects[O_LIONESS].initialise = InitialiseCreature;
-        Objects[O_LIONESS].control = LionControl;
-        Objects[O_LIONESS].collision = CreatureCollision;
-        Objects[O_LIONESS].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_LIONESS].hit_points = LIONESS_HITPOINTS;
-        Objects[O_LIONESS].pivot_length = 400;
-        Objects[O_LIONESS].radius = LIONESS_RADIUS;
-        Objects[O_LIONESS].smartness = LIONESS_SMARTNESS;
-        Objects[O_LIONESS].intelligent = 1;
-        Objects[O_LIONESS].save_position = 1;
-        Objects[O_LIONESS].save_hitpoints = 1;
-        Objects[O_LIONESS].save_anim = 1;
-        Objects[O_LIONESS].save_flags = 1;
-        AnimBones[Objects[O_LIONESS].bone_index + 76] |= BEB_ROT_Y;
-    }
-
-    if (Objects[O_PUMA].loaded) {
-        Objects[O_PUMA].initialise = InitialiseCreature;
-        Objects[O_PUMA].control = LionControl;
-        Objects[O_PUMA].collision = CreatureCollision;
-        Objects[O_PUMA].shadow_size = UNIT_SHADOW / 2;
-        Objects[O_PUMA].hit_points = PUMA_HITPOINTS;
-        Objects[O_PUMA].pivot_length = 400;
-        Objects[O_PUMA].radius = PUMA_RADIUS;
-        Objects[O_PUMA].smartness = PUMA_SMARTNESS;
-        Objects[O_PUMA].intelligent = 1;
-        Objects[O_PUMA].save_position = 1;
-        Objects[O_PUMA].save_hitpoints = 1;
-        Objects[O_PUMA].save_anim = 1;
-        Objects[O_PUMA].save_flags = 1;
-        AnimBones[Objects[O_PUMA].bone_index + 76] |= BEB_ROT_Y;
-    }
+    SetupLion(&Objects[O_LION]);
+    SetupLioness(&Objects[O_LIONESS]);
+    SetupPuma(&Objects[O_PUMA]);
 
     if (Objects[O_CROCODILE].loaded) {
         Objects[O_CROCODILE].initialise = InitialiseCreature;

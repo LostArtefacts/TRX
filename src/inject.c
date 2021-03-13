@@ -34,7 +34,6 @@
 #include "game/text.h"
 #include "game/traps.h"
 #include "game/warrior.h"
-#include "game/wolf.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
@@ -87,7 +86,6 @@ void T1MInject()
     T1MInjectGameText();
     T1MInjectGameTraps();
     T1MInjectGameWarrior();
-    T1MInjectGameWolf();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();
