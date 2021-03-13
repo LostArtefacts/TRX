@@ -29,7 +29,7 @@ void SetupScreenSize()
 void S_FadeInInventory(int32_t fade)
 {
     if (IsHardwareRenderer) {
-        if (CurrentLevel == 20) {
+        if (CurrentLevel == GF.title_level_num) {
             DownloadPictureHardware();
         } else {
             CopyPictureHardware();

@@ -181,7 +181,7 @@ int32_t GetRenderScaleGLRage(int32_t unit)
 
 void S_InitialiseScreen()
 {
-    if (CurrentLevel != 20) {
+    if (CurrentLevel != GF.title_level_num) {
         TempVideoRemove();
     }
 }
