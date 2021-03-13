@@ -234,7 +234,7 @@ LaraDinoDeath                   0x004163A0  0x000000C1  +
 # shell/display.cpp
 IncreaseScreenSize              ----------  ----------  -
 DecreaseScreenSize              ----------  ----------  -
-setup_screen_size               0x00416470  0x000000D4  -
+SetupScreenSize                 0x00416470  0x000000D4  +
 switch_resolution               ----------  ----------  -
 TempVideoAdjust                 0x00416550  0x00000277  *
 TempVideoRemove                 0x004167D0  0x00000289  *

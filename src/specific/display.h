@@ -9,4 +9,8 @@
 #define S_NoFade                ((void          (*)())0x00416B10)
 // clang-format on
 
+void SetupScreenSize();
+
+void T1MInjectSpecificDisplay();
+
 #endif

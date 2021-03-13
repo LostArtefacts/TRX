@@ -260,6 +260,10 @@
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
 
+#define DPQ_BASE 10
+#define DPQ_END 20480
+#define DPQ_START 12288
+
 #define NO_ACTION 0
 #define GAME_ACTION 1
 #define END_ACTION 2
