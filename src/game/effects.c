@@ -49,9 +49,9 @@ void SoundEffects()
     for (int i = 0; i < NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &SoundEffectsTable[i];
         if (FlipStatus && (sound->flags & FLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS *)sound, 0);
+            SoundEffect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         } else if (!FlipStatus && (sound->flags & UNFLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS *)&sound->x, 0);
+            SoundEffect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         }
     }
 
@@ -122,7 +122,7 @@ void Ricochet(GAME_VECTOR *pos)
         fx->counter = 4;
         fx->object_number = O_RICOCHET1;
         fx->frame_number = -3 * GetRandomDraw() / 0x8000;
-        SoundEffect(10, &fx->pos, 0);
+        SoundEffect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
     }
 }
 
@@ -197,7 +197,7 @@ void FxLaraBubbles(ITEM_INFO *item)
         return;
     }
 
-    SoundEffect(37, &item->pos, SFX_UNDERWATER);
+    SoundEffect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
 
     PHD_VECTOR offset;
     offset.x = 0;
@@ -257,7 +257,7 @@ void Splash(ITEM_INFO *item)
     int16_t room_num = item->room_number;
     GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
-    SoundEffect(33, &item->pos, 0);
+    SoundEffect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
 
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(room_num);
@@ -356,14 +356,14 @@ void FxLaraNormal(ITEM_INFO *item)
 void FxEarthQuake(ITEM_INFO *item)
 {
     if (FlipTimer == 0) {
-        SoundEffect(99, NULL, 0);
+        SoundEffect(SFX_EXPLOSION, NULL, SPM_NORMAL);
         Camera.bounce = -250;
     } else if (FlipTimer == 3) {
-        SoundEffect(147, NULL, 0);
+        SoundEffect(SFX_ROLLING_BALL, NULL, SPM_NORMAL);
     } else if (FlipTimer == 35) {
-        SoundEffect(99, NULL, 0);
+        SoundEffect(SFX_EXPLOSION, NULL, SPM_NORMAL);
     } else if (FlipTimer == 20 || FlipTimer == 50 || FlipTimer == 70) {
-        SoundEffect(70, NULL, 0);
+        SoundEffect(SFX_T_REX_FOOTSTOMP, NULL, SPM_NORMAL);
     }
 
     FlipTimer++;
@@ -387,7 +387,7 @@ void FxFlood(ITEM_INFO *item)
             pos.y = Camera.target.y + (FlipTimer - 30) * 100;
         }
         pos.z = LaraItem->pos.z;
-        SoundEffect(81, &pos, 0);
+        SoundEffect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
 
     FlipTimer++;
@@ -396,7 +396,7 @@ void FxFlood(ITEM_INFO *item)
 // original name: RaisingBlockFX
 void FxRaisingBlock(ITEM_INFO *item)
 {
-    SoundEffect(117, NULL, 0);
+    SoundEffect(SFX_RAISINGBLOCK_FX, NULL, SPM_NORMAL);
     FlipEffect = -1;
 }
 
@@ -404,18 +404,18 @@ void FxRaisingBlock(ITEM_INFO *item)
 void FxChainBlock(ITEM_INFO *item)
 {
     if (T1MConfig.fix_tihocan_secret_sound) {
-        SoundEffect(33, NULL, 0);
+        SoundEffect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
         FlipEffect = -1;
         return;
     }
 
     if (FlipTimer == 0) {
-        SoundEffect(173, NULL, 0);
+        SoundEffect(SFX_SECRET, NULL, SPM_NORMAL);
     }
 
     FlipTimer++;
     if (FlipTimer == 55) {
-        SoundEffect(33, NULL, 0);
+        SoundEffect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
         FlipEffect = -1;
     }
 }
@@ -424,7 +424,7 @@ void FxChainBlock(ITEM_INFO *item)
 void FxStairs2Slope(ITEM_INFO *item)
 {
     if (FlipTimer == 5) {
-        SoundEffect(119, NULL, 0);
+        SoundEffect(SFX_STAIRS2SLOPE_FX, NULL, SPM_NORMAL);
         FlipEffect = -1;
     }
     FlipTimer++;
@@ -438,12 +438,12 @@ void FxSand(ITEM_INFO *item)
         FlipEffect = -1;
     } else {
         if (!FlipTimer) {
-            SoundEffect(161, NULL, 0);
+            SoundEffect(SFX_TRAPDOOR_OPEN, NULL, SPM_NORMAL);
         }
         pos.x = Camera.target.x;
         pos.y = Camera.target.y + FlipTimer * 100;
         pos.z = Camera.target.z;
-        SoundEffect(118, &pos, 0);
+        SoundEffect(SFX_SAND_FX, &pos, SPM_NORMAL);
     }
     FlipTimer++;
 }
@@ -458,7 +458,7 @@ void FxPowerUp(ITEM_INFO *item)
         pos.x = Camera.target.x;
         pos.y = Camera.target.y + FlipTimer * 100;
         pos.z = Camera.target.z;
-        SoundEffect(155, &pos, 0);
+        SoundEffect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
     }
     FlipTimer++;
 }
@@ -466,7 +466,7 @@ void FxPowerUp(ITEM_INFO *item)
 // original name: ExplosionFX
 void FxExplosion(ITEM_INFO *item)
 {
-    SoundEffect(170, NULL, 0);
+    SoundEffect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
     Camera.bounce = -75;
     FlipEffect = -1;
 }

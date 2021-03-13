@@ -63,7 +63,7 @@ void MovableBlockControl(int16_t item_num)
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         FxDinoStomp(item);
-        SoundEffect(70, &item->pos, 0);
+        SoundEffect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     }
 
     if (item->room_number != room_num) {

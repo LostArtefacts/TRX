@@ -458,7 +458,7 @@ void DamoclesSwordControl(int16_t item_num)
         item->pos.z += item->goal_anim_state;
 
         if (item->pos.y > item->floor) {
-            SoundEffect(103, &item->pos, 0);
+            SoundEffect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
             item->gravity_status = 0;
             item->status = IS_DEACTIVATED;
@@ -555,7 +555,7 @@ void DartEmitterControl(int16_t item_num)
                 fx->frame_number = 0;
                 fx->counter = 0;
                 fx->object_number = O_DART_EFFECT;
-                SoundEffect(151, &fx->pos, 0);
+                SoundEffect(SFX_DARTS, &fx->pos, SPM_NORMAL);
             }
         }
     }
@@ -627,7 +627,7 @@ void FlameEmitterControl(int16_t item_num)
             item->data = (void *)(fx_num + 1);
         }
     } else if (item->data) {
-        StopSoundEffect(150, NULL);
+        StopSoundEffect(SFX_FIRE, NULL);
         KillEffect((int16_t)(size_t)item->data - 1);
         item->data = NULL;
     }
@@ -645,7 +645,7 @@ void FlameControl(int16_t fx_num)
     if (fx->counter < 0) {
         if (Lara.water_status == LWS_CHEAT) {
             fx->counter = 0;
-            StopSoundEffect(150, NULL);
+            StopSoundEffect(SFX_FIRE, NULL);
             KillEffect(fx_num);
         }
 
@@ -665,17 +665,17 @@ void FlameControl(int16_t fx_num)
 
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
-            StopSoundEffect(150, NULL);
+            StopSoundEffect(SFX_FIRE, NULL);
             KillEffect(fx_num);
         } else {
-            SoundEffect(150, &fx->pos, 0);
+            SoundEffect(SFX_FIRE, &fx->pos, SPM_NORMAL);
             LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
             LaraItem->hit_status = 1;
         }
         return;
     }
 
-    SoundEffect(150, &fx->pos, 0);
+    SoundEffect(SFX_FIRE, &fx->pos, SPM_NORMAL);
     if (fx->counter) {
         fx->counter--;
     } else if (ItemNearLara(&fx->pos, 600)) {
@@ -750,7 +750,7 @@ void LavaEmitterControl(int16_t item_num)
         fx->fall_speed = -GetRandomControl() / 200;
         fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
         fx->object_number = O_LAVA;
-        SoundEffect(149, &item->pos, 0);
+        SoundEffect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
     }
 }
 

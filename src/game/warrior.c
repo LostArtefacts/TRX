@@ -192,7 +192,7 @@ void CentaurControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 
     if (item->status == IS_DEACTIVATED) {
-        SoundEffect(171, &item->pos, 0);
+        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         ExplodingDeath(item_num, -1, CENTAUR_PART_DAMAGE);
         KillItem(item_num);
         item->status = IS_DEACTIVATED;
@@ -222,7 +222,7 @@ void FlyerControl(int16_t item_num)
 
     if (item->hit_points <= 0) {
         if (ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
-            SoundEffect(171, &item->pos, 0);
+            SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
             DisableBaddieAI(item_num);
             KillItem(item_num);
             item->status = IS_DEACTIVATED;
@@ -478,13 +478,13 @@ void ControlMissile(int16_t fx_num)
             fx->frame_number = -GetRandomControl() / 11000;
             fx->speed = 0;
             fx->counter = 6;
-            SoundEffect(10, &fx->pos, 0);
+            SoundEffect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
         } else {
             fx->object_number = O_EXPLOSION1;
             fx->frame_number = 0;
             fx->speed = 0;
             fx->counter = 0;
-            SoundEffect(104, &fx->pos, 0);
+            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
 
             int32_t x = fx->pos.x - LaraItem->pos.x;
             int32_t y = fx->pos.y - LaraItem->pos.y;
@@ -510,16 +510,16 @@ void ControlMissile(int16_t fx_num)
     if (fx->object_number == O_MISSILE2) {
         LaraItem->hit_points -= SHARD_DAMAGE;
         fx->object_number = O_BLOOD1;
-        SoundEffect(50, &fx->pos, 0);
+        SoundEffect(SFX_LARA_BULLETHIT, &fx->pos, SPM_NORMAL);
     } else {
         LaraItem->hit_points -= ROCKET_DAMAGE;
         fx->object_number = O_EXPLOSION1;
         if (LaraItem->hit_points > 0) {
-            SoundEffect(31, &LaraItem->pos, 0);
+            SoundEffect(SFX_LARA_INJURY, &LaraItem->pos, SPM_NORMAL);
             Lara.spaz_effect = fx;
             Lara.spaz_effect_count = 5;
         }
-        SoundEffect(104, &fx->pos, 0);
+        SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
     }
     LaraItem->hit_status = 1;
 
@@ -763,7 +763,7 @@ void ControlBodyPart(int16_t fx_num)
             fx->frame_number = 0;
             fx->counter = 0;
             fx->object_number = O_EXPLOSION1;
-            SoundEffect(104, &fx->pos, 0);
+            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
         } else {
             KillEffect(fx_num);
         }
@@ -779,7 +779,7 @@ void ControlBodyPart(int16_t fx_num)
             fx->frame_number = 0;
             fx->counter = 0;
             fx->object_number = O_EXPLOSION1;
-            SoundEffect(104, &fx->pos, 0);
+            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
 
             Lara.spaz_effect_count = 5;
             Lara.spaz_effect = fx;
@@ -935,7 +935,7 @@ void StatueControl(int16_t item_num)
         EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 
-        SoundEffect(104, &centaur->pos, 0);
+        SoundEffect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
     }
 }
 

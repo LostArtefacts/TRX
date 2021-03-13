@@ -57,7 +57,7 @@ void LaraControl(int16_t item_num)
         item->pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
-        StopSoundEffect(30, NULL);
+        StopSoundEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
@@ -100,7 +100,7 @@ void LaraControl(int16_t item_num)
             Lara.torso_x_rot = 0;
             Lara.torso_y_rot = 0;
             UpdateLaraRoom(item, -LARA_HITE / 2);
-            SoundEffect(36, &item->pos, SFX_ALWAYS);
+            SoundEffect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             Lara.water_status = LWS_ABOVEWATER;
             Lara.gun_status = LGS_ARMLESS;
@@ -276,7 +276,7 @@ void AnimateLara(ITEM_INFO *item)
 
             case AC_SOUND_FX:
                 if (item->frame_number == command[0]) {
-                    SoundEffect(command[1], &item->pos, SFX_ALWAYS);
+                    SoundEffect(command[1], &item->pos, SPM_ALWAYS);
                 }
                 command += 2;
                 break;
@@ -360,7 +360,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_MEDI_ITEM);
-        SoundEffect(116, NULL, SFX_ALWAYS);
+        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
 
     case O_BIGMEDI_ITEM:
@@ -374,7 +374,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_BIGMEDI_ITEM);
-        SoundEffect(116, NULL, SFX_ALWAYS);
+        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
     }
 }
@@ -579,7 +579,7 @@ void LaraCheatGetStuff()
     }
 
     // play istols drawing sound
-    SoundEffect(6, &LaraItem->pos, 0);
+    SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
 
     if (Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
         Inv_AddItem(O_GUN_ITEM);

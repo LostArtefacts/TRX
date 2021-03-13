@@ -269,7 +269,7 @@ void LightningControl(int16_t item_num)
         }
     }
 
-    SoundEffect(98, &item->pos, 0);
+    SoundEffect(SFX_THUNDER, &item->pos, SPM_NORMAL);
 }
 
 void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

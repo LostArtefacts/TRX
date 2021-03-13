@@ -249,7 +249,7 @@ void AbortionControl(int16_t item_num)
     }
 
     if (item->status == IS_DEACTIVATED) {
-        SoundEffect(171, &item->pos, 0);
+        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
@@ -328,7 +328,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(123, &fx->pos, 0);
+                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }
@@ -341,7 +341,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(123, &fx->pos, 0);
+                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }
@@ -447,7 +447,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(123, &fx->pos, 0);
+                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }

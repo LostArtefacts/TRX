@@ -431,7 +431,7 @@ void LaraAsFastFall(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->speed = (item->speed * 95) / 100;
     if (item->fall_speed >= DAMAGE_START + DAMAGE_LENGTH) {
-        SoundEffect(30, &item->pos, 0);
+        SoundEffect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
     }
 }
 
@@ -1219,7 +1219,7 @@ void LaraColFastFall(ITEM_INFO *item, COLL_INFO *coll)
             item->anim_number = AA_LANDFAR;
             item->frame_number = AF_LANDFAR;
         }
-        StopSoundEffect(30, NULL);
+        StopSoundEffect(SFX_LARA_FALL, NULL);
         item->pos.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;

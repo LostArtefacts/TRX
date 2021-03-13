@@ -484,7 +484,7 @@ void Scion3Control(int16_t item_num)
             fx->frame_number = 0;
             fx->object_number = O_EXPLOSION1;
             fx->counter = 0;
-            SoundEffect(104, &fx->pos, 0);
+            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
             Camera.bounce = -200;
         }
     }
@@ -502,10 +502,10 @@ void EarthQuakeControl(int16_t item_num)
     if (TriggerActive(item)) {
         if (GetRandomDraw() < 0x100) {
             Camera.bounce = -150;
-            SoundEffect(147, NULL, 0);
+            SoundEffect(SFX_ROLLING_BALL, NULL, SPM_NORMAL);
         } else if (GetRandomControl() < 0x400) {
             Camera.bounce = 50;
-            SoundEffect(70, NULL, 0);
+            SoundEffect(SFX_T_REX_FOOTSTOMP, NULL, SPM_NORMAL);
         }
     }
 }

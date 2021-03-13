@@ -93,7 +93,7 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    SoundEffect(111, 0, RT_KEYS);
+    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
     InvNFrames = 2;
 
@@ -252,19 +252,19 @@ int32_t Display_Inventory(int inv_mode)
         case RNG_OPEN:
             if (CHK_ANY(Input, IN_RIGHT) && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
-                SoundEffect(108, NULL, SFX_ALWAYS);
+                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if (CHK_ANY(Input, IN_LEFT) && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
-                SoundEffect(108, NULL, SFX_ALWAYS);
+                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if ((ResetFlag || CHK_ANY(InputDB, IN_OPTION))
                 && (ResetFlag || InventoryMode != INV_TITLE_MODE)) {
-                SoundEffect(112, NULL, SFX_ALWAYS);
+                SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 InventoryChosen = -1;
 
                 if (ring.type == RT_MAIN) {
@@ -323,26 +323,26 @@ int32_t Display_Inventory(int inv_mode)
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
-                    SoundEffect(113, NULL, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_COMPASS, NULL, SPM_ALWAYS);
                     break;
 
                 case O_PHOTO_OPTION:
-                    SoundEffect(109, NULL, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_CHOOSE, NULL, SPM_ALWAYS);
                     break;
 
                 case O_CONTROL_OPTION:
-                    SoundEffect(110, NULL, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_GAMEBOY, NULL, SPM_ALWAYS);
                     break;
 
                 case O_GUN_OPTION:
                 case O_SHOTGUN_OPTION:
                 case O_MAGNUM_OPTION:
                 case O_UZI_OPTION:
-                    SoundEffect(114, NULL, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_GUNS, NULL, SPM_ALWAYS);
                     break;
 
                 default:
-                    SoundEffect(111, NULL, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
                     break;
                 }
             }
@@ -550,7 +550,7 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_DESELECT:
-            SoundEffect(112, NULL, SFX_ALWAYS);
+            SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
             Inv_RingMotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
