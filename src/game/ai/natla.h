@@ -14,6 +14,9 @@
 #define NATLA_LAND_CHANCE 256
 #define NATLA_DIE_TIME 30 * 16 // = 480
 #define NATLA_GUN_SPEED 400
+#define NATLA_HITPOINTS 400
+#define NATLA_RADIUS (WALL_L / 5) // = 204
+#define NATLA_SMARTNESS 0x7FFF
 
 typedef enum {
     NATLA_EMPTY = 0,

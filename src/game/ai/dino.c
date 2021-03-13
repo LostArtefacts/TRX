@@ -18,10 +18,10 @@ void SetupDino(OBJECT_INFO *obj)
     obj->draw_routine = DrawUnclippedItem;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = DINOSAUR_HITPOINTS;
+    obj->hit_points = DINO_HITPOINTS;
     obj->pivot_length = 2000;
-    obj->radius = DINOSAUR_RADIUS;
-    obj->smartness = DINOSAUR_SMARTNESS;
+    obj->radius = DINO_RADIUS;
+    obj->smartness = DINO_SMARTNESS;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;

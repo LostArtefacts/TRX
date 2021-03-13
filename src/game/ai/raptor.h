@@ -15,6 +15,9 @@
 #define RAPTOR_RUN_TURN (4 * PHD_DEGREE) // = 728
 #define RAPTOR_TOUCH 0xFF7C00
 #define RAPTOR_WALK_TURN (1 * PHD_DEGREE) // = 182
+#define RAPTOR_HITPOINTS 20
+#define RAPTOR_RADIUS (WALL_L / 3) // = 341
+#define RAPTOR_SMARTNESS 0x4000
 
 typedef enum {
     RAPTOR_EMPTY = 0,

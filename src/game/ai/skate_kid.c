@@ -22,9 +22,9 @@ void SetupSkateKid(OBJECT_INFO *obj)
     obj->draw_routine = DrawSkateKid;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = SKATEKID_HITPOINTS;
-    obj->radius = SKATEKID_RADIUS;
-    obj->smartness = SKATEKID_SMARTNESS;
+    obj->hit_points = SKATE_KID_HITPOINTS;
+    obj->radius = SKATE_KID_RADIUS;
+    obj->smartness = SKATE_KID_SMARTNESS;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
@@ -36,7 +36,7 @@ void SetupSkateKid(OBJECT_INFO *obj)
 void InitialiseSkateKid(int16_t item_num)
 {
     InitialiseCreature(item_num);
-    Items[item_num].current_anim_state = KID_SKATE;
+    Items[item_num].current_anim_state = SKATE_KID_SKATE;
 }
 
 void SkateKidControl(int16_t item_num)
@@ -47,9 +47,10 @@ void SkateKidControl(int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != KID_DEATH) {
-            item->current_anim_state = KID_DEATH;
-            item->anim_number = Objects[O_MERCENARY1].anim_index + KID_DIE_ANIM;
+        if (item->current_anim_state != SKATE_KID_DEATH) {
+            item->current_anim_state = SKATE_KID_DEATH;
+            item->anim_number =
+                Objects[O_MERCENARY1].anim_index + SKATE_KID_DIE_ANIM;
             item->frame_number = Anims[item->anim_number].frame_base;
             SpawnItem(item, O_UZI_ITEM);
         }
@@ -63,68 +64,69 @@ void SkateKidControl(int16_t item_num)
 
         CreatureMood(item, &info, 0);
 
-        angle = CreatureTurn(item, KID_SKATE_TURN);
+        angle = CreatureTurn(item, SKATE_KID_SKATE_TURN);
 
         if (item->hit_points < 120 && CDTrack != 56) {
             S_CDPlay(56);
         }
 
         switch (item->current_anim_state) {
-        case KID_STOP:
+        case SKATE_KID_STOP:
             kid->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (Targetable(item, &info)) {
-                item->goal_anim_state = KID_SHOOT;
+                item->goal_anim_state = SKATE_KID_SHOOT;
             } else {
-                item->goal_anim_state = KID_SKATE;
+                item->goal_anim_state = SKATE_KID_SKATE;
             }
             break;
 
-        case KID_SKATE:
+        case SKATE_KID_SKATE:
             kid->flags = 0;
-            if (GetRandomControl() < KID_PUSH_CHANCE) {
-                item->goal_anim_state = KID_PUSH;
+            if (GetRandomControl() < SKATE_KID_PUSH_CHANCE) {
+                item->goal_anim_state = SKATE_KID_PUSH;
             } else if (Targetable(item, &info)) {
-                if (info.distance > KID_DONT_STOP_RANGE
-                    && info.distance < KID_STOP_RANGE
+                if (info.distance > SKATE_KID_DONT_STOP_RANGE
+                    && info.distance < SKATE_KID_STOP_RANGE
                     && kid->mood != MOOD_ESCAPE) {
-                    item->goal_anim_state = KID_STOP;
+                    item->goal_anim_state = SKATE_KID_STOP;
                 } else {
-                    item->goal_anim_state = KID_SHOOT2;
+                    item->goal_anim_state = SKATE_KID_SHOOT2;
                 }
             }
             break;
 
-        case KID_PUSH:
-            if (GetRandomControl() < KID_SKATE_CHANCE) {
-                item->goal_anim_state = KID_SKATE;
+        case SKATE_KID_PUSH:
+            if (GetRandomControl() < SKATE_KID_SKATE_CHANCE) {
+                item->goal_anim_state = SKATE_KID_SKATE;
             }
             break;
 
-        case KID_SHOOT:
-        case KID_SHOOT2:
+        case SKATE_KID_SHOOT:
+        case SKATE_KID_SHOOT2:
             if (!kid->flags && Targetable(item, &info)) {
                 if (ShotLara(item, info.distance, &KidGun1, head)) {
                     LaraItem->hit_points -=
-                        item->current_anim_state == KID_SHOOT
-                        ? KID_STOP_SHOT_DAMAGE
-                        : KID_SKATE_SHOT_DAMAGE;
+                        item->current_anim_state == SKATE_KID_SHOOT
+                        ? SKATE_KID_STOP_SHOT_DAMAGE
+                        : SKATE_KID_SKATE_SHOT_DAMAGE;
                     LaraItem->hit_status = 1;
                 }
 
                 if (ShotLara(item, info.distance, &KidGun2, head)) {
                     LaraItem->hit_points -=
-                        item->current_anim_state == KID_SHOOT
-                        ? KID_STOP_SHOT_DAMAGE
-                        : KID_SKATE_SHOT_DAMAGE;
+                        item->current_anim_state == SKATE_KID_SHOOT
+                        ? SKATE_KID_STOP_SHOT_DAMAGE
+                        : SKATE_KID_SKATE_SHOT_DAMAGE;
                     LaraItem->hit_status = 1;
                 }
 
                 kid->flags = 1;
             }
-            if (kid->mood == MOOD_ESCAPE || info.distance < KID_TOO_CLOSE) {
-                item->required_anim_state = KID_SKATE;
+            if (kid->mood == MOOD_ESCAPE
+                || info.distance < SKATE_KID_TOO_CLOSE) {
+                item->required_anim_state = SKATE_KID_SKATE;
             }
             break;
         }

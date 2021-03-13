@@ -10,6 +10,9 @@
 #define LARSON_RUN_TURN (PHD_DEGREE * 6) // = 1092
 #define LARSON_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define LARSON_DIE_ANIM 15
+#define LARSON_HITPOINTS 50
+#define LARSON_RADIUS (WALL_L / 10) // = 102
+#define LARSON_SMARTNESS 0x7FFF
 
 typedef enum {
     LARSON_EMPTY = 0,

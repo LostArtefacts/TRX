@@ -14,6 +14,9 @@
 #define DINO_TOUCH_DAMAGE 1
 #define DINO_TRAMPLE_DAMAGE 10
 #define DINO_WALK_TURN (2 * PHD_DEGREE) // = 364
+#define DINO_HITPOINTS 100
+#define DINO_RADIUS (WALL_L / 3) // = 341
+#define DINO_SMARTNESS 0x7FFF
 
 typedef enum {
     DINO_EMPTY = 0,

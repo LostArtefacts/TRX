@@ -7,7 +7,7 @@
 #include "game/ai/bear.h"
 #include "game/ai/centaur.h"
 #include "game/ai/cowboy.h"
-#include "game/ai/croc.h"
+#include "game/ai/crocodile.h"
 #include "game/ai/dino.h"
 #include "game/ai/evil_lara.h"
 #include "game/ai/larson.h"
@@ -165,7 +165,7 @@ void BaddyObjects()
     SetupLion(&Objects[O_LION]);
     SetupLioness(&Objects[O_LIONESS]);
     SetupPuma(&Objects[O_PUMA]);
-    SetupCroc(&Objects[O_CROCODILE]);
+    SetupCrocodile(&Objects[O_CROCODILE]);
     SetupAlligator(&Objects[O_ALLIGATOR]);
     SetupApe(&Objects[O_APE]);
     SetupWarrior(&Objects[O_WARRIOR1]);

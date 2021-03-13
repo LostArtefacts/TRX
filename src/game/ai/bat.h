@@ -6,6 +6,9 @@
 
 #define BAT_ATTACK_DAMAGE 2
 #define BAT_TURN (20 * PHD_DEGREE) // = 3640
+#define BAT_HITPOINTS 1
+#define BAT_RADIUS (WALL_L / 10) // = 102
+#define BAT_SMARTNESS 0x400
 
 typedef enum {
     BAT_EMPTY = 0,

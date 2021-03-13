@@ -20,6 +20,9 @@
 #define APE_TURN_L_FLAG 2
 #define APE_TURN_R_FLAG 4
 #define APE_SHIFT 75
+#define APE_HITPOINTS 22
+#define APE_RADIUS (WALL_L / 3) // = 341
+#define APE_SMARTNESS 0x7FFF
 
 typedef enum {
     APE_EMPTY = 0,

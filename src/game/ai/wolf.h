@@ -18,6 +18,9 @@
 #define WOLF_SLEEP_CHANCE 32
 #define WOLF_HOWL_CHANCE 384
 #define WOLF_TOUCH 0x774F
+#define WOLF_HITPOINTS 6
+#define WOLF_RADIUS (WALL_L / 3) // = 341
+#define WOLF_SMARTNESS 0x2000
 
 typedef enum {
     WOLF_EMPTY = 0,

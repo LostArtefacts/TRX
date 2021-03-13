@@ -9,6 +9,9 @@
 #define BALDY_RUN_TURN (PHD_DEGREE * 6) // = 1092
 #define BALDY_WALK_RANGE SQUARE(WALL_L * 4) // = 16777216
 #define BALDY_DIE_ANIM 14
+#define BALDY_HITPOINTS 200
+#define BALDY_RADIUS (WALL_L / 10) // = 102
+#define BALDY_SMARTNESS 0x7FFF
 
 typedef enum {
     BALDY_EMPTY = 0,

@@ -18,6 +18,9 @@
 #define BEAR_RUN_TURN (5 * PHD_DEGREE) // = 910
 #define BEAR_WALK_TURN (2 * PHD_DEGREE) // = 364
 #define BEAR_EAT_RANGE SQUARE(WALL_L * 3 / 4) // = 589824
+#define BEAR_HITPOINTS 20
+#define BEAR_RADIUS (WALL_L / 3) // = 341
+#define BEAR_SMARTNESS 0x4000
 
 typedef enum {
     BEAR_STROLL = 0,

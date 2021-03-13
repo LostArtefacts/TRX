@@ -9,6 +9,9 @@
 #define COWBOY_RUN_TURN (PHD_DEGREE * 6) // = 1092
 #define COWBOY_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define COWBOY_DIE_ANIM 7
+#define COWBOY_HITPOINTS 150
+#define COWBOY_RADIUS (WALL_L / 10) // = 102
+#define COWBOY_SMARTNESS 0x7FFF
 
 typedef enum {
     COWBOY_EMPTY = 0,

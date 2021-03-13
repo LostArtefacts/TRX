@@ -1,5 +1,5 @@
 #include "game/ai/alligator.h"
-#include "game/ai/croc.h"
+#include "game/ai/crocodile.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -60,9 +60,10 @@ void AlligatorControl(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_CROCODILE;
-            item->current_anim_state = CROC_DEATH;
-            item->goal_anim_state = CROC_DEATH;
-            item->anim_number = Objects[O_CROCODILE].anim_index + CROC_DIE_ANIM;
+            item->current_anim_state = CROCODILE_DEATH;
+            item->goal_anim_state = CROCODILE_DEATH;
+            item->anim_number =
+                Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM;
             item->frame_number = Anims[item->anim_number].frame_base;
             room_num = item->room_number;
             floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -113,7 +114,7 @@ void AlligatorControl(int16_t item_num)
 
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == ALLIGATOR_EMPTY) {
-                CreatureEffect(item, &CrocBite, DoBloodSplat);
+                CreatureEffect(item, &CrocodileBite, DoBloodSplat);
                 LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
                 LaraItem->hit_status = 1;
                 item->required_anim_state = ALLIGATOR_SWIM;

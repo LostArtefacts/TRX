@@ -4,6 +4,8 @@
 #include "game/types.h"
 #include <stdint.h>
 
+#define MUMMY_HITPOINTS 18
+
 typedef enum {
     MUMMY_EMPTY = 0,
     MUMMY_STOP = 1,
