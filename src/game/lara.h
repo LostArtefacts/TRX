@@ -7,6 +7,7 @@
 void LaraControl(int16_t item_num);
 void LaraSwapMeshExtra();
 void AnimateLara(ITEM_INFO *item);
+void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal);
 void UseItem(int16_t object_num);
 void ControlLaraExtra(int16_t item_num);
 void InitialiseLaraLoad(int16_t item_num);

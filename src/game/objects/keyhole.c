@@ -1,9 +1,10 @@
-#include "game/objects/keyhole.h"
-#include "game/inv.h"
-#include "game/pickup.h"
-#include "game/effects.h"
 #include "game/collide.h"
+#include "game/effects.h"
+#include "game/inv.h"
+#include "game/lara.h"
+#include "game/objects/keyhole.h"
 #include "game/vars.h"
+#include "config.h"
 
 PHD_VECTOR KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
 int16_t KeyHoleBounds[12] = {
@@ -122,4 +123,16 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         PickUpY = lara_item->pos.y;
         PickUpZ = lara_item->pos.z;
     }
+}
+
+int32_t KeyTrigger(int16_t item_num)
+{
+    ITEM_INFO *item = &Items[item_num];
+    if (item->status == IS_ACTIVE
+        && (T1MConfig.fix_key_triggers ? Lara.gun_status != LGS_HANDSBUSY
+                                       : Lara.gun_status == LGS_ARMLESS)) {
+        item->status = IS_DEACTIVATED;
+        return 1;
+    }
+    return 0;
 }

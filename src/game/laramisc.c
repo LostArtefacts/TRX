@@ -313,6 +313,14 @@ void AnimateLara(ITEM_INFO *item)
     item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
+void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
+{
+    lara_item->goal_anim_state = goal;
+    do {
+        AnimateLara(lara_item);
+    } while (lara_item->current_anim_state != goal);
+}
+
 void UseItem(int16_t object_num)
 {
     TRACE("%d", object_num);

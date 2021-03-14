@@ -13,5 +13,6 @@ extern int32_t PickUpZ;
 
 void SetupKeyHole(OBJECT_INFO *obj);
 void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+int32_t KeyTrigger(int16_t item_num);
 
 #endif

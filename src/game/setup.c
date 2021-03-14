@@ -50,7 +50,6 @@
 #include "game/objects/scion.h"
 #include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
-#include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"

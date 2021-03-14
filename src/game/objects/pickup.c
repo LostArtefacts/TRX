@@ -4,8 +4,8 @@
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/pickup.h"
-#include "game/pickup.h"
 #include "game/vars.h"
 
 PHD_VECTOR PickUpPosition = { 0, 0, -100 };

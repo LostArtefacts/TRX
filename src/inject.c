@@ -17,7 +17,6 @@
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/option.h"
-#include "game/pickup.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/sphere.h"
@@ -57,7 +56,6 @@ void T1MInject()
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
     T1MInjectGameOption();
-    T1MInjectGamePickup();
     T1MInjectGameSaveGame();
     T1MInjectGameSetup();
     T1MInjectGameSphere();

@@ -11,5 +11,6 @@ void SetupPuzzleHole(OBJECT_INFO *obj);
 void SetupPuzzleDone(OBJECT_INFO *obj);
 void PuzzleHoleCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+int32_t PickupTrigger(int16_t item_num);
 
 #endif

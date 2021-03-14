@@ -1,9 +1,9 @@
 #include "game/collide.h"
 #include "game/effects.h"
 #include "game/inv.h"
+#include "game/lara.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
-#include "game/pickup.h"
 #include "game/vars.h"
 
 PHD_VECTOR PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
@@ -152,4 +152,14 @@ void PuzzleHoleCollision(
         PickUpY = lara_item->pos.y;
         PickUpZ = lara_item->pos.z;
     }
+}
+
+int32_t PickupTrigger(int16_t item_num)
+{
+    ITEM_INFO *item = &Items[item_num];
+    if (item->status != IS_INVISIBLE) {
+        return 0;
+    }
+    item->status = IS_DEACTIVATED;
+    return 1;
 }
