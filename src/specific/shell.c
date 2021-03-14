@@ -37,6 +37,7 @@ void S_ReadUserSettings()
     fread(&AppSettings, sizeof(int32_t), 1, fp);
     fread(&GameHiRes, sizeof(int32_t), 1, fp);
     fread(&GameSizer, sizeof(double), 1, fp);
+    fread(&IConfig, sizeof(int32_t), 1, fp);
 
     if (OptionMusicVolume) {
         S_CDVolume(25 * OptionMusicVolume + 5);
@@ -65,6 +66,7 @@ void S_WriteUserSettings()
     fwrite(&AppSettings, sizeof(int32_t), 1, fp);
     fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
     fwrite(&GameSizer, sizeof(double), 1, fp);
+    fwrite(&IConfig, sizeof(int32_t), 1, fp);
     fclose(fp);
 }
 
