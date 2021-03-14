@@ -387,7 +387,7 @@ CalculateWibbleTable            ----------  ----------  +
 S_SeedRandom                    ----------  ----------  +
 
 # shell/input.cpp
-Key                             0x0041E3E0  0x00000166  *
+Key                             0x0041E3E0  0x00000166  +
 GetJoystickButtonName           ----------  ----------  -
 JoyRead                         ----------  ----------  -
 S_UpdateInput                   0x0041E550  0x00000210  +
