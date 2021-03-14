@@ -13,7 +13,6 @@
 #define WinVidSpinMessageLoop   ((int32_t       (*)())0x00437AD0)
 #define ShowFatalError          ((void          (*)(const char *message))0x0043D770)
 #define S_ExitSystem            ((void          (*)(const char *message))0x0041E260)
-#define WriteTombAtiSettings    ((void          (*)())0x00438B60)
 #define InitialiseHardware      ((void          (*)())0x00408005)
 #define mn_stop_ambient_samples ((void          (*)())0x0042B000)
 #define mn_reset_sound_effects  ((void          (*)())0x0042A940)

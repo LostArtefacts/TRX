@@ -25,8 +25,8 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 SAVEGAME_INFO SaveGame;
 int32_t DemoLevel;
 
+char *UserSettingsPath = "atiset.dat";
 int16_t StoredLaraHealth = 0;
-
 int16_t BarOffsetY[6];
 
 GameFlow GF;

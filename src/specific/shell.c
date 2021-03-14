@@ -24,45 +24,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// T1M: this function was inlined
 void S_ReadUserSettings()
 {
-    FILE *fp = fopen("atiset.dat", "rb");
-    if (fp) {
-        fread(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-        fread(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-        fread(Layout[1], sizeof(int16_t), 13, fp);
-        fread(&AppSettings, sizeof(int32_t), 1, fp);
-        fread(&GameHiRes, sizeof(int32_t), 1, fp);
-        fread(&GameSizer, sizeof(double), 1, fp);
-        if (OptionMusicVolume) {
-            S_CDVolume(25 * OptionMusicVolume + 5);
-        } else {
-            S_CDVolume(0);
-        }
-        // T1M
-        if (OptionSoundFXVolume) {
-            adjust_master_volume(6 * OptionSoundFXVolume + 3);
-        } else {
-            adjust_master_volume(0);
-        }
-        fclose(fp);
+    FILE *fp = fopen(UserSettingsPath, "rb");
+    if (!fp) {
+        return;
     }
+
+    fread(&OptionMusicVolume, sizeof(int16_t), 1, fp);
+    fread(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    fread(Layout[1], sizeof(int16_t), 13, fp);
+    fread(&AppSettings, sizeof(int32_t), 1, fp);
+    fread(&GameHiRes, sizeof(int32_t), 1, fp);
+    fread(&GameSizer, sizeof(double), 1, fp);
+
+    if (OptionMusicVolume) {
+        S_CDVolume(25 * OptionMusicVolume + 5);
+    } else {
+        S_CDVolume(0);
+    }
+
+    if (OptionSoundFXVolume) {
+        adjust_master_volume(6 * OptionSoundFXVolume + 3);
+    } else {
+        adjust_master_volume(0);
+    }
+
+    fclose(fp);
 }
 
-// T1M: this function was inlined
 void S_WriteUserSettings()
 {
-    FILE *fp = fopen("atiset.dat", "wb");
-    if (fp) {
-        fwrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-        fwrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-        fwrite(Layout[1], sizeof(int16_t), 13, fp);
-        fwrite(&AppSettings, sizeof(int32_t), 1, fp);
-        fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
-        fwrite(&GameSizer, sizeof(double), 1, fp);
-        fclose(fp);
+    FILE *fp = fopen(UserSettingsPath, "wb");
+    if (!fp) {
+        return;
     }
+    fwrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
+    fwrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    fwrite(Layout[1], sizeof(int16_t), 13, fp);
+    fwrite(&AppSettings, sizeof(int32_t), 1, fp);
+    fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
+    fwrite(&GameSizer, sizeof(double), 1, fp);
+    fclose(fp);
 }
 
 void GameMain()

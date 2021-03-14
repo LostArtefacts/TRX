@@ -20,6 +20,7 @@
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
+#include "specific/shell.h"
 #include "specific/sndpc.h"
 
 #include "config.h"
@@ -110,7 +111,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
                     CreateSaveGameInfo();
                     S_SaveGame(&SaveGame, InventoryExtraData[1]);
-                    WriteTombAtiSettings();
+                    S_WriteUserSettings();
                 }
             }
         }

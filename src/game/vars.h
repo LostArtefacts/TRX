@@ -258,6 +258,7 @@
 extern void (*EffectRoutines[])(ITEM_INFO *item);
 extern SAVEGAME_INFO SaveGame;
 extern int32_t DemoLevel;
+extern char *UserSettingsPath;
 
 extern GameFlow GF; // T1M
 
