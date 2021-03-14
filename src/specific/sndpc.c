@@ -17,10 +17,7 @@ void S_CDVolume(int16_t volume)
 
 void S_CDPlay(int16_t track)
 {
-    if (!OptionMusicVolume) {
-        return;
-    }
-
+    TRACE("%d", track);
     if (track == 13) {
         SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
     } else if (track <= 2 || track >= 22) {
@@ -52,10 +49,7 @@ void S_CDPlay(int16_t track)
 
 void S_StartSyncedAudio(int16_t track)
 {
-    if (!OptionMusicVolume) {
-        return;
-    }
-
+    TRACE("%d", track);
     if (track == 13) {
         SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
     } else if (track <= 2 || track >= 22) {
@@ -88,10 +82,6 @@ void S_StartSyncedAudio(int16_t track)
 int32_t CDPlay(int16_t track)
 {
     TRACE("%d", track);
-
-    if (!OptionMusicVolume) {
-        return 0;
-    }
 
     if (track < 2) {
         return 0;
