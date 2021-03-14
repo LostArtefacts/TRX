@@ -258,6 +258,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 5},
                 {"type": "start_game"},
+                {"type": "remove_scions"},
                 {"type": "remove_guns"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
