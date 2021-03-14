@@ -597,7 +597,7 @@
 <rect width="12.00" height="12.00" x="616.00" y="171.00" class="decompiled"><title>S_CDVolume</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="171.00" class="named"><title>TestCdDrive</title></rect>
 <rect width="12.00" height="12.00" x="644.00" y="171.00" class="named"><title>CDStop</title></rect>
-<rect width="12.00" height="12.00" x="658.00" y="171.00" class="named"><title>CDPlay</title></rect>
+<rect width="12.00" height="12.00" x="658.00" y="171.00" class="decompiled"><title>CDPlay</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="171.00" class="named"><title>S_CDLoop</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="171.00" class="todo"><title>sub_4380C0</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="185.00" class="todo"><title>sub_4380E0</title></rect>
@@ -1022,7 +1022,7 @@
 <rect width="12.06" height="11.26" x="512.50" y="446.42" class="todo"><title>sub_40C7EE</title></rect>
 <rect width="12.06" height="11.26" x="512.50" y="459.68" class="decompiled"><title>FallingBlockControl</title></rect>
 <rect width="12.06" height="11.20" x="512.50" y="472.94" class="decompiled"><title>UseItem</title></rect>
-<rect width="12.06" height="11.04" x="512.50" y="486.14" class="named"><title>CDPlay</title></rect>
+<rect width="12.06" height="11.04" x="512.50" y="486.14" class="decompiled"><title>CDPlay</title></rect>
 <rect width="12.06" height="10.99" x="512.50" y="499.19" class="todo"><title>sub_40C25A</title></rect>
 <rect width="12.06" height="10.94" x="512.50" y="512.18" class="named"><title>phd_PutPolygons</title></rect>
 <rect width="12.06" height="10.88" x="512.50" y="525.12" class="decompiled"><title>phd_InitWindow</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.08%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.52%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.35%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.43%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.18%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.25%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.19%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.57%</text>
 </svg>
