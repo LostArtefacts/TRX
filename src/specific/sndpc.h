@@ -12,9 +12,9 @@
 // clang-format on
 
 int32_t CDPlay(int16_t track_id);
-void S_CDPlay(int16_t track);
+int32_t S_CDPlay(int16_t track);
+int32_t S_StartSyncedAudio(int16_t track);
 void S_CDVolume(int16_t volume);
-void S_StartSyncedAudio(int16_t track);
 
 void T1MInjectSpecificSndPC();
 
