@@ -616,7 +616,7 @@
 <rect width="12.00" height="12.00" x="182.00" y="185.00" class="named"><title>S_CDStop</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="185.00" class="named"><title>SampleLoader</title></rect>
 <rect width="12.00" height="12.00" x="210.00" y="185.00" class="named"><title>LoadSamples</title></rect>
-<rect width="12.00" height="12.00" x="224.00" y="185.00" class="named"><title>S_StartSyncedAudio</title></rect>
+<rect width="12.00" height="12.00" x="224.00" y="185.00" class="decompiled"><title>S_StartSyncedAudio</title></rect>
 <rect width="12.00" height="12.00" x="238.00" y="185.00" class="decompiled"><title>TestCollision</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="185.00" class="decompiled"><title>GetSpheres</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="185.00" class="decompiled"><title>GetJointAbsPosition</title></rect>
@@ -1017,7 +1017,7 @@
 <rect width="12.06" height="11.42" x="512.50" y="379.44" class="decompiled"><title>InterpolateArmMatrix</title></rect>
 <rect width="12.06" height="11.42" x="512.50" y="392.86" class="decompiled"><title>LaraColStop</title></rect>
 <rect width="12.06" height="11.42" x="512.50" y="406.28" class="decompiled"><title>InitialiseSlot</title></rect>
-<rect width="12.06" height="11.42" x="512.50" y="419.69" class="named"><title>S_StartSyncedAudio</title></rect>
+<rect width="12.06" height="11.42" x="512.50" y="419.69" class="decompiled"><title>S_StartSyncedAudio</title></rect>
 <rect width="12.06" height="11.31" x="512.50" y="433.11" class="decompiled"><title>LaraSwimCollision</title></rect>
 <rect width="12.06" height="11.26" x="512.50" y="446.42" class="todo"><title>sub_40C7EE</title></rect>
 <rect width="12.06" height="11.26" x="512.50" y="459.68" class="decompiled"><title>FallingBlockControl</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.15%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.98%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.66%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.45%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.29%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.08%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.52%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.35%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.19%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.57%</text>
 </svg>
