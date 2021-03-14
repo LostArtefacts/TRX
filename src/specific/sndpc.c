@@ -3,6 +3,7 @@
 #include "game/sound.h"
 #include "game/vars.h"
 
+#include "config.h"
 #include "util.h"
 
 #include <windows.h>
@@ -18,6 +19,12 @@ void S_CDVolume(int16_t volume)
 int32_t S_CDPlay(int16_t track)
 {
     TRACE("%d", track);
+
+    if (T1MConfig.fix_secrets_killing_music && track == 13) {
+        SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
+        return 1;
+    }
+
     if (track == 0) {
         CDStop();
         return 0;

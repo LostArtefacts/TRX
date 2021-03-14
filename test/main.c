@@ -34,6 +34,7 @@ void test_empty_config()
     ASSERT_INT_EQUAL(T1MConfig.fix_pyramid_secret_trigger, 1);
     ASSERT_INT_EQUAL(T1MConfig.fix_illegal_gun_equip, 1);
     ASSERT_INT_EQUAL(T1MConfig.fix_fmv_esc_key, 1);
+    ASSERT_INT_EQUAL(T1MConfig.fix_secrets_killing_music, 1);
     ASSERT_INT_EQUAL(T1MConfig.fov_value, 65);
     ASSERT_INT_EQUAL(T1MConfig.fov_vertical, 1);
     ASSERT_INT_EQUAL(T1MConfig.disable_demo, 0);
