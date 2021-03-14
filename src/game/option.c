@@ -8,6 +8,7 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/shed.h"
+#include "specific/shell.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -541,6 +542,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             T_RemovePrint(DetailText[i]);
             DetailText[i] = NULL;
         }
+        S_WriteUserSettings();
     }
 }
 
@@ -662,12 +664,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             IDCount = 10;
             sprintf(buf, "| %2d", OptionMusicVolume);
             T_ChangeText(SoundText[0], buf);
+            S_WriteUserSettings();
         } else if (CHK_ANY(Input, IN_RIGHT) && OptionMusicVolume < 10) {
             OptionMusicVolume++;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "| %2d", OptionMusicVolume);
             T_ChangeText(SoundText[0], buf);
+            S_WriteUserSettings();
         }
 
         if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
@@ -687,12 +691,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             IDCount = 10;
             sprintf(buf, "} %2d", OptionSoundFXVolume);
             T_ChangeText(SoundText[1], buf);
+            S_WriteUserSettings();
         } else if (CHK_ANY(Input, IN_RIGHT) && OptionSoundFXVolume < 10) {
             OptionSoundFXVolume++;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "} %2d", OptionSoundFXVolume);
             T_ChangeText(SoundText[1], buf);
+            S_WriteUserSettings();
         }
 
         if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
@@ -776,6 +782,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 IConfig = IConfig ? 0 : 1;
                 S_ChangeCtrlText();
                 FlashConflicts();
+                S_WriteUserSettings();
             } else {
                 T_RemoveBackground(CtrlTextA[KeyChange]);
                 if (KeyChange <= 6) {
@@ -861,6 +868,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
             SelectKey = 3;
             FlashConflicts();
+            S_WriteUserSettings();
         }
         break;
 
@@ -880,6 +888,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     Layout[IConfig][key] = DIK_RMENU;
                 }
                 FlashConflicts();
+                S_WriteUserSettings();
             }
         }
 

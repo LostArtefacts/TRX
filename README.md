@@ -65,6 +65,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed The Great Pyramid secret
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
 - fixed a crash when Lara is on fire and goes too far away from where she caught fire
+- fixed settings not being saved when exiting the game with Alt+F4
 
 ## Decompilation progress
 
