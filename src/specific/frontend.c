@@ -16,6 +16,7 @@ void S_Wait(int32_t nframes)
 {
     while (Input) {
         S_UpdateInput();
+        WinVidSpinMessageLoop();
     }
     for (int i = 0; i < nframes; i++) {
         S_UpdateInput();
