@@ -54,6 +54,13 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     }
     TempVideoRemove();
 
+    if (T1MConfig.fix_fmv_esc_key) {
+        while (KeyData->keys_held) {
+            S_UpdateInput();
+            WinVidSpinMessageLoop();
+        }
+    }
+
     return ret;
 }
 
