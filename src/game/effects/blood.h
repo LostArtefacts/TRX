@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_BLOOD_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupBlood(OBJECT_INFO *obj);

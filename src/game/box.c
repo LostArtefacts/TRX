@@ -1,6 +1,8 @@
-#include "3dsystem/phd_math.h"
 #include "game/box.h"
+
+#include "3dsystem/phd_math.h"
 #include "game/control.h"
+#include "game/const.h"
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -8,6 +10,8 @@
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
+
+#include <stddef.h>
 
 void InitialiseCreature(int16_t item_num)
 {

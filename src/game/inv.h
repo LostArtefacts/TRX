@@ -2,6 +2,7 @@
 #define T1M_GAME_INV_H
 
 #include "types.h"
+
 #include <stdint.h>
 
 int32_t Display_Inventory(int inv_mode);

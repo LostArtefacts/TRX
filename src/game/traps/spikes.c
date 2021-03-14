@@ -1,8 +1,9 @@
+#include "game/traps/spikes.h"
+
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/sphere.h"
-#include "game/traps/spikes.h"
 #include "game/vars.h"
 
 void SetupSpikes(OBJECT_INFO *obj)

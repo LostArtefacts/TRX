@@ -1,7 +1,8 @@
+#include "game/traps/teeth_trap.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/sphere.h"
-#include "game/traps/teeth_trap.h"
 #include "game/vars.h"
 
 BITE_INFO Teeth1A = { -23, 0, -1718, 0 };

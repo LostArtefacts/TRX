@@ -1,6 +1,7 @@
+#include "game/objects/bridge.h"
+
 #include "game/collide.h"
 #include "game/draw.h"
-#include "game/objects/bridge.h"
 #include "game/objects/cog.h"
 #include "game/vars.h"
 

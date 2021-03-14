@@ -1,18 +1,21 @@
+#include "game/savegame.h"
+
 #include "game/ai/pod.h"
+#include "game/const.h"
 #include "game/control.h"
-#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
-#include "game/savegame.h"
 #include "game/traps/movable_block.h"
 #include "game/traps/rolling_block.h"
 #include "game/vars.h"
 #include "specific/shed.h"
 #include "util.h"
+
+#include <stddef.h>
 
 #define SAVE_CREATURE (1 << 7)
 

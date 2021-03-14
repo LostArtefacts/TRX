@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_BEAR_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define BEAR_CHARGE_DAMAGE 3

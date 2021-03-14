@@ -1,9 +1,14 @@
+#include "specific/frontend.h"
+
+#include "game/const.h"
 #include "game/vars.h"
 #include "specific/display.h"
-#include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+
 #include "config.h"
+#include "util.h"
+
 #include <stdlib.h>
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)

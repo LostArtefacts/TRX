@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_BALDY_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define BALDY_SHOT_DAMAGE 150

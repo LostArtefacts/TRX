@@ -1,3 +1,5 @@
+#include "game/traps/lightning_emitter.h"
+
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
@@ -7,7 +9,6 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/traps/lightning_emitter.h"
 #include "game/vars.h"
 #include "specific/init.h"
 #include "specific/output.h"

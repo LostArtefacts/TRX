@@ -2,6 +2,7 @@
 #define T1M_GAME_COLLIDE_H
 
 #include "types.h"
+
 #include <stdint.h>
 
 void GetCollisionInfo(

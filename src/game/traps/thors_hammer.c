@@ -1,9 +1,10 @@
+#include "game/traps/thors_hammer.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/traps/movable_block.h"
-#include "game/traps/thors_hammer.h"
 #include "game/vars.h"
 
 void SetupThorsHandle(OBJECT_INFO *obj)

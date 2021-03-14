@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_CENTAUR_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define CENTAUR_PART_DAMAGE 100

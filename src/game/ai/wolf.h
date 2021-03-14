@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_WOLF_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define WOLF_SLEEP_FRAME 96

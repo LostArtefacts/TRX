@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_LARSON_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define LARSON_POSE_CHANCE 0x60 // = 96

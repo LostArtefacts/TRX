@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_POD_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096

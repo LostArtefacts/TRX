@@ -1,6 +1,7 @@
+#include "game/effects/earthquake.h"
+
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/effects/earthquake.h"
 #include "game/game.h"
 #include "game/sound.h"
 #include "game/vars.h"

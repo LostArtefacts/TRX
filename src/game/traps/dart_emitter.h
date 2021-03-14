@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_DART_EMITTER_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 typedef enum {

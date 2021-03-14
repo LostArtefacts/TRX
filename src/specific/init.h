@@ -1,6 +1,8 @@
 #ifndef T1M_SPECIFIC_INIT_H
 #define T1M_SPECIFIC_INIT_H
 
+#include <stdint.h>
+
 // clang-format off
 #define game_malloc             ((void*         (*)(uint32_t length, int32_t type))0x0041E2F0)
 // clang-format on

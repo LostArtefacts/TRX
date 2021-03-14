@@ -1,4 +1,5 @@
 #include "game/ai/skate_kid.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/draw.h"

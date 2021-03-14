@@ -1,8 +1,9 @@
+#include "game/objects/switch.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects/switch.h"
 #include "game/vars.h"
 
 PHD_VECTOR Switch2Position = { 0, 0, 108 };

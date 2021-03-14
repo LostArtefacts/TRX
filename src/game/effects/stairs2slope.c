@@ -1,4 +1,5 @@
 #include "game/effects/stairs2slope.h"
+
 #include "game/sound.h"
 #include "game/vars.h"
 

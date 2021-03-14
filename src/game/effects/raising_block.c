@@ -1,4 +1,5 @@
 #include "game/effects/raising_block.h"
+
 #include "game/sound.h"
 #include "game/vars.h"
 

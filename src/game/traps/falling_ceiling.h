@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_FALLING_CEILING_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define FALLING_CEILING_DAMAGE 300

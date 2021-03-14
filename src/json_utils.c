@@ -1,6 +1,9 @@
 #include "json_utils.h"
-#include <string.h>
+
 #include "util.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 struct json_value_s *JSONGetField(struct json_value_s *root, const char *name)
 {

@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_RAT_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define RAT_BITE_DAMAGE 20

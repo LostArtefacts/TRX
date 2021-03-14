@@ -1,4 +1,5 @@
 #include "game/objects/savegame_crystal.h"
+
 #include "game/vars.h"
 
 void SetupSaveGameCrystal(OBJECT_INFO *obj)

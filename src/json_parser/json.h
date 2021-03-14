@@ -49,7 +49,6 @@
 #endif
 
 #include <stddef.h>
-#include <string.h>
 
 struct json_value_s;
 struct json_parse_result_s;
@@ -366,8 +365,6 @@ struct json_parse_result_s {
     /* the row number for the error, in bytes. */
     size_t error_row_no;
 };
-
-#include <stdlib.h>
 
 #if defined(_MSC_VER)
     #pragma warning(pop)

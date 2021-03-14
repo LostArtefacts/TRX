@@ -1,4 +1,6 @@
-#include "game/cinema.h"
+#include "specific/shell.h"
+
+#include "game/const.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/gameflow.h"
@@ -6,17 +8,19 @@
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
+#include "game/types.h"
 #include "game/vars.h"
 #include "specific/display.h"
-#include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
-#include "specific/shell.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 

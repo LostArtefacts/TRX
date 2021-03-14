@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_BAT_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define BAT_ATTACK_DAMAGE 2

@@ -1,4 +1,7 @@
+#include "game/setup.h"
+
 #include "3dsystem/3d_gen.h"
+#include "game/const.h"
 #include "game/ai/abortion.h"
 #include "game/ai/alligator.h"
 #include "game/ai/ape.h"
@@ -23,9 +26,7 @@
 #include "game/ai/statue.h"
 #include "game/ai/vole.h"
 #include "game/ai/wolf.h"
-#include "game/box.h"
 #include "game/cinema.h"
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/effects/body_part.h"
@@ -37,7 +38,6 @@
 #include "game/effects/splash.h"
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
-#include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
 #include "game/inv.h"
@@ -59,7 +59,6 @@
 #include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
 #include "game/savegame.h"
-#include "game/setup.h"
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
 #include "game/traps/dart.h"
@@ -77,15 +76,17 @@
 #include "game/traps/spikes.h"
 #include "game/traps/teeth_trap.h"
 #include "game/traps/thors_hammer.h"
-#include "game/types.h"
 #include "game/vars.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stddef.h>
 
 int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {

@@ -2,6 +2,7 @@
 #define T1M_GAME_ITEMS_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void InitialiseItemArray(int32_t num_items);

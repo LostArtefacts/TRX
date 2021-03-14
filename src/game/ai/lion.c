@@ -1,10 +1,11 @@
+#include "game/ai/lion.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/vars.h"
-#include "game/ai/lion.h"
 
 BITE_INFO LionBite = { -2, -10, 132, 21 };
 

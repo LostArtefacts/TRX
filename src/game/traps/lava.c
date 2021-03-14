@@ -1,3 +1,5 @@
+#include "game/traps/lava.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -5,7 +7,6 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/traps/lava.h"
 #include "game/vars.h"
 
 void SetupLavaEmitter(OBJECT_INFO *obj)

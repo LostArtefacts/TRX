@@ -1,8 +1,13 @@
 #include "game/lot.h"
+
+#include "game/const.h"
 #include "game/vars.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+
 #include "util.h"
+
+#include <stddef.h>
 
 void InitialiseLOTArray()
 {

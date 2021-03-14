@@ -1,11 +1,14 @@
+#include "specific/file.h"
+
 #include "game/vars.h"
 #include "game/items.h"
 #include "game/setup.h"
-#include "specific/file.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+
 #include "config.h"
 #include "util.h"
+
 #include <windows.h>
 
 int32_t MeshCount = 0;

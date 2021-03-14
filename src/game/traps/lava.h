@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_LAVA_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define LAVA_GLOB_DAMAGE 10

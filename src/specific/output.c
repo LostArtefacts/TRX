@@ -1,9 +1,14 @@
-#include "3dsystem/3d_insert.h"
-#include "game/vars.h"
-#include "specific/display.h"
 #include "specific/output.h"
+
+#include "3dsystem/3d_insert.h"
+#include "game/const.h"
+#include "game/vars.h"
+#include "game/types.h"
+#include "specific/display.h"
+
 #include "config.h"
 #include "util.h"
+
 #include <math.h>
 
 #define COLOR_BAR_SIZE 5

@@ -1,10 +1,10 @@
+#include "game/gameflow.h"
+
 #include "game/cinema.h"
+#include "game/const.h"
 #include "game/control.h"
 #include "game/game.h"
-#include "game/gameflow.h"
-#include "game/inv.h"
 #include "game/lara.h"
-#include "game/savegame.h"
 #include "game/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -14,9 +14,12 @@
 #include "specific/sndpc.h"
 
 #include "config.h"
+#include "json_parser/json.h"
 #include "json_utils.h"
+#include "util.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct {

@@ -3,6 +3,8 @@
 
 // a place for odd functions that have no place to go yet
 
+#include <stdint.h>
+
 // clang-format off
 #define sub_408E41              ((void          (*)())0x00408E41)
 #define sub_4380E0              ((void          (*)(int16_t *unk))0x004380E0)

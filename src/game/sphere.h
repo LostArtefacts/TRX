@@ -2,6 +2,7 @@
 #define T1M_GAME_SPHERE_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item);

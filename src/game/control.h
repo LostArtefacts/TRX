@@ -2,6 +2,7 @@
 #define T1M_GAME_CONTROL_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode);

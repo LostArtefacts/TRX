@@ -2,6 +2,7 @@
 #define T1M_GAME_DRAW_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 int32_t DrawPhaseCinematic();

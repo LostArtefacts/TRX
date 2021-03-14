@@ -1,6 +1,8 @@
 #include "game/effects/chain_block.h"
+
 #include "game/sound.h"
 #include "game/vars.h"
+
 #include "config.h"
 
 // original name: ChainBlockFX

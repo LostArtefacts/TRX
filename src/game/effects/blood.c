@@ -1,5 +1,6 @@
-#include "3dsystem/phd_math.h"
 #include "game/effects/blood.h"
+
+#include "3dsystem/phd_math.h"
 #include "game/items.h"
 #include "game/vars.h"
 

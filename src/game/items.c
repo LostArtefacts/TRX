@@ -1,8 +1,12 @@
-#include "game/const.h"
 #include "game/items.h"
+
+#include "game/const.h"
 #include "game/vars.h"
 #include "specific/shed.h"
+
 #include "util.h"
+
+#include <stdio.h>
 
 void InitialiseItemArray(int32_t num_items)
 {

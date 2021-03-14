@@ -1,8 +1,11 @@
+#include "game/sphere.h"
+
 #include "3dsystem/3d_gen.h"
+#include "game/const.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
-#include "game/sphere.h"
 #include "game/vars.h"
+
 #include "util.h"
 
 int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)

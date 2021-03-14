@@ -1,4 +1,8 @@
-#include "json-parser/json.h"
+#include "json_parser/json.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int json_hexadecimal_digit(const char c)
 {

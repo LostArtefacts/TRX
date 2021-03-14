@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_NATLA_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define NATLA_SHOT_DAMAGE 100

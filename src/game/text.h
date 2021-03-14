@@ -2,6 +2,7 @@
 #define T1M_GAME_TEXT_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void T_InitPrint();

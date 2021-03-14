@@ -1,6 +1,7 @@
-#include "game/game.h"
-#include "game/gameflow.h"
 #include "game/option.h"
+
+#include "game/const.h"
+#include "game/game.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/vars.h"
@@ -8,9 +9,10 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
+
 #include <dinput.h>
+#include <stdio.h>
 
 #define BOX_PADDING 10
 #define BOX_BORDER 1

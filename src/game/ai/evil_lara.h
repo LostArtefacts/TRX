@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_EVIL_LARA_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupEvilLara(OBJECT_INFO *obj);

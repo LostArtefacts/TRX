@@ -2,6 +2,7 @@
 #define T1M_GAME_OBJECTS_BOAT_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 typedef enum {

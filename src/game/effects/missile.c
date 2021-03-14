@@ -1,9 +1,10 @@
+#include "game/effects/missile.h"
+
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/effects/missile.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"

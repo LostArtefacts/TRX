@@ -1,11 +1,12 @@
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
-#include "game/gameflow.h"
 #include "game/inv.h"
+
+#include "3dsystem/3d_gen.h"
+#include "game/const.h"
 #include "game/lara.h"
 #include "game/option.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "game/types.h"
 #include "game/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
@@ -13,8 +14,11 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stdint.h>
 #include <string.h>
 
 typedef enum {

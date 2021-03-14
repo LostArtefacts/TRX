@@ -2,6 +2,7 @@
 #define T1M_GAME_GAMEFLOW_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 // T1M: gameflow implementation.

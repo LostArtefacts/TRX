@@ -1,8 +1,9 @@
 #ifndef T1M_GAME_AI_MUTANT_H
 #define T1M_GAME_AI_MUTANT_H
 
-#include <stdint.h>
 #include "game/types.h"
+
+#include <stdint.h>
 
 #define FLYER_CHARGE_DAMAGE 100
 #define FLYER_LUNGE_DAMAGE 150

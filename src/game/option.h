@@ -3,6 +3,8 @@
 
 #include "game/types.h"
 
+#include <stdint.h>
+
 void DoInventoryOptions(INVENTORY_ITEM *inv_item);
 void DoPassportOption(INVENTORY_ITEM *inv_item);
 void DoGammaOption(INVENTORY_ITEM *inv_item);

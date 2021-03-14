@@ -2,6 +2,7 @@
 #define T1M_GAME_OBJECTS_TRAPDOOR_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupTrapDoor(OBJECT_INFO *obj);

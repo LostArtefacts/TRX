@@ -1,12 +1,15 @@
+#include "specific/init.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
 #include "game/vars.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
-#include "specific/init.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "util.h"
+
 #include <stdarg.h>
 #include <time.h>
 #include <windows.h>

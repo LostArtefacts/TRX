@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_FLAME_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define FLAME_ONFIRE_DAMAGE 5

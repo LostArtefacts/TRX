@@ -1,6 +1,7 @@
+#include "game/effects/splash.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "game/effects/splash.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"

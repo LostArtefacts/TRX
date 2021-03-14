@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_WATERFALL_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240

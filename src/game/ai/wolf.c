@@ -1,10 +1,11 @@
+#include "game/ai/wolf.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/vars.h"
-#include "game/ai/wolf.h"
 
 BITE_INFO WolfJawBite = { 0, -14, 174, 6 };
 

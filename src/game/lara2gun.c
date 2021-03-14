@@ -1,7 +1,12 @@
 #include "game/lara.h"
+
 #include "game/sound.h"
 #include "game/vars.h"
+#include "game/types.h"
 #include "util.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 // original name: draw_pistols
 void DrawPistols(int32_t weapon_type)

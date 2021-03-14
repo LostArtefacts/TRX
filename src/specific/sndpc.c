@@ -1,6 +1,9 @@
-#include "game/vars.h"
 #include "specific/sndpc.h"
+
+#include "game/vars.h"
+
 #include "util.h"
+
 #include <windows.h>
 
 void S_CDVolume(int16_t volume)

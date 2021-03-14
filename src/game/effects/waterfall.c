@@ -1,5 +1,6 @@
-#include "game/draw.h"
 #include "game/effects/waterfall.h"
+
+#include "game/draw.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/vars.h"

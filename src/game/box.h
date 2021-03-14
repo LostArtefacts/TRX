@@ -2,6 +2,7 @@
 #define T1M_GAME_BOX_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void InitialiseCreature(int16_t item_num);

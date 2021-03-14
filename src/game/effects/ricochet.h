@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_RICOCHET_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupRicochet(OBJECT_INFO *obj);

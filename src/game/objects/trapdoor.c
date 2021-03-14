@@ -1,4 +1,5 @@
 #include "game/objects/trapdoor.h"
+
 #include "game/control.h"
 #include "game/vars.h"
 

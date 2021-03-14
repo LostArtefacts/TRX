@@ -2,6 +2,7 @@
 #define T1M_GAME_OBJECTS_SAVEGAME_CRYSTAL_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupSaveGameCrystal(OBJECT_INFO *obj);

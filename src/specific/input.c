@@ -1,10 +1,13 @@
+#include "specific/input.h"
+
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/vars.h"
-#include "specific/input.h"
 #include "specific/shed.h"
+
 #include "config.h"
 #include "util.h"
+
 #include <dinput.h>
 
 static int32_t MedipackCoolDown = 0;

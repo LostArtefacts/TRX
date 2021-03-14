@@ -1,7 +1,8 @@
+#include "game/objects/misc.h"
+
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/objects/cog.h"
-#include "game/objects/misc.h"
 #include "game/objects/pickup.h"
 
 void SetupCameraTarget(OBJECT_INFO *obj)

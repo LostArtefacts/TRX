@@ -1,6 +1,7 @@
+#include "game/effects/bubble.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "game/effects/bubble.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"

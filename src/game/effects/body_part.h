@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_BODY_PART_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupBodyPart(OBJECT_INFO *obj);

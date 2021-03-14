@@ -4,6 +4,8 @@
 #include "game/const.h"
 #include "game/types.h"
 #include "util.h"
+
+#include <stddef.h>
 #include <stdint.h>
 
 // clang-format off

@@ -1,9 +1,16 @@
-#include "game/game.h"
 #include "game/lara.h"
+
+#include "game/const.h"
+#include "game/game.h"
 #include "game/sound.h"
+#include "game/types.h"
 #include "game/vars.h"
-#include "specific/input.h"
+#include "util.h"
+
 #include "config.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 // original name: draw_shotgun
 void DrawShotgun()

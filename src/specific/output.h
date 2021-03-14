@@ -1,6 +1,8 @@
 #ifndef T1M_SPECIFIC_OUTPUT_H
 #define T1M_SPECIFIC_OUTPUT_H
 
+#include <stdint.h>
+
 // clang-format off
 #define S_AniamteTextures       ((void          (*)(int32_t nframes))0x00430660)
 #define S_DumpScreen            ((int32_t       (*)())0x0042FC70)

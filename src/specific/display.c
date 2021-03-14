@@ -1,7 +1,13 @@
-#include "3dsystem/3d_gen.h"
-#include "game/vars.h"
 #include "specific/display.h"
+
+#include "3dsystem/3d_gen.h"
+#include "game/const.h"
+#include "game/types.h"
+#include "game/vars.h"
 #include "specific/shed.h"
+
+#include "util.h"
+
 #include <stdlib.h>
 
 void SetupScreenSize()
@@ -26,7 +32,7 @@ void SetupScreenSize()
     }
 }
 
-void TempVideoAdjust(int hi_res, double sizer)
+void TempVideoAdjust(int32_t hi_res, double sizer)
 {
     ModeLock = 1;
     if (hi_res == HiRes && sizer == ScreenSizer) {

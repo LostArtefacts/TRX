@@ -1,8 +1,10 @@
 #ifndef T1M_GAME_PEOPLE_H
 #define T1M_GAME_PEOPLE_H
 
+#include "game/const.h"
 #include "game/types.h"
 #include "util.h"
+
 #include <stdint.h>
 
 #define PEOPLE_POSE_CHANCE 0x60 // = 96

@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_APE_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define APE_ATTACK_DAMAGE 200

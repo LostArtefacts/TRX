@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_MIDAS_TOUCH_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 extern int16_t MidasBounds[12];

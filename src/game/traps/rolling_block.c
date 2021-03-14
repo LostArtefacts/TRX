@@ -1,7 +1,8 @@
+#include "game/traps/rolling_block.h"
+
 #include "game/control.h"
 #include "game/items.h"
 #include "game/traps/movable_block.h"
-#include "game/traps/rolling_block.h"
 #include "game/vars.h"
 
 int16_t MovingBlockBounds[12] = {

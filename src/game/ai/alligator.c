@@ -1,5 +1,6 @@
-#include "game/ai/alligator.h"
 #include "game/ai/crocodile.h"
+
+#include "game/ai/alligator.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"

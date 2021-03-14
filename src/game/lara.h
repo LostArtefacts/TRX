@@ -2,6 +2,7 @@
 #define T1M_GAME_LARA_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void LaraControl(int16_t item_num);

@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_ABORTION_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define ABORTION_DIE_ANIM 13

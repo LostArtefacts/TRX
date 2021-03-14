@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_FALLING_BLOCK_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupFallingBlock(OBJECT_INFO *obj);

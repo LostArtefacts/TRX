@@ -2,6 +2,7 @@
 #define T1M_GAME_OBJECTS_CABIN_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 typedef enum {

@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_RAPTOR_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define RAPTOR_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296

@@ -1,4 +1,5 @@
 #include "game/effects/flicker.h"
+
 #include "game/control.h"
 #include "game/sound.h"
 #include "game/vars.h"

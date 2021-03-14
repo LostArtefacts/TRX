@@ -2,6 +2,7 @@
 #define T1M_GAME_CAMERA_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void InitialiseCamera();

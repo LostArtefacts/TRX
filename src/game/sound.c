@@ -1,6 +1,9 @@
 #include "game/sound.h"
+
 #include "game/vars.h"
 #include "specific/shed.h"
+
+#include <stddef.h>
 
 #define FLIPFLAG 0x40
 #define UNFLIPFLAG 0x80

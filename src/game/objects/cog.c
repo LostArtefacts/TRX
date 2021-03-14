@@ -1,6 +1,7 @@
+#include "game/objects/cog.h"
+
 #include "game/control.h"
 #include "game/items.h"
-#include "game/objects/cog.h"
 #include "game/vars.h"
 
 void SetupCog(OBJECT_INFO *obj)

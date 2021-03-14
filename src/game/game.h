@@ -2,6 +2,7 @@
 #define T1M_GAME_GAME_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);

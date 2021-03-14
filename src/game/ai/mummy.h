@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_MUMMY_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define MUMMY_HITPOINTS 18

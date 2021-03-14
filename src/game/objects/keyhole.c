@@ -1,9 +1,11 @@
+#include "game/objects/keyhole.h"
+
 #include "game/collide.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/objects/keyhole.h"
 #include "game/sound.h"
 #include "game/vars.h"
+
 #include "config.h"
 
 PHD_VECTOR KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };

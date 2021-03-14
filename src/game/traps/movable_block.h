@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_MOVABLE_BLOCK_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 typedef enum {

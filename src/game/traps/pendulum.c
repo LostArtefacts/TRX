@@ -1,8 +1,9 @@
+#include "game/traps/pendulum.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
-#include "game/traps/pendulum.h"
 #include "game/vars.h"
 
 void SetupPendulum(OBJECT_INFO *obj)

@@ -1,10 +1,11 @@
+#include "game/people.h"
+
 #include "game/box.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/effects/ricochet.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/people.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "game/vars.h"

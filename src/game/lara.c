@@ -1,16 +1,18 @@
+#include "game/lara.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/twinkle.h"
-#include "game/lara.h"
-#include "game/lot.h"
 #include "game/sound.h"
 #include "game/vars.h"
-#include "specific/init.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stddef.h>
 
 void LookLeftRight()
 {

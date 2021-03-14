@@ -1,7 +1,8 @@
+#include "game/traps/midas_touch.h"
+
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/inv.h"
-#include "game/traps/midas_touch.h"
 #include "game/vars.h"
 
 int16_t MidasBounds[12] = {

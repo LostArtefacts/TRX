@@ -1,4 +1,5 @@
 #include "game/ai/pierre.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"

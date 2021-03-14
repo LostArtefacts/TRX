@@ -1,8 +1,9 @@
+#include "game/game.h"
+
 #include "game/camera.h"
+#include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
-#include "game/gameflow.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
@@ -13,8 +14,11 @@
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stdio.h>
 
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {

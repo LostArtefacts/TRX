@@ -1,6 +1,8 @@
 #ifndef T1M_GAME_SAVEGAME_H
 #define T1M_GAME_SAVEGAME_H
 
+#include "game/types.h"
+
 #include <stdint.h>
 
 void InitialiseStartInfo();

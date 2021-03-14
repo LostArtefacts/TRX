@@ -1,9 +1,10 @@
+#include "game/control.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/camera.h"
-#include "game/control.h"
+#include "game/const.h"
 #include "game/demo.h"
 #include "game/game.h"
-#include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -20,8 +21,11 @@
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stddef.h>
 
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {

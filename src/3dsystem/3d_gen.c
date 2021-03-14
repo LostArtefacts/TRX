@@ -1,8 +1,13 @@
 #include "3dsystem/3d_gen.h"
+
 #include "3dsystem/phd_math.h"
 #include "specific/output.h"
+#include "game/const.h"
 #include "game/vars.h"
+
 #include "config.h"
+#include "util.h"
+
 #include <math.h>
 
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)

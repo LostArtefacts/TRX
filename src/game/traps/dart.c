@@ -1,10 +1,11 @@
+#include "game/traps/dart.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/traps/dart.h"
 #include "game/vars.h"
 
 void SetupDart(OBJECT_INFO *obj)

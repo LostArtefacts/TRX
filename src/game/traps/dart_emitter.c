@@ -1,7 +1,8 @@
+#include "game/traps/dart_emitter.h"
+
 #include "game/control.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/traps/dart_emitter.h"
 #include "game/vars.h"
 
 void SetupDartEmitter(OBJECT_INFO *obj)

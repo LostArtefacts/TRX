@@ -1,13 +1,19 @@
+#include "game/lara.h"
+
 #include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/const.h"
 #include "game/control.h"
-#include "game/lara.h"
 #include "game/objects/door.h"
+#include "game/types.h"
 #include "game/vars.h"
+
 #include "config.h"
 #include "util.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 static int32_t OpenDoorsCheatCooldown = 0;
 

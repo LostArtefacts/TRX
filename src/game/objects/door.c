@@ -1,8 +1,9 @@
+#include "game/objects/door.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/objects/door.h"
 #include "game/vars.h"
 #include "specific/init.h"
 

@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_COWBOY_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define COWBOY_SHOT_DAMAGE 70

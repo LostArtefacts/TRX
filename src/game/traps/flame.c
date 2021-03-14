@@ -1,10 +1,11 @@
+#include "game/traps/flame.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/traps/flame.h"
 #include "game/vars.h"
 
 void SetupFlameEmitter(OBJECT_INFO *obj)

@@ -1,6 +1,7 @@
+#include "game/objects/boat.h"
+
 #include "game/control.h"
 #include "game/items.h"
-#include "game/objects/boat.h"
 #include "game/vars.h"
 
 void SetupBoat(OBJECT_INFO *obj)

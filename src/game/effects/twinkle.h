@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_TWINKLE_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupTwinkle(OBJECT_INFO *obj);

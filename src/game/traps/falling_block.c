@@ -1,4 +1,5 @@
 #include "game/traps/falling_block.h"
+
 #include "game/control.h"
 #include "game/items.h"
 #include "game/vars.h"

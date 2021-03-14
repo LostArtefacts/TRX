@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_SKATE_KID_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define SKATE_KID_STOP_SHOT_DAMAGE 50

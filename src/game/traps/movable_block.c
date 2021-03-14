@@ -1,3 +1,5 @@
+#include "game/traps/movable_block.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -5,7 +7,6 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"
-#include "game/traps/movable_block.h"
 #include "game/vars.h"
 
 void SetupMovableBlock(OBJECT_INFO *obj)

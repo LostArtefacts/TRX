@@ -2,6 +2,7 @@
 #define T1M_GAME_TRAPS_ROLLING_BLOCK_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 void SetupRollingBlock(OBJECT_INFO *obj);

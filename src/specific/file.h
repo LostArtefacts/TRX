@@ -1,6 +1,7 @@
 #ifndef T1M_SPECIFIC_FILE_H
 #define T1M_SPECIFIC_FILE_H
 
+#include <stdint.h>
 #include <stdio.h>
 
 // clang-format off

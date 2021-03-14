@@ -1,4 +1,5 @@
 #include "game/ai/baldy.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/items.h"

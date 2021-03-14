@@ -2,6 +2,7 @@
 #define T1M_GAME_EFFECTS_MISSILE_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define SHARD_DAMAGE 30

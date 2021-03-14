@@ -1,9 +1,10 @@
+#include "game/traps/damocles_sword.h"
+
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/traps/damocles_sword.h"
 #include "game/vars.h"
 
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)

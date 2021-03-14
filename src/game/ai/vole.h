@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_VOLE_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define VOLE_DIE_ANIM 2

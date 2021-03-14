@@ -1,5 +1,6 @@
-#include "3dsystem/phd_math.h"
 #include "game/ai/abortion.h"
+
+#include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"

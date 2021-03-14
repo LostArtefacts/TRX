@@ -1,4 +1,5 @@
 #include "game/ai/mutant.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"

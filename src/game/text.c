@@ -1,11 +1,14 @@
-#include "3dsystem/scalespr.h"
 #include "game/text.h"
-#include "game/vars.h"
+
+#include "game/const.h"
 #include "game/types.h"
+#include "game/vars.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-#include "config.h"
+
 #include "util.h"
+
+#include <stdio.h>
 #include <string.h>
 
 #define TEXT_BOX_OFFSET 2

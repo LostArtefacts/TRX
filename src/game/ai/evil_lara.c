@@ -1,4 +1,5 @@
 #include "game/ai/evil_lara.h"
+
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"

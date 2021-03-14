@@ -2,6 +2,7 @@
 #define T1M_GAME_AI_DINO_H
 
 #include "game/types.h"
+
 #include <stdint.h>
 
 #define DINO_ATTACK_RANGE SQUARE(WALL_L * 4) // = 16777216
