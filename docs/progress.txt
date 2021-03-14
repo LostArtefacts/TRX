@@ -852,7 +852,7 @@ sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
 S_CDVolume                      0x00437F30  0x00000001  +
 TestCdDrive                     0x00437F40  0x00000039  -
-sub_437F80                      0x00437F80  0x00000026  -
+CDStop                          0x00437F80  0x00000026  *
 CDPlay                          0x00437FB0  0x000000F5  -
 S_CDLoop                        0x004380B0  0x0000000B  *
 sub_4380C0                      0x004380C0  0x00000018  -
@@ -868,7 +868,7 @@ sub_438CA0                      0x00438CA0  0x00000015  -
 S_SoundStopAllSamples           0x00438CC0  0x0000000F  *
 S_SoundStopSample               0x00438CD0  0x0000001B  -
 sub_438CF0                      0x00438CF0  0x00000044  -
-S_CDPlay                        0x00438D40  0x000000FD  *
+S_CDPlay                        0x00438D40  0x000000FD  +
 S_CDStop                        0x00438E40  0x00000043  *
 SampleLoader                    0x00438E90  0x00000005  -
 LoadSamples                     0x00438EA0  0x00000189  *
