@@ -253,7 +253,7 @@
 <rect width="12.00" height="12.00" x="0.00" y="87.00" class="named"><title>S_DrawScreenFBox</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="87.00" class="named"><title>S_FinishInventory</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="87.00" class="named"><title>S_FadeToBlack</title></rect>
-<rect width="12.00" height="12.00" x="42.00" y="87.00" class="named"><title>S_Wait</title></rect>
+<rect width="12.00" height="12.00" x="42.00" y="87.00" class="decompiled"><title>S_Wait</title></rect>
 <rect width="12.00" height="12.00" x="56.00" y="87.00" class="named"><title>SoundStart</title></rect>
 <rect width="12.00" height="12.00" x="70.00" y="87.00" class="named"><title>WinPlayFMV</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="87.00" class="decompiled"><title>S_PlayFMV</title></rect>
@@ -1233,7 +1233,7 @@
 <rect width="6.23" height="5.37" x="642.85" y="450.24" class="named"><title>S_SoundPlaySampleLooped</title></rect>
 <rect width="5.92" height="5.37" x="651.07" y="450.24" class="todo"><title>sub_407911</title></rect>
 <rect width="5.92" height="5.37" x="659.00" y="450.24" class="decompiled"><title>GetDoor</title></rect>
-<rect width="5.82" height="5.37" x="666.92" y="450.24" class="named"><title>S_Wait</title></rect>
+<rect width="5.82" height="5.37" x="666.92" y="450.24" class="decompiled"><title>S_Wait</title></rect>
 <rect width="5.82" height="5.37" x="674.74" y="450.24" class="decompiled"><title>BridgeTilt1Ceiling</title></rect>
 <rect width="5.72" height="5.37" x="682.56" y="450.24" class="decompiled"><title>ControlExplosion1</title></rect>
 <rect width="5.72" height="5.37" x="690.28" y="450.24" class="decompiled"><title>ControlTwinkle</title></rect>
@@ -1459,10 +1459,10 @@
 <rect width="-0.46" height="0.42" x="695.22" y="535.58" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.76" height="-0.18" x="696.76" y="535.58" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-0.76" height="-1.39" x="696.76" y="537.39" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 70.64%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.75%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 16.05%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.67%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 70.78%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 69.78%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.91%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 14.64%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.31%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.58%</text>
 </svg>
