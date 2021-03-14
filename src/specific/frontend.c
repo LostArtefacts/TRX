@@ -30,7 +30,7 @@ void S_Wait(int32_t nframes)
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    if (T1MConfig.disable_fmv) { // T1M
+    if (T1MConfig.disable_fmv) {
         return -1;
     }
 

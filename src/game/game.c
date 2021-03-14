@@ -22,11 +22,9 @@
 
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    // T1M: level_type argument is missing in OG
-    // T1M: removed hardcoded S_PlayFMV calls
     CurrentLevel = level_num;
     TitleLoaded = 0;
-    if (level_type != GFL_SAVED) { // T1M: level_id != LV_CURRENT
+    if (level_type != GFL_SAVED) {
         InitialiseLevelFlags();
     }
 
@@ -41,7 +39,6 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 int32_t StopGame()
 {
     if (LevelComplete) {
-        // T1M: removed hardcoded check for gym
         S_FadeInInventory(1);
         return GF_LEVEL_COMPLETE | CurrentLevel;
     }
@@ -87,7 +84,6 @@ int32_t GameLoop(int32_t demo_mode)
 
 int32_t LevelCompleteSequence(int32_t level_num)
 {
-    // T1M: removed hardcoded S_PlayFMV calls and GF_ returns
     return GF_EXIT_TO_TITLE;
 }
 
@@ -225,7 +221,6 @@ void LevelStats(int32_t level_num)
 
 int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 {
-    // T1M: removed size parameter, more manual data handling
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);
@@ -308,7 +303,7 @@ int32_t S_FrontEndCheck()
     REQUEST_INFO *req = &LoadSaveGameRequester;
 
     req->items = 0;
-    SaveCounter = 0; // T1M
+    SaveCounter = 0;
     SavedGamesCount = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         char filename[80];
@@ -321,7 +316,7 @@ int32_t S_FrontEndCheck()
             fread(&counter, sizeof(int32_t), 1, fp);
             fclose(fp);
 
-            req->item_flags[req->items] &= ~RIF_BLOCKED; // T1M
+            req->item_flags[req->items] &= ~RIF_BLOCKED;
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
@@ -334,7 +329,7 @@ int32_t S_FrontEndCheck()
 
             SavedGamesCount++;
         } else {
-            req->item_flags[req->items] |= RIF_BLOCKED; // T1M
+            req->item_flags[req->items] |= RIF_BLOCKED;
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
@@ -350,7 +345,6 @@ int32_t S_FrontEndCheck()
 
 int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
 {
-    // T1M: removed size parameter, more manual data handling
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);

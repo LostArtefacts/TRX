@@ -706,8 +706,6 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    // T1M: removed dead code (unused INVENTORY_SPRITE* member assignments)
-
     if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
         for (int i = 0; i < 4; i++) {
             T_RemovePrint(SoundText[i]);
@@ -1032,7 +1030,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 {
     int32_t edge_y;
 
-    if (req->flags & RIF_FIXED_HEIGHT) { // T1M
+    if (req->flags & RIF_FIXED_HEIGHT) {
         edge_y = req->y * GetRenderHeightDownscaled() / 100;
     } else {
         switch (HiRes) {
@@ -1175,8 +1173,6 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (CHK_ANY(InputDB, IN_SELECT)) {
-        // T1M: introduce requester item flags. OG was checking the requester
-        // heading text and comparing the item text to "- EMPTY SLOT" instead.
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
             Input = 0;

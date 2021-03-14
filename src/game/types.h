@@ -746,7 +746,6 @@ typedef enum {
     TRAP_FINISHED = 3,
 } TRAP_ANIM;
 
-// T1M
 typedef enum {
     RIF_FIXED_HEIGHT = 1 << 0,
     RIF_BLOCKED = 1 << 1,
@@ -759,7 +758,6 @@ typedef enum {
     RBS_MOVING = 2,
 } ROLLING_BLOCK_STATE;
 
-// T1M
 typedef enum {
     GFS_END = -1,
     GFS_START_GAME,
@@ -786,7 +784,6 @@ typedef enum {
     GFS_FIX_PYRAMID_SECRET_TRIGGER,
 } GameFlowSequenceType;
 
-// T1M
 typedef enum {
     GS_HEADING_INVENTORY,
     GS_HEADING_GAME_OVER,
@@ -880,7 +877,6 @@ typedef enum {
     GS_NUMBER_OF,
 } GAME_STRING_ID;
 
-// T1M
 typedef enum {
     BT_LARA_HEALTH = 0,
     BT_LARA_AIR = 1,
@@ -1357,7 +1353,7 @@ typedef struct {
 } START_INFO;
 
 typedef struct {
-    START_INFO *start; // T1M. OG: start[LV_NUMBER_OF]
+    START_INFO *start;
     uint32_t timer;
     uint32_t kills;
     uint16_t secrets;
@@ -1721,7 +1717,7 @@ typedef struct {
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
-    /* 0014 */ uint16_t flags; // T1M
+    /* 0014 */ uint16_t flags;
     /* 0016 */ char *heading_text;
     /* 0020 */ char *item_texts;
     /* 001E */ int16_t item_text_len;
@@ -1730,7 +1726,7 @@ typedef struct {
     /* 0028 */ TEXTSTRING *moreup;
     /* 002C */ TEXTSTRING *moredown;
     /* 0030 */ TEXTSTRING *texts[MAX_REQLINES];
-    /* 0070 */ uint16_t item_flags[MAX_REQLINES]; // T1M
+    /* 0070 */ uint16_t item_flags[MAX_REQLINES];
     /* 0090 end */
 } REQUEST_INFO;
 
@@ -1818,13 +1814,11 @@ typedef struct {
     /* 0050 end */
 } RING_INFO;
 
-// T1M
 typedef struct {
     GameFlowSequenceType type;
     void *data;
 } GameFlowSequence;
 
-// T1M
 typedef struct {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
@@ -1845,7 +1839,6 @@ typedef struct {
     GameFlowSequence *sequence;
 } GameFlowLevel;
 
-// T1M
 typedef struct {
     int32_t gym_level_num;
     int32_t first_level_num;

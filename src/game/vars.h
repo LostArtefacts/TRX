@@ -252,7 +252,6 @@
 #define ReqMainGour2            VAR_U_(0x00455140, SG_COL*)
 #define ReqUnselGour1           VAR_U_(0x00455190, SG_COL*)
 #define ReqUnselGour2           VAR_U_(0x00455178, SG_COL*)
-
 // clang-format on
 
 extern void (*EffectRoutines[])(ITEM_INFO *item);
@@ -260,7 +259,7 @@ extern SAVEGAME_INFO SaveGame;
 extern int32_t DemoLevel;
 extern char *UserSettingsPath;
 
-extern GameFlow GF; // T1M
+extern GameFlow GF;
 
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;

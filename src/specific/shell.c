@@ -78,7 +78,6 @@ void GameMain()
 
     S_InitialiseSystem();
 
-    // T1M gameflow support
     if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
         ShowFatalError("MAIN: unable to load script file");
         return;
@@ -98,7 +97,7 @@ void GameMain()
     sub_408E41();
     S_Wait(60);
 
-    if (!T1MConfig.disable_fmv) { // T1M
+    if (!T1MConfig.disable_fmv) {
         if (IsHardwareRenderer) {
             HardwarePrepareFMV();
         }
@@ -132,18 +131,16 @@ void GameMain()
 
         switch (gf_direction) {
         case GF_START_GAME:
-            // T1M: StartGame(gf_param)
             gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
             break;
 
-        // T1M: GF_START_SAVED_GAME does not exist in OG
         case GF_START_SAVED_GAME:
             S_LoadGame(&SaveGame, gf_param);
             gf_option = GF_InterpretSequence(SaveGame.current_level, GFL_SAVED);
             break;
 
         case GF_START_CINE:
-            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE); // T1M
+            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:

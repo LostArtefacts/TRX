@@ -26,9 +26,6 @@ void DrawGameInfo()
         DrawPickups();
     }
 
-    // T1M: this was drawn before the healthbars in OG. In T1M it's called
-    // after drawing the healthbars, as it updates the healthbars position and
-    // thus vertical offset for the ammo text.
     DrawAmmoInfo();
 
     T_DrawText();
@@ -209,7 +206,6 @@ void DrawPickups()
                 S_DrawUISprite(
                     x, y, GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
-                // T1M - support for more than 3 pickup sprites
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
                     x = PhdWinWidth - sprite_height;
                     y -= sprite_height;

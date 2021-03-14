@@ -631,7 +631,6 @@ void LaraCheatGetStuff()
         }
     }
 
-    // T1M: cheat for keys/puzzles
     if (Objects[O_KEY_OPTION1].loaded && !Inv_RequestItem(O_KEY_ITEM1)) {
         Inv_AddItem(O_KEY_ITEM1);
     }

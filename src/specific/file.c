@@ -528,7 +528,7 @@ int32_t LoadCinematic(FILE *fp)
     }
     Cine =
         game_malloc(sizeof(int16_t) * 8 * NumCineFrames, GBUF_CINEMATIC_FRAMES);
-    if (!Cine) { // T1M
+    if (!Cine) {
         return 0;
     }
     _fread(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);

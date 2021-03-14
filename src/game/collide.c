@@ -479,7 +479,6 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
         }
     }
 
-    // T1M: protect against access violation
     if (i >= MAX_ROOMS_TO_DRAW) {
         return;
     }
@@ -553,7 +552,6 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     DOOR_INFOS *door = RoomInfo[lara_item->room_number].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
-            // T1M: protect against access violation
             if (numroom >= MAX_BADDIE_COLLISION) {
                 break;
             }

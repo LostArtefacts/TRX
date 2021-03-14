@@ -25,8 +25,6 @@ static char *SGPoint;
 void InitialiseStartInfo()
 {
     TRACE("");
-    // T1M: removed early exit if bonus_flag is on
-
     for (int i = 0; i < GF.level_count; i++) {
         ModifyStartInfo(i);
         SaveGame.start[i].available = 0;
@@ -145,7 +143,7 @@ void CreateSaveGameInfo()
 {
     SaveGame.current_level = CurrentLevel;
 
-    CreateStartInfo(CurrentLevel); // T1M: LV_CURRENT
+    CreateStartInfo(CurrentLevel);
 
     SaveGame.num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
     SaveGame.num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
@@ -229,7 +227,7 @@ void ExtractSaveGameInfo()
     int16_t tmp16;
     int32_t tmp32;
 
-    InitialiseLaraInventory(CurrentLevel); // T1M: LV_CURRENT
+    InitialiseLaraInventory(CurrentLevel);
 
     for (int i = 0; i < SaveGame.num_pickup1; i++) {
         Inv_AddItem(O_PICKUP_ITEM1);

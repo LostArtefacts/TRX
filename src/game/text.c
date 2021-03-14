@@ -127,7 +127,7 @@ T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char *string)
 
 void T_ChangeText(TEXTSTRING *textstring, const char *string)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (!(textstring->flags & TF_ACTIVE)) {
@@ -141,7 +141,7 @@ void T_ChangeText(TEXTSTRING *textstring, const char *string)
 
 void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     textstring->scale_h = scale_h;
@@ -150,7 +150,7 @@ void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 
 void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (b) {
@@ -166,7 +166,7 @@ void T_AddBackground(
     TEXTSTRING *textstring, int16_t xsize, int16_t ysize, int16_t xoff,
     int16_t yoff, int16_t zoff, int16_t colour, SG_COL *gourptr, int16_t flags)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     textstring->flags |= TF_BGND;
@@ -182,7 +182,7 @@ void T_AddBackground(
 
 void T_RemoveBackground(TEXTSTRING *textstring)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     textstring->flags &= ~TF_BGND;
@@ -192,7 +192,7 @@ void T_AddOutline(
     TEXTSTRING *textstring, int16_t b, int16_t colour, SG_COL *gourptr,
     int16_t flags)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     textstring->flags |= TF_OUTLINE;
@@ -203,7 +203,7 @@ void T_AddOutline(
 
 void T_RemoveOutline(TEXTSTRING *textstring)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     textstring->flags &= ~TF_OUTLINE;
@@ -211,7 +211,7 @@ void T_RemoveOutline(TEXTSTRING *textstring)
 
 void T_CentreH(TEXTSTRING *textstring, int16_t b)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (b) {
@@ -223,7 +223,7 @@ void T_CentreH(TEXTSTRING *textstring, int16_t b)
 
 void T_CentreV(TEXTSTRING *textstring, int16_t b)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (b) {
@@ -235,7 +235,7 @@ void T_CentreV(TEXTSTRING *textstring, int16_t b)
 
 void T_RightAlign(TEXTSTRING *textstring, int16_t b)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (b) {
@@ -247,7 +247,7 @@ void T_RightAlign(TEXTSTRING *textstring, int16_t b)
 
 void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return;
     }
     if (b) {
@@ -259,7 +259,7 @@ void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
 
 int32_t T_GetTextWidth(TEXTSTRING *textstring)
 {
-    if (!textstring) { // T1M
+    if (!textstring) {
         return 0;
     }
     int width = 0;

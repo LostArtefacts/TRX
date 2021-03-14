@@ -67,8 +67,6 @@ int32_t Display_Inventory(int inv_mode)
     mn_stop_ambient_samples();
     S_SoundStopAllSamples();
 
-    // T1M: there was a removed call to S_CDVolume here.
-
     switch (InventoryMode) {
     case INV_DEATH_MODE:
     case INV_SAVE_MODE:
@@ -111,7 +109,7 @@ int32_t Display_Inventory(int inv_mode)
             NoInputCount = 0;
             ResetFlag = 0;
         } else {
-            if (!T1MConfig.disable_demo) { // T1M
+            if (!T1MConfig.disable_demo) {
                 NoInputCount++;
                 if (GF.has_demo && NoInputCount > NOINPUT_TIME) {
                     ResetFlag = 1;
@@ -608,7 +606,6 @@ int32_t Display_Inventory(int inv_mode)
 
     switch (InventoryChosen) {
     case O_PASSPORT_OPTION:
-        // T1M: there was a removed call to S_CDVolume here.
         return GF_START_GAME | GF.first_level_num;
 
     case O_PHOTO_OPTION:
@@ -639,8 +636,6 @@ int32_t Display_Inventory(int inv_mode)
         UseItem(O_BIGMEDI_OPTION);
         break;
     }
-
-    // T1M: there was a removed call to S_CDVolume here.
 
     return GF_NOP;
 }
@@ -695,7 +690,6 @@ void Construct_Inventory()
     InvOptionCurrent = 0;
     Item_Data = 0;
 
-    // T1M
     if (GF.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
     }

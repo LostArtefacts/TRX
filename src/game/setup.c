@@ -90,9 +90,8 @@
 
 int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    // T1M: level_type argument is missing in OG
     TRACE("%d", level_num);
-    if (level_type == GFL_SAVED) { // T1M: level_num == LV_CURRENT
+    if (level_type == GFL_SAVED) {
         CurrentLevel = SaveGame.current_level;
     } else {
         CurrentLevel = level_num;
@@ -123,7 +122,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     HealthBarTimer = 100;
     mn_reset_sound_effects();
 
-    if (level_type == GFL_SAVED) { // T1M: level_num == LV_CURRENT
+    if (level_type == GFL_SAVED) {
         ExtractSaveGameInfo();
     }
 
