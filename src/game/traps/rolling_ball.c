@@ -1,7 +1,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sphere.h"

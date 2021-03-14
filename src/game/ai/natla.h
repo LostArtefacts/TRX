@@ -34,6 +34,7 @@ typedef enum {
 extern BITE_INFO NatlaGun;
 
 void SetupNatla(OBJECT_INFO *obj);
+void SetupNatlaGun(OBJECT_INFO *obj);
 void NatlaControl(int16_t item_num);
 void ControlNatlaGun(int16_t fx_num);
 

@@ -1,14 +1,14 @@
-#include "config.h"
-#include "game/effects.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/option.h"
+#include "game/sound.h"
 #include "game/text.h"
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
+#include "config.h"
 #include "util.h"
 #include <dinput.h>
 

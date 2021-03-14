@@ -1,6 +1,6 @@
 #include "game/control.h"
-#include "game/effects.h"
 #include "game/items.h"
+#include "game/sound.h"
 #include "game/traps/dart_emitter.h"
 #include "game/vars.h"
 

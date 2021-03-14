@@ -1,0 +1,37 @@
+#include "3dsystem/3d_gen.h"
+#include "game/effects/lara_effects.h"
+#include "game/vars.h"
+#include "config.h"
+
+// original name: lara_normal_effect
+void LaraNormal(ITEM_INFO *item)
+{
+    item->current_anim_state = AS_STOP;
+    item->goal_anim_state = AS_STOP;
+    item->anim_number = AA_STOP;
+    item->frame_number = AF_STOP;
+    Camera.type = CAM_CHASE;
+    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+}
+
+// original name: lara_hands_free
+void LaraHandsFree(ITEM_INFO *item)
+{
+    Lara.gun_status = LGS_ARMLESS;
+}
+
+// original name: draw_right_gun
+void LaraDrawRightGun(ITEM_INFO *item)
+{
+    int16_t *tmp_mesh;
+    OBJECT_INFO *obj = &Objects[item->object_number];
+    OBJECT_INFO *obj2 = &Objects[O_PISTOLS];
+
+    SWAP(
+        Meshes[obj->mesh_index + LM_THIGH_R],
+        Meshes[obj2->mesh_index + LM_THIGH_R], tmp_mesh);
+
+    SWAP(
+        Meshes[obj->mesh_index + LM_HAND_R],
+        Meshes[obj2->mesh_index + LM_HAND_R], tmp_mesh);
+}

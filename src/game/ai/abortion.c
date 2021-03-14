@@ -3,12 +3,12 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/effects.h"
+#include "game/effects/body_part.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/sound.h"
 #include "game/vars.h"
-#include "game/warrior.h"
 
 void SetupAbortion(OBJECT_INFO *obj)
 {

@@ -1,8 +1,8 @@
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/effects.h"
+#include "game/effects/earthquake.h"
 #include "game/game.h"
-#include "game/objects/earthquake.h"
+#include "game/sound.h"
 #include "game/vars.h"
 
 void SetupEarthquake(OBJECT_INFO *obj)
@@ -10,6 +10,26 @@ void SetupEarthquake(OBJECT_INFO *obj)
     obj->control = EarthQuakeControl;
     obj->draw_routine = DrawDummyItem;
     obj->save_flags = 1;
+}
+
+// original name: EarthQuakeFX
+void EarthQuake(ITEM_INFO *item)
+{
+    if (FlipTimer == 0) {
+        SoundEffect(SFX_EXPLOSION, NULL, SPM_NORMAL);
+        Camera.bounce = -250;
+    } else if (FlipTimer == 3) {
+        SoundEffect(SFX_ROLLING_BALL, NULL, SPM_NORMAL);
+    } else if (FlipTimer == 35) {
+        SoundEffect(SFX_EXPLOSION, NULL, SPM_NORMAL);
+    } else if (FlipTimer == 20 || FlipTimer == 50 || FlipTimer == 70) {
+        SoundEffect(SFX_T_REX_FOOTSTOMP, NULL, SPM_NORMAL);
+    }
+
+    FlipTimer++;
+    if (FlipTimer == 105) {
+        FlipEffect = -1;
+    }
 }
 
 // original name: EarthQuake

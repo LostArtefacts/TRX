@@ -2,7 +2,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/vars.h"
 

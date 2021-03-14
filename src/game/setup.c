@@ -27,7 +27,16 @@
 #include "game/cinema.h"
 #include "game/collide.h"
 #include "game/draw.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
+#include "game/effects/body_part.h"
+#include "game/effects/bubble.h"
+#include "game/effects/earthquake.h"
+#include "game/effects/explosion.h"
+#include "game/effects/missile.h"
+#include "game/effects/ricochet.h"
+#include "game/effects/splash.h"
+#include "game/effects/twinkle.h"
+#include "game/effects/waterfall.h"
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
@@ -40,7 +49,6 @@
 #include "game/objects/cabin.h"
 #include "game/objects/cog.h"
 #include "game/objects/door.h"
-#include "game/objects/earthquake.h"
 #include "game/objects/gunshot.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/misc.h"
@@ -71,13 +79,11 @@
 #include "game/traps/thors_hammer.h"
 #include "game/types.h"
 #include "game/vars.h"
-#include "game/warrior.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-
 #include "config.h"
 #include "util.h"
 
@@ -325,24 +331,17 @@ void ObjectObjects()
     Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
     Objects[O_PLAYER_4].hit_points = 1;
 
-    Objects[O_BLOOD1].control = ControlBlood1;
-    Objects[O_BUBBLES1].control = ControlBubble1;
-    Objects[O_EXPLOSION1].control = ControlExplosion1;
-
-    Objects[O_RICOCHET1].control = ControlRicochet1;
-    Objects[O_TWINKLE].control = ControlTwinkle;
-    Objects[O_SPLASH1].control = ControlSplash1;
-    Objects[O_WATERFALL].control = ControlWaterFall;
-    Objects[O_WATERFALL].draw_routine = DrawDummyItem;
-
-    Objects[O_BODY_PART].control = ControlBodyPart;
-    Objects[O_BODY_PART].nmeshes = 0;
-    Objects[O_BODY_PART].loaded = 1;
-
-    Objects[O_MISSILE1].control = ControlNatlaGun;
-    Objects[O_MISSILE2].control = ControlMissile;
-    Objects[O_MISSILE3].control = ControlMissile;
-
+    SetupBlood(&Objects[O_BLOOD1]);
+    SetupBubble(&Objects[O_BUBBLES1]);
+    SetupExplosion(&Objects[O_EXPLOSION1]);
+    SetupRicochet(&Objects[O_RICOCHET1]);
+    SetupTwinkle(&Objects[O_TWINKLE]);
+    SetupSplash(&Objects[O_SPLASH1]);
+    SetupWaterfall(&Objects[O_WATERFALL]);
+    SetupBodyPart(&Objects[O_BODY_PART]);
+    SetupNatlaGun(&Objects[O_MISSILE1]);
+    SetupMissile(&Objects[O_MISSILE2]);
+    SetupMissile(&Objects[O_MISSILE3]);
     SetupGunShot(&Objects[O_GUN_FLASH]);
 }
 

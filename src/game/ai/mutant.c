@@ -1,13 +1,15 @@
 #include "game/ai/mutant.h"
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
+#include "game/effects/body_part.h"
+#include "game/effects/missile.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/sound.h"
 #include "game/vars.h"
-#include "game/warrior.h"
 
 BITE_INFO WarriorBite = { -27, 98, 0, 10 };
 BITE_INFO WarriorRocket = { 51, 213, 0, 14 };

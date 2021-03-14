@@ -1,6 +1,6 @@
 #include "3dsystem/3d_gen.h"
 #include "game/draw.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"

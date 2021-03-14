@@ -4,8 +4,8 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/effects.h"
 #include "game/items.h"
+#include "game/sound.h"
 #include "game/sphere.h"
 #include "game/vars.h"
 #include "util.h"
@@ -925,6 +925,25 @@ int32_t Move3DPosTo3DPos(
     return srcpos->x == destpos->x && srcpos->y == destpos->y
         && srcpos->z == destpos->z && srcpos->x_rot == destpos->x_rot
         && srcpos->y_rot == destpos->y_rot && srcpos->z_rot == destpos->z_rot;
+}
+
+int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance)
+{
+    int32_t x = pos->x - LaraItem->pos.x;
+    int32_t y = pos->y - LaraItem->pos.y;
+    int32_t z = pos->z - LaraItem->pos.z;
+
+    if (x >= -distance && x <= distance && z >= -distance && z <= distance
+        && y >= -WALL_L * 3 && y <= WALL_L * 3
+        && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
+        int16_t *bounds = GetBoundsAccurate(LaraItem);
+        if (y >= bounds[FRAME_BOUND_MIN_Y]
+            && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void T1MInjectGameCollide()

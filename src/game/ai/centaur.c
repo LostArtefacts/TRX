@@ -1,13 +1,15 @@
 #include "game/ai/centaur.h"
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
+#include "game/effects/body_part.h"
+#include "game/effects/missile.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/sound.h"
 #include "game/vars.h"
-#include "game/warrior.h"
 
 BITE_INFO CentaurRocket = { 11, 415, 41, 13 };
 BITE_INFO CentaurRear = { 50, 30, 0, 5 };

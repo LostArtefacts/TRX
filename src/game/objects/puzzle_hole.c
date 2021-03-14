@@ -1,9 +1,9 @@
 #include "game/collide.h"
-#include "game/effects.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
+#include "game/sound.h"
 #include "game/vars.h"
 
 PHD_VECTOR PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };

@@ -1,5 +1,5 @@
 #include "game/collide.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/sphere.h"
 #include "game/traps/spikes.h"

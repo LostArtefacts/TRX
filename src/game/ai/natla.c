@@ -1,16 +1,16 @@
 #include "3dsystem/phd_math.h"
-#include "game/control.h"
 #include "game/ai/natla.h"
 #include "game/box.h"
-#include "game/vars.h"
 #include "game/collide.h"
-#include "game/lot.h"
-#include "game/people.h"
-#include "game/effects.h"
+#include "game/control.h"
+#include "game/effects/missile.h"
 #include "game/game.h"
 #include "game/items.h"
+#include "game/lot.h"
+#include "game/people.h"
+#include "game/sound.h"
+#include "game/vars.h"
 #include "specific/sndpc.h"
-#include "game/warrior.h"
 
 BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 
@@ -32,6 +32,11 @@ void SetupNatla(OBJECT_INFO *obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
     AnimBones[obj->bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
+}
+
+void SetupNatlaGun(OBJECT_INFO *obj)
+{
+    obj->control = ControlNatlaGun;
 }
 
 void NatlaControl(int16_t item_num)

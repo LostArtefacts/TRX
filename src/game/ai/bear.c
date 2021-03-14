@@ -1,7 +1,7 @@
 #include "game/ai/bear.h"
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/types.h"

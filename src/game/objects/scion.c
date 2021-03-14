@@ -1,13 +1,13 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/effects.h"
 #include "game/game.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/objects/pickup.h"
 #include "game/objects/scion.h"
+#include "game/sound.h"
 #include "game/vars.h"
 
 PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };

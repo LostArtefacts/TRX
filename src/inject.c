@@ -9,7 +9,6 @@
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
-#include "game/effects.h"
 #include "game/game.h"
 #include "game/health.h"
 #include "game/inv.h"
@@ -41,7 +40,6 @@ void T1MInject()
     T1MInjectGameControl();
     T1MInjectGameDemo();
     T1MInjectGameDraw();
-    T1MInjectGameEffects();
     T1MInjectGameGame();
     T1MInjectGameHealth();
     T1MInjectGameInvEntry();

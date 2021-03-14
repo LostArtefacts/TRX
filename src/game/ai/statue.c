@@ -1,10 +1,10 @@
 #include "game/ai/statue.h"
 #include "game/collide.h"
-#include "game/effects.h"
+#include "game/effects/body_part.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/sound.h"
 #include "game/vars.h"
-#include "game/warrior.h"
 #include "specific/init.h"
 #include "specific/shed.h"
 

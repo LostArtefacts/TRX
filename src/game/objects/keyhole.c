@@ -1,8 +1,8 @@
 #include "game/collide.h"
-#include "game/effects.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/objects/keyhole.h"
+#include "game/sound.h"
 #include "game/vars.h"
 #include "config.h"
 

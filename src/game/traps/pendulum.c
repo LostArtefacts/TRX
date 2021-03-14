@@ -1,6 +1,6 @@
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/effects.h"
+#include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/traps/pendulum.h"
 #include "game/vars.h"
