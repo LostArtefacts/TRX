@@ -20,6 +20,52 @@ installed to work.
 To configure Tomb1Main, edit the `Tomb1Main.json5` file in your text editor
 such as Notepad. All the configuration is explained in that file.
 
+## Improvements over original game
+
+Not all options are turned on by default. Refer to `Tomb1Main.json5` for details.
+
+- added proper UI scaling
+- added enemy health bar
+- added more control over when to show health bar and air bar
+- added ability to customize of health bar and air bar
+- added ability to set user-defined FOV
+- added selecting weapons / using items with numeric keys
+- added ability to look around while running
+- added TR3-like sidesteps
+- added shotgun flash sprites
+- added a fly cheat
+- added a level skip cheat
+- added a door open cheat (while in fly mode)
+- added ability to disable all medpacks
+- added ability to disable Magnums
+- added ability to disable UZIs
+- added ability to disable shotgun
+- added ability to disable main menu demos
+- added ability to disable FMVs
+- added ability to disable cutscenes
+- added ability to disable healing between levels
+- added braid (currently only works in Lost Valley)
+- added support for more than 3 pickup sprites
+- added a choice whether to play NG or NG+
+- added external game flow (no longer 2 different .exes for TR1 and TR1IB)
+    For TRLE builders:
+    - the levels can be reordered
+    - the levels can be renamed
+    - all the strings can be translated, including keys and items
+    - you no longer are constrained to 4 or 21 levels only
+    - you can offer a custom Gym level
+- added automatic calculation of secret numbers
+- fixed skipping FMVs triggering inventory
+- fixed skipping credits working too fast
+- fixed setting user keys being very difficult
+- fixed keys and items not working when drawing guns immediately after using them
+- fixed freeze when holding action key during end of level
+- fixed reading user settings not restoring the volume
+- fixed Tomb of Tihocan playing secret sound
+- fixed The Great Pyramid secret
+- fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
+- fixed a crash when Lara is on fire and goes too far away from where she caught fire
+
 ## Decompilation progress
 
 ![](docs/progress.svg)
