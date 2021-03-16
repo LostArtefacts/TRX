@@ -603,21 +603,21 @@ void LaraCheatGetStuff()
         if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddItem(O_SHOTGUN_ITEM);
         }
-        Lara.shotgun.ammo = SaveGame.bonus_flag ? 10001 : 300;
+        Lara.shotgun.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 300;
     }
 
     if (Objects[O_MAGNUM_OPTION].loaded) {
         if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddItem(O_MAGNUM_ITEM);
         }
-        Lara.magnums.ammo = SaveGame.bonus_flag ? 10001 : 1000;
+        Lara.magnums.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
     }
 
     if (Objects[O_UZI_OPTION].loaded) {
         if (!Inv_RequestItem(O_UZI_ITEM)) {
             Inv_AddItem(O_UZI_ITEM);
         }
-        Lara.uzis.ammo = SaveGame.bonus_flag ? 10001 : 2000;
+        Lara.uzis.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
     }
 
     for (int i = 0; i < 10; ++i) {

@@ -208,7 +208,7 @@ void LevelStats(int32_t level_num)
     }
 
     if (level_num == GF.last_level_num) {
-        SaveGame.bonus_flag = 1;
+        SaveGame.bonus_flag = GBF_NGPLUS;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);

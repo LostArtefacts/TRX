@@ -902,7 +902,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_REMOVE_GUNS:
-            if (!SaveGame.bonus_flag) {
+            if (!(SaveGame.bonus_flag & GBF_NGPLUS)) {
                 SaveGame.start[level_num].got_pistols = 0;
                 SaveGame.start[level_num].got_shotgun = 0;
                 SaveGame.start[level_num].got_magnums = 0;

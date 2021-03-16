@@ -1089,6 +1089,10 @@ typedef enum {
     SPM_ALWAYS = 2,
 } SOUND_PLAY_MODE;
 
+typedef enum {
+    GBF_NGPLUS = 1 << 0,
+} GAME_BONUS_FLAG;
+
 #pragma pack(push, 1)
 
 typedef struct {

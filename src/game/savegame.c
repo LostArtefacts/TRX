@@ -74,7 +74,7 @@ void ModifyStartInfo(int32_t level_num)
         start->gun_status = LGS_ARMLESS;
     }
 
-    if (SaveGame.bonus_flag && level_num != GF.gym_level_num) {
+    if ((SaveGame.bonus_flag & GBF_NGPLUS) && level_num != GF.gym_level_num) {
         start->got_pistols = 1;
         start->got_shotgun = 1;
         start->got_magnums = 1;

@@ -117,7 +117,7 @@ void DrawEnemyBar()
     RenderBar(
         Lara.target->hit_points,
         Objects[Lara.target->object_number].hit_points
-            * (SaveGame.bonus_flag ? 2 : 1),
+            * ((SaveGame.bonus_flag & GBF_NGPLUS) ? 2 : 1),
         BT_ENEMY_HEALTH);
 }
 
@@ -126,7 +126,7 @@ void DrawAmmoInfo()
     char ammostring[80] = "";
 
     if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
-        || SaveGame.bonus_flag) {
+        || (SaveGame.bonus_flag & GBF_NGPLUS)) {
         if (AmmoText) {
             T_RemovePrint(AmmoText);
             AmmoText = 0;

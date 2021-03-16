@@ -386,21 +386,21 @@ int32_t FireWeapon(
     switch (weapon_type) {
     case LGT_MAGNUMS:
         ammo = &Lara.magnums;
-        if (SaveGame.bonus_flag) {
+        if (SaveGame.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
         ammo = &Lara.uzis;
-        if (SaveGame.bonus_flag) {
+        if (SaveGame.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
         ammo = &Lara.shotgun;
-        if (SaveGame.bonus_flag) {
+        if (SaveGame.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
