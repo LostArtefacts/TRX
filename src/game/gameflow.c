@@ -59,6 +59,10 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
         { "PASSPORT_SELECT_MODE", GS_PASSPORT_SELECT_MODE },
         { "PASSPORT_MODE_NEW_GAME", GS_PASSPORT_MODE_NEW_GAME },
         { "PASSPORT_MODE_NEW_GAME_PLUS", GS_PASSPORT_MODE_NEW_GAME_PLUS },
+        { "PASSPORT_MODE_JAPANESE_NEW_GAME",
+          GS_PASSPORT_MODE_JAPANESE_NEW_GAME },
+        { "PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS",
+          GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS },
         { "PASSPORT_NEW_GAME", GS_PASSPORT_NEW_GAME },
         { "PASSPORT_LOAD_GAME", GS_PASSPORT_LOAD_GAME },
         { "PASSPORT_SAVE_GAME", GS_PASSPORT_SAVE_GAME },
@@ -708,6 +712,11 @@ int8_t GF_LoadScriptFile(const char *file_name)
         &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME]);
     SetRequesterItemText(
         &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS]);
+    SetRequesterItemText(
+        &NewGameRequester, 2, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME]);
+    SetRequesterItemText(
+        &NewGameRequester, 3,
+        GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS]);
 
     return result;
 }

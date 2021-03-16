@@ -461,7 +461,9 @@ int32_t FireWeapon(
         vdest.x = view.x + ((bestdist * PhdMatrixPtr->_20) >> W2V_SHIFT);
         vdest.y = view.y + ((bestdist * PhdMatrixPtr->_21) >> W2V_SHIFT);
         vdest.z = view.z + ((bestdist * PhdMatrixPtr->_22) >> W2V_SHIFT);
-        HitTarget(target, &vdest, winfo->damage);
+        HitTarget(
+            target, &vdest,
+            winfo->damage * (SaveGame.bonus_flag & GBF_JAPANESE ? 2 : 1));
         return 1;
     }
 

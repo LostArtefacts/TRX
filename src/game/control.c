@@ -104,7 +104,20 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                         return return_val;
                     }
                     if (CurrentLevel == GF.gym_level_num) {
-                        SaveGame.bonus_flag = InventoryExtraData[1];
+                        switch (InventoryExtraData[1]) {
+                        case 0:
+                            SaveGame.bonus_flag = 0;
+                            break;
+                        case 1:
+                            SaveGame.bonus_flag = GBF_NGPLUS;
+                            break;
+                        case 2:
+                            SaveGame.bonus_flag = GBF_JAPANESE;
+                            break;
+                        case 3:
+                            SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                            break;
+                        }
                         InitialiseStartInfo();
                         return GF_START_GAME | GF.first_level_num;
                     }

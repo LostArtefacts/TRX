@@ -29,7 +29,7 @@ static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
-#define MAX_MODES 2
+#define MAX_MODES 4
 #define MAX_MODE_NAME_LENGTH 20
 
 static char NewGameStrings[MAX_MODES][MAX_MODE_NAME_LENGTH];

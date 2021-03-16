@@ -180,7 +180,20 @@ void GameMain()
                 if (InventoryExtraData[0] == 0) {
                     gf_option = GF_START_SAVED_GAME | InventoryExtraData[1];
                 } else if (InventoryExtraData[0] == 1) {
-                    SaveGame.bonus_flag = InventoryExtraData[1];
+                    switch (InventoryExtraData[1]) {
+                    case 0:
+                        SaveGame.bonus_flag = 0;
+                        break;
+                    case 1:
+                        SaveGame.bonus_flag = GBF_NGPLUS;
+                        break;
+                    case 2:
+                        SaveGame.bonus_flag = GBF_JAPANESE;
+                        break;
+                    case 3:
+                        SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        break;
+                    }
                     InitialiseStartInfo();
                     gf_option = GF_START_GAME | GF.first_level_num;
                 } else {
