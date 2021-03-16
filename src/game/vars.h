@@ -216,6 +216,7 @@
 #define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
 #define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)
 #define TombHWND                VAR_U_(0x00463600, uint32_t)
+#define FMVPaths                ARRAY_(0x00453AC0, char*, [])
 
 #define InvItemCompass          VAR_U_(0x00455760, INVENTORY_ITEM)
 #define InvItemMedi             VAR_U_(0x004559E0, INVENTORY_ITEM)

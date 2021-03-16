@@ -3,6 +3,7 @@
 #include "game/const.h"
 #include "game/vars.h"
 #include "specific/display.h"
+#include "specific/file.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shed.h"
@@ -26,6 +27,68 @@ void S_Wait(int32_t nframes)
         while (!WinVidSpinMessageLoop())
             ;
     }
+}
+
+int32_t WinPlayFMV(int32_t sequence, int32_t mode)
+{
+    int32_t result = 0;
+    void *movie_context = NULL;
+    void *fmv_context = NULL;
+    void *sound_context = NULL;
+
+    sub_40837F();
+    const char *path = GetFullPath(FMVPaths[sequence]);
+    if (Player_InitMovie(&movie_context, 0, 0, path, 0x100000)) {
+        S_ExitSystem("ERROR: Cannot initialise FMV player");
+    }
+    if (mode) {
+        Movie_GetYSize(movie_context);
+    }
+    Movie_GetYSize(movie_context);
+
+    int32_t width = Movie_GetXSize(movie_context);
+    if (Player_InitVideo(&fmv_context, movie_context, width)) {
+        goto cleanup;
+    }
+    if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) {
+        goto cleanup;
+    }
+    if (SoundIsActive) {
+        Movie_GetSoundPrecision(movie_context);
+        Movie_GetSoundRate(movie_context);
+        int32_t channels = Movie_GetSoundChannels(movie_context);
+        if (Player_InitSound(&sound_context, 44100, 1, 1, 22050, channels)) {
+            goto cleanup;
+        }
+    }
+
+    if (Player_InitMoviePlayback(movie_context, fmv_context, sound_context)) {
+        goto cleanup;
+    }
+
+    if (Player_MapVideo(fmv_context, 0)) {
+        goto cleanup;
+    }
+
+    result = 1;
+    int32_t total_frames = Movie_GetTotalFrames(movie_context);
+    if (!Player_StartTimer(movie_context)) {
+        while (Movie_GetCurrentFrame(movie_context) < total_frames - 2) {
+            if (Player_PlayFrame(
+                    movie_context, fmv_context, sound_context, 0, 0, 0, 0, 0)) {
+                break;
+            }
+            sub_43D940();
+
+            if (KeyData->keymap[1]) {
+                break;
+            }
+        }
+    }
+
+cleanup:
+    Player_ReturnPlaybackMode();
+    return result;
 }
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
