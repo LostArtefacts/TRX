@@ -91,6 +91,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     }
 
     result = 1;
+    int8_t keypress = 0;
     int32_t total_frames = Movie_GetTotalFrames(movie_context);
     if (Player_StartTimer(movie_context)) {
         TRACE("can't start timer");
@@ -104,8 +105,16 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         }
         sub_43D940();
 
-        if (KeyData->keymap[1]) {
-            break;
+        if (T1MConfig.fix_fmv_esc_key) {
+            if (KeyData->keymap[1]) {
+                keypress = 1;
+            } else if (keypress && !KeyData->keymap[1]) {
+                break;
+            }
+        } else {
+            if (KeyData->keymap[1]) {
+                break;
+            }
         }
     }
 
@@ -144,13 +153,6 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
         HardwareFMVDone();
     }
     TempVideoRemove();
-
-    if (T1MConfig.fix_fmv_esc_key) {
-        while (KeyData->keys_held) {
-            S_UpdateInput();
-            WinVidSpinMessageLoop();
-        }
-    }
 
     return ret;
 }
