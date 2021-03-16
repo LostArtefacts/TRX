@@ -13,6 +13,13 @@
 
 #include <stdlib.h>
 
+const char *FMVPaths[] = {
+    "fmv\\cafe.rpl",    "fmv\\mansion.rpl", "fmv\\snow.rpl",
+    "fmv\\lift.rpl",    "fmv\\vision.rpl",  "fmv\\canyon.rpl",
+    "fmv\\pyramid.rpl", "fmv\\prison.rpl",  "fmv\\end.rpl",
+    "fmv\\core.rpl",    "fmv\\escape.rpl",  NULL,
+};
+
 void S_Wait(int32_t nframes)
 {
     while (Input) {
@@ -38,8 +45,10 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
 
     sub_40837F();
     const char *path = GetFullPath(FMVPaths[sequence]);
+
     if (Player_InitMovie(&movie_context, 0, 0, path, 0x100000)) {
-        S_ExitSystem("ERROR: Cannot initialise FMV player");
+        TRACE("cannot load video");
+        goto cleanup;
     }
 
     int32_t width = Movie_GetXSize(movie_context);
@@ -58,12 +67,12 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     if (Player_InitVideo(
             &fmv_context, movie_context, width, height, x, y, 0, 0, 640, 480, 0,
             1, tmp)) {
-        TRACE("can't init video");
+        TRACE("cannot init video");
         goto cleanup;
     }
 
     if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) {
-        TRACE("can't init playback mode");
+        TRACE("cannot init playback mode");
         goto cleanup;
     }
 
@@ -75,18 +84,18 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         if (Player_InitSound(
                 &sound_context, 44100, 1, 1, 22050, channels, rate, precision,
                 2)) {
-            TRACE("can't init sound");
+            TRACE("cannot init sound");
             goto cleanup;
         }
     }
 
     if (Player_InitMoviePlayback(movie_context, fmv_context, sound_context)) {
-        TRACE("can't init movie playback");
+        TRACE("cannot init movie playback");
         goto cleanup;
     }
 
     if (Player_MapVideo(fmv_context, 0)) {
-        TRACE("can't map video");
+        TRACE("cannot map video");
         goto cleanup;
     }
 
@@ -94,7 +103,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     int8_t keypress = 0;
     int32_t total_frames = Movie_GetTotalFrames(movie_context);
     if (Player_StartTimer(movie_context)) {
-        TRACE("can't start timer");
+        TRACE("cannot start timer");
         goto cleanup;
     }
 
