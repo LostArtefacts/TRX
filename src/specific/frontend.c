@@ -38,6 +38,10 @@ void S_Wait(int32_t nframes)
 
 int32_t WinPlayFMV(int32_t sequence, int32_t mode)
 {
+    if (T1MConfig.disable_fmv) {
+        return -1;
+    }
+
     int32_t result = 0;
     void *movie_context = NULL;
     void *fmv_context = NULL;
@@ -138,10 +142,6 @@ cleanup:
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    if (T1MConfig.disable_fmv) {
-        return -1;
-    }
-
     if (GameMemoryPointer) {
         free(GameMemoryPointer);
     }

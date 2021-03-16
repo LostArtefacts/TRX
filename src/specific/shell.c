@@ -99,20 +99,18 @@ void GameMain()
     sub_408E41();
     S_Wait(60);
 
-    if (!T1MConfig.disable_fmv) {
-        if (IsHardwareRenderer) {
-            HardwarePrepareFMV();
-        }
-        WinPlayFMV(FMV_CORE, 1);
-        WinPlayFMV(FMV_ESCAPE, 1);
-        WinPlayFMV(FMV_INTRO, 1);
+    if (IsHardwareRenderer) {
+        HardwarePrepareFMV();
+    }
+    WinPlayFMV(FMV_CORE, 1);
+    WinPlayFMV(FMV_ESCAPE, 1);
+    WinPlayFMV(FMV_INTRO, 1);
+    if (!IsHardwareRenderer) {
+        HiRes = -1;
+    } else {
+        HardwareFMVDone();
         if (!IsHardwareRenderer) {
             HiRes = -1;
-        } else {
-            HardwareFMVDone();
-            if (!IsHardwareRenderer) {
-                HiRes = -1;
-            }
         }
     }
 
