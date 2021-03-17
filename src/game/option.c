@@ -12,6 +12,8 @@
 #include "specific/sndpc.h"
 #include "util.h"
 
+#include "config.h"
+
 #include <dinput.h>
 #include <stdio.h>
 
@@ -26,6 +28,7 @@
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailText[5] = { NULL, NULL, NULL, NULL, NULL };
 static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
+static TEXTSTRING *CompassText[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
@@ -614,7 +617,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 // original name: do_sound_option
 void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
-    char buf[20];
+    static char buf[20];
 
     if (!SoundText[0]) {
         if (OptionMusicVolume > 10) {
@@ -728,7 +731,75 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 // original name: do_compass_option
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
+    static char string[100];
+    static char time_str[100];
+    const int32_t top_y = -100;
+    const int32_t row_height = 25;
+    const int32_t row_width = 225;
+
+    if (!CompassText[0] && T1MConfig.enable_compass_stats) {
+        sprintf(string, "%s", GF.levels[CurrentLevel].level_title);
+        int32_t y = top_y;
+        CompassText[0] = T_Print(0, y - 2, 0, " ");
+        CompassText[1] = T_Print(0, y, 0, string);
+        y += row_height;
+
+        int32_t seconds = SaveGame.timer / 30;
+        int32_t hours = seconds / 3600;
+        int32_t minutes = (seconds / 60) % 60;
+        seconds %= 60;
+        if (hours) {
+            sprintf(
+                time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+                seconds / 10, seconds % 10);
+        } else {
+            sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
+        }
+        sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+        CompassText[2] = T_Print(0, y, 0, string);
+        y += row_height;
+
+        int32_t secrets_taken = 0;
+        int32_t secrets_total = MAX_SECRETS;
+        do {
+            if (SaveGame.secrets & 1) {
+                ++secrets_taken;
+            }
+            SaveGame.secrets >>= 1;
+            --secrets_total;
+        } while (secrets_total);
+        sprintf(
+            string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
+            GF.levels[CurrentLevel].secrets);
+        CompassText[3] = T_Print(0, y, 0, string);
+        y += row_height;
+
+        sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
+        CompassText[4] = T_Print(0, y, 0, string);
+        y += row_height;
+
+        sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
+        CompassText[5] = T_Print(0, y, 0, string);
+        y += row_height;
+
+        T_AddBackground(
+            CompassText[0], row_width, y - top_y, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(CompassText[0], 1, IC_BLUE, NULL, 0);
+        T_AddBackground(
+            CompassText[1], row_width - 8, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(CompassText[1], 1, IC_BLUE, NULL, 0);
+
+        for (int i = 0; i < 6; i++) {
+            T_CentreH(CompassText[i], 1);
+            T_CentreV(CompassText[i], 1);
+        }
+    }
+
     if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+        for (int i = 0; i < 6; i++) {
+            T_RemovePrint(CompassText[i]);
+            CompassText[i] = NULL;
+        }
         inv_item->goal_frame = inv_item->frames_total - 1;
         inv_item->anim_direction = 1;
     }

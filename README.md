@@ -59,6 +59,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - you no longer are constrained to 4 or 21 levels only
     - you can offer a custom Gym level
 - added automatic calculation of secret numbers
+- added compass level stats
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
 - fixed setting user keys being very difficult

@@ -19,6 +19,7 @@ void test_empty_config()
     ASSERT_INT_EQUAL(T1MConfig.enable_tr3_sidesteps, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 0);
     ASSERT_INT_EQUAL(T1MConfig.enable_braid, 0);
+    ASSERT_INT_EQUAL(T1MConfig.enable_compass_stats, 1);
     ASSERT_INT_EQUAL(
         T1MConfig.healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT);
     ASSERT_INT_EQUAL(T1MConfig.healthbar_location, T1M_BL_TOP_LEFT);

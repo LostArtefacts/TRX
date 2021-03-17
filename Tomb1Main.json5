@@ -50,6 +50,9 @@
     // Enables braid animation. Currently works only in the Lost Valley level.
     "enable_braid": false,
 
+    // Enables showing level stats when selecting compass.
+    "enable_compass_stats": true,
+
     // Changes how the healthbar is displayed. Possible values:
     // - always: always show the healthbar
     // - default: show the healthbar at the beginning of a level, after
