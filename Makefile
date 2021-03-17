@@ -1,11 +1,12 @@
 CC=i686-w64-mingw32-gcc
+PYTHON=python3
 WINDRES=i686-w64-mingw32-windres
 LDFLAGS=-ldbghelp -lwinmm
 CFLAGS=-Wall -Isrc
 
 VERSION = $(shell git describe --abbrev=7 --tags master)
 CWD = $(shell pwd)
-C_FILES = $(shell find src/ -type f -name '*.c')
+C_FILES = $(shell find src/ -type f -name '*.c') build/init.c
 H_FILES = $(shell find src/ -type f -name '*.h')
 O_FILES = $(patsubst src/%.c, build/src/%.o, $(C_FILES))
 TEST_C_FILES = $(shell find test/ -type f -name '*.c')
@@ -35,6 +36,13 @@ build/test/%.o: test/%.c
 	@mkdir -p "$(@D)"
 	$(CC) $(CFLAGS) -c "$<" -o "$@"
 
+build/init.c: Tomb1Main_gameflow.json5 src/generate_init.py
+	$(PYTHON) src/generate_init.py
+
+src/generate_init.py:
+Tomb1Main_gameflow.json5:
+	@:
+
 version:
 	sed s/{version}/$(VERSION)/g src/version.rc >build/version.rc
 	$(WINDRES) build/version.rc -O coff -o build/version.res
@@ -43,10 +51,10 @@ version:
 clean:
 	find build -type f -iname '*.o' -delete
 	find build -type f -iname '*.dll' -delete
-	rm -f build/version.res build/version.rc
+	rm -f build/version.res build/version.rc build/init.c
 	find . -type d -empty -delete
 
-lint:
+lint: $(C_FILES)
 	clang-format-10 -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)
 
 docs:
