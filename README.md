@@ -70,6 +70,28 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed settings not persisting chosen layout (default vs. user keys)
 - fixed the sound of collecting a secret killing music
 
+## Showcase
+
+#### Mode selection
+
+![](docs/showcase1.jpg)
+
+#### Braid
+
+![](docs/showcase2.jpg)
+
+#### Fly cheat
+
+![](docs/showcase3.jpg)
+
+#### Door open cheat
+
+![](docs/showcase4.jpg)
+
+#### Enemy health bars
+
+![](docs/showcase5.jpg)
+
 ## Decompilation progress
 
 ![](docs/progress.svg)
