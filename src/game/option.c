@@ -249,10 +249,15 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
-                    InitRequester(&NewGameRequester);
-                    PassportMode = 2;
-                    Input = 0;
-                    InputDB = 0;
+
+                    if (GF.enable_game_modes) {
+                        InitRequester(&NewGameRequester);
+                        PassportMode = 2;
+                        Input = 0;
+                        InputDB = 0;
+                    } else {
+                        InventoryExtraData[1] = SaveGame.bonus_flag;
+                    }
                 } else {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;

@@ -145,11 +145,18 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
 static int8_t S_LoadScriptMeta(struct json_value_s *json)
 {
     const char *tmp;
+
     if (!JSONGetStringValue(json, "savegame_fmt", &tmp)) {
         TRACE("'savegame_fmt' must be a string");
         return 0;
     } else {
         GF.save_game_fmt = strdup(tmp);
+    }
+
+    if (!JSONGetBooleanValue(
+            json, "enable_game_modes", &GF.enable_game_modes)) {
+        TRACE("'enable_game_modes' must be a boolean");
+        return 0;
     }
 
     return 1;

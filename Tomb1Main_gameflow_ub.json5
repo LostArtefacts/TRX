@@ -2,6 +2,7 @@
     // NOTE: bad changes to this file may result in crashes.
 
     "savegame_fmt": "saveuba.%d",
+    "enable_game_modes": true,
 
     "levels": [
         // level 0
