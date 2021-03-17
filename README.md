@@ -4,6 +4,9 @@ This is a dynamic library for the classic Tomb Raider I game (TombATI version).
 The purpose of the library is to reimplement all the routines performed by the
 game and enhance the gameplay with new options.
 
+See the [Tomb Raider Forums
+topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
+
 This project is inspired by Arsunt's
 [TR2Main](https://github.com/Arsunt/TR2Main/) project.
 
