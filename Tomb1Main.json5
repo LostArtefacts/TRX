@@ -133,6 +133,10 @@
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 
+    // Fixes calculating distances between creatures. In particular, this fixes
+    // the first Tihocan crocodile able to damage Lara much later in the level.
+    "fix_creature_dist_calc": true,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,

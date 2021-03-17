@@ -11,7 +11,11 @@
 #include "game/vars.h"
 #include "util.h"
 
+#include "config.h"
+
 #include <stddef.h>
+
+#define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
 void InitialiseCreature(int16_t item_num)
 {
@@ -70,6 +74,10 @@ void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info)
 
     PHD_ANGLE angle = phd_atan(z, x);
     info->distance = SQUARE(x) + SQUARE(z);
+    if (T1MConfig.fix_creature_dist_calc
+        && (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE)) {
+        info->distance = SQUARE(MAX_CREATURE_DISTANCE);
+    }
     info->angle = angle - item->pos.y_rot;
     info->enemy_facing = angle - LaraItem->pos.y_rot + PHD_180;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
