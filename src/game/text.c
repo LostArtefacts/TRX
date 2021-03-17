@@ -1,5 +1,6 @@
 #include "game/text.h"
 
+#include "3dsystem/3d_insert.h"
 #include "game/const.h"
 #include "game/types.h"
 #include "game/vars.h"
@@ -367,10 +368,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
     }
 
     char *string = textstring->string;
-    int xpos = textstring->xpos;
-    int ypos = textstring->ypos;
-    int zpos = textstring->zpos;
-    int textwidth = T_GetTextWidth(textstring);
+    int32_t xpos = textstring->xpos;
+    int32_t ypos = textstring->ypos;
+    int32_t zpos = textstring->zpos;
+    int32_t textwidth = T_GetTextWidth(textstring);
 
     if (textstring->flags & TF_CENTRE_H) {
         xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
@@ -384,11 +385,16 @@ void T_DrawThisText(TEXTSTRING *textstring)
         ypos += GetRenderHeightDownscaled();
     }
 
-    int bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
-    int bypos =
+    int32_t bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
+    int32_t bypos =
         textstring->bgnd_off_y + ypos - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
-    int letter = '\0';
+#ifdef DEBUG_TEXT_SPRITES
+    int32_t fx = GetRenderScale(xpos);
+    int32_t fy = GetRenderScale(ypos);
+#endif
+
+    int32_t letter = '\0';
     while (*string) {
         letter = *string++;
         if (letter > 15 && letter < 32) {
@@ -400,34 +406,53 @@ void T_DrawThisText(TEXTSTRING *textstring)
             continue;
         }
 
-        int sprite = letter;
+        int32_t sprite_num = letter;
         if (letter >= 16) {
-            sprite = TextRemapASCII[letter - 32];
+            sprite_num = TextRemapASCII[letter - 32];
         } else if (letter >= 11) {
-            sprite = letter + 91;
+            sprite_num = letter + 91;
         } else {
-            sprite = letter + 81;
+            sprite_num = letter + 81;
         }
 
         sx = GetRenderScale(xpos);
         sy = GetRenderScale(ypos);
         sh = GetRenderScale(textstring->scale_h);
         sv = GetRenderScale(textstring->scale_v);
+
+#ifdef DEBUG_TEXT_SPRITES
+        PHDSPRITESTRUCT *sprite =
+            &PhdSpriteInfo[0][0] + Objects[O_ALPHABET].mesh_index + sprite_num;
+        int32_t fx1 = sx + ((sh * sprite->x1) >> 16);
+        int32_t fx2 = sx + ((sh * sprite->x2) >> 16);
+        int32_t fy1 = sy + ((sv * sprite->y1) >> 16);
+        int32_t fy2 = sy + ((sv * sprite->y2) >> 16);
+        Insert2DLine(fx1, fy1, fx2, fy1, -100, 0);
+        Insert2DLine(fx1, fy2, fx2, fy2, -100, 0);
+        Insert2DLine(fx1, fy1, fx1, fy2, -100, 0);
+        Insert2DLine(fx2, fy1, fx2, fy2, -100, 0);
+#endif
+
         S_DrawScreenSprite2d(
-            sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite,
+            sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, textstring->text_flags, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
-        xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite])
+        xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
                  * textstring->scale_h)
             / PHD_ONE;
     }
 
-    int bwidth = 0;
-    int bheight = 0;
+#ifdef DEBUG_TEXT_SPRITES
+    Insert2DLine(fx - 5, fy, fx + 5, fy, -100, 112);
+    Insert2DLine(fx, fy - 5, fx, fy + 5, -100, 112);
+#endif
+
+    int32_t bwidth = 0;
+    int32_t bheight = 0;
     if ((textstring->flags & TF_BGND) || (textstring->flags & TF_OUTLINE)) {
         if (textstring->bgnd_size_x) {
             bxpos += textwidth / 2;
@@ -443,17 +468,17 @@ void T_DrawThisText(TEXTSTRING *textstring)
         }
     }
 
-    sx = GetRenderScale(bxpos);
-    sy = GetRenderScale(bypos);
-    sh = GetRenderScale(bwidth);
-    sv = GetRenderScale(bheight);
-
     if (textstring->flags & TF_BGND) {
+        sx = GetRenderScale(bxpos);
+        sy = GetRenderScale(bypos);
+        sh = GetRenderScale(bwidth);
+        sv = GetRenderScale(bheight);
+
         if (textstring->bgnd_gour) {
-            int bhw = sh / 2;
-            int bhh = sv / 2;
-            int bhw2 = sh - bhw;
-            int bhh2 = sv - bhh;
+            int32_t bhw = sh / 2;
+            int32_t bhh = sv / 2;
+            int32_t bhw2 = sh - bhw;
+            int32_t bhh2 = sv - bhh;
 
             S_DrawScreenFBox(
                 sx, sy, zpos + textstring->bgnd_off_z + 8, bhw, bhh,

@@ -123,13 +123,19 @@ void DrawEnemyBar()
 
 void DrawAmmoInfo()
 {
+    const double scale = 0.8;
+    const int32_t text_height = 17 * scale;
+    const int32_t text_offset_x = 3;
+    const int32_t screen_margin_h = 20;
+    const int32_t screen_margin_v = 18;
+
     char ammostring[80] = "";
 
     if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
         || (SaveGame.bonus_flag & GBF_NGPLUS)) {
         if (AmmoText) {
             T_RemovePrint(AmmoText);
-            AmmoText = 0;
+            AmmoText = NULL;
         }
         return;
     }
@@ -155,13 +161,16 @@ void DrawAmmoInfo()
     if (AmmoText) {
         T_ChangeText(AmmoText, ammostring);
     } else {
-        AmmoText = T_Print(-17, 22, 0, ammostring);
+        AmmoText = T_Print(
+            -screen_margin_h - text_offset_x, text_height + screen_margin_v, 0,
+            ammostring);
+        T_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
         T_RightAlign(AmmoText, 1);
     }
 
     AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
-        ? 30 + (int)(BarOffsetY[T1M_BL_TOP_RIGHT] * 10 / GetRenderScale(10))
-        : 22;
+        ? text_height + screen_margin_v + BarOffsetY[T1M_BL_TOP_RIGHT]
+        : text_height + screen_margin_v;
 }
 
 void MakeAmmoString(char *string)

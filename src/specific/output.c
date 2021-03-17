@@ -53,41 +53,42 @@ int32_t GetRenderWidth()
 int32_t GetRenderScale(int32_t unit)
 {
     // TR2Main-style UI scaler
-    int32_t baseWidth = 800;
-    int32_t baseHeight = 600;
+    int32_t baseWidth = 640;
+    int32_t baseHeight = 480;
     int32_t scale_x =
-        (PhdWinWidth > baseWidth) ? MulDiv(PhdWinWidth, unit, baseWidth) : unit;
-    int32_t scale_y = (PhdWinHeight > baseHeight)
+        PhdWinWidth > baseWidth ? MulDiv(PhdWinWidth, unit, baseWidth) : unit;
+    int32_t scale_y = PhdWinHeight > baseHeight
         ? MulDiv(PhdWinHeight, unit, baseHeight)
         : unit;
-    if (scale_x < scale_y) {
-        return scale_x;
-    }
-    return scale_y;
+    return MIN(scale_x, scale_y);
 }
 
 void BarLocation(
-    int8_t bar_location, int32_t scale, int32_t width, int32_t height,
-    int32_t *x, int32_t *y)
+    int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
 {
+    const int32_t screen_margin_h = 20;
+    const int32_t screen_margin_v = 18;
+    const int32_t bar_spacing = 8;
+
     if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_BOTTOM_LEFT) {
-        *x = 8 * scale;
+        *x = screen_margin_h;
     } else if (
         bar_location == T1M_BL_TOP_RIGHT
         || bar_location == T1M_BL_BOTTOM_RIGHT) {
-        *x = PhdWinWidth - width - 8 * scale;
+        *x = GetRenderWidthDownscaled() - width - screen_margin_h;
     } else {
-        *x = (PhdWinWidth - width) / 2;
+        *x = (GetRenderWidthDownscaled() - width) / 2;
     }
 
     if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_TOP_CENTER
         || bar_location == T1M_BL_TOP_RIGHT) {
-        *y = 8 * scale + BarOffsetY[bar_location];
+        *y = screen_margin_v + BarOffsetY[bar_location];
     } else {
-        *y = PhdWinHeight - height - 8 * scale - BarOffsetY[bar_location];
+        *y = GetRenderHeightDownscaled() - height - screen_margin_v
+            - BarOffsetY[bar_location];
     }
 
-    BarOffsetY[bar_location] += height + 4 * scale;
+    BarOffsetY[bar_location] += height + bar_spacing;
 }
 
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
@@ -108,42 +109,40 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     const int32_t color_border_2 = 17;
     const int32_t color_bgnd = 0;
 
-    int32_t scale = GetRenderScaleGLRage(1);
-    int32_t width = percent_max * scale;
-    int32_t height = 5 * scale;
+    int32_t width = 100;
+    int32_t height = 5;
     int16_t bar_color = bar_type;
 
     int32_t x;
     int32_t y;
     if (bar_type == BT_LARA_HEALTH) {
-        BarLocation(T1MConfig.healthbar_location, scale, width, height, &x, &y);
+        BarLocation(T1MConfig.healthbar_location, width, height, &x, &y);
         bar_color = T1MConfig.healthbar_color;
     } else if (bar_type == BT_LARA_AIR) {
-        BarLocation(T1MConfig.airbar_location, scale, width, height, &x, &y);
+        BarLocation(T1MConfig.airbar_location, width, height, &x, &y);
         bar_color = T1MConfig.airbar_color;
     } else if (bar_type == BT_ENEMY_HEALTH) {
-        BarLocation(
-            T1MConfig.enemy_healthbar_location, scale, width, height, &x, &y);
+        BarLocation(T1MConfig.enemy_healthbar_location, width, height, &x, &y);
         bar_color = T1MConfig.enemy_healthbar_color;
     }
 
-    int32_t padding = 2;
-    int32_t top = y - padding;
-    int32_t left = x - padding;
-    int32_t bottom = top + height + padding + 1;
-    int32_t right = left + width + padding + 1;
+    int32_t padding = 3;
+    int32_t left = GetRenderScale(x) - padding;
+    int32_t top = GetRenderScale(y) - padding;
+    int32_t right = GetRenderScale(x + width) + padding;
+    int32_t bottom = GetRenderScale(y + height) + padding;
 
     // background
-    for (int32_t i = 1; i < height + 3; i++) {
-        Insert2DLine(left + 1, top + i, right, top + i, p1, color_bgnd);
+    for (int32_t i = top; i < bottom; i++) {
+        Insert2DLine(left, i, right, i, p1, color_bgnd);
     }
 
     // top / left border
-    Insert2DLine(left, top, right + 1, top, p2, color_border_1);
+    Insert2DLine(left, top, right, top, p2, color_border_1);
     Insert2DLine(left, top, left, bottom, p2, color_border_1);
 
     // bottom / right border
-    Insert2DLine(left + 1, bottom, right, bottom, p2, color_border_2);
+    Insert2DLine(left, bottom - 1, right, bottom - 1, p2, color_border_2);
     Insert2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int32_t blink_interval = 20;
@@ -153,18 +152,17 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
         percent <= blink_threshold && blink_time > blink_interval / 2;
 
     if (percent && !blink) {
-        width -= (percent_max - percent) * scale;
+        width = width * percent / percent_max;
 
-        top = y;
-        left = x;
-        bottom = top + height;
-        right = left + width;
+        left = GetRenderScale(x);
+        top = GetRenderScale(y);
+        right = GetRenderScale(x + width);
+        bottom = GetRenderScale(y + height);
 
-        for (int i = 0; i < height; i++) {
-            int color_index = i * COLOR_BAR_SIZE / height;
+        for (int i = top; i < bottom; i++) {
+            int color_index = (i - top) * COLOR_BAR_SIZE / (bottom - top);
             Insert2DLine(
-                left, top + i, right, top + i, p3,
-                color_bar_map[bar_color][color_index]);
+                left, i, right, i, p3, color_bar_map[bar_color][color_index]);
         }
     }
 }
