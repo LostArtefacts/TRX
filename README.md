@@ -63,6 +63,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed skipping credits working too fast
 - fixed setting user keys being very difficult
 - fixed keys and items not working when drawing guns immediately after using them
+- fixed not being able to close level stats with Escape
 - fixed freeze when holding action key during end of level
 - fixed reading user settings not restoring the volume
 - fixed Tomb of Tihocan playing secret sound

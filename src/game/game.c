@@ -173,7 +173,7 @@ void LevelStats(int32_t level_num)
 
     // wait till action key release
     if (T1MConfig.fix_end_of_level_freeze) {
-        while (Input & IN_SELECT) {
+        while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
             S_UpdateInput();
             S_InitialisePolyList();
             S_CopyBufferToScreen();
@@ -194,11 +194,21 @@ void LevelStats(int32_t level_num)
         S_DumpScreen();
     }
 
-    // wait till action key press
-    while (!(Input & IN_SELECT)) {
+    // wait till action or escape key press
+    while (!CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
         if (ResetFlag) {
             break;
         }
+        S_InitialisePolyList();
+        S_CopyBufferToScreen();
+        S_UpdateInput();
+        T_DrawText();
+        S_OutputPolyList();
+        S_DumpScreen();
+    }
+
+    // wait till escape key release
+    while (CHK_ANY(Input, IN_DESELECT)) {
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
