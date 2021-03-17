@@ -202,9 +202,9 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
     struct json_array_element_s *item = arr->start;
 
     GF.levels[level_num].sequence =
-        malloc(sizeof(GameFlowSequence) * (arr->length + 1));
+        malloc(sizeof(GAMEFLOW_SEQUENCE) * (arr->length + 1));
 
-    GameFlowSequence *seq = GF.levels[level_num].sequence;
+    GAMEFLOW_SEQUENCE *seq = GF.levels[level_num].sequence;
     int32_t i = 0;
     while (item) {
         const char *type_str;
@@ -418,7 +418,7 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
     struct json_array_s *arr = json_value_as_array(levels);
     int32_t level_count = arr->length;
 
-    GF.levels = malloc(sizeof(GameFlowLevel) * level_count);
+    GF.levels = malloc(sizeof(GAMEFLOW_LEVEL) * level_count);
     if (!GF.levels) {
         TRACE("failed to allocate memory");
         return 0;
@@ -440,7 +440,7 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
     GF.title_level_num = -1;
     GF.level_count = arr->length;
 
-    GameFlowLevel *cur = &GF.levels[0];
+    GAMEFLOW_LEVEL *cur = &GF.levels[0];
     while (item) {
         const char *str;
         int32_t num;
@@ -797,7 +797,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     TRACE("%d", level_num);
 
-    GameFlowSequence *seq = GF.levels[level_num].sequence;
+    GAMEFLOW_SEQUENCE *seq = GF.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
     while (seq->type != GFS_END) {
         TRACE("seq %d %d", seq->type, seq->data);

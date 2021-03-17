@@ -264,7 +264,7 @@ extern SAVEGAME_INFO SaveGame;
 extern int32_t DemoLevel;
 extern char *UserSettingsPath;
 
-extern GameFlow GF;
+extern GAMEFLOW GF;
 
 extern int32_t MeshCount;
 extern int32_t MeshPtrCount;

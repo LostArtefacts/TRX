@@ -8,7 +8,7 @@
 typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 
-typedef enum {
+typedef enum CAMERA_TYPE {
     CAM_CHASE = 0,
     CAM_FIXED = 1,
     CAM_LOOK = 2,
@@ -17,7 +17,7 @@ typedef enum {
     CAM_HEAVY = 5,
 } CAMERA_TYPE;
 
-typedef enum {
+typedef enum GAME_OBJECT_ID {
     O_LARA = 0,
     O_PISTOLS = 1,
     O_SHOTGUN = 2,
@@ -211,681 +211,9 @@ typedef enum {
     O_HAIR = O_TEMP10,
     O_ALPHABET = 190,
     NUMBER_OBJECTS = 191,
-} OBJECT_ID;
+} GAME_OBJECT_ID;
 
-typedef enum {
-    AF_VAULT12 = 759,
-    AF_VAULT34 = 614,
-    AF_FASTFALL = 481,
-    AF_STOP = 185,
-    AF_FALLDOWN = 492,
-    AF_STOP_LEFT = 58,
-    AF_STOP_RIGHT = 74,
-    AF_HITWALLLEFT = 800,
-    AF_HITWALLRIGHT = 815,
-    AF_RUNSTEPUP_LEFT = 837,
-    AF_RUNSTEPUP_RIGHT = 830,
-    AF_WALKSTEPUP_LEFT = 844,
-    AF_WALKSTEPUP_RIGHT = 858,
-    AF_WALKSTEPD_LEFT = 887,
-    AF_WALKSTEPD_RIGHT = 874,
-    AF_BACKSTEPD_LEFT = 899,
-    AF_BACKSTEPD_RIGHT = 930,
-    AF_LANDFAR = 358,
-    AF_GRABLEDGE = 1493,
-    AF_GRABLEDGE_OLD = 621,
-    AF_SWIMGLIDE = 1431,
-    AF_FALLBACK = 1473,
-    AF_HANG = 1514,
-    AF_HANG_OLD = 642,
-    AF_STARTHANG = 1505,
-    AF_STARTHANG_OLD = 634,
-    AF_STOPHANG = 448,
-    AF_SLIDE = 1133,
-    AF_SLIDEBACK = 1677,
-    AF_TREAD = 1736,
-    AF_SURFTREAD = 1937,
-    AF_SURFDIVE = 2041,
-    AF_SURFCLIMB = 1849,
-    AF_JUMPIN = 1895,
-    AF_ROLL = 3857,
-    AF_RBALL_DEATH = 3561,
-    AF_SPIKE_DEATH = 3887,
-    AF_GRABLEDGEIN = 3974,
-    AF_PPREADY = 2091,
-    AF_PICKUP = 3443,
-    AF_PICKUP_UW = 2970,
-    AF_PICKUPSCION = 44,
-    AF_USEPUZZLE = 3372,
-} LARA_ANIMATION_FRAME;
-
-typedef enum {
-    AF_SG_AIM = 0,
-    AF_SG_DRAW = 13,
-    AF_SG_RECOIL = 47,
-    AF_SG_UNDRAW = 80,
-    AF_SG_UNAIM = 114,
-    AF_SG_END = 127,
-} LARA_SHOTGUN_ANIMATION_FRAME;
-
-typedef enum {
-    AF_G_AIM = 0,
-    AF_G_AIM_L = 4,
-    AF_G_DRAW1 = 5,
-    AF_G_DRAW1_L = 12,
-    AF_G_DRAW2 = 13,
-    AF_G_DRAW2_L = 23,
-    AF_G_RECOIL = 24,
-} LARA_GUN_ANIMATION_FRAME;
-
-typedef enum {
-    AA_VAULT12 = 50,
-    AA_VAULT34 = 42,
-    AA_FASTFALL = 32,
-    AA_STOP = 11,
-    AA_FALLDOWN = 34,
-    AA_STOP_LEFT = 2,
-    AA_STOP_RIGHT = 3,
-    AA_HITWALLLEFT = 53,
-    AA_HITWALLRIGHT = 54,
-    AA_RUNSTEPUP_LEFT = 56,
-    AA_RUNSTEPUP_RIGHT = 55,
-    AA_WALKSTEPUP_LEFT = 57,
-    AA_WALKSTEPUP_RIGHT = 58,
-    AA_WALKSTEPD_LEFT = 60,
-    AA_WALKSTEPD_RIGHT = 59,
-    AA_BACKSTEPD_LEFT = 61,
-    AA_BACKSTEPD_RIGHT = 62,
-    AA_LANDFAR = 24,
-    AA_GRABLEDGE = 96,
-    AA_GRABLEDGE_OLD = 32,
-    AA_SWIMGLIDE = 87,
-    AA_FALLBACK = 93,
-    AA_HANG = 96,
-    AA_HANG_OLD = 33,
-    AA_STARTHANG = 96,
-    AA_STARTHANG_OLD = 33,
-    AA_STOPHANG = 28,
-    AA_SLIDE = 70,
-    AA_SLIDEBACK = 104,
-    AA_TREAD = 108,
-    AA_SURFTREAD = 114,
-    AA_SURFDIVE = 119,
-    AA_SURFCLIMB = 111,
-    AA_JUMPIN = 112,
-    AA_ROLL = 146,
-    AA_RBALL_DEATH = 139,
-    AA_SPIKE_DEATH = 149,
-    AA_GRABLEDGEIN = 150,
-    AA_SPAZ_FORWARD = 125,
-    AA_SPAZ_BACK = 126,
-    AA_SPAZ_RIGHT = 127,
-    AA_SPAZ_LEFT = 128,
-} LARA_ANIMATION;
-
-typedef enum {
-    LWS_ABOVEWATER = 0,
-    LWS_UNDERWATER = 1,
-    LWS_SURFACE = 2,
-    LWS_CHEAT = 3,
-} LARA_WATER_STATUS;
-
-typedef enum {
-    AS_WALK = 0,
-    AS_RUN = 1,
-    AS_STOP = 2,
-    AS_FORWARDJUMP = 3,
-    AS_POSE = 4,
-    AS_FASTBACK = 5,
-    AS_TURN_R = 6,
-    AS_TURN_L = 7,
-    AS_DEATH = 8,
-    AS_FASTFALL = 9,
-    AS_HANG = 10,
-    AS_REACH = 11,
-    AS_SPLAT = 12,
-    AS_TREAD = 13,
-    AS_LAND = 14,
-    AS_COMPRESS = 15,
-    AS_BACK = 16,
-    AS_SWIM = 17,
-    AS_GLIDE = 18,
-    AS_NULL = 19,
-    AS_FASTTURN = 20,
-    AS_STEPRIGHT = 21,
-    AS_STEPLEFT = 22,
-    AS_HIT = 23,
-    AS_SLIDE = 24,
-    AS_BACKJUMP = 25,
-    AS_RIGHTJUMP = 26,
-    AS_LEFTJUMP = 27,
-    AS_UPJUMP = 28,
-    AS_FALLBACK = 29,
-    AS_HANGLEFT = 30,
-    AS_HANGRIGHT = 31,
-    AS_SLIDEBACK = 32,
-    AS_SURFTREAD = 33,
-    AS_SURFSWIM = 34,
-    AS_DIVE = 35,
-    AS_PUSHBLOCK = 36,
-    AS_PULLBLOCK = 37,
-    AS_PPREADY = 38,
-    AS_PICKUP = 39,
-    AS_SWITCHON = 40,
-    AS_SWITCHOFF = 41,
-    AS_USEKEY = 42,
-    AS_USEPUZZLE = 43,
-    AS_UWDEATH = 44,
-    AS_ROLL = 45,
-    AS_SPECIAL = 46,
-    AS_SURFBACK = 47,
-    AS_SURFLEFT = 48,
-    AS_SURFRIGHT = 49,
-    AS_USEMIDAS = 50,
-    AS_DIEMIDAS = 51,
-    AS_SWANDIVE = 52,
-    AS_FASTDIVE = 53,
-    AS_GYMNAST = 54,
-    AS_WATEROUT = 55,
-} LARA_STATE;
-
-typedef enum {
-    LGS_ARMLESS = 0,
-    LGS_HANDSBUSY = 1,
-    LGS_DRAW = 2,
-    LGS_UNDRAW = 3,
-    LGS_READY = 4,
-} LARA_GUN_STATE;
-
-typedef enum {
-    LGT_UNARMED = 0,
-    LGT_PISTOLS = 1,
-    LGT_MAGNUMS = 2,
-    LGT_UZIS = 3,
-    LGT_SHOTGUN = 4,
-    NUM_WEAPONS = 5
-} LARA_GUN_TYPE;
-
-typedef enum {
-    LM_HIPS = 0,
-    LM_THIGH_L = 1,
-    LM_CALF_L = 2,
-    LM_FOOT_L = 3,
-    LM_THIGH_R = 4,
-    LM_CALF_R = 5,
-    LM_FOOT_R = 6,
-    LM_TORSO = 7,
-    LM_UARM_R = 8,
-    LM_LARM_R = 9,
-    LM_HAND_R = 10,
-    LM_UARM_L = 11,
-    LM_LARM_L = 12,
-    LM_HAND_L = 13,
-    LM_HEAD = 14,
-    LM_NUMBER_OF = 15,
-} LARA_MESH;
-
-typedef enum {
-    MOOD_BORED = 0,
-    MOOD_ATTACK = 1,
-    MOOD_ESCAPE = 2,
-    MOOD_STALK = 3,
-} MOOD_TYPE;
-
-typedef enum {
-    TARGET_NONE = 0,
-    TARGET_PRIMARY = 1,
-    TARGET_SECONDARY = 2,
-} TARGET_TYPE;
-
-typedef enum {
-    GBUF_TEXTURE_PAGES = 0,
-    GBUF_OBJECT_TEXTURES = 1,
-    GBUF_MESH_POINTERS = 2,
-    GBUF_MESHES = 3,
-    GBUF_ANIMS = 4,
-    GBUF_ANIM_CHANGES = 5,
-    GBUF_ANIM_RANGES = 6,
-    GBUF_ANIM_COMMANDS = 7,
-    GBUF_ANIM_BONES = 8,
-    GBUF_ANIM_FRAMES = 9,
-    GBUF_ROOM_TEXTURES = 10,
-    GBUF_ROOM_INFOS = 11,
-    GBUF_ROOM_MESH = 12,
-    GBUF_ROOM_DOOR = 13,
-    GBUF_ROOM_FLOOR = 14,
-    GBUF_ROOM_LIGHTS = 15,
-    GBUF_ROOM_STATIC_MESH_INFOS = 16,
-    GBUF_FLOOR_DATA = 17,
-    GBUF_ITEMS = 18,
-    GBUF_CAMERAS = 19,
-    GBUF_SOUND_FX = 20,
-    GBUF_BOXES = 21,
-    GBUF_OVERLAPS = 22,
-    GBUF_GROUNDZONE = 23,
-    GBUF_FLYZONE = 24,
-    GBUF_ANIMATING_TEXTURE_RANGES = 25,
-    GBUF_CINEMATIC_FRAMES = 26,
-    GBUF_LOADDEMO_BUFFER = 27,
-    GBUF_SAVEDEMO_BUFFER = 28,
-    GBUF_CINEMATIC_EFFECTS = 29,
-    GBUF_MUMMY_HEAD_TURN = 30,
-    GBUF_EXTRA_DOOR_STUFF = 31,
-    GBUF_EFFECTS = 32,
-    GBUF_CREATURE_DATA = 33,
-    GBUF_CREATURE_LOT = 34,
-    GBUF_SAMPLE_INFOS = 35,
-    GBUF_SAMPLES = 36,
-    GBUF_SAMPLE_OFFSETS = 37,
-    GBUF_ROLLINGBALL_STUFF = 38,
-} GAMEALLOC_BUFFER;
-
-typedef enum {
-    GFL_TITLE = 0,
-    GFL_NORMAL = 1,
-    GFL_SAVED = 2,
-    GFL_DEMO = 3,
-    GFL_CUTSCENE = 4,
-    GFL_GYM = 5,
-    GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
-} GAMEFLOW_LEVEL_TYPE;
-
-typedef enum {
-    GF_NOP = -1,
-    GF_START_GAME = 0,
-    GF_START_CINE = 1 << 6,
-    GF_START_FMV = 2 << 6,
-    GF_START_DEMO = 3 << 6,
-    GF_EXIT_TO_TITLE = 4 << 6,
-    GF_LEVEL_COMPLETE = 5 << 6,
-    GF_EXIT_GAME = 6 << 6,
-    GF_START_SAVED_GAME = 7 << 6,
-} GAMEFLOW_OPTION;
-
-typedef enum {
-    IN_FORWARD = 1 << 0,
-    IN_BACK = 1 << 1,
-    IN_LEFT = 1 << 2,
-    IN_RIGHT = 1 << 3,
-    IN_JUMP = 1 << 4,
-    IN_DRAW = 1 << 5,
-    IN_ACTION = 1 << 6,
-    IN_SLOW = 1 << 7,
-    IN_OPTION = 1 << 8,
-    IN_LOOK = 1 << 9,
-    IN_STEPL = 1 << 10,
-    IN_STEPR = 1 << 11,
-    IN_ROLL = 1 << 12,
-    IN_PAUSE = 1 << 13,
-    IN_A = 1 << 14,
-    IN_B = 1 << 15,
-    IN_C = 1 << 16,
-    IN_MENUBACK = 1 << 17,
-    IN_UP = 1 << 18,
-    IN_DOWN = 1 << 19,
-    IN_SELECT = 1 << 20,
-    IN_DESELECT = 1 << 21,
-    IN_SAVE = 1 << 22,
-    IN_LOAD = 1 << 23,
-    IN_DOZYCHEAT = 1 << 24,
-    IN_STUFFCHEAT = 1 << 25,
-} INPUT_STATE;
-
-typedef enum {
-    TF_ACTIVE = 1 << 0,
-    TF_FLASH = 1 << 1,
-    TF_ROTATE_H = 1 << 2,
-    TF_ROTATE_V = 1 << 3,
-    TF_CENTRE_H = 1 << 4,
-    TF_CENTRE_V = 1 << 5,
-    TF_RIGHT = 1 << 7,
-    TF_BOTTOM = 1 << 8,
-    TF_BGND = 1 << 9,
-    TF_OUTLINE = 1 << 10,
-} TEXTSTRING_FLAG;
-
-typedef enum {
-    D_TRANS1 = 1,
-    D_TRANS2 = 2,
-    D_TRANS3 = 3,
-    D_TRANS4 = 4,
-    D_NEXT = 1 << 3,
-} D_flags;
-
-typedef enum {
-    ASF_PERSPECTIVE = 1 << 0,
-    ASF_BILINEAR = 1 << 1,
-    ASF_FPS = 1 << 2,
-} APP_SETTINGS_FLAG;
-
-typedef enum {
-    COLL_NONE = 0,
-    COLL_FRONT = 1,
-    COLL_LEFT = 2,
-    COLL_RIGHT = 4,
-    COLL_TOP = 8,
-    COLL_TOPFRONT = 16,
-    COLL_CLAMP = 32,
-} COLL_TYPE;
-
-typedef enum {
-    HT_WALL = 0,
-    HT_SMALL_SLOPE = 1,
-    HT_BIG_SLOPE = 2,
-} HEIGHT_TYPE;
-
-typedef enum {
-    DIR_NORTH = 0,
-    DIR_EAST = 1,
-    DIR_SOUTH = 2,
-    DIR_WEST = 3,
-} DIRECTION;
-
-typedef enum {
-    AC_NULL = 0,
-    AC_MOVE_ORIGIN = 1,
-    AC_JUMP_VELOCITY = 2,
-    AC_ATTACK_READY = 3,
-    AC_DEACTIVATE = 4,
-    AC_SOUND_FX = 5,
-    AC_EFFECT = 6,
-} ANIM_COMMAND;
-
-typedef enum {
-    BEB_POP = 1 << 0,
-    BEB_PUSH = 1 << 1,
-    BEB_ROT_X = 1 << 2,
-    BEB_ROT_Y = 1 << 3,
-    BEB_ROT_Z = 1 << 4,
-} BONE_EXTRA_BITS;
-
-typedef enum {
-    IS_NOT_ACTIVE = 0,
-    IS_ACTIVE = 1,
-    IS_DEACTIVATED = 2,
-    IS_INVISIBLE = 3,
-} ITEM_STATUS;
-
-typedef enum {
-    RF_UNDERWATER = 1,
-} ROOM_FLAG;
-
-typedef enum {
-    FT_FLOOR = 0,
-    FT_DOOR = 1,
-    FT_TILT = 2,
-    FT_ROOF = 3,
-    FT_TRIGGER = 4,
-    FT_LAVA = 5,
-} FLOOR_TYPE;
-
-typedef enum {
-    TT_TRIGGER = 0,
-    TT_PAD = 1,
-    TT_SWITCH = 2,
-    TT_KEY = 3,
-    TT_PICKUP = 4,
-    TT_HEAVY = 5,
-    TT_ANTIPAD = 6,
-    TT_COMBAT = 7,
-    TT_DUMMY = 8,
-} TRIGGER_TYPE;
-
-typedef enum {
-    TO_OBJECT = 0,
-    TO_CAMERA = 1,
-    TO_SINK = 2,
-    TO_FLIPMAP = 3,
-    TO_FLIPON = 4,
-    TO_FLIPOFF = 5,
-    TO_TARGET = 6,
-    TO_FINISH = 7,
-    TO_CD = 8,
-    TO_FLIPEFFECT = 9,
-    TO_SECRET = 10,
-} TRIGGER_OBJECT;
-
-typedef enum {
-    IF_ONESHOT = 0x0100,
-    IF_CODE_BITS = 0x3E00,
-    IF_REVERSE = 0x4000,
-    IF_NOT_VISIBLE = 0x0100,
-    IF_KILLED_ITEM = 0x8000,
-} ITEM_FLAG;
-
-typedef enum {
-    FMV_INTRO = 0,
-    FMV_GYM = 1,
-    FMV_SNOW = 2,
-    FMV_LIFT = 3,
-    FMV_VISION = 4,
-    FMV_CANYON = 5,
-    FMV_PYRAMID = 6,
-    FMV_PRISON = 7,
-    FMV_ENDSEQ = 8,
-    FMV_CORE = 9,
-    FMV_ESCAPE = 10,
-    NUMBER_OF_FMV = 11,
-} FMV_SEQUENCE;
-
-typedef enum {
-    RNG_OPENING = 0,
-    RNG_OPEN = 1,
-    RNG_CLOSING = 2,
-    RNG_MAIN2OPTION = 3,
-    RNG_MAIN2KEYS = 4,
-    RNG_KEYS2MAIN = 5,
-    RNG_OPTION2MAIN = 6,
-    RNG_SELECTING = 7,
-    RNG_SELECTED = 8,
-    RNG_DESELECTING = 9,
-    RNG_DESELECT = 10,
-    RNG_CLOSING_ITEM = 11,
-    RNG_EXITING_INVENTORY = 12,
-    RNG_DONE = 13,
-} RING_STATUS;
-
-typedef enum {
-    INV_GAME_MODE = 0,
-    INV_TITLE_MODE = 1,
-    INV_KEYS_MODE = 2,
-    INV_SAVE_MODE = 3,
-    INV_LOAD_MODE = 4,
-    INV_DEATH_MODE = 5,
-} INV_MODE;
-
-typedef enum {
-    RT_MAIN = 0,
-    RT_OPTION = 1,
-    RT_KEYS = 2,
-} RING_TYPE;
-
-typedef enum {
-    SHAPE_SPRITE = 1,
-    SHAPE_LINE = 2,
-    SHAPE_BOX = 3,
-    SHAPE_FBOX = 4
-} SHAPE;
-
-typedef enum {
-    IC_BLACK = 0,
-    IC_GREY = 1,
-    IC_WHITE = 2,
-    IC_RED = 3,
-    IC_ORANGE = 4,
-    IC_YELLOW = 5,
-    IC_GREEN1 = 6,
-    IC_GREEN2 = 7,
-    IC_GREEN3 = 8,
-    IC_GREEN4 = 9,
-    IC_GREEN5 = 10,
-    IC_GREEN6 = 11,
-    IC_DARKGREEN = 12,
-    IC_GREEN = 13,
-    IC_CYAN = 14,
-    IC_BLUE = 15,
-    IC_MAGENTA = 16,
-    IC_NUMBER_OF = 17,
-} INV_COLOUR;
-
-typedef enum {
-    IT_NAME = 0,
-    IT_QTY = 1,
-    IT_NUMBER_OF = 2,
-} INV_TEXT;
-
-typedef enum {
-    DOOR_CLOSED = 0,
-    DOOR_OPEN = 1,
-} DOOR_ANIM;
-
-typedef enum {
-    TRAP_SET = 0,
-    TRAP_ACTIVATE = 1,
-    TRAP_WORKING = 2,
-    TRAP_FINISHED = 3,
-} TRAP_ANIM;
-
-typedef enum {
-    RIF_FIXED_HEIGHT = 1 << 0,
-    RIF_BLOCKED = 1 << 1,
-    RIF_BLOCKABLE = 1 << 2,
-} REQUEST_INFO_FLAGS;
-
-typedef enum {
-    RBS_START = 0,
-    RBS_END = 1,
-    RBS_MOVING = 2,
-} ROLLING_BLOCK_STATE;
-
-typedef enum {
-    GFS_END = -1,
-    GFS_START_GAME,
-    GFS_LOOP_GAME,
-    GFS_STOP_GAME,
-    GFS_START_CINE,
-    GFS_LOOP_CINE,
-    GFS_STOP_CINE,
-    GFS_PLAY_FMV,
-    GFS_LEVEL_STATS,
-    GFS_DISPLAY_PICTURE,
-    GFS_EXIT_TO_TITLE,
-    GFS_EXIT_TO_LEVEL,
-    GFS_EXIT_TO_CINE,
-    GFS_SET_CAM_X,
-    GFS_SET_CAM_Y,
-    GFS_SET_CAM_Z,
-    GFS_SET_CAM_ANGLE,
-    GFS_FLIP_MAP,
-    GFS_REMOVE_GUNS,
-    GFS_REMOVE_SCIONS,
-    GFS_PLAY_SYNCED_AUDIO,
-    GFS_MESH_SWAP,
-    GFS_FIX_PYRAMID_SECRET_TRIGGER,
-} GameFlowSequenceType;
-
-typedef enum {
-    GS_HEADING_INVENTORY,
-    GS_HEADING_GAME_OVER,
-    GS_HEADING_OPTION,
-    GS_HEADING_ITEMS,
-
-    GS_PASSPORT_SELECT_LEVEL,
-    GS_PASSPORT_SELECT_MODE,
-    GS_PASSPORT_MODE_NEW_GAME,
-    GS_PASSPORT_MODE_NEW_GAME_PLUS,
-    GS_PASSPORT_MODE_JAPANESE_NEW_GAME,
-    GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS,
-    GS_PASSPORT_NEW_GAME,
-    GS_PASSPORT_LOAD_GAME,
-    GS_PASSPORT_SAVE_GAME,
-    GS_PASSPORT_EXIT_GAME,
-    GS_PASSPORT_EXIT_TO_TITLE,
-
-    GS_DETAIL_SELECT_DETAIL,
-    GS_DETAIL_LEVEL_HIGH,
-    GS_DETAIL_LEVEL_MEDIUM,
-    GS_DETAIL_LEVEL_LOW,
-    GS_DETAIL_PERSPECTIVE_FMT,
-    GS_DETAIL_BILINEAR_FMT,
-    GS_DETAIL_VIDEO_MODE_FMT,
-
-    GS_SOUND_SET_VOLUMES,
-
-    GS_CONTROL_DEFAULT_KEYS,
-    GS_CONTROL_USER_KEYS,
-
-    GS_KEYMAP_RUN,
-    GS_KEYMAP_BACK,
-    GS_KEYMAP_LEFT,
-    GS_KEYMAP_RIGHT,
-    GS_KEYMAP_STEP_LEFT,
-    GS_KEYMAP_STEP_RIGHT,
-    GS_KEYMAP_WALK,
-    GS_KEYMAP_JUMP,
-    GS_KEYMAP_ACTION,
-    GS_KEYMAP_DRAW_WEAPON,
-    GS_KEYMAP_LOOK,
-    GS_KEYMAP_ROLL,
-    GS_KEYMAP_INVENTORY,
-
-    GS_STATS_TIME_TAKEN_FMT,
-    GS_STATS_SECRETS_FMT,
-    GS_STATS_PICKUPS_FMT,
-    GS_STATS_KILLS_FMT,
-
-    GS_MISC_ON,
-    GS_MISC_OFF,
-    GS_MISC_EMPTY_SLOT_FMT,
-    GS_MISC_DEMO_MODE,
-
-    GS_INV_ITEM_MEDI,
-    GS_INV_ITEM_BIG_MEDI,
-
-    GS_INV_ITEM_PUZZLE1,
-    GS_INV_ITEM_PUZZLE2,
-    GS_INV_ITEM_PUZZLE3,
-    GS_INV_ITEM_PUZZLE4,
-
-    GS_INV_ITEM_KEY1,
-    GS_INV_ITEM_KEY2,
-    GS_INV_ITEM_KEY3,
-    GS_INV_ITEM_KEY4,
-
-    GS_INV_ITEM_PICKUP1,
-    GS_INV_ITEM_PICKUP2,
-    GS_INV_ITEM_LEADBAR,
-    GS_INV_ITEM_SCION,
-
-    GS_INV_ITEM_PISTOLS,
-    GS_INV_ITEM_SHOTGUN,
-    GS_INV_ITEM_MAGNUM,
-    GS_INV_ITEM_UZI,
-    GS_INV_ITEM_GRENADE,
-
-    GS_INV_ITEM_PISTOL_AMMO,
-    GS_INV_ITEM_SHOTGUN_AMMO,
-    GS_INV_ITEM_MAGNUM_AMMO,
-    GS_INV_ITEM_UZI_AMMO,
-
-    GS_INV_ITEM_COMPASS,
-    GS_INV_ITEM_GAME,
-    GS_INV_ITEM_DETAILS,
-    GS_INV_ITEM_SOUND,
-    GS_INV_ITEM_CONTROLS,
-    GS_INV_ITEM_GAMMA,
-    GS_INV_ITEM_LARAS_HOME,
-
-    GS_NUMBER_OF,
-} GAME_STRING_ID;
-
-typedef enum {
-    BT_LARA_HEALTH = 0,
-    BT_LARA_AIR = 1,
-    BT_ENEMY_HEALTH = 2,
-} BAR_TYPE;
-
-typedef enum {
+typedef enum SOUND_EFFECT_ID {
     SFX_LARA_FEET = 0,
     SFX_LARA_CLIMB2 = 1,
     SFX_LARA_NO = 2,
@@ -1085,40 +413,778 @@ typedef enum {
     SFX_LARA_SETUP = 205,
 } SOUND_EFFECT_ID;
 
-typedef enum {
+typedef enum LARA_ANIMATION_FRAME {
+    AF_VAULT12 = 759,
+    AF_VAULT34 = 614,
+    AF_FASTFALL = 481,
+    AF_STOP = 185,
+    AF_FALLDOWN = 492,
+    AF_STOP_LEFT = 58,
+    AF_STOP_RIGHT = 74,
+    AF_HITWALLLEFT = 800,
+    AF_HITWALLRIGHT = 815,
+    AF_RUNSTEPUP_LEFT = 837,
+    AF_RUNSTEPUP_RIGHT = 830,
+    AF_WALKSTEPUP_LEFT = 844,
+    AF_WALKSTEPUP_RIGHT = 858,
+    AF_WALKSTEPD_LEFT = 887,
+    AF_WALKSTEPD_RIGHT = 874,
+    AF_BACKSTEPD_LEFT = 899,
+    AF_BACKSTEPD_RIGHT = 930,
+    AF_LANDFAR = 358,
+    AF_GRABLEDGE = 1493,
+    AF_GRABLEDGE_OLD = 621,
+    AF_SWIMGLIDE = 1431,
+    AF_FALLBACK = 1473,
+    AF_HANG = 1514,
+    AF_HANG_OLD = 642,
+    AF_STARTHANG = 1505,
+    AF_STARTHANG_OLD = 634,
+    AF_STOPHANG = 448,
+    AF_SLIDE = 1133,
+    AF_SLIDEBACK = 1677,
+    AF_TREAD = 1736,
+    AF_SURFTREAD = 1937,
+    AF_SURFDIVE = 2041,
+    AF_SURFCLIMB = 1849,
+    AF_JUMPIN = 1895,
+    AF_ROLL = 3857,
+    AF_RBALL_DEATH = 3561,
+    AF_SPIKE_DEATH = 3887,
+    AF_GRABLEDGEIN = 3974,
+    AF_PPREADY = 2091,
+    AF_PICKUP = 3443,
+    AF_PICKUP_UW = 2970,
+    AF_PICKUPSCION = 44,
+    AF_USEPUZZLE = 3372,
+} LARA_ANIMATION_FRAME;
+
+typedef enum LARA_SHOTGUN_ANIMATION_FRAME {
+    AF_SG_AIM = 0,
+    AF_SG_DRAW = 13,
+    AF_SG_RECOIL = 47,
+    AF_SG_UNDRAW = 80,
+    AF_SG_UNAIM = 114,
+    AF_SG_END = 127,
+} LARA_SHOTGUN_ANIMATION_FRAME;
+
+typedef enum LARA_GUN_ANIMATION_FRAME {
+    AF_G_AIM = 0,
+    AF_G_AIM_L = 4,
+    AF_G_DRAW1 = 5,
+    AF_G_DRAW1_L = 12,
+    AF_G_DRAW2 = 13,
+    AF_G_DRAW2_L = 23,
+    AF_G_RECOIL = 24,
+} LARA_GUN_ANIMATION_FRAME;
+
+typedef enum LARA_ANIMATION {
+    AA_VAULT12 = 50,
+    AA_VAULT34 = 42,
+    AA_FASTFALL = 32,
+    AA_STOP = 11,
+    AA_FALLDOWN = 34,
+    AA_STOP_LEFT = 2,
+    AA_STOP_RIGHT = 3,
+    AA_HITWALLLEFT = 53,
+    AA_HITWALLRIGHT = 54,
+    AA_RUNSTEPUP_LEFT = 56,
+    AA_RUNSTEPUP_RIGHT = 55,
+    AA_WALKSTEPUP_LEFT = 57,
+    AA_WALKSTEPUP_RIGHT = 58,
+    AA_WALKSTEPD_LEFT = 60,
+    AA_WALKSTEPD_RIGHT = 59,
+    AA_BACKSTEPD_LEFT = 61,
+    AA_BACKSTEPD_RIGHT = 62,
+    AA_LANDFAR = 24,
+    AA_GRABLEDGE = 96,
+    AA_GRABLEDGE_OLD = 32,
+    AA_SWIMGLIDE = 87,
+    AA_FALLBACK = 93,
+    AA_HANG = 96,
+    AA_HANG_OLD = 33,
+    AA_STARTHANG = 96,
+    AA_STARTHANG_OLD = 33,
+    AA_STOPHANG = 28,
+    AA_SLIDE = 70,
+    AA_SLIDEBACK = 104,
+    AA_TREAD = 108,
+    AA_SURFTREAD = 114,
+    AA_SURFDIVE = 119,
+    AA_SURFCLIMB = 111,
+    AA_JUMPIN = 112,
+    AA_ROLL = 146,
+    AA_RBALL_DEATH = 139,
+    AA_SPIKE_DEATH = 149,
+    AA_GRABLEDGEIN = 150,
+    AA_SPAZ_FORWARD = 125,
+    AA_SPAZ_BACK = 126,
+    AA_SPAZ_RIGHT = 127,
+    AA_SPAZ_LEFT = 128,
+} LARA_ANIMATION;
+
+typedef enum LARA_WATER_STATUS {
+    LWS_ABOVEWATER = 0,
+    LWS_UNDERWATER = 1,
+    LWS_SURFACE = 2,
+    LWS_CHEAT = 3,
+} LARA_WATER_STATUS;
+
+typedef enum LARA_STATE {
+    AS_WALK = 0,
+    AS_RUN = 1,
+    AS_STOP = 2,
+    AS_FORWARDJUMP = 3,
+    AS_POSE = 4,
+    AS_FASTBACK = 5,
+    AS_TURN_R = 6,
+    AS_TURN_L = 7,
+    AS_DEATH = 8,
+    AS_FASTFALL = 9,
+    AS_HANG = 10,
+    AS_REACH = 11,
+    AS_SPLAT = 12,
+    AS_TREAD = 13,
+    AS_LAND = 14,
+    AS_COMPRESS = 15,
+    AS_BACK = 16,
+    AS_SWIM = 17,
+    AS_GLIDE = 18,
+    AS_NULL = 19,
+    AS_FASTTURN = 20,
+    AS_STEPRIGHT = 21,
+    AS_STEPLEFT = 22,
+    AS_HIT = 23,
+    AS_SLIDE = 24,
+    AS_BACKJUMP = 25,
+    AS_RIGHTJUMP = 26,
+    AS_LEFTJUMP = 27,
+    AS_UPJUMP = 28,
+    AS_FALLBACK = 29,
+    AS_HANGLEFT = 30,
+    AS_HANGRIGHT = 31,
+    AS_SLIDEBACK = 32,
+    AS_SURFTREAD = 33,
+    AS_SURFSWIM = 34,
+    AS_DIVE = 35,
+    AS_PUSHBLOCK = 36,
+    AS_PULLBLOCK = 37,
+    AS_PPREADY = 38,
+    AS_PICKUP = 39,
+    AS_SWITCHON = 40,
+    AS_SWITCHOFF = 41,
+    AS_USEKEY = 42,
+    AS_USEPUZZLE = 43,
+    AS_UWDEATH = 44,
+    AS_ROLL = 45,
+    AS_SPECIAL = 46,
+    AS_SURFBACK = 47,
+    AS_SURFLEFT = 48,
+    AS_SURFRIGHT = 49,
+    AS_USEMIDAS = 50,
+    AS_DIEMIDAS = 51,
+    AS_SWANDIVE = 52,
+    AS_FASTDIVE = 53,
+    AS_GYMNAST = 54,
+    AS_WATEROUT = 55,
+} LARA_STATE;
+
+typedef enum LARA_GUN_STATE {
+    LGS_ARMLESS = 0,
+    LGS_HANDSBUSY = 1,
+    LGS_DRAW = 2,
+    LGS_UNDRAW = 3,
+    LGS_READY = 4,
+} LARA_GUN_STATE;
+
+typedef enum LARA_GUN_TYPE {
+    LGT_UNARMED = 0,
+    LGT_PISTOLS = 1,
+    LGT_MAGNUMS = 2,
+    LGT_UZIS = 3,
+    LGT_SHOTGUN = 4,
+    NUM_WEAPONS = 5
+} LARA_GUN_TYPE;
+
+typedef enum LARA_MESH {
+    LM_HIPS = 0,
+    LM_THIGH_L = 1,
+    LM_CALF_L = 2,
+    LM_FOOT_L = 3,
+    LM_THIGH_R = 4,
+    LM_CALF_R = 5,
+    LM_FOOT_R = 6,
+    LM_TORSO = 7,
+    LM_UARM_R = 8,
+    LM_LARM_R = 9,
+    LM_HAND_R = 10,
+    LM_UARM_L = 11,
+    LM_LARM_L = 12,
+    LM_HAND_L = 13,
+    LM_HEAD = 14,
+    LM_NUMBER_OF = 15,
+} LARA_MESH;
+
+typedef enum MOOD_TYPE {
+    MOOD_BORED = 0,
+    MOOD_ATTACK = 1,
+    MOOD_ESCAPE = 2,
+    MOOD_STALK = 3,
+} MOOD_TYPE;
+
+typedef enum TARGET_TYPE {
+    TARGET_NONE = 0,
+    TARGET_PRIMARY = 1,
+    TARGET_SECONDARY = 2,
+} TARGET_TYPE;
+
+typedef enum GAMEALLOC_BUFFER {
+    GBUF_TEXTURE_PAGES = 0,
+    GBUF_OBJECT_TEXTURES = 1,
+    GBUF_MESH_POINTERS = 2,
+    GBUF_MESHES = 3,
+    GBUF_ANIMS = 4,
+    GBUF_ANIM_CHANGES = 5,
+    GBUF_ANIM_RANGES = 6,
+    GBUF_ANIM_COMMANDS = 7,
+    GBUF_ANIM_BONES = 8,
+    GBUF_ANIM_FRAMES = 9,
+    GBUF_ROOM_TEXTURES = 10,
+    GBUF_ROOM_INFOS = 11,
+    GBUF_ROOM_MESH = 12,
+    GBUF_ROOM_DOOR = 13,
+    GBUF_ROOM_FLOOR = 14,
+    GBUF_ROOM_LIGHTS = 15,
+    GBUF_ROOM_STATIC_MESH_INFOS = 16,
+    GBUF_FLOOR_DATA = 17,
+    GBUF_ITEMS = 18,
+    GBUF_CAMERAS = 19,
+    GBUF_SOUND_FX = 20,
+    GBUF_BOXES = 21,
+    GBUF_OVERLAPS = 22,
+    GBUF_GROUNDZONE = 23,
+    GBUF_FLYZONE = 24,
+    GBUF_ANIMATING_TEXTURE_RANGES = 25,
+    GBUF_CINEMATIC_FRAMES = 26,
+    GBUF_LOADDEMO_BUFFER = 27,
+    GBUF_SAVEDEMO_BUFFER = 28,
+    GBUF_CINEMATIC_EFFECTS = 29,
+    GBUF_MUMMY_HEAD_TURN = 30,
+    GBUF_EXTRA_DOOR_STUFF = 31,
+    GBUF_EFFECTS = 32,
+    GBUF_CREATURE_DATA = 33,
+    GBUF_CREATURE_LOT = 34,
+    GBUF_SAMPLE_INFOS = 35,
+    GBUF_SAMPLES = 36,
+    GBUF_SAMPLE_OFFSETS = 37,
+    GBUF_ROLLINGBALL_STUFF = 38,
+} GAMEALLOC_BUFFER;
+
+typedef enum INPUT_STATE {
+    IN_FORWARD = 1 << 0,
+    IN_BACK = 1 << 1,
+    IN_LEFT = 1 << 2,
+    IN_RIGHT = 1 << 3,
+    IN_JUMP = 1 << 4,
+    IN_DRAW = 1 << 5,
+    IN_ACTION = 1 << 6,
+    IN_SLOW = 1 << 7,
+    IN_OPTION = 1 << 8,
+    IN_LOOK = 1 << 9,
+    IN_STEPL = 1 << 10,
+    IN_STEPR = 1 << 11,
+    IN_ROLL = 1 << 12,
+    IN_PAUSE = 1 << 13,
+    IN_A = 1 << 14,
+    IN_B = 1 << 15,
+    IN_C = 1 << 16,
+    IN_MENUBACK = 1 << 17,
+    IN_UP = 1 << 18,
+    IN_DOWN = 1 << 19,
+    IN_SELECT = 1 << 20,
+    IN_DESELECT = 1 << 21,
+    IN_SAVE = 1 << 22,
+    IN_LOAD = 1 << 23,
+    IN_DOZYCHEAT = 1 << 24,
+    IN_STUFFCHEAT = 1 << 25,
+} INPUT_STATE;
+
+typedef enum TEXTSTRING_FLAG {
+    TF_ACTIVE = 1 << 0,
+    TF_FLASH = 1 << 1,
+    TF_ROTATE_H = 1 << 2,
+    TF_ROTATE_V = 1 << 3,
+    TF_CENTRE_H = 1 << 4,
+    TF_CENTRE_V = 1 << 5,
+    TF_RIGHT = 1 << 7,
+    TF_BOTTOM = 1 << 8,
+    TF_BGND = 1 << 9,
+    TF_OUTLINE = 1 << 10,
+} TEXTSTRING_FLAG;
+
+typedef enum D_FLAGS {
+    D_TRANS1 = 1,
+    D_TRANS2 = 2,
+    D_TRANS3 = 3,
+    D_TRANS4 = 4,
+    D_NEXT = 1 << 3,
+} D_FLAGS;
+
+typedef enum APP_SETTINGS_FLAG {
+    ASF_PERSPECTIVE = 1 << 0,
+    ASF_BILINEAR = 1 << 1,
+    ASF_FPS = 1 << 2,
+} APP_SETTINGS_FLAG;
+
+typedef enum COLL_TYPE {
+    COLL_NONE = 0,
+    COLL_FRONT = 1,
+    COLL_LEFT = 2,
+    COLL_RIGHT = 4,
+    COLL_TOP = 8,
+    COLL_TOPFRONT = 16,
+    COLL_CLAMP = 32,
+} COLL_TYPE;
+
+typedef enum HEIGHT_TYPE {
+    HT_WALL = 0,
+    HT_SMALL_SLOPE = 1,
+    HT_BIG_SLOPE = 2,
+} HEIGHT_TYPE;
+
+typedef enum DIRECTION {
+    DIR_NORTH = 0,
+    DIR_EAST = 1,
+    DIR_SOUTH = 2,
+    DIR_WEST = 3,
+} DIRECTION;
+
+typedef enum ANIM_COMMAND {
+    AC_NULL = 0,
+    AC_MOVE_ORIGIN = 1,
+    AC_JUMP_VELOCITY = 2,
+    AC_ATTACK_READY = 3,
+    AC_DEACTIVATE = 4,
+    AC_SOUND_FX = 5,
+    AC_EFFECT = 6,
+} ANIM_COMMAND;
+
+typedef enum BONE_EXTRA_BITS {
+    BEB_POP = 1 << 0,
+    BEB_PUSH = 1 << 1,
+    BEB_ROT_X = 1 << 2,
+    BEB_ROT_Y = 1 << 3,
+    BEB_ROT_Z = 1 << 4,
+} BONE_EXTRA_BITS;
+
+typedef enum ITEM_STATUS {
+    IS_NOT_ACTIVE = 0,
+    IS_ACTIVE = 1,
+    IS_DEACTIVATED = 2,
+    IS_INVISIBLE = 3,
+} ITEM_STATUS;
+
+typedef enum ROOM_FLAG {
+    RF_UNDERWATER = 1,
+} ROOM_FLAG;
+
+typedef enum FLOOR_TYPE {
+    FT_FLOOR = 0,
+    FT_DOOR = 1,
+    FT_TILT = 2,
+    FT_ROOF = 3,
+    FT_TRIGGER = 4,
+    FT_LAVA = 5,
+} FLOOR_TYPE;
+
+typedef enum TRIGGER_TYPE {
+    TT_TRIGGER = 0,
+    TT_PAD = 1,
+    TT_SWITCH = 2,
+    TT_KEY = 3,
+    TT_PICKUP = 4,
+    TT_HEAVY = 5,
+    TT_ANTIPAD = 6,
+    TT_COMBAT = 7,
+    TT_DUMMY = 8,
+} TRIGGER_TYPE;
+
+typedef enum TRIGGER_OBJECT {
+    TO_OBJECT = 0,
+    TO_CAMERA = 1,
+    TO_SINK = 2,
+    TO_FLIPMAP = 3,
+    TO_FLIPON = 4,
+    TO_FLIPOFF = 5,
+    TO_TARGET = 6,
+    TO_FINISH = 7,
+    TO_CD = 8,
+    TO_FLIPEFFECT = 9,
+    TO_SECRET = 10,
+} TRIGGER_OBJECT;
+
+typedef enum ITEM_FLAG {
+    IF_ONESHOT = 0x0100,
+    IF_CODE_BITS = 0x3E00,
+    IF_REVERSE = 0x4000,
+    IF_NOT_VISIBLE = 0x0100,
+    IF_KILLED_ITEM = 0x8000,
+} ITEM_FLAG;
+
+typedef enum FMV_SEQUENCE {
+    FMV_INTRO = 0,
+    FMV_GYM = 1,
+    FMV_SNOW = 2,
+    FMV_LIFT = 3,
+    FMV_VISION = 4,
+    FMV_CANYON = 5,
+    FMV_PYRAMID = 6,
+    FMV_PRISON = 7,
+    FMV_ENDSEQ = 8,
+    FMV_CORE = 9,
+    FMV_ESCAPE = 10,
+    NUMBER_OF_FMV = 11,
+} FMV_SEQUENCE;
+
+typedef enum INV_MODE {
+    INV_GAME_MODE = 0,
+    INV_TITLE_MODE = 1,
+    INV_KEYS_MODE = 2,
+    INV_SAVE_MODE = 3,
+    INV_LOAD_MODE = 4,
+    INV_DEATH_MODE = 5,
+} INV_MODE;
+
+typedef enum INV_TEXT {
+    IT_NAME = 0,
+    IT_QTY = 1,
+    IT_NUMBER_OF = 2,
+} INV_TEXT;
+
+typedef enum INV_COLOUR {
+    IC_BLACK = 0,
+    IC_GREY = 1,
+    IC_WHITE = 2,
+    IC_RED = 3,
+    IC_ORANGE = 4,
+    IC_YELLOW = 5,
+    IC_GREEN1 = 6,
+    IC_GREEN2 = 7,
+    IC_GREEN3 = 8,
+    IC_GREEN4 = 9,
+    IC_GREEN5 = 10,
+    IC_GREEN6 = 11,
+    IC_DARKGREEN = 12,
+    IC_GREEN = 13,
+    IC_CYAN = 14,
+    IC_BLUE = 15,
+    IC_MAGENTA = 16,
+    IC_NUMBER_OF = 17,
+} INV_COLOUR;
+
+typedef enum RING_STATUS {
+    RNG_OPENING = 0,
+    RNG_OPEN = 1,
+    RNG_CLOSING = 2,
+    RNG_MAIN2OPTION = 3,
+    RNG_MAIN2KEYS = 4,
+    RNG_KEYS2MAIN = 5,
+    RNG_OPTION2MAIN = 6,
+    RNG_SELECTING = 7,
+    RNG_SELECTED = 8,
+    RNG_DESELECTING = 9,
+    RNG_DESELECT = 10,
+    RNG_CLOSING_ITEM = 11,
+    RNG_EXITING_INVENTORY = 12,
+    RNG_DONE = 13,
+} RING_STATUS;
+
+typedef enum RING_TYPE {
+    RT_MAIN = 0,
+    RT_OPTION = 1,
+    RT_KEYS = 2,
+} RING_TYPE;
+
+typedef enum SHAPE {
+    SHAPE_SPRITE = 1,
+    SHAPE_LINE = 2,
+    SHAPE_BOX = 3,
+    SHAPE_FBOX = 4
+} SHAPE;
+
+typedef enum DOOR_ANIM {
+    DOOR_CLOSED = 0,
+    DOOR_OPEN = 1,
+} DOOR_ANIM;
+
+typedef enum TRAP_ANIM {
+    TRAP_SET = 0,
+    TRAP_ACTIVATE = 1,
+    TRAP_WORKING = 2,
+    TRAP_FINISHED = 3,
+} TRAP_ANIM;
+
+typedef enum ROLLING_BLOCK_STATE {
+    RBS_START = 0,
+    RBS_END = 1,
+    RBS_MOVING = 2,
+} ROLLING_BLOCK_STATE;
+
+typedef enum REQUEST_INFO_FLAGS {
+    RIF_FIXED_HEIGHT = 1 << 0,
+    RIF_BLOCKED = 1 << 1,
+    RIF_BLOCKABLE = 1 << 2,
+} REQUEST_INFO_FLAGS;
+
+typedef enum GAMEFLOW_LEVEL_TYPE {
+    GFL_TITLE = 0,
+    GFL_NORMAL = 1,
+    GFL_SAVED = 2,
+    GFL_DEMO = 3,
+    GFL_CUTSCENE = 4,
+    GFL_GYM = 5,
+    GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
+} GAMEFLOW_LEVEL_TYPE;
+
+typedef enum GAMEFLOW_OPTION {
+    GF_NOP = -1,
+    GF_START_GAME = 0,
+    GF_START_CINE = 1 << 6,
+    GF_START_FMV = 2 << 6,
+    GF_START_DEMO = 3 << 6,
+    GF_EXIT_TO_TITLE = 4 << 6,
+    GF_LEVEL_COMPLETE = 5 << 6,
+    GF_EXIT_GAME = 6 << 6,
+    GF_START_SAVED_GAME = 7 << 6,
+} GAMEFLOW_OPTION;
+
+typedef enum GAMEFLOW_SEQUENCE_TYPE {
+    GFS_END = -1,
+    GFS_START_GAME,
+    GFS_LOOP_GAME,
+    GFS_STOP_GAME,
+    GFS_START_CINE,
+    GFS_LOOP_CINE,
+    GFS_STOP_CINE,
+    GFS_PLAY_FMV,
+    GFS_LEVEL_STATS,
+    GFS_DISPLAY_PICTURE,
+    GFS_EXIT_TO_TITLE,
+    GFS_EXIT_TO_LEVEL,
+    GFS_EXIT_TO_CINE,
+    GFS_SET_CAM_X,
+    GFS_SET_CAM_Y,
+    GFS_SET_CAM_Z,
+    GFS_SET_CAM_ANGLE,
+    GFS_FLIP_MAP,
+    GFS_REMOVE_GUNS,
+    GFS_REMOVE_SCIONS,
+    GFS_PLAY_SYNCED_AUDIO,
+    GFS_MESH_SWAP,
+    GFS_FIX_PYRAMID_SECRET_TRIGGER,
+} GAMEFLOW_SEQUENCE_TYPE;
+
+typedef enum GAME_STRING_ID {
+    GS_HEADING_INVENTORY,
+    GS_HEADING_GAME_OVER,
+    GS_HEADING_OPTION,
+    GS_HEADING_ITEMS,
+
+    GS_PASSPORT_SELECT_LEVEL,
+    GS_PASSPORT_SELECT_MODE,
+    GS_PASSPORT_MODE_NEW_GAME,
+    GS_PASSPORT_MODE_NEW_GAME_PLUS,
+    GS_PASSPORT_MODE_JAPANESE_NEW_GAME,
+    GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS,
+    GS_PASSPORT_NEW_GAME,
+    GS_PASSPORT_LOAD_GAME,
+    GS_PASSPORT_SAVE_GAME,
+    GS_PASSPORT_EXIT_GAME,
+    GS_PASSPORT_EXIT_TO_TITLE,
+
+    GS_DETAIL_SELECT_DETAIL,
+    GS_DETAIL_LEVEL_HIGH,
+    GS_DETAIL_LEVEL_MEDIUM,
+    GS_DETAIL_LEVEL_LOW,
+    GS_DETAIL_PERSPECTIVE_FMT,
+    GS_DETAIL_BILINEAR_FMT,
+    GS_DETAIL_VIDEO_MODE_FMT,
+
+    GS_SOUND_SET_VOLUMES,
+
+    GS_CONTROL_DEFAULT_KEYS,
+    GS_CONTROL_USER_KEYS,
+
+    GS_KEYMAP_RUN,
+    GS_KEYMAP_BACK,
+    GS_KEYMAP_LEFT,
+    GS_KEYMAP_RIGHT,
+    GS_KEYMAP_STEP_LEFT,
+    GS_KEYMAP_STEP_RIGHT,
+    GS_KEYMAP_WALK,
+    GS_KEYMAP_JUMP,
+    GS_KEYMAP_ACTION,
+    GS_KEYMAP_DRAW_WEAPON,
+    GS_KEYMAP_LOOK,
+    GS_KEYMAP_ROLL,
+    GS_KEYMAP_INVENTORY,
+
+    GS_STATS_TIME_TAKEN_FMT,
+    GS_STATS_SECRETS_FMT,
+    GS_STATS_PICKUPS_FMT,
+    GS_STATS_KILLS_FMT,
+
+    GS_MISC_ON,
+    GS_MISC_OFF,
+    GS_MISC_EMPTY_SLOT_FMT,
+    GS_MISC_DEMO_MODE,
+
+    GS_INV_ITEM_MEDI,
+    GS_INV_ITEM_BIG_MEDI,
+
+    GS_INV_ITEM_PUZZLE1,
+    GS_INV_ITEM_PUZZLE2,
+    GS_INV_ITEM_PUZZLE3,
+    GS_INV_ITEM_PUZZLE4,
+
+    GS_INV_ITEM_KEY1,
+    GS_INV_ITEM_KEY2,
+    GS_INV_ITEM_KEY3,
+    GS_INV_ITEM_KEY4,
+
+    GS_INV_ITEM_PICKUP1,
+    GS_INV_ITEM_PICKUP2,
+    GS_INV_ITEM_LEADBAR,
+    GS_INV_ITEM_SCION,
+
+    GS_INV_ITEM_PISTOLS,
+    GS_INV_ITEM_SHOTGUN,
+    GS_INV_ITEM_MAGNUM,
+    GS_INV_ITEM_UZI,
+    GS_INV_ITEM_GRENADE,
+
+    GS_INV_ITEM_PISTOL_AMMO,
+    GS_INV_ITEM_SHOTGUN_AMMO,
+    GS_INV_ITEM_MAGNUM_AMMO,
+    GS_INV_ITEM_UZI_AMMO,
+
+    GS_INV_ITEM_COMPASS,
+    GS_INV_ITEM_GAME,
+    GS_INV_ITEM_DETAILS,
+    GS_INV_ITEM_SOUND,
+    GS_INV_ITEM_CONTROLS,
+    GS_INV_ITEM_GAMMA,
+    GS_INV_ITEM_LARAS_HOME,
+
+    GS_NUMBER_OF,
+} GAME_STRING_ID;
+
+typedef enum BAR_TYPE {
+    BT_LARA_HEALTH = 0,
+    BT_LARA_AIR = 1,
+    BT_ENEMY_HEALTH = 2,
+} BAR_TYPE;
+
+typedef enum SOUND_PLAY_MODE {
     SPM_NORMAL = 0,
     SPM_UNDERWATER = 1,
     SPM_ALWAYS = 2,
 } SOUND_PLAY_MODE;
 
-typedef enum {
+typedef enum GAME_BONUS_FLAG {
     GBF_NGPLUS = 1 << 0,
     GBF_JAPANESE = 1 << 1,
 } GAME_BONUS_FLAG;
 
 #pragma pack(push, 1)
 
-typedef struct {
+typedef struct POS_2D {
     /* 0000 */ uint16_t x;
     /* 0002 */ uint16_t y;
     /* 0004 end */
 } POS_2D;
 
-typedef struct {
+typedef struct POS_3D {
     /* 0000 */ uint16_t x;
     /* 0002 */ uint16_t y;
     /* 0004 */ uint16_t z;
     /* 0006 end */
 } POS_3D;
 
-typedef struct {
+typedef struct PHD_VECTOR {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
     /* 000C end */
 } PHD_VECTOR;
 
-typedef struct {
+typedef struct PHD_MATRIX {
+    /* 0000 */ int32_t _00;
+    /* 0004 */ int32_t _01;
+    /* 0008 */ int32_t _02;
+    /* 000C */ int32_t _03;
+    /* 0010 */ int32_t _10;
+    /* 0014 */ int32_t _11;
+    /* 0018 */ int32_t _12;
+    /* 001C */ int32_t _13;
+    /* 0020 */ int32_t _20;
+    /* 0024 */ int32_t _21;
+    /* 0028 */ int32_t _22;
+    /* 002C */ int32_t _23;
+    /* 0030 end */
+} PHD_MATRIX;
+
+typedef struct PHD_3DPOS {
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int16_t x_rot;
+    /* 000E */ int16_t y_rot;
+    /* 0010 */ int16_t z_rot;
+    /* 0012 end */
+} PHD_3DPOS;
+
+typedef struct PHD_VBUF {
+    /* 0000 */ int32_t xv;
+    /* 0004 */ int32_t yv;
+    /* 0008 */ int32_t zv;
+    /* 000C */ int32_t xs;
+    /* 0010 */ int32_t ys;
+    /* 0014 */ int32_t dist;
+    /* 0018 */ int16_t clip;
+    /* 001A */ int16_t g;
+    /* 001C */ uint16_t u;
+    /* 001E */ uint16_t v;
+    /* 0020 end */
+} PHD_VBUF;
+
+typedef struct PHDTEXTURESTRUCT {
+    /* 0000 */ uint16_t drawtype;
+    /* 0002 */ uint16_t tpage;
+    /* 0004 */ uint16_t u1;
+    /* 0006 */ uint16_t v1;
+    /* 0008 */ uint16_t u2;
+    /* 000A */ uint16_t v2;
+    /* 000C */ uint16_t u3;
+    /* 000E */ uint16_t v3;
+    /* 0010 */ uint16_t u4;
+    /* 0012 */ uint16_t v4;
+    /* 0014 end */
+} PHDTEXTURESTRUCT;
+
+typedef struct PHDSPRITESTRUCT {
+    /* 0000 */ uint16_t tpage;
+    /* 0002 */ uint16_t offset;
+    /* 0004 */ uint16_t width;
+    /* 0006 */ uint16_t height;
+    /* 0008 */ int16_t x1;
+    /* 000A */ int16_t y1;
+    /* 000C */ int16_t x2;
+    /* 000E */ int16_t y2;
+    /* 0010 end */
+} PHDSPRITESTRUCT;
+
+typedef struct DOOR_INFO {
     /* 0000 */ int16_t room_num;
     /* 0002 */ int16_t x;
     /* 0004 */ int16_t y;
@@ -1127,13 +1193,13 @@ typedef struct {
     /* 0020 end */
 } DOOR_INFO;
 
-typedef struct {
+typedef struct DOOR_INFOS {
     /* 0000 */ uint16_t count;
     /* 0002 */ DOOR_INFO door[];
     /* 0006 end */
 } DOOR_INFOS;
 
-typedef struct {
+typedef struct FLOOR_INFO {
     /* 0000 */ uint16_t index;
     /* 0002 */ int16_t box;
     /* 0004 */ uint8_t pit_room;
@@ -1143,14 +1209,14 @@ typedef struct {
     /* 0008 end */
 } FLOOR_INFO;
 
-typedef struct {
+typedef struct DOORPOS_DATA {
     /* 0000 */ FLOOR_INFO *floor;
     /* 0004 */ FLOOR_INFO data;
     /* 000C */ int16_t block;
     /* 000E end */
 } DOORPOS_DATA;
 
-typedef struct {
+typedef struct DOOR_DATA {
     /* 0000 */ DOORPOS_DATA d1;
     /* 000E */ DOORPOS_DATA d1flip;
     /* 001C */ DOORPOS_DATA d2;
@@ -1158,7 +1224,7 @@ typedef struct {
     /* 0038 end */
 } DOOR_DATA;
 
-typedef struct {
+typedef struct LIGHT_INFO {
     /* 0000 */ uint32_t x;
     /* 0004 */ uint32_t y;
     /* 0008 */ uint32_t z;
@@ -1167,7 +1233,7 @@ typedef struct {
     /* 0012 end */
 } LIGHT_INFO;
 
-typedef struct {
+typedef struct MESH_INFO {
     /* 0000 */ uint32_t x;
     /* 0004 */ uint32_t y;
     /* 0008 */ uint32_t z;
@@ -1177,7 +1243,7 @@ typedef struct {
     /* 0012 end */
 } MESH_INFO;
 
-typedef struct {
+typedef struct ROOM_INFO {
     /* 0000 */ int16_t *data;
     /* 0004 */ DOOR_INFOS *doors;
     /* 0008 */ FLOOR_INFO *floor;
@@ -1205,17 +1271,7 @@ typedef struct {
     /* 0044 end */
 } ROOM_INFO;
 
-typedef struct {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int16_t x_rot;
-    /* 000E */ int16_t y_rot;
-    /* 0010 */ int16_t z_rot;
-    /* 0012 end */
-} PHD_3DPOS;
-
-typedef struct {
+typedef struct ITEM_INFO {
     /* 0000 */ int32_t floor;
     /* 0004 */ uint32_t touch_bits;
     /* 0008 */ uint32_t mesh_bits;
@@ -1246,7 +1302,7 @@ typedef struct {
     /* 0044 end */
 } ITEM_INFO;
 
-typedef struct {
+typedef struct LARA_ARM {
     /* 0000 */ int16_t *frame_base;
     /* 0004 */ int16_t frame_number;
     /* 0006 */ int16_t lock;
@@ -1257,14 +1313,14 @@ typedef struct {
     /* 0010 end */
 } LARA_ARM;
 
-typedef struct {
+typedef struct AMMO_INFO {
     /* 0000 */ int32_t ammo;
     /* 0004 */ int32_t hit;
     /* 0008 */ int32_t miss;
     /* 000C end */
 } AMMO_INFO;
 
-typedef struct {
+typedef struct BOX_NODE {
     /* 0000 */ int16_t exit_box;
     /* 0002 */ uint16_t search_number;
     /* 0004 */ int16_t next_expansion;
@@ -1272,7 +1328,7 @@ typedef struct {
     /* 0008 end */
 } BOX_NODE;
 
-typedef struct {
+typedef struct LOT_INFO {
     /* 0000 */ BOX_NODE *node;
     /* 0004 */ int16_t head;
     /* 0006 */ int16_t tail;
@@ -1288,7 +1344,7 @@ typedef struct {
     /* 0024 end */
 } LOT_INFO;
 
-typedef struct {
+typedef struct FX_INFO {
     /* 0000 */ PHD_3DPOS pos;
     /* 0012 */ int16_t room_number;
     /* 0014 */ int16_t object_number;
@@ -1302,7 +1358,7 @@ typedef struct {
     /* 0024 end */
 } FX_INFO;
 
-typedef struct {
+typedef struct LARA_INFO {
     /* 0000 */ int16_t item_number;
     /* 0002 */ int16_t gun_status;
     /* 0004 */ int16_t gun_type;
@@ -1340,7 +1396,7 @@ typedef struct {
     /* 00E6 end */
 } LARA_INFO;
 
-typedef struct {
+typedef struct START_INFO {
     /* 0000 */ uint16_t pistol_ammo;
     /* 0002 */ uint16_t magnum_ammo;
     /* 0004 */ uint16_t uzi_ammo;
@@ -1359,7 +1415,7 @@ typedef struct {
     /* 000F end */
 } START_INFO;
 
-typedef struct {
+typedef struct SAVEGAME_INFO {
     START_INFO *start;
     uint32_t timer;
     uint32_t kills;
@@ -1382,7 +1438,19 @@ typedef struct {
     char buffer[MAX_SAVEGAME_BUFFER];
 } SAVEGAME_INFO;
 
-typedef struct {
+typedef struct CREATURE_INFO {
+    /* 0000 */ int16_t head_rotation;
+    /* 0002 */ int16_t neck_rotation;
+    /* 0004 */ int16_t maximum_turn;
+    /* 0006 */ uint16_t flags;
+    /* 0008 */ int16_t item_num;
+    /* 000A */ int32_t mood;
+    /* 000E */ LOT_INFO LOT;
+    /* 002C */ PHD_VECTOR target;
+    /* 003E end */
+} CREATURE_INFO;
+
+typedef struct TEXTSTRING {
     /* 0000 */ uint32_t flags;
     /* 0004 */ uint16_t text_flags;
     /* 0006 */ uint16_t bgnd_flags;
@@ -1409,25 +1477,13 @@ typedef struct {
     /* 0038 end */
 } TEXTSTRING;
 
-typedef struct {
-    /* 0000 */ int16_t head_rotation;
-    /* 0002 */ int16_t neck_rotation;
-    /* 0004 */ int16_t maximum_turn;
-    /* 0006 */ uint16_t flags;
-    /* 0008 */ int16_t item_num;
-    /* 000A */ int32_t mood;
-    /* 000E */ LOT_INFO LOT;
-    /* 002C */ PHD_VECTOR target;
-    /* 003E end */
-} CREATURE_INFO;
-
-typedef struct {
+typedef struct DISPLAYPU {
     /* 0000 */ int16_t duration;
     /* 0002 */ int16_t sprnum;
     /* 0004 end */
 } DISPLAYPU;
 
-typedef struct {
+typedef struct COLL_INFO {
     /* 0000 */ int32_t mid_floor;
     /* 0004 */ int32_t mid_ceiling;
     /* 0008 */ int32_t mid_type;
@@ -1462,7 +1518,7 @@ typedef struct {
     /* 005C end */
 } COLL_INFO;
 
-typedef struct {
+typedef struct OBJECT_INFO {
     /* 0000 */ int16_t nmeshes;
     /* 0002 */ int16_t mesh_index;
     /* 0004 */ int32_t bone_index;
@@ -1491,7 +1547,7 @@ typedef struct {
     /* 0032 end */
 } OBJECT_INFO;
 
-typedef struct {
+typedef struct STATIC_INFO {
     /* 0000 */ int16_t mesh_number;
     /* 0002 */ int16_t flags;
     /* 0004 */ int16_t x_minp;
@@ -1509,7 +1565,7 @@ typedef struct {
     /* 001C end */
 } STATIC_INFO;
 
-typedef struct {
+typedef struct KEYSTUFF {
     /* 0000 */ uint8_t keymap[128];
     /* 0080 */ uint8_t oldkeymap[128];
     /* 0100 */ uint8_t keybuf[64];
@@ -1522,7 +1578,7 @@ typedef struct {
     /* 0146 end */
 } KEYSTUFF;
 
-typedef struct {
+typedef struct GAME_VECTOR {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
@@ -1531,7 +1587,7 @@ typedef struct {
     /* 0010 end */
 } GAME_VECTOR;
 
-typedef struct {
+typedef struct OBJECT_VECTOR {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
@@ -1540,7 +1596,7 @@ typedef struct {
     /* 0010 end */
 } OBJECT_VECTOR;
 
-typedef struct {
+typedef struct CAMERA_INFO {
     /* 0000 */ GAME_VECTOR pos;
     /* 0010 */ GAME_VECTOR target;
     /* 0020 */ int32_t type;
@@ -1566,7 +1622,7 @@ typedef struct {
     /* 0060 end */
 } CAMERA_INFO;
 
-typedef struct {
+typedef struct ANIM_STRUCT {
     /* 0000 */ int16_t *frame_ptr;
     /* 0004 */ int16_t interpolation;
     /* 0006 */ int16_t current_anim_state;
@@ -1583,14 +1639,14 @@ typedef struct {
     /* 0020 end */
 } ANIM_STRUCT;
 
-typedef struct {
+typedef struct ANIM_CHANGE_STRUCT {
     /* 0000 */ int16_t goal_anim_state;
     /* 0004 */ int16_t number_ranges;
     /* 0006 */ int16_t range_index;
     /* 0008 end */
 } ANIM_CHANGE_STRUCT;
 
-typedef struct {
+typedef struct ANIM_RANGE_STRUCT {
     /* 0000 */ int16_t start_frame;
     /* 0004 */ int16_t end_frame;
     /* 0006 */ int16_t link_anim_num;
@@ -1598,70 +1654,14 @@ typedef struct {
     /* 000A end */
 } ANIM_RANGE_STRUCT;
 
-typedef struct {
-    /* 0000 */ int32_t _00;
-    /* 0004 */ int32_t _01;
-    /* 0008 */ int32_t _02;
-    /* 000C */ int32_t _03;
-    /* 0010 */ int32_t _10;
-    /* 0014 */ int32_t _11;
-    /* 0018 */ int32_t _12;
-    /* 001C */ int32_t _13;
-    /* 0020 */ int32_t _20;
-    /* 0024 */ int32_t _21;
-    /* 0028 */ int32_t _22;
-    /* 002C */ int32_t _23;
-    /* 0030 end */
-} PHD_MATRIX;
-
-typedef struct {
+typedef struct DOOR_VBUF {
     /* 0000 */ int32_t xv;
     /* 0004 */ int32_t yv;
     /* 0008 */ int32_t zv;
     /* 000C end */
 } DOOR_VBUF;
 
-typedef struct {
-    /* 0000 */ int32_t xv;
-    /* 0004 */ int32_t yv;
-    /* 0008 */ int32_t zv;
-    /* 000C */ int32_t xs;
-    /* 0010 */ int32_t ys;
-    /* 0014 */ int32_t dist;
-    /* 0018 */ int16_t clip;
-    /* 001A */ int16_t g;
-    /* 001C */ uint16_t u;
-    /* 001E */ uint16_t v;
-    /* 0020 end */
-} PHD_VBUF;
-
-typedef struct {
-    /* 0000 */ uint16_t drawtype;
-    /* 0002 */ uint16_t tpage;
-    /* 0004 */ uint16_t u1;
-    /* 0006 */ uint16_t v1;
-    /* 0008 */ uint16_t u2;
-    /* 000A */ uint16_t v2;
-    /* 000C */ uint16_t u3;
-    /* 000E */ uint16_t v3;
-    /* 0010 */ uint16_t u4;
-    /* 0012 */ uint16_t v4;
-    /* 0014 end */
-} PHDTEXTURESTRUCT;
-
-typedef struct {
-    /* 0000 */ uint16_t tpage;
-    /* 0002 */ uint16_t offset;
-    /* 0004 */ uint16_t width;
-    /* 0006 */ uint16_t height;
-    /* 0008 */ int16_t x1;
-    /* 000A */ int16_t y1;
-    /* 000C */ int16_t x2;
-    /* 000E */ int16_t y2;
-    /* 0010 end */
-} PHDSPRITESTRUCT;
-
-typedef struct {
+typedef struct WEAPON_INFO {
     /* 0000 */ PHD_ANGLE lock_angles[4];
     /* 0008 */ PHD_ANGLE left_angles[4];
     /* 0010 */ PHD_ANGLE right_angles[4];
@@ -1676,7 +1676,7 @@ typedef struct {
     /* 002E end */
 } WEAPON_INFO;
 
-typedef struct {
+typedef struct SPHERE {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
@@ -1684,7 +1684,7 @@ typedef struct {
     /* 0010 end */
 } SPHERE;
 
-typedef struct {
+typedef struct BITE_INFO {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;
     /* 0008 */ int32_t z;
@@ -1692,7 +1692,7 @@ typedef struct {
     /* 0010 end */
 } BITE_INFO;
 
-typedef struct {
+typedef struct AI_INFO {
     /* 0000 */ int16_t zone_number;
     /* 0002 */ int16_t enemy_zone;
     /* 0004 */ int32_t distance;
@@ -1703,7 +1703,7 @@ typedef struct {
     /* 0012 end */
 } AI_INFO;
 
-typedef struct {
+typedef struct BOX_INFO {
     /* 0000 */ int32_t left;
     /* 0004 */ int32_t right;
     /* 0008 */ int32_t top;
@@ -1713,7 +1713,7 @@ typedef struct {
     /* 0014 end */
 } BOX_INFO;
 
-typedef struct {
+typedef struct REQUEST_INFO {
     /* 0000 */ uint16_t items;
     /* 0002 */ uint16_t requested;
     /* 0004 */ uint16_t vis_lines;
@@ -1737,7 +1737,7 @@ typedef struct {
     /* 0090 end */
 } REQUEST_INFO;
 
-typedef struct {
+typedef struct IMOTION_INFO {
     /* 0000 */ int16_t count;
     /* 0002 */ int16_t status;
     /* 0004 */ int16_t status_target;
@@ -1761,7 +1761,7 @@ typedef struct {
     /* 0032 end */
 } IMOTION_INFO;
 
-typedef struct {
+typedef struct INVENTORY_SPRITE {
     /* 0000 */ int16_t shape;
     /* 0002 */ int16_t x;
     /* 0004 */ int16_t y;
@@ -1773,7 +1773,7 @@ typedef struct {
     /* 0016 end */
 } INVENTORY_SPRITE;
 
-typedef struct {
+typedef struct INVENTORY_ITEM {
     /* 0000 */ char *string;
     /* 0004 */ int16_t object_number;
     /* 0006 */ int16_t frames_total;
@@ -1800,7 +1800,7 @@ typedef struct {
     /* 003E end */
 } INVENTORY_ITEM;
 
-typedef struct {
+typedef struct RING_INFO {
     /* 0000 */ INVENTORY_ITEM **list;
     /* 0004 */ int16_t type;
     /* 0006 */ int16_t radius;
@@ -1821,12 +1821,12 @@ typedef struct {
     /* 0050 end */
 } RING_INFO;
 
-typedef struct {
-    GameFlowSequenceType type;
+typedef struct GAMEFLOW_SEQUENCE {
+    GAMEFLOW_SEQUENCE_TYPE type;
     void *data;
-} GameFlowSequence;
+} GAMEFLOW_SEQUENCE;
 
-typedef struct {
+typedef struct GAMEFLOW_LEVEL {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
     const char *level_title;
@@ -1843,10 +1843,10 @@ typedef struct {
     const char *puzzle4;
     int8_t demo;
     int16_t secrets;
-    GameFlowSequence *sequence;
-} GameFlowLevel;
+    GAMEFLOW_SEQUENCE *sequence;
+} GAMEFLOW_LEVEL;
 
-typedef struct {
+typedef struct GAMEFLOW {
     int32_t gym_level_num;
     int32_t first_level_num;
     int32_t last_level_num;
@@ -1854,9 +1854,9 @@ typedef struct {
     int32_t level_count;
     const char *save_game_fmt;
     int8_t has_demo;
-    GameFlowLevel *levels;
+    GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
-} GameFlow;
+} GAMEFLOW;
 
 #pragma pack(pop)
 
