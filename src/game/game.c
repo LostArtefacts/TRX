@@ -147,10 +147,10 @@ void LevelStats(int32_t level_num)
     int32_t secrets_total = MAX_SECRETS;
     do {
         if (SaveGame.secrets & 1) {
-            ++secrets_taken;
+            secrets_taken++;
         }
         SaveGame.secrets >>= 1;
-        --secrets_total;
+        secrets_total--;
     } while (secrets_total);
     sprintf(
         string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,

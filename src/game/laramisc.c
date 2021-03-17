@@ -620,7 +620,7 @@ void LaraCheatGetStuff()
         Lara.uzis.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
     }
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; i++) {
         if (Objects[O_MEDI_OPTION].loaded
             && Inv_RequestItem(O_MEDI_ITEM) < 240) {
             Inv_AddItem(O_MEDI_ITEM);

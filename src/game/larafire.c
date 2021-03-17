@@ -23,10 +23,10 @@
 void LaraGun()
 {
     if (Lara.left_arm.flash_gun > 0) {
-        --Lara.left_arm.flash_gun;
+        Lara.left_arm.flash_gun--;
     }
     if (Lara.right_arm.flash_gun > 0) {
-        --Lara.right_arm.flash_gun;
+        Lara.right_arm.flash_gun--;
     }
 
     int32_t draw = 0;

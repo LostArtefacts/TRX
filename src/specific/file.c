@@ -143,7 +143,7 @@ int32_t LoadRooms(FILE *fp)
 
     int i = 0;
     for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount;
-         ++i, ++current_room_info) {
+         i++, current_room_info++) {
         // Room position
         _fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
         current_room_info->y = 0;
@@ -373,7 +373,7 @@ int32_t LoadItems(FILE *fp)
         LevelItemCount = item_count;
         InitialiseItemArray(NUMBER_ITEMS);
 
-        for (int i = 0; i < item_count; ++i) {
+        for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &Items[i];
             _fread(&item->object_number, sizeof(int16_t), 1, fp);
             _fread(&item->room_number, sizeof(int16_t), 1, fp);

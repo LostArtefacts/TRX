@@ -226,7 +226,7 @@ void AnimatePistols(int32_t weapon_type)
     int16_t anil = Lara.left_arm.frame_number;
     if (Lara.left_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
         if (anil >= AF_G_AIM && anil < AF_G_AIM_L) {
-            ++anil;
+            anil++;
         } else if (anil == AF_G_AIM_L && (Input & IN_ACTION)) {
             angles[0] = Lara.left_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.left_arm.x_rot;
@@ -244,7 +244,7 @@ void AnimatePistols(int32_t weapon_type)
     } else if (anil >= AF_G_RECOIL) {
         anil = AF_G_AIM_L;
     } else if (anil > AF_G_AIM && anil <= AF_G_AIM_L) {
-        --anil;
+        anil--;
     }
     Lara.left_arm.frame_number = anil;
 }

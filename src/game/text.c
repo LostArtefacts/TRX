@@ -299,7 +299,7 @@ void T_RemovePrint(TEXTSTRING *textstring)
     }
     if (textstring->flags & TF_ACTIVE) {
         textstring->flags &= ~TF_ACTIVE;
-        --TextStringCount;
+        TextStringCount--;
     }
 }
 

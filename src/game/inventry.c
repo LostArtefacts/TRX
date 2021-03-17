@@ -117,7 +117,7 @@ int32_t Display_Inventory(int inv_mode)
             }
         }
 
-        for (int i = 0; i < InvNFrames; ++i) {
+        for (int i = 0; i < InvNFrames; i++) {
             if (IDelay) {
                 if (IDCount) {
                     IDCount--;

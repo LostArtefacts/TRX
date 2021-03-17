@@ -534,7 +534,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             break;
         case 2:
             if (GameHiRes > 0) {
-                --GameHiRes;
+                GameHiRes--;
                 reset = 1;
             }
             break;
@@ -763,10 +763,10 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
         int32_t secrets_total = MAX_SECRETS;
         do {
             if (SaveGame.secrets & 1) {
-                ++secrets_taken;
+                secrets_taken++;
             }
             SaveGame.secrets >>= 1;
-            --secrets_total;
+            secrets_total--;
         } while (secrets_total);
         sprintf(
             string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
@@ -1057,14 +1057,14 @@ void S_ChangeCtrlText()
     T_ChangeText(
         ControlText[0],
         GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
-    for (int i = 0; i < 13; ++i) {
+    for (int i = 0; i < 13; i++) {
         T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
     }
 }
 
 void S_RemoveCtrlText()
 {
-    for (int i = 0; i < 13; ++i) {
+    for (int i = 0; i < 13; i++) {
         T_RemovePrint(CtrlTextA[i]);
         T_RemovePrint(CtrlTextB[i]);
         CtrlTextB[i] = NULL;
