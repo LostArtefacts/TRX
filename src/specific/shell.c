@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
+#include "game/option.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
@@ -38,6 +39,8 @@ void S_ReadUserSettings()
     fread(&GameHiRes, sizeof(int32_t), 1, fp);
     fread(&GameSizer, sizeof(double), 1, fp);
     fread(&IConfig, sizeof(int32_t), 1, fp);
+
+    DefaultConflict();
 
     if (OptionMusicVolume) {
         S_CDVolume(25 * OptionMusicVolume + 5);
