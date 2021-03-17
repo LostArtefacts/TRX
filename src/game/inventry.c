@@ -240,6 +240,10 @@ int32_t Display_Inventory(int inv_mode)
         InvNFrames = S_DumpScreen();
         Camera.number_frames = InvNFrames;
 
+        if (T1MConfig.enable_timer_in_inventory) {
+            SaveGame.timer += InvNFrames / 2;
+        }
+
         if (ring.rotating) {
             continue;
         }

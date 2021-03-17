@@ -53,6 +53,10 @@
     // Enables showing level stats when selecting compass.
     "enable_compass_stats": true,
 
+    // Makes the ingame timer work even while the game is showing the
+    // inventory.
+    "enable_timer_in_inventory": true,
+
     // Changes how the healthbar is displayed. Possible values:
     // - always: always show the healthbar
     // - default: show the healthbar at the beginning of a level, after

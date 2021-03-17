@@ -60,6 +60,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - you can offer a custom Gym level
 - added automatic calculation of secret numbers
 - added compass level stats
+- added ability to keep timer on in inventory
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
 - fixed setting user keys being very difficult
