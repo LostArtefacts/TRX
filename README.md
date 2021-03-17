@@ -47,6 +47,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added braid (currently only works in Lost Valley)
 - added support for more than 3 pickup sprites
 - added a choice whether to play NG or NG+
+- added Japanese mode (guns deal twice the damage); available for both NG and NG+
 - added external game flow (no longer 2 different .exes for TR1 and TR1IB)
     For TRLE builders:
     - the levels can be reordered
