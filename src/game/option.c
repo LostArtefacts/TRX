@@ -760,11 +760,12 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
 
             int32_t secrets_taken = 0;
             int32_t secrets_total = MAX_SECRETS;
+            int32_t secrets_flags = SaveGame.secrets;
             do {
-                if (SaveGame.secrets & 1) {
+                if (secrets_flags & 1) {
                     secrets_taken++;
                 }
-                SaveGame.secrets >>= 1;
+                secrets_flags >>= 1;
                 secrets_total--;
             } while (secrets_total);
             sprintf(
