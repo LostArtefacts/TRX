@@ -981,6 +981,7 @@ void json_parse_string(
     unsigned long high_surrogate = 0;
     unsigned long codepoint;
 
+    string->ref_count = 1;
     string->string = data;
 
     /* skip leading '"' or '\''. */
@@ -1127,6 +1128,7 @@ void json_parse_key(
         } else {
             size_t size = 0;
 
+            string->ref_count = 1;
             string->string = state->data;
 
             while (is_valid_unquoted_key_char(src[offset])) {
@@ -1288,6 +1290,7 @@ void json_parse_object(
         object->start = json_null;
     }
 
+    object->ref_count = 1;
     object->length = elements;
 }
 
@@ -1378,6 +1381,7 @@ void json_parse_array(
         array->start = json_null;
     }
 
+    array->ref_count = 1;
     array->length = elements;
 }
 
@@ -1391,6 +1395,7 @@ void json_parse_number(
     const char *const src = state->src;
     char *data = state->data;
 
+    number->ref_count = 1;
     number->number = data;
 
     if (json_parse_flags_allow_hexadecimal_numbers & flags_bitset) {
@@ -1495,6 +1500,7 @@ void json_parse_value(
             state, /* is_global_object = */ 1,
             (struct json_object_s *)value->payload);
     } else {
+        value->ref_count = 1;
         switch (src[offset]) {
         case '"':
         case '\'':
@@ -1703,12 +1709,14 @@ struct json_value_s *json_parse_ex(
         (int)(json_parse_flags_allow_global_object & state.flags_bitset),
         value);
 
+    ((struct json_value_s *)allocation)->ref_count = 0;
+
     return (struct json_value_s *)allocation;
 }
 
 struct json_string_s *json_value_as_string(struct json_value_s *const value)
 {
-    if (value->type != json_type_string) {
+    if (!value || value->type != json_type_string) {
         return json_null;
     }
 
@@ -1717,7 +1725,7 @@ struct json_string_s *json_value_as_string(struct json_value_s *const value)
 
 struct json_number_s *json_value_as_number(struct json_value_s *const value)
 {
-    if (value->type != json_type_number) {
+    if (!value || value->type != json_type_number) {
         return json_null;
     }
 
@@ -1726,7 +1734,7 @@ struct json_number_s *json_value_as_number(struct json_value_s *const value)
 
 struct json_object_s *json_value_as_object(struct json_value_s *const value)
 {
-    if (value->type != json_type_object) {
+    if (!value || value->type != json_type_object) {
         return json_null;
     }
 
@@ -1735,7 +1743,7 @@ struct json_object_s *json_value_as_object(struct json_value_s *const value)
 
 struct json_array_s *json_value_as_array(struct json_value_s *const value)
 {
-    if (value->type != json_type_array) {
+    if (!value || value->type != json_type_array) {
         return json_null;
     }
 
@@ -1744,17 +1752,17 @@ struct json_array_s *json_value_as_array(struct json_value_s *const value)
 
 int json_value_is_true(const struct json_value_s *const value)
 {
-    return value->type == json_type_true;
+    return value && value->type == json_type_true;
 }
 
 int json_value_is_false(const struct json_value_s *const value)
 {
-    return value->type == json_type_false;
+    return value && value->type == json_type_false;
 }
 
 int json_value_is_null(const struct json_value_s *const value)
 {
-    return value->type == json_type_null;
+    return value && value->type == json_type_null;
 }
 
 int json_write_get_number_size(const struct json_number_s *number, size_t *size)

@@ -203,9 +203,11 @@ enum json_type_e {
 /* A JSON string value. */
 struct json_string_s {
     /* utf-8 string */
-    const char *string;
+    char *string;
     /* The size (in bytes) of the string */
     size_t string_size;
+
+    size_t ref_count;
 };
 
 /* A JSON string value (extended). */
@@ -226,9 +228,11 @@ struct json_string_ex_s {
 /* A JSON number value. */
 struct json_number_s {
     /* ASCII string containing representation of the number. */
-    const char *number;
+    char *number;
     /* the size (in bytes) of the number. */
     size_t number_size;
+
+    size_t ref_count;
 };
 
 /* an element of a JSON object. */
@@ -248,6 +252,8 @@ struct json_object_s {
     struct json_object_element_s *start;
     /* the number of elements in the object. */
     size_t length;
+
+    size_t ref_count;
 };
 
 /* an element of a JSON array. */
@@ -264,6 +270,8 @@ struct json_array_s {
     struct json_array_element_s *start;
     /* the number of elements in the array. */
     size_t length;
+
+    size_t ref_count;
 };
 
 /* a JSON value. */
@@ -279,6 +287,8 @@ struct json_value_s {
      */
     /* json_type_null, payload will be NULL. */
     size_t type;
+
+    size_t ref_count;
 };
 
 /* a JSON value (extended). */
