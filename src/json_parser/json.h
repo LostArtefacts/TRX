@@ -467,8 +467,6 @@ int json_get_array_size(struct json_parse_state_s *state);
 
 int json_get_number_size(struct json_parse_state_s *state);
 
-int json_get_value_size(struct json_parse_state_s *state, int is_global_object);
-
 void json_parse_value(
     struct json_parse_state_s *state, int is_global_object,
     struct json_value_s *value);
@@ -489,21 +487,10 @@ void json_parse_array(
 void json_parse_number(
     struct json_parse_state_s *state, struct json_number_s *number);
 
-void json_parse_value(
-    struct json_parse_state_s *state, int is_global_object,
-    struct json_value_s *value);
-
-struct json_value_s *json_parse_ex(
-    const void *src, size_t src_size, size_t flags_bitset,
-    void *(*alloc_func_ptr)(void *user_data, size_t size), void *user_data,
-    struct json_parse_result_s *result);
-
 struct json_extract_result_s {
     size_t dom_size;
     size_t data_size;
 };
-
-struct json_value_s *json_extract_value(const struct json_value_s *value);
 
 struct json_extract_result_s
 json_extract_get_number_size(const struct json_number_s *const number);
@@ -540,9 +527,6 @@ int json_write_minified_get_array_size(
 int json_write_minified_get_object_size(
     const struct json_object_s *object, size_t *size);
 
-int json_write_minified_get_value_size(
-    const struct json_value_s *value, size_t *size);
-
 char *json_write_minified_value(const struct json_value_s *value, char *data);
 
 char *json_write_number(const struct json_number_s *number, char *data);
@@ -553,8 +537,6 @@ char *json_write_minified_array(const struct json_array_s *array, char *data);
 
 char *
 json_write_minified_object(const struct json_object_s *object, char *data);
-
-char *json_write_minified_value(const struct json_value_s *value, char *data);
 
 int json_write_pretty_get_value_size(
     const struct json_value_s *value, size_t depth, size_t indent_size,
@@ -568,10 +550,6 @@ int json_write_pretty_get_object_size(
     const struct json_object_s *object, size_t depth, size_t indent_size,
     size_t newline_size, size_t *size);
 
-int json_write_pretty_get_value_size(
-    const struct json_value_s *value, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size);
-
 char *json_write_pretty_value(
     const struct json_value_s *value, size_t depth, const char *indent,
     const char *newline, char *data);
@@ -582,10 +560,6 @@ char *json_write_pretty_array(
 
 char *json_write_pretty_object(
     const struct json_object_s *object, size_t depth, const char *indent,
-    const char *newline, char *data);
-
-char *json_write_pretty_value(
-    const struct json_value_s *value, size_t depth, const char *indent,
     const char *newline, char *data);
 
 #if defined(__clang__)

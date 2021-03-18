@@ -83,7 +83,7 @@ void GameMain()
 
     S_InitialiseSystem();
 
-    if (!GF_LoadScriptFile("Tomb1Main_gameflow.json5")) {
+    if (!GF_LoadScriptFile("cfg/Tomb1Main_gameflow.json5")) {
         ShowFatalError("MAIN: unable to load script file");
         return;
     }

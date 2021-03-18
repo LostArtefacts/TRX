@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: |
           make build
-          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll Tomb1Main.json5 Tomb1Main_gameflow.json5
+          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll cfg
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

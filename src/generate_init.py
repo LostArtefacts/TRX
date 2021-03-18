@@ -9,7 +9,7 @@ BUILD_DIR = REPO_DIR / "build"
 
 def main() -> None:
     gf = pyjson5.loads(
-        (REPO_DIR / "Tomb1Main_gameflow.json5").read_text(encoding="utf-8")
+        (REPO_DIR / "cfg/Tomb1Main_gameflow.json5").read_text(encoding="utf-8")
     )
     with (BUILD_DIR / "init.c").open("w") as handle:
         print('#include "init.h"', file=handle)

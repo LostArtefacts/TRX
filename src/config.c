@@ -169,7 +169,7 @@ int8_t T1MReadConfig()
     FILE *fp = NULL;
     char *cfg_data = NULL;
 
-    fp = fopen("Tomb1Main.json5", "rb");
+    fp = fopen("cfg/Tomb1Main.json5", "rb");
     if (!fp) {
         result = T1MReadConfigFromJson("");
         goto cleanup;

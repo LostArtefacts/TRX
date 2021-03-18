@@ -47,7 +47,7 @@ void test_empty_config()
 
 void test_config_override()
 {
-    FILE *fp = fopen("Tomb1Main.json5", "rb");
+    FILE *fp = fopen("cfg/Tomb1Main.json5", "rb");
     ASSERT_OK(!!fp);
 
     fseek(fp, 0, SEEK_END);
