@@ -918,7 +918,8 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_REMOVE_GUNS:
-            if (!(SaveGame.bonus_flag & GBF_NGPLUS)) {
+            if (level_type != GFL_SAVED
+                && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
                 SaveGame.start[level_num].got_pistols = 0;
                 SaveGame.start[level_num].got_shotgun = 0;
                 SaveGame.start[level_num].got_magnums = 0;
@@ -930,8 +931,10 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_REMOVE_SCIONS:
-            SaveGame.start[level_num].num_scions = 0;
-            InitialiseLaraInventory(level_num);
+            if (level_type != GFL_SAVED) {
+                SaveGame.start[level_num].num_scions = 0;
+                InitialiseLaraInventory(level_num);
+            }
             break;
 
         case GFS_MESH_SWAP: {
