@@ -5,74 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct json_value_s *JSONGetField(struct json_value_s *root, const char *name)
-{
-    if (root == NULL || root->type != json_type_object) {
-        return NULL;
-    }
-    struct json_object_s *object = json_value_as_object(root);
-    struct json_object_element_s *item = object->start;
-    while (item) {
-        if (!strcmp(item->name->string, name)) {
-            return item->value;
-        }
-        item = item->next;
-    }
-    return NULL;
-}
-
-int JSONGetBooleanValue(
-    struct json_value_s *root, const char *name, int8_t *value)
-{
-    if (!root) {
-        return 0;
-    }
-    struct json_value_s *field = JSONGetField(root, name);
-    if (!field
-        || (field->type != json_type_true && field->type != json_type_false)) {
-        return 0;
-    }
-    *value = field->type == json_type_true;
-    return 1;
-}
-
-int JSONGetIntegerValue(
-    struct json_value_s *root, const char *name, int32_t *value)
-{
-    if (!root) {
-        return 0;
-    }
-    struct json_value_s *field = JSONGetField(root, name);
-    if (!field) {
-        return 0;
-    }
-    struct json_number_s *number = json_value_as_number(field);
-    if (!number) {
-        return 0;
-    }
-    *value = atoi(number->number);
-    return 1;
-}
-
-int JSONGetStringValue(
-    struct json_value_s *root, const char *name, const char **value)
-{
-    if (!root) {
-        return 0;
-    }
-    struct json_value_s *field = JSONGetField(root, name);
-    if (!field || field->type != json_type_string) {
-        return 0;
-    }
-    struct json_string_s *string = json_value_as_string(field);
-    if (!string) {
-        return 0;
-    }
-    *value = string->string;
-    return 1;
-}
-
-const char *JSONGetErrorDescription(enum json_parse_error_e error)
+const char *json_get_error_description(enum json_parse_error_e error)
 {
     switch (error) {
     case json_parse_error_none:
@@ -274,15 +207,15 @@ json_array_get_number_double(struct json_array_s *arr, const int idx, double d)
     return d;
 }
 
-char *
+const char *
 json_array_get_string(struct json_array_s *arr, const int idx, const char *d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_string_s *str = json_value_as_string(value);
     if (str) {
-        return strdup(str->string);
+        return str->string;
     }
-    return strdup(d);
+    return d;
 }
 
 struct json_array_s *
@@ -291,6 +224,14 @@ json_array_get_array(struct json_array_s *arr, const int idx)
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_array_s *arr2 = json_value_as_array(value);
     return arr2;
+}
+
+struct json_object_s *
+json_array_get_object(struct json_array_s *arr, const int idx)
+{
+    struct json_value_s *value = json_array_get_value(arr, idx);
+    struct json_object_s *obj = json_value_as_object(value);
+    return obj;
 }
 
 struct json_object_s *json_object_new()
@@ -410,15 +351,15 @@ double json_object_get_number_double(
     return d;
 }
 
-char *json_object_get_string(
+const char *json_object_get_string(
     struct json_object_s *obj, const char *key, const char *d)
 {
     struct json_value_s *value = json_object_get_value(obj, key);
     struct json_string_s *str = json_value_as_string(value);
     if (str) {
-        return strdup(str->string);
+        return str->string;
     }
-    return strdup(d);
+    return d;
 }
 
 struct json_array_s *
@@ -427,6 +368,14 @@ json_object_get_array(struct json_object_s *obj, const char *key)
     struct json_value_s *value = json_object_get_value(obj, key);
     struct json_array_s *arr = json_value_as_array(value);
     return arr;
+}
+
+struct json_object_s *
+json_object_get_object(struct json_object_s *obj, const char *key)
+{
+    struct json_value_s *value = json_object_get_value(obj, key);
+    struct json_object_s *obj2 = json_value_as_object(value);
+    return obj2;
 }
 
 struct json_value_s *json_value_from_bool(int b)

@@ -3,18 +3,11 @@
 
 #include "json_parser/json.h"
 
-struct json_value_s *JSONGetField(struct json_value_s *root, const char *name);
+#define JSON_INVALID_BOOL -1
+#define JSON_INVALID_STRING NULL
+#define JSON_INVALID_NUMBER 0x7FFFFFFF
 
-int JSONGetBooleanValue(
-    struct json_value_s *root, const char *name, int8_t *value);
-
-int JSONGetIntegerValue(
-    struct json_value_s *root, const char *name, int32_t *value);
-
-int JSONGetStringValue(
-    struct json_value_s *root, const char *name, const char **value);
-
-const char *JSONGetErrorDescription(enum json_parse_error_e error);
+const char *json_get_error_description(enum json_parse_error_e error);
 
 // numbers
 struct json_number_s *json_number_new_int(int number);
@@ -42,10 +35,12 @@ int json_array_get_bool(struct json_array_s *arr, const int idx, int d);
 int json_array_get_number_int(struct json_array_s *arr, const int idx, int d);
 double
 json_array_get_number_double(struct json_array_s *arr, const int idx, double d);
-char *
+const char *
 json_array_get_string(struct json_array_s *arr, const int idx, const char *d);
 struct json_array_s *
 json_array_get_array(struct json_array_s *arr, const int idx);
+struct json_object_s *
+json_array_get_object(struct json_array_s *arr, const int idx);
 
 // objects
 struct json_object_s *json_object_new();
@@ -68,10 +63,12 @@ int json_object_get_number_int(
     struct json_object_s *obj, const char *key, int d);
 double json_object_get_number_double(
     struct json_object_s *obj, const char *key, double d);
-char *json_object_get_string(
+const char *json_object_get_string(
     struct json_object_s *obj, const char *key, const char *d);
 struct json_array_s *
 json_object_get_array(struct json_object_s *obj, const char *key);
+struct json_object_s *
+json_object_get_object(struct json_object_s *obj, const char *key);
 
 // values
 struct json_value_s *json_value_from_bool(int b);

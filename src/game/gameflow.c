@@ -142,81 +142,76 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
-static int8_t S_LoadScriptMeta(struct json_value_s *json)
+static int8_t S_LoadScriptMeta(struct json_object_s *obj)
 {
-    const char *tmp;
+    const char *tmp_s;
+    int tmp_b;
 
-    if (!JSONGetStringValue(json, "savegame_fmt", &tmp)) {
+    tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
         TRACE("'savegame_fmt' must be a string");
         return 0;
-    } else {
-        GF.save_game_fmt = strdup(tmp);
     }
+    GF.save_game_fmt = strdup(tmp_s);
 
-    if (!JSONGetBooleanValue(
-            json, "enable_game_modes", &GF.enable_game_modes)) {
+    tmp_b = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
+    if (tmp_b == JSON_INVALID_BOOL) {
         TRACE("'enable_game_modes' must be a boolean");
         return 0;
     }
+    GF.enable_game_modes = tmp_b;
 
     return 1;
 }
 
-static int8_t S_LoadScriptGameStrings(struct json_value_s *json)
+static int8_t S_LoadScriptGameStrings(struct json_object_s *obj)
 {
-    struct json_value_s *strings = JSONGetField(json, "strings");
-    if (!strings) {
-        TRACE("missing 'strings' entry");
-        return 0;
-    }
-    if (strings->type != json_type_object) {
+    struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
+    if (!strings_obj) {
         TRACE("'strings' must be a dictionary");
         return 0;
     }
 
-    struct json_object_s *object = json_value_as_object(strings);
-    struct json_object_element_s *item = object->start;
-    while (item) {
-        GAME_STRING_ID key = StringToGameStringID(item->name->string);
-        struct json_string_s *value = json_value_as_string(item->value);
-        if (!value) {
-            TRACE("invalid string key %s", item->name->string);
-            item = item->next;
-            continue;
+    struct json_object_element_s *strings_elem = strings_obj->start;
+    while (strings_elem) {
+        GAME_STRING_ID key = StringToGameStringID(strings_elem->name->string);
+        struct json_string_s *value = json_value_as_string(strings_elem->value);
+        if (!value || key < 0 || key >= GS_NUMBER_OF) {
+            TRACE("invalid string key %s", strings_elem->name->string);
+        } else {
+            GF.strings[key] = strdup(value->string);
         }
-        if (key < 0 || key >= GS_NUMBER_OF) {
-            TRACE("invalid string key %s", item->name->string);
-            item = item->next;
-            continue;
-        }
-
-        GF.strings[key] = strdup(value->string);
-        item = item->next;
+        strings_elem = strings_elem->next;
     }
 
     return 1;
 }
 
-static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
+static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 {
-    struct json_value_s *level_sequence = JSONGetField(json, "sequence");
-    if (!level_sequence || level_sequence->type != json_type_array) {
+    struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
+    if (!jseq_arr) {
         TRACE("level %d: 'sequence' must be a list", level_num);
         return 0;
     }
 
-    struct json_array_s *arr = json_value_as_array(level_sequence);
-    struct json_array_element_s *item = arr->start;
+    struct json_array_element_s *jseq_elem = jseq_arr->start;
 
     GF.levels[level_num].sequence =
-        malloc(sizeof(GAMEFLOW_SEQUENCE) * (arr->length + 1));
+        malloc(sizeof(GAMEFLOW_SEQUENCE) * (jseq_arr->length + 1));
 
     GAMEFLOW_SEQUENCE *seq = GF.levels[level_num].sequence;
     int32_t i = 0;
-    while (item) {
-        const char *type_str;
+    while (jseq_elem) {
+        struct json_object_s *jseq_obj = json_value_as_object(jseq_elem->value);
+        if (!jseq_obj) {
+            TRACE("level %d: 'sequence' elements must be dictionaries");
+            return 0;
+        }
 
-        if (!JSONGetStringValue(item->value, "type", &type_str)) {
+        const char *type_str =
+            json_object_get_string(jseq_obj, "type", JSON_INVALID_STRING);
+        if (type_str == JSON_INVALID_STRING) {
             TRACE("level %d: sequence 'type' must be a string", level_num);
             return 0;
         }
@@ -247,18 +242,21 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
 
         } else if (!strcmp(type_str, "play_fmv")) {
             seq->type = GFS_PLAY_FMV;
-            if (!JSONGetIntegerValue(
-                    item->value, "fmv_id", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "fmv_id", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'fmv_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
-            const char *tmp;
-            if (!JSONGetStringValue(item->value, "picture_path", &tmp)) {
+            const char *tmp = json_object_get_string(
+                jseq_obj, "picture_path", JSON_INVALID_STRING);
+            if (tmp == JSON_INVALID_STRING) {
                 TRACE(
                     "level %d, sequence %s: 'picture_path' must be a string",
                     level_num, type_str);
@@ -272,76 +270,90 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
 
         } else if (!strcmp(type_str, "level_stats")) {
             seq->type = GFS_LEVEL_STATS;
-            if (!JSONGetIntegerValue(
-                    item->value, "level_id", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "exit_to_title")) {
             seq->type = GFS_EXIT_TO_TITLE;
 
         } else if (!strcmp(type_str, "exit_to_level")) {
             seq->type = GFS_EXIT_TO_LEVEL;
-            if (!JSONGetIntegerValue(
-                    item->value, "level_id", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "exit_to_cine")) {
             seq->type = GFS_EXIT_TO_CINE;
-            if (!JSONGetIntegerValue(
-                    item->value, "level_id", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "set_cam_x")) {
             seq->type = GFS_SET_CAM_X;
-            if (!JSONGetIntegerValue(
-                    item->value, "value", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "value", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "set_cam_y")) {
             seq->type = GFS_SET_CAM_Y;
-            if (!JSONGetIntegerValue(
-                    item->value, "value", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "value", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "set_cam_z")) {
             seq->type = GFS_SET_CAM_Z;
-            if (!JSONGetIntegerValue(
-                    item->value, "value", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "value", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "set_cam_angle")) {
             seq->type = GFS_SET_CAM_ANGLE;
-            if (!JSONGetIntegerValue(
-                    item->value, "value", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "value", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "flip_map")) {
             seq->type = GFS_FLIP_MAP;
@@ -354,13 +366,15 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
 
         } else if (!strcmp(type_str, "play_synced_audio")) {
             seq->type = GFS_PLAY_SYNCED_AUDIO;
-            if (!JSONGetIntegerValue(
-                    item->value, "audio_id", (int32_t *)&seq->data)) {
+            int tmp = json_object_get_number_int(
+                jseq_obj, "audio_id", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'audio_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+            seq->data = (void *)tmp;
 
         } else if (!strcmp(type_str, "mesh_swap")) {
             seq->type = GFS_MESH_SWAP;
@@ -370,29 +384,34 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
                 TRACE("failed to allocate memory");
                 return 0;
             }
-            if (!JSONGetIntegerValue(
-                    item->value, "object1_id",
-                    (int32_t *)&swap_data->object1_num)) {
+
+            swap_data->object1_num = json_object_get_number_int(
+                jseq_obj, "object1_id", JSON_INVALID_NUMBER);
+            if (swap_data->object1_num == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'object1_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
-            if (!JSONGetIntegerValue(
-                    item->value, "object2_id",
-                    (int32_t *)&swap_data->object2_num)) {
+
+            swap_data->object2_num = json_object_get_number_int(
+                jseq_obj, "object2_id", JSON_INVALID_NUMBER);
+            if (swap_data->object2_num == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'object2_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
-            if (!JSONGetIntegerValue(
-                    item->value, "mesh_id", (int32_t *)&swap_data->mesh_num)) {
+
+            swap_data->mesh_num = json_object_get_number_int(
+                jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
+            if (swap_data->mesh_num == JSON_INVALID_NUMBER) {
                 TRACE(
                     "level %d, sequence %s: 'mesh_id' must be a number",
                     level_num, type_str);
                 return 0;
             }
+
             seq->data = swap_data;
 
         } else if (!strcmp(type_str, "fix_pyramid_secret")) {
@@ -403,7 +422,7 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
             return 0;
         }
 
-        item = item->next;
+        jseq_elem = jseq_elem->next;
         i++;
         seq++;
     }
@@ -414,16 +433,15 @@ static int8_t GF_LoadLevelSequence(struct json_value_s *json, int32_t level_num)
     return 1;
 }
 
-static int8_t S_LoadScriptLevels(struct json_value_s *json)
+static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 {
-    struct json_value_s *levels = JSONGetField(json, "levels");
-    if (!levels || levels->type != json_type_array) {
+    struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
+    if (!jlvl_arr) {
         TRACE("'levels' must be a list");
         return 0;
     }
 
-    struct json_array_s *arr = json_value_as_array(levels);
-    int32_t level_count = arr->length;
+    int32_t level_count = jlvl_arr->length;
 
     GF.levels = malloc(sizeof(GAMEFLOW_LEVEL) * level_count);
     if (!GF.levels) {
@@ -437,7 +455,7 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
         return 0;
     }
 
-    struct json_array_element_s *item = arr->start;
+    struct json_array_element_s *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
 
     GF.has_demo = 0;
@@ -445,153 +463,181 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
     GF.first_level_num = -1;
     GF.last_level_num = -1;
     GF.title_level_num = -1;
-    GF.level_count = arr->length;
+    GF.level_count = jlvl_arr->length;
 
     GAMEFLOW_LEVEL *cur = &GF.levels[0];
-    while (item) {
-        const char *str;
-        int32_t num;
-        int8_t enabled;
+    while (jlvl_elem) {
+        struct json_object_s *jlvl_obj = json_value_as_object(jlvl_elem->value);
+        if (!jlvl_obj) {
+            TRACE("'levels' elements must be dictionaries");
+            return 0;
+        }
 
-        if (JSONGetIntegerValue(item->value, "music", &num)) {
-            cur->music = num;
-        } else {
+        const char *tmp_s;
+        int32_t tmp_i;
+
+        tmp_i =
+            json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
+        if (tmp_i == JSON_INVALID_NUMBER) {
             TRACE("level %d: 'music' must be a number", level_num);
             return 0;
         }
+        cur->music = tmp_i;
 
-        if (JSONGetStringValue(item->value, "file", &str)) {
-            cur->level_file = strdup(str);
-            if (!cur->level_file) {
-                TRACE("failed to allocate memory");
-                return 0;
-            }
-        } else {
+        tmp_s = json_object_get_string(jlvl_obj, "file", JSON_INVALID_STRING);
+        if (tmp_s == JSON_INVALID_STRING) {
             TRACE("level %d: 'file' must be a string", level_num);
             return 0;
         }
+        cur->level_file = strdup(tmp_s);
+        if (!cur->level_file) {
+            TRACE("failed to allocate memory");
+            return 0;
+        }
 
-        if (JSONGetStringValue(item->value, "title", &str)) {
-            cur->level_title = strdup(str);
-            if (!cur->level_title) {
-                TRACE("failed to allocate memory");
-                return 0;
-            }
-        } else {
+        tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
+        if (tmp_s == JSON_INVALID_STRING) {
             TRACE("level %d: 'title' must be a string", level_num);
             return 0;
         }
+        cur->level_title = strdup(tmp_s);
+        if (!cur->level_title) {
+            TRACE("failed to allocate memory");
+            return 0;
+        }
 
-        if (!JSONGetStringValue(item->value, "type", &str)) {
+        tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
+        if (tmp_s == JSON_INVALID_STRING) {
             TRACE("level %d: 'type' must be a string", level_num);
             return 0;
         }
-        if (!strcmp(str, "title")) {
+        if (!strcmp(tmp_s, "title")) {
             cur->level_type = GFL_TITLE;
             if (GF.title_level_num != -1) {
                 TRACE("level %d: there can be only one title level", level_num);
                 return 0;
             }
             GF.title_level_num = level_num;
-        } else if (!strcmp(str, "gym")) {
+        } else if (!strcmp(tmp_s, "gym")) {
             cur->level_type = GFL_GYM;
             if (GF.gym_level_num != -1) {
                 TRACE("level %d: there can be only one gym level", level_num);
                 return 0;
             }
             GF.gym_level_num = level_num;
-        } else if (!strcmp(str, "normal")) {
+        } else if (!strcmp(tmp_s, "normal")) {
             cur->level_type = GFL_NORMAL;
             if (GF.first_level_num == -1) {
                 GF.first_level_num = level_num;
             }
             GF.last_level_num = level_num;
-        } else if (!strcmp(str, "cutscene")) {
+        } else if (!strcmp(tmp_s, "cutscene")) {
             cur->level_type = GFL_CUTSCENE;
-        } else if (!strcmp(str, "current")) {
+        } else if (!strcmp(tmp_s, "current")) {
             cur->level_type = GFL_CURRENT;
         } else {
-            TRACE("level %d: unknown level type %s", level_num, str);
+            TRACE("level %d: unknown level type %s", level_num, tmp_s);
             return 0;
         }
 
-        if (JSONGetBooleanValue(item->value, "demo", &enabled)) {
-            cur->demo = enabled;
-            GF.has_demo |= enabled;
+        tmp_i = json_object_get_bool(jlvl_obj, "demo", JSON_INVALID_BOOL);
+        if (tmp_i != JSON_INVALID_BOOL) {
+            cur->demo = tmp_i;
+            GF.has_demo |= tmp_i;
         }
 
-        struct json_value_s *level_strings =
-            JSONGetField(item->value, "strings");
-        if (!level_strings || level_strings->type != json_type_object) {
+        struct json_object_s *jlbl_strings_obj =
+            json_object_get_object(jlvl_obj, "strings");
+        if (!jlbl_strings_obj) {
             TRACE("level %d: 'strings' must be a dictionary", level_num);
             return 0;
         } else {
-            if (JSONGetStringValue(level_strings, "pickup1", &str)) {
-                cur->pickup1 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->pickup1 = strdup(tmp_s);
             } else {
                 cur->pickup1 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "pickup2", &str)) {
-                cur->pickup2 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "pickup2", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->pickup2 = strdup(tmp_s);
             } else {
                 cur->pickup2 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "key1", &str)) {
-                cur->key1 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "key1", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->key1 = strdup(tmp_s);
             } else {
                 cur->key1 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "key2", &str)) {
-                cur->key2 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "key2", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->key2 = strdup(tmp_s);
             } else {
                 cur->key2 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "key3", &str)) {
-                cur->key3 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "key3", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->key3 = strdup(tmp_s);
             } else {
                 cur->key3 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "key4", &str)) {
-                cur->key4 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "key4", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->key4 = strdup(tmp_s);
             } else {
                 cur->key4 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "puzzle1", &str)) {
-                cur->puzzle1 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "puzzle1", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->puzzle1 = strdup(tmp_s);
             } else {
                 cur->puzzle1 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "puzzle2", &str)) {
-                cur->puzzle2 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "puzzle2", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->puzzle2 = strdup(tmp_s);
             } else {
                 cur->puzzle2 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "puzzle3", &str)) {
-                cur->puzzle3 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "puzzle3", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->puzzle3 = strdup(tmp_s);
             } else {
                 cur->puzzle3 = NULL;
             }
 
-            if (JSONGetStringValue(level_strings, "puzzle4", &str)) {
-                cur->puzzle4 = strdup(str);
+            tmp_s = json_object_get_string(
+                jlbl_strings_obj, "puzzle4", JSON_INVALID_STRING);
+            if (tmp_s != JSON_INVALID_STRING) {
+                cur->puzzle4 = strdup(tmp_s);
             } else {
                 cur->puzzle4 = NULL;
             }
         }
 
-        if (!GF_LoadLevelSequence(item->value, level_num)) {
+        if (!GF_LoadLevelSequence(jlvl_obj, level_num)) {
             return 0;
         }
 
-        item = item->next;
+        jlvl_elem = jlvl_elem->next;
         level_num++;
         cur++;
     }
@@ -615,7 +661,7 @@ static int8_t S_LoadScriptLevels(struct json_value_s *json)
 static int8_t S_LoadGameFlow(const char *file_name)
 {
     int8_t result = 0;
-    struct json_value_s *json = NULL;
+    struct json_value_s *root = NULL;
     MYFILE *fp = NULL;
     char *script_data = NULL;
 
@@ -639,28 +685,30 @@ static int8_t S_LoadGameFlow(const char *file_name)
     fp = NULL;
 
     struct json_parse_result_s parse_result;
-    json = json_parse_ex(
+    root = json_parse_ex(
         script_data, strlen(script_data), json_parse_flags_allow_json5, NULL,
         NULL, &parse_result);
-    if (!json) {
+    if (!root) {
         TRACE(
             "failed to parse script file: %s in line %d, char %d",
-            JSONGetErrorDescription(parse_result.error),
+            json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, script_data);
         goto cleanup;
     }
 
+    struct json_object_s *root_obj = json_value_as_object(root);
+
     result = 1;
-    result &= S_LoadScriptMeta(json);
-    result &= S_LoadScriptGameStrings(json);
-    result &= S_LoadScriptLevels(json);
+    result &= S_LoadScriptMeta(root_obj);
+    result &= S_LoadScriptGameStrings(root_obj);
+    result &= S_LoadScriptLevels(root_obj);
 
 cleanup:
     if (fp) {
         FileClose(fp);
     }
-    if (json) {
-        free(json);
+    if (root) {
+        json_value_free(root);
     }
     if (script_data) {
         free(script_data);

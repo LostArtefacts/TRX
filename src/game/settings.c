@@ -79,7 +79,7 @@ static int32_t S_ReadUserSettingsT1M()
     if (!root) {
         TRACE(
             "failed to parse script file: %s in line %d, char %d",
-            JSONGetErrorDescription(parse_result.error),
+            json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, config_data);
         goto cleanup;
     }
