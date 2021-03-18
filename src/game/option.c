@@ -40,15 +40,12 @@ typedef enum COMPASS_TEXT {
 } COMPASS_TEXT;
 
 static TEXTSTRING *PassportText = NULL;
-static TEXTSTRING *DetailText[5] = { NULL, NULL, NULL, NULL, NULL };
-static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
-static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { NULL, NULL, NULL,
-                                                      NULL, NULL, NULL };
-static TEXTSTRING *CtrlText[2] = { NULL, NULL };
-static TEXTSTRING *CtrlTextA[13] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                     NULL, NULL, NULL, NULL, NULL, NULL };
-static TEXTSTRING *CtrlTextB[13] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                     NULL, NULL, NULL, NULL, NULL, NULL };
+static TEXTSTRING *DetailText[5] = { 0 };
+static TEXTSTRING *SoundText[4] = { 0 };
+static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
+static TEXTSTRING *CtrlText[2] = { 0 };
+static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
 
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
@@ -830,10 +827,10 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
 
 void FlashConflicts()
 {
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         int16_t key = Layout[IConfig][i];
         T_FlashText(CtrlTextB[i], 0, 0);
-        for (int j = 0; j < 13; j++) {
+        for (int j = 0; j < KEY_NUMBER_OF; j++) {
             if (i != j && key == Layout[IConfig][j]) {
                 T_FlashText(CtrlTextB[i], 1, 20);
                 break;
@@ -844,10 +841,10 @@ void FlashConflicts()
 
 void DefaultConflict()
 {
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         int16_t key = Layout[0][i];
         Conflict[i] = 0;
-        for (int j = 0; j < 13; j++) {
+        for (int j = 0; j < KEY_NUMBER_OF; j++) {
             if (key == Layout[1][j]) {
                 Conflict[i] = 1;
                 break;
@@ -884,15 +881,15 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 S_WriteUserSettings();
             } else {
                 T_RemoveBackground(CtrlTextA[KeyChange]);
-                if (KeyChange <= 6) {
-                    KeyChange += 7;
-                    if (KeyChange == 13) {
-                        KeyChange = 12;
+                if (KeyChange <= KEY_NUMBER_OF / 2) {
+                    KeyChange += (KEY_NUMBER_OF) / 2 + 1;
+                    if (KeyChange == KEY_NUMBER_OF) {
+                        KeyChange = KEY_NUMBER_OF - 1;
                     }
-                } else if (KeyChange == 12) {
-                    KeyChange = 6;
+                } else if (KeyChange == KEY_NUMBER_OF - 1) {
+                    KeyChange = KEY_NUMBER_OF / 2;
                 } else {
-                    KeyChange -= 7;
+                    KeyChange -= (KEY_NUMBER_OF / 2) + 1;
                 }
                 T_AddBackground(
                     CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
@@ -1043,7 +1040,7 @@ void S_ShowControls()
         CtrlTextB[11] = T_Print(centre + 20, 35, 0, ScanCodeNames[layout[11]]);
         CtrlTextB[12] = T_Print(centre + 20, 65, 0, ScanCodeNames[layout[12]]);
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < KEY_NUMBER_OF; i++) {
             T_CentreV(CtrlTextB[i], 1);
         }
         KeyChange = 0;
@@ -1069,7 +1066,7 @@ void S_ShowControls()
         CtrlTextA[12] =
             T_Print(centre + 90, 65, 0, GF.strings[GS_KEYMAP_INVENTORY]);
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < KEY_NUMBER_OF; i++) {
             T_CentreV(CtrlTextA[i], 1);
         }
     }
@@ -1080,14 +1077,14 @@ void S_ChangeCtrlText()
     T_ChangeText(
         CtrlText[0],
         GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
     }
 }
 
 void S_RemoveCtrlText()
 {
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         T_RemovePrint(CtrlTextA[i]);
         T_RemovePrint(CtrlTextB[i]);
         CtrlTextB[i] = NULL;

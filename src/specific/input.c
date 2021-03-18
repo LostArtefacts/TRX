@@ -10,6 +10,44 @@
 
 #include <dinput.h>
 
+int16_t Layout[2][KEY_NUMBER_OF] = {
+    // built-in controls
+    {
+        DIK_UP, // KEY_UP
+        DIK_DOWN, // KEY_DOWN
+        DIK_LEFT, // KEY_LEFT
+        DIK_RIGHT, // KEY_RIGHT
+        DIK_DELETE, // KEY_STEP_L
+        DIK_NEXT, // KEY_STEP_R
+        DIK_RSHIFT, // KEY_SLOW
+        DIK_RMENU, // KEY_JUMP
+        DIK_RCONTROL, // KEY_ACTION
+        DIK_SPACE, // KEY_DRAW
+        DIK_NUMPAD0, // KEY_LOOK
+        DIK_END, // KEY_ROLL
+        DIK_ESCAPE, // KEY_OPTION
+    },
+
+    // default user controls
+    {
+        DIK_NUMPAD8, // KEY_UP
+        DIK_NUMPAD2, // KEY_DOWN
+        DIK_NUMPAD4, // KEY_LEFT
+        DIK_NUMPAD6, // KEY_RIGHT
+        DIK_NUMPAD7, // KEY_STEP_L
+        DIK_NUMPAD9, // KEY_STEP_R
+        DIK_NUMPAD1, // KEY_SLOW
+        DIK_ADD, // KEY_JUMP
+        DIK_NUMPADENTER, // KEY_ACTION
+        DIK_NUMPAD3, // KEY_DRAW
+        DIK_NUMPAD0, // KEY_LOOK
+        DIK_NUMPAD5, // KEY_ROLL
+        DIK_DECIMAL, // KEY_OPTION
+    }
+};
+
+int32_t Conflict[KEY_NUMBER_OF] = { 0 };
+
 static int32_t MedipackCoolDown = 0;
 
 int32_t Key_(int32_t number)
@@ -115,43 +153,43 @@ void S_UpdateInput()
         linput |= IN_BACK;
     }
 
-    if (Key_(0)) {
+    if (Key_(KEY_UP)) {
         linput |= IN_FORWARD;
     }
-    if (Key_(1)) {
+    if (Key_(KEY_DOWN)) {
         linput |= IN_BACK;
     }
-    if (Key_(2)) {
+    if (Key_(KEY_LEFT)) {
         linput |= IN_LEFT;
     }
-    if (Key_(3)) {
+    if (Key_(KEY_RIGHT)) {
         linput |= IN_RIGHT;
     }
-    if (Key_(4)) {
+    if (Key_(KEY_STEP_L)) {
         linput |= IN_STEPL;
     }
-    if (Key_(5)) {
+    if (Key_(KEY_STEP_R)) {
         linput |= IN_STEPR;
     }
-    if (Key_(6)) {
+    if (Key_(KEY_SLOW)) {
         linput |= IN_SLOW;
     }
-    if (Key_(7)) {
+    if (Key_(KEY_JUMP)) {
         linput |= IN_JUMP;
     }
-    if (Key_(8)) {
+    if (Key_(KEY_ACTION)) {
         linput |= IN_ACTION;
     }
-    if (Key_(9)) {
+    if (Key_(KEY_DRAW)) {
         linput |= IN_DRAW;
     }
-    if (Key_(10)) {
+    if (Key_(KEY_LOOK)) {
         linput |= IN_LOOK;
     }
-    if (Key_(11)) {
+    if (Key_(KEY_ROLL)) {
         linput |= IN_ROLL;
     }
-    if (Key_(12) && Camera.type != CAM_CINEMATIC) {
+    if (Key_(KEY_OPTION) && Camera.type != CAM_CINEMATIC) {
         linput |= IN_OPTION;
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {

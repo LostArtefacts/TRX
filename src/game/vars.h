@@ -87,7 +87,6 @@
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
 
-#define Layout                  ARRAY_(0x00454A08, int16_t, [2][13])
 #define NoInputCount            VAR_I_(0x00459F4C, int32_t, 0)
 #define IDelay                  VAR_U_(0x0045A0B0, int32_t)
 #define IDCount                 VAR_U_(0x0045A0B4, int32_t)
@@ -100,7 +99,6 @@
 #define JoyThrottle             VAR_U_(0x0045B970, int32_t)
 #define JoyHat                  VAR_U_(0x0045B9A0, int32_t)
 #define JoyFire                 VAR_U_(0x0045B990, int32_t)
-#define Conflict                ARRAY_(0x0045EEC0, int32_t, [13])
 
 #define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
 #define SoundsLoaded            VAR_U_(0x0045A214, int32_t)

@@ -3,6 +3,7 @@
 #include "game/option.h"
 #include "game/types.h"
 #include "game/vars.h"
+#include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 

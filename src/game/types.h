@@ -734,6 +734,23 @@ typedef enum GAMEALLOC_BUFFER {
     GBUF_ROLLINGBALL_STUFF = 38,
 } GAMEALLOC_BUFFER;
 
+typedef enum KEY_NUMBER {
+    KEY_UP = 0,
+    KEY_DOWN = 1,
+    KEY_LEFT = 2,
+    KEY_RIGHT = 3,
+    KEY_STEP_L = 4,
+    KEY_STEP_R = 5,
+    KEY_SLOW = 6,
+    KEY_JUMP = 7,
+    KEY_ACTION = 8,
+    KEY_DRAW = 9,
+    KEY_LOOK = 10,
+    KEY_ROLL = 11,
+    KEY_OPTION = 12,
+    KEY_NUMBER_OF = 13,
+} KEY_NUMBER;
+
 typedef enum INPUT_STATE {
     IN_FORWARD = 1 << 0,
     IN_BACK = 1 << 1,
