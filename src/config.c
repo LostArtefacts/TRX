@@ -1,9 +1,9 @@
 #include "config.h"
 
 #include "game/const.h"
-#include "json_utils.h"
 
 #include "filesystem.h"
+#include "json.h"
 #include "util.h"
 
 #include <stdlib.h>

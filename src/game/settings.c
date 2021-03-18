@@ -6,7 +6,7 @@
 #include "specific/sndpc.h"
 
 #include "filesystem.h"
-#include "json_utils.h"
+#include "json.h"
 
 #include <stdlib.h>
 #include <string.h>

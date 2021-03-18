@@ -15,8 +15,7 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "json_parser/json.h"
-#include "json_utils.h"
+#include "json.h"
 #include "util.h"
 
 #include <stdlib.h>
