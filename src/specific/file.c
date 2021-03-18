@@ -38,14 +38,14 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
     TRACE("%s", full_path);
 
     init_game_malloc();
-    FILE *fp = _fopen(full_path, "rb");
+    FILE *fp = fopen(full_path, "rb");
     if (!fp) {
         sprintf(StringToShow, "S_LoadLevel(): Could not open %s", full_path);
         S_ExitSystem(StringToShow);
         return 0;
     }
 
-    _fread(&version, sizeof(int32_t), 1, fp);
+    fread(&version, sizeof(int32_t), 1, fp);
     if (version != 32) {
         sprintf(
             StringToShow,
@@ -59,7 +59,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
         return 0;
     }
 
-    _fread(&file_level_num, sizeof(int32_t), 1, fp);
+    fread(&file_level_num, sizeof(int32_t), 1, fp);
     TRACE("file level num: %d", file_level_num);
 
     if (!LoadRooms(fp)) {
@@ -114,7 +114,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
         return 0;
     }
 
-    _fclose(fp);
+    fclose(fp);
 
     if (IsHardwareRenderer) {
         DownloadTexturesToHardware(TexturePageCount);
@@ -128,7 +128,7 @@ int32_t LoadRooms(FILE *fp)
     uint16_t count2;
     uint32_t count4;
 
-    _fread(&RoomCount, sizeof(uint16_t), 1, fp);
+    fread(&RoomCount, sizeof(uint16_t), 1, fp);
     TRACE("%d rooms", RoomCount);
     if (RoomCount > MAX_ROOMS) {
         strcpy(StringToShow, "LoadRoom(): Too many rooms");
@@ -140,72 +140,72 @@ int32_t LoadRooms(FILE *fp)
     for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount;
          i++, current_room_info++) {
         // Room position
-        _fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
+        fread(&current_room_info->x, sizeof(uint32_t), 1, fp);
         current_room_info->y = 0;
-        _fread(&current_room_info->z, sizeof(uint32_t), 1, fp);
+        fread(&current_room_info->z, sizeof(uint32_t), 1, fp);
 
         // Room floor/ceiling
-        _fread(&current_room_info->min_floor, sizeof(uint32_t), 1, fp);
-        _fread(&current_room_info->max_ceiling, sizeof(uint32_t), 1, fp);
+        fread(&current_room_info->min_floor, sizeof(uint32_t), 1, fp);
+        fread(&current_room_info->max_ceiling, sizeof(uint32_t), 1, fp);
 
         // Room mesh
-        _fread(&count4, sizeof(uint32_t), 1, fp);
+        fread(&count4, sizeof(uint32_t), 1, fp);
         current_room_info->data =
             game_malloc(sizeof(uint16_t) * count4, GBUF_ROOM_MESH);
-        _fread(current_room_info->data, sizeof(uint16_t), count4, fp);
+        fread(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
-        _fread(&count2, sizeof(uint16_t), 1, fp);
+        fread(&count2, sizeof(uint16_t), 1, fp);
         if (!count2) {
             current_room_info->doors = NULL;
         } else {
             current_room_info->doors = game_malloc(
                 sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_ROOM_DOOR);
             current_room_info->doors->count = count2;
-            _fread(
+            fread(
                 &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp);
         }
 
         // Room floor
-        _fread(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
-        _fread(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
         count4 = current_room_info->y_size * current_room_info->x_size;
         current_room_info->floor =
             game_malloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
-        _fread(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
+        fread(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
 
         // Room lights
-        _fread(&current_room_info->ambient, sizeof(uint16_t), 1, fp);
-        _fread(&current_room_info->num_lights, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->ambient, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->num_lights, sizeof(uint16_t), 1, fp);
         if (!current_room_info->num_lights) {
             current_room_info->light = NULL;
         } else {
             current_room_info->light = game_malloc(
                 sizeof(LIGHT_INFO) * current_room_info->num_lights,
                 GBUF_ROOM_LIGHTS);
-            _fread(
+            fread(
                 current_room_info->light, sizeof(LIGHT_INFO),
                 current_room_info->num_lights, fp);
         }
 
         // Static mesh infos
-        _fread(&current_room_info->num_meshes, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->num_meshes, sizeof(uint16_t), 1, fp);
         if (!current_room_info->num_meshes) {
             current_room_info->mesh = NULL;
         } else {
             current_room_info->mesh = game_malloc(
                 sizeof(MESH_INFO) * current_room_info->num_meshes,
                 GBUF_ROOM_STATIC_MESH_INFOS);
-            _fread(
+            fread(
                 current_room_info->mesh, sizeof(MESH_INFO),
                 current_room_info->num_meshes, fp);
         }
 
         // Flipped (alternative) room
-        _fread(&current_room_info->flipped_room, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->flipped_room, sizeof(uint16_t), 1, fp);
 
         // Room flags
-        _fread(&current_room_info->flags, sizeof(uint16_t), 1, fp);
+        fread(&current_room_info->flags, sizeof(uint16_t), 1, fp);
 
         // Initialise some variables
         current_room_info->bound_active = 0;
@@ -217,127 +217,127 @@ int32_t LoadRooms(FILE *fp)
         current_room_info->fx_number = -1;
     }
 
-    _fread(&FloorDataSize, sizeof(uint32_t), 1, fp);
+    fread(&FloorDataSize, sizeof(uint32_t), 1, fp);
     FloorData = game_malloc(sizeof(uint16_t) * FloorDataSize, GBUF_FLOOR_DATA);
-    _fread(FloorData, sizeof(uint16_t), FloorDataSize, fp);
+    fread(FloorData, sizeof(uint16_t), FloorDataSize, fp);
 
     return 1;
 }
 
 int32_t LoadObjects(FILE *fp)
 {
-    _fread(&MeshCount, sizeof(int32_t), 1, fp);
+    fread(&MeshCount, sizeof(int32_t), 1, fp);
     TRACE("%d meshes", MeshCount);
     MeshBase = game_malloc(sizeof(int16_t) * MeshCount, GBUF_MESHES);
-    _fread(MeshBase, sizeof(int16_t), MeshCount, fp);
+    fread(MeshBase, sizeof(int16_t), MeshCount, fp);
 
-    _fread(&MeshPtrCount, sizeof(int32_t), 1, fp);
+    fread(&MeshPtrCount, sizeof(int32_t), 1, fp);
     uint32_t *mesh_indices =
         game_malloc(sizeof(uint32_t) * MeshPtrCount, GBUF_MESH_POINTERS);
-    _fread(mesh_indices, sizeof(uint32_t), MeshPtrCount, fp);
+    fread(mesh_indices, sizeof(uint32_t), MeshPtrCount, fp);
 
     Meshes = game_malloc(sizeof(int16_t *) * MeshPtrCount, GBUF_MESH_POINTERS);
     for (int i = 0; i < MeshPtrCount; i++) {
         Meshes[i] = &MeshBase[mesh_indices[i] / 2];
     }
 
-    _fread(&AnimCount, sizeof(int32_t), 1, fp);
+    fread(&AnimCount, sizeof(int32_t), 1, fp);
     TRACE("%d anims", AnimCount);
     Anims = game_malloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
-    _fread(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
+    fread(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
 
-    _fread(&AnimChangeCount, sizeof(int32_t), 1, fp);
+    fread(&AnimChangeCount, sizeof(int32_t), 1, fp);
     TRACE("%d anim changes", AnimChangeCount);
     AnimChanges = game_malloc(
         sizeof(ANIM_CHANGE_STRUCT) * AnimChangeCount, GBUF_ANIM_CHANGES);
-    _fread(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, fp);
+    fread(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, fp);
 
-    _fread(&AnimRangeCount, sizeof(int32_t), 1, fp);
+    fread(&AnimRangeCount, sizeof(int32_t), 1, fp);
     TRACE("%d anim ranges", AnimRangeCount);
     AnimRanges = game_malloc(
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
-    _fread(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
+    fread(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
 
-    _fread(&AnimCommandCount, sizeof(int32_t), 1, fp);
+    fread(&AnimCommandCount, sizeof(int32_t), 1, fp);
     TRACE("%d anim commands", AnimCommandCount);
     AnimCommands =
         game_malloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
-    _fread(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
+    fread(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
 
-    _fread(&AnimBoneCount, sizeof(int32_t), 1, fp);
+    fread(&AnimBoneCount, sizeof(int32_t), 1, fp);
     TRACE("%d anim bones", AnimBoneCount);
     AnimBones = game_malloc(sizeof(int32_t) * AnimBoneCount, GBUF_ANIM_BONES);
-    _fread(AnimBones, sizeof(int32_t), AnimBoneCount, fp);
+    fread(AnimBones, sizeof(int32_t), AnimBoneCount, fp);
 
-    _fread(&AnimFrameCount, sizeof(int32_t), 1, fp);
+    fread(&AnimFrameCount, sizeof(int32_t), 1, fp);
     TRACE("%d anim frames", AnimFrameCount);
     AnimFrames =
         game_malloc(sizeof(int16_t) * AnimFrameCount, GBUF_ANIM_FRAMES);
-    _fread(AnimFrames, sizeof(int16_t), AnimFrameCount, fp);
+    fread(AnimFrames, sizeof(int16_t), AnimFrameCount, fp);
     for (int i = 0; i < AnimCount; i++) {
         Anims[i].frame_ptr = &AnimFrames[(size_t)Anims[i].frame_ptr / 2];
     }
 
-    _fread(&ObjectCount, sizeof(int32_t), 1, fp);
+    fread(&ObjectCount, sizeof(int32_t), 1, fp);
     TRACE("%d objects", ObjectCount);
     for (int i = 0; i < ObjectCount; i++) {
         int32_t tmp;
-        _fread(&tmp, sizeof(int32_t), 1, fp);
+        fread(&tmp, sizeof(int32_t), 1, fp);
         OBJECT_INFO *object = &Objects[tmp];
 
-        _fread(&object->nmeshes, sizeof(int16_t), 1, fp);
-        _fread(&object->mesh_index, sizeof(int16_t), 1, fp);
-        _fread(&object->bone_index, sizeof(int32_t), 1, fp);
+        fread(&object->nmeshes, sizeof(int16_t), 1, fp);
+        fread(&object->mesh_index, sizeof(int16_t), 1, fp);
+        fread(&object->bone_index, sizeof(int32_t), 1, fp);
 
-        _fread(&tmp, sizeof(int32_t), 1, fp);
+        fread(&tmp, sizeof(int32_t), 1, fp);
         object->frame_base = &AnimFrames[tmp / 2];
-        _fread(&object->anim_index, sizeof(int16_t), 1, fp);
+        fread(&object->anim_index, sizeof(int16_t), 1, fp);
         object->loaded = 1;
     }
 
     InitialiseObjects();
 
-    _fread(&StaticCount, sizeof(int32_t), 1, fp);
+    fread(&StaticCount, sizeof(int32_t), 1, fp);
     TRACE("%d statics", StaticCount);
     for (int i = 0; i < StaticCount; i++) {
         int32_t tmp;
-        _fread(&tmp, sizeof(int32_t), 1, fp);
+        fread(&tmp, sizeof(int32_t), 1, fp);
         STATIC_INFO *object = &StaticObjects[tmp];
 
-        _fread(&object->mesh_number, sizeof(int16_t), 1, fp);
-        _fread(&object->x_minp, sizeof(int16_t), 6, fp);
-        _fread(&object->x_minc, sizeof(int16_t), 6, fp);
-        _fread(&object->flags, sizeof(int16_t), 1, fp);
+        fread(&object->mesh_number, sizeof(int16_t), 1, fp);
+        fread(&object->x_minp, sizeof(int16_t), 6, fp);
+        fread(&object->x_minc, sizeof(int16_t), 6, fp);
+        fread(&object->flags, sizeof(int16_t), 1, fp);
     }
 
-    _fread(&TextureCount, sizeof(int32_t), 1, fp);
+    fread(&TextureCount, sizeof(int32_t), 1, fp);
     TRACE("%d textures", TextureCount);
     if (TextureCount > MAX_TEXTURES) {
         sprintf(StringToShow, "Too many Textures in level");
         return 0;
     }
-    _fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), TextureCount, fp);
+    fread(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), TextureCount, fp);
 
     return 1;
 }
 
 int32_t LoadSprites(FILE *fp)
 {
-    _fread(&SpriteInfoCount, sizeof(int32_t), 1, fp);
-    _fread(&PhdSpriteInfo, sizeof(PHDSPRITESTRUCT), SpriteInfoCount, fp);
+    fread(&SpriteInfoCount, sizeof(int32_t), 1, fp);
+    fread(&PhdSpriteInfo, sizeof(PHDSPRITESTRUCT), SpriteInfoCount, fp);
 
-    _fread(&SpriteCount, sizeof(int32_t), 1, fp);
+    fread(&SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < SpriteCount; i++) {
         int32_t object_num;
-        _fread(&object_num, sizeof(int32_t), 1, fp);
+        fread(&object_num, sizeof(int32_t), 1, fp);
         if (object_num < NUMBER_OBJECTS) {
-            _fread(&Objects[object_num], sizeof(int16_t), 1, fp);
-            _fread(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
+            fread(&Objects[object_num], sizeof(int16_t), 1, fp);
+            fread(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
             Objects[object_num].loaded = 1;
         } else {
             int32_t static_num = object_num - NUMBER_OBJECTS;
-            _fseek(fp, 2, 1);
-            _fread(
+            fseek(fp, 2, 1);
+            fread(
                 &StaticObjects[static_num].mesh_number, sizeof(int16_t), 1, fp);
         }
     }
@@ -347,7 +347,7 @@ int32_t LoadSprites(FILE *fp)
 int32_t LoadItems(FILE *fp)
 {
     int32_t item_count = 0;
-    _fread(&item_count, sizeof(int32_t), 1, fp);
+    fread(&item_count, sizeof(int32_t), 1, fp);
 
     TRACE("%d items", item_count);
 
@@ -363,14 +363,14 @@ int32_t LoadItems(FILE *fp)
 
         for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &Items[i];
-            _fread(&item->object_number, sizeof(int16_t), 1, fp);
-            _fread(&item->room_number, sizeof(int16_t), 1, fp);
-            _fread(&item->pos.x, sizeof(int32_t), 1, fp);
-            _fread(&item->pos.y, sizeof(int32_t), 1, fp);
-            _fread(&item->pos.z, sizeof(int32_t), 1, fp);
-            _fread(&item->pos.y_rot, sizeof(int16_t), 1, fp);
-            _fread(&item->shade, sizeof(int16_t), 1, fp);
-            _fread(&item->flags, sizeof(uint16_t), 1, fp);
+            fread(&item->object_number, sizeof(int16_t), 1, fp);
+            fread(&item->room_number, sizeof(int16_t), 1, fp);
+            fread(&item->pos.x, sizeof(int32_t), 1, fp);
+            fread(&item->pos.y, sizeof(int32_t), 1, fp);
+            fread(&item->pos.z, sizeof(int32_t), 1, fp);
+            fread(&item->pos.y_rot, sizeof(int16_t), 1, fp);
+            fread(&item->shade, sizeof(int16_t), 1, fp);
+            fread(&item->flags, sizeof(uint16_t), 1, fp);
 
             if (item->object_number < 0
                 || item->object_number >= NUMBER_OBJECTS) {
@@ -391,7 +391,7 @@ int32_t LoadItems(FILE *fp)
 int32_t LoadDepthQ(FILE *fp)
 {
     TRACE("");
-    _fread(DepthQTable, sizeof(uint8_t), 32 * 256, fp);
+    fread(DepthQTable, sizeof(uint8_t), 32 * 256, fp);
     for (int i = 0; i < 32; i++) {
         // force colour 0 to black
         DepthQTable[i][0] = 0;
@@ -406,7 +406,7 @@ int32_t LoadDepthQ(FILE *fp)
 int32_t LoadPalette(FILE *fp)
 {
     TRACE("");
-    _fread(GamePalette, sizeof(uint8_t), 256 * 3, fp);
+    fread(GamePalette, sizeof(uint8_t), 256 * 3, fp);
     GamePalette[0] = 0;
     GamePalette[1] = 0;
     GamePalette[2] = 0;
@@ -424,7 +424,7 @@ int32_t LoadPalette(FILE *fp)
 
 int32_t LoadCameras(FILE *fp)
 {
-    _fread(&NumberCameras, sizeof(int32_t), 1, fp);
+    fread(&NumberCameras, sizeof(int32_t), 1, fp);
     TRACE("%d cameras", NumberCameras);
     if (!NumberCameras) {
         return 1;
@@ -434,13 +434,13 @@ int32_t LoadCameras(FILE *fp)
     if (!Camera.fixed) {
         return 0;
     }
-    _fread(Camera.fixed, sizeof(OBJECT_VECTOR), NumberCameras, fp);
+    fread(Camera.fixed, sizeof(OBJECT_VECTOR), NumberCameras, fp);
     return 1;
 }
 
 int32_t LoadSoundEffects(FILE *fp)
 {
-    _fread(&NumberSoundEffects, sizeof(int32_t), 1, fp);
+    fread(&NumberSoundEffects, sizeof(int32_t), 1, fp);
     TRACE("%d sound effects", NumberSoundEffects);
     if (!NumberSoundEffects) {
         return 1;
@@ -450,22 +450,22 @@ int32_t LoadSoundEffects(FILE *fp)
     if (!SoundEffectsTable) {
         return 0;
     }
-    _fread(SoundEffectsTable, sizeof(OBJECT_VECTOR), NumberSoundEffects, fp);
+    fread(SoundEffectsTable, sizeof(OBJECT_VECTOR), NumberSoundEffects, fp);
     return 1;
 }
 
 int32_t LoadBoxes(FILE *fp)
 {
-    _fread(&NumberBoxes, sizeof(int32_t), 1, fp);
+    fread(&NumberBoxes, sizeof(int32_t), 1, fp);
     Boxes = game_malloc(sizeof(BOX_INFO) * NumberBoxes, GBUF_BOXES);
-    if (!_fread(Boxes, sizeof(BOX_INFO), NumberBoxes, fp)) {
+    if (!fread(Boxes, sizeof(BOX_INFO), NumberBoxes, fp)) {
         sprintf(StringToShow, "LoadBoxes(): Unable to load boxes");
         return 0;
     }
 
-    _fread(&OverlapCount, sizeof(int32_t), 1, fp);
+    fread(&OverlapCount, sizeof(int32_t), 1, fp);
     Overlap = (uint16_t *)game_malloc(2 * OverlapCount, 22);
-    if (!_fread(Overlap, sizeof(int16_t), OverlapCount, fp)) {
+    if (!fread(Overlap, sizeof(int16_t), OverlapCount, fp)) {
         sprintf(StringToShow, "LoadBoxes(): Unable to load box overlaps");
         return 0;
     }
@@ -474,21 +474,21 @@ int32_t LoadBoxes(FILE *fp)
         GroundZone[i] =
             game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone[i]
-            || !_fread(GroundZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !fread(GroundZone[i], sizeof(int16_t), NumberBoxes, fp)) {
             sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground_zone'");
             return 0;
         }
 
         GroundZone2[i] = game_malloc(2 * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone2[i]
-            || !_fread(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !fread(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
             sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground2_zone'");
             return 0;
         }
 
         FlyZone[i] = game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_FLYZONE);
         if (!FlyZone[i]
-            || !_fread(FlyZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !fread(FlyZone[i], sizeof(int16_t), NumberBoxes, fp)) {
             sprintf(StringToShow, "LoadBoxes(): Unable to load 'fly_zone'");
             return 0;
         }
@@ -499,24 +499,24 @@ int32_t LoadBoxes(FILE *fp)
 
 int32_t LoadAnimatedTextures(FILE *fp)
 {
-    _fread(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
+    fread(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
     TRACE("%d animated textures", AnimTextureRangeCount);
     AnimTextureRanges = game_malloc(
         sizeof(int16_t) * AnimTextureRangeCount, GBUF_ANIMATING_TEXTURE_RANGES);
-    _fread(AnimTextureRanges, sizeof(int16_t), AnimTextureRangeCount, fp);
+    fread(AnimTextureRanges, sizeof(int16_t), AnimTextureRangeCount, fp);
     return 1;
 }
 
 int32_t LoadCinematic(FILE *fp)
 {
-    _fread(&NumCineFrames, sizeof(int16_t), 1, fp);
+    fread(&NumCineFrames, sizeof(int16_t), 1, fp);
     TRACE("%d cinematic frames", NumCineFrames);
     if (!NumCineFrames) {
         return 1;
     }
     Cine =
         game_malloc(sizeof(int16_t) * 8 * NumCineFrames, GBUF_CINEMATIC_FRAMES);
-    _fread(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);
+    fread(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);
     return 1;
 }
 
@@ -526,12 +526,12 @@ int32_t LoadDemo(FILE *fp)
     DemoPtr =
         game_malloc(DEMO_COUNT_MAX * sizeof(uint32_t), GBUF_LOADDEMO_BUFFER);
     uint16_t size = 0;
-    _fread(&size, sizeof(int16_t), 1, fp);
+    fread(&size, sizeof(int16_t), 1, fp);
     TRACE("%d demo buffer size", size);
     if (!size) {
         return 1;
     }
-    _fread(DemoPtr, 1, size, fp);
+    fread(DemoPtr, 1, size, fp);
     return 1;
 }
 
@@ -541,8 +541,8 @@ int32_t LoadSamples(FILE *fp)
         return 1;
     }
 
-    _fread(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
-    _fread(&NumSampleInfos, sizeof(int32_t), 1, fp);
+    fread(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
+    fread(&NumSampleInfos, sizeof(int32_t), 1, fp);
     TRACE("%d sample infos", NumSampleInfos);
     if (!NumSampleInfos) {
         S_ExitSystem("No Sample Infos");
@@ -550,20 +550,20 @@ int32_t LoadSamples(FILE *fp)
     }
 
     SampleInfos = game_malloc(8 * NumSampleInfos, GBUF_SAMPLE_INFOS);
-    _fread(SampleInfos, sizeof(SAMPLE_INFO), NumSampleInfos, fp);
+    fread(SampleInfos, sizeof(SAMPLE_INFO), NumSampleInfos, fp);
 
     int32_t sample_data_size;
     TRACE("%d sample data size", sample_data_size);
-    _fread(&sample_data_size, sizeof(int32_t), 1, fp);
+    fread(&sample_data_size, sizeof(int32_t), 1, fp);
     if (!sample_data_size) {
         S_ExitSystem("No Sample Data");
     }
 
     char *sample_data = game_malloc(sample_data_size, GBUF_SAMPLES);
-    _fread(
+    fread(
         sample_data, sizeof(int16_t), sample_data_size / sizeof(int16_t), fp);
 
-    _fread(&NumSamples, sizeof(int32_t), 1u, fp);
+    fread(&NumSamples, sizeof(int32_t), 1u, fp);
     TRACE("%d samples", NumSamples);
     if (!NumSamples) {
         S_ExitSystem("No Samples");
@@ -571,7 +571,7 @@ int32_t LoadSamples(FILE *fp)
 
     int32_t *sample_offsets =
         game_malloc(sizeof(int32_t) * NumSamples, GBUF_SAMPLE_OFFSETS);
-    _fread(sample_offsets, sizeof(int32_t), NumSamples, fp);
+    fread(sample_offsets, sizeof(int32_t), NumSamples, fp);
 
     char **sample_pointers =
         game_malloc(sizeof(char *) * (NumSamples + 1), GBUF_SAMPLE_OFFSETS);
@@ -590,10 +590,10 @@ int32_t LoadSamples(FILE *fp)
 
 int32_t LoadTexturePages(FILE *fp)
 {
-    _fread(&TexturePageCount, sizeof(int32_t), 1, fp);
+    fread(&TexturePageCount, sizeof(int32_t), 1, fp);
     TRACE("%d texture pages", TexturePageCount);
     int8_t *base = game_malloc(TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
-    _fread(base, 65536, TexturePageCount, fp);
+    fread(base, 65536, TexturePageCount, fp);
     for (int i = 0; i < TexturePageCount; i++) {
         TexturePagePtrs[i] = base;
         base += 65536;

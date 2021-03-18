@@ -4,16 +4,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// clang-format off
-// TODO: these can be removed once entire file.c is ported, but currently
-// we're still passing FILE* pointers to the original game routines and if we
-// mix our version of libc with the game's, the game will read garbage.
-#define _fopen                  ((FILE*         (*)(const char  *path, const char *mode))0x00442EE0)
-#define _fseek                  ((int32_t       (*)(FILE* fp, int32_t offset, int32_t mode))0x00443000)
-#define _fclose                 ((int32_t       (*)(FILE* fp))0x00442B40)
-#define _fread                  ((size_t        (*)(void *, size_t, size_t, FILE *))0x00442C20)
-// clang-format on
-
 int32_t LoadLevel(const char *filename, int32_t level_num);
 int32_t LoadRooms(FILE *fp);
 int32_t LoadObjects(FILE *fp);
