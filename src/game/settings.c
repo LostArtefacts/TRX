@@ -13,7 +13,6 @@
 
 static int32_t S_ReadUserSettingsATI();
 static int32_t S_ReadUserSettingsT1M();
-static int32_t S_WriteUserSettingsATI();
 static int32_t S_WriteUserSettingsT1M();
 
 static int32_t S_ReadUserSettingsATI()
@@ -132,23 +131,6 @@ cleanup:
     return result;
 }
 
-static int32_t S_WriteUserSettingsATI()
-{
-    MYFILE *fp = FileOpen(ATIUserSettingsPath, FILE_OPEN_WRITE);
-    if (!fp) {
-        return 0;
-    }
-    FileWrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-    FileWrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-    FileWrite(Layout[1], sizeof(int16_t), 13, fp);
-    FileWrite(&AppSettings, sizeof(int32_t), 1, fp);
-    FileWrite(&GameHiRes, sizeof(int32_t), 1, fp);
-    FileWrite(&GameSizer, sizeof(double), 1, fp);
-    FileWrite(&IConfig, sizeof(int32_t), 1, fp);
-    FileClose(fp);
-    return 1;
-}
-
 static int32_t S_WriteUserSettingsT1M()
 {
     MYFILE *fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_WRITE);
@@ -187,13 +169,14 @@ static int32_t S_WriteUserSettingsT1M()
 
 void S_ReadUserSettings()
 {
-    S_ReadUserSettingsATI();
-    S_WriteUserSettingsT1M();
+    if (S_ReadUserSettingsATI()) {
+        S_WriteUserSettingsT1M();
+        FileDelete(ATIUserSettingsPath);
+    }
     S_ReadUserSettingsT1M();
 }
 
 void S_WriteUserSettings()
 {
-    S_WriteUserSettingsATI();
     S_WriteUserSettingsT1M();
 }

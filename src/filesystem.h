@@ -23,5 +23,6 @@ FileWrite(const void *data, size_t item_size, size_t count, MYFILE *file);
 size_t FileSize(MYFILE *file);
 void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
 void FileClose(MYFILE *file);
+int FileDelete(const char *path);
 
 #endif

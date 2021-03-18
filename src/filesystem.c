@@ -67,3 +67,8 @@ void FileClose(MYFILE *file)
     fclose(file->fp);
     free(file);
 }
+
+int FileDelete(const char *path)
+{
+    return remove(path);
+}
