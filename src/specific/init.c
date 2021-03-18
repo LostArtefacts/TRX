@@ -61,7 +61,7 @@ void init_game_malloc()
     GameAllocMemUsed = 0;
 }
 
-void game_free(int32_t free_size)
+void game_free(int32_t free_size, int32_t type)
 {
     TRACE("");
     GameAllocMemPointer -= free_size;

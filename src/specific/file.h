@@ -5,10 +5,6 @@
 #include <stdio.h>
 
 // clang-format off
-#define LoadSamples             ((int32_t       (*)(FILE* fp))0x00438EA0)
-// clang-format on
-
-// clang-format off
 // TODO: these can be removed once entire file.c is ported, but currently
 // we're still passing FILE* pointers to the original game routines and if we
 // mix our version of libc with the game's, the game will read garbage.
@@ -31,6 +27,7 @@ int32_t LoadBoxes(FILE *fp);
 int32_t LoadAnimatedTextures(FILE *fp);
 int32_t LoadCinematic(FILE *fp);
 int32_t LoadDemo(FILE *fp);
+int32_t LoadSamples(FILE *fp);
 int32_t LoadTexturePages(FILE *fp);
 int32_t S_LoadLevel(int32_t level_num);
 const char *GetFullPath(const char *filename);

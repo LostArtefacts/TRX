@@ -1859,10 +1859,18 @@ typedef struct GAMEFLOW {
     char *strings[GS_NUMBER_OF];
 } GAMEFLOW;
 
+typedef struct SAMPLE_INFO {
+    int16_t number;
+    int16_t volume;
+    int16_t randomness;
+    int16_t flags;
+} SAMPLE_INFO;
+
 #pragma pack(pop)
 
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*EffectRoutine)(ITEM_INFO *item);
+typedef int32_t (*SampleLoaderRoutine)(int32_t sample_num);
 
 #endif

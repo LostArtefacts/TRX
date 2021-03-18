@@ -12,6 +12,7 @@
 #define HALF_SECOND 15
 
 #define MAX_REQLINES 16
+#define MAX_SAMPLES 256
 #define MAX_SAVE_SLOTS 16
 #define MAX_LEVEL_NAME_LENGTH 48
 #define NUM_SLOTS 8

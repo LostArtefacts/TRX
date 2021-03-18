@@ -136,11 +136,6 @@ int32_t LoadRooms(FILE *fp)
     }
 
     RoomInfo = game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_ROOM_INFOS);
-    if (!RoomInfo) {
-        strcpy(StringToShow, "LoadRoom(): Could not allocate memory for rooms");
-        return 0;
-    }
-
     int i = 0;
     for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount;
          i++, current_room_info++) {
@@ -363,13 +358,6 @@ int32_t LoadItems(FILE *fp)
         }
 
         Items = game_malloc(sizeof(ITEM_INFO) * NUMBER_ITEMS, GBUF_ITEMS);
-        if (!Items) {
-            strcpy(
-                StringToShow,
-                "LoadItems(): Unable to allocate memory for 'items'");
-            return 0;
-        }
-
         LevelItemCount = item_count;
         InitialiseItemArray(NUMBER_ITEMS);
 
@@ -528,9 +516,6 @@ int32_t LoadCinematic(FILE *fp)
     }
     Cine =
         game_malloc(sizeof(int16_t) * 8 * NumCineFrames, GBUF_CINEMATIC_FRAMES);
-    if (!Cine) {
-        return 0;
-    }
     _fread(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);
     return 1;
 }
@@ -547,6 +532,59 @@ int32_t LoadDemo(FILE *fp)
         return 1;
     }
     _fread(DemoPtr, 1, size, fp);
+    return 1;
+}
+
+int32_t LoadSamples(FILE *fp)
+{
+    if (!SoundIsActive) {
+        return 1;
+    }
+
+    _fread(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
+    _fread(&NumSampleInfos, sizeof(int32_t), 1, fp);
+    TRACE("%d sample infos", NumSampleInfos);
+    if (!NumSampleInfos) {
+        S_ExitSystem("No Sample Infos");
+        return 0;
+    }
+
+    SampleInfos = game_malloc(8 * NumSampleInfos, GBUF_SAMPLE_INFOS);
+    _fread(SampleInfos, sizeof(SAMPLE_INFO), NumSampleInfos, fp);
+
+    int32_t sample_data_size;
+    TRACE("%d sample data size", sample_data_size);
+    _fread(&sample_data_size, sizeof(int32_t), 1, fp);
+    if (!sample_data_size) {
+        S_ExitSystem("No Sample Data");
+    }
+
+    char *sample_data = game_malloc(sample_data_size, GBUF_SAMPLES);
+    _fread(
+        sample_data, sizeof(int16_t), sample_data_size / sizeof(int16_t), fp);
+
+    _fread(&NumSamples, sizeof(int32_t), 1u, fp);
+    TRACE("%d samples", NumSamples);
+    if (!NumSamples) {
+        S_ExitSystem("No Samples");
+    }
+
+    int32_t *sample_offsets =
+        game_malloc(sizeof(int32_t) * NumSamples, GBUF_SAMPLE_OFFSETS);
+    _fread(sample_offsets, sizeof(int32_t), NumSamples, fp);
+
+    char **sample_pointers =
+        game_malloc(sizeof(char *) * (NumSamples + 1), GBUF_SAMPLE_OFFSETS);
+    sample_pointers[0] = (char *)&SampleLoader;
+    for (int i = 0; i < NumSamples; i++) {
+        sample_pointers[i + 1] = sample_data + sample_offsets[i];
+    }
+
+    WinSndLoadSamples(sample_pointers, -NumSamples);
+    SoundsLoaded = 1;
+
+    game_free(sizeof(char *) * (NumSamples + 1), GBUF_SAMPLE_OFFSETS);
+
     return 1;
 }
 

@@ -9,7 +9,7 @@
 
 void S_InitialiseSystem();
 void init_game_malloc();
-void game_free(int32_t free_size);
+void game_free(int32_t free_size, int32_t type);
 void CalculateWibbleTable();
 void S_SeedRandom();
 

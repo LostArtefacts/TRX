@@ -30,6 +30,7 @@
 #define CopyPictureHardware     ((void          (*)())0x00408B85)
 #define DownloadPictureHardware ((void          (*)())0x00408C3A)
 #define SwitchResolution        ((void          (*)())0x004089F4)
+#define WinSndLoadSamples       ((void          (*)(char **sample_pointers, int32_t file_size))0x00437C00)
 
 #define Movie_GetCurrentFrame           ((int32_t (*)(void*))0x004504AC)
 #define Movie_GetSoundChannels          ((int32_t (*)(void*))0x004504D0)
