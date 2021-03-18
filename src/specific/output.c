@@ -243,6 +243,15 @@ void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
+void S_CalculateStaticLight(int16_t adder)
+{
+    LsAdder = adder - 16 * 256;
+    int32_t z_dist = PhdMatrixPtr->_23 >> W2V_SHIFT;
+    if (z_dist > DEPTH_Q_START) {
+        LsAdder += z_dist - DEPTH_Q_START;
+    }
+}
+
 void S_DrawHealthBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_HEALTH);
@@ -257,6 +266,7 @@ void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x00430100, S_CalculateLight);
+    INJECT(0x00430290, S_CalculateStaticLight);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
 }
