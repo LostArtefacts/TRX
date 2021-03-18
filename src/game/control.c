@@ -21,7 +21,6 @@
 #include "game/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
-#include "specific/shell.h"
 #include "specific/sndpc.h"
 
 #include "config.h"

@@ -1,13 +1,16 @@
 #include "game/settings.h"
 
 #include "game/option.h"
+#include "game/types.h"
 #include "game/vars.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 
 #include "filesystem.h"
 #include "json.h"
+#include "util.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 

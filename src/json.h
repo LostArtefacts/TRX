@@ -5,6 +5,7 @@
 #define JSON_INVALID_STRING NULL
 #define JSON_INVALID_NUMBER 0x7FFFFFFF
 
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 
