@@ -25,7 +25,8 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 SAVEGAME_INFO SaveGame;
 int32_t DemoLevel;
 
-char *UserSettingsPath = "atiset.dat";
+char *ATIUserSettingsPath = "atiset.dat";
+char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 int16_t StoredLaraHealth = 0;
 int16_t BarOffsetY[6];
 
