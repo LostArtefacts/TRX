@@ -144,18 +144,6 @@ struct json_value_s *json_parse_ex(
     void *(*alloc_func_ptr)(void *, size_t), void *user_data,
     struct json_parse_result_s *result);
 
-/* Extracts a value and all the data that makes it up into a newly created
- * value. json_extract_value performs 1 call to malloc for the entire encoding.
- */
-struct json_value_s *json_extract_value(const struct json_value_s *value);
-
-/* Extracts a value and all the data that makes it up into a newly created
- * value. json_extract_value performs 1 call to alloc_func_ptr for the entire
- * encoding. If alloc_func_ptr is null then malloc is used. */
-struct json_value_s *json_extract_value_ex(
-    const struct json_value_s *value, void *(*alloc_func_ptr)(void *, size_t),
-    void *user_data);
-
 /* Write out a minified JSON utf-8 string. This string is an encoding of the
  * minimal string characters required to still encode the same data.
  * json_write_minified performs 1 call to malloc for the entire encoding. Return
@@ -486,31 +474,6 @@ void json_parse_array(
 
 void json_parse_number(
     struct json_parse_state_s *state, struct json_number_s *number);
-
-struct json_extract_result_s {
-    size_t dom_size;
-    size_t data_size;
-};
-
-struct json_extract_result_s
-json_extract_get_number_size(const struct json_number_s *const number);
-struct json_extract_result_s
-json_extract_get_string_size(const struct json_string_s *const string);
-struct json_extract_result_s
-json_extract_get_object_size(const struct json_object_s *const object);
-struct json_extract_result_s
-json_extract_get_array_size(const struct json_array_s *const array);
-struct json_extract_result_s
-json_extract_get_value_size(const struct json_value_s *const value);
-
-struct json_extract_state_s {
-    char *dom;
-    char *data;
-};
-
-void json_extract_copy_value(
-    struct json_extract_state_s *const state,
-    const struct json_value_s *const value);
 
 int json_write_minified_get_value_size(
     const struct json_value_s *value, size_t *size);
