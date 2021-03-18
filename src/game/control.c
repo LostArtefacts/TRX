@@ -1386,6 +1386,72 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
     }
 }
 
+int GetSecretCount()
+{
+    int count = 0;
+    uint32_t secrets = 0;
+
+    for (int i = 0; i < RoomCount; i++) {
+        ROOM_INFO *r = &RoomInfo[i];
+        FLOOR_INFO *floor = &r->floor[0];
+        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
+            int k = floor->index;
+            if (!k) {
+                continue;
+            }
+
+            while (1) {
+                uint16_t floor = FloorData[k++];
+
+                switch (floor & DATA_TYPE) {
+                case FT_DOOR:
+                case FT_ROOF:
+                case FT_TILT:
+                    k++;
+                    break;
+
+                case FT_LAVA:
+                    break;
+
+                case FT_TRIGGER: {
+                    uint16_t trig_type = (floor & 0x3F00) >> 8;
+                    k++; // skip basic trigger stuff
+
+                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                        || trig_type == TT_PICKUP) {
+                        k++;
+                    }
+
+                    while (1) {
+                        int16_t command = FloorData[k++];
+                        if (TRIG_BITS(command) == TO_CAMERA) {
+                            k++;
+                        } else if (TRIG_BITS(command) == TO_SECRET) {
+                            int16_t number = command & VALUE_BITS;
+                            if (!(secrets & (1 << number))) {
+                                secrets |= (1 << number);
+                                count++;
+                            }
+                        }
+
+                        if (command & END_BIT) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+
+                if (floor & END_BIT) {
+                    break;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
 void T1MInjectGameControl()
 {
     INJECT(0x004133B0, ControlPhase);

@@ -27,6 +27,8 @@ void AddRoomFlipItems(ROOM_INFO *r);
 void TriggerCDTrack(int16_t value, int16_t flags, int16_t type);
 void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type);
 
+int32_t GetSecretCount();
+
 void T1MInjectGameControl();
 
 #endif

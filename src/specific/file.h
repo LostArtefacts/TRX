@@ -22,8 +22,6 @@ int32_t LoadTexturePages(FILE *fp);
 int32_t S_LoadLevel(int32_t level_num);
 const char *GetFullPath(const char *filename);
 
-int32_t GetSecretCount();
-
 void T1MInjectSpecificFile();
 
 #endif
