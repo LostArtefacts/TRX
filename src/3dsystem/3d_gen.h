@@ -8,6 +8,7 @@
 #define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
 #define phd_RotateLight         ((void          (*)(PHD_ANGLE pitch, PHD_ANGLE yaw))0x004023A0)
+#define phd_InitPolyList        ((void          (*)())0x00402470)
 // clang-format on
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos);

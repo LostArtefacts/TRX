@@ -183,6 +183,11 @@ int32_t GetRenderScaleGLRage(int32_t unit)
     return round(result);
 }
 
+void S_InitialisePolyList()
+{
+    phd_InitPolyList();
+}
+
 void S_InitialiseScreen()
 {
     if (CurrentLevel != GF.title_level_num) {
@@ -264,6 +269,7 @@ void S_DrawAirBar(int32_t percent)
 
 void T1MInjectSpecificOutput()
 {
+    INJECT(0x0042FC60, S_InitialisePolyList);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x00430100, S_CalculateLight);
     INJECT(0x00430290, S_CalculateStaticLight);

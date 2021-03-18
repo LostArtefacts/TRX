@@ -27,7 +27,7 @@ calc_vertice_light              0x00401E00  0x00000165  -
 calc_roomvert                   0x00401F70  0x00000428  -
 phd_RotateLight                 0x004023A0  0x000000CF  *
 phd_PointLight                  ----------  ----------  -
-phd_InitPolyList                0x00402470  0x0000002D  -
+phd_InitPolyList                0x00402470  0x0000002D  *
 phd_SortPolyList                0x004024A0  0x0000002F  -
 do_quickysorty                  0x004024D0  0x000000C5  -
 phd_PrintPolyList               ----------  ----------  -
@@ -740,7 +740,7 @@ RemoveRequester                 ----------  ----------  +
 DisplayRequester                0x0042F6F0  0x0000056B  +
 
 # shell/output.cpp
-S_InitialisePolyList            0x0042FC60  0x00000005  *
+S_InitialisePolyList            0x0042FC60  0x00000005  +
 S_DumpScreen                    0x0042FC70  0x00000044  *
 S_ClearScreen                   0x0042FCC0  0x00000013  *
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
