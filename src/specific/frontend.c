@@ -1,6 +1,7 @@
 #include "specific/frontend.h"
 
 #include "game/const.h"
+#include "game/types.h"
 #include "game/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"

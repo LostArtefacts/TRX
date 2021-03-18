@@ -1,6 +1,8 @@
 #include "game/text.h"
 
-#include "3dsystem/3d_insert.h"
+#ifdef DEBUG_TEXT_SPRITES
+    #include "3dsystem/3d_insert.h"
+#endif
 #include "game/const.h"
 #include "game/types.h"
 #include "game/vars.h"

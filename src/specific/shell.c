@@ -18,7 +18,7 @@
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 
-#include "config.h"
+#include "filesystem.h"
 #include "util.h"
 
 #include <stdint.h>
@@ -27,18 +27,18 @@
 
 void S_ReadUserSettings()
 {
-    FILE *fp = fopen(UserSettingsPath, "rb");
+    MYFILE *fp = FileOpen(UserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         return;
     }
 
-    fread(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-    fread(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-    fread(Layout[1], sizeof(int16_t), 13, fp);
-    fread(&AppSettings, sizeof(int32_t), 1, fp);
-    fread(&GameHiRes, sizeof(int32_t), 1, fp);
-    fread(&GameSizer, sizeof(double), 1, fp);
-    fread(&IConfig, sizeof(int32_t), 1, fp);
+    FileRead(&OptionMusicVolume, sizeof(int16_t), 1, fp);
+    FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    FileRead(Layout[1], sizeof(int16_t), 13, fp);
+    FileRead(&AppSettings, sizeof(int32_t), 1, fp);
+    FileRead(&GameHiRes, sizeof(int32_t), 1, fp);
+    FileRead(&GameSizer, sizeof(double), 1, fp);
+    FileRead(&IConfig, sizeof(int32_t), 1, fp);
 
     DefaultConflict();
 
@@ -54,23 +54,23 @@ void S_ReadUserSettings()
         adjust_master_volume(0);
     }
 
-    fclose(fp);
+    FileClose(fp);
 }
 
 void S_WriteUserSettings()
 {
-    FILE *fp = fopen(UserSettingsPath, "wb");
+    MYFILE *fp = FileOpen(UserSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
         return;
     }
-    fwrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-    fwrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
-    fwrite(Layout[1], sizeof(int16_t), 13, fp);
-    fwrite(&AppSettings, sizeof(int32_t), 1, fp);
-    fwrite(&GameHiRes, sizeof(int32_t), 1, fp);
-    fwrite(&GameSizer, sizeof(double), 1, fp);
-    fwrite(&IConfig, sizeof(int32_t), 1, fp);
-    fclose(fp);
+    FileWrite(&OptionMusicVolume, sizeof(int16_t), 1, fp);
+    FileWrite(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    FileWrite(Layout[1], sizeof(int16_t), 13, fp);
+    FileWrite(&AppSettings, sizeof(int32_t), 1, fp);
+    FileWrite(&GameHiRes, sizeof(int32_t), 1, fp);
+    FileWrite(&GameSizer, sizeof(double), 1, fp);
+    FileWrite(&IConfig, sizeof(int32_t), 1, fp);
+    FileClose(fp);
 }
 
 void GameMain()

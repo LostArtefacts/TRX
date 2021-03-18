@@ -16,6 +16,7 @@
 #include "specific/sndpc.h"
 
 #include "config.h"
+#include "filesystem.h"
 #include "util.h"
 
 #include <stdio.h>
@@ -234,41 +235,41 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);
-    FILE *fp = fopen(filename, "rb");
+    MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
     if (!fp) {
         return 0;
     }
-    fread(filename, sizeof(char), 75, fp);
+    FileRead(filename, sizeof(char), 75, fp);
     int32_t counter;
 
-    fread(&counter, sizeof(int32_t), 1, fp);
+    FileRead(&counter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
         S_ExitSystem("null save->start");
         return 0;
     }
     TRACE("%d", GF.level_count);
-    fread(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
-    fread(&save->timer, sizeof(uint32_t), 1, fp);
-    fread(&save->kills, sizeof(uint32_t), 1, fp);
-    fread(&save->secrets, sizeof(uint16_t), 1, fp);
-    fread(&save->current_level, sizeof(uint16_t), 1, fp);
-    fread(&save->pickups, sizeof(uint8_t), 1, fp);
-    fread(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    fread(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    fread(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    fread(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    fread(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    fread(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    fread(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    fread(&save->num_key1, sizeof(uint8_t), 1, fp);
-    fread(&save->num_key2, sizeof(uint8_t), 1, fp);
-    fread(&save->num_key3, sizeof(uint8_t), 1, fp);
-    fread(&save->num_key4, sizeof(uint8_t), 1, fp);
-    fread(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    fread(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    fread(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    fclose(fp);
+    FileRead(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    FileRead(&save->timer, sizeof(uint32_t), 1, fp);
+    FileRead(&save->kills, sizeof(uint32_t), 1, fp);
+    FileRead(&save->secrets, sizeof(uint16_t), 1, fp);
+    FileRead(&save->current_level, sizeof(uint16_t), 1, fp);
+    FileRead(&save->pickups, sizeof(uint8_t), 1, fp);
+    FileRead(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key3, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key4, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    FileRead(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileRead(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    FileClose(fp);
 
     for (int i = 0; i < GF.level_count; i++) {
         if (GF.levels[i].level_type == GFL_CURRENT) {
@@ -319,12 +320,12 @@ int32_t S_FrontEndCheck()
         char filename[80];
         sprintf(filename, GF.save_game_fmt, i);
 
-        FILE *fp = fopen(filename, "rb");
+        MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
         if (fp) {
-            fread(filename, sizeof(char), 75, fp);
+            FileRead(filename, sizeof(char), 75, fp);
             int32_t counter;
-            fread(&counter, sizeof(int32_t), 1, fp);
-            fclose(fp);
+            FileRead(&counter, sizeof(int32_t), 1, fp);
+            FileClose(fp);
 
             req->item_flags[req->items] &= ~RIF_BLOCKED;
 
@@ -359,7 +360,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     sprintf(filename, GF.save_game_fmt, slot);
     TRACE("%s", filename);
 
-    FILE *fp = fopen(filename, "wb");
+    MYFILE *fp = FileOpen(filename, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
     }
@@ -371,34 +372,34 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     }
 
     sprintf(filename, "%s", GF.levels[SaveGame.current_level].level_title);
-    fwrite(filename, sizeof(char), 75, fp);
-    fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
+    FileWrite(filename, sizeof(char), 75, fp);
+    FileWrite(&SaveCounter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
         S_ExitSystem("null save->start");
         return 0;
     }
-    fwrite(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
-    fwrite(&save->timer, sizeof(uint32_t), 1, fp);
-    fwrite(&save->kills, sizeof(uint32_t), 1, fp);
-    fwrite(&save->secrets, sizeof(uint16_t), 1, fp);
-    fwrite(&save->current_level, sizeof(uint16_t), 1, fp);
-    fwrite(&save->pickups, sizeof(uint8_t), 1, fp);
-    fwrite(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_key1, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_key2, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_key3, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_key4, sizeof(uint8_t), 1, fp);
-    fwrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    fwrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    fwrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    fclose(fp);
+    FileWrite(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    FileWrite(&save->timer, sizeof(uint32_t), 1, fp);
+    FileWrite(&save->kills, sizeof(uint32_t), 1, fp);
+    FileWrite(&save->secrets, sizeof(uint16_t), 1, fp);
+    FileWrite(&save->current_level, sizeof(uint16_t), 1, fp);
+    FileWrite(&save->pickups, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key3, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key4, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    FileClose(fp);
 
     REQUEST_INFO *req = &LoadSaveGameRequester;
     req->item_flags[slot] &= ~RIF_BLOCKED;

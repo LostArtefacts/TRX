@@ -14,11 +14,11 @@
 #include "specific/sndpc.h"
 
 #include "config.h"
+#include "filesystem.h"
 #include "json_parser/json.h"
 #include "json_utils.h"
 #include "util.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -616,28 +616,26 @@ static int8_t S_LoadGameFlow(const char *file_name)
 {
     int8_t result = 0;
     struct json_value_s *json = NULL;
-    FILE *fp = NULL;
+    MYFILE *fp = NULL;
     char *script_data = NULL;
 
     const char *file_path = GetFullPath(file_name);
-    fp = fopen(file_path, "rb");
+    fp = FileOpen(file_path, FILE_OPEN_READ);
     if (!fp) {
         TRACE("failed to open script file");
         goto cleanup;
     }
 
-    fseek(fp, 0, SEEK_END);
-    size_t script_data_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    size_t script_data_size = FileSize(fp);
 
     script_data = malloc(script_data_size + 1);
     if (!script_data) {
         TRACE("failed to allocate memory");
         goto cleanup;
     }
-    fread(script_data, 1, script_data_size, fp);
+    FileRead(script_data, 1, script_data_size, fp);
     script_data[script_data_size] = '\0';
-    fclose(fp);
+    FileClose(fp);
     fp = NULL;
 
     struct json_parse_result_s parse_result;
@@ -659,7 +657,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
 cleanup:
     if (fp) {
-        fclose(fp);
+        FileClose(fp);
     }
     if (json) {
         free(json);

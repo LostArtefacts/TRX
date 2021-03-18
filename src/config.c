@@ -2,9 +2,10 @@
 
 #include "game/const.h"
 #include "json_utils.h"
+
+#include "filesystem.h"
 #include "util.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -166,34 +167,32 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
 int8_t T1MReadConfig()
 {
     int8_t result = 0;
-    FILE *fp = NULL;
+    MYFILE *fp = NULL;
     char *cfg_data = NULL;
 
-    fp = fopen("cfg/Tomb1Main.json5", "rb");
+    fp = FileOpen("cfg/Tomb1Main.json5", FILE_OPEN_READ);
     if (!fp) {
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
 
-    fseek(fp, 0, SEEK_END);
-    size_t cfg_data_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    size_t cfg_data_size = FileSize(fp);
 
     cfg_data = malloc(cfg_data_size + 1);
     if (!cfg_data) {
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
-    fread(cfg_data, 1, cfg_data_size, fp);
+    FileRead(cfg_data, 1, cfg_data_size, fp);
     cfg_data[cfg_data_size] = '\0';
-    fclose(fp);
+    FileClose(fp);
     fp = NULL;
 
     result = T1MReadConfigFromJson(cfg_data);
 
 cleanup:
     if (fp) {
-        fclose(fp);
+        FileClose(fp);
     }
     if (cfg_data) {
         free(cfg_data);

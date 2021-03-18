@@ -1,7 +1,9 @@
 #include "config.h"
 #include "test.h"
+
+#include "filesystem.h"
+
 #include <stdlib.h>
-#include <string.h>
 
 void test_empty_config()
 {
@@ -47,19 +49,16 @@ void test_empty_config()
 
 void test_config_override()
 {
-    FILE *fp = fopen("cfg/Tomb1Main.json5", "rb");
+    MYFILE *fp = FileOpen("cfg/Tomb1Main.json5", FILE_OPEN_READ);
     ASSERT_OK(!!fp);
 
-    fseek(fp, 0, SEEK_END);
-    int cfg_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
+    int cfg_size = FileSize(fp);
     char *cfg_data = malloc(cfg_size + 1);
     ASSERT_OK(!!cfg_data);
 
-    fread(cfg_data, 1, cfg_size, fp);
+    FileRead(cfg_data, 1, cfg_size, fp);
     cfg_data[cfg_size] = '\0';
-    fclose(fp);
+    FileClose(fp);
 
     char *tmp = strstr(cfg_data, "enable_cheats\": false,");
     ASSERT_OK(!!tmp);
