@@ -14,6 +14,7 @@
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
 #include "game/savegame.h"
+#include "game/settings.h"
 #include "game/sound.h"
 #include "game/traps/lava.h"
 #include "game/traps/movable_block.h"

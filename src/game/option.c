@@ -2,6 +2,7 @@
 
 #include "game/const.h"
 #include "game/game.h"
+#include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/vars.h"
