@@ -28,6 +28,103 @@
 
 #include <stddef.h>
 
+void CheckCheatMode()
+{
+    static int32_t cheat_mode = 0;
+    static int16_t cheat_angle = 0;
+    static int32_t cheat_turn = 0;
+
+    if (CurrentLevel == GF.gym_level_num) {
+        return;
+    }
+
+    LARA_STATE as = LaraItem->current_anim_state;
+    switch (cheat_mode) {
+    case 0:
+        if (as == AS_WALK) {
+            cheat_mode = 1;
+        }
+        break;
+
+    case 1:
+        if (as != AS_WALK) {
+            cheat_mode = as == AS_STOP ? 2 : 0;
+        }
+        break;
+
+    case 2:
+        if (as != AS_STOP) {
+            cheat_mode = as == AS_BACK ? 3 : 0;
+        }
+        break;
+
+    case 3:
+        if (as != AS_BACK) {
+            cheat_mode = as == AS_STOP ? 4 : 0;
+        }
+        break;
+
+    case 4:
+        if (as != AS_STOP) {
+            cheat_angle = LaraItem->pos.y_rot;
+        }
+        cheat_turn = 0;
+        if (as == AS_TURN_L) {
+            cheat_mode = 5;
+        } else if (as == AS_TURN_R) {
+            cheat_mode = 6;
+        } else {
+            cheat_mode = 0;
+        }
+        break;
+
+    case 5:
+        if (as == AS_TURN_L || as == AS_FASTTURN) {
+            cheat_turn += (int16_t)(LaraItem->pos.y_rot - cheat_angle);
+            cheat_angle = LaraItem->pos.y_rot;
+        } else {
+            cheat_mode = cheat_turn < -94208 ? 7 : 0;
+        }
+        break;
+
+    case 6:
+        if (as == AS_TURN_R || as == AS_FASTTURN) {
+            cheat_turn += (int16_t)(LaraItem->pos.y_rot - cheat_angle);
+            cheat_angle = LaraItem->pos.y_rot;
+        } else {
+            cheat_mode = cheat_turn > 94208 ? 7 : 0;
+        }
+        break;
+
+    case 7:
+        if (as != AS_STOP) {
+            cheat_mode = as == AS_COMPRESS ? 8 : 0;
+        }
+        break;
+
+    case 8:
+        if (LaraItem->fall_speed > 0) {
+            if (as == AS_FORWARDJUMP) {
+                LevelComplete = 1;
+            } else if (as == AS_BACKJUMP) {
+                Inv_AddItem(O_SHOTGUN_ITEM);
+                Inv_AddItem(O_MAGNUM_ITEM);
+                Inv_AddItem(O_UZI_ITEM);
+                Lara.shotgun.ammo = 500;
+                Lara.magnums.ammo = 500;
+                Lara.uzis.ammo = 5000;
+                SoundEffect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
+            }
+            cheat_mode = 0;
+        }
+        break;
+
+    default:
+        cheat_mode = 0;
+        break;
+    }
+}
+
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {
     int32_t return_val = 0;
@@ -1472,4 +1569,5 @@ void T1MInjectGameControl()
     INJECT(0x004150C0, ClipTarget);
     INJECT(0x004151A0, FlipMap);
     INJECT(0x00415310, TriggerCDTrack);
+    INJECT(0x00438920, CheckCheatMode);
 }

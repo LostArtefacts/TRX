@@ -860,7 +860,7 @@ sub_4380E0                      0x004380E0  0x00000255  *
 TerminateGameWithMsg            0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  +
-CheckCheatMode                  0x00438920  0x00000213  *
+CheckCheatMode                  0x00438920  0x00000213  +
 S_WriteSettings                 0x00438B60  0x00000090  +
 S_SoundPlaySample               0x00438BF0  0x0000004B  -
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -

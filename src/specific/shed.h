@@ -21,7 +21,6 @@
 #define mn_reset_ambient_loudness ((void        (*)())0x0042AFD0)
 #define mn_update_sound_effects ((void          (*)())0x0042B080)
 #define adjust_master_volume    ((void          (*)(int32_t new_volume))0x0042B410)
-#define CheckCheatMode          ((void          (*)())0x00438920)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
 #define PaletteSetHardware      ((void          (*)())0x004087EA)
 #define S_DrawSpriteRel         ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435B70)
