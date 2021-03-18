@@ -126,13 +126,13 @@ void GameMain()
             if (ResetFlag) {
                 ResetFlag = 0;
                 gf_option = GF_START_DEMO;
-            } else if (InventoryChosen == O_PHOTO_OPTION) {
+            } else if (InvChosen == O_PHOTO_OPTION) {
                 gf_option = GF_START_GAME | GF.gym_level_num;
-            } else if (InventoryChosen == O_PASSPORT_OPTION) {
-                if (InventoryExtraData[0] == 0) {
-                    gf_option = GF_START_SAVED_GAME | InventoryExtraData[1];
-                } else if (InventoryExtraData[0] == 1) {
-                    switch (InventoryExtraData[1]) {
+            } else if (InvChosen == O_PASSPORT_OPTION) {
+                if (InvExtraData[0] == 0) {
+                    gf_option = GF_START_SAVED_GAME | InvExtraData[1];
+                } else if (InvExtraData[0] == 1) {
+                    switch (InvExtraData[1]) {
                     case 0:
                         SaveGame.bonus_flag = 0;
                         break;

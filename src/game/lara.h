@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+extern WEAPON_INFO Weapons[NUM_WEAPONS];
+
 void LaraControl(int16_t item_num);
 void LaraSwapMeshExtra();
 void AnimateLara(ITEM_INFO *item);

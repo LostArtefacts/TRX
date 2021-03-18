@@ -1,7 +1,11 @@
 #ifndef T1M_GAME_HEALTH_H
 #define T1M_GAME_HEALTH_H
 
+#include "game/types.h"
+
 #include <stdint.h>
+
+extern TEXTSTRING *AmmoText;
 
 void MakeAmmoString(char *string);
 void DrawAmmoInfo();

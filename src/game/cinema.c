@@ -16,10 +16,10 @@
 #include "util.h"
 
 static int32_t OldSoundIsActive;
+static const int32_t CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
 {
-    CinematicLevel = level_num;
     if (!InitialiseLevel(level_num, GFL_CUTSCENE)) {
         return END_ACTION;
     }
@@ -73,8 +73,10 @@ void InitCinematicRooms()
 
 int32_t DoCinematic(int32_t nframes)
 {
-    CinematicFrameCount += CinematicAnimationRate * nframes;
-    while (CinematicFrameCount >= 0) {
+    static int32_t frame_count = 0;
+
+    frame_count += CinematicAnimationRate * nframes;
+    while (frame_count >= 0) {
         S_UpdateInput();
         if (Input & IN_OPTION) {
             return 1;
@@ -113,7 +115,7 @@ int32_t DoCinematic(int32_t nframes)
             return 1;
         }
 
-        CinematicFrameCount -= 0x10000;
+        frame_count -= 0x10000;
     }
 
     return 0;
@@ -200,15 +202,15 @@ void InGameCinematicCamera()
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
 
-    int32_t c = phd_cos(CinematicPosition.y_rot);
-    int32_t s = phd_sin(CinematicPosition.y_rot);
+    int32_t c = phd_cos(CinePosition.y_rot);
+    int32_t s = phd_sin(CinePosition.y_rot);
 
-    Camera.target.x = CinematicPosition.x + ((c * tx + s * tz) >> 14);
-    Camera.target.y = CinematicPosition.y + ty;
-    Camera.target.z = CinematicPosition.z + ((c * tz - s * tx) >> 14);
-    Camera.pos.x = CinematicPosition.x + ((s * cz + c * cx) >> 14);
-    Camera.pos.y = CinematicPosition.y + cy;
-    Camera.pos.z = CinematicPosition.z + ((c * cz - s * cx) >> 14);
+    Camera.target.x = CinePosition.x + ((c * tx + s * tz) >> 14);
+    Camera.target.y = CinePosition.y + ty;
+    Camera.target.z = CinePosition.z + ((c * tz - s * tx) >> 14);
+    Camera.pos.x = CinePosition.x + ((s * cz + c * cx) >> 14);
+    Camera.pos.y = CinePosition.y + cy;
+    Camera.pos.z = CinePosition.z + ((c * cz - s * cx) >> 14);
 
     AlterFOV(fov);
 

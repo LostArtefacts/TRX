@@ -46,11 +46,11 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         Lara.gun_type = LGT_UNARMED;
         Camera.type = CAM_CINEMATIC;
         CineFrame = 0;
-        CinematicPosition = lara_item->pos;
+        CinePosition = lara_item->pos;
         return;
     }
 
-    if ((InventoryChosen == -1 && !CHK_ANY(Input, IN_ACTION))
+    if ((InvChosen == -1 && !CHK_ANY(Input, IN_ACTION))
         || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status
         || lara_item->current_anim_state != AS_STOP) {
         return;
@@ -76,11 +76,11 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (InventoryChosen == -1) {
+    if (InvChosen == -1) {
         Display_Inventory(INV_KEYS_MODE);
     }
 
-    if (InventoryChosen == O_LEADBAR_OPTION) {
+    if (InvChosen == O_LEADBAR_OPTION) {
         Inv_RemoveItem(O_LEADBAR_OPTION);
         Inv_AddItem(O_PUZZLE_ITEM1);
         lara_item->current_anim_state = AS_USEMIDAS;

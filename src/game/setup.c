@@ -1,7 +1,6 @@
 #include "game/setup.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/const.h"
 #include "game/ai/abortion.h"
 #include "game/ai/alligator.h"
 #include "game/ai/ape.h"
@@ -27,6 +26,7 @@
 #include "game/ai/vole.h"
 #include "game/ai/wolf.h"
 #include "game/cinema.h"
+#include "game/const.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/effects/body_part.h"
@@ -39,6 +39,7 @@
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
 #include "game/hair.h"
+#include "game/health.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -152,14 +153,14 @@ void InitialiseGameFlags()
     }
 
     /* Clear Object Loaded flags */
-    for (int i = 0; i < NUMBER_OBJECTS; i++) {
+    for (int i = 0; i < O_NUMBER_OF; i++) {
         Objects[i].loaded = 0;
     }
 
     AmmoText = NULL;
     LevelComplete = 0;
     FlipEffect = -1;
-    PierreItem = NO_ITEM;
+    PierreItemNum = NO_ITEM;
 }
 
 void InitialiseLevelFlags()
@@ -347,7 +348,7 @@ void ObjectObjects()
 
 void InitialiseObjects()
 {
-    for (int i = 0; i < NUMBER_OBJECTS; i++) {
+    for (int i = 0; i < O_NUMBER_OF; i++) {
         OBJECT_INFO *obj = &Objects[i];
         obj->intelligent = 0;
         obj->save_position = 0;

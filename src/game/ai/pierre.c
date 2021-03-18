@@ -11,6 +11,7 @@
 
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
 BITE_INFO PierreGun2 = { -57, 200, 0, 14 };
+int16_t PierreItemNum = NO_ITEM;
 
 void SetupPierre(OBJECT_INFO *obj)
 {
@@ -36,11 +37,11 @@ void PierreControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
 
-    if (PierreItem == NO_ITEM) {
-        PierreItem = item_num;
-    } else if (PierreItem != item_num) {
+    if (PierreItemNum == NO_ITEM) {
+        PierreItemNum = item_num;
+    } else if (PierreItemNum != item_num) {
         if (item->flags & IF_ONESHOT) {
-            KillItem(PierreItem);
+            KillItem(PierreItemNum);
         } else {
             KillItem(item_num);
         }
@@ -199,7 +200,7 @@ void PierreControl(int16_t item_num)
             item->hit_points = DONT_TARGET;
             DisableBaddieAI(item_num);
             KillItem(item_num);
-            PierreItem = NO_ITEM;
+            PierreItemNum = NO_ITEM;
         }
     }
 
@@ -209,6 +210,6 @@ void PierreControl(int16_t item_num)
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
         KillItem(item_num);
-        PierreItem = NO_ITEM;
+        PierreItemNum = NO_ITEM;
     }
 }

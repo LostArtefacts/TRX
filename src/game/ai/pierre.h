@@ -29,6 +29,7 @@ typedef enum {
     PIERRE_SHOOT = 7,
 } PIERRE_ANIM;
 
+extern int16_t PierreItemNum;
 extern BITE_INFO PierreGun1;
 extern BITE_INFO PierreGun2;
 

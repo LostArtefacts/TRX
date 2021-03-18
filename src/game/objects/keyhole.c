@@ -42,7 +42,7 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if ((InventoryChosen == -1 && !CHK_ANY(Input, IN_ACTION))
+    if ((InvChosen == -1 && !CHK_ANY(Input, IN_ACTION))
         || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
         return;
     }
@@ -62,52 +62,52 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (InventoryChosen == -1) {
+    if (InvChosen == -1) {
         Display_Inventory(INV_KEYS_MODE);
     } else {
         PickUpY = lara_item->pos.y - 1;
     }
 
-    if (InventoryChosen == -1 && InvKeysObjects) {
+    if (InvChosen == -1 && InvKeysObjects) {
         return;
     }
 
-    if (InventoryChosen != -1) {
+    if (InvChosen != -1) {
         PickUpY = lara_item->pos.y - 1;
     }
 
     int32_t correct = 0;
     switch (item->object_number) {
     case O_KEY_HOLE1:
-        if (InventoryChosen == O_KEY_OPTION1) {
+        if (InvChosen == O_KEY_OPTION1) {
             Inv_RemoveItem(O_KEY_OPTION1);
             correct = 1;
         }
         break;
 
     case O_KEY_HOLE2:
-        if (InventoryChosen == O_KEY_OPTION2) {
+        if (InvChosen == O_KEY_OPTION2) {
             Inv_RemoveItem(O_KEY_OPTION2);
             correct = 1;
         }
         break;
 
     case O_KEY_HOLE3:
-        if (InventoryChosen == O_KEY_OPTION3) {
+        if (InvChosen == O_KEY_OPTION3) {
             Inv_RemoveItem(O_KEY_OPTION3);
             correct = 1;
         }
         break;
 
     case O_KEY_HOLE4:
-        if (InventoryChosen == O_KEY_OPTION4) {
+        if (InvChosen == O_KEY_OPTION4) {
             Inv_RemoveItem(O_KEY_OPTION4);
             correct = 1;
         }
         break;
     }
 
-    InventoryChosen = -1;
+    InvChosen = -1;
     if (correct) {
         AlignLaraPosition(&KeyHolePosition, item, lara_item);
         AnimateLaraUntil(lara_item, AS_USEKEY);

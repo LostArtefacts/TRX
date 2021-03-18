@@ -2,6 +2,7 @@
 
 #include "game/const.h"
 #include "game/game.h"
+#include "game/inv.h"
 #include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
@@ -11,9 +12,9 @@
 #include "specific/shed.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include "config.h"
+#include "util.h"
 
 #include <dinput.h>
 #include <stdio.h>
@@ -43,6 +44,12 @@ static TEXTSTRING *DetailText[5] = { NULL, NULL, NULL, NULL, NULL };
 static TEXTSTRING *SoundText[4] = { NULL, NULL, NULL, NULL };
 static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { NULL, NULL, NULL,
                                                       NULL, NULL, NULL };
+static TEXTSTRING *CtrlText[2] = { NULL, NULL };
+static TEXTSTRING *CtrlTextA[13] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                                     NULL, NULL, NULL, NULL, NULL, NULL };
+static TEXTSTRING *CtrlTextB[13] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                                     NULL, NULL, NULL, NULL, NULL, NULL };
+
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
@@ -156,7 +163,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         page = -1;
     }
 
-    if (InventoryMode == INV_LOAD_MODE || InventoryMode == INV_SAVE_MODE) {
+    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE) {
         InputDB &= ~(PASSPORT_2FRONT | PASSPORT_2BACK);
     }
 
@@ -166,10 +173,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             int32_t select = DisplayRequester(&LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
-                    InventoryExtraData[1] = select - 1;
+                    InvExtraData[1] = select - 1;
                 } else if (
-                    InventoryMode != INV_SAVE_MODE
-                    && InventoryMode != INV_LOAD_MODE) {
+                    InvMode != INV_SAVE_MODE && InvMode != INV_LOAD_MODE) {
                     Input = 0;
                     InputDB = 0;
                 }
@@ -179,7 +185,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = 0;
             }
         } else if (PassportMode == 0) {
-            if (!SavedGamesCount || InventoryMode == INV_SAVE_MODE) {
+            if (!SavedGamesCount || InvMode == INV_SAVE_MODE) {
                 InputDB = PASSPORT_2BACK;
             } else {
                 if (!PassportText) {
@@ -188,8 +194,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_BottomAlign(PassportText, 1);
                     T_CentreH(PassportText, 1);
                 }
-                if (CHK_ANY(InputDB, IN_SELECT)
-                    || InventoryMode == INV_LOAD_MODE) {
+                if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_LOAD_MODE) {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
@@ -211,8 +216,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             int32_t select = DisplayRequester(&NewGameRequester);
             if (select) {
                 if (select > 0) {
-                    InventoryExtraData[1] = select - 1;
-                } else if (InventoryMode != INV_GAME_MODE) {
+                    InvExtraData[1] = select - 1;
+                } else if (InvMode != INV_GAME_MODE) {
                     Input = 0;
                     InputDB = 0;
                 }
@@ -226,10 +231,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             if (select) {
                 if (select > 0) {
                     PassportMode = 0;
-                    InventoryExtraData[1] = select - 1;
+                    InvExtraData[1] = select - 1;
                 } else {
-                    if (InventoryMode != INV_SAVE_MODE
-                        && InventoryMode != INV_LOAD_MODE) {
+                    if (InvMode != INV_SAVE_MODE && InvMode != INV_LOAD_MODE) {
                         Input = 0;
                         InputDB = 0;
                     }
@@ -240,12 +244,12 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = 0;
             }
         } else if (PassportMode == 0) {
-            if (InventoryMode == INV_DEATH_MODE) {
+            if (InvMode == INV_DEATH_MODE) {
                 InputDB = inv_item->anim_direction == -1 ? PASSPORT_2FRONT
                                                          : PASSPORT_2BACK;
             }
             if (!PassportText) {
-                if (InventoryMode == INV_TITLE_MODE
+                if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     PassportText =
                         T_Print(0, -16, 0, GF.strings[GS_PASSPORT_NEW_GAME]);
@@ -256,8 +260,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
             }
-            if (CHK_ANY(InputDB, IN_SELECT) || InventoryMode == INV_SAVE_MODE) {
-                if (InventoryMode == INV_TITLE_MODE
+            if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_SAVE_MODE) {
+                if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
@@ -270,7 +274,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                         Input = 0;
                         InputDB = 0;
                     } else {
-                        InventoryExtraData[1] = SaveGame.bonus_flag;
+                        InvExtraData[1] = SaveGame.bonus_flag;
                     }
                 } else {
                     T_RemovePrint(InvRingText);
@@ -291,7 +295,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     case 2:
         if (!PassportText) {
-            if (InventoryMode == INV_TITLE_MODE) {
+            if (InvMode == INV_TITLE_MODE) {
                 PassportText =
                     T_Print(0, -16, 0, GF.strings[GS_PASSPORT_EXIT_GAME]);
             } else {
@@ -305,7 +309,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     }
 
     if (CHK_ANY(InputDB, PASSPORT_2FRONT)
-        && (InventoryMode != INV_DEATH_MODE || SavedGamesCount)) {
+        && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
         inv_item->anim_direction = -1;
         inv_item->goal_frame -= 5;
 
@@ -351,7 +355,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     }
 
     if (CHK_ANY(InputDB, IN_DESELECT)) {
-        if (InventoryMode == INV_DEATH_MODE) {
+        if (InvMode == INV_DEATH_MODE) {
             Input = 0;
             InputDB = 0;
         } else {
@@ -370,7 +374,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     }
 
     if (CHK_ANY(InputDB, IN_SELECT)) {
-        InventoryExtraData[0] = page;
+        InvExtraData[0] = page;
         if (page == 2) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;
@@ -418,7 +422,7 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
         if (gamma < -255) {
             gamma = -255;
         }
-        if (InventoryMode != INV_TITLE_MODE) {
+        if (InvMode != INV_TITLE_MODE) {
             // S_SetBackgroundGamma(gamma);
         }
     }
@@ -857,17 +861,17 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 {
     int16_t key;
 
-    if (!ControlText[0]) {
-        ControlText[0] = T_Print(
+    if (!CtrlText[0]) {
+        CtrlText[0] = T_Print(
             0, -50, 0,
             GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
-        T_CentreH(ControlText[0], 1);
-        T_CentreV(ControlText[0], 1);
+        T_CentreH(CtrlText[0], 1);
+        T_CentreV(CtrlText[0], 1);
         S_ShowControls();
 
         KeyChange = -1;
-        T_AddBackground(ControlText[0], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+        T_AddBackground(CtrlText[0], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
     }
 
     switch (SelectKey) {
@@ -909,7 +913,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     CtrlTextB[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
             } else if (CHK_ANY(InputDB, IN_FORWARD)) {
                 T_RemoveBackground(
-                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange]);
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 KeyChange--;
                 if (KeyChange < -1) {
@@ -917,11 +921,11 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 }
 
                 T_AddBackground(
-                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange], 0,
-                    0, 0, 0, 48, IC_BLACK, NULL, 0);
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
+                    0, 0, 48, IC_BLACK, NULL, 0);
             } else if (CHK_ANY(InputDB, IN_BACK)) {
                 T_RemoveBackground(
-                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange]);
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 KeyChange++;
                 if (KeyChange > 12) {
@@ -929,8 +933,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 }
 
                 T_AddBackground(
-                    KeyChange == -1 ? ControlText[0] : CtrlTextA[KeyChange], 0,
-                    0, 0, 0, 48, IC_BLACK, NULL, 0);
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
+                    0, 0, 48, IC_BLACK, NULL, 0);
             }
         }
         break;
@@ -1013,13 +1017,13 @@ void S_ShowControls()
     int16_t hpos;
     int16_t vpos;
 
-    ControlText[1] = T_Print(0, -60, 0, " ");
-    T_CentreH(ControlText[1], 1);
-    T_CentreV(ControlText[1], 1);
+    CtrlText[1] = T_Print(0, -60, 0, " ");
+    T_CentreH(CtrlText[1], 1);
+    T_CentreV(CtrlText[1], 1);
 
     hpos = 420;
     vpos = 150;
-    T_AddBackground(ControlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
+    T_AddBackground(CtrlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
 
     if (!CtrlTextB[0]) {
         int16_t *layout = Layout[IConfig];
@@ -1074,7 +1078,7 @@ void S_ShowControls()
 void S_ChangeCtrlText()
 {
     T_ChangeText(
-        ControlText[0],
+        CtrlText[0],
         GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
     for (int i = 0; i < 13; i++) {
         T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
@@ -1093,10 +1097,10 @@ void S_RemoveCtrlText()
 
 void S_RemoveCtrl()
 {
-    T_RemovePrint(ControlText[0]);
-    T_RemovePrint(ControlText[1]);
-    ControlText[0] = NULL;
-    ControlText[1] = NULL;
+    T_RemovePrint(CtrlText[0]);
+    T_RemovePrint(CtrlText[1]);
+    CtrlText[0] = NULL;
+    CtrlText[1] = NULL;
     S_RemoveCtrlText();
 }
 

@@ -18,7 +18,7 @@
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
-    PhdMatrixPtr = &MatrixStack;
+    PhdMatrixPtr = &MatrixStack[0];
     int32_t sx = phd_sin(viewpos->x_rot);
     int32_t cx = phd_cos(viewpos->x_rot);
     int32_t sy = phd_sin(viewpos->y_rot);
@@ -26,19 +26,19 @@ void phd_GenerateW2V(PHD_3DPOS *viewpos)
     int32_t sz = phd_sin(viewpos->z_rot);
     int32_t cz = phd_cos(viewpos->z_rot);
 
-    MatrixStack._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-    MatrixStack._01 = TRIGMULT2(cx, sz);
-    MatrixStack._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-    MatrixStack._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-    MatrixStack._11 = TRIGMULT2(cx, cz);
-    MatrixStack._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-    MatrixStack._20 = TRIGMULT2(cx, sy);
-    MatrixStack._21 = -sx;
-    MatrixStack._22 = TRIGMULT2(cx, cy);
-    MatrixStack._03 = viewpos->x;
-    MatrixStack._13 = viewpos->y;
-    MatrixStack._23 = viewpos->z;
-    W2VMatrix = MatrixStack;
+    MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+    MatrixStack[0]._01 = TRIGMULT2(cx, sz);
+    MatrixStack[0]._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+    MatrixStack[0]._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+    MatrixStack[0]._11 = TRIGMULT2(cx, cz);
+    MatrixStack[0]._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+    MatrixStack[0]._20 = TRIGMULT2(cx, sy);
+    MatrixStack[0]._21 = -sx;
+    MatrixStack[0]._22 = TRIGMULT2(cx, cy);
+    MatrixStack[0]._03 = viewpos->x;
+    MatrixStack[0]._13 = viewpos->y;
+    MatrixStack[0]._23 = viewpos->z;
+    W2VMatrix = MatrixStack[0];
 }
 
 void phd_LookAt(
@@ -355,7 +355,7 @@ void phd_InitWindow(
     PhdRight = PhdWinMaxX;
     PhdBottom = PhdWinMaxY;
 
-    PhdMatrixPtr = &MatrixStack;
+    PhdMatrixPtr = &MatrixStack[0];
 }
 
 void AlterFOV(PHD_ANGLE fov)

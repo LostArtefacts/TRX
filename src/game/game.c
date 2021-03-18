@@ -45,13 +45,13 @@ int32_t StopGame()
     }
 
     S_FadeToBlack();
-    if (!InventoryChosen) {
+    if (!InvChosen) {
         return GF_EXIT_TO_TITLE;
     }
 
-    if (InventoryExtraData[0] == 0) {
-        return GF_START_SAVED_GAME | InventoryExtraData[1];
-    } else if (InventoryExtraData[0] == 1) {
+    if (InvExtraData[0] == 0) {
+        return GF_START_SAVED_GAME | InvExtraData[1];
+    } else if (InvExtraData[0] == 1) {
         return GF_START_GAME | GF.first_level_num;
     } else {
         return GF_EXIT_TO_TITLE;

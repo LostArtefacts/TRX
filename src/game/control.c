@@ -28,6 +28,8 @@
 
 #include <stddef.h>
 
+static const int32_t AnimationRate = 0x8000;
+
 void CheckCheatMode()
 {
     static int32_t cheat_mode = 0;
@@ -127,13 +129,14 @@ void CheckCheatMode()
 
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {
+    static int32_t frame_count = 0;
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
 
-    FrameCount += AnimationRate * nframes;
-    while (FrameCount >= 0) {
+    frame_count += AnimationRate * nframes;
+    while (frame_count >= 0) {
         if (CDTrack > 0) {
             S_CDLoop();
         }
@@ -197,11 +200,11 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
                 OverlayFlag = 1;
                 if (return_val != GF_NOP) {
-                    if (InventoryExtraData[0] != 1) {
+                    if (InvExtraData[0] != 1) {
                         return return_val;
                     }
                     if (CurrentLevel == GF.gym_level_num) {
-                        switch (InventoryExtraData[1]) {
+                        switch (InvExtraData[1]) {
                         case 0:
                             SaveGame.bonus_flag = 0;
                             break;
@@ -220,7 +223,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                     }
 
                     CreateSaveGameInfo();
-                    S_SaveGame(&SaveGame, InventoryExtraData[1]);
+                    S_SaveGame(&SaveGame, InvExtraData[1]);
                     S_WriteUserSettings();
                 }
             }
@@ -263,7 +266,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        FrameCount -= 0x10000;
+        frame_count -= 0x10000;
     }
 
     return GF_NOP;

@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "game/const.h"
+#include "game/health.h"
 #include "game/lara.h"
 #include "game/option.h"
 #include "game/sound.h"
@@ -42,7 +43,7 @@ int32_t Display_Inventory(int inv_mode)
     memset(&ring, 0, sizeof(RING_INFO));
 
     if (inv_mode == RT_KEYS && !InvKeysObjects) {
-        InventoryChosen = -1;
+        InvChosen = -1;
         return GF_NOP;
     }
 
@@ -53,12 +54,12 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-    InventoryMode = inv_mode;
+    InvMode = inv_mode;
 
     InvNFrames = 2;
     Construct_Inventory();
 
-    if (InventoryMode != INV_TITLE_MODE) {
+    if (InvMode != INV_TITLE_MODE) {
         S_FadeInInventory(1);
     } else {
         S_FadeInInventory(0);
@@ -67,7 +68,7 @@ int32_t Display_Inventory(int inv_mode)
     mn_stop_ambient_samples();
     S_SoundStopAllSamples();
 
-    switch (InventoryMode) {
+    switch (InvMode) {
     case INV_DEATH_MODE:
     case INV_SAVE_MODE:
     case INV_LOAD_MODE:
@@ -105,7 +106,7 @@ int32_t Display_Inventory(int inv_mode)
 
         InputDB = GetDebouncedInput(Input);
 
-        if (InventoryMode != INV_TITLE_MODE || Input || InputDB) {
+        if (InvMode != INV_TITLE_MODE || Input || InputDB) {
             NoInputCount = 0;
             ResetFlag = 0;
         } else {
@@ -248,8 +249,8 @@ int32_t Display_Inventory(int inv_mode)
             continue;
         }
 
-        if ((InventoryMode == INV_SAVE_MODE || InventoryMode == INV_LOAD_MODE
-             || InventoryMode == INV_DEATH_MODE)
+        if ((InvMode == INV_SAVE_MODE || InvMode == INV_LOAD_MODE
+             || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
             InputDB = IN_SELECT;
         }
@@ -269,9 +270,9 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if ((ResetFlag || CHK_ANY(InputDB, IN_OPTION))
-                && (ResetFlag || InventoryMode != INV_TITLE_MODE)) {
+                && (ResetFlag || InvMode != INV_TITLE_MODE)) {
                 SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
-                InventoryChosen = -1;
+                InvChosen = -1;
 
                 if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
@@ -279,7 +280,7 @@ int32_t Display_Inventory(int inv_mode)
                     InvOptionCurrent = ring.current_object;
                 }
 
-                if (InventoryMode == INV_TITLE_MODE) {
+                if (InvMode == INV_TITLE_MODE) {
                     S_FadeOutInventory(0);
                 } else {
                     S_FadeOutInventory(1);
@@ -295,9 +296,8 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (CHK_ANY(InputDB, IN_SELECT)) {
-                if ((InventoryMode == INV_SAVE_MODE
-                     || InventoryMode == INV_LOAD_MODE
-                     || InventoryMode == INV_DEATH_MODE)
+                if ((InvMode == INV_SAVE_MODE || InvMode == INV_LOAD_MODE
+                     || InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
                     pass_mode_open = 1;
                 }
@@ -353,8 +353,8 @@ int32_t Display_Inventory(int inv_mode)
                 }
             }
 
-            if (CHK_ANY(InputDB, IN_FORWARD) && InventoryMode != INV_TITLE_MODE
-                && InventoryMode != INV_KEYS_MODE) {
+            if (CHK_ANY(InputDB, IN_FORWARD) && InvMode != INV_TITLE_MODE
+                && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (InvKeysObjects) {
                         Inv_RingMotionSetup(
@@ -384,8 +384,8 @@ int32_t Display_Inventory(int inv_mode)
                     InputDB = 0;
                 }
             } else if (
-                CHK_ANY(InputDB, IN_BACK) && InventoryMode != INV_TITLE_MODE
-                && InventoryMode != INV_KEYS_MODE) {
+                CHK_ANY(InputDB, IN_BACK) && InvMode != INV_TITLE_MODE
+                && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
@@ -519,8 +519,7 @@ int32_t Display_Inventory(int inv_mode)
                     Input = 0;
                     InputDB = 0;
 
-                    if (InventoryMode == INV_LOAD_MODE
-                        || InventoryMode == INV_SAVE_MODE) {
+                    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                         Input = 0;
@@ -530,14 +529,14 @@ int32_t Display_Inventory(int inv_mode)
 
                 if (CHK_ANY(InputDB, IN_SELECT)) {
                     inv_item->sprlist = NULL;
-                    InventoryChosen = inv_item->object_number;
+                    InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {
                         InvMainCurrent = ring.current_object;
                     } else {
                         InvOptionCurrent = ring.current_object;
                     }
 
-                    if (InventoryMode == INV_TITLE_MODE
+                    if (InvMode == INV_TITLE_MODE
                         && ((inv_item->object_number == O_DETAIL_OPTION)
                             || inv_item->object_number == O_SOUND_OPTION
                             || inv_item->object_number == O_CONTROL_OPTION
@@ -584,7 +583,7 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_EXITING_INVENTORY:
             if (!imo.count) {
-                if (InventoryMode != INV_TITLE_MODE) {
+                if (InvMode != INV_TITLE_MODE) {
                     S_FadeOutInventory(1);
                 } else {
                     S_FadeOutInventory(0);
@@ -602,18 +601,16 @@ int32_t Display_Inventory(int inv_mode)
     RemoveInventoryText();
     S_FinishInventory();
 
-    InventoryDisplaying = 0;
-
     if (ResetFlag) {
         return GF_EXIT_TO_TITLE;
     }
 
-    switch (InventoryChosen) {
+    switch (InvChosen) {
     case O_PASSPORT_OPTION:
         return GF_START_GAME | GF.first_level_num;
 
     case O_PHOTO_OPTION:
-        InventoryExtraData[1] = 0;
+        InvExtraData[1] = 0;
         return GF_START_GAME | GF.first_level_num;
 
     case O_GUN_OPTION:
@@ -647,7 +644,7 @@ int32_t Display_Inventory(int inv_mode)
 void Construct_Inventory()
 {
     S_SetupAboveWater(0);
-    if (InventoryMode != INV_TITLE_MODE) {
+    if (InvMode != INV_TITLE_MODE) {
         TempVideoAdjust(HiRes, 1.0);
     }
 
@@ -657,12 +654,11 @@ void Construct_Inventory()
     PhdRight = PhdWinMaxX;
 
     for (int i = 0; i < 8; i++) {
-        InventoryExtraData[i] = 0;
+        InvExtraData[i] = 0;
     }
 
-    InventoryDisplaying = 1;
-    InventoryChosen = 0;
-    if (InventoryMode == INV_TITLE_MODE) {
+    InvChosen = 0;
+    if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;

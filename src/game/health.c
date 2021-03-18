@@ -15,6 +15,7 @@
 #define MAX_PICKUP_COLUMNS 4
 #define MAX_PICKUPS 16
 
+TEXTSTRING *AmmoText = NULL;
 static DISPLAYPU Pickups[MAX_PICKUPS];
 
 void DrawGameInfo()
@@ -33,6 +34,8 @@ void DrawGameInfo()
 
 void DrawHealthBar()
 {
+    static int32_t old_hit_points = 0;
+
     for (int i = 0; i < 6; i++) {
         BarOffsetY[i] = 0;
     }
@@ -44,8 +47,8 @@ void DrawHealthBar()
         hit_points = LARA_HITPOINTS;
     }
 
-    if (OldHitPoints != hit_points) {
-        OldHitPoints = hit_points;
+    if (old_hit_points != hit_points) {
+        old_hit_points = hit_points;
         HealthBarTimer = 40;
     }
 
@@ -197,9 +200,9 @@ void InitialisePickUpDisplay()
 
 void DrawPickups()
 {
-    int32_t old_game_timer = OldGameTimer;
-    OldGameTimer = SaveGame.timer;
+    static int32_t old_game_timer = 0;
     int16_t time = SaveGame.timer - old_game_timer;
+    old_game_timer = SaveGame.timer;
 
     if (time > 0 && time < 60) {
         int32_t sprite_height = MIN(PhdWinWidth, PhdWinHeight * 320 / 200) / 10;

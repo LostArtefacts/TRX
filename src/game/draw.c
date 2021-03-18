@@ -12,6 +12,8 @@
 
 #include "util.h"
 
+static int16_t InterpolatedBounds[6];
+
 int32_t DrawPhaseCinematic()
 {
     S_InitialisePolyList();
@@ -107,7 +109,7 @@ void GetRoomBounds(int16_t room_num)
 
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
 {
-    // TODO: the way the game passes the objptr is dangerous and relies on
+    // XXX: the way the game passes the objptr is dangerous and relies on
     // layout of DOOR_INFO
 
     if ((objptr[0] * (parent->x + objptr[3] - W2VMatrix._03))
@@ -117,6 +119,7 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
         return 0;
     }
 
+    DOOR_VBUF door_vbuf[4];
     int32_t left = parent->right;
     int32_t right = parent->left;
     int32_t top = parent->bottom;
@@ -134,9 +137,9 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
             + mptr->_12 * objptr[2] + mptr->_13;
         int32_t zv = mptr->_20 * objptr[0] + mptr->_21 * objptr[1]
             + mptr->_22 * objptr[2] + mptr->_23;
-        DoorVBuf[i].xv = xv;
-        DoorVBuf[i].yv = yv;
-        DoorVBuf[i].zv = zv;
+        door_vbuf[i].xv = xv;
+        door_vbuf[i].yv = yv;
+        door_vbuf[i].zv = zv;
         objptr += 3;
 
         if (zv > 0) {
@@ -176,8 +179,8 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     }
 
     if (z_behind > 0) {
-        DOOR_VBUF *dest = &DoorVBuf[0];
-        DOOR_VBUF *last = &DoorVBuf[3];
+        DOOR_VBUF *dest = &door_vbuf[0];
+        DOOR_VBUF *last = &door_vbuf[3];
         for (int i = 0; i < 4; i++) {
             if ((dest->zv < 0) ^ (last->zv < 0)) {
                 if (dest->xv < 0 && last->xv < 0) {

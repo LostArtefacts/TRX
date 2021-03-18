@@ -588,7 +588,7 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
         Lara.hit_frame = 0;
     }
 
-    InventoryChosen = -1;
+    InvChosen = -1;
 }
 
 void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)

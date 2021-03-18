@@ -5,6 +5,9 @@
 
 #include <stdint.h>
 
+extern TEXTSTRING *InvItemText[2];
+extern TEXTSTRING *InvRingText;
+
 int32_t Display_Inventory(int inv_mode);
 void Construct_Inventory();
 void SelectMeshes(INVENTORY_ITEM *inv_item);

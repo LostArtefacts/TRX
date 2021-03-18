@@ -14,6 +14,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
+TEXTSTRING *InvItemText[2] = { NULL, NULL };
+TEXTSTRING *InvRingText = NULL;
+
+static TEXTSTRING *InvDownArrow1 = NULL;
+static TEXTSTRING *InvDownArrow2 = NULL;
+static TEXTSTRING *InvUpArrow1 = NULL;
+static TEXTSTRING *InvUpArrow2 = NULL;
+
 void InitColours()
 {
     InvColours[IC_BLACK] = S_Colour(0, 0, 0);
@@ -31,7 +39,7 @@ void InitColours()
 
 void RingIsOpen(RING_INFO *ring)
 {
-    if (InventoryMode == INV_TITLE_MODE) {
+    if (InvMode == INV_TITLE_MODE) {
         return;
     }
 
@@ -42,7 +50,7 @@ void RingIsOpen(RING_INFO *ring)
             break;
 
         case RT_OPTION:
-            if (InventoryMode == INV_DEATH_MODE) {
+            if (InvMode == INV_DEATH_MODE) {
                 InvRingText =
                     T_Print(0, 26, 0, GF.strings[GS_HEADING_GAME_OVER]);
             } else {
@@ -58,7 +66,7 @@ void RingIsOpen(RING_INFO *ring)
         T_CentreH(InvRingText, 1);
     }
 
-    if (InventoryMode == INV_KEYS_MODE || InventoryMode == INV_DEATH_MODE) {
+    if (InvMode == INV_KEYS_MODE || InvMode == INV_DEATH_MODE) {
         return;
     }
 
@@ -704,7 +712,7 @@ void Inv_RingInit(
     ring->current_object = current;
     ring->angle_adder = 0x10000 / qty;
 
-    if (InventoryMode == INV_TITLE_MODE) {
+    if (InvMode == INV_TITLE_MODE) {
         ring->camera_pitch = 1024;
     } else {
         ring->camera_pitch = 0;

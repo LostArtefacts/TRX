@@ -161,7 +161,7 @@ void PickUpScionCollision(
         Lara.gun_status = LGS_HANDSBUSY;
         Camera.type = CAM_CINEMATIC;
         CineFrame = 0;
-        CinematicPosition = lara_item->pos;
+        CinePosition = lara_item->pos;
     }
 }
 
@@ -188,7 +188,7 @@ void PickUpScion4Collision(
         Lara.gun_status = LGS_HANDSBUSY;
         Camera.type = CAM_CINEMATIC;
         CineFrame = 0;
-        CinematicPosition = lara_item->pos;
-        CinematicPosition.y_rot -= PHD_90;
+        CinePosition = lara_item->pos;
+        CinePosition.y_rot -= PHD_90;
     }
 }

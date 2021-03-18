@@ -347,12 +347,12 @@ static int32_t LoadSprites(MYFILE *fp)
     for (int i = 0; i < SpriteCount; i++) {
         int32_t object_num;
         FileRead(&object_num, sizeof(int32_t), 1, fp);
-        if (object_num < NUMBER_OBJECTS) {
+        if (object_num < O_NUMBER_OF) {
             FileRead(&Objects[object_num], sizeof(int16_t), 1, fp);
             FileRead(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
             Objects[object_num].loaded = 1;
         } else {
-            int32_t static_num = object_num - NUMBER_OBJECTS;
+            int32_t static_num = object_num - O_NUMBER_OF;
             FileSeek(fp, 2, FILE_SEEK_CUR);
             FileRead(
                 &StaticObjects[static_num].mesh_number, sizeof(int16_t), 1, fp);
@@ -369,14 +369,14 @@ static int32_t LoadItems(MYFILE *fp)
     TRACE("%d items", item_count);
 
     if (item_count) {
-        if (item_count > NUMBER_ITEMS) {
+        if (item_count > O_NUMBER_OF) {
             strcpy(StringToShow, "LoadItems(): Too Many Items being Loaded!!");
             return 0;
         }
 
-        Items = game_malloc(sizeof(ITEM_INFO) * NUMBER_ITEMS, GBUF_ITEMS);
+        Items = game_malloc(sizeof(ITEM_INFO) * O_NUMBER_OF, GBUF_ITEMS);
         LevelItemCount = item_count;
-        InitialiseItemArray(NUMBER_ITEMS);
+        InitialiseItemArray(O_NUMBER_OF);
 
         for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &Items[i];
@@ -389,8 +389,7 @@ static int32_t LoadItems(MYFILE *fp)
             FileRead(&item->shade, sizeof(int16_t), 1, fp);
             FileRead(&item->flags, sizeof(uint16_t), 1, fp);
 
-            if (item->object_number < 0
-                || item->object_number >= NUMBER_OBJECTS) {
+            if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
                 sprintf(
                     StringToShow,
                     "LoadItems(): Bad Object number (%d) on Item %d",
