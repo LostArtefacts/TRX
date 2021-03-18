@@ -28,7 +28,7 @@ int32_t DrawPhaseCinematic()
     }
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
-    S_AniamteTextures(Camera.number_frames);
+    S_AnimateTextures(Camera.number_frames);
     return Camera.number_frames;
 }
 
@@ -39,7 +39,7 @@ int32_t DrawPhaseGame()
     DrawGameInfo();
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
-    S_AniamteTextures(Camera.number_frames);
+    S_AnimateTextures(Camera.number_frames);
     return Camera.number_frames;
 }
 

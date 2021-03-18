@@ -526,7 +526,7 @@
 <rect width="12.00" height="12.00" x="322.00" y="157.00" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="157.00" class="named"><title>S_GetObjectBounds</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="157.00" class="named"><title>S_PrintShadow</title></rect>
-<rect width="12.00" height="12.00" x="364.00" y="157.00" class="named"><title>S_CalculateLight</title></rect>
+<rect width="12.00" height="12.00" x="364.00" y="157.00" class="decompiled"><title>S_CalculateLight</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="157.00" class="named"><title>S_CalculateStaticLight</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="157.00" class="decompiled"><title>S_DrawHealthBar</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="157.00" class="decompiled"><title>S_DrawAirBar</title></rect>
@@ -919,7 +919,7 @@
 <rect width="15.90" height="14.27" x="447.72" y="473.12" class="named"><title>gourA</title></rect>
 <rect width="15.90" height="14.23" x="447.72" y="489.40" class="decompiled"><title>BatControl</title></rect>
 <rect width="15.90" height="14.19" x="447.72" y="505.62" class="decompiled"><title>StartCinematic</title></rect>
-<rect width="15.90" height="14.19" x="447.72" y="521.81" class="named"><title>S_CalculateLight</title></rect>
+<rect width="15.90" height="14.19" x="447.72" y="521.81" class="decompiled"><title>S_CalculateLight</title></rect>
 <rect width="14.89" height="15.11" x="465.62" y="305.85" class="todo"><title>sub_40CADB</title></rect>
 <rect width="14.89" height="15.02" x="465.62" y="322.96" class="decompiled"><title>DoInventoryOptions</title></rect>
 <rect width="14.89" height="15.02" x="465.62" y="339.98" class="decompiled"><title>S_DrawHealthBar</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.70%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.57%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 15.11%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.86%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 71.84%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.72%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 14.97%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.71%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.19%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.57%</text>
 </svg>

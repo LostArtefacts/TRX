@@ -1,5 +1,6 @@
 #include "specific/output.h"
 
+#include "3dsystem/3d_gen.h"
 #include "3dsystem/3d_insert.h"
 #include "game/const.h"
 #include "game/vars.h"
@@ -189,6 +190,59 @@ void S_InitialiseScreen()
     }
 }
 
+void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+{
+    ROOM_INFO *r = &RoomInfo[room_num];
+
+    if (r->num_lights == 0) {
+        LsAdder = r->ambient;
+        LsDivider = 0;
+    } else {
+        int32_t ambient = 0x1FFF - r->ambient;
+        int32_t brightest = 0;
+
+        PHD_VECTOR ls;
+        for (int i = 0; i < r->num_lights; i++) {
+            LIGHT_INFO *light = &r->light[i];
+            PHD_VECTOR lc;
+            lc.x = x - light->x;
+            lc.y = y - light->y;
+            lc.z = z - light->z;
+
+            int32_t distance =
+                (SQUARE(lc.x) + SQUARE(lc.y) + SQUARE(lc.z)) >> 12;
+            int32_t falloff = SQUARE(light->falloff) >> 12;
+            int32_t shade =
+                ambient + (light->intensity * falloff) / (distance + falloff);
+
+            if (shade > brightest) {
+                brightest = shade;
+                ls = lc;
+            }
+        }
+
+        LsAdder = (ambient + brightest) / 2;
+        if (brightest == ambient) {
+            LsDivider = 0;
+        } else {
+            LsDivider = (1 << (W2V_SHIFT + 12)) / (brightest - LsAdder);
+        }
+        LsAdder = 0x1FFF - LsAdder;
+
+        PHD_ANGLE angles[2];
+        phd_GetVectorAngles(ls.x, ls.y, ls.z, angles);
+        phd_RotateLight(angles[1], angles[0]);
+    }
+
+    int32_t distance = PhdMatrixPtr->_23 >> W2V_SHIFT;
+    if (distance > DEPTH_Q_START) {
+        LsAdder += distance - DEPTH_Q_START;
+        if (LsAdder > 0x1FFF) {
+            LsAdder = 0x1FFF;
+        }
+    }
+}
+
 void S_DrawHealthBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_HEALTH);
@@ -202,6 +256,7 @@ void S_DrawAirBar(int32_t percent)
 void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FCE0, S_InitialiseScreen);
+    INJECT(0x00430100, S_CalculateLight);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
 }
