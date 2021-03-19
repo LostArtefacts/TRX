@@ -1,16 +1,34 @@
 {
     // NOTE: bad changes to this file may result in crashes.
 
+    // path to the savegame file
     "savegame_fmt": "saveati.%d",
+
+    // whether to allow user to select NG/NG+/etc. modes in the new game dialog
     "enable_game_modes": true,
 
+    // list of levels
     "levels": [
         // level 0
         {
+            // level title
             "title": "Lara's Home",
+
+            // level path
             "file": "data\\gym.phd",
+
+            // level type
+            // can be:
+            // - gym
+            // - normal
+            // - cutscene
+            // - current
             "type": "gym",
+
+            // music track ID
             "music": 0,
+
+            // list of actions to execute when this level is played
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 1},
                 {"type": "start_game"},
@@ -18,6 +36,8 @@
                 {"type": "stop_game"},
                 {"type": "exit_to_title"},
             ],
+
+            // keys and puzzle items names
             "strings": {},
         },
 
