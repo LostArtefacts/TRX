@@ -114,7 +114,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
             "failed to parse config file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no);
-        goto cleanup;
+        // continue to supply the default values
     } else {
         result = 1;
     }

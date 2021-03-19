@@ -17,6 +17,7 @@
 
 static int32_t S_ReadUserSettingsATI();
 static int32_t S_ReadUserSettingsT1M();
+static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data);
 static int32_t S_WriteUserSettingsT1M();
 
 static int32_t S_ReadUserSettingsATI()
@@ -52,39 +53,21 @@ static int32_t S_ReadUserSettingsATI()
     return 1;
 }
 
-static int32_t S_ReadUserSettingsT1M()
+static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
 {
     int32_t result = 0;
-    size_t config_data_size;
-    char *config_data = NULL;
-    MYFILE *fp = NULL;
     struct json_value_s *root = NULL;
     struct json_parse_result_s parse_result;
 
-    fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_READ);
-    if (!fp) {
-        goto cleanup;
-    }
-
-    config_data_size = FileSize(fp);
-    config_data = malloc(config_data_size + 1);
-    if (!config_data) {
-        goto cleanup;
-    }
-    FileRead(config_data, 1, config_data_size, fp);
-    config_data[config_data_size] = '\0';
-    FileClose(fp);
-    fp = NULL;
-
     root = json_parse_ex(
-        config_data, strlen(config_data), json_parse_flags_allow_json5, NULL,
-        NULL, &parse_result);
+        cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
+        &parse_result);
     if (!root) {
         TRACE(
             "failed to parse script file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no, config_data);
-        goto cleanup;
+            parse_result.error_line_no, parse_result.error_row_no, cfg_data);
+        // continue to supply the default values
     }
 
     result = 1;
@@ -122,15 +105,44 @@ static int32_t S_ReadUserSettingsT1M()
         Layout[1][i] = json_array_get_number_int(layout_arr, i, Layout[1][i]);
     }
 
+    if (root) {
+        json_value_free(root);
+    }
+    return result;
+}
+
+static int32_t S_ReadUserSettingsT1M()
+{
+    int32_t result = 0;
+    size_t cfg_data_size;
+    char *cfg_data = NULL;
+    MYFILE *fp = NULL;
+
+    fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_READ);
+    if (!fp) {
+        result = S_ReadUserSettingsT1MFromJson("");
+        goto cleanup;
+    }
+
+    cfg_data_size = FileSize(fp);
+    cfg_data = malloc(cfg_data_size + 1);
+    if (!cfg_data) {
+        result = S_ReadUserSettingsT1MFromJson("");
+        goto cleanup;
+    }
+    FileRead(cfg_data, 1, cfg_data_size, fp);
+    cfg_data[cfg_data_size] = '\0';
+    FileClose(fp);
+    fp = NULL;
+
+    result = S_ReadUserSettingsT1MFromJson(cfg_data);
+
 cleanup:
     if (fp) {
         FileClose(fp);
     }
-    if (config_data) {
-        free(config_data);
-    }
-    if (root) {
-        json_value_free(root);
+    if (cfg_data) {
+        free(cfg_data);
     }
     return result;
 }
