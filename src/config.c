@@ -160,7 +160,6 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
 
     CLAMP(T1MConfig.fov_value, 30, 255);
 
-cleanup:
     if (root) {
         json_value_free(root);
     }

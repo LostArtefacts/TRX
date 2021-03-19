@@ -23,10 +23,6 @@ const char *FMVPaths[] = {
 
 void S_Wait(int32_t nframes)
 {
-    while (Input) {
-        S_UpdateInput();
-        WinVidSpinMessageLoop();
-    }
     for (int i = 0; i < nframes; i++) {
         S_UpdateInput();
         if (KeyData->keys_held) {
@@ -34,6 +30,10 @@ void S_Wait(int32_t nframes)
         }
         while (!WinVidSpinMessageLoop())
             ;
+    }
+    while (Input) {
+        S_UpdateInput();
+        WinVidSpinMessageLoop();
     }
 }
 
