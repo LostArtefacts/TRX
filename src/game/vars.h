@@ -190,6 +190,9 @@
 extern char *ATIUserSettingsPath;
 extern char *T1MUserSettingsPath;
 
+extern double UITextScale;
+extern double UIBarScale;
+
 extern void (*EffectRoutines[])(ITEM_INFO *item);
 
 extern GAMEFLOW GF;

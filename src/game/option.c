@@ -44,8 +44,10 @@ typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_TITLE_BORDER = 1,
     DETAIL_HW_PERSPECTIVE = 2,
     DETAIL_HW_BILINEAR = 3,
-    DETAIL_HW_RESOLUTION = 4,
-    DETAIL_HW_NUMBER_OF = 5,
+    DETAIL_HW_UI_TEXT_SCALE = 4,
+    DETAIL_HW_UI_BAR_SCALE = 5,
+    DETAIL_HW_RESOLUTION = 6,
+    DETAIL_HW_NUMBER_OF = 7,
 } DETAIL_HW_TEXT;
 
 static TEXTSTRING *PassportText = NULL;
@@ -438,13 +440,13 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
 // original name: do_detail_option?
 void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 {
+    static char buf[256];
     static int32_t current_row = DETAIL_HW_PERSPECTIVE;
     const int32_t min_row = DETAIL_HW_PERSPECTIVE;
     static int32_t max_row = DETAIL_HW_RESOLUTION;
-    char buf[256];
-    const int32_t top_y = -32;
-    const int32_t row_height = 25;
-    const int32_t row_width = 280;
+    const int16_t top_y = -55;
+    const int16_t row_height = 25;
+    const int16_t row_width = 280;
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = top_y;
@@ -467,9 +469,17 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, 0, buf);
         y += row_height;
 
+        sprintf(buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT], UITextScale);
+        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, 0, buf);
+        y += row_height;
+
+        sprintf(buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT], UIBarScale);
+        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, 0, buf);
+        y += row_height;
+
         if (dword_45B940) {
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, " ");
-            max_row = DETAIL_HW_BILINEAR;
+            max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {
             const char *tmp;
             switch (GameHiRes) {
@@ -558,6 +568,20 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             }
             break;
 
+        case DETAIL_HW_UI_TEXT_SCALE:
+            if (UITextScale < MAX_UI_SCALE) {
+                UITextScale += 0.1;
+                reset = 1;
+            }
+            break;
+
+        case DETAIL_HW_UI_BAR_SCALE:
+            if (UIBarScale < MAX_UI_SCALE) {
+                UIBarScale += 0.1;
+                reset = 1;
+            }
+            break;
+
         case DETAIL_HW_RESOLUTION:
             if (GameHiRes < 3) {
                 GameHiRes++;
@@ -579,6 +603,20 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_BILINEAR:
             if (AppSettings & ASF_BILINEAR) {
                 AppSettings &= ~ASF_BILINEAR;
+                reset = 1;
+            }
+            break;
+
+        case DETAIL_HW_UI_TEXT_SCALE:
+            if (UITextScale > MIN_UI_SCALE) {
+                UITextScale -= 0.1;
+                reset = 1;
+            }
+            break;
+
+        case DETAIL_HW_UI_BAR_SCALE:
+            if (UIBarScale > MIN_UI_SCALE) {
+                UIBarScale -= 0.1;
                 reset = 1;
             }
             break;
@@ -784,9 +822,9 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[100];
     static char time_buf[100];
-    const int32_t top_y = -100;
-    const int32_t row_height = 25;
-    const int32_t row_width = 225;
+    const int16_t top_y = -100;
+    const int16_t row_height = 25;
+    const int16_t row_width = 225;
 
     if (T1MConfig.enable_compass_stats) {
         if (!CompassText[COMPASS_TITLE_BORDER]) {
@@ -901,7 +939,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     if (!CtrlText[0]) {
         CtrlText[0] = T_Print(
-            0, -50, 0,
+            0, -75, 0,
             GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
@@ -1051,61 +1089,56 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
 void S_ShowControls()
 {
-    int16_t centre = GetRenderWidthDownscaled() / 2;
+    const int16_t centre = GetRenderWidthDownscaled() / 2;
+    const int16_t top_y = -50;
+    const int16_t row_height = 15;
 
-    CtrlText[1] = T_Print(0, -60, 0, " ");
+    CtrlText[1] = T_Print(0, -85, 0, " ");
     T_CentreH(CtrlText[1], 1);
     T_CentreV(CtrlText[1], 1);
 
-    int16_t hpos = 420;
-    int16_t vpos = 150;
+    int16_t y;
+    int16_t x1 = 420;
+    int16_t x2 = centre + 20;
+    int16_t height = 150;
     if (T1MConfig.enable_cheats) {
-        vpos += 45;
+        height += row_height * 3;
     }
-    T_AddBackground(CtrlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
+    T_AddBackground(CtrlText[1], x1, height, 0, 0, 48, IC_BLACK, NULL, 0);
 
-    if (!CtrlTextB[0]) {
+    if (!CtrlTextB[KEY_UP]) {
         int16_t *layout = Layout[IConfig];
-        hpos = centre - 200;
+        x1 = centre - 200;
+        y = top_y;
 
-        CtrlTextB[KEY_UP] =
-            T_Print(hpos, -25, 0, ScanCodeNames[layout[KEY_UP]]);
-        CtrlTextB[KEY_DOWN] =
-            T_Print(hpos, -10, 0, ScanCodeNames[layout[KEY_DOWN]]);
-        CtrlTextB[KEY_LEFT] =
-            T_Print(hpos, 5, 0, ScanCodeNames[layout[KEY_LEFT]]);
-        CtrlTextB[KEY_RIGHT] =
-            T_Print(hpos, 20, 0, ScanCodeNames[layout[KEY_RIGHT]]);
-        CtrlTextB[KEY_STEP_L] =
-            T_Print(hpos, 35, 0, ScanCodeNames[layout[KEY_STEP_L]]);
-        CtrlTextB[KEY_STEP_R] =
-            T_Print(hpos, 50, 0, ScanCodeNames[layout[KEY_STEP_R]]);
-        CtrlTextB[KEY_SLOW] =
-            T_Print(hpos, 65, 0, ScanCodeNames[layout[KEY_SLOW]]);
-        CtrlTextB[KEY_JUMP] =
-            T_Print(centre + 20, -25, 0, ScanCodeNames[layout[KEY_JUMP]]);
-        CtrlTextB[KEY_ACTION] =
-            T_Print(centre + 20, -10, 0, ScanCodeNames[layout[KEY_ACTION]]);
-        CtrlTextB[KEY_DRAW] =
-            T_Print(centre + 20, 5, 0, ScanCodeNames[layout[KEY_DRAW]]);
-        CtrlTextB[KEY_LOOK] =
-            T_Print(centre + 20, 20, 0, ScanCodeNames[layout[KEY_LOOK]]);
-        CtrlTextB[KEY_ROLL] =
-            T_Print(centre + 20, 35, 0, ScanCodeNames[layout[KEY_ROLL]]);
+        for (int i = KEY_UP; i <= KEY_SLOW; i++) {
+            CtrlTextB[i] = T_Print(x1, y, 0, ScanCodeNames[layout[i]]);
+            y += row_height;
+        }
+
+        y = top_y;
+        for (int i = KEY_JUMP; i <= KEY_ROLL; i++) {
+            CtrlTextB[i] = T_Print(x2, y, 0, ScanCodeNames[layout[i]]);
+            y += row_height;
+        }
 
         if (T1MConfig.enable_cheats) {
             CtrlTextB[KEY_OPTION] =
-                T_Print(centre + 20, 50, 0, ScanCodeNames[layout[KEY_OPTION]]);
-            CtrlTextB[KEY_FLY_CHEAT] = T_Print(
-                centre + 20, 80, 0, ScanCodeNames[layout[KEY_FLY_CHEAT]]);
-            CtrlTextB[KEY_ITEM_CHEAT] = T_Print(
-                centre + 20, 95, 0, ScanCodeNames[layout[KEY_ITEM_CHEAT]]);
-            CtrlTextB[KEY_LEVEL_SKIP_CHEAT] = T_Print(
-                centre + 20, 110, 0,
-                ScanCodeNames[layout[KEY_LEVEL_SKIP_CHEAT]]);
+                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_OPTION]]);
+            y += row_height;
+            y += row_height;
+            CtrlTextB[KEY_FLY_CHEAT] =
+                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_FLY_CHEAT]]);
+            y += row_height;
+            CtrlTextB[KEY_ITEM_CHEAT] =
+                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_ITEM_CHEAT]]);
+            y += row_height;
+            CtrlTextB[KEY_LEVEL_SKIP_CHEAT] =
+                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_LEVEL_SKIP_CHEAT]]);
         } else {
+            y += row_height;
             CtrlTextB[KEY_OPTION] =
-                T_Print(centre + 20, 65, 0, ScanCodeNames[layout[KEY_OPTION]]);
+                T_Print(x2, 65, 0, ScanCodeNames[layout[KEY_OPTION]]);
         }
 
         for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -1114,42 +1147,41 @@ void S_ShowControls()
         KeyChange = 0;
     }
 
-    if (!CtrlTextA[0]) {
-        hpos = centre - 130;
+    if (!CtrlTextA[KEY_UP]) {
+        x1 = centre - 130;
+        x2 = centre + 90;
 
-        CtrlTextA[KEY_UP] = T_Print(hpos, -25, 0, GF.strings[GS_KEYMAP_RUN]);
-        CtrlTextA[KEY_DOWN] = T_Print(hpos, -10, 0, GF.strings[GS_KEYMAP_BACK]);
-        CtrlTextA[KEY_LEFT] = T_Print(hpos, 5, 0, GF.strings[GS_KEYMAP_LEFT]);
-        CtrlTextA[KEY_RIGHT] =
-            T_Print(hpos, 20, 0, GF.strings[GS_KEYMAP_RIGHT]);
-        CtrlTextA[KEY_STEP_L] =
-            T_Print(hpos, 35, 0, GF.strings[GS_KEYMAP_STEP_LEFT]);
-        CtrlTextA[KEY_STEP_R] =
-            T_Print(hpos, 50, 0, GF.strings[GS_KEYMAP_STEP_RIGHT]);
-        CtrlTextA[KEY_SLOW] = T_Print(hpos, 65, 0, GF.strings[GS_KEYMAP_WALK]);
-        CtrlTextA[KEY_JUMP] =
-            T_Print(centre + 90, -25, 0, GF.strings[GS_KEYMAP_JUMP]);
-        CtrlTextA[KEY_ACTION] =
-            T_Print(centre + 90, -10, 0, GF.strings[GS_KEYMAP_ACTION]);
-        CtrlTextA[KEY_DRAW] =
-            T_Print(centre + 90, 5, 0, GF.strings[GS_KEYMAP_DRAW_WEAPON]);
-        CtrlTextA[KEY_LOOK] =
-            T_Print(centre + 90, 20, 0, GF.strings[GS_KEYMAP_LOOK]);
-        CtrlTextA[KEY_ROLL] =
-            T_Print(centre + 90, 35, 0, GF.strings[GS_KEYMAP_ROLL]);
+        y = top_y;
+        for (int i = KEY_UP; i <= KEY_SLOW; i++) {
+            CtrlTextA[i] =
+                T_Print(x1, y, 0, GF.strings[i + GS_KEYMAP_RUN - KEY_UP]);
+            y += row_height;
+        }
+
+        y = top_y;
+        for (int i = KEY_JUMP; i <= KEY_ROLL; i++) {
+            CtrlTextA[i] =
+                T_Print(x2, y, 0, GF.strings[i + GS_KEYMAP_RUN - KEY_UP]);
+            y += row_height;
+        }
 
         if (T1MConfig.enable_cheats) {
             CtrlTextA[KEY_OPTION] =
-                T_Print(centre + 90, 50, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+            y += row_height;
+            y += row_height;
             CtrlTextA[KEY_FLY_CHEAT] =
-                T_Print(centre + 90, 80, 0, GF.strings[GS_KEYMAP_FLY_CHEAT]);
+                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_FLY_CHEAT]);
+            y += row_height;
             CtrlTextA[KEY_ITEM_CHEAT] =
-                T_Print(centre + 90, 95, 0, GF.strings[GS_KEYMAP_ITEM_CHEAT]);
-            CtrlTextA[KEY_LEVEL_SKIP_CHEAT] = T_Print(
-                centre + 90, 110, 0, GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT]);
+                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_ITEM_CHEAT]);
+            y += row_height;
+            CtrlTextA[KEY_LEVEL_SKIP_CHEAT] =
+                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT]);
         } else {
+            y += row_height;
             CtrlTextA[KEY_OPTION] =
-                T_Print(centre + 90, 65, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_INVENTORY]);
         }
 
         for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -1224,23 +1256,19 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     if (req->flags & RIF_FIXED_HEIGHT) {
         edge_y = req->y * GetRenderHeightDownscaled() / 100;
     } else {
-        switch (HiRes) {
-        case 0:
-            req->y = -20;
+        TRACE("%d", GetRenderHeightDownscaled());
+        if (GetRenderHeightDownscaled() <= 240) {
+            req->y = -30;
             req->vis_lines = 5;
-            break;
-        case 1:
-            req->y = -60;
+        } else if (GetRenderHeightDownscaled() <= 384) {
+            req->y = -30;
             req->vis_lines = 8;
-            break;
-        case 3:
-            req->y = -120;
-            req->vis_lines = 12;
-            break;
-        default:
+        } else if (GetRenderHeightDownscaled() <= 480) {
             req->y = -80;
             req->vis_lines = 10;
-            break;
+        } else {
+            req->y = -120;
+            req->vis_lines = 12;
         }
         edge_y = req->y;
     }

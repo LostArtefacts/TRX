@@ -18,6 +18,9 @@
 char *ATIUserSettingsPath = "atiset.dat";
 char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
+double UITextScale;
+double UIBarScale;
+
 void (*EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,
     EarthQuake, Flood,     RaisingBlock,  Stairs2Slope, DropSand,

@@ -11,6 +11,10 @@
 #define ONE_SECOND 30
 #define HALF_SECOND 15
 
+#define MIN_UI_SCALE 0.5
+#define MAX_UI_SCALE 2.0
+#define DEFAULT_UI_SCALE 1.0
+
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
 #define MAX_REQLINES 16

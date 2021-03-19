@@ -35,6 +35,9 @@ static int32_t S_ReadUserSettingsATI()
     FileRead(&GameSizer, sizeof(double), 1, fp);
     FileRead(&IConfig, sizeof(int32_t), 1, fp);
 
+    UITextScale = DEFAULT_UI_SCALE;
+    UIBarScale = DEFAULT_UI_SCALE;
+
     DefaultConflict();
 
     if (OptionMusicVolume) {
@@ -99,6 +102,14 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
 
     IConfig = json_object_get_number_int(root_obj, "layout_num", 0);
     CLAMP(IConfig, 0, 1);
+
+    UITextScale = json_object_get_number_double(
+        root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
+    CLAMP(UITextScale, MIN_UI_SCALE, MAX_UI_SCALE);
+
+    UIBarScale = json_object_get_number_double(
+        root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
+    CLAMP(UIBarScale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -165,6 +176,8 @@ static int32_t S_WriteUserSettingsT1M()
     json_object_append_number_int(
         root_obj, "sound_volume", OptionSoundFXVolume);
     json_object_append_number_int(root_obj, "layout_num", IConfig);
+    json_object_append_number_double(root_obj, "ui_text_scale", UITextScale);
+    json_object_append_number_double(root_obj, "ui_bar_scale", UIBarScale);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < KEY_NUMBER_OF; i++) {

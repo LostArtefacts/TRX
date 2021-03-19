@@ -439,6 +439,8 @@
         "DETAIL_LEVEL_LOW": "Low",
         "DETAIL_PERSPECTIVE_FMT": "Perspective     %s",
         "DETAIL_BILINEAR_FMT": "Bilinear        %s",
+        "DETAIL_UI_TEXT_SCALE_FMT": "UI text scale   %.1f",
+        "DETAIL_UI_BAR_SCALE_FMT": "UI bar scale    %.1f",
         "DETAIL_VIDEO_MODE_FMT": "Game Video Mode %s",
         "SOUND_SET_VOLUMES": "Set Volumes",
         "CONTROL_DEFAULT_KEYS": "Default Keys",

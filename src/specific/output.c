@@ -26,7 +26,7 @@ static int8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 193, 194, 192, 191, 189 }, // pink
 };
 
-int32_t MulDiv(int32_t x, int32_t y, int32_t z)
+double MulDiv(double x, double y, double z)
 {
     return (x * y) / z;
 }
@@ -56,11 +56,12 @@ int32_t GetRenderScale(int32_t unit)
     // TR2Main-style UI scaler
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
-    int32_t scale_x =
-        PhdWinWidth > baseWidth ? MulDiv(PhdWinWidth, unit, baseWidth) : unit;
+    int32_t scale_x = PhdWinWidth > baseWidth
+        ? MulDiv(PhdWinWidth, unit * UITextScale, baseWidth)
+        : unit * UITextScale;
     int32_t scale_y = PhdWinHeight > baseHeight
-        ? MulDiv(PhdWinHeight, unit, baseHeight)
-        : unit;
+        ? MulDiv(PhdWinHeight, unit * UITextScale, baseHeight)
+        : unit * UITextScale;
     return MIN(scale_x, scale_y);
 }
 
@@ -76,7 +77,7 @@ void BarLocation(
     } else if (
         bar_location == T1M_BL_TOP_RIGHT
         || bar_location == T1M_BL_BOTTOM_RIGHT) {
-        *x = GetRenderWidthDownscaled() - width - screen_margin_h;
+        *x = GetRenderWidthDownscaled() - width * UIBarScale - screen_margin_h;
     } else {
         *x = (GetRenderWidthDownscaled() - width) / 2;
     }
@@ -85,7 +86,7 @@ void BarLocation(
         || bar_location == T1M_BL_TOP_RIGHT) {
         *y = screen_margin_v + BarOffsetY[bar_location];
     } else {
-        *y = GetRenderHeightDownscaled() - height - screen_margin_v
+        *y = GetRenderHeightDownscaled() - height * UIBarScale - screen_margin_v
             - BarOffsetY[bar_location];
     }
 
@@ -130,8 +131,10 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t padding = 3;
     int32_t left = GetRenderScale(x) - padding;
     int32_t top = GetRenderScale(y) - padding;
-    int32_t right = GetRenderScale(x + width) + padding;
-    int32_t bottom = GetRenderScale(y + height) + padding;
+    int32_t right =
+        GetRenderScale(x) + GetRenderScale(width) * UIBarScale + padding;
+    int32_t bottom =
+        GetRenderScale(y) + GetRenderScale(height) * UIBarScale + padding;
 
     // background
     for (int32_t i = top; i < bottom; i++) {
@@ -157,8 +160,8 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 
         left = GetRenderScale(x);
         top = GetRenderScale(y);
-        right = GetRenderScale(x + width);
-        bottom = GetRenderScale(y + height);
+        right = GetRenderScale(x) + GetRenderScale(width) * UIBarScale;
+        bottom = GetRenderScale(y) + GetRenderScale(height) * UIBarScale;
 
         for (int i = top; i < bottom; i++) {
             int color_index = (i - top) * COLOR_BAR_SIZE / (bottom - top);
