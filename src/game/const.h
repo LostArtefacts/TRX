@@ -28,7 +28,7 @@
 #define MAX_SPRITES 512
 #define MAX_FLIP_MAPS 10
 #define DEMO_COUNT_MAX 9000
-#define MAX_ITEMS 256
+#define MAX_ITEMS 10240
 #define MAX_SECRETS 16
 #define MAX_SAVEGAME_BUFFER (10 * 1024)
 #define GRAVITY 6
