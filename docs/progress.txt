@@ -870,7 +870,7 @@ S_SoundStopSample               0x00438CD0  0x0000001B  -
 sub_438CF0                      0x00438CF0  0x00000044  -
 S_CDPlay                        0x00438D40  0x000000FD  +
 S_CDStop                        0x00438E40  0x00000043  *
-SampleLoader                    0x00438E90  0x00000005  *
+SampleLoader                    0x00438E90  0x00000005  +
 LoadSamples                     0x00438EA0  0x00000189  +
 S_StartSyncedAudio              0x00439030  0x000000FC  +
 

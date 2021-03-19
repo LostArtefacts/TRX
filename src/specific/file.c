@@ -551,6 +551,11 @@ static int32_t LoadDemo(MYFILE *fp)
     return 1;
 }
 
+static const char *SampleLoader(const char *sample_data)
+{
+    return sample_data;
+}
+
 static int32_t LoadSamples(MYFILE *fp)
 {
     if (!SoundIsActive) {
@@ -565,24 +570,26 @@ static int32_t LoadSamples(MYFILE *fp)
         return 0;
     }
 
-    SampleInfos = game_malloc(8 * NumSampleInfos, GBUF_SAMPLE_INFOS);
+    SampleInfos =
+        game_malloc(sizeof(SAMPLE_INFO) * NumSampleInfos, GBUF_SAMPLE_INFOS);
     FileRead(SampleInfos, sizeof(SAMPLE_INFO), NumSampleInfos, fp);
 
     int32_t sample_data_size;
-    TRACE("%d sample data size", sample_data_size);
     FileRead(&sample_data_size, sizeof(int32_t), 1, fp);
+    TRACE("%d sample data size", sample_data_size);
     if (!sample_data_size) {
         S_ExitSystem("No Sample Data");
+        return 0;
     }
 
     char *sample_data = game_malloc(sample_data_size, GBUF_SAMPLES);
-    FileRead(
-        sample_data, sizeof(int16_t), sample_data_size / sizeof(int16_t), fp);
+    FileRead(sample_data, sizeof(char), sample_data_size, fp);
 
-    FileRead(&NumSamples, sizeof(int32_t), 1u, fp);
+    FileRead(&NumSamples, sizeof(int32_t), 1, fp);
     TRACE("%d samples", NumSamples);
     if (!NumSamples) {
         S_ExitSystem("No Samples");
+        return 0;
     }
 
     int32_t *sample_offsets =

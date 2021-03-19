@@ -1951,6 +1951,5 @@ typedef struct SAMPLE_INFO {
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*EffectRoutine)(ITEM_INFO *item);
-typedef int32_t (*SampleLoaderRoutine)(int32_t sample_num);
 
 #endif

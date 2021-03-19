@@ -102,7 +102,6 @@
 
 #define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
 #define SoundsLoaded            VAR_U_(0x0045A214, int32_t)
-#define SampleLoader            VAR_U_(0x00438E90, SampleLoaderRoutine)
 #define SampleLUT               ARRAY_(0x0045EB60, int16_t, [MAX_SAMPLES])
 #define SampleInfos             VAR_U_(0x0045ED60, SAMPLE_INFO*)
 #define NumSampleInfos          VAR_U_(0x0045A210, int32_t)
