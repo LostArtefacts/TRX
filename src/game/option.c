@@ -39,7 +39,17 @@ typedef enum COMPASS_TEXT {
     COMPASS_NUMBER_OF = 6,
 } COMPASS_TEXT;
 
+typedef enum DETAIL_HW_TEXT {
+    DETAIL_HW_TITLE = 0,
+    DETAIL_HW_TITLE_BORDER = 1,
+    DETAIL_HW_PERSPECTIVE = 2,
+    DETAIL_HW_BILINEAR = 3,
+    DETAIL_HW_RESOLUTION = 4,
+    DETAIL_HW_NUMBER_OF = 5,
+} DETAIL_HW_TEXT;
+
 static TEXTSTRING *PassportText = NULL;
+static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
 static TEXTSTRING *DetailText[5] = { 0 };
 static TEXTSTRING *SoundText[4] = { 0 };
 static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
@@ -428,23 +438,38 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
 // original name: do_detail_option?
 void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 {
-    static int32_t current_row = 0;
-    static int32_t max_row = 0;
+    static int32_t current_row = DETAIL_HW_PERSPECTIVE;
+    const int32_t min_row = DETAIL_HW_PERSPECTIVE;
+    static int32_t max_row = DETAIL_HW_RESOLUTION;
     char buf[256];
+    const int32_t top_y = -32;
+    const int32_t row_height = 25;
+    const int32_t row_width = 280;
 
-    if (!DetailText[0]) {
+    if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
+        int32_t y = top_y;
+        DetailTextHW[DETAIL_HW_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
+
+        DetailTextHW[DETAIL_HW_TITLE] =
+            T_Print(0, y, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
+        y += row_height;
+
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
                 [AppSettings & ASF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailText[0] = T_Print(0, 0, 0, buf);
+        DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, 0, buf);
+        y += row_height;
+
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings[AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailText[1] = T_Print(0, 25, 0, buf);
+        DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, 0, buf);
+        y += row_height;
+
         if (dword_45B940) {
-            DetailText[2] = T_Print(0, 50, 0, " ");
-            max_row = 1;
+            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, " ");
+            max_row = DETAIL_HW_BILINEAR;
         } else {
             const char *tmp;
             switch (GameHiRes) {
@@ -462,66 +487,78 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 break;
             }
             sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-            DetailText[2] = T_Print(0, 50, 0, buf);
-            max_row = 2;
+            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, buf);
+            max_row = DETAIL_HW_RESOLUTION;
         }
+        y += row_height;
 
-        DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] = T_Print(0, -30, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
-
+        if (current_row < min_row) {
+            current_row = min_row;
+        }
         if (current_row > max_row) {
             current_row = max_row;
         }
 
-        T_AddBackground(DetailText[4], 276, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
-            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(DetailText[3], 280, 122, 0, 0, 16, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[3], 1, IC_BLUE, NULL, 0);
+            DetailTextHW[DETAIL_HW_TITLE_BORDER], row_width, y - top_y, 0, 0,
+            16, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1, IC_BLUE, NULL, 0);
 
-        for (int i = 0; i < 5; i++) {
-            T_CentreH(DetailText[i], 1);
-            T_CentreV(DetailText[i], 1);
+        T_AddBackground(
+            DetailTextHW[DETAIL_HW_TITLE], row_width - 4, 0, 0, 0, 8, IC_BLACK,
+            NULL, 0);
+        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1, IC_ORANGE, NULL, 0);
+
+        T_AddBackground(
+            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
+            NULL, 0);
+        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
+
+        for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
+            T_CentreH(DetailTextHW[i], 1);
+            T_CentreV(DetailTextHW[i], 1);
         }
     }
 
-    if (CHK_ANY(InputDB, IN_FORWARD) && current_row > 0) {
-        T_RemoveOutline(DetailText[current_row]);
-        T_RemoveBackground(DetailText[current_row]);
+    if (CHK_ANY(InputDB, IN_FORWARD) && current_row > min_row) {
+        T_RemoveOutline(DetailTextHW[current_row]);
+        T_RemoveBackground(DetailTextHW[current_row]);
         current_row--;
-        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
-            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
+            NULL, 0);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
-        T_RemoveOutline(DetailText[current_row]);
-        T_RemoveBackground(DetailText[current_row]);
+        T_RemoveOutline(DetailTextHW[current_row]);
+        T_RemoveBackground(DetailTextHW[current_row]);
         current_row++;
-        T_AddOutline(DetailText[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
-            DetailText[current_row], 268, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
+            NULL, 0);
     }
 
     int8_t reset = 0;
 
     if (CHK_ANY(InputDB, IN_RIGHT)) {
         switch (current_row) {
-        case 0:
+        case DETAIL_HW_PERSPECTIVE:
             if (!(AppSettings & ASF_PERSPECTIVE)) {
                 AppSettings |= ASF_PERSPECTIVE;
                 reset = 1;
             }
             break;
-        case 1:
+
+        case DETAIL_HW_BILINEAR:
             if (!(AppSettings & ASF_BILINEAR)) {
                 AppSettings |= ASF_BILINEAR;
                 reset = 1;
             }
             break;
-        case 2:
+
+        case DETAIL_HW_RESOLUTION:
             if (GameHiRes < 3) {
                 GameHiRes++;
                 reset = 1;
@@ -532,19 +569,21 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
     if (CHK_ANY(InputDB, IN_LEFT)) {
         switch (current_row) {
-        case 0:
+        case DETAIL_HW_PERSPECTIVE:
             if (AppSettings & ASF_PERSPECTIVE) {
                 AppSettings &= ~ASF_PERSPECTIVE;
                 reset = 1;
             }
             break;
-        case 1:
+
+        case DETAIL_HW_BILINEAR:
             if (AppSettings & ASF_BILINEAR) {
                 AppSettings &= ~ASF_BILINEAR;
                 reset = 1;
             }
             break;
-        case 2:
+
+        case DETAIL_HW_RESOLUTION:
             if (GameHiRes > 0) {
                 GameHiRes--;
                 reset = 1;
@@ -558,9 +597,9 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
     }
 
     if (reset) {
-        for (int i = 0; i < 5; i++) {
-            T_RemovePrint(DetailText[i]);
-            DetailText[i] = NULL;
+        for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
+            T_RemovePrint(DetailTextHW[i]);
+            DetailTextHW[i] = NULL;
         }
         S_WriteUserSettings();
     }
@@ -743,18 +782,20 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 // original name: do_compass_option
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
-    static char string[100];
-    static char time_str[100];
+    static char buf[100];
+    static char time_buf[100];
     const int32_t top_y = -100;
     const int32_t row_height = 25;
     const int32_t row_width = 225;
 
     if (T1MConfig.enable_compass_stats) {
         if (!CompassText[COMPASS_TITLE_BORDER]) {
-            sprintf(string, "%s", GF.levels[CurrentLevel].level_title);
             int32_t y = top_y;
+
             CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
-            CompassText[COMPASS_TITLE] = T_Print(0, y, 0, string);
+
+            sprintf(buf, "%s", GF.levels[CurrentLevel].level_title);
+            CompassText[COMPASS_TITLE] = T_Print(0, y, 0, buf);
             y += row_height;
 
             CompassText[COMPASS_TIME] = T_Print(0, y, 0, " ");
@@ -771,17 +812,17 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
                 secrets_total--;
             } while (secrets_total);
             sprintf(
-                string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
+                buf, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
                 GF.levels[CurrentLevel].secrets);
-            CompassText[COMPASS_SECRETS] = T_Print(0, y, 0, string);
+            CompassText[COMPASS_SECRETS] = T_Print(0, y, 0, buf);
             y += row_height;
 
-            sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
-            CompassText[COMPASS_PICKUPS] = T_Print(0, y, 0, string);
+            sprintf(buf, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
+            CompassText[COMPASS_PICKUPS] = T_Print(0, y, 0, buf);
             y += row_height;
 
-            sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
-            CompassText[COMPASS_KILLS] = T_Print(0, y, 0, string);
+            sprintf(buf, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
+            CompassText[COMPASS_KILLS] = T_Print(0, y, 0, buf);
             y += row_height;
 
             T_AddBackground(
@@ -806,13 +847,13 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
         seconds %= 60;
         if (hours) {
             sprintf(
-                time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+                time_buf, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
                 seconds / 10, seconds % 10);
         } else {
-            sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
+            sprintf(time_buf, "%d:%d%d", minutes, seconds / 10, seconds % 10);
         }
-        sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-        T_ChangeText(CompassText[COMPASS_TIME], string);
+        sprintf(buf, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_buf);
+        T_ChangeText(CompassText[COMPASS_TIME], buf);
     }
 
     if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
