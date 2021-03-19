@@ -1304,11 +1304,11 @@ typedef struct DOOR_DATA {
 } DOOR_DATA;
 
 typedef struct LIGHT_INFO {
-    /* 0000 */ uint32_t x;
-    /* 0004 */ uint32_t y;
-    /* 0008 */ uint32_t z;
-    /* 000C */ uint16_t intensity;
-    /* 000E */ uint32_t falloff;
+    /* 0000 */ int32_t x;
+    /* 0004 */ int32_t y;
+    /* 0008 */ int32_t z;
+    /* 000C */ int16_t intensity;
+    /* 000E */ int32_t falloff;
     /* 0012 end */
 } LIGHT_INFO;
 
