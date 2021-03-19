@@ -748,7 +748,10 @@ typedef enum KEY_NUMBER {
     KEY_LOOK = 10,
     KEY_ROLL = 11,
     KEY_OPTION = 12,
-    KEY_NUMBER_OF = 13,
+    KEY_FLY_CHEAT = 13,
+    KEY_ITEM_CHEAT = 14,
+    KEY_LEVEL_SKIP_CHEAT = 15,
+    KEY_NUMBER_OF = 16,
 } KEY_NUMBER;
 
 typedef enum INPUT_STATE {
@@ -776,8 +779,8 @@ typedef enum INPUT_STATE {
     IN_DESELECT = 1 << 21,
     IN_SAVE = 1 << 22,
     IN_LOAD = 1 << 23,
-    IN_DOZYCHEAT = 1 << 24,
-    IN_STUFFCHEAT = 1 << 25,
+    IN_FLY_CHEAT = 1 << 24,
+    IN_ITEM_CHEAT = 1 << 25,
 } INPUT_STATE;
 
 typedef enum TEXTSTRING_FLAG {
@@ -1099,6 +1102,9 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_LOOK,
     GS_KEYMAP_ROLL,
     GS_KEYMAP_INVENTORY,
+    GS_KEYMAP_FLY_CHEAT,
+    GS_KEYMAP_ITEM_CHEAT,
+    GS_KEYMAP_LEVEL_SKIP_CHEAT,
 
     GS_STATS_TIME_TAKEN_FMT,
     GS_STATS_SECRETS_FMT,

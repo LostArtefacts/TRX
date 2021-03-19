@@ -26,6 +26,9 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_NUMPAD0, // KEY_LOOK
         DIK_END, // KEY_ROLL
         DIK_ESCAPE, // KEY_OPTION
+        DIK_O, // KEY_FLY_CHEAT,
+        DIK_I, // KEY_ITEM_CHEAT,
+        DIK_X, // KEY_LEVEL_SKIP_CHEAT,
     },
 
     // default user controls
@@ -43,6 +46,9 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_NUMPAD0, // KEY_LOOK
         DIK_NUMPAD5, // KEY_ROLL
         DIK_DECIMAL, // KEY_OPTION
+        DIK_O, // KEY_FLY_CHEAT,
+        DIK_I, // KEY_ITEM_CHEAT,
+        DIK_X, // KEY_LEVEL_SKIP_CHEAT,
     }
 };
 
@@ -198,20 +204,19 @@ void S_UpdateInput()
 
     if (T1MConfig.enable_cheats) {
         static int8_t is_stuff_cheat_key_pressed = 0;
-        if (KeyData->keymap[DIK_I]) {
+        if (Key_(KEY_ITEM_CHEAT)) {
             if (!is_stuff_cheat_key_pressed) {
                 is_stuff_cheat_key_pressed = 1;
-                TRACE("enabling stuff cheat");
-                linput |= IN_STUFFCHEAT;
+                linput |= IN_ITEM_CHEAT;
             }
         } else {
             is_stuff_cheat_key_pressed = 0;
         }
 
-        if (KeyData->keymap[DIK_O]) {
-            linput |= IN_DOZYCHEAT;
+        if (Key_(KEY_FLY_CHEAT)) {
+            linput |= IN_FLY_CHEAT;
         }
-        if (KeyData->keymap[DIK_F10]) {
+        if (Key_(KEY_LEVEL_SKIP_CHEAT)) {
             LevelComplete = 1;
         }
         if (KeyData->keymap[DIK_F11] && LaraItem) {

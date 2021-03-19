@@ -163,7 +163,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (Lara.death_count > DEATH_WAIT
-            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_DOZYCHEAT))
+            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_FLY_CHEAT))
             || OverlayFlag == 2) {
             if (demo_mode) {
                 return 1;

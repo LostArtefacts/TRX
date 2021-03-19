@@ -42,6 +42,9 @@ void T1MInit()
     GF.strings[GS_KEYMAP_LOOK] = "Look";
     GF.strings[GS_KEYMAP_ROLL] = "Roll";
     GF.strings[GS_KEYMAP_INVENTORY] = "Inventory";
+    GF.strings[GS_KEYMAP_FLY_CHEAT] = "Fly cheat";
+    GF.strings[GS_KEYMAP_ITEM_CHEAT] = "Item cheat";
+    GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT] = "Level skip";
     GF.strings[GS_STATS_TIME_TAKEN_FMT] = "TIME TAKEN %s";
     GF.strings[GS_STATS_SECRETS_FMT] = "SECRETS %d OF %d";
     GF.strings[GS_STATS_PICKUPS_FMT] = "PICKUPS %d";

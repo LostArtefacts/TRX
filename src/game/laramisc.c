@@ -27,11 +27,11 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-    if (Input & IN_STUFFCHEAT) {
+    if (Input & IN_ITEM_CHEAT) {
         LaraCheatGetStuff();
     }
 
-    if (Lara.water_status != LWS_CHEAT && (Input & IN_DOZYCHEAT)) {
+    if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
@@ -185,7 +185,7 @@ void LaraControl(int16_t item_num)
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
         if (CHK_ANY(Input, IN_SLOW)
-            && !CHK_ANY(Input, IN_LOOK | IN_DOZYCHEAT)) {
+            && !CHK_ANY(Input, IN_LOOK | IN_FLY_CHEAT)) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {

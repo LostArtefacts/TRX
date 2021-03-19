@@ -38,7 +38,7 @@
     "enable_tr3_sidesteps": true,
 
     // Enables various cheats:
-    // - F10: immediately end the level.
+    // - X: immediately end the level.
     // - F11: heal Lara. Hold WALK key to hurt instead.
     // - I: gives Lara all the guns, ammo, medpacks and plot items for the
     //   current level.

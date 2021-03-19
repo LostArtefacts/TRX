@@ -881,15 +881,15 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 S_WriteUserSettings();
             } else {
                 T_RemoveBackground(CtrlTextA[KeyChange]);
-                if (KeyChange <= KEY_NUMBER_OF / 2) {
-                    KeyChange += (KEY_NUMBER_OF) / 2 + 1;
+                if (KeyChange <= 6) {
+                    KeyChange += 7;
                     if (KeyChange == KEY_NUMBER_OF) {
                         KeyChange = KEY_NUMBER_OF - 1;
                     }
                 } else if (KeyChange == KEY_NUMBER_OF - 1) {
-                    KeyChange = KEY_NUMBER_OF / 2;
+                    KeyChange = 6;
                 } else {
-                    KeyChange -= (KEY_NUMBER_OF / 2) + 1;
+                    KeyChange -= 7;
                 }
                 T_AddBackground(
                     CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
@@ -914,7 +914,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
                 KeyChange--;
                 if (KeyChange < -1) {
-                    KeyChange = 12;
+                    KeyChange = KEY_NUMBER_OF - 1;
                 }
 
                 T_AddBackground(
@@ -925,7 +925,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 KeyChange++;
-                if (KeyChange > 12) {
+                if (KeyChange > KEY_NUMBER_OF - 1) {
                     KeyChange = -1;
                 }
 
@@ -1011,34 +1011,61 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 void S_ShowControls()
 {
     int16_t centre = GetRenderWidthDownscaled() / 2;
-    int16_t hpos;
-    int16_t vpos;
 
     CtrlText[1] = T_Print(0, -60, 0, " ");
     T_CentreH(CtrlText[1], 1);
     T_CentreV(CtrlText[1], 1);
 
-    hpos = 420;
-    vpos = 150;
+    int16_t hpos = 420;
+    int16_t vpos = 150;
+    if (T1MConfig.enable_cheats) {
+        vpos += 45;
+    }
     T_AddBackground(CtrlText[1], hpos, vpos, 0, 0, 48, IC_BLACK, NULL, 0);
 
     if (!CtrlTextB[0]) {
         int16_t *layout = Layout[IConfig];
         hpos = centre - 200;
 
-        CtrlTextB[0] = T_Print(hpos, -25, 0, ScanCodeNames[layout[0]]);
-        CtrlTextB[1] = T_Print(hpos, -10, 0, ScanCodeNames[layout[1]]);
-        CtrlTextB[2] = T_Print(hpos, 5, 0, ScanCodeNames[layout[2]]);
-        CtrlTextB[3] = T_Print(hpos, 20, 0, ScanCodeNames[layout[3]]);
-        CtrlTextB[4] = T_Print(hpos, 35, 0, ScanCodeNames[layout[4]]);
-        CtrlTextB[5] = T_Print(hpos, 50, 0, ScanCodeNames[layout[5]]);
-        CtrlTextB[6] = T_Print(hpos, 65, 0, ScanCodeNames[layout[6]]);
-        CtrlTextB[7] = T_Print(centre + 20, -25, 0, ScanCodeNames[layout[7]]);
-        CtrlTextB[8] = T_Print(centre + 20, -10, 0, ScanCodeNames[layout[8]]);
-        CtrlTextB[9] = T_Print(centre + 20, 5, 0, ScanCodeNames[layout[9]]);
-        CtrlTextB[10] = T_Print(centre + 20, 20, 0, ScanCodeNames[layout[10]]);
-        CtrlTextB[11] = T_Print(centre + 20, 35, 0, ScanCodeNames[layout[11]]);
-        CtrlTextB[12] = T_Print(centre + 20, 65, 0, ScanCodeNames[layout[12]]);
+        CtrlTextB[KEY_UP] =
+            T_Print(hpos, -25, 0, ScanCodeNames[layout[KEY_UP]]);
+        CtrlTextB[KEY_DOWN] =
+            T_Print(hpos, -10, 0, ScanCodeNames[layout[KEY_DOWN]]);
+        CtrlTextB[KEY_LEFT] =
+            T_Print(hpos, 5, 0, ScanCodeNames[layout[KEY_LEFT]]);
+        CtrlTextB[KEY_RIGHT] =
+            T_Print(hpos, 20, 0, ScanCodeNames[layout[KEY_RIGHT]]);
+        CtrlTextB[KEY_STEP_L] =
+            T_Print(hpos, 35, 0, ScanCodeNames[layout[KEY_STEP_L]]);
+        CtrlTextB[KEY_STEP_R] =
+            T_Print(hpos, 50, 0, ScanCodeNames[layout[KEY_STEP_R]]);
+        CtrlTextB[KEY_SLOW] =
+            T_Print(hpos, 65, 0, ScanCodeNames[layout[KEY_SLOW]]);
+        CtrlTextB[KEY_JUMP] =
+            T_Print(centre + 20, -25, 0, ScanCodeNames[layout[KEY_JUMP]]);
+        CtrlTextB[KEY_ACTION] =
+            T_Print(centre + 20, -10, 0, ScanCodeNames[layout[KEY_ACTION]]);
+        CtrlTextB[KEY_DRAW] =
+            T_Print(centre + 20, 5, 0, ScanCodeNames[layout[KEY_DRAW]]);
+        CtrlTextB[KEY_LOOK] =
+            T_Print(centre + 20, 20, 0, ScanCodeNames[layout[KEY_LOOK]]);
+        CtrlTextB[KEY_ROLL] =
+            T_Print(centre + 20, 35, 0, ScanCodeNames[layout[KEY_ROLL]]);
+
+        if (T1MConfig.enable_cheats) {
+            CtrlTextB[KEY_OPTION] =
+                T_Print(centre + 20, 50, 0, ScanCodeNames[layout[KEY_OPTION]]);
+            CtrlTextB[KEY_FLY_CHEAT] = T_Print(
+                centre + 20, 80, 0, ScanCodeNames[layout[KEY_FLY_CHEAT]]);
+            CtrlTextB[KEY_ITEM_CHEAT] = T_Print(
+                centre + 20, 95, 0, ScanCodeNames[layout[KEY_ITEM_CHEAT]]);
+            CtrlTextB[KEY_LEVEL_SKIP_CHEAT] = T_Print(
+                centre + 20, 110, 0,
+                ScanCodeNames[layout[KEY_LEVEL_SKIP_CHEAT]]);
+        } else {
+            CtrlTextB[KEY_OPTION] =
+                T_Print(centre + 20, 65, 0, ScanCodeNames[layout[KEY_OPTION]]);
+        }
 
         for (int i = 0; i < KEY_NUMBER_OF; i++) {
             T_CentreV(CtrlTextB[i], 1);
@@ -1049,22 +1076,40 @@ void S_ShowControls()
     if (!CtrlTextA[0]) {
         hpos = centre - 130;
 
-        CtrlTextA[0] = T_Print(hpos, -25, 0, GF.strings[GS_KEYMAP_RUN]);
-        CtrlTextA[1] = T_Print(hpos, -10, 0, GF.strings[GS_KEYMAP_BACK]);
-        CtrlTextA[2] = T_Print(hpos, 5, 0, GF.strings[GS_KEYMAP_LEFT]);
-        CtrlTextA[3] = T_Print(hpos, 20, 0, GF.strings[GS_KEYMAP_RIGHT]);
-        CtrlTextA[4] = T_Print(hpos, 35, 0, GF.strings[GS_KEYMAP_STEP_LEFT]);
-        CtrlTextA[5] = T_Print(hpos, 50, 0, GF.strings[GS_KEYMAP_STEP_RIGHT]);
-        CtrlTextA[6] = T_Print(hpos, 65, 0, GF.strings[GS_KEYMAP_WALK]);
-        CtrlTextA[7] = T_Print(centre + 90, -25, 0, GF.strings[GS_KEYMAP_JUMP]);
-        CtrlTextA[8] =
+        CtrlTextA[KEY_UP] = T_Print(hpos, -25, 0, GF.strings[GS_KEYMAP_RUN]);
+        CtrlTextA[KEY_DOWN] = T_Print(hpos, -10, 0, GF.strings[GS_KEYMAP_BACK]);
+        CtrlTextA[KEY_LEFT] = T_Print(hpos, 5, 0, GF.strings[GS_KEYMAP_LEFT]);
+        CtrlTextA[KEY_RIGHT] =
+            T_Print(hpos, 20, 0, GF.strings[GS_KEYMAP_RIGHT]);
+        CtrlTextA[KEY_STEP_L] =
+            T_Print(hpos, 35, 0, GF.strings[GS_KEYMAP_STEP_LEFT]);
+        CtrlTextA[KEY_STEP_R] =
+            T_Print(hpos, 50, 0, GF.strings[GS_KEYMAP_STEP_RIGHT]);
+        CtrlTextA[KEY_SLOW] = T_Print(hpos, 65, 0, GF.strings[GS_KEYMAP_WALK]);
+        CtrlTextA[KEY_JUMP] =
+            T_Print(centre + 90, -25, 0, GF.strings[GS_KEYMAP_JUMP]);
+        CtrlTextA[KEY_ACTION] =
             T_Print(centre + 90, -10, 0, GF.strings[GS_KEYMAP_ACTION]);
-        CtrlTextA[9] =
+        CtrlTextA[KEY_DRAW] =
             T_Print(centre + 90, 5, 0, GF.strings[GS_KEYMAP_DRAW_WEAPON]);
-        CtrlTextA[10] = T_Print(centre + 90, 20, 0, GF.strings[GS_KEYMAP_LOOK]);
-        CtrlTextA[11] = T_Print(centre + 90, 35, 0, GF.strings[GS_KEYMAP_ROLL]);
-        CtrlTextA[12] =
-            T_Print(centre + 90, 65, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+        CtrlTextA[KEY_LOOK] =
+            T_Print(centre + 90, 20, 0, GF.strings[GS_KEYMAP_LOOK]);
+        CtrlTextA[KEY_ROLL] =
+            T_Print(centre + 90, 35, 0, GF.strings[GS_KEYMAP_ROLL]);
+
+        if (T1MConfig.enable_cheats) {
+            CtrlTextA[KEY_OPTION] =
+                T_Print(centre + 90, 50, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+            CtrlTextA[KEY_FLY_CHEAT] =
+                T_Print(centre + 90, 80, 0, GF.strings[GS_KEYMAP_FLY_CHEAT]);
+            CtrlTextA[KEY_ITEM_CHEAT] =
+                T_Print(centre + 90, 95, 0, GF.strings[GS_KEYMAP_ITEM_CHEAT]);
+            CtrlTextA[KEY_LEVEL_SKIP_CHEAT] = T_Print(
+                centre + 90, 110, 0, GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT]);
+        } else {
+            CtrlTextA[KEY_OPTION] =
+                T_Print(centre + 90, 65, 0, GF.strings[GS_KEYMAP_INVENTORY]);
+        }
 
         for (int i = 0; i < KEY_NUMBER_OF; i++) {
             T_CentreV(CtrlTextA[i], 1);

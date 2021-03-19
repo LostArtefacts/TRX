@@ -118,7 +118,7 @@ static int32_t S_ReadUserSettingsT1M()
     CLAMP(IConfig, 0, 1);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         Layout[1][i] = json_array_get_number_int(layout_arr, i, Layout[1][i]);
     }
 
@@ -155,7 +155,7 @@ static int32_t S_WriteUserSettingsT1M()
     json_object_append_number_int(root_obj, "layout_num", IConfig);
 
     struct json_array_s *layout_arr = json_array_new();
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < KEY_NUMBER_OF; i++) {
         json_array_append_number_int(layout_arr, Layout[1][i]);
     }
     json_object_append_array(root_obj, "layout", layout_arr);
