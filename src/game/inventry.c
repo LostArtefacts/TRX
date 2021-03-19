@@ -71,6 +71,7 @@ int32_t Display_Inventory(int inv_mode)
     switch (InvMode) {
     case INV_DEATH_MODE:
     case INV_SAVE_MODE:
+    case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_TITLE_MODE:
         Inv_RingInit(
@@ -249,8 +250,8 @@ int32_t Display_Inventory(int inv_mode)
             continue;
         }
 
-        if ((InvMode == INV_SAVE_MODE || InvMode == INV_LOAD_MODE
-             || InvMode == INV_DEATH_MODE)
+        if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
+             || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
             InputDB = IN_SELECT;
         }
@@ -296,8 +297,9 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (CHK_ANY(InputDB, IN_SELECT)) {
-                if ((InvMode == INV_SAVE_MODE || InvMode == INV_LOAD_MODE
-                     || InvMode == INV_DEATH_MODE)
+                if ((InvMode == INV_SAVE_MODE
+                     || InvMode == INV_SAVE_CRYSTAL_MODE
+                     || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
                     pass_mode_open = 1;
                 }
@@ -519,7 +521,8 @@ int32_t Display_Inventory(int inv_mode)
                     Input = 0;
                     InputDB = 0;
 
-                    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE) {
+                    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
+                        || InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                         Input = 0;

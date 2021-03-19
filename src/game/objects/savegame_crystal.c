@@ -1,39 +1,46 @@
 #include "game/objects/savegame_crystal.h"
 
+#include "game/collide.h"
+#include "game/control.h"
+#include "game/game.h"
+#include "game/inv.h"
+#include "game/items.h"
+#include "game/objects/pickup.h"
+#include "game/savegame.h"
+#include "game/settings.h"
+#include "game/sound.h"
 #include "game/vars.h"
 
 void SetupSaveGameCrystal(OBJECT_INFO *obj)
 {
     obj->initialise = InitialiseSaveGameItem;
-#ifdef T1M_FEAT_SAVE_CRYSTALS
-    obj->control = ControlSaveGameItem;
-    obj->collision = PickUpSaveGameCollision;
-    obj->save_flags = 1;
-#endif
+    if (GF.enable_save_crystals) {
+        obj->control = ControlSaveGameItem;
+        obj->collision = PickUpSaveGameCollision;
+        obj->save_flags = 1;
+    }
 }
 
 void InitialiseSaveGameItem(int16_t item_num)
 {
-#ifdef T1M_FEAT_SAVE_CRYSTALS
-    AddActiveItem(item_num);
-#else
-    Items[item_num].status = IS_INVISIBLE;
-#endif
+    if (GF.enable_save_crystals) {
+        AddActiveItem(item_num);
+    } else {
+        Items[item_num].status = IS_INVISIBLE;
+    }
 }
 
 void ControlSaveGameItem(int16_t item_num)
 {
-#ifdef T1M_FEAT_SAVE_CRYSTALS
-    AnimateItem(&Items[item_num]);
-#endif
+    if (GF.enable_save_crystals) {
+        AnimateItem(&Items[item_num]);
+    }
 }
 
 void PickUpSaveGameCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-#ifdef T1M_FEAT_SAVE_CRYSTALS
     ITEM_INFO *item = &Items[item_num];
-    ObjectCollision(item_num, lara_item, coll);
 
     if (!CHK_ANY(Input, IN_ACTION) || Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status) {
@@ -51,13 +58,15 @@ void PickUpSaveGameCollision(
         return;
     }
 
-    item->status = IS_INVISIBLE;
-    CreateSaveGameInfo();
-    if (S_SaveGame(&SaveGame, -1)) {
+    int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+    if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
+        CreateSaveGameInfo();
+        S_SaveGame(&SaveGame, InvExtraData[1]);
+        S_WriteUserSettings();
+        SoundEffect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
         item->status = IS_ACTIVE;
     }
-#endif
 }

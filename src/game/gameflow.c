@@ -4,7 +4,10 @@
 #include "game/const.h"
 #include "game/control.h"
 #include "game/game.h"
+#include "game/inv.h"
 #include "game/lara.h"
+#include "game/savegame.h"
+#include "game/settings.h"
 #include "game/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -177,6 +180,14 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         return 0;
     }
     GF.enable_game_modes = tmp_i;
+
+    tmp_i =
+        json_object_get_bool(obj, "enable_save_crystals", JSON_INVALID_BOOL);
+    if (tmp_i == JSON_INVALID_BOOL) {
+        TRACE("'enable_save_crystals' must be a boolean");
+        return 0;
+    }
+    GF.enable_save_crystals = tmp_i;
 
     return 1;
 }
@@ -921,6 +932,16 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         switch (seq->type) {
         case GFS_START_GAME:
             ret = StartGame((int32_t)seq->data, level_type);
+            if (GF.enable_save_crystals && level_type != GFL_SAVED
+                && (int32_t)seq->data != GF.first_level_num) {
+                int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+                if (return_val != GF_NOP) {
+                    CreateSaveGameInfo();
+                    S_SaveGame(&SaveGame, InvExtraData[1]);
+                    S_WriteUserSettings();
+                }
+            }
+
             break;
 
         case GFS_LOOP_GAME:

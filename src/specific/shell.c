@@ -117,7 +117,7 @@ void GameMain()
             TitleLoaded = 1;
 
             dword_45B940 = 0;
-            Display_Inventory(1);
+            Display_Inventory(INV_TITLE_MODE);
             dword_45B940 = 1;
 
             S_FadeToBlack();

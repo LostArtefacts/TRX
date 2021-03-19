@@ -28,6 +28,7 @@
 #define PASSPORT_2BACK IN_RIGHT
 #define MAX_MODES 4
 #define MAX_MODE_NAME_LENGTH 20
+#define PASSPORT_PAGE_COUNT 3
 
 typedef enum COMPASS_TEXT {
     COMPASS_TITLE = 0,
@@ -203,7 +204,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         page = -1;
     }
 
-    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE) {
+    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
+        || InvMode == INV_SAVE_CRYSTAL_MODE) {
         InputDB &= ~(PASSPORT_2FRONT | PASSPORT_2BACK);
     }
 
@@ -215,7 +217,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 if (select > 0) {
                     InvExtraData[1] = select - 1;
                 } else if (
-                    InvMode != INV_SAVE_MODE && InvMode != INV_LOAD_MODE) {
+                    InvMode != INV_SAVE_MODE && InvMode != INV_SAVE_CRYSTAL_MODE
+                    && InvMode != INV_LOAD_MODE) {
                     Input = 0;
                     InputDB = 0;
                 }
@@ -225,7 +228,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = 0;
             }
         } else if (PassportMode == 0) {
-            if (!SavedGamesCount || InvMode == INV_SAVE_MODE) {
+            if (!SavedGamesCount || InvMode == INV_SAVE_MODE
+                || InvMode == INV_SAVE_CRYSTAL_MODE) {
                 InputDB = PASSPORT_2BACK;
             } else {
                 if (!PassportText) {
@@ -273,7 +277,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     PassportMode = 0;
                     InvExtraData[1] = select - 1;
                 } else {
-                    if (InvMode != INV_SAVE_MODE && InvMode != INV_LOAD_MODE) {
+                    if (InvMode != INV_SAVE_MODE
+                        && InvMode != INV_SAVE_CRYSTAL_MODE
+                        && InvMode != INV_LOAD_MODE) {
                         Input = 0;
                         InputDB = 0;
                     }
@@ -300,7 +306,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
             }
-            if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_SAVE_MODE) {
+            if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_SAVE_MODE
+                || InvMode == INV_SAVE_CRYSTAL_MODE) {
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     T_RemovePrint(InvRingText);
@@ -348,44 +355,49 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
+    int8_t pages_available[3] = {
+        SavedGamesCount,
+        InvMode == INV_TITLE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
+            || !GF.enable_save_crystals,
+        1,
+    };
+
     if (CHK_ANY(InputDB, PASSPORT_2FRONT)
         && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
-        inv_item->anim_direction = -1;
-        inv_item->goal_frame -= 5;
 
-        Input = 0;
-        InputDB = 0;
+        while (--page >= 0) {
+            if (pages_available[page]) {
+                break;
+            }
+        }
 
-        if (!SavedGamesCount) {
-            if (inv_item->goal_frame < inv_item->open_frame + 5) {
-                inv_item->goal_frame = inv_item->open_frame + 5;
-            } else if (PassportText) {
+        if (page >= 0) {
+            inv_item->anim_direction = -1;
+            inv_item->goal_frame = inv_item->open_frame + 5 * page;
+            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            if (PassportText) {
                 T_RemovePrint(PassportText);
                 PassportText = NULL;
             }
-        } else {
-            if (inv_item->goal_frame < inv_item->open_frame) {
-                inv_item->goal_frame = inv_item->open_frame;
-            } else {
-                SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
-                if (PassportText) {
-                    T_RemovePrint(PassportText);
-                    PassportText = NULL;
-                }
-            }
         }
-    }
-
-    if (CHK_ANY(InputDB, PASSPORT_2BACK)) {
-        inv_item->goal_frame += 5;
-        inv_item->anim_direction = 1;
 
         Input = 0;
         InputDB = 0;
+    }
 
-        if (inv_item->goal_frame > inv_item->frames_total - 6) {
-            inv_item->goal_frame = inv_item->frames_total - 6;
-        } else {
+    if (CHK_ANY(InputDB, PASSPORT_2BACK)) {
+        Input = 0;
+        InputDB = 0;
+
+        while (++page < PASSPORT_PAGE_COUNT) {
+            if (pages_available[page]) {
+                break;
+            }
+        }
+
+        if (page < PASSPORT_PAGE_COUNT) {
+            inv_item->anim_direction = 1;
+            inv_item->goal_frame = inv_item->open_frame + 5 * page;
             SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
                 T_RemovePrint(PassportText);
