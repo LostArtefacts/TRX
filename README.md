@@ -61,6 +61,10 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added automatic calculation of secret numbers
 - added compass level stats
 - added ability to keep timer on in inventory
+- added UI and bar scaling
+- added save game crystals game mode (enabled via gameflow)
+- changed internal game memory limit from 3.5 MB to 16 MB
+- changed moveable limit from 256 to 10240
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
 - fixed setting user keys being very difficult
