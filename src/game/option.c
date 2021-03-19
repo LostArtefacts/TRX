@@ -50,6 +50,11 @@ typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_NUMBER_OF = 7,
 } DETAIL_HW_TEXT;
 
+typedef struct TEXT_COLUMN_PLACEMENT {
+    int option;
+    int col_num;
+} TEXT_COLUMN_PLACEMENT;
+
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
 static TEXTSTRING *DetailText[5] = { 0 };
@@ -58,6 +63,32 @@ static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlText[2] = { 0 };
 static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
+
+static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
+    { KEY_UP, 0 },     { KEY_DOWN, 0 },   { KEY_LEFT, 0 }, { KEY_RIGHT, 0 },
+    { KEY_STEP_L, 0 }, { KEY_STEP_R, 0 }, { KEY_SLOW, 0 }, { KEY_JUMP, 1 },
+    { KEY_ACTION, 1 }, { KEY_DRAW, 1 },   { KEY_LOOK, 1 }, { KEY_ROLL, 1 },
+    { -1, 1 },         { KEY_OPTION, 1 }, { -1, -1 },
+};
+static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
+    { KEY_UP, 0 },
+    { KEY_DOWN, 0 },
+    { KEY_LEFT, 0 },
+    { KEY_RIGHT, 0 },
+    { KEY_STEP_L, 0 },
+    { KEY_STEP_R, 0 },
+    { KEY_SLOW, 0 },
+    { KEY_JUMP, 0 },
+    { KEY_ACTION, 1 },
+    { KEY_DRAW, 1 },
+    { KEY_LOOK, 1 },
+    { KEY_ROLL, 1 },
+    { KEY_OPTION, 1 },
+    { KEY_FLY_CHEAT, 1 },
+    { KEY_ITEM_CHEAT, 1 },
+    { KEY_LEVEL_SKIP_CHEAT, 1 },
+    { -1, -1 },
+};
 
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
@@ -939,7 +970,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     if (!CtrlText[0]) {
         CtrlText[0] = T_Print(
-            0, -75, 0,
+            0, -55, 0,
             GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
@@ -948,6 +979,22 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         KeyChange = -1;
         T_AddBackground(CtrlText[0], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+    }
+
+    const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
+        ? CtrlTextPlacementCheats
+        : CtrlTextPlacementNormal;
+
+    const TEXT_COLUMN_PLACEMENT *first_col = NULL;
+    const TEXT_COLUMN_PLACEMENT *last_col = NULL;
+    for (const TEXT_COLUMN_PLACEMENT *col = cols;
+         col->col_num >= 0 && col->col_num <= 1; col++) {
+        if (col->option != -1) {
+            if (first_col == NULL) {
+                first_col = col;
+            }
+            last_col = col;
+        }
     }
 
     switch (SelectKey) {
@@ -960,16 +1007,34 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 S_WriteUserSettings();
             } else {
                 T_RemoveBackground(CtrlTextA[KeyChange]);
-                if (KeyChange <= 6) {
-                    KeyChange += 7;
-                    if (KeyChange == KEY_NUMBER_OF) {
-                        KeyChange = KEY_NUMBER_OF - 1;
+
+                int col_idx[2] = { 0, 0 };
+                const TEXT_COLUMN_PLACEMENT *sel_col;
+
+                for (sel_col = cols;
+                     sel_col->col_num >= 0 && sel_col->col_num <= 1;
+                     sel_col++) {
+                    col_idx[sel_col->col_num]++;
+                    if (sel_col->option == KeyChange) {
+                        break;
                     }
-                } else if (KeyChange == KEY_NUMBER_OF - 1) {
-                    KeyChange = 6;
-                } else {
-                    KeyChange -= 7;
                 }
+
+                col_idx[!sel_col->col_num] = 0;
+                for (const TEXT_COLUMN_PLACEMENT *dst_col = cols;
+                     dst_col->col_num >= 0 && dst_col->col_num <= 1;
+                     dst_col++) {
+                    if (dst_col->col_num != sel_col->col_num) {
+                        col_idx[dst_col->col_num]++;
+                        if (dst_col->option != -1
+                            && col_idx[dst_col->col_num]
+                                >= col_idx[sel_col->col_num]) {
+                            KeyChange = dst_col->option;
+                            break;
+                        }
+                    }
+                }
+
                 T_AddBackground(
                     CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
             }
@@ -993,7 +1058,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
                 KeyChange--;
                 if (KeyChange < -1) {
-                    KeyChange = KEY_NUMBER_OF - 1;
+                    KeyChange = last_col->option;
                 }
 
                 T_AddBackground(
@@ -1004,7 +1069,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 KeyChange++;
-                if (KeyChange > KEY_NUMBER_OF - 1) {
+                if (KeyChange > last_col->option) {
                     KeyChange = -1;
                 }
 
@@ -1090,104 +1155,72 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 void S_ShowControls()
 {
     const int16_t centre = GetRenderWidthDownscaled() / 2;
-    const int16_t top_y = -50;
+    const int16_t top_y = -30;
     const int16_t row_height = 15;
+    int16_t max_y = 0;
 
-    CtrlText[1] = T_Print(0, -85, 0, " ");
+    CtrlText[1] = T_Print(0, -65, 0, " ");
     T_CentreH(CtrlText[1], 1);
     T_CentreV(CtrlText[1], 1);
 
-    int16_t y;
-    int16_t x1 = 420;
-    int16_t x2 = centre + 20;
-    int16_t height = 150;
-    if (T1MConfig.enable_cheats) {
-        height += row_height * 3;
-    }
-    T_AddBackground(CtrlText[1], x1, height, 0, 0, 48, IC_BLACK, NULL, 0);
+    const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
+        ? CtrlTextPlacementCheats
+        : CtrlTextPlacementNormal;
 
     if (!CtrlTextB[KEY_UP]) {
         int16_t *layout = Layout[IConfig];
-        x1 = centre - 200;
-        y = top_y;
+        int16_t xs[2] = { centre - 200, centre + 20 };
+        int16_t ys[2] = { top_y, top_y };
+        TRACE("%d %d x", ys[0], ys[1]);
 
-        for (int i = KEY_UP; i <= KEY_SLOW; i++) {
-            CtrlTextB[i] = T_Print(x1, y, 0, ScanCodeNames[layout[i]]);
-            y += row_height;
+        int text_id = 0;
+        for (const TEXT_COLUMN_PLACEMENT *col = cols;
+             col->col_num >= 0 && col->col_num <= 1; col++) {
+            int16_t x = xs[col->col_num];
+            int16_t y = ys[col->col_num];
+            TRACE("%d %d", x, y);
+
+            if (col->option != -1) {
+                CtrlTextB[text_id] =
+                    T_Print(x, y, 0, ScanCodeNames[layout[col->option]]);
+                T_CentreV(CtrlTextB[text_id], 1);
+                text_id++;
+            }
+
+            ys[col->col_num] += row_height;
+            max_y = MAX(max_y, ys[col->col_num]);
         }
 
-        y = top_y;
-        for (int i = KEY_JUMP; i <= KEY_ROLL; i++) {
-            CtrlTextB[i] = T_Print(x2, y, 0, ScanCodeNames[layout[i]]);
-            y += row_height;
-        }
-
-        if (T1MConfig.enable_cheats) {
-            CtrlTextB[KEY_OPTION] =
-                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_OPTION]]);
-            y += row_height;
-            y += row_height;
-            CtrlTextB[KEY_FLY_CHEAT] =
-                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_FLY_CHEAT]]);
-            y += row_height;
-            CtrlTextB[KEY_ITEM_CHEAT] =
-                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_ITEM_CHEAT]]);
-            y += row_height;
-            CtrlTextB[KEY_LEVEL_SKIP_CHEAT] =
-                T_Print(x2, y, 0, ScanCodeNames[layout[KEY_LEVEL_SKIP_CHEAT]]);
-        } else {
-            y += row_height;
-            CtrlTextB[KEY_OPTION] =
-                T_Print(x2, 65, 0, ScanCodeNames[layout[KEY_OPTION]]);
-        }
-
-        for (int i = 0; i < KEY_NUMBER_OF; i++) {
-            T_CentreV(CtrlTextB[i], 1);
-        }
         KeyChange = 0;
     }
 
     if (!CtrlTextA[KEY_UP]) {
-        x1 = centre - 130;
-        x2 = centre + 90;
+        int16_t xs[2] = { centre - 130, centre + 90 };
+        int16_t ys[2] = { top_y, top_y };
+        TRACE("%d %d", ys[0], ys[1]);
 
-        y = top_y;
-        for (int i = KEY_UP; i <= KEY_SLOW; i++) {
-            CtrlTextA[i] =
-                T_Print(x1, y, 0, GF.strings[i + GS_KEYMAP_RUN - KEY_UP]);
-            y += row_height;
-        }
+        int text_id = 0;
+        for (const TEXT_COLUMN_PLACEMENT *col = cols;
+             col->col_num >= 0 && col->col_num <= 1; col++) {
+            int16_t x = xs[col->col_num];
+            int16_t y = ys[col->col_num];
+            TRACE("%d %d", x, y);
 
-        y = top_y;
-        for (int i = KEY_JUMP; i <= KEY_ROLL; i++) {
-            CtrlTextA[i] =
-                T_Print(x2, y, 0, GF.strings[i + GS_KEYMAP_RUN - KEY_UP]);
-            y += row_height;
-        }
+            if (col->option != -1) {
+                CtrlTextA[text_id] = T_Print(
+                    x, y, 0, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
+                T_CentreV(CtrlTextA[text_id], 1);
+                text_id++;
+            }
 
-        if (T1MConfig.enable_cheats) {
-            CtrlTextA[KEY_OPTION] =
-                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_INVENTORY]);
-            y += row_height;
-            y += row_height;
-            CtrlTextA[KEY_FLY_CHEAT] =
-                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_FLY_CHEAT]);
-            y += row_height;
-            CtrlTextA[KEY_ITEM_CHEAT] =
-                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_ITEM_CHEAT]);
-            y += row_height;
-            CtrlTextA[KEY_LEVEL_SKIP_CHEAT] =
-                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT]);
-        } else {
-            y += row_height;
-            CtrlTextA[KEY_OPTION] =
-                T_Print(x2, y, 0, GF.strings[GS_KEYMAP_INVENTORY]);
-        }
-
-        for (int i = 0; i < KEY_NUMBER_OF; i++) {
-            T_CentreV(CtrlTextA[i], 1);
+            ys[col->col_num] += row_height;
+            max_y = MAX(max_y, ys[col->col_num]);
         }
     }
+
+    int16_t width = 420;
+    int16_t height = 3 * row_height + max_y - top_y;
+    T_AddBackground(CtrlText[1], width, height, 0, 0, 48, IC_BLACK, NULL, 0);
 }
 
 void S_ChangeCtrlText()
