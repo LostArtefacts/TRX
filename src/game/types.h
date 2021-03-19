@@ -1933,6 +1933,7 @@ typedef struct GAMEFLOW {
     int32_t level_count;
     const char *save_game_fmt;
     int8_t has_demo;
+    int32_t demo_delay;
     int8_t enable_game_modes;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];

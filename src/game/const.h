@@ -197,7 +197,6 @@
 #define CAMERA_STARTHEIGHT (-0x600) // = -1536
 #define CAMERA_YOFFSET (-96)
 #define CAMERA_HEIGHT (-0x100) // = -256
-#define NOINPUT_TIME 480
 #define CAMERA_2_RING 598
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096

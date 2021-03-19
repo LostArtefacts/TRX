@@ -154,7 +154,8 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
 static int8_t S_LoadScriptMeta(struct json_object_s *obj)
 {
     const char *tmp_s;
-    int tmp_b;
+    int tmp_i;
+    double tmp_d;
 
     tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
@@ -163,12 +164,19 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
     }
     GF.save_game_fmt = strdup(tmp_s);
 
-    tmp_b = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
-    if (tmp_b == JSON_INVALID_BOOL) {
+    tmp_d = json_object_get_number_double(obj, "demo_delay", -1.0);
+    if (tmp_d < 0.0) {
+        TRACE("'demo_delay' must be a positive number");
+        return 0;
+    }
+    GF.demo_delay = tmp_d * 30;
+
+    tmp_i = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
+    if (tmp_i == JSON_INVALID_BOOL) {
         TRACE("'enable_game_modes' must be a boolean");
         return 0;
     }
-    GF.enable_game_modes = tmp_b;
+    GF.enable_game_modes = tmp_i;
 
     return 1;
 }

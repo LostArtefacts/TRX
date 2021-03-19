@@ -3,6 +3,7 @@
 
     "savegame_fmt": "saveuba.%d",
     "enable_game_modes": true,
+    "demo_delay": 16,
 
     "levels": [
         // level 0

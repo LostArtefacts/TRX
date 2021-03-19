@@ -7,6 +7,9 @@
     // whether to allow user to select NG/NG+/etc. modes in the new game dialog
     "enable_game_modes": true,
 
+    // seconds to pass in the main menu before playing the demo
+    "demo_delay": 16,
+
     // list of levels
     "levels": [
         // level 0
