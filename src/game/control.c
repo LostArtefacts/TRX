@@ -231,18 +231,22 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         int16_t item_num = NextItemActive;
         while (item_num != NO_ITEM) {
-            int16_t nex = Items[item_num].next_active;
-            if (Objects[Items[item_num].object_number].control)
-                (*Objects[Items[item_num].object_number].control)(item_num);
-            item_num = nex;
+            ITEM_INFO *item = &Items[item_num];
+            OBJECT_INFO *obj = &Objects[item->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = item->next_active;
         }
 
         item_num = NextFxActive;
         while (item_num != NO_ITEM) {
-            int16_t nex = Effects[item_num].next_active;
-            if (Objects[Effects[item_num].object_number].control)
-                (*Objects[Effects[item_num].object_number].control)(item_num);
-            item_num = nex;
+            FX_INFO *fx = &Effects[item_num];
+            OBJECT_INFO *obj = &Objects[fx->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = fx->next_active;
         }
 
         LaraControl(0);

@@ -369,14 +369,14 @@ static int32_t LoadItems(MYFILE *fp)
     TRACE("%d items", item_count);
 
     if (item_count) {
-        if (item_count > O_NUMBER_OF) {
+        if (item_count > MAX_ITEMS) {
             strcpy(StringToShow, "LoadItems(): Too Many Items being Loaded!!");
             return 0;
         }
 
-        Items = game_malloc(sizeof(ITEM_INFO) * O_NUMBER_OF, GBUF_ITEMS);
+        Items = game_malloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
         LevelItemCount = item_count;
-        InitialiseItemArray(O_NUMBER_OF);
+        InitialiseItemArray(MAX_ITEMS);
 
         for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &Items[i];
