@@ -26,11 +26,16 @@ typedef struct {
     const int32_t val;
 } EnumToString;
 
-typedef struct {
+typedef struct GAME_FLOW_DISPLAY_PICTURE_DATA {
+    char *path;
+    int32_t display_time;
+} GAME_FLOW_DISPLAY_PICTURE_DATA;
+
+typedef struct GAME_FLOW_MESH_SWAP_DATA {
     int32_t object1_num;
     int32_t object2_num;
     int32_t mesh_num;
-} GameFlowMeshSwapData;
+} GAME_FLOW_MESH_SWAP_DATA;
 
 static void SetRequesterHeading(REQUEST_INFO *req, char *text)
 {
@@ -256,19 +261,43 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
-            const char *tmp = json_object_get_string(
+
+            GAME_FLOW_DISPLAY_PICTURE_DATA *data =
+                malloc(sizeof(GAME_FLOW_DISPLAY_PICTURE_DATA));
+            if (!data) {
+                TRACE("failed to allocate memory");
+                return 0;
+            }
+
+            const char *tmp_s = json_object_get_string(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
-            if (tmp == JSON_INVALID_STRING) {
+            if (tmp_s == JSON_INVALID_STRING) {
                 TRACE(
                     "level %d, sequence %s: 'picture_path' must be a string",
                     level_num, type_str);
                 return 0;
             }
-            seq->data = strdup(tmp);
-            if (!seq->data) {
+            data->path = strdup(tmp_s);
+            if (!data->path) {
                 TRACE("failed to allocate memory");
                 return 0;
             }
+
+            double tmp_d =
+                json_object_get_number_double(jseq_obj, "display_time", -1.0);
+            if (tmp_d < 0.0) {
+                TRACE(
+                    "level %d, sequence %s: 'display_time' must be a positive "
+                    "number",
+                    level_num, type_str);
+                return 0;
+            }
+            data->display_time = tmp_d * 2 * 30;
+            if (!data->display_time) {
+                data->display_time = INT_MAX;
+            }
+
+            seq->data = data;
 
         } else if (!strcmp(type_str, "level_stats")) {
             seq->type = GFS_LEVEL_STATS;
@@ -380,8 +409,9 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         } else if (!strcmp(type_str, "mesh_swap")) {
             seq->type = GFS_MESH_SWAP;
-            GameFlowMeshSwapData *swap_data =
-                malloc(sizeof(GameFlowMeshSwapData));
+
+            GAME_FLOW_MESH_SWAP_DATA *swap_data =
+                malloc(sizeof(GAME_FLOW_MESH_SWAP_DATA));
             if (!swap_data) {
                 TRACE("failed to allocate memory");
                 return 0;
@@ -928,10 +958,11 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
+                GAME_FLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 TempVideoAdjust(2, 1.0);
-                S_DisplayPicture((const char *)seq->data);
+                S_DisplayPicture(data->path);
                 sub_408E41();
-                S_Wait(450);
+                S_Wait(data->display_time);
                 S_FadeToBlack();
                 S_NoFade();
             }
@@ -986,7 +1017,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_MESH_SWAP: {
-            GameFlowMeshSwapData *swap_data = seq->data;
+            GAME_FLOW_MESH_SWAP_DATA *swap_data = seq->data;
             int16_t *temp;
 
             temp = Meshes
