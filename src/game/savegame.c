@@ -84,7 +84,6 @@ void ModifyStartInfo(int32_t level_num)
         start->uzi_ammo = 1234;
         start->gun_type = LGT_UZIS;
     }
-    TRACE("%d costume = %d", level_num, start->costume);
 }
 
 void CreateStartInfo(int level_num)

@@ -38,20 +38,6 @@ static int32_t S_ReadUserSettingsATI()
     UITextScale = DEFAULT_UI_SCALE;
     UIBarScale = DEFAULT_UI_SCALE;
 
-    DefaultConflict();
-
-    if (OptionMusicVolume) {
-        S_CDVolume(25 * OptionMusicVolume + 5);
-    } else {
-        S_CDVolume(0);
-    }
-
-    if (OptionSoundFXVolume) {
-        adjust_master_volume(6 * OptionSoundFXVolume + 3);
-    } else {
-        adjust_master_volume(0);
-    }
-
     FileClose(fp);
     return 1;
 }
@@ -203,6 +189,20 @@ void S_ReadUserSettings()
         FileDelete(ATIUserSettingsPath);
     }
     S_ReadUserSettingsT1M();
+
+    DefaultConflict();
+
+    if (OptionMusicVolume) {
+        S_CDVolume(25 * OptionMusicVolume + 5);
+    } else {
+        S_CDVolume(0);
+    }
+
+    if (OptionSoundFXVolume) {
+        adjust_master_volume(6 * OptionSoundFXVolume + 3);
+    } else {
+        adjust_master_volume(0);
+    }
 }
 
 void S_WriteUserSettings()
