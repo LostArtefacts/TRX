@@ -1079,9 +1079,27 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
-                KeyChange--;
-                if (KeyChange < -1) {
+                if (KeyChange == -1) {
                     KeyChange = last_col->option;
+                } else if (KeyChange == first_col->option) {
+                    KeyChange = -1;
+                } else {
+                    const TEXT_COLUMN_PLACEMENT *sel_col;
+                    for (sel_col = cols;
+                         sel_col->col_num >= 0 && sel_col->col_num <= 1;
+                         sel_col++) {
+                        if (sel_col->option == KeyChange) {
+                            break;
+                        }
+                    }
+                    sel_col--;
+                    while (sel_col >= cols) {
+                        if (sel_col->option != -1) {
+                            KeyChange = sel_col->option;
+                            break;
+                        }
+                        sel_col--;
+                    }
                 }
 
                 T_AddBackground(
@@ -1091,9 +1109,27 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
-                KeyChange++;
-                if (KeyChange > last_col->option) {
+                if (KeyChange == -1) {
+                    KeyChange = first_col->option;
+                } else if (KeyChange == last_col->option) {
                     KeyChange = -1;
+                } else {
+                    const TEXT_COLUMN_PLACEMENT *sel_col;
+                    for (sel_col = cols;
+                         sel_col->col_num >= 0 && sel_col->col_num <= 1;
+                         sel_col++) {
+                        if (sel_col->option == KeyChange) {
+                            break;
+                        }
+                    }
+                    sel_col++;
+                    while (sel_col >= cols) {
+                        if (sel_col->option != -1) {
+                            KeyChange = sel_col->option;
+                            break;
+                        }
+                        sel_col++;
+                    }
                 }
 
                 T_AddBackground(
@@ -1194,17 +1230,15 @@ void S_ShowControls()
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
 
-        int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
              col->col_num >= 0 && col->col_num <= 1; col++) {
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                CtrlTextB[text_id] =
+                CtrlTextB[col->option] =
                     T_Print(x, y, 0, ScanCodeNames[layout[col->option]]);
-                T_CentreV(CtrlTextB[text_id], 1);
-                text_id++;
+                T_CentreV(CtrlTextB[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
@@ -1219,17 +1253,15 @@ void S_ShowControls()
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
 
-        int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
              col->col_num >= 0 && col->col_num <= 1; col++) {
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                CtrlTextA[text_id] = T_Print(
+                CtrlTextA[col->option] = T_Print(
                     x, y, 0, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
-                T_CentreV(CtrlTextA[text_id], 1);
-                text_id++;
+                T_CentreV(CtrlTextA[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
@@ -1249,8 +1281,18 @@ void S_ChangeCtrlText()
     T_ChangeText(
         CtrlText[0],
         GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
-        T_ChangeText(CtrlTextB[i], ScanCodeNames[Layout[IConfig][i]]);
+
+    const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
+        ? CtrlTextPlacementCheats
+        : CtrlTextPlacementNormal;
+
+    int16_t *layout = Layout[IConfig];
+    for (const TEXT_COLUMN_PLACEMENT *col = cols;
+         col->col_num >= 0 && col->col_num <= 1; col++) {
+        if (col->option != -1) {
+            T_ChangeText(
+                CtrlTextB[col->option], ScanCodeNames[layout[col->option]]);
+        }
     }
 }
 
