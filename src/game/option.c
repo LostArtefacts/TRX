@@ -26,9 +26,20 @@
 #define MAX_GAMMA_LEVEL 127
 #define PASSPORT_2FRONT IN_LEFT
 #define PASSPORT_2BACK IN_RIGHT
-#define MAX_MODES 4
-#define MAX_MODE_NAME_LENGTH 20
 #define PASSPORT_PAGE_COUNT 3
+#define MAX_GAME_MODES 4
+#define MAX_GAME_MODE_LENGTH 20
+
+#define COMPASS_TOP_Y -100
+#define COMPASS_ROW_HEIGHT 25
+#define COMPASS_ROW_WIDTH 225
+#define DETAIL_HW_TOP_Y -55
+#define DETAIL_HW_ROW_HEIGHT 25
+#define DETAIL_HW_ROW_WIDHT 280
+#define CONTROLS_TOP_Y -60
+#define CONTROLS_BORDER 4
+#define CONTROLS_HEADER_HEIGHT 25
+#define CONTROLS_ROW_HEIGHT 15
 
 typedef enum COMPASS_TEXT {
     COMPASS_TITLE = 0,
@@ -94,11 +105,11 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 static int32_t PassportMode = 0;
 static int32_t SelectKey = 0;
 
-static char NewGameStrings[MAX_MODES][MAX_MODE_NAME_LENGTH];
+static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH];
 REQUEST_INFO NewGameRequester = {
-    MAX_MODES, // items
+    MAX_GAME_MODES, // items
     0, // requested
-    MAX_MODES, // vis_lines
+    MAX_GAME_MODES, // vis_lines
     0, // line_offset
     0, // line_old_offset
     162, // pix_width
@@ -109,7 +120,7 @@ REQUEST_INFO NewGameRequester = {
     RIF_FIXED_HEIGHT,
     NULL, // heading_text
     &NewGameStrings[0][0], // item_texts
-    MAX_MODE_NAME_LENGTH, // item_text_len
+    MAX_GAME_MODE_LENGTH, // item_text_len
 };
 
 static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
@@ -487,38 +498,35 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
     static int32_t current_row = DETAIL_HW_PERSPECTIVE;
     const int32_t min_row = DETAIL_HW_PERSPECTIVE;
     static int32_t max_row = DETAIL_HW_RESOLUTION;
-    const int16_t top_y = -55;
-    const int16_t row_height = 25;
-    const int16_t row_width = 280;
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
-        int32_t y = top_y;
+        int32_t y = DETAIL_HW_TOP_Y;
         DetailTextHW[DETAIL_HW_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
 
         DetailTextHW[DETAIL_HW_TITLE] =
             T_Print(0, y, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
                 [AppSettings & ASF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, 0, buf);
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings[AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, 0, buf);
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT], UITextScale);
         DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, 0, buf);
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT], UIBarScale);
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, 0, buf);
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         if (dword_45B940) {
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, " ");
@@ -543,7 +551,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, buf);
             max_row = DETAIL_HW_RESOLUTION;
         }
-        y += row_height;
+        y += DETAIL_HW_ROW_HEIGHT;
 
         if (current_row < min_row) {
             current_row = min_row;
@@ -553,18 +561,18 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         }
 
         T_AddBackground(
-            DetailTextHW[DETAIL_HW_TITLE_BORDER], row_width, y - top_y, 0, 0,
-            16, IC_BLACK, NULL, 0);
+            DetailTextHW[DETAIL_HW_TITLE_BORDER], DETAIL_HW_ROW_WIDHT,
+            y - DETAIL_HW_TOP_Y, 0, 0, 16, IC_BLACK, NULL, 0);
         T_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1, IC_BLUE, NULL, 0);
 
         T_AddBackground(
-            DetailTextHW[DETAIL_HW_TITLE], row_width - 4, 0, 0, 0, 8, IC_BLACK,
-            NULL, 0);
+            DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0, 8,
+            IC_BLACK, NULL, 0);
         T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1, IC_ORANGE, NULL, 0);
 
         T_AddBackground(
-            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
-            NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
+            IC_BLACK, NULL, 0);
         T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
@@ -579,8 +587,8 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         current_row--;
         T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
-            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
-            NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
+            IC_BLACK, NULL, 0);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
@@ -589,8 +597,8 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         current_row++;
         T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
         T_AddBackground(
-            DetailTextHW[current_row], row_width - 12, 0, 0, 0, 8, IC_BLACK,
-            NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
+            IC_BLACK, NULL, 0);
     }
 
     int8_t reset = 0;
@@ -865,22 +873,19 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[100];
     static char time_buf[100];
-    const int16_t top_y = -100;
-    const int16_t row_height = 25;
-    const int16_t row_width = 225;
 
     if (T1MConfig.enable_compass_stats) {
         if (!CompassText[COMPASS_TITLE_BORDER]) {
-            int32_t y = top_y;
+            int32_t y = COMPASS_TOP_Y;
 
             CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
 
             sprintf(buf, "%s", GF.levels[CurrentLevel].level_title);
             CompassText[COMPASS_TITLE] = T_Print(0, y, 0, buf);
-            y += row_height;
+            y += COMPASS_ROW_HEIGHT;
 
             CompassText[COMPASS_TIME] = T_Print(0, y, 0, " ");
-            y += row_height;
+            y += COMPASS_ROW_HEIGHT;
 
             int32_t secrets_taken = 0;
             int32_t secrets_total = MAX_SECRETS;
@@ -896,24 +901,24 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
                 buf, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
                 GF.levels[CurrentLevel].secrets);
             CompassText[COMPASS_SECRETS] = T_Print(0, y, 0, buf);
-            y += row_height;
+            y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
             CompassText[COMPASS_PICKUPS] = T_Print(0, y, 0, buf);
-            y += row_height;
+            y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
             CompassText[COMPASS_KILLS] = T_Print(0, y, 0, buf);
-            y += row_height;
+            y += COMPASS_ROW_HEIGHT;
 
             T_AddBackground(
-                CompassText[COMPASS_TITLE_BORDER], row_width, y - top_y, 0, 0,
-                8, IC_BLACK, NULL, 0);
+                CompassText[COMPASS_TITLE_BORDER], COMPASS_ROW_WIDTH,
+                y - COMPASS_TOP_Y, 0, 0, 8, IC_BLACK, NULL, 0);
             T_AddOutline(
                 CompassText[COMPASS_TITLE_BORDER], 1, IC_BLUE, NULL, 0);
             T_AddBackground(
-                CompassText[COMPASS_TITLE], row_width - 4, 0, 0, 0, 8, IC_BLACK,
-                NULL, 0);
+                CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0, 8,
+                IC_BLACK, NULL, 0);
             T_AddOutline(CompassText[COMPASS_TITLE], 1, IC_BLUE, NULL, 0);
 
             for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
@@ -982,7 +987,12 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     if (!CtrlText[0]) {
         CtrlText[0] = T_Print(
-            0, -55, 0,
+            0,
+            CONTROLS_TOP_Y - CONTROLS_BORDER
+                + (CONTROLS_HEADER_HEIGHT + CONTROLS_BORDER
+                   - CONTROLS_ROW_HEIGHT)
+                    / 2,
+            0,
             GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
@@ -1167,11 +1177,9 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 void S_ShowControls()
 {
     const int16_t centre = GetRenderWidthDownscaled() / 2;
-    const int16_t top_y = -30;
-    const int16_t row_height = 15;
     int16_t max_y = 0;
 
-    CtrlText[1] = T_Print(0, -65, 0, " ");
+    CtrlText[1] = T_Print(0, CONTROLS_TOP_Y - CONTROLS_BORDER, 0, " ");
     T_CentreH(CtrlText[1], 1);
     T_CentreV(CtrlText[1], 1);
 
@@ -1182,7 +1190,8 @@ void S_ShowControls()
     if (!CtrlTextB[KEY_UP]) {
         int16_t *layout = Layout[IConfig];
         int16_t xs[2] = { centre - 200, centre + 20 };
-        int16_t ys[2] = { top_y, top_y };
+        int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
+                          CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
 
         int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
@@ -1197,7 +1206,7 @@ void S_ShowControls()
                 text_id++;
             }
 
-            ys[col->col_num] += row_height;
+            ys[col->col_num] += CONTROLS_ROW_HEIGHT;
             max_y = MAX(max_y, ys[col->col_num]);
         }
 
@@ -1206,7 +1215,8 @@ void S_ShowControls()
 
     if (!CtrlTextA[KEY_UP]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
-        int16_t ys[2] = { top_y, top_y };
+        int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
+                          CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
 
         int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
@@ -1221,13 +1231,13 @@ void S_ShowControls()
                 text_id++;
             }
 
-            ys[col->col_num] += row_height;
+            ys[col->col_num] += CONTROLS_ROW_HEIGHT;
             max_y = MAX(max_y, ys[col->col_num]);
         }
     }
 
     int16_t width = 420;
-    int16_t height = 3 * row_height + max_y - top_y;
+    int16_t height = max_y + CONTROLS_BORDER * 2 - CONTROLS_TOP_Y;
     T_AddBackground(CtrlText[1], width, height, 0, 0, 48, IC_BLACK, NULL, 0);
 
     FlashConflicts();
