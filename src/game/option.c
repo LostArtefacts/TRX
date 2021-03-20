@@ -18,6 +18,7 @@
 
 #include <dinput.h>
 #include <stdio.h>
+#include <string.h>
 
 #define BOX_PADDING 10
 #define BOX_BORDER 1
@@ -1458,6 +1459,41 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     return 0;
+}
+
+void SetRequesterHeading(REQUEST_INFO *req, const char *string)
+{
+    T_RemovePrint(req->heading);
+    req->heading = NULL;
+
+    if (string) {
+        req->heading_text = string; // unsafe
+    } else {
+        req->heading_text = NULL;
+    }
+}
+
+void ChangeRequesterItem(
+    REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag)
+{
+    if (string) {
+        strcpy(&req->item_texts[idx * req->item_text_len], string);
+        req->item_flags[idx] = flag;
+    } else {
+        req->item_flags[idx] = 0;
+    }
+}
+
+void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
+{
+    if (string) {
+        strcpy(&req->item_texts[req->items * req->item_text_len], string);
+        req->item_flags[req->items] = flag;
+    } else {
+        req->item_flags[req->items] = 0;
+    }
+
+    req->items++;
 }
 
 void T1MInjectGameOption()

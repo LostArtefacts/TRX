@@ -6,6 +6,7 @@
 #include "game/game.h"
 #include "game/inv.h"
 #include "game/lara.h"
+#include "game/option.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/vars.h"
@@ -39,21 +40,6 @@ typedef struct GAME_FLOW_MESH_SWAP_DATA {
     int32_t object2_num;
     int32_t mesh_num;
 } GAME_FLOW_MESH_SWAP_DATA;
-
-static void SetRequesterHeading(REQUEST_INFO *req, char *text)
-{
-    req->heading_text = text;
-}
-
-static void
-SetRequesterItemText(REQUEST_INFO *req, int8_t index, const char *text)
-{
-    if (!text) {
-        return;
-    }
-    strncpy(
-        &req->item_texts[index * req->item_text_len], text, req->item_text_len);
-}
 
 static GAME_STRING_ID StringToGameStringID(const char *str)
 {
@@ -814,15 +800,16 @@ int8_t GF_LoadScriptFile(const char *file_name)
         &LoadSaveGameRequester, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
 
     SetRequesterHeading(&NewGameRequester, GF.strings[GS_PASSPORT_SELECT_MODE]);
-    SetRequesterItemText(
-        &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME]);
-    SetRequesterItemText(
-        &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS]);
-    SetRequesterItemText(
-        &NewGameRequester, 2, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME]);
-    SetRequesterItemText(
+    ChangeRequesterItem(
+        &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
+    ChangeRequesterItem(
+        &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
+    ChangeRequesterItem(
+        &NewGameRequester, 2, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME],
+        0);
+    ChangeRequesterItem(
         &NewGameRequester, 3,
-        GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS]);
+        GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS], 0);
 
     return result;
 }

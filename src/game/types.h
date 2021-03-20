@@ -1805,7 +1805,7 @@ typedef struct REQUEST_INFO {
     /* 0010 */ int16_t y;
     /* 0012 */ int16_t z;
     /* 0014 */ uint16_t flags;
-    /* 0016 */ char *heading_text;
+    /* 0016 */ const char *heading_text;
     /* 0020 */ char *item_texts;
     /* 001E */ int16_t item_text_len;
     /* 0020 */ TEXTSTRING *heading;
