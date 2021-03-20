@@ -218,12 +218,6 @@ void OpenNearestDoors(ITEM_INFO *lara_item)
             continue;
         }
 
-        TRACE(
-            "found nearby item %d: obj_num=%d, dist=%d, timer=%d, "
-            "touch_bits=%d, flags=%x",
-            item_num, item->object_number, dist, item->timer, item->touch_bits,
-            item->flags);
-
         if ((item->object_number < O_DOOR_TYPE1
              || item->object_number > O_DOOR_TYPE8)
             && item->object_number != O_TRAPDOOR
@@ -232,7 +226,6 @@ void OpenNearestDoors(ITEM_INFO *lara_item)
             continue;
         }
 
-        TRACE("opening");
         if (!item->active) {
             AddActiveItem(item_num);
             item->flags |= IF_CODE_BITS;

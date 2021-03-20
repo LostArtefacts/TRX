@@ -38,7 +38,6 @@ int32_t StartDemo()
     SeedRandomDraw(0xD371F947);
     SeedRandomControl(0xD371F947);
 
-    TRACE("%d", DemoLevel);
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         TitleLoaded = 0;
 

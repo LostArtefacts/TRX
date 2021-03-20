@@ -1183,14 +1183,12 @@ void S_ShowControls()
         int16_t *layout = Layout[IConfig];
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { top_y, top_y };
-        TRACE("%d %d x", ys[0], ys[1]);
 
         int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
              col->col_num >= 0 && col->col_num <= 1; col++) {
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
-            TRACE("%d %d", x, y);
 
             if (col->option != -1) {
                 CtrlTextB[text_id] =
@@ -1209,14 +1207,12 @@ void S_ShowControls()
     if (!CtrlTextA[KEY_UP]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
         int16_t ys[2] = { top_y, top_y };
-        TRACE("%d %d", ys[0], ys[1]);
 
         int text_id = 0;
         for (const TEXT_COLUMN_PLACEMENT *col = cols;
              col->col_num >= 0 && col->col_num <= 1; col++) {
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
-            TRACE("%d %d", x, y);
 
             if (col->option != -1) {
                 CtrlTextA[text_id] = T_Print(
@@ -1303,7 +1299,6 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     if (req->flags & RIF_FIXED_HEIGHT) {
         edge_y = req->y * GetRenderHeightDownscaled() / 100;
     } else {
-        TRACE("%d", GetRenderHeightDownscaled());
         if (GetRenderHeightDownscaled() <= 240) {
             req->y = -30;
             req->vis_lines = 5;
