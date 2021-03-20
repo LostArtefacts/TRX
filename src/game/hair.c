@@ -114,7 +114,7 @@ void HairControl(int in_cutscene)
     phd_RotYXZpack(packed_rotation[LM_TORSO]);
     phd_RotYXZ(Lara.torso_y_rot, Lara.torso_x_rot, Lara.torso_z_rot);
     phd_PushMatrix();
-    objptr = Lara.mesh_ptrs[LM_TORSO];
+    objptr = Meshes[Objects[O_LARA].mesh_index + LM_TORSO]; // ignore shotgun
     phd_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[1].x = PhdMatrixPtr->_03 >> W2V_SHIFT;
     sphere[1].y = PhdMatrixPtr->_13 >> W2V_SHIFT;
