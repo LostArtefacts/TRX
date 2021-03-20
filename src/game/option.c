@@ -1233,6 +1233,8 @@ void S_ShowControls()
     int16_t width = 420;
     int16_t height = 3 * row_height + max_y - top_y;
     T_AddBackground(CtrlText[1], width, height, 0, 0, 48, IC_BLACK, NULL, 0);
+
+    FlashConflicts();
 }
 
 void S_ChangeCtrlText()
