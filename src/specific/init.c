@@ -41,8 +41,8 @@ void S_InitialiseSystem()
 
     sub_4380E0(&GameVidWidth);
 
-    SoundStart();
-    if (SoundInit() == -1) {
+    FMVInit();
+    if (!SoundInit1) {
         SoundIsActive = 0;
     }
 

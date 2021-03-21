@@ -348,7 +348,7 @@ S_DrawScreenFBox                0x0041CBB0  0x00000101  *
 S_FinishInventory               0x0041CCC0  0x00000047  *
 S_FadeToBlack                   0x0041CD10  0x0000003F  *
 S_Wait                          0x0041CD50  0x0000004D  +
-SoundStart                      0x0041CDA0  0x00000045  *
+FMVInit                         0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x00000250  +
 S_PlayFMV                       0x0041D040  0x0000007C  +
 
@@ -846,7 +846,7 @@ KeyGet                          0x00437BC0  0x00000003  +
 KeyClearBuffer                  0x00437BD0  0x00000029  +
 WinSndLoadSamples               0x00437C00  0x000000A5  *
 SoundLoadSample                 0x00437CB0  0x0000014B  -
-SoundInit                       0x00437E00  0x0000000D  *
+SoundIsInitialised              0x00437E00  0x0000000D  +
 sub_437E10                      0x00437E10  0x000000C3  -
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -

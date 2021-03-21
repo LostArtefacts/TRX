@@ -12,7 +12,7 @@
 #define S_DrawScreenFBox        ((void      (*)(int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col, SG_COL* grdptr, uint16_t flags))0x0041CBB0)
 #define S_FinishInventory       ((void      (*)())0x0041CCC0)
 #define S_FadeToBlack           ((void      (*)())0x0041CD10)
-#define SoundStart              ((void      (*)())0x0041CDA0)
+#define FMVInit                 ((void      (*)())0x0041CDA0)
 // clang-format on
 
 int32_t WinPlayFMV(int32_t sequence, int32_t mode);

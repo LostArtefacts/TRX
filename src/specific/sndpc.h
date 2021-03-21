@@ -5,7 +5,6 @@
 
 // clang-format off
 #define S_SoundStopAllSamples   ((void          (*)())0x00438CC0)
-#define SoundInit               ((int32_t       (*)())0x00437E00)
 // clang-format on
 
 int32_t CDPlay(int16_t track_id);
