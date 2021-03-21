@@ -99,6 +99,11 @@ int32_t CDPlay(int16_t track)
     return 1;
 }
 
+void S_CDLoop()
+{
+    CDLoop = 1;
+}
+
 int32_t CDPlayLooped()
 {
     TRACE("");
@@ -114,6 +119,7 @@ int32_t CDPlayLooped()
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00437FB0, CDPlay);
+    INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);

@@ -854,7 +854,7 @@ S_CDVolume                      0x00437F30  0x00000001  +
 TestCdDrive                     0x00437F40  0x00000039  x
 CDStop                          0x00437F80  0x00000026  +
 CDPlay                          0x00437FB0  0x000000F5  +
-S_CDLoop                        0x004380B0  0x0000000B  *
+S_CDLoop                        0x004380B0  0x0000000B  +
 CDPlayLooped                    0x004380C0  0x00000018  +
 sub_4380E0                      0x004380E0  0x00000255  *
 TerminateGameWithMsg            0x00438340  0x0000003B  -
