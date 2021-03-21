@@ -103,6 +103,7 @@
 #define SampleLUT               ARRAY_(0x0045EB60, int16_t, [MAX_SAMPLES])
 #define SampleInfos             VAR_U_(0x0045ED60, SAMPLE_INFO*)
 #define SampleData              VAR_U_(0x0045B954, SAMPLE_DATA**)
+#define NumSampleData           VAR_U_(0x0045B96C, int32_t)
 #define NumSampleInfos          VAR_U_(0x0045A210, int32_t)
 #define NumSamples              VAR_U_(0x0045E964, int32_t)
 #define DecibelLUT              ARRAY_(0x0045F1E0, int32_t, [DECIBEL_LUT_SIZE])

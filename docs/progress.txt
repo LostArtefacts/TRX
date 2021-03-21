@@ -847,7 +847,7 @@ KeyClearBuffer                  0x00437BD0  0x00000029  +
 WinSndLoadSamples               0x00437C00  0x000000A5  *
 SoundLoadSample                 0x00437CB0  0x0000014B  -
 SoundIsInitialised              0x00437E00  0x0000000D  +
-SoundPlaySample                 0x00437E10  0x000000C3  -
+SoundPlaySample                 0x00437E10  0x000000C3  +
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
 S_CDVolume                      0x00437F30  0x00000001  +
@@ -867,7 +867,7 @@ S_WriteSettings                 0x00438B60  0x00000090  +
 S_SoundPlaySample               0x00438BF0  0x0000004B  +
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
 sub_438CA0                      0x00438CA0  0x00000015  -
-S_SoundStopAllSamples           0x00438CC0  0x0000000F  *
+S_SoundStopAllSamples           0x00438CC0  0x0000000F  +
 S_SoundStopSample               0x00438CD0  0x0000001B  -
 SoundBufferSetPanVol            0x00438CF0  0x00000044  +
 S_CDPlay                        0x00438D40  0x000000FD  +

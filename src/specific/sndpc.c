@@ -267,17 +267,33 @@ int32_t S_SoundPlaySample(
         sample_id, (MasterVolume * volume) >> 6, pitch, 128 + pan / 256, 0);
 }
 
+void S_SoundStopAllSamples()
+{
+    TRACE("");
+    if (!SoundInit1 || !SoundInit2) {
+        return;
+    }
+
+    for (int i = 0; i < NumSampleData; i++) {
+        SAMPLE_DATA *sample = SampleData[i];
+        if (sample) {
+            IDirectSoundBuffer_Stop(sample->buffer);
+        }
+    }
+}
+
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
     INJECT(0x00437FB0, CDPlay);
     INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);
+    INJECT(0x00438BF0, S_SoundPlaySample);
+    INJECT(0x00438CC0, S_SoundStopAllSamples);
+    INJECT(0x00438CF0, SoundBufferSetPanVol);
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
-    INJECT(0x00438CF0, SoundBufferSetPanVol);
-    INJECT(0x00438BF0, S_SoundPlaySample);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.

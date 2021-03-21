@@ -591,7 +591,7 @@
 <rect width="12.00" height="12.00" x="532.00" y="171.00" class="named"><title>WinSndLoadSamples</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="171.00" class="named"><title>SoundLoadSample</title></rect>
 <rect width="12.00" height="12.00" x="560.00" y="171.00" class="decompiled"><title>SoundIsInitialised</title></rect>
-<rect width="12.00" height="12.00" x="574.00" y="171.00" class="named"><title>SoundPlaySample</title></rect>
+<rect width="12.00" height="12.00" x="574.00" y="171.00" class="decompiled"><title>SoundPlaySample</title></rect>
 <rect width="12.00" height="12.00" x="588.00" y="171.00" class="todo"><title>sub_437EE0</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="171.00" class="named"><title>WinSndStopSample</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="171.00" class="decompiled"><title>S_CDVolume</title></rect>
@@ -609,7 +609,7 @@
 <rect width="12.00" height="12.00" x="84.00" y="185.00" class="decompiled"><title>S_SoundPlaySample</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="185.00" class="named"><title>S_SoundPlaySampleLooped</title></rect>
 <rect width="12.00" height="12.00" x="112.00" y="185.00" class="todo"><title>sub_438CA0</title></rect>
-<rect width="12.00" height="12.00" x="126.00" y="185.00" class="named"><title>S_SoundStopAllSamples</title></rect>
+<rect width="12.00" height="12.00" x="126.00" y="185.00" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="185.00" class="named"><title>S_SoundStopSample</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="185.00" class="decompiled"><title>SoundBufferSetPanVol</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="185.00" class="decompiled"><title>S_CDPlay</title></rect>
@@ -1071,7 +1071,7 @@
 <rect width="10.24" height="10.05" x="601.39" y="379.16" class="named"><title>do_quickysorty</title></rect>
 <rect width="10.18" height="10.05" x="613.63" y="379.16" class="decompiled"><title>CreateZone</title></rect>
 <rect width="10.11" height="10.05" x="625.81" y="379.16" class="decompiled"><title>LaraColForwardJump</title></rect>
-<rect width="10.11" height="10.05" x="637.92" y="379.16" class="named"><title>SoundPlaySample</title></rect>
+<rect width="10.11" height="10.05" x="637.92" y="379.16" class="decompiled"><title>SoundPlaySample</title></rect>
 <rect width="9.99" height="10.05" x="650.04" y="379.16" class="decompiled"><title>AlignLaraPosition</title></rect>
 <rect width="9.99" height="10.05" x="662.03" y="379.16" class="decompiled"><title>LaraDinoDeath</title></rect>
 <rect width="9.99" height="10.05" x="674.02" y="379.16" class="decompiled"><title>AimWeapon</title></rect>
@@ -1425,7 +1425,7 @@
 <rect width="1.38" height="1.55" x="678.91" y="534.45" class="decompiled"><title>S_NoFade</title></rect>
 <rect width="1.52" height="1.19" x="682.28" y="522.47" class="todo"><title>sub_408E32</title></rect>
 <rect width="1.52" height="1.19" x="682.28" y="525.66" class="todo"><title>sub_41A200</title></rect>
-<rect width="1.52" height="1.19" x="682.28" y="528.86" class="named"><title>S_SoundStopAllSamples</title></rect>
+<rect width="1.52" height="1.19" x="682.28" y="528.86" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
 <rect width="1.52" height="0.98" x="682.28" y="532.05" class="todo"><title>sub_4507B0</title></rect>
 <rect width="1.52" height="0.98" x="682.28" y="535.02" class="todo"><title>sub_4507E0</title></rect>
 <rect width="1.11" height="1.38" x="685.80" y="522.47" class="todo"><title>sub_450810</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 73.49%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.15%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 13.87%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.47%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 73.76%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.24%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 13.60%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.38%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 12.64%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.38%</text>
 </svg>
