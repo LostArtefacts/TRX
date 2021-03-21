@@ -10,6 +10,19 @@
 
 #define DECIBEL_LUT_SIZE 512
 
+int32_t ConvertVolumeToDecibel(int32_t volume)
+{
+    return DecibelLUT[(volume & 0x7FFF) >> 6];
+}
+
+void SoundBufferSetVolume(LPDIRECTSOUNDBUFFER buffer, int32_t volume)
+{
+    TRACE("%d", volume);
+    if (buffer) {
+        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    }
+}
+
 int32_t SoundInit()
 {
     TRACE("");
@@ -143,6 +156,7 @@ void T1MInjectSpecificSndPC()
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
+    INJECT(0x00438CF0, SoundBufferSetVolume);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.
