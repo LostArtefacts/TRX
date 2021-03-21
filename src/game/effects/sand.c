@@ -1,7 +1,7 @@
 #include "game/effects/sand.h"
 
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 // original name: SandFX
 void DropSand(ITEM_INFO *item)

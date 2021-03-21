@@ -5,7 +5,7 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100

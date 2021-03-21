@@ -3,7 +3,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupDartEmitter(OBJECT_INFO *obj)
 {

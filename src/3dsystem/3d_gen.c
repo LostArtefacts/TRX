@@ -1,11 +1,10 @@
 #include "3dsystem/3d_gen.h"
 
 #include "3dsystem/phd_math.h"
-#include "specific/output.h"
-#include "game/const.h"
-#include "game/vars.h"
-
 #include "config.h"
+#include "global/const.h"
+#include "global/vars.h"
+#include "specific/output.h"
 #include "util.h"
 
 #include <math.h>

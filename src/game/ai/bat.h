@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_AI_BAT_H
 #define T1M_GAME_AI_BAT_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

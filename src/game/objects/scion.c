@@ -9,7 +9,7 @@
 #include "game/items.h"
 #include "game/objects/pickup.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 PHD_VECTOR PickUpScionPosition = { 0, 640, -310 };
 PHD_VECTOR PickUpScion4Position = { 0, 280, -512 + 105 };

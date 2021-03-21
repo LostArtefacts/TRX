@@ -1,7 +1,7 @@
-#ifndef T1M_GAME_TYPES_H
-#define T1M_GAME_TYPES_H
+#ifndef T1M_GLOBAL_TYPES_H
+#define T1M_GLOBAL_TYPES_H
 
-#include "const.h"
+#include "global/const.h"
 
 #include <stdint.h>
 

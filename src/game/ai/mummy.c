@@ -5,7 +5,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/init.h"
 
 void SetupMummy(OBJECT_INFO *obj)

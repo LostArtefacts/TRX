@@ -5,7 +5,7 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO CrocodileBite = { 5, -21, 467, 9 };
 

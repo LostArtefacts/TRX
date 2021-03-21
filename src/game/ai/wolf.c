@@ -5,7 +5,7 @@
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO WolfJawBite = { 0, -14, 174, 6 };
 

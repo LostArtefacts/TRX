@@ -1,14 +1,13 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/const.h"
 #include "game/health.h"
 #include "game/items.h"
 #include "game/text.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/frontend.h"
-
 #include "util.h"
 
 #include <stdint.h>

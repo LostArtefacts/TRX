@@ -3,13 +3,12 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/3d_insert.h"
 #include "3dsystem/scalespr.h"
-#include "game/const.h"
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/output.h"
-
 #include "util.h"
 
 static int16_t InterpolatedBounds[6];

@@ -3,12 +3,11 @@
 #ifdef DEBUG_TEXT_SPRITES
     #include "3dsystem/3d_insert.h"
 #endif
-#include "game/const.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-
 #include "util.h"
 
 #include <stdio.h>

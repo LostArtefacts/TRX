@@ -1,8 +1,8 @@
 #include "game/control.h"
 
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/camera.h"
-#include "game/const.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/hair.h"
@@ -19,12 +19,11 @@
 #include "game/sound.h"
 #include "game/traps/lava.h"
 #include "game/traps/movable_block.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-
-#include "config.h"
 #include "util.h"
 
 #include <stddef.h>

@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_THORS_HAMMER_H
 #define T1M_GAME_TRAPS_THORS_HAMMER_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 typedef enum {
     THS_SET = 0,

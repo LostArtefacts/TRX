@@ -1,7 +1,7 @@
 #include "game/objects/trapdoor.h"
 
 #include "game/control.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupTrapDoor(OBJECT_INFO *obj)
 {

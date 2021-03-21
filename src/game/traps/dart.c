@@ -6,7 +6,7 @@
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupDart(OBJECT_INFO *obj)
 {

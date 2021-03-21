@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_PENDULUM_H
 #define T1M_GAME_TRAPS_PENDULUM_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

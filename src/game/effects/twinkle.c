@@ -3,7 +3,7 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupTwinkle(OBJECT_INFO *obj)
 {

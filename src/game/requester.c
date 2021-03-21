@@ -1,16 +1,16 @@
 #include "game/requester.h"
 
-#include "game/const.h"
 #include "game/text.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/output.h"
 #include "util.h"
 
-#define BOX_PADDING 10
-#define BOX_BORDER 2
-
 #include <string.h>
+
+#define BOX_BORDER 2
+#define BOX_PADDING 10
 
 // original name: Init_Requester
 void InitRequester(REQUEST_INFO *req)

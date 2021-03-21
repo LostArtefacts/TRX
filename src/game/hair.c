@@ -2,13 +2,12 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
-#include "game/const.h"
+#include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/types.h"
-#include "game/vars.h"
-
-#include "config.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
 
 #define HAIR_SEGMENTS 6

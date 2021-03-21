@@ -5,14 +5,14 @@
 #include "game/option.h"
 #include "game/requester.h"
 #include "game/text.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
 
-#define PAUSE_MAX_TEXT_LENGTH 50
 #define PAUSE_MAX_ITEMS 5
+#define PAUSE_MAX_TEXT_LENGTH 50
 
 static TEXTSTRING *PausedText = NULL;
 

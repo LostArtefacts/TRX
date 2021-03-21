@@ -1,13 +1,12 @@
 #include "game/lara.h"
 
-#include "game/const.h"
+#include "config.h"
 #include "game/game.h"
 #include "game/sound.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
-
-#include "config.h"
 
 #include <stddef.h>
 #include <stdint.h>

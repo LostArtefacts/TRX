@@ -1,7 +1,8 @@
 #ifndef T1M_3DSYSTEM_3D_GEN_H
 #define T1M_3DSYSTEM_3D_GEN_H
 
-#include "game/types.h"
+#include "global/types.h"
+
 #include <stdint.h>
 
 // clang-format off

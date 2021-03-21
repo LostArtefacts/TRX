@@ -1,7 +1,6 @@
 #include "game/savegame.h"
 
 #include "game/ai/pod.h"
-#include "game/const.h"
 #include "game/control.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -11,7 +10,8 @@
 #include "game/objects/puzzle_hole.h"
 #include "game/traps/movable_block.h"
 #include "game/traps/rolling_block.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/shed.h"
 #include "util.h"
 

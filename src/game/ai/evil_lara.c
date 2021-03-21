@@ -4,7 +4,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupEvilLara(OBJECT_INFO *obj)
 {

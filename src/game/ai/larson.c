@@ -5,7 +5,7 @@
 #include "game/game.h"
 #include "game/lot.h"
 #include "game/people.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO LarsonGun = { -60, 170, 0, 14 };
 

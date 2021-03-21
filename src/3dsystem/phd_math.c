@@ -1,6 +1,6 @@
 #include "3dsystem/phd_math.h"
 
-#include "game/const.h"
+#include "global/const.h"
 
 #include "util.h"
 

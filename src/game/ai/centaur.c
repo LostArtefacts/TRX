@@ -10,7 +10,7 @@
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO CentaurRocket = { 11, 415, 41, 13 };
 BITE_INFO CentaurRear = { 50, 30, 0, 5 };

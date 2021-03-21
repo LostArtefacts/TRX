@@ -1,15 +1,14 @@
 #include "game/lara.h"
 
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/collide.h"
-#include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/twinkle.h"
 #include "game/sound.h"
-#include "game/vars.h"
-
-#include "config.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>

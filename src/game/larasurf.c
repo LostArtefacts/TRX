@@ -3,10 +3,10 @@
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/collide.h"
-#include "game/const.h"
 #include "game/control.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>

@@ -4,7 +4,7 @@
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupEarthquake(OBJECT_INFO *obj)
 {

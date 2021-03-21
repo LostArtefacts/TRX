@@ -1,9 +1,8 @@
 #include "specific/sndpc.h"
 
-#include "game/sound.h"
-#include "game/vars.h"
-
 #include "config.h"
+#include "game/sound.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <windows.h>

@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupFallingCeilling(OBJECT_INFO *obj)
 {

@@ -5,8 +5,8 @@
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/types.h"
+#include "global/vars.h"
 
 BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
 

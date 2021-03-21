@@ -6,7 +6,7 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupFlameEmitter(OBJECT_INFO *obj)
 {

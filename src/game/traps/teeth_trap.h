@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_TEETH_TRAP_H
 #define T1M_GAME_TRAPS_TEETH_TRAP_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #define TEETH_TRAP_DAMAGE 400
 

@@ -7,7 +7,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupMovableBlock(OBJECT_INFO *obj)
 {

@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_OBJECTS_DOOR_H
 #define T1M_GAME_OBJECTS_DOOR_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 void SetupDoor(OBJECT_INFO *obj);
 void ShutThatDoor(DOORPOS_DATA *d);

@@ -14,7 +14,7 @@ def main() -> None:
     with (BUILD_DIR / "init.c").open("w") as handle:
         print('#include "init.h"', file=handle)
         print(file=handle)
-        print('#include "game/vars.h"', file=handle)
+        print('#include "global/vars.h"', file=handle)
         print(file=handle)
         print("void T1MInit()", file=handle)
         print("{", file=handle)

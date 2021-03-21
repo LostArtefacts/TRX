@@ -5,7 +5,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO CowboyGun1 = { 1, 200, 41, 5 };
 BITE_INFO CowboyGun2 = { -2, 200, 40, 8 };

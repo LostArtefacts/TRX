@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/objects/cog.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupBridgeFlat(OBJECT_INFO *obj)
 {

@@ -5,7 +5,7 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/traps/movable_block.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupThorsHandle(OBJECT_INFO *obj)
 {

@@ -1,11 +1,10 @@
 #include "specific/display.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/const.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/shed.h"
-
 #include "util.h"
 
 #include <stdlib.h>

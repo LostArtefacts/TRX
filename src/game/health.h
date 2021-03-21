@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_HEALTH_H
 #define T1M_GAME_HEALTH_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

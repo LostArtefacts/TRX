@@ -1,8 +1,8 @@
-#ifndef T1M_GAME_VARS_H
-#define T1M_GAME_VARS_H
+#ifndef T1M_GLOBAL_VARS_H
+#define T1M_GLOBAL_VARS_H
 
-#include "game/const.h"
-#include "game/types.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "util.h"
 
 #include <stddef.h>

@@ -7,7 +7,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
 BITE_INFO PierreGun2 = { -57, 200, 0, 14 };

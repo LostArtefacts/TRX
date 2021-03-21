@@ -4,8 +4,8 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/types.h"
+#include "global/vars.h"
 
 BITE_INFO BatBite = { 0, 16, 45, 4 };
 

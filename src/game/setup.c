@@ -1,6 +1,7 @@
 #include "game/setup.h"
 
 #include "3dsystem/3d_gen.h"
+#include "config.h"
 #include "game/ai/abortion.h"
 #include "game/ai/alligator.h"
 #include "game/ai/ape.h"
@@ -26,7 +27,6 @@
 #include "game/ai/vole.h"
 #include "game/ai/wolf.h"
 #include "game/cinema.h"
-#include "game/const.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/effects/body_part.h"
@@ -77,14 +77,13 @@
 #include "game/traps/spikes.h"
 #include "game/traps/teeth_trap.h"
 #include "game/traps/thors_hammer.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-
-#include "config.h"
 #include "util.h"
 
 #include <stddef.h>

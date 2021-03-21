@@ -6,7 +6,7 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupVole(OBJECT_INFO *obj)
 {

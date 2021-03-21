@@ -1,8 +1,7 @@
 #include "config.h"
 
-#include "game/const.h"
-
 #include "filesystem.h"
+#include "global/const.h"
 #include "json.h"
 #include "util.h"
 

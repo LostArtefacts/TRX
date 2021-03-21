@@ -1,7 +1,7 @@
 #include "game/effects/raising_block.h"
 
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 // original name: RaisingBlockFX
 void RaisingBlock(ITEM_INFO *item)

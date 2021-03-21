@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_ROLLING_BALL_H
 #define T1M_GAME_TRAPS_ROLLING_BALL_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 

@@ -7,7 +7,7 @@
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupAlligator(OBJECT_INFO *obj)
 {

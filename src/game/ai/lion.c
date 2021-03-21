@@ -5,7 +5,7 @@
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO LionBite = { -2, -10, 132, 21 };
 

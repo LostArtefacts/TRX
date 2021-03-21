@@ -1,13 +1,12 @@
 #include "game/health.h"
 
 #include "3dsystem/scalespr.h"
-#include "game/const.h"
-#include "game/text.h"
-#include "game/types.h"
-#include "game/vars.h"
-#include "specific/output.h"
-
 #include "config.h"
+#include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
+#include "specific/output.h"
 #include "util.h"
 
 #include <stdio.h>

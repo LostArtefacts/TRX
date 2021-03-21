@@ -4,7 +4,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 PHD_VECTOR Switch2Position = { 0, 0, 108 };
 

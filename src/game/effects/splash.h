@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_EFFECTS_SPLASH_H
 #define T1M_GAME_EFFECTS_SPLASH_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

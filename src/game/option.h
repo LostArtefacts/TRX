@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_OPTION_H
 #define T1M_GAME_OPTION_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 
@@ -19,14 +19,6 @@ void S_ShowControls();
 void S_ChangeCtrlText();
 void S_RemoveCtrlText();
 void S_RemoveCtrl();
-
-void InitRequester(REQUEST_INFO *req);
-void RemoveRequester(REQUEST_INFO *req);
-int32_t DisplayRequester(REQUEST_INFO *req);
-void SetRequesterHeading(REQUEST_INFO *req, const char *string);
-void ChangeRequesterItem(
-    REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag);
-void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag);
 
 void T1MInjectGameOption();
 

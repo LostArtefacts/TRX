@@ -1,8 +1,8 @@
 #include "game/effects/lara_effects.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/vars.h"
 #include "config.h"
+#include "global/vars.h"
 
 // original name: lara_normal_effect
 void LaraNormal(ITEM_INFO *item)

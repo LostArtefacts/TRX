@@ -5,7 +5,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/init.h"
 #include "specific/shed.h"
 

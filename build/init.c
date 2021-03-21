@@ -1,6 +1,6 @@
 #include "init.h"
 
-#include "game/vars.h"
+#include "global/vars.h"
 
 void T1MInit()
 {

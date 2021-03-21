@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_SPIKES_H
 #define T1M_GAME_TRAPS_SPIKES_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #define SPIKE_DAMAGE 15
 

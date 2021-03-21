@@ -1,15 +1,14 @@
 #include "specific/frontend.h"
 
-#include "game/const.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "config.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shed.h"
-
-#include "config.h"
 #include "util.h"
 
 #include <stdlib.h>

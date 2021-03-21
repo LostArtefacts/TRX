@@ -1,11 +1,10 @@
 #include "specific/input.h"
 
+#include "config.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/shed.h"
-
-#include "config.h"
 #include "util.h"
 
 #include <dinput.h>

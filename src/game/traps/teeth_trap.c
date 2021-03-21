@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO Teeth1A = { -23, 0, -1718, 0 };
 BITE_INFO Teeth1B = { 71, 0, -1718, 1 };

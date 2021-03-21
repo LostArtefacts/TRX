@@ -10,7 +10,7 @@
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO WarriorBite = { -27, 98, 0, 10 };
 BITE_INFO WarriorRocket = { 51, 213, 0, 14 };

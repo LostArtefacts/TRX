@@ -3,13 +3,12 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/cinema.h"
-#include "game/const.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/sound.h"
-#include "game/vars.h"
-
+#include "global/const.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>

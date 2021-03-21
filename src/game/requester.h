@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_REQUESTER_H
 #define T1M_GAME_REQUESTER_H
 
-#include "types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

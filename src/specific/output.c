@@ -2,12 +2,11 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/3d_insert.h"
-#include "game/const.h"
-#include "game/vars.h"
-#include "game/types.h"
-#include "specific/display.h"
-
 #include "config.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
+#include "specific/display.h"
 #include "util.h"
 
 #include <math.h>

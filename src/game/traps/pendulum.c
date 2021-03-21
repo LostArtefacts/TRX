@@ -4,7 +4,7 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupPendulum(OBJECT_INFO *obj)
 {

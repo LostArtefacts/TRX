@@ -1,7 +1,8 @@
 #include "game/gameflow.h"
 
+#include "config.h"
+#include "filesystem.h"
 #include "game/cinema.h"
-#include "game/const.h"
 #include "game/control.h"
 #include "game/game.h"
 #include "game/inv.h"
@@ -9,16 +10,14 @@
 #include "game/option.h"
 #include "game/savegame.h"
 #include "game/settings.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-
-#include "config.h"
-#include "filesystem.h"
 #include "json.h"
 #include "util.h"
 

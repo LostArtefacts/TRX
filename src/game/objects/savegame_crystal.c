@@ -9,7 +9,7 @@
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupSaveGameCrystal(OBJECT_INFO *obj)
 {

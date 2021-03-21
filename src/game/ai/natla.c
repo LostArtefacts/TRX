@@ -10,7 +10,7 @@
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/sndpc.h"
 
 BITE_INFO NatlaGun = { 5, 220, 7, 4 };

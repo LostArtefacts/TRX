@@ -7,7 +7,7 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 PHD_VECTOR PickUpPosition = { 0, 0, -100 };
 PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };

@@ -1,15 +1,14 @@
 #include "game/demo.h"
 
-#include "game/const.h"
 #include "game/control.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/setup.h"
 #include "game/text.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/frontend.h"
-
 #include "util.h"
 
 int32_t StartDemo()

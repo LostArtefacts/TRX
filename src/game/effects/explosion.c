@@ -2,7 +2,7 @@
 
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupExplosion(OBJECT_INFO *obj)
 {

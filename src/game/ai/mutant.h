@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_AI_MUTANT_H
 #define T1M_GAME_AI_MUTANT_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #include <stdint.h>
 

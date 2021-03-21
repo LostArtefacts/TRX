@@ -7,7 +7,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupDino(OBJECT_INFO *obj)
 {

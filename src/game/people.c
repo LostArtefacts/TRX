@@ -8,7 +8,7 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 int32_t Targetable(ITEM_INFO *item, AI_INFO *info)
 {

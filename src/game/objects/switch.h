@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_OBJECTS_SWITCH_H
 #define T1M_GAME_OBJECTS_SWITCH_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 typedef enum {
     SWITCH_STATE_OFF = 0,

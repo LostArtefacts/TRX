@@ -3,7 +3,7 @@
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "util.h"
 
 void SetupWaterfall(OBJECT_INFO *obj)

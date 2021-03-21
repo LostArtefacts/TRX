@@ -2,7 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
-#include "game/const.h"
+#include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
@@ -11,10 +11,9 @@
 #include "game/inv.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/types.h"
-#include "game/vars.h"
-
-#include "config.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>

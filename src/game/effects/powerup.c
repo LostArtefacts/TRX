@@ -1,7 +1,7 @@
 #include "game/effects/powerup.h"
 
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 // original name: PowerUpFX
 void PowerUp(ITEM_INFO *item)

@@ -2,7 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "game/items.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupBlood(OBJECT_INFO *obj)
 {

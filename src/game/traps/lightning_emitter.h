@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_LIGHTNING_EMITTER_H
 #define T1M_GAME_TRAPS_LIGHTNING_EMITTER_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8

@@ -1,6 +1,6 @@
 #include "specific/shell.h"
 
-#include "game/const.h"
+#include "args.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/gameflow.h"
@@ -9,16 +9,15 @@
 #include "game/settings.h"
 #include "game/setup.h"
 #include "game/text.h"
-#include "game/types.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
-
-#include "args.h"
 #include "util.h"
 
 #include <stdint.h>

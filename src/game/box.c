@@ -1,17 +1,16 @@
 #include "game/box.h"
 
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/control.h"
-#include "game/const.h"
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "util.h"
-
-#include "config.h"
 
 #include <stddef.h>
 

@@ -13,7 +13,7 @@
 #include "game/effects/sand.h"
 #include "game/effects/stairs2slope.h"
 #include "game/effects/turn_180.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 char *ATIUserSettingsPath = "atiset.dat";
 char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";

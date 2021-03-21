@@ -6,7 +6,7 @@
 #include "game/effects/blood.h"
 #include "game/game.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 BITE_INFO RatBite = { 0, -11, 108, 3 };
 

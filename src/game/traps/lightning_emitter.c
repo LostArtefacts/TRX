@@ -9,7 +9,7 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/init.h"
 #include "specific/output.h"
 

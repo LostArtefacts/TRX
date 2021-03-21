@@ -3,7 +3,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/traps/movable_block.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 int16_t MovingBlockBounds[12] = {
     -300,

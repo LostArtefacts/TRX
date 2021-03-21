@@ -1,14 +1,13 @@
 #include "specific/file.h"
 
+#include "config.h"
+#include "filesystem.h"
 #include "game/control.h"
 #include "game/items.h"
 #include "game/setup.h"
-#include "game/vars.h"
+#include "global/vars.h"
 #include "specific/init.h"
 #include "specific/shed.h"
-
-#include "config.h"
-#include "filesystem.h"
 #include "util.h"
 
 #include <windows.h>

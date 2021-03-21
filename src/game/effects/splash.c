@@ -5,7 +5,7 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/sound.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 void SetupSplash(OBJECT_INFO *obj)
 {

@@ -1,8 +1,8 @@
 #include "game/lara.h"
 
 #include "game/sound.h"
-#include "game/vars.h"
-#include "game/types.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>

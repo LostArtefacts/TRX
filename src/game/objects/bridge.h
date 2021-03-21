@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_OBJECTS_BRIDGE_H
 #define T1M_GAME_OBJECTS_BRIDGE_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 void SetupBridgeFlat(OBJECT_INFO *obj);
 void SetupBridgeTilt1(OBJECT_INFO *obj);

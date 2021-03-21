@@ -1,7 +1,7 @@
 #ifndef T1M_GAME_TRAPS_DAMOCLES_SWORD_H
 #define T1M_GAME_TRAPS_DAMOCLES_SWORD_H
 
-#include "game/types.h"
+#include "global/types.h"
 
 void SetupDamoclesSword(OBJECT_INFO *obj);
 void InitialiseDamoclesSword(int16_t item_num);

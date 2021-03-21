@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/inv.h"
-#include "game/vars.h"
+#include "global/vars.h"
 
 int16_t MidasBounds[12] = {
     -700,
