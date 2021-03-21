@@ -10,8 +10,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/input.h"
+#include "specific/mnsound.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -884,9 +884,9 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
         if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
             if (OptionSoundFXVolume) {
-                adjust_master_volume(6 * OptionSoundFXVolume + 3);
+                mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
             } else {
-                adjust_master_volume(0);
+                mn_adjust_master_volume(0);
             }
             SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }

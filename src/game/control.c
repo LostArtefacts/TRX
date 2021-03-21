@@ -22,6 +22,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/input.h"
+#include "specific/mnsound.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"

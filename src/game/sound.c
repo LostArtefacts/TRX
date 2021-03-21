@@ -1,7 +1,7 @@
 #include "game/sound.h"
 
 #include "global/vars.h"
-#include "specific/shed.h"
+#include "specific/mnsound.h"
 
 #include <stddef.h>
 
@@ -28,4 +28,14 @@ void SoundEffects()
     }
 
     mn_update_sound_effects();
+}
+
+int32_t SoundEffect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+{
+    return mn_sound_effect(sfx_num, pos, flags);
+}
+
+void StopSoundEffect(int32_t sfx_num, PHD_3DPOS *pos)
+{
+    mn_stop_sound_effect(sfx_num, pos);
 }

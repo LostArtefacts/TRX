@@ -13,6 +13,7 @@
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/input.h"
+#include "specific/mnsound.h"
 #include "specific/output.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"

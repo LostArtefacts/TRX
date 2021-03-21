@@ -80,8 +80,8 @@
 #include "global/vars.h"
 #include "specific/file.h"
 #include "specific/init.h"
+#include "specific/mnsound.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
