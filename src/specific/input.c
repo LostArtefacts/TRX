@@ -31,6 +31,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_O, // KEY_FLY_CHEAT,
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
+        DIK_P, // KEY_PAUSE,
     },
 
     // default user controls
@@ -51,6 +52,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_O, // KEY_FLY_CHEAT,
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
+        DIK_P, // KEY_PAUSE,
     }
 };
 
@@ -199,6 +201,9 @@ void S_UpdateInput()
     }
     if (Key_(KEY_OPTION) && Camera.type != CAM_CINEMATIC) {
         linput |= IN_OPTION;
+    }
+    if (Key_(KEY_PAUSE)) {
+        linput |= IN_PAUSE;
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
         linput |= IN_ROLL;

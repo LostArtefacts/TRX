@@ -13,6 +13,7 @@
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
+#include "game/pause.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/sound.h"
@@ -226,6 +227,12 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                     S_SaveGame(&SaveGame, InvExtraData[1]);
                     S_WriteUserSettings();
                 }
+            }
+        }
+
+        if (!Lara.death_count && CHK_ANY(GetDebouncedInput(Input), IN_PAUSE)) {
+            if (S_Pause()) {
+                return GF_EXIT_TO_TITLE;
             }
         }
 

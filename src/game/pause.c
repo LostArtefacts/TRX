@@ -1,0 +1,165 @@
+#include "game/pause.h"
+
+#include "game/health.h"
+#include "game/inv.h"
+#include "game/option.h"
+#include "game/requester.h"
+#include "game/text.h"
+#include "game/vars.h"
+#include "specific/display.h"
+#include "specific/input.h"
+#include "specific/output.h"
+#include "specific/sndpc.h"
+
+#define PAUSE_MAX_TEXT_LENGTH 50
+#define PAUSE_MAX_ITEMS 5
+
+static TEXTSTRING *PausedText = NULL;
+
+static char PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
+static REQUEST_INFO PauseRequester = {
+    0, // items
+    0, // requested
+    0, // vis_lines
+    0, // line_offset
+    0, // line_old_offset
+    160, // pix_width
+    TEXT_HEIGHT + 7, // line_height
+    0, // x
+    0, // y
+    0, // z
+    0, // flags
+    NULL, // heading_text
+    &PauseStrings[0][0], // item_texts
+    PAUSE_MAX_TEXT_LENGTH, // item_text_len
+};
+
+static void RemovePausedText();
+static void DisplayPausedText();
+static int32_t DisplayPauseRequester(
+    const char *header, const char *option1, const char *option2,
+    int16_t requested);
+static int32_t PauseLoop();
+
+static void RemovePausedText()
+{
+    T_RemovePrint(PausedText);
+    PausedText = NULL;
+}
+
+static void DisplayPausedText()
+{
+    if (PausedText == NULL) {
+        PausedText = T_Print(0, -24, 5, GF.strings[GS_PAUSE_PAUSED]);
+        T_CentreH(PausedText, 1);
+        T_BottomAlign(PausedText, 1);
+    }
+}
+
+static int32_t DisplayPauseRequester(
+    const char *header, const char *option1, const char *option2,
+    int16_t requested)
+{
+    static int8_t is_pause_text_ready = 0;
+    if (!is_pause_text_ready) {
+        InitRequester(&PauseRequester);
+        SetRequesterSize(&PauseRequester, 2, -48);
+        PauseRequester.requested = requested;
+        SetRequesterHeading(&PauseRequester, header);
+        AddRequesterItem(&PauseRequester, option1, 0);
+        AddRequesterItem(&PauseRequester, option2, 0);
+
+        is_pause_text_ready = 1;
+        InputDB = 0;
+        Input = 0;
+    }
+
+    int select = DisplayRequester(&PauseRequester);
+    if (select > 0) {
+        is_pause_text_ready = 0;
+    } else {
+        InputDB = 0;
+        Input = 0;
+    }
+    return select;
+}
+
+static int32_t PauseLoop()
+{
+    int32_t state = 0;
+
+    while (1) {
+        S_InitialisePolyList(0);
+        S_CopyBufferToScreen();
+        DisplayPausedText();
+        T_DrawText();
+        S_OutputPolyList();
+        S_DumpScreen();
+        S_UpdateInput();
+
+        InputDB = GetDebouncedInput(Input);
+
+        switch (state) {
+        case 0:
+            if (CHK_ANY(InputDB, IN_PAUSE)) {
+                return 1;
+            }
+            if (CHK_ANY(InputDB, IN_OPTION)) {
+                state = 1;
+            }
+            break;
+
+        case 1: {
+            int32_t choice = DisplayPauseRequester(
+                GF.strings[GS_PAUSE_EXIT_TO_TITLE],
+                GF.strings[GS_PAUSE_CONTINUE], GF.strings[GS_PAUSE_QUIT], 1);
+            if (choice == 1) {
+                return 1;
+            } else if (choice == 2) {
+                state = 2;
+            }
+            break;
+        }
+
+        case 2: {
+            int32_t choice = DisplayPauseRequester(
+                GF.strings[GS_PAUSE_ARE_YOU_SURE], GF.strings[GS_PAUSE_YES],
+                GF.strings[GS_PAUSE_NO], 1);
+            if (choice == 1) {
+                return -1;
+            } else if (choice == 2) {
+                return 1;
+            }
+            break;
+        }
+        }
+    }
+
+    return 0;
+}
+
+int8_t S_Pause()
+{
+    TRACE("");
+    OldInputDB = Input;
+
+    int old_overlay_flag = OverlayFlag;
+    OverlayFlag = -3;
+    InvMode = INV_PAUSE_MODE;
+    T_RemovePrint(AmmoText);
+    AmmoText = NULL;
+    S_FadeInInventory(1);
+    S_CDVolume(0);
+    TempVideoAdjust(HiRes, 1.0);
+    S_SetupAboveWater(0);
+
+    int32_t select = PauseLoop();
+
+    RemoveRequester(&PauseRequester);
+    RemovePausedText();
+    TempVideoRemove();
+    S_CDVolume(OptionMusicVolume * 25 + 5);
+    S_FadeOutInventory(1);
+    OverlayFlag = old_overlay_flag;
+    return select < 0;
+}

@@ -44,6 +44,7 @@ void T1MInit()
     GF.strings[GS_KEYMAP_LOOK] = "Look";
     GF.strings[GS_KEYMAP_ROLL] = "Roll";
     GF.strings[GS_KEYMAP_INVENTORY] = "Inventory";
+    GF.strings[GS_KEYMAP_PAUSE] = "Pause";
     GF.strings[GS_KEYMAP_FLY_CHEAT] = "Fly cheat";
     GF.strings[GS_KEYMAP_ITEM_CHEAT] = "Item cheat";
     GF.strings[GS_KEYMAP_LEVEL_SKIP_CHEAT] = "Level skip";
@@ -51,6 +52,13 @@ void T1MInit()
     GF.strings[GS_STATS_SECRETS_FMT] = "SECRETS %d OF %d";
     GF.strings[GS_STATS_PICKUPS_FMT] = "PICKUPS %d";
     GF.strings[GS_STATS_KILLS_FMT] = "KILLS %d";
+    GF.strings[GS_PAUSE_PAUSED] = "Paused";
+    GF.strings[GS_PAUSE_EXIT_TO_TITLE] = "Exit to title?";
+    GF.strings[GS_PAUSE_CONTINUE] = "Continue";
+    GF.strings[GS_PAUSE_QUIT] = "Quit";
+    GF.strings[GS_PAUSE_ARE_YOU_SURE] = "Are you sure?";
+    GF.strings[GS_PAUSE_YES] = "Yes";
+    GF.strings[GS_PAUSE_NO] = "No";
     GF.strings[GS_MISC_ON] = "On";
     GF.strings[GS_MISC_OFF] = "Off";
     GF.strings[GS_MISC_EMPTY_SLOT_FMT] = "- EMPTY SLOT %d -";
