@@ -43,6 +43,19 @@ int32_t S_StartSyncedAudio(int16_t track)
     return S_CDPlay(track);
 }
 
+int32_t S_CDStop()
+{
+    TRACE("");
+
+    CDTrack = 0;
+    CDTrackLooped = 0;
+    CDLoop = 0;
+
+    MCI_GENERIC_PARMS gen_parms;
+    return !mciSendCommandA(
+        MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
+}
+
 int32_t CDPlay(int16_t track)
 {
     TRACE("%d", track);
@@ -88,9 +101,10 @@ int32_t CDPlay(int16_t track)
 
 void T1MInjectSpecificSndPC()
 {
-    INJECT(0x00438D40, S_CDPlay);
-    INJECT(0x00439030, S_StartSyncedAudio);
     INJECT(0x00437FB0, CDPlay);
+    INJECT(0x00438D40, S_CDPlay);
+    INJECT(0x00438E40, S_CDStop);
+    INJECT(0x00439030, S_StartSyncedAudio);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.

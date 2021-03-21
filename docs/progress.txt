@@ -862,6 +862,8 @@ FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  +
 CheckCheatMode                  0x00438920  0x00000213  +
 S_WriteSettings                 0x00438B60  0x00000090  +
+
+# shell/sndpc.cpp
 S_SoundPlaySample               0x00438BF0  0x0000004B  -
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
 sub_438CA0                      0x00438CA0  0x00000015  -
@@ -869,7 +871,7 @@ S_SoundStopAllSamples           0x00438CC0  0x0000000F  *
 S_SoundStopSample               0x00438CD0  0x0000001B  -
 sub_438CF0                      0x00438CF0  0x00000044  -
 S_CDPlay                        0x00438D40  0x000000FD  +
-S_CDStop                        0x00438E40  0x00000043  *
+S_CDStop                        0x00438E40  0x00000043  +
 SampleLoader                    0x00438E90  0x00000005  +
 LoadSamples                     0x00438EA0  0x00000189  +
 S_StartSyncedAudio              0x00439030  0x000000FC  +
