@@ -10,17 +10,127 @@
 
 #define DECIBEL_LUT_SIZE 512
 
-int32_t ConvertVolumeToDecibel(int32_t volume)
+#pragma pack(push)
+#pragma pack(1)
+typedef struct SAMPLE_DATA {
+    uint32_t data;
+    uint16_t length;
+    uint16_t bits_per_sample;
+    uint16_t channels;
+    uint16_t unk1;
+    uint16_t sample_rate;
+    uint16_t unk2;
+    uint16_t channels2;
+    uint32_t unk3;
+    uint16_t volume;
+    uint32_t pan;
+    uint16_t unk4;
+    LPDIRECTSOUNDBUFFER buffer;
+    uint16_t unk5;
+} SAMPLE_DATA;
+#pragma pack(pop)
+
+static int32_t ConvertVolumeToDecibel(int32_t volume);
+static int32_t ConvertPanToDecibel(uint16_t pan);
+static void
+SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume);
+static LPDIRECTSOUNDBUFFER SoundPlaySample(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
+    int8_t loop);
+
+typedef struct DUPE_SOUND_BUFFER {
+    SAMPLE_DATA *sample;
+    LPDIRECTSOUNDBUFFER buffer;
+    struct DUPE_SOUND_BUFFER *next;
+} DUPE_SOUND_BUFFER;
+
+DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
+
+static int32_t ConvertVolumeToDecibel(int32_t volume)
 {
     return DecibelLUT[(volume & 0x7FFF) >> 6];
 }
 
-void SoundBufferSetVolume(LPDIRECTSOUNDBUFFER buffer, int32_t volume)
+static int32_t ConvertPanToDecibel(uint16_t pan)
 {
-    TRACE("%d", volume);
+    int32_t result = sin((pan / 32767.0) * M_PI) * (DECIBEL_LUT_SIZE / 2);
+    if (result > 0) {
+        return -DecibelLUT[DECIBEL_LUT_SIZE - result];
+    } else if (result < 0) {
+        return DecibelLUT[DECIBEL_LUT_SIZE + result];
+    } else {
+        return 0;
+    }
+}
+
+static void
+SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume)
+{
     if (buffer) {
         IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(128 + pan / 256));
     }
+}
+
+static LPDIRECTSOUNDBUFFER SoundPlaySample(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
+{
+    if (!SoundInit1 || !SoundInit2) {
+        return NULL;
+    }
+
+    SAMPLE_DATA *sample = SampleData[sample_id];
+    if (!sample) {
+        return NULL;
+    }
+
+    LPDIRECTSOUNDBUFFER buffer = sample->buffer;
+
+    // check if the buffer is already playing
+    DWORD status;
+    IDirectSoundBuffer_GetStatus(sample->buffer, &status);
+    if (status == DSBSTATUS_PLAYING) {
+        buffer = NULL;
+
+        for (DUPE_SOUND_BUFFER *dupe_buffer = DupeSoundBufferList;
+             dupe_buffer != NULL; dupe_buffer = dupe_buffer->next) {
+            if (dupe_buffer->sample == sample) {
+                IDirectSoundBuffer_GetStatus(dupe_buffer->buffer, &status);
+                if (status != DSBSTATUS_PLAYING) {
+                    buffer = dupe_buffer->buffer;
+                    break;
+                }
+            }
+        }
+
+        if (!buffer) {
+            LPDIRECTSOUNDBUFFER buffer_new;
+            IDirectSound8_DuplicateSoundBuffer(
+                DSound, sample->buffer, &buffer_new);
+
+            DUPE_SOUND_BUFFER *dupe_buffer = malloc(sizeof(DUPE_SOUND_BUFFER));
+            dupe_buffer->buffer = buffer_new;
+            dupe_buffer->next = DupeSoundBufferList;
+            DupeSoundBufferList = dupe_buffer;
+
+            buffer = buffer_new;
+            TRACE(
+                "duplicated sound buffer %p to %p", sample->buffer, buffer_new);
+        }
+    }
+
+    // calculate pitch from sample rate
+    int32_t ds_pitch = sample->sample_rate;
+    if (pitch != -1) {
+        ds_pitch = ds_pitch * pitch / 100;
+    }
+
+    IDirectSoundBuffer_SetFrequency(buffer, ds_pitch);
+    IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    IDirectSoundBuffer_SetCurrentPosition(buffer, 0);
+    IDirectSoundBuffer_Play(buffer, 0, 0, loop ? DSBPLAY_LOOPING : 0);
+    return buffer;
 }
 
 int32_t SoundInit()
@@ -147,6 +257,16 @@ int32_t CDPlayLooped()
     return CDLoop;
 }
 
+int32_t S_SoundPlaySample(
+    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
+{
+    if (!SoundIsActive) {
+        return 0;
+    }
+    return (int32_t)SoundPlaySample(
+        sample_id, (MasterVolume * volume) >> 6, pitch, 128 + pan / 256, 0);
+}
+
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
@@ -156,7 +276,8 @@ void T1MInjectSpecificSndPC()
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
-    INJECT(0x00438CF0, SoundBufferSetVolume);
+    INJECT(0x00438CF0, SoundBufferSetPanVol);
+    INJECT(0x00438BF0, S_SoundPlaySample);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.
