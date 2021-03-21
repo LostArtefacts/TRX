@@ -18,6 +18,17 @@ This project is inspired by Arsunt's
 3. Unpack the contents to your game directory. Make sure you overwrite existing
     files (Tomb1Main_config.json5 can be left alone).
 
+To play the Unfinished Business expansion pack, launch the game with `-gold`
+command line switch:
+
+1. Create a shortcut to `tombati.exe`
+2. Select the newly created shortcut, go to Properties
+3. At the end of the "target" field, append `-gold` so it looks something like
+    this:
+    ```
+    (...)\tombati.exe -gold
+    ```
+
 ## Configuring
 
 To configure Tomb1Main, edit the `Tomb1Main.json5` file in your text editor
