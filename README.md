@@ -12,11 +12,11 @@ This project is inspired by Arsunt's
 
 ## Installing
 
-Get a copy of the latest release from
-[here](https://github.com/rr-/Tomb1Main/releases) and unpack the contents to your
-game directory. Make sure you overwrite existing files. Currently Tomb1Main
-requires you to have the [TombATI patch
-v1.7](http://www.glidos.net/tombati.html) installed to work.
+1. Install the [TombATI v1.7 patch](http://www.glidos.net/tombati.html).
+2. Get a copy of the latest Tomb1Main release from
+    [here](https://github.com/rr-/Tomb1Main/releases).
+3. Unpack the contents to your game directory. Make sure you overwrite existing
+    files (Tomb1Main_config.json5 can be left alone).
 
 ## Configuring
 
@@ -63,6 +63,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to keep timer on in inventory
 - added UI and bar scaling
 - added save game crystals game mode (enabled via gameflow)
+- added pause screen
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - fixed skipping FMVs triggering inventory
