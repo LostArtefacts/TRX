@@ -473,7 +473,7 @@
 <rect width="12.00" height="12.00" x="280.00" y="143.00" class="decompiled"><title>sinf</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="143.00" class="decompiled"><title>phd_atan</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="143.00" class="decompiled"><title>phd_sqrt</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="143.00" class="named"><title>mn_reset_sound_effects</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="143.00" class="decompiled"><title>mn_reset_sound_effects</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="143.00" class="named"><title>SoundEffect</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="143.00" class="named"><title>mn_get_fx_slot</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="143.00" class="named"><title>mn_reset_ambient_loudness</title></rect>
@@ -1029,7 +1029,7 @@
 <rect width="11.62" height="11.19" x="526.56" y="365.97" class="decompiled"><title>SwitchCollision2</title></rect>
 <rect width="11.45" height="11.19" x="540.19" y="365.97" class="decompiled"><title>LaraAsRun</title></rect>
 <rect width="11.45" height="11.19" x="553.64" y="365.97" class="decompiled"><title>GunHit</title></rect>
-<rect width="11.40" height="11.19" x="567.09" y="365.97" class="named"><title>mn_reset_sound_effects</title></rect>
+<rect width="11.40" height="11.19" x="567.09" y="365.97" class="decompiled"><title>mn_reset_sound_effects</title></rect>
 <rect width="11.17" height="11.19" x="580.49" y="365.97" class="decompiled"><title>FxLaraBubbles</title></rect>
 <rect width="11.17" height="11.19" x="593.66" y="365.97" class="decompiled"><title>DamoclesSwordCollision</title></rect>
 <rect width="11.17" height="11.19" x="606.83" y="365.97" class="decompiled"><title>LavaBurn</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 74.31%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 13.19%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.34%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 74.45%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 13.05%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.24%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 12.50%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.37%</text>
 </svg>

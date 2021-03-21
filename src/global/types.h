@@ -1951,6 +1951,16 @@ typedef struct GAMEFLOW {
     char *strings[GS_NUMBER_OF];
 } GAMEFLOW;
 
+typedef struct MN_SFX_PLAY_INFO {
+    int32_t handle;
+    PHD_3DPOS *pos;
+    uint32_t loudness;
+    int16_t volume; // Need
+    int16_t pan;
+    int16_t fxnum;
+    int16_t mn_flags;
+} MN_SFX_PLAY_INFO;
+
 typedef struct SAMPLE_INFO {
     int16_t number;
     int16_t volume;

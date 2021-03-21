@@ -25,6 +25,7 @@
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
+#include "specific/mnsound.h"
 #include "specific/output.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
@@ -63,6 +64,7 @@ void T1MInject()
     T1MInjectSpecificFrontend();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
+    T1MInjectSpecificMNSound();
     T1MInjectSpecificOutput();
     T1MInjectSpecificShell();
     T1MInjectSpecificSndPC();

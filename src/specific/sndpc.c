@@ -265,7 +265,8 @@ int32_t S_SoundPlaySample(
         return 0;
     }
     return (int32_t)SoundPlaySample(
-        sample_id, (MasterVolume * volume) >> 6, pitch, 128 + pan / 256, 0);
+        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, 128 + pan / 256,
+        0);
 }
 
 void S_SoundStopAllSamples()
