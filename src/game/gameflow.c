@@ -796,21 +796,6 @@ int8_t GF_LoadScriptFile(const char *file_name)
     InvItemGamma.string = GF.strings[GS_INV_ITEM_GAMMA];
     InvItemLarasHome.string = GF.strings[GS_INV_ITEM_LARAS_HOME];
 
-    SetRequesterHeading(
-        &LoadSaveGameRequester, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
-
-    SetRequesterHeading(&NewGameRequester, GF.strings[GS_PASSPORT_SELECT_MODE]);
-    ChangeRequesterItem(
-        &NewGameRequester, 0, GF.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
-    ChangeRequesterItem(
-        &NewGameRequester, 1, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
-    ChangeRequesterItem(
-        &NewGameRequester, 2, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME],
-        0);
-    ChangeRequesterItem(
-        &NewGameRequester, 3,
-        GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS], 0);
-
     return result;
 }
 

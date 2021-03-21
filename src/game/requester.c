@@ -21,7 +21,10 @@ void InitRequester(REQUEST_INFO *req)
     req->moredown = NULL;
     for (int i = 0; i < MAX_REQLINES; i++) {
         req->texts[i] = NULL;
+        req->item_flags[i] = 0;
     }
+
+    req->items = 0;
 }
 
 // original name: Remove_Requester
@@ -44,27 +47,7 @@ void RemoveRequester(REQUEST_INFO *req)
 // original name: Display_Requester
 int32_t DisplayRequester(REQUEST_INFO *req)
 {
-    int32_t edge_y;
-
-    if (req->flags & RIF_FIXED_HEIGHT) {
-        edge_y = req->y * GetRenderHeightDownscaled() / 100;
-    } else {
-        if (GetRenderHeightDownscaled() <= 240) {
-            req->y = -30;
-            req->vis_lines = 5;
-        } else if (GetRenderHeightDownscaled() <= 384) {
-            req->y = -30;
-            req->vis_lines = 8;
-        } else if (GetRenderHeightDownscaled() <= 480) {
-            req->y = -80;
-            req->vis_lines = 10;
-        } else {
-            req->y = -120;
-            req->vis_lines = 12;
-        }
-        edge_y = req->y;
-    }
-
+    int32_t edge_y = req->y;
     int32_t lines_height = req->vis_lines * req->line_height;
     int32_t box_width = req->pix_width;
     int32_t box_height =
@@ -233,4 +216,13 @@ void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
     }
 
     req->items++;
+}
+
+void SetRequesterSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)
+{
+    req->y = y;
+    req->vis_lines = GetRenderHeightDownscaled() / 2 / MAX_REQLINES;
+    if (req->vis_lines > max_lines) {
+        req->vis_lines = max_lines;
+    }
 }

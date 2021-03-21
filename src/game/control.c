@@ -154,11 +154,11 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         if (demo_mode) {
             if (KeyData->keys_held) {
-                return 1;
+                return GF_EXIT_TO_TITLE;
             }
             GetDemoInput();
             if (Input == -1) {
-                return 1;
+                return GF_EXIT_TO_TITLE;
             }
         }
 
@@ -166,7 +166,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_FLY_CHEAT))
             || OverlayFlag == 2) {
             if (demo_mode) {
-                return 1;
+                return GF_EXIT_TO_TITLE;
             }
             if (OverlayFlag == 2) {
                 OverlayFlag = 1;

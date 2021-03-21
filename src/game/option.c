@@ -112,9 +112,9 @@ REQUEST_INFO NewGameRequester = {
     162, // pix_width
     TEXT_HEIGHT + 7, // line_height
     0, // x
-    -30, // y
+    0, // y
     0, // z
-    RIF_FIXED_HEIGHT,
+    0, // flags
     NULL, // heading_text
     &NewGameStrings[0][0], // item_texts
     MAX_GAME_MODE_LENGTH, // item_text_len
@@ -122,21 +122,59 @@ REQUEST_INFO NewGameRequester = {
 
 static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
 REQUEST_INFO LoadSaveGameRequester = {
-    1,
-    0,
-    5,
-    0,
-    0,
-    272,
-    TEXT_HEIGHT + 7,
-    0,
-    -32,
-    0,
-    0,
-    NULL,
-    &LoadSaveGameStrings[0][0],
-    MAX_LEVEL_NAME_LENGTH,
+    1, // items
+    0, // requested
+    -1, // vis_lines
+    0, // line_offset
+    0, // line_old_offset
+    272, // pix_width
+    TEXT_HEIGHT + 7, // line_height
+    0, // x
+    -32, // y
+    0, // z
+    0, // flags
+    NULL, // heading_text
+    &LoadSaveGameStrings[0][0], // item_texts
+    MAX_LEVEL_NAME_LENGTH, // item_text_len
 };
+
+static void InitLoadSaveGameRequester()
+{
+    REQUEST_INFO *req = &LoadSaveGameRequester;
+    InitRequester(req);
+    GetSavedGamesList(req);
+    SetRequesterHeading(req, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
+
+    if (GetRenderHeightDownscaled() <= 240) {
+        req->y = -30;
+        req->vis_lines = 5;
+    } else if (GetRenderHeightDownscaled() <= 384) {
+        req->y = -30;
+        req->vis_lines = 8;
+    } else if (GetRenderHeightDownscaled() <= 480) {
+        req->y = -80;
+        req->vis_lines = 10;
+    } else {
+        req->y = -120;
+        req->vis_lines = 12;
+    }
+
+    S_FrontEndCheck();
+}
+
+static void InitNewGameRequester()
+{
+    REQUEST_INFO *req = &NewGameRequester;
+    InitRequester(req);
+    SetRequesterHeading(req, GF.strings[GS_PASSPORT_SELECT_MODE]);
+    AddRequesterItem(req, GF.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
+    AddRequesterItem(req, GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
+    AddRequesterItem(req, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME], 0);
+    AddRequesterItem(
+        req, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS], 0);
+    req->y = -30 * GetRenderHeightDownscaled() / 100;
+    req->vis_lines = MAX_GAME_MODES;
+}
 
 // original name: do_inventory_options
 void DoInventoryOptions(INVENTORY_ITEM *inv_item)
@@ -253,8 +291,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvItemText[IT_NAME] = NULL;
 
                     LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
-                    GetSavedGamesList(&LoadSaveGameRequester);
-                    InitRequester(&LoadSaveGameRequester);
+                    InitLoadSaveGameRequester();
                     PassportMode = 1;
                     Input = 0;
                     InputDB = 0;
@@ -324,7 +361,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvItemText[IT_NAME] = NULL;
 
                     if (GF.enable_game_modes) {
-                        InitRequester(&NewGameRequester);
+                        InitNewGameRequester();
                         PassportMode = 2;
                         Input = 0;
                         InputDB = 0;
@@ -338,8 +375,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     InvItemText[IT_NAME] = NULL;
 
                     LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
-                    GetSavedGamesList(&LoadSaveGameRequester);
-                    InitRequester(&LoadSaveGameRequester);
+                    InitLoadSaveGameRequester();
                     PassportMode = 1;
                     Input = 0;
                     InputDB = 0;
