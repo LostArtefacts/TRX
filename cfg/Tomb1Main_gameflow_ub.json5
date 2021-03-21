@@ -3,6 +3,7 @@
 
     "savegame_fmt": "saveuba.%d",
     "enable_game_modes": true,
+    "enable_save_crystals": false,
     "demo_delay": 16,
 
     "levels": [
@@ -65,11 +66,11 @@
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 3},
-                {"type": "display_picture", "picture_path": "data\\end"},
-                {"type": "display_picture", "picture_path": "data\\cred0"},
-                {"type": "display_picture", "picture_path": "data\\cred1"},
-                {"type": "display_picture", "picture_path": "data\\cred2"},
-                {"type": "display_picture", "picture_path": "data\\cred3"},
+                {"type": "display_picture", "picture_path": "data\\end", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data\\cred0", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data\\cred1", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data\\cred2", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data\\cred3", "display_time": 7.5},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
