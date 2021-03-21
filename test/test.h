@@ -6,8 +6,8 @@
 #include <time.h>
 #include <string.h>
 
-static size_t tests = 0;
-static size_t fails = 0;
+extern size_t tests;
+extern size_t fails;
 
 #define TEST_RESULTS()                                                         \
     do {                                                                       \
