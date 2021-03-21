@@ -596,10 +596,10 @@
 <rect width="12.00" height="12.00" x="602.00" y="171.00" class="named"><title>WinSndStopSample</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="171.00" class="decompiled"><title>S_CDVolume</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="171.00" class="named"><title>TestCdDrive</title></rect>
-<rect width="12.00" height="12.00" x="644.00" y="171.00" class="named"><title>CDStop</title></rect>
+<rect width="12.00" height="12.00" x="644.00" y="171.00" class="decompiled"><title>CDStop</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="171.00" class="decompiled"><title>CDPlay</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="171.00" class="named"><title>S_CDLoop</title></rect>
-<rect width="12.00" height="12.00" x="686.00" y="171.00" class="todo"><title>sub_4380C0</title></rect>
+<rect width="12.00" height="12.00" x="686.00" y="171.00" class="decompiled"><title>CDPlayLooped</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="185.00" class="todo"><title>sub_4380E0</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="185.00" class="named"><title>TerminateGameWithMsg</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="185.00" class="named"><title>FileLoad</title></rect>
@@ -1351,7 +1351,7 @@
 <rect width="3.54" height="3.27" x="650.51" y="532.73" class="decompiled"><title>T_FlashText</title></rect>
 <rect width="3.35" height="3.32" x="656.04" y="495.82" class="decompiled"><title>FxExplosion</title></rect>
 <rect width="3.35" height="3.32" x="661.39" y="495.82" class="decompiled"><title>Inv_RingMotionRadius</title></rect>
-<rect width="3.35" height="3.32" x="666.74" y="495.82" class="named"><title>CDStop</title></rect>
+<rect width="3.35" height="3.32" x="666.74" y="495.82" class="decompiled"><title>CDStop</title></rect>
 <rect width="3.21" height="3.32" x="672.09" y="495.82" class="decompiled"><title>Inv_RingMotionCameraPos</title></rect>
 <rect width="3.21" height="3.32" x="677.30" y="495.82" class="decompiled"><title>InitialiseEvilLara</title></rect>
 <rect width="3.21" height="3.32" x="682.51" y="495.82" class="decompiled"><title>T_AddOutline</title></rect>
@@ -1400,7 +1400,7 @@
 <rect width="2.63" height="2.04" x="670.50" y="514.56" class="named"><title>S_SetupAboveWater</title></rect>
 <rect width="2.63" height="1.88" x="670.50" y="518.60" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="2.63" height="1.88" x="670.50" y="522.48" class="decompiled"><title>InitialiseLevelFlags</title></rect>
-<rect width="2.63" height="1.88" x="670.50" y="526.36" class="todo"><title>sub_4380C0</title></rect>
+<rect width="2.63" height="1.88" x="670.50" y="526.36" class="decompiled"><title>CDPlayLooped</title></rect>
 <rect width="2.63" height="1.88" x="670.50" y="530.24" class="todo"><title>sub_4507F0</title></rect>
 <rect width="2.63" height="1.88" x="670.50" y="534.12" class="todo"><title>sub_450840</title></rect>
 <rect width="2.11" height="2.19" x="675.13" y="514.56" class="named"><title>HardwareFMVDone</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 72.53%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 70.98%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 14.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.44%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.19%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.57%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 72.80%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.01%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 14.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.43%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 13.05%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.56%</text>
 </svg>

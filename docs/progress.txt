@@ -851,11 +851,11 @@ sub_437E10                      0x00437E10  0x000000C3  -
 sub_437EE0                      0x00437EE0  0x00000028  -
 WinSndStopSample                0x00437F10  0x00000020  -
 S_CDVolume                      0x00437F30  0x00000001  +
-TestCdDrive                     0x00437F40  0x00000039  -
-CDStop                          0x00437F80  0x00000026  *
+TestCdDrive                     0x00437F40  0x00000039  x
+CDStop                          0x00437F80  0x00000026  +
 CDPlay                          0x00437FB0  0x000000F5  +
 S_CDLoop                        0x004380B0  0x0000000B  *
-sub_4380C0                      0x004380C0  0x00000018  -
+CDPlayLooped                    0x004380C0  0x00000018  +
 sub_4380E0                      0x004380E0  0x00000255  *
 TerminateGameWithMsg            0x00438340  0x0000003B  -
 FileLoad                        0x00438390  0x00000080  -

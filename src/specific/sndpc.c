@@ -26,7 +26,7 @@ int32_t S_CDPlay(int16_t track)
     }
 
     if (track == 0) {
-        CDStop();
+        S_CDStop();
         return 0;
     }
 
@@ -99,9 +99,22 @@ int32_t CDPlay(int16_t track)
     return 1;
 }
 
+int32_t CDPlayLooped()
+{
+    TRACE("");
+
+    if (CDLoop && CDTrackLooped > 0) {
+        CDPlay(CDTrackLooped);
+        return 0;
+    }
+
+    return CDLoop;
+}
+
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00437FB0, CDPlay);
+    INJECT(0x004380C0, CDPlayLooped);
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
