@@ -11,11 +11,13 @@
 
 extern int16_t Layout[2][KEY_NUMBER_OF];
 extern int32_t Conflict[KEY_NUMBER_OF];
+extern int32_t OldInputDB;
 
 int32_t Key_(int32_t key);
 int16_t KeyGet();
 void KeyClearBuffer();
 void S_UpdateInput();
+int32_t GetDebouncedInput(int32_t input);
 
 void T1MInjectSpecificInput();
 

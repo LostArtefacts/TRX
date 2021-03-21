@@ -32,8 +32,6 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
-static int OldInputDB = 0;
-
 int32_t Display_Inventory(int inv_mode)
 {
     RING_INFO ring;
@@ -851,18 +849,6 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
         }
     }
     phd_PopMatrix();
-}
-
-int32_t GetDebouncedInput(int32_t input)
-{
-    if (input && !OldInputDB) {
-        OldInputDB = input;
-    } else if (!input) {
-        OldInputDB = 0;
-    } else {
-        input = 0;
-    }
-    return input;
 }
 
 void T1MInjectGameInvEntry()

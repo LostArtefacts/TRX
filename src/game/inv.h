@@ -13,7 +13,6 @@ void Construct_Inventory();
 void SelectMeshes(INVENTORY_ITEM *inv_item);
 int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item);
 void DrawInventoryItem(INVENTORY_ITEM *inv_item);
-int32_t GetDebouncedInput(int32_t input);
 
 void InitColours();
 void RingIsOpen(RING_INFO *ring);

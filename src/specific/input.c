@@ -10,6 +10,8 @@
 
 #include <dinput.h>
 
+int32_t OldInputDB = 0;
+
 int16_t Layout[2][KEY_NUMBER_OF] = {
     // built-in controls
     {
@@ -299,6 +301,13 @@ void S_UpdateInput()
 
     Input = linput;
     return;
+}
+
+int32_t GetDebouncedInput(int32_t input)
+{
+    int32_t result = input & ~OldInputDB;
+    OldInputDB = input;
+    return result;
 }
 
 void T1MInjectSpecificInput()
