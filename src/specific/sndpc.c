@@ -37,6 +37,7 @@ SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume);
 static LPDIRECTSOUNDBUFFER SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
     int8_t loop);
+static void S_SoundStopSample(LPDIRECTSOUNDBUFFER buffer);
 
 typedef struct DUPE_SOUND_BUFFER {
     SAMPLE_DATA *sample;
@@ -75,7 +76,7 @@ SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume)
 static LPDIRECTSOUNDBUFFER SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
-    if (!SoundInit1 || !SoundInit2) {
+    if (!SoundIsActive) {
         return NULL;
     }
 
@@ -270,7 +271,7 @@ int32_t S_SoundPlaySample(
 void S_SoundStopAllSamples()
 {
     TRACE("");
-    if (!SoundInit1 || !SoundInit2) {
+    if (!SoundIsActive) {
         return;
     }
 
@@ -279,6 +280,17 @@ void S_SoundStopAllSamples()
         if (sample) {
             IDirectSoundBuffer_Stop(sample->buffer);
         }
+    }
+}
+
+static void S_SoundStopSample(LPDIRECTSOUNDBUFFER buffer)
+{
+    TRACE("");
+    if (!SoundIsActive || !SoundInit1 || !SoundInit2) {
+        return;
+    }
+    if (buffer) {
+        IDirectSoundBuffer_Stop(buffer);
     }
 }
 
@@ -294,6 +306,7 @@ void T1MInjectSpecificSndPC()
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
+    INJECT(0x00438CD0, S_SoundStopSample);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.

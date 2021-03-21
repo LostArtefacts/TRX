@@ -283,7 +283,7 @@ SoundInit                       0x00419E90  0x000000C0  +
 WinSndMakeSample                0x00419F50  0x000001CA  -
 sub_41A120                      0x0041A120  0x000000A1  -
 sub_41A1D0                      0x0041A1D0  0x00000027  -
-sub_41A200                      0x0041A200  0x0000000F  -
+StopSoundSample                 0x0041A200  0x0000000F  +
 
 # effects.cpp
 ItemNearLara                    0x0041A210  0x0000008C  +
@@ -849,7 +849,7 @@ SoundLoadSample                 0x00437CB0  0x0000014B  -
 SoundIsInitialised              0x00437E00  0x0000000D  +
 SoundPlaySample                 0x00437E10  0x000000C3  +
 sub_437EE0                      0x00437EE0  0x00000028  -
-WinSndStopSample                0x00437F10  0x00000020  -
+WinSndStopSample                0x00437F10  0x00000020  +
 S_CDVolume                      0x00437F30  0x00000001  +
 TestCdDrive                     0x00437F40  0x00000039  x
 CDStop                          0x00437F80  0x00000026  +
@@ -868,7 +868,7 @@ S_SoundPlaySample               0x00438BF0  0x0000004B  +
 S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
 sub_438CA0                      0x00438CA0  0x00000015  -
 S_SoundStopAllSamples           0x00438CC0  0x0000000F  +
-S_SoundStopSample               0x00438CD0  0x0000001B  -
+S_SoundStopSample               0x00438CD0  0x0000001B  +
 SoundBufferSetPanVol            0x00438CF0  0x00000044  +
 S_CDPlay                        0x00438D40  0x000000FD  +
 S_CDStop                        0x00438E40  0x00000043  +
