@@ -104,6 +104,37 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 ![](docs/showcase5.jpg)
 
+## Q&A
+
+1. **Is the game fully playable from beginning to the end?**
+
+    Yes. If you encounter a bug, please file a ticket.
+
+2. **Can we get HD textures? Reflections? Other graphical updates?**
+
+    Eventually, probably yes. But first we need to decompile the renderer,
+    which is going to take a while (can't give an estimate).
+
+3. **Can we get braid in every level? Skyboxes? Flyby cameras? New animations? etc.**
+
+    Not sure at this moment; this requires meddling with the original game
+    level files. It's one thing fixing a faulty trigger bit in The Great
+    Pyramid for the final secret, and another to insert a completely new
+    animation, a textured mesh or a sound file and pretend it's always been a
+    part of the original game. So far we haven't found a good way that'll keep
+    the code maintainable.
+
+4. **Can I play this on Mac, Linux, Android...?**
+
+    Currently only Windows version is available.
+
+5. **Do I really need to install this TombATI patch? Why not have just the .exe?**
+
+    One of our goals is to eventually provide a single .exe file (maybe with
+    some .dll-s related to multimedia) and only require the players to supply
+    the game data, i.e. the level files, music and FMVs. However, this requires
+    decompiling GFX and SFX routines which, again, is going to take a while.
+
 ## Decompilation progress
 
 ![](docs/progress.svg)
