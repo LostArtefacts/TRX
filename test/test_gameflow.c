@@ -14,14 +14,15 @@ static char *read_file_text(const char *path)
         return NULL;
     }
     int data_size = FileSize(fp);
-    char *data = malloc(data_size+1);
+    char *data = malloc(data_size + 1);
     FileRead(data, sizeof(char), data_size, fp);
     data[data_size] = '\0';
     FileClose(fp);
     return data;
 }
 
-static void assert_json_keys_equal(struct json_object_s *obj1, struct json_object_s *obj2)
+static void
+assert_json_keys_equal(struct json_object_s *obj1, struct json_object_s *obj2)
 {
     ASSERT_INT_EQUAL(obj1->length, obj2->length);
     struct json_object_element_s *obj1_elem = obj1->start;
@@ -50,8 +51,10 @@ void test_gameflow_equality()
     ASSERT_OK(gf2_root != NULL);
     assert_json_keys_equal(gf1_root, gf2_root);
 
-    struct json_object_s *strings1 = json_object_get_object(gf1_root, "strings");
-    struct json_object_s *strings2 = json_object_get_object(gf2_root, "strings");
+    struct json_object_s *strings1 =
+        json_object_get_object(gf1_root, "strings");
+    struct json_object_s *strings2 =
+        json_object_get_object(gf2_root, "strings");
     ASSERT_OK(strings1 != NULL);
     ASSERT_OK(strings2 != NULL);
     assert_json_keys_equal(strings1, strings2);

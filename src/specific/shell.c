@@ -18,11 +18,13 @@
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 
+#include "args.h"
 #include "util.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void GameMain()
 {
@@ -32,9 +34,25 @@ void GameMain()
     ScreenSizer = 1.0;
     GameSizer = 1.0;
 
+    const char *gameflow_path = "cfg/Tomb1Main_gameflow.json5";
+
+    char **args;
+    int arg_count;
+    get_command_line(&args, &arg_count);
+    for (int i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            gameflow_path = "cfg/Tomb1Main_gameflow_ub.json5";
+        }
+    }
+
+    for (int i = 0; i < arg_count; i++) {
+        free(args[i]);
+    }
+    free(args);
+
     S_InitialiseSystem();
 
-    if (!GF_LoadScriptFile("cfg/Tomb1Main_gameflow.json5")) {
+    if (!GF_LoadScriptFile(gameflow_path)) {
         ShowFatalError("MAIN: unable to load script file");
         return;
     }

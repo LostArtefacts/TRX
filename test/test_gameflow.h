@@ -4,4 +4,3 @@
 void test_gameflow_equality();
 
 #endif
-
