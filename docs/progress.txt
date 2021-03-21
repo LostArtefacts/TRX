@@ -279,7 +279,7 @@ GetBoundsAccurate               0x00419DD0  0x0000007C  +
 GetBestFrame                    0x00419E50  0x00000035  +
 
 # ?????
-sub_419E90                      0x00419E90  0x000000C0  -
+SoundInit                       0x00419E90  0x000000C0  +
 WinSndMakeSample                0x00419F50  0x000001CA  -
 sub_41A120                      0x0041A120  0x000000A1  -
 sub_41A1D0                      0x0041A1D0  0x00000027  -

@@ -1,15 +1,18 @@
 #include "game/pause.h"
 
 #include "game/health.h"
-#include "game/inv.h"
-#include "game/option.h"
 #include "game/requester.h"
 #include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_MAX_TEXT_LENGTH 50

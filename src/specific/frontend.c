@@ -77,7 +77,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         goto cleanup;
     }
 
-    if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) {
+    if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) { //
         TRACE("cannot init playback mode");
         goto cleanup;
     }

@@ -6,7 +6,25 @@
 #include "global/vars_platform.h"
 #include "util.h"
 
-#include <windows.h>
+#include <math.h>
+
+#define DECIBEL_LUT_SIZE 512
+
+int32_t SoundInit()
+{
+    TRACE("");
+    if (DirectSoundCreate(0, &DSound, 0)) {
+        return 0;
+    }
+    if (DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1)) {
+        return 0;
+    }
+    DecibelLUT[0] = -10000;
+    for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
+        DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
+    }
+    return 1;
+}
 
 void S_CDVolume(int16_t volume)
 {
@@ -118,6 +136,7 @@ int32_t CDPlayLooped()
 
 void T1MInjectSpecificSndPC()
 {
+    INJECT(0x00419E90, SoundInit);
     INJECT(0x00437FB0, CDPlay);
     INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);

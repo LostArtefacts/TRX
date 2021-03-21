@@ -7,7 +7,6 @@
 #include "game/game.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/option.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "global/const.h"
@@ -21,6 +20,7 @@
 #include "json.h"
 #include "util.h"
 
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 

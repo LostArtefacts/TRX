@@ -102,6 +102,7 @@
 #define SoundsLoaded            VAR_U_(0x0045A214, int32_t)
 #define SampleLUT               ARRAY_(0x0045EB60, int16_t, [MAX_SAMPLES])
 #define SampleInfos             VAR_U_(0x0045ED60, SAMPLE_INFO*)
+#define DecibelLUT              ARRAY_(0x0045F1E0, int32_t, [DECIBEL_LUT_SIZE])
 #define NumSampleInfos          VAR_U_(0x0045A210, int32_t)
 #define NumSamples              VAR_U_(0x0045E964, int32_t)
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)

@@ -1,7 +1,7 @@
 CC=i686-w64-mingw32-gcc
 PYTHON=python3
 WINDRES=i686-w64-mingw32-windres
-LDFLAGS=-ldbghelp -lwinmm
+LDFLAGS=-ldbghelp -lwinmm -ldsound
 CFLAGS=-Wall -Isrc
 
 VERSION = $(shell git describe --abbrev=7 --tags master)

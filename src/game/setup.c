@@ -40,7 +40,6 @@
 #include "game/effects/waterfall.h"
 #include "game/hair.h"
 #include "game/health.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
