@@ -51,12 +51,12 @@ typedef struct {
 
 void T1MTraceFunc(
     const char *file, int line, const char *func, const char *fmt, ...);
-void T1MInjectFunc(void *from, void *to);
+void T1MInjectFunc(void (*from)(void), void (*to)(void));
 void T1MPrintStackTrace();
 
 #define INJECT(from, to)                                                       \
     {                                                                          \
-        T1MInjectFunc((void *)from, (void *)to);                               \
+        T1MInjectFunc((void (*)(void))from, (void (*)(void))to);               \
     }
 
 #endif

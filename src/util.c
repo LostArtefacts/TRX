@@ -16,7 +16,7 @@ void T1MTraceFunc(
     fflush(stdout);
 }
 
-void T1MInjectFunc(void *from, void *to)
+void T1MInjectFunc(void (*from)(void), void (*to)(void))
 {
     if (from == to) {
         return;

@@ -2846,41 +2846,40 @@ void json_array_append(struct json_array_s *arr, struct json_value_s *value)
 
 void json_array_append_bool(struct json_array_s *arr, int b)
 {
-    return json_array_append(arr, json_value_from_bool(b));
+    json_array_append(arr, json_value_from_bool(b));
 }
 
 void json_array_append_number_int(struct json_array_s *arr, int number)
 {
-    return json_array_append(
-        arr, json_value_from_number(json_number_new_int(number)));
+    json_array_append(arr, json_value_from_number(json_number_new_int(number)));
 }
 
 void json_array_append_number_double(struct json_array_s *arr, double number)
 {
-    return json_array_append(
+    json_array_append(
         arr, json_value_from_number(json_number_new_double(number)));
 }
 
 void json_array_append_array(
     struct json_array_s *arr, struct json_array_s *arr2)
 {
-    return json_array_append(arr, json_value_from_array(arr2));
+    json_array_append(arr, json_value_from_array(arr2));
 }
 
 struct json_value_s *
-json_array_get_value(struct json_array_s *arr, const int idx)
+json_array_get_value(struct json_array_s *arr, const size_t idx)
 {
-    if (!arr || idx < 0 || idx >= arr->length) {
+    if (!arr || idx >= arr->length) {
         return json_null;
     }
     struct json_array_element_s *elem = arr->start;
-    for (int i = 0; i < idx; i++) {
+    for (size_t i = 0; i < idx; i++) {
         elem = elem->next;
     }
     return elem->value;
 }
 
-int json_array_get_bool(struct json_array_s *arr, const int idx, int d)
+int json_array_get_bool(struct json_array_s *arr, const size_t idx, int d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     if (json_value_is_true(value)) {
@@ -2891,7 +2890,7 @@ int json_array_get_bool(struct json_array_s *arr, const int idx, int d)
     return d;
 }
 
-int json_array_get_number_int(struct json_array_s *arr, const int idx, int d)
+int json_array_get_number_int(struct json_array_s *arr, const size_t idx, int d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_number_s *num = json_value_as_number(value);
@@ -2901,8 +2900,8 @@ int json_array_get_number_int(struct json_array_s *arr, const int idx, int d)
     return d;
 }
 
-double
-json_array_get_number_double(struct json_array_s *arr, const int idx, double d)
+double json_array_get_number_double(
+    struct json_array_s *arr, const size_t idx, double d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_number_s *num = json_value_as_number(value);
@@ -2913,7 +2912,7 @@ json_array_get_number_double(struct json_array_s *arr, const int idx, double d)
 }
 
 const char *
-json_array_get_string(struct json_array_s *arr, const int idx, const char *d)
+json_array_get_string(struct json_array_s *arr, const size_t idx, const char *d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_string_s *str = json_value_as_string(value);
@@ -2924,7 +2923,7 @@ json_array_get_string(struct json_array_s *arr, const int idx, const char *d)
 }
 
 struct json_array_s *
-json_array_get_array(struct json_array_s *arr, const int idx)
+json_array_get_array(struct json_array_s *arr, const size_t idx)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_array_s *arr2 = json_value_as_array(value);
@@ -2932,7 +2931,7 @@ json_array_get_array(struct json_array_s *arr, const int idx)
 }
 
 struct json_object_s *
-json_array_get_object(struct json_array_s *arr, const int idx)
+json_array_get_object(struct json_array_s *arr, const size_t idx)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_object_s *obj = json_value_as_object(value);
@@ -2984,27 +2983,27 @@ void json_object_append(
 
 void json_object_append_bool(struct json_object_s *obj, const char *key, int b)
 {
-    return json_object_append(obj, key, json_value_from_bool(b));
+    json_object_append(obj, key, json_value_from_bool(b));
 }
 
 void json_object_append_number_int(
     struct json_object_s *obj, const char *key, int number)
 {
-    return json_object_append(
+    json_object_append(
         obj, key, json_value_from_number(json_number_new_int(number)));
 }
 
 void json_object_append_number_double(
     struct json_object_s *obj, const char *key, double number)
 {
-    return json_object_append(
+    json_object_append(
         obj, key, json_value_from_number(json_number_new_double(number)));
 }
 
 void json_object_append_array(
     struct json_object_s *obj, const char *key, struct json_array_s *arr)
 {
-    return json_object_append(obj, key, json_value_from_array(arr));
+    json_object_append(obj, key, json_value_from_array(arr));
 }
 
 struct json_value_s *

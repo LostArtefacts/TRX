@@ -14,7 +14,7 @@
 
 #define COLOR_BAR_SIZE 5
 
-static int8_t color_bar_map[][COLOR_BAR_SIZE] = {
+static uint8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 8, 11, 8, 6, 24 }, // gold
     { 32, 41, 32, 19, 21 }, // blue
     { 18, 17, 18, 19, 21 }, // grey
