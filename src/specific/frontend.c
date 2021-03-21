@@ -2,8 +2,10 @@
 
 #include "config.h"
 #include "global/const.h"
+#include "global/lib.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "global/vars_platform.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/init.h"

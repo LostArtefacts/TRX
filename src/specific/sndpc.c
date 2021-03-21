@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "global/vars_platform.h"
 #include "util.h"
 
 #include <windows.h>
@@ -82,7 +83,7 @@ int32_t CDPlay(int16_t track)
 
     MCI_PLAY_PARMS open_parms;
     open_parms.dwFrom = track;
-    open_parms.dwCallback = TombHWND;
+    open_parms.dwCallback = (DWORD_PTR)TombHWND;
 
     DWORD_PTR dwFlags = MCI_NOTIFY | MCI_FROM;
     if (track != CDNumTracks) {
