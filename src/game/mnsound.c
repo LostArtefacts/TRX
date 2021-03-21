@@ -1,4 +1,4 @@
-#include "specific/mnsound.h"
+#include "game/mnsound.h"
 
 #include "global/vars.h"
 #include "specific/sndpc.h"
@@ -66,7 +66,7 @@ void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
     slot->fxnum = -1;
 }
 
-void T1MInjectSpecificMNSound()
+void T1MInjectGameMNSound()
 {
     INJECT(0x0042A940, mn_reset_sound_effects);
     INJECT(0x0042AA30, mn_sound_effect);

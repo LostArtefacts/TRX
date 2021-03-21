@@ -1,7 +1,7 @@
 #include "game/sound.h"
 
+#include "game/mnsound.h"
 #include "global/vars.h"
-#include "specific/mnsound.h"
 
 #include <stddef.h>
 

@@ -1,13 +1,13 @@
 #include "game/settings.h"
 
 #include "filesystem.h"
+#include "game/mnsound.h"
 #include "game/option.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "json.h"
 #include "specific/input.h"
-#include "specific/mnsound.h"
 #include "specific/sndpc.h"
 #include "util.h"
 

@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_MNSOUND_H
-#define T1M_SPECIFIC_MNSOUND_H
+#ifndef T1M_GAME_MNSOUND_H
+#define T1M_GAME_MNSOUND_H
 
 #include "global/types.h"
 
@@ -17,6 +17,6 @@
 void mn_reset_sound_effects();
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot);
 
-void T1MInjectSpecificMNSound();
+void T1MInjectGameMNSound();
 
 #endif

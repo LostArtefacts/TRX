@@ -15,6 +15,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/mnsound.h"
 #include "game/option.h"
 #include "game/savegame.h"
 #include "game/setup.h"
@@ -25,7 +26,6 @@
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
-#include "specific/mnsound.h"
 #include "specific/output.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
@@ -54,6 +54,7 @@ void T1MInject()
     T1MInjectGameLaraMisc();
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
+    T1MInjectGameMNSound();
     T1MInjectGameOption();
     T1MInjectGameSaveGame();
     T1MInjectGameSetup();
@@ -64,7 +65,6 @@ void T1MInject()
     T1MInjectSpecificFrontend();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
-    T1MInjectSpecificMNSound();
     T1MInjectSpecificOutput();
     T1MInjectSpecificShell();
     T1MInjectSpecificSndPC();
