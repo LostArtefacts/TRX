@@ -8,7 +8,7 @@
 #include "util.h"
 
 #define BOX_PADDING 10
-#define BOX_BORDER 1
+#define BOX_BORDER 2
 
 #include <string.h>
 
@@ -84,7 +84,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         T_CentreH(req->heading, 1);
         T_BottomAlign(req->heading, 1);
         T_AddBackground(
-            req->heading, req->pix_width - 4, 0, 0, 0, 8, IC_BLACK,
+            req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0, 8, IC_BLACK,
             ReqMainGour1, D_TRANS2);
         T_AddOutline(req->heading, 1, IC_ORANGE, ReqMainGour2, 0);
     }
