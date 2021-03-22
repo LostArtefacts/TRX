@@ -7,7 +7,6 @@
 
 // clang-format off
 #define mn_adjust_master_volume     ((void      (*)(int32_t new_volume))0x0042B410)
-#define mn_stop_sound_effect        ((void      (*)(int32_t sfx_num, PHD_3DPOS *pos))0x0042B300)
 // clang-format on
 
 void mn_reset_sound_effects();

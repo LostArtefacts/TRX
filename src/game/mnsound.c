@@ -397,6 +397,42 @@ void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
     slot->pan = angle;
 }
 
+void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
+{
+    if (!SoundIsActive) {
+        return;
+    }
+
+    if (pos) {
+        for (int i = 0; i < MAX_PLAYING_FX; i++) {
+            MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
+            if (slot->mn_flags & MN_FX_USED) {
+                if (sfx_num >= 0) {
+                    if (slot->pos == pos && slot->fxnum == sfx_num) {
+                        S_SoundStopSample(slot->handle);
+                        mn_clear_fx_slot(slot);
+                        return;
+                    }
+                } else if (slot->pos == pos) {
+                    S_SoundStopSample(slot->handle);
+                    mn_clear_fx_slot(slot);
+                }
+            }
+        }
+    } else {
+        for (int i = 0; i < MAX_PLAYING_FX; i++) {
+            MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
+            if (slot->mn_flags & MN_FX_USED) {
+                if (slot->fxnum == sfx_num
+                    && S_SoundSampleIsPlaying(slot->handle)) {
+                    S_SoundStopSample(slot->handle);
+                    mn_clear_fx_slot(slot);
+                }
+            }
+        }
+    }
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -426,4 +462,5 @@ void T1MInjectGameMNSound()
     INJECT(0x0042AFD0, mn_reset_ambient_loudness);
     INJECT(0x0042B000, mn_stop_ambient_samples);
     INJECT(0x0042B080, mn_update_sound_effects);
+    INJECT(0x0042B300, mn_stop_sound_effect);
 }
