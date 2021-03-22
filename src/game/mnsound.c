@@ -306,6 +306,97 @@ void mn_stop_ambient_samples()
     }
 }
 
+void mn_update_sound_effects()
+{
+    if (!SoundIsActive) {
+        return;
+    }
+
+    MnSoundsPlaying = 0;
+
+    if (MnSoundMasterFadeOn) {
+        if (MnSoundFadeCounter == MnSoundFadeRate) {
+            MnSoundFadeCounter = 0;
+            if (MnSoundMasterVolume > 0) {
+                MnSoundMasterVolume--;
+            }
+        } else {
+            MnSoundFadeCounter++;
+        }
+    }
+
+    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+        MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
+        if (slot->mn_flags & MN_FX_USED) {
+            if (slot->mn_flags & MN_FX_AMBIENT) {
+                if (slot->loudness != MN_NOT_AUDIBLE && slot->handle >= 0) {
+                    S_SoundSetPanAndVolume(
+                        slot->handle, slot->pan, slot->volume);
+                    MnSoundsPlaying++;
+                } else {
+                    if (slot->handle >= 0) {
+                        S_SoundStopSample(slot->handle);
+                    }
+                    mn_clear_fx_slot(slot);
+                }
+            } else if (S_SoundSampleIsPlaying(slot->handle)) {
+                if (slot->pos != NULL) {
+                    mn_get_sound_params(slot);
+                    if (slot->volume > 0 && slot->handle >= 0) {
+                        S_SoundSetPanAndVolume(
+                            slot->handle, slot->pan, slot->volume);
+                        MnSoundsPlaying++;
+                    } else {
+                        if (slot->handle >= 0) {
+                            S_SoundStopSample(slot->handle);
+                        }
+                        mn_clear_fx_slot(slot);
+                    }
+                }
+            } else {
+                mn_clear_fx_slot(slot);
+            }
+        }
+    }
+}
+
+void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
+{
+    SAMPLE_INFO *s = &SampleInfos[SampleLUT[slot->fxnum]];
+
+    int32_t x = slot->pos->x - Camera.target.x;
+    int32_t y = slot->pos->y - Camera.target.y;
+    int32_t z = slot->pos->z - Camera.target.z;
+    if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
+        || ABS(z) > SOUND_RADIUS) {
+        slot->volume = 0;
+        return;
+    }
+
+    uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
+    int32_t volume = s->volume - phd_sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
+    if (volume < 0) {
+        slot->volume = 0;
+        return;
+    }
+
+    if (volume > 0x7FFF) {
+        volume = 0x7FFF;
+    }
+
+    slot->volume = volume;
+
+    if (!distance || (s->flags & NO_PAN)) {
+        slot->pan = 0;
+        return;
+    }
+
+    int16_t angle = phd_atan(
+        slot->pos->z - LaraItem->pos.z, slot->pos->x - LaraItem->pos.x);
+    angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+    slot->pan = angle;
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -334,4 +425,5 @@ void T1MInjectGameMNSound()
     INJECT(0x0042AF00, mn_get_fx_slot);
     INJECT(0x0042AFD0, mn_reset_ambient_loudness);
     INJECT(0x0042B000, mn_stop_ambient_samples);
+    INJECT(0x0042B080, mn_update_sound_effects);
 }

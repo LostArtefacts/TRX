@@ -118,6 +118,8 @@
 #define MnAmbientLookup         ARRAY_(0x0045A200, int16_t, [MAX_AMBIENT_FX])
 #define MnSoundMasterFadeOn     VAR_U_(0x0045A21C, int32_t)
 #define MnSoundFadeCounter      VAR_U_(0x0045A220, int32_t)
+#define MnSoundFadeRate         VAR_I_(0x00456694, int32_t, 10)
+#define MnSoundsPlaying         VAR_U_(0x0045A218, int32_t)
 #define MnAmbientLookupIdx      VAR_U_(0x0045A224, int32_t)
 
 #define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
