@@ -280,7 +280,7 @@ GetBestFrame                    0x00419E50  0x00000035  +
 
 # ?????
 SoundInit                       0x00419E90  0x000000C0  +
-SoundMakeSample                 0x00419F50  0x000001CA  -
+SoundMakeSample                 0x00419F50  0x000001CA  +
 sub_41A120                      0x0041A120  0x000000A1  +
 SoundSampleIsPlaying_           0x0041A1D0  0x00000027  +
 SoundStopSample_                0x0041A200  0x0000000F  +

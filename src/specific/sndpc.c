@@ -172,7 +172,7 @@ SAMPLE_DATA *SoundLoadSample(char *content)
     sample_data->bits_per_sample = hdr->fmt_chunk.bits_per_sample;
     sample_data->channels = hdr->fmt_chunk.num_channels;
     sample_data->unk1 = 0;
-    sample_data->bytes_per_sample =
+    sample_data->block_align =
         sample_data->channels * hdr->fmt_chunk.bits_per_sample / 8;
     sample_data->sample_rate = hdr->fmt_chunk.sample_rate;
 
@@ -182,6 +182,59 @@ SAMPLE_DATA *SoundLoadSample(char *content)
         return sample_data;
     }
     return NULL;
+}
+
+int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
+{
+    WAVEFORMATEX wave_format;
+    wave_format.wFormatTag = WAVE_FORMAT_PCM;
+    wave_format.nChannels = sample_data->channels;
+    wave_format.nSamplesPerSec = sample_data->sample_rate;
+    wave_format.nAvgBytesPerSec =
+        sample_data->sample_rate * sample_data->block_align;
+    wave_format.nBlockAlign = sample_data->block_align;
+    wave_format.wBitsPerSample = sample_data->bits_per_sample;
+
+    DSBUFFERDESC buffer_desc;
+    buffer_desc.dwSize = sizeof(DSBUFFERDESC);
+    buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN
+        | DSBCAPS_CTRLFREQUENCY;
+    // re-read DATA chunk size.
+    // TODO: use SAMPLE_DATA->length
+    buffer_desc.dwBufferBytes = *(int32_t *)&sample_data->data[-4];
+    buffer_desc.dwReserved = 0;
+    buffer_desc.lpwfxFormat = &wave_format;
+    CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
+
+    HRESULT result = IDirectSound_CreateSoundBuffer(
+        DSound, &buffer_desc, (LPDIRECTSOUNDBUFFER *)&sample_data->handle, 0);
+    if (result) {
+        TRACE("DirectSound error code %x", result);
+        ShowFatalError("Fatal DirectSound error!");
+    }
+
+    DWORD audio_data_size;
+    LPVOID audio_data;
+
+    result = IDirectSoundBuffer_Lock(
+        (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
+        &audio_data, &audio_data_size, 0, 0, 0);
+    if (result) {
+        TRACE("DirectSound error code %x", result);
+        ShowFatalError("Fatal DirectSound error!");
+    }
+
+    memcpy(audio_data, sample_data->data, buffer_desc.dwBufferBytes);
+
+    result = IDirectSoundBuffer_Unlock(
+        (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
+        0, 0);
+    if (result) {
+        TRACE("DirectSound error code %x", result);
+        ShowFatalError("Fatal DirectSound error!");
+    }
+
+    return 1;
 }
 
 void S_CDVolume(int16_t volume)
@@ -370,6 +423,7 @@ int32_t S_SoundSampleIsPlaying(void *handle)
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
+    INJECT(0x00419F50, SoundMakeSample);
     INJECT(0x00437C00, SoundLoadSamples);
     INJECT(0x00437CB0, SoundLoadSample);
     INJECT(0x00437FB0, CDPlay);

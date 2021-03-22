@@ -1970,13 +1970,13 @@ typedef struct SAMPLE_INFO {
 
 typedef struct SAMPLE_DATA {
     /* 0000 */ char *data;
-    /* 0004 */ int16_t length;
+    /* 0004 */ int16_t length; // TODO: make me 32-bit!
     /* 0006 */ int16_t bits_per_sample;
     /* 0008 */ int16_t channels;
     /* 000A */ int16_t unk1;
     /* 000C */ int16_t sample_rate;
     /* 000E */ int16_t unk2;
-    /* 0010 */ int16_t bytes_per_sample;
+    /* 0010 */ int16_t block_align;
     /* 0012 */ int32_t unk3;
     /* 0016 */ int16_t volume;
     /* 0018 */ int32_t pan;
