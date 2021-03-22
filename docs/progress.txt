@@ -667,7 +667,7 @@ mn_reset_sound_effects          0x0042A940  0x000000EC  +
 SoundEffect                     0x0042AA30  0x000004C2  +
 mn_get_fx_slot                  0x0042AF00  0x000000CE  +
 mn_reset_ambient_loudness       0x0042AFD0  0x00000030  +
-mn_stop_ambient_samples         0x0042B000  0x0000007E  *
+mn_stop_ambient_samples         0x0042B000  0x0000007E  +
 mn_update_sound_effects         0x0042B080  0x0000027D  *
 mn_get_sound_params             ----------  ----------  -
 StopSoundEffect                 0x0042B300  0x0000010E  *
