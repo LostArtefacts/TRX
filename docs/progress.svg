@@ -480,7 +480,7 @@
 <rect width="12.00" height="12.00" x="378.00" y="143.00" class="decompiled"><title>mn_stop_ambient_samples</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="143.00" class="decompiled"><title>mn_update_sound_effects</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="143.00" class="decompiled"><title>StopSoundEffect</title></rect>
-<rect width="12.00" height="12.00" x="420.00" y="143.00" class="named"><title>mn_adjust_master_volume</title></rect>
+<rect width="12.00" height="12.00" x="420.00" y="143.00" class="decompiled"><title>mn_adjust_master_volume</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="143.00" class="decompiled"><title>InitialiseMovableBlock</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="143.00" class="decompiled"><title>MovableBlockControl</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="143.00" class="decompiled"><title>MovableBlockCollision</title></rect>
@@ -1420,7 +1420,7 @@
 <rect width="1.82" height="1.72" x="690.36" y="518.75" class="todo"><title>sub_4507C0</title></rect>
 <rect width="1.82" height="1.72" x="694.18" y="518.75" class="todo"><title>sub_450880</title></rect>
 <rect width="1.38" height="2.21" x="678.91" y="522.47" class="todo"><title>sub_4508A0</title></rect>
-<rect width="1.38" height="1.99" x="678.91" y="526.69" class="named"><title>mn_adjust_master_volume</title></rect>
+<rect width="1.38" height="1.99" x="678.91" y="526.69" class="decompiled"><title>mn_adjust_master_volume</title></rect>
 <rect width="1.38" height="1.77" x="678.91" y="530.68" class="todo"><title>sub_43E670</title></rect>
 <rect width="1.38" height="1.55" x="678.91" y="534.45" class="decompiled"><title>S_NoFade</title></rect>
 <rect width="1.52" height="1.19" x="682.28" y="522.47" class="todo"><title>sub_408E32</title></rect>
@@ -1457,9 +1457,9 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 75.96%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 76.10%</text>
 <rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 72.52%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 12.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 11.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 12.21%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.27%</text>

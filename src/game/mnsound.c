@@ -76,6 +76,7 @@ void mn_reset_sound_effects()
     }
 }
 
+// original name: SoundEffect
 int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
     if (!SoundIsActive) {
@@ -397,6 +398,7 @@ void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
     slot->pan = angle;
 }
 
+// original name: StopSoundEffect
 void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
 {
     if (!SoundIsActive) {
@@ -433,6 +435,13 @@ void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
     }
 }
 
+// original name: adjust_master_volume
+void mn_adjust_master_volume(int8_t volume)
+{
+    MnSoundMasterVolumeDefault = volume & 0x3F;
+    MnSoundMasterVolume = volume & 0x3F;
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -463,4 +472,5 @@ void T1MInjectGameMNSound()
     INJECT(0x0042B000, mn_stop_ambient_samples);
     INJECT(0x0042B080, mn_update_sound_effects);
     INJECT(0x0042B300, mn_stop_sound_effect);
+    INJECT(0x0042B410, mn_adjust_master_volume);
 }

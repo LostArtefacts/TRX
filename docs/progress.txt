@@ -671,9 +671,9 @@ mn_stop_ambient_samples         0x0042B000  0x0000007E  +
 mn_update_sound_effects         0x0042B080  0x0000027D  +
 mn_get_sound_params             ----------  ----------  +
 StopSoundEffect                 0x0042B300  0x0000010E  +
-mn_adjust_master_volume         0x0042B410  0x00000012  *
-mn_start_sound_fade             ----------  ----------  -
-mn_set_sound_fade_rate          ----------  ----------  -
+mn_adjust_master_volume         0x0042B410  0x00000012  +
+mn_start_sound_fade             ----------  ----------  x
+mn_set_sound_fade_rate          ----------  ----------  x
 mn_clear_fx_slot                ----------  ----------  +
 mn_clear_handles                ----------  ----------  +
 
