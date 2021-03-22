@@ -321,33 +321,38 @@ void S_SoundStopAllSamples()
 void S_SoundStopSample(void *handle)
 {
     TRACE("");
-    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    if (!SoundIsActive || !SoundInit1 || !SoundInit2) {
+    if (!SoundIsActive) {
         return;
     }
-    if (buffer) {
-        IDirectSoundBuffer_Stop(buffer);
+    if (handle == SOUND_INVALID_HANDLE) {
+        return;
     }
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
+    IDirectSoundBuffer_Stop(buffer);
 }
 
 void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
 {
-    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    if (buffer) {
-        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
-        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    if (!SoundIsActive) {
+        return;
     }
+    if (handle == SOUND_INVALID_HANDLE) {
+        return;
+    }
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
+    IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
 }
 
 int32_t S_SoundSampleIsPlaying(void *handle)
 {
+    if (!SoundIsActive) {
+        return 0;
+    }
+    if (handle == SOUND_INVALID_HANDLE) {
+        return 0;
+    }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    if (!SoundIsActive || !SoundInit1 || !SoundInit2) {
-        return 0;
-    }
-    if (!buffer) {
-        return 0;
-    }
     DWORD status;
     IDirectSoundBuffer_GetStatus(buffer, &status);
     return status == DSBSTATUS_PLAYING;

@@ -5,7 +5,7 @@
 
 #include "global/types.h"
 
-#define SOUND_INVALID_HANDLE ((void *)-1)
+#define SOUND_INVALID_HANDLE NULL
 
 // clang-format off
 #define SoundMakeSample     ((int (*)(SAMPLE_DATA *sample_data))0x00419F50)
