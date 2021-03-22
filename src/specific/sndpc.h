@@ -18,6 +18,7 @@ int32_t S_SoundPlaySampleLooped(
 int32_t S_SoundSampleIsPlaying(int32_t handle);
 void S_SoundStopAllSamples();
 void S_SoundStopSample(int32_t handle);
+void S_SoundSetPanAndVolume(int32_t handle, int16_t pan, int16_t volume);
 
 void T1MInjectSpecificSndPC();
 

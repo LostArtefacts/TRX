@@ -611,7 +611,7 @@
 <rect width="12.00" height="12.00" x="112.00" y="185.00" class="decompiled"><title>S_SoundSampleIsPlaying</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="185.00" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="185.00" class="decompiled"><title>S_SoundStopSample</title></rect>
-<rect width="12.00" height="12.00" x="154.00" y="185.00" class="decompiled"><title>SoundBufferSetPanVol</title></rect>
+<rect width="12.00" height="12.00" x="154.00" y="185.00" class="decompiled"><title>S_SoundSetPanAndVolume</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="185.00" class="decompiled"><title>S_CDPlay</title></rect>
 <rect width="12.00" height="12.00" x="182.00" y="185.00" class="decompiled"><title>S_CDStop</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="185.00" class="decompiled"><title>SampleLoader</title></rect>
@@ -1255,7 +1255,7 @@
 <rect width="5.20" height="5.17" x="662.42" y="458.30" class="named"><title>FMVInit</title></rect>
 <rect width="5.20" height="5.17" x="669.62" y="458.30" class="named"><title>OnKeyPress</title></rect>
 <rect width="5.09" height="5.17" x="676.82" y="458.30" class="named"><title>S_DumpScreen</title></rect>
-<rect width="5.09" height="5.17" x="683.92" y="458.30" class="decompiled"><title>SoundBufferSetPanVol</title></rect>
+<rect width="5.09" height="5.17" x="683.92" y="458.30" class="decompiled"><title>S_SoundSetPanAndVolume</title></rect>
 <rect width="4.99" height="5.17" x="691.01" y="458.30" class="decompiled"><title>FxChainBlock</title></rect>
 <rect width="5.50" height="4.69" x="625.59" y="465.48" class="decompiled"><title>S_CDStop</title></rect>
 <rect width="5.39" height="4.69" x="633.09" y="465.48" class="decompiled"><title>KeyTrigger</title></rect>

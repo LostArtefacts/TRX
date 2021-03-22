@@ -869,7 +869,7 @@ S_SoundPlaySampleLooped         0x00438C40  0x00000051  +
 S_SoundSampleIsPlaying          0x00438CA0  0x00000015  +
 S_SoundStopAllSamples           0x00438CC0  0x0000000F  +
 S_SoundStopSample               0x00438CD0  0x0000001B  +
-SoundBufferSetPanVol            0x00438CF0  0x00000044  +
+S_SoundSetPanAndVolume          0x00438CF0  0x00000044  +
 S_CDPlay                        0x00438D40  0x000000FD  +
 S_CDStop                        0x00438E40  0x00000043  +
 SampleLoader                    0x00438E90  0x00000005  +

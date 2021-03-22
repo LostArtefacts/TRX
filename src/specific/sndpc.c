@@ -55,15 +55,6 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static void
-SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume)
-{
-    if (buffer) {
-        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
-        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(128 + pan / 256));
-    }
-}
-
 static LPDIRECTSOUNDBUFFER SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
@@ -298,6 +289,15 @@ void S_SoundStopSample(int32_t handle)
     }
 }
 
+void S_SoundSetPanAndVolume(int32_t handle, int16_t pan, int16_t volume)
+{
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
+    if (buffer) {
+        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(128 + pan / 256));
+    }
+}
+
 int32_t S_SoundSampleIsPlaying(int32_t handle)
 {
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
@@ -323,7 +323,7 @@ void T1MInjectSpecificSndPC()
     INJECT(0x00438CA0, S_SoundSampleIsPlaying);
     INJECT(0x00438CC0, S_SoundStopAllSamples);
     INJECT(0x00438CD0, S_SoundStopSample);
-    INJECT(0x00438CF0, SoundBufferSetPanVol);
+    INJECT(0x00438CF0, S_SoundSetPanAndVolume);
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
