@@ -279,6 +279,18 @@ mn_get_fx_slot(int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
     return NULL;
 }
 
+void mn_reset_ambient_loudness()
+{
+    if (!SoundIsActive) {
+        return;
+    }
+
+    for (int i = 0; i < MnAmbientLookupIdx; i++) {
+        MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
+        slot->loudness = MN_NOT_AUDIBLE;
+    }
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -305,4 +317,5 @@ void T1MInjectGameMNSound()
     INJECT(0x0042A940, mn_reset_sound_effects);
     INJECT(0x0042AA30, mn_sound_effect);
     INJECT(0x0042AF00, mn_get_fx_slot);
+    INJECT(0x0042AFD0, mn_reset_ambient_loudness);
 }
