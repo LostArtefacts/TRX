@@ -55,6 +55,11 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
+static char *SampleLoader(char *sample_data)
+{
+    return sample_data;
+}
+
 static LPDIRECTSOUNDBUFFER SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
@@ -130,6 +135,20 @@ int32_t SoundInit()
         DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
     }
     return 1;
+}
+
+void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
+{
+    TRACE("");
+    if (!SoundIsActive) {
+        return;
+    }
+
+    NumSampleData = num_samples;
+    SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
+    for (int i = 0; i < NumSampleData; i++) {
+        SampleData[i] = SoundLoadSample(sample_pointers[i], SampleLoader);
+    }
 }
 
 void S_CDVolume(int16_t volume)
@@ -313,6 +332,7 @@ int32_t S_SoundSampleIsPlaying(int32_t handle)
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
+    INJECT(0x00437C00, SoundLoadSamples);
     INJECT(0x00437FB0, CDPlay);
     INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);

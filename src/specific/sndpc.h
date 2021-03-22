@@ -3,7 +3,15 @@
 
 #include <stdint.h>
 
+#include "global/types.h"
+
+// clang-format off
+#define SoundLoadSample     ((SAMPLE_DATA* (*)(char *content, char *(*sample_loader)(char *)))0x00437CB0)
+// clang-format on
+
 int32_t SoundInit();
+void SoundLoadSamples(char **sample_pointers, int32_t file_size);
+
 int32_t CDPlay(int16_t track_id);
 int32_t CDPlayLooped();
 int32_t S_CDPlay(int16_t track);

@@ -8,6 +8,7 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+#include "specific/sndpc.h"
 #include "util.h"
 
 #include <windows.h>
@@ -550,11 +551,6 @@ static int32_t LoadDemo(MYFILE *fp)
     return 1;
 }
 
-static const char *SampleLoader(const char *sample_data)
-{
-    return sample_data;
-}
-
 static int32_t LoadSamples(MYFILE *fp)
 {
     if (!SoundIsActive) {
@@ -596,16 +592,15 @@ static int32_t LoadSamples(MYFILE *fp)
     FileRead(sample_offsets, sizeof(int32_t), NumSamples, fp);
 
     char **sample_pointers =
-        game_malloc(sizeof(char *) * (NumSamples + 1), GBUF_SAMPLE_OFFSETS);
-    sample_pointers[0] = (char *)&SampleLoader;
+        game_malloc(sizeof(char *) * NumSamples, GBUF_SAMPLE_OFFSETS);
     for (int i = 0; i < NumSamples; i++) {
-        sample_pointers[i + 1] = sample_data + sample_offsets[i];
+        sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    WinSndLoadSamples(sample_pointers, -NumSamples);
+    SoundLoadSamples(sample_pointers, NumSamples);
     SoundsLoaded = 1;
 
-    game_free(sizeof(char *) * (NumSamples + 1), GBUF_SAMPLE_OFFSETS);
+    game_free(sizeof(char *) * NumSamples, GBUF_SAMPLE_OFFSETS);
 
     return 1;
 }
