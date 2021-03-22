@@ -247,8 +247,7 @@ int32_t S_SoundPlaySample(
         return 0;
     }
     return (int32_t)SoundPlaySample(
-        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, 128 + pan / 256,
-        0);
+        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 0);
 }
 
 int32_t S_SoundPlaySampleLooped(
@@ -258,8 +257,7 @@ int32_t S_SoundPlaySampleLooped(
         return 0;
     }
     return (int32_t)SoundPlaySample(
-        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, 128 + pan / 256,
-        1);
+        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 1);
 }
 
 void S_SoundStopAllSamples()
@@ -294,7 +292,7 @@ void S_SoundSetPanAndVolume(int32_t handle, int16_t pan, int16_t volume)
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     if (buffer) {
         IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
-        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(128 + pan / 256));
+        IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
     }
 }
 
