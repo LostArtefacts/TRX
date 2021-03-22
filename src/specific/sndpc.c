@@ -298,6 +298,20 @@ void S_SoundStopSample(int32_t handle)
     }
 }
 
+int32_t S_SoundSampleIsPlaying(int32_t handle)
+{
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
+    if (!SoundIsActive || !SoundInit1 || !SoundInit2) {
+        return 0;
+    }
+    if (!buffer) {
+        return 0;
+    }
+    DWORD status;
+    IDirectSoundBuffer_GetStatus(buffer, &status);
+    return status == DSBSTATUS_PLAYING;
+}
+
 void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
@@ -306,6 +320,7 @@ void T1MInjectSpecificSndPC()
     INJECT(0x004380C0, CDPlayLooped);
     INJECT(0x00438BF0, S_SoundPlaySample);
     INJECT(0x00438C40, S_SoundPlaySampleLooped);
+    INJECT(0x00438CA0, S_SoundSampleIsPlaying);
     INJECT(0x00438CC0, S_SoundStopAllSamples);
     INJECT(0x00438CD0, S_SoundStopSample);
     INJECT(0x00438CF0, SoundBufferSetPanVol);

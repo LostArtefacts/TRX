@@ -15,6 +15,7 @@ int32_t S_SoundPlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
 int32_t S_SoundPlaySampleLooped(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
+int32_t S_SoundSampleIsPlaying(int32_t handle);
 void S_SoundStopAllSamples();
 void S_SoundStopSample(int32_t handle);
 
