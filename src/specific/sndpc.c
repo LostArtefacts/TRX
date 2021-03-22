@@ -36,11 +36,6 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static char *SampleLoader(char *sample_data)
-{
-    return sample_data;
-}
-
 static LPDIRECTSOUNDBUFFER SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
@@ -128,8 +123,56 @@ void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
     NumSampleData = num_samples;
     SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
     for (int i = 0; i < NumSampleData; i++) {
-        SampleData[i] = SoundLoadSample(sample_pointers[i], SampleLoader);
+        SampleData[i] = SoundLoadSample(sample_pointers[i]);
     }
+}
+
+SAMPLE_DATA *SoundLoadSample(char *content)
+{
+    int8_t encrypted = 0;
+    if (content[0] == '~') {
+        encrypted = 1;
+        content++;
+    }
+
+    SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
+    memset(sample_data, 0, sizeof(SAMPLE_DATA));
+    sample_data->unk2 = 0;
+    if (content[0] == 'R' && content[1] == 'I' && content[2] == 'F'
+        && content[3] == 'F') {
+        sample_data->data = content + 44;
+        sample_data->length = *((int16_t *)content + 20) - 44;
+        sample_data->bits_per_sample = *((int16_t *)content + 17);
+        sample_data->channels = *((int16_t *)content + 11);
+        sample_data->unk1 = 0;
+        if (*((int16_t *)content + 17) == 8) {
+            sample_data->channels2 = sample_data->channels;
+        } else {
+            sample_data->channels2 = sample_data->channels * 2;
+        }
+        sample_data->sample_rate = *((int16_t *)content + 12);
+    } else {
+        size_t data_size = 0; // TODO: establish if it's needed
+        sample_data->data = content;
+        sample_data->length = data_size;
+        sample_data->channels = 1;
+        sample_data->channels2 = 1;
+        sample_data->bits_per_sample = 8;
+        sample_data->unk1 = 0;
+        sample_data->sample_rate = 11025;
+        if (encrypted) {
+            for (int i = 0; i < data_size; ++i) {
+                content[i] ^= 0x80u;
+            }
+        }
+    }
+
+    sample_data->pan = 0;
+    sample_data->volume = 0x7FFF;
+    if (SoundMakeSample(sample_data)) {
+        return sample_data;
+    }
+    return NULL;
 }
 
 void S_CDVolume(int16_t volume)
@@ -314,6 +357,7 @@ void T1MInjectSpecificSndPC()
 {
     INJECT(0x00419E90, SoundInit);
     INJECT(0x00437C00, SoundLoadSamples);
+    INJECT(0x00437CB0, SoundLoadSample);
     INJECT(0x00437FB0, CDPlay);
     INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);

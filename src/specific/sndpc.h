@@ -8,11 +8,12 @@
 #define SOUND_INVALID_HANDLE ((void *)-1)
 
 // clang-format off
-#define SoundLoadSample     ((SAMPLE_DATA* (*)(char *content, char *(*sample_loader)(char *)))0x00437CB0)
+#define SoundMakeSample     ((int (*)(SAMPLE_DATA *sample_data))0x00419F50)
 // clang-format on
 
 int32_t SoundInit();
-void SoundLoadSamples(char **sample_pointers, int32_t file_size);
+void SoundLoadSamples(char **sample_pointers, int32_t num_samples);
+SAMPLE_DATA *SoundLoadSample(char *content);
 
 int32_t CDPlay(int16_t track_id);
 int32_t CDPlayLooped();

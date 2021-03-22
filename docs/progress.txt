@@ -280,10 +280,10 @@ GetBestFrame                    0x00419E50  0x00000035  +
 
 # ?????
 SoundInit                       0x00419E90  0x000000C0  +
-WinSndMakeSample                0x00419F50  0x000001CA  -
+SoundMakeSample                 0x00419F50  0x000001CA  -
 sub_41A120                      0x0041A120  0x000000A1  +
-WinSndSampleIsPlaying           0x0041A1D0  0x00000027  +
-StopSoundSample                 0x0041A200  0x0000000F  +
+SoundSampleIsPlaying_           0x0041A1D0  0x00000027  +
+SoundStopSample_                0x0041A200  0x0000000F  +
 
 # effects.cpp
 ItemNearLara                    0x0041A210  0x0000008C  +
@@ -845,11 +845,11 @@ OnKeyPress                      0x00437B70  0x00000045  -
 KeyGet                          0x00437BC0  0x00000003  +
 KeyClearBuffer                  0x00437BD0  0x00000029  +
 SoundLoadSamples                0x00437C00  0x000000A5  +
-SoundLoadSample                 0x00437CB0  0x0000014B  *
+SoundLoadSample                 0x00437CB0  0x0000014B  +
 SoundIsInitialised              0x00437E00  0x0000000D  +
 SoundPlaySample                 0x00437E10  0x000000C3  +
 SoundSampleIsPlaying            0x00437EE0  0x00000028  +
-WinSndStopSample                0x00437F10  0x00000020  +
+SoundStopSample                 0x00437F10  0x00000020  +
 S_CDVolume                      0x00437F30  0x00000001  +
 TestCdDrive                     0x00437F40  0x00000039  x
 CDStop                          0x00437F80  0x00000026  +
