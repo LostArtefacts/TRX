@@ -21,6 +21,7 @@ typedef enum SOUND_MODE {
 } SOUND_MODE;
 
 typedef enum SOUND_FLAG {
+    MN_FX_UNUSED = 0,
     MN_FX_USED = 1 << 0,
     MN_FX_AMBIENT = 1 << 1,
     MN_FX_RESTARTED = 1 << 2,
@@ -241,6 +242,43 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     return 0;
 }
 
+MN_SFX_PLAY_INFO *
+mn_get_fx_slot(int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
+{
+    switch (mode) {
+    case SOUND_WAIT:
+    case SOUND_RESTART: {
+        MN_SFX_PLAY_INFO *last_free_slot = NULL;
+        for (int i = MnAmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
+            MN_SFX_PLAY_INFO *result = &SFXPlaying[i];
+            if ((result->mn_flags & MN_FX_USED) && result->fxnum == sfx_num
+                && result->pos == pos) {
+                result->mn_flags |= MN_FX_RESTARTED;
+                return result;
+            } else if (result->mn_flags == MN_FX_UNUSED) {
+                last_free_slot = result;
+            }
+        }
+        return last_free_slot;
+    }
+
+    case SOUND_AMBIENT:
+        for (int i = 0; i < MAX_AMBIENT_FX; i++) {
+            if (MnAmbientLookup[i] == sfx_num) {
+                MN_SFX_PLAY_INFO *result = &SFXPlaying[i];
+                if (result->mn_flags != MN_FX_UNUSED
+                    && result->loudness <= loudness) {
+                    return NULL;
+                }
+                return result;
+            }
+        }
+        break;
+    }
+
+    return NULL;
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -266,4 +304,5 @@ void T1MInjectGameMNSound()
 {
     INJECT(0x0042A940, mn_reset_sound_effects);
     INJECT(0x0042AA30, mn_sound_effect);
+    INJECT(0x0042AF00, mn_get_fx_slot);
 }
