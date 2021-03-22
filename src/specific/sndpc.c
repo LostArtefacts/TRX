@@ -4,6 +4,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "specific/shed.h"
 #include "util.h"
 
 #include <math.h>
@@ -16,6 +17,33 @@ typedef struct DUPE_SOUND_BUFFER {
     LPDIRECTSOUNDBUFFER buffer;
     struct DUPE_SOUND_BUFFER *next;
 } DUPE_SOUND_BUFFER;
+
+#pragma pack(push, 1)
+typedef struct WAVE_FORMAT_CHUNK {
+    char subchunk_id[4];
+    int32_t subchunk_size;
+    int16_t audio_format;
+    int16_t num_channels;
+    int32_t sample_rate;
+    int32_t byte_rate;
+    int16_t block_align;
+    int16_t bits_per_sample;
+} WAVE_FORMAT_CHUNK;
+
+typedef struct WAVE_DATA_CHUNK {
+    char subchunk_id[4];
+    int32_t subchunk_size;
+    // data
+} WAVE_DATA_CHUNK;
+
+typedef struct WAVE_FILE_HEADER {
+    char chunk_id[4];
+    int32_t chunk_size;
+    char format[4];
+    WAVE_FORMAT_CHUNK fmt_chunk;
+    WAVE_DATA_CHUNK data_chunk;
+} WAVE_FILE_HEADER;
+#pragma pack(pop)
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 
@@ -129,43 +157,24 @@ void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
 
 SAMPLE_DATA *SoundLoadSample(char *content)
 {
-    int8_t encrypted = 0;
-    if (content[0] == '~') {
-        encrypted = 1;
-        content++;
+    WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
+    if (strncmp(hdr->chunk_id, "RIFF", 4)) {
+        S_ExitSystem("Samples must be in WAVE format.");
+        return NULL;
     }
 
     SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
     memset(sample_data, 0, sizeof(SAMPLE_DATA));
     sample_data->unk2 = 0;
-    if (content[0] == 'R' && content[1] == 'I' && content[2] == 'F'
-        && content[3] == 'F') {
-        sample_data->data = content + 44;
-        sample_data->length = *((int16_t *)content + 20) - 44;
-        sample_data->bits_per_sample = *((int16_t *)content + 17);
-        sample_data->channels = *((int16_t *)content + 11);
-        sample_data->unk1 = 0;
-        if (*((int16_t *)content + 17) == 8) {
-            sample_data->channels2 = sample_data->channels;
-        } else {
-            sample_data->channels2 = sample_data->channels * 2;
-        }
-        sample_data->sample_rate = *((int16_t *)content + 12);
-    } else {
-        size_t data_size = 0; // TODO: establish if it's needed
-        sample_data->data = content;
-        sample_data->length = data_size;
-        sample_data->channels = 1;
-        sample_data->channels2 = 1;
-        sample_data->bits_per_sample = 8;
-        sample_data->unk1 = 0;
-        sample_data->sample_rate = 11025;
-        if (encrypted) {
-            for (int i = 0; i < data_size; ++i) {
-                content[i] ^= 0x80u;
-            }
-        }
-    }
+    sample_data->data = content + sizeof(WAVE_FILE_HEADER);
+    sample_data->length =
+        hdr->data_chunk.subchunk_size - sizeof(WAVE_FILE_HEADER);
+    sample_data->bits_per_sample = hdr->fmt_chunk.bits_per_sample;
+    sample_data->channels = hdr->fmt_chunk.num_channels;
+    sample_data->unk1 = 0;
+    sample_data->bytes_per_sample =
+        sample_data->channels * hdr->fmt_chunk.bits_per_sample / 8;
+    sample_data->sample_rate = hdr->fmt_chunk.sample_rate;
 
     sample_data->pan = 0;
     sample_data->volume = 0x7FFF;
