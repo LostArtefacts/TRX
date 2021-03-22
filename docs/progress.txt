@@ -865,7 +865,7 @@ S_WriteSettings                 0x00438B60  0x00000090  +
 
 # shell/sndpc.cpp
 S_SoundPlaySample               0x00438BF0  0x0000004B  +
-S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
+S_SoundPlaySampleLooped         0x00438C40  0x00000051  +
 sub_438CA0                      0x00438CA0  0x00000015  -
 S_SoundStopAllSamples           0x00438CC0  0x0000000F  +
 S_SoundStopSample               0x00438CD0  0x0000001B  +

@@ -28,24 +28,15 @@ typedef struct SAMPLE_DATA {
     LPDIRECTSOUNDBUFFER buffer;
     uint16_t unk5;
 } SAMPLE_DATA;
-#pragma pack(pop)
-
-static int32_t ConvertVolumeToDecibel(int32_t volume);
-static int32_t ConvertPanToDecibel(uint16_t pan);
-static void
-SoundBufferSetPanVol(LPDIRECTSOUNDBUFFER buffer, int16_t pan, int16_t volume);
-static LPDIRECTSOUNDBUFFER SoundPlaySample(
-    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
-    int8_t loop);
-static void S_SoundStopSample(LPDIRECTSOUNDBUFFER buffer);
 
 typedef struct DUPE_SOUND_BUFFER {
     SAMPLE_DATA *sample;
     LPDIRECTSOUNDBUFFER buffer;
     struct DUPE_SOUND_BUFFER *next;
 } DUPE_SOUND_BUFFER;
+#pragma pack(pop)
 
-DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
+static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 
 static int32_t ConvertVolumeToDecibel(int32_t volume)
 {
@@ -269,6 +260,17 @@ int32_t S_SoundPlaySample(
         0);
 }
 
+int32_t S_SoundPlaySampleLooped(
+    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
+{
+    if (!SoundIsActive) {
+        return 0;
+    }
+    return (int32_t)SoundPlaySample(
+        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, 128 + pan / 256,
+        1);
+}
+
 void S_SoundStopAllSamples()
 {
     TRACE("");
@@ -284,9 +286,10 @@ void S_SoundStopAllSamples()
     }
 }
 
-static void S_SoundStopSample(LPDIRECTSOUNDBUFFER buffer)
+void S_SoundStopSample(int32_t handle)
 {
     TRACE("");
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     if (!SoundIsActive || !SoundInit1 || !SoundInit2) {
         return;
     }
@@ -302,12 +305,13 @@ void T1MInjectSpecificSndPC()
     INJECT(0x004380B0, S_CDLoop);
     INJECT(0x004380C0, CDPlayLooped);
     INJECT(0x00438BF0, S_SoundPlaySample);
+    INJECT(0x00438C40, S_SoundPlaySampleLooped);
     INJECT(0x00438CC0, S_SoundStopAllSamples);
+    INJECT(0x00438CD0, S_SoundStopSample);
     INJECT(0x00438CF0, SoundBufferSetPanVol);
     INJECT(0x00438D40, S_CDPlay);
     INJECT(0x00438E40, S_CDStop);
     INJECT(0x00439030, S_StartSyncedAudio);
-    INJECT(0x00438CD0, S_SoundStopSample);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.
