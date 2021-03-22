@@ -7,34 +7,15 @@
 #include "util.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #define DECIBEL_LUT_SIZE 512
-
-#pragma pack(push)
-#pragma pack(1)
-typedef struct SAMPLE_DATA {
-    uint32_t data;
-    uint16_t length;
-    uint16_t bits_per_sample;
-    uint16_t channels;
-    uint16_t unk1;
-    uint16_t sample_rate;
-    uint16_t unk2;
-    uint16_t channels2;
-    uint32_t unk3;
-    uint16_t volume;
-    uint32_t pan;
-    uint16_t unk4;
-    LPDIRECTSOUNDBUFFER buffer;
-    uint16_t unk5;
-} SAMPLE_DATA;
 
 typedef struct DUPE_SOUND_BUFFER {
     SAMPLE_DATA *sample;
     LPDIRECTSOUNDBUFFER buffer;
     struct DUPE_SOUND_BUFFER *next;
 } DUPE_SOUND_BUFFER;
-#pragma pack(pop)
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 
@@ -72,11 +53,11 @@ static LPDIRECTSOUNDBUFFER SoundPlaySample(
         return NULL;
     }
 
-    LPDIRECTSOUNDBUFFER buffer = sample->buffer;
+    LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)sample->handle;
 
     // check if the buffer is already playing
     DWORD status;
-    IDirectSoundBuffer_GetStatus(sample->buffer, &status);
+    IDirectSoundBuffer_GetStatus((LPDIRECTSOUNDBUFFER)sample->handle, &status);
     if (status == DSBSTATUS_PLAYING) {
         buffer = NULL;
 
@@ -94,7 +75,7 @@ static LPDIRECTSOUNDBUFFER SoundPlaySample(
         if (!buffer) {
             LPDIRECTSOUNDBUFFER buffer_new;
             IDirectSound8_DuplicateSoundBuffer(
-                DSound, sample->buffer, &buffer_new);
+                DSound, (LPDIRECTSOUNDBUFFER)sample->handle, &buffer_new);
 
             DUPE_SOUND_BUFFER *dupe_buffer = malloc(sizeof(DUPE_SOUND_BUFFER));
             dupe_buffer->buffer = buffer_new;
@@ -103,7 +84,7 @@ static LPDIRECTSOUNDBUFFER SoundPlaySample(
 
             buffer = buffer_new;
             TRACE(
-                "duplicated sound buffer %p to %p", sample->buffer, buffer_new);
+                "duplicated sound buffer %p to %p", sample->handle, buffer_new);
         }
     }
 
@@ -259,23 +240,23 @@ int32_t CDPlayLooped()
     return CDLoop;
 }
 
-int32_t S_SoundPlaySample(
+void *S_SoundPlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
         return 0;
     }
-    return (int32_t)SoundPlaySample(
+    return SoundPlaySample(
         sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 0);
 }
 
-int32_t S_SoundPlaySampleLooped(
+void *S_SoundPlaySampleLooped(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
         return 0;
     }
-    return (int32_t)SoundPlaySample(
+    return SoundPlaySample(
         sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 1);
 }
 
@@ -289,12 +270,12 @@ void S_SoundStopAllSamples()
     for (int i = 0; i < NumSampleData; i++) {
         SAMPLE_DATA *sample = SampleData[i];
         if (sample) {
-            IDirectSoundBuffer_Stop(sample->buffer);
+            S_SoundStopSample(sample->handle);
         }
     }
 }
 
-void S_SoundStopSample(int32_t handle)
+void S_SoundStopSample(void *handle)
 {
     TRACE("");
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
@@ -306,7 +287,7 @@ void S_SoundStopSample(int32_t handle)
     }
 }
 
-void S_SoundSetPanAndVolume(int32_t handle, int16_t pan, int16_t volume)
+void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
 {
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     if (buffer) {
@@ -315,7 +296,7 @@ void S_SoundSetPanAndVolume(int32_t handle, int16_t pan, int16_t volume)
     }
 }
 
-int32_t S_SoundSampleIsPlaying(int32_t handle)
+int32_t S_SoundSampleIsPlaying(void *handle)
 {
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     if (!SoundIsActive || !SoundInit1 || !SoundInit2) {

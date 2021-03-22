@@ -168,7 +168,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return 1;
         }
         fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
-        if (fxslot->handle < 0) {
+        if (fxslot->handle == SOUND_INVALID_HANDLE) {
             return 0;
         }
         mn_clear_handles(fxslot);
@@ -189,7 +189,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return 1;
         }
         fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
-        if (fxslot->handle < 0) {
+        if (fxslot->handle == SOUND_INVALID_HANDLE) {
             return 0;
         }
         mn_clear_handles(fxslot);
@@ -221,7 +221,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         if (volume > 0) {
             fxslot->handle =
                 S_SoundPlaySampleLooped(sfx_id, volume, pitch, pan);
-            if (fxslot->handle < 0) {
+            if (fxslot->handle == SOUND_INVALID_HANDLE) {
                 mn_clear_fx_slot(fxslot);
                 return 0;
             }
@@ -330,12 +330,13 @@ void mn_update_sound_effects()
         MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
         if (slot->mn_flags & MN_FX_USED) {
             if (slot->mn_flags & MN_FX_AMBIENT) {
-                if (slot->loudness != MN_NOT_AUDIBLE && slot->handle >= 0) {
+                if (slot->loudness != MN_NOT_AUDIBLE
+                    && slot->handle != SOUND_INVALID_HANDLE) {
                     S_SoundSetPanAndVolume(
                         slot->handle, slot->pan, slot->volume);
                     MnSoundsPlaying++;
                 } else {
-                    if (slot->handle >= 0) {
+                    if (slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundStopSample(slot->handle);
                     }
                     mn_clear_fx_slot(slot);
@@ -343,12 +344,13 @@ void mn_update_sound_effects()
             } else if (S_SoundSampleIsPlaying(slot->handle)) {
                 if (slot->pos != NULL) {
                     mn_get_sound_params(slot);
-                    if (slot->volume > 0 && slot->handle >= 0) {
+                    if (slot->volume > 0
+                        && slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundSetPanAndVolume(
                             slot->handle, slot->pan, slot->volume);
                         MnSoundsPlaying++;
                     } else {
-                        if (slot->handle >= 0) {
+                        if (slot->handle != SOUND_INVALID_HANDLE) {
                             S_SoundStopSample(slot->handle);
                         }
                         mn_clear_fx_slot(slot);
@@ -444,7 +446,7 @@ void mn_adjust_master_volume(int8_t volume)
 
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
-    slot->handle = -1;
+    slot->handle = SOUND_INVALID_HANDLE;
     slot->pos = NULL;
     slot->mn_flags = 0;
     slot->volume = 0;
@@ -458,7 +460,7 @@ void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         MN_SFX_PLAY_INFO *rslot = &SFXPlaying[i];
         if (rslot != slot && rslot->handle == slot->handle) {
-            rslot->handle = -1;
+            rslot->handle = SOUND_INVALID_HANDLE;
         }
     }
 }

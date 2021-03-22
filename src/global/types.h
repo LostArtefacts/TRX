@@ -1952,7 +1952,7 @@ typedef struct GAMEFLOW {
 } GAMEFLOW;
 
 typedef struct MN_SFX_PLAY_INFO {
-    int32_t handle;
+    void *handle;
     PHD_3DPOS *pos;
     uint32_t loudness;
     int16_t volume; // Need
@@ -1967,6 +1967,24 @@ typedef struct SAMPLE_INFO {
     int16_t randomness;
     int16_t flags;
 } SAMPLE_INFO;
+
+typedef struct SAMPLE_DATA {
+    /* 0000 */ char *data;
+    /* 0004 */ int16_t length;
+    /* 0006 */ int16_t bits_per_sample;
+    /* 0008 */ int16_t channels;
+    /* 000A */ int16_t unk1;
+    /* 000C */ int16_t sample_rate;
+    /* 000E */ int16_t unk2;
+    /* 0010 */ int16_t channels2;
+    /* 0012 */ int32_t unk3;
+    /* 0016 */ int16_t volume;
+    /* 0018 */ int32_t pan;
+    /* 001C */ int16_t unk4;
+    /* 001E */ void *handle;
+    /* 0022 */ int32_t unk5;
+    /* 0026 end */
+} SAMPLE_DATA;
 
 #pragma pack(pop)
 
