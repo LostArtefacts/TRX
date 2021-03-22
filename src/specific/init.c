@@ -5,6 +5,7 @@
 #include "global/vars.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
+#include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
@@ -39,8 +40,9 @@ void S_InitialiseSystem()
     DumpHeight = 480;
 
     sub_4380E0(&GameVidWidth);
-
+    InputInit();
     FMVInit();
+
     if (!SoundInit1) {
         SoundIsActive = 0;
     }

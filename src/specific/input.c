@@ -59,6 +59,12 @@ int32_t Conflict[KEY_NUMBER_OF] = { 0 };
 
 static int32_t MedipackCoolDown = 0;
 
+void InputInit()
+{
+    KeyData = malloc(sizeof(KEYSTUFF));
+    memset(KeyData, 0, sizeof(KEYSTUFF));
+}
+
 int32_t Key_(int32_t number)
 {
     int16_t key = Layout[1][number];
