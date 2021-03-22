@@ -474,7 +474,7 @@
 <rect width="12.00" height="12.00" x="294.00" y="143.00" class="decompiled"><title>phd_atan</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="143.00" class="decompiled"><title>phd_sqrt</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="143.00" class="decompiled"><title>mn_reset_sound_effects</title></rect>
-<rect width="12.00" height="12.00" x="336.00" y="143.00" class="named"><title>SoundEffect</title></rect>
+<rect width="12.00" height="12.00" x="336.00" y="143.00" class="decompiled"><title>SoundEffect</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="143.00" class="named"><title>mn_get_fx_slot</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="143.00" class="named"><title>mn_reset_ambient_loudness</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="143.00" class="named"><title>mn_stop_ambient_samples</title></rect>
@@ -771,7 +771,7 @@
 <rect width="28.89" height="27.88" x="201.02" y="360.83" class="decompiled"><title>DrawLightning</title></rect>
 <rect width="28.89" height="27.86" x="201.02" y="390.72" class="decompiled"><title>DoPassportOption</title></rect>
 <rect width="28.89" height="27.76" x="201.02" y="420.57" class="decompiled"><title>BaldyControl</title></rect>
-<rect width="28.89" height="27.52" x="201.02" y="450.34" class="named"><title>SoundEffect</title></rect>
+<rect width="28.89" height="27.52" x="201.02" y="450.34" class="decompiled"><title>SoundEffect</title></rect>
 <rect width="28.89" height="27.11" x="201.02" y="479.86" class="decompiled"><title>S_ShowControls</title></rect>
 <rect width="28.89" height="27.04" x="201.02" y="508.96" class="decompiled"><title>InitialiseDoor</title></rect>
 <rect width="26.00" height="29.60" x="231.90" y="269.00" class="decompiled"><title>AbortionControl</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 74.59%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.41%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 12.91%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 13.21%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 74.73%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 71.90%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 12.77%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 12.73%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 12.50%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.37%</text>
 </svg>

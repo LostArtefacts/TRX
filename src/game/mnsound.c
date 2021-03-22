@@ -1,17 +1,37 @@
 #include "game/mnsound.h"
 
+#include "3dsystem/phd_math.h"
+#include "game/game.h"
 #include "global/vars.h"
 #include "specific/sndpc.h"
 #include "specific/shed.h"
 #include "util.h"
 
+#define SOUND_RANGE 8
+#define SOUND_RADIUS (SOUND_RANGE << 10)
+#define SOUND_RANGE_MULT_CONSTANT ((int32_t)(32768 / SOUND_RADIUS))
+#define MAX_VOLUME_CHANGE 0x2000
+#define MAX_PITCH_CHANGE 10
 #define MN_NOT_AUDIBLE -1
 
-typedef enum SOUND_FLAGS {
-    SOUND_WAIT,
-    SOUND_RESTART,
-    SOUND_AMBIENT,
-} SOUND_FLAGS;
+typedef enum SOUND_MODE {
+    SOUND_WAIT = 0,
+    SOUND_RESTART = 1,
+    SOUND_AMBIENT = 2,
+} SOUND_MODE;
+
+typedef enum SOUND_FLAG {
+    MN_FX_USED = 1 << 0,
+    MN_FX_AMBIENT = 1 << 1,
+    MN_FX_RESTARTED = 1 << 2,
+    MN_FX_NO_REVERB = 1 << 3,
+} SOUND_FLAG;
+
+typedef enum SAMPLE_FLAG {
+    NO_PAN = 1 << 12,
+    PITCH_WIBBLE = 1 << 13,
+    VOLUME_WIBBLE = 1 << 14,
+} SAMPLE_FLAG;
 
 void mn_reset_sound_effects()
 {
@@ -55,6 +75,172 @@ void mn_reset_sound_effects()
     }
 }
 
+int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+{
+    if (!SoundIsActive) {
+        return 0;
+    }
+
+    if (flags != SPM_ALWAYS
+        && (flags & RF_UNDERWATER)
+            != (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER)) {
+        return 0;
+    }
+
+    if (SampleLUT[sfx_num] < 0) {
+        return 0;
+    }
+
+    SAMPLE_INFO *s = &SampleInfos[SampleLUT[sfx_num]];
+    if (s->randomness && GetRandomDraw() > (int32_t)s->randomness) {
+        return 0;
+    }
+
+    flags = 0;
+    int32_t pan = 0x7FFF;
+    int32_t mode = s->flags & 3;
+    uint32_t distance;
+    if (pos) {
+        int32_t x = pos->x - Camera.target.x;
+        int32_t y = pos->y - Camera.target.y;
+        int32_t z = pos->z - Camera.target.z;
+        if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
+            || ABS(z) > SOUND_RADIUS) {
+            return 0;
+        }
+        distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
+        if (!distance) {
+            pan = 0;
+        }
+    } else {
+        distance = 0;
+        pan = 0;
+        flags = MN_FX_NO_REVERB;
+    }
+    distance = phd_sqrt(distance);
+
+    int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
+    if (s->flags & VOLUME_WIBBLE) {
+        volume -= GetRandomDraw() * MAX_VOLUME_CHANGE >> 15;
+    }
+
+    if (s->flags & NO_PAN) {
+        pan = 0;
+    }
+
+    if (volume <= 0 && mode != SOUND_AMBIENT) {
+        return 0;
+    }
+
+    if (pan) {
+        int16_t angle =
+            phd_atan(pos->z - LaraItem->pos.z, pos->x - LaraItem->pos.x);
+        angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+        pan = angle;
+    }
+
+    int32_t pitch = 100;
+    if (s->flags & PITCH_WIBBLE) {
+        pitch +=
+            ((GetRandomDraw() * MAX_PITCH_CHANGE) / 16384) - MAX_PITCH_CHANGE;
+    }
+
+    int32_t vars = (s->flags >> 2) & 15;
+    int32_t sfx_id = s->number;
+    if (vars != 1) {
+        sfx_id += (GetRandomDraw() * vars) / 0x8000;
+    }
+
+    if (volume > 0x7FFF) {
+        volume = 0x7FFF;
+    }
+
+    switch (mode) {
+    case SOUND_WAIT: {
+        MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, 0, pos, mode);
+        if (!fxslot) {
+            return 0;
+        }
+        if (fxslot->mn_flags & MN_FX_RESTARTED) {
+            fxslot->mn_flags &= 0xFFFF - MN_FX_RESTARTED;
+            return 1;
+        }
+        fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
+        if (fxslot->handle < 0) {
+            return 0;
+        }
+        mn_clear_handles(fxslot);
+        fxslot->mn_flags = flags | MN_FX_USED;
+        fxslot->fxnum = sfx_num;
+        fxslot->pos = pos;
+        return 1;
+    }
+
+    case SOUND_RESTART: {
+        MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, 0, pos, mode);
+        if (!fxslot) {
+            return 0;
+        }
+        if (fxslot->mn_flags & MN_FX_RESTARTED) {
+            S_SoundStopSample(fxslot->handle);
+            fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
+            return 1;
+        }
+        fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
+        if (fxslot->handle < 0) {
+            return 0;
+        }
+        mn_clear_handles(fxslot);
+        fxslot->mn_flags = flags | MN_FX_USED;
+        fxslot->fxnum = sfx_num;
+        fxslot->pos = pos;
+        return 1;
+    }
+
+    case SOUND_AMBIENT: {
+        uint32_t loudness = distance;
+        MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, loudness, pos, mode);
+        if (!fxslot) {
+            return 0;
+        }
+        fxslot->pos = pos;
+        if (fxslot->mn_flags & MN_FX_AMBIENT) {
+            if (volume > 0) {
+                fxslot->loudness = loudness;
+                fxslot->pan = pan;
+                fxslot->volume = volume;
+            } else {
+                fxslot->loudness = MN_NOT_AUDIBLE;
+                fxslot->volume = 0;
+            }
+            return 1;
+        }
+
+        if (volume > 0) {
+            fxslot->handle =
+                S_SoundPlaySampleLooped(sfx_id, volume, pitch, pan);
+            if (fxslot->handle < 0) {
+                mn_clear_fx_slot(fxslot);
+                return 0;
+            }
+            mn_clear_handles(fxslot);
+            fxslot->loudness = loudness;
+            fxslot->fxnum = sfx_num;
+            fxslot->pan = pan;
+            fxslot->volume = volume;
+            fxslot->mn_flags |= MN_FX_AMBIENT | MN_FX_USED;
+            fxslot->pos = pos;
+            return 1;
+        }
+
+        fxslot->loudness = MN_NOT_AUDIBLE;
+        return 1;
+    }
+    }
+
+    return 0;
+}
+
 void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = -1;
@@ -64,6 +250,16 @@ void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
     slot->pan = 0;
     slot->loudness = MN_NOT_AUDIBLE;
     slot->fxnum = -1;
+}
+
+void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
+{
+    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+        MN_SFX_PLAY_INFO *rslot = &SFXPlaying[i];
+        if (rslot != slot && rslot->handle == slot->handle) {
+            rslot->handle = -1;
+        }
+    }
 }
 
 void T1MInjectGameMNSound()

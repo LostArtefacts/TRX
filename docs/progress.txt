@@ -664,8 +664,8 @@ phd_sqrt                        0x0042A900  0x0000003A  +
 
 # mnsound.cpp
 mn_reset_sound_effects          0x0042A940  0x000000EC  +
-SoundEffect                     0x0042AA30  0x000004C2  *
-mn_get_fx_slot                  0x0042AF00  0x000000CE  -
+SoundEffect                     0x0042AA30  0x000004C2  +
+mn_get_fx_slot                  0x0042AF00  0x000000CE  *
 mn_reset_ambient_loudness       0x0042AFD0  0x00000030  *
 mn_stop_ambient_samples         0x0042B000  0x0000007E  *
 mn_update_sound_effects         0x0042B080  0x0000027D  *
@@ -675,7 +675,7 @@ adjust_master_volume            0x0042B410  0x00000012  *
 mn_start_sound_fade             ----------  ----------  -
 mn_set_sound_fade_rate          ----------  ----------  -
 mn_clear_fx_slot                ----------  ----------  +
-mn_clear_handles                ----------  ----------  -
+mn_clear_handles                ----------  ----------  +
 
 # moveblok.cpp
 InitialiseMovableBlock          0x0042B430  0x00000030  +
