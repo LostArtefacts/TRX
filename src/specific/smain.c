@@ -50,7 +50,31 @@ typedef struct UNK2 {
 #define Msg             VAR_U_(0x0045A940, UINT)
 // clang-format on
 
-LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
+static void WinGameFinish();
+static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam);
+
+void ShowFatalError(const char *message)
+{
+    DB_Log(message);
+    if (dword_45A938) {
+        (*dword_45A938)->cb8(dword_45A938);
+        dword_45A938 = 0;
+    }
+    if (dword_45A998) {
+        sub_407A91();
+        (*dword_45A998)->cb28(dword_45A998);
+        (*dword_45A998)->cb4C(dword_45A998);
+        (*dword_45A998)->cb50(dword_45A998, TombHWND, 8);
+        (*dword_45A998)->cb8(dword_45A998);
+        dword_45A998 = 0;
+    }
+    MessageBoxA(
+        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    WinGameFinish();
+    exit(1);
+}
+
+static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
 {
     if (code < 0) {
         return CallNextHookEx(HHK, code, wParam, lParam);
@@ -130,26 +154,8 @@ int WINAPI WinMain(
         scr_width, scr_height, 0, 0, hInstance, 0);
 
     if (!TombHWND) {
-        DB_Log("System Error: cannot create window");
-        if (dword_45A938) {
-            (*dword_45A938)->cb8(dword_45A938);
-            dword_45A938 = 0;
-        }
-        if (dword_45A998) {
-            sub_407A91();
-            (*dword_45A998)->cb28(dword_45A998);
-            (*dword_45A998)->cb4C(dword_45A998);
-            (*dword_45A998)->cb50(dword_45A998, TombHWND, 8);
-            (*dword_45A998)->cb8(dword_45A998);
-            dword_45A998 = 0;
-        }
-        MessageBoxA(
-            0, "System Error: cannot create window", "Tomb Raider Error",
-            MB_SETFOREGROUND | MB_ICONEXCLAMATION);
-        if (TombHWND) {
-            PostMessageA(HWND_BROADCAST, Msg, 0, 0);
-        }
-        return 0;
+        ShowFatalError("System Error: cannot create window");
+        return 1;
     }
 
     SetWindowPos(TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
@@ -175,6 +181,7 @@ int WINAPI WinMain(
 
 void T1MInjectSpecificSMain()
 {
+    INJECT(0x0043D770, ShowFatalError);
     INJECT(0x0043D8C0, KeyboardHook);
     INJECT(0x0043DA80, WinMain);
 }

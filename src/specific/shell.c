@@ -17,6 +17,7 @@
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/shed.h"
+#include "specific/smain.h"
 #include "specific/sndpc.h"
 #include "util.h"
 

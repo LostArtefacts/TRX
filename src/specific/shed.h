@@ -13,7 +13,6 @@
 #define _malloc                 ((void*         (*)(size_t n))0x00441310)
 
 #define WinVidSpinMessageLoop   ((int32_t       (*)())0x00437AD0)
-#define ShowFatalError          ((void          (*)(const char *message))0x0043D770)
 #define S_ExitSystem            ((void          (*)(const char *message))0x0041E260)
 #define InitialiseHardware      ((void          (*)())0x00408005)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
