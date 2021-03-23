@@ -26,4 +26,6 @@
 #define SwitchResolution        ((void          (*)())0x004089F4)
 // clang-format on
 
+void SWRInit();
+
 #endif

@@ -39,6 +39,7 @@ void S_InitialiseSystem()
     DumpWidth = 640;
     DumpHeight = 480;
 
+    SWRInit();
     sub_4380E0(&GameVidWidth);
     InputInit();
     FMVInit();
