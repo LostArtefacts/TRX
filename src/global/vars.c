@@ -38,6 +38,9 @@ KEYSTUFF *KeyData;
 
 GAMEFLOW GF;
 LARA_INFO Lara;
+ITEM_INFO *LaraItem;
+CAMERA_INFO Camera;
+int32_t CameraUnderwater;
 SAVEGAME_INFO SaveGame;
 int32_t SavedGamesCount;
 int32_t SaveCounter;

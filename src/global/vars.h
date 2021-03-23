@@ -123,10 +123,6 @@ extern KEYSTUFF* KeyData;
 #define MnSoundsPlaying         VAR_U_(0x0045A218, int32_t)
 #define MnAmbientLookupIdx      VAR_U_(0x0045A224, int32_t)
 
-#define LaraItem                VAR_U_(0x0045EE6C, ITEM_INFO*)
-#define Camera                  VAR_U_(0x00462D20, CAMERA_INFO)
-#define CameraUnderwater        VAR_U_(0x00462BEC, int32_t)
-
 #define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
 #define AppSettings             VAR_U_(0x0045A240, uint32_t)
@@ -207,6 +203,9 @@ extern void (*EffectRoutines[])(ITEM_INFO *item);
 
 extern GAMEFLOW GF;
 extern LARA_INFO Lara;
+extern ITEM_INFO *LaraItem;
+extern CAMERA_INFO Camera;
+extern int32_t CameraUnderwater;
 extern SAVEGAME_INFO SaveGame;
 extern int32_t SavedGamesCount;
 extern int32_t SaveCounter;
