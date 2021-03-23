@@ -277,7 +277,7 @@
 <rect width="12.00" height="12.00" x="336.00" y="87.00" class="decompiled"><title>InitialisePickUpDisplay</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="87.00" class="decompiled"><title>AddDisplayPickup</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="87.00" class="decompiled"><title>S_InitialiseSystem</title></rect>
-<rect width="12.00" height="12.00" x="378.00" y="87.00" class="named"><title>S_ExitSystem</title></rect>
+<rect width="12.00" height="12.00" x="378.00" y="87.00" class="decompiled"><title>S_ExitSystem</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="87.00" class="decompiled"><title>init_game_malloc</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="87.00" class="named"><title>game_malloc</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="87.00" class="decompiled"><title>game_free</title></rect>
@@ -1227,7 +1227,7 @@
 <rect width="5.81" height="5.96" x="682.47" y="450.35" class="decompiled"><title>TrapDoorControl</title></rect>
 <rect width="5.72" height="5.96" x="690.28" y="450.35" class="decompiled"><title>ThorsHeadCollision</title></rect>
 <rect width="5.34" height="6.36" x="610.59" y="458.30" class="decompiled"><title>T_AddBackground</title></rect>
-<rect width="5.34" height="6.26" x="610.59" y="466.66" class="named"><title>S_ExitSystem</title></rect>
+<rect width="5.34" height="6.26" x="610.59" y="466.66" class="decompiled"><title>S_ExitSystem</title></rect>
 <rect width="5.34" height="6.26" x="610.59" y="474.91" class="decompiled"><title>S_SoundPlaySampleLooped</title></rect>
 <rect width="5.34" height="5.95" x="610.59" y="483.17" class="todo"><title>sub_407911</title></rect>
 <rect width="5.34" height="5.95" x="610.59" y="491.12" class="decompiled"><title>GetDoor</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 77.88%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.87%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.58%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.11%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 78.02%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.90%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.44%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.08%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.54%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.02%</text>
 </svg>

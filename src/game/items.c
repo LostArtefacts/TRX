@@ -2,7 +2,7 @@
 
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/shed.h"
+#include "specific/init.h"
 #include "util.h"
 
 #include <stdio.h>

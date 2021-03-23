@@ -22,8 +22,8 @@
 #include "game/traps/movable_block.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "specific/init.h"
 #include "specific/input.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 

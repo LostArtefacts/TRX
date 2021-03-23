@@ -3,8 +3,8 @@
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
 #include "global/vars.h"
+#include "specific/init.h"
 #include "specific/sndpc.h"
-#include "specific/shed.h"
 #include "util.h"
 
 #define SOUND_RANGE 8

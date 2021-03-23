@@ -7,7 +7,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 #include "specific/init.h"
-#include "specific/shed.h"
 
 void SetupStatue(OBJECT_INFO *obj)
 {

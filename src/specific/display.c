@@ -4,6 +4,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/init.h"
 #include "specific/shed.h"
 #include "util.h"
 

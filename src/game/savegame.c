@@ -12,7 +12,7 @@
 #include "game/traps/rolling_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/shed.h"
+#include "specific/init.h"
 #include "util.h"
 
 #include <stddef.h>

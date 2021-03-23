@@ -7,6 +7,7 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/shed.h"
+#include "specific/smain.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -54,6 +55,21 @@ void S_InitialiseSystem()
     GameMemorySize = MALLOC_SIZE;
 
     InitialiseHardware();
+}
+
+void S_ExitSystem(const char *message)
+{
+    while (Input & IN_SELECT) {
+        S_UpdateInput();
+        WinVidSpinMessageLoop();
+    }
+    if (GameMemoryPointer) {
+        free(GameMemoryPointer);
+    }
+    ShutdownHardware();
+    TerminateGameWithMsg(
+        "\n\nTomb Raider (c) Core Design. %s %s \n%s\n%s\n", "Jan  7 1998",
+        "14:53:25", " ", message);
 }
 
 void init_game_malloc()

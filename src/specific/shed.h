@@ -13,8 +13,8 @@
 #define _malloc                 ((void*         (*)(size_t n))0x00441310)
 
 #define WinVidSpinMessageLoop   ((int32_t       (*)())0x00437AD0)
-#define S_ExitSystem            ((void          (*)(const char *message))0x0041E260)
 #define InitialiseHardware      ((void          (*)())0x00408005)
+#define ShutdownHardware        ((void          (*)())0x00408323)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
 #define PaletteSetHardware      ((void          (*)())0x004087EA)
 #define S_DrawSpriteRel         ((void          (*)(int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade))0x00435B70)

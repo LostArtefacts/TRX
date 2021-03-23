@@ -12,9 +12,9 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
+#include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 

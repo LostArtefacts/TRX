@@ -379,7 +379,7 @@ AddDisplayPickup                0x0041E0C0  0x0000003F  +
 # shell/init.cpp
 S_OnWindowResized               ----------  ----------  -
 S_InitialiseSystem              0x0041E100  0x0000015B  +
-S_ExitSystem                    0x0041E260  0x00000051  *
+S_ExitSystem                    0x0041E260  0x00000051  +
 init_game_malloc                0x0041E2C0  0x00000021  +
 game_malloc                     0x0041E2F0  0x000000B1  *
 game_free                       0x0041E3B0  0x0000002F  +
