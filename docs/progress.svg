@@ -458,8 +458,8 @@
 <rect width="12.00" height="12.00" x="70.00" y="143.00" class="decompiled"><title>ThorsHandleControl</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="143.00" class="decompiled"><title>ThorsHandleCollision</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="143.00" class="decompiled"><title>ThorsHeadCollision</title></rect>
-<rect width="12.00" height="12.00" x="112.00" y="143.00" class="todo"><title>sub_42A2A0</title></rect>
-<rect width="12.00" height="12.00" x="126.00" y="143.00" class="todo"><title>sub_42A2B0</title></rect>
+<rect width="12.00" height="12.00" x="112.00" y="143.00" class="decompiled"><title>sub_42A2A0</title></rect>
+<rect width="12.00" height="12.00" x="126.00" y="143.00" class="decompiled"><title>sub_42A2B0</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="143.00" class="decompiled"><title>DB_Log</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="143.00" class="decompiled"><title>InitialiseLOTArray</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="143.00" class="decompiled"><title>DisableBaddieAI</title></rect>
@@ -1432,8 +1432,8 @@
 <rect width="1.11" height="1.38" x="688.91" y="522.47" class="todo"><title>sub_450830</title></rect>
 <rect width="1.11" height="1.38" x="692.01" y="522.47" class="todo"><title>sub_450860</title></rect>
 <rect width="0.88" height="1.38" x="695.12" y="522.47" class="decompiled"><title>SoundIsInitialised</title></rect>
-<rect width="0.96" height="1.04" x="685.80" y="525.85" class="todo"><title>sub_42A2A0</title></rect>
-<rect width="0.96" height="1.04" x="685.80" y="528.89" class="todo"><title>sub_42A2B0</title></rect>
+<rect width="0.96" height="1.04" x="685.80" y="525.85" class="decompiled"><title>sub_42A2A0</title></rect>
+<rect width="0.96" height="1.04" x="685.80" y="528.89" class="decompiled"><title>sub_42A2B0</title></rect>
 <rect width="0.96" height="1.04" x="685.80" y="531.92" class="decompiled"><title>T_RemoveBackground</title></rect>
 <rect width="0.96" height="1.04" x="685.80" y="534.96" class="decompiled"><title>T_RemoveOutline</title></rect>
 <rect width="1.08" height="0.67" x="688.76" y="525.85" class="decompiled"><title>FxFinishLevel</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 77.20%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.62%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 77.47%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.63%</text>
 <rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.99%</text>
 <rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.35%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.81%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.03%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.54%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.02%</text>
 </svg>

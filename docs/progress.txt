@@ -641,8 +641,8 @@ ThorsHandleCollision            0x0042A1F0  0x0000004B  +
 ThorsHeadCollision              0x0042A240  0x00000052  +
 
 # ???
-sub_42A2A0                      0x0042A2A0  0x0000000C  -
-sub_42A2B0                      0x0042A2B0  0x0000000C  -
+sub_42A2A0                      0x0042A2A0  0x0000000C  x
+sub_42A2B0                      0x0042A2B0  0x0000000C  x
 DB_Log                          0x0042A2C0  0x00000037  +
 
 # lot.cpp

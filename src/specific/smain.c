@@ -34,7 +34,6 @@ typedef struct UNK2 {
 
 // clang-format off
 // TODO: decompile me!
-#define sub_42A2A0      ((void (*)())0x0042A2A0)
 #define sub_43D070      ((int (*)())0x0043D070)
 #define sub_4508C0      ((void (*)())0x004508C0)
 #define sub_407A91      ((void (*)())0x00407A91)
@@ -157,7 +156,6 @@ int WINAPI WinMain(
     ShowWindow(TombHWND, nShowCmd);
     UpdateWindow(TombHWND);
     Msg = RegisterWindowMessageA("CLOSE_HACK");
-    sub_42A2A0();
     HHK =
         SetWindowsHookExA(WH_KEYBOARD, &KeyboardHook, 0, GetCurrentThreadId());
 
