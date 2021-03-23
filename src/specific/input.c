@@ -121,6 +121,20 @@ int32_t Key_(int32_t number)
     return 0;
 }
 
+void OnKeyPress(int high, int key, int held)
+{
+    TRACE("%d %d %d", high, key, held);
+    if (KeyData) {
+        if (high) {
+            key += 128;
+        }
+        if (KeyData->keymap[key] != held) {
+            KeyData->keymap[key] = held;
+            KeyData->keys_held++;
+        }
+    }
+}
+
 int16_t KeyGet()
 {
     if (KeyData) {
@@ -316,6 +330,9 @@ int32_t GetDebouncedInput(int32_t input)
 
 void T1MInjectSpecificInput()
 {
+    INJECT(0x0041E3E0, Key_);
     INJECT(0x0041E550, S_UpdateInput);
+    INJECT(0x00437B70, OnKeyPress);
+    INJECT(0x00437BC0, KeyGet);
     INJECT(0x00437BD0, KeyClearBuffer);
 }
