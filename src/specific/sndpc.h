@@ -12,6 +12,7 @@ void SoundLoadSamples(char **sample_pointers, int32_t num_samples);
 SAMPLE_DATA *SoundLoadSample(char *content);
 int32_t SoundMakeSample(SAMPLE_DATA *sample_data);
 
+int32_t MusicInit();
 int32_t CDPlay(int16_t track_id);
 int32_t CDPlayLooped();
 int32_t S_CDPlay(int16_t track);

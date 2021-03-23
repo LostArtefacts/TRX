@@ -138,6 +138,42 @@ int32_t SoundInit()
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
         DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
     }
+    SoundInit1 = 1;
+    SoundInit2 = 1;
+    return 1;
+}
+
+int32_t MusicInit()
+{
+    MCI_OPEN_PARMS open_parms;
+    open_parms.dwCallback = 0;
+    open_parms.wDeviceID = 0;
+    open_parms.lpstrDeviceType = (LPSTR)MCI_DEVTYPE_CD_AUDIO;
+    open_parms.lpstrElementName = NULL;
+    open_parms.lpstrAlias = NULL;
+
+    MCIERROR result = mciSendCommandA(
+        0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID, (DWORD_PTR)&open_parms);
+    if (result) {
+        TRACE("Cannot initailize music device: %x", result);
+        return 0;
+    }
+    MCIDeviceID = open_parms.wDeviceID;
+
+    AuxDeviceID = 0;
+    for (int i = 0; i < auxGetNumDevs(); i++) {
+        AUXCAPSA caps;
+        auxGetDevCapsA((UINT_PTR)i, &caps, sizeof(AUXCAPSA));
+        if (caps.wTechnology == AUXCAPS_CDAUDIO) {
+            AuxDeviceID = i;
+        }
+    }
+
+    MCI_STATUS_PARMS status_parms;
+    status_parms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
+    mciSendCommandA(
+        MCIDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR)&status_parms);
+    CDNumTracks = status_parms.dwReturn;
     return 1;
 }
 

@@ -5,8 +5,7 @@
 
 #include <stdint.h>
 
-typedef enum INPUT_LAYOUT
-{
+typedef enum INPUT_LAYOUT {
     INPUT_LAYOUT_DEFAULT,
     INPUT_LAYOUT_USER,
     INPUT_LAYOUT_NUMBER_OF,

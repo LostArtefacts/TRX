@@ -40,7 +40,8 @@ void S_InitialiseSystem()
     DumpHeight = 480;
 
     SWRInit();
-    sub_4380E0(&GameVidWidth);
+    SoundInit();
+    MusicInit();
     InputInit();
     FMVInit();
 
