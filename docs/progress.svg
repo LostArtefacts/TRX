@@ -682,7 +682,7 @@
 <rect width="12.00" height="12.00" x="406.00" y="199.00" class="named"><title>TerminateGame</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="199.00" class="todo"><title>sub_43D5F0</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="named"><title>ShowFatalError</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="199.00" class="named"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="todo"><title>sub_43D940</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="199.00" class="named"><title>WinMain</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="199.00" class="named"><title>WndProc</title></rect>
@@ -1166,7 +1166,7 @@
 <rect width="7.40" height="7.55" x="583.92" y="462.38" class="decompiled"><title>CreatureCollision</title></rect>
 <rect width="7.40" height="7.55" x="583.92" y="471.93" class="decompiled"><title>SwitchTrigger</title></rect>
 <rect width="7.40" height="7.47" x="583.92" y="481.48" class="decompiled"><title>Inv_RequestItem</title></rect>
-<rect width="7.40" height="7.47" x="583.92" y="490.95" class="named"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="7.40" height="7.47" x="583.92" y="490.95" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
 <rect width="7.40" height="7.39" x="583.92" y="500.43" class="decompiled"><title>FxEarthQuake</title></rect>
 <rect width="7.40" height="7.39" x="583.92" y="509.82" class="decompiled"><title>RingIsNotOpen</title></rect>
 <rect width="7.40" height="7.39" x="583.92" y="519.21" class="decompiled"><title>LaraAsTurnR</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 76.65%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 72.93%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 11.40%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.80%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 76.79%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 72.98%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 11.26%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.75%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.27%</text>
 </svg>

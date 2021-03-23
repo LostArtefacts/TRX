@@ -13,6 +13,7 @@ extern int16_t Layout[2][KEY_NUMBER_OF];
 extern int32_t Conflict[KEY_NUMBER_OF];
 extern int32_t OldInputDB;
 
+void OnKeyPress(int high, int key, int held);
 void InputInit();
 int32_t Key_(int32_t key);
 int16_t KeyGet();
