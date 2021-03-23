@@ -53,6 +53,12 @@ typedef struct UNK2 {
 static void WinGameFinish();
 static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam);
 
+void TerminateGame(int exit_code)
+{
+    WinGameFinish();
+    exit(exit_code);
+}
+
 void ShowFatalError(const char *message)
 {
     DB_Log(message);
@@ -181,6 +187,7 @@ int WINAPI WinMain(
 
 void T1MInjectSpecificSMain()
 {
+    INJECT(0x0043D510, TerminateGame);
     INJECT(0x0043D770, ShowFatalError);
     INJECT(0x0043D8C0, KeyboardHook);
     INJECT(0x0043DA80, WinMain);
