@@ -5,8 +5,14 @@
 
 #include <stdint.h>
 
+typedef enum INPUT_LAYOUT
+{
+    INPUT_LAYOUT_DEFAULT,
+    INPUT_LAYOUT_USER,
+    INPUT_LAYOUT_NUMBER_OF,
+} INPUT_LAYOUT;
 
-extern int16_t Layout[2][KEY_NUMBER_OF];
+extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][KEY_NUMBER_OF];
 extern int32_t Conflict[KEY_NUMBER_OF];
 extern int32_t OldInputDB;
 

@@ -1002,10 +1002,10 @@ void FlashConflicts()
 void DefaultConflict()
 {
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
-        int16_t key = Layout[0][i];
+        int16_t key = Layout[INPUT_LAYOUT_DEFAULT][i];
         Conflict[i] = 0;
         for (int j = 0; j < KEY_NUMBER_OF; j++) {
-            if (key == Layout[1][j]) {
+            if (key == Layout[INPUT_LAYOUT_USER][j]) {
                 Conflict[i] = 1;
                 break;
             }

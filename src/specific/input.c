@@ -67,7 +67,7 @@ void InputInit()
 
 int32_t Key_(int32_t number)
 {
-    int16_t key = Layout[1][number];
+    int16_t key = Layout[INPUT_LAYOUT_USER][number];
 
     if (KeyData->keymap[key]) {
         return 1;
@@ -77,7 +77,7 @@ int32_t Key_(int32_t number)
         return 0;
     }
 
-    key = Layout[0][number];
+    key = Layout[INPUT_LAYOUT_DEFAULT][number];
     if (KeyData->keymap[key]) {
         return 1;
     }
