@@ -857,7 +857,7 @@ CDPlay                          0x00437FB0  0x000000F5  +
 S_CDLoop                        0x004380B0  0x0000000B  +
 CDPlayLooped                    0x004380C0  0x00000018  +
 sub_4380E0                      0x004380E0  0x00000255  +
-TerminateGameWithMsg            0x00438340  0x0000003B  -
+TerminateGameWithMsg            0x00438340  0x0000003B  +
 FileLoad                        0x00438390  0x00000080  -
 GameMain                        0x00438410  0x0000050A  +
 CheckCheatMode                  0x00438920  0x00000213  +

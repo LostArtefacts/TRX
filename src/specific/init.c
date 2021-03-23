@@ -17,13 +17,13 @@
 void DB_Log(const char *fmt, ...)
 {
     va_list va;
-    char buffer[256] = { 0 };
+    char buf[256] = { 0 };
 
     va_start(va, fmt);
     if (!dword_45A1F0) {
-        vsprintf(buffer, fmt, va);
-        TRACE(buffer);
-        OutputDebugStringA(buffer);
+        vsprintf(buf, fmt, va);
+        TRACE(buf);
+        OutputDebugStringA(buf);
         OutputDebugStringA("\n");
     }
 }
