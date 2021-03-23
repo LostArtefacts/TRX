@@ -28,6 +28,14 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
     ChainBlock, Flicker,
 };
 
+int32_t NoInputCount = 0;
+int32_t IDelay;
+int32_t IDCount;
+int32_t Input;
+int32_t InputDB;
+int32_t KeyChange;
+KEYSTUFF *KeyData;
+
 GAMEFLOW GF;
 LARA_INFO Lara;
 SAVEGAME_INFO SaveGame;

@@ -83,13 +83,14 @@
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
 
-#define NoInputCount            VAR_I_(0x00459F4C, int32_t, 0)
-#define IDelay                  VAR_U_(0x0045A0B0, int32_t)
-#define IDCount                 VAR_U_(0x0045A0B4, int32_t)
-#define Input                   VAR_U_(0x0045EEF4, int32_t)
-#define InputDB                 VAR_U_(0x0045A06C, int32_t)
-#define KeyChange               VAR_U_(0x0045A234, int32_t)
-#define KeyData                 VAR_U_(0x0045B998, KEYSTUFF*)
+extern int32_t NoInputCount;
+extern int32_t IDelay;
+extern int32_t IDCount;
+extern int32_t Input;
+extern int32_t InputDB;
+extern int32_t KeyChange;
+extern KEYSTUFF* KeyData;
+
 #define JoyXPos                 VAR_U_(0x0045B958, int32_t)
 #define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
 #define JoyThrottle             VAR_U_(0x0045B970, int32_t)
