@@ -684,7 +684,7 @@
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="named"><title>ShowFatalError</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="todo"><title>sub_43D940</title></rect>
-<rect width="12.00" height="12.00" x="476.00" y="199.00" class="named"><title>WinMain</title></rect>
+<rect width="12.00" height="12.00" x="476.00" y="199.00" class="decompiled"><title>WinMain</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="199.00" class="named"><title>WndProc</title></rect>
 <rect width="12.00" height="12.00" x="504.00" y="199.00" class="decompiled"><title>InitialiseWolf</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="199.00" class="decompiled"><title>WolfControl</title></rect>
@@ -795,7 +795,7 @@
 <rect width="25.99" height="22.87" x="259.90" y="513.13" class="decompiled"><title>T_DrawThisText</title></rect>
 <rect width="24.61" height="24.10" x="287.90" y="269.00" class="decompiled"><title>DrawInventoryItem</title></rect>
 <rect width="24.61" height="23.93" x="287.90" y="295.10" class="decompiled"><title>ExplodingDeath</title></rect>
-<rect width="24.61" height="23.12" x="287.90" y="321.03" class="named"><title>WinMain</title></rect>
+<rect width="24.61" height="23.12" x="287.90" y="321.03" class="decompiled"><title>WinMain</title></rect>
 <rect width="24.61" height="22.84" x="287.90" y="346.15" class="decompiled"><title>RifleHandler</title></rect>
 <rect width="24.61" height="22.81" x="287.90" y="370.99" class="decompiled"><title>LaraControl</title></rect>
 <rect width="24.61" height="22.16" x="287.90" y="395.79" class="todo"><title>sub_4063B0</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 76.79%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 72.98%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 11.26%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.75%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 76.92%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.34%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 11.13%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.39%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.95%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.27%</text>
 </svg>

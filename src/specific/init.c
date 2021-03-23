@@ -14,7 +14,7 @@
 #include <time.h>
 #include <windows.h>
 
-void DB_Log(char *fmt, ...)
+void DB_Log(const char *fmt, ...)
 {
     va_list va;
     char buffer[256] = { 0 };
