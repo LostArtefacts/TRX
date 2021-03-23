@@ -100,7 +100,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 };
 
 static int32_t PassportMode = 0;
-static int32_t SelectKey = 0;
+static int32_t KeyMode = 0;
 
 static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH];
 REQUEST_INFO NewGameRequester = {
@@ -1052,7 +1052,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    switch (SelectKey) {
+    switch (KeyMode) {
     case 0:
         if (CHK_ANY(InputDB, IN_LEFT | IN_RIGHT)) {
             if (KeyChange == -1) {
@@ -1103,7 +1103,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         if (IConfig) {
             if (CHK_ANY(InputDB, IN_SELECT)) {
-                SelectKey = 1;
+                KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
                 T_AddBackground(
                     CtrlTextB[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
@@ -1173,21 +1173,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     case 1:
         if (!CHK_ANY(Input, IN_SELECT)) {
-            SelectKey = 2;
+            KeyMode = 2;
         }
         KeyClearBuffer();
         break;
 
     case 2:
-        if (JoyThrottle) {
-            key = 272;
-        } else if (JoyHat) {
-            key = 256;
-        } else if (JoyFire) {
-            key = JoyFire + 256;
-        } else {
-            key = KeyGet();
-        }
+        key = KeyGet();
 
         if (key >= 0 && ScanCodeNames[key] && key != DIK_ESCAPE
             && key != DIK_RETURN && key != DIK_LEFT && key != DIK_RIGHT
@@ -1197,7 +1189,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             T_RemoveBackground(CtrlTextB[KeyChange]);
             T_AddBackground(
                 CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
-            SelectKey = 3;
+            KeyMode = 3;
             FlashConflicts();
             S_WriteUserSettings();
         }
@@ -1208,25 +1200,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         if (!CHK_ANY(key, IN_OPTION)) {
             if (!KeyData->keymap[key]) {
-                SelectKey = 0;
+                KeyMode = 0;
                 FlashConflicts();
                 S_WriteUserSettings();
             }
         }
 
-        if (key == 256) {
-            if (!JoyHat) {
-                SelectKey = 0;
-            }
-        } else if (key == 272) {
-            if (!JoyThrottle) {
-                SelectKey = 0;
-            }
-        } else {
-            if (JoyFire != key) {
-                SelectKey = 0;
-            }
-        }
+        KeyMode = 0;
         break;
     }
 

@@ -5,9 +5,6 @@
 
 #include <stdint.h>
 
-// clang-format off
-#define WinInReadJoystick       ((void          (*)())0x00437B00)
-// clang-format on
 
 extern int16_t Layout[2][KEY_NUMBER_OF];
 extern int32_t Conflict[KEY_NUMBER_OF];

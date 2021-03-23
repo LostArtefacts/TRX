@@ -840,7 +840,7 @@ ObjectObjects                   0x00437370  0x000006D3  +
 InitialiseObjects               0x00437A50  0x00000063  +
 sub_437AC0                      0x00437AC0  0x00000006  -
 WinVidSpinMessageLoop           0x00437AD0  0x00000029  *
-WinInReadJoystick               0x00437B00  0x00000070  *
+WinInReadJoystick               0x00437B00  0x00000070  x
 OnKeyPress                      0x00437B70  0x00000045  +
 KeyGet                          0x00437BC0  0x00000003  +
 KeyClearBuffer                  0x00437BD0  0x00000029  +

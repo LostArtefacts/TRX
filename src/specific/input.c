@@ -69,19 +69,7 @@ int32_t Key_(int32_t number)
 {
     int16_t key = Layout[1][number];
 
-    if (key >= 256) {
-        if (key == 256) {
-            if (JoyHat) {
-                return 1;
-            }
-        } else if (key == 272) {
-            if (JoyThrottle) {
-                return 1;
-            }
-        } else if ((1 << (key & 0xff)) & JoyFire) {
-            return 1;
-        }
-    } else if (KeyData->keymap[key]) {
+    if (KeyData->keymap[key]) {
         return 1;
     }
 
@@ -121,22 +109,6 @@ void KeyClearBuffer()
 void S_UpdateInput()
 {
     int32_t linput = 0;
-
-    WinInReadJoystick();
-    if (JoyYPos >= -8) {
-        if (JoyYPos > 8) {
-            linput = IN_RIGHT;
-        }
-    } else {
-        linput = IN_LEFT;
-    }
-    if (JoyXPos <= 8) {
-        if (JoyXPos < -8) {
-            linput |= IN_FORWARD;
-        }
-    } else {
-        linput |= IN_BACK;
-    }
 
     if (Key_(KEY_UP)) {
         linput |= IN_FORWARD;

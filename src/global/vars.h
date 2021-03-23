@@ -91,12 +91,6 @@ extern int32_t InputDB;
 extern int32_t KeyChange;
 extern KEYSTUFF* KeyData;
 
-#define JoyXPos                 VAR_U_(0x0045B958, int32_t)
-#define JoyYPos                 VAR_U_(0x0045B95C, int32_t)
-#define JoyThrottle             VAR_U_(0x0045B970, int32_t)
-#define JoyHat                  VAR_U_(0x0045B9A0, int32_t)
-#define JoyFire                 VAR_U_(0x0045B990, int32_t)
-
 #define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
 #define SoundInit1              VAR_U_(0x0045A31C, int32_t)
 #define SoundInit2              VAR_U_(0x0045A320, int32_t)
