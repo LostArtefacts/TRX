@@ -279,7 +279,7 @@
 <rect width="12.00" height="12.00" x="364.00" y="87.00" class="decompiled"><title>S_InitialiseSystem</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="87.00" class="decompiled"><title>S_ExitSystem</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="87.00" class="decompiled"><title>init_game_malloc</title></rect>
-<rect width="12.00" height="12.00" x="406.00" y="87.00" class="named"><title>game_malloc</title></rect>
+<rect width="12.00" height="12.00" x="406.00" y="87.00" class="decompiled"><title>game_malloc</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="87.00" class="decompiled"><title>game_free</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="87.00" class="decompiled"><title>Key</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="87.00" class="decompiled"><title>S_UpdateInput</title></rect>
@@ -1086,7 +1086,7 @@
 <rect width="10.01" height="9.34" x="638.93" y="391.21" class="decompiled"><title>SpawnItem</title></rect>
 <rect width="9.95" height="9.34" x="650.95" y="391.21" class="named"><title>CopyPictureHardware</title></rect>
 <rect width="9.75" height="9.34" x="662.89" y="391.21" class="decompiled"><title>find_target_point</title></rect>
-<rect width="9.68" height="9.34" x="674.64" y="391.21" class="named"><title>game_malloc</title></rect>
+<rect width="9.68" height="9.34" x="674.64" y="391.21" class="decompiled"><title>game_malloc</title></rect>
 <rect width="9.68" height="9.34" x="686.32" y="391.21" class="decompiled"><title>OnDrawBridge</title></rect>
 <rect width="9.26" height="9.56" x="551.69" y="402.55" class="decompiled"><title>phd_RotX</title></rect>
 <rect width="9.26" height="9.43" x="551.69" y="414.11" class="decompiled"><title>phd_RotY</title></rect>
@@ -1457,10 +1457,10 @@
 <rect width="0.42" height="-0.45" x="695.58" y="535.22" class="todo"><title>sub_440EF0</title></rect>
 <rect width="-0.18" height="-0.76" x="695.58" y="536.76" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.39" height="-0.76" x="697.39" y="536.76" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 78.02%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.90%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.44%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.08%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 78.16%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.97%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.30%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.01%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.54%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.02%</text>
 </svg>
