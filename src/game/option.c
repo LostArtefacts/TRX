@@ -1209,15 +1209,6 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (!CHK_ANY(key, IN_OPTION)) {
             if (!KeyData->keymap[key]) {
                 SelectKey = 0;
-                if (Layout[IConfig][key] == DIK_LCONTROL) {
-                    Layout[IConfig][key] = DIK_RCONTROL;
-                }
-                if (Layout[IConfig][key] == DIK_LSHIFT) {
-                    Layout[IConfig][key] = DIK_RSHIFT;
-                }
-                if (Layout[IConfig][key] == DIK_LMENU) {
-                    Layout[IConfig][key] = DIK_RMENU;
-                }
                 FlashConflicts();
                 S_WriteUserSettings();
             }

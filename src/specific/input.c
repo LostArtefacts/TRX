@@ -81,24 +81,8 @@ int32_t Key_(int32_t number)
         } else if ((1 << (key & 0xff)) & JoyFire) {
             return 1;
         }
-    } else {
-        if (KeyData->keymap[key]) {
-            return 1;
-        }
-        switch (key) {
-        case DIK_RCONTROL:
-            return KeyData->keymap[DIK_LCONTROL];
-        case DIK_LCONTROL:
-            return KeyData->oldkeymap[DIK_LCONTROL];
-        case DIK_RSHIFT:
-            return KeyData->keymap[DIK_LSHIFT];
-        case DIK_LSHIFT:
-            return KeyData->keymap[DIK_RSHIFT];
-        case DIK_RMENU:
-            return KeyData->keymap[DIK_LMENU];
-        case DIK_LMENU:
-            return KeyData->oldkeymap[DIK_LMENU];
-        }
+    } else if (KeyData->keymap[key]) {
+        return 1;
     }
 
     if (Conflict[number]) {
@@ -109,36 +93,8 @@ int32_t Key_(int32_t number)
     if (KeyData->keymap[key]) {
         return 1;
     }
-    switch (key) {
-    case DIK_RCONTROL:
-        return KeyData->keymap[DIK_LCONTROL];
-    case DIK_LCONTROL:
-        return KeyData->oldkeymap[DIK_LCONTROL];
-    case DIK_RSHIFT:
-        return KeyData->keymap[DIK_LSHIFT];
-    case DIK_LSHIFT:
-        return KeyData->keymap[DIK_RSHIFT];
-    case DIK_RMENU:
-        return KeyData->keymap[DIK_LMENU];
-    case DIK_LMENU:
-        return KeyData->oldkeymap[DIK_LMENU];
-    }
 
     return 0;
-}
-
-void OnKeyPress(int high, int key, int held)
-{
-    TRACE("%d %d %d", high, key, held);
-    if (KeyData) {
-        if (high) {
-            key += 128;
-        }
-        if (KeyData->keymap[key] != held) {
-            KeyData->keymap[key] = held;
-            KeyData->keys_held++;
-        }
-    }
 }
 
 int16_t KeyGet()
@@ -338,7 +294,6 @@ void T1MInjectSpecificInput()
 {
     INJECT(0x0041E3E0, Key_);
     INJECT(0x0041E550, S_UpdateInput);
-    INJECT(0x00437B70, OnKeyPress);
     INJECT(0x00437BC0, KeyGet);
     INJECT(0x00437BD0, KeyClearBuffer);
 }

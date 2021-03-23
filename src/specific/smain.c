@@ -1,5 +1,6 @@
 #include "specific/smain.h"
 
+#include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/init.h"
 #include "specific/input.h"
@@ -7,6 +8,7 @@
 #include "util.h"
 
 #include <windows.h>
+#include <dinput.h>
 
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
@@ -51,18 +53,33 @@ typedef struct UNK2 {
 
 LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
 {
-    TRACE("");
     if (code < 0) {
         return CallNextHookEx(HHK, code, wParam, lParam);
     }
-    if (wParam == 145) {
-        PostMessageA(TombHWND, 0x10u, 0, 0);
+
+    uint32_t keyData = (uint32_t)lParam;
+    uint32_t scan_code = (keyData >> 16) & 0xFF;
+    uint32_t extended = (keyData >> 24) & 0x1;
+    uint32_t pressed = ~keyData >> 31;
+
+    if (scan_code == DIK_LCONTROL) {
+        scan_code = DIK_RCONTROL;
+    } else if (scan_code == DIK_LSHIFT) {
+        scan_code = DIK_RSHIFT;
+    } else if (scan_code == DIK_LMENU) {
+        scan_code = DIK_RMENU;
+    } else if (extended) {
+        scan_code += 128;
     }
-    OnKeyPress(lParam & 0x1000000, (lParam >> 16) & 0xFF, lParam >= 0);
-    if (wParam < 0x11 || wParam > 0x12) {
+
+    if (!KeyData) {
         return CallNextHookEx(HHK, code, wParam, lParam);
     }
-    return 1;
+
+    KeyData->keymap[scan_code] = pressed;
+    KeyData->keys_held = pressed;
+
+    return wParam == VK_MENU;
 }
 
 static void WinGameFinish()
