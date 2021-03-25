@@ -980,7 +980,7 @@ transA                          0x0043EAE4  0x00000139  -
 gourA                           0x0043EC1D  0x00000185  -
 gtmapA                          0x0043EDA2  0x00000311  -
 wgtmapA                         0x0043F0B3  0x00000355  -
-ATI3DCIF_NullSub                0x00450500  0x00000006  -
+ATI3DCIF_NullSub                0x00450500  0x00000006  +
 InitATI3DCIF                    0x00450510  0x00000296  -
 ATI3DCIF_GetInfo                0x004507B0  0x0000000E  +
 ATI3DCIF_TextureReg             0x004507C0  0x00000013  +

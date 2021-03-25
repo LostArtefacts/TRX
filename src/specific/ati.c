@@ -19,6 +19,11 @@
 #define ATI3DCIF_RenderPrimList_lib         ((C3D_EC (**)(C3D_VLIST vList, C3D_UINT32 u32NumVert))0x00459D2C)
 // clang-format on
 
+C3D_EC ATI3DCIF_NullSub()
+{
+    return C3D_EC_GENFAIL;
+}
+
 C3D_EC __stdcall ATI3DCIF_GetInfo(PC3D_3DCIFINFO info)
 {
     return (*ATI3DCIF_GetInfo_lib)(info);
@@ -85,6 +90,7 @@ C3D_EC __stdcall ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 
 void T1MInjectSpecificATI()
 {
+    INJECT(0x00450500, ATI3DCIF_NullSub);
     INJECT(0x004507B0, ATI3DCIF_GetInfo);
     INJECT(0x004507C0, ATI3DCIF_TextureReg);
     INJECT(0x004507E0, ATI3DCIF_TextureUnreg);
