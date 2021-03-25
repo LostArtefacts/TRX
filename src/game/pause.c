@@ -143,7 +143,7 @@ static int32_t PauseLoop()
 
 int8_t S_Pause()
 {
-    TRACE("");
+    LOG_DEBUG("");
     OldInputDB = Input;
 
     int old_overlay_flag = OverlayFlag;

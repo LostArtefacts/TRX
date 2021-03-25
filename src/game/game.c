@@ -88,7 +88,7 @@ int32_t LevelCompleteSequence(int32_t level_num)
 
 void SeedRandomControl(int32_t seed)
 {
-    TRACE("%d", seed);
+    LOG_DEBUG("%d", seed);
     Rand1 = seed;
 }
 
@@ -100,6 +100,7 @@ int32_t GetRandomControl()
 
 void SeedRandomDraw(int32_t seed)
 {
+    LOG_DEBUG("%d", seed);
     Rand2 = seed;
 }
 
@@ -232,7 +233,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 {
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
-    TRACE("%s", filename);
+    LOG_DEBUG("%s", filename);
     MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
     if (!fp) {
         return 0;
@@ -355,7 +356,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
 {
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
-    TRACE("%s", filename);
+    LOG_DEBUG("%s", filename);
 
     MYFILE *fp = FileOpen(filename, FILE_OPEN_WRITE);
     if (!fp) {

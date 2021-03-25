@@ -155,21 +155,21 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
 
     tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
-        TRACE("'savegame_fmt' must be a string");
+        LOG_ERROR("'savegame_fmt' must be a string");
         return 0;
     }
     GF.save_game_fmt = strdup(tmp_s);
 
     tmp_d = json_object_get_number_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
-        TRACE("'demo_delay' must be a positive number");
+        LOG_ERROR("'demo_delay' must be a positive number");
         return 0;
     }
     GF.demo_delay = tmp_d * 30;
 
     tmp_i = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
     if (tmp_i == JSON_INVALID_BOOL) {
-        TRACE("'enable_game_modes' must be a boolean");
+        LOG_ERROR("'enable_game_modes' must be a boolean");
         return 0;
     }
     GF.enable_game_modes = tmp_i;
@@ -177,7 +177,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
     tmp_i =
         json_object_get_bool(obj, "enable_save_crystals", JSON_INVALID_BOOL);
     if (tmp_i == JSON_INVALID_BOOL) {
-        TRACE("'enable_save_crystals' must be a boolean");
+        LOG_ERROR("'enable_save_crystals' must be a boolean");
         return 0;
     }
     GF.enable_save_crystals = tmp_i;
@@ -189,7 +189,7 @@ static int8_t S_LoadScriptGameStrings(struct json_object_s *obj)
 {
     struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
     if (!strings_obj) {
-        TRACE("'strings' must be a dictionary");
+        LOG_ERROR("'strings' must be a dictionary");
         return 0;
     }
 
@@ -198,7 +198,7 @@ static int8_t S_LoadScriptGameStrings(struct json_object_s *obj)
         GAME_STRING_ID key = StringToGameStringID(strings_elem->name->string);
         struct json_string_s *value = json_value_as_string(strings_elem->value);
         if (!value || key < 0 || key >= GS_NUMBER_OF) {
-            TRACE("invalid string key %s", strings_elem->name->string);
+            LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
             GF.strings[key] = strdup(value->string);
         }
@@ -212,7 +212,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 {
     struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
     if (!jseq_arr) {
-        TRACE("level %d: 'sequence' must be a list", level_num);
+        LOG_ERROR("level %d: 'sequence' must be a list", level_num);
         return 0;
     }
 
@@ -226,14 +226,14 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
     while (jseq_elem) {
         struct json_object_s *jseq_obj = json_value_as_object(jseq_elem->value);
         if (!jseq_obj) {
-            TRACE("level %d: 'sequence' elements must be dictionaries");
+            LOG_ERROR("level %d: 'sequence' elements must be dictionaries");
             return 0;
         }
 
         const char *type_str =
             json_object_get_string(jseq_obj, "type", JSON_INVALID_STRING);
         if (type_str == JSON_INVALID_STRING) {
-            TRACE("level %d: sequence 'type' must be a string", level_num);
+            LOG_ERROR("level %d: sequence 'type' must be a string", level_num);
             return 0;
         }
 
@@ -266,7 +266,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "fmv_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'fmv_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -279,28 +279,28 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             GAME_FLOW_DISPLAY_PICTURE_DATA *data =
                 malloc(sizeof(GAME_FLOW_DISPLAY_PICTURE_DATA));
             if (!data) {
-                TRACE("failed to allocate memory");
+                LOG_ERROR("failed to allocate memory");
                 return 0;
             }
 
             const char *tmp_s = json_object_get_string(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
             if (tmp_s == JSON_INVALID_STRING) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'picture_path' must be a string",
                     level_num, type_str);
                 return 0;
             }
             data->path = strdup(tmp_s);
             if (!data->path) {
-                TRACE("failed to allocate memory");
+                LOG_ERROR("failed to allocate memory");
                 return 0;
             }
 
             double tmp_d =
                 json_object_get_number_double(jseq_obj, "display_time", -1.0);
             if (tmp_d < 0.0) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'display_time' must be a positive "
                     "number",
                     level_num, type_str);
@@ -318,7 +318,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -333,7 +333,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -345,7 +345,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -357,7 +357,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
@@ -369,7 +369,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
@@ -381,7 +381,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
@@ -393,7 +393,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
                 return 0;
@@ -414,7 +414,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             int tmp = json_object_get_number_int(
                 jseq_obj, "audio_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'audio_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -427,14 +427,14 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             GAME_FLOW_MESH_SWAP_DATA *swap_data =
                 malloc(sizeof(GAME_FLOW_MESH_SWAP_DATA));
             if (!swap_data) {
-                TRACE("failed to allocate memory");
+                LOG_ERROR("failed to allocate memory");
                 return 0;
             }
 
             swap_data->object1_num = json_object_get_number_int(
                 jseq_obj, "object1_id", JSON_INVALID_NUMBER);
             if (swap_data->object1_num == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'object1_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -443,7 +443,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             swap_data->object2_num = json_object_get_number_int(
                 jseq_obj, "object2_id", JSON_INVALID_NUMBER);
             if (swap_data->object2_num == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'object2_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -452,7 +452,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             swap_data->mesh_num = json_object_get_number_int(
                 jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
             if (swap_data->mesh_num == JSON_INVALID_NUMBER) {
-                TRACE(
+                LOG_ERROR(
                     "level %d, sequence %s: 'mesh_id' must be a number",
                     level_num, type_str);
                 return 0;
@@ -464,7 +464,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             seq->type = GFS_FIX_PYRAMID_SECRET_TRIGGER;
 
         } else {
-            TRACE("unknown sequence type %s", type_str);
+            LOG_ERROR("unknown sequence type %s", type_str);
             return 0;
         }
 
@@ -483,7 +483,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 {
     struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
     if (!jlvl_arr) {
-        TRACE("'levels' must be a list");
+        LOG_ERROR("'levels' must be a list");
         return 0;
     }
 
@@ -491,13 +491,13 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 
     GF.levels = malloc(sizeof(GAMEFLOW_LEVEL) * level_count);
     if (!GF.levels) {
-        TRACE("failed to allocate memory");
+        LOG_ERROR("failed to allocate memory");
         return 0;
     }
 
     SaveGame.start = malloc(sizeof(START_INFO) * level_count);
     if (!SaveGame.start) {
-        TRACE("failed to allocate memory");
+        LOG_ERROR("failed to allocate memory");
         return 0;
     }
 
@@ -515,7 +515,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
     while (jlvl_elem) {
         struct json_object_s *jlvl_obj = json_value_as_object(jlvl_elem->value);
         if (!jlvl_obj) {
-            TRACE("'levels' elements must be dictionaries");
+            LOG_ERROR("'levels' elements must be dictionaries");
             return 0;
         }
 
@@ -525,49 +525,51 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         tmp_i =
             json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
         if (tmp_i == JSON_INVALID_NUMBER) {
-            TRACE("level %d: 'music' must be a number", level_num);
+            LOG_ERROR("level %d: 'music' must be a number", level_num);
             return 0;
         }
         cur->music = tmp_i;
 
         tmp_s = json_object_get_string(jlvl_obj, "file", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
-            TRACE("level %d: 'file' must be a string", level_num);
+            LOG_ERROR("level %d: 'file' must be a string", level_num);
             return 0;
         }
         cur->level_file = strdup(tmp_s);
         if (!cur->level_file) {
-            TRACE("failed to allocate memory");
+            LOG_ERROR("failed to allocate memory");
             return 0;
         }
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
-            TRACE("level %d: 'title' must be a string", level_num);
+            LOG_ERROR("level %d: 'title' must be a string", level_num);
             return 0;
         }
         cur->level_title = strdup(tmp_s);
         if (!cur->level_title) {
-            TRACE("failed to allocate memory");
+            LOG_ERROR("failed to allocate memory");
             return 0;
         }
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
-            TRACE("level %d: 'type' must be a string", level_num);
+            LOG_ERROR("level %d: 'type' must be a string", level_num);
             return 0;
         }
         if (!strcmp(tmp_s, "title")) {
             cur->level_type = GFL_TITLE;
             if (GF.title_level_num != -1) {
-                TRACE("level %d: there can be only one title level", level_num);
+                LOG_ERROR(
+                    "level %d: there can be only one title level", level_num);
                 return 0;
             }
             GF.title_level_num = level_num;
         } else if (!strcmp(tmp_s, "gym")) {
             cur->level_type = GFL_GYM;
             if (GF.gym_level_num != -1) {
-                TRACE("level %d: there can be only one gym level", level_num);
+                LOG_ERROR(
+                    "level %d: there can be only one gym level", level_num);
                 return 0;
             }
             GF.gym_level_num = level_num;
@@ -582,7 +584,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         } else if (!strcmp(tmp_s, "current")) {
             cur->level_type = GFL_CURRENT;
         } else {
-            TRACE("level %d: unknown level type %s", level_num, tmp_s);
+            LOG_ERROR("level %d: unknown level type %s", level_num, tmp_s);
             return 0;
         }
 
@@ -595,7 +597,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         struct json_object_s *jlbl_strings_obj =
             json_object_get_object(jlvl_obj, "strings");
         if (!jlbl_strings_obj) {
-            TRACE("level %d: 'strings' must be a dictionary", level_num);
+            LOG_ERROR("level %d: 'strings' must be a dictionary", level_num);
             return 0;
         } else {
             tmp_s = json_object_get_string(
@@ -689,11 +691,11 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
     }
 
     if (GF.title_level_num == -1) {
-        TRACE("at least one level must be of title type");
+        LOG_ERROR("at least one level must be of title type");
         return 0;
     }
     if (GF.first_level_num == -1 || GF.last_level_num == -1) {
-        TRACE("at least one level must be of normal type");
+        LOG_ERROR("at least one level must be of normal type");
         return 0;
     }
     return 1;
@@ -709,7 +711,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
     const char *file_path = GetFullPath(file_name);
     fp = FileOpen(file_path, FILE_OPEN_READ);
     if (!fp) {
-        TRACE("failed to open script file");
+        LOG_ERROR("failed to open script file");
         goto cleanup;
     }
 
@@ -717,7 +719,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
     script_data = malloc(script_data_size + 1);
     if (!script_data) {
-        TRACE("failed to allocate memory");
+        LOG_ERROR("failed to allocate memory");
         goto cleanup;
     }
     FileRead(script_data, 1, script_data_size, fp);
@@ -730,7 +732,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
         script_data, strlen(script_data), json_parse_flags_allow_json5, NULL,
         NULL, &parse_result);
     if (!root) {
-        TRACE(
+        LOG_ERROR(
             "failed to parse script file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, script_data);
@@ -874,12 +876,12 @@ static void FixPyramidSecretTrigger()
 GAMEFLOW_OPTION
 GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    TRACE("%d", level_num);
+    LOG_INFO("%d", level_num);
 
     GAMEFLOW_SEQUENCE *seq = GF.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
     while (seq->type != GFS_END) {
-        TRACE("seq %d %d", seq->type, seq->data);
+        LOG_INFO("seq %d %d", seq->type, seq->data);
 
         if (T1MConfig.disable_cine
             && GF.levels[level_num].level_type == GFL_CUTSCENE) {

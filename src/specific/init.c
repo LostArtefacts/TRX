@@ -65,7 +65,7 @@ void DB_Log(const char *fmt, ...)
     va_start(va, fmt);
     if (!dword_45A1F0) {
         vsprintf(buf, fmt, va);
-        TRACE(buf);
+        LOG_INFO(buf);
         OutputDebugStringA(buf);
         OutputDebugStringA("\n");
     }
@@ -115,7 +115,7 @@ void S_ExitSystem(const char *message)
 
 void init_game_malloc()
 {
-    TRACE("");
+    LOG_DEBUG("");
     GameAllocMemPointer = GameMemoryPointer;
     GameAllocMemFree = GameMemorySize;
     GameAllocMemUsed = 0;
@@ -143,7 +143,7 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
 
 void game_free(int32_t free_size, int32_t type)
 {
-    TRACE("");
+    LOG_DEBUG("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
     GameAllocMemUsed -= free_size;

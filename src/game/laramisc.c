@@ -328,7 +328,7 @@ void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
 
 void UseItem(int16_t object_num)
 {
-    TRACE("%d", object_num);
+    LOG_INFO("%d", object_num);
     switch (object_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:

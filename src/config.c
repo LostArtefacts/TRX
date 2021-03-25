@@ -109,7 +109,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
         &parse_result);
     if (!root) {
-        TRACE(
+        LOG_ERROR(
             "failed to parse config file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no);

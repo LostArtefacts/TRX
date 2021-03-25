@@ -53,7 +53,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     const char *path = GetFullPath(FMVPaths[sequence]);
 
     if (Player_InitMovie(&movie_context, 0, 0, path, 0x100000)) {
-        TRACE("cannot load video");
+        LOG_ERROR("cannot load video");
         goto cleanup;
     }
 
@@ -73,12 +73,12 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     if (Player_InitVideo(
             &fmv_context, movie_context, width, height, x, y, 0, 0, 640, 480, 0,
             1, tmp)) {
-        TRACE("cannot init video");
+        LOG_ERROR("cannot init video");
         goto cleanup;
     }
 
     if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) { //
-        TRACE("cannot init playback mode");
+        LOG_ERROR("cannot init playback mode");
         goto cleanup;
     }
 
@@ -86,22 +86,21 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         int32_t precision = Movie_GetSoundPrecision(movie_context);
         int32_t rate = Movie_GetSoundRate(movie_context);
         int32_t channels = Movie_GetSoundChannels(movie_context);
-        TRACE("%d", channels);
         if (Player_InitSound(
                 &sound_context, 44100, 1, 1, 22050, channels, rate, precision,
                 2)) {
-            TRACE("cannot init sound");
+            LOG_ERROR("cannot init sound");
             goto cleanup;
         }
     }
 
     if (Player_InitMoviePlayback(movie_context, fmv_context, sound_context)) {
-        TRACE("cannot init movie playback");
+        LOG_ERROR("cannot init movie playback");
         goto cleanup;
     }
 
     if (Player_MapVideo(fmv_context, 0)) {
-        TRACE("cannot map video");
+        LOG_ERROR("cannot map video");
         goto cleanup;
     }
 
@@ -109,7 +108,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     int8_t keypress = 0;
     int32_t total_frames = Movie_GetTotalFrames(movie_context);
     if (Player_StartTimer(movie_context)) {
-        TRACE("cannot start timer");
+        LOG_ERROR("cannot start timer");
         goto cleanup;
     }
 

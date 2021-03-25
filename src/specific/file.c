@@ -52,7 +52,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
     int32_t file_level_num;
 
     const char *full_path = GetFullPath(filename);
-    TRACE("%s", full_path);
+    LOG_INFO("%s", full_path);
 
     init_game_malloc();
     MYFILE *fp = FileOpen(full_path, FILE_OPEN_READ);
@@ -77,7 +77,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
     }
 
     FileRead(&file_level_num, sizeof(int32_t), 1, fp);
-    TRACE("file level num: %d", file_level_num);
+    LOG_INFO("file level num: %d", file_level_num);
 
     if (!LoadRooms(fp)) {
         return 0;
@@ -146,7 +146,7 @@ static int32_t LoadRooms(MYFILE *fp)
     uint32_t count4;
 
     FileRead(&RoomCount, sizeof(uint16_t), 1, fp);
-    TRACE("%d rooms", RoomCount);
+    LOG_INFO("%d rooms", RoomCount);
     if (RoomCount > MAX_ROOMS) {
         strcpy(StringToShow, "LoadRoom(): Too many rooms");
         return 0;
@@ -244,7 +244,7 @@ static int32_t LoadRooms(MYFILE *fp)
 static int32_t LoadObjects(MYFILE *fp)
 {
     FileRead(&MeshCount, sizeof(int32_t), 1, fp);
-    TRACE("%d meshes", MeshCount);
+    LOG_INFO("%d meshes", MeshCount);
     MeshBase = game_malloc(sizeof(int16_t) * MeshCount, GBUF_MESHES);
     FileRead(MeshBase, sizeof(int16_t), MeshCount, fp);
 
@@ -259,35 +259,35 @@ static int32_t LoadObjects(MYFILE *fp)
     }
 
     FileRead(&AnimCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anims", AnimCount);
+    LOG_INFO("%d anims", AnimCount);
     Anims = game_malloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
     FileRead(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
 
     FileRead(&AnimChangeCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anim changes", AnimChangeCount);
+    LOG_INFO("%d anim changes", AnimChangeCount);
     AnimChanges = game_malloc(
         sizeof(ANIM_CHANGE_STRUCT) * AnimChangeCount, GBUF_ANIM_CHANGES);
     FileRead(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, fp);
 
     FileRead(&AnimRangeCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anim ranges", AnimRangeCount);
+    LOG_INFO("%d anim ranges", AnimRangeCount);
     AnimRanges = game_malloc(
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
     FileRead(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
 
     FileRead(&AnimCommandCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anim commands", AnimCommandCount);
+    LOG_INFO("%d anim commands", AnimCommandCount);
     AnimCommands =
         game_malloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
     FileRead(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
 
     FileRead(&AnimBoneCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anim bones", AnimBoneCount);
+    LOG_INFO("%d anim bones", AnimBoneCount);
     AnimBones = game_malloc(sizeof(int32_t) * AnimBoneCount, GBUF_ANIM_BONES);
     FileRead(AnimBones, sizeof(int32_t), AnimBoneCount, fp);
 
     FileRead(&AnimFrameCount, sizeof(int32_t), 1, fp);
-    TRACE("%d anim frames", AnimFrameCount);
+    LOG_INFO("%d anim frames", AnimFrameCount);
     AnimFrames =
         game_malloc(sizeof(int16_t) * AnimFrameCount, GBUF_ANIM_FRAMES);
     FileRead(AnimFrames, sizeof(int16_t), AnimFrameCount, fp);
@@ -296,7 +296,7 @@ static int32_t LoadObjects(MYFILE *fp)
     }
 
     FileRead(&ObjectCount, sizeof(int32_t), 1, fp);
-    TRACE("%d objects", ObjectCount);
+    LOG_INFO("%d objects", ObjectCount);
     for (int i = 0; i < ObjectCount; i++) {
         int32_t tmp;
         FileRead(&tmp, sizeof(int32_t), 1, fp);
@@ -315,7 +315,7 @@ static int32_t LoadObjects(MYFILE *fp)
     InitialiseObjects();
 
     FileRead(&StaticCount, sizeof(int32_t), 1, fp);
-    TRACE("%d statics", StaticCount);
+    LOG_INFO("%d statics", StaticCount);
     for (int i = 0; i < StaticCount; i++) {
         int32_t tmp;
         FileRead(&tmp, sizeof(int32_t), 1, fp);
@@ -328,7 +328,7 @@ static int32_t LoadObjects(MYFILE *fp)
     }
 
     FileRead(&TextureCount, sizeof(int32_t), 1, fp);
-    TRACE("%d textures", TextureCount);
+    LOG_INFO("%d textures", TextureCount);
     if (TextureCount > MAX_TEXTURES) {
         sprintf(StringToShow, "Too many Textures in level");
         return 0;
@@ -366,7 +366,7 @@ static int32_t LoadItems(MYFILE *fp)
     int32_t item_count = 0;
     FileRead(&item_count, sizeof(int32_t), 1, fp);
 
-    TRACE("%d items", item_count);
+    LOG_INFO("%d items", item_count);
 
     if (item_count) {
         if (item_count > MAX_ITEMS) {
@@ -406,7 +406,7 @@ static int32_t LoadItems(MYFILE *fp)
 
 static int32_t LoadDepthQ(MYFILE *fp)
 {
-    TRACE("");
+    LOG_INFO("");
     FileRead(DepthQTable, sizeof(uint8_t), 32 * 256, fp);
     for (int i = 0; i < 32; i++) {
         // force colour 0 to black
@@ -421,7 +421,7 @@ static int32_t LoadDepthQ(MYFILE *fp)
 
 static int32_t LoadPalette(MYFILE *fp)
 {
-    TRACE("");
+    LOG_INFO("");
     FileRead(GamePalette, sizeof(uint8_t), 256 * 3, fp);
     GamePalette[0] = 0;
     GamePalette[1] = 0;
@@ -441,7 +441,7 @@ static int32_t LoadPalette(MYFILE *fp)
 static int32_t LoadCameras(MYFILE *fp)
 {
     FileRead(&NumberCameras, sizeof(int32_t), 1, fp);
-    TRACE("%d cameras", NumberCameras);
+    LOG_INFO("%d cameras", NumberCameras);
     if (!NumberCameras) {
         return 1;
     }
@@ -457,7 +457,7 @@ static int32_t LoadCameras(MYFILE *fp)
 static int32_t LoadSoundEffects(MYFILE *fp)
 {
     FileRead(&NumberSoundEffects, sizeof(int32_t), 1, fp);
-    TRACE("%d sound effects", NumberSoundEffects);
+    LOG_INFO("%d sound effects", NumberSoundEffects);
     if (!NumberSoundEffects) {
         return 1;
     }
@@ -516,7 +516,7 @@ static int32_t LoadBoxes(MYFILE *fp)
 static int32_t LoadAnimatedTextures(MYFILE *fp)
 {
     FileRead(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
-    TRACE("%d animated textures", AnimTextureRangeCount);
+    LOG_INFO("%d animated textures", AnimTextureRangeCount);
     AnimTextureRanges = game_malloc(
         sizeof(int16_t) * AnimTextureRangeCount, GBUF_ANIMATING_TEXTURE_RANGES);
     FileRead(AnimTextureRanges, sizeof(int16_t), AnimTextureRangeCount, fp);
@@ -526,7 +526,7 @@ static int32_t LoadAnimatedTextures(MYFILE *fp)
 static int32_t LoadCinematic(MYFILE *fp)
 {
     FileRead(&NumCineFrames, sizeof(int16_t), 1, fp);
-    TRACE("%d cinematic frames", NumCineFrames);
+    LOG_INFO("%d cinematic frames", NumCineFrames);
     if (!NumCineFrames) {
         return 1;
     }
@@ -543,7 +543,7 @@ static int32_t LoadDemo(MYFILE *fp)
         game_malloc(DEMO_COUNT_MAX * sizeof(uint32_t), GBUF_LOADDEMO_BUFFER);
     uint16_t size = 0;
     FileRead(&size, sizeof(int16_t), 1, fp);
-    TRACE("%d demo buffer size", size);
+    LOG_INFO("%d demo buffer size", size);
     if (!size) {
         return 1;
     }
@@ -559,7 +559,7 @@ static int32_t LoadSamples(MYFILE *fp)
 
     FileRead(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
     FileRead(&NumSampleInfos, sizeof(int32_t), 1, fp);
-    TRACE("%d sample infos", NumSampleInfos);
+    LOG_INFO("%d sample infos", NumSampleInfos);
     if (!NumSampleInfos) {
         S_ExitSystem("No Sample Infos");
         return 0;
@@ -571,7 +571,7 @@ static int32_t LoadSamples(MYFILE *fp)
 
     int32_t sample_data_size;
     FileRead(&sample_data_size, sizeof(int32_t), 1, fp);
-    TRACE("%d sample data size", sample_data_size);
+    LOG_INFO("%d sample data size", sample_data_size);
     if (!sample_data_size) {
         S_ExitSystem("No Sample Data");
         return 0;
@@ -581,7 +581,7 @@ static int32_t LoadSamples(MYFILE *fp)
     FileRead(sample_data, sizeof(char), sample_data_size, fp);
 
     FileRead(&NumSamples, sizeof(int32_t), 1, fp);
-    TRACE("%d samples", NumSamples);
+    LOG_INFO("%d samples", NumSamples);
     if (!NumSamples) {
         S_ExitSystem("No Samples");
         return 0;
@@ -608,7 +608,7 @@ static int32_t LoadSamples(MYFILE *fp)
 static int32_t LoadTexturePages(MYFILE *fp)
 {
     FileRead(&TexturePageCount, sizeof(int32_t), 1, fp);
-    TRACE("%d texture pages", TexturePageCount);
+    LOG_INFO("%d texture pages", TexturePageCount);
     int8_t *base = game_malloc(TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
     FileRead(base, 65536, TexturePageCount, fp);
     for (int i = 0; i < TexturePageCount; i++) {
@@ -620,7 +620,7 @@ static int32_t LoadTexturePages(MYFILE *fp)
 
 int32_t S_LoadLevel(int level_num)
 {
-    TRACE("%d (%s)", level_num, GF.levels[level_num].level_file);
+    LOG_INFO("%d (%s)", level_num, GF.levels[level_num].level_file);
     int32_t ret = LoadLevel(GF.levels[level_num].level_file, level_num);
 
     if (T1MConfig.disable_healing_between_levels) {
@@ -652,7 +652,7 @@ int32_t S_LoadLevel(int level_num)
 const char *GetFullPath(const char *filename)
 {
     static char newpath[128];
-    TRACE("%s", filename);
+    LOG_INFO("%s", filename);
     sprintf(newpath, ".\\%s", filename);
     return newpath;
 }

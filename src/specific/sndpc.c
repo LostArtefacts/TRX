@@ -115,7 +115,7 @@ static LPDIRECTSOUNDBUFFER SoundPlaySample(
             DupeSoundBufferList = dupe_buffer;
 
             buffer = buffer_new;
-            TRACE(
+            LOG_DEBUG(
                 "duplicated sound buffer %p to %p", sample->handle, buffer_new);
         }
     }
@@ -163,7 +163,7 @@ int32_t MusicInit()
     MCIERROR result = mciSendCommandA(
         0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID, (DWORD_PTR)&open_parms);
     if (result) {
-        TRACE("Cannot initailize music device: %x", result);
+        LOG_ERROR("cannot initailize music device: %x", result);
         return 0;
     }
     MCIDeviceID = open_parms.wDeviceID;
@@ -252,7 +252,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     HRESULT result = IDirectSound_CreateSoundBuffer(
         DSound, &buffer_desc, (LPDIRECTSOUNDBUFFER *)&sample_data->handle, 0);
     if (result) {
-        TRACE("DirectSound error code %x", result);
+        LOG_ERROR("DirectSound error code %x", result);
         ShowFatalError("Fatal DirectSound error!");
     }
 
@@ -263,7 +263,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
         (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
         &audio_data, &audio_data_size, 0, 0, 0);
     if (result) {
-        TRACE("DirectSound error code %x", result);
+        LOG_ERROR("DirectSound error code %x", result);
         ShowFatalError("Fatal DirectSound error!");
     }
 
@@ -273,7 +273,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
         (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
         0, 0);
     if (result) {
-        TRACE("DirectSound error code %x", result);
+        LOG_ERROR("DirectSound error code %x", result);
         ShowFatalError("Fatal DirectSound error!");
     }
 

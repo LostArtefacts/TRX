@@ -89,7 +89,7 @@
 
 int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    TRACE("%d", level_num);
+    LOG_DEBUG("%d", level_num);
     if (level_type == GFL_SAVED) {
         CurrentLevel = SaveGame.current_level;
     } else {

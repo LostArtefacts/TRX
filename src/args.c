@@ -13,7 +13,7 @@ int get_command_line(char ***args, int *arg_count)
 
     l_arg_list = CommandLineToArgvW(GetCommandLineW(), &l_arg_count);
     if (!l_arg_list) {
-        TRACE("CommandLineToArgvW failed");
+        LOG_ERROR("CommandLineToArgvW failed");
         return 0;
     }
 

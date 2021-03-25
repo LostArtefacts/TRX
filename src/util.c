@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <dbghelp.h>
 
-void T1MTraceFunc(
+void T1MLogFunc(
     const char *file, int line, const char *func, const char *fmt, ...)
 {
     va_list va;
@@ -22,7 +22,7 @@ void T1MInjectFunc(void (*from)(void), void (*to)(void))
         return;
     }
     DWORD tmp;
-    TRACE("Patching %p to %p", from, to);
+    LOG_DEBUG("Patching %p to %p", from, to);
     VirtualProtect(from, sizeof(JMP), PAGE_EXECUTE_READWRITE, &tmp);
     HANDLE hCurrentProcess = GetCurrentProcess();
     JMP buf;
@@ -75,12 +75,12 @@ void T1MPrintStackTrace()
         UnDecorateSymbolName(
             pSymbol->Name, (PSTR)name, MaxNameLen, UNDNAME_COMPLETE);
 
-        TRACE(
-            "Frame %lu:\n"
-            "    Symbol name:    %s\n"
-            "    PC address:     0x%08LX\n"
-            "    Stack address:  0x%08LX\n"
-            "    Frame address:  0x%08LX\n"
+        LOG_DEBUG(
+            "frame %lu:\n"
+            "    symbol name:    %s\n"
+            "    pc address:     0x%08LX\n"
+            "    stack address:  0x%08LX\n"
+            "    frame address:  0x%08LX\n"
             "\n",
             frame, pSymbol->Name, (ULONG64)stack.AddrPC.Offset,
             (ULONG64)stack.AddrStack.Offset, (ULONG64)stack.AddrFrame.Offset);
