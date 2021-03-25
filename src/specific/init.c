@@ -63,12 +63,10 @@ void DB_Log(const char *fmt, ...)
     char buf[256] = { 0 };
 
     va_start(va, fmt);
-    if (!dword_45A1F0) {
-        vsprintf(buf, fmt, va);
-        LOG_INFO(buf);
-        OutputDebugStringA(buf);
-        OutputDebugStringA("\n");
-    }
+    vsprintf(buf, fmt, va);
+    LOG_INFO("%s", buf);
+    OutputDebugStringA(buf);
+    OutputDebugStringA("\n");
 }
 
 void S_InitialiseSystem()

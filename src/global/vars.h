@@ -9,7 +9,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define dword_45A1F0            VAR_U_(0x0045A1F0, int32_t)
 #define dword_45E960            VAR_U_(0x0045E960, int32_t)
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
