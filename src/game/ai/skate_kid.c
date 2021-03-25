@@ -68,7 +68,7 @@ void SkateKidControl(int16_t item_num)
         angle = CreatureTurn(item, SKATE_KID_SKATE_TURN);
 
         if (item->hit_points < 120 && CDTrack != 56) {
-            S_CDPlay(56);
+            S_MusicPlay(56);
         }
 
         switch (item->current_anim_state) {

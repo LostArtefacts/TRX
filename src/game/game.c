@@ -74,9 +74,9 @@ int32_t GameLoop(int32_t demo_mode)
     }
 
     S_SoundStopAllSamples();
-    S_CDStop();
+    S_MusicStop();
     if (OptionMusicVolume) {
-        S_CDVolume(OptionMusicVolume * 25 + 5);
+        S_MusicVolume(OptionMusicVolume * 25 + 5);
     }
 
     return ret;

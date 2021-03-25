@@ -193,9 +193,9 @@ void S_ReadUserSettings()
     DefaultConflict();
 
     if (OptionMusicVolume) {
-        S_CDVolume(25 * OptionMusicVolume + 5);
+        S_MusicVolume(25 * OptionMusicVolume + 5);
     } else {
-        S_CDVolume(0);
+        S_MusicVolume(0);
     }
 
     if (OptionSoundFXVolume) {

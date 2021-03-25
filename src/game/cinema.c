@@ -44,7 +44,7 @@ int32_t CinematicLoop()
 
 int32_t StopCinematic(int32_t level_num)
 {
-    S_CDStop();
+    S_MusicStop();
     S_SoundStopAllSamples();
     SoundIsActive = OldSoundIsActive;
 

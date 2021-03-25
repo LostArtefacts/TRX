@@ -152,7 +152,7 @@ int8_t S_Pause()
     T_RemovePrint(AmmoText);
     AmmoText = NULL;
     S_FadeInInventory(1);
-    S_CDVolume(0);
+    S_MusicVolume(0);
     TempVideoAdjust(HiRes, 1.0);
     S_SetupAboveWater(0);
 
@@ -161,7 +161,7 @@ int8_t S_Pause()
     RemoveRequester(&PauseRequester);
     RemovePausedText();
     TempVideoRemove();
-    S_CDVolume(OptionMusicVolume * 25 + 5);
+    S_MusicVolume(OptionMusicVolume * 25 + 5);
     S_FadeOutInventory(1);
     OverlayFlag = old_overlay_flag;
     return select < 0;

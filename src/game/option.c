@@ -857,9 +857,9 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
         if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
             if (OptionMusicVolume) {
-                S_CDVolume(25 * OptionMusicVolume + 5);
+                S_MusicVolume(25 * OptionMusicVolume + 5);
             } else {
-                S_CDVolume(0);
+                S_MusicVolume(0);
             }
             SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }

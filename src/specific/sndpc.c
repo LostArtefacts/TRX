@@ -48,6 +48,14 @@ typedef struct WAVE_FILE_HEADER {
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 
+static int32_t MusicPlay(int16_t track_id);
+static int32_t MusicPlayLooped();
+static int32_t ConvertVolumeToDecibel(int32_t volume);
+static int32_t ConvertPanToDecibel(uint16_t pan);
+static LPDIRECTSOUNDBUFFER SoundPlaySample(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
+    int8_t loop);
+
 static int32_t ConvertVolumeToDecibel(int32_t volume)
 {
     return DecibelLUT[(volume & 0x7FFF) >> 6];
@@ -274,7 +282,8 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     return 1;
 }
 
-void S_CDVolume(int16_t volume)
+// original name: S_CDVolume
+void S_MusicVolume(int16_t volume)
 {
     TRACE("%d", volume);
     int32_t volume_aux = volume * 0xFFFF / 0xFF;
@@ -282,47 +291,8 @@ void S_CDVolume(int16_t volume)
     auxSetVolume(AuxDeviceID, volume_aux);
 }
 
-int32_t S_CDPlay(int16_t track)
-{
-    TRACE("%d", track);
-
-    if (T1MConfig.fix_secrets_killing_music && track == 13) {
-        SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
-        return 1;
-    }
-
-    if (track == 0) {
-        S_CDStop();
-        return 0;
-    }
-
-    if (track == 5) {
-        return 0;
-    }
-
-    CDTrack = track;
-    return CDPlay(track);
-}
-
-int32_t S_StartSyncedAudio(int16_t track)
-{
-    return S_CDPlay(track);
-}
-
-int32_t S_CDStop()
-{
-    TRACE("");
-
-    CDTrack = 0;
-    CDTrackLooped = 0;
-    CDLoop = 0;
-
-    MCI_GENERIC_PARMS gen_parms;
-    return !mciSendCommandA(
-        MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
-}
-
-int32_t CDPlay(int16_t track)
+// original name: CDPlay
+static int32_t MusicPlay(int16_t track)
 {
     TRACE("%d", track);
 
@@ -365,21 +335,60 @@ int32_t CDPlay(int16_t track)
     return 1;
 }
 
-void S_CDLoop()
-{
-    CDLoop = 1;
-}
-
-int32_t CDPlayLooped()
+// original name: CDPlayLooped
+static int32_t MusicPlayLooped()
 {
     TRACE("");
 
     if (CDLoop && CDTrackLooped > 0) {
-        CDPlay(CDTrackLooped);
+        MusicPlay(CDTrackLooped);
         return 0;
     }
 
     return CDLoop;
+}
+
+// original name: S_CDPlay
+int32_t S_MusicPlay(int16_t track)
+{
+    TRACE("%d", track);
+
+    if (T1MConfig.fix_secrets_killing_music && track == 13) {
+        SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
+        return 1;
+    }
+
+    if (track == 0) {
+        S_MusicStop();
+        return 0;
+    }
+
+    if (track == 5) {
+        return 0;
+    }
+
+    CDTrack = track;
+    return MusicPlay(track);
+}
+
+// original name: S_CDStop
+int32_t S_MusicStop()
+{
+    TRACE("");
+
+    CDTrack = 0;
+    CDTrackLooped = 0;
+    CDLoop = 0;
+
+    MCI_GENERIC_PARMS gen_parms;
+    return !mciSendCommandA(
+        MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
+}
+
+// original name: S_CDLoop
+void S_MusicLoop()
+{
+    CDLoop = 1;
 }
 
 void *S_SoundPlaySample(
@@ -463,20 +472,20 @@ void T1MInjectSpecificSndPC()
     INJECT(0x00419F50, SoundMakeSample);
     INJECT(0x00437C00, SoundLoadSamples);
     INJECT(0x00437CB0, SoundLoadSample);
-    INJECT(0x00437FB0, CDPlay);
-    INJECT(0x004380B0, S_CDLoop);
-    INJECT(0x004380C0, CDPlayLooped);
+    INJECT(0x00437FB0, MusicPlay);
+    INJECT(0x004380B0, S_MusicLoop);
+    INJECT(0x004380C0, MusicPlayLooped);
     INJECT(0x00438BF0, S_SoundPlaySample);
     INJECT(0x00438C40, S_SoundPlaySampleLooped);
     INJECT(0x00438CA0, S_SoundSampleIsPlaying);
     INJECT(0x00438CC0, S_SoundStopAllSamples);
     INJECT(0x00438CD0, S_SoundStopSample);
     INJECT(0x00438CF0, S_SoundSetPanAndVolume);
-    INJECT(0x00438D40, S_CDPlay);
-    INJECT(0x00438E40, S_CDStop);
-    INJECT(0x00439030, S_StartSyncedAudio);
+    INJECT(0x00438D40, S_MusicPlay);
+    INJECT(0x00438E40, S_MusicStop);
+    INJECT(0x00439030, S_MusicPlay);
 
     // NOTE: this is a nullsub in OG and is called in many different places
     // for many different purposes so it's not injected.
-    // INJECT(0x00437F30, S_CDVolume);
+    // INJECT(0x00437F30, S_MusicVolume);
 }

@@ -139,7 +139,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
         if (CDTrack > 0) {
-            S_CDLoop();
+            S_MusicLoop();
         }
 
         CheckCheatMode();
@@ -953,7 +953,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                 break;
             }
             SaveGame.secrets |= 1 << value;
-            S_CDPlay(13);
+            S_MusicPlay(13);
             break;
         }
     } while (!(trigger & END_BIT));
@@ -1490,10 +1490,10 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
             CDFlags[value] |= IF_ONESHOT;
         }
         if (value != CDTrack) {
-            S_CDPlay(value);
+            S_MusicPlay(value);
         }
     } else {
-        S_CDStop();
+        S_MusicStop();
     }
 }
 

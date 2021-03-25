@@ -140,7 +140,7 @@ void GameMain()
             dword_45B940 = 1;
 
             S_FadeToBlack();
-            S_CDStop();
+            S_MusicStop();
 
             if (ResetFlag) {
                 ResetFlag = 0;

@@ -1003,7 +1003,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
-            S_StartSyncedAudio((int32_t)seq->data);
+            S_MusicPlay((int32_t)seq->data);
             break;
 
         case GFS_REMOVE_GUNS:
