@@ -9,7 +9,6 @@
 
 void InitialiseLOTArray()
 {
-    TRACE("");
     BaddieSlots =
         game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_DATA);
     for (int i = 0; i < NUM_SLOTS; i++) {

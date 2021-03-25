@@ -405,7 +405,6 @@ void InitialiseLaraLoad(int16_t item_num)
 
 void InitialiseLara()
 {
-    TRACE("");
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
@@ -462,7 +461,6 @@ void InitialiseLara()
 
 void InitialiseLaraInventory(int32_t level_num)
 {
-    TRACE("%d", level_num);
     Inv_RemoveAllItems();
 
     START_INFO *start = &SaveGame.start[level_num];

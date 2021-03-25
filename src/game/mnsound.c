@@ -36,7 +36,6 @@ typedef enum SAMPLE_FLAG {
 
 void mn_reset_sound_effects()
 {
-    TRACE("");
     if (!SoundIsActive) {
         return;
     }

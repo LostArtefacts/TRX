@@ -73,7 +73,6 @@ void DB_Log(const char *fmt, ...)
 
 void S_InitialiseSystem()
 {
-    TRACE("");
     S_SeedRandom();
 
     GameVidWidth = 640;

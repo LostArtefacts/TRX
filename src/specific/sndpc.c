@@ -136,7 +136,6 @@ static LPDIRECTSOUNDBUFFER SoundPlaySample(
 
 int32_t SoundInit()
 {
-    TRACE("");
     if (DirectSoundCreate(0, &DSound, 0)) {
         return 0;
     }
@@ -188,7 +187,6 @@ int32_t MusicInit()
 
 void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
 {
-    TRACE("");
     if (!SoundIsActive) {
         return;
     }
@@ -285,7 +283,6 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
 // original name: S_CDVolume
 void S_MusicVolume(int16_t volume)
 {
-    TRACE("%d", volume);
     int32_t volume_aux = volume * 0xFFFF / 0xFF;
     volume_aux |= volume_aux << 16;
     auxSetVolume(AuxDeviceID, volume_aux);
@@ -294,8 +291,6 @@ void S_MusicVolume(int16_t volume)
 // original name: CDPlay
 static int32_t MusicPlay(int16_t track)
 {
-    TRACE("%d", track);
-
     if (track < 2) {
         return 0;
     }
@@ -338,8 +333,6 @@ static int32_t MusicPlay(int16_t track)
 // original name: CDPlayLooped
 static int32_t MusicPlayLooped()
 {
-    TRACE("");
-
     if (CDLoop && CDTrackLooped > 0) {
         MusicPlay(CDTrackLooped);
         return 0;
@@ -351,8 +344,6 @@ static int32_t MusicPlayLooped()
 // original name: S_CDPlay
 int32_t S_MusicPlay(int16_t track)
 {
-    TRACE("%d", track);
-
     if (T1MConfig.fix_secrets_killing_music && track == 13) {
         SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
         return 1;
@@ -374,8 +365,6 @@ int32_t S_MusicPlay(int16_t track)
 // original name: S_CDStop
 int32_t S_MusicStop()
 {
-    TRACE("");
-
     CDTrack = 0;
     CDTrackLooped = 0;
     CDLoop = 0;
@@ -413,7 +402,6 @@ void *S_SoundPlaySampleLooped(
 
 void S_SoundStopAllSamples()
 {
-    TRACE("");
     if (!SoundIsActive) {
         return;
     }
@@ -428,7 +416,6 @@ void S_SoundStopAllSamples()
 
 void S_SoundStopSample(void *handle)
 {
-    TRACE("");
     if (!SoundIsActive) {
         return;
     }

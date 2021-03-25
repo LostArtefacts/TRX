@@ -128,7 +128,6 @@ static void WinGameFinish()
         dword_45A998 = 0;
     }
     if (dword_45A994) {
-        DB_Log("TerminateLibrary");
         sub_450830(dword_45A994);
         sub_4508C0();
         dword_45A994 = 0;

@@ -24,7 +24,6 @@ static char *SGPoint;
 
 void InitialiseStartInfo()
 {
-    TRACE("");
     for (int i = 0; i < GF.level_count; i++) {
         ModifyStartInfo(i);
         SaveGame.start[i].available = 0;
@@ -88,7 +87,6 @@ void ModifyStartInfo(int32_t level_num)
 
 void CreateStartInfo(int level_num)
 {
-    TRACE("%d", level_num);
     START_INFO *start = &SaveGame.start[level_num];
 
     start->available = 1;

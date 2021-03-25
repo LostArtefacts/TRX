@@ -696,11 +696,6 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         TRACE("at least one level must be of normal type");
         return 0;
     }
-
-    TRACE("gym: %d", GF.gym_level_num);
-    TRACE("first: %d", GF.first_level_num);
-    TRACE("last: %d", GF.last_level_num);
-    TRACE("title: %d", GF.title_level_num);
     return 1;
 }
 
@@ -808,7 +803,6 @@ int8_t GF_LoadScriptFile(const char *file_name)
 
 static void FixPyramidSecretTrigger()
 {
-    TRACE("");
     uint32_t global_secrets = 0;
 
     for (int i = 0; i < RoomCount; i++) {

@@ -59,7 +59,6 @@ int32_t StopGame()
 
 int32_t GameLoop(int32_t demo_mode)
 {
-    TRACE("");
     OverlayFlag = 1;
     InitialiseCamera();
 
@@ -247,7 +246,6 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
         S_ExitSystem("null save->start");
         return 0;
     }
-    TRACE("%d", GF.level_count);
     FileRead(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
     FileRead(&save->timer, sizeof(uint32_t), 1, fp);
     FileRead(&save->kills, sizeof(uint32_t), 1, fp);
