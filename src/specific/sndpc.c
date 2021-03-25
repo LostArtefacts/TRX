@@ -5,7 +5,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/init.h"
-#include "specific/smain.h"
 #include "util.h"
 
 #include <math.h>
@@ -252,8 +251,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     HRESULT result = IDirectSound_CreateSoundBuffer(
         DSound, &buffer_desc, (LPDIRECTSOUNDBUFFER *)&sample_data->handle, 0);
     if (result) {
-        LOG_ERROR("DirectSound error code %x", result);
-        ShowFatalError("Fatal DirectSound error!");
+        S_ExitSystem("Fatal DirectSound error!");
     }
 
     DWORD audio_data_size;
@@ -263,8 +261,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
         (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
         &audio_data, &audio_data_size, 0, 0, 0);
     if (result) {
-        LOG_ERROR("DirectSound error code %x", result);
-        ShowFatalError("Fatal DirectSound error!");
+        S_ExitSystem("Fatal DirectSound error!");
     }
 
     memcpy(audio_data, sample_data->data, buffer_desc.dwBufferBytes);
@@ -273,8 +270,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
         (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
         0, 0);
     if (result) {
-        LOG_ERROR("DirectSound error code %x", result);
-        ShowFatalError("Fatal DirectSound error!");
+        S_ExitSystem("Fatal DirectSound error!");
     }
 
     return 1;
