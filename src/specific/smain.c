@@ -112,9 +112,7 @@ static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
 
 static void WinGameFinish()
 {
-    DB_Log("TerminateGame");
     dword_45A990 = 1;
-    DB_Log("Shutting down DirectDraw");
     if (dword_45A938) {
         (*dword_45A938)->cb8(dword_45A938);
         dword_45A938 = 0;
@@ -169,7 +167,6 @@ int WINAPI WinMain(
     HHK =
         SetWindowsHookExA(WH_KEYBOARD, &KeyboardHook, 0, GetCurrentThreadId());
 
-    DB_Log("StartTombRaider: running game");
     if (!sub_43D070()) {
         WinGameFinish();
         exit(1);
