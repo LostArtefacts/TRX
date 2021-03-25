@@ -76,8 +76,7 @@ void ShowFatalError(const char *message)
     }
     MessageBoxA(
         0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
-    WinGameFinish();
-    exit(1);
+    TerminateGame(1);
 }
 
 static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)

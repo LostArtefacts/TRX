@@ -111,7 +111,7 @@ void S_ExitSystem(const char *message)
         free(GameMemoryPointer);
     }
     ShutdownHardware();
-    TerminateGame(1);
+    ShowFatalError(message);
 }
 
 void init_game_malloc()
