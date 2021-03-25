@@ -994,4 +994,4 @@ ATI3DCIF_RenderBegin            0x00450860  0x0000000E  +
 ATI3DCIF_RenderEnd              0x00450870  0x00000006  +
 ATI3DCIF_RenderPrimStrip        0x00450880  0x00000013  +
 ATI3DCIF_RenderPrimList         0x004508A0  0x00000013  +
-ShutdownATI3DCIF                0x004508C0  0x00000056  -
+ShutdownATI3DCIF                0x004508C0  0x00000056  +

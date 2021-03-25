@@ -443,6 +443,7 @@ typedef enum {
 #pragma pack(pop)
 
 C3D_EC InitATI3DCIF();
+C3D_EC ShutdownATI3DCIF();
 
 C3D_EC ATI3DCIF_NullSub();
 C3D_EC __stdcall ATI3DCIF_GetInfo(C3D_3DCIFINFO *info);

@@ -714,7 +714,7 @@
 <rect width="12.00" height="12.00" x="154.00" y="213.00" class="decompiled"><title>ATI3DCIF_RenderEnd</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="213.00" class="decompiled"><title>ATI3DCIF_RenderPrimStrip</title></rect>
 <rect width="12.00" height="12.00" x="182.00" y="213.00" class="decompiled"><title>ATI3DCIF_RenderPrimList</title></rect>
-<rect width="12.00" height="12.00" x="196.00" y="213.00" class="named"><title>ShutdownATI3DCIF</title></rect>
+<rect width="12.00" height="12.00" x="196.00" y="213.00" class="decompiled"><title>ShutdownATI3DCIF</title></rect>
 <text x="0.00" y="259.50">TombATI functions, arranged according to the function sizes:</text>
 <rect width="52.40" height="68.51" x="0.00" y="269.00" class="decompiled"><title>DrawLaraInt</title></rect>
 <rect width="52.40" height="59.86" x="0.00" y="339.51" class="decompiled"><title>Display_Inventory</title></rect>
@@ -1200,7 +1200,7 @@
 <rect width="6.59" height="5.68" x="602.42" y="530.32" class="decompiled"><title>Inv_RingMotionItemSelect</title></rect>
 <rect width="6.15" height="6.09" x="611.01" y="450.64" class="decompiled"><title>LaraAsFastBack</title></rect>
 <rect width="6.05" height="6.09" x="619.16" y="450.64" class="decompiled"><title>LaraColDefault</title></rect>
-<rect width="6.05" height="6.09" x="627.21" y="450.64" class="named"><title>ShutdownATI3DCIF</title></rect>
+<rect width="6.05" height="6.09" x="627.21" y="450.64" class="decompiled"><title>ShutdownATI3DCIF</title></rect>
 <rect width="5.96" height="6.09" x="635.26" y="450.64" class="decompiled"><title>TriggerActive</title></rect>
 <rect width="5.96" height="6.09" x="643.22" y="450.64" class="decompiled"><title>Inv_RingMotionItemDeselect</title></rect>
 <rect width="5.96" height="6.09" x="651.18" y="450.64" class="decompiled"><title>phd_atan</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 81.54%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 75.22%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.49%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.65%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 81.68%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 75.26%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.35%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.61%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 7.97%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 13.13%</text>
 </svg>

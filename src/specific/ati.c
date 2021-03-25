@@ -178,6 +178,30 @@ C3D_EC InitATI3DCIF()
     return result;
 }
 
+C3D_EC ShutdownATI3DCIF()
+{
+    C3D_EC result;
+    C3D_EC (*ATI3DCIF_Term_lib)();
+
+    if (!HATI3DCIFModule) {
+        return C3D_EC_GENFAIL;
+    }
+
+    ATI3DCIF_Term_lib =
+        *(C3D_EC(**)())GetProcAddress(HATI3DCIFModule, "ATI3DCIF_Term_lib");
+    if (ATI3DCIF_Term_lib) {
+        result = ATI3DCIF_Term_lib();
+    } else {
+        ATI3DCIF_Term_lib = ATI3DCIF_NullSub;
+        result = C3D_EC_GENFAIL;
+    }
+
+    FreeLibrary(HATI3DCIFModule);
+    HATI3DCIFModule = NULL;
+
+    return result;
+}
+
 C3D_EC ATI3DCIF_NullSub()
 {
     return C3D_EC_GENFAIL;
@@ -263,4 +287,5 @@ void T1MInjectSpecificATI()
     INJECT(0x00450870, ATI3DCIF_RenderEnd);
     INJECT(0x00450880, ATI3DCIF_RenderPrimStrip);
     INJECT(0x004508A0, ATI3DCIF_RenderPrimList);
+    INJECT(0x004508C0, ShutdownATI3DCIF);
 }
