@@ -954,7 +954,7 @@ InitialiseStatue                0x0043CE90  0x000000E5  +
 StatueControl                   0x0043CF80  0x000000E1  +
 
 # ???
-sub_43D070                      0x0043D070  0x0000049A  -
+InitDirectDraw                  0x0043D070  0x0000049A  -
 TerminateGame                   0x0043D510  0x000000DA  +
 sub_43D5F0                      0x0043D5F0  0x00000176  -
 ShowFatalError                  0x0043D770  0x00000147  +
@@ -991,18 +991,18 @@ sub_44B6D0                      0x0044B6D0  0x00000036  -
 sub_44B710                      0x0044B710  0x00000036  -
 sub_44C5F0                      0x0044C5F0  0x00000168  -
 sub_44D9D0                      0x0044D9D0  0x000002C4  -
-sub_450500                      0x00450500  0x00000006  -
-sub_450510                      0x00450510  0x00000296  -
-sub_4507B0                      0x004507B0  0x0000000E  -
-sub_4507C0                      0x004507C0  0x00000013  -
-sub_4507E0                      0x004507E0  0x0000000E  -
-sub_4507F0                      0x004507F0  0x00000018  -
-sub_450810                      0x00450810  0x0000000E  -
-sub_450820                      0x00450820  0x00000006  -
-sub_450830                      0x00450830  0x0000000E  -
-sub_450840                      0x00450840  0x00000018  -
-sub_450860                      0x00450860  0x0000000E  -
-sub_450870                      0x00450870  0x00000006  -
-sub_450880                      0x00450880  0x00000013  -
-sub_4508A0                      0x004508A0  0x00000013  -
-sub_4508C0                      0x004508C0  0x00000056  -
+ATI3DCIF_NullSub                0x00450500  0x00000006  -
+InitATI3DCIF                    0x00450510  0x00000296  -
+ATI3DCIF_GetInfo                0x004507B0  0x0000000E  -
+ATI3DCIF_TextureReg             0x004507C0  0x00000013  -
+ATI3DCIF_TextureUnreg           0x004507E0  0x0000000E  -
+ATI3DCIF_TexturePaletteCreate   0x004507F0  0x00000018  -
+ATI3DCIF_TexturePaletteDestroy  0x00450810  0x0000000E  -
+ATI3DCIF_ContextCreate          0x00450820  0x00000006  -
+ATI3DCIF_ContextDestroy         0x00450830  0x0000000E  -
+ATI3DCIF_ContextSetState        0x00450840  0x00000018  -
+ATI3DCIF_RenderBegin            0x00450860  0x0000000E  -
+ATI3DCIF_RenderEnd              0x00450870  0x00000006  -
+ATI3DCIF_RenderPrimStrip        0x00450880  0x00000013  -
+ATI3DCIF_RenderPrimList         0x004508A0  0x00000013  -
+ShutdownATI3DCIF                0x004508C0  0x00000056  -

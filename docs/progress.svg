@@ -678,7 +678,7 @@
 <rect width="12.00" height="12.00" x="350.00" y="199.00" class="decompiled"><title>PodControl</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="199.00" class="decompiled"><title>InitialiseStatue</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="199.00" class="decompiled"><title>StatueControl</title></rect>
-<rect width="12.00" height="12.00" x="392.00" y="199.00" class="todo"><title>sub_43D070</title></rect>
+<rect width="12.00" height="12.00" x="392.00" y="199.00" class="named"><title>InitDirectDraw</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="199.00" class="decompiled"><title>TerminateGame</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="199.00" class="todo"><title>sub_43D5F0</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="decompiled"><title>ShowFatalError</title></rect>
@@ -711,21 +711,21 @@
 <rect width="12.00" height="12.00" x="112.00" y="213.00" class="todo"><title>sub_44B710</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="213.00" class="todo"><title>sub_44C5F0</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="213.00" class="todo"><title>sub_44D9D0</title></rect>
-<rect width="12.00" height="12.00" x="154.00" y="213.00" class="todo"><title>sub_450500</title></rect>
-<rect width="12.00" height="12.00" x="168.00" y="213.00" class="todo"><title>sub_450510</title></rect>
-<rect width="12.00" height="12.00" x="182.00" y="213.00" class="todo"><title>sub_4507B0</title></rect>
-<rect width="12.00" height="12.00" x="196.00" y="213.00" class="todo"><title>sub_4507C0</title></rect>
-<rect width="12.00" height="12.00" x="210.00" y="213.00" class="todo"><title>sub_4507E0</title></rect>
-<rect width="12.00" height="12.00" x="224.00" y="213.00" class="todo"><title>sub_4507F0</title></rect>
-<rect width="12.00" height="12.00" x="238.00" y="213.00" class="todo"><title>sub_450810</title></rect>
-<rect width="12.00" height="12.00" x="252.00" y="213.00" class="todo"><title>sub_450820</title></rect>
-<rect width="12.00" height="12.00" x="266.00" y="213.00" class="todo"><title>sub_450830</title></rect>
-<rect width="12.00" height="12.00" x="280.00" y="213.00" class="todo"><title>sub_450840</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="213.00" class="todo"><title>sub_450860</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="213.00" class="todo"><title>sub_450870</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="213.00" class="todo"><title>sub_450880</title></rect>
-<rect width="12.00" height="12.00" x="336.00" y="213.00" class="todo"><title>sub_4508A0</title></rect>
-<rect width="12.00" height="12.00" x="350.00" y="213.00" class="todo"><title>sub_4508C0</title></rect>
+<rect width="12.00" height="12.00" x="154.00" y="213.00" class="named"><title>ATI3DCIF_NullSub</title></rect>
+<rect width="12.00" height="12.00" x="168.00" y="213.00" class="named"><title>InitATI3DCIF</title></rect>
+<rect width="12.00" height="12.00" x="182.00" y="213.00" class="named"><title>ATI3DCIF_GetInfo</title></rect>
+<rect width="12.00" height="12.00" x="196.00" y="213.00" class="named"><title>ATI3DCIF_TextureReg</title></rect>
+<rect width="12.00" height="12.00" x="210.00" y="213.00" class="named"><title>ATI3DCIF_TextureUnreg</title></rect>
+<rect width="12.00" height="12.00" x="224.00" y="213.00" class="named"><title>ATI3DCIF_TexturePaletteCreate</title></rect>
+<rect width="12.00" height="12.00" x="238.00" y="213.00" class="named"><title>ATI3DCIF_TexturePaletteDestroy</title></rect>
+<rect width="12.00" height="12.00" x="252.00" y="213.00" class="named"><title>ATI3DCIF_ContextCreate</title></rect>
+<rect width="12.00" height="12.00" x="266.00" y="213.00" class="named"><title>ATI3DCIF_ContextDestroy</title></rect>
+<rect width="12.00" height="12.00" x="280.00" y="213.00" class="named"><title>ATI3DCIF_ContextSetState</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="213.00" class="named"><title>ATI3DCIF_RenderBegin</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="213.00" class="named"><title>ATI3DCIF_RenderEnd</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="213.00" class="named"><title>ATI3DCIF_RenderPrimStrip</title></rect>
+<rect width="12.00" height="12.00" x="336.00" y="213.00" class="named"><title>ATI3DCIF_RenderPrimList</title></rect>
+<rect width="12.00" height="12.00" x="350.00" y="213.00" class="named"><title>ShutdownATI3DCIF</title></rect>
 <text x="0.00" y="259.50">TombATI functions, arranged according to the function sizes:</text>
 <rect width="51.74" height="68.51" x="0.00" y="269.00" class="decompiled"><title>DrawLaraInt</title></rect>
 <rect width="51.74" height="59.86" x="0.00" y="339.51" class="decompiled"><title>Display_Inventory</title></rect>
@@ -774,7 +774,7 @@
 <rect width="28.89" height="27.04" x="201.03" y="508.96" class="decompiled"><title>InitialiseDoor</title></rect>
 <rect width="26.00" height="29.60" x="231.92" y="269.00" class="decompiled"><title>AbortionControl</title></rect>
 <rect width="26.00" height="29.60" x="231.92" y="300.60" class="decompiled"><title>PeopleControl</title></rect>
-<rect width="26.00" height="29.50" x="231.92" y="332.21" class="todo"><title>sub_43D070</title></rect>
+<rect width="26.00" height="29.50" x="231.92" y="332.21" class="named"><title>InitDirectDraw</title></rect>
 <rect width="26.00" height="27.73" x="231.92" y="363.70" class="decompiled"><title>SkateKidControl</title></rect>
 <rect width="26.00" height="27.25" x="231.92" y="393.43" class="named"><title>S_DrawLightningSegment</title></rect>
 <rect width="26.00" height="27.06" x="231.92" y="422.68" class="decompiled"><title>LoadObjects</title></rect>
@@ -830,7 +830,7 @@
 <rect width="20.00" height="21.34" x="362.81" y="315.79" class="named"><title>ins_objectG4</title></rect>
 <rect width="20.00" height="21.14" x="362.81" y="339.13" class="decompiled"><title>RatControl</title></rect>
 <rect width="20.00" height="20.66" x="362.81" y="362.27" class="todo"><title>sub_403DB0</title></rect>
-<rect width="20.00" height="20.53" x="362.81" y="384.94" class="todo"><title>sub_450510</title></rect>
+<rect width="20.00" height="20.53" x="362.81" y="384.94" class="named"><title>InitATI3DCIF</title></rect>
 <rect width="20.00" height="20.29" x="362.81" y="407.46" class="decompiled"><title>DinoControl</title></rect>
 <rect width="20.00" height="20.08" x="362.81" y="429.75" class="decompiled"><title>TempVideoRemove</title></rect>
 <rect width="20.00" height="19.68" x="362.81" y="451.84" class="decompiled"><title>mn_update_sound_effects</title></rect>
@@ -1215,7 +1215,7 @@
 <rect width="6.46" height="5.70" x="602.18" y="530.30" class="decompiled"><title>Inv_RingMotionItemSelect</title></rect>
 <rect width="6.18" height="5.96" x="610.64" y="450.39" class="decompiled"><title>LaraAsFastBack</title></rect>
 <rect width="6.09" height="5.96" x="618.82" y="450.39" class="decompiled"><title>LaraColDefault</title></rect>
-<rect width="6.09" height="5.96" x="626.91" y="450.39" class="todo"><title>sub_4508C0</title></rect>
+<rect width="6.09" height="5.96" x="626.91" y="450.39" class="named"><title>ShutdownATI3DCIF</title></rect>
 <rect width="5.99" height="5.96" x="635.00" y="450.39" class="decompiled"><title>TriggerActive</title></rect>
 <rect width="5.99" height="5.96" x="642.99" y="450.39" class="decompiled"><title>Inv_RingMotionItemDeselect</title></rect>
 <rect width="5.99" height="5.96" x="650.98" y="450.39" class="decompiled"><title>phd_atan</title></rect>
@@ -1399,8 +1399,8 @@
 <rect width="2.67" height="1.85" x="670.67" y="518.76" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="2.67" height="1.85" x="670.67" y="522.61" class="decompiled"><title>InitialiseLevelFlags</title></rect>
 <rect width="2.67" height="1.85" x="670.67" y="526.45" class="decompiled"><title>CDPlayLooped</title></rect>
-<rect width="2.67" height="1.85" x="670.67" y="530.30" class="todo"><title>sub_4507F0</title></rect>
-<rect width="2.67" height="1.85" x="670.67" y="534.15" class="todo"><title>sub_450840</title></rect>
+<rect width="2.67" height="1.85" x="670.67" y="530.30" class="named"><title>ATI3DCIF_TexturePaletteCreate</title></rect>
+<rect width="2.67" height="1.85" x="670.67" y="534.15" class="named"><title>ATI3DCIF_ContextSetState</title></rect>
 <rect width="2.07" height="2.23" x="675.34" y="514.75" class="named"><title>HardwareFMVDone</title></rect>
 <rect width="1.90" height="2.23" x="679.41" y="514.75" class="decompiled"><title>S_LoadLevel</title></rect>
 <rect width="1.72" height="2.23" x="683.30" y="514.75" class="decompiled"><title>InitialisePickUpDisplay</title></rect>
@@ -1415,20 +1415,20 @@
 <rect width="1.77" height="1.77" x="679.15" y="518.98" class="named"><title>S_ClearScreen</title></rect>
 <rect width="1.77" height="1.77" x="682.92" y="518.98" class="decompiled"><title>T_SetScale</title></rect>
 <rect width="1.77" height="1.77" x="686.69" y="518.98" class="todo"><title>sub_441C80</title></rect>
-<rect width="1.77" height="1.77" x="690.46" y="518.98" class="todo"><title>sub_4507C0</title></rect>
-<rect width="1.77" height="1.77" x="694.23" y="518.98" class="todo"><title>sub_450880</title></rect>
-<rect width="1.44" height="2.14" x="679.15" y="522.75" class="todo"><title>sub_4508A0</title></rect>
+<rect width="1.77" height="1.77" x="690.46" y="518.98" class="named"><title>ATI3DCIF_TextureReg</title></rect>
+<rect width="1.77" height="1.77" x="694.23" y="518.98" class="named"><title>ATI3DCIF_RenderPrimStrip</title></rect>
+<rect width="1.44" height="2.14" x="679.15" y="522.75" class="named"><title>ATI3DCIF_RenderPrimList</title></rect>
 <rect width="1.44" height="1.92" x="679.15" y="526.89" class="decompiled"><title>mn_adjust_master_volume</title></rect>
 <rect width="1.44" height="1.70" x="679.15" y="530.81" class="todo"><title>sub_43E670</title></rect>
 <rect width="1.44" height="1.49" x="679.15" y="534.51" class="decompiled"><title>S_NoFade</title></rect>
 <rect width="1.58" height="1.13" x="682.59" y="522.75" class="todo"><title>sub_408E32</title></rect>
 <rect width="1.58" height="1.13" x="682.59" y="525.88" class="decompiled"><title>SoundStopSample_</title></rect>
 <rect width="1.58" height="1.13" x="682.59" y="529.02" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
-<rect width="1.58" height="0.92" x="682.59" y="532.15" class="todo"><title>sub_4507B0</title></rect>
-<rect width="1.58" height="0.92" x="682.59" y="535.08" class="todo"><title>sub_4507E0</title></rect>
-<rect width="1.01" height="1.48" x="686.17" y="522.75" class="todo"><title>sub_450810</title></rect>
-<rect width="1.01" height="1.48" x="689.18" y="522.75" class="todo"><title>sub_450830</title></rect>
-<rect width="1.01" height="1.48" x="692.19" y="522.75" class="todo"><title>sub_450860</title></rect>
+<rect width="1.58" height="0.92" x="682.59" y="532.15" class="named"><title>ATI3DCIF_GetInfo</title></rect>
+<rect width="1.58" height="0.92" x="682.59" y="535.08" class="named"><title>ATI3DCIF_TextureUnreg</title></rect>
+<rect width="1.01" height="1.48" x="686.17" y="522.75" class="named"><title>ATI3DCIF_TexturePaletteDestroy</title></rect>
+<rect width="1.01" height="1.48" x="689.18" y="522.75" class="named"><title>ATI3DCIF_ContextDestroy</title></rect>
+<rect width="1.01" height="1.48" x="692.19" y="522.75" class="named"><title>ATI3DCIF_RenderBegin</title></rect>
 <rect width="0.80" height="1.48" x="695.20" y="522.75" class="decompiled"><title>SoundIsInitialised</title></rect>
 <rect width="1.05" height="0.94" x="686.17" y="526.23" class="decompiled"><title>sub_42A2A0</title></rect>
 <rect width="1.05" height="0.94" x="686.17" y="529.17" class="decompiled"><title>sub_42A2B0</title></rect>
@@ -1443,9 +1443,9 @@
 <rect width="0.40" height="1.11" x="689.22" y="531.77" class="decompiled"><title>SeedRandomControl</title></rect>
 <rect width="0.40" height="1.11" x="689.22" y="534.89" class="decompiled"><title>SeedRandomDraw</title></rect>
 <rect width="0.16" height="0.08" x="691.63" y="531.77" class="todo"><title>sub_437AC0</title></rect>
-<rect width="0.16" height="0.08" x="691.63" y="533.85" class="todo"><title>sub_450500</title></rect>
-<rect width="0.16" height="0.08" x="691.63" y="535.92" class="todo"><title>sub_450820</title></rect>
-<rect width="0.30" height="-0.04" x="693.79" y="531.77" class="todo"><title>sub_450870</title></rect>
+<rect width="0.16" height="0.08" x="691.63" y="533.85" class="named"><title>ATI3DCIF_NullSub</title></rect>
+<rect width="0.16" height="0.08" x="691.63" y="535.92" class="named"><title>ATI3DCIF_ContextCreate</title></rect>
+<rect width="0.30" height="-0.04" x="693.79" y="531.77" class="named"><title>ATI3DCIF_RenderEnd</title></rect>
 <rect width="-0.09" height="-0.04" x="696.09" y="531.77" class="named"><title>DoNothing</title></rect>
 <rect width="0.10" height="-0.22" x="693.79" y="533.73" class="decompiled"><title>FxFlipMap</title></rect>
 <rect width="0.10" height="-0.22" x="695.90" y="533.73" class="decompiled"><title>S_InitialisePolyList</title></rect>
@@ -1455,8 +1455,8 @@
 <rect width="-0.80" height="-1.38" x="696.80" y="537.38" class="decompiled"><title>S_CDVolume</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 78.37%</text>
 <rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 73.98%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.06%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.00%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 11.57%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 15.02%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 12.26%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.85%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 9.37%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 14.18%</text>
 </svg>
