@@ -111,9 +111,7 @@ void S_ExitSystem(const char *message)
         free(GameMemoryPointer);
     }
     ShutdownHardware();
-    TerminateGameWithMsg(
-        "\n\nTomb Raider (c) Core Design. %s %s \n%s\n%s\n", "Jan  7 1998",
-        "14:53:25", " ", message);
+    TerminateGame(1);
 }
 
 void init_game_malloc()
