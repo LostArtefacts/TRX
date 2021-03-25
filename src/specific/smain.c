@@ -61,7 +61,7 @@ void TerminateGame(int exit_code)
 
 void ShowFatalError(const char *message)
 {
-    DB_Log(message);
+    LOG_ERROR("%s", message);
     if (dword_45A938) {
         (*dword_45A938)->cb8(dword_45A938);
         dword_45A938 = 0;
