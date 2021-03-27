@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_AnimateTextures       ((void      (*)(int32_t nframes))0x00430660)
 #define S_DumpScreen            ((int32_t   (*)())0x0042FC70)
 #define S_ClearScreen           ((void      (*)())0x0042FCC0)
 #define S_OutputPolyList        ((void      (*)())0x0042FD10)
@@ -20,6 +19,7 @@ void S_DrawHealthBar(int32_t percent);
 void S_DrawAirBar(int32_t percent);
 void S_SetupBelowWater(int32_t underwater);
 void S_SetupAboveWater(int32_t underwater);
+void S_AnimateTextures(int32_t ticks);
 void S_DisplayPicture(const char *filename);
 
 int32_t GetRenderScaleGLRage(int32_t unit);

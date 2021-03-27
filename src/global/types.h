@@ -1275,7 +1275,7 @@ typedef struct PHD_VBUF {
     /* 0020 end */
 } PHD_VBUF;
 
-typedef struct PHDTEXTURESTRUCT {
+typedef struct PHD_TEXTURE {
     /* 0000 */ uint16_t drawtype;
     /* 0002 */ uint16_t tpage;
     /* 0004 */ uint16_t u1;
@@ -1287,9 +1287,9 @@ typedef struct PHDTEXTURESTRUCT {
     /* 0010 */ uint16_t u4;
     /* 0012 */ uint16_t v4;
     /* 0014 end */
-} PHDTEXTURESTRUCT;
+} PHD_TEXTURE;
 
-typedef struct PHDSPRITESTRUCT {
+typedef struct PHD_SPRITE {
     /* 0000 */ uint16_t tpage;
     /* 0002 */ uint16_t offset;
     /* 0004 */ uint16_t width;
@@ -1299,7 +1299,7 @@ typedef struct PHDSPRITESTRUCT {
     /* 000C */ int16_t x2;
     /* 000E */ int16_t y2;
     /* 0010 end */
-} PHDSPRITESTRUCT;
+} PHD_SPRITE;
 
 typedef struct DOOR_INFO {
     /* 0000 */ int16_t room_num;

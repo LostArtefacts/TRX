@@ -422,7 +422,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sv = GetRenderScale(textstring->scale_v);
 
 #ifdef DEBUG_TEXT_SPRITES
-        PHDSPRITESTRUCT *sprite =
+        PHD_SPRITE *sprite =
             &PhdSpriteInfo[0][0] + Objects[O_ALPHABET].mesh_index + sprite_num;
         int32_t fx1 = sx + ((sh * sprite->x1) >> 16);
         int32_t fx2 = sx + ((sh * sprite->x2) >> 16);

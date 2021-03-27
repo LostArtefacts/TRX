@@ -289,6 +289,32 @@ void S_SetupAboveWater(int32_t underwater)
     IsShadeEffect = underwater;
 }
 
+void S_AnimateTextures(int32_t ticks)
+{
+    WibbleOffset = (WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
+
+    static int32_t tick_comp = 0;
+    tick_comp += ticks;
+
+    while (tick_comp > TICKS_PER_FRAME * 5) {
+        int16_t *ptr = AnimTextureRanges;
+        int16_t i = *ptr++;
+        while (i > 0) {
+            int16_t j = *ptr++;
+            PHD_TEXTURE temp = PhdTextureInfo[*ptr];
+            while (j > 0) {
+                PhdTextureInfo[ptr[0]] = PhdTextureInfo[ptr[1]];
+                j--;
+                ptr++;
+            }
+            PhdTextureInfo[*ptr] = temp;
+            i--;
+            ptr++;
+        }
+        tick_comp -= TICKS_PER_FRAME * 5;
+    }
+}
+
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
 {
     PCX_HEADER *header = (PCX_HEADER *)pcx;

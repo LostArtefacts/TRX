@@ -334,7 +334,7 @@ static int32_t LoadObjects(MYFILE *fp)
         sprintf(StringToShow, "Too many Textures in level");
         return 0;
     }
-    FileRead(PhdTextInfo, sizeof(PHDTEXTURESTRUCT), TextureCount, fp);
+    FileRead(PhdTextureInfo, sizeof(PHD_TEXTURE), TextureCount, fp);
 
     return 1;
 }
@@ -342,7 +342,7 @@ static int32_t LoadObjects(MYFILE *fp)
 static int32_t LoadSprites(MYFILE *fp)
 {
     FileRead(&SpriteInfoCount, sizeof(int32_t), 1, fp);
-    FileRead(&PhdSpriteInfo, sizeof(PHDSPRITESTRUCT), SpriteInfoCount, fp);
+    FileRead(&PhdSpriteInfo, sizeof(PHD_SPRITE), SpriteInfoCount, fp);
 
     FileRead(&SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < SpriteCount; i++) {
