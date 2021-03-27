@@ -19,7 +19,6 @@ typedef struct HWR_LIGHTNING {
     int32_t thickness2;
 } HWR_LIGHTNING;
 
-#define HWR_NormalizeVertices ((int (*)(int num, C3D_VTCF *vertices))0x0040904D)
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
@@ -288,6 +287,159 @@ void HWR_RenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
+int32_t HWR_NormalizeVertices(int32_t num, C3D_VTCF *source)
+{
+    float scale;
+    C3D_VTCF vertices[10];
+
+    C3D_VTCF *l = &source[num - 1];
+    int j = 0;
+
+    for (int i = 0; i < num; i++) {
+        C3D_VTCF *v1 = &vertices[j];
+        C3D_VTCF *v2 = l;
+        l = &source[i];
+
+        if (v2->x < DDrawSurfaceMinX) {
+            if (l->x < DDrawSurfaceMinX) {
+                continue;
+            }
+            scale = (DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMinX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &vertices[++j];
+        } else if (v2->x > DDrawSurfaceMaxX) {
+            if (l->x > DDrawSurfaceMaxX) {
+                continue;
+            }
+            scale = (DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMaxX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &vertices[++j];
+        }
+
+        if (l->x < DDrawSurfaceMinX) {
+            scale = (DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMinX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &vertices[++j];
+        } else if (l->x > DDrawSurfaceMaxX) {
+            scale = (DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMaxX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &vertices[++j];
+        } else {
+            v1->x = l->x;
+            v1->y = l->y;
+            v1->z = l->z;
+            v1->r = l->r;
+            v1->g = l->g;
+            v1->b = l->b;
+            v1->a = l->a;
+            v1 = &vertices[++j];
+        }
+    }
+
+    if (j < 3) {
+        return 0;
+    }
+
+    num = j;
+    l = &vertices[j - 1];
+    j = 0;
+
+    for (int i = 0; i < num; i++) {
+        C3D_VTCF *v1 = &source[j];
+        C3D_VTCF *v2 = l;
+        l = &vertices[i];
+
+        if (v2->y < DDrawSurfaceMinY) {
+            if (l->y < DDrawSurfaceMinY) {
+                continue;
+            }
+            scale = (DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMinY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &source[++j];
+        } else if (v2->y > DDrawSurfaceMaxY) {
+            if (l->y > DDrawSurfaceMaxY) {
+                continue;
+            }
+            scale = (DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMaxY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &source[++j];
+        }
+
+        if (l->y < DDrawSurfaceMinY) {
+            scale = (DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMinY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &source[++j];
+        } else if (l->y > DDrawSurfaceMaxY) {
+            scale = (DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMaxY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
+            v1 = &source[++j];
+        } else {
+            v1->x = l->x;
+            v1->y = l->y;
+            v1->z = l->z;
+            v1->r = l->r;
+            v1->g = l->g;
+            v1->b = l->b;
+            v1->a = l->a;
+            v1 = &source[++j];
+        }
+    }
+
+    if (j < 3) {
+        return 0;
+    }
+
+    return j;
+}
+
 int32_t HWR_NormalizeVertices2(int32_t num, C3D_VTCF *source)
 {
     float scale;
@@ -474,5 +626,6 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
+    INJECT(0x0040904D, HWR_NormalizeVertices);
     INJECT(0x0040A6B1, HWR_NormalizeVertices2);
 }
