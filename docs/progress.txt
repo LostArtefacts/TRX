@@ -28,31 +28,31 @@ calc_roomvert                   0x00401F70  0x00000428  -
 phd_RotateLight                 0x004023A0  0x000000CF  *
 phd_PointLight                  ----------  ----------  -
 phd_InitPolyList                0x00402470  0x0000002D  *
-phd_SortPolyList                0x004024A0  0x0000002F  -
-do_quickysorty                  0x004024D0  0x000000C5  -
+phd_SortPolyList                0x004024A0  0x0000002F  x
+do_quickysorty                  0x004024D0  0x000000C5  x
 phd_PrintPolyList               ----------  ----------  -
 phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  +
 
 # 3dsystem/3d_line.cpp
 Insert2DLine                    0x00402710  0x000000CA  +
-draw_line                       ----------  ----------  -
-draw_poly_line                  0x004027E0  0x000001A1  -
+draw_line                       ----------  ----------  x
+draw_poly_line                  0x004027E0  0x000001A1  x
 
 # 3dsystem/3d_out.cpp
-draw_poly_flat                  0x00402990  0x0000002F  -
-draw_poly_trans                 0x004029C0  0x00000030  -
-draw_poly_gouraud               0x004029F0  0x00000030  -
-draw_poly_gtmap                 0x00402A20  0x00000037  -
-draw_poly_wgtmap                0x00402A60  0x00000037  -
-draw_poly_gtmap_persp           0x00402AA0  0x00000037  -
-draw_poly_wgtmap_persp          0x00402AE0  0x00000037  -
-xgen_x                          0x00402B20  0x000000D2  -
-xgen_xg                         0x00402C00  0x00000146  -
-xgen_xguv                       0x00402D50  0x00000219  -
-xgen_xguvpersp_fp               0x00402F70  0x00000226  -
-gtmap_persp16_fp                0x004031A0  0x000005D0  -
-wgtmap_persp16_fp               0x00403770  0x00000637  -
+draw_poly_flat                  0x00402990  0x0000002F  x
+draw_poly_trans                 0x004029C0  0x00000030  x
+draw_poly_gouraud               0x004029F0  0x00000030  x
+draw_poly_gtmap                 0x00402A20  0x00000037  x
+draw_poly_wgtmap                0x00402A60  0x00000037  x
+draw_poly_gtmap_persp           0x00402AA0  0x00000037  x
+draw_poly_wgtmap_persp          0x00402AE0  0x00000037  x
+xgen_x                          0x00402B20  0x000000D2  x
+xgen_xg                         0x00402C00  0x00000146  x
+xgen_xguv                       0x00402D50  0x00000219  x
+xgen_xguvpersp_fp               0x00402F70  0x00000226  x
+gtmap_persp16_fp                0x004031A0  0x000005D0  x
+wgtmap_persp16_fp               0x00403770  0x00000637  x
 
 # ???
 sub_403DB0                      0x00403DB0  0x0000029A  -

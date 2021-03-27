@@ -18,25 +18,25 @@
 <rect width="12.00" height="12.00" x="210.00" y="17.00" class="named"><title>calc_roomvert</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="17.00" class="named"><title>phd_RotateLight</title></rect>
 <rect width="12.00" height="12.00" x="238.00" y="17.00" class="named"><title>phd_InitPolyList</title></rect>
-<rect width="12.00" height="12.00" x="252.00" y="17.00" class="named"><title>phd_SortPolyList</title></rect>
-<rect width="12.00" height="12.00" x="266.00" y="17.00" class="named"><title>do_quickysorty</title></rect>
+<rect width="12.00" height="12.00" x="252.00" y="17.00" class="decompiled"><title>phd_SortPolyList</title></rect>
+<rect width="12.00" height="12.00" x="266.00" y="17.00" class="decompiled"><title>do_quickysorty</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="17.00" class="decompiled"><title>phd_InitWindow</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="17.00" class="decompiled"><title>AlterFOV</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="17.00" class="decompiled"><title>Insert2DLine</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="17.00" class="named"><title>draw_poly_line</title></rect>
-<rect width="12.00" height="12.00" x="336.00" y="17.00" class="named"><title>draw_poly_flat</title></rect>
-<rect width="12.00" height="12.00" x="350.00" y="17.00" class="named"><title>draw_poly_trans</title></rect>
-<rect width="12.00" height="12.00" x="364.00" y="17.00" class="named"><title>draw_poly_gouraud</title></rect>
-<rect width="12.00" height="12.00" x="378.00" y="17.00" class="named"><title>draw_poly_gtmap</title></rect>
-<rect width="12.00" height="12.00" x="392.00" y="17.00" class="named"><title>draw_poly_wgtmap</title></rect>
-<rect width="12.00" height="12.00" x="406.00" y="17.00" class="named"><title>draw_poly_gtmap_persp</title></rect>
-<rect width="12.00" height="12.00" x="420.00" y="17.00" class="named"><title>draw_poly_wgtmap_persp</title></rect>
-<rect width="12.00" height="12.00" x="434.00" y="17.00" class="named"><title>xgen_x</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="17.00" class="named"><title>xgen_xg</title></rect>
-<rect width="12.00" height="12.00" x="462.00" y="17.00" class="named"><title>xgen_xguv</title></rect>
-<rect width="12.00" height="12.00" x="476.00" y="17.00" class="named"><title>xgen_xguvpersp_fp</title></rect>
-<rect width="12.00" height="12.00" x="490.00" y="17.00" class="named"><title>gtmap_persp16_fp</title></rect>
-<rect width="12.00" height="12.00" x="504.00" y="17.00" class="named"><title>wgtmap_persp16_fp</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="17.00" class="decompiled"><title>draw_poly_line</title></rect>
+<rect width="12.00" height="12.00" x="336.00" y="17.00" class="decompiled"><title>draw_poly_flat</title></rect>
+<rect width="12.00" height="12.00" x="350.00" y="17.00" class="decompiled"><title>draw_poly_trans</title></rect>
+<rect width="12.00" height="12.00" x="364.00" y="17.00" class="decompiled"><title>draw_poly_gouraud</title></rect>
+<rect width="12.00" height="12.00" x="378.00" y="17.00" class="decompiled"><title>draw_poly_gtmap</title></rect>
+<rect width="12.00" height="12.00" x="392.00" y="17.00" class="decompiled"><title>draw_poly_wgtmap</title></rect>
+<rect width="12.00" height="12.00" x="406.00" y="17.00" class="decompiled"><title>draw_poly_gtmap_persp</title></rect>
+<rect width="12.00" height="12.00" x="420.00" y="17.00" class="decompiled"><title>draw_poly_wgtmap_persp</title></rect>
+<rect width="12.00" height="12.00" x="434.00" y="17.00" class="decompiled"><title>xgen_x</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="17.00" class="decompiled"><title>xgen_xg</title></rect>
+<rect width="12.00" height="12.00" x="462.00" y="17.00" class="decompiled"><title>xgen_xguv</title></rect>
+<rect width="12.00" height="12.00" x="476.00" y="17.00" class="decompiled"><title>xgen_xguvpersp_fp</title></rect>
+<rect width="12.00" height="12.00" x="490.00" y="17.00" class="decompiled"><title>gtmap_persp16_fp</title></rect>
+<rect width="12.00" height="12.00" x="504.00" y="17.00" class="decompiled"><title>wgtmap_persp16_fp</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="17.00" class="todo"><title>sub_403DB0</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="17.00" class="todo"><title>sub_404050</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="17.00" class="todo"><title>sub_4046E0</title></rect>
@@ -738,11 +738,11 @@
 <rect width="33.89" height="33.37" x="132.27" y="269.00" class="todo"><title>sub_404050</title></rect>
 <rect width="33.89" height="33.30" x="132.27" y="304.37" class="decompiled"><title>S_DrawScreenBox</title></rect>
 <rect width="33.89" height="32.97" x="132.27" y="339.67" class="todo"><title>sub_40BBE2</title></rect>
-<rect width="33.89" height="31.59" x="132.27" y="374.64" class="named"><title>wgtmap_persp16_fp</title></rect>
+<rect width="33.89" height="31.59" x="132.27" y="374.64" class="decompiled"><title>wgtmap_persp16_fp</title></rect>
 <rect width="33.89" height="31.21" x="132.27" y="408.23" class="decompiled"><title>FlyerControl</title></rect>
 <rect width="33.89" height="31.11" x="132.27" y="441.44" class="decompiled"><title>Inv_AddItem</title></rect>
 <rect width="33.89" height="30.03" x="132.27" y="474.55" class="todo"><title>sub_40A0C4</title></rect>
-<rect width="33.89" height="29.42" x="132.27" y="506.58" class="named"><title>gtmap_persp16_fp</title></rect>
+<rect width="33.89" height="29.42" x="132.27" y="506.58" class="decompiled"><title>gtmap_persp16_fp</title></rect>
 <rect width="29.62" height="32.68" x="168.16" y="269.00" class="decompiled"><title>CowboyControl</title></rect>
 <rect width="29.62" height="32.48" x="168.16" y="303.68" class="decompiled"><title>NatlaControl</title></rect>
 <rect width="29.62" height="32.22" x="168.16" y="338.16" class="todo"><title>sub_4059F0</title></rect>
@@ -846,12 +846,12 @@
 <rect width="18.62" height="18.32" x="404.92" y="416.78" class="decompiled"><title>LaraHangTest</title></rect>
 <rect width="18.62" height="18.28" x="404.92" y="437.10" class="decompiled"><title>LaraColWalk</title></rect>
 <rect width="18.62" height="18.25" x="404.92" y="457.38" class="decompiled"><title>KeyHoleCollision</title></rect>
-<rect width="18.62" height="18.21" x="404.92" y="477.63" class="named"><title>xgen_xguvpersp_fp</title></rect>
+<rect width="18.62" height="18.21" x="404.92" y="477.63" class="decompiled"><title>xgen_xguvpersp_fp</title></rect>
 <rect width="18.62" height="18.14" x="404.92" y="497.84" class="decompiled"><title>CreatureAIInfo</title></rect>
 <rect width="18.62" height="18.03" x="404.92" y="517.97" class="decompiled"><title>ControlEvilLara</title></rect>
 <rect width="17.28" height="19.22" x="425.54" y="269.00" class="decompiled"><title>LevelCompleteSequence</title></rect>
 <rect width="17.28" height="19.14" x="425.54" y="290.22" class="decompiled"><title>PrintRooms</title></rect>
-<rect width="17.28" height="19.10" x="425.54" y="311.36" class="named"><title>xgen_xguv</title></rect>
+<rect width="17.28" height="19.10" x="425.54" y="311.36" class="decompiled"><title>xgen_xguv</title></rect>
 <rect width="17.28" height="19.02" x="425.54" y="332.47" class="decompiled"><title>MidasCollision</title></rect>
 <rect width="17.28" height="18.87" x="425.54" y="353.49" class="decompiled"><title>CheckCheatMode</title></rect>
 <rect width="17.28" height="18.75" x="425.54" y="374.36" class="decompiled"><title>S_UpdateInput</title></rect>
@@ -886,7 +886,7 @@
 <rect width="16.63" height="15.65" x="444.82" y="434.61" class="decompiled"><title>LaraSurface</title></rect>
 <rect width="16.63" height="15.61" x="444.82" y="452.26" class="decompiled"><title>LaraTestWaterClimbOut</title></rect>
 <rect width="16.63" height="15.45" x="444.82" y="469.87" class="decompiled"><title>LaraUnderWater</title></rect>
-<rect width="16.63" height="14.96" x="444.82" y="487.32" class="named"><title>draw_poly_line</title></rect>
+<rect width="16.63" height="14.96" x="444.82" y="487.32" class="decompiled"><title>draw_poly_line</title></rect>
 <rect width="16.63" height="14.92" x="444.82" y="504.28" class="todo"><title>sub_40D140</title></rect>
 <rect width="16.63" height="14.80" x="444.82" y="521.20" class="decompiled"><title>LoadItems</title></rect>
 <rect width="15.33" height="16.01" x="463.45" y="287.74" class="decompiled"><title>GetJointAbsPosition</title></rect>
@@ -943,7 +943,7 @@
 <rect width="14.23" height="13.31" x="480.62" y="476.95" class="decompiled"><title>LaraColFastFall</title></rect>
 <rect width="14.23" height="13.26" x="480.62" y="492.26" class="decompiled"><title>DrawPistols</title></rect>
 <rect width="14.23" height="13.26" x="480.62" y="507.52" class="decompiled"><title>ShowFatalError</title></rect>
-<rect width="14.23" height="13.22" x="480.62" y="522.78" class="named"><title>xgen_xg</title></rect>
+<rect width="14.23" height="13.22" x="480.62" y="522.78" class="decompiled"><title>xgen_xg</title></rect>
 <rect width="13.74" height="13.50" x="496.86" y="321.70" class="decompiled"><title>TestBlockPush</title></rect>
 <rect width="13.69" height="13.50" x="512.60" y="321.70" class="todo"><title>sub_407A91</title></rect>
 <rect width="13.69" height="13.50" x="528.29" y="321.70" class="decompiled"><title>S_FrontEndCheck</title></rect>
@@ -1038,7 +1038,7 @@
 <rect width="10.84" height="10.52" x="538.56" y="391.12" class="decompiled"><title>SetupScreenSize</title></rect>
 <rect width="10.84" height="10.46" x="538.56" y="403.64" class="decompiled"><title>S_DrawScreenLine</title></rect>
 <rect width="10.84" height="10.46" x="538.56" y="416.09" class="decompiled"><title>S_AnimateTextures</title></rect>
-<rect width="10.84" height="10.40" x="538.56" y="428.55" class="named"><title>xgen_x</title></rect>
+<rect width="10.84" height="10.40" x="538.56" y="428.55" class="decompiled"><title>xgen_x</title></rect>
 <rect width="10.84" height="10.34" x="538.56" y="440.95" class="decompiled"><title>TestBoundsCollide</title></rect>
 <rect width="10.84" height="10.22" x="538.56" y="453.28" class="named"><title>phd_RotateLight</title></rect>
 <rect width="10.84" height="10.16" x="538.56" y="465.50" class="decompiled"><title>StalkBox</title></rect>
@@ -1051,7 +1051,7 @@
 <rect width="10.51" height="10.17" x="563.90" y="378.61" class="decompiled"><title>CalculateObjectLighting</title></rect>
 <rect width="10.39" height="10.17" x="576.42" y="378.61" class="decompiled"><title>FindCdDrive</title></rect>
 <rect width="10.39" height="10.17" x="588.81" y="378.61" class="decompiled"><title>LavaEmitterControl</title></rect>
-<rect width="10.26" height="10.17" x="601.19" y="378.61" class="named"><title>do_quickysorty</title></rect>
+<rect width="10.26" height="10.17" x="601.19" y="378.61" class="decompiled"><title>do_quickysorty</title></rect>
 <rect width="10.20" height="10.17" x="613.46" y="378.61" class="decompiled"><title>CreateZone</title></rect>
 <rect width="10.14" height="10.17" x="625.66" y="378.61" class="decompiled"><title>LaraColForwardJump</title></rect>
 <rect width="10.14" height="10.17" x="637.80" y="378.61" class="decompiled"><title>SoundPlaySample</title></rect>
@@ -1264,10 +1264,10 @@
 <rect width="4.60" height="4.54" x="640.07" y="472.90" class="decompiled"><title>RingActive</title></rect>
 <rect width="4.60" height="4.54" x="646.67" y="472.90" class="decompiled"><title>TestCdDrive</title></rect>
 <rect width="4.49" height="4.54" x="653.28" y="472.90" class="decompiled"><title>PickupTrigger</title></rect>
-<rect width="4.37" height="4.54" x="659.77" y="472.90" class="named"><title>draw_poly_gtmap</title></rect>
-<rect width="4.37" height="4.54" x="666.14" y="472.90" class="named"><title>draw_poly_wgtmap</title></rect>
-<rect width="4.37" height="4.54" x="672.51" y="472.90" class="named"><title>draw_poly_gtmap_persp</title></rect>
-<rect width="4.37" height="4.54" x="678.88" y="472.90" class="named"><title>draw_poly_wgtmap_persp</title></rect>
+<rect width="4.37" height="4.54" x="659.77" y="472.90" class="decompiled"><title>draw_poly_gtmap</title></rect>
+<rect width="4.37" height="4.54" x="666.14" y="472.90" class="decompiled"><title>draw_poly_wgtmap</title></rect>
+<rect width="4.37" height="4.54" x="672.51" y="472.90" class="decompiled"><title>draw_poly_gtmap_persp</title></rect>
+<rect width="4.37" height="4.54" x="678.88" y="472.90" class="decompiled"><title>draw_poly_wgtmap_persp</title></rect>
 <rect width="4.37" height="4.54" x="685.26" y="472.90" class="decompiled"><title>ShiftItem</title></rect>
 <rect width="4.37" height="4.54" x="691.63" y="472.90" class="decompiled"><title>DrawPhaseGame</title></rect>
 <rect width="4.24" height="4.68" x="633.35" y="479.44" class="decompiled"><title>DB_Log</title></rect>
@@ -1287,15 +1287,15 @@
 <rect width="4.48" height="3.97" x="672.73" y="479.44" class="decompiled"><title>LaraColHangLeft</title></rect>
 <rect width="4.48" height="3.97" x="679.21" y="479.44" class="decompiled"><title>LaraColHangRight</title></rect>
 <rect width="4.22" height="3.97" x="685.68" y="479.44" class="decompiled"><title>S_CalculateStaticLight</title></rect>
-<rect width="4.10" height="3.97" x="691.90" y="479.44" class="named"><title>draw_poly_trans</title></rect>
-<rect width="4.18" height="3.88" x="639.59" y="485.41" class="named"><title>draw_poly_gouraud</title></rect>
+<rect width="4.10" height="3.97" x="691.90" y="479.44" class="decompiled"><title>draw_poly_trans</title></rect>
+<rect width="4.18" height="3.88" x="639.59" y="485.41" class="decompiled"><title>draw_poly_gouraud</title></rect>
 <rect width="4.18" height="3.88" x="639.59" y="491.29" class="decompiled"><title>ControlRicochet1</title></rect>
 <rect width="4.18" height="3.88" x="639.59" y="497.18" class="decompiled"><title>InitialiseFXArray</title></rect>
 <rect width="4.18" height="3.88" x="639.59" y="503.06" class="decompiled"><title>LaraSwapMeshExtra</title></rect>
 <rect width="4.18" height="3.88" x="639.59" y="508.95" class="decompiled"><title>mn_reset_ambient_loudness</title></rect>
 <rect width="4.18" height="3.88" x="639.59" y="514.83" class="decompiled"><title>InitialiseMovableBlock</title></rect>
-<rect width="4.18" height="3.76" x="639.59" y="520.72" class="named"><title>phd_SortPolyList</title></rect>
-<rect width="4.18" height="3.76" x="639.59" y="526.48" class="named"><title>draw_poly_flat</title></rect>
+<rect width="4.18" height="3.76" x="639.59" y="520.72" class="decompiled"><title>phd_SortPolyList</title></rect>
+<rect width="4.18" height="3.76" x="639.59" y="526.48" class="decompiled"><title>draw_poly_flat</title></rect>
 <rect width="4.18" height="3.76" x="639.59" y="532.24" class="decompiled"><title>game_free</title></rect>
 <rect width="4.03" height="3.90" x="645.77" y="485.41" class="decompiled"><title>Inv_RingRotateLeft</title></rect>
 <rect width="4.03" height="3.90" x="651.80" y="485.41" class="decompiled"><title>Inv_RingRotateRight</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.87%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 78.31%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.23%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.03%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 88.11%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 80.62%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.99%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 7.72%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 4.90%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 11.66%</text>
 </svg>
