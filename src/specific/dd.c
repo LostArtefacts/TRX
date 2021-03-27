@@ -12,6 +12,18 @@ void DDError(HRESULT result)
     }
 }
 
+void DDClearSurface(LPDIRECTDRAWSURFACE surface)
+{
+    DDBLTFX blt_fx;
+    blt_fx.dwSize = sizeof(DDBLTFX);
+    blt_fx.dwFillColor = 0;
+    HRESULT result = IDirectDrawSurface_Blt(
+        surface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_COLORFILL, &blt_fx);
+    if (result) {
+        DDError(result);
+    }
+}
+
 void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 {
     RECT rect;
@@ -26,5 +38,6 @@ void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
+    INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);
 }

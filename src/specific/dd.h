@@ -5,6 +5,7 @@
 #include <ddraw.h>
 
 void DDError(HRESULT result);
+void DDClearSurface(LPDIRECTDRAWSURFACE surface);
 void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 
 void T1MInjectSpecificDD();
