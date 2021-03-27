@@ -26,9 +26,23 @@ const char *FMVPaths[] = {
 
 void S_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
-    SG_COL *grdptr, uint16_t flags)
+    SG_COL *gourptr, uint16_t flags)
 {
     DDDraw2DLine(sx, sy, sx + w, sy + h, 210, col);
+}
+
+void S_DrawScreenBox(
+    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
+    SG_COL *gourptr, uint16_t flags)
+{
+    S_DrawScreenLine(sx - 1, sy - 1, z, w + 3, 0, 15, gourptr, flags);
+    S_DrawScreenLine(sx, sy, z, w + 1, 0, 31, gourptr, flags);
+    S_DrawScreenLine(w + sx + 1, sy, z, 0, h + 1, 15, gourptr, flags);
+    S_DrawScreenLine(w + sx + 2, sy - 1, z, 0, h + 3, 31, gourptr, flags);
+    S_DrawScreenLine(w + sx + 1, h + sy + 1, z, -w - 1, 0, 15, gourptr, flags);
+    S_DrawScreenLine(w + sx + 2, h + sy + 2, z, -w - 3, 0, 31, gourptr, flags);
+    S_DrawScreenLine(sx - 1, h + sy + 2, z, 0, -3 - h, 15, gourptr, flags);
+    S_DrawScreenLine(sx, h + sy + 1, z, 0, -1 - h, 31, gourptr, flags);
 }
 
 void S_Wait(int32_t nframes)
@@ -179,6 +193,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C440, S_DrawScreenLine);
+    INJECT(0x0041C520, S_DrawScreenBox);
     INJECT(0x0041CD50, S_Wait);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
