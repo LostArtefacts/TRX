@@ -114,8 +114,8 @@ sub_40C425                      0x0040C425  0x000003C9  -
 DDDraw2DLine                    0x0040C7EE  0x000000F9  +
 DDDrawTranslucentQuad           0x0040C8E7  0x000001F4  +
 sub_40CADB                      0x0040CADB  0x00000182  -
-sub_40CC5D                      0x0040CC5D  0x000003F9  -
-sub_40D056                      0x0040D056  0x000000A1  -
+DDRenderLightningSegment        0x0040CC5D  0x000003F9  -
+DDDrawLightningSegment          0x0040D056  0x000000A1  +
 sub_40D0F7                      0x0040D0F7  0x00000049  -
 sub_40D140                      0x0040D140  0x000001A0  -
 DDOutputPolyList                0x0040D2E0  0x00000185  -

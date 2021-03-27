@@ -8,6 +8,20 @@
 
 #include <stdlib.h>
 
+typedef struct DDLIGHTNING {
+    int32_t x1;
+    int32_t y1;
+    int32_t z1;
+    int32_t thickness1;
+    int32_t x2;
+    int32_t y2;
+    int32_t z2;
+    int32_t thickness2;
+} DDLIGHTNING;
+
+#define DDLightningTable ARRAY_(0x005DA800, DDLIGHTNING, [100])
+#define DDLightningCount VAR_U_(0x00463618, int32_t)
+
 void DDError(HRESULT result)
 {
     if (result) {
@@ -166,6 +180,21 @@ void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
+void DDDrawLightningSegment(
+    int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
+    int thickness2)
+{
+    DDLightningTable[DDLightningCount].x1 = x1;
+    DDLightningTable[DDLightningCount].y1 = y1;
+    DDLightningTable[DDLightningCount].z1 = z1;
+    DDLightningTable[DDLightningCount].thickness1 = thickness1;
+    DDLightningTable[DDLightningCount].x2 = x2;
+    DDLightningTable[DDLightningCount].y2 = y2;
+    DDLightningTable[DDLightningCount].z2 = z2;
+    DDLightningTable[DDLightningCount].thickness2 = thickness2;
+    DDLightningCount++;
+}
+
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
@@ -177,4 +206,5 @@ void T1MInjectSpecificDD()
     INJECT(0x00408E6D, DDRenderTriangleStrip);
     INJECT(0x0040C7EE, DDDraw2DLine);
     INJECT(0x0040C8E7, DDDrawTranslucentQuad);
+    INJECT(0x0040D056, DDDrawLightningSegment);
 }
