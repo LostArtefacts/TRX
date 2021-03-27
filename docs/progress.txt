@@ -91,7 +91,7 @@ PaletteSetHardware              0x004087EA  0x0000020A  *
 SwitchResolution                0x004089F4  0x0000007C  *
 sub_408A70                      0x00408A70  0x00000057  -
 sub_408AC7                      0x00408AC7  0x00000065  -
-sub_408B2C                      0x00408B2C  0x00000059  -
+sub_408B2C                      0x00408B2C  0x00000059  +
 CopyPictureHardware             0x00408B85  0x000000B5  *
 DownloadPictureHardware         0x00408C3A  0x000001D4  *
 sub_408E0E                      0x00408E0E  0x00000024  -
