@@ -13,6 +13,15 @@ void DDError(HRESULT result)
     }
 }
 
+void DDRenderBegin()
+{
+    DDOldIsRendering = DDIsRendering;
+    if (!DDIsRendering) {
+        ATI3DCIF_RenderBegin(ATIRenderContext);
+        DDIsRendering = 1;
+    }
+}
+
 void DDRenderEnd()
 {
     DDOldIsRendering = DDIsRendering;
@@ -48,6 +57,7 @@ void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
+    INJECT(0x00407827, DDRenderBegin);
     INJECT(0x0040783B, DDRenderEnd);
     INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);

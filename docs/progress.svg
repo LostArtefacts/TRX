@@ -50,16 +50,16 @@
 <rect width="12.00" height="12.00" x="658.00" y="17.00" class="named"><title>ins_objectG3</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="17.00" class="todo"><title>sub_406FD0</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="17.00" class="named"><title>ins_poly_trans8</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="31.00" class="decompiled"><title>sub_4077D0</title></rect>
-<rect width="12.00" height="12.00" x="14.00" y="31.00" class="todo"><title>sub_407804</title></rect>
-<rect width="12.00" height="12.00" x="28.00" y="31.00" class="todo"><title>sub_407827</title></rect>
-<rect width="12.00" height="12.00" x="42.00" y="31.00" class="decompiled"><title>sub_40783B</title></rect>
-<rect width="12.00" height="12.00" x="56.00" y="31.00" class="todo"><title>sub_407862</title></rect>
-<rect width="12.00" height="12.00" x="70.00" y="31.00" class="todo"><title>sub_40787C</title></rect>
-<rect width="12.00" height="12.00" x="84.00" y="31.00" class="todo"><title>sub_407911</title></rect>
-<rect width="12.00" height="12.00" x="98.00" y="31.00" class="todo"><title>sub_40795F</title></rect>
-<rect width="12.00" height="12.00" x="112.00" y="31.00" class="todo"><title>sub_4079E9</title></rect>
-<rect width="12.00" height="12.00" x="126.00" y="31.00" class="decompiled"><title>sub_407A49</title></rect>
+<rect width="12.00" height="12.00" x="0.00" y="31.00" class="decompiled"><title>DDError</title></rect>
+<rect width="12.00" height="12.00" x="14.00" y="31.00" class="decompiled"><title>DDRenderBegin_0</title></rect>
+<rect width="12.00" height="12.00" x="28.00" y="31.00" class="decompiled"><title>DDRenderBegin</title></rect>
+<rect width="12.00" height="12.00" x="42.00" y="31.00" class="decompiled"><title>DDRenderEnd</title></rect>
+<rect width="12.00" height="12.00" x="56.00" y="31.00" class="named"><title>DDRenderToggle</title></rect>
+<rect width="12.00" height="12.00" x="70.00" y="31.00" class="named"><title>TmpGetSurfaceAndPitch</title></rect>
+<rect width="12.00" height="12.00" x="84.00" y="31.00" class="named"><title>TmpSetupRenderContextAndRender2</title></rect>
+<rect width="12.00" height="12.00" x="98.00" y="31.00" class="named"><title>TmpSetupRenderContextAndRender</title></rect>
+<rect width="12.00" height="12.00" x="112.00" y="31.00" class="named"><title>TmpFlipPrimaryBuffer</title></rect>
+<rect width="12.00" height="12.00" x="126.00" y="31.00" class="decompiled"><title>DDClearSurface</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="31.00" class="todo"><title>sub_407A91</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="31.00" class="named"><title>SetHardwareVideoMode</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="31.00" class="named"><title>InitialiseHardware</title></rect>
@@ -73,7 +73,7 @@
 <rect width="12.00" height="12.00" x="280.00" y="31.00" class="named"><title>SwitchResolution</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="31.00" class="todo"><title>sub_408A70</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="31.00" class="todo"><title>sub_408AC7</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="31.00" class="decompiled"><title>sub_408B2C</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="31.00" class="decompiled"><title>DDBlitSurface</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="31.00" class="named"><title>CopyPictureHardware</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="31.00" class="named"><title>DownloadPictureHardware</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="31.00" class="todo"><title>sub_408E0E</title></rect>
@@ -1104,7 +1104,7 @@
 <rect width="8.97" height="8.36" x="562.77" y="476.33" class="decompiled"><title>FxDinoStomp</title></rect>
 <rect width="8.97" height="8.36" x="562.77" y="486.69" class="decompiled"><title>EffectNewRoom</title></rect>
 <rect width="8.97" height="8.36" x="562.77" y="497.05" class="decompiled"><title>LaraColCompress</title></rect>
-<rect width="8.97" height="8.29" x="562.77" y="507.41" class="todo"><title>sub_40787C</title></rect>
+<rect width="8.97" height="8.29" x="562.77" y="507.41" class="named"><title>TmpGetSurfaceAndPitch</title></rect>
 <rect width="8.97" height="8.22" x="562.77" y="517.70" class="decompiled"><title>S_DisplayPicture</title></rect>
 <rect width="8.97" height="8.08" x="562.77" y="527.92" class="decompiled"><title>BadFloor</title></rect>
 <rect width="8.69" height="8.21" x="573.74" y="413.14" class="decompiled"><title>DrawPhaseCinematic</title></rect>
@@ -1113,7 +1113,7 @@
 <rect width="8.39" height="8.21" x="605.73" y="413.14" class="decompiled"><title>ItemNearLara</title></rect>
 <rect width="8.32" height="8.21" x="616.12" y="413.14" class="decompiled"><title>InitialiseCamera</title></rect>
 <rect width="8.32" height="8.21" x="626.44" y="413.14" class="decompiled"><title>ControlBlood1</title></rect>
-<rect width="8.24" height="8.21" x="636.76" y="413.14" class="todo"><title>sub_40795F</title></rect>
+<rect width="8.24" height="8.21" x="636.76" y="413.14" class="named"><title>TmpSetupRenderContextAndRender</title></rect>
 <rect width="8.24" height="8.21" x="647.00" y="413.14" class="todo"><title>sub_40837F</title></rect>
 <rect width="8.24" height="8.21" x="657.25" y="413.14" class="decompiled"><title>LaraAsGlide</title></rect>
 <rect width="8.17" height="8.21" x="667.49" y="413.14" class="named"><title>S_Colour</title></rect>
@@ -1179,7 +1179,7 @@
 <rect width="6.96" height="6.37" x="602.42" y="442.27" class="decompiled"><title>InitialiseObjects</title></rect>
 <rect width="6.78" height="6.37" x="611.38" y="442.27" class="decompiled"><title>DrawPistolMeshes</title></rect>
 <rect width="6.78" height="6.37" x="620.16" y="442.27" class="decompiled"><title>LightningCollision</title></rect>
-<rect width="6.69" height="6.37" x="628.94" y="442.27" class="todo"><title>sub_4079E9</title></rect>
+<rect width="6.69" height="6.37" x="628.94" y="442.27" class="named"><title>TmpFlipPrimaryBuffer</title></rect>
 <rect width="6.69" height="6.37" x="637.63" y="442.27" class="decompiled"><title>GetSavedGamesList</title></rect>
 <rect width="6.69" height="6.37" x="646.32" y="442.27" class="decompiled"><title>Inv_RingGetView</title></rect>
 <rect width="6.69" height="6.37" x="655.01" y="442.27" class="decompiled"><title>LaraAsSurfLeft</title></rect>
@@ -1192,7 +1192,7 @@
 <rect width="6.59" height="6.12" x="602.42" y="467.05" class="decompiled"><title>CreatureEffect</title></rect>
 <rect width="6.59" height="6.12" x="602.42" y="475.17" class="decompiled"><title>LevelIsValid</title></rect>
 <rect width="6.59" height="6.03" x="602.42" y="483.29" class="decompiled"><title>BoatControl</title></rect>
-<rect width="6.59" height="5.85" x="602.42" y="491.32" class="decompiled"><title>sub_408B2C</title></rect>
+<rect width="6.59" height="5.85" x="602.42" y="491.32" class="decompiled"><title>DDBlitSurface</title></rect>
 <rect width="6.59" height="5.85" x="602.42" y="499.17" class="decompiled"><title>ObjectCollision</title></rect>
 <rect width="6.59" height="5.85" x="602.42" y="507.03" class="decompiled"><title>DoBloodSplat</title></rect>
 <rect width="6.59" height="5.77" x="602.42" y="514.88" class="decompiled"><title>DrawEvilLara</title></rect>
@@ -1212,7 +1212,7 @@
 <rect width="5.48" height="6.31" x="611.01" y="458.73" class="decompiled"><title>T_AddBackground</title></rect>
 <rect width="5.48" height="6.21" x="611.01" y="467.05" class="decompiled"><title>S_ExitSystem</title></rect>
 <rect width="5.48" height="6.21" x="611.01" y="475.26" class="decompiled"><title>S_SoundPlaySampleLooped</title></rect>
-<rect width="5.48" height="5.91" x="611.01" y="483.47" class="todo"><title>sub_407911</title></rect>
+<rect width="5.48" height="5.91" x="611.01" y="483.47" class="named"><title>TmpSetupRenderContextAndRender2</title></rect>
 <rect width="5.48" height="5.91" x="611.01" y="491.37" class="decompiled"><title>GetDoor</title></rect>
 <rect width="5.48" height="5.80" x="611.01" y="499.28" class="decompiled"><title>S_Wait</title></rect>
 <rect width="5.48" height="5.80" x="611.01" y="507.08" class="decompiled"><title>BridgeTilt1Ceiling</title></rect>
@@ -1229,7 +1229,7 @@
 <rect width="5.80" height="5.09" x="618.48" y="509.73" class="todo"><title>sub_40D0F7</title></rect>
 <rect width="5.80" height="5.09" x="618.48" y="516.82" class="decompiled"><title>CreatureHead</title></rect>
 <rect width="5.80" height="5.09" x="618.48" y="523.91" class="decompiled"><title>LaraAsHang</title></rect>
-<rect width="5.80" height="4.99" x="618.48" y="531.01" class="decompiled"><title>sub_407A49</title></rect>
+<rect width="5.80" height="4.99" x="618.48" y="531.01" class="decompiled"><title>DDClearSurface</title></rect>
 <rect width="5.44" height="5.33" x="626.28" y="458.73" class="decompiled"><title>BridgeTilt1Floor</title></rect>
 <rect width="5.34" height="5.33" x="633.73" y="458.73" class="named"><title>S_FinishInventory</title></rect>
 <rect width="5.34" height="5.33" x="641.06" y="458.73" class="decompiled"><title>BridgeTilt2Floor</title></rect>
@@ -1281,7 +1281,7 @@
 <rect width="4.24" height="4.44" x="633.35" y="531.56" class="decompiled"><title>LaraAsHangRight</title></rect>
 <rect width="4.73" height="3.97" x="639.59" y="479.44" class="decompiled"><title>FallingBlockFloor</title></rect>
 <rect width="4.73" height="3.97" x="646.32" y="479.44" class="decompiled"><title>phd_PushUnitMatrix</title></rect>
-<rect width="4.60" height="3.97" x="653.05" y="479.44" class="decompiled"><title>sub_4077D0</title></rect>
+<rect width="4.60" height="3.97" x="653.05" y="479.44" class="decompiled"><title>DDError</title></rect>
 <rect width="4.60" height="3.97" x="659.65" y="479.44" class="decompiled"><title>FallingBlockCeiling</title></rect>
 <rect width="4.48" height="3.97" x="666.25" y="479.44" class="decompiled"><title>InitialiseCreature</title></rect>
 <rect width="4.48" height="3.97" x="672.73" y="479.44" class="decompiled"><title>LaraColHangLeft</title></rect>
@@ -1316,7 +1316,7 @@
 <rect width="3.96" height="3.09" x="645.77" y="527.82" class="decompiled"><title>LaraAsSwanDive</title></rect>
 <rect width="3.96" height="3.09" x="645.77" y="532.91" class="decompiled"><title>SoundSampleIsPlaying</title></rect>
 <rect width="3.26" height="3.76" x="651.73" y="491.32" class="decompiled"><title>InitialiseWarrior2</title></rect>
-<rect width="3.13" height="3.76" x="656.98" y="491.32" class="decompiled"><title>sub_40783B</title></rect>
+<rect width="3.13" height="3.76" x="656.98" y="491.32" class="decompiled"><title>DDRenderEnd</title></rect>
 <rect width="3.13" height="3.76" x="662.11" y="491.32" class="decompiled"><title>InitialiseGenPlayer</title></rect>
 <rect width="3.13" height="3.76" x="667.24" y="491.32" class="decompiled"><title>S_FadeOutInventory</title></rect>
 <rect width="3.13" height="3.76" x="672.37" y="491.32" class="decompiled"><title>SoundSampleIsPlaying_</title></rect>
@@ -1341,7 +1341,7 @@
 <rect width="2.96" height="3.50" x="688.07" y="497.08" class="decompiled"><title>InitialiseLaraLoad</title></rect>
 <rect width="2.96" height="3.50" x="693.04" y="497.08" class="decompiled"><title>InitialiseRollingBlock</title></rect>
 <rect width="3.24" height="3.21" x="657.47" y="502.58" class="decompiled"><title>InitialiseWolf</title></rect>
-<rect width="3.24" height="3.06" x="657.47" y="507.78" class="todo"><title>sub_407804</title></rect>
+<rect width="3.24" height="3.06" x="657.47" y="507.78" class="decompiled"><title>DDRenderBegin_0</title></rect>
 <rect width="3.24" height="3.06" x="657.47" y="512.84" class="decompiled"><title>LaraColSlideBack</title></rect>
 <rect width="3.24" height="3.06" x="657.47" y="517.90" class="decompiled"><title>LaraColSurfBack</title></rect>
 <rect width="3.24" height="3.06" x="657.47" y="522.96" class="decompiled"><title>LaraColSurfLeft</title></rect>
@@ -1367,7 +1367,7 @@
 <rect width="2.89" height="2.34" x="667.17" y="525.13" class="decompiled"><title>LaraAsBackJump</title></rect>
 <rect width="2.89" height="2.34" x="667.17" y="529.47" class="decompiled"><title>InitialiseSaveGameItem</title></rect>
 <rect width="2.89" height="2.19" x="667.17" y="533.81" class="decompiled"><title>S_SoundStopSample</title></rect>
-<rect width="2.32" height="2.56" x="672.06" y="507.45" class="todo"><title>sub_407862</title></rect>
+<rect width="2.32" height="2.56" x="672.06" y="507.45" class="named"><title>DDRenderToggle</title></rect>
 <rect width="2.32" height="2.56" x="676.38" y="507.45" class="decompiled"><title>cosf</title></rect>
 <rect width="2.32" height="2.56" x="680.70" y="507.45" class="decompiled"><title>sinf</title></rect>
 <rect width="2.32" height="2.56" x="685.03" y="507.45" class="decompiled"><title>T_CentreH</title></rect>
@@ -1387,7 +1387,7 @@
 <rect width="1.61" height="2.41" x="676.15" y="516.36" class="decompiled"><title>InitialisePickUpDisplay</title></rect>
 <rect width="1.61" height="2.41" x="676.15" y="520.77" class="decompiled"><title>LaraAsWaterOut</title></rect>
 <rect width="1.61" height="2.41" x="676.15" y="525.18" class="decompiled"><title>S_SoundSampleIsPlaying</title></rect>
-<rect width="1.61" height="2.20" x="676.15" y="529.59" class="todo"><title>sub_407827</title></rect>
+<rect width="1.61" height="2.20" x="676.15" y="529.59" class="decompiled"><title>DDRenderBegin</title></rect>
 <rect width="1.61" height="2.20" x="676.15" y="533.80" class="decompiled"><title>LaraAsSlideBack</title></rect>
 <rect width="1.80" height="1.99" x="679.76" y="516.36" class="decompiled"><title>LaraAsDive</title></rect>
 <rect width="1.61" height="1.99" x="683.56" y="516.36" class="decompiled"><title>LaraAsRightJump</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 84.48%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.99%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.09%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.63%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.43%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 84.76%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 77.01%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.79%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.83%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 5.45%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.16%</text>
 </svg>
