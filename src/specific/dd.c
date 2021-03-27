@@ -19,6 +19,7 @@ typedef struct DDLIGHTNING {
     int32_t thickness2;
 } DDLIGHTNING;
 
+#define DDNormalizeVertices ((int (*)(int num, C3D_VTCF *vertices))0x0040904D)
 #define DDLightningTable ARRAY_(0x005DA800, DDLIGHTNING, [100])
 #define DDLightningCount VAR_U_(0x00463618, int32_t)
 
@@ -195,6 +196,98 @@ void DDDrawLightningSegment(
     DDLightningCount++;
 }
 
+void DDRenderLightningSegment(
+    int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
+    int32_t z2, int thickness2)
+{
+    C3D_VTCF vertex[4];
+
+    DDDisableTextures();
+
+    int32_t alpha_src = 4;
+    int32_t alpha_dst = 5;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
+    vertex[0].x = x1;
+    vertex[0].y = y1;
+    vertex[0].z = (double)z1 * 0.0001;
+    vertex[0].g = 0.0;
+    vertex[0].r = 0.0;
+    vertex[0].b = 255.0;
+    vertex[0].a = 128.0;
+
+    vertex[1].x = thickness1 / 2 + x1;
+    vertex[1].y = vertex[0].y;
+    vertex[1].z = vertex[0].z;
+    vertex[1].b = 255.0;
+    vertex[1].g = 255.0;
+    vertex[1].r = 255.0;
+    vertex[1].a = 128.0;
+
+    vertex[2].x = (float)(thickness2 / 2 + x2);
+    vertex[2].y = (float)y2;
+    vertex[2].z = (double)z2 * 0.0001;
+    vertex[2].b = 255.0;
+    vertex[2].g = 255.0;
+    vertex[2].r = 255.0;
+    vertex[2].a = 128.0;
+
+    vertex[3].x = (float)x2;
+    vertex[3].y = vertex[2].y;
+    vertex[3].z = vertex[2].z;
+    vertex[3].g = 0.0;
+    vertex[3].r = 0.0;
+    vertex[3].b = 255.0;
+    vertex[3].a = 128.0;
+
+    int num = DDNormalizeVertices(4, vertex);
+    if (num) {
+        DDRenderTriangleStrip(vertex, num);
+    }
+
+    vertex[0].x = thickness1 / 2 + x1;
+    vertex[0].y = y1;
+    vertex[0].z = (double)z1 * 0.0001;
+    vertex[0].b = 255.0;
+    vertex[0].g = 255.0;
+    vertex[0].r = 255.0;
+    vertex[0].a = 128.0;
+
+    vertex[1].x = thickness1 + x1;
+    vertex[1].y = vertex[0].y;
+    vertex[1].z = vertex[0].z;
+    vertex[1].g = 0.0;
+    vertex[1].r = 0.0;
+    vertex[1].b = 255.0;
+    vertex[1].a = 128.0;
+
+    vertex[2].x = (thickness2 + x2);
+    vertex[2].y = y2;
+    vertex[2].z = z2 * 0.0001;
+    vertex[2].g = 0.0;
+    vertex[2].r = 0.0;
+    vertex[2].b = 255.0;
+    vertex[2].a = 128.0;
+
+    vertex[3].x = (thickness2 / 2 + x2);
+    vertex[3].y = vertex[2].y;
+    vertex[3].z = vertex[2].z;
+    vertex[3].b = 255.0;
+    vertex[3].g = 255.0;
+    vertex[3].r = 255.0;
+    vertex[3].a = 128.0;
+
+    num = DDNormalizeVertices(4, vertex);
+    if (num) {
+        DDRenderTriangleStrip(vertex, num);
+    }
+
+    alpha_src = 1;
+    alpha_dst = 0;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
+}
+
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
@@ -207,4 +300,5 @@ void T1MInjectSpecificDD()
     INJECT(0x0040C7EE, DDDraw2DLine);
     INJECT(0x0040C8E7, DDDrawTranslucentQuad);
     INJECT(0x0040D056, DDDrawLightningSegment);
+    INJECT(0x0040CC5D, DDRenderLightningSegment);
 }
