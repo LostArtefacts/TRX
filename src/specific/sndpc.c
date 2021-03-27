@@ -47,20 +47,12 @@ typedef struct WAVE_FILE_HEADER {
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 
-static int32_t MusicPlay(int16_t track_id);
-static int32_t MusicPlayLooped();
-static int32_t ConvertVolumeToDecibel(int32_t volume);
-static int32_t ConvertPanToDecibel(uint16_t pan);
-static LPDIRECTSOUNDBUFFER SoundPlaySample(
-    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
-    int8_t loop);
-
-static int32_t ConvertVolumeToDecibel(int32_t volume)
+int32_t ConvertVolumeToDecibel(int32_t volume)
 {
     return DecibelLUT[(volume & 0x7FFF) >> 6];
 }
 
-static int32_t ConvertPanToDecibel(uint16_t pan)
+int32_t ConvertPanToDecibel(uint16_t pan)
 {
     int32_t result = sin((pan / 32767.0) * M_PI) * (DECIBEL_LUT_SIZE / 2);
     if (result > 0) {
@@ -72,7 +64,7 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static LPDIRECTSOUNDBUFFER SoundPlaySample(
+void *SoundPlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
     if (!SoundIsActive) {
@@ -285,7 +277,7 @@ void S_MusicVolume(int16_t volume)
 }
 
 // original name: CDPlay
-static int32_t MusicPlay(int16_t track)
+int32_t MusicPlay(int16_t track)
 {
     if (track < 2) {
         return 0;
@@ -327,7 +319,7 @@ static int32_t MusicPlay(int16_t track)
 }
 
 // original name: CDPlayLooped
-static int32_t MusicPlayLooped()
+int32_t MusicPlayLooped()
 {
     if (CDLoop && CDTrackLooped > 0) {
         MusicPlay(CDTrackLooped);
@@ -338,24 +330,24 @@ static int32_t MusicPlayLooped()
 }
 
 // original name: S_CDPlay
-int32_t S_MusicPlay(int16_t track)
+int32_t S_MusicPlay(int16_t track_id)
 {
-    if (T1MConfig.fix_secrets_killing_music && track == 13) {
+    if (T1MConfig.fix_secrets_killing_music && track_id == 13) {
         SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
         return 1;
     }
 
-    if (track == 0) {
+    if (track_id == 0) {
         S_MusicStop();
         return 0;
     }
 
-    if (track == 5) {
+    if (track_id == 5) {
         return 0;
     }
 
-    CDTrack = track;
-    return MusicPlay(track);
+    CDTrack = track_id;
+    return MusicPlay(track_id);
 }
 
 // original name: S_CDStop

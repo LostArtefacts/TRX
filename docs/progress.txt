@@ -961,7 +961,7 @@ ShowFatalError                  0x0043D770  0x00000147  +
 KeyboardHook(x,x,x)             0x0043D8C0  0x00000077  +
 sub_43D940                      0x0043D940  0x00000136  *
 WinMain                         0x0043DA80  0x0000037D  +
-WndProc                         0x0043DE00  0x0000011F  *
+WndProc                         0x0043DE00  0x0000011F  +
 
 # wolf.cpp
 InitialiseWolf                  0x0043DF20  0x00000024  +

@@ -5,6 +5,7 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shell.h"
+#include "specific/sndpc.h"
 #include "util.h"
 
 #include <windows.h>
@@ -32,19 +33,21 @@ typedef struct UNK1 {
 #define sub_4508C0      ((void (*)())0x004508C0)
 #define sub_407A91      ((void (*)())0x00407A91)
 #define sub_450830      ((void (*)(int32_t))0x00450830)
-#define WndProc         ((LRESULT __stdcall (*)(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam))0x0043DE00)
 // clang-format off
 
 // clang-format off
 // TODO: decompile me!
-#define dword_45A998    VAR_U_(0x0045A998, UNK1**)
-#define dword_45A994    VAR_U_(0x0045A994, int32_t)
-#define dword_45A990    VAR_U_(0x0045A990, int32_t)
-#define Msg             VAR_U_(0x0045A940, UINT)
+#define DirectDrawSurfaceWidth  VAR_U_(0x00456D90, int32_t)
+#define DirectDrawSurfaceHeight VAR_U_(0x00456D94, int32_t)
+#define dword_45A998            VAR_U_(0x0045A998, UNK1**)
+#define dword_45A994            VAR_U_(0x0045A994, int32_t)
+#define dword_45A990            VAR_U_(0x0045A990, int32_t)
+#define CloseMsg                VAR_U_(0x0045A940, UINT)
 // clang-format on
 
 static void WinGameFinish();
 static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam);
+static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 void TerminateGame(int exit_code)
 {
@@ -58,6 +61,51 @@ void ShowFatalError(const char *message)
     MessageBoxA(
         0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
     TerminateGame(1);
+}
+
+static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (uMsg == CloseMsg) {
+        DestroyWindow(TombHWND);
+        return 0;
+    }
+
+    switch (uMsg) {
+    case WM_CLOSE:
+        DestroyWindow(TombHWND);
+        return 0;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    case WM_SIZE:
+        return 1;
+    case WM_MOVE:
+        return 0;
+    case WM_SETCURSOR:
+        SetCursor(0);
+        return 1;
+    case WM_ERASEBKGND:
+        return 1;
+    case WM_NCPAINT:
+        return 0;
+    case WM_GETMINMAXINFO: {
+        MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
+        min_max_info->ptMinTrackSize.x = DirectDrawSurfaceWidth;
+        min_max_info->ptMinTrackSize.y = DirectDrawSurfaceHeight;
+        min_max_info->ptMaxTrackSize.x = DirectDrawSurfaceWidth;
+        min_max_info->ptMaxTrackSize.y = DirectDrawSurfaceHeight;
+        return DefWindowProcA(
+            hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
+    }
+    case WM_MOVING:
+        GetWindowRect(TombHWND, (LPRECT)lParam);
+        return 1;
+    case MM_MCINOTIFY:
+        MusicPlayLooped();
+        return 0;
+    default:
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    }
 }
 
 static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
@@ -107,7 +155,7 @@ static void WinGameFinish()
         sub_4508C0();
         dword_45A994 = 0;
     }
-    PostMessageA(HWND_BROADCAST, Msg, 0, 0);
+    PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
 }
 
 int WINAPI WinMain(
@@ -140,7 +188,7 @@ int WINAPI WinMain(
     SetWindowPos(TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
     ShowWindow(TombHWND, nShowCmd);
     UpdateWindow(TombHWND);
-    Msg = RegisterWindowMessageA("CLOSE_HACK");
+    CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
     HHK =
         SetWindowsHookExA(WH_KEYBOARD, &KeyboardHook, 0, GetCurrentThreadId());
 
@@ -162,5 +210,6 @@ void T1MInjectSpecificSMain()
     INJECT(0x0043D510, TerminateGame);
     INJECT(0x0043D770, ShowFatalError);
     INJECT(0x0043D8C0, KeyboardHook);
+    INJECT(0x0043DE00, WndProc);
     INJECT(0x0043DA80, WinMain);
 }
