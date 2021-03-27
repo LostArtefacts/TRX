@@ -8,6 +8,7 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/shed.h"
+#include "specific/smain.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -657,6 +658,21 @@ const char *GetFullPath(const char *filename)
     return newpath;
 }
 
+char *FileLoad(const char *path, char *target)
+{
+    MYFILE *fp = FileOpen(path, FILE_OPEN_READ);
+    if (!fp) {
+        ShowFatalError("File load error");
+    }
+    size_t file_size = FileSize(fp);
+    if (FileRead(target, sizeof(char), file_size, fp) != file_size) {
+        ShowFatalError("File read error");
+    }
+    FileClose(fp);
+    LastReadFileSize = file_size;
+    return target;
+}
+
 void T1MInjectSpecificFile()
 {
     INJECT(0x0041AF90, S_LoadLevel);
@@ -667,4 +683,5 @@ void T1MInjectSpecificFile()
     INJECT(0x0041BC60, LoadItems);
     INJECT(0x0041BE00, LoadBoxes);
     INJECT(0x0041BFC0, GetFullPath);
+    INJECT(0x00438390, FileLoad);
 }

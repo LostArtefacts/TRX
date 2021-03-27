@@ -81,6 +81,7 @@
 #define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
+#define LastReadFileSize        VAR_U_(0x0045B98C, int32_t)
 
 extern int32_t NoInputCount;
 extern int32_t IDelay;
