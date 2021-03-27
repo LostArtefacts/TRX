@@ -6,6 +6,8 @@
 #include "specific/smain.h"
 #include "util.h"
 
+#include <stdlib.h>
+
 void DDError(HRESULT result)
 {
     if (result) {
@@ -64,6 +66,17 @@ void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
     }
 }
 
+void DDRenderTriangleStrip(C3D_VTCF *vertices, int num)
+{
+    ATI3DCIF_RenderPrimStrip(vertices, 3);
+    int left = num - 2;
+    for (int i = num - 3; i > 0; i--) {
+        memcpy(&vertices[1], &vertices[2], left * sizeof(C3D_VTCF));
+        ATI3DCIF_RenderPrimStrip(vertices, 3);
+        left--;
+    }
+}
+
 void DDDraw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color)
 {
@@ -109,5 +122,6 @@ void T1MInjectSpecificDD()
     INJECT(0x00407862, DDRenderToggle);
     INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);
+    INJECT(0x00408E6D, DDRenderTriangleStrip);
     INJECT(0x0040C7EE, DDDraw2DLine);
 }

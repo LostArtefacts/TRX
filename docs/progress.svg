@@ -79,7 +79,7 @@
 <rect width="12.00" height="12.00" x="364.00" y="31.00" class="todo"><title>sub_408E0E</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="31.00" class="todo"><title>sub_408E32</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="31.00" class="todo"><title>sub_408E41</title></rect>
-<rect width="12.00" height="12.00" x="406.00" y="31.00" class="todo"><title>sub_408E6D</title></rect>
+<rect width="12.00" height="12.00" x="406.00" y="31.00" class="named"><title>DDRenderTriangleStrip</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="31.00" class="todo"><title>sub_408ED8</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="31.00" class="todo"><title>sub_408FF0</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="31.00" class="todo"><title>sub_40904D</title></rect>
@@ -94,7 +94,7 @@
 <rect width="12.00" height="12.00" x="574.00" y="31.00" class="todo"><title>sub_40C34E</title></rect>
 <rect width="12.00" height="12.00" x="588.00" y="31.00" class="todo"><title>sub_40C425</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="31.00" class="decompiled"><title>DDDraw2DLine</title></rect>
-<rect width="12.00" height="12.00" x="616.00" y="31.00" class="todo"><title>sub_40C8E7</title></rect>
+<rect width="12.00" height="12.00" x="616.00" y="31.00" class="named"><title>DDDrawTranslucentQuad</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="31.00" class="todo"><title>sub_40CADB</title></rect>
 <rect width="12.00" height="12.00" x="644.00" y="31.00" class="todo"><title>sub_40CC5D</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="31.00" class="todo"><title>sub_40D056</title></rect>
@@ -864,7 +864,7 @@
 <rect width="17.28" height="17.92" x="425.54" y="518.08" class="named"><title>draw_scaled_spriteC</title></rect>
 <rect width="18.42" height="16.74" x="444.82" y="269.00" class="decompiled"><title>SearchLOT</title></rect>
 <rect width="18.26" height="16.74" x="465.24" y="269.00" class="decompiled"><title>AnimatePistols</title></rect>
-<rect width="18.22" height="16.74" x="485.50" y="269.00" class="todo"><title>sub_40C8E7</title></rect>
+<rect width="18.22" height="16.74" x="485.50" y="269.00" class="named"><title>DDDrawTranslucentQuad</title></rect>
 <rect width="18.17" height="16.74" x="505.71" y="269.00" class="decompiled"><title>phd_RotYXZpack</title></rect>
 <rect width="17.97" height="16.74" x="525.89" y="269.00" class="decompiled"><title>InitialiseItem</title></rect>
 <rect width="17.73" height="16.74" x="545.86" y="269.00" class="decompiled"><title>phd_RotYXZ</title></rect>
@@ -1164,7 +1164,7 @@
 <rect width="7.36" height="6.98" x="661.14" y="433.29" class="decompiled"><title>EarthQuakeControl</title></rect>
 <rect width="7.28" height="6.98" x="670.50" y="433.29" class="named"><title>S_InsertRoom</title></rect>
 <rect width="7.19" height="6.98" x="679.78" y="433.29" class="decompiled"><title>SoundEffects</title></rect>
-<rect width="7.03" height="6.98" x="688.97" y="433.29" class="todo"><title>sub_408E6D</title></rect>
+<rect width="7.03" height="6.98" x="688.97" y="433.29" class="named"><title>DDRenderTriangleStrip</title></rect>
 <rect width="6.94" height="6.99" x="593.49" y="442.27" class="decompiled"><title>FxPowerUp</title></rect>
 <rect width="6.94" height="6.99" x="593.49" y="451.26" class="decompiled"><title>LaraColHang</title></rect>
 <rect width="6.94" height="6.90" x="593.49" y="460.25" class="decompiled"><title>CreateEffect</title></rect>
@@ -1433,8 +1433,8 @@
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.45%</text>
 <rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 77.96%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.37%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.14%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 5.17%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 11.90%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.65%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 4.90%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 11.66%</text>
 </svg>
