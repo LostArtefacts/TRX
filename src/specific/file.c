@@ -424,17 +424,17 @@ static int32_t LoadPalette(MYFILE *fp)
 {
     LOG_INFO("");
     FileRead(GamePalette, sizeof(uint8_t), 256 * 3, fp);
-    GamePalette[0] = 0;
-    GamePalette[1] = 0;
-    GamePalette[2] = 0;
+    GamePalette[0].r = 0;
+    GamePalette[0].g = 0;
+    GamePalette[0].b = 0;
     if (IsHardwareRenderer) {
         PaletteSetHardware();
     }
     PhdWet = 0;
-    for (int i = 0; i < 256 * 3; i += 3) {
-        WaterPalette[i + 0] = GamePalette[i + 0] * 2 / 3;
-        WaterPalette[i + 1] = GamePalette[i + 1] * 2 / 3;
-        WaterPalette[i + 2] = GamePalette[i + 2];
+    for (int i = 0; i < 256; i++) {
+        WaterPalette[i].r = GamePalette[i].r * 2 / 3;
+        WaterPalette[i].g = GamePalette[i].g * 2 / 3;
+        WaterPalette[i].b = GamePalette[i].b;
     }
     return 1;
 }
@@ -658,19 +658,28 @@ const char *GetFullPath(const char *filename)
     return newpath;
 }
 
-char *FileLoad(const char *path, char *target)
+void FileLoad(const char *path, char **output_data, size_t *output_size)
 {
     MYFILE *fp = FileOpen(path, FILE_OPEN_READ);
     if (!fp) {
         ShowFatalError("File load error");
+        return;
     }
-    size_t file_size = FileSize(fp);
-    if (FileRead(target, sizeof(char), file_size, fp) != file_size) {
+
+    size_t data_size = FileSize(fp);
+    char *data = malloc(data_size);
+    if (!data) {
+        ShowFatalError("Failed to allocate memory");
+        return;
+    }
+    if (FileRead(data, sizeof(char), data_size, fp) != data_size) {
         ShowFatalError("File read error");
+        return;
     }
     FileClose(fp);
-    LastReadFileSize = file_size;
-    return target;
+
+    *output_data = data;
+    *output_size = data_size;
 }
 
 void T1MInjectSpecificFile()

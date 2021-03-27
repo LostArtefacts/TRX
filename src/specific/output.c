@@ -11,6 +11,7 @@
 #include "util.h"
 
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define COLOR_BAR_SIZE 5
@@ -27,7 +28,10 @@ static uint8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 193, 194, 192, 191, 189 }, // pink
 };
 
-double MulDiv(double x, double y, double z)
+static double MulDiv(double x, double y, double z);
+static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal);
+
+static double MulDiv(double x, double y, double z)
 {
     return (x * y) / z;
 }
@@ -54,7 +58,6 @@ int32_t GetRenderWidth()
 
 int32_t GetRenderScale(int32_t unit)
 {
-    // TR2Main-style UI scaler
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
     int32_t scale_x = PhdWinWidth > baseWidth
@@ -271,15 +274,74 @@ void S_DrawAirBar(int32_t percent)
     RenderBar(percent, 100, BT_LARA_AIR);
 }
 
+static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
+{
+    PCX_HEADER *header = (PCX_HEADER *)pcx;
+    int32_t width = header->x_max - header->x_min + 1;
+    int32_t height = header->y_max - header->y_min + 1;
+
+    if (header->manufacturer != 10 || header->version < 5 || header->bpp != 8
+        || header->rle != 1 || header->planes != 1 || width * height == 0) {
+        return 0;
+    }
+
+    const int32_t stride = width + width % 2;
+    const char *src = pcx + sizeof(PCX_HEADER);
+    char *dst = pic;
+    int32_t x = 0;
+    int32_t y = 0;
+
+    while (y < height) {
+        if ((*src & 0xC0) == 0xC0) {
+            uint8_t n = (*src++) & 0x3F;
+            uint8_t c = *src++;
+            if (n > 0) {
+                if (x < width) {
+                    CLAMPG(n, width - x);
+                    for (int i = 0; i < n; i++) {
+                        *dst++ = c;
+                    }
+                }
+                x += n;
+            }
+        } else {
+            *dst++ = *src++;
+            x++;
+        }
+        if (x >= stride) {
+            x = 0;
+            y++;
+        }
+    }
+
+    if (pal != NULL) {
+        src = pcx + pcx_size - sizeof(RGB888) * 256;
+        for (int i = 0; i < 256; i++) {
+            pal[i].r = ((*src++) >> 2) & 0x3F;
+            pal[i].g = ((*src++) >> 2) & 0x3F;
+            pal[i].b = ((*src++) >> 2) & 0x3F;
+        }
+    }
+
+    return 1;
+}
+
 void S_DisplayPicture(const char *file_stem)
 {
-    char tmp[788];
     char file_name[128];
     strcpy(file_name, file_stem);
     strcat(file_name, ".pcx");
     const char *file_path = GetFullPath(file_name);
-    FileLoad(file_path, (char *)BackScreen);
-    decomp_pcx(tmp, (char *)BackScreen);
+
+    char *file_data = NULL;
+    size_t file_size = 0;
+    FileLoad(file_path, &file_data, &file_size);
+
+    if (!DecompPCX(file_data, file_size, (char *)ScrPtr, GamePalette)) {
+        LOG_ERROR("failed to decompress PCX %s", file_path);
+    }
+
+    free(file_data);
 }
 
 void T1MInjectSpecificOutput()

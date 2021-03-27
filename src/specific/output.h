@@ -12,7 +12,6 @@
 #define S_OutputPolyList        ((void      (*)())0x0042FD10)
 #define S_GetObjectBounds       ((int32_t   (*)(int16_t* bptr))0x0042FD30)
 #define S_DrawLightningSegment  ((void      (*)(int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t width))0x00430740)
-#define decomp_pcx              ((int       (*)(char *a1, char *a2))0x00430B90)
 // clang-format on
 
 void S_InitialisePolyList();

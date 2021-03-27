@@ -67,8 +67,8 @@
 #define DepthQTable             ARRAY_(0x006D5600, uint8_t, [32][256])
 #define GouraudTable            ARRAY_(0x0068B380, uint8_t, [256][32])
 #define AnimTextureRanges       VAR_U_(0x0045E640, int16_t*)
-#define GamePalette             ARRAY_(0x0045E660, uint8_t, [256 * 3])
-#define WaterPalette            ARRAY_(0x0045E33D, uint8_t, [256 * 3])
+#define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
+#define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 
@@ -81,7 +81,6 @@
 #define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
-#define LastReadFileSize        VAR_U_(0x0045B98C, int32_t)
 
 extern int32_t NoInputCount;
 extern int32_t IDelay;
