@@ -385,6 +385,21 @@ void S_DisplayPicture(const char *file_stem)
     free(file_data);
 }
 
+void S_DrawLightningSegment(
+    int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
+    int32_t width)
+{
+    if (z1 >= PhdNearZ && z1 <= PhdFarZ && z2 >= PhdNearZ && z2 <= PhdFarZ) {
+        x1 = PhdCenterX + x1 / (z1 / PhdPersp);
+        y1 = PhdCenterY + y1 / (z1 / PhdPersp);
+        x2 = PhdCenterX + x2 / (z2 / PhdPersp);
+        y2 = PhdCenterY + y2 / (z2 / PhdPersp);
+        int32_t thickness1 = (width << W2V_SHIFT) / (z1 / PhdPersp);
+        int32_t thickness2 = (width << W2V_SHIFT) / (z2 / PhdPersp);
+        DDDrawLightningSegment(x1, y1, z1, thickness1, x2, y2, z2, thickness2);
+    }
+}
+
 void T1MInjectSpecificOutput()
 {
     INJECT(0x00402710, S_Draw2DLine);
@@ -396,5 +411,6 @@ void T1MInjectSpecificOutput()
     INJECT(0x00430450, S_DrawAirBar);
     INJECT(0x004305E0, S_SetupBelowWater);
     INJECT(0x00430640, S_SetupAboveWater);
+    INJECT(0x00430740, S_DrawLightningSegment);
     INJECT(0x00430CE0, S_DisplayPicture);
 }
