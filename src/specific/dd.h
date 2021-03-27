@@ -11,11 +11,13 @@ void DDError(HRESULT result);
 void DDRenderBegin();
 void DDRenderEnd();
 void DDRenderToggle();
+void DDDisableTextures();
 void DDClearSurface(LPDIRECTDRAWSURFACE surface);
 void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void DDRenderTriangleStrip(C3D_VTCF *vertices, int num);
 void DDDraw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color);
+void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
 void T1MInjectSpecificDD();
 

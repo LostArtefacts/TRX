@@ -101,17 +101,69 @@ void DDDraw2DLine(
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 
+    DDDisableTextures();
+
+    ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
+
+    prim_type = C3D_EPRIM_TRI;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
+}
+
+void DDDisableTextures()
+{
     if (IsTextureMode) {
         int32_t textures_enabled = 0;
         ATI3DCIF_ContextSetState(
             ATIRenderContext, C3D_ERS_TMAP_EN, &textures_enabled);
         IsTextureMode = 0;
     }
+}
 
-    ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
+void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+{
+    C3D_VTCF vertex[4];
+    vertex[0].x = x1;
+    vertex[0].y = y1;
+    vertex[0].z = 1.0;
+    vertex[0].b = 0.0;
+    vertex[0].g = 0.0;
+    vertex[0].r = 0.0;
+    vertex[0].a = 128.0;
+    vertex[1].x = x2;
+    vertex[1].y = y1;
+    vertex[1].z = 1.0;
+    vertex[1].b = 0.0;
+    vertex[1].g = 0.0;
+    vertex[1].r = 0.0;
+    vertex[1].a = 128.0;
+    vertex[2].x = x2;
+    vertex[2].y = y2;
+    vertex[2].z = 1.0;
+    vertex[2].b = 0.0;
+    vertex[2].g = 0.0;
+    vertex[2].r = 0.0;
+    vertex[2].a = 128.0;
+    vertex[3].x = x1;
+    vertex[3].y = y2;
+    vertex[3].z = 1.0;
+    vertex[3].b = 0.0;
+    vertex[3].g = 0.0;
+    vertex[3].r = 0.0;
+    vertex[3].a = 128.0;
 
-    prim_type = C3D_EPRIM_TRI;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
+    DDDisableTextures();
+
+    int32_t alpha_src = 4;
+    int32_t alpha_dst = 5;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
+
+    DDRenderTriangleStrip(vertex, 4);
+
+    alpha_src = 1;
+    alpha_dst = 0;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
 void T1MInjectSpecificDD()
@@ -124,4 +176,5 @@ void T1MInjectSpecificDD()
     INJECT(0x00408B2C, DDBlitSurface);
     INJECT(0x00408E6D, DDRenderTriangleStrip);
     INJECT(0x0040C7EE, DDDraw2DLine);
+    INJECT(0x0040C8E7, DDDrawTranslucentQuad);
 }
