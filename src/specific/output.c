@@ -7,9 +7,11 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/display.h"
+#include "specific/file.h"
 #include "util.h"
 
 #include <math.h>
+#include <string.h>
 
 #define COLOR_BAR_SIZE 5
 
@@ -269,6 +271,17 @@ void S_DrawAirBar(int32_t percent)
     RenderBar(percent, 100, BT_LARA_AIR);
 }
 
+void S_DisplayPicture(const char *file_stem)
+{
+    char tmp[788];
+    char file_name[128];
+    strcpy(file_name, file_stem);
+    strcat(file_name, ".pcx");
+    const char *file_path = GetFullPath(file_name);
+    FileLoad(file_path, (char *)BackScreen);
+    decomp_pcx(tmp, (char *)BackScreen);
+}
+
 void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FC60, S_InitialisePolyList);
@@ -277,4 +290,5 @@ void T1MInjectSpecificOutput()
     INJECT(0x00430290, S_CalculateStaticLight);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
+    INJECT(0x00430CE0, S_DisplayPicture);
 }

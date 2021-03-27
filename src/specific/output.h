@@ -4,15 +4,15 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_AnimateTextures       ((void          (*)(int32_t nframes))0x00430660)
-#define S_DumpScreen            ((int32_t       (*)())0x0042FC70)
-#define S_ClearScreen           ((void          (*)())0x0042FCC0)
-#define S_SetupAboveWater       ((void          (*)(int32_t underwater))0x00430640)
-#define S_SetupBelowWater       ((void          (*)(int32_t underwater))0x004305E0)
-#define S_OutputPolyList        ((void          (*)())0x0042FD10)
-#define S_GetObjectBounds       ((int32_t       (*)(int16_t* bptr))0x0042FD30)
-#define S_DisplayPicture        ((void          (*)(const char* filename))0x00430CE0)
-#define S_DrawLightningSegment  ((void     (*)(int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t width))0x00430740)
+#define S_AnimateTextures       ((void      (*)(int32_t nframes))0x00430660)
+#define S_DumpScreen            ((int32_t   (*)())0x0042FC70)
+#define S_ClearScreen           ((void      (*)())0x0042FCC0)
+#define S_SetupAboveWater       ((void      (*)(int32_t underwater))0x00430640)
+#define S_SetupBelowWater       ((void      (*)(int32_t underwater))0x004305E0)
+#define S_OutputPolyList        ((void      (*)())0x0042FD10)
+#define S_GetObjectBounds       ((int32_t   (*)(int16_t* bptr))0x0042FD30)
+#define S_DrawLightningSegment  ((void      (*)(int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t width))0x00430740)
+#define decomp_pcx              ((int       (*)(char *a1, char *a2))0x00430B90)
 // clang-format on
 
 void S_InitialisePolyList();
@@ -21,6 +21,7 @@ void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void S_CalculateStaticLight(int16_t adder);
 void S_DrawHealthBar(int32_t percent);
 void S_DrawAirBar(int32_t percent);
+void S_DisplayPicture(const char *filename);
 
 int32_t GetRenderScaleGLRage(int32_t unit);
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type);
