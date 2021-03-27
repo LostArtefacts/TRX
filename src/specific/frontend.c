@@ -11,6 +11,7 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shed.h"
+#include "specific/smain.h"
 #include "util.h"
 
 #include <stdlib.h>
@@ -29,12 +30,12 @@ void S_Wait(int32_t nframes)
         if (KeyData->keys_held) {
             break;
         }
-        while (!WinVidSpinMessageLoop())
+        while (!WinSpinMessageLoop())
             ;
     }
     while (Input) {
         S_UpdateInput();
-        WinVidSpinMessageLoop();
+        WinSpinMessageLoop();
     }
 }
 

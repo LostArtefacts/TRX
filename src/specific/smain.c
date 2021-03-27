@@ -4,6 +4,7 @@
 #include "global/vars_platform.h"
 #include "specific/init.h"
 #include "specific/input.h"
+#include "specific/shed.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
 #include "util.h"
@@ -61,6 +62,15 @@ void ShowFatalError(const char *message)
     MessageBoxA(
         0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
     TerminateGame(1);
+}
+
+int32_t WinSpinMessageLoop()
+{
+    sub_43D940();
+    int32_t time_ms = timeGetTime();
+    int32_t old_ticks = Ticks;
+    Ticks = time_ms * 2 * 30 / 1000;
+    return Ticks - old_ticks;
 }
 
 static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

@@ -4,7 +4,7 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "global/vars.h"
-#include "specific/shed.h"
+#include "specific/smain.h"
 #include "util.h"
 
 #include <dinput.h>
@@ -231,22 +231,22 @@ void S_UpdateInput()
     if (IsHardwareRenderer) {
         if (KeyData->keymap[DIK_F3]) {
             AppSettings ^= 2u;
-            do
-                WinVidSpinMessageLoop();
-            while (KeyData->keymap[DIK_F3]);
+            do {
+                WinSpinMessageLoop();
+            } while (KeyData->keymap[DIK_F3]);
         }
 
         if (KeyData->keymap[DIK_F4]) {
             AppSettings ^= 1u;
             do {
-                WinVidSpinMessageLoop();
+                WinSpinMessageLoop();
             } while (KeyData->keymap[DIK_F4]);
         }
 
         if (KeyData->keymap[DIK_F2]) {
             AppSettings ^= 4u;
             do {
-                WinVidSpinMessageLoop();
+                WinSpinMessageLoop();
             } while (KeyData->keymap[DIK_F2]);
         }
     }

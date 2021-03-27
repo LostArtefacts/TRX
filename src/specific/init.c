@@ -102,7 +102,7 @@ void S_ExitSystem(const char *message)
 {
     while (Input & IN_SELECT) {
         S_UpdateInput();
-        WinVidSpinMessageLoop();
+        WinSpinMessageLoop();
     }
     if (GameMemoryPointer) {
         free(GameMemoryPointer);

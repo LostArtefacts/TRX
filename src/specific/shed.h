@@ -12,7 +12,6 @@
 #define sub_43D940              ((void          (*)())0x43D940)
 #define _malloc                 ((void*         (*)(size_t n))0x00441310)
 
-#define WinVidSpinMessageLoop   ((int32_t       (*)())0x00437AD0)
 #define InitialiseHardware      ((void          (*)())0x00408005)
 #define ShutdownHardware        ((void          (*)())0x00408323)
 #define DownloadTexturesToHardware  ((void      (*)(int16_t level_num))0x004084DE)
