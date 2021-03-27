@@ -2,6 +2,7 @@
 
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "specific/ati.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shed.h"
@@ -10,38 +11,20 @@
 #include "util.h"
 
 #include <windows.h>
+#include <ddraw.h>
 #include <dinput.h>
 
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
 
-#pragma pack(push, 1)
-// TODO: decompile me!
-typedef struct UNK1 {
-    char tmp0[8];
-    void(__stdcall *cb8)(struct UNK1 **);
-    char tmpC[28];
-    void(__stdcall *cb28)(struct UNK1 **);
-    char tmp2C[32];
-    void(__stdcall *cb4C)(struct UNK1 **);
-    void(__stdcall *cb50)(struct UNK1 **, HWND, int);
-} UNK1;
-#pragma pack(pop)
-
 // clang-format off
 // TODO: decompile me!
 #define sub_43D070      ((int (*)())0x0043D070)
-#define sub_4508C0      ((void (*)())0x004508C0)
 #define sub_407A91      ((void (*)())0x00407A91)
-#define sub_450830      ((void (*)(int32_t))0x00450830)
 // clang-format off
 
 // clang-format off
 // TODO: decompile me!
-#define DirectDrawSurfaceWidth  VAR_U_(0x00456D90, int32_t)
-#define DirectDrawSurfaceHeight VAR_U_(0x00456D94, int32_t)
-#define dword_45A998            VAR_U_(0x0045A998, UNK1**)
-#define dword_45A994            VAR_U_(0x0045A994, int32_t)
 #define dword_45A990            VAR_U_(0x0045A990, int32_t)
 #define CloseMsg                VAR_U_(0x0045A940, UINT)
 // clang-format on
@@ -100,10 +83,10 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
     case WM_GETMINMAXINFO: {
         MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
-        min_max_info->ptMinTrackSize.x = DirectDrawSurfaceWidth;
-        min_max_info->ptMinTrackSize.y = DirectDrawSurfaceHeight;
-        min_max_info->ptMaxTrackSize.x = DirectDrawSurfaceWidth;
-        min_max_info->ptMaxTrackSize.y = DirectDrawSurfaceHeight;
+        min_max_info->ptMinTrackSize.x = DDrawSurfaceWidth;
+        min_max_info->ptMinTrackSize.y = DDrawSurfaceHeight;
+        min_max_info->ptMaxTrackSize.x = DDrawSurfaceWidth;
+        min_max_info->ptMaxTrackSize.y = DDrawSurfaceHeight;
         return DefWindowProcA(
             hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
     }
@@ -152,18 +135,19 @@ static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
 static void WinGameFinish()
 {
     dword_45A990 = 1;
-    if (dword_45A998) {
+    if (DDraw) {
         sub_407A91();
-        (*dword_45A998)->cb28(dword_45A998);
-        (*dword_45A998)->cb4C(dword_45A998);
-        (*dword_45A998)->cb50(dword_45A998, TombHWND, 8);
-        (*dword_45A998)->cb8(dword_45A998);
-        dword_45A998 = 0;
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_RestoreDisplayMode(DDraw);
+        IDirectDraw_SetCooperativeLevel(DDraw, TombHWND, 8);
+        IDirectDraw_Release(DDraw);
+        DDraw = NULL;
     }
-    if (dword_45A994) {
-        sub_450830(dword_45A994);
-        sub_4508C0();
-        dword_45A994 = 0;
+    if (ATIRenderContext) {
+        ATI3DCIF_ContextDestroy(ATIRenderContext);
+        ShutdownATI3DCIF();
+        ATIRenderContext = 0;
     }
     PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
 }

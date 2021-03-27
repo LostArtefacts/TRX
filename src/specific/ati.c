@@ -1,11 +1,11 @@
 #include "specific/ati.h"
 
+#include "global/vars_platform.h"
 #include "util.h"
 
 #include <windows.h>
 
 // clang-format off
-#define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
 #define ATI3DCIF_GetInfo_lib                ((C3D_EC (**)(PC3D_3DCIFINFO info))0x00459CF4)
 #define ATI3DCIF_TextureReg_lib             ((C3D_EC (**)(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap))0x00459CF8)
 #define ATI3DCIF_TextureUnreg_lib           ((C3D_EC (**)(C3D_HTX htxToUnreg))0x00459CFC)

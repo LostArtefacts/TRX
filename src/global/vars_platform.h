@@ -3,6 +3,7 @@
 
 #include "util.h"
 
+#include "specific/ati.h"
 #include <dsound.h>
 #include <windows.h>
 
@@ -12,6 +13,11 @@
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HHK                     VAR_U_(0x0045A93C, HHOOK)
+#define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
+#define DDrawSurfaceWidth       VAR_U_(0x00456D90, int32_t)
+#define DDrawSurfaceHeight      VAR_U_(0x00456D94, int32_t)
+#define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
+#define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 // clang-format on
 
 #endif
