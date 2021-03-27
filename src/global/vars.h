@@ -69,6 +69,9 @@
 #define AnimTextureRanges       VAR_U_(0x0045E640, int16_t*)
 #define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
 #define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
+#define IsWibbleEffect          VAR_U_(0x00459F0C, int32_t)
+#define IsWaterEffect           VAR_U_(0x00459F10, int32_t)
+#define IsShadeEffect           VAR_U_(0x00459F14, int32_t)
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 

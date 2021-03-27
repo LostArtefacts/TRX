@@ -530,7 +530,7 @@
 <rect width="12.00" height="12.00" x="378.00" y="157.00" class="decompiled"><title>S_CalculateStaticLight</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="157.00" class="decompiled"><title>S_DrawHealthBar</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="157.00" class="decompiled"><title>S_DrawAirBar</title></rect>
-<rect width="12.00" height="12.00" x="420.00" y="157.00" class="named"><title>S_SetupBelowWater</title></rect>
+<rect width="12.00" height="12.00" x="420.00" y="157.00" class="decompiled"><title>S_SetupBelowWater</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="157.00" class="named"><title>S_SetupAboveWater</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="157.00" class="named"><title>S_AnimateTextures</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="157.00" class="named"><title>S_DrawLightningSegment</title></rect>
@@ -1204,7 +1204,7 @@
 <rect width="5.96" height="6.09" x="635.26" y="450.64" class="decompiled"><title>TriggerActive</title></rect>
 <rect width="5.96" height="6.09" x="643.22" y="450.64" class="decompiled"><title>Inv_RingMotionItemDeselect</title></rect>
 <rect width="5.96" height="6.09" x="651.18" y="450.64" class="decompiled"><title>phd_atan</title></rect>
-<rect width="5.87" height="6.09" x="659.14" y="450.64" class="named"><title>S_SetupBelowWater</title></rect>
+<rect width="5.87" height="6.09" x="659.14" y="450.64" class="decompiled"><title>S_SetupBelowWater</title></rect>
 <rect width="5.77" height="6.09" x="667.01" y="450.64" class="decompiled"><title>GetFullPath</title></rect>
 <rect width="5.77" height="6.09" x="674.78" y="450.64" class="decompiled"><title>InitialiseLOTArray</title></rect>
 <rect width="5.77" height="6.09" x="682.55" y="450.64" class="decompiled"><title>TrapDoorControl</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.50%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.75%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.51%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.76%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.64%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.79%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.37%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.73%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.99%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.48%</text>
 </svg>

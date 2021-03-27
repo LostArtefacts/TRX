@@ -274,6 +274,14 @@ void S_DrawAirBar(int32_t percent)
     RenderBar(percent, 100, BT_LARA_AIR);
 }
 
+void S_SetupBelowWater(int32_t underwater)
+{
+    PhdWet = underwater;
+    IsWaterEffect = 1;
+    IsWibbleEffect = underwater == 0;
+    IsShadeEffect = 1;
+}
+
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
 {
     PCX_HEADER *header = (PCX_HEADER *)pcx;
@@ -352,5 +360,6 @@ void T1MInjectSpecificOutput()
     INJECT(0x00430290, S_CalculateStaticLight);
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
+    INJECT(0x004305E0, S_SetupBelowWater);
     INJECT(0x00430CE0, S_DisplayPicture);
 }
