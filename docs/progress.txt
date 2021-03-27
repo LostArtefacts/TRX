@@ -838,7 +838,7 @@ ObjectObjects                   0x00437370  0x000006D3  +
 
 # ???
 InitialiseObjects               0x00437A50  0x00000063  +
-sub_437AC0                      0x00437AC0  0x00000006  -
+sub_437AC0                      0x00437AC0  0x00000006  x
 WinVidSpinMessageLoop           0x00437AD0  0x00000029  *
 WinInReadJoystick               0x00437B00  0x00000070  x
 OnKeyPress                      0x00437B70  0x00000045  +
@@ -969,10 +969,10 @@ WolfControl                     0x0043DF50  0x0000040B  +
 LionControl                     0x0043E390  0x000002BD  +
 
 # ???
-sub_43E670                      0x0043E670  0x00000011  -
-sub_43E681                      0x0043E681  0x000000CC  -
-sub_43E74D                      0x0043E74D  0x0000015F  -
-sub_43E8AC                      0x0043E8AC  0x00000155  -
+sub_43E670                      0x0043E670  0x00000011  x
+sub_43E681                      0x0043E681  0x000000CC  x
+sub_43E74D                      0x0043E74D  0x0000015F  x
+sub_43E8AC                      0x0043E8AC  0x00000155  x
 phd_PushMatrix                  0x0043EA01  0x00000020  +
 phd_PushUnitMatrix              0x0043EA21  0x00000035  +
 flatA                           0x0043EA80  0x00000064  -

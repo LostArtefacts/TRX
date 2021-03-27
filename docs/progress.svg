@@ -582,7 +582,7 @@
 <rect width="12.00" height="12.00" x="406.00" y="171.00" class="decompiled"><title>TrapObjects</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="171.00" class="decompiled"><title>ObjectObjects</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="171.00" class="decompiled"><title>InitialiseObjects</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="171.00" class="todo"><title>sub_437AC0</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="171.00" class="decompiled"><title>sub_437AC0</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="171.00" class="named"><title>WinVidSpinMessageLoop</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="171.00" class="decompiled"><title>WinInReadJoystick</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="171.00" class="decompiled"><title>OnKeyPress</title></rect>
@@ -689,10 +689,10 @@
 <rect width="12.00" height="12.00" x="504.00" y="199.00" class="decompiled"><title>InitialiseWolf</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="199.00" class="decompiled"><title>WolfControl</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="199.00" class="decompiled"><title>LionControl</title></rect>
-<rect width="12.00" height="12.00" x="546.00" y="199.00" class="todo"><title>sub_43E670</title></rect>
-<rect width="12.00" height="12.00" x="560.00" y="199.00" class="todo"><title>sub_43E681</title></rect>
-<rect width="12.00" height="12.00" x="574.00" y="199.00" class="todo"><title>sub_43E74D</title></rect>
-<rect width="12.00" height="12.00" x="588.00" y="199.00" class="todo"><title>sub_43E8AC</title></rect>
+<rect width="12.00" height="12.00" x="546.00" y="199.00" class="decompiled"><title>sub_43E670</title></rect>
+<rect width="12.00" height="12.00" x="560.00" y="199.00" class="decompiled"><title>sub_43E681</title></rect>
+<rect width="12.00" height="12.00" x="574.00" y="199.00" class="decompiled"><title>sub_43E74D</title></rect>
+<rect width="12.00" height="12.00" x="588.00" y="199.00" class="decompiled"><title>sub_43E8AC</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="199.00" class="decompiled"><title>phd_PushMatrix</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="199.00" class="decompiled"><title>phd_PushUnitMatrix</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="199.00" class="named"><title>flatA</title></rect>
@@ -924,11 +924,11 @@
 <rect width="14.91" height="13.95" x="549.03" y="305.75" class="decompiled"><title>PickUpScionCollision</title></rect>
 <rect width="14.86" height="13.95" x="565.94" y="305.75" class="named"><title>S_DrawScreenSprite</title></rect>
 <rect width="14.72" height="13.95" x="582.80" y="305.75" class="decompiled"><title>UndrawShotgun</title></rect>
-<rect width="14.67" height="13.95" x="599.52" y="305.75" class="todo"><title>sub_43E74D</title></rect>
+<rect width="14.67" height="13.95" x="599.52" y="305.75" class="decompiled"><title>sub_43E74D</title></rect>
 <rect width="14.53" height="13.95" x="616.20" y="305.75" class="decompiled"><title>ShiftCamera</title></rect>
 <rect width="14.48" height="13.95" x="632.73" y="305.75" class="decompiled"><title>S_InitialiseSystem</title></rect>
 <rect width="14.48" height="13.95" x="649.21" y="305.75" class="named"><title>S_PrintShadow</title></rect>
-<rect width="14.20" height="13.95" x="665.70" y="305.75" class="todo"><title>sub_43E8AC</title></rect>
+<rect width="14.20" height="13.95" x="665.70" y="305.75" class="decompiled"><title>sub_43E8AC</title></rect>
 <rect width="14.10" height="13.95" x="681.90" y="305.75" class="decompiled"><title>T_DrawText</title></rect>
 <rect width="14.23" height="13.68" x="480.62" y="321.70" class="named"><title>S_DrawScreenSprite2d</title></rect>
 <rect width="14.23" height="13.68" x="480.62" y="337.39" class="decompiled"><title>InitialiseLara</title></rect>
@@ -1045,7 +1045,7 @@
 <rect width="10.84" height="10.16" x="538.56" y="477.67" class="decompiled"><title>mn_get_fx_slot</title></rect>
 <rect width="10.84" height="10.10" x="538.56" y="489.83" class="decompiled"><title>InitialisePlayer1</title></rect>
 <rect width="10.84" height="10.10" x="538.56" y="501.93" class="decompiled"><title>Splash</title></rect>
-<rect width="10.84" height="10.04" x="538.56" y="514.03" class="todo"><title>sub_43E681</title></rect>
+<rect width="10.84" height="10.04" x="538.56" y="514.03" class="decompiled"><title>sub_43E681</title></rect>
 <rect width="10.84" height="9.93" x="538.56" y="526.07" class="named"><title>Insert2DLine</title></rect>
 <rect width="10.51" height="10.17" x="551.39" y="378.61" class="decompiled"><title>phd_LookAt</title></rect>
 <rect width="10.51" height="10.17" x="563.90" y="378.61" class="decompiled"><title>CalculateObjectLighting</title></rect>
@@ -1399,7 +1399,7 @@
 <rect width="2.03" height="1.57" x="679.76" y="527.48" class="decompiled"><title>ATI3DCIF_RenderPrimStrip</title></rect>
 <rect width="2.03" height="1.57" x="679.76" y="531.05" class="decompiled"><title>ATI3DCIF_RenderPrimList</title></rect>
 <rect width="2.03" height="1.38" x="679.76" y="534.62" class="decompiled"><title>mn_adjust_master_volume</title></rect>
-<rect width="1.83" height="1.36" x="683.79" y="520.34" class="todo"><title>sub_43E670</title></rect>
+<rect width="1.83" height="1.36" x="683.79" y="520.34" class="decompiled"><title>sub_43E670</title></rect>
 <rect width="1.61" height="1.36" x="687.63" y="520.34" class="decompiled"><title>S_NoFade</title></rect>
 <rect width="1.38" height="1.36" x="691.24" y="520.34" class="todo"><title>sub_408E32</title></rect>
 <rect width="1.38" height="1.36" x="694.62" y="520.34" class="decompiled"><title>SoundStopSample_</title></rect>
@@ -1421,7 +1421,7 @@
 <rect width="0.86" height="0.65" x="689.79" y="532.70" class="decompiled"><title>FxLaraHandsFree</title></rect>
 <rect width="0.86" height="0.65" x="689.79" y="535.35" class="decompiled"><title>SeedRandomControl</title></rect>
 <rect width="1.35" height="0.26" x="692.65" y="529.79" class="decompiled"><title>SeedRandomDraw</title></rect>
-<rect width="0.01" height="0.26" x="695.99" y="529.79" class="todo"><title>sub_437AC0</title></rect>
+<rect width="0.01" height="0.26" x="695.99" y="529.79" class="decompiled"><title>sub_437AC0</title></rect>
 <rect width="-0.22" height="0.55" x="692.65" y="532.05" class="decompiled"><title>ATI3DCIF_NullSub</title></rect>
 <rect width="-0.22" height="0.55" x="694.43" y="532.05" class="decompiled"><title>ATI3DCIF_ContextCreate</title></rect>
 <rect width="-0.22" height="0.55" x="696.22" y="532.05" class="decompiled"><title>ATI3DCIF_RenderEnd</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 81.68%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 75.26%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 82.38%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 75.63%</text>
 <rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.35%</text>
 <rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.61%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 7.97%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 13.13%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 7.27%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.76%</text>
 </svg>

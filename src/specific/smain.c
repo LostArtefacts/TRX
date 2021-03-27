@@ -24,12 +24,6 @@ typedef struct UNK1 {
     void(__stdcall *cb4C)(struct UNK1 **);
     void(__stdcall *cb50)(struct UNK1 **, HWND, int);
 } UNK1;
-
-// TODO: decompile me!
-typedef struct UNK2 {
-    char tmp0[8];
-    void(__stdcall *cb8)(struct UNK2 **);
-} UNK2;
 #pragma pack(pop)
 
 // clang-format off
@@ -43,7 +37,6 @@ typedef struct UNK2 {
 
 // clang-format off
 // TODO: decompile me!
-#define dword_45A938    VAR_U_(0x0045A938, UNK2**)
 #define dword_45A998    VAR_U_(0x0045A998, UNK1**)
 #define dword_45A994    VAR_U_(0x0045A994, int32_t)
 #define dword_45A990    VAR_U_(0x0045A990, int32_t)
@@ -62,18 +55,6 @@ void TerminateGame(int exit_code)
 void ShowFatalError(const char *message)
 {
     LOG_ERROR("%s", message);
-    if (dword_45A938) {
-        (*dword_45A938)->cb8(dword_45A938);
-        dword_45A938 = 0;
-    }
-    if (dword_45A998) {
-        sub_407A91();
-        (*dword_45A998)->cb28(dword_45A998);
-        (*dword_45A998)->cb4C(dword_45A998);
-        (*dword_45A998)->cb50(dword_45A998, TombHWND, 8);
-        (*dword_45A998)->cb8(dword_45A998);
-        dword_45A998 = 0;
-    }
     MessageBoxA(
         0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
     TerminateGame(1);
@@ -113,10 +94,6 @@ static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
 static void WinGameFinish()
 {
     dword_45A990 = 1;
-    if (dword_45A938) {
-        (*dword_45A938)->cb8(dword_45A938);
-        dword_45A938 = 0;
-    }
     if (dword_45A998) {
         sub_407A91();
         (*dword_45A998)->cb28(dword_45A998);
