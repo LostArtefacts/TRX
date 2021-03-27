@@ -4,8 +4,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/hwr.h"
 #include "specific/init.h"
-#include "specific/shed.h"
 #include "util.h"
 
 #include <stdlib.h>
@@ -41,7 +41,7 @@ void TempVideoAdjust(int32_t hi_res, double sizer)
 
     if (IsHardwareRenderer) {
         HiRes = hi_res;
-        SwitchResolution();
+        HWR_SwitchResolution();
     } else {
         ScreenSizer = sizer;
 
@@ -70,7 +70,7 @@ void TempVideoRemove()
 
     if (IsHardwareRenderer) {
         HiRes = GameHiRes;
-        SwitchResolution();
+        HWR_SwitchResolution();
     } else {
         ScreenSizer = GameSizer;
 
@@ -100,9 +100,9 @@ void S_FadeInInventory(int32_t fade)
 {
     if (IsHardwareRenderer) {
         if (CurrentLevel == GF.title_level_num) {
-            DownloadPictureHardware();
+            HWR_DownloadPicture();
         } else {
-            CopyPictureHardware();
+            HWR_CopyPicture();
         }
     } else if (BackScreen && BackScreenSize) {
         uint8_t *scrptr = ScrPtr;

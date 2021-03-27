@@ -5,6 +5,7 @@
 #include "global/vars.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
+#include "specific/hwr.h"
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/smain.h"
@@ -95,7 +96,7 @@ void S_InitialiseSystem()
 
     GameMemorySize = MALLOC_SIZE;
 
-    InitialiseHardware();
+    HWR_InitialiseHardware();
 }
 
 void S_ExitSystem(const char *message)
@@ -107,7 +108,7 @@ void S_ExitSystem(const char *message)
     if (GameMemoryPointer) {
         free(GameMemoryPointer);
     }
-    ShutdownHardware();
+    HWR_ShutdownHardware();
     ShowFatalError(message);
 }
 

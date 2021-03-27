@@ -5,9 +5,9 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
+#include "specific/hwr.h"
 #include "util.h"
 
 #include <math.h>
@@ -261,7 +261,7 @@ void S_CalculateStaticLight(int16_t adder)
 void S_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color)
 {
-    DDDraw2DLine(x1, y1, x2, y2, 200, color);
+    HWR_Draw2DLine(x1, y1, x2, y2, 200, color);
 }
 
 void S_DrawHealthBar(int32_t percent)
@@ -396,7 +396,8 @@ void S_DrawLightningSegment(
         y2 = PhdCenterY + y2 / (z2 / PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / PhdPersp);
-        DDDrawLightningSegment(x1, y1, z1, thickness1, x2, y2, z2, thickness2);
+        HWR_DrawLightningSegment(
+            x1, y1, z1, thickness1, x2, y2, z2, thickness2);
     }
 }
 

@@ -22,10 +22,10 @@
 #include "game/sphere.h"
 #include "game/text.h"
 #include "specific/ati.h"
-#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
+#include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
@@ -64,10 +64,10 @@ void T1MInject()
     T1MInjectGameSphere();
     T1MInjectGameText();
     T1MInjectSpecificATI();
-    T1MInjectSpecificDD();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();
+    T1MInjectSpecificHWR();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();
     T1MInjectSpecificOutput();

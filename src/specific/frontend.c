@@ -6,9 +6,9 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
-#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
+#include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shed.h"
@@ -46,7 +46,7 @@ void S_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)
 {
-    DDDraw2DLine(sx, sy, sx + w, sy + h, 210, col);
+    HWR_Draw2DLine(sx, sy, sx + w, sy + h, 210, col);
 }
 
 void S_DrawScreenBox(
@@ -67,7 +67,7 @@ void S_DrawScreenFBox(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)
 {
-    DDDrawTranslucentQuad(sx, sy, sx + w, sy + h);
+    HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
 
 void S_Wait(int32_t nframes)
@@ -196,7 +196,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     }
 
     TempVideoAdjust(2, 1.0);
-    HardwarePrepareFMV();
+    HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);
 
@@ -208,7 +208,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     init_game_malloc();
 
     if (IsHardwareRenderer) {
-        HardwareFMVDone();
+        HWR_FMVDone();
     }
     TempVideoRemove();
 

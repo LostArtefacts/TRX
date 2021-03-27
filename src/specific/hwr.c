@@ -1,4 +1,4 @@
-#include "specific/dd.h"
+#include "specific/hwr.h"
 
 #include "global/vars.h"
 #include "global/vars_platform.h"
@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-typedef struct DDLIGHTNING {
+typedef struct HWR_LIGHTNING {
     int32_t x1;
     int32_t y1;
     int32_t z1;
@@ -17,13 +17,13 @@ typedef struct DDLIGHTNING {
     int32_t y2;
     int32_t z2;
     int32_t thickness2;
-} DDLIGHTNING;
+} HWR_LIGHTNING;
 
-#define DDNormalizeVertices ((int (*)(int num, C3D_VTCF *vertices))0x0040904D)
-#define DDLightningTable ARRAY_(0x005DA800, DDLIGHTNING, [100])
-#define DDLightningCount VAR_U_(0x00463618, int32_t)
+#define HWR_NormalizeVertices ((int (*)(int num, C3D_VTCF *vertices))0x0040904D)
+#define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
+#define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
-void DDError(HRESULT result)
+void HWR_Error(HRESULT result)
 {
     if (result) {
         LOG_ERROR("DirectDraw error code %x", result);
@@ -31,34 +31,34 @@ void DDError(HRESULT result)
     }
 }
 
-void DDRenderBegin()
+void HWR_RenderBegin()
 {
-    DDOldIsRendering = DDIsRendering;
-    if (!DDIsRendering) {
+    HWR_OldIsRendering = HWR_IsRendering;
+    if (!HWR_IsRendering) {
         ATI3DCIF_RenderBegin(ATIRenderContext);
-        DDIsRendering = 1;
+        HWR_IsRendering = 1;
     }
 }
 
-void DDRenderEnd()
+void HWR_RenderEnd()
 {
-    DDOldIsRendering = DDIsRendering;
-    if (DDIsRendering) {
+    HWR_OldIsRendering = HWR_IsRendering;
+    if (HWR_IsRendering) {
         ATI3DCIF_RenderEnd();
-        DDIsRendering = 0;
+        HWR_IsRendering = 0;
     }
 }
 
-void DDRenderToggle()
+void HWR_RenderToggle()
 {
-    if (DDOldIsRendering) {
-        DDRenderBegin();
+    if (HWR_OldIsRendering) {
+        HWR_RenderBegin();
     } else {
-        DDRenderEnd();
+        HWR_RenderEnd();
     }
 }
 
-void DDClearSurface(LPDIRECTDRAWSURFACE surface)
+void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     DDBLTFX blt_fx;
     blt_fx.dwSize = sizeof(DDBLTFX);
@@ -66,22 +66,22 @@ void DDClearSurface(LPDIRECTDRAWSURFACE surface)
     HRESULT result = IDirectDrawSurface_Blt(
         surface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_COLORFILL, &blt_fx);
     if (result) {
-        DDError(result);
+        HWR_Error(result);
     }
 }
 
-void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
+void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 {
     RECT rect;
     SetRect(&rect, 0, 0, DDrawSurfaceWidth, DDrawSurfaceHeight);
     HRESULT result =
         IDirectDrawSurface_Blt(source, &rect, target, &rect, DDBLT_WAIT, NULL);
     if (result) {
-        DDError(result);
+        HWR_Error(result);
     }
 }
 
-void DDRenderTriangleStrip(C3D_VTCF *vertices, int num)
+void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
 {
     ATI3DCIF_RenderPrimStrip(vertices, 3);
     int left = num - 2;
@@ -92,7 +92,7 @@ void DDRenderTriangleStrip(C3D_VTCF *vertices, int num)
     }
 }
 
-void DDDraw2DLine(
+void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color)
 {
     C3D_VTCF vertex[2];
@@ -116,7 +116,7 @@ void DDDraw2DLine(
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 
-    DDDisableTextures();
+    HWR_DisableTextures();
 
     ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
 
@@ -124,17 +124,17 @@ void DDDraw2DLine(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 }
 
-void DDDisableTextures()
+void HWR_DisableTextures()
 {
-    if (IsTextureMode) {
+    if (HWR_IsTextureMode) {
         int32_t textures_enabled = 0;
         ATI3DCIF_ContextSetState(
             ATIRenderContext, C3D_ERS_TMAP_EN, &textures_enabled);
-        IsTextureMode = 0;
+        HWR_IsTextureMode = 0;
     }
 }
 
-void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
     C3D_VTCF vertex[4];
     vertex[0].x = x1;
@@ -166,14 +166,14 @@ void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     vertex[3].r = 0.0;
     vertex[3].a = 128.0;
 
-    DDDisableTextures();
+    HWR_DisableTextures();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 
-    DDRenderTriangleStrip(vertex, 4);
+    HWR_RenderTriangleStrip(vertex, 4);
 
     alpha_src = 1;
     alpha_dst = 0;
@@ -181,28 +181,28 @@ void DDDrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
-void DDDrawLightningSegment(
+void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
 {
-    DDLightningTable[DDLightningCount].x1 = x1;
-    DDLightningTable[DDLightningCount].y1 = y1;
-    DDLightningTable[DDLightningCount].z1 = z1;
-    DDLightningTable[DDLightningCount].thickness1 = thickness1;
-    DDLightningTable[DDLightningCount].x2 = x2;
-    DDLightningTable[DDLightningCount].y2 = y2;
-    DDLightningTable[DDLightningCount].z2 = z2;
-    DDLightningTable[DDLightningCount].thickness2 = thickness2;
-    DDLightningCount++;
+    HWR_LightningTable[HWR_LightningCount].x1 = x1;
+    HWR_LightningTable[HWR_LightningCount].y1 = y1;
+    HWR_LightningTable[HWR_LightningCount].z1 = z1;
+    HWR_LightningTable[HWR_LightningCount].thickness1 = thickness1;
+    HWR_LightningTable[HWR_LightningCount].x2 = x2;
+    HWR_LightningTable[HWR_LightningCount].y2 = y2;
+    HWR_LightningTable[HWR_LightningCount].z2 = z2;
+    HWR_LightningTable[HWR_LightningCount].thickness2 = thickness2;
+    HWR_LightningCount++;
 }
 
-void DDRenderLightningSegment(
+void HWR_RenderLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
     int32_t z2, int thickness2)
 {
     C3D_VTCF vertex[4];
 
-    DDDisableTextures();
+    HWR_DisableTextures();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
@@ -240,9 +240,9 @@ void DDRenderLightningSegment(
     vertex[3].b = 255.0;
     vertex[3].a = 128.0;
 
-    int num = DDNormalizeVertices(4, vertex);
+    int num = HWR_NormalizeVertices(4, vertex);
     if (num) {
-        DDRenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertex, num);
     }
 
     vertex[0].x = thickness1 / 2 + x1;
@@ -277,9 +277,9 @@ void DDRenderLightningSegment(
     vertex[3].r = 255.0;
     vertex[3].a = 128.0;
 
-    num = DDNormalizeVertices(4, vertex);
+    num = HWR_NormalizeVertices(4, vertex);
     if (num) {
-        DDRenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertex, num);
     }
 
     alpha_src = 1;
@@ -288,17 +288,17 @@ void DDRenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
-void T1MInjectSpecificDD()
+void T1MInjectSpecificHWR()
 {
-    INJECT(0x004077D0, DDError);
-    INJECT(0x00407827, DDRenderBegin);
-    INJECT(0x0040783B, DDRenderEnd);
-    INJECT(0x00407862, DDRenderToggle);
-    INJECT(0x00407A49, DDClearSurface);
-    INJECT(0x00408B2C, DDBlitSurface);
-    INJECT(0x00408E6D, DDRenderTriangleStrip);
-    INJECT(0x0040C7EE, DDDraw2DLine);
-    INJECT(0x0040C8E7, DDDrawTranslucentQuad);
-    INJECT(0x0040D056, DDDrawLightningSegment);
-    INJECT(0x0040CC5D, DDRenderLightningSegment);
+    INJECT(0x004077D0, HWR_Error);
+    INJECT(0x00407827, HWR_RenderBegin);
+    INJECT(0x0040783B, HWR_RenderEnd);
+    INJECT(0x00407862, HWR_RenderToggle);
+    INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x00408B2C, HWR_BlitSurface);
+    INJECT(0x00408E6D, HWR_RenderTriangleStrip);
+    INJECT(0x0040C7EE, HWR_Draw2DLine);
+    INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
+    INJECT(0x0040D056, HWR_DrawLightningSegment);
+    INJECT(0x0040CC5D, HWR_RenderLightningSegment);
 }

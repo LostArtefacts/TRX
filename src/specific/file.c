@@ -6,8 +6,8 @@
 #include "game/items.h"
 #include "game/setup.h"
 #include "global/vars.h"
+#include "specific/hwr.h"
 #include "specific/init.h"
-#include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
 #include "util.h"
@@ -135,7 +135,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
     FileClose(fp);
 
     if (IsHardwareRenderer) {
-        DownloadTexturesToHardware(TexturePageCount);
+        HWR_DownloadTextures(TexturePageCount);
     }
 
     return 1;
@@ -428,7 +428,7 @@ static int32_t LoadPalette(MYFILE *fp)
     GamePalette[0].g = 0;
     GamePalette[0].b = 0;
     if (IsHardwareRenderer) {
-        PaletteSetHardware();
+        HWR_SetPalette();
     }
     PhdWet = 0;
     for (int i = 0; i < 256; i++) {

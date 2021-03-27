@@ -14,6 +14,7 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
+#include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
@@ -73,7 +74,7 @@ void GameMain()
     S_Wait(TICKS_PER_SECOND);
 
     if (IsHardwareRenderer) {
-        HardwarePrepareFMV();
+        HWR_PrepareFMV();
     }
     WinPlayFMV(FMV_CORE, 1);
     WinPlayFMV(FMV_ESCAPE, 1);
@@ -81,7 +82,7 @@ void GameMain()
     if (!IsHardwareRenderer) {
         HiRes = -1;
     } else {
-        HardwareFMVDone();
+        HWR_FMVDone();
         if (!IsHardwareRenderer) {
             HiRes = -1;
         }
