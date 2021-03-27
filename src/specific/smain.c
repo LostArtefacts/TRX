@@ -19,7 +19,6 @@ static const char *WindowName = "Tomb Raider";
 
 // clang-format off
 // TODO: decompile me!
-#define sub_43D070      ((int (*)())0x0043D070)
 #define sub_407A91      ((void (*)())0x00407A91)
 // clang-format off
 
@@ -32,6 +31,7 @@ static const char *WindowName = "Tomb Raider";
 static void WinGameFinish();
 static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam);
 static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static int InitDirectDraw();
 
 void TerminateGame(int exit_code)
 {
@@ -63,6 +63,43 @@ int32_t WinSpinMessageLoop()
     int32_t old_ticks = Ticks;
     Ticks = time_ms * 2 * 30 / 1000;
     return Ticks - old_ticks;
+}
+
+static int InitDirectDraw()
+{
+    if (DirectDrawCreate(0, &DDraw, 0)) {
+        ShowFatalError("DirectDraw could not be started");
+        return 0;
+    }
+
+    if (InitATI3DCIF()) {
+        ShowFatalError("ATI3DCIF could not be started");
+        return 0;
+    }
+
+    ATIRenderContext = ATI3DCIF_ContextCreate();
+    if (!ATIRenderContext) {
+        ShowFatalError("ATI3DCIF could not be started");
+        return 0;
+    }
+
+    ATIInfo.u32Size = sizeof(C3D_3DCIFINFO);
+    if (ATI3DCIF_GetInfo(&ATIInfo)) {
+        ShowFatalError("Failed to parse ATI3DCIF capabilities");
+        return 0;
+    }
+
+    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_Z_BUFFER)) {
+        ShowFatalError("Z-Buffer capability not found");
+        return 0;
+    }
+
+    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_CI8_TMAP)) {
+        ShowFatalError("8-bit texture capability not found");
+        return 0;
+    }
+
+    return 1;
 }
 
 static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -195,7 +232,7 @@ int WINAPI WinMain(
     HHK =
         SetWindowsHookExA(WH_KEYBOARD, &KeyboardHook, 0, GetCurrentThreadId());
 
-    if (!sub_43D070()) {
+    if (!InitDirectDraw()) {
         WinGameFinish();
         exit(1);
         return 1;
@@ -210,9 +247,10 @@ int WINAPI WinMain(
 
 void T1MInjectSpecificSMain()
 {
+    INJECT(0x0043D070, InitDirectDraw);
     INJECT(0x0043D510, TerminateGame);
     INJECT(0x0043D770, ShowFatalError);
     INJECT(0x0043D8C0, KeyboardHook);
-    INJECT(0x0043DE00, WndProc);
     INJECT(0x0043DA80, WinMain);
+    INJECT(0x0043DE00, WndProc);
 }

@@ -678,9 +678,9 @@
 <rect width="12.00" height="12.00" x="350.00" y="199.00" class="decompiled"><title>PodControl</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="199.00" class="decompiled"><title>InitialiseStatue</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="199.00" class="decompiled"><title>StatueControl</title></rect>
-<rect width="12.00" height="12.00" x="392.00" y="199.00" class="named"><title>InitDirectDraw</title></rect>
+<rect width="12.00" height="12.00" x="392.00" y="199.00" class="decompiled"><title>InitDirectDraw</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="199.00" class="decompiled"><title>TerminateGame</title></rect>
-<rect width="12.00" height="12.00" x="420.00" y="199.00" class="todo"><title>sub_43D5F0</title></rect>
+<rect width="12.00" height="12.00" x="420.00" y="199.00" class="decompiled"><title>sub_43D5F0</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="decompiled"><title>ShowFatalError</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="decompiled"><title>sub_43D940</title></rect>
@@ -763,7 +763,7 @@
 <rect width="26.69" height="29.64" x="231.38" y="269.00" class="decompiled"><title>InitialiseDoor</title></rect>
 <rect width="26.69" height="29.22" x="231.38" y="300.64" class="decompiled"><title>AbortionControl</title></rect>
 <rect width="26.69" height="29.22" x="231.38" y="331.86" class="decompiled"><title>PeopleControl</title></rect>
-<rect width="26.69" height="29.11" x="231.38" y="363.08" class="named"><title>InitDirectDraw</title></rect>
+<rect width="26.69" height="29.11" x="231.38" y="363.08" class="decompiled"><title>InitDirectDraw</title></rect>
 <rect width="26.69" height="27.37" x="231.38" y="394.19" class="decompiled"><title>SkateKidControl</title></rect>
 <rect width="26.69" height="26.89" x="231.38" y="423.56" class="named"><title>S_DrawLightningSegment</title></rect>
 <rect width="26.69" height="26.71" x="231.38" y="452.45" class="decompiled"><title>LoadObjects</title></rect>
@@ -911,7 +911,7 @@
 <rect width="15.17" height="14.60" x="463.45" y="390.63" class="decompiled"><title>LaraAsSurfTread</title></rect>
 <rect width="15.17" height="14.51" x="463.45" y="407.22" class="decompiled"><title>LaraSlideSlope</title></rect>
 <rect width="15.17" height="14.51" x="463.45" y="423.73" class="decompiled"><title>Scion3Control</title></rect>
-<rect width="15.17" height="14.51" x="463.45" y="440.24" class="todo"><title>sub_43D5F0</title></rect>
+<rect width="15.17" height="14.51" x="463.45" y="440.24" class="decompiled"><title>sub_43D5F0</title></rect>
 <rect width="15.17" height="14.37" x="463.45" y="456.74" class="decompiled"><title>DrawRooms</title></rect>
 <rect width="15.17" height="14.33" x="463.45" y="473.12" class="decompiled"><title>Move3DPosTo3DPos</title></rect>
 <rect width="15.17" height="14.24" x="463.45" y="489.45" class="decompiled"><title>LaraColBack</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 82.80%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 75.89%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 10.07%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.48%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 7.13%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.63%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.08%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.51%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.93%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 11.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.99%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.48%</text>
 </svg>

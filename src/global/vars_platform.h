@@ -18,6 +18,7 @@
 #define DDrawSurfaceHeight      VAR_U_(0x00456D94, int32_t)
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
+#define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
 // clang-format on
 
 #endif
