@@ -282,6 +282,13 @@ void S_SetupBelowWater(int32_t underwater)
     IsShadeEffect = 1;
 }
 
+void S_SetupAboveWater(int32_t underwater)
+{
+    IsWaterEffect = 0;
+    IsWibbleEffect = underwater;
+    IsShadeEffect = underwater;
+}
+
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
 {
     PCX_HEADER *header = (PCX_HEADER *)pcx;
@@ -361,5 +368,6 @@ void T1MInjectSpecificOutput()
     INJECT(0x004302D0, S_DrawHealthBar);
     INJECT(0x00430450, S_DrawAirBar);
     INJECT(0x004305E0, S_SetupBelowWater);
+    INJECT(0x00430640, S_SetupAboveWater);
     INJECT(0x00430CE0, S_DisplayPicture);
 }

@@ -753,7 +753,7 @@ S_DrawHealthBar                 0x004302D0  0x00000180  +
 S_DrawAirBar                    0x00430450  0x00000188  +
 AnimateTextures                 ----------  ----------  -
 S_SetupBelowWater               0x004305E0  0x00000054  +
-S_SetupAboveWater               0x00430640  0x00000019  *
+S_SetupAboveWater               0x00430640  0x00000019  +
 S_AnimateTextures               0x00430660  0x000000D3  *
 S_DrawLightningSegment          0x00430740  0x00000446  *
 decomp_pcx                      0x00430B90  0x00000141  +

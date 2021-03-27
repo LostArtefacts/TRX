@@ -531,7 +531,7 @@
 <rect width="12.00" height="12.00" x="392.00" y="157.00" class="decompiled"><title>S_DrawHealthBar</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="157.00" class="decompiled"><title>S_DrawAirBar</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="157.00" class="decompiled"><title>S_SetupBelowWater</title></rect>
-<rect width="12.00" height="12.00" x="434.00" y="157.00" class="named"><title>S_SetupAboveWater</title></rect>
+<rect width="12.00" height="12.00" x="434.00" y="157.00" class="decompiled"><title>S_SetupAboveWater</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="157.00" class="named"><title>S_AnimateTextures</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="157.00" class="named"><title>S_DrawLightningSegment</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="157.00" class="decompiled"><title>decomp_pcx</title></rect>
@@ -1376,7 +1376,7 @@
 <rect width="2.53" height="2.35" x="672.06" y="512.01" class="decompiled"><title>T_BottomAlign</title></rect>
 <rect width="2.35" height="2.35" x="676.58" y="512.01" class="decompiled"><title>FxRaisingBlock</title></rect>
 <rect width="2.35" height="2.35" x="680.94" y="512.01" class="decompiled"><title>BridgeFlatFloor</title></rect>
-<rect width="2.35" height="2.35" x="685.29" y="512.01" class="named"><title>S_SetupAboveWater</title></rect>
+<rect width="2.35" height="2.35" x="685.29" y="512.01" class="decompiled"><title>S_SetupAboveWater</title></rect>
 <rect width="2.18" height="2.35" x="689.64" y="512.01" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="2.18" height="2.35" x="693.82" y="512.01" class="decompiled"><title>InitialiseLevelFlags</title></rect>
 <rect width="2.10" height="2.44" x="672.06" y="516.36" class="decompiled"><title>CDPlayLooped</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.64%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.79%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.37%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.73%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.78%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.80%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.23%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.72%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.99%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.48%</text>
 </svg>
