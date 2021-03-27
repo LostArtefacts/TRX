@@ -36,6 +36,7 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2);
+int32_t HWR_NormalizeVertices2(int32_t num, C3D_VTCF *source);
 
 void T1MInjectSpecificHWR();
 

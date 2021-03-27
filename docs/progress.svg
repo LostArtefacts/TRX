@@ -87,7 +87,7 @@
 <rect width="12.00" height="12.00" x="476.00" y="31.00" class="todo"><title>sub_409F44</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="31.00" class="todo"><title>sub_40A01D</title></rect>
 <rect width="12.00" height="12.00" x="504.00" y="31.00" class="todo"><title>sub_40A0C4</title></rect>
-<rect width="12.00" height="12.00" x="518.00" y="31.00" class="named"><title>HWR_NormalizeVertices2</title></rect>
+<rect width="12.00" height="12.00" x="518.00" y="31.00" class="decompiled"><title>HWR_NormalizeVertices2</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="31.00" class="todo"><title>sub_40B510</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="31.00" class="todo"><title>sub_40BBE2</title></rect>
 <rect width="12.00" height="12.00" x="560.00" y="31.00" class="todo"><title>sub_40C25A</title></rect>
@@ -718,7 +718,7 @@
 <text x="0.00" y="259.50">TombATI functions, arranged according to the function sizes:</text>
 <rect width="52.40" height="68.51" x="0.00" y="269.00" class="decompiled"><title>DrawLaraInt</title></rect>
 <rect width="52.40" height="59.86" x="0.00" y="339.51" class="decompiled"><title>Display_Inventory</title></rect>
-<rect width="52.40" height="49.25" x="0.00" y="401.38" class="named"><title>HWR_NormalizeVertices2</title></rect>
+<rect width="52.40" height="49.25" x="0.00" y="401.38" class="decompiled"><title>HWR_NormalizeVertices2</title></rect>
 <rect width="52.40" height="41.45" x="0.00" y="452.62" class="decompiled"><title>BaddyObjects</title></rect>
 <rect width="52.40" height="39.93" x="0.00" y="496.07" class="named"><title>HWR_NormalizeVertices</title></rect>
 <rect width="41.43" height="46.84" x="54.40" y="269.00" class="decompiled"><title>DrawLara</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 90.07%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 84.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.99%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 8.87%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 90.21%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 85.77%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.85%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 7.39%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.94%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.84%</text>
 </svg>

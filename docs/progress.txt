@@ -105,7 +105,7 @@ sub_409C0F                      0x00409C0F  0x00000335  -
 sub_409F44                      0x00409F44  0x000000D9  -
 sub_40A01D                      0x0040A01D  0x000000A7  -
 sub_40A0C4                      0x0040A0C4  0x000005ED  -
-HWR_NormalizeVertices2          0x0040A6B1  0x00000E5F  -
+HWR_NormalizeVertices2          0x0040A6B1  0x00000E5F  +
 sub_40B510                      0x0040B510  0x000006D2  -
 sub_40BBE2                      0x0040BBE2  0x00000678  -
 sub_40C25A                      0x0040C25A  0x000000F4  -

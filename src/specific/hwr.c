@@ -288,6 +288,179 @@ void HWR_RenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
+int32_t HWR_NormalizeVertices2(int32_t num, C3D_VTCF *source)
+{
+    float scale;
+    C3D_VTCF vertices[8];
+
+    C3D_VTCF *l = &source[num - 1];
+    int j = 0;
+
+    for (int i = 0; i < num; i++) {
+        C3D_VTCF *v1 = &vertices[j];
+        C3D_VTCF *v2 = l;
+        l = &source[i];
+
+        if (v2->x < DDrawSurfaceMinX) {
+            if (l->x < DDrawSurfaceMinX) {
+                continue;
+            }
+            scale = (DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMinX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &vertices[++j];
+        } else if (v2->x > DDrawSurfaceMaxX) {
+            if (l->x > DDrawSurfaceMaxX) {
+                continue;
+            }
+            scale = (DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMaxX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &vertices[++j];
+        }
+
+        if (l->x < DDrawSurfaceMinX) {
+            scale = (DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMinX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &vertices[++j];
+        } else if (l->x > DDrawSurfaceMaxX) {
+            scale = (DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = DDrawSurfaceMaxX;
+            v1->y = (v2->y - l->y) * scale + l->y;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &vertices[++j];
+        } else {
+            v1->x = l->x;
+            v1->y = l->y;
+            v1->z = l->z;
+            v1->r = l->r;
+            v1->g = l->g;
+            v1->b = l->b;
+            v1->w = l->w;
+            v1->s = l->s;
+            v1->t = l->t;
+            v1 = &vertices[++j];
+        }
+    }
+
+    if (j < 3) {
+        return 0;
+    }
+
+    num = j;
+    l = &vertices[j - 1];
+    j = 0;
+
+    for (int i = 0; i < num; i++) {
+        C3D_VTCF *v1 = &source[j];
+        C3D_VTCF *v2 = l;
+        l = &vertices[i];
+
+        if (v2->y < DDrawSurfaceMinY) {
+            if (l->y < DDrawSurfaceMinY) {
+                continue;
+            }
+            scale = (DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMinY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &source[++j];
+        } else if (v2->y > DDrawSurfaceMaxY) {
+            if (l->y > DDrawSurfaceMaxY) {
+                continue;
+            }
+            scale = (DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMaxY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &source[++j];
+        }
+
+        if (l->y < DDrawSurfaceMinY) {
+            scale = (DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMinY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &source[++j];
+        } else if (l->y > DDrawSurfaceMaxY) {
+            scale = (DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            v1->x = (v2->x - l->x) * scale + l->x;
+            v1->y = DDrawSurfaceMaxY;
+            v1->z = (v2->z - l->z) * scale + l->z;
+            v1->r = (v2->r - l->r) * scale + l->r;
+            v1->g = (v2->g - l->g) * scale + l->g;
+            v1->b = (v2->b - l->b) * scale + l->b;
+            v1->w = (v2->w - l->w) * scale + l->w;
+            v1->s = (v2->s - l->s) * scale + l->s;
+            v1->t = (v2->t - l->t) * scale + l->t;
+            v1 = &source[++j];
+        } else {
+            v1->x = l->x;
+            v1->y = l->y;
+            v1->z = l->z;
+            v1->r = l->r;
+            v1->g = l->g;
+            v1->b = l->b;
+            v1->w = l->w;
+            v1->s = l->s;
+            v1->t = l->t;
+            v1 = &source[++j];
+        }
+    }
+
+    if (j < 3) {
+        return 0;
+    }
+
+    return j;
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_Error);
@@ -301,4 +474,5 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
+    INJECT(0x0040A6B1, HWR_NormalizeVertices2);
 }
