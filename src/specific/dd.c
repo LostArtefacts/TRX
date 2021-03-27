@@ -31,6 +31,15 @@ void DDRenderEnd()
     }
 }
 
+void DDRenderToggle()
+{
+    if (DDOldIsRendering) {
+        DDRenderBegin();
+    } else {
+        DDRenderEnd();
+    }
+}
+
 void DDClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     DDBLTFX blt_fx;
@@ -59,6 +68,7 @@ void T1MInjectSpecificDD()
     INJECT(0x004077D0, DDError);
     INJECT(0x00407827, DDRenderBegin);
     INJECT(0x0040783B, DDRenderEnd);
+    INJECT(0x00407862, DDRenderToggle);
     INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);
 }

@@ -7,6 +7,7 @@
 void DDError(HRESULT result);
 void DDRenderBegin();
 void DDRenderEnd();
+void DDRenderToggle();
 void DDClearSurface(LPDIRECTDRAWSURFACE surface);
 void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 

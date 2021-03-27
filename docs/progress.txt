@@ -72,7 +72,7 @@ DDError                         0x004077D0  0x00000034  +
 DDRenderBegin_0                 0x00407804  0x00000023  +
 DDRenderBegin                   0x00407827  0x00000014  +
 DDRenderEnd                     0x0040783B  0x00000027  +
-DDRenderToggle                  0x00407862  0x0000001A  -
+DDRenderToggle                  0x00407862  0x0000001A  +
 TmpGetSurfaceAndPitch           0x0040787C  0x00000095  -
 TmpSetupRenderContextAndRender2 0x00407911  0x0000004E  -
 TmpSetupRenderContextAndRender  0x0040795F  0x0000008A  -
