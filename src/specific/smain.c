@@ -49,7 +49,16 @@ void ShowFatalError(const char *message)
 
 int32_t WinSpinMessageLoop()
 {
-    sub_43D940();
+    MSG msg;
+    while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
+        if (!GetMessageA(&msg, 0, 0, 0)) {
+            TerminateGame(0);
+        }
+
+        TranslateMessage(&msg);
+        DispatchMessageA(&msg);
+    }
+
     int32_t time_ms = timeGetTime();
     int32_t old_ticks = Ticks;
     Ticks = time_ms * 2 * 30 / 1000;

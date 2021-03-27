@@ -118,7 +118,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
                 movie_context, fmv_context, sound_context, 0, 0, 0, 0, 0)) {
             break;
         }
-        sub_43D940();
+        WinSpinMessageLoop();
 
         if (T1MConfig.fix_fmv_esc_key) {
             if (KeyData->keymap[1]) {

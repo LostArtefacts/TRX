@@ -9,7 +9,6 @@
 #define sub_40837F              ((void          (*)())0x40837F)
 #define sub_408E41              ((void          (*)())0x00408E41)
 #define sub_4380E0              ((void          (*)(int16_t *unk))0x004380E0)
-#define sub_43D940              ((void          (*)())0x43D940)
 #define _malloc                 ((void*         (*)(size_t n))0x00441310)
 
 #define InitialiseHardware      ((void          (*)())0x00408005)
