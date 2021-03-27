@@ -1,6 +1,7 @@
 #include "specific/dd.h"
 
 #include "global/vars_platform.h"
+#include "specific/ati.h"
 #include "specific/smain.h"
 #include "util.h"
 
@@ -9,6 +10,15 @@ void DDError(HRESULT result)
     if (result) {
         LOG_ERROR("DirectDraw error code %x", result);
         ShowFatalError("Fatal DirectDraw error!");
+    }
+}
+
+void DDRenderEnd()
+{
+    DDOldIsRendering = DDIsRendering;
+    if (DDIsRendering) {
+        ATI3DCIF_RenderEnd();
+        DDIsRendering = 0;
     }
 }
 
@@ -38,6 +48,7 @@ void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
+    INJECT(0x0040783B, DDRenderEnd);
     INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);
 }

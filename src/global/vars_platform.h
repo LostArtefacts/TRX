@@ -19,6 +19,8 @@
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
+#define DDOldIsRendering        VAR_U_(0x00463568, int32_t)
+#define DDIsRendering           VAR_U_(0x00459F34, int32_t)
 // clang-format on
 
 #endif
