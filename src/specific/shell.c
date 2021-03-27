@@ -70,7 +70,7 @@ void GameMain()
     TempVideoAdjust(2, 1.0);
     S_DisplayPicture("data\\eidospc");
     sub_408E41();
-    S_Wait(60);
+    S_Wait(TICKS_PER_SECOND);
 
     if (IsHardwareRenderer) {
         HardwarePrepareFMV();

@@ -795,7 +795,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
             item->timer = timer;
             if (timer != 1) {
-                item->timer *= 30;
+                item->timer *= FRAMES_PER_SECOND;
             }
 
             if (type == TT_SWITCH) {
@@ -868,7 +868,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
             Camera.timer = camera_timer;
             if (Camera.timer != 1) {
-                Camera.timer *= 30;
+                Camera.timer *= FRAMES_PER_SECOND;
             }
 
             if (camera_flags & IF_ONESHOT) {
@@ -1458,7 +1458,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         if (CDFlags[value] & IF_ONESHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
-            if (gym_completion_counter == 30 * 4) {
+            if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
                 LevelComplete = 1;
                 gym_completion_counter = 0;
             }

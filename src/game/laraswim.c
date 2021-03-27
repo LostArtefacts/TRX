@@ -88,7 +88,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         if (OpenDoorsCheatCooldown) {
             OpenDoorsCheatCooldown--;
         } else if (CHK_ANY(Input, IN_DRAW)) {
-            OpenDoorsCheatCooldown = ONE_SECOND;
+            OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
             OpenNearestDoors(LaraItem);
         }
     }

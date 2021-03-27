@@ -200,11 +200,11 @@ void S_UpdateInput()
         } else {
             if (KeyData->keymap[DIK_8] && Inv_RequestItem(O_MEDI_OPTION)) {
                 UseItem(O_MEDI_OPTION);
-                MedipackCoolDown = HALF_SECOND;
+                MedipackCoolDown = FRAMES_PER_SECOND / 2;
             } else if (
                 KeyData->keymap[DIK_9] && Inv_RequestItem(O_BIGMEDI_OPTION)) {
                 UseItem(O_BIGMEDI_OPTION);
-                MedipackCoolDown = HALF_SECOND;
+                MedipackCoolDown = FRAMES_PER_SECOND / 2;
             }
         }
     }

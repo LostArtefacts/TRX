@@ -61,7 +61,7 @@ int32_t WinSpinMessageLoop()
 
     int32_t time_ms = timeGetTime();
     int32_t old_ticks = Ticks;
-    Ticks = time_ms * 2 * 30 / 1000;
+    Ticks = time_ms * TICKS_PER_SECOND / 1000;
     return Ticks - old_ticks;
 }
 

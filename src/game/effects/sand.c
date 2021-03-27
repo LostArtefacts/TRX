@@ -7,7 +7,7 @@
 void DropSand(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
-    if (FlipTimer > 120) {
+    if (FlipTimer > FRAMES_PER_SECOND * 4) {
         FlipEffect = -1;
     } else {
         if (!FlipTimer) {

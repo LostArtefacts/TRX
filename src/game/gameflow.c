@@ -165,7 +165,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'demo_delay' must be a positive number");
         return 0;
     }
-    GF.demo_delay = tmp_d * 30;
+    GF.demo_delay = tmp_d * FRAMES_PER_SECOND;
 
     tmp_i = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
     if (tmp_i == JSON_INVALID_BOOL) {
@@ -306,7 +306,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                     level_num, type_str);
                 return 0;
             }
-            data->display_time = tmp_d * 2 * 30;
+            data->display_time = tmp_d * TICKS_PER_SECOND;
             if (!data->display_time) {
                 data->display_time = INT_MAX;
             }

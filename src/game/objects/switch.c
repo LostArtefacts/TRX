@@ -65,7 +65,7 @@ int32_t SwitchTrigger(int16_t item_num, int16_t timer)
     if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
         item->timer = timer;
         if (timer != 1) {
-            item->timer *= 30;
+            item->timer *= FRAMES_PER_SECOND;
         }
         item->status = IS_ACTIVE;
     } else {
