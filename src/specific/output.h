@@ -15,6 +15,8 @@ void S_InitialisePolyList();
 void S_InitialiseScreen();
 void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void S_CalculateStaticLight(int16_t adder);
+void S_Draw2DLine(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color);
 void S_DrawHealthBar(int32_t percent);
 void S_DrawAirBar(int32_t percent);
 void S_SetupBelowWater(int32_t underwater);

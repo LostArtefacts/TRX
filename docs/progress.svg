@@ -22,7 +22,7 @@
 <rect width="12.00" height="12.00" x="266.00" y="17.00" class="named"><title>do_quickysorty</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="17.00" class="decompiled"><title>phd_InitWindow</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="17.00" class="decompiled"><title>AlterFOV</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="17.00" class="named"><title>Insert2DLine</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="17.00" class="decompiled"><title>Insert2DLine</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="17.00" class="named"><title>draw_poly_line</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="17.00" class="named"><title>draw_poly_flat</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="17.00" class="named"><title>draw_poly_trans</title></rect>
@@ -1046,7 +1046,7 @@
 <rect width="10.84" height="10.10" x="538.56" y="489.83" class="decompiled"><title>InitialisePlayer1</title></rect>
 <rect width="10.84" height="10.10" x="538.56" y="501.93" class="decompiled"><title>Splash</title></rect>
 <rect width="10.84" height="10.04" x="538.56" y="514.03" class="decompiled"><title>sub_43E681</title></rect>
-<rect width="10.84" height="9.93" x="538.56" y="526.07" class="named"><title>Insert2DLine</title></rect>
+<rect width="10.84" height="9.93" x="538.56" y="526.07" class="decompiled"><title>Insert2DLine</title></rect>
 <rect width="10.51" height="10.17" x="551.39" y="378.61" class="decompiled"><title>phd_LookAt</title></rect>
 <rect width="10.51" height="10.17" x="563.90" y="378.61" class="decompiled"><title>CalculateObjectLighting</title></rect>
 <rect width="10.39" height="10.17" x="576.42" y="378.61" class="decompiled"><title>FindCdDrive</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.03%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 77.12%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.79%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.98%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.17%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 77.20%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.65%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.90%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 5.17%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 11.90%</text>
 </svg>

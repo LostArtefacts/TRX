@@ -1,8 +1,5 @@
 #include "game/text.h"
 
-#ifdef DEBUG_TEXT_SPRITES
-    #include "3dsystem/3d_insert.h"
-#endif
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -428,10 +425,10 @@ void T_DrawThisText(TEXTSTRING *textstring)
         int32_t fx2 = sx + ((sh * sprite->x2) >> 16);
         int32_t fy1 = sy + ((sv * sprite->y1) >> 16);
         int32_t fy2 = sy + ((sv * sprite->y2) >> 16);
-        Insert2DLine(fx1, fy1, fx2, fy1, -100, 0);
-        Insert2DLine(fx1, fy2, fx2, fy2, -100, 0);
-        Insert2DLine(fx1, fy1, fx1, fy2, -100, 0);
-        Insert2DLine(fx2, fy1, fx2, fy2, -100, 0);
+        S_Draw2DLine(fx1, fy1, fx2, fy1, -100, 0);
+        S_Draw2DLine(fx1, fy2, fx2, fy2, -100, 0);
+        S_Draw2DLine(fx1, fy1, fx1, fy2, -100, 0);
+        S_Draw2DLine(fx2, fy1, fx2, fy2, -100, 0);
 #endif
 
         S_DrawScreenSprite2d(
@@ -448,8 +445,8 @@ void T_DrawThisText(TEXTSTRING *textstring)
     }
 
 #ifdef DEBUG_TEXT_SPRITES
-    Insert2DLine(fx - 5, fy, fx + 5, fy, -100, 112);
-    Insert2DLine(fx, fy - 5, fx, fy + 5, -100, 112);
+    S_Draw2DLine(fx - 5, fy, fx + 5, fy, -100, 112);
+    S_Draw2DLine(fx, fy - 5, fx, fy + 5, -100, 112);
 #endif
 
     int32_t bwidth = 0;

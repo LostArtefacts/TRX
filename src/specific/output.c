@@ -1,11 +1,11 @@
 #include "specific/output.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/3d_insert.h"
 #include "config.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "util.h"
@@ -28,13 +28,7 @@ static uint8_t color_bar_map[][COLOR_BAR_SIZE] = {
     { 193, 194, 192, 191, 189 }, // pink
 };
 
-static double MulDiv(double x, double y, double z);
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal);
-
-static double MulDiv(double x, double y, double z)
-{
-    return (x * y) / z;
-}
 
 int32_t GetRenderHeightDownscaled()
 {
@@ -61,10 +55,10 @@ int32_t GetRenderScale(int32_t unit)
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
     int32_t scale_x = PhdWinWidth > baseWidth
-        ? MulDiv(PhdWinWidth, unit * UITextScale, baseWidth)
+        ? ((double)PhdWinWidth * unit * UITextScale) / baseWidth
         : unit * UITextScale;
     int32_t scale_y = PhdWinHeight > baseHeight
-        ? MulDiv(PhdWinHeight, unit * UITextScale, baseHeight)
+        ? ((double)PhdWinHeight * unit * UITextScale) / baseHeight
         : unit * UITextScale;
     return MIN(scale_x, scale_y);
 }
@@ -142,16 +136,16 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 
     // background
     for (int32_t i = top; i < bottom; i++) {
-        Insert2DLine(left, i, right, i, p1, color_bgnd);
+        S_Draw2DLine(left, i, right, i, p1, color_bgnd);
     }
 
     // top / left border
-    Insert2DLine(left, top, right, top, p2, color_border_1);
-    Insert2DLine(left, top, left, bottom, p2, color_border_1);
+    S_Draw2DLine(left, top, right, top, p2, color_border_1);
+    S_Draw2DLine(left, top, left, bottom, p2, color_border_1);
 
     // bottom / right border
-    Insert2DLine(left, bottom - 1, right, bottom - 1, p2, color_border_2);
-    Insert2DLine(right, top, right, bottom, p2, color_border_2);
+    S_Draw2DLine(left, bottom - 1, right, bottom - 1, p2, color_border_2);
+    S_Draw2DLine(right, top, right, bottom, p2, color_border_2);
 
     const int32_t blink_interval = 20;
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
@@ -169,7 +163,7 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 
         for (int i = top; i < bottom; i++) {
             int color_index = (i - top) * COLOR_BAR_SIZE / (bottom - top);
-            Insert2DLine(
+            S_Draw2DLine(
                 left, i, right, i, p3, color_bar_map[bar_color][color_index]);
         }
     }
@@ -262,6 +256,12 @@ void S_CalculateStaticLight(int16_t adder)
     if (z_dist > DEPTH_Q_START) {
         LsAdder += z_dist - DEPTH_Q_START;
     }
+}
+
+void S_Draw2DLine(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color)
+{
+    DDDraw2DLine(x1, y1, x2, y2, 200, color);
 }
 
 void S_DrawHealthBar(int32_t percent)
@@ -387,6 +387,7 @@ void S_DisplayPicture(const char *file_stem)
 
 void T1MInjectSpecificOutput()
 {
+    INJECT(0x00402710, S_Draw2DLine);
     INJECT(0x0042FC60, S_InitialisePolyList);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x00430100, S_CalculateLight);

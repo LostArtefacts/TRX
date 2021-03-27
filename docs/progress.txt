@@ -35,7 +35,7 @@ phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  +
 
 # 3dsystem/3d_line.cpp
-Insert2DLine                    0x00402710  0x000000CA  -
+Insert2DLine                    0x00402710  0x000000CA  +
 draw_line                       ----------  ----------  -
 draw_poly_line                  0x004027E0  0x000001A1  -
 
