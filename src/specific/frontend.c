@@ -24,6 +24,24 @@ const char *FMVPaths[] = {
     "fmv\\core.rpl",    "fmv\\escape.rpl",  NULL,
 };
 
+SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
+{
+    int32_t best_dist = SQUARE(256) * 3;
+    SG_COL best_entry = 0;
+    for (int i = 0; i < 256; i++) {
+        RGB888 *col = &GamePalette[i];
+        int32_t dr = red - col->r;
+        int32_t dg = green - col->g;
+        int32_t db = blue - col->b;
+        int32_t dist = SQUARE(dr) + SQUARE(dg) + SQUARE(db);
+        if (dist < best_dist) {
+            best_dist = dist;
+            best_entry = i;
+        }
+    }
+    return best_entry;
+}
+
 void S_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)
@@ -199,6 +217,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 
 void T1MInjectSpecificFrontend()
 {
+    INJECT(0x0041C0F0, S_Colour);
     INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041C520, S_DrawScreenBox);
     INJECT(0x0041CBB0, S_DrawScreenFBox);

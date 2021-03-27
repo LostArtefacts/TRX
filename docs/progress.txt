@@ -339,7 +339,7 @@ GetFullPath                     0x0041BFC0  0x00000053  +
 FindCdDrive                     0x0041C020  0x000000C7  +
 
 # shell/frontend.cpp
-S_Colour                        0x0041C0F0  0x00000089  *
+S_Colour                        0x0041C0F0  0x00000089  +
 S_DrawScreenSprite2d            0x0041C180  0x00000150  -
 S_DrawScreenSprite              0x0041C2D0  0x00000163  *
 S_DrawScreenLine                0x0041C440  0x000000D3  +
