@@ -250,7 +250,7 @@
 <rect width="12.00" height="12.00" x="658.00" y="73.00" class="named"><title>S_DrawScreenSprite</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="73.00" class="decompiled"><title>S_DrawScreenLine</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="73.00" class="decompiled"><title>S_DrawScreenBox</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="87.00" class="named"><title>S_DrawScreenFBox</title></rect>
+<rect width="12.00" height="12.00" x="0.00" y="87.00" class="decompiled"><title>S_DrawScreenFBox</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="87.00" class="named"><title>S_FinishInventory</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="87.00" class="named"><title>S_FadeToBlack</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="87.00" class="decompiled"><title>S_Wait</title></rect>
@@ -991,7 +991,7 @@
 <rect width="11.76" height="12.32" x="511.49" y="424.97" class="decompiled"><title>LaraColRoll2</title></rect>
 <rect width="11.76" height="12.27" x="511.49" y="439.29" class="decompiled"><title>ApeVault</title></rect>
 <rect width="11.76" height="12.21" x="511.49" y="453.56" class="decompiled"><title>LoadSprites</title></rect>
-<rect width="11.76" height="12.16" x="511.49" y="467.77" class="named"><title>S_DrawScreenFBox</title></rect>
+<rect width="11.76" height="12.16" x="511.49" y="467.77" class="decompiled"><title>S_DrawScreenFBox</title></rect>
 <rect width="11.76" height="12.10" x="511.49" y="481.92" class="decompiled"><title>LaraColRoll</title></rect>
 <rect width="11.76" height="12.05" x="511.49" y="496.03" class="decompiled"><title>ControlBubble1</title></rect>
 <rect width="11.76" height="11.99" x="511.49" y="510.07" class="decompiled"><title>GetWaterHeight</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.73%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 78.21%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.37%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.14%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 85.87%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 78.31%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.23%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.03%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 4.90%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 11.66%</text>
 </svg>

@@ -45,6 +45,13 @@ void S_DrawScreenBox(
     S_DrawScreenLine(sx, h + sy + 1, z, 0, -1 - h, 31, gourptr, flags);
 }
 
+void S_DrawScreenFBox(
+    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
+    SG_COL *gourptr, uint16_t flags)
+{
+    DDDrawTranslucentQuad(sx, sy, sx + w, sy + h);
+}
+
 void S_Wait(int32_t nframes)
 {
     for (int i = 0; i < nframes; i++) {
@@ -194,6 +201,7 @@ void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041C520, S_DrawScreenBox);
+    INJECT(0x0041CBB0, S_DrawScreenFBox);
     INJECT(0x0041CD50, S_Wait);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
