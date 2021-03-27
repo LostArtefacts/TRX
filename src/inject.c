@@ -22,6 +22,7 @@
 #include "game/sphere.h"
 #include "game/text.h"
 #include "specific/ati.h"
+#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
@@ -63,6 +64,7 @@ void T1MInject()
     T1MInjectGameSphere();
     T1MInjectGameText();
     T1MInjectSpecificATI();
+    T1MInjectSpecificDD();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();

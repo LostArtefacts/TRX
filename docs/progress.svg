@@ -50,7 +50,7 @@
 <rect width="12.00" height="12.00" x="658.00" y="17.00" class="named"><title>ins_objectG3</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="17.00" class="todo"><title>sub_406FD0</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="17.00" class="named"><title>ins_poly_trans8</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="31.00" class="todo"><title>sub_4077D0</title></rect>
+<rect width="12.00" height="12.00" x="0.00" y="31.00" class="decompiled"><title>sub_4077D0</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="31.00" class="todo"><title>sub_407804</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="31.00" class="todo"><title>sub_407827</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="31.00" class="todo"><title>sub_40783B</title></rect>
@@ -1281,7 +1281,7 @@
 <rect width="4.24" height="4.44" x="633.35" y="531.56" class="decompiled"><title>LaraAsHangRight</title></rect>
 <rect width="4.73" height="3.97" x="639.59" y="479.44" class="decompiled"><title>FallingBlockFloor</title></rect>
 <rect width="4.73" height="3.97" x="646.32" y="479.44" class="decompiled"><title>phd_PushUnitMatrix</title></rect>
-<rect width="4.60" height="3.97" x="653.05" y="479.44" class="todo"><title>sub_4077D0</title></rect>
+<rect width="4.60" height="3.97" x="653.05" y="479.44" class="decompiled"><title>sub_4077D0</title></rect>
 <rect width="4.60" height="3.97" x="659.65" y="479.44" class="decompiled"><title>FallingBlockCeiling</title></rect>
 <rect width="4.48" height="3.97" x="666.25" y="479.44" class="decompiled"><title>InitialiseCreature</title></rect>
 <rect width="4.48" height="3.97" x="672.73" y="479.44" class="decompiled"><title>LaraColHangLeft</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 83.92%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.88%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 84.06%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 76.90%</text>
 <rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 9.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 10.63%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.99%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.48%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 6.85%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 12.46%</text>
 </svg>
