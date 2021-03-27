@@ -6,6 +6,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "specific/dd.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/init.h"
@@ -22,6 +23,13 @@ const char *FMVPaths[] = {
     "fmv\\pyramid.rpl", "fmv\\prison.rpl",  "fmv\\end.rpl",
     "fmv\\core.rpl",    "fmv\\escape.rpl",  NULL,
 };
+
+void S_DrawScreenLine(
+    int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
+    SG_COL *grdptr, uint16_t flags)
+{
+    DDDraw2DLine(sx, sy, sx + w, sy + h, 210, col);
+}
 
 void S_Wait(int32_t nframes)
 {
@@ -170,6 +178,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 
 void T1MInjectSpecificFrontend()
 {
+    INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041CD50, S_Wait);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
