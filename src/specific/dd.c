@@ -1,5 +1,6 @@
 #include "specific/dd.h"
 
+#include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/ati.h"
 #include "specific/smain.h"
@@ -63,6 +64,43 @@ void DDBlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
     }
 }
 
+void DDDraw2DLine(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color)
+{
+    C3D_VTCF vertex[2];
+
+    vertex[0].x = (float)x1;
+    vertex[0].y = (float)y1;
+    vertex[0].z = 0.0;
+    vertex[0].r = (float)(4 * (char)GamePalette[color].r);
+    vertex[0].g = (float)(4 * (char)GamePalette[color].g);
+    vertex[0].b = (float)(4 * (char)GamePalette[color].b);
+
+    vertex[1].x = (float)x2;
+    vertex[1].y = (float)y2;
+    vertex[1].z = 0.0;
+    vertex[1].r = vertex[0].r;
+    vertex[1].g = vertex[0].g;
+    vertex[1].b = vertex[0].b;
+
+    C3D_VTCF *v_list[2] = { &vertex[0], &vertex[1] };
+
+    C3D_EPRIM prim_type = C3D_EPRIM_LINE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
+
+    if (IsTextureMode) {
+        int32_t textures_enabled = 0;
+        ATI3DCIF_ContextSetState(
+            ATIRenderContext, C3D_ERS_TMAP_EN, &textures_enabled);
+        IsTextureMode = 0;
+    }
+
+    ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
+
+    prim_type = C3D_EPRIM_TRI;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
+}
+
 void T1MInjectSpecificDD()
 {
     INJECT(0x004077D0, DDError);
@@ -71,4 +109,5 @@ void T1MInjectSpecificDD()
     INJECT(0x00407862, DDRenderToggle);
     INJECT(0x00407A49, DDClearSurface);
     INJECT(0x00408B2C, DDBlitSurface);
+    INJECT(0x0040C7EE, DDDraw2DLine);
 }

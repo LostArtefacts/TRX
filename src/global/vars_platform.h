@@ -21,6 +21,7 @@
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
 #define DDOldIsRendering        VAR_U_(0x00463568, int32_t)
 #define DDIsRendering           VAR_U_(0x00459F34, int32_t)
+#define IsTextureMode           VAR_U_(0x00459F28, int32_t)
 // clang-format on
 
 #endif
