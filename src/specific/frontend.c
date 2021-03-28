@@ -42,6 +42,21 @@ SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
     return best_entry;
 }
 
+RGB888 S_PalColorToRGB(RGB888 palette_color)
+{
+    RGB888 ret;
+    ret.r = palette_color.r * 4;
+    ret.g = palette_color.g * 4;
+    ret.b = palette_color.b * 4;
+    return ret;
+}
+
+void S_DrawScreenQuad(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
+{
+    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, color);
+}
+
 void S_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)

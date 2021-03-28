@@ -123,6 +123,32 @@ void HWR_Draw2DLine(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 }
 
+void HWR_Draw2DQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color)
+{
+    C3D_VTCF vertex[4];
+    vertex[0].z = vertex[1].z = vertex[2].z = vertex[3].z = 1.0;
+    vertex[0].r = vertex[1].r = vertex[2].r = vertex[3].r = color.r;
+    vertex[0].g = vertex[1].g = vertex[2].g = vertex[3].g = color.g;
+    vertex[0].b = vertex[1].b = vertex[2].b = vertex[3].b = color.b;
+
+    vertex[0].x = x1;
+    vertex[0].y = y1;
+
+    vertex[1].x = x2;
+    vertex[1].y = y1;
+
+    vertex[2].x = x2;
+    vertex[2].y = y2;
+
+    vertex[3].x = x1;
+    vertex[3].y = y2;
+
+    HWR_DisableTextures();
+
+    HWR_RenderTriangleStrip(vertex, 4);
+}
+
 void HWR_DisableTextures()
 {
     if (HWR_IsTextureMode) {

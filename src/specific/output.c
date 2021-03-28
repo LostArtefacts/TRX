@@ -7,6 +7,7 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/file.h"
+#include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "util.h"
 
@@ -93,9 +94,6 @@ void BarLocation(
 
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 {
-    const int32_t p1 = -100;
-    const int32_t p2 = -200;
-    const int32_t p3 = -400;
     const int32_t percent_max = 100;
 
     if (value < 0) {
@@ -105,9 +103,9 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     }
     int32_t percent = value * 100 / value_max;
 
-    const int32_t color_border_1 = 19;
-    const int32_t color_border_2 = 17;
-    const int32_t color_bgnd = 0;
+    const RGB888 rgb_bgnd = { 0, 0, 0 };
+    const RGB888 rgb_border_light = { 128, 128, 128 };
+    const RGB888 rgb_border_dark = { 64, 64, 64 };
 
     int32_t width = 100;
     int32_t height = 5;
@@ -126,26 +124,20 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
         bar_color = T1MConfig.enemy_healthbar_color;
     }
 
-    int32_t padding = 3;
-    int32_t left = GetRenderScale(x) - padding;
-    int32_t top = GetRenderScale(y) - padding;
-    int32_t right =
-        GetRenderScale(x) + GetRenderScale(width) * UIBarScale + padding;
-    int32_t bottom =
-        GetRenderScale(y) + GetRenderScale(height) * UIBarScale + padding;
+    int32_t padding = 2;
+    int32_t border = 1;
+    int32_t sx = GetRenderScale(x) - padding;
+    int32_t sy = GetRenderScale(y) - padding;
+    int32_t sw = GetRenderScale(width) * UIBarScale + padding * 2;
+    int32_t sh = GetRenderScale(height) * UIBarScale + padding * 2;
+
+    // border
+    S_DrawScreenQuad(
+        sx - border, sy - border, sw + border, sh + border, rgb_border_dark);
+    S_DrawScreenQuad(sx, sy, sw + border, sh + border, rgb_border_light);
 
     // background
-    for (int32_t i = top; i < bottom; i++) {
-        S_Draw2DLine(left, i, right, i, p1, color_bgnd);
-    }
-
-    // top / left border
-    S_Draw2DLine(left, top, right, top, p2, color_border_1);
-    S_Draw2DLine(left, top, left, bottom, p2, color_border_1);
-
-    // bottom / right border
-    S_Draw2DLine(left, bottom - 1, right, bottom - 1, p2, color_border_2);
-    S_Draw2DLine(right, top, right, bottom, p2, color_border_2);
+    S_DrawScreenQuad(sx, sy, sw, sh, rgb_bgnd);
 
     const int32_t blink_interval = 20;
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
@@ -156,15 +148,18 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     if (percent && !blink) {
         width = width * percent / percent_max;
 
-        left = GetRenderScale(x);
-        top = GetRenderScale(y);
-        right = GetRenderScale(x) + GetRenderScale(width) * UIBarScale;
-        bottom = GetRenderScale(y) + GetRenderScale(height) * UIBarScale;
+        sx = GetRenderScale(x);
+        sy = GetRenderScale(y);
+        sw = GetRenderScale(width) * UIBarScale;
+        sh = GetRenderScale(height) * UIBarScale;
 
-        for (int i = top; i < bottom; i++) {
-            int color_index = (i - top) * COLOR_BAR_SIZE / (bottom - top);
-            S_Draw2DLine(
-                left, i, right, i, p3, color_bar_map[bar_color][color_index]);
+        for (int i = 0; i < COLOR_BAR_SIZE; i++) {
+            // TODO: change this to work with RGB
+            RGB888 color =
+                S_PalColorToRGB(GamePalette[color_bar_map[bar_color][i]]);
+            int32_t lsy = sy + i * sh / COLOR_BAR_SIZE;
+            int32_t lsh = sy + (i + 1) * sh / COLOR_BAR_SIZE - lsy;
+            S_DrawScreenQuad(sx, lsy, sw, lsh, color);
         }
     }
 }
