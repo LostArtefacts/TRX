@@ -8,7 +8,6 @@
 // clang-format off
 #define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
 #define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
-#define phd_RotateLight         ((void          (*)(PHD_ANGLE pitch, PHD_ANGLE yaw))0x004023A0)
 #define phd_InitPolyList        ((void          (*)())0x00402470)
 // clang-format on
 
@@ -25,6 +24,7 @@ void phd_RotYXZpack(int32_t rots);
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
 int32_t visible_zclip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
+void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,

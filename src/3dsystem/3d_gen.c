@@ -329,6 +329,28 @@ int32_t visible_zclip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
     return a * v2z + b * v2y + c * v2x < 0.0;
 }
 
+void phd_RotateLight(int16_t pitch, int16_t yaw)
+{
+    LsYaw = yaw;
+    LsPitch = pitch;
+    int32_t cp = phd_cos(pitch);
+    int32_t sp = phd_sin(pitch);
+    int32_t cy = phd_cos(yaw);
+    int32_t sy = phd_sin(yaw);
+    int32_t ls_x = TRIGMULT2(cp, sy);
+    int32_t ls_y = -sp;
+    int32_t ls_z = TRIGMULT2(cp, cy);
+    LsVectorView.x =
+        (W2VMatrix._00 * ls_x + W2VMatrix._01 * ls_y + W2VMatrix._02 * ls_z)
+        >> W2V_SHIFT;
+    LsVectorView.y =
+        (W2VMatrix._10 * ls_x + W2VMatrix._11 * ls_y + W2VMatrix._12 * ls_z)
+        >> W2V_SHIFT;
+    LsVectorView.z =
+        (W2VMatrix._20 * ls_x + W2VMatrix._21 * ls_y + W2VMatrix._22 * ls_z)
+        >> W2V_SHIFT;
+}
+
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
     int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
@@ -415,6 +437,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004018F0, phd_TranslateRel);
     INJECT(0x004019A0, phd_TranslateAbs);
     INJECT(0x00401A20, visible_zclip);
+    INJECT(0x004023A0, phd_RotateLight);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
     INJECT(0x0043EA01, phd_PushMatrix);
