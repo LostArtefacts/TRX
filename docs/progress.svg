@@ -82,12 +82,12 @@
 <rect width="12.00" height="12.00" x="406.00" y="31.00" class="decompiled"><title>HWR_RenderTriangleStrip</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="31.00" class="todo"><title>sub_408ED8</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="31.00" class="named"><title>HWR_SelectTexture</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="31.00" class="decompiled"><title>HWR_NormalizeVertices</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="31.00" class="decompiled"><title>HWR_ClipVertices</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="31.00" class="todo"><title>sub_409C0F</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="31.00" class="todo"><title>sub_409F44</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="31.00" class="todo"><title>sub_40A01D</title></rect>
 <rect width="12.00" height="12.00" x="504.00" y="31.00" class="todo"><title>sub_40A0C4</title></rect>
-<rect width="12.00" height="12.00" x="518.00" y="31.00" class="decompiled"><title>HWR_NormalizeVertices2</title></rect>
+<rect width="12.00" height="12.00" x="518.00" y="31.00" class="decompiled"><title>HWR_ClipVertices2</title></rect>
 <rect width="12.00" height="12.00" x="532.00" y="31.00" class="todo"><title>sub_40B510</title></rect>
 <rect width="12.00" height="12.00" x="546.00" y="31.00" class="todo"><title>sub_40BBE2</title></rect>
 <rect width="12.00" height="12.00" x="560.00" y="31.00" class="todo"><title>sub_40C25A</title></rect>
@@ -718,9 +718,9 @@
 <text x="0.00" y="259.50">TombATI functions, arranged according to the function sizes:</text>
 <rect width="52.40" height="68.51" x="0.00" y="269.00" class="decompiled"><title>DrawLaraInt</title></rect>
 <rect width="52.40" height="59.86" x="0.00" y="339.51" class="decompiled"><title>Display_Inventory</title></rect>
-<rect width="52.40" height="49.25" x="0.00" y="401.38" class="decompiled"><title>HWR_NormalizeVertices2</title></rect>
+<rect width="52.40" height="49.25" x="0.00" y="401.38" class="decompiled"><title>HWR_ClipVertices2</title></rect>
 <rect width="52.40" height="41.45" x="0.00" y="452.62" class="decompiled"><title>BaddyObjects</title></rect>
-<rect width="52.40" height="39.93" x="0.00" y="496.07" class="decompiled"><title>HWR_NormalizeVertices</title></rect>
+<rect width="52.40" height="39.93" x="0.00" y="496.07" class="decompiled"><title>HWR_ClipVertices</title></rect>
 <rect width="41.43" height="46.84" x="54.40" y="269.00" class="decompiled"><title>DrawLara</title></rect>
 <rect width="41.43" height="40.18" x="54.40" y="317.84" class="decompiled"><title>ExtractSaveGameInfo</title></rect>
 <rect width="41.43" height="35.52" x="54.40" y="360.02" class="decompiled"><title>CreateSaveGameInfo</title></rect>

@@ -239,7 +239,7 @@ void HWR_RenderLightningSegment(
     vertex[3].b = 255.0;
     vertex[3].a = 128.0;
 
-    int num = HWR_NormalizeVertices(4, vertex);
+    int num = HWR_ClipVertices(4, vertex);
     if (num) {
         HWR_RenderTriangleStrip(vertex, num);
     }
@@ -276,7 +276,7 @@ void HWR_RenderLightningSegment(
     vertex[3].r = 255.0;
     vertex[3].a = 128.0;
 
-    num = HWR_NormalizeVertices(4, vertex);
+    num = HWR_ClipVertices(4, vertex);
     if (num) {
         HWR_RenderTriangleStrip(vertex, num);
     }
@@ -287,7 +287,7 @@ void HWR_RenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
-int32_t HWR_NormalizeVertices(int32_t num, C3D_VTCF *source)
+int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
     C3D_VTCF vertices[10];
@@ -440,7 +440,7 @@ int32_t HWR_NormalizeVertices(int32_t num, C3D_VTCF *source)
     return j;
 }
 
-int32_t HWR_NormalizeVertices2(int32_t num, C3D_VTCF *source)
+int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
 {
     float scale;
     C3D_VTCF vertices[8];
@@ -626,6 +626,6 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
-    INJECT(0x0040904D, HWR_NormalizeVertices);
-    INJECT(0x0040A6B1, HWR_NormalizeVertices2);
+    INJECT(0x0040904D, HWR_ClipVertices);
+    INJECT(0x0040A6B1, HWR_ClipVertices2);
 }
