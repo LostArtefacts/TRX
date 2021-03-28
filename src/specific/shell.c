@@ -70,7 +70,10 @@ void GameMain()
     HiRes = 0;
     TempVideoAdjust(2, 1.0);
     S_DisplayPicture("data\\eidospc");
-    sub_408E41();
+    S_InitialisePolyList();
+    S_CopyBufferToScreen();
+    S_OutputPolyList();
+    S_DumpScreen();
     S_Wait(TICKS_PER_SECOND);
 
     if (IsHardwareRenderer) {

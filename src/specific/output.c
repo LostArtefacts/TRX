@@ -383,6 +383,8 @@ void S_DisplayPicture(const char *file_stem)
     }
 
     free(file_data);
+
+    HWR_DownloadPicture();
 }
 
 void S_DrawLightningSegment(
