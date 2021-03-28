@@ -15,9 +15,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COLOR_BAR_SIZE 5
+#define COLOR_STEPS 5
 
-static RGB888 ColorBarMap[][COLOR_BAR_SIZE] = {
+static RGB888 ColorBarMap[][COLOR_STEPS] = {
     // gold
     { { 112, 92, 44 },
       { 164, 120, 72 },
@@ -177,12 +177,12 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t sh = GetRenderScale(height) * UIBarScale + padding * 2;
 
     // border
-    S_DrawScreenQuad(
+    S_DrawScreenFlatQuad(
         sx - border, sy - border, sw + border, sh + border, rgb_border_dark);
-    S_DrawScreenQuad(sx, sy, sw + border, sh + border, rgb_border_light);
+    S_DrawScreenFlatQuad(sx, sy, sw + border, sh + border, rgb_border_light);
 
     // background
-    S_DrawScreenQuad(sx, sy, sw, sh, rgb_bgnd);
+    S_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
 
     const int32_t blink_interval = 20;
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
@@ -198,11 +198,21 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
         sw = GetRenderScale(width) * UIBarScale;
         sh = GetRenderScale(height) * UIBarScale;
 
-        for (int i = 0; i < COLOR_BAR_SIZE; i++) {
-            RGB888 color = ColorBarMap[bar_color][i];
-            int32_t lsy = sy + i * sh / COLOR_BAR_SIZE;
-            int32_t lsh = sy + (i + 1) * sh / COLOR_BAR_SIZE - lsy;
-            S_DrawScreenQuad(sx, lsy, sw, lsh, color);
+        if (T1MConfig.enable_smooth_bars) {
+            for (int i = 0; i < COLOR_STEPS - 1; i++) {
+                RGB888 c1 = ColorBarMap[bar_color][i];
+                RGB888 c2 = ColorBarMap[bar_color][i + 1];
+                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
+                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
+                S_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
+            }
+        } else {
+            for (int i = 0; i < COLOR_STEPS; i++) {
+                RGB888 color = ColorBarMap[bar_color][i];
+                int32_t lsy = sy + i * sh / COLOR_STEPS;
+                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
+                S_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
+            }
         }
     }
 }

@@ -47,6 +47,7 @@ struct {
     int8_t enable_braid;
     int8_t enable_compass_stats;
     int8_t enable_timer_in_inventory;
+    int8_t enable_smooth_bars;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;

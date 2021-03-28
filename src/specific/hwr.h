@@ -35,7 +35,8 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color);
 void HWR_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color);
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
+    RGB888 bl, RGB888 br);
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,

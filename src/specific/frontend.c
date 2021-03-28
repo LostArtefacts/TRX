@@ -42,10 +42,17 @@ SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
     return best_entry;
 }
 
-void S_DrawScreenQuad(
+void S_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
 {
-    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, color);
+    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+}
+
+void S_DrawScreenGradientQuad(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 tl, RGB888 tr,
+    RGB888 bl, RGB888 br)
+{
+    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void S_DrawScreenLine(
