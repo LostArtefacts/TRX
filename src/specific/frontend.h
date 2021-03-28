@@ -19,8 +19,6 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode);
 
 SG_COL S_Colour(int32_t red, int32_t green, int32_t blue);
 
-// TODO: remove
-RGB888 S_PalColorToRGB(RGB888 palette_color);
 void S_DrawScreenQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color);
 

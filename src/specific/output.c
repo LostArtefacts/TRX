@@ -17,16 +17,61 @@
 
 #define COLOR_BAR_SIZE 5
 
-static uint8_t color_bar_map[][COLOR_BAR_SIZE] = {
-    { 8, 11, 8, 6, 24 }, // gold
-    { 32, 41, 32, 19, 21 }, // blue
-    { 18, 17, 18, 19, 21 }, // grey
-    { 29, 30, 29, 28, 26 }, // red
-    { 76, 77, 76, 75, 74 }, // silver
-    { 141, 143, 141, 139, 136 }, // green
-    { 119, 118, 119, 121, 123 }, // gold2
-    { 113, 112, 113, 114, 115 }, // blue2
-    { 193, 194, 192, 191, 189 }, // pink
+static RGB888 ColorBarMap[][COLOR_BAR_SIZE] = {
+    // gold
+    { { 112, 92, 44 },
+      { 164, 120, 72 },
+      { 112, 92, 44 },
+      { 88, 68, 0 },
+      { 80, 48, 20 } },
+    // blue
+    { { 100, 116, 100 },
+      { 92, 160, 156 },
+      { 100, 116, 100 },
+      { 76, 80, 76 },
+      { 48, 48, 48 } },
+    // grey
+    { { 88, 100, 88 },
+      { 116, 132, 116 },
+      { 88, 100, 88 },
+      { 76, 80, 76 },
+      { 48, 48, 48 } },
+    // red
+    { { 160, 40, 28 },
+      { 184, 44, 32 },
+      { 160, 40, 28 },
+      { 124, 32, 32 },
+      { 84, 20, 32 } },
+    // silver
+    { { 150, 150, 150 },
+      { 230, 230, 230 },
+      { 200, 200, 200 },
+      { 140, 140, 140 },
+      { 100, 100, 100 } },
+    // green
+    { { 100, 190, 20 },
+      { 130, 230, 30 },
+      { 100, 190, 20 },
+      { 90, 150, 15 },
+      { 80, 110, 10 } },
+    // gold2
+    { { 220, 170, 0 },
+      { 255, 200, 0 },
+      { 220, 170, 0 },
+      { 185, 140, 0 },
+      { 150, 100, 0 } },
+    // blue2
+    { { 0, 170, 220 },
+      { 0, 200, 255 },
+      { 0, 170, 220 },
+      { 0, 140, 185 },
+      { 0, 100, 150 } },
+    // pink
+    { { 220, 140, 170 },
+      { 255, 150, 200 },
+      { 220, 140, 170 },
+      { 185, 120, 140 },
+      { 150, 90, 100 } },
 };
 
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal);
@@ -154,9 +199,7 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
         sh = GetRenderScale(height) * UIBarScale;
 
         for (int i = 0; i < COLOR_BAR_SIZE; i++) {
-            // TODO: change this to work with RGB
-            RGB888 color =
-                S_PalColorToRGB(GamePalette[color_bar_map[bar_color][i]]);
+            RGB888 color = ColorBarMap[bar_color][i];
             int32_t lsy = sy + i * sh / COLOR_BAR_SIZE;
             int32_t lsh = sy + (i + 1) * sh / COLOR_BAR_SIZE - lsy;
             S_DrawScreenQuad(sx, lsy, sw, lsh, color);
