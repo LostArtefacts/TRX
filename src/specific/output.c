@@ -69,9 +69,9 @@ static RGB888 ColorBarMap[][COLOR_STEPS] = {
     // pink
     { { 220, 140, 170 },
       { 255, 150, 200 },
-      { 220, 140, 170 },
-      { 185, 120, 140 },
-      { 150, 90, 100 } },
+      { 210, 130, 160 },
+      { 165, 100, 120 },
+      { 120, 60, 70 } },
 };
 
 static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal);
