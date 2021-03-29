@@ -42,6 +42,15 @@ SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
     return best_entry;
 }
 
+RGB888 S_ColourFromPalette(int8_t idx)
+{
+    RGB888 ret;
+    ret.r = 4 * GamePalette[idx].r;
+    ret.g = 4 * GamePalette[idx].g;
+    ret.b = 4 * GamePalette[idx].b;
+    return ret;
+}
+
 void S_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
 {
@@ -55,29 +64,25 @@ void S_DrawScreenGradientQuad(
     HWR_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
-void S_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
-    SG_COL *gourptr, uint16_t flags)
+void S_DrawScreenLine(int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col)
 {
-    RGB888 rgb;
-    rgb.r = 4 * GamePalette[col].r;
-    rgb.g = 4 * GamePalette[col].g;
-    rgb.b = 4 * GamePalette[col].b;
-    HWR_Draw2DLine(sx, sy, sx + w, sy + h, rgb, rgb);
+    HWR_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
 void S_DrawScreenBox(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)
 {
-    S_DrawScreenLine(sx - 1, sy - 1, z, w + 3, 0, 15, gourptr, flags);
-    S_DrawScreenLine(sx, sy, z, w + 1, 0, 31, gourptr, flags);
-    S_DrawScreenLine(w + sx + 1, sy, z, 0, h + 1, 15, gourptr, flags);
-    S_DrawScreenLine(w + sx + 2, sy - 1, z, 0, h + 3, 31, gourptr, flags);
-    S_DrawScreenLine(w + sx + 1, h + sy + 1, z, -w - 1, 0, 15, gourptr, flags);
-    S_DrawScreenLine(w + sx + 2, h + sy + 2, z, -w - 3, 0, 31, gourptr, flags);
-    S_DrawScreenLine(sx - 1, h + sy + 2, z, 0, -3 - h, 15, gourptr, flags);
-    S_DrawScreenLine(sx, h + sy + 1, z, 0, -1 - h, 31, gourptr, flags);
+    RGB888 rgb_border_light = S_ColourFromPalette(15);
+    RGB888 rgb_border_dark = S_ColourFromPalette(31);
+    S_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
+    S_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
+    S_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);
+    S_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, rgb_border_dark);
+    S_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 1, 0, rgb_border_light);
+    S_DrawScreenLine(w + sx + 2, h + sy + 2, -w - 3, 0, rgb_border_dark);
+    S_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_light);
+    S_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_dark);
 }
 
 void S_DrawScreenFBox(

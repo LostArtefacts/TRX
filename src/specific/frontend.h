@@ -18,6 +18,7 @@ void S_Wait(int32_t nframes);
 int32_t S_PlayFMV(int32_t sequence, int32_t mode);
 
 SG_COL S_Colour(int32_t red, int32_t green, int32_t blue);
+RGB888 S_ColourFromPalette(int8_t idx);
 
 void S_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color);
@@ -27,9 +28,7 @@ void S_DrawScreenGradientQuad(
 
 // TODO: remove unused arguments
 // TODO change to take RGB
-void S_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
-    SG_COL *gourptr, uint16_t flags);
+void S_DrawScreenLine(int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col);
 void S_DrawScreenBox(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags);
