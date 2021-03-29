@@ -15,6 +15,7 @@
 #include "specific/smain.h"
 #include "util.h"
 
+#include <dinput.h>
 #include <stdlib.h>
 
 const char *FMVPaths[] = {
@@ -186,13 +187,13 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         WinSpinMessageLoop();
 
         if (T1MConfig.fix_fmv_esc_key) {
-            if (KeyData->keymap[1]) {
+            if (KeyData->keymap[DIK_ESCAPE]) {
                 keypress = 1;
-            } else if (keypress && !KeyData->keymap[1]) {
+            } else if (keypress && !KeyData->keymap[DIK_ESCAPE]) {
                 break;
             }
         } else {
-            if (KeyData->keymap[1]) {
+            if (KeyData->keymap[DIK_ESCAPE]) {
                 break;
             }
         }

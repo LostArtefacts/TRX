@@ -50,14 +50,16 @@ void ShowFatalError(const char *message)
 int32_t WinSpinMessageLoop()
 {
     MSG msg;
-    while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
-        if (!GetMessageA(&msg, 0, 0, 0)) {
-            TerminateGame(0);
-        }
+    do {
+        while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
+            if (!GetMessageA(&msg, 0, 0, 0)) {
+                TerminateGame(0);
+            }
 
-        TranslateMessage(&msg);
-        DispatchMessageA(&msg);
-    }
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
+        }
+    } while (!IsGameWindowActive);
 
     int32_t time_ms = timeGetTime();
     int32_t old_ticks = Ticks;
@@ -113,20 +115,48 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
         DestroyWindow(TombHWND);
         return 0;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+
     case WM_SIZE:
         return 1;
+
     case WM_MOVE:
         return 0;
+
     case WM_SETCURSOR:
         SetCursor(0);
         return 1;
+
     case WM_ERASEBKGND:
         return 1;
+
+    case WM_ACTIVATEAPP:
+        // mute the music when the game is not active
+        if (wParam && !IsGameWindowActive) {
+            if (OptionMusicVolume) {
+                S_MusicVolume(OptionMusicVolume * 25 + 5);
+            } else {
+                S_MusicVolume(0);
+            }
+        } else if (!wParam && IsGameWindowActive) {
+            S_MusicVolume(0);
+        }
+        if (wParam && !IsGameWindowActive) {
+            // TODO: remove this after switching to DInput
+            for (int i = 0; i < 256; i++) {
+                KeyData->keymap[i] = 0;
+            }
+            KeyData->keys_held = 0;
+        }
+        IsGameWindowActive = wParam != 0;
+        return 1;
+
     case WM_NCPAINT:
         return 0;
+
     case WM_GETMINMAXINFO: {
         MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
         min_max_info->ptMinTrackSize.x = DDrawSurfaceWidth;
@@ -136,12 +166,15 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return DefWindowProcA(
             hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
     }
+
     case WM_MOVING:
         GetWindowRect(TombHWND, (LPRECT)lParam);
         return 1;
+
     case MM_MCINOTIFY:
         MusicPlayLooped();
         return 0;
+
     default:
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }

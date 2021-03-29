@@ -196,6 +196,7 @@ extern KEYSTUFF* KeyData;
 extern char *ATIUserSettingsPath;
 extern char *T1MUserSettingsPath;
 
+extern int8_t IsGameWindowActive;
 extern double UITextScale;
 extern double UIBarScale;
 
