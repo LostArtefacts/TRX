@@ -45,7 +45,7 @@ int32_t StartDemo()
         SeedRandomDraw(0xD371F947);
         SeedRandomControl(0xD371F947);
 
-        txt = T_Print(0, -16, 0, GF.strings[GS_MISC_DEMO_MODE]);
+        txt = T_Print(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
         T_FlashText(txt, 1, 20);
         T_BottomAlign(txt, 1);
         T_CentreH(txt, 1);

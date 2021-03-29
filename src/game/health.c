@@ -164,7 +164,7 @@ void DrawAmmoInfo()
         T_ChangeText(AmmoText, ammostring);
     } else {
         AmmoText = T_Print(
-            -screen_margin_h - text_offset_x, text_height + screen_margin_v, 0,
+            -screen_margin_h - text_offset_x, text_height + screen_margin_v,
             ammostring);
         T_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
         T_RightAlign(AmmoText, 1);

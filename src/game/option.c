@@ -280,7 +280,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             } else {
                 if (!PassportText) {
                     PassportText =
-                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_LOAD_GAME]);
+                        T_Print(0, -16, GF.strings[GS_PASSPORT_LOAD_GAME]);
                     T_BottomAlign(PassportText, 1);
                     T_CentreH(PassportText, 1);
                 }
@@ -343,10 +343,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     PassportText =
-                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_NEW_GAME]);
+                        T_Print(0, -16, GF.strings[GS_PASSPORT_NEW_GAME]);
                 } else {
                     PassportText =
-                        T_Print(0, -16, 0, GF.strings[GS_PASSPORT_SAVE_GAME]);
+                        T_Print(0, -16, GF.strings[GS_PASSPORT_SAVE_GAME]);
                 }
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
@@ -388,10 +388,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (!PassportText) {
             if (InvMode == INV_TITLE_MODE) {
                 PassportText =
-                    T_Print(0, -16, 0, GF.strings[GS_PASSPORT_EXIT_GAME]);
+                    T_Print(0, -16, GF.strings[GS_PASSPORT_EXIT_GAME]);
             } else {
                 PassportText =
-                    T_Print(0, -16, 0, GF.strings[GS_PASSPORT_EXIT_TO_TITLE]);
+                    T_Print(0, -16, GF.strings[GS_PASSPORT_EXIT_TO_TITLE]);
             }
             T_BottomAlign(PassportText, 1);
             T_CentreH(PassportText, 1);
@@ -534,35 +534,35 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
-        DetailTextHW[DETAIL_HW_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
+        DetailTextHW[DETAIL_HW_TITLE_BORDER] = T_Print(0, y - 2, " ");
 
         DetailTextHW[DETAIL_HW_TITLE] =
-            T_Print(0, y, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
+            T_Print(0, y, GF.strings[GS_DETAIL_SELECT_DETAIL]);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
                 [AppSettings & ASF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, 0, buf);
+        DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings[AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, 0, buf);
+        DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT], UITextScale);
-        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, 0, buf);
+        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT], UIBarScale);
-        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, 0, buf);
+        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         if (dword_45B940) {
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, " ");
+            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
             max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {
             const char *tmp;
@@ -581,7 +581,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 break;
             }
             sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, 0, buf);
+            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
             max_row = DETAIL_HW_RESOLUTION;
         }
         y += DETAIL_HW_ROW_HEIGHT;
@@ -595,18 +595,16 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
         T_AddBackground(
             DetailTextHW[DETAIL_HW_TITLE_BORDER], DETAIL_HW_ROW_WIDHT,
-            y - DETAIL_HW_TOP_Y, 0, 0, 16, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1, IC_BLUE, NULL, 0);
+            y - DETAIL_HW_TOP_Y, 0, 0);
+        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1);
 
         T_AddBackground(
-            DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0, 8,
-            IC_BLACK, NULL, 0);
-        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1, IC_ORANGE, NULL, 0);
+            DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0);
+        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
 
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
-            IC_BLACK, NULL, 0);
-        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+        T_AddOutline(DetailTextHW[current_row], 1);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
             T_CentreH(DetailTextHW[i], 1);
@@ -618,20 +616,18 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         T_RemoveOutline(DetailTextHW[current_row]);
         T_RemoveBackground(DetailTextHW[current_row]);
         current_row--;
-        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddOutline(DetailTextHW[current_row], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
-            IC_BLACK, NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
         T_RemoveOutline(DetailTextHW[current_row]);
         T_RemoveBackground(DetailTextHW[current_row]);
         current_row++;
-        T_AddOutline(DetailTextHW[current_row], 1, IC_ORANGE, NULL, 0);
+        T_AddOutline(DetailTextHW[current_row], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0, 8,
-            IC_BLACK, NULL, 0);
+            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
     int8_t reset = 0;
@@ -735,18 +731,17 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 
     if (!DetailText[0]) {
-        DetailText[2] = T_Print(0, 0, 0, GF.strings[GS_DETAIL_LEVEL_HIGH]);
-        DetailText[1] = T_Print(0, 25, 0, GF.strings[GS_DETAIL_LEVEL_MEDIUM]);
-        DetailText[0] = T_Print(0, 50, 0, GF.strings[GS_DETAIL_LEVEL_LOW]);
-        DetailText[3] = T_Print(0, -32, 0, " ");
-        DetailText[4] = T_Print(0, -30, 0, GF.strings[GS_DETAIL_SELECT_DETAIL]);
-        T_AddBackground(DetailText[4], 156, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[4], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(
-            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(DetailText[3], 160, 107, 0, 0, 16, IC_BLACK, NULL, 0);
-        T_AddOutline(DetailText[3], 1, IC_BLUE, NULL, 0);
+        DetailText[2] = T_Print(0, 0, GF.strings[GS_DETAIL_LEVEL_HIGH]);
+        DetailText[1] = T_Print(0, 25, GF.strings[GS_DETAIL_LEVEL_MEDIUM]);
+        DetailText[0] = T_Print(0, 50, GF.strings[GS_DETAIL_LEVEL_LOW]);
+        DetailText[3] = T_Print(0, -32, " ");
+        DetailText[4] = T_Print(0, -30, GF.strings[GS_DETAIL_SELECT_DETAIL]);
+        T_AddBackground(DetailText[4], 156, 0, 0, 0);
+        T_AddOutline(DetailText[4], 1);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
+        T_AddOutline(DetailText[AppSettings], 1);
+        T_AddBackground(DetailText[3], 160, 107, 0, 0);
+        T_AddOutline(DetailText[3], 1);
         for (int i = 0; i < 5; i++) {
             T_CentreH(DetailText[i], 1);
             T_CentreV(DetailText[i], 1);
@@ -757,18 +752,16 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         T_RemoveOutline(DetailText[AppSettings]);
         T_RemoveBackground(DetailText[AppSettings]);
         AppSettings--;
-        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(
-            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[AppSettings], 1);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
     }
 
     if (CHK_ANY(InputDB, IN_FORWARD) && AppSettings < 2) {
         T_RemoveOutline(DetailText[AppSettings]);
         T_RemoveBackground(DetailText[AppSettings]);
         AppSettings++;
-        T_AddOutline(DetailText[AppSettings], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(
-            DetailText[AppSettings], 148, 0, 0, 0, 8, IC_BLACK, NULL, 0);
+        T_AddOutline(DetailText[AppSettings], 1);
+        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
     }
 
     if (AppSettings == 0) {
@@ -797,23 +790,23 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             OptionMusicVolume = 10;
         }
         sprintf(buf, "| %2d", OptionMusicVolume);
-        SoundText[0] = T_Print(0, 0, 0, buf);
+        SoundText[0] = T_Print(0, 0, buf);
 
         if (OptionSoundFXVolume > 10) {
             OptionSoundFXVolume = 10;
         }
         sprintf(buf, "} %2d", OptionSoundFXVolume);
-        SoundText[1] = T_Print(0, 25, 0, buf);
+        SoundText[1] = T_Print(0, 25, buf);
 
-        SoundText[2] = T_Print(0, -32, 0, " ");
-        SoundText[3] = T_Print(0, -30, 0, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[2] = T_Print(0, -32, " ");
+        SoundText[3] = T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
 
-        T_AddBackground(SoundText[0], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(SoundText[0], 1, IC_ORANGE, NULL, 0);
-        T_AddBackground(SoundText[2], 140, 85, 0, 0, 48, IC_BLACK, NULL, 0);
-        T_AddOutline(SoundText[2], 1, IC_BLUE, NULL, 0);
-        T_AddBackground(SoundText[3], 136, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(SoundText[3], 1, IC_BLUE, NULL, 0);
+        T_AddBackground(SoundText[0], 128, 0, 0, 0);
+        T_AddOutline(SoundText[0], 1);
+        T_AddBackground(SoundText[2], 140, 85, 0, 0);
+        T_AddOutline(SoundText[2], 1);
+        T_AddBackground(SoundText[3], 136, 0, 0, 0);
+        T_AddOutline(SoundText[3], 1);
 
         for (int i = 0; i < 4; i++) {
             T_CentreH(SoundText[i], 1);
@@ -824,17 +817,15 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     if (CHK_ANY(InputDB, IN_FORWARD) && Item_Data > 0) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(
-            SoundText[--Item_Data], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(SoundText[Item_Data], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0);
+        T_AddOutline(SoundText[Item_Data], 1);
     }
 
     if (CHK_ANY(InputDB, IN_BACK) && Item_Data < 1) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(
-            SoundText[++Item_Data], 128, 0, 0, 0, 8, IC_BLACK, NULL, 0);
-        T_AddOutline(SoundText[Item_Data], 1, IC_ORANGE, NULL, 0);
+        T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0);
+        T_AddOutline(SoundText[Item_Data], 1);
     }
 
     switch (Item_Data) {
@@ -911,13 +902,13 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
         if (!CompassText[COMPASS_TITLE_BORDER]) {
             int32_t y = COMPASS_TOP_Y;
 
-            CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, 0, " ");
+            CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, " ");
 
             sprintf(buf, "%s", GF.levels[CurrentLevel].level_title);
-            CompassText[COMPASS_TITLE] = T_Print(0, y, 0, buf);
+            CompassText[COMPASS_TITLE] = T_Print(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
-            CompassText[COMPASS_TIME] = T_Print(0, y, 0, " ");
+            CompassText[COMPASS_TIME] = T_Print(0, y, " ");
             y += COMPASS_ROW_HEIGHT;
 
             int32_t secrets_taken = 0;
@@ -933,26 +924,24 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             sprintf(
                 buf, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
                 GF.levels[CurrentLevel].secrets);
-            CompassText[COMPASS_SECRETS] = T_Print(0, y, 0, buf);
+            CompassText[COMPASS_SECRETS] = T_Print(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
-            CompassText[COMPASS_PICKUPS] = T_Print(0, y, 0, buf);
+            CompassText[COMPASS_PICKUPS] = T_Print(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
-            CompassText[COMPASS_KILLS] = T_Print(0, y, 0, buf);
+            CompassText[COMPASS_KILLS] = T_Print(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             T_AddBackground(
                 CompassText[COMPASS_TITLE_BORDER], COMPASS_ROW_WIDTH,
-                y - COMPASS_TOP_Y, 0, 0, 8, IC_BLACK, NULL, 0);
-            T_AddOutline(
-                CompassText[COMPASS_TITLE_BORDER], 1, IC_BLUE, NULL, 0);
+                y - COMPASS_TOP_Y, 0, 0);
+            T_AddOutline(CompassText[COMPASS_TITLE_BORDER], 1);
             T_AddBackground(
-                CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0, 8,
-                IC_BLACK, NULL, 0);
-            T_AddOutline(CompassText[COMPASS_TITLE], 1, IC_BLUE, NULL, 0);
+                CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0);
+            T_AddOutline(CompassText[COMPASS_TITLE], 1);
 
             for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
                 T_CentreH(CompassText[i], 1);
@@ -1025,7 +1014,6 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 + (CONTROLS_HEADER_HEIGHT + CONTROLS_BORDER
                    - CONTROLS_ROW_HEIGHT)
                     / 2,
-            0,
             GF.strings
                 [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
@@ -1033,7 +1021,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         S_ShowControls();
 
         KeyChange = -1;
-        T_AddBackground(CtrlText[0], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+        T_AddBackground(CtrlText[0], 0, 0, 0, 0);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
@@ -1090,8 +1078,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                T_AddBackground(
-                    CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+                T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
             }
         } else if (
             CHK_ANY(InputDB, IN_DESELECT)
@@ -1105,8 +1092,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             if (CHK_ANY(InputDB, IN_SELECT)) {
                 KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
-                T_AddBackground(
-                    CtrlTextB[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+                T_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
             } else if (CHK_ANY(InputDB, IN_FORWARD)) {
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
@@ -1136,7 +1122,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
                 T_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
-                    0, 0, 48, IC_BLACK, NULL, 0);
+                    0, 0);
             } else if (CHK_ANY(InputDB, IN_BACK)) {
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
@@ -1166,7 +1152,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
                 T_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
-                    0, 0, 48, IC_BLACK, NULL, 0);
+                    0, 0);
             }
         }
         break;
@@ -1187,8 +1173,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             Layout[IConfig][KeyChange] = key;
             T_ChangeText(CtrlTextB[KeyChange], ScanCodeNames[key]);
             T_RemoveBackground(CtrlTextB[KeyChange]);
-            T_AddBackground(
-                CtrlTextA[KeyChange], 0, 0, 0, 0, 48, IC_BLACK, NULL, 0);
+            T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
             KeyMode = 3;
             FlashConflicts();
             S_WriteUserSettings();
@@ -1219,7 +1204,7 @@ void S_ShowControls()
     const int16_t centre = GetRenderWidthDownscaled() / 2;
     int16_t max_y = 0;
 
-    CtrlText[1] = T_Print(0, CONTROLS_TOP_Y - CONTROLS_BORDER, 0, " ");
+    CtrlText[1] = T_Print(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");
     T_CentreH(CtrlText[1], 1);
     T_CentreV(CtrlText[1], 1);
 
@@ -1240,7 +1225,7 @@ void S_ShowControls()
 
             if (col->option != -1) {
                 CtrlTextB[col->option] =
-                    T_Print(x, y, 0, ScanCodeNames[layout[col->option]]);
+                    T_Print(x, y, ScanCodeNames[layout[col->option]]);
                 T_CentreV(CtrlTextB[col->option], 1);
             }
 
@@ -1263,7 +1248,7 @@ void S_ShowControls()
 
             if (col->option != -1) {
                 CtrlTextA[col->option] = T_Print(
-                    x, y, 0, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
+                    x, y, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
                 T_CentreV(CtrlTextA[col->option], 1);
             }
 
@@ -1274,7 +1259,7 @@ void S_ShowControls()
 
     int16_t width = 420;
     int16_t height = max_y + CONTROLS_BORDER * 2 - CONTROLS_TOP_Y;
-    T_AddBackground(CtrlText[1], width, height, 0, 0, 48, IC_BLACK, NULL, 0);
+    T_AddBackground(CtrlText[1], width, height, 0, 0);
 
     FlashConflicts();
 }

@@ -121,7 +121,7 @@ void LevelStats(int32_t level_num)
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);
-    txt = T_Print(0, -50, 0, string);
+    txt = T_Print(0, -50, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
@@ -138,7 +138,7 @@ void LevelStats(int32_t level_num)
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
     sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    txt = T_Print(0, 70, 0, string);
+    txt = T_Print(0, 70, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
@@ -155,19 +155,19 @@ void LevelStats(int32_t level_num)
     sprintf(
         string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
         GF.levels[level_num].secrets);
-    txt = T_Print(0, 40, 0, string);
+    txt = T_Print(0, 40, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // pickups
     sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
-    txt = T_Print(0, 10, 0, string);
+    txt = T_Print(0, 10, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // kills
     sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
-    txt = T_Print(0, -20, 0, string);
+    txt = T_Print(0, -20, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 

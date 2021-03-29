@@ -45,20 +45,19 @@ void RingIsOpen(RING_INFO *ring)
     if (!InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_INVENTORY]);
+            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
             if (InvMode == INV_DEATH_MODE) {
-                InvRingText =
-                    T_Print(0, 26, 0, GF.strings[GS_HEADING_GAME_OVER]);
+                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_GAME_OVER]);
             } else {
-                InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_OPTION]);
+                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText = T_Print(0, 26, 0, GF.strings[GS_HEADING_ITEMS]);
+            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_ITEMS]);
             break;
         }
 
@@ -72,16 +71,16 @@ void RingIsOpen(RING_INFO *ring)
     if (!InvUpArrow1) {
         if (ring->type == RT_OPTION
             || (ring->type == RT_MAIN && InvKeysObjects)) {
-            InvUpArrow1 = T_Print(20, 28, 0, "[");
-            InvUpArrow2 = T_Print(-20, 28, 0, "[");
+            InvUpArrow1 = T_Print(20, 28, "[");
+            InvUpArrow2 = T_Print(-20, 28, "[");
             T_RightAlign(InvUpArrow2, 1);
         }
     }
 
     if (!InvDownArrow1) {
         if (ring->type == RT_MAIN || ring->type == RT_KEYS) {
-            InvDownArrow1 = T_Print(20, -15, 0, "]");
-            InvDownArrow2 = T_Print(-20, -15, 0, "]");
+            InvDownArrow1 = T_Print(20, -15, "]");
+            InvDownArrow2 = T_Print(-20, -15, "]");
             T_BottomAlign(InvDownArrow1, 1);
             T_BottomAlign(InvDownArrow2, 1);
             T_RightAlign(InvDownArrow2, 1);
@@ -118,59 +117,59 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         switch (inv_item->object_number) {
         case O_PUZZLE_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle1);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle1);
             break;
 
         case O_PUZZLE_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle2);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle2);
             break;
 
         case O_PUZZLE_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle3);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle3);
             break;
 
         case O_PUZZLE_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].puzzle4);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle4);
             break;
 
         case O_KEY_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].key1);
+                T_Print(0, -16, GF.levels[CurrentLevel].key1);
             break;
 
         case O_KEY_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].key2);
+                T_Print(0, -16, GF.levels[CurrentLevel].key2);
             break;
 
         case O_KEY_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].key3);
+                T_Print(0, -16, GF.levels[CurrentLevel].key3);
             break;
 
         case O_KEY_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].key4);
+                T_Print(0, -16, GF.levels[CurrentLevel].key4);
             break;
 
         case O_PICKUP_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].pickup1);
+                T_Print(0, -16, GF.levels[CurrentLevel].pickup1);
             break;
 
         case O_PICKUP_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, GF.levels[CurrentLevel].pickup2);
+                T_Print(0, -16, GF.levels[CurrentLevel].pickup2);
             break;
 
         case O_PASSPORT_OPTION:
             break;
 
         default:
-            InvItemText[IT_NAME] = T_Print(0, -16, 0, inv_item->string);
+            InvItemText[IT_NAME] = T_Print(0, -16, inv_item->string);
             break;
         }
 
@@ -188,7 +187,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -198,7 +197,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d B", Lara.magnums.ammo);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -208,7 +207,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d C", Lara.uzis.ammo);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -218,7 +217,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -228,7 +227,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -238,7 +237,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -250,7 +249,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -262,7 +261,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -283,7 +282,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }

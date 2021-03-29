@@ -53,7 +53,7 @@ static void RemovePausedText()
 static void DisplayPausedText()
 {
     if (PausedText == NULL) {
-        PausedText = T_Print(0, -24, 5, GF.strings[GS_PAUSE_PAUSED]);
+        PausedText = T_Print(0, -24, GF.strings[GS_PAUSE_PAUSED]);
         T_CentreH(PausedText, 1);
         T_BottomAlign(PausedText, 1);
     }

@@ -1574,20 +1574,20 @@ typedef struct TEXTSTRING {
     /* 0008 */ uint16_t outl_flags;
     /* 000A */ int16_t xpos;
     /* 000C */ int16_t ypos;
-    /* 000E */ int16_t zpos;
+    /* 000E */ int16_t zpos; // unused
     /* 0010 */ int16_t letter_spacing;
     /* 0012 */ int16_t word_spacing;
     /* 0014 */ int16_t flash_rate;
     /* 0016 */ int16_t flash_count;
-    /* 0018 */ int16_t bgnd_colour;
-    /* 001A */ SG_COL *bgnd_gour;
-    /* 001E */ int16_t outl_colour;
-    /* 0020 */ SG_COL *outl_gour;
+    /* 0018 */ int16_t bgnd_colour; // unused
+    /* 001A */ SG_COL *bgnd_gour; // unused
+    /* 001E */ int16_t outl_colour; // unused
+    /* 0020 */ SG_COL *outl_gour; // unused
     /* 0024 */ int16_t bgnd_size_x;
     /* 0026 */ int16_t bgnd_size_y;
     /* 0028 */ int16_t bgnd_off_x;
     /* 002A */ int16_t bgnd_off_y;
-    /* 002C */ int16_t bgnd_off_z;
+    /* 002C */ int16_t bgnd_off_z; // unused
     /* 002E */ int32_t scale_h;
     /* 0032 */ int32_t scale_v;
     /* 0034 */ char *string;
@@ -1840,7 +1840,7 @@ typedef struct REQUEST_INFO {
     /* 000C */ uint16_t line_height;
     /* 000E */ int16_t x;
     /* 0010 */ int16_t y;
-    /* 0012 */ int16_t z;
+    /* 0012 */ int16_t z; // unused
     /* 0014 */ uint16_t flags;
     /* 0016 */ const char *heading_text;
     /* 0020 */ char *item_texts;

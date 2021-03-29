@@ -69,8 +69,7 @@ void T_InitPrint()
     TextStringCount = 0;
 }
 
-TEXTSTRING *
-T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char *string)
+TEXTSTRING *T_Print(int16_t x, int16_t y, const char *string)
 {
     if (TextStringCount == MAX_TEXT_STRINGS) {
         return NULL;
@@ -97,9 +96,8 @@ T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char *string)
         length = MAX_STRING_SIZE - 1;
     }
 
-    result->xpos = xpos;
-    result->ypos = ypos;
-    result->zpos = zpos;
+    result->xpos = x;
+    result->ypos = y;
     result->letter_spacing = 1;
     result->word_spacing = 6;
     result->scale_h = PHD_ONE;
@@ -162,21 +160,16 @@ void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
 }
 
 void T_AddBackground(
-    TEXTSTRING *textstring, int16_t xsize, int16_t ysize, int16_t xoff,
-    int16_t yoff, int16_t zoff, int16_t colour, SG_COL *gourptr, int16_t flags)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
 {
     if (!textstring) {
         return;
     }
     textstring->flags |= TF_BGND;
-    textstring->bgnd_size_x = xsize;
-    textstring->bgnd_size_y = ysize;
-    textstring->bgnd_off_x = xoff;
-    textstring->bgnd_off_y = yoff;
-    textstring->bgnd_off_z = zoff;
-    textstring->bgnd_colour = colour;
-    textstring->bgnd_gour = gourptr;
-    textstring->bgnd_flags = flags;
+    textstring->bgnd_size_x = w;
+    textstring->bgnd_size_y = h;
+    textstring->bgnd_off_x = x;
+    textstring->bgnd_off_y = y;
 }
 
 void T_RemoveBackground(TEXTSTRING *textstring)
@@ -187,17 +180,12 @@ void T_RemoveBackground(TEXTSTRING *textstring)
     textstring->flags &= ~TF_BGND;
 }
 
-void T_AddOutline(
-    TEXTSTRING *textstring, int16_t b, int16_t colour, SG_COL *gourptr,
-    int16_t flags)
+void T_AddOutline(TEXTSTRING *textstring, int16_t b)
 {
     if (!textstring) {
         return;
     }
     textstring->flags |= TF_OUTLINE;
-    textstring->outl_gour = gourptr;
-    textstring->outl_colour = colour;
-    textstring->outl_flags = flags;
 }
 
 void T_RemoveOutline(TEXTSTRING *textstring)
@@ -331,7 +319,7 @@ void T_DrawText()
                 fps_counter1 = 0;
                 fps_counter2 = 0;
             } else {
-                fps_text = T_Print(10, 30, 0, fps_buf);
+                fps_text = T_Print(10, 30, fps_buf);
                 fps_counter1 = 0;
                 fps_counter2 = 0;
             }
@@ -366,30 +354,29 @@ void T_DrawThisText(TEXTSTRING *textstring)
     }
 
     char *string = textstring->string;
-    int32_t xpos = textstring->xpos;
-    int32_t ypos = textstring->ypos;
-    int32_t zpos = textstring->zpos;
+    int32_t x = textstring->xpos;
+    int32_t y = textstring->ypos;
     int32_t textwidth = T_GetTextWidth(textstring);
 
     if (textstring->flags & TF_CENTRE_H) {
-        xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
+        x += (GetRenderWidthDownscaled() - textwidth) / 2;
     } else if (textstring->flags & TF_RIGHT) {
-        xpos += GetRenderWidthDownscaled() - textwidth;
+        x += GetRenderWidthDownscaled() - textwidth;
     }
 
     if (textstring->flags & TF_CENTRE_V) {
-        ypos += GetRenderHeightDownscaled() / 2;
+        y += GetRenderHeightDownscaled() / 2;
     } else if (textstring->flags & TF_BOTTOM) {
-        ypos += GetRenderHeightDownscaled();
+        y += GetRenderHeightDownscaled();
     }
 
-    int32_t bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
+    int32_t bxpos = textstring->bgnd_off_x + x - TEXT_BOX_OFFSET;
     int32_t bypos =
-        textstring->bgnd_off_y + ypos - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+        textstring->bgnd_off_y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
 #ifdef DEBUG_TEXT_SPRITES
-    int32_t fx = GetRenderScale(xpos);
-    int32_t fy = GetRenderScale(ypos);
+    int32_t fx = GetRenderScale(x);
+    int32_t fy = GetRenderScale(y);
 #endif
 
     int32_t letter = '\0';
@@ -400,7 +387,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
         }
 
         if (letter == ' ') {
-            xpos += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
+            x += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
             continue;
         }
 
@@ -413,8 +400,8 @@ void T_DrawThisText(TEXTSTRING *textstring)
             sprite_num = letter + 81;
         }
 
-        sx = GetRenderScale(xpos);
-        sy = GetRenderScale(ypos);
+        sx = GetRenderScale(x);
+        sy = GetRenderScale(y);
         sh = GetRenderScale(textstring->scale_h);
         sv = GetRenderScale(textstring->scale_v);
 
@@ -432,15 +419,15 @@ void T_DrawThisText(TEXTSTRING *textstring)
 #endif
 
         S_DrawScreenSprite2d(
-            sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
+            sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, textstring->text_flags, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
-        xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
-                 * textstring->scale_h)
+        x += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
+              * textstring->scale_h)
             / PHD_ONE;
     }
 
@@ -472,20 +459,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sh = GetRenderScale(bwidth);
         sv = GetRenderScale(bheight);
 
-        if (textstring->bgnd_gour) {
-            int32_t bhw = sh / 2;
-            int32_t bhh = sv / 2;
-            int32_t bhw2 = sh - bhw;
-            int32_t bhh2 = sv - bhh;
-
-            S_DrawScreenFBox(sx, sy, bhw, bhh);
-            S_DrawScreenFBox(sx + bhw, sy, bhw2, bhh);
-            S_DrawScreenFBox(sx + bhw, sy + bhh, bhw, bhh2);
-            S_DrawScreenFBox(sx, sy + bhh, bhw2, bhh2);
-        } else {
-            S_DrawScreenFBox(sx, sy, sh, sv);
-            S_DrawScreenBox(sx, sy, sh, sv);
-        }
+        S_DrawScreenFBox(sx, sy, sh, sv);
     }
 
     if (textstring->flags & TF_OUTLINE) {
