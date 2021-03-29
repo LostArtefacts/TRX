@@ -31,9 +31,9 @@ void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
-// TODO: change to take RGB; remove z argument
 void HWR_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color);
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
+    RGB888 color2);
 void HWR_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br);

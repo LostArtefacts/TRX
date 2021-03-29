@@ -59,7 +59,11 @@ void S_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t sz, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags)
 {
-    HWR_Draw2DLine(sx, sy, sx + w, sy + h, 210, col);
+    RGB888 rgb;
+    rgb.r = 4 * GamePalette[col].r;
+    rgb.g = 4 * GamePalette[col].g;
+    rgb.b = 4 * GamePalette[col].b;
+    HWR_Draw2DLine(sx, sy, sx + w, sy + h, rgb, rgb);
 }
 
 void S_DrawScreenBox(

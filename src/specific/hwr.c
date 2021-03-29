@@ -92,23 +92,24 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
 }
 
 void HWR_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int32_t color)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
+    RGB888 color2)
 {
     C3D_VTCF vertex[2];
 
     vertex[0].x = (float)x1;
     vertex[0].y = (float)y1;
     vertex[0].z = 0.0;
-    vertex[0].r = (float)(4 * (char)GamePalette[color].r);
-    vertex[0].g = (float)(4 * (char)GamePalette[color].g);
-    vertex[0].b = (float)(4 * (char)GamePalette[color].b);
+    vertex[0].r = color1.r;
+    vertex[0].g = color1.g;
+    vertex[0].b = color1.b;
 
     vertex[1].x = (float)x2;
     vertex[1].y = (float)y2;
     vertex[1].z = 0.0;
-    vertex[1].r = vertex[0].r;
-    vertex[1].g = vertex[0].g;
-    vertex[1].b = vertex[0].b;
+    vertex[1].r = color2.r;
+    vertex[1].g = color2.g;
+    vertex[1].b = color2.b;
 
     C3D_VTCF *v_list[2] = { &vertex[0], &vertex[1] };
 
