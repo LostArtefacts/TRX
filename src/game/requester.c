@@ -85,7 +85,6 @@ int32_t DisplayRequester(REQUEST_INFO *req)
             T_SetScale(req->moreup, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
             T_CentreH(req->moreup, 1);
             T_BottomAlign(req->moreup, 1);
-            T_AddBackground(req->moreup, 16, 6, 0, 8);
         }
     } else {
         T_RemovePrint(req->moreup);
@@ -98,7 +97,6 @@ int32_t DisplayRequester(REQUEST_INFO *req)
             T_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
             T_CentreH(req->moredown, 1);
             T_BottomAlign(req->moredown, 1);
-            T_AddBackground(req->moredown, 16, 6, 0, 0);
         }
     } else {
         T_RemovePrint(req->moredown);
