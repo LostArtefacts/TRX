@@ -423,7 +423,8 @@ void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
         return;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    IDirectSoundBuffer_SetVolume(
+        buffer, ConvertVolumeToDecibel((MnSoundMasterVolume * volume) >> 6));
     IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
 }
 
