@@ -29,9 +29,7 @@ void S_DrawScreenGradientQuad(
 // TODO: remove unused arguments
 // TODO change to take RGB
 void S_DrawScreenLine(int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col);
-void S_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
-    SG_COL *gourptr, uint16_t flags);
+void S_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 void S_DrawScreenFBox(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
     SG_COL *gourptr, uint16_t flags);

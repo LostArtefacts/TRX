@@ -69,9 +69,7 @@ void S_DrawScreenLine(int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col)
     HWR_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
-void S_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
-    SG_COL *gourptr, uint16_t flags)
+void S_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     RGB888 rgb_border_light = S_ColourFromPalette(15);
     RGB888 rgb_border_dark = S_ColourFromPalette(31);

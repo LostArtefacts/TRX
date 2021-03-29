@@ -425,7 +425,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
         int32_t fx2 = sx + ((sh * sprite->x2) >> 16);
         int32_t fy1 = sy + ((sv * sprite->y1) >> 16);
         int32_t fy2 = sy + ((sv * sprite->y2) >> 16);
-        S_Draw2DLine(fx1, fy1, fx2, fy1, -100, 0);
+        S_DrawScreenLine(fx1, fy1, fx2, fy1, -100, 0);
         S_Draw2DLine(fx1, fy2, fx2, fy2, -100, 0);
         S_Draw2DLine(fx1, fy1, fx1, fy2, -100, 0);
         S_Draw2DLine(fx2, fy1, fx2, fy2, -100, 0);
@@ -501,8 +501,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
             S_DrawScreenFBox(
                 sx, sy, zpos + textstring->bgnd_off_z + 8, sh, sv,
                 textstring->bgnd_colour, 0, textstring->bgnd_flags);
-            S_DrawScreenBox(
-                sx, sy, textstring->bgnd_off_z + zpos, sh, sv, 0, 0, 0);
+            S_DrawScreenBox(sx, sy, sh, sv);
         }
     }
 
@@ -511,10 +510,7 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sy = GetRenderScale(bypos);
         sh = GetRenderScale(bwidth);
         sv = GetRenderScale(bheight);
-        S_DrawScreenBox(
-            sx, sy, zpos + textstring->bgnd_off_z, sh, sv,
-            textstring->outl_colour, textstring->outl_gour,
-            textstring->outl_flags);
+        S_DrawScreenBox(sx, sy, sh, sv);
     }
 }
 
