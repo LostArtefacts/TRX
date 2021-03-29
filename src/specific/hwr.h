@@ -21,6 +21,7 @@
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SwitchResolution        ((void      (*)())0x004089F4)
+#define HWR_DumpScreen              ((void      (*)())0x00408A70)
 // clang-format on
 
 void HWR_Error(HRESULT result);

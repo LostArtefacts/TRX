@@ -9,6 +9,7 @@
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
+#include "specific/smain.h"
 #include "util.h"
 
 #include <math.h>
@@ -237,6 +238,23 @@ void S_InitialisePolyList()
     phd_InitPolyList();
 }
 
+int32_t S_DumpScreen()
+{
+    HWR_DumpScreen();
+    int32_t ticks = WinSpinMessageLoop();
+    int32_t ret = ticks;
+    if (ticks < TICKS_PER_FRAME) {
+        ret = TICKS_PER_FRAME;
+        int32_t it = TICKS_PER_FRAME - ret;
+        while (it) {
+            while (!WinSpinMessageLoop())
+                ;
+            it--;
+        }
+    }
+    return ret;
+}
+
 void S_InitialiseScreen()
 {
     if (CurrentLevel != GF.title_level_num) {
@@ -459,6 +477,7 @@ void T1MInjectSpecificOutput()
 {
     INJECT(0x00402710, S_Draw2DLine);
     INJECT(0x0042FC60, S_InitialisePolyList);
+    INJECT(0x0042FC70, S_DumpScreen);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x00430100, S_CalculateLight);
     INJECT(0x00430290, S_CalculateStaticLight);

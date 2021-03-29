@@ -19,7 +19,7 @@ phd_RotYXZ                      0x00401500  0x000001E8  +
 phd_RotYXZpack                  0x004016F0  0x000001F3  +
 phd_TranslateRel                0x004018F0  0x000000AB  +
 phd_TranslateAbs                0x004019A0  0x0000007A  +
-visible_zclip                   0x00401A20  0x000000A9  +
+HWR_VisibleZClip                0x00401A20  0x000000A9  +
 phd_PutPolygons                 0x00401AD0  0x000000F3  *
 S_InsertRoom                    0x00401BD0  0x0000006E  *
 calc_object_vertices            0x00401C40  0x000001B6  -
@@ -89,7 +89,7 @@ sub_408409                      0x00408409  0x000000D5  x
 HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
 HWR_SwitchResolution            0x004089F4  0x0000007C  *
-HWR_DumpScreen                  0x00408A70  0x00000057  -
+HWR_DumpScreen                  0x00408A70  0x00000057  *
 HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  -
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  *
@@ -116,7 +116,7 @@ HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
 HWR_PrintShadow                 0x0040CADB  0x00000182  -
 HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
-sub_40D0F7                      0x0040D0F7  0x00000049  -
+HWR_InitPolyList                0x0040D0F7  0x00000049  -
 HWR_CacheTexture                0x0040D140  0x000001A0  -
 HWR_OutputPolyList              0x0040D2E0  0x00000185  -
 DoNothing                       0x0040D465  0x00000005  -
@@ -741,7 +741,7 @@ DisplayRequester                0x0042F6F0  0x0000056B  +
 
 # shell/output.cpp
 S_InitialisePolyList            0x0042FC60  0x00000005  +
-S_DumpScreen                    0x0042FC70  0x00000044  *
+S_DumpScreen                    0x0042FC70  0x00000044  +
 S_ClearScreen                   0x0042FCC0  0x00000013  *
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  *
