@@ -140,43 +140,12 @@ void GameMain()
             TitleLoaded = 1;
 
             dword_45B940 = 0;
-            Display_Inventory(INV_TITLE_MODE);
+            gf_option = Display_Inventory(INV_TITLE_MODE);
             dword_45B940 = 1;
 
             S_FadeToBlack();
             S_MusicStop();
 
-            if (ResetFlag) {
-                ResetFlag = 0;
-                gf_option = GF_START_DEMO;
-            } else if (InvChosen == O_PHOTO_OPTION) {
-                gf_option = GF_START_GAME | GF.gym_level_num;
-            } else if (InvChosen == O_PASSPORT_OPTION) {
-                if (InvExtraData[0] == 0) {
-                    gf_option = GF_START_SAVED_GAME | InvExtraData[1];
-                } else if (InvExtraData[0] == 1) {
-                    switch (InvExtraData[1]) {
-                    case 0:
-                        SaveGame.bonus_flag = 0;
-                        break;
-                    case 1:
-                        SaveGame.bonus_flag = GBF_NGPLUS;
-                        break;
-                    case 2:
-                        SaveGame.bonus_flag = GBF_JAPANESE;
-                        break;
-                    case 3:
-                        SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
-                        break;
-                    }
-                    InitialiseStartInfo();
-                    gf_option = GF_START_GAME | GF.first_level_num;
-                } else {
-                    gf_option = GF_EXIT_GAME;
-                }
-            } else {
-                gf_option = GF_EXIT_GAME;
-            }
             break;
 
         case GF_EXIT_GAME:

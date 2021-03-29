@@ -1023,6 +1023,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
 } GAMEFLOW_LEVEL_TYPE;
 
 typedef enum GAMEFLOW_OPTION {
+    GF_NOP_BREAK = -2,
     GF_NOP = -1,
     GF_START_GAME = 0,
     GF_START_CINE = 1 << 6,

@@ -2,10 +2,13 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/game.h"
 #include "game/health.h"
 #include "game/lara.h"
 #include "game/mnsound.h"
 #include "game/option.h"
+#include "game/savegame.h"
+#include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -603,16 +606,75 @@ int32_t Display_Inventory(int inv_mode)
     S_FinishInventory();
 
     if (ResetFlag) {
-        return GF_EXIT_TO_TITLE;
+        return GF_START_DEMO;
     }
 
     switch (InvChosen) {
     case O_PASSPORT_OPTION:
-        return GF_START_GAME | GF.first_level_num;
+        if (InvMode == INV_TITLE_MODE) {
+            if (InvExtraData[0] == 0) {
+                // page 1: load game
+                return GF_START_SAVED_GAME | InvExtraData[1];
+            } else if (InvExtraData[0] == 1) {
+                // page 2: new game
+                switch (InvExtraData[1]) {
+                case 0:
+                    SaveGame.bonus_flag = 0;
+                    break;
+                case 1:
+                    SaveGame.bonus_flag = GBF_NGPLUS;
+                    break;
+                case 2:
+                    SaveGame.bonus_flag = GBF_JAPANESE;
+                    break;
+                case 3:
+                    SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    break;
+                }
+                InitialiseStartInfo();
+                return GF_START_GAME | GF.first_level_num;
+            } else {
+                // page 3: exit game
+                return GF_EXIT_GAME;
+            }
+        } else {
+            if (InvExtraData[0] == 0) {
+                // page 1: load game
+                return GF_START_SAVED_GAME | InvExtraData[1];
+            } else if (InvExtraData[0] == 1) {
+                // page 1: save game, or new game in gym
+                if (CurrentLevel == GF.gym_level_num) {
+                    switch (InvExtraData[1]) {
+                    case 0:
+                        SaveGame.bonus_flag = 0;
+                        break;
+                    case 1:
+                        SaveGame.bonus_flag = GBF_NGPLUS;
+                        break;
+                    case 2:
+                        SaveGame.bonus_flag = GBF_JAPANESE;
+                        break;
+                    case 3:
+                        SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        break;
+                    }
+                    InitialiseStartInfo();
+                    return GF_START_GAME | GF.first_level_num;
+                } else {
+                    CreateSaveGameInfo();
+                    S_SaveGame(&SaveGame, InvExtraData[1]);
+                    S_WriteUserSettings();
+                    return GF_NOP;
+                }
+            } else {
+                // page 3: exit to title
+                return GF_EXIT_TO_TITLE;
+            }
+        }
 
     case O_PHOTO_OPTION:
         InvExtraData[1] = 0;
-        return GF_START_GAME | GF.first_level_num;
+        return GF_START_GAME | GF.gym_level_num;
 
     case O_GUN_OPTION:
         UseItem(O_GUN_OPTION);

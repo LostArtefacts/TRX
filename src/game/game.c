@@ -78,6 +78,10 @@ int32_t GameLoop(int32_t demo_mode)
         S_MusicVolume(OptionMusicVolume * 25 + 5);
     }
 
+    if (ret == GF_NOP_BREAK) {
+        return GF_NOP;
+    }
+
     return ret;
 }
 

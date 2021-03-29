@@ -4,7 +4,6 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/demo.h"
-#include "game/game.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -15,8 +14,6 @@
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
 #include "game/pause.h"
-#include "game/savegame.h"
-#include "game/settings.h"
 #include "game/sound.h"
 #include "game/traps/lava.h"
 #include "game/traps/movable_block.h"
@@ -144,7 +141,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CheckCheatMode();
         if (LevelComplete) {
-            return 1;
+            return GF_NOP_BREAK;
         }
 
         S_UpdateInput();
@@ -201,31 +198,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
                 OverlayFlag = 1;
                 if (return_val != GF_NOP) {
-                    if (InvExtraData[0] != 1) {
-                        return return_val;
-                    }
-                    if (CurrentLevel == GF.gym_level_num) {
-                        switch (InvExtraData[1]) {
-                        case 0:
-                            SaveGame.bonus_flag = 0;
-                            break;
-                        case 1:
-                            SaveGame.bonus_flag = GBF_NGPLUS;
-                            break;
-                        case 2:
-                            SaveGame.bonus_flag = GBF_JAPANESE;
-                            break;
-                        case 3:
-                            SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
-                            break;
-                        }
-                        InitialiseStartInfo();
-                        return GF_START_GAME | GF.first_level_num;
-                    }
-
-                    CreateSaveGameInfo();
-                    S_SaveGame(&SaveGame, InvExtraData[1]);
-                    S_WriteUserSettings();
+                    return return_val;
                 }
             }
         }

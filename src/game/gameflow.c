@@ -16,7 +16,6 @@
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -921,6 +920,10 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_GAME:
             ret = GameLoop(0);
+            LOG_DEBUG("GameLoop() exited with %d", ret);
+            if (ret != GF_NOP) {
+                return ret;
+            }
             break;
 
         case GFS_STOP_GAME:
