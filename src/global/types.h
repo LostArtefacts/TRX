@@ -1983,7 +1983,7 @@ typedef struct MN_SFX_PLAY_INFO {
     void *handle;
     PHD_3DPOS *pos;
     uint32_t loudness;
-    int16_t volume; // Need
+    int16_t volume;
     int16_t pan;
     int16_t fxnum;
     int16_t mn_flags;
@@ -1997,21 +1997,15 @@ typedef struct SAMPLE_INFO {
 } SAMPLE_INFO;
 
 typedef struct SAMPLE_DATA {
-    /* 0000 */ char *data;
-    /* 0004 */ int16_t length; // TODO: make me 32-bit!
-    /* 0006 */ int16_t bits_per_sample;
-    /* 0008 */ int16_t channels;
-    /* 000A */ int16_t unk1;
-    /* 000C */ int16_t sample_rate;
-    /* 000E */ int16_t unk2;
-    /* 0010 */ int16_t block_align;
-    /* 0012 */ int32_t unk3;
-    /* 0016 */ int16_t volume;
-    /* 0018 */ int32_t pan;
-    /* 001C */ int16_t unk4;
-    /* 001E */ void *handle;
-    /* 0022 */ int32_t unk5;
-    /* 0026 end */
+    char *data;
+    int32_t length;
+    int16_t bits_per_sample;
+    int16_t channels;
+    int16_t sample_rate;
+    int16_t block_align;
+    int16_t volume;
+    int32_t pan;
+    void *handle;
 } SAMPLE_DATA;
 
 #pragma pack(pop)

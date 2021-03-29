@@ -199,13 +199,11 @@ SAMPLE_DATA *SoundLoadSample(char *content)
 
     SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
     memset(sample_data, 0, sizeof(SAMPLE_DATA));
-    sample_data->unk2 = 0;
     sample_data->data = content + sizeof(WAVE_FILE_HEADER);
     sample_data->length =
         hdr->data_chunk.subchunk_size - sizeof(WAVE_FILE_HEADER);
     sample_data->bits_per_sample = hdr->fmt_chunk.bits_per_sample;
     sample_data->channels = hdr->fmt_chunk.num_channels;
-    sample_data->unk1 = 0;
     sample_data->block_align =
         sample_data->channels * hdr->fmt_chunk.bits_per_sample / 8;
     sample_data->sample_rate = hdr->fmt_chunk.sample_rate;
@@ -233,9 +231,7 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     buffer_desc.dwSize = sizeof(DSBUFFERDESC);
     buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN
         | DSBCAPS_CTRLFREQUENCY;
-    // re-read DATA chunk size.
-    // TODO: use SAMPLE_DATA->length
-    buffer_desc.dwBufferBytes = *(int32_t *)&sample_data->data[-4];
+    buffer_desc.dwBufferBytes = sample_data->length;
     buffer_desc.dwReserved = 0;
     buffer_desc.lpwfxFormat = &wave_format;
     CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
