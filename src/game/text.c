@@ -374,11 +374,6 @@ void T_DrawThisText(TEXTSTRING *textstring)
     int32_t bypos =
         textstring->bgnd_off_y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
-#ifdef DEBUG_TEXT_SPRITES
-    int32_t fx = GetRenderScale(x);
-    int32_t fy = GetRenderScale(y);
-#endif
-
     int32_t letter = '\0';
     while (*string) {
         letter = *string++;
@@ -405,19 +400,6 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sh = GetRenderScale(textstring->scale_h);
         sv = GetRenderScale(textstring->scale_v);
 
-#ifdef DEBUG_TEXT_SPRITES
-        PHD_SPRITE *sprite =
-            &PhdSpriteInfo[0][0] + Objects[O_ALPHABET].mesh_index + sprite_num;
-        int32_t fx1 = sx + ((sh * sprite->x1) >> 16);
-        int32_t fx2 = sx + ((sh * sprite->x2) >> 16);
-        int32_t fy1 = sy + ((sv * sprite->y1) >> 16);
-        int32_t fy2 = sy + ((sv * sprite->y2) >> 16);
-        S_DrawScreenLine(fx1, fy1, fx2, fy1, -100, 0);
-        S_Draw2DLine(fx1, fy2, fx2, fy2, -100, 0);
-        S_Draw2DLine(fx1, fy1, fx1, fy2, -100, 0);
-        S_Draw2DLine(fx2, fy1, fx2, fy2, -100, 0);
-#endif
-
         S_DrawScreenSprite2d(
             sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, textstring->text_flags, 0);
@@ -430,11 +412,6 @@ void T_DrawThisText(TEXTSTRING *textstring)
               * textstring->scale_h)
             / PHD_ONE;
     }
-
-#ifdef DEBUG_TEXT_SPRITES
-    S_Draw2DLine(fx - 5, fy, fx + 5, fy, -100, 112);
-    S_Draw2DLine(fx, fy - 5, fx, fy + 5, -100, 112);
-#endif
 
     int32_t bwidth = 0;
     int32_t bheight = 0;

@@ -324,16 +324,6 @@ void S_CalculateStaticLight(int16_t adder)
     }
 }
 
-void S_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, uint8_t color)
-{
-    RGB888 rgb;
-    rgb.r = 4 * GamePalette[color].r;
-    rgb.g = 4 * GamePalette[color].g;
-    rgb.b = 4 * GamePalette[color].b;
-    HWR_Draw2DLine(x1, y1, x2, y2, rgb, rgb);
-}
-
 void S_DrawHealthBar(int32_t percent)
 {
     RenderBar(percent, 100, BT_LARA_HEALTH);
@@ -475,7 +465,6 @@ void S_DrawLightningSegment(
 
 void T1MInjectSpecificOutput()
 {
-    INJECT(0x00402710, S_Draw2DLine);
     INJECT(0x0042FC60, S_InitialisePolyList);
     INJECT(0x0042FC70, S_DumpScreen);
     INJECT(0x0042FCE0, S_InitialiseScreen);
