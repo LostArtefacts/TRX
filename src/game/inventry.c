@@ -788,8 +788,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
                     break;
                 case SHAPE_FBOX:
                     S_DrawScreenFBox(
-                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
-                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
                     break;
                 }
                 spr++;

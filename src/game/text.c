@@ -478,29 +478,12 @@ void T_DrawThisText(TEXTSTRING *textstring)
             int32_t bhw2 = sh - bhw;
             int32_t bhh2 = sv - bhh;
 
-            S_DrawScreenFBox(
-                sx, sy, zpos + textstring->bgnd_off_z + 8, bhw, bhh,
-                textstring->bgnd_colour, textstring->bgnd_gour,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx + bhw, sy, zpos + textstring->bgnd_off_z + 8, bhw2, bhh,
-                textstring->bgnd_colour, textstring->bgnd_gour + 4,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx + bhw, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw,
-                bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 8,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw2, bhh2,
-                textstring->bgnd_colour, textstring->bgnd_gour + 12,
-                textstring->bgnd_flags);
+            S_DrawScreenFBox(sx, sy, bhw, bhh);
+            S_DrawScreenFBox(sx + bhw, sy, bhw2, bhh);
+            S_DrawScreenFBox(sx + bhw, sy + bhh, bhw, bhh2);
+            S_DrawScreenFBox(sx, sy + bhh, bhw2, bhh2);
         } else {
-            S_DrawScreenFBox(
-                sx, sy, zpos + textstring->bgnd_off_z + 8, sh, sv,
-                textstring->bgnd_colour, 0, textstring->bgnd_flags);
+            S_DrawScreenFBox(sx, sy, sh, sv);
             S_DrawScreenBox(sx, sy, sh, sv);
         }
     }

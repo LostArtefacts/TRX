@@ -83,9 +83,7 @@ void S_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
     S_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_dark);
 }
 
-void S_DrawScreenFBox(
-    int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, int32_t col,
-    SG_COL *gourptr, uint16_t flags)
+void S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
