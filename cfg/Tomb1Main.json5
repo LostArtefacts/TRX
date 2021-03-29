@@ -58,7 +58,7 @@
     "enable_timer_in_inventory": true,
 
     // Makes the healthbar and airbar use smooth color transitions.
-    "enable_smooth_bars": false,
+    "enable_smooth_bars": true,
 
     // Changes how the healthbar is displayed. Possible values:
     // - always: always show the healthbar
