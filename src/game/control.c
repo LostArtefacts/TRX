@@ -147,7 +147,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         S_UpdateInput();
 
         if (ResetFlag) {
-            return GF_EXIT_TO_TITLE;
+            return GF_NOP_BREAK;
         }
 
         if (demo_mode) {
