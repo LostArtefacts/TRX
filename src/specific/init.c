@@ -3,6 +3,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
 #include "global/vars.h"
+#include "specific/clock.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
@@ -83,6 +84,7 @@ void S_InitialiseSystem()
     DumpHeight = 480;
 
     SWRInit();
+    ClockInit();
     SoundInit();
     MusicInit();
     InputInit();
@@ -103,7 +105,6 @@ void S_ExitSystem(const char *message)
 {
     while (Input & IN_SELECT) {
         S_UpdateInput();
-        WinSpinMessageLoop();
     }
     if (GameMemoryPointer) {
         free(GameMemoryPointer);

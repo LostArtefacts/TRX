@@ -3,6 +3,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/ati.h"
+#include "specific/clock.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
@@ -47,7 +48,7 @@ void ShowFatalError(const char *message)
     TerminateGame(1);
 }
 
-int32_t WinSpinMessageLoop()
+void WinSpinMessageLoop()
 {
     MSG msg;
     do {
@@ -60,11 +61,6 @@ int32_t WinSpinMessageLoop()
             DispatchMessageA(&msg);
         }
     } while (!IsGameWindowActive);
-
-    int32_t time_ms = timeGetTime();
-    int32_t old_ticks = Ticks;
-    Ticks = time_ms * TICKS_PER_SECOND / 1000;
-    return Ticks - old_ticks;
 }
 
 static int InitDirectDraw()

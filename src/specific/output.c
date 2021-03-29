@@ -5,6 +5,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/clock.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
@@ -140,6 +141,7 @@ void BarLocation(
 
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 {
+    static int32_t blink_counter = 0;
     const int32_t percent_max = 100;
 
     if (value < 0) {
@@ -187,7 +189,7 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 
     const int32_t blink_interval = 20;
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
-    int32_t blink_time = Ticks % blink_interval;
+    int32_t blink_time = blink_counter++ % blink_interval;
     int32_t blink =
         percent <= blink_threshold && blink_time > blink_interval / 2;
 
@@ -241,18 +243,8 @@ void S_InitialisePolyList()
 int32_t S_DumpScreen()
 {
     HWR_DumpScreen();
-    int32_t ticks = WinSpinMessageLoop();
-    int32_t ret = ticks;
-    if (ticks < TICKS_PER_FRAME) {
-        ret = TICKS_PER_FRAME;
-        int32_t it = TICKS_PER_FRAME - ret;
-        while (it) {
-            while (!WinSpinMessageLoop())
-                ;
-            it--;
-        }
-    }
-    return ret;
+    WinSpinMessageLoop();
+    return ClockSyncTicks(TICKS_PER_FRAME);
 }
 
 void S_InitialiseScreen()

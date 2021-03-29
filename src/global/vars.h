@@ -12,7 +12,6 @@
 #define dword_45E960            VAR_U_(0x0045E960, int32_t)
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
-#define Ticks                   VAR_U_(0x0045A318, int32_t)
 #define PhdWinPtr               VAR_U_(0x006CAD0C, uint8_t*)
 #define PhdWinMaxX              VAR_U_(0x006CAD00, int32_t)
 #define PhdWinMaxY              VAR_U_(0x006CAD10, int32_t)

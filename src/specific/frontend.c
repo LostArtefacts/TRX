@@ -6,6 +6,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "specific/clock.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/hwr.h"
@@ -89,19 +90,17 @@ void S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
     HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
 
-void S_Wait(int32_t nframes)
+void S_Wait(int32_t nticks)
 {
-    for (int i = 0; i < nframes; i++) {
+    for (int i = 0; i < nticks; i++) {
         S_UpdateInput();
         if (KeyData->keys_held) {
             break;
         }
-        while (!WinSpinMessageLoop())
-            ;
+        ClockSyncTicks(1);
     }
     while (Input) {
         S_UpdateInput();
-        WinSpinMessageLoop();
     }
 }
 
@@ -185,6 +184,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
             break;
         }
         WinSpinMessageLoop();
+        ClockSync();
 
         if (T1MConfig.fix_fmv_esc_key) {
             if (KeyData->keymap[DIK_ESCAPE]) {

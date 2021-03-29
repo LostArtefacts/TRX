@@ -5,8 +5,7 @@
 
 void TerminateGame(int exit_code);
 void ShowFatalError(const char *message);
-
-int32_t WinSpinMessageLoop();
+void WinSpinMessageLoop();
 
 void T1MInjectSpecificSMain();
 

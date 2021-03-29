@@ -110,6 +110,8 @@ void S_UpdateInput()
 {
     int32_t linput = 0;
 
+    WinSpinMessageLoop();
+
     if (Key_(KEY_UP)) {
         linput |= IN_FORWARD;
     }
@@ -230,28 +232,29 @@ void S_UpdateInput()
 
     if (IsHardwareRenderer) {
         if (KeyData->keymap[DIK_F3]) {
-            AppSettings ^= 2u;
-            do {
+            AppSettings ^= ASF_BILINEAR;
+            while (KeyData->keymap[DIK_F3]) {
                 WinSpinMessageLoop();
-            } while (KeyData->keymap[DIK_F3]);
+            }
         }
 
         if (KeyData->keymap[DIK_F4]) {
-            AppSettings ^= 1u;
-            do {
+            AppSettings ^= ASF_PERSPECTIVE;
+            while (KeyData->keymap[DIK_F4]) {
                 WinSpinMessageLoop();
-            } while (KeyData->keymap[DIK_F4]);
+            }
         }
 
         if (KeyData->keymap[DIK_F2]) {
-            AppSettings ^= 4u;
-            do {
+            AppSettings ^= ASF_FPS;
+            while (KeyData->keymap[DIK_F2]) {
                 WinSpinMessageLoop();
-            } while (KeyData->keymap[DIK_F2]);
+            }
         }
     }
 
     Input = linput;
+
     return;
 }
 
