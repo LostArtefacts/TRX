@@ -128,11 +128,6 @@
     // Fixes the secret trigger in the final level not working.
     "fix_pyramid_secret_trigger": true,
 
-    // Fixes ability to obtain pistols by running out of ammo with other guns.
-    // (Happens if you get to shotgun before obtaining pistols in Natla's
-    // Mines)
-    "fix_illegal_gun_equip": true,
-
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 

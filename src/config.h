@@ -59,7 +59,6 @@ struct {
     int8_t fix_key_triggers;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;
-    int8_t fix_illegal_gun_equip;
     int8_t fix_secrets_killing_music;
     int8_t fix_creature_dist_calc;
     int32_t fov_value;

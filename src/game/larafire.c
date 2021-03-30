@@ -532,7 +532,7 @@ int32_t FireWeapon(
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
         SoundEffect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-        if (!T1MConfig.fix_illegal_gun_equip || Inv_RequestItem(O_GUN_ITEM)) {
+        if (Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
         }
         return 0;
