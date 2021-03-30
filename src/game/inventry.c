@@ -3,6 +3,7 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/game.h"
+#include "game/health.h"
 #include "game/lara.h"
 #include "game/mnsound.h"
 #include "game/option.h"
@@ -236,6 +237,7 @@ int32_t Display_Inventory(int inv_mode)
         phd_PopMatrix();
 
         mn_update_sound_effects();
+        DrawFPSInfo();
         T_DrawText();
         S_OutputPolyList();
 

@@ -5,6 +5,7 @@
 
 void MakeAmmoString(char *string);
 void DrawAmmoInfo();
+void DrawFPSInfo();
 void DrawGameInfo();
 void DrawHealthBar();
 void DrawEnemyBar();

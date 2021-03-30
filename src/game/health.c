@@ -6,6 +6,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/clock.h"
 #include "specific/output.h"
 #include "util.h"
 
@@ -26,8 +27,33 @@ void DrawGameInfo()
     }
 
     DrawAmmoInfo();
+    DrawFPSInfo();
 
     T_DrawText();
+}
+
+void DrawFPSInfo()
+{
+    static char fps_buf[20];
+    static int32_t elapsed = 0;
+
+    if (AppSettings & ASF_FPS) {
+        if (ClockGetMS() - elapsed >= 1000) {
+            if (FPSText) {
+                sprintf(fps_buf, "%d FPS", FPSCounter);
+                T_ChangeText(FPSText, fps_buf);
+            } else {
+                sprintf(fps_buf, "? FPS");
+                FPSText = T_Print(10, 30, fps_buf);
+            }
+            FPSCounter = 0;
+            elapsed = ClockGetMS();
+        }
+    } else if (FPSText) {
+        T_RemovePrint(FPSText);
+        FPSText = NULL;
+        FPSCounter = 0;
+    }
 }
 
 void DrawHealthBar()
