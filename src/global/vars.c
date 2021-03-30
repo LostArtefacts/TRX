@@ -20,6 +20,7 @@ char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
 double UITextScale;
 double UIBarScale;
+int32_t FramesPerSecondCounter = 0;
 
 void (*EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,

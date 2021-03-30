@@ -43,3 +43,8 @@ int32_t ClockSync()
     ClockUpdateTicks();
     return ((double)(Ticks - last_ticks) / Frequency);
 }
+
+int32_t ClockGetMS()
+{
+    return GetTickCount();
+}

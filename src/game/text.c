@@ -3,6 +3,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "specific/clock.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
 #include "util.h"
@@ -300,8 +301,7 @@ void T_DrawText()
     // Additionally, it's not present in TR2+.
     static TEXTSTRING *fps_text = NULL;
     static char fps_buf[20];
-    static int fps_counter1 = 0;
-    static int fps_counter2 = 0;
+    static int32_t elapsed = 0;
 
     // In case someone called T_RemoveAllPrints or similar.
     if (fps_text && !(fps_text->flags & TF_ACTIVE)) {
@@ -309,28 +309,21 @@ void T_DrawText()
     }
 
     if (AppSettings & ASF_FPS) {
-        int fps = ++fps_counter1;
-        int tmp = Camera.number_frames + fps_counter2;
-        fps_counter2 += Camera.number_frames;
-        if (tmp >= 60) {
-            sprintf(fps_buf, "%d FPS", fps);
+        if (ClockGetMS() - elapsed >= 1000) {
             if (fps_text) {
+                sprintf(fps_buf, "%d FPS", FramesPerSecondCounter);
                 T_ChangeText(fps_text, fps_buf);
-                fps_counter1 = 0;
-                fps_counter2 = 0;
             } else {
+                sprintf(fps_buf, "? FPS");
                 fps_text = T_Print(10, 30, fps_buf);
-                fps_counter1 = 0;
-                fps_counter2 = 0;
             }
-        }
-        if (Camera.number_frames > 30 && fps_text) {
-            T_RemovePrint(fps_text);
-            fps_text = NULL;
+            FramesPerSecondCounter = 0;
+            elapsed = ClockGetMS();
         }
     } else if (fps_text) {
         T_RemovePrint(fps_text);
         fps_text = NULL;
+        FramesPerSecondCounter = 0;
     }
 
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
