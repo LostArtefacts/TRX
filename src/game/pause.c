@@ -1,6 +1,5 @@
 #include "game/pause.h"
 
-#include "game/health.h"
 #include "game/requester.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -149,8 +148,9 @@ int8_t S_Pause()
     int old_overlay_flag = OverlayFlag;
     OverlayFlag = -3;
     InvMode = INV_PAUSE_MODE;
-    T_RemovePrint(AmmoText);
+    T_RemoveAllPrints();
     AmmoText = NULL;
+    FPSText = NULL;
     S_FadeInInventory(1);
     S_MusicVolume(0);
     TempVideoAdjust(HiRes, 1.0);

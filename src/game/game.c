@@ -123,7 +123,9 @@ void LevelStats(int32_t level_num)
     TEXTSTRING *txt;
 
     TempVideoAdjust(HiRes, 1.0);
-    T_InitPrint();
+    T_RemoveAllPrints();
+    AmmoText = NULL;
+    FPSText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);

@@ -96,6 +96,10 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         CurrentLevel = level_num;
     }
 
+    T_RemoveAllPrints();
+    AmmoText = NULL;
+    FPSText = NULL;
+
     InitialiseGameFlags();
 
     Lara.item_number = NO_ITEM;
@@ -155,7 +159,6 @@ void InitialiseGameFlags()
         Objects[i].loaded = 0;
     }
 
-    AmmoText = NULL;
     LevelComplete = 0;
     FlipEffect = -1;
     PierreItemNum = NO_ITEM;

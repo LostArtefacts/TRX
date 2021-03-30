@@ -299,31 +299,25 @@ void T_DrawText()
 {
     // TombATI FPS counter, pretty pointless IMO as it always shows 30 for me.
     // Additionally, it's not present in TR2+.
-    static TEXTSTRING *fps_text = NULL;
     static char fps_buf[20];
     static int32_t elapsed = 0;
 
-    // In case someone called T_RemoveAllPrints or similar.
-    if (fps_text && !(fps_text->flags & TF_ACTIVE)) {
-        fps_text = NULL;
-    }
-
     if (AppSettings & ASF_FPS) {
         if (ClockGetMS() - elapsed >= 1000) {
-            if (fps_text) {
-                sprintf(fps_buf, "%d FPS", FramesPerSecondCounter);
-                T_ChangeText(fps_text, fps_buf);
+            if (FPSText) {
+                sprintf(fps_buf, "%d FPS", FPSCounter);
+                T_ChangeText(FPSText, fps_buf);
             } else {
                 sprintf(fps_buf, "? FPS");
-                fps_text = T_Print(10, 30, fps_buf);
+                FPSText = T_Print(10, 30, fps_buf);
             }
-            FramesPerSecondCounter = 0;
+            FPSCounter = 0;
             elapsed = ClockGetMS();
         }
-    } else if (fps_text) {
-        T_RemovePrint(fps_text);
-        fps_text = NULL;
-        FramesPerSecondCounter = 0;
+    } else if (FPSText) {
+        T_RemovePrint(FPSText);
+        FPSText = NULL;
+        FPSCounter = 0;
     }
 
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {

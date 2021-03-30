@@ -244,7 +244,7 @@ int32_t S_DumpScreen()
 {
     HWR_DumpScreen();
     WinSpinMessageLoop();
-    FramesPerSecondCounter++;
+    FPSCounter++;
     return ClockSyncTicks(TICKS_PER_FRAME);
 }
 

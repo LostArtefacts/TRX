@@ -18,9 +18,12 @@
 char *ATIUserSettingsPath = "atiset.dat";
 char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
+int8_t IsGameWindowActive = 1;
 double UITextScale;
 double UIBarScale;
-int32_t FramesPerSecondCounter = 0;
+TEXTSTRING *AmmoText = NULL;
+TEXTSTRING *FPSText = NULL;
+int32_t FPSCounter = 0;
 
 void (*EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,
@@ -29,7 +32,6 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
     ChainBlock, Flicker,
 };
 
-int8_t IsGameWindowActive = 1;
 int32_t NoInputCount = 0;
 int32_t IDelay;
 int32_t IDCount;

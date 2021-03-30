@@ -14,7 +14,6 @@
 #define MAX_PICKUP_COLUMNS 4
 #define MAX_PICKUPS 16
 
-TEXTSTRING *AmmoText = NULL;
 static DISPLAYPU Pickups[MAX_PICKUPS];
 
 void DrawGameInfo()

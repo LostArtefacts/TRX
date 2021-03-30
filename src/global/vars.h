@@ -198,7 +198,9 @@ extern char *T1MUserSettingsPath;
 extern int8_t IsGameWindowActive;
 extern double UITextScale;
 extern double UIBarScale;
-extern int32_t FramesPerSecondCounter;
+extern TEXTSTRING *AmmoText;
+extern TEXTSTRING *FPSText;
+extern int32_t FPSCounter;
 
 extern void (*EffectRoutines[])(ITEM_INFO *item);
 

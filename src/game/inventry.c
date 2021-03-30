@@ -3,7 +3,6 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/game.h"
-#include "game/health.h"
 #include "game/lara.h"
 #include "game/mnsound.h"
 #include "game/option.h"
