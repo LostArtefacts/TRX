@@ -76,7 +76,7 @@ HWR_RenderToggle                0x00407862  0x0000001A  +
 HWR_GetSurfaceAndPitch          0x0040787C  0x00000095  -
 HWR_SetupRenderContextAndRender2 0x00407911  0x0000004E  -
 HWR_SetupRenderContextAndRender 0x0040795F  0x0000008A  -
-HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  -
+HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  *
 HWR_ClearSurface                0x00407A49  0x00000048  +
 sub_407A91                      0x00407A91  0x00000141  -
 HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  -
@@ -89,7 +89,7 @@ sub_408409                      0x00408409  0x000000D5  x
 HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
 HWR_SwitchResolution            0x004089F4  0x0000007C  *
-HWR_DumpScreen                  0x00408A70  0x00000057  *
+HWR_DumpScreen                  0x00408A70  0x00000057  +
 HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  -
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  *

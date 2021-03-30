@@ -26,6 +26,7 @@
 #define HWR_OldIsRendering      VAR_U_(0x00463568, int32_t)
 #define HWR_IsRendering         VAR_U_(0x00459F34, int32_t)
 #define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
+#define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
 // clang-format on
 
 #endif

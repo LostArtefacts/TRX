@@ -71,7 +71,7 @@
 <rect width="12.00" height="12.00" x="252.00" y="31.00" class="named"><title>HWR_DownloadTextures</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="31.00" class="named"><title>HWR_SetPalette</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="31.00" class="named"><title>HWR_SwitchResolution</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="31.00" class="named"><title>HWR_DumpScreen</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="31.00" class="decompiled"><title>HWR_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="31.00" class="named"><title>HWR_ClearSurfaceDepth</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="31.00" class="decompiled"><title>HWR_BlitSurface</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="31.00" class="named"><title>HWR_CopyPicture</title></rect>
@@ -1196,7 +1196,7 @@
 <rect width="6.59" height="5.85" x="602.42" y="499.17" class="decompiled"><title>ObjectCollision</title></rect>
 <rect width="6.59" height="5.85" x="602.42" y="507.03" class="decompiled"><title>DoBloodSplat</title></rect>
 <rect width="6.59" height="5.77" x="602.42" y="514.88" class="decompiled"><title>DrawEvilLara</title></rect>
-<rect width="6.59" height="5.68" x="602.42" y="522.65" class="named"><title>HWR_DumpScreen</title></rect>
+<rect width="6.59" height="5.68" x="602.42" y="522.65" class="decompiled"><title>HWR_DumpScreen</title></rect>
 <rect width="6.59" height="5.68" x="602.42" y="530.32" class="decompiled"><title>Inv_RingMotionItemSelect</title></rect>
 <rect width="6.15" height="6.09" x="611.01" y="450.64" class="decompiled"><title>LaraAsFastBack</title></rect>
 <rect width="6.05" height="6.09" x="619.16" y="450.64" class="decompiled"><title>LaraColDefault</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 90.77%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.11%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.71%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.13%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 90.91%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.57%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.09%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>

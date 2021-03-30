@@ -69,6 +69,12 @@ void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
     }
 }
 
+void HWR_DumpScreen()
+{
+    HWR_FlipPrimaryBuffer();
+    HWR_SelectedTexture = -1;
+}
+
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 {
     RECT rect;
@@ -660,12 +666,13 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
     INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
-    INJECT(0x0040C7EE, HWR_Draw2DLine);
-    INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
-    INJECT(0x0040D056, HWR_DrawLightningSegment);
-    INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040904D, HWR_ClipVertices);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040C7EE, HWR_Draw2DLine);
+    INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
+    INJECT(0x0040CC5D, HWR_RenderLightningSegment);
+    INJECT(0x0040D056, HWR_DrawLightningSegment);
 }
