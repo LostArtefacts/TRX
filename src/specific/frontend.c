@@ -187,16 +187,10 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         WinSpinMessageLoop();
         ClockSync();
 
-        if (T1MConfig.fix_fmv_esc_key) {
-            if (Input & IN_DESELECT) {
-                keypress = 1;
-            } else if (keypress && !(Input & IN_DESELECT)) {
-                break;
-            }
-        } else {
-            if (Input & IN_DESELECT) {
-                break;
-            }
+        if (Input & IN_DESELECT) {
+            keypress = 1;
+        } else if (keypress && !(Input & IN_DESELECT)) {
+            break;
         }
     }
 

@@ -133,10 +133,6 @@
     // Mines)
     "fix_illegal_gun_equip": true,
 
-    // Fixes skipping FMVs with Esc key triggering inventory if the key is held
-    // for longer than 1 frame.
-    "fix_fmv_esc_key": true,
-
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 
