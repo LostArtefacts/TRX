@@ -73,8 +73,7 @@ void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info)
 
     PHD_ANGLE angle = phd_atan(z, x);
     info->distance = SQUARE(x) + SQUARE(z);
-    if (T1MConfig.fix_creature_dist_calc
-        && (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE)) {
+    if (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE) {
         info->distance = SQUARE(MAX_CREATURE_DISTANCE);
     }
     info->angle = angle - item->pos.y_rot;
