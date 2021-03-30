@@ -95,6 +95,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed the sound of collecting a secret killing music
 - fixed infamous Tihocan crocodile bug
 - fixed Lara jumping forever when alt+tabbing out of the game
+- fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
 
 ## Showcase
 

@@ -1329,7 +1329,7 @@ typedef struct FLOOR_INFO {
 
 typedef struct DOORPOS_DATA {
     /* 0000 */ FLOOR_INFO *floor;
-    /* 0004 */ FLOOR_INFO data;
+    /* 0004 */ FLOOR_INFO old_floor;
     /* 000C */ int16_t block;
     /* 000E end */
 } DOORPOS_DATA;

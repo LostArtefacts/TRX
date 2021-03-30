@@ -7,6 +7,10 @@
 #include "global/vars.h"
 #include "specific/init.h"
 
+static void OpenThatDoor(DOORPOS_DATA *d);
+static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item);
+static int8_t LaraDoorCollision(ITEM_INFO *item);
+
 void SetupDoor(OBJECT_INFO *obj)
 {
     obj->initialise = InitialiseDoor;
@@ -17,10 +21,27 @@ void SetupDoor(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void ShutThatDoor(DOORPOS_DATA *d)
+static int8_t LaraDoorCollision(ITEM_INFO *item)
+{
+    if (!LaraItem) {
+        return 0;
+    }
+    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
+    int32_t dx = ABS(item->pos.x - LaraItem->pos.x) >> 8;
+    int32_t dy = ABS(item->pos.y - LaraItem->pos.y) >> 8;
+    int32_t dz = ABS(item->pos.z - LaraItem->pos.z) >> 8;
+    int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    return dist < max_dist;
+}
+
+static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item)
 {
     FLOOR_INFO *floor = d->floor;
     if (!floor) {
+        return;
+    }
+
+    if (LaraDoorCollision(item)) {
         return;
     }
 
@@ -37,14 +58,14 @@ void ShutThatDoor(DOORPOS_DATA *d)
     }
 }
 
-void OpenThatDoor(DOORPOS_DATA *d)
+static void OpenThatDoor(DOORPOS_DATA *d)
 {
     FLOOR_INFO *floor = d->floor;
     if (!floor) {
         return;
     }
 
-    *floor = d->data;
+    *floor = d->old_floor;
 
     int16_t box_num = d->block;
     if (box_num != NO_BOX) {
@@ -94,7 +115,7 @@ void InitialiseDoor(int16_t item_num)
         box_num = NO_BOX;
     }
     door->d1.block = box_num;
-    door->d1.data = *door->d1.floor;
+    door->d1.old_floor = *door->d1.floor;
 
     if (r->flipped_room != -1) {
         r = &RoomInfo[r->flipped_room];
@@ -114,14 +135,14 @@ void InitialiseDoor(int16_t item_num)
             box_num = NO_BOX;
         }
         door->d1flip.block = box_num;
-        door->d1flip.data = *door->d1flip.floor;
+        door->d1flip.old_floor = *door->d1flip.floor;
     } else {
         door->d1flip.floor = NULL;
     }
 
     room_num = GetDoor(door->d1.floor);
-    ShutThatDoor(&door->d1);
-    ShutThatDoor(&door->d1flip);
+    ShutThatDoor(&door->d1, item);
+    ShutThatDoor(&door->d1flip, item);
 
     if (room_num == NO_ROOM) {
         door->d2.floor = NULL;
@@ -146,7 +167,7 @@ void InitialiseDoor(int16_t item_num)
         box_num = NO_BOX;
     }
     door->d2.block = box_num;
-    door->d2.data = *door->d2.floor;
+    door->d2.old_floor = *door->d2.floor;
 
     if (r->flipped_room != -1) {
         r = &RoomInfo[r->flipped_room];
@@ -166,13 +187,13 @@ void InitialiseDoor(int16_t item_num)
             box_num = NO_BOX;
         }
         door->d2flip.block = box_num;
-        door->d2flip.data = *door->d2flip.floor;
+        door->d2flip.old_floor = *door->d2flip.floor;
     } else {
         door->d2flip.floor = NULL;
     }
 
-    ShutThatDoor(&door->d2);
-    ShutThatDoor(&door->d2flip);
+    ShutThatDoor(&door->d2, item);
+    ShutThatDoor(&door->d2flip, item);
 }
 
 void DoorControl(int16_t item_num)
@@ -193,10 +214,10 @@ void DoorControl(int16_t item_num)
         if (item->current_anim_state == DOOR_OPEN) {
             item->goal_anim_state = DOOR_CLOSED;
         } else {
-            ShutThatDoor(&door->d1);
-            ShutThatDoor(&door->d2);
-            ShutThatDoor(&door->d1flip);
-            ShutThatDoor(&door->d2flip);
+            ShutThatDoor(&door->d1, item);
+            ShutThatDoor(&door->d2, item);
+            ShutThatDoor(&door->d1flip, item);
+            ShutThatDoor(&door->d2flip, item);
         }
     }
 
@@ -209,10 +230,10 @@ void OpenNearestDoors(ITEM_INFO *lara_item)
 
     for (int item_num = 0; item_num < LevelItemCount; item_num++) {
         ITEM_INFO *item = &Items[item_num];
-        int32_t x = (item->pos.x - lara_item->pos.x) >> 8;
-        int32_t y = (item->pos.y - lara_item->pos.y) >> 8;
-        int32_t z = (item->pos.z - lara_item->pos.z) >> 8;
-        int32_t dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
+        int32_t dx = (item->pos.x - lara_item->pos.x) >> 8;
+        int32_t dy = (item->pos.y - lara_item->pos.y) >> 8;
+        int32_t dz = (item->pos.z - lara_item->pos.z) >> 8;
+        int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
 
         if (dist > max_dist) {
             continue;
