@@ -135,7 +135,6 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(enable_compass_stats, 1);
     READ_BOOL(enable_timer_in_inventory, 1);
     READ_BOOL(enable_smooth_bars, 1);
-    READ_BOOL(fix_key_triggers, 1);
     READ_BOOL(fix_tihocan_secret_sound, 1);
     READ_BOOL(fix_pyramid_secret_trigger, 1);
     READ_BOOL(fix_secrets_killing_music, 1);

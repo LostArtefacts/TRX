@@ -129,9 +129,7 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 int32_t KeyTrigger(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
-    if (item->status == IS_ACTIVE
-        && (T1MConfig.fix_key_triggers ? Lara.gun_status != LGS_HANDSBUSY
-                                       : Lara.gun_status == LGS_ARMLESS)) {
+    if (item->status == IS_ACTIVE && Lara.gun_status != LGS_HANDSBUSY) {
         item->status = IS_DEACTIVATED;
         return 1;
     }

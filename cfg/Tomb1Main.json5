@@ -117,10 +117,6 @@
     // Color of the enemy healthbar.
     "enemy_healthbar_color": "grey",
 
-    // Fixes key and puzzle triggers not activating when Lara draws guns
-    // immediately after using them.
-    "fix_key_triggers": true,
-
     // Disables the secret sound incorrectly playing during using the golden
     // key in Tomb of Tihocan.
     "fix_tihocan_secret_sound": true,
