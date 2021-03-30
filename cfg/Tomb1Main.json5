@@ -121,9 +121,6 @@
     // immediately after using them.
     "fix_key_triggers": true,
 
-    // Fixes game freeze when ending the level with the Action key held.
-    "fix_end_of_level_freeze": true,
-
     // Disables the secret sound incorrectly playing during using the golden
     // key in Tomb of Tihocan.
     "fix_tihocan_secret_sound": true,

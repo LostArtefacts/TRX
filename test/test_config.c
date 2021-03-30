@@ -35,7 +35,6 @@ void test_empty_config()
     ASSERT_INT_EQUAL(T1MConfig.enemy_healthbar_location, T1M_BL_BOTTOM_LEFT);
     ASSERT_INT_EQUAL(T1MConfig.enemy_healthbar_color, T1M_BC_GREY);
     ASSERT_INT_EQUAL(T1MConfig.fix_key_triggers, 1);
-    ASSERT_INT_EQUAL(T1MConfig.fix_end_of_level_freeze, 1);
     ASSERT_INT_EQUAL(T1MConfig.fix_tihocan_secret_sound, 1);
     ASSERT_INT_EQUAL(T1MConfig.fix_pyramid_secret_trigger, 1);
     ASSERT_INT_EQUAL(T1MConfig.fix_illegal_gun_equip, 1);

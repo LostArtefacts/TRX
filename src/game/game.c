@@ -180,20 +180,8 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // wait till action key release
-    if (T1MConfig.fix_end_of_level_freeze) {
-        while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
-            S_UpdateInput();
-            S_InitialisePolyList();
-            S_CopyBufferToScreen();
-            S_UpdateInput();
-            T_DrawText();
-            S_OutputPolyList();
-            S_DumpScreen();
-        }
-    } else {
-        while (Input & IN_SELECT) {
-            S_UpdateInput();
-        }
+    while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+        S_UpdateInput();
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
