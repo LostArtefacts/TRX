@@ -992,10 +992,10 @@ void DefaultConflict()
 {
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
         int16_t key = Layout[INPUT_LAYOUT_DEFAULT][i];
-        Conflict[i] = 0;
+        ConflictLayout[i] = 0;
         for (int j = 0; j < KEY_NUMBER_OF; j++) {
             if (key == Layout[INPUT_LAYOUT_USER][j]) {
-                Conflict[i] = 1;
+                ConflictLayout[i] = 1;
                 break;
             }
         }
@@ -1174,7 +1174,6 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (!CHK_ANY(Input, IN_SELECT)) {
             KeyMode = 2;
         }
-        KeyClearBuffer();
         break;
 
     case 2:
@@ -1199,7 +1198,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         key = Layout[IConfig][KeyChange];
 
         if (!CHK_ANY(key, IN_OPTION)) {
-            if (!KeyData->keymap[key]) {
+            if (KeyGet() < 0 || KeyGet() != key) {
                 KeyMode = 0;
                 FlashConflicts();
                 S_WriteUserSettings();

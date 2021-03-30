@@ -12,7 +12,6 @@
 #define AuxDeviceID             VAR_U_(0x0045B984, uint32_t)
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
-#define HHK                     VAR_U_(0x0045A93C, HHOOK)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
 #define DDrawSurfaceMinX        VAR_I_(0x00459F24, float, 0.0)
 #define DDrawSurfaceMinY        VAR_I_(0x00459F20, float, 0.0)
@@ -31,5 +30,7 @@
 #define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
 #define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
 // clang-format on
+
+HINSTANCE TombModule;
 
 #endif

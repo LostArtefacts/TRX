@@ -94,7 +94,6 @@ extern int32_t IDCount;
 extern int32_t Input;
 extern int32_t InputDB;
 extern int32_t KeyChange;
-extern KEYSTUFF* KeyData;
 
 #define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
 #define SoundInit1              VAR_U_(0x0045A31C, int32_t)

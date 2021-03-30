@@ -1683,19 +1683,6 @@ typedef struct STATIC_INFO {
     /* 001C end */
 } STATIC_INFO;
 
-typedef struct KEYSTUFF {
-    /* 0000 */ uint8_t keymap[128];
-    /* 0080 */ uint8_t oldkeymap[128];
-    /* 0100 */ uint8_t keybuf[64];
-    /* 0140 */ uint8_t bufin;
-    /* 0141 */ uint8_t bufout;
-    /* 0142 */ uint8_t bufchars;
-    /* 0143 */ uint8_t extended;
-    /* 0144 */ uint8_t last_key;
-    /* 0145 */ uint8_t keys_held;
-    /* 0146 end */
-} KEYSTUFF;
-
 typedef struct GAME_VECTOR {
     /* 0000 */ int32_t x;
     /* 0004 */ int32_t y;

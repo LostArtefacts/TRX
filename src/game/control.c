@@ -151,7 +151,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (demo_mode) {
-            if (KeyData->keys_held) {
+            if (Input) {
                 return GF_EXIT_TO_TITLE;
             }
             GetDemoInput();

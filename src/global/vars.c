@@ -38,7 +38,6 @@ int32_t IDCount;
 int32_t Input;
 int32_t InputDB;
 int32_t KeyChange;
-KEYSTUFF *KeyData;
 
 GAMEFLOW GF;
 LARA_INFO Lara;

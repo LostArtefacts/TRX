@@ -94,7 +94,7 @@ void S_Wait(int32_t nticks)
 {
     for (int i = 0; i < nticks; i++) {
         S_UpdateInput();
-        if (KeyData->keys_held) {
+        if (Input) {
             break;
         }
         ClockSyncTicks(1);
@@ -183,17 +183,18 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
                 movie_context, fmv_context, sound_context, 0, 0, 0, 0, 0)) {
             break;
         }
+        S_UpdateInput();
         WinSpinMessageLoop();
         ClockSync();
 
         if (T1MConfig.fix_fmv_esc_key) {
-            if (KeyData->keymap[DIK_ESCAPE]) {
+            if (Input & IN_DESELECT) {
                 keypress = 1;
-            } else if (keypress && !KeyData->keymap[DIK_ESCAPE]) {
+            } else if (keypress && !(Input & IN_DESELECT)) {
                 break;
             }
         } else {
-            if (KeyData->keymap[DIK_ESCAPE]) {
+            if (Input & IN_DESELECT) {
                 break;
             }
         }

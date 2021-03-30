@@ -30,7 +30,6 @@ static const char *WindowName = "Tomb Raider";
 // clang-format on
 
 static void WinGameFinish();
-static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam);
 static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static int InitDirectDraw();
 
@@ -140,13 +139,6 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         } else if (!wParam && IsGameWindowActive) {
             S_MusicVolume(0);
         }
-        if (wParam && !IsGameWindowActive) {
-            // TODO: remove this after switching to DInput
-            for (int i = 0; i < 256; i++) {
-                KeyData->keymap[i] = 0;
-            }
-            KeyData->keys_held = 0;
-        }
         IsGameWindowActive = wParam != 0;
         return 1;
 
@@ -174,37 +166,6 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
-}
-
-static LRESULT WINAPI KeyboardHook(int code, WPARAM wParam, LPARAM lParam)
-{
-    if (code < 0) {
-        return CallNextHookEx(HHK, code, wParam, lParam);
-    }
-
-    uint32_t keyData = (uint32_t)lParam;
-    uint32_t scan_code = (keyData >> 16) & 0xFF;
-    uint32_t extended = (keyData >> 24) & 0x1;
-    uint32_t pressed = ~keyData >> 31;
-
-    if (scan_code == DIK_LCONTROL) {
-        scan_code = DIK_RCONTROL;
-    } else if (scan_code == DIK_LSHIFT) {
-        scan_code = DIK_RSHIFT;
-    } else if (scan_code == DIK_LMENU) {
-        scan_code = DIK_RMENU;
-    } else if (extended) {
-        scan_code += 128;
-    }
-
-    if (!KeyData) {
-        return CallNextHookEx(HHK, code, wParam, lParam);
-    }
-
-    KeyData->keymap[scan_code] = pressed;
-    KeyData->keys_held = pressed;
-
-    return wParam == VK_MENU;
 }
 
 static void WinGameFinish()
@@ -245,6 +206,7 @@ int WINAPI WinMain(
     int32_t scr_height = GetSystemMetrics(SM_CYSCREEN);
     int32_t scr_width = GetSystemMetrics(SM_CXSCREEN);
 
+    TombModule = hInstance;
     TombHWND = CreateWindowExA(
         0, ClassName, WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
         scr_width, scr_height, 0, 0, hInstance, 0);
@@ -258,8 +220,6 @@ int WINAPI WinMain(
     ShowWindow(TombHWND, nShowCmd);
     UpdateWindow(TombHWND);
     CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
-    HHK =
-        SetWindowsHookExA(WH_KEYBOARD, &KeyboardHook, 0, GetCurrentThreadId());
 
     if (!InitDirectDraw()) {
         WinGameFinish();
@@ -279,7 +239,6 @@ void T1MInjectSpecificSMain()
     INJECT(0x0043D070, InitDirectDraw);
     INJECT(0x0043D510, TerminateGame);
     INJECT(0x0043D770, ShowFatalError);
-    INJECT(0x0043D8C0, KeyboardHook);
     INJECT(0x0043DA80, WinMain);
     INJECT(0x0043DE00, WndProc);
 }
