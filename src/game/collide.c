@@ -56,7 +56,7 @@ void GetCollisionInfo(
     int32_t xfront;
     int32_t zfront;
     switch (coll->quadrant) {
-    case 0:
+    case DIR_NORTH:
         xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
         zfront = coll->radius;
         xleft = -coll->radius;
@@ -65,7 +65,7 @@ void GetCollisionInfo(
         zright = coll->radius;
         break;
 
-    case 1:
+    case DIR_EAST:
         xfront = coll->radius;
         zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
         xleft = coll->radius;
@@ -74,7 +74,7 @@ void GetCollisionInfo(
         zright = -coll->radius;
         break;
 
-    case 2:
+    case DIR_SOUTH:
         xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
         zfront = -coll->radius;
         xleft = coll->radius;
@@ -83,7 +83,7 @@ void GetCollisionInfo(
         zright = -coll->radius;
         break;
 
-    case 3:
+    case DIR_WEST:
         xfront = -coll->radius;
         zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
         xleft = -coll->radius;
@@ -215,14 +215,14 @@ void GetCollisionInfo(
     if (coll->front_floor > coll->bad_pos || coll->front_floor < coll->bad_neg
         || coll->front_ceiling > coll->bad_ceiling) {
         switch (coll->quadrant) {
-        case 0:
-        case 2:
+        case DIR_NORTH:
+        case DIR_SOUTH:
             coll->shift.x = coll->old.x - xpos;
             coll->shift.z = FindGridShift(zpos + zfront, zpos);
             break;
 
-        case 1:
-        case 3:
+        case DIR_EAST:
+        case DIR_WEST:
             coll->shift.x = FindGridShift(xpos + xfront, xpos);
             coll->shift.z = coll->old.z - zpos;
             break;
@@ -242,13 +242,13 @@ void GetCollisionInfo(
 
     if (coll->left_floor > coll->bad_pos || coll->left_floor < coll->bad_neg) {
         switch (coll->quadrant) {
-        case 0:
-        case 2:
+        case DIR_NORTH:
+        case DIR_SOUTH:
             coll->shift.x = FindGridShift(xpos + xleft, xpos + xfront);
             break;
 
-        case 1:
-        case 3:
+        case DIR_EAST:
+        case DIR_WEST:
             coll->shift.z = FindGridShift(zpos + zleft, zpos + zfront);
             break;
         }
@@ -260,13 +260,13 @@ void GetCollisionInfo(
     if (coll->right_floor > coll->bad_pos
         || coll->right_floor < coll->bad_neg) {
         switch (coll->quadrant) {
-        case 0:
-        case 2:
+        case DIR_NORTH:
+        case DIR_SOUTH:
             coll->shift.x = FindGridShift(xpos + xright, xpos + xfront);
             break;
 
-        case 1:
-        case 3:
+        case DIR_EAST:
+        case DIR_WEST:
             coll->shift.z = FindGridShift(zpos + zright, zpos + zfront);
             break;
         }
