@@ -94,6 +94,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed settings not persisting chosen layout (default vs. user keys)
 - fixed the sound of collecting a secret killing music
 - fixed infamous Tihocan crocodile bug
+- fixed Lara jumping forever when alt+tabbing out of the game
 
 ## Showcase
 
