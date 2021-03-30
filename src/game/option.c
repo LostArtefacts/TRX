@@ -1022,6 +1022,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         KeyChange = -1;
         T_AddBackground(CtrlText[0], 0, 0, 0, 0);
+        T_AddOutline(CtrlText[0], 1);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
@@ -1050,6 +1051,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 S_WriteUserSettings();
             } else {
                 T_RemoveBackground(CtrlTextA[KeyChange]);
+                T_RemoveOutline(CtrlTextA[KeyChange]);
 
                 int col_idx[2] = { 0, 0 };
                 const TEXT_COLUMN_PLACEMENT *sel_col;
@@ -1079,6 +1081,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 }
 
                 T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
+                T_AddOutline(CtrlTextA[KeyChange], 1);
             }
         } else if (
             CHK_ANY(InputDB, IN_DESELECT)
@@ -1093,8 +1096,12 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
                 T_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
+                T_RemoveOutline(CtrlTextA[KeyChange]);
+                T_AddOutline(CtrlTextB[KeyChange], 1);
             } else if (CHK_ANY(InputDB, IN_FORWARD)) {
                 T_RemoveBackground(
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                T_RemoveOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 if (KeyChange == -1) {
@@ -1123,8 +1130,12 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 T_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
                     0, 0);
+                T_AddOutline(
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
             } else if (CHK_ANY(InputDB, IN_BACK)) {
                 T_RemoveBackground(
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                T_RemoveOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 if (KeyChange == -1) {
@@ -1153,6 +1164,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 T_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
                     0, 0);
+                T_AddOutline(
+                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
             }
         }
         break;
@@ -1173,7 +1186,9 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             Layout[IConfig][KeyChange] = key;
             T_ChangeText(CtrlTextB[KeyChange], ScanCodeNames[key]);
             T_RemoveBackground(CtrlTextB[KeyChange]);
+            T_RemoveOutline(CtrlTextB[KeyChange]);
             T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
+            T_AddOutline(CtrlTextA[KeyChange], 1);
             KeyMode = 3;
             FlashConflicts();
             S_WriteUserSettings();
@@ -1260,6 +1275,7 @@ void S_ShowControls()
     int16_t width = 420;
     int16_t height = max_y + CONTROLS_BORDER * 2 - CONTROLS_TOP_Y;
     T_AddBackground(CtrlText[1], width, height, 0, 0);
+    T_AddOutline(CtrlText[1], 1);
 
     FlashConflicts();
 }
