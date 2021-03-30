@@ -12,7 +12,6 @@
 // TODO: port ATI3DCIF to actual D3D calls
 
 // clang-format off
-#define HWR_FlipPrimaryBuffer       ((void      (*)())0x004079E9)
 #define HWR_InitialiseHardware      ((void      (*)())0x00408005)
 #define HWR_ShutdownHardware        ((void      (*)())0x00408323)
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
@@ -22,6 +21,7 @@
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SwitchResolution        ((void      (*)())0x004089F4)
+#define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
 // clang-format on
 
 void HWR_Error(HRESULT result);
@@ -31,6 +31,7 @@ void HWR_RenderToggle();
 void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_DumpScreen();
+void HWR_FlipPrimaryBuffer();
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(

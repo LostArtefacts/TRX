@@ -75,6 +75,23 @@ void HWR_DumpScreen()
     HWR_SelectedTexture = -1;
 }
 
+void HWR_FlipPrimaryBuffer()
+{
+    HWR_RenderEnd();
+    HRESULT result = IDirectDrawSurface_Flip(Surface1, NULL, DDFLIP_WAIT);
+    if (result) {
+        HWR_Error(result);
+        return;
+    }
+    HWR_RenderToggle();
+
+    void *old_ptr = Surface2DrawPtr;
+    Surface2DrawPtr = Surface1DrawPtr;
+    Surface1DrawPtr = old_ptr;
+
+    HWR_SetupRenderContextAndRender();
+}
+
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 {
     RECT rect;
@@ -665,6 +682,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407827, HWR_RenderBegin);
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
+    INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);

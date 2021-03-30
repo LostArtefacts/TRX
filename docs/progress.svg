@@ -58,7 +58,7 @@
 <rect width="12.00" height="12.00" x="70.00" y="31.00" class="named"><title>HWR_GetSurfaceAndPitch</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="31.00" class="named"><title>HWR_SetupRenderContextAndRender2</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="31.00" class="named"><title>HWR_SetupRenderContextAndRender</title></rect>
-<rect width="12.00" height="12.00" x="112.00" y="31.00" class="named"><title>HWR_FlipPrimaryBuffer</title></rect>
+<rect width="12.00" height="12.00" x="112.00" y="31.00" class="decompiled"><title>HWR_FlipPrimaryBuffer</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="31.00" class="decompiled"><title>HWR_ClearSurface</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="31.00" class="todo"><title>sub_407A91</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="31.00" class="named"><title>HWR_SetHardwareVideoMode</title></rect>
@@ -1179,7 +1179,7 @@
 <rect width="6.96" height="6.37" x="602.42" y="442.27" class="decompiled"><title>InitialiseObjects</title></rect>
 <rect width="6.78" height="6.37" x="611.38" y="442.27" class="decompiled"><title>DrawPistolMeshes</title></rect>
 <rect width="6.78" height="6.37" x="620.16" y="442.27" class="decompiled"><title>LightningCollision</title></rect>
-<rect width="6.69" height="6.37" x="628.94" y="442.27" class="named"><title>HWR_FlipPrimaryBuffer</title></rect>
+<rect width="6.69" height="6.37" x="628.94" y="442.27" class="decompiled"><title>HWR_FlipPrimaryBuffer</title></rect>
 <rect width="6.69" height="6.37" x="637.63" y="442.27" class="decompiled"><title>GetSavedGamesList</title></rect>
 <rect width="6.69" height="6.37" x="646.32" y="442.27" class="decompiled"><title>Inv_RingGetView</title></rect>
 <rect width="6.69" height="6.37" x="655.01" y="442.27" class="decompiled"><title>LaraAsSurfLeft</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 90.91%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.15%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.57%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.05%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.19%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.43%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.06%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>
