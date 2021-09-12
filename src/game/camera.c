@@ -445,7 +445,7 @@ void LookCamera(ITEM_INFO *item)
     int32_t distance =
         Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
 
-    Camera.shift = -STEP_L * 2 * phd_sin(Camera.target_elevation) >> W2V_SHIFT;
+    Camera.shift = ((-STEP_L * 2) / ANIM_SCALE) * phd_sin(Camera.target_elevation) >> W2V_SHIFT;
     Camera.target.z += Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
     Camera.target.x += Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
 

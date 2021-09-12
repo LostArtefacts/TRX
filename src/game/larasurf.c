@@ -88,9 +88,9 @@ void LaraAsSurfSwim(ITEM_INFO *item, COLL_INFO *coll)
 
     if (!T1MConfig.enable_tr3_sidesteps || !CHK_ANY(Input, IN_SLOW)) {
         if (Input & IN_LEFT) {
-            item->pos.y_rot -= LARA_SLOW_TURN;
+            item->pos.y_rot -= LARA_SLOW_TURN/ANIM_SCALE;
         } else if (Input & IN_RIGHT) {
-            item->pos.y_rot += LARA_SLOW_TURN;
+            item->pos.y_rot += LARA_SLOW_TURN/ANIM_SCALE;
         }
     }
 
@@ -118,9 +118,9 @@ void LaraAsSurfBack(ITEM_INFO *item, COLL_INFO *coll)
 
     if (!T1MConfig.enable_tr3_sidesteps || !CHK_ANY(Input, IN_SLOW)) {
         if (Input & IN_LEFT) {
-            item->pos.y_rot -= LARA_SLOW_TURN / 2;
+            item->pos.y_rot -= LARA_SLOW_TURN/ANIM_SCALE / 2;
         } else if (Input & IN_RIGHT) {
-            item->pos.y_rot += LARA_SLOW_TURN / 2;
+            item->pos.y_rot += LARA_SLOW_TURN/ANIM_SCALE / 2;
         }
     }
 
@@ -152,9 +152,9 @@ void LaraAsSurfLeft(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_SLOW_TURN / 2;
+        item->pos.y_rot -= LARA_SLOW_TURN/ANIM_SCALE / 2;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_SLOW_TURN / 2;
+        item->pos.y_rot += LARA_SLOW_TURN/ANIM_SCALE / 2;
     }
 
     if (!(Input & IN_STEPL)) {
@@ -185,9 +185,9 @@ void LaraAsSurfRight(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_SLOW_TURN / 2;
+        item->pos.y_rot -= LARA_SLOW_TURN/ANIM_SCALE / 2;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_SLOW_TURN / 2;
+        item->pos.y_rot += LARA_SLOW_TURN/ANIM_SCALE / 2;
     }
 
     if (!(Input & IN_STEPR)) {
@@ -215,17 +215,17 @@ void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
     if (Input & IN_LOOK) {
         Camera.type = CAM_LOOK;
         if (Input & IN_LEFT && Lara.head_y_rot > -MAX_HEAD_ROTATION_SURF) {
-            Lara.head_y_rot -= HEAD_TURN_SURF;
+            Lara.head_y_rot -= HEAD_TURN_SURF/ANIM_SCALE;
         } else if (
             (Input & IN_RIGHT) && Lara.head_y_rot < MAX_HEAD_ROTATION_SURF) {
-            Lara.head_y_rot += HEAD_TURN_SURF;
+            Lara.head_y_rot += HEAD_TURN_SURF/ANIM_SCALE;
         }
         Lara.torso_y_rot = Lara.head_y_rot / 2;
 
         if ((Input & IN_FORWARD) && Lara.head_x_rot > MIN_HEAD_TILT_SURF) {
-            Lara.head_x_rot -= HEAD_TURN_SURF;
+            Lara.head_x_rot -= HEAD_TURN_SURF/ANIM_SCALE;
         } else if ((Input & IN_BACK) && Lara.head_x_rot < MAX_HEAD_TILT_SURF) {
-            Lara.head_x_rot += HEAD_TURN_SURF;
+            Lara.head_x_rot += HEAD_TURN_SURF/ANIM_SCALE;
         }
         Lara.torso_x_rot = 0;
         return;
@@ -235,9 +235,9 @@ void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_SLOW_TURN;
+        item->pos.y_rot -= LARA_SLOW_TURN/ANIM_SCALE;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_SLOW_TURN;
+        item->pos.y_rot += LARA_SLOW_TURN/ANIM_SCALE;
     }
 
     if (Input & IN_FORWARD) {
@@ -265,7 +265,7 @@ void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
             item->anim_number = AA_SURFDIVE;
             item->frame_number = AF_SURFDIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
-            item->fall_speed = 80;
+            item->fall_speed = 80/ANIM_SCALE;
             Lara.water_status = LWS_UNDERWATER;
         }
     } else {
@@ -335,7 +335,7 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_SURFDIVE;
         item->frame_number = AF_SURFDIVE;
         item->pos.x_rot = -45 * PHD_DEGREE;
-        item->fall_speed = 80;
+        item->fall_speed = 80/ANIM_SCALE;
         Lara.water_status = LWS_UNDERWATER;
         return;
     }

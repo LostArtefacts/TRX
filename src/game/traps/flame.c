@@ -61,7 +61,7 @@ void FlameControl(int16_t fx_num)
 
         fx->pos.x = 0;
         fx->pos.y = 0;
-        if (fx->counter == -1) {
+        if (fx->counter == -1*ANIM_SCALE) {
             fx->pos.z = -100;
         } else {
             fx->pos.z = 0;

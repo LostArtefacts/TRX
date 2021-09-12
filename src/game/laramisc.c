@@ -18,6 +18,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+int32_t lara_jump_error = 0;
+
 void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
@@ -67,19 +69,19 @@ void LaraControl(int16_t item_num)
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
             AnimateLara(item);
-            item->fall_speed *= 2;
+            item->fall_speed *= 2/ANIM_SCALE;
         } else if (item->current_anim_state == AS_FASTDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -85 * PHD_DEGREE;
             AnimateLara(item);
-            item->fall_speed *= 2;
+            item->fall_speed *= 2/ANIM_SCALE;
         } else {
             item->current_anim_state = AS_DIVE;
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_JUMPIN;
             item->frame_number = AF_JUMPIN;
             item->pos.x_rot = -45 * PHD_DEGREE;
-            item->fall_speed = (item->fall_speed * 3) / 2;
+            item->fall_speed = ((item->fall_speed * 3) / 2) /ANIM_SCALE;
         }
         Lara.head_x_rot = 0;
         Lara.head_y_rot = 0;
@@ -238,14 +240,15 @@ void AnimateLara(ITEM_INFO *item)
                     break;
 
                 case AC_JUMP_VELOCITY:
-                    item->fall_speed = command[0];
-                    item->speed = command[1];
-                    command += 2;
-                    item->gravity_status = 1;
-                    if (Lara.calc_fall_speed) {
-                        item->fall_speed = Lara.calc_fall_speed;
+                    item->fall_speed = *(command++);                    // Get Upward Velocity
+                    item->speed = *(command++)/ANIM_SCALE;                     // Get Forward Velocity
+                    item->gravity_status = 1;                       // turn gravity ON
+                    if ( Lara.calc_fall_speed )                      // If Upward velocity is  Pre-Calculated
+                    {
+                        item->fall_speed = Lara.calc_fall_speed;      // then use that Value instead..
                         Lara.calc_fall_speed = 0;
                     }
+                    break;
                     break;
 
                 case AC_ATTACK_READY:
@@ -297,21 +300,42 @@ void AnimateLara(ITEM_INFO *item)
     }
 
     if (item->gravity_status) {
-        int32_t speed = anim->velocity
-            + anim->acceleration * (item->frame_number - anim->frame_base - 1);
-        item->speed -= (int16_t)(speed >> 16);
-        speed += anim->acceleration;
-        item->speed += (int16_t)(speed >> 16);
+     int16_t speed = anim->velocity + anim->acceleration * (((item->frame_number - anim->frame_base) / ANIM_SCALE) - 1);
+        item->speed -= (uint16_t)(speed >> 16);
+        speed += anim->acceleration / ANIM_SCALE;
+        item->speed += (uint16_t)(speed >> 16);
 
-        item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY : 1;
-        item->pos.y += item->fall_speed;
+        item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY /ANIM_SCALE : 1;
+        item->pos.y += item->fall_speed / ANIM_SCALE;
+        if (ANIM_SCALE == 2)
+        {
+            if (item->fall_speed > 0)
+            {
+                lara_jump_error += item->fall_speed & 1;
+            }
+            else if (item->fall_speed < 0)
+            {
+                lara_jump_error -= item->fall_speed & 1;
+            }
+            while (lara_jump_error > 2)
+            {
+                item->pos.y += 2;
+                lara_jump_error -= 2;
+            }
+            while (lara_jump_error < -2)
+            {
+                item->pos.y -= 2;
+                lara_jump_error += 2;
+            }
+        }
     } else {
         int32_t speed = anim->velocity;
         if (anim->acceleration) {
             speed +=
-                anim->acceleration * (item->frame_number - anim->frame_base);
+                anim->acceleration * ((item->frame_number - anim->frame_base) / ANIM_SCALE);
         }
         item->speed = (int16_t)(speed >> 16);
+        lara_jump_error = 0;
     }
 
     item->pos.x += (phd_sin(Lara.move_angle) * item->speed) >> W2V_SHIFT;

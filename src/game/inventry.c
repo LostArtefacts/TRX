@@ -35,6 +35,8 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
+TEXTSTRING* BETA_TEXT = NULL;
+
 int32_t Display_Inventory(int inv_mode)
 {
     RING_INFO ring;
@@ -151,7 +153,7 @@ int32_t Display_Inventory(int inv_mode)
             INVENTORY_ITEM *inv_item = ring.list[i];
 
             if (i == ring.current_object) {
-                for (int j = 0; j < InvNFrames; j++) {
+                for (int j = 0; j < (InvNFrames/ANIM_SCALE); j++) {
                     if (ring.rotating) {
                         LsAdder = LOW_LIGHT;
                         if (inv_item->y_rot) {
@@ -605,6 +607,10 @@ int32_t Display_Inventory(int inv_mode)
 
     RemoveInventoryText();
     S_FinishInventory();
+    if( BETA_TEXT != NULL ) {
+		T_RemovePrint(BETA_TEXT);
+		BETA_TEXT = NULL;
+	}
 
     if (ResetFlag) {
         return GF_START_DEMO;
@@ -705,6 +711,7 @@ int32_t Display_Inventory(int inv_mode)
     return GF_NOP;
 }
 
+
 void Construct_Inventory()
 {
     S_SetupAboveWater(0);
@@ -724,8 +731,11 @@ void Construct_Inventory()
     InvChosen = 0;
     if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
+        BETA_TEXT = T_Print(-25, 50,"BETA 1");
+        T_RightAlign(BETA_TEXT, 1);
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;
+        BETA_TEXT = NULL;
     }
 
     for (int i = 0; i < InvMainObjects; i++) {
@@ -768,7 +778,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
     if (inv_item->anim_count) {
         inv_item->anim_count--;
     } else {
-        inv_item->anim_count = inv_item->anim_speed;
+        inv_item->anim_count = inv_item->anim_speed * ANIM_SCALE;
         inv_item->current_frame += inv_item->anim_direction;
         if (inv_item->current_frame >= inv_item->frames_total) {
             inv_item->current_frame = 0;

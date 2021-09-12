@@ -19,12 +19,12 @@ void LookLeftRight()
     if (Input & IN_LEFT) {
         Input -= IN_LEFT;
         if (Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            Lara.head_y_rot -= HEAD_TURN / 2;
+            Lara.head_y_rot -= HEAD_TURN/ANIM_SCALE / 2;
         }
     } else if (Input & IN_RIGHT) {
         Input -= IN_RIGHT;
         if (Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            Lara.head_y_rot += HEAD_TURN / 2;
+            Lara.head_y_rot += HEAD_TURN/ANIM_SCALE / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -38,12 +38,12 @@ void LookUpDown()
     if (Input & IN_FORWARD) {
         Input -= IN_FORWARD;
         if (Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            Lara.head_x_rot -= HEAD_TURN / 2;
+            Lara.head_x_rot -= HEAD_TURN/ANIM_SCALE / 2;
         }
     } else if (Input & IN_BACK) {
         Input -= IN_BACK;
         if (Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            Lara.head_x_rot += HEAD_TURN / 2;
+            Lara.head_x_rot += HEAD_TURN/ANIM_SCALE / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -624,28 +624,28 @@ void LaraAsSlide(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsBackJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     Camera.target_angle = PHD_DEGREE * 135;
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsRightJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsLeftJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsUpJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * 2/ANIM_SCALE + ANIM_SCALE) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }

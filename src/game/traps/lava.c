@@ -120,19 +120,19 @@ void LavaWedgeControl(int16_t item_num)
 
         switch (item->pos.y_rot) {
         case 0:
-            item->pos.z += LAVA_WEDGE_SPEED;
+            item->pos.z += LAVA_WEDGE_SPEED/ANIM_SCALE;
             z += 2 * WALL_L;
             break;
         case -PHD_180:
-            item->pos.z -= LAVA_WEDGE_SPEED;
+            item->pos.z -= LAVA_WEDGE_SPEED/ANIM_SCALE;
             z -= 2 * WALL_L;
             break;
         case PHD_90:
-            item->pos.x += LAVA_WEDGE_SPEED;
+            item->pos.x += LAVA_WEDGE_SPEED/ANIM_SCALE;
             x += 2 * WALL_L;
             break;
         default:
-            item->pos.x -= LAVA_WEDGE_SPEED;
+            item->pos.x -= LAVA_WEDGE_SPEED/ANIM_SCALE;
             x -= 2 * WALL_L;
             break;
         }

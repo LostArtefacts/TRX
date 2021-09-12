@@ -119,7 +119,7 @@ int16_t ShardGun(
         fx->pos.z_rot = 0;
         fx->object_number = O_MISSILE2;
         fx->frame_number = 0;
-        fx->speed = SHARD_SPEED;
+        fx->speed = SHARD_SPEED/ANIM_SCALE;
         fx->shade = 3584;
         ShootAtLara(fx);
     }
@@ -142,7 +142,7 @@ int16_t RocketGun(
         fx->pos.z_rot = 0;
         fx->object_number = O_MISSILE3;
         fx->frame_number = 0;
-        fx->speed = ROCKET_SPEED;
+        fx->speed = ROCKET_SPEED/ANIM_SCALE;
         fx->shade = 4096;
         ShootAtLara(fx);
     }

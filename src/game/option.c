@@ -949,7 +949,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             }
         }
 
-        int32_t seconds = SaveGame.timer / 30;
+        int32_t seconds = SaveGame.timer / 30/ANIM_SCALE;
         int32_t hours = seconds / 3600;
         int32_t minutes = (seconds / 60) % 60;
         seconds %= 60;

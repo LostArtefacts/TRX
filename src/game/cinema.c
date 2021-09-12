@@ -33,7 +33,7 @@ int32_t StartCinematic(int32_t level_num)
 
 int32_t CinematicLoop()
 {
-    DoCinematic(2);
+    DoCinematic(2/ANIM_SCALE);
     DrawPhaseCinematic();
     int32_t nframes;
     do {
@@ -110,7 +110,7 @@ int32_t DoCinematic(int32_t nframes)
         CalculateCinematicCamera();
         CineFrame++;
 
-        if (CineFrame >= NumCineFrames) {
+        if ((CineFrame / ANIM_SCALE) >= NumCineFrames) {
             return 1;
         }
 
@@ -125,7 +125,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t *ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * (CineFrame/ANIM_SCALE)];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -191,7 +191,7 @@ void InGameCinematicCamera()
         CineFrame = NumCineFrames - 1;
     }
 
-    int16_t *ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * (CineFrame/ANIM_SCALE)];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];

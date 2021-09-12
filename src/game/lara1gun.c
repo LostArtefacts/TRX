@@ -19,7 +19,7 @@ void DrawShotgun()
 
     if (ani < AF_SG_DRAW || ani > AF_SG_RECOIL) {
         ani = AF_SG_DRAW;
-    } else if (ani == AF_SG_DRAW + 10) {
+    } else if (ani == AF_SG_DRAW + (10*ANIM_SCALE)) {
         DrawShotgunMeshes();
         SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
     } else if (ani == AF_SG_RECOIL) {
@@ -46,7 +46,7 @@ void UndrawShotgun()
         ani = AF_SG_UNAIM;
     } else if (ani >= AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
         ani++;
-        if (ani == AF_SG_RECOIL + 12) {
+        if (ani == AF_SG_RECOIL + (12*ANIM_SCALE)) {
             ani = AF_SG_AIM;
         } else if (ani == AF_SG_UNDRAW) {
             ani = AF_SG_UNAIM;
@@ -58,7 +58,7 @@ void UndrawShotgun()
         }
     } else if (ani >= AF_SG_UNDRAW && ani < AF_SG_UNAIM) {
         ani++;
-        if (ani == AF_SG_UNDRAW + 20) {
+        if (ani == AF_SG_UNDRAW + (20*ANIM_SCALE)) {
             UndrawShotgunMeshes();
             SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
         } else if (ani == AF_SG_UNAIM) {

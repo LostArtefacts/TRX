@@ -78,8 +78,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         1, // damage
         8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
+        9*ANIM_SCALE, // recoil_frame
+        3*ANIM_SCALE, // flash_time
         SFX_LARA_FIRE, // sample_num
     },
 
@@ -96,8 +96,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         2, // damage
         8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
+        9*ANIM_SCALE, // recoil_frame
+        3*ANIM_SCALE, // flash_time
         SFX_LARA_MAGNUMS, // sample_num
     },
 
@@ -114,8 +114,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         1, // damage
         8 * WALL_L, // target_dist
-        3, // recoil_frame
-        2, // flash_time
+        3*ANIM_SCALE, // recoil_frame
+        2*ANIM_SCALE, // flash_time
         SFX_LARA_UZI_FIRE, // sample_num
     },
 
@@ -132,8 +132,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         0x1F4, // gun_height
         4, // damage
         8 * WALL_L, // target_dist
-        9, // recoil_frame
-        3, // flash_time
+        9*ANIM_SCALE, // recoil_frame
+        3*ANIM_SCALE, // flash_time
         SFX_LARA_SHOTGUN, // sample_num
     },
 };

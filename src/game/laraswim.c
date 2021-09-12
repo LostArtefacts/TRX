@@ -42,13 +42,13 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
 
     LaraControlRoutines[item->current_anim_state](item, coll);
 
-    if (item->pos.z_rot >= -(2 * LARA_LEAN_UNDO)
+ if (item->pos.z_rot >= -(2 * LARA_LEAN_UNDO)
         && item->pos.z_rot <= 2 * LARA_LEAN_UNDO) {
         item->pos.z_rot = 0;
     } else if (item->pos.z_rot < 0) {
-        item->pos.z_rot += 2 * LARA_LEAN_UNDO;
+        item->pos.z_rot += 2 * LARA_LEAN_UNDO /ANIM_SCALE;
     } else {
-        item->pos.z_rot -= 2 * LARA_LEAN_UNDO;
+        item->pos.z_rot -= 2 * LARA_LEAN_UNDO /ANIM_SCALE;
     }
 
     if (item->pos.x_rot < -100 * PHD_DEGREE) {
@@ -107,23 +107,23 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_FORWARD) {
-        item->pos.x_rot -= 2 * PHD_DEGREE;
+        item->pos.x_rot -= 2 * PHD_DEGREE/ANIM_SCALE;
     }
     if (Input & IN_BACK) {
-        item->pos.x_rot += 2 * PHD_DEGREE;
+        item->pos.x_rot += 2 * PHD_DEGREE/ANIM_SCALE;
     }
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_MED_TURN;
-        item->pos.z_rot -= LARA_LEAN_RATE * 2;
+        item->pos.y_rot -= LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot -= LARA_LEAN_RATE * 2/ANIM_SCALE;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_MED_TURN;
-        item->pos.z_rot += LARA_LEAN_RATE * 2;
+        item->pos.y_rot += LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot += LARA_LEAN_RATE * 2/ANIM_SCALE;
     }
 
     item->fall_speed += 8;
     if (Lara.water_status == LWS_CHEAT) {
         if (item->fall_speed > UW_MAXSPEED * 2) {
-            item->fall_speed = UW_MAXSPEED * 2;
+            item->fall_speed = UW_MAXSPEED * 2/ANIM_SCALE;
         }
     } else if (item->fall_speed > UW_MAXSPEED) {
         item->fall_speed = UW_MAXSPEED;
@@ -133,7 +133,6 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_GLIDE;
     }
 }
-
 void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -142,16 +141,16 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_FORWARD) {
-        item->pos.x_rot -= 2 * PHD_DEGREE;
+        item->pos.x_rot -= 2 * PHD_DEGREE/ANIM_SCALE;
     } else if (Input & IN_BACK) {
-        item->pos.x_rot += 2 * PHD_DEGREE;
+        item->pos.x_rot += 2 * PHD_DEGREE/ANIM_SCALE;
     }
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_MED_TURN;
-        item->pos.z_rot -= LARA_LEAN_RATE * 2;
+        item->pos.y_rot -= LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot -= LARA_LEAN_RATE * 2/ANIM_SCALE;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_MED_TURN;
-        item->pos.z_rot += LARA_LEAN_RATE * 2;
+        item->pos.y_rot += LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot += LARA_LEAN_RATE * 2/ANIM_SCALE;
     }
     if (Input & IN_JUMP) {
         item->goal_anim_state = AS_SWIM;
@@ -181,16 +180,16 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input & IN_FORWARD) {
-        item->pos.x_rot -= 2 * PHD_DEGREE;
+        item->pos.x_rot -= 2 * PHD_DEGREE/ANIM_SCALE;
     } else if (Input & IN_BACK) {
-        item->pos.x_rot += 2 * PHD_DEGREE;
+        item->pos.x_rot += 2 * PHD_DEGREE/ANIM_SCALE;
     }
     if (Input & IN_LEFT) {
-        item->pos.y_rot -= LARA_MED_TURN;
-        item->pos.z_rot -= LARA_LEAN_RATE * 2;
+        item->pos.y_rot -= LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot -= LARA_LEAN_RATE * 2/ANIM_SCALE;
     } else if (Input & IN_RIGHT) {
-        item->pos.y_rot += LARA_MED_TURN;
-        item->pos.z_rot += LARA_LEAN_RATE * 2;
+        item->pos.y_rot += LARA_MED_TURN/ANIM_SCALE;
+        item->pos.z_rot += LARA_LEAN_RATE * 2/ANIM_SCALE;
     }
     if (Input & IN_JUMP) {
         item->goal_anim_state = AS_SWIM;
@@ -205,13 +204,13 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (Input & AS_RUN) {
-        item->pos.x_rot -= PHD_DEGREE;
+        item->pos.x_rot -= PHD_DEGREE/ANIM_SCALE;
     }
 }
 
 void LaraAsUWDeath(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->fall_speed -= 8;
+    item->fall_speed -= 8/ANIM_SCALE;
     if (item->fall_speed <= 0) {
         item->fall_speed = 0;
     }
@@ -220,9 +219,9 @@ void LaraAsUWDeath(ITEM_INFO *item, COLL_INFO *coll)
         && item->pos.x_rot <= 2 * PHD_DEGREE) {
         item->pos.x_rot = 0;
     } else if (item->pos.x_rot < 0) {
-        item->pos.x_rot += 2 * PHD_DEGREE;
+        item->pos.x_rot += 2 * PHD_DEGREE/ANIM_SCALE;
     } else {
-        item->pos.x_rot -= 2 * PHD_DEGREE;
+        item->pos.x_rot -= 2 * PHD_DEGREE/ANIM_SCALE;
     }
 }
 

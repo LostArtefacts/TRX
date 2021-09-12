@@ -344,6 +344,7 @@ void S_SetupAboveWater(int32_t underwater)
 
 void S_AnimateTextures(int32_t ticks)
 {
+	ticks /= ANIM_SCALE;
     WibbleOffset = (WibbleOffset + ticks) % WIBBLE_SIZE;
 
     static int32_t tick_comp = 0;

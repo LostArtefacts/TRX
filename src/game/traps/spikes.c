@@ -31,7 +31,7 @@ void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             lara_item->hit_points = -1;
             num = 20;
         }
-    } else if (lara_item->speed < 30) {
+    } else if (lara_item->speed < 30/ANIM_SCALE) {
         return;
     }
 
