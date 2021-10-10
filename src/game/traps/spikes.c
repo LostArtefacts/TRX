@@ -48,7 +48,7 @@ void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         lara_item->current_anim_state = AS_DEATH;
         lara_item->goal_anim_state = AS_DEATH;
         lara_item->anim_number = AA_SPIKE_DEATH;
-        lara_item->frame_number = AF_SPIKE_DEATH;
+        lara_item->frame_number = AF_SPIKE_DEATH * ANIM_SCALE;
         lara_item->pos.y = item->pos.y;
         lara_item->gravity_status = 0;
     }

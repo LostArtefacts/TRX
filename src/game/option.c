@@ -13,6 +13,7 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
+#include "specific/clock.h"
 #include "util.h"
 
 #include <dinput.h>
@@ -56,7 +57,8 @@ typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_UI_TEXT_SCALE = 4,
     DETAIL_HW_UI_BAR_SCALE = 5,
     DETAIL_HW_RESOLUTION = 6,
-    DETAIL_HW_NUMBER_OF = 7,
+    DETAIL_HW_FPS = 7,
+    DETAIL_HW_NUMBER_OF = 8,
 } DETAIL_HW_TEXT;
 
 typedef struct TEXT_COLUMN_PLACEMENT {
@@ -585,6 +587,14 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             max_row = DETAIL_HW_RESOLUTION;
         }
         y += DETAIL_HW_ROW_HEIGHT;
+        
+        if ( InvMode == INV_TITLE_MODE ) {
+			// this can only be changed in the title menu and not in game, bad things will happen
+			sprintf(buf, GF.strings[GS_DETAIL_VIDEO_FPS_RATE], (1+((AppSettings & ASF_60FPS)>>ASF_60FPS_SHIFT)) * 30);
+			DetailTextHW[DETAIL_HW_FPS] = T_Print(0, y, buf);
+			y += DETAIL_HW_ROW_HEIGHT;
+			max_row = DETAIL_HW_FPS;
+        }
 
         if (current_row < min_row) {
             current_row = min_row;
@@ -668,6 +678,11 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 reset = 1;
             }
             break;
+            
+        case DETAIL_HW_FPS:
+			AppSettings ^= ASF_60FPS;
+			reset = 1;
+			break;
         }
     }
 
@@ -707,6 +722,11 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 reset = 1;
             }
             break;
+            
+        case DETAIL_HW_FPS:
+			AppSettings ^= ASF_60FPS;
+			reset = 1;
+			break;
         }
     }
 

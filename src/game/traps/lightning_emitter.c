@@ -65,14 +65,14 @@ void LightningControl(int16_t item_num)
 
     if (l->onstate) {
         l->onstate = 0;
-        l->count = 35 + (GetRandomControl() * 45) / 0x8000;
+        l->count = (35 + (GetRandomControl() * 45) / 0x8000)*ANIM_SCALE;
         l->zapped = 0;
         if (FlipStatus) {
             FlipMap();
         }
     } else {
         l->onstate = 1;
-        l->count = 20;
+        l->count = 20*ANIM_SCALE;
 
         for (int i = 0; i < LIGHTNING_STEPS; i++) {
             l->wibble[i].x = 0;

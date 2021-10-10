@@ -173,6 +173,7 @@ void CreateSaveGameInfo()
     for (int i = 0; i < LevelItemCount; i++) {
         ITEM_INFO *item = &Items[i];
         OBJECT_INFO *obj = &Objects[item->object_number];
+        int16_t dummy = 0;
 
         if (obj->save_position) {
             WriteSG(&item->pos, sizeof(PHD_3DPOS));
@@ -186,7 +187,8 @@ void CreateSaveGameInfo()
             WriteSG(&item->goal_anim_state, sizeof(int16_t));
             WriteSG(&item->required_anim_state, sizeof(int16_t));
             WriteSG(&item->anim_number, sizeof(int16_t));
-            WriteSG(&item->frame_number, sizeof(int16_t));
+            dummy = item->frame_number/ANIM_SCALE;	//adjust the frame number back to 30fps
+            WriteSG(&dummy, sizeof(int16_t));
         }
 
         if (obj->save_hitpoints) {
@@ -321,6 +323,7 @@ void ExtractSaveGameInfo()
             ReadSG(&item->required_anim_state, sizeof(int16_t));
             ReadSG(&item->anim_number, sizeof(int16_t));
             ReadSG(&item->frame_number, sizeof(int16_t));
+            item->frame_number *= ANIM_SCALE;
         }
 
         if (obj->save_hitpoints) {
@@ -434,6 +437,8 @@ void ExtractSaveGameInfo()
 
     ReadSG(&FlipEffect, sizeof(int32_t));
     ReadSG(&FlipTimer, sizeof(int32_t));
+    
+    LaraSetFloatPosFromFixed(); //fix up her float positions
 }
 
 void ResetSG()

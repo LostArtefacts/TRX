@@ -78,8 +78,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         1, // damage
         8 * WALL_L, // target_dist
-        9*ANIM_SCALE, // recoil_frame
-        3*ANIM_SCALE, // flash_time
+        9, // recoil_frame
+        3, // flash_time
         SFX_LARA_FIRE, // sample_num
     },
 
@@ -96,8 +96,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         2, // damage
         8 * WALL_L, // target_dist
-        9*ANIM_SCALE, // recoil_frame
-        3*ANIM_SCALE, // flash_time
+        9, // recoil_frame
+        3, // flash_time
         SFX_LARA_MAGNUMS, // sample_num
     },
 
@@ -114,8 +114,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         650, // gun_height
         1, // damage
         8 * WALL_L, // target_dist
-        3*ANIM_SCALE, // recoil_frame
-        2*ANIM_SCALE, // flash_time
+        3, // recoil_frame
+        2, // flash_time
         SFX_LARA_UZI_FIRE, // sample_num
     },
 
@@ -132,8 +132,8 @@ WEAPON_INFO Weapons[NUM_WEAPONS] = {
         0x1F4, // gun_height
         4, // damage
         8 * WALL_L, // target_dist
-        9*ANIM_SCALE, // recoil_frame
-        3*ANIM_SCALE, // flash_time
+        9, // recoil_frame
+        3, // flash_time
         SFX_LARA_SHOTGUN, // sample_num
     },
 };
@@ -181,8 +181,8 @@ void LaraGun()
         case LGT_UZIS:
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_status = LGS_DRAW;
-                Lara.right_arm.frame_number = AF_G_AIM;
-                Lara.left_arm.frame_number = AF_G_AIM;
+                Lara.right_arm.frame_number = AF_G_AIM * ANIM_SCALE;
+                Lara.left_arm.frame_number = AF_G_AIM * ANIM_SCALE;
             } else if (Lara.gun_status == LGS_READY) {
                 Lara.gun_status = LGS_UNDRAW;
             }
@@ -191,8 +191,8 @@ void LaraGun()
         case LGT_SHOTGUN:
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_status = LGS_DRAW;
-                Lara.left_arm.frame_number = AF_SG_AIM;
-                Lara.right_arm.frame_number = AF_SG_AIM;
+                Lara.left_arm.frame_number = AF_SG_AIM * ANIM_SCALE;
+                Lara.right_arm.frame_number = AF_SG_AIM * ANIM_SCALE;
             } else if (Lara.gun_status == LGS_READY) {
                 Lara.gun_status = LGS_UNDRAW;
             }

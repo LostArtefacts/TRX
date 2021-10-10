@@ -14,14 +14,14 @@ void DrawPistols(int32_t weapon_type)
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
 
-    if (ani < AF_G_DRAW1 || ani > AF_G_DRAW2_L) {
-        ani = AF_G_DRAW1;
-    } else if (ani == AF_G_DRAW2) {
+    if (ani < (AF_G_DRAW1  * ANIM_SCALE) || ani > (AF_G_DRAW2_L  * ANIM_SCALE)) {
+        ani = (AF_G_DRAW1  * ANIM_SCALE);
+    } else if (ani == (AF_G_DRAW2  * ANIM_SCALE)) {
         DrawPistolMeshes(weapon_type);
         SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
-    } else if (ani == AF_G_DRAW2_L) {
+    } else if (ani == (AF_G_DRAW2_L  * ANIM_SCALE)) {
         ReadyPistols();
-        ani = AF_G_AIM;
+        ani = (AF_G_AIM  * ANIM_SCALE);
     }
 
     Lara.left_arm.frame_number = ani;
@@ -32,50 +32,50 @@ void DrawPistols(int32_t weapon_type)
 void UndrawPistols(int32_t weapon_type)
 {
     int16_t anil = Lara.left_arm.frame_number;
-    if (anil >= AF_G_RECOIL) {
-        anil = AF_G_AIM_L;
-    } else if (anil > AF_G_AIM && anil < AF_G_DRAW1) {
+    if (anil >= (AF_G_RECOIL * ANIM_SCALE)) {
+        anil = (AF_G_AIM_L  * ANIM_SCALE);
+    } else if (anil > (AF_G_AIM  * ANIM_SCALE) && anil < (AF_G_DRAW1  * ANIM_SCALE)) {
         Lara.left_arm.x_rot -= Lara.left_arm.x_rot / anil;
         Lara.left_arm.y_rot -= Lara.left_arm.y_rot / anil;
         anil--;
-    } else if (anil == AF_G_AIM) {
+    } else if (anil == (AF_G_AIM  * ANIM_SCALE)) {
         Lara.left_arm.x_rot = 0;
         Lara.left_arm.y_rot = 0;
         Lara.left_arm.z_rot = 0;
-        anil = AF_G_DRAW2_L;
-    } else if (anil > AF_G_DRAW1) {
+        anil = (AF_G_DRAW2_L  * ANIM_SCALE);
+    } else if (anil > (AF_G_DRAW1  * ANIM_SCALE)) {
         anil--;
-        if (anil == AF_G_DRAW2) {
+        if (anil == (AF_G_DRAW2  * ANIM_SCALE)) {
             UndrawPistolMeshLeft(weapon_type);
         }
     }
     Lara.left_arm.frame_number = anil;
 
     int16_t anir = Lara.right_arm.frame_number;
-    if (anir >= AF_G_RECOIL) {
-        anir = AF_G_AIM_L;
-    } else if (anir > AF_G_AIM && anir < AF_G_DRAW1) {
+    if (anir >= (AF_G_RECOIL * ANIM_SCALE)) {
+        anir = (AF_G_AIM_L  * ANIM_SCALE);
+    } else if (anir > (AF_G_AIM  * ANIM_SCALE) && anir < (AF_G_DRAW1  * ANIM_SCALE)) {
         Lara.right_arm.x_rot -= Lara.right_arm.x_rot / anir;
         Lara.right_arm.y_rot -= Lara.right_arm.y_rot / anir;
         anir--;
-    } else if (anir == AF_G_AIM) {
+    } else if (anir == (AF_G_AIM  * ANIM_SCALE)) {
         Lara.right_arm.x_rot = 0;
         Lara.right_arm.y_rot = 0;
         Lara.right_arm.z_rot = 0;
-        anir = AF_G_DRAW2_L;
-    } else if (anir > AF_G_DRAW1) {
+        anir = (AF_G_DRAW2_L  * ANIM_SCALE);
+    } else if (anir > (AF_G_DRAW1  * ANIM_SCALE)) {
         anir--;
-        if (anir == AF_G_DRAW2) {
+        if (anir == (AF_G_DRAW2  * ANIM_SCALE)) {
             UndrawPistolMeshRight(weapon_type);
         }
     }
     Lara.right_arm.frame_number = anir;
 
-    if (anil == AF_G_DRAW1 && anir == AF_G_DRAW1) {
+    if (anil == (AF_G_DRAW1  * ANIM_SCALE) && anir == (AF_G_DRAW1  * ANIM_SCALE)) {
         Lara.left_arm.lock = 0;
         Lara.right_arm.lock = 0;
-        Lara.left_arm.frame_number = AF_G_AIM;
-        Lara.right_arm.frame_number = AF_G_AIM;
+        Lara.left_arm.frame_number = (AF_G_AIM  * ANIM_SCALE);
+        Lara.right_arm.frame_number = (AF_G_AIM  * ANIM_SCALE);
         Lara.gun_status = LGS_ARMLESS;
         Lara.target = NULL;
     }
@@ -200,50 +200,50 @@ void AnimatePistols(int32_t weapon_type)
 
     int16_t anir = Lara.right_arm.frame_number;
     if (Lara.right_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
-        if (anir >= AF_G_AIM && anir < AF_G_AIM_L) {
+        if (anir >= (AF_G_AIM  * ANIM_SCALE) && anir < (AF_G_AIM_L  * ANIM_SCALE)) {
             anir++;
-        } else if (anir == AF_G_AIM_L && (Input & IN_ACTION)) {
+        } else if (anir == (AF_G_AIM_L  * ANIM_SCALE) && (Input & IN_ACTION)) {
             angles[0] = Lara.right_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.right_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {
-                Lara.right_arm.flash_gun = winfo->flash_time;
+                Lara.right_arm.flash_gun = winfo->flash_time * ANIM_SCALE;
                 SoundEffect(winfo->sample_num, &LaraItem->pos, SPM_NORMAL);
             }
-            anir = AF_G_RECOIL;
-        } else if (anir >= AF_G_RECOIL) {
+            anir = (AF_G_RECOIL * ANIM_SCALE);
+        } else if (anir >= (AF_G_RECOIL * ANIM_SCALE)) {
             anir++;
-            if (anir == AF_G_RECOIL + winfo->recoil_frame) {
-                anir = AF_G_AIM_L;
+            if (anir == (AF_G_RECOIL * ANIM_SCALE) + (winfo->recoil_frame * ANIM_SCALE)) {
+                anir = (AF_G_AIM_L  * ANIM_SCALE);
             }
         }
-    } else if (anir >= AF_G_RECOIL) {
-        anir = AF_G_AIM_L;
-    } else if (anir > AF_G_AIM && anir <= AF_G_AIM_L) {
+    } else if (anir >= (AF_G_RECOIL * ANIM_SCALE)) {
+        anir = (AF_G_AIM_L  * ANIM_SCALE);
+    } else if (anir > (AF_G_AIM  * ANIM_SCALE) && anir <= (AF_G_AIM_L  * ANIM_SCALE)) {
         anir--;
     }
     Lara.right_arm.frame_number = anir;
 
     int16_t anil = Lara.left_arm.frame_number;
     if (Lara.left_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
-        if (anil >= AF_G_AIM && anil < AF_G_AIM_L) {
+        if (anil >= (AF_G_AIM  * ANIM_SCALE) && anil < (AF_G_AIM_L  * ANIM_SCALE)) {
             anil++;
-        } else if (anil == AF_G_AIM_L && (Input & IN_ACTION)) {
+        } else if (anil == (AF_G_AIM_L  * ANIM_SCALE) && (Input & IN_ACTION)) {
             angles[0] = Lara.left_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.left_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {
-                Lara.left_arm.flash_gun = winfo->flash_time;
+                Lara.left_arm.flash_gun = winfo->flash_time * ANIM_SCALE;
                 SoundEffect(winfo->sample_num, &LaraItem->pos, SPM_NORMAL);
             }
-            anil = AF_G_RECOIL;
-        } else if (anil >= AF_G_RECOIL) {
+            anil = (AF_G_RECOIL * ANIM_SCALE);
+        } else if (anil >= (AF_G_RECOIL * ANIM_SCALE)) {
             anil++;
-            if (anil == AF_G_RECOIL + winfo->recoil_frame) {
-                anil = AF_G_AIM_L;
+            if (anil == (AF_G_RECOIL * ANIM_SCALE) + (winfo->recoil_frame * ANIM_SCALE)) {
+                anil = (AF_G_AIM_L  * ANIM_SCALE);
             }
         }
-    } else if (anil >= AF_G_RECOIL) {
-        anil = AF_G_AIM_L;
-    } else if (anil > AF_G_AIM && anil <= AF_G_AIM_L) {
+    } else if (anil >= (AF_G_RECOIL * ANIM_SCALE)) {
+        anil = (AF_G_AIM_L  * ANIM_SCALE);
+    } else if (anil > (AF_G_AIM  * ANIM_SCALE) && anil <= (AF_G_AIM_L  * ANIM_SCALE)) {
         anil--;
     }
     Lara.left_arm.frame_number = anil;

@@ -28,6 +28,7 @@ void T1MInit()
     GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT] = "UI text scale   %.1f";
     GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT] = "UI bar scale    %.1f";
     GF.strings[GS_DETAIL_VIDEO_MODE_FMT] = "Game Video Mode %s";
+    GF.strings[GS_DETAIL_VIDEO_FPS_RATE] = "Frame Rate %d";
     GF.strings[GS_SOUND_SET_VOLUMES] = "Set Volumes";
     GF.strings[GS_CONTROL_DEFAULT_KEYS] = "Default Keys";
     GF.strings[GS_CONTROL_USER_KEYS] = "User Keys";

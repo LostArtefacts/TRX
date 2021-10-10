@@ -34,7 +34,7 @@ void DamoclesSwordControl(int16_t item_num)
     ITEM_INFO *item = &Items[item_num];
     if (item->gravity_status) {
         item->pos.y_rot += item->required_anim_state;
-        item->fall_speed += item->fall_speed < FASTFALL_SPEED/ANIM_SCALE ? GRAVITY : 1;
+        item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY/ANIM_SCALE : 1;
         item->pos.y += item->fall_speed/ANIM_SCALE;
         item->pos.x += item->current_anim_state/ANIM_SCALE;
         item->pos.z += item->goal_anim_state/ANIM_SCALE;

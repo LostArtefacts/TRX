@@ -896,13 +896,13 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         }
     }
 
-    item->pos.x += shift_x;
-    item->pos.z += shift_z;
+    item->pos.x += shift_x/ANIM_SCALE;
+    item->pos.z += shift_z/ANIM_SCALE;
 
     if (shift_x || shift_z) {
         floor = GetFloor(item->pos.x, y, item->pos.z, &room_num);
 
-        item->pos.y_rot += angle;
+        item->pos.y_rot += angle/ANIM_SCALE;
         CreatureTilt(item, tilt * 2);
     }
 
@@ -949,7 +949,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
             }
         }
 
-        item->pos.y += dy;
+        item->pos.y += dy / ANIM_SCALE;
         floor = GetFloor(item->pos.x, y, item->pos.z, &room_num);
         item->floor = GetHeight(floor, item->pos.x, y, item->pos.z);
 
@@ -957,7 +957,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         if (angle < item->pos.x_rot - PHD_DEGREE) {
             item->pos.x_rot -= PHD_DEGREE;
         } else if (angle > item->pos.x_rot + PHD_DEGREE) {
-            item->pos.x_rot += PHD_DEGREE;
+            item->pos.x_rot += PHD_DEGREE/ANIM_SCALE;
         } else {
             item->pos.x_rot = angle;
         }
@@ -965,7 +965,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         if (item->pos.y > item->floor) {
             item->pos.y = item->floor;
         } else if (item->floor - item->pos.y > STEP_L / 4) {
-            item->pos.y += STEP_L / 4;
+            item->pos.y += STEP_L / 4 / ANIM_SCALE;
         } else if (item->pos.y < item->floor) {
             item->pos.y = item->floor;
         }
@@ -1011,7 +1011,7 @@ int16_t CreatureTurn(ITEM_INFO *item, int16_t maximum_turn)
         angle = -maximum_turn;
     }
 
-    item->pos.y_rot += angle;
+    item->pos.y_rot += angle/ANIM_SCALE;
 
     return angle;
 }
@@ -1024,7 +1024,7 @@ void CreatureTilt(ITEM_INFO *item, int16_t angle)
     } else if (angle > MAX_TILT) {
         angle = MAX_TILT;
     }
-    item->pos.z_rot += angle;
+    item->pos.z_rot += angle/ANIM_SCALE;
 }
 
 void CreatureHead(ITEM_INFO *item, int16_t required)
@@ -1041,7 +1041,7 @@ void CreatureHead(ITEM_INFO *item, int16_t required)
         change = -MAX_HEAD_CHANGE;
     }
 
-    creature->head_rotation += change;
+    creature->head_rotation += change/ANIM_SCALE;
 
     if (creature->head_rotation > FRONT_ARC) {
         creature->head_rotation = FRONT_ARC;

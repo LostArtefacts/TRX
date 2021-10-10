@@ -276,8 +276,8 @@ static int32_t LoadObjects(MYFILE *fp)
 	  Anims[i].frame_base *= ANIM_SCALE;
 	  Anims[i].frame_end *= ANIM_SCALE;
 	  Anims[i].jump_frame_num *= ANIM_SCALE;
-	  Anims[i].acceleration /= ANIM_SCALE;
-	  Anims[i].velocity /= ANIM_SCALE;
+	  //Anims[i].acceleration /= ANIM_SCALE;
+	  //Anims[i].velocity /= ANIM_SCALE;
 	}
 
 

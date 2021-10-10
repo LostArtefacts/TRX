@@ -21,6 +21,7 @@
 #include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
+#include "specific/clock.h"
 #include "util.h"
 
 #include <stdint.h>
@@ -108,6 +109,12 @@ void GameMain()
 
         switch (gf_direction) {
         case GF_START_GAME:
+			//update the game based upon the speed chosen
+			ANIM_SCALE = 1;
+			if (AppSettings & ASF_60FPS) {
+				ANIM_SCALE = 2;
+			}
+			ClockInit();
             gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
             break;
 
@@ -121,6 +128,8 @@ void GameMain()
             break;
 
         case GF_START_DEMO:
+			ANIM_SCALE = 1; //demo is always 30fps as its goes wrong otherwise
+			ClockInit();
             gf_option = StartDemo();
             break;
 
@@ -129,6 +138,8 @@ void GameMain()
             break;
 
         case GF_EXIT_TO_TITLE:
+			ANIM_SCALE = 2; //do title screen menu in 60fps 
+			ClockInit();
             T_InitPrint();
             TempVideoAdjust(2, 1.0);
             S_DisplayPicture("data\\titleh");

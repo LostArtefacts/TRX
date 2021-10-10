@@ -853,8 +853,8 @@ void Inv_RingRotateLeft(RING_INFO *ring)
     if (ring->target_object < 0) {
         ring->target_object = ring->number_of_objects - 1;
     }
-    ring->rot_count = ROTATE_DURATION*ANIM_SCALE;
-    ring->rot_adder = ring->rot_adder_l/ANIM_SCALE;
+    ring->rot_count = ROTATE_DURATION;
+    ring->rot_adder = ring->rot_adder_l;
 }
 
 void Inv_RingRotateRight(RING_INFO *ring)
@@ -864,8 +864,8 @@ void Inv_RingRotateRight(RING_INFO *ring)
     if (ring->target_object >= ring->number_of_objects) {
         ring->target_object = 0;
     }
-    ring->rot_count = ROTATE_DURATION*ANIM_SCALE;
-    ring->rot_adder = ring->rot_adder_r/ANIM_SCALE;
+    ring->rot_count = ROTATE_DURATION;
+    ring->rot_adder = ring->rot_adder_r;
 }
 
 void Inv_RingMotionInit(

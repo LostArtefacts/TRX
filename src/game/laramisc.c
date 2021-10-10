@@ -14,11 +14,18 @@
 #include "global/vars.h"
 #include "specific/sndpc.h"
 #include "util.h"
+#include "game/text.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 int32_t lara_jump_error = 0;
+TEXTSTRING* LaraText = NULL;
+TEXTSTRING* LaraText2 = NULL;
+
+PHD_3DPOS_F lara_float_pos;
+double lara_fall_speed_f = 0.0;
+double lara_speed_F = 0.0;
 
 void LaraControl(int16_t item_num)
 {
@@ -35,6 +42,7 @@ void LaraControl(int16_t item_num)
     if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
+            lara_float_pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_SWIMGLIDE;
@@ -42,6 +50,7 @@ void LaraControl(int16_t item_num)
             item->gravity_status = 0;
             item->pos.x_rot = 30 * PHD_DEGREE;
             item->fall_speed = 30;
+            lara_fall_speed_f = 30.0;
             Lara.head_x_rot = 0;
             Lara.head_y_rot = 0;
             Lara.torso_x_rot = 0;
@@ -62,6 +71,7 @@ void LaraControl(int16_t item_num)
         Lara.water_status = LWS_UNDERWATER;
         Lara.air = LARA_AIR;
         item->pos.y += 100;
+        lara_float_pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
         StopSoundEffect(SFX_LARA_FALL, NULL);
@@ -70,18 +80,21 @@ void LaraControl(int16_t item_num)
             item->pos.x_rot = -45 * PHD_DEGREE;
             AnimateLara(item);
             item->fall_speed *= 2/ANIM_SCALE;
+            lara_fall_speed_f *= 2.0/ANIM_SCALE;
         } else if (item->current_anim_state == AS_FASTDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -85 * PHD_DEGREE;
             AnimateLara(item);
             item->fall_speed *= 2/ANIM_SCALE;
+            lara_fall_speed_f *= 2.0/ANIM_SCALE;
         } else {
             item->current_anim_state = AS_DIVE;
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_JUMPIN;
-            item->frame_number = AF_JUMPIN;
+            item->frame_number = AF_JUMPIN * ANIM_SCALE;
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = ((item->fall_speed * 3) / 2) /ANIM_SCALE;
+            lara_fall_speed_f *= 1.5/(double)ANIM_SCALE;
         }
         Lara.head_x_rot = 0;
         Lara.head_y_rot = 0;
@@ -97,9 +110,11 @@ void LaraControl(int16_t item_num)
             item->current_anim_state = AS_SURFTREAD;
             item->goal_anim_state = AS_SURFTREAD;
             item->anim_number = AA_SURFTREAD;
-            item->frame_number = AF_SURFTREAD;
+            item->frame_number = AF_SURFTREAD * ANIM_SCALE;
             item->fall_speed = 0;
+            lara_fall_speed_f = 0.0;
             item->pos.y = wh + 1;
+            lara_float_pos.y = wh + 1;
             item->pos.x_rot = 0;
             item->pos.z_rot = 0;
             Lara.head_x_rot = 0;
@@ -114,9 +129,12 @@ void LaraControl(int16_t item_num)
             item->current_anim_state = AS_FORWARDJUMP;
             item->goal_anim_state = AS_FORWARDJUMP;
             item->anim_number = AA_FALLDOWN;
-            item->frame_number = AF_FALLDOWN;
-            item->speed = item->fall_speed / 4;
+            item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+            item->speed = item->fall_speed / 4 ;
+            lara_speed_F = lara_fall_speed_f / 4.0 ;
+            LaraSpeedError = 0;
             item->fall_speed = 0;
+            lara_fall_speed_f = 0.0;
             item->gravity_status = 1;
             item->pos.x_rot = 0;
             item->pos.z_rot = 0;
@@ -131,9 +149,12 @@ void LaraControl(int16_t item_num)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
+        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
         item->speed = item->fall_speed / 4;
+        lara_speed_F = lara_fall_speed_f / 4.0;
+        LaraSpeedError = 0;
         item->fall_speed = 0;
+        lara_fall_speed_f = 0;
         item->gravity_status = 1;
         item->pos.x_rot = 0;
         item->pos.z_rot = 0;
@@ -217,6 +238,8 @@ void LaraSwapMeshExtra()
     }
 }
 
+int32_t frameCounter = 0;
+
 void AnimateLara(ITEM_INFO *item)
 {
     int16_t *command;
@@ -236,19 +259,26 @@ void AnimateLara(ITEM_INFO *item)
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
                     TranslateItem(item, command[0], command[1], command[2]);
+                    TranslateItem_f(&lara_float_pos, command[0], command[1], command[2], item->pos.y_rot);
                     command += 3;
                     break;
 
                 case AC_JUMP_VELOCITY:
-                    item->fall_speed = *(command++);                    // Get Upward Velocity
-                    item->speed = *(command++)/ANIM_SCALE;                     // Get Forward Velocity
+                {			
+					int16_t dummy = *(command++);					// Get Upward Velocity
+					item->fall_speed = dummy;
+					lara_fall_speed_f = (double)dummy;		
+                    dummy = *(command++);
+                    item->speed = dummy/ANIM_SCALE;                 // Get Forward Velocity
+                    lara_speed_F = (double)dummy/(double)ANIM_SCALE;
                     item->gravity_status = 1;                       // turn gravity ON
-                    if ( Lara.calc_fall_speed )                      // If Upward velocity is  Pre-Calculated
+                    if ( Lara.calc_fall_speed )                     // If Upward velocity is  Pre-Calculated
                     {
-                        item->fall_speed = Lara.calc_fall_speed;      // then use that Value instead..
+                        item->fall_speed = Lara.calc_fall_speed;    // then use that Value instead..
+                        lara_fall_speed_f = Lara.calc_fall_speed;
                         Lara.calc_fall_speed = 0;
                     }
-                    break;
+                 }
                     break;
 
                 case AC_ATTACK_READY:
@@ -298,48 +328,105 @@ void AnimateLara(ITEM_INFO *item)
             }
         }
     }
+	if ( ANIM_SCALE == 1) {
+		if (item->gravity_status) {
+			int16_t speed = anim->velocity + anim->acceleration * (item->frame_number - anim->frame_base - 1);
+						
+			item->speed -= (int16_t)(speed >> 16);
+			speed += anim->acceleration;
+			item->speed += (int16_t)(speed >> 16);
 
-    if (item->gravity_status) {
-     int16_t speed = anim->velocity + anim->acceleration * (((item->frame_number - anim->frame_base) / ANIM_SCALE) - 1);
-        item->speed -= (uint16_t)(speed >> 16);
-        speed += anim->acceleration / ANIM_SCALE;
-        item->speed += (uint16_t)(speed >> 16);
+			item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY : 1;
+			item->pos.y += item->fall_speed;
+		} else {
+			int32_t speed = anim->velocity;
+			if (anim->acceleration) {
+				speed +=
+					anim->acceleration * (item->frame_number - anim->frame_base);
+			}
+			item->speed = (int16_t)(speed >> 16);
+		}
+		
+		item->pos.x += (phd_sin(Lara.move_angle) * item->speed) >> W2V_SHIFT;
+		item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
+		
+		lara_float_pos.x = item->pos.x;
+		lara_float_pos.z = item->pos.z;
+		lara_float_pos.y = item->pos.y;
+		lara_fall_speed_f = item->fall_speed;
+		lara_speed_F = item->speed;
+	}
+	else // ANIM_SCALE = 2
+	{
+		if (item->gravity_status) {
+			int32_t currentSpeed = item->speed;
+			int32_t currentFallSpeed = item->fall_speed;
+			
+			double speed = (double)(anim->velocity + anim->acceleration)/ANIM_SCALE * (((item->frame_number - anim->frame_base) / (double)ANIM_SCALE) - 1.0);
+			
+			lara_speed_F -= speed/65536.0;
+			speed += (double)anim->acceleration / (double)ANIM_SCALE;
+			lara_speed_F += speed/65536.0;
 
-        item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY /ANIM_SCALE : 1;
-        item->pos.y += item->fall_speed / ANIM_SCALE;
-        if (ANIM_SCALE == 2)
-        {
-            if (item->fall_speed > 0)
-            {
-                lara_jump_error += item->fall_speed & 1;
-            }
-            else if (item->fall_speed < 0)
-            {
-                lara_jump_error -= item->fall_speed & 1;
-            }
-            while (lara_jump_error > 2)
-            {
-                item->pos.y += 2;
-                lara_jump_error -= 2;
-            }
-            while (lara_jump_error < -2)
-            {
-                item->pos.y -= 2;
-                lara_jump_error += 2;
-            }
-        }
+			lara_fall_speed_f += (item->fall_speed < FASTFALL_SPEED) ? (double)GRAVITY /(double)ANIM_SCALE : 1.0/(double)ANIM_SCALE;
+			
+			lara_float_pos.y += lara_fall_speed_f / (double)ANIM_SCALE;
+
+			item->fall_speed = lara_fall_speed_f;
+			item->speed = lara_speed_F;
+			frameCounter += 1;
+			//LOG_DEBUG("%d - s %d f %d -> %d %d : y %d,%d,%d", frameCounter, currentSpeed, currentFallSpeed,item->speed, item->fall_speed, (int32_t)lara_float_pos.x,(int32_t)lara_float_pos.y,(int32_t)lara_float_pos.z); 
+			
+		} else {
+			frameCounter = 0;
+			double speed = (double)anim->velocity/(double)ANIM_SCALE;
+			LaraSpeedError = 0; //since speed is explicity set this is now 0
+			if (anim->acceleration) {
+				speed +=
+					((double)anim->acceleration/(double)ANIM_SCALE) * ((item->frame_number - anim->frame_base) / (double)ANIM_SCALE);
+			}
+			lara_speed_F = speed / 65536.0;
+			item->speed = lara_speed_F; //(int16_t)(speed >> 16);
+			lara_jump_error = 0;
+		}
+		
+		lara_float_pos.x += (phd_sin_f(Lara.move_angle) * lara_speed_F) / View2World;
+		lara_float_pos.z += (phd_cos_f(Lara.move_angle) * lara_speed_F) / View2World;
+		
+		item->pos.x = lara_float_pos.x;
+		item->pos.z = lara_float_pos.z;
+		item->pos.y = lara_float_pos.y;
+	}
+#if 0   
+    const double scale = 0.8;
+    const int32_t text_height = 17 * scale;
+    const int32_t text_offset_x = 0;
+    const int32_t screen_margin_h = -20;
+    const int32_t screen_margin_v = 18;
+
+    char ammostring[80] = "";
+    char speedString[80] = "";
+    
+    sprintf(ammostring,"%d,%d,%d - %d : %g,%g,%g",item->pos.x, item->pos.y, item->pos.z, LaraItem->pos.y_rot, lara_float_pos.x, lara_float_pos.y, lara_float_pos.z);
+    sprintf(speedString,"%d - %g",item->speed, lara_speed_F);
+    
+    if (LaraText) {
+        T_ChangeText(LaraText, ammostring);
+        T_ChangeText(LaraText2, speedString);
     } else {
-        int32_t speed = anim->velocity;
-        if (anim->acceleration) {
-            speed +=
-                anim->acceleration * ((item->frame_number - anim->frame_base) / ANIM_SCALE);
-        }
-        item->speed = (int16_t)(speed >> 16);
-        lara_jump_error = 0;
+        LaraText = T_Print(
+            -screen_margin_h - text_offset_x, text_height + screen_margin_v,
+            ammostring);
+        T_SetScale(LaraText, PHD_ONE * scale, PHD_ONE * scale);
+        //T_RightAlign(LaraText, 1);
+        
+        LaraText2 = T_Print(
+            -screen_margin_h - text_offset_x, (text_height*2) + screen_margin_v,
+            ammostring);
+        T_SetScale(LaraText2, PHD_ONE * scale, PHD_ONE * scale);
+        //T_RightAlign(LaraText2, 1);
     }
-
-    item->pos.x += (phd_sin(Lara.move_angle) * item->speed) >> W2V_SHIFT;
-    item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
+#endif
 }
 
 void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
@@ -352,7 +439,7 @@ void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
 
 void UseItem(int16_t object_num)
 {
-    LOG_INFO("%d", object_num);
+    //LOG_INFO("%d", object_num);
     switch (object_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
@@ -425,6 +512,7 @@ void InitialiseLaraLoad(int16_t item_num)
 {
     Lara.item_number = item_num;
     LaraItem = &Items[item_num];
+    LaraSetFloatPosFromFixed();
 }
 
 void InitialiseLara()
@@ -461,16 +549,17 @@ void InitialiseLara()
     if (RoomInfo[LaraItem->room_number].flags & 1) {
         Lara.water_status = LWS_UNDERWATER;
         LaraItem->fall_speed = 0;
+        lara_fall_speed_f = 0.0;
         LaraItem->goal_anim_state = AS_TREAD;
         LaraItem->current_anim_state = AS_TREAD;
         LaraItem->anim_number = AA_TREAD;
-        LaraItem->frame_number = AF_TREAD;
+        LaraItem->frame_number = AF_TREAD * ANIM_SCALE;
     } else {
         Lara.water_status = LWS_ABOVEWATER;
         LaraItem->goal_anim_state = AS_STOP;
         LaraItem->current_anim_state = AS_STOP;
         LaraItem->anim_number = AA_STOP;
-        LaraItem->frame_number = AF_STOP;
+        LaraItem->frame_number = AF_STOP * ANIM_SCALE;
     }
 
     Lara.current_active = 0;
@@ -682,6 +771,15 @@ void LaraCheatGetStuff()
     if (Objects[O_PICKUP_OPTION2].loaded && !Inv_RequestItem(O_PICKUP_ITEM2)) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
+}
+
+void LaraSetFloatPosFromFixed() {
+	lara_float_pos.x = LaraItem->pos.x;
+    lara_float_pos.y = LaraItem->pos.y;
+    lara_float_pos.z = LaraItem->pos.z;
+    lara_fall_speed_f = LaraItem->fall_speed;
+	lara_speed_F = LaraItem->speed;
+	//LOG_DEBUG("%d,%d,%d", LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z);
 }
 
 void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {

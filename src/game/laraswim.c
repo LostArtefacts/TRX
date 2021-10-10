@@ -68,17 +68,31 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     AnimateLara(item);
+    
+    if(ANIM_SCALE == 2) {
+		lara_float_pos.y -= (phd_sin_f(item->pos.x_rot) * lara_fall_speed_f) / (View2World * 4);
+		lara_float_pos.x += ((phd_sin_f(item->pos.y_rot) * lara_fall_speed_f) / (View2World * 4) * phd_cos_f(item->pos.x_rot)) / View2World;
+		lara_float_pos.z += ((phd_cos_f(item->pos.y_rot) * lara_fall_speed_f) / (View2World * 4) * phd_cos_f(item->pos.x_rot)) / View2World;
 
-    item->pos.y -=
-        (phd_sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
-    item->pos.x +=
-        (((phd_sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * phd_cos(item->pos.x_rot))
-        >> W2V_SHIFT;
-    item->pos.z +=
-        (((phd_cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * phd_cos(item->pos.x_rot))
-        >> W2V_SHIFT;
+        item->pos.y = lara_float_pos.y;
+        item->pos.x = lara_float_pos.x;
+        item->pos.z = lara_float_pos.z;
+    } else {
+		item->pos.y -=
+			(phd_sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
+		item->pos.x +=
+			(((phd_sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
+			 * phd_cos(item->pos.x_rot))
+			>> W2V_SHIFT;
+		item->pos.z +=
+			(((phd_cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
+			 * phd_cos(item->pos.x_rot))
+			>> W2V_SHIFT;
+        
+        lara_float_pos.y = item->pos.y;
+        lara_float_pos.x = item->pos.x;
+        lara_float_pos.z = item->pos.z;
+	}
 
     if (Lara.water_status != LWS_CHEAT) {
         LaraBaddieCollision(item, coll);
@@ -120,13 +134,16 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.z_rot += LARA_LEAN_RATE * 2/ANIM_SCALE;
     }
 
-    item->fall_speed += 8;
+    lara_fall_speed_f += 8.0;
+    item->fall_speed = lara_fall_speed_f;
     if (Lara.water_status == LWS_CHEAT) {
         if (item->fall_speed > UW_MAXSPEED * 2) {
             item->fall_speed = UW_MAXSPEED * 2/ANIM_SCALE;
+            lara_fall_speed_f = UW_MAXSPEED * 2.0/ANIM_SCALE;
         }
     } else if (item->fall_speed > UW_MAXSPEED) {
         item->fall_speed = UW_MAXSPEED;
+        lara_fall_speed_f = UW_MAXSPEED;
     }
 
     if (!(Input & IN_JUMP)) {
@@ -156,14 +173,15 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SWIM;
     }
 
-    item->fall_speed -= WATER_FRICTION;
-    if (item->fall_speed < 0) {
-        item->fall_speed = 0;
+    lara_fall_speed_f-= WATER_FRICTION;
+    if (lara_fall_speed_f < 0) {
+        lara_fall_speed_f = 0;
     }
 
-    if (item->fall_speed <= (UW_MAXSPEED * 2) / 3) {
+    if (lara_fall_speed_f <= (UW_MAXSPEED * 2.0) / 3.0) {
         item->goal_anim_state = AS_TREAD;
     }
+    item->fall_speed = lara_fall_speed_f;
 }
 
 void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
@@ -195,10 +213,12 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SWIM;
     }
 
-    item->fall_speed -= WATER_FRICTION;
-    if (item->fall_speed < 0) {
-        item->fall_speed = 0;
+	lara_fall_speed_f -= WATER_FRICTION;
+    
+    if (lara_fall_speed_f < 0) {
+        lara_fall_speed_f = 0;
     }
+    item->fall_speed = lara_fall_speed_f;
 }
 
 void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
@@ -210,10 +230,12 @@ void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsUWDeath(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->fall_speed -= 8/ANIM_SCALE;
-    if (item->fall_speed <= 0) {
-        item->fall_speed = 0;
+	lara_fall_speed_f -= 8.0/ANIM_SCALE;
+    
+    if (lara_fall_speed_f <= 0) {
+        lara_fall_speed_f= 0;
     }
+    item->fall_speed = lara_fall_speed_f;
 
     if (item->pos.x_rot >= -2 * PHD_DEGREE
         && item->pos.x_rot <= 2 * PHD_DEGREE) {
@@ -254,6 +276,7 @@ void LaraColUWDeath(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
         item->pos.y -= 5;
+        lara_float_pos.y -= 5.0;
     }
     LaraSwimCollision(item, coll);
 }
@@ -269,7 +292,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
         coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
         item->room_number, UW_HITE);
 
-    ShiftItem(item, coll);
+    ShiftItemLara(item, coll);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -282,6 +305,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
             break;
         }
         item->fall_speed = 0;
+        lara_fall_speed_f = 0.0;
         break;
 
     case COLL_TOP:
@@ -292,6 +316,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
 
     case COLL_TOPFRONT:
         item->fall_speed = 0;
+        lara_fall_speed_f = 0.0;
         break;
 
     case COLL_LEFT:
@@ -304,11 +329,13 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
 
     case COLL_CLAMP:
         item->fall_speed = 0;
+        lara_fall_speed_f = 0.0;
         return;
         break;
     }
 
     if (coll->mid_floor < 0) {
+		lara_float_pos.y += coll->mid_floor;
         item->pos.y += coll->mid_floor;
         item->pos.x_rot += UW_WALLDEFLECT;
     }
@@ -332,29 +359,38 @@ void LaraWaterCurrent(COLL_INFO *coll)
 
     target.x -= item->pos.x;
     if (target.x > Lara.current_active) {
-        item->pos.x += Lara.current_active;
+		lara_float_pos.x += Lara.current_active;
+        item->pos.x = lara_float_pos.x;        
     } else if (target.x < -Lara.current_active) {
-        item->pos.x -= Lara.current_active;
+        lara_float_pos.x -= Lara.current_active;
+        item->pos.x = lara_float_pos.x;     
     } else {
         item->pos.x += target.x;
+        lara_float_pos.x += target.x;
     }
 
     target.z -= item->pos.z;
     if (target.z > Lara.current_active) {
-        item->pos.z += Lara.current_active;
+		lara_float_pos.z += Lara.current_active;
+        item->pos.z = lara_float_pos.z;
     } else if (target.z < -Lara.current_active) {
-        item->pos.z -= Lara.current_active;
+        lara_float_pos.z -= Lara.current_active;
+        item->pos.z = lara_float_pos.z;
     } else {
         item->pos.z += target.z;
+        lara_float_pos.z += target.z;
     }
 
     target.y -= item->pos.y;
     if (target.y > Lara.current_active) {
-        item->pos.y += Lara.current_active;
+        lara_float_pos.y += Lara.current_active;
+        item->pos.y = lara_float_pos.y;
     } else if (target.y < -Lara.current_active) {
-        item->pos.y -= Lara.current_active;
+        lara_float_pos.y -= Lara.current_active;
+        item->pos.y = lara_float_pos.y;
     } else {
         item->pos.y += target.y;
+        lara_float_pos.y += target.y;
     }
 
     Lara.current_active = 0;
@@ -372,11 +408,13 @@ void LaraWaterCurrent(COLL_INFO *coll)
             item->pos.x_rot -= UW_WALLDEFLECT;
         } else {
             item->fall_speed = 0;
+            lara_fall_speed_f = 0.0;
         }
     } else if (coll->coll_type == COLL_TOP) {
         item->pos.x_rot -= UW_WALLDEFLECT;
     } else if (coll->coll_type == COLL_TOPFRONT) {
         item->fall_speed = 0;
+        lara_fall_speed_f = 0.0;
     } else if (coll->coll_type == COLL_LEFT) {
         item->pos.y_rot += 5 * PHD_DEGREE;
     } else if (coll->coll_type == COLL_RIGHT) {
@@ -385,9 +423,10 @@ void LaraWaterCurrent(COLL_INFO *coll)
 
     if (coll->mid_floor < 0) {
         item->pos.y += coll->mid_floor;
+        lara_float_pos.y += coll->mid_floor;
         item->pos.x_rot += UW_WALLDEFLECT;
     }
-    ShiftItem(item, coll);
+    ShiftItemLara(item, coll);
 
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;

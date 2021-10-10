@@ -313,7 +313,7 @@ void DrawEffect(int16_t fxnum)
     if (object->nmeshes < 0) {
         S_DrawSprite(
             fx->pos.x, fx->pos.y, fx->pos.z,
-            object->mesh_index - (fx->frame_number/ANIM_SCALE), 4096);
+            object->mesh_index - fx->frame_number, 4096);
     } else {
         phd_PushMatrix();
         phd_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
@@ -325,7 +325,7 @@ void DrawEffect(int16_t fxnum)
             } else {
                 S_CalculateLight(
                     fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
-                phd_PutPolygons(Meshes[(fx->frame_number/ANIM_SCALE)], -1);
+                phd_PutPolygons(Meshes[fx->frame_number], -1);
             }
         }
         phd_PopMatrix();
@@ -336,7 +336,7 @@ void DrawSpriteItem(ITEM_INFO *item)
 {
     S_DrawSprite(
         item->pos.x, item->pos.y, item->pos.z,
-        Objects[item->object_number].mesh_index - (item->frame_number/ANIM_SCALE),
+        Objects[item->object_number].mesh_index - item->frame_number,
         item->shade);
 }
 
@@ -674,7 +674,7 @@ void DrawLara(ITEM_INFO *item)
 
         packed_rotation =
             (int32_t
-                 *)(Lara.right_arm.frame_base + (Lara.right_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.right_arm.y_rot, Lara.right_arm.x_rot, Lara.right_arm.z_rot);
         phd_RotYXZpack(packed_rotation[LM_UARM_R]);
@@ -710,7 +710,7 @@ void DrawLara(ITEM_INFO *item)
 
         packed_rotation =
             (int32_t
-                 *)(Lara.left_arm.frame_base + (Lara.left_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.left_arm.y_rot, Lara.left_arm.x_rot, Lara.left_arm.z_rot);
         phd_RotYXZpack(packed_rotation[LM_UARM_L]);
@@ -740,7 +740,7 @@ void DrawLara(ITEM_INFO *item)
 
         packed_rotation =
             (int32_t
-                 *)(Lara.right_arm.frame_base + (Lara.right_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[29], bone[30], bone[31]);
         phd_RotYXZpack(packed_rotation[LM_UARM_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_R], clip);
@@ -763,7 +763,7 @@ void DrawLara(ITEM_INFO *item)
 
         packed_rotation =
             (int32_t
-                 *)(Lara.left_arm.frame_base + (Lara.left_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[41], bone[42], bone[43]);
         phd_RotYXZpack(packed_rotation[LM_UARM_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_L], clip);
@@ -1005,7 +1005,7 @@ void DrawLaraInt(
 
         packed_rotation1 =
             (int32_t
-                 *)(Lara.right_arm.frame_base + (Lara.right_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.right_arm.y_rot, Lara.right_arm.x_rot, Lara.right_arm.z_rot);
         phd_RotYXZpack(packed_rotation1[LM_UARM_R]);
@@ -1032,7 +1032,7 @@ void DrawLaraInt(
 
         packed_rotation1 =
             (int32_t
-                 *)(Lara.left_arm.frame_base + (Lara.left_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.left_arm.y_rot, Lara.left_arm.x_rot, Lara.left_arm.z_rot);
         phd_RotYXZpack(packed_rotation1[LM_UARM_L]);
@@ -1064,7 +1064,7 @@ void DrawLaraInt(
 
         packed_rotation1 =
             (int32_t
-                 *)(Lara.right_arm.frame_base + (Lara.right_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[29], bone[30], bone[31]);
         phd_RotYXZpack(packed_rotation1[LM_UARM_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_R], clip);
@@ -1087,7 +1087,7 @@ void DrawLaraInt(
 
         packed_rotation1 =
             (int32_t
-                 *)(Lara.left_arm.frame_base + (Lara.left_arm.frame_number / ANIM_SCALE ) * (object->nmeshes * 2 + FRAME_ROT) + 10);
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[41], bone[42], bone[43]);
         phd_RotYXZpack(packed_rotation1[LM_UARM_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_L], clip);

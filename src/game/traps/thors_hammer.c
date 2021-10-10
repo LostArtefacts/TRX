@@ -63,7 +63,7 @@ void ThorsHandleControl(int16_t item_num)
 
     case THS_ACTIVE: {
         int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
-        if (frm > 30) {
+        if (frm > (30*ANIM_SCALE)) {
             int32_t x = item->pos.x;
             int32_t z = item->pos.z;
 
@@ -91,7 +91,7 @@ void ThorsHandleControl(int16_t item_num)
                 LaraItem->current_anim_state = AS_SPECIAL;
                 LaraItem->goal_anim_state = AS_SPECIAL;
                 LaraItem->anim_number = AA_RBALL_DEATH;
-                LaraItem->frame_number = AF_RBALL_DEATH;
+                LaraItem->frame_number = AF_RBALL_DEATH * ANIM_SCALE;
             }
         }
         break;

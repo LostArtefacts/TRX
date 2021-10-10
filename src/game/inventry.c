@@ -731,7 +731,7 @@ void Construct_Inventory()
     InvChosen = 0;
     if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
-        BETA_TEXT = T_Print(-25, 50,"BETA 1");
+        BETA_TEXT = T_Print(-32, 50,"RC 1");
         T_RightAlign(BETA_TEXT, 1);
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;

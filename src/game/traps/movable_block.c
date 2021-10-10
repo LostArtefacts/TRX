@@ -137,7 +137,7 @@ void MovableBlockCollision(
             Lara.gun_status = LGS_HANDSBUSY;
         }
     } else if (lara_item->current_anim_state == AS_PPREADY) {
-        if (lara_item->frame_number != AF_PPREADY) {
+        if (lara_item->frame_number != (AF_PPREADY * ANIM_SCALE)) {
             return;
         }
 

@@ -40,4 +40,5 @@ int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance);
 
 void T1MInjectGameCollide();
 
+void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll);
 #endif

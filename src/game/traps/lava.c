@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "global/const.h"
 
 void SetupLavaEmitter(OBJECT_INFO *obj)
 {
@@ -72,7 +73,7 @@ void LavaEmitterControl(int16_t item_num)
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
         fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
-        fx->speed = GetRandomControl() >> 10;
+        fx->speed = GetRandomControl()/ANIM_SCALE >> 10;
         fx->fall_speed = -GetRandomControl() / 200;
         fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
         fx->object_number = O_LAVA;
@@ -86,8 +87,8 @@ void LavaControl(int16_t fx_num)
     FX_INFO *fx = &Effects[fx_num];
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->fall_speed += GRAVITY;
-    fx->pos.y += fx->fall_speed;
+    fx->fall_speed += GRAVITY/ANIM_SCALE;
+    fx->pos.y += fx->fall_speed/ANIM_SCALE;
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);

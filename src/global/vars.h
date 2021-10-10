@@ -295,4 +295,7 @@ extern int16_t InvChosen;
 
 extern int16_t BarOffsetY[6];
 
+extern int32_t LaraSpeedError;
+extern int16_t ANIM_SCALE;
+
 #endif

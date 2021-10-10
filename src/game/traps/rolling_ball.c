@@ -38,7 +38,7 @@ void RollingBallControl(int16_t item_num)
         if (item->pos.y < item->floor) {
             if (!item->gravity_status) {
                 item->gravity_status = 1;
-                item->fall_speed = -10/ANIM_SCALE;
+                item->fall_speed = -10; //(-10/ANIM_SCALE);
             }
         } else if (item->current_anim_state == TRAP_SET) {
             item->goal_anim_state = TRAP_ACTIVATE;
@@ -154,7 +154,7 @@ void RollingBallCollision(
             lara_item->current_anim_state = AS_SPECIAL;
             lara_item->goal_anim_state = AS_SPECIAL;
             lara_item->anim_number = AA_RBALL_DEATH;
-            lara_item->frame_number = AF_RBALL_DEATH;
+            lara_item->frame_number = AF_RBALL_DEATH * ANIM_SCALE;
 
             Camera.flags = FOLLOW_CENTRE;
             Camera.target_angle = 170 * PHD_DEGREE;

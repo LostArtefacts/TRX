@@ -11,6 +11,8 @@
 #include "specific/frontend.h"
 #include "util.h"
 
+extern PHD_3DPOS_F lara_float_pos;
+
 uint32_t demo_frame_delay = 0;
 int32_t StartDemo()
 {
@@ -38,22 +40,8 @@ int32_t StartDemo()
     SeedRandomDraw(0xD371F947);
     SeedRandomControl(0xD371F947);
 
-     demo_frame_delay = 0;
+    demo_frame_delay = 0;
 
-     void GetDemoInput();
-{
-     if (demo_frame_delay == 0) {
-         if (DemoCount >= DEMO_COUNT_MAX) {
-              Input = -1;
-         } else {
-              Input = DemoPtr[DemoCount];
-         }
-         if (Input != -1) {
-              DemoCount++;
-         }
-     }
-     demo_frame_delay = !demo_frame_delay;
-}
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         TitleLoaded = 0;
 
@@ -89,6 +77,10 @@ void LoadLaraDemoPos()
     item->pos.z_rot = DemoPtr[5];
     int16_t room_num = DemoPtr[6];
     DemoCount += 7;
+    
+    lara_float_pos.x = item->pos.x;
+    lara_float_pos.y = item->pos.y;
+    lara_float_pos.z = item->pos.z;
 
     if (item->room_number != room_num) {
         ItemNewRoom(Lara.item_number, room_num);
@@ -102,14 +94,14 @@ void LoadLaraDemoPos()
 void GetDemoInput()
 {
     if (DemoCount >= DEMO_COUNT_MAX) {
-        Input = -1;
-    } else {
-        Input = DemoPtr[DemoCount];
-    }
-    if (Input != -1) {
-        DemoCount++;
-    }
-}
+		Input = -1;
+	} else {
+		Input = DemoPtr[DemoCount];
+	}
+	if (Input != -1) {
+		DemoCount++;
+	}
+ }
 
 void T1MInjectGameDemo()
 {

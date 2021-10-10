@@ -364,7 +364,7 @@ void phd_InitWindow(
     PhdCenterX = width / 2;
     PhdCenterY = height / 2;
     PhdNearZ = nearz << W2V_SHIFT;
-    PhdFarZ = farz << W2V_SHIFT;
+    PhdFarZ = 2147483647; //farz << W2V_SHIFT;
     PhdViewDist = farz;
     PhdScrHeight = scrheight;
     PhdScrWidth = scrwidth;
