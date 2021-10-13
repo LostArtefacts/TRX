@@ -65,7 +65,7 @@ void GameMain()
 
     if (IsHardwareRenderer) {
         GameSizer = 1.0;
-        dword_45E960 = AppSettings;
+        OldRenderSettings = RenderSettings;
     }
     HiRes = 0;
     TempVideoAdjust(2, 1.0);

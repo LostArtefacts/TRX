@@ -9,7 +9,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define dword_45E960            VAR_U_(0x0045E960, int32_t)
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
 #define PhdWinPtr               VAR_U_(0x006CAD0C, uint8_t*)
@@ -123,7 +122,8 @@ extern int32_t KeyChange;
 
 #define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
-#define AppSettings             VAR_U_(0x0045A240, uint32_t)
+#define RenderSettings          VAR_U_(0x0045A240, uint32_t)
+#define OldRenderSettings       VAR_U_(0x0045E960, uint32_t)
 #define Quality                 VAR_I_(0x00453030, int32_t, 0x3000000)
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)
