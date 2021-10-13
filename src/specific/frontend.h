@@ -6,12 +6,13 @@
 #include <stdint.h>
 
 // clang-format off
-#define FMVInit                 ((void      (*)())0x0041CDA0)
 // clang-format on
 
+void FMVInit();
 int32_t WinPlayFMV(int32_t sequence, int32_t mode);
-void S_Wait(int32_t nframes);
 int32_t S_PlayFMV(int32_t sequence, int32_t mode);
+
+void S_Wait(int32_t nframes);
 
 SG_COL S_Colour(int32_t red, int32_t green, int32_t blue);
 RGB888 S_ColourFromPalette(int8_t idx);

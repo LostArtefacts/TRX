@@ -274,6 +274,17 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     return ret;
 }
 
+void FMVInit()
+{
+    if (Player_PassInDirectDrawObject(DDraw)) {
+        S_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
+    }
+    if (Player_InitSoundSystem(TombHWND)) {
+        Player_GetDSErrorCode();
+        S_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
+    }
+}
+
 void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C0F0, S_Colour);
@@ -285,6 +296,7 @@ void T1MInjectSpecificFrontend()
     INJECT(0x0041CCC0, S_FinishInventory);
     INJECT(0x0041CD10, S_FadeToBlack);
     INJECT(0x0041CD50, S_Wait);
+    INJECT(0x0041CDA0, FMVInit);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
 }
