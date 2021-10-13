@@ -17,6 +17,7 @@
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
 #define HWR_DrawSprite              ((void      (*)(int16_t x1, int16_t x2, int16_t y1, int16_t y2, int16_t z, int16_t sprnum, int16_t shade))0x0040C425)
+#define HWR_ClearSurfaceDepth       ((void      (*)())0x00408AC7)
 #define HWR_PrepareFMV              ((void      (*)())0x0040834C)
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)

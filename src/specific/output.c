@@ -248,6 +248,11 @@ int32_t S_DumpScreen()
     return ClockSyncTicks(TICKS_PER_FRAME);
 }
 
+void S_ClearScreen()
+{
+    HWR_ClearSurfaceDepth();
+}
+
 void S_InitialiseScreen()
 {
     if (CurrentLevel != GF.title_level_num) {
@@ -460,6 +465,7 @@ void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FC60, S_InitialisePolyList);
     INJECT(0x0042FC70, S_DumpScreen);
+    INJECT(0x0042FCC0, S_ClearScreen);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x00430100, S_CalculateLight);
     INJECT(0x00430290, S_CalculateStaticLight);

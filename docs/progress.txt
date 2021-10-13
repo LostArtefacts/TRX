@@ -742,7 +742,7 @@ DisplayRequester                0x0042F6F0  0x0000056B  +
 # shell/output.cpp
 S_InitialisePolyList            0x0042FC60  0x00000005  +
 S_DumpScreen                    0x0042FC70  0x00000044  +
-S_ClearScreen                   0x0042FCC0  0x00000013  *
+S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  *
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
