@@ -96,11 +96,9 @@ void S_FinishInventory()
         TempVideoRemove();
     }
     ModeLock = 0;
-    if (IsHardwareRenderer) {
-        if (RenderSettings != OldRenderSettings) {
-            HWR_DownloadTextures(-1);
-            OldRenderSettings = RenderSettings;
-        }
+    if (RenderSettings != OldRenderSettings) {
+        HWR_DownloadTextures(-1);
+        OldRenderSettings = RenderSettings;
     }
 }
 
@@ -242,9 +240,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     }
     init_game_malloc();
 
-    if (IsHardwareRenderer) {
-        HWR_FMVDone();
-    }
+    HWR_FMVDone();
     TempVideoRemove();
 
     return ret;

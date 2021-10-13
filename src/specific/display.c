@@ -39,26 +39,8 @@ void TempVideoAdjust(int32_t hi_res, double sizer)
         return;
     }
 
-    if (IsHardwareRenderer) {
-        HiRes = hi_res;
-        HWR_SwitchResolution();
-    } else {
-        ScreenSizer = sizer;
-
-        if (hi_res != HiRes) {
-            if (HiRes == 2) {
-                HiRes = 0;
-                GameVidWidth = 320;
-                GameVidHeight = 200;
-            } else {
-                HiRes = 2;
-                GameVidWidth = 640;
-                GameVidHeight = 480;
-            }
-        }
-
-        SetupScreenSize();
-    }
+    HiRes = hi_res;
+    HWR_SwitchResolution();
 }
 
 void TempVideoRemove()
@@ -68,26 +50,8 @@ void TempVideoRemove()
         return;
     }
 
-    if (IsHardwareRenderer) {
-        HiRes = GameHiRes;
-        HWR_SwitchResolution();
-    } else {
-        ScreenSizer = GameSizer;
-
-        if (HiRes != GameHiRes) {
-            if (HiRes == 2) {
-                HiRes = 0;
-                GameVidWidth = 320;
-                GameVidHeight = 200;
-            } else {
-                HiRes = 2;
-                GameVidWidth = 640;
-                GameVidHeight = 480;
-            }
-        }
-
-        SetupScreenSize();
-    }
+    HiRes = GameHiRes;
+    HWR_SwitchResolution();
 }
 
 void S_NoFade()
@@ -98,24 +62,10 @@ void S_NoFade()
 
 void S_FadeInInventory(int32_t fade)
 {
-    if (IsHardwareRenderer) {
-        if (CurrentLevel == GF.title_level_num) {
-            HWR_DownloadPicture();
-        } else {
-            HWR_CopyPicture();
-        }
-    } else if (BackScreen && BackScreenSize) {
-        uint8_t *scrptr = ScrPtr;
-        uint8_t *bkscrptr = BackScreen;
-        for (int i = 0; i < GameVidWidth * GameVidHeight; i++) {
-            *bkscrptr++ = *scrptr++;
-        }
-    }
-
-    if (fade) {
-        FadeValue = 0x100000;
-        FadeLimit = 0x180000;
-        FadeAdder = 0x8000;
+    if (CurrentLevel == GF.title_level_num) {
+        HWR_DownloadPicture();
+    } else {
+        HWR_CopyPicture();
     }
 }
 

@@ -66,7 +66,6 @@ typedef struct TEXT_COLUMN_PLACEMENT {
 
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
-static TEXTSTRING *DetailText[5] = { 0 };
 static TEXTSTRING *SoundText[4] = { 0 };
 static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlText[2] = { 0 };
@@ -726,59 +725,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
-    if (IsHardwareRenderer) {
-        DoDetailOptionHW(inv_item);
-        return;
-    }
-
-    if (!DetailText[0]) {
-        DetailText[2] = T_Print(0, 0, GF.strings[GS_DETAIL_LEVEL_HIGH]);
-        DetailText[1] = T_Print(0, 25, GF.strings[GS_DETAIL_LEVEL_MEDIUM]);
-        DetailText[0] = T_Print(0, 50, GF.strings[GS_DETAIL_LEVEL_LOW]);
-        DetailText[3] = T_Print(0, -32, " ");
-        DetailText[4] = T_Print(0, -30, GF.strings[GS_DETAIL_SELECT_DETAIL]);
-        T_AddBackground(DetailText[4], 156, 0, 0, 0);
-        T_AddOutline(DetailText[4], 1);
-        T_AddBackground(DetailText[RenderSettings], 148, 0, 0, 0);
-        T_AddOutline(DetailText[RenderSettings], 1);
-        T_AddBackground(DetailText[3], 160, 107, 0, 0);
-        T_AddOutline(DetailText[3], 1);
-        for (int i = 0; i < 5; i++) {
-            T_CentreH(DetailText[i], 1);
-            T_CentreV(DetailText[i], 1);
-        }
-    }
-
-    if (CHK_ANY(InputDB, IN_BACK) && RenderSettings > 0) {
-        T_RemoveOutline(DetailText[RenderSettings]);
-        T_RemoveBackground(DetailText[RenderSettings]);
-        RenderSettings--;
-        T_AddOutline(DetailText[RenderSettings], 1);
-        T_AddBackground(DetailText[RenderSettings], 148, 0, 0, 0);
-    }
-
-    if (CHK_ANY(InputDB, IN_FORWARD) && RenderSettings < 2) {
-        T_RemoveOutline(DetailText[RenderSettings]);
-        T_RemoveBackground(DetailText[RenderSettings]);
-        RenderSettings++;
-        T_AddOutline(DetailText[RenderSettings], 1);
-        T_AddBackground(DetailText[RenderSettings], 148, 0, 0, 0);
-    }
-
-    if (RenderSettings == 0) {
-        Quality = 0;
-    } else if (RenderSettings == 1) {
-        Quality = 0x3000000;
-    } else if (RenderSettings == 2) {
-        Quality = 0x6000000;
-    }
-
-    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
-        for (int i = 0; i < 5; i++) {
-            T_RemovePrint(DetailText[i]);
-            DetailText[0] = NULL;
-        }
-    }
+    DoDetailOptionHW(inv_item);
 }
 
 // original name: do_sound_option
