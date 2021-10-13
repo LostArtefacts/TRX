@@ -676,6 +676,11 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
     return j;
 }
 
+void HWR_FadeToPal(int32_t fade_value, RGB888 *palette)
+{
+    // null sub
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_Error);

@@ -77,7 +77,7 @@
 <rect width="12.00" height="12.00" x="336.00" y="31.00" class="named"><title>HWR_CopyPicture</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="31.00" class="named"><title>HWR_DownloadPicture</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="31.00" class="todo"><title>sub_408E0E</title></rect>
-<rect width="12.00" height="12.00" x="378.00" y="31.00" class="named"><title>HWR_FadeToBlack</title></rect>
+<rect width="12.00" height="12.00" x="378.00" y="31.00" class="named"><title>HWR_FadeWait</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="31.00" class="decompiled"><title>sub_408E41</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="31.00" class="decompiled"><title>HWR_RenderTriangleStrip</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="31.00" class="todo"><title>sub_408ED8</title></rect>
@@ -252,7 +252,7 @@
 <rect width="12.00" height="12.00" x="686.00" y="73.00" class="decompiled"><title>S_DrawScreenBox</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="87.00" class="decompiled"><title>S_DrawScreenFBox</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="87.00" class="decompiled"><title>S_FinishInventory</title></rect>
-<rect width="12.00" height="12.00" x="28.00" y="87.00" class="named"><title>S_FadeToBlack</title></rect>
+<rect width="12.00" height="12.00" x="28.00" y="87.00" class="decompiled"><title>S_FadeToBlack</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="87.00" class="decompiled"><title>S_Wait</title></rect>
 <rect width="12.00" height="12.00" x="56.00" y="87.00" class="named"><title>FMVInit</title></rect>
 <rect width="12.00" height="12.00" x="70.00" y="87.00" class="decompiled"><title>WinPlayFMV</title></rect>
@@ -1249,7 +1249,7 @@
 <rect width="5.09" height="4.84" x="669.85" y="466.07" class="decompiled"><title>LaraAsFastFall</title></rect>
 <rect width="5.09" height="4.84" x="676.94" y="466.07" class="decompiled"><title>InitialiseRollingBall</title></rect>
 <rect width="4.98" height="4.84" x="684.03" y="466.07" class="decompiled"><title>AlterFOV</title></rect>
-<rect width="4.98" height="4.84" x="691.02" y="466.07" class="named"><title>S_FadeToBlack</title></rect>
+<rect width="4.98" height="4.84" x="691.02" y="466.07" class="decompiled"><title>S_FadeToBlack</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="472.90" class="decompiled"><title>AddDisplayPickup</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="479.66" class="decompiled"><title>DrawBridgeCeiling</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="486.42" class="decompiled"><title>T_ChangeText</title></rect>
@@ -1401,7 +1401,7 @@
 <rect width="2.03" height="1.38" x="679.76" y="534.62" class="decompiled"><title>mn_adjust_master_volume</title></rect>
 <rect width="1.83" height="1.36" x="683.79" y="520.34" class="decompiled"><title>sub_43E670</title></rect>
 <rect width="1.61" height="1.36" x="687.63" y="520.34" class="decompiled"><title>S_NoFade</title></rect>
-<rect width="1.38" height="1.36" x="691.24" y="520.34" class="named"><title>HWR_FadeToBlack</title></rect>
+<rect width="1.38" height="1.36" x="691.24" y="520.34" class="named"><title>HWR_FadeWait</title></rect>
 <rect width="1.38" height="1.36" x="694.62" y="520.34" class="decompiled"><title>SoundStopSample_</title></rect>
 <rect width="1.74" height="1.04" x="683.79" y="523.71" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
 <rect width="1.49" height="1.04" x="687.53" y="523.71" class="decompiled"><title>ATI3DCIF_GetInfo</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.19%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.22%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.29%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.03%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.33%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.24%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.00%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>

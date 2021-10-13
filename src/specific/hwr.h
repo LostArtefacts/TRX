@@ -22,6 +22,7 @@
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SwitchResolution        ((void      (*)())0x004089F4)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
+#define HWR_FadeWait                ((void      (*)())0x00408E32)
 // clang-format on
 
 void HWR_Error(HRESULT result);
@@ -32,6 +33,7 @@ void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_DumpScreen();
 void HWR_FlipPrimaryBuffer();
+void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(

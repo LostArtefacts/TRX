@@ -95,7 +95,7 @@ HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  *
 HWR_DownloadPicture             0x00408C3A  0x000001D4  *
 sub_408E0E                      0x00408E0E  0x00000024  -
-HWR_FadeToBlack                 0x00408E32  0x0000000F  -
+HWR_FadeWait                    0x00408E32  0x0000000F  *
 sub_408E41                      0x00408E41  0x0000002C  x
 HWR_RenderTriangleStrip         0x00408E6D  0x0000006B  +
 sub_408ED8                      0x00408ED8  0x00000118  -
@@ -346,7 +346,7 @@ S_DrawScreenLine                0x0041C440  0x000000D3  +
 S_DrawScreenBox                 0x0041C520  0x00000688  +
 S_DrawScreenFBox                0x0041CBB0  0x00000101  +
 S_FinishInventory               0x0041CCC0  0x00000047  +
-S_FadeToBlack                   0x0041CD10  0x0000003F  *
+S_FadeToBlack                   0x0041CD10  0x0000003F  +
 S_Wait                          0x0041CD50  0x0000004D  +
 FMVInit                         0x0041CDA0  0x00000045  *
 WinPlayFMV                      0x0041CDF0  0x00000250  +

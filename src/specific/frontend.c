@@ -104,6 +104,13 @@ void S_FinishInventory()
     }
 }
 
+void S_FadeToBlack()
+{
+    memset(GamePalette, 0, sizeof(GamePalette));
+    HWR_FadeToPal(20, GamePalette);
+    HWR_FadeWait();
+}
+
 void S_Wait(int32_t nticks)
 {
     for (int i = 0; i < nticks; i++) {
@@ -250,6 +257,7 @@ void T1MInjectSpecificFrontend()
     INJECT(0x0041C520, S_DrawScreenBox);
     INJECT(0x0041CBB0, S_DrawScreenFBox);
     INJECT(0x0041CCC0, S_FinishInventory);
+    INJECT(0x0041CD10, S_FadeToBlack);
     INJECT(0x0041CD50, S_Wait);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
