@@ -82,8 +82,22 @@ void S_DrawSpriteRel(
     }
 }
 
+void S_DrawUISprite(
+    int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade)
+{
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    int32_t x1 = x + (scale * sprite->x1 >> 16);
+    int32_t x2 = x + (scale * sprite->x2 >> 16);
+    int32_t y1 = y + (scale * sprite->y1 >> 16);
+    int32_t y2 = y + (scale * sprite->y2 >> 16);
+    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+        HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
+    }
+}
+
 void T1MInject3DSystemScaleSpr()
 {
     INJECT(0x00435910, S_DrawSprite);
     INJECT(0x00435B70, S_DrawSpriteRel);
+    INJECT(0x00435D80, S_DrawUISprite);
 }
