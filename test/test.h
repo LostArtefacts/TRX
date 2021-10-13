@@ -12,9 +12,9 @@ extern size_t fails;
 #define TEST_RESULTS()                                                         \
     do {                                                                       \
         if (fails == 0) {                                                      \
-            printf("ALL TESTS PASSED (%lu/%lu)\n", tests, tests);                \
+            printf("ALL TESTS PASSED (%lu/%lu)\n", tests, tests);              \
         } else {                                                               \
-            printf("SOME TESTS FAILED (%lu/%lu)\n", tests - fails, tests);       \
+            printf("SOME TESTS FAILED (%lu/%lu)\n", tests - fails, tests);     \
         }                                                                      \
     } while (0)
 

@@ -207,66 +207,66 @@ C3D_EC ATI3DCIF_NullSub()
     return C3D_EC_GENFAIL;
 }
 
-C3D_EC ATI3DCIF_GetInfo(PC3D_3DCIFINFO info)
+C3D_EC __stdcall ATI3DCIF_GetInfo(PC3D_3DCIFINFO info)
 {
     return (*ATI3DCIF_GetInfo_lib)(info);
 }
 
-C3D_EC ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
+C3D_EC __stdcall ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     return (*ATI3DCIF_TextureReg_lib)(ptmapToReg, phtmap);
 }
 
-C3D_EC ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
+C3D_EC __stdcall ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
 {
     return (*ATI3DCIF_TextureUnreg_lib)(htxToUnreg);
 }
 
-C3D_EC ATI3DCIF_TexturePaletteCreate(
+C3D_EC __stdcall ATI3DCIF_TexturePaletteCreate(
     C3D_ECI_TMAP_TYPE epalette, void *pPalette, C3D_PHTXPAL phtpalCreated)
 {
     return (*ATI3DCIF_TexturePaletteCreate_lib)(
         epalette, pPalette, phtpalCreated);
 }
 
-C3D_EC ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
+C3D_EC __stdcall ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
 {
     return (*ATI3DCIF_TexturePaletteDestroy_lib)(htxpalToDestroy);
 }
 
-C3D_HRC ATI3DCIF_ContextCreate()
+C3D_HRC __stdcall ATI3DCIF_ContextCreate()
 {
     return (*ATI3DCIF_ContextCreate_lib)();
 }
 
-C3D_EC ATI3DCIF_ContextDestroy(C3D_HRC hRC)
+C3D_EC __stdcall ATI3DCIF_ContextDestroy(C3D_HRC hRC)
 {
     return (*ATI3DCIF_ContextDestroy_lib)(hRC);
 }
 
-C3D_EC ATI3DCIF_ContextSetState(
+C3D_EC __stdcall ATI3DCIF_ContextSetState(
     C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     return (*ATI3DCIF_ContextSetState_lib)(hRC, eRStateID, pRStateData);
 }
 
-C3D_EC ATI3DCIF_RenderBegin(C3D_HRC hRC)
+C3D_EC __stdcall ATI3DCIF_RenderBegin(C3D_HRC hRC)
 {
     return (*ATI3DCIF_RenderBegin_lib)(hRC);
 }
 
-C3D_EC ATI3DCIF_RenderEnd()
+C3D_EC __stdcall ATI3DCIF_RenderEnd()
 {
     return (*ATI3DCIF_RenderEnd_lib)();
 }
 
-C3D_EC ATI3DCIF_RenderPrimStrip(
+C3D_EC __stdcall ATI3DCIF_RenderPrimStrip(
     C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
 {
     return (*ATI3DCIF_RenderPrimStrip_lib)(vStrip, u32NumVert);
 }
 
-C3D_EC ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
+C3D_EC __stdcall ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 {
     return (*ATI3DCIF_RenderPrimList_lib)(vList, u32NumVert);
 }
