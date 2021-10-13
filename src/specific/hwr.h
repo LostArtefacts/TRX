@@ -23,6 +23,7 @@
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SwitchResolution        ((void      (*)())0x004089F4)
+#define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
 #define HWR_FadeWait                ((void      (*)())0x00408E32)
 // clang-format on

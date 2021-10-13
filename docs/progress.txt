@@ -90,7 +90,7 @@ HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
 HWR_SwitchResolution            0x004089F4  0x0000007C  *
 HWR_DumpScreen                  0x00408A70  0x00000057  +
-HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  -
+HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  *
 HWR_DownloadPicture             0x00408C3A  0x000001D4  *
@@ -118,7 +118,7 @@ HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
 HWR_InitPolyList                0x0040D0F7  0x00000049  -
 HWR_CacheTexture                0x0040D140  0x000001A0  -
-HWR_OutputPolyList              0x0040D2E0  0x00000185  -
+HWR_OutputPolyList              0x0040D2E0  0x00000185  *
 DoNothing                       0x0040D465  0x00000005  -
 
 # bat.cpp
