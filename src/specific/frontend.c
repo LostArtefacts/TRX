@@ -104,6 +104,20 @@ void S_DrawScreenSprite(
     }
 }
 
+void S_DrawScreenSprite2d(
+    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
+    int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
+{
+    PHD_SPRITE *sprite = &PhdSpriteInfo[(signed __int16)sprnum];
+    int32_t x1 = sx + (scale_h * sprite->x1 >> 16);
+    int32_t x2 = sx + (scale_h * sprite->x2 >> 16);
+    int32_t y1 = sy + (scale_v * sprite->y1 >> 16);
+    int32_t y2 = sy + (scale_v * sprite->y2 >> 16);
+    if (x2 >= 0 && x1 < PhdWinWidth && y2 >= 0 && y1 < PhdWinHeight) {
+        HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
+    }
+}
+
 void S_FinishInventory()
 {
     if (InvMode != INV_TITLE_MODE) {
@@ -263,6 +277,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C0F0, S_Colour);
+    INJECT(0x0041C180, S_DrawScreenSprite2d);
     INJECT(0x0041C2D0, S_DrawScreenSprite);
     INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041C520, S_DrawScreenBox);

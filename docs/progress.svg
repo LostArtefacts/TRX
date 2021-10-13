@@ -246,7 +246,7 @@
 <rect width="12.00" height="12.00" x="602.00" y="73.00" class="decompiled"><title>GetFullPath</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="73.00" class="decompiled"><title>FindCdDrive</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="73.00" class="decompiled"><title>S_Colour</title></rect>
-<rect width="12.00" height="12.00" x="644.00" y="73.00" class="named"><title>S_DrawScreenSprite2d</title></rect>
+<rect width="12.00" height="12.00" x="644.00" y="73.00" class="decompiled"><title>S_DrawScreenSprite2d</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="73.00" class="decompiled"><title>S_DrawScreenSprite</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="73.00" class="decompiled"><title>S_DrawScreenLine</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="73.00" class="decompiled"><title>S_DrawScreenBox</title></rect>
@@ -930,7 +930,7 @@
 <rect width="14.48" height="13.95" x="649.21" y="305.75" class="named"><title>S_PrintShadow</title></rect>
 <rect width="14.20" height="13.95" x="665.70" y="305.75" class="decompiled"><title>sub_43E8AC</title></rect>
 <rect width="14.10" height="13.95" x="681.90" y="305.75" class="decompiled"><title>T_DrawText</title></rect>
-<rect width="14.23" height="13.68" x="480.62" y="321.70" class="named"><title>S_DrawScreenSprite2d</title></rect>
+<rect width="14.23" height="13.68" x="480.62" y="321.70" class="decompiled"><title>S_DrawScreenSprite2d</title></rect>
 <rect width="14.23" height="13.68" x="480.62" y="337.39" class="decompiled"><title>InitialiseLara</title></rect>
 <rect width="14.23" height="13.59" x="480.62" y="353.07" class="decompiled"><title>SpikeCollision</title></rect>
 <rect width="14.23" height="13.54" x="480.62" y="368.66" class="decompiled"><title>RingIsOpen</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.47%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.39%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.01%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 5.86%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.61%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.52%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 5.87%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 5.72%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>
