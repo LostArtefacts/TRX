@@ -823,7 +823,7 @@ ReadSG                          ----------  ----------  +
 
 # ???
 S_DrawSprite                    0x00435910  0x0000025E  +
-S_DrawSpriteRel                 0x00435B70  0x00000207  *
+S_DrawSpriteRel                 0x00435B70  0x00000207  +
 S_DrawUISprite                  0x00435D80  0x0000014D  -
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
 draw_scaled_spriteC             0x004360A0  0x000001FB  -

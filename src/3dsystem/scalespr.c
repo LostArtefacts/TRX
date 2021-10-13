@@ -50,7 +50,40 @@ void S_DrawSprite(
     }
 }
 
+void S_DrawSpriteRel(
+    int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
+{
+    int32_t zv = PhdMatrixPtr->_20 * x + PhdMatrixPtr->_21 * y
+        + PhdMatrixPtr->_22 * z + PhdMatrixPtr->_23;
+    if (zv < PhdNearZ || zv > PhdFarZ) {
+        return;
+    }
+
+    int32_t xv = PhdMatrixPtr->_00 * x + PhdMatrixPtr->_01 * y
+        + PhdMatrixPtr->_02 * z + PhdMatrixPtr->_03;
+    int32_t yv = PhdMatrixPtr->_10 * x + PhdMatrixPtr->_11 * y
+        + PhdMatrixPtr->_12 * z + PhdMatrixPtr->_13;
+    int32_t zp = zv / PhdPersp;
+
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    int32_t x1 = PhdCenterX + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = PhdCenterY + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = PhdCenterX + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t y2 = PhdCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+        int32_t depth = (zv >> W2V_SHIFT);
+        if (depth > DEPTH_Q_START) {
+            shade += depth - DEPTH_Q_START;
+            if (shade > 0x1FFF) {
+                return;
+            }
+        }
+        HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
+    }
+}
+
 void T1MInject3DSystemScaleSpr()
 {
     INJECT(0x00435910, S_DrawSprite);
+    INJECT(0x00435B70, S_DrawSpriteRel);
 }
