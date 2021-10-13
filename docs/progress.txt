@@ -110,7 +110,7 @@ sub_40B510                      0x0040B510  0x000006D2  -
 sub_40BBE2                      0x0040BBE2  0x00000678  -
 sub_40C25A                      0x0040C25A  0x000000F4  -
 sub_40C34E                      0x0040C34E  0x000000D7  -
-HWR_DrawSprite                  0x0040C425  0x000003C9  -
+HWR_DrawSprite                  0x0040C425  0x000003C9  *
 HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
 HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
 HWR_PrintShadow                 0x0040CADB  0x00000182  -
@@ -341,7 +341,7 @@ FindCdDrive                     0x0041C020  0x000000C7  +
 # shell/frontend.cpp
 S_Colour                        0x0041C0F0  0x00000089  +
 S_DrawScreenSprite2d            0x0041C180  0x00000150  -
-S_DrawScreenSprite              0x0041C2D0  0x00000163  *
+S_DrawScreenSprite              0x0041C2D0  0x00000163  +
 S_DrawScreenLine                0x0041C440  0x000000D3  +
 S_DrawScreenBox                 0x0041C520  0x00000688  +
 S_DrawScreenFBox                0x0041CBB0  0x00000101  +

@@ -90,6 +90,20 @@ void S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
     HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
 
+void S_DrawScreenSprite(
+    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
+    int16_t sprnum, int16_t shade, uint16_t flags)
+{
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    int32_t x1 = sx + (scale_h * (sprite->x1 >> 3) >> 16);
+    int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) >> 16);
+    int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) >> 16);
+    int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) >> 16);
+    if (x2 >= 0 && x1 < PhdWinWidth && y2 >= 0 && y1 < PhdWinHeight) {
+        HWR_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
+    }
+}
+
 void S_FinishInventory()
 {
     if (InvMode != INV_TITLE_MODE) {
@@ -249,6 +263,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C0F0, S_Colour);
+    INJECT(0x0041C2D0, S_DrawScreenSprite);
     INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041C520, S_DrawScreenBox);
     INJECT(0x0041CBB0, S_DrawScreenFBox);

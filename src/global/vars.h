@@ -31,7 +31,7 @@
 #define PhdTop                  VAR_U_(0x0068D380, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
-#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE][MAX_SPRITES])
+#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE * MAX_SPRITES])
 #define PhdTextureInfo          ARRAY_(0x006CADE0, PHD_TEXTURE, [MAX_TEXTURES])
 #define PhdMatrixPtr            VAR_U_(0x006CAD14, PHD_MATRIX*)
 #define MatrixStack             ARRAY_(0x006D4E80, PHD_MATRIX, [MAX_MATRICES])
