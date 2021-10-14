@@ -1,6 +1,7 @@
 #ifndef T1M_GLOBAL_LIB_H
 #define T1M_GLOBAL_LIB_H
 
+#include <ddraw.h>
 #include <stdint.h>
 #include <windows.h>
 
@@ -17,10 +18,10 @@
 #define Player_InitMoviePlayback        ((int32_t (*)(HWND, void*, void*))0x004504C4)
 #define Player_InitPlaybackMode         ((int32_t (*)(void*, void*, uint32_t, uint32_t))0x004504E2)
 #define Player_InitSound                ((int32_t (*)(void*, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t))0x004504CA)
-#define Player_InitSoundSystem          ((int32_t (*)(int32_t))0x00450482)
+#define Player_InitSoundSystem          ((int32_t (*)(HWND))0x00450482)
 #define Player_InitVideo                ((int32_t (*)(void*, void*, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t))0x004504E8)
 #define Player_MapVideo                 ((int32_t (*)(void*, int32_t))0x004504BE)
-#define Player_PassInDirectDrawObject   ((int32_t (*)(void*))0x00450488)
+#define Player_PassInDirectDrawObject   ((int32_t (*)(LPDIRECTDRAW))0x00450488)
 #define Player_PlayFrame                ((int32_t (*)(void*, void*, void*, uint32_t, void*, uint32_t, uint32_t, uint32_t))0x004504A6)
 #define Player_ReturnPlaybackMode       ((int32_t (*)())0x004504A0)
 #define Player_ShutDownMovie            ((int32_t (*)(void*))0x0045048E)

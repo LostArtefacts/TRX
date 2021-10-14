@@ -1,6 +1,7 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/game.h"
 #include "game/health.h"
@@ -18,7 +19,6 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
 #include "util.h"
 

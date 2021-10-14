@@ -90,6 +90,53 @@ void S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
     HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
 
+void S_DrawScreenSprite(
+    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
+    int16_t sprnum, int16_t shade, uint16_t flags)
+{
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    int32_t x1 = sx + (scale_h * (sprite->x1 >> 3) / PHD_ONE);
+    int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
+    int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
+    int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
+    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+        HWR_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
+    }
+}
+
+void S_DrawScreenSprite2d(
+    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
+    int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
+{
+    PHD_SPRITE *sprite = &PhdSpriteInfo[(signed __int16)sprnum];
+    int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
+    int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
+    int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
+    int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
+    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+        HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
+    }
+}
+
+void S_FinishInventory()
+{
+    if (InvMode != INV_TITLE_MODE) {
+        TempVideoRemove();
+    }
+    ModeLock = 0;
+    if (RenderSettings != OldRenderSettings) {
+        HWR_DownloadTextures(-1);
+        OldRenderSettings = RenderSettings;
+    }
+}
+
+void S_FadeToBlack()
+{
+    memset(GamePalette, 0, sizeof(GamePalette));
+    HWR_FadeToPal(20, GamePalette);
+    HWR_FadeWait();
+}
+
 void S_Wait(int32_t nticks)
 {
     for (int i = 0; i < nticks; i++) {
@@ -221,21 +268,35 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     }
     init_game_malloc();
 
-    if (IsHardwareRenderer) {
-        HWR_FMVDone();
-    }
+    HWR_FMVDone();
     TempVideoRemove();
 
     return ret;
 }
 
+void FMVInit()
+{
+    if (Player_PassInDirectDrawObject(DDraw)) {
+        S_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
+    }
+    if (Player_InitSoundSystem(TombHWND)) {
+        Player_GetDSErrorCode();
+        S_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
+    }
+}
+
 void T1MInjectSpecificFrontend()
 {
     INJECT(0x0041C0F0, S_Colour);
+    INJECT(0x0041C180, S_DrawScreenSprite2d);
+    INJECT(0x0041C2D0, S_DrawScreenSprite);
     INJECT(0x0041C440, S_DrawScreenLine);
     INJECT(0x0041C520, S_DrawScreenBox);
     INJECT(0x0041CBB0, S_DrawScreenFBox);
+    INJECT(0x0041CCC0, S_FinishInventory);
+    INJECT(0x0041CD10, S_FadeToBlack);
     INJECT(0x0041CD50, S_Wait);
+    INJECT(0x0041CDA0, FMVInit);
     INJECT(0x0041CDF0, WinPlayFMV);
     INJECT(0x0041D040, S_PlayFMV);
 }

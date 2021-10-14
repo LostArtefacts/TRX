@@ -77,7 +77,7 @@
 <rect width="12.00" height="12.00" x="336.00" y="31.00" class="named"><title>HWR_CopyPicture</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="31.00" class="named"><title>HWR_DownloadPicture</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="31.00" class="todo"><title>sub_408E0E</title></rect>
-<rect width="12.00" height="12.00" x="378.00" y="31.00" class="named"><title>HWR_FadeToBlack</title></rect>
+<rect width="12.00" height="12.00" x="378.00" y="31.00" class="named"><title>HWR_FadeWait</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="31.00" class="decompiled"><title>sub_408E41</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="31.00" class="decompiled"><title>HWR_RenderTriangleStrip</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="31.00" class="todo"><title>sub_408ED8</title></rect>
@@ -246,15 +246,15 @@
 <rect width="12.00" height="12.00" x="602.00" y="73.00" class="decompiled"><title>GetFullPath</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="73.00" class="decompiled"><title>FindCdDrive</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="73.00" class="decompiled"><title>S_Colour</title></rect>
-<rect width="12.00" height="12.00" x="644.00" y="73.00" class="named"><title>S_DrawScreenSprite2d</title></rect>
-<rect width="12.00" height="12.00" x="658.00" y="73.00" class="named"><title>S_DrawScreenSprite</title></rect>
+<rect width="12.00" height="12.00" x="644.00" y="73.00" class="decompiled"><title>S_DrawScreenSprite2d</title></rect>
+<rect width="12.00" height="12.00" x="658.00" y="73.00" class="decompiled"><title>S_DrawScreenSprite</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="73.00" class="decompiled"><title>S_DrawScreenLine</title></rect>
 <rect width="12.00" height="12.00" x="686.00" y="73.00" class="decompiled"><title>S_DrawScreenBox</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="87.00" class="decompiled"><title>S_DrawScreenFBox</title></rect>
-<rect width="12.00" height="12.00" x="14.00" y="87.00" class="named"><title>S_FinishInventory</title></rect>
-<rect width="12.00" height="12.00" x="28.00" y="87.00" class="named"><title>S_FadeToBlack</title></rect>
+<rect width="12.00" height="12.00" x="14.00" y="87.00" class="decompiled"><title>S_FinishInventory</title></rect>
+<rect width="12.00" height="12.00" x="28.00" y="87.00" class="decompiled"><title>S_FadeToBlack</title></rect>
 <rect width="12.00" height="12.00" x="42.00" y="87.00" class="decompiled"><title>S_Wait</title></rect>
-<rect width="12.00" height="12.00" x="56.00" y="87.00" class="named"><title>FMVInit</title></rect>
+<rect width="12.00" height="12.00" x="56.00" y="87.00" class="decompiled"><title>FMVInit</title></rect>
 <rect width="12.00" height="12.00" x="70.00" y="87.00" class="decompiled"><title>WinPlayFMV</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="87.00" class="decompiled"><title>S_PlayFMV</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="87.00" class="decompiled"><title>StartGame</title></rect>
@@ -521,7 +521,7 @@
 <rect width="12.00" height="12.00" x="252.00" y="157.00" class="decompiled"><title>DisplayRequester</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="157.00" class="decompiled"><title>S_InitialisePolyList</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="157.00" class="decompiled"><title>S_DumpScreen</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="157.00" class="named"><title>S_ClearScreen</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="157.00" class="decompiled"><title>S_ClearScreen</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="157.00" class="decompiled"><title>S_InitialiseScreen</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="157.00" class="named"><title>S_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="157.00" class="named"><title>S_GetObjectBounds</title></rect>
@@ -571,9 +571,9 @@
 <rect width="12.00" height="12.00" x="252.00" y="171.00" class="decompiled"><title>CreateStartInfo</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="171.00" class="decompiled"><title>CreateSaveGameInfo</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="171.00" class="decompiled"><title>ExtractSaveGameInfo</title></rect>
-<rect width="12.00" height="12.00" x="294.00" y="171.00" class="named"><title>S_DrawSprite</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="171.00" class="named"><title>S_DrawSpriteRel</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="171.00" class="named"><title>S_DrawUISprite</title></rect>
+<rect width="12.00" height="12.00" x="294.00" y="171.00" class="decompiled"><title>S_DrawSprite</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="171.00" class="decompiled"><title>S_DrawSpriteRel</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="171.00" class="decompiled"><title>S_DrawUISprite</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="171.00" class="named"><title>ins_room_sprite_Sorted</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="171.00" class="named"><title>draw_scaled_spriteC</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="171.00" class="decompiled"><title>InitialiseLevel</title></rect>
@@ -831,7 +831,7 @@
 <rect width="18.62" height="20.79" x="384.30" y="360.55" class="named"><title>S_GetObjectBounds</title></rect>
 <rect width="18.62" height="20.49" x="384.30" y="383.34" class="decompiled"><title>RollingBallCollision</title></rect>
 <rect width="18.62" height="20.38" x="384.30" y="405.83" class="decompiled"><title>UndrawPistols</title></rect>
-<rect width="18.62" height="20.27" x="384.30" y="428.22" class="named"><title>S_DrawSprite</title></rect>
+<rect width="18.62" height="20.27" x="384.30" y="428.22" class="decompiled"><title>S_DrawSprite</title></rect>
 <rect width="18.62" height="20.24" x="384.30" y="450.49" class="decompiled"><title>RollingBallControl</title></rect>
 <rect width="18.62" height="19.94" x="384.30" y="472.73" class="decompiled"><title>sub_4380E0</title></rect>
 <rect width="18.62" height="19.76" x="384.30" y="494.67" class="decompiled"><title>WinPlayFMV</title></rect>
@@ -860,7 +860,7 @@
 <rect width="17.28" height="18.47" x="425.54" y="436.37" class="decompiled"><title>LaraBaddieCollision</title></rect>
 <rect width="17.28" height="18.44" x="425.54" y="456.85" class="decompiled"><title>MovableBlockCollision</title></rect>
 <rect width="17.28" height="18.40" x="425.54" y="477.28" class="decompiled"><title>LaraAsStop</title></rect>
-<rect width="17.28" height="18.40" x="425.54" y="497.68" class="named"><title>S_DrawSpriteRel</title></rect>
+<rect width="17.28" height="18.40" x="425.54" y="497.68" class="decompiled"><title>S_DrawSpriteRel</title></rect>
 <rect width="17.28" height="17.92" x="425.54" y="518.08" class="named"><title>draw_scaled_spriteC</title></rect>
 <rect width="18.42" height="16.74" x="444.82" y="269.00" class="decompiled"><title>SearchLOT</title></rect>
 <rect width="18.26" height="16.74" x="465.24" y="269.00" class="decompiled"><title>AnimatePistols</title></rect>
@@ -922,7 +922,7 @@
 <rect width="15.01" height="13.95" x="515.06" y="305.75" class="decompiled"><title>Key</title></rect>
 <rect width="14.96" height="13.95" x="532.07" y="305.75" class="named"><title>calc_vertice_light</title></rect>
 <rect width="14.91" height="13.95" x="549.03" y="305.75" class="decompiled"><title>PickUpScionCollision</title></rect>
-<rect width="14.86" height="13.95" x="565.94" y="305.75" class="named"><title>S_DrawScreenSprite</title></rect>
+<rect width="14.86" height="13.95" x="565.94" y="305.75" class="decompiled"><title>S_DrawScreenSprite</title></rect>
 <rect width="14.72" height="13.95" x="582.80" y="305.75" class="decompiled"><title>UndrawShotgun</title></rect>
 <rect width="14.67" height="13.95" x="599.52" y="305.75" class="decompiled"><title>sub_43E74D</title></rect>
 <rect width="14.53" height="13.95" x="616.20" y="305.75" class="decompiled"><title>ShiftCamera</title></rect>
@@ -930,12 +930,12 @@
 <rect width="14.48" height="13.95" x="649.21" y="305.75" class="named"><title>S_PrintShadow</title></rect>
 <rect width="14.20" height="13.95" x="665.70" y="305.75" class="decompiled"><title>sub_43E8AC</title></rect>
 <rect width="14.10" height="13.95" x="681.90" y="305.75" class="decompiled"><title>T_DrawText</title></rect>
-<rect width="14.23" height="13.68" x="480.62" y="321.70" class="named"><title>S_DrawScreenSprite2d</title></rect>
+<rect width="14.23" height="13.68" x="480.62" y="321.70" class="decompiled"><title>S_DrawScreenSprite2d</title></rect>
 <rect width="14.23" height="13.68" x="480.62" y="337.39" class="decompiled"><title>InitialiseLara</title></rect>
 <rect width="14.23" height="13.59" x="480.62" y="353.07" class="decompiled"><title>SpikeCollision</title></rect>
 <rect width="14.23" height="13.54" x="480.62" y="368.66" class="decompiled"><title>RingIsOpen</title></rect>
 <rect width="14.23" height="13.54" x="480.62" y="384.20" class="decompiled"><title>LaraColReach</title></rect>
-<rect width="14.23" height="13.54" x="480.62" y="399.75" class="named"><title>S_DrawUISprite</title></rect>
+<rect width="14.23" height="13.54" x="480.62" y="399.75" class="decompiled"><title>S_DrawUISprite</title></rect>
 <rect width="14.23" height="13.45" x="480.62" y="415.29" class="decompiled"><title>SoundLoadSample</title></rect>
 <rect width="14.23" height="13.45" x="480.62" y="430.74" class="decompiled"><title>PendulumControl</title></rect>
 <rect width="14.23" height="13.40" x="480.62" y="446.19" class="decompiled"><title>MovableBlockControl</title></rect>
@@ -1231,11 +1231,11 @@
 <rect width="5.80" height="5.09" x="618.48" y="523.91" class="decompiled"><title>LaraAsHang</title></rect>
 <rect width="5.80" height="4.99" x="618.48" y="531.01" class="decompiled"><title>HWR_ClearSurface</title></rect>
 <rect width="5.44" height="5.33" x="626.28" y="458.73" class="decompiled"><title>BridgeTilt1Floor</title></rect>
-<rect width="5.34" height="5.33" x="633.73" y="458.73" class="named"><title>S_FinishInventory</title></rect>
+<rect width="5.34" height="5.33" x="633.73" y="458.73" class="decompiled"><title>S_FinishInventory</title></rect>
 <rect width="5.34" height="5.33" x="641.06" y="458.73" class="decompiled"><title>BridgeTilt2Floor</title></rect>
 <rect width="5.23" height="5.33" x="648.40" y="458.73" class="decompiled"><title>TrapDoorCeiling</title></rect>
 <rect width="5.13" height="5.33" x="655.63" y="458.73" class="decompiled"><title>ControlCinematicPlayer</title></rect>
-<rect width="5.13" height="5.33" x="662.76" y="458.73" class="named"><title>FMVInit</title></rect>
+<rect width="5.13" height="5.33" x="662.76" y="458.73" class="decompiled"><title>FMVInit</title></rect>
 <rect width="5.13" height="5.33" x="669.89" y="458.73" class="decompiled"><title>OnKeyPress</title></rect>
 <rect width="5.03" height="5.33" x="677.02" y="458.73" class="decompiled"><title>S_DumpScreen</title></rect>
 <rect width="5.03" height="5.33" x="684.05" y="458.73" class="decompiled"><title>S_SoundSetPanAndVolume</title></rect>
@@ -1249,7 +1249,7 @@
 <rect width="5.09" height="4.84" x="669.85" y="466.07" class="decompiled"><title>LaraAsFastFall</title></rect>
 <rect width="5.09" height="4.84" x="676.94" y="466.07" class="decompiled"><title>InitialiseRollingBall</title></rect>
 <rect width="4.98" height="4.84" x="684.03" y="466.07" class="decompiled"><title>AlterFOV</title></rect>
-<rect width="4.98" height="4.84" x="691.02" y="466.07" class="named"><title>S_FadeToBlack</title></rect>
+<rect width="4.98" height="4.84" x="691.02" y="466.07" class="decompiled"><title>S_FadeToBlack</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="472.90" class="decompiled"><title>AddDisplayPickup</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="479.66" class="decompiled"><title>DrawBridgeCeiling</title></rect>
 <rect width="5.07" height="4.76" x="626.28" y="486.42" class="decompiled"><title>T_ChangeText</title></rect>
@@ -1393,7 +1393,7 @@
 <rect width="1.61" height="1.99" x="683.56" y="516.36" class="decompiled"><title>LaraAsRightJump</title></rect>
 <rect width="1.61" height="1.99" x="687.17" y="516.36" class="decompiled"><title>LaraColLand</title></rect>
 <rect width="1.61" height="1.99" x="690.78" y="516.36" class="decompiled"><title>LaraColSwim</title></rect>
-<rect width="1.61" height="1.99" x="694.39" y="516.36" class="named"><title>S_ClearScreen</title></rect>
+<rect width="1.61" height="1.99" x="694.39" y="516.36" class="decompiled"><title>S_ClearScreen</title></rect>
 <rect width="2.03" height="1.57" x="679.76" y="520.34" class="decompiled"><title>T_SetScale</title></rect>
 <rect width="2.03" height="1.57" x="679.76" y="523.91" class="decompiled"><title>ATI3DCIF_TextureReg</title></rect>
 <rect width="2.03" height="1.57" x="679.76" y="527.48" class="decompiled"><title>ATI3DCIF_RenderPrimStrip</title></rect>
@@ -1401,7 +1401,7 @@
 <rect width="2.03" height="1.38" x="679.76" y="534.62" class="decompiled"><title>mn_adjust_master_volume</title></rect>
 <rect width="1.83" height="1.36" x="683.79" y="520.34" class="decompiled"><title>sub_43E670</title></rect>
 <rect width="1.61" height="1.36" x="687.63" y="520.34" class="decompiled"><title>S_NoFade</title></rect>
-<rect width="1.38" height="1.36" x="691.24" y="520.34" class="named"><title>HWR_FadeToBlack</title></rect>
+<rect width="1.38" height="1.36" x="691.24" y="520.34" class="named"><title>HWR_FadeWait</title></rect>
 <rect width="1.38" height="1.36" x="694.62" y="520.34" class="decompiled"><title>SoundStopSample_</title></rect>
 <rect width="1.74" height="1.04" x="683.79" y="523.71" class="decompiled"><title>S_SoundStopAllSamples</title></rect>
 <rect width="1.49" height="1.04" x="687.53" y="523.71" class="decompiled"><title>ATI3DCIF_GetInfo</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 91.05%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 87.19%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 6.43%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 6.06%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 92.31%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 88.14%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 5.17%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 5.10%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>

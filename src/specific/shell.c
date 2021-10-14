@@ -63,10 +63,8 @@ void GameMain()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    if (IsHardwareRenderer) {
-        GameSizer = 1.0;
-        dword_45E960 = AppSettings;
-    }
+    GameSizer = 1.0;
+    OldRenderSettings = RenderSettings;
     HiRes = 0;
     TempVideoAdjust(2, 1.0);
     S_DisplayPicture("data\\eidospc");
@@ -76,20 +74,11 @@ void GameMain()
     S_DumpScreen();
     S_Wait(TICKS_PER_SECOND);
 
-    if (IsHardwareRenderer) {
-        HWR_PrepareFMV();
-    }
+    HWR_PrepareFMV();
     WinPlayFMV(FMV_CORE, 1);
     WinPlayFMV(FMV_ESCAPE, 1);
     WinPlayFMV(FMV_INTRO, 1);
-    if (!IsHardwareRenderer) {
-        HiRes = -1;
-    } else {
-        HWR_FMVDone();
-        if (!IsHardwareRenderer) {
-            HiRes = -1;
-        }
-    }
+    HWR_FMVDone();
 
     GameMemoryPointer = malloc(MALLOC_SIZE);
     if (!GameMemoryPointer) {

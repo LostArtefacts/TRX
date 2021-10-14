@@ -4,6 +4,7 @@
 #include "util.h"
 
 #include "specific/ati.h"
+#include <ddraw.h>
 #include <dsound.h>
 #include <windows.h>
 

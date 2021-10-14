@@ -16,12 +16,16 @@
 #define HWR_ShutdownHardware        ((void      (*)())0x00408323)
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
+#define HWR_DrawSprite              ((void      (*)(int32_t x1, int32_t x2, int32_t y1, int32_t y2, int32_t z, int16_t sprnum, int16_t shade))0x0040C425)
+#define HWR_ClearSurfaceDepth       ((void      (*)())0x00408AC7)
 #define HWR_PrepareFMV              ((void      (*)())0x0040834C)
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SwitchResolution        ((void      (*)())0x004089F4)
+#define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
+#define HWR_FadeWait                ((void      (*)())0x00408E32)
 // clang-format on
 
 void HWR_Error(HRESULT result);
@@ -32,6 +36,7 @@ void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_DumpScreen();
 void HWR_FlipPrimaryBuffer();
+void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(

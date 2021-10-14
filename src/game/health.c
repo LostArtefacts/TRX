@@ -37,7 +37,7 @@ void DrawFPSInfo()
     static char fps_buf[20];
     static int32_t elapsed = 0;
 
-    if (AppSettings & ASF_FPS) {
+    if (RenderSettings & RSF_FPS) {
         if (ClockGetMS() - elapsed >= 1000) {
             if (FPSText) {
                 sprintf(fps_buf, "%d FPS", FPSCounter);

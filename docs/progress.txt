@@ -90,12 +90,12 @@ HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
 HWR_SwitchResolution            0x004089F4  0x0000007C  *
 HWR_DumpScreen                  0x00408A70  0x00000057  +
-HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  -
+HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  *
 HWR_DownloadPicture             0x00408C3A  0x000001D4  *
 sub_408E0E                      0x00408E0E  0x00000024  -
-HWR_FadeToBlack                 0x00408E32  0x0000000F  -
+HWR_FadeWait                    0x00408E32  0x0000000F  *
 sub_408E41                      0x00408E41  0x0000002C  x
 HWR_RenderTriangleStrip         0x00408E6D  0x0000006B  +
 sub_408ED8                      0x00408ED8  0x00000118  -
@@ -110,7 +110,7 @@ sub_40B510                      0x0040B510  0x000006D2  -
 sub_40BBE2                      0x0040BBE2  0x00000678  -
 sub_40C25A                      0x0040C25A  0x000000F4  -
 sub_40C34E                      0x0040C34E  0x000000D7  -
-HWR_DrawSprite                  0x0040C425  0x000003C9  -
+HWR_DrawSprite                  0x0040C425  0x000003C9  *
 HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
 HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
 HWR_PrintShadow                 0x0040CADB  0x00000182  -
@@ -118,7 +118,7 @@ HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
 HWR_InitPolyList                0x0040D0F7  0x00000049  -
 HWR_CacheTexture                0x0040D140  0x000001A0  -
-HWR_OutputPolyList              0x0040D2E0  0x00000185  -
+HWR_OutputPolyList              0x0040D2E0  0x00000185  *
 DoNothing                       0x0040D465  0x00000005  -
 
 # bat.cpp
@@ -340,15 +340,15 @@ FindCdDrive                     0x0041C020  0x000000C7  +
 
 # shell/frontend.cpp
 S_Colour                        0x0041C0F0  0x00000089  +
-S_DrawScreenSprite2d            0x0041C180  0x00000150  -
-S_DrawScreenSprite              0x0041C2D0  0x00000163  *
+S_DrawScreenSprite2d            0x0041C180  0x00000150  +
+S_DrawScreenSprite              0x0041C2D0  0x00000163  +
 S_DrawScreenLine                0x0041C440  0x000000D3  +
 S_DrawScreenBox                 0x0041C520  0x00000688  +
 S_DrawScreenFBox                0x0041CBB0  0x00000101  +
-S_FinishInventory               0x0041CCC0  0x00000047  *
-S_FadeToBlack                   0x0041CD10  0x0000003F  *
+S_FinishInventory               0x0041CCC0  0x00000047  +
+S_FadeToBlack                   0x0041CD10  0x0000003F  +
 S_Wait                          0x0041CD50  0x0000004D  +
-FMVInit                         0x0041CDA0  0x00000045  *
+FMVInit                         0x0041CDA0  0x00000045  +
 WinPlayFMV                      0x0041CDF0  0x00000250  +
 S_PlayFMV                       0x0041D040  0x0000007C  +
 
@@ -742,7 +742,7 @@ DisplayRequester                0x0042F6F0  0x0000056B  +
 # shell/output.cpp
 S_InitialisePolyList            0x0042FC60  0x00000005  +
 S_DumpScreen                    0x0042FC70  0x00000044  +
-S_ClearScreen                   0x0042FCC0  0x00000013  *
+S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  *
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
@@ -822,9 +822,9 @@ WriteSG                         ----------  ----------  +
 ReadSG                          ----------  ----------  +
 
 # ???
-S_DrawSprite                    0x00435910  0x0000025E  -
-S_DrawSpriteRel                 0x00435B70  0x00000207  *
-S_DrawUISprite                  0x00435D80  0x0000014D  -
+S_DrawSprite                    0x00435910  0x0000025E  +
+S_DrawSpriteRel                 0x00435B70  0x00000207  +
+S_DrawUISprite                  0x00435D80  0x0000014D  +
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
 draw_scaled_spriteC             0x004360A0  0x000001FB  -
 
