@@ -489,6 +489,50 @@ int16_t *calc_object_vertices(int16_t *obj_ptr)
     return total_clip == 0 ? obj_ptr : NULL;
 }
 
+int16_t *calc_vertice_light(int16_t *obj_ptr)
+{
+    int32_t vertex_count = *obj_ptr++;
+    if (vertex_count > 0) {
+        if (LsDivider) {
+            int32_t xv = (PhdMatrixPtr->_00 * LsVectorView.x
+                          + PhdMatrixPtr->_10 * LsVectorView.y
+                          + PhdMatrixPtr->_20 * LsVectorView.z)
+                / LsDivider;
+            int32_t yv = (PhdMatrixPtr->_01 * LsVectorView.x
+                          + PhdMatrixPtr->_11 * LsVectorView.y
+                          + PhdMatrixPtr->_21 * LsVectorView.z)
+                / LsDivider;
+            int32_t zv = (PhdMatrixPtr->_02 * LsVectorView.x
+                          + PhdMatrixPtr->_12 * LsVectorView.y
+                          + PhdMatrixPtr->_22 * LsVectorView.z)
+                / LsDivider;
+            for (int i = 0; i < vertex_count; i++) {
+                int16_t shade = LsAdder
+                    + ((obj_ptr[0] * xv + obj_ptr[1] * yv + obj_ptr[2] * zv)
+                       >> 16);
+                CLAMP(shade, 0, 0x1FFF);
+                PhdVBuf[i].g = shade;
+                obj_ptr += 3;
+            }
+            return obj_ptr;
+        } else {
+            int16_t shade = LsAdder;
+            CLAMP(shade, 0, 0x1FFF);
+            for (int i = 0; i < vertex_count; i++) {
+                PhdVBuf[i].g = shade;
+            }
+            obj_ptr += 3 * vertex_count;
+        }
+    } else {
+        for (int i = 0; i < -vertex_count; i++) {
+            int16_t shade = LsAdder + *obj_ptr++;
+            CLAMP(shade, 0, 0x1FFF);
+            PhdVBuf[i].g = shade;
+        }
+    }
+    return obj_ptr;
+}
+
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
@@ -503,6 +547,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004019A0, phd_TranslateAbs);
     INJECT(0x00401A20, visible_zclip);
     INJECT(0x00401C40, calc_object_vertices);
+    INJECT(0x00401E00, calc_vertice_light);
     INJECT(0x004023A0, phd_RotateLight);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
