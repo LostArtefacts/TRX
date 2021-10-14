@@ -26,11 +26,11 @@ calc_object_vertices            0x00401C40  0x000001B6  +
 calc_vertice_light              0x00401E00  0x00000165  -
 calc_roomvert                   0x00401F70  0x00000428  -
 phd_RotateLight                 0x004023A0  0x000000CF  +
-phd_PointLight                  ----------  ----------  -
+phd_PointLight                  ----------  ----------  x
 phd_InitPolyList                0x00402470  0x0000002D  *
 phd_SortPolyList                0x004024A0  0x0000002F  x
 do_quickysorty                  0x004024D0  0x000000C5  x
-phd_PrintPolyList               ----------  ----------  -
+phd_PrintPolyList               ----------  ----------  x
 phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  +
 
@@ -720,7 +720,7 @@ Scion3Control                   0x0042D580  0x00000176  +
 EarthQuakeControl               0x0042D700  0x0000006F  +
 
 # option.cpp
-GetScancodeName                 ----------  ----------  -
+GetScancodeName                 ----------  ----------  +
 DoInventoryOptions              0x0042D770  0x00000180  +
 DoPassportOption                0x0042D9C0  0x000004D0  +
 DoGammaOption                   ----------  ----------  +
@@ -728,7 +728,7 @@ DoDetailOptionHW                0x0042DE90  0x00000435  +
 DoDetailOption                  0x0042E2D0  0x000002E8  +
 DoSoundOption                   0x0042E5C0  0x000004F2  +
 DoCompassOption                 ----------  ----------  +
-FlashConflicts                  ----------  ----------  -
+FlashConflicts                  ----------  ----------  +
 DefaultConflict                 ----------  ----------  +
 DoControlOption                 0x0042EAC0  0x0000075D  +
 S_ShowControls                  0x0042F230  0x000004B1  +
@@ -826,7 +826,7 @@ S_DrawSprite                    0x00435910  0x0000025E  +
 S_DrawSpriteRel                 0x00435B70  0x00000207  +
 S_DrawUISprite                  0x00435D80  0x0000014D  +
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
-draw_scaled_spriteC             0x004360A0  0x000001FB  -
+draw_scaled_spriteC             0x004360A0  0x000001FB  x
 
 # setup.cpp
 InitialiseLevel                 0x004362A0  0x00000119  +

@@ -32,7 +32,9 @@ with PROGRESS_FILE.open("r", encoding="utf-8") as handle:
             print(f"renaming 0x{offset:08x} to {name}")
             idc.set_name(offset, name)
 
-        if flags == '+':
+        if flags == "+":
             idc.set_color(offset, idc.CIC_FUNC, 0xF0FFEE)
+        elif flags == "x":
+            idc.set_color(offset, idc.CIC_FUNC, 0xD8D8D8)
         else:
             idc.set_color(offset, idc.CIC_FUNC, idc.DEFCOLOR)
