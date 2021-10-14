@@ -424,6 +424,71 @@ void phd_PopMatrix()
     PhdMatrixPtr--;
 }
 
+int16_t *calc_object_vertices(int16_t *obj_ptr)
+{
+    int16_t total_clip = -1;
+
+    obj_ptr++;
+    int vertex_count = *obj_ptr++;
+    for (int i = 0; i < vertex_count; i++) {
+        int32_t xv = PhdMatrixPtr->_00 * obj_ptr[0]
+            + PhdMatrixPtr->_01 * obj_ptr[1] + PhdMatrixPtr->_02 * obj_ptr[2]
+            + PhdMatrixPtr->_03;
+        int32_t yv = PhdMatrixPtr->_10 * obj_ptr[0]
+            + PhdMatrixPtr->_11 * obj_ptr[1] + PhdMatrixPtr->_12 * obj_ptr[2]
+            + PhdMatrixPtr->_13;
+        int32_t zv = PhdMatrixPtr->_20 * obj_ptr[0]
+            + PhdMatrixPtr->_21 * obj_ptr[1] + PhdMatrixPtr->_22 * obj_ptr[2]
+            + PhdMatrixPtr->_23;
+        PhdVBuf[i].xv = xv;
+        PhdVBuf[i].yv = yv;
+        PhdVBuf[i].zv = zv;
+
+        int32_t clip_flags;
+        if (zv < PhdNearZ) {
+            clip_flags = -32768;
+        } else {
+            clip_flags = 0;
+
+            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
+            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
+
+            if (xs < PhdLeft) {
+                if (xs < -32760) {
+                    xs = -32760;
+                }
+                clip_flags |= 1;
+            } else if (xs > PhdRight) {
+                if (xs > 32760) {
+                    xs = 32760;
+                }
+                clip_flags |= 2;
+            }
+
+            if (ys < PhdTop) {
+                if (ys < -32760) {
+                    ys = -32760;
+                }
+                clip_flags |= 4;
+            } else if (ys > PhdBottom) {
+                if (ys > 32760) {
+                    ys = 32760;
+                }
+                clip_flags |= 8;
+            }
+
+            PhdVBuf[i].xs = xs;
+            PhdVBuf[i].ys = ys;
+        }
+
+        PhdVBuf[i].clip = clip_flags;
+        total_clip &= clip_flags;
+        obj_ptr += 3;
+    }
+
+    return total_clip == 0 ? obj_ptr : NULL;
+}
+
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
@@ -437,6 +502,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004018F0, phd_TranslateRel);
     INJECT(0x004019A0, phd_TranslateAbs);
     INJECT(0x00401A20, visible_zclip);
+    INJECT(0x00401C40, calc_object_vertices);
     INJECT(0x004023A0, phd_RotateLight);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);

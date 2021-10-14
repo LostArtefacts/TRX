@@ -13,7 +13,7 @@
 <rect width="12.00" height="12.00" x="140.00" y="17.00" class="decompiled"><title>HWR_VisibleZClip</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="17.00" class="named"><title>phd_PutPolygons</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="17.00" class="named"><title>S_InsertRoom</title></rect>
-<rect width="12.00" height="12.00" x="182.00" y="17.00" class="named"><title>calc_object_vertices</title></rect>
+<rect width="12.00" height="12.00" x="182.00" y="17.00" class="decompiled"><title>calc_object_vertices</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="17.00" class="named"><title>calc_vertice_light</title></rect>
 <rect width="12.00" height="12.00" x="210.00" y="17.00" class="named"><title>calc_roomvert</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="17.00" class="decompiled"><title>phd_RotateLight</title></rect>
@@ -682,7 +682,7 @@
 <rect width="12.00" height="12.00" x="406.00" y="199.00" class="decompiled"><title>TerminateGame</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="199.00" class="decompiled"><title>sub_43D5F0</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="decompiled"><title>ShowFatalError</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="decompiled"><title>sub_43D940</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="199.00" class="decompiled"><title>WinMain</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="199.00" class="decompiled"><title>WndProc</title></rect>
@@ -881,7 +881,7 @@
 <rect width="16.63" height="16.55" x="444.82" y="343.75" class="decompiled"><title>TestLaraVault</title></rect>
 <rect width="16.63" height="16.55" x="444.82" y="362.29" class="decompiled"><title>InitialiseLaraInventory</title></rect>
 <rect width="16.63" height="16.18" x="444.82" y="380.84" class="decompiled"><title>PickUpCollision</title></rect>
-<rect width="16.63" height="15.81" x="444.82" y="399.02" class="named"><title>calc_object_vertices</title></rect>
+<rect width="16.63" height="15.81" x="444.82" y="399.02" class="decompiled"><title>calc_object_vertices</title></rect>
 <rect width="16.63" height="15.77" x="444.82" y="416.84" class="decompiled"><title>LoadBoxes</title></rect>
 <rect width="16.63" height="15.65" x="444.82" y="434.61" class="decompiled"><title>LaraSurface</title></rect>
 <rect width="16.63" height="15.61" x="444.82" y="452.26" class="decompiled"><title>LaraTestWaterClimbOut</title></rect>
@@ -1149,7 +1149,7 @@
 <rect width="7.52" height="7.55" x="583.96" y="462.41" class="decompiled"><title>CreatureCollision</title></rect>
 <rect width="7.52" height="7.55" x="583.96" y="471.96" class="decompiled"><title>SwitchTrigger</title></rect>
 <rect width="7.52" height="7.47" x="583.96" y="481.51" class="decompiled"><title>Inv_RequestItem</title></rect>
-<rect width="7.52" height="7.47" x="583.96" y="490.97" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="7.52" height="7.47" x="583.96" y="490.97" class="decompiled"><title>KeyboardHook</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="500.44" class="decompiled"><title>FxEarthQuake</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="509.83" class="decompiled"><title>RingIsNotOpen</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="519.22" class="decompiled"><title>LaraAsTurnR</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 92.31%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 88.14%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 5.17%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 5.10%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 92.45%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 88.32%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 5.03%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 4.92%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>
