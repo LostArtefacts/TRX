@@ -80,14 +80,29 @@ void *SoundPlaySample(
 
     // check if the buffer is already playing
     DWORD status;
-    IDirectSoundBuffer_GetStatus((LPDIRECTSOUNDBUFFER)sample->handle, &status);
+    HRESULT result = IDirectSoundBuffer_GetStatus(
+        (LPDIRECTSOUNDBUFFER)sample->handle, &status);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_GetStatus: 0x%lx", result);
+        return NULL;
+    }
+
     if (status == DSBSTATUS_PLAYING) {
         buffer = NULL;
 
         for (DUPE_SOUND_BUFFER *dupe_buffer = DupeSoundBufferList;
              dupe_buffer != NULL; dupe_buffer = dupe_buffer->next) {
             if (dupe_buffer->sample == sample) {
-                IDirectSoundBuffer_GetStatus(dupe_buffer->buffer, &status);
+                result =
+                    IDirectSoundBuffer_GetStatus(dupe_buffer->buffer, &status);
+                if (result != DS_OK) {
+                    LOG_ERROR(
+                        "Error while calling IDirectSoundBuffer_GetStatus: "
+                        "0x%lx",
+                        result);
+                    continue;
+                }
                 if (status != DSBSTATUS_PLAYING) {
                     buffer = dupe_buffer->buffer;
                     break;
@@ -97,8 +112,15 @@ void *SoundPlaySample(
 
         if (!buffer) {
             LPDIRECTSOUNDBUFFER buffer_new;
-            IDirectSound8_DuplicateSoundBuffer(
+            result = IDirectSound8_DuplicateSoundBuffer(
                 DSound, (LPDIRECTSOUNDBUFFER)sample->handle, &buffer_new);
+            if (result != DS_OK) {
+                LOG_ERROR(
+                    "Error while calling IDirectSound8_DuplicateSoundBuffer: "
+                    "0x%lx",
+                    result);
+                return NULL;
+            }
 
             DUPE_SOUND_BUFFER *dupe_buffer = malloc(sizeof(DUPE_SOUND_BUFFER));
             dupe_buffer->buffer = buffer_new;
@@ -117,20 +139,51 @@ void *SoundPlaySample(
         ds_pitch = ds_pitch * pitch / 100;
     }
 
-    IDirectSoundBuffer_SetFrequency(buffer, ds_pitch);
-    IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
-    IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
-    IDirectSoundBuffer_SetCurrentPosition(buffer, 0);
-    IDirectSoundBuffer_Play(buffer, 0, 0, loop ? DSBPLAY_LOOPING : 0);
+    result = IDirectSoundBuffer_SetFrequency(buffer, ds_pitch);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetFrequency: 0x%lx",
+            result);
+        return NULL;
+    }
+    result = IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetPan: 0x%lx", result);
+        return NULL;
+    }
+    result =
+        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);
+        return NULL;
+    }
+    result = IDirectSoundBuffer_SetCurrentPosition(buffer, 0);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetCurrentPosition: 0x%lx",
+            result);
+        return NULL;
+    }
+    result = IDirectSoundBuffer_Play(buffer, 0, 0, loop ? DSBPLAY_LOOPING : 0);
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling IDirectSoundBuffer_Play: 0x%lx", result);
+        return NULL;
+    }
     return buffer;
 }
 
 int32_t SoundInit()
 {
-    if (DirectSoundCreate(0, &DSound, 0)) {
+    HRESULT result = DirectSoundCreate(0, &DSound, 0);
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling DirectSoundCreate: 0x%lx", result);
         return 0;
     }
-    if (DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1)) {
+    result = DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1);
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
         return 0;
     }
     DecibelLUT[0] = -10000;
@@ -237,8 +290,11 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
 
     HRESULT result = IDirectSound_CreateSoundBuffer(
-        DSound, &buffer_desc, (LPDIRECTSOUNDBUFFER *)&sample_data->handle, 0);
-    if (result) {
+        DSound, &buffer_desc, (LPLPDIRECTSOUNDBUFFER)&sample_data->handle, 0);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSound_CreateSoundBuffer: 0x%lx",
+            result);
         S_ExitSystem("Fatal DirectSound error!");
     }
 
@@ -248,7 +304,8 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     result = IDirectSoundBuffer_Lock(
         (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
         &audio_data, &audio_data_size, 0, 0, 0);
-    if (result) {
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling IDirectSoundBuffer_Lock: 0x%lx", result);
         S_ExitSystem("Fatal DirectSound error!");
     }
 
@@ -257,7 +314,9 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     result = IDirectSoundBuffer_Unlock(
         (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
         0, 0);
-    if (result) {
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_Unlock: 0x%lx", result);
         S_ExitSystem("Fatal DirectSound error!");
     }
 
@@ -407,7 +466,10 @@ void S_SoundStopSample(void *handle)
         return;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    IDirectSoundBuffer_Stop(buffer);
+    HRESULT result = IDirectSoundBuffer_Stop(buffer);
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling IDirectSoundBuffer_Stop: 0x%lx", result);
+    }
 }
 
 void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
@@ -419,9 +481,18 @@ void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
         return;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
-    IDirectSoundBuffer_SetVolume(
+    HRESULT result;
+    result = IDirectSoundBuffer_SetVolume(
         buffer, ConvertVolumeToDecibel((MnSoundMasterVolume * volume) >> 6));
-    IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);
+    }
+    result = IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_SetPan: 0x%lx", result);
+    }
 }
 
 int32_t S_SoundSampleIsPlaying(void *handle)
@@ -434,7 +505,12 @@ int32_t S_SoundSampleIsPlaying(void *handle)
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     DWORD status;
-    IDirectSoundBuffer_GetStatus(buffer, &status);
+    HRESULT result = IDirectSoundBuffer_GetStatus(buffer, &status);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_GetStatus: 0x%lx", result);
+        return 0;
+    }
     return status == DSBSTATUS_PLAYING;
 }
 
