@@ -691,12 +691,13 @@ void HWR_SwitchResolution()
         GameVidWidth = 512;
         GameVidHeight = 384;
     } else if (HiRes == 3) {
-        GameVidWidth = 800;
-        GameVidHeight = 600;
+        GameVidWidth = GetSystemMetrics(SM_CXSCREEN);
+        GameVidHeight = GetSystemMetrics(SM_CYSCREEN);
     } else {
         GameVidWidth = 640;
         GameVidHeight = 480;
     }
+
     HWR_SetHardwareVideoMode();
     SetupScreenSize();
 }
