@@ -533,6 +533,91 @@ int16_t *calc_vertice_light(int16_t *obj_ptr)
     return obj_ptr;
 }
 
+int16_t *calc_roomvert(int16_t *obj_ptr)
+{
+    int32_t vertex_count = *obj_ptr++;
+
+    for (int i = 0; i < vertex_count; i++) {
+        int32_t xv = PhdMatrixPtr->_00 * obj_ptr[0]
+            + PhdMatrixPtr->_01 * obj_ptr[1] + PhdMatrixPtr->_02 * obj_ptr[2]
+            + PhdMatrixPtr->_03;
+        int32_t yv = PhdMatrixPtr->_10 * obj_ptr[0]
+            + PhdMatrixPtr->_11 * obj_ptr[1] + PhdMatrixPtr->_12 * obj_ptr[2]
+            + PhdMatrixPtr->_13;
+        int32_t zv = PhdMatrixPtr->_20 * obj_ptr[0]
+            + PhdMatrixPtr->_21 * obj_ptr[1] + PhdMatrixPtr->_22 * obj_ptr[2]
+            + PhdMatrixPtr->_23;
+        PhdVBuf[i].xv = xv;
+        PhdVBuf[i].yv = yv;
+        PhdVBuf[i].zv = zv;
+
+        if (zv < PhdNearZ) {
+            PhdVBuf[i].clip = 0x8000;
+            PhdVBuf[i].g = obj_ptr[3];
+        } else {
+            int16_t clip_flags = 0;
+            int32_t depth = zv >> W2V_SHIFT;
+            if (depth > DEPTH_Q_END) {
+                PhdVBuf[i].g = 0x1FFF;
+                clip_flags |= 16;
+            } else if (depth <= DEPTH_Q_START) {
+                PhdVBuf[i].g = obj_ptr[3];
+            } else {
+                PhdVBuf[i].g = obj_ptr[3] + depth - DEPTH_Q_START;
+                if (!IsWaterEffect) {
+                    CLAMPG(PhdVBuf[i].g, 0x1FFF);
+                }
+            }
+
+            int32_t xs = PhdCenterX + xv / (zv / PhdPersp);
+            int32_t ys = PhdCenterY + yv / (zv / PhdPersp);
+            if (IsWibbleEffect) {
+                xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
+                ys += WibbleTable[(xs + WibbleOffset) & 0x1F];
+            }
+
+            if (xs < PhdLeft) {
+                if (xs < -32760) {
+                    xs = -32760;
+                }
+                clip_flags |= 1;
+            } else if (xs > PhdRight) {
+                if (xs > 32760) {
+                    xs = 32760;
+                }
+                clip_flags |= 2;
+            }
+
+            if (ys < PhdTop) {
+                if (ys < -32760) {
+                    ys = -32760;
+                }
+                clip_flags |= 4;
+            } else if (ys > PhdBottom) {
+                if (ys > 32760) {
+                    ys = 32760;
+                }
+                clip_flags |= 8;
+            }
+
+            if (IsWaterEffect) {
+                PhdVBuf[i].g += ShadeTable
+                    [(((uint8_t)WibbleOffset
+                         + (uint8_t)RandTable[(vertex_count - i) % WIBBLE_SIZE])
+                        % WIBBLE_SIZE)];
+                CLAMP(PhdVBuf[i].g, 0, 0x1FFF);
+            }
+
+            PhdVBuf[i].xs = xs;
+            PhdVBuf[i].ys = ys;
+            PhdVBuf[i].clip = clip_flags;
+        }
+        obj_ptr += 4;
+    }
+
+    return obj_ptr;
+}
+
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
@@ -548,6 +633,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x00401A20, visible_zclip);
     INJECT(0x00401C40, calc_object_vertices);
     INJECT(0x00401E00, calc_vertice_light);
+    INJECT(0x00401F70, calc_roomvert);
     INJECT(0x004023A0, phd_RotateLight);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);

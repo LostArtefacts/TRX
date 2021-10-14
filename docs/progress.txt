@@ -24,7 +24,7 @@ phd_PutPolygons                 0x00401AD0  0x000000F3  *
 S_InsertRoom                    0x00401BD0  0x0000006E  *
 calc_object_vertices            0x00401C40  0x000001B6  +
 calc_vertice_light              0x00401E00  0x00000165  +
-calc_roomvert                   0x00401F70  0x00000428  -
+calc_roomvert                   0x00401F70  0x00000428  +
 phd_RotateLight                 0x004023A0  0x000000CF  +
 phd_PointLight                  ----------  ----------  x
 phd_InitPolyList                0x00402470  0x0000002D  *

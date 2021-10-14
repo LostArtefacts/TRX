@@ -152,10 +152,10 @@ void game_free(int32_t free_size, int32_t type)
 void CalculateWibbleTable()
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
-        PHD_ANGLE angle = (i * 65536) / WIBBLE_SIZE;
+        PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
         WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
         ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        RandTable[i] = (GetRandomDraw() >> 5) - 0x01ff;
+        RandTable[i] = (GetRandomDraw() >> 5) - 0x01FF;
     }
 }
 
