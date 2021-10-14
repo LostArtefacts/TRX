@@ -172,5 +172,7 @@ void T1MInjectSpecificInit()
     INJECT(0x0041E100, S_InitialiseSystem);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);
-    INJECT(0x0042A2C0, DB_Log);
+
+    // va_args causes crashes on certain platforms
+    // INJECT(0x0042A2C0, DB_Log);
 }
