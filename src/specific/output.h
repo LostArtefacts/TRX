@@ -4,13 +4,13 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_ClearScreen           ((void      (*)())0x0042FCC0)
-#define S_OutputPolyList        ((void      (*)())0x0042FD10)
 #define S_GetObjectBounds       ((int32_t   (*)(int16_t* bptr))0x0042FD30)
 // clang-format on
 
 void S_InitialisePolyList();
 int32_t S_DumpScreen();
+void S_ClearScreen();
+void S_OutputPolyList();
 void S_InitialiseScreen();
 void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void S_CalculateStaticLight(int16_t adder);

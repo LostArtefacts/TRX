@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
+#include "3dsystem/scalespr.h"
 #include "game/box.h"
 #include "game/camera.h"
 #include "game/cinema.h"
@@ -37,6 +38,7 @@ void T1MInject()
 {
     T1MInject3DSystem3DGen();
     T1MInject3DSystemPHDMath();
+    T1MInject3DSystemScaleSpr();
     T1MInjectGameBox();
     T1MInjectGameCamera();
     T1MInjectGameCinema();

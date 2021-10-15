@@ -66,6 +66,8 @@ void DB_Log(const char *fmt, ...)
 
     va_start(va, fmt);
     vsprintf(buf, fmt, va);
+    va_end(va);
+
     LOG_INFO("%s", buf);
     OutputDebugStringA(buf);
     OutputDebugStringA("\n");
@@ -152,10 +154,10 @@ void game_free(int32_t free_size, int32_t type)
 void CalculateWibbleTable()
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
-        PHD_ANGLE angle = (i * 65536) / WIBBLE_SIZE;
+        PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
         WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
         ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        RandTable[i] = (GetRandomDraw() >> 5) - 0x01ff;
+        RandTable[i] = (GetRandomDraw() >> 5) - 0x01FF;
     }
 }
 
@@ -172,5 +174,7 @@ void T1MInjectSpecificInit()
     INJECT(0x0041E100, S_InitialiseSystem);
     INJECT(0x0041E2C0, init_game_malloc);
     INJECT(0x0041E3B0, game_free);
-    INJECT(0x0042A2C0, DB_Log);
+
+    // va_args causes crashes on certain platforms
+    // INJECT(0x0042A2C0, DB_Log);
 }

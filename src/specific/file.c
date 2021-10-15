@@ -134,9 +134,7 @@ int32_t LoadLevel(const char *filename, int32_t level_num)
 
     FileClose(fp);
 
-    if (IsHardwareRenderer) {
-        HWR_DownloadTextures(TexturePageCount);
-    }
+    HWR_DownloadTextures(TexturePageCount);
 
     return 1;
 }
@@ -485,9 +483,7 @@ static int32_t LoadPalette(MYFILE *fp)
     GamePalette[0].r = 0;
     GamePalette[0].g = 0;
     GamePalette[0].b = 0;
-    if (IsHardwareRenderer) {
-        HWR_SetPalette();
-    }
+    HWR_SetPalette();
     PhdWet = 0;
     for (int i = 0; i < 256; i++) {
         WaterPalette[i].r = GamePalette[i].r * 2 / 3;

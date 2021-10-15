@@ -806,11 +806,11 @@ typedef enum D_FLAGS {
 } D_FLAGS;
 
 typedef enum APP_SETTINGS_FLAG {
-    ASF_PERSPECTIVE = 1 << 0,
-    ASF_BILINEAR = 1 << 1,
-    ASF_FPS = 1 << 2,
-    ASF_60FPS_SHIFT = 3,
-    ASF_60FPS = 1 << ASF_60FPS_SHIFT,
+    RSF_PERSPECTIVE = 1 << 0,
+    RSF_BILINEAR = 1 << 1,
+    RSF_FPS = 1 << 2,
+    RSF_60FPS_SHIFT = 3,
+    RSF_60FPS = 1 << RSF_60FPS_SHIFT,
 } APP_SETTINGS_FLAG;
 
 typedef enum COLL_TYPE {

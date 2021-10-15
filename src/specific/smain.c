@@ -159,6 +159,13 @@ static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         GetWindowRect(TombHWND, (LPRECT)lParam);
         return 1;
 
+    case WM_SYSCOMMAND:
+        // ignore alt keypresses to bring window menu
+        if (wParam == SC_KEYMENU && (lParam >> 16) <= 0) {
+            return 0;
+        }
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+
     case MM_MCINOTIFY:
         MusicPlayLooped();
         return 0;

@@ -30,7 +30,7 @@ static int32_t S_ReadUserSettingsATI()
     FileRead(&OptionMusicVolume, sizeof(int16_t), 1, fp);
     FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
-    FileRead(&AppSettings, sizeof(int32_t), 1, fp);
+    FileRead(&RenderSettings, sizeof(int32_t), 1, fp);
     FileRead(&GameHiRes, sizeof(int32_t), 1, fp);
     FileRead(&GameSizer, sizeof(double), 1, fp);
     FileRead(&IConfig, sizeof(int32_t), 1, fp);
@@ -63,15 +63,15 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
 
     struct json_object_s *root_obj = json_value_as_object(root);
     if (json_object_get_bool(root_obj, "bilinear", 1)) {
-        AppSettings |= ASF_BILINEAR;
+        RenderSettings |= RSF_BILINEAR;
     } else {
-        AppSettings &= ~ASF_BILINEAR;
+        RenderSettings &= ~RSF_BILINEAR;
     }
 
     if (json_object_get_bool(root_obj, "perspective", 1)) {
-        AppSettings |= ASF_PERSPECTIVE;
+        RenderSettings |= RSF_PERSPECTIVE;
     } else {
-        AppSettings &= ~ASF_PERSPECTIVE;
+        RenderSettings &= ~RSF_PERSPECTIVE;
     }
     
     if (json_object_get_bool(root_obj, "60fps", 1)) {
@@ -159,10 +159,11 @@ static int32_t S_WriteUserSettingsT1M()
 
     size_t size;
     struct json_object_s *root_obj = json_object_new();
-    json_object_append_bool(root_obj, "bilinear", AppSettings & ASF_BILINEAR);
     json_object_append_bool(
-        root_obj, "perspective", AppSettings & ASF_PERSPECTIVE);
-    json_object_append_bool(root_obj, "60fps", AppSettings & ASF_60FPS);
+        root_obj, "bilinear", RenderSettings & RSF_BILINEAR);
+    json_object_append_bool(
+        root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
+    json_object_append_bool(root_obj, "60fps", AppSettings & RSF_60FPS);
     json_object_append_number_int(root_obj, "hi_res", GameHiRes);
     json_object_append_number_double(root_obj, "game_sizer", GameSizer);
     json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);

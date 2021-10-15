@@ -22,7 +22,7 @@ MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
         break;
     }
     if (!file->fp) {
-        fclose(file->fp);
+        free(file);
         return NULL;
     }
     return file;

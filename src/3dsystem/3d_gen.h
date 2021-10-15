@@ -35,6 +35,10 @@ void phd_PushMatrix();
 void phd_PushUnitMatrix();
 void phd_PopMatrix();
 
+int16_t *calc_object_vertices(int16_t *obj_ptr);
+int16_t *calc_vertice_light(int16_t *obj_ptr);
+int16_t *calc_roomvert(int16_t *obj_ptr);
+
 void T1MInject3DSystem3DGen();
 
 #endif

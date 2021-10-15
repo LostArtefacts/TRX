@@ -68,7 +68,6 @@ typedef struct TEXT_COLUMN_PLACEMENT {
 
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
-static TEXTSTRING *DetailText[5] = { 0 };
 static TEXTSTRING *SoundText[4] = { 0 };
 static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlText[2] = { 0 };
@@ -545,13 +544,14 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
-                [AppSettings & ASF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
+                [RenderSettings & RSF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
-            GF.strings[AppSettings & ASF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
+            GF.strings
+                [RenderSettings & RSF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
@@ -645,15 +645,15 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
     if (CHK_ANY(InputDB, IN_RIGHT)) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
-            if (!(AppSettings & ASF_PERSPECTIVE)) {
-                AppSettings |= ASF_PERSPECTIVE;
+            if (!(RenderSettings & RSF_PERSPECTIVE)) {
+                RenderSettings |= RSF_PERSPECTIVE;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (!(AppSettings & ASF_BILINEAR)) {
-                AppSettings |= ASF_BILINEAR;
+            if (!(RenderSettings & RSF_BILINEAR)) {
+                RenderSettings |= RSF_BILINEAR;
                 reset = 1;
             }
             break;
@@ -689,15 +689,15 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
     if (CHK_ANY(InputDB, IN_LEFT)) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
-            if (AppSettings & ASF_PERSPECTIVE) {
-                AppSettings &= ~ASF_PERSPECTIVE;
+            if (RenderSettings & RSF_PERSPECTIVE) {
+                RenderSettings &= ~RSF_PERSPECTIVE;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (AppSettings & ASF_BILINEAR) {
-                AppSettings &= ~ASF_BILINEAR;
+            if (RenderSettings & RSF_BILINEAR) {
+                RenderSettings &= ~RSF_BILINEAR;
                 reset = 1;
             }
             break;
@@ -745,59 +745,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
-    if (IsHardwareRenderer) {
-        DoDetailOptionHW(inv_item);
-        return;
-    }
-
-    if (!DetailText[0]) {
-        DetailText[2] = T_Print(0, 0, GF.strings[GS_DETAIL_LEVEL_HIGH]);
-        DetailText[1] = T_Print(0, 25, GF.strings[GS_DETAIL_LEVEL_MEDIUM]);
-        DetailText[0] = T_Print(0, 50, GF.strings[GS_DETAIL_LEVEL_LOW]);
-        DetailText[3] = T_Print(0, -32, " ");
-        DetailText[4] = T_Print(0, -30, GF.strings[GS_DETAIL_SELECT_DETAIL]);
-        T_AddBackground(DetailText[4], 156, 0, 0, 0);
-        T_AddOutline(DetailText[4], 1);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
-        T_AddOutline(DetailText[AppSettings], 1);
-        T_AddBackground(DetailText[3], 160, 107, 0, 0);
-        T_AddOutline(DetailText[3], 1);
-        for (int i = 0; i < 5; i++) {
-            T_CentreH(DetailText[i], 1);
-            T_CentreV(DetailText[i], 1);
-        }
-    }
-
-    if (CHK_ANY(InputDB, IN_BACK) && AppSettings > 0) {
-        T_RemoveOutline(DetailText[AppSettings]);
-        T_RemoveBackground(DetailText[AppSettings]);
-        AppSettings--;
-        T_AddOutline(DetailText[AppSettings], 1);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
-    }
-
-    if (CHK_ANY(InputDB, IN_FORWARD) && AppSettings < 2) {
-        T_RemoveOutline(DetailText[AppSettings]);
-        T_RemoveBackground(DetailText[AppSettings]);
-        AppSettings++;
-        T_AddOutline(DetailText[AppSettings], 1);
-        T_AddBackground(DetailText[AppSettings], 148, 0, 0, 0);
-    }
-
-    if (AppSettings == 0) {
-        Quality = 0;
-    } else if (AppSettings == 1) {
-        Quality = 0x3000000;
-    } else if (AppSettings == 2) {
-        Quality = 0x6000000;
-    }
-
-    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
-        for (int i = 0; i < 5; i++) {
-            T_RemovePrint(DetailText[i]);
-            DetailText[0] = NULL;
-        }
-    }
+    DoDetailOptionHW(inv_item);
 }
 
 // original name: do_sound_option

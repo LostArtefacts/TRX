@@ -94,7 +94,7 @@ void BearControl(int16_t item_num)
             bear->flags = 1;
         }
 
-        switch ((signed __int16)item->current_anim_state) {
+        switch ((int16_t)item->current_anim_state) {
         case BEAR_STOP:
             if (dead_enemy) {
                 if (info.bite && info.distance < BEAR_EAT_RANGE) {

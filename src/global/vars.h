@@ -9,7 +9,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define dword_45E960            VAR_U_(0x0045E960, int32_t)
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
 #define PhdWinPtr               VAR_U_(0x006CAD0C, uint8_t*)
@@ -25,6 +24,7 @@
 #define PhdPersp                VAR_U_(0x0069518C, int32_t)
 #define PhdFarZ                 VAR_U_(0x00695184, int32_t)
 #define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
+#define PhdVBuf                 ARRAY_(0x006D7620, PHD_VBUF, [1500])
 #define PhdWet                  VAR_U_(0x0045A300, int32_t)
 #define PhdLeft                 VAR_U_(0x00695190, int32_t)
 #define PhdBottom               VAR_U_(0x00695188, int32_t)
@@ -32,7 +32,7 @@
 #define PhdTop                  VAR_U_(0x0068D380, int32_t)
 #define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
-#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE][MAX_SPRITES])
+#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE * MAX_SPRITES])
 #define PhdTextureInfo          ARRAY_(0x006CADE0, PHD_TEXTURE, [MAX_TEXTURES])
 #define PhdMatrixPtr            VAR_U_(0x006CAD14, PHD_MATRIX*)
 #define MatrixStack             ARRAY_(0x006D4E80, PHD_MATRIX, [MAX_MATRICES])
@@ -123,7 +123,8 @@ extern int32_t KeyChange;
 
 #define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
-#define AppSettings             VAR_U_(0x0045A240, uint32_t)
+#define RenderSettings          VAR_U_(0x0045A240, uint32_t)
+#define OldRenderSettings       VAR_U_(0x0045E960, uint32_t)
 #define Quality                 VAR_I_(0x00453030, int32_t, 0x3000000)
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)

@@ -1,7 +1,7 @@
 #ifndef T1M_FILESYSTEM_H
 #define T1M_FILESYSTEM_H
 
-#include <stdint.h>
+#include <stddef.h>
 
 typedef enum {
     FILE_SEEK_SET,

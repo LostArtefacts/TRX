@@ -326,26 +326,24 @@ void S_UpdateInput()
         }
     }
 
-    if (IsHardwareRenderer) {
-        if (KEY_DOWN(DIK_F3)) {
-            AppSettings ^= ASF_BILINEAR;
-            while (KEY_DOWN(DIK_F3)) {
-                DInputKeyboardRead();
-            }
+    if (KEY_DOWN(DIK_F3)) {
+        RenderSettings ^= RSF_BILINEAR;
+        while (KEY_DOWN(DIK_F3)) {
+            DInputKeyboardRead();
         }
+    }
 
-        if (KEY_DOWN(DIK_F4)) {
-            AppSettings ^= ASF_PERSPECTIVE;
-            while (KEY_DOWN(DIK_F4)) {
-                DInputKeyboardRead();
-            }
+    if (KEY_DOWN(DIK_F4)) {
+        RenderSettings ^= RSF_PERSPECTIVE;
+        while (KEY_DOWN(DIK_F4)) {
+            DInputKeyboardRead();
         }
+    }
 
-        if (KEY_DOWN(DIK_F2)) {
-            AppSettings ^= ASF_FPS;
-            while (KEY_DOWN(DIK_F2)) {
-                DInputKeyboardRead();
-            }
+    if (KEY_DOWN(DIK_F2)) {
+        RenderSettings ^= RSF_FPS;
+        while (KEY_DOWN(DIK_F2)) {
+            DInputKeyboardRead();
         }
     }
 
