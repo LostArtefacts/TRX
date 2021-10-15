@@ -38,7 +38,7 @@ void RollingBallControl(int16_t item_num)
         if (item->pos.y < item->floor) {
             if (!item->gravity_status) {
                 item->gravity_status = 1;
-                item->fall_speed = -10; //(-10/ANIM_SCALE);
+                item->fall_speed = -10;
             }
         } else if (item->current_anim_state == TRAP_SET) {
             item->goal_anim_state = TRAP_ACTIVATE;
