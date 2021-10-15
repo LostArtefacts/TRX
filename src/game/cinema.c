@@ -208,7 +208,7 @@ void InGameCinematicCamera()
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
     if (ANIM_SCALE == 2) {
-        if (((CineFrame & 1) == 1) && CineFrame < lastFrameNum) {
+        if ((CineFrame & 1) && CineFrame < lastFrameNum) {
             ptr += 8; // move to next frame
             tx += ptr[0];
             ty += ptr[1];
@@ -219,14 +219,14 @@ void InGameCinematicCamera()
             fov += ptr[6];
             roll += ptr[7];
 
-            tx /= 2;
-            ty /= 2;
-            tz /= 2;
-            cx /= 2;
-            cy /= 2;
-            cz /= 2;
-            fov /= 2;
-            roll /= 2;
+            tx /= ANIM_SCALE;
+            ty /= ANIM_SCALE;
+            tz /= ANIM_SCALE;
+            cx /= ANIM_SCALE;
+            cy /= ANIM_SCALE;
+            cz /= ANIM_SCALE;
+            fov /= ANIM_SCALE;
+            roll /= ANIM_SCALE;
         }
     }
 
