@@ -590,7 +590,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         
         if ( InvMode == INV_TITLE_MODE ) {
 			// this can only be changed in the title menu and not in game, bad things will happen
-			sprintf(buf, GF.strings[GS_DETAIL_VIDEO_FPS_RATE], (1+((AppSettings & ASF_60FPS)>>ASF_60FPS_SHIFT)) * 30);
+			sprintf(buf, GF.strings[GS_DETAIL_VIDEO_FPS_RATE], (1+((RenderSettings & RSF_60FPS)>>RSF_60FPS_SHIFT)) * 30);
 			DetailTextHW[DETAIL_HW_FPS] = T_Print(0, y, buf);
 			y += DETAIL_HW_ROW_HEIGHT;
 			max_row = DETAIL_HW_FPS;
@@ -680,7 +680,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             break;
             
         case DETAIL_HW_FPS:
-			AppSettings ^= ASF_60FPS;
+			RenderSettings ^= RSF_60FPS;
 			reset = 1;
 			break;
         }
@@ -724,7 +724,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             break;
             
         case DETAIL_HW_FPS:
-			AppSettings ^= ASF_60FPS;
+			RenderSettings ^= RSF_60FPS;
 			reset = 1;
 			break;
         }

@@ -100,7 +100,7 @@ void GameMain()
         case GF_START_GAME:
 			//update the game based upon the speed chosen
 			ANIM_SCALE = 1;
-			if (AppSettings & ASF_60FPS) {
+			if (RenderSettings & RSF_60FPS) {
 				ANIM_SCALE = 2;
 			}
 			ClockInit();

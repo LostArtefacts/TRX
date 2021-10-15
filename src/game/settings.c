@@ -75,9 +75,9 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     }
     
     if (json_object_get_bool(root_obj, "60fps", 1)) {
-        AppSettings |= ASF_60FPS;
+        RenderSettings |= RSF_60FPS;
     } else {
-        AppSettings &= ~ASF_60FPS;
+        RenderSettings &= ~RSF_60FPS;
     }
 
     GameHiRes = json_object_get_number_int(root_obj, "hi_res", 3);
@@ -163,7 +163,7 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "bilinear", RenderSettings & RSF_BILINEAR);
     json_object_append_bool(
         root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
-    json_object_append_bool(root_obj, "60fps", AppSettings & RSF_60FPS);
+    json_object_append_bool(root_obj, "60fps", RenderSettings & RSF_60FPS);
     json_object_append_number_int(root_obj, "hi_res", GameHiRes);
     json_object_append_number_double(root_obj, "game_sizer", GameSizer);
     json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);
