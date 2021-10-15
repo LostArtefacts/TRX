@@ -42,7 +42,6 @@ void InitialiseCamera()
 
 void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
 {
-    // speed *= ANIM_SCALE;
     Camera.pos.x += (ideal->x - Camera.pos.x) / speed;
     Camera.pos.z += (ideal->z - Camera.pos.z) / speed;
     Camera.pos.y += (ideal->y - Camera.pos.y) / speed;

@@ -52,7 +52,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == AS_PICKUP) {
-            if (lara_item->frame_number != (AF_PICKUP * ANIM_SCALE)) {
+            if (lara_item->frame_number != AF_PICKUP * ANIM_SCALE) {
                 return;
             }
             if (item->object_number == O_SHOTGUN_ITEM) {
@@ -83,7 +83,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == AS_PICKUP) {
-            if (lara_item->frame_number != (AF_PICKUP_UW * ANIM_SCALE)) {
+            if (lara_item->frame_number != AF_PICKUP_UW * ANIM_SCALE) {
                 return;
             }
             AddDisplayPickup(item->object_number);

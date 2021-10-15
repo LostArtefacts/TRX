@@ -116,7 +116,7 @@ int32_t DoCinematic(int32_t nframes)
         CalculateCinematicCamera();
         CineFrame++;
 
-        if ((CineFrame / ANIM_SCALE) >= NumCineFrames - 1) {
+        if (CineFrame / ANIM_SCALE >= NumCineFrames - 1) {
             return 1;
         }
 
@@ -131,7 +131,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t *ptr = &Cine[8 * (CineFrame / ANIM_SCALE)];
+    int16_t *ptr = &Cine[8 * CineFrame / ANIM_SCALE];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -194,11 +194,11 @@ void InGameCinematicCamera()
 {
     CineFrame++;
     int16_t lastFrameNum = NumCineFrames - (1 * ANIM_SCALE);
-    if ((CineFrame / ANIM_SCALE) >= NumCineFrames) {
+    if (CineFrame / ANIM_SCALE >= NumCineFrames) {
         CineFrame = lastFrameNum;
     }
 
-    int16_t *ptr = &Cine[8 * (CineFrame / ANIM_SCALE)];
+    int16_t *ptr = &Cine[8 * CineFrame / ANIM_SCALE];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -208,7 +208,7 @@ void InGameCinematicCamera()
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
     if (ANIM_SCALE == 2) {
-        if ((CineFrame & 1) && CineFrame < lastFrameNum) {
+        if (CineFrame & 1 && CineFrame < lastFrameNum) {
             ptr += 8; // move to next frame
             tx += ptr[0];
             ty += ptr[1];

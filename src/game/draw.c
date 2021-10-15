@@ -313,7 +313,7 @@ void DrawEffect(int16_t fxnum)
     if (object->nmeshes < 0) {
         S_DrawSprite(
             fx->pos.x, fx->pos.y, fx->pos.z,
-            object->mesh_index - (fx->frame_number / ANIM_SCALE), 4096);
+            object->mesh_index - fx->frame_number / ANIM_SCALE, 4096);
     } else {
         phd_PushMatrix();
         phd_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
@@ -325,7 +325,7 @@ void DrawEffect(int16_t fxnum)
             } else {
                 S_CalculateLight(
                     fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
-                phd_PutPolygons(Meshes[(fx->frame_number / ANIM_SCALE)], -1);
+                phd_PutPolygons(Meshes[fx->frame_number / ANIM_SCALE], -1);
             }
         }
         phd_PopMatrix();
@@ -337,7 +337,7 @@ void DrawSpriteItem(ITEM_INFO *item)
     S_DrawSprite(
         item->pos.x, item->pos.y, item->pos.z,
         Objects[item->object_number].mesh_index
-            - (item->frame_number / ANIM_SCALE),
+            - item->frame_number / ANIM_SCALE,
         item->shade);
 }
 

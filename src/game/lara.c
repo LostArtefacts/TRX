@@ -946,15 +946,15 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (LaraDeflectEdge(item, coll)) {
-        if (item->frame_number >= (29 * ANIM_SCALE)
-            && item->frame_number <= (47 * ANIM_SCALE)) {
+        if (item->frame_number >= 29 * ANIM_SCALE
+            && item->frame_number <= 47 * ANIM_SCALE) {
             item->anim_number = AA_STOP_RIGHT;
             item->frame_number = AF_STOP_RIGHT * ANIM_SCALE;
         } else if (
-            (item->frame_number >= (22 * ANIM_SCALE)
-             && item->frame_number <= (28 * ANIM_SCALE))
-            || (item->frame_number >= (48 * ANIM_SCALE)
-                && item->frame_number <= (57 * ANIM_SCALE))) {
+            (item->frame_number >= 22 * ANIM_SCALE
+             && item->frame_number <= 28 * ANIM_SCALE)
+            || (item->frame_number >= 48 * ANIM_SCALE)
+                && item->frame_number <= 57 * ANIM_SCALE)) {
             item->anim_number = AA_STOP_LEFT;
             item->frame_number = AF_STOP_LEFT * ANIM_SCALE;
         } else {
@@ -975,8 +975,8 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2) {
-        if (item->frame_number >= (28 * ANIM_SCALE)
-            && item->frame_number <= (45 * ANIM_SCALE)) {
+        if (item->frame_number >= 28 * ANIM_SCALE
+            && item->frame_number <= 45 * ANIM_SCALE) {
             item->anim_number = AA_WALKSTEPD_RIGHT;
             item->frame_number = AF_WALKSTEPD_RIGHT * ANIM_SCALE;
         } else {
@@ -986,8 +986,8 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= (27 * ANIM_SCALE)
-            && item->frame_number <= (44 * ANIM_SCALE)) {
+        if (item->frame_number >= 27 * ANIM_SCALE
+            && item->frame_number <= 44 * ANIM_SCALE) {
             item->anim_number = AA_WALKSTEPUP_RIGHT;
             item->frame_number = AF_WALKSTEPUP_RIGHT * ANIM_SCALE;
         } else {
@@ -1027,13 +1027,13 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
             && coll->front_floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = AS_SPLAT;
             if (item->frame_number >= 0
-                && item->frame_number <= (9 * ANIM_SCALE)) {
+                && item->frame_number <= 9 * ANIM_SCALE) {
                 item->anim_number = AA_HITWALLLEFT;
                 item->frame_number = AF_HITWALLLEFT * ANIM_SCALE;
                 return;
             }
-            if (item->frame_number >= (10 * ANIM_SCALE)
-                && item->frame_number <= (21 * ANIM_SCALE)) {
+            if (item->frame_number >= 10 * ANIM_SCALE
+                && item->frame_number <= 21 * ANIM_SCALE) {
                 item->anim_number = AA_HITWALLRIGHT;
                 item->frame_number = AF_HITWALLRIGHT * ANIM_SCALE;
                 return;
@@ -1055,8 +1055,8 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= (3 * ANIM_SCALE)
-            && item->frame_number <= (14 * ANIM_SCALE)) {
+        if (item->frame_number >= 3 * ANIM_SCALE
+            && item->frame_number <= 14 * ANIM_SCALE) {
             item->anim_number = AA_RUNSTEPUP_LEFT;
             item->frame_number = AF_RUNSTEPUP_LEFT * ANIM_SCALE;
         } else {
@@ -1383,8 +1383,8 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
-        if (item->frame_number >= (964 * ANIM_SCALE)
-            && item->frame_number <= (993 * ANIM_SCALE)) {
+        if (item->frame_number >= 964 * ANIM_SCALE
+            && item->frame_number <= 993 * ANIM_SCALE) {
             item->anim_number = AA_BACKSTEPD_RIGHT;
             item->frame_number = AF_BACKSTEPD_RIGHT * ANIM_SCALE;
         } else {
@@ -1881,27 +1881,25 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     lara_fall_speed_f = 0.0;
 
     PHD_ANGLE angle = ((uint16_t)(item->pos.y_rot + PHD_45)) / PHD_90;
-    // LOG_DEBUG("angel %d, y_rot %d +PHD_45 %d", angle, item->pos.y_rot,
-    // (uint16_t)(item->pos.y_rot+PHD_45));
     switch (angle) {
     case DIR_NORTH:
-        item->pos.z += 2; /// ANIM_SCALE;
-        lara_float_pos.z += 2; //*ANIM_SCALE;
+        item->pos.z += 2; 
+        lara_float_pos.z += 2;
         break;
 
     case DIR_WEST:
-        item->pos.x -= 2; //*ANIM_SCALE;
-        lara_float_pos.x -= 2; //*ANIM_SCALE;
+        item->pos.x -= 2;
+        lara_float_pos.x -= 2;
         break;
 
     case DIR_SOUTH:
-        item->pos.z -= 2; //*ANIM_SCALE;
-        lara_float_pos.z -= 2; //*ANIM_SCALE;
+        item->pos.z -= 2;
+        lara_float_pos.z -= 2;
         break;
 
     case DIR_EAST:
-        item->pos.x += 2; //*ANIM_SCALE;
-        lara_float_pos.x += 2; //*ANIM_SCALE;
+        item->pos.x += 2;
+        lara_float_pos.x += 2;
         break;
     }
 
@@ -2003,7 +2001,7 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     ShiftItemLara(item, coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
-        item->pos.y_rot += LARA_DEF_ADD_EDGE; // DAN
+        item->pos.y_rot += LARA_DEF_ADD_EDGE;
         break;
 
     case COLL_RIGHT:
@@ -2036,8 +2034,6 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        // item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        // item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
         lara_float_pos.z -= (phd_cos_f(coll->facing) * 100.0) / View2World;
         lara_float_pos.x -= (phd_sin_f(coll->facing) * 100.0) / View2World;
         item->pos.z = lara_float_pos.z;

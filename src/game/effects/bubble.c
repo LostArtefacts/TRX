@@ -43,7 +43,7 @@ void LaraBubbles(ITEM_INFO *item)
             fx->pos.z = offset.z;
             fx->object_number = O_BUBBLES1;
             fx->frame_number = -((GetRandomDraw() * 3) / 0x8000);
-            fx->speed = 10 + ((GetRandomDraw() * 6) / 0x8000) / ANIM_SCALE;
+            fx->speed = 10 + (GetRandomDraw() * 6) / 0x8000 / ANIM_SCALE;
         }
     }
 }
