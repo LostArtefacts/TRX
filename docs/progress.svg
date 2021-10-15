@@ -49,7 +49,7 @@
 <rect width="12.00" height="12.00" x="644.00" y="17.00" class="decompiled"><title>sub_406AE0</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="17.00" class="decompiled"><title>sub_406D90</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="17.00" class="decompiled"><title>sub_406FD0</title></rect>
-<rect width="12.00" height="12.00" x="686.00" y="17.00" class="todo"><title>sub_4072A0</title></rect>
+<rect width="12.00" height="12.00" x="686.00" y="17.00" class="decompiled"><title>ins_poly_trans8</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="31.00" class="decompiled"><title>HWR_Error</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="31.00" class="decompiled"><title>HWR_RenderBegin_0</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="31.00" class="decompiled"><title>HWR_RenderBegin</title></rect>
@@ -525,7 +525,7 @@
 <rect width="12.00" height="12.00" x="308.00" y="157.00" class="decompiled"><title>S_InitialiseScreen</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="157.00" class="decompiled"><title>S_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="157.00" class="named"><title>S_GetObjectBounds</title></rect>
-<rect width="12.00" height="12.00" x="350.00" y="157.00" class="named"><title>S_PrintShadow</title></rect>
+<rect width="12.00" height="12.00" x="350.00" y="157.00" class="decompiled"><title>S_PrintShadow</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="157.00" class="decompiled"><title>S_CalculateLight</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="157.00" class="decompiled"><title>S_CalculateStaticLight</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="157.00" class="decompiled"><title>S_DrawHealthBar</title></rect>
@@ -751,7 +751,7 @@
 <rect width="29.62" height="31.14" x="168.16" y="439.72" class="decompiled"><title>SmartShift</title></rect>
 <rect width="29.62" height="30.90" x="168.16" y="472.86" class="decompiled"><title>CalculateCamera</title></rect>
 <rect width="29.62" height="30.23" x="168.16" y="505.77" class="decompiled"><title>DrawAnimatingItem</title></rect>
-<rect width="29.59" height="29.54" x="199.78" y="269.00" class="todo"><title>sub_4072A0</title></rect>
+<rect width="29.59" height="29.54" x="199.78" y="269.00" class="decompiled"><title>ins_poly_trans8</title></rect>
 <rect width="29.59" height="28.94" x="199.78" y="300.54" class="decompiled"><title>GameMain</title></rect>
 <rect width="29.59" height="28.36" x="199.78" y="331.48" class="decompiled"><title>DoSoundOption</title></rect>
 <rect width="29.59" height="27.57" x="199.78" y="361.84" class="decompiled"><title>CalculateTarget</title></rect>
@@ -927,7 +927,7 @@
 <rect width="14.67" height="13.95" x="599.52" y="305.75" class="decompiled"><title>sub_43E74D</title></rect>
 <rect width="14.53" height="13.95" x="616.20" y="305.75" class="decompiled"><title>ShiftCamera</title></rect>
 <rect width="14.48" height="13.95" x="632.73" y="305.75" class="decompiled"><title>S_InitialiseSystem</title></rect>
-<rect width="14.48" height="13.95" x="649.21" y="305.75" class="named"><title>S_PrintShadow</title></rect>
+<rect width="14.48" height="13.95" x="649.21" y="305.75" class="decompiled"><title>S_PrintShadow</title></rect>
 <rect width="14.20" height="13.95" x="665.70" y="305.75" class="decompiled"><title>sub_43E8AC</title></rect>
 <rect width="14.10" height="13.95" x="681.90" y="305.75" class="decompiled"><title>T_DrawText</title></rect>
 <rect width="14.23" height="13.68" x="480.62" y="321.70" class="decompiled"><title>S_DrawScreenSprite2d</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 94.55%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 93.12%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 4.34%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 3.77%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 1.12%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 3.10%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 94.83%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 93.79%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 4.20%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 3.63%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.98%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.57%</text>
 </svg>

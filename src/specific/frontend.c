@@ -162,7 +162,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     void *fmv_context = NULL;
     void *sound_context = NULL;
 
-    sub_40837F();
+    HWR_FMVInit();
     const char *path = GetFullPath(FMVPaths[sequence]);
 
     if (Player_InitMovie(&movie_context, 0, 0, path, 0x100000)) {

@@ -466,6 +466,45 @@ void S_DrawLightningSegment(
     }
 }
 
+void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
+{
+    int32_t x0 = bptr[0];
+    int32_t x1 = bptr[1];
+    int32_t y0 = bptr[4];
+    int32_t y1 = bptr[5];
+
+    int32_t x_mid = (x0 + x1) / 2;
+    int32_t y_mid = (y0 + y1) / 2;
+
+    int32_t x_add = size * (x1 - x0) / 1024;
+    int32_t y_add = size * (y1 - y0) / 1024;
+
+    ShadowInfo.vertex[0].x = x_mid - x_add;
+    ShadowInfo.vertex[0].z = y_mid + 2 * y_add;
+    ShadowInfo.vertex[1].x = x_mid + x_add;
+    ShadowInfo.vertex[1].z = ShadowInfo.vertex[0].z;
+    ShadowInfo.vertex[2].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[2].z = y_add + y_mid;
+    ShadowInfo.vertex[3].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[3].z = y_mid - y_add;
+    ShadowInfo.vertex[4].x = x_mid + x_add;
+    ShadowInfo.vertex[4].z = y_mid - 2 * y_add;
+    ShadowInfo.vertex[5].x = x_mid - x_add;
+    ShadowInfo.vertex[5].z = ShadowInfo.vertex[4].z;
+    ShadowInfo.vertex[6].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[6].z = y_mid - y_add;
+    ShadowInfo.vertex[7].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[7].z = y_add + y_mid;
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    phd_RotY(item->pos.y_rot);
+    if (calc_object_vertices(&ShadowInfo.poly_count)) {
+        HWR_PrintShadow(&PhdVBuf[0], 0);
+    }
+    phd_PopMatrix();
+}
+
 void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FC60, S_InitialisePolyList);
@@ -473,6 +512,7 @@ void T1MInjectSpecificOutput()
     INJECT(0x0042FCC0, S_ClearScreen);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x0042FD10, S_OutputPolyList);
+    INJECT(0x0042FFA0, S_PrintShadow);
     INJECT(0x00430100, S_CalculateLight);
     INJECT(0x00430290, S_CalculateStaticLight);
     INJECT(0x004302D0, S_DrawHealthBar);

@@ -67,7 +67,7 @@ XYGClipper                      0x00406710  0x000003C2  x
 sub_406AE0                      0x00406AE0  0x000002AE  x
 sub_406D90                      0x00406D90  0x0000023E  x
 sub_406FD0                      0x00406FD0  0x000002D0  x
-sub_4072A0                      0x004072A0  0x00000523  -
+ins_poly_trans8                 0x004072A0  0x00000523  +
 HWR_Error                       0x004077D0  0x00000034  +
 HWR_RenderBegin_0               0x00407804  0x00000023  +
 HWR_RenderBegin                 0x00407827  0x00000014  +
@@ -113,7 +113,7 @@ HWR_InsertObjectGT3             0x0040C34E  0x000000D7  *
 HWR_DrawSprite                  0x0040C425  0x000003C9  *
 HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
 HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
-HWR_PrintShadow                 0x0040CADB  0x00000182  -
+HWR_PrintShadow                 0x0040CADB  0x00000182  *
 HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
 HWR_InitPolyList                0x0040D0F7  0x00000049  -
@@ -746,7 +746,7 @@ S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  +
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
-S_PrintShadow                   0x0042FFA0  0x0000015B  *
+S_PrintShadow                   0x0042FFA0  0x0000015B  +
 S_CalculateLight                0x00430100  0x00000183  +
 S_CalculateStaticLight          0x00430290  0x00000031  +
 S_DrawHealthBar                 0x004302D0  0x00000180  +
