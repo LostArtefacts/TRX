@@ -19,12 +19,12 @@ void LookLeftRight()
     if (Input & IN_LEFT) {
         Input -= IN_LEFT;
         if (Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            Lara.head_y_rot -= HEAD_TURN/ANIM_SCALE / 2;
+            Lara.head_y_rot -= HEAD_TURN / ANIM_SCALE / 2;
         }
     } else if (Input & IN_RIGHT) {
         Input -= IN_RIGHT;
         if (Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            Lara.head_y_rot += HEAD_TURN/ANIM_SCALE / 2;
+            Lara.head_y_rot += HEAD_TURN / ANIM_SCALE / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -38,12 +38,12 @@ void LookUpDown()
     if (Input & IN_FORWARD) {
         Input -= IN_FORWARD;
         if (Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            Lara.head_x_rot -= HEAD_TURN/ANIM_SCALE / 2;
+            Lara.head_x_rot -= HEAD_TURN / ANIM_SCALE / 2;
         }
     } else if (Input & IN_BACK) {
         Input -= IN_BACK;
         if (Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            Lara.head_x_rot += HEAD_TURN/ANIM_SCALE / 2;
+            Lara.head_x_rot += HEAD_TURN / ANIM_SCALE / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -132,9 +132,9 @@ void LaraAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.y_rot += Lara.turn_rate;
     /*if( Lara.turn_rate == 0)
     {
-		int lockAngle = (item->pos.y_rot / PHD_DEGREE) * PHD_DEGREE;
-		item->pos.y_rot = lockAngle; 
-	}*/
+                int lockAngle = (item->pos.y_rot / PHD_DEGREE) * PHD_DEGREE;
+                item->pos.y_rot = lockAngle;
+        }*/
 
     AnimateLara(item);
     LaraBaddieCollision(item, coll);
@@ -188,7 +188,7 @@ void LaraAsRun(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL *ANIM_SCALE;
+        item->frame_number = AF_ROLL * ANIM_SCALE;
         return;
     }
 
@@ -236,7 +236,7 @@ void LaraAsStop(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL *ANIM_SCALE;
+        item->frame_number = AF_ROLL * ANIM_SCALE;
         return;
     }
 
@@ -652,7 +652,7 @@ void LaraAsLeftJump(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsUpJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * 2/ANIM_SCALE) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * 2 / ANIM_SCALE) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
@@ -946,12 +946,15 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (LaraDeflectEdge(item, coll)) {
-        if (item->frame_number >= (29*ANIM_SCALE) && item->frame_number <= (47*ANIM_SCALE)) {
+        if (item->frame_number >= (29 * ANIM_SCALE)
+            && item->frame_number <= (47 * ANIM_SCALE)) {
             item->anim_number = AA_STOP_RIGHT;
             item->frame_number = AF_STOP_RIGHT * ANIM_SCALE;
         } else if (
-            (item->frame_number >= (22*ANIM_SCALE) && item->frame_number <= (28*ANIM_SCALE))
-            || (item->frame_number >= (48*ANIM_SCALE) && item->frame_number <= (57*ANIM_SCALE))) {
+            (item->frame_number >= (22 * ANIM_SCALE)
+             && item->frame_number <= (28 * ANIM_SCALE))
+            || (item->frame_number >= (48 * ANIM_SCALE)
+                && item->frame_number <= (57 * ANIM_SCALE))) {
             item->anim_number = AA_STOP_LEFT;
             item->frame_number = AF_STOP_LEFT * ANIM_SCALE;
         } else {
@@ -972,7 +975,8 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2) {
-        if (item->frame_number >= (28*ANIM_SCALE) && item->frame_number <= (45*ANIM_SCALE)) {
+        if (item->frame_number >= (28 * ANIM_SCALE)
+            && item->frame_number <= (45 * ANIM_SCALE)) {
             item->anim_number = AA_WALKSTEPD_RIGHT;
             item->frame_number = AF_WALKSTEPD_RIGHT * ANIM_SCALE;
         } else {
@@ -982,7 +986,8 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= (27*ANIM_SCALE) && item->frame_number <= (44*ANIM_SCALE)) {
+        if (item->frame_number >= (27 * ANIM_SCALE)
+            && item->frame_number <= (44 * ANIM_SCALE)) {
             item->anim_number = AA_WALKSTEPUP_RIGHT;
             item->frame_number = AF_WALKSTEPUP_RIGHT * ANIM_SCALE;
         } else {
@@ -1021,12 +1026,14 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
         if (coll->front_type == HT_WALL
             && coll->front_floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = AS_SPLAT;
-            if (item->frame_number >= 0 && item->frame_number <= (9*ANIM_SCALE)) {
+            if (item->frame_number >= 0
+                && item->frame_number <= (9 * ANIM_SCALE)) {
                 item->anim_number = AA_HITWALLLEFT;
                 item->frame_number = AF_HITWALLLEFT * ANIM_SCALE;
                 return;
             }
-            if (item->frame_number >= (10*ANIM_SCALE) && item->frame_number <= (21*ANIM_SCALE)) {
+            if (item->frame_number >= (10 * ANIM_SCALE)
+                && item->frame_number <= (21 * ANIM_SCALE)) {
                 item->anim_number = AA_HITWALLRIGHT;
                 item->frame_number = AF_HITWALLRIGHT * ANIM_SCALE;
                 return;
@@ -1048,7 +1055,8 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= (3*ANIM_SCALE) && item->frame_number <= (14*ANIM_SCALE)) {
+        if (item->frame_number >= (3 * ANIM_SCALE)
+            && item->frame_number <= (14 * ANIM_SCALE)) {
             item->anim_number = AA_RUNSTEPUP_LEFT;
             item->frame_number = AF_RUNSTEPUP_LEFT * ANIM_SCALE;
         } else {
@@ -1063,7 +1071,7 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
 
     if (coll->mid_floor >= 50) {
         item->pos.y += 50;
-        lara_float_pos.y +=  50.0f;
+        lara_float_pos.y += 50.0f;
     } else {
         item->pos.y += coll->mid_floor;
         lara_float_pos.y += coll->mid_floor;
@@ -1300,7 +1308,7 @@ void LaraColReach(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         lara_float_pos.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;        
+        item->fall_speed = 0;
         lara_fall_speed_f = 0.0;
     }
 }
@@ -1375,7 +1383,8 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
-        if (item->frame_number >= (964*ANIM_SCALE) && item->frame_number <= (993*ANIM_SCALE)) {
+        if (item->frame_number >= (964 * ANIM_SCALE)
+            && item->frame_number <= (993 * ANIM_SCALE)) {
             item->anim_number = AA_BACKSTEPD_RIGHT;
             item->frame_number = AF_BACKSTEPD_RIGHT * ANIM_SCALE;
         } else {
@@ -1493,10 +1502,10 @@ void LaraColUpJump(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
     coll->facing = Lara.move_angle;
-    
+
     GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number, 870);
-	
+
     if (LaraTestHangJumpUp(item, coll)) {
         return;
     }
@@ -1759,26 +1768,26 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
     GetLaraCollisionInfo(item, coll);
     int collide = 1;
-    //if(ANIM_SCALE == 2 && ((item->frame_number & 1) == 1)) {
-	//	collide = 0; //make jump collisions be 30fps still
-	//}
-	if(collide == 1) {
-		LaraDeflectEdgeJump(item, coll);
+    // if(ANIM_SCALE == 2 && ((item->frame_number & 1) == 1)) {
+    //	collide = 0; //make jump collisions be 30fps still
+    //}
+    if (collide == 1) {
+        LaraDeflectEdgeJump(item, coll);
 
-		//if (item->fall_speed > 0 && coll->mid_floor <= 0) {
-		if (lara_fall_speed_f > 0.0 && coll->mid_floor <= 0) {
-			if (LaraLandedBad(item, coll)) {
-				item->goal_anim_state = AS_DEATH;
-			} else {
-				item->goal_anim_state = AS_STOP;
-			}
-			item->pos.y += coll->mid_floor;
-			lara_float_pos.y += coll->mid_floor;
-			item->gravity_status = 0;
-			item->fall_speed = 0;
-			lara_fall_speed_f = 0.0;
-		}
-	}
+        // if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+        if (lara_fall_speed_f > 0.0 && coll->mid_floor <= 0) {
+            if (LaraLandedBad(item, coll)) {
+                item->goal_anim_state = AS_DEATH;
+            } else {
+                item->goal_anim_state = AS_STOP;
+            }
+            item->pos.y += coll->mid_floor;
+            lara_float_pos.y += coll->mid_floor;
+            item->gravity_status = 0;
+            item->fall_speed = 0;
+            lara_fall_speed_f = 0.0;
+        }
+    }
 }
 
 void GetLaraCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
@@ -1872,26 +1881,27 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     lara_fall_speed_f = 0.0;
 
     PHD_ANGLE angle = ((uint16_t)(item->pos.y_rot + PHD_45)) / PHD_90;
-    //LOG_DEBUG("angel %d, y_rot %d +PHD_45 %d", angle, item->pos.y_rot, (uint16_t)(item->pos.y_rot+PHD_45));
+    // LOG_DEBUG("angel %d, y_rot %d +PHD_45 %d", angle, item->pos.y_rot,
+    // (uint16_t)(item->pos.y_rot+PHD_45));
     switch (angle) {
     case DIR_NORTH:
-        item->pos.z += 2;///ANIM_SCALE;
-        lara_float_pos.z += 2;//*ANIM_SCALE;
+        item->pos.z += 2; /// ANIM_SCALE;
+        lara_float_pos.z += 2; //*ANIM_SCALE;
         break;
 
     case DIR_WEST:
-        item->pos.x -= 2;//*ANIM_SCALE;
-        lara_float_pos.x -= 2;//*ANIM_SCALE;
+        item->pos.x -= 2; //*ANIM_SCALE;
+        lara_float_pos.x -= 2; //*ANIM_SCALE;
         break;
 
     case DIR_SOUTH:
-        item->pos.z -= 2;//*ANIM_SCALE;
-        lara_float_pos.z -= 2;//*ANIM_SCALE;
+        item->pos.z -= 2; //*ANIM_SCALE;
+        lara_float_pos.z -= 2; //*ANIM_SCALE;
         break;
 
     case DIR_EAST:
-        item->pos.x += 2;//*ANIM_SCALE;
-        lara_float_pos.x += 2;//*ANIM_SCALE;
+        item->pos.x += 2; //*ANIM_SCALE;
+        lara_float_pos.x += 2; //*ANIM_SCALE;
         break;
     }
 
@@ -1906,20 +1916,20 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_STOPHANG;
         item->frame_number = AF_STOPHANG * ANIM_SCALE;
         bounds = GetBoundsAccurate(item);
-        
+
         lara_float_pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
         lara_float_pos.x += coll->shift.x;
         lara_float_pos.z += coll->shift.z;
-        
+
         item->pos.y = lara_float_pos.y;
         item->pos.x = lara_float_pos.x;
         item->pos.z = lara_float_pos.z;
-        
+
         item->gravity_status = 1;
         item->fall_speed = 1;
         lara_fall_speed_f = 1.0;
-        item->speed = 2/ANIM_SCALE;
-        lara_speed_F = 2.0/ANIM_SCALE; 
+        item->speed = 2 / ANIM_SCALE;
+        lara_speed_F = 2.0 / ANIM_SCALE;
         LaraSpeedError = 0;
         Lara.gun_status = LGS_ARMLESS;
         return;
@@ -1960,9 +1970,8 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     bounds = GetBoundsAccurate(item);
     int hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif >= -STEP_L && hdif <= STEP_L) {
-		lara_float_pos.y += hdif;
+        lara_float_pos.y += hdif;
         item->pos.y = lara_float_pos.y;
-        
     }
 }
 
@@ -1994,7 +2003,7 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     ShiftItemLara(item, coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
-        item->pos.y_rot += LARA_DEF_ADD_EDGE; //DAN
+        item->pos.y_rot += LARA_DEF_ADD_EDGE; // DAN
         break;
 
     case COLL_RIGHT:
@@ -2007,10 +2016,10 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FASTFALL;
         item->anim_number = AA_FASTFALL;
         item->frame_number = AF_FASTFALL * ANIM_SCALE;
-        
+
         lara_speed_F /= 4.0;
         item->speed = lara_fall_speed_f;
-        
+
         LaraSpeedError = 0;
         Lara.move_angle -= PHD_180;
         if (item->fall_speed <= 0) {
@@ -2027,13 +2036,13 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        //item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        //item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        // item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
+        // item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
         lara_float_pos.z -= (phd_cos_f(coll->facing) * 100.0) / View2World;
         lara_float_pos.x -= (phd_sin_f(coll->facing) * 100.0) / View2World;
         item->pos.z = lara_float_pos.z;
         item->pos.x = lara_float_pos.x;
-        
+
         item->speed = 0;
         lara_speed_F = 0.0;
         LaraSpeedError = 0;
@@ -2215,12 +2224,12 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     // bounds = GetBoundsAccurate(item);
     lara_float_pos.y += hdif;
     lara_float_pos.x += coll->shift.x;
-    lara_float_pos.z += coll->shift.z;    
-    
+    lara_float_pos.z += coll->shift.z;
+
     item->pos.y = lara_float_pos.y;
     item->pos.x = lara_float_pos.x;
     item->pos.z = lara_float_pos.z;
-    
+
     item->pos.y_rot = angle;
     item->gravity_status = 0;
     item->fall_speed = 0;
@@ -2269,29 +2278,29 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
 {
     int hdif;
     int16_t *bounds;
-    
+
     if (coll->coll_type != COLL_FRONT || !(Input & IN_ACTION)
         || Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
         return 0;
     }
-    
+
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -384) {
         return 0;
     }
-    
+
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
-    
+
     if (hdif < 0 && hdif + (item->fall_speed) < 0) {
         return 0;
     }
-   
+
     if (hdif > 0 && hdif + item->fall_speed > 0) {
         return 0;
     }
-	
-	int angle = item->pos.y_rot;
+
+    int angle = item->pos.y_rot;
     if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
         angle = 0;
     } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
@@ -2303,25 +2312,25 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     } else if (angle >= -PHD_90 - HANG_ANGLE && angle <= -PHD_90 + HANG_ANGLE) {
         angle = -PHD_90;
     }
-	
-	if (angle & (PHD_90 - 1)) {
+
+    if (angle & (PHD_90 - 1)) {
         return 0;
     }
-	
-	item->goal_anim_state = AS_HANG;
+
+    item->goal_anim_state = AS_HANG;
     item->current_anim_state = AS_HANG;
     item->anim_number = AA_HANG;
     item->frame_number = AF_STARTHANG * ANIM_SCALE;
     bounds = GetBoundsAccurate(item);
-    
+
     lara_float_pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     lara_float_pos.x += coll->shift.x;
-    lara_float_pos.z += coll->shift.z; 
-    
+    lara_float_pos.z += coll->shift.z;
+
     item->pos.y = lara_float_pos.y;
     item->pos.x = lara_float_pos.x;
     item->pos.z = lara_float_pos.z;
-       
+
     item->pos.y_rot = angle;
     item->gravity_status = 0;
     item->fall_speed = 0;
@@ -2406,18 +2415,21 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     item->floor = height;
     item->pos.y = height;
     TestTriggers(TriggerIndex, 0);
-    item->pos.y = oy; //restores Y so don't touch double y
-    
-    //LOG_DEBUG("This is a test %d %g", item->fall_speed, lara_fall_speed_f);
+    item->pos.y = oy; // restores Y so don't touch double y
 
-    int landspeed = (item->fall_speed + 3 - DAMAGE_START); //this 3 is from measuring the different, why 3 no idea.
+    // LOG_DEBUG("This is a test %d %g", item->fall_speed, lara_fall_speed_f);
+
+    int landspeed =
+        (item->fall_speed + 3 - DAMAGE_START); // this 3 is from measuring the
+                                               // different, why 3 no idea.
     if (landspeed <= 0) {
         return 0;
     } else if (landspeed > DAMAGE_LENGTH) {
         item->hit_points = -1;
     } else {
-        item->hit_points -= ((LARA_HITPOINTS * landspeed * landspeed)
-            / ((DAMAGE_LENGTH * DAMAGE_LENGTH)));
+        item->hit_points -=
+            ((LARA_HITPOINTS * landspeed * landspeed)
+             / ((DAMAGE_LENGTH * DAMAGE_LENGTH)));
     }
 
     if (item->hit_points < 0) {

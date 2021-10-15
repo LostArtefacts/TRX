@@ -33,7 +33,7 @@ void FallingCeilingControl(int16_t item_num)
         && item->pos.y >= item->floor) {
         item->goal_anim_state = TRAP_WORKING;
         item->pos.y = item->floor;
-        item->fall_speed = 0/ANIM_SCALE;
+        item->fall_speed = 0 / ANIM_SCALE;
         item->gravity_status = 0;
     }
 }

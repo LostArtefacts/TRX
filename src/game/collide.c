@@ -57,10 +57,10 @@ void GetCollisionInfo(
     int32_t zright;
     int32_t xfront;
     int32_t zfront;
-    
+
     int32_t extraX = 0;
     int32_t extraZ = 0;
-    
+
     switch (coll->quadrant) {
     case DIR_NORTH:
         xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
@@ -69,10 +69,13 @@ void GetCollisionInfo(
         zleft = coll->radius;
         xright = coll->radius;
         zright = coll->radius;
-        
-        if( (objheight == 870 || objheight == SURF_HITE) && ANIM_SCALE == 2 ) {	//this is a Horrible hack, when jumping up to catch a ledge for some reason this don't work any more in thei quadrant
-			extraZ = 10;
-		}
+
+        if ((objheight == 870 || objheight == SURF_HITE)
+            && ANIM_SCALE == 2) { // this is a Horrible hack, when jumping up to
+                                  // catch a ledge for some reason this don't
+                                  // work any more in thei quadrant
+            extraZ = 10;
+        }
         break;
 
     case DIR_EAST:
@@ -82,9 +85,12 @@ void GetCollisionInfo(
         zleft = coll->radius;
         xright = coll->radius;
         zright = -coll->radius;
-        if( (objheight == 870 || objheight == SURF_HITE) && ANIM_SCALE == 2 ) {	//this is a Horrible hack, when jumping up to catch a ledge for some reason this don't work any more in thei quadrant
-			extraX = 10;
-		}
+        if ((objheight == 870 || objheight == SURF_HITE)
+            && ANIM_SCALE == 2) { // this is a Horrible hack, when jumping up to
+                                  // catch a ledge for some reason this don't
+                                  // work any more in thei quadrant
+            extraX = 10;
+        }
         break;
 
     case DIR_SOUTH:
@@ -117,8 +123,8 @@ void GetCollisionInfo(
 
     x = xpos + xfront;
     z = zpos + zfront;
-    floor = GetFloor(x+extraX, ytop, z+extraZ, &room_num);
-    height = GetHeight(floor, x+extraX, ytop, z+extraZ);
+    floor = GetFloor(x + extraX, ytop, z + extraZ, &room_num);
+    height = GetHeight(floor, x + extraX, ytop, z + extraZ);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -513,11 +519,11 @@ void ShiftItem(ITEM_INFO *item, COLL_INFO *coll)
 
 void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll)
 {
-	//push int out
-	item->pos.x += coll->shift.x;
-	item->pos.y += coll->shift.y;
-	item->pos.z += coll->shift.z;
-	//clip float to match clipped int
+    // push int out
+    item->pos.x += coll->shift.x;
+    item->pos.y += coll->shift.y;
+    item->pos.z += coll->shift.z;
+    // clip float to match clipped int
     lara_float_pos.x = item->pos.x;
     lara_float_pos.y = item->pos.y;
     lara_float_pos.z = item->pos.z;
@@ -751,9 +757,9 @@ void ItemPushLara(
 
         lara_item->pos.x = item->pos.x + ax;
         lara_item->pos.z = item->pos.z + az;
-        
+
         lara_float_pos.x = lara_item->pos.x;
-		lara_float_pos.z = lara_item->pos.z;
+        lara_float_pos.z = lara_item->pos.z;
 
         rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
         rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
@@ -769,8 +775,8 @@ void ItemPushLara(
             }
 
             Lara.hit_frame++;
-            if (Lara.hit_frame > (34*ANIM_SCALE)) {
-                Lara.hit_frame = 34*ANIM_SCALE;
+            if (Lara.hit_frame > (34 * ANIM_SCALE)) {
+                Lara.hit_frame = 34 * ANIM_SCALE;
             }
         }
 
@@ -789,9 +795,9 @@ void ItemPushLara(
         if (coll->coll_type != COLL_NONE) {
             lara_item->pos.x = coll->old.x;
             lara_item->pos.z = coll->old.z;
-            
+
             lara_float_pos.x = lara_item->pos.x;
-			lara_float_pos.z = lara_item->pos.z;
+            lara_float_pos.z = lara_item->pos.z;
         } else {
             coll->old.x = lara_item->pos.x;
             coll->old.y = lara_item->pos.y;
@@ -886,9 +892,9 @@ void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
-	lara_float_pos.x = lara_item->pos.x;
+    lara_float_pos.x = lara_item->pos.x;
     lara_float_pos.y = lara_item->pos.y;
-    lara_float_pos.z = lara_item->pos.z; 
+    lara_float_pos.z = lara_item->pos.z;
 }
 
 int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
@@ -910,10 +916,13 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
-    int32_t retVal = Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
+    int32_t retVal =
+        Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
     lara_float_pos.x = lara_item->pos.x;
     lara_float_pos.y = lara_item->pos.y;
-    lara_float_pos.z = lara_item->pos.z; //while the above function seems to be only called here, it doeesn't have to always be
+    lara_float_pos.z =
+        lara_item->pos.z; // while the above function seems to be only called
+                          // here, it doeesn't have to always be
     return retVal;
 }
 

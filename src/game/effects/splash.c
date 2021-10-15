@@ -31,7 +31,7 @@ void Splash(ITEM_INFO *item)
             fx->pos.y_rot = PHD_180 + 2 * GetRandomDraw();
             fx->object_number = O_SPLASH1;
             fx->frame_number = 0;
-            fx->speed = GetRandomDraw() / 256 /ANIM_SCALE;
+            fx->speed = GetRandomDraw() / 256 / ANIM_SCALE;
         }
     }
 }

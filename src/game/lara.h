@@ -209,5 +209,4 @@ extern PHD_3DPOS_F lara_float_pos;
 extern double lara_fall_speed_f;
 extern double lara_speed_F;
 
-
 #endif

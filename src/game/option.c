@@ -587,13 +587,16 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             max_row = DETAIL_HW_RESOLUTION;
         }
         y += DETAIL_HW_ROW_HEIGHT;
-        
-        if ( InvMode == INV_TITLE_MODE ) {
-			// this can only be changed in the title menu and not in game, bad things will happen
-			sprintf(buf, GF.strings[GS_DETAIL_VIDEO_FPS_RATE], (1+((RenderSettings & RSF_60FPS)>>RSF_60FPS_SHIFT)) * 30);
-			DetailTextHW[DETAIL_HW_FPS] = T_Print(0, y, buf);
-			y += DETAIL_HW_ROW_HEIGHT;
-			max_row = DETAIL_HW_FPS;
+
+        if (InvMode == INV_TITLE_MODE) {
+            // this can only be changed in the title menu and not in game, bad
+            // things will happen
+            sprintf(
+                buf, GF.strings[GS_DETAIL_VIDEO_FPS_RATE],
+                (1 + ((RenderSettings & RSF_60FPS) >> RSF_60FPS_SHIFT)) * 30);
+            DetailTextHW[DETAIL_HW_FPS] = T_Print(0, y, buf);
+            y += DETAIL_HW_ROW_HEIGHT;
+            max_row = DETAIL_HW_FPS;
         }
 
         if (current_row < min_row) {
@@ -678,11 +681,11 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 reset = 1;
             }
             break;
-            
+
         case DETAIL_HW_FPS:
-			RenderSettings ^= RSF_60FPS;
-			reset = 1;
-			break;
+            RenderSettings ^= RSF_60FPS;
+            reset = 1;
+            break;
         }
     }
 
@@ -722,11 +725,11 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
                 reset = 1;
             }
             break;
-            
+
         case DETAIL_HW_FPS:
-			RenderSettings ^= RSF_60FPS;
-			reset = 1;
-			break;
+            RenderSettings ^= RSF_60FPS;
+            reset = 1;
+            break;
         }
     }
 
@@ -917,7 +920,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             }
         }
 
-        int32_t seconds = SaveGame.timer / 30/ANIM_SCALE;
+        int32_t seconds = SaveGame.timer / 30 / ANIM_SCALE;
         int32_t hours = seconds / 3600;
         int32_t minutes = (seconds / 60) % 60;
         seconds %= 60;

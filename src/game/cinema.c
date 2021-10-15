@@ -35,7 +35,7 @@ int32_t StartCinematic(int32_t level_num)
 
 int32_t CinematicLoop()
 {
-    DoCinematic(2/ANIM_SCALE);
+    DoCinematic(2 / ANIM_SCALE);
     DrawPhaseCinematic();
     int32_t nframes;
     do {
@@ -49,7 +49,7 @@ int32_t StopCinematic(int32_t level_num)
     S_MusicStop();
     S_SoundStopAllSamples();
     SoundIsActive = OldSoundIsActive;
-    
+
     lara_float_pos.x = LaraItem->pos.x;
     lara_float_pos.y = LaraItem->pos.y;
     lara_float_pos.z = LaraItem->pos.z;
@@ -116,7 +116,7 @@ int32_t DoCinematic(int32_t nframes)
         CalculateCinematicCamera();
         CineFrame++;
 
-        if ((CineFrame / ANIM_SCALE) >= NumCineFrames-1) {
+        if ((CineFrame / ANIM_SCALE) >= NumCineFrames - 1) {
             return 1;
         }
 
@@ -131,7 +131,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t *ptr = &Cine[8 * (CineFrame/ANIM_SCALE)];
+    int16_t *ptr = &Cine[8 * (CineFrame / ANIM_SCALE)];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -193,12 +193,12 @@ void InitialiseGenPlayer(int16_t item_num)
 void InGameCinematicCamera()
 {
     CineFrame++;
-    int16_t lastFrameNum = NumCineFrames - (1*ANIM_SCALE);
-    if ((CineFrame/ANIM_SCALE) >= NumCineFrames) {
+    int16_t lastFrameNum = NumCineFrames - (1 * ANIM_SCALE);
+    if ((CineFrame / ANIM_SCALE) >= NumCineFrames) {
         CineFrame = lastFrameNum;
     }
 
-    int16_t *ptr = &Cine[8 * (CineFrame/ANIM_SCALE)];
+    int16_t *ptr = &Cine[8 * (CineFrame / ANIM_SCALE)];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -207,30 +207,28 @@ void InGameCinematicCamera()
     int32_t cz = ptr[5];
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
-    if( ANIM_SCALE == 2 )
-    {
-		if( ((CineFrame & 1) == 1) && CineFrame < lastFrameNum)
-		{
-			ptr += 8; //move to next frame
-			tx += ptr[0];
-			ty += ptr[1];
-			tz += ptr[2];
-			cx += ptr[3];
-			cy += ptr[4];
-			cz += ptr[5];
-			fov += ptr[6];
-			roll += ptr[7];
-			
-			tx /= 2;
-			ty /= 2;
-			tz /= 2;
-			cx /= 2;
-			cy /= 2;
-			cz /= 2;
-			fov /= 2;
-			roll /= 2;
-		} 
-	}
+    if (ANIM_SCALE == 2) {
+        if (((CineFrame & 1) == 1) && CineFrame < lastFrameNum) {
+            ptr += 8; // move to next frame
+            tx += ptr[0];
+            ty += ptr[1];
+            tz += ptr[2];
+            cx += ptr[3];
+            cy += ptr[4];
+            cz += ptr[5];
+            fov += ptr[6];
+            roll += ptr[7];
+
+            tx /= 2;
+            ty /= 2;
+            tz /= 2;
+            cx /= 2;
+            cy /= 2;
+            cz /= 2;
+            fov /= 2;
+            roll /= 2;
+        }
+    }
 
     int32_t c = phd_cos(CinePosition.y_rot);
     int32_t s = phd_sin(CinePosition.y_rot);

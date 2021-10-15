@@ -487,13 +487,13 @@ typedef enum LARA_ANIMATION_FRAME {
     AF_BACKSTEPD_RIGHT = 930,
     AF_LANDFAR = 358,
     AF_GRABLEDGE = 1493,
-    AF_GRABLEDGE_OLD = 621,		//not used
-    AF_SWIMGLIDE = 1431,		//not used
+    AF_GRABLEDGE_OLD = 621, // not used
+    AF_SWIMGLIDE = 1431, // not used
     AF_FALLBACK = 1473,
     AF_HANG = 1514,
-    AF_HANG_OLD = 642,			//not used
+    AF_HANG_OLD = 642, // not used
     AF_STARTHANG = 1505,
-    AF_STARTHANG_OLD = 634,		//not used
+    AF_STARTHANG_OLD = 634, // not used
     AF_STOPHANG = 448,
     AF_SLIDE = 1133,
     AF_SLIDEBACK = 1677,
@@ -526,7 +526,7 @@ typedef enum LARA_GUN_ANIMATION_FRAME {
     AF_G_AIM = 0,
     AF_G_AIM_L = 4,
     AF_G_DRAW1 = 5,
-    AF_G_DRAW1_L = 12,	//not used
+    AF_G_DRAW1_L = 12, // not used
     AF_G_DRAW2 = 13,
     AF_G_DRAW2_L = 23,
     AF_G_RECOIL = 24,

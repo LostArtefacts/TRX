@@ -142,7 +142,8 @@ void PickUpScionCollision(
 
     if (lara_item->current_anim_state == AS_PICKUP) {
         if (lara_item->frame_number
-            == Anims[lara_item->anim_number].frame_base + (AF_PICKUPSCION * ANIM_SCALE)) {
+            == Anims[lara_item->anim_number].frame_base
+                + (AF_PICKUPSCION * ANIM_SCALE)) {
             AddDisplayPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;

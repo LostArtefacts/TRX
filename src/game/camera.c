@@ -42,7 +42,7 @@ void InitialiseCamera()
 
 void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
 {
-	//speed *= ANIM_SCALE;
+    // speed *= ANIM_SCALE;
     Camera.pos.x += (ideal->x - Camera.pos.x) / speed;
     Camera.pos.z += (ideal->z - Camera.pos.z) / speed;
     Camera.pos.y += (ideal->y - Camera.pos.y) / speed;
@@ -447,7 +447,9 @@ void LookCamera(ITEM_INFO *item)
     int32_t distance =
         Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
 
-    Camera.shift = ((-STEP_L * 2)  * phd_sin(Camera.target_elevation))/ ANIM_SCALE >> W2V_SHIFT;
+    Camera.shift =
+        ((-STEP_L * 2) * phd_sin(Camera.target_elevation)) / ANIM_SCALE
+        >> W2V_SHIFT;
     Camera.target.z += Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
     Camera.target.x += Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
 
@@ -471,8 +473,10 @@ void LookCamera(ITEM_INFO *item)
 
     SmartShift(&ideal, ClipCamera);
 
-    Camera.target.z = old.z + (Camera.target.z - old.z) / (Camera.speed*ANIM_SCALE);
-    Camera.target.x = old.x + (Camera.target.x - old.x) / (Camera.speed*ANIM_SCALE);
+    Camera.target.z =
+        old.z + (Camera.target.z - old.z) / (Camera.speed * ANIM_SCALE);
+    Camera.target.x =
+        old.x + (Camera.target.x - old.x) / (Camera.speed * ANIM_SCALE);
 
     MoveCamera(&ideal, Camera.speed);
 }
@@ -504,7 +508,7 @@ void FixedCamera()
     }
 }
 
-TEXTSTRING* cameraText = NULL;
+TEXTSTRING *cameraText = NULL;
 
 void CalculateCamera()
 {
@@ -659,7 +663,7 @@ void CalculateCamera()
     }
 
     ChunkyFlag = 0;
-    
+
 #if 0    
     const double scale = 0.8;
     const int32_t text_height = 17 * scale;

@@ -77,7 +77,7 @@ void LoadLaraDemoPos()
     item->pos.z_rot = DemoPtr[5];
     int16_t room_num = DemoPtr[6];
     DemoCount += 7;
-    
+
     lara_float_pos.x = item->pos.x;
     lara_float_pos.y = item->pos.y;
     lara_float_pos.z = item->pos.z;
@@ -94,14 +94,14 @@ void LoadLaraDemoPos()
 void GetDemoInput()
 {
     if (DemoCount >= DEMO_COUNT_MAX) {
-		Input = -1;
-	} else {
-		Input = DemoPtr[DemoCount];
-	}
-	if (Input != -1) {
-		DemoCount++;
-	}
- }
+        Input = -1;
+    } else {
+        Input = DemoPtr[DemoCount];
+    }
+    if (Input != -1) {
+        DemoCount++;
+    }
+}
 
 void T1MInjectGameDemo()
 {

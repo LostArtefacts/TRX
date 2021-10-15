@@ -187,7 +187,8 @@ void CreateSaveGameInfo()
             WriteSG(&item->goal_anim_state, sizeof(int16_t));
             WriteSG(&item->required_anim_state, sizeof(int16_t));
             WriteSG(&item->anim_number, sizeof(int16_t));
-            dummy = item->frame_number/ANIM_SCALE;	//adjust the frame number back to 30fps
+            dummy = item->frame_number
+                / ANIM_SCALE; // adjust the frame number back to 30fps
             WriteSG(&dummy, sizeof(int16_t));
         }
 
@@ -437,8 +438,8 @@ void ExtractSaveGameInfo()
 
     ReadSG(&FlipEffect, sizeof(int32_t));
     ReadSG(&FlipTimer, sizeof(int32_t));
-    
-    LaraSetFloatPosFromFixed(); //fix up her float positions
+
+    LaraSetFloatPosFromFixed(); // fix up her float positions
 }
 
 void ResetSG()

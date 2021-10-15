@@ -34,10 +34,11 @@ void DamoclesSwordControl(int16_t item_num)
     ITEM_INFO *item = &Items[item_num];
     if (item->gravity_status) {
         item->pos.y_rot += item->required_anim_state;
-        item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY/ANIM_SCALE : 1;
-        item->pos.y += item->fall_speed/ANIM_SCALE;
-        item->pos.x += item->current_anim_state/ANIM_SCALE;
-        item->pos.z += item->goal_anim_state/ANIM_SCALE;
+        item->fall_speed +=
+            item->fall_speed < FASTFALL_SPEED ? GRAVITY / ANIM_SCALE : 1;
+        item->pos.y += item->fall_speed / ANIM_SCALE;
+        item->pos.x += item->current_anim_state / ANIM_SCALE;
+        item->pos.z += item->goal_anim_state / ANIM_SCALE;
 
         if (item->pos.y > item->floor) {
             SoundEffect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
@@ -47,7 +48,7 @@ void DamoclesSwordControl(int16_t item_num)
             RemoveActiveItem(item_num);
         }
     } else if (item->pos.y != item->floor) {
-        item->pos.y_rot += item->required_anim_state/ANIM_SCALE;
+        item->pos.y_rot += item->required_anim_state / ANIM_SCALE;
         int32_t x = LaraItem->pos.x - item->pos.x;
         int32_t y = LaraItem->pos.y - item->pos.y;
         int32_t z = LaraItem->pos.z - item->pos.z;

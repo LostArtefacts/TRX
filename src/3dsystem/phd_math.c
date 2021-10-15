@@ -6,7 +6,6 @@
 
 #include <math.h>
 
-
 static int16_t SinTable[0x402] = {
     0x0000, 0x0019, 0x0032, 0x004B, 0x0065, 0x007E, 0x0097, 0x00B0, 0x00C9,
     0x00E2, 0x00FB, 0x0114, 0x012E, 0x0147, 0x0160, 0x0179, 0x0192, 0x01AB,
@@ -432,20 +431,24 @@ uint32_t phd_sqrt(uint32_t n)
     return result;
 }
 
-double phd_cos_f(double angle) {
-	return View2World * cos(angle * Angle2Rad);
+double phd_cos_f(double angle)
+{
+    return View2World * cos(angle * Angle2Rad);
 }
 
-double phd_sin_f(double angle) {
-	return View2World * sin(angle * Angle2Rad);
+double phd_sin_f(double angle)
+{
+    return View2World * sin(angle * Angle2Rad);
 }
 
-double phd_sqrt_f(double n) {
-	return sqrt(n);
+double phd_sqrt_f(double n)
+{
+    return sqrt(n);
 }
 
-double phd_atan_f(double x, double y) {
-	return Rad2Angle * atan2(y,x);
+double phd_atan_f(double x, double y)
+{
+    return Rad2Angle * atan2(y, x);
 }
 
 void T1MInject3DSystemPHDMath()

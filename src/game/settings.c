@@ -73,7 +73,7 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     } else {
         RenderSettings &= ~RSF_PERSPECTIVE;
     }
-    
+
     if (json_object_get_bool(root_obj, "60fps", 1)) {
         RenderSettings |= RSF_60FPS;
     } else {

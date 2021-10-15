@@ -55,11 +55,11 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
             fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
             fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
             if (abortion) {
-                fx->speed = (GetRandomControl() >> 7)/ANIM_SCALE;
-                fx->fall_speed = (-GetRandomControl() >> 7)/ANIM_SCALE;
+                fx->speed = (GetRandomControl() >> 7) / ANIM_SCALE;
+                fx->fall_speed = (-GetRandomControl() >> 7) / ANIM_SCALE;
             } else {
-                fx->speed = (GetRandomControl() >> 8)/ANIM_SCALE;
-                fx->fall_speed = (-GetRandomControl() >> 8)/ANIM_SCALE;
+                fx->speed = (GetRandomControl() >> 8) / ANIM_SCALE;
+                fx->fall_speed = (-GetRandomControl() >> 8) / ANIM_SCALE;
             }
             fx->counter = damage;
             fx->frame_number = object->mesh_index;
@@ -107,11 +107,11 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
                 fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
                 fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
                 if (abortion) {
-                    fx->speed = (GetRandomControl() >> 7)/ANIM_SCALE;
-                    fx->fall_speed = (-GetRandomControl() >> 7)/ANIM_SCALE;
+                    fx->speed = (GetRandomControl() >> 7) / ANIM_SCALE;
+                    fx->fall_speed = (-GetRandomControl() >> 7) / ANIM_SCALE;
                 } else {
-                    fx->speed = (GetRandomControl() >> 8)/ANIM_SCALE;
-                    fx->fall_speed = (-GetRandomControl() >> 8)/ANIM_SCALE;
+                    fx->speed = (GetRandomControl() >> 8) / ANIM_SCALE;
+                    fx->fall_speed = (-GetRandomControl() >> 8) / ANIM_SCALE;
                 }
                 fx->counter = damage;
                 fx->object_number = O_BODY_PART;
@@ -135,7 +135,7 @@ void ControlBodyPart(int16_t fx_num)
     fx->pos.z_rot += 10 * PHD_DEGREE;
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->fall_speed += GRAVITY/ANIM_SCALE;
+    fx->fall_speed += GRAVITY / ANIM_SCALE;
     fx->pos.y += fx->fall_speed;
 
     int16_t room_num = fx->room_number;

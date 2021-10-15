@@ -261,23 +261,19 @@ static int32_t LoadObjects(MYFILE *fp)
     LOG_INFO("%d anims", AnimCount);
     Anims = game_malloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
     FileRead(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
-    for (int32_t i = 0; i < AnimCount; ++i)  //DAN
+    for (int32_t i = 0; i < AnimCount; ++i) // DAN
     {
-        if (Anims[i].interpolation == 0)
-	  {
-		Anims[i].interpolation = 1;
-	  }
-	  else
-	  {
-		Anims[i].interpolation *= ANIM_SCALE;
-	  }
-	  Anims[i].frame_base *= ANIM_SCALE;
-	  Anims[i].frame_end *= ANIM_SCALE;
-	  Anims[i].jump_frame_num *= ANIM_SCALE;
-	  //Anims[i].acceleration /= ANIM_SCALE;
-	  //Anims[i].velocity /= ANIM_SCALE;
-	}
-
+        if (Anims[i].interpolation == 0) {
+            Anims[i].interpolation = 1;
+        } else {
+            Anims[i].interpolation *= ANIM_SCALE;
+        }
+        Anims[i].frame_base *= ANIM_SCALE;
+        Anims[i].frame_end *= ANIM_SCALE;
+        Anims[i].jump_frame_num *= ANIM_SCALE;
+        // Anims[i].acceleration /= ANIM_SCALE;
+        // Anims[i].velocity /= ANIM_SCALE;
+    }
 
     FileRead(&AnimChangeCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim changes", AnimChangeCount);
@@ -290,36 +286,33 @@ static int32_t LoadObjects(MYFILE *fp)
     AnimRanges = game_malloc(
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
     FileRead(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
-    for (int32_t i = 0; i < AnimRangeCount; ++i) //DAN
+    for (int32_t i = 0; i < AnimRangeCount; ++i) // DAN
     {
         AnimRanges[i].end_frame *= ANIM_SCALE;
-	  AnimRanges[i].start_frame *= ANIM_SCALE;
-	  AnimRanges[i].link_frame_num *= ANIM_SCALE;
+        AnimRanges[i].start_frame *= ANIM_SCALE;
+        AnimRanges[i].link_frame_num *= ANIM_SCALE;
     }
-
 
     FileRead(&AnimCommandCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim commands", AnimCommandCount);
     AnimCommands =
         game_malloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
     FileRead(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
-       for (uint32_t j = 0; j < AnimCount; ++j)  //DAN
+    for (uint32_t j = 0; j < AnimCount; ++j) // DAN
     {
-        if (Anims[j].number_commands > 0)
-        {
-            int16_t* command = &AnimCommands[Anims[j].command_index];
-            for (uint32_t i = Anims[j].number_commands; i > 0; i--)
-            {
-                switch (*(command++))
-                {
+        if (Anims[j].number_commands > 0) {
+            int16_t *command = &AnimCommands[Anims[j].command_index];
+            for (uint32_t i = Anims[j].number_commands; i > 0; i--) {
+                switch (*(command++)) {
                 case AC_MOVE_ORIGIN:
                     /* Translate (allowing for y-axis rotation) */
                     command += 3;
                     break;
 
                 case AC_JUMP_VELOCITY:
-                    //item->fall_speed = *(command++);        // Get Upward Velocity
-                    //item->speed = *(command++);         // Get Forward Velocity
+                    // item->fall_speed = *(command++);        // Get Upward
+                    // Velocity item->speed = *(command++);         // Get
+                    // Forward Velocity
                     command += 2;
                     break;
 
