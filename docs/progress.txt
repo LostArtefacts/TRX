@@ -161,7 +161,7 @@ FixedCamera                     ----------  ----------  +
 CalculateCamera                 0x00410B40  0x0000055D  +
 
 # cinema.cpp
-LoopCinematic                   ----------  ----------  -
+LoopCinematic                   ----------  ----------  +
 StartCinematic                  0x004110A0  0x00000183  +
 InitCinematicRooms              ----------  ----------  +
 DoCinematic                     0x00411240  0x0000012B  +
@@ -232,19 +232,19 @@ DinoControl                     0x004160F0  0x0000028F  +
 LaraDinoDeath                   0x004163A0  0x000000C1  +
 
 # shell/display.cpp
-IncreaseScreenSize              ----------  ----------  -
-DecreaseScreenSize              ----------  ----------  -
+IncreaseScreenSize              ----------  ----------  x
+DecreaseScreenSize              ----------  ----------  x
 SetupScreenSize                 0x00416470  0x000000D4  +
-switch_resolution               ----------  ----------  -
+switch_resolution               ----------  ----------  x
 TempVideoAdjust                 0x00416550  0x00000277  +
 TempVideoRemove                 0x004167D0  0x00000289  +
-S_CopyScreenToBuffer            ----------  ----------  -
+S_CopyScreenToBuffer            ----------  ----------  x
 S_CopyBufferToScreen            0x00416A60  0x000000A7  *
 S_NoFade                        0x00416B10  0x00000010  +
 S_FadeInInventory               0x00416B20  0x00000082  +
 S_FadeOutInventory              0x00416BB0  0x00000027  +
-FadeToPal                       ----------  ----------  -
-ScreenPartialDump               ----------  ----------  -
+FadeToPal                       ----------  ----------  x
+ScreenPartialDump               ----------  ----------  x
 
 # draw.cpp
 DrawPhaseCinematic              0x00416BE0  0x00000090  +
@@ -377,7 +377,7 @@ DrawPickups                     ----------  ----------  +
 AddDisplayPickup                0x0041E0C0  0x0000003F  +
 
 # shell/init.cpp
-S_OnWindowResized               ----------  ----------  -
+S_OnWindowResized               ----------  ----------  x
 S_InitialiseSystem              0x0041E100  0x0000015B  +
 S_ExitSystem                    0x0041E260  0x00000051  +
 init_game_malloc                0x0041E2C0  0x00000021  +
@@ -745,7 +745,7 @@ S_DumpScreen                    0x0042FC70  0x00000044  +
 S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  +
-S_GetObjectBounds               0x0042FD30  0x0000026C  *
+S_GetObjectBounds               0x0042FD30  0x0000026C  +
 S_PrintShadow                   0x0042FFA0  0x0000015B  +
 S_CalculateLight                0x00430100  0x00000183  +
 S_CalculateStaticLight          0x00430290  0x00000031  +

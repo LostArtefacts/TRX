@@ -5,10 +5,6 @@
 
 #include "global/types.h"
 
-// clang-format off
-#define S_GetObjectBounds       ((int32_t   (*)(int16_t* bptr))0x0042FD30)
-// clang-format on
-
 void S_InitialisePolyList();
 int32_t S_DumpScreen();
 void S_ClearScreen();
@@ -26,6 +22,7 @@ void S_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width);
 void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item);
+int S_GetObjectBounds(int16_t *bptr);
 
 int32_t GetRenderScaleGLRage(int32_t unit);
 void RenderBar(int32_t value, int32_t value_max, int32_t bar_type);
