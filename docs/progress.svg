@@ -13,9 +13,9 @@
 <rect width="12.00" height="12.00" x="140.00" y="17.00" class="decompiled"><title>HWR_VisibleZClip</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="17.00" class="named"><title>phd_PutPolygons</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="17.00" class="named"><title>S_InsertRoom</title></rect>
-<rect width="12.00" height="12.00" x="182.00" y="17.00" class="named"><title>calc_object_vertices</title></rect>
-<rect width="12.00" height="12.00" x="196.00" y="17.00" class="named"><title>calc_vertice_light</title></rect>
-<rect width="12.00" height="12.00" x="210.00" y="17.00" class="named"><title>calc_roomvert</title></rect>
+<rect width="12.00" height="12.00" x="182.00" y="17.00" class="decompiled"><title>calc_object_vertices</title></rect>
+<rect width="12.00" height="12.00" x="196.00" y="17.00" class="decompiled"><title>calc_vertice_light</title></rect>
+<rect width="12.00" height="12.00" x="210.00" y="17.00" class="decompiled"><title>calc_roomvert</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="17.00" class="decompiled"><title>phd_RotateLight</title></rect>
 <rect width="12.00" height="12.00" x="238.00" y="17.00" class="named"><title>phd_InitPolyList</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="17.00" class="decompiled"><title>phd_SortPolyList</title></rect>
@@ -70,7 +70,7 @@
 <rect width="12.00" height="12.00" x="238.00" y="31.00" class="decompiled"><title>sub_408409</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="31.00" class="named"><title>HWR_DownloadTextures</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="31.00" class="named"><title>HWR_SetPalette</title></rect>
-<rect width="12.00" height="12.00" x="280.00" y="31.00" class="named"><title>HWR_SwitchResolution</title></rect>
+<rect width="12.00" height="12.00" x="280.00" y="31.00" class="decompiled"><title>HWR_SwitchResolution</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="31.00" class="decompiled"><title>HWR_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="31.00" class="named"><title>HWR_ClearSurfaceDepth</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="31.00" class="decompiled"><title>HWR_BlitSurface</title></rect>
@@ -523,7 +523,7 @@
 <rect width="12.00" height="12.00" x="280.00" y="157.00" class="decompiled"><title>S_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="157.00" class="decompiled"><title>S_ClearScreen</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="157.00" class="decompiled"><title>S_InitialiseScreen</title></rect>
-<rect width="12.00" height="12.00" x="322.00" y="157.00" class="named"><title>S_OutputPolyList</title></rect>
+<rect width="12.00" height="12.00" x="322.00" y="157.00" class="decompiled"><title>S_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="157.00" class="named"><title>S_GetObjectBounds</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="157.00" class="named"><title>S_PrintShadow</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="157.00" class="decompiled"><title>S_CalculateLight</title></rect>
@@ -575,7 +575,7 @@
 <rect width="12.00" height="12.00" x="308.00" y="171.00" class="decompiled"><title>S_DrawSpriteRel</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="171.00" class="decompiled"><title>S_DrawUISprite</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="171.00" class="named"><title>ins_room_sprite_Sorted</title></rect>
-<rect width="12.00" height="12.00" x="350.00" y="171.00" class="named"><title>draw_scaled_spriteC</title></rect>
+<rect width="12.00" height="12.00" x="350.00" y="171.00" class="decompiled"><title>draw_scaled_spriteC</title></rect>
 <rect width="12.00" height="12.00" x="364.00" y="171.00" class="decompiled"><title>InitialiseLevel</title></rect>
 <rect width="12.00" height="12.00" x="378.00" y="171.00" class="decompiled"><title>InitialiseLevelFlags</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="171.00" class="decompiled"><title>BaddyObjects</title></rect>
@@ -682,7 +682,7 @@
 <rect width="12.00" height="12.00" x="406.00" y="199.00" class="decompiled"><title>TerminateGame</title></rect>
 <rect width="12.00" height="12.00" x="420.00" y="199.00" class="decompiled"><title>sub_43D5F0</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="199.00" class="decompiled"><title>ShowFatalError</title></rect>
-<rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="12.00" height="12.00" x="448.00" y="199.00" class="decompiled"><title>KeyboardHook</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="199.00" class="decompiled"><title>sub_43D940</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="199.00" class="decompiled"><title>WinMain</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="199.00" class="decompiled"><title>WndProc</title></rect>
@@ -770,7 +770,7 @@
 <rect width="26.69" height="26.45" x="231.38" y="481.16" class="decompiled"><title>DoDetailOptionHW</title></rect>
 <rect width="26.69" height="26.39" x="231.38" y="509.61" class="named"><title>HWR_SetHardwareVideoMode</title></rect>
 <rect width="26.53" height="26.52" x="260.07" y="269.00" class="decompiled"><title>LoadLevel</title></rect>
-<rect width="26.53" height="26.25" x="260.07" y="297.52" class="named"><title>calc_roomvert</title></rect>
+<rect width="26.53" height="26.25" x="260.07" y="297.52" class="decompiled"><title>calc_roomvert</title></rect>
 <rect width="26.53" height="25.91" x="260.07" y="325.77" class="todo"><title>sub_405F90</title></rect>
 <rect width="26.53" height="25.78" x="260.07" y="353.68" class="decompiled"><title>BearControl</title></rect>
 <rect width="26.53" height="25.48" x="260.07" y="381.46" class="decompiled"><title>WolfControl</title></rect>
@@ -861,7 +861,7 @@
 <rect width="17.28" height="18.44" x="425.54" y="456.85" class="decompiled"><title>MovableBlockCollision</title></rect>
 <rect width="17.28" height="18.40" x="425.54" y="477.28" class="decompiled"><title>LaraAsStop</title></rect>
 <rect width="17.28" height="18.40" x="425.54" y="497.68" class="decompiled"><title>S_DrawSpriteRel</title></rect>
-<rect width="17.28" height="17.92" x="425.54" y="518.08" class="named"><title>draw_scaled_spriteC</title></rect>
+<rect width="17.28" height="17.92" x="425.54" y="518.08" class="decompiled"><title>draw_scaled_spriteC</title></rect>
 <rect width="18.42" height="16.74" x="444.82" y="269.00" class="decompiled"><title>SearchLOT</title></rect>
 <rect width="18.26" height="16.74" x="465.24" y="269.00" class="decompiled"><title>AnimatePistols</title></rect>
 <rect width="18.22" height="16.74" x="485.50" y="269.00" class="decompiled"><title>HWR_DrawTranslucentQuad</title></rect>
@@ -881,7 +881,7 @@
 <rect width="16.63" height="16.55" x="444.82" y="343.75" class="decompiled"><title>TestLaraVault</title></rect>
 <rect width="16.63" height="16.55" x="444.82" y="362.29" class="decompiled"><title>InitialiseLaraInventory</title></rect>
 <rect width="16.63" height="16.18" x="444.82" y="380.84" class="decompiled"><title>PickUpCollision</title></rect>
-<rect width="16.63" height="15.81" x="444.82" y="399.02" class="named"><title>calc_object_vertices</title></rect>
+<rect width="16.63" height="15.81" x="444.82" y="399.02" class="decompiled"><title>calc_object_vertices</title></rect>
 <rect width="16.63" height="15.77" x="444.82" y="416.84" class="decompiled"><title>LoadBoxes</title></rect>
 <rect width="16.63" height="15.65" x="444.82" y="434.61" class="decompiled"><title>LaraSurface</title></rect>
 <rect width="16.63" height="15.61" x="444.82" y="452.26" class="decompiled"><title>LaraTestWaterClimbOut</title></rect>
@@ -920,7 +920,7 @@
 <rect width="15.24" height="13.95" x="480.62" y="305.75" class="decompiled"><title>LaraAboveWater</title></rect>
 <rect width="15.20" height="13.95" x="497.87" y="305.75" class="decompiled"><title>LaraTestHangJumpUp</title></rect>
 <rect width="15.01" height="13.95" x="515.06" y="305.75" class="decompiled"><title>Key</title></rect>
-<rect width="14.96" height="13.95" x="532.07" y="305.75" class="named"><title>calc_vertice_light</title></rect>
+<rect width="14.96" height="13.95" x="532.07" y="305.75" class="decompiled"><title>calc_vertice_light</title></rect>
 <rect width="14.91" height="13.95" x="549.03" y="305.75" class="decompiled"><title>PickUpScionCollision</title></rect>
 <rect width="14.86" height="13.95" x="565.94" y="305.75" class="decompiled"><title>S_DrawScreenSprite</title></rect>
 <rect width="14.72" height="13.95" x="582.80" y="305.75" class="decompiled"><title>UndrawShotgun</title></rect>
@@ -1137,7 +1137,7 @@
 <rect width="7.60" height="7.94" x="612.78" y="423.35" class="decompiled"><title>mn_stop_ambient_samples</title></rect>
 <rect width="7.53" height="7.94" x="622.38" y="423.35" class="decompiled"><title>GetRoomBounds</title></rect>
 <rect width="7.53" height="7.94" x="631.91" y="423.35" class="decompiled"><title>LaraAsBack</title></rect>
-<rect width="7.45" height="7.94" x="641.44" y="423.35" class="named"><title>HWR_SwitchResolution</title></rect>
+<rect width="7.45" height="7.94" x="641.44" y="423.35" class="decompiled"><title>HWR_SwitchResolution</title></rect>
 <rect width="7.45" height="7.94" x="650.89" y="423.35" class="decompiled"><title>GetBoundsAccurate</title></rect>
 <rect width="7.45" height="7.94" x="660.34" y="423.35" class="decompiled"><title>S_PlayFMV</title></rect>
 <rect width="7.45" height="7.94" x="669.80" y="423.35" class="decompiled"><title>LaraAsTread</title></rect>
@@ -1149,7 +1149,7 @@
 <rect width="7.52" height="7.55" x="583.96" y="462.41" class="decompiled"><title>CreatureCollision</title></rect>
 <rect width="7.52" height="7.55" x="583.96" y="471.96" class="decompiled"><title>SwitchTrigger</title></rect>
 <rect width="7.52" height="7.47" x="583.96" y="481.51" class="decompiled"><title>Inv_RequestItem</title></rect>
-<rect width="7.52" height="7.47" x="583.96" y="490.97" class="decompiled"><title>KeyboardHook(x,x,x)</title></rect>
+<rect width="7.52" height="7.47" x="583.96" y="490.97" class="decompiled"><title>KeyboardHook</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="500.44" class="decompiled"><title>FxEarthQuake</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="509.83" class="decompiled"><title>RingIsNotOpen</title></rect>
 <rect width="7.52" height="7.39" x="583.96" y="519.22" class="decompiled"><title>LaraAsTurnR</title></rect>
@@ -1377,7 +1377,7 @@
 <rect width="2.35" height="2.35" x="676.58" y="512.01" class="decompiled"><title>FxRaisingBlock</title></rect>
 <rect width="2.35" height="2.35" x="680.94" y="512.01" class="decompiled"><title>BridgeFlatFloor</title></rect>
 <rect width="2.35" height="2.35" x="685.29" y="512.01" class="decompiled"><title>S_SetupAboveWater</title></rect>
-<rect width="2.18" height="2.35" x="689.64" y="512.01" class="named"><title>S_OutputPolyList</title></rect>
+<rect width="2.18" height="2.35" x="689.64" y="512.01" class="decompiled"><title>S_OutputPolyList</title></rect>
 <rect width="2.18" height="2.35" x="693.82" y="512.01" class="decompiled"><title>InitialiseLevelFlags</title></rect>
 <rect width="2.10" height="2.44" x="672.06" y="516.36" class="decompiled"><title>CDPlayLooped</title></rect>
 <rect width="2.10" height="2.44" x="672.06" y="520.80" class="decompiled"><title>ATI3DCIF_TexturePaletteCreate</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 92.31%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 88.14%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 5.17%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 5.10%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 93.15%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 89.16%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 4.34%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 4.08%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 2.52%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 6.76%</text>
 </svg>

@@ -24,6 +24,7 @@
 #define PhdPersp                VAR_U_(0x0069518C, int32_t)
 #define PhdFarZ                 VAR_U_(0x00695184, int32_t)
 #define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
+#define PhdVBuf                 ARRAY_(0x006D7620, PHD_VBUF, [1500])
 #define PhdWet                  VAR_U_(0x0045A300, int32_t)
 #define PhdLeft                 VAR_U_(0x00695190, int32_t)
 #define PhdBottom               VAR_U_(0x00695188, int32_t)

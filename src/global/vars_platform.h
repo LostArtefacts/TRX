@@ -32,6 +32,6 @@
 #define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
 // clang-format on
 
-HINSTANCE TombModule;
+extern HINSTANCE TombModule;
 
 #endif

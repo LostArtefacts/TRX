@@ -22,15 +22,15 @@ phd_TranslateAbs                0x004019A0  0x0000007A  +
 HWR_VisibleZClip                0x00401A20  0x000000A9  +
 phd_PutPolygons                 0x00401AD0  0x000000F3  *
 S_InsertRoom                    0x00401BD0  0x0000006E  *
-calc_object_vertices            0x00401C40  0x000001B6  -
-calc_vertice_light              0x00401E00  0x00000165  -
-calc_roomvert                   0x00401F70  0x00000428  -
+calc_object_vertices            0x00401C40  0x000001B6  +
+calc_vertice_light              0x00401E00  0x00000165  +
+calc_roomvert                   0x00401F70  0x00000428  +
 phd_RotateLight                 0x004023A0  0x000000CF  +
-phd_PointLight                  ----------  ----------  -
+phd_PointLight                  ----------  ----------  x
 phd_InitPolyList                0x00402470  0x0000002D  *
 phd_SortPolyList                0x004024A0  0x0000002F  x
 do_quickysorty                  0x004024D0  0x000000C5  x
-phd_PrintPolyList               ----------  ----------  -
+phd_PrintPolyList               ----------  ----------  x
 phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  +
 
@@ -79,7 +79,7 @@ HWR_SetupRenderContextAndRender 0x0040795F  0x0000008A  *
 HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  +
 HWR_ClearSurface                0x00407A49  0x00000048  +
 sub_407A91                      0x00407A91  0x00000141  -
-HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  -
+HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  *
 HWR_InitialiseHardware          0x00408005  0x0000031E  *
 HWR_ShutdownHardware            0x00408323  0x00000029  -
 HWR_PrepareFMV                  0x0040834C  0x0000001C  *
@@ -88,7 +88,7 @@ HWR_FMVInit                     0x0040837F  0x0000008A  *
 sub_408409                      0x00408409  0x000000D5  x
 HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
-HWR_SwitchResolution            0x004089F4  0x0000007C  *
+HWR_SwitchResolution            0x004089F4  0x0000007C  +
 HWR_DumpScreen                  0x00408A70  0x00000057  +
 HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
@@ -720,7 +720,7 @@ Scion3Control                   0x0042D580  0x00000176  +
 EarthQuakeControl               0x0042D700  0x0000006F  +
 
 # option.cpp
-GetScancodeName                 ----------  ----------  -
+GetScancodeName                 ----------  ----------  +
 DoInventoryOptions              0x0042D770  0x00000180  +
 DoPassportOption                0x0042D9C0  0x000004D0  +
 DoGammaOption                   ----------  ----------  +
@@ -728,7 +728,7 @@ DoDetailOptionHW                0x0042DE90  0x00000435  +
 DoDetailOption                  0x0042E2D0  0x000002E8  +
 DoSoundOption                   0x0042E5C0  0x000004F2  +
 DoCompassOption                 ----------  ----------  +
-FlashConflicts                  ----------  ----------  -
+FlashConflicts                  ----------  ----------  +
 DefaultConflict                 ----------  ----------  +
 DoControlOption                 0x0042EAC0  0x0000075D  +
 S_ShowControls                  0x0042F230  0x000004B1  +
@@ -744,7 +744,7 @@ S_InitialisePolyList            0x0042FC60  0x00000005  +
 S_DumpScreen                    0x0042FC70  0x00000044  +
 S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
-S_OutputPolyList                0x0042FD10  0x00000018  *
+S_OutputPolyList                0x0042FD10  0x00000018  +
 S_GetObjectBounds               0x0042FD30  0x0000026C  *
 S_PrintShadow                   0x0042FFA0  0x0000015B  *
 S_CalculateLight                0x00430100  0x00000183  +
@@ -826,7 +826,7 @@ S_DrawSprite                    0x00435910  0x0000025E  +
 S_DrawSpriteRel                 0x00435B70  0x00000207  +
 S_DrawUISprite                  0x00435D80  0x0000014D  +
 ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
-draw_scaled_spriteC             0x004360A0  0x000001FB  -
+draw_scaled_spriteC             0x004360A0  0x000001FB  x
 
 # setup.cpp
 InitialiseLevel                 0x004362A0  0x00000119  +
@@ -958,7 +958,7 @@ InitDirectDraw                  0x0043D070  0x0000049A  +
 TerminateGame                   0x0043D510  0x000000DA  +
 sub_43D5F0                      0x0043D5F0  0x00000176  +
 ShowFatalError                  0x0043D770  0x00000147  +
-KeyboardHook(x,x,x)             0x0043D8C0  0x00000077  +
+KeyboardHook                    0x0043D8C0  0x00000077  +
 sub_43D940                      0x0043D940  0x00000136  +
 WinMain                         0x0043DA80  0x0000037D  +
 WndProc                         0x0043DE00  0x0000011F  +

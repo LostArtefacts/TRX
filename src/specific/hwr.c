@@ -3,6 +3,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/ati.h"
+#include "specific/display.h"
 #include "specific/smain.h"
 #include "util.h"
 
@@ -681,6 +682,26 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette)
     // null sub
 }
 
+void HWR_SwitchResolution()
+{
+    if (HiRes == 0) {
+        GameVidWidth = 320;
+        GameVidHeight = 200;
+    } else if (HiRes == 1) {
+        GameVidWidth = 512;
+        GameVidHeight = 384;
+    } else if (HiRes == 3) {
+        GameVidWidth = GetSystemMetrics(SM_CXSCREEN);
+        GameVidHeight = GetSystemMetrics(SM_CYSCREEN);
+    } else {
+        GameVidWidth = 640;
+        GameVidHeight = 480;
+    }
+
+    HWR_SetHardwareVideoMode();
+    SetupScreenSize();
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_Error);
@@ -698,4 +719,5 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
+    INJECT(0x004089F4, HWR_SwitchResolution);
 }
