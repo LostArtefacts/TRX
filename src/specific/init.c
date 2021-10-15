@@ -66,6 +66,8 @@ void DB_Log(const char *fmt, ...)
 
     va_start(va, fmt);
     vsprintf(buf, fmt, va);
+    va_end(va);
+
     LOG_INFO("%s", buf);
     OutputDebugStringA(buf);
     OutputDebugStringA("\n");
