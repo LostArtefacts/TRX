@@ -93,7 +93,7 @@ HWR_DumpScreen                  0x00408A70  0x00000057  +
 HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  +
-HWR_DownloadPicture             0x00408C3A  0x000001D4  *
+HWR_DownloadPicture             0x00408C3A  0x000001D4  +
 sub_408E0E                      0x00408E0E  0x00000024  x
 HWR_FadeWait                    0x00408E32  0x0000000F  +
 sub_408E41                      0x00408E41  0x0000002C  x

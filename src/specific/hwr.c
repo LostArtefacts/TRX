@@ -23,9 +23,9 @@ typedef struct HWR_LIGHTNING {
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
-void HWR_Error(HRESULT result)
+void HWR_CheckError(HRESULT result)
 {
-    if (result) {
+    if (result != DD_OK) {
         LOG_ERROR("DirectDraw error code %x", result);
         ShowFatalError("Fatal DirectDraw error!");
     }
@@ -65,9 +65,7 @@ void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
     blt_fx.dwFillColor = 0;
     HRESULT result = IDirectDrawSurface_Blt(
         surface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_COLORFILL, &blt_fx);
-    if (result) {
-        HWR_Error(result);
-    }
+    HWR_CheckError(result);
 }
 
 void HWR_DumpScreen()
@@ -80,10 +78,7 @@ void HWR_FlipPrimaryBuffer()
 {
     HWR_RenderEnd();
     HRESULT result = IDirectDrawSurface_Flip(Surface1, NULL, DDFLIP_WAIT);
-    if (result) {
-        HWR_Error(result);
-        return;
-    }
+    HWR_CheckError(result);
     HWR_RenderToggle();
 
     void *old_ptr = Surface2DrawPtr;
@@ -99,9 +94,7 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
     SetRect(&rect, 0, 0, DDrawSurfaceWidth, DDrawSurfaceHeight);
     HRESULT result =
         IDirectDrawSurface_Blt(source, &rect, target, &rect, DDBLT_WAIT, NULL);
-    if (result) {
-        HWR_Error(result);
-    }
+    HWR_CheckError(result);
 }
 
 void HWR_CopyPicture()
@@ -118,14 +111,54 @@ void HWR_CopyPicture()
         surface_desc.dwHeight = DDrawSurfaceHeight;
         HRESULT result =
             IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
-        if (result != DD_OK) {
-            HWR_Error(result);
-        }
+        HWR_CheckError(result);
     }
 
     HWR_RenderEnd();
     HWR_BlitSurface(Surface2, Surface3);
     HWR_RenderToggle();
+    LOG_INFO("    complete");
+}
+
+void HWR_DownloadPicture()
+{
+    LOG_INFO("DownloadPictureHardware:");
+
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    if (!Surface3) {
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+        surface_desc.ddsCaps.dwCaps =
+            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        surface_desc.dwWidth = DDrawSurfaceWidth;
+        surface_desc.dwHeight = DDrawSurfaceHeight;
+        result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+        HWR_CheckError(result);
+    }
+
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = 108;
+
+    result =
+        IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
+    HWR_CheckError(result);
+
+    uint16_t *output_ptr = surface_desc.lpSurface;
+    uint8_t *input_ptr = ScrPtr;
+    for (int i = 0; i < DDrawSurfaceHeight * DDrawSurfaceWidth; i++) {
+        uint8_t idx = *input_ptr++;
+        uint16_t r = GamePalette[idx].r & 0x3E;
+        uint16_t g = GamePalette[idx].g & 0x3E;
+        uint16_t b = GamePalette[idx].b & 0x3E;
+        *output_ptr++ = (b >> 1) | (16 * g) | (r << 9);
+    }
+
+    result = IDirectDrawSurface2_Unlock(Surface3, surface_desc.lpSurface);
+    HWR_CheckError(result);
+
     LOG_INFO("    complete");
 }
 
@@ -735,7 +768,7 @@ void HWR_SwitchResolution()
 
 void T1MInjectSpecificHWR()
 {
-    INJECT(0x004077D0, HWR_Error);
+    INJECT(0x004077D0, HWR_CheckError);
     INJECT(0x00407827, HWR_RenderBegin);
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
@@ -745,6 +778,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
     INJECT(0x00408B85, HWR_CopyPicture);
+    INJECT(0x00408C3A, HWR_DownloadPicture);
     INJECT(0x00408E32, HWR_FadeWait);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
     INJECT(0x0040904D, HWR_ClipVertices);

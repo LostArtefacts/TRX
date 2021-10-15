@@ -22,7 +22,6 @@
 #define HWR_FMVInit                 ((void      (*)())0x0040837F)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
-#define HWR_DownloadPicture         ((void      (*)())0x00408C3A)
 #define HWR_SetHardwareVideoMode    ((void      (*)())0x00407BD2)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
@@ -33,7 +32,7 @@
 #define HWR_InsertObjectG3          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040A01D)
 // clang-format on
 
-void HWR_Error(HRESULT result);
+void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
@@ -45,6 +44,7 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_FadeWait();
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_CopyPicture();
+void HWR_DownloadPicture();
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
