@@ -284,7 +284,7 @@ static int32_t LoadObjects(MYFILE *fp)
     AnimRanges = game_malloc(
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
     FileRead(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
-    for (int32_t i = 0; i < AnimRangeCount; ++i) // DAN
+    for (int32_t i = 0; i < AnimRangeCount; ++i)
     {
         AnimRanges[i].end_frame *= ANIM_SCALE;
         AnimRanges[i].start_frame *= ANIM_SCALE;
@@ -296,7 +296,7 @@ static int32_t LoadObjects(MYFILE *fp)
     AnimCommands =
         game_malloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
     FileRead(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
-    for (uint32_t j = 0; j < AnimCount; ++j) // DAN
+    for (uint32_t j = 0; j < AnimCount; ++j
     {
         if (Anims[j].number_commands > 0) {
             int16_t *command = &AnimCommands[Anims[j].command_index];
