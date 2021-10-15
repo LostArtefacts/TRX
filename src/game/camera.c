@@ -508,8 +508,6 @@ void FixedCamera()
     }
 }
 
-TEXTSTRING *cameraText = NULL;
-
 void CalculateCamera()
 {
     if (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER) {
@@ -663,31 +661,6 @@ void CalculateCamera()
     }
 
     ChunkyFlag = 0;
-
-#if 0    
-    const double scale = 0.8;
-    const int32_t text_height = 17 * scale;
-    const int32_t text_offset_x = 0;
-    const int32_t screen_margin_h = -20;
-    const int32_t screen_margin_v = 18;
-
-    char ammostring[80] = "";
-    //char speedString[80] = "";
-    
-    sprintf(ammostring,"%d ; %d,%d,%d : %d,%d,%d : lara %d,%d,%d",fixed_camera, Camera.pos.x, Camera.pos.y, Camera.pos.z, Camera.target.x, Camera.target.y, Camera.target.z, LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z);
-    //sprintf(speedString,"%d - %g",item->speed, lara_speed_F);
-    
-    if (cameraText) {
-        T_ChangeText(cameraText, ammostring);
-    } else {
-        
-        cameraText = T_Print(
-            -screen_margin_h - text_offset_x, (text_height*3) + screen_margin_v,
-            ammostring);
-        T_SetScale(cameraText, PHD_ONE * scale, PHD_ONE * scale);
-        //T_RightAlign(LaraText2, 1);
-    }
-#endif
 }
 
 void T1MInjectGameCamera()
