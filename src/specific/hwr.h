@@ -26,6 +26,10 @@
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
 #define HWR_FadeWait                ((void      (*)())0x00408E32)
+#define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
+#define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
+#define HWR_InsertObjectG4          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x00409F44)
+#define HWR_InsertObjectG3          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040A01D)
 // clang-format on
 
 void HWR_Error(HRESULT result);
