@@ -439,7 +439,7 @@ void ExtractSaveGameInfo()
     ReadSG(&FlipEffect, sizeof(int32_t));
     ReadSG(&FlipTimer, sizeof(int32_t));
 
-    LaraSetFloatPosFromFixed(); // fix up her float positions
+    LaraSetFloatPosFromFixed();
 }
 
 void ResetSG()
