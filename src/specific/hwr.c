@@ -104,6 +104,31 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
     }
 }
 
+void HWR_CopyPicture()
+{
+    LOG_INFO("CopyPictureHardware:");
+    if (!Surface3) {
+        DDSURFACEDESC surface_desc;
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+        surface_desc.ddsCaps.dwCaps =
+            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        surface_desc.dwWidth = DDrawSurfaceWidth;
+        surface_desc.dwHeight = DDrawSurfaceHeight;
+        HRESULT result =
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+        if (result != DD_OK) {
+            HWR_Error(result);
+        }
+    }
+
+    HWR_RenderEnd();
+    HWR_BlitSurface(Surface2, Surface3);
+    HWR_RenderToggle();
+    LOG_INFO("    complete");
+}
+
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
 {
     ATI3DCIF_RenderPrimStrip(vertices, 3);
@@ -719,6 +744,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
+    INJECT(0x00408B85, HWR_CopyPicture);
     INJECT(0x00408E32, HWR_FadeWait);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
     INJECT(0x0040904D, HWR_ClipVertices);
