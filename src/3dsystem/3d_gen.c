@@ -601,10 +601,10 @@ int16_t *calc_roomvert(int16_t *obj_ptr)
             }
 
             if (IsWaterEffect) {
-                PhdVBuf[i].g += ShadeTable
-                    [(((uint8_t)WibbleOffset
-                         + (uint8_t)RandTable[(vertex_count - i) % WIBBLE_SIZE])
-                        % WIBBLE_SIZE)];
+                PhdVBuf[i].g += ShadeTable[(
+                    ((uint8_t)WibbleOffset
+                     + (uint8_t)RandTable[(vertex_count - i) % WIBBLE_SIZE])
+                    % WIBBLE_SIZE)];
                 CLAMP(PhdVBuf[i].g, 0, 0x1FFF);
             }
 

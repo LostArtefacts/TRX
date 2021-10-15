@@ -445,7 +445,7 @@ typedef enum {
 C3D_EC InitATI3DCIF();
 C3D_EC ShutdownATI3DCIF();
 
-C3D_EC ATI3DCIF_NullSub();
+C3D_EC __stdcall ATI3DCIF_NullSub();
 C3D_EC __stdcall ATI3DCIF_GetInfo(C3D_3DCIFINFO *info);
 C3D_EC __stdcall ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap);
 C3D_EC __stdcall ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg);
