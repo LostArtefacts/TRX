@@ -261,7 +261,7 @@ static int32_t LoadObjects(MYFILE *fp)
     LOG_INFO("%d anims", AnimCount);
     Anims = game_malloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
     FileRead(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
-    for (int32_t i = 0; i < AnimCount; ++i) // DAN
+    for (int32_t i = 0; i < AnimCount; ++i)
     {
         if (Anims[i].interpolation == 0) {
             Anims[i].interpolation = 1;
@@ -271,8 +271,6 @@ static int32_t LoadObjects(MYFILE *fp)
         Anims[i].frame_base *= ANIM_SCALE;
         Anims[i].frame_end *= ANIM_SCALE;
         Anims[i].jump_frame_num *= ANIM_SCALE;
-        // Anims[i].acceleration /= ANIM_SCALE;
-        // Anims[i].velocity /= ANIM_SCALE;
     }
 
     FileRead(&AnimChangeCount, sizeof(int32_t), 1, fp);
