@@ -17,7 +17,7 @@
 <rect width="12.00" height="12.00" x="196.00" y="17.00" class="decompiled"><title>calc_vertice_light</title></rect>
 <rect width="12.00" height="12.00" x="210.00" y="17.00" class="decompiled"><title>calc_roomvert</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="17.00" class="decompiled"><title>phd_RotateLight</title></rect>
-<rect width="12.00" height="12.00" x="238.00" y="17.00" class="named"><title>phd_InitPolyList</title></rect>
+<rect width="12.00" height="12.00" x="238.00" y="17.00" class="decompiled"><title>phd_InitPolyList</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="17.00" class="decompiled"><title>phd_SortPolyList</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="17.00" class="decompiled"><title>do_quickysorty</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="17.00" class="decompiled"><title>phd_InitWindow</title></rect>
@@ -1300,7 +1300,7 @@
 <rect width="4.03" height="3.90" x="645.77" y="485.41" class="decompiled"><title>Inv_RingRotateLeft</title></rect>
 <rect width="4.03" height="3.90" x="651.80" y="485.41" class="decompiled"><title>Inv_RingRotateRight</title></rect>
 <rect width="4.03" height="3.90" x="657.83" y="485.41" class="decompiled"><title>DrawBridgeCollision</title></rect>
-<rect width="3.77" height="3.90" x="663.86" y="485.41" class="named"><title>phd_InitPolyList</title></rect>
+<rect width="3.77" height="3.90" x="663.86" y="485.41" class="decompiled"><title>phd_InitPolyList</title></rect>
 <rect width="3.77" height="3.90" x="669.64" y="485.41" class="decompiled"><title>GetDemoInput</title></rect>
 <rect width="3.65" height="3.90" x="675.41" y="485.41" class="decompiled"><title>sub_408E41</title></rect>
 <rect width="3.65" height="3.90" x="681.06" y="485.41" class="decompiled"><title>Inv_RingCalcAdders</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 94.83%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 93.79%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 4.20%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 3.63%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 94.97%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 93.81%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 4.06%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 3.61%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.98%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.57%</text>
 </svg>

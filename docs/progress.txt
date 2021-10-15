@@ -27,7 +27,7 @@ calc_vertice_light              0x00401E00  0x00000165  +
 calc_roomvert                   0x00401F70  0x00000428  +
 phd_RotateLight                 0x004023A0  0x000000CF  +
 phd_PointLight                  ----------  ----------  x
-phd_InitPolyList                0x00402470  0x0000002D  *
+phd_InitPolyList                0x00402470  0x0000002D  +
 phd_SortPolyList                0x004024A0  0x0000002F  x
 do_quickysorty                  0x004024D0  0x000000C5  x
 phd_PrintPolyList               ----------  ----------  x
@@ -116,7 +116,7 @@ HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
 HWR_PrintShadow                 0x0040CADB  0x00000182  *
 HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
-HWR_InitPolyList                0x0040D0F7  0x00000049  -
+HWR_InitPolyList                0x0040D0F7  0x00000049  *
 HWR_CacheTexture                0x0040D140  0x000001A0  -
 HWR_OutputPolyList              0x0040D2E0  0x00000185  *
 DoNothing                       0x0040D465  0x00000005  -

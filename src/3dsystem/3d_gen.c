@@ -620,6 +620,11 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
+void phd_InitPolyList()
+{
+    HWR_InitPolyList();
+}
+
 void phd_PutPolygons(const int16_t *obj_ptr, int clip)
 {
     obj_ptr += 4;
@@ -668,6 +673,7 @@ void T1MInject3DSystem3DGen()
     INJECT(0x00401E00, calc_vertice_light);
     INJECT(0x00401F70, calc_roomvert);
     INJECT(0x004023A0, phd_RotateLight);
+    INJECT(0x00402470, phd_InitPolyList);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
     INJECT(0x0043EA01, phd_PushMatrix);

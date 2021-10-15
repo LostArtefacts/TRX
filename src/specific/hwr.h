@@ -20,6 +20,7 @@
 #define HWR_ClearSurfaceDepth       ((void      (*)())0x00408AC7)
 #define HWR_PrepareFMV              ((void      (*)())0x0040834C)
 #define HWR_FMVInit                 ((void      (*)())0x0040837F)
+#define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
 #define HWR_CopyPicture             ((void      (*)())0x00408B85)
 #define HWR_DownloadPicture         ((void      (*)())0x00408C3A)

@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define phd_InitPolyList        ((void          (*)())0x00402470)
 // clang-format on
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos);
@@ -32,6 +31,8 @@ void AlterFOV(PHD_ANGLE fov);
 void phd_PushMatrix();
 void phd_PushUnitMatrix();
 void phd_PopMatrix();
+
+void phd_InitPolyList();
 void phd_PutPolygons(const int16_t *obj_ptr, int clip);
 
 void S_InsertRoom(const int16_t *obj_ptr);
