@@ -682,6 +682,12 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette)
     // null sub
 }
 
+void HWR_FadeWait()
+{
+    HWR_ClearSurfaceDepth();
+    HWR_DumpScreen();
+}
+
 void HWR_SwitchResolution()
 {
     if (HiRes == 0) {
@@ -710,8 +716,10 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407862, HWR_RenderToggle);
     INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
+    INJECT(0x00408E32, HWR_FadeWait);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
     INJECT(0x0040904D, HWR_ClipVertices);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
@@ -719,5 +727,4 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
-    INJECT(0x004089F4, HWR_SwitchResolution);
 }

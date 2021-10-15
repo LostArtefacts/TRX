@@ -27,7 +27,6 @@
 #define HWR_SetHardwareVideoMode    ((void      (*)())0x00407BD2)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
-#define HWR_FadeWait                ((void      (*)())0x00408E32)
 #define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
 #define HWR_PrintShadow             ((void      (*)(PHD_VBUF *vbuf, int clip))0x0040CADB)
 #define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
@@ -44,6 +43,7 @@ void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_DumpScreen();
 void HWR_FlipPrimaryBuffer();
 void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
+void HWR_FadeWait();
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_Draw2DLine(
