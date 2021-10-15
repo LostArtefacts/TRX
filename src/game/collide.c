@@ -71,7 +71,7 @@ void GetCollisionInfo(
         zright = coll->radius;
 
         if ((objheight == 870 || objheight == SURF_HITE)
-            && ANIM_SCALE == 2) { // this is a Horrible hack, when jumping up to
+            && AnimScale == 2) { // this is a Horrible hack, when jumping up to
                                   // catch a ledge for some reason this don't
                                   // work any more in this quadrant
             extraZ = 10;
@@ -86,7 +86,7 @@ void GetCollisionInfo(
         xright = coll->radius;
         zright = -coll->radius;
         if ((objheight == 870 || objheight == SURF_HITE)
-            && ANIM_SCALE == 2) { // this is a Horrible hack, when jumping up to
+            && AnimScale == 2) { // this is a Horrible hack, when jumping up to
                                   // catch a ledge for some reason this don't
                                   // work any more in this quadrant
             extraX = 10;
@@ -775,8 +775,8 @@ void ItemPushLara(
             }
 
             Lara.hit_frame++;
-            if (Lara.hit_frame > 34 * ANIM_SCALE) {
-                Lara.hit_frame = 34 * ANIM_SCALE;
+            if (Lara.hit_frame > 34 * AnimScale) {
+                Lara.hit_frame = 34 * AnimScale;
             }
         }
 

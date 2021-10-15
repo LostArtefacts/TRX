@@ -110,4 +110,4 @@ int16_t InvChosen = -1;
 
 int16_t BarOffsetY[6];
 
-int16_t ANIM_SCALE = 1;
+int16_t AnimScale = 1;

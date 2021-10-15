@@ -13,7 +13,7 @@ void ControlExplosion1(int16_t fx_num)
 {
     FX_INFO *fx = &Effects[fx_num];
     fx->counter++;
-    if (fx->counter == 2 * ANIM_SCALE) {
+    if (fx->counter == 2 * AnimScale) {
         fx->counter = 0;
         fx->frame_number--;
         if (fx->frame_number <= Objects[fx->object_number].nmeshes) {

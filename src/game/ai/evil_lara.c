@@ -64,7 +64,7 @@ void ControlEvilLara(int16_t item_num)
             item->current_anim_state = AS_FASTFALL;
             item->goal_anim_state = AS_FASTFALL;
             item->anim_number = AA_FASTFALL;
-            item->frame_number = AF_FASTFALL * ANIM_SCALE;
+            item->frame_number = AF_FASTFALL * AnimScale;
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity_status = 1;

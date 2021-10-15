@@ -10,7 +10,7 @@ void LaraNormal(ITEM_INFO *item)
     item->current_anim_state = AS_STOP;
     item->goal_anim_state = AS_STOP;
     item->anim_number = AA_STOP;
-    item->frame_number = AF_STOP * ANIM_SCALE;
+    item->frame_number = AF_STOP * AnimScale;
     Camera.type = CAM_CHASE;
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 }

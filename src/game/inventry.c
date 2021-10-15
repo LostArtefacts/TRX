@@ -153,7 +153,7 @@ int32_t Display_Inventory(int inv_mode)
             INVENTORY_ITEM *inv_item = ring.list[i];
 
             if (i == ring.current_object) {
-                for (int j = 0; j < InvNFrames / ANIM_SCALE; j++) {
+                for (int j = 0; j < InvNFrames / AnimScale; j++) {
                     if (ring.rotating) {
                         LsAdder = LOW_LIGHT;
                         if (inv_item->y_rot) {
@@ -777,7 +777,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
     if (inv_item->anim_count) {
         inv_item->anim_count--;
     } else {
-        inv_item->anim_count = inv_item->anim_speed * ANIM_SCALE;
+        inv_item->anim_count = inv_item->anim_speed * AnimScale;
         inv_item->current_frame += inv_item->anim_direction;
         if (inv_item->current_frame >= inv_item->frames_total) {
             inv_item->current_frame = 0;

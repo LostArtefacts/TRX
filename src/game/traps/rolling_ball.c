@@ -154,7 +154,7 @@ void RollingBallCollision(
             lara_item->current_anim_state = AS_SPECIAL;
             lara_item->goal_anim_state = AS_SPECIAL;
             lara_item->anim_number = AA_RBALL_DEATH;
-            lara_item->frame_number = AF_RBALL_DEATH * ANIM_SCALE;
+            lara_item->frame_number = AF_RBALL_DEATH * AnimScale;
 
             Camera.flags = FOLLOW_CENTRE;
             Camera.target_angle = 170 * PHD_DEGREE;

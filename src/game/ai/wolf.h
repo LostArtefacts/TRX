@@ -5,13 +5,13 @@
 
 #include <stdint.h>
 
-#define WOLF_SLEEP_FRAME (96 * ANIM_SCALE)
+#define WOLF_SLEEP_FRAME (96 * AnimScale)
 #define WOLF_BITE_DAMAGE 100
 #define WOLF_POUNCE_DAMAGE 50
 #define WOLF_DIE_ANIM 20
-#define WOLF_WALK_TURN (2 * PHD_DEGREE / ANIM_SCALE) // = 364
-#define WOLF_RUN_TURN (5 * PHD_DEGREE / ANIM_SCALE) // = 910
-#define WOLF_STALK_TURN (2 * PHD_DEGREE / ANIM_SCALE) // = 364
+#define WOLF_WALK_TURN (2 * PHD_DEGREE / AnimScale) // = 364
+#define WOLF_RUN_TURN (5 * PHD_DEGREE / AnimScale) // = 910
+#define WOLF_STALK_TURN (2 * PHD_DEGREE / AnimScale) // = 364
 #define WOLF_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 #define WOLF_STALK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define WOLF_BITE_RANGE SQUARE(345) // = 119025

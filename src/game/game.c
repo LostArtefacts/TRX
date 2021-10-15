@@ -134,7 +134,7 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // time taken
-    int32_t seconds = SaveGame.timer / 30 / ANIM_SCALE;
+    int32_t seconds = SaveGame.timer / 30 / AnimScale;
     int32_t hours = seconds / 3600;
     int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;

@@ -288,7 +288,7 @@ void AnimateItem(ITEM_INFO *item)
 
                 case AC_JUMP_VELOCITY:
                     item->fall_speed = command[0];
-                    item->speed = command[1] / ANIM_SCALE;
+                    item->speed = command[1] / AnimScale;
                     item->gravity_status = 1;
                     command += 2;
                     break;
@@ -348,16 +348,16 @@ void AnimateItem(ITEM_INFO *item)
     }
 
     if (!item->gravity_status) {
-        int32_t speed = anim->velocity / ANIM_SCALE;
+        int32_t speed = anim->velocity / AnimScale;
         if (anim->acceleration) {
-            speed += anim->acceleration / ANIM_SCALE
-                * ((item->frame_number - anim->frame_base) / ANIM_SCALE);
+            speed += anim->acceleration / AnimScale
+                * ((item->frame_number - anim->frame_base) / AnimScale);
         }
         item->speed = speed >> 16;
     } else {
         item->fall_speed +=
-            (item->fall_speed < FASTFALL_SPEED) ? GRAVITY / ANIM_SCALE : 1;
-        item->pos.y += item->fall_speed / ANIM_SCALE;
+            (item->fall_speed < FASTFALL_SPEED) ? GRAVITY / AnimScale : 1;
+        item->pos.y += item->fall_speed / AnimScale;
     }
 
     item->pos.x += (phd_sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
@@ -879,7 +879,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                 Lara.LOT.required_box = obvector->flags;
             }
 
-            Lara.current_active = obvector->data * 6 / ANIM_SCALE;
+            Lara.current_active = obvector->data * 6 / AnimScale;
             break;
         }
 

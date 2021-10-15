@@ -188,7 +188,7 @@ void CreateSaveGameInfo()
             WriteSG(&item->required_anim_state, sizeof(int16_t));
             WriteSG(&item->anim_number, sizeof(int16_t));
             dummy = item->frame_number
-                / ANIM_SCALE; // adjust the frame number back to 30fps
+                / AnimScale; // adjust the frame number back to 30fps
             WriteSG(&dummy, sizeof(int16_t));
         }
 
@@ -324,7 +324,7 @@ void ExtractSaveGameInfo()
             ReadSG(&item->required_anim_state, sizeof(int16_t));
             ReadSG(&item->anim_number, sizeof(int16_t));
             ReadSG(&item->frame_number, sizeof(int16_t));
-            item->frame_number *= ANIM_SCALE;
+            item->frame_number *= AnimScale;
         }
 
         if (obj->save_hitpoints) {

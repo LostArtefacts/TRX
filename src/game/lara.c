@@ -19,12 +19,12 @@ void LookLeftRight()
     if (Input & IN_LEFT) {
         Input -= IN_LEFT;
         if (Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            Lara.head_y_rot -= HEAD_TURN / ANIM_SCALE / 2;
+            Lara.head_y_rot -= HEAD_TURN / AnimScale / 2;
         }
     } else if (Input & IN_RIGHT) {
         Input -= IN_RIGHT;
         if (Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            Lara.head_y_rot += HEAD_TURN / ANIM_SCALE / 2;
+            Lara.head_y_rot += HEAD_TURN / AnimScale / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -38,12 +38,12 @@ void LookUpDown()
     if (Input & IN_FORWARD) {
         Input -= IN_FORWARD;
         if (Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            Lara.head_x_rot -= HEAD_TURN / ANIM_SCALE / 2;
+            Lara.head_x_rot -= HEAD_TURN / AnimScale / 2;
         }
     } else if (Input & IN_BACK) {
         Input -= IN_BACK;
         if (Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            Lara.head_x_rot += HEAD_TURN / ANIM_SCALE / 2;
+            Lara.head_x_rot += HEAD_TURN / AnimScale / 2;
         }
     }
     if (Lara.gun_status != LGS_HANDSBUSY) {
@@ -188,7 +188,7 @@ void LaraAsRun(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL * ANIM_SCALE;
+        item->frame_number = AF_ROLL * AnimScale;
         return;
     }
 
@@ -236,7 +236,7 @@ void LaraAsStop(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_ROLL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_ROLL;
-        item->frame_number = AF_ROLL * ANIM_SCALE;
+        item->frame_number = AF_ROLL * AnimScale;
         return;
     }
 
@@ -251,9 +251,9 @@ void LaraAsStop(ITEM_INFO *item, COLL_INFO *coll)
         Lara.torso_y_rot = Lara.head_y_rot;
 
         if ((Input & IN_FORWARD) && Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            Lara.head_x_rot -= HEAD_TURN / 2 / ANIM_SCALE;
+            Lara.head_x_rot -= HEAD_TURN / 2 / AnimScale;
         } else if ((Input & IN_BACK) && Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            Lara.head_x_rot += HEAD_TURN / 2 / ANIM_SCALE;
+            Lara.head_x_rot += HEAD_TURN / 2 / AnimScale;
         }
         Lara.torso_x_rot = Lara.head_x_rot;
         return;
@@ -630,28 +630,28 @@ void LaraAsSlide(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsBackJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     Camera.target_angle = PHD_DEGREE * 135;
-    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsRightJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsLeftJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * ANIM_SCALE) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsUpJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * 2 / ANIM_SCALE) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * 2 / AnimScale) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
@@ -944,20 +944,20 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (LaraDeflectEdge(item, coll)) {
-        if (item->frame_number >= 29 * ANIM_SCALE
-            && item->frame_number <= 47 * ANIM_SCALE) {
+        if (item->frame_number >= 29 * AnimScale
+            && item->frame_number <= 47 * AnimScale) {
             item->anim_number = AA_STOP_RIGHT;
-            item->frame_number = AF_STOP_RIGHT * ANIM_SCALE;
+            item->frame_number = AF_STOP_RIGHT * AnimScale;
         } else if (
-            (item->frame_number >= 22 * ANIM_SCALE
-             && item->frame_number <= 28 * ANIM_SCALE)
-            || (item->frame_number >= 48 * ANIM_SCALE)
-                && item->frame_number <= 57 * ANIM_SCALE)) {
+            (item->frame_number >= 22 * AnimScale
+             && item->frame_number <= 28 * AnimScale)
+            || (item->frame_number >= 48 * AnimScale)
+                && item->frame_number <= 57 * AnimScale)) {
             item->anim_number = AA_STOP_LEFT;
-            item->frame_number = AF_STOP_LEFT * ANIM_SCALE;
+            item->frame_number = AF_STOP_LEFT * AnimScale;
         } else {
             item->anim_number = AA_STOP;
-            item->frame_number = AF_STOP * ANIM_SCALE;
+            item->frame_number = AF_STOP * AnimScale;
         }
     }
 
@@ -965,7 +965,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -973,24 +973,24 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2) {
-        if (item->frame_number >= 28 * ANIM_SCALE
-            && item->frame_number <= 45 * ANIM_SCALE) {
+        if (item->frame_number >= 28 * AnimScale
+            && item->frame_number <= 45 * AnimScale) {
             item->anim_number = AA_WALKSTEPD_RIGHT;
-            item->frame_number = AF_WALKSTEPD_RIGHT * ANIM_SCALE;
+            item->frame_number = AF_WALKSTEPD_RIGHT * AnimScale;
         } else {
             item->anim_number = AA_WALKSTEPD_LEFT;
-            item->frame_number = AF_WALKSTEPD_LEFT * ANIM_SCALE;
+            item->frame_number = AF_WALKSTEPD_LEFT * AnimScale;
         }
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= 27 * ANIM_SCALE
-            && item->frame_number <= 44 * ANIM_SCALE) {
+        if (item->frame_number >= 27 * AnimScale
+            && item->frame_number <= 44 * AnimScale) {
             item->anim_number = AA_WALKSTEPUP_RIGHT;
-            item->frame_number = AF_WALKSTEPUP_RIGHT * ANIM_SCALE;
+            item->frame_number = AF_WALKSTEPUP_RIGHT * AnimScale;
         } else {
             item->anim_number = AA_WALKSTEPUP_LEFT;
-            item->frame_number = AF_WALKSTEPUP_LEFT * ANIM_SCALE;
+            item->frame_number = AF_WALKSTEPUP_LEFT * AnimScale;
         }
     }
 
@@ -1025,27 +1025,27 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
             && coll->front_floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = AS_SPLAT;
             if (item->frame_number >= 0
-                && item->frame_number <= 9 * ANIM_SCALE) {
+                && item->frame_number <= 9 * AnimScale) {
                 item->anim_number = AA_HITWALLLEFT;
-                item->frame_number = AF_HITWALLLEFT * ANIM_SCALE;
+                item->frame_number = AF_HITWALLLEFT * AnimScale;
                 return;
             }
-            if (item->frame_number >= 10 * ANIM_SCALE
-                && item->frame_number <= 21 * ANIM_SCALE) {
+            if (item->frame_number >= 10 * AnimScale
+                && item->frame_number <= 21 * AnimScale) {
                 item->anim_number = AA_HITWALLRIGHT;
-                item->frame_number = AF_HITWALLRIGHT * ANIM_SCALE;
+                item->frame_number = AF_HITWALLRIGHT * AnimScale;
                 return;
             }
         }
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
     }
 
     if (coll->mid_floor > STEPUP_HEIGHT) {
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1053,13 +1053,13 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= 3 * ANIM_SCALE
-            && item->frame_number <= 14 * ANIM_SCALE) {
+        if (item->frame_number >= 3 * AnimScale
+            && item->frame_number <= 14 * AnimScale) {
             item->anim_number = AA_RUNSTEPUP_LEFT;
-            item->frame_number = AF_RUNSTEPUP_LEFT * ANIM_SCALE;
+            item->frame_number = AF_RUNSTEPUP_LEFT * AnimScale;
         } else {
             item->anim_number = AA_RUNSTEPUP_RIGHT;
-            item->frame_number = AF_RUNSTEPUP_RIGHT * ANIM_SCALE;
+            item->frame_number = AF_RUNSTEPUP_RIGHT * AnimScale;
         }
     }
 
@@ -1097,7 +1097,7 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1168,7 +1168,7 @@ void LaraColFastBack(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FALLBACK;
         item->goal_anim_state = AS_FALLBACK;
         item->anim_number = AA_FALLBACK;
-        item->frame_number = AF_FALLBACK * ANIM_SCALE;
+        item->frame_number = AF_FALLBACK * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1177,7 +1177,7 @@ void LaraColFastBack(ITEM_INFO *item, COLL_INFO *coll)
 
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
     }
 
     item->pos.y += coll->mid_floor;
@@ -1201,7 +1201,7 @@ void LaraColTurnR(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1253,7 +1253,7 @@ void LaraColFastFall(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
             item->current_anim_state = AS_STOP;
             item->anim_number = AA_LANDFAR;
-            item->frame_number = AF_LANDFAR * ANIM_SCALE;
+            item->frame_number = AF_LANDFAR * AnimScale;
         }
         StopSoundEffect(SFX_LARA_FALL, NULL);
         item->pos.y += coll->mid_floor;
@@ -1341,7 +1341,7 @@ void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1375,17 +1375,17 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
 
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
     }
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
-        if (item->frame_number >= 964 * ANIM_SCALE
-            && item->frame_number <= 993 * ANIM_SCALE) {
+        if (item->frame_number >= 964 * AnimScale
+            && item->frame_number <= 993 * AnimScale) {
             item->anim_number = AA_BACKSTEPD_RIGHT;
-            item->frame_number = AF_BACKSTEPD_RIGHT * ANIM_SCALE;
+            item->frame_number = AF_BACKSTEPD_RIGHT * AnimScale;
         } else {
             item->anim_number = AA_BACKSTEPD_LEFT;
-            item->frame_number = AF_BACKSTEPD_LEFT * ANIM_SCALE;
+            item->frame_number = AF_BACKSTEPD_LEFT * AnimScale;
         }
     }
 
@@ -1426,7 +1426,7 @@ void LaraColStepRight(ITEM_INFO *item, COLL_INFO *coll)
 
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
     }
 
     if (TestLaraSlide(item, coll)) {
@@ -1456,7 +1456,7 @@ void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
 
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
     }
 
     if (TestLaraSlide(item, coll)) {
@@ -1641,7 +1641,7 @@ void LaraColRoll(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1677,7 +1677,7 @@ void LaraColRoll2(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_FALLBACK;
         item->goal_anim_state = AS_FALLBACK;
         item->anim_number = AA_FALLBACK;
-        item->frame_number = AF_FALLBACK * ANIM_SCALE;
+        item->frame_number = AF_FALLBACK * AnimScale;
         item->gravity_status = 1;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1764,7 +1764,7 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_ceiling = BAD_JUMP_CEILING;
     GetLaraCollisionInfo(item, coll);
     int collide = 1;
-    // if(ANIM_SCALE == 2 && ((item->frame_number & 1) == 1)) {
+    // if(AnimScale == 2 && ((item->frame_number & 1) == 1)) {
     //	collide = 0; //make jump collisions be 30fps still
     //}
     if (collide == 1) {
@@ -1812,12 +1812,12 @@ void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)
             item->current_anim_state = AS_FORWARDJUMP;
             item->goal_anim_state = AS_FORWARDJUMP;
             item->anim_number = AA_FALLDOWN;
-            item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+            item->frame_number = AF_FALLDOWN * AnimScale;
         } else {
             item->current_anim_state = AS_FALLBACK;
             item->goal_anim_state = AS_FALLBACK;
             item->anim_number = AA_FALLBACK;
-            item->frame_number = AF_FALLBACK * ANIM_SCALE;
+            item->frame_number = AF_FALLBACK * AnimScale;
         }
         item->gravity_status = 1;
         item->fall_speed = 0;
@@ -1846,7 +1846,7 @@ int32_t LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1907,7 +1907,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_UPJUMP;
         item->current_anim_state = AS_UPJUMP;
         item->anim_number = AA_STOPHANG;
-        item->frame_number = AF_STOPHANG * ANIM_SCALE;
+        item->frame_number = AF_STOPHANG * AnimScale;
         bounds = GetBoundsAccurate(item);
 
         LaraFloatPos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
@@ -1921,8 +1921,8 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->gravity_status = 1;
         item->fall_speed = 1;
         LaraFallSpeedF = 1.0;
-        item->speed = 2 / ANIM_SCALE;
-        LaraSpeedF = 2.0 / ANIM_SCALE;
+        item->speed = 2 / AnimScale;
+        LaraSpeedF = 2.0 / AnimScale;
         Lara.gun_status = LGS_ARMLESS;
         return;
     }
@@ -1940,7 +1940,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_HANG;
             item->current_anim_state = AS_HANG;
             item->anim_number = AA_HANG;
-            item->frame_number = AF_HANG * ANIM_SCALE;
+            item->frame_number = AF_HANG * AnimScale;
         }
         return;
     }
@@ -2006,7 +2006,7 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_FASTFALL;
         item->current_anim_state = AS_FASTFALL;
         item->anim_number = AA_FASTFALL;
-        item->frame_number = AF_FASTFALL * ANIM_SCALE;
+        item->frame_number = AF_FASTFALL * AnimScale;
 
         LaraSpeedF /= 4.0;
         item->speed = LaraFallSpeedF;
@@ -2114,7 +2114,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_NULL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_VAULT12;
-        item->frame_number = AF_VAULT12 * ANIM_SCALE;
+        item->frame_number = AF_VAULT12 * AnimScale;
         item->pos.y += STEP_L * 2 + hdif;
         LaraFloatPos.y += STEP_L * 2 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
@@ -2131,7 +2131,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_NULL;
         item->goal_anim_state = AS_STOP;
         item->anim_number = AA_VAULT34;
-        item->frame_number = AF_VAULT34 * ANIM_SCALE;
+        item->frame_number = AF_VAULT34 * AnimScale;
         item->pos.y += STEP_L * 3 + hdif;
         LaraFloatPos.y += STEP_L * 3 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
@@ -2143,7 +2143,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_UPJUMP;
         item->current_anim_state = AS_STOP;
         item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP * ANIM_SCALE;
+        item->frame_number = AF_STOP * AnimScale;
         Lara.calc_fall_speed =
             -(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         AnimateLara(item);
@@ -2199,10 +2199,10 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
 
     if (TestHangSwingIn(item, angle)) {
         item->anim_number = AA_GRABLEDGEIN;
-        item->frame_number = AF_GRABLEDGEIN * ANIM_SCALE;
+        item->frame_number = AF_GRABLEDGEIN * AnimScale;
     } else {
         item->anim_number = AA_GRABLEDGE;
-        item->frame_number = AF_GRABLEDGE * ANIM_SCALE;
+        item->frame_number = AF_GRABLEDGE * AnimScale;
     }
     item->current_anim_state = AS_HANG;
     item->goal_anim_state = AS_HANG;
@@ -2305,7 +2305,7 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->goal_anim_state = AS_HANG;
     item->current_anim_state = AS_HANG;
     item->anim_number = AA_HANG;
-    item->frame_number = AF_STARTHANG * ANIM_SCALE;
+    item->frame_number = AF_STARTHANG * AnimScale;
     bounds = GetBoundsAccurate(item);
 
     LaraFloatPos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
@@ -2353,7 +2353,7 @@ int32_t TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_SLIDE;
             item->current_anim_state = AS_SLIDE;
             item->anim_number = AA_SLIDE;
-            item->frame_number = AF_SLIDE * ANIM_SCALE;
+            item->frame_number = AF_SLIDE * AnimScale;
             item->pos.y_rot = ang;
             Lara.move_angle = ang;
             old_angle = ang;
@@ -2363,7 +2363,7 @@ int32_t TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_SLIDEBACK;
             item->current_anim_state = AS_SLIDEBACK;
             item->anim_number = AA_SLIDEBACK;
-            item->frame_number = AF_SLIDEBACK * ANIM_SCALE;
+            item->frame_number = AF_SLIDEBACK * AnimScale;
             item->pos.y_rot = ang - PHD_180;
             Lara.move_angle = ang;
             old_angle = ang;

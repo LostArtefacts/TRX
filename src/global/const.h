@@ -14,7 +14,7 @@
 #define MAX_UI_SCALE 2.0
 #define DEFAULT_UI_SCALE 1.0
 
-#define FRAMES_PER_SECOND (30 * ANIM_SCALE)
+#define FRAMES_PER_SECOND (30 * AnimScale)
 #define TICKS_PER_FRAME 2
 #define TICKS_PER_SECOND (FRAMES_PER_SECOND * TICKS_PER_FRAME)
 
@@ -44,31 +44,31 @@
 #define GRAVITY 6
 #define FASTFALL_SPEED 128
 #define LARA_HITPOINTS 1000
-#define LARA_AIR (1800 * ANIM_SCALE)
+#define LARA_AIR (1800 * AnimScale)
 
-#define LARA_TURN_UNDO (2 * PHD_DEGREE / ANIM_SCALE) // = 364
+#define LARA_TURN_UNDO (2 * PHD_DEGREE / AnimScale) // = 364
 #define LARA_TURN_RATE                                                         \
-    ((PHD_DEGREE / (4 * ANIM_SCALE)) + LARA_TURN_UNDO) // = 409
-#define LARA_SLOW_TURN ((PHD_DEGREE * 2 / ANIM_SCALE) + LARA_TURN_UNDO) // = 728
-#define LARA_JUMP_TURN ((PHD_DEGREE * 1 / ANIM_SCALE) + LARA_TURN_UNDO) // = 546
-#define LARA_MED_TURN ((PHD_DEGREE * 4 / ANIM_SCALE) + LARA_TURN_UNDO) // = 1092
+    ((PHD_DEGREE / (4 * AnimScale)) + LARA_TURN_UNDO) // = 409
+#define LARA_SLOW_TURN ((PHD_DEGREE * 2 / AnimScale) + LARA_TURN_UNDO) // = 728
+#define LARA_JUMP_TURN ((PHD_DEGREE * 1 / AnimScale) + LARA_TURN_UNDO) // = 546
+#define LARA_MED_TURN ((PHD_DEGREE * 4 / AnimScale) + LARA_TURN_UNDO) // = 1092
 #define LARA_FAST_TURN                                                         \
-    ((PHD_DEGREE * (6 / ANIM_SCALE)) + LARA_TURN_UNDO) // = 1456
-#define LARA_LEAN_UNDO (PHD_DEGREE / ANIM_SCALE)
+    ((PHD_DEGREE * (6 / AnimScale)) + LARA_TURN_UNDO) // = 1456
+#define LARA_LEAN_UNDO (PHD_DEGREE / AnimScale)
 
 #define LARA_DEF_ADD_EDGE (5 * PHD_DEGREE) // = 910
-#define LARA_LEAN_RATE (273 / ANIM_SCALE)
+#define LARA_LEAN_RATE (273 / AnimScale)
 #define LARA_LEAN_MAX ((10 * PHD_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
 #define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
-#define UW_MAXSPEED (200 / ANIM_SCALE)
-#define UW_RADIUS (300 / ANIM_SCALE)
+#define UW_MAXSPEED (200 / AnimScale)
+#define UW_RADIUS (300 / AnimScale)
 #define UW_HITE 400
-#define UW_WALLDEFLECT (2 * PHD_DEGREE / ANIM_SCALE) // = 364
-#define SURF_MAXSPEED (60 / ANIM_SCALE)
-#define SURF_RADIUS (100 / ANIM_SCALE)
+#define UW_WALLDEFLECT (2 * PHD_DEGREE / AnimScale) // = 364
+#define SURF_MAXSPEED (60 / AnimScale)
+#define SURF_RADIUS (100 / AnimScale)
 #define SURF_HITE 700
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
@@ -193,11 +193,11 @@
 
 #define DEFAULT_RADIUS 10
 
-#define OPEN_FRAMES ((64 / 2) * ANIM_SCALE)
-#define CLOSE_FRAMES ((64 / 2) * ANIM_SCALE)
-#define RINGSWITCH_FRAMES ((96 / 2) * ANIM_SCALE)
-#define ROTATE_DURATION ((48 / 2) * ANIM_SCALE)
-#define SELECTING_FRAMES ((32 / 2) * ANIM_SCALE)
+#define OPEN_FRAMES ((64 / 2) * AnimScale)
+#define CLOSE_FRAMES ((64 / 2) * AnimScale)
+#define RINGSWITCH_FRAMES ((96 / 2) * AnimScale)
+#define ROTATE_DURATION ((48 / 2) * AnimScale)
+#define SELECTING_FRAMES ((32 / 2) * AnimScale)
 #define OPEN_ROTATION (-0x8000) // = -32768
 #define CLOSE_ROTATION (-0x8000) // = -32768
 #define OPTION_RING_OBJECTS 4
@@ -211,7 +211,7 @@
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
 
-#define VIEW_NEAR (127 / ANIM_SCALE)
+#define VIEW_NEAR (127 / AnimScale)
 #define VIEW_FAR (0x14 * 0x400)
 #define DEPTH_Q_END (40 * 1024)
 #define DEPTH_Q_START ((DEPTH_Q_END - 1024))

@@ -296,6 +296,6 @@ extern int16_t InvChosen;
 
 extern int16_t BarOffsetY[6];
 
-extern int16_t ANIM_SCALE;
+extern int16_t AnimScale;
 
 #endif

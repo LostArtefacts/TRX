@@ -17,14 +17,14 @@ void DrawShotgun()
     int16_t ani = Lara.left_arm.frame_number;
     ani++;
 
-    if (ani < AF_SG_DRAW * ANIM_SCALE || ani > AF_SG_RECOIL * ANIM_SCALE) {
-        ani = AF_SG_DRAW * ANIM_SCALE;
-    } else if (ani == AF_SG_DRAW * ANIM_SCALE + 10 * ANIM_SCALE) {
+    if (ani < AF_SG_DRAW * AnimScale || ani > AF_SG_RECOIL * AnimScale) {
+        ani = AF_SG_DRAW * AnimScale;
+    } else if (ani == AF_SG_DRAW * AnimScale + 10 * AnimScale) {
         DrawShotgunMeshes();
         SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
-    } else if (ani == AF_SG_RECOIL * ANIM_SCALE) {
+    } else if (ani == AF_SG_RECOIL * AnimScale) {
         ReadyShotgun();
-        ani = AF_SG_AIM * ANIM_SCALE;
+        ani = AF_SG_AIM * AnimScale;
     }
     Lara.left_arm.frame_number = ani;
     Lara.right_arm.frame_number = ani;
@@ -35,40 +35,40 @@ void UndrawShotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
 
-    if (ani == AF_SG_AIM * ANIM_SCALE) {
-        ani = AF_SG_UNDRAW * ANIM_SCALE;
+    if (ani == AF_SG_AIM * AnimScale) {
+        ani = AF_SG_UNDRAW * AnimScale;
     } else if (
-        ani >= AF_SG_AIM * ANIM_SCALE && ani < AF_SG_DRAW * ANIM_SCALE) {
+        ani >= AF_SG_AIM * AnimScale && ani < AF_SG_DRAW * AnimScale) {
         ani++;
-        if (ani == AF_SG_DRAW * ANIM_SCALE) {
-            ani = AF_SG_UNAIM * ANIM_SCALE;
+        if (ani == AF_SG_DRAW * AnimScale) {
+            ani = AF_SG_UNAIM * AnimScale;
         }
-    } else if (ani == AF_SG_RECOIL * ANIM_SCALE) {
-        ani = AF_SG_UNAIM * ANIM_SCALE;
+    } else if (ani == AF_SG_RECOIL * AnimScale) {
+        ani = AF_SG_UNAIM * AnimScale;
     } else if (
-        ani >= AF_SG_RECOIL * ANIM_SCALE
-        && ani < AF_SG_UNDRAW * ANIM_SCALE) {
+        ani >= AF_SG_RECOIL * AnimScale
+        && ani < AF_SG_UNDRAW * AnimScale) {
         ani++;
-        if (ani == AF_SG_RECOIL * ANIM_SCALE + 12 * ANIM_SCALE) {
-            ani = AF_SG_AIM * ANIM_SCALE;
-        } else if (ani == AF_SG_UNDRAW * ANIM_SCALE) {
-            ani = AF_SG_UNAIM * ANIM_SCALE;
-        }
-    } else if (
-        ani >= AF_SG_UNAIM * ANIM_SCALE && ani < AF_SG_END * ANIM_SCALE) {
-        ani++;
-        if (ani == AF_SG_END * ANIM_SCALE) {
-            ani = AF_SG_UNDRAW * ANIM_SCALE;
+        if (ani == AF_SG_RECOIL * AnimScale + 12 * AnimScale) {
+            ani = AF_SG_AIM * AnimScale;
+        } else if (ani == AF_SG_UNDRAW * AnimScale) {
+            ani = AF_SG_UNAIM * AnimScale;
         }
     } else if (
-        ani >= AF_SG_UNDRAW * ANIM_SCALE
-        && ani < AF_SG_UNAIM * ANIM_SCALE) {
+        ani >= AF_SG_UNAIM * AnimScale && ani < AF_SG_END * AnimScale) {
         ani++;
-        if (ani == AF_SG_UNDRAW * ANIM_SCALE + 20 * ANIM_SCALE) {
+        if (ani == AF_SG_END * AnimScale) {
+            ani = AF_SG_UNDRAW * AnimScale;
+        }
+    } else if (
+        ani >= AF_SG_UNDRAW * AnimScale
+        && ani < AF_SG_UNAIM * AnimScale) {
+        ani++;
+        if (ani == AF_SG_UNDRAW * AnimScale + 20 * AnimScale) {
             UndrawShotgunMeshes();
             SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
-        } else if (ani == AF_SG_UNAIM * ANIM_SCALE) {
-            ani = AF_SG_AIM * ANIM_SCALE;
+        } else if (ani == AF_SG_UNAIM * AnimScale) {
+            ani = AF_SG_AIM * AnimScale;
             Lara.gun_status = LGS_ARMLESS;
             Lara.target = NULL;
             Lara.right_arm.lock = 0;
@@ -152,72 +152,72 @@ void AnimateShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
     if (Lara.left_arm.lock) {
-        if (ani >= AF_SG_AIM * ANIM_SCALE
-            && ani < AF_SG_DRAW * ANIM_SCALE) {
+        if (ani >= AF_SG_AIM * AnimScale
+            && ani < AF_SG_DRAW * AnimScale) {
             ani++;
-            if (ani == AF_SG_DRAW * ANIM_SCALE) {
-                ani = AF_SG_RECOIL * ANIM_SCALE;
+            if (ani == AF_SG_DRAW * AnimScale) {
+                ani = AF_SG_RECOIL * AnimScale;
             }
-        } else if (ani == AF_SG_RECOIL * ANIM_SCALE) {
+        } else if (ani == AF_SG_RECOIL * AnimScale) {
             if (Input & IN_ACTION) {
                 FireShotgun();
                 ani++;
             }
         } else if (
-            ani > AF_SG_RECOIL * ANIM_SCALE
-            && ani < AF_SG_UNDRAW * ANIM_SCALE) {
+            ani > AF_SG_RECOIL * AnimScale
+            && ani < AF_SG_UNDRAW * AnimScale) {
             ani++;
-            if (ani == AF_SG_UNDRAW * ANIM_SCALE) {
-                ani = AF_SG_RECOIL * ANIM_SCALE;
-            } else if (ani == AF_SG_RECOIL * ANIM_SCALE + 10 * ANIM_SCALE) {
+            if (ani == AF_SG_UNDRAW * AnimScale) {
+                ani = AF_SG_RECOIL * AnimScale;
+            } else if (ani == AF_SG_RECOIL * AnimScale + 10 * AnimScale) {
                 SoundEffect(SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
             }
         } else if (
-            ani >= AF_SG_UNAIM * ANIM_SCALE
-            && ani < AF_SG_END * ANIM_SCALE) {
+            ani >= AF_SG_UNAIM * AnimScale
+            && ani < AF_SG_END * AnimScale) {
             ani++;
-            if (ani == AF_SG_END * ANIM_SCALE) {
-                ani = AF_SG_AIM * ANIM_SCALE;
+            if (ani == AF_SG_END * AnimScale) {
+                ani = AF_SG_AIM * AnimScale;
             }
         }
     } else {
-        if (ani == AF_SG_AIM * ANIM_SCALE && (Input & IN_ACTION)) {
+        if (ani == AF_SG_AIM * AnimScale && (Input & IN_ACTION)) {
             ani++;
         } else if (
-            ani > AF_SG_AIM * ANIM_SCALE && ani < AF_SG_DRAW * ANIM_SCALE) {
+            ani > AF_SG_AIM * AnimScale && ani < AF_SG_DRAW * AnimScale) {
             ani++;
-            if (ani == AF_SG_DRAW * ANIM_SCALE) {
+            if (ani == AF_SG_DRAW * AnimScale) {
                 if (Input & IN_ACTION) {
-                    ani = AF_SG_RECOIL * ANIM_SCALE;
+                    ani = AF_SG_RECOIL * AnimScale;
                 } else {
-                    ani = AF_SG_UNAIM * ANIM_SCALE;
+                    ani = AF_SG_UNAIM * AnimScale;
                 }
             }
         } else {
-            if (ani == AF_SG_RECOIL * ANIM_SCALE) {
+            if (ani == AF_SG_RECOIL * AnimScale) {
                 if (Input & IN_ACTION) {
                     FireShotgun();
                     ani++;
                 } else {
-                    ani = AF_SG_UNAIM * ANIM_SCALE;
+                    ani = AF_SG_UNAIM * AnimScale;
                 }
             } else if (
-                ani > AF_SG_RECOIL * ANIM_SCALE
-                && ani < AF_SG_UNDRAW * ANIM_SCALE) {
+                ani > AF_SG_RECOIL * AnimScale
+                && ani < AF_SG_UNDRAW * AnimScale) {
                 ani++;
-                if (ani == ((AF_SG_RECOIL + 12 + 1) * ANIM_SCALE)) {
-                    ani = AF_SG_AIM * ANIM_SCALE;
-                } else if (ani == AF_SG_UNDRAW * ANIM_SCALE) {
-                    ani = AF_SG_UNAIM * ANIM_SCALE;
-                } else if (ani == (AF_SG_RECOIL + 10) * ANIM_SCALE) {
+                if (ani == ((AF_SG_RECOIL + 12 + 1) * AnimScale)) {
+                    ani = AF_SG_AIM * AnimScale;
+                } else if (ani == AF_SG_UNDRAW * AnimScale) {
+                    ani = AF_SG_UNAIM * AnimScale;
+                } else if (ani == (AF_SG_RECOIL + 10) * AnimScale) {
                     SoundEffect(SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
                 }
             } else if (
-                ani >= AF_SG_UNAIM * ANIM_SCALE
-                && ani < AF_SG_END * ANIM_SCALE) {
+                ani >= AF_SG_UNAIM * AnimScale
+                && ani < AF_SG_END * AnimScale) {
                 ani++;
-                if (ani == AF_SG_END * ANIM_SCALE) {
-                    ani = AF_SG_AIM * ANIM_SCALE;
+                if (ani == AF_SG_END * AnimScale) {
+                    ani = AF_SG_AIM * AnimScale;
                 }
             }
         }
@@ -248,7 +248,7 @@ void FireShotgun()
     if (fired) {
         if (T1MConfig.enable_shotgun_flash) {
             Lara.right_arm.flash_gun =
-                Weapons[LGT_SHOTGUN].flash_time * ANIM_SCALE;
+                Weapons[LGT_SHOTGUN].flash_time * AnimScale;
         }
         SoundEffect(
             Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, SPM_NORMAL);

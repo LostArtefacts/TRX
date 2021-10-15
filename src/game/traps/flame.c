@@ -48,7 +48,7 @@ void FlameControl(int16_t fx_num)
     FX_INFO *fx = &Effects[fx_num];
 
     fx->frame_number--;
-    if (fx->frame_number <= Objects[O_FLAME].nmeshes * ANIM_SCALE) {
+    if (fx->frame_number <= Objects[O_FLAME].nmeshes * AnimScale) {
         fx->frame_number = 0;
     }
 
@@ -101,7 +101,7 @@ void FlameControl(int16_t fx_num)
         LaraItem->hit_status = 1;
 
         if (distance < SQUARE(300)) {
-            fx->counter = 100 * ANIM_SCALE;
+            fx->counter = 100 * AnimScale;
 
             fx_num = CreateEffect(LaraItem->room_number);
             if (fx_num != NO_ITEM) {

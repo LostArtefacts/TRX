@@ -99,9 +99,9 @@ void GameMain()
         switch (gf_direction) {
         case GF_START_GAME:
             // update the game based upon the speed chosen
-            ANIM_SCALE = 1;
+            AnimScale = 1;
             if (RenderSettings & RSF_60FPS) {
-                ANIM_SCALE = 2;
+                AnimScale = 2;
             }
             ClockInit();
             gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
@@ -117,7 +117,7 @@ void GameMain()
             break;
 
         case GF_START_DEMO:
-            ANIM_SCALE = 1; // demo is always 30fps as its goes wrong otherwise
+            AnimScale = 1; // demo is always 30fps as its goes wrong otherwise
             ClockInit();
             gf_option = StartDemo();
             break;
@@ -127,7 +127,7 @@ void GameMain()
             break;
 
         case GF_EXIT_TO_TITLE:
-            ANIM_SCALE = 2; // do title screen menu in 60fps
+            AnimScale = 2; // do title screen menu in 60fps
             ClockInit();
             T_InitPrint();
             TempVideoAdjust(2, 1.0);

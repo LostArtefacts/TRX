@@ -447,7 +447,7 @@ void LookCamera(ITEM_INFO *item)
         Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
 
     Camera.shift =
-        ((-STEP_L * 2) * phd_sin(Camera.target_elevation)) / ANIM_SCALE
+        ((-STEP_L * 2) * phd_sin(Camera.target_elevation)) / AnimScale
         >> W2V_SHIFT;
     Camera.target.z += Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
     Camera.target.x += Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
@@ -473,9 +473,9 @@ void LookCamera(ITEM_INFO *item)
     SmartShift(&ideal, ClipCamera);
 
     Camera.target.z =
-        old.z + (Camera.target.z - old.z) / (Camera.speed * ANIM_SCALE);
+        old.z + (Camera.target.z - old.z) / (Camera.speed * AnimScale);
     Camera.target.x =
-        old.x + (Camera.target.x - old.x) / (Camera.speed * ANIM_SCALE);
+        old.x + (Camera.target.x - old.x) / (Camera.speed * AnimScale);
 
     MoveCamera(&ideal, Camera.speed);
 }

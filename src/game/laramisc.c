@@ -75,22 +75,22 @@ void LaraControl(int16_t item_num)
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
             AnimateLara(item);
-            item->fall_speed *= 2 / ANIM_SCALE;
-            LaraFallSpeedF *= 2.0 / ANIM_SCALE;
+            item->fall_speed *= 2 / AnimScale;
+            LaraFallSpeedF *= 2.0 / AnimScale;
         } else if (item->current_anim_state == AS_FASTDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -85 * PHD_DEGREE;
             AnimateLara(item);
-            item->fall_speed *= 2 / ANIM_SCALE;
-            LaraFallSpeedF *= 2.0 / ANIM_SCALE;
+            item->fall_speed *= 2 / AnimScale;
+            LaraFallSpeedF *= 2.0 / AnimScale;
         } else {
             item->current_anim_state = AS_DIVE;
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_JUMPIN;
-            item->frame_number = AF_JUMPIN * ANIM_SCALE;
+            item->frame_number = AF_JUMPIN * AnimScale;
             item->pos.x_rot = -45 * PHD_DEGREE;
-            item->fall_speed = ((item->fall_speed * 3) / 2) / ANIM_SCALE;
-            LaraFallSpeedF *= 1.5 / (double)ANIM_SCALE;
+            item->fall_speed = ((item->fall_speed * 3) / 2) / AnimScale;
+            LaraFallSpeedF *= 1.5 / (double)AnimScale;
         }
         Lara.head_x_rot = 0;
         Lara.head_y_rot = 0;
@@ -106,7 +106,7 @@ void LaraControl(int16_t item_num)
             item->current_anim_state = AS_SURFTREAD;
             item->goal_anim_state = AS_SURFTREAD;
             item->anim_number = AA_SURFTREAD;
-            item->frame_number = AF_SURFTREAD * ANIM_SCALE;
+            item->frame_number = AF_SURFTREAD * AnimScale;
             item->fall_speed = 0;
             LaraFallSpeedF = 0.0;
             item->pos.y = wh + 1;
@@ -125,7 +125,7 @@ void LaraControl(int16_t item_num)
             item->current_anim_state = AS_FORWARDJUMP;
             item->goal_anim_state = AS_FORWARDJUMP;
             item->anim_number = AA_FALLDOWN;
-            item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+            item->frame_number = AF_FALLDOWN * AnimScale;
             item->speed = item->fall_speed / 4;
             LaraSpeedF = LaraFallSpeedF / 4.0;
             item->fall_speed = 0;
@@ -144,7 +144,7 @@ void LaraControl(int16_t item_num)
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
         item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN * ANIM_SCALE;
+        item->frame_number = AF_FALLDOWN * AnimScale;
         item->speed = item->fall_speed / 4;
         LaraSpeedF = LaraFallSpeedF / 4.0;
         item->fall_speed = 0;
@@ -262,8 +262,8 @@ void AnimateLara(ITEM_INFO *item)
                     item->fall_speed = dummy;
                     LaraFallSpeedF = (double)dummy;
                     dummy = *(command++);
-                    item->speed = dummy / ANIM_SCALE; // Get Forward Velocity
-                    LaraSpeedF = (double)dummy / (double)ANIM_SCALE;
+                    item->speed = dummy / AnimScale; // Get Forward Velocity
+                    LaraSpeedF = (double)dummy / (double)AnimScale;
                     item->gravity_status = 1; // turn gravity ON
                     if (Lara.calc_fall_speed) // If Upward velocity is
                                               // Pre-Calculated
@@ -323,7 +323,7 @@ void AnimateLara(ITEM_INFO *item)
             }
         }
     }
-    if (ANIM_SCALE == 1) {
+    if (AnimScale == 1) {
         if (item->gravity_status) {
             int16_t speed = anim->velocity
                 + anim->acceleration
@@ -353,36 +353,36 @@ void AnimateLara(ITEM_INFO *item)
         LaraFloatPos.y = item->pos.y;
         LaraFallSpeedF = item->fall_speed;
         LaraSpeedF = item->speed;
-    } else // ANIM_SCALE = 2
+    } else // AnimScale = 2
     {
         if (item->gravity_status) {
             int32_t currentSpeed = item->speed;
             int32_t currentFallSpeed = item->fall_speed;
 
             double speed = (double)(anim->velocity + anim->acceleration)
-                / ANIM_SCALE
+                / AnimScale
                 * (((item->frame_number - anim->frame_base)
-                    / (double)ANIM_SCALE)
+                    / (double)AnimScale)
                    - 1.0);
 
             LaraSpeedF -= speed / 65536.0;
-            speed += (double)anim->acceleration / (double)ANIM_SCALE;
+            speed += (double)anim->acceleration / (double)AnimScale;
             LaraSpeedF += speed / 65536.0;
 
             LaraFallSpeedF += (item->fall_speed < FASTFALL_SPEED)
-                ? (double)GRAVITY / (double)ANIM_SCALE
-                : 1.0 / (double)ANIM_SCALE;
+                ? (double)GRAVITY / (double)AnimScale
+                : 1.0 / (double)AnimScale;
 
-            LaraFloatPos.y += LaraFallSpeedF / (double)ANIM_SCALE;
+            LaraFloatPos.y += LaraFallSpeedF / (double)AnimScale;
 
             item->fall_speed = LaraFallSpeedF;
             item->speed = LaraSpeedF;
         } else {
-            double speed = (double)anim->velocity / (double)ANIM_SCALE;
+            double speed = (double)anim->velocity / (double)AnimScale;
             if (anim->acceleration) {
-                speed += ((double)anim->acceleration / (double)ANIM_SCALE)
+                speed += ((double)anim->acceleration / (double)AnimScale)
                     * ((item->frame_number - anim->frame_base)
-                       / (double)ANIM_SCALE);
+                       / (double)AnimScale);
             }
             LaraSpeedF = speed / 65536.0;
             item->speed = LaraSpeedF;
@@ -523,13 +523,13 @@ void InitialiseLara()
         LaraItem->goal_anim_state = AS_TREAD;
         LaraItem->current_anim_state = AS_TREAD;
         LaraItem->anim_number = AA_TREAD;
-        LaraItem->frame_number = AF_TREAD * ANIM_SCALE;
+        LaraItem->frame_number = AF_TREAD * AnimScale;
     } else {
         Lara.water_status = LWS_ABOVEWATER;
         LaraItem->goal_anim_state = AS_STOP;
         LaraItem->current_anim_state = AS_STOP;
         LaraItem->anim_number = AA_STOP;
-        LaraItem->frame_number = AF_STOP * ANIM_SCALE;
+        LaraItem->frame_number = AF_STOP * AnimScale;
     }
 
     Lara.current_active = 0;

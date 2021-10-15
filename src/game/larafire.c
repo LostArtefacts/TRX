@@ -181,8 +181,8 @@ void LaraGun()
         case LGT_UZIS:
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_status = LGS_DRAW;
-                Lara.right_arm.frame_number = AF_G_AIM * ANIM_SCALE;
-                Lara.left_arm.frame_number = AF_G_AIM * ANIM_SCALE;
+                Lara.right_arm.frame_number = AF_G_AIM * AnimScale;
+                Lara.left_arm.frame_number = AF_G_AIM * AnimScale;
             } else if (Lara.gun_status == LGS_READY) {
                 Lara.gun_status = LGS_UNDRAW;
             }
@@ -191,8 +191,8 @@ void LaraGun()
         case LGT_SHOTGUN:
             if (Lara.gun_status == LGS_ARMLESS) {
                 Lara.gun_status = LGS_DRAW;
-                Lara.left_arm.frame_number = AF_SG_AIM * ANIM_SCALE;
-                Lara.right_arm.frame_number = AF_SG_AIM * ANIM_SCALE;
+                Lara.left_arm.frame_number = AF_SG_AIM * AnimScale;
+                Lara.right_arm.frame_number = AF_SG_AIM * AnimScale;
             } else if (Lara.gun_status == LGS_READY) {
                 Lara.gun_status = LGS_UNDRAW;
             }

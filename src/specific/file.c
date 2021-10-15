@@ -265,11 +265,11 @@ static int32_t LoadObjects(MYFILE *fp)
         if (Anims[i].interpolation == 0) {
             Anims[i].interpolation = 1;
         } else {
-            Anims[i].interpolation *= ANIM_SCALE;
+            Anims[i].interpolation *= AnimScale;
         }
-        Anims[i].frame_base *= ANIM_SCALE;
-        Anims[i].frame_end *= ANIM_SCALE;
-        Anims[i].jump_frame_num *= ANIM_SCALE;
+        Anims[i].frame_base *= AnimScale;
+        Anims[i].frame_end *= AnimScale;
+        Anims[i].jump_frame_num *= AnimScale;
     }
 
     FileRead(&AnimChangeCount, sizeof(int32_t), 1, fp);
@@ -284,9 +284,9 @@ static int32_t LoadObjects(MYFILE *fp)
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
     FileRead(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
     for (int32_t i = 0; i < AnimRangeCount; ++i) {
-        AnimRanges[i].end_frame *= ANIM_SCALE;
-        AnimRanges[i].start_frame *= ANIM_SCALE;
-        AnimRanges[i].link_frame_num *= ANIM_SCALE;
+        AnimRanges[i].end_frame *= AnimScale;
+        AnimRanges[i].start_frame *= AnimScale;
+        AnimRanges[i].link_frame_num *= AnimScale;
     }
 
     FileRead(&AnimCommandCount, sizeof(int32_t), 1, fp);
@@ -314,7 +314,7 @@ static int32_t LoadObjects(MYFILE *fp)
 
                 case AC_SOUND_FX:
                 case AC_EFFECT:
-                    (*command) *= ANIM_SCALE;
+                    (*command) *= AnimScale;
                     command += 2;
                     break;
                 }
