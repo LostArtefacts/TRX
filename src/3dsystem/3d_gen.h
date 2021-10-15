@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
 #define phd_InitPolyList        ((void          (*)())0x00402470)
 // clang-format on
 
@@ -34,6 +33,8 @@ void phd_PushMatrix();
 void phd_PushUnitMatrix();
 void phd_PopMatrix();
 void phd_PutPolygons(const int16_t *obj_ptr, int clip);
+
+void S_InsertRoom(const int16_t *obj_ptr);
 
 const int16_t *calc_object_vertices(const int16_t *obj_ptr);
 const int16_t *calc_vertice_light(const int16_t *obj_ptr);

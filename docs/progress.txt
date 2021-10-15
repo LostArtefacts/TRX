@@ -21,7 +21,7 @@ phd_TranslateRel                0x004018F0  0x000000AB  +
 phd_TranslateAbs                0x004019A0  0x0000007A  +
 phd_VisibleZClip                0x00401A20  0x000000A9  +
 phd_PutPolygons                 0x00401AD0  0x000000F3  +
-S_InsertRoom                    0x00401BD0  0x0000006E  *
+S_InsertRoom                    0x00401BD0  0x0000006E  +
 calc_object_vertices            0x00401C40  0x000001B6  +
 calc_vertice_light              0x00401E00  0x00000165  +
 calc_roomvert                   0x00401F70  0x00000428  +
@@ -57,8 +57,8 @@ wgtmap_persp16_fp               0x00403770  0x00000637  x
 # ???
 sub_403DB0                      0x00403DB0  0x0000029A  x
 sub_404050                      0x00404050  0x0000068B  x
-sub_4046E0                      0x004046E0  0x000006BC  -
-sub_404DA0                      0x00404DA0  0x0000058F  -
+sub_4046E0                      0x004046E0  0x000006BC  x
+sub_404DA0                      0x00404DA0  0x0000058F  x
 sub_405330                      0x00405330  0x000006BB  x
 sub_4059F0                      0x004059F0  0x00000594  x
 sub_405F90                      0x00405F90  0x0000041B  x
@@ -825,7 +825,7 @@ ReadSG                          ----------  ----------  +
 S_DrawSprite                    0x00435910  0x0000025E  +
 S_DrawSpriteRel                 0x00435B70  0x00000207  +
 S_DrawUISprite                  0x00435D80  0x0000014D  +
-ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
+ins_room_sprite                 0x00435ED0  0x000001CD  *
 draw_scaled_spriteC             0x004360A0  0x000001FB  x
 
 # setup.cpp

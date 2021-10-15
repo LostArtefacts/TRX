@@ -1,5 +1,6 @@
 #include "3dsystem/3d_gen.h"
 
+#include "3dsystem/scalespr.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "global/const.h"
@@ -635,6 +636,18 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
         obj_ptr = HWR_InsertObjectG4(obj_ptr + 1, *obj_ptr);
         obj_ptr = HWR_InsertObjectG3(obj_ptr + 1, *obj_ptr);
     }
+}
+
+void S_InsertRoom(const int16_t *obj_ptr)
+{
+    FltWinLeft = PhdLeft;
+    FltWinRight = PhdRight;
+    FltWinTop = PhdTop;
+    FltWinBottom = PhdBottom;
+    obj_ptr = calc_roomvert(obj_ptr);
+    obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = ins_room_sprite(obj_ptr + 1, *obj_ptr);
 }
 
 void T1MInject3DSystem3DGen()
