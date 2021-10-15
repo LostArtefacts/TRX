@@ -14,8 +14,6 @@
 #define MAX_UI_SCALE 2.0
 #define DEFAULT_UI_SCALE 1.0
 
-//#define ANIM_SCALE 2 //this is now in vars
-
 #define FRAMES_PER_SECOND (30 * ANIM_SCALE)
 #define TICKS_PER_FRAME 2
 #define TICKS_PER_SECOND (FRAMES_PER_SECOND * TICKS_PER_FRAME)
@@ -213,12 +211,10 @@
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
 
-#define VIEW_NEAR 127 / ANIM_SCALE
+#define VIEW_NEAR (127 / ANIM_SCALE)
 #define VIEW_FAR (0x14 * 0x400)
-//#define DEPTH_Q_END (20 * 1024)
 #define DEPTH_Q_END (40 * 1024)
-//#define DEPTH_Q_START ((DEPTH_Q_END) - (8 * 1024))
-#define DEPTH_Q_START ((DEPTH_Q_END - 1024)) // - (16 * 1024))
+#define DEPTH_Q_START ((DEPTH_Q_END - 1024))
 
 #define NO_ACTION 0
 #define GAME_ACTION 1
