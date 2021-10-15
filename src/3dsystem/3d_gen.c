@@ -652,7 +652,7 @@ void S_InsertRoom(const int16_t *obj_ptr)
     obj_ptr = calc_roomvert(obj_ptr);
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
-    obj_ptr = ins_room_sprite(obj_ptr + 1, *obj_ptr);
+    obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
 void T1MInject3DSystem3DGen()
