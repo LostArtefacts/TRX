@@ -205,8 +205,8 @@ void T1MInjectGameLaraGun2();
 
 void LaraSetFloatPosFromFixed();
 
-extern PHD_3DPOS_F lara_float_pos;
-extern double lara_fall_speed_f;
-extern double lara_speed_F;
+extern PHD_3DPOS_F LaraFloatPos;
+extern double LaraFallSpeedF;
+extern double LaraSpeedF;
 
 #endif

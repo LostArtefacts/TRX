@@ -110,6 +110,4 @@ int16_t InvChosen = -1;
 
 int16_t BarOffsetY[6];
 
-int32_t LaraSpeedError =
-    0; // this is used to help with speed fix-ups when in 60fps mode
 int16_t ANIM_SCALE = 1;

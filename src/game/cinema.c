@@ -17,7 +17,7 @@
 static int32_t OldSoundIsActive;
 static const int32_t CinematicAnimationRate = 0x8000;
 
-extern PHD_3DPOS_F lara_float_pos;
+extern PHD_3DPOS_F LaraFloatPos;
 
 int32_t StartCinematic(int32_t level_num)
 {
@@ -50,9 +50,9 @@ int32_t StopCinematic(int32_t level_num)
     S_SoundStopAllSamples();
     SoundIsActive = OldSoundIsActive;
 
-    lara_float_pos.x = LaraItem->pos.x;
-    lara_float_pos.y = LaraItem->pos.y;
-    lara_float_pos.z = LaraItem->pos.z;
+    LaraFloatPos.x = LaraItem->pos.x;
+    LaraFloatPos.y = LaraItem->pos.y;
+    LaraFloatPos.z = LaraItem->pos.z;
 
     LevelComplete = 1;
     S_FadeInInventory(1);

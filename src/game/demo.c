@@ -11,7 +11,7 @@
 #include "specific/frontend.h"
 #include "util.h"
 
-extern PHD_3DPOS_F lara_float_pos;
+extern PHD_3DPOS_F LaraFloatPos;
 
 uint32_t demo_frame_delay = 0;
 int32_t StartDemo()
@@ -78,9 +78,9 @@ void LoadLaraDemoPos()
     int16_t room_num = DemoPtr[6];
     DemoCount += 7;
 
-    lara_float_pos.x = item->pos.x;
-    lara_float_pos.y = item->pos.y;
-    lara_float_pos.z = item->pos.z;
+    LaraFloatPos.x = item->pos.x;
+    LaraFloatPos.y = item->pos.y;
+    LaraFloatPos.z = item->pos.z;
 
     if (item->room_number != room_num) {
         ItemNewRoom(Lara.item_number, room_num);
