@@ -6,9 +6,6 @@
 #include <stdint.h>
 
 // clang-format off
-#define S_InsertRoom            ((void          (*)(int16_t* objptr))0x00401BD0)
-#define phd_PutPolygons         ((void          (*)(const int16_t* objptr, int clip))0x00401AD0)
-#define phd_InitPolyList        ((void          (*)())0x00402470)
 // clang-format on
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos);
@@ -23,7 +20,7 @@ void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz);
 void phd_RotYXZpack(int32_t rots);
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
-int32_t visible_zclip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
+int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
@@ -35,9 +32,14 @@ void phd_PushMatrix();
 void phd_PushUnitMatrix();
 void phd_PopMatrix();
 
-int16_t *calc_object_vertices(int16_t *obj_ptr);
-int16_t *calc_vertice_light(int16_t *obj_ptr);
-int16_t *calc_roomvert(int16_t *obj_ptr);
+void phd_InitPolyList();
+void phd_PutPolygons(const int16_t *obj_ptr, int clip);
+
+void S_InsertRoom(const int16_t *obj_ptr);
+
+const int16_t *calc_object_vertices(const int16_t *obj_ptr);
+const int16_t *calc_vertice_light(const int16_t *obj_ptr);
+const int16_t *calc_roomvert(const int16_t *obj_ptr);
 
 void T1MInject3DSystem3DGen();
 

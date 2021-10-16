@@ -1,9 +1,11 @@
 #include "3dsystem/3d_gen.h"
 
+#include "3dsystem/scalespr.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "specific/hwr.h"
 #include "specific/output.h"
 #include "util.h"
 
@@ -312,7 +314,7 @@ void phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
     mptr->_23 = mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
 }
 
-int32_t visible_zclip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
+int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 {
     double v1x = vn1->xv;
     double v1y = vn1->yv;
@@ -424,7 +426,7 @@ void phd_PopMatrix()
     PhdMatrixPtr--;
 }
 
-int16_t *calc_object_vertices(int16_t *obj_ptr)
+const int16_t *calc_object_vertices(const int16_t *obj_ptr)
 {
     int16_t total_clip = -1;
 
@@ -489,7 +491,7 @@ int16_t *calc_object_vertices(int16_t *obj_ptr)
     return total_clip == 0 ? obj_ptr : NULL;
 }
 
-int16_t *calc_vertice_light(int16_t *obj_ptr)
+const int16_t *calc_vertice_light(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
@@ -533,7 +535,7 @@ int16_t *calc_vertice_light(int16_t *obj_ptr)
     return obj_ptr;
 }
 
-int16_t *calc_roomvert(int16_t *obj_ptr)
+const int16_t *calc_roomvert(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
 
@@ -618,6 +620,41 @@ int16_t *calc_roomvert(int16_t *obj_ptr)
     return obj_ptr;
 }
 
+void phd_InitPolyList()
+{
+    HWR_InitPolyList();
+}
+
+void phd_PutPolygons(const int16_t *obj_ptr, int clip)
+{
+    obj_ptr += 4;
+    obj_ptr = calc_object_vertices(obj_ptr);
+    if (obj_ptr) {
+        FltWinTop = 0.0;
+        FltWinLeft = 0.0;
+        FltWinRight = PhdWinMaxX;
+        FltWinBottom = PhdWinMaxY;
+
+        obj_ptr = calc_vertice_light(obj_ptr);
+        obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
+        obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
+        obj_ptr = HWR_InsertObjectG4(obj_ptr + 1, *obj_ptr);
+        obj_ptr = HWR_InsertObjectG3(obj_ptr + 1, *obj_ptr);
+    }
+}
+
+void S_InsertRoom(const int16_t *obj_ptr)
+{
+    FltWinLeft = PhdLeft;
+    FltWinRight = PhdRight;
+    FltWinTop = PhdTop;
+    FltWinBottom = PhdBottom;
+    obj_ptr = calc_roomvert(obj_ptr);
+    obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
+}
+
 void T1MInject3DSystem3DGen()
 {
     INJECT(0x00401000, phd_GenerateW2V);
@@ -630,11 +667,13 @@ void T1MInject3DSystem3DGen()
     INJECT(0x004016F0, phd_RotYXZpack);
     INJECT(0x004018F0, phd_TranslateRel);
     INJECT(0x004019A0, phd_TranslateAbs);
-    INJECT(0x00401A20, visible_zclip);
+    INJECT(0x00401A20, phd_VisibleZClip);
+    INJECT(0x00401AD0, phd_PutPolygons);
     INJECT(0x00401C40, calc_object_vertices);
     INJECT(0x00401E00, calc_vertice_light);
     INJECT(0x00401F70, calc_roomvert);
     INJECT(0x004023A0, phd_RotateLight);
+    INJECT(0x00402470, phd_InitPolyList);
     INJECT(0x004025D0, phd_InitWindow);
     INJECT(0x004026D0, AlterFOV);
     INJECT(0x0043EA01, phd_PushMatrix);

@@ -83,7 +83,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     if (flags != SPM_ALWAYS
-        && (flags & RF_UNDERWATER)
+        && (flags & SPM_UNDERWATER)
             != (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER)) {
         return 0;
     }
