@@ -198,7 +198,9 @@ void InGameCinematicCamera()
         CineFrame = lastFrameNum;
     }
 
-    int16_t *ptr = &Cine[8 * CineFrame / AnimScale];
+    int16_t *ptr = &Cine[8 * (CineFrame / AnimScale)]; //these brackets are 
+                                                       //needed, it crashes 
+                                                       //otherwise
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
