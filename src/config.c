@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
@@ -191,6 +192,18 @@ int8_t T1MReadConfig()
     fp = NULL;
 
     result = T1MReadConfigFromJson(cfg_data);
+
+    if (T1MConfig.resolution_width > 0) {
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+            T1MConfig.resolution_width;
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+            T1MConfig.resolution_height;
+    } else {
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+            GetSystemMetrics(SM_CXSCREEN);
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+            GetSystemMetrics(SM_CYSCREEN);
+    }
 
 cleanup:
     if (fp) {

@@ -23,6 +23,8 @@
 #define Surface1                VAR_U_(0x005DA6A4, LPDIRECTDRAWSURFACE)
 #define Surface2                VAR_U_(0x005DB484, LPDIRECTDRAWSURFACE)
 #define Surface3                VAR_U_(0x005DA744, LPDIRECTDRAWSURFACE)
+#define Surface4                VAR_U_(0x00463608, LPDIRECTDRAWSURFACE)
+#define TextureSurfaces         ARRAY_(0x005DA6C0, LPDIRECTDRAWSURFACE, [32])
 #define Surface1DrawPtr         VAR_U_(0x00463564, void*)
 #define Surface2DrawPtr         VAR_U_(0x005DB480, void*)
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)

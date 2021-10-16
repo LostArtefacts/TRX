@@ -57,11 +57,11 @@
 <rect width="12.00" height="12.00" x="56.00" y="31.00" class="decompiled"><title>HWR_RenderToggle</title></rect>
 <rect width="12.00" height="12.00" x="70.00" y="31.00" class="named"><title>HWR_GetSurfaceAndPitch</title></rect>
 <rect width="12.00" height="12.00" x="84.00" y="31.00" class="named"><title>HWR_SetupRenderContextAndRender2</title></rect>
-<rect width="12.00" height="12.00" x="98.00" y="31.00" class="named"><title>HWR_SetupRenderContextAndRender</title></rect>
+<rect width="12.00" height="12.00" x="98.00" y="31.00" class="decompiled"><title>HWR_SetupRenderContextAndRender</title></rect>
 <rect width="12.00" height="12.00" x="112.00" y="31.00" class="decompiled"><title>HWR_FlipPrimaryBuffer</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="31.00" class="decompiled"><title>HWR_ClearSurface</title></rect>
 <rect width="12.00" height="12.00" x="140.00" y="31.00" class="named"><title>HWR_ReleaseSurfaces</title></rect>
-<rect width="12.00" height="12.00" x="154.00" y="31.00" class="named"><title>HWR_SetHardwareVideoMode</title></rect>
+<rect width="12.00" height="12.00" x="154.00" y="31.00" class="decompiled"><title>HWR_SetHardwareVideoMode</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="31.00" class="named"><title>HWR_InitialiseHardware</title></rect>
 <rect width="12.00" height="12.00" x="182.00" y="31.00" class="named"><title>HWR_ShutdownHardware</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="31.00" class="named"><title>HWR_PrepareFMV</title></rect>
@@ -768,7 +768,7 @@
 <rect width="26.69" height="26.89" x="231.38" y="423.56" class="decompiled"><title>S_DrawLightningSegment</title></rect>
 <rect width="26.69" height="26.71" x="231.38" y="452.45" class="decompiled"><title>LoadObjects</title></rect>
 <rect width="26.69" height="26.45" x="231.38" y="481.16" class="decompiled"><title>DoDetailOptionHW</title></rect>
-<rect width="26.69" height="26.39" x="231.38" y="509.61" class="named"><title>HWR_SetHardwareVideoMode</title></rect>
+<rect width="26.69" height="26.39" x="231.38" y="509.61" class="decompiled"><title>HWR_SetHardwareVideoMode</title></rect>
 <rect width="26.53" height="26.52" x="260.07" y="269.00" class="decompiled"><title>LoadLevel</title></rect>
 <rect width="26.53" height="26.25" x="260.07" y="297.52" class="decompiled"><title>calc_roomvert</title></rect>
 <rect width="26.53" height="25.91" x="260.07" y="325.77" class="decompiled"><title>sub_405F90</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 96.08%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 94.65%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 3.22%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 2.92%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 96.22%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.09%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 3.08%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 2.48%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.70%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.43%</text>
 </svg>

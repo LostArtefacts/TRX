@@ -64,6 +64,8 @@ typedef struct {
     int8_t disable_demo;
     int8_t disable_fmv;
     int8_t disable_cine;
+    int32_t resolution_width;
+    int32_t resolution_height;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;

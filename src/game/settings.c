@@ -78,8 +78,9 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         RenderSettings &= ~RSF_PERSPECTIVE;
     }
 
-    GameHiRes = json_object_get_number_int(root_obj, "hi_res", 3);
-    CLAMP(GameHiRes, 0, 3);
+    GameHiRes =
+        json_object_get_number_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+    CLAMP(GameHiRes, 0, RESOLUTIONS_SIZE - 1);
 
     GameSizer = json_object_get_number_double(root_obj, "game_sizer", 1.0);
 

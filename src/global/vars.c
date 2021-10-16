@@ -112,3 +112,7 @@ int32_t InvExtraData[8];
 int16_t InvChosen = -1;
 
 int16_t BarOffsetY[6];
+
+HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE] = {
+    { 320, 200 }, { 512, 384 }, { 640, 480 }, { 800, 600 }, { -1, -1 },
+};

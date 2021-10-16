@@ -305,4 +305,6 @@ extern int16_t InvChosen;
 
 extern int16_t BarOffsetY[6];
 
+extern HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE];
+
 #endif

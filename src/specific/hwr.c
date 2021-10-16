@@ -748,22 +748,102 @@ void HWR_FadeWait()
 
 void HWR_SwitchResolution()
 {
-    if (HiRes == 0) {
-        GameVidWidth = 320;
-        GameVidHeight = 200;
-    } else if (HiRes == 1) {
-        GameVidWidth = 512;
-        GameVidHeight = 384;
-    } else if (HiRes == 3) {
-        GameVidWidth = GetSystemMetrics(SM_CXSCREEN);
-        GameVidHeight = GetSystemMetrics(SM_CYSCREEN);
-    } else {
-        GameVidWidth = 640;
-        GameVidHeight = 480;
-    }
+    GameVidWidth = AvailableResolutions[HiRes].width;
+    GameVidHeight = AvailableResolutions[HiRes].height;
 
     HWR_SetHardwareVideoMode();
     SetupScreenSize();
+}
+
+int32_t HWR_SetHardwareVideoMode()
+{
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    LOG_INFO("SetHardwareVideoMode:");
+    HWR_ReleaseSurfaces();
+
+    DDrawSurfaceWidth = AvailableResolutions[HiRes].width;
+    DDrawSurfaceHeight = AvailableResolutions[HiRes].height;
+    DDrawSurfaceMaxX = AvailableResolutions[HiRes].width - 1.0f;
+    DDrawSurfaceMaxY = AvailableResolutions[HiRes].height - 1.0f;
+
+    LOG_INFO("    Switching to %dx%d", DDrawSurfaceWidth, DDrawSurfaceHeight);
+    result = IDirectDraw_SetDisplayMode(
+        DDraw, DDrawSurfaceWidth, DDrawSurfaceHeight, 16);
+    HWR_CheckError(result);
+
+    LOG_INFO("    Allocating front/back buffers");
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE
+        | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
+    surface_desc.dwBackBufferCount = 1;
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, 0);
+    HWR_CheckError(result);
+
+    HWR_ClearSurface(Surface1);
+    LOG_INFO("    Picking up back buffer");
+    DDSCAPS caps = { DDSCAPS_BACKBUFFER };
+    result = IDirectDrawSurface_GetAttachedSurface(Surface1, &caps, &Surface2);
+    HWR_CheckError(result);
+
+    HWR_ClearSurface(Surface2);
+    LOG_INFO("    Allocating Z-buffer");
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    surface_desc.dwFlags =
+        DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_ZBUFFERBITDEPTH;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY;
+    surface_desc.dwWidth = DDrawSurfaceWidth;
+    surface_desc.dwHeight = DDrawSurfaceHeight;
+    surface_desc.dwZBufferBitDepth = 16;
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface4, 0);
+    HWR_CheckError(result);
+
+    LOG_INFO("    Creating texture surfaces");
+    for (int i = 0; i < 16; i++) {
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        surface_desc.dwFlags =
+            DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
+        surface_desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_VIDEOMEMORY;
+        surface_desc.ddpfPixelFormat.dwSize = 32;
+        surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
+        surface_desc.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
+        surface_desc.dwWidth = 256;
+        surface_desc.dwHeight = 256;
+        result = IDirectDraw2_CreateSurface(
+            DDraw, &surface_desc, &TextureSurfaces[i], 0);
+        HWR_CheckError(result);
+    }
+
+    void *surface;
+    int32_t pitch;
+    HWR_GetSurfaceAndPitch(Surface2, &Surface2DrawPtr, &pitch);
+    HWR_GetSurfaceAndPitch(Surface1, &Surface1DrawPtr, &pitch);
+    LOG_INFO(
+        "Pitch = %x Draw1Ptr = %x Draw2Ptr = %x", pitch, Surface1DrawPtr,
+        Surface2DrawPtr);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PITCH, &pitch);
+    HWR_SetupRenderContextAndRender();
+
+    HWR_RenderEnd();
+    HWR_GetSurfaceAndPitch(Surface4, &surface, &pitch);
+    HWR_RenderToggle();
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_Z_PTR, &surface);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_Z_PITCH, &pitch);
+
+    C3D_RECT viewport;
+    viewport.top = 0;
+    viewport.left = 0;
+    viewport.right = DDrawSurfaceWidth - 1;
+    viewport.bottom = DDrawSurfaceHeight - 1;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_VPORT, &viewport);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_SCISSOR, &viewport);
+    LOG_INFO("    complete");
+    return 1;
 }
 
 void HWR_SetupRenderContextAndRender()
@@ -785,8 +865,10 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407827, HWR_RenderBegin);
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
+    INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
     INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
@@ -800,5 +882,4 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
-    INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
 }
