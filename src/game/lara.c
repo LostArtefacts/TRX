@@ -951,7 +951,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
         } else if (
             (item->frame_number >= 22 * AnimScale
              && item->frame_number <= 28 * AnimScale)
-            || (item->frame_number >= 48 * AnimScale)
+            || (item->frame_number >= 48 * AnimScale
                 && item->frame_number <= 57 * AnimScale)) {
             item->anim_number = AA_STOP_LEFT;
             item->frame_number = AF_STOP_LEFT * AnimScale;
