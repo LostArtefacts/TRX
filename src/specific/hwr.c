@@ -140,7 +140,7 @@ void HWR_DownloadPicture()
     }
 
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = 108;
+    surface_desc.dwSize = sizeof(surface_desc);
 
     result =
         IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
@@ -766,6 +766,19 @@ void HWR_SwitchResolution()
     SetupScreenSize();
 }
 
+void HWR_SetupRenderContextAndRender()
+{
+    HWR_RenderBegin();
+    ATI3DCIF_ContextSetState(
+        ATIRenderContext, C3D_ERS_SURF_DRAW_PTR, &Surface2DrawPtr);
+    int32_t filter = RenderSettings & RSF_BILINEAR ? 3 : 0;
+    int32_t perspective = RenderSettings & RSF_PERSPECTIVE ? 2 : 0;
+    ATI3DCIF_ContextSetState(
+        ATIRenderContext, C3D_ERS_TMAP_PERSP_COR, &perspective);
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &filter);
+    HWR_RenderToggle();
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -787,4 +800,5 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
+    INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
 }
