@@ -36,14 +36,14 @@ void GameMain()
     ScreenSizer = 1.0;
     GameSizer = 1.0;
 
-    const char *gameflow_path = "cfg/Tomb1Main_gameflow.json5";
+    const char *gameflow_path = T1MGameflowPath;
 
     char **args;
     int arg_count;
     get_command_line(&args, &arg_count);
     for (int i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
-            gameflow_path = "cfg/Tomb1Main_gameflow_ub.json5";
+            gameflow_path = T1MGameflowGoldPath;
         }
     }
 

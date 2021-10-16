@@ -62,6 +62,8 @@ void T1MPrintStackTrace()
     stack.AddrFrame.Offset = context.Ebp;
     stack.AddrFrame.Mode = AddrModeFlat;
 
+    SymInitialize(process, NULL, 1);
+
     for (frame = 0;; frame++) {
         result = StackWalk64(
             IMAGE_FILE_MACHINE_I386, process, thread, &stack, &context, NULL,
@@ -91,4 +93,6 @@ void T1MPrintStackTrace()
     }
     free(pSymbol);
     free(name);
+
+    SymCleanup(process);
 }
