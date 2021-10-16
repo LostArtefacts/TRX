@@ -356,9 +356,6 @@ void AnimateLara(ITEM_INFO *item)
     } else // AnimScale = 2
     {
         if (item->gravity_status) {
-            int32_t currentSpeed = item->speed;
-            int32_t currentFallSpeed = item->fall_speed;
-
             double speed = (double)(anim->velocity + anim->acceleration)
                 / AnimScale
                 * (((item->frame_number - anim->frame_base)
@@ -389,9 +386,9 @@ void AnimateLara(ITEM_INFO *item)
         }
 
         LaraFloatPos.x +=
-            (phd_sin_f(Lara.move_angle) * LaraSpeedF) / View2World;
+            phd_sin_f(Lara.move_angle) * LaraSpeedF / View2World;
         LaraFloatPos.z +=
-            (phd_cos_f(Lara.move_angle) * LaraSpeedF) / View2World;
+            phd_cos_f(Lara.move_angle) * LaraSpeedF / View2World;
 
         item->pos.x = LaraFloatPos.x;
         item->pos.z = LaraFloatPos.z;
