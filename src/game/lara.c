@@ -1878,7 +1878,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     PHD_ANGLE angle = ((uint16_t)(item->pos.y_rot + PHD_45)) / PHD_90;
     switch (angle) {
     case DIR_NORTH:
-        item->pos.z += 2; 
+        item->pos.z += 2;
         LaraFloatPos.z += 2;
         break;
 

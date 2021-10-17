@@ -70,10 +70,9 @@ void GetCollisionInfo(
         xright = coll->radius;
         zright = coll->radius;
 
-        if ((objheight == 870 || objheight == SURF_HITE)
-            && AnimScale == 2) { // this is a Horrible hack, when jumping up to
-                                  // catch a ledge for some reason this don't
-                                  // work any more in this quadrant
+        if ((objheight == 870 || objheight == SURF_HITE) && AnimScale == 2) {
+            // XXX: this is a horrible hack, when jumping up to catch a ledge
+            // for some reason this don't work any more in this quadrant
             extraZ = 10;
         }
         break;
@@ -85,10 +84,9 @@ void GetCollisionInfo(
         zleft = coll->radius;
         xright = coll->radius;
         zright = -coll->radius;
-        if ((objheight == 870 || objheight == SURF_HITE)
-            && AnimScale == 2) { // this is a Horrible hack, when jumping up to
-                                  // catch a ledge for some reason this don't
-                                  // work any more in this quadrant
+        if ((objheight == 870 || objheight == SURF_HITE) && AnimScale == 2) {
+            // XXX: this is a horrible hack, when jumping up to catch a ledge
+            // for some reason this don't work any more in this quadrant
             extraX = 10;
         }
         break;

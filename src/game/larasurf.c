@@ -64,10 +64,10 @@ void LaraSurface(ITEM_INFO *item, COLL_INFO *coll)
 
     AnimateLara(item);
     if (AnimScale == 2) {
-        LaraFloatPos.x += (phd_sin_f(Lara.move_angle) * LaraFallSpeedF)
-            / (View2World * 2.0);
-        LaraFloatPos.z += (phd_cos_f(Lara.move_angle) * LaraFallSpeedF)
-            / (View2World * 2.0);
+        LaraFloatPos.x +=
+            (phd_sin_f(Lara.move_angle) * LaraFallSpeedF) / (View2World * 2.0);
+        LaraFloatPos.z +=
+            (phd_cos_f(Lara.move_angle) * LaraFallSpeedF) / (View2World * 2.0);
 
         item->pos.x = LaraFloatPos.x;
         item->pos.z = LaraFloatPos.z;

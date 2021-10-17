@@ -73,10 +73,10 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         LaraFloatPos.y -=
             (phd_sin_f(item->pos.x_rot) * LaraFallSpeedF) / (View2World * 4);
         LaraFloatPos.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
-                             / (View2World * 4) * phd_cos_f(item->pos.x_rot))
+                           / (View2World * 4) * phd_cos_f(item->pos.x_rot))
             / View2World;
         LaraFloatPos.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
-                             / (View2World * 4) * phd_cos_f(item->pos.x_rot))
+                           / (View2World * 4) * phd_cos_f(item->pos.x_rot))
             / View2World;
 
         item->pos.y = LaraFloatPos.y;
