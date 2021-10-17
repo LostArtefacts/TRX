@@ -1678,6 +1678,17 @@ typedef struct OBJECT_INFO {
     /* 0032 end */
 } OBJECT_INFO;
 
+typedef struct SHADOW_INFO {
+    /* 0000 */ int16_t x;
+    /* 0002 */ int16_t y;
+    /* 0004 */ int16_t z;
+    /* 0006 */ int16_t radius;
+    /* 0008 */ int16_t poly_count;
+    /* 000A */ int16_t vertex_count;
+    /* 000C */ POS_3D vertex[8];
+    /* 003C end */
+} SHADOW_INFO;
+
 typedef struct STATIC_INFO {
     /* 0000 */ int16_t mesh_number;
     /* 0002 */ int16_t flags;

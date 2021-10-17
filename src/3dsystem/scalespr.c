@@ -95,9 +95,37 @@ void S_DrawUISprite(
     }
 }
 
+const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
+{
+    for (int i = 0; i < vertex_count; i++) {
+        int16_t vbuf_num = obj_ptr[0];
+        int16_t sprnum = obj_ptr[1];
+        obj_ptr += 2;
+
+        PHD_VBUF *vbuf = &PhdVBuf[vbuf_num];
+        if (vbuf->clip < 0) {
+            continue;
+        }
+
+        int32_t zv = vbuf->zv;
+        PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+        int32_t zp = (zv / PhdPersp);
+        int32_t x1 = PhdCenterX + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+        int32_t y1 = PhdCenterY + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+        int32_t x2 = PhdCenterX + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+        int32_t y2 = PhdCenterY + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+        if (x2 >= PhdLeft && y2 >= PhdTop && x1 < PhdRight && y1 < PhdBottom) {
+            HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
+        }
+    }
+
+    return obj_ptr;
+}
+
 void T1MInject3DSystemScaleSpr()
 {
     INJECT(0x00435910, S_DrawSprite);
     INJECT(0x00435B70, S_DrawSpriteRel);
     INJECT(0x00435D80, S_DrawUISprite);
+    INJECT(0x00435ED0, S_DrawRoomSprites);
 }

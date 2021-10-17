@@ -467,6 +467,138 @@ void S_DrawLightningSegment(
     }
 }
 
+void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
+{
+    int32_t x0 = bptr[0];
+    int32_t x1 = bptr[1];
+    int32_t y0 = bptr[4];
+    int32_t y1 = bptr[5];
+
+    int32_t x_mid = (x0 + x1) / 2;
+    int32_t y_mid = (y0 + y1) / 2;
+
+    int32_t x_add = size * (x1 - x0) / 1024;
+    int32_t y_add = size * (y1 - y0) / 1024;
+
+    ShadowInfo.vertex[0].x = x_mid - x_add;
+    ShadowInfo.vertex[0].z = y_mid + 2 * y_add;
+    ShadowInfo.vertex[1].x = x_mid + x_add;
+    ShadowInfo.vertex[1].z = ShadowInfo.vertex[0].z;
+    ShadowInfo.vertex[2].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[2].z = y_add + y_mid;
+    ShadowInfo.vertex[3].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[3].z = y_mid - y_add;
+    ShadowInfo.vertex[4].x = x_mid + x_add;
+    ShadowInfo.vertex[4].z = y_mid - 2 * y_add;
+    ShadowInfo.vertex[5].x = x_mid - x_add;
+    ShadowInfo.vertex[5].z = ShadowInfo.vertex[4].z;
+    ShadowInfo.vertex[6].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[6].z = y_mid - y_add;
+    ShadowInfo.vertex[7].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[7].z = y_add + y_mid;
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    phd_RotY(item->pos.y_rot);
+    if (calc_object_vertices(&ShadowInfo.poly_count)) {
+        HWR_PrintShadow(&PhdVBuf[0], 0);
+    }
+    phd_PopMatrix();
+}
+
+int S_GetObjectBounds(int16_t *bptr)
+{
+    if (PhdMatrixPtr->_23 >= PhdFarZ) {
+        return 0;
+    }
+
+    int32_t x_min = bptr[0];
+    int32_t x_max = bptr[1];
+    int32_t y_min = bptr[2];
+    int32_t y_max = bptr[3];
+    int32_t z_min = bptr[4];
+    int32_t z_max = bptr[5];
+
+    PHD_VECTOR vtx[8];
+    vtx[0].x = x_min;
+    vtx[0].y = y_min;
+    vtx[0].z = z_min;
+    vtx[1].x = x_max;
+    vtx[1].y = y_min;
+    vtx[1].z = z_min;
+    vtx[2].x = x_max;
+    vtx[2].y = y_max;
+    vtx[2].z = z_min;
+    vtx[3].x = x_min;
+    vtx[3].y = y_max;
+    vtx[3].z = z_min;
+    vtx[4].x = x_min;
+    vtx[4].y = y_min;
+    vtx[4].z = z_max;
+    vtx[5].x = x_max;
+    vtx[5].y = y_min;
+    vtx[5].z = z_max;
+    vtx[6].x = x_max;
+    vtx[6].y = y_max;
+    vtx[6].z = z_max;
+    vtx[7].x = x_min;
+    vtx[7].y = y_max;
+    vtx[7].z = z_max;
+
+    int num_z = 0;
+    x_min = 0x3FFFFFFF;
+    y_min = 0x3FFFFFFF;
+    x_max = -0x3FFFFFFF;
+    y_max = -0x3FFFFFFF;
+
+    for (int i = 0; i < 8; i++) {
+        int32_t zv = PhdMatrixPtr->_20 * vtx[i].x + PhdMatrixPtr->_21 * vtx[i].y
+            + PhdMatrixPtr->_22 * vtx[i].z + PhdMatrixPtr->_23;
+
+        if (zv > PhdNearZ && zv < PhdFarZ) {
+            ++num_z;
+            int32_t zp = zv / PhdPersp;
+            int32_t xv =
+                (PhdMatrixPtr->_00 * vtx[i].x + PhdMatrixPtr->_01 * vtx[i].y
+                 + PhdMatrixPtr->_02 * vtx[i].z + PhdMatrixPtr->_03)
+                / zp;
+            int32_t yv =
+                (PhdMatrixPtr->_10 * vtx[i].x + PhdMatrixPtr->_11 * vtx[i].y
+                 + PhdMatrixPtr->_12 * vtx[i].z + PhdMatrixPtr->_13)
+                / zp;
+
+            if (x_min > xv) {
+                x_min = xv;
+            } else if (x_max < xv) {
+                x_max = xv;
+            }
+
+            if (y_min > yv) {
+                y_min = yv;
+            } else if (y_max < yv) {
+                y_max = yv;
+            }
+        }
+    }
+
+    x_min += PhdCenterX;
+    x_max += PhdCenterX;
+    y_min += PhdCenterY;
+    y_max += PhdCenterY;
+
+    if (!num_z || x_min > PhdRight || y_min > PhdBottom || x_max < PhdLeft
+        || y_max < PhdTop) {
+        return 0; // out of screen
+    }
+
+    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > PhdWinMaxX
+        || y_max > PhdWinMaxY) {
+        return -1; // clipped
+    }
+
+    return 1; // fully on screen
+}
+
 void T1MInjectSpecificOutput()
 {
     INJECT(0x0042FC60, S_InitialisePolyList);
@@ -474,6 +606,8 @@ void T1MInjectSpecificOutput()
     INJECT(0x0042FCC0, S_ClearScreen);
     INJECT(0x0042FCE0, S_InitialiseScreen);
     INJECT(0x0042FD10, S_OutputPolyList);
+    INJECT(0x0042FD30, S_GetObjectBounds);
+    INJECT(0x0042FFA0, S_PrintShadow);
     INJECT(0x00430100, S_CalculateLight);
     INJECT(0x00430290, S_CalculateStaticLight);
     INJECT(0x004302D0, S_DrawHealthBar);

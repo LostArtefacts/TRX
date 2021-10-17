@@ -1,7 +1,6 @@
 #include "game/draw.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/3d_insert.h"
 #include "3dsystem/scalespr.h"
 #include "game/game.h"
 #include "game/hair.h"

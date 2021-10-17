@@ -19,15 +19,15 @@ phd_RotYXZ                      0x00401500  0x000001E8  +
 phd_RotYXZpack                  0x004016F0  0x000001F3  +
 phd_TranslateRel                0x004018F0  0x000000AB  +
 phd_TranslateAbs                0x004019A0  0x0000007A  +
-HWR_VisibleZClip                0x00401A20  0x000000A9  +
-phd_PutPolygons                 0x00401AD0  0x000000F3  *
-S_InsertRoom                    0x00401BD0  0x0000006E  *
+phd_VisibleZClip                0x00401A20  0x000000A9  +
+phd_PutPolygons                 0x00401AD0  0x000000F3  +
+S_InsertRoom                    0x00401BD0  0x0000006E  +
 calc_object_vertices            0x00401C40  0x000001B6  +
 calc_vertice_light              0x00401E00  0x00000165  +
 calc_roomvert                   0x00401F70  0x00000428  +
 phd_RotateLight                 0x004023A0  0x000000CF  +
 phd_PointLight                  ----------  ----------  x
-phd_InitPolyList                0x00402470  0x0000002D  *
+phd_InitPolyList                0x00402470  0x0000002D  +
 phd_SortPolyList                0x004024A0  0x0000002F  x
 do_quickysorty                  0x004024D0  0x000000C5  x
 phd_PrintPolyList               ----------  ----------  x
@@ -57,17 +57,17 @@ wgtmap_persp16_fp               0x00403770  0x00000637  x
 # ???
 sub_403DB0                      0x00403DB0  0x0000029A  x
 sub_404050                      0x00404050  0x0000068B  x
-sub_4046E0                      0x004046E0  0x000006BC  -
-sub_404DA0                      0x00404DA0  0x0000058F  -
-sub_405330                      0x00405330  0x000006BB  -
-sub_4059F0                      0x004059F0  0x00000594  -
-sub_405F90                      0x00405F90  0x0000041B  -
-sub_4063B0                      0x004063B0  0x0000035B  -
+sub_4046E0                      0x004046E0  0x000006BC  x
+sub_404DA0                      0x00404DA0  0x0000058F  x
+sub_405330                      0x00405330  0x000006BB  x
+sub_4059F0                      0x004059F0  0x00000594  x
+sub_405F90                      0x00405F90  0x0000041B  x
+sub_4063B0                      0x004063B0  0x0000035B  x
 XYGClipper                      0x00406710  0x000003C2  x
-ins_objectG4                    0x00406AE0  0x000002AE  -
-ins_objectG3                    0x00406D90  0x0000023E  -
+sub_406AE0                      0x00406AE0  0x000002AE  x
+sub_406D90                      0x00406D90  0x0000023E  x
 sub_406FD0                      0x00406FD0  0x000002D0  x
-sub_4072A0                      0x004072A0  0x00000523  -
+ins_poly_trans8                 0x004072A0  0x00000523  +
 HWR_Error                       0x004077D0  0x00000034  +
 HWR_RenderBegin_0               0x00407804  0x00000023  +
 HWR_RenderBegin                 0x00407827  0x00000014  +
@@ -92,31 +92,31 @@ HWR_SwitchResolution            0x004089F4  0x0000007C  +
 HWR_DumpScreen                  0x00408A70  0x00000057  +
 HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
-HWR_CopyPicture                 0x00408B85  0x000000B5  *
-HWR_DownloadPicture             0x00408C3A  0x000001D4  *
-sub_408E0E                      0x00408E0E  0x00000024  -
-HWR_FadeWait                    0x00408E32  0x0000000F  *
+HWR_CopyPicture                 0x00408B85  0x000000B5  +
+HWR_DownloadPicture             0x00408C3A  0x000001D4  +
+sub_408E0E                      0x00408E0E  0x00000024  x
+HWR_FadeWait                    0x00408E32  0x0000000F  +
 sub_408E41                      0x00408E41  0x0000002C  x
 HWR_RenderTriangleStrip         0x00408E6D  0x0000006B  +
 sub_408ED8                      0x00408ED8  0x00000118  -
 HWR_SelectTexture               0x00408FF0  0x0000005D  -
 HWR_ClipVertices                0x0040904D  0x00000BC2  +
 sub_409C0F                      0x00409C0F  0x00000335  -
-sub_409F44                      0x00409F44  0x000000D9  -
-sub_40A01D                      0x0040A01D  0x000000A7  -
+HWR_InsertObjectG4              0x00409F44  0x000000D9  -
+HWR_InsertObjectG3              0x0040A01D  0x000000A7  -
 sub_40A0C4                      0x0040A0C4  0x000005ED  -
 HWR_ClipVertices2               0x0040A6B1  0x00000E5F  +
 sub_40B510                      0x0040B510  0x000006D2  -
 sub_40BBE2                      0x0040BBE2  0x00000678  -
-sub_40C25A                      0x0040C25A  0x000000F4  -
-sub_40C34E                      0x0040C34E  0x000000D7  -
+HWR_InsertObjectGT4             0x0040C25A  0x000000F4  *
+HWR_InsertObjectGT3             0x0040C34E  0x000000D7  *
 HWR_DrawSprite                  0x0040C425  0x000003C9  *
 HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
 HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
-HWR_PrintShadow                 0x0040CADB  0x00000182  -
+HWR_PrintShadow                 0x0040CADB  0x00000182  *
 HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
-HWR_InitPolyList                0x0040D0F7  0x00000049  -
+HWR_InitPolyList                0x0040D0F7  0x00000049  *
 HWR_CacheTexture                0x0040D140  0x000001A0  -
 HWR_OutputPolyList              0x0040D2E0  0x00000185  *
 DoNothing                       0x0040D465  0x00000005  -
@@ -161,7 +161,7 @@ FixedCamera                     ----------  ----------  +
 CalculateCamera                 0x00410B40  0x0000055D  +
 
 # cinema.cpp
-LoopCinematic                   ----------  ----------  -
+LoopCinematic                   ----------  ----------  +
 StartCinematic                  0x004110A0  0x00000183  +
 InitCinematicRooms              ----------  ----------  +
 DoCinematic                     0x00411240  0x0000012B  +
@@ -232,19 +232,19 @@ DinoControl                     0x004160F0  0x0000028F  +
 LaraDinoDeath                   0x004163A0  0x000000C1  +
 
 # shell/display.cpp
-IncreaseScreenSize              ----------  ----------  -
-DecreaseScreenSize              ----------  ----------  -
+IncreaseScreenSize              ----------  ----------  x
+DecreaseScreenSize              ----------  ----------  x
 SetupScreenSize                 0x00416470  0x000000D4  +
-switch_resolution               ----------  ----------  -
+switch_resolution               ----------  ----------  x
 TempVideoAdjust                 0x00416550  0x00000277  +
 TempVideoRemove                 0x004167D0  0x00000289  +
-S_CopyScreenToBuffer            ----------  ----------  -
-S_CopyBufferToScreen            0x00416A60  0x000000A7  *
+S_CopyScreenToBuffer            ----------  ----------  x
+S_CopyBufferToScreen            0x00416A60  0x000000A7  +
 S_NoFade                        0x00416B10  0x00000010  +
 S_FadeInInventory               0x00416B20  0x00000082  +
 S_FadeOutInventory              0x00416BB0  0x00000027  +
-FadeToPal                       ----------  ----------  -
-ScreenPartialDump               ----------  ----------  -
+FadeToPal                       ----------  ----------  x
+ScreenPartialDump               ----------  ----------  x
 
 # draw.cpp
 DrawPhaseCinematic              0x00416BE0  0x00000090  +
@@ -377,7 +377,7 @@ DrawPickups                     ----------  ----------  +
 AddDisplayPickup                0x0041E0C0  0x0000003F  +
 
 # shell/init.cpp
-S_OnWindowResized               ----------  ----------  -
+S_OnWindowResized               ----------  ----------  x
 S_InitialiseSystem              0x0041E100  0x0000015B  +
 S_ExitSystem                    0x0041E260  0x00000051  +
 init_game_malloc                0x0041E2C0  0x00000021  +
@@ -745,8 +745,8 @@ S_DumpScreen                    0x0042FC70  0x00000044  +
 S_ClearScreen                   0x0042FCC0  0x00000013  +
 S_InitialiseScreen              0x0042FCE0  0x00000027  +
 S_OutputPolyList                0x0042FD10  0x00000018  +
-S_GetObjectBounds               0x0042FD30  0x0000026C  *
-S_PrintShadow                   0x0042FFA0  0x0000015B  *
+S_GetObjectBounds               0x0042FD30  0x0000026C  +
+S_PrintShadow                   0x0042FFA0  0x0000015B  +
 S_CalculateLight                0x00430100  0x00000183  +
 S_CalculateStaticLight          0x00430290  0x00000031  +
 S_DrawHealthBar                 0x004302D0  0x00000180  +
@@ -825,7 +825,7 @@ ReadSG                          ----------  ----------  +
 S_DrawSprite                    0x00435910  0x0000025E  +
 S_DrawSpriteRel                 0x00435B70  0x00000207  +
 S_DrawUISprite                  0x00435D80  0x0000014D  +
-ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
+S_DrawRoomSprites               0x00435ED0  0x000001CD  +
 draw_scaled_spriteC             0x004360A0  0x000001FB  x
 
 # setup.cpp

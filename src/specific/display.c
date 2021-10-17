@@ -4,6 +4,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "global/vars_platform.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "util.h"
@@ -78,10 +79,20 @@ void S_FadeOutInventory(int32_t fade)
     }
 }
 
+void S_CopyBufferToScreen()
+{
+    HWR_ClearSurfaceDepth();
+    HWR_RenderEnd();
+    HWR_BlitSurface(Surface3, Surface2);
+    HWR_RenderToggle();
+}
+
 void T1MInjectSpecificDisplay()
 {
     INJECT(0x00416470, SetupScreenSize);
     INJECT(0x00416550, TempVideoAdjust);
+    INJECT(0x004167D0, TempVideoRemove);
+    INJECT(0x00416B10, S_NoFade);
     INJECT(0x00416B20, S_FadeInInventory);
     INJECT(0x00416BB0, S_FadeOutInventory);
 }

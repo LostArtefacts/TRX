@@ -9,8 +9,13 @@
 #include <stdint.h>
 
 // clang-format off
+// TODO: decompile me!
 #define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
+#define FltWinTop               VAR_U_(0x0068F3B8, float)
+#define FltWinLeft              VAR_U_(0x00695180, float)
+#define FltWinBottom            VAR_U_(0x0068F3A4, float)
+#define FltWinRight             VAR_U_(0x006E8040, float)
 #define PhdWinPtr               VAR_U_(0x006CAD0C, uint8_t*)
 #define PhdWinMaxX              VAR_U_(0x006CAD00, int32_t)
 #define PhdWinMaxY              VAR_U_(0x006CAD10, int32_t)
@@ -58,6 +63,7 @@
 #define FadeValue               VAR_I_(0x00453568, int32_t, 0x100000)
 #define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
 #define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)
+#define ShadowInfo              VAR_U_(0x004567B8, SHADOW_INFO)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
 #define LsYaw                   VAR_U_(0x0068F3B4, int32_t)
 #define LsPitch                 VAR_U_(0x006D4DE4, int32_t)
