@@ -851,8 +851,11 @@ void HWR_SetupRenderContextAndRender()
     HWR_RenderBegin();
     ATI3DCIF_ContextSetState(
         ATIRenderContext, C3D_ERS_SURF_DRAW_PTR, &Surface2DrawPtr);
-    int32_t filter = RenderSettings & RSF_BILINEAR ? 3 : 0;
-    int32_t perspective = RenderSettings & RSF_PERSPECTIVE ? 2 : 0;
+    int32_t perspective =
+        (RenderSettings & RSF_PERSPECTIVE) ? C3D_ETPC_THREE : C3D_ETPC_NONE;
+    int32_t filter = (RenderSettings & RSF_BILINEAR)
+        ? C3D_ETFILT_MIN2BY2_MAG2BY2
+        : C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_ContextSetState(
         ATIRenderContext, C3D_ERS_TMAP_PERSP_COR, &perspective);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &filter);
