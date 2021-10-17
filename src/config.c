@@ -2,11 +2,13 @@
 
 #include "filesystem.h"
 #include "global/const.h"
+#include "global/vars.h"
 #include "json.h"
 #include "util.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
@@ -169,8 +171,9 @@ int8_t T1MReadConfig()
     MYFILE *fp = NULL;
     char *cfg_data = NULL;
 
-    fp = FileOpen("cfg/Tomb1Main.json5", FILE_OPEN_READ);
+    fp = FileOpen(T1MGlobalSettingsPath, FILE_OPEN_READ);
     if (!fp) {
+        LOG_ERROR("Failed to open file '%s'", T1MGlobalSettingsPath);
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
@@ -179,6 +182,7 @@ int8_t T1MReadConfig()
 
     cfg_data = malloc(cfg_data_size + 1);
     if (!cfg_data) {
+        LOG_ERROR("Failed to allocate memory");
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
@@ -188,6 +192,18 @@ int8_t T1MReadConfig()
     fp = NULL;
 
     result = T1MReadConfigFromJson(cfg_data);
+
+    if (T1MConfig.resolution_width > 0) {
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+            T1MConfig.resolution_width;
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+            T1MConfig.resolution_height;
+    } else {
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+            GetSystemMetrics(SM_CXSCREEN);
+        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+            GetSystemMetrics(SM_CYSCREEN);
+    }
 
 cleanup:
     if (fp) {

@@ -296,6 +296,11 @@ void GetSavedGamesList(REQUEST_INFO *req)
         req->y = -100;
         req->vis_lines = 12;
         break;
+
+    case 4:
+        req->y = -100;
+        req->vis_lines = 12;
+        break;
     }
 
     if (req->requested >= req->vis_lines) {
