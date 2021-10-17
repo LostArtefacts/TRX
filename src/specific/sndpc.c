@@ -358,6 +358,10 @@ void S_MusicUnpause()
 // original name: CDPlay
 int32_t MusicPlay(int16_t track)
 {
+    if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
+        return 0;
+    }
+
     if (track < 2) {
         return 0;
     }

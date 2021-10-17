@@ -146,6 +146,9 @@
     // Disables ingame cinematics.
     "disable_cine": false,
 
+    // Disables music in the main menu.
+    "disable_music_in_menu": false,
+
     // Overrides game resolution. Leave at 0 or negative values to
     // automatically guess from the screen size. Note: these values
     // only override the last position in the game resolutions menu that
