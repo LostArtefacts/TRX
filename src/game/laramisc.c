@@ -14,7 +14,6 @@
 #include "global/vars.h"
 #include "specific/sndpc.h"
 #include "util.h"
-#include "game/text.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -258,19 +257,14 @@ void AnimateLara(ITEM_INFO *item)
                     break;
 
                 case AC_JUMP_VELOCITY: {
-                    int16_t dummy = *(command++); // Get Upward Velocity
-                    item->fall_speed = dummy;
-                    LaraFallSpeedF = (double)dummy;
-                    dummy = *(command++);
-                    item->speed = dummy / AnimScale; // Get Forward Velocity
-                    LaraSpeedF = (double)dummy / (double)AnimScale;
-                    item->gravity_status = 1; // turn gravity ON
-                    if (Lara.calc_fall_speed) // If Upward velocity is
-                                              // Pre-Calculated
-                    {
-                        item->fall_speed =
-                            Lara.calc_fall_speed; // then use that Value
-                                                  // instead..
+                    item->fall_speed = command[0];
+                    LaraFallSpeedF = (double)command[0];
+                    item->speed = command[1] / AnimScale;
+                    LaraSpeedF = (double)command[1] / (double)AnimScale;
+                    command += 2;
+                    item->gravity_status = 1;
+                    if (Lara.calc_fall_speed) {
+                        item->fall_speed = Lara.calc_fall_speed;
                         LaraFallSpeedF = Lara.calc_fall_speed;
                         Lara.calc_fall_speed = 0;
                     }
@@ -323,9 +317,10 @@ void AnimateLara(ITEM_INFO *item)
             }
         }
     }
+
     if (AnimScale == 1) {
         if (item->gravity_status) {
-            int16_t speed = anim->velocity
+            int32_t speed = anim->velocity
                 + anim->acceleration
                     * (item->frame_number - anim->frame_base - 1);
 
@@ -353,8 +348,7 @@ void AnimateLara(ITEM_INFO *item)
         LaraFloatPos.y = item->pos.y;
         LaraFallSpeedF = item->fall_speed;
         LaraSpeedF = item->speed;
-    } else // AnimScale = 2
-    {
+    } else {
         if (item->gravity_status) {
             double speed = (double)(anim->velocity + anim->acceleration)
                 / AnimScale
@@ -384,8 +378,8 @@ void AnimateLara(ITEM_INFO *item)
             item->speed = LaraSpeedF;
         }
 
-        LaraFloatPos.x += phd_sin_f(Lara.move_angle) * LaraSpeedF / View2World;
-        LaraFloatPos.z += phd_cos_f(Lara.move_angle) * LaraSpeedF / View2World;
+        LaraFloatPos.x += phd_sin_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
+        LaraFloatPos.z += phd_cos_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
 
         item->pos.x = LaraFloatPos.x;
         item->pos.z = LaraFloatPos.z;
@@ -403,7 +397,6 @@ void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
 
 void UseItem(int16_t object_num)
 {
-    // LOG_INFO("%d", object_num);
     switch (object_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
@@ -744,7 +737,6 @@ void LaraSetFloatPosFromFixed()
     LaraFloatPos.z = LaraItem->pos.z;
     LaraFallSpeedF = LaraItem->fall_speed;
     LaraSpeedF = LaraItem->speed;
-    // LOG_DEBUG("%d,%d,%d", LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z);
 }
 
 void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {

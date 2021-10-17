@@ -314,7 +314,7 @@ static int32_t LoadObjects(MYFILE *fp)
 
                 case AC_SOUND_FX:
                 case AC_EFFECT:
-                    (*command) *= AnimScale;
+                    command[0] *= AnimScale;
                     command += 2;
                     break;
                 }

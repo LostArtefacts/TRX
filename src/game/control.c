@@ -404,9 +404,9 @@ void TranslateItem_f(
     double c = phd_cos_f(y_rot);
     double s = phd_sin_f(y_rot);
 
-    item->x += (c * x + s * z) / View2World;
+    item->x += (c * x + s * z) / VIEW2WORLD;
     item->y += y;
-    item->z += (c * z - s * x) / View2World;
+    item->z += (c * z - s * x) / VIEW2WORLD;
 }
 
 FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)

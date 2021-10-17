@@ -214,7 +214,7 @@
 #define VIEW_NEAR (127 / AnimScale)
 #define VIEW_FAR (0x14 * 0x400)
 #define DEPTH_Q_END (40 * 1024)
-#define DEPTH_Q_START ((DEPTH_Q_END - 1024))
+#define DEPTH_Q_START (DEPTH_Q_END - 1024)
 
 #define NO_ACTION 0
 #define GAME_ACTION 1
@@ -224,9 +224,9 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define Rad2Angle (32768.0 / 3.142)
-#define Angle2Rad (1.0 / Rad2Angle)
-#define View2World (double)(1 << W2V_SHIFT)
+#define RAD2ANGLE (32768.0 / 3.142)
+#define ANGLE2RAD (1.0 / RAD2ANGLE)
+#define VIEW2WORLD (double)(1 << W2V_SHIFT)
 #define RESOLUTIONS_SIZE 12
 
 #endif

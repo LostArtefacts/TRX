@@ -173,7 +173,6 @@ void CreateSaveGameInfo()
     for (int i = 0; i < LevelItemCount; i++) {
         ITEM_INFO *item = &Items[i];
         OBJECT_INFO *obj = &Objects[item->object_number];
-        int16_t dummy = 0;
 
         if (obj->save_position) {
             WriteSG(&item->pos, sizeof(PHD_3DPOS));
@@ -187,8 +186,8 @@ void CreateSaveGameInfo()
             WriteSG(&item->goal_anim_state, sizeof(int16_t));
             WriteSG(&item->required_anim_state, sizeof(int16_t));
             WriteSG(&item->anim_number, sizeof(int16_t));
-            dummy = item->frame_number
-                / AnimScale; // adjust the frame number back to 30fps
+            int16_t dummy = 0;
+            dummy = item->frame_number / AnimScale;
             WriteSG(&dummy, sizeof(int16_t));
         }
 

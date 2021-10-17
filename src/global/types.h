@@ -809,8 +809,7 @@ typedef enum APP_SETTINGS_FLAG {
     RSF_PERSPECTIVE = 1 << 0,
     RSF_BILINEAR = 1 << 1,
     RSF_FPS = 1 << 2,
-    RSF_60FPS_SHIFT = 3,
-    RSF_60FPS = 1 << RSF_60FPS_SHIFT,
+    RSF_60FPS = 1 << 3,
 } APP_SETTINGS_FLAG;
 
 typedef enum COLL_TYPE {

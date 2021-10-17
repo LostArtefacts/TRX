@@ -433,12 +433,12 @@ uint32_t phd_sqrt(uint32_t n)
 
 double phd_cos_f(double angle)
 {
-    return View2World * cos(angle * Angle2Rad);
+    return VIEW2WORLD * cos(angle * ANGLE2RAD);
 }
 
 double phd_sin_f(double angle)
 {
-    return View2World * sin(angle * Angle2Rad);
+    return VIEW2WORLD * sin(angle * ANGLE2RAD);
 }
 
 double phd_sqrt_f(double n)
@@ -448,7 +448,7 @@ double phd_sqrt_f(double n)
 
 double phd_atan_f(double x, double y)
 {
-    return Rad2Angle * atan2(y, x);
+    return RAD2ANGLE * atan2(y, x);
 }
 
 void T1MInject3DSystemPHDMath()

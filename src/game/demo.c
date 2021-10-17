@@ -14,7 +14,6 @@
 
 extern PHD_3DPOS_F LaraFloatPos;
 
-uint32_t demo_frame_delay = 0;
 int32_t StartDemo()
 {
     LOG_DEBUG("");
@@ -40,8 +39,6 @@ int32_t StartDemo()
 
     SeedRandomDraw(0xD371F947);
     SeedRandomControl(0xD371F947);
-
-    demo_frame_delay = 0;
 
     // changing the controls affects negatively the original game demo data,
     // so temporarily turn off all the T1M enhancements

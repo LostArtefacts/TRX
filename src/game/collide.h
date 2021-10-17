@@ -37,8 +37,8 @@ MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
 int32_t Move3DPosTo3DPos(
     PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd);
 int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance);
+void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll);
 
 void T1MInjectGameCollide();
 
-void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll);
 #endif

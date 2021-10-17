@@ -63,21 +63,21 @@ void LaraSurface(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     AnimateLara(item);
-    if (AnimScale == 2) {
-        LaraFloatPos.x +=
-            (phd_sin_f(Lara.move_angle) * LaraFallSpeedF) / (View2World * 2.0);
-        LaraFloatPos.z +=
-            (phd_cos_f(Lara.move_angle) * LaraFallSpeedF) / (View2World * 2.0);
-
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
-    } else {
+    if (AnimScale == 1) {
         item->pos.x +=
             (phd_sin(Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
         item->pos.z +=
             (phd_cos(Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
         LaraFloatPos.x = item->pos.x;
         LaraFloatPos.z = item->pos.z;
+    } else {
+        LaraFloatPos.x +=
+            (phd_sin_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
+        LaraFloatPos.z +=
+            (phd_cos_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
+
+        item->pos.x = LaraFloatPos.x;
+        item->pos.z = LaraFloatPos.z;
     }
 
     LaraBaddieCollision(item, coll);

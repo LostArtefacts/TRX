@@ -130,11 +130,6 @@ void LaraAboveWater(ITEM_INFO *item, COLL_INFO *coll)
         Lara.turn_rate -= LARA_TURN_UNDO;
     }
     item->pos.y_rot += Lara.turn_rate;
-    /*if( Lara.turn_rate == 0)
-    {
-                int lockAngle = (item->pos.y_rot / PHD_DEGREE) * PHD_DEGREE;
-                item->pos.y_rot = lockAngle;
-        }*/
 
     AnimateLara(item);
     LaraBaddieCollision(item, coll);
@@ -1763,26 +1758,21 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
     GetLaraCollisionInfo(item, coll);
-    int collide = 1;
-    // if(AnimScale == 2 && ((item->frame_number & 1) == 1)) {
-    //	collide = 0; //make jump collisions be 30fps still
-    //}
-    if (collide == 1) {
-        LaraDeflectEdgeJump(item, coll);
 
-        // if (item->fall_speed > 0 && coll->mid_floor <= 0) {
-        if (LaraFallSpeedF > 0.0 && coll->mid_floor <= 0) {
-            if (LaraLandedBad(item, coll)) {
-                item->goal_anim_state = AS_DEATH;
-            } else {
-                item->goal_anim_state = AS_STOP;
-            }
-            item->pos.y += coll->mid_floor;
-            LaraFloatPos.y += coll->mid_floor;
-            item->gravity_status = 0;
-            item->fall_speed = 0;
-            LaraFallSpeedF = 0.0;
+    LaraDeflectEdgeJump(item, coll);
+
+    if ((AnimScale == 1 ? item->fall_speed > 0 : LaraFallSpeedF > 0.0)
+        && coll->mid_floor <= 0) {
+        if (LaraLandedBad(item, coll)) {
+            item->goal_anim_state = AS_DEATH;
+        } else {
+            item->goal_anim_state = AS_STOP;
         }
+        item->pos.y += coll->mid_floor;
+        LaraFloatPos.y += coll->mid_floor;
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+        LaraFallSpeedF = 0.0;
     }
 }
 
@@ -1807,7 +1797,7 @@ void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)
 
     LaraDeflectEdge(item, coll);
 
-    if (coll->mid_floor > (200)) {
+    if (coll->mid_floor > 200) {
         if (item->current_anim_state == AS_SLIDE) {
             item->current_anim_state = AS_FORWARDJUMP;
             item->goal_anim_state = AS_FORWARDJUMP;
@@ -2026,8 +2016,8 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / View2World;
-        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / View2World;
+        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
+        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
         item->pos.z = LaraFloatPos.z;
         item->pos.x = LaraFloatPos.x;
 
@@ -2065,8 +2055,8 @@ void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     case COLL_CLAMP:
         item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
         item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
-        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / View2World;
-        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / View2World;
+        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
+        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
         item->speed = 0;
         LaraSpeedF = 0.0;
         coll->mid_floor = 0;
@@ -2401,8 +2391,6 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     TestTriggers(TriggerIndex, 0);
     item->pos.y = oy; // restores Y so don't touch double y
 
-    // LOG_DEBUG("This is a test %d %g", item->fall_speed, LaraFallSpeedF);
-
     int landspeed =
         (item->fall_speed + 3 - DAMAGE_START); // this 3 is from measuring the
                                                // different, why 3 no idea.
@@ -2411,9 +2399,8 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     } else if (landspeed > DAMAGE_LENGTH) {
         item->hit_points = -1;
     } else {
-        item->hit_points -=
-            ((LARA_HITPOINTS * landspeed * landspeed)
-             / ((DAMAGE_LENGTH * DAMAGE_LENGTH)));
+        item->hit_points -= (LARA_HITPOINTS * landspeed * landspeed)
+            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
     }
 
     if (item->hit_points < 0) {

@@ -73,7 +73,7 @@ void LavaEmitterControl(int16_t item_num)
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
         fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
-        fx->speed = GetRandomControl() / AnimScale >> 10;
+        fx->speed = (GetRandomControl() >> 10) / AnimScale;
         fx->fall_speed = -GetRandomControl() / 200;
         fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
         fx->object_number = O_LAVA;

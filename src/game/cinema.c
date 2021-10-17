@@ -193,9 +193,9 @@ void InitialiseGenPlayer(int16_t item_num)
 void InGameCinematicCamera()
 {
     CineFrame++;
-    int16_t lastFrameNum = NumCineFrames - (1 * AnimScale);
+    int16_t last_frame_num = NumCineFrames - (1 * AnimScale);
     if (CineFrame / AnimScale >= NumCineFrames) {
-        CineFrame = lastFrameNum;
+        CineFrame = last_frame_num;
     }
 
     // brackets are needed, it crashes otherwise
@@ -209,8 +209,9 @@ void InGameCinematicCamera()
     int32_t cz = ptr[5];
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
+
     if (AnimScale == 2) {
-        if (CineFrame & 1 && CineFrame < lastFrameNum) {
+        if (CineFrame & 1 && CineFrame < last_frame_num) {
             ptr += 8; // move to next frame
             tx += ptr[0];
             ty += ptr[1];

@@ -69,20 +69,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
 
     AnimateLara(item);
 
-    if (AnimScale == 2) {
-        LaraFloatPos.y -=
-            (phd_sin_f(item->pos.x_rot) * LaraFallSpeedF) / (View2World * 4);
-        LaraFloatPos.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
-                           / (View2World * 4) * phd_cos_f(item->pos.x_rot))
-            / View2World;
-        LaraFloatPos.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
-                           / (View2World * 4) * phd_cos_f(item->pos.x_rot))
-            / View2World;
-
-        item->pos.y = LaraFloatPos.y;
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
-    } else {
+    if (AnimScale == 1) {
         item->pos.y -=
             (phd_sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
         item->pos.x +=
@@ -97,6 +84,19 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         LaraFloatPos.y = item->pos.y;
         LaraFloatPos.x = item->pos.x;
         LaraFloatPos.z = item->pos.z;
+    } else {
+        LaraFloatPos.y -=
+            (phd_sin_f(item->pos.x_rot) * LaraFallSpeedF) / (VIEW2WORLD * 4);
+        LaraFloatPos.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
+                           / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
+            / VIEW2WORLD;
+        LaraFloatPos.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
+                           / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
+            / VIEW2WORLD;
+
+        item->pos.y = LaraFloatPos.y;
+        item->pos.x = LaraFloatPos.x;
+        item->pos.z = LaraFloatPos.z;
     }
 
     if (Lara.water_status != LWS_CHEAT) {

@@ -42,7 +42,7 @@ void UndrawPistols(int32_t weapon_type)
         Lara.left_arm.x_rot = 0;
         Lara.left_arm.y_rot = 0;
         Lara.left_arm.z_rot = 0;
-        anil = (AF_G_DRAW2_L * AnimScale);
+        anil = AF_G_DRAW2_L * AnimScale;
     } else if (anil > AF_G_DRAW1 * AnimScale) {
         anil--;
         if (anil == AF_G_DRAW2 * AnimScale) {

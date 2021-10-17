@@ -58,8 +58,8 @@ void GetCollisionInfo(
     int32_t xfront;
     int32_t zfront;
 
-    int32_t extraX = 0;
-    int32_t extraZ = 0;
+    int32_t extra_x = 0;
+    int32_t extra_z = 0;
 
     switch (coll->quadrant) {
     case DIR_NORTH:
@@ -71,9 +71,9 @@ void GetCollisionInfo(
         zright = coll->radius;
 
         if ((objheight == 870 || objheight == SURF_HITE) && AnimScale == 2) {
-            // XXX: this is a horrible hack, when jumping up to catch a ledge
+            // TODO: this is a horrible hack, when jumping up to catch a ledge
             // for some reason this don't work any more in this quadrant
-            extraZ = 10;
+            extra_z = 10;
         }
         break;
 
@@ -85,9 +85,9 @@ void GetCollisionInfo(
         xright = coll->radius;
         zright = -coll->radius;
         if ((objheight == 870 || objheight == SURF_HITE) && AnimScale == 2) {
-            // XXX: this is a horrible hack, when jumping up to catch a ledge
+            // TODO: this is a horrible hack, when jumping up to catch a ledge
             // for some reason this don't work any more in this quadrant
-            extraX = 10;
+            extra_x = 10;
         }
         break;
 
@@ -121,8 +121,8 @@ void GetCollisionInfo(
 
     x = xpos + xfront;
     z = zpos + zfront;
-    floor = GetFloor(x + extraX, ytop, z + extraZ, &room_num);
-    height = GetHeight(floor, x + extraX, ytop, z + extraZ);
+    floor = GetFloor(x + extra_x, ytop, z + extra_z, &room_num);
+    height = GetHeight(floor, x + extra_x, ytop, z + extra_z);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -914,14 +914,15 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
-    int32_t retVal =
+
+    int32_t ret =
         Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
+
     LaraFloatPos.x = lara_item->pos.x;
     LaraFloatPos.y = lara_item->pos.y;
-    LaraFloatPos.z =
-        lara_item->pos.z; // while the above function seems to be only called
-                          // here, it doeesn't have to always be
-    return retVal;
+    LaraFloatPos.z = lara_item->pos.z;
+
+    return ret;
 }
 
 int32_t Move3DPosTo3DPos(
