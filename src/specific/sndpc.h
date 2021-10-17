@@ -25,6 +25,8 @@ int32_t S_MusicPlay(int16_t track);
 int32_t S_MusicStop();
 void S_MusicLoop();
 void S_MusicVolume(int16_t volume);
+void S_MusicPause();
+void S_MusicUnpause();
 
 void *S_SoundPlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
