@@ -15,8 +15,11 @@
 #include "game/effects/turn_180.h"
 #include "global/vars.h"
 
-char *ATIUserSettingsPath = "atiset.dat";
-char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
+const char *ATIUserSettingsPath = "atiset.dat";
+const char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
+const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
+const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
+const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
 int8_t IsGameWindowActive = 1;
 double UITextScale;
@@ -111,3 +114,7 @@ int16_t InvChosen = -1;
 int16_t BarOffsetY[6];
 
 int16_t AnimScale = 1;
+
+HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE] = {
+    { 320, 200 }, { 512, 384 }, { 640, 480 }, { 800, 600 }, { -1, -1 },
+};

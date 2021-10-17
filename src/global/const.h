@@ -227,4 +227,6 @@
 #define Rad2Angle (32768.0 / 3.142)
 #define Angle2Rad (1.0 / Rad2Angle)
 #define View2World (double)(1 << W2V_SHIFT)
+#define RESOLUTIONS_SIZE 5
+
 #endif

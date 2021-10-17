@@ -1192,6 +1192,11 @@ typedef enum GAME_BONUS_FLAG {
 
 #pragma pack(push, 1)
 
+typedef struct HWR_Resolution {
+    int width;
+    int height;
+} HWR_Resolution;
+
 typedef struct RGB888 {
     uint8_t r;
     uint8_t g;

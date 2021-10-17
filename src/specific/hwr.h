@@ -20,16 +20,16 @@
 #define HWR_ClearSurfaceDepth       ((void      (*)())0x00408AC7)
 #define HWR_PrepareFMV              ((void      (*)())0x0040834C)
 #define HWR_FMVInit                 ((void      (*)())0x0040837F)
-#define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
-#define HWR_SetHardwareVideoMode    ((void      (*)())0x00407BD2)
+#define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
-#define HWR_SetupRenderContextAndRender ((void  (*)())0x0040795F)
-#define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
 #define HWR_PrintShadow             ((void      (*)(PHD_VBUF *vbuf, int clip))0x0040CADB)
+#define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
 #define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
 #define HWR_InsertObjectG4          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x00409F44)
 #define HWR_InsertObjectG3          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040A01D)
+#define HWR_GetSurfaceAndPitch      ((void      (*)(LPDIRECTDRAWSURFACE surface, void **out_surface, int32_t *out_pitch))0x0040787C)
+#define HWR_ReleaseSurfaces         ((void      (*)())0x00407A91)
 // clang-format on
 
 void HWR_CheckError(HRESULT result);
@@ -59,6 +59,8 @@ void HWR_DrawLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
 void HWR_SwitchResolution();
+int32_t HWR_SetHardwareVideoMode();
+void HWR_SetupRenderContextAndRender();
 
 void T1MInjectSpecificHWR();
 

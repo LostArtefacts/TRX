@@ -27,6 +27,8 @@ static int32_t S_ReadUserSettingsATI()
         return 0;
     }
 
+    LOG_INFO("Loading user settings (T1M)");
+
     FileRead(&OptionMusicVolume, sizeof(int16_t), 1, fp);
     FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
@@ -47,6 +49,8 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     int32_t result = 0;
     struct json_value_s *root = NULL;
     struct json_parse_result_s parse_result;
+
+    LOG_INFO("Loading user settings (T1M)");
 
     root = json_parse_ex(
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
@@ -79,9 +83,9 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     } else {
         RenderSettings &= ~RSF_60FPS;
     }
-
-    GameHiRes = json_object_get_number_int(root_obj, "hi_res", 3);
-    CLAMP(GameHiRes, 0, 3);
+    GameHiRes =
+        json_object_get_number_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+    CLAMP(GameHiRes, 0, RESOLUTIONS_SIZE - 1);
 
     GameSizer = json_object_get_number_double(root_obj, "game_sizer", 1.0);
 
@@ -123,6 +127,7 @@ static int32_t S_ReadUserSettingsT1M()
 
     fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
+        LOG_ERROR("Failed to open file '%s'", T1MUserSettingsPath);
         result = S_ReadUserSettingsT1MFromJson("");
         goto cleanup;
     }
@@ -130,6 +135,7 @@ static int32_t S_ReadUserSettingsT1M()
     cfg_data_size = FileSize(fp);
     cfg_data = malloc(cfg_data_size + 1);
     if (!cfg_data) {
+        LOG_ERROR("Failed to allocate memory");
         result = S_ReadUserSettingsT1MFromJson("");
         goto cleanup;
     }
@@ -152,6 +158,8 @@ cleanup:
 
 static int32_t S_WriteUserSettingsT1M()
 {
+    LOG_INFO("Saving user settings (T1M)");
+
     MYFILE *fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
@@ -193,8 +201,10 @@ static int32_t S_WriteUserSettingsT1M()
 void S_ReadUserSettings()
 {
     if (S_ReadUserSettingsATI()) {
-        S_WriteUserSettingsT1M();
-        FileDelete(ATIUserSettingsPath);
+        if (!FileDelete(ATIUserSettingsPath)) {
+            // only save settings if we successfully removed the file
+            S_WriteUserSettingsT1M();
+        }
     }
     S_ReadUserSettingsT1M();
 

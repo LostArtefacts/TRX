@@ -567,21 +567,10 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
             max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {
-            const char *tmp;
-            switch (GameHiRes) {
-            case 0:
-                tmp = "320x200";
-                break;
-            case 1:
-                tmp = "512x384";
-                break;
-            case 3:
-                tmp = "800x600";
-                break;
-            default:
-                tmp = "640x480";
-                break;
-            }
+            static char tmp[10];
+            sprintf(
+                tmp, "%dx%d", AvailableResolutions[GameHiRes].width,
+                AvailableResolutions[GameHiRes].height);
             sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
             max_row = DETAIL_HW_RESOLUTION;
@@ -676,7 +665,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (GameHiRes < 3) {
+            if (GameHiRes + 1 < RESOLUTIONS_SIZE) {
                 GameHiRes++;
                 reset = 1;
             }
@@ -720,7 +709,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (GameHiRes > 0) {
+            if (GameHiRes - 1 >= 0) {
                 GameHiRes--;
                 reset = 1;
             }

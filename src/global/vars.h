@@ -198,8 +198,11 @@ extern int32_t KeyChange;
 #define ReqUnselGour2           VAR_U_(0x00455178, SG_COL*)
 // clang-format on
 
-extern char *ATIUserSettingsPath;
-extern char *T1MUserSettingsPath;
+extern const char *ATIUserSettingsPath;
+extern const char *T1MUserSettingsPath;
+extern const char *T1MGlobalSettingsPath;
+extern const char *T1MGameflowPath;
+extern const char *T1MGameflowGoldPath;
 
 extern int8_t IsGameWindowActive;
 extern double UITextScale;
@@ -303,5 +306,7 @@ extern int16_t InvChosen;
 extern int16_t BarOffsetY[6];
 
 extern int16_t AnimScale;
+
+extern HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE];
 
 #endif
