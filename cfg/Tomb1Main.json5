@@ -146,7 +146,11 @@
     // Disables ingame cinematics.
     "disable_cine": false,
 
-    // Overrides game resolution. Leave at 0 or engative values to automatically guess from the screen size.
+    // Overrides game resolution. Leave at 0 or negative values to
+    // automatically guess from the screen size. Note: these values
+    // only override the last position in the game resolutions menu that
+    // normally defaults to the screen resolution, so in order for this to
+    // work, make sure you have selected the last resolution.
     "resolution_width": -1,
     "resolution_height": -1,
 }

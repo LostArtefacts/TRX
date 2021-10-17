@@ -220,6 +220,6 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define RESOLUTIONS_SIZE 5
+#define RESOLUTIONS_SIZE 12
 
 #endif
