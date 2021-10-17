@@ -19,6 +19,11 @@
 #include <string.h>
 
 #define COLOR_STEPS 5
+#define VISIBLE(vn1, vn2, vn3)                                                 \
+    ((int32_t)(                                                                \
+         ((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys))                           \
+         - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))                        \
+     >= 0)
 
 static RGB888 ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -481,27 +486,46 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     int32_t y_add = size * (y1 - y0) / 1024;
 
     ShadowInfo.vertex[0].x = x_mid - x_add;
-    ShadowInfo.vertex[0].z = y_mid + 2 * y_add;
+    ShadowInfo.vertex[0].z = y_mid + y_add * 2;
     ShadowInfo.vertex[1].x = x_mid + x_add;
-    ShadowInfo.vertex[1].z = ShadowInfo.vertex[0].z;
-    ShadowInfo.vertex[2].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[1].z = y_mid + y_add * 2;
+    ShadowInfo.vertex[2].x = x_mid + x_add * 2;
     ShadowInfo.vertex[2].z = y_add + y_mid;
-    ShadowInfo.vertex[3].x = 2 * x_add + x_mid;
+    ShadowInfo.vertex[3].x = x_mid + x_add * 2;
     ShadowInfo.vertex[3].z = y_mid - y_add;
     ShadowInfo.vertex[4].x = x_mid + x_add;
-    ShadowInfo.vertex[4].z = y_mid - 2 * y_add;
+    ShadowInfo.vertex[4].z = y_mid - y_add * 2;
     ShadowInfo.vertex[5].x = x_mid - x_add;
-    ShadowInfo.vertex[5].z = ShadowInfo.vertex[4].z;
-    ShadowInfo.vertex[6].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[5].z = y_mid - y_add * 2;
+    ShadowInfo.vertex[6].x = x_mid - x_add * 2;
     ShadowInfo.vertex[6].z = y_mid - y_add;
-    ShadowInfo.vertex[7].x = x_mid - 2 * x_add;
+    ShadowInfo.vertex[7].x = x_mid - x_add * 2;
     ShadowInfo.vertex[7].z = y_add + y_mid;
 
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
     phd_RotY(item->pos.y_rot);
     if (calc_object_vertices(&ShadowInfo.poly_count)) {
-        HWR_PrintShadow(&PhdVBuf[0], 0);
+        PHD_VBUF *vn1 = &PhdVBuf[0];
+        PHD_VBUF *vn2 = &PhdVBuf[1];
+        PHD_VBUF *vn3 = &PhdVBuf[2];
+        PHD_VBUF *vn4 = &PhdVBuf[3];
+        PHD_VBUF *vn5 = &PhdVBuf[4];
+        PHD_VBUF *vn6 = &PhdVBuf[5];
+        PHD_VBUF *vn7 = &PhdVBuf[6];
+        PHD_VBUF *vn8 = &PhdVBuf[7];
+
+        if (!(vn1->clip & vn2->clip & vn3->clip & vn4->clip & vn5->clip
+              & vn6->clip & vn7->clip & vn8->clip)
+            && vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
+            && vn4->clip >= 0 && vn5->clip >= 0 && vn6->clip >= 0
+            && vn7->clip >= 0 && vn8->clip >= 0 && VISIBLE(vn1, vn2, vn3)) {
+            int clip = (vn1->clip | vn2->clip | vn3->clip | vn4->clip
+                        | vn5->clip | vn6->clip | vn7->clip | vn8->clip)
+                ? 1
+                : 0;
+            HWR_PrintShadow(&PhdVBuf[0], clip);
+        }
     }
     phd_PopMatrix();
 }
