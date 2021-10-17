@@ -5,6 +5,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "global/vars_platform.h"
 #include "specific/clock.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -172,7 +173,7 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
         bar_color = T1MConfig.enemy_healthbar_color;
     }
 
-    int32_t padding = 2;
+    int32_t padding = DDrawSurfaceWidth <= 800 ? 1 : 2;
     int32_t border = 1;
     int32_t sx = GetRenderScale(x) - padding;
     int32_t sy = GetRenderScale(y) - padding;
