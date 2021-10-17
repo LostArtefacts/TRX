@@ -1,5 +1,6 @@
 #include "game/demo.h"
 
+#include "config.h"
 #include "game/control.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -37,6 +38,11 @@ int32_t StartDemo()
     SeedRandomDraw(0xD371F947);
     SeedRandomControl(0xD371F947);
 
+    // changing the controls affects negatively the original game demo data,
+    // so temporarily turn off all the T1M enhancements
+    int8_t old_enhanced_look = T1MConfig.enable_enhanced_look;
+    T1MConfig.enable_enhanced_look = 0;
+
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         TitleLoaded = 0;
 
@@ -57,6 +63,8 @@ int32_t StartDemo()
         *s = start;
         S_FadeToBlack();
     }
+
+    T1MConfig.enable_enhanced_look = old_enhanced_look;
 
     return GF_EXIT_TO_TITLE;
 }
