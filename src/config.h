@@ -64,6 +64,7 @@ typedef struct {
     int8_t disable_demo;
     int8_t disable_fmv;
     int8_t disable_cine;
+    int8_t disable_music_in_menu;
     int32_t resolution_width;
     int32_t resolution_height;
 } T1MConfigStruct;
