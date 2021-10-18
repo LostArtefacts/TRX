@@ -131,7 +131,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t *ptr = &Cine[8 * CineFrame / AnimScale];
+    int16_t *ptr = &Cine[8 * (CineFrame / AnimScale)];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
