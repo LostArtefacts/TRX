@@ -139,7 +139,7 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
     void *result = GameAllocMemPointer;
     GameAllocMemFree -= aligned_size;
     GameAllocMemUsed += aligned_size;
-    GameAllocMemPointer += aligned_size;
+    GameAllocMemPointer = (char *)GameAllocMemPointer + aligned_size;
     return result;
 }
 
@@ -148,7 +148,7 @@ void game_free(int32_t free_size, int32_t type)
     LOG_DEBUG("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
-    GameAllocMemUsed -= free_size;
+    GameAllocMemPointer = (char *)GameAllocMemPointer - free_size;
 }
 
 void CalculateWibbleTable()
