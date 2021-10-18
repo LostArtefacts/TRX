@@ -591,6 +591,8 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         if (tmp_i != JSON_INVALID_BOOL) {
             cur->demo = tmp_i;
             GF.has_demo |= tmp_i;
+        } else {
+            cur->demo = 0;
         }
 
         struct json_object_s *jlbl_strings_obj =
