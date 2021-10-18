@@ -148,7 +148,7 @@ void game_free(int32_t free_size, int32_t type)
     LOG_DEBUG("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
-    GameAllocMemUsed -= free_size;
+    GameAllocMemPointer -= free_size;
 }
 
 void CalculateWibbleTable()
