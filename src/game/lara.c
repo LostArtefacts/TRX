@@ -2391,9 +2391,12 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     TestTriggers(TriggerIndex, 0);
     item->pos.y = oy; // restores Y so don't touch double y
 
+    int fallDamageFixUp = AnimScale == 2 ? 3 : 0; // this 3 is from measuring 
+                                                  // the difference, why 3? No idea.
     int landspeed =
-        (item->fall_speed + 3 - DAMAGE_START); // this 3 is from measuring the
-                                               // different, why 3 no idea.
+        (item->fall_speed + fallDamageFixUp
+         - DAMAGE_START); 
+                                               
     if (landspeed <= 0) {
         return 0;
     } else if (landspeed > DAMAGE_LENGTH) {
