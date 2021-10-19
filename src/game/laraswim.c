@@ -317,7 +317,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraWaterCurrent(COLL_INFO *coll)
 {
-    PHD_VECTOR target; // [esp+Ch] [ebp-Ch]
+    PHD_VECTOR target;
 
     ITEM_INFO *item = LaraItem;
     ROOM_INFO *r = &RoomInfo[item->room_number];
