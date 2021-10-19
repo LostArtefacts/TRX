@@ -55,7 +55,7 @@ clean:
 	find . -type d -empty -delete
 
 lint: $(C_FILES)
-	clang-format-10 -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)
+	clang-format -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)
 
 docs:
 	docs/render_progress

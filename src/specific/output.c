@@ -19,10 +19,8 @@
 #include <string.h>
 
 #define COLOR_STEPS 5
-#define VISIBLE(vn1, vn2, vn3)                                                 \
-    ((int32_t)(                                                                \
-         ((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys))                           \
-         - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))                        \
+#define VISIBLE(vn1, vn2, vn3)                                                                            \
+    ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys))) \
      >= 0)
 
 static RGB888 ColorBarMap[][COLOR_STEPS] = {

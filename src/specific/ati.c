@@ -115,7 +115,8 @@ C3D_EC InitATI3DCIF()
         HATI3DCIFModule, "ATI3DCIF_ContextCreate_lib");
     if (!ATI3DCIF_ContextCreate_lib) {
         LOG_ERROR("cannot find ATI3DCIF_ContextCreate_lib");
-        *ATI3DCIF_ContextCreate_lib = (C3D_HRC(__stdcall *)(void))ATI3DCIF_NullSub;
+        *ATI3DCIF_ContextCreate_lib =
+            (C3D_HRC(__stdcall *)(void))ATI3DCIF_NullSub;
         result = C3D_EC_GENFAIL;
     }
 
