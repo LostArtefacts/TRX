@@ -154,6 +154,11 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 ![](docs/progress.svg)
 
+## Importing data to IDA
+
+This option requires IDAPython and a recent version of IDA. Install Python 3.8+
+and IDA 7.5+, then hit alt+f7, then choose `scripts/ida_import.py`.
+
 ## License
 
 This project is licensed under the GNU General Public License - see the
