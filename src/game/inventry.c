@@ -837,8 +837,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
                     S_DrawScreenSprite(
                         sx + spr->x, sy + spr->y, spr->z, spr->param1,
                         spr->param2,
-                        StaticObjects[O_ALPHABET].mesh_number + spr->sprnum,
-                        4096, 0);
+                        Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096, 0);
                     break;
                 case SHAPE_LINE:
                     S_DrawScreenLine(
