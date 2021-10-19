@@ -41,7 +41,7 @@ static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item)
         return;
     }
 
-    if (LaraDoorCollision(item)) {
+    if (item && LaraDoorCollision(item)) {
         return;
     }
 
@@ -141,8 +141,8 @@ void InitialiseDoor(int16_t item_num)
     }
 
     room_num = GetDoor(door->d1.floor);
-    ShutThatDoor(&door->d1, item);
-    ShutThatDoor(&door->d1flip, item);
+    ShutThatDoor(&door->d1, NULL);
+    ShutThatDoor(&door->d1flip, NULL);
 
     if (room_num == NO_ROOM) {
         door->d2.floor = NULL;
@@ -192,8 +192,8 @@ void InitialiseDoor(int16_t item_num)
         door->d2flip.floor = NULL;
     }
 
-    ShutThatDoor(&door->d2, item);
-    ShutThatDoor(&door->d2flip, item);
+    ShutThatDoor(&door->d2, NULL);
+    ShutThatDoor(&door->d2flip, NULL);
 }
 
 void DoorControl(int16_t item_num)
