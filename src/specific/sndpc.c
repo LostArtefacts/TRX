@@ -331,9 +331,37 @@ void S_MusicVolume(int16_t volume)
     auxSetVolume(AuxDeviceID, volume_aux);
 }
 
+void S_MusicPause()
+{
+    MCIERROR result;
+    MCI_GENERIC_PARMS pause_parms;
+
+    result = mciSendCommandA(
+        MCIDeviceID, MCI_PAUSE, MCI_WAIT, (DWORD_PTR)&pause_parms);
+    if (result) {
+        LOG_ERROR("Error while calling mciSendCommandA: 0x%lx", result);
+    }
+}
+
+void S_MusicUnpause()
+{
+    MCIERROR result;
+    MCI_GENERIC_PARMS pause_parms;
+
+    result = mciSendCommandA(
+        MCIDeviceID, MCI_RESUME, MCI_WAIT, (DWORD_PTR)&pause_parms);
+    if (result) {
+        LOG_ERROR("Error while calling mciSendCommandA: 0x%lx", result);
+    }
+}
+
 // original name: CDPlay
 int32_t MusicPlay(int16_t track)
 {
+    if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
+        return 0;
+    }
+
     if (track < 2) {
         return 0;
     }

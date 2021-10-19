@@ -30,7 +30,8 @@ static const char *WindowName = "Tomb Raider";
 // clang-format on
 
 static void WinGameFinish();
-static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK
+WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static int InitDirectDraw();
 
 void TerminateGame(int exit_code)
@@ -99,7 +100,8 @@ static int InitDirectDraw()
     return 1;
 }
 
-static LRESULT WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK
+WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == CloseMsg) {
         DestroyWindow(TombHWND);

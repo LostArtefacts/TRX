@@ -152,16 +152,17 @@ int8_t S_Pause()
     AmmoText = NULL;
     FPSText = NULL;
     S_FadeInInventory(1);
-    S_MusicVolume(0);
     TempVideoAdjust(HiRes, 1.0);
     S_SetupAboveWater(0);
 
+    S_MusicPause();
+
     int32_t select = PauseLoop();
 
+    S_MusicUnpause();
     RemoveRequester(&PauseRequester);
     RemovePausedText();
     TempVideoRemove();
-    S_MusicVolume(OptionMusicVolume * 25 + 5);
     S_FadeOutInventory(1);
     OverlayFlag = old_overlay_flag;
     return select < 0;
