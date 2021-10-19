@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-DOCS_DIR = Path(__file__).parent
+DOCS_DIR = Path(__file__).parent.parent / "docs"
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 
 
@@ -82,8 +82,10 @@ def collect_my_functions() -> T.Iterable[BaseProgressLine]:
             continue
         yield MyFunction(
             name=name,
-            offset=int(offset_str, 16) if offset_str.replace('-', '') else None,
-            size=int(size_str, 16) if size_str.replace('-', '') else None,
+            offset=int(offset_str, 16)
+            if offset_str.replace("-", "")
+            else None,
+            size=int(size_str, 16) if size_str.replace("-", "") else None,
             flags=flags,
         )
 
