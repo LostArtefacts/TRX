@@ -492,7 +492,8 @@ static int32_t LoadBoxes(MYFILE *fp)
             return 0;
         }
 
-        GroundZone2[i] = game_malloc(2 * NumberBoxes, GBUF_GROUNDZONE);
+        GroundZone2[i] =
+            game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone2[i]
             || !FileRead(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
             sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground2_zone'");

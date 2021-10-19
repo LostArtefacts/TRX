@@ -32,7 +32,7 @@ void SetupRollingBlock(OBJECT_INFO *obj)
 void InitialiseRollingBlock(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
-    AlterFloorHeight(item, -2048);
+    AlterFloorHeight(item, -WALL_L * 2);
 }
 
 // original name: RollingBlock
@@ -42,11 +42,11 @@ void RollingBlockControl(int16_t item_num)
     if (TriggerActive(item)) {
         if (item->current_anim_state == RBS_START) {
             item->goal_anim_state = RBS_END;
-            AlterFloorHeight(item, 2048);
+            AlterFloorHeight(item, WALL_L * 2);
         }
     } else if (item->current_anim_state == RBS_END) {
         item->goal_anim_state = RBS_START;
-        AlterFloorHeight(item, 2048);
+        AlterFloorHeight(item, WALL_L * 2);
     }
 
     AnimateItem(item);
@@ -59,7 +59,7 @@ void RollingBlockControl(int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_ACTIVE;
-        AlterFloorHeight(item, -2048);
+        AlterFloorHeight(item, -WALL_L * 2);
         item->pos.x &= -WALL_L;
         item->pos.x += WALL_L / 2;
         item->pos.z &= -WALL_L;
