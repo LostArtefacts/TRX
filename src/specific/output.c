@@ -165,8 +165,8 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t height = 5;
     int16_t bar_color = bar_type;
 
-    int32_t x;
-    int32_t y;
+    int32_t x = 0;
+    int32_t y = 0;
     if (bar_type == BT_LARA_HEALTH) {
         BarLocation(T1MConfig.healthbar_location, width, height, &x, &y);
         bar_color = T1MConfig.healthbar_color;
@@ -282,7 +282,7 @@ void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         int32_t ambient = 0x1FFF - r->ambient;
         int32_t brightest = 0;
 
-        PHD_VECTOR ls;
+        PHD_VECTOR ls = { 0, 0, 0 };
         for (int i = 0; i < r->num_lights; i++) {
             LIGHT_INFO *light = &r->light[i];
             PHD_VECTOR lc;
