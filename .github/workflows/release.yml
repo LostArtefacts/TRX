@@ -1,10 +1,10 @@
+name: Publish new release
+
 on:
   push:
     branch: master
     tags:
     - 'v?[0-9]*'
-
-name: Publish new release
 
 jobs:
   build:
