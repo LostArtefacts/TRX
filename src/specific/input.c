@@ -39,7 +39,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_S, // KEY_CAMERA_DOWN
         DIK_A, // KEY_CAMERA_LEFT
         DIK_D, // KEY_CAMERA_RIGHT
-        DIK_SLASH, //KEY_CAMERA_RESET
+        DIK_SLASH, // KEY_CAMERA_RESET
     },
 
     // default user controls
@@ -383,7 +383,7 @@ void S_UpdateInput()
         CameraOffsetAdditionalElevation(camera_move_delta);
     } else if (Key_(KEY_CAMERA_RESET)) {
         CameraOffsetReset();
-    } 
+    }
     Input = linput;
 
     return;

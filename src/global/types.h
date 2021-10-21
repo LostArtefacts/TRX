@@ -1756,7 +1756,7 @@ typedef struct CAMERA_INFO {
     /* 0058 */ ITEM_INFO *last_item;
     /* 005C */ OBJECT_VECTOR *fixed;
     /* 0060 end */
-    int16_t additional_angle;       //used for the manual camera controll
+    int16_t additional_angle; // used for the manual camera control
     int16_t additional_elevation;
 } CAMERA_INFO;
 
