@@ -752,7 +752,12 @@ typedef enum KEY_NUMBER {
     KEY_ITEM_CHEAT = 14,
     KEY_LEVEL_SKIP_CHEAT = 15,
     KEY_PAUSE = 16,
-    KEY_NUMBER_OF = 17,
+    KEY_CAMERA_UP = 17,
+    KEY_CAMERA_DOWN = 18,
+    KEY_CAMERA_LEFT = 19,
+    KEY_CAMERA_RIGHT = 20,
+    KEY_CAMERA_RESET = 21,
+    KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
 typedef enum INPUT_STATE {
@@ -782,6 +787,11 @@ typedef enum INPUT_STATE {
     IN_LOAD = 1 << 23,
     IN_FLY_CHEAT = 1 << 24,
     IN_ITEM_CHEAT = 1 << 25,
+    IN_CAMERA_UP = 1 << 26,
+    IN_CAMERA_DOWN = 1 << 27,
+    IN_CAMERA_LEFT = 1 << 28,
+    IN_CAMERA_RIGHT = 1 << 29,
+    IN_CAMERA_RESET = 1 << 30,
 } INPUT_STATE;
 
 typedef enum TEXTSTRING_FLAG {
@@ -1111,6 +1121,11 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_ITEM_CHEAT,
     GS_KEYMAP_LEVEL_SKIP_CHEAT,
     GS_KEYMAP_PAUSE,
+    GS_KEYMAP_CAMERA_UP,
+    GS_KEYMAP_CAMERA_DOWN,
+    GS_KEYMAP_CAMERA_LEFT,
+    GS_KEYMAP_CAMERA_RIGHT,
+    GS_KEYMAP_CAMERA_RESET,
 
     GS_STATS_TIME_TAKEN_FMT,
     GS_STATS_SECRETS_FMT,
@@ -1741,6 +1756,8 @@ typedef struct CAMERA_INFO {
     /* 0058 */ ITEM_INFO *last_item;
     /* 005C */ OBJECT_VECTOR *fixed;
     /* 0060 end */
+    int16_t additional_angle;       //used for the manual camera controll
+    int16_t additional_elevation;
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {

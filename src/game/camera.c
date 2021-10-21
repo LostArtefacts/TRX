@@ -35,6 +35,8 @@ void InitialiseCamera()
     Camera.flags = 0;
     Camera.bounce = 0;
     Camera.number = NO_CAMERA;
+    Camera.additional_angle = 0;
+    Camera.additional_elevation = 0;
 
     CalculateCamera();
 }
@@ -643,18 +645,59 @@ void CalculateCamera()
     Camera.last = Camera.number;
     Camera.fixed_camera = fixed_camera;
 
+    //should we clear the manual camera
+    switch (Camera.type) {
+    case CAM_LOOK:
+    case CAM_CINEMATIC:
+    case CAM_COMBAT:
+    case CAM_FIXED:
+        Camera.additional_angle = 0;
+        Camera.additional_elevation = 0;
+        break;
+    }
+
     if (Camera.type != CAM_HEAVY || Camera.timer == -1) {
         Camera.type = CAM_CHASE;
         Camera.number = NO_CAMERA;
         Camera.last_item = Camera.item;
         Camera.item = NULL;
-        Camera.target_angle = 0;
-        Camera.target_elevation = 0;
+        Camera.target_angle = Camera.additional_angle;
+        Camera.target_elevation = Camera.additional_elevation;
         Camera.target_distance = WALL_L * 3 / 2;
         Camera.flags = 0;
     }
 
     ChunkyFlag = 0;
+}
+
+void CameraOffsetAdditionalAngle(int16_t delta)
+{
+    Camera.additional_angle += delta;
+}
+
+void CameraOffsetAdditionalElevation(int16_t delta)
+{
+    int16_t old = Camera.additional_elevation;
+    
+    //don't let this value wrap, so clamp it. 
+    if (delta > 0) {
+        if (Camera.additional_elevation > INT16_MAX - delta) {
+            Camera.additional_elevation = INT16_MAX;
+        } else {
+            Camera.additional_elevation += delta;
+        }
+    } else {
+        if (Camera.additional_elevation < INT16_MIN - delta) {
+            Camera.additional_elevation = INT16_MIN;
+        } else {
+            Camera.additional_elevation += delta;
+        }
+    }
+}
+
+void CameraOffsetReset()
+{
+    Camera.additional_angle = Camera.additional_elevation = 0;
 }
 
 void T1MInjectGameCamera()

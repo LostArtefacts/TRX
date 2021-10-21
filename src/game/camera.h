@@ -26,6 +26,10 @@ void LookCamera(ITEM_INFO *item);
 void FixedCamera();
 void CalculateCamera();
 
+void CameraOffsetAdditionalAngle(int16_t delta);
+void CameraOffsetAdditionalElevation(int16_t delta);
+void CameraOffsetReset();
+
 void T1MInjectGameCamera();
 
 #endif

@@ -1,6 +1,7 @@
 #include "specific/input.h"
 
 #include "config.h"
+#include "game/camera.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "global/vars.h"
@@ -34,6 +35,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, //KEY_CAMERA_RESET
     },
 
     // default user controls
@@ -55,6 +61,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, // KEY_CAMERA_RESET
     }
 };
 
@@ -255,6 +266,19 @@ void S_UpdateInput()
         linput |= IN_ROLL;
     }
 
+    if (Key_(KEY_CAMERA_UP)) {
+        linput |= IN_CAMERA_UP;
+    }
+    if (Key_(KEY_CAMERA_DOWN)) {
+        linput |= IN_CAMERA_DOWN;
+    }
+    if (Key_(KEY_CAMERA_LEFT)) {
+        linput |= IN_CAMERA_LEFT;
+    }
+    if (Key_(KEY_CAMERA_RIGHT)) {
+        linput |= IN_CAMERA_RIGHT;
+    }
+
     if (T1MConfig.enable_cheats) {
         static int8_t is_stuff_cheat_key_pressed = 0;
         if (Key_(KEY_ITEM_CHEAT)) {
@@ -347,6 +371,19 @@ void S_UpdateInput()
         }
     }
 
+    int16_t camera_move_delta = PHD_45 / 30;
+
+    if (Key_(KEY_CAMERA_LEFT)) {
+        CameraOffsetAdditionalAngle(camera_move_delta);
+    } else if (Key_(KEY_CAMERA_RIGHT)) {
+        CameraOffsetAdditionalAngle(-camera_move_delta);
+    } else if (Key_(KEY_CAMERA_UP)) {
+        CameraOffsetAdditionalElevation(-camera_move_delta);
+    } else if (Key_(KEY_CAMERA_DOWN)) {
+        CameraOffsetAdditionalElevation(camera_move_delta);
+    } else if (Key_(KEY_CAMERA_RESET)) {
+        CameraOffsetReset();
+    } 
     Input = linput;
 
     return;
