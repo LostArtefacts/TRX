@@ -159,11 +159,13 @@ void LaraControl(int16_t item_num)
         CameraOffsetAdditionalAngle(camera_move_delta);
     } else if (Input & IN_CAMERA_RIGHT) {
         CameraOffsetAdditionalAngle(-camera_move_delta);
-    } else if (Input & IN_CAMERA_UP) {
+    }
+    if (Input & IN_CAMERA_UP) {
         CameraOffsetAdditionalElevation(-camera_move_delta);
     } else if (Input & IN_CAMERA_DOWN) {
         CameraOffsetAdditionalElevation(camera_move_delta);
-    } else if (Input & IN_CAMERA_RESET) {
+    }
+    if (Input & IN_CAMERA_RESET) {
         CameraOffsetReset();
     }
 
