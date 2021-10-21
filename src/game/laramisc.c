@@ -2,6 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "config.h"
+#include "game/camera.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/splash.h"
@@ -150,6 +151,20 @@ void LaraControl(int16_t item_num)
         // make sure the enemy healthbar is no longer rendered. If Lara later
         // is resurrected with DOZY, she should no longer aim at the target.
         Lara.target = NULL;
+    }
+
+    int16_t camera_move_delta = PHD_45 / 30;
+
+    if (Input & IN_CAMERA_LEFT) {
+        CameraOffsetAdditionalAngle(camera_move_delta);
+    } else if (Input & IN_CAMERA_RIGHT) {
+        CameraOffsetAdditionalAngle(-camera_move_delta);
+    } else if (Input & IN_CAMERA_UP) {
+        CameraOffsetAdditionalElevation(-camera_move_delta);
+    } else if (Input & IN_CAMERA_DOWN) {
+        CameraOffsetAdditionalElevation(camera_move_delta);
+    } else if (Input & IN_CAMERA_RESET) {
+        CameraOffsetReset();
     }
 
     switch (Lara.water_status) {

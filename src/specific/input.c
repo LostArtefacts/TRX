@@ -1,7 +1,6 @@
 #include "specific/input.h"
 
 #include "config.h"
-#include "game/camera.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "global/vars.h"
@@ -371,18 +370,16 @@ void S_UpdateInput()
         }
     }
 
-    int16_t camera_move_delta = PHD_45 / 30;
-
     if (Key_(KEY_CAMERA_LEFT)) {
-        CameraOffsetAdditionalAngle(camera_move_delta);
+        linput |= IN_CAMERA_LEFT;
     } else if (Key_(KEY_CAMERA_RIGHT)) {
-        CameraOffsetAdditionalAngle(-camera_move_delta);
+        linput |= IN_CAMERA_RIGHT;
     } else if (Key_(KEY_CAMERA_UP)) {
-        CameraOffsetAdditionalElevation(-camera_move_delta);
+        linput |= IN_CAMERA_UP;
     } else if (Key_(KEY_CAMERA_DOWN)) {
-        CameraOffsetAdditionalElevation(camera_move_delta);
+        linput |= IN_CAMERA_DOWN;
     } else if (Key_(KEY_CAMERA_RESET)) {
-        CameraOffsetReset();
+        linput |= IN_CAMERA_RESET;
     }
     Input = linput;
 
