@@ -572,15 +572,15 @@ int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
                 if (xoff < 0) {
                     height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height += (int16_t)(
-                        (xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 } else {
-                    height += (int16_t)(
-                        (yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 }
             }
 
@@ -1003,13 +1003,13 @@ int16_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
                 if (xoff < 0) {
                     height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height -= (int16_t)(
-                        (xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height -=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
-                    height += (int16_t)(
-                        (yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 } else {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 }
@@ -1357,11 +1357,11 @@ void RemoveRoomFlipItems(ROOM_INFO *r)
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, 1024);
+            AlterFloorHeight(item, WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, 2048);
+            AlterFloorHeight(item, WALL_L * 2);
             break;
         }
     }
@@ -1378,11 +1378,11 @@ void AddRoomFlipItems(ROOM_INFO *r)
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, -1024);
+            AlterFloorHeight(item, -WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, -2048);
+            AlterFloorHeight(item, -WALL_L * 2);
             break;
         }
     }

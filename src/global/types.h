@@ -805,7 +805,7 @@ typedef enum D_FLAGS {
     D_NEXT = 1 << 3,
 } D_FLAGS;
 
-typedef enum APP_SETTINGS_FLAG {
+typedef enum RENDER_SETTINGS_FLAG {
     RSF_PERSPECTIVE = 1 << 0,
     RSF_BILINEAR = 1 << 1,
     RSF_FPS = 1 << 2,

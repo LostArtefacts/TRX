@@ -14,7 +14,7 @@ LEGEND_ROW_PADDING = 3
 LEGEND_MARGIN = 15
 TEXT_SIZE = 15
 TEXT_MARGIN = 5
-DOCS_DIR = Path(__file__).parent
+DOCS_DIR = Path(__file__).parent.parent / "docs"
 PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
 PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 

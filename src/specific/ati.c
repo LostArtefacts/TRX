@@ -12,11 +12,11 @@
 #define ATI3DCIF_TexturePaletteCreate_lib   ((C3D_EC (__stdcall **)(C3D_ECI_TMAP_TYPE epalette, void *pPalette, C3D_PHTXPAL phtpalCreated))0x00459D00)
 #define ATI3DCIF_TexturePaletteDestroy_lib  ((C3D_EC (__stdcall **)(C3D_HTXPAL htxpalToDestroy))0x00459D04)
 #define ATI3DCIF_TexturePaletteAnimate      ((C3D_EC (__stdcall **)(C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette))0x00459D08)
-#define ATI3DCIF_ContextCreate_lib          ((C3D_HRC (__stdcall **)())0x00459D10)
+#define ATI3DCIF_ContextCreate_lib          ((C3D_HRC (__stdcall **)(void))0x00459D10)
 #define ATI3DCIF_ContextDestroy_lib         ((C3D_EC (__stdcall **)(C3D_HRC hRC))0x00459D14)
 #define ATI3DCIF_ContextSetState_lib        ((C3D_EC (__stdcall **)(C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData))0x00459D18)
 #define ATI3DCIF_RenderBegin_lib            ((C3D_EC (__stdcall **)(C3D_HRC hRC))0x00459D1C)
-#define ATI3DCIF_RenderEnd_lib              ((C3D_EC (__stdcall **)())0x00459D20)
+#define ATI3DCIF_RenderEnd_lib              ((C3D_EC (__stdcall **)(void))0x00459D20)
 #define ATI3DCIF_RenderSwitch               ((C3D_EC (__stdcall **)(C3D_HRC hRC))0x00459D24)
 #define ATI3DCIF_RenderPrimStrip_lib        ((C3D_EC (__stdcall **)(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert))0x00459D28)
 #define ATI3DCIF_RenderPrimList_lib         ((C3D_EC (__stdcall **)(C3D_VLIST vList, C3D_UINT32 u32NumVert))0x00459D2C)
@@ -24,7 +24,7 @@
 
 C3D_EC InitATI3DCIF()
 {
-    C3D_EC(__stdcall * ATI3DCIF_Init_lib)();
+    C3D_EC(__stdcall * ATI3DCIF_Init_lib)(void);
 
     HATI3DCIFModule = LoadLibraryA("ati3dcif");
     if (!HATI3DCIFModule) {
@@ -33,11 +33,11 @@ C3D_EC InitATI3DCIF()
     }
 
     C3D_EC result = C3D_EC_OK;
-    ATI3DCIF_Init_lib = *(C3D_EC(__stdcall **)())GetProcAddress(
+    ATI3DCIF_Init_lib = *(C3D_EC(__stdcall **)(void))GetProcAddress(
         HATI3DCIFModule, "ATI3DCIF_Init_lib");
     if (!ATI3DCIF_Init_lib) {
         LOG_ERROR("cannot find ATI3DCIF_Init_lib");
-        ATI3DCIF_Init_lib = (C3D_EC(__stdcall *)())ATI3DCIF_NullSub;
+        ATI3DCIF_Init_lib = (C3D_EC(__stdcall *)(void))ATI3DCIF_NullSub;
         FreeLibrary(HATI3DCIFModule);
         return C3D_EC_GENFAIL;
     }
@@ -111,11 +111,12 @@ C3D_EC InitATI3DCIF()
         result = C3D_EC_GENFAIL;
     }
 
-    *ATI3DCIF_ContextCreate_lib = *(C3D_HRC(__stdcall **)())GetProcAddress(
+    *ATI3DCIF_ContextCreate_lib = *(C3D_HRC(__stdcall **)(void))GetProcAddress(
         HATI3DCIFModule, "ATI3DCIF_ContextCreate_lib");
     if (!ATI3DCIF_ContextCreate_lib) {
         LOG_ERROR("cannot find ATI3DCIF_ContextCreate_lib");
-        *ATI3DCIF_ContextCreate_lib = (C3D_HRC(__stdcall *)())ATI3DCIF_NullSub;
+        *ATI3DCIF_ContextCreate_lib =
+            (C3D_HRC(__stdcall *)(void))ATI3DCIF_NullSub;
         result = C3D_EC_GENFAIL;
     }
 
@@ -147,7 +148,7 @@ C3D_EC InitATI3DCIF()
         result = C3D_EC_GENFAIL;
     }
 
-    *ATI3DCIF_RenderEnd_lib = *(C3D_EC(__stdcall **)())GetProcAddress(
+    *ATI3DCIF_RenderEnd_lib = *(C3D_EC(__stdcall **)(void))GetProcAddress(
         HATI3DCIFModule, "ATI3DCIF_RenderEnd_lib");
     if (!ATI3DCIF_RenderEnd_lib) {
         LOG_ERROR("cannot find ATI3DCIF_RenderEnd_lib");
@@ -189,13 +190,13 @@ C3D_EC InitATI3DCIF()
 C3D_EC ShutdownATI3DCIF()
 {
     C3D_EC result;
-    C3D_EC(__stdcall * ATI3DCIF_Term_lib)();
+    C3D_EC(__stdcall * ATI3DCIF_Term_lib)(void);
 
     if (!HATI3DCIFModule) {
         return C3D_EC_GENFAIL;
     }
 
-    ATI3DCIF_Term_lib = *(C3D_EC(__stdcall **)())GetProcAddress(
+    ATI3DCIF_Term_lib = *(C3D_EC(__stdcall **)(void))GetProcAddress(
         HATI3DCIFModule, "ATI3DCIF_Term_lib");
     if (ATI3DCIF_Term_lib) {
         result = ATI3DCIF_Term_lib();
@@ -210,7 +211,7 @@ C3D_EC ShutdownATI3DCIF()
     return result;
 }
 
-C3D_EC __stdcall ATI3DCIF_NullSub()
+C3D_EC __stdcall ATI3DCIF_NullSub(void)
 {
     return C3D_EC_GENFAIL;
 }
@@ -242,7 +243,7 @@ C3D_EC __stdcall ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
     return (*ATI3DCIF_TexturePaletteDestroy_lib)(htxpalToDestroy);
 }
 
-C3D_HRC __stdcall ATI3DCIF_ContextCreate()
+C3D_HRC __stdcall ATI3DCIF_ContextCreate(void)
 {
     return (*ATI3DCIF_ContextCreate_lib)();
 }
@@ -263,7 +264,7 @@ C3D_EC __stdcall ATI3DCIF_RenderBegin(C3D_HRC hRC)
     return (*ATI3DCIF_RenderBegin_lib)(hRC);
 }
 
-C3D_EC __stdcall ATI3DCIF_RenderEnd()
+C3D_EC __stdcall ATI3DCIF_RenderEnd(void)
 {
     return (*ATI3DCIF_RenderEnd_lib)();
 }

@@ -17,8 +17,6 @@ void mn_update_sound_effects();
 void mn_get_sound_params(MN_SFX_PLAY_INFO *slot);
 void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos);
 void mn_adjust_master_volume(int8_t volume);
-void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot);
-void mn_clear_handles(MN_SFX_PLAY_INFO *slot);
 
 void T1MInjectGameMNSound();
 
