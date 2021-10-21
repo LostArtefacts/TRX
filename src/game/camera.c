@@ -677,7 +677,7 @@ void CameraOffsetAdditionalAngle(int16_t delta)
 
 void CameraOffsetAdditionalElevation(int16_t delta)
 {
-    // don't let this value wrap, so clamp it. 
+    // don't let this value wrap, so clamp it.
     if (delta > 0) {
         if (Camera.additional_elevation > INT16_MAX - delta) {
             Camera.additional_elevation = INT16_MAX;
