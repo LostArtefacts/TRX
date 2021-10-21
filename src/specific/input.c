@@ -276,6 +276,9 @@ void S_UpdateInput()
     }
     if (Key_(KEY_CAMERA_RIGHT)) {
         linput |= IN_CAMERA_RIGHT;
+    } 
+    if (Key_(KEY_CAMERA_RESET)) {
+        linput |= IN_CAMERA_RESET;
     }
 
     if (T1MConfig.enable_cheats) {
@@ -370,17 +373,6 @@ void S_UpdateInput()
         }
     }
 
-    if (Key_(KEY_CAMERA_LEFT)) {
-        linput |= IN_CAMERA_LEFT;
-    } else if (Key_(KEY_CAMERA_RIGHT)) {
-        linput |= IN_CAMERA_RIGHT;
-    } else if (Key_(KEY_CAMERA_UP)) {
-        linput |= IN_CAMERA_UP;
-    } else if (Key_(KEY_CAMERA_DOWN)) {
-        linput |= IN_CAMERA_DOWN;
-    } else if (Key_(KEY_CAMERA_RESET)) {
-        linput |= IN_CAMERA_RESET;
-    }
     Input = linput;
 
     return;
