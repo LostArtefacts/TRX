@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-PHD_3DPOS_F LaraFloatPos;
+//PHD_3DPOS_F LaraFloatPos;
 double LaraFallSpeedF = 0.0;
 double LaraSpeedF = 0.0;
 
@@ -37,7 +37,7 @@ void LaraControl(int16_t item_num)
     if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
-            LaraFloatPos.y -= 0x80;
+            item->pos_f.y -= 0x80;
             item->current_anim_state = AS_SWIM;
             item->goal_anim_state = AS_SWIM;
             item->anim_number = AA_SWIMGLIDE;
@@ -66,7 +66,7 @@ void LaraControl(int16_t item_num)
         Lara.water_status = LWS_UNDERWATER;
         Lara.air = LARA_AIR;
         item->pos.y += 100;
-        LaraFloatPos.y += 100;
+        item->pos_f.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
         StopSoundEffect(SFX_LARA_FALL, NULL);
@@ -109,7 +109,7 @@ void LaraControl(int16_t item_num)
             item->fall_speed = 0;
             LaraFallSpeedF = 0.0;
             item->pos.y = wh + 1;
-            LaraFloatPos.y = wh + 1;
+            item->pos_f.y = wh + 1;
             item->pos.x_rot = 0;
             item->pos.z_rot = 0;
             Lara.head_x_rot = 0;
@@ -250,9 +250,6 @@ void AnimateLara(ITEM_INFO *item)
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
                     TranslateItem(item, command[0], command[1], command[2]);
-                    TranslateItem_f(
-                        &LaraFloatPos, command[0], command[1], command[2],
-                        item->pos.y_rot);
                     command += 3;
                     break;
 
@@ -343,9 +340,7 @@ void AnimateLara(ITEM_INFO *item)
         item->pos.x += (phd_sin(Lara.move_angle) * item->speed) >> W2V_SHIFT;
         item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
 
-        LaraFloatPos.x = item->pos.x;
-        LaraFloatPos.z = item->pos.z;
-        LaraFloatPos.y = item->pos.y;
+        UpdateItemFloatPosFromFixed(item);
         LaraFallSpeedF = item->fall_speed;
         LaraSpeedF = item->speed;
     } else {
@@ -363,7 +358,7 @@ void AnimateLara(ITEM_INFO *item)
                 ? (double)GRAVITY / (double)AnimScale
                 : 1.0 / (double)AnimScale;
 
-            LaraFloatPos.y += LaraFallSpeedF / (double)AnimScale;
+            item->pos_f.y += LaraFallSpeedF / (double)AnimScale;
 
             item->fall_speed = LaraFallSpeedF;
             item->speed = LaraSpeedF;
@@ -378,12 +373,10 @@ void AnimateLara(ITEM_INFO *item)
             item->speed = LaraSpeedF;
         }
 
-        LaraFloatPos.x += phd_sin_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
-        LaraFloatPos.z += phd_cos_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
+        item->pos_f.x += phd_sin_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
+        item->pos_f.z += phd_cos_f(Lara.move_angle) * LaraSpeedF / VIEW2WORLD;
 
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
-        item->pos.y = LaraFloatPos.y;
+        UpdateItemFixedPosFromFloat(item);
     }
 }
 
@@ -732,9 +725,7 @@ void LaraCheatGetStuff()
 
 void LaraSetFloatPosFromFixed()
 {
-    LaraFloatPos.x = LaraItem->pos.x;
-    LaraFloatPos.y = LaraItem->pos.y;
-    LaraFloatPos.z = LaraItem->pos.z;
+    UpdateItemFloatPosFromFixed(LaraItem);
     LaraFallSpeedF = LaraItem->fall_speed;
     LaraSpeedF = LaraItem->speed;
 }

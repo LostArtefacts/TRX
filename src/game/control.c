@@ -396,17 +396,13 @@ void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.x += (c * x + s * z) >> W2V_SHIFT;
     item->pos.y += y;
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
-}
 
-void TranslateItem_f(
-    PHD_3DPOS_F *item, double x, double y, double z, int16_t y_rot)
-{
-    double c = phd_cos_f(y_rot);
-    double s = phd_sin_f(y_rot);
+    double cf = phd_cos_f(item->pos.y_rot);
+    double sf = phd_sin_f(item->pos.y_rot);
 
-    item->x += (c * x + s * z) / VIEW2WORLD;
-    item->y += y;
-    item->z += (c * z - s * x) / VIEW2WORLD;
+    item->pos_f.x += (cf * x + sf * z) / VIEW2WORLD;
+    item->pos_f.y += y;
+    item->pos_f.z += (cf * z - sf * x) / VIEW2WORLD;
 }
 
 FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)

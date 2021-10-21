@@ -14,7 +14,7 @@
 
 #define MAX_BADDIE_COLLISION 12
 
-extern PHD_3DPOS_F LaraFloatPos;
+//extern PHD_3DPOS_F LaraFloatPos;
 
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
@@ -510,21 +510,20 @@ void ShiftItem(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.x += coll->shift.x;
     item->pos.y += coll->shift.y;
     item->pos.z += coll->shift.z;
+    UpdateItemFloatPosFromFixed(item);
     coll->shift.x = 0;
     coll->shift.y = 0;
     coll->shift.z = 0;
 }
 
-void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll)
+void ShiftItemLara(ITEM_INFO *item, COLL_INFO *coll) //REMOVE ME
 {
     // push int out
     item->pos.x += coll->shift.x;
     item->pos.y += coll->shift.y;
     item->pos.z += coll->shift.z;
     // clip float to match clipped int
-    LaraFloatPos.x = item->pos.x;
-    LaraFloatPos.y = item->pos.y;
-    LaraFloatPos.z = item->pos.z;
+    UpdateItemFloatPosFromFixed(item);
     coll->shift.x = 0;
     coll->shift.y = 0;
     coll->shift.z = 0;
@@ -756,8 +755,7 @@ void ItemPushLara(
         lara_item->pos.x = item->pos.x + ax;
         lara_item->pos.z = item->pos.z + az;
 
-        LaraFloatPos.x = lara_item->pos.x;
-        LaraFloatPos.z = lara_item->pos.z;
+        UpdateItemFloatPosFromFixed(lara_item);
 
         rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
         rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
@@ -793,9 +791,7 @@ void ItemPushLara(
         if (coll->coll_type != COLL_NONE) {
             lara_item->pos.x = coll->old.x;
             lara_item->pos.z = coll->old.z;
-
-            LaraFloatPos.x = lara_item->pos.x;
-            LaraFloatPos.z = lara_item->pos.z;
+            UpdateItemFloatPosFromFixed(lara_item);
         } else {
             coll->old.x = lara_item->pos.x;
             coll->old.y = lara_item->pos.y;
@@ -890,9 +886,7 @@ void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
-    LaraFloatPos.x = lara_item->pos.x;
-    LaraFloatPos.y = lara_item->pos.y;
-    LaraFloatPos.z = lara_item->pos.z;
+    UpdateItemFloatPosFromFixed(lara_item);
 }
 
 int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
@@ -918,9 +912,7 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
     int32_t ret =
         Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
 
-    LaraFloatPos.x = lara_item->pos.x;
-    LaraFloatPos.y = lara_item->pos.y;
-    LaraFloatPos.z = lara_item->pos.z;
+    UpdateItemFloatPosFromFixed(lara_item);
 
     return ret;
 }

@@ -5,6 +5,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/items.h"
 #include "game/objects/door.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -81,22 +82,17 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
              * phd_cos(item->pos.x_rot))
             >> W2V_SHIFT;
 
-        LaraFloatPos.y = item->pos.y;
-        LaraFloatPos.x = item->pos.x;
-        LaraFloatPos.z = item->pos.z;
+        UpdateItemFloatPosFromFixed(item);
     } else {
-        LaraFloatPos.y -=
+        item->pos_f.y -=
             (phd_sin_f(item->pos.x_rot) * LaraFallSpeedF) / (VIEW2WORLD * 4);
-        LaraFloatPos.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
+        item->pos_f.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
                            / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
             / VIEW2WORLD;
-        LaraFloatPos.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
+        item->pos_f.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
                            / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
             / VIEW2WORLD;
-
-        item->pos.y = LaraFloatPos.y;
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
+        UpdateItemFixedPosFromFloat(item);
     }
 
     if (Lara.water_status != LWS_CHEAT) {
@@ -281,7 +277,7 @@ void LaraColUWDeath(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
         item->pos.y -= 5;
-        LaraFloatPos.y -= 5.0;
+        item->pos_f.y -= 5.0;
     }
     LaraSwimCollision(item, coll);
 }
@@ -340,7 +336,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor < 0) {
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->pos.y += coll->mid_floor;
         item->pos.x_rot += UW_WALLDEFLECT;
     }
@@ -364,38 +360,38 @@ void LaraWaterCurrent(COLL_INFO *coll)
 
     target.x -= item->pos.x;
     if (target.x > Lara.current_active) {
-        LaraFloatPos.x += Lara.current_active;
-        item->pos.x = LaraFloatPos.x;
+        item->pos_f.x += Lara.current_active;
+        item->pos.x = item->pos_f.x;
     } else if (target.x < -Lara.current_active) {
-        LaraFloatPos.x -= Lara.current_active;
-        item->pos.x = LaraFloatPos.x;
+        item->pos_f.x -= Lara.current_active;
+        item->pos.x = item->pos_f.x;
     } else {
         item->pos.x += target.x;
-        LaraFloatPos.x += target.x;
+        item->pos_f.x += target.x;
     }
 
     target.z -= item->pos.z;
     if (target.z > Lara.current_active) {
-        LaraFloatPos.z += Lara.current_active;
-        item->pos.z = LaraFloatPos.z;
+        item->pos_f.z += Lara.current_active;
+        item->pos.z = item->pos_f.z;
     } else if (target.z < -Lara.current_active) {
-        LaraFloatPos.z -= Lara.current_active;
-        item->pos.z = LaraFloatPos.z;
+        item->pos_f.z -= Lara.current_active;
+        item->pos.z = item->pos_f.z;
     } else {
         item->pos.z += target.z;
-        LaraFloatPos.z += target.z;
+        item->pos_f.z += target.z;
     }
 
     target.y -= item->pos.y;
     if (target.y > Lara.current_active) {
-        LaraFloatPos.y += Lara.current_active;
-        item->pos.y = LaraFloatPos.y;
+        item->pos_f.y += Lara.current_active;
+        item->pos.y = item->pos_f.y;
     } else if (target.y < -Lara.current_active) {
-        LaraFloatPos.y -= Lara.current_active;
-        item->pos.y = LaraFloatPos.y;
+        item->pos_f.y -= Lara.current_active;
+        item->pos.y = item->pos_f.y;
     } else {
         item->pos.y += target.y;
-        LaraFloatPos.y += target.y;
+        item->pos_f.y += target.y;
     }
 
     Lara.current_active = 0;
@@ -428,7 +424,7 @@ void LaraWaterCurrent(COLL_INFO *coll)
 
     if (coll->mid_floor < 0) {
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->pos.x_rot += UW_WALLDEFLECT;
     }
     ShiftItemLara(item, coll);

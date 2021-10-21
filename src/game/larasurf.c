@@ -4,6 +4,7 @@
 #include "config.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/items.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -68,16 +69,13 @@ void LaraSurface(ITEM_INFO *item, COLL_INFO *coll)
             (phd_sin(Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
         item->pos.z +=
             (phd_cos(Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
-        LaraFloatPos.x = item->pos.x;
-        LaraFloatPos.z = item->pos.z;
+        UpdateItemFloatPosFromFixed(item);
     } else {
-        LaraFloatPos.x +=
+        item->pos_f.x +=
             (phd_sin_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
-        LaraFloatPos.z +=
+        item->pos_f.z +=
             (phd_cos_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
-
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
+        UpdateItemFixedPosFromFloat(item);
     }
 
     LaraBaddieCollision(item, coll);
@@ -341,9 +339,7 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-        LaraFloatPos.x = coll->old.x;
-        LaraFloatPos.y = coll->old.y;
-        LaraFloatPos.z = coll->old.z;
+        UpdateItemFloatPosFromFixed(item);
     } else if (coll->coll_type == COLL_LEFT) {
         item->pos.y_rot += 5 * PHD_DEGREE;
     } else if (coll->coll_type == COLL_RIGHT) {
@@ -403,27 +399,27 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
         return 0;
     }
 
-    LaraFloatPos.y += hdif - 5.0;
-    item->pos.y = LaraFloatPos.y;
+    item->pos_f.y += hdif - 5.0;
+    item->pos.y = item->pos_f.y;
 
     UpdateLaraRoom(item, -LARA_HITE / 2);
 
     switch (angle) {
     case 0:
         item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RAD;
-        LaraFloatPos.z = item->pos.z;
+        item->pos_f.z = item->pos.z;
         break;
     case PHD_90:
         item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RAD;
-        LaraFloatPos.x = item->pos.x;
+        item->pos_f.x = item->pos.x;
         break;
     case -PHD_180:
         item->pos.z = (item->pos.z & -WALL_L) - LARA_RAD;
-        LaraFloatPos.z = item->pos.z;
+        item->pos_f.z = item->pos.z;
         break;
     case -PHD_90:
         item->pos.x = (item->pos.x & -WALL_L) - LARA_RAD;
-        LaraFloatPos.x = item->pos.x;
+        item->pos_f.x = item->pos.x;
         break;
     }
 

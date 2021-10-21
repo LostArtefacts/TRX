@@ -994,7 +994,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
@@ -1064,10 +1064,10 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
 
     if (coll->mid_floor >= 50) {
         item->pos.y += 50;
-        LaraFloatPos.y += 50.0f;
+        item->pos_f.y += 50.0f;
     } else {
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
     }
 }
 
@@ -1105,7 +1105,7 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
 
     ShiftItemLara(item, coll);
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColForwardJump(ITEM_INFO *item, COLL_INFO *coll)
@@ -1127,7 +1127,7 @@ void LaraColForwardJump(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1176,7 +1176,7 @@ void LaraColFastBack(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColTurnR(ITEM_INFO *item, COLL_INFO *coll)
@@ -1208,7 +1208,7 @@ void LaraColTurnR(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColTurnL(ITEM_INFO *item, COLL_INFO *coll)
@@ -1227,7 +1227,7 @@ void LaraColDeath(ITEM_INFO *item, COLL_INFO *coll)
 
     ShiftItemLara(item, coll);
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
     item->hit_points = -1;
     Lara.air = -1;
 }
@@ -1252,7 +1252,7 @@ void LaraColFastFall(ITEM_INFO *item, COLL_INFO *coll)
         }
         StopSoundEffect(SFX_LARA_FALL, NULL);
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1298,7 +1298,7 @@ void LaraColReach(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1345,9 +1345,7 @@ void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-        LaraFloatPos.x = coll->old.x;
-        LaraFloatPos.y = coll->old.y;
-        LaraFloatPos.z = coll->old.z;
+        UpdateItemFloatPosFromFixed(item);
     }
 }
 
@@ -1389,7 +1387,7 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColNull(ITEM_INFO *item, COLL_INFO *coll)
@@ -1429,7 +1427,7 @@ void LaraColStepRight(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
@@ -1459,7 +1457,7 @@ void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColSlide(ITEM_INFO *item, COLL_INFO *coll)
@@ -1510,7 +1508,7 @@ void LaraColUpJump(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1534,7 +1532,7 @@ void LaraColFallBack(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y = item->pos.y;
+        item->pos_f.y = item->pos.y;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1645,7 +1643,7 @@ void LaraColRoll(ITEM_INFO *item, COLL_INFO *coll)
 
     ShiftItemLara(item, coll);
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColRoll2(ITEM_INFO *item, COLL_INFO *coll)
@@ -1681,7 +1679,7 @@ void LaraColRoll2(ITEM_INFO *item, COLL_INFO *coll)
 
     ShiftItemLara(item, coll);
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 }
 
 void LaraColSpecial(ITEM_INFO *item, COLL_INFO *coll)
@@ -1714,7 +1712,7 @@ void LaraColSwanDive(ITEM_INFO *item, COLL_INFO *coll)
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
     }
 }
 
@@ -1738,7 +1736,7 @@ void LaraColFastDive(ITEM_INFO *item, COLL_INFO *coll)
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
     }
 }
 
@@ -1769,7 +1767,7 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        LaraFloatPos.y += coll->mid_floor;
+        item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
         item->fall_speed = 0;
         LaraFallSpeedF = 0.0;
@@ -1817,7 +1815,7 @@ void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)
 
     TestLaraSlide(item, coll);
     item->pos.y += coll->mid_floor;
-    LaraFloatPos.y += coll->mid_floor;
+    item->pos_f.y += coll->mid_floor;
 
     if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         item->goal_anim_state = AS_STOP;
@@ -1830,9 +1828,7 @@ int32_t LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-        LaraFloatPos.x += coll->old.x;
-        LaraFloatPos.y += coll->old.y;
-        LaraFloatPos.z += coll->old.z;
+        UpdateItemFloatPosFromFixed(item);
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
         item->anim_number = AA_STOP;
@@ -1869,22 +1865,22 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     switch (angle) {
     case DIR_NORTH:
         item->pos.z += 2;
-        LaraFloatPos.z += 2;
+        item->pos_f.z += 2;
         break;
 
     case DIR_WEST:
         item->pos.x -= 2;
-        LaraFloatPos.x -= 2;
+        item->pos_f.x -= 2;
         break;
 
     case DIR_SOUTH:
         item->pos.z -= 2;
-        LaraFloatPos.z -= 2;
+        item->pos_f.z -= 2;
         break;
 
     case DIR_EAST:
         item->pos.x += 2;
-        LaraFloatPos.x += 2;
+        item->pos_f.x += 2;
         break;
     }
 
@@ -1900,13 +1896,11 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOPHANG * AnimScale;
         bounds = GetBoundsAccurate(item);
 
-        LaraFloatPos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
-        LaraFloatPos.x += coll->shift.x;
-        LaraFloatPos.z += coll->shift.z;
+        item->pos_f.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
+        item->pos_f.x += coll->shift.x;
+        item->pos_f.z += coll->shift.z;
 
-        item->pos.y = LaraFloatPos.y;
-        item->pos.x = LaraFloatPos.x;
-        item->pos.z = LaraFloatPos.z;
+        UpdateItemFixedPosFromFloat(item);
 
         item->gravity_status = 1;
         item->fall_speed = 1;
@@ -1922,9 +1916,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-        LaraFloatPos.x = coll->old.x;
-        LaraFloatPos.y = coll->old.y;
-        LaraFloatPos.z = coll->old.z;
+        UpdateItemFloatPosFromFixed(item);
         if (item->current_anim_state == AS_HANGLEFT
             || item->current_anim_state == AS_HANGRIGHT) {
             item->goal_anim_state = AS_HANG;
@@ -1938,22 +1930,22 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     switch (angle) {
     case DIR_NORTH:
     case DIR_SOUTH:
-        LaraFloatPos.z += coll->shift.z;
-        item->pos.z = LaraFloatPos.z;
+        item->pos_f.z += coll->shift.z;
+        item->pos.z = item->pos_f.z;
         break;
 
     case DIR_WEST:
     case DIR_EAST:
-        LaraFloatPos.x += coll->shift.x;
-        item->pos.x = LaraFloatPos.x;
+        item->pos_f.x += coll->shift.x;
+        item->pos.x = item->pos_f.x;
         break;
     }
 
     bounds = GetBoundsAccurate(item);
     int hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif >= -STEP_L && hdif <= STEP_L) {
-        LaraFloatPos.y += hdif;
-        item->pos.y = LaraFloatPos.y;
+        item->pos_f.y += hdif;
+        item->pos.y = item->pos_f.y;
     }
 }
 
@@ -2016,10 +2008,9 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
-        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
-        item->pos.z = LaraFloatPos.z;
-        item->pos.x = LaraFloatPos.x;
+        item->pos_f.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
+        item->pos_f.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
+        UpdateItemFixedPosFromFloat(item);
 
         item->speed = 0;
         LaraSpeedF = 0.0;
@@ -2055,8 +2046,8 @@ void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     case COLL_CLAMP:
         item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
         item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
-        LaraFloatPos.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
-        LaraFloatPos.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
+        item->pos_f.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
+        item->pos_f.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
         item->speed = 0;
         LaraSpeedF = 0.0;
         coll->mid_floor = 0;
@@ -2106,7 +2097,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_VAULT12;
         item->frame_number = AF_VAULT12 * AnimScale;
         item->pos.y += STEP_L * 2 + hdif;
-        LaraFloatPos.y += STEP_L * 2 + hdif;
+        item->pos_f.y += STEP_L * 2 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
         item->pos.y_rot = angle;
         ShiftItemLara(item, coll);
@@ -2123,7 +2114,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_VAULT34;
         item->frame_number = AF_VAULT34 * AnimScale;
         item->pos.y += STEP_L * 3 + hdif;
-        LaraFloatPos.y += STEP_L * 3 + hdif;
+        item->pos_f.y += STEP_L * 3 + hdif;
         Lara.gun_status = LGS_HANDSBUSY;
         item->pos.y_rot = angle;
         ShiftItemLara(item, coll);
@@ -2198,13 +2189,11 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     item->goal_anim_state = AS_HANG;
 
     // bounds = GetBoundsAccurate(item);
-    LaraFloatPos.y += hdif;
-    LaraFloatPos.x += coll->shift.x;
-    LaraFloatPos.z += coll->shift.z;
+    item->pos_f.y += hdif;
+    item->pos_f.x += coll->shift.x;
+    item->pos_f.z += coll->shift.z;
 
-    item->pos.y = LaraFloatPos.y;
-    item->pos.x = LaraFloatPos.x;
-    item->pos.z = LaraFloatPos.z;
+    UpdateItemFixedPosFromFloat(item);
 
     item->pos.y_rot = angle;
     item->gravity_status = 0;
@@ -2298,13 +2287,11 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->frame_number = AF_STARTHANG * AnimScale;
     bounds = GetBoundsAccurate(item);
 
-    LaraFloatPos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
-    LaraFloatPos.x += coll->shift.x;
-    LaraFloatPos.z += coll->shift.z;
+    item->pos_f.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    item->pos_f.x += coll->shift.x;
+    item->pos_f.z += coll->shift.z;
 
-    item->pos.y = LaraFloatPos.y;
-    item->pos.x = LaraFloatPos.x;
-    item->pos.z = LaraFloatPos.z;
+    UpdateItemFixedPosFromFloat(item);
 
     item->pos.y_rot = angle;
     item->gravity_status = 0;

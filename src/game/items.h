@@ -19,6 +19,8 @@ void InitialiseFXArray();
 int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
+void UpdateItemFixedPosFromFloat(ITEM_INFO *item);
+void UpdateItemFloatPosFromFixed(ITEM_INFO *item);
 
 void T1MInjectGameItems();
 

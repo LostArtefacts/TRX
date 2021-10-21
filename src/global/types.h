@@ -1435,6 +1435,7 @@ typedef struct ITEM_INFO {
     /*      */ uint16_t collidable : 1;
     /*      */ uint16_t looked_at : 1;
     /* 0044 end */
+    PHD_3DPOS_F pos_f;
 } ITEM_INFO;
 
 typedef struct LARA_ARM {

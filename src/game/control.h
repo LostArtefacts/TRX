@@ -31,7 +31,4 @@ int32_t GetSecretCount();
 
 void T1MInjectGameControl();
 
-void TranslateItem_f(
-    PHD_3DPOS_F *item, double x, double y, double z, int16_t y_rot);
-
 #endif

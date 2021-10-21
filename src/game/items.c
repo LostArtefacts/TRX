@@ -324,6 +324,20 @@ void EffectNewRoom(int16_t fx_num, int16_t room_num)
     r->fx_number = fx_num;
 }
 
+void UpdateItemFixedPosFromFloat(ITEM_INFO *item)
+{
+    item->pos.x = item->pos_f.x;
+    item->pos.y = item->pos_f.y;
+    item->pos.z = item->pos_f.z;
+}
+
+void UpdateItemFloatPosFromFixed(ITEM_INFO *item)
+{
+    item->pos_f.x = item->pos.x;
+    item->pos_f.y = item->pos.y;
+    item->pos_f.z = item->pos.z;
+}
+
 void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);
