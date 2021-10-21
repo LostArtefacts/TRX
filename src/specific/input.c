@@ -276,7 +276,7 @@ void S_UpdateInput()
     }
     if (Key_(KEY_CAMERA_RIGHT)) {
         linput |= IN_CAMERA_RIGHT;
-    } 
+    }
     if (Key_(KEY_CAMERA_RESET)) {
         linput |= IN_CAMERA_RESET;
     }
