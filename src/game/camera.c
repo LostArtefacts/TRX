@@ -695,7 +695,8 @@ void CameraOffsetAdditionalElevation(int16_t delta)
 
 void CameraOffsetReset()
 {
-    Camera.additional_angle = Camera.additional_elevation = 0;
+    Camera.additional_angle = 0;
+    Camera.additional_elevation = 0;
 }
 
 void T1MInjectGameCamera()
