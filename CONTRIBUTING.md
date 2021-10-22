@@ -2,31 +2,16 @@
 
 ## Workflow
 
-First we need to compile the project (how to do this is described in the next
-section). After this, there should be `Tomb1Main.dll` output DLL. If you're
-doing it for the first time, please copy the output DLL to the directory with
-TombATI along with the entire `cfg/` directory. For the subsequent times, only
-copy `Tomb1Main.dll`. It is encouraged to create a script that does it for you,
-for example on Windows:
+Initial build:
 
-`test.bat`:
+- Compile the project (described in the next section)
+- Copy `build/Tomb1Main.dll` and the `cfg` directory to your TombATI directory
 
-```
-cd "C:\path to your game"
-del Tomb1Main.dll
-cp "C:\path to the repository\build\Tomb1Main.dll" Tomb1Main.dll
-TombATI.exe
-```
+Subsequent builds:
 
-and on Linux:
-
-`test`:
-
-```
-#!/bin/sh
-cp /path/to/compiled/Tomb1Main.dll /path/to/your/game/Tomb1Main.dll
-wine /path/to/your/game/TombATI.exe
-```
+- Compile the project
+- Copy `build/Tomb1Main.dll` to your TombATI directory
+  (we recommend making a small batch or other script file to do this)
 
 ## Compiling on Ubuntu
 
