@@ -338,6 +338,46 @@ void UpdateItemFloatPosFromFixed(ITEM_INFO *item)
     item->pos_f.z = item->pos.z;
 }
 
+void ClearItemFallSpeed(ITEM_INFO *item)
+{
+    SetItemFallSpeed(item, 0);
+}
+
+void SetItemFallSpeed(ITEM_INFO *item, double value)
+{
+    item->fall_speed = value;
+    item->fall_speed_f = value;
+}
+
+void ClampItemFallSpeedUpper(ITEM_INFO *item, double max)
+{
+    if (item->fall_speed_f > max) {
+        item->fall_speed_f = max;
+        item->fall_speed = max;
+    }
+}
+
+void SubFallSpeedClampZero(ITEM_INFO *item, double delta)
+{
+    item->fall_speed_f -= delta;
+
+    if (item->fall_speed_f < 0) {
+        item->fall_speed_f = 0;
+    }
+    item->fall_speed = item->fall_speed_f;
+}
+
+void ClearItemSpeed(ITEM_INFO *item)
+{
+    SetItemSpeed(item, 0.0);
+}
+
+void SetItemSpeed(ITEM_INFO *item, double value)
+{
+    item->speed = value;
+    item->speed_f = value;
+}
+
 void T1MInjectGameItems()
 {
     INJECT(0x00421B10, InitialiseItemArray);

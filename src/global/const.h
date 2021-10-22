@@ -63,11 +63,11 @@
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
 #define LARA_RAD 100 // global radius of Lara
 #define LARA_HITE 762 // global height of Lara - less than 3/4 block
-#define UW_MAXSPEED (200 / AnimScale)
+#define UW_MAXSPEED 200
 #define UW_RADIUS (300 / AnimScale)
 #define UW_HITE 400
 #define UW_WALLDEFLECT (2 * PHD_DEGREE / AnimScale) // = 364
-#define SURF_MAXSPEED (60 / AnimScale)
+#define SURF_MAXSPEED 60
 #define SURF_RADIUS (100 / AnimScale)
 #define SURF_HITE 700
 #define WATER_FRICTION 6
@@ -230,7 +230,7 @@
 #define RESOLUTIONS_SIZE 12
 
 #if _MSC_VER > 0x500
-    #define strdup _strdup    // fixes error about POSIX function
+    #define strdup _strdup // fixes error about POSIX function
     #define _USE_MATH_DEFINES // makes maths.h also define M_PI
 #endif
 

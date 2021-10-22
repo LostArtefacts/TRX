@@ -21,6 +21,12 @@ void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
 void UpdateItemFixedPosFromFloat(ITEM_INFO *item);
 void UpdateItemFloatPosFromFixed(ITEM_INFO *item);
+void ClearItemFallSpeed(ITEM_INFO *item);
+void SetItemFallSpeed(ITEM_INFO *item, double value);
+void ClampItemFallSpeedUpper(ITEM_INFO *item, double max);
+void SubFallSpeedClampZero(ITEM_INFO *item, double delta);
+void ClearItemSpeed(ITEM_INFO *item);
+void SetItemSpeed(ITEM_INFO *item, double value);
 
 void T1MInjectGameItems();
 

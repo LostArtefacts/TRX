@@ -72,9 +72,11 @@ void LaraSurface(ITEM_INFO *item, COLL_INFO *coll)
         UpdateItemFloatPosFromFixed(item);
     } else {
         item->pos_f.x +=
-            (phd_sin_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
+            (phd_sin_f(Lara.move_angle) * item->fall_speed_f / AnimScale)
+            / (VIEW2WORLD * 4.0);
         item->pos_f.z +=
-            (phd_cos_f(Lara.move_angle) * LaraFallSpeedF) / (VIEW2WORLD * 2.0);
+            (phd_cos_f(Lara.move_angle) * item->fall_speed_f / AnimScale)
+            / (VIEW2WORLD * 4.0);
         UpdateItemFixedPosFromFloat(item);
     }
 
@@ -84,6 +86,15 @@ void LaraSurface(ITEM_INFO *item, COLL_INFO *coll)
     UpdateLaraRoom(item, 100);
     LaraGun();
     TestTriggers(coll->trigger, 0);
+}
+
+void LaraIncFallSpeedClampSurfMax(ITEM_INFO *item)
+{
+    item->fall_speed_f += 8;
+    if (item->fall_speed_f > SURF_MAXSPEED) {
+        item->fall_speed_f = SURF_MAXSPEED;
+    }
+    item->fall_speed = item->fall_speed_f;
 }
 
 void LaraAsSurfSwim(ITEM_INFO *item, COLL_INFO *coll)
@@ -110,11 +121,7 @@ void LaraAsSurfSwim(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SURFTREAD;
     }
 
-    LaraFallSpeedF += 8;
-    if (LaraFallSpeedF > SURF_MAXSPEED / AnimScale) {
-        LaraFallSpeedF = SURF_MAXSPEED / AnimScale;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    LaraIncFallSpeedClampSurfMax(item);
 }
 
 void LaraAsSurfBack(ITEM_INFO *item, COLL_INFO *coll)
@@ -138,11 +145,7 @@ void LaraAsSurfBack(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SURFTREAD;
     }
 
-    LaraFallSpeedF += 8;
-    if (LaraFallSpeedF > SURF_MAXSPEED / AnimScale) {
-        LaraFallSpeedF = SURF_MAXSPEED / AnimScale;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    LaraIncFallSpeedClampSurfMax(item);
 }
 
 void LaraAsSurfLeft(ITEM_INFO *item, COLL_INFO *coll)
@@ -155,11 +158,7 @@ void LaraAsSurfLeft(ITEM_INFO *item, COLL_INFO *coll)
     Lara.dive_count = 0;
 
     if (T1MConfig.enable_tr3_sidesteps && CHK_ALL(Input, IN_SLOW | IN_LEFT)) {
-        LaraFallSpeedF += 8;
-        if (LaraFallSpeedF > SURF_MAXSPEED) {
-            LaraFallSpeedF = SURF_MAXSPEED;
-        }
-        item->fall_speed = LaraFallSpeedF;
+        LaraIncFallSpeedClampSurfMax(item);
         return;
     }
 
@@ -173,11 +172,7 @@ void LaraAsSurfLeft(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SURFTREAD;
     }
 
-    LaraFallSpeedF += 8;
-    if (LaraFallSpeedF > SURF_MAXSPEED / AnimScale) {
-        LaraFallSpeedF = SURF_MAXSPEED / AnimScale;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    LaraIncFallSpeedClampSurfMax(item);
 }
 
 void LaraAsSurfRight(ITEM_INFO *item, COLL_INFO *coll)
@@ -190,11 +185,7 @@ void LaraAsSurfRight(ITEM_INFO *item, COLL_INFO *coll)
     Lara.dive_count = 0;
 
     if (T1MConfig.enable_tr3_sidesteps && CHK_ALL(Input, IN_SLOW | IN_RIGHT)) {
-        LaraFallSpeedF += 8;
-        if (LaraFallSpeedF > SURF_MAXSPEED) {
-            LaraFallSpeedF = SURF_MAXSPEED;
-        }
-        item->fall_speed = LaraFallSpeedF;
+        LaraIncFallSpeedClampSurfMax(item);
         return;
     }
 
@@ -208,20 +199,12 @@ void LaraAsSurfRight(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SURFTREAD;
     }
 
-    LaraFallSpeedF += 8;
-    if (LaraFallSpeedF > SURF_MAXSPEED / AnimScale) {
-        LaraFallSpeedF = SURF_MAXSPEED / AnimScale;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    LaraIncFallSpeedClampSurfMax(item);
 }
 
 void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
 {
-    LaraFallSpeedF -= 4;
-    if (LaraFallSpeedF < 0) {
-        LaraFallSpeedF = 0;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    SubFallSpeedClampZero(item, 4.0);
 
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_UWDEATH;
@@ -281,8 +264,7 @@ void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
             item->anim_number = AA_SURFDIVE;
             item->frame_number = AF_SURFDIVE * AnimScale;
             item->pos.x_rot = -45 * PHD_DEGREE;
-            item->fall_speed = 80 / AnimScale;
-            LaraFallSpeedF = 80.0 / AnimScale;
+            SetItemFallSpeed(item, 80);
             Lara.water_status = LWS_UNDERWATER;
         }
     } else {
@@ -334,8 +316,7 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
          & (COLL_FRONT | COLL_LEFT | COLL_RIGHT | COLL_TOP | COLL_TOPFRONT
             | COLL_CLAMP))
         || coll->mid_floor < 0) {
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
@@ -354,8 +335,7 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_SURFDIVE;
         item->frame_number = AF_SURFDIVE * AnimScale;
         item->pos.x_rot = -45 * PHD_DEGREE;
-        item->fall_speed = 80 / AnimScale;
-        LaraFallSpeedF = 80.0 / AnimScale;
+        SetItemFallSpeed(item, 80);
         Lara.water_status = LWS_UNDERWATER;
         return;
     }
@@ -431,10 +411,8 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.y_rot = angle;
     item->pos.z_rot = 0;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0;
-    item->speed = 0;
-    LaraSpeedF = 0.0;
+    ClearItemFallSpeed(item);
+    ClearItemSpeed(item);
     Lara.gun_status = LGS_HANDSBUSY;
     Lara.water_status = LWS_ABOVEWATER;
     return 1;

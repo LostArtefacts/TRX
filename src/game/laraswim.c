@@ -85,12 +85,15 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         UpdateItemFloatPosFromFixed(item);
     } else {
         item->pos_f.y -=
-            (phd_sin_f(item->pos.x_rot) * LaraFallSpeedF) / (VIEW2WORLD * 4);
-        item->pos_f.x += ((phd_sin_f(item->pos.y_rot) * LaraFallSpeedF)
-                           / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
+            (phd_sin_f(item->pos.x_rot) * item->fall_speed_f / AnimScale)
+            / (VIEW2WORLD * 4);
+        item->pos_f.x +=
+            ((phd_sin_f(item->pos.y_rot) * item->fall_speed_f / AnimScale)
+             / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
             / VIEW2WORLD;
-        item->pos_f.z += ((phd_cos_f(item->pos.y_rot) * LaraFallSpeedF)
-                           / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
+        item->pos_f.z +=
+            ((phd_cos_f(item->pos.y_rot) * item->fall_speed_f / AnimScale)
+             / (VIEW2WORLD * 4) * phd_cos_f(item->pos.x_rot))
             / VIEW2WORLD;
         UpdateItemFixedPosFromFloat(item);
     }
@@ -135,16 +138,12 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.z_rot += LARA_LEAN_RATE * 2 / AnimScale;
     }
 
-    LaraFallSpeedF += 8.0;
-    item->fall_speed = LaraFallSpeedF;
+    item->fall_speed_f += 8.0;
+    item->fall_speed = item->fall_speed_f;
     if (Lara.water_status == LWS_CHEAT) {
-        if (item->fall_speed > UW_MAXSPEED * 2) {
-            item->fall_speed = UW_MAXSPEED * 2 / AnimScale;
-            LaraFallSpeedF = UW_MAXSPEED * 2.0 / AnimScale;
-        }
-    } else if (item->fall_speed > UW_MAXSPEED) {
-        item->fall_speed = UW_MAXSPEED;
-        LaraFallSpeedF = UW_MAXSPEED;
+        ClampItemFallSpeedUpper(item, UW_MAXSPEED * 2);
+    } else {
+        ClampItemFallSpeedUpper(item, UW_MAXSPEED);
     }
 
     if (!(Input & IN_JUMP)) {
@@ -174,15 +173,13 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SWIM;
     }
 
-    LaraFallSpeedF -= WATER_FRICTION;
-    if (LaraFallSpeedF < 0) {
-        LaraFallSpeedF = 0;
-    }
+    _Static_assert(
+        (WATER_FRICTION & 1) == 0, "Update equation to handle odd values");
+    SubFallSpeedClampZero(item, WATER_FRICTION / AnimScale);
 
-    if (LaraFallSpeedF <= (UW_MAXSPEED * 2.0) / 3.0) {
+    if (item->fall_speed_f <= UW_MAXSPEED * 2.0 / 3.0) {
         item->goal_anim_state = AS_TREAD;
     }
-    item->fall_speed = LaraFallSpeedF;
 }
 
 void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
@@ -214,12 +211,9 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_SWIM;
     }
 
-    LaraFallSpeedF -= WATER_FRICTION;
-
-    if (LaraFallSpeedF < 0) {
-        LaraFallSpeedF = 0;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    _Static_assert(
+        (WATER_FRICTION & 1) == 0, "Update equation to handle odd values");
+    SubFallSpeedClampZero(item, WATER_FRICTION / AnimScale);
 }
 
 void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
@@ -231,12 +225,7 @@ void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsUWDeath(ITEM_INFO *item, COLL_INFO *coll)
 {
-    LaraFallSpeedF -= 8.0 / AnimScale;
-
-    if (LaraFallSpeedF <= 0) {
-        LaraFallSpeedF = 0;
-    }
-    item->fall_speed = LaraFallSpeedF;
+    SubFallSpeedClampZero(item, 8.0);
 
     if (item->pos.x_rot >= -2 * PHD_DEGREE
         && item->pos.x_rot <= 2 * PHD_DEGREE) {
@@ -305,8 +294,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
             item->pos.x_rot = item->pos.x_rot - UW_WALLDEFLECT;
             break;
         }
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         break;
 
     case COLL_TOP:
@@ -316,8 +304,7 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_TOPFRONT:
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         break;
 
     case COLL_LEFT:
@@ -329,10 +316,8 @@ void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
-        break;
     }
 
     if (coll->mid_floor < 0) {
@@ -408,14 +393,12 @@ void LaraWaterCurrent(COLL_INFO *coll)
         } else if (item->pos.x_rot < -35 * PHD_DEGREE) {
             item->pos.x_rot -= UW_WALLDEFLECT;
         } else {
-            item->fall_speed = 0;
-            LaraFallSpeedF = 0.0;
+            ClearItemFallSpeed(item);
         }
     } else if (coll->coll_type == COLL_TOP) {
         item->pos.x_rot -= UW_WALLDEFLECT;
     } else if (coll->coll_type == COLL_TOPFRONT) {
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     } else if (coll->coll_type == COLL_LEFT) {
         item->pos.y_rot += 5 * PHD_DEGREE;
     } else if (coll->coll_type == COLL_RIGHT) {

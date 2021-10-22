@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/twinkle.h"
+#include "game/items.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -432,7 +433,7 @@ void LaraAsDeath(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsFastFall(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->speed = (item->speed * 95) / 100;
-    LaraSpeedF *= 0.95;
+    item->speed_f *= 0.95;
     if (item->fall_speed >= DAMAGE_START + DAMAGE_LENGTH) {
         SoundEffect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
     }
@@ -625,28 +626,28 @@ void LaraAsSlide(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsBackJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     Camera.target_angle = PHD_DEGREE * 135;
-    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsRightJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsLeftJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * AnimScale) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
 
 void LaraAsUpJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED * 2 / AnimScale) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED * 2) {
         item->goal_anim_state = AS_FASTFALL;
     }
 }
@@ -895,7 +896,7 @@ void LaraAsFastDive(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 1;
     item->speed = (item->speed * 95) / 100;
-    LaraSpeedF *= 0.95;
+    item->speed_f *= 0.95;
 }
 
 void LaraAsNull(ITEM_INFO *item, COLL_INFO *coll)
@@ -921,8 +922,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -962,8 +962,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLDOWN;
         item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1042,8 +1041,7 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLDOWN;
         item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1075,8 +1073,7 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1094,8 +1091,7 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLDOWN;
         item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1129,10 +1125,8 @@ void LaraColForwardJump(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemFallSpeed(item);
+        ClearItemSpeed(item);
         AnimateLara(item);
     }
 }
@@ -1146,8 +1140,7 @@ void LaraColFastBack(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1165,8 +1158,7 @@ void LaraColFastBack(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLBACK;
         item->frame_number = AF_FALLBACK * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1183,8 +1175,7 @@ void LaraColTurnR(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1198,8 +1189,7 @@ void LaraColTurnR(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLDOWN;
         item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1254,8 +1244,7 @@ void LaraColFastFall(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     }
 }
 
@@ -1300,8 +1289,7 @@ void LaraColReach(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     }
 }
 
@@ -1325,8 +1313,7 @@ void LaraColLand(ITEM_INFO *item, COLL_INFO *coll)
 void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
     coll->bad_ceiling = 0;
@@ -1338,10 +1325,8 @@ void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP * AnimScale;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemFallSpeed(item);
+        ClearItemSpeed(item);
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
@@ -1353,8 +1338,7 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1404,8 +1388,7 @@ void LaraColStepRight(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot + PHD_90;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = STEP_L / 2;
     coll->bad_neg = -STEP_L / 2;
     coll->bad_ceiling = 0;
@@ -1434,8 +1417,7 @@ void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_90;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = 128;
     coll->bad_neg = -128;
     coll->bad_ceiling = 0;
@@ -1510,8 +1492,7 @@ void LaraColUpJump(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     }
 }
 
@@ -1534,8 +1515,7 @@ void LaraColFallBack(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y = item->pos.y;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     }
 }
 
@@ -1614,8 +1594,7 @@ void LaraColRoll(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1636,8 +1615,7 @@ void LaraColRoll(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLDOWN;
         item->frame_number = AF_FALLDOWN * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1650,8 +1628,7 @@ void LaraColRoll2(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara.move_angle = item->pos.y_rot - PHD_180;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -1672,8 +1649,7 @@ void LaraColRoll2(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FALLBACK;
         item->frame_number = AF_FALLBACK * AnimScale;
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1709,8 +1685,7 @@ void LaraColSwanDive(ITEM_INFO *item, COLL_INFO *coll)
     if (item->fall_speed > 0 && coll->mid_floor <= 0) {
         item->goal_anim_state = AS_STOP;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
     }
@@ -1733,8 +1708,7 @@ void LaraColFastDive(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = AS_STOP;
         }
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
     }
@@ -1759,7 +1733,7 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
 
     LaraDeflectEdgeJump(item, coll);
 
-    if ((AnimScale == 1 ? item->fall_speed > 0 : LaraFallSpeedF > 0.0)
+    if ((AnimScale == 1 ? item->fall_speed > 0 : item->fall_speed_f > 0.0)
         && coll->mid_floor <= 0) {
         if (LaraLandedBad(item, coll)) {
             item->goal_anim_state = AS_DEATH;
@@ -1769,8 +1743,7 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos_f.y += coll->mid_floor;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
     }
 }
 
@@ -1808,8 +1781,7 @@ void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)
             item->frame_number = AF_FALLBACK * AnimScale;
         }
         item->gravity_status = 1;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
+        ClearItemFallSpeed(item);
         return;
     }
 
@@ -1834,10 +1806,8 @@ int32_t LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP * AnimScale;
         item->gravity_status = 0;
-        item->fall_speed = 0;
-        LaraFallSpeedF = 0.0;
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemFallSpeed(item);
+        ClearItemSpeed(item);
         return 1;
     }
     return 0;
@@ -1858,8 +1828,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
 
     Lara.move_angle = item->pos.y_rot;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
+    ClearItemFallSpeed(item);
 
     PHD_ANGLE angle = ((uint16_t)(item->pos.y_rot + PHD_45)) / PHD_90;
     switch (angle) {
@@ -1904,9 +1873,9 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
 
         item->gravity_status = 1;
         item->fall_speed = 1;
-        LaraFallSpeedF = 1.0;
-        item->speed = 2 / AnimScale;
-        LaraSpeedF = 2.0 / AnimScale;
+        item->fall_speed_f = 1.0;
+        item->speed = 2;
+        item->speed_f = 2.0;
         Lara.gun_status = LGS_ARMLESS;
         return;
     }
@@ -1956,8 +1925,7 @@ int32_t LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
         item->gravity_status = 0;
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemSpeed(item);
         return 1;
     }
 
@@ -1990,20 +1958,18 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = AA_FASTFALL;
         item->frame_number = AF_FASTFALL * AnimScale;
 
-        LaraSpeedF /= 4.0;
-        item->speed = LaraFallSpeedF;
+        item->speed_f /= 4.0;
+        item->speed = item->speed_f;
 
         Lara.move_angle -= PHD_180;
         if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-            LaraFallSpeedF = 1.0;
+            SetItemFallSpeed(item, 1);
         }
         break;
 
     case COLL_TOP:
         if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-            LaraFallSpeedF = 1.0;
+            SetItemFallSpeed(item, 1);
         }
         break;
 
@@ -2012,12 +1978,10 @@ void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         item->pos_f.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
         UpdateItemFixedPosFromFloat(item);
 
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemSpeed(item);
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-            LaraFallSpeedF = 16.0;
+            SetItemFallSpeed(item, 16);
         }
         break;
     }
@@ -2038,8 +2002,7 @@ void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     case COLL_TOP:
     case COLL_TOPFRONT:
         if (item->fall_speed <= 0) {
-            item->fall_speed = 1;
-            LaraFallSpeedF = 1.0;
+            SetItemFallSpeed(item, 1);
         }
         break;
 
@@ -2048,12 +2011,10 @@ void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
         item->pos_f.z -= (phd_cos_f(coll->facing) * 100.0) / VIEW2WORLD;
         item->pos_f.x -= (phd_sin_f(coll->facing) * 100.0) / VIEW2WORLD;
-        item->speed = 0;
-        LaraSpeedF = 0.0;
+        ClearItemSpeed(item);
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
-            item->fall_speed = 16;
-            LaraFallSpeedF = 16.0;
+            SetItemFallSpeed(item, 16);
         }
         break;
     }
@@ -2197,10 +2158,8 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
 
     item->pos.y_rot = angle;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
-    item->speed = 0;
-    LaraSpeedF = 0.0;
+    ClearItemFallSpeed(item);
+    ClearItemSpeed(item);
     Lara.gun_status = LGS_HANDSBUSY;
     return 1;
 }
@@ -2295,10 +2254,8 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
 
     item->pos.y_rot = angle;
     item->gravity_status = 0;
-    item->fall_speed = 0;
-    LaraFallSpeedF = 0.0;
-    item->speed = 0;
-    LaraSpeedF = 0.0;
+    ClearItemFallSpeed(item);
+    ClearItemSpeed(item);
     Lara.gun_status = LGS_HANDSBUSY;
     return 1;
 }
@@ -2378,12 +2335,11 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     TestTriggers(TriggerIndex, 0);
     item->pos.y = oy; // restores Y so don't touch double y
 
-    int fallDamageFixUp = AnimScale == 2 ? 3 : 0; // this 3 is from measuring 
-                                                  // the difference, why 3? No idea.
-    int landspeed =
-        (item->fall_speed + fallDamageFixUp
-         - DAMAGE_START); 
-                                               
+    int fallDamageFixUp =
+        AnimScale == 2 ? 3 : 0; // this 3 is from measuring
+                                // the difference, why 3? No idea.
+    int landspeed = (item->fall_speed + fallDamageFixUp - DAMAGE_START);
+
     if (landspeed <= 0) {
         return 0;
     } else if (landspeed > DAMAGE_LENGTH) {

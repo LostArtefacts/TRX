@@ -1436,6 +1436,8 @@ typedef struct ITEM_INFO {
     /*      */ uint16_t looked_at : 1;
     /* 0044 end */
     PHD_3DPOS_F pos_f;
+    double speed_f;
+    double fall_speed_f;
 } ITEM_INFO;
 
 typedef struct LARA_ARM {
