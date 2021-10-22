@@ -34,6 +34,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, // KEY_CAMERA_RESET
     },
 
     // default user controls
@@ -55,6 +60,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, // KEY_CAMERA_RESET
     }
 };
 
@@ -253,6 +263,22 @@ void S_UpdateInput()
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
         linput |= IN_ROLL;
+    }
+
+    if (Key_(KEY_CAMERA_UP)) {
+        linput |= IN_CAMERA_UP;
+    }
+    if (Key_(KEY_CAMERA_DOWN)) {
+        linput |= IN_CAMERA_DOWN;
+    }
+    if (Key_(KEY_CAMERA_LEFT)) {
+        linput |= IN_CAMERA_LEFT;
+    }
+    if (Key_(KEY_CAMERA_RIGHT)) {
+        linput |= IN_CAMERA_RIGHT;
+    }
+    if (Key_(KEY_CAMERA_RESET)) {
+        linput |= IN_CAMERA_RESET;
     }
 
     if (T1MConfig.enable_cheats) {

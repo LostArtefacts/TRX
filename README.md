@@ -75,6 +75,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added UI and bar scaling
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
+- added movable camera on W,A,S,D
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed input method to DirectInput
