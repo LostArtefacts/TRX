@@ -94,3 +94,10 @@ addressed, we should re-request a review from the interested parties.
 
 New version releases happen automatically whenever a new tag is pushed to the
 `master` branch with the help of GitHub actions.
+
+## Supported compilers
+
+Please be advised that any build systems that are not the one we use for
+automating releases (= mingw-w64) come at user's own risk. They might crash or
+even refuse to compile. Pull requests are welcome, but those other toolchains
+will be always considered supplementary.
