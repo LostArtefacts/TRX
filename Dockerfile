@@ -6,11 +6,9 @@ RUN apt-get update && \
     python3 -m pip install pyjson5
 
 RUN mkdir /app
+ADD . /app
 WORKDIR /app
-ADD .git .git
-ADD cfg cfg
-ADD src src
-ADD test test
-ADD Makefile Makefile
+
+RUN chmod 0666 /app/src/init.c
 
 CMD ["make", "build"]
