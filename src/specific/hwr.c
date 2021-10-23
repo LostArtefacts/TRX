@@ -91,6 +91,42 @@ void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
     HWR_CheckError(result);
 }
 
+void HWR_ReleaseSurfaces()
+{
+    int i;
+    HRESULT result;
+
+    if (Surface1) {
+        HWR_ClearSurface(Surface1);
+        HWR_ClearSurface(Surface2);
+
+        result = IDirectDrawSurface_Release(Surface1);
+        HWR_CheckError(result);
+        Surface1 = NULL;
+        Surface2 = NULL;
+    }
+
+    if (Surface4) {
+        result = IDirectDrawSurface_Release(Surface4);
+        HWR_CheckError(result);
+        Surface4 = NULL;
+    }
+
+    for (i = 0; i < 32; i++) {
+        if (TextureSurfaces[i]) {
+            result = IDirectDrawSurface_Release(TextureSurfaces[i]);
+            HWR_CheckError(result);
+            TextureSurfaces[i] = NULL;
+        }
+    }
+
+    if (Surface3) {
+        result = IDirectDrawSurface_Release(Surface3);
+        HWR_CheckError(result);
+        Surface3 = NULL;
+    }
+}
+
 void HWR_DumpScreen()
 {
     HWR_FlipPrimaryBuffer();
@@ -940,6 +976,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
     INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x00407A91, HWR_ReleaseSurfaces);
     INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
