@@ -23,7 +23,6 @@
 #define HWR_FMVDone                 ((void      (*)())0x00408368)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
-#define HWR_PrintShadow             ((void      (*)(PHD_VBUF *vbuf, int clip))0x0040CADB)
 #define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
 #define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
 #define HWR_InsertObjectG4          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x00409F44)
@@ -53,6 +52,7 @@ void HWR_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br);
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
 void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2);

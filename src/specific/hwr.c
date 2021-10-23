@@ -317,6 +317,51 @@ void HWR_DrawLightningSegment(
     HWR_LightningCount++;
 }
 
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
+{
+    // needs to be more than 8 cause clipping might return more polygons.
+    C3D_VTCF vertices[30];
+    int32_t vertex_count = 8;
+
+    for (int i = 0; i < vertex_count; i++) {
+        C3D_VTCF *vertex = &vertices[i];
+        PHD_VBUF *vbuf = &vbufs[i];
+        vertex->x = vbuf->xs;
+        vertex->y = vbuf->ys;
+        vertex->z = vbuf->zv * 0.0001 - 16.0;
+        vertex->b = 0.0;
+        vertex->g = 0.0;
+        vertex->r = 0.0;
+        vertex->a = 128.0;
+    }
+
+    if (clip) {
+        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    int32_t tmp;
+
+    if (HWR_IsTextureMode) {
+        tmp = 0;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 0;
+    }
+
+    tmp = C3D_EASRC_SRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_INVSRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+    tmp = C3D_EASRC_ONE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_ZERO;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
+}
+
 void HWR_RenderLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
     int32_t z2, int thickness2)
@@ -412,7 +457,7 @@ void HWR_RenderLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
-    C3D_VTCF vertices[10];
+    C3D_VTCF vertices[20];
 
     C3D_VTCF *l = &source[num - 1];
     int j = 0;
@@ -883,6 +928,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040A6B1, HWR_ClipVertices2);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
+    INJECT(0x0040CADB, HWR_PrintShadow);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
 }
