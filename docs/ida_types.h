@@ -358,7 +358,6 @@ typedef struct {
     C3D_BOOL bClampS;
     C3D_BOOL bClampT;
     C3D_BOOL bAlphaBlend;
-    C3D_ETEXTILE eTexTiling;
 } C3D_TMAP, *C3D_PTMAP;
 
 typedef enum {
