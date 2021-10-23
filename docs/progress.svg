@@ -72,7 +72,7 @@
 <rect width="12.00" height="12.00" x="266.00" y="31.00" class="named"><title>HWR_SetPalette</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="31.00" class="decompiled"><title>HWR_SwitchResolution</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="31.00" class="decompiled"><title>HWR_DumpScreen</title></rect>
-<rect width="12.00" height="12.00" x="308.00" y="31.00" class="named"><title>HWR_ClearSurfaceDepth</title></rect>
+<rect width="12.00" height="12.00" x="308.00" y="31.00" class="decompiled"><title>HWR_ClearSurfaceDepth</title></rect>
 <rect width="12.00" height="12.00" x="322.00" y="31.00" class="decompiled"><title>HWR_BlitSurface</title></rect>
 <rect width="12.00" height="12.00" x="336.00" y="31.00" class="decompiled"><title>HWR_CopyPicture</title></rect>
 <rect width="12.00" height="12.00" x="350.00" y="31.00" class="decompiled"><title>HWR_DownloadPicture</title></rect>
@@ -1171,7 +1171,7 @@
 <rect width="6.94" height="6.82" x="593.49" y="469.15" class="decompiled"><title>DrawUnclippedItem</title></rect>
 <rect width="6.94" height="6.73" x="593.49" y="477.97" class="decompiled"><title>TranslateItem</title></rect>
 <rect width="6.94" height="6.65" x="593.49" y="486.70" class="decompiled"><title>GunShot</title></rect>
-<rect width="6.94" height="6.56" x="593.49" y="495.35" class="named"><title>HWR_ClearSurfaceDepth</title></rect>
+<rect width="6.94" height="6.56" x="593.49" y="495.35" class="decompiled"><title>HWR_ClearSurfaceDepth</title></rect>
 <rect width="6.94" height="6.56" x="593.49" y="503.91" class="decompiled"><title>GameLoop</title></rect>
 <rect width="6.94" height="6.56" x="593.49" y="512.48" class="decompiled"><title>InitialiseLOT</title></rect>
 <rect width="6.94" height="6.48" x="593.49" y="521.04" class="decompiled"><title>LaraColSplat</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 97.48%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.88%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 1.82%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 1.69%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 97.62%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.92%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 1.68%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 1.65%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.70%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.43%</text>
 </svg>
