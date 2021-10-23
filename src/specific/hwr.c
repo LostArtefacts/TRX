@@ -1198,6 +1198,68 @@ const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
     return obj_ptr;
 }
 
+void HWR_DrawFlatTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color)
+{
+    int32_t vertex_count;
+    C3D_VTCF vertices[8];
+    float r;
+    float g;
+    float b;
+    float light;
+
+    if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
+          && vn2->clip >= 0 && vn3->clip >= 0
+          && (vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                  - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+              >= 0)) {
+        return;
+    }
+
+    r = GamePalette[color].r;
+    g = GamePalette[color].g;
+    b = GamePalette[color].b;
+
+    if (IsShadeEffect) {
+        r *= 0.6;
+        g *= 0.7;
+    }
+
+    light = (8192.0 - (float)vn1->g) / 2048.0;
+    vertices[0].x = vn1->xs;
+    vertices[0].y = vn1->ys;
+    vertices[0].z = vn1->zv * 0.0001;
+    vertices[0].r = r * light;
+    vertices[0].g = g * light;
+    vertices[0].b = b * light;
+
+    light = (8192.0 - (float)vn2->g) / 2048.0;
+    vertices[1].x = vn2->xs;
+    vertices[1].y = vn2->ys;
+    vertices[1].z = vn2->zv * 0.0001;
+    vertices[1].r = r * light;
+    vertices[1].g = g * light;
+    vertices[1].b = b * light;
+
+    light = (8192.0 - (float)vn3->g) / 2048.0;
+    vertices[2].x = vn3->xs;
+    vertices[2].y = vn3->ys;
+    vertices[2].z = vn3->zv * 0.0001;
+    vertices[2].r = r * light;
+    vertices[2].g = g * light;
+    vertices[2].b = b * light;
+
+    vertex_count = 3;
+    if (vn1->clip || vn2->clip || vn3->clip) {
+        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+    }
+    if (!vertex_count) {
+        return;
+    }
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1225,6 +1287,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
     INJECT(0x00408FF0, HWR_SelectTexture);
     INJECT(0x0040904D, HWR_ClipVertices);
+    INJECT(0x00409C0F, HWR_DrawFlatTriangle);
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
