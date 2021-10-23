@@ -19,7 +19,6 @@
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
 #define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
-#define HWR_InsertObjectG3          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040A01D)
 #define HWR_DrawFlatTriangle        ((void (*)(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color))0x00409C0F)
 // clang-format on
 
@@ -63,6 +62,8 @@ void HWR_PrepareFMV();
 void HWR_FMVDone();
 void HWR_FMVInit();
 void HWR_SetupRenderContextAndRender();
+
+const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
 
 void T1MInjectSpecificHWR();
