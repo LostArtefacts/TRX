@@ -73,7 +73,7 @@ HWR_RenderBegin_0               0x00407804  0x00000023  +
 HWR_RenderBegin                 0x00407827  0x00000014  +
 HWR_RenderEnd                   0x0040783B  0x00000027  +
 HWR_RenderToggle                0x00407862  0x0000001A  +
-HWR_GetSurfaceAndPitch          0x0040787C  0x00000095  *
+HWR_GetSurfaceAndPitch          0x0040787C  0x00000095  +
 HWR_SetupRenderContextAndRender2 0x00407911  0x0000004E  +
 HWR_SetupRenderContextAndRender 0x0040795F  0x0000008A  +
 HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  +

@@ -61,7 +61,7 @@
 0x00407827 void HWR_RenderBegin();
 0x0040783B void HWR_RenderEnd();
 0x00407862 void HWR_RenderToggle();
-# 0x0040787C HWR_GetSurfaceAndPitch
+0x0040787C void HWR_GetSurfaceAndPitch(LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch);
 # 0x00407911 HWR_SetupRenderContextAndRender2
 0x0040795F void HWR_SetupRenderContextAndRender();
 0x004079E9 void HWR_FlipPrimaryBuffer();
