@@ -259,7 +259,7 @@ static HRESULT DInputJoystickCreate()
     }
     LOG_INFO("Joystick set data format pass.\n");
 
-    //don't request exclusive access
+    // don't request exclusive access
     if (FAILED(
             hr = IDirectInputDevice_SetCooperativeLevel(
                 IDID_Joystick, NULL, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND))) {
@@ -270,7 +270,7 @@ static HRESULT DInputJoystickCreate()
 
     LOG_INFO("Joystick co-op passed.\n");
 
-    //get axis count, we should know what it is but best to ask
+    // get axis count, we should know what it is but best to ask
     capabilities.dwSize = sizeof(DIDEVCAPS);
     if (FAILED(
             hr = IDirectInputDevice_GetCapabilities(
@@ -281,7 +281,7 @@ static HRESULT DInputJoystickCreate()
     }
     LOG_INFO("Joystick num axis passed.\n");
 
-    //set the range we expect each axis to report back in
+    // set the range we expect each axis to report back in
     if (FAILED(
             hr = IDirectInputDevice_EnumObjects(
                 IDID_Joystick, EnumAxesCallback, NULL, DIDFT_AXIS))) {
@@ -566,13 +566,13 @@ void S_UpdateInput()
             linput |= IN_STEPR;
         }
 
-        //check 2nd stick X
+        // check 2nd stick X
         if (state.lRx > 512) {
             linput |= IN_CAMERA_RIGHT;
         } else if (state.lRx < -512) {
             linput |= IN_CAMERA_LEFT;
         }
-        //check 2nd stick Y
+        // check 2nd stick Y
         if (state.lRy > 512) {
             linput |= IN_CAMERA_DOWN;
         } else if (state.lRy < -512) {
@@ -597,7 +597,7 @@ void S_UpdateInput()
         }
         if (state.rgbButtons[5]) { // RB
             linput |= IN_DRAW;
-            }
+        }
         if (state.rgbButtons[6]) { // back
             linput |= IN_OPTION;
         }
