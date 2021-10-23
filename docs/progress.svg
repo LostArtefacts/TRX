@@ -56,7 +56,7 @@
 <rect width="12.00" height="12.00" x="42.00" y="31.00" class="decompiled"><title>HWR_RenderEnd</title></rect>
 <rect width="12.00" height="12.00" x="56.00" y="31.00" class="decompiled"><title>HWR_RenderToggle</title></rect>
 <rect width="12.00" height="12.00" x="70.00" y="31.00" class="named"><title>HWR_GetSurfaceAndPitch</title></rect>
-<rect width="12.00" height="12.00" x="84.00" y="31.00" class="named"><title>HWR_SetupRenderContextAndRender2</title></rect>
+<rect width="12.00" height="12.00" x="84.00" y="31.00" class="decompiled"><title>HWR_SetupRenderContextAndRender2</title></rect>
 <rect width="12.00" height="12.00" x="98.00" y="31.00" class="decompiled"><title>HWR_SetupRenderContextAndRender</title></rect>
 <rect width="12.00" height="12.00" x="112.00" y="31.00" class="decompiled"><title>HWR_FlipPrimaryBuffer</title></rect>
 <rect width="12.00" height="12.00" x="126.00" y="31.00" class="decompiled"><title>HWR_ClearSurface</title></rect>
@@ -1212,7 +1212,7 @@
 <rect width="5.48" height="6.31" x="611.01" y="458.73" class="decompiled"><title>T_AddBackground</title></rect>
 <rect width="5.48" height="6.21" x="611.01" y="467.05" class="decompiled"><title>S_ExitSystem</title></rect>
 <rect width="5.48" height="6.21" x="611.01" y="475.26" class="decompiled"><title>S_SoundPlaySampleLooped</title></rect>
-<rect width="5.48" height="5.91" x="611.01" y="483.47" class="named"><title>HWR_SetupRenderContextAndRender2</title></rect>
+<rect width="5.48" height="5.91" x="611.01" y="483.47" class="decompiled"><title>HWR_SetupRenderContextAndRender2</title></rect>
 <rect width="5.48" height="5.91" x="611.01" y="491.37" class="decompiled"><title>GetDoor</title></rect>
 <rect width="5.48" height="5.80" x="611.01" y="499.28" class="decompiled"><title>S_Wait</title></rect>
 <rect width="5.48" height="5.80" x="611.01" y="507.08" class="decompiled"><title>BridgeTilt1Ceiling</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 96.36%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.24%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 2.94%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 2.33%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 96.50%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.27%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 2.80%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 2.30%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.70%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.43%</text>
 </svg>
