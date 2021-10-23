@@ -68,7 +68,7 @@
 0x00407A49 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 0x00407A91 void HWR_ReleaseSurfaces();
 0x00407BD2 int32_t HWR_SetHardwareVideoMode();
-# 0x00408005 HWR_InitialiseHardware
+0x00408005 void HWR_InitialiseHardware();
 # 0x00408323 HWR_ShutdownHardware
 # 0x0040834C HWR_PrepareFMV
 # 0x00408368 HWR_FMVDone
@@ -992,12 +992,16 @@
 0x00462D98 uint16_t* Overlap;
 0x00462D9C BOX_INFO* Boxes;
 0x00462DA0 int32_t NumberBoxes;
+0x004634E0 LPDIRECTDRAWSURFACE TextureCacheSurfaces[16];
 0x00463564 void* Surface1DrawPtr;
 0x00463568 int32_t HWR_OldIsRendering;
+0x00463580 C3D_PHTX ATITextureMap[32];
 0x00463600 HWND TombHWND;
 0x00463600 uint32_t TombHWND;
 0x00463608 LPDIRECTDRAWSURFACE Surface4;
+0x0046360C int32_t IsTextureCacheAvailable;
 0x00463610 int32_t IsHardwareRenderer;
+0x0046361C uint32_t VideoMemoryAvailable;
 0x005DA6A4 LPDIRECTDRAWSURFACE Surface1;
 0x005DA6C0 LPDIRECTDRAWSURFACE TextureSurfaces[32];
 0x005DA744 LPDIRECTDRAWSURFACE Surface3;

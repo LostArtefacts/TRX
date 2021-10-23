@@ -80,7 +80,7 @@ HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  +
 HWR_ClearSurface                0x00407A49  0x00000048  +
 HWR_ReleaseSurfaces             0x00407A91  0x00000141  +
 HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  +
-HWR_InitialiseHardware          0x00408005  0x0000031E  *
+HWR_InitialiseHardware          0x00408005  0x0000031E  +
 HWR_ShutdownHardware            0x00408323  0x00000029  -
 HWR_PrepareFMV                  0x0040834C  0x0000001C  *
 HWR_FMVDone                     0x00408368  0x00000017  *

@@ -405,7 +405,7 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
     int32_t tmp;
 
     if (HWR_IsTextureMode) {
-        tmp = 0;
+        tmp = FALSE;
         ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
         HWR_IsTextureMode = 0;
     }
@@ -950,6 +950,59 @@ int32_t HWR_SetHardwareVideoMode()
     return 1;
 }
 
+void HWR_InitialiseHardware()
+{
+    int32_t i;
+    int32_t tmp;
+    HRESULT result;
+
+    LOG_INFO("InitialiseHardware:");
+
+    IsHardwareRenderer = 0;
+
+    for (i = 0; i < 32; i++) {
+        ATITextureMap[i] = NULL;
+        TextureSurfaces[i] = NULL;
+    }
+
+    result = IDirectDraw_SetCooperativeLevel(
+        DDraw, TombHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
+    HWR_CheckError(result);
+
+    if (!HWR_SetHardwareVideoMode()) {
+        return;
+    }
+
+    IsHardwareRenderer = 1;
+
+    tmp = C3D_EV_VTCF;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_VERTEX_TYPE, &tmp);
+    tmp = C3D_EPRIM_TRI;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &tmp);
+    tmp = C3D_ESH_SMOOTH;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SHADE_MODE, &tmp);
+    tmp = C3D_ETL_MODULATE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_LIGHT, &tmp);
+    tmp = C3D_ETEXOP_CHROMAKEY;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_TEXOP, &tmp);
+    tmp = C3D_ETFILT_MINPNT_MAGPNT;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &tmp);
+    tmp = FALSE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_FOG_EN, &tmp);
+    tmp = TRUE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_DITHER_EN, &tmp);
+    tmp = C3D_EZCMP_LEQUAL;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_CMP_FNC, &tmp);
+    tmp = C3D_EZMODE_TESTON_WRITEZ;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_MODE, &tmp);
+    tmp = C3D_EPF_RGB1555;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PF, &tmp);
+
+    LOG_INFO("    Detected %dk video memory", 4096);
+    // NOTE: skipped dead code related to caching textures
+    LOG_INFO("    Complete, hardware ready");
+}
+
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();
@@ -978,6 +1031,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407A49, HWR_ClearSurface);
     INJECT(0x00407A91, HWR_ReleaseSurfaces);
     INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
+    INJECT(0x00408005, HWR_InitialiseHardware);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);

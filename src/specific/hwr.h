@@ -12,7 +12,6 @@
 // TODO: port ATI3DCIF to actual D3D calls
 
 // clang-format off
-#define HWR_InitialiseHardware      ((void      (*)())0x00408005)
 #define HWR_ShutdownHardware        ((void      (*)())0x00408323)
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
@@ -61,6 +60,7 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
 void HWR_SwitchResolution();
 int32_t HWR_SetHardwareVideoMode();
+void HWR_InitialiseHardware();
 void HWR_SetupRenderContextAndRender();
 
 void T1MInjectSpecificHWR();
