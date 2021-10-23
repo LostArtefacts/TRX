@@ -103,7 +103,7 @@ HWR_SelectTexture               0x00408FF0  0x0000005D  +
 HWR_ClipVertices                0x0040904D  0x00000BC2  +
 HWR_DrawFlatTriangle            0x00409C0F  0x00000335  *
 HWR_InsertObjectG4              0x00409F44  0x000000D9  +
-HWR_InsertObjectG3              0x0040A01D  0x000000A7  -
+HWR_InsertObjectG3              0x0040A01D  0x000000A7  +
 sub_40A0C4                      0x0040A0C4  0x000005ED  -
 HWR_ClipVertices2               0x0040A6B1  0x00000E5F  +
 HWR_DrawTexturedTriangle        0x0040B510  0x000006D2  -

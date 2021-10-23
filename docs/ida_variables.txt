@@ -91,7 +91,7 @@
 0x0040904D int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
 0x00409C0F void HWR_DrawFlatTriangle(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
 0x00409F44 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
-# 0x0040A01D HWR_InsertObjectG3
+0x0040A01D const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
 # 0x0040A0C4 sub_40A0C4
 0x0040A6B1 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
 0x0040B510 void HWR_DrawTexturedTriangle(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3);
