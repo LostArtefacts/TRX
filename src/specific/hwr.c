@@ -169,7 +169,7 @@ void HWR_CopyPicture()
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
         HRESULT result =
-            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
 
@@ -194,7 +194,8 @@ void HWR_DownloadPicture()
             DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
-        result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+        result =
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
 
@@ -884,7 +885,7 @@ int32_t HWR_SetHardwareVideoMode()
     surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE
         | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
     surface_desc.dwBackBufferCount = 1;
-    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, 0);
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, NULL);
     HWR_CheckError(result);
 
     HWR_ClearSurface(Surface1);
@@ -903,7 +904,7 @@ int32_t HWR_SetHardwareVideoMode()
     surface_desc.dwWidth = DDrawSurfaceWidth;
     surface_desc.dwHeight = DDrawSurfaceHeight;
     surface_desc.dwZBufferBitDepth = 16;
-    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface4, 0);
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface4, NULL);
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
@@ -919,7 +920,7 @@ int32_t HWR_SetHardwareVideoMode()
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
         result = IDirectDraw2_CreateSurface(
-            DDraw, &surface_desc, &TextureSurfaces[i], 0);
+            DDraw, &surface_desc, &TextureSurfaces[i], NULL);
         HWR_CheckError(result);
     }
 
@@ -1023,6 +1024,23 @@ void HWR_FMVDone()
     HWR_SetHardwareVideoMode();
 }
 
+void HWR_FMVInit()
+{
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    surface_desc.dwFlags = DDSD_CAPS;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE;
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, NULL);
+    HWR_CheckError(result);
+
+    HWR_ClearSurface(Surface1);
+    IDirectDrawSurface_Release(Surface1);
+    Surface1 = NULL;
+}
+
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();
@@ -1055,6 +1073,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00408323, HWR_ShutdownHardware);
     INJECT(0x0040834C, HWR_PrepareFMV);
     INJECT(0x00408368, HWR_FMVDone);
+    INJECT(0x0040837F, HWR_FMVInit);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
