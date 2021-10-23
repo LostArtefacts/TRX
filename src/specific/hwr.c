@@ -1170,6 +1170,34 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
     return obj_ptr;
 }
 
+const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[4];
+    PHD_TEXTURE *tex;
+
+    if (!HWR_IsTextureMode) {
+        tmp = 1;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 1;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        vns[3] = &PhdVBuf[*obj_ptr++];
+        tex = &PhdTextureInfo[*obj_ptr++];
+
+        HWR_DrawTexturedQuad(
+            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->u1, &tex->u2,
+            &tex->u3, &tex->u4);
+    }
+
+    return obj_ptr;
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1200,6 +1228,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040C25A, HWR_InsertObjectGT4);
     INJECT(0x0040C34E, HWR_InsertObjectGT3);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
