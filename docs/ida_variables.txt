@@ -66,7 +66,7 @@
 0x0040795F void HWR_SetupRenderContextAndRender();
 0x004079E9 void HWR_FlipPrimaryBuffer();
 0x00407A49 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
-# 0x00407A91 HWR_ReleaseSurfaces
+0x00407A91 void HWR_ReleaseSurfaces();
 0x00407BD2 int32_t HWR_SetHardwareVideoMode();
 # 0x00408005 HWR_InitialiseHardware
 # 0x00408323 HWR_ShutdownHardware
