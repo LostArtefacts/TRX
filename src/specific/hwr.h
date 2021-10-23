@@ -14,7 +14,6 @@
 // clang-format off
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
-#define HWR_DrawSprite              ((void      (*)(int32_t x1, int32_t x2, int32_t y1, int32_t y2, int32_t z, int16_t sprnum, int16_t shade))0x0040C425)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_DrawTexturedTriangle    ((void (*)(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t textype))0x0040B510)
@@ -40,6 +39,8 @@ void HWR_CopyPicture();
 void HWR_DownloadPicture();
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_SelectTexture(int tex_num);
+void HWR_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2);

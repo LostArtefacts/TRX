@@ -98,7 +98,7 @@
 0x0040BBE2 void HWR_DrawTexturedQuad(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t *u4, uint16_t textype);
 0x0040C25A const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
 0x0040C34E const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
-# 0x0040C425 HWR_DrawSprite
+0x0040C425 void HWR_DrawSprite(int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
 0x0040C7EE void HWR_Draw2DLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1, RGB888 color2);
 0x0040C8E7 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 0x0040CADB void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
@@ -1005,6 +1005,7 @@
 0x005DA6A4 LPDIRECTDRAWSURFACE Surface1;
 0x005DA6C0 LPDIRECTDRAWSURFACE TextureSurfaces[32];
 0x005DA744 LPDIRECTDRAWSURFACE Surface3;
+0x005DA760 int32_t HWR_TextureLoaded[32];
 0x005DB480 void* Surface2DrawPtr;
 0x005DB484 LPDIRECTDRAWSURFACE Surface2;
 0x0068B380 uint8_t GouraudTable[256][32];

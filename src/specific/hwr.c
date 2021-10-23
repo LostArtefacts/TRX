@@ -269,6 +269,106 @@ void HWR_SelectTexture(int tex_num)
     HWR_SelectedTexture = tex_num;
 }
 
+void HWR_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade)
+{
+    C3D_FLOAT32 t1;
+    C3D_FLOAT32 t2;
+    C3D_FLOAT32 t3;
+    C3D_FLOAT32 t4;
+    C3D_FLOAT32 t5;
+    C3D_FLOAT32 vz;
+    C3D_FLOAT32 vshade;
+    int32_t tmp;
+    int32_t vertex_count;
+    PHD_SPRITE *sprite;
+    C3D_VTCF vertices[10];
+    C3D_VTCF *vertex;
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    vertex = &vertices[0];
+    sprite = &PhdSpriteInfo[sprnum];
+    vshade = (8192.0 - (float)shade) * multiplier;
+    if (vshade >= 256.0f) {
+        vshade = 255.0f;
+    }
+
+    t1 = (double)(uint8_t)sprite->offset + 0.5;
+    t2 = (double)((int)sprite->offset >> 8) + 0.5;
+    t3 = (double)((int)sprite->width >> 8) + t1;
+    t4 = (double)((int)sprite->height >> 8) + t2;
+    vz = (double)z * 0.0001;
+    t5 = 65536.0 / (double)z;
+
+    vertex->x = x1;
+    vertex->y = y1;
+    vertex->z = vz;
+    vertex->s = t1 * t5 * 0.00390625;
+    vertex->t = t2 * t5 * 0.00390625;
+    vertex->w = t5;
+    vertex->r = vshade;
+    vertex->g = vshade;
+    vertex->b = vshade;
+    vertex++;
+
+    vertex->x = x2;
+    vertex->y = y1;
+    vertex->z = vz;
+    vertex->s = t3 * t5 * 0.00390625;
+    vertex->t = t2 * t5 * 0.00390625;
+    vertex->w = t5;
+    vertex->r = vshade;
+    vertex->g = vshade;
+    vertex->b = vshade;
+    vertex++;
+
+    vertex->x = x2;
+    vertex->y = y2;
+    vertex->z = vz;
+    vertex->s = t3 * t5 * 0.00390625;
+    vertex->t = t4 * t5 * 0.00390625;
+    vertex->w = t5;
+    vertex->r = vshade;
+    vertex->g = vshade;
+    vertex->b = vshade;
+    vertex++;
+
+    vertex->x = x1;
+    vertex->y = y2;
+    vertex->z = vz;
+    vertex->s = t1 * t5 * 0.00390625;
+    vertex->t = t4 * t5 * 0.00390625;
+    vertex->w = t5;
+    vertex->r = vshade;
+    vertex->g = vshade;
+    vertex->b = vshade;
+
+    vertex_count = 4;
+    if (x1 < 0 || y1 < 0 || x2 > PhdWinWidth || y2 > PhdWinHeight) {
+        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    if (HWR_TextureLoaded[sprite->tpage]) {
+        if (!HWR_IsTextureMode) {
+            tmp = 1;
+            ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+            HWR_IsTextureMode = 1;
+        }
+        HWR_SelectTexture(sprite->tpage);
+    }
+
+    // NOTE: original .exe has some additional logic for the case when
+    // the requested texture page was not loaded.
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
@@ -1228,9 +1328,9 @@ void HWR_DrawFlatTriangle(
         g *= 0.7f;
     }
 
-    divisor = (1.0f / T1MConfig.brightness) * 1024;
+    divisor = (1.0f / T1MConfig.brightness) * 1024.0f;
 
-    light = (8192.0 - (float)vn1->g) / divisor;
+    light = (8192.0 - vn1->g) / divisor;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
     vertices[0].z = vn1->zv * 0.0001;
@@ -1238,7 +1338,7 @@ void HWR_DrawFlatTriangle(
     vertices[0].g = g * light;
     vertices[0].b = b * light;
 
-    light = (8192.0 - (float)vn2->g) / divisor;
+    light = (8192.0 - vn2->g) / divisor;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
     vertices[1].z = vn2->zv * 0.0001;
@@ -1246,7 +1346,7 @@ void HWR_DrawFlatTriangle(
     vertices[1].g = g * light;
     vertices[1].b = b * light;
 
-    light = (8192.0 - (float)vn3->g) / divisor;
+    light = (8192.0 - vn3->g) / divisor;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
     vertices[2].z = vn3->zv * 0.0001;
@@ -1303,4 +1403,5 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040CADB, HWR_PrintShadow);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
+    INJECT(0x0040C425, HWR_DrawSprite);
 }
