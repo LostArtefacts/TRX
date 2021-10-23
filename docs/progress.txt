@@ -106,10 +106,10 @@ HWR_InsertObjectG4              0x00409F44  0x000000D9  +
 HWR_InsertObjectG3              0x0040A01D  0x000000A7  +
 sub_40A0C4                      0x0040A0C4  0x000005ED  -
 HWR_ClipVertices2               0x0040A6B1  0x00000E5F  +
-HWR_DrawTexturedTriangle        0x0040B510  0x000006D2  -
+HWR_DrawTexturedTriangle        0x0040B510  0x000006D2  *
 HWR_DrawTexturedQuad            0x0040BBE2  0x00000678  -
 HWR_InsertObjectGT4             0x0040C25A  0x000000F4  *
-HWR_InsertObjectGT3             0x0040C34E  0x000000D7  *
+HWR_InsertObjectGT3             0x0040C34E  0x000000D7  +
 HWR_DrawSprite                  0x0040C425  0x000003C9  *
 HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
 HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
