@@ -83,7 +83,7 @@ HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  +
 HWR_InitialiseHardware          0x00408005  0x0000031E  +
 HWR_ShutdownHardware            0x00408323  0x00000029  +
 HWR_PrepareFMV                  0x0040834C  0x0000001C  +
-HWR_FMVDone                     0x00408368  0x00000017  *
+HWR_FMVDone                     0x00408368  0x00000017  +
 HWR_FMVInit                     0x0040837F  0x0000008A  *
 sub_408409                      0x00408409  0x000000D5  x
 HWR_DownloadTextures            0x004084DE  0x0000030C  *
