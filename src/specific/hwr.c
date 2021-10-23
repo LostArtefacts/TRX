@@ -1,5 +1,6 @@
 #include "specific/hwr.h"
 
+#include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/ati.h"
@@ -1207,6 +1208,7 @@ void HWR_DrawFlatTriangle(
     float g;
     float b;
     float light;
+    float divisor;
 
     if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
           && vn2->clip >= 0 && vn3->clip >= 0
@@ -1225,7 +1227,9 @@ void HWR_DrawFlatTriangle(
         g *= 0.7;
     }
 
-    light = (8192.0 - (float)vn1->g) / 2048.0;
+    divisor = (1.0f / T1MConfig.brightness) * 1024;
+
+    light = (8192.0 - (float)vn1->g) / divisor;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
     vertices[0].z = vn1->zv * 0.0001;
@@ -1233,7 +1237,7 @@ void HWR_DrawFlatTriangle(
     vertices[0].g = g * light;
     vertices[0].b = b * light;
 
-    light = (8192.0 - (float)vn2->g) / 2048.0;
+    light = (8192.0 - (float)vn2->g) / divisor;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
     vertices[1].z = vn2->zv * 0.0001;
@@ -1241,7 +1245,7 @@ void HWR_DrawFlatTriangle(
     vertices[1].g = g * light;
     vertices[1].b = b * light;
 
-    light = (8192.0 - (float)vn3->g) / 2048.0;
+    light = (8192.0 - (float)vn3->g) / divisor;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
     vertices[2].z = vn3->zv * 0.0001;

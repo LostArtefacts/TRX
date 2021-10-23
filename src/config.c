@@ -21,6 +21,8 @@
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
 #define READ_INTEGER(opt, default_value)                                       \
     READ_PRIMITIVE(json_object_get_number_int, opt, default_value)
+#define READ_FLOAT(opt, default_value)                                         \
+    READ_PRIMITIVE(json_object_get_number_double, opt, default_value)
 
 #define READ_CUSTOM(func, opt, default_value)                                  \
     do {                                                                       \
@@ -150,6 +152,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(disable_fmv, 0);
     READ_BOOL(disable_cine, 0);
     READ_BOOL(disable_music_in_menu, 0);
+    READ_FLOAT(brightness, 1.0);
 
     READ_BAR_SHOWING_MODE(healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT);
     READ_BAR_SHOWING_MODE(airbar_showing_mode, T1M_BSM_DEFAULT);

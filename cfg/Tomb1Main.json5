@@ -156,4 +156,7 @@
     // work, make sure you have selected the last resolution.
     "resolution_width": -1,
     "resolution_height": -1,
+
+    // Overrides ingame brightness.
+    "brightness": 1.0,
 }
