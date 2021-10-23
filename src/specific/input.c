@@ -88,9 +88,9 @@ static int8_t Key_(KEY_NUMBER number);
 static HRESULT DInputJoystickCreate();
 static void DInputJoystickRelease();
 static BOOL CALLBACK
-EnumAxesCallback(const DIDEVICEOBJECTINSTANCE *instance, VOID *context);
+EnumAxesCallback(const LPDIDEVICEOBJECTINSTANCE instance, LPVOID context);
 static BOOL CALLBACK
-EnumCallback(const DIDEVICEINSTANCE *instance, VOID *context);
+EnumCallback(const LPDIDEVICEINSTANCE instance, LPVOID context);
 
 void InputInit()
 {
@@ -231,19 +231,21 @@ int16_t KeyGet()
 
 static HRESULT DInputJoystickCreate()
 {
-    HRESULT hr;
+    HRESULT result;
 
     // Look for the first simple joystick we can find.
     if (FAILED(
-            hr = IDirectInput8_EnumDevices(
+            result = IDirectInput8_EnumDevices(
                 DInput, DI8DEVCLASS_GAMECTRL, EnumCallback, NULL,
                 DIEDFL_ATTACHEDONLY))) {
-        return hr;
+        LOG_ERROR(
+            "Error while calling IDirectInput8_EnumDevices: 0x%lx", result);
+        return result;
     }
 
     // Make sure we got a joystick
     if (IDID_Joystick == NULL) {
-        LOG_INFO("Joystick not found.\n");
+        LOG_ERROR("Joystick not found.\n");
         return E_FAIL;
     }
     LOG_INFO("Joystick found.\n");
@@ -251,46 +253,49 @@ static HRESULT DInputJoystickCreate()
     DIDEVCAPS capabilities;
     // request simple joystick format 2
     if (FAILED(
-            hr = IDirectInputDevice_SetDataFormat(
+            result = IDirectInputDevice_SetDataFormat(
                 IDID_Joystick, &c_dfDIJoystick2))) {
-        LOG_INFO("Joystick set data format fail.\n");
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_SetDataFormat: 0x%lx",
+            result);
         DInputJoystickRelease();
-        return hr;
+        return result;
     }
-    LOG_INFO("Joystick set data format pass.\n");
 
     // don't request exclusive access
     if (FAILED(
-            hr = IDirectInputDevice_SetCooperativeLevel(
+            result = IDirectInputDevice_SetCooperativeLevel(
                 IDID_Joystick, NULL, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND))) {
-        LOG_INFO("Joystick co-op failed.\n");
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_SetCooperativeLevel: 0x%lx",
+            result);
         DInputJoystickRelease();
-        return hr;
+        return result;
     }
-
-    LOG_INFO("Joystick co-op passed.\n");
 
     // get axis count, we should know what it is but best to ask
     capabilities.dwSize = sizeof(DIDEVCAPS);
     if (FAILED(
-            hr = IDirectInputDevice_GetCapabilities(
+            result = IDirectInputDevice_GetCapabilities(
                 IDID_Joystick, &capabilities))) {
-        LOG_INFO("Joystick num axis failed.\n");
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_GetCapabilities: 0x%lx",
+            result);
         DInputJoystickRelease();
-        return hr;
+        return result;
     }
-    LOG_INFO("Joystick num axis passed.\n");
 
     // set the range we expect each axis to report back in
     if (FAILED(
-            hr = IDirectInputDevice_EnumObjects(
+            result = IDirectInputDevice_EnumObjects(
                 IDID_Joystick, EnumAxesCallback, NULL, DIDFT_AXIS))) {
-        LOG_INFO("Joystick enum objects failed.\n");
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_EnumObjects: 0x%lx",
+            result);
         DInputJoystickRelease();
-        return hr;
+        return result;
     }
-    LOG_INFO("Joystick enum objects passed.\n");
-    return hr;
+    return result;
 }
 
 static void DInputJoystickRelease()
@@ -303,10 +308,8 @@ static void DInputJoystickRelease()
 }
 
 static BOOL CALLBACK
-EnumAxesCallback(const DIDEVICEOBJECTINSTANCE *instance, VOID *context)
+EnumAxesCallback(const LPDIDEVICEOBJECTINSTANCE instance, LPVOID context)
 {
-    // HWND hDlg = (HWND)context;
-
     DIPROPRANGE propRange;
     propRange.diph.dwSize = sizeof(DIPROPRANGE);
     propRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
@@ -318,6 +321,9 @@ EnumAxesCallback(const DIDEVICEOBJECTINSTANCE *instance, VOID *context)
     // Set the range for the axis
     if (FAILED(IDirectInputDevice8_SetProperty(
             IDID_Joystick, DIPROP_RANGE, &propRange.diph))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice8_SetProperty: 0x%lx",
+            result);
         return DIENUM_STOP;
     }
 
@@ -325,59 +331,61 @@ EnumAxesCallback(const DIDEVICEOBJECTINSTANCE *instance, VOID *context)
 }
 
 static BOOL CALLBACK
-EnumCallback(const DIDEVICEINSTANCE *instance, VOID *context)
+EnumCallback(const LPDIDEVICEINSTANCE instance, LPVOID context)
 {
-    HRESULT hr;
+    HRESULT result;
 
     // Obtain an interface to the enumerated joystick.
-    hr = IDirectInput8_CreateDevice(
+    result = IDirectInput8_CreateDevice(
         DInput, &instance->guidInstance, &IDID_Joystick, NULL);
 
-    // If it failed, then we can't use this joystick. (Maybe the user unplugged
-    // it while we were in the middle of enumerating it.)
-    if (FAILED(hr)) {
+    if (FAILED(result)) {
+        LOG_ERROR(
+            "Error while calling IDirectInput8_CreateDevice: 0x%lx", result);
         return DIENUM_CONTINUE;
     }
-
-    // Stop enumeration. Note: we're just taking the first joystick we get. You
-    // could store all the enumerated joysticks and let the user pick.
+    // we got one, it will do.
     return DIENUM_STOP;
 }
 
-static HRESULT DInputJoystickPoll(DIJOYSTATE2 *js)
+static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
 {
-    HRESULT hr;
+    HRESULT result;
 
     if (!IDID_Joystick) {
         return S_OK;
     }
 
     // Poll the device to read the current state
-    hr = IDirectInputDevice8_Poll(IDID_Joystick);
-    if (FAILED(hr)) {
+    result = IDirectInputDevice8_Poll(IDID_Joystick);
+    if (FAILED(result)) {
         // focus was lost, try to reaquire the device
-        hr = IDirectInputDevice8_Acquire(IDID_Joystick);
-        while (hr == DIERR_INPUTLOST) {
-            hr = IDirectInputDevice8_Acquire(IDID_Joystick);
+        result = IDirectInputDevice8_Acquire(IDID_Joystick);
+        while (result == DIERR_INPUTLOST) {
+            result = IDirectInputDevice8_Acquire(IDID_Joystick);
         }
 
-        // If we encounter a fatal error, return failure.
-        if ((hr == DIERR_INVALIDPARAM) || (hr == DIERR_NOTINITIALIZED)) {
+        // A fatal error? Return failure.
+        if ((result == DIERR_INVALIDPARAM)
+            || (result == DIERR_NOTINITIALIZED)) {
+            LOG_ERROR(
+                "Error while calling IDirectInputDevice8_Acquire: 0x%lx",
+                result);
             return E_FAIL;
         }
 
         // If another application has control of this device, return
-        // successfully. We'll just have to wait our turn to use the joystick.
-        if (hr == DIERR_OTHERAPPHASPRIO) {
+        // successfully.
+        if (result == DIERR_OTHERAPPHASPRIO) {
             return S_OK;
         }
     }
 
     // Get the input's device state
     if (FAILED(
-            hr = IDirectInputDevice8_GetDeviceState(
-                IDID_Joystick, sizeof(DIJOYSTATE2), js))) {
-        return hr; // The device should have been acquired during the Poll()
+            result = IDirectInputDevice8_GetDeviceState(
+                IDID_Joystick, sizeof(DIJOYSTATE2), joystate))) {
+        return result; // The device should have been acquired during the Poll()
     }
 
     return S_OK;
