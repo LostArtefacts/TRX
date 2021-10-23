@@ -1092,6 +1092,33 @@ void HWR_SetupRenderContextAndRender()
     HWR_RenderToggle();
 }
 
+const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[4];
+    int32_t color;
+
+    if (HWR_IsTextureMode) {
+        tmp = 0;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 0;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        vns[3] = &PhdVBuf[*obj_ptr++];
+        color = *obj_ptr++;
+
+        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        HWR_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+    }
+
+    return obj_ptr;
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1119,6 +1146,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
     INJECT(0x00408FF0, HWR_SelectTexture);
     INJECT(0x0040904D, HWR_ClipVertices);
+    INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
