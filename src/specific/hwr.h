@@ -27,7 +27,6 @@
 #define HWR_InsertObjectGT3         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C34E)
 #define HWR_InsertObjectG4          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x00409F44)
 #define HWR_InsertObjectG3          ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040A01D)
-#define HWR_GetSurfaceAndPitch      ((void      (*)(LPDIRECTDRAWSURFACE surface, void **out_surface, int32_t *out_pitch))0x0040787C)
 #define HWR_ReleaseSurfaces         ((void      (*)())0x00407A91)
 // clang-format on
 
@@ -35,6 +34,8 @@ void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
+void HWR_GetSurfaceAndPitch(
+    LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch);
 void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_DumpScreen();

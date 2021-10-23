@@ -58,6 +58,29 @@ void HWR_RenderToggle()
     }
 }
 
+void HWR_GetSurfaceAndPitch(
+    LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch)
+{
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    result =
+        IDirectDrawSurface2_Lock(surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
+    HWR_CheckError(result);
+
+    if (out_surface) {
+        *out_surface = surface_desc.lpSurface;
+    }
+    if (out_pitch) {
+        *out_pitch = surface_desc.lPitch / 2;
+    }
+
+    result = IDirectDrawSurface2_Unlock(surface, surface_desc.lpSurface);
+    HWR_CheckError(result);
+}
+
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     DDBLTFX blt_fx;
@@ -913,6 +936,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407827, HWR_RenderBegin);
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
+    INJECT(0x0040787C, HWR_GetSurfaceAndPitch);
     INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
     INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
