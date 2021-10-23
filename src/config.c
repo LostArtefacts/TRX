@@ -150,6 +150,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(disable_fmv, 0);
     READ_BOOL(disable_cine, 0);
     READ_BOOL(disable_music_in_menu, 0);
+    READ_BOOL(enable_xbox_one_controller, 0);
 
     READ_BAR_SHOWING_MODE(healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT);
     READ_BAR_SHOWING_MODE(airbar_showing_mode, T1M_BSM_DEFAULT);

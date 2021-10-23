@@ -67,6 +67,7 @@ typedef struct {
     int8_t disable_music_in_menu;
     int32_t resolution_width;
     int32_t resolution_height;
+    int8_t enable_xbox_one_controller;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;
