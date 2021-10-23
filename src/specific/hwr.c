@@ -250,6 +250,24 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
     }
 }
 
+void HWR_SelectTexture(int tex_num)
+{
+    if (tex_num == HWR_SelectedTexture) {
+        return;
+    }
+
+    if (!ATITextureMap[tex_num]) {
+        ShowFatalError("ERROR: Attempt to select unloaded texture");
+    }
+
+    if (ATI3DCIF_ContextSetState(
+            ATIRenderContext, C3D_ERS_TMAP_SELECT, &ATITextureMap[tex_num])) {
+        LOG_ERROR("    Texture error");
+    }
+
+    HWR_SelectedTexture = tex_num;
+}
+
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
@@ -1099,6 +1117,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00408C3A, HWR_DownloadPicture);
     INJECT(0x00408E32, HWR_FadeWait);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
+    INJECT(0x00408FF0, HWR_SelectTexture);
     INJECT(0x0040904D, HWR_ClipVertices);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
     INJECT(0x0040C7EE, HWR_Draw2DLine);

@@ -87,7 +87,7 @@
 # 0x00408E41 sub_408E41
 0x00408E6D void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 # 0x00408ED8 sub_408ED8
-# 0x00408FF0 HWR_SelectTexture
+0x00408FF0 void HWR_SelectTexture(int tex_num);
 0x0040904D int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
 # 0x00409C0F sub_409C0F
 # 0x00409F44 HWR_InsertObjectG4
