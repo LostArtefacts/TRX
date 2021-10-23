@@ -71,7 +71,7 @@
 0x00408005 void HWR_InitialiseHardware();
 0x00408323 void HWR_ShutdownHardware();
 0x0040834C void HWR_PrepareFMV();
-# 0x00408368 HWR_FMVDone
+0x00408368 void HWR_FMVDone();
 # 0x0040837F HWR_FMVInit
 # 0x00408409 sub_408409
 # 0x004084DE HWR_DownloadTextures
