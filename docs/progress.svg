@@ -63,7 +63,7 @@
 <rect width="12.00" height="12.00" x="140.00" y="31.00" class="decompiled"><title>HWR_ReleaseSurfaces</title></rect>
 <rect width="12.00" height="12.00" x="154.00" y="31.00" class="decompiled"><title>HWR_SetHardwareVideoMode</title></rect>
 <rect width="12.00" height="12.00" x="168.00" y="31.00" class="decompiled"><title>HWR_InitialiseHardware</title></rect>
-<rect width="12.00" height="12.00" x="182.00" y="31.00" class="named"><title>HWR_ShutdownHardware</title></rect>
+<rect width="12.00" height="12.00" x="182.00" y="31.00" class="decompiled"><title>HWR_ShutdownHardware</title></rect>
 <rect width="12.00" height="12.00" x="196.00" y="31.00" class="named"><title>HWR_PrepareFMV</title></rect>
 <rect width="12.00" height="12.00" x="210.00" y="31.00" class="named"><title>HWR_FMVDone</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="31.00" class="named"><title>HWR_FMVInit</title></rect>
@@ -1307,7 +1307,7 @@
 <rect width="3.65" height="3.90" x="686.71" y="485.41" class="decompiled"><title>Inv_RingMotionSetup</title></rect>
 <rect width="3.65" height="3.90" x="692.35" y="485.41" class="decompiled"><title>LaraAsFallBack</title></rect>
 <rect width="3.96" height="3.60" x="645.77" y="491.32" class="decompiled"><title>phd_cos</title></rect>
-<rect width="3.96" height="3.22" x="645.77" y="496.91" class="named"><title>HWR_ShutdownHardware</title></rect>
+<rect width="3.96" height="3.22" x="645.77" y="496.91" class="decompiled"><title>HWR_ShutdownHardware</title></rect>
 <rect width="3.96" height="3.22" x="645.77" y="502.13" class="decompiled"><title>WinSpinMessageLoop</title></rect>
 <rect width="3.96" height="3.22" x="645.77" y="507.34" class="decompiled"><title>KeyClearBuffer</title></rect>
 <rect width="3.96" height="3.09" x="645.77" y="512.56" class="decompiled"><title>FxStairs2Slope</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 96.92%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.79%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 2.38%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 1.78%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 97.06%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 95.80%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 2.24%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 1.77%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.70%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 2.43%</text>
 </svg>
