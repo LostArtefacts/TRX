@@ -41,6 +41,7 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_CopyPicture();
 void HWR_DownloadPicture();
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
+void HWR_SelectTexture(int tex_num);
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2);
