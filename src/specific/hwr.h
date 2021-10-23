@@ -16,7 +16,6 @@
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
 #define HWR_DrawSprite              ((void      (*)(int32_t x1, int32_t x2, int32_t y1, int32_t y2, int32_t z, int16_t sprnum, int16_t shade))0x0040C425)
 #define HWR_ClearSurfaceDepth       ((void      (*)())0x00408AC7)
-#define HWR_FMVInit                 ((void      (*)())0x0040837F)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 #define HWR_InsertObjectGT4         ((const int16_t *(*)(const int16_t *obj_ptr, int32_t vertex_count))0x0040C25A)
@@ -61,6 +60,7 @@ void HWR_InitialiseHardware();
 void HWR_ShutdownHardware();
 void HWR_PrepareFMV();
 void HWR_FMVDone();
+void HWR_FMVInit();
 void HWR_SetupRenderContextAndRender();
 
 void T1MInjectSpecificHWR();
