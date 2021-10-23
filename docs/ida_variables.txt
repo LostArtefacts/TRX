@@ -96,7 +96,7 @@
 0x0040A6B1 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
 0x0040B510 void HWR_DrawTexturedTriangle(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3);
 0x0040BBE2 void HWR_DrawTexturedQuad(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t *u4);
-# 0x0040C25A HWR_InsertObjectGT4
+0x0040C25A const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
 0x0040C34E const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
 # 0x0040C425 HWR_DrawSprite
 0x0040C7EE void HWR_Draw2DLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1, RGB888 color2);
