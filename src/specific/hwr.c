@@ -113,7 +113,7 @@ void HWR_ReleaseSurfaces()
         Surface4 = NULL;
     }
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (TextureSurfaces[i]) {
             result = IDirectDrawSurface_Release(TextureSurfaces[i]);
             HWR_CheckError(result);
@@ -1050,7 +1050,8 @@ int32_t HWR_SetHardwareVideoMode()
         surface_desc.dwFlags =
             DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
         surface_desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_VIDEOMEMORY;
-        surface_desc.ddpfPixelFormat.dwSize = 32;
+        surface_desc.ddpfPixelFormat.dwSize =
+            sizeof(surface_desc.ddpfPixelFormat);
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
         surface_desc.dwWidth = 256;
@@ -1097,7 +1098,7 @@ void HWR_InitialiseHardware()
 
     IsHardwareRenderer = 0;
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
         ATITextureMap[i] = NULL;
         TextureSurfaces[i] = NULL;
     }
