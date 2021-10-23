@@ -1003,6 +1003,13 @@ void HWR_InitialiseHardware()
     LOG_INFO("    Complete, hardware ready");
 }
 
+void HWR_ShutdownHardware()
+{
+    LOG_INFO("ShutdownHardware:");
+    IsHardwareRenderer = 0;
+    LOG_INFO("    complete");
+}
+
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();
@@ -1032,6 +1039,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00407A91, HWR_ReleaseSurfaces);
     INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
     INJECT(0x00408005, HWR_InitialiseHardware);
+    INJECT(0x00408323, HWR_ShutdownHardware);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408B2C, HWR_BlitSurface);
