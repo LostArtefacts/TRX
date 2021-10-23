@@ -119,7 +119,7 @@ HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
 HWR_InitPolyList                0x0040D0F7  0x00000049  *
 HWR_CacheTexture                0x0040D140  0x000001A0  -
 HWR_OutputPolyList              0x0040D2E0  0x00000185  *
-DoNothing                       0x0040D465  0x00000005  -
+DoNothing                       0x0040D465  0x00000005  +
 
 # bat.cpp
 BatControl                      0x0040D470  0x00000184  +
