@@ -90,7 +90,7 @@ HWR_DownloadTextures            0x004084DE  0x0000030C  *
 HWR_SetPalette                  0x004087EA  0x0000020A  *
 HWR_SwitchResolution            0x004089F4  0x0000007C  +
 HWR_DumpScreen                  0x00408A70  0x00000057  +
-HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  *
+HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  +
 HWR_BlitSurface                 0x00408B2C  0x00000059  +
 HWR_CopyPicture                 0x00408B85  0x000000B5  +
 HWR_DownloadPicture             0x00408C3A  0x000001D4  +

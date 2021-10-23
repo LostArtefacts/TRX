@@ -78,7 +78,7 @@
 # 0x004087EA HWR_SetPalette
 0x004089F4 void HWR_SwitchResolution();
 0x00408A70 void HWR_DumpScreen();
-# 0x00408AC7 HWR_ClearSurfaceDepth
+0x00408AC7 void HWR_ClearSurfaceDepth();
 0x00408B2C void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 0x00408B85 void HWR_CopyPicture();
 0x00408C3A void HWR_DownloadPicture();

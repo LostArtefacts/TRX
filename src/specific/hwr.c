@@ -133,6 +133,23 @@ void HWR_DumpScreen()
     HWR_SelectedTexture = -1;
 }
 
+void HWR_ClearSurfaceDepth()
+{
+    DDBLTFX bltfx;
+    HRESULT result;
+
+    HWR_RenderEnd();
+    HWR_ClearSurface(Surface2);
+
+    bltfx.dwSize = sizeof(bltfx);
+    bltfx.dwFillDepth = 0xFFFF;
+    result = IDirectDrawSurface_Blt(
+        Surface4, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_DEPTHFILL, &bltfx);
+    HWR_CheckError(result);
+
+    HWR_RenderToggle();
+}
+
 void HWR_FlipPrimaryBuffer()
 {
     HWR_RenderEnd();
@@ -1076,6 +1093,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040837F, HWR_FMVInit);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
+    INJECT(0x00408AC7, HWR_ClearSurfaceDepth);
     INJECT(0x00408B2C, HWR_BlitSurface);
     INJECT(0x00408B85, HWR_CopyPicture);
     INJECT(0x00408C3A, HWR_DownloadPicture);
