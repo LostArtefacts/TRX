@@ -1677,7 +1677,7 @@ typedef struct SHADOW_INFO {
     /* 0006 */ int16_t radius;
     /* 0008 */ int16_t poly_count;
     /* 000A */ int16_t vertex_count;
-    /* 000C */ POS_3D vertex[8];
+    /* 000C */ POS_3D vertex[32];
     /* 003C end */
 } SHADOW_INFO;
 

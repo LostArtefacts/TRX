@@ -472,6 +472,7 @@ void S_DrawLightningSegment(
 
 void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 {
+    /*
     int32_t x0 = bptr[0];
     int32_t x1 = bptr[1];
     int32_t y0 = bptr[4];
@@ -525,6 +526,42 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
             HWR_PrintShadow(&PhdVBuf[0], clip);
         }
     }
+    phd_PopMatrix();*/
+
+    int x0, x1, z0, z1, midX, midZ, xAdd, zAdd;
+
+    ShadowInfo.x = 0;
+    ShadowInfo.y = 0;
+    ShadowInfo.z = 0;
+    ShadowInfo.radius = 0x7FFF;
+    ShadowInfo.poly_count = 1;
+    ShadowInfo.vertex_count = 32;
+
+    x0 = bptr[0];
+    x1 = bptr[1];
+    z0 = bptr[4];
+    z1 = bptr[5];
+
+    midX = (x0 + x1) / 2;
+    xAdd = (x1 - x0) * size / 0x400;
+    midZ = (z0 + z1) / 2;
+    zAdd = (z1 - z0) * size / 0x400;
+
+    
+    for (int i = 0; i < ShadowInfo.vertex_count; ++i) {
+        int angle = (PHD_180 + i * PHD_360) / ShadowInfo.vertex_count;
+        ShadowInfo.vertex[i].x = midX + (xAdd * 2) * phd_sin(angle) / (PHD_ONE / 4);
+        ShadowInfo.vertex[i].z = midZ + (zAdd * 2) * phd_cos(angle) / (PHD_ONE / 4);
+        ShadowInfo.vertex[i].y = 0;
+    }
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    phd_RotY(item->pos.y_rot);
+    if (calc_object_vertices(&ShadowInfo.poly_count)) {
+        HWR_PrintShadow(&PhdVBuf[0], 0);
+    }
+
     phd_PopMatrix();
 }
 
