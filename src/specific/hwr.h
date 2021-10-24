@@ -16,8 +16,7 @@
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
-#define HWR_DrawTexturedTriangle    ((void (*)(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t textype))0x0040B510)
-#define HWR_DrawTexturedQuad        ((void (*)(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t *u4, uint16_t textype))0x0040BBE2)
+#define HWR_DrawTexturedTriangle    ((void (*)(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, uint16_t textype))0x0040B510)
 // clang-format on
 
 void HWR_CheckError(HRESULT result);
@@ -65,6 +64,9 @@ void HWR_SetupRenderContextAndRender();
 
 void HWR_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
+void HWR_DrawTexturedQuad(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype);
 
 const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
