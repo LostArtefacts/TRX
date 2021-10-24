@@ -1532,17 +1532,15 @@ struct PHD_VBUF {
     uint16_t v;
 };
 
+struct PHD_UV {
+    uint16_t u1;
+    uint16_t v1;
+};
+
 struct PHD_TEXTURE {
     uint16_t drawtype;
     uint16_t tpage;
-    uint16_t u1;
-    uint16_t v1;
-    uint16_t u2;
-    uint16_t v2;
-    uint16_t u3;
-    uint16_t v3;
-    uint16_t u4;
-    uint16_t v4;
+    PHD_UV uv[4];
 };
 
 struct PHD_SPRITE {

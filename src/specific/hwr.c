@@ -1,5 +1,6 @@
 #include "specific/hwr.h"
 
+#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
@@ -1270,8 +1271,8 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
         tex = &PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tpage, &tex->u1, &tex->u2, &tex->u3,
-            tex->drawtype);
+            vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
+            &tex->uv[2], tex->drawtype);
     }
 
     return obj_ptr;
@@ -1293,8 +1294,8 @@ const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
         tex = &PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->u1, &tex->u2,
-            &tex->u3, &tex->u4, tex->drawtype);
+            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
+            &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
     }
 
     return obj_ptr;
@@ -1365,6 +1366,84 @@ void HWR_DrawFlatTriangle(
     HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
+void HWR_DrawTexturedQuad(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
+{
+    int32_t i;
+    float multiplier;
+    C3D_VTCF vertices[4];
+    PHD_VBUF *src_vbuf[4];
+    PHD_UV *src_uv[4];
+
+    if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
+        if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
+            return;
+        }
+
+        if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
+            && vn4->clip >= 0) {
+            if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                    - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+                < 0) {
+                return;
+            }
+        } else if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        HWR_DrawTexturedTriangle(vn1, vn2, vn3, tpage, uv1, uv2, uv3, textype);
+        HWR_DrawTexturedTriangle(vn3, vn4, vn1, tpage, uv3, uv4, uv1, textype);
+        return;
+    }
+
+    if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+            - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+        < 0) {
+        return;
+    }
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    src_vbuf[0] = vn2;
+    src_vbuf[1] = vn1;
+    src_vbuf[2] = vn3;
+    src_vbuf[3] = vn4;
+
+    src_uv[0] = uv2;
+    src_uv[1] = uv1;
+    src_uv[2] = uv3;
+    src_uv[3] = uv4;
+
+    for (i = 0; i < 4; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = src_vbuf[i]->zv * 0.0001;
+        vertices[i].w = 65536.0 / (double)src_vbuf[i]->zv;
+        vertices[i].s = (double)((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625
+            * vertices[i].w * 0.00390625;
+        vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625
+            * vertices[i].w * 0.00390625;
+        vertices[i].r = (8192.0 - src_vbuf[i]->g) * multiplier;
+        vertices[i].g = (8192.0 - src_vbuf[i]->g) * multiplier;
+        vertices[i].b = (8192.0 - src_vbuf[i]->g) * multiplier;
+        if (IsShadeEffect) {
+            vertices[i].r *= 0.6;
+            vertices[i].g *= 0.7;
+        }
+    }
+
+    if (HWR_TextureLoaded[tpage]) {
+        HWR_EnableTextureMode();
+        HWR_SelectTexture(tpage);
+    }
+
+    ATI3DCIF_RenderPrimStrip(vertices, 4);
+
+    // NOTE: original .exe has some additional logic for the case when
+    // the requested texture page was not loaded.
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1396,12 +1475,13 @@ void T1MInjectSpecificHWR()
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040BBE2, HWR_DrawTexturedQuad);
     INJECT(0x0040C25A, HWR_InsertObjectGT4);
     INJECT(0x0040C34E, HWR_InsertObjectGT3);
+    INJECT(0x0040C425, HWR_DrawSprite);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CADB, HWR_PrintShadow);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
-    INJECT(0x0040C425, HWR_DrawSprite);
 }

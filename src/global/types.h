@@ -1296,17 +1296,16 @@ typedef struct PHD_VBUF {
     /* 0020 end */
 } PHD_VBUF;
 
+typedef struct PHD_UV {
+    /* 0000 */ uint16_t u1;
+    /* 0002 */ uint16_t v1;
+    /* 0004 end */
+} PHD_UV;
+
 typedef struct PHD_TEXTURE {
     /* 0000 */ uint16_t drawtype;
     /* 0002 */ uint16_t tpage;
-    /* 0004 */ uint16_t u1;
-    /* 0006 */ uint16_t v1;
-    /* 0008 */ uint16_t u2;
-    /* 000A */ uint16_t v2;
-    /* 000C */ uint16_t u3;
-    /* 000E */ uint16_t v3;
-    /* 0010 */ uint16_t u4;
-    /* 0012 */ uint16_t v4;
+    /* 0004 */ PHD_UV uv[4];
     /* 0014 end */
 } PHD_TEXTURE;
 
