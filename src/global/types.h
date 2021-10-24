@@ -1282,6 +1282,18 @@ typedef struct PHD_3DPOS {
     /* 0012 end */
 } PHD_3DPOS;
 
+typedef struct POINT_INFO {
+    /* 0000 */ float xv;
+    /* 0004 */ float yv;
+    /* 0008 */ float zv;
+    /* 000C */ float xs;
+    /* 0010 */ float ys;
+    /* 0014 */ float u;
+    /* 0018 */ float v;
+    /* 001C */ float g;
+    /* 0020 end */
+} POINT_INFO;
+
 typedef struct PHD_VBUF {
     /* 0000 */ int32_t xv;
     /* 0004 */ int32_t yv;

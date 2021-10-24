@@ -1366,6 +1366,99 @@ void HWR_DrawFlatTriangle(
     HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
+void HWR_DrawTexturedTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
+    PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
+{
+    int32_t i;
+    int32_t vertex_count;
+    C3D_VTCF vertices[8];
+    POINT_INFO points[3];
+    PHD_VBUF *src_vbuf[4];
+    PHD_UV *src_uv[4];
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    src_vbuf[0] = vn1;
+    src_vbuf[1] = vn2;
+    src_vbuf[2] = vn3;
+
+    src_uv[0] = uv1;
+    src_uv[1] = uv2;
+    src_uv[2] = uv3;
+
+    if (vn3->clip & vn2->clip & vn1->clip) {
+        return;
+    }
+
+    if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
+        if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+            < 0) {
+            return;
+        }
+
+        for (i = 0; i < 3; i++) {
+            vertices[i].x = src_vbuf[i]->xs;
+            vertices[i].y = src_vbuf[i]->ys;
+            vertices[i].z = src_vbuf[i]->zv * 0.0001;
+
+            vertices[i].w = 65536.0 / (double)src_vbuf[i]->zv;
+            vertices[i].s = (double)((src_uv[i]->u1 & 0xFF00) + 127)
+                * 0.00390625 * vertices[i].w * 0.00390625;
+            vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127)
+                * 0.00390625 * vertices[i].w * 0.00390625;
+
+            vertices[i].r = (8192.0 - src_vbuf[i]->g) * multiplier;
+            vertices[i].g = (8192.0 - src_vbuf[i]->g) * multiplier;
+            vertices[i].b = (8192.0 - src_vbuf[i]->g) * multiplier;
+
+            if (IsShadeEffect) {
+                vertices[i].r *= 0.6;
+                vertices[i].g *= 0.7;
+            }
+        }
+
+        vertex_count = 3;
+        if (vn1->clip || vn2->clip || vn3->clip) {
+            vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+        }
+    } else {
+        if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        for (i = 0; i < 3; i++) {
+            points[i].xv = src_vbuf[i]->xv;
+            points[i].yv = src_vbuf[i]->yv;
+            points[i].zv = src_vbuf[i]->zv;
+            points[i].xs = src_vbuf[i]->xs;
+            points[i].ys = src_vbuf[i]->ys;
+            points[i].g = (float)src_vbuf[i]->g;
+            points[i].u = (double)((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625;
+            points[i].v = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625;
+        }
+
+        vertex_count = HWR_ZedClipper(3, points, vertices);
+        if (!vertex_count) {
+            return;
+        }
+        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    if (HWR_TextureLoaded[tpage]) {
+        HWR_EnableTextureMode();
+        HWR_SelectTexture(tpage);
+    }
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
 void HWR_DrawTexturedQuad(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
@@ -1419,14 +1512,17 @@ void HWR_DrawTexturedQuad(
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
         vertices[i].z = src_vbuf[i]->zv * 0.0001;
+
         vertices[i].w = 65536.0 / (double)src_vbuf[i]->zv;
         vertices[i].s = (double)((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625
             * vertices[i].w * 0.00390625;
         vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625
             * vertices[i].w * 0.00390625;
+
         vertices[i].r = (8192.0 - src_vbuf[i]->g) * multiplier;
         vertices[i].g = (8192.0 - src_vbuf[i]->g) * multiplier;
         vertices[i].b = (8192.0 - src_vbuf[i]->g) * multiplier;
+
         if (IsShadeEffect) {
             vertices[i].r *= 0.6;
             vertices[i].g *= 0.7;
@@ -1475,6 +1571,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040B510, HWR_DrawTexturedTriangle);
     INJECT(0x0040BBE2, HWR_DrawTexturedQuad);
     INJECT(0x0040C25A, HWR_InsertObjectGT4);
     INJECT(0x0040C34E, HWR_InsertObjectGT3);
