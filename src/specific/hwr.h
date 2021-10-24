@@ -16,7 +16,6 @@
 #define HWR_SetPalette              ((void      (*)())0x004087EA)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
-#define HWR_ZedClipper              ((int32_t   (*)(int vertex_count, POINT_INFO *source, C3D_VTCF *vertices))0x0040A0C4)
 // clang-format on
 
 void HWR_CheckError(HRESULT result);
@@ -61,6 +60,9 @@ void HWR_PrepareFMV();
 void HWR_FMVDone();
 void HWR_FMVInit();
 void HWR_SetupRenderContextAndRender();
+
+int32_t
+HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices);
 
 void HWR_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);

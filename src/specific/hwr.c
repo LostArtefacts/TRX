@@ -1410,9 +1410,8 @@ void HWR_DrawTexturedTriangle(
             vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127)
                 * 0.00390625 * vertices[i].w * 0.00390625;
 
-            vertices[i].r = (8192.0 - src_vbuf[i]->g) * multiplier;
-            vertices[i].g = (8192.0 - src_vbuf[i]->g) * multiplier;
-            vertices[i].b = (8192.0 - src_vbuf[i]->g) * multiplier;
+            vertices[i].r = vertices[i].g = vertices[i].b =
+                (8192.0 - src_vbuf[i]->g) * multiplier;
 
             if (IsShadeEffect) {
                 vertices[i].r *= 0.6;
@@ -1519,9 +1518,8 @@ void HWR_DrawTexturedQuad(
         vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625
             * vertices[i].w * 0.00390625;
 
-        vertices[i].r = (8192.0 - src_vbuf[i]->g) * multiplier;
-        vertices[i].g = (8192.0 - src_vbuf[i]->g) * multiplier;
-        vertices[i].b = (8192.0 - src_vbuf[i]->g) * multiplier;
+        vertices[i].r = vertices[i].g = vertices[i].b =
+            (8192.0 - src_vbuf[i]->g) * multiplier;
 
         if (IsShadeEffect) {
             vertices[i].r *= 0.6;
@@ -1538,6 +1536,96 @@ void HWR_DrawTexturedQuad(
 
     // NOTE: original .exe has some additional logic for the case when
     // the requested texture page was not loaded.
+}
+
+int32_t
+HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
+{
+    int32_t i;
+    int32_t count;
+    POINT_INFO *pts0;
+    POINT_INFO *pts1;
+    C3D_VTCF *v;
+    float clip;
+    float near_z;
+    float persp_o_near_z;
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+    near_z = PhdNearZ;
+    persp_o_near_z = PhdPersp / near_z;
+
+    v = &vertices[0];
+    pts0 = &pts[vertex_count - 1];
+    for (i = 0; i < vertex_count; i++) {
+        pts1 = pts0;
+        pts0 = &pts[i];
+        if (near_z > pts1->zv) {
+            if (near_z > pts0->zv) {
+                continue;
+            }
+
+            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
+            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
+                + PhdCenterX;
+            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
+                + PhdCenterY;
+            v->z = near_z * 0.0001;
+
+            v->w = 65536.0 / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625;
+
+            v->r = v->g = v->b =
+                (8192.0 - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+
+            if (IsShadeEffect) {
+                v->r *= 0.6;
+                v->g *= 0.7;
+            }
+            v++;
+        }
+
+        if (near_z > pts0->zv) {
+            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
+            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
+                + PhdCenterX;
+            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
+                + PhdCenterY;
+            v->z = near_z * 0.0001;
+
+            v->w = 65536.0 / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625;
+
+            v->r = v->g = v->b =
+                (8192.0 - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+            if (IsShadeEffect) {
+                v->r *= 0.6;
+                v->g *= 0.7;
+            }
+            v++;
+        } else {
+            v->x = pts0->xs;
+            v->y = pts0->ys;
+            v->z = pts0->zv * 0.0001;
+
+            v->w = 65536.0 / pts0->zv;
+            v->s = pts0->u * v->w * 0.00390625;
+            v->t = pts0->v * v->w * 0.00390625;
+
+            v->r = v->g = v->b = (8192.0 - pts0->g) * multiplier;
+
+            if (IsShadeEffect) {
+                v->r *= 0.6;
+                v->g *= 0.7;
+            }
+            v++;
+        }
+    }
+
+    count = v - vertices;
+    return count < 3 ? 0 : count;
 }
 
 void T1MInjectSpecificHWR()
@@ -1570,6 +1658,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x00409C0F, HWR_DrawFlatTriangle);
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
+    INJECT(0x0040A0C4, HWR_ZedClipper);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
     INJECT(0x0040B510, HWR_DrawTexturedTriangle);
     INJECT(0x0040BBE2, HWR_DrawTexturedQuad);
