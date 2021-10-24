@@ -98,7 +98,7 @@ sub_408E0E                      0x00408E0E  0x00000024  x
 HWR_FadeWait                    0x00408E32  0x0000000F  +
 sub_408E41                      0x00408E41  0x0000002C  x
 HWR_RenderTriangleStrip         0x00408E6D  0x0000006B  +
-sub_408ED8                      0x00408ED8  0x00000118  -
+sub_408ED8                      0x00408ED8  0x00000118  x
 HWR_SelectTexture               0x00408FF0  0x0000005D  +
 HWR_ClipVertices                0x0040904D  0x00000BC2  +
 HWR_DrawFlatTriangle            0x00409C0F  0x00000335  +
