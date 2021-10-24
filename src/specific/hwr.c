@@ -158,6 +158,39 @@ void HWR_ReleaseSurfaces()
     }
 }
 
+void HWR_SetPalette()
+{
+    int32_t i;
+
+    LOG_INFO("PaletteSetHardware:");
+
+    ATIPalette[0].r = 0;
+    ATIPalette[0].g = 0;
+    ATIPalette[0].b = 0;
+    ATIPalette[0].flags = C3D_LOAD_PALETTE_ENTRY;
+
+    for (i = 1; i < 256; i++) {
+        if (GamePalette[i].r || GamePalette[i].g || GamePalette[i].b) {
+            ATIPalette[i].r = 4 * GamePalette[i].r;
+            ATIPalette[i].g = 4 * GamePalette[i].g;
+            ATIPalette[i].b = 4 * GamePalette[i].b;
+        } else {
+            ATIPalette[i].r = 1;
+            ATIPalette[i].g = 1;
+            ATIPalette[i].b = 1;
+        }
+        ATIPalette[i].flags = C3D_LOAD_PALETTE_ENTRY;
+    }
+
+    ATIChromaKey.r = 0;
+    ATIChromaKey.g = 0;
+    ATIChromaKey.b = 0;
+    ATIChromaKey.a = 0;
+
+    HWR_IsPaletteActive = 1;
+    LOG_INFO("    complete");
+}
+
 void HWR_DumpScreen()
 {
     HWR_FlipPrimaryBuffer();
@@ -1645,6 +1678,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040834C, HWR_PrepareFMV);
     INJECT(0x00408368, HWR_FMVDone);
     INJECT(0x0040837F, HWR_FMVInit);
+    INJECT(0x004087EA, HWR_SetPalette);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408AC7, HWR_ClearSurfaceDepth);
