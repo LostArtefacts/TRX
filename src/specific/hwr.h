@@ -13,7 +13,6 @@
 
 // clang-format off
 #define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
-#define HWR_SetPalette              ((void      (*)())0x004087EA)
 #define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
 #define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
 // clang-format on
@@ -59,6 +58,7 @@ void HWR_ShutdownHardware();
 void HWR_PrepareFMV();
 void HWR_FMVDone();
 void HWR_FMVInit();
+void HWR_SetPalette();
 void HWR_SetupRenderContextAndRender();
 
 int32_t
