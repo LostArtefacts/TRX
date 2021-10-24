@@ -1537,6 +1537,17 @@ struct PHD_UV {
     uint16_t v1;
 };
 
+struct POINT_INFO {
+    float xv;
+    float yv;
+    float zv;
+    float xs;
+    float ys;
+    float u;
+    float v;
+    float g;
+};
+
 struct PHD_TEXTURE {
     uint16_t drawtype;
     uint16_t tpage;
