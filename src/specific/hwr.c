@@ -1165,7 +1165,8 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
         tex = &PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tpage, &tex->u1, &tex->u2, &tex->u3);
+            vns[0], vns[1], vns[2], tex->tpage, &tex->u1, &tex->u2, &tex->u3,
+            tex->drawtype);
     }
 
     return obj_ptr;
@@ -1193,7 +1194,7 @@ const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
 
         HWR_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->u1, &tex->u2,
-            &tex->u3, &tex->u4);
+            &tex->u3, &tex->u4, tex->drawtype);
     }
 
     return obj_ptr;
@@ -1223,8 +1224,8 @@ void HWR_DrawFlatTriangle(
     b = GamePalette[color].b;
 
     if (IsShadeEffect) {
-        r *= 0.6;
-        g *= 0.7;
+        r *= 0.6f;
+        g *= 0.7f;
     }
 
     divisor = (1.0f / T1MConfig.brightness) * 1024;
