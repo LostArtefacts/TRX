@@ -9,10 +9,10 @@
 0x00401000 void phd_GenerateW2V(PHD_3DPOS *viewpos);
 0x004011A0 void phd_LookAt(int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar, int32_t ztar, int16_t roll);
 0x00401270 void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest);
-0x004012F0 void phd_RotX(PHD_ANGLE rx);
-0x004013A0 void phd_RotY(PHD_ANGLE ry);
-0x00401450 void phd_RotZ(PHD_ANGLE rz);
-0x00401500 void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz);
+0x004012F0 void phd_RotX(int16_t rx);
+0x004013A0 void phd_RotY(int16_t ry);
+0x00401450 void phd_RotZ(int16_t rz);
+0x00401500 void phd_RotYXZ(int16_t ry, int16_t rx, int16_t rz);
 0x004016F0 void phd_RotYXZpack(int32_t rots);
 0x004018F0 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 0x004019A0 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
@@ -27,7 +27,7 @@
 0x004024A0 void phd_SortPolyList();
 0x004024D0 void do_quickysorty(int32_t left, int32_t right);
 0x004025D0 void phd_InitWindow(int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz, int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight, uint8_t *scrptr);
-0x004026D0 void AlterFOV(PHD_ANGLE fov);
+0x004026D0 void AlterFOV(int16_t fov);
 0x00402710 void Insert2DLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t z, int8_t color);
 0x004027E0 void draw_poly_line(int16_t *buf_ptr);
 0x00402990 void draw_poly_flat(int16_t *buf_ptr);
@@ -74,8 +74,8 @@
 0x00408368 void HWR_FMVDone();
 0x0040837F void HWR_FMVInit();
 # 0x00408409 sub_408409
-# 0x004084DE HWR_DownloadTextures
-# 0x004087EA HWR_SetPalette
+0x004084DE void HWR_DownloadTextures(int16_t tpage);
+0x004087EA void HWR_SetPalette();
 0x004089F4 void HWR_SwitchResolution();
 0x00408A70 void HWR_DumpScreen();
 0x00408AC7 void HWR_ClearSurfaceDepth();
@@ -102,7 +102,7 @@
 0x0040C7EE void HWR_Draw2DLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1, RGB888 color2);
 0x0040C8E7 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 0x0040CADB void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
-# 0x0040CC5D HWR_RenderLightningSegment
+0x0040CC5D void HWR_RenderLightningSegment(int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2, int32_t z2, int thickness2);
 0x0040D056 void HWR_DrawLightningSegment(int x1, int y1, int z1, int thickness1, int x2, int y2, int z2, int thickness2);
 # 0x0040D0F7 HWR_InitPolyList
 # 0x0040D140 HWR_CacheTexture
@@ -156,7 +156,7 @@
 0x00412F30 int32_t TestLaraPosition(int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item);
 0x00413070 void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
 0x00413140 int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
-0x00413230 int32_t Move3DPosTo3DPos(PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd);
+0x00413230 int32_t Move3DPosTo3DPos(PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t angadd);
 0x004133B0 int32_t ControlPhase(int32_t nframes, int32_t demo_mode);
 0x00413660 void AnimateItem(ITEM_INFO *item);
 0x00413960 int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim);
@@ -419,7 +419,7 @@
 0x004270C0 void LaraGetNewTarget(WEAPON_INFO *winfo);
 0x004272A0 void find_target_point(ITEM_INFO *item, GAME_VECTOR *target);
 0x00427360 void AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm);
-0x00427430 int32_t FireWeapon(int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles);
+0x00427430 int32_t FireWeapon(int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, int16_t *angles);
 0x00427730 void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage);
 0x00427850 void LaraControl(int16_t item_num);
 0x00427BD0 void LaraSwapMeshExtra();
@@ -542,9 +542,9 @@
 0x00430CE0 void S_DisplayPicture(const char *filename);
 0x00430D80 int32_t Targetable(ITEM_INFO *item, AI_INFO *info);
 0x00430E00 void ControlGunShot(int16_t fx_num);
-0x00430E40 int16_t GunShot(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot, int16_t room_num);
-0x00430EB0 int16_t GunHit(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot, int16_t room_num);
-0x00430FA0 int16_t GunMiss(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot, int16_t room_num);
+0x00430E40 int16_t GunShot(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num);
+0x00430EB0 int16_t GunHit(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num);
+0x00430FA0 int16_t GunMiss(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num);
 0x00431090 void PeopleControl(int16_t item_num);
 0x00431550 void PierreControl(int16_t item_num);
 0x00431C30 void ApeVault(int16_t item_num, int16_t angle);
@@ -670,7 +670,7 @@
 0x0043BB30 void InitialiseWarrior2(int16_t item_num);
 0x0043BB60 void FlyerControl(int16_t item_num);
 0x0043C1C0 void ControlMissile(int16_t fx_num);
-0x0043C430 int16_t ShardGun(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot, int16_t room_num);
+0x0043C430 int16_t ShardGun(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num);
 0x0043C540 int16_t RocketGun(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num);
 0x0043C650 void InitialiseMummy(int16_t item_num);
 0x0043C690 void MummyControl(int16_t item_num);
@@ -834,6 +834,7 @@
 0x00459F24 float DDrawSurfaceMinX;
 0x00459F28 int32_t HWR_IsTextureMode;
 0x00459F34 int32_t HWR_IsRendering;
+0x00459F38 BOOL HWR_IsPaletteActive;
 0x00459F40 int32_t CinematicFrameCount;
 0x00459F44 int32_t ChunkyFlag;
 0x00459F48 int32_t HeightType;
@@ -918,7 +919,7 @@
 0x0045B994 uint32_t MCIDeviceID;
 0x0045B998 KEYSTUFF* KeyData;
 0x0045B9A0 int32_t JoyHat;
-0x0045B9C0 SAVEGAME_INFO SaveGame[2];
+0x0045B9C0 SAVEGAME_INFO SaveGame[1];
 0x0045E328 int16_t PierreItem;
 0x0045E32C char* GameAllocMemPointer;
 0x0045E330 uint32_t GameAllocMemUsed;
@@ -992,6 +993,7 @@
 0x00462D98 uint16_t* Overlap;
 0x00462D9C BOX_INFO* Boxes;
 0x00462DA0 int32_t NumberBoxes;
+0x00462DC0 C3D_PALETTENTRY ATIPalette[256];
 0x004634E0 LPDIRECTDRAWSURFACE TextureCacheSurfaces[16];
 0x00463564 void* Surface1DrawPtr;
 0x00463568 int32_t HWR_OldIsRendering;
@@ -1001,6 +1003,7 @@
 0x00463608 LPDIRECTDRAWSURFACE Surface4;
 0x0046360C int32_t IsTextureCacheAvailable;
 0x00463610 int32_t IsHardwareRenderer;
+0x00463614 C3D_COLOR ATIChromaKey;
 0x0046361C uint32_t VideoMemoryAvailable;
 0x005DA6A4 LPDIRECTDRAWSURFACE Surface1;
 0x005DA6C0 LPDIRECTDRAWSURFACE TextureSurfaces[32];
