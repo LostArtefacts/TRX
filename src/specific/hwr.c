@@ -24,6 +24,35 @@ typedef struct HWR_LIGHTNING {
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
+static void HWR_EnableTextureMode(void);
+static void HWR_DisableTextureMode(void);
+
+static void HWR_EnableTextureMode(void)
+{
+    BOOL enable;
+
+    if (HWR_IsTextureMode) {
+        return;
+    }
+
+    HWR_IsTextureMode = 1;
+    enable = TRUE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
+
+static void HWR_DisableTextureMode(void)
+{
+    BOOL enable;
+
+    if (!HWR_IsTextureMode) {
+        return;
+    }
+
+    HWR_IsTextureMode = 0;
+    enable = FALSE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
+
 void HWR_CheckError(HRESULT result)
 {
     if (result != DD_OK) {
@@ -279,7 +308,6 @@ void HWR_DrawSprite(
     C3D_FLOAT32 t5;
     C3D_FLOAT32 vz;
     C3D_FLOAT32 vshade;
-    int32_t tmp;
     int32_t vertex_count;
     PHD_SPRITE *sprite;
     C3D_VTCF vertices[10];
@@ -355,11 +383,7 @@ void HWR_DrawSprite(
     }
 
     if (HWR_TextureLoaded[sprite->tpage]) {
-        if (!HWR_IsTextureMode) {
-            tmp = 1;
-            ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-            HWR_IsTextureMode = 1;
-        }
+        HWR_EnableTextureMode();
         HWR_SelectTexture(sprite->tpage);
     }
 
@@ -517,6 +541,7 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
 {
     // needs to be more than 8 cause clipping might return more polygons.
     C3D_VTCF vertices[30];
+    int32_t tmp;
     int32_t vertex_count = 8;
 
     for (int i = 0; i < vertex_count; i++) {
@@ -539,13 +564,7 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
         return;
     }
 
-    int32_t tmp;
-
-    if (HWR_IsTextureMode) {
-        tmp = FALSE;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     tmp = C3D_EASRC_SRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
@@ -1197,15 +1216,10 @@ void HWR_SetupRenderContextAndRender()
 const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[3];
     int32_t color;
 
-    if (HWR_IsTextureMode) {
-        tmp = 0;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1222,15 +1236,10 @@ const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[4];
     int32_t color;
 
-    if (HWR_IsTextureMode) {
-        tmp = 0;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1249,15 +1258,10 @@ const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[3];
     PHD_TEXTURE *tex;
 
-    if (!HWR_IsTextureMode) {
-        tmp = 1;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 1;
-    }
+    HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1276,15 +1280,10 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[4];
     PHD_TEXTURE *tex;
 
-    if (!HWR_IsTextureMode) {
-        tmp = 1;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 1;
-    }
+    HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
