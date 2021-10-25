@@ -61,24 +61,24 @@
 0x00407827 void HWR_RenderBegin();
 0x0040783B void HWR_RenderEnd();
 0x00407862 void HWR_RenderToggle();
-# 0x0040787C HWR_GetSurfaceAndPitch
+0x0040787C void HWR_GetSurfaceAndPitch(LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch);
 # 0x00407911 HWR_SetupRenderContextAndRender2
 0x0040795F void HWR_SetupRenderContextAndRender();
 0x004079E9 void HWR_FlipPrimaryBuffer();
 0x00407A49 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
-# 0x00407A91 HWR_ReleaseSurfaces
+0x00407A91 void HWR_ReleaseSurfaces();
 0x00407BD2 int32_t HWR_SetHardwareVideoMode();
-# 0x00408005 HWR_InitialiseHardware
-# 0x00408323 HWR_ShutdownHardware
-# 0x0040834C HWR_PrepareFMV
-# 0x00408368 HWR_FMVDone
-# 0x0040837F HWR_FMVInit
+0x00408005 void HWR_InitialiseHardware();
+0x00408323 void HWR_ShutdownHardware();
+0x0040834C void HWR_PrepareFMV();
+0x00408368 void HWR_FMVDone();
+0x0040837F void HWR_FMVInit();
 # 0x00408409 sub_408409
 # 0x004084DE HWR_DownloadTextures
 # 0x004087EA HWR_SetPalette
 0x004089F4 void HWR_SwitchResolution();
 0x00408A70 void HWR_DumpScreen();
-# 0x00408AC7 HWR_ClearSurfaceDepth
+0x00408AC7 void HWR_ClearSurfaceDepth();
 0x00408B2C void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 0x00408B85 void HWR_CopyPicture();
 0x00408C3A void HWR_DownloadPicture();
@@ -87,21 +87,21 @@
 # 0x00408E41 sub_408E41
 0x00408E6D void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 # 0x00408ED8 sub_408ED8
-# 0x00408FF0 HWR_SelectTexture
+0x00408FF0 void HWR_SelectTexture(int tex_num);
 0x0040904D int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
-# 0x00409C0F sub_409C0F
-# 0x00409F44 HWR_InsertObjectG4
-# 0x0040A01D HWR_InsertObjectG3
+0x00409C0F void HWR_DrawFlatTriangle(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
+0x00409F44 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
+0x0040A01D const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
 # 0x0040A0C4 sub_40A0C4
 0x0040A6B1 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
-# 0x0040B510 sub_40B510
-# 0x0040BBE2 sub_40BBE2
-# 0x0040C25A HWR_InsertObjectGT4
-# 0x0040C34E HWR_InsertObjectGT3
+0x0040B510 void HWR_DrawTexturedTriangle(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t textype);
+0x0040BBE2 void HWR_DrawTexturedQuad(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage, uint16_t *u1, uint16_t *u2, uint16_t *u3, uint16_t *u4, uint16_t textype);
+0x0040C25A const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
+0x0040C34E const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
 # 0x0040C425 HWR_DrawSprite
 0x0040C7EE void HWR_Draw2DLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1, RGB888 color2);
 0x0040C8E7 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-# 0x0040CADB HWR_PrintShadow
+0x0040CADB void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
 # 0x0040CC5D HWR_RenderLightningSegment
 0x0040D056 void HWR_DrawLightningSegment(int x1, int y1, int z1, int thickness1, int x2, int y2, int z2, int thickness2);
 # 0x0040D0F7 HWR_InitPolyList
@@ -992,12 +992,16 @@
 0x00462D98 uint16_t* Overlap;
 0x00462D9C BOX_INFO* Boxes;
 0x00462DA0 int32_t NumberBoxes;
+0x004634E0 LPDIRECTDRAWSURFACE TextureCacheSurfaces[16];
 0x00463564 void* Surface1DrawPtr;
 0x00463568 int32_t HWR_OldIsRendering;
+0x00463580 C3D_PHTX ATITextureMap[32];
 0x00463600 HWND TombHWND;
 0x00463600 uint32_t TombHWND;
 0x00463608 LPDIRECTDRAWSURFACE Surface4;
+0x0046360C int32_t IsTextureCacheAvailable;
 0x00463610 int32_t IsHardwareRenderer;
+0x0046361C uint32_t VideoMemoryAvailable;
 0x005DA6A4 LPDIRECTDRAWSURFACE Surface1;
 0x005DA6C0 LPDIRECTDRAWSURFACE TextureSurfaces[32];
 0x005DA744 LPDIRECTDRAWSURFACE Surface3;
