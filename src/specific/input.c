@@ -322,8 +322,7 @@ EnumAxesCallback(const LPDIDEVICEOBJECTINSTANCE instance, LPVOID context)
     if (FAILED(IDirectInputDevice8_SetProperty(
             IDID_Joystick, DIPROP_RANGE, &propRange.diph))) {
         LOG_ERROR(
-            "Error while calling IDirectInputDevice8_SetProperty: 0x%lx",
-            result);
+            "Error while calling IDirectInputDevice8_SetProperty");
         return DIENUM_STOP;
     }
 
