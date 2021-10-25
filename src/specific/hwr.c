@@ -345,67 +345,62 @@ void HWR_DrawSprite(
     int32_t vertex_count;
     PHD_SPRITE *sprite;
     C3D_VTCF vertices[10];
-    C3D_VTCF *vertex;
     float multiplier;
 
     multiplier = 0.0625f * T1MConfig.brightness;
 
-    vertex = &vertices[0];
     sprite = &PhdSpriteInfo[sprnum];
-    vshade = (8192.0 - (float)shade) * multiplier;
+    vshade = (8192.0f - shade) * multiplier;
     if (vshade >= 256.0f) {
         vshade = 255.0f;
     }
 
-    t1 = (double)(uint8_t)sprite->offset + 0.5;
-    t2 = (double)((int)sprite->offset >> 8) + 0.5;
-    t3 = (double)((int)sprite->width >> 8) + t1;
-    t4 = (double)((int)sprite->height >> 8) + t2;
-    vz = (double)z * 0.0001;
-    t5 = 65536.0 / (double)z;
+    t1 = ((int)sprite->offset & 0xFF) + 0.5f;
+    t2 = ((int)sprite->offset >> 8) + 0.5f;
+    t3 = ((int)sprite->width >> 8) + t1;
+    t4 = ((int)sprite->height >> 8) + t2;
+    vz = z * 0.0001f;
+    t5 = 65536.0f / z;
 
-    vertex->x = x1;
-    vertex->y = y1;
-    vertex->z = vz;
-    vertex->s = t1 * t5 * 0.00390625;
-    vertex->t = t2 * t5 * 0.00390625;
-    vertex->w = t5;
-    vertex->r = vshade;
-    vertex->g = vshade;
-    vertex->b = vshade;
-    vertex++;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = vz;
+    vertices[0].s = t1 * t5 * 0.00390625f;
+    vertices[0].t = t2 * t5 * 0.00390625f;
+    vertices[0].w = t5;
+    vertices[0].r = vshade;
+    vertices[0].g = vshade;
+    vertices[0].b = vshade;
 
-    vertex->x = x2;
-    vertex->y = y1;
-    vertex->z = vz;
-    vertex->s = t3 * t5 * 0.00390625;
-    vertex->t = t2 * t5 * 0.00390625;
-    vertex->w = t5;
-    vertex->r = vshade;
-    vertex->g = vshade;
-    vertex->b = vshade;
-    vertex++;
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = vz;
+    vertices[1].s = t3 * t5 * 0.00390625f;
+    vertices[1].t = t2 * t5 * 0.00390625f;
+    vertices[1].w = t5;
+    vertices[1].r = vshade;
+    vertices[1].g = vshade;
+    vertices[1].b = vshade;
 
-    vertex->x = x2;
-    vertex->y = y2;
-    vertex->z = vz;
-    vertex->s = t3 * t5 * 0.00390625;
-    vertex->t = t4 * t5 * 0.00390625;
-    vertex->w = t5;
-    vertex->r = vshade;
-    vertex->g = vshade;
-    vertex->b = vshade;
-    vertex++;
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = vz;
+    vertices[2].s = t3 * t5 * 0.00390625f;
+    vertices[2].t = t4 * t5 * 0.00390625f;
+    vertices[2].w = t5;
+    vertices[2].r = vshade;
+    vertices[2].g = vshade;
+    vertices[2].b = vshade;
 
-    vertex->x = x1;
-    vertex->y = y2;
-    vertex->z = vz;
-    vertex->s = t1 * t5 * 0.00390625;
-    vertex->t = t4 * t5 * 0.00390625;
-    vertex->w = t5;
-    vertex->r = vshade;
-    vertex->g = vshade;
-    vertex->b = vshade;
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = vz;
+    vertices[3].s = t1 * t5 * 0.00390625f;
+    vertices[3].t = t4 * t5 * 0.00390625f;
+    vertices[3].w = t5;
+    vertices[3].r = vshade;
+    vertices[3].g = vshade;
+    vertices[3].b = vshade;
 
     vertex_count = 4;
     if (x1 < 0 || y1 < 0 || x2 > PhdWinWidth || y2 > PhdWinHeight) {
@@ -431,23 +426,23 @@ void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
 {
-    C3D_VTCF vertex[2];
+    C3D_VTCF vertices[2];
 
-    vertex[0].x = (float)x1;
-    vertex[0].y = (float)y1;
-    vertex[0].z = 0.0;
-    vertex[0].r = color1.r;
-    vertex[0].g = color1.g;
-    vertex[0].b = color1.b;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 0.0f;
+    vertices[0].r = color1.r;
+    vertices[0].g = color1.g;
+    vertices[0].b = color1.b;
 
-    vertex[1].x = (float)x2;
-    vertex[1].y = (float)y2;
-    vertex[1].z = 0.0;
-    vertex[1].r = color2.r;
-    vertex[1].g = color2.g;
-    vertex[1].b = color2.b;
+    vertices[1].x = x2;
+    vertices[1].y = y2;
+    vertices[1].z = 0.0f;
+    vertices[1].r = color2.r;
+    vertices[1].g = color2.g;
+    vertices[1].b = color2.b;
 
-    C3D_VTCF *v_list[2] = { &vertex[0], &vertex[1] };
+    C3D_VTCF *v_list[2] = { &vertices[0], &vertices[1] };
 
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
@@ -464,39 +459,39 @@ void HWR_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br)
 {
-    C3D_VTCF vertex[4];
+    C3D_VTCF vertices[4];
 
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = 1.0;
-    vertex[0].r = tl.r;
-    vertex[0].g = tl.g;
-    vertex[0].b = tl.b;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 1.0f;
+    vertices[0].r = tl.r;
+    vertices[0].g = tl.g;
+    vertices[0].b = tl.b;
 
-    vertex[1].x = x2;
-    vertex[1].y = y1;
-    vertex[1].z = 1.0;
-    vertex[1].r = tr.r;
-    vertex[1].g = tr.g;
-    vertex[1].b = tr.b;
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = 1.0f;
+    vertices[1].r = tr.r;
+    vertices[1].g = tr.g;
+    vertices[1].b = tr.b;
 
-    vertex[2].x = x2;
-    vertex[2].y = y2;
-    vertex[2].z = 1.0;
-    vertex[2].r = br.r;
-    vertex[2].g = br.g;
-    vertex[2].b = br.b;
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = 1.0f;
+    vertices[2].r = br.r;
+    vertices[2].g = br.g;
+    vertices[2].b = br.b;
 
-    vertex[3].x = x1;
-    vertex[3].y = y2;
-    vertex[3].z = 1.0;
-    vertex[3].r = bl.r;
-    vertex[3].g = bl.g;
-    vertex[3].b = bl.b;
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = 1.0f;
+    vertices[3].r = bl.r;
+    vertices[3].g = bl.g;
+    vertices[3].b = bl.b;
 
     HWR_DisableTextures();
 
-    HWR_RenderTriangleStrip(vertex, 4);
+    HWR_RenderTriangleStrip(vertices, 4);
 }
 
 void HWR_DisableTextures()
@@ -511,35 +506,39 @@ void HWR_DisableTextures()
 
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
-    C3D_VTCF vertex[4];
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = 1.0;
-    vertex[0].b = 0.0;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].a = 128.0;
-    vertex[1].x = x2;
-    vertex[1].y = y1;
-    vertex[1].z = 1.0;
-    vertex[1].b = 0.0;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].a = 128.0;
-    vertex[2].x = x2;
-    vertex[2].y = y2;
-    vertex[2].z = 1.0;
-    vertex[2].b = 0.0;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].a = 128.0;
-    vertex[3].x = x1;
-    vertex[3].y = y2;
-    vertex[3].z = 1.0;
-    vertex[3].b = 0.0;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].a = 128.0;
+    C3D_VTCF vertices[4];
+
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 1.0f;
+    vertices[0].b = 0.0f;
+    vertices[0].g = 0.0f;
+    vertices[0].r = 0.0f;
+    vertices[0].a = 128.0f;
+
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = 1.0f;
+    vertices[1].b = 0.0f;
+    vertices[1].g = 0.0f;
+    vertices[1].r = 0.0f;
+    vertices[1].a = 128.0f;
+
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = 1.0f;
+    vertices[2].b = 0.0f;
+    vertices[2].g = 0.0f;
+    vertices[2].r = 0.0f;
+    vertices[2].a = 128.0f;
+
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = 1.0f;
+    vertices[3].b = 0.0f;
+    vertices[3].g = 0.0f;
+    vertices[3].r = 0.0f;
+    vertices[3].a = 128.0f;
 
     HWR_DisableTextures();
 
@@ -548,7 +547,7 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 
-    HWR_RenderTriangleStrip(vertex, 4);
+    HWR_RenderTriangleStrip(vertices, 4);
 
     alpha_src = 1;
     alpha_dst = 0;
@@ -583,11 +582,11 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
         vertex->y = vbuf->ys;
-        vertex->z = vbuf->zv * 0.0001 - 16.0;
-        vertex->b = 0.0;
-        vertex->g = 0.0;
-        vertex->r = 0.0;
-        vertex->a = 128.0;
+        vertex->z = vbuf->zv * 0.0001f - 16.0f;
+        vertex->b = 0.0f;
+        vertex->g = 0.0f;
+        vertex->r = 0.0f;
+        vertex->a = 128.0f;
     }
 
     if (clip) {
@@ -615,7 +614,7 @@ void HWR_RenderLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
     int32_t z2, int thickness2)
 {
-    C3D_VTCF vertex[4];
+    C3D_VTCF vertices[4];
 
     HWR_DisableTextures();
 
@@ -623,78 +622,78 @@ void HWR_RenderLightningSegment(
     int32_t alpha_dst = 5;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].b = 255.0;
-    vertex[0].a = 128.0;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = z1 * 0.0001f;
+    vertices[0].g = 0.0f;
+    vertices[0].r = 0.0f;
+    vertices[0].b = 255.0f;
+    vertices[0].a = 128.0f;
 
-    vertex[1].x = thickness1 / 2 + x1;
-    vertex[1].y = vertex[0].y;
-    vertex[1].z = vertex[0].z;
-    vertex[1].b = 255.0;
-    vertex[1].g = 255.0;
-    vertex[1].r = 255.0;
-    vertex[1].a = 128.0;
+    vertices[1].x = thickness1 / 2 + x1;
+    vertices[1].y = vertices[0].y;
+    vertices[1].z = vertices[0].z;
+    vertices[1].b = 255.0f;
+    vertices[1].g = 255.0f;
+    vertices[1].r = 255.0f;
+    vertices[1].a = 128.0f;
 
-    vertex[2].x = (float)(thickness2 / 2 + x2);
-    vertex[2].y = (float)y2;
-    vertex[2].z = (double)z2 * 0.0001;
-    vertex[2].b = 255.0;
-    vertex[2].g = 255.0;
-    vertex[2].r = 255.0;
-    vertex[2].a = 128.0;
+    vertices[2].x = thickness2 / 2 + x2;
+    vertices[2].y = y2;
+    vertices[2].z = z2 * 0.0001f;
+    vertices[2].b = 255.0f;
+    vertices[2].g = 255.0f;
+    vertices[2].r = 255.0f;
+    vertices[2].a = 128.0f;
 
-    vertex[3].x = (float)x2;
-    vertex[3].y = vertex[2].y;
-    vertex[3].z = vertex[2].z;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].b = 255.0;
-    vertex[3].a = 128.0;
+    vertices[3].x = x2;
+    vertices[3].y = vertices[2].y;
+    vertices[3].z = vertices[2].z;
+    vertices[3].g = 0.0f;
+    vertices[3].r = 0.0f;
+    vertices[3].b = 255.0f;
+    vertices[3].a = 128.0f;
 
-    int num = HWR_ClipVertices(4, vertex);
+    int num = HWR_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertices, num);
     }
 
-    vertex[0].x = thickness1 / 2 + x1;
-    vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001;
-    vertex[0].b = 255.0;
-    vertex[0].g = 255.0;
-    vertex[0].r = 255.0;
-    vertex[0].a = 128.0;
+    vertices[0].x = thickness1 / 2 + x1;
+    vertices[0].y = y1;
+    vertices[0].z = z1 * 0.0001f;
+    vertices[0].b = 255.0f;
+    vertices[0].g = 255.0f;
+    vertices[0].r = 255.0f;
+    vertices[0].a = 128.0f;
 
-    vertex[1].x = thickness1 + x1;
-    vertex[1].y = vertex[0].y;
-    vertex[1].z = vertex[0].z;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].b = 255.0;
-    vertex[1].a = 128.0;
+    vertices[1].x = thickness1 + x1;
+    vertices[1].y = vertices[0].y;
+    vertices[1].z = vertices[0].z;
+    vertices[1].g = 0.0f;
+    vertices[1].r = 0.0f;
+    vertices[1].b = 255.0f;
+    vertices[1].a = 128.0f;
 
-    vertex[2].x = (thickness2 + x2);
-    vertex[2].y = y2;
-    vertex[2].z = z2 * 0.0001;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].b = 255.0;
-    vertex[2].a = 128.0;
+    vertices[2].x = (thickness2 + x2);
+    vertices[2].y = y2;
+    vertices[2].z = z2 * 0.0001f;
+    vertices[2].g = 0.0f;
+    vertices[2].r = 0.0f;
+    vertices[2].b = 255.0f;
+    vertices[2].a = 128.0f;
 
-    vertex[3].x = (thickness2 / 2 + x2);
-    vertex[3].y = vertex[2].y;
-    vertex[3].z = vertex[2].z;
-    vertex[3].b = 255.0;
-    vertex[3].g = 255.0;
-    vertex[3].r = 255.0;
-    vertex[3].a = 128.0;
+    vertices[3].x = (thickness2 / 2 + x2);
+    vertices[3].y = vertices[2].y;
+    vertices[3].z = vertices[2].z;
+    vertices[3].b = 255.0f;
+    vertices[3].g = 255.0f;
+    vertices[3].r = 255.0f;
+    vertices[3].a = 128.0f;
 
-    num = HWR_ClipVertices(4, vertex);
+    num = HWR_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertices, num);
     }
 
     alpha_src = 1;
@@ -1364,26 +1363,26 @@ void HWR_DrawFlatTriangle(
 
     divisor = (1.0f / T1MConfig.brightness) * 1024.0f;
 
-    light = (8192.0 - vn1->g) / divisor;
+    light = (8192.0f - vn1->g) / divisor;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
-    vertices[0].z = vn1->zv * 0.0001;
+    vertices[0].z = vn1->zv * 0.0001f;
     vertices[0].r = r * light;
     vertices[0].g = g * light;
     vertices[0].b = b * light;
 
-    light = (8192.0 - vn2->g) / divisor;
+    light = (8192.0f - vn2->g) / divisor;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
-    vertices[1].z = vn2->zv * 0.0001;
+    vertices[1].z = vn2->zv * 0.0001f;
     vertices[1].r = r * light;
     vertices[1].g = g * light;
     vertices[1].b = b * light;
 
-    light = (8192.0 - vn3->g) / divisor;
+    light = (8192.0f - vn3->g) / divisor;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
-    vertices[2].z = vn3->zv * 0.0001;
+    vertices[2].z = vn3->zv * 0.0001f;
     vertices[2].r = r * light;
     vertices[2].g = g * light;
     vertices[2].b = b * light;
@@ -1435,20 +1434,20 @@ void HWR_DrawTexturedTriangle(
         for (i = 0; i < 3; i++) {
             vertices[i].x = src_vbuf[i]->xs;
             vertices[i].y = src_vbuf[i]->ys;
-            vertices[i].z = src_vbuf[i]->zv * 0.0001;
+            vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
-            vertices[i].w = 65536.0 / (double)src_vbuf[i]->zv;
-            vertices[i].s = (double)((src_uv[i]->u1 & 0xFF00) + 127)
-                * 0.00390625 * vertices[i].w * 0.00390625;
-            vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127)
-                * 0.00390625 * vertices[i].w * 0.00390625;
+            vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+            vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
+                * vertices[i].w * 0.00390625f;
+            vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
+                * vertices[i].w * 0.00390625f;
 
             vertices[i].r = vertices[i].g = vertices[i].b =
-                (8192.0 - src_vbuf[i]->g) * multiplier;
+                (8192.0f - src_vbuf[i]->g) * multiplier;
 
             if (IsShadeEffect) {
-                vertices[i].r *= 0.6;
-                vertices[i].g *= 0.7;
+                vertices[i].r *= 0.6f;
+                vertices[i].g *= 0.7f;
             }
         }
 
@@ -1467,9 +1466,9 @@ void HWR_DrawTexturedTriangle(
             points[i].zv = src_vbuf[i]->zv;
             points[i].xs = src_vbuf[i]->xs;
             points[i].ys = src_vbuf[i]->ys;
-            points[i].g = (float)src_vbuf[i]->g;
-            points[i].u = (double)((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625;
-            points[i].v = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625;
+            points[i].g = src_vbuf[i]->g;
+            points[i].u = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f;
+            points[i].v = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f;
         }
 
         vertex_count = HWR_ZedClipper(3, points, vertices);
@@ -1543,20 +1542,20 @@ void HWR_DrawTexturedQuad(
     for (i = 0; i < 4; i++) {
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = src_vbuf[i]->zv * 0.0001;
+        vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
-        vertices[i].w = 65536.0 / (double)src_vbuf[i]->zv;
-        vertices[i].s = (double)((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625
-            * vertices[i].w * 0.00390625;
-        vertices[i].t = (double)((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625
-            * vertices[i].w * 0.00390625;
+        vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+        vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
+            * vertices[i].w * 0.00390625f;
+        vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
+            * vertices[i].w * 0.00390625f;
 
         vertices[i].r = vertices[i].g = vertices[i].b =
-            (8192.0 - src_vbuf[i]->g) * multiplier;
+            (8192.0f - src_vbuf[i]->g) * multiplier;
 
         if (IsShadeEffect) {
-            vertices[i].r *= 0.6;
-            vertices[i].g *= 0.7;
+            vertices[i].r *= 0.6f;
+            vertices[i].g *= 0.7f;
         }
     }
 
@@ -1603,18 +1602,18 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
                 + PhdCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
                 + PhdCenterY;
-            v->z = near_z * 0.0001;
+            v->z = near_z * 0.0001f;
 
-            v->w = 65536.0 / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625;
+            v->w = 65536.0f / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
 
             v->r = v->g = v->b =
-                (8192.0 - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
 
             if (IsShadeEffect) {
-                v->r *= 0.6;
-                v->g *= 0.7;
+                v->r *= 0.6f;
+                v->g *= 0.7f;
             }
             v++;
         }
@@ -1625,33 +1624,33 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
                 + PhdCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
                 + PhdCenterY;
-            v->z = near_z * 0.0001;
+            v->z = near_z * 0.0001f;
 
-            v->w = 65536.0 / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625;
+            v->w = 65536.0f / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
 
             v->r = v->g = v->b =
-                (8192.0 - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
             if (IsShadeEffect) {
-                v->r *= 0.6;
-                v->g *= 0.7;
+                v->r *= 0.6f;
+                v->g *= 0.7f;
             }
             v++;
         } else {
             v->x = pts0->xs;
             v->y = pts0->ys;
-            v->z = pts0->zv * 0.0001;
+            v->z = pts0->zv * 0.0001f;
 
-            v->w = 65536.0 / pts0->zv;
-            v->s = pts0->u * v->w * 0.00390625;
-            v->t = pts0->v * v->w * 0.00390625;
+            v->w = 65536.0f / pts0->zv;
+            v->s = pts0->u * v->w * 0.00390625f;
+            v->t = pts0->v * v->w * 0.00390625f;
 
-            v->r = v->g = v->b = (8192.0 - pts0->g) * multiplier;
+            v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
 
             if (IsShadeEffect) {
-                v->r *= 0.6;
-                v->g *= 0.7;
+                v->r *= 0.6f;
+                v->g *= 0.7f;
             }
             v++;
         }
