@@ -490,7 +490,7 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     int32_t xAdd = (x1 - x0) * size / 0x400;
     int32_t midZ = (z0 + z1) / 2;
     int32_t zAdd = (z1 - z0) * size / 0x400;
-    
+
     for (i = 0; i < ShadowInfo.vertex_count; ++i) {
         int32_t angle = (PHD_180 + i * PHD_360) / ShadowInfo.vertex_count;
         ShadowInfo.vertex[i].x =
