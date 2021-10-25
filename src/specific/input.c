@@ -87,9 +87,9 @@ static int8_t Key_(KEY_NUMBER number);
 
 static HRESULT DInputJoystickCreate();
 static void DInputJoystickRelease();
-static WINBOOL CALLBACK
+static BOOL CALLBACK
 EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
-static WINBOOL CALLBACK
+static BOOL CALLBACK
 EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context);
 
 void InputInit()
@@ -307,7 +307,7 @@ static void DInputJoystickRelease()
     }
 }
 
-static WINBOOL CALLBACK
+static BOOL CALLBACK
 EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
 {
     HRESULT result;
@@ -333,8 +333,7 @@ EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
     return DIENUM_CONTINUE;
 }
 
-static WINBOOL CALLBACK
-EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context)
+static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context)
 {
     HRESULT result;
 
