@@ -76,6 +76,20 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
 - added movable camera on W,A,S,D
+- added Xbox One Controller support
+    - Per Axis Dead Zone
+    - Left Stick = movement
+    - A = Jump/Select
+    - B = Roll/Deselect
+    - X = Action/Select
+    - Y = Look/Select
+    - LB = Walk
+    - RB = Draw Weapons
+    - Dpad Up = Draw Weapons
+    - Back = Option
+    - Start = Pause
+    - Right Stick = Camera Movement
+    - R3 = Reset Camera
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed input method to DirectInput
