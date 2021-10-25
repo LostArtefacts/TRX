@@ -1,6 +1,7 @@
 #include "specific/output.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -485,14 +486,12 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     int32_t z_mid = (z0 + z1) / 2;
 
     int32_t x_add = (x1 - x0) * size / 1024;
-    int32_t z_zdd = (z1 - z0) * size / 1024;
+    int32_t z_add = (z1 - z0) * size / 1024;
 
     for (i = 0; i < ShadowInfo.vertex_count; i++) {
         int32_t angle = (PHD_180 + i * PHD_360) / ShadowInfo.vertex_count;
-        ShadowInfo.vertex[i].x =
-            z_mid + (x_add * 2) * phd_sin(angle) / (PHD_ONE / 4);
-        ShadowInfo.vertex[i].z =
-            z_mid + (x_add * 2) * phd_cos(angle) / (PHD_ONE / 4);
+        ShadowInfo.vertex[i].x = x_mid + (x_add * 2) * phd_sin(angle) / PHD_90;
+        ShadowInfo.vertex[i].z = z_mid + (z_add * 2) * phd_cos(angle) / PHD_90;
         ShadowInfo.vertex[i].y = 0;
     }
 
