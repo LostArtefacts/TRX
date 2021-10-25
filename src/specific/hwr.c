@@ -278,14 +278,14 @@ void HWR_Draw2DLine(
 
     vertex[0].x = (float)x1;
     vertex[0].y = (float)y1;
-    vertex[0].z = 0.0f;
+    vertex[0].z = 0.0;
     vertex[0].r = color1.r;
     vertex[0].g = color1.g;
     vertex[0].b = color1.b;
 
     vertex[1].x = (float)x2;
     vertex[1].y = (float)y2;
-    vertex[1].z = 0.0f;
+    vertex[1].z = 0.0;
     vertex[1].r = color2.r;
     vertex[1].g = color2.g;
     vertex[1].b = color2.b;
@@ -311,28 +311,28 @@ void HWR_Draw2DQuad(
 
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = 1.0f;
+    vertex[0].z = 1.0;
     vertex[0].r = tl.r;
     vertex[0].g = tl.g;
     vertex[0].b = tl.b;
 
     vertex[1].x = x2;
     vertex[1].y = y1;
-    vertex[1].z = 1.0f;
+    vertex[1].z = 1.0;
     vertex[1].r = tr.r;
     vertex[1].g = tr.g;
     vertex[1].b = tr.b;
 
     vertex[2].x = x2;
     vertex[2].y = y2;
-    vertex[2].z = 1.0f;
+    vertex[2].z = 1.0;
     vertex[2].r = br.r;
     vertex[2].g = br.g;
     vertex[2].b = br.b;
 
     vertex[3].x = x1;
     vertex[3].y = y2;
-    vertex[3].z = 1.0f;
+    vertex[3].z = 1.0;
     vertex[3].r = bl.r;
     vertex[3].g = bl.g;
     vertex[3].b = bl.b;
@@ -357,32 +357,32 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     C3D_VTCF vertex[4];
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = 1.0f;
-    vertex[0].b = 0.0f;
-    vertex[0].g = 0.0f;
-    vertex[0].r = 0.0f;
-    vertex[0].a = 128.0f;
+    vertex[0].z = 1.0;
+    vertex[0].b = 0.0;
+    vertex[0].g = 0.0;
+    vertex[0].r = 0.0;
+    vertex[0].a = 128.0;
     vertex[1].x = x2;
     vertex[1].y = y1;
-    vertex[1].z = 1.0f;
-    vertex[1].b = 0.0f;
-    vertex[1].g = 0.0f;
-    vertex[1].r = 0.0f;
-    vertex[1].a = 128.0f;
+    vertex[1].z = 1.0;
+    vertex[1].b = 0.0;
+    vertex[1].g = 0.0;
+    vertex[1].r = 0.0;
+    vertex[1].a = 128.0;
     vertex[2].x = x2;
     vertex[2].y = y2;
-    vertex[2].z = 1.0f;
-    vertex[2].b = 0.0f;
-    vertex[2].g = 0.0f;
-    vertex[2].r = 0.0f;
-    vertex[2].a = 128.0f;
+    vertex[2].z = 1.0;
+    vertex[2].b = 0.0;
+    vertex[2].g = 0.0;
+    vertex[2].r = 0.0;
+    vertex[2].a = 128.0;
     vertex[3].x = x1;
     vertex[3].y = y2;
-    vertex[3].z = 1.0f;
-    vertex[3].b = 0.0f;
-    vertex[3].g = 0.0f;
-    vertex[3].r = 0.0f;
-    vertex[3].a = 128.0f;
+    vertex[3].z = 1.0;
+    vertex[3].b = 0.0;
+    vertex[3].g = 0.0;
+    vertex[3].r = 0.0;
+    vertex[3].a = 128.0;
 
     HWR_DisableTextures();
 
@@ -475,72 +475,72 @@ void HWR_RenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001f;
-    vertex[0].g = 0.0f;
-    vertex[0].r = 0.0f;
-    vertex[0].b = 255.0f;
-    vertex[0].a = 128.0f;
+    vertex[0].z = (double)z1 * 0.0001;
+    vertex[0].g = 0.0;
+    vertex[0].r = 0.0;
+    vertex[0].b = 255.0;
+    vertex[0].a = 128.0;
 
-    vertex[1].x = thickness1 / 2.0f + x1;
+    vertex[1].x = thickness1 / 2 + x1;
     vertex[1].y = vertex[0].y;
     vertex[1].z = vertex[0].z;
-    vertex[1].b = 255.0f;
-    vertex[1].g = 255.0f;
-    vertex[1].r = 255.0f;
-    vertex[1].a = 128.0f;
+    vertex[1].b = 255.0;
+    vertex[1].g = 255.0;
+    vertex[1].r = 255.0;
+    vertex[1].a = 128.0;
 
-    vertex[2].x = (float)(thickness2 / 2.0f + x2);
+    vertex[2].x = (float)(thickness2 / 2 + x2);
     vertex[2].y = (float)y2;
-    vertex[2].z = (double)z2 * 0.0001f;
-    vertex[2].b = 255.0f;
-    vertex[2].g = 255.0f;
-    vertex[2].r = 255.0f;
-    vertex[2].a = 128.0f;
+    vertex[2].z = (double)z2 * 0.0001;
+    vertex[2].b = 255.0;
+    vertex[2].g = 255.0;
+    vertex[2].r = 255.0;
+    vertex[2].a = 128.0;
 
     vertex[3].x = (float)x2;
     vertex[3].y = vertex[2].y;
     vertex[3].z = vertex[2].z;
-    vertex[3].g = 0.0f;
-    vertex[3].r = 0.0f;
-    vertex[3].b = 255.0f;
-    vertex[3].a = 128.0f;
+    vertex[3].g = 0.0;
+    vertex[3].r = 0.0;
+    vertex[3].b = 255.0;
+    vertex[3].a = 128.0;
 
     int num = HWR_ClipVertices(4, vertex);
     if (num) {
         HWR_RenderTriangleStrip(vertex, num);
     }
 
-    vertex[0].x = thickness1 / 2.0f + x1;
+    vertex[0].x = thickness1 / 2.0 + x1;
     vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001f;
-    vertex[0].b = 255.0f;
-    vertex[0].g = 255.0f;
-    vertex[0].r = 255.0f;
-    vertex[0].a = 128.0f;
+    vertex[0].z = (double)z1 * 0.0001;
+    vertex[0].b = 255.0;
+    vertex[0].g = 255.0;
+    vertex[0].r = 255.0;
+    vertex[0].a = 128.0;
 
     vertex[1].x = thickness1 + x1;
     vertex[1].y = vertex[0].y;
     vertex[1].z = vertex[0].z;
-    vertex[1].g = 0.0f;
-    vertex[1].r = 0.0f;
-    vertex[1].b = 255.0f;
-    vertex[1].a = 128.0f;
+    vertex[1].g = 0.0;
+    vertex[1].r = 0.0;
+    vertex[1].b = 255.0;
+    vertex[1].a = 128.0;
 
     vertex[2].x = (thickness2 + x2);
     vertex[2].y = y2;
-    vertex[2].z = z2 * 0.0001f;
-    vertex[2].g = 0.0f;
-    vertex[2].r = 0.0f;
-    vertex[2].b = 255.0f;
-    vertex[2].a = 128.0f;
+    vertex[2].z = z2 * 0.0001;
+    vertex[2].g = 0.0;
+    vertex[2].r = 0.0;
+    vertex[2].b = 255.0;
+    vertex[2].a = 128.0;
 
-    vertex[3].x = (thickness2 / 2.0f + x2);
+    vertex[3].x = (thickness2 / 2.0 + x2);
     vertex[3].y = vertex[2].y;
     vertex[3].z = vertex[2].z;
-    vertex[3].b = 255.0f;
-    vertex[3].g = 255.0f;
-    vertex[3].r = 255.0f;
-    vertex[3].a = 128.0f;
+    vertex[3].b = 255.0;
+    vertex[3].g = 255.0;
+    vertex[3].r = 255.0;
+    vertex[3].a = 128.0;
 
     num = HWR_ClipVertices(4, vertex);
     if (num) {
@@ -1238,7 +1238,7 @@ void HWR_DrawFlatTriangle(
     light = (8192.0 - (float)vn1->g) / divisor;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
-    vertices[0].z = vn1->zv * 0.0001f;
+    vertices[0].z = vn1->zv * 0.0001;
     vertices[0].r = r * light;
     vertices[0].g = g * light;
     vertices[0].b = b * light;
@@ -1246,7 +1246,7 @@ void HWR_DrawFlatTriangle(
     light = (8192.0 - (float)vn2->g) / divisor;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
-    vertices[1].z = vn2->zv * 0.0001f;
+    vertices[1].z = vn2->zv * 0.0001;
     vertices[1].r = r * light;
     vertices[1].g = g * light;
     vertices[1].b = b * light;
@@ -1254,7 +1254,7 @@ void HWR_DrawFlatTriangle(
     light = (8192.0 - (float)vn3->g) / divisor;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
-    vertices[2].z = vn3->zv * 0.0001f;
+    vertices[2].z = vn3->zv * 0.0001;
     vertices[2].r = r * light;
     vertices[2].g = g * light;
     vertices[2].b = b * light;
