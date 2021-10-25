@@ -310,7 +310,9 @@ static void DInputJoystickRelease()
 static BOOL CALLBACK
 EnumAxesCallback(const LPDIDEVICEOBJECTINSTANCE instance, LPVOID context)
 {
+    HRESULT result;
     DIPROPRANGE propRange;
+
     propRange.diph.dwSize = sizeof(DIPROPRANGE);
     propRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
     propRange.diph.dwHow = DIPH_BYID;
@@ -319,8 +321,9 @@ EnumAxesCallback(const LPDIDEVICEOBJECTINSTANCE instance, LPVOID context)
     propRange.lMax = 1024;
 
     // Set the range for the axis
-    if (FAILED(IDirectInputDevice8_SetProperty(
-            IDID_Joystick, DIPROP_RANGE, &propRange.diph))) {
+    if (FAILED(
+            result = IDirectInputDevice8_SetProperty(
+                IDID_Joystick, DIPROP_RANGE, &propRange.diph))) {
         LOG_ERROR(
             "Error while calling IDirectInputDevice8_SetProperty: 0x%lx",
             result);
