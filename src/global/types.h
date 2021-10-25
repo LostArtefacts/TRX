@@ -819,7 +819,7 @@ typedef enum RENDER_SETTINGS_FLAG {
     RSF_PERSPECTIVE = 1 << 0,
     RSF_BILINEAR = 1 << 1,
     RSF_FPS = 1 << 2,
-} APP_SETTINGS_FLAG;
+} RENDER_SETTINGS_FLAG;
 
 typedef enum COLL_TYPE {
     COLL_NONE = 0,
