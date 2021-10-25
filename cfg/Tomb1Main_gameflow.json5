@@ -488,6 +488,11 @@
         "KEYMAP_FLY_CHEAT": "Fly cheat",
         "KEYMAP_ITEM_CHEAT": "Item cheat",
         "KEYMAP_LEVEL_SKIP_CHEAT": "Level skip",
+        "KEYMAP_CAMERA_UP": "Camera Up",
+        "KEYMAP_CAMERA_DOWN": "Camera Down",
+        "KEYMAP_CAMERA_LEFT": "Camera Left",
+        "KEYMAP_CAMERA_RIGHT": "Camera Right",
+        "KEYMAP_CAMERA_RESET": "Reset Camera",
         "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
         "STATS_SECRETS_FMT": "SECRETS %d OF %d",
         "STATS_PICKUPS_FMT": "PICKUPS %d",
@@ -532,6 +537,6 @@
         "INV_ITEM_SOUND": "Sound",
         "INV_ITEM_CONTROLS": "Controls",
         "INV_ITEM_GAMMA": "Gamma",
-        "INV_ITEM_LARAS_HOME": "Lara's Home",
+        "INV_ITEM_LARAS_HOME": "Lara's Home"
     },
 }

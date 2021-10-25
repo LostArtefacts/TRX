@@ -1,5 +1,6 @@
 #include "specific/hwr.h"
 
+#include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/ati.h"
@@ -58,6 +59,29 @@ void HWR_RenderToggle()
     }
 }
 
+void HWR_GetSurfaceAndPitch(
+    LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch)
+{
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    result =
+        IDirectDrawSurface2_Lock(surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
+    HWR_CheckError(result);
+
+    if (out_surface) {
+        *out_surface = surface_desc.lpSurface;
+    }
+    if (out_pitch) {
+        *out_pitch = surface_desc.lPitch / 2;
+    }
+
+    result = IDirectDrawSurface2_Unlock(surface, surface_desc.lpSurface);
+    HWR_CheckError(result);
+}
+
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     DDBLTFX blt_fx;
@@ -68,10 +92,63 @@ void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
     HWR_CheckError(result);
 }
 
+void HWR_ReleaseSurfaces()
+{
+    int i;
+    HRESULT result;
+
+    if (Surface1) {
+        HWR_ClearSurface(Surface1);
+        HWR_ClearSurface(Surface2);
+
+        result = IDirectDrawSurface_Release(Surface1);
+        HWR_CheckError(result);
+        Surface1 = NULL;
+        Surface2 = NULL;
+    }
+
+    if (Surface4) {
+        result = IDirectDrawSurface_Release(Surface4);
+        HWR_CheckError(result);
+        Surface4 = NULL;
+    }
+
+    for (i = 0; i < 32; i++) {
+        if (TextureSurfaces[i]) {
+            result = IDirectDrawSurface_Release(TextureSurfaces[i]);
+            HWR_CheckError(result);
+            TextureSurfaces[i] = NULL;
+        }
+    }
+
+    if (Surface3) {
+        result = IDirectDrawSurface_Release(Surface3);
+        HWR_CheckError(result);
+        Surface3 = NULL;
+    }
+}
+
 void HWR_DumpScreen()
 {
     HWR_FlipPrimaryBuffer();
     HWR_SelectedTexture = -1;
+}
+
+void HWR_ClearSurfaceDepth()
+{
+    DDBLTFX bltfx;
+    HRESULT result;
+
+    HWR_RenderEnd();
+    HWR_ClearSurface(Surface2);
+
+    bltfx.dwSize = sizeof(bltfx);
+    bltfx.dwFillDepth = 0xFFFF;
+    result = IDirectDrawSurface_Blt(
+        Surface4, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_DEPTHFILL, &bltfx);
+    HWR_CheckError(result);
+
+    HWR_RenderToggle();
 }
 
 void HWR_FlipPrimaryBuffer()
@@ -110,7 +187,7 @@ void HWR_CopyPicture()
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
         HRESULT result =
-            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
 
@@ -135,7 +212,8 @@ void HWR_DownloadPicture()
             DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
-        result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, 0);
+        result =
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
 
@@ -171,6 +249,24 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
         ATI3DCIF_RenderPrimStrip(vertices, 3);
         left--;
     }
+}
+
+void HWR_SelectTexture(int tex_num)
+{
+    if (tex_num == HWR_SelectedTexture) {
+        return;
+    }
+
+    if (!ATITextureMap[tex_num]) {
+        ShowFatalError("ERROR: Attempt to select unloaded texture");
+    }
+
+    if (ATI3DCIF_ContextSetState(
+            ATIRenderContext, C3D_ERS_TMAP_SELECT, &ATITextureMap[tex_num])) {
+        LOG_ERROR("    Texture error");
+    }
+
+    HWR_SelectedTexture = tex_num;
 }
 
 void HWR_Draw2DLine(
@@ -317,6 +413,51 @@ void HWR_DrawLightningSegment(
     HWR_LightningCount++;
 }
 
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
+{
+    // needs to be more than 8 cause clipping might return more polygons.
+    C3D_VTCF vertices[30];
+    int32_t vertex_count = 8;
+
+    for (int i = 0; i < vertex_count; i++) {
+        C3D_VTCF *vertex = &vertices[i];
+        PHD_VBUF *vbuf = &vbufs[i];
+        vertex->x = vbuf->xs;
+        vertex->y = vbuf->ys;
+        vertex->z = vbuf->zv * 0.0001 - 16.0;
+        vertex->b = 0.0;
+        vertex->g = 0.0;
+        vertex->r = 0.0;
+        vertex->a = 128.0;
+    }
+
+    if (clip) {
+        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    int32_t tmp;
+
+    if (HWR_IsTextureMode) {
+        tmp = FALSE;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 0;
+    }
+
+    tmp = C3D_EASRC_SRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_INVSRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+    tmp = C3D_EASRC_ONE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_ZERO;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
+}
+
 void HWR_RenderLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
     int32_t z2, int thickness2)
@@ -412,7 +553,7 @@ void HWR_RenderLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
-    C3D_VTCF vertices[10];
+    C3D_VTCF vertices[20];
 
     C3D_VTCF *l = &source[num - 1];
     int j = 0;
@@ -780,7 +921,7 @@ int32_t HWR_SetHardwareVideoMode()
     surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE
         | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
     surface_desc.dwBackBufferCount = 1;
-    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, 0);
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, NULL);
     HWR_CheckError(result);
 
     HWR_ClearSurface(Surface1);
@@ -799,7 +940,7 @@ int32_t HWR_SetHardwareVideoMode()
     surface_desc.dwWidth = DDrawSurfaceWidth;
     surface_desc.dwHeight = DDrawSurfaceHeight;
     surface_desc.dwZBufferBitDepth = 16;
-    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface4, 0);
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface4, NULL);
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
@@ -815,7 +956,7 @@ int32_t HWR_SetHardwareVideoMode()
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
         result = IDirectDraw2_CreateSurface(
-            DDraw, &surface_desc, &TextureSurfaces[i], 0);
+            DDraw, &surface_desc, &TextureSurfaces[i], NULL);
         HWR_CheckError(result);
     }
 
@@ -846,6 +987,96 @@ int32_t HWR_SetHardwareVideoMode()
     return 1;
 }
 
+void HWR_InitialiseHardware()
+{
+    int32_t i;
+    int32_t tmp;
+    HRESULT result;
+
+    LOG_INFO("InitialiseHardware:");
+
+    IsHardwareRenderer = 0;
+
+    for (i = 0; i < 32; i++) {
+        ATITextureMap[i] = NULL;
+        TextureSurfaces[i] = NULL;
+    }
+
+    result = IDirectDraw_SetCooperativeLevel(
+        DDraw, TombHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
+    HWR_CheckError(result);
+
+    if (!HWR_SetHardwareVideoMode()) {
+        return;
+    }
+
+    IsHardwareRenderer = 1;
+
+    tmp = C3D_EV_VTCF;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_VERTEX_TYPE, &tmp);
+    tmp = C3D_EPRIM_TRI;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &tmp);
+    tmp = C3D_ESH_SMOOTH;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SHADE_MODE, &tmp);
+    tmp = C3D_ETL_MODULATE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_LIGHT, &tmp);
+    tmp = C3D_ETEXOP_CHROMAKEY;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_TEXOP, &tmp);
+    tmp = C3D_ETFILT_MINPNT_MAGPNT;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &tmp);
+    tmp = FALSE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_FOG_EN, &tmp);
+    tmp = TRUE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_DITHER_EN, &tmp);
+    tmp = C3D_EZCMP_LEQUAL;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_CMP_FNC, &tmp);
+    tmp = C3D_EZMODE_TESTON_WRITEZ;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_MODE, &tmp);
+    tmp = C3D_EPF_RGB1555;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PF, &tmp);
+
+    LOG_INFO("    Detected %dk video memory", 4096);
+    // NOTE: skipped dead code related to caching textures
+    LOG_INFO("    Complete, hardware ready");
+}
+
+void HWR_ShutdownHardware()
+{
+    LOG_INFO("ShutdownHardware:");
+    IsHardwareRenderer = 0;
+    LOG_INFO("    complete");
+}
+
+void HWR_PrepareFMV()
+{
+    LOG_INFO("HardwarePrepareFMV");
+    HWR_ClearSurfaceDepth();
+    HWR_ReleaseSurfaces();
+}
+
+void HWR_FMVDone()
+{
+    LOG_INFO("HardwareFMVDone");
+    HWR_SetHardwareVideoMode();
+}
+
+void HWR_FMVInit()
+{
+    DDSURFACEDESC surface_desc;
+    HRESULT result;
+
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    surface_desc.dwFlags = DDSD_CAPS;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE;
+    result = IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface1, NULL);
+    HWR_CheckError(result);
+
+    HWR_ClearSurface(Surface1);
+    IDirectDrawSurface_Release(Surface1);
+    Surface1 = NULL;
+}
+
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();
@@ -862,27 +1093,214 @@ void HWR_SetupRenderContextAndRender()
     HWR_RenderToggle();
 }
 
+const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[3];
+    int32_t color;
+
+    if (HWR_IsTextureMode) {
+        tmp = 0;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 0;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        color = *obj_ptr++;
+
+        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+    }
+
+    return obj_ptr;
+}
+
+const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[4];
+    int32_t color;
+
+    if (HWR_IsTextureMode) {
+        tmp = 0;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 0;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        vns[3] = &PhdVBuf[*obj_ptr++];
+        color = *obj_ptr++;
+
+        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        HWR_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+    }
+
+    return obj_ptr;
+}
+
+const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[3];
+    PHD_TEXTURE *tex;
+
+    if (!HWR_IsTextureMode) {
+        tmp = 1;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 1;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        tex = &PhdTextureInfo[*obj_ptr++];
+
+        HWR_DrawTexturedTriangle(
+            vns[0], vns[1], vns[2], tex->tpage, &tex->u1, &tex->u2, &tex->u3,
+            tex->drawtype);
+    }
+
+    return obj_ptr;
+}
+
+const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    int32_t tmp;
+    PHD_VBUF *vns[4];
+    PHD_TEXTURE *tex;
+
+    if (!HWR_IsTextureMode) {
+        tmp = 1;
+        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
+        HWR_IsTextureMode = 1;
+    }
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &PhdVBuf[*obj_ptr++];
+        vns[1] = &PhdVBuf[*obj_ptr++];
+        vns[2] = &PhdVBuf[*obj_ptr++];
+        vns[3] = &PhdVBuf[*obj_ptr++];
+        tex = &PhdTextureInfo[*obj_ptr++];
+
+        HWR_DrawTexturedQuad(
+            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->u1, &tex->u2,
+            &tex->u3, &tex->u4, tex->drawtype);
+    }
+
+    return obj_ptr;
+}
+
+void HWR_DrawFlatTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color)
+{
+    int32_t vertex_count;
+    C3D_VTCF vertices[8];
+    float r;
+    float g;
+    float b;
+    float light;
+    float divisor;
+
+    if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
+          && vn2->clip >= 0 && vn3->clip >= 0
+          && (vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                  - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+              >= 0)) {
+        return;
+    }
+
+    r = GamePalette[color].r;
+    g = GamePalette[color].g;
+    b = GamePalette[color].b;
+
+    if (IsShadeEffect) {
+        r *= 0.6f;
+        g *= 0.7f;
+    }
+
+    divisor = (1.0f / T1MConfig.brightness) * 1024;
+
+    light = (8192.0 - (float)vn1->g) / divisor;
+    vertices[0].x = vn1->xs;
+    vertices[0].y = vn1->ys;
+    vertices[0].z = vn1->zv * 0.0001;
+    vertices[0].r = r * light;
+    vertices[0].g = g * light;
+    vertices[0].b = b * light;
+
+    light = (8192.0 - (float)vn2->g) / divisor;
+    vertices[1].x = vn2->xs;
+    vertices[1].y = vn2->ys;
+    vertices[1].z = vn2->zv * 0.0001;
+    vertices[1].r = r * light;
+    vertices[1].g = g * light;
+    vertices[1].b = b * light;
+
+    light = (8192.0 - (float)vn3->g) / divisor;
+    vertices[2].x = vn3->xs;
+    vertices[2].y = vn3->ys;
+    vertices[2].z = vn3->zv * 0.0001;
+    vertices[2].r = r * light;
+    vertices[2].g = g * light;
+    vertices[2].b = b * light;
+
+    vertex_count = 3;
+    if (vn1->clip || vn2->clip || vn3->clip) {
+        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+    }
+    if (!vertex_count) {
+        return;
+    }
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
     INJECT(0x00407827, HWR_RenderBegin);
     INJECT(0x0040783B, HWR_RenderEnd);
     INJECT(0x00407862, HWR_RenderToggle);
+    INJECT(0x0040787C, HWR_GetSurfaceAndPitch);
     INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
     INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
     INJECT(0x00407A49, HWR_ClearSurface);
+    INJECT(0x00407A91, HWR_ReleaseSurfaces);
     INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
+    INJECT(0x00408005, HWR_InitialiseHardware);
+    INJECT(0x00408323, HWR_ShutdownHardware);
+    INJECT(0x0040834C, HWR_PrepareFMV);
+    INJECT(0x00408368, HWR_FMVDone);
+    INJECT(0x0040837F, HWR_FMVInit);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
+    INJECT(0x00408AC7, HWR_ClearSurfaceDepth);
     INJECT(0x00408B2C, HWR_BlitSurface);
     INJECT(0x00408B85, HWR_CopyPicture);
     INJECT(0x00408C3A, HWR_DownloadPicture);
     INJECT(0x00408E32, HWR_FadeWait);
     INJECT(0x00408E6D, HWR_RenderTriangleStrip);
+    INJECT(0x00408FF0, HWR_SelectTexture);
     INJECT(0x0040904D, HWR_ClipVertices);
+    INJECT(0x00409C0F, HWR_DrawFlatTriangle);
+    INJECT(0x00409F44, HWR_InsertObjectG4);
+    INJECT(0x0040A01D, HWR_InsertObjectG3);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040C25A, HWR_InsertObjectGT4);
+    INJECT(0x0040C34E, HWR_InsertObjectGT3);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
+    INJECT(0x0040CADB, HWR_PrintShadow);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
 }

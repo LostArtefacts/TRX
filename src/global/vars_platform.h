@@ -30,6 +30,7 @@
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
+#define ATITextureMap           ARRAY_(0x00463580, C3D_PHTX, [32])
 #define HWR_OldIsRendering      VAR_U_(0x00463568, int32_t)
 #define HWR_IsRendering         VAR_U_(0x00459F34, int32_t)
 #define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
