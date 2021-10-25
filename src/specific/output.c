@@ -474,11 +474,6 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 {
     int i;
 
-    ShadowInfo.x = 0;
-    ShadowInfo.y = 0;
-    ShadowInfo.z = 0;
-    ShadowInfo.radius = 0x7FFF;
-    ShadowInfo.poly_count = 1;
     ShadowInfo.vertex_count = T1MConfig.enable_round_shadow ? 32 : 8;
 
     int32_t x0 = bptr[FRAME_BOUND_MIN_X];
@@ -486,17 +481,18 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     int32_t z0 = bptr[FRAME_BOUND_MIN_Z];
     int32_t z1 = bptr[FRAME_BOUND_MAX_Z];
 
-    int32_t midX = (x0 + x1) / 2;
-    int32_t xAdd = (x1 - x0) * size / 0x400;
-    int32_t midZ = (z0 + z1) / 2;
-    int32_t zAdd = (z1 - z0) * size / 0x400;
+    int32_t x_mid = (x0 + x1) / 2;
+    int32_t z_mid = (z0 + z1) / 2;
 
-    for (i = 0; i < ShadowInfo.vertex_count; ++i) {
+    int32_t x_add = (x1 - x0) * size / 1024;
+    int32_t z_zdd = (z1 - z0) * size / 1024;
+
+    for (i = 0; i < ShadowInfo.vertex_count; i++) {
         int32_t angle = (PHD_180 + i * PHD_360) / ShadowInfo.vertex_count;
         ShadowInfo.vertex[i].x =
-            midX + (xAdd * 2) * phd_sin(angle) / (PHD_ONE / 4);
+            z_mid + (x_add * 2) * phd_sin(angle) / (PHD_ONE / 4);
         ShadowInfo.vertex[i].z =
-            midZ + (zAdd * 2) * phd_cos(angle) / (PHD_ONE / 4);
+            z_mid + (x_add * 2) * phd_cos(angle) / (PHD_ONE / 4);
         ShadowInfo.vertex[i].y = 0;
     }
 
