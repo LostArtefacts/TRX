@@ -516,7 +516,7 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         PHD_VBUF *vn2 = &PhdVBuf[1];
         PHD_VBUF *vn3 = &PhdVBuf[2];
 
-        if (!clip_and && clip_positive && VISIBLE(vn1,vn2,vn3)) {
+        if (!clip_and && clip_positive && VISIBLE(vn1, vn2, vn3)) {
             HWR_PrintShadow(
                 &PhdVBuf[0], clip_or ? 1 : 0, ShadowInfo.vertex_count);
         }
