@@ -359,6 +359,9 @@ typedef struct {
     C3D_BOOL bClampS;
     C3D_BOOL bClampT;
     C3D_BOOL bAlphaBlend;
+    // NOTE: this version of the structure mismatches the ATI technical
+    // reference manual, but is consistent with the assignments to u32Size
+    // member in TombATI.exe.
 } C3D_TMAP, *C3D_PTMAP;
 
 typedef enum {
