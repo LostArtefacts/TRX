@@ -244,21 +244,27 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         if (!strcmp(type_str, "start_game")) {
             seq->type = GFS_START_GAME;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "stop_game")) {
             seq->type = GFS_STOP_GAME;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "loop_game")) {
             seq->type = GFS_LOOP_GAME;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "start_cine")) {
             seq->type = GFS_START_CINE;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "stop_cine")) {
             seq->type = GFS_STOP_CINE;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "loop_cine")) {
             seq->type = GFS_LOOP_CINE;
             seq->data = (void *)level_num;
+
         } else if (!strcmp(type_str, "play_fmv")) {
             seq->type = GFS_PLAY_FMV;
             int tmp = json_object_get_number_int(
@@ -270,6 +276,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
 
@@ -309,6 +316,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             }
 
             seq->data = data;
+
         } else if (!strcmp(type_str, "level_stats")) {
             seq->type = GFS_LEVEL_STATS;
             int tmp = json_object_get_number_int(
@@ -320,8 +328,10 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "exit_to_title")) {
             seq->type = GFS_EXIT_TO_TITLE;
+
         } else if (!strcmp(type_str, "exit_to_level")) {
             seq->type = GFS_EXIT_TO_LEVEL;
             int tmp = json_object_get_number_int(
@@ -333,6 +343,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "exit_to_cine")) {
             seq->type = GFS_EXIT_TO_CINE;
             int tmp = json_object_get_number_int(
@@ -344,6 +355,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "set_cam_x")) {
             seq->type = GFS_SET_CAM_X;
             int tmp = json_object_get_number_int(
@@ -355,6 +367,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "set_cam_y")) {
             seq->type = GFS_SET_CAM_Y;
             int tmp = json_object_get_number_int(
@@ -366,6 +379,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "set_cam_z")) {
             seq->type = GFS_SET_CAM_Z;
             int tmp = json_object_get_number_int(
@@ -377,6 +391,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "set_cam_angle")) {
             seq->type = GFS_SET_CAM_ANGLE;
             int tmp = json_object_get_number_int(
@@ -388,12 +403,16 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "flip_map")) {
             seq->type = GFS_FLIP_MAP;
+
         } else if (!strcmp(type_str, "remove_guns")) {
             seq->type = GFS_REMOVE_GUNS;
+
         } else if (!strcmp(type_str, "remove_scions")) {
             seq->type = GFS_REMOVE_SCIONS;
+
         } else if (!strcmp(type_str, "play_synced_audio")) {
             seq->type = GFS_PLAY_SYNCED_AUDIO;
             int tmp = json_object_get_number_int(
@@ -405,6 +424,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return 0;
             }
             seq->data = (void *)tmp;
+
         } else if (!strcmp(type_str, "mesh_swap")) {
             seq->type = GFS_MESH_SWAP;
 
@@ -443,8 +463,10 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             }
 
             seq->data = swap_data;
+
         } else if (!strcmp(type_str, "fix_pyramid_secret")) {
             seq->type = GFS_FIX_PYRAMID_SECRET_TRIGGER;
+
         } else {
             LOG_ERROR("unknown sequence type %s", type_str);
             return 0;
