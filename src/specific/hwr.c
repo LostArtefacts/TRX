@@ -1,5 +1,6 @@
 #include "specific/hwr.h"
 
+#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
@@ -24,6 +25,35 @@ typedef struct HWR_LIGHTNING {
 
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
+
+static void HWR_EnableTextureMode(void);
+static void HWR_DisableTextureMode(void);
+
+static void HWR_EnableTextureMode(void)
+{
+    BOOL enable;
+
+    if (HWR_IsTextureMode) {
+        return;
+    }
+
+    HWR_IsTextureMode = 1;
+    enable = TRUE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
+
+static void HWR_DisableTextureMode(void)
+{
+    BOOL enable;
+
+    if (!HWR_IsTextureMode) {
+        return;
+    }
+
+    HWR_IsTextureMode = 0;
+    enable = FALSE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
 
 void HWR_CheckError(HRESULT result)
 {
@@ -114,7 +144,7 @@ void HWR_ReleaseSurfaces()
         Surface4 = NULL;
     }
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (TextureSurfaces[i]) {
             result = IDirectDrawSurface_Release(TextureSurfaces[i]);
             HWR_CheckError(result);
@@ -127,6 +157,39 @@ void HWR_ReleaseSurfaces()
         HWR_CheckError(result);
         Surface3 = NULL;
     }
+}
+
+void HWR_SetPalette()
+{
+    int32_t i;
+
+    LOG_INFO("PaletteSetHardware:");
+
+    ATIPalette[0].r = 0;
+    ATIPalette[0].g = 0;
+    ATIPalette[0].b = 0;
+    ATIPalette[0].flags = C3D_LOAD_PALETTE_ENTRY;
+
+    for (i = 1; i < 256; i++) {
+        if (GamePalette[i].r || GamePalette[i].g || GamePalette[i].b) {
+            ATIPalette[i].r = 4 * GamePalette[i].r;
+            ATIPalette[i].g = 4 * GamePalette[i].g;
+            ATIPalette[i].b = 4 * GamePalette[i].b;
+        } else {
+            ATIPalette[i].r = 1;
+            ATIPalette[i].g = 1;
+            ATIPalette[i].b = 1;
+        }
+        ATIPalette[i].flags = C3D_LOAD_PALETTE_ENTRY;
+    }
+
+    ATIChromaKey.r = 0;
+    ATIChromaKey.g = 0;
+    ATIChromaKey.b = 0;
+    ATIChromaKey.a = 0;
+
+    HWR_IsPaletteActive = 1;
+    LOG_INFO("    complete");
 }
 
 void HWR_DumpScreen()
@@ -270,27 +333,117 @@ void HWR_SelectTexture(int tex_num)
     HWR_SelectedTexture = tex_num;
 }
 
+void HWR_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade)
+{
+    C3D_FLOAT32 t1;
+    C3D_FLOAT32 t2;
+    C3D_FLOAT32 t3;
+    C3D_FLOAT32 t4;
+    C3D_FLOAT32 t5;
+    C3D_FLOAT32 vz;
+    C3D_FLOAT32 vshade;
+    int32_t vertex_count;
+    PHD_SPRITE *sprite;
+    C3D_VTCF vertices[10];
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    sprite = &PhdSpriteInfo[sprnum];
+    vshade = (8192.0f - shade) * multiplier;
+    if (vshade >= 256.0f) {
+        vshade = 255.0f;
+    }
+
+    t1 = ((int)sprite->offset & 0xFF) + 0.5f;
+    t2 = ((int)sprite->offset >> 8) + 0.5f;
+    t3 = ((int)sprite->width >> 8) + t1;
+    t4 = ((int)sprite->height >> 8) + t2;
+    vz = z * 0.0001f;
+    t5 = 65536.0f / z;
+
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = vz;
+    vertices[0].s = t1 * t5 * 0.00390625f;
+    vertices[0].t = t2 * t5 * 0.00390625f;
+    vertices[0].w = t5;
+    vertices[0].r = vshade;
+    vertices[0].g = vshade;
+    vertices[0].b = vshade;
+
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = vz;
+    vertices[1].s = t3 * t5 * 0.00390625f;
+    vertices[1].t = t2 * t5 * 0.00390625f;
+    vertices[1].w = t5;
+    vertices[1].r = vshade;
+    vertices[1].g = vshade;
+    vertices[1].b = vshade;
+
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = vz;
+    vertices[2].s = t3 * t5 * 0.00390625f;
+    vertices[2].t = t4 * t5 * 0.00390625f;
+    vertices[2].w = t5;
+    vertices[2].r = vshade;
+    vertices[2].g = vshade;
+    vertices[2].b = vshade;
+
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = vz;
+    vertices[3].s = t1 * t5 * 0.00390625f;
+    vertices[3].t = t4 * t5 * 0.00390625f;
+    vertices[3].w = t5;
+    vertices[3].r = vshade;
+    vertices[3].g = vshade;
+    vertices[3].b = vshade;
+
+    vertex_count = 4;
+    if (x1 < 0 || y1 < 0 || x2 > PhdWinWidth || y2 > PhdWinHeight) {
+        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    if (HWR_TextureLoaded[sprite->tpage]) {
+        HWR_EnableTextureMode();
+        HWR_SelectTexture(sprite->tpage);
+    }
+
+    // NOTE: original .exe has some additional logic for the case when
+    // the requested texture page was not loaded.
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
 void HWR_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
 {
-    C3D_VTCF vertex[2];
+    C3D_VTCF vertices[2];
 
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = 0.0f;
-    vertex[0].r = color1.r;
-    vertex[0].g = color1.g;
-    vertex[0].b = color1.b;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 0.0f;
+    vertices[0].r = color1.r;
+    vertices[0].g = color1.g;
+    vertices[0].b = color1.b;
 
-    vertex[1].x = x2;
-    vertex[1].y = y2;
-    vertex[1].z = 0.0f;
-    vertex[1].r = color2.r;
-    vertex[1].g = color2.g;
-    vertex[1].b = color2.b;
+    vertices[1].x = x2;
+    vertices[1].y = y2;
+    vertices[1].z = 0.0f;
+    vertices[1].r = color2.r;
+    vertices[1].g = color2.g;
+    vertices[1].b = color2.b;
 
-    C3D_VTCF *v_list[2] = { &vertex[0], &vertex[1] };
+    C3D_VTCF *v_list[2] = { &vertices[0], &vertices[1] };
 
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
@@ -307,39 +460,39 @@ void HWR_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br)
 {
-    C3D_VTCF vertex[4];
+    C3D_VTCF vertices[4];
 
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = 1.0;
-    vertex[0].r = tl.r;
-    vertex[0].g = tl.g;
-    vertex[0].b = tl.b;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 1.0f;
+    vertices[0].r = tl.r;
+    vertices[0].g = tl.g;
+    vertices[0].b = tl.b;
 
-    vertex[1].x = x2;
-    vertex[1].y = y1;
-    vertex[1].z = 1.0;
-    vertex[1].r = tr.r;
-    vertex[1].g = tr.g;
-    vertex[1].b = tr.b;
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = 1.0f;
+    vertices[1].r = tr.r;
+    vertices[1].g = tr.g;
+    vertices[1].b = tr.b;
 
-    vertex[2].x = x2;
-    vertex[2].y = y2;
-    vertex[2].z = 1.0;
-    vertex[2].r = br.r;
-    vertex[2].g = br.g;
-    vertex[2].b = br.b;
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = 1.0f;
+    vertices[2].r = br.r;
+    vertices[2].g = br.g;
+    vertices[2].b = br.b;
 
-    vertex[3].x = x1;
-    vertex[3].y = y2;
-    vertex[3].z = 1.0;
-    vertex[3].r = bl.r;
-    vertex[3].g = bl.g;
-    vertex[3].b = bl.b;
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = 1.0f;
+    vertices[3].r = bl.r;
+    vertices[3].g = bl.g;
+    vertices[3].b = bl.b;
 
     HWR_DisableTextures();
 
-    HWR_RenderTriangleStrip(vertex, 4);
+    HWR_RenderTriangleStrip(vertices, 4);
 }
 
 void HWR_DisableTextures()
@@ -354,35 +507,39 @@ void HWR_DisableTextures()
 
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
-    C3D_VTCF vertex[4];
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = 1.0;
-    vertex[0].b = 0.0;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].a = 128.0;
-    vertex[1].x = x2;
-    vertex[1].y = y1;
-    vertex[1].z = 1.0;
-    vertex[1].b = 0.0;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].a = 128.0;
-    vertex[2].x = x2;
-    vertex[2].y = y2;
-    vertex[2].z = 1.0;
-    vertex[2].b = 0.0;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].a = 128.0;
-    vertex[3].x = x1;
-    vertex[3].y = y2;
-    vertex[3].z = 1.0;
-    vertex[3].b = 0.0;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].a = 128.0;
+    C3D_VTCF vertices[4];
+
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = 1.0f;
+    vertices[0].b = 0.0f;
+    vertices[0].g = 0.0f;
+    vertices[0].r = 0.0f;
+    vertices[0].a = 128.0f;
+
+    vertices[1].x = x2;
+    vertices[1].y = y1;
+    vertices[1].z = 1.0f;
+    vertices[1].b = 0.0f;
+    vertices[1].g = 0.0f;
+    vertices[1].r = 0.0f;
+    vertices[1].a = 128.0f;
+
+    vertices[2].x = x2;
+    vertices[2].y = y2;
+    vertices[2].z = 1.0f;
+    vertices[2].b = 0.0f;
+    vertices[2].g = 0.0f;
+    vertices[2].r = 0.0f;
+    vertices[2].a = 128.0f;
+
+    vertices[3].x = x1;
+    vertices[3].y = y2;
+    vertices[3].z = 1.0f;
+    vertices[3].b = 0.0f;
+    vertices[3].g = 0.0f;
+    vertices[3].r = 0.0f;
+    vertices[3].a = 128.0f;
 
     HWR_DisableTextures();
 
@@ -391,7 +548,7 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 
-    HWR_RenderTriangleStrip(vertex, 4);
+    HWR_RenderTriangleStrip(vertices, 4);
 
     alpha_src = 1;
     alpha_dst = 0;
@@ -419,6 +576,7 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     // needs to be more than 8 cause clipping might return more polygons.
     C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
     int i;
+    int32_t tmp;
 
     for (i = 0; i < vertex_count; i++) {
         C3D_VTCF *vertex = &vertices[i];
@@ -442,13 +600,7 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
         return;
     }
 
-    int32_t tmp;
-
-    if (HWR_IsTextureMode) {
-        tmp = FALSE;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     tmp = C3D_EASRC_SRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
@@ -465,7 +617,7 @@ void HWR_RenderLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
     int32_t z2, int thickness2)
 {
-    C3D_VTCF vertex[4];
+    C3D_VTCF vertices[4];
 
     HWR_DisableTextures();
 
@@ -473,78 +625,78 @@ void HWR_RenderLightningSegment(
     int32_t alpha_dst = 5;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
-    vertex[0].x = x1;
-    vertex[0].y = y1;
-    vertex[0].z = z1 * 0.0001f;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].b = 255.0;
-    vertex[0].a = 128.0;
+    vertices[0].x = x1;
+    vertices[0].y = y1;
+    vertices[0].z = z1 * 0.0001f;
+    vertices[0].g = 0.0f;
+    vertices[0].r = 0.0f;
+    vertices[0].b = 255.0f;
+    vertices[0].a = 128.0f;
 
-    vertex[1].x = thickness1 / 2.0f + x1;
-    vertex[1].y = vertex[0].y;
-    vertex[1].z = vertex[0].z;
-    vertex[1].b = 255.0;
-    vertex[1].g = 255.0;
-    vertex[1].r = 255.0;
-    vertex[1].a = 128.0;
+    vertices[1].x = thickness1 / 2 + x1;
+    vertices[1].y = vertices[0].y;
+    vertices[1].z = vertices[0].z;
+    vertices[1].b = 255.0f;
+    vertices[1].g = 255.0f;
+    vertices[1].r = 255.0f;
+    vertices[1].a = 128.0f;
 
-    vertex[2].x = thickness2 / 2.0f + x2;
-    vertex[2].y = y2;
-    vertex[2].z = z2 * 0.0001f;
-    vertex[2].b = 255.0;
-    vertex[2].g = 255.0;
-    vertex[2].r = 255.0;
-    vertex[2].a = 128.0;
+    vertices[2].x = thickness2 / 2 + x2;
+    vertices[2].y = y2;
+    vertices[2].z = z2 * 0.0001f;
+    vertices[2].b = 255.0f;
+    vertices[2].g = 255.0f;
+    vertices[2].r = 255.0f;
+    vertices[2].a = 128.0f;
 
-    vertex[3].x = x2;
-    vertex[3].y = vertex[2].y;
-    vertex[3].z = vertex[2].z;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].b = 255.0;
-    vertex[3].a = 128.0;
+    vertices[3].x = x2;
+    vertices[3].y = vertices[2].y;
+    vertices[3].z = vertices[2].z;
+    vertices[3].g = 0.0f;
+    vertices[3].r = 0.0f;
+    vertices[3].b = 255.0f;
+    vertices[3].a = 128.0f;
 
-    int num = HWR_ClipVertices(4, vertex);
+    int num = HWR_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertices, num);
     }
 
-    vertex[0].x = thickness1 / 2.0f + x1;
-    vertex[0].y = y1;
-    vertex[0].z = z1 * 0.0001f;
-    vertex[0].b = 255.0;
-    vertex[0].g = 255.0;
-    vertex[0].r = 255.0;
-    vertex[0].a = 128.0;
+    vertices[0].x = thickness1 / 2 + x1;
+    vertices[0].y = y1;
+    vertices[0].z = z1 * 0.0001f;
+    vertices[0].b = 255.0f;
+    vertices[0].g = 255.0f;
+    vertices[0].r = 255.0f;
+    vertices[0].a = 128.0f;
 
-    vertex[1].x = thickness1 + x1;
-    vertex[1].y = vertex[0].y;
-    vertex[1].z = vertex[0].z;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].b = 255.0;
-    vertex[1].a = 128.0;
+    vertices[1].x = thickness1 + x1;
+    vertices[1].y = vertices[0].y;
+    vertices[1].z = vertices[0].z;
+    vertices[1].g = 0.0f;
+    vertices[1].r = 0.0f;
+    vertices[1].b = 255.0f;
+    vertices[1].a = 128.0f;
 
-    vertex[2].x = (thickness2 + x2);
-    vertex[2].y = y2;
-    vertex[2].z = z2 * 0.0001f;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].b = 255.0;
-    vertex[2].a = 128.0;
+    vertices[2].x = (thickness2 + x2);
+    vertices[2].y = y2;
+    vertices[2].z = z2 * 0.0001f;
+    vertices[2].g = 0.0f;
+    vertices[2].r = 0.0f;
+    vertices[2].b = 255.0f;
+    vertices[2].a = 128.0f;
 
-    vertex[3].x = thickness2 / 2.0f + x2;
-    vertex[3].y = vertex[2].y;
-    vertex[3].z = vertex[2].z;
-    vertex[3].b = 255.0;
-    vertex[3].g = 255.0;
-    vertex[3].r = 255.0;
-    vertex[3].a = 128.0;
+    vertices[3].x = (thickness2 / 2 + x2);
+    vertices[3].y = vertices[2].y;
+    vertices[3].z = vertices[2].z;
+    vertices[3].b = 255.0f;
+    vertices[3].g = 255.0f;
+    vertices[3].r = 255.0f;
+    vertices[3].a = 128.0f;
 
-    num = HWR_ClipVertices(4, vertex);
+    num = HWR_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertex, num);
+        HWR_RenderTriangleStrip(vertices, num);
     }
 
     alpha_src = 1;
@@ -955,7 +1107,8 @@ int32_t HWR_SetHardwareVideoMode()
         surface_desc.dwFlags =
             DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
         surface_desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_VIDEOMEMORY;
-        surface_desc.ddpfPixelFormat.dwSize = 32;
+        surface_desc.ddpfPixelFormat.dwSize =
+            sizeof(surface_desc.ddpfPixelFormat);
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
         surface_desc.dwWidth = 256;
@@ -1002,7 +1155,7 @@ void HWR_InitialiseHardware()
 
     IsHardwareRenderer = 0;
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
         ATITextureMap[i] = NULL;
         TextureSurfaces[i] = NULL;
     }
@@ -1101,15 +1254,10 @@ void HWR_SetupRenderContextAndRender()
 const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[3];
     int32_t color;
 
-    if (HWR_IsTextureMode) {
-        tmp = 0;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1126,15 +1274,10 @@ const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[4];
     int32_t color;
 
-    if (HWR_IsTextureMode) {
-        tmp = 0;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 0;
-    }
+    HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1153,15 +1296,10 @@ const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[3];
     PHD_TEXTURE *tex;
 
-    if (!HWR_IsTextureMode) {
-        tmp = 1;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 1;
-    }
+    HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1170,8 +1308,8 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
         tex = &PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tpage, &tex->u1, &tex->u2, &tex->u3,
-            tex->drawtype);
+            vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
+            &tex->uv[2], tex->drawtype);
     }
 
     return obj_ptr;
@@ -1180,15 +1318,10 @@ const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
 const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
 {
     int32_t i;
-    int32_t tmp;
     PHD_VBUF *vns[4];
     PHD_TEXTURE *tex;
 
-    if (!HWR_IsTextureMode) {
-        tmp = 1;
-        ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &tmp);
-        HWR_IsTextureMode = 1;
-    }
+    HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &PhdVBuf[*obj_ptr++];
@@ -1198,8 +1331,8 @@ const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
         tex = &PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->u1, &tex->u2,
-            &tex->u3, &tex->u4, tex->drawtype);
+            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
+            &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
     }
 
     return obj_ptr;
@@ -1270,6 +1403,268 @@ void HWR_DrawFlatTriangle(
     HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
+void HWR_DrawTexturedTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
+    PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
+{
+    int32_t i;
+    int32_t vertex_count;
+    C3D_VTCF vertices[8];
+    POINT_INFO points[3];
+    PHD_VBUF *src_vbuf[4];
+    PHD_UV *src_uv[4];
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    src_vbuf[0] = vn1;
+    src_vbuf[1] = vn2;
+    src_vbuf[2] = vn3;
+
+    src_uv[0] = uv1;
+    src_uv[1] = uv2;
+    src_uv[2] = uv3;
+
+    if (vn3->clip & vn2->clip & vn1->clip) {
+        return;
+    }
+
+    if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
+        if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+            < 0) {
+            return;
+        }
+
+        for (i = 0; i < 3; i++) {
+            vertices[i].x = src_vbuf[i]->xs;
+            vertices[i].y = src_vbuf[i]->ys;
+            vertices[i].z = src_vbuf[i]->zv * 0.0001f;
+
+            vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+            vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
+                * vertices[i].w * 0.00390625f;
+            vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
+                * vertices[i].w * 0.00390625f;
+
+            vertices[i].r = vertices[i].g = vertices[i].b =
+                (8192.0f - src_vbuf[i]->g) * multiplier;
+
+            if (IsShadeEffect) {
+                vertices[i].r *= 0.6f;
+                vertices[i].g *= 0.7f;
+            }
+        }
+
+        vertex_count = 3;
+        if (vn1->clip || vn2->clip || vn3->clip) {
+            vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+        }
+    } else {
+        if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        for (i = 0; i < 3; i++) {
+            points[i].xv = src_vbuf[i]->xv;
+            points[i].yv = src_vbuf[i]->yv;
+            points[i].zv = src_vbuf[i]->zv;
+            points[i].xs = src_vbuf[i]->xs;
+            points[i].ys = src_vbuf[i]->ys;
+            points[i].g = src_vbuf[i]->g;
+            points[i].u = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f;
+            points[i].v = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f;
+        }
+
+        vertex_count = HWR_ZedClipper(3, points, vertices);
+        if (!vertex_count) {
+            return;
+        }
+        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    if (HWR_TextureLoaded[tpage]) {
+        HWR_EnableTextureMode();
+        HWR_SelectTexture(tpage);
+    }
+
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+}
+
+void HWR_DrawTexturedQuad(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
+{
+    int32_t i;
+    float multiplier;
+    C3D_VTCF vertices[4];
+    PHD_VBUF *src_vbuf[4];
+    PHD_UV *src_uv[4];
+
+    if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
+        if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
+            return;
+        }
+
+        if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
+            && vn4->clip >= 0) {
+            if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+                    - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+                < 0) {
+                return;
+            }
+        } else if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        HWR_DrawTexturedTriangle(vn1, vn2, vn3, tpage, uv1, uv2, uv3, textype);
+        HWR_DrawTexturedTriangle(vn3, vn4, vn1, tpage, uv3, uv4, uv1, textype);
+        return;
+    }
+
+    if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
+            - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
+        < 0) {
+        return;
+    }
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+
+    src_vbuf[0] = vn2;
+    src_vbuf[1] = vn1;
+    src_vbuf[2] = vn3;
+    src_vbuf[3] = vn4;
+
+    src_uv[0] = uv2;
+    src_uv[1] = uv1;
+    src_uv[2] = uv3;
+    src_uv[3] = uv4;
+
+    for (i = 0; i < 4; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = src_vbuf[i]->zv * 0.0001f;
+
+        vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+        vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
+            * vertices[i].w * 0.00390625f;
+        vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
+            * vertices[i].w * 0.00390625f;
+
+        vertices[i].r = vertices[i].g = vertices[i].b =
+            (8192.0f - src_vbuf[i]->g) * multiplier;
+
+        if (IsShadeEffect) {
+            vertices[i].r *= 0.6f;
+            vertices[i].g *= 0.7f;
+        }
+    }
+
+    if (HWR_TextureLoaded[tpage]) {
+        HWR_EnableTextureMode();
+        HWR_SelectTexture(tpage);
+    }
+
+    ATI3DCIF_RenderPrimStrip(vertices, 4);
+
+    // NOTE: original .exe has some additional logic for the case when
+    // the requested texture page was not loaded.
+}
+
+int32_t
+HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
+{
+    int32_t i;
+    int32_t count;
+    POINT_INFO *pts0;
+    POINT_INFO *pts1;
+    C3D_VTCF *v;
+    float clip;
+    float near_z;
+    float persp_o_near_z;
+    float multiplier;
+
+    multiplier = 0.0625f * T1MConfig.brightness;
+    near_z = PhdNearZ;
+    persp_o_near_z = PhdPersp / near_z;
+
+    v = &vertices[0];
+    pts0 = &pts[vertex_count - 1];
+    for (i = 0; i < vertex_count; i++) {
+        pts1 = pts0;
+        pts0 = &pts[i];
+        if (near_z > pts1->zv) {
+            if (near_z > pts0->zv) {
+                continue;
+            }
+
+            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
+            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
+                + PhdCenterX;
+            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
+                + PhdCenterY;
+            v->z = near_z * 0.0001f;
+
+            v->w = 65536.0f / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
+
+            v->r = v->g = v->b =
+                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+
+            if (IsShadeEffect) {
+                v->r *= 0.6f;
+                v->g *= 0.7f;
+            }
+            v++;
+        }
+
+        if (near_z > pts0->zv) {
+            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
+            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
+                + PhdCenterX;
+            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
+                + PhdCenterY;
+            v->z = near_z * 0.0001f;
+
+            v->w = 65536.0f / near_z;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
+
+            v->r = v->g = v->b =
+                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+            if (IsShadeEffect) {
+                v->r *= 0.6f;
+                v->g *= 0.7f;
+            }
+            v++;
+        } else {
+            v->x = pts0->xs;
+            v->y = pts0->ys;
+            v->z = pts0->zv * 0.0001f;
+
+            v->w = 65536.0f / pts0->zv;
+            v->s = pts0->u * v->w * 0.00390625f;
+            v->t = pts0->v * v->w * 0.00390625f;
+
+            v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
+
+            if (IsShadeEffect) {
+                v->r *= 0.6f;
+                v->g *= 0.7f;
+            }
+            v++;
+        }
+    }
+
+    count = v - vertices;
+    return count < 3 ? 0 : count;
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1287,6 +1682,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040834C, HWR_PrepareFMV);
     INJECT(0x00408368, HWR_FMVDone);
     INJECT(0x0040837F, HWR_FMVInit);
+    INJECT(0x004087EA, HWR_SetPalette);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);
     INJECT(0x00408AC7, HWR_ClearSurfaceDepth);
@@ -1300,9 +1696,13 @@ void T1MInjectSpecificHWR()
     INJECT(0x00409C0F, HWR_DrawFlatTriangle);
     INJECT(0x00409F44, HWR_InsertObjectG4);
     INJECT(0x0040A01D, HWR_InsertObjectG3);
+    INJECT(0x0040A0C4, HWR_ZedClipper);
     INJECT(0x0040A6B1, HWR_ClipVertices2);
+    INJECT(0x0040B510, HWR_DrawTexturedTriangle);
+    INJECT(0x0040BBE2, HWR_DrawTexturedQuad);
     INJECT(0x0040C25A, HWR_InsertObjectGT4);
     INJECT(0x0040C34E, HWR_InsertObjectGT3);
+    INJECT(0x0040C425, HWR_DrawSprite);
     INJECT(0x0040C7EE, HWR_Draw2DLine);
     INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
     INJECT(0x0040CADB, HWR_PrintShadow);
