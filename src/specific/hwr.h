@@ -47,7 +47,7 @@ void HWR_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br);
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count);
 void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2);

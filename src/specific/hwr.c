@@ -9,6 +9,7 @@
 #include "util.h"
 
 #include <stdlib.h>
+#include <assert.h>
 
 typedef struct HWR_LIGHTNING {
     int32_t x1;
@@ -277,14 +278,14 @@ void HWR_Draw2DLine(
 
     vertex[0].x = (float)x1;
     vertex[0].y = (float)y1;
-    vertex[0].z = 0.0;
+    vertex[0].z = 0.0f;
     vertex[0].r = color1.r;
     vertex[0].g = color1.g;
     vertex[0].b = color1.b;
 
     vertex[1].x = (float)x2;
     vertex[1].y = (float)y2;
-    vertex[1].z = 0.0;
+    vertex[1].z = 0.0f;
     vertex[1].r = color2.r;
     vertex[1].g = color2.g;
     vertex[1].b = color2.b;
@@ -310,28 +311,28 @@ void HWR_Draw2DQuad(
 
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = 1.0;
+    vertex[0].z = 1.0f;
     vertex[0].r = tl.r;
     vertex[0].g = tl.g;
     vertex[0].b = tl.b;
 
     vertex[1].x = x2;
     vertex[1].y = y1;
-    vertex[1].z = 1.0;
+    vertex[1].z = 1.0f;
     vertex[1].r = tr.r;
     vertex[1].g = tr.g;
     vertex[1].b = tr.b;
 
     vertex[2].x = x2;
     vertex[2].y = y2;
-    vertex[2].z = 1.0;
+    vertex[2].z = 1.0f;
     vertex[2].r = br.r;
     vertex[2].g = br.g;
     vertex[2].b = br.b;
 
     vertex[3].x = x1;
     vertex[3].y = y2;
-    vertex[3].z = 1.0;
+    vertex[3].z = 1.0f;
     vertex[3].r = bl.r;
     vertex[3].g = bl.g;
     vertex[3].b = bl.b;
@@ -356,32 +357,32 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     C3D_VTCF vertex[4];
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = 1.0;
-    vertex[0].b = 0.0;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].a = 128.0;
+    vertex[0].z = 1.0f;
+    vertex[0].b = 0.0f;
+    vertex[0].g = 0.0f;
+    vertex[0].r = 0.0f;
+    vertex[0].a = 128.0f;
     vertex[1].x = x2;
     vertex[1].y = y1;
-    vertex[1].z = 1.0;
-    vertex[1].b = 0.0;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].a = 128.0;
+    vertex[1].z = 1.0f;
+    vertex[1].b = 0.0f;
+    vertex[1].g = 0.0f;
+    vertex[1].r = 0.0f;
+    vertex[1].a = 128.0f;
     vertex[2].x = x2;
     vertex[2].y = y2;
-    vertex[2].z = 1.0;
-    vertex[2].b = 0.0;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].a = 128.0;
+    vertex[2].z = 1.0f;
+    vertex[2].b = 0.0f;
+    vertex[2].g = 0.0f;
+    vertex[2].r = 0.0f;
+    vertex[2].a = 128.0f;
     vertex[3].x = x1;
     vertex[3].y = y2;
-    vertex[3].z = 1.0;
-    vertex[3].b = 0.0;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].a = 128.0;
+    vertex[3].z = 1.0f;
+    vertex[3].b = 0.0f;
+    vertex[3].g = 0.0f;
+    vertex[3].r = 0.0f;
+    vertex[3].a = 128.0f;
 
     HWR_DisableTextures();
 
@@ -413,26 +414,28 @@ void HWR_DrawLightningSegment(
     HWR_LightningCount++;
 }
 
-void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
-    C3D_VTCF vertices[30];
-    int32_t vertex_count = 8;
+    C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
+    int i;
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (i = 0; i < vertex_count; i++) {
         C3D_VTCF *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
         vertex->y = vbuf->ys;
-        vertex->z = vbuf->zv * 0.0001 - 16.0;
-        vertex->b = 0.0;
-        vertex->g = 0.0;
-        vertex->r = 0.0;
-        vertex->a = 128.0;
+        vertex->z = vbuf->zv * 0.0001f - 16.0f;
+        vertex->b = 0.0f;
+        vertex->g = 0.0f;
+        vertex->r = 0.0f;
+        vertex->a = 128.0f;
     }
 
     if (clip) {
+        int original = vertex_count;
         vertex_count = HWR_ClipVertices(vertex_count, vertices);
+        assert(vertex_count < original * HWR_CLIP_VERTCOUNT_SCALE);
     }
 
     if (!vertex_count) {
@@ -472,72 +475,72 @@ void HWR_RenderLightningSegment(
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
     vertex[0].x = x1;
     vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001;
-    vertex[0].g = 0.0;
-    vertex[0].r = 0.0;
-    vertex[0].b = 255.0;
-    vertex[0].a = 128.0;
+    vertex[0].z = (double)z1 * 0.0001f;
+    vertex[0].g = 0.0f;
+    vertex[0].r = 0.0f;
+    vertex[0].b = 255.0f;
+    vertex[0].a = 128.0f;
 
-    vertex[1].x = thickness1 / 2 + x1;
+    vertex[1].x = thickness1 / 2.0f + x1;
     vertex[1].y = vertex[0].y;
     vertex[1].z = vertex[0].z;
-    vertex[1].b = 255.0;
-    vertex[1].g = 255.0;
-    vertex[1].r = 255.0;
-    vertex[1].a = 128.0;
+    vertex[1].b = 255.0f;
+    vertex[1].g = 255.0f;
+    vertex[1].r = 255.0f;
+    vertex[1].a = 128.0f;
 
-    vertex[2].x = (float)(thickness2 / 2 + x2);
+    vertex[2].x = (float)(thickness2 / 2.0f + x2);
     vertex[2].y = (float)y2;
-    vertex[2].z = (double)z2 * 0.0001;
-    vertex[2].b = 255.0;
-    vertex[2].g = 255.0;
-    vertex[2].r = 255.0;
-    vertex[2].a = 128.0;
+    vertex[2].z = (double)z2 * 0.0001f;
+    vertex[2].b = 255.0f;
+    vertex[2].g = 255.0f;
+    vertex[2].r = 255.0f;
+    vertex[2].a = 128.0f;
 
     vertex[3].x = (float)x2;
     vertex[3].y = vertex[2].y;
     vertex[3].z = vertex[2].z;
-    vertex[3].g = 0.0;
-    vertex[3].r = 0.0;
-    vertex[3].b = 255.0;
-    vertex[3].a = 128.0;
+    vertex[3].g = 0.0f;
+    vertex[3].r = 0.0f;
+    vertex[3].b = 255.0f;
+    vertex[3].a = 128.0f;
 
     int num = HWR_ClipVertices(4, vertex);
     if (num) {
         HWR_RenderTriangleStrip(vertex, num);
     }
 
-    vertex[0].x = thickness1 / 2 + x1;
+    vertex[0].x = thickness1 / 2.0f + x1;
     vertex[0].y = y1;
-    vertex[0].z = (double)z1 * 0.0001;
-    vertex[0].b = 255.0;
-    vertex[0].g = 255.0;
-    vertex[0].r = 255.0;
-    vertex[0].a = 128.0;
+    vertex[0].z = (double)z1 * 0.0001f;
+    vertex[0].b = 255.0f;
+    vertex[0].g = 255.0f;
+    vertex[0].r = 255.0f;
+    vertex[0].a = 128.0f;
 
     vertex[1].x = thickness1 + x1;
     vertex[1].y = vertex[0].y;
     vertex[1].z = vertex[0].z;
-    vertex[1].g = 0.0;
-    vertex[1].r = 0.0;
-    vertex[1].b = 255.0;
-    vertex[1].a = 128.0;
+    vertex[1].g = 0.0f;
+    vertex[1].r = 0.0f;
+    vertex[1].b = 255.0f;
+    vertex[1].a = 128.0f;
 
     vertex[2].x = (thickness2 + x2);
     vertex[2].y = y2;
-    vertex[2].z = z2 * 0.0001;
-    vertex[2].g = 0.0;
-    vertex[2].r = 0.0;
-    vertex[2].b = 255.0;
-    vertex[2].a = 128.0;
+    vertex[2].z = z2 * 0.0001f;
+    vertex[2].g = 0.0f;
+    vertex[2].r = 0.0f;
+    vertex[2].b = 255.0f;
+    vertex[2].a = 128.0f;
 
-    vertex[3].x = (thickness2 / 2 + x2);
+    vertex[3].x = (thickness2 / 2.0f + x2);
     vertex[3].y = vertex[2].y;
     vertex[3].z = vertex[2].z;
-    vertex[3].b = 255.0;
-    vertex[3].g = 255.0;
-    vertex[3].r = 255.0;
-    vertex[3].a = 128.0;
+    vertex[3].b = 255.0f;
+    vertex[3].g = 255.0f;
+    vertex[3].r = 255.0f;
+    vertex[3].a = 128.0f;
 
     num = HWR_ClipVertices(4, vertex);
     if (num) {
@@ -553,12 +556,14 @@ void HWR_RenderLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
-    C3D_VTCF vertices[20];
+    C3D_VTCF vertices[num * HWR_CLIP_VERTCOUNT_SCALE];
 
     C3D_VTCF *l = &source[num - 1];
     int j = 0;
+    int i = 0;
 
-    for (int i = 0; i < num; i++) {
+    for (i = 0; i < num; i++) {
+        assert(j < num * HWR_CLIP_VERTCOUNT_SCALE);
         C3D_VTCF *v1 = &vertices[j];
         C3D_VTCF *v2 = l;
         l = &source[i];
@@ -631,7 +636,7 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
     l = &vertices[j - 1];
     j = 0;
 
-    for (int i = 0; i < num; i++) {
+    for (i = 0; i < num; i++) {
         C3D_VTCF *v1 = &source[j];
         C3D_VTCF *v2 = l;
         l = &vertices[i];
@@ -1228,12 +1233,12 @@ void HWR_DrawFlatTriangle(
         g *= 0.7f;
     }
 
-    divisor = (1.0f / T1MConfig.brightness) * 1024;
+    divisor = (1.0f / T1MConfig.brightness) * 1024.0f;
 
     light = (8192.0 - (float)vn1->g) / divisor;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
-    vertices[0].z = vn1->zv * 0.0001;
+    vertices[0].z = vn1->zv * 0.0001f;
     vertices[0].r = r * light;
     vertices[0].g = g * light;
     vertices[0].b = b * light;
@@ -1241,7 +1246,7 @@ void HWR_DrawFlatTriangle(
     light = (8192.0 - (float)vn2->g) / divisor;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
-    vertices[1].z = vn2->zv * 0.0001;
+    vertices[1].z = vn2->zv * 0.0001f;
     vertices[1].r = r * light;
     vertices[1].g = g * light;
     vertices[1].b = b * light;
@@ -1249,7 +1254,7 @@ void HWR_DrawFlatTriangle(
     light = (8192.0 - (float)vn3->g) / divisor;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
-    vertices[2].z = vn3->zv * 0.0001;
+    vertices[2].z = vn3->zv * 0.0001f;
     vertices[2].r = r * light;
     vertices[2].g = g * light;
     vertices[2].b = b * light;
