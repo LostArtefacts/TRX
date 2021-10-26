@@ -1282,6 +1282,18 @@ typedef struct PHD_3DPOS {
     /* 0012 end */
 } PHD_3DPOS;
 
+typedef struct POINT_INFO {
+    /* 0000 */ float xv;
+    /* 0004 */ float yv;
+    /* 0008 */ float zv;
+    /* 000C */ float xs;
+    /* 0010 */ float ys;
+    /* 0014 */ float u;
+    /* 0018 */ float v;
+    /* 001C */ float g;
+    /* 0020 end */
+} POINT_INFO;
+
 typedef struct PHD_VBUF {
     /* 0000 */ int32_t xv;
     /* 0004 */ int32_t yv;
@@ -1296,17 +1308,16 @@ typedef struct PHD_VBUF {
     /* 0020 end */
 } PHD_VBUF;
 
+typedef struct PHD_UV {
+    /* 0000 */ uint16_t u1;
+    /* 0002 */ uint16_t v1;
+    /* 0004 end */
+} PHD_UV;
+
 typedef struct PHD_TEXTURE {
     /* 0000 */ uint16_t drawtype;
     /* 0002 */ uint16_t tpage;
-    /* 0004 */ uint16_t u1;
-    /* 0006 */ uint16_t v1;
-    /* 0008 */ uint16_t u2;
-    /* 000A */ uint16_t v2;
-    /* 000C */ uint16_t u3;
-    /* 000E */ uint16_t v3;
-    /* 0010 */ uint16_t u4;
-    /* 0012 */ uint16_t v4;
+    /* 0004 */ PHD_UV uv[4];
     /* 0014 end */
 } PHD_TEXTURE;
 

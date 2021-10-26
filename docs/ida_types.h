@@ -20,7 +20,7 @@ typedef unsigned char *C3D_PUINT8;
 typedef float *C3D_PFLOAT32;
 typedef void *C3D_PVOID;
 
-typedef enum {
+enum C3D_EC {
     C3D_EC_OK = 0,
     C3D_EC_GENFAIL = 1,
     C3D_EC_MEMALLOCFAIL = 2,
@@ -32,45 +32,43 @@ typedef enum {
     C3D_EC_CHIPCAPABILITY = 8,
     C3D_EC_NUM = 9,
     C3D_EC_FORCE_U32 = 0x7FFFFFFF
-} C3D_EC,
-    *C3D_PEC;
+};
+typedef enum C3D_EC *C3D_PEC;
 
-typedef struct {
+struct C3D_RECT {
     C3D_INT32 top;
     C3D_INT32 left;
     C3D_INT32 bottom;
     C3D_INT32 right;
-} C3D_RECT, *C3D_PRECT;
+};
+typedef struct C3D_RECT *C3D_PRECT;
 
-typedef union {
-    struct {
-        unsigned r : 8;
-        unsigned g : 8;
-        unsigned b : 8;
-        unsigned a : 8;
-    };
-    C3D_UINT32 u32All;
-} C3D_COLOR, *C3D_PCOLOR;
+struct C3D_COLOR {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+};
+typedef struct C3D_COLOR *C3D_PCOLOR;
 
 #define C3D_LOAD_PALETTE_ENTRY 0x40
 #define C3D_NO_LOAD_PALETTE_ENTRY 0x00
 
-typedef union {
-    struct {
-        unsigned r : 8;
-        unsigned g : 8;
-        unsigned b : 8;
-        unsigned flags : 8;
-    };
-    C3D_UINT32 u32All;
-} C3D_PALETTENTRY, *C3D_PPALETTENTRY;
+struct C3D_PALETTENTRY {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t flags;
+};
+typedef struct C3D_PALETTENTRY *C3D_PPALETTENTRY;
 
-typedef struct {
+struct C3D_CODEBOOKENTRY {
     C3D_UINT16 ul;
     C3D_UINT16 ur;
     C3D_UINT16 ll;
     C3D_UINT16 lr;
-} C3D_CODEBOOKENTRY, *C3D_PCODEBOOKENTRY;
+};
+typedef struct C3D_CODEBOOKENTRY *C3D_PCODEBOOKENTRY;
 
 #define C3D_CAPS1_BASE 0x00000000
 #define C3D_CAPS1_FOG 0x00000001
@@ -89,7 +87,7 @@ typedef struct {
 #define C3D_CAPS2_DESTINATION_ALPHA_BLEND 0x00000004
 #define C3D_CAPS2_TEXTURE_TILING 0x00000008
 
-typedef struct {
+struct C3D_3DCIFINFO {
     uint32_t u32Size;
     uint32_t u32FrameBuffBase;
     uint32_t u32OffScreenHeap;
@@ -102,23 +100,25 @@ typedef struct {
     uint32_t u32CIFCaps3;
     uint32_t u32CIFCaps4;
     uint32_t u32CIFCaps5;
-} C3D_3DCIFINFO, *PC3D_3DCIFINFO;
+};
+typedef struct C3D_3DCIFINFO *PC3D_3DCIFINFO;
 
-typedef enum {
+enum C3D_EVERTEX {
     C3D_EV_VTCF = 3,
     C3D_EV_TLVERTEX = 4,
     C3D_EV_NUM = 5,
     C3D_EV_FORCE_U32 = 0x7FFFFFFF
-} C3D_EVERTEX,
-    *C3D_PEVERTEX;
+};
+typedef enum C3D_EVERTEX *C3D_PEVERTEX;
 
-typedef struct {
+struct C3D_VTCF {
     C3D_FLOAT32 x, y, z;
     C3D_FLOAT32 s, t, w;
     C3D_FLOAT32 r, g, b, a;
-} C3D_VTCF, *C3D_PVTCF;
+};
+typedef struct C3D_VTCF *C3D_PVTCF;
 
-typedef struct {
+struct C3D_TLVERTEX {
     union {
         C3D_FLOAT32 sx;
         C3D_FLOAT32 x;
@@ -166,13 +166,13 @@ typedef struct {
         C3D_FLOAT32 tu;
         C3D_FLOAT32 tv;
     } composite;
-} C3D_TLVERTEX;
+};
 
 typedef void *C3D_VSTRIP;
 typedef void **C3D_VLIST;
 typedef void **C3D_PVARRAY;
 
-typedef enum {
+enum C3D_EPRIM {
     C3D_EPRIM_LINE = 0,
     C3D_EPRIM_TRI = 1,
     C3D_EPRIM_QUAD = 2,
@@ -180,20 +180,20 @@ typedef enum {
     C3D_EPRIM_POINT = 4,
     C3D_EPRIM_NUM = 5,
     C3D_EPRIM_FORCE_U32 = 0x7FFFFFFF
-} C3D_EPRIM,
-    *C3D_PEPRIM;
+};
+typedef enum C3D_EPRIM *C3D_PEPRIM;
 
-typedef enum {
+enum C3D_ESHADE {
     C3D_ESH_NONE = 0,
     C3D_ESH_SOLID = 1,
     C3D_ESH_FLAT = 2,
     C3D_ESH_SMOOTH = 3,
     C3D_ESH_NUM = 4,
     C3D_ESH_FORCE_U32 = 0x7FFFFFFF
-} C3D_ESHADE,
-    *C3D_PESHADE;
+};
+typedef enum C3D_ESHADE *C3D_PESHADE;
 
-typedef enum {
+enum C3D_EASRC {
     C3D_EASRC_ZERO = 0,
     C3D_EASRC_ONE = 1,
     C3D_EASRC_DSTCLR = 2,
@@ -204,10 +204,10 @@ typedef enum {
     C3D_EASRC_INVDSTALPHA = 7,
     C3D_EASRC_NUM = 8,
     C3D_EASRC_FORCE_U32 = 0x7FFFFFFF
-} C3D_EASRC,
-    *C3D_PEASRC;
+};
+typedef enum C3D_EASRC *C3D_PEASRC;
 
-typedef enum {
+enum C3D_EADST {
     C3D_EADST_ZERO = 0,
     C3D_EADST_ONE = 1,
     C3D_EADST_SRCCLR = 2,
@@ -218,10 +218,10 @@ typedef enum {
     C3D_EADST_INVDSTALPHA = 7,
     C3D_EADST_NUM = 8,
     C3D_EADST_FORCE_U32 = 0x7FFFFFFF
-} C3D_EADST,
-    *C3D_PEADST;
+};
+typedef enum C3D_EADST *C3D_PEADST;
 
-typedef enum {
+enum C3D_EASEL {
     C3D_EASEL_ZERO = 0,
     C3D_EASEL_ONE = 1,
     C3D_EASEL_SRCALPHA = 4,
@@ -229,10 +229,10 @@ typedef enum {
     C3D_EASEL_DSTALPHA = 6,
     C3D_EASEL_INVDSTALPHA = 7,
     C3D_EASEL_FORCE_U32 = 0x7FFFFFFF
-} C3D_EASEL,
-    *C3D_PEASEL;
+};
+typedef enum C3D_EASEL *C3D_PEASEL;
 
-typedef enum {
+enum C3D_EACMP {
     C3D_EACMP_NEVER = 0,
     C3D_EACMP_LESS = 1,
     C3D_EACMP_LEQUAL = 2,
@@ -243,24 +243,24 @@ typedef enum {
     C3D_EACMP_ALWAYS = 7,
     C3D_EACMP_MAX = 8,
     C3D_EACMP_FORCE_U32 = 0x7FFFFFFF
-} C3D_EACMP,
-    *C3D_PEACMP;
+};
+typedef enum C3D_EACMP *C3D_PEACMP;
 
-typedef enum {
+enum C3D_ETEXTILE {
     C3D_ETEXTILE_DEFAULT = 0,
     C3D_ETEXTILE_OFF = 1,
     C3D_ETEXTILE_ON = 2,
     C3D_ETEXTILE_MAX = 3,
     C3D_ETEXTILE_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETEXTILE,
-    *C3D_PETEXTILE;
+};
+typedef enum C3D_ETEXTILE *C3D_PETEXTILE;
 
 typedef void *C3D_HTX;
 typedef C3D_HTX *C3D_PHTX;
 typedef void *C3D_HTXPAL;
 typedef C3D_HTXPAL *C3D_PHTXPAL;
 
-typedef enum {
+enum C3D_ECI_TMAP_TYPE {
     C3D_ECI_TMAP_TRUE_COLOR = 0,
     C3D_ECI_TMAP_4BIT_HI = 1,
     C3D_ECI_TMAP_4BIT_LOW = 2,
@@ -268,18 +268,18 @@ typedef enum {
     C3D_ECI_TMAP_VQ = 4,
     C3D_ECI_TMAP_NUM = 5,
     C3D_ECI_TMAP_FORCE_U32 = 0x7FFFFFFF
-} C3D_ECI_TMAP_TYPE;
+};
 
-typedef enum {
+enum C3D_ETLIGHT {
     C3D_ETL_NONE = 0,
     C3D_ETL_MODULATE = 1,
     C3D_ETL_ALPHA_DECAL = 2,
     C3D_ETL_NUM = 3,
     C3D_ETL_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETLIGHT,
-    *C3D_PETLIGHT;
+};
+typedef enum C3D_ETLIGHT *C3D_PETLIGHT;
 
-typedef enum {
+enum C3D_ETPERSPCOR {
     C3D_ETPC_NONE = 0,
     C3D_ETPC_ONE = 1,
     C3D_ETPC_TWO = 2,
@@ -292,10 +292,10 @@ typedef enum {
     C3D_ETPC_NINE = 9,
     C3D_ETPC_NUM = 10,
     C3D_ETPC_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETPERSPCOR,
-    *C3D_PETPERSPCOR;
+};
+typedef enum C3D_ETPERSPCOR *C3D_PETPERSPCOR;
 
-typedef enum {
+enum C3D_ETEXFILTER {
     C3D_ETFILT_MINPNT_MAGPNT = 0,
     C3D_ETFILT_MINPNT_MAG2BY2 = 1,
     C3D_ETFILT_MIN2BY2_MAG2BY2 = 2,
@@ -305,20 +305,20 @@ typedef enum {
     C3D_ETFILT_MIN2BY2_MAGPNT = 6,
     C3D_ETFILT_NUM = 7,
     C3D_ETFILT_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETEXFILTER,
-    *C3D_PETEXFILTER;
+};
+typedef enum C3D_ETEXFILTER *C3D_PETEXFILTER;
 
-typedef enum {
+enum C3D_ETEXOP {
     C3D_ETEXOP_NONE = 0,
     C3D_ETEXOP_CHROMAKEY = 1,
     C3D_ETEXOP_ALPHA = 2,
     C3D_ETEXOP_ALPHA_MASK = 3,
     C3D_ETEXOP_NUM = 4,
     C3D_ETEXOP_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETEXOP,
-    *C3D_PETEXOP;
+};
+typedef enum C3D_ETEXOP *C3D_PETEXOP;
 
-typedef enum {
+enum C3D_EPIXFMT {
     C3D_EPF_RGB1555 = 3,
     C3D_EPF_RGB565 = 4,
     C3D_EPF_RGB8888 = 6,
@@ -326,10 +326,10 @@ typedef enum {
     C3D_EPF_Y8 = 8,
     C3D_EPF_YUV422 = 11,
     C3D_EPF_FORCE_U32 = 0x7FFFFFFF
-} C3D_EPIXFMT,
-    *C3D_PEPIXFMT;
+};
+typedef enum C3D_EPIXFMT *C3D_PEPIXFMT;
 
-typedef enum {
+enum C3D_ETEXFMT {
     C3D_ETF_CI4 = 1,
     C3D_ETF_CI8 = 2,
     C3D_ETF_RGB1555 = 3,
@@ -341,12 +341,12 @@ typedef enum {
     C3D_ETF_RGB4444 = 15,
     C3D_ETF_VQ = 20,
     C3D_ETF_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETEXFMT,
-    *C3D_PETEXFMT;
+};
+typedef enum C3D_ETEXFMT *C3D_PETEXFMT;
 
 #define cu32MAX_TMAP_LEV 11
 
-typedef struct {
+struct C3D_TMAP {
     C3D_UINT32 u32Size;
     C3D_BOOL bMipMap;
     C3D_PVOID apvLevels[cu32MAX_TMAP_LEV];
@@ -358,28 +358,28 @@ typedef struct {
     C3D_BOOL bClampS;
     C3D_BOOL bClampT;
     C3D_BOOL bAlphaBlend;
-    C3D_ETEXTILE eTexTiling;
-} C3D_TMAP, *C3D_PTMAP;
+};
+typedef C3D_TMAP *C3D_PTMAP;
 
-typedef enum {
+enum C3D_ETEXCOMPFCN {
     C3D_ETEXCOMPFCN_BLEND = 0,
     C3D_ETEXCOMPFCN_MOD = 1,
     C3D_ETEXCOMPFCN_ADD_SPEC = 2,
     C3D_ETEXCOMPFCN_MAX = 3,
     C3D_ETEXCOMPFCN_FORCE_U32 = 0x7FFFFFFF
-} C3D_ETEXCOMPFCN,
-    *C3D_PETEXCOMPFCN;
+};
+typedef enum C3D_ETEXCOMPFCN *C3D_PETEXCOMPFCN;
 
-typedef enum {
+enum C3D_EZMODE {
     C3D_EZMODE_OFF = 0,
     C3D_EZMODE_TESTON = 1,
     C3D_EZMODE_TESTON_WRITEZ = 2,
     C3D_EZMODE_MAX = 3,
     C3D_EZMODE_FORCE_U32 = 0x7FFFFFFF
-} C3D_EZMODE,
-    *C3D_PEZMODE;
+};
+typedef enum C3D_EZMODE *C3D_PEZMODE;
 
-typedef enum {
+enum C3D_EZCMP {
     C3D_EZCMP_NEVER = 0,
     C3D_EZCMP_LESS = 1,
     C3D_EZCMP_LEQUAL = 2,
@@ -390,13 +390,13 @@ typedef enum {
     C3D_EZCMP_ALWAYS = 7,
     C3D_EZCMP_MAX = 8,
     C3D_EZCMP_FORCE_U32 = 0x7FFFFFFF
-} C3D_EZCMP,
-    *C3D_PEZCMP;
+};
+typedef enum C3D_EZCMP *C3D_PEZCMP;
 
 typedef void *C3D_HRC;
 typedef void *C3D_PRSDATA;
 
-typedef enum {
+enum C3D_ERSID {
     C3D_ERS_FG_CLR = 0,
     C3D_ERS_VERTEX_TYPE = 1,
     C3D_ERS_PRIM_TYPE = 2,
@@ -436,8 +436,8 @@ typedef enum {
     C3D_ERS_ENHANCED_COLOR_RANGE_EN = 36,
     C3D_ERS_NUM = 37,
     C3D_ERS_FORCE_U32 = 0x7FFFFFFF,
-} C3D_ERSID,
-    *C3D_PERSID;
+};
+typedef enum C3D_ERSID *C3D_PERSID;
 
 #pragma pack(pop)
 
@@ -1533,17 +1533,26 @@ struct PHD_VBUF {
     uint16_t v;
 };
 
+struct PHD_UV {
+    uint16_t u1;
+    uint16_t v1;
+};
+
+struct POINT_INFO {
+    float xv;
+    float yv;
+    float zv;
+    float xs;
+    float ys;
+    float u;
+    float v;
+    float g;
+};
+
 struct PHD_TEXTURE {
     uint16_t drawtype;
     uint16_t tpage;
-    uint16_t u1;
-    uint16_t v1;
-    uint16_t u2;
-    uint16_t v2;
-    uint16_t u3;
-    uint16_t v3;
-    uint16_t u4;
-    uint16_t v4;
+    PHD_UV uv[4];
 };
 
 struct PHD_SPRITE {

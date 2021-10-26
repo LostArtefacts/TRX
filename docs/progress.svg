@@ -69,7 +69,7 @@
 <rect width="12.00" height="12.00" x="224.00" y="31.00" class="decompiled"><title>HWR_FMVInit</title></rect>
 <rect width="12.00" height="12.00" x="238.00" y="31.00" class="decompiled"><title>sub_408409</title></rect>
 <rect width="12.00" height="12.00" x="252.00" y="31.00" class="named"><title>HWR_DownloadTextures</title></rect>
-<rect width="12.00" height="12.00" x="266.00" y="31.00" class="named"><title>HWR_SetPalette</title></rect>
+<rect width="12.00" height="12.00" x="266.00" y="31.00" class="decompiled"><title>HWR_SetPalette</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="31.00" class="decompiled"><title>HWR_SwitchResolution</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="31.00" class="decompiled"><title>HWR_DumpScreen</title></rect>
 <rect width="12.00" height="12.00" x="308.00" y="31.00" class="decompiled"><title>HWR_ClearSurfaceDepth</title></rect>
@@ -80,19 +80,19 @@
 <rect width="12.00" height="12.00" x="378.00" y="31.00" class="decompiled"><title>HWR_FadeWait</title></rect>
 <rect width="12.00" height="12.00" x="392.00" y="31.00" class="decompiled"><title>sub_408E41</title></rect>
 <rect width="12.00" height="12.00" x="406.00" y="31.00" class="decompiled"><title>HWR_RenderTriangleStrip</title></rect>
-<rect width="12.00" height="12.00" x="420.00" y="31.00" class="todo"><title>sub_408ED8</title></rect>
+<rect width="12.00" height="12.00" x="420.00" y="31.00" class="decompiled"><title>sub_408ED8</title></rect>
 <rect width="12.00" height="12.00" x="434.00" y="31.00" class="decompiled"><title>HWR_SelectTexture</title></rect>
 <rect width="12.00" height="12.00" x="448.00" y="31.00" class="decompiled"><title>HWR_ClipVertices</title></rect>
 <rect width="12.00" height="12.00" x="462.00" y="31.00" class="decompiled"><title>HWR_DrawFlatTriangle</title></rect>
 <rect width="12.00" height="12.00" x="476.00" y="31.00" class="decompiled"><title>HWR_InsertObjectG4</title></rect>
 <rect width="12.00" height="12.00" x="490.00" y="31.00" class="decompiled"><title>HWR_InsertObjectG3</title></rect>
-<rect width="12.00" height="12.00" x="504.00" y="31.00" class="todo"><title>sub_40A0C4</title></rect>
+<rect width="12.00" height="12.00" x="504.00" y="31.00" class="decompiled"><title>HWR_ZedClipper</title></rect>
 <rect width="12.00" height="12.00" x="518.00" y="31.00" class="decompiled"><title>HWR_ClipVertices2</title></rect>
-<rect width="12.00" height="12.00" x="532.00" y="31.00" class="named"><title>HWR_DrawTexturedTriangle</title></rect>
-<rect width="12.00" height="12.00" x="546.00" y="31.00" class="named"><title>HWR_DrawTexturedQuad</title></rect>
+<rect width="12.00" height="12.00" x="532.00" y="31.00" class="decompiled"><title>HWR_DrawTexturedTriangle</title></rect>
+<rect width="12.00" height="12.00" x="546.00" y="31.00" class="decompiled"><title>HWR_DrawTexturedQuad</title></rect>
 <rect width="12.00" height="12.00" x="560.00" y="31.00" class="decompiled"><title>HWR_InsertObjectGT4</title></rect>
 <rect width="12.00" height="12.00" x="574.00" y="31.00" class="decompiled"><title>HWR_InsertObjectGT3</title></rect>
-<rect width="12.00" height="12.00" x="588.00" y="31.00" class="named"><title>HWR_DrawSprite</title></rect>
+<rect width="12.00" height="12.00" x="588.00" y="31.00" class="decompiled"><title>HWR_DrawSprite</title></rect>
 <rect width="12.00" height="12.00" x="602.00" y="31.00" class="decompiled"><title>HWR_Draw2DLine</title></rect>
 <rect width="12.00" height="12.00" x="616.00" y="31.00" class="decompiled"><title>HWR_DrawTranslucentQuad</title></rect>
 <rect width="12.00" height="12.00" x="630.00" y="31.00" class="decompiled"><title>HWR_PrintShadow</title></rect>
@@ -730,18 +730,18 @@
 <rect width="41.43" height="30.89" x="54.40" y="505.11" class="decompiled"><title>DoControlOption</title></rect>
 <rect width="32.45" height="39.13" x="97.82" y="269.00" class="decompiled"><title>TestTriggers</title></rect>
 <rect width="32.45" height="36.42" x="97.82" y="310.13" class="decompiled"><title>ObjectObjects</title></rect>
-<rect width="32.45" height="36.40" x="97.82" y="348.55" class="named"><title>HWR_DrawTexturedTriangle</title></rect>
+<rect width="32.45" height="36.40" x="97.82" y="348.55" class="decompiled"><title>HWR_DrawTexturedTriangle</title></rect>
 <rect width="32.45" height="35.98" x="97.82" y="386.95" class="decompiled"><title>PierreControl</title></rect>
 <rect width="32.45" height="35.92" x="97.82" y="424.93" class="decompiled"><title>sub_4046E0</title></rect>
 <rect width="32.45" height="35.89" x="97.82" y="462.85" class="decompiled"><title>sub_405330</title></rect>
 <rect width="32.45" height="35.26" x="97.82" y="500.74" class="decompiled"><title>RingNotActive</title></rect>
 <rect width="33.89" height="33.37" x="132.27" y="269.00" class="decompiled"><title>sub_404050</title></rect>
 <rect width="33.89" height="33.30" x="132.27" y="304.37" class="decompiled"><title>S_DrawScreenBox</title></rect>
-<rect width="33.89" height="32.97" x="132.27" y="339.67" class="named"><title>HWR_DrawTexturedQuad</title></rect>
+<rect width="33.89" height="32.97" x="132.27" y="339.67" class="decompiled"><title>HWR_DrawTexturedQuad</title></rect>
 <rect width="33.89" height="31.59" x="132.27" y="374.64" class="decompiled"><title>wgtmap_persp16_fp</title></rect>
 <rect width="33.89" height="31.21" x="132.27" y="408.23" class="decompiled"><title>FlyerControl</title></rect>
 <rect width="33.89" height="31.11" x="132.27" y="441.44" class="decompiled"><title>Inv_AddItem</title></rect>
-<rect width="33.89" height="30.03" x="132.27" y="474.55" class="todo"><title>sub_40A0C4</title></rect>
+<rect width="33.89" height="30.03" x="132.27" y="474.55" class="decompiled"><title>HWR_ZedClipper</title></rect>
 <rect width="33.89" height="29.42" x="132.27" y="506.58" class="decompiled"><title>gtmap_persp16_fp</title></rect>
 <rect width="29.62" height="32.68" x="168.16" y="269.00" class="decompiled"><title>CowboyControl</title></rect>
 <rect width="29.62" height="32.48" x="168.16" y="303.68" class="decompiled"><title>NatlaControl</title></rect>
@@ -776,7 +776,7 @@
 <rect width="26.53" height="25.48" x="260.07" y="381.46" class="decompiled"><title>WolfControl</title></rect>
 <rect width="26.53" height="25.01" x="260.07" y="408.94" class="decompiled"><title>HWR_RenderLightningSegment</title></rect>
 <rect width="26.53" height="24.08" x="260.07" y="435.95" class="decompiled"><title>CollideStaticObjects</title></rect>
-<rect width="26.53" height="23.73" x="260.07" y="462.03" class="named"><title>HWR_DrawSprite</title></rect>
+<rect width="26.53" height="23.73" x="260.07" y="462.03" class="decompiled"><title>HWR_DrawSprite</title></rect>
 <rect width="26.53" height="23.55" x="260.07" y="487.76" class="decompiled"><title>XYGClipper</title></rect>
 <rect width="26.53" height="22.70" x="260.07" y="513.30" class="decompiled"><title>T_DrawThisText</title></rect>
 <rect width="22.63" height="26.55" x="288.60" y="269.00" class="decompiled"><title>DrawInventoryItem</title></rect>
@@ -856,7 +856,7 @@
 <rect width="17.28" height="18.87" x="425.54" y="353.49" class="decompiled"><title>CheckCheatMode</title></rect>
 <rect width="17.28" height="18.75" x="425.54" y="374.36" class="decompiled"><title>S_UpdateInput</title></rect>
 <rect width="17.28" height="18.75" x="425.54" y="395.11" class="decompiled"><title>LaraColRun</title></rect>
-<rect width="17.28" height="18.51" x="425.54" y="415.86" class="named"><title>HWR_SetPalette</title></rect>
+<rect width="17.28" height="18.51" x="425.54" y="415.86" class="decompiled"><title>HWR_SetPalette</title></rect>
 <rect width="17.28" height="18.47" x="425.54" y="436.37" class="decompiled"><title>LaraBaddieCollision</title></rect>
 <rect width="17.28" height="18.44" x="425.54" y="456.85" class="decompiled"><title>MovableBlockCollision</title></rect>
 <rect width="17.28" height="18.40" x="425.54" y="477.28" class="decompiled"><title>LaraAsStop</title></rect>
@@ -975,7 +975,7 @@
 <rect width="12.52" height="12.72" x="540.88" y="337.21" class="decompiled"><title>TestLaraSlide</title></rect>
 <rect width="12.47" height="12.72" x="555.40" y="337.21" class="decompiled"><title>InitialiseLevel</title></rect>
 <rect width="12.47" height="12.72" x="569.87" y="337.21" class="decompiled"><title>LavaControl</title></rect>
-<rect width="12.41" height="12.72" x="584.33" y="337.21" class="todo"><title>sub_408ED8</title></rect>
+<rect width="12.41" height="12.72" x="584.33" y="337.21" class="decompiled"><title>sub_408ED8</title></rect>
 <rect width="12.41" height="12.72" x="598.75" y="337.21" class="decompiled"><title>ChaseCamera</title></rect>
 <rect width="12.41" height="12.72" x="613.16" y="337.21" class="decompiled"><title>PodControl</title></rect>
 <rect width="12.26" height="12.72" x="627.58" y="337.21" class="decompiled"><title>ItemSparkle</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 98.60%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 96.63%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 1.12%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 2.64%</text>
-<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.28%</text>
-<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 0.73%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 99.44%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 99.33%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 0.56%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 0.67%</text>
+<rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 0.00%</text>
 </svg>
