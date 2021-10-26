@@ -498,6 +498,7 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
     phd_RotY(item->pos.y_rot);
+
     if (calc_object_vertices(&ShadowInfo.poly_count)) {
         int16_t clip_and = 1;
         int16_t clip_positive = 1;
@@ -508,10 +509,12 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
             clip_or |= PhdVBuf[i].clip;
         }
         PHD_VBUF *vn1 = &PhdVBuf[0];
-        PHD_VBUF *vn2 = &PhdVBuf[1];
-        PHD_VBUF *vn3 = &PhdVBuf[2];
+        PHD_VBUF *vn2 = &PhdVBuf[T1MConfig.enable_round_shadow ? 4 : 1];
+        PHD_VBUF *vn3 = &PhdVBuf[T1MConfig.enable_round_shadow ? 8 : 2];
 
-        if (!clip_and && clip_positive && VISIBLE(vn1, vn2, vn3)) {
+        int visible = VISIBLE(vn1, vn2, vn3);
+
+        if (!clip_and && clip_positive && visible) {
             HWR_PrintShadow(
                 &PhdVBuf[0], clip_or ? 1 : 0, ShadowInfo.vertex_count);
         }
