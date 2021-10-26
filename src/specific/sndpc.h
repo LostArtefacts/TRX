@@ -1,15 +1,42 @@
 #ifndef T1M_SPECIFIC_SNDPC_H
 #define T1M_SPECIFIC_SNDPC_H
 
-// clang-format off
-#define S_CDLoop                ((void          (*)())0x004380B0)
-#define S_CDStop                ((void          (*)())0x00438E40)
-#define S_CDPlay                ((void          (*)(int16_t track))0x00438D40)
-#define S_CDVolume              ((void          (*)(int16_t volume))0x00437F30)
-#define S_SoundStopAllSamples   ((void          (*)())0x00438CC0)
-#define S_StartSyncedAudio      ((void          (*)(int32_t num))0x00439030)
-#define SoundStart              ((void          (*)())0x0041CDA0)
-#define SoundInit               ((int32_t       (*)())0x00437E00)
-// clang-format on
+#include <stdint.h>
+
+#include "global/types.h"
+
+#define SOUND_INVALID_HANDLE NULL
+
+int32_t ConvertVolumeToDecibel(int32_t volume);
+int32_t ConvertPanToDecibel(uint16_t pan);
+
+int32_t SoundInit();
+void SoundLoadSamples(char **sample_pointers, int32_t num_samples);
+SAMPLE_DATA *SoundLoadSample(char *content);
+int32_t SoundMakeSample(SAMPLE_DATA *sample_data);
+void *SoundPlaySample(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
+    int8_t loop);
+
+int32_t MusicInit();
+int32_t MusicPlay(int16_t track_id);
+int32_t MusicPlayLooped();
+int32_t S_MusicPlay(int16_t track);
+int32_t S_MusicStop();
+void S_MusicLoop();
+void S_MusicVolume(int16_t volume);
+void S_MusicPause();
+void S_MusicUnpause();
+
+void *S_SoundPlaySample(
+    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
+void *S_SoundPlaySampleLooped(
+    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
+int32_t S_SoundSampleIsPlaying(void *handle);
+void S_SoundStopAllSamples();
+void S_SoundStopSample(void *handle);
+void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume);
+
+void T1MInjectSpecificSndPC();
 
 #endif

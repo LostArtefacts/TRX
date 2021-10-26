@@ -1,11 +1,25 @@
+#include "game/inv.h"
+
 #include "3dsystem/3d_gen.h"
 #include "game/health.h"
-#include "game/inv.h"
 #include "game/items.h"
 #include "game/text.h"
-#include "game/vars.h"
-#include "specific/shed.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
+#include "specific/frontend.h"
 #include "util.h"
+
+#include <stdint.h>
+#include <stdio.h>
+
+TEXTSTRING *InvItemText[2] = { NULL, NULL };
+TEXTSTRING *InvRingText = NULL;
+
+static TEXTSTRING *InvDownArrow1 = NULL;
+static TEXTSTRING *InvDownArrow2 = NULL;
+static TEXTSTRING *InvUpArrow1 = NULL;
+static TEXTSTRING *InvUpArrow2 = NULL;
 
 void InitColours()
 {
@@ -22,51 +36,51 @@ void InitColours()
     InvColours[IC_MAGENTA] = S_Colour(255, 0, 255);
 }
 
-void RingIsOpen(RING_INFO* ring)
+void RingIsOpen(RING_INFO *ring)
 {
-    if (InventoryMode == INV_TITLE_MODE) {
+    if (InvMode == INV_TITLE_MODE) {
         return;
     }
 
     if (!InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            InvRingText = T_Print(0, 26, 0, "INVENTORY");
+            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
-            if (InventoryMode == INV_DEATH_MODE) {
-                InvRingText = T_Print(0, 26, 0, "GAME OVER");
+            if (InvMode == INV_DEATH_MODE) {
+                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_GAME_OVER]);
             } else {
-                InvRingText = T_Print(0, 26, 0, "OPTION");
+                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText = T_Print(0, 26, 0, "ITEMS");
+            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_ITEMS]);
             break;
         }
 
         T_CentreH(InvRingText, 1);
     }
 
-    if (InventoryMode == INV_KEYS_MODE || InventoryMode == INV_DEATH_MODE) {
+    if (InvMode == INV_KEYS_MODE || InvMode == INV_DEATH_MODE) {
         return;
     }
 
     if (!InvUpArrow1) {
         if (ring->type == RT_OPTION
             || (ring->type == RT_MAIN && InvKeysObjects)) {
-            InvUpArrow1 = T_Print(20, 28, 0, "[");
-            InvUpArrow2 = T_Print(-20, 28, 0, "[");
+            InvUpArrow1 = T_Print(20, 28, "[");
+            InvUpArrow2 = T_Print(-20, 28, "[");
             T_RightAlign(InvUpArrow2, 1);
         }
     }
 
     if (!InvDownArrow1) {
         if (ring->type == RT_MAIN || ring->type == RT_KEYS) {
-            InvDownArrow1 = T_Print(20, -15, 0, "]");
-            InvDownArrow2 = T_Print(-20, -15, 0, "]");
+            InvDownArrow1 = T_Print(20, -15, "]");
+            InvDownArrow2 = T_Print(-20, -15, "]");
             T_BottomAlign(InvDownArrow1, 1);
             T_BottomAlign(InvDownArrow2, 1);
             T_RightAlign(InvDownArrow2, 1);
@@ -74,7 +88,7 @@ void RingIsOpen(RING_INFO* ring)
     }
 }
 
-void RingIsNotOpen(RING_INFO* ring)
+void RingIsNotOpen(RING_INFO *ring)
 {
     if (!InvRingText) {
         return;
@@ -97,66 +111,65 @@ void RingIsNotOpen(RING_INFO* ring)
     }
 }
 
-void RingNotActive(INVENTORY_ITEM* inv_item)
+void RingNotActive(INVENTORY_ITEM *inv_item)
 {
     if (!InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
         case O_PUZZLE_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle1Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle1);
             break;
 
         case O_PUZZLE_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle2Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle2);
             break;
 
         case O_PUZZLE_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle3Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle3);
             break;
 
         case O_PUZZLE_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Puzzle4Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].puzzle4);
             break;
 
         case O_KEY_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key1Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].key1);
             break;
 
         case O_KEY_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key2Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].key2);
             break;
 
         case O_KEY_OPTION3:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key3Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].key3);
             break;
 
         case O_KEY_OPTION4:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Key4Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].key4);
             break;
 
         case O_PICKUP_OPTION1:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Pickup1Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].pickup1);
             break;
 
         case O_PICKUP_OPTION2:
             InvItemText[IT_NAME] =
-                T_Print(0, -16, 0, Pickup2Strings[CurrentLevel]);
+                T_Print(0, -16, GF.levels[CurrentLevel].pickup2);
             break;
 
         case O_PASSPORT_OPTION:
             break;
 
         default:
-            // XXX: terrible hack
-            InvItemText[IT_NAME] = T_Print(0, -16, 0, (char*)inv_item->item_id);
+            InvItemText[IT_NAME] = T_Print(0, -16, inv_item->string);
             break;
         }
 
@@ -171,30 +184,30 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
 
     switch (inv_item->object_number) {
     case O_SHOTGUN_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_MAGNUM_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d B", Lara.magnums.ammo);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_UZI_OPTION:
-        if (!InvItemText[IT_QTY] && !SaveGame[0].bonus_flag) {
+        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d C", Lara.uzis.ammo);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -204,7 +217,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -214,7 +227,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -224,7 +237,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -236,7 +249,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -248,7 +261,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -269,7 +282,7 @@ void RingNotActive(INVENTORY_ITEM* inv_item)
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, 0, temp_text);
+            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
         }
@@ -294,7 +307,7 @@ int32_t Inv_AddItem(int32_t item_num)
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
     for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvMainList[i];
+        INVENTORY_ITEM *inv_item = InvMainList[i];
         if (inv_item->object_number == item_num_option) {
             InvMainQtys[i]++;
             return 1;
@@ -302,7 +315,7 @@ int32_t Inv_AddItem(int32_t item_num)
     }
 
     for (int i = 0; i < InvKeysObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvKeysList[i];
+        INVENTORY_ITEM *inv_item = InvKeysList[i];
         if (inv_item->object_number == item_num_option) {
             InvKeysQtys[i]++;
             return 1;
@@ -312,7 +325,7 @@ int32_t Inv_AddItem(int32_t item_num)
     switch (item_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
-        Inv_InsertItem(&IPistolsOption);
+        Inv_InsertItem(&InvItemPistols);
         return 1;
 
     case O_SHOTGUN_ITEM:
@@ -322,7 +335,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         }
         Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        Inv_InsertItem(&IShotgunOption);
+        Inv_InsertItem(&InvItemShotgun);
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         return 0;
 
@@ -333,7 +346,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         }
         Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        Inv_InsertItem(&IMagnumOption);
+        Inv_InsertItem(&InvItemMagnum);
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         return 0;
 
@@ -344,7 +357,7 @@ int32_t Inv_AddItem(int32_t item_num)
             Lara.uzis.ammo += UZI_AMMO_QTY;
         }
         Lara.uzis.ammo += UZI_AMMO_QTY;
-        Inv_InsertItem(&IUziOption);
+        Inv_InsertItem(&InvItemUzi);
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return 0;
 
@@ -353,7 +366,7 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IShotgunAmmoOption);
+            Inv_InsertItem(&InvItemShotgunAmmo);
         }
         return 0;
 
@@ -362,7 +375,7 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
             Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IMagnumAmmoOption);
+            Inv_InsertItem(&InvItemMagnumAmmo);
         }
         return 0;
 
@@ -371,86 +384,86 @@ int32_t Inv_AddItem(int32_t item_num)
         if (Inv_RequestItem(O_UZI_ITEM)) {
             Lara.uzis.ammo += UZI_AMMO_QTY;
         } else {
-            Inv_InsertItem(&IUziAmmoOption);
+            Inv_InsertItem(&InvItemUziAmmo);
         }
         return 0;
 
     case O_MEDI_ITEM:
     case O_MEDI_OPTION:
-        Inv_InsertItem(&IMediOption);
+        Inv_InsertItem(&InvItemMedi);
         return 1;
 
     case O_BIGMEDI_ITEM:
     case O_BIGMEDI_OPTION:
-        Inv_InsertItem(&IBigMediOption);
+        Inv_InsertItem(&InvItemBigMedi);
         return 1;
 
     case O_PUZZLE_ITEM1:
     case O_PUZZLE_OPTION1:
-        Inv_InsertItem(&IPuzzle1Option);
+        Inv_InsertItem(&InvItemPuzzle1);
         return 1;
 
     case O_PUZZLE_ITEM2:
     case O_PUZZLE_OPTION2:
-        Inv_InsertItem(&IPuzzle2Option);
+        Inv_InsertItem(&InvItemPuzzle2);
         return 1;
 
     case O_PUZZLE_ITEM3:
     case O_PUZZLE_OPTION3:
-        Inv_InsertItem(&IPuzzle3Option);
+        Inv_InsertItem(&InvItemPuzzle3);
         return 1;
 
     case O_PUZZLE_ITEM4:
     case O_PUZZLE_OPTION4:
-        Inv_InsertItem(&IPuzzle4Option);
+        Inv_InsertItem(&InvItemPuzzle4);
         return 1;
 
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
-        Inv_InsertItem(&ILeadBarOption);
+        Inv_InsertItem(&InvItemLeadBar);
         return 1;
 
     case O_KEY_ITEM1:
     case O_KEY_OPTION1:
-        Inv_InsertItem(&IKey1Option);
+        Inv_InsertItem(&InvItemKey1);
         return 1;
 
     case O_KEY_ITEM2:
     case O_KEY_OPTION2:
-        Inv_InsertItem(&IKey2Option);
+        Inv_InsertItem(&InvItemKey2);
         return 1;
 
     case O_KEY_ITEM3:
     case O_KEY_OPTION3:
-        Inv_InsertItem(&IKey3Option);
+        Inv_InsertItem(&InvItemKey3);
         return 1;
 
     case O_KEY_ITEM4:
     case O_KEY_OPTION4:
-        Inv_InsertItem(&IKey4Option);
+        Inv_InsertItem(&InvItemKey4);
         return 1;
 
     case O_PICKUP_ITEM1:
     case O_PICKUP_OPTION1:
-        Inv_InsertItem(&IPickup1Option);
+        Inv_InsertItem(&InvItemPickup1);
         return 1;
 
     case O_PICKUP_ITEM2:
     case O_PICKUP_OPTION2:
-        Inv_InsertItem(&IPickup2Option);
+        Inv_InsertItem(&InvItemPickup2);
         return 1;
 
     case O_SCION_ITEM:
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
-        Inv_InsertItem(&IScionOption);
+        Inv_InsertItem(&InvItemScion);
         return 1;
     }
 
     return 0;
 }
 
-void Inv_InsertItem(INVENTORY_ITEM* inv_item)
+void Inv_InsertItem(INVENTORY_ITEM *inv_item)
 {
     int n;
 
@@ -558,6 +571,16 @@ int32_t Inv_RemoveItem(int32_t item_num)
         }
     }
 
+    for (int i = 0; i < InvOptionObjects; i++) {
+        if (InvOptionList[i]->object_number == item_num_option) {
+            InvOptionObjects--;
+            for (int j = i; j < InvOptionObjects; j++) {
+                InvOptionList[j] = InvOptionList[j + 1];
+            }
+            return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -652,6 +675,15 @@ int32_t Inv_GetItemOption(int32_t item_num)
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
         return O_SCION_OPTION;
+
+    case O_DETAIL_OPTION:
+    case O_SOUND_OPTION:
+    case O_CONTROL_OPTION:
+    case O_GAMMA_OPTION:
+    case O_PASSPORT_OPTION:
+    case O_MAP_OPTION:
+    case O_PHOTO_OPTION:
+        return item_num;
     }
 
     return -1;
@@ -668,8 +700,8 @@ void RemoveInventoryText()
 }
 
 void Inv_RingInit(
-    RING_INFO* ring, int16_t type, INVENTORY_ITEM** list, int16_t qty,
-    int16_t current, IMOTION_INFO* imo)
+    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
+    int16_t current, IMOTION_INFO *imo)
 {
     ring->type = type;
     ring->radius = 0;
@@ -678,7 +710,7 @@ void Inv_RingInit(
     ring->current_object = current;
     ring->angle_adder = 0x10000 / qty;
 
-    if (InventoryMode == INV_TITLE_MODE) {
+    if (InvMode == INV_TITLE_MODE) {
         ring->camera_pitch = 1024;
     } else {
         ring->camera_pitch = 0;
@@ -718,7 +750,7 @@ void Inv_RingInit(
     ring->light.z = 1024;
 }
 
-void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
+void Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
 {
     PHD_ANGLE angles[2];
 
@@ -733,7 +765,7 @@ void Inv_RingGetView(RING_INFO* ring, PHD_3DPOS* viewer)
     viewer->z_rot = 0;
 }
 
-void Inv_RingLight(RING_INFO* ring)
+void Inv_RingLight(RING_INFO *ring)
 {
     PHD_ANGLE angles[2];
     LsDivider = 0x6000;
@@ -741,16 +773,16 @@ void Inv_RingLight(RING_INFO* ring)
     phd_RotateLight(angles[1], angles[0]);
 }
 
-void Inv_RingCalcAdders(RING_INFO* ring, int16_t rotation_duration)
+void Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration)
 {
     ring->angle_adder = 0x10000 / ring->number_of_objects;
     ring->rot_adder_l = ring->angle_adder / rotation_duration;
     ring->rot_adder_r = -ring->rot_adder_l;
 }
 
-void Inv_RingDoMotions(RING_INFO* ring)
+void Inv_RingDoMotions(RING_INFO *ring)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
 
     if (imo->count) {
         ring->radius += imo->radius_rate;
@@ -758,7 +790,7 @@ void Inv_RingDoMotions(RING_INFO* ring)
         ring->ringpos.y_rot += imo->rotate_rate;
         ring->camera_pitch += imo->camera_pitch_rate;
 
-        INVENTORY_ITEM* inv_item = ring->list[ring->current_object];
+        INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
         inv_item->pt_xrot += imo->item_ptxrot_rate;
         inv_item->x_rot += imo->item_xrot_rate;
         inv_item->ytrans += imo->item_ytrans_rate;
@@ -814,7 +846,7 @@ void Inv_RingDoMotions(RING_INFO* ring)
     }
 }
 
-void Inv_RingRotateLeft(RING_INFO* ring)
+void Inv_RingRotateLeft(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object - 1;
@@ -825,7 +857,7 @@ void Inv_RingRotateLeft(RING_INFO* ring)
     ring->rot_adder = ring->rot_adder_l;
 }
 
-void Inv_RingRotateRight(RING_INFO* ring)
+void Inv_RingRotateRight(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object + 1;
@@ -837,7 +869,7 @@ void Inv_RingRotateRight(RING_INFO* ring)
 }
 
 void Inv_RingMotionInit(
-    RING_INFO* ring, int16_t frames, int16_t status, int16_t status_target)
+    RING_INFO *ring, int16_t frames, int16_t status, int16_t status_target)
 {
     ring->imo->status_target = status_target;
     ring->imo->count = frames;
@@ -862,9 +894,9 @@ void Inv_RingMotionInit(
 }
 
 void Inv_RingMotionSetup(
-    RING_INFO* ring, int16_t status, int16_t status_target, int16_t frames)
+    RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->count = frames;
     imo->status = status;
     imo->status_target = status_target;
@@ -872,37 +904,37 @@ void Inv_RingMotionSetup(
     imo->camera_yrate = 0;
 }
 
-void Inv_RingMotionRadius(RING_INFO* ring, int16_t target)
+void Inv_RingMotionRadius(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->radius_target = target;
     imo->radius_rate = (target - ring->radius) / imo->count;
 }
 
-void Inv_RingMotionRotation(RING_INFO* ring, int16_t rotation, int16_t target)
+void Inv_RingMotionRotation(RING_INFO *ring, int16_t rotation, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->rotate_target = target;
     imo->rotate_rate = rotation / imo->count;
 }
 
-void Inv_RingMotionCameraPos(RING_INFO* ring, int16_t target)
+void Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->camera_ytarget = target;
     imo->camera_yrate = (target - ring->camera.y) / imo->count;
 }
 
-void Inv_RingMotionCameraPitch(RING_INFO* ring, int16_t target)
+void Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->camera_pitch_target = target;
     imo->camera_pitch_rate = target / imo->count;
 }
 
-void Inv_RingMotionItemSelect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
+void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = inv_item->pt_xrot_sel;
     imo->item_ptxrot_rate = inv_item->pt_xrot_sel / imo->count;
     imo->item_xrot_target = inv_item->x_rot_sel;
@@ -913,9 +945,9 @@ void Inv_RingMotionItemSelect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
     imo->item_ztrans_rate = inv_item->ztrans_sel / imo->count;
 }
 
-void Inv_RingMotionItemDeselect(RING_INFO* ring, INVENTORY_ITEM* inv_item)
+void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
-    IMOTION_INFO* imo = ring->imo;
+    IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = 0;
     imo->item_ptxrot_rate = -inv_item->pt_xrot_sel / imo->count;
     imo->item_xrot_target = 0;

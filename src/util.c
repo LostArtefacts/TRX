@@ -1,11 +1,12 @@
 #include "util.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <windows.h>
 #include <dbghelp.h>
 
-void T1MTraceFunc(
-    const char* file, int line, const char* func, const char* fmt, ...)
+void T1MLogFunc(
+    const char *file, int line, const char *func, const char *fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
@@ -15,13 +16,13 @@ void T1MTraceFunc(
     fflush(stdout);
 }
 
-void T1MInjectFunc(void* from, void* to)
+void T1MInjectFunc(void (*from)(void), void (*to)(void))
 {
     if (from == to) {
         return;
     }
     DWORD tmp;
-    TRACE("Patching %p to %p", from, to);
+    LOG_DEBUG("Patching %p to %p", from, to);
     VirtualProtect(from, sizeof(JMP), PAGE_EXECUTE_READWRITE, &tmp);
     HANDLE hCurrentProcess = GetCurrentProcess();
     JMP buf;
@@ -44,9 +45,9 @@ void T1MPrintStackTrace()
     STACKFRAME64 stack;
     ULONG frame;
     DWORD64 displacement;
-    IMAGEHLP_SYMBOL64* pSymbol =
+    IMAGEHLP_SYMBOL64 *pSymbol =
         malloc(sizeof(IMAGEHLP_SYMBOL64) + (MaxNameLen + 1) * sizeof(TCHAR));
-    char* name = malloc(MaxNameLen + 1);
+    char *name = malloc(MaxNameLen + 1);
 
     RtlCaptureContext(&context);
     memset(&stack, 0, sizeof(STACKFRAME64));
@@ -61,6 +62,8 @@ void T1MPrintStackTrace()
     stack.AddrFrame.Offset = context.Ebp;
     stack.AddrFrame.Mode = AddrModeFlat;
 
+    SymInitialize(process, NULL, 1);
+
     for (frame = 0;; frame++) {
         result = StackWalk64(
             IMAGE_FILE_MACHINE_I386, process, thread, &stack, &context, NULL,
@@ -74,12 +77,12 @@ void T1MPrintStackTrace()
         UnDecorateSymbolName(
             pSymbol->Name, (PSTR)name, MaxNameLen, UNDNAME_COMPLETE);
 
-        TRACE(
-            "Frame %lu:\n"
-            "    Symbol name:    %s\n"
-            "    PC address:     0x%08LX\n"
-            "    Stack address:  0x%08LX\n"
-            "    Frame address:  0x%08LX\n"
+        LOG_DEBUG(
+            "frame %lu:\n"
+            "    symbol name:    %s\n"
+            "    pc address:     0x%08LX\n"
+            "    stack address:  0x%08LX\n"
+            "    frame address:  0x%08LX\n"
             "\n",
             frame, pSymbol->Name, (ULONG64)stack.AddrPC.Offset,
             (ULONG64)stack.AddrStack.Offset, (ULONG64)stack.AddrFrame.Offset);
@@ -90,4 +93,6 @@ void T1MPrintStackTrace()
     }
     free(pSymbol);
     free(name);
+
+    SymCleanup(process);
 }

@@ -19,107 +19,107 @@ phd_RotYXZ                      0x00401500  0x000001E8  +
 phd_RotYXZpack                  0x004016F0  0x000001F3  +
 phd_TranslateRel                0x004018F0  0x000000AB  +
 phd_TranslateAbs                0x004019A0  0x0000007A  +
-visible_zclip                   0x00401A20  0x000000A9  +
-phd_PutPolygons                 0x00401AD0  0x000000F3  *
-S_InsertRoom                    0x00401BD0  0x0000006E  *
-calc_object_vertices            0x00401C40  0x000001B6  -
-calc_vertice_light              0x00401E00  0x00000165  -
-calc_roomvert                   0x00401F70  0x00000428  -
-phd_RotateLight                 0x004023A0  0x000000CF  *
-phd_PointLight                  ----------  ----------  -
-phd_InitPolyList                0x00402470  0x0000002D  -
-phd_SortPolyList                0x004024A0  0x0000002F  -
-do_quickysorty                  0x004024D0  0x000000C5  -
-phd_PrintPolyList               ----------  ----------  -
+phd_VisibleZClip                0x00401A20  0x000000A9  +
+phd_PutPolygons                 0x00401AD0  0x000000F3  +
+S_InsertRoom                    0x00401BD0  0x0000006E  +
+calc_object_vertices            0x00401C40  0x000001B6  +
+calc_vertice_light              0x00401E00  0x00000165  +
+calc_roomvert                   0x00401F70  0x00000428  +
+phd_RotateLight                 0x004023A0  0x000000CF  +
+phd_PointLight                  ----------  ----------  x
+phd_InitPolyList                0x00402470  0x0000002D  +
+phd_SortPolyList                0x004024A0  0x0000002F  x
+do_quickysorty                  0x004024D0  0x000000C5  x
+phd_PrintPolyList               ----------  ----------  x
 phd_InitWindow                  0x004025D0  0x000000F2  +
 AlterFOV                        0x004026D0  0x0000003F  +
 
 # 3dsystem/3d_line.cpp
-Insert2DLine                    0x00402710  0x000000CA  -
-draw_line                       ----------  ----------  -
-draw_poly_line                  0x004027E0  0x000001A1  -
+Insert2DLine                    0x00402710  0x000000CA  +
+draw_line                       ----------  ----------  x
+draw_poly_line                  0x004027E0  0x000001A1  x
 
 # 3dsystem/3d_out.cpp
-draw_poly_flat                  0x00402990  0x0000002F  -
-draw_poly_trans                 0x004029C0  0x00000030  -
-draw_poly_gouraud               0x004029F0  0x00000030  -
-draw_poly_gtmap                 0x00402A20  0x00000037  -
-draw_poly_wgtmap                0x00402A60  0x00000037  -
-draw_poly_gtmap_persp           0x00402AA0  0x00000037  -
-draw_poly_wgtmap_persp          0x00402AE0  0x00000037  -
-xgen_x                          0x00402B20  0x000000D2  -
-xgen_xg                         0x00402C00  0x00000146  -
-xgen_xguv                       0x00402D50  0x00000219  -
-xgen_xguvpersp_fp               0x00402F70  0x00000226  -
-gtmap_persp16_fp                0x004031A0  0x000005D0  -
-wgtmap_persp16_fp               0x00403770  0x00000637  -
+draw_poly_flat                  0x00402990  0x0000002F  x
+draw_poly_trans                 0x004029C0  0x00000030  x
+draw_poly_gouraud               0x004029F0  0x00000030  x
+draw_poly_gtmap                 0x00402A20  0x00000037  x
+draw_poly_wgtmap                0x00402A60  0x00000037  x
+draw_poly_gtmap_persp           0x00402AA0  0x00000037  x
+draw_poly_wgtmap_persp          0x00402AE0  0x00000037  x
+xgen_x                          0x00402B20  0x000000D2  x
+xgen_xg                         0x00402C00  0x00000146  x
+xgen_xguv                       0x00402D50  0x00000219  x
+xgen_xguvpersp_fp               0x00402F70  0x00000226  x
+gtmap_persp16_fp                0x004031A0  0x000005D0  x
+wgtmap_persp16_fp               0x00403770  0x00000637  x
 
 # ???
-sub_403DB0                      0x00403DB0  0x0000029A  -
-sub_404050                      0x00404050  0x0000068B  -
-sub_4046E0                      0x004046E0  0x000006BC  -
-sub_404DA0                      0x00404DA0  0x0000058F  -
-sub_405330                      0x00405330  0x000006BB  -
-sub_4059F0                      0x004059F0  0x00000594  -
-sub_405F90                      0x00405F90  0x0000041B  -
-sub_4063B0                      0x004063B0  0x0000035B  -
-XYGClipper                      0x00406710  0x000003C2  -
-ins_objectG4                    0x00406AE0  0x000002AE  -
-ins_objectG3                    0x00406D90  0x0000023E  -
-sub_406FD0                      0x00406FD0  0x000002D0  -
-ins_poly_trans8                 0x004072A0  0x00000523  -
-sub_4077D0                      0x004077D0  0x00000034  -
-sub_407804                      0x00407804  0x00000023  -
-sub_407827                      0x00407827  0x00000014  -
-sub_40783B                      0x0040783B  0x00000027  -
-sub_407862                      0x00407862  0x0000001A  -
-sub_40787C                      0x0040787C  0x00000095  -
-sub_407911                      0x00407911  0x0000004E  -
-sub_40795F                      0x0040795F  0x0000008A  -
-sub_4079E9                      0x004079E9  0x00000060  -
-sub_407A49                      0x00407A49  0x00000048  -
-sub_407A91                      0x00407A91  0x00000141  -
-SetHardwareVideoMode            0x00407BD2  0x00000433  -
-InitialiseHardware              0x00408005  0x0000031E  *
-ShutdownHardware                0x00408323  0x00000029  -
-HardwarePrepareFMV              0x0040834C  0x0000001C  -
-HardwareFMVDone                 0x00408368  0x00000017  -
-sub_40837F                      0x0040837F  0x0000008A  -
-sub_408409                      0x00408409  0x000000D5  -
-DownloadTexturesToHardware      0x004084DE  0x0000030C  *
-PaletteSetHardware              0x004087EA  0x0000020A  *
-SwitchResolution                0x004089F4  0x0000007C  -
-sub_408A70                      0x00408A70  0x00000057  -
-sub_408AC7                      0x00408AC7  0x00000065  -
-sub_408B2C                      0x00408B2C  0x00000059  -
-CopyPictureHardware             0x00408B85  0x000000B5  -
-DownloadPictureHardware         0x00408C3A  0x000001D4  -
-sub_408E0E                      0x00408E0E  0x00000024  -
-sub_408E32                      0x00408E32  0x0000000F  -
-sub_408E41                      0x00408E41  0x0000002C  *
-sub_408E6D                      0x00408E6D  0x0000006B  -
-sub_408ED8                      0x00408ED8  0x00000118  -
-sub_408FF0                      0x00408FF0  0x0000005D  -
-sub_40904D                      0x0040904D  0x00000BC2  -
-sub_409C0F                      0x00409C0F  0x00000335  -
-sub_409F44                      0x00409F44  0x000000D9  -
-sub_40A01D                      0x0040A01D  0x000000A7  -
-sub_40A0C4                      0x0040A0C4  0x000005ED  -
-sub_40A6B1                      0x0040A6B1  0x00000E5F  -
-sub_40B510                      0x0040B510  0x000006D2  -
-sub_40BBE2                      0x0040BBE2  0x00000678  -
-sub_40C25A                      0x0040C25A  0x000000F4  -
-sub_40C34E                      0x0040C34E  0x000000D7  -
-sub_40C425                      0x0040C425  0x000003C9  -
-sub_40C7EE                      0x0040C7EE  0x000000F9  -
-sub_40C8E7                      0x0040C8E7  0x000001F4  -
-sub_40CADB                      0x0040CADB  0x00000182  -
-sub_40CC5D                      0x0040CC5D  0x000003F9  -
-sub_40D056                      0x0040D056  0x000000A1  -
-sub_40D0F7                      0x0040D0F7  0x00000049  -
-sub_40D140                      0x0040D140  0x000001A0  -
-sub_40D2E0                      0x0040D2E0  0x00000185  -
-DoNothing                       0x0040D465  0x00000005  -
+sub_403DB0                      0x00403DB0  0x0000029A  x
+sub_404050                      0x00404050  0x0000068B  x
+sub_4046E0                      0x004046E0  0x000006BC  x
+sub_404DA0                      0x00404DA0  0x0000058F  x
+sub_405330                      0x00405330  0x000006BB  x
+sub_4059F0                      0x004059F0  0x00000594  x
+sub_405F90                      0x00405F90  0x0000041B  x
+sub_4063B0                      0x004063B0  0x0000035B  x
+XYGClipper                      0x00406710  0x000003C2  x
+sub_406AE0                      0x00406AE0  0x000002AE  x
+sub_406D90                      0x00406D90  0x0000023E  x
+sub_406FD0                      0x00406FD0  0x000002D0  x
+ins_poly_trans8                 0x004072A0  0x00000523  +
+HWR_Error                       0x004077D0  0x00000034  +
+HWR_RenderBegin_0               0x00407804  0x00000023  +
+HWR_RenderBegin                 0x00407827  0x00000014  +
+HWR_RenderEnd                   0x0040783B  0x00000027  +
+HWR_RenderToggle                0x00407862  0x0000001A  +
+HWR_GetSurfaceAndPitch          0x0040787C  0x00000095  +
+HWR_SetupRenderContextAndRender2 0x00407911  0x0000004E  +
+HWR_SetupRenderContextAndRender 0x0040795F  0x0000008A  +
+HWR_FlipPrimaryBuffer           0x004079E9  0x00000060  +
+HWR_ClearSurface                0x00407A49  0x00000048  +
+HWR_ReleaseSurfaces             0x00407A91  0x00000141  +
+HWR_SetHardwareVideoMode        0x00407BD2  0x00000433  +
+HWR_InitialiseHardware          0x00408005  0x0000031E  +
+HWR_ShutdownHardware            0x00408323  0x00000029  +
+HWR_PrepareFMV                  0x0040834C  0x0000001C  +
+HWR_FMVDone                     0x00408368  0x00000017  +
+HWR_FMVInit                     0x0040837F  0x0000008A  +
+sub_408409                      0x00408409  0x000000D5  x
+HWR_DownloadTextures            0x004084DE  0x0000030C  *
+HWR_SetPalette                  0x004087EA  0x0000020A  +
+HWR_SwitchResolution            0x004089F4  0x0000007C  +
+HWR_DumpScreen                  0x00408A70  0x00000057  +
+HWR_ClearSurfaceDepth           0x00408AC7  0x00000065  +
+HWR_BlitSurface                 0x00408B2C  0x00000059  +
+HWR_CopyPicture                 0x00408B85  0x000000B5  +
+HWR_DownloadPicture             0x00408C3A  0x000001D4  +
+sub_408E0E                      0x00408E0E  0x00000024  x
+HWR_FadeWait                    0x00408E32  0x0000000F  +
+sub_408E41                      0x00408E41  0x0000002C  x
+HWR_RenderTriangleStrip         0x00408E6D  0x0000006B  +
+sub_408ED8                      0x00408ED8  0x00000118  x
+HWR_SelectTexture               0x00408FF0  0x0000005D  +
+HWR_ClipVertices                0x0040904D  0x00000BC2  +
+HWR_DrawFlatTriangle            0x00409C0F  0x00000335  +
+HWR_InsertObjectG4              0x00409F44  0x000000D9  +
+HWR_InsertObjectG3              0x0040A01D  0x000000A7  +
+HWR_ZedClipper                  0x0040A0C4  0x000005ED  +
+HWR_ClipVertices2               0x0040A6B1  0x00000E5F  +
+HWR_DrawTexturedTriangle        0x0040B510  0x000006D2  +
+HWR_DrawTexturedQuad            0x0040BBE2  0x00000678  +
+HWR_InsertObjectGT4             0x0040C25A  0x000000F4  +
+HWR_InsertObjectGT3             0x0040C34E  0x000000D7  +
+HWR_DrawSprite                  0x0040C425  0x000003C9  +
+HWR_Draw2DLine                  0x0040C7EE  0x000000F9  +
+HWR_DrawTranslucentQuad         0x0040C8E7  0x000001F4  +
+HWR_PrintShadow                 0x0040CADB  0x00000182  +
+HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
+HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
+HWR_InitPolyList                0x0040D0F7  0x00000049  *
+HWR_CacheTexture                0x0040D140  0x000001A0  -
+HWR_OutputPolyList              0x0040D2E0  0x00000185  *
+DoNothing                       0x0040D465  0x00000005  +
 
 # bat.cpp
 BatControl                      0x0040D470  0x00000184  +
@@ -161,7 +161,7 @@ FixedCamera                     ----------  ----------  +
 CalculateCamera                 0x00410B40  0x0000055D  +
 
 # cinema.cpp
-LoopCinematic                   ----------  ----------  -
+LoopCinematic                   ----------  ----------  +
 StartCinematic                  0x004110A0  0x00000183  +
 InitCinematicRooms              ----------  ----------  +
 DoCinematic                     0x00411240  0x0000012B  +
@@ -232,19 +232,19 @@ DinoControl                     0x004160F0  0x0000028F  +
 LaraDinoDeath                   0x004163A0  0x000000C1  +
 
 # shell/display.cpp
-IncreaseScreenSize              ----------  ----------  -
-DecreaseScreenSize              ----------  ----------  -
-setup_screen_size               0x00416470  0x000000D4  -
-switch_resolution               ----------  ----------  -
-TempVideoAdjust                 0x00416550  0x00000277  *
-TempVideoRemove                 0x004167D0  0x00000289  *
-S_CopyScreenToBuffer            ----------  ----------  -
-S_CopyBufferToScreen            0x00416A60  0x000000A7  *
-S_NoFade                        0x00416B10  0x00000010  *
-S_FadeInInventory               0x00416B20  0x00000082  -
-S_FadeOutInventory              0x00416BB0  0x00000027  *
-FadeToPal                       ----------  ----------  -
-ScreenPartialDump               ----------  ----------  -
+IncreaseScreenSize              ----------  ----------  x
+DecreaseScreenSize              ----------  ----------  x
+SetupScreenSize                 0x00416470  0x000000D4  +
+switch_resolution               ----------  ----------  x
+TempVideoAdjust                 0x00416550  0x00000277  +
+TempVideoRemove                 0x004167D0  0x00000289  +
+S_CopyScreenToBuffer            ----------  ----------  x
+S_CopyBufferToScreen            0x00416A60  0x000000A7  +
+S_NoFade                        0x00416B10  0x00000010  +
+S_FadeInInventory               0x00416B20  0x00000082  +
+S_FadeOutInventory              0x00416BB0  0x00000027  +
+FadeToPal                       ----------  ----------  x
+ScreenPartialDump               ----------  ----------  x
 
 # draw.cpp
 DrawPhaseCinematic              0x00416BE0  0x00000090  +
@@ -279,11 +279,11 @@ GetBoundsAccurate               0x00419DD0  0x0000007C  +
 GetBestFrame                    0x00419E50  0x00000035  +
 
 # ?????
-sub_419E90                      0x00419E90  0x000000C0  -
-WinSndMakeSample                0x00419F50  0x000001CA  -
-sub_41A120                      0x0041A120  0x000000A1  -
-sub_41A1D0                      0x0041A1D0  0x00000027  -
-sub_41A200                      0x0041A200  0x0000000F  -
+SoundInit                       0x00419E90  0x000000C0  +
+SoundMakeSample                 0x00419F50  0x000001CA  +
+sub_41A120                      0x0041A120  0x000000A1  +
+SoundSampleIsPlaying_           0x0041A1D0  0x00000027  +
+SoundStopSample_                0x0041A200  0x0000000F  +
 
 # effects.cpp
 ItemNearLara                    0x0041A210  0x0000008C  +
@@ -338,21 +338,19 @@ LoadTexturePages                ----------  ----------  +
 GetFullPath                     0x0041BFC0  0x00000053  +
 FindCdDrive                     0x0041C020  0x000000C7  +
 
-# ???
-S_Colour                        0x0041C0F0  0x00000089  *
-S_DrawScreenSprite2d            0x0041C180  0x00000150  -
-S_DrawScreenSprite              0x0041C2D0  0x00000163  *
-S_DrawScreenLine                0x0041C440  0x000000D3  *
-S_DrawScreenBox                 0x0041C520  0x00000688  *
-S_DrawScreenFBox                0x0041CBB0  0x00000101  *
-S_FinishInventory               0x0041CCC0  0x00000047  *
-S_FadeToBlack                   0x0041CD10  0x0000003F  *
-S_Wait                          0x0041CD50  0x0000004D  *
-SoundStart                      0x0041CDA0  0x00000045  *
-WinPlayFMV                      0x0041CDF0  0x0000024A  -
-sub_41D00B                      0x0041D00B  0x0000002F  -
-S_PlayFMV                       0x0041D040  0x0000007C  *
-sub_41D078                      0x0041D078  0x00000044  -
+# shell/frontend.cpp
+S_Colour                        0x0041C0F0  0x00000089  +
+S_DrawScreenSprite2d            0x0041C180  0x00000150  +
+S_DrawScreenSprite              0x0041C2D0  0x00000163  +
+S_DrawScreenLine                0x0041C440  0x000000D3  +
+S_DrawScreenBox                 0x0041C520  0x00000688  +
+S_DrawScreenFBox                0x0041CBB0  0x00000101  +
+S_FinishInventory               0x0041CCC0  0x00000047  +
+S_FadeToBlack                   0x0041CD10  0x0000003F  +
+S_Wait                          0x0041CD50  0x0000004D  +
+FMVInit                         0x0041CDA0  0x00000045  +
+WinPlayFMV                      0x0041CDF0  0x00000250  +
+S_PlayFMV                       0x0041D040  0x0000007C  +
 
 # game.cpp
 StartGame                       0x0041D0C0  0x000001CA  +
@@ -379,17 +377,17 @@ DrawPickups                     ----------  ----------  +
 AddDisplayPickup                0x0041E0C0  0x0000003F  +
 
 # shell/init.cpp
-S_OnWindowResized               ----------  ----------  -
+S_OnWindowResized               ----------  ----------  x
 S_InitialiseSystem              0x0041E100  0x0000015B  +
-S_ExitSystem                    0x0041E260  0x00000051  *
+S_ExitSystem                    0x0041E260  0x00000051  +
 init_game_malloc                0x0041E2C0  0x00000021  +
-game_malloc                     0x0041E2F0  0x000000B1  *
+game_malloc                     0x0041E2F0  0x000000B1  +
 game_free                       0x0041E3B0  0x0000002F  +
 CalculateWibbleTable            ----------  ----------  +
 S_SeedRandom                    ----------  ----------  +
 
 # shell/input.cpp
-Key                             0x0041E3E0  0x00000166  *
+Key                             0x0041E3E0  0x00000166  +
 GetJoystickButtonName           ----------  ----------  -
 JoyRead                         ----------  ----------  -
 S_UpdateInput                   0x0041E550  0x00000210  +
@@ -559,8 +557,8 @@ LaraFloorFront                  ----------  ----------  +
 LaraLandedBad                   0x00425D70  0x000000BE  +
 
 # lara1gun.cpp
-draw_shotgun                    0x00425E30  0x00000113  +
-undraw_shotgun                  0x00425F50  0x00000160  +
+DrawShotgun                     0x00425E30  0x00000113  +
+UndrawShotgun                   0x00425F50  0x00000160  +
 draw_shotgun_meshes             ----------  ----------  +
 undraw_shotgun_meshes           ----------  ----------  +
 ready_shotgun                   ----------  ----------  +
@@ -569,10 +567,10 @@ AnimateShotgun                  ----------  ----------  +
 FireShotgun                     ----------  ----------  +
 
 # lara2gun.cpp
-draw_pistols                    0x00426470  0x00000147  +
-undraw_pistols                  0x004265C0  0x00000261  +
+DrawPistols                     0x00426470  0x00000147  +
+UndrawPistols                   0x004265C0  0x00000261  +
 ready_pistols                   ----------  ----------  +
-draw_pistol_meshes              0x00426830  0x00000061  +
+DrawPistolMeshes                0x00426830  0x00000061  +
 undraw_pistol_mesh_left         ----------  ----------  +
 undraw_pistol_mesh_right        ----------  ----------  +
 PistolHandler                   0x004268A0  0x0000012E  +
@@ -643,8 +641,8 @@ ThorsHandleCollision            0x0042A1F0  0x0000004B  +
 ThorsHeadCollision              0x0042A240  0x00000052  +
 
 # ???
-sub_42A2A0                      0x0042A2A0  0x0000000C  -
-sub_42A2B0                      0x0042A2B0  0x0000000C  -
+sub_42A2A0                      0x0042A2A0  0x0000000C  x
+sub_42A2B0                      0x0042A2B0  0x0000000C  x
 DB_Log                          0x0042A2C0  0x00000037  +
 
 # lot.cpp
@@ -665,19 +663,19 @@ phd_atan                        0x0042A8A0  0x00000055  +
 phd_sqrt                        0x0042A900  0x0000003A  +
 
 # mnsound.cpp
-mn_reset_sound_effects          0x0042A940  0x000000EC  *
-SoundEffect                     0x0042AA30  0x000004C2  *
-mn_get_fx_slot                  0x0042AF00  0x000000CE  -
-mn_reset_ambient_loudness       0x0042AFD0  0x00000030  *
-mn_stop_ambient_samples         0x0042B000  0x0000007E  *
-mn_update_sound_effects         0x0042B080  0x0000027D  *
-mn_get_sound_params             ----------  ----------  -
-StopSoundEffect                 0x0042B300  0x0000010E  *
-adjust_master_volume            0x0042B410  0x00000012  -
-mn_start_sound_fade             ----------  ----------  -
-mn_set_sound_fade_rate          ----------  ----------  -
-mn_clear_fx_slot                ----------  ----------  -
-mn_clear_handles                ----------  ----------  -
+mn_reset_sound_effects          0x0042A940  0x000000EC  +
+SoundEffect                     0x0042AA30  0x000004C2  +
+mn_get_fx_slot                  0x0042AF00  0x000000CE  +
+mn_reset_ambient_loudness       0x0042AFD0  0x00000030  +
+mn_stop_ambient_samples         0x0042B000  0x0000007E  +
+mn_update_sound_effects         0x0042B080  0x0000027D  +
+mn_get_sound_params             ----------  ----------  +
+StopSoundEffect                 0x0042B300  0x0000010E  +
+mn_adjust_master_volume         0x0042B410  0x00000012  +
+mn_start_sound_fade             ----------  ----------  x
+mn_set_sound_fade_rate          ----------  ----------  x
+mn_clear_fx_slot                ----------  ----------  +
+mn_clear_handles                ----------  ----------  +
 
 # moveblok.cpp
 InitialiseMovableBlock          0x0042B430  0x00000030  +
@@ -722,43 +720,44 @@ Scion3Control                   0x0042D580  0x00000176  +
 EarthQuakeControl               0x0042D700  0x0000006F  +
 
 # option.cpp
-GetScancodeName                 ----------  ----------  -
-do_inventory_options            0x0042D770  0x00000180  *
-do_passport_option              0x0042D9C0  0x000004D0  -
-do_detail_option_hw             0x0042DE90  0x00000435  -
-do_detail_option                0x0042E2D0  0x000002E8  -
-do_sound_option                 0x0042E5C0  0x000004F2  -
-do_compass_option               ----------  ----------  -
-FlashConflicts                  ----------  ----------  -
-DefaultConflict                 ----------  ----------  -
-do_control_option               0x0042EAC0  0x0000075D  -
+GetScancodeName                 ----------  ----------  +
+DoInventoryOptions              0x0042D770  0x00000180  +
+DoPassportOption                0x0042D9C0  0x000004D0  +
+DoGammaOption                   ----------  ----------  +
+DoDetailOptionHW                0x0042DE90  0x00000435  +
+DoDetailOption                  0x0042E2D0  0x000002E8  +
+DoSoundOption                   0x0042E5C0  0x000004F2  +
+DoCompassOption                 ----------  ----------  +
+FlashConflicts                  ----------  ----------  +
+DefaultConflict                 ----------  ----------  +
+DoControlOption                 0x0042EAC0  0x0000075D  +
 S_ShowControls                  0x0042F230  0x000004B1  +
-S_ChangeCtrlText                ----------  ----------  -
-S_RemoveCtrlText                ----------  ----------  -
-S_RemoveCtrl                    ----------  ----------  -
-Init_Requester                  ----------  ----------  -
-Remove_Requester                ----------  ----------  -
-Display_Requester               0x0042F6F0  0x0000056B  -
+S_ChangeCtrlText                ----------  ----------  +
+S_RemoveCtrlText                ----------  ----------  +
+S_RemoveCtrl                    ----------  ----------  +
+InitRequester                   ----------  ----------  +
+RemoveRequester                 ----------  ----------  +
+DisplayRequester                0x0042F6F0  0x0000056B  +
 
 # shell/output.cpp
-S_InitialisePolyList            0x0042FC60  0x00000005  *
-S_DumpScreen                    0x0042FC70  0x00000044  *
-S_ClearScreen                   0x0042FCC0  0x00000013  *
-S_InitialiseScreen              0x0042FCE0  0x00000027  *
-S_OutputPolyList                0x0042FD10  0x00000018  *
-S_GetObjectBounds               0x0042FD30  0x0000026C  *
-S_PrintShadow                   0x0042FFA0  0x0000015B  *
-S_CalculateLight                0x00430100  0x00000183  *
-S_CalculateStaticLight          0x00430290  0x00000031  *
+S_InitialisePolyList            0x0042FC60  0x00000005  +
+S_DumpScreen                    0x0042FC70  0x00000044  +
+S_ClearScreen                   0x0042FCC0  0x00000013  +
+S_InitialiseScreen              0x0042FCE0  0x00000027  +
+S_OutputPolyList                0x0042FD10  0x00000018  +
+S_GetObjectBounds               0x0042FD30  0x0000026C  +
+S_PrintShadow                   0x0042FFA0  0x0000015B  +
+S_CalculateLight                0x00430100  0x00000183  +
+S_CalculateStaticLight          0x00430290  0x00000031  +
 S_DrawHealthBar                 0x004302D0  0x00000180  +
 S_DrawAirBar                    0x00430450  0x00000188  +
-AnimateTextures                 ----------  ----------  -
-S_SetupBelowWater               0x004305E0  0x00000054  *
-S_SetupAboveWater               0x00430640  0x00000019  *
-S_AnimateTextures               0x00430660  0x000000D3  *
-S_DrawLightningSegment          0x00430740  0x00000446  *
-decomp_pcx                      0x00430B90  0x00000141  -
-S_DisplayPicture                0x00430CE0  0x00000094  *
+S_SetupBelowWater               0x004305E0  0x00000054  +
+S_SetupAboveWater               0x00430640  0x00000019  +
+AnimateTextures                 ----------  ----------  +
+S_AnimateTextures               0x00430660  0x000000D3  +
+S_DrawLightningSegment          0x00430740  0x00000446  +
+decomp_pcx                      0x00430B90  0x00000141  +
+S_DisplayPicture                0x00430CE0  0x00000094  +
 
 # people.cpp
 Targetable                      0x00430D80  0x0000007B  +
@@ -805,32 +804,29 @@ RatControl                      0x00433F50  0x000002A8  +
 VoleControl                     0x00434210  0x000002B5  +
 
 # savegame.cpp
-ReadSGPos                       ----------  ----------  -
-WriteSGPos                      ----------  ----------  -
-ReadSGARM                       ----------  ----------  -
-ReadSGLOT                       ----------  ----------  -
-ReadSGLara                      ----------  ----------  -
-WriteSGARM                      ----------  ----------  -
-WriteSGLOT                      ----------  ----------  -
-WriteSGLara                     ----------  ----------  -
-LoadSaveGameInfo                ----------  ----------  -
-InitialiseStartInfo             0x004344D0  0x00000042  -
-ModifyStartInfo                 0x00434520  0x000000BF  *
-CreateStartInfo                 0x004345E0  0x00000139  *
-CreateSaveGameInfo              0x00434720  0x00000866  *
-ExtractSaveGameInfo             0x00434F90  0x00000971  *
-ResetSG                         ----------  ----------  -
-WriteSG                         ----------  ----------  -
-ReadSG                          ----------  ----------  -
-ConfirmSave                     ----------  ----------  -
-CompleteSave                    ----------  ----------  -
+ReadSGPos                       ----------  ----------  +
+WriteSGPos                      ----------  ----------  +
+ReadSGARM                       ----------  ----------  +
+ReadSGLOT                       ----------  ----------  +
+ReadSGLara                      ----------  ----------  +
+WriteSGARM                      ----------  ----------  +
+WriteSGLOT                      ----------  ----------  +
+WriteSGLara                     ----------  ----------  +
+InitialiseStartInfo             0x004344D0  0x00000042  +
+ModifyStartInfo                 0x00434520  0x000000BF  +
+CreateStartInfo                 0x004345E0  0x00000139  +
+CreateSaveGameInfo              0x00434720  0x00000866  +
+ExtractSaveGameInfo             0x00434F90  0x00000971  +
+ResetSG                         ----------  ----------  +
+WriteSG                         ----------  ----------  +
+ReadSG                          ----------  ----------  +
 
 # ???
-S_DrawSprite                    0x00435910  0x0000025E  -
-S_DrawSpriteRel                 0x00435B70  0x00000207  *
-S_DrawUISprite                  0x00435D80  0x0000014D  -
-ins_room_sprite_Sorted          0x00435ED0  0x000001CD  -
-draw_scaled_spriteC             0x004360A0  0x000001FB  -
+S_DrawSprite                    0x00435910  0x0000025E  +
+S_DrawSpriteRel                 0x00435B70  0x00000207  +
+S_DrawUISprite                  0x00435D80  0x0000014D  +
+S_DrawRoomSprites               0x00435ED0  0x000001CD  +
+draw_scaled_spriteC             0x004360A0  0x000001FB  x
 
 # setup.cpp
 InitialiseLevel                 0x004362A0  0x00000119  +
@@ -842,47 +838,49 @@ ObjectObjects                   0x00437370  0x000006D3  +
 
 # ???
 InitialiseObjects               0x00437A50  0x00000063  +
-sub_437AC0                      0x00437AC0  0x00000006  -
-WinVidSpinMessageLoop           0x00437AD0  0x00000029  *
-WinInReadJoystick               0x00437B00  0x00000070  *
-OnKeyPress                      0x00437B70  0x00000045  -
-sub_437BC0                      0x00437BC0  0x00000003  -
-KeyClearBuffer                  0x00437BD0  0x00000029  -
-WinSndLoadSamples               0x00437C00  0x000000A5  -
-SoundLoadSample                 0x00437CB0  0x0000014B  -
-SoundInit                       0x00437E00  0x0000000D  *
-sub_437E10                      0x00437E10  0x000000C3  -
-sub_437EE0                      0x00437EE0  0x00000028  -
-WinSndStopSample                0x00437F10  0x00000020  -
-S_CDVolume                      0x00437F30  0x00000001  *
-TestCdDrive                     0x00437F40  0x00000039  -
-sub_437F80                      0x00437F80  0x00000026  -
-CDPlay                          0x00437FB0  0x000000F5  -
-S_CDLoop                        0x004380B0  0x0000000B  *
-sub_4380C0                      0x004380C0  0x00000018  -
-sub_4380E0                      0x004380E0  0x00000255  *
-sub_438340                      0x00438340  0x0000003B  -
-FileLoad                        0x00438390  0x00000080  -
-GameMain                        0x00438410  0x0000050A  -
-CheckCheatMode                  0x00438920  0x00000213  *
-S_WriteSettings                 0x00438B60  0x00000090  *
-S_SoundPlaySample               0x00438BF0  0x0000004B  -
-S_SoundPlaySampleLooped         0x00438C40  0x00000051  -
-sub_438CA0                      0x00438CA0  0x00000015  -
-S_SoundStopAllSamples           0x00438CC0  0x0000000F  *
-S_SoundStopSample               0x00438CD0  0x0000001B  -
-sub_438CF0                      0x00438CF0  0x00000044  -
-S_CDPlay                        0x00438D40  0x000000FD  *
-S_CDStop                        0x00438E40  0x00000043  *
-SampleLoader                    0x00438E90  0x00000005  -
-LoadSamples                     0x00438EA0  0x00000189  *
-S_StartSyncedAudio              0x00439030  0x000000FC  -
+sub_437AC0                      0x00437AC0  0x00000006  x
+WinSpinMessageLoop              0x00437AD0  0x00000029  +
+WinInReadJoystick               0x00437B00  0x00000070  x
+OnKeyPress                      0x00437B70  0x00000045  +
+KeyGet                          0x00437BC0  0x00000003  +
+KeyClearBuffer                  0x00437BD0  0x00000029  +
+SoundLoadSamples                0x00437C00  0x000000A5  +
+SoundLoadSample                 0x00437CB0  0x0000014B  +
+SoundIsInitialised              0x00437E00  0x0000000D  +
+SoundPlaySample                 0x00437E10  0x000000C3  +
+SoundSampleIsPlaying            0x00437EE0  0x00000028  +
+SoundStopSample                 0x00437F10  0x00000020  +
+S_CDVolume                      0x00437F30  0x00000001  +
+TestCdDrive                     0x00437F40  0x00000039  x
+CDStop                          0x00437F80  0x00000026  +
+CDPlay                          0x00437FB0  0x000000F5  +
+S_CDLoop                        0x004380B0  0x0000000B  +
+CDPlayLooped                    0x004380C0  0x00000018  +
+sub_4380E0                      0x004380E0  0x00000255  +
+TerminateGameWithMsg            0x00438340  0x0000003B  +
+FileLoad                        0x00438390  0x00000080  +
+GameMain                        0x00438410  0x0000050A  +
+CheckCheatMode                  0x00438920  0x00000213  +
+S_WriteSettings                 0x00438B60  0x00000090  +
+
+# shell/sndpc.cpp
+S_SoundPlaySample               0x00438BF0  0x0000004B  +
+S_SoundPlaySampleLooped         0x00438C40  0x00000051  +
+S_SoundSampleIsPlaying          0x00438CA0  0x00000015  +
+S_SoundStopAllSamples           0x00438CC0  0x0000000F  +
+S_SoundStopSample               0x00438CD0  0x0000001B  +
+S_SoundSetPanAndVolume          0x00438CF0  0x00000044  +
+S_CDPlay                        0x00438D40  0x000000FD  +
+S_CDStop                        0x00438E40  0x00000043  +
+SampleLoader                    0x00438E90  0x00000005  +
+LoadSamples                     0x00438EA0  0x00000189  +
+S_StartSyncedAudio              0x00439030  0x000000FC  +
 
 # sphere.cpp
-TestCollision                   0x00439130  0x00000128  *
-GetSpheres                      0x00439260  0x000002EF  *
-GetJointAbsPosition             0x00439550  0x0000019C  *
-BaddieBiteEffect                0x004396F0  0x0000005D  -
+TestCollision                   0x00439130  0x00000128  +
+GetSpheres                      0x00439260  0x000002EF  +
+GetJointAbsPosition             0x00439550  0x0000019C  +
+BaddieBiteEffect                0x004396F0  0x0000005D  +
 
 # text.cpp
 T_InitPrint                     0x00439750  0x00000022  +
@@ -911,32 +909,32 @@ T_DrawText                      0x00439B00  0x00000153  +
 T_DrawThisText                  0x00439C60  0x000003A2  +
 
 # traps.cpp
-InitialiseRollingBall           0x0043A010  0x00000040  *
-RollingBallControl              0x0043A050  0x0000025D  *
-RollingBallCollision            0x0043A2B0  0x00000264  *
-SpikeCollision                  0x0043A520  0x0000014E  *
-TrapDoorControl                 0x0043A670  0x00000053  *
-TrapDoorFloor                   0x0043A6D0  0x00000042  *
-TrapDoorCeiling                 0x0043A720  0x00000046  *
-OnTrapDoor                      0x0043A770  0x000000A3  -
-PendulumControl                 0x0043A820  0x0000014B  *
-FallingBlockControl             0x0043A970  0x000000F9  *
-FallingBlockFloor               0x0043AA70  0x00000035  *
-FallingBlockCeiling             0x0043AAB0  0x00000034  *
-TeethTrapControl                0x0043AAF0  0x000000C1  *
-FallingCeilingControl           0x0043ABC0  0x0000009E  *
-InitialiseDamoclesSword         0x0043AC60  0x0000003B  *
-DamoclesSwordControl            0x0043ACA0  0x00000129  *
-DamoclesSwordCollision          0x0043ADD0  0x000000E8  *
-DartEmitterControl              0x0043AEC0  0x0000019B  *
-DartsControl                    0x0043B060  0x00000140  *
-DartEffectControl               0x0043B1A0  0x0000004C  *
-FlameEmitterControl             0x0043B1F0  0x000000A3  *
+InitialiseRollingBall           0x0043A010  0x00000040  +
+RollingBallControl              0x0043A050  0x0000025D  +
+RollingBallCollision            0x0043A2B0  0x00000264  +
+SpikeCollision                  0x0043A520  0x0000014E  +
+TrapDoorControl                 0x0043A670  0x00000053  +
+TrapDoorFloor                   0x0043A6D0  0x00000042  +
+TrapDoorCeiling                 0x0043A720  0x00000046  +
+OnTrapDoor                      0x0043A770  0x000000A3  +
+PendulumControl                 0x0043A820  0x0000014B  +
+FallingBlockControl             0x0043A970  0x000000F9  +
+FallingBlockFloor               0x0043AA70  0x00000035  +
+FallingBlockCeiling             0x0043AAB0  0x00000034  +
+TeethTrapControl                0x0043AAF0  0x000000C1  +
+FallingCeilingControl           0x0043ABC0  0x0000009E  +
+InitialiseDamoclesSword         0x0043AC60  0x0000003B  +
+DamoclesSwordControl            0x0043ACA0  0x00000129  +
+DamoclesSwordCollision          0x0043ADD0  0x000000E8  +
+DartEmitterControl              0x0043AEC0  0x0000019B  +
+DartsControl                    0x0043B060  0x00000140  +
+DartEffectControl               0x0043B1A0  0x0000004C  +
+FlameEmitterControl             0x0043B1F0  0x000000A3  +
 FlameControl                    0x0043B2A0  0x00000185  +
 LavaBurn                        0x0043B430  0x000000E8  +
-LavaEmitterControl              0x0043B520  0x000000C7  *
-LavaControl                     0x0043B5F0  0x00000119  *
-LavaWedgeControl                0x0043B710  0x00000139  *
+LavaEmitterControl              0x0043B520  0x000000C7  +
+LavaControl                     0x0043B5F0  0x00000119  +
+LavaWedgeControl                0x0043B710  0x00000139  +
 
 # warrior.cpp
 CentaurControl                  0x0043B850  0x000002B9  +
@@ -956,14 +954,14 @@ InitialiseStatue                0x0043CE90  0x000000E5  +
 StatueControl                   0x0043CF80  0x000000E1  +
 
 # ???
-sub_43D070                      0x0043D070  0x0000049A  -
-sub_43D510                      0x0043D510  0x000000DA  -
-sub_43D5F0                      0x0043D5F0  0x00000176  -
-ShowFatalError                  0x0043D770  0x00000147  *
-KeyboardHook(x,x,x)             0x0043D8C0  0x00000077  -
-sub_43D940                      0x0043D940  0x00000136  -
-WinMain(x,x,x,x)                0x0043DA80  0x0000037D  -
-WndProc                         0x0043DE00  0x0000011F  -
+InitDirectDraw                  0x0043D070  0x0000049A  +
+TerminateGame                   0x0043D510  0x000000DA  +
+sub_43D5F0                      0x0043D5F0  0x00000176  +
+ShowFatalError                  0x0043D770  0x00000147  +
+KeyboardHook                    0x0043D8C0  0x00000077  +
+sub_43D940                      0x0043D940  0x00000136  +
+WinMain                         0x0043DA80  0x0000037D  +
+WndProc                         0x0043DE00  0x0000011F  +
 
 # wolf.cpp
 InitialiseWolf                  0x0043DF20  0x00000024  +
@@ -971,43 +969,29 @@ WolfControl                     0x0043DF50  0x0000040B  +
 LionControl                     0x0043E390  0x000002BD  +
 
 # ???
-sub_43E670                      0x0043E670  0x00000011  -
-sub_43E681                      0x0043E681  0x000000CC  -
-sub_43E74D                      0x0043E74D  0x0000015F  -
-sub_43E8AC                      0x0043E8AC  0x00000155  -
+sub_43E670                      0x0043E670  0x00000011  x
+sub_43E681                      0x0043E681  0x000000CC  x
+sub_43E74D                      0x0043E74D  0x0000015F  x
+sub_43E8AC                      0x0043E8AC  0x00000155  x
 phd_PushMatrix                  0x0043EA01  0x00000020  +
 phd_PushUnitMatrix              0x0043EA21  0x00000035  +
-flatA                           0x0043EA80  0x00000064  -
-transA                          0x0043EAE4  0x00000139  -
-gourA                           0x0043EC1D  0x00000185  -
-gtmapA                          0x0043EDA2  0x00000311  -
-wgtmapA                         0x0043F0B3  0x00000355  -
-DirectSoundCreate               0x00440EAC  0x00000006  -
-sub_440EF0                      0x00440EF0  0x00000005  -
-sub_441C80                      0x00441C80  0x00000013  -
-sub_441CA0                      0x00441CA0  0x000003EC  -
-sub_444990                      0x00444990  0x0000000B  -
-sub_448A80                      0x00448A80  0x000002FA  -
-sub_44B690                      0x0044B690  0x0000001A  -
-sub_44B6B0                      0x0044B6B0  0x0000001A  -
-sub_44B6D0                      0x0044B6D0  0x00000036  -
-sub_44B710                      0x0044B710  0x00000036  -
-sub_44C5F0                      0x0044C5F0  0x00000168  -
-sub_44D9D0                      0x0044D9D0  0x000002C4  -
-sub_450500                      0x00450500  0x00000006  -
-sub_450510                      0x00450510  0x00000296  -
-sub_4507B0                      0x004507B0  0x0000000E  -
-sub_4507C0                      0x004507C0  0x00000013  -
-sub_4507E0                      0x004507E0  0x0000000E  -
-sub_4507F0                      0x004507F0  0x00000018  -
-sub_450810                      0x00450810  0x0000000E  -
-sub_450820                      0x00450820  0x00000006  -
-sub_450830                      0x00450830  0x0000000E  -
-sub_450840                      0x00450840  0x00000018  -
-sub_450860                      0x00450860  0x0000000E  -
-sub_450870                      0x00450870  0x00000006  -
-sub_450880                      0x00450880  0x00000013  -
-sub_4508A0                      0x004508A0  0x00000013  -
-sub_4508C0                      0x004508C0  0x00000056  -
-RtlUnwind                       0x00450916  0x00000006  -
-WriteTombAtiSettings            0x0045A084  0x00000090  -
+flatA                           0x0043EA80  0x00000064  x
+transA                          0x0043EAE4  0x00000139  x
+gourA                           0x0043EC1D  0x00000185  x
+gtmapA                          0x0043EDA2  0x00000311  x
+wgtmapA                         0x0043F0B3  0x00000355  x
+ATI3DCIF_NullSub                0x00450500  0x00000006  +
+InitATI3DCIF                    0x00450510  0x00000296  +
+ATI3DCIF_GetInfo                0x004507B0  0x0000000E  +
+ATI3DCIF_TextureReg             0x004507C0  0x00000013  +
+ATI3DCIF_TextureUnreg           0x004507E0  0x0000000E  +
+ATI3DCIF_TexturePaletteCreate   0x004507F0  0x00000018  +
+ATI3DCIF_TexturePaletteDestroy  0x00450810  0x0000000E  +
+ATI3DCIF_ContextCreate          0x00450820  0x00000006  +
+ATI3DCIF_ContextDestroy         0x00450830  0x0000000E  +
+ATI3DCIF_ContextSetState        0x00450840  0x00000018  +
+ATI3DCIF_RenderBegin            0x00450860  0x0000000E  +
+ATI3DCIF_RenderEnd              0x00450870  0x00000006  +
+ATI3DCIF_RenderPrimStrip        0x00450880  0x00000013  +
+ATI3DCIF_RenderPrimList         0x004508A0  0x00000013  +
+ShutdownATI3DCIF                0x004508C0  0x00000056  +

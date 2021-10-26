@@ -1,11 +1,14 @@
-#include "3dsystem/scalespr.h"
 #include "game/text.h"
-#include "game/vars.h"
-#include "game/types.h"
+
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
+#include "specific/clock.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-#include "config.h"
 #include "util.h"
+
+#include <stdio.h>
 #include <string.h>
 
 #define TEXT_BOX_OFFSET 2
@@ -50,7 +53,7 @@ static int8_t TextRemapASCII[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-int T_GetStringLen(const char* string)
+int T_GetStringLen(const char *string)
 {
     int len = 1;
     while (*string++) {
@@ -67,14 +70,13 @@ void T_InitPrint()
     TextStringCount = 0;
 }
 
-TEXTSTRING*
-T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
+TEXTSTRING *T_Print(int16_t x, int16_t y, const char *string)
 {
     if (TextStringCount == MAX_TEXT_STRINGS) {
         return NULL;
     }
 
-    TEXTSTRING* result = &TextInfoTable[0];
+    TEXTSTRING *result = &TextInfoTable[0];
     int n;
     for (n = 0; n < MAX_TEXT_STRINGS; n++) {
         if (!(result->flags & TF_ACTIVE)) {
@@ -95,9 +97,8 @@ T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
         length = MAX_STRING_SIZE - 1;
     }
 
-    result->xpos = xpos;
-    result->ypos = ypos;
-    result->zpos = zpos;
+    result->xpos = x;
+    result->ypos = y;
     result->letter_spacing = 1;
     result->word_spacing = 6;
     result->scale_h = PHD_ONE;
@@ -122,8 +123,11 @@ T_Print(int16_t xpos, int16_t ypos, int16_t zpos, const char* string)
     return result;
 }
 
-void T_ChangeText(TEXTSTRING* textstring, const char* string)
+void T_ChangeText(TEXTSTRING *textstring, const char *string)
 {
+    if (!textstring) {
+        return;
+    }
     if (!(textstring->flags & TF_ACTIVE)) {
         return;
     }
@@ -133,14 +137,20 @@ void T_ChangeText(TEXTSTRING* textstring, const char* string)
     }
 }
 
-void T_SetScale(TEXTSTRING* textstring, int32_t scale_h, int32_t scale_v)
+void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 {
+    if (!textstring) {
+        return;
+    }
     textstring->scale_h = scale_h;
     textstring->scale_v = scale_v;
 }
 
-void T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
+void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
 {
+    if (!textstring) {
+        return;
+    }
     if (b) {
         textstring->flags |= TF_FLASH;
         textstring->flash_rate = rate;
@@ -151,42 +161,47 @@ void T_FlashText(TEXTSTRING* textstring, int16_t b, int16_t rate)
 }
 
 void T_AddBackground(
-    TEXTSTRING* textstring, int16_t xsize, int16_t ysize, int16_t xoff,
-    int16_t yoff, int16_t zoff, int16_t colour, SG_COL* gourptr, int16_t flags)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
 {
+    if (!textstring) {
+        return;
+    }
     textstring->flags |= TF_BGND;
-    textstring->bgnd_size_x = xsize;
-    textstring->bgnd_size_y = ysize;
-    textstring->bgnd_off_x = xoff;
-    textstring->bgnd_off_y = yoff;
-    textstring->bgnd_off_z = zoff;
-    textstring->bgnd_colour = colour;
-    textstring->bgnd_gour = gourptr;
-    textstring->bgnd_flags = flags;
+    textstring->bgnd_size_x = w;
+    textstring->bgnd_size_y = h;
+    textstring->bgnd_off_x = x;
+    textstring->bgnd_off_y = y;
 }
 
-void T_RemoveBackground(TEXTSTRING* textstring)
+void T_RemoveBackground(TEXTSTRING *textstring)
 {
+    if (!textstring) {
+        return;
+    }
     textstring->flags &= ~TF_BGND;
 }
 
-void T_AddOutline(
-    TEXTSTRING* textstring, int16_t b, int16_t colour, SG_COL* gourptr,
-    int16_t flags)
+void T_AddOutline(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) {
+        return;
+    }
     textstring->flags |= TF_OUTLINE;
-    textstring->outl_gour = gourptr;
-    textstring->outl_colour = colour;
-    textstring->outl_flags = flags;
 }
 
-void T_RemoveOutline(TEXTSTRING* textstring)
+void T_RemoveOutline(TEXTSTRING *textstring)
 {
+    if (!textstring) {
+        return;
+    }
     textstring->flags &= ~TF_OUTLINE;
 }
 
-void T_CentreH(TEXTSTRING* textstring, int16_t b)
+void T_CentreH(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) {
+        return;
+    }
     if (b) {
         textstring->flags |= TF_CENTRE_H;
     } else {
@@ -194,8 +209,11 @@ void T_CentreH(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void T_CentreV(TEXTSTRING* textstring, int16_t b)
+void T_CentreV(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) {
+        return;
+    }
     if (b) {
         textstring->flags |= TF_CENTRE_V;
     } else {
@@ -203,8 +221,11 @@ void T_CentreV(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void T_RightAlign(TEXTSTRING* textstring, int16_t b)
+void T_RightAlign(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) {
+        return;
+    }
     if (b) {
         textstring->flags |= TF_RIGHT;
     } else {
@@ -212,8 +233,11 @@ void T_RightAlign(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-void T_BottomAlign(TEXTSTRING* textstring, int16_t b)
+void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
 {
+    if (!textstring) {
+        return;
+    }
     if (b) {
         textstring->flags |= TF_BOTTOM;
     } else {
@@ -221,10 +245,13 @@ void T_BottomAlign(TEXTSTRING* textstring, int16_t b)
     }
 }
 
-int32_t T_GetTextWidth(TEXTSTRING* textstring)
+int32_t T_GetTextWidth(TEXTSTRING *textstring)
 {
+    if (!textstring) {
+        return 0;
+    }
     int width = 0;
-    char* ptr = textstring->string;
+    char *ptr = textstring->string;
     for (char letter = *ptr; *ptr; letter = *ptr++) {
         if (letter == 0x7F || (letter > 10 && letter < 32)) {
             continue;
@@ -252,15 +279,14 @@ int32_t T_GetTextWidth(TEXTSTRING* textstring)
     return width;
 }
 
-void T_RemovePrint(TEXTSTRING* textstring)
+void T_RemovePrint(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return;
     }
-
     if (textstring->flags & TF_ACTIVE) {
         textstring->flags &= ~TF_ACTIVE;
-        --TextStringCount;
+        TextStringCount--;
     }
 }
 
@@ -271,52 +297,15 @@ void T_RemoveAllPrints()
 
 void T_DrawText()
 {
-    // TombATI FPS counter, pretty pointless IMO as it always shows 30 for me.
-    // Additionally, it's not present in TR2+.
-    static TEXTSTRING* fps_text = NULL;
-    static char fps_buf[20];
-    static int fps_counter1 = 0;
-    static int fps_counter2 = 0;
-
-    // in case someone called T_RemoveAllPrints or similar
-    if (fps_text && !(fps_text->flags & TF_ACTIVE)) {
-        fps_text = NULL;
-    }
-
-    if (AppSettings & ASF_FPS) {
-        int fps = ++fps_counter1;
-        int tmp = Camera.number_frames + fps_counter2;
-        fps_counter2 += Camera.number_frames;
-        if (tmp >= 60) {
-            sprintf(fps_buf, "%d FPS", fps);
-            if (fps_text) {
-                T_ChangeText(fps_text, fps_buf);
-                fps_counter1 = 0;
-                fps_counter2 = 0;
-            } else {
-                fps_text = T_Print(10, 30, 0, fps_buf);
-                fps_counter1 = 0;
-                fps_counter2 = 0;
-            }
-        }
-        if (Camera.number_frames > 30 && fps_text) {
-            T_RemovePrint(fps_text);
-            fps_text = NULL;
-        }
-    } else if (fps_text) {
-        T_RemovePrint(fps_text);
-        fps_text = NULL;
-    }
-
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TEXTSTRING* textstring = &TextInfoTable[i];
+        TEXTSTRING *textstring = &TextInfoTable[i];
         if (textstring->flags & TF_ACTIVE) {
             T_DrawThisText(textstring);
         }
     }
 }
 
-void T_DrawThisText(TEXTSTRING* textstring)
+void T_DrawThisText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
     if (textstring->flags & TF_FLASH) {
@@ -328,47 +317,28 @@ void T_DrawThisText(TEXTSTRING* textstring)
         }
     }
 
-    char* string = textstring->string;
-    int xpos = textstring->xpos;
-    int ypos = textstring->ypos;
-    int zpos = textstring->zpos;
-    int textwidth = T_GetTextWidth(textstring);
+    char *string = textstring->string;
+    int32_t x = textstring->xpos;
+    int32_t y = textstring->ypos;
+    int32_t textwidth = T_GetTextWidth(textstring);
 
-#ifdef T1M_FEAT_UI
-    if (T1MConfig.enable_enhanced_ui) {
-        if (textstring->flags & TF_CENTRE_H) {
-            xpos += (GetRenderWidthDownscaled() - textwidth) / 2;
-        } else if (textstring->flags & TF_RIGHT) {
-            xpos += GetRenderWidthDownscaled() - textwidth;
-        }
-
-        if (textstring->flags & TF_CENTRE_V) {
-            ypos += GetRenderHeightDownscaled() / 2;
-        } else if (textstring->flags & TF_BOTTOM) {
-            ypos += GetRenderHeightDownscaled();
-        }
-    } else {
-#else
-    {
-#endif
-        if (textstring->flags & TF_CENTRE_H) {
-            xpos += (DumpWidth - textwidth) / 2;
-        } else if (textstring->flags & TF_RIGHT) {
-            xpos += DumpWidth - textwidth;
-        }
-
-        if (textstring->flags & TF_CENTRE_V) {
-            ypos += DumpHeight / 2;
-        } else if (textstring->flags & TF_BOTTOM) {
-            ypos += DumpHeight;
-        }
+    if (textstring->flags & TF_CENTRE_H) {
+        x += (GetRenderWidthDownscaled() - textwidth) / 2;
+    } else if (textstring->flags & TF_RIGHT) {
+        x += GetRenderWidthDownscaled() - textwidth;
     }
 
-    int bxpos = textstring->bgnd_off_x + xpos - TEXT_BOX_OFFSET;
-    int bypos =
-        textstring->bgnd_off_y + ypos - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+    if (textstring->flags & TF_CENTRE_V) {
+        y += GetRenderHeightDownscaled() / 2;
+    } else if (textstring->flags & TF_BOTTOM) {
+        y += GetRenderHeightDownscaled();
+    }
 
-    int letter = '\0';
+    int32_t bxpos = textstring->bgnd_off_x + x - TEXT_BOX_OFFSET;
+    int32_t bypos =
+        textstring->bgnd_off_y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+
+    int32_t letter = '\0';
     while (*string) {
         letter = *string++;
         if (letter > 15 && letter < 32) {
@@ -376,46 +346,39 @@ void T_DrawThisText(TEXTSTRING* textstring)
         }
 
         if (letter == ' ') {
-            xpos += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
+            x += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
             continue;
         }
 
-        int sprite = letter;
+        int32_t sprite_num = letter;
         if (letter >= 16) {
-            sprite = TextRemapASCII[letter - 32];
+            sprite_num = TextRemapASCII[letter - 32];
         } else if (letter >= 11) {
-            sprite = letter + 91;
+            sprite_num = letter + 91;
         } else {
-            sprite = letter + 81;
+            sprite_num = letter + 81;
         }
 
-        sx = xpos;
-        sy = ypos;
-        sh = textstring->scale_h;
-        sv = textstring->scale_v;
-#ifdef T1M_FEAT_UI
-        if (T1MConfig.enable_enhanced_ui) {
-            sx = GetRenderScale(sx);
-            sy = GetRenderScale(sy);
-            sh = GetRenderScale(sh);
-            sv = GetRenderScale(sv);
-        }
-#endif
+        sx = GetRenderScale(x);
+        sy = GetRenderScale(y);
+        sh = GetRenderScale(textstring->scale_h);
+        sv = GetRenderScale(textstring->scale_v);
+
         S_DrawScreenSprite2d(
-            sx, sy, zpos, sh, sv, Objects[O_ALPHABET].mesh_index + sprite,
+            sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, textstring->text_flags, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
-        xpos += (((int32_t)textstring->letter_spacing + TextSpacing[sprite])
-                 * textstring->scale_h)
+        x += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
+              * textstring->scale_h)
             / PHD_ONE;
     }
 
-    int bwidth = 0;
-    int bheight = 0;
+    int32_t bwidth = 0;
+    int32_t bheight = 0;
     if ((textstring->flags & TF_BGND) || (textstring->flags & TF_OUTLINE)) {
         if (textstring->bgnd_size_x) {
             bxpos += textwidth / 2;
@@ -431,71 +394,21 @@ void T_DrawThisText(TEXTSTRING* textstring)
         }
     }
 
-    sx = bxpos;
-    sy = bypos;
-    sh = bwidth;
-    sv = bheight;
-#ifdef T1M_FEAT_UI
-    if (T1MConfig.enable_enhanced_ui) {
-        sx = GetRenderScale(sx);
-        sy = GetRenderScale(sy);
-        sh = GetRenderScale(sh);
-        sv = GetRenderScale(sv);
-    }
-#endif
-
     if (textstring->flags & TF_BGND) {
-        if (textstring->bgnd_gour) {
-            int bhw = sh / 2;
-            int bhh = sv / 2;
-            int bhw2 = sh - bhw;
-            int bhh2 = sv - bhh;
+        sx = GetRenderScale(bxpos);
+        sy = GetRenderScale(bypos);
+        sh = GetRenderScale(bwidth);
+        sv = GetRenderScale(bheight);
 
-            S_DrawScreenFBox(
-                sx, sy, zpos + textstring->bgnd_off_z + 8, bhw, bhh,
-                textstring->bgnd_colour, textstring->bgnd_gour,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx + bhw, sy, zpos + textstring->bgnd_off_z + 8, bhw2, bhh,
-                textstring->bgnd_colour, textstring->bgnd_gour + 4,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx + bhw, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw,
-                bhh2, textstring->bgnd_colour, textstring->bgnd_gour + 8,
-                textstring->bgnd_flags);
-
-            S_DrawScreenFBox(
-                sx, sy + bhh, zpos + textstring->bgnd_off_z + 8, bhw2, bhh2,
-                textstring->bgnd_colour, textstring->bgnd_gour + 12,
-                textstring->bgnd_flags);
-        } else {
-            S_DrawScreenFBox(
-                sx, sy, zpos + textstring->bgnd_off_z + 8, sh, sv,
-                textstring->bgnd_colour, 0, textstring->bgnd_flags);
-            S_DrawScreenBox(
-                sx, sy, textstring->bgnd_off_z + zpos, sh, sv, 0, 0, 0);
-        }
+        S_DrawScreenFBox(sx, sy, sh, sv);
     }
 
     if (textstring->flags & TF_OUTLINE) {
-        sx = bxpos;
-        sy = bypos;
-        sh = bwidth;
-        sv = bheight;
-#ifdef T1M_FEAT_UI
-        if (T1MConfig.enable_enhanced_ui) {
-            sx = GetRenderScale(sx);
-            sy = GetRenderScale(sy);
-            sh = GetRenderScale(sh);
-            sv = GetRenderScale(sv);
-        }
-#endif
-        S_DrawScreenBox(
-            sx, sy, zpos + textstring->bgnd_off_z, sh, sv,
-            textstring->outl_colour, textstring->outl_gour,
-            textstring->outl_flags);
+        sx = GetRenderScale(bxpos);
+        sy = GetRenderScale(bypos);
+        sh = GetRenderScale(bwidth);
+        sv = GetRenderScale(bheight);
+        S_DrawScreenBox(sx, sy, sh, sv);
     }
 }
 

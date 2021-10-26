@@ -32,7 +32,7 @@ typedef enum {
     T1M_BSM_NEVER = 4,
 } T1M_BAR_SHOW_MODE;
 
-struct {
+typedef struct {
     int8_t disable_healing_between_levels;
     int8_t disable_medpacks;
     int8_t disable_magnums;
@@ -40,12 +40,14 @@ struct {
     int8_t disable_shotgun;
     int8_t enable_enemy_healthbar;
     int8_t enable_enhanced_look;
-    int8_t enable_enhanced_ui;
     int8_t enable_numeric_keys;
     int8_t enable_shotgun_flash;
     int8_t enable_cheats;
     int8_t enable_tr3_sidesteps;
     int8_t enable_braid;
+    int8_t enable_compass_stats;
+    int8_t enable_timer_in_inventory;
+    int8_t enable_smooth_bars;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
@@ -54,16 +56,24 @@ struct {
     int8_t airbar_color;
     int8_t enemy_healthbar_location;
     int8_t enemy_healthbar_color;
-    int8_t fix_key_triggers;
-    int8_t fix_end_of_level_freeze;
     int8_t fix_tihocan_secret_sound;
     int8_t fix_pyramid_secret_trigger;
-    int8_t fix_hardcoded_secret_counts;
-    int8_t fix_illegal_gun_equip;
-    int8_t fov_value;
+    int8_t fix_secrets_killing_music;
+    int32_t fov_value;
     int8_t fov_vertical;
-} T1MConfig;
+    int8_t disable_demo;
+    int8_t disable_fmv;
+    int8_t disable_cine;
+    int8_t disable_music_in_menu;
+    int32_t resolution_width;
+    int32_t resolution_height;
+    int8_t enable_xbox_one_controller;
+    float brightness;
+} T1MConfigStruct;
 
-int T1MReadConfig();
+extern T1MConfigStruct T1MConfig;
+
+int8_t T1MReadConfigFromJson(const char *json);
+int8_t T1MReadConfig();
 
 #endif

@@ -1,31 +1,37 @@
+#include "game/lara.h"
+
 #include "3dsystem/phd_math.h"
+#include "config.h"
+#include "game/camera.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/draw.h"
-#include "game/effects.h"
+#include "game/effects/splash.h"
 #include "game/inv.h"
 #include "game/items.h"
-#include "game/lara.h"
 #include "game/lot.h"
-#include "game/vars.h"
+#include "game/sound.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
 
-    ITEM_INFO* item = LaraItem;
-    ROOM_INFO* r = &RoomInfo[item->room_number];
+    ITEM_INFO *item = LaraItem;
+    ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-#ifdef T1M_FEAT_CHEATS
-    if (Input & IN_STUFFCHEAT) {
+    if (Input & IN_ITEM_CHEAT) {
         LaraCheatGetStuff();
     }
 
-    if (Lara.water_status != LWS_CHEAT && (Input & IN_DOZYCHEAT)) {
+    if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
@@ -50,7 +56,6 @@ void LaraControl(int16_t item_num)
         Lara.mesh_effects = 0;
         LaraInitialiseMeshes(CurrentLevel);
     }
-#endif
 
     if (Lara.water_status == LWS_ABOVEWATER && room_submerged) {
         Lara.water_status = LWS_UNDERWATER;
@@ -58,7 +63,7 @@ void LaraControl(int16_t item_num)
         item->pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
-        StopSoundEffect(30, NULL);
+        StopSoundEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
@@ -101,7 +106,7 @@ void LaraControl(int16_t item_num)
             Lara.torso_x_rot = 0;
             Lara.torso_y_rot = 0;
             UpdateLaraRoom(item, -LARA_HITE / 2);
-            SoundEffect(36, &item->pos, SFX_ALWAYS);
+            SoundEffect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             Lara.water_status = LWS_ABOVEWATER;
             Lara.gun_status = LGS_ARMLESS;
@@ -140,14 +145,28 @@ void LaraControl(int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (!Lara.death_count) {
-            S_CDStop();
+            S_MusicStop();
         }
         Lara.death_count++;
-#ifdef T1M_FEAT_GAMEPLAY
         // make sure the enemy healthbar is no longer rendered. If Lara later
         // is resurrected with DOZY, she should no longer aim at the target.
         Lara.target = NULL;
-#endif
+    }
+
+    int16_t camera_move_delta = PHD_45 / 30;
+
+    if (Input & IN_CAMERA_LEFT) {
+        CameraOffsetAdditionalAngle(camera_move_delta);
+    } else if (Input & IN_CAMERA_RIGHT) {
+        CameraOffsetAdditionalAngle(-camera_move_delta);
+    }
+    if (Input & IN_CAMERA_UP) {
+        CameraOffsetAdditionalElevation(-camera_move_delta);
+    } else if (Input & IN_CAMERA_DOWN) {
+        CameraOffsetAdditionalElevation(camera_move_delta);
+    }
+    if (Input & IN_CAMERA_RESET) {
+        CameraOffsetReset();
     }
 
     switch (Lara.water_status) {
@@ -177,13 +196,12 @@ void LaraControl(int16_t item_num)
         LaraSurface(item, &coll);
         break;
 
-#ifdef T1M_FEAT_CHEATS
     case LWS_CHEAT:
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
         if (CHK_ANY(Input, IN_SLOW)
-            && !CHK_ANY(Input, IN_LOOK | IN_DOZYCHEAT)) {
+            && !CHK_ANY(Input, IN_LOOK | IN_FLY_CHEAT)) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
@@ -201,7 +219,6 @@ void LaraControl(int16_t item_num)
             Lara.gun_status = LGS_ARMLESS;
         }
         break;
-#endif
     }
 }
 
@@ -215,10 +232,10 @@ void LaraSwapMeshExtra()
     }
 }
 
-void AnimateLara(ITEM_INFO* item)
+void AnimateLara(ITEM_INFO *item)
 {
-    int16_t* command;
-    ANIM_STRUCT* anim;
+    int16_t *command;
+    ANIM_STRUCT *anim;
 
     item->frame_number++;
     anim = &Anims[item->anim_number];
@@ -281,7 +298,7 @@ void AnimateLara(ITEM_INFO* item)
 
             case AC_SOUND_FX:
                 if (item->frame_number == command[0]) {
-                    SoundEffect(command[1], &item->pos, SFX_ALWAYS);
+                    SoundEffect(command[1], &item->pos, SPM_ALWAYS);
                 }
                 command += 2;
                 break;
@@ -318,9 +335,17 @@ void AnimateLara(ITEM_INFO* item)
     item->pos.z += (phd_cos(Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
+void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
+{
+    lara_item->goal_anim_state = goal;
+    do {
+        AnimateLara(lara_item);
+    } while (lara_item->current_anim_state != goal);
+}
+
 void UseItem(int16_t object_num)
 {
-    TRACE("%d", object_num);
+    LOG_INFO("%d", object_num);
     switch (object_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
@@ -365,7 +390,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_MEDI_ITEM);
-        SoundEffect(116, NULL, SFX_ALWAYS);
+        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
 
     case O_BIGMEDI_ITEM:
@@ -379,7 +404,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_BIGMEDI_ITEM);
-        SoundEffect(116, NULL, SFX_ALWAYS);
+        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
     }
 }
@@ -397,15 +422,12 @@ void InitialiseLaraLoad(int16_t item_num)
 
 void InitialiseLara()
 {
-    TRACE("");
     LaraItem->collidable = 0;
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
-#ifdef T1M_FEAT_GAMEPLAY
     if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = StoredLaraHealth;
     }
-#endif
 
     Lara.air = LARA_AIR;
     Lara.torso_y_rot = 0;
@@ -420,7 +442,7 @@ void InitialiseLara()
     Lara.hit_direction = 0;
     Lara.death_count = 0;
     Lara.target = NULL;
-    Lara.spaz_effect = 0;
+    Lara.spaz_effect = NULL;
     Lara.spaz_effect_count = 0;
     Lara.turn_rate = 0;
     Lara.move_angle = 0;
@@ -458,7 +480,7 @@ void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    START_INFO* start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     Lara.pistols.ammo = 1000;
     if (start->got_pistols) {
@@ -523,7 +545,7 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO* start = &SaveGame[0].start[level_num];
+    START_INFO *start = &SaveGame.start[level_num];
 
     if (start->costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
@@ -580,12 +602,12 @@ void LaraInitialiseMeshes(int32_t level_num)
 
 void LaraCheatGetStuff()
 {
-    if (CurrentLevel == LV_GYM) {
+    if (CurrentLevel == GF.gym_level_num) {
         return;
     }
 
     // play istols drawing sound
-    SoundEffect(6, &LaraItem->pos, 0);
+    SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
 
     if (Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
         Inv_AddItem(O_GUN_ITEM);
@@ -595,24 +617,24 @@ void LaraCheatGetStuff()
         if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddItem(O_SHOTGUN_ITEM);
         }
-        Lara.shotgun.ammo = SaveGame[0].bonus_flag ? 10001 : 300;
+        Lara.shotgun.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 300;
     }
 
     if (Objects[O_MAGNUM_OPTION].loaded) {
         if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddItem(O_MAGNUM_ITEM);
         }
-        Lara.magnums.ammo = SaveGame[0].bonus_flag ? 10001 : 1000;
+        Lara.magnums.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
     }
 
     if (Objects[O_UZI_OPTION].loaded) {
         if (!Inv_RequestItem(O_UZI_ITEM)) {
             Inv_AddItem(O_UZI_ITEM);
         }
-        Lara.uzis.ammo = SaveGame[0].bonus_flag ? 10001 : 2000;
+        Lara.uzis.ammo = SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
     }
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; i++) {
         if (Objects[O_MEDI_OPTION].loaded
             && Inv_RequestItem(O_MEDI_ITEM) < 240) {
             Inv_AddItem(O_MEDI_ITEM);
@@ -623,7 +645,6 @@ void LaraCheatGetStuff()
         }
     }
 
-    // NOTE: there is no cheat for keys/puzzles in the original code
     if (Objects[O_KEY_OPTION1].loaded && !Inv_RequestItem(O_KEY_ITEM1)) {
         Inv_AddItem(O_KEY_ITEM1);
     }
@@ -656,104 +677,7 @@ void LaraCheatGetStuff()
     }
 }
 
-void InitialiseEvilLara(int16_t item_num)
-{
-    Objects[O_EVIL_LARA].frame_base = Objects[O_LARA].frame_base;
-    Items[item_num].data = NULL;
-}
-
-void ControlEvilLara(int16_t item_num)
-{
-    ITEM_INFO* item = &Items[item_num];
-
-    if (item->hit_points < LARA_HITPOINTS) {
-        LaraItem->hit_points -= (LARA_HITPOINTS - item->hit_points) * 10;
-        item->hit_points = LARA_HITPOINTS;
-    }
-
-    if (!item->data) {
-        int32_t x = 2 * 36 * WALL_L - LaraItem->pos.x;
-        int32_t y = LaraItem->pos.y;
-        int32_t z = 2 * 60 * WALL_L - LaraItem->pos.z;
-
-        int16_t room_num = item->room_number;
-        FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
-        int32_t h = GetHeight(floor, x, y, z);
-        item->floor = h;
-
-        room_num = LaraItem->room_number;
-        floor = GetFloor(
-            LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z, &room_num);
-        int32_t lh =
-            GetHeight(floor, LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z);
-
-        item->anim_number = LaraItem->anim_number;
-        item->frame_number = LaraItem->frame_number;
-        item->pos.x = x;
-        item->pos.y = y;
-        item->pos.z = z;
-        item->pos.x_rot = LaraItem->pos.x_rot;
-        item->pos.y_rot = LaraItem->pos.y_rot - PHD_180;
-        item->pos.z_rot = LaraItem->pos.z_rot;
-        ItemNewRoom(item_num, LaraItem->room_number);
-
-        if (h >= lh + WALL_L && !LaraItem->gravity_status) {
-            item->current_anim_state = AS_FASTFALL;
-            item->goal_anim_state = AS_FASTFALL;
-            item->anim_number = AA_FASTFALL;
-            item->frame_number = AF_FASTFALL;
-            item->speed = 0;
-            item->fall_speed = 0;
-            item->gravity_status = 1;
-            item->data = (void*)-1;
-            item->pos.y += 50;
-        }
-    }
-
-    if (item->data) {
-        AnimateItem(item);
-
-        int32_t x = item->pos.x;
-        int32_t y = item->pos.y;
-        int32_t z = item->pos.z;
-
-        int16_t room_num = item->room_number;
-        FLOOR_INFO* floor = GetFloor(x, y, z, &room_num);
-        int32_t h = GetHeight(floor, x, y, z);
-        item->floor = h;
-
-        TestTriggers(TriggerIndex, 1);
-        if (item->pos.y >= h) {
-            item->floor = h;
-            item->pos.y = h;
-            floor = GetFloor(x, h, z, &room_num);
-            GetHeight(floor, x, h, z);
-            TestTriggers(TriggerIndex, 1);
-            item->gravity_status = 0;
-            item->fall_speed = 0;
-            item->goal_anim_state = AS_DEATH;
-            item->required_anim_state = AS_DEATH;
-        }
-    }
-}
-
-void DrawEvilLara(ITEM_INFO* item)
-{
-    int16_t* old_mesh_ptrs[LM_NUMBER_OF];
-
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        old_mesh_ptrs[i] = Lara.mesh_ptrs[i];
-        Lara.mesh_ptrs[i] = Meshes[Objects[O_EVIL_LARA].mesh_index + i];
-    }
-
-    DrawLara(item);
-
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        Lara.mesh_ptrs[i] = old_mesh_ptrs[i];
-    }
-}
-
-void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
     LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
     LaraAsDeath,     LaraAsFastFall,  LaraAsHang,      LaraAsReach,
@@ -770,7 +694,7 @@ void (*LaraControlRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
     LaraAsSwanDive,  LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
 };
 
-void (*LaraCollisionRoutines[])(ITEM_INFO* item, COLL_INFO* coll) = {
+void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraColWalk,      LaraColRun,       LaraColStop,      LaraColForwardJump,
     LaraColPose,      LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
     LaraColDeath,     LaraColFastFall,  LaraColHang,      LaraColReach,
@@ -798,7 +722,4 @@ void T1MInjectGameLaraMisc()
     INJECT(0x00428020, InitialiseLara);
     INJECT(0x00428170, InitialiseLaraInventory);
     INJECT(0x00428340, LaraInitialiseMeshes);
-    INJECT(0x00428420, InitialiseEvilLara);
-    INJECT(0x00428450, ControlEvilLara);
-    INJECT(0x00428680, DrawEvilLara);
 }

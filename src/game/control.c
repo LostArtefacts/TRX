@@ -1,73 +1,175 @@
-#include "3dsystem/phd_math.h"
-#include "game/camera.h"
 #include "game/control.h"
+
+#include "3dsystem/phd_math.h"
+#include "config.h"
+#include "game/camera.h"
 #include "game/demo.h"
-#include "game/effects.h"
-#include "game/game.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/moveblock.h"
-#include "game/pickup.h"
-#include "game/savegame.h"
-#include "game/traps.h"
-#include "game/vars.h"
+#include "game/mnsound.h"
+#include "game/objects/keyhole.h"
+#include "game/objects/puzzle_hole.h"
+#include "game/objects/switch.h"
+#include "game/pause.h"
+#include "game/sound.h"
+#include "game/traps/lava.h"
+#include "game/traps/movable_block.h"
+#include "global/const.h"
+#include "global/vars.h"
+#include "specific/init.h"
 #include "specific/input.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
+
+#include <stddef.h>
+
+static const int32_t AnimationRate = 0x8000;
+
+void CheckCheatMode()
+{
+    static int32_t cheat_mode = 0;
+    static int16_t cheat_angle = 0;
+    static int32_t cheat_turn = 0;
+
+    if (CurrentLevel == GF.gym_level_num) {
+        return;
+    }
+
+    LARA_STATE as = LaraItem->current_anim_state;
+    switch (cheat_mode) {
+    case 0:
+        if (as == AS_WALK) {
+            cheat_mode = 1;
+        }
+        break;
+
+    case 1:
+        if (as != AS_WALK) {
+            cheat_mode = as == AS_STOP ? 2 : 0;
+        }
+        break;
+
+    case 2:
+        if (as != AS_STOP) {
+            cheat_mode = as == AS_BACK ? 3 : 0;
+        }
+        break;
+
+    case 3:
+        if (as != AS_BACK) {
+            cheat_mode = as == AS_STOP ? 4 : 0;
+        }
+        break;
+
+    case 4:
+        if (as != AS_STOP) {
+            cheat_angle = LaraItem->pos.y_rot;
+        }
+        cheat_turn = 0;
+        if (as == AS_TURN_L) {
+            cheat_mode = 5;
+        } else if (as == AS_TURN_R) {
+            cheat_mode = 6;
+        } else {
+            cheat_mode = 0;
+        }
+        break;
+
+    case 5:
+        if (as == AS_TURN_L || as == AS_FASTTURN) {
+            cheat_turn += (int16_t)(LaraItem->pos.y_rot - cheat_angle);
+            cheat_angle = LaraItem->pos.y_rot;
+        } else {
+            cheat_mode = cheat_turn < -94208 ? 7 : 0;
+        }
+        break;
+
+    case 6:
+        if (as == AS_TURN_R || as == AS_FASTTURN) {
+            cheat_turn += (int16_t)(LaraItem->pos.y_rot - cheat_angle);
+            cheat_angle = LaraItem->pos.y_rot;
+        } else {
+            cheat_mode = cheat_turn > 94208 ? 7 : 0;
+        }
+        break;
+
+    case 7:
+        if (as != AS_STOP) {
+            cheat_mode = as == AS_COMPRESS ? 8 : 0;
+        }
+        break;
+
+    case 8:
+        if (LaraItem->fall_speed > 0) {
+            if (as == AS_FORWARDJUMP) {
+                LevelComplete = 1;
+            } else if (as == AS_BACKJUMP) {
+                Inv_AddItem(O_SHOTGUN_ITEM);
+                Inv_AddItem(O_MAGNUM_ITEM);
+                Inv_AddItem(O_UZI_ITEM);
+                Lara.shotgun.ammo = 500;
+                Lara.magnums.ammo = 500;
+                Lara.uzis.ammo = 5000;
+                SoundEffect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
+            }
+            cheat_mode = 0;
+        }
+        break;
+
+    default:
+        cheat_mode = 0;
+        break;
+    }
+}
 
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {
+    static int32_t frame_count = 0;
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
 
-    FrameCount += AnimationRate * nframes;
-    while (FrameCount >= 0) {
+    frame_count += AnimationRate * nframes;
+    while (frame_count >= 0) {
         if (CDTrack > 0) {
-            S_CDLoop();
+            S_MusicLoop();
         }
 
         CheckCheatMode();
         if (LevelComplete) {
-            return 1;
+            return GF_NOP_BREAK;
         }
 
         S_UpdateInput();
 
         if (ResetFlag) {
-            return GF_EXIT_TO_TITLE;
+            return GF_NOP_BREAK;
         }
 
         if (demo_mode) {
-            if (KeyData->keys_held) {
-                return 1;
+            if (Input) {
+                return GF_EXIT_TO_TITLE;
             }
             GetDemoInput();
             if (Input == -1) {
-                return 1;
+                return GF_EXIT_TO_TITLE;
             }
         }
 
         if (Lara.death_count > DEATH_WAIT
-#ifdef T1M_FEAT_CHEATS
-            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_DOZYCHEAT))
-#else
-            || (Lara.death_count > DEATH_WAIT_MIN && Input)
-#endif
+            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_FLY_CHEAT))
             || OverlayFlag == 2) {
             if (demo_mode) {
-                return 1;
+                return GF_EXIT_TO_TITLE;
             }
             if (OverlayFlag == 2) {
                 OverlayFlag = 1;
                 return_val = Display_Inventory(INV_DEATH_MODE);
-                if (return_val) {
+                if (return_val != GF_NOP) {
                     return return_val;
                 }
             } else {
@@ -95,50 +197,46 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                 }
 
                 OverlayFlag = 1;
-                if (return_val) {
-                    if (InventoryExtraData[0] != 1) {
-                        return return_val;
-                    }
-                    if (CurrentLevel == LV_GYM) {
-                        return GF_STARTGAME | LV_FIRSTLEVEL;
-                    }
-
-                    CreateSaveGameInfo();
-                    S_SaveGame(
-                        &SaveGame[0], sizeof(SAVEGAME_INFO),
-                        InventoryExtraData[1]);
-                    WriteTombAtiSettings();
+                if (return_val != GF_NOP) {
+                    return return_val;
                 }
+            }
+        }
+
+        if (!Lara.death_count && CHK_ANY(GetDebouncedInput(Input), IN_PAUSE)) {
+            if (S_Pause()) {
+                return GF_EXIT_TO_TITLE;
             }
         }
 
         int16_t item_num = NextItemActive;
         while (item_num != NO_ITEM) {
-            int16_t nex = Items[item_num].next_active;
-            if (Objects[Items[item_num].object_number].control)
-                (*Objects[Items[item_num].object_number].control)(item_num);
-            item_num = nex;
+            ITEM_INFO *item = &Items[item_num];
+            OBJECT_INFO *obj = &Objects[item->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = item->next_active;
         }
 
         item_num = NextFxActive;
         while (item_num != NO_ITEM) {
-            int16_t nex = Effects[item_num].next_active;
-            if (Objects[Effects[item_num].object_number].control)
-                (*Objects[Effects[item_num].object_number].control)(item_num);
-            item_num = nex;
+            FX_INFO *fx = &Effects[item_num];
+            OBJECT_INFO *obj = &Objects[fx->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = fx->next_active;
         }
 
         LaraControl(0);
-#ifdef T1M_FEAT_HAIR
         HairControl(0);
-#endif
 
         CalculateCamera();
         SoundEffects();
-        ++SaveGame[0].timer;
-        --HealthBarTimer;
+        SaveGame.timer++;
+        HealthBarTimer--;
 
-#ifdef T1M_FEAT_GAMEPLAY
         if (T1MConfig.disable_healing_between_levels) {
             int8_t lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
@@ -151,20 +249,19 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
                     LaraItem ? LaraItem->hit_points : LARA_HITPOINTS;
             }
         }
-#endif
 
-        FrameCount -= 0x10000;
+        frame_count -= 0x10000;
     }
 
-    return 0;
+    return GF_NOP;
 }
 
-void AnimateItem(ITEM_INFO* item)
+void AnimateItem(ITEM_INFO *item)
 {
     item->touch_bits = 0;
     item->hit_status = 0;
 
-    ANIM_STRUCT* anim = &Anims[item->anim_number];
+    ANIM_STRUCT *anim = &Anims[item->anim_number];
 
     item->frame_number++;
 
@@ -181,7 +278,7 @@ void AnimateItem(ITEM_INFO* item)
 
     if (item->frame_number > anim->frame_end) {
         if (anim->number_commands > 0) {
-            int16_t* command = &AnimCommands[anim->command_index];
+            int16_t *command = &AnimCommands[anim->command_index];
             for (int i = 0; i < anim->number_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
@@ -220,7 +317,7 @@ void AnimateItem(ITEM_INFO* item)
     }
 
     if (anim->number_commands > 0) {
-        int16_t* command = &AnimCommands[anim->command_index];
+        int16_t *command = &AnimCommands[anim->command_index];
         for (int i = 0; i < anim->number_commands; i++) {
             switch (*command++) {
             case AC_MOVE_ORIGIN:
@@ -266,16 +363,16 @@ void AnimateItem(ITEM_INFO* item)
     item->pos.z += (phd_cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
 }
 
-int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
+int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
 {
     if (item->current_anim_state == item->goal_anim_state) {
         return 0;
     }
 
-    ANIM_CHANGE_STRUCT* change = &AnimChanges[anim->change_index];
+    ANIM_CHANGE_STRUCT *change = &AnimChanges[anim->change_index];
     for (int i = 0; i < anim->number_changes; i++, change++) {
         if (change->goal_anim_state == item->goal_anim_state) {
-            ANIM_RANGE_STRUCT* range = &AnimRanges[change->range_index];
+            ANIM_RANGE_STRUCT *range = &AnimRanges[change->range_index];
             for (int j = 0; j < change->number_ranges; j++, range++) {
                 if (item->frame_number >= range->start_frame
                     && item->frame_number <= range->end_frame) {
@@ -290,7 +387,7 @@ int32_t GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
     return 0;
 }
 
-void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
+void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
     int32_t c = phd_cos(item->pos.y_rot);
     int32_t s = phd_sin(item->pos.y_rot);
@@ -300,11 +397,11 @@ void TranslateItem(ITEM_INFO* item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
-FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
+FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
 {
     int16_t data;
-    FLOOR_INFO* floor;
-    ROOM_INFO* r = &RoomInfo[*room_num];
+    FLOOR_INFO *floor;
+    ROOM_INFO *r = &RoomInfo[*room_num];
     do {
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
@@ -374,13 +471,10 @@ FLOOR_INFO* GetFloor(int32_t x, int32_t y, int32_t z, int16_t* room_num)
 
 int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    ROOM_INFO* r = &RoomInfo[room_num];
+    ROOM_INFO *r = &RoomInfo[room_num];
 
-#ifdef T1M_FEAT_OG_FIXES
-    // TR2 code. Fixes infinite loops and crashes when x, y, z are outside of
-    // room_num's coordinates.
     int16_t data;
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
     int32_t x_floor, y_floor;
 
     do {
@@ -413,11 +507,6 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             r = &RoomInfo[data];
         }
     } while (data != NO_ROOM);
-#else
-    int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-    FLOOR_INFO* floor = &r->floor[x_floor + y_floor * r->x_size];
-#endif
 
     if (r->flags & RF_UNDERWATER) {
         while (floor->sky_room != NO_ROOM) {
@@ -444,11 +533,11 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     HeightType = HT_WALL;
     while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[floor->pit_room];
+        ROOM_INFO *r = &RoomInfo[floor->pit_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         floor = &r->floor[x_floor + y_floor * r->x_size];
@@ -462,7 +551,7 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
         return height;
     }
 
-    int16_t* data = &FloorData[floor->index];
+    int16_t *data = &FloorData[floor->index];
     int16_t type;
     int16_t trigger;
     do {
@@ -483,15 +572,15 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                 if (xoff < 0) {
                     height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height += (int16_t)(
-                        (xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 } else {
-                    height += (int16_t)(
-                        (yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 }
             }
 
@@ -521,8 +610,8 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                         trigger = *data++;
                     }
                 } else {
-                    ITEM_INFO* item = &Items[trigger & VALUE_BITS];
-                    OBJECT_INFO* object = &Objects[item->object_number];
+                    ITEM_INFO *item = &Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &Objects[item->object_number];
                     if (object->floor) {
                         object->floor(item, x, y, z, &height);
                     }
@@ -539,7 +628,7 @@ int16_t GetHeight(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
-void RefreshCamera(int16_t type, int16_t* data)
+void RefreshCamera(int16_t type, int16_t *data)
 {
     int16_t trigger;
     int16_t target_ok = 2;
@@ -584,7 +673,7 @@ void RefreshCamera(int16_t type, int16_t* data)
     }
 }
 
-void TestTriggers(int16_t* data, int32_t heavy)
+void TestTriggers(int16_t *data, int32_t heavy)
 {
     if (!data) {
         return;
@@ -663,7 +752,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
         }
     }
 
-    ITEM_INFO* camera_item = NULL;
+    ITEM_INFO *camera_item = NULL;
     int16_t trigger;
     do {
         trigger = *data++;
@@ -671,7 +760,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
 
         switch (TRIG_BITS(trigger)) {
         case TO_OBJECT: {
-            ITEM_INFO* item = &Items[value];
+            ITEM_INFO *item = &Items[value];
 
             if (item->flags & IF_ONESHOT) {
                 break;
@@ -679,7 +768,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
 
             item->timer = timer;
             if (timer != 1) {
-                item->timer *= 30;
+                item->timer *= FRAMES_PER_SECOND;
             }
 
             if (type == TT_SWITCH) {
@@ -752,7 +841,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
 
             Camera.timer = camera_timer;
             if (Camera.timer != 1) {
-                Camera.timer *= 30;
+                Camera.timer *= FRAMES_PER_SECOND;
             }
 
             if (camera_flags & IF_ONESHOT) {
@@ -769,7 +858,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
             break;
 
         case TO_SINK: {
-            OBJECT_VECTOR* obvector = &Camera.fixed[value];
+            OBJECT_VECTOR *obvector = &Camera.fixed[value];
 
             if (Lara.LOT.required_box != obvector->flags) {
                 Lara.LOT.target.x = obvector->x;
@@ -833,11 +922,11 @@ void TestTriggers(int16_t* data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((SaveGame[0].secrets & (1 << value))) {
+            if ((SaveGame.secrets & (1 << value))) {
                 break;
             }
-            SaveGame[0].secrets |= 1 << value;
-            S_CDPlay(13);
+            SaveGame.secrets |= 1 << value;
+            S_MusicPlay(13);
             break;
         }
     } while (!(trigger & END_BIT));
@@ -855,7 +944,7 @@ void TestTriggers(int16_t* data, int32_t heavy)
     }
 }
 
-int32_t TriggerActive(ITEM_INFO* item)
+int32_t TriggerActive(ITEM_INFO *item)
 {
     int32_t ok = (item->flags & IF_REVERSE) ? 0 : 1;
 
@@ -880,15 +969,15 @@ int32_t TriggerActive(ITEM_INFO* item)
     return ok;
 }
 
-int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
+int16_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
-    int16_t* data;
+    int16_t *data;
     int16_t type;
     int16_t trigger;
 
-    FLOOR_INFO* f = floor;
+    FLOOR_INFO *f = floor;
     while (f->sky_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[f->sky_room];
+        ROOM_INFO *r = &RoomInfo[f->sky_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         f = &r->floor[x_floor + y_floor * r->x_size];
@@ -914,13 +1003,13 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                 if (xoff < 0) {
                     height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height -= (int16_t)(
-                        (xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height -=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
-                    height += (int16_t)(
-                        (yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 } else {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 }
@@ -929,7 +1018,7 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     }
 
     while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO* r = &RoomInfo[floor->pit_room];
+        ROOM_INFO *r = &RoomInfo[floor->pit_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
         floor = &r->floor[x_floor + y_floor * r->x_size];
@@ -962,8 +1051,8 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
                         trigger = *data++;
                     }
                 } else {
-                    ITEM_INFO* item = &Items[trigger & VALUE_BITS];
-                    OBJECT_INFO* object = &Objects[item->object_number];
+                    ITEM_INFO *item = &Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &Objects[item->object_number];
                     if (object->ceiling) {
                         object->ceiling(item, x, y, z, &height);
                     }
@@ -980,13 +1069,13 @@ int16_t GetCeiling(FLOOR_INFO* floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
-int16_t GetDoor(FLOOR_INFO* floor)
+int16_t GetDoor(FLOOR_INFO *floor)
 {
     if (!floor->index) {
         return NO_ROOM;
     }
 
-    int16_t* data = &FloorData[floor->index];
+    int16_t *data = &FloorData[floor->index];
     int16_t type = *data++;
 
     if (type == FT_TILT) {
@@ -1005,7 +1094,7 @@ int16_t GetDoor(FLOOR_INFO* floor)
     return NO_ROOM;
 }
 
-int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
     int32_t los1;
     int32_t los2;
@@ -1022,7 +1111,7 @@ int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
         return 0;
     }
 
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(target->x, target->y, target->z, &target->room_number);
 
     if (ClipTarget(start, target, floor) && los1 == 1 && los2 == 1) {
@@ -1032,9 +1121,9 @@ int32_t LOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 0;
 }
 
-int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
 
     int32_t dz = target->z - start->z;
     if (dz == 0) {
@@ -1117,9 +1206,9 @@ int32_t zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 1;
 }
 
-int32_t xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
 
     int32_t dx = target->x - start->x;
     if (dx == 0) {
@@ -1202,7 +1291,7 @@ int32_t xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
     return 1;
 }
 
-int32_t ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target, FLOOR_INFO* floor)
+int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
 {
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
@@ -1232,14 +1321,14 @@ void FlipMap()
     mn_stop_ambient_samples();
 
     for (int i = 0; i < RoomCount; i++) {
-        ROOM_INFO* r = &RoomInfo[i];
+        ROOM_INFO *r = &RoomInfo[i];
         if (r->flipped_room < 0) {
             continue;
         }
 
         RemoveRoomFlipItems(r);
 
-        ROOM_INFO* flipped = &RoomInfo[r->flipped_room];
+        ROOM_INFO *flipped = &RoomInfo[r->flipped_room];
         ROOM_INFO temp = *r;
         *r = *flipped;
         *flipped = temp;
@@ -1257,43 +1346,43 @@ void FlipMap()
     FlipStatus = !FlipStatus;
 }
 
-void RemoveRoomFlipItems(ROOM_INFO* r)
+void RemoveRoomFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_number; item_num != NO_ITEM;
          item_num = Items[item_num].next_item) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
 
         switch (item->object_number) {
         case O_MOVABLE_BLOCK:
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, 1024);
+            AlterFloorHeight(item, WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, 2048);
+            AlterFloorHeight(item, WALL_L * 2);
             break;
         }
     }
 }
 
-void AddRoomFlipItems(ROOM_INFO* r)
+void AddRoomFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_number; item_num != NO_ITEM;
          item_num = Items[item_num].next_item) {
-        ITEM_INFO* item = &Items[item_num];
+        ITEM_INFO *item = &Items[item_num];
 
         switch (item->object_number) {
         case O_MOVABLE_BLOCK:
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, -1024);
+            AlterFloorHeight(item, -WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, -2048);
+            AlterFloorHeight(item, -WALL_L * 2);
             break;
         }
     }
@@ -1342,7 +1431,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         if (CDFlags[value] & IF_ONESHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
-            if (gym_completion_counter == 30 * 4) {
+            if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
                 LevelComplete = 1;
                 gym_completion_counter = 0;
             }
@@ -1374,11 +1463,77 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
             CDFlags[value] |= IF_ONESHOT;
         }
         if (value != CDTrack) {
-            S_CDPlay(value);
+            S_MusicPlay(value);
         }
     } else {
-        S_CDStop();
+        S_MusicStop();
     }
+}
+
+int GetSecretCount()
+{
+    int count = 0;
+    uint32_t secrets = 0;
+
+    for (int i = 0; i < RoomCount; i++) {
+        ROOM_INFO *r = &RoomInfo[i];
+        FLOOR_INFO *floor = &r->floor[0];
+        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
+            int k = floor->index;
+            if (!k) {
+                continue;
+            }
+
+            while (1) {
+                uint16_t floor = FloorData[k++];
+
+                switch (floor & DATA_TYPE) {
+                case FT_DOOR:
+                case FT_ROOF:
+                case FT_TILT:
+                    k++;
+                    break;
+
+                case FT_LAVA:
+                    break;
+
+                case FT_TRIGGER: {
+                    uint16_t trig_type = (floor & 0x3F00) >> 8;
+                    k++; // skip basic trigger stuff
+
+                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                        || trig_type == TT_PICKUP) {
+                        k++;
+                    }
+
+                    while (1) {
+                        int16_t command = FloorData[k++];
+                        if (TRIG_BITS(command) == TO_CAMERA) {
+                            k++;
+                        } else if (TRIG_BITS(command) == TO_SECRET) {
+                            int16_t number = command & VALUE_BITS;
+                            if (!(secrets & (1 << number))) {
+                                secrets |= (1 << number);
+                                count++;
+                            }
+                        }
+
+                        if (command & END_BIT) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+
+                if (floor & END_BIT) {
+                    break;
+                }
+            }
+        }
+    }
+
+    return count;
 }
 
 void T1MInjectGameControl()
@@ -1401,4 +1556,5 @@ void T1MInjectGameControl()
     INJECT(0x004150C0, ClipTarget);
     INJECT(0x004151A0, FlipMap);
     INJECT(0x00415310, TriggerCDTrack);
+    INJECT(0x00438920, CheckCheatMode);
 }

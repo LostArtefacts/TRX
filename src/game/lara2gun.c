@@ -1,7 +1,12 @@
-#include "game/effects.h"
 #include "game/lara.h"
-#include "game/vars.h"
+
+#include "game/sound.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 // original name: draw_pistols
 void DrawPistols(int32_t weapon_type)
@@ -13,7 +18,7 @@ void DrawPistols(int32_t weapon_type)
         ani = AF_G_DRAW1;
     } else if (ani == AF_G_DRAW2) {
         DrawPistolMeshes(weapon_type);
-        SoundEffect(6, &LaraItem->pos, 0);
+        SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
     } else if (ani == AF_G_DRAW2_L) {
         ReadyPistols();
         ani = AF_G_AIM;
@@ -134,7 +139,7 @@ void UndrawPistolMeshLeft(int32_t weapon_type)
     Lara.mesh_ptrs[LM_THIGH_L] =
         Meshes[Objects[object_num].mesh_index + LM_THIGH_L];
     Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
-    SoundEffect(7, &LaraItem->pos, 0);
+    SoundEffect(SFX_LARA_HOLSTER, &LaraItem->pos, SPM_NORMAL);
 }
 
 // original name: undraw_pistol_mesh_right
@@ -149,12 +154,12 @@ void UndrawPistolMeshRight(int32_t weapon_type)
     Lara.mesh_ptrs[LM_THIGH_R] =
         Meshes[Objects[object_num].mesh_index + LM_THIGH_R];
     Lara.mesh_ptrs[LM_HAND_R] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_R];
-    SoundEffect(7, &LaraItem->pos, 0);
+    SoundEffect(SFX_LARA_HOLSTER, &LaraItem->pos, SPM_NORMAL);
 }
 
 void PistolHandler(int32_t weapon_type)
 {
-    WEAPON_INFO* winfo = &Weapons[weapon_type];
+    WEAPON_INFO *winfo = &Weapons[weapon_type];
 
     if (Input & IN_ACTION) {
         LaraTargetInfo(winfo);
@@ -191,7 +196,7 @@ void PistolHandler(int32_t weapon_type)
 void AnimatePistols(int32_t weapon_type)
 {
     PHD_ANGLE angles[2];
-    WEAPON_INFO* winfo = &Weapons[weapon_type];
+    WEAPON_INFO *winfo = &Weapons[weapon_type];
 
     int16_t anir = Lara.right_arm.frame_number;
     if (Lara.right_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
@@ -202,7 +207,7 @@ void AnimatePistols(int32_t weapon_type)
             angles[1] = Lara.right_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {
                 Lara.right_arm.flash_gun = winfo->flash_time;
-                SoundEffect(winfo->sample_num, &LaraItem->pos, 0);
+                SoundEffect(winfo->sample_num, &LaraItem->pos, SPM_NORMAL);
             }
             anir = AF_G_RECOIL;
         } else if (anir >= AF_G_RECOIL) {
@@ -221,13 +226,13 @@ void AnimatePistols(int32_t weapon_type)
     int16_t anil = Lara.left_arm.frame_number;
     if (Lara.left_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
         if (anil >= AF_G_AIM && anil < AF_G_AIM_L) {
-            ++anil;
+            anil++;
         } else if (anil == AF_G_AIM_L && (Input & IN_ACTION)) {
             angles[0] = Lara.left_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.left_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {
                 Lara.left_arm.flash_gun = winfo->flash_time;
-                SoundEffect(winfo->sample_num, &LaraItem->pos, 0);
+                SoundEffect(winfo->sample_num, &LaraItem->pos, SPM_NORMAL);
             }
             anil = AF_G_RECOIL;
         } else if (anil >= AF_G_RECOIL) {
@@ -239,7 +244,7 @@ void AnimatePistols(int32_t weapon_type)
     } else if (anil >= AF_G_RECOIL) {
         anil = AF_G_AIM_L;
     } else if (anil > AF_G_AIM && anil <= AF_G_AIM_L) {
-        --anil;
+        anil--;
     }
     Lara.left_arm.frame_number = anil;
 }

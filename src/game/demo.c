@@ -1,29 +1,33 @@
-#include "game/control.h"
 #include "game/demo.h"
+
+#include "config.h"
+#include "game/control.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/setup.h"
-#include "game/setup.h"
 #include "game/text.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/frontend.h"
 #include "util.h"
 
 int32_t StartDemo()
 {
-    TRACE("");
-    TEXTSTRING* txt;
+    LOG_DEBUG("");
+    TEXTSTRING *txt;
     START_INFO start, *s;
 
     int16_t level_num = DemoLevel;
     do {
-        if (++level_num > 15) {
-            level_num = 1;
+        level_num++;
+        if (level_num > GF.last_level_num) {
+            level_num = GF.first_level_num;
         }
-    } while (!DemoLevels[level_num]);
+    } while (!GF.levels[level_num].demo);
     DemoLevel = level_num;
 
-    s = &SaveGame[0].start[DemoLevel];
+    s = &SaveGame.start[DemoLevel];
     start = *s;
     s->available = 1;
     s->got_pistols = 1;
@@ -34,7 +38,12 @@ int32_t StartDemo()
     SeedRandomDraw(0xD371F947);
     SeedRandomControl(0xD371F947);
 
-    if (InitialiseLevel(DemoLevel)) {
+    // changing the controls affects negatively the original game demo data,
+    // so temporarily turn off all the T1M enhancements
+    int8_t old_enhanced_look = T1MConfig.enable_enhanced_look;
+    T1MConfig.enable_enhanced_look = 0;
+
+    if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         TitleLoaded = 0;
 
         LoadLaraDemoPos();
@@ -42,17 +51,10 @@ int32_t StartDemo()
         SeedRandomDraw(0xD371F947);
         SeedRandomControl(0xD371F947);
 
-#ifdef T1M_FEAT_UI
-        txt = T_Print(0, -16, 0, "Demo Mode");
+        txt = T_Print(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
         T_FlashText(txt, 1, 20);
         T_BottomAlign(txt, 1);
         T_CentreH(txt, 1);
-#else
-        txt = T_Print(0, DumpHeight / 2 - 16, 0, "Demo Mode");
-        T_FlashText(txt, 1, 20);
-        T_CentreV(txt, 1);
-        T_CentreH(txt, 1);
-#endif
 
         GameLoop(1);
 
@@ -62,12 +64,14 @@ int32_t StartDemo()
         S_FadeToBlack();
     }
 
+    T1MConfig.enable_enhanced_look = old_enhanced_look;
+
     return GF_EXIT_TO_TITLE;
 }
 
 void LoadLaraDemoPos()
 {
-    ITEM_INFO* item = LaraItem;
+    ITEM_INFO *item = LaraItem;
     item->pos.x = DemoPtr[0];
     item->pos.y = DemoPtr[1];
     item->pos.z = DemoPtr[2];
@@ -81,7 +85,7 @@ void LoadLaraDemoPos()
         ItemNewRoom(Lara.item_number, room_num);
     }
 
-    FLOOR_INFO* floor =
+    FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }

@@ -6,3 +6,4 @@ AllowShortFunctionsOnASingleLine: InlineOnly
 BreakBeforeBinaryOperators: NonAssignment
 AlignAfterOpenBracket: AlwaysBreak
 SortIncludes: false
+PointerAlignment: Right

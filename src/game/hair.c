@@ -1,13 +1,13 @@
+#include "game/hair.h"
+
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
-#include "game/const.h"
+#include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
-#include "game/hair.h"
-#include "game/types.h"
-#include "game/vars.h"
-#include "config.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "util.h"
 
 #define HAIR_SEGMENTS 6
@@ -23,7 +23,7 @@ void InitialiseHair()
 {
     FirstHair = 1;
 
-    int32_t* bone = &AnimBones[Objects[O_HAIR].bone_index];
+    int32_t *bone = &AnimBones[Objects[O_HAIR].bone_index];
 
     Hair[0].y_rot = 0;
     Hair[0].x_rot = -PHD_90;
@@ -46,11 +46,11 @@ void HairControl(int in_cutscene)
         return;
     }
 
-    OBJECT_INFO* object;
+    OBJECT_INFO *object;
     int32_t *bone, distance;
     int16_t *frame, *objptr, room_number;
     PHD_VECTOR pos;
-    FLOOR_INFO* floor;
+    FLOOR_INFO *floor;
     int32_t i, water_level, height, size;
     SPHERE sphere[5];
     int32_t j, x, y, z;
@@ -95,7 +95,7 @@ void HairControl(int in_cutscene)
 
     phd_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-    int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(packed_rotation[LM_HIPS]);
 
     // hips
@@ -113,7 +113,7 @@ void HairControl(int in_cutscene)
     phd_RotYXZpack(packed_rotation[LM_TORSO]);
     phd_RotYXZ(Lara.torso_y_rot, Lara.torso_x_rot, Lara.torso_z_rot);
     phd_PushMatrix();
-    objptr = Lara.mesh_ptrs[LM_TORSO];
+    objptr = Meshes[Objects[O_LARA].mesh_index + LM_TORSO]; // ignore shotgun
     phd_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[1].x = PhdMatrixPtr->_03 >> W2V_SHIFT;
     sphere[1].y = PhdMatrixPtr->_13 >> W2V_SHIFT;
@@ -300,8 +300,8 @@ void DrawHair()
         return;
     }
 
-    OBJECT_INFO* object = &Objects[O_HAIR];
-    int16_t** mesh = &Meshes[object->mesh_index];
+    OBJECT_INFO *object = &Objects[O_HAIR];
+    int16_t **mesh = &Meshes[object->mesh_index];
 
     for (int i = 0; i < HAIR_SEGMENTS; i++) {
         phd_PushMatrix();

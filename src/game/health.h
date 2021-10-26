@@ -3,18 +3,16 @@
 
 #include <stdint.h>
 
-void MakeAmmoString(char* string);
+void MakeAmmoString(char *string);
 void DrawAmmoInfo();
+void DrawFPSInfo();
 void DrawGameInfo();
 void DrawHealthBar();
+void DrawEnemyBar();
 void DrawAirBar();
 void AddDisplayPickup(int16_t object_num);
 void InitialisePickUpDisplay();
 void DrawPickups();
-
-#ifdef T1M_FEAT_GAMEPLAY
-void DrawEnemyBar();
-#endif
 
 void T1MInjectGameHealth();
 

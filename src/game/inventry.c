@@ -1,19 +1,28 @@
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
-#include "game/effects.h"
 #include "game/inv.h"
+
+#include "3dsystem/3d_gen.h"
+#include "3dsystem/scalespr.h"
+#include "config.h"
+#include "game/game.h"
+#include "game/health.h"
 #include "game/lara.h"
+#include "game/mnsound.h"
 #include "game/option.h"
+#include "game/savegame.h"
+#include "game/settings.h"
+#include "game/sound.h"
 #include "game/text.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
+
+#include <stdint.h>
 #include <string.h>
 
 typedef enum {
@@ -26,8 +35,6 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
-static int OldInputDB = 0;
-
 int32_t Display_Inventory(int inv_mode)
 {
     RING_INFO ring;
@@ -37,8 +44,8 @@ int32_t Display_Inventory(int inv_mode)
     memset(&ring, 0, sizeof(RING_INFO));
 
     if (inv_mode == RT_KEYS && !InvKeysObjects) {
-        InventoryChosen = -1;
-        return 0;
+        InvChosen = -1;
+        return GF_NOP;
     }
 
     int32_t pass_mode_open = 0;
@@ -47,17 +54,13 @@ int32_t Display_Inventory(int inv_mode)
         AmmoText = 0;
     }
 
-#ifdef T1M_FEAT_UI
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-#else
-    AlterFOV(GAME_FOV * PHD_DEGREE);
-#endif
-    InventoryMode = inv_mode;
+    InvMode = inv_mode;
 
     InvNFrames = 2;
     Construct_Inventory();
 
-    if (InventoryMode != INV_TITLE_MODE) {
+    if (InvMode != INV_TITLE_MODE) {
         S_FadeInInventory(1);
     } else {
         S_FadeInInventory(0);
@@ -65,13 +68,11 @@ int32_t Display_Inventory(int inv_mode)
 
     mn_stop_ambient_samples();
     S_SoundStopAllSamples();
-    if (InventoryMode != INV_TITLE_MODE) {
-        S_CDVolume(0);
-    }
 
-    switch (InventoryMode) {
+    switch (InvMode) {
     case INV_DEATH_MODE:
     case INV_SAVE_MODE:
+    case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_TITLE_MODE:
         Inv_RingInit(
@@ -97,7 +98,7 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    SoundEffect(111, 0, RT_KEYS);
+    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
     InvNFrames = 2;
 
@@ -107,17 +108,19 @@ int32_t Display_Inventory(int inv_mode)
 
         InputDB = GetDebouncedInput(Input);
 
-        if (InventoryMode != INV_TITLE_MODE || Input || InputDB) {
+        if (InvMode != INV_TITLE_MODE || Input || InputDB) {
             NoInputCount = 0;
             ResetFlag = 0;
         } else {
-            NoInputCount++;
-            if (NoInputCount > NOINPUT_TIME) {
-                ResetFlag = INV_TITLE_MODE;
+            if (!T1MConfig.disable_demo) {
+                NoInputCount++;
+                if (GF.has_demo && NoInputCount > GF.demo_delay) {
+                    ResetFlag = 1;
+                }
             }
         }
 
-        for (int i = 0; i < InvNFrames; ++i) {
+        for (int i = 0; i < InvNFrames; i++) {
             if (IDelay) {
                 if (IDCount) {
                     IDCount--;
@@ -145,7 +148,7 @@ int32_t Display_Inventory(int inv_mode)
 
         PHD_ANGLE angle = 0;
         for (int i = 0; i < ring.number_of_objects; i++) {
-            INVENTORY_ITEM* inv_item = ring.list[i];
+            INVENTORY_ITEM *inv_item = ring.list[i];
 
             if (i == ring.current_object) {
                 for (int j = 0; j < InvNFrames; j++) {
@@ -234,18 +237,23 @@ int32_t Display_Inventory(int inv_mode)
         phd_PopMatrix();
 
         mn_update_sound_effects();
+        DrawFPSInfo();
         T_DrawText();
         S_OutputPolyList();
 
         InvNFrames = S_DumpScreen();
         Camera.number_frames = InvNFrames;
 
+        if (T1MConfig.enable_timer_in_inventory) {
+            SaveGame.timer += InvNFrames / 2;
+        }
+
         if (ring.rotating) {
             continue;
         }
 
-        if ((InventoryMode == INV_SAVE_MODE || InventoryMode == INV_LOAD_MODE
-             || InventoryMode == INV_DEATH_MODE)
+        if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
+             || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
             InputDB = IN_SELECT;
         }
@@ -254,20 +262,20 @@ int32_t Display_Inventory(int inv_mode)
         case RNG_OPEN:
             if (CHK_ANY(Input, IN_RIGHT) && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
-                SoundEffect(108, 0, SFX_ALWAYS);
+                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if (CHK_ANY(Input, IN_LEFT) && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
-                SoundEffect(108, 0, SFX_ALWAYS);
+                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if ((ResetFlag || CHK_ANY(InputDB, IN_OPTION))
-                && (ResetFlag || InventoryMode != INV_TITLE_MODE)) {
-                SoundEffect(112, 0, SFX_ALWAYS);
-                InventoryChosen = -1;
+                && (ResetFlag || InvMode != INV_TITLE_MODE)) {
+                SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
+                InvChosen = -1;
 
                 if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
@@ -275,7 +283,7 @@ int32_t Display_Inventory(int inv_mode)
                     InvOptionCurrent = ring.current_object;
                 }
 
-                if (InventoryMode == INV_TITLE_MODE) {
+                if (InvMode == INV_TITLE_MODE) {
                     S_FadeOutInventory(0);
                 } else {
                     S_FadeOutInventory(1);
@@ -291,16 +299,16 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (CHK_ANY(InputDB, IN_SELECT)) {
-                if ((InventoryMode == INV_SAVE_MODE
-                     || InventoryMode == INV_LOAD_MODE
-                     || InventoryMode == INV_DEATH_MODE)
+                if ((InvMode == INV_SAVE_MODE
+                     || InvMode == INV_SAVE_CRYSTAL_MODE
+                     || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
                     pass_mode_open = 1;
                 }
 
                 Item_Data = 0;
 
-                INVENTORY_ITEM* inv_item;
+                INVENTORY_ITEM *inv_item;
                 if (ring.type == RT_MAIN) {
                     InvMainCurrent = ring.current_object;
                     inv_item = InvMainList[ring.current_object];
@@ -325,32 +333,32 @@ int32_t Display_Inventory(int inv_mode)
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
-                    SoundEffect(113, 0, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_COMPASS, NULL, SPM_ALWAYS);
                     break;
 
                 case O_PHOTO_OPTION:
-                    SoundEffect(109, 0, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_CHOOSE, NULL, SPM_ALWAYS);
                     break;
 
                 case O_CONTROL_OPTION:
-                    SoundEffect(110, 0, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_GAMEBOY, NULL, SPM_ALWAYS);
                     break;
 
                 case O_GUN_OPTION:
                 case O_SHOTGUN_OPTION:
                 case O_MAGNUM_OPTION:
                 case O_UZI_OPTION:
-                    SoundEffect(114, 0, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_GUNS, NULL, SPM_ALWAYS);
                     break;
 
                 default:
-                    SoundEffect(111, 0, SFX_ALWAYS);
+                    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
                     break;
                 }
             }
 
-            if (CHK_ANY(InputDB, IN_FORWARD) && InventoryMode != INV_TITLE_MODE
-                && InventoryMode != INV_KEYS_MODE) {
+            if (CHK_ANY(InputDB, IN_FORWARD) && InvMode != INV_TITLE_MODE
+                && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (InvKeysObjects) {
                         Inv_RingMotionSetup(
@@ -380,8 +388,8 @@ int32_t Display_Inventory(int inv_mode)
                     InputDB = 0;
                 }
             } else if (
-                CHK_ANY(InputDB, IN_BACK) && InventoryMode != INV_TITLE_MODE
-                && InventoryMode != INV_KEYS_MODE) {
+                CHK_ANY(InputDB, IN_BACK) && InvMode != INV_TITLE_MODE
+                && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
@@ -492,7 +500,7 @@ int32_t Display_Inventory(int inv_mode)
             break;
 
         case RNG_SELECTED: {
-            INVENTORY_ITEM* inv_item = ring.list[ring.current_object];
+            INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
             if (inv_item->object_number == O_PASSPORT_CLOSED) {
                 inv_item->object_number = O_PASSPORT_OPTION;
             }
@@ -506,7 +514,7 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (!busy && !IDelay) {
-                do_inventory_options(inv_item);
+                DoInventoryOptions(inv_item);
 
                 if (CHK_ANY(InputDB, IN_DESELECT)) {
                     inv_item->sprlist = NULL;
@@ -515,8 +523,8 @@ int32_t Display_Inventory(int inv_mode)
                     Input = 0;
                     InputDB = 0;
 
-                    if (InventoryMode == INV_LOAD_MODE
-                        || InventoryMode == INV_SAVE_MODE) {
+                    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
+                        || InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                         Input = 0;
@@ -526,14 +534,14 @@ int32_t Display_Inventory(int inv_mode)
 
                 if (CHK_ANY(InputDB, IN_SELECT)) {
                     inv_item->sprlist = NULL;
-                    InventoryChosen = inv_item->object_number;
+                    InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {
                         InvMainCurrent = ring.current_object;
                     } else {
                         InvOptionCurrent = ring.current_object;
                     }
 
-                    if (InventoryMode == INV_TITLE_MODE
+                    if (InvMode == INV_TITLE_MODE
                         && ((inv_item->object_number == O_DETAIL_OPTION)
                             || inv_item->object_number == O_SOUND_OPTION
                             || inv_item->object_number == O_CONTROL_OPTION
@@ -552,7 +560,7 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_DESELECT:
-            SoundEffect(112, 0, SFX_ALWAYS);
+            SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
             Inv_RingMotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
@@ -562,7 +570,7 @@ int32_t Display_Inventory(int inv_mode)
             break;
 
         case RNG_CLOSING_ITEM: {
-            INVENTORY_ITEM* inv_item = ring.list[ring.current_object];
+            INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
             for (int j = 0; j < InvNFrames; j++) {
                 if (!AnimateInventoryItem(inv_item)) {
                     if (inv_item->object_number == O_PASSPORT_OPTION) {
@@ -580,7 +588,7 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_EXITING_INVENTORY:
             if (!imo.count) {
-                if (InventoryMode != INV_TITLE_MODE) {
+                if (InvMode != INV_TITLE_MODE) {
                     S_FadeOutInventory(1);
                 } else {
                     S_FadeOutInventory(0);
@@ -598,22 +606,76 @@ int32_t Display_Inventory(int inv_mode)
     RemoveInventoryText();
     S_FinishInventory();
 
-    InventoryDisplaying = 0;
-
     if (ResetFlag) {
-        return GF_EXIT_TO_TITLE;
+        return GF_START_DEMO;
     }
 
-    switch (InventoryChosen) {
+    switch (InvChosen) {
     case O_PASSPORT_OPTION:
-        if (InventoryExtraData[0] == 1 && OptionMusicVolume) {
-            S_CDVolume(25 * OptionMusicVolume + 5);
+        if (InvMode == INV_TITLE_MODE) {
+            if (InvExtraData[0] == 0) {
+                // page 1: load game
+                return GF_START_SAVED_GAME | InvExtraData[1];
+            } else if (InvExtraData[0] == 1) {
+                // page 2: new game
+                switch (InvExtraData[1]) {
+                case 0:
+                    SaveGame.bonus_flag = 0;
+                    break;
+                case 1:
+                    SaveGame.bonus_flag = GBF_NGPLUS;
+                    break;
+                case 2:
+                    SaveGame.bonus_flag = GBF_JAPANESE;
+                    break;
+                case 3:
+                    SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    break;
+                }
+                InitialiseStartInfo();
+                return GF_START_GAME | GF.first_level_num;
+            } else {
+                // page 3: exit game
+                return GF_EXIT_GAME;
+            }
+        } else {
+            if (InvExtraData[0] == 0) {
+                // page 1: load game
+                return GF_START_SAVED_GAME | InvExtraData[1];
+            } else if (InvExtraData[0] == 1) {
+                // page 1: save game, or new game in gym
+                if (CurrentLevel == GF.gym_level_num) {
+                    switch (InvExtraData[1]) {
+                    case 0:
+                        SaveGame.bonus_flag = 0;
+                        break;
+                    case 1:
+                        SaveGame.bonus_flag = GBF_NGPLUS;
+                        break;
+                    case 2:
+                        SaveGame.bonus_flag = GBF_JAPANESE;
+                        break;
+                    case 3:
+                        SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        break;
+                    }
+                    InitialiseStartInfo();
+                    return GF_START_GAME | GF.first_level_num;
+                } else {
+                    CreateSaveGameInfo();
+                    S_SaveGame(&SaveGame, InvExtraData[1]);
+                    S_WriteUserSettings();
+                    return GF_NOP;
+                }
+            } else {
+                // page 3: exit to title
+                return GF_EXIT_TO_TITLE;
+            }
         }
-        return GF_STARTGAME | LV_FIRSTLEVEL;
 
     case O_PHOTO_OPTION:
-        InventoryExtraData[1] = 0;
-        return GF_STARTGAME | LV_FIRSTLEVEL;
+        InvExtraData[1] = 0;
+        return GF_START_GAME | GF.gym_level_num;
 
     case O_GUN_OPTION:
         UseItem(O_GUN_OPTION);
@@ -640,17 +702,13 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    if (InventoryMode != INV_TITLE_MODE && OptionMusicVolume) {
-        S_CDVolume(25 * OptionMusicVolume + 5);
-    }
-
-    return 0;
+    return GF_NOP;
 }
 
 void Construct_Inventory()
 {
     S_SetupAboveWater(0);
-    if (InventoryMode != INV_TITLE_MODE) {
+    if (InvMode != INV_TITLE_MODE) {
         TempVideoAdjust(HiRes, 1.0);
     }
 
@@ -660,19 +718,18 @@ void Construct_Inventory()
     PhdRight = PhdWinMaxX;
 
     for (int i = 0; i < 8; i++) {
-        InventoryExtraData[i] = 0;
+        InvExtraData[i] = 0;
     }
 
-    InventoryDisplaying = 1;
-    InventoryChosen = 0;
-    if (InventoryMode == INV_TITLE_MODE) {
+    InvChosen = 0;
+    if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;
     }
 
     for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvMainList[i];
+        INVENTORY_ITEM *inv_item = InvMainList[i];
         inv_item->drawn_meshes = inv_item->which_meshes;
         if ((inv_item->object_number == O_MAP_OPTION) && CompassStatus) {
             inv_item->current_frame = inv_item->open_frame;
@@ -686,7 +743,7 @@ void Construct_Inventory()
     }
 
     for (int i = 0; i < InvOptionObjects; i++) {
-        INVENTORY_ITEM* inv_item = InvOptionList[i];
+        INVENTORY_ITEM *inv_item = InvOptionList[i];
         inv_item->current_frame = 0;
         inv_item->goal_frame = 0;
         inv_item->anim_count = 0;
@@ -696,9 +753,13 @@ void Construct_Inventory()
     InvMainCurrent = 0;
     InvOptionCurrent = 0;
     Item_Data = 0;
+
+    if (GF.gym_level_num == -1) {
+        Inv_RemoveItem(O_PHOTO_OPTION);
+    }
 }
 
-int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
+int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
         SelectMeshes(inv_item);
@@ -719,7 +780,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM* inv_item)
     return 1;
 }
 
-void SelectMeshes(INVENTORY_ITEM* inv_item)
+void SelectMeshes(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->object_number == O_PASSPORT_OPTION) {
         if (inv_item->current_frame <= 14) {
@@ -746,12 +807,12 @@ void SelectMeshes(INVENTORY_ITEM* inv_item)
     }
 }
 
-void DrawInventoryItem(INVENTORY_ITEM* inv_item)
+void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 {
     phd_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     phd_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
-    OBJECT_INFO* obj = &Objects[inv_item->object_number];
+    OBJECT_INFO *obj = &Objects[inv_item->object_number];
     if (obj->nmeshes < 0) {
         S_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
         return;
@@ -763,8 +824,8 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
         int32_t sx = PhdCenterX + PhdMatrixPtr->_03 / zp;
         int32_t sy = PhdCenterY + PhdMatrixPtr->_13 / zp;
 
-        INVENTORY_SPRITE** sprlist = inv_item->sprlist;
-        INVENTORY_SPRITE* spr;
+        INVENTORY_SPRITE **sprlist = inv_item->sprlist;
+        INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
             if (zv < PhdNearZ || zv > PhdFarZ) {
                 break;
@@ -776,23 +837,20 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
                     S_DrawScreenSprite(
                         sx + spr->x, sy + spr->y, spr->z, spr->param1,
                         spr->param2,
-                        StaticObjects[O_ALPHABET].mesh_number + spr->sprnum,
-                        4096, 0);
+                        Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096, 0);
                     break;
                 case SHAPE_LINE:
                     S_DrawScreenLine(
-                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
-                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2,
+                        S_ColourFromPalette(spr->sprnum));
                     break;
                 case SHAPE_BOX:
                     S_DrawScreenBox(
-                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
-                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
                     break;
                 case SHAPE_FBOX:
                     S_DrawScreenFBox(
-                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
-                        spr->param2, spr->sprnum, spr->grdptr, 0);
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
                     break;
                 }
                 spr++;
@@ -800,7 +858,7 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
         }
     }
 
-    int16_t* frame =
+    int16_t *frame =
         &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
 
     phd_PushMatrix();
@@ -809,12 +867,12 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
     if (clip) {
         phd_TranslateRel(
             frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-        int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
         phd_RotYXZpack(*packed_rotation++);
 
         int32_t mesh_num = 1;
 
-        int32_t* bone = &AnimBones[obj->bone_index];
+        int32_t *bone = &AnimBones[obj->bone_index];
         if (inv_item->drawn_meshes & mesh_num) {
             phd_PutPolygons(Meshes[obj->mesh_index], clip);
         }
@@ -835,9 +893,7 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
                 CompassSpeed = CompassSpeed * 19 / 20
-                    + (int16_t)(
-                          -inv_item->y_rot - LaraItem->pos.y_rot
-                          - CompassNeedle)
+                    + (int16_t)(-inv_item->y_rot - LaraItem->pos.y_rot - CompassNeedle)
                         / 50;
                 CompassNeedle += CompassSpeed;
                 phd_RotY(CompassNeedle);
@@ -851,18 +907,6 @@ void DrawInventoryItem(INVENTORY_ITEM* inv_item)
         }
     }
     phd_PopMatrix();
-}
-
-int32_t GetDebouncedInput(int32_t input)
-{
-    if (input && !OldInputDB) {
-        OldInputDB = input;
-    } else if (!input) {
-        OldInputDB = 0;
-    } else {
-        input = 0;
-    }
-    return input;
 }
 
 void T1MInjectGameInvEntry()

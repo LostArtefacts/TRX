@@ -1,93 +1,66 @@
+#include "game/game.h"
+
+#include "config.h"
+#include "filesystem.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/text.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
+#include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/sndpc.h"
-#include "config.h"
 #include "util.h"
 
-int32_t StartGame(int level_num)
+#include <stdio.h>
+
+int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    switch (level_num) {
-    case LV_GYM:
-        S_PlayFMV(FMV_GYM, 1);
-        break;
-
-    case LV_LEVEL1:
-        S_PlayFMV(FMV_SNOW, 1);
-        break;
-
-    case LV_LEVEL4:
-        S_PlayFMV(FMV_LIFT, 1);
-        break;
-
-    case LV_LEVEL8A:
-        S_PlayFMV(FMV_VISION, 1);
-        break;
-
-    case LV_LEVEL10A:
-        S_PlayFMV(FMV_CANYON, 1);
-        break;
-
-    case LV_LEVEL10B:
-        S_PlayFMV(FMV_PYRAMID, 1);
-        break;
-    }
-
-    // TODO: this probably doesn't belong here
     CurrentLevel = level_num;
     TitleLoaded = 0;
-    if (level_num != LV_CURRENT) {
+    if (level_type != GFL_SAVED) {
         InitialiseLevelFlags();
     }
 
-    if (!InitialiseLevel(level_num)) {
+    if (!InitialiseLevel(level_num, level_type)) {
         CurrentLevel = 0;
         return GF_EXIT_TO_TITLE;
     }
 
-    if (GameLoop(0) == GF_EXIT_TO_TITLE) {
-        return GF_EXIT_TO_TITLE;
-    }
+    return GF_NOP;
+}
 
+int32_t StopGame()
+{
     if (LevelComplete) {
-        if (CurrentLevel) {
-            S_FadeInInventory(1);
-            return GF_LEVELCOMPLETE | CurrentLevel;
-        }
-
-        S_FadeToBlack();
-        return GF_EXIT_TO_TITLE;
+        S_FadeInInventory(1);
+        return GF_LEVEL_COMPLETE | CurrentLevel;
     }
 
     S_FadeToBlack();
-    if (!InventoryChosen) {
+    if (!InvChosen) {
         return GF_EXIT_TO_TITLE;
     }
 
-    if (InventoryExtraData[0]) {
-        if (InventoryExtraData[0] == 1) {
-            return GF_STARTGAME | LV_FIRSTLEVEL;
-        }
+    if (InvExtraData[0] == 0) {
+        return GF_START_SAVED_GAME | InvExtraData[1];
+    } else if (InvExtraData[0] == 1) {
+        return GF_START_GAME | GF.first_level_num;
+    } else {
         return GF_EXIT_TO_TITLE;
     }
-
-    S_LoadGame(SaveGame, sizeof(SAVEGAME_INFO), InventoryExtraData[1]);
-    return GF_STARTGAME | LV_CURRENT;
 }
 
-int32_t GameLoop(int demo_mode)
+int32_t GameLoop(int32_t demo_mode)
 {
-    TRACE("");
+    NoInputCount = 0;
+    ResetFlag = 0;
     OverlayFlag = 1;
     InitialiseCamera();
 
@@ -95,144 +68,33 @@ int32_t GameLoop(int demo_mode)
     int32_t ret;
     while (1) {
         ret = ControlPhase(nframes, demo_mode);
-        if (ret) {
+        if (ret != GF_NOP) {
             break;
         }
-        nframes = DrawPhaseGame(ret);
+        nframes = DrawPhaseGame();
     }
 
     S_SoundStopAllSamples();
-    S_CDStop();
+    S_MusicStop();
     if (OptionMusicVolume) {
-        S_CDVolume(OptionMusicVolume * 25 + 5);
+        S_MusicVolume(OptionMusicVolume * 25 + 5);
+    }
+
+    if (ret == GF_NOP_BREAK) {
+        return GF_NOP;
     }
 
     return ret;
 }
 
-int32_t LevelCompleteSequence(int level_num)
+int32_t LevelCompleteSequence(int32_t level_num)
 {
-    TRACE("");
-    switch (level_num) {
-    case LV_GYM:
-        return GF_EXIT_TO_OPTION;
-
-    case LV_LEVEL1:
-        LevelStats(LV_LEVEL1);
-        return GF_STARTGAME | LV_LEVEL2;
-
-    case LV_LEVEL2:
-        LevelStats(LV_LEVEL2);
-        return GF_STARTGAME | LV_LEVEL3A;
-
-    case LV_LEVEL3A:
-        LevelStats(LV_LEVEL3A);
-        return GF_STARTGAME | LV_LEVEL3B;
-
-    case LV_LEVEL3B:
-        return GF_STARTCINE | LV_CUTSCENE1;
-
-    case LV_LEVEL4:
-        LevelStats(LV_LEVEL4);
-        return GF_STARTGAME | LV_LEVEL5;
-
-    case LV_LEVEL5:
-        LevelStats(LV_LEVEL5);
-        return GF_STARTGAME | LV_LEVEL6;
-
-    case LV_LEVEL6:
-        LevelStats(LV_LEVEL6);
-        return GF_STARTGAME | LV_LEVEL7A;
-
-    case LV_LEVEL7A:
-        LevelStats(LV_LEVEL7A);
-        return GF_STARTGAME | LV_LEVEL7B;
-
-    case LV_LEVEL7B:
-        return GF_STARTCINE | LV_CUTSCENE2;
-
-    case LV_LEVEL8A:
-        LevelStats(LV_LEVEL8A);
-        return GF_STARTGAME | LV_LEVEL8B;
-
-    case LV_LEVEL8B:
-        LevelStats(LV_LEVEL8B);
-        return GF_STARTGAME | LV_LEVEL8C;
-
-    case LV_LEVEL8C:
-        LevelStats(LV_LEVEL8C);
-        return GF_STARTGAME | LV_LEVEL10A;
-
-    case LV_LEVEL10A:
-        LevelStats(LV_LEVEL10A);
-        return GF_STARTCINE | LV_CUTSCENE3;
-
-    case LV_LEVEL10B:
-        S_PlayFMV(FMV_PRISON, 1);
-        return GF_STARTCINE | LV_CUTSCENE4;
-
-    case LV_LEVEL10C:
-        LevelStats(LV_LEVEL10C);
-        S_PlayFMV(FMV_ENDSEQ, 1);
-        TempVideoAdjust(2, 1.0);
-        S_DisplayPicture("data\\end");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_DisplayPicture("data\\cred1");
-        sub_408E41();
-        S_Wait(450);
-        S_DisplayPicture("data\\cred2");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_DisplayPicture("data\\cred3");
-        sub_408E41();
-        S_Wait(450);
-        S_FadeToBlack();
-        S_NoFade();
-        return GF_EXIT_TO_TITLE;
-
-    case LV_CUTSCENE1:
-        LevelStats(LV_LEVEL3B);
-        return GF_STARTGAME | LV_LEVEL4;
-
-    case LV_CUTSCENE2:
-        LevelStats(LV_LEVEL7B);
-        return GF_STARTGAME | LV_LEVEL8A;
-
-    case LV_CUTSCENE3:
-        return GF_STARTGAME | LV_LEVEL10B;
-
-    case LV_CUTSCENE4:
-        LevelStats(LV_LEVEL10B);
-        return GF_STARTGAME | LV_LEVEL10C;
-    }
-
     return GF_EXIT_TO_TITLE;
-}
-
-int32_t LevelIsValid(int16_t level_num)
-{
-    TRACE("%d", level_num);
-    int32_t number_valid = 0;
-    for (;;) {
-        if (ValidLevels[number_valid] == -1) {
-            break;
-        }
-        number_valid++;
-    }
-    for (int i = 0; i < number_valid; i++) {
-        if (ValidLevels[i] == level_num) {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 void SeedRandomControl(int32_t seed)
 {
-    TRACE("%d", seed);
+    LOG_DEBUG("%d", seed);
     Rand1 = seed;
 }
 
@@ -244,6 +106,7 @@ int32_t GetRandomControl()
 
 void SeedRandomDraw(int32_t seed)
 {
+    LOG_DEBUG("%d", seed);
     Rand2 = seed;
 }
 
@@ -256,90 +119,69 @@ int32_t GetRandomDraw()
 void LevelStats(int32_t level_num)
 {
     static char string[100];
-    TEXTSTRING* txt;
+    static char time_str[100];
+    TEXTSTRING *txt;
 
     TempVideoAdjust(HiRes, 1.0);
-    T_InitPrint();
+    T_RemoveAllPrints();
+    AmmoText = NULL;
+    FPSText = NULL;
 
     // heading
-    sprintf(string, "%s", LevelTitles[level_num]); // TODO: translation
-    txt = T_Print(0, -50, 0, string);
+    sprintf(string, "%s", GF.levels[level_num].level_title);
+    txt = T_Print(0, -50, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // time taken
-    int seconds = SaveGame[0].timer / 30;
-    int hours = seconds / 3600;
-    int minutes = (seconds / 60) % 60;
+    int32_t seconds = SaveGame.timer / 30;
+    int32_t hours = seconds / 3600;
+    int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
     if (hours) {
         sprintf(
-            string, "%s %d:%d%d:%d%d",
-            "TIME TAKEN", // TODO: translation
-            hours, minutes / 10, minutes % 10, seconds / 10, seconds % 10);
+            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+            seconds / 10, seconds % 10);
     } else {
-        sprintf(
-            string, "%s %d:%d%d",
-            "TIME TAKEN", // TODO: translation
-            minutes, seconds / 10, seconds % 10);
+        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
-    txt = T_Print(0, 70, 0, string);
+    sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    txt = T_Print(0, 70, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // secrets
-    int secrets_taken = 0;
-    int secrets_total = MAX_SECRETS;
+    int32_t secrets_taken = 0;
+    int32_t secrets_total = MAX_SECRETS;
     do {
-        if (SaveGame[0].secrets & 1) {
-            ++secrets_taken;
+        if (SaveGame.secrets & 1) {
+            secrets_taken++;
         }
-        SaveGame[0].secrets >>= 1;
-        --secrets_total;
+        SaveGame.secrets >>= 1;
+        secrets_total--;
     } while (secrets_total);
     sprintf(
-        string, "%s %d %s %d",
-        "SECRETS", // TODO: translation
-        secrets_taken,
-        "OF", // TODO: translation
-        SecretTotals[level_num]);
-    txt = T_Print(0, 40, 0, string);
+        string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
+        GF.levels[level_num].secrets);
+    txt = T_Print(0, 40, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // pickups
-    sprintf(
-        string, "%s %d", "PICKUPS",
-        SaveGame[0].pickups); // TODO: translation
-    txt = T_Print(0, 10, 0, string);
+    sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
+    txt = T_Print(0, 10, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // kills
-    sprintf(string, "%s %d", "KILLS", SaveGame[0].kills); // TODO: translation
-    txt = T_Print(0, -20, 0, string);
+    sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
+    txt = T_Print(0, -20, string);
     T_CentreH(txt, 1);
     T_CentreV(txt, 1);
 
     // wait till action key release
-#ifdef T1M_FEAT_OG_FIXES
-    if (T1MConfig.fix_end_of_level_freeze) {
-        while (Input & IN_SELECT) {
-            S_UpdateInput();
-            S_InitialisePolyList();
-            S_CopyBufferToScreen();
-            S_UpdateInput();
-            T_DrawText();
-            S_OutputPolyList();
-            S_DumpScreen();
-        }
-    } else {
-#else
-    {
-#endif
-        while (Input & IN_SELECT) {
-            S_UpdateInput();
-        }
+    while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+        S_UpdateInput();
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
@@ -348,8 +190,8 @@ void LevelStats(int32_t level_num)
         S_DumpScreen();
     }
 
-    // wait till action key press
-    while (!(Input & IN_SELECT)) {
+    // wait till action or escape key press
+    while (!CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
         if (ResetFlag) {
             break;
         }
@@ -361,42 +203,78 @@ void LevelStats(int32_t level_num)
         S_DumpScreen();
     }
 
-    // go to next level
-    if (level_num == LV_LEVEL10C) {
-        SaveGame[0].bonus_flag = 1;
-        for (int level = LV_LEVEL1; level <= LV_LEVEL10C; level++) {
-            ModifyStartInfo(level);
-        }
-        SaveGame[0].current_level = 1;
+    // wait till escape key release
+    while (CHK_ANY(Input, IN_DESELECT)) {
+        S_InitialisePolyList();
+        S_CopyBufferToScreen();
+        S_UpdateInput();
+        T_DrawText();
+        S_OutputPolyList();
+        S_DumpScreen();
+    }
+
+    if (level_num == GF.last_level_num) {
+        SaveGame.bonus_flag = GBF_NGPLUS;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
-        SaveGame[0].current_level = level_num + 1;
     }
 
-    SaveGame[0].start[LV_CURRENT].available = 0;
+    SaveGame.start[CurrentLevel].available = 0;
     S_FadeToBlack();
     TempVideoRemove();
 }
 
-int32_t S_LoadGame(void* data, int32_t size, int32_t slot)
+int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 {
     char filename[80];
-    sprintf(filename, "saveati.%d", slot);
-    TRACE("%s", filename);
-    FILE* fp = fopen(filename, "rb");
+    sprintf(filename, GF.save_game_fmt, slot);
+    LOG_DEBUG("%s", filename);
+    MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
     if (!fp) {
         return 0;
     }
-    fread(filename, sizeof(char), 75, fp);
+    FileRead(filename, sizeof(char), 75, fp);
     int32_t counter;
-    fread(&counter, sizeof(int32_t), 1, fp);
-    fread(data, size, 1, fp);
-    fclose(fp);
+
+    FileRead(&counter, sizeof(int32_t), 1, fp);
+
+    if (!save->start) {
+        S_ExitSystem("null save->start");
+        return 0;
+    }
+    FileRead(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    FileRead(&save->timer, sizeof(uint32_t), 1, fp);
+    FileRead(&save->kills, sizeof(uint32_t), 1, fp);
+    FileRead(&save->secrets, sizeof(uint16_t), 1, fp);
+    FileRead(&save->current_level, sizeof(uint16_t), 1, fp);
+    FileRead(&save->pickups, sizeof(uint8_t), 1, fp);
+    FileRead(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key1, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key2, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key3, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_key4, sizeof(uint8_t), 1, fp);
+    FileRead(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    FileRead(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileRead(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    FileClose(fp);
+
+    for (int i = 0; i < GF.level_count; i++) {
+        if (GF.levels[i].level_type == GFL_CURRENT) {
+            save->start[save->current_level] = save->start[i];
+        }
+    }
+
     return 1;
 }
 
-void GetSavedGamesList(REQUEST_INFO* req)
+void GetSavedGamesList(REQUEST_INFO *req)
 {
     switch (HiRes) {
     case 0:
@@ -419,7 +297,9 @@ void GetSavedGamesList(REQUEST_INFO* req)
         req->vis_lines = 12;
         break;
 
-    default:
+    case 4:
+        req->y = -100;
+        req->vis_lines = 12;
         break;
     }
 
@@ -430,20 +310,23 @@ void GetSavedGamesList(REQUEST_INFO* req)
 
 int32_t S_FrontEndCheck()
 {
-    REQUEST_INFO* req = &LoadGameRequester;
+    REQUEST_INFO *req = &LoadSaveGameRequester;
 
     req->items = 0;
+    SaveCounter = 0;
     SavedGamesCount = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        char filename[75];
-        sprintf(filename, "saveati.%d", i);
+        char filename[80];
+        sprintf(filename, GF.save_game_fmt, i);
 
-        FILE* fp = fopen(filename, "rb");
+        MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
         if (fp) {
-            fread(filename, 1, 75, fp);
+            FileRead(filename, sizeof(char), 75, fp);
             int32_t counter;
-            fread(&counter, sizeof(int32_t), 1, fp);
-            fclose(fp);
+            FileRead(&counter, sizeof(int32_t), 1, fp);
+            FileClose(fp);
+
+            req->item_flags[req->items] &= ~RIF_BLOCKED;
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
@@ -454,13 +337,13 @@ int32_t S_FrontEndCheck()
                 req->requested = i;
             }
 
-            SaveSlotFlags[i] = 1;
             SavedGamesCount++;
         } else {
+            req->item_flags[req->items] |= RIF_BLOCKED;
+
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
-                "- EMPTY SLOT %d -", i + 1);
-            SaveSlotFlags[i] = 0;
+                GF.strings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
         }
 
         req->items++;
@@ -470,28 +353,58 @@ int32_t S_FrontEndCheck()
     return 1;
 }
 
-int32_t S_SaveGame(void* data, int32_t size, int32_t slot)
+int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
 {
-    char filename[75];
-    sprintf(filename, "saveati.%d", slot);
-    TRACE("%s", filename);
+    char filename[80];
+    sprintf(filename, GF.save_game_fmt, slot);
+    LOG_DEBUG("%s", filename);
 
-    FILE* fp = fopen(filename, "wb");
+    MYFILE *fp = FileOpen(filename, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
     }
 
-    sprintf(filename, "%s", LevelTitles[SaveGame[0].current_level]);
-    fwrite(filename, sizeof(char), 75, fp);
-    fwrite(&SaveCounter, sizeof(int32_t), 1, fp);
-    fwrite(data, size, 1, fp);
-    fclose(fp);
+    for (int i = 0; i < GF.level_count; i++) {
+        if (GF.levels[i].level_type == GFL_CURRENT) {
+            save->start[i] = save->start[save->current_level];
+        }
+    }
 
-    REQUEST_INFO* req = &LoadGameRequester;
+    sprintf(filename, "%s", GF.levels[SaveGame.current_level].level_title);
+    FileWrite(filename, sizeof(char), 75, fp);
+    FileWrite(&SaveCounter, sizeof(int32_t), 1, fp);
+
+    if (!save->start) {
+        S_ExitSystem("null save->start");
+        return 0;
+    }
+    FileWrite(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    FileWrite(&save->timer, sizeof(uint32_t), 1, fp);
+    FileWrite(&save->kills, sizeof(uint32_t), 1, fp);
+    FileWrite(&save->secrets, sizeof(uint16_t), 1, fp);
+    FileWrite(&save->current_level, sizeof(uint16_t), 1, fp);
+    FileWrite(&save->pickups, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key1, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key2, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key3, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_key4, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    FileClose(fp);
+
+    REQUEST_INFO *req = &LoadSaveGameRequester;
+    req->item_flags[slot] &= ~RIF_BLOCKED;
     sprintf(
         &req->item_texts[req->item_text_len * slot], "%s %d", filename,
         SaveCounter);
-    SaveSlotFlags[slot] = 1;
     SavedGamesCount++;
     SaveCounter++;
     return 1;
@@ -507,7 +420,6 @@ void T1MInjectGameGame()
     INJECT(0x0041D910, SeedRandomControl);
     INJECT(0x0041D920, GetRandomDraw);
     INJECT(0x0041D940, SeedRandomDraw);
-    INJECT(0x0041D950, LevelIsValid);
     INJECT(0x0041D9B0, GetSavedGamesList);
     INJECT(0x0041DA20, S_FrontEndCheck);
     INJECT(0x0041DB70, S_SaveGame);

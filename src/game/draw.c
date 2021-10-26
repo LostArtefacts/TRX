@@ -1,16 +1,17 @@
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/3d_insert.h"
-#include "3dsystem/scalespr.h"
-#include "game/const.h"
 #include "game/draw.h"
+
+#include "3dsystem/3d_gen.h"
+#include "3dsystem/scalespr.h"
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
 #include "game/inv.h"
 #include "game/vars.h"
+#include "global/const.h"
 #include "specific/output.h"
-#include "config.h"
 #include "util.h"
+
+static int16_t InterpolatedBounds[6];
 
 int32_t DrawPhaseCinematic()
 {
@@ -19,7 +20,7 @@ int32_t DrawPhaseCinematic()
     CameraUnderwater = 0;
     for (int i = 0; i < RoomsToDrawNum; i++) {
         int32_t room_num = RoomsToDraw[i];
-        ROOM_INFO* r = &RoomInfo[room_num];
+        ROOM_INFO *r = &RoomInfo[room_num];
         r->top = 0;
         r->left = 0;
         r->right = PhdWinMaxX;
@@ -28,7 +29,7 @@ int32_t DrawPhaseCinematic()
     }
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
-    S_AniamteTextures(Camera.number_frames);
+    S_AnimateTextures(Camera.number_frames);
     return Camera.number_frames;
 }
 
@@ -39,7 +40,7 @@ int32_t DrawPhaseGame()
     DrawGameInfo();
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
-    S_AniamteTextures(Camera.number_frames);
+    S_AnimateTextures(Camera.number_frames);
     return Camera.number_frames;
 }
 
@@ -50,7 +51,7 @@ void DrawRooms(int16_t current_room)
     PhdRight = PhdWinMaxX;
     PhdBottom = PhdWinMaxY;
 
-    ROOM_INFO* r = &RoomInfo[current_room];
+    ROOM_INFO *r = &RoomInfo[current_room];
     r->left = PhdLeft;
     r->top = PhdTop;
     r->right = PhdRight;
@@ -66,7 +67,7 @@ void DrawRooms(int16_t current_room)
     phd_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
-            DOOR_INFO* door = &r->doors->door[i];
+            DOOR_INFO *door = &r->doors->door[i];
             if (SetRoomBounds(&door->x, door->room_num, r)) {
                 GetRoomBounds(door->room_num);
             }
@@ -91,12 +92,12 @@ void DrawRooms(int16_t current_room)
 
 void GetRoomBounds(int16_t room_num)
 {
-    ROOM_INFO* r = &RoomInfo[room_num];
+    ROOM_INFO *r = &RoomInfo[room_num];
     phd_PushMatrix();
     phd_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
-            DOOR_INFO* door = &r->doors->door[i];
+            DOOR_INFO *door = &r->doors->door[i];
             if (SetRoomBounds(&door->x, door->room_num, r)) {
                 GetRoomBounds(door->room_num);
             }
@@ -105,9 +106,9 @@ void GetRoomBounds(int16_t room_num)
     phd_PopMatrix();
 }
 
-int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
+int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
 {
-    // TODO: the way the game passes the objptr is dangerous and relies on
+    // XXX: the way the game passes the objptr is dangerous and relies on
     // layout of DOOR_INFO
 
     if ((objptr[0] * (parent->x + objptr[3] - W2VMatrix._03))
@@ -117,6 +118,7 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
         return 0;
     }
 
+    DOOR_VBUF door_vbuf[4];
     int32_t left = parent->right;
     int32_t right = parent->left;
     int32_t top = parent->bottom;
@@ -126,7 +128,7 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
     int32_t z_toofar = 0;
     int32_t z_behind = 0;
 
-    const PHD_MATRIX* mptr = PhdMatrixPtr;
+    const PHD_MATRIX *mptr = PhdMatrixPtr;
     for (int i = 0; i < 4; i++) {
         int32_t xv = mptr->_00 * objptr[0] + mptr->_01 * objptr[1]
             + mptr->_02 * objptr[2] + mptr->_03;
@@ -134,9 +136,9 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
             + mptr->_12 * objptr[2] + mptr->_13;
         int32_t zv = mptr->_20 * objptr[0] + mptr->_21 * objptr[1]
             + mptr->_22 * objptr[2] + mptr->_23;
-        DoorVBuf[i].xv = xv;
-        DoorVBuf[i].yv = yv;
-        DoorVBuf[i].zv = zv;
+        door_vbuf[i].xv = xv;
+        door_vbuf[i].yv = yv;
+        door_vbuf[i].zv = zv;
         objptr += 3;
 
         if (zv > 0) {
@@ -176,8 +178,8 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
     }
 
     if (z_behind > 0) {
-        DOOR_VBUF* dest = &DoorVBuf[0];
-        DOOR_VBUF* last = &DoorVBuf[3];
+        DOOR_VBUF *dest = &door_vbuf[0];
+        DOOR_VBUF *last = &door_vbuf[3];
         for (int i = 0; i < 4; i++) {
             if ((dest->zv < 0) ^ (last->zv < 0)) {
                 if (dest->xv < 0 && last->xv < 0) {
@@ -221,7 +223,7 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
         return 0;
     }
 
-    ROOM_INFO* r = &RoomInfo[room_num];
+    ROOM_INFO *r = &RoomInfo[room_num];
     if (left < r->left) {
         r->left = left;
     }
@@ -244,7 +246,7 @@ int32_t SetRoomBounds(int16_t* objptr, int16_t room_num, ROOM_INFO* parent)
 
 void PrintRooms(int16_t room_number)
 {
-    ROOM_INFO* r = &RoomInfo[room_number];
+    ROOM_INFO *r = &RoomInfo[room_number];
     if (r->flags & RF_UNDERWATER) {
         S_SetupBelowWater(CameraUnderwater);
     } else {
@@ -264,14 +266,14 @@ void PrintRooms(int16_t room_number)
     S_InsertRoom(r->data);
 
     for (int i = r->item_number; i != NO_ITEM; i = Items[i].next_item) {
-        ITEM_INFO* item = &Items[i];
+        ITEM_INFO *item = &Items[i];
         if (item->status != IS_INVISIBLE) {
             Objects[item->object_number].draw_routine(item);
         }
     }
 
     for (int i = 0; i < r->num_meshes; i++) {
-        MESH_INFO* mesh = &r->mesh[i];
+        MESH_INFO *mesh = &r->mesh[i];
         if (StaticObjects[mesh->static_number].flags & 2) {
             phd_PushMatrix();
             phd_TranslateAbs(mesh->x, mesh->y, mesh->z);
@@ -302,8 +304,8 @@ void PrintRooms(int16_t room_number)
 
 void DrawEffect(int16_t fxnum)
 {
-    FX_INFO* fx = &Effects[fxnum];
-    OBJECT_INFO* object = &Objects[fx->object_number];
+    FX_INFO *fx = &Effects[fxnum];
+    OBJECT_INFO *object = &Objects[fx->object_number];
     if (!object->loaded) {
         return;
     }
@@ -330,7 +332,7 @@ void DrawEffect(int16_t fxnum)
     }
 }
 
-void DrawSpriteItem(ITEM_INFO* item)
+void DrawSpriteItem(ITEM_INFO *item)
 {
     S_DrawSprite(
         item->pos.x, item->pos.y, item->pos.z,
@@ -400,14 +402,14 @@ void DrawDummyItem(ITEM_INFO* item)
 {
 }
 
-void DrawAnimatingItem(ITEM_INFO* item)
+void DrawAnimatingItem(ITEM_INFO *item)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    int16_t* frmptr[2];
+    int16_t *frmptr[2];
     int32_t rate;
     int32_t frac = GetFrames(item, frmptr, &rate);
-    OBJECT_INFO* object = &Objects[item->object_number];
+    OBJECT_INFO *object = &Objects[item->object_number];
 
     if (object->shadow_size) {
         S_PrintShadow(object->shadow_size, frmptr[0], item);
@@ -423,18 +425,18 @@ void DrawAnimatingItem(ITEM_INFO* item)
     }
 
     CalculateObjectLighting(item, frmptr[0]);
-    int16_t* extra_rotation = item->data ? item->data : &null_rotation;
+    int16_t *extra_rotation = item->data ? item->data : &null_rotation;
 
     int32_t bit = 1;
-    int16_t** meshpp = &Meshes[object->mesh_index];
-    int32_t* bone = &AnimBones[object->bone_index];
+    int16_t **meshpp = &Meshes[object->mesh_index];
+    int32_t *bone = &AnimBones[object->bone_index];
 
     if (!frac) {
         phd_TranslateRel(
             frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
             frmptr[0][FRAME_POS_Z]);
 
-        int32_t* packed_rotation = (int32_t*)(frmptr[0] + FRAME_ROT);
+        int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
         phd_RotYXZpack(*packed_rotation++);
 
         if (item->mesh_bits & bit) {
@@ -478,8 +480,8 @@ void DrawAnimatingItem(ITEM_INFO* item)
             frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
             frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
             frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
-        int32_t* packed_rotation1 = (int32_t*)(frmptr[0] + FRAME_ROT);
-        int32_t* packed_rotation2 = (int32_t*)(frmptr[1] + FRAME_ROT);
+        int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
+        int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
         phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
         if (item->mesh_bits & bit) {
@@ -523,7 +525,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 }
 
 // originally in moveblok.c
-void DrawUnclippedItem(ITEM_INFO* item)
+void DrawUnclippedItem(ITEM_INFO *item)
 {
     int32_t left = PhdLeft;
     int32_t top = PhdTop;
@@ -543,11 +545,11 @@ void DrawUnclippedItem(ITEM_INFO* item)
     PhdBottom = bottom;
 }
 
-void DrawLara(ITEM_INFO* item)
+void DrawLara(ITEM_INFO *item)
 {
-    OBJECT_INFO* object;
-    int16_t* frame;
-    int16_t* frmptr[2];
+    OBJECT_INFO *object;
+    int16_t *frame;
+    int16_t *frmptr[2];
     PHD_MATRIX saved_matrix;
 
     int32_t top = PhdTop;
@@ -595,10 +597,8 @@ void DrawLara(ITEM_INFO* item)
         frame = frmptr[0];
     }
 
-#ifdef T1M_FEAT_HAIR
     // save matrix for hair
     saved_matrix = *PhdMatrixPtr;
-#endif
 
     S_PrintShadow(object->shadow_size, frame, item);
     phd_PushMatrix();
@@ -615,8 +615,8 @@ void DrawLara(ITEM_INFO* item)
 
     CalculateObjectLighting(item, frame);
 
-    int32_t* bone = &AnimBones[object->bone_index];
-    int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
+    int32_t *bone = &AnimBones[object->bone_index];
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
 
     phd_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
@@ -667,10 +667,8 @@ void DrawLara(ITEM_INFO* item)
     phd_RotYXZ(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons(Lara.mesh_ptrs[LM_HEAD], clip);
 
-#ifdef T1M_FEAT_HAIR
     *PhdMatrixPtr = saved_matrix;
     DrawHair();
-#endif
 
     phd_PopMatrix();
 
@@ -733,7 +731,8 @@ void DrawLara(ITEM_INFO* item)
         PhdMatrixPtr->_22 = PhdMatrixPtr[-2]._22;
 
         packed_rotation =
-            (int32_t*)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.right_arm.y_rot, Lara.right_arm.x_rot, Lara.right_arm.z_rot);
         phd_RotYXZpack(packed_rotation[LM_UARM_R]);
@@ -768,7 +767,8 @@ void DrawLara(ITEM_INFO* item)
         PhdMatrixPtr->_22 = PhdMatrixPtr[-2]._22;
 
         packed_rotation =
-            (int32_t*)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.left_arm.y_rot, Lara.left_arm.x_rot, Lara.left_arm.z_rot);
         phd_RotYXZpack(packed_rotation[LM_UARM_L]);
@@ -797,7 +797,8 @@ void DrawLara(ITEM_INFO* item)
         phd_PushMatrix();
 
         packed_rotation =
-            (int32_t*)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[29], bone[30], bone[31]);
         phd_RotYXZpack(packed_rotation[LM_UARM_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_R], clip);
@@ -810,18 +811,17 @@ void DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
-#endif
 
         phd_PopMatrix();
 
         phd_PushMatrix();
 
         packed_rotation =
-            (int32_t*)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[41], bone[42], bone[43]);
         phd_RotYXZpack(packed_rotation[LM_UARM_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_L], clip);
@@ -834,12 +834,10 @@ void DrawLara(ITEM_INFO* item)
         phd_RotYXZpack(packed_rotation[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
-#endif
 
         phd_PopMatrix();
         break;
@@ -872,13 +870,11 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip)
         off = 55;
         break;
 
-#ifdef T1M_FEAT_UI
     case LGT_SHOTGUN:
         light = 10 * 256;
         len = 285;
         off = 0;
         break;
-#endif
 
     default:
         light = 20 * 256;
@@ -893,7 +889,7 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip)
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
 }
 
-void CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
+void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
 {
     if (item->shade >= 0) {
         S_CalculateStaticLight(item->shade);
@@ -921,17 +917,15 @@ void CalculateObjectLighting(ITEM_INFO* item, int16_t* frame)
 }
 
 void DrawLaraInt(
-    ITEM_INFO* item, int16_t* frame1, int16_t* frame2, int32_t frac,
+    ITEM_INFO *item, int16_t *frame1, int16_t *frame2, int32_t frac,
     int32_t rate)
 {
     PHD_MATRIX saved_matrix;
 
-    OBJECT_INFO* object = &Objects[item->object_number];
-    int16_t* bounds = GetBoundsAccurate(item);
+    OBJECT_INFO *object = &Objects[item->object_number];
+    int16_t *bounds = GetBoundsAccurate(item);
 
-#ifdef T1M_FEAT_HAIR
     saved_matrix = *PhdMatrixPtr;
-#endif
 
     S_PrintShadow(object->shadow_size, bounds, item);
     phd_PushMatrix();
@@ -948,9 +942,9 @@ void DrawLaraInt(
 
     CalculateObjectLighting(item, frame1);
 
-    int32_t* bone = &AnimBones[object->bone_index];
-    int32_t* packed_rotation1 = (int32_t*)(frame1 + FRAME_ROT);
-    int32_t* packed_rotation2 = (int32_t*)(frame2 + FRAME_ROT);
+    int32_t *bone = &AnimBones[object->bone_index];
+    int32_t *packed_rotation1 = (int32_t *)(frame1 + FRAME_ROT);
+    int32_t *packed_rotation2 = (int32_t *)(frame2 + FRAME_ROT);
 
     InitInterpolate(frac, rate);
 
@@ -1007,10 +1001,8 @@ void DrawLaraInt(
     phd_RotYXZ_I(Lara.head_y_rot, Lara.head_x_rot, Lara.head_z_rot);
     phd_PutPolygons_I(Lara.mesh_ptrs[LM_HEAD], clip);
 
-#ifdef T1M_FEAT_HAIR
     *PhdMatrixPtr = saved_matrix;
     DrawHair();
-#endif
 
     phd_PopMatrix_I();
 
@@ -1070,7 +1062,8 @@ void DrawLaraInt(
         InterpolateArmMatrix();
 
         packed_rotation1 =
-            (int32_t*)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.right_arm.y_rot, Lara.right_arm.x_rot, Lara.right_arm.z_rot);
         phd_RotYXZpack(packed_rotation1[LM_UARM_R]);
@@ -1096,7 +1089,8 @@ void DrawLaraInt(
         InterpolateArmMatrix();
 
         packed_rotation1 =
-            (int32_t*)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_RotYXZ(
             Lara.left_arm.y_rot, Lara.left_arm.x_rot, Lara.left_arm.z_rot);
         phd_RotYXZpack(packed_rotation1[LM_UARM_L]);
@@ -1127,7 +1121,8 @@ void DrawLaraInt(
         InterpolateMatrix();
 
         packed_rotation1 =
-            (int32_t*)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.right_arm.frame_base + Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[29], bone[30], bone[31]);
         phd_RotYXZpack(packed_rotation1[LM_UARM_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_R], clip);
@@ -1140,18 +1135,17 @@ void DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_R]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_R], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             saved_matrix = *PhdMatrixPtr;
         }
-#endif
 
         phd_PopMatrix();
 
         phd_PushMatrix();
 
         packed_rotation1 =
-            (int32_t*)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
+            (int32_t
+                 *)(Lara.left_arm.frame_base + Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         phd_TranslateRel(bone[41], bone[42], bone[43]);
         phd_RotYXZpack(packed_rotation1[LM_UARM_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_UARM_L], clip);
@@ -1164,12 +1158,10 @@ void DrawLaraInt(
         phd_RotYXZpack(packed_rotation1[LM_HAND_L]);
         phd_PutPolygons(Lara.mesh_ptrs[LM_HAND_L], clip);
 
-#ifdef T1M_FEAT_UI
         if (Lara.right_arm.flash_gun) {
             *PhdMatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
-#endif
 
         phd_PopMatrix_I();
         break;
@@ -1225,7 +1217,7 @@ void phd_PopMatrix_I()
 void phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
 {
     phd_TranslateRel(x, y, z);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_TranslateRel(x, y, z);
     PhdMatrixPtr = old_matrix;
@@ -1235,7 +1227,7 @@ void phd_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2)
 {
     phd_TranslateRel(x, y, z);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_TranslateRel(x2, y2, z2);
     PhdMatrixPtr = old_matrix;
@@ -1244,7 +1236,7 @@ void phd_TranslateRel_ID(
 void phd_RotY_I(PHD_ANGLE ang)
 {
     phd_RotY(ang);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_RotY(ang);
     PhdMatrixPtr = old_matrix;
@@ -1253,7 +1245,7 @@ void phd_RotY_I(PHD_ANGLE ang)
 void phd_RotX_I(PHD_ANGLE ang)
 {
     phd_RotX(ang);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_RotX(ang);
     PhdMatrixPtr = old_matrix;
@@ -1262,7 +1254,7 @@ void phd_RotX_I(PHD_ANGLE ang)
 void phd_RotZ_I(PHD_ANGLE ang)
 {
     phd_RotZ(ang);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_RotZ(ang);
     PhdMatrixPtr = old_matrix;
@@ -1271,7 +1263,7 @@ void phd_RotZ_I(PHD_ANGLE ang)
 void phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
 {
     phd_RotYXZ(y, x, z);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_RotYXZ(y, x, z);
     PhdMatrixPtr = old_matrix;
@@ -1280,13 +1272,13 @@ void phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
 void phd_RotYXZpack_I(int32_t r1, int32_t r2)
 {
     phd_RotYXZpack(r1);
-    PHD_MATRIX* old_matrix = PhdMatrixPtr;
+    PHD_MATRIX *old_matrix = PhdMatrixPtr;
     PhdMatrixPtr = IMMatrixPtr;
     phd_RotYXZpack(r2);
     PhdMatrixPtr = old_matrix;
 }
 
-void phd_PutPolygons_I(int16_t* ptr, int32_t clip)
+void phd_PutPolygons_I(int16_t *ptr, int32_t clip)
 {
     phd_PushMatrix();
     InterpolateMatrix();
@@ -1296,8 +1288,8 @@ void phd_PutPolygons_I(int16_t* ptr, int32_t clip)
 
 void InterpolateMatrix()
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
-    PHD_MATRIX* iptr = IMMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *iptr = IMMatrixPtr;
 
     if (IMRate == 2) {
         mptr->_00 = (mptr->_00 + iptr->_00) / 2;
@@ -1330,8 +1322,8 @@ void InterpolateMatrix()
 
 void InterpolateArmMatrix()
 {
-    PHD_MATRIX* mptr = PhdMatrixPtr;
-    PHD_MATRIX* iptr = IMMatrixPtr;
+    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *iptr = IMMatrixPtr;
 
     if (IMRate == 2) {
         mptr->_00 = mptr[-2]._00;
@@ -1362,9 +1354,9 @@ void InterpolateArmMatrix()
     }
 }
 
-int32_t GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
+int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 {
-    ANIM_STRUCT* anim = &Anims[item->anim_number];
+    ANIM_STRUCT *anim = &Anims[item->anim_number];
     frmptr[0] = anim->frame_ptr;
     frmptr[1] = anim->frame_ptr;
 
@@ -1390,10 +1382,10 @@ int32_t GetFrames(ITEM_INFO* item, int16_t* frmptr[], int32_t* rate)
     return interp;
 }
 
-int16_t* GetBoundsAccurate(ITEM_INFO* item)
+int16_t *GetBoundsAccurate(ITEM_INFO *item)
 {
     int32_t rate;
-    int16_t* frmptr[2];
+    int16_t *frmptr[2];
 
     int32_t frac = GetFrames(item, frmptr, &rate);
     if (!frac) {
@@ -1408,9 +1400,9 @@ int16_t* GetBoundsAccurate(ITEM_INFO* item)
     return InterpolatedBounds;
 }
 
-int16_t* GetBestFrame(ITEM_INFO* item)
+int16_t *GetBestFrame(ITEM_INFO *item)
 {
-    int16_t* frmptr[2];
+    int16_t *frmptr[2];
     int32_t rate;
     int32_t frac = GetFrames(item, frmptr, &rate);
     if (frac <= rate / 2) {

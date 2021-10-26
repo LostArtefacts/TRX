@@ -1,68 +1,57 @@
+#include "game/cinema.h"
+
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
-#include "game/cinema.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/setup.h"
-#include "game/vars.h"
+#include "global/const.h"
+#include "global/types.h"
+#include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
+static int32_t OldSoundIsActive;
+static const int32_t CinematicAnimationRate = 0x8000;
+
 int32_t StartCinematic(int32_t level_num)
 {
-    CinematicLevel = level_num;
-    if (!InitialiseLevel(level_num)) {
+    if (!InitialiseLevel(level_num, GFL_CUTSCENE)) {
         return END_ACTION;
     }
 
     InitCinematicRooms();
 
-    switch (level_num) {
-    case LV_CUTSCENE1:
-        Camera.pos.x = 36668;
-        Camera.pos.z = 63180;
-        Camera.target_angle = -23312;
-        S_StartSyncedAudio(23);
-        break;
-
-    case LV_CUTSCENE2:
-        Camera.pos.x = 51962;
-        Camera.pos.z = 53760;
-        Camera.target_angle = 16380;
-        S_StartSyncedAudio(25);
-        break;
-
-    case LV_CUTSCENE3:
-        Camera.target_angle = PHD_90;
-        FlipMap();
-        S_StartSyncedAudio(24);
-        break;
-
-    case LV_CUTSCENE4:
-        Camera.target_angle = PHD_90;
-        S_StartSyncedAudio(22);
-        break;
-    }
-
+    OldSoundIsActive = SoundIsActive;
     SoundIsActive = 0;
     CineFrame = 0;
+    return GF_NOP;
+}
 
+int32_t CinematicLoop()
+{
     DoCinematic(2);
     DrawPhaseCinematic();
     int32_t nframes;
     do {
         nframes = DrawPhaseCinematic();
     } while (!DoCinematic(nframes));
+    return GF_NOP;
+}
 
-    S_CDStop();
+int32_t StopCinematic(int32_t level_num)
+{
+    S_MusicStop();
     S_SoundStopAllSamples();
+    SoundIsActive = OldSoundIsActive;
+
     LevelComplete = 1;
     S_FadeInInventory(1);
 
-    return level_num | GF_LEVELCOMPLETE;
+    return level_num | GF_LEVEL_COMPLETE;
 }
 
 void InitCinematicRooms()
@@ -83,8 +72,10 @@ void InitCinematicRooms()
 
 int32_t DoCinematic(int32_t nframes)
 {
-    CinematicFrameCount += CinematicAnimationRate * nframes;
-    while (CinematicFrameCount >= 0) {
+    static int32_t frame_count = 0;
+
+    frame_count += CinematicAnimationRate * nframes;
+    while (frame_count >= 0) {
         S_UpdateInput();
         if (Input & IN_OPTION) {
             return 1;
@@ -92,8 +83,8 @@ int32_t DoCinematic(int32_t nframes)
 
         int16_t item_num = NextItemActive;
         while (item_num != NO_ITEM) {
-            ITEM_INFO* item = &Items[item_num];
-            OBJECT_INFO* object = &Objects[item->object_number];
+            ITEM_INFO *item = &Items[item_num];
+            OBJECT_INFO *object = &Objects[item->object_number];
             int16_t next_item_num = item->next_active;
 
             if (object->control) {
@@ -105,8 +96,8 @@ int32_t DoCinematic(int32_t nframes)
 
         int16_t fx_num = NextFxActive;
         while (fx_num != NO_ITEM) {
-            FX_INFO* fx = &Effects[fx_num];
-            OBJECT_INFO* object = &Objects[fx->object_number];
+            FX_INFO *fx = &Effects[fx_num];
+            OBJECT_INFO *object = &Objects[fx->object_number];
             int16_t next_fx_num = fx->next_active;
 
             if (object->control) {
@@ -123,7 +114,7 @@ int32_t DoCinematic(int32_t nframes)
             return 1;
         }
 
-        CinematicFrameCount -= 0x10000;
+        frame_count -= 0x10000;
     }
 
     return 0;
@@ -134,7 +125,7 @@ void CalculateCinematicCamera()
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
 
-    int16_t* ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * CineFrame];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -163,32 +154,18 @@ void InitialisePlayer1(int16_t item_num)
 {
     AddActiveItem(item_num);
 
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     Camera.pos.room_number = item->room_number;
     Camera.pos.x = item->pos.x;
     Camera.pos.y = item->pos.y;
     Camera.pos.z = item->pos.z;
     Camera.target_angle = 0;
     item->pos.y_rot = 0;
-
-    if (CinematicLevel == LV_CUTSCENE2 || CinematicLevel == LV_CUTSCENE4) {
-        int16_t* temp;
-
-        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L];
-        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_L] =
-            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L];
-        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_L] = temp;
-
-        temp = Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R];
-        Meshes[Objects[O_PLAYER_1].mesh_index + LM_THIGH_R] =
-            Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R];
-        Meshes[Objects[O_PISTOLS].mesh_index + LM_THIGH_R] = temp;
-    }
 }
 
 void ControlCinematicPlayer(int16_t item_num)
 {
-    ITEM_INFO* item = &Items[item_num];
+    ITEM_INFO *item = &Items[item_num];
     item->pos.y_rot = Camera.target_angle;
     item->pos.x = Camera.pos.x;
     item->pos.y = Camera.pos.y;
@@ -214,7 +191,7 @@ void InGameCinematicCamera()
         CineFrame = NumCineFrames - 1;
     }
 
-    int16_t* ptr = &Cine[8 * CineFrame];
+    int16_t *ptr = &Cine[8 * CineFrame];
     int32_t tx = ptr[0];
     int32_t ty = ptr[1];
     int32_t tz = ptr[2];
@@ -224,15 +201,15 @@ void InGameCinematicCamera()
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
 
-    int32_t c = phd_cos(CinematicPosition.y_rot);
-    int32_t s = phd_sin(CinematicPosition.y_rot);
+    int32_t c = phd_cos(CinePosition.y_rot);
+    int32_t s = phd_sin(CinePosition.y_rot);
 
-    Camera.target.x = CinematicPosition.x + ((c * tx + s * tz) >> 14);
-    Camera.target.y = CinematicPosition.y + ty;
-    Camera.target.z = CinematicPosition.z + ((c * tz - s * tx) >> 14);
-    Camera.pos.x = CinematicPosition.x + ((s * cz + c * cx) >> 14);
-    Camera.pos.y = CinematicPosition.y + cy;
-    Camera.pos.z = CinematicPosition.z + ((c * cz - s * cx) >> 14);
+    Camera.target.x = CinePosition.x + ((c * tx + s * tz) >> 14);
+    Camera.target.y = CinePosition.y + ty;
+    Camera.target.z = CinePosition.z + ((c * tz - s * tx) >> 14);
+    Camera.pos.x = CinePosition.x + ((s * cz + c * cx) >> 14);
+    Camera.pos.y = CinePosition.y + cy;
+    Camera.pos.z = CinePosition.z + ((c * cz - s * cx) >> 14);
 
     AlterFOV(fov);
 

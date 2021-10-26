@@ -1,5 +1,7 @@
 #include "3dsystem/phd_math.h"
-#include "game/const.h"
+
+#include "global/const.h"
+
 #include "util.h"
 
 static int16_t SinTable[0x402] = {
