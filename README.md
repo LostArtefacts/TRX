@@ -90,6 +90,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - Start = Pause
     - Right Stick = Camera Movement
     - R3 = Reset Camera
+- added rounded shadows (instead of the default octagon)
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed input method to DirectInput
