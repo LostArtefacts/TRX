@@ -69,6 +69,7 @@ typedef struct {
     int32_t resolution_height;
     int8_t enable_xbox_one_controller;
     float brightness;
+    int8_t enable_round_shadow;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;

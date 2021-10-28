@@ -89,8 +89,7 @@ static HRESULT DInputJoystickCreate();
 static void DInputJoystickRelease();
 static BOOL CALLBACK
 EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
-static BOOL CALLBACK
-EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context);
+static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
 
 void InputInit()
 {

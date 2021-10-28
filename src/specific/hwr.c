@@ -10,6 +10,7 @@
 #include "util.h"
 
 #include <stdlib.h>
+#include <assert.h>
 
 typedef struct HWR_LIGHTNING {
     int32_t x1;
@@ -570,14 +571,14 @@ void HWR_DrawLightningSegment(
     HWR_LightningCount++;
 }
 
-void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
-    C3D_VTCF vertices[30];
+    C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
+    int i;
     int32_t tmp;
-    int32_t vertex_count = 8;
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (i = 0; i < vertex_count; i++) {
         C3D_VTCF *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
@@ -590,7 +591,9 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip)
     }
 
     if (clip) {
+        int original = vertex_count;
         vertex_count = HWR_ClipVertices(vertex_count, vertices);
+        assert(vertex_count < original * HWR_CLIP_VERTCOUNT_SCALE);
     }
 
     if (!vertex_count) {
@@ -705,12 +708,14 @@ void HWR_RenderLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
-    C3D_VTCF vertices[20];
+    C3D_VTCF vertices[num * HWR_CLIP_VERTCOUNT_SCALE];
 
     C3D_VTCF *l = &source[num - 1];
     int j = 0;
+    int i;
 
-    for (int i = 0; i < num; i++) {
+    for (i = 0; i < num; i++) {
+        assert(j < num * HWR_CLIP_VERTCOUNT_SCALE);
         C3D_VTCF *v1 = &vertices[j];
         C3D_VTCF *v2 = l;
         l = &source[i];
@@ -783,7 +788,7 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
     l = &vertices[j - 1];
     j = 0;
 
-    for (int i = 0; i < num; i++) {
+    for (i = 0; i < num; i++) {
         C3D_VTCF *v1 = &source[j];
         C3D_VTCF *v2 = l;
         l = &vertices[i];
