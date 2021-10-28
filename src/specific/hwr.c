@@ -1665,6 +1665,23 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
     return count < 3 ? 0 : count;
 }
 
+void HWR_OutputPolyList()
+{
+    int i;
+
+    // NOTE: original .exe has some additional logic for rendering
+    // polygons whose textures were not loaded at the draw time.
+
+    for (i = 0; i < HWR_LightningCount; i++) {
+        HWR_RenderLightningSegment(
+            HWR_LightningTable[i].x1, HWR_LightningTable[i].y1,
+            HWR_LightningTable[i].z1, HWR_LightningTable[i].thickness1,
+            HWR_LightningTable[i].x2, HWR_LightningTable[i].y2,
+            HWR_LightningTable[i].z2, HWR_LightningTable[i].thickness2);
+    }
+    HWR_RenderEnd();
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1708,4 +1725,5 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040CADB, HWR_PrintShadow);
     INJECT(0x0040CC5D, HWR_RenderLightningSegment);
     INJECT(0x0040D056, HWR_DrawLightningSegment);
+    INJECT(0x0040D2E0, HWR_OutputPolyList);
 }

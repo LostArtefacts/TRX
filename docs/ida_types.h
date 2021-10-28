@@ -2217,4 +2217,15 @@ struct LIGHTNING {
     PHD_VECTOR shoot[2][8];
 };
 
+struct HWR_LIGHTNING {
+    int32_t x1;
+    int32_t y1;
+    int32_t z1;
+    int32_t thickness1;
+    int32_t x2;
+    int32_t y2;
+    int32_t z2;
+    int32_t thickness2;
+};
+
 #pragma pack(pop)
