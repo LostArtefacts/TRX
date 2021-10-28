@@ -128,9 +128,9 @@ void GameMain()
             }
             TitleLoaded = 1;
 
-            dword_45B940 = 0;
+            InvDisableResolutionSwitch = 0;
             gf_option = Display_Inventory(INV_TITLE_MODE);
-            dword_45B940 = 1;
+            InvDisableResolutionSwitch = 1;
 
             S_FadeToBlack();
             S_MusicStop();

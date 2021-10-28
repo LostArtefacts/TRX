@@ -20,7 +20,6 @@ static const char *WindowName = "Tomb Raider";
 
 // clang-format off
 // TODO: decompile me!
-#define dword_45A990            VAR_U_(0x0045A990, int32_t)
 #define CloseMsg                VAR_U_(0x0045A940, UINT)
 // clang-format on
 
@@ -174,7 +173,6 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 static void WinGameFinish()
 {
-    dword_45A990 = 1;
     if (DDraw) {
         HWR_ReleaseSurfaces();
         IDirectDraw_FlipToGDISurface(DDraw);
