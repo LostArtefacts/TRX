@@ -28,6 +28,15 @@ typedef struct HWR_LIGHTNING {
 
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
+
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
+{
+    if (IsShadeEffect) {
+        *r *= 0.6f;
+        *g *= 0.7f;
+    }
+}
 
 static void HWR_EnableTextureMode(void)
 {
@@ -1361,10 +1370,7 @@ void HWR_DrawFlatTriangle(
     g = GamePalette[color].g;
     b = GamePalette[color].b;
 
-    if (IsShadeEffect) {
-        r *= 0.6f;
-        g *= 0.7f;
-    }
+    HWR_ApplyWaterEffect(&r, &g, &b);
 
     divisor = (1.0f / T1MConfig.brightness) * 1024.0f;
 
@@ -1450,10 +1456,8 @@ void HWR_DrawTexturedTriangle(
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
 
-            if (IsShadeEffect) {
-                vertices[i].r *= 0.6f;
-                vertices[i].g *= 0.7f;
-            }
+            HWR_ApplyWaterEffect(
+                &vertices[i].r, &vertices[i].g, &vertices[i].b);
         }
 
         vertex_count = 3;
@@ -1558,10 +1562,7 @@ void HWR_DrawTexturedQuad(
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
 
-        if (IsShadeEffect) {
-            vertices[i].r *= 0.6f;
-            vertices[i].g *= 0.7f;
-        }
+        HWR_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
     if (HWR_TextureLoaded[tpage]) {
@@ -1615,11 +1616,8 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
             v++;
         }
 
@@ -1637,10 +1635,8 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
+
             v++;
         } else {
             v->x = pts0->xs;
@@ -1652,11 +1648,8 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
             v->t = pts0->v * v->w * 0.00390625f;
 
             v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
             v++;
         }
     }
