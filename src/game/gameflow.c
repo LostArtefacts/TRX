@@ -156,6 +156,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
     const char *tmp_s;
     int tmp_i;
     double tmp_d;
+    struct json_array_s *tmp_arr;
 
     tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
@@ -185,6 +186,19 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         return 0;
     }
     GF.enable_save_crystals = tmp_i;
+
+    tmp_arr = json_object_get_array(obj, "water_color");
+    GF.water_color.r = 0.6;
+    GF.water_color.g = 0.7;
+    GF.water_color.b = 1.0;
+    if (tmp_arr) {
+        GF.water_color.r =
+            json_array_get_number_double(tmp_arr, 0, GF.water_color.r);
+        GF.water_color.g =
+            json_array_get_number_double(tmp_arr, 1, GF.water_color.g);
+        GF.water_color.b =
+            json_array_get_number_double(tmp_arr, 2, GF.water_color.b);
+    }
 
     return 1;
 }
@@ -525,6 +539,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 
         const char *tmp_s;
         int32_t tmp_i;
+        struct json_array_s *tmp_arr;
 
         tmp_i =
             json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
@@ -598,6 +613,19 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             GF.has_demo |= tmp_i;
         } else {
             cur->demo = 0;
+        }
+
+        tmp_arr = json_object_get_array(jlvl_obj, "water_color");
+        if (tmp_arr) {
+            cur->water_color_override = 1;
+            cur->water_color.r =
+                json_array_get_number_double(tmp_arr, 0, GF.water_color.r);
+            cur->water_color.g =
+                json_array_get_number_double(tmp_arr, 1, GF.water_color.g);
+            cur->water_color.b =
+                json_array_get_number_double(tmp_arr, 2, GF.water_color.b);
+        } else {
+            cur->water_color_override = 0;
         }
 
         struct json_object_s *jlbl_strings_obj =

@@ -1209,6 +1209,12 @@ typedef struct HWR_Resolution {
     int height;
 } HWR_Resolution;
 
+typedef struct RGBF {
+    float r;
+    float g;
+    float b;
+} RGBF;
+
 typedef struct RGB888 {
     uint8_t r;
     uint8_t g;
@@ -1994,6 +2000,8 @@ typedef struct GAMEFLOW_LEVEL {
     int8_t demo;
     int16_t secrets;
     GAMEFLOW_SEQUENCE *sequence;
+    int8_t water_color_override;
+    RGBF water_color;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -2009,6 +2017,7 @@ typedef struct GAMEFLOW {
     int8_t enable_save_crystals;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
+    RGBF water_color;
 } GAMEFLOW;
 
 typedef struct MN_SFX_PLAY_INFO {
