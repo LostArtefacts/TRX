@@ -1692,6 +1692,87 @@ void HWR_OutputPolyList()
     HWR_RenderEnd();
 }
 
+void HWR_DownloadTextures(int32_t pages)
+{
+    int i;
+
+    LOG_INFO(
+        "DownloadTexturesToHardware: level %d, pages %d", CurrentLevel, pages);
+
+    if (pages > MAX_TEXTPAGES) {
+        ShowFatalError("Attempt to download more than texture page limit");
+    }
+
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
+        if (ATITextureMap[i]) {
+            if (ATI3DCIF_TextureUnreg(ATITextureMap[i])) {
+                ShowFatalError("ERROR: Could not unregister texture");
+            }
+            ATITextureMap[i] = 0;
+        }
+        HWR_TextureLoaded[i] = 0;
+    }
+
+    if (HWR_IsPaletteActive) {
+        LOG_INFO("    Resetting texture palette handle");
+        if (ATITexturePalette) {
+            if (ATI3DCIF_TexturePaletteDestroy(ATITexturePalette)) {
+                ShowFatalError("ERROR: Cannot release old texture palette");
+            }
+            ATITexturePalette = NULL;
+        }
+        if (ATI3DCIF_TexturePaletteCreate(
+                C3D_ECI_TMAP_8BIT, ATIPalette, &ATITexturePalette)) {
+            ShowFatalError("ERROR: Cannot create texture palette");
+        }
+        HWR_IsPaletteActive = 0;
+    }
+
+    for (i = 0; i < pages; i++) {
+        DDSURFACEDESC surface_desc;
+        HRESULT result;
+
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        result = IDirectDrawSurface2_Lock(
+            TextureSurfaces[i], NULL, &surface_desc, DDLOCK_WAIT, 0);
+        HWR_CheckError(result);
+
+        memcpy(
+            surface_desc.lpSurface, TexturePagePtrs[i],
+            0x10000); // TODO: magic number
+
+        result = IDirectDrawSurface2_Unlock(
+            TextureSurfaces[i], surface_desc.lpSurface);
+        HWR_CheckError(result);
+
+        LOG_INFO("    registering");
+
+        C3D_TMAP tmap;
+        tmap.u32Size = sizeof(C3D_TMAP);
+        tmap.bMipMap = FALSE;
+        tmap.apvLevels[0] = (C3D_PVOID)surface_desc.lpSurface;
+        tmap.u32MaxMapXSizeLg2 = 8;
+        tmap.u32MaxMapYSizeLg2 = 8;
+        tmap.eTexFormat = C3D_ETF_CI8;
+        tmap.clrTexChromaKey = ATIChromaKey;
+        tmap.htxpalTexPalette = ATITexturePalette;
+        tmap.bClampS = FALSE;
+        tmap.bClampT = FALSE;
+        tmap.bAlphaBlend = FALSE;
+        if (ATI3DCIF_TextureReg(&tmap, &ATITextureMap[i])) {
+            ShowFatalError("ERROR: Could not register texture");
+        }
+
+        HWR_TextureLoaded[i] = 1;
+        LOG_INFO("    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
+    }
+
+    HWR_SelectedTexture = -1;
+
+    LOG_INFO("    complete");
+}
+
 void T1MInjectSpecificHWR()
 {
     INJECT(0x004077D0, HWR_CheckError);
@@ -1709,6 +1790,7 @@ void T1MInjectSpecificHWR()
     INJECT(0x0040834C, HWR_PrepareFMV);
     INJECT(0x00408368, HWR_FMVDone);
     INJECT(0x0040837F, HWR_FMVInit);
+    INJECT(0x004084DE, HWR_DownloadTextures);
     INJECT(0x004087EA, HWR_SetPalette);
     INJECT(0x004089F4, HWR_SwitchResolution);
     INJECT(0x00408A70, HWR_DumpScreen);

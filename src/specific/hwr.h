@@ -11,10 +11,6 @@
 // TODO: function naming, Render vs. Draw vs. Insert
 // TODO: port ATI3DCIF to actual D3D calls
 
-// clang-format off
-#define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
-// clang-format on
-
 void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
@@ -58,6 +54,7 @@ void HWR_FMVDone();
 void HWR_FMVInit();
 void HWR_SetPalette();
 void HWR_SetupRenderContextAndRender();
+void HWR_DownloadTextures(int32_t pages);
 void HWR_InitPolyList();
 void HWR_OutputPolyList();
 
