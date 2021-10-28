@@ -26,17 +26,11 @@ typedef struct HWR_LIGHTNING {
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
+static RGBF HWR_WaterColor;
+
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
 static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
-
-static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
-{
-    if (IsShadeEffect) {
-        *r *= 0.6f;
-        *g *= 0.7f;
-    }
-}
 
 static void HWR_EnableTextureMode(void)
 {
@@ -62,6 +56,22 @@ static void HWR_DisableTextureMode(void)
     HWR_IsTextureMode = 0;
     enable = FALSE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
+
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
+{
+    if (IsShadeEffect) {
+        *r *= HWR_WaterColor.r;
+        *g *= HWR_WaterColor.g;
+        *b *= HWR_WaterColor.b;
+    }
+}
+
+void HWR_ChangeWaterColor(const RGBF *color)
+{
+    HWR_WaterColor.r = color->r;
+    HWR_WaterColor.g = color->g;
+    HWR_WaterColor.b = color->b;
 }
 
 void HWR_CheckError(HRESULT result)

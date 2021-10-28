@@ -621,6 +621,12 @@ int32_t S_LoadLevel(int level_num)
     LOG_INFO("%d (%s)", level_num, GF.levels[level_num].level_file);
     int32_t ret = LoadLevel(GF.levels[level_num].level_file, level_num);
 
+    if (GF.levels[level_num].water_color_override) {
+        HWR_ChangeWaterColor(&GF.levels[level_num].water_color);
+    } else {
+        HWR_ChangeWaterColor(&GF.water_color);
+    }
+
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
