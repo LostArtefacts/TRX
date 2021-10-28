@@ -11,6 +11,7 @@
 #include "global/vars.h"
 #include "specific/output.h"
 #include "util.h"
+#include "config.h"
 
 #include <stdlib.h>
 
@@ -349,6 +350,11 @@ void DrawDummyItem(ITEM_INFO *item)
 
 void DrawPickupItem(ITEM_INFO *item)
 {
+    if (!T1MConfig.enable_3d_pickups) {
+        DrawSpriteItem(item);
+        return;
+    }
+
     // convert item to menu display item
     int16_t item_num_option = Inv_GetItemOption(item->object_number);
     // save the frame number

@@ -158,11 +158,14 @@
     "resolution_height": -1,
 
     // Enables XBox One Controller with PS1 layout and Per Axis Dead Zone.
-    "enable_xbox_one_controller": true,
+    "enable_xbox_one_controller": false,
 
     // Overrides ingame brightness.
     "brightness": 1.0,
 
     // Enable round shadow instead of the default octagon one.
     "enable_round_shadow": true,
+
+    // Enables 3D models to be rendered in place of the billboards for pickup items
+    "enable_3d_pickups" : true,
 }

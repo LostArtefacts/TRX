@@ -155,6 +155,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(enable_xbox_one_controller, 0);
     READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, 1);
+    READ_BOOL(enable_3d_pickups, 1);
 
     READ_BAR_SHOWING_MODE(healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT);
     READ_BAR_SHOWING_MODE(airbar_showing_mode, T1M_BSM_DEFAULT);
