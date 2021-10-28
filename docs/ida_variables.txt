@@ -104,7 +104,7 @@
 0x0040CADB void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
 0x0040CC5D void HWR_RenderLightningSegment(int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2, int32_t z2, int thickness2);
 0x0040D056 void HWR_DrawLightningSegment(int x1, int y1, int z1, int thickness1, int x2, int y2, int z2, int thickness2);
-# 0x0040D0F7 HWR_InitPolyList
+0x0040D0F7 void HWR_InitPolyList();
 # 0x0040D140 HWR_CacheTexture
 0x0040D2E0 void HWR_OutputPolyList();
 # 0x0040D465 DoNothing
