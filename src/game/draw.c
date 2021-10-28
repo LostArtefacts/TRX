@@ -406,7 +406,7 @@ void DrawPickupItem(ITEM_INFO *item)
         int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
         int16_t anim_y = frmptr[0][FRAME_POS_Y];
 
-        // different objects need different heuristics 
+        // different objects need different heuristics
         switch (item_num_option) {
         case O_GUN_OPTION:
         case O_SHOTGUN_OPTION:
