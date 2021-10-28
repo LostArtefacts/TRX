@@ -382,8 +382,9 @@ void DrawPickupItem(ITEM_INFO *item)
     // good news is there is a mesh, we just need to work out where to put it
 
     // first - Is there floor under the item
-    // This is mostly true, but for example the 4 items in the Obelisk of Kharmoon
-    // the 4 items are sitting ontop of a static mesh which is not floor.
+    // This is mostly true, but for example the 4 items in the Obelisk of
+    // Kharmoon the 4 items are sitting ontop of a static mesh which is not
+    // floor.
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     int16_t floor_height =
@@ -393,11 +394,11 @@ void DrawPickupItem(ITEM_INFO *item)
     int16_t offset = floor_height;
     // is the floor "just below" the item?
     int16_t floor_mapped_delta = abs(floor_height - item->pos.y);
-    if ( floor_mapped_delta > 256 || floor_mapped_delta == 0) {
+    if (floor_mapped_delta > 256 || floor_mapped_delta == 0) {
 
         // no, now we need to fudge it a bit
         // first get the sprite that was to be used
-        
+
         int16_t spr_num =
             Objects[item->object_number].mesh_index - item->frame_number;
         PHD_SPRITE *sprite = &PhdSpriteInfo[spr_num];
@@ -434,32 +435,32 @@ void DrawPickupItem(ITEM_INFO *item)
         case O_KEY_OPTION2:
         case O_KEY_OPTION3:
         case O_KEY_OPTION4: {
-                // take the difference from the bottom of the sprite and the bottom
-                // of the animation and divide it by 8
-                // why 8? It looks about right in the cases I tested.
-                // specifically the 4 items in the Obelisk of Kharmoon
-                // I also orriginally used this for keys on most levels and it
-                // was correct on them too.
-                // some objects have a centred mesh and some have one that is from the bottom
-                // for the centred ones we have to move up from the bottom. 
-                int centred = abs(min_y + max_y) < 8;
-                if (floor_mapped_delta) {
-                    offset = item->pos.y - abs(min_y - sprite->y1) / 8;
-                } else if (centred) {
-                    offset = item->pos.y + min_y;
-                }
-                break;
+            // take the difference from the bottom of the sprite and the bottom
+            // of the animation and divide it by 8
+            // why 8? It looks about right in the cases I tested.
+            // specifically the 4 items in the Obelisk of Kharmoon
+            // I also orriginally used this for keys on most levels and it
+            // was correct on them too.
+            // some objects have a centred mesh and some have one that is from
+            // the bottom for the centred ones we have to move up from the
+            // bottom.
+            int centred = abs(min_y + max_y) < 8;
+            if (floor_mapped_delta) {
+                offset = item->pos.y - abs(min_y - sprite->y1) / 8;
+            } else if (centred) {
+                offset = item->pos.y + min_y;
             }
+            break;
+        }
         }
     }
 
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, offset, item->pos.z);
 
-    int16_t *frame =
-        &object->frame_base[(object->nmeshes * 2 + 10)];
+    int16_t *frame = &object->frame_base[(object->nmeshes * 2 + 10)];
     CalculateObjectLighting(item, frame);
-    
+
     int32_t x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
     int32_t y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
     int32_t z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
