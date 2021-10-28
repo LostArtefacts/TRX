@@ -34,7 +34,7 @@ int16_t PickUpBoundsUW[12] = {
 
 void SetupPickupObject(OBJECT_INFO *obj)
 {
-    obj->draw_routine = DrawSpriteItem;
+    obj->draw_routine = DrawPickupItem;
     obj->collision = PickUpCollision;
     obj->save_flags = 1;
 }

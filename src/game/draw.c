@@ -2,14 +2,17 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/scalespr.h"
+#include "game/control.h"
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/health.h"
 #include "game/inv.h"
-#include "game/vars.h"
 #include "global/const.h"
+#include "global/vars.h"
 #include "specific/output.h"
 #include "util.h"
+
+#include <stdlib.h>
 
 static int16_t InterpolatedBounds[6];
 
@@ -340,66 +343,205 @@ void DrawSpriteItem(ITEM_INFO *item)
         item->shade);
 }
 
-void DrawPickupItem(ITEM_INFO* item)
+void DrawDummyItem(ITEM_INFO *item)
 {
+}
+
+void DrawPickupItem(ITEM_INFO *item)
+{
+    // convert item to menu display item
     int16_t item_num_option = Inv_GetItemOption(item->object_number);
+    // save the frame number
+    int16_t old_frame_number = item->frame_number;
+    // modify item to be the anim for inv item and animation 0
+    item->anim_number = Objects[item_num_option].anim_index;
+    item->frame_number = Anims[item->anim_number].frame_base;
 
-    int16_t current_frame = 0;
-    int32_t drawn_meshes = -1;
-    OBJECT_INFO* obj = &Objects[item_num_option];
+    OBJECT_INFO *object = &Objects[item_num_option];
 
-    if (obj->nmeshes < 0) {
-        TRACE("no meshes for object %d", item_num_option);
+    int16_t *frmptr[2];
+    int32_t rate;
+    int32_t frac = GetFrames(item, frmptr, &rate);
+
+    // restore the old frame number in case we need to get the sprite again.
+    item->frame_number = old_frame_number;
+
+    // fall back to normal sprite rendering if not found
+    if (object->nmeshes < 0) {
+        T1MPrintStackTrace("no meshes for object %d", item_num_option);
         DrawSpriteItem(item);
         return;
     }
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->pos.y - STEP_L / 8, item->pos.z);
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    // good news is there is a mesh, we just need to work out where to put it
 
-    int16_t* frame = &obj->frame_base[current_frame];
-    // CalculateObjectLighting(item, frame);
+    // first - Is there floor under the item
+    // This is mostly true, but for example the 4 items in the Obelisk of Kharmoon
+    // the 4 items are sitting ontop of a static mesh which is not floor.
+    FLOOR_INFO *floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    int16_t floor_height =
+        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    // assume this is our offset
+    int16_t offset = floor_height;
+    // is the floor "just below" the item?
+    int16_t floor_mapped_delta = abs(floor_height - item->pos.y);
+    if ( floor_mapped_delta > 256 || floor_mapped_delta == 0) {
+
+        // no, now we need to fudge it a bit
+        // first get the sprite that was to be used
+        
+        int16_t spr_num =
+            Objects[item->object_number].mesh_index - item->frame_number;
+        PHD_SPRITE *sprite = &PhdSpriteInfo[spr_num];
+
+        // and get the animation bounding box, which is not the mesh one
+        int16_t min_y = frmptr[0][FRAME_BOUND_MIN_Y];
+        int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
+        int16_t anim_y = frmptr[0][FRAME_POS_Y];
+
+        // different objects need differnet huertistics
+        switch (item_num_option) {
+        case O_GUN_OPTION:
+        case O_SHOTGUN_OPTION:
+        case O_MAGNUM_OPTION:
+        case O_UZI_OPTION:
+        case O_MAG_AMMO_OPTION:
+        case O_UZI_AMMO_OPTION:
+        case O_EXPLOSIVE_OPTION:
+        case O_LEADBAR_OPTION:
+        case O_PICKUP_OPTION1:
+        case O_PICKUP_OPTION2:
+        case O_SCION_OPTION:
+            // ignore the sprite and just position based upon the anim
+            offset = item->pos.y + (min_y - anim_y) / 2;
+            break;
+        case O_MEDI_OPTION:
+        case O_BIGMEDI_OPTION:
+        case O_SG_AMMO_OPTION:
+        case O_PUZZLE_OPTION1:
+        case O_PUZZLE_OPTION2:
+        case O_PUZZLE_OPTION3:
+        case O_PUZZLE_OPTION4:
+        case O_KEY_OPTION1:
+        case O_KEY_OPTION2:
+        case O_KEY_OPTION3:
+        case O_KEY_OPTION4: {
+                // take the difference from the bottom of the sprite and the bottom
+                // of the animation and divide it by 8
+                // why 8? It looks about right in the cases I tested.
+                // specifically the 4 items in the Obelisk of Kharmoon
+                // I also orriginally used this for keys on most levels and it
+                // was correct on them too.
+                // some objects have a centred mesh and some have one that is from the bottom
+                // for the centred ones we have to move up from the bottom. 
+                int centred = abs(min_y + max_y) < 8;
+                if (floor_mapped_delta) {
+                    offset = item->pos.y - abs(min_y - sprite->y1) / 8;
+                } else if (centred) {
+                    offset = item->pos.y + min_y;
+                }
+                break;
+            }
+        }
+    }
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, offset, item->pos.z);
+
+    int16_t *frame =
+        &object->frame_base[(object->nmeshes * 2 + 10)];
+    CalculateObjectLighting(item, frame);
+    
+    int32_t x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    S_CalculateLight(x, y, z, item->room_number);
+
     int32_t clip = S_GetObjectBounds(frame);
     if (clip) {
-        // phd_TranslateRel(
-        //     frame[FRAME_POS_X], frame[FRAME_POS_Y],
-        //     frame[FRAME_POS_Z]);
-        // int32_t* packed_rotation = (int32_t*)(frame + FRAME_ROT);
-        // phd_RotYXZpack(*packed_rotation++);
 
-        int32_t mesh_num = 1;
-        int32_t* bone = &AnimBones[obj->bone_index];
-        if (drawn_meshes & mesh_num) {
-            phd_PutPolygons(Meshes[obj->mesh_index], clip);
-        }
+        int32_t bit = 1;
+        int16_t **meshpp = &Meshes[object->mesh_index];
+        int32_t *bone = &AnimBones[object->bone_index];
 
-        for (int i = 1; i < obj->nmeshes; i++) {
-            mesh_num <<= 1;
+        if (!frac) {
+            phd_TranslateRel(
+                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+                frmptr[0][FRAME_POS_Z]);
 
-            int32_t bone_extra_flags = bone[0];
-            if (bone_extra_flags & BEB_POP) {
-                phd_PopMatrix();
-            }
-            if (bone_extra_flags & BEB_PUSH) {
-                phd_PushMatrix();
+            int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
+            phd_RotYXZpack(*packed_rotation++);
+
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons(*meshpp++, clip);
             }
 
-            phd_TranslateRel(bone[1], bone[2], bone[3]);
-            // phd_RotYXZpack(*packed_rotation++);
+            for (int i = 1; i < object->nmeshes; i++) {
+                int32_t bone_extra_flags = *bone;
+                if (bone_extra_flags & BEB_POP) {
+                    phd_PopMatrix();
+                }
 
-            if (drawn_meshes & mesh_num) {
-                phd_PutPolygons(Meshes[obj->mesh_index + i], clip);
+                if (bone_extra_flags & BEB_PUSH) {
+                    phd_PushMatrix();
+                }
+
+                phd_TranslateRel(bone[1], bone[2], bone[3]);
+                phd_RotYXZpack(*packed_rotation++);
+
+                // extra rotation is ingnored in this case as its not needed
+
+                bit <<= 1;
+                if (item->mesh_bits & bit) {
+                    phd_PutPolygons(*meshpp, clip);
+                }
+
+                bone += 4;
+                meshpp++;
+            }
+        } else {
+            // this should never happen but is here "just in case"
+            InitInterpolate(frac, rate);
+            phd_TranslateRel_ID(
+                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+                frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
+                frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
+            int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
+            int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
+            phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons_I(*meshpp++, clip);
             }
 
-            bone += 4;
+            for (int i = 1; i < object->nmeshes; i++) {
+                int32_t bone_extra_flags = *bone;
+                if (bone_extra_flags & BEB_POP) {
+                    phd_PopMatrix_I();
+                }
+
+                if (bone_extra_flags & BEB_PUSH) {
+                    phd_PushMatrix_I();
+                }
+
+                phd_TranslateRel_I(bone[1], bone[2], bone[3]);
+                phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+                // extra rotation is ingnored in this case as its not needed
+
+                bit <<= 1;
+                if (item->mesh_bits & bit) {
+                    phd_PutPolygons_I(*meshpp, clip);
+                }
+
+                bone += 4;
+                meshpp++;
+            }
         }
     }
     phd_PopMatrix();
-}
-
-void DrawDummyItem(ITEM_INFO* item)
-{
 }
 
 void DrawAnimatingItem(ITEM_INFO *item)

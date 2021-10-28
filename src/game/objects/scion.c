@@ -46,13 +46,13 @@ int16_t PickUpScion4Bounds[12] = {
 
 void SetupScion1(OBJECT_INFO *obj)
 {
-    Objects[O_SCION_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM].collision = PickUpScionCollision;
 }
 
 void SetupScion2(OBJECT_INFO *obj)
 {
-    Objects[O_SCION_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM2].collision = PickUpCollision;
     Objects[O_SCION_ITEM2].save_flags = 1;
 }
