@@ -5,9 +5,6 @@
 
 #include <stdint.h>
 
-// clang-format off
-// clang-format on
-
 void phd_GenerateW2V(PHD_3DPOS *viewpos);
 void phd_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,

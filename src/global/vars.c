@@ -111,6 +111,7 @@ int32_t FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 int16_t InvMode = INV_TITLE_MODE;
 int32_t InvExtraData[8];
 int16_t InvChosen = -1;
+int8_t InvDisableResolutionSwitch = 0;
 
 int16_t BarOffsetY[6];
 

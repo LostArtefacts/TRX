@@ -586,7 +586,7 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (dword_45B940) {
+        if (InvDisableResolutionSwitch) {
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
             max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {

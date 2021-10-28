@@ -10,7 +10,6 @@
 
 // clang-format off
 // TODO: decompile me!
-#define dword_45B940            VAR_U_(0x0045B940, int32_t)
 
 #define FltWinTop               VAR_U_(0x0068F3B8, float)
 #define FltWinLeft              VAR_U_(0x00695180, float)
@@ -302,6 +301,7 @@ extern int16_t StoredLaraHealth;
 extern int16_t InvMode;
 extern int32_t InvExtraData[];
 extern int16_t InvChosen;
+extern int8_t InvDisableResolutionSwitch;
 
 extern int16_t BarOffsetY[6];
 
