@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/scalespr.h"
+#include "config.h"
 #include "game/control.h"
 #include "game/game.h"
 #include "game/hair.h"
@@ -11,7 +12,6 @@
 #include "global/vars.h"
 #include "specific/output.h"
 #include "util.h"
-#include "config.h"
 
 #include <stdlib.h>
 
@@ -374,7 +374,6 @@ void DrawPickupItem(ITEM_INFO *item)
 
     // fall back to normal sprite rendering if not found
     if (object->nmeshes < 0) {
-        T1MPrintStackTrace("no meshes for object %d", item_num_option);
         DrawSpriteItem(item);
         return;
     }
@@ -394,9 +393,8 @@ void DrawPickupItem(ITEM_INFO *item)
     int16_t offset = floor_height;
     // is the floor "just below" the item?
     int16_t floor_mapped_delta = abs(floor_height - item->pos.y);
-    if (floor_mapped_delta > 256 || floor_mapped_delta == 0) {
-
-        // no, now we need to fudge it a bit
+    if (floor_mapped_delta > WALL_L / 4 || floor_mapped_delta == 0) {
+        // no, now we need to move it a bit
         // first get the sprite that was to be used
 
         int16_t spr_num =
@@ -408,7 +406,7 @@ void DrawPickupItem(ITEM_INFO *item)
         int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
         int16_t anim_y = frmptr[0][FRAME_POS_Y];
 
-        // different objects need differnet huertistics
+        // different objects need different heuristics 
         switch (item_num_option) {
         case O_GUN_OPTION:
         case O_SHOTGUN_OPTION:
@@ -437,13 +435,11 @@ void DrawPickupItem(ITEM_INFO *item)
         case O_KEY_OPTION4: {
             // take the difference from the bottom of the sprite and the bottom
             // of the animation and divide it by 8
-            // why 8? It looks about right in the cases I tested.
-            // specifically the 4 items in the Obelisk of Kharmoon
-            // I also orriginally used this for keys on most levels and it
-            // was correct on them too.
-            // some objects have a centred mesh and some have one that is from
-            // the bottom for the centred ones we have to move up from the
-            // bottom.
+            // 8 was chosen because in testing it positioned objects correctly.
+            // specifically the 4 items in the Obelisk of Kharmoon and keys.
+            // Some objects have a centred mesh and some have one that is from
+            // the bottom, for the centred ones; move up from the
+            // bottom is necessary.
             int centred = abs(min_y + max_y) < 8;
             if (floor_mapped_delta) {
                 offset = item->pos.y - abs(min_y - sprite->y1) / 8;
@@ -468,7 +464,9 @@ void DrawPickupItem(ITEM_INFO *item)
 
     int32_t clip = S_GetObjectBounds(frame);
     if (clip) {
-
+        // From this point on the function is a slightly customised version
+        // of the code in DrawAnimatingItem starting with the line that
+        // matches the following line.
         int32_t bit = 1;
         int16_t **meshpp = &Meshes[object->mesh_index];
         int32_t *bone = &AnimBones[object->bone_index];
@@ -498,7 +496,7 @@ void DrawPickupItem(ITEM_INFO *item)
                 phd_TranslateRel(bone[1], bone[2], bone[3]);
                 phd_RotYXZpack(*packed_rotation++);
 
-                // extra rotation is ingnored in this case as its not needed
+                // extra rotation is ignored in this case as its not needed
 
                 bit <<= 1;
                 if (item->mesh_bits & bit) {
@@ -536,7 +534,7 @@ void DrawPickupItem(ITEM_INFO *item)
                 phd_TranslateRel_I(bone[1], bone[2], bone[3]);
                 phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
-                // extra rotation is ingnored in this case as its not needed
+                // extra rotation is ignored in this case as its not needed
 
                 bit <<= 1;
                 if (item->mesh_bits & bit) {
