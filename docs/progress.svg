@@ -68,7 +68,7 @@
 <rect width="12.00" height="12.00" x="210.00" y="31.00" class="decompiled"><title>HWR_FMVDone</title></rect>
 <rect width="12.00" height="12.00" x="224.00" y="31.00" class="decompiled"><title>HWR_FMVInit</title></rect>
 <rect width="12.00" height="12.00" x="238.00" y="31.00" class="decompiled"><title>sub_408409</title></rect>
-<rect width="12.00" height="12.00" x="252.00" y="31.00" class="named"><title>HWR_DownloadTextures</title></rect>
+<rect width="12.00" height="12.00" x="252.00" y="31.00" class="decompiled"><title>HWR_DownloadTextures</title></rect>
 <rect width="12.00" height="12.00" x="266.00" y="31.00" class="decompiled"><title>HWR_SetPalette</title></rect>
 <rect width="12.00" height="12.00" x="280.00" y="31.00" class="decompiled"><title>HWR_SwitchResolution</title></rect>
 <rect width="12.00" height="12.00" x="294.00" y="31.00" class="decompiled"><title>HWR_DumpScreen</title></rect>
@@ -99,7 +99,7 @@
 <rect width="12.00" height="12.00" x="644.00" y="31.00" class="decompiled"><title>HWR_RenderLightningSegment</title></rect>
 <rect width="12.00" height="12.00" x="658.00" y="31.00" class="decompiled"><title>HWR_DrawLightningSegment</title></rect>
 <rect width="12.00" height="12.00" x="672.00" y="31.00" class="decompiled"><title>HWR_InitPolyList</title></rect>
-<rect width="12.00" height="12.00" x="686.00" y="31.00" class="named"><title>HWR_CacheTexture</title></rect>
+<rect width="12.00" height="12.00" x="686.00" y="31.00" class="decompiled"><title>HWR_CacheTexture</title></rect>
 <rect width="12.00" height="12.00" x="0.00" y="45.00" class="decompiled"><title>HWR_OutputPolyList</title></rect>
 <rect width="12.00" height="12.00" x="14.00" y="45.00" class="decompiled"><title>DoNothing</title></rect>
 <rect width="12.00" height="12.00" x="28.00" y="45.00" class="decompiled"><title>BatControl</title></rect>
@@ -797,7 +797,7 @@
 <rect width="22.75" height="22.43" x="313.23" y="393.86" class="decompiled"><title>HWR_InitialiseHardware</title></rect>
 <rect width="22.75" height="22.03" x="313.23" y="418.29" class="decompiled"><title>LoadRooms</title></rect>
 <rect width="22.75" height="22.03" x="313.23" y="442.32" class="decompiled"><title>gtmapA</title></rect>
-<rect width="22.75" height="21.88" x="313.23" y="466.36" class="named"><title>HWR_DownloadTextures</title></rect>
+<rect width="22.75" height="21.88" x="313.23" y="466.36" class="decompiled"><title>HWR_DownloadTextures</title></rect>
 <rect width="22.75" height="21.88" x="313.23" y="490.24" class="decompiled"><title>CrocControl</title></rect>
 <rect width="22.75" height="21.88" x="313.23" y="514.12" class="decompiled"><title>LaraAsDieMidas</title></rect>
 <rect width="22.23" height="21.58" x="337.98" y="269.00" class="decompiled"><title>FireWeapon</title></rect>
@@ -887,7 +887,7 @@
 <rect width="16.63" height="15.61" x="444.82" y="452.26" class="decompiled"><title>LaraTestWaterClimbOut</title></rect>
 <rect width="16.63" height="15.45" x="444.82" y="469.87" class="decompiled"><title>LaraUnderWater</title></rect>
 <rect width="16.63" height="14.96" x="444.82" y="487.32" class="decompiled"><title>draw_poly_line</title></rect>
-<rect width="16.63" height="14.92" x="444.82" y="504.28" class="named"><title>HWR_CacheTexture</title></rect>
+<rect width="16.63" height="14.92" x="444.82" y="504.28" class="decompiled"><title>HWR_CacheTexture</title></rect>
 <rect width="16.63" height="14.80" x="444.82" y="521.20" class="decompiled"><title>LoadItems</title></rect>
 <rect width="15.33" height="16.01" x="463.45" y="287.74" class="decompiled"><title>GetJointAbsPosition</title></rect>
 <rect width="15.29" height="16.01" x="480.79" y="287.74" class="decompiled"><title>DartEmitterControl</title></rect>
@@ -1431,10 +1431,10 @@
 <rect width="-0.44" height="0.43" x="696.44" y="534.60" class="decompiled"><title>SampleLoader</title></rect>
 <rect width="0.34" height="-1.03" x="694.88" y="537.03" class="decompiled"><title>KeyGet</title></rect>
 <rect width="-1.22" height="-1.03" x="697.22" y="537.03" class="decompiled"><title>S_CDVolume</title></rect>
-<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 99.72%</text>
-<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 99.52%</text>
-<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 0.28%</text>
-<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 0.48%</text>
+<rect width="12.00" height="12.00" x="0.00" y="564.50" class="decompiled"/><text x="17.00" y="570.50">Functions decompiled (count): 100.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="582.50" class="decompiled"/><text x="17.00" y="588.50">Functions decompiled (bytesize): 100.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="600.50" class="named"/><text x="17.00" y="606.50">Functions not decompiled, but with known names (count): 0.00%</text>
+<rect width="12.00" height="12.00" x="0.00" y="618.50" class="named"/><text x="17.00" y="624.50">Functions not decompiled, but with known names (bytesize): 0.00%</text>
 <rect width="12.00" height="12.00" x="0.00" y="636.50" class="todo"/><text x="17.00" y="642.50">Functions not decompiled, with unknown names (count): 0.00%</text>
 <rect width="12.00" height="12.00" x="0.00" y="654.50" class="todo"/><text x="17.00" y="660.50">Functions not decompiled, with unknown names (bytesize): 0.00%</text>
 </svg>

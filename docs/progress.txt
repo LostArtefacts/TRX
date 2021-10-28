@@ -86,7 +86,7 @@ HWR_PrepareFMV                  0x0040834C  0x0000001C  +
 HWR_FMVDone                     0x00408368  0x00000017  +
 HWR_FMVInit                     0x0040837F  0x0000008A  +
 sub_408409                      0x00408409  0x000000D5  x
-HWR_DownloadTextures            0x004084DE  0x0000030C  *
+HWR_DownloadTextures            0x004084DE  0x0000030C  +
 HWR_SetPalette                  0x004087EA  0x0000020A  +
 HWR_SwitchResolution            0x004089F4  0x0000007C  +
 HWR_DumpScreen                  0x00408A70  0x00000057  +
@@ -117,7 +117,7 @@ HWR_PrintShadow                 0x0040CADB  0x00000182  +
 HWR_RenderLightningSegment      0x0040CC5D  0x000003F9  +
 HWR_DrawLightningSegment        0x0040D056  0x000000A1  +
 HWR_InitPolyList                0x0040D0F7  0x00000049  +
-HWR_CacheTexture                0x0040D140  0x000001A0  -
+HWR_CacheTexture                0x0040D140  0x000001A0  x
 HWR_OutputPolyList              0x0040D2E0  0x00000185  +
 DoNothing                       0x0040D465  0x00000005  +
 

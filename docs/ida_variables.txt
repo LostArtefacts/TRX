@@ -74,7 +74,8 @@
 0x00408368 void HWR_FMVDone();
 0x0040837F void HWR_FMVInit();
 # 0x00408409 sub_408409
-0x004084DE void HWR_DownloadTextures(int16_t tpage);
+0x004084DE void HWR_DownloadTextures(int32_t pages);
+0x005DA7E0 C3D_HTXPAL ATITexturePalette;
 0x004087EA void HWR_SetPalette();
 0x004089F4 void HWR_SwitchResolution();
 0x00408A70 void HWR_DumpScreen();
@@ -997,7 +998,7 @@
 0x004634E0 LPDIRECTDRAWSURFACE TextureCacheSurfaces[16];
 0x00463564 void* Surface1DrawPtr;
 0x00463568 int32_t HWR_OldIsRendering;
-0x00463580 C3D_PHTX ATITextureMap[32];
+0x00463580 C3D_HTX ATITextureMap[32];
 0x00463600 HWND TombHWND;
 0x00463600 uint32_t TombHWND;
 0x00463608 LPDIRECTDRAWSURFACE Surface4;
