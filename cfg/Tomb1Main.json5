@@ -158,7 +158,7 @@
     "resolution_height": -1,
 
     // Enables XBox One Controller with PS1 layout and Per Axis Dead Zone.
-    "enable_xbox_one_controller": false,
+    "enable_xbox_one_controller": true,
 
     // Overrides ingame brightness.
     "brightness": 1.0,
