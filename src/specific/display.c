@@ -76,8 +76,7 @@ void SetupScreenSize()
     int32_t x = (res_x - width) / 2;
     int32_t y = (res_y - height) / 2;
     phd_InitWindow(
-        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, res_x, res_y,
-        ScrPtr);
+        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, res_x, res_y);
 }
 
 void TempVideoAdjust(int32_t hi_res, double sizer)
