@@ -12,12 +12,12 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
+#include "log.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <limits.h>
 #include <stdlib.h>

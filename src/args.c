@@ -1,6 +1,6 @@
 #include "args.h"
 
-#include "util.h"
+#include "log.h"
 
 #include <windows.h>
 #include <shellapi.h>

@@ -1,7 +1,7 @@
 #include "specific/ati.h"
 
 #include "global/vars_platform.h"
-#include "util.h"
+#include "log.h"
 
 #include <windows.h>
 

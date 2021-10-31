@@ -10,6 +10,7 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/init.h"

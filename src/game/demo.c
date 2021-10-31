@@ -13,7 +13,6 @@
 
 int32_t StartDemo()
 {
-    LOG_DEBUG("");
     TEXTSTRING *txt;
     START_INFO start, *s;
 

@@ -4,7 +4,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
-#include "util.h"
+#include "log.h"
 
 #include <stdlib.h>
 #include <string.h>

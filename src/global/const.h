@@ -1,6 +1,8 @@
 #ifndef T1M_GLOBAL_CONST_H
 #define T1M_GLOBAL_CONST_H
 
+#include "util.h"
+
 #define MALLOC_SIZE 0x1000000 // 16 MB
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182

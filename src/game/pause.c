@@ -9,7 +9,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -142,7 +141,6 @@ static int32_t PauseLoop()
 
 int8_t S_Pause()
 {
-    LOG_DEBUG("");
     OldInputDB = Input;
 
     int old_overlay_flag = OverlayFlag;

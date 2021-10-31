@@ -4,6 +4,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "log.h"
 #include "specific/init.h"
 
 #include <math.h>

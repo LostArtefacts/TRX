@@ -8,7 +8,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #define HAIR_SEGMENTS 6
 #define HAIR_OFFSET_X (0) // left-right
