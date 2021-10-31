@@ -9,7 +9,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -393,21 +392,4 @@ void LaraWaterCurrent(COLL_INFO *coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
-}
-
-void T1MInjectGameLaraSwim()
-{
-    INJECT(0x00428F10, LaraUnderWater);
-
-    INJECT(0x004290C0, LaraAsSwim);
-    INJECT(0x00429140, LaraAsGlide);
-    INJECT(0x004291D0, LaraAsTread);
-    INJECT(0x00429250, LaraAsDive);
-    INJECT(0x00429270, LaraAsUWDeath);
-
-    INJECT(0x004292C0, LaraColSwim);
-    INJECT(0x004292E0, LaraColUWDeath);
-
-    INJECT(0x00429340, LaraSwimCollision);
-    INJECT(0x00429440, LaraWaterCurrent);
 }
