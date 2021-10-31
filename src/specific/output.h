@@ -33,6 +33,4 @@ int32_t GetRenderWidthDownscaled();
 int32_t GetRenderHeight();
 int32_t GetRenderWidth();
 
-void T1MInjectSpecificOutput();
-
 #endif

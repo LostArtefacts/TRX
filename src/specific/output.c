@@ -13,7 +13,6 @@
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/smain.h"
-#include "util.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -614,23 +613,4 @@ int S_GetObjectBounds(int16_t *bptr)
     }
 
     return 1; // fully on screen
-}
-
-void T1MInjectSpecificOutput()
-{
-    INJECT(0x0042FC60, S_InitialisePolyList);
-    INJECT(0x0042FC70, S_DumpScreen);
-    INJECT(0x0042FCC0, S_ClearScreen);
-    INJECT(0x0042FCE0, S_InitialiseScreen);
-    INJECT(0x0042FD10, S_OutputPolyList);
-    INJECT(0x0042FD30, S_GetObjectBounds);
-    INJECT(0x0042FFA0, S_PrintShadow);
-    INJECT(0x00430100, S_CalculateLight);
-    INJECT(0x00430290, S_CalculateStaticLight);
-    INJECT(0x004302D0, S_DrawHealthBar);
-    INJECT(0x00430450, S_DrawAirBar);
-    INJECT(0x004305E0, S_SetupBelowWater);
-    INJECT(0x00430640, S_SetupAboveWater);
-    INJECT(0x00430740, S_DrawLightningSegment);
-    INJECT(0x00430CE0, S_DisplayPicture);
 }
