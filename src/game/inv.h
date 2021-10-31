@@ -30,6 +30,7 @@ extern INVENTORY_ITEM InvItemPuzzle1;
 extern INVENTORY_ITEM InvItemPuzzle2;
 extern INVENTORY_ITEM InvItemPuzzle3;
 extern INVENTORY_ITEM InvItemPuzzle4;
+extern INVENTORY_ITEM InvItemKey1;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
