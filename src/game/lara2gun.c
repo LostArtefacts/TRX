@@ -3,7 +3,6 @@
 #include "game/sound.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -241,13 +240,4 @@ void AnimatePistols(int32_t weapon_type)
         anil--;
     }
     Lara.left_arm.frame_number = anil;
-}
-
-void T1MInjectGameLaraGun2()
-{
-    INJECT(0x00426470, DrawPistols);
-    INJECT(0x004265C0, UndrawPistols);
-    INJECT(0x00426830, DrawPistolMeshes);
-    INJECT(0x004268A0, PistolHandler);
-    INJECT(0x004269D0, AnimatePistols);
 }

@@ -6,7 +6,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -231,11 +230,4 @@ void FireShotgun()
         SoundEffect(
             Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, SPM_NORMAL);
     }
-}
-
-void T1MInjectGameLaraGun1()
-{
-    INJECT(0x00425E30, DrawShotgun);
-    INJECT(0x00425F50, UndrawShotgun);
-    INJECT(0x004260F0, RifleHandler);
 }
