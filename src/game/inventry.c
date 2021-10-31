@@ -20,7 +20,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -907,12 +906,4 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
         }
     }
     phd_PopMatrix();
-}
-
-void T1MInjectGameInvEntry()
-{
-    INJECT(0x0041E760, Display_Inventory);
-    INJECT(0x0041F980, Construct_Inventory);
-    INJECT(0x0041FAB0, SelectMeshes);
-    INJECT(0x0041FB40, DrawInventoryItem);
 }

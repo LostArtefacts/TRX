@@ -12,7 +12,6 @@
 #include "game/draw.h"
 #include "game/game.h"
 #include "game/health.h"
-#include "game/inv.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -39,8 +38,6 @@ void T1MInject()
     T1MInjectGameDraw();
     T1MInjectGameGame();
     T1MInjectGameHealth();
-    T1MInjectGameInvEntry();
-    T1MInjectGameInvFunc();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
