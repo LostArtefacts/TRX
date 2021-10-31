@@ -31,8 +31,6 @@
 void GameMain()
 {
     SoundIsActive = 1;
-    HiRes = 2;
-    GameHiRes = 2;
     ScreenSizer = 1.0;
     GameSizer = 1.0;
 
@@ -65,7 +63,6 @@ void GameMain()
 
     GameSizer = 1.0;
     OldRenderSettings = RenderSettings;
-    HiRes = 0;
     TempVideoAdjust(2, 1.0);
     S_DisplayPicture("data\\eidospc");
     S_InitialisePolyList();

@@ -150,7 +150,7 @@ int8_t S_Pause()
     AmmoText = NULL;
     FPSText = NULL;
     S_FadeInInventory(1);
-    TempVideoAdjust(HiRes, 1.0);
+    TempVideoAdjust(GetScreenSizeIdx(), 1.0);
     S_SetupAboveWater(0);
 
     S_MusicPause();
