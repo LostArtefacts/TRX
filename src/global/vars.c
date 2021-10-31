@@ -100,7 +100,6 @@ int32_t RoomsToDrawNum;
 int32_t NumberCameras;
 int32_t NumberSoundEffects;
 OBJECT_VECTOR *SoundEffectsTable;
-SHADOW_INFO ShadowInfo;
 
 int16_t *TriggerIndex;
 int32_t FlipTimer = 0;
@@ -113,6 +112,9 @@ int32_t InvExtraData[8];
 int16_t InvChosen = -1;
 int8_t InvDisableResolutionSwitch = 0;
 
+int32_t LsAdder;
+int32_t LsDivider;
+SHADOW_INFO ShadowInfo;
 int16_t BarOffsetY[6];
 
 HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE] = {
