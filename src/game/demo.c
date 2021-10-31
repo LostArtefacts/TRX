@@ -10,7 +10,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/frontend.h"
-#include "util.h"
 
 int32_t StartDemo()
 {
@@ -100,11 +99,4 @@ void GetDemoInput()
     if (Input != -1) {
         DemoCount++;
     }
-}
-
-void T1MInjectGameDemo()
-{
-    INJECT(0x00415B70, StartDemo);
-    INJECT(0x00415CB0, LoadLaraDemoPos);
-    INJECT(0x00415D70, GetDemoInput);
 }

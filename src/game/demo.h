@@ -7,6 +7,4 @@ int32_t StartDemo();
 void LoadLaraDemoPos();
 void GetDemoInput();
 
-void T1MInjectGameDemo();
-
 #endif
