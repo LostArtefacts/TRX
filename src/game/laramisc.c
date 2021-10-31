@@ -14,7 +14,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -710,16 +709,3 @@ void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraColSurfLeft,  LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
     LaraColSwanDive,  LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
 };
-
-void T1MInjectGameLaraMisc()
-{
-    INJECT(0x00427850, LaraControl);
-    INJECT(0x00427BD0, LaraSwapMeshExtra);
-    INJECT(0x00427C00, AnimateLara);
-    INJECT(0x00427E80, UseItem);
-    INJECT(0x00427FD0, ControlLaraExtra);
-    INJECT(0x00427FF0, InitialiseLaraLoad);
-    INJECT(0x00428020, InitialiseLara);
-    INJECT(0x00428170, InitialiseLaraInventory);
-    INJECT(0x00428340, LaraInitialiseMeshes);
-}
