@@ -4,7 +4,6 @@
 #include "3dsystem/phd_math.h"
 #include "3dsystem/scalespr.h"
 #include "game/box.h"
-#include "game/camera.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -23,7 +22,6 @@ void T1MInject()
     T1MInject3DSystemPHDMath();
     T1MInject3DSystemScaleSpr();
     T1MInjectGameBox();
-    T1MInjectGameCamera();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
