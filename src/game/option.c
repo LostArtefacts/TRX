@@ -545,7 +545,7 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
+void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[256];
     static int32_t current_row = DETAIL_HW_PERSPECTIVE;
@@ -731,11 +731,6 @@ void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
         }
         S_WriteUserSettings();
     }
-}
-
-void DoDetailOption(INVENTORY_ITEM *inv_item)
-{
-    DoDetailOptionHW(inv_item);
 }
 
 void DoSoundOption(INVENTORY_ITEM *inv_item)
