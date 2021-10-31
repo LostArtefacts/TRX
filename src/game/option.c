@@ -13,7 +13,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <dinput.h>
 #include <stdio.h>
@@ -1272,15 +1271,4 @@ void S_RemoveCtrl()
     CtrlText[0] = NULL;
     CtrlText[1] = NULL;
     S_RemoveCtrlText();
-}
-
-void T1MInjectGameOption()
-{
-    INJECT(0x0042D770, DoInventoryOptions);
-    INJECT(0x0042D9C0, DoPassportOption);
-    INJECT(0x0042DE90, DoDetailOptionHW);
-    INJECT(0x0042E2D0, DoDetailOption);
-    INJECT(0x0042E5C0, DoSoundOption);
-    INJECT(0x0042F230, S_ShowControls);
-    INJECT(0x0042F6F0, DisplayRequester);
 }

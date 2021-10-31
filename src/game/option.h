@@ -18,6 +18,4 @@ void S_ChangeCtrlText();
 void S_RemoveCtrlText();
 void S_RemoveCtrl();
 
-void T1MInjectGameOption();
-
 #endif
