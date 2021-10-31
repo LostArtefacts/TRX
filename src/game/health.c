@@ -8,7 +8,6 @@
 #include "global/vars.h"
 #include "specific/clock.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <stdio.h>
 
@@ -262,14 +261,4 @@ void AddDisplayPickup(int16_t object_num)
             return;
         }
     }
-}
-
-void T1MInjectGameHealth()
-{
-    INJECT(0x0041DD00, DrawGameInfo);
-    INJECT(0x0041DEA0, DrawHealthBar);
-    INJECT(0x0041DF20, MakeAmmoString);
-    INJECT(0x0041DF50, DrawAmmoInfo);
-    INJECT(0x0041E0A0, InitialisePickUpDisplay);
-    INJECT(0x0041E0C0, AddDisplayPickup);
 }

@@ -14,6 +14,4 @@ void AddDisplayPickup(int16_t object_num);
 void InitialisePickUpDisplay();
 void DrawPickups();
 
-void T1MInjectGameHealth();
-
 #endif
