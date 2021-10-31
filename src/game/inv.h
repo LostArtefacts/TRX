@@ -20,6 +20,7 @@ extern int16_t InvOptionObjects;
 extern INVENTORY_ITEM *InvOptionList[5];
 
 extern INVENTORY_ITEM InvItemCompass;
+extern INVENTORY_ITEM InvItemMedi;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
