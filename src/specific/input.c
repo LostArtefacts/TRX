@@ -6,7 +6,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/smain.h"
-#include "util.h"
 
 #include <dinput.h>
 
@@ -632,11 +631,4 @@ int32_t GetDebouncedInput(int32_t input)
     int32_t result = input & ~OldInputDB;
     OldInputDB = input;
     return result;
-}
-
-void T1MInjectSpecificInput()
-{
-    INJECT(0x0041E3E0, Key_);
-    INJECT(0x0041E550, S_UpdateInput);
-    INJECT(0x00437BC0, KeyGet);
 }

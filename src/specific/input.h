@@ -20,6 +20,4 @@ int16_t KeyGet();
 void S_UpdateInput();
 int32_t GetDebouncedInput(int32_t input);
 
-void T1MInjectSpecificInput();
-
 #endif
