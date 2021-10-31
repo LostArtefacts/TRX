@@ -8,7 +8,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/output.h"
-#include "util.h"
 
 static int16_t InterpolatedBounds[6];
 
@@ -1350,26 +1349,4 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
-}
-
-void T1MInjectGameDraw()
-{
-    INJECT(0x00416BE0, DrawPhaseCinematic);
-    INJECT(0x00416C70, DrawPhaseGame);
-    INJECT(0x00416CB0, DrawRooms);
-    INJECT(0x00416E30, GetRoomBounds);
-    INJECT(0x00416EB0, SetRoomBounds);
-    INJECT(0x004171E0, PrintRooms);
-    INJECT(0x00417400, DrawEffect);
-    INJECT(0x00417510, DrawSpriteItem);
-    INJECT(0x00417550, DrawAnimatingItem);
-    INJECT(0x00417AA0, DrawLara);
-    INJECT(0x004185B0, CalculateObjectLighting);
-    INJECT(0x00418680, DrawLaraInt);
-    INJECT(0x00419A60, InterpolateMatrix);
-    INJECT(0x00419C30, InterpolateArmMatrix);
-    INJECT(0x00419D30, GetFrames);
-    INJECT(0x00419DD0, GetBoundsAccurate);
-    INJECT(0x00419E50, GetBestFrame);
-    INJECT(0x0042BDF0, DrawUnclippedItem);
 }

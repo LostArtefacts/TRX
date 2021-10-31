@@ -42,6 +42,4 @@ int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);
 
-void T1MInjectGameDraw();
-
 #endif
