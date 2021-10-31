@@ -10,13 +10,13 @@
 
 #include <stdlib.h>
 
-// The screen resolution is controlled by two variables are indices
-// within an array of predefined screen resolutions.
-// Actual screen resolution, sometimes different from the game
-// resolution (during FMVs, main menu sequence, static pictures etc.)
+// The screen resolution is controlled by two variables that are indices within
+// an array of predefined screen resolutions.
+// Actual screen resolution, sometimes different from the game resolution
+// (during FMVs, main menu sequence, static pictures etc.)
 static int32_t HiRes = 0;
-// The resolution to render the game in. This is what gets saved in
-// settings and the like.
+// The resolution to render the game in. This is what gets saved in settings
+// and the like.
 static int32_t GameHiRes = 0;
 
 bool SetGameScreenSizeIdx(int32_t idx)
