@@ -8,7 +8,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/frontend.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -956,34 +955,4 @@ void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
     imo->item_ytrans_rate = -inv_item->ytrans_sel / imo->count;
     imo->item_ztrans_target = 0;
     imo->item_ztrans_rate = -inv_item->ztrans_sel / imo->count;
-}
-
-void T1MInjectGameInvFunc()
-{
-    INJECT(0x0041FEF0, InitColours);
-    INJECT(0x00420000, RingIsOpen);
-    INJECT(0x00420150, RingIsNotOpen);
-    INJECT(0x004201D0, RingNotActive);
-    INJECT(0x00420980, RingActive);
-    INJECT(0x004209C0, Inv_AddItem);
-    INJECT(0x004210D0, Inv_InsertItem);
-    INJECT(0x00421200, Inv_RequestItem);
-    INJECT(0x00421280, Inv_RemoveAllItems);
-    INJECT(0x004212A0, Inv_RemoveItem);
-    INJECT(0x004213B0, Inv_GetItemOption);
-    INJECT(0x00421550, RemoveInventoryText);
-    INJECT(0x00421580, Inv_RingInit);
-    INJECT(0x00421700, Inv_RingGetView);
-    INJECT(0x00421760, Inv_RingLight);
-    INJECT(0x004217A0, Inv_RingCalcAdders);
-    INJECT(0x004217D0, Inv_RingDoMotions);
-    INJECT(0x00421910, Inv_RingRotateLeft);
-    INJECT(0x00421940, Inv_RingRotateRight);
-    INJECT(0x00421970, Inv_RingMotionSetup);
-    INJECT(0x004219A0, Inv_RingMotionRadius);
-    INJECT(0x004219D0, Inv_RingMotionRotation);
-    INJECT(0x00421A00, Inv_RingMotionCameraPos);
-    INJECT(0x00421A30, Inv_RingMotionCameraPitch);
-    INJECT(0x00421A50, Inv_RingMotionItemSelect);
-    INJECT(0x00421AB0, Inv_RingMotionItemDeselect);
 }
