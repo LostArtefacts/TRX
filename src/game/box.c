@@ -955,7 +955,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
 
         angle = item->speed ? phd_atan(item->speed, -dy) : 0;
         if (angle < item->pos.x_rot - PHD_DEGREE) {
-            item->pos.x_rot -= PHD_DEGREE;
+            item->pos.x_rot -= PHD_DEGREE / AnimScale;
         } else if (angle > item->pos.x_rot + PHD_DEGREE) {
             item->pos.x_rot += PHD_DEGREE / AnimScale;
         } else {

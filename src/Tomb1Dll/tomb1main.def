@@ -1,0 +1,4 @@
+LIBRARY tomb1main
+EXPORTS
+ALL_POWERSCHEMES_GUID
+hInstance 

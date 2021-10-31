@@ -19,6 +19,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <windows.h>
+#include <debugapi.h>
+
 void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };

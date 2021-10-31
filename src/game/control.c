@@ -288,7 +288,7 @@ void AnimateItem(ITEM_INFO *item)
 
                 case AC_JUMP_VELOCITY:
                     item->fall_speed = command[0];
-                    item->speed = command[1] / AnimScale;
+                    item->speed = command[1];
                     item->gravity_status = 1;
                     command += 2;
                     break;
