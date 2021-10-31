@@ -7,7 +7,6 @@
 #include "game/camera.h"
 #include "game/cinema.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -29,7 +28,6 @@ void T1MInject()
     T1MInjectGameCamera();
     T1MInjectGameCinema();
     T1MInjectGameCollide();
-    T1MInjectGameControl();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
