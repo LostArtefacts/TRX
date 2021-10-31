@@ -831,7 +831,6 @@ int8_t GF_LoadScriptFile(const char *file_name)
     InvItemDetails.string = GF.strings[GS_INV_ITEM_DETAILS];
     InvItemSound.string = GF.strings[GS_INV_ITEM_SOUND];
     InvItemControls.string = GF.strings[GS_INV_ITEM_CONTROLS];
-    InvItemGamma.string = GF.strings[GS_INV_ITEM_GAMMA];
     InvItemLarasHome.string = GF.strings[GS_INV_ITEM_LARAS_HOME];
 
     return result;

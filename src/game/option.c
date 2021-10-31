@@ -224,7 +224,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
         break;
 
     case O_GAMMA_OPTION:
-        DoGammaOption(inv_item);
+        // not implemented in TombATI
         break;
 
     case O_GUN_OPTION:
@@ -504,44 +504,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (PassportText) {
             T_RemovePrint(PassportText);
             PassportText = NULL;
-        }
-    }
-}
-
-void DoGammaOption(INVENTORY_ITEM *inv_item)
-{
-    if (CHK_ANY(Input, IN_LEFT)) {
-        IDelay = 1;
-        IDCount = 10;
-        OptionGammaLevel -= GAMMA_MODIFIER;
-        if (OptionGammaLevel < MIN_GAMMA_LEVEL) {
-            OptionGammaLevel = MIN_GAMMA_LEVEL;
-        }
-    }
-    if (CHK_ANY(Input, IN_RIGHT)) {
-        IDCount = 10;
-        IDelay = 1;
-        OptionGammaLevel += GAMMA_MODIFIER;
-        if (OptionGammaLevel > MAX_GAMMA_LEVEL) {
-            OptionGammaLevel = MAX_GAMMA_LEVEL;
-        }
-    }
-    inv_item->sprlist = InvSprGammaList;
-    InvSprGammaLevel[6].param1 = OptionGammaLevel / 2 + 63;
-    // S_SetGamma(OptionGammaLevel);
-
-    if (CHK_ANY(InputDB, IN_SELECT)) {
-        inv_item->goal_frame = 0;
-        inv_item->anim_direction = -1;
-    }
-
-    if (CHK_ANY(InputDB, IN_DESELECT)) {
-        int32_t gamma = OptionGammaLevel - 64;
-        if (gamma < -255) {
-            gamma = -255;
-        }
-        if (InvMode != INV_TITLE_MODE) {
-            // S_SetBackgroundGamma(gamma);
         }
     }
 }

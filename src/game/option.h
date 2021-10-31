@@ -5,7 +5,6 @@
 
 void DoInventoryOptions(INVENTORY_ITEM *inv_item);
 void DoPassportOption(INVENTORY_ITEM *inv_item);
-void DoGammaOption(INVENTORY_ITEM *inv_item);
 void DoCompassOption(INVENTORY_ITEM *inv_item);
 void DoDetailOption(INVENTORY_ITEM *inv_item);
 void FlashConflicts();

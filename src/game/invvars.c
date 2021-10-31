@@ -67,7 +67,7 @@ INVENTORY_ITEM *InvMainList[23] = {
 
 int16_t InvOptionCurrent;
 int16_t InvOptionObjects = 5;
-INVENTORY_ITEM *InvOptionList[5] = {
+INVENTORY_ITEM *InvOptionList[] = {
     &InvItemGame,    &InvItemControls,  &InvItemSound,
     &InvItemDetails, &InvItemLarasHome,
 };
@@ -797,32 +797,6 @@ INVENTORY_ITEM InvItemControls = {
     .which_meshes = 0xFFFFFFFF,
     .drawn_meshes = 0xFFFFFFFF,
     .inv_pos = 3,
-    .sprlist = NULL,
-};
-
-INVENTORY_ITEM InvItemGamma = {
-    .string = "Gamma",
-    .object_number = O_GAMMA_OPTION,
-    .frames_total = 1,
-    .current_frame = 0,
-    .goal_frame = 0,
-    .open_frame = 0,
-    .anim_direction = 1,
-    .anim_speed = 1,
-    .anim_count = 0,
-    .pt_xrot_sel = 3904,
-    .pt_xrot = 0,
-    .x_rot_sel = 0,
-    .x_rot = 0,
-    .y_rot_sel = 0,
-    .y_rot = 0,
-    .ytrans_sel = 0,
-    .ytrans = 0,
-    .ztrans_sel = 440,
-    .ztrans = 0,
-    .which_meshes = 0xFFFFFFFF,
-    .drawn_meshes = 0xFFFFFFFF,
-    .inv_pos = 4,
     .sprlist = NULL,
 };
 

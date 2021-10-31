@@ -99,6 +99,5 @@ void T1MInit()
     GF.strings[GS_INV_ITEM_DETAILS] = "Detail Levels";
     GF.strings[GS_INV_ITEM_SOUND] = "Sound";
     GF.strings[GS_INV_ITEM_CONTROLS] = "Controls";
-    GF.strings[GS_INV_ITEM_GAMMA] = "Gamma";
     GF.strings[GS_INV_ITEM_LARAS_HOME] = "Lara's Home";
 }

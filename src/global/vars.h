@@ -111,15 +111,11 @@ extern int32_t KeyChange;
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)
 #define OptionSoundFXVolume     VAR_I_(0x00456330, int32_t, 165)
-#define OptionGammaLevel        VAR_U_(0x0045A0A0, int16_t)
 
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
 #define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
-
-#define InvSprGammaLevel        ARRAY_(0x00455218, INVENTORY_SPRITE, [10])
-#define InvSprGammaList         ARRAY_(0x004552F8, INVENTORY_SPRITE*, [])
 // clang-format on
 
 extern const char *ATIUserSettingsPath;

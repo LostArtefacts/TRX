@@ -545,7 +545,6 @@
         "INV_ITEM_DETAILS": "Detail Levels",
         "INV_ITEM_SOUND": "Sound",
         "INV_ITEM_CONTROLS": "Controls",
-        "INV_ITEM_GAMMA": "Gamma",
         "INV_ITEM_LARAS_HOME": "Lara's Home"
     },
 }
