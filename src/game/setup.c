@@ -83,7 +83,6 @@
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -437,15 +436,4 @@ void InitialiseObjects()
         Objects[O_SG_AMMO_ITEM].floor = NULL;
         Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }
-}
-
-void T1MInjectGameSetup()
-{
-    INJECT(0x004362A0, InitialiseLevel);
-    INJECT(0x004363C0, InitialiseLevelFlags);
-
-    INJECT(0x004363E0, BaddyObjects);
-    INJECT(0x00437010, TrapObjects);
-    INJECT(0x00437370, ObjectObjects);
-    INJECT(0x00437A50, InitialiseObjects);
 }
