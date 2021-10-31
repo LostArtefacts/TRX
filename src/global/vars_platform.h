@@ -1,9 +1,9 @@
 #ifndef T1M_GLOBAL_VARS_PLATFORM_H
 #define T1M_GLOBAL_VARS_PLATFORM_H
 
-#include "util.h"
-
+#include "inject_util.h"
 #include "specific/ati.h"
+
 #include <ddraw.h>
 #include <dsound.h>
 #include <windows.h>

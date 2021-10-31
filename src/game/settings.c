@@ -7,6 +7,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "json.h"
+#include "log.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
 

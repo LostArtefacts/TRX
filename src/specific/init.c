@@ -12,6 +12,7 @@
 #include "specific/smain.h"
 #include "specific/sndpc.h"
 
+#include <stdio.h>
 #include <time.h>
 #include <windows.h>
 
@@ -101,7 +102,6 @@ void S_ExitSystem(const char *message)
 
 void init_game_malloc()
 {
-    LOG_DEBUG("");
     GameAllocMemPointer = GameMemoryPointer;
     GameAllocMemFree = GameMemorySize;
     GameAllocMemUsed = 0;
@@ -129,7 +129,6 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
 
 void game_free(int32_t free_size, int32_t type)
 {
-    LOG_DEBUG("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
     GameAllocMemPointer -= free_size;

@@ -7,7 +7,7 @@
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/smain.h"
-#include "util.h"
+#include "log.h"
 
 #include <stdlib.h>
 #include <assert.h>

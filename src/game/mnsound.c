@@ -5,6 +5,9 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/sndpc.h"
+#include "util.h"
+
+#include <stdio.h>
 
 #define SOUND_RANGE 8
 #define SOUND_RADIUS (SOUND_RANGE << 10)

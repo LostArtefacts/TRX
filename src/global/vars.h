@@ -3,7 +3,7 @@
 
 #include "global/const.h"
 #include "global/types.h"
-#include "util.h"
+#include "inject_util.h"
 
 #include <stddef.h>
 #include <stdint.h>

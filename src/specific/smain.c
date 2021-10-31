@@ -2,6 +2,7 @@
 
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "log.h"
 #include "specific/ati.h"
 #include "specific/clock.h"
 #include "specific/hwr.h"
@@ -9,7 +10,6 @@
 #include "specific/input.h"
 #include "specific/shell.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <windows.h>
 #include <ddraw.h>

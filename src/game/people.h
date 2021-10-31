@@ -3,7 +3,6 @@
 
 #include "global/const.h"
 #include "global/types.h"
-#include "util.h"
 
 #include <stdint.h>
 

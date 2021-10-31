@@ -5,7 +5,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <string.h>
 

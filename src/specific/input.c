@@ -5,6 +5,7 @@
 #include "game/lara.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "log.h"
 #include "specific/smain.h"
 
 #include <dinput.h>
