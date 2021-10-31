@@ -10,6 +10,8 @@
 
 #include <math.h>
 
+static PHD_VECTOR LsVectorView;
+
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)

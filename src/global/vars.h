@@ -46,7 +46,6 @@
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
-#define LsVectorView            VAR_U_(0x006E8050, PHD_VECTOR)
 #define LsDivider               VAR_U_(0x006D7604, int32_t)
 #define WibbleTable             ARRAY_(0x006E8060, int32_t, [WIBBLE_SIZE])
 #define ShadeTable              ARRAY_(0x006D4E00, int32_t, [WIBBLE_SIZE])
