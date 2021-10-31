@@ -19,17 +19,6 @@ void SetupScreenSize()
     phd_InitWindow(
         x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, GameVidWidth,
         GameVidHeight, ScrPtr);
-    DumpX = x;
-    DumpY = y;
-    DumpWidth = width;
-    DumpHeight = height;
-    if (!BackScreenSize) {
-        BackScreenSize = 640 * 480;
-        BackScreen = malloc(BackScreenSize);
-        if (!BackScreen) {
-            S_ExitSystem("ERROR: Could not allocate enough memory to run (0)");
-        }
-    }
 }
 
 void TempVideoAdjust(int32_t hi_res, double sizer)
