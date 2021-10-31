@@ -3,7 +3,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-// original name: PowerUpFX
 void PowerUp(ITEM_INFO *item)
 {
     PHD_3DPOS pos;

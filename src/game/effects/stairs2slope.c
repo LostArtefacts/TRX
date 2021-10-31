@@ -3,7 +3,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-// original name: Stairs2SlopeFX
 void Stairs2Slope(ITEM_INFO *item)
 {
     if (FlipTimer == 5) {

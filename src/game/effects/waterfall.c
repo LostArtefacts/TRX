@@ -12,7 +12,6 @@ void SetupWaterfall(OBJECT_INFO *obj)
     Objects[O_WATERFALL].draw_routine = DrawDummyItem;
 }
 
-// original name: WaterFall
 void ControlWaterFall(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

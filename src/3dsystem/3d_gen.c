@@ -399,14 +399,12 @@ void AlterFOV(PHD_ANGLE fov)
     PhdPersp = ((PhdWinWidth / 2) * c) / s;
 }
 
-// originally in shell.c
 void phd_PushMatrix()
 {
     PhdMatrixPtr++;
     PhdMatrixPtr[0] = PhdMatrixPtr[-1];
 }
 
-// originally in shell.c
 void phd_PushUnitMatrix()
 {
     PHD_MATRIX *mptr = ++PhdMatrixPtr;

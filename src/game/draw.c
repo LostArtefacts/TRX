@@ -671,7 +671,6 @@ void DrawAnimatingItem(ITEM_INFO *item)
     phd_PopMatrix();
 }
 
-// originally in moveblok.c
 void DrawUnclippedItem(ITEM_INFO *item)
 {
     int32_t left = PhdLeft;

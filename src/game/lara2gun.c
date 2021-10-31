@@ -8,7 +8,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// original name: draw_pistols
 void DrawPistols(int32_t weapon_type)
 {
     int16_t ani = Lara.left_arm.frame_number;
@@ -28,7 +27,6 @@ void DrawPistols(int32_t weapon_type)
     Lara.right_arm.frame_number = ani;
 }
 
-// original name: undraw_pistols
 void UndrawPistols(int32_t weapon_type)
 {
     int16_t anil = Lara.left_arm.frame_number;
@@ -86,7 +84,6 @@ void UndrawPistols(int32_t weapon_type)
     Lara.torso_y_rot = (Lara.right_arm.y_rot + Lara.left_arm.y_rot) / 4;
 }
 
-// original name: ready_pistols
 void ReadyPistols()
 {
     Lara.gun_status = LGS_READY;
@@ -107,7 +104,6 @@ void ReadyPistols()
     Lara.left_arm.frame_base = Objects[O_PISTOLS].frame_base;
 }
 
-// original name: draw_pistol_meshes
 void DrawPistolMeshes(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
@@ -127,7 +123,6 @@ void DrawPistolMeshes(int32_t weapon_type)
         Meshes[Objects[O_LARA].mesh_index + LM_THIGH_R];
 }
 
-// original name: undraw_pistol_mesh_left
 void UndrawPistolMeshLeft(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;
@@ -142,7 +137,6 @@ void UndrawPistolMeshLeft(int32_t weapon_type)
     SoundEffect(SFX_LARA_HOLSTER, &LaraItem->pos, SPM_NORMAL);
 }
 
-// original name: undraw_pistol_mesh_right
 void UndrawPistolMeshRight(int32_t weapon_type)
 {
     int16_t object_num = O_PISTOLS;

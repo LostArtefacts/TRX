@@ -323,7 +323,6 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     return 1;
 }
 
-// original name: S_CDVolume
 void S_MusicVolume(int16_t volume)
 {
     int32_t volume_aux = volume * 0xFFFF / 0xFF;
@@ -355,7 +354,6 @@ void S_MusicUnpause()
     }
 }
 
-// original name: CDPlay
 int32_t MusicPlay(int16_t track)
 {
     if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
@@ -401,7 +399,6 @@ int32_t MusicPlay(int16_t track)
     return 1;
 }
 
-// original name: CDPlayLooped
 int32_t MusicPlayLooped()
 {
     if (CDLoop && CDTrackLooped > 0) {
@@ -412,7 +409,6 @@ int32_t MusicPlayLooped()
     return CDLoop;
 }
 
-// original name: S_CDPlay
 int32_t S_MusicPlay(int16_t track_id)
 {
     if (T1MConfig.fix_secrets_killing_music && track_id == 13) {
@@ -433,7 +429,6 @@ int32_t S_MusicPlay(int16_t track_id)
     return MusicPlay(track_id);
 }
 
-// original name: S_CDStop
 int32_t S_MusicStop()
 {
     CDTrack = 0;
@@ -445,7 +440,6 @@ int32_t S_MusicStop()
         MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
 }
 
-// original name: S_CDLoop
 void S_MusicLoop()
 {
     CDLoop = 1;
