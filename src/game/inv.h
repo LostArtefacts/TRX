@@ -48,6 +48,7 @@ extern INVENTORY_ITEM InvItemDetails;
 extern INVENTORY_ITEM InvItemSound;
 extern INVENTORY_ITEM InvItemControls;
 extern INVENTORY_ITEM InvItemGamma;
+extern INVENTORY_ITEM InvItemLarasHome;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
