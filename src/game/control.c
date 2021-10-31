@@ -22,7 +22,6 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -1534,27 +1533,4 @@ int GetSecretCount()
     }
 
     return count;
-}
-
-void T1MInjectGameControl()
-{
-    INJECT(0x004133B0, ControlPhase);
-    INJECT(0x00413660, AnimateItem);
-    INJECT(0x00413960, GetChange);
-    INJECT(0x00413A10, TranslateItem);
-    INJECT(0x00413A80, GetFloor);
-    INJECT(0x00413C60, GetWaterHeight);
-    INJECT(0x00413D60, GetHeight);
-    INJECT(0x00413FA0, RefreshCamera);
-    INJECT(0x00414080, TestTriggers);
-    INJECT(0x00414820, TriggerActive);
-    INJECT(0x00414880, GetCeiling);
-    INJECT(0x00414AE0, GetDoor);
-    INJECT(0x00414B30, LOS);
-    INJECT(0x00414BD0, zLOS);
-    INJECT(0x00414E50, xLOS);
-    INJECT(0x004150C0, ClipTarget);
-    INJECT(0x004151A0, FlipMap);
-    INJECT(0x00415310, TriggerCDTrack);
-    INJECT(0x00438920, CheckCheatMode);
 }
