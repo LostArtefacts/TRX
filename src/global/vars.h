@@ -45,9 +45,6 @@
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 
-#define FadeValue               VAR_I_(0x00453568, int32_t, 0x100000)
-#define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
-#define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
 #define LsYaw                   VAR_U_(0x0068F3B4, int32_t)
 #define LsPitch                 VAR_U_(0x006D4DE4, int32_t)

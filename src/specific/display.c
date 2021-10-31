@@ -99,8 +99,7 @@ void TempVideoRemove()
 
 void S_NoFade()
 {
-    FadeValue = 0x100000;
-    FadeLimit = 0x100000;
+    // not implemented in TombATI
 }
 
 void S_FadeInInventory(int32_t fade)
@@ -112,11 +111,7 @@ void S_FadeInInventory(int32_t fade)
 
 void S_FadeOutInventory(int32_t fade)
 {
-    if (fade) {
-        FadeValue = 0x180000;
-        FadeLimit = 0x100000;
-        FadeAdder = -32768;
-    }
+    // not implemented in TombATI
 }
 
 void S_CopyBufferToScreen()
