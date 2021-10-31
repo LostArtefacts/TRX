@@ -15,7 +15,6 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/lot.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -45,7 +44,6 @@ void T1MInject()
     T1MInjectGameInvEntry();
     T1MInjectGameInvFunc();
     T1MInjectGameItems();
-    T1MInjectGameLOT();
     T1MInjectGameLara();
     T1MInjectGameLaraFire();
     T1MInjectGameLaraGun1();
