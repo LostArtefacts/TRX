@@ -30,6 +30,4 @@ void CameraOffsetAdditionalAngle(int16_t delta);
 void CameraOffsetAdditionalElevation(int16_t delta);
 void CameraOffsetReset();
 
-void T1MInjectGameCamera();
-
 #endif

@@ -9,7 +9,6 @@
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -697,18 +696,4 @@ void CameraOffsetReset()
 {
     Camera.additional_angle = 0;
     Camera.additional_elevation = 0;
-}
-
-void T1MInjectGameCamera()
-{
-    INJECT(0x0040F920, InitialiseCamera);
-    INJECT(0x0040F9B0, MoveCamera);
-    INJECT(0x0040FCA0, ClipCamera);
-    INJECT(0x0040FD40, ShiftCamera);
-    INJECT(0x0040FEA0, SmartShift);
-    INJECT(0x00410410, ChaseCamera);
-    INJECT(0x00410530, ShiftClamp);
-    INJECT(0x004107B0, CombatCamera);
-    INJECT(0x004108F0, LookCamera);
-    INJECT(0x00410B40, CalculateCamera);
 }
