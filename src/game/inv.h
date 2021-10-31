@@ -5,6 +5,20 @@
 
 #include <stdint.h>
 
+extern int16_t InvKeysCurrent;
+extern int16_t InvKeysObjects;
+extern int16_t InvKeysQtys[24];
+extern INVENTORY_ITEM *InvKeysList[23];
+
+extern int16_t InvMainCurrent;
+extern int16_t InvMainObjects;
+extern int16_t InvMainQtys[24];
+extern INVENTORY_ITEM *InvMainList[23];
+
+extern int16_t InvOptionCurrent;
+extern int16_t InvOptionObjects;
+extern INVENTORY_ITEM *InvOptionList[5];
+
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
 

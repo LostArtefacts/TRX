@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <string.h>
 
+static int16_t InvNFrames = 2;
+
 typedef enum {
     PSPINE = 1,
     PFRONT = 2,
