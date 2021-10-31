@@ -46,6 +46,7 @@ extern INVENTORY_ITEM InvItemUziAmmo;
 extern INVENTORY_ITEM InvItemGame;
 extern INVENTORY_ITEM InvItemDetails;
 extern INVENTORY_ITEM InvItemSound;
+extern INVENTORY_ITEM InvItemControls;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
