@@ -16,7 +16,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdio.h>
 
@@ -408,20 +407,4 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     SavedGamesCount++;
     SaveCounter++;
     return 1;
-}
-
-void T1MInjectGameGame()
-{
-    INJECT(0x0041D0C0, StartGame);
-    INJECT(0x0041D2C0, GameLoop);
-    INJECT(0x0041D330, LevelCompleteSequence);
-    INJECT(0x0041D5A0, LevelStats);
-    INJECT(0x0041D8F0, GetRandomControl);
-    INJECT(0x0041D910, SeedRandomControl);
-    INJECT(0x0041D920, GetRandomDraw);
-    INJECT(0x0041D940, SeedRandomDraw);
-    INJECT(0x0041D9B0, GetSavedGamesList);
-    INJECT(0x0041DA20, S_FrontEndCheck);
-    INJECT(0x0041DB70, S_SaveGame);
-    INJECT(0x0041DC70, S_LoadGame);
 }

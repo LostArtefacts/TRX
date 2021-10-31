@@ -10,7 +10,6 @@
 #include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -35,7 +34,6 @@ void T1MInject()
     T1MInjectGameControl();
     T1MInjectGameDemo();
     T1MInjectGameDraw();
-    T1MInjectGameGame();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();

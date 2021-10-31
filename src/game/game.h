@@ -19,6 +19,4 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot);
 int32_t S_FrontEndCheck();
 int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot);
 
-void T1MInjectGameGame();
-
 #endif
