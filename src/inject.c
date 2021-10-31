@@ -5,7 +5,6 @@
 #include "3dsystem/scalespr.h"
 #include "game/box.h"
 #include "game/camera.h"
-#include "game/cinema.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -25,7 +24,6 @@ void T1MInject()
     T1MInject3DSystemScaleSpr();
     T1MInjectGameBox();
     T1MInjectGameCamera();
-    T1MInjectGameCinema();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
