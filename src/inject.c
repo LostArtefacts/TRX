@@ -48,7 +48,6 @@ void T1MInject()
     T1MInjectGameLaraFire();
     T1MInjectGameLaraGun1();
     T1MInjectGameLaraGun2();
-    T1MInjectGameLaraMisc();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
