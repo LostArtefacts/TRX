@@ -12,7 +12,7 @@ int32_t GetGameScreenSizeIdx();
 int32_t GetScreenSizeIdx();
 int32_t GetScreenWidth();
 int32_t GetScreenHeight();
-void TempVideoAdjust(int32_t hi_res, double sizer);
+void TempVideoAdjust(int32_t hi_res);
 void TempVideoRemove();
 void S_NoFade();
 void S_FadeInInventory(int32_t fade);

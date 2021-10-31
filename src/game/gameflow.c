@@ -1003,7 +1003,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
                 GAME_FLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                TempVideoAdjust(2, 1.0);
+                TempVideoAdjust(2);
                 S_DisplayPicture(data->path);
                 S_InitialisePolyList();
                 S_CopyBufferToScreen();

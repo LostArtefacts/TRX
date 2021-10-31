@@ -255,7 +255,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
         free(GameMemoryPointer);
     }
 
-    TempVideoAdjust(2, 1.0);
+    TempVideoAdjust(2);
     HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);

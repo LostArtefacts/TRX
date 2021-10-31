@@ -185,7 +185,7 @@
 0x004160F0 void DinoControl(int16_t item_num);
 0x004163A0 void LaraDinoDeath(ITEM_INFO *item);
 0x00416470 void SetupScreenSize();
-0x00416550 void TempVideoAdjust(int32_t hi_res, double sizer);
+0x00416550 void TempVideoAdjust(int32_t hi_res);
 0x004167D0 void TempVideoRemove();
 0x00416A60 void S_CopyBufferToScreen();
 0x00416B10 void S_NoFade();

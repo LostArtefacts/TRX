@@ -45,8 +45,6 @@
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 
-#define ScreenSizer             VAR_I_(0x00453558, double, 1.0)
-#define GameSizer               VAR_I_(0x00453560, double, 1.0)
 #define FadeValue               VAR_I_(0x00453568, int32_t, 0x100000)
 #define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
 #define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)

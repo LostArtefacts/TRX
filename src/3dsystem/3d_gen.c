@@ -354,7 +354,7 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
 
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
-    int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight)
+    int32_t farz, int32_t view_angle)
 {
     PhdWinMaxX = width - 1;
     PhdWinMaxY = height - 1;
@@ -365,8 +365,8 @@ void phd_InitWindow(
     PhdNearZ = nearz << W2V_SHIFT;
     PhdFarZ = farz << W2V_SHIFT;
     PhdViewDist = farz;
-    PhdScrHeight = scrheight;
-    PhdScrWidth = scrwidth;
+    PhdScrWidth = width;
+    PhdScrHeight = height;
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 

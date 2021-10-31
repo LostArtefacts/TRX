@@ -68,21 +68,17 @@ int32_t GetScreenHeight()
 
 void SetupScreenSize()
 {
-    int32_t res_x = GetScreenWidth();
-    int32_t res_y = GetScreenHeight();
-
-    int32_t width = res_x * ScreenSizer;
-    int32_t height = res_y * ScreenSizer;
-    int32_t x = (res_x - width) / 2;
-    int32_t y = (res_y - height) / 2;
-    phd_InitWindow(
-        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, res_x, res_y);
+    int32_t width = GetScreenWidth();
+    int32_t height = GetScreenHeight();
+    int32_t x = (width - width) / 2;
+    int32_t y = (height - height) / 2;
+    phd_InitWindow(x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV);
 }
 
-void TempVideoAdjust(int32_t hi_res, double sizer)
+void TempVideoAdjust(int32_t hi_res)
 {
     ModeLock = 1;
-    if (hi_res == HiRes && sizer == ScreenSizer) {
+    if (hi_res == HiRes) {
         return;
     }
 
@@ -93,7 +89,7 @@ void TempVideoAdjust(int32_t hi_res, double sizer)
 void TempVideoRemove()
 {
     ModeLock = 0;
-    if (GameHiRes == HiRes && GameSizer == ScreenSizer) {
+    if (GameHiRes == HiRes) {
         return;
     }
 

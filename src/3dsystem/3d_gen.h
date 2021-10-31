@@ -21,7 +21,7 @@ int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
-    int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight);
+    int32_t farz, int32_t view_angle);
 void AlterFOV(PHD_ANGLE fov);
 
 void phd_PushMatrix();
