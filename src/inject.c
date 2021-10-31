@@ -13,7 +13,6 @@
 #include "game/game.h"
 #include "game/health.h"
 #include "game/inv.h"
-#include "game/items.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -42,7 +41,6 @@ void T1MInject()
     T1MInjectGameHealth();
     T1MInjectGameInvEntry();
     T1MInjectGameInvFunc();
-    T1MInjectGameItems();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
