@@ -684,16 +684,3 @@ void FileLoad(const char *path, char **output_data, size_t *output_size)
     *output_data = data;
     *output_size = data_size;
 }
-
-void T1MInjectSpecificFile()
-{
-    INJECT(0x0041AF90, S_LoadLevel);
-    INJECT(0x0041AFB0, LoadLevel);
-    INJECT(0x0041B3F0, LoadRooms);
-    INJECT(0x0041B710, LoadObjects);
-    INJECT(0x0041BB50, LoadSprites);
-    INJECT(0x0041BC60, LoadItems);
-    INJECT(0x0041BE00, LoadBoxes);
-    INJECT(0x0041BFC0, GetFullPath);
-    INJECT(0x00438390, FileLoad);
-}
