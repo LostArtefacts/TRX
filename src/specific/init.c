@@ -11,7 +11,6 @@
 #include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdarg.h>
 #include <time.h>
@@ -167,14 +166,4 @@ void S_SeedRandom()
     struct tm *tptr = localtime(&lt);
     SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
     SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
-}
-
-void T1MInjectSpecificInit()
-{
-    INJECT(0x0041E100, S_InitialiseSystem);
-    INJECT(0x0041E2C0, init_game_malloc);
-    INJECT(0x0041E3B0, game_free);
-
-    // va_args causes crashes on certain platforms
-    // INJECT(0x0042A2C0, DB_Log);
 }
