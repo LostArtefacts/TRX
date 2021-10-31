@@ -455,7 +455,7 @@ void S_DisplayPicture(const char *file_stem)
     size_t file_size = 0;
     FileLoad(file_path, &file_data, &file_size);
 
-    PICTURE pic;
+    PICTURE pic = { 0 };
     if (!DecompPCX(file_data, file_size, &pic)) {
         LOG_ERROR("failed to decompress PCX %s", file_path);
     }
@@ -464,7 +464,9 @@ void S_DisplayPicture(const char *file_stem)
 
     HWR_DownloadPicture(&pic);
 
-    free(pic.data);
+    if (pic.data) {
+        free(pic.data);
+    }
 }
 
 void S_DrawLightningSegment(
