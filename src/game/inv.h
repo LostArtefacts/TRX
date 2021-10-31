@@ -44,6 +44,7 @@ extern INVENTORY_ITEM InvItemShotgunAmmo;
 extern INVENTORY_ITEM InvItemMagnumAmmo;
 extern INVENTORY_ITEM InvItemUziAmmo;
 extern INVENTORY_ITEM InvItemGame;
+extern INVENTORY_ITEM InvItemDetails;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
