@@ -5,7 +5,6 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #define SOUND_RANGE 8
 #define SOUND_RADIUS (SOUND_RANGE << 10)
@@ -459,16 +458,4 @@ void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
             rslot->handle = SOUND_INVALID_HANDLE;
         }
     }
-}
-
-void T1MInjectGameMNSound()
-{
-    INJECT(0x0042A940, mn_reset_sound_effects);
-    INJECT(0x0042AA30, mn_sound_effect);
-    INJECT(0x0042AF00, mn_get_fx_slot);
-    INJECT(0x0042AFD0, mn_reset_ambient_loudness);
-    INJECT(0x0042B000, mn_stop_ambient_samples);
-    INJECT(0x0042B080, mn_update_sound_effects);
-    INJECT(0x0042B300, mn_stop_sound_effect);
-    INJECT(0x0042B410, mn_adjust_master_volume);
 }
