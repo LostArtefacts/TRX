@@ -195,6 +195,4 @@ void ResetLook();
 
 void LaraCheatGetStuff();
 
-void T1MInjectGameLara();
-
 #endif
