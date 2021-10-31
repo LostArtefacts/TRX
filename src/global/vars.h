@@ -118,7 +118,6 @@ extern int32_t KeyChange;
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 
-#define InvItemBigMedi          VAR_U_(0x00455A20, INVENTORY_ITEM)
 #define InvItemLeadBar          VAR_U_(0x00455A60, INVENTORY_ITEM)
 #define InvItemPickup1          VAR_U_(0x00455AA0, INVENTORY_ITEM)
 #define InvItemPickup2          VAR_U_(0x00455AE0, INVENTORY_ITEM)
