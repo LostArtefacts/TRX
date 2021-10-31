@@ -29,6 +29,4 @@ int16_t CreatureEffect(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num));
 
-void T1MInjectGameBox();
-
 #endif
