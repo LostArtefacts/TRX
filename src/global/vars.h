@@ -47,8 +47,6 @@
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 
 #define ScrPtr                  VAR_I_(0x004546DA, uint8_t*, NULL)
-#define GameVidWidth            VAR_I_(0x004546D0, int16_t, 320)
-#define GameVidHeight           VAR_I_(0x004546D2, int16_t, 200)
 #define GameHiRes               VAR_I_(0x00459F60, int32_t, 0)
 #define HiRes                   VAR_I_(0x00459F64, int32_t, 0)
 #define ScreenSizer             VAR_I_(0x00453558, double, 1.0)

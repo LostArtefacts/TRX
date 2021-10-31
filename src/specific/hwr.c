@@ -1065,9 +1065,6 @@ void HWR_FadeWait()
 
 void HWR_SwitchResolution()
 {
-    GameVidWidth = AvailableResolutions[HiRes].width;
-    GameVidHeight = AvailableResolutions[HiRes].height;
-
     HWR_SetHardwareVideoMode();
     SetupScreenSize();
 }

@@ -31,8 +31,8 @@
 void GameMain()
 {
     SoundIsActive = 1;
-    HiRes = 0;
-    GameHiRes = 0;
+    HiRes = 2;
+    GameHiRes = 2;
     ScreenSizer = 1.0;
     GameSizer = 1.0;
 
