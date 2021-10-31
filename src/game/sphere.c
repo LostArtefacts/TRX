@@ -2,7 +2,6 @@
 
 #include "3dsystem/3d_gen.h"
 #include "game/draw.h"
-#include "game/effects/blood.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -183,15 +182,4 @@ void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
     vec->y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
     vec->z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
     phd_PopMatrix();
-}
-
-void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
-{
-    PHD_VECTOR pos;
-    pos.x = bite->x;
-    pos.y = bite->y;
-    pos.z = bite->z;
-    GetJointAbsPosition(item, &pos, bite->mesh_num);
-    DoBloodSplat(
-        pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
