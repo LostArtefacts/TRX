@@ -7,17 +7,17 @@
 
 extern int16_t InvKeysCurrent;
 extern int16_t InvKeysObjects;
-extern int16_t InvKeysQtys[24];
-extern INVENTORY_ITEM *InvKeysList[23];
+extern int16_t InvKeysQtys[];
+extern INVENTORY_ITEM *InvKeysList[];
 
 extern int16_t InvMainCurrent;
 extern int16_t InvMainObjects;
-extern int16_t InvMainQtys[24];
-extern INVENTORY_ITEM *InvMainList[23];
+extern int16_t InvMainQtys[];
+extern INVENTORY_ITEM *InvMainList[];
 
 extern int16_t InvOptionCurrent;
 extern int16_t InvOptionObjects;
-extern INVENTORY_ITEM *InvOptionList[5];
+extern INVENTORY_ITEM *InvOptionList[];
 
 extern INVENTORY_ITEM InvItemCompass;
 extern INVENTORY_ITEM InvItemMedi;
@@ -47,10 +47,9 @@ extern INVENTORY_ITEM InvItemGame;
 extern INVENTORY_ITEM InvItemDetails;
 extern INVENTORY_ITEM InvItemSound;
 extern INVENTORY_ITEM InvItemControls;
-extern INVENTORY_ITEM InvItemGamma;
 extern INVENTORY_ITEM InvItemLarasHome;
 
-extern TEXTSTRING *InvItemText[2];
+extern TEXTSTRING *InvItemText[];
 extern TEXTSTRING *InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
