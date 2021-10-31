@@ -37,6 +37,4 @@ void S_SoundStopAllSamples();
 void S_SoundStopSample(void *handle);
 void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume);
 
-void T1MInjectSpecificSndPC();
-
 #endif

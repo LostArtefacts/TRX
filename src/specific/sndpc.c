@@ -5,7 +5,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -534,28 +533,4 @@ int32_t S_SoundSampleIsPlaying(void *handle)
         return 0;
     }
     return status == DSBSTATUS_PLAYING;
-}
-
-void T1MInjectSpecificSndPC()
-{
-    INJECT(0x00419E90, SoundInit);
-    INJECT(0x00419F50, SoundMakeSample);
-    INJECT(0x00437C00, SoundLoadSamples);
-    INJECT(0x00437CB0, SoundLoadSample);
-    INJECT(0x00437FB0, MusicPlay);
-    INJECT(0x004380B0, S_MusicLoop);
-    INJECT(0x004380C0, MusicPlayLooped);
-    INJECT(0x00438BF0, S_SoundPlaySample);
-    INJECT(0x00438C40, S_SoundPlaySampleLooped);
-    INJECT(0x00438CA0, S_SoundSampleIsPlaying);
-    INJECT(0x00438CC0, S_SoundStopAllSamples);
-    INJECT(0x00438CD0, S_SoundStopSample);
-    INJECT(0x00438CF0, S_SoundSetPanAndVolume);
-    INJECT(0x00438D40, S_MusicPlay);
-    INJECT(0x00438E40, S_MusicStop);
-    INJECT(0x00439030, S_MusicPlay);
-
-    // NOTE: this is a nullsub in OG and is called in many different places
-    // for many different purposes so it's not injected.
-    // INJECT(0x00437F30, S_MusicVolume);
 }
