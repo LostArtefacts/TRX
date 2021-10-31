@@ -36,6 +36,7 @@ extern INVENTORY_ITEM InvItemKey3;
 extern INVENTORY_ITEM InvItemKey4;
 extern INVENTORY_ITEM InvItemPistols;
 extern INVENTORY_ITEM InvItemShotgun;
+extern INVENTORY_ITEM InvItemMagnum;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
