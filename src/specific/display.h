@@ -11,6 +11,4 @@ void S_FadeInInventory(int32_t fade);
 void S_FadeOutInventory(int32_t fade);
 void S_CopyBufferToScreen();
 
-void T1MInjectSpecificDisplay();
-
 #endif
