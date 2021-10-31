@@ -77,6 +77,4 @@ const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
 
-void T1MInjectSpecificHWR();
-
 #endif
