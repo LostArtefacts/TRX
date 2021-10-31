@@ -27,6 +27,7 @@ extern INVENTORY_ITEM InvItemPickup1;
 extern INVENTORY_ITEM InvItemPickup2;
 extern INVENTORY_ITEM InvItemScion;
 extern INVENTORY_ITEM InvItemPuzzle1;
+extern INVENTORY_ITEM InvItemPuzzle2;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
