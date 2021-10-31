@@ -1,7 +1,6 @@
 #include "inject.h"
 
 #include "specific/ati.h"
-#include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
@@ -15,7 +14,6 @@
 void T1MInject()
 {
     T1MInjectSpecificATI();
-    T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
     T1MInjectSpecificFrontend();
     T1MInjectSpecificHWR();
