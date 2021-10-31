@@ -23,6 +23,7 @@ extern INVENTORY_ITEM InvItemCompass;
 extern INVENTORY_ITEM InvItemMedi;
 extern INVENTORY_ITEM InvItemBigMedi;
 extern INVENTORY_ITEM InvItemLeadBar;
+extern INVENTORY_ITEM InvItemPickup1;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
