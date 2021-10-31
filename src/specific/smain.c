@@ -238,9 +238,6 @@ int WINAPI WinMain(
 
 void T1MInjectSpecificSMain()
 {
-    INJECT(0x0043D070, InitDirectDraw);
-    INJECT(0x0043D510, TerminateGame);
-    INJECT(0x0043D770, ShowFatalError);
     INJECT(0x0043DA80, WinMain);
     INJECT(0x0043DE00, WndProc);
 }
