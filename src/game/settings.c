@@ -8,6 +8,7 @@
 #include "global/vars.h"
 #include "json.h"
 #include "log.h"
+#include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
 
@@ -33,7 +34,14 @@ static int32_t S_ReadUserSettingsATI()
     FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
     FileRead(&RenderSettings, sizeof(int32_t), 1, fp);
-    FileRead(&GameHiRes, sizeof(int32_t), 1, fp);
+
+    {
+        int32_t resolution_idx;
+        FileRead(&resolution_idx, sizeof(int32_t), 1, fp);
+        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
+        SetGameScreenSizeIdx(resolution_idx);
+    }
+
     FileRead(&GameSizer, sizeof(double), 1, fp);
     FileRead(&IConfig, sizeof(int32_t), 1, fp);
 
@@ -78,9 +86,12 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         RenderSettings &= ~RSF_PERSPECTIVE;
     }
 
-    GameHiRes =
-        json_object_get_number_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
-    CLAMP(GameHiRes, 0, RESOLUTIONS_SIZE - 1);
+    {
+        int32_t resolution_idx = json_object_get_number_int(
+            root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
+        SetGameScreenSizeIdx(resolution_idx);
+    }
 
     GameSizer = json_object_get_number_double(root_obj, "game_sizer", 1.0);
 
@@ -166,7 +177,7 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "bilinear", RenderSettings & RSF_BILINEAR);
     json_object_append_bool(
         root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
-    json_object_append_number_int(root_obj, "hi_res", GameHiRes);
+    json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
     json_object_append_number_double(root_obj, "game_sizer", GameSizer);
     json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);
     json_object_append_number_int(

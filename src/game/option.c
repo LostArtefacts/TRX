@@ -10,6 +10,7 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "specific/display.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
@@ -587,9 +588,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {
             static char tmp[10];
-            sprintf(
-                tmp, "%dx%d", AvailableResolutions[GameHiRes].width,
-                AvailableResolutions[GameHiRes].height);
+            sprintf(tmp, "%dx%d", GetScreenWidth(), GetScreenHeight());
             sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
             max_row = DETAIL_HW_RESOLUTION;
@@ -673,8 +672,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (GameHiRes + 1 < RESOLUTIONS_SIZE) {
-                GameHiRes++;
+            if (SetNextGameScreenSize()) {
                 reset = 1;
             }
             break;
@@ -712,8 +710,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (GameHiRes - 1 >= 0) {
-                GameHiRes--;
+            if (SetPrevGameScreenSize()) {
                 reset = 1;
             }
             break;

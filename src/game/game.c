@@ -122,7 +122,7 @@ void LevelStats(int32_t level_num)
     static char time_str[100];
     TEXTSTRING *txt;
 
-    TempVideoAdjust(HiRes, 1.0);
+    TempVideoAdjust(GetScreenSizeIdx(), 1.0);
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
@@ -276,31 +276,20 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 
 void GetSavedGamesList(REQUEST_INFO *req)
 {
-    switch (HiRes) {
-    case 0:
+    int32_t height = GetScreenHeight();
+
+    if (height <= 200) {
         req->y = -32;
         req->vis_lines = 5;
-        break;
-
-    case 1:
+    } else if (height <= 384) {
         req->y = -62;
         req->vis_lines = 8;
-        break;
-
-    case 2:
+    } else if (height <= 480) {
         req->y = -90;
         req->vis_lines = 10;
-        break;
-
-    case 3:
+    } else {
         req->y = -100;
         req->vis_lines = 12;
-        break;
-
-    case 4:
-        req->y = -100;
-        req->vis_lines = 12;
-        break;
     }
 
     if (req->requested >= req->vis_lines) {

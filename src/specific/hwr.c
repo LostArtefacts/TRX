@@ -1077,10 +1077,10 @@ int32_t HWR_SetHardwareVideoMode()
     LOG_INFO("SetHardwareVideoMode:");
     HWR_ReleaseSurfaces();
 
-    DDrawSurfaceWidth = AvailableResolutions[HiRes].width;
-    DDrawSurfaceHeight = AvailableResolutions[HiRes].height;
-    DDrawSurfaceMaxX = AvailableResolutions[HiRes].width - 1.0f;
-    DDrawSurfaceMaxY = AvailableResolutions[HiRes].height - 1.0f;
+    DDrawSurfaceWidth = GetScreenWidth();
+    DDrawSurfaceHeight = GetScreenHeight();
+    DDrawSurfaceMaxX = GetScreenWidth() - 1.0f;
+    DDrawSurfaceMaxY = GetScreenHeight() - 1.0f;
 
     LOG_INFO("    Switching to %dx%d", DDrawSurfaceWidth, DDrawSurfaceHeight);
     result = IDirectDraw_SetDisplayMode(

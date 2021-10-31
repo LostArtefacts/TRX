@@ -5,6 +5,7 @@
 #include "global/vars.h"
 #include "specific/clock.h"
 #include "specific/file.h"
+#include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/input.h"
