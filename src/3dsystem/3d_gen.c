@@ -332,8 +332,6 @@ int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 
 void phd_RotateLight(int16_t pitch, int16_t yaw)
 {
-    LsYaw = yaw;
-    LsPitch = pitch;
     int32_t cp = phd_cos(pitch);
     int32_t sp = phd_sin(pitch);
     int32_t cy = phd_cos(yaw);
