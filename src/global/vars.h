@@ -45,8 +45,6 @@
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 
-#define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
-#define LsDivider               VAR_U_(0x006D7604, int32_t)
 #define WibbleTable             ARRAY_(0x006E8060, int32_t, [WIBBLE_SIZE])
 #define ShadeTable              ARRAY_(0x006D4E00, int32_t, [WIBBLE_SIZE])
 #define RandTable               ARRAY_(0x006CAD20, int32_t, [WIBBLE_SIZE])
@@ -246,7 +244,6 @@ extern int32_t RoomsToDrawNum;
 extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
-extern SHADOW_INFO ShadowInfo;
 
 extern int16_t *TriggerIndex;
 extern int32_t FlipTimer;
@@ -283,6 +280,9 @@ extern int32_t InvExtraData[];
 extern int16_t InvChosen;
 extern int8_t InvDisableResolutionSwitch;
 
+extern int32_t LsAdder;
+extern int32_t LsDivider;
+extern SHADOW_INFO ShadowInfo;
 extern int16_t BarOffsetY[6];
 
 extern HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE];
