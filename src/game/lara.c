@@ -9,7 +9,6 @@
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -2280,84 +2279,4 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
         return 1;
     }
     return 0;
-}
-
-void T1MInjectGameLara()
-{
-    INJECT(0x00422480, LaraAboveWater);
-
-    INJECT(0x004225F0, LaraAsWalk);
-    INJECT(0x00422670, LaraAsRun);
-    INJECT(0x00422760, LaraAsStop);
-    INJECT(0x00422970, LaraAsForwardJump);
-    INJECT(0x00422A30, LaraAsFastBack);
-    INJECT(0x00422A90, LaraAsTurnR);
-    INJECT(0x00422B10, LaraAsTurnL);
-    INJECT(0x00422B90, LaraAsFastFall);
-    INJECT(0x00422BD0, LaraAsHang);
-    INJECT(0x00422C20, LaraAsReach);
-    INJECT(0x00422C40, LaraAsCompress);
-    INJECT(0x00422EB0, LaraAsBack);
-    INJECT(0x00422F30, LaraAsFastTurn);
-    INJECT(0x00422F80, LaraAsStepRight);
-    INJECT(0x00423000, LaraAsStepLeft);
-    INJECT(0x00423080, LaraAsSlide);
-    INJECT(0x004230B0, LaraAsBackJump);
-    INJECT(0x004230D0, LaraAsRightJump);
-    INJECT(0x004230F0, LaraAsFallBack);
-    INJECT(0x00423120, LaraAsHangLeft);
-    INJECT(0x00423160, LaraAsHangRight);
-    INJECT(0x004231A0, LaraAsSlideBack);
-    INJECT(0x004231C0, LaraAsPushBlock);
-    INJECT(0x004231F0, LaraAsPPReady);
-    INJECT(0x00423220, LaraAsPickup);
-    INJECT(0x00423250, LaraAsSwitchOn);
-    INJECT(0x00423280, LaraAsUseKey);
-    INJECT(0x004232B0, LaraAsSpecial);
-    INJECT(0x004232D0, LaraAsUseMidas);
-    INJECT(0x004232F0, LaraAsDieMidas);
-    INJECT(0x00423720, LaraAsSwanDive);
-    INJECT(0x00423750, LaraAsFastDive);
-    INJECT(0x00423790, LaraAsGymnast);
-    INJECT(0x004237A0, LaraAsWaterOut);
-
-    INJECT(0x004237C0, LaraColWalk);
-    INJECT(0x004239F0, LaraColRun);
-    INJECT(0x00423C00, LaraColStop);
-    INJECT(0x00423D00, LaraColForwardJump);
-    INJECT(0x00423DD0, LaraColFastBack);
-    INJECT(0x00423F40, LaraColTurnR);
-    INJECT(0x00423FF0, LaraColDeath);
-    INJECT(0x00424070, LaraColFastFall);
-    INJECT(0x004241F0, LaraColHang);
-    INJECT(0x00424260, LaraColReach);
-    INJECT(0x004243F0, LaraColSplat);
-    INJECT(0x00424460, LaraColLand);
-    INJECT(0x00424480, LaraColCompress);
-    INJECT(0x00424520, LaraColBack);
-    INJECT(0x00424690, LaraColStepRight);
-    INJECT(0x004247D0, LaraColStepLeft);
-    INJECT(0x00424910, LaraColSlide);
-    INJECT(0x00424930, LaraColBackJump);
-    INJECT(0x004249E0, LaraColRightJump);
-    INJECT(0x00424A90, LaraColLeftJump);
-    INJECT(0x00424B40, LaraColUpJump);
-    INJECT(0x00424CD0, LaraColFallBack);
-    INJECT(0x00424D80, LaraColHangLeft);
-    INJECT(0x00424DC0, LaraColHangRight);
-    INJECT(0x00424E00, LaraColSlideBack);
-    INJECT(0x00424E30, LaraColDefault);
-    INJECT(0x00424E90, LaraColRoll);
-    INJECT(0x00424F90, LaraColRoll2);
-    INJECT(0x004250A0, LaraColSwanDive);
-    INJECT(0x00425130, LaraColFastDive);
-
-    INJECT(0x004251D0, LaraSlideSlope);
-    INJECT(0x00425350, LaraHangTest);
-    INJECT(0x004255A0, LaraDeflectEdgeJump);
-    INJECT(0x004256C0, TestLaraVault);
-    INJECT(0x00425890, LaraTestHangJump);
-    INJECT(0x00425AE0, LaraTestHangJumpUp);
-    INJECT(0x00425C50, TestLaraSlide);
-    INJECT(0x00425D70, LaraLandedBad);
 }
