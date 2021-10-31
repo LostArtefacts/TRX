@@ -5,8 +5,6 @@
 
 #include <stdint.h>
 
-void DB_Log(const char *fmt, ...);
-
 void S_InitialiseSystem();
 void S_ExitSystem(const char *message);
 

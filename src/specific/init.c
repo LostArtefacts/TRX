@@ -12,7 +12,6 @@
 #include "specific/smain.h"
 #include "specific/sndpc.h"
 
-#include <stdarg.h>
 #include <time.h>
 #include <windows.h>
 
@@ -57,20 +56,6 @@ static const char *BufferNames[] = {
     "Sample Offsets", // GBUF_SAMPLE_OFFSETS
     "Rolling Ball Stuff", // GBUF_ROLLINGBALL_STUFF
 };
-
-void DB_Log(const char *fmt, ...)
-{
-    va_list va;
-    char buf[256] = { 0 };
-
-    va_start(va, fmt);
-    vsprintf(buf, fmt, va);
-    va_end(va);
-
-    LOG_INFO("%s", buf);
-    OutputDebugStringA(buf);
-    OutputDebugStringA("\n");
-}
 
 void S_InitialiseSystem()
 {
