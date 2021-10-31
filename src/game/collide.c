@@ -10,7 +10,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #define MAX_BADDIE_COLLISION 12
 
@@ -944,24 +943,4 @@ int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance)
     }
 
     return 0;
-}
-
-void T1MInjectGameCollide()
-{
-    INJECT(0x00411780, GetCollisionInfo);
-    INJECT(0x00411FA0, CollideStaticObjects);
-    INJECT(0x00412390, GetNearByRooms);
-    INJECT(0x00412660, ShiftItem);
-    INJECT(0x004126A0, UpdateLaraRoom);
-    INJECT(0x00412700, LaraBaddieCollision);
-    INJECT(0x00412910, CreatureCollision);
-    INJECT(0x00412990, ObjectCollision);
-    INJECT(0x004129F0, DoorCollision);
-    INJECT(0x00412A70, TrapCollision);
-    INJECT(0x00412B10, ItemPushLara);
-    INJECT(0x00412E50, TestBoundsCollide);
-    INJECT(0x00412F30, TestLaraPosition);
-    INJECT(0x00413070, AlignLaraPosition);
-    INJECT(0x00413230, MoveLaraPosition);
-    INJECT(0x00413230, Move3DPosTo3DPos);
 }
