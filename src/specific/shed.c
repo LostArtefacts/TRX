@@ -6,5 +6,7 @@
 
 void SWRInit()
 {
-    ScrPtr = malloc(GameVidWidth * GameVidHeight * sizeof(int16_t));
+    int32_t res_x = AvailableResolutions[HiRes].width;
+    int32_t res_y = AvailableResolutions[HiRes].height;
+    ScrPtr = malloc(res_x * res_y * sizeof(int16_t));
 }

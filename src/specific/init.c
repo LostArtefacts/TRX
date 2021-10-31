@@ -62,9 +62,6 @@ void S_InitialiseSystem()
 {
     S_SeedRandom();
 
-    GameVidWidth = 640;
-    GameVidHeight = 480;
-
     SWRInit();
     ClockInit();
     SoundInit();

@@ -12,13 +12,16 @@
 
 void SetupScreenSize()
 {
-    int32_t width = ((double)GameVidWidth * ScreenSizer);
-    int32_t height = ((double)GameVidHeight * ScreenSizer);
-    int32_t x = (GameVidWidth - width) / 2;
-    int32_t y = (GameVidHeight - height) / 2;
+    int32_t res_x = AvailableResolutions[HiRes].width;
+    int32_t res_y = AvailableResolutions[HiRes].height;
+
+    int32_t width = res_x * ScreenSizer;
+    int32_t height = res_y * ScreenSizer;
+    int32_t x = (res_x - width) / 2;
+    int32_t y = (res_y - height) / 2;
     phd_InitWindow(
-        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, GameVidWidth,
-        GameVidHeight, ScrPtr);
+        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, res_x, res_y,
+        ScrPtr);
 }
 
 void TempVideoAdjust(int32_t hi_res, double sizer)
