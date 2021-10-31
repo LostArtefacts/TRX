@@ -121,11 +121,3 @@ const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
 
     return obj_ptr;
 }
-
-void T1MInject3DSystemScaleSpr()
-{
-    INJECT(0x00435910, S_DrawSprite);
-    INJECT(0x00435B70, S_DrawSpriteRel);
-    INJECT(0x00435D80, S_DrawUISprite);
-    INJECT(0x00435ED0, S_DrawRoomSprites);
-}
