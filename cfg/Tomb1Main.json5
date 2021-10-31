@@ -163,6 +163,9 @@
     // Overrides ingame brightness.
     "brightness": 1.0,
 
-    // Enable round shadow instead of the default octagon one.
+    // Enables round shadow instead of the default octagon one.
     "enable_round_shadow": true,
+
+    // Enables 3D models to be rendered in place of the sprites for pickup items
+    "enable_3d_pickups" : true,
 }
