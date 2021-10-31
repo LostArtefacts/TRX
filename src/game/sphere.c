@@ -5,7 +5,6 @@
 #include "game/effects/blood.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
 {
@@ -195,12 +194,4 @@ void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
     GetJointAbsPosition(item, &pos, bite->mesh_num);
     DoBloodSplat(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
-}
-
-void T1MInjectGameSphere()
-{
-    INJECT(0x00439130, TestCollision);
-    INJECT(0x00439260, GetSpheres);
-    INJECT(0x00439550, GetJointAbsPosition);
-    INJECT(0x004396F0, BaddieBiteEffect);
 }

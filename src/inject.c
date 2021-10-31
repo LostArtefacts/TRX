@@ -20,7 +20,6 @@
 #include "game/option.h"
 #include "game/savegame.h"
 #include "game/setup.h"
-#include "game/sphere.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -62,7 +61,6 @@ void T1MInject()
     T1MInjectGameOption();
     T1MInjectGameSaveGame();
     T1MInjectGameSetup();
-    T1MInjectGameSphere();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
