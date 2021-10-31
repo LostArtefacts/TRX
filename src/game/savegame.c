@@ -13,7 +13,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -637,13 +636,4 @@ void ReadSGLOT(LOT_INFO *lot)
     ReadSG(&lot->target_box, sizeof(int16_t));
     ReadSG(&lot->required_box, sizeof(int16_t));
     ReadSG(&lot->target, sizeof(PHD_VECTOR));
-}
-
-void T1MInjectGameSaveGame()
-{
-    INJECT(0x004344D0, InitialiseStartInfo);
-    INJECT(0x00434520, ModifyStartInfo);
-    INJECT(0x004345E0, CreateStartInfo)
-    INJECT(0x00434720, CreateSaveGameInfo);
-    INJECT(0x00434F90, ExtractSaveGameInfo);
 }

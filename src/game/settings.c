@@ -9,7 +9,6 @@
 #include "json.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdlib.h>

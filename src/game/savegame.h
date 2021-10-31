@@ -23,6 +23,4 @@ void WriteSGARM(LARA_ARM *arm);
 void WriteSGLara(LARA_INFO *lara);
 void WriteSGLOT(LOT_INFO *lot);
 
-void T1MInjectGameSaveGame();
-
 #endif
