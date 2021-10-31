@@ -118,7 +118,6 @@ extern int32_t KeyChange;
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 
-#define InvItemPuzzle1          VAR_U_(0x00455B60, INVENTORY_ITEM)
 #define InvItemPuzzle2          VAR_U_(0x00455BA0, INVENTORY_ITEM)
 #define InvItemPuzzle3          VAR_U_(0x00455BE0, INVENTORY_ITEM)
 #define InvItemPuzzle4          VAR_U_(0x00455C20, INVENTORY_ITEM)
