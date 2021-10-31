@@ -163,15 +163,6 @@ extern int32_t KeyChange;
 #define InvItemLarasHome        VAR_U_(0x00455EA0, INVENTORY_ITEM)
 #define InvSprGammaLevel        ARRAY_(0x00455218, INVENTORY_SPRITE, [10])
 #define InvSprGammaList         ARRAY_(0x004552F8, INVENTORY_SPRITE*, [])
-
-#define ReqBgndMoreUp           VAR_U_(0x004550A8, SG_COL*)
-#define ReqBgndMoreDown         VAR_U_(0x004550C8, SG_COL*)
-#define ReqBgndGour1            VAR_U_(0x004550E8, SG_COL*)
-#define ReqBgndGour2            VAR_U_(0x00455108, SG_COL*)
-#define ReqMainGour1            VAR_U_(0x00455120, SG_COL*)
-#define ReqMainGour2            VAR_U_(0x00455140, SG_COL*)
-#define ReqUnselGour1           VAR_U_(0x00455190, SG_COL*)
-#define ReqUnselGour2           VAR_U_(0x00455178, SG_COL*)
 // clang-format on
 
 extern const char *ATIUserSettingsPath;
