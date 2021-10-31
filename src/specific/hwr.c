@@ -4,13 +4,13 @@
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "log.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/smain.h"
-#include "log.h"
 
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 typedef struct HWR_LIGHTNING {
     int32_t x1;
@@ -260,6 +260,9 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 void HWR_CopyPicture()
 {
     LOG_INFO("CopyPictureHardware:");
+
+    HRESULT result;
+
     if (!Surface3) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -269,7 +272,7 @@ void HWR_CopyPicture()
             DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
-        HRESULT result =
+        result =
             IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
@@ -280,7 +283,7 @@ void HWR_CopyPicture()
     LOG_INFO("    complete");
 }
 
-void HWR_DownloadPicture()
+void HWR_DownloadPicture(const PICTURE *pic)
 {
     LOG_INFO("DownloadPictureHardware:");
 
@@ -307,13 +310,17 @@ void HWR_DownloadPicture()
         IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
     HWR_CheckError(result);
 
+    // TODO: allow pics of any size
+    assert(pic->width == DDrawSurfaceWidth);
+    assert(pic->height == DDrawSurfaceHeight);
+
     uint16_t *output_ptr = surface_desc.lpSurface;
-    uint8_t *input_ptr = ScrPtr;
-    for (int i = 0; i < DDrawSurfaceHeight * DDrawSurfaceWidth; i++) {
-        uint8_t idx = *input_ptr++;
-        uint16_t r = GamePalette[idx].r & 0x3E;
-        uint16_t g = GamePalette[idx].g & 0x3E;
-        uint16_t b = GamePalette[idx].b & 0x3E;
+    RGB888 *input_ptr = pic->data;
+    for (int i = 0; i < pic->height * pic->width; i++) {
+        uint16_t r = input_ptr->r & 0x3E;
+        uint16_t g = input_ptr->g & 0x3E;
+        uint16_t b = input_ptr->b & 0x3E;
+        input_ptr++;
         *output_ptr++ = (b >> 1) | (16 * g) | (r << 9);
     }
 

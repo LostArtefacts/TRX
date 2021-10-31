@@ -27,7 +27,7 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_FadeWait();
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_CopyPicture();
-void HWR_DownloadPicture();
+void HWR_DownloadPicture(const PICTURE *pic);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_SelectTexture(int tex_num);
 void HWR_DrawSprite(

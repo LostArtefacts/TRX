@@ -109,9 +109,7 @@ void S_NoFade()
 
 void S_FadeInInventory(int32_t fade)
 {
-    if (CurrentLevel == GF.title_level_num) {
-        HWR_DownloadPicture();
-    } else {
+    if (CurrentLevel != GF.title_level_num) {
         HWR_CopyPicture();
     }
 }
