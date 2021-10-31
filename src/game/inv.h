@@ -25,6 +25,7 @@ extern INVENTORY_ITEM InvItemBigMedi;
 extern INVENTORY_ITEM InvItemLeadBar;
 extern INVENTORY_ITEM InvItemPickup1;
 extern INVENTORY_ITEM InvItemPickup2;
+extern INVENTORY_ITEM InvItemScion;
 
 extern TEXTSTRING *InvItemText[2];
 extern TEXTSTRING *InvRingText;
