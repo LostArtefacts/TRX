@@ -197,7 +197,6 @@ void LaraCheatGetStuff();
 
 void T1MInjectGameLara();
 void T1MInjectGameLaraMisc();
-void T1MInjectGameLaraSurf();
 void T1MInjectGameLaraFire();
 void T1MInjectGameLaraGun1();
 void T1MInjectGameLaraGun2();

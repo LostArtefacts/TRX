@@ -7,7 +7,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -410,23 +409,4 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     Lara.gun_status = LGS_HANDSBUSY;
     Lara.water_status = LWS_ABOVEWATER;
     return 1;
-}
-
-void T1MInjectGameLaraSurf()
-{
-    INJECT(0x004286E0, LaraSurface);
-
-    INJECT(0x004288A0, LaraAsSurfSwim);
-    INJECT(0x00428910, LaraAsSurfBack);
-    INJECT(0x00428970, LaraAsSurfLeft);
-    INJECT(0x004289D0, LaraAsSurfRight);
-    INJECT(0x00428A30, LaraAsSurfTread);
-
-    INJECT(0x00428BB0, LaraColSurfTread);
-    INJECT(0x00428BD0, LaraColSurfBack);
-    INJECT(0x00428C00, LaraColSurfLeft);
-    INJECT(0x00428C30, LaraColSurfRight);
-
-    INJECT(0x00428C60, LaraSurfaceCollision);
-    INJECT(0x00428D50, LaraTestWaterClimbOut);
 }
