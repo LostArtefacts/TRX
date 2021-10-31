@@ -42,7 +42,10 @@ static int32_t S_ReadUserSettingsATI()
         SetGameScreenSizeIdx(resolution_idx);
     }
 
-    FileRead(&GameSizer, sizeof(double), 1, fp);
+    {
+        float game_sizer;
+        FileRead(&game_sizer, sizeof(double), 1, fp);
+    }
     FileRead(&IConfig, sizeof(int32_t), 1, fp);
 
     UITextScale = DEFAULT_UI_SCALE;
@@ -92,8 +95,6 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
         SetGameScreenSizeIdx(resolution_idx);
     }
-
-    GameSizer = json_object_get_number_double(root_obj, "game_sizer", 1.0);
 
     OptionMusicVolume = json_object_get_number_int(root_obj, "music_volume", 8);
     CLAMP(OptionMusicVolume, 0, 10);
@@ -178,7 +179,6 @@ static int32_t S_WriteUserSettingsT1M()
     json_object_append_bool(
         root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
     json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
-    json_object_append_number_double(root_obj, "game_sizer", GameSizer);
     json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);
     json_object_append_number_int(
         root_obj, "sound_volume", OptionSoundFXVolume);

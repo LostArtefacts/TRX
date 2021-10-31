@@ -30,8 +30,6 @@
 void GameMain()
 {
     SoundIsActive = 1;
-    ScreenSizer = 1.0;
-    GameSizer = 1.0;
 
     const char *gameflow_path = T1MGameflowPath;
 
@@ -60,9 +58,8 @@ void GameMain()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    GameSizer = 1.0;
     OldRenderSettings = RenderSettings;
-    TempVideoAdjust(2, 1.0);
+    TempVideoAdjust(2);
     S_DisplayPicture("data\\eidospc");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
@@ -115,7 +112,7 @@ void GameMain()
 
         case GF_EXIT_TO_TITLE:
             T_InitPrint();
-            TempVideoAdjust(2, 1.0);
+            TempVideoAdjust(2);
             S_DisplayPicture("data\\titleh");
             NoInputCount = 0;
             if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {

@@ -122,7 +122,7 @@ void LevelStats(int32_t level_num)
     static char time_str[100];
     TEXTSTRING *txt;
 
-    TempVideoAdjust(GetScreenSizeIdx(), 1.0);
+    TempVideoAdjust(GetScreenSizeIdx());
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;

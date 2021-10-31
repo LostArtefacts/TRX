@@ -708,7 +708,7 @@ void Construct_Inventory()
 {
     S_SetupAboveWater(0);
     if (InvMode != INV_TITLE_MODE) {
-        TempVideoAdjust(GetScreenSizeIdx(), 1.0);
+        TempVideoAdjust(GetScreenSizeIdx());
     }
 
     PhdLeft = 0;
