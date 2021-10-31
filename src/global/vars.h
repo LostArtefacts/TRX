@@ -118,7 +118,6 @@ extern int32_t KeyChange;
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 
-#define InvItemMagnum           VAR_U_(0x00455820, INVENTORY_ITEM)
 #define InvItemUzi              VAR_U_(0x00455860, INVENTORY_ITEM)
 #define InvItemGrenade          VAR_U_(0x004559A0, INVENTORY_ITEM)
 #define InvItemPistolAmmo       VAR_U_(0x004558A0, INVENTORY_ITEM)
