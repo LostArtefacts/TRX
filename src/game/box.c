@@ -10,7 +10,6 @@
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -1063,22 +1062,4 @@ int16_t CreatureEffect(
     GetJointAbsPosition(item, &pos, bite->mesh_num);
     return generate(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
-}
-
-void T1MInjectGameBox()
-{
-    INJECT(0x0040DA60, InitialiseCreature);
-    INJECT(0x0040DAA0, CreatureAIInfo);
-    INJECT(0x0040DCD0, SearchLOT);
-    INJECT(0x0040DED0, StalkBox);
-    INJECT(0x0040DFA0, ValidBox);
-    INJECT(0x0040E040, CreatureMood);
-    INJECT(0x0040E850, CalculateTarget);
-    INJECT(0x0040ED30, CreatureCreature);
-    INJECT(0x0040EE40, BadFloor);
-    INJECT(0x0040EEE0, CreatureAnimation);
-    INJECT(0x0040F750, CreatureTurn);
-    INJECT(0x0040F830, CreatureTilt);
-    INJECT(0x0040F870, CreatureHead);
-    INJECT(0x0040F8C0, CreatureEffect);
 }
