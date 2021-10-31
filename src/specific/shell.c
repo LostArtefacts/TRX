@@ -21,7 +21,6 @@
 #include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -151,10 +150,4 @@ void GameMain()
     }
 
     S_WriteUserSettings();
-}
-
-void T1MInjectSpecificShell()
-{
-    INJECT(0x0041E260, S_ExitSystem);
-    INJECT(0x00438410, GameMain);
 }

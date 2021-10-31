@@ -3,6 +3,4 @@
 
 void GameMain();
 
-void T1MInjectSpecificShell();
-
 #endif
