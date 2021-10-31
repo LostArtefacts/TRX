@@ -519,8 +519,8 @@ static int32_t LoadBoxes(MYFILE *fp)
     }
 
     FileRead(&OverlapCount, sizeof(int32_t), 1, fp);
-    Overlap = (uint16_t *)game_malloc(2 * OverlapCount, 22);
-    if (!FileRead(Overlap, sizeof(int16_t), OverlapCount, fp)) {
+    Overlap = (uint16_t *)game_malloc(sizeof(uint16_t) * OverlapCount, 22);
+    if (!FileRead(Overlap, sizeof(uint16_t), OverlapCount, fp)) {
         sprintf(StringToShow, "LoadBoxes(): Unable to load box overlaps");
         return 0;
     }
@@ -534,7 +534,8 @@ static int32_t LoadBoxes(MYFILE *fp)
             return 0;
         }
 
-        GroundZone2[i] = game_malloc(2 * NumberBoxes, GBUF_GROUNDZONE);
+        GroundZone2[i] =
+            game_malloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone2[i]
             || !FileRead(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
             sprintf(StringToShow, "LoadBoxes(): Unable to load 'ground2_zone'");
@@ -579,7 +580,7 @@ static int32_t LoadDemo(MYFILE *fp)
 {
     DemoCount = 0;
     DemoPtr =
-        game_malloc(DEMO_COUNT_MAX * sizeof(uint32_t), GBUF_LOADDEMO_BUFFER);
+        game_malloc(sizeof(uint32_t) * DEMO_COUNT_MAX, GBUF_LOADDEMO_BUFFER);
     uint16_t size = 0;
     FileRead(&size, sizeof(int16_t), 1, fp);
     LOG_INFO("%d demo buffer size", size);

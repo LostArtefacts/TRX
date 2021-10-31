@@ -25,7 +25,7 @@ void InitialiseMovableBlock(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
     if (item->status != IS_INVISIBLE) {
-        AlterFloorHeight(item, -1024);
+        AlterFloorHeight(item, -WALL_L);
     }
 }
 
@@ -35,7 +35,7 @@ void MovableBlockControl(int16_t item_num)
     ITEM_INFO *item = &Items[item_num];
 
     if (item->flags & IF_ONESHOT) {
-        AlterFloorHeight(item, 1024);
+        AlterFloorHeight(item, WALL_L);
         KillItem(item_num);
         return;
     }
@@ -64,7 +64,7 @@ void MovableBlockControl(int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_NOT_ACTIVE;
         RemoveActiveItem(item_num);
-        AlterFloorHeight(item, -1024);
+        AlterFloorHeight(item, -WALL_L);
 
         room_num = item->room_number;
         floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -162,7 +162,7 @@ void MovableBlockCollision(
         }
 
         AddActiveItem(item_num);
-        AlterFloorHeight(item, 1024);
+        AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
         AnimateItem(item);
         AnimateLara(lara_item);

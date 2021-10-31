@@ -78,7 +78,7 @@ void BearControl(int16_t item_num)
             break;
         }
     } else {
-        AI_INFO info; // [esp+18h] [ebp-14h]
+        AI_INFO info;
         CreatureAIInfo(item, &info);
 
         if (info.ahead) {

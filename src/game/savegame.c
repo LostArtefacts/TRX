@@ -293,10 +293,10 @@ void ExtractSaveGameInfo()
         OBJECT_INFO *obj = &Objects[item->object_number];
 
         if (obj->control == MovableBlockControl) {
-            AlterFloorHeight(item, 1024);
+            AlterFloorHeight(item, WALL_L);
         }
         if (obj->control == RollingBlockControl) {
-            AlterFloorHeight(item, 2048);
+            AlterFloorHeight(item, WALL_L * 2);
         }
 
         if (obj->save_position) {
@@ -387,12 +387,12 @@ void ExtractSaveGameInfo()
 
         if (obj->control == MovableBlockControl
             && item->status == IS_NOT_ACTIVE) {
-            AlterFloorHeight(item, -1024);
+            AlterFloorHeight(item, -WALL_L);
         }
 
         if (obj->control == RollingBlockControl
             && item->current_anim_state != RBS_MOVING) {
-            AlterFloorHeight(item, -2048);
+            AlterFloorHeight(item, -WALL_L * 2);
         }
 
         if (item->object_number == O_PIERRE && item->hit_points <= 0

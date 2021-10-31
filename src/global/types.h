@@ -752,7 +752,12 @@ typedef enum KEY_NUMBER {
     KEY_ITEM_CHEAT = 14,
     KEY_LEVEL_SKIP_CHEAT = 15,
     KEY_PAUSE = 16,
-    KEY_NUMBER_OF = 17,
+    KEY_CAMERA_UP = 17,
+    KEY_CAMERA_DOWN = 18,
+    KEY_CAMERA_LEFT = 19,
+    KEY_CAMERA_RIGHT = 20,
+    KEY_CAMERA_RESET = 21,
+    KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
 typedef enum INPUT_STATE {
@@ -782,6 +787,11 @@ typedef enum INPUT_STATE {
     IN_LOAD = 1 << 23,
     IN_FLY_CHEAT = 1 << 24,
     IN_ITEM_CHEAT = 1 << 25,
+    IN_CAMERA_UP = 1 << 26,
+    IN_CAMERA_DOWN = 1 << 27,
+    IN_CAMERA_LEFT = 1 << 28,
+    IN_CAMERA_RIGHT = 1 << 29,
+    IN_CAMERA_RESET = 1 << 30,
 } INPUT_STATE;
 
 typedef enum TEXTSTRING_FLAG {
@@ -805,12 +815,12 @@ typedef enum D_FLAGS {
     D_NEXT = 1 << 3,
 } D_FLAGS;
 
-typedef enum APP_SETTINGS_FLAG {
+typedef enum RENDER_SETTINGS_FLAG {
     RSF_PERSPECTIVE = 1 << 0,
     RSF_BILINEAR = 1 << 1,
     RSF_FPS = 1 << 2,
     RSF_60FPS = 1 << 3,
-} APP_SETTINGS_FLAG;
+} RENDER_SETTINGS_FLAG;
 
 typedef enum COLL_TYPE {
     COLL_NONE = 0,
@@ -1113,6 +1123,11 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_ITEM_CHEAT,
     GS_KEYMAP_LEVEL_SKIP_CHEAT,
     GS_KEYMAP_PAUSE,
+    GS_KEYMAP_CAMERA_UP,
+    GS_KEYMAP_CAMERA_DOWN,
+    GS_KEYMAP_CAMERA_LEFT,
+    GS_KEYMAP_CAMERA_RIGHT,
+    GS_KEYMAP_CAMERA_RESET,
 
     GS_STATS_TIME_TAKEN_FMT,
     GS_STATS_SECRETS_FMT,
@@ -1279,6 +1294,18 @@ typedef struct PHD_3DPOS_F {
     /* 0012 end */
 } PHD_3DPOS_F;
 
+typedef struct POINT_INFO {
+    /* 0000 */ float xv;
+    /* 0004 */ float yv;
+    /* 0008 */ float zv;
+    /* 000C */ float xs;
+    /* 0010 */ float ys;
+    /* 0014 */ float u;
+    /* 0018 */ float v;
+    /* 001C */ float g;
+    /* 0020 end */
+} POINT_INFO;
+
 typedef struct PHD_VBUF {
     /* 0000 */ int32_t xv;
     /* 0004 */ int32_t yv;
@@ -1293,17 +1320,16 @@ typedef struct PHD_VBUF {
     /* 0020 end */
 } PHD_VBUF;
 
+typedef struct PHD_UV {
+    /* 0000 */ uint16_t u1;
+    /* 0002 */ uint16_t v1;
+    /* 0004 end */
+} PHD_UV;
+
 typedef struct PHD_TEXTURE {
     /* 0000 */ uint16_t drawtype;
     /* 0002 */ uint16_t tpage;
-    /* 0004 */ uint16_t u1;
-    /* 0006 */ uint16_t v1;
-    /* 0008 */ uint16_t u2;
-    /* 000A */ uint16_t v2;
-    /* 000C */ uint16_t u3;
-    /* 000E */ uint16_t v3;
-    /* 0010 */ uint16_t u4;
-    /* 0012 */ uint16_t v4;
+    /* 0004 */ PHD_UV uv[4];
     /* 0014 end */
 } PHD_TEXTURE;
 
@@ -1692,7 +1718,7 @@ typedef struct SHADOW_INFO {
     /* 0006 */ int16_t radius;
     /* 0008 */ int16_t poly_count;
     /* 000A */ int16_t vertex_count;
-    /* 000C */ POS_3D vertex[8];
+    /* 000C */ POS_3D vertex[32];
     /* 003C end */
 } SHADOW_INFO;
 
@@ -1756,6 +1782,9 @@ typedef struct CAMERA_INFO {
     /* 0058 */ ITEM_INFO *last_item;
     /* 005C */ OBJECT_VECTOR *fixed;
     /* 0060 end */
+    // used for the manual camera control
+    int16_t additional_angle;
+    int16_t additional_elevation;
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {

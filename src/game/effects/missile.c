@@ -48,8 +48,8 @@ void ControlMissile(int16_t fx_num)
             int32_t z = fx->pos.z - LaraItem->pos.z;
             int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
             if (range < ROCKET_RANGE) {
-                LaraItem->hit_points -= (int16_t)(
-                    ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
+                LaraItem->hit_points -=
+                    (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
                 LaraItem->hit_status = 1;
             }
         }

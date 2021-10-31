@@ -100,6 +100,7 @@ int32_t RoomsToDrawNum;
 int32_t NumberCameras;
 int32_t NumberSoundEffects;
 OBJECT_VECTOR *SoundEffectsTable;
+SHADOW_INFO ShadowInfo;
 
 int16_t *TriggerIndex;
 int32_t FlipTimer = 0;

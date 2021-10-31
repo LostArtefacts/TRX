@@ -1,6 +1,7 @@
 #include "specific/output.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -19,10 +20,8 @@
 #include <string.h>
 
 #define COLOR_STEPS 5
-#define VISIBLE(vn1, vn2, vn3)                                                 \
-    ((int32_t)(                                                                \
-         ((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys))                           \
-         - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))                        \
+#define VISIBLE(vn1, vn2, vn3)                                                                            \
+    ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys))) \
      >= 0)
 
 static RGB888 ColorBarMap[][COLOR_STEPS] = {
@@ -475,59 +474,53 @@ void S_DrawLightningSegment(
 
 void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 {
-    int32_t x0 = bptr[0];
-    int32_t x1 = bptr[1];
-    int32_t y0 = bptr[4];
-    int32_t y1 = bptr[5];
+    int i;
+
+    ShadowInfo.vertex_count = T1MConfig.enable_round_shadow ? 32 : 8;
+
+    int32_t x0 = bptr[FRAME_BOUND_MIN_X];
+    int32_t x1 = bptr[FRAME_BOUND_MAX_X];
+    int32_t z0 = bptr[FRAME_BOUND_MIN_Z];
+    int32_t z1 = bptr[FRAME_BOUND_MAX_Z];
 
     int32_t x_mid = (x0 + x1) / 2;
-    int32_t y_mid = (y0 + y1) / 2;
+    int32_t z_mid = (z0 + z1) / 2;
 
-    int32_t x_add = size * (x1 - x0) / 1024;
-    int32_t y_add = size * (y1 - y0) / 1024;
+    int32_t x_add = (x1 - x0) * size / 1024;
+    int32_t z_add = (z1 - z0) * size / 1024;
 
-    ShadowInfo.vertex[0].x = x_mid - x_add;
-    ShadowInfo.vertex[0].z = y_mid + y_add * 2;
-    ShadowInfo.vertex[1].x = x_mid + x_add;
-    ShadowInfo.vertex[1].z = y_mid + y_add * 2;
-    ShadowInfo.vertex[2].x = x_mid + x_add * 2;
-    ShadowInfo.vertex[2].z = y_add + y_mid;
-    ShadowInfo.vertex[3].x = x_mid + x_add * 2;
-    ShadowInfo.vertex[3].z = y_mid - y_add;
-    ShadowInfo.vertex[4].x = x_mid + x_add;
-    ShadowInfo.vertex[4].z = y_mid - y_add * 2;
-    ShadowInfo.vertex[5].x = x_mid - x_add;
-    ShadowInfo.vertex[5].z = y_mid - y_add * 2;
-    ShadowInfo.vertex[6].x = x_mid - x_add * 2;
-    ShadowInfo.vertex[6].z = y_mid - y_add;
-    ShadowInfo.vertex[7].x = x_mid - x_add * 2;
-    ShadowInfo.vertex[7].z = y_add + y_mid;
+    for (i = 0; i < ShadowInfo.vertex_count; i++) {
+        int32_t angle = (PHD_180 + i * PHD_360) / ShadowInfo.vertex_count;
+        ShadowInfo.vertex[i].x = x_mid + (x_add * 2) * phd_sin(angle) / PHD_90;
+        ShadowInfo.vertex[i].z = z_mid + (z_add * 2) * phd_cos(angle) / PHD_90;
+        ShadowInfo.vertex[i].y = 0;
+    }
 
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
     phd_RotY(item->pos.y_rot);
-    if (calc_object_vertices(&ShadowInfo.poly_count)) {
-        PHD_VBUF *vn1 = &PhdVBuf[0];
-        PHD_VBUF *vn2 = &PhdVBuf[1];
-        PHD_VBUF *vn3 = &PhdVBuf[2];
-        PHD_VBUF *vn4 = &PhdVBuf[3];
-        PHD_VBUF *vn5 = &PhdVBuf[4];
-        PHD_VBUF *vn6 = &PhdVBuf[5];
-        PHD_VBUF *vn7 = &PhdVBuf[6];
-        PHD_VBUF *vn8 = &PhdVBuf[7];
 
-        if (!(vn1->clip & vn2->clip & vn3->clip & vn4->clip & vn5->clip
-              & vn6->clip & vn7->clip & vn8->clip)
-            && vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
-            && vn4->clip >= 0 && vn5->clip >= 0 && vn6->clip >= 0
-            && vn7->clip >= 0 && vn8->clip >= 0 && VISIBLE(vn1, vn2, vn3)) {
-            int clip = (vn1->clip | vn2->clip | vn3->clip | vn4->clip
-                        | vn5->clip | vn6->clip | vn7->clip | vn8->clip)
-                ? 1
-                : 0;
-            HWR_PrintShadow(&PhdVBuf[0], clip);
+    if (calc_object_vertices(&ShadowInfo.poly_count)) {
+        int16_t clip_and = 1;
+        int16_t clip_positive = 1;
+        int16_t clip_or = 0;
+        for (i = 0; i < ShadowInfo.vertex_count; i++) {
+            clip_and &= PhdVBuf[i].clip;
+            clip_positive &= PhdVBuf[i].clip >= 0;
+            clip_or |= PhdVBuf[i].clip;
+        }
+        PHD_VBUF *vn1 = &PhdVBuf[0];
+        PHD_VBUF *vn2 = &PhdVBuf[T1MConfig.enable_round_shadow ? 4 : 1];
+        PHD_VBUF *vn3 = &PhdVBuf[T1MConfig.enable_round_shadow ? 8 : 2];
+
+        int visible = VISIBLE(vn1, vn2, vn3);
+
+        if (!clip_and && clip_positive && visible) {
+            HWR_PrintShadow(
+                &PhdVBuf[0], clip_or ? 1 : 0, ShadowInfo.vertex_count);
         }
     }
+
     phd_PopMatrix();
 }
 

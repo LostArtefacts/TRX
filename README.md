@@ -75,6 +75,22 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added UI and bar scaling
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
+- added movable camera on W,A,S,D
+- added Xbox One Controller support
+    - Per Axis Dead Zone
+    - Left Stick = movement
+    - A = Jump/Select
+    - B = Roll/Deselect
+    - X = Action/Select
+    - Y = Look/Select
+    - LB = Walk
+    - RB = Draw Weapons
+    - Dpad Up = Draw Weapons
+    - Back = Option
+    - Start = Pause
+    - Right Stick = Camera Movement
+    - R3 = Reset Camera
+- added rounded shadows (instead of the default octagon)
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed input method to DirectInput
@@ -153,6 +169,11 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 ## Decompilation progress
 
 ![](docs/progress.svg)
+
+## Importing data to IDA
+
+This option requires IDAPython and a recent version of IDA. Install Python 3.8+
+and IDA 7.5+, then hit alt+f7, then choose `scripts/ida_import.py`.
 
 ## License
 

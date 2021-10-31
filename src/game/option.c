@@ -37,7 +37,7 @@
 #define CONTROLS_TOP_Y -60
 #define CONTROLS_BORDER 4
 #define CONTROLS_HEADER_HEIGHT 25
-#define CONTROLS_ROW_HEIGHT 15
+#define CONTROLS_ROW_HEIGHT 17
 
 typedef enum COMPASS_TEXT {
     COMPASS_TITLE = 0,
@@ -75,10 +75,29 @@ static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
-    { KEY_UP, 0 },     { KEY_DOWN, 0 },   { KEY_LEFT, 0 }, { KEY_RIGHT, 0 },
-    { KEY_STEP_L, 0 }, { KEY_STEP_R, 0 }, { KEY_SLOW, 0 }, { KEY_JUMP, 1 },
-    { KEY_ACTION, 1 }, { KEY_DRAW, 1 },   { KEY_LOOK, 1 }, { KEY_ROLL, 1 },
-    { -1, 1 },         { KEY_OPTION, 1 }, { -1, -1 },
+    { KEY_UP, 0 },
+    { KEY_DOWN, 0 },
+    { KEY_LEFT, 0 },
+    { KEY_RIGHT, 0 },
+    { KEY_STEP_L, 0 },
+    { KEY_STEP_R, 0 },
+    { KEY_CAMERA_UP, 0 },
+    { KEY_CAMERA_DOWN, 0 },
+    { KEY_CAMERA_LEFT, 0 },
+    { KEY_CAMERA_RIGHT, 0 },
+    { KEY_CAMERA_RESET, 0 },
+    { KEY_SLOW, 1 },
+    { KEY_JUMP, 1 },
+    { KEY_ACTION, 1 },
+    { KEY_DRAW, 1 },
+    { KEY_LOOK, 1 },
+    { KEY_ROLL, 1 },
+    { KEY_OPTION, 1 },
+    { KEY_PAUSE, 1 },
+    { KEY_FLY_CHEAT, 1 },
+    { KEY_ITEM_CHEAT, 1 },
+    { KEY_LEVEL_SKIP_CHEAT, 1 },
+    { -1, -1 },
 };
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { KEY_UP, 0 },
@@ -87,13 +106,19 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { KEY_RIGHT, 0 },
     { KEY_STEP_L, 0 },
     { KEY_STEP_R, 0 },
-    { KEY_SLOW, 0 },
-    { KEY_JUMP, 0 },
+    { KEY_CAMERA_UP, 0 },
+    { KEY_CAMERA_DOWN, 0 },
+    { KEY_CAMERA_LEFT, 0 },
+    { KEY_CAMERA_RIGHT, 0 },
+    { KEY_CAMERA_RESET, 0 },
+    { KEY_SLOW, 1 },
+    { KEY_JUMP, 1 },
     { KEY_ACTION, 1 },
     { KEY_DRAW, 1 },
     { KEY_LOOK, 1 },
     { KEY_ROLL, 1 },
     { KEY_OPTION, 1 },
+    { KEY_PAUSE, 1 },
     { KEY_FLY_CHEAT, 1 },
     { KEY_ITEM_CHEAT, 1 },
     { KEY_LEVEL_SKIP_CHEAT, 1 },

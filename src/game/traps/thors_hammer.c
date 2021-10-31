@@ -126,7 +126,7 @@ void ThorsHandleControl(int16_t item_num)
         item->pos.x = x;
         item->pos.z = z;
         if (LaraItem->hit_points >= 0) {
-            AlterFloorHeight(item, -2 * WALL_L);
+            AlterFloorHeight(item, -WALL_L * 2);
         }
         item->pos.x = old_x;
         item->pos.z = old_z;

@@ -24,16 +24,21 @@
 #define Surface2                VAR_U_(0x005DB484, LPDIRECTDRAWSURFACE)
 #define Surface3                VAR_U_(0x005DA744, LPDIRECTDRAWSURFACE)
 #define Surface4                VAR_U_(0x00463608, LPDIRECTDRAWSURFACE)
-#define TextureSurfaces         ARRAY_(0x005DA6C0, LPDIRECTDRAWSURFACE, [32])
+#define TextureSurfaces         ARRAY_(0x005DA6C0, LPDIRECTDRAWSURFACE, [MAX_TEXTPAGES])
 #define Surface1DrawPtr         VAR_U_(0x00463564, void*)
 #define Surface2DrawPtr         VAR_U_(0x005DB480, void*)
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
+#define ATITextureMap           ARRAY_(0x00463580, C3D_PHTX, [MAX_TEXTPAGES])
+#define ATIPalette              ARRAY_(0x00462DC0, C3D_PALETTENTRY, [256])
+#define ATIChromaKey            VAR_U_(0x00463614, C3D_COLOR)
 #define HWR_OldIsRendering      VAR_U_(0x00463568, int32_t)
+#define HWR_IsPaletteActive     VAR_U_(0x00459F38, BOOL)
 #define HWR_IsRendering         VAR_U_(0x00459F34, int32_t)
 #define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
 #define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
+#define HWR_TextureLoaded       ARRAY_(0x005DA760, int32_t, [MAX_TEXTPAGES])
 // clang-format on
 
 extern HINSTANCE TombModule;

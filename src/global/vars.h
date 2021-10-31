@@ -63,7 +63,6 @@
 #define FadeValue               VAR_I_(0x00453568, int32_t, 0x100000)
 #define FadeLimit               VAR_I_(0x0045356C, int32_t, 0x100000)
 #define FadeAdder               VAR_I_(0x00453570, int32_t, 0x8000)
-#define ShadowInfo              VAR_U_(0x004567B8, SHADOW_INFO)
 #define LsAdder                 VAR_U_(0x0068F3A0, int32_t)
 #define LsYaw                   VAR_U_(0x0068F3B4, int32_t)
 #define LsPitch                 VAR_U_(0x006D4DE4, int32_t)
@@ -268,6 +267,7 @@ extern int32_t RoomsToDrawNum;
 extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
+extern SHADOW_INFO ShadowInfo;
 
 extern int16_t *TriggerIndex;
 extern int32_t FlipTimer;

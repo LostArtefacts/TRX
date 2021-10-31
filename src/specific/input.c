@@ -34,6 +34,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, // KEY_CAMERA_RESET
     },
 
     // default user controls
@@ -55,6 +60,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_I, // KEY_ITEM_CHEAT,
         DIK_X, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
+        DIK_W, // KEY_CAMERA_UP
+        DIK_S, // KEY_CAMERA_DOWN
+        DIK_A, // KEY_CAMERA_LEFT
+        DIK_D, // KEY_CAMERA_RIGHT
+        DIK_SLASH, // KEY_CAMERA_RESET
     }
 };
 
@@ -63,6 +73,8 @@ int32_t ConflictLayout[KEY_NUMBER_OF] = { 0 };
 static LPDIRECTINPUT8 DInput;
 static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard;
 static uint8_t DIKeys[256];
+
+static LPDIRECTINPUTDEVICE8 IDID_Joystick;
 
 static int32_t MedipackCoolDown = 0;
 
@@ -73,15 +85,29 @@ static void DInputKeyboardRelease();
 static void DInputKeyboardRead();
 static int8_t Key_(KEY_NUMBER number);
 
+static HRESULT DInputJoystickCreate();
+static void DInputJoystickRelease();
+static BOOL CALLBACK
+EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
+static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
+
 void InputInit()
 {
     DInputCreate();
     DInputKeyboardCreate();
+    if (T1MConfig.enable_xbox_one_controller) {
+        DInputJoystickCreate();
+    } else {
+        IDID_Joystick = NULL;
+    }
 }
 
 void InputShutdown()
 {
     DInputKeyboardRelease();
+    if (T1MConfig.enable_xbox_one_controller) {
+        DInputJoystickRelease();
+    }
     DInputShutdown();
 }
 
@@ -202,6 +228,170 @@ int16_t KeyGet()
     return -1;
 }
 
+static HRESULT DInputJoystickCreate()
+{
+    HRESULT result;
+
+    // Look for the first simple joystick we can find.
+    if (FAILED(
+            result = IDirectInput8_EnumDevices(
+                DInput, DI8DEVCLASS_GAMECTRL, EnumCallback, NULL,
+                DIEDFL_ATTACHEDONLY))) {
+        LOG_ERROR(
+            "Error while calling IDirectInput8_EnumDevices: 0x%lx", result);
+        return result;
+    }
+
+    // Make sure we got a joystick
+    if (IDID_Joystick == NULL) {
+        LOG_ERROR("Joystick not found.\n");
+        return E_FAIL;
+    }
+    LOG_INFO("Joystick found.\n");
+
+    DIDEVCAPS capabilities;
+    // request simple joystick format 2
+    if (FAILED(
+            result = IDirectInputDevice_SetDataFormat(
+                IDID_Joystick, &c_dfDIJoystick2))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_SetDataFormat: 0x%lx",
+            result);
+        DInputJoystickRelease();
+        return result;
+    }
+
+    // don't request exclusive access
+    if (FAILED(
+            result = IDirectInputDevice_SetCooperativeLevel(
+                IDID_Joystick, NULL, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_SetCooperativeLevel: 0x%lx",
+            result);
+        DInputJoystickRelease();
+        return result;
+    }
+
+    // get axis count, we should know what it is but best to ask
+    capabilities.dwSize = sizeof(DIDEVCAPS);
+    if (FAILED(
+            result = IDirectInputDevice_GetCapabilities(
+                IDID_Joystick, &capabilities))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_GetCapabilities: 0x%lx",
+            result);
+        DInputJoystickRelease();
+        return result;
+    }
+
+    // set the range we expect each axis to report back in
+    if (FAILED(
+            result = IDirectInputDevice_EnumObjects(
+                IDID_Joystick, EnumAxesCallback, NULL, DIDFT_AXIS))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice_EnumObjects: 0x%lx",
+            result);
+        DInputJoystickRelease();
+        return result;
+    }
+    return result;
+}
+
+static void DInputJoystickRelease()
+{
+    if (IDID_Joystick) {
+        IDirectInputDevice_Unacquire(IDID_Joystick);
+        IDirectInputDevice_Release(IDID_Joystick);
+        IDID_Joystick = NULL;
+    }
+}
+
+static BOOL CALLBACK
+EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
+{
+    HRESULT result;
+    DIPROPRANGE propRange;
+
+    propRange.diph.dwSize = sizeof(DIPROPRANGE);
+    propRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    propRange.diph.dwHow = DIPH_BYID;
+    propRange.diph.dwObj = instance->dwType;
+    propRange.lMin = -1024;
+    propRange.lMax = 1024;
+
+    // Set the range for the axis
+    if (FAILED(
+            result = IDirectInputDevice8_SetProperty(
+                IDID_Joystick, DIPROP_RANGE, &propRange.diph))) {
+        LOG_ERROR(
+            "Error while calling IDirectInputDevice8_SetProperty: 0x%lx",
+            result);
+        return DIENUM_STOP;
+    }
+
+    return DIENUM_CONTINUE;
+}
+
+static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context)
+{
+    HRESULT result;
+
+    // Obtain an interface to the enumerated joystick.
+    result = IDirectInput8_CreateDevice(
+        DInput, &instance->guidInstance, &IDID_Joystick, NULL);
+
+    if (FAILED(result)) {
+        LOG_ERROR(
+            "Error while calling IDirectInput8_CreateDevice: 0x%lx", result);
+        return DIENUM_CONTINUE;
+    }
+    // we got one, it will do.
+    return DIENUM_STOP;
+}
+
+static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
+{
+    HRESULT result;
+
+    if (!IDID_Joystick) {
+        return S_OK;
+    }
+
+    // Poll the device to read the current state
+    result = IDirectInputDevice8_Poll(IDID_Joystick);
+    if (FAILED(result)) {
+        // focus was lost, try to reaquire the device
+        result = IDirectInputDevice8_Acquire(IDID_Joystick);
+        while (result == DIERR_INPUTLOST) {
+            result = IDirectInputDevice8_Acquire(IDID_Joystick);
+        }
+
+        // A fatal error? Return failure.
+        if ((result == DIERR_INVALIDPARAM)
+            || (result == DIERR_NOTINITIALIZED)) {
+            LOG_ERROR(
+                "Error while calling IDirectInputDevice8_Acquire: 0x%lx",
+                result);
+            return E_FAIL;
+        }
+
+        // If another application has control of this device, return
+        // successfully.
+        if (result == DIERR_OTHERAPPHASPRIO) {
+            return S_OK;
+        }
+    }
+
+    // Get the input's device state
+    if (FAILED(
+            result = IDirectInputDevice8_GetDeviceState(
+                IDID_Joystick, sizeof(DIJOYSTATE2), joystate))) {
+        return result; // The device should have been acquired during the Poll()
+    }
+
+    return S_OK;
+}
+
 void S_UpdateInput()
 {
     int32_t linput = 0;
@@ -253,6 +443,22 @@ void S_UpdateInput()
     }
     if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
         linput |= IN_ROLL;
+    }
+
+    if (Key_(KEY_CAMERA_UP)) {
+        linput |= IN_CAMERA_UP;
+    }
+    if (Key_(KEY_CAMERA_DOWN)) {
+        linput |= IN_CAMERA_DOWN;
+    }
+    if (Key_(KEY_CAMERA_LEFT)) {
+        linput |= IN_CAMERA_LEFT;
+    }
+    if (Key_(KEY_CAMERA_RIGHT)) {
+        linput |= IN_CAMERA_RIGHT;
+    }
+    if (Key_(KEY_CAMERA_RESET)) {
+        linput |= IN_CAMERA_RESET;
     }
 
     if (T1MConfig.enable_cheats) {
@@ -344,6 +550,75 @@ void S_UpdateInput()
         RenderSettings ^= RSF_FPS;
         while (KEY_DOWN(DIK_F2)) {
             DInputKeyboardRead();
+        }
+    }
+
+    if (IDID_Joystick) {
+        DIJOYSTATE2 state;
+        DInputJoystickPoll(&state);
+        // check Y
+        if (state.lY > 512) {
+            linput |= IN_BACK;
+        } else if (state.lY < -512) {
+            linput |= IN_FORWARD;
+        }
+        // check X
+        if (state.lX > 512) {
+            linput |= IN_RIGHT;
+        } else if (state.lX < -512) {
+            linput |= IN_LEFT;
+        }
+        // check Z
+        if (state.lZ > 512) {
+            linput |= IN_STEPL;
+        } else if (state.lZ < -512) {
+            linput |= IN_STEPR;
+        }
+
+        // check 2nd stick X
+        if (state.lRx > 512) {
+            linput |= IN_CAMERA_RIGHT;
+        } else if (state.lRx < -512) {
+            linput |= IN_CAMERA_LEFT;
+        }
+        // check 2nd stick Y
+        if (state.lRy > 512) {
+            linput |= IN_CAMERA_DOWN;
+        } else if (state.lRy < -512) {
+            linput |= IN_CAMERA_UP;
+        }
+
+        // check buttons
+        if (state.rgbButtons[0]) { // A
+            linput |= IN_JUMP | IN_SELECT;
+        }
+        if (state.rgbButtons[1]) { // B
+            linput |= IN_ROLL | IN_DESELECT;
+        }
+        if (state.rgbButtons[2]) { // X
+            linput |= IN_ACTION | IN_SELECT;
+        }
+        if (state.rgbButtons[3]) { // Y
+            linput |= IN_LOOK | IN_DESELECT;
+        }
+        if (state.rgbButtons[4]) { // LB
+            linput |= IN_SLOW;
+        }
+        if (state.rgbButtons[5]) { // RB
+            linput |= IN_DRAW;
+        }
+        if (state.rgbButtons[6]) { // back
+            linput |= IN_OPTION;
+        }
+        if (state.rgbButtons[7]) { // start
+            linput |= IN_PAUSE;
+        }
+        if (state.rgbButtons[9]) { // 2nd axis click
+            linput |= IN_CAMERA_RESET;
+        }
+        // check dpad
+        if (state.rgdwPOV[0] == 0) { // up
+            linput |= IN_DRAW;
         }
     }
 
