@@ -196,7 +196,5 @@ void ResetLook();
 void LaraCheatGetStuff();
 
 void T1MInjectGameLara();
-void T1MInjectGameLaraGun1();
-void T1MInjectGameLaraGun2();
 
 #endif
