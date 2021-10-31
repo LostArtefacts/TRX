@@ -5,7 +5,6 @@
 
 #define MAX_BOUNCE 100
 
-// original name: dino_stomp_effect
 void DinoStomp(ITEM_INFO *item)
 {
     int32_t dx = item->pos.x - Camera.pos.x;

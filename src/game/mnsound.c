@@ -75,7 +75,6 @@ void mn_reset_sound_effects()
     }
 }
 
-// original name: SoundEffect
 int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
     if (!SoundIsActive) {
@@ -399,7 +398,6 @@ void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
     slot->pan = angle;
 }
 
-// original name: StopSoundEffect
 void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
 {
     if (!SoundIsActive) {
@@ -436,7 +434,6 @@ void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
     }
 }
 
-// original name: adjust_master_volume
 void mn_adjust_master_volume(int8_t volume)
 {
     MnSoundMasterVolumeDefault = volume & 0x3F;

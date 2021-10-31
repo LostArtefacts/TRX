@@ -22,7 +22,6 @@ void ControlExplosion1(int16_t fx_num)
     }
 }
 
-// original name: ExplosionFX
 void Explosion(ITEM_INFO *item)
 {
     SoundEffect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);

@@ -200,7 +200,6 @@ static void InitNewGameRequester()
     req->vis_lines = MAX_GAME_MODES;
 }
 
-// original name: do_inventory_options
 void DoInventoryOptions(INVENTORY_ITEM *inv_item)
 {
     switch (inv_item->object_number) {
@@ -509,7 +508,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-// original name: do_gamma_option
 void DoGammaOption(INVENTORY_ITEM *inv_item)
 {
     if (CHK_ANY(Input, IN_LEFT)) {
@@ -548,7 +546,6 @@ void DoGammaOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-// original name: do_detail_option?
 void DoDetailOptionHW(INVENTORY_ITEM *inv_item)
 {
     static char buf[256];
@@ -742,7 +739,6 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     DoDetailOptionHW(inv_item);
 }
 
-// original name: do_sound_option
 void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[20];
@@ -854,7 +850,6 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-// original name: do_compass_option
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[100];
@@ -964,7 +959,6 @@ void DefaultConflict()
     }
 }
 
-// original name: do_control_option
 void DoControlOption(INVENTORY_ITEM *inv_item)
 {
     int16_t key;

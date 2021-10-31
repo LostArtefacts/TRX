@@ -4,7 +4,6 @@
 #include "config.h"
 #include "global/vars.h"
 
-// original name: lara_normal_effect
 void LaraNormal(ITEM_INFO *item)
 {
     item->current_anim_state = AS_STOP;
@@ -15,13 +14,11 @@ void LaraNormal(ITEM_INFO *item)
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 }
 
-// original name: lara_hands_free
 void LaraHandsFree(ITEM_INFO *item)
 {
     Lara.gun_status = LGS_ARMLESS;
 }
 
-// original name: draw_right_gun
 void LaraDrawRightGun(ITEM_INFO *item)
 {
     int16_t *tmp_mesh;

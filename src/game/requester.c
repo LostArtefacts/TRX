@@ -12,7 +12,6 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-// original name: Init_Requester
 void InitRequester(REQUEST_INFO *req)
 {
     req->heading = NULL;
@@ -27,7 +26,6 @@ void InitRequester(REQUEST_INFO *req)
     req->items = 0;
 }
 
-// original name: Remove_Requester
 void RemoveRequester(REQUEST_INFO *req)
 {
     T_RemovePrint(req->heading);
@@ -44,7 +42,6 @@ void RemoveRequester(REQUEST_INFO *req)
     }
 }
 
-// original name: Display_Requester
 int32_t DisplayRequester(REQUEST_INFO *req)
 {
     int32_t edge_y = req->y;

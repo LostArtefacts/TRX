@@ -11,7 +11,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// original name: draw_shotgun
 void DrawShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
@@ -30,7 +29,6 @@ void DrawShotgun()
     Lara.right_arm.frame_number = ani;
 }
 
-// origianl name: undraw_shotgun
 void UndrawShotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
@@ -78,7 +76,6 @@ void UndrawShotgun()
     Lara.left_arm.frame_number = ani;
 }
 
-// original name: draw_shotgun_meshes
 void DrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] =
@@ -88,7 +85,6 @@ void DrawShotgunMeshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-// original name: undraw_shotgun_meshes
 void UndrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
@@ -96,7 +92,6 @@ void UndrawShotgunMeshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-// original name: ReadyShotgun
 void ReadyShotgun()
 {
     Lara.gun_status = LGS_READY;

@@ -61,7 +61,6 @@ void LavaBurn(ITEM_INFO *item)
     }
 }
 
-// original name: LavaSpray
 void LavaEmitterControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
@@ -80,7 +79,6 @@ void LavaEmitterControl(int16_t item_num)
     }
 }
 
-// original name: ControlLavaBlob
 void LavaControl(int16_t fx_num)
 {
     FX_INFO *fx = &Effects[fx_num];
@@ -103,7 +101,6 @@ void LavaControl(int16_t fx_num)
     }
 }
 
-// original name: LavaWedge
 void LavaWedgeControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

@@ -35,7 +35,6 @@ void InitialiseRollingBlock(int16_t item_num)
     AlterFloorHeight(item, -WALL_L * 2);
 }
 
-// original name: RollingBlock
 void RollingBlockControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

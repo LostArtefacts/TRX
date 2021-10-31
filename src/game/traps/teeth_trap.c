@@ -20,7 +20,6 @@ void SetupTeethTrap(OBJECT_INFO *obj)
     obj->save_anim = 1;
 }
 
-// original name: TeethTrap
 void TeethTrapControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

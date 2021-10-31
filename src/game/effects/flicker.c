@@ -4,7 +4,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-// original name: FlickerFX
 void Flicker(ITEM_INFO *item)
 {
     if (FlipTimer > 125) {

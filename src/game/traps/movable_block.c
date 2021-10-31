@@ -20,7 +20,6 @@ void SetupMovableBlock(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-// original name: InitialiseMovingBlock
 void InitialiseMovableBlock(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
@@ -29,7 +28,6 @@ void InitialiseMovableBlock(int16_t item_num)
     }
 }
 
-// original name: MovableBlock
 void MovableBlockControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

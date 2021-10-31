@@ -15,7 +15,6 @@ void SetupPendulum(OBJECT_INFO *obj)
     obj->save_anim = 1;
 }
 
-// original name: Pendulum
 void PendulumControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
