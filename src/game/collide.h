@@ -27,13 +27,13 @@ void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void ItemPushLara(
     ITEM_INFO *item, ITEM_INFO *lara_item, COLL_INFO *coll, int32_t spazon,
     int32_t bigpush);
-int32_t
-TestBoundsCollide(ITEM_INFO *item, ITEM_INFO *lara_item, int32_t radius);
-int32_t
-TestLaraPosition(int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item);
+int32_t TestBoundsCollide(
+    ITEM_INFO *item, ITEM_INFO *lara_item, int32_t radius);
+int32_t TestLaraPosition(
+    int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item);
 void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
-int32_t
-MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
+int32_t MoveLaraPosition(
+    PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
 int32_t Move3DPosTo3DPos(
     PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd);
 int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance);

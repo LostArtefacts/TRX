@@ -7,3 +7,5 @@ BreakBeforeBinaryOperators: NonAssignment
 AlignAfterOpenBracket: AlwaysBreak
 SortIncludes: false
 PointerAlignment: Right
+AlwaysBreakAfterReturnType: None
+PenaltyReturnTypeOnItsOwnLine: 1000

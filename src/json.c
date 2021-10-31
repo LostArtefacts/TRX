@@ -2868,8 +2868,8 @@ void json_array_append_array(
     json_array_append(arr, json_value_from_array(arr2));
 }
 
-struct json_value_s *
-json_array_get_value(struct json_array_s *arr, const size_t idx)
+struct json_value_s *json_array_get_value(
+    struct json_array_s *arr, const size_t idx)
 {
     if (!arr || idx >= arr->length) {
         return json_null;
@@ -2913,8 +2913,8 @@ double json_array_get_number_double(
     return d;
 }
 
-const char *
-json_array_get_string(struct json_array_s *arr, const size_t idx, const char *d)
+const char *json_array_get_string(
+    struct json_array_s *arr, const size_t idx, const char *d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_string_s *str = json_value_as_string(value);
@@ -2924,16 +2924,16 @@ json_array_get_string(struct json_array_s *arr, const size_t idx, const char *d)
     return d;
 }
 
-struct json_array_s *
-json_array_get_array(struct json_array_s *arr, const size_t idx)
+struct json_array_s *json_array_get_array(
+    struct json_array_s *arr, const size_t idx)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_array_s *arr2 = json_value_as_array(value);
     return arr2;
 }
 
-struct json_object_s *
-json_array_get_object(struct json_array_s *arr, const size_t idx)
+struct json_object_s *json_array_get_object(
+    struct json_array_s *arr, const size_t idx)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_object_s *obj = json_value_as_object(value);
@@ -3008,8 +3008,8 @@ void json_object_append_array(
     json_object_append(obj, key, json_value_from_array(arr));
 }
 
-struct json_value_s *
-json_object_get_value(struct json_object_s *obj, const char *key)
+struct json_value_s *json_object_get_value(
+    struct json_object_s *obj, const char *key)
 {
     if (!obj) {
         return json_null;
@@ -3068,16 +3068,16 @@ const char *json_object_get_string(
     return d;
 }
 
-struct json_array_s *
-json_object_get_array(struct json_object_s *obj, const char *key)
+struct json_array_s *json_object_get_array(
+    struct json_object_s *obj, const char *key)
 {
     struct json_value_s *value = json_object_get_value(obj, key);
     struct json_array_s *arr = json_value_as_array(value);
     return arr;
 }
 
-struct json_object_s *
-json_object_get_object(struct json_object_s *obj, const char *key)
+struct json_object_s *json_object_get_object(
+    struct json_object_s *obj, const char *key)
 {
     struct json_value_s *value = json_object_get_value(obj, key);
     struct json_object_s *obj2 = json_value_as_object(value);

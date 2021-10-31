@@ -21,8 +21,8 @@ static char *read_file_text(const char *path)
     return data;
 }
 
-static void
-assert_json_keys_equal(struct json_object_s *obj1, struct json_object_s *obj2)
+static void assert_json_keys_equal(
+    struct json_object_s *obj1, struct json_object_s *obj2)
 {
     ASSERT_ULONG_EQUAL(obj1->length, obj2->length);
     struct json_object_element_s *obj1_elem = obj1->start;

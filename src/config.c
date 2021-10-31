@@ -77,8 +77,8 @@ static int8_t ReadBarLocation(
     return default_value;
 }
 
-static int8_t
-ReadBarColor(struct json_object_s *obj, const char *name, int8_t default_value)
+static int8_t ReadBarColor(
+    struct json_object_s *obj, const char *name, int8_t default_value)
 {
     const char *value_str = json_object_get_string(obj, name, NULL);
     if (value_str) {
