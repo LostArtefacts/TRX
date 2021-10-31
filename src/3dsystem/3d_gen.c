@@ -7,7 +7,6 @@
 #include "global/vars.h"
 #include "specific/hwr.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <math.h>
 
@@ -651,29 +650,4 @@ void S_InsertRoom(const int16_t *obj_ptr)
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
     obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
-}
-
-void T1MInject3DSystem3DGen()
-{
-    INJECT(0x00401000, phd_GenerateW2V);
-    INJECT(0x004011A0, phd_LookAt);
-    INJECT(0x00401270, phd_GetVectorAngles);
-    INJECT(0x004012F0, phd_RotX);
-    INJECT(0x004013A0, phd_RotY);
-    INJECT(0x00401450, phd_RotZ);
-    INJECT(0x00401500, phd_RotYXZ);
-    INJECT(0x004016F0, phd_RotYXZpack);
-    INJECT(0x004018F0, phd_TranslateRel);
-    INJECT(0x004019A0, phd_TranslateAbs);
-    INJECT(0x00401A20, phd_VisibleZClip);
-    INJECT(0x00401AD0, phd_PutPolygons);
-    INJECT(0x00401C40, calc_object_vertices);
-    INJECT(0x00401E00, calc_vertice_light);
-    INJECT(0x00401F70, calc_roomvert);
-    INJECT(0x004023A0, phd_RotateLight);
-    INJECT(0x00402470, phd_InitPolyList);
-    INJECT(0x004025D0, phd_InitWindow);
-    INJECT(0x004026D0, AlterFOV);
-    INJECT(0x0043EA01, phd_PushMatrix);
-    INJECT(0x0043EA21, phd_PushUnitMatrix);
 }
