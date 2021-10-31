@@ -14,7 +14,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -634,16 +633,4 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
             break;
         }
     }
-}
-
-void T1MInjectGameLaraFire()
-{
-    INJECT(0x00426BD0, LaraGun);
-    INJECT(0x00426E60, InitialiseNewWeapon);
-    INJECT(0x00426F20, LaraTargetInfo);
-    INJECT(0x004270C0, LaraGetNewTarget);
-    INJECT(0x004272A0, find_target_point);
-    INJECT(0x00427360, AimWeapon);
-    INJECT(0x00427430, FireWeapon);
-    INJECT(0x00427730, HitTarget);
 }
