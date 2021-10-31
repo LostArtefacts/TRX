@@ -25,6 +25,4 @@ void T_RemoveAllPrints();
 void T_DrawText();
 void T_DrawThisText(TEXTSTRING *textstring);
 
-void T1MInjectGameText();
-
 #endif
