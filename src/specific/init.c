@@ -65,11 +65,6 @@ void S_InitialiseSystem()
     GameVidWidth = 640;
     GameVidHeight = 480;
 
-    DumpX = 0;
-    DumpY = 0;
-    DumpWidth = 640;
-    DumpHeight = 480;
-
     SWRInit();
     ClockInit();
     SoundInit();
