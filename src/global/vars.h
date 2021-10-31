@@ -118,7 +118,6 @@ extern int32_t KeyChange;
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 
-#define InvItemControls         VAR_U_(0x00455E20, INVENTORY_ITEM)
 #define InvItemGamma            VAR_U_(0x00455E60, INVENTORY_ITEM)
 #define InvItemLarasHome        VAR_U_(0x00455EA0, INVENTORY_ITEM)
 #define InvSprGammaLevel        ARRAY_(0x00455218, INVENTORY_SPRITE, [10])
