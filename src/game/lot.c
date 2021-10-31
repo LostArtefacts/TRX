@@ -3,7 +3,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -189,14 +188,4 @@ void ClearLOT(LOT_INFO *LOT)
         node->exit_box = NO_BOX;
         node->next_expansion = NO_BOX;
     }
-}
-
-void T1MInjectGameLOT()
-{
-    INJECT(0x0042A300, InitialiseLOTArray);
-    INJECT(0x0042A360, DisableBaddieAI);
-    INJECT(0x0042A3A0, EnableBaddieAI);
-    INJECT(0x0042A570, InitialiseSlot);
-    INJECT(0x0042A6B0, CreateZone);
-    INJECT(0x0042A780, InitialiseLOT);
 }
