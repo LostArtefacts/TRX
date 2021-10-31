@@ -1583,8 +1583,8 @@ void HWR_DrawTexturedQuad(
     // the requested texture page was not loaded.
 }
 
-int32_t
-HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
+int32_t HWR_ZedClipper(
+    int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 {
     int32_t i;
     int32_t count;

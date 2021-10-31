@@ -243,8 +243,8 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     return 0;
 }
 
-MN_SFX_PLAY_INFO *
-mn_get_fx_slot(int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
+MN_SFX_PLAY_INFO *mn_get_fx_slot(
+    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
 {
     switch (mode) {
     case SOUND_WAIT:
