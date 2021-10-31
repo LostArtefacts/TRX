@@ -14,7 +14,6 @@
 #include "specific/input.h"
 #include "specific/shed.h"
 #include "specific/smain.h"
-#include "util.h"
 
 #include <dinput.h>
 #include <stdlib.h>
@@ -283,20 +282,4 @@ void FMVInit()
         Player_GetDSErrorCode();
         S_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
     }
-}
-
-void T1MInjectSpecificFrontend()
-{
-    INJECT(0x0041C0F0, S_Colour);
-    INJECT(0x0041C180, S_DrawScreenSprite2d);
-    INJECT(0x0041C2D0, S_DrawScreenSprite);
-    INJECT(0x0041C440, S_DrawScreenLine);
-    INJECT(0x0041C520, S_DrawScreenBox);
-    INJECT(0x0041CBB0, S_DrawScreenFBox);
-    INJECT(0x0041CCC0, S_FinishInventory);
-    INJECT(0x0041CD10, S_FadeToBlack);
-    INJECT(0x0041CD50, S_Wait);
-    INJECT(0x0041CDA0, FMVInit);
-    INJECT(0x0041CDF0, WinPlayFMV);
-    INJECT(0x0041D040, S_PlayFMV);
 }

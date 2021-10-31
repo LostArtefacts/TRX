@@ -1,7 +1,6 @@
 #include "inject.h"
 
 #include "specific/ati.h"
-#include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
@@ -13,7 +12,6 @@
 void T1MInject()
 {
     T1MInjectSpecificATI();
-    T1MInjectSpecificFrontend();
     T1MInjectSpecificHWR();
     T1MInjectSpecificInit();
     T1MInjectSpecificInput();

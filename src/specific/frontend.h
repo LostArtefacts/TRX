@@ -34,6 +34,4 @@ void S_FadeToBlack();
 
 void S_FinishInventory();
 
-void T1MInjectSpecificFrontend();
-
 #endif
