@@ -15,7 +15,9 @@
 #include "specific/hwr.h"
 #include "specific/smain.h"
 
+#include <assert.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -81,7 +83,7 @@ static RGB888 ColorBarMap[][COLOR_STEPS] = {
       { 120, 60, 70 } },
 };
 
-static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal);
+static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *pic);
 
 int32_t GetRenderHeightDownscaled()
 {
@@ -383,48 +385,24 @@ void S_AnimateTextures(int32_t ticks)
     }
 }
 
-static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
+static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *pic)
 {
     PCX_HEADER *header = (PCX_HEADER *)pcx;
-    int32_t width = header->x_max - header->x_min + 1;
-    int32_t height = header->y_max - header->y_min + 1;
+    pic->width = header->x_max - header->x_min + 1;
+    pic->height = header->y_max - header->y_min + 1;
 
     if (header->manufacturer != 10 || header->version < 5 || header->bpp != 8
-        || header->rle != 1 || header->planes != 1 || width * height == 0) {
-        return 0;
+        || header->rle != 1 || header->planes != 1 || !pic->width
+        || !pic->height) {
+        return false;
     }
 
-    const int32_t stride = width + width % 2;
-    const char *src = pcx + sizeof(PCX_HEADER);
-    char *dst = pic;
-    int32_t x = 0;
-    int32_t y = 0;
+    pic->data = malloc(pic->width * pic->height * sizeof(RGB888));
+    assert(pic->data);
 
-    while (y < height) {
-        if ((*src & 0xC0) == 0xC0) {
-            uint8_t n = (*src++) & 0x3F;
-            uint8_t c = *src++;
-            if (n > 0) {
-                if (x < width) {
-                    CLAMPG(n, width - x);
-                    for (int i = 0; i < n; i++) {
-                        *dst++ = c;
-                    }
-                }
-                x += n;
-            }
-        } else {
-            *dst++ = *src++;
-            x++;
-        }
-        if (x >= stride) {
-            x = 0;
-            y++;
-        }
-    }
-
-    if (pal != NULL) {
-        src = pcx + pcx_size - sizeof(RGB888) * 256;
+    RGB888 pal[256];
+    {
+        const uint8_t *src = (uint8_t *)pcx + pcx_size - sizeof(RGB888) * 256;
         for (int i = 0; i < 256; i++) {
             pal[i].r = ((*src++) >> 2) & 0x3F;
             pal[i].g = ((*src++) >> 2) & 0x3F;
@@ -432,7 +410,38 @@ static int DecompPCX(const char *pcx, size_t pcx_size, char *pic, RGB888 *pal)
         }
     }
 
-    return 1;
+    {
+        const int32_t stride = pic->width + pic->width % 2;
+        const uint8_t *src = (uint8_t *)pcx + sizeof(PCX_HEADER);
+        RGB888 *dst = pic->data;
+        int32_t x = 0;
+        int32_t y = 0;
+
+        while (y < pic->height) {
+            if ((*src & 0xC0) == 0xC0) {
+                uint8_t n = (*src++) & 0x3F;
+                uint8_t c = *src++;
+                if (n > 0) {
+                    if (x < pic->width) {
+                        CLAMPG(n, pic->width - x);
+                        for (int i = 0; i < n; i++) {
+                            *dst++ = pal[c];
+                        }
+                    }
+                    x += n;
+                }
+            } else {
+                *dst++ = pal[*src++];
+                x++;
+            }
+            if (x >= stride) {
+                x = 0;
+                y++;
+            }
+        }
+    }
+
+    return true;
 }
 
 void S_DisplayPicture(const char *file_stem)
@@ -446,13 +455,16 @@ void S_DisplayPicture(const char *file_stem)
     size_t file_size = 0;
     FileLoad(file_path, &file_data, &file_size);
 
-    if (!DecompPCX(file_data, file_size, (char *)ScrPtr, GamePalette)) {
+    PICTURE pic;
+    if (!DecompPCX(file_data, file_size, &pic)) {
         LOG_ERROR("failed to decompress PCX %s", file_path);
     }
 
     free(file_data);
 
-    HWR_DownloadPicture();
+    HWR_DownloadPicture(&pic);
+
+    free(pic.data);
 }
 
 void S_DrawLightningSegment(

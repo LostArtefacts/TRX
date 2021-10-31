@@ -2051,6 +2051,12 @@ typedef struct SAMPLE_DATA {
 
 #pragma pack(pop)
 
+typedef struct PICTURE {
+    int32_t width;
+    int32_t height;
+    RGB888 *data;
+} PICTURE;
+
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*EffectRoutine)(ITEM_INFO *item);
