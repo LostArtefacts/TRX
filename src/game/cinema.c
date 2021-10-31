@@ -12,7 +12,6 @@
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 static int32_t OldSoundIsActive;
 static const int32_t CinematicAnimationRate = 0x8000;
@@ -217,15 +216,4 @@ void InGameCinematicCamera()
         Camera.pos.x, Camera.pos.y, Camera.pos.z, Camera.target.x,
         Camera.target.y, Camera.target.z, roll);
     GetFloor(Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
-}
-
-void T1MInjectGameCinema()
-{
-    INJECT(0x004110A0, StartCinematic);
-    INJECT(0x00411240, DoCinematic);
-    INJECT(0x00411370, CalculateCinematicCamera);
-    INJECT(0x004114A0, ControlCinematicPlayer);
-    INJECT(0x004114F0, InitialisePlayer1);
-    INJECT(0x004115C0, InitialiseGenPlayer);
-    INJECT(0x004115F0, InGameCinematicCamera);
 }
