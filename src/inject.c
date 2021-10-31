@@ -16,7 +16,6 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/mnsound.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -54,7 +53,6 @@ void T1MInject()
     T1MInjectGameLaraMisc();
     T1MInjectGameLaraSurf();
     T1MInjectGameLaraSwim();
-    T1MInjectGameMNSound();
     T1MInjectSpecificATI();
     T1MInjectSpecificDisplay();
     T1MInjectSpecificFile();
