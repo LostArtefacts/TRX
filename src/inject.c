@@ -1,6 +1,5 @@
 #include "inject.h"
 
-#include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "3dsystem/scalespr.h"
 #include "specific/ati.h"
@@ -17,7 +16,6 @@
 
 void T1MInject()
 {
-    T1MInject3DSystem3DGen();
     T1MInject3DSystemPHDMath();
     T1MInject3DSystemScaleSpr();
     T1MInjectSpecificATI();
