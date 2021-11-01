@@ -441,12 +441,8 @@ void HWR_DrawSprite(
     if (HWR_TextureLoaded[sprite->tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(sprite->tpage);
+        HWR_RenderTriangleStrip(vertices, vertex_count);
     }
-
-    // NOTE: original .exe has some additional logic for the case when
-    // the requested texture page was not loaded.
-
-    HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
 void HWR_Draw2DLine(
@@ -1217,7 +1213,6 @@ void HWR_InitialiseHardware()
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PF, &tmp);
 
     LOG_INFO("    Detected %dk video memory", 4096);
-    // NOTE: skipped dead code related to caching textures
     LOG_INFO("    Complete, hardware ready");
 }
 
@@ -1508,9 +1503,8 @@ void HWR_DrawTexturedTriangle(
     if (HWR_TextureLoaded[tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
+        HWR_RenderTriangleStrip(vertices, vertex_count);
     }
-
-    HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
 void HWR_DrawTexturedQuad(
@@ -1585,9 +1579,6 @@ void HWR_DrawTexturedQuad(
     }
 
     ATI3DCIF_RenderPrimStrip(vertices, 4);
-
-    // NOTE: original .exe has some additional logic for the case when
-    // the requested texture page was not loaded.
 }
 
 int32_t HWR_ZedClipper(
@@ -1675,20 +1666,12 @@ int32_t HWR_ZedClipper(
 void HWR_InitPolyList()
 {
     HWR_RenderBegin();
-
-    // NOTE: original .exe has some additional logic for rendering
-    // polygons whose textures were not loaded at the draw time.
-
     HWR_LightningCount = 0;
 }
 
 void HWR_OutputPolyList()
 {
     int i;
-
-    // NOTE: original .exe has some additional logic for rendering
-    // polygons whose textures were not loaded at the draw time.
-
     for (i = 0; i < HWR_LightningCount; i++) {
         HWR_RenderLightningSegment(
             HWR_LightningTable[i].x1, HWR_LightningTable[i].y1,
