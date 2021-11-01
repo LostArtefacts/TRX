@@ -9,6 +9,8 @@ bool SetGameScreenSizeIdx(int32_t idx);
 bool SetPrevGameScreenSize();
 bool SetNextGameScreenSize();
 int32_t GetGameScreenSizeIdx();
+int32_t GetGameScreenWidth();
+int32_t GetGameScreenHeight();
 int32_t GetScreenSizeIdx();
 int32_t GetScreenWidth();
 int32_t GetScreenHeight();

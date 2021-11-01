@@ -51,6 +51,16 @@ int32_t GetGameScreenSizeIdx()
     return GameHiRes;
 }
 
+int32_t GetGameScreenWidth()
+{
+    return AvailableResolutions[GameHiRes].width;
+}
+
+int32_t GetGameScreenHeight()
+{
+    return AvailableResolutions[GameHiRes].height;
+}
+
 int32_t GetScreenSizeIdx()
 {
     return HiRes;

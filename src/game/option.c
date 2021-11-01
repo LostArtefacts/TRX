@@ -550,7 +550,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             max_row = DETAIL_HW_UI_BAR_SCALE;
         } else {
             static char tmp[10];
-            sprintf(tmp, "%dx%d", GetScreenWidth(), GetScreenHeight());
+            sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
             sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
             DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
             max_row = DETAIL_HW_RESOLUTION;
