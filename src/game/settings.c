@@ -42,10 +42,11 @@ static int32_t S_ReadUserSettingsATI()
         SetGameScreenSizeIdx(resolution_idx);
     }
 
-    {
-        float game_sizer;
-        FileRead(&game_sizer, sizeof(double), 1, fp);
-    }
+    // Skip GameSizer from TombATI, which is no longer used in T1M.
+    // In the original game, it's expected to be 1.0 everywhere and changing it
+    // to any other value results in uninteresting window clipping anomalies.
+    FileSeek(fp, sizeof(double), FILE_SEEK_CUR);
+
     FileRead(&IConfig, sizeof(int32_t), 1, fp);
 
     UITextScale = DEFAULT_UI_SCALE;
