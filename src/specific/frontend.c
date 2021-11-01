@@ -123,10 +123,6 @@ void S_FinishInventory()
         TempVideoRemove();
     }
     ModeLock = 0;
-    if (RenderSettings != OldRenderSettings) {
-        HWR_DownloadTextures(-1);
-        OldRenderSettings = RenderSettings;
-    }
 }
 
 void S_FadeToBlack()

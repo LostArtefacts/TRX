@@ -106,7 +106,6 @@ extern int32_t KeyChange;
 #define IsHardwareRenderer      VAR_U_(0x00463610, int32_t)
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
 #define RenderSettings          VAR_U_(0x0045A240, uint32_t)
-#define OldRenderSettings       VAR_U_(0x0045E960, uint32_t)
 #define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 #define OptionMusicVolume       VAR_I_(0x00456334, int32_t, 255)
 #define OptionSoundFXVolume     VAR_I_(0x00456330, int32_t, 165)

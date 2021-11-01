@@ -58,7 +58,6 @@ void GameMain()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    OldRenderSettings = RenderSettings;
     TempVideoAdjust(2);
     S_DisplayPicture("data\\eidospc");
     S_InitialisePolyList();
