@@ -32,7 +32,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_ESCAPE, // KEY_OPTION
         DIK_O, // KEY_FLY_CHEAT,
         DIK_I, // KEY_ITEM_CHEAT,
-        DIK_X, // KEY_LEVEL_SKIP_CHEAT,
+        DIK_L, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
         DIK_W, // KEY_CAMERA_UP
         DIK_S, // KEY_CAMERA_DOWN
@@ -58,7 +58,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
         DIK_DECIMAL, // KEY_OPTION
         DIK_O, // KEY_FLY_CHEAT,
         DIK_I, // KEY_ITEM_CHEAT,
-        DIK_X, // KEY_LEVEL_SKIP_CHEAT,
+        DIK_L, // KEY_LEVEL_SKIP_CHEAT,
         DIK_P, // KEY_PAUSE,
         DIK_W, // KEY_CAMERA_UP
         DIK_S, // KEY_CAMERA_DOWN
