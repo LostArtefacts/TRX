@@ -144,6 +144,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BOOL(fix_tihocan_secret_sound, true);
     READ_BOOL(fix_pyramid_secret_trigger, true);
     READ_BOOL(fix_secrets_killing_music, true);
+    READ_BOOL(fix_sidestep_glitch, false);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);

@@ -1342,6 +1342,10 @@ void LaraColStepRight(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOP;
     }
 
+    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+        return;
+    }
+
     if (TestLaraSlide(item, coll)) {
         return;
     }
@@ -1368,6 +1372,10 @@ void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP;
+    }
+
+    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+        return;
     }
 
     if (TestLaraSlide(item, coll)) {

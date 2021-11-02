@@ -60,6 +60,7 @@ typedef struct {
     bool fix_tihocan_secret_sound;
     bool fix_pyramid_secret_trigger;
     bool fix_secrets_killing_music;
+    bool fix_sidestep_glitch;
     int32_t fov_value;
     bool fov_vertical;
     bool disable_demo;
