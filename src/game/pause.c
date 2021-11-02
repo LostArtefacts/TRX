@@ -71,16 +71,16 @@ static int32_t DisplayPauseRequester(
         AddRequesterItem(&PauseRequester, option2, 0);
 
         is_pause_text_ready = 1;
-        InputDB.any = 0;
-        Input.any = 0;
+        InputDB = (INPUT_STATE) { 0 };
+        Input = (INPUT_STATE) { 0 };
     }
 
     int select = DisplayRequester(&PauseRequester);
     if (select > 0) {
         is_pause_text_ready = 0;
     } else {
-        InputDB.any = 0;
-        Input.any = 0;
+        InputDB = (INPUT_STATE) { 0 };
+        Input = (INPUT_STATE) { 0 };
     }
     return select;
 }

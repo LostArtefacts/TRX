@@ -255,8 +255,7 @@ int32_t Display_Inventory(int inv_mode)
         if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
              || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
-            InputDB.any = 0;
-            InputDB.select = 1;
+            InputDB = (INPUT_STATE) { 0, .select = 1 };
         }
 
         switch (imo.status) {
@@ -295,8 +294,8 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
                 Inv_RingMotionRotation(
                     &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
-                Input.any = 0;
-                InputDB.any = 0;
+                Input = (INPUT_STATE) { 0 };
+                InputDB = (INPUT_STATE) { 0 };
             }
 
             if (InputDB.select) {
@@ -329,8 +328,8 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionRotation(
                     &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
                 Inv_RingMotionItemSelect(&ring, inv_item);
-                Input.any = 0;
-                InputDB.any = 0;
+                Input = (INPUT_STATE) { 0 };
+                InputDB = (INPUT_STATE) { 0 };
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
@@ -372,8 +371,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    Input.any = 0;
-                    InputDB.any = 0;
+                    Input = (INPUT_STATE) { 0 };
+                    InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_OPTION) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
@@ -386,7 +385,7 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    InputDB.any = 0;
+                    InputDB = (INPUT_STATE) { 0 };
                 }
             } else if (
                 InputDB.back && InvMode != INV_TITLE_MODE
@@ -403,8 +402,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    Input.any = 0;
-                    InputDB.any = 0;
+                    Input = (INPUT_STATE) { 0 };
+                    InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_MAIN) {
                     if (InvOptionObjects) {
                         Inv_RingMotionSetup(
@@ -417,7 +416,7 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    InputDB.any = 0;
+                    InputDB = (INPUT_STATE) { 0 };
                 }
             }
             break;
@@ -521,15 +520,15 @@ int32_t Display_Inventory(int inv_mode)
                     inv_item->sprlist = NULL;
                     Inv_RingMotionSetup(
                         &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
-                    Input.any = 0;
-                    InputDB.any = 0;
+                    Input = (INPUT_STATE) { 0 };
+                    InputDB = (INPUT_STATE) { 0 };
 
                     if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
                         || InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
-                        Input.any = 0;
-                        InputDB.any = 0;
+                        Input = (INPUT_STATE) { 0 };
+                        InputDB = (INPUT_STATE) { 0 };
                     }
                 }
 
@@ -553,8 +552,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     }
-                    Input.any = 0;
-                    InputDB.any = 0;
+                    Input = (INPUT_STATE) { 0 };
+                    InputDB = (INPUT_STATE) { 0 };
                 }
             }
             break;
@@ -566,8 +565,8 @@ int32_t Display_Inventory(int inv_mode)
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
                 &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
-            Input.any = 0;
-            InputDB.any = 0;
+            Input = (INPUT_STATE) { 0 };
+            InputDB = (INPUT_STATE) { 0 };
             break;
 
         case RNG_CLOSING_ITEM: {
