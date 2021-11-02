@@ -127,6 +127,10 @@
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 
+    // Fixes sidestepping on breakable tiles causing Lara to immediately
+    // descend down to the tile underneath.
+    "fix_sidestep_glitch": false,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,
