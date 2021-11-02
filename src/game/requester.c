@@ -156,7 +156,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     if (InputDB.select) {
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
-            Input.any = 0;
+            Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
             RemoveRequester(req);

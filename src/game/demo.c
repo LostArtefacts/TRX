@@ -90,33 +90,34 @@ void LoadLaraDemoPos()
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 
-void GetDemoInput()
+bool ProcessDemoInput()
 {
-    // translate demo input that use TombATI key values to T1M inputs
     if (DemoCount >= DEMO_COUNT_MAX || DemoPtr[DemoCount] == -1) {
-        Input.any = -1;
-    } else {
-        Input.any = 0;
-        Input.forward = (bool)(DemoPtr[DemoCount] & (1 << 0));
-        Input.back = (bool)(DemoPtr[DemoCount] & (1 << 1));
-        Input.left = (bool)(DemoPtr[DemoCount] & (1 << 2));
-        Input.right = (bool)(DemoPtr[DemoCount] & (1 << 3));
-        Input.jump = (bool)(DemoPtr[DemoCount] & (1 << 4));
-        Input.draw = (bool)(DemoPtr[DemoCount] & (1 << 5));
-        Input.action = (bool)(DemoPtr[DemoCount] & (1 << 6));
-        Input.slow = (bool)(DemoPtr[DemoCount] & (1 << 7));
-        Input.option = (bool)(DemoPtr[DemoCount] & (1 << 8));
-        Input.look = (bool)(DemoPtr[DemoCount] & (1 << 9));
-        Input.step_left = (bool)(DemoPtr[DemoCount] & (1 << 10));
-        Input.step_right = (bool)(DemoPtr[DemoCount] & (1 << 11));
-        Input.roll = (bool)(DemoPtr[DemoCount] & (1 << 12));
-        Input.select = (bool)(DemoPtr[DemoCount] & (1 << 20));
-        Input.deselect = (bool)(DemoPtr[DemoCount] & (1 << 21));
-        Input.save = (bool)(DemoPtr[DemoCount] & (1 << 22));
-        Input.load = (bool)(DemoPtr[DemoCount] & (1 << 23));
+        return false;
     }
 
-    if (Input.any != -1) {
-        DemoCount++;
-    }
+    // Translate demo inputs (that use TombATI key values) to T1M inputs.
+    Input = (INPUT_STATE) {
+        0,
+        .forward = (bool)(DemoPtr[DemoCount] & (1 << 0)),
+        .back = (bool)(DemoPtr[DemoCount] & (1 << 1)),
+        .left = (bool)(DemoPtr[DemoCount] & (1 << 2)),
+        .right = (bool)(DemoPtr[DemoCount] & (1 << 3)),
+        .jump = (bool)(DemoPtr[DemoCount] & (1 << 4)),
+        .draw = (bool)(DemoPtr[DemoCount] & (1 << 5)),
+        .action = (bool)(DemoPtr[DemoCount] & (1 << 6)),
+        .slow = (bool)(DemoPtr[DemoCount] & (1 << 7)),
+        .option = (bool)(DemoPtr[DemoCount] & (1 << 8)),
+        .look = (bool)(DemoPtr[DemoCount] & (1 << 9)),
+        .step_left = (bool)(DemoPtr[DemoCount] & (1 << 10)),
+        .step_right = (bool)(DemoPtr[DemoCount] & (1 << 11)),
+        .roll = (bool)(DemoPtr[DemoCount] & (1 << 12)),
+        .select = (bool)(DemoPtr[DemoCount] & (1 << 20)),
+        .deselect = (bool)(DemoPtr[DemoCount] & (1 << 21)),
+        .save = (bool)(DemoPtr[DemoCount] & (1 << 22)),
+        .load = (bool)(DemoPtr[DemoCount] & (1 << 23)),
+    };
+
+    DemoCount++;
+    return true;
 }

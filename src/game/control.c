@@ -153,8 +153,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             if (Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
-            GetDemoInput();
-            if (Input.any == -1) {
+            if (!ProcessDemoInput()) {
                 return GF_EXIT_TO_TITLE;
             }
         }
