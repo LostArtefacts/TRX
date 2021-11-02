@@ -73,6 +73,7 @@ static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
+    // left column
     { KEY_UP, 0 },
     { KEY_DOWN, 0 },
     { KEY_LEFT, 0 },
@@ -84,20 +85,24 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { KEY_CAMERA_LEFT, 0 },
     { KEY_CAMERA_RIGHT, 0 },
     { KEY_CAMERA_RESET, 0 },
+    // right column
     { KEY_SLOW, 1 },
     { KEY_JUMP, 1 },
     { KEY_ACTION, 1 },
     { KEY_DRAW, 1 },
     { KEY_LOOK, 1 },
     { KEY_ROLL, 1 },
+    { -1, 1 },
     { KEY_OPTION, 1 },
     { KEY_PAUSE, 1 },
-    { KEY_FLY_CHEAT, 1 },
-    { KEY_ITEM_CHEAT, 1 },
-    { KEY_LEVEL_SKIP_CHEAT, 1 },
+    { -1, 1 },
+    { -1, 1 },
+    // end
     { -1, -1 },
 };
+
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
+    // left column
     { KEY_UP, 0 },
     { KEY_DOWN, 0 },
     { KEY_LEFT, 0 },
@@ -109,6 +114,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { KEY_CAMERA_LEFT, 0 },
     { KEY_CAMERA_RIGHT, 0 },
     { KEY_CAMERA_RESET, 0 },
+    // right column
     { KEY_SLOW, 1 },
     { KEY_JUMP, 1 },
     { KEY_ACTION, 1 },
@@ -120,6 +126,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { KEY_FLY_CHEAT, 1 },
     { KEY_ITEM_CHEAT, 1 },
     { KEY_LEVEL_SKIP_CHEAT, 1 },
+    // end
     { -1, -1 },
 };
 
