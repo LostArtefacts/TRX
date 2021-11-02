@@ -134,6 +134,10 @@
     // Fixes Lara jumping through objects and Lara moving up certain slopes.
     "fix_wall_jump_glitch": false,
 
+    // Fixes Lara jumping on small steps sometimes resulting in a weird running
+    // animation, known as a QWOP state.
+    "fix_qwop_glitch": false,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,
