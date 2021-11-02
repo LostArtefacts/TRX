@@ -893,13 +893,30 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
 
 void FlashConflicts()
 {
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
-        int16_t key = Layout[IConfig][i];
-        T_FlashText(CtrlTextB[i], 0, 0);
-        for (int j = 0; j < KEY_NUMBER_OF; j++) {
-            if (i != j && key == Layout[IConfig][j]) {
-                T_FlashText(CtrlTextB[i], 1, 20);
-                break;
+    const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
+        ? CtrlTextPlacementCheats
+        : CtrlTextPlacementNormal;
+
+    for (const TEXT_COLUMN_PLACEMENT *item = cols; item->col_num != -1;
+         item++) {
+        T_FlashText(CtrlTextB[item->option], 0, 0);
+    }
+
+    for (const TEXT_COLUMN_PLACEMENT *item1 = cols; item1->col_num != -1;
+         item1++) {
+        if (item1->option == -1) {
+            continue;
+        }
+        int16_t key1 = Layout[IConfig][item1->option];
+        for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
+             item2->col_num != -1; item2++) {
+            if (item2->option == -1) {
+                continue;
+            }
+            int16_t key2 = Layout[IConfig][item2->option];
+            if (item1 != item2 && key1 == key2) {
+                T_FlashText(CtrlTextB[item1->option], 1, 20);
+                T_FlashText(CtrlTextB[item2->option], 1, 20);
             }
         }
     }
