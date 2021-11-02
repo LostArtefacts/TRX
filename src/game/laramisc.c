@@ -15,6 +15,7 @@
 #include "global/vars.h"
 #include "log.h"
 #include "specific/sndpc.h"
+#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -26,6 +27,16 @@ void LaraControl(int16_t item_num)
     ITEM_INFO *item = LaraItem;
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
+
+    if (Input & IN_LEVEL_SKIP_CHEAT) {
+        LevelComplete = 1;
+    }
+
+    if (Input & IN_HEALTH_CHEAT) {
+        item->hit_points +=
+            (Input & IN_SLOW ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
+        CLAMP(item->hit_points, 0, LARA_HITPOINTS);
+    }
 
     if (Input & IN_ITEM_CHEAT) {
         LaraCheatGetStuff();
@@ -606,7 +617,7 @@ void LaraCheatGetStuff()
         return;
     }
 
-    // play istols drawing sound
+    // play pistols drawing sound
     SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
 
     if (Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {

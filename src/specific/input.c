@@ -476,16 +476,10 @@ void S_UpdateInput()
             linput |= IN_FLY_CHEAT;
         }
         if (Key_(KEY_LEVEL_SKIP_CHEAT)) {
-            LevelComplete = 1;
+            linput |= IN_LEVEL_SKIP_CHEAT;
         }
         if (KEY_DOWN(DIK_F11) && LaraItem) {
-            LaraItem->hit_points += linput & IN_SLOW ? -20 : 20;
-            if (LaraItem->hit_points < 0) {
-                LaraItem->hit_points = 0;
-            }
-            if (LaraItem->hit_points > LARA_HITPOINTS) {
-                LaraItem->hit_points = LARA_HITPOINTS;
-            }
+            linput |= IN_HEALTH_CHEAT;
         }
     }
 

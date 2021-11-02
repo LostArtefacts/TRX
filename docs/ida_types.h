@@ -1213,8 +1213,6 @@ enum INPUT_STATE {
     IN_DESELECT = 1 << 21,
     IN_SAVE = 1 << 22,
     IN_LOAD = 1 << 23,
-    IN_FLY_CHEAT = 1 << 24,
-    IN_ITEM_CHEAT = 1 << 25,
 };
 
 enum TEXTSTRING_FLAG {
