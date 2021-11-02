@@ -131,6 +131,9 @@
     // descend down to the tile underneath.
     "fix_sidestep_glitch": false,
 
+    // Fixes Lara jumping through objects and Lara moving up certain slopes.
+    "fix_wall_jump_glitch": false,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,

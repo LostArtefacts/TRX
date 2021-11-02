@@ -1076,7 +1076,10 @@ void LaraColForwardJump(ITEM_INFO *item, COLL_INFO *coll)
         item->gravity_status = 0;
         item->fall_speed = 0;
         item->speed = 0;
-        AnimateLara(item);
+
+        if (!T1MConfig.fix_wall_jump_glitch) {
+            AnimateLara(item);
+        }
     }
 }
 
