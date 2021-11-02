@@ -28,21 +28,21 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-    if (Input & IN_LEVEL_SKIP_CHEAT) {
+    if (Input.level_skip_cheat) {
         LevelComplete = 1;
     }
 
-    if (Input & IN_HEALTH_CHEAT) {
+    if (Input.health_cheat) {
         item->hit_points +=
-            (Input & IN_SLOW ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
+            (Input.slow ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
         CLAMP(item->hit_points, 0, LARA_HITPOINTS);
     }
 
-    if (Input & IN_ITEM_CHEAT) {
+    if (Input.item_cheat) {
         LaraCheatGetStuff();
     }
 
-    if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
+    if (Lara.water_status != LWS_CHEAT && Input.fly_cheat) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
@@ -166,17 +166,17 @@ void LaraControl(int16_t item_num)
 
     int16_t camera_move_delta = PHD_45 / 30;
 
-    if (Input & IN_CAMERA_LEFT) {
+    if (Input.camera_left) {
         CameraOffsetAdditionalAngle(camera_move_delta);
-    } else if (Input & IN_CAMERA_RIGHT) {
+    } else if (Input.camera_right) {
         CameraOffsetAdditionalAngle(-camera_move_delta);
     }
-    if (Input & IN_CAMERA_UP) {
+    if (Input.camera_up) {
         CameraOffsetAdditionalElevation(-camera_move_delta);
-    } else if (Input & IN_CAMERA_DOWN) {
+    } else if (Input.camera_down) {
         CameraOffsetAdditionalElevation(camera_move_delta);
     }
-    if (Input & IN_CAMERA_RESET) {
+    if (Input.camera_reset) {
         CameraOffsetReset();
     }
 
@@ -211,8 +211,7 @@ void LaraControl(int16_t item_num)
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
-        if (CHK_ANY(Input, IN_SLOW)
-            && !CHK_ANY(Input, IN_LOOK | IN_FLY_CHEAT)) {
+        if (Input.slow && !Input.look && !Input.fly_cheat) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {

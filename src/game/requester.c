@@ -129,7 +129,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_BACK)) {
+    if (InputDB.back) {
         if (req->requested < req->items - 1) {
             req->requested++;
         }
@@ -141,7 +141,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (CHK_ANY(InputDB, IN_FORWARD)) {
+    if (InputDB.forward) {
         if (req->requested) {
             req->requested--;
         }
@@ -153,16 +153,16 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (CHK_ANY(InputDB, IN_SELECT)) {
+    if (InputDB.select) {
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
-            Input = 0;
+            Input.any = 0;
             return 0;
         } else {
             RemoveRequester(req);
             return req->requested + 1;
         }
-    } else if (InputDB & IN_DESELECT) {
+    } else if (InputDB.deselect) {
         RemoveRequester(req);
         return -1;
     }

@@ -71,16 +71,16 @@ static int32_t DisplayPauseRequester(
         AddRequesterItem(&PauseRequester, option2, 0);
 
         is_pause_text_ready = 1;
-        InputDB = 0;
-        Input = 0;
+        InputDB.any = 0;
+        Input.any = 0;
     }
 
     int select = DisplayRequester(&PauseRequester);
     if (select > 0) {
         is_pause_text_ready = 0;
     } else {
-        InputDB = 0;
-        Input = 0;
+        InputDB.any = 0;
+        Input.any = 0;
     }
     return select;
 }
@@ -102,10 +102,10 @@ static int32_t PauseLoop()
 
         switch (state) {
         case 0:
-            if (CHK_ANY(InputDB, IN_PAUSE)) {
+            if (InputDB.pause) {
                 return 1;
             }
-            if (CHK_ANY(InputDB, IN_OPTION)) {
+            if (InputDB.option) {
                 state = 1;
             }
             break;

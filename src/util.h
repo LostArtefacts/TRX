@@ -7,8 +7,6 @@
     #define MIN(x, y) ((x) <= (y) ? (x) : (y))
     #define MAX(x, y) ((x) >= (y) ? (x) : (y))
 #endif
-#define CHK_ALL(a, b) (((a) & (b)) == (b))
-#define CHK_ANY(a, b) (((a) & (b)) != 0)
 
 #define CLAMPL(a, b)                                                           \
     do {                                                                       \

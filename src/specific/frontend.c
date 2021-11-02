@@ -136,12 +136,12 @@ void S_Wait(int32_t nticks)
 {
     for (int i = 0; i < nticks; i++) {
         S_UpdateInput();
-        if (Input) {
+        if (Input.any) {
             break;
         }
         ClockSyncTicks(1);
     }
-    while (Input) {
+    while (Input.any) {
         S_UpdateInput();
     }
 }
@@ -229,9 +229,9 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         WinSpinMessageLoop();
         ClockSync();
 
-        if (Input & IN_DESELECT) {
+        if (Input.deselect) {
             keypress = 1;
-        } else if (keypress && !(Input & IN_DESELECT)) {
+        } else if (keypress && !Input.deselect) {
             break;
         }
     }

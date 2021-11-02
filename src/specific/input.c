@@ -8,11 +8,12 @@
 #include "log.h"
 #include "specific/smain.h"
 
+#include <stdbool.h>
 #include <dinput.h>
 
 #define KEY_DOWN(a) ((DIKeys[(a)] & 0x80) != 0)
 
-int32_t OldInputDB = 0;
+INPUT_STATE OldInputDB = { 0 };
 
 int16_t Layout[2][KEY_NUMBER_OF] = {
     // built-in controls
@@ -83,7 +84,8 @@ static void DInputShutdown();
 static void DInputKeyboardCreate();
 static void DInputKeyboardRelease();
 static void DInputKeyboardRead();
-static int8_t Key_(KEY_NUMBER number);
+static bool KbdKey(KEY_NUMBER number, bool user);
+static bool Key_(KEY_NUMBER number);
 
 static HRESULT DInputJoystickCreate();
 static void DInputJoystickRelease();
@@ -185,12 +187,12 @@ static void DInputKeyboardRead()
     }
 }
 
-static int8_t KbdKey(KEY_NUMBER number, int8_t user)
+static bool KbdKey(KEY_NUMBER number, bool user)
 {
     uint16_t key =
         Layout[user ? INPUT_LAYOUT_USER : INPUT_LAYOUT_DEFAULT][number];
-    if KEY_DOWN (key) {
-        return TRUE;
+    if (KEY_DOWN(key)) {
+        return true;
     }
     if (key == DIK_LCONTROL) {
         return KEY_DOWN(DIK_RCONTROL);
@@ -210,12 +212,13 @@ static int8_t KbdKey(KEY_NUMBER number, int8_t user)
     if (key == DIK_RMENU) {
         return KEY_DOWN(DIK_LMENU);
     }
-    return 0;
+    return false;
 }
 
-static int8_t Key_(KEY_NUMBER number)
+static bool Key_(KEY_NUMBER number)
 {
-    return KbdKey(number, 1) || (!ConflictLayout[number] && KbdKey(number, 0));
+    return KbdKey(number, true)
+        || (!ConflictLayout[number] && KbdKey(number, false));
 }
 
 int16_t KeyGet()
@@ -394,93 +397,45 @@ static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
 
 void S_UpdateInput()
 {
-    int32_t linput = 0;
-
     DInputKeyboardRead();
     WinSpinMessageLoop();
 
-    if (Key_(KEY_UP)) {
-        linput |= IN_FORWARD;
-    }
-    if (Key_(KEY_DOWN)) {
-        linput |= IN_BACK;
-    }
-    if (Key_(KEY_LEFT)) {
-        linput |= IN_LEFT;
-    }
-    if (Key_(KEY_RIGHT)) {
-        linput |= IN_RIGHT;
-    }
-    if (Key_(KEY_STEP_L)) {
-        linput |= IN_STEPL;
-    }
-    if (Key_(KEY_STEP_R)) {
-        linput |= IN_STEPR;
-    }
-    if (Key_(KEY_SLOW)) {
-        linput |= IN_SLOW;
-    }
-    if (Key_(KEY_JUMP)) {
-        linput |= IN_JUMP;
-    }
-    if (Key_(KEY_ACTION)) {
-        linput |= IN_ACTION;
-    }
-    if (Key_(KEY_DRAW)) {
-        linput |= IN_DRAW;
-    }
-    if (Key_(KEY_LOOK)) {
-        linput |= IN_LOOK;
-    }
-    if (Key_(KEY_ROLL)) {
-        linput |= IN_ROLL;
-    }
-    if (Key_(KEY_OPTION) && Camera.type != CAM_CINEMATIC) {
-        linput |= IN_OPTION;
-    }
-    if (Key_(KEY_PAUSE)) {
-        linput |= IN_PAUSE;
-    }
-    if ((linput & IN_FORWARD) && (linput & IN_BACK)) {
-        linput |= IN_ROLL;
-    }
+    INPUT_STATE linput = { 0 };
 
-    if (Key_(KEY_CAMERA_UP)) {
-        linput |= IN_CAMERA_UP;
-    }
-    if (Key_(KEY_CAMERA_DOWN)) {
-        linput |= IN_CAMERA_DOWN;
-    }
-    if (Key_(KEY_CAMERA_LEFT)) {
-        linput |= IN_CAMERA_LEFT;
-    }
-    if (Key_(KEY_CAMERA_RIGHT)) {
-        linput |= IN_CAMERA_RIGHT;
-    }
-    if (Key_(KEY_CAMERA_RESET)) {
-        linput |= IN_CAMERA_RESET;
-    }
+    linput.forward = Key_(KEY_UP);
+    linput.back = Key_(KEY_DOWN);
+    linput.left = Key_(KEY_LEFT);
+    linput.right = Key_(KEY_RIGHT);
+    linput.step_left = Key_(KEY_STEP_L);
+    linput.step_right = Key_(KEY_STEP_R);
+    linput.slow = Key_(KEY_SLOW);
+    linput.jump = Key_(KEY_JUMP);
+    linput.action = Key_(KEY_ACTION);
+    linput.draw = Key_(KEY_DRAW);
+    linput.look = Key_(KEY_LOOK);
+    linput.roll = Key_(KEY_ROLL) || (linput.forward && linput.back);
+    linput.option = Key_(KEY_OPTION) && Camera.type != CAM_CINEMATIC;
+    linput.pause = Key_(KEY_PAUSE);
+    linput.camera_up = Key_(KEY_CAMERA_UP);
+    linput.camera_down = Key_(KEY_CAMERA_DOWN);
+    linput.camera_left = Key_(KEY_CAMERA_LEFT);
+    linput.camera_right = Key_(KEY_CAMERA_RIGHT);
+    linput.camera_reset = Key_(KEY_CAMERA_RESET);
 
     if (T1MConfig.enable_cheats) {
-        static int8_t is_stuff_cheat_key_pressed = 0;
+        static bool is_stuff_cheat_key_pressed = false;
         if (Key_(KEY_ITEM_CHEAT)) {
             if (!is_stuff_cheat_key_pressed) {
-                is_stuff_cheat_key_pressed = 1;
-                linput |= IN_ITEM_CHEAT;
+                is_stuff_cheat_key_pressed = true;
+                linput.item_cheat = 1;
             }
         } else {
             is_stuff_cheat_key_pressed = 0;
         }
 
-        if (Key_(KEY_FLY_CHEAT)) {
-            linput |= IN_FLY_CHEAT;
-        }
-        if (Key_(KEY_LEVEL_SKIP_CHEAT)) {
-            linput |= IN_LEVEL_SKIP_CHEAT;
-        }
-        if (KEY_DOWN(DIK_F11) && LaraItem) {
-            linput |= IN_HEALTH_CHEAT;
-        }
+        linput.fly_cheat = Key_(KEY_FLY_CHEAT);
+        linput.level_skip_cheat = Key_(KEY_LEVEL_SKIP_CHEAT);
+        linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 
     if (T1MConfig.enable_numeric_keys) {
@@ -507,23 +462,17 @@ void S_UpdateInput()
         }
     }
 
-    if (KEY_DOWN(DIK_RETURN) || (linput & IN_ACTION)) {
-        linput |= IN_SELECT;
-    }
-    if (KEY_DOWN(DIK_ESCAPE)) {
-        linput |= IN_DESELECT;
-    }
+    linput.select = KEY_DOWN(DIK_RETURN) || linput.action;
+    linput.deselect = KEY_DOWN(DIK_ESCAPE);
 
-    if ((linput & (IN_RIGHT | IN_LEFT)) == (IN_RIGHT | IN_LEFT)) {
-        linput &= ~(IN_RIGHT | IN_LEFT);
+    if (linput.left && linput.right) {
+        linput.left = 0;
+        linput.right = 0;
     }
 
     if (!ModeLock && Camera.type != CAM_CINEMATIC) {
-        if (KEY_DOWN(DIK_F5)) {
-            linput |= IN_SAVE;
-        } else if (KEY_DOWN(DIK_F6)) {
-            linput |= IN_LOAD;
-        }
+        linput.save = KEY_DOWN(DIK_F5);
+        linput.load = KEY_DOWN(DIK_F6);
     }
 
     if (KEY_DOWN(DIK_F3)) {
@@ -550,69 +499,74 @@ void S_UpdateInput()
     if (IDID_Joystick) {
         DIJOYSTATE2 state;
         DInputJoystickPoll(&state);
+
         // check Y
         if (state.lY > 512) {
-            linput |= IN_BACK;
+            linput.back = 1;
         } else if (state.lY < -512) {
-            linput |= IN_FORWARD;
+            linput.forward = 1;
         }
         // check X
         if (state.lX > 512) {
-            linput |= IN_RIGHT;
+            linput.right = 1;
         } else if (state.lX < -512) {
-            linput |= IN_LEFT;
+            linput.left = 1;
         }
         // check Z
         if (state.lZ > 512) {
-            linput |= IN_STEPL;
+            linput.step_left = 0;
         } else if (state.lZ < -512) {
-            linput |= IN_STEPR;
+            linput.step_right = 1;
         }
 
         // check 2nd stick X
         if (state.lRx > 512) {
-            linput |= IN_CAMERA_RIGHT;
+            linput.camera_right = 1;
         } else if (state.lRx < -512) {
-            linput |= IN_CAMERA_LEFT;
+            linput.camera_left = 1;
         }
         // check 2nd stick Y
         if (state.lRy > 512) {
-            linput |= IN_CAMERA_DOWN;
+            linput.camera_down = 1;
         } else if (state.lRy < -512) {
-            linput |= IN_CAMERA_UP;
+            linput.camera_up = 1;
         }
 
         // check buttons
         if (state.rgbButtons[0]) { // A
-            linput |= IN_JUMP | IN_SELECT;
+            linput.jump = 1;
+            linput.select = 1;
         }
         if (state.rgbButtons[1]) { // B
-            linput |= IN_ROLL | IN_DESELECT;
+            linput.roll = 1;
+            linput.deselect = 1;
         }
         if (state.rgbButtons[2]) { // X
-            linput |= IN_ACTION | IN_SELECT;
+            linput.action = 1;
+            linput.select = 1;
         }
         if (state.rgbButtons[3]) { // Y
-            linput |= IN_LOOK | IN_DESELECT;
+            linput.look = 1;
+            linput.deselect = 1;
         }
         if (state.rgbButtons[4]) { // LB
-            linput |= IN_SLOW;
+            linput.slow = 1;
         }
         if (state.rgbButtons[5]) { // RB
-            linput |= IN_DRAW;
+            linput.draw = 1;
         }
         if (state.rgbButtons[6]) { // back
-            linput |= IN_OPTION;
+            linput.option = 1;
         }
         if (state.rgbButtons[7]) { // start
-            linput |= IN_PAUSE;
+            linput.pause = 1;
         }
         if (state.rgbButtons[9]) { // 2nd axis click
-            linput |= IN_CAMERA_RESET;
+            linput.camera_reset = 1;
         }
         // check dpad
         if (state.rgdwPOV[0] == 0) { // up
-            linput |= IN_DRAW;
+            linput.draw = 1;
         }
     }
 
@@ -621,9 +575,10 @@ void S_UpdateInput()
     return;
 }
 
-int32_t GetDebouncedInput(int32_t input)
+INPUT_STATE GetDebouncedInput(INPUT_STATE input)
 {
-    int32_t result = input & ~OldInputDB;
+    INPUT_STATE result;
+    result.any = input.any & ~OldInputDB.any;
     OldInputDB = input;
     return result;
 }

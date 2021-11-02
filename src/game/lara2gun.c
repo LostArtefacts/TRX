@@ -154,7 +154,7 @@ void PistolHandler(int32_t weapon_type)
 {
     WEAPON_INFO *winfo = &Weapons[weapon_type];
 
-    if (Input & IN_ACTION) {
+    if (Input.action) {
         LaraTargetInfo(winfo);
     } else {
         Lara.target = NULL;
@@ -192,10 +192,10 @@ void AnimatePistols(int32_t weapon_type)
     WEAPON_INFO *winfo = &Weapons[weapon_type];
 
     int16_t anir = Lara.right_arm.frame_number;
-    if (Lara.right_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
+    if (Lara.right_arm.lock || (Input.action && !Lara.target)) {
         if (anir >= AF_G_AIM && anir < AF_G_AIM_L) {
             anir++;
-        } else if (anir == AF_G_AIM_L && (Input & IN_ACTION)) {
+        } else if (anir == AF_G_AIM_L && Input.action) {
             angles[0] = Lara.right_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.right_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {
@@ -217,10 +217,10 @@ void AnimatePistols(int32_t weapon_type)
     Lara.right_arm.frame_number = anir;
 
     int16_t anil = Lara.left_arm.frame_number;
-    if (Lara.left_arm.lock || ((Input & IN_ACTION) && !Lara.target)) {
+    if (Lara.left_arm.lock || (Input.action && !Lara.target)) {
         if (anil >= AF_G_AIM && anil < AF_G_AIM_L) {
             anil++;
-        } else if (anil == AF_G_AIM_L && (Input & IN_ACTION)) {
+        } else if (anil == AF_G_AIM_L && Input.action) {
             angles[0] = Lara.left_arm.y_rot + LaraItem->pos.y_rot;
             angles[1] = Lara.left_arm.x_rot;
             if (FireWeapon(weapon_type, Lara.target, LaraItem, angles)) {

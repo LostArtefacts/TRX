@@ -115,7 +115,7 @@ void RifleHandler(int32_t weapon_type)
 {
     WEAPON_INFO *winfo = &Weapons[LGT_SHOTGUN];
 
-    if (Input & IN_ACTION) {
+    if (Input.action) {
         LaraTargetInfo(winfo);
     } else {
         Lara.target = NULL;
@@ -146,7 +146,7 @@ void AnimateShotgun()
                 ani = AF_SG_RECOIL;
             }
         } else if (ani == AF_SG_RECOIL) {
-            if (Input & IN_ACTION) {
+            if (Input.action) {
                 FireShotgun();
                 ani++;
             }
@@ -164,20 +164,16 @@ void AnimateShotgun()
             }
         }
     } else {
-        if (ani == AF_SG_AIM && (Input & IN_ACTION)) {
+        if (ani == AF_SG_AIM && Input.action) {
             ani++;
         } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
             ani++;
             if (ani == AF_SG_DRAW) {
-                if (Input & IN_ACTION) {
-                    ani = AF_SG_RECOIL;
-                } else {
-                    ani = AF_SG_UNAIM;
-                }
+                ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
             }
         } else {
             if (ani == AF_SG_RECOIL) {
-                if (Input & IN_ACTION) {
+                if (Input.action) {
                     FireShotgun();
                     ani++;
                 } else {

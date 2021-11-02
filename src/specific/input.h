@@ -13,11 +13,11 @@ typedef enum INPUT_LAYOUT {
 
 extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][KEY_NUMBER_OF];
 extern int32_t ConflictLayout[KEY_NUMBER_OF];
-extern int32_t OldInputDB;
+extern INPUT_STATE OldInputDB;
 
 void InputInit();
 int16_t KeyGet();
 void S_UpdateInput();
-int32_t GetDebouncedInput(int32_t input);
+INPUT_STATE GetDebouncedInput(INPUT_STATE input);
 
 #endif

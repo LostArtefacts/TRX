@@ -73,8 +73,8 @@
 extern int32_t NoInputCount;
 extern int32_t IDelay;
 extern int32_t IDCount;
-extern int32_t Input;
-extern int32_t InputDB;
+extern INPUT_STATE Input;
+extern INPUT_STATE InputDB;
 extern int32_t KeyChange;
 
 #define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)

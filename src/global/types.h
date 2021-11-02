@@ -760,36 +760,6 @@ typedef enum KEY_NUMBER {
     KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
-typedef enum INPUT_STATE {
-    IN_FORWARD = 1 << 0,
-    IN_BACK = 1 << 1,
-    IN_LEFT = 1 << 2,
-    IN_RIGHT = 1 << 3,
-    IN_JUMP = 1 << 4,
-    IN_DRAW = 1 << 5,
-    IN_ACTION = 1 << 6,
-    IN_SLOW = 1 << 7,
-    IN_OPTION = 1 << 8,
-    IN_LOOK = 1 << 9,
-    IN_STEPL = 1 << 10,
-    IN_STEPR = 1 << 11,
-    IN_ROLL = 1 << 12,
-    IN_PAUSE = 1 << 13,
-    IN_SELECT = 1 << 14,
-    IN_DESELECT = 1 << 15,
-    IN_SAVE = 1 << 16,
-    IN_LOAD = 1 << 17,
-    IN_FLY_CHEAT = 1 << 18,
-    IN_ITEM_CHEAT = 1 << 19,
-    IN_LEVEL_SKIP_CHEAT = 1 << 20,
-    IN_HEALTH_CHEAT = 1 << 21,
-    IN_CAMERA_UP = 1 << 22,
-    IN_CAMERA_DOWN = 1 << 23,
-    IN_CAMERA_LEFT = 1 << 24,
-    IN_CAMERA_RIGHT = 1 << 25,
-    IN_CAMERA_RESET = 1 << 26,
-} INPUT_STATE;
-
 typedef enum TEXTSTRING_FLAG {
     TF_ACTIVE = 1 << 0,
     TF_FLASH = 1 << 1,
@@ -2052,6 +2022,39 @@ typedef struct PICTURE {
     int32_t height;
     RGB888 *data;
 } PICTURE;
+
+typedef union INPUT_STATE {
+    int32_t any;
+    struct {
+        int32_t forward : 1;
+        int32_t back : 1;
+        int32_t left : 1;
+        int32_t right : 1;
+        int32_t jump : 1;
+        int32_t draw : 1;
+        int32_t action : 1;
+        int32_t slow : 1;
+        int32_t option : 1;
+        int32_t look : 1;
+        int32_t step_left : 1;
+        int32_t step_right : 1;
+        int32_t roll : 1;
+        int32_t pause : 1;
+        int32_t select : 1;
+        int32_t deselect : 1;
+        int32_t save : 1;
+        int32_t load : 1;
+        int32_t fly_cheat : 1;
+        int32_t item_cheat : 1;
+        int32_t level_skip_cheat : 1;
+        int32_t health_cheat : 1;
+        int32_t camera_up : 1;
+        int32_t camera_down : 1;
+        int32_t camera_left : 1;
+        int32_t camera_right : 1;
+        int32_t camera_reset : 1;
+    };
+} INPUT_STATE;
 
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
