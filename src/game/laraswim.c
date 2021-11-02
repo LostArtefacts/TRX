@@ -203,7 +203,7 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (Input & AS_RUN) {
+    if (Input & IN_FORWARD) {
         item->pos.x_rot -= PHD_DEGREE;
     }
 }
