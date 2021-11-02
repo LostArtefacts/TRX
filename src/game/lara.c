@@ -1731,22 +1731,23 @@ void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)
     }
 }
 
-int32_t LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_CLAMP) {
-        item->pos.x = coll->old.x;
-        item->pos.y = coll->old.y;
-        item->pos.z = coll->old.z;
-        item->goal_anim_state = AS_STOP;
-        item->current_anim_state = AS_STOP;
-        item->anim_number = AA_STOP;
-        item->frame_number = AF_STOP;
-        item->gravity_status = 0;
-        item->fall_speed = 0;
-        item->speed = 0;
-        return 1;
+    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
+        return false;
     }
-    return 0;
+
+    item->pos.x = coll->old.x;
+    item->pos.y = coll->old.y;
+    item->pos.z = coll->old.z;
+    item->goal_anim_state = AS_STOP;
+    item->current_anim_state = AS_STOP;
+    item->anim_number = AA_STOP;
+    item->frame_number = AF_STOP;
+    item->gravity_status = 0;
+    item->fall_speed = 0;
+    item->speed = 0;
+    return true;
 }
 
 void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
@@ -1840,7 +1841,7 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     }
 }
 
-int32_t LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOPFRONT) {
         ShiftItem(item, coll);
@@ -1848,7 +1849,7 @@ int32_t LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = AS_STOP;
         item->gravity_status = 0;
         item->speed = 0;
-        return 1;
+        return true;
     }
 
     if (coll->coll_type == COLL_LEFT) {
@@ -1858,7 +1859,7 @@ int32_t LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
         ShiftItem(item, coll);
         item->pos.y_rot -= LARA_DEF_ADD_EDGE;
     }
-    return 0;
+    return false;
 }
 
 void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
@@ -1935,12 +1936,12 @@ void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
     }
 }
 
-int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
+bool TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !Input.action
         || Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
-        return 0;
+        return false;
     }
 
     PHD_ANGLE angle = item->pos.y_rot;
@@ -1958,7 +1959,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (angle & (PHD_90 - 1)) {
-        return 0;
+        return false;
     }
 
     int32_t hdif = coll->front_floor;
@@ -1966,7 +1967,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         if (hdif - coll->front_ceiling < 0
             || coll->left_floor - coll->left_ceiling < 0
             || coll->right_floor - coll->right_ceiling < 0) {
-            return 0;
+            return false;
         }
         item->current_anim_state = AS_NULL;
         item->goal_anim_state = AS_STOP;
@@ -1976,13 +1977,13 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         Lara.gun_status = LGS_HANDSBUSY;
         item->pos.y_rot = angle;
         ShiftItem(item, coll);
-        return 1;
+        return true;
     } else if (
         hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 + STEP_L / 2) {
         if (hdif - coll->front_ceiling < 0
             || coll->left_floor - coll->left_ceiling < 0
             || coll->right_floor - coll->right_ceiling < 0) {
-            return 0;
+            return false;
         }
         item->current_anim_state = AS_NULL;
         item->goal_anim_state = AS_STOP;
@@ -1992,7 +1993,7 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         Lara.gun_status = LGS_HANDSBUSY;
         item->pos.y_rot = angle;
         ShiftItem(item, coll);
-        return 1;
+        return true;
     } else if (
         hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
         item->goal_anim_state = AS_UPJUMP;
@@ -2004,13 +2005,13 @@ int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll)
         AnimateLara(item);
         item->pos.y_rot = angle;
         ShiftItem(item, coll);
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     int hdif;
     int16_t *bounds;
@@ -2018,21 +2019,21 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->coll_type != COLL_FRONT || !Input.action
         || Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
-        return 0;
+        return false;
     }
 
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -384
         || coll->mid_floor < 200) {
-        return 0;
+        return false;
     }
 
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
-        return 0;
+        return false;
     }
     if (hdif > 0 && hdif + item->fall_speed > 0) {
-        return 0;
+        return false;
     }
 
     PHD_ANGLE angle = item->pos.y_rot;
@@ -2049,7 +2050,7 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (angle & (PHD_90 - 1)) {
-        return 0;
+        return false;
     }
 
     if (TestHangSwingIn(item, angle)) {
@@ -2071,10 +2072,10 @@ int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     item->fall_speed = 0;
     item->speed = 0;
     Lara.gun_status = LGS_HANDSBUSY;
-    return 1;
+    return true;
 }
 
-int32_t TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
+bool TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
 {
     int x = item->pos.x;
     int y = item->pos.y;
@@ -2101,13 +2102,13 @@ int32_t TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
 
     if (h != NO_HEIGHT) {
         if ((h - y) > 0 && (c - y) < -400) {
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
 }
 
-int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
 {
     int hdif;
     int16_t *bounds;
@@ -2115,20 +2116,20 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->coll_type != COLL_FRONT || !Input.action
         || Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
-        return 0;
+        return false;
     }
 
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -384) {
-        return 0;
+        return false;
     }
 
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
-        return 0;
+        return false;
     }
     if (hdif > 0 && hdif + item->fall_speed > 0) {
-        return 0;
+        return false;
     }
 
     int angle = item->pos.y_rot;
@@ -2145,7 +2146,7 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (angle & (PHD_90 - 1)) {
-        return 0;
+        return false;
     }
 
     item->goal_anim_state = AS_HANG;
@@ -2161,15 +2162,15 @@ int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->fall_speed = 0;
     item->speed = 0;
     Lara.gun_status = LGS_HANDSBUSY;
-    return 1;
+    return true;
 }
 
-int32_t TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll)
+bool TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll)
 {
     static PHD_ANGLE old_angle = 1;
 
     if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
-        return 0;
+        return false;
     }
 
     PHD_ANGLE ang = 0;
@@ -2207,7 +2208,7 @@ int32_t TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll)
             old_angle = ang;
         }
     }
-    return 1;
+    return true;
 }
 
 int16_t LaraFloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
@@ -2223,7 +2224,7 @@ int16_t LaraFloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
     return height;
 }
 
-int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
 {
     int16_t room_num = item->room_number;
 
@@ -2241,7 +2242,7 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     int landspeed = item->fall_speed - DAMAGE_START;
     if (landspeed <= 0) {
-        return 0;
+        return false;
     } else if (landspeed > DAMAGE_LENGTH) {
         item->hit_points = -1;
     } else {
@@ -2250,7 +2251,7 @@ int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (item->hit_points < 0) {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }

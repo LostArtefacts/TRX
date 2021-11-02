@@ -339,24 +339,24 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
     LaraTestWaterClimbOut(item, coll);
 }
 
-int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
+bool LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (item->pos.y_rot != Lara.move_angle) {
-        return 0;
+        return false;
     }
 
     if (coll->coll_type != COLL_FRONT || !Input.action
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
-        return 0;
+        return false;
     }
 
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -STEPUP_HEIGHT) {
-        return 0;
+        return false;
     }
 
     int hdif = coll->front_floor + 700;
     if (hdif < -512 || hdif > 100) {
-        return 0;
+        return false;
     }
 
     PHD_ANGLE angle = item->pos.y_rot;
@@ -372,7 +372,7 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
         angle = -PHD_90;
     }
     if (angle & (PHD_90 - 1)) {
-        return 0;
+        return false;
     }
 
     item->pos.y += hdif - 5;
@@ -405,5 +405,5 @@ int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     item->speed = 0;
     Lara.gun_status = LGS_HANDSBUSY;
     Lara.water_status = LWS_ABOVEWATER;
-    return 1;
+    return true;
 }
