@@ -927,13 +927,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
         }
     }
 
-    if (coll->mid_floor > STEPUP_HEIGHT) {
-        item->current_anim_state = AS_FORWARDJUMP;
-        item->goal_anim_state = AS_FORWARDJUMP;
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
-        item->gravity_status = 1;
-        item->fall_speed = 0;
+    if (LaraFallen(item, coll)) {
         return;
     }
 
@@ -1001,13 +995,7 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOP;
     }
 
-    if (coll->mid_floor > STEPUP_HEIGHT) {
-        item->current_anim_state = AS_FORWARDJUMP;
-        item->goal_anim_state = AS_FORWARDJUMP;
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
-        item->gravity_status = 1;
-        item->fall_speed = 0;
+    if (LaraFallen(item, coll)) {
         return;
     }
 
@@ -1691,6 +1679,20 @@ void GetLaraCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
     GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
         LARA_HITE);
+}
+
+bool LaraFallen(ITEM_INFO *item, COLL_INFO *coll)
+{
+    if (coll->mid_floor <= STEPUP_HEIGHT) {
+        return false;
+    }
+    item->current_anim_state = AS_FORWARDJUMP;
+    item->goal_anim_state = AS_FORWARDJUMP;
+    item->anim_number = AA_FALLDOWN;
+    item->frame_number = Anims[item->anim_number].frame_base;
+    item->gravity_status = 1;
+    item->fall_speed = 0;
+    return true;
 }
 
 void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll)

@@ -142,6 +142,7 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll);
 
 void GetLaraCollisionInfo(ITEM_INFO *item, COLL_INFO *coll);
 void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraFallen(ITEM_INFO *item, COLL_INFO *coll);
 bool LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll);
 void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll);
 bool LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll);
