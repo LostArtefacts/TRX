@@ -1130,12 +1130,10 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     case 3:
         key = Layout[IConfig][KeyChange];
 
-        if (!CHK_ANY(key, IN_OPTION)) {
-            if (KeyGet() < 0 || KeyGet() != key) {
-                KeyMode = 0;
-                FlashConflicts();
-                S_WriteUserSettings();
-            }
+        if (KeyGet() < 0 || KeyGet() != key) {
+            KeyMode = 0;
+            FlashConflicts();
+            S_WriteUserSettings();
         }
 
         KeyMode = 0;
