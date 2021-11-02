@@ -67,7 +67,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             return;
         }
 
-        if (CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
+        if (Input.action && Lara.gun_status == LGS_ARMLESS
             && !lara_item->gravity_status
             && lara_item->current_anim_state == AS_STOP) {
             AlignLaraPosition(&PickUpPosition, item, lara_item);
@@ -94,8 +94,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             return;
         }
 
-        if (CHK_ANY(Input, IN_ACTION)
-            && lara_item->current_anim_state == AS_TREAD) {
+        if (Input.action && lara_item->current_anim_state == AS_TREAD) {
             if (!MoveLaraPosition(&PickUpPositionUW, item, lara_item)) {
                 return;
             }

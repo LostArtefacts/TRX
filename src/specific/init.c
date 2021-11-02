@@ -81,7 +81,7 @@ void S_InitialiseSystem()
 
 void S_ExitSystem(const char *message)
 {
-    while (Input & IN_SELECT) {
+    while (Input.select) {
         S_UpdateInput();
     }
     if (GameMemoryPointer) {

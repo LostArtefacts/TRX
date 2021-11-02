@@ -76,7 +76,7 @@ int32_t DoCinematic(int32_t nframes)
     frame_count += CinematicAnimationRate * nframes;
     while (frame_count >= 0) {
         S_UpdateInput();
-        if (Input & IN_OPTION) {
+        if (Input.option) {
             return 1;
         }
 

@@ -32,7 +32,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_baddie_push = 0;
 
     if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
-        if (Input & IN_LOOK) {
+        if (Input.look) {
             LookLeftRight();
         } else {
             ResetLook();
@@ -86,7 +86,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     if (Lara.water_status == LWS_CHEAT) {
         if (OpenDoorsCheatCooldown) {
             OpenDoorsCheatCooldown--;
-        } else if (CHK_ANY(Input, IN_DRAW)) {
+        } else if (Input.draw) {
             OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
             OpenNearestDoors(LaraItem);
         }
@@ -105,16 +105,16 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (Input & IN_FORWARD) {
+    if (Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
     }
-    if (Input & IN_BACK) {
+    if (Input.back) {
         item->pos.x_rot += 2 * PHD_DEGREE;
     }
-    if (Input & IN_LEFT) {
+    if (Input.left) {
         item->pos.y_rot -= LARA_MED_TURN;
         item->pos.z_rot -= LARA_LEAN_RATE * 2;
-    } else if (Input & IN_RIGHT) {
+    } else if (Input.right) {
         item->pos.y_rot += LARA_MED_TURN;
         item->pos.z_rot += LARA_LEAN_RATE * 2;
     }
@@ -128,7 +128,7 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
         item->fall_speed = UW_MAXSPEED;
     }
 
-    if (!(Input & IN_JUMP)) {
+    if (!Input.jump) {
         item->goal_anim_state = AS_GLIDE;
     }
 }
@@ -140,19 +140,19 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (Input & IN_FORWARD) {
+    if (Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
-    } else if (Input & IN_BACK) {
+    } else if (Input.back) {
         item->pos.x_rot += 2 * PHD_DEGREE;
     }
-    if (Input & IN_LEFT) {
+    if (Input.left) {
         item->pos.y_rot -= LARA_MED_TURN;
         item->pos.z_rot -= LARA_LEAN_RATE * 2;
-    } else if (Input & IN_RIGHT) {
+    } else if (Input.right) {
         item->pos.y_rot += LARA_MED_TURN;
         item->pos.z_rot += LARA_LEAN_RATE * 2;
     }
-    if (Input & IN_JUMP) {
+    if (Input.jump) {
         item->goal_anim_state = AS_SWIM;
     }
 
@@ -169,7 +169,7 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
 void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (T1MConfig.enable_enhanced_look) {
-        if (Input & IN_LOOK) {
+        if (Input.look) {
             LookUpDown();
         }
     }
@@ -179,19 +179,19 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (Input & IN_FORWARD) {
+    if (Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
-    } else if (Input & IN_BACK) {
+    } else if (Input.back) {
         item->pos.x_rot += 2 * PHD_DEGREE;
     }
-    if (Input & IN_LEFT) {
+    if (Input.left) {
         item->pos.y_rot -= LARA_MED_TURN;
         item->pos.z_rot -= LARA_LEAN_RATE * 2;
-    } else if (Input & IN_RIGHT) {
+    } else if (Input.right) {
         item->pos.y_rot += LARA_MED_TURN;
         item->pos.z_rot += LARA_LEAN_RATE * 2;
     }
-    if (Input & IN_JUMP) {
+    if (Input.jump) {
         item->goal_anim_state = AS_SWIM;
     }
 
@@ -203,7 +203,7 @@ void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsDive(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (Input & IN_FORWARD) {
+    if (Input.forward) {
         item->pos.x_rot -= PHD_DEGREE;
     }
 }

@@ -109,7 +109,7 @@ int32_t Display_Inventory(int inv_mode)
 
         InputDB = GetDebouncedInput(Input);
 
-        if (InvMode != INV_TITLE_MODE || Input || InputDB) {
+        if (InvMode != INV_TITLE_MODE || Input.any || InputDB.any) {
             NoInputCount = 0;
             ResetFlag = 0;
         } else {
@@ -181,8 +181,7 @@ int32_t Display_Inventory(int inv_mode)
                         }
                     } else if (
                         ring.number_of_objects == 1
-                        || !CHK_ANY(Input, IN_RIGHT | IN_LEFT)
-                        || !CHK_ANY(Input, IN_LEFT)) {
+                        || (!Input.left && !Input.right) || !Input.left) {
                         LsAdder = HIGH_LIGHT;
                         inv_item->y_rot += 256;
                     }
@@ -193,7 +192,7 @@ int32_t Display_Inventory(int inv_mode)
                      || imo.status == RNG_DESELECTING
                      || imo.status == RNG_DESELECT
                      || imo.status == RNG_CLOSING_ITEM)
-                    && !ring.rotating && !CHK_ANY(Input, IN_RIGHT | IN_LEFT)) {
+                    && !ring.rotating && !Input.left && !Input.right) {
                     RingNotActive(inv_item);
                 }
             } else {
@@ -256,24 +255,25 @@ int32_t Display_Inventory(int inv_mode)
         if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
              || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
-            InputDB = IN_SELECT;
+            InputDB.any = 0;
+            InputDB.select = 1;
         }
 
         switch (imo.status) {
         case RNG_OPEN:
-            if (CHK_ANY(Input, IN_RIGHT) && ring.number_of_objects > 1) {
+            if (Input.right && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
                 SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
-            if (CHK_ANY(Input, IN_LEFT) && ring.number_of_objects > 1) {
+            if (Input.left && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
                 SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
-            if ((ResetFlag || CHK_ANY(InputDB, IN_OPTION))
+            if ((ResetFlag || InputDB.option)
                 && (ResetFlag || InvMode != INV_TITLE_MODE)) {
                 SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 InvChosen = -1;
@@ -295,11 +295,11 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
                 Inv_RingMotionRotation(
                     &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
-                Input = 0;
-                InputDB = 0;
+                Input.any = 0;
+                InputDB.any = 0;
             }
 
-            if (CHK_ANY(InputDB, IN_SELECT)) {
+            if (InputDB.select) {
                 if ((InvMode == INV_SAVE_MODE
                      || InvMode == INV_SAVE_CRYSTAL_MODE
                      || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
@@ -329,8 +329,8 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionRotation(
                     &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
                 Inv_RingMotionItemSelect(&ring, inv_item);
-                Input = 0;
-                InputDB = 0;
+                Input.any = 0;
+                InputDB.any = 0;
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
@@ -358,7 +358,7 @@ int32_t Display_Inventory(int inv_mode)
                 }
             }
 
-            if (CHK_ANY(InputDB, IN_FORWARD) && InvMode != INV_TITLE_MODE
+            if (InputDB.forward && InvMode != INV_TITLE_MODE
                 && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (InvKeysObjects) {
@@ -372,8 +372,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 } else if (ring.type == RT_OPTION) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
@@ -386,10 +386,10 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    InputDB = 0;
+                    InputDB.any = 0;
                 }
             } else if (
-                CHK_ANY(InputDB, IN_BACK) && InvMode != INV_TITLE_MODE
+                InputDB.back && InvMode != INV_TITLE_MODE
                 && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (InvMainObjects) {
@@ -403,8 +403,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 } else if (ring.type == RT_MAIN) {
                     if (InvOptionObjects) {
                         Inv_RingMotionSetup(
@@ -417,7 +417,7 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    InputDB = 0;
+                    InputDB.any = 0;
                 }
             }
             break;
@@ -517,23 +517,23 @@ int32_t Display_Inventory(int inv_mode)
             if (!busy && !IDelay) {
                 DoInventoryOptions(inv_item);
 
-                if (CHK_ANY(InputDB, IN_DESELECT)) {
+                if (InputDB.deselect) {
                     inv_item->sprlist = NULL;
                     Inv_RingMotionSetup(
                         &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
 
                     if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
                         || InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
-                        Input = 0;
-                        InputDB = 0;
+                        Input.any = 0;
+                        InputDB.any = 0;
                     }
                 }
 
-                if (CHK_ANY(InputDB, IN_SELECT)) {
+                if (InputDB.select) {
                     inv_item->sprlist = NULL;
                     InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {
@@ -553,8 +553,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     }
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 }
             }
             break;
@@ -566,8 +566,8 @@ int32_t Display_Inventory(int inv_mode)
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
                 &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
-            Input = 0;
-            InputDB = 0;
+            Input.any = 0;
+            InputDB.any = 0;
             break;
 
         case RNG_CLOSING_ITEM: {

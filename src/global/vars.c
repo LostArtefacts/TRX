@@ -38,8 +38,8 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 int32_t NoInputCount = 0;
 int32_t IDelay;
 int32_t IDCount;
-int32_t Input;
-int32_t InputDB;
+INPUT_STATE Input;
+INPUT_STATE InputDB;
 int32_t KeyChange;
 
 GAMEFLOW GF;

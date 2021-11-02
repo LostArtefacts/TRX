@@ -11,6 +11,8 @@
 #include "global/vars.h"
 #include "specific/frontend.h"
 
+#include <stdbool.h>
+
 int32_t StartDemo()
 {
     TEXTSTRING *txt;
@@ -92,47 +94,29 @@ void GetDemoInput()
 {
     // translate demo input that use TombATI key values to T1M inputs
     if (DemoCount >= DEMO_COUNT_MAX || DemoPtr[DemoCount] == -1) {
-        Input = -1;
+        Input.any = -1;
     } else {
-        Input = 0;
-        if (DemoPtr[DemoCount] & (1 << 0)) {
-            Input |= IN_FORWARD;
-        } else if (DemoPtr[DemoCount] & (1 << 1)) {
-            Input |= IN_BACK;
-        } else if (DemoPtr[DemoCount] & (1 << 2)) {
-            Input |= IN_LEFT;
-        } else if (DemoPtr[DemoCount] & (1 << 3)) {
-            Input |= IN_RIGHT;
-        } else if (DemoPtr[DemoCount] & (1 << 4)) {
-            Input |= IN_JUMP;
-        } else if (DemoPtr[DemoCount] & (1 << 5)) {
-            Input |= IN_DRAW;
-        } else if (DemoPtr[DemoCount] & (1 << 6)) {
-            Input |= IN_ACTION;
-        } else if (DemoPtr[DemoCount] & (1 << 7)) {
-            Input |= IN_SLOW;
-        } else if (DemoPtr[DemoCount] & (1 << 8)) {
-            Input |= IN_OPTION;
-        } else if (DemoPtr[DemoCount] & (1 << 9)) {
-            Input |= IN_LOOK;
-        } else if (DemoPtr[DemoCount] & (1 << 10)) {
-            Input |= IN_STEPL;
-        } else if (DemoPtr[DemoCount] & (1 << 11)) {
-            Input |= IN_STEPR;
-        } else if (DemoPtr[DemoCount] & (1 << 12)) {
-            Input |= IN_ROLL;
-        } else if (DemoPtr[DemoCount] & (1 << 20)) {
-            Input |= IN_SELECT;
-        } else if (DemoPtr[DemoCount] & (1 << 21)) {
-            Input |= IN_DESELECT;
-        } else if (DemoPtr[DemoCount] & (1 << 22)) {
-            Input |= IN_SAVE;
-        } else if (DemoPtr[DemoCount] & (1 << 23)) {
-            Input |= IN_LOAD;
-        }
+        Input.any = 0;
+        Input.forward = (bool)(DemoPtr[DemoCount] & (1 << 0));
+        Input.back = (bool)(DemoPtr[DemoCount] & (1 << 1));
+        Input.left = (bool)(DemoPtr[DemoCount] & (1 << 2));
+        Input.right = (bool)(DemoPtr[DemoCount] & (1 << 3));
+        Input.jump = (bool)(DemoPtr[DemoCount] & (1 << 4));
+        Input.draw = (bool)(DemoPtr[DemoCount] & (1 << 5));
+        Input.action = (bool)(DemoPtr[DemoCount] & (1 << 6));
+        Input.slow = (bool)(DemoPtr[DemoCount] & (1 << 7));
+        Input.option = (bool)(DemoPtr[DemoCount] & (1 << 8));
+        Input.look = (bool)(DemoPtr[DemoCount] & (1 << 9));
+        Input.step_left = (bool)(DemoPtr[DemoCount] & (1 << 10));
+        Input.step_right = (bool)(DemoPtr[DemoCount] & (1 << 11));
+        Input.roll = (bool)(DemoPtr[DemoCount] & (1 << 12));
+        Input.select = (bool)(DemoPtr[DemoCount] & (1 << 20));
+        Input.deselect = (bool)(DemoPtr[DemoCount] & (1 << 21));
+        Input.save = (bool)(DemoPtr[DemoCount] & (1 << 22));
+        Input.load = (bool)(DemoPtr[DemoCount] & (1 << 23));
     }
 
-    if (Input != -1) {
+    if (Input.any != -1) {
         DemoCount++;
     }
 }

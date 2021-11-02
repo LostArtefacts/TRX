@@ -21,8 +21,6 @@
 #define GAMMA_MODIFIER 8
 #define MIN_GAMMA_LEVEL -127
 #define MAX_GAMMA_LEVEL 127
-#define PASSPORT_2FRONT IN_LEFT
-#define PASSPORT_2BACK IN_RIGHT
 #define PASSPORT_PAGE_COUNT 3
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20
@@ -252,7 +250,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
     case O_PICKUP_OPTION1:
     case O_PICKUP_OPTION2:
     case O_SCION_OPTION:
-        InputDB |= IN_SELECT;
+        InputDB.select = 1;
         break;
 
     case O_GUN_AMMO_OPTION:
@@ -262,7 +260,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
         break;
 
     default:
-        if (CHK_ANY(InputDB, (IN_DESELECT | IN_SELECT))) {
+        if (InputDB.deselect || InputDB.select) {
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
         }
@@ -282,7 +280,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
         || InvMode == INV_SAVE_CRYSTAL_MODE) {
-        InputDB &= ~(PASSPORT_2FRONT | PASSPORT_2BACK);
+        InputDB.left = 0;
+        InputDB.right = 0;
     }
 
     switch (page) {
@@ -295,18 +294,19 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 } else if (
                     InvMode != INV_SAVE_MODE && InvMode != INV_SAVE_CRYSTAL_MODE
                     && InvMode != INV_LOAD_MODE) {
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 }
                 PassportMode = 0;
             } else {
-                Input = 0;
-                InputDB = 0;
+                Input.any = 0;
+                InputDB.any = 0;
             }
         } else if (PassportMode == 0) {
             if (!SavedGamesCount || InvMode == INV_SAVE_MODE
                 || InvMode == INV_SAVE_CRYSTAL_MODE) {
-                InputDB = PASSPORT_2BACK;
+                InputDB.any = 0;
+                InputDB.right = 1;
             } else {
                 if (!PassportText) {
                     PassportText =
@@ -314,7 +314,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     T_BottomAlign(PassportText, 1);
                     T_CentreH(PassportText, 1);
                 }
-                if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_LOAD_MODE) {
+                if (InputDB.select || InvMode == INV_LOAD_MODE) {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
                     T_RemovePrint(InvItemText[IT_NAME]);
@@ -323,8 +323,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
                     PassportMode = 1;
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 }
             }
         }
@@ -337,13 +337,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 if (select > 0) {
                     InvExtraData[1] = select - 1;
                 } else if (InvMode != INV_GAME_MODE) {
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 }
                 PassportMode = 0;
             } else {
-                Input = 0;
-                InputDB = 0;
+                Input.any = 0;
+                InputDB.any = 0;
             }
         } else if (PassportMode == 1) {
             int32_t select = DisplayRequester(&LoadSaveGameRequester);
@@ -355,19 +355,23 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     if (InvMode != INV_SAVE_MODE
                         && InvMode != INV_SAVE_CRYSTAL_MODE
                         && InvMode != INV_LOAD_MODE) {
-                        Input = 0;
-                        InputDB = 0;
+                        Input.any = 0;
+                        InputDB.any = 0;
                     }
                     PassportMode = 0;
                 }
             } else {
-                Input = 0;
-                InputDB = 0;
+                Input.any = 0;
+                InputDB.any = 0;
             }
         } else if (PassportMode == 0) {
             if (InvMode == INV_DEATH_MODE) {
-                InputDB = inv_item->anim_direction == -1 ? PASSPORT_2FRONT
-                                                         : PASSPORT_2BACK;
+                InputDB.any = 0;
+                if (inv_item->anim_direction == -1) {
+                    InputDB.left = 1;
+                } else {
+                    InputDB.right = 1;
+                }
             }
             if (!PassportText) {
                 if (InvMode == INV_TITLE_MODE
@@ -381,7 +385,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 T_BottomAlign(PassportText, 1);
                 T_CentreH(PassportText, 1);
             }
-            if (CHK_ANY(InputDB, IN_SELECT) || InvMode == INV_SAVE_MODE
+            if (InputDB.select || InvMode == INV_SAVE_MODE
                 || InvMode == INV_SAVE_CRYSTAL_MODE) {
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
@@ -393,8 +397,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     if (GF.enable_game_modes) {
                         InitNewGameRequester();
                         PassportMode = 2;
-                        Input = 0;
-                        InputDB = 0;
+                        Input.any = 0;
+                        InputDB.any = 0;
                     } else {
                         InvExtraData[1] = SaveGame.bonus_flag;
                     }
@@ -407,8 +411,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
                     PassportMode = 1;
-                    Input = 0;
-                    InputDB = 0;
+                    Input.any = 0;
+                    InputDB.any = 0;
                 }
             }
         }
@@ -436,9 +440,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         1,
     };
 
-    if (CHK_ANY(InputDB, PASSPORT_2FRONT)
-        && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
-
+    if (InputDB.left && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;
@@ -455,13 +457,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             }
         }
 
-        Input = 0;
-        InputDB = 0;
+        Input.any = 0;
+        InputDB.any = 0;
     }
 
-    if (CHK_ANY(InputDB, PASSPORT_2BACK)) {
-        Input = 0;
-        InputDB = 0;
+    if (InputDB.right) {
+        Input.any = 0;
+        InputDB.any = 0;
 
         while (++page < PASSPORT_PAGE_COUNT) {
             if (pages_available[page]) {
@@ -480,10 +482,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_DESELECT)) {
+    if (InputDB.deselect) {
         if (InvMode == INV_DEATH_MODE) {
-            Input = 0;
-            InputDB = 0;
+            Input.any = 0;
+            InputDB.any = 0;
         } else {
             if (page == 2) {
                 inv_item->anim_direction = 1;
@@ -499,7 +501,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_SELECT)) {
+    if (InputDB.select) {
         InvExtraData[0] = page;
         if (page == 2) {
             inv_item->anim_direction = 1;
@@ -590,7 +592,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_FORWARD) && current_row > min_row) {
+    if (InputDB.forward && current_row > min_row) {
         T_RemoveOutline(DetailTextHW[current_row]);
         T_RemoveBackground(DetailTextHW[current_row]);
         current_row--;
@@ -599,7 +601,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    if (CHK_ANY(InputDB, IN_BACK) && current_row < max_row) {
+    if (InputDB.back && current_row < max_row) {
         T_RemoveOutline(DetailTextHW[current_row]);
         T_RemoveBackground(DetailTextHW[current_row]);
         current_row++;
@@ -610,7 +612,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
     int8_t reset = 0;
 
-    if (CHK_ANY(InputDB, IN_RIGHT)) {
+    if (InputDB.right) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
             if (!(RenderSettings & RSF_PERSPECTIVE)) {
@@ -648,7 +650,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_LEFT)) {
+    if (InputDB.left) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
             if (RenderSettings & RSF_PERSPECTIVE) {
@@ -686,7 +688,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+    if (InputDB.deselect || InputDB.select) {
         reset = 1;
     }
 
@@ -732,14 +734,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_FORWARD) && Item_Data > 0) {
+    if (InputDB.forward && Item_Data > 0) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
         T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0);
         T_AddOutline(SoundText[Item_Data], 1);
     }
 
-    if (CHK_ANY(InputDB, IN_BACK) && Item_Data < 1) {
+    if (InputDB.back && Item_Data < 1) {
         T_RemoveOutline(SoundText[Item_Data]);
         T_RemoveBackground(SoundText[Item_Data]);
         T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0);
@@ -748,14 +750,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
     switch (Item_Data) {
     case 0:
-        if (CHK_ANY(Input, IN_LEFT) && OptionMusicVolume > 0) {
+        if (Input.left && OptionMusicVolume > 0) {
             OptionMusicVolume--;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "| %2d", OptionMusicVolume);
             T_ChangeText(SoundText[0], buf);
             S_WriteUserSettings();
-        } else if (CHK_ANY(Input, IN_RIGHT) && OptionMusicVolume < 10) {
+        } else if (Input.right && OptionMusicVolume < 10) {
             OptionMusicVolume++;
             IDelay = 1;
             IDCount = 10;
@@ -764,7 +766,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             S_WriteUserSettings();
         }
 
-        if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
+        if (Input.left || Input.right) {
             if (OptionMusicVolume) {
                 S_MusicVolume(25 * OptionMusicVolume + 5);
             } else {
@@ -775,14 +777,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (CHK_ANY(Input, IN_LEFT) && OptionSoundFXVolume > 0) {
+        if (Input.left && OptionSoundFXVolume > 0) {
             OptionSoundFXVolume--;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "} %2d", OptionSoundFXVolume);
             T_ChangeText(SoundText[1], buf);
             S_WriteUserSettings();
-        } else if (CHK_ANY(Input, IN_RIGHT) && OptionSoundFXVolume < 10) {
+        } else if (Input.right && OptionSoundFXVolume < 10) {
             OptionSoundFXVolume++;
             IDelay = 1;
             IDCount = 10;
@@ -791,7 +793,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             S_WriteUserSettings();
         }
 
-        if (CHK_ANY(Input, IN_LEFT | IN_RIGHT)) {
+        if (Input.left || Input.right) {
             if (OptionSoundFXVolume) {
                 mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
             } else {
@@ -802,7 +804,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+    if (InputDB.deselect || InputDB.select) {
         for (int i = 0; i < 4; i++) {
             T_RemovePrint(SoundText[i]);
             SoundText[i] = NULL;
@@ -881,7 +883,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
         T_ChangeText(CompassText[COMPASS_TIME], buf);
     }
 
-    if (CHK_ANY(InputDB, IN_DESELECT | IN_SELECT)) {
+    if (InputDB.deselect || InputDB.select) {
         for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
             T_RemovePrint(CompassText[i]);
             CompassText[i] = NULL;
@@ -976,7 +978,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     switch (KeyMode) {
     case 0:
-        if (CHK_ANY(InputDB, IN_LEFT | IN_RIGHT)) {
+        if (InputDB.left || InputDB.right) {
             if (KeyChange == -1) {
                 IConfig = IConfig ? 0 : 1;
                 S_ChangeCtrlText();
@@ -1016,22 +1018,20 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
                 T_AddOutline(CtrlTextA[KeyChange], 1);
             }
-        } else if (
-            CHK_ANY(InputDB, IN_DESELECT)
-            || (CHK_ANY(InputDB, IN_SELECT) && KeyChange == -1)) {
+        } else if (InputDB.deselect || (InputDB.select && KeyChange == -1)) {
             S_RemoveCtrl();
             DefaultConflict();
             return;
         }
 
         if (IConfig) {
-            if (CHK_ANY(InputDB, IN_SELECT)) {
+            if (InputDB.select) {
                 KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
                 T_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
                 T_RemoveOutline(CtrlTextA[KeyChange]);
                 T_AddOutline(CtrlTextB[KeyChange], 1);
-            } else if (CHK_ANY(InputDB, IN_FORWARD)) {
+            } else if (InputDB.forward) {
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
                 T_RemoveOutline(
@@ -1065,7 +1065,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     0, 0);
                 T_AddOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
-            } else if (CHK_ANY(InputDB, IN_BACK)) {
+            } else if (InputDB.back) {
                 T_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
                 T_RemoveOutline(
@@ -1104,7 +1104,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (!CHK_ANY(Input, IN_SELECT)) {
+        if (!Input.select) {
             KeyMode = 2;
         }
         break;
@@ -1140,8 +1140,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    Input = 0;
-    InputDB = 0;
+    Input.any = 0;
+    InputDB.any = 0;
 }
 
 void S_ShowControls()

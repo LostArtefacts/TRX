@@ -42,7 +42,7 @@ void PickUpSaveGameCollision(
 {
     ITEM_INFO *item = &Items[item_num];
 
-    if (!CHK_ANY(Input, IN_ACTION) || Lara.gun_status != LGS_ARMLESS
+    if (!Input.action || Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status) {
         return;
     }

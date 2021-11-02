@@ -180,7 +180,7 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // wait till action key release
-    while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+    while (Input.select || Input.deselect) {
         S_UpdateInput();
         S_InitialisePolyList();
         S_CopyBufferToScreen();
@@ -191,7 +191,7 @@ void LevelStats(int32_t level_num)
     }
 
     // wait till action or escape key press
-    while (!CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+    while (!Input.select && !Input.deselect) {
         if (ResetFlag) {
             break;
         }
@@ -204,7 +204,7 @@ void LevelStats(int32_t level_num)
     }
 
     // wait till escape key release
-    while (CHK_ANY(Input, IN_DESELECT)) {
+    while (Input.deselect) {
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
