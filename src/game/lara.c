@@ -960,6 +960,11 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
 {
+    if (T1MConfig.fix_qwop_glitch) {
+        item->gravity_status = 0;
+        item->fall_speed = 0;
+    }
+
     Lara.move_angle = item->pos.y_rot;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
