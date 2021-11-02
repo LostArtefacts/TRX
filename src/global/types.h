@@ -781,11 +781,13 @@ typedef enum INPUT_STATE {
     IN_LOAD = 1 << 17,
     IN_FLY_CHEAT = 1 << 18,
     IN_ITEM_CHEAT = 1 << 19,
-    IN_CAMERA_UP = 1 << 20,
-    IN_CAMERA_DOWN = 1 << 21,
-    IN_CAMERA_LEFT = 1 << 22,
-    IN_CAMERA_RIGHT = 1 << 23,
-    IN_CAMERA_RESET = 1 << 24,
+    IN_LEVEL_SKIP_CHEAT = 1 << 20,
+    IN_HEALTH_CHEAT = 1 << 21,
+    IN_CAMERA_UP = 1 << 22,
+    IN_CAMERA_DOWN = 1 << 23,
+    IN_CAMERA_LEFT = 1 << 24,
+    IN_CAMERA_RIGHT = 1 << 25,
+    IN_CAMERA_RESET = 1 << 26,
 } INPUT_STATE;
 
 typedef enum TEXTSTRING_FLAG {
