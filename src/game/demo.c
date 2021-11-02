@@ -90,11 +90,48 @@ void LoadLaraDemoPos()
 
 void GetDemoInput()
 {
-    if (DemoCount >= DEMO_COUNT_MAX) {
+    // translate demo input that use TombATI key values to T1M inputs
+    if (DemoCount >= DEMO_COUNT_MAX || DemoPtr[DemoCount] == -1) {
         Input = -1;
     } else {
-        Input = DemoPtr[DemoCount];
+        Input = 0;
+        if (DemoPtr[DemoCount] & (1 << 0)) {
+            Input |= IN_FORWARD;
+        } else if (DemoPtr[DemoCount] & (1 << 1)) {
+            Input |= IN_BACK;
+        } else if (DemoPtr[DemoCount] & (1 << 2)) {
+            Input |= IN_LEFT;
+        } else if (DemoPtr[DemoCount] & (1 << 3)) {
+            Input |= IN_RIGHT;
+        } else if (DemoPtr[DemoCount] & (1 << 4)) {
+            Input |= IN_JUMP;
+        } else if (DemoPtr[DemoCount] & (1 << 5)) {
+            Input |= IN_DRAW;
+        } else if (DemoPtr[DemoCount] & (1 << 6)) {
+            Input |= IN_ACTION;
+        } else if (DemoPtr[DemoCount] & (1 << 7)) {
+            Input |= IN_SLOW;
+        } else if (DemoPtr[DemoCount] & (1 << 8)) {
+            Input |= IN_OPTION;
+        } else if (DemoPtr[DemoCount] & (1 << 9)) {
+            Input |= IN_LOOK;
+        } else if (DemoPtr[DemoCount] & (1 << 10)) {
+            Input |= IN_STEPL;
+        } else if (DemoPtr[DemoCount] & (1 << 11)) {
+            Input |= IN_STEPR;
+        } else if (DemoPtr[DemoCount] & (1 << 12)) {
+            Input |= IN_ROLL;
+        } else if (DemoPtr[DemoCount] & (1 << 20)) {
+            Input |= IN_SELECT;
+        } else if (DemoPtr[DemoCount] & (1 << 21)) {
+            Input |= IN_DESELECT;
+        } else if (DemoPtr[DemoCount] & (1 << 22)) {
+            Input |= IN_SAVE;
+        } else if (DemoPtr[DemoCount] & (1 << 23)) {
+            Input |= IN_LOAD;
+        }
     }
+
     if (Input != -1) {
         DemoCount++;
     }
