@@ -423,16 +423,7 @@ void S_UpdateInput()
     linput.camera_reset = Key_(KEY_CAMERA_RESET);
 
     if (T1MConfig.enable_cheats) {
-        static bool is_stuff_cheat_key_pressed = false;
-        if (Key_(KEY_ITEM_CHEAT)) {
-            if (!is_stuff_cheat_key_pressed) {
-                is_stuff_cheat_key_pressed = true;
-                linput.item_cheat = 1;
-            }
-        } else {
-            is_stuff_cheat_key_pressed = 0;
-        }
-
+        linput.item_cheat = Key_(KEY_ITEM_CHEAT);
         linput.fly_cheat = Key_(KEY_FLY_CHEAT);
         linput.level_skip_cheat = Key_(KEY_LEVEL_SKIP_CHEAT);
         linput.health_cheat = KEY_DOWN(DIK_F11);
@@ -571,8 +562,7 @@ void S_UpdateInput()
     }
 
     Input = linput;
-
-    return;
+    InputDB = GetDebouncedInput(Input);
 }
 
 INPUT_STATE GetDebouncedInput(INPUT_STATE input)

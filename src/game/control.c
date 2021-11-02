@@ -202,7 +202,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if (!Lara.death_count && GetDebouncedInput(Input).pause) {
+        if (!Lara.death_count && InputDB.pause) {
             if (S_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }

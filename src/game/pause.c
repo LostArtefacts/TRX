@@ -98,8 +98,6 @@ static int32_t PauseLoop()
         S_DumpScreen();
         S_UpdateInput();
 
-        InputDB = GetDebouncedInput(Input);
-
         switch (state) {
         case 0:
             if (InputDB.pause) {

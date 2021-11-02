@@ -107,8 +107,6 @@ int32_t Display_Inventory(int inv_mode)
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
         S_UpdateInput();
 
-        InputDB = GetDebouncedInput(Input);
-
         if (InvMode != INV_TITLE_MODE || Input.any || InputDB.any) {
             NoInputCount = 0;
             ResetFlag = 0;

@@ -38,7 +38,7 @@ void LaraControl(int16_t item_num)
         CLAMP(item->hit_points, 0, LARA_HITPOINTS);
     }
 
-    if (Input.item_cheat) {
+    if (InputDB.item_cheat) {
         LaraCheatGetStuff();
     }
 
