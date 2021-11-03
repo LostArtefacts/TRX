@@ -52,6 +52,7 @@ int32_t IDCount;
 INPUT_STATE Input;
 INPUT_STATE InputDB;
 int32_t KeyChange;
+int32_t OptionSelected;
 
 GAMEFLOW GF;
 LARA_INFO Lara;

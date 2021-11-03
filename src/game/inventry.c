@@ -306,7 +306,7 @@ int32_t Display_Inventory(int inv_mode)
                     pass_mode_open = 1;
                 }
 
-                Item_Data = 0;
+                OptionSelected = 0;
 
                 INVENTORY_ITEM *inv_item;
                 if (ring.type == RT_MAIN) {
@@ -747,7 +747,7 @@ void Construct_Inventory()
 
     InvMainCurrent = 0;
     InvOptionCurrent = 0;
-    Item_Data = 0;
+    OptionSelected = 0;
 
     if (GF.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
