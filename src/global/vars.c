@@ -21,6 +21,7 @@ const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
 const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
+char *GameMemoryPointer;
 int8_t IsGameWindowActive = 1;
 double UITextScale;
 double UIBarScale;

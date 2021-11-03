@@ -58,6 +58,11 @@ static const char *BufferNames[] = {
     "Rolling Ball Stuff", // GBUF_ROLLINGBALL_STUFF
 };
 
+static char *GameMemoryPointer;
+static char *GameAllocMemPointer;
+static uint32_t GameAllocMemUsed;
+static uint32_t GameAllocMemFree;
+
 void S_InitialiseSystem()
 {
     S_SeedRandom();
@@ -71,8 +76,6 @@ void S_InitialiseSystem()
     RoomsToDraw = DynArray_Create(sizeof(int16_t));
 
     CalculateWibbleTable();
-
-    GameMemorySize = MALLOC_SIZE;
 
     HWR_InitialiseHardware();
 }
@@ -91,9 +94,21 @@ void S_ExitSystem(const char *message)
 
 void init_game_malloc()
 {
+    GameMemoryPointer = malloc(MALLOC_SIZE);
+    if (!GameMemoryPointer) {
+        S_ExitSystem("ERROR: Could not allocate enough memory");
+    }
+
     GameAllocMemPointer = GameMemoryPointer;
-    GameAllocMemFree = GameMemorySize;
+    GameAllocMemFree = MALLOC_SIZE;
     GameAllocMemUsed = 0;
+}
+
+void game_malloc_shutdown()
+{
+    if (GameMemoryPointer) {
+        free(GameMemoryPointer);
+    }
 }
 
 void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)

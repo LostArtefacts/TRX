@@ -247,20 +247,13 @@ cleanup:
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    if (GameMemoryPointer) {
-        free(GameMemoryPointer);
-    }
+    game_malloc_shutdown();
 
     TempVideoAdjust(2);
     HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);
 
-    GameMemoryPointer = malloc(MALLOC_SIZE);
-    if (!GameMemoryPointer) {
-        S_ExitSystem("ERROR: Could not allocate enough memory");
-        return -1;
-    }
     init_game_malloc();
 
     HWR_FMVDone();
