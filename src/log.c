@@ -13,6 +13,7 @@ void T1MLogFunc(
     printf("%s %d %s ", file, line, func);
     vprintf(fmt, va);
     printf("\n");
+    va_end(va);
     fflush(stdout);
 }
 
