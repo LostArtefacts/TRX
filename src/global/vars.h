@@ -50,8 +50,6 @@
 #define WibbleTable             ARRAY_(0x006E8060, int32_t, [WIBBLE_SIZE])
 #define ShadeTable              ARRAY_(0x006D4E00, int32_t, [WIBBLE_SIZE])
 #define RandTable               ARRAY_(0x006CAD20, int32_t, [WIBBLE_SIZE])
-#define DepthQTable             ARRAY_(0x006D5600, uint8_t, [32][256])
-#define GouraudTable            ARRAY_(0x0068B380, uint8_t, [256][32])
 #define AnimTextureRanges       VAR_U_(0x0045E640, int16_t*)
 #define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
 #define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
