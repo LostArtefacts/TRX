@@ -14,8 +14,6 @@
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define Surface1DrawPtr         VAR_U_(0x00463564, void*)
-#define Surface2DrawPtr         VAR_U_(0x005DB480, void*)
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
@@ -37,5 +35,7 @@ extern LPDIRECTDRAWSURFACE Surface2;
 extern LPDIRECTDRAWSURFACE Surface3;
 extern LPDIRECTDRAWSURFACE Surface4;
 extern LPDIRECTDRAWSURFACE TextureSurfaces[];
+extern void *Surface1DrawPtr;
+extern void *Surface2DrawPtr;
 
 #endif
