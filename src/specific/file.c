@@ -403,15 +403,7 @@ static bool LoadItems(MYFILE *fp)
 static bool LoadDepthQ(MYFILE *fp)
 {
     LOG_INFO("");
-    FileRead(DepthQTable, sizeof(uint8_t), 32 * 256, fp);
-    for (int i = 0; i < 32; i++) {
-        // force colour 0 to black
-        DepthQTable[i][0] = 0;
-
-        for (int j = 0; j < 256; j++) {
-            GouraudTable[j][i] = DepthQTable[i][j];
-        }
-    }
+    FileSeek(fp, sizeof(uint8_t) * 32 * 256, FILE_SEEK_CUR);
     return true;
 }
 
