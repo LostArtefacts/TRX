@@ -83,6 +83,7 @@ int16_t *MeshBase;
 int16_t **Meshes;
 OBJECT_INFO Objects[O_NUMBER_OF];
 STATIC_INFO StaticObjects[STATIC_NUMBER_OF];
+int8_t *TexturePagePtrs[MAX_TEXTPAGES];
 int16_t RoomCount;
 int32_t LevelItemCount;
 ITEM_INFO *Items;
