@@ -1,5 +1,6 @@
 #include "specific/smain.h"
 
+#include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
@@ -127,8 +128,8 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
         if (wParam && !IsGameWindowActive) {
-            if (OptionMusicVolume) {
-                S_MusicVolume(OptionMusicVolume * 25 + 5);
+            if (T1MConfig.music_volume) {
+                S_MusicVolume(T1MConfig.music_volume * 25 + 5);
             } else {
                 S_MusicVolume(0);
             }

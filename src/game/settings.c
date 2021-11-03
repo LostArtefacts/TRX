@@ -1,5 +1,6 @@
 #include "game/settings.h"
 
+#include "config.h"
 #include "filesystem.h"
 #include "game/mnsound.h"
 #include "game/option.h"
@@ -30,8 +31,8 @@ static int32_t S_ReadUserSettingsATI()
 
     LOG_INFO("Loading user settings (T1M)");
 
-    FileRead(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-    FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    FileRead(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
+    FileRead(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
     FileRead(&RenderSettings, sizeof(int32_t), 1, fp);
 
@@ -97,12 +98,13 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         SetGameScreenSizeIdx(resolution_idx);
     }
 
-    OptionMusicVolume = json_object_get_number_int(root_obj, "music_volume", 8);
-    CLAMP(OptionMusicVolume, 0, 10);
+    T1MConfig.music_volume =
+        json_object_get_number_int(root_obj, "music_volume", 8);
+    CLAMP(T1MConfig.music_volume, 0, 10);
 
-    OptionSoundFXVolume =
+    T1MConfig.sound_volume =
         json_object_get_number_int(root_obj, "sound_volume", 8);
-    CLAMP(OptionSoundFXVolume, 0, 10);
+    CLAMP(T1MConfig.sound_volume, 0, 10);
 
     IConfig = json_object_get_number_int(root_obj, "layout_num", 0);
     CLAMP(IConfig, 0, 1);
@@ -180,9 +182,10 @@ static int32_t S_WriteUserSettingsT1M()
     json_object_append_bool(
         root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
     json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
-    json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);
     json_object_append_number_int(
-        root_obj, "sound_volume", OptionSoundFXVolume);
+        root_obj, "music_volume", T1MConfig.music_volume);
+    json_object_append_number_int(
+        root_obj, "sound_volume", T1MConfig.sound_volume);
     json_object_append_number_int(root_obj, "layout_num", IConfig);
     json_object_append_number_double(root_obj, "ui_text_scale", UITextScale);
     json_object_append_number_double(root_obj, "ui_bar_scale", UIBarScale);
@@ -216,14 +219,14 @@ void S_ReadUserSettings()
 
     DefaultConflict();
 
-    if (OptionMusicVolume) {
-        S_MusicVolume(25 * OptionMusicVolume + 5);
+    if (T1MConfig.music_volume) {
+        S_MusicVolume(25 * T1MConfig.music_volume + 5);
     } else {
         S_MusicVolume(0);
     }
 
-    if (OptionSoundFXVolume) {
-        mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
+    if (T1MConfig.sound_volume) {
+        mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
     } else {
         mn_adjust_master_volume(0);
     }
