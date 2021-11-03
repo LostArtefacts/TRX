@@ -14,11 +14,6 @@
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define Surface1                VAR_U_(0x005DA6A4, LPDIRECTDRAWSURFACE)
-#define Surface2                VAR_U_(0x005DB484, LPDIRECTDRAWSURFACE)
-#define Surface3                VAR_U_(0x005DA744, LPDIRECTDRAWSURFACE)
-#define Surface4                VAR_U_(0x00463608, LPDIRECTDRAWSURFACE)
-#define TextureSurfaces         ARRAY_(0x005DA6C0, LPDIRECTDRAWSURFACE, [MAX_TEXTPAGES])
 #define Surface1DrawPtr         VAR_U_(0x00463564, void*)
 #define Surface2DrawPtr         VAR_U_(0x005DB480, void*)
 #define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
@@ -37,5 +32,10 @@ extern float DDrawSurfaceMaxX;
 extern float DDrawSurfaceMaxY;
 extern int32_t DDrawSurfaceWidth;
 extern int32_t DDrawSurfaceHeight;
+extern LPDIRECTDRAWSURFACE Surface1;
+extern LPDIRECTDRAWSURFACE Surface2;
+extern LPDIRECTDRAWSURFACE Surface3;
+extern LPDIRECTDRAWSURFACE Surface4;
+extern LPDIRECTDRAWSURFACE TextureSurfaces[];
 
 #endif
