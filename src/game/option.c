@@ -533,14 +533,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
-                [RenderSettings & RSF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
+                [T1MConfig.render_flags.perspective ? GS_MISC_ON
+                                                    : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings
-                [RenderSettings & RSF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
+                [T1MConfig.render_flags.bilinear ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
@@ -613,15 +614,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     if (InputDB.right) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
-            if (!(RenderSettings & RSF_PERSPECTIVE)) {
-                RenderSettings |= RSF_PERSPECTIVE;
+            if (!T1MConfig.render_flags.perspective) {
+                T1MConfig.render_flags.perspective = 1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (!(RenderSettings & RSF_BILINEAR)) {
-                RenderSettings |= RSF_BILINEAR;
+            if (!T1MConfig.render_flags.bilinear) {
+                T1MConfig.render_flags.bilinear = 1;
                 reset = 1;
             }
             break;
@@ -651,15 +652,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     if (InputDB.left) {
         switch (current_row) {
         case DETAIL_HW_PERSPECTIVE:
-            if (RenderSettings & RSF_PERSPECTIVE) {
-                RenderSettings &= ~RSF_PERSPECTIVE;
+            if (T1MConfig.render_flags.perspective) {
+                T1MConfig.render_flags.perspective = 0;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (RenderSettings & RSF_BILINEAR) {
-                RenderSettings &= ~RSF_BILINEAR;
+            if (T1MConfig.render_flags.bilinear) {
+                T1MConfig.render_flags.bilinear = 0;
                 reset = 1;
             }
             break;
