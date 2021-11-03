@@ -10,14 +10,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// clang-format off
-// TODO: decompile me!
-
-#define PhdVBuf                 ARRAY_(0x006D7620, PHD_VBUF, [1500])
-#define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE * MAX_SPRITES])
-#define PhdTextureInfo          ARRAY_(0x006CADE0, PHD_TEXTURE, [MAX_TEXTURES])
-// clang-format on
-
 extern int32_t PhdWinMaxX;
 extern int32_t PhdWinMaxY;
 extern int32_t PhdWinCenterX;
@@ -32,6 +24,9 @@ extern int32_t PhdRight;
 extern int32_t PhdTop;
 extern int32_t PhdWinWidth;
 extern int32_t PhdWinHeight;
+extern PHD_VBUF PhdVBuf[1500];
+extern PHD_SPRITE PhdSpriteInfo[MAX_SPRITES_PAGE * MAX_SPRITES];
+extern PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES];
 extern PHD_MATRIX *PhdMatrixPtr;
 extern PHD_MATRIX W2VMatrix;
 

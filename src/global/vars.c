@@ -69,6 +69,9 @@ int32_t PhdRight;
 int32_t PhdTop;
 int32_t PhdWinWidth;
 int32_t PhdWinHeight;
+PHD_VBUF PhdVBuf[1500];
+PHD_SPRITE PhdSpriteInfo[MAX_SPRITES_PAGE * MAX_SPRITES];
+PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES];
 PHD_MATRIX *PhdMatrixPtr;
 PHD_MATRIX W2VMatrix;
 
