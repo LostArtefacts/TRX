@@ -90,9 +90,6 @@ extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t MnSoundMasterVolume;
 
-#define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
-#define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
-#define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)
 #define Item_Data               VAR_U_(0x0045A0B8, int16_t)
 // clang-format on
 
