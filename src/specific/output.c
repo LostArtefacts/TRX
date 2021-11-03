@@ -345,7 +345,6 @@ void S_DrawAirBar(int32_t percent)
 
 void S_SetupBelowWater(bool underwater)
 {
-    PhdWet = underwater;
     IsWaterEffect = true;
     IsWibbleEffect = !underwater;
     IsShadeEffect = true;
