@@ -72,12 +72,6 @@ void GameMain()
     WinPlayFMV(FMV_INTRO, 1);
     HWR_FMVDone();
 
-    GameMemoryPointer = malloc(MALLOC_SIZE);
-    if (!GameMemoryPointer) {
-        S_ExitSystem("ERROR: Could not allocate enough memory");
-        return;
-    }
-
     int32_t gf_option = GF_EXIT_TO_TITLE;
 
     int8_t loop_continue = 1;

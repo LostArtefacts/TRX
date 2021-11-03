@@ -64,11 +64,6 @@
 
 #define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
-#define GameAllocMemPointer     VAR_U_(0x0045E32C, char*)
-#define GameAllocMemUsed        VAR_U_(0x0045E330, uint32_t)
-#define GameAllocMemFree        VAR_U_(0x0045E334, uint32_t)
-#define GameMemoryPointer       VAR_U_(0x0045A034, char*)
-#define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
 // clang-format on
 
 extern int32_t NoInputCount;
