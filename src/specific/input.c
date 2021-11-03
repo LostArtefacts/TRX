@@ -467,21 +467,21 @@ void S_UpdateInput()
     }
 
     if (KEY_DOWN(DIK_F3)) {
-        RenderSettings ^= RSF_BILINEAR;
+        T1MConfig.render_flags.bilinear ^= 1;
         while (KEY_DOWN(DIK_F3)) {
             DInputKeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F4)) {
-        RenderSettings ^= RSF_PERSPECTIVE;
+        T1MConfig.render_flags.perspective ^= 1;
         while (KEY_DOWN(DIK_F4)) {
             DInputKeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F2)) {
-        RenderSettings ^= RSF_FPS;
+        T1MConfig.render_flags.fps_counter ^= 1;
         while (KEY_DOWN(DIK_F2)) {
             DInputKeyboardRead();
         }

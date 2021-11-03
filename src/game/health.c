@@ -36,7 +36,7 @@ void DrawFPSInfo()
     static char fps_buf[20];
     static int32_t elapsed = 0;
 
-    if (RenderSettings & RSF_FPS) {
+    if (T1MConfig.render_flags.fps_counter) {
         if (ClockGetMS() - elapsed >= 1000) {
             if (FPSText) {
                 sprintf(fps_buf, "%d FPS", FPSCounter);

@@ -34,7 +34,13 @@ static int32_t S_ReadUserSettingsATI()
     FileRead(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
     FileRead(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
-    FileRead(&RenderSettings, sizeof(int32_t), 1, fp);
+    {
+        uint32_t render_flags;
+        FileRead(&render_flags, sizeof(int32_t), 1, fp);
+        T1MConfig.render_flags.perspective = (bool)(render_flags & 1);
+        T1MConfig.render_flags.bilinear = (bool)(render_flags & 2);
+        T1MConfig.render_flags.fps_counter = (bool)(render_flags & 4);
+    }
 
     {
         int32_t resolution_idx;
@@ -79,17 +85,10 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     result = 1;
 
     struct json_object_s *root_obj = json_value_as_object(root);
-    if (json_object_get_bool(root_obj, "bilinear", 1)) {
-        RenderSettings |= RSF_BILINEAR;
-    } else {
-        RenderSettings &= ~RSF_BILINEAR;
-    }
-
-    if (json_object_get_bool(root_obj, "perspective", 1)) {
-        RenderSettings |= RSF_PERSPECTIVE;
-    } else {
-        RenderSettings &= ~RSF_PERSPECTIVE;
-    }
+    T1MConfig.render_flags.bilinear =
+        json_object_get_bool(root_obj, "bilinear", true);
+    T1MConfig.render_flags.perspective =
+        json_object_get_bool(root_obj, "perspective", true);
 
     {
         int32_t resolution_idx = json_object_get_number_int(
@@ -178,9 +177,9 @@ static int32_t S_WriteUserSettingsT1M()
     size_t size;
     struct json_object_s *root_obj = json_object_new();
     json_object_append_bool(
-        root_obj, "bilinear", RenderSettings & RSF_BILINEAR);
+        root_obj, "bilinear", T1MConfig.render_flags.bilinear);
     json_object_append_bool(
-        root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
+        root_obj, "perspective", T1MConfig.render_flags.perspective);
     json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
     json_object_append_number_int(
         root_obj, "music_volume", T1MConfig.music_volume);
