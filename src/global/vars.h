@@ -69,8 +69,6 @@
 #define GameAllocMemFree        VAR_U_(0x0045E334, uint32_t)
 #define GameMemoryPointer       VAR_U_(0x0045A034, char*)
 #define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
-#define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
-#define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
 // clang-format on
 
 extern int32_t NoInputCount;
