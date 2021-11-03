@@ -35,6 +35,8 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
     ChainBlock, Flicker,
 };
 
+bool SoundIsActive = true;
+
 int32_t NoInputCount = 0;
 int32_t IDelay;
 int32_t IDCount;

@@ -29,7 +29,7 @@
 
 void GameMain()
 {
-    SoundIsActive = 1;
+    SoundIsActive = true;
 
     const char *gameflow_path = T1MGameflowPath;
 

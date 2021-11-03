@@ -1,6 +1,7 @@
 #ifndef T1M_SPECIFIC_SNDPC_H
 #define T1M_SPECIFIC_SNDPC_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "global/types.h"
@@ -10,7 +11,7 @@
 int32_t ConvertVolumeToDecibel(int32_t volume);
 int32_t ConvertPanToDecibel(uint16_t pan);
 
-int32_t SoundInit();
+bool SoundInit();
 void SoundLoadSamples(char **sample_pointers, int32_t num_samples);
 SAMPLE_DATA *SoundLoadSample(char *content);
 int32_t SoundMakeSample(SAMPLE_DATA *sample_data);
