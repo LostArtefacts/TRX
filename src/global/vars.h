@@ -71,6 +71,7 @@
 #define GameMemorySize          VAR_U_(0x0045EEF8, uint32_t)
 #define Rand1                   VAR_I_(0x00453CC0, int32_t, 0xD371F947)
 #define Rand2                   VAR_I_(0x00453CC4, int32_t, 0xD371F947)
+// clang-format on
 
 extern int32_t NoInputCount;
 extern int32_t IDelay;
@@ -78,20 +79,18 @@ extern int32_t IDCount;
 extern INPUT_STATE Input;
 extern INPUT_STATE InputDB;
 extern int32_t KeyChange;
+extern int32_t OptionSelected;
 
 extern bool SoundIsActive;
 extern int16_t SampleLUT[MAX_SAMPLES];
 extern SAMPLE_INFO *SampleInfos;
-extern SAMPLE_DATA** SampleData;
+extern SAMPLE_DATA **SampleData;
 extern int32_t NumSampleData;
 extern int16_t MusicTrack;
 extern int16_t MusicTrackLooped;
 extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t MnSoundMasterVolume;
-
-#define Item_Data               VAR_U_(0x0045A0B8, int16_t)
-// clang-format on
 
 extern const char *ATIUserSettingsPath;
 extern const char *T1MUserSettingsPath;

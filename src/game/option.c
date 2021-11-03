@@ -47,15 +47,23 @@ typedef enum COMPASS_TEXT {
 } COMPASS_TEXT;
 
 typedef enum DETAIL_HW_TEXT {
-    DETAIL_HW_TITLE = 0,
-    DETAIL_HW_TITLE_BORDER = 1,
-    DETAIL_HW_PERSPECTIVE = 2,
-    DETAIL_HW_BILINEAR = 3,
-    DETAIL_HW_UI_TEXT_SCALE = 4,
-    DETAIL_HW_UI_BAR_SCALE = 5,
+    DETAIL_HW_PERSPECTIVE = 0,
+    DETAIL_HW_BILINEAR = 1,
+    DETAIL_HW_UI_TEXT_SCALE = 2,
+    DETAIL_HW_UI_BAR_SCALE = 3,
+    DETAIL_HW_TITLE = 4,
+    DETAIL_HW_TITLE_BORDER = 5,
     DETAIL_HW_RESOLUTION = 6,
     DETAIL_HW_NUMBER_OF = 7,
 } DETAIL_HW_TEXT;
+
+typedef enum SOUND_TEXT {
+    SOUND_MUSIC_VOLUME = 0,
+    SOUND_SOUND_VOLUME = 1,
+    SOUND_TITLE = 2,
+    SOUND_TITLE_BORDER = 3,
+    SOUND_NUMBER_OF = 4,
+} SOUND_TEXT;
 
 typedef struct TEXT_COLUMN_PLACEMENT {
     int option;
@@ -633,7 +641,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[256];
-    static int32_t current_row = DETAIL_HW_PERSPECTIVE;
     const int32_t min_row = DETAIL_HW_PERSPECTIVE;
     static int32_t max_row = DETAIL_HW_RESOLUTION;
 
@@ -680,11 +687,11 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (current_row < min_row) {
-            current_row = min_row;
+        if (OptionSelected < min_row) {
+            OptionSelected = min_row;
         }
-        if (current_row > max_row) {
-            current_row = max_row;
+        if (OptionSelected > max_row) {
+            OptionSelected = max_row;
         }
 
         T_AddBackground(
@@ -697,8 +704,8 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
 
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
-        T_AddOutline(DetailTextHW[current_row], 1);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
             T_CentreH(DetailTextHW[i], 1);
@@ -706,28 +713,28 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && current_row > min_row) {
-        T_RemoveOutline(DetailTextHW[current_row]);
-        T_RemoveBackground(DetailTextHW[current_row]);
-        current_row--;
-        T_AddOutline(DetailTextHW[current_row], 1);
+    if (InputDB.forward && OptionSelected > min_row) {
+        T_RemoveOutline(DetailTextHW[OptionSelected]);
+        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        OptionSelected--;
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    if (InputDB.back && current_row < max_row) {
-        T_RemoveOutline(DetailTextHW[current_row]);
-        T_RemoveBackground(DetailTextHW[current_row]);
-        current_row++;
-        T_AddOutline(DetailTextHW[current_row], 1);
+    if (InputDB.back && OptionSelected < max_row) {
+        T_RemoveOutline(DetailTextHW[OptionSelected]);
+        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        OptionSelected++;
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
     int8_t reset = 0;
 
     if (InputDB.right) {
-        switch (current_row) {
+        switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (!T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 1;
@@ -765,7 +772,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 
     if (InputDB.left) {
-        switch (current_row) {
+        switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 0;
@@ -819,64 +826,65 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[20];
 
-    if (!SoundText[0]) {
+    if (!SoundText[SOUND_MUSIC_VOLUME]) {
         if (T1MConfig.music_volume > 10) {
             T1MConfig.music_volume = 10;
         }
         sprintf(buf, "| %2d", T1MConfig.music_volume);
-        SoundText[0] = T_Print(0, 0, buf);
+        SoundText[SOUND_MUSIC_VOLUME] = T_Print(0, 0, buf);
 
         if (T1MConfig.sound_volume > 10) {
             T1MConfig.sound_volume = 10;
         }
         sprintf(buf, "} %2d", T1MConfig.sound_volume);
-        SoundText[1] = T_Print(0, 25, buf);
+        SoundText[SOUND_SOUND_VOLUME] = T_Print(0, 25, buf);
 
-        SoundText[2] = T_Print(0, -32, " ");
-        SoundText[3] = T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[SOUND_TITLE] =
+            T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[SOUND_TITLE_BORDER] = T_Print(0, -32, " ");
 
-        T_AddBackground(SoundText[0], 128, 0, 0, 0);
-        T_AddOutline(SoundText[0], 1);
-        T_AddBackground(SoundText[2], 140, 85, 0, 0);
-        T_AddOutline(SoundText[2], 1);
-        T_AddBackground(SoundText[3], 136, 0, 0, 0);
-        T_AddOutline(SoundText[3], 1);
+        T_AddBackground(SoundText[OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
+        T_AddBackground(SoundText[SOUND_TITLE], 136, 0, 0, 0);
+        T_AddOutline(SoundText[SOUND_TITLE], 1);
+        T_AddBackground(SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
+        T_AddOutline(SoundText[SOUND_TITLE_BORDER], 1);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SOUND_NUMBER_OF; i++) {
             T_CentreH(SoundText[i], 1);
             T_CentreV(SoundText[i], 1);
         }
     }
 
-    if (InputDB.forward && Item_Data > 0) {
-        T_RemoveOutline(SoundText[Item_Data]);
-        T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1);
+    if (InputDB.forward && OptionSelected > SOUND_MUSIC_VOLUME) {
+        T_RemoveOutline(SoundText[OptionSelected]);
+        T_RemoveBackground(SoundText[OptionSelected]);
+        T_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    if (InputDB.back && Item_Data < 1) {
-        T_RemoveOutline(SoundText[Item_Data]);
-        T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1);
+    if (InputDB.back && OptionSelected < SOUND_SOUND_VOLUME) {
+        T_RemoveOutline(SoundText[OptionSelected]);
+        T_RemoveBackground(SoundText[OptionSelected]);
+        T_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    switch (Item_Data) {
-    case 0:
+    switch (OptionSelected) {
+    case SOUND_MUSIC_VOLUME:
         if (Input.left && T1MConfig.music_volume > 0) {
             T1MConfig.music_volume--;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
-            T_ChangeText(SoundText[0], buf);
+            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.music_volume < 10) {
             T1MConfig.music_volume++;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
-            T_ChangeText(SoundText[0], buf);
+            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -890,20 +898,20 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
         break;
 
-    case 1:
+    case SOUND_SOUND_VOLUME:
         if (Input.left && T1MConfig.sound_volume > 0) {
             T1MConfig.sound_volume--;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
-            T_ChangeText(SoundText[1], buf);
+            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.sound_volume < 10) {
             T1MConfig.sound_volume++;
             IDelay = 1;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
-            T_ChangeText(SoundText[1], buf);
+            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -919,7 +927,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     }
 
     if (InputDB.deselect || InputDB.select) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SOUND_NUMBER_OF; i++) {
             T_RemovePrint(SoundText[i]);
             SoundText[i] = NULL;
         }
