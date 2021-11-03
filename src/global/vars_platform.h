@@ -14,7 +14,6 @@
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
 #define ATITextureMap           ARRAY_(0x00463580, C3D_HTX, [MAX_TEXTPAGES])
@@ -24,6 +23,8 @@
 // clang-format on
 
 extern HINSTANCE TombModule;
+
+extern LPDIRECTDRAW DDraw;
 extern float DDrawSurfaceMinX;
 extern float DDrawSurfaceMinY;
 extern float DDrawSurfaceMaxX;
