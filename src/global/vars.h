@@ -39,14 +39,10 @@
 #define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
 #define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE * MAX_SPRITES])
 #define PhdTextureInfo          ARRAY_(0x006CADE0, PHD_TEXTURE, [MAX_TEXTURES])
-#define PhdMatrixPtr            VAR_U_(0x006CAD14, PHD_MATRIX*)
-#define MatrixStack             ARRAY_(0x006D4E80, PHD_MATRIX, [MAX_MATRICES])
-#define W2VMatrix               VAR_U_(0x006CADA0, PHD_MATRIX)
-#define IMRate                  VAR_U_(0x00462BE0, int32_t)
-#define IMFrac                  VAR_U_(0x00462570, int32_t)
-#define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
-#define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
 // clang-format on
+
+extern PHD_MATRIX *PhdMatrixPtr;
+extern PHD_MATRIX W2VMatrix;
 
 extern int32_t WibbleOffset;
 extern int32_t WibbleTable[WIBBLE_SIZE];

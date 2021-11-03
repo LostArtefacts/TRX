@@ -55,6 +55,9 @@ INPUT_STATE InputDB;
 int32_t KeyChange;
 int32_t OptionSelected;
 
+PHD_MATRIX *PhdMatrixPtr;
+PHD_MATRIX W2VMatrix;
+
 int32_t WibbleOffset;
 int32_t WibbleTable[WIBBLE_SIZE];
 int32_t ShadeTable[WIBBLE_SIZE];

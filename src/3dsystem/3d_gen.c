@@ -18,6 +18,8 @@ static PHD_VECTOR LsVectorView;
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
 
+static PHD_MATRIX MatrixStack[MAX_MATRICES];
+
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
     PhdMatrixPtr = &MatrixStack[0];
