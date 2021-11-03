@@ -36,11 +36,15 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 };
 
 bool SoundIsActive = true;
-int32_t MnSoundMasterVolume;
 int16_t SampleLUT[MAX_SAMPLES];
 SAMPLE_INFO *SampleInfos;
 SAMPLE_DATA **SampleData;
 int32_t NumSampleData;
+int16_t MusicTrack = 0;
+int16_t MusicTrackLooped = 0;
+bool MusicLoop = false;
+uint16_t MusicTrackFlags[MAX_CD_TRACKS];
+int32_t MnSoundMasterVolume;
 
 int32_t NoInputCount = 0;
 int32_t IDelay;

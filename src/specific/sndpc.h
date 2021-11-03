@@ -21,7 +21,7 @@ void *SoundPlaySample(
 
 int32_t MusicInit();
 int32_t MusicPlay(int16_t track_id);
-int32_t MusicPlayLooped();
+void MusicPlayLooped();
 int32_t S_MusicPlay(int16_t track);
 int32_t S_MusicStop();
 void S_MusicLoop();

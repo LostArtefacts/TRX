@@ -47,6 +47,7 @@ typedef struct WAVE_FILE_HEADER {
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 static int32_t DecibelLUT[DECIBEL_LUT_SIZE];
+static int32_t MusicNumTracks;
 
 int32_t ConvertVolumeToDecibel(int32_t volume)
 {
@@ -224,7 +225,7 @@ int32_t MusicInit()
     status_parms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
     mciSendCommandA(
         MCIDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR)&status_parms);
-    CDNumTracks = status_parms.dwReturn;
+    MusicNumTracks = status_parms.dwReturn;
     return 1;
 }
 
@@ -364,10 +365,10 @@ int32_t MusicPlay(int16_t track)
     }
 
     if (track >= 57) {
-        CDTrackLooped = track;
+        MusicTrackLooped = track;
     }
 
-    CDLoop = 0;
+    MusicLoop = false;
 
     uint32_t volume = T1MConfig.music_volume * 0xFFFF / 10;
     volume |= volume << 16;
@@ -385,7 +386,7 @@ int32_t MusicPlay(int16_t track)
     open_parms.dwCallback = (DWORD_PTR)TombHWND;
 
     DWORD_PTR dwFlags = MCI_NOTIFY | MCI_FROM;
-    if (track != CDNumTracks) {
+    if (track != MusicNumTracks) {
         open_parms.dwTo = track + 1;
         dwFlags |= MCI_TO;
     }
@@ -398,14 +399,11 @@ int32_t MusicPlay(int16_t track)
     return 1;
 }
 
-int32_t MusicPlayLooped()
+void MusicPlayLooped()
 {
-    if (CDLoop && CDTrackLooped > 0) {
-        MusicPlay(CDTrackLooped);
-        return 0;
+    if (MusicLoop && MusicTrackLooped > 0) {
+        MusicPlay(MusicTrackLooped);
     }
-
-    return CDLoop;
 }
 
 int32_t S_MusicPlay(int16_t track_id)
@@ -424,15 +422,15 @@ int32_t S_MusicPlay(int16_t track_id)
         return 0;
     }
 
-    CDTrack = track_id;
+    MusicTrack = track_id;
     return MusicPlay(track_id);
 }
 
 int32_t S_MusicStop()
 {
-    CDTrack = 0;
-    CDTrackLooped = 0;
-    CDLoop = 0;
+    MusicTrack = 0;
+    MusicTrackLooped = 0;
+    MusicLoop = false;
 
     MCI_GENERIC_PARMS gen_parms;
     return !mciSendCommandA(
@@ -441,7 +439,7 @@ int32_t S_MusicStop()
 
 void S_MusicLoop()
 {
-    CDLoop = 1;
+    MusicLoop = true;
 }
 
 void *S_SoundPlaySample(

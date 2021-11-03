@@ -134,7 +134,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
-        if (CDTrack > 0) {
+        if (MusicTrack > 0) {
             S_MusicLoop();
         }
 
@@ -1395,7 +1395,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
 
     switch (value) {
     case 28:
-        if ((CDFlags[value] & IF_ONESHOT)
+        if ((MusicTrackFlags[value] & IF_ONESHOT)
             && LaraItem->current_anim_state == AS_UPJUMP) {
             value = 29;
         }
@@ -1414,7 +1414,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         break;
 
     case 42:
-        if ((CDFlags[value] & IF_ONESHOT)
+        if ((MusicTrackFlags[value] & IF_ONESHOT)
             && LaraItem->current_anim_state == AS_HANG) {
             value = 43;
         }
@@ -1427,7 +1427,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         break;
 
     case 50:
-        if (CDFlags[value] & IF_ONESHOT) {
+        if (MusicTrackFlags[value] & IF_ONESHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
@@ -1445,23 +1445,23 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
 
 void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
 {
-    if (CDFlags[value] & IF_ONESHOT) {
+    if (MusicTrackFlags[value] & IF_ONESHOT) {
         return;
     }
 
     if (type == TT_SWITCH) {
-        CDFlags[value] ^= flags & IF_CODE_BITS;
+        MusicTrackFlags[value] ^= flags & IF_CODE_BITS;
     } else if (type == TT_ANTIPAD) {
-        CDFlags[value] &= -1 - (flags & IF_CODE_BITS);
+        MusicTrackFlags[value] &= -1 - (flags & IF_CODE_BITS);
     } else if (flags & IF_CODE_BITS) {
-        CDFlags[value] |= flags & IF_CODE_BITS;
+        MusicTrackFlags[value] |= flags & IF_CODE_BITS;
     }
 
-    if ((CDFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
+    if ((MusicTrackFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
         if (flags & IF_ONESHOT) {
-            CDFlags[value] |= IF_ONESHOT;
+            MusicTrackFlags[value] |= IF_ONESHOT;
         }
-        if (value != CDTrack) {
+        if (value != MusicTrack) {
             S_MusicPlay(value);
         }
     } else {
