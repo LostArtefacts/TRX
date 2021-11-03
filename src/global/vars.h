@@ -6,6 +6,7 @@
 #include "global/types.h"
 #include "inject_util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -78,9 +79,7 @@ extern INPUT_STATE Input;
 extern INPUT_STATE InputDB;
 extern int32_t KeyChange;
 
-#define SoundIsActive           VAR_I_(0x00456688, int32_t, 1)
-#define SoundInit1              VAR_U_(0x0045A31C, int32_t)
-#define SoundInit2              VAR_U_(0x0045A320, int32_t)
+extern bool SoundIsActive;
 #define SoundsLoaded            VAR_U_(0x0045A214, int32_t)
 #define SampleLUT               ARRAY_(0x0045EB60, int16_t, [MAX_SAMPLES])
 #define SampleInfos             VAR_U_(0x0045ED60, SAMPLE_INFO*)

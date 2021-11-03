@@ -174,25 +174,23 @@ void *SoundPlaySample(
     return buffer;
 }
 
-int32_t SoundInit()
+bool SoundInit()
 {
     HRESULT result = DirectSoundCreate(0, &DSound, 0);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling DirectSoundCreate: 0x%lx", result);
-        return 0;
+        return false;
     }
     result = DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
-        return 0;
+        return false;
     }
     DecibelLUT[0] = -10000;
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
         DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
     }
-    SoundInit1 = 1;
-    SoundInit2 = 1;
-    return 1;
+    return true;
 }
 
 int32_t MusicInit()

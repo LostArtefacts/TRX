@@ -63,14 +63,10 @@ void S_InitialiseSystem()
     S_SeedRandom();
 
     ClockInit();
-    SoundInit();
+    SoundIsActive = SoundInit();
     MusicInit();
     InputInit();
     FMVInit();
-
-    if (!SoundInit1) {
-        SoundIsActive = 0;
-    }
 
     RoomsToDraw = DynArray_Create(sizeof(int16_t));
 

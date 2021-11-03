@@ -13,7 +13,7 @@
 #include "specific/input.h"
 #include "specific/sndpc.h"
 
-static int32_t OldSoundIsActive;
+static bool SoundIsActiveOld;
 static const int32_t CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
@@ -24,8 +24,8 @@ int32_t StartCinematic(int32_t level_num)
 
     InitCinematicRooms();
 
-    OldSoundIsActive = SoundIsActive;
-    SoundIsActive = 0;
+    SoundIsActiveOld = SoundIsActive;
+    SoundIsActive = false;
     CineFrame = 0;
     return GF_NOP;
 }
@@ -45,7 +45,7 @@ int32_t StopCinematic(int32_t level_num)
 {
     S_MusicStop();
     S_SoundStopAllSamples();
-    SoundIsActive = OldSoundIsActive;
+    SoundIsActive = SoundIsActiveOld;
 
     LevelComplete = 1;
     S_FadeInInventory(1);
