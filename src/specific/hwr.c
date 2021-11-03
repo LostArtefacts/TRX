@@ -1114,7 +1114,7 @@ int32_t HWR_SetHardwareVideoMode()
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags =
