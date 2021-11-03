@@ -55,16 +55,16 @@ int32_t StopCinematic(int32_t level_num)
 
 void InitCinematicRooms()
 {
-    for (int i = 0; i < RoomCount; i++) {
-        if (RoomInfo[i].flipped_room >= 0) {
-            RoomInfo[RoomInfo[i].flipped_room].bound_active = 1;
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (RoomInfo[room_num].flipped_room >= 0) {
+            RoomInfo[RoomInfo[room_num].flipped_room].bound_active = 1;
         }
     }
 
-    RoomsToDrawNum = 0;
-    for (int i = 0; i < RoomCount; i++) {
-        if (!RoomInfo[i].bound_active) {
-            RoomsToDraw[RoomsToDrawNum++] = i;
+    DynArray_Reset(RoomsToDraw);
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (!RoomInfo[room_num].bound_active) {
+            DynArray_Append(RoomsToDraw, &room_num);
         }
     }
 }

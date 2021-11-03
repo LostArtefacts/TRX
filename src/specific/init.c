@@ -72,6 +72,8 @@ void S_InitialiseSystem()
         SoundIsActive = 0;
     }
 
+    RoomsToDraw = DynArray_Create(sizeof(int16_t));
+
     CalculateWibbleTable();
 
     GameMemorySize = MALLOC_SIZE;
