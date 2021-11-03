@@ -1166,8 +1166,6 @@ void HWR_InitialiseHardware()
 
     LOG_INFO("InitialiseHardware:");
 
-    IsHardwareRenderer = 0;
-
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         ATITextureMap[i] = NULL;
         TextureSurfaces[i] = NULL;
@@ -1180,8 +1178,6 @@ void HWR_InitialiseHardware()
     if (!HWR_SetHardwareVideoMode()) {
         return;
     }
-
-    IsHardwareRenderer = 1;
 
     tmp = C3D_EV_VTCF;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_VERTEX_TYPE, &tmp);
@@ -1213,7 +1209,6 @@ void HWR_InitialiseHardware()
 void HWR_ShutdownHardware()
 {
     LOG_INFO("ShutdownHardware:");
-    IsHardwareRenderer = 0;
     LOG_INFO("    complete");
 }
 
