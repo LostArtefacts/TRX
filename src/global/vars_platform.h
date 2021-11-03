@@ -10,13 +10,6 @@
 
 // clang-format off
 #define TombHWND                VAR_U_(0x00463600, HWND)
-#define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
-#define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
-#define ATITextureMap           ARRAY_(0x00463580, C3D_HTX, [MAX_TEXTPAGES])
-#define ATITexturePalette       VAR_U_(0x005DA7E0, C3D_HTXPAL)
-#define ATIPalette              ARRAY_(0x00462DC0, C3D_PALETTENTRY, [256])
-#define ATIChromaKey            VAR_U_(0x00463614, C3D_COLOR)
 // clang-format on
 
 extern HINSTANCE TombModule;
@@ -39,5 +32,13 @@ extern LPDIRECTDRAWSURFACE Surface4;
 extern LPDIRECTDRAWSURFACE TextureSurfaces[];
 extern void *Surface1DrawPtr;
 extern void *Surface2DrawPtr;
+
+extern HMODULE HATI3DCIFModule;
+extern C3D_HRC ATIRenderContext;
+extern C3D_3DCIFINFO ATIInfo;
+extern C3D_HTX ATITextureMap[];
+extern C3D_HTXPAL ATITexturePalette;
+extern C3D_PALETTENTRY ATIPalette[];
+extern C3D_COLOR ATIChromaKey;
 
 #endif
