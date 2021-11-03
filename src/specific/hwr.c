@@ -23,8 +23,8 @@ typedef struct HWR_LIGHTNING {
     int32_t thickness2;
 } HWR_LIGHTNING;
 
-#define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
-#define HWR_LightningCount VAR_U_(0x00463618, int32_t)
+HWR_LIGHTNING HWR_LightningTable[100];
+int32_t HWR_LightningCount = 0;
 
 static bool HWR_IsPaletteActive;
 static bool HWR_IsRendering;
