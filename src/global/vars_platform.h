@@ -28,12 +28,6 @@
 #define ATITexturePalette       VAR_U_(0x005DA7E0, C3D_HTXPAL)
 #define ATIPalette              ARRAY_(0x00462DC0, C3D_PALETTENTRY, [256])
 #define ATIChromaKey            VAR_U_(0x00463614, C3D_COLOR)
-#define HWR_OldIsRendering      VAR_U_(0x00463568, int32_t)
-#define HWR_IsPaletteActive     VAR_U_(0x00459F38, BOOL)
-#define HWR_IsRendering         VAR_U_(0x00459F34, int32_t)
-#define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
-#define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
-#define HWR_TextureLoaded       ARRAY_(0x005DA760, int32_t, [MAX_TEXTPAGES])
 // clang-format on
 
 extern HINSTANCE TombModule;
