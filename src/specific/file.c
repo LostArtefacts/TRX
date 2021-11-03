@@ -152,10 +152,6 @@ static int32_t LoadRooms(MYFILE *fp)
 
     FileRead(&RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", RoomCount);
-    if (RoomCount > MAX_ROOMS) {
-        strcpy(StringToShow, "LoadRoom(): Too many rooms");
-        return 0;
-    }
 
     RoomInfo = game_malloc(sizeof(ROOM_INFO) * RoomCount, GBUF_ROOM_INFOS);
     int i = 0;
