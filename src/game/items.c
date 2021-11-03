@@ -171,10 +171,8 @@ void AddActiveItem(int16_t item_num)
     }
 
     if (item->active) {
-        sprintf(
-            StringToShow, "Item(%d)(Obj%d) already Active\n", item_num,
-            item->object_number);
-        S_ExitSystem(StringToShow);
+        S_ExitSystemFmt(
+            "Item(%d)(Obj%d) already Active\n", item_num, item->object_number);
     }
 
     item->active = 1;

@@ -62,7 +62,6 @@
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 
-#define StringToShow            ARRAY_(0x00456AD0, char, [128])
 #define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
 // clang-format on
 

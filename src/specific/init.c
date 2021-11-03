@@ -92,6 +92,15 @@ void S_ExitSystem(const char *message)
     ShowFatalError(message);
 }
 
+void S_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    S_ExitSystem(message);
+}
+
 void init_game_malloc()
 {
     GameMemoryPointer = malloc(MALLOC_SIZE);
@@ -118,10 +127,9 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
     aligned_size = (alloc_size + 3) & ~3;
 
     if (aligned_size > GameAllocMemFree) {
-        sprintf(
-            StringToShow, "game_malloc(): OUT OF MEMORY %s %d",
-            BufferNames[buf_index], aligned_size);
-        S_ExitSystem(StringToShow);
+        S_ExitSystemFmt(
+            "game_malloc(): OUT OF MEMORY %s %d", BufferNames[buf_index],
+            aligned_size);
     }
 
     void *result = GameAllocMemPointer;
