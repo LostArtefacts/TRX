@@ -34,27 +34,23 @@ static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
 
 static void HWR_EnableTextureMode(void)
 {
-    BOOL enable;
-
     if (HWR_IsTextureMode) {
         return;
     }
 
     HWR_IsTextureMode = 1;
-    enable = TRUE;
+    BOOL enable = TRUE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
 }
 
 static void HWR_DisableTextureMode(void)
 {
-    BOOL enable;
-
     if (!HWR_IsTextureMode) {
         return;
     }
 
     HWR_IsTextureMode = 0;
-    enable = FALSE;
+    BOOL enable = FALSE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
 }
 
@@ -470,7 +466,7 @@ void HWR_Draw2DLine(
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
 
@@ -512,19 +508,9 @@ void HWR_Draw2DQuad(
     vertices[3].g = bl.g;
     vertices[3].b = bl.b;
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     HWR_RenderTriangleStrip(vertices, 4);
-}
-
-void HWR_DisableTextures()
-{
-    if (HWR_IsTextureMode) {
-        int32_t textures_enabled = 0;
-        ATI3DCIF_ContextSetState(
-            ATIRenderContext, C3D_ERS_TMAP_EN, &textures_enabled);
-        HWR_IsTextureMode = 0;
-    }
 }
 
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
@@ -563,7 +549,7 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     vertices[3].r = 0.0f;
     vertices[3].a = 128.0f;
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
@@ -641,7 +627,7 @@ void HWR_RenderLightningSegment(
 {
     C3D_VTCF vertices[4];
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
