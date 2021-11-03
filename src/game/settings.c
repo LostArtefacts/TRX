@@ -54,7 +54,7 @@ static int32_t S_ReadUserSettingsATI()
     // to any other value results in uninteresting window clipping anomalies.
     FileSeek(fp, sizeof(double), FILE_SEEK_CUR);
 
-    FileRead(&IConfig, sizeof(int32_t), 1, fp);
+    FileRead(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
 
     UITextScale = DEFAULT_UI_SCALE;
     UIBarScale = DEFAULT_UI_SCALE;
@@ -105,8 +105,9 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         json_object_get_number_int(root_obj, "sound_volume", 8);
     CLAMP(T1MConfig.sound_volume, 0, 10);
 
-    IConfig = json_object_get_number_int(root_obj, "layout_num", 0);
-    CLAMP(IConfig, 0, 1);
+    T1MConfig.input.layout =
+        json_object_get_number_int(root_obj, "layout_num", 0);
+    CLAMP(T1MConfig.input.layout, 0, 1);
 
     UITextScale = json_object_get_number_double(
         root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
@@ -185,7 +186,8 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "music_volume", T1MConfig.music_volume);
     json_object_append_number_int(
         root_obj, "sound_volume", T1MConfig.sound_volume);
-    json_object_append_number_int(root_obj, "layout_num", IConfig);
+    json_object_append_number_int(
+        root_obj, "layout_num", T1MConfig.input.layout);
     json_object_append_number_double(root_obj, "ui_text_scale", UITextScale);
     json_object_append_number_double(root_obj, "ui_bar_scale", UIBarScale);
 

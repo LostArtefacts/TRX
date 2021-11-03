@@ -77,6 +77,10 @@ typedef struct {
     bool enable_3d_pickups;
 
     struct {
+        int32_t layout;
+    } input;
+
+    struct {
         uint32_t perspective : 1;
         uint32_t bilinear : 1;
         uint32_t fps_counter : 1;
