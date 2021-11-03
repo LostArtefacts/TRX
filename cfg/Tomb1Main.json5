@@ -179,9 +179,4 @@
 
     // Enables 3D models to be rendered in place of the sprites for pickup items
     "enable_3d_pickups" : true,
-
-    // Fixes the bats being incorrectly positioned on the original levels,
-    // causing some of them to not appear and others to partially appear
-    // through grounds or ceilings.
-    "fix_bats_position" : true,
 }

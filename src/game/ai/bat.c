@@ -99,45 +99,48 @@ void InitialiseBat(int16_t item_num)
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down
     // by the height of their hanging animation.
-    if (T1MConfig.fix_bats_position) {
-        ITEM_INFO *item;
-        FLOOR_INFO *floor;
-        int32_t x, y, z;
-        int16_t room_number, ceiling, old_anim, old_frame, bat_height;
-        int16_t *bounds;
+    FixEmbeddedBatPosition(item_num);
+}
 
-        item = &Items[item_num];
-        if (item->status != IS_ACTIVE) {
-            x = item->pos.x;
-            y = item->pos.y;
-            z = item->pos.z;
-            room_number = item->room_number;
+static void FixEmbeddedBatPosition(int16_t item_num)
+{
+    ITEM_INFO *item;
+    FLOOR_INFO *floor;
+    int32_t x, y, z;
+    int16_t room_number, ceiling, old_anim, old_frame, bat_height;
+    int16_t *bounds;
 
-            floor = GetFloor(x, y, z, &room_number);
-            GetHeight(floor, x, y, z);
-            ceiling = GetCeiling(floor, x, y, z);
+    item = &Items[item_num];
+    if (item->status != IS_ACTIVE) {
+        x = item->pos.x;
+        y = item->pos.y;
+        z = item->pos.z;
+        room_number = item->room_number;
 
-            // The bats animation and frame have to be changed to the hanging
-            // one to properly measure them. Save it so it can be restored
-            // after.
-            old_anim = item->anim_number;
-            old_frame = item->frame_number;
+        floor = GetFloor(x, y, z, &room_number);
+        GetHeight(floor, x, y, z);
+        ceiling = GetCeiling(floor, x, y, z);
 
-            item->anim_number = Objects[item->object_number].anim_index;
-            item->frame_number = Anims[item->anim_number].frame_base;
-            bounds = GetBoundsAccurate(item);
+        // The bats animation and frame have to be changed to the hanging
+        // one to properly measure them. Save it so it can be restored
+        // after.
+        old_anim = item->anim_number;
+        old_frame = item->frame_number;
 
-            item->anim_number = old_anim;
-            item->frame_number = old_frame;
+        item->anim_number = Objects[item->object_number].anim_index;
+        item->frame_number = Anims[item->anim_number].frame_base;
+        bounds = GetBoundsAccurate(item);
 
-            bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
+        item->anim_number = old_anim;
+        item->frame_number = old_frame;
 
-            // Only move the bat if it's above the calculated position,
-            // Palace Midas has many bats that aren't intended to be at
-            // ceiling level.
-            if (item->pos.y < ceiling + bat_height) {
-                item->pos.y = ceiling + bat_height;
-            }
+        bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
+
+        // Only move the bat if it's above the calculated position,
+        // Palace Midas has many bats that aren't intended to be at
+        // ceiling level.
+        if (item->pos.y < ceiling + bat_height) {
+            item->pos.y = ceiling + bat_height;
         }
     }
 }
