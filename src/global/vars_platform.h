@@ -14,12 +14,6 @@
 #define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
 #define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define DDrawSurfaceMinX        VAR_I_(0x00459F24, float, 0.0)
-#define DDrawSurfaceMinY        VAR_I_(0x00459F20, float, 0.0)
-#define DDrawSurfaceMaxX        VAR_I_(0x00453068, float, 639.0)
-#define DDrawSurfaceMaxY        VAR_I_(0x00453064, float, 479.0)
-#define DDrawSurfaceWidth       VAR_U_(0x00456D90, int32_t)
-#define DDrawSurfaceHeight      VAR_U_(0x00456D94, int32_t)
 #define Surface1                VAR_U_(0x005DA6A4, LPDIRECTDRAWSURFACE)
 #define Surface2                VAR_U_(0x005DB484, LPDIRECTDRAWSURFACE)
 #define Surface3                VAR_U_(0x005DA744, LPDIRECTDRAWSURFACE)
@@ -43,5 +37,11 @@
 // clang-format on
 
 extern HINSTANCE TombModule;
+extern float DDrawSurfaceMinX;
+extern float DDrawSurfaceMinY;
+extern float DDrawSurfaceMaxX;
+extern float DDrawSurfaceMaxY;
+extern int32_t DDrawSurfaceWidth;
+extern int32_t DDrawSurfaceHeight;
 
 #endif
