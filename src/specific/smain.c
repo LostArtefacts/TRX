@@ -3,6 +3,7 @@
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "inject_util.h"
 #include "log.h"
 #include "specific/ati.h"
 #include "specific/clock.h"
@@ -18,11 +19,7 @@
 
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
-
-// clang-format off
-// TODO: decompile me!
-#define CloseMsg                VAR_U_(0x0045A940, UINT)
-// clang-format on
+static UINT CloseMsg;
 
 static void WinGameFinish();
 static LRESULT CALLBACK

@@ -4,7 +4,6 @@
 #include "dynarray.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "inject_util.h"
 
 #include <stdbool.h>
 #include <stddef.h>
