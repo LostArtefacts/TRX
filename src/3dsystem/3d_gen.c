@@ -367,8 +367,6 @@ void phd_InitWindow(
     PhdNearZ = nearz << W2V_SHIFT;
     PhdFarZ = farz << W2V_SHIFT;
     PhdViewDist = farz;
-    PhdScrWidth = width;
-    PhdScrHeight = height;
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
