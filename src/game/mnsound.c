@@ -36,14 +36,17 @@ typedef enum SAMPLE_FLAG {
     VOLUME_WIBBLE = 1 << 14,
 } SAMPLE_FLAG;
 
+static MN_SFX_PLAY_INFO SFXPlaying[MAX_PLAYING_FX];
+static int32_t MnSoundMasterVolumeDefault = 32;
+static int16_t MnAmbientLookup[MAX_AMBIENT_FX];
+static int32_t MnAmbientLookupIdx;
+
 void mn_reset_sound_effects()
 {
     if (!SoundIsActive) {
         return;
     }
     MnSoundMasterVolume = MnSoundMasterVolumeDefault;
-    MnSoundMasterFadeOn = 0;
-    MnSoundFadeCounter = 0;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         mn_clear_fx_slot(&SFXPlaying[i]);
@@ -313,19 +316,6 @@ void mn_update_sound_effects()
         return;
     }
 
-    MnSoundsPlaying = 0;
-
-    if (MnSoundMasterFadeOn) {
-        if (MnSoundFadeCounter == MnSoundFadeRate) {
-            MnSoundFadeCounter = 0;
-            if (MnSoundMasterVolume > 0) {
-                MnSoundMasterVolume--;
-            }
-        } else {
-            MnSoundFadeCounter++;
-        }
-    }
-
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
         if (slot->mn_flags & MN_FX_USED) {
@@ -334,7 +324,6 @@ void mn_update_sound_effects()
                     && slot->handle != SOUND_INVALID_HANDLE) {
                     S_SoundSetPanAndVolume(
                         slot->handle, slot->pan, slot->volume);
-                    MnSoundsPlaying++;
                 } else {
                     if (slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundStopSample(slot->handle);
@@ -348,7 +337,6 @@ void mn_update_sound_effects()
                         && slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundSetPanAndVolume(
                             slot->handle, slot->pan, slot->volume);
-                        MnSoundsPlaying++;
                     } else {
                         if (slot->handle != SOUND_INVALID_HANDLE) {
                             S_SoundStopSample(slot->handle);
