@@ -108,6 +108,7 @@ CREATURE_INFO *BaddieSlots;
 ANIM_STRUCT *Anims;
 ANIM_CHANGE_STRUCT *AnimChanges;
 ANIM_RANGE_STRUCT *AnimRanges;
+int16_t *AnimTextureRanges;
 int16_t *AnimCommands;
 int32_t *AnimBones;
 int16_t *AnimFrames;
