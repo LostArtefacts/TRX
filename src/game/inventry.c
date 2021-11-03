@@ -816,8 +816,8 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     if (inv_item->sprlist) {
         int32_t zv = PhdMatrixPtr->_23;
         int32_t zp = zv / PhdPersp;
-        int32_t sx = PhdCenterX + PhdMatrixPtr->_03 / zp;
-        int32_t sy = PhdCenterY + PhdMatrixPtr->_13 / zp;
+        int32_t sx = PhdWinCenterX + PhdMatrixPtr->_03 / zp;
+        int32_t sy = PhdWinCenterY + PhdMatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;

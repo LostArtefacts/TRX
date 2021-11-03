@@ -1599,9 +1599,9 @@ int32_t HWR_ZedClipper(
 
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdCenterX;
+                + PhdWinCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdCenterY;
+                + PhdWinCenterY;
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -1618,9 +1618,9 @@ int32_t HWR_ZedClipper(
         if (near_z > pts0->zv) {
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdCenterX;
+                + PhdWinCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdCenterY;
+                + PhdWinCenterY;
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
