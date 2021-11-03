@@ -20,6 +20,9 @@
 
 #include <stdio.h>
 
+static int32_t Rand1 = 0xD371F947;
+static int32_t Rand2 = 0xD371F947;
+
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     CurrentLevel = level_num;
