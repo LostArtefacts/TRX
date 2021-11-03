@@ -62,11 +62,9 @@ void mn_reset_sound_effects()
         }
         SAMPLE_INFO *s = &SampleInfos[SampleLUT[i]];
         if (s->volume < 0) {
-            sprintf(
-                StringToShow,
+            S_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
                 s->volume);
-            S_ExitSystem(StringToShow);
         }
 
         if ((s->flags & 3) == SOUND_AMBIENT) {

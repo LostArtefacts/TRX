@@ -128,10 +128,8 @@ void GameMain()
             break;
 
         default:
-            sprintf(
-                StringToShow, "MAIN: Unknown request %x %d", gf_direction,
-                gf_param);
-            S_ExitSystem(StringToShow);
+            S_ExitSystemFmt(
+                "MAIN: Unknown request %x %d", gf_direction, gf_param);
             return;
         }
     }
