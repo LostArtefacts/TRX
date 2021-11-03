@@ -105,7 +105,6 @@ extern int32_t KeyChange;
 #define MnAmbientLookupIdx      VAR_U_(0x0045A224, int32_t)
 
 #define IConfig                 VAR_U_(0x0045A23C, int32_t)
-#define ScanCodeNames           ARRAY_(0x00454A40, char*, [])
 
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
 #define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
