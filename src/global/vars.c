@@ -55,6 +55,11 @@ INPUT_STATE InputDB;
 int32_t KeyChange;
 int32_t OptionSelected;
 
+int32_t WibbleOffset;
+int32_t WibbleTable[WIBBLE_SIZE];
+int32_t ShadeTable[WIBBLE_SIZE];
+int32_t RandTable[WIBBLE_SIZE];
+
 GAMEFLOW GF;
 LARA_INFO Lara;
 ITEM_INFO *LaraItem;
