@@ -370,7 +370,7 @@ int32_t MusicPlay(int16_t track)
 
     CDLoop = 0;
 
-    uint32_t volume = OptionMusicVolume * 0xFFFF / 10;
+    uint32_t volume = T1MConfig.music_volume * 0xFFFF / 10;
     volume |= volume << 16;
     auxSetVolume(AuxDeviceID, volume);
 

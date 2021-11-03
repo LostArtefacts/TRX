@@ -704,16 +704,16 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     static char buf[20];
 
     if (!SoundText[0]) {
-        if (OptionMusicVolume > 10) {
-            OptionMusicVolume = 10;
+        if (T1MConfig.music_volume > 10) {
+            T1MConfig.music_volume = 10;
         }
-        sprintf(buf, "| %2d", OptionMusicVolume);
+        sprintf(buf, "| %2d", T1MConfig.music_volume);
         SoundText[0] = T_Print(0, 0, buf);
 
-        if (OptionSoundFXVolume > 10) {
-            OptionSoundFXVolume = 10;
+        if (T1MConfig.sound_volume > 10) {
+            T1MConfig.sound_volume = 10;
         }
-        sprintf(buf, "} %2d", OptionSoundFXVolume);
+        sprintf(buf, "} %2d", T1MConfig.sound_volume);
         SoundText[1] = T_Print(0, 25, buf);
 
         SoundText[2] = T_Print(0, -32, " ");
@@ -748,25 +748,25 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
     switch (Item_Data) {
     case 0:
-        if (Input.left && OptionMusicVolume > 0) {
-            OptionMusicVolume--;
+        if (Input.left && T1MConfig.music_volume > 0) {
+            T1MConfig.music_volume--;
             IDelay = 1;
             IDCount = 10;
-            sprintf(buf, "| %2d", OptionMusicVolume);
+            sprintf(buf, "| %2d", T1MConfig.music_volume);
             T_ChangeText(SoundText[0], buf);
             S_WriteUserSettings();
-        } else if (Input.right && OptionMusicVolume < 10) {
-            OptionMusicVolume++;
+        } else if (Input.right && T1MConfig.music_volume < 10) {
+            T1MConfig.music_volume++;
             IDelay = 1;
             IDCount = 10;
-            sprintf(buf, "| %2d", OptionMusicVolume);
+            sprintf(buf, "| %2d", T1MConfig.music_volume);
             T_ChangeText(SoundText[0], buf);
             S_WriteUserSettings();
         }
 
         if (Input.left || Input.right) {
-            if (OptionMusicVolume) {
-                S_MusicVolume(25 * OptionMusicVolume + 5);
+            if (T1MConfig.music_volume) {
+                S_MusicVolume(25 * T1MConfig.music_volume + 5);
             } else {
                 S_MusicVolume(0);
             }
@@ -775,25 +775,25 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (Input.left && OptionSoundFXVolume > 0) {
-            OptionSoundFXVolume--;
+        if (Input.left && T1MConfig.sound_volume > 0) {
+            T1MConfig.sound_volume--;
             IDelay = 1;
             IDCount = 10;
-            sprintf(buf, "} %2d", OptionSoundFXVolume);
+            sprintf(buf, "} %2d", T1MConfig.sound_volume);
             T_ChangeText(SoundText[1], buf);
             S_WriteUserSettings();
-        } else if (Input.right && OptionSoundFXVolume < 10) {
-            OptionSoundFXVolume++;
+        } else if (Input.right && T1MConfig.sound_volume < 10) {
+            T1MConfig.sound_volume++;
             IDelay = 1;
             IDCount = 10;
-            sprintf(buf, "} %2d", OptionSoundFXVolume);
+            sprintf(buf, "} %2d", T1MConfig.sound_volume);
             T_ChangeText(SoundText[1], buf);
             S_WriteUserSettings();
         }
 
         if (Input.left || Input.right) {
-            if (OptionSoundFXVolume) {
-                mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
+            if (T1MConfig.sound_volume) {
+                mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
             } else {
                 mn_adjust_master_volume(0);
             }
