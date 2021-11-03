@@ -98,6 +98,7 @@ void S_ExitSystemFmt(const char *fmt, ...)
     va_start(va, fmt);
     char message[150];
     vsnprintf(message, 150, fmt, va);
+    va_end(va);
     S_ExitSystem(message);
 }
 
