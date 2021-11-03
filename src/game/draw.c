@@ -15,6 +15,10 @@
 #include <stdlib.h>
 
 static int16_t InterpolatedBounds[6];
+static PHD_MATRIX *IMMatrixPtr;
+static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES];
+static int32_t IMRate;
+static int32_t IMFrac;
 
 int32_t DrawPhaseCinematic()
 {
