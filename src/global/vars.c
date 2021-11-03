@@ -60,6 +60,10 @@ int32_t WibbleTable[WIBBLE_SIZE];
 int32_t ShadeTable[WIBBLE_SIZE];
 int32_t RandTable[WIBBLE_SIZE];
 
+RGB888 GamePalette[256];
+RGB888 WaterPalette[256];
+bool ModeLock = false;
+
 GAMEFLOW GF;
 LARA_INFO Lara;
 ITEM_INFO *LaraItem;

@@ -46,16 +46,16 @@
 #define IMFrac                  VAR_U_(0x00462570, int32_t)
 #define IMMatrixPtr             VAR_U_(0x00462BE4, PHD_MATRIX*)
 #define IMMatrixStack           ARRAY_(0x00461F40, PHD_MATRIX, [MAX_NESTED_MATRICES])
+// clang-format on
 
 extern int32_t WibbleOffset;
 extern int32_t WibbleTable[WIBBLE_SIZE];
 extern int32_t ShadeTable[WIBBLE_SIZE];
 extern int32_t RandTable[WIBBLE_SIZE];
 
-#define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
-#define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
-#define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
-// clang-format on
+extern RGB888 GamePalette[256];
+extern RGB888 WaterPalette[256];
+extern bool ModeLock;
 
 extern int32_t NoInputCount;
 extern int32_t IDelay;

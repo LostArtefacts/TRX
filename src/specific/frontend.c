@@ -122,7 +122,7 @@ void S_FinishInventory()
     if (InvMode != INV_TITLE_MODE) {
         TempVideoRemove();
     }
-    ModeLock = 0;
+    ModeLock = false;
 }
 
 void S_FadeToBlack()
