@@ -1,18 +1,14 @@
 #ifndef T1M_GLOBAL_VARS_PLATFORM_H
 #define T1M_GLOBAL_VARS_PLATFORM_H
 
-#include "inject_util.h"
 #include "specific/ati.h"
 
 #include <ddraw.h>
 #include <dsound.h>
 #include <windows.h>
 
-// clang-format off
-#define TombHWND                VAR_U_(0x00463600, HWND)
-// clang-format on
-
 extern HINSTANCE TombModule;
+extern HWND TombHWND;
 
 extern LPDIRECTSOUND DSound;
 extern uint32_t AuxDeviceID;

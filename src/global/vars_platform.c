@@ -3,6 +3,7 @@
 #include "global/const.h"
 
 HINSTANCE TombModule;
+HWND TombHWND;
 
 LPDIRECTSOUND DSound;
 uint32_t AuxDeviceID;
