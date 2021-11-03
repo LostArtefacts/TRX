@@ -1068,6 +1068,8 @@ int32_t HWR_SetHardwareVideoMode()
 
     DDrawSurfaceWidth = GetScreenWidth();
     DDrawSurfaceHeight = GetScreenHeight();
+    DDrawSurfaceMinX = 0.0f;
+    DDrawSurfaceMinY = 0.0f;
     DDrawSurfaceMaxX = GetScreenWidth() - 1.0f;
     DDrawSurfaceMaxY = GetScreenHeight() - 1.0f;
 
