@@ -104,8 +104,6 @@ extern int32_t KeyChange;
 #define MnSoundsPlaying         VAR_U_(0x0045A218, int32_t)
 #define MnAmbientLookupIdx      VAR_U_(0x0045A224, int32_t)
 
-#define IConfig                 VAR_U_(0x0045A23C, int32_t)
-
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
 #define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)
 #define CompassNeedle           VAR_U_(0x0045A0AC, int16_t)

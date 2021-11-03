@@ -1023,13 +1023,13 @@ void FlashConflicts()
         if (item1->option == -1) {
             continue;
         }
-        int16_t key1 = Layout[IConfig][item1->option];
+        int16_t key1 = Layout[T1MConfig.input.layout][item1->option];
         for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
              item2->col_num != -1; item2++) {
             if (item2->option == -1) {
                 continue;
             }
-            int16_t key2 = Layout[IConfig][item2->option];
+            int16_t key2 = Layout[T1MConfig.input.layout][item2->option];
             if (item1 != item2 && key1 == key2) {
                 T_FlashText(CtrlTextB[item1->option], 1, 20);
                 T_FlashText(CtrlTextB[item2->option], 1, 20);
@@ -1064,7 +1064,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                    - CONTROLS_ROW_HEIGHT)
                     / 2,
             GF.strings
-                [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
+                [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
+                                        : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
         T_CentreV(CtrlText[0], 1);
         S_ShowControls();
@@ -1094,7 +1095,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     case 0:
         if (InputDB.left || InputDB.right) {
             if (KeyChange == -1) {
-                IConfig = IConfig ? 0 : 1;
+                T1MConfig.input.layout ^= 1;
                 S_ChangeCtrlText();
                 FlashConflicts();
                 S_WriteUserSettings();
@@ -1138,7 +1139,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             return;
         }
 
-        if (IConfig) {
+        if (T1MConfig.input.layout) {
             if (InputDB.select) {
                 KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
@@ -1230,7 +1231,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (key >= 0 && scancode_name && key != DIK_ESCAPE && key != DIK_RETURN
             && key != DIK_LEFT && key != DIK_RIGHT && key != DIK_UP
             && key != DIK_DOWN) {
-            Layout[IConfig][KeyChange] = key;
+            Layout[T1MConfig.input.layout][KeyChange] = key;
             T_ChangeText(CtrlTextB[KeyChange], scancode_name);
             T_RemoveBackground(CtrlTextB[KeyChange]);
             T_RemoveOutline(CtrlTextB[KeyChange]);
@@ -1243,7 +1244,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 3:
-        key = Layout[IConfig][KeyChange];
+        key = Layout[T1MConfig.input.layout][KeyChange];
 
         if (KeyGet() < 0 || KeyGet() != key) {
             KeyMode = 0;
@@ -1273,7 +1274,7 @@ void S_ShowControls()
         : CtrlTextPlacementNormal;
 
     if (!CtrlTextB[KEY_UP]) {
-        int16_t *layout = Layout[IConfig];
+        int16_t *layout = Layout[T1MConfig.input.layout];
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1329,13 +1330,15 @@ void S_ChangeCtrlText()
 {
     T_ChangeText(
         CtrlText[0],
-        GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
+        GF.strings
+            [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
+                                    : GS_CONTROL_DEFAULT_KEYS]);
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    int16_t *layout = Layout[IConfig];
+    int16_t *layout = Layout[T1MConfig.input.layout];
     for (const TEXT_COLUMN_PLACEMENT *col = cols;
          col->col_num >= 0 && col->col_num <= 1; col++) {
         const char *scancode_name = GetScanCodeName(layout[col->option]);
