@@ -3,6 +3,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef enum INPUT_LAYOUT {
@@ -12,7 +13,7 @@ typedef enum INPUT_LAYOUT {
 } INPUT_LAYOUT;
 
 extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][KEY_NUMBER_OF];
-extern int32_t ConflictLayout[KEY_NUMBER_OF];
+extern bool ConflictLayout[KEY_NUMBER_OF];
 extern INPUT_STATE OldInputDB;
 
 void InputInit();

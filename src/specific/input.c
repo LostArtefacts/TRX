@@ -69,7 +69,7 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
     }
 };
 
-int32_t ConflictLayout[KEY_NUMBER_OF] = { 0 };
+bool ConflictLayout[KEY_NUMBER_OF] = { false };
 
 static LPDIRECTINPUT8 DInput;
 static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard;
