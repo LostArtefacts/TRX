@@ -473,10 +473,10 @@ void S_DrawLightningSegment(
     int32_t width)
 {
     if (z1 >= PhdNearZ && z1 <= PhdFarZ && z2 >= PhdNearZ && z2 <= PhdFarZ) {
-        x1 = PhdCenterX + x1 / (z1 / PhdPersp);
-        y1 = PhdCenterY + y1 / (z1 / PhdPersp);
-        x2 = PhdCenterX + x2 / (z2 / PhdPersp);
-        y2 = PhdCenterY + y2 / (z2 / PhdPersp);
+        x1 = PhdWinCenterX + x1 / (z1 / PhdPersp);
+        y1 = PhdWinCenterY + y1 / (z1 / PhdPersp);
+        x2 = PhdWinCenterX + x2 / (z2 / PhdPersp);
+        y2 = PhdWinCenterY + y2 / (z2 / PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / PhdPersp);
         HWR_DrawLightningSegment(
@@ -611,10 +611,10 @@ int S_GetObjectBounds(int16_t *bptr)
         }
     }
 
-    x_min += PhdCenterX;
-    x_max += PhdCenterX;
-    y_min += PhdCenterY;
-    y_max += PhdCenterY;
+    x_min += PhdWinCenterX;
+    x_max += PhdWinCenterX;
+    y_min += PhdWinCenterY;
+    y_max += PhdWinCenterY;
 
     if (!num_z || x_min > PhdRight || y_min > PhdBottom || x_max < PhdLeft
         || y_max < PhdTop) {

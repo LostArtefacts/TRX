@@ -362,8 +362,8 @@ void phd_InitWindow(
     PhdWinMaxY = height - 1;
     PhdWinWidth = width;
     PhdWinHeight = height;
-    PhdCenterX = width / 2;
-    PhdCenterY = height / 2;
+    PhdWinCenterX = width / 2;
+    PhdWinCenterY = height / 2;
     PhdNearZ = nearz << W2V_SHIFT;
     PhdFarZ = farz << W2V_SHIFT;
     PhdViewDist = farz;
@@ -568,8 +568,8 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
                 }
             }
 
-            int32_t xs = PhdCenterX + xv / (zv / PhdPersp);
-            int32_t ys = PhdCenterY + yv / (zv / PhdPersp);
+            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
+            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
             if (IsWibbleEffect) {
                 xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
                 ys += WibbleTable[(xs + WibbleOffset) & 0x1F];
