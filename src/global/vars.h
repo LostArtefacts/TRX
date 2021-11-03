@@ -56,7 +56,6 @@
 #define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
 #define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
 #define WibbleOffset            VAR_U_(0x00459F08, int32_t)
-#define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 // clang-format on
 
@@ -119,6 +118,7 @@ extern int16_t *MeshBase;
 extern int16_t **Meshes;
 extern OBJECT_INFO Objects[O_NUMBER_OF];
 extern STATIC_INFO StaticObjects[STATIC_NUMBER_OF];
+extern int8_t *TexturePagePtrs[MAX_TEXTPAGES];
 extern int16_t RoomCount;
 extern int32_t LevelItemCount;
 extern ITEM_INFO *Items;
