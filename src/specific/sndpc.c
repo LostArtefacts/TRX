@@ -46,6 +46,7 @@ typedef struct WAVE_FILE_HEADER {
 #pragma pack(pop)
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
+static int32_t DecibelLUT[DECIBEL_LUT_SIZE];
 
 int32_t ConvertVolumeToDecibel(int32_t volume)
 {

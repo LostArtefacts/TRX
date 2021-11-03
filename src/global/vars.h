@@ -80,13 +80,10 @@ extern INPUT_STATE InputDB;
 extern int32_t KeyChange;
 
 extern bool SoundIsActive;
-#define SampleLUT               ARRAY_(0x0045EB60, int16_t, [MAX_SAMPLES])
-#define SampleInfos             VAR_U_(0x0045ED60, SAMPLE_INFO*)
-#define SampleData              VAR_U_(0x0045B954, SAMPLE_DATA**)
-#define NumSampleData           VAR_U_(0x0045B96C, int32_t)
-#define NumSampleInfos          VAR_U_(0x0045A210, int32_t)
-#define NumSamples              VAR_U_(0x0045E964, int32_t)
-#define DecibelLUT              ARRAY_(0x0045F1E0, int32_t, [DECIBEL_LUT_SIZE])
+extern int16_t SampleLUT[MAX_SAMPLES];
+extern SAMPLE_INFO *SampleInfos;
+extern SAMPLE_DATA** SampleData;
+extern int32_t NumSampleData;
 #define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
 #define CDTrackLooped           VAR_I_(0x0045B97C, int16_t, -1)
 #define CDLoop                  VAR_U_(0x0045B94C, int32_t)

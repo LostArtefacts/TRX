@@ -558,16 +558,17 @@ static int32_t LoadSamples(MYFILE *fp)
     }
 
     FileRead(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
-    FileRead(&NumSampleInfos, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d sample infos", NumSampleInfos);
-    if (!NumSampleInfos) {
+    int32_t num_sample_infos;
+    FileRead(&num_sample_infos, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d sample infos", num_sample_infos);
+    if (!num_sample_infos) {
         S_ExitSystem("No Sample Infos");
         return 0;
     }
 
     SampleInfos =
-        game_malloc(sizeof(SAMPLE_INFO) * NumSampleInfos, GBUF_SAMPLE_INFOS);
-    FileRead(SampleInfos, sizeof(SAMPLE_INFO), NumSampleInfos, fp);
+        game_malloc(sizeof(SAMPLE_INFO) * num_sample_infos, GBUF_SAMPLE_INFOS);
+    FileRead(SampleInfos, sizeof(SAMPLE_INFO), num_sample_infos, fp);
 
     int32_t sample_data_size;
     FileRead(&sample_data_size, sizeof(int32_t), 1, fp);
@@ -580,26 +581,27 @@ static int32_t LoadSamples(MYFILE *fp)
     char *sample_data = game_malloc(sample_data_size, GBUF_SAMPLES);
     FileRead(sample_data, sizeof(char), sample_data_size, fp);
 
-    FileRead(&NumSamples, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d samples", NumSamples);
-    if (!NumSamples) {
+    int32_t num_samples;
+    FileRead(&num_samples, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d samples", num_samples);
+    if (!num_samples) {
         S_ExitSystem("No Samples");
         return 0;
     }
 
     int32_t *sample_offsets =
-        game_malloc(sizeof(int32_t) * NumSamples, GBUF_SAMPLE_OFFSETS);
-    FileRead(sample_offsets, sizeof(int32_t), NumSamples, fp);
+        game_malloc(sizeof(int32_t) * num_samples, GBUF_SAMPLE_OFFSETS);
+    FileRead(sample_offsets, sizeof(int32_t), num_samples, fp);
 
     char **sample_pointers =
-        game_malloc(sizeof(char *) * NumSamples, GBUF_SAMPLE_OFFSETS);
-    for (int i = 0; i < NumSamples; i++) {
+        game_malloc(sizeof(char *) * num_samples, GBUF_SAMPLE_OFFSETS);
+    for (int i = 0; i < num_samples; i++) {
         sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    SoundLoadSamples(sample_pointers, NumSamples);
+    SoundLoadSamples(sample_pointers, num_samples);
 
-    game_free(sizeof(char *) * NumSamples, GBUF_SAMPLE_OFFSETS);
+    game_free(sizeof(char *) * num_samples, GBUF_SAMPLE_OFFSETS);
 
     return 1;
 }
