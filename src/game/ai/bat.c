@@ -12,6 +12,8 @@
 
 BITE_INFO BatBite = { 0, 16, 45, 4 };
 
+static void FixEmbeddedBatPosition(int16_t item_num);
+
 void SetupBat(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
