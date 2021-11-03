@@ -92,15 +92,7 @@ extern bool SoundIsActive;
 #define CDLoop                  VAR_U_(0x0045B94C, int32_t)
 #define CDNumTracks             VAR_U_(0x0045B964, int32_t)
 #define CDFlags                 ARRAY_(0x00462C20, int16_t, [MAX_CD_TRACKS])
-#define MnSoundMasterVolume     VAR_U_(0x0045668C, int32_t)
-#define MnSoundMasterVolumeDefault VAR_U_(0x00456690, int32_t)
-#define SFXPlaying              ARRAY_(0x0045E980, MN_SFX_PLAY_INFO, [MAX_PLAYING_FX])
-#define MnAmbientLookup         ARRAY_(0x0045A200, int16_t, [MAX_AMBIENT_FX])
-#define MnSoundMasterFadeOn     VAR_U_(0x0045A21C, int32_t)
-#define MnSoundFadeCounter      VAR_U_(0x0045A220, int32_t)
-#define MnSoundFadeRate         VAR_I_(0x00456694, int32_t, 10)
-#define MnSoundsPlaying         VAR_U_(0x0045A218, int32_t)
-#define MnAmbientLookupIdx      VAR_U_(0x0045A224, int32_t)
+extern int32_t MnSoundMasterVolume;
 
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)
 #define CompassSpeed            VAR_U_(0x0045A0A8, int16_t)

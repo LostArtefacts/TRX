@@ -36,6 +36,7 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 };
 
 bool SoundIsActive = true;
+int32_t MnSoundMasterVolume;
 
 int32_t NoInputCount = 0;
 int32_t IDelay;
