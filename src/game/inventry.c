@@ -24,8 +24,6 @@
 #include <stdint.h>
 #include <string.h>
 
-static int16_t InvNFrames = 2;
-
 typedef enum {
     PSPINE = 1,
     PFRONT = 2,
@@ -35,6 +33,10 @@ typedef enum {
     PINBACK = 32,
     PPAGE1 = 64
 } PASS_PAGE;
+
+static int16_t InvNFrames = 2;
+static int16_t CompassNeedle = 0;
+static int16_t CompassSpeed = 0;
 
 int32_t Display_Inventory(int inv_mode)
 {
@@ -729,12 +731,7 @@ void Construct_Inventory()
     for (int i = 0; i < InvMainObjects; i++) {
         INVENTORY_ITEM *inv_item = InvMainList[i];
         inv_item->drawn_meshes = inv_item->which_meshes;
-        if ((inv_item->object_number == O_MAP_OPTION) && CompassStatus) {
-            inv_item->current_frame = inv_item->open_frame;
-            inv_item->drawn_meshes = -1;
-        } else {
-            inv_item->current_frame = 0;
-        }
+        inv_item->current_frame = 0;
         inv_item->goal_frame = inv_item->current_frame;
         inv_item->anim_count = 0;
         inv_item->y_rot = 0;
