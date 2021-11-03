@@ -1041,6 +1041,10 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+        return;
+    }
+
     if (coll->mid_floor > 100) {
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
@@ -1267,6 +1271,10 @@ void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
     GetLaraCollisionInfo(item, coll);
 
+    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+        return;
+    }
+
     if (coll->mid_ceiling > -100) {
         item->goal_anim_state = AS_STOP;
         item->current_anim_state = AS_STOP;
@@ -1300,6 +1308,10 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
     if (LaraDeflectEdge(item, coll)) {
         item->anim_number = AA_STOP;
         item->frame_number = AF_STOP;
+    }
+
+    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+        return;
     }
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
