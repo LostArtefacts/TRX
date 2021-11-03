@@ -149,7 +149,7 @@ int8_t S_Pause()
     FPSText = NULL;
     S_FadeInInventory(1);
     TempVideoAdjust(GetScreenSizeIdx());
-    S_SetupAboveWater(0);
+    S_SetupAboveWater(false);
 
     S_MusicPause();
 

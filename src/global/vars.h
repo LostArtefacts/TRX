@@ -56,9 +56,6 @@
 #define GamePalette             ARRAY_(0x0045E660, RGB888, [256])
 #define WaterPalette            ARRAY_(0x0045E33D, RGB888, [256])
 #define WibbleOffset            VAR_U_(0x00459F08, int32_t)
-#define IsWibbleEffect          VAR_U_(0x00459F0C, int32_t)
-#define IsWaterEffect           VAR_U_(0x00459F10, int32_t)
-#define IsShadeEffect           VAR_U_(0x00459F14, int32_t)
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
 // clang-format on
@@ -101,7 +98,7 @@ extern GAMEFLOW GF;
 extern LARA_INFO Lara;
 extern ITEM_INFO *LaraItem;
 extern CAMERA_INFO Camera;
-extern int32_t CameraUnderwater;
+extern bool CameraUnderwater;
 extern SAVEGAME_INFO SaveGame;
 extern int32_t SavedGamesCount;
 extern int32_t SaveCounter;
@@ -152,6 +149,9 @@ extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
 extern DYNARRAY *RoomsToDraw; // array of int16_t
+extern bool IsWibbleEffect;
+extern bool IsWaterEffect;
+extern bool IsShadeEffect;
 
 extern int16_t *TriggerIndex;
 extern int32_t FlipTimer;
