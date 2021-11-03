@@ -131,7 +131,13 @@ void InitialiseBat(int16_t item_num)
             item->frame_number = old_frame;
 
             bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
-            item->pos.y = ceiling + bat_height;
+            
+            // Only move the bat if it's above the calculated position,
+            // Palace Midas has many bats that aren't intended to be at
+            // ceiling level.
+            if (item->pos.y < ceiling + bat_height) {
+                item->pos.y = ceiling + bat_height;
+            }
         }
     }
 }
