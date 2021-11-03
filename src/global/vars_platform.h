@@ -10,9 +10,6 @@
 
 // clang-format off
 #define TombHWND                VAR_U_(0x00463600, HWND)
-#define AuxDeviceID             VAR_U_(0x0045B984, uint32_t)
-#define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
-#define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
 #define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
 #define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
 #define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
@@ -23,6 +20,10 @@
 // clang-format on
 
 extern HINSTANCE TombModule;
+
+extern LPDIRECTSOUND DSound;
+extern uint32_t AuxDeviceID;
+extern uint32_t MCIDeviceID;
 
 extern LPDIRECTDRAW DDraw;
 extern float DDrawSurfaceMinX;
