@@ -13,25 +13,25 @@
 // clang-format off
 // TODO: decompile me!
 
-#define PhdWinMaxX              VAR_U_(0x006CAD00, int32_t)
-#define PhdWinMaxY              VAR_U_(0x006CAD10, int32_t)
-#define PhdWinCenterX           VAR_U_(0x0068F3AC, int32_t)
-#define PhdWinCenterY           VAR_U_(0x0068F3B0, int32_t)
-#define PhdViewDist             VAR_U_(0x006D4DE0, int32_t)
-#define PhdPersp                VAR_U_(0x0069518C, int32_t)
-#define PhdFarZ                 VAR_U_(0x00695184, int32_t)
-#define PhdNearZ                VAR_U_(0x006CAD04, int32_t)
-#define PhdLeft                 VAR_U_(0x00695190, int32_t)
-#define PhdBottom               VAR_U_(0x00695188, int32_t)
-#define PhdRight                VAR_U_(0x006E80E0, int32_t)
-#define PhdTop                  VAR_U_(0x0068D380, int32_t)
-#define PhdWinWidth             VAR_U_(0x006CADD4, int32_t)
-#define PhdWinHeight            VAR_U_(0x0068F3A8, int32_t)
 #define PhdVBuf                 ARRAY_(0x006D7620, PHD_VBUF, [1500])
 #define PhdSpriteInfo           ARRAY_(0x0068D3A0, PHD_SPRITE, [MAX_SPRITES_PAGE * MAX_SPRITES])
 #define PhdTextureInfo          ARRAY_(0x006CADE0, PHD_TEXTURE, [MAX_TEXTURES])
 // clang-format on
 
+extern int32_t PhdWinMaxX;
+extern int32_t PhdWinMaxY;
+extern int32_t PhdWinCenterX;
+extern int32_t PhdWinCenterY;
+extern int32_t PhdViewDist;
+extern int32_t PhdPersp;
+extern int32_t PhdFarZ;
+extern int32_t PhdNearZ;
+extern int32_t PhdLeft;
+extern int32_t PhdBottom;
+extern int32_t PhdRight;
+extern int32_t PhdTop;
+extern int32_t PhdWinWidth;
+extern int32_t PhdWinHeight;
 extern PHD_MATRIX *PhdMatrixPtr;
 extern PHD_MATRIX W2VMatrix;
 
