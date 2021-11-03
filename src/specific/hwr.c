@@ -26,6 +26,12 @@ typedef struct HWR_LIGHTNING {
 #define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
 #define HWR_LightningCount VAR_U_(0x00463618, int32_t)
 
+static bool HWR_IsPaletteActive;
+static bool HWR_IsRendering;
+static bool HWR_IsRenderingOld;
+static bool HWR_IsTextureMode;
+static int32_t HWR_SelectedTexture;
+static bool HWR_TextureLoaded[MAX_TEXTPAGES];
 static RGBF HWR_WaterColor;
 
 static void HWR_EnableTextureMode(void);
@@ -38,7 +44,7 @@ static void HWR_EnableTextureMode(void)
         return;
     }
 
-    HWR_IsTextureMode = 1;
+    HWR_IsTextureMode = true;
     BOOL enable = TRUE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
 }
@@ -49,7 +55,7 @@ static void HWR_DisableTextureMode(void)
         return;
     }
 
-    HWR_IsTextureMode = 0;
+    HWR_IsTextureMode = false;
     BOOL enable = FALSE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
 }
@@ -80,25 +86,25 @@ void HWR_CheckError(HRESULT result)
 
 void HWR_RenderBegin()
 {
-    HWR_OldIsRendering = HWR_IsRendering;
+    HWR_IsRenderingOld = HWR_IsRendering;
     if (!HWR_IsRendering) {
         ATI3DCIF_RenderBegin(ATIRenderContext);
-        HWR_IsRendering = 1;
+        HWR_IsRendering = true;
     }
 }
 
 void HWR_RenderEnd()
 {
-    HWR_OldIsRendering = HWR_IsRendering;
+    HWR_IsRenderingOld = HWR_IsRendering;
     if (HWR_IsRendering) {
         ATI3DCIF_RenderEnd();
-        HWR_IsRendering = 0;
+        HWR_IsRendering = false;
     }
 }
 
 void HWR_RenderToggle()
 {
-    if (HWR_OldIsRendering) {
+    if (HWR_IsRenderingOld) {
         HWR_RenderBegin();
     } else {
         HWR_RenderEnd();
@@ -203,7 +209,7 @@ void HWR_SetPalette()
     ATIChromaKey.b = 0;
     ATIChromaKey.a = 0;
 
-    HWR_IsPaletteActive = 1;
+    HWR_IsPaletteActive = true;
     LOG_INFO("    complete");
 }
 
@@ -1688,7 +1694,7 @@ void HWR_DownloadTextures(int32_t pages)
             }
             ATITextureMap[i] = 0;
         }
-        HWR_TextureLoaded[i] = 0;
+        HWR_TextureLoaded[i] = false;
     }
 
     if (HWR_IsPaletteActive) {
@@ -1703,7 +1709,7 @@ void HWR_DownloadTextures(int32_t pages)
                 C3D_ECI_TMAP_8BIT, ATIPalette, &ATITexturePalette)) {
             ShowFatalError("ERROR: Cannot create texture palette");
         }
-        HWR_IsPaletteActive = 0;
+        HWR_IsPaletteActive = false;
     }
 
     for (i = 0; i < pages; i++) {
@@ -1742,7 +1748,7 @@ void HWR_DownloadTextures(int32_t pages)
             ShowFatalError("ERROR: Could not register texture");
         }
 
-        HWR_TextureLoaded[i] = 1;
+        HWR_TextureLoaded[i] = true;
         LOG_INFO("    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
     }
 
