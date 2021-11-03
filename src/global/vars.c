@@ -55,6 +55,20 @@ INPUT_STATE InputDB;
 int32_t KeyChange;
 int32_t OptionSelected;
 
+int32_t PhdWinMaxX;
+int32_t PhdWinMaxY;
+int32_t PhdWinCenterX;
+int32_t PhdWinCenterY;
+int32_t PhdViewDist;
+int32_t PhdPersp;
+int32_t PhdFarZ;
+int32_t PhdNearZ;
+int32_t PhdLeft;
+int32_t PhdBottom;
+int32_t PhdRight;
+int32_t PhdTop;
+int32_t PhdWinWidth;
+int32_t PhdWinHeight;
 PHD_MATRIX *PhdMatrixPtr;
 PHD_MATRIX W2VMatrix;
 
