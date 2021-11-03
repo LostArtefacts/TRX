@@ -77,6 +77,7 @@ int32_t HeightType = 0;
 int32_t HealthBarTimer;
 int16_t StoredLaraHealth = 0;
 
+ROOM_INFO *RoomInfo;
 int16_t *FloorData;
 int16_t *MeshBase;
 int16_t **Meshes;

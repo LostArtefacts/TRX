@@ -61,8 +61,6 @@
 #define IsShadeEffect           VAR_U_(0x00459F14, int32_t)
 #define TexturePagePtrs         ARRAY_(0x006E7FC0, int8_t*, [MAX_TEXTPAGES])
 #define ModeLock                VAR_I_(0x00459F70, int32_t, 0)
-
-#define RoomInfo                VAR_U_(0x00462BE8, ROOM_INFO*)
 // clang-format on
 
 extern int32_t NoInputCount;
@@ -118,6 +116,7 @@ extern int32_t OverlayFlag;
 extern int32_t ChunkyFlag;
 extern int32_t HeightType;
 
+extern ROOM_INFO *RoomInfo;
 extern int16_t *FloorData;
 extern int16_t *MeshBase;
 extern int16_t **Meshes;
