@@ -95,11 +95,10 @@ int16_t *Cine;
 int16_t NumCineFrames;
 int16_t CineFrame;
 PHD_3DPOS CinePosition;
-int16_t RoomsToDraw[MAX_ROOMS_TO_DRAW];
-int32_t RoomsToDrawNum;
 int32_t NumberCameras;
 int32_t NumberSoundEffects;
 OBJECT_VECTOR *SoundEffectsTable;
+DYNARRAY *RoomsToDraw = NULL; // array of int16_t
 
 int16_t *TriggerIndex;
 int32_t FlipTimer = 0;

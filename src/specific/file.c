@@ -145,6 +145,11 @@ static int32_t LoadRooms(MYFILE *fp)
     uint16_t count2;
     uint32_t count4;
 
+    if (RoomsToDraw) {
+        DynArray_Free(RoomsToDraw);
+    }
+    RoomsToDraw = DynArray_Create(sizeof(int16_t));
+
     FileRead(&RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", RoomCount);
     if (RoomCount > MAX_ROOMS) {

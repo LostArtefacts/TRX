@@ -1,6 +1,7 @@
 #ifndef T1M_GLOBAL_VARS_H
 #define T1M_GLOBAL_VARS_H
 
+#include "dynarray.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "inject_util.h"
@@ -181,11 +182,10 @@ extern int16_t *Cine;
 extern int16_t NumCineFrames;
 extern int16_t CineFrame;
 extern PHD_3DPOS CinePosition;
-extern int16_t RoomsToDraw[MAX_ROOMS_TO_DRAW];
-extern int32_t RoomsToDrawNum;
 extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
+extern DYNARRAY *RoomsToDraw; // array of int16_t
 
 extern int16_t *TriggerIndex;
 extern int32_t FlipTimer;
