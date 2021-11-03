@@ -84,11 +84,10 @@ extern int16_t SampleLUT[MAX_SAMPLES];
 extern SAMPLE_INFO *SampleInfos;
 extern SAMPLE_DATA** SampleData;
 extern int32_t NumSampleData;
-#define CDTrack                 VAR_I_(0x004534DC, int16_t, -1)
-#define CDTrackLooped           VAR_I_(0x0045B97C, int16_t, -1)
-#define CDLoop                  VAR_U_(0x0045B94C, int32_t)
-#define CDNumTracks             VAR_U_(0x0045B964, int32_t)
-#define CDFlags                 ARRAY_(0x00462C20, int16_t, [MAX_CD_TRACKS])
+extern int16_t MusicTrack;
+extern int16_t MusicTrackLooped;
+extern bool MusicLoop;
+extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t MnSoundMasterVolume;
 
 #define CompassStatus           VAR_U_(0x0045A0A4, int16_t)

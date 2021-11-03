@@ -151,7 +151,7 @@ void InitialiseGameFlags()
     }
 
     for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        CDFlags[i] = 0;
+        MusicTrackFlags[i] = 0;
     }
 
     /* Clear Object Loaded flags */
