@@ -127,9 +127,9 @@
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 
-    // Fixes sidestepping on breakable tiles causing Lara to immediately
-    // descend down to the tile underneath.
-    "fix_sidestep_glitch": false,
+    // Fixes sidestepping and walking backwards on breakable tiles
+    // causing Lara to immediately descend down to the tile underneath.
+    "fix_descending_glitch": false,
 
     // Fixes Lara jumping through objects and Lara moving up certain slopes.
     "fix_wall_jump_glitch": false,

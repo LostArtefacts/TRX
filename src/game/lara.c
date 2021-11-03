@@ -1041,7 +1041,7 @@ void LaraColStop(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+    if (T1MConfig.fix_descending_glitch && LaraFallen(item, coll)) {
         return;
     }
 
@@ -1271,7 +1271,7 @@ void LaraColCompress(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
     GetLaraCollisionInfo(item, coll);
 
-    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+    if (T1MConfig.fix_descending_glitch && LaraFallen(item, coll)) {
         return;
     }
 
@@ -1310,7 +1310,7 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOP;
     }
 
-    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+    if (T1MConfig.fix_descending_glitch && LaraFallen(item, coll)) {
         return;
     }
 
@@ -1362,7 +1362,7 @@ void LaraColStepRight(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOP;
     }
 
-    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+    if (T1MConfig.fix_descending_glitch && LaraFallen(item, coll)) {
         return;
     }
 
@@ -1394,7 +1394,7 @@ void LaraColStepLeft(ITEM_INFO *item, COLL_INFO *coll)
         item->frame_number = AF_STOP;
     }
 
-    if (T1MConfig.fix_sidestep_glitch && LaraFallen(item, coll)) {
+    if (T1MConfig.fix_descending_glitch && LaraFallen(item, coll)) {
         return;
     }
 
