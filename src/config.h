@@ -75,6 +75,7 @@ typedef struct {
     float brightness;
     bool enable_round_shadow;
     bool enable_3d_pickups;
+    bool fix_bats_position;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;
