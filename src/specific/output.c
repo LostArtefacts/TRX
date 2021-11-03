@@ -17,7 +17,6 @@
 
 #include <assert.h>
 #include <math.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -344,17 +343,17 @@ void S_DrawAirBar(int32_t percent)
     RenderBar(percent, 100, BT_LARA_AIR);
 }
 
-void S_SetupBelowWater(int32_t underwater)
+void S_SetupBelowWater(bool underwater)
 {
     PhdWet = underwater;
-    IsWaterEffect = 1;
-    IsWibbleEffect = underwater == 0;
-    IsShadeEffect = 1;
+    IsWaterEffect = true;
+    IsWibbleEffect = !underwater;
+    IsShadeEffect = true;
 }
 
-void S_SetupAboveWater(int32_t underwater)
+void S_SetupAboveWater(bool underwater)
 {
-    IsWaterEffect = 0;
+    IsWaterEffect = false;
     IsWibbleEffect = underwater;
     IsShadeEffect = underwater;
 }

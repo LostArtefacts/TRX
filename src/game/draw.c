@@ -20,7 +20,7 @@ int32_t DrawPhaseCinematic()
 {
     S_InitialisePolyList();
     S_ClearScreen();
-    CameraUnderwater = 0;
+    CameraUnderwater = false;
     for (int i = 0; i < DynArray_Size(RoomsToDraw); i++) {
         int16_t room_num = *(int16_t *)DynArray_Get(RoomsToDraw, i);
         ROOM_INFO *r = &RoomInfo[room_num];

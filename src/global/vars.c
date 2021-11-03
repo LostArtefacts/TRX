@@ -59,7 +59,7 @@ GAMEFLOW GF;
 LARA_INFO Lara;
 ITEM_INFO *LaraItem;
 CAMERA_INFO Camera;
-int32_t CameraUnderwater;
+bool CameraUnderwater;
 SAVEGAME_INFO SaveGame;
 int32_t SavedGamesCount;
 int32_t SaveCounter;
@@ -113,6 +113,9 @@ int32_t NumberCameras;
 int32_t NumberSoundEffects;
 OBJECT_VECTOR *SoundEffectsTable;
 DYNARRAY *RoomsToDraw = NULL; // array of int16_t
+bool IsWibbleEffect;
+bool IsWaterEffect;
+bool IsShadeEffect;
 
 int16_t *TriggerIndex;
 int32_t FlipTimer = 0;

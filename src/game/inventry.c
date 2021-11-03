@@ -707,7 +707,7 @@ int32_t Display_Inventory(int inv_mode)
 
 void Construct_Inventory()
 {
-    S_SetupAboveWater(0);
+    S_SetupAboveWater(false);
     if (InvMode != INV_TITLE_MODE) {
         TempVideoAdjust(GetScreenSizeIdx());
     }
