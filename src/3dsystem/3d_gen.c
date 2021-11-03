@@ -627,11 +627,6 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
     obj_ptr += 4;
     obj_ptr = calc_object_vertices(obj_ptr);
     if (obj_ptr) {
-        FltWinTop = 0.0;
-        FltWinLeft = 0.0;
-        FltWinRight = PhdWinMaxX;
-        FltWinBottom = PhdWinMaxY;
-
         obj_ptr = calc_vertice_light(obj_ptr);
         obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
         obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
@@ -642,10 +637,6 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
 
 void S_InsertRoom(const int16_t *obj_ptr)
 {
-    FltWinLeft = PhdLeft;
-    FltWinRight = PhdRight;
-    FltWinTop = PhdTop;
-    FltWinBottom = PhdBottom;
     obj_ptr = calc_roomvert(obj_ptr);
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);

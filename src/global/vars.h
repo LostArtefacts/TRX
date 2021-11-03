@@ -13,10 +13,6 @@
 // clang-format off
 // TODO: decompile me!
 
-#define FltWinTop               VAR_U_(0x0068F3B8, float)
-#define FltWinLeft              VAR_U_(0x00695180, float)
-#define FltWinBottom            VAR_U_(0x0068F3A4, float)
-#define FltWinRight             VAR_U_(0x006E8040, float)
 #define PhdWinMaxX              VAR_U_(0x006CAD00, int32_t)
 #define PhdWinMaxY              VAR_U_(0x006CAD10, int32_t)
 #define PhdWinCenterX           VAR_U_(0x0068F3AC, int32_t)
