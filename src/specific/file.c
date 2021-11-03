@@ -598,7 +598,6 @@ static int32_t LoadSamples(MYFILE *fp)
     }
 
     SoundLoadSamples(sample_pointers, NumSamples);
-    SoundsLoaded = 1;
 
     game_free(sizeof(char *) * NumSamples, GBUF_SAMPLE_OFFSETS);
 
