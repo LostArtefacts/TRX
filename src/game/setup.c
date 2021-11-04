@@ -159,7 +159,7 @@ void InitialiseGameFlags()
         Objects[i].loaded = 0;
     }
 
-    LevelComplete = 0;
+    LevelComplete = false;
     FlipEffect = -1;
     PierreItemNum = NO_ITEM;
 }

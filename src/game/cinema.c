@@ -47,7 +47,7 @@ int32_t StopCinematic(int32_t level_num)
     S_SoundStopAllSamples();
     SoundIsActive = SoundIsActiveOld;
 
-    LevelComplete = 1;
+    LevelComplete = true;
     S_FadeInInventory(1);
 
     return level_num | GF_LEVEL_COMPLETE;

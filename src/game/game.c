@@ -62,7 +62,7 @@ int32_t StopGame()
 int32_t GameLoop(int32_t demo_mode)
 {
     NoInputCount = 0;
-    ResetFlag = 0;
+    ResetFlag = false;
     OverlayFlag = 1;
     InitialiseCamera();
 

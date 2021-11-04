@@ -111,12 +111,12 @@ int32_t Display_Inventory(int inv_mode)
 
         if (InvMode != INV_TITLE_MODE || Input.any || InputDB.any) {
             NoInputCount = 0;
-            ResetFlag = 0;
+            ResetFlag = false;
         } else {
             if (!T1MConfig.disable_demo) {
                 NoInputCount++;
                 if (GF.has_demo && NoInputCount > GF.demo_delay) {
-                    ResetFlag = 1;
+                    ResetFlag = true;
                 }
             }
         }

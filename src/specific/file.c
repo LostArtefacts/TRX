@@ -612,17 +612,17 @@ bool S_LoadLevel(int level_num)
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the
         // currently loaded level.
-        int8_t lara_found = 0;
-        int8_t in_cutscene = 0;
+        bool lara_found = false;
+        bool in_cutscene = false;
         for (int i = 0; i < LevelItemCount; i++) {
             if (Items[i].object_number == O_LARA) {
-                lara_found = 1;
+                lara_found = true;
             }
             if (Items[i].object_number == O_PLAYER_1
                 || Items[i].object_number == O_PLAYER_2
                 || Items[i].object_number == O_PLAYER_3
                 || Items[i].object_number == O_PLAYER_4) {
-                in_cutscene = 1;
+                in_cutscene = true;
             }
         }
         if (!lara_found && !in_cutscene) {

@@ -104,7 +104,7 @@ void CheckCheatMode()
     case 8:
         if (LaraItem->fall_speed > 0) {
             if (as == AS_FORWARDJUMP) {
-                LevelComplete = 1;
+                LevelComplete = true;
             } else if (as == AS_BACKJUMP) {
                 Inv_AddItem(O_SHOTGUN_ITEM);
                 Inv_AddItem(O_MAGNUM_ITEM);
@@ -913,7 +913,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_FINISH:
-            LevelComplete = 1;
+            LevelComplete = true;
             break;
 
         case TO_CD:
@@ -1431,7 +1431,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
-                LevelComplete = 1;
+                LevelComplete = true;
                 gym_completion_counter = 0;
             }
         } else if (LaraItem->current_anim_state != AS_WATEROUT) {
