@@ -20,6 +20,16 @@ int32_t StartDemo()
     TEXTSTRING *txt;
     START_INFO start, *s;
 
+    bool any_demos = false;
+    for (int i = GF.first_level_num; i < GF.last_level_num; i++) {
+        if (GF.levels[i].demo) {
+            any_demos = true;
+        }
+    }
+    if (!any_demos) {
+        return GF_EXIT_TO_TITLE;
+    }
+
     int16_t level_num = DemoLevel;
     do {
         level_num++;
