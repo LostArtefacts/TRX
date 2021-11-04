@@ -6,8 +6,8 @@
 #include "game/control.h"
 #include "game/game.h"
 #include "game/hair.h"
-#include "game/health.h"
 #include "game/inv.h"
+#include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/output.h"
@@ -45,7 +45,7 @@ int32_t DrawPhaseGame()
 {
     S_InitialisePolyList();
     DrawRooms(Camera.pos.room_number);
-    DrawGameInfo();
+    Overlay_DrawGameInfo();
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
     S_AnimateTextures(Camera.number_frames);

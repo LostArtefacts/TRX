@@ -1,4 +1,4 @@
-#include "game/health.h"
+#include "game/overlay.h"
 
 #include "3dsystem/scalespr.h"
 #include "config.h"
@@ -77,11 +77,11 @@ static RGB888 ColorBarMap[][COLOR_STEPS] = {
       { 120, 60, 70 } },
 };
 
-static void BarLocation(
+static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y);
-static void RenderBar(int32_t value, int32_t value_max, int32_t bar_type);
+static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type);
 
-static void BarLocation(
+static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
 {
     const int32_t screen_margin_h = 20;
@@ -110,7 +110,7 @@ static void BarLocation(
     BarOffsetY[bar_location] += height + bar_spacing;
 }
 
-static void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
+static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
 {
     static int32_t blink_counter = 0;
     const int32_t percent_max = 100;
@@ -133,13 +133,16 @@ static void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t x = 0;
     int32_t y = 0;
     if (bar_type == BT_LARA_HEALTH) {
-        BarLocation(T1MConfig.healthbar_location, width, height, &x, &y);
+        Overlay_GetBarLocation(
+            T1MConfig.healthbar_location, width, height, &x, &y);
         bar_color = T1MConfig.healthbar_color;
     } else if (bar_type == BT_LARA_AIR) {
-        BarLocation(T1MConfig.airbar_location, width, height, &x, &y);
+        Overlay_GetBarLocation(
+            T1MConfig.airbar_location, width, height, &x, &y);
         bar_color = T1MConfig.airbar_color;
     } else if (bar_type == BT_ENEMY_HEALTH) {
-        BarLocation(T1MConfig.enemy_healthbar_location, width, height, &x, &y);
+        Overlay_GetBarLocation(
+            T1MConfig.enemy_healthbar_location, width, height, &x, &y);
         bar_color = T1MConfig.enemy_healthbar_color;
     }
 
@@ -191,46 +194,14 @@ static void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     }
 }
 
-void DrawGameInfo()
+void Overlay_Init()
 {
-    if (OverlayFlag > 0) {
-        DrawHealthBar();
-        DrawAirBar();
-        DrawEnemyBar();
-        DrawPickups();
-    }
-
-    DrawAmmoInfo();
-    DrawFPSInfo();
-
-    T_DrawText();
-}
-
-void DrawFPSInfo()
-{
-    static char fps_buf[20];
-    static int32_t elapsed = 0;
-
-    if (T1MConfig.render_flags.fps_counter) {
-        if (ClockGetMS() - elapsed >= 1000) {
-            if (FPSText) {
-                sprintf(fps_buf, "%d FPS", FPSCounter);
-                T_ChangeText(FPSText, fps_buf);
-            } else {
-                sprintf(fps_buf, "? FPS");
-                FPSText = T_Print(10, 30, fps_buf);
-            }
-            FPSCounter = 0;
-            elapsed = ClockGetMS();
-        }
-    } else if (FPSText) {
-        T_RemovePrint(FPSText);
-        FPSText = NULL;
-        FPSCounter = 0;
+    for (int i = 0; i < MAX_PICKUPS; i++) {
+        Pickups[i].duration = 0;
     }
 }
 
-void DrawHealthBar()
+void Overlay_DrawHealthBar()
 {
     static int32_t old_hit_points = 0;
 
@@ -274,10 +245,10 @@ void DrawHealthBar()
         return;
     }
 
-    RenderBar(hit_points, LARA_HITPOINTS, BT_LARA_HEALTH);
+    Overlay_DrawBar(hit_points, LARA_HITPOINTS, BT_LARA_HEALTH);
 }
 
-void DrawAirBar()
+void Overlay_DrawAirBar()
 {
     int32_t show =
         Lara.water_status == LWS_UNDERWATER || Lara.water_status == LWS_SURFACE;
@@ -306,23 +277,23 @@ void DrawAirBar()
         air = LARA_AIR;
     }
 
-    RenderBar(air, LARA_AIR, BT_LARA_AIR);
+    Overlay_DrawBar(air, LARA_AIR, BT_LARA_AIR);
 }
 
-void DrawEnemyBar()
+void Overlay_DrawEnemyBar()
 {
     if (!T1MConfig.enable_enemy_healthbar || !Lara.target) {
         return;
     }
 
-    RenderBar(
+    Overlay_DrawBar(
         Lara.target->hit_points,
         Objects[Lara.target->object_number].hit_points
             * ((SaveGame.bonus_flag & GBF_NGPLUS) ? 2 : 1),
         BT_ENEMY_HEALTH);
 }
 
-void DrawAmmoInfo()
+void Overlay_DrawAmmoInfo()
 {
     const double scale = 0.8;
     const int32_t text_height = 17 * scale;
@@ -357,7 +328,7 @@ void DrawAmmoInfo()
         return;
     }
 
-    MakeAmmoString(ammostring);
+    Overlay_MakeAmmoString(ammostring);
 
     if (AmmoText) {
         T_ChangeText(AmmoText, ammostring);
@@ -374,29 +345,7 @@ void DrawAmmoInfo()
         : text_height + screen_margin_v;
 }
 
-void MakeAmmoString(char *string)
-{
-    char *c;
-
-    for (c = string; *c != 0; c++) {
-        if (*c == 32) {
-            continue;
-        } else if (*c - 'A' >= 0) {
-            *c += 12 - 'A';
-        } else {
-            *c += 1 - '0';
-        }
-    }
-}
-
-void InitialisePickUpDisplay()
-{
-    for (int i = 0; i < MAX_PICKUPS; i++) {
-        Pickups[i].duration = 0;
-    }
-}
-
-void DrawPickups()
+void Overlay_DrawPickups()
 {
     static int32_t old_game_timer = 0;
     int16_t time = SaveGame.timer - old_game_timer;
@@ -427,13 +376,67 @@ void DrawPickups()
     }
 }
 
-void AddDisplayPickup(int16_t object_num)
+void Overlay_DrawFPSInfo()
+{
+    static char fps_buf[20];
+    static int32_t elapsed = 0;
+
+    if (T1MConfig.render_flags.fps_counter) {
+        if (ClockGetMS() - elapsed >= 1000) {
+            if (FPSText) {
+                sprintf(fps_buf, "%d FPS", FPSCounter);
+                T_ChangeText(FPSText, fps_buf);
+            } else {
+                sprintf(fps_buf, "? FPS");
+                FPSText = T_Print(10, 30, fps_buf);
+            }
+            FPSCounter = 0;
+            elapsed = ClockGetMS();
+        }
+    } else if (FPSText) {
+        T_RemovePrint(FPSText);
+        FPSText = NULL;
+        FPSCounter = 0;
+    }
+}
+
+void Overlay_DrawGameInfo()
+{
+    if (OverlayFlag > 0) {
+        Overlay_DrawHealthBar();
+        Overlay_DrawAirBar();
+        Overlay_DrawEnemyBar();
+        Overlay_DrawPickups();
+    }
+
+    Overlay_DrawAmmoInfo();
+    Overlay_DrawFPSInfo();
+
+    T_DrawText();
+}
+
+void Overlay_AddPickup(int16_t object_num)
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
         if (Pickups[i].duration <= 0) {
             Pickups[i].duration = 75;
             Pickups[i].sprnum = Objects[object_num].mesh_index;
             return;
+        }
+    }
+}
+
+void Overlay_MakeAmmoString(char *string)
+{
+    char *c;
+
+    for (c = string; *c != 0; c++) {
+        if (*c == 32) {
+            continue;
+        } else if (*c - 'A' >= 0) {
+            *c += 12 - 'A';
+        } else {
+            *c += 1 - '0';
         }
     }
 }
