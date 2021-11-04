@@ -36,10 +36,10 @@ typedef enum SAMPLE_FLAG {
     VOLUME_WIBBLE = 1 << 14,
 } SAMPLE_FLAG;
 
-static MN_SFX_PLAY_INFO SFXPlaying[MAX_PLAYING_FX];
+static MN_SFX_PLAY_INFO SFXPlaying[MAX_PLAYING_FX] = { 0 };
 static int32_t MnSoundMasterVolumeDefault = 32;
-static int16_t MnAmbientLookup[MAX_AMBIENT_FX];
-static int32_t MnAmbientLookupIdx;
+static int16_t MnAmbientLookup[MAX_AMBIENT_FX] = { -1 };
+static int32_t MnAmbientLookupIdx = 0;
 
 void mn_reset_sound_effects()
 {

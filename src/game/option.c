@@ -82,6 +82,103 @@ static TEXTSTRING *CtrlText[2] = { 0 };
 static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
 
+static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
+    // left column
+    { KEY_UP, 0 },
+    { KEY_DOWN, 0 },
+    { KEY_LEFT, 0 },
+    { KEY_RIGHT, 0 },
+    { KEY_STEP_L, 0 },
+    { KEY_STEP_R, 0 },
+    { KEY_CAMERA_UP, 0 },
+    { KEY_CAMERA_DOWN, 0 },
+    { KEY_CAMERA_LEFT, 0 },
+    { KEY_CAMERA_RIGHT, 0 },
+    { KEY_CAMERA_RESET, 0 },
+    // right column
+    { KEY_SLOW, 1 },
+    { KEY_JUMP, 1 },
+    { KEY_ACTION, 1 },
+    { KEY_DRAW, 1 },
+    { KEY_LOOK, 1 },
+    { KEY_ROLL, 1 },
+    { -1, 1 },
+    { KEY_OPTION, 1 },
+    { KEY_PAUSE, 1 },
+    { -1, 1 },
+    { -1, 1 },
+    // end
+    { -1, -1 },
+};
+
+static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
+    // left column
+    { KEY_UP, 0 },
+    { KEY_DOWN, 0 },
+    { KEY_LEFT, 0 },
+    { KEY_RIGHT, 0 },
+    { KEY_STEP_L, 0 },
+    { KEY_STEP_R, 0 },
+    { KEY_CAMERA_UP, 0 },
+    { KEY_CAMERA_DOWN, 0 },
+    { KEY_CAMERA_LEFT, 0 },
+    { KEY_CAMERA_RIGHT, 0 },
+    { KEY_CAMERA_RESET, 0 },
+    // right column
+    { KEY_SLOW, 1 },
+    { KEY_JUMP, 1 },
+    { KEY_ACTION, 1 },
+    { KEY_DRAW, 1 },
+    { KEY_LOOK, 1 },
+    { KEY_ROLL, 1 },
+    { KEY_OPTION, 1 },
+    { KEY_PAUSE, 1 },
+    { KEY_FLY_CHEAT, 1 },
+    { KEY_ITEM_CHEAT, 1 },
+    { KEY_LEVEL_SKIP_CHEAT, 1 },
+    // end
+    { -1, -1 },
+};
+
+static int32_t PassportMode = 0;
+static int32_t KeyMode = 0;
+
+static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
+REQUEST_INFO NewGameRequester = {
+    MAX_GAME_MODES, // items
+    0, // requested
+    MAX_GAME_MODES, // vis_lines
+    0, // line_offset
+    0, // line_old_offset
+    162, // pix_width
+    TEXT_HEIGHT + 7, // line_height
+    0, // x
+    0, // y
+    0, // z
+    0, // flags
+    NULL, // heading_text
+    &NewGameStrings[0][0], // item_texts
+    MAX_GAME_MODE_LENGTH, // item_text_len
+};
+
+static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
+REQUEST_INFO LoadSaveGameRequester = {
+    1, // items
+    0, // requested
+    -1, // vis_lines
+    0, // line_offset
+    0, // line_old_offset
+    272, // pix_width
+    TEXT_HEIGHT + 7, // line_height
+    0, // x
+    -32, // y
+    0, // z
+    0, // flags
+    NULL, // heading_text
+    &LoadSaveGameStrings[0][0], // item_texts
+    MAX_LEVEL_NAME_LENGTH, // item_text_len
+};
+
 static const char *GetScanCodeName(int16_t key)
 {
     // clang-format off
@@ -195,103 +292,6 @@ static const char *GetScanCodeName(int16_t key)
     }
     // clang-format on
     return "????";
-};
-
-static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
-    // left column
-    { KEY_UP, 0 },
-    { KEY_DOWN, 0 },
-    { KEY_LEFT, 0 },
-    { KEY_RIGHT, 0 },
-    { KEY_STEP_L, 0 },
-    { KEY_STEP_R, 0 },
-    { KEY_CAMERA_UP, 0 },
-    { KEY_CAMERA_DOWN, 0 },
-    { KEY_CAMERA_LEFT, 0 },
-    { KEY_CAMERA_RIGHT, 0 },
-    { KEY_CAMERA_RESET, 0 },
-    // right column
-    { KEY_SLOW, 1 },
-    { KEY_JUMP, 1 },
-    { KEY_ACTION, 1 },
-    { KEY_DRAW, 1 },
-    { KEY_LOOK, 1 },
-    { KEY_ROLL, 1 },
-    { -1, 1 },
-    { KEY_OPTION, 1 },
-    { KEY_PAUSE, 1 },
-    { -1, 1 },
-    { -1, 1 },
-    // end
-    { -1, -1 },
-};
-
-static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
-    // left column
-    { KEY_UP, 0 },
-    { KEY_DOWN, 0 },
-    { KEY_LEFT, 0 },
-    { KEY_RIGHT, 0 },
-    { KEY_STEP_L, 0 },
-    { KEY_STEP_R, 0 },
-    { KEY_CAMERA_UP, 0 },
-    { KEY_CAMERA_DOWN, 0 },
-    { KEY_CAMERA_LEFT, 0 },
-    { KEY_CAMERA_RIGHT, 0 },
-    { KEY_CAMERA_RESET, 0 },
-    // right column
-    { KEY_SLOW, 1 },
-    { KEY_JUMP, 1 },
-    { KEY_ACTION, 1 },
-    { KEY_DRAW, 1 },
-    { KEY_LOOK, 1 },
-    { KEY_ROLL, 1 },
-    { KEY_OPTION, 1 },
-    { KEY_PAUSE, 1 },
-    { KEY_FLY_CHEAT, 1 },
-    { KEY_ITEM_CHEAT, 1 },
-    { KEY_LEVEL_SKIP_CHEAT, 1 },
-    // end
-    { -1, -1 },
-};
-
-static int32_t PassportMode = 0;
-static int32_t KeyMode = 0;
-
-static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH];
-REQUEST_INFO NewGameRequester = {
-    MAX_GAME_MODES, // items
-    0, // requested
-    MAX_GAME_MODES, // vis_lines
-    0, // line_offset
-    0, // line_old_offset
-    162, // pix_width
-    TEXT_HEIGHT + 7, // line_height
-    0, // x
-    0, // y
-    0, // z
-    0, // flags
-    NULL, // heading_text
-    &NewGameStrings[0][0], // item_texts
-    MAX_GAME_MODE_LENGTH, // item_text_len
-};
-
-static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
-REQUEST_INFO LoadSaveGameRequester = {
-    1, // items
-    0, // requested
-    -1, // vis_lines
-    0, // line_offset
-    0, // line_old_offset
-    272, // pix_width
-    TEXT_HEIGHT + 7, // line_height
-    0, // x
-    -32, // y
-    0, // z
-    0, // flags
-    NULL, // heading_text
-    &LoadSaveGameStrings[0][0], // item_texts
-    MAX_LEVEL_NAME_LENGTH, // item_text_len
 };
 
 static void InitLoadSaveGameRequester()

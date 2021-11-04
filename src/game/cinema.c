@@ -13,7 +13,7 @@
 #include "specific/input.h"
 #include "specific/sndpc.h"
 
-static bool SoundIsActiveOld;
+static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)

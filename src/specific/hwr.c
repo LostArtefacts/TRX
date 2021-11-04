@@ -26,13 +26,13 @@ typedef struct HWR_LIGHTNING {
 HWR_LIGHTNING HWR_LightningTable[100];
 int32_t HWR_LightningCount = 0;
 
-static bool HWR_IsPaletteActive;
-static bool HWR_IsRendering;
-static bool HWR_IsRenderingOld;
-static bool HWR_IsTextureMode;
+static bool HWR_IsPaletteActive = false;
+static bool HWR_IsRendering = false;
+static bool HWR_IsRenderingOld = false;
+static bool HWR_IsTextureMode = false;
 static int32_t HWR_SelectedTexture = -1;
-static bool HWR_TextureLoaded[MAX_TEXTPAGES];
-static RGBF HWR_WaterColor;
+static bool HWR_TextureLoaded[MAX_TEXTPAGES] = { false };
+static RGBF HWR_WaterColor = { 0 };
 
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
