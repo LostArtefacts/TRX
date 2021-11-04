@@ -1,8 +1,8 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/health.h"
 #include "game/items.h"
+#include "game/overlay.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -186,7 +186,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SHOTGUN_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -196,7 +196,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_MAGNUM_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d B", Lara.magnums.ammo);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -206,7 +206,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_UZI_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d C", Lara.uzis.ammo);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -216,7 +216,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SG_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -226,7 +226,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_MAG_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -236,7 +236,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_UZI_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -245,10 +245,10 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     case O_MEDI_OPTION:
         HealthBarTimer = 40;
-        DrawHealthBar();
+        Overlay_DrawHealthBar();
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -257,10 +257,10 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     case O_BIGMEDI_OPTION:
         HealthBarTimer = 40;
-        DrawHealthBar();
+        Overlay_DrawHealthBar();
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -281,7 +281,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SCION_OPTION:
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
