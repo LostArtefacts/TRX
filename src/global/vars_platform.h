@@ -1,6 +1,7 @@
 #ifndef T1M_GLOBAL_VARS_PLATFORM_H
 #define T1M_GLOBAL_VARS_PLATFORM_H
 
+#include "global/const.h"
 #include "specific/ati.h"
 
 #include <ddraw.h>
@@ -25,16 +26,16 @@ extern LPDIRECTDRAWSURFACE Surface1;
 extern LPDIRECTDRAWSURFACE Surface2;
 extern LPDIRECTDRAWSURFACE Surface3;
 extern LPDIRECTDRAWSURFACE Surface4;
-extern LPDIRECTDRAWSURFACE TextureSurfaces[];
+extern LPDIRECTDRAWSURFACE TextureSurfaces[MAX_TEXTPAGES];
 extern void *Surface1DrawPtr;
 extern void *Surface2DrawPtr;
 
 extern HMODULE HATI3DCIFModule;
 extern C3D_HRC ATIRenderContext;
 extern C3D_3DCIFINFO ATIInfo;
-extern C3D_HTX ATITextureMap[];
+extern C3D_HTX ATITextureMap[MAX_TEXTPAGES];
 extern C3D_HTXPAL ATITexturePalette;
-extern C3D_PALETTENTRY ATIPalette[];
+extern C3D_PALETTENTRY ATIPalette[256];
 extern C3D_COLOR ATIChromaKey;
 
 #endif
