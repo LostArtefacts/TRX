@@ -13,6 +13,8 @@
 
 #include <stdbool.h>
 
+static int32_t DemoLevel = -1;
+
 int32_t StartDemo()
 {
     TEXTSTRING *txt;

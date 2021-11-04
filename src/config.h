@@ -86,6 +86,11 @@ typedef struct {
         uint32_t fps_counter : 1;
     } render_flags;
 
+    struct {
+        double text_scale;
+        double bar_scale;
+    } ui;
+
     int32_t sound_volume;
     int32_t music_volume;
 } T1MConfigStruct;

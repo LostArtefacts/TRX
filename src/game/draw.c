@@ -19,6 +19,7 @@ static PHD_MATRIX *IMMatrixPtr = NULL;
 static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
 static int32_t IMRate = 0;
 static int32_t IMFrac = 0;
+static bool CameraUnderwater = false;
 
 int32_t DrawPhaseCinematic()
 {

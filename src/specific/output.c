@@ -109,11 +109,11 @@ int32_t GetRenderScale(int32_t unit)
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
     int32_t scale_x = PhdWinWidth > baseWidth
-        ? ((double)PhdWinWidth * unit * UITextScale) / baseWidth
-        : unit * UITextScale;
+        ? ((double)PhdWinWidth * unit * T1MConfig.ui.text_scale) / baseWidth
+        : unit * T1MConfig.ui.text_scale;
     int32_t scale_y = PhdWinHeight > baseHeight
-        ? ((double)PhdWinHeight * unit * UITextScale) / baseHeight
-        : unit * UITextScale;
+        ? ((double)PhdWinHeight * unit * T1MConfig.ui.text_scale) / baseHeight
+        : unit * T1MConfig.ui.text_scale;
     return MIN(scale_x, scale_y);
 }
 
@@ -129,7 +129,8 @@ void BarLocation(
     } else if (
         bar_location == T1M_BL_TOP_RIGHT
         || bar_location == T1M_BL_BOTTOM_RIGHT) {
-        *x = GetRenderWidthDownscaled() - width * UIBarScale - screen_margin_h;
+        *x = GetRenderWidthDownscaled() - width * T1MConfig.ui.bar_scale
+            - screen_margin_h;
     } else {
         *x = (GetRenderWidthDownscaled() - width) / 2;
     }
@@ -138,8 +139,8 @@ void BarLocation(
         || bar_location == T1M_BL_TOP_RIGHT) {
         *y = screen_margin_v + BarOffsetY[bar_location];
     } else {
-        *y = GetRenderHeightDownscaled() - height * UIBarScale - screen_margin_v
-            - BarOffsetY[bar_location];
+        *y = GetRenderHeightDownscaled() - height * T1MConfig.ui.bar_scale
+            - screen_margin_v - BarOffsetY[bar_location];
     }
 
     BarOffsetY[bar_location] += height + bar_spacing;
@@ -182,8 +183,8 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
     int32_t border = 1;
     int32_t sx = GetRenderScale(x) - padding;
     int32_t sy = GetRenderScale(y) - padding;
-    int32_t sw = GetRenderScale(width) * UIBarScale + padding * 2;
-    int32_t sh = GetRenderScale(height) * UIBarScale + padding * 2;
+    int32_t sw = GetRenderScale(width) * T1MConfig.ui.bar_scale + padding * 2;
+    int32_t sh = GetRenderScale(height) * T1MConfig.ui.bar_scale + padding * 2;
 
     // border
     S_DrawScreenFlatQuad(
@@ -204,8 +205,8 @@ void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
 
         sx = GetRenderScale(x);
         sy = GetRenderScale(y);
-        sw = GetRenderScale(width) * UIBarScale;
-        sh = GetRenderScale(height) * UIBarScale;
+        sw = GetRenderScale(width) * T1MConfig.ui.bar_scale;
+        sh = GetRenderScale(height) * T1MConfig.ui.bar_scale;
 
         if (T1MConfig.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
