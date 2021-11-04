@@ -143,7 +143,6 @@ int16_t InvChosen = -1;
 int32_t LsAdder = 0;
 int32_t LsDivider = 0;
 SHADOW_INFO ShadowInfo = { 0 };
-int16_t BarOffsetY[6] = { 0 };
 
 HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE] = {
     { 320, 200 },   { 512, 384 },   { 640, 480 },   { 800, 600 },
