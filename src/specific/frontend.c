@@ -107,7 +107,7 @@ void S_DrawScreenSprite2d(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
 {
-    PHD_SPRITE *sprite = &PhdSpriteInfo[(signed __int16)sprnum];
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
     int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);

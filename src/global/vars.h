@@ -23,7 +23,7 @@ extern int32_t PhdTop;
 extern int32_t PhdWinWidth;
 extern int32_t PhdWinHeight;
 extern PHD_VBUF PhdVBuf[1500];
-extern PHD_SPRITE PhdSpriteInfo[MAX_SPRITES_PAGE * MAX_SPRITES];
+extern PHD_SPRITE PhdSpriteInfo[MAX_SPRITES];
 extern PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES];
 extern PHD_MATRIX *PhdMatrixPtr;
 extern PHD_MATRIX W2VMatrix;

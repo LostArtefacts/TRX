@@ -334,6 +334,10 @@ static bool LoadObjects(MYFILE *fp)
 static bool LoadSprites(MYFILE *fp)
 {
     FileRead(&SpriteInfoCount, sizeof(int32_t), 1, fp);
+    if (SpriteInfoCount > MAX_SPRITES) {
+        S_ExitSystem("Too many sprites in level");
+        return false;
+    }
     FileRead(&PhdSpriteInfo, sizeof(PHD_SPRITE), SpriteInfoCount, fp);
 
     FileRead(&SpriteCount, sizeof(int32_t), 1, fp);
