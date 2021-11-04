@@ -83,9 +83,7 @@ void S_ExitSystem(const char *message)
     while (Input.select) {
         S_UpdateInput();
     }
-    if (GameMemoryPointer) {
-        free(GameMemoryPointer);
-    }
+    game_malloc_shutdown();
     HWR_ShutdownHardware();
     ShowFatalError(message);
 }
@@ -117,6 +115,10 @@ void game_malloc_shutdown()
     if (GameMemoryPointer) {
         free(GameMemoryPointer);
     }
+    GameMemoryPointer = NULL;
+    GameAllocMemPointer = NULL;
+    GameAllocMemFree = 0;
+    GameAllocMemUsed = 0;
 }
 
 void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
