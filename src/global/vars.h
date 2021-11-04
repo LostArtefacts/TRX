@@ -127,7 +127,7 @@ extern PHD_3DPOS CinePosition;
 extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
-extern int16_t RoomsToDraw[];
+extern int16_t RoomsToDraw[MAX_ROOMS_TO_DRAW];
 extern int16_t RoomsToDrawCount;
 extern bool IsWibbleEffect;
 extern bool IsWaterEffect;
@@ -164,7 +164,7 @@ extern int32_t HealthBarTimer;
 extern int16_t StoredLaraHealth;
 
 extern int16_t InvMode;
-extern int32_t InvExtraData[];
+extern int32_t InvExtraData[8];
 extern int16_t InvChosen;
 extern int8_t InvDisableResolutionSwitch;
 
