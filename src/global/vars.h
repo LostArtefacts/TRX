@@ -149,8 +149,6 @@ extern int16_t InvMode;
 extern int32_t InvExtraData[8];
 extern int16_t InvChosen;
 
-extern int16_t BarOffsetY[6];
-
 extern HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE];
 
 #endif
