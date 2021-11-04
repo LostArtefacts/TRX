@@ -414,11 +414,6 @@ static bool LoadPalette(MYFILE *fp)
     GamePalette[0].g = 0;
     GamePalette[0].b = 0;
     HWR_SetPalette();
-    for (int i = 0; i < 256; i++) {
-        WaterPalette[i].r = GamePalette[i].r * 2 / 3;
-        WaterPalette[i].g = GamePalette[i].g * 2 / 3;
-        WaterPalette[i].b = GamePalette[i].b;
-    }
     return true;
 }
 
