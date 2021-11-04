@@ -145,7 +145,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 };
 
 static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-REQUEST_INFO NewGameRequester = {
+static REQUEST_INFO NewGameRequester = {
     MAX_GAME_MODES, // items
     0, // requested
     MAX_GAME_MODES, // vis_lines

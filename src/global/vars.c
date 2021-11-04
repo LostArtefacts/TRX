@@ -80,10 +80,10 @@ int32_t SavedGamesCount = 0;
 int32_t SaveCounter = 0;
 int32_t CurrentLevel = -1;
 uint32_t *DemoData = NULL;
-int32_t LevelComplete = 0;
-int32_t ResetFlag = 0;
+bool LevelComplete = false;
+bool ResetFlag = false;
+bool ChunkyFlag = false;
 int32_t OverlayFlag = 0;
-int32_t ChunkyFlag = 0;
 int32_t HeightType = 0;
 
 int32_t HealthBarTimer = 0;

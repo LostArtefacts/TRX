@@ -29,7 +29,7 @@ void LaraControl(int16_t item_num)
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
     if (Input.level_skip_cheat) {
-        LevelComplete = 1;
+        LevelComplete = true;
     }
 
     if (Input.health_cheat) {

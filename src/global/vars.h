@@ -32,6 +32,9 @@ extern int32_t WibbleOffset;
 extern int32_t WibbleTable[WIBBLE_SIZE];
 extern int32_t ShadeTable[WIBBLE_SIZE];
 extern int32_t RandTable[WIBBLE_SIZE];
+extern int32_t LsAdder;
+extern int32_t LsDivider;
+extern SHADOW_INFO ShadowInfo;
 
 extern RGB888 GamePalette[256];
 extern bool ModeLock;
@@ -66,10 +69,10 @@ extern int32_t SavedGamesCount;
 extern int32_t SaveCounter;
 extern int32_t CurrentLevel;
 extern uint32_t *DemoData;
-extern int32_t LevelComplete;
-extern int32_t ResetFlag;
+extern bool LevelComplete;
+extern bool ResetFlag;
+extern bool ChunkyFlag;
 extern int32_t OverlayFlag;
-extern int32_t ChunkyFlag;
 extern int32_t HeightType;
 
 extern ROOM_INFO *RoomInfo;
@@ -138,7 +141,6 @@ extern int32_t SpriteCount;
 extern int32_t OverlapCount;
 
 extern REQUEST_INFO LoadSaveGameRequester;
-extern REQUEST_INFO NewGameRequester;
 
 extern int32_t HealthBarTimer;
 extern int16_t StoredLaraHealth;
@@ -147,9 +149,6 @@ extern int16_t InvMode;
 extern int32_t InvExtraData[8];
 extern int16_t InvChosen;
 
-extern int32_t LsAdder;
-extern int32_t LsDivider;
-extern SHADOW_INFO ShadowInfo;
 extern int16_t BarOffsetY[6];
 
 extern HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE];
