@@ -30,7 +30,7 @@ static bool HWR_IsPaletteActive;
 static bool HWR_IsRendering;
 static bool HWR_IsRenderingOld;
 static bool HWR_IsTextureMode;
-static int32_t HWR_SelectedTexture;
+static int32_t HWR_SelectedTexture = -1;
 static bool HWR_TextureLoaded[MAX_TEXTPAGES];
 static RGBF HWR_WaterColor;
 
