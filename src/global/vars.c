@@ -96,7 +96,6 @@ int32_t CurrentLevel;
 int32_t DemoLevel;
 uint32_t *DemoPtr;
 int32_t DemoCount;
-int32_t TitleLoaded;
 int32_t LevelComplete;
 int32_t ResetFlag;
 int32_t OverlayFlag;

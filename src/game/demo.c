@@ -44,8 +44,6 @@ int32_t StartDemo()
     T1MConfig.enable_enhanced_look = 0;
 
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
-        TitleLoaded = 0;
-
         LoadLaraDemoPos();
 
         SeedRandomDraw(0xD371F947);
