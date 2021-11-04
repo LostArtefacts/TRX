@@ -51,10 +51,12 @@ typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_BILINEAR = 1,
     DETAIL_HW_UI_TEXT_SCALE = 2,
     DETAIL_HW_UI_BAR_SCALE = 3,
-    DETAIL_HW_TITLE = 4,
-    DETAIL_HW_TITLE_BORDER = 5,
-    DETAIL_HW_RESOLUTION = 6,
+    DETAIL_HW_RESOLUTION = 4,
+    DETAIL_HW_TITLE = 5,
+    DETAIL_HW_TITLE_BORDER = 6,
     DETAIL_HW_NUMBER_OF = 7,
+    DETAIL_HW_OPTION_MIN = DETAIL_HW_PERSPECTIVE,
+    DETAIL_HW_OPTION_MAX = DETAIL_HW_RESOLUTION,
 } DETAIL_HW_TEXT;
 
 typedef enum SOUND_TEXT {
@@ -63,6 +65,8 @@ typedef enum SOUND_TEXT {
     SOUND_TITLE = 2,
     SOUND_TITLE_BORDER = 3,
     SOUND_NUMBER_OF = 4,
+    SOUND_OPTION_MIN = SOUND_MUSIC_VOLUME,
+    SOUND_OPTION_MAX = SOUND_SOUND_VOLUME,
 } SOUND_TEXT;
 
 typedef struct TEXT_COLUMN_PLACEMENT {
@@ -641,8 +645,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[256];
-    const int32_t min_row = DETAIL_HW_PERSPECTIVE;
-    static int32_t max_row = DETAIL_HW_RESOLUTION;
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
@@ -675,23 +677,18 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (InvDisableResolutionSwitch) {
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
-            max_row = DETAIL_HW_UI_BAR_SCALE;
-        } else {
-            static char tmp[10];
-            sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
-            sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
-            max_row = DETAIL_HW_RESOLUTION;
-        }
+        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
+        static char tmp[10];
+        sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
+        sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
+        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (OptionSelected < min_row) {
-            OptionSelected = min_row;
+        if (OptionSelected < DETAIL_HW_OPTION_MIN) {
+            OptionSelected = DETAIL_HW_OPTION_MIN;
         }
-        if (OptionSelected > max_row) {
-            OptionSelected = max_row;
+        if (OptionSelected > DETAIL_HW_OPTION_MAX) {
+            OptionSelected = DETAIL_HW_OPTION_MAX;
         }
 
         T_AddBackground(
@@ -713,7 +710,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && OptionSelected > min_row) {
+    if (InputDB.forward && OptionSelected > DETAIL_HW_OPTION_MIN) {
         T_RemoveOutline(DetailTextHW[OptionSelected]);
         T_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected--;
@@ -722,7 +719,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    if (InputDB.back && OptionSelected < max_row) {
+    if (InputDB.back && OptionSelected < DETAIL_HW_OPTION_MAX) {
         T_RemoveOutline(DetailTextHW[OptionSelected]);
         T_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected++;
@@ -826,7 +823,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[20];
 
-    if (!SoundText[SOUND_MUSIC_VOLUME]) {
+    if (!SoundText[0]) {
         if (T1MConfig.music_volume > 10) {
             T1MConfig.music_volume = 10;
         }
@@ -856,14 +853,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && OptionSelected > SOUND_MUSIC_VOLUME) {
+    if (InputDB.forward && OptionSelected > SOUND_OPTION_MIN) {
         T_RemoveOutline(SoundText[OptionSelected]);
         T_RemoveBackground(SoundText[OptionSelected]);
         T_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
         T_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    if (InputDB.back && OptionSelected < SOUND_SOUND_VOLUME) {
+    if (InputDB.back && OptionSelected < SOUND_OPTION_MAX) {
         T_RemoveOutline(SoundText[OptionSelected]);
         T_RemoveBackground(SoundText[OptionSelected]);
         T_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
@@ -940,7 +937,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
     static char time_buf[100];
 
     if (T1MConfig.enable_compass_stats) {
-        if (!CompassText[COMPASS_TITLE_BORDER]) {
+        if (!CompassText[0]) {
             int32_t y = COMPASS_TOP_Y;
 
             CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, " ");
@@ -1281,7 +1278,7 @@ void S_ShowControls()
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    if (!CtrlTextB[KEY_UP]) {
+    if (!CtrlTextB[0]) {
         int16_t *layout = Layout[T1MConfig.input.layout];
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
@@ -1305,7 +1302,7 @@ void S_ShowControls()
         KeyChange = 0;
     }
 
-    if (!CtrlTextA[KEY_UP]) {
+    if (!CtrlTextA[0]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };

@@ -114,9 +114,7 @@ void GameMain()
             }
             TitleLoaded = 1;
 
-            InvDisableResolutionSwitch = 0;
             gf_option = Display_Inventory(INV_TITLE_MODE);
-            InvDisableResolutionSwitch = 1;
 
             S_FadeToBlack();
             S_MusicStop();

@@ -166,7 +166,6 @@ extern int16_t StoredLaraHealth;
 extern int16_t InvMode;
 extern int32_t InvExtraData[8];
 extern int16_t InvChosen;
-extern int8_t InvDisableResolutionSwitch;
 
 extern int32_t LsAdder;
 extern int32_t LsDivider;
