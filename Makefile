@@ -59,9 +59,6 @@ clean:
 lint: $(C_FILES)
 	clang-format -i $(C_FILES) $(H_FILES) $(TEST_C_FILES) $(TEST_H_FILES)
 
-docs:
-	scripts/render_progress
-
 # docker builds
 docker:
 	docker build -t tomb1main .

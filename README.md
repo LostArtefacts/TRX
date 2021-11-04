@@ -173,7 +173,10 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 ## Decompilation progress
 
-![](docs/progress.svg)
+Currently the entirety of TombATI.exe's code is decompiled. Our goal now is to
+ship with our own .exe rather than a DLL. To make it possible, we must reverse
+portions of the glrage patch (glrage.dll) and the ATI renderer (ati3dcif.dll)
+and that is the current project focus.
 
 ## Importing data to IDA
 
