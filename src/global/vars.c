@@ -81,7 +81,6 @@ int32_t ShadeTable[WIBBLE_SIZE] = { 0 };
 int32_t RandTable[WIBBLE_SIZE] = { 0 };
 
 RGB888 GamePalette[256] = { 0 };
-RGB888 WaterPalette[256] = { 0 };
 bool ModeLock = false;
 
 GAMEFLOW GF = { 0 };

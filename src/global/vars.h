@@ -34,7 +34,6 @@ extern int32_t ShadeTable[WIBBLE_SIZE];
 extern int32_t RandTable[WIBBLE_SIZE];
 
 extern RGB888 GamePalette[256];
-extern RGB888 WaterPalette[256];
 extern bool ModeLock;
 
 extern int32_t NoInputCount;
