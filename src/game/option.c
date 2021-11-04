@@ -124,7 +124,7 @@ static const char *GetScanCodeName(int16_t key)
         case DIK_APOSTROPHE:   return "\'";
         case DIK_GRAVE:        return "`";
         case DIK_LSHIFT:       return "SHIFT";
-        case DIK_BACKSLASH:    return "#";
+        case DIK_BACKSLASH:    return "\\";
         case DIK_Z:            return "Z";
         case DIK_X:            return "X";
         case DIK_C:            return "C";
