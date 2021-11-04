@@ -1,7 +1,6 @@
 #ifndef T1M_GLOBAL_VARS_H
 #define T1M_GLOBAL_VARS_H
 
-#include "dynarray.h"
 #include "global/const.h"
 #include "global/types.h"
 
@@ -128,7 +127,8 @@ extern PHD_3DPOS CinePosition;
 extern int32_t NumberCameras;
 extern int32_t NumberSoundEffects;
 extern OBJECT_VECTOR *SoundEffectsTable;
-extern DYNARRAY *RoomsToDraw; // array of int16_t
+extern int16_t RoomsToDraw[];
+extern int16_t RoomsToDrawCount;
 extern bool IsWibbleEffect;
 extern bool IsWaterEffect;
 extern bool IsShadeEffect;

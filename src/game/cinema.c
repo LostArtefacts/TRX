@@ -61,10 +61,12 @@ void InitCinematicRooms()
         }
     }
 
-    DynArray_Reset(RoomsToDraw);
+    RoomsToDrawCount = 0;
     for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
         if (!RoomInfo[room_num].bound_active) {
-            DynArray_Append(RoomsToDraw, &room_num);
+            if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+                RoomsToDraw[RoomsToDrawCount++] = room_num;
+            }
         }
     }
 }

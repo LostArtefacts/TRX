@@ -143,7 +143,8 @@ PHD_3DPOS CinePosition;
 int32_t NumberCameras;
 int32_t NumberSoundEffects;
 OBJECT_VECTOR *SoundEffectsTable;
-DYNARRAY *RoomsToDraw = NULL; // array of int16_t
+int16_t RoomsToDraw[MAX_ROOMS_TO_DRAW];
+int16_t RoomsToDrawCount;
 bool IsWibbleEffect;
 bool IsWaterEffect;
 bool IsShadeEffect;

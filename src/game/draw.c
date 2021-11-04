@@ -25,8 +25,8 @@ int32_t DrawPhaseCinematic()
     S_InitialisePolyList();
     S_ClearScreen();
     CameraUnderwater = false;
-    for (int i = 0; i < DynArray_Size(RoomsToDraw); i++) {
-        int16_t room_num = *(int16_t *)DynArray_Get(RoomsToDraw, i);
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t room_num = RoomsToDraw[i];
         ROOM_INFO *r = &RoomInfo[room_num];
         r->top = 0;
         r->left = 0;
@@ -65,8 +65,10 @@ void DrawRooms(int16_t current_room)
     r->bottom = PhdBottom;
     r->bound_active = 1;
 
-    DynArray_Reset(RoomsToDraw);
-    DynArray_Append(RoomsToDraw, &current_room);
+    RoomsToDrawCount = 0;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = current_room;
+    }
 
     CameraUnderwater = r->flags & RF_UNDERWATER;
 
@@ -83,8 +85,8 @@ void DrawRooms(int16_t current_room)
     phd_PopMatrix();
     S_ClearScreen();
 
-    for (int i = 0; i < DynArray_Size(RoomsToDraw); i++) {
-        PrintRooms(*(int16_t *)DynArray_Get(RoomsToDraw, i));
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        PrintRooms(RoomsToDraw[i]);
     }
 
     if (Objects[O_LARA].loaded) {
@@ -245,7 +247,9 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     }
 
     if (!r->bound_active) {
-        DynArray_Append(RoomsToDraw, &room_num);
+        if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+            RoomsToDraw[RoomsToDrawCount++] = room_num;
+        }
         r->bound_active = 1;
     }
     return 1;

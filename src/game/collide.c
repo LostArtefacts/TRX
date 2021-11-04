@@ -311,8 +311,8 @@ int32_t CollideStaticObjects(
 
     GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
 
-    for (int i = 0; i < DynArray_Size(RoomsToDraw); i++) {
-        int16_t room_num = *(int16_t *)DynArray_Get(RoomsToDraw, i);
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t room_num = RoomsToDraw[i];
         ROOM_INFO *r = &RoomInfo[room_num];
         MESH_INFO *mesh = r->mesh;
 
@@ -456,8 +456,10 @@ int32_t CollideStaticObjects(
 void GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
 {
-    DynArray_Reset(RoomsToDraw);
-    DynArray_Append(RoomsToDraw, &room_num);
+    RoomsToDrawCount = 0;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = room_num;
+    }
     GetNewRoom(x + r, y, z + r, room_num);
     GetNewRoom(x - r, y, z + r, room_num);
     GetNewRoom(x + r, y, z - r, room_num);
@@ -472,16 +474,15 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     GetFloor(x, y, z, &room_num);
 
-    int i;
-    for (i = 0; i < DynArray_Size(RoomsToDraw); i++) {
-        int16_t drawn_room = *(int16_t *)DynArray_Get(RoomsToDraw, i);
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t drawn_room = RoomsToDraw[i];
         if (drawn_room == room_num) {
-            break;
+            return;
         }
     }
 
-    if (i == DynArray_Size(RoomsToDraw)) {
-        DynArray_Append(RoomsToDraw, &room_num);
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = room_num;
     }
 }
 

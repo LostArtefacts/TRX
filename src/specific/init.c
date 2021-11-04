@@ -73,8 +73,6 @@ void S_InitialiseSystem()
     InputInit();
     FMVInit();
 
-    RoomsToDraw = DynArray_Create(sizeof(int16_t));
-
     CalculateWibbleTable();
 
     HWR_InitialiseHardware();
