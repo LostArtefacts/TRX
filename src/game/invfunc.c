@@ -15,7 +15,7 @@
 TEXTSTRING *InvItemText[2] = { NULL, NULL };
 TEXTSTRING *InvRingText = NULL;
 
-static int16_t InvColours[IC_NUMBER_OF];
+static int16_t InvColours[IC_NUMBER_OF] = { 0 };
 static TEXTSTRING *InvDownArrow1 = NULL;
 static TEXTSTRING *InvDownArrow2 = NULL;
 static TEXTSTRING *InvUpArrow1 = NULL;

@@ -18,8 +18,8 @@
 
 #define SAVE_CREATURE (1 << 7)
 
-static int SGCount;
-static char *SGPoint;
+static int SGCount = 0;
+static char *SGPoint = NULL;
 
 void InitialiseStartInfo()
 {

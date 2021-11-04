@@ -58,10 +58,10 @@ static const char *BufferNames[] = {
     "Rolling Ball Stuff", // GBUF_ROLLINGBALL_STUFF
 };
 
-static char *GameMemoryPointer;
-static char *GameAllocMemPointer;
-static uint32_t GameAllocMemUsed;
-static uint32_t GameAllocMemFree;
+static char *GameMemoryPointer = NULL;
+static char *GameAllocMemPointer = NULL;
+static uint32_t GameAllocMemUsed = 0;
+static uint32_t GameAllocMemFree = 0;
 
 void S_InitialiseSystem()
 {

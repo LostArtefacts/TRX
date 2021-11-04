@@ -14,11 +14,11 @@
 
 #include <stdlib.h>
 
-static int16_t InterpolatedBounds[6];
-static PHD_MATRIX *IMMatrixPtr;
-static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES];
-static int32_t IMRate;
-static int32_t IMFrac;
+static int16_t InterpolatedBounds[6] = { 0 };
+static PHD_MATRIX *IMMatrixPtr = NULL;
+static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
+static int32_t IMRate = 0;
+static int32_t IMFrac = 0;
 
 int32_t DrawPhaseCinematic()
 {

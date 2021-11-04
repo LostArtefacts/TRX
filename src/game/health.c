@@ -14,7 +14,7 @@
 #define MAX_PICKUP_COLUMNS 4
 #define MAX_PICKUPS 16
 
-static DISPLAYPU Pickups[MAX_PICKUPS];
+static DISPLAYPU Pickups[MAX_PICKUPS] = { 0 };
 
 void DrawGameInfo()
 {

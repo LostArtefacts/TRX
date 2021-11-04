@@ -10,15 +10,14 @@
 
 #include <math.h>
 
-static PHD_VECTOR LsVectorView;
-
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
 
-static PHD_MATRIX MatrixStack[MAX_MATRICES];
+static PHD_VECTOR LsVectorView = { 0 };
+static PHD_MATRIX MatrixStack[MAX_MATRICES] = { 0 };
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {

@@ -71,11 +71,11 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
 
 bool ConflictLayout[KEY_NUMBER_OF] = { false };
 
-static LPDIRECTINPUT8 DInput;
-static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard;
-static uint8_t DIKeys[256];
+static LPDIRECTINPUT8 DInput = NULL;
+static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard = NULL;
+static uint8_t DIKeys[256] = { 0 };
 
-static LPDIRECTINPUTDEVICE8 IDID_Joystick;
+static LPDIRECTINPUTDEVICE8 IDID_Joystick = NULL;
 
 static int32_t MedipackCoolDown = 0;
 
