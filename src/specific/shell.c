@@ -112,13 +112,11 @@ void GameMain()
                 gf_option = GF_EXIT_GAME;
                 break;
             }
-            TitleLoaded = 1;
 
             gf_option = Display_Inventory(INV_TITLE_MODE);
 
             S_FadeToBlack();
             S_MusicStop();
-
             break;
 
         case GF_EXIT_GAME:

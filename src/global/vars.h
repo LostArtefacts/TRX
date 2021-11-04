@@ -83,7 +83,6 @@ extern int32_t CurrentLevel;
 extern int32_t DemoLevel;
 extern uint32_t *DemoPtr;
 extern int32_t DemoCount;
-extern int32_t TitleLoaded;
 extern int32_t LevelComplete;
 extern int32_t ResetFlag;
 extern int32_t OverlayFlag;
