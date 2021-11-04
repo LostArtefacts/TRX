@@ -20,6 +20,7 @@
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
 static UINT CloseMsg = 0;
+static bool IsGameWindowActive = true;
 
 static void WinGameFinish();
 static LRESULT CALLBACK

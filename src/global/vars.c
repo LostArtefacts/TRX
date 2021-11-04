@@ -15,16 +15,7 @@
 #include "game/effects/turn_180.h"
 #include "global/vars.h"
 
-const char *ATIUserSettingsPath = "atiset.dat";
-const char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
-const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
-const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
-const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
-
 char *GameMemoryPointer = NULL;
-int8_t IsGameWindowActive = 1;
-double UITextScale = 1.0;
-double UIBarScale = 1.0;
 TEXTSTRING *AmmoText = NULL;
 TEXTSTRING *FPSText = NULL;
 int32_t FPSCounter = 0;
@@ -39,20 +30,17 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 bool SoundIsActive = true;
 int16_t SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *SampleInfos = NULL;
-SAMPLE_DATA **SampleData = NULL;
 int32_t NumSampleData = 0;
 int16_t MusicTrack = 0;
-int16_t MusicTrackLooped = 0;
 bool MusicLoop = false;
 uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
 int32_t MnSoundMasterVolume = 32;
 
 int32_t NoInputCount = 0;
-int32_t IDelay = 0;
+bool IDelay = false;
 int32_t IDCount = 0;
 INPUT_STATE Input = { 0 };
 INPUT_STATE InputDB = { 0 };
-int32_t KeyChange = 0;
 int32_t OptionSelected = 0;
 
 int32_t PhdWinMaxX = 0;
@@ -87,12 +75,10 @@ GAMEFLOW GF = { 0 };
 LARA_INFO Lara = { 0 };
 ITEM_INFO *LaraItem = NULL;
 CAMERA_INFO Camera = { 0 };
-bool CameraUnderwater = false;
 SAVEGAME_INFO SaveGame = { 0 };
 int32_t SavedGamesCount = 0;
 int32_t SaveCounter = 0;
 int32_t CurrentLevel = -1;
-int32_t DemoLevel = -1;
 uint32_t *DemoPtr = NULL;
 int32_t DemoCount = 0;
 int32_t LevelComplete = 0;
@@ -125,8 +111,6 @@ uint16_t *Overlap = NULL;
 int16_t *GroundZone[2] = { NULL };
 int16_t *GroundZone2[2] = { NULL };
 int16_t *FlyZone[2] = { NULL };
-int32_t SlotsUsed = 0;
-CREATURE_INFO *BaddieSlots = NULL;
 ANIM_STRUCT *Anims = NULL;
 ANIM_CHANGE_STRUCT *AnimChanges = NULL;
 ANIM_RANGE_STRUCT *AnimRanges = NULL;

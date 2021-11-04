@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
+static const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+
 void GameMain()
 {
     SoundIsActive = true;

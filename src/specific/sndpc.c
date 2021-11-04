@@ -48,6 +48,9 @@ typedef struct WAVE_FILE_HEADER {
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
 static int32_t DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
 static int32_t MusicNumTracks = 0;
+static int16_t MusicTrackLooped = 0;
+extern int32_t NumSampleData;
+static SAMPLE_DATA **SampleData = NULL;
 
 int32_t ConvertVolumeToDecibel(int32_t volume)
 {

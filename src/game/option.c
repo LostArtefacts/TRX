@@ -74,6 +74,10 @@ typedef struct TEXT_COLUMN_PLACEMENT {
     int col_num;
 } TEXT_COLUMN_PLACEMENT;
 
+static int32_t PassportMode = 0;
+static int32_t KeyMode = 0;
+static int32_t KeyChange = 0;
+
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
 static TEXTSTRING *SoundText[4] = { 0 };
@@ -139,9 +143,6 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     // end
     { -1, -1 },
 };
-
-static int32_t PassportMode = 0;
-static int32_t KeyMode = 0;
 
 static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
 REQUEST_INFO NewGameRequester = {
@@ -669,11 +670,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        sprintf(buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT], UITextScale);
+        sprintf(
+            buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
+            T1MConfig.ui.text_scale);
         DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        sprintf(buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT], UIBarScale);
+        sprintf(
+            buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT],
+            T1MConfig.ui.bar_scale);
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
@@ -747,15 +752,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_UI_TEXT_SCALE:
-            if (UITextScale < MAX_UI_SCALE) {
-                UITextScale += 0.1;
+            if (T1MConfig.ui.text_scale < MAX_UI_SCALE) {
+                T1MConfig.ui.text_scale += 0.1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
-            if (UIBarScale < MAX_UI_SCALE) {
-                UIBarScale += 0.1;
+            if (T1MConfig.ui.bar_scale < MAX_UI_SCALE) {
+                T1MConfig.ui.bar_scale += 0.1;
                 reset = 1;
             }
             break;
@@ -785,15 +790,15 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_UI_TEXT_SCALE:
-            if (UITextScale > MIN_UI_SCALE) {
-                UITextScale -= 0.1;
+            if (T1MConfig.ui.text_scale > MIN_UI_SCALE) {
+                T1MConfig.ui.text_scale -= 0.1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
-            if (UIBarScale > MIN_UI_SCALE) {
-                UIBarScale -= 0.1;
+            if (T1MConfig.ui.bar_scale > MIN_UI_SCALE) {
+                T1MConfig.ui.bar_scale -= 0.1;
                 reset = 1;
             }
             break;
@@ -871,14 +876,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     case SOUND_MUSIC_VOLUME:
         if (Input.left && T1MConfig.music_volume > 0) {
             T1MConfig.music_volume--;
-            IDelay = 1;
+            IDelay = true;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
             T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.music_volume < 10) {
             T1MConfig.music_volume++;
-            IDelay = 1;
+            IDelay = true;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
             T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
@@ -898,14 +903,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     case SOUND_SOUND_VOLUME:
         if (Input.left && T1MConfig.sound_volume > 0) {
             T1MConfig.sound_volume--;
-            IDelay = 1;
+            IDelay = true;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
             T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.sound_volume < 10) {
             T1MConfig.sound_volume++;
-            IDelay = 1;
+            IDelay = true;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
             T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);

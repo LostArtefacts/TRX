@@ -54,7 +54,7 @@ int32_t Display_Inventory(int inv_mode)
     int32_t pass_mode_open = 0;
     if (AmmoText) {
         T_RemovePrint(AmmoText);
-        AmmoText = 0;
+        AmmoText = NULL;
     }
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
@@ -126,7 +126,7 @@ int32_t Display_Inventory(int inv_mode)
                 if (IDCount) {
                     IDCount--;
                 } else {
-                    IDelay = 0;
+                    IDelay = false;
                 }
             }
             Inv_RingDoMotions(&ring);

@@ -17,6 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char *ATIUserSettingsPath = "atiset.dat";
+static const char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
+
 static int32_t S_ReadUserSettingsATI();
 static int32_t S_ReadUserSettingsT1M();
 static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data);
@@ -56,8 +59,8 @@ static int32_t S_ReadUserSettingsATI()
 
     FileRead(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
 
-    UITextScale = DEFAULT_UI_SCALE;
-    UIBarScale = DEFAULT_UI_SCALE;
+    T1MConfig.ui.text_scale = DEFAULT_UI_SCALE;
+    T1MConfig.ui.bar_scale = DEFAULT_UI_SCALE;
 
     FileClose(fp);
     return 1;
@@ -109,13 +112,13 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         json_object_get_number_int(root_obj, "layout_num", 0);
     CLAMP(T1MConfig.input.layout, 0, 1);
 
-    UITextScale = json_object_get_number_double(
+    T1MConfig.ui.text_scale = json_object_get_number_double(
         root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
-    CLAMP(UITextScale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(T1MConfig.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    UIBarScale = json_object_get_number_double(
+    T1MConfig.ui.bar_scale = json_object_get_number_double(
         root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
-    CLAMP(UIBarScale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(T1MConfig.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -188,8 +191,10 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "sound_volume", T1MConfig.sound_volume);
     json_object_append_number_int(
         root_obj, "layout_num", T1MConfig.input.layout);
-    json_object_append_number_double(root_obj, "ui_text_scale", UITextScale);
-    json_object_append_number_double(root_obj, "ui_bar_scale", UIBarScale);
+    json_object_append_number_double(
+        root_obj, "ui_text_scale", T1MConfig.ui.text_scale);
+    json_object_append_number_double(
+        root_obj, "ui_bar_scale", T1MConfig.ui.bar_scale);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
