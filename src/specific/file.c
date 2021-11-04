@@ -518,8 +518,7 @@ static bool LoadCinematic(MYFILE *fp)
 
 static bool LoadDemo(MYFILE *fp)
 {
-    DemoCount = 0;
-    DemoPtr =
+    DemoData =
         game_malloc(sizeof(uint32_t) * DEMO_COUNT_MAX, GBUF_LOADDEMO_BUFFER);
     uint16_t size = 0;
     FileRead(&size, sizeof(int16_t), 1, fp);
@@ -527,7 +526,7 @@ static bool LoadDemo(MYFILE *fp)
     if (!size) {
         return true;
     }
-    FileRead(DemoPtr, 1, size, fp);
+    FileRead(DemoData, 1, size, fp);
     return true;
 }
 
