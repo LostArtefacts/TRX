@@ -127,12 +127,12 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // mute the music when the game is not active
         if (wParam && !IsGameWindowActive) {
             if (T1MConfig.music_volume) {
-                S_MusicVolume(T1MConfig.music_volume * 25 + 5);
+                S_Music_AdjustVolume(T1MConfig.music_volume * 25 + 5);
             } else {
-                S_MusicVolume(0);
+                S_Music_AdjustVolume(0);
             }
         } else if (!wParam && IsGameWindowActive) {
-            S_MusicVolume(0);
+            S_Music_AdjustVolume(0);
         }
         IsGameWindowActive = wParam != 0;
         return 1;
@@ -162,7 +162,7 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 
     case MM_MCINOTIFY:
-        MusicPlayLooped();
+        S_Music_PlayLooped();
         return 0;
 
     default:

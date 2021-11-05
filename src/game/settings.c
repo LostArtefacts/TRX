@@ -226,9 +226,9 @@ void S_ReadUserSettings()
     DefaultConflict();
 
     if (T1MConfig.music_volume) {
-        S_MusicVolume(25 * T1MConfig.music_volume + 5);
+        S_Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
     } else {
-        S_MusicVolume(0);
+        S_Music_AdjustVolume(0);
     }
 
     Sound_AdjustMasterVolume(T1MConfig.sound_volume);

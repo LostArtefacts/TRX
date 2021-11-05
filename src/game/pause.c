@@ -150,11 +150,11 @@ int8_t S_Pause()
     TempVideoAdjust(GetScreenSizeIdx());
     S_SetupAboveWater(false);
 
-    S_MusicPause();
+    S_Music_Pause();
 
     int32_t select = PauseLoop();
 
-    S_MusicUnpause();
+    S_Music_Unpause();
     RemoveRequester(&PauseRequester);
     RemovePausedText();
     TempVideoRemove();

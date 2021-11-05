@@ -6,14 +6,14 @@
 
 #include "global/types.h"
 
-int32_t MusicInit();
-int32_t MusicPlay(int16_t track_id);
-void MusicPlayLooped();
-int32_t S_MusicPlay(int16_t track);
-int32_t S_MusicStop();
-void S_MusicLoop();
-void S_MusicVolume(int16_t volume);
-void S_MusicPause();
-void S_MusicUnpause();
+int32_t S_Music_Init();
+int32_t S_Music_PlayImpl(int16_t track_id);
+void S_Music_PlayLooped();
+int32_t S_Music_Play(int16_t track);
+int32_t S_Music_Stop();
+void S_Music_Loop();
+void S_Music_AdjustVolume(int16_t volume);
+void S_Music_Pause();
+void S_Music_Unpause();
 
 #endif

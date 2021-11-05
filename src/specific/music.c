@@ -9,7 +9,7 @@
 static int32_t MusicNumTracks = 0;
 static int16_t MusicTrackLooped = 0;
 
-int32_t MusicInit()
+int32_t S_Music_Init()
 {
     MCI_OPEN_PARMS open_parms;
     open_parms.dwCallback = 0;
@@ -43,14 +43,14 @@ int32_t MusicInit()
     return 1;
 }
 
-void S_MusicVolume(int16_t volume)
+void S_Music_AdjustVolume(int16_t volume)
 {
     int32_t volume_aux = volume * 0xFFFF / 0xFF;
     volume_aux |= volume_aux << 16;
     auxSetVolume(AuxDeviceID, volume_aux);
 }
 
-void S_MusicPause()
+void S_Music_Pause()
 {
     MCIERROR result;
     MCI_GENERIC_PARMS pause_parms;
@@ -62,7 +62,7 @@ void S_MusicPause()
     }
 }
 
-void S_MusicUnpause()
+void S_Music_Unpause()
 {
     MCIERROR result;
     MCI_GENERIC_PARMS pause_parms;
@@ -74,7 +74,7 @@ void S_MusicUnpause()
     }
 }
 
-int32_t MusicPlay(int16_t track)
+int32_t S_Music_PlayImpl(int16_t track)
 {
     if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
         return 0;
@@ -119,14 +119,14 @@ int32_t MusicPlay(int16_t track)
     return 1;
 }
 
-void MusicPlayLooped()
+void S_Music_PlayLooped()
 {
     if (MusicLoop && MusicTrackLooped > 0) {
-        MusicPlay(MusicTrackLooped);
+        S_Music_PlayImpl(MusicTrackLooped);
     }
 }
 
-int32_t S_MusicPlay(int16_t track_id)
+int32_t S_Music_Play(int16_t track_id)
 {
     if (T1MConfig.fix_secrets_killing_music && track_id == 13) {
         Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
@@ -134,7 +134,7 @@ int32_t S_MusicPlay(int16_t track_id)
     }
 
     if (track_id == 0) {
-        S_MusicStop();
+        S_Music_Stop();
         return 0;
     }
 
@@ -143,10 +143,10 @@ int32_t S_MusicPlay(int16_t track_id)
     }
 
     MusicTrack = track_id;
-    return MusicPlay(track_id);
+    return S_Music_PlayImpl(track_id);
 }
 
-int32_t S_MusicStop()
+int32_t S_Music_Stop()
 {
     MusicTrack = 0;
     MusicTrackLooped = 0;
@@ -157,7 +157,7 @@ int32_t S_MusicStop()
         MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
 }
 
-void S_MusicLoop()
+void S_Music_Loop()
 {
     MusicLoop = true;
 }
