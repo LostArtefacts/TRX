@@ -43,12 +43,6 @@ typedef enum SOUND_FLAG {
     SOUND_FLAG_NO_REVERB = 1 << 3,
 } SOUND_FLAG;
 
-typedef enum SAMPLE_FLAG {
-    NO_PAN = 1 << 12,
-    PITCH_WIBBLE = 1 << 13,
-    VOLUME_WIBBLE = 1 << 14,
-} SAMPLE_FLAG;
-
 static SOUND_SLOT SFXPlaying[MAX_PLAYING_FX] = { 0 };
 static int32_t Sound_MasterVolumeDefault = 32;
 static int16_t MnAmbientLookup[MAX_AMBIENT_FX] = { -1 };
@@ -163,11 +157,11 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     distance = phd_sqrt(distance);
 
     int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
-    if (s->flags & VOLUME_WIBBLE) {
+    if (s->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
         volume -= GetRandomDraw() * MAX_VOLUME_CHANGE >> 15;
     }
 
-    if (s->flags & NO_PAN) {
+    if (s->flags & SAMPLE_FLAG_NO_PAN) {
         pan = 0;
     }
 
@@ -183,7 +177,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     int32_t pitch = 100;
-    if (s->flags & PITCH_WIBBLE) {
+    if (s->flags & SAMPLE_FLAG_PITCH_WIBBLE) {
         pitch +=
             ((GetRandomDraw() * MAX_PITCH_CHANGE) / 16384) - MAX_PITCH_CHANGE;
     }
@@ -434,7 +428,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
 
     slot->volume = volume;
 
-    if (!distance || (s->flags & NO_PAN)) {
+    if (!distance || (s->flags & SAMPLE_FLAG_NO_PAN)) {
         slot->pan = 0;
         return;
     }
