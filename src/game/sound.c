@@ -30,9 +30,9 @@ typedef struct SOUND_SLOT {
 } SOUND_SLOT;
 
 typedef enum SOUND_MODE {
-    SOUND_WAIT = 0,
-    SOUND_RESTART = 1,
-    SOUND_AMBIENT = 2,
+    SOUND_MODE_WAIT = 0,
+    SOUND_MODE_RESTART = 1,
+    SOUND_MODE_AMBIENT = 2,
 } SOUND_MODE;
 
 typedef enum SOUND_FLAG {
@@ -171,7 +171,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         pan = 0;
     }
 
-    if (volume <= 0 && mode != SOUND_AMBIENT) {
+    if (volume <= 0 && mode != SOUND_MODE_AMBIENT) {
         return false;
     }
 
@@ -199,7 +199,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     switch (mode) {
-    case SOUND_WAIT: {
+    case SOUND_MODE_WAIT: {
         SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, 0, pos, mode);
         if (!fxslot) {
             return false;
@@ -219,7 +219,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         return true;
     }
 
-    case SOUND_RESTART: {
+    case SOUND_MODE_RESTART: {
         SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, 0, pos, mode);
         if (!fxslot) {
             return false;
@@ -240,7 +240,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         return true;
     }
 
-    case SOUND_AMBIENT: {
+    case SOUND_MODE_AMBIENT: {
         uint32_t loudness = distance;
         SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, loudness, pos, mode);
         if (!fxslot) {
@@ -333,7 +333,7 @@ void Sound_ResetEffects()
                 s->volume);
         }
 
-        if ((s->flags & 3) == SOUND_AMBIENT) {
+        if ((s->flags & 3) == SOUND_MODE_AMBIENT) {
             if (MnAmbientLookupIdx >= MAX_AMBIENT_FX) {
                 S_ExitSystem("Ran out of ambient fx slots in "
                              "Sound_ResetEffects()");
@@ -348,8 +348,8 @@ static SOUND_SLOT *Sound_GetSlot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
 {
     switch (mode) {
-    case SOUND_WAIT:
-    case SOUND_RESTART: {
+    case SOUND_MODE_WAIT:
+    case SOUND_MODE_RESTART: {
         SOUND_SLOT *last_free_slot = NULL;
         for (int i = MnAmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
             SOUND_SLOT *result = &SFXPlaying[i];
@@ -364,7 +364,7 @@ static SOUND_SLOT *Sound_GetSlot(
         return last_free_slot;
     }
 
-    case SOUND_AMBIENT:
+    case SOUND_MODE_AMBIENT:
         for (int i = 0; i < MAX_AMBIENT_FX; i++) {
             if (MnAmbientLookup[i] == sfx_num) {
                 SOUND_SLOT *result = &SFXPlaying[i];
