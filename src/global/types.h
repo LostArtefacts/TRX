@@ -1945,18 +1945,6 @@ typedef struct SAMPLE_INFO {
     int16_t flags;
 } SAMPLE_INFO;
 
-typedef struct SAMPLE_DATA {
-    char *data;
-    int32_t length;
-    int16_t bits_per_sample;
-    int16_t channels;
-    int16_t sample_rate;
-    int16_t block_align;
-    int16_t volume;
-    int32_t pan;
-    void *handle;
-} SAMPLE_DATA;
-
 #pragma pack(pop)
 
 typedef struct PICTURE {
