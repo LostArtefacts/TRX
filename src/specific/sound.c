@@ -62,7 +62,7 @@ static SAMPLE_DATA **SampleData = NULL;
 static int32_t ConvertVolumeToDecibel(int32_t volume);
 static int32_t ConvertPanToDecibel(uint16_t pan);
 static SAMPLE_DATA *S_Sound_LoadSample(char *content);
-static int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data);
+static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data);
 static void *S_Sound_PlaySampleImpl(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
     int8_t loop);
@@ -267,7 +267,7 @@ static SAMPLE_DATA *S_Sound_LoadSample(char *content)
     return NULL;
 }
 
-static int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data)
+static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
 {
     WAVEFORMATEX wave_format;
     wave_format.wFormatTag = WAVE_FORMAT_PCM;
@@ -318,7 +318,7 @@ static int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data)
         S_ExitSystem("Fatal DirectSound error!");
     }
 
-    return 1;
+    return true;
 }
 
 void *S_Sound_PlaySample(
@@ -381,13 +381,13 @@ void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     }
 }
 
-int32_t S_Sound_SampleIsPlaying(void *handle)
+bool S_Sound_SampleIsPlaying(void *handle)
 {
     if (!SoundIsActive) {
-        return 0;
+        return false;
     }
     if (!handle) {
-        return 0;
+        return false;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     DWORD status;
@@ -395,7 +395,7 @@ int32_t S_Sound_SampleIsPlaying(void *handle)
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_GetStatus: 0x%lx", result);
-        return 0;
+        return false;
     }
     return status == DSBSTATUS_PLAYING;
 }
