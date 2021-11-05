@@ -40,7 +40,6 @@ typedef enum SOUND_FLAG {
     SOUND_FLAG_USED = 1 << 0,
     SOUND_FLAG_AMBIENT = 1 << 1,
     SOUND_FLAG_RESTARTED = 1 << 2,
-    SOUND_FLAG_NO_REVERB = 1 << 3,
 } SOUND_FLAG;
 
 static SOUND_SLOT SFXPlaying[MAX_PLAYING_FX] = { 0 };
@@ -151,7 +150,6 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     } else {
         distance = 0;
         pan = 0;
-        flags = SOUND_FLAG_NO_REVERB;
     }
     distance = phd_sqrt(distance);
 
