@@ -9,6 +9,12 @@
 typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 
+typedef enum SAMPLE_FLAG {
+    SAMPLE_FLAG_NO_PAN = 1 << 12,
+    SAMPLE_FLAG_PITCH_WIBBLE = 1 << 13,
+    SAMPLE_FLAG_VOLUME_WIBBLE = 1 << 14,
+} SAMPLE_FLAG;
+
 typedef enum CAMERA_TYPE {
     CAM_CHASE = 0,
     CAM_FIXED = 1,
