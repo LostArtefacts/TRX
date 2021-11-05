@@ -10,8 +10,8 @@
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
+#include "specific/music.h"
 #include "specific/shell.h"
-#include "specific/sndpc.h"
 
 #include <windows.h>
 #include <ddraw.h>

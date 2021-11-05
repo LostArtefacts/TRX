@@ -82,8 +82,8 @@
 #include "log.h"
 #include "specific/file.h"
 #include "specific/init.h"
+#include "specific/music.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stddef.h>
 

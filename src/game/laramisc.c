@@ -14,7 +14,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 #include "util.h"
 
 #include <stddef.h>

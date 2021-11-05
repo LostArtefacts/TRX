@@ -18,9 +18,9 @@
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
+#include "specific/music.h"
 #include "specific/output.h"
 #include "specific/smain.h"
-#include "specific/sndpc.h"
 
 #include <stdint.h>
 #include <stdio.h>

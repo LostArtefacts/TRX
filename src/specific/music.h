@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_SNDPC_H
-#define T1M_SPECIFIC_SNDPC_H
+#ifndef T1M_SPECIFIC_MUSIC_H
+#define T1M_SPECIFIC_MUSIC_H
 
 #include <stdbool.h>
 #include <stdint.h>

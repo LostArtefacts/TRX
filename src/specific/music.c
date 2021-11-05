@@ -1,4 +1,4 @@
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 #include "config.h"
 #include "game/sound.h"

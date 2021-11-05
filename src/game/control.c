@@ -20,7 +20,7 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 #include <stddef.h>
 

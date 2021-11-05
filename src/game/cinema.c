@@ -12,7 +12,7 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;

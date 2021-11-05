@@ -16,8 +16,8 @@
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
+#include "specific/music.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <limits.h>
 #include <stdlib.h>
