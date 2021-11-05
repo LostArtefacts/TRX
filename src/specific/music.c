@@ -5,7 +5,7 @@
 
 static int32_t MusicNumTracks = 0;
 
-int32_t S_Music_Init()
+bool S_Music_Init()
 {
     MCI_OPEN_PARMS open_parms;
     open_parms.dwCallback = 0;
@@ -18,7 +18,7 @@ int32_t S_Music_Init()
         0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID, (DWORD_PTR)&open_parms);
     if (result) {
         LOG_ERROR("cannot initailize music device: %x", result);
-        return 0;
+        return false;
     }
     MCIDeviceID = open_parms.wDeviceID;
 
@@ -36,7 +36,7 @@ int32_t S_Music_Init()
     mciSendCommandA(
         MCIDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR)&status_parms);
     MusicNumTracks = status_parms.dwReturn;
-    return 1;
+    return true;
 }
 
 void S_Music_AdjustVolume(int16_t volume)
@@ -70,13 +70,13 @@ void S_Music_Unpause()
     }
 }
 
-int32_t S_Music_Play(int16_t track)
+bool S_Music_Play(int16_t track)
 {
     MCI_SET_PARMS set_parms;
     set_parms.dwTimeFormat = MCI_FORMAT_TMSF;
     if (mciSendCommandA(
             MCIDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD_PTR)&set_parms)) {
-        return 0;
+        return false;
     }
 
     MCI_PLAY_PARMS open_parms;
@@ -91,13 +91,13 @@ int32_t S_Music_Play(int16_t track)
 
     if (mciSendCommandA(
             MCIDeviceID, MCI_PLAY, dwFlags, (DWORD_PTR)&open_parms)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t S_Music_Stop()
+bool S_Music_Stop()
 {
     MCI_GENERIC_PARMS gen_parms;
     return !mciSendCommandA(
