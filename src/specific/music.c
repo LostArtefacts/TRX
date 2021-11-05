@@ -1,6 +1,5 @@
 #include "specific/music.h"
 
-#include "config.h"
 #include "global/vars_platform.h"
 #include "log.h"
 
@@ -73,10 +72,6 @@ void S_Music_Unpause()
 
 int32_t S_Music_Play(int16_t track)
 {
-    uint32_t volume = T1MConfig.music_volume * 0xFFFF / 10;
-    volume |= volume << 16;
-    auxSetVolume(AuxDeviceID, volume);
-
     MCI_SET_PARMS set_parms;
     set_parms.dwTimeFormat = MCI_FORMAT_TMSF;
     if (mciSendCommandA(
