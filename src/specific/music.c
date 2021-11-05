@@ -1,15 +1,10 @@
 #include "specific/music.h"
 
 #include "config.h"
-#include "game/sound.h"
-#include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 
 static int32_t MusicNumTracks = 0;
-static int16_t MusicTrackLooped = 0;
-
-static int32_t S_Music_PlayImpl(int16_t track_id);
 
 int32_t S_Music_Init()
 {
@@ -76,22 +71,8 @@ void S_Music_Unpause()
     }
 }
 
-static int32_t S_Music_PlayImpl(int16_t track)
+int32_t S_Music_Play(int16_t track)
 {
-    if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
-        return 0;
-    }
-
-    if (track < 2) {
-        return 0;
-    }
-
-    if (track >= 57) {
-        MusicTrackLooped = track;
-    }
-
-    MusicLoop = false;
-
     uint32_t volume = T1MConfig.music_volume * 0xFFFF / 10;
     volume |= volume << 16;
     auxSetVolume(AuxDeviceID, volume);
@@ -121,45 +102,9 @@ static int32_t S_Music_PlayImpl(int16_t track)
     return 1;
 }
 
-void S_Music_PlayLooped()
-{
-    if (MusicLoop && MusicTrackLooped > 0) {
-        S_Music_PlayImpl(MusicTrackLooped);
-    }
-}
-
-int32_t S_Music_Play(int16_t track_id)
-{
-    if (T1MConfig.fix_secrets_killing_music && track_id == 13) {
-        Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
-        return 1;
-    }
-
-    if (track_id == 0) {
-        S_Music_Stop();
-        return 0;
-    }
-
-    if (track_id == 5) {
-        return 0;
-    }
-
-    MusicTrack = track_id;
-    return S_Music_PlayImpl(track_id);
-}
-
 int32_t S_Music_Stop()
 {
-    MusicTrack = 0;
-    MusicTrackLooped = 0;
-    MusicLoop = false;
-
     MCI_GENERIC_PARMS gen_parms;
     return !mciSendCommandA(
         MCIDeviceID, MCI_STOP, MCI_WAIT, (DWORD_PTR)&gen_parms);
-}
-
-void S_Music_Loop()
-{
-    MusicLoop = true;
 }
