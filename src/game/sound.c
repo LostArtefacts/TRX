@@ -46,6 +46,7 @@ typedef enum SOUND_FLAG {
 
 static struct {
     SOUND_SLOT sfx_playing[MAX_PLAYING_FX];
+    int32_t master_volume;
     int32_t master_volume_default;
     int16_t ambient_lookup[MAX_AMBIENT_FX];
     int32_t ambient_lookup_idx;
@@ -154,6 +155,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
 
 bool Sound_Init()
 {
+    S.master_volume = 32;
     S.master_volume_default = 32;
     return S_Sound_Init();
 }
@@ -189,7 +191,9 @@ void Sound_UpdateEffects()
 
         if (slot->flags & SOUND_FLAG_AMBIENT) {
             if (slot->loudness != SOUND_NOT_AUDIBLE && slot->handle) {
-                S_Sound_SetPanAndVolume(slot->handle, slot->pan, slot->volume);
+                S_Sound_SetPanAndVolume(
+                    slot->handle, slot->pan,
+                    (S.master_volume * slot->volume) >> 6);
             } else {
                 if (slot->handle) {
                     S_Sound_StopSample(slot->handle);
@@ -201,7 +205,8 @@ void Sound_UpdateEffects()
                 Sound_UpdateSlotParams(slot);
                 if (slot->volume > 0 && slot->handle) {
                     S_Sound_SetPanAndVolume(
-                        slot->handle, slot->pan, slot->volume);
+                        slot->handle, slot->pan,
+                        (S.master_volume * slot->volume) >> 6);
                 } else {
                     if (slot->handle) {
                         S_Sound_StopSample(slot->handle);
@@ -293,6 +298,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     if (volume > SOUND_MAX_VOLUME) {
         volume = SOUND_MAX_VOLUME;
     }
+
+    volume = (S.master_volume * volume) >> 6;
 
     switch (mode) {
     case SOUND_MODE_WAIT: {
@@ -409,7 +416,7 @@ void Sound_ResetEffects()
     if (!SoundIsActive) {
         return;
     }
-    Sound_MasterVolume = S.master_volume_default;
+    S.master_volume = S.master_volume_default;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         Sound_ClearSlot(&S.sfx_playing[i]);
@@ -483,5 +490,5 @@ void Sound_AdjustMasterVolume(int8_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
     S.master_volume_default = raw_volume & 0x3F;
-    Sound_MasterVolume = raw_volume & 0x3F;
+    S.master_volume = raw_volume & 0x3F;
 }

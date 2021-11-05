@@ -167,8 +167,6 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
 void *S_Sound_PlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, bool loop)
 {
-    volume = (Sound_MasterVolume * volume) >> 6;
-
     if (!SoundIsActive) {
         return NULL;
     }
@@ -349,8 +347,7 @@ void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     HRESULT result;
     result = IDirectSoundBuffer_SetVolume(
-        buffer,
-        S_Sound_ConvertVolumeToDecibel((Sound_MasterVolume * volume) >> 6));
+        buffer, S_Sound_ConvertVolumeToDecibel(volume));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);

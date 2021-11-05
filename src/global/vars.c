@@ -29,7 +29,6 @@ bool SoundIsActive = true;
 int16_t SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *SampleInfos = NULL;
 uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
-int32_t Sound_MasterVolume = 32;
 
 int32_t NoInputCount = 0;
 bool IDelay = false;
