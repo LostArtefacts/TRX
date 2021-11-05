@@ -392,31 +392,15 @@ void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
         return;
     }
 
-    if (pos) {
-        for (int i = 0; i < MAX_PLAYING_FX; i++) {
-            MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
-            if (slot->mn_flags & MN_FX_USED) {
-                if (sfx_num >= 0) {
-                    if (slot->pos == pos && slot->fxnum == sfx_num) {
-                        S_SoundStopSample(slot->handle);
-                        mn_clear_fx_slot(slot);
-                        return;
-                    }
-                } else if (slot->pos == pos) {
-                    S_SoundStopSample(slot->handle);
-                    mn_clear_fx_slot(slot);
-                }
-            }
-        }
-    } else {
-        for (int i = 0; i < MAX_PLAYING_FX; i++) {
-            MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
-            if (slot->mn_flags & MN_FX_USED) {
-                if (slot->fxnum == sfx_num
-                    && S_SoundSampleIsPlaying(slot->handle)) {
-                    S_SoundStopSample(slot->handle);
-                    mn_clear_fx_slot(slot);
-                }
+    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+        MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
+        if ((slot->mn_flags & MN_FX_USED)
+            && S_SoundSampleIsPlaying(slot->handle)) {
+            if ((!pos && slot->fxnum == sfx_num)
+                || (pos && sfx_num >= 0 && slot->fxnum == sfx_num)
+                || (pos && sfx_num < 0)) {
+                S_SoundStopSample(slot->handle);
+                mn_clear_fx_slot(slot);
             }
         }
     }
