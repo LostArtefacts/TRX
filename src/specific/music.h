@@ -7,7 +7,6 @@
 #include "global/types.h"
 
 int32_t S_Music_Init();
-int32_t S_Music_PlayImpl(int16_t track_id);
 void S_Music_PlayLooped();
 int32_t S_Music_Play(int16_t track);
 int32_t S_Music_Stop();
