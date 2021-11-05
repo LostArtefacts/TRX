@@ -578,7 +578,7 @@ static bool LoadSamples(MYFILE *fp)
         sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    SoundLoadSamples(sample_pointers, num_samples);
+    S_Sound_LoadSamples(sample_pointers, num_samples);
 
     game_free(sizeof(char *) * num_samples, GBUF_SAMPLE_OFFSETS);
 

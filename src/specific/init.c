@@ -73,7 +73,7 @@ void S_InitialiseSystem()
     Lib_Init();
     Text_Init();
     ClockInit();
-    SoundIsActive = SoundInit();
+    SoundIsActive = S_Sound_Init();
     MusicInit();
     InputInit();
     FMVInit();
