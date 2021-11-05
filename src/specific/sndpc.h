@@ -6,8 +6,6 @@
 
 #include "global/types.h"
 
-#define SOUND_INVALID_HANDLE NULL
-
 int32_t ConvertVolumeToDecibel(int32_t volume);
 int32_t ConvertPanToDecibel(uint16_t pan);
 
