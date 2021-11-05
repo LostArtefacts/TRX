@@ -760,19 +760,6 @@ typedef enum KEY_NUMBER {
     KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
-typedef enum TEXTSTRING_FLAG {
-    TF_ACTIVE = 1 << 0,
-    TF_FLASH = 1 << 1,
-    TF_ROTATE_H = 1 << 2,
-    TF_ROTATE_V = 1 << 3,
-    TF_CENTRE_H = 1 << 4,
-    TF_CENTRE_V = 1 << 5,
-    TF_RIGHT = 1 << 7,
-    TF_BOTTOM = 1 << 8,
-    TF_BGND = 1 << 9,
-    TF_OUTLINE = 1 << 10,
-} TEXTSTRING_FLAG;
-
 typedef enum D_FLAGS {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
@@ -1539,28 +1526,42 @@ typedef struct CREATURE_INFO {
 } CREATURE_INFO;
 
 typedef struct TEXTSTRING {
-    uint32_t flags;
-    uint16_t text_flags;
-    uint16_t bgnd_flags;
-    uint16_t outl_flags;
-    int16_t xpos;
-    int16_t ypos;
-    int16_t zpos; // unused
+    union {
+        uint32_t all;
+        struct {
+            uint32_t active : 1;
+            uint32_t flash : 1;
+            uint32_t rotate_h : 1;
+            uint32_t centre_h : 1;
+            uint32_t centre_v : 1;
+            uint32_t right : 1;
+            uint32_t bottom : 1;
+            uint32_t background : 1;
+            uint32_t outline : 1;
+        };
+    } flags;
+    struct {
+        int16_t x;
+        int16_t y;
+    } pos;
     int16_t letter_spacing;
     int16_t word_spacing;
-    int16_t flash_rate;
-    int16_t flash_count;
-    int16_t bgnd_colour; // unused
-    SG_COL *bgnd_gour; // unused
-    int16_t outl_colour; // unused
-    SG_COL *outl_gour; // unused
-    int16_t bgnd_size_x;
-    int16_t bgnd_size_y;
-    int16_t bgnd_off_x;
-    int16_t bgnd_off_y;
-    int16_t bgnd_off_z; // unused
-    int32_t scale_h;
-    int32_t scale_v;
+    struct {
+        int16_t rate;
+        int16_t count;
+    } flash;
+    struct {
+        int16_t x;
+        int16_t y;
+    } bgnd_size;
+    struct {
+        int16_t x;
+        int16_t y;
+    } bgnd_off;
+    struct {
+        int32_t h;
+        int32_t v;
+    } scale;
     char *string;
 } TEXTSTRING;
 

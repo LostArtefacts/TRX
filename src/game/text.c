@@ -67,7 +67,7 @@ static int Text_GetStringLen(const char *string)
 void Text_Init()
 {
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TextInfoTable[i].flags = 0;
+        TextInfoTable[i].flags.all = 0;
     }
     TextStringCount = 0;
 }
@@ -81,7 +81,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     TEXTSTRING *result = &TextInfoTable[0];
     int n;
     for (n = 0; n < MAX_TEXT_STRINGS; n++) {
-        if (!(result->flags & TF_ACTIVE)) {
+        if (!result->flags.active) {
             break;
         }
         result++;
@@ -99,26 +99,23 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
         length = MAX_STRING_SIZE - 1;
     }
 
-    result->xpos = x;
-    result->ypos = y;
+    result->pos.x = x;
+    result->pos.y = y;
     result->letter_spacing = 1;
     result->word_spacing = 6;
-    result->scale_h = PHD_ONE;
-    result->scale_v = PHD_ONE;
+    result->scale.h = PHD_ONE;
+    result->scale.v = PHD_ONE;
 
     result->string = TextStrings[n];
     memcpy(result->string, string, length + 1);
 
-    result->flags = TF_ACTIVE;
-    result->text_flags = 0;
-    result->outl_flags = 0;
-    result->bgnd_flags = 0;
+    result->flags.all = 0;
+    result->flags.active = 1;
 
-    result->bgnd_size_x = 0;
-    result->bgnd_size_y = 0;
-    result->bgnd_off_x = 0;
-    result->bgnd_off_y = 0;
-    result->bgnd_off_z = 0;
+    result->bgnd_size.x = 0;
+    result->bgnd_size.y = 0;
+    result->bgnd_off.x = 0;
+    result->bgnd_off.y = 0;
 
     TextStringCount++;
 
@@ -130,7 +127,7 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
     if (!textstring) {
         return;
     }
-    if (!(textstring->flags & TF_ACTIVE)) {
+    if (!textstring->flags.active) {
         return;
     }
     strncpy(textstring->string, string, MAX_STRING_SIZE);
@@ -144,8 +141,8 @@ void Text_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
     if (!textstring) {
         return;
     }
-    textstring->scale_h = scale_h;
-    textstring->scale_v = scale_v;
+    textstring->scale.h = scale_h;
+    textstring->scale.v = scale_v;
 }
 
 void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
@@ -154,11 +151,11 @@ void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
         return;
     }
     if (enable) {
-        textstring->flags |= TF_FLASH;
-        textstring->flash_rate = rate;
-        textstring->flash_count = rate;
+        textstring->flags.flash = 1;
+        textstring->flash.rate = rate;
+        textstring->flash.count = rate;
     } else {
-        textstring->flags &= ~TF_FLASH;
+        textstring->flags.flash = 0;
     }
 }
 
@@ -168,11 +165,11 @@ void Text_AddBackground(
     if (!textstring) {
         return;
     }
-    textstring->flags |= TF_BGND;
-    textstring->bgnd_size_x = w;
-    textstring->bgnd_size_y = h;
-    textstring->bgnd_off_x = x;
-    textstring->bgnd_off_y = y;
+    textstring->flags.background = 1;
+    textstring->bgnd_size.x = w;
+    textstring->bgnd_size.y = h;
+    textstring->bgnd_off.x = x;
+    textstring->bgnd_off.y = y;
 }
 
 void Text_RemoveBackground(TEXTSTRING *textstring)
@@ -180,7 +177,7 @@ void Text_RemoveBackground(TEXTSTRING *textstring)
     if (!textstring) {
         return;
     }
-    textstring->flags &= ~TF_BGND;
+    textstring->flags.background = 0;
 }
 
 void Text_AddOutline(TEXTSTRING *textstring, bool enable)
@@ -188,7 +185,7 @@ void Text_AddOutline(TEXTSTRING *textstring, bool enable)
     if (!textstring) {
         return;
     }
-    textstring->flags |= TF_OUTLINE;
+    textstring->flags.outline = 1;
 }
 
 void Text_RemoveOutline(TEXTSTRING *textstring)
@@ -196,7 +193,7 @@ void Text_RemoveOutline(TEXTSTRING *textstring)
     if (!textstring) {
         return;
     }
-    textstring->flags &= ~TF_OUTLINE;
+    textstring->flags.outline = 0;
 }
 
 void Text_CentreH(TEXTSTRING *textstring, bool enable)
@@ -204,11 +201,7 @@ void Text_CentreH(TEXTSTRING *textstring, bool enable)
     if (!textstring) {
         return;
     }
-    if (enable) {
-        textstring->flags |= TF_CENTRE_H;
-    } else {
-        textstring->flags &= ~TF_CENTRE_H;
-    }
+    textstring->flags.centre_h = enable;
 }
 
 void Text_CentreV(TEXTSTRING *textstring, bool enable)
@@ -216,11 +209,7 @@ void Text_CentreV(TEXTSTRING *textstring, bool enable)
     if (!textstring) {
         return;
     }
-    if (enable) {
-        textstring->flags |= TF_CENTRE_V;
-    } else {
-        textstring->flags &= ~TF_CENTRE_V;
-    }
+    textstring->flags.centre_v = enable;
 }
 
 void Text_AlignRight(TEXTSTRING *textstring, bool enable)
@@ -228,11 +217,7 @@ void Text_AlignRight(TEXTSTRING *textstring, bool enable)
     if (!textstring) {
         return;
     }
-    if (enable) {
-        textstring->flags |= TF_RIGHT;
-    } else {
-        textstring->flags &= ~TF_RIGHT;
-    }
+    textstring->flags.right = enable;
 }
 
 void Text_AlignBottom(TEXTSTRING *textstring, bool enable)
@@ -240,11 +225,7 @@ void Text_AlignBottom(TEXTSTRING *textstring, bool enable)
     if (!textstring) {
         return;
     }
-    if (enable) {
-        textstring->flags |= TF_BOTTOM;
-    } else {
-        textstring->flags &= ~TF_BOTTOM;
-    }
+    textstring->flags.bottom = enable;
 }
 
 int32_t Text_GetWidth(TEXTSTRING *textstring)
@@ -260,7 +241,7 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
         }
 
         if (letter == 32) {
-            width += textstring->word_spacing * textstring->scale_h / PHD_ONE;
+            width += textstring->word_spacing * textstring->scale.h / PHD_ONE;
             continue;
         }
 
@@ -273,7 +254,7 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
         }
 
         width += ((TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
-                  * textstring->scale_h)
+                  * textstring->scale.h)
             / PHD_ONE;
     }
     width -= textstring->letter_spacing;
@@ -286,8 +267,8 @@ void Text_Remove(TEXTSTRING *textstring)
     if (!textstring) {
         return;
     }
-    if (textstring->flags & TF_ACTIVE) {
-        textstring->flags &= ~TF_ACTIVE;
+    if (textstring->flags.active) {
+        textstring->flags.active = 0;
         TextStringCount--;
     }
 }
@@ -301,7 +282,7 @@ void Text_Draw()
 {
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
         TEXTSTRING *textstring = &TextInfoTable[i];
-        if (textstring->flags & TF_ACTIVE) {
+        if (textstring->flags.active) {
             Text_DrawText(textstring);
         }
     }
@@ -310,35 +291,35 @@ void Text_Draw()
 static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
-    if (textstring->flags & TF_FLASH) {
-        textstring->flash_count -= (int16_t)Camera.number_frames;
-        if (textstring->flash_count <= -textstring->flash_rate) {
-            textstring->flash_count = textstring->flash_rate;
-        } else if (textstring->flash_count < 0) {
+    if (textstring->flags.flash) {
+        textstring->flash.count -= (int16_t)Camera.number_frames;
+        if (textstring->flash.count <= -textstring->flash.rate) {
+            textstring->flash.count = textstring->flash.rate;
+        } else if (textstring->flash.count < 0) {
             return;
         }
     }
 
     char *string = textstring->string;
-    int32_t x = textstring->xpos;
-    int32_t y = textstring->ypos;
+    int32_t x = textstring->pos.x;
+    int32_t y = textstring->pos.y;
     int32_t textwidth = Text_GetWidth(textstring);
 
-    if (textstring->flags & TF_CENTRE_H) {
+    if (textstring->flags.centre_h) {
         x += (GetRenderWidthDownscaled() - textwidth) / 2;
-    } else if (textstring->flags & TF_RIGHT) {
+    } else if (textstring->flags.right) {
         x += GetRenderWidthDownscaled() - textwidth;
     }
 
-    if (textstring->flags & TF_CENTRE_V) {
+    if (textstring->flags.centre_v) {
         y += GetRenderHeightDownscaled() / 2;
-    } else if (textstring->flags & TF_BOTTOM) {
+    } else if (textstring->flags.bottom) {
         y += GetRenderHeightDownscaled();
     }
 
-    int32_t bxpos = textstring->bgnd_off_x + x - TEXT_BOX_OFFSET;
+    int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
     int32_t bypos =
-        textstring->bgnd_off_y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+        textstring->bgnd_off.y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
     int32_t letter = '\0';
     while (*string) {
@@ -348,7 +329,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         }
 
         if (letter == ' ') {
-            x += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
+            x += (textstring->word_spacing * textstring->scale.h) / PHD_ONE;
             continue;
         }
 
@@ -363,40 +344,40 @@ static void Text_DrawText(TEXTSTRING *textstring)
 
         sx = GetRenderScale(x);
         sy = GetRenderScale(y);
-        sh = GetRenderScale(textstring->scale_h);
-        sv = GetRenderScale(textstring->scale_v);
+        sh = GetRenderScale(textstring->scale.h);
+        sv = GetRenderScale(textstring->scale.v);
 
         S_DrawScreenSprite2d(
             sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
-            16 << 8, textstring->text_flags, 0);
+            16 << 8, 0, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
         x += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
-              * textstring->scale_h)
+              * textstring->scale.h)
             / PHD_ONE;
     }
 
     int32_t bwidth = 0;
     int32_t bheight = 0;
-    if ((textstring->flags & TF_BGND) || (textstring->flags & TF_OUTLINE)) {
-        if (textstring->bgnd_size_x) {
+    if (textstring->flags.background || textstring->flags.outline) {
+        if (textstring->bgnd_size.x) {
             bxpos += textwidth / 2;
-            bxpos -= textstring->bgnd_size_x / 2;
-            bwidth = textstring->bgnd_size_x + TEXT_BOX_OFFSET * 2;
+            bxpos -= textstring->bgnd_size.x / 2;
+            bwidth = textstring->bgnd_size.x + TEXT_BOX_OFFSET * 2;
         } else {
             bwidth = textwidth + TEXT_BOX_OFFSET * 2;
         }
-        if (textstring->bgnd_size_y) {
-            bheight = textstring->bgnd_size_y;
+        if (textstring->bgnd_size.y) {
+            bheight = textstring->bgnd_size.y;
         } else {
             bheight = TEXT_HEIGHT + 7;
         }
     }
 
-    if (textstring->flags & TF_BGND) {
+    if (textstring->flags.background) {
         sx = GetRenderScale(bxpos);
         sy = GetRenderScale(bypos);
         sh = GetRenderScale(bwidth);
@@ -405,7 +386,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         S_DrawScreenFBox(sx, sy, sh, sv);
     }
 
-    if (textstring->flags & TF_OUTLINE) {
+    if (textstring->flags.outline) {
         sx = GetRenderScale(bxpos);
         sy = GetRenderScale(bypos);
         sh = GetRenderScale(bwidth);

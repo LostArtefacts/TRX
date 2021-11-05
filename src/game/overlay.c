@@ -340,7 +340,7 @@ void Overlay_DrawAmmoInfo()
         Text_AlignRight(AmmoText, 1);
     }
 
-    AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
+    AmmoText->pos.y = BarOffsetY[T1M_BL_TOP_RIGHT]
         ? text_height + screen_margin_v + BarOffsetY[T1M_BL_TOP_RIGHT]
         : text_height + screen_margin_v;
 }
