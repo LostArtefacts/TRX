@@ -890,11 +890,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
 
         if (Input.left || Input.right) {
-            if (T1MConfig.music_volume) {
-                Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
-            } else {
-                Music_AdjustVolume(0);
-            }
+            Music_AdjustVolume(T1MConfig.music_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
