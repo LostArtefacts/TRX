@@ -1,9 +1,10 @@
 #include "specific/init.h"
 
-#include "global/lib.h"
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
+#include "game/sound.h"
 #include "game/text.h"
+#include "global/lib.h"
 #include "global/vars.h"
 #include "specific/clock.h"
 #include "specific/display.h"
@@ -13,7 +14,6 @@
 #include "specific/input.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
-#include "specific/sound.h"
 
 #include <stdio.h>
 #include <time.h>
@@ -73,7 +73,7 @@ void S_InitialiseSystem()
     Lib_Init();
     Text_Init();
     ClockInit();
-    SoundIsActive = S_Sound_Init();
+    SoundIsActive = Sound_Init();
     MusicInit();
     InputInit();
     FMVInit();
