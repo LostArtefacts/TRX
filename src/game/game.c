@@ -125,16 +125,16 @@ void LevelStats(int32_t level_num)
     TEXTSTRING *txt;
 
     TempVideoAdjust(GetScreenSizeIdx());
-    T_RemoveAllPrints();
+    Text_RemoveAll();
     AmmoText = NULL;
     FPSText = NULL;
     VersionText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);
-    txt = T_Print(0, -50, string);
-    T_CentreH(txt, 1);
-    T_CentreV(txt, 1);
+    txt = Text_Create(0, -50, string);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
 
     // time taken
     int32_t seconds = SaveGame.timer / 30;
@@ -149,9 +149,9 @@ void LevelStats(int32_t level_num)
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
     sprintf(string, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    txt = T_Print(0, 70, string);
-    T_CentreH(txt, 1);
-    T_CentreV(txt, 1);
+    txt = Text_Create(0, 70, string);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
 
     // secrets
     int32_t secrets_taken = 0;
@@ -166,21 +166,21 @@ void LevelStats(int32_t level_num)
     sprintf(
         string, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
         GF.levels[level_num].secrets);
-    txt = T_Print(0, 40, string);
-    T_CentreH(txt, 1);
-    T_CentreV(txt, 1);
+    txt = Text_Create(0, 40, string);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
 
     // pickups
     sprintf(string, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
-    txt = T_Print(0, 10, string);
-    T_CentreH(txt, 1);
-    T_CentreV(txt, 1);
+    txt = Text_Create(0, 10, string);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
 
     // kills
     sprintf(string, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
-    txt = T_Print(0, -20, string);
-    T_CentreH(txt, 1);
-    T_CentreV(txt, 1);
+    txt = Text_Create(0, -20, string);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
 
     // wait till action key release
     while (Input.select || Input.deselect) {
@@ -188,7 +188,7 @@ void LevelStats(int32_t level_num)
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
-        T_DrawText();
+        Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
     }
@@ -201,7 +201,7 @@ void LevelStats(int32_t level_num)
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
-        T_DrawText();
+        Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
     }
@@ -211,7 +211,7 @@ void LevelStats(int32_t level_num)
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
-        T_DrawText();
+        Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
     }

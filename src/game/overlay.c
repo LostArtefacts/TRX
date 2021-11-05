@@ -306,7 +306,7 @@ void Overlay_DrawAmmoInfo()
     if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
         || (SaveGame.bonus_flag & GBF_NGPLUS)) {
         if (AmmoText) {
-            T_RemovePrint(AmmoText);
+            Text_Remove(AmmoText);
             AmmoText = NULL;
         }
         return;
@@ -331,13 +331,13 @@ void Overlay_DrawAmmoInfo()
     Overlay_MakeAmmoString(ammostring);
 
     if (AmmoText) {
-        T_ChangeText(AmmoText, ammostring);
+        Text_ChangeText(AmmoText, ammostring);
     } else {
-        AmmoText = T_Print(
+        AmmoText = Text_Create(
             -screen_margin_h - text_offset_x, text_height + screen_margin_v,
             ammostring);
-        T_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
-        T_RightAlign(AmmoText, 1);
+        Text_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
+        Text_AlignRight(AmmoText, 1);
     }
 
     AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
@@ -385,16 +385,16 @@ void Overlay_DrawFPSInfo()
         if (ClockGetMS() - elapsed >= 1000) {
             if (FPSText) {
                 sprintf(fps_buf, "%d FPS", FPSCounter);
-                T_ChangeText(FPSText, fps_buf);
+                Text_ChangeText(FPSText, fps_buf);
             } else {
                 sprintf(fps_buf, "? FPS");
-                FPSText = T_Print(10, 30, fps_buf);
+                FPSText = Text_Create(10, 30, fps_buf);
             }
             FPSCounter = 0;
             elapsed = ClockGetMS();
         }
     } else if (FPSText) {
-        T_RemovePrint(FPSText);
+        Text_Remove(FPSText);
         FPSText = NULL;
         FPSCounter = 0;
     }
@@ -412,7 +412,7 @@ void Overlay_DrawGameInfo()
     Overlay_DrawAmmoInfo();
     Overlay_DrawFPSInfo();
 
-    T_DrawText();
+    Text_Draw();
 }
 
 void Overlay_AddPickup(int16_t object_num)
