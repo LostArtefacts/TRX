@@ -10,7 +10,7 @@
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/smain.h"
-#include "specific/sndpc.h"
+#include "specific/sound.h"
 
 #include <stdio.h>
 #include <windows.h>

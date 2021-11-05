@@ -6,13 +6,14 @@
 #include "game/text.h"
 #include "global/vars.h"
 #include "specific/clock.h"
-#include "specific/file.h"
 #include "specific/display.h"
+#include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/input.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
+#include "specific/sound.h"
 
 #include <stdio.h>
 #include <time.h>
