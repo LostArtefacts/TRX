@@ -64,7 +64,7 @@ int32_t Display_Inventory(int inv_mode)
         S_FadeInInventory(0);
     }
 
-    mn_stop_ambient_samples();
+    Sound_StopAmbientSounds();
     S_SoundStopAllSamples();
 
     switch (InvMode) {
@@ -231,7 +231,7 @@ int32_t Display_Inventory(int inv_mode)
 
         phd_PopMatrix();
 
-        mn_update_sound_effects();
+        Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
         S_OutputPolyList();

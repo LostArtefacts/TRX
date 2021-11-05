@@ -452,7 +452,7 @@ void *S_SoundPlaySample(
         return 0;
     }
     return SoundPlaySample(
-        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 0);
+        sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 0);
 }
 
 void *S_SoundPlaySampleLooped(
@@ -462,7 +462,7 @@ void *S_SoundPlaySampleLooped(
         return 0;
     }
     return SoundPlaySample(
-        sample_id, (MnSoundMasterVolume * volume) >> 6, pitch, pan, 1);
+        sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 1);
 }
 
 void S_SoundStopAllSamples()
@@ -505,7 +505,7 @@ void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     HRESULT result;
     result = IDirectSoundBuffer_SetVolume(
-        buffer, ConvertVolumeToDecibel((MnSoundMasterVolume * volume) >> 6));
+        buffer, ConvertVolumeToDecibel((Sound_MasterVolume * volume) >> 6));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);
