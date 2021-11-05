@@ -10,9 +10,7 @@ bool S_Sound_Init();
 void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples);
 
 void *S_Sound_PlaySample(
-    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
-void *S_Sound_PlaySampleLooped(
-    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, bool loop);
 bool S_Sound_SampleIsPlaying(void *handle);
 void S_Sound_StopAllSamples();
 void S_Sound_StopSample(void *handle);

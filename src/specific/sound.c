@@ -63,9 +63,6 @@ static int32_t ConvertVolumeToDecibel(int32_t volume);
 static int32_t ConvertPanToDecibel(uint16_t pan);
 static SAMPLE_DATA *S_Sound_LoadSample(char *content);
 static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data);
-static void *S_Sound_PlaySampleImpl(
-    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
-    int8_t loop);
 
 static int32_t ConvertVolumeToDecibel(int32_t volume)
 {
@@ -84,9 +81,11 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static void *S_Sound_PlaySampleImpl(
-    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
+void *S_Sound_PlaySample(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, bool loop)
 {
+    volume = (Sound_MasterVolume * volume) >> 6;
+
     if (!SoundIsActive) {
         return NULL;
     }
@@ -319,28 +318,6 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
     }
 
     return true;
-}
-
-void *S_Sound_PlaySample(
-    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
-{
-    if (!SoundIsActive) {
-        return NULL;
-    }
-
-    return S_Sound_PlaySampleImpl(
-        sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 0);
-}
-
-void *S_Sound_PlaySampleLooped(
-    int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
-{
-    if (!SoundIsActive) {
-        return NULL;
-    }
-
-    return S_Sound_PlaySampleImpl(
-        sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 1);
 }
 
 void S_Sound_StopSample(void *handle)
