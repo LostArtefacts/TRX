@@ -67,7 +67,7 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-void *SoundPlaySample(
+void *S_Sound_PlaySampleImpl(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
     if (!SoundIsActive) {
@@ -177,7 +177,7 @@ void *SoundPlaySample(
     return buffer;
 }
 
-bool SoundInit()
+bool S_Sound_Init()
 {
     HRESULT result = DirectSoundCreate(0, &DSound, 0);
     if (result != DS_OK) {
@@ -196,7 +196,7 @@ bool SoundInit()
     return true;
 }
 
-void S_SoundStopAllSamples()
+void S_Sound_StopAllSamples()
 {
     if (!SoundIsActive) {
         return;
@@ -205,12 +205,12 @@ void S_SoundStopAllSamples()
     for (int i = 0; i < NumSampleData; i++) {
         SAMPLE_DATA *sample = SampleData[i];
         if (sample) {
-            S_SoundStopSample(sample->handle);
+            S_Sound_StopSample(sample->handle);
         }
     }
 }
 
-void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
+void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
 {
     if (!SoundIsActive) {
         return;
@@ -219,11 +219,11 @@ void SoundLoadSamples(char **sample_pointers, int32_t num_samples)
     NumSampleData = num_samples;
     SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
     for (int i = 0; i < NumSampleData; i++) {
-        SampleData[i] = SoundLoadSample(sample_pointers[i]);
+        SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
     }
 }
 
-SAMPLE_DATA *SoundLoadSample(char *content)
+SAMPLE_DATA *S_Sound_LoadSample(char *content)
 {
     WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
     if (strncmp(hdr->chunk_id, "RIFF", 4)) {
@@ -244,13 +244,13 @@ SAMPLE_DATA *SoundLoadSample(char *content)
 
     sample_data->pan = 0;
     sample_data->volume = 0x7FFF;
-    if (SoundMakeSample(sample_data)) {
+    if (S_Sound_MakeSample(sample_data)) {
         return sample_data;
     }
     return NULL;
 }
 
-int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
+int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data)
 {
     WAVEFORMATEX wave_format;
     wave_format.wFormatTag = WAVE_FORMAT_PCM;
@@ -304,29 +304,29 @@ int32_t SoundMakeSample(SAMPLE_DATA *sample_data)
     return 1;
 }
 
-void *S_SoundPlaySample(
+void *S_Sound_PlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
         return NULL;
     }
 
-    return SoundPlaySample(
+    return S_Sound_PlaySampleImpl(
         sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 0);
 }
 
-void *S_SoundPlaySampleLooped(
+void *S_Sound_PlaySampleLooped(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
         return NULL;
     }
 
-    return SoundPlaySample(
+    return S_Sound_PlaySampleImpl(
         sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 1);
 }
 
-void S_SoundStopSample(void *handle)
+void S_Sound_StopSample(void *handle)
 {
     if (!SoundIsActive) {
         return;
@@ -341,7 +341,7 @@ void S_SoundStopSample(void *handle)
     }
 }
 
-void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
+void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
 {
     if (!SoundIsActive) {
         return;
@@ -364,7 +364,7 @@ void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     }
 }
 
-int32_t S_SoundSampleIsPlaying(void *handle)
+int32_t S_Sound_SampleIsPlaying(void *handle)
 {
     if (!SoundIsActive) {
         return 0;
