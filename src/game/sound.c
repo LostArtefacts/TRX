@@ -55,6 +55,101 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
 static void Sound_ClearSlot(SOUND_SLOT *slot);
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
 
+static SOUND_SLOT *Sound_GetSlot(
+    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
+{
+    switch (mode) {
+    case SOUND_MODE_WAIT:
+    case SOUND_MODE_RESTART: {
+        SOUND_SLOT *last_free_slot = NULL;
+        for (int i = Sound_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
+            SOUND_SLOT *result = &SFXPlaying[i];
+            if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
+                && result->pos == pos) {
+                result->flags |= SOUND_FLAG_RESTARTED;
+                return result;
+            } else if (result->flags == SOUND_FLAG_UNUSED) {
+                last_free_slot = result;
+            }
+        }
+        return last_free_slot;
+    }
+
+    case SOUND_MODE_AMBIENT:
+        for (int i = 0; i < MAX_AMBIENT_FX; i++) {
+            if (Sound_AmbientLookup[i] == sfx_num) {
+                SOUND_SLOT *result = &SFXPlaying[i];
+                if (result->flags != SOUND_FLAG_UNUSED
+                    && result->loudness <= loudness) {
+                    return NULL;
+                }
+                return result;
+            }
+        }
+        break;
+    }
+
+    return NULL;
+}
+
+static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
+{
+    SAMPLE_INFO *s = &SampleInfos[SampleLUT[slot->fxnum]];
+
+    int32_t x = slot->pos->x - Camera.target.x;
+    int32_t y = slot->pos->y - Camera.target.y;
+    int32_t z = slot->pos->z - Camera.target.z;
+    if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
+        || ABS(z) > SOUND_RADIUS) {
+        slot->volume = 0;
+        return;
+    }
+
+    uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
+    int32_t volume = s->volume - phd_sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
+    if (volume < 0) {
+        slot->volume = 0;
+        return;
+    }
+
+    if (volume > 0x7FFF) {
+        volume = 0x7FFF;
+    }
+
+    slot->volume = volume;
+
+    if (!distance || (s->flags & SAMPLE_FLAG_NO_PAN)) {
+        slot->pan = 0;
+        return;
+    }
+
+    int16_t angle = phd_atan(
+        slot->pos->z - LaraItem->pos.z, slot->pos->x - LaraItem->pos.x);
+    angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+    slot->pan = angle;
+}
+
+static void Sound_ClearSlot(SOUND_SLOT *slot)
+{
+    slot->handle = NULL;
+    slot->pos = NULL;
+    slot->flags = 0;
+    slot->volume = 0;
+    slot->pan = 0;
+    slot->loudness = SOUND_NOT_AUDIBLE;
+    slot->fxnum = -1;
+}
+
+static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
+{
+    for (int i = 0; i < MAX_PLAYING_FX; i++) {
+        SOUND_SLOT *rslot = &SFXPlaying[i];
+        if (rslot != slot && rslot->handle == slot->handle) {
+            rslot->handle = NULL;
+        }
+    }
+}
+
 bool Sound_Init()
 {
     return S_Sound_Init();
@@ -344,43 +439,6 @@ void Sound_ResetEffects()
     }
 }
 
-static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
-{
-    switch (mode) {
-    case SOUND_MODE_WAIT:
-    case SOUND_MODE_RESTART: {
-        SOUND_SLOT *last_free_slot = NULL;
-        for (int i = Sound_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
-            SOUND_SLOT *result = &SFXPlaying[i];
-            if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
-                && result->pos == pos) {
-                result->flags |= SOUND_FLAG_RESTARTED;
-                return result;
-            } else if (result->flags == SOUND_FLAG_UNUSED) {
-                last_free_slot = result;
-            }
-        }
-        return last_free_slot;
-    }
-
-    case SOUND_MODE_AMBIENT:
-        for (int i = 0; i < MAX_AMBIENT_FX; i++) {
-            if (Sound_AmbientLookup[i] == sfx_num) {
-                SOUND_SLOT *result = &SFXPlaying[i];
-                if (result->flags != SOUND_FLAG_UNUSED
-                    && result->loudness <= loudness) {
-                    return NULL;
-                }
-                return result;
-            }
-        }
-        break;
-    }
-
-    return NULL;
-}
-
 void Sound_ResetAmbientLoudness()
 {
     if (!SoundIsActive) {
@@ -418,67 +476,9 @@ void Sound_StopAllSamples()
     S_Sound_StopAllSamples();
 }
 
-static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
-{
-    SAMPLE_INFO *s = &SampleInfos[SampleLUT[slot->fxnum]];
-
-    int32_t x = slot->pos->x - Camera.target.x;
-    int32_t y = slot->pos->y - Camera.target.y;
-    int32_t z = slot->pos->z - Camera.target.z;
-    if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
-        || ABS(z) > SOUND_RADIUS) {
-        slot->volume = 0;
-        return;
-    }
-
-    uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
-    int32_t volume = s->volume - phd_sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
-    if (volume < 0) {
-        slot->volume = 0;
-        return;
-    }
-
-    if (volume > 0x7FFF) {
-        volume = 0x7FFF;
-    }
-
-    slot->volume = volume;
-
-    if (!distance || (s->flags & SAMPLE_FLAG_NO_PAN)) {
-        slot->pan = 0;
-        return;
-    }
-
-    int16_t angle = phd_atan(
-        slot->pos->z - LaraItem->pos.z, slot->pos->x - LaraItem->pos.x);
-    angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
-    slot->pan = angle;
-}
-
 void Sound_AdjustMasterVolume(int8_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
     Sound_MasterVolumeDefault = raw_volume & 0x3F;
     Sound_MasterVolume = raw_volume & 0x3F;
-}
-
-static void Sound_ClearSlot(SOUND_SLOT *slot)
-{
-    slot->handle = NULL;
-    slot->pos = NULL;
-    slot->flags = 0;
-    slot->volume = 0;
-    slot->pan = 0;
-    slot->loudness = SOUND_NOT_AUDIBLE;
-    slot->fxnum = -1;
-}
-
-static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
-{
-    for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *rslot = &SFXPlaying[i];
-        if (rslot != slot && rslot->handle == slot->handle) {
-            rslot->handle = NULL;
-        }
-    }
 }
