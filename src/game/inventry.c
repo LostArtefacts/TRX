@@ -5,7 +5,6 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/lara.h"
-#include "game/mnsound.h"
 #include "game/option.h"
 #include "game/overlay.h"
 #include "game/savegame.h"

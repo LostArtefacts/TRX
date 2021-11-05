@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/inv.h"
-#include "game/mnsound.h"
 #include "game/requester.h"
 #include "game/settings.h"
 #include "game/sound.h"
