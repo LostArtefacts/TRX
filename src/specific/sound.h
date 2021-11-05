@@ -8,11 +8,6 @@
 
 bool S_Sound_Init();
 void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples);
-SAMPLE_DATA *S_Sound_LoadSample(char *content);
-int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data);
-void *S_Sound_PlaySampleImpl(
-    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
-    int8_t loop);
 
 void *S_Sound_PlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan);

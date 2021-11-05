@@ -9,6 +9,18 @@
 
 #define DECIBEL_LUT_SIZE 512
 
+typedef struct SAMPLE_DATA {
+    char *data;
+    int32_t length;
+    int16_t bits_per_sample;
+    int16_t channels;
+    int16_t sample_rate;
+    int16_t block_align;
+    int16_t volume;
+    int32_t pan;
+    void *handle;
+} SAMPLE_DATA;
+
 typedef struct DUPE_SOUND_BUFFER {
     SAMPLE_DATA *sample;
     LPDIRECTSOUNDBUFFER buffer;
@@ -49,6 +61,11 @@ static SAMPLE_DATA **SampleData = NULL;
 
 static int32_t ConvertVolumeToDecibel(int32_t volume);
 static int32_t ConvertPanToDecibel(uint16_t pan);
+static SAMPLE_DATA *S_Sound_LoadSample(char *content);
+static int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data);
+static void *S_Sound_PlaySampleImpl(
+    int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan,
+    int8_t loop);
 
 static int32_t ConvertVolumeToDecibel(int32_t volume)
 {
@@ -67,7 +84,7 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-void *S_Sound_PlaySampleImpl(
+static void *S_Sound_PlaySampleImpl(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, int8_t loop)
 {
     if (!SoundIsActive) {
@@ -223,7 +240,7 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
     }
 }
 
-SAMPLE_DATA *S_Sound_LoadSample(char *content)
+static SAMPLE_DATA *S_Sound_LoadSample(char *content)
 {
     WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
     if (strncmp(hdr->chunk_id, "RIFF", 4)) {
@@ -250,7 +267,7 @@ SAMPLE_DATA *S_Sound_LoadSample(char *content)
     return NULL;
 }
 
-int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data)
+static int32_t S_Sound_MakeSample(SAMPLE_DATA *sample_data)
 {
     WAVEFORMATEX wave_format;
     wave_format.wFormatTag = WAVE_FORMAT_PCM;
