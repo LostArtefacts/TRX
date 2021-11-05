@@ -119,7 +119,7 @@ void GameMain()
             gf_option = Display_Inventory(INV_TITLE_MODE);
 
             S_FadeToBlack();
-            S_MusicStop();
+            S_Music_Stop();
             break;
 
         case GF_EXIT_GAME:

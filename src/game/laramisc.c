@@ -156,7 +156,7 @@ void LaraControl(int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (!Lara.death_count) {
-            S_MusicStop();
+            S_Music_Stop();
         }
         Lara.death_count++;
         // make sure the enemy healthbar is no longer rendered. If Lara later

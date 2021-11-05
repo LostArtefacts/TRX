@@ -78,9 +78,9 @@ int32_t GameLoop(int32_t demo_mode)
     }
 
     Sound_StopAllSamples();
-    S_MusicStop();
+    S_Music_Stop();
     if (T1MConfig.music_volume) {
-        S_MusicVolume(T1MConfig.music_volume * 25 + 5);
+        S_Music_AdjustVolume(T1MConfig.music_volume * 25 + 5);
     }
 
     if (ret == GF_NOP_BREAK) {
