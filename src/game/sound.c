@@ -438,8 +438,9 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
 
 void Sound_AdjustMasterVolume(int8_t volume)
 {
-    Sound_MasterVolumeDefault = volume & 0x3F;
-    Sound_MasterVolume = volume & 0x3F;
+    int8_t raw_volume = volume ? 6 * volume + 3 : 0;
+    Sound_MasterVolumeDefault = raw_volume & 0x3F;
+    Sound_MasterVolume = raw_volume & 0x3F;
 }
 
 static void Sound_ClearSlot(SOUND_SLOT *slot)

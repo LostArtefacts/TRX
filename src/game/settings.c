@@ -236,11 +236,7 @@ void S_ReadUserSettings()
         S_MusicVolume(0);
     }
 
-    if (T1MConfig.sound_volume) {
-        Sound_AdjustMasterVolume(6 * T1MConfig.sound_volume + 3);
-    } else {
-        Sound_AdjustMasterVolume(0);
-    }
+    Sound_AdjustMasterVolume(T1MConfig.sound_volume);
 }
 
 void S_WriteUserSettings()
