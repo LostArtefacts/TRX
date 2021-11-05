@@ -145,12 +145,12 @@ void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
     textstring->scale_v = scale_v;
 }
 
-void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
+void T_FlashText(TEXTSTRING *textstring, bool enable, int16_t rate)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
+    if (enable) {
         textstring->flags |= TF_FLASH;
         textstring->flash_rate = rate;
         textstring->flash_count = rate;
@@ -180,7 +180,7 @@ void T_RemoveBackground(TEXTSTRING *textstring)
     textstring->flags &= ~TF_BGND;
 }
 
-void T_AddOutline(TEXTSTRING *textstring, int16_t b)
+void T_AddOutline(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
@@ -196,48 +196,48 @@ void T_RemoveOutline(TEXTSTRING *textstring)
     textstring->flags &= ~TF_OUTLINE;
 }
 
-void T_CentreH(TEXTSTRING *textstring, int16_t b)
+void T_CentreH(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
+    if (enable) {
         textstring->flags |= TF_CENTRE_H;
     } else {
         textstring->flags &= ~TF_CENTRE_H;
     }
 }
 
-void T_CentreV(TEXTSTRING *textstring, int16_t b)
+void T_CentreV(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
+    if (enable) {
         textstring->flags |= TF_CENTRE_V;
     } else {
         textstring->flags &= ~TF_CENTRE_V;
     }
 }
 
-void T_RightAlign(TEXTSTRING *textstring, int16_t b)
+void T_RightAlign(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
+    if (enable) {
         textstring->flags |= TF_RIGHT;
     } else {
         textstring->flags &= ~TF_RIGHT;
     }
 }
 
-void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
+void T_BottomAlign(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
+    if (enable) {
         textstring->flags |= TF_BOTTOM;
     } else {
         textstring->flags &= ~TF_BOTTOM;
