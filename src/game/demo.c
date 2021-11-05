@@ -62,14 +62,14 @@ int32_t StartDemo()
         SeedRandomDraw(0xD371F947);
         SeedRandomControl(0xD371F947);
 
-        txt = T_Print(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
-        T_FlashText(txt, 1, 20);
-        T_BottomAlign(txt, 1);
-        T_CentreH(txt, 1);
+        txt = Text_Create(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
+        Text_Flash(txt, 1, 20);
+        Text_AlignBottom(txt, 1);
+        Text_CentreH(txt, 1);
 
         GameLoop(1);
 
-        T_RemovePrint(txt);
+        Text_Remove(txt);
 
         *s = start;
         S_FadeToBlack();

@@ -53,7 +53,7 @@ int32_t Display_Inventory(int inv_mode)
 
     int32_t pass_mode_open = 0;
     if (AmmoText) {
-        T_RemovePrint(AmmoText);
+        Text_Remove(AmmoText);
         AmmoText = NULL;
     }
 
@@ -238,7 +238,7 @@ int32_t Display_Inventory(int inv_mode)
 
         mn_update_sound_effects();
         Overlay_DrawFPSInfo();
-        T_DrawText();
+        Text_Draw();
         S_OutputPolyList();
 
         InvNFrames = S_DumpScreen();
@@ -606,7 +606,7 @@ int32_t Display_Inventory(int inv_mode)
     RemoveInventoryText();
     S_FinishInventory();
     if (VersionText) {
-        T_RemovePrint(VersionText);
+        Text_Remove(VersionText);
         VersionText = NULL;
     }
 
@@ -728,13 +728,13 @@ void Construct_Inventory()
     InvChosen = 0;
     if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
-        VersionText = T_Print(-20, -18, T1MVersion);
-        T_RightAlign(VersionText, 1);
-        T_BottomAlign(VersionText, 1);
-        T_SetScale(VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
+        VersionText = Text_Create(-20, -18, T1MVersion);
+        Text_AlignRight(VersionText, 1);
+        Text_AlignBottom(VersionText, 1);
+        Text_SetScale(VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;
-        T_RemovePrint(VersionText);
+        Text_Remove(VersionText);
         VersionText = NULL;
     }
 
