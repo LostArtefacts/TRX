@@ -14,7 +14,9 @@
 #define SOUND_UNFLIPFLAG 0x80
 #define SOUND_RANGE 8
 #define SOUND_RADIUS (SOUND_RANGE << 10)
-#define SOUND_RANGE_MULT_CONSTANT ((int32_t)(32768 / SOUND_RADIUS))
+#define SOUND_MAX_VOLUME 0x7FFF
+#define SOUND_RANGE_MULT_CONSTANT                                              \
+    ((int32_t)((SOUND_MAX_VOLUME + 1) / SOUND_RADIUS))
 #define SOUND_MAX_VOLUME_CHANGE 0x2000
 #define SOUND_MAX_PITCH_CHANGE 10
 #define SOUND_NOT_AUDIBLE -1
@@ -190,8 +192,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         sfx_id += (GetRandomDraw() * vars) / 0x8000;
     }
 
-    if (volume > 0x7FFF) {
-        volume = 0x7FFF;
+    if (volume > SOUND_MAX_VOLUME) {
+        volume = SOUND_MAX_VOLUME;
     }
 
     switch (mode) {
