@@ -7,19 +7,19 @@
 
 static int16_t MusicTrackLooped = 0;
 
-int32_t Music_Init()
+bool Music_Init()
 {
     return S_Music_Init();
 }
 
-int32_t Music_Play(int16_t track)
+bool Music_Play(int16_t track)
 {
     if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
-        return 0;
+        return false;
     }
 
     if (track <= 1) {
-        return 0;
+        return false;
     }
 
     if (track >= 57) {
@@ -29,17 +29,16 @@ int32_t Music_Play(int16_t track)
     MusicLoop = false;
 
     if (T1MConfig.fix_secrets_killing_music && track == 13) {
-        Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
-        return 1;
+        return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
     if (track == 0) {
         S_Music_Stop();
-        return 0;
+        return false;
     }
 
     if (track == 5) {
-        return 0;
+        return false;
     }
 
     MusicTrack = track;
@@ -53,7 +52,7 @@ void Music_PlayLooped()
     }
 }
 
-int32_t Music_Stop()
+bool Music_Stop()
 {
     MusicTrack = 0;
     MusicTrackLooped = 0;
