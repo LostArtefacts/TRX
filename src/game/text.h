@@ -24,6 +24,5 @@ int32_t Text_GetWidth(TEXTSTRING *textstring);
 void Text_Remove(TEXTSTRING *textstring);
 void Text_RemoveAll();
 void Text_Draw();
-void Text_DrawThisText(TEXTSTRING *textstring);
 
 #endif
