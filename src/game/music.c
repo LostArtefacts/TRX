@@ -68,7 +68,8 @@ void Music_Loop()
 
 void Music_AdjustVolume(int16_t volume)
 {
-    S_Music_AdjustVolume(volume);
+    int16_t volume_raw = volume ? 25 * volume + 5 : 0;
+    S_Music_AdjustVolume(volume_raw);
 }
 
 void Music_Pause()

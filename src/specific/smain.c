@@ -125,13 +125,9 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
-        if (wParam && !IsGameWindowActive) {
-            if (T1MConfig.music_volume) {
-                Music_AdjustVolume(T1MConfig.music_volume * 25 + 5);
-            } else {
-                Music_AdjustVolume(0);
-            }
-        } else if (!wParam && IsGameWindowActive) {
+        if (!IsGameWindowActive && wParam) {
+            Music_AdjustVolume(T1MConfig.music_volume);
+        } else if (IsGameWindowActive && !wParam) {
             Music_AdjustVolume(0);
         }
         IsGameWindowActive = wParam != 0;
