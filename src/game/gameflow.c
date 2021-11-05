@@ -7,6 +7,7 @@
 #include "game/game.h"
 #include "game/inv.h"
 #include "game/lara.h"
+#include "game/music.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "global/const.h"
@@ -16,7 +17,6 @@
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
-#include "specific/music.h"
 #include "specific/output.h"
 
 #include <limits.h>
@@ -1039,7 +1039,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
-            S_Music_Play((int32_t)seq->data);
+            Music_Play((int32_t)seq->data);
             break;
 
         case GFS_REMOVE_GUNS:

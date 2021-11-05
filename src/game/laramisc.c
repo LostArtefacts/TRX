@@ -9,12 +9,12 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/music.h"
 #include "util.h"
 
 #include <stddef.h>
@@ -156,7 +156,7 @@ void LaraControl(int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (!Lara.death_count) {
-            S_Music_Stop();
+            Music_Stop();
         }
         Lara.death_count++;
         // make sure the enemy healthbar is no longer rendered. If Lara later

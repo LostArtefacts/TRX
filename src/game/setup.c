@@ -43,6 +43,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/objects/boat.h"
 #include "game/objects/bridge.h"
 #include "game/objects/cabin.h"
@@ -82,7 +83,6 @@
 #include "log.h"
 #include "specific/file.h"
 #include "specific/init.h"
-#include "specific/music.h"
 #include "specific/output.h"
 
 #include <stddef.h>
@@ -132,7 +132,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
     if (GF.levels[CurrentLevel].music) {
-        S_Music_Play(GF.levels[CurrentLevel].music);
+        Music_Play(GF.levels[CurrentLevel].music);
     }
     Camera.underwater = 0;
     return 1;

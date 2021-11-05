@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "filesystem.h"
+#include "game/music.h"
 #include "game/option.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -11,7 +12,6 @@
 #include "log.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/music.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -226,9 +226,9 @@ void S_ReadUserSettings()
     DefaultConflict();
 
     if (T1MConfig.music_volume) {
-        S_Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
+        Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
     } else {
-        S_Music_AdjustVolume(0);
+        Music_AdjustVolume(0);
     }
 
     Sound_AdjustMasterVolume(T1MConfig.sound_volume);

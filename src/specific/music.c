@@ -76,7 +76,7 @@ void S_Music_Unpause()
     }
 }
 
-int32_t S_Music_PlayImpl(int16_t track)
+static int32_t S_Music_PlayImpl(int16_t track)
 {
     if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
         return 0;

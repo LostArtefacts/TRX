@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/inv.h"
+#include "game/music.h"
 #include "game/requester.h"
 #include "game/settings.h"
 #include "game/sound.h"
@@ -11,7 +12,6 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/music.h"
 #include "specific/output.h"
 
 #include <dinput.h>
@@ -891,9 +891,9 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
         if (Input.left || Input.right) {
             if (T1MConfig.music_volume) {
-                S_Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
+                Music_AdjustVolume(25 * T1MConfig.music_volume + 5);
             } else {
-                S_Music_AdjustVolume(0);
+                Music_AdjustVolume(0);
             }
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
