@@ -10,10 +10,6 @@ typedef struct {
 } JMP;
 #pragma pack(pop)
 
-#define VAR_U_(address, type) (*(type *)(address))
-#define VAR_I_(address, type, value) (*(type *)(address))
-#define ARRAY_(address, type, length) (*(type(*) length)(address))
-
 void T1MInjectFunc(void (*from)(void), void (*to)(void));
 
 #define INJECT(from, to)                                                       \
