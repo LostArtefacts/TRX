@@ -412,7 +412,7 @@ void MusicPlayLooped()
 int32_t S_MusicPlay(int16_t track_id)
 {
     if (T1MConfig.fix_secrets_killing_music && track_id == 13) {
-        SoundEffect(SFX_SECRET, NULL, SPM_ALWAYS);
+        Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
         return 1;
     }
 

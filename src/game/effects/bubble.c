@@ -26,7 +26,7 @@ void LaraBubbles(ITEM_INFO *item)
         return;
     }
 
-    SoundEffect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
+    Sound_Effect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
 
     PHD_VECTOR offset;
     offset.x = 0;

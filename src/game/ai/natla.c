@@ -107,7 +107,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
+                    Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }
@@ -120,7 +120,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
+                    Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }
@@ -226,7 +226,7 @@ void NatlaControl(int16_t item_num)
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
                     gun = fx->pos.x_rot;
-                    SoundEffect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
+                    Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
             }

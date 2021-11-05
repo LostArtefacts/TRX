@@ -37,7 +37,7 @@ void FlameEmitterControl(int16_t item_num)
             item->data = (void *)(fx_num + 1);
         }
     } else if (item->data) {
-        StopSoundEffect(SFX_FIRE, NULL);
+        Sound_StopEffect(SFX_FIRE, NULL);
         KillEffect((int16_t)(size_t)item->data - 1);
         item->data = NULL;
     }
@@ -55,7 +55,7 @@ void FlameControl(int16_t fx_num)
     if (fx->counter < 0) {
         if (Lara.water_status == LWS_CHEAT) {
             fx->counter = 0;
-            StopSoundEffect(SFX_FIRE, NULL);
+            Sound_StopEffect(SFX_FIRE, NULL);
             KillEffect(fx_num);
         }
 
@@ -75,17 +75,17 @@ void FlameControl(int16_t fx_num)
 
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
-            StopSoundEffect(SFX_FIRE, NULL);
+            Sound_StopEffect(SFX_FIRE, NULL);
             KillEffect(fx_num);
         } else {
-            SoundEffect(SFX_FIRE, &fx->pos, SPM_NORMAL);
+            Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
             LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
             LaraItem->hit_status = 1;
         }
         return;
     }
 
-    SoundEffect(SFX_FIRE, &fx->pos, SPM_NORMAL);
+    Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
     if (fx->counter) {
         fx->counter--;
     } else if (ItemNearLara(&fx->pos, 600)) {

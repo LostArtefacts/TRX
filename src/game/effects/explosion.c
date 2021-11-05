@@ -24,7 +24,7 @@ void ControlExplosion1(int16_t fx_num)
 
 void Explosion(ITEM_INFO *item)
 {
-    SoundEffect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
+    Sound_Effect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
     Camera.bounce = -75;
     FlipEffect = -1;
 }

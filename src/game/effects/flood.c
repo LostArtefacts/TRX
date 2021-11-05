@@ -17,7 +17,7 @@ void Flood(ITEM_INFO *item)
             pos.y = Camera.target.y + (FlipTimer - FRAMES_PER_SECOND) * 100;
         }
         pos.z = LaraItem->pos.z;
-        SoundEffect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
+        Sound_Effect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
 
     FlipTimer++;

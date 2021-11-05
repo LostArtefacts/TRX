@@ -577,7 +577,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (page >= 0) {
             inv_item->anim_direction = -1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
                 Text_Remove(PassportText);
                 PassportText = NULL;
@@ -601,7 +601,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (page < PASSPORT_PAGE_COUNT) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
                 Text_Remove(PassportText);
                 PassportText = NULL;
@@ -915,7 +915,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             } else {
                 S_MusicVolume(0);
             }
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
 
@@ -942,7 +942,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             } else {
                 mn_adjust_master_volume(0);
             }
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
     }

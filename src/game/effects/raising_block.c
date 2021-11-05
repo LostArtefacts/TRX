@@ -5,6 +5,6 @@
 
 void RaisingBlock(ITEM_INFO *item)
 {
-    SoundEffect(SFX_RAISINGBLOCK_FX, NULL, SPM_NORMAL);
+    Sound_Effect(SFX_RAISINGBLOCK_FX, NULL, SPM_NORMAL);
     FlipEffect = -1;
 }

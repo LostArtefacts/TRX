@@ -5,8 +5,8 @@
 
 #include <stdint.h>
 
-void SoundEffects();
-void SoundEffect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
-void StopSoundEffect(int32_t sfx_num, PHD_3DPOS *pos);
+void Sound_UpdateEffects();
+void Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
+void Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
 
 #endif

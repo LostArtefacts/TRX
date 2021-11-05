@@ -12,7 +12,7 @@ void PowerUp(ITEM_INFO *item)
         pos.x = Camera.target.x;
         pos.y = Camera.target.y + FlipTimer * 100;
         pos.z = Camera.target.z;
-        SoundEffect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
+        Sound_Effect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
     }
     FlipTimer++;
 }

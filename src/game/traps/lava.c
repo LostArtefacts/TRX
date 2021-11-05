@@ -75,7 +75,7 @@ void LavaEmitterControl(int16_t item_num)
         fx->fall_speed = -GetRandomControl() / 200;
         fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
         fx->object_number = O_LAVA;
-        SoundEffect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
     }
 }
 

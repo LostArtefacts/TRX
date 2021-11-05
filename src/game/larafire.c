@@ -530,7 +530,7 @@ int32_t FireWeapon(
 
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
-        SoundEffect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
         if (Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
         }
@@ -608,28 +608,28 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
     if (item->hit_points > 0) {
         switch (item->object_number) {
         case O_WOLF:
-            SoundEffect(SFX_WOLF_HURT, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_WOLF_HURT, &item->pos, SPM_NORMAL);
             break;
 
         case O_BEAR:
-            SoundEffect(SFX_BEAR_HURT, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_BEAR_HURT, &item->pos, SPM_NORMAL);
             break;
 
         case O_LION:
         case O_LIONESS:
-            SoundEffect(SFX_LION_HURT, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_LION_HURT, &item->pos, SPM_NORMAL);
             break;
 
         case O_RAT:
-            SoundEffect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
             break;
 
         case O_MERCENARY1:
-            SoundEffect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
             break;
 
         case O_ABORTION:
-            SoundEffect(SFX_ABORTION_HIT, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_ABORTION_HIT, &item->pos, SPM_NORMAL);
             break;
         }
     }

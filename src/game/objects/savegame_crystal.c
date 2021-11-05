@@ -65,7 +65,7 @@ void PickUpSaveGameCollision(
         CreateSaveGameInfo();
         S_SaveGame(&SaveGame, InvExtraData[1]);
         S_WriteUserSettings();
-        SoundEffect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
+        Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
         item->status = IS_ACTIVE;
     }

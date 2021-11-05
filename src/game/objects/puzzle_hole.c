@@ -85,7 +85,7 @@ void PuzzleHoleCollision(
             PickUpX = lara_item->pos.x;
             PickUpY = lara_item->pos.y;
             PickUpZ = lara_item->pos.z;
-            SoundEffect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
         }
         return;
     }
@@ -148,7 +148,7 @@ void PuzzleHoleCollision(
     } else if (
         lara_item->pos.x != PickUpX || lara_item->pos.y != PickUpY
         || lara_item->pos.z != PickUpZ) {
-        SoundEffect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
         PickUpX = lara_item->pos.x;
         PickUpY = lara_item->pos.y;
         PickUpZ = lara_item->pos.z;
