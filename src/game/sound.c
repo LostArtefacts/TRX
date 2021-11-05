@@ -10,14 +10,14 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#define FLIPFLAG 0x40
-#define UNFLIPFLAG 0x80
+#define SOUND_FLIPFLAG 0x40
+#define SOUND_UNFLIPFLAG 0x80
 #define SOUND_RANGE 8
 #define SOUND_RADIUS (SOUND_RANGE << 10)
 #define SOUND_RANGE_MULT_CONSTANT ((int32_t)(32768 / SOUND_RADIUS))
-#define MAX_VOLUME_CHANGE 0x2000
-#define MAX_PITCH_CHANGE 10
-#define MN_NOT_AUDIBLE -1
+#define SOUND_MAX_VOLUME_CHANGE 0x2000
+#define SOUND_MAX_PITCH_CHANGE 10
+#define SOUND_NOT_AUDIBLE -1
 
 typedef struct SOUND_SLOT {
     void *handle;
@@ -64,9 +64,9 @@ void Sound_UpdateEffects()
 
     for (int i = 0; i < NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &SoundEffectsTable[i];
-        if (FlipStatus && (sound->flags & FLIPFLAG)) {
+        if (FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
             Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
-        } else if (!FlipStatus && (sound->flags & UNFLIPFLAG)) {
+        } else if (!FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
             Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         }
     }
@@ -81,7 +81,7 @@ void Sound_UpdateEffects()
         SOUND_SLOT *slot = &SFXPlaying[i];
         if (slot->flags & SOUND_FLAG_USED) {
             if (slot->flags & SOUND_FLAG_AMBIENT) {
-                if (slot->loudness != MN_NOT_AUDIBLE
+                if (slot->loudness != SOUND_NOT_AUDIBLE
                     && slot->handle != SOUND_INVALID_HANDLE) {
                     S_SoundSetPanAndVolume(
                         slot->handle, slot->pan, slot->volume);
@@ -158,7 +158,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
     if (s->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
-        volume -= GetRandomDraw() * MAX_VOLUME_CHANGE >> 15;
+        volume -= GetRandomDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
     if (s->flags & SAMPLE_FLAG_NO_PAN) {
@@ -178,8 +178,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     int32_t pitch = 100;
     if (s->flags & SAMPLE_FLAG_PITCH_WIBBLE) {
-        pitch +=
-            ((GetRandomDraw() * MAX_PITCH_CHANGE) / 16384) - MAX_PITCH_CHANGE;
+        pitch += ((GetRandomDraw() * SOUND_MAX_PITCH_CHANGE) / 16384)
+            - SOUND_MAX_PITCH_CHANGE;
     }
 
     int32_t vars = (s->flags >> 2) & 15;
@@ -247,7 +247,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
                 fxslot->pan = pan;
                 fxslot->volume = volume;
             } else {
-                fxslot->loudness = MN_NOT_AUDIBLE;
+                fxslot->loudness = SOUND_NOT_AUDIBLE;
                 fxslot->volume = 0;
             }
             return true;
@@ -270,7 +270,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return true;
         }
 
-        fxslot->loudness = MN_NOT_AUDIBLE;
+        fxslot->loudness = SOUND_NOT_AUDIBLE;
         return true;
     }
     }
@@ -383,7 +383,7 @@ void Sound_ResetAmbientLoudness()
 
     for (int i = 0; i < MnAmbientLookupIdx; i++) {
         SOUND_SLOT *slot = &SFXPlaying[i];
-        slot->loudness = MN_NOT_AUDIBLE;
+        slot->loudness = SOUND_NOT_AUDIBLE;
     }
 }
 
@@ -452,7 +452,7 @@ static void Sound_ClearSlot(SOUND_SLOT *slot)
     slot->flags = 0;
     slot->volume = 0;
     slot->pan = 0;
-    slot->loudness = MN_NOT_AUDIBLE;
+    slot->loudness = SOUND_NOT_AUDIBLE;
     slot->fxnum = -1;
 }
 
