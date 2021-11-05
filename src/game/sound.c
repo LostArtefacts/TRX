@@ -79,10 +79,24 @@ void Sound_UpdateEffects()
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         SOUND_SLOT *slot = &SFXPlaying[i];
-        if (slot->flags & SOUND_FLAG_USED) {
-            if (slot->flags & SOUND_FLAG_AMBIENT) {
-                if (slot->loudness != SOUND_NOT_AUDIBLE
-                    && slot->handle != SOUND_INVALID_HANDLE) {
+        if (!(slot->flags & SOUND_FLAG_USED)) {
+            continue;
+        }
+
+        if (slot->flags & SOUND_FLAG_AMBIENT) {
+            if (slot->loudness != SOUND_NOT_AUDIBLE
+                && slot->handle != SOUND_INVALID_HANDLE) {
+                S_SoundSetPanAndVolume(slot->handle, slot->pan, slot->volume);
+            } else {
+                if (slot->handle != SOUND_INVALID_HANDLE) {
+                    S_SoundStopSample(slot->handle);
+                }
+                Sound_ClearSlot(slot);
+            }
+        } else if (S_SoundSampleIsPlaying(slot->handle)) {
+            if (slot->pos != NULL) {
+                Sound_UpdateSlotParams(slot);
+                if (slot->volume > 0 && slot->handle != SOUND_INVALID_HANDLE) {
                     S_SoundSetPanAndVolume(
                         slot->handle, slot->pan, slot->volume);
                 } else {
@@ -91,23 +105,9 @@ void Sound_UpdateEffects()
                     }
                     Sound_ClearSlot(slot);
                 }
-            } else if (S_SoundSampleIsPlaying(slot->handle)) {
-                if (slot->pos != NULL) {
-                    Sound_UpdateSlotParams(slot);
-                    if (slot->volume > 0
-                        && slot->handle != SOUND_INVALID_HANDLE) {
-                        S_SoundSetPanAndVolume(
-                            slot->handle, slot->pan, slot->volume);
-                    } else {
-                        if (slot->handle != SOUND_INVALID_HANDLE) {
-                            S_SoundStopSample(slot->handle);
-                        }
-                        Sound_ClearSlot(slot);
-                    }
-                }
-            } else {
-                Sound_ClearSlot(slot);
             }
+        } else {
+            Sound_ClearSlot(slot);
         }
     }
 }
