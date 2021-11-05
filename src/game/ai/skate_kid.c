@@ -8,7 +8,7 @@
 #include "game/lot.h"
 #include "game/people.h"
 #include "global/vars.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 BITE_INFO KidGun1 = { 0, 150, 34, 7 };
 BITE_INFO KidGun2 = { 0, 150, 37, 4 };

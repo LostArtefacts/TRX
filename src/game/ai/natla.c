@@ -11,7 +11,7 @@
 #include "game/people.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 

@@ -12,8 +12,8 @@
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/input.h"
+#include "specific/music.h"
 #include "specific/smain.h"
-#include "specific/sndpc.h"
 
 #include <stdio.h>
 #include <time.h>

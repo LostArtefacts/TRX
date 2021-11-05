@@ -11,7 +11,7 @@
 #include "log.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
+#include "specific/music.h"
 
 #include <stdint.h>
 #include <stdlib.h>

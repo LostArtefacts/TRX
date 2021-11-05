@@ -16,8 +16,8 @@
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
+#include "specific/music.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stdio.h>
 
