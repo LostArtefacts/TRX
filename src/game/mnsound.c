@@ -41,6 +41,12 @@ static int32_t MnSoundMasterVolumeDefault = 32;
 static int16_t MnAmbientLookup[MAX_AMBIENT_FX] = { -1 };
 static int32_t MnAmbientLookupIdx = 0;
 
+static MN_SFX_PLAY_INFO *mn_get_fx_slot(
+    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
+static void mn_get_sound_params(MN_SFX_PLAY_INFO *slot);
+static void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot);
+static void mn_clear_handles(MN_SFX_PLAY_INFO *slot);
+
 void mn_reset_sound_effects()
 {
     if (!SoundIsActive) {
@@ -244,7 +250,7 @@ bool mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     return false;
 }
 
-MN_SFX_PLAY_INFO *mn_get_fx_slot(
+static MN_SFX_PLAY_INFO *mn_get_fx_slot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
 {
     switch (mode) {
@@ -349,7 +355,7 @@ void mn_update_sound_effects()
     }
 }
 
-void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
+static void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
 {
     SAMPLE_INFO *s = &SampleInfos[SampleLUT[slot->fxnum]];
 
@@ -412,7 +418,7 @@ void mn_adjust_master_volume(int8_t volume)
     MnSoundMasterVolume = volume & 0x3F;
 }
 
-void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
+static void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
 {
     slot->handle = SOUND_INVALID_HANDLE;
     slot->pos = NULL;
@@ -423,7 +429,7 @@ void mn_clear_fx_slot(MN_SFX_PLAY_INFO *slot)
     slot->fxnum = -1;
 }
 
-void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
+static void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
 {
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         MN_SFX_PLAY_INFO *rslot = &SFXPlaying[i];
