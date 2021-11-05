@@ -449,8 +449,9 @@ void *S_SoundPlaySample(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
-        return 0;
+        return NULL;
     }
+
     return SoundPlaySample(
         sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 0);
 }
@@ -459,8 +460,9 @@ void *S_SoundPlaySampleLooped(
     int32_t sample_id, uint16_t volume, uint16_t pitch, int16_t pan)
 {
     if (!SoundIsActive) {
-        return 0;
+        return NULL;
     }
+
     return SoundPlaySample(
         sample_id, (Sound_MasterVolume * volume) >> 6, pitch, pan, 1);
 }
@@ -484,7 +486,7 @@ void S_SoundStopSample(void *handle)
     if (!SoundIsActive) {
         return;
     }
-    if (handle == SOUND_INVALID_HANDLE) {
+    if (!handle) {
         return;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
@@ -499,7 +501,7 @@ void S_SoundSetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     if (!SoundIsActive) {
         return;
     }
-    if (handle == SOUND_INVALID_HANDLE) {
+    if (!handle) {
         return;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
@@ -522,7 +524,7 @@ int32_t S_SoundSampleIsPlaying(void *handle)
     if (!SoundIsActive) {
         return 0;
     }
-    if (handle == SOUND_INVALID_HANDLE) {
+    if (!handle) {
         return 0;
     }
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
