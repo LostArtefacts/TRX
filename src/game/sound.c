@@ -30,9 +30,9 @@ void SoundEffects()
     mn_update_sound_effects();
 }
 
-int32_t SoundEffect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+void SoundEffect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
-    return mn_sound_effect(sfx_num, pos, flags);
+    mn_sound_effect(sfx_num, pos, flags);
 }
 
 void StopSoundEffect(int32_t sfx_num, PHD_3DPOS *pos)
