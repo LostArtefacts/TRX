@@ -9,6 +9,8 @@
 static int32_t MusicNumTracks = 0;
 static int16_t MusicTrackLooped = 0;
 
+static int32_t S_Music_PlayImpl(int16_t track_id);
+
 int32_t S_Music_Init()
 {
     MCI_OPEN_PARMS open_parms;
