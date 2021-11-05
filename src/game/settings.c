@@ -232,9 +232,9 @@ void S_ReadUserSettings()
     }
 
     if (T1MConfig.sound_volume) {
-        mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
+        Sound_AdjustMasterVolume(6 * T1MConfig.sound_volume + 3);
     } else {
-        mn_adjust_master_volume(0);
+        Sound_AdjustMasterVolume(0);
     }
 }
 

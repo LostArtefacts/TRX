@@ -1316,7 +1316,7 @@ int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
 
 void FlipMap()
 {
-    mn_stop_ambient_samples();
+    Sound_StopAmbientSounds();
 
     for (int i = 0; i < RoomCount; i++) {
         ROOM_INFO *r = &RoomInfo[i];

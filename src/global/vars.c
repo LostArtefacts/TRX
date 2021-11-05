@@ -32,7 +32,7 @@ int32_t NumSampleData = 0;
 int16_t MusicTrack = 0;
 bool MusicLoop = false;
 uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
-int32_t MnSoundMasterVolume = 32;
+int32_t Sound_MasterVolume = 32;
 
 int32_t NoInputCount = 0;
 bool IDelay = false;

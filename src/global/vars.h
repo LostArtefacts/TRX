@@ -54,7 +54,7 @@ extern SAMPLE_INFO *SampleInfos;
 extern int16_t MusicTrack;
 extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
-extern int32_t MnSoundMasterVolume;
+extern int32_t Sound_MasterVolume;
 
 extern int32_t FPSCounter;
 

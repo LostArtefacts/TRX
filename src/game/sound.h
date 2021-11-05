@@ -6,16 +6,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
+bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
 void Sound_UpdateEffects();
-void Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
-void Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
-
-void mn_reset_sound_effects();
-bool mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
-void mn_reset_ambient_loudness();
-void mn_stop_ambient_samples();
-void mn_update_sound_effects();
-void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos);
-void mn_adjust_master_volume(int8_t volume);
+void Sound_ResetEffects();
+void Sound_ResetAmbientLoudness();
+void Sound_StopAmbientSounds();
+void Sound_AdjustMasterVolume(int8_t volume);
 
 #endif
