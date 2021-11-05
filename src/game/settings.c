@@ -2,8 +2,8 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/mnsound.h"
 #include "game/option.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"

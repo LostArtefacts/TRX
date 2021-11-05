@@ -9,7 +9,6 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/mnsound.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
