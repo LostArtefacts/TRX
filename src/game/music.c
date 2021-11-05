@@ -5,7 +5,11 @@
 #include "global/vars.h"
 #include "specific/music.h"
 
-static int16_t MusicTrackLooped = 0;
+static struct {
+    bool loop;
+    int16_t track;
+    int16_t track_looped;
+} S = { 0 };
 
 bool Music_Init()
 {
@@ -23,10 +27,10 @@ bool Music_Play(int16_t track)
     }
 
     if (track >= 57) {
-        MusicTrackLooped = track;
+        S.track_looped = track;
     }
 
-    MusicLoop = false;
+    S.loop = false;
 
     if (T1MConfig.fix_secrets_killing_music && track == 13) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
@@ -41,28 +45,28 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    MusicTrack = track;
+    S.track = track;
     return S_Music_Play(track);
 }
 
 void Music_PlayLooped()
 {
-    if (MusicLoop && MusicTrackLooped > 0) {
-        S_Music_Play(MusicTrackLooped);
+    if (S.loop && S.track_looped > 0) {
+        S_Music_Play(S.track_looped);
     }
 }
 
 bool Music_Stop()
 {
-    MusicTrack = 0;
-    MusicTrackLooped = 0;
-    MusicLoop = false;
+    S.track = 0;
+    S.track_looped = 0;
+    S.loop = false;
     return S_Music_Stop();
 }
 
 void Music_Loop()
 {
-    MusicLoop = true;
+    S.loop = true;
 }
 
 void Music_AdjustVolume(int16_t volume)
@@ -79,4 +83,9 @@ void Music_Pause()
 void Music_Unpause()
 {
     S_Music_Unpause();
+}
+
+int16_t Music_CurrentTrack()
+{
+    return S.track;
 }
