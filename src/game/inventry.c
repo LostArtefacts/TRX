@@ -605,6 +605,10 @@ int32_t Display_Inventory(int inv_mode)
 
     RemoveInventoryText();
     S_FinishInventory();
+    if (VersionText) {
+        T_RemovePrint(VersionText);
+        VersionText = NULL;
+    }
 
     if (ResetFlag) {
         return GF_START_DEMO;
@@ -724,8 +728,14 @@ void Construct_Inventory()
     InvChosen = 0;
     if (InvMode == INV_TITLE_MODE) {
         InvOptionObjects = TITLE_RING_OBJECTS;
+        VersionText = T_Print(-20, -18, T1MVersion);
+        T_RightAlign(VersionText, 1);
+        T_BottomAlign(VersionText, 1);
+        T_SetScale(VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
     } else {
         InvOptionObjects = OPTION_RING_OBJECTS;
+        T_RemovePrint(VersionText);
+        VersionText = NULL;
     }
 
     for (int i = 0; i < InvMainObjects; i++) {

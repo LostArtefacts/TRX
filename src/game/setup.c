@@ -99,6 +99,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     InitialiseGameFlags();
 
