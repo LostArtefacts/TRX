@@ -51,8 +51,6 @@ extern int32_t OptionSelected;
 extern bool SoundIsActive;
 extern int16_t SampleLUT[MAX_SAMPLES];
 extern SAMPLE_INFO *SampleInfos;
-extern int16_t MusicTrack;
-extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t Sound_MasterVolume;
 

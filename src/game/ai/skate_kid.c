@@ -67,7 +67,7 @@ void SkateKidControl(int16_t item_num)
 
         angle = CreatureTurn(item, SKATE_KID_SKATE_TURN);
 
-        if (item->hit_points < 120 && MusicTrack != 56) {
+        if (item->hit_points < 120 && Music_CurrentTrack() != 56) {
             Music_Play(56);
         }
 

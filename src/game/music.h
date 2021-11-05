@@ -14,5 +14,6 @@ void Music_Loop();
 void Music_AdjustVolume(int16_t volume);
 void Music_Pause();
 void Music_Unpause();
+int16_t Music_CurrentTrack();
 
 #endif

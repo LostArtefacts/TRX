@@ -133,7 +133,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
-        if (MusicTrack > 0) {
+        if (Music_CurrentTrack() > 0) {
             Music_Loop();
         }
 
@@ -1460,7 +1460,7 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
         if (flags & IF_ONESHOT) {
             MusicTrackFlags[value] |= IF_ONESHOT;
         }
-        if (value != MusicTrack) {
+        if (value != Music_CurrentTrack()) {
             Music_Play(value);
         }
     } else {
