@@ -44,10 +44,12 @@ typedef enum SOUND_FLAG {
     SOUND_FLAG_RESTARTED = 1 << 2,
 } SOUND_FLAG;
 
-static SOUND_SLOT SFXPlaying[MAX_PLAYING_FX] = { 0 };
-static int32_t Sound_MasterVolumeDefault = 32;
-static int16_t Sound_AmbientLookup[MAX_AMBIENT_FX] = { -1 };
-static int32_t Sound_AmbientLookupIdx = 0;
+static struct {
+    SOUND_SLOT sfx_playing[MAX_PLAYING_FX];
+    int32_t master_volume_default;
+    int16_t ambient_lookup[MAX_AMBIENT_FX];
+    int32_t ambient_lookup_idx;
+} S = { 0 };
 
 static SOUND_SLOT *Sound_GetSlot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
@@ -62,8 +64,8 @@ static SOUND_SLOT *Sound_GetSlot(
     case SOUND_MODE_WAIT:
     case SOUND_MODE_RESTART: {
         SOUND_SLOT *last_free_slot = NULL;
-        for (int i = Sound_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
-            SOUND_SLOT *result = &SFXPlaying[i];
+        for (int i = S.ambient_lookup_idx; i < MAX_PLAYING_FX; i++) {
+            SOUND_SLOT *result = &S.sfx_playing[i];
             if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
                 && result->pos == pos) {
                 result->flags |= SOUND_FLAG_RESTARTED;
@@ -77,8 +79,8 @@ static SOUND_SLOT *Sound_GetSlot(
 
     case SOUND_MODE_AMBIENT:
         for (int i = 0; i < MAX_AMBIENT_FX; i++) {
-            if (Sound_AmbientLookup[i] == sfx_num) {
-                SOUND_SLOT *result = &SFXPlaying[i];
+            if (S.ambient_lookup[i] == sfx_num) {
+                SOUND_SLOT *result = &S.sfx_playing[i];
                 if (result->flags != SOUND_FLAG_UNUSED
                     && result->loudness <= loudness) {
                     return NULL;
@@ -143,7 +145,7 @@ static void Sound_ClearSlot(SOUND_SLOT *slot)
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
 {
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *rslot = &SFXPlaying[i];
+        SOUND_SLOT *rslot = &S.sfx_playing[i];
         if (rslot != slot && rslot->handle == slot->handle) {
             rslot->handle = NULL;
         }
@@ -152,6 +154,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
 
 bool Sound_Init()
 {
+    S.master_volume_default = 32;
     return S_Sound_Init();
 }
 
@@ -179,7 +182,7 @@ void Sound_UpdateEffects()
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *slot = &SFXPlaying[i];
+        SOUND_SLOT *slot = &S.sfx_playing[i];
         if (!(slot->flags & SOUND_FLAG_USED)) {
             continue;
         }
@@ -385,7 +388,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *slot = &SFXPlaying[i];
+        SOUND_SLOT *slot = &S.sfx_playing[i];
         if ((slot->flags & SOUND_FLAG_USED)
             && S_Sound_SampleIsPlaying(slot->handle)) {
             if ((!pos && slot->fxnum == sfx_num)
@@ -406,15 +409,15 @@ void Sound_ResetEffects()
     if (!SoundIsActive) {
         return;
     }
-    Sound_MasterVolume = Sound_MasterVolumeDefault;
+    Sound_MasterVolume = S.master_volume_default;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        Sound_ClearSlot(&SFXPlaying[i]);
+        Sound_ClearSlot(&S.sfx_playing[i]);
     }
 
     Sound_StopAllSamples();
 
-    Sound_AmbientLookupIdx = 0;
+    S.ambient_lookup_idx = 0;
 
     for (int i = 0; i < MAX_SAMPLES; i++) {
         if (SampleLUT[i] < 0) {
@@ -429,12 +432,12 @@ void Sound_ResetEffects()
 
         int32_t mode = s->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
-            if (Sound_AmbientLookupIdx >= MAX_AMBIENT_FX) {
+            if (S.ambient_lookup_idx >= MAX_AMBIENT_FX) {
                 S_ExitSystem("Ran out of ambient fx slots in "
                              "Sound_ResetEffects()");
             }
-            Sound_AmbientLookup[Sound_AmbientLookupIdx] = i;
-            Sound_AmbientLookupIdx++;
+            S.ambient_lookup[S.ambient_lookup_idx] = i;
+            S.ambient_lookup_idx++;
         }
     }
 }
@@ -445,8 +448,8 @@ void Sound_ResetAmbientLoudness()
         return;
     }
 
-    for (int i = 0; i < Sound_AmbientLookupIdx; i++) {
-        SOUND_SLOT *slot = &SFXPlaying[i];
+    for (int i = 0; i < S.ambient_lookup_idx; i++) {
+        SOUND_SLOT *slot = &S.sfx_playing[i];
         slot->loudness = SOUND_NOT_AUDIBLE;
     }
 }
@@ -457,8 +460,8 @@ void Sound_StopAmbientSounds()
         return;
     }
 
-    for (int i = 0; i < Sound_AmbientLookupIdx; i++) {
-        SOUND_SLOT *slot = &SFXPlaying[i];
+    for (int i = 0; i < S.ambient_lookup_idx; i++) {
+        SOUND_SLOT *slot = &S.sfx_playing[i];
         if (S_Sound_SampleIsPlaying(slot->handle)) {
             S_Sound_StopSample(slot->handle);
             Sound_ClearSlot(slot);
@@ -479,6 +482,6 @@ void Sound_StopAllSamples()
 void Sound_AdjustMasterVolume(int8_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
-    Sound_MasterVolumeDefault = raw_volume & 0x3F;
+    S.master_volume_default = raw_volume & 0x3F;
     Sound_MasterVolume = raw_volume & 0x3F;
 }
