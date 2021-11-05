@@ -3,6 +3,8 @@
 #include "global/vars_platform.h"
 #include "log.h"
 
+static uint32_t MCIDeviceID = 0;
+static uint32_t AuxDeviceID = 0;
 static int32_t MusicNumTracks = 0;
 
 bool S_Music_Init()
