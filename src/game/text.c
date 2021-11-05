@@ -52,7 +52,10 @@ static int8_t TextRemapASCII[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-int Text_GetStringLen(const char *string)
+static void Text_DrawText(TEXTSTRING *textstring);
+static int Text_GetStringLen(const char *string);
+
+static int Text_GetStringLen(const char *string)
 {
     int len = 1;
     while (*string++) {
@@ -299,12 +302,12 @@ void Text_Draw()
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
         TEXTSTRING *textstring = &TextInfoTable[i];
         if (textstring->flags & TF_ACTIVE) {
-            Text_DrawThisText(textstring);
+            Text_DrawText(textstring);
         }
     }
 }
 
-void Text_DrawThisText(TEXTSTRING *textstring)
+static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
     if (textstring->flags & TF_FLASH) {
