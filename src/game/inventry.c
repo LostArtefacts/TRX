@@ -65,7 +65,7 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     Sound_StopAmbientSounds();
-    S_SoundStopAllSamples();
+    Sound_StopAllSamples();
 
     switch (InvMode) {
     case INV_DEATH_MODE:

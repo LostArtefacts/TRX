@@ -12,6 +12,7 @@ void Sound_UpdateEffects();
 void Sound_ResetEffects();
 void Sound_ResetAmbientLoudness();
 void Sound_StopAmbientSounds();
+void Sound_StopAllSamples();
 void Sound_AdjustMasterVolume(int8_t volume);
 
 #endif
