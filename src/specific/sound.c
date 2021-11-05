@@ -81,6 +81,87 @@ static int32_t ConvertPanToDecibel(uint16_t pan)
     }
 }
 
+static SAMPLE_DATA *S_Sound_LoadSample(char *content)
+{
+    WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
+    if (strncmp(hdr->chunk_id, "RIFF", 4)) {
+        S_ExitSystem("Samples must be in WAVE format.");
+        return NULL;
+    }
+
+    SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
+    memset(sample_data, 0, sizeof(SAMPLE_DATA));
+    sample_data->data = content + sizeof(WAVE_FILE_HEADER);
+    sample_data->length =
+        hdr->data_chunk.subchunk_size - sizeof(WAVE_FILE_HEADER);
+    sample_data->bits_per_sample = hdr->fmt_chunk.bits_per_sample;
+    sample_data->channels = hdr->fmt_chunk.num_channels;
+    sample_data->block_align =
+        sample_data->channels * hdr->fmt_chunk.bits_per_sample / 8;
+    sample_data->sample_rate = hdr->fmt_chunk.sample_rate;
+
+    sample_data->pan = 0;
+    sample_data->volume = 0x7FFF;
+    if (S_Sound_MakeSample(sample_data)) {
+        return sample_data;
+    }
+    return NULL;
+}
+
+static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
+{
+    WAVEFORMATEX wave_format;
+    wave_format.wFormatTag = WAVE_FORMAT_PCM;
+    wave_format.nChannels = sample_data->channels;
+    wave_format.nSamplesPerSec = sample_data->sample_rate;
+    wave_format.nAvgBytesPerSec =
+        sample_data->sample_rate * sample_data->block_align;
+    wave_format.nBlockAlign = sample_data->block_align;
+    wave_format.wBitsPerSample = sample_data->bits_per_sample;
+
+    DSBUFFERDESC buffer_desc;
+    buffer_desc.dwSize = sizeof(DSBUFFERDESC);
+    buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN
+        | DSBCAPS_CTRLFREQUENCY;
+    buffer_desc.dwBufferBytes = sample_data->length;
+    buffer_desc.dwReserved = 0;
+    buffer_desc.lpwfxFormat = &wave_format;
+    CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
+
+    HRESULT result = IDirectSound_CreateSoundBuffer(
+        DSound, &buffer_desc, (LPLPDIRECTSOUNDBUFFER)&sample_data->handle, 0);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSound_CreateSoundBuffer: 0x%lx",
+            result);
+        S_ExitSystem("Fatal DirectSound error!");
+    }
+
+    DWORD audio_data_size;
+    LPVOID audio_data;
+
+    result = IDirectSoundBuffer_Lock(
+        (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
+        &audio_data, &audio_data_size, 0, 0, 0);
+    if (result != DS_OK) {
+        LOG_ERROR("Error while calling IDirectSoundBuffer_Lock: 0x%lx", result);
+        S_ExitSystem("Fatal DirectSound error!");
+    }
+
+    memcpy(audio_data, sample_data->data, buffer_desc.dwBufferBytes);
+
+    result = IDirectSoundBuffer_Unlock(
+        (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
+        0, 0);
+    if (result != DS_OK) {
+        LOG_ERROR(
+            "Error while calling IDirectSoundBuffer_Unlock: 0x%lx", result);
+        S_ExitSystem("Fatal DirectSound error!");
+    }
+
+    return true;
+}
+
 void *S_Sound_PlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, bool loop)
 {
@@ -237,87 +318,6 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
     for (int i = 0; i < NumSampleData; i++) {
         SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
     }
-}
-
-static SAMPLE_DATA *S_Sound_LoadSample(char *content)
-{
-    WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
-    if (strncmp(hdr->chunk_id, "RIFF", 4)) {
-        S_ExitSystem("Samples must be in WAVE format.");
-        return NULL;
-    }
-
-    SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
-    memset(sample_data, 0, sizeof(SAMPLE_DATA));
-    sample_data->data = content + sizeof(WAVE_FILE_HEADER);
-    sample_data->length =
-        hdr->data_chunk.subchunk_size - sizeof(WAVE_FILE_HEADER);
-    sample_data->bits_per_sample = hdr->fmt_chunk.bits_per_sample;
-    sample_data->channels = hdr->fmt_chunk.num_channels;
-    sample_data->block_align =
-        sample_data->channels * hdr->fmt_chunk.bits_per_sample / 8;
-    sample_data->sample_rate = hdr->fmt_chunk.sample_rate;
-
-    sample_data->pan = 0;
-    sample_data->volume = 0x7FFF;
-    if (S_Sound_MakeSample(sample_data)) {
-        return sample_data;
-    }
-    return NULL;
-}
-
-static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
-{
-    WAVEFORMATEX wave_format;
-    wave_format.wFormatTag = WAVE_FORMAT_PCM;
-    wave_format.nChannels = sample_data->channels;
-    wave_format.nSamplesPerSec = sample_data->sample_rate;
-    wave_format.nAvgBytesPerSec =
-        sample_data->sample_rate * sample_data->block_align;
-    wave_format.nBlockAlign = sample_data->block_align;
-    wave_format.wBitsPerSample = sample_data->bits_per_sample;
-
-    DSBUFFERDESC buffer_desc;
-    buffer_desc.dwSize = sizeof(DSBUFFERDESC);
-    buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN
-        | DSBCAPS_CTRLFREQUENCY;
-    buffer_desc.dwBufferBytes = sample_data->length;
-    buffer_desc.dwReserved = 0;
-    buffer_desc.lpwfxFormat = &wave_format;
-    CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
-
-    HRESULT result = IDirectSound_CreateSoundBuffer(
-        DSound, &buffer_desc, (LPLPDIRECTSOUNDBUFFER)&sample_data->handle, 0);
-    if (result != DS_OK) {
-        LOG_ERROR(
-            "Error while calling IDirectSound_CreateSoundBuffer: 0x%lx",
-            result);
-        S_ExitSystem("Fatal DirectSound error!");
-    }
-
-    DWORD audio_data_size;
-    LPVOID audio_data;
-
-    result = IDirectSoundBuffer_Lock(
-        (LPDIRECTSOUNDBUFFER)sample_data->handle, 0, buffer_desc.dwBufferBytes,
-        &audio_data, &audio_data_size, 0, 0, 0);
-    if (result != DS_OK) {
-        LOG_ERROR("Error while calling IDirectSoundBuffer_Lock: 0x%lx", result);
-        S_ExitSystem("Fatal DirectSound error!");
-    }
-
-    memcpy(audio_data, sample_data->data, buffer_desc.dwBufferBytes);
-
-    result = IDirectSoundBuffer_Unlock(
-        (LPDIRECTSOUNDBUFFER)sample_data->handle, audio_data, audio_data_size,
-        0, 0);
-    if (result != DS_OK) {
-        LOG_ERROR(
-            "Error while calling IDirectSoundBuffer_Unlock: 0x%lx", result);
-        S_ExitSystem("Fatal DirectSound error!");
-    }
-
-    return true;
 }
 
 void S_Sound_StopSample(void *handle)
