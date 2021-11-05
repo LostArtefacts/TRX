@@ -78,25 +78,25 @@ void mn_reset_sound_effects()
     }
 }
 
-int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+bool mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
     if (!SoundIsActive) {
-        return 0;
+        return false;
     }
 
     if (flags != SPM_ALWAYS
         && (flags & SPM_UNDERWATER)
             != (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER)) {
-        return 0;
+        return false;
     }
 
     if (SampleLUT[sfx_num] < 0) {
-        return 0;
+        return false;
     }
 
     SAMPLE_INFO *s = &SampleInfos[SampleLUT[sfx_num]];
     if (s->randomness && GetRandomDraw() > (int32_t)s->randomness) {
-        return 0;
+        return false;
     }
 
     flags = 0;
@@ -109,7 +109,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         int32_t z = pos->z - Camera.target.z;
         if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
             || ABS(z) > SOUND_RADIUS) {
-            return 0;
+            return false;
         }
         distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
         if (!distance) {
@@ -132,7 +132,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     if (volume <= 0 && mode != SOUND_AMBIENT) {
-        return 0;
+        return false;
     }
 
     if (pan) {
@@ -162,49 +162,49 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     case SOUND_WAIT: {
         MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, 0, pos, mode);
         if (!fxslot) {
-            return 0;
+            return false;
         }
         if (fxslot->mn_flags & MN_FX_RESTARTED) {
             fxslot->mn_flags &= 0xFFFF - MN_FX_RESTARTED;
-            return 1;
+            return true;
         }
         fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
         if (fxslot->handle == SOUND_INVALID_HANDLE) {
-            return 0;
+            return false;
         }
         mn_clear_handles(fxslot);
         fxslot->mn_flags = flags | MN_FX_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
-        return 1;
+        return true;
     }
 
     case SOUND_RESTART: {
         MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, 0, pos, mode);
         if (!fxslot) {
-            return 0;
+            return false;
         }
         if (fxslot->mn_flags & MN_FX_RESTARTED) {
             S_SoundStopSample(fxslot->handle);
             fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
-            return 1;
+            return true;
         }
         fxslot->handle = S_SoundPlaySample(sfx_id, volume, pitch, pan);
         if (fxslot->handle == SOUND_INVALID_HANDLE) {
-            return 0;
+            return false;
         }
         mn_clear_handles(fxslot);
         fxslot->mn_flags = flags | MN_FX_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
-        return 1;
+        return true;
     }
 
     case SOUND_AMBIENT: {
         uint32_t loudness = distance;
         MN_SFX_PLAY_INFO *fxslot = mn_get_fx_slot(sfx_num, loudness, pos, mode);
         if (!fxslot) {
-            return 0;
+            return false;
         }
         fxslot->pos = pos;
         if (fxslot->mn_flags & MN_FX_AMBIENT) {
@@ -216,7 +216,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
                 fxslot->loudness = MN_NOT_AUDIBLE;
                 fxslot->volume = 0;
             }
-            return 1;
+            return true;
         }
 
         if (volume > 0) {
@@ -224,7 +224,7 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
                 S_SoundPlaySampleLooped(sfx_id, volume, pitch, pan);
             if (fxslot->handle == SOUND_INVALID_HANDLE) {
                 mn_clear_fx_slot(fxslot);
-                return 0;
+                return false;
             }
             mn_clear_handles(fxslot);
             fxslot->loudness = loudness;
@@ -233,15 +233,15 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             fxslot->volume = volume;
             fxslot->mn_flags |= MN_FX_AMBIENT | MN_FX_USED;
             fxslot->pos = pos;
-            return 1;
+            return true;
         }
 
         fxslot->loudness = MN_NOT_AUDIBLE;
-        return 1;
+        return true;
     }
     }
 
-    return 0;
+    return false;
 }
 
 MN_SFX_PLAY_INFO *mn_get_fx_slot(
