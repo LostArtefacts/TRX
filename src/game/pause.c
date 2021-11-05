@@ -1,5 +1,6 @@
 #include "game/pause.h"
 
+#include "game/music.h"
 #include "game/requester.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -7,7 +8,6 @@
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/music.h"
 #include "specific/output.h"
 
 #include <stddef.h>
@@ -150,11 +150,11 @@ int8_t S_Pause()
     TempVideoAdjust(GetScreenSizeIdx());
     S_SetupAboveWater(false);
 
-    S_Music_Pause();
+    Music_Pause();
 
     int32_t select = PauseLoop();
 
-    S_Music_Unpause();
+    Music_Unpause();
     RemoveRequester(&PauseRequester);
     RemovePausedText();
     TempVideoRemove();

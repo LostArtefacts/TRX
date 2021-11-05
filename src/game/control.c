@@ -9,6 +9,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
@@ -20,7 +21,6 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/input.h"
-#include "specific/music.h"
 
 #include <stddef.h>
 
@@ -134,7 +134,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
         if (MusicTrack > 0) {
-            S_Music_Loop();
+            Music_Loop();
         }
 
         CheckCheatMode();
@@ -924,7 +924,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                 break;
             }
             SaveGame.secrets |= 1 << value;
-            S_Music_Play(13);
+            Music_Play(13);
             break;
         }
     } while (!(trigger & END_BIT));
@@ -1461,10 +1461,10 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
             MusicTrackFlags[value] |= IF_ONESHOT;
         }
         if (value != MusicTrack) {
-            S_Music_Play(value);
+            Music_Play(value);
         }
     } else {
-        S_Music_Stop();
+        Music_Stop();
     }
 }
 

@@ -8,10 +8,10 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/people.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/music.h"
 
 BITE_INFO NatlaGun = { 5, 220, 7, 4 };
 
@@ -135,7 +135,7 @@ void NatlaControl(int16_t item_num)
                 natla->flags = 0;
                 timer = 0;
                 item->hit_points = NATLA_NEAR_DEATH;
-                S_Music_Play(54);
+                Music_Play(54);
             } else {
                 item->hit_points = DONT_TARGET;
             }

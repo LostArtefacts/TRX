@@ -2,6 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
+#include "game/music.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/lib.h"
@@ -12,7 +13,6 @@
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/input.h"
-#include "specific/music.h"
 #include "specific/smain.h"
 
 #include <stdio.h>
@@ -74,7 +74,7 @@ void S_InitialiseSystem()
     Text_Init();
     ClockInit();
     SoundIsActive = Sound_Init();
-    S_Music_Init();
+    Music_Init();
     InputInit();
     FMVInit();
 

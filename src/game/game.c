@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/music.h"
 #include "game/savegame.h"
 #include "game/setup.h"
 #include "game/sound.h"
@@ -16,7 +17,6 @@
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
-#include "specific/music.h"
 #include "specific/output.h"
 
 #include <stdio.h>
@@ -78,9 +78,9 @@ int32_t GameLoop(int32_t demo_mode)
     }
 
     Sound_StopAllSamples();
-    S_Music_Stop();
+    Music_Stop();
     if (T1MConfig.music_volume) {
-        S_Music_AdjustVolume(T1MConfig.music_volume * 25 + 5);
+        Music_AdjustVolume(T1MConfig.music_volume * 25 + 5);
     }
 
     if (ret == GF_NOP_BREAK) {
