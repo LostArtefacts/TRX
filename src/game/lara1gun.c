@@ -164,34 +164,90 @@ void AnimateShotgun()
             }
         }
     } else {
-        if (ani == AF_SG_AIM && Input.action) {
-            ani++;
-        } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
-            ani++;
-            if (ani == AF_SG_DRAW) {
-                ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
-            }
-        } else {
-            if (ani == AF_SG_RECOIL) {
-                if (Input.action) {
-                    FireShotgun();
+        if (T1MConfig.enable_shotgun_target_fix) {
+            if (Lara.target) {
+                if (ani == AF_SG_RECOIL) {
+                    ani = AF_SG_UNAIM;
                     ani++;
-                } else {
-                    ani = AF_SG_UNAIM;
+                } else if (ani > AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
+                    ani++;
+                    if (ani == AF_SG_RECOIL + 10) {
+                        SoundEffect(
+                            SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
+                    } else if (ani == AF_SG_RECOIL + 16) {
+                        ani = AF_SG_AIM;
+                    } else if (ani == AF_SG_UNDRAW) {
+                        ani = AF_SG_UNAIM;
+                    }
+                } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
+                    ani++;
+                    if (ani == AF_SG_END) {
+                        ani = AF_SG_AIM;
+                    }
+                } else if (ani > AF_SG_AIM && ani <= AF_SG_DRAW) {
+                    ani--;
                 }
-            } else if (ani > AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
-                ani++;
-                if (ani == AF_SG_RECOIL + 12 + 1) {
-                    ani = AF_SG_AIM;
-                } else if (ani == AF_SG_UNDRAW) {
-                    ani = AF_SG_UNAIM;
-                } else if (ani == AF_SG_RECOIL + 10) {
-                    SoundEffect(SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
+            } else {
+                if (Input.action && ani == AF_SG_AIM) {
+                    ani++;
+                } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
+                    ani++;
+                    if (ani == AF_SG_DRAW) {
+                        ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
+                    }
+                } else if (ani == AF_SG_RECOIL) {
+                    if (Input.action) {
+                        FireShotgun();
+                        ani++;
+                    } else {
+                        ani = AF_SG_UNAIM;
+                    }
+                } else if (ani > AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
+                    ani++;
+                    if (ani == AF_SG_RECOIL + 10) {
+                        SoundEffect(
+                            SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
+                    } else if (ani == AF_SG_UNDRAW) {
+                        ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
+                    }
+                } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
+                    ani++;
+                    if (ani == AF_SG_END) {
+                        ani = AF_SG_AIM;
+                    }
                 }
-            } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
+            }
+        } else if (!T1MConfig.enable_shotgun_target_fix) {
+            if (ani == AF_SG_AIM && Input.action) {
                 ani++;
-                if (ani == AF_SG_END) {
-                    ani = AF_SG_AIM;
+            } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
+                ani++;
+                if (ani == AF_SG_DRAW) {
+                    ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
+                }
+            } else {
+                if (ani == AF_SG_RECOIL) {
+                    if (Input.action) {
+                        FireShotgun();
+                        ani++;
+                    } else {
+                        ani = AF_SG_UNAIM;
+                    }
+                } else if (ani > AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
+                    ani++;
+                    if (ani == AF_SG_RECOIL + 12 + 1) {
+                        ani = AF_SG_AIM;
+                    } else if (ani == AF_SG_UNDRAW) {
+                        ani = AF_SG_UNAIM;
+                    } else if (ani == AF_SG_RECOIL + 10) {
+                        SoundEffect(
+                            SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
+                    }
+                } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
+                    ani++;
+                    if (ani == AF_SG_END) {
+                        ani = AF_SG_AIM;
+                    }
                 }
             }
         }

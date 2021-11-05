@@ -18,6 +18,7 @@ void test_empty_config()
     ASSERT_INT_EQUAL(T1MConfig.enable_enemy_healthbar, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_enhanced_look, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_shotgun_flash, 1);
+    ASSERT_INT_EQUAL(T1MConfig.enable_shotgun_target_fix, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_numeric_keys, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_tr3_sidesteps, 1);
     ASSERT_INT_EQUAL(T1MConfig.enable_cheats, 0);

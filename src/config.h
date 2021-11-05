@@ -43,6 +43,7 @@ typedef struct {
     bool enable_enhanced_look;
     bool enable_numeric_keys;
     bool enable_shotgun_flash;
+    bool enable_shotgun_target_fix;
     bool enable_cheats;
     bool enable_tr3_sidesteps;
     bool enable_braid;
