@@ -1932,16 +1932,6 @@ typedef struct GAMEFLOW {
     RGBF water_color;
 } GAMEFLOW;
 
-typedef struct MN_SFX_PLAY_INFO {
-    void *handle;
-    PHD_3DPOS *pos;
-    uint32_t loudness;
-    int16_t volume;
-    int16_t pan;
-    int16_t fxnum;
-    int16_t mn_flags;
-} MN_SFX_PLAY_INFO;
-
 typedef struct SAMPLE_INFO {
     int16_t number;
     int16_t volume;
