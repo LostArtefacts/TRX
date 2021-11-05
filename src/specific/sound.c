@@ -54,28 +54,28 @@ typedef struct WAVE_FILE_HEADER {
 } WAVE_FILE_HEADER;
 #pragma pack(pop)
 
-static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
-static int32_t DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
-extern int32_t NumSampleData;
-static SAMPLE_DATA **SampleData = NULL;
+static DUPE_SOUND_BUFFER *S_Sound_DupeBuffers = NULL;
+static int32_t S_Sound_DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
+static int32_t S_Sound_NumSampleData;
+static SAMPLE_DATA **S_Sound_SampleData = NULL;
 
-static int32_t ConvertVolumeToDecibel(int32_t volume);
-static int32_t ConvertPanToDecibel(uint16_t pan);
+static int32_t S_Sound_ConvertVolumeToDecibel(int32_t volume);
+static int32_t S_Sound_ConvertPanToDecibel(uint16_t pan);
 static SAMPLE_DATA *S_Sound_LoadSample(char *content);
 static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data);
 
-static int32_t ConvertVolumeToDecibel(int32_t volume)
+static int32_t S_Sound_ConvertVolumeToDecibel(int32_t volume)
 {
-    return DecibelLUT[(volume & 0x7FFF) >> 6];
+    return S_Sound_DecibelLUT[(volume & 0x7FFF) >> 6];
 }
 
-static int32_t ConvertPanToDecibel(uint16_t pan)
+static int32_t S_Sound_ConvertPanToDecibel(uint16_t pan)
 {
     int32_t result = sin((pan / 32767.0) * M_PI) * (DECIBEL_LUT_SIZE / 2);
     if (result > 0) {
-        return -DecibelLUT[DECIBEL_LUT_SIZE - result];
+        return -S_Sound_DecibelLUT[DECIBEL_LUT_SIZE - result];
     } else if (result < 0) {
-        return DecibelLUT[DECIBEL_LUT_SIZE + result];
+        return S_Sound_DecibelLUT[DECIBEL_LUT_SIZE + result];
     } else {
         return 0;
     }
@@ -171,7 +171,7 @@ void *S_Sound_PlaySample(
         return NULL;
     }
 
-    SAMPLE_DATA *sample = SampleData[sample_id];
+    SAMPLE_DATA *sample = S_Sound_SampleData[sample_id];
     if (!sample) {
         return NULL;
     }
@@ -191,7 +191,7 @@ void *S_Sound_PlaySample(
     if (status == DSBSTATUS_PLAYING) {
         buffer = NULL;
 
-        for (DUPE_SOUND_BUFFER *dupe_buffer = DupeSoundBufferList;
+        for (DUPE_SOUND_BUFFER *dupe_buffer = S_Sound_DupeBuffers;
              dupe_buffer != NULL; dupe_buffer = dupe_buffer->next) {
             if (dupe_buffer->sample == sample) {
                 result =
@@ -224,8 +224,8 @@ void *S_Sound_PlaySample(
 
             DUPE_SOUND_BUFFER *dupe_buffer = malloc(sizeof(DUPE_SOUND_BUFFER));
             dupe_buffer->buffer = buffer_new;
-            dupe_buffer->next = DupeSoundBufferList;
-            DupeSoundBufferList = dupe_buffer;
+            dupe_buffer->next = S_Sound_DupeBuffers;
+            S_Sound_DupeBuffers = dupe_buffer;
 
             buffer = buffer_new;
             LOG_DEBUG(
@@ -246,14 +246,15 @@ void *S_Sound_PlaySample(
             result);
         return NULL;
     }
-    result = IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    result =
+        IDirectSoundBuffer_SetPan(buffer, S_Sound_ConvertPanToDecibel(pan));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetPan: 0x%lx", result);
         return NULL;
     }
-    result =
-        IDirectSoundBuffer_SetVolume(buffer, ConvertVolumeToDecibel(volume));
+    result = IDirectSoundBuffer_SetVolume(
+        buffer, S_Sound_ConvertVolumeToDecibel(volume));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);
@@ -286,9 +287,9 @@ bool S_Sound_Init()
         LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
         return false;
     }
-    DecibelLUT[0] = -10000;
+    S_Sound_DecibelLUT[0] = -10000;
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
-        DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
+        S_Sound_DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
     }
     return true;
 }
@@ -299,8 +300,8 @@ void S_Sound_StopAllSamples()
         return;
     }
 
-    for (int i = 0; i < NumSampleData; i++) {
-        SAMPLE_DATA *sample = SampleData[i];
+    for (int i = 0; i < S_Sound_NumSampleData; i++) {
+        SAMPLE_DATA *sample = S_Sound_SampleData[i];
         if (sample) {
             S_Sound_StopSample(sample->handle);
         }
@@ -313,10 +314,10 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
         return;
     }
 
-    NumSampleData = num_samples;
-    SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
-    for (int i = 0; i < NumSampleData; i++) {
-        SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
+    S_Sound_NumSampleData = num_samples;
+    S_Sound_SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
+    for (int i = 0; i < S_Sound_NumSampleData; i++) {
+        S_Sound_SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
     }
 }
 
@@ -346,12 +347,14 @@ void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER)handle;
     HRESULT result;
     result = IDirectSoundBuffer_SetVolume(
-        buffer, ConvertVolumeToDecibel((Sound_MasterVolume * volume) >> 6));
+        buffer,
+        S_Sound_ConvertVolumeToDecibel((Sound_MasterVolume * volume) >> 6));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetVolume: 0x%lx", result);
     }
-    result = IDirectSoundBuffer_SetPan(buffer, ConvertPanToDecibel(pan));
+    result =
+        IDirectSoundBuffer_SetPan(buffer, S_Sound_ConvertPanToDecibel(pan));
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_SetPan: 0x%lx", result);

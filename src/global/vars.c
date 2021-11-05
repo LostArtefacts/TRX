@@ -28,7 +28,6 @@ void (*EffectRoutines[])(ITEM_INFO *item) = {
 bool SoundIsActive = true;
 int16_t SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *SampleInfos = NULL;
-int32_t NumSampleData = 0;
 int16_t MusicTrack = 0;
 bool MusicLoop = false;
 uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
