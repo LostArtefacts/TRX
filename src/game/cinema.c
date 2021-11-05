@@ -6,6 +6,7 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/setup.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -44,7 +45,7 @@ int32_t CinematicLoop()
 int32_t StopCinematic(int32_t level_num)
 {
     S_MusicStop();
-    S_SoundStopAllSamples();
+    Sound_StopAllSamples();
     SoundIsActive = SoundIsActiveOld;
 
     LevelComplete = true;

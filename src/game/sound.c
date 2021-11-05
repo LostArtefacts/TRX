@@ -309,7 +309,7 @@ void Sound_ResetEffects()
         Sound_ClearSlot(&SFXPlaying[i]);
     }
 
-    S_SoundStopAllSamples();
+    Sound_StopAllSamples();
 
     Sound_AmbientLookupIdx = 0;
 
@@ -324,7 +324,8 @@ void Sound_ResetEffects()
                 s->volume);
         }
 
-        if ((s->flags & 3) == SOUND_MODE_AMBIENT) {
+        int32_t mode = s->flags & 3;
+        if (mode == SOUND_MODE_AMBIENT) {
             if (Sound_AmbientLookupIdx >= MAX_AMBIENT_FX) {
                 S_ExitSystem("Ran out of ambient fx slots in "
                              "Sound_ResetEffects()");
@@ -397,6 +398,11 @@ void Sound_StopAmbientSounds()
             Sound_ClearSlot(slot);
         }
     }
+}
+
+void Sound_StopAllSamples()
+{
+    S_SoundStopAllSamples();
 }
 
 static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
