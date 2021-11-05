@@ -53,6 +53,11 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
 static void Sound_ClearSlot(SOUND_SLOT *slot);
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
 
+bool Sound_Init()
+{
+    return S_Sound_Init();
+}
+
 void Sound_UpdateEffects()
 {
     if (!SoundIsActive) {
@@ -398,6 +403,11 @@ void Sound_StopAmbientSounds()
             Sound_ClearSlot(slot);
         }
     }
+}
+
+void Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
+{
+    S_Sound_LoadSamples(sample_pointers, num_samples);
 }
 
 void Sound_StopAllSamples()

@@ -5,12 +5,12 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/setup.h"
+#include "game/sound.h"
 #include "global/vars.h"
 #include "log.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/smain.h"
-#include "specific/sound.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -578,7 +578,7 @@ static bool LoadSamples(MYFILE *fp)
         sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    S_Sound_LoadSamples(sample_pointers, num_samples);
+    Sound_LoadSamples(sample_pointers, num_samples);
 
     game_free(sizeof(char *) * num_samples, GBUF_SAMPLE_OFFSETS);
 
