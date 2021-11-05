@@ -112,7 +112,7 @@ void CheckCheatMode()
                 Lara.shotgun.ammo = 500;
                 Lara.magnums.ammo = 500;
                 Lara.uzis.ammo = 5000;
-                SoundEffect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
+                Sound_Effect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
             }
             cheat_mode = 0;
         }
@@ -232,7 +232,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         HairControl(0);
 
         CalculateCamera();
-        SoundEffects();
+        Sound_UpdateEffects();
         SaveGame.timer++;
         HealthBarTimer--;
 
@@ -329,7 +329,7 @@ void AnimateItem(ITEM_INFO *item)
 
             case AC_SOUND_FX:
                 if (item->frame_number == command[0]) {
-                    SoundEffect(
+                    Sound_Effect(
                         command[1], &item->pos,
                         RoomInfo[item->room_number].flags);
                 }

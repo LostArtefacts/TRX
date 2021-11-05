@@ -154,7 +154,7 @@ void ControlBodyPart(int16_t fx_num)
             fx->frame_number = 0;
             fx->counter = 0;
             fx->object_number = O_EXPLOSION1;
-            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
+            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
         } else {
             KillEffect(fx_num);
         }
@@ -170,7 +170,7 @@ void ControlBodyPart(int16_t fx_num)
             fx->frame_number = 0;
             fx->counter = 0;
             fx->object_number = O_EXPLOSION1;
-            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
+            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
 
             Lara.spaz_effect_count = 5;
             Lara.spaz_effect = fx;

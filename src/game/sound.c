@@ -8,16 +8,16 @@
 #define FLIPFLAG 0x40
 #define UNFLIPFLAG 0x80
 
-void SoundEffects()
+void Sound_UpdateEffects()
 {
     mn_reset_ambient_loudness();
 
     for (int i = 0; i < NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &SoundEffectsTable[i];
         if (FlipStatus && (sound->flags & FLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         } else if (!FlipStatus && (sound->flags & UNFLIPFLAG)) {
-            SoundEffect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         }
     }
 
@@ -30,12 +30,12 @@ void SoundEffects()
     mn_update_sound_effects();
 }
 
-void SoundEffect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+void Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
     mn_sound_effect(sfx_num, pos, flags);
 }
 
-void StopSoundEffect(int32_t sfx_num, PHD_3DPOS *pos)
+void Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
 {
     mn_stop_sound_effect(sfx_num, pos);
 }
