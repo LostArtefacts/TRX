@@ -8,6 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern const char *T1MVersion;
+
 extern int32_t PhdWinMaxX;
 extern int32_t PhdWinMaxY;
 extern int32_t PhdWinCenterX;
@@ -54,6 +56,7 @@ extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t MnSoundMasterVolume;
 
+extern TEXTSTRING *VersionText;
 extern TEXTSTRING *AmmoText;
 extern TEXTSTRING *FPSText;
 extern int32_t FPSCounter;

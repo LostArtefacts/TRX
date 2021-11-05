@@ -128,6 +128,7 @@ void LevelStats(int32_t level_num)
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);
