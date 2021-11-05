@@ -18,7 +18,6 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stdint.h>
 #include <string.h>
