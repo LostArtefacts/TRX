@@ -44,8 +44,8 @@ typedef enum SOUND_FLAG {
 
 static SOUND_SLOT SFXPlaying[MAX_PLAYING_FX] = { 0 };
 static int32_t Sound_MasterVolumeDefault = 32;
-static int16_t MnAmbientLookup[MAX_AMBIENT_FX] = { -1 };
-static int32_t MnAmbientLookupIdx = 0;
+static int16_t Sound_AmbientLookup[MAX_AMBIENT_FX] = { -1 };
+static int32_t Sound_AmbientLookupIdx = 0;
 
 static SOUND_SLOT *Sound_GetSlot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
@@ -311,7 +311,7 @@ void Sound_ResetEffects()
 
     S_SoundStopAllSamples();
 
-    MnAmbientLookupIdx = 0;
+    Sound_AmbientLookupIdx = 0;
 
     for (int i = 0; i < MAX_SAMPLES; i++) {
         if (SampleLUT[i] < 0) {
@@ -325,12 +325,12 @@ void Sound_ResetEffects()
         }
 
         if ((s->flags & 3) == SOUND_MODE_AMBIENT) {
-            if (MnAmbientLookupIdx >= MAX_AMBIENT_FX) {
+            if (Sound_AmbientLookupIdx >= MAX_AMBIENT_FX) {
                 S_ExitSystem("Ran out of ambient fx slots in "
                              "Sound_ResetEffects()");
             }
-            MnAmbientLookup[MnAmbientLookupIdx] = i;
-            MnAmbientLookupIdx++;
+            Sound_AmbientLookup[Sound_AmbientLookupIdx] = i;
+            Sound_AmbientLookupIdx++;
         }
     }
 }
@@ -342,7 +342,7 @@ static SOUND_SLOT *Sound_GetSlot(
     case SOUND_MODE_WAIT:
     case SOUND_MODE_RESTART: {
         SOUND_SLOT *last_free_slot = NULL;
-        for (int i = MnAmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
+        for (int i = Sound_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
             SOUND_SLOT *result = &SFXPlaying[i];
             if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
                 && result->pos == pos) {
@@ -357,7 +357,7 @@ static SOUND_SLOT *Sound_GetSlot(
 
     case SOUND_MODE_AMBIENT:
         for (int i = 0; i < MAX_AMBIENT_FX; i++) {
-            if (MnAmbientLookup[i] == sfx_num) {
+            if (Sound_AmbientLookup[i] == sfx_num) {
                 SOUND_SLOT *result = &SFXPlaying[i];
                 if (result->flags != SOUND_FLAG_UNUSED
                     && result->loudness <= loudness) {
@@ -378,7 +378,7 @@ void Sound_ResetAmbientLoudness()
         return;
     }
 
-    for (int i = 0; i < MnAmbientLookupIdx; i++) {
+    for (int i = 0; i < Sound_AmbientLookupIdx; i++) {
         SOUND_SLOT *slot = &SFXPlaying[i];
         slot->loudness = SOUND_NOT_AUDIBLE;
     }
@@ -390,7 +390,7 @@ void Sound_StopAmbientSounds()
         return;
     }
 
-    for (int i = 0; i < MnAmbientLookupIdx; i++) {
+    for (int i = 0; i < Sound_AmbientLookupIdx; i++) {
         SOUND_SLOT *slot = &SFXPlaying[i];
         if (S_SoundSampleIsPlaying(slot->handle)) {
             S_SoundStopSample(slot->handle);
