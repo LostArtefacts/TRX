@@ -145,17 +145,15 @@ void LaraAsWalk(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (!T1MConfig.enable_tr3_sidesteps || (Input.slow && Input.forward)) {
-        if (Input.left) {
-            Lara.turn_rate -= LARA_TURN_RATE;
-            if (Lara.turn_rate < -LARA_SLOW_TURN) {
-                Lara.turn_rate = -LARA_SLOW_TURN;
-            }
-        } else if (Input.right) {
-            Lara.turn_rate += LARA_TURN_RATE;
-            if (Lara.turn_rate > LARA_SLOW_TURN) {
-                Lara.turn_rate = LARA_SLOW_TURN;
-            }
+    if (Input.left) {
+        Lara.turn_rate -= LARA_TURN_RATE;
+        if (Lara.turn_rate < -LARA_SLOW_TURN) {
+            Lara.turn_rate = -LARA_SLOW_TURN;
+        }
+    } else if (Input.right) {
+        Lara.turn_rate += LARA_TURN_RATE;
+        if (Lara.turn_rate > LARA_SLOW_TURN) {
+            Lara.turn_rate = LARA_SLOW_TURN;
         }
     }
 
@@ -254,17 +252,9 @@ void LaraAsStop(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Input.left) {
-        if (T1MConfig.enable_tr3_sidesteps && Input.slow) {
-            item->goal_anim_state = AS_STEPLEFT;
-        } else {
-            item->goal_anim_state = AS_TURN_L;
-        }
+        item->goal_anim_state = AS_TURN_L;
     } else if (Input.right) {
-        if (T1MConfig.enable_tr3_sidesteps && Input.slow) {
-            item->goal_anim_state = AS_STEPRIGHT;
-        } else {
-            item->goal_anim_state = AS_TURN_R;
-        }
+        item->goal_anim_state = AS_TURN_R;
     }
 
     if (Input.jump) {
@@ -347,11 +337,6 @@ void LaraAsTurnR(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (T1MConfig.enable_tr3_sidesteps && Input.slow) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
-
     Lara.turn_rate += LARA_TURN_RATE;
     if (Lara.gun_status == LGS_READY) {
         item->goal_anim_state = AS_FASTTURN;
@@ -378,11 +363,6 @@ void LaraAsTurnL(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (T1MConfig.enable_enhanced_look && Input.look) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
-
-    if (T1MConfig.enable_tr3_sidesteps && Input.slow) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -488,17 +468,15 @@ void LaraAsBack(ITEM_INFO *item, COLL_INFO *coll)
 
     item->goal_anim_state = Input.back && Input.slow ? AS_BACK : AS_STOP;
 
-    if (!T1MConfig.enable_tr3_sidesteps || (Input.slow && Input.back)) {
-        if (Input.left) {
-            Lara.turn_rate -= LARA_TURN_RATE;
-            if (Lara.turn_rate < -LARA_SLOW_TURN) {
-                Lara.turn_rate = -LARA_SLOW_TURN;
-            }
-        } else if (Input.right) {
-            Lara.turn_rate += LARA_TURN_RATE;
-            if (Lara.turn_rate > LARA_SLOW_TURN) {
-                Lara.turn_rate = LARA_SLOW_TURN;
-            }
+    if (Input.left) {
+        Lara.turn_rate -= LARA_TURN_RATE;
+        if (Lara.turn_rate < -LARA_SLOW_TURN) {
+            Lara.turn_rate = -LARA_SLOW_TURN;
+        }
+    } else if (Input.right) {
+        Lara.turn_rate += LARA_TURN_RATE;
+        if (Lara.turn_rate > LARA_SLOW_TURN) {
+            Lara.turn_rate = LARA_SLOW_TURN;
         }
     }
 }
@@ -511,11 +489,6 @@ void LaraAsFastTurn(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (T1MConfig.enable_enhanced_look && Input.look) {
-        item->goal_anim_state = AS_STOP;
-        return;
-    }
-
-    if (T1MConfig.enable_tr3_sidesteps && Input.slow) {
         item->goal_anim_state = AS_STOP;
         return;
     }
@@ -540,10 +513,6 @@ void LaraAsStepRight(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    if (T1MConfig.enable_tr3_sidesteps && Input.right && Input.slow) {
-        return;
-    }
-
     if (!Input.step_right) {
         item->goal_anim_state = AS_STOP;
     }
@@ -565,10 +534,6 @@ void LaraAsStepLeft(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
         item->goal_anim_state = AS_STOP;
-        return;
-    }
-
-    if (T1MConfig.enable_tr3_sidesteps && Input.left && Input.slow) {
         return;
     }
 

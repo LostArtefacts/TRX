@@ -429,6 +429,19 @@ void S_UpdateInput()
         linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 
+    if (T1MConfig.enable_tr3_sidesteps) {
+        if (linput.slow && !linput.forward && !linput.back && !linput.step_left
+            && !linput.step_right) {
+            if (linput.left) {
+                linput.left = 0;
+                linput.step_left = 1;
+            } else if (linput.right) {
+                linput.right = 0;
+                linput.step_right = 1;
+            }
+        }
+    }
+
     if (T1MConfig.enable_numeric_keys) {
         if (KEY_DOWN(DIK_1) && Inv_RequestItem(O_GUN_ITEM)) {
             Lara.request_gun_type = LGT_PISTOLS;
