@@ -52,15 +52,6 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     int32_t pass_mode_open = 0;
-    if (AmmoText) {
-        Text_Remove(AmmoText);
-        AmmoText = NULL;
-    }
-    if (FPSText) {
-        Text_Remove(FPSText);
-        FPSText = NULL;
-    }
-
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
     InvMode = inv_mode;
 
