@@ -109,6 +109,7 @@
         "HEADING_OPTION": "OPTION",
         "HEADING_ITEMS": "ITEMS",
         "PASSPORT_SELECT_LEVEL": "Select Level",
+        "PASSPORT_RESTART_LEVEL": "Restart Level",
         "PASSPORT_SELECT_MODE": "Select Mode",
         "PASSPORT_MODE_NEW_GAME": "New Game",
         "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",

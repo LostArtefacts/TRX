@@ -364,18 +364,16 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 InputDB = (INPUT_STATE) { 0 };
             }
         } else if (PassportMode == 0) {
-            if (InvMode == INV_DEATH_MODE) {
-                if (inv_item->anim_direction == -1) {
-                    InputDB = (INPUT_STATE) { 0, .left = 1 };
-                } else {
-                    InputDB = (INPUT_STATE) { 0, .right = 1 };
-                }
-            }
             if (!PassportText) {
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     PassportText =
                         T_Print(0, -16, GF.strings[GS_PASSPORT_NEW_GAME]);
+                } else if (InvMode == INV_DEATH_MODE) {
+                    if (SavedGamesCount == 0)
+                        InputDB.left = 0;
+                    PassportText =
+                        T_Print(0, -16, GF.strings[GS_PASSPORT_RESTART_LEVEL]);
                 } else {
                     PassportText =
                         T_Print(0, -16, GF.strings[GS_PASSPORT_SAVE_GAME]);
@@ -400,6 +398,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     } else {
                         InvExtraData[1] = SaveGame.bonus_flag;
                     }
+                } else if (InvMode == INV_DEATH_MODE) {
+                    T_RemovePrint(InvRingText);
+                    InvRingText = NULL;
+                    T_RemovePrint(InvItemText[IT_NAME]);
+                    InvItemText[IT_NAME] = NULL;
                 } else {
                     T_RemovePrint(InvRingText);
                     InvRingText = NULL;
@@ -438,7 +441,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         1,
     };
 
-    if (InputDB.left && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
+    if (InputDB.left
+        && (InvMode != INV_DEATH_MODE || SavedGamesCount || page > 1)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;

@@ -12,6 +12,7 @@ void T1MInit()
     GF.strings[GS_HEADING_OPTION] = "OPTION";
     GF.strings[GS_HEADING_ITEMS] = "ITEMS";
     GF.strings[GS_PASSPORT_SELECT_LEVEL] = "Select Level";
+    GF.strings[GS_PASSPORT_RESTART_LEVEL] = "Restart Level";
     GF.strings[GS_PASSPORT_SELECT_MODE] = "Select Mode";
     GF.strings[GS_PASSPORT_MODE_NEW_GAME] = "New Game";
     GF.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS] = "New Game+";

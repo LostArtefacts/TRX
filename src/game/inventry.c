@@ -636,6 +636,17 @@ int32_t Display_Inventory(int inv_mode)
                 // page 3: exit game
                 return GF_EXIT_GAME;
             }
+        } else if (InvMode == INV_DEATH_MODE) {
+            if (InvExtraData[0] == 0) {
+                // page 1: load game
+                return GF_START_SAVED_GAME | InvExtraData[1];
+            } else if (InvExtraData[0] == 1) {
+                // page 2: restart level
+                return GF_START_GAME | CurrentLevel;
+            } else {
+                // page 3: exit game
+                return GF_EXIT_TO_TITLE;
+            }
         } else {
             if (InvExtraData[0] == 0) {
                 // page 1: load game
