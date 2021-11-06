@@ -332,7 +332,7 @@ EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
     return DIENUM_CONTINUE;
 }
 
-static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCEA instance, LPVOID context)
+static BOOL CALLBACK EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context)
 {
     HRESULT result;
 
