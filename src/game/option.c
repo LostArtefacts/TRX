@@ -645,7 +645,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[256];
+    char buf[256];
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
@@ -683,7 +683,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         y += DETAIL_HW_ROW_HEIGHT;
 
         DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, " ");
-        static char tmp[10];
+        char tmp[10];
         sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
         sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
         DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, buf);
@@ -826,7 +826,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
 void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[20];
+    char buf[20];
 
     if (!SoundText[0]) {
         if (T1MConfig.music_volume > 10) {
@@ -938,8 +938,8 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[100];
-    static char time_buf[100];
+    char buf[100];
+    char time_buf[100];
 
     if (T1MConfig.enable_compass_stats) {
         if (!CompassText[0]) {
