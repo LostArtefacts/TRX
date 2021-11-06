@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define TEXT_HEIGHT 11
+
 void Text_Init();
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string);
 void Text_ChangeText(TEXTSTRING *textstring, const char *string);

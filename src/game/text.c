@@ -11,11 +11,13 @@
 #include <string.h>
 
 #define TEXT_BOX_OFFSET 2
+#define TEXT_MAX_STRING_SIZE 100
+#define TEXT_MAX_STRINGS 64
 
 static struct {
     int16_t textstring_count;
-    TEXTSTRING textstring_table[MAX_TEXT_STRINGS];
-    char text_strings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+    TEXTSTRING textstring_table[TEXT_MAX_STRINGS];
+    char text_strings[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE];
 } S = { 0 };
 
 static int8_t Text_Spacing[110] = {
@@ -68,7 +70,7 @@ static int Text_GetStringLen(const char *string)
 
 void Text_Init()
 {
-    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         S.textstring_table[i].flags.all = 0;
     }
     S.textstring_count = 0;
@@ -76,19 +78,19 @@ void Text_Init()
 
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
 {
-    if (S.textstring_count == MAX_TEXT_STRINGS) {
+    if (S.textstring_count == TEXT_MAX_STRINGS) {
         return NULL;
     }
 
     TEXTSTRING *result = &S.textstring_table[0];
     int n;
-    for (n = 0; n < MAX_TEXT_STRINGS; n++) {
+    for (n = 0; n < TEXT_MAX_STRINGS; n++) {
         if (!result->flags.active) {
             break;
         }
         result++;
     }
-    if (n >= MAX_TEXT_STRINGS) {
+    if (n >= TEXT_MAX_STRINGS) {
         return NULL;
     }
 
@@ -97,8 +99,8 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     }
 
     int length = Text_GetStringLen(string);
-    if (length >= MAX_STRING_SIZE) {
-        length = MAX_STRING_SIZE - 1;
+    if (length > TEXT_MAX_STRING_SIZE) {
+        length = TEXT_MAX_STRING_SIZE;
     }
 
     result->pos.x = x;
@@ -109,7 +111,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->scale.v = PHD_ONE;
 
     result->string = S.text_strings[n];
-    memcpy(result->string, string, length + 1);
+    strncpy(result->string, string, length);
 
     result->flags.all = 0;
     result->flags.active = 1;
@@ -132,9 +134,9 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
     if (!textstring->flags.active) {
         return;
     }
-    strncpy(textstring->string, string, MAX_STRING_SIZE);
-    if (Text_GetStringLen(string) > MAX_STRING_SIZE) {
-        textstring->string[MAX_STRING_SIZE - 1] = '\0';
+    strncpy(textstring->string, string, TEXT_MAX_STRING_SIZE);
+    if (Text_GetStringLen(string) > TEXT_MAX_STRING_SIZE) {
+        textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
 }
 
@@ -282,7 +284,7 @@ void Text_RemoveAll()
 
 void Text_Draw()
 {
-    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &S.textstring_table[i];
         if (textstring->flags.active) {
             Text_DrawText(textstring);
