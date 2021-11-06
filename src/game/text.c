@@ -105,6 +105,8 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->bgnd_off.x = 0;
     result->bgnd_off.y = 0;
 
+    result->on_remove = NULL;
+
     Text_ChangeText(result, string);
 
     S.textstring_count++;
@@ -260,6 +262,9 @@ void Text_Remove(TEXTSTRING *textstring)
         return;
     }
     if (textstring->flags.active) {
+        if (textstring->on_remove) {
+            textstring->on_remove(textstring);
+        }
         textstring->flags.active = 0;
         S.textstring_count--;
     }
@@ -267,6 +272,12 @@ void Text_Remove(TEXTSTRING *textstring)
 
 void Text_RemoveAll()
 {
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *textstring = &S.textstring_table[i];
+        if (textstring->flags.active) {
+            Text_Remove(textstring);
+        }
+    }
     Text_Init();
 }
 

@@ -146,10 +146,6 @@ int8_t S_Pause()
     InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
-    AmmoText = NULL;
-    FPSText = NULL;
-    VersionText = NULL;
-
     S_FadeInInventory(1);
     TempVideoAdjust(GetScreenSizeIdx());
     S_SetupAboveWater(false);

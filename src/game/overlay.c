@@ -80,6 +80,8 @@ static RGB888 ColorBarMap[][COLOR_STEPS] = {
 static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y);
 static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type);
+static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
+static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 
 static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
@@ -192,6 +194,16 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
             }
         }
     }
+}
+
+static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring)
+{
+    AmmoText = NULL;
+}
+
+static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring)
+{
+    FPSText = NULL;
 }
 
 void Overlay_Init()
@@ -336,6 +348,7 @@ void Overlay_DrawAmmoInfo()
         AmmoText = Text_Create(
             -screen_margin_h - text_offset_x, text_height + screen_margin_v,
             ammostring);
+        AmmoText->on_remove = Overlay_OnAmmoTextRemoval;
         Text_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
         Text_AlignRight(AmmoText, 1);
     }
@@ -390,6 +403,7 @@ void Overlay_DrawFPSInfo()
                 char fps_buf[20];
                 sprintf(fps_buf, "? FPS");
                 FPSText = Text_Create(10, 30, fps_buf);
+                FPSText->on_remove = Overlay_OnFPSTextRemoval;
             }
             FPSCounter = 0;
             elapsed = ClockGetMS();
