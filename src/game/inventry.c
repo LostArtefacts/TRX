@@ -34,6 +34,7 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
+static TEXTSTRING *VersionText = NULL;
 static int16_t InvNFrames = 2;
 static int16_t CompassNeedle = 0;
 static int16_t CompassSpeed = 0;
