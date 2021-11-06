@@ -1563,6 +1563,8 @@ typedef struct TEXTSTRING {
         int32_t v;
     } scale;
     char *string;
+
+    void (*on_remove)(const struct TEXTSTRING *);
 } TEXTSTRING;
 
 typedef struct DISPLAYPU {

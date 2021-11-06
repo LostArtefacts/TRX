@@ -97,14 +97,9 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     Text_RemoveAll();
-    AmmoText = NULL;
-    FPSText = NULL;
-    VersionText = NULL;
-
     InitialiseGameFlags();
 
     Lara.item_number = NO_ITEM;
-
     S_InitialiseScreen();
 
     if (!S_LoadLevel(CurrentLevel)) {

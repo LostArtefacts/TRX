@@ -126,9 +126,6 @@ void LevelStats(int32_t level_num)
 
     TempVideoAdjust(GetScreenSizeIdx());
     Text_RemoveAll();
-    AmmoText = NULL;
-    FPSText = NULL;
-    VersionText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);
