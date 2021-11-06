@@ -6,6 +6,7 @@
 #include "specific/clock.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -57,16 +58,6 @@ static int8_t Text_ASCIIMap[95] = {
 };
 
 static void Text_DrawText(TEXTSTRING *textstring);
-static int Text_GetStringLen(const char *string);
-
-static int Text_GetStringLen(const char *string)
-{
-    int len = 1;
-    while (*string++) {
-        len++;
-    }
-    return len;
-}
 
 void Text_Init()
 {
@@ -98,20 +89,13 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
         return NULL;
     }
 
-    int length = Text_GetStringLen(string);
-    if (length > TEXT_MAX_STRING_SIZE) {
-        length = TEXT_MAX_STRING_SIZE;
-    }
-
+    result->string = S.text_strings[n];
     result->pos.x = x;
     result->pos.y = y;
     result->letter_spacing = 1;
     result->word_spacing = 6;
     result->scale.h = PHD_ONE;
     result->scale.v = PHD_ONE;
-
-    result->string = S.text_strings[n];
-    strncpy(result->string, string, length);
 
     result->flags.all = 0;
     result->flags.active = 1;
@@ -120,6 +104,8 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->bgnd_size.y = 0;
     result->bgnd_off.x = 0;
     result->bgnd_off.y = 0;
+
+    Text_ChangeText(result, string);
 
     S.textstring_count++;
 
@@ -134,8 +120,10 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
     if (!textstring->flags.active) {
         return;
     }
-    strncpy(textstring->string, string, TEXT_MAX_STRING_SIZE);
-    if (Text_GetStringLen(string) > TEXT_MAX_STRING_SIZE) {
+    size_t length = strlen(string) + 1;
+    CLAMPG(length, TEXT_MAX_STRING_SIZE);
+    strncpy(textstring->string, string, length);
+    if (length >= TEXT_MAX_STRING_SIZE) {
         textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
 }
