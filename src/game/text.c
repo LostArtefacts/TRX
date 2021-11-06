@@ -12,11 +12,13 @@
 
 #define TEXT_BOX_OFFSET 2
 
-static int16_t TextStringCount = 0;
-static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS] = { 0 };
-static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE] = { 0 };
+static struct {
+    int16_t textstring_count;
+    TEXTSTRING textstring_table[MAX_TEXT_STRINGS];
+    char text_strings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+} S = { 0 };
 
-static int8_t TextSpacing[110] = {
+static int8_t Text_Spacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
     13 /*H*/,  8 /*I*/,  11 /*J*/, 12 /*K*/, 11 /*L*/, 13 /*M*/, 13 /*N*/,
     12 /*O*/,  11 /*P*/, 12 /*Q*/, 12 /*R*/, 11 /*S*/, 12 /*T*/, 13 /*U*/,
@@ -35,7 +37,7 @@ static int8_t TextSpacing[110] = {
     8,         8,        8,        8,        8
 };
 
-static int8_t TextRemapASCII[95] = {
+static int8_t Text_ASCIIMap[95] = {
     0 /* */,   64 /*!*/,  66 /*"*/,  78 /*#*/, 77 /*$*/, 74 /*%*/, 78 /*&*/,
     79 /*'*/,  69 /*(*/,  70 /*)*/,  92 /***/, 72 /*+*/, 63 /*,*/, 71 /*-*/,
     62 /*.*/,  68 /**/,   52 /*0*/,  53 /*1*/, 54 /*2*/, 55 /*3*/, 56 /*4*/,
@@ -67,18 +69,18 @@ static int Text_GetStringLen(const char *string)
 void Text_Init()
 {
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TextInfoTable[i].flags.all = 0;
+        S.textstring_table[i].flags.all = 0;
     }
-    TextStringCount = 0;
+    S.textstring_count = 0;
 }
 
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
 {
-    if (TextStringCount == MAX_TEXT_STRINGS) {
+    if (S.textstring_count == MAX_TEXT_STRINGS) {
         return NULL;
     }
 
-    TEXTSTRING *result = &TextInfoTable[0];
+    TEXTSTRING *result = &S.textstring_table[0];
     int n;
     for (n = 0; n < MAX_TEXT_STRINGS; n++) {
         if (!result->flags.active) {
@@ -106,7 +108,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->scale.h = PHD_ONE;
     result->scale.v = PHD_ONE;
 
-    result->string = TextStrings[n];
+    result->string = S.text_strings[n];
     memcpy(result->string, string, length + 1);
 
     result->flags.all = 0;
@@ -117,7 +119,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->bgnd_off.x = 0;
     result->bgnd_off.y = 0;
 
-    TextStringCount++;
+    S.textstring_count++;
 
     return result;
 }
@@ -246,14 +248,14 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
         }
 
         if (letter >= 16) {
-            letter = TextRemapASCII[letter - 32];
+            letter = Text_ASCIIMap[letter - 32];
         } else if (letter >= 11) {
             letter = letter + 91;
         } else {
             letter = letter + 81;
         }
 
-        width += ((TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
+        width += ((Text_Spacing[(uint8_t)letter] + textstring->letter_spacing)
                   * textstring->scale.h)
             / PHD_ONE;
     }
@@ -269,7 +271,7 @@ void Text_Remove(TEXTSTRING *textstring)
     }
     if (textstring->flags.active) {
         textstring->flags.active = 0;
-        TextStringCount--;
+        S.textstring_count--;
     }
 }
 
@@ -281,7 +283,7 @@ void Text_RemoveAll()
 void Text_Draw()
 {
     for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TEXTSTRING *textstring = &TextInfoTable[i];
+        TEXTSTRING *textstring = &S.textstring_table[i];
         if (textstring->flags.active) {
             Text_DrawText(textstring);
         }
@@ -335,7 +337,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
 
         int32_t sprite_num = letter;
         if (letter >= 16) {
-            sprite_num = TextRemapASCII[letter - 32];
+            sprite_num = Text_ASCIIMap[letter - 32];
         } else if (letter >= 11) {
             sprite_num = letter + 91;
         } else {
@@ -355,7 +357,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
-        x += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
+        x += (((int32_t)textstring->letter_spacing + Text_Spacing[sprite_num])
               * textstring->scale.h)
             / PHD_ONE;
     }
