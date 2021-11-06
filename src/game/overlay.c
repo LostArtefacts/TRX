@@ -378,15 +378,16 @@ void Overlay_DrawPickups()
 
 void Overlay_DrawFPSInfo()
 {
-    static char fps_buf[20];
     static int32_t elapsed = 0;
 
     if (T1MConfig.render_flags.fps_counter) {
         if (ClockGetMS() - elapsed >= 1000) {
             if (FPSText) {
+                char fps_buf[20];
                 sprintf(fps_buf, "%d FPS", FPSCounter);
                 Text_ChangeText(FPSText, fps_buf);
             } else {
+                char fps_buf[20];
                 sprintf(fps_buf, "? FPS");
                 FPSText = Text_Create(10, 30, fps_buf);
             }

@@ -120,8 +120,8 @@ int32_t GetRandomDraw()
 
 void LevelStats(int32_t level_num)
 {
-    static char string[100];
-    static char time_str[100];
+    char string[100];
+    char time_str[100];
     TEXTSTRING *txt;
 
     TempVideoAdjust(GetScreenSizeIdx());
