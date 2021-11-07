@@ -6,6 +6,9 @@
 
 #include <stddef.h>
 
+static int32_t SlotsUsed = 0;
+static CREATURE_INFO *BaddieSlots = NULL;
+
 void InitialiseLOTArray()
 {
     BaddieSlots =

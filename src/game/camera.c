@@ -47,7 +47,7 @@ void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
     Camera.pos.y += (ideal->y - Camera.pos.y) / speed;
     Camera.pos.room_number = ideal->room_number;
 
-    ChunkyFlag = 0;
+    ChunkyFlag = false;
 
     FLOOR_INFO *floor = GetFloor(
         Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
@@ -521,7 +521,7 @@ void CalculateCamera()
     }
 
     if (Camera.flags != NO_CHUNKY) {
-        ChunkyFlag = 1;
+        ChunkyFlag = true;
     }
 
     int32_t fixed_camera =
@@ -631,7 +631,7 @@ void CalculateCamera()
             &Camera.target.room_number);
         if (Camera.target.y > GetHeight(
                 floor, Camera.target.x, Camera.target.y, Camera.target.z)) {
-            ChunkyFlag = 0;
+            ChunkyFlag = false;
         }
 
         if (Camera.type == CAM_CHASE || Camera.flags == CHASE_OBJECT) {
@@ -666,7 +666,7 @@ void CalculateCamera()
         Camera.flags = 0;
     }
 
-    ChunkyFlag = 0;
+    ChunkyFlag = false;
 }
 
 void CameraOffsetAdditionalAngle(int16_t delta)

@@ -107,7 +107,7 @@ void S_DrawScreenSprite2d(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
 {
-    PHD_SPRITE *sprite = &PhdSpriteInfo[(signed __int16)sprnum];
+    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
     int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
@@ -122,7 +122,7 @@ void S_FinishInventory()
     if (InvMode != INV_TITLE_MODE) {
         TempVideoRemove();
     }
-    ModeLock = 0;
+    ModeLock = false;
 }
 
 void S_FadeToBlack()
@@ -247,20 +247,13 @@ cleanup:
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    if (GameMemoryPointer) {
-        free(GameMemoryPointer);
-    }
+    game_malloc_shutdown();
 
     TempVideoAdjust(2);
     HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);
 
-    GameMemoryPointer = malloc(MALLOC_SIZE);
-    if (!GameMemoryPointer) {
-        S_ExitSystem("ERROR: Could not allocate enough memory");
-        return -1;
-    }
     init_game_malloc();
 
     HWR_FMVDone();

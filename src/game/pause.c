@@ -144,12 +144,15 @@ int8_t S_Pause()
     int old_overlay_flag = OverlayFlag;
     OverlayFlag = -3;
     InvMode = INV_PAUSE_MODE;
+
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
+
     S_FadeInInventory(1);
     TempVideoAdjust(GetScreenSizeIdx());
-    S_SetupAboveWater(0);
+    S_SetupAboveWater(false);
 
     S_MusicPause();
 

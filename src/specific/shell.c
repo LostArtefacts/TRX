@@ -27,9 +27,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
+static const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+
 void GameMain()
 {
-    SoundIsActive = 1;
+    SoundIsActive = true;
 
     const char *gameflow_path = T1MGameflowPath;
 
@@ -72,12 +75,6 @@ void GameMain()
     WinPlayFMV(FMV_INTRO, 1);
     HWR_FMVDone();
 
-    GameMemoryPointer = malloc(MALLOC_SIZE);
-    if (!GameMemoryPointer) {
-        S_ExitSystem("ERROR: Could not allocate enough memory");
-        return;
-    }
-
     int32_t gf_option = GF_EXIT_TO_TITLE;
 
     int8_t loop_continue = 1;
@@ -118,15 +115,11 @@ void GameMain()
                 gf_option = GF_EXIT_GAME;
                 break;
             }
-            TitleLoaded = 1;
 
-            InvDisableResolutionSwitch = 0;
             gf_option = Display_Inventory(INV_TITLE_MODE);
-            InvDisableResolutionSwitch = 1;
 
             S_FadeToBlack();
             S_MusicStop();
-
             break;
 
         case GF_EXIT_GAME:
@@ -134,10 +127,8 @@ void GameMain()
             break;
 
         default:
-            sprintf(
-                StringToShow, "MAIN: Unknown request %x %d", gf_direction,
-                gf_param);
-            S_ExitSystem(StringToShow);
+            S_ExitSystemFmt(
+                "MAIN: Unknown request %x %d", gf_direction, gf_param);
             return;
         }
     }

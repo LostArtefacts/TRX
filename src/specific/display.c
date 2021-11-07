@@ -87,7 +87,7 @@ void SetupScreenSize()
 
 void TempVideoAdjust(int32_t hi_res)
 {
-    ModeLock = 1;
+    ModeLock = true;
     if (hi_res == HiRes) {
         return;
     }
@@ -98,7 +98,7 @@ void TempVideoAdjust(int32_t hi_res)
 
 void TempVideoRemove()
 {
-    ModeLock = 0;
+    ModeLock = false;
     if (GameHiRes == HiRes) {
         return;
     }

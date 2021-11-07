@@ -46,6 +46,11 @@ typedef struct WAVE_FILE_HEADER {
 #pragma pack(pop)
 
 static DUPE_SOUND_BUFFER *DupeSoundBufferList = NULL;
+static int32_t DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
+static int32_t MusicNumTracks = 0;
+static int16_t MusicTrackLooped = 0;
+extern int32_t NumSampleData;
+static SAMPLE_DATA **SampleData = NULL;
 
 int32_t ConvertVolumeToDecibel(int32_t volume)
 {
@@ -174,25 +179,23 @@ void *SoundPlaySample(
     return buffer;
 }
 
-int32_t SoundInit()
+bool SoundInit()
 {
     HRESULT result = DirectSoundCreate(0, &DSound, 0);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling DirectSoundCreate: 0x%lx", result);
-        return 0;
+        return false;
     }
     result = DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
-        return 0;
+        return false;
     }
     DecibelLUT[0] = -10000;
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
         DecibelLUT[i] = -9000.0 - log2(1.0 / i) * -1000.0 / log2(0.5);
     }
-    SoundInit1 = 1;
-    SoundInit2 = 1;
-    return 1;
+    return true;
 }
 
 int32_t MusicInit()
@@ -225,7 +228,7 @@ int32_t MusicInit()
     status_parms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
     mciSendCommandA(
         MCIDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR)&status_parms);
-    CDNumTracks = status_parms.dwReturn;
+    MusicNumTracks = status_parms.dwReturn;
     return 1;
 }
 
@@ -365,12 +368,12 @@ int32_t MusicPlay(int16_t track)
     }
 
     if (track >= 57) {
-        CDTrackLooped = track;
+        MusicTrackLooped = track;
     }
 
-    CDLoop = 0;
+    MusicLoop = false;
 
-    uint32_t volume = OptionMusicVolume * 0xFFFF / 10;
+    uint32_t volume = T1MConfig.music_volume * 0xFFFF / 10;
     volume |= volume << 16;
     auxSetVolume(AuxDeviceID, volume);
 
@@ -386,7 +389,7 @@ int32_t MusicPlay(int16_t track)
     open_parms.dwCallback = (DWORD_PTR)TombHWND;
 
     DWORD_PTR dwFlags = MCI_NOTIFY | MCI_FROM;
-    if (track != CDNumTracks) {
+    if (track != MusicNumTracks) {
         open_parms.dwTo = track + 1;
         dwFlags |= MCI_TO;
     }
@@ -399,14 +402,11 @@ int32_t MusicPlay(int16_t track)
     return 1;
 }
 
-int32_t MusicPlayLooped()
+void MusicPlayLooped()
 {
-    if (CDLoop && CDTrackLooped > 0) {
-        MusicPlay(CDTrackLooped);
-        return 0;
+    if (MusicLoop && MusicTrackLooped > 0) {
+        MusicPlay(MusicTrackLooped);
     }
-
-    return CDLoop;
 }
 
 int32_t S_MusicPlay(int16_t track_id)
@@ -425,15 +425,15 @@ int32_t S_MusicPlay(int16_t track_id)
         return 0;
     }
 
-    CDTrack = track_id;
+    MusicTrack = track_id;
     return MusicPlay(track_id);
 }
 
 int32_t S_MusicStop()
 {
-    CDTrack = 0;
-    CDTrackLooped = 0;
-    CDLoop = 0;
+    MusicTrack = 0;
+    MusicTrackLooped = 0;
+    MusicLoop = false;
 
     MCI_GENERIC_PARMS gen_parms;
     return !mciSendCommandA(
@@ -442,7 +442,7 @@ int32_t S_MusicStop()
 
 void S_MusicLoop()
 {
-    CDLoop = 1;
+    MusicLoop = true;
 }
 
 void *S_SoundPlaySample(

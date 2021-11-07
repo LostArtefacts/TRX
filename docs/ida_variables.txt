@@ -1016,7 +1016,7 @@
 0x005DB484 LPDIRECTDRAWSURFACE Surface2;
 0x0068B380 uint8_t GouraudTable[256][32];
 0x0068D380 int32_t PhdTop;
-0x0068D3A0 PHD_SPRITE PhdSpriteInfo[4][512];
+0x0068D3A0 PHD_SPRITE PhdSpriteInfo[512];
 0x0068F3A0 int32_t LsAdder;
 0x0068F3A4 float FltWinBottom;
 0x0068F3A8 int32_t PhdWinHeight;

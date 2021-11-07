@@ -1,7 +1,9 @@
 #include "specific/smain.h"
 
+#include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "inject_util.h"
 #include "log.h"
 #include "specific/ati.h"
 #include "specific/clock.h"
@@ -17,11 +19,8 @@
 
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
-
-// clang-format off
-// TODO: decompile me!
-#define CloseMsg                VAR_U_(0x0045A940, UINT)
-// clang-format on
+static UINT CloseMsg = 0;
+static bool IsGameWindowActive = true;
 
 static void WinGameFinish();
 static LRESULT CALLBACK
@@ -127,8 +126,8 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
         if (wParam && !IsGameWindowActive) {
-            if (OptionMusicVolume) {
-                S_MusicVolume(OptionMusicVolume * 25 + 5);
+            if (T1MConfig.music_volume) {
+                S_MusicVolume(T1MConfig.music_volume * 25 + 5);
             } else {
                 S_MusicVolume(0);
             }

@@ -10,7 +10,6 @@ REPO_DIR = Path(__file__).parent.parent
 DOCS_DIR = REPO_DIR / "docs"
 TYPES_FILE = DOCS_DIR / "ida_types.h"
 VARIABLES_FILE = DOCS_DIR / "ida_variables.txt"
-PROGRESS_FILE = DOCS_DIR / "progress.txt"
 
 
 def to_int(source: str) -> Optional[int]:
@@ -57,36 +56,6 @@ def import_variables() -> None:
     print("    done")
 
 
-def import_functions() -> None:
-    print(f"Importing types information from {PROGRESS_FILE}:")
-    with PROGRESS_FILE.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            name, offset, size, flags = line.split(maxsplit=3)
-            offset = to_int(offset)
-            size = to_int(size)
-
-            # ignore inline functions
-            if offset is None:
-                continue
-
-            old_name = idc.get_name(offset)
-            if old_name != name and not name.startswith("sub_"):
-                print(f"    renaming {old_name} to {name}")
-                idc.set_name(offset, name)
-
-            if flags == "+":
-                idc.set_color(offset, idc.CIC_FUNC, 0xF0FFEE)
-            elif flags == "x":
-                idc.set_color(offset, idc.CIC_FUNC, 0xD8D8D8)
-            else:
-                idc.set_color(offset, idc.CIC_FUNC, idc.DEFCOLOR)
-    print("    done")
-
-
 if __name__ == "__main__":
     import_types()
     import_variables()
-    import_functions()

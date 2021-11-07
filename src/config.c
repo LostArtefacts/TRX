@@ -37,6 +37,8 @@
 
 T1MConfigStruct T1MConfig = { 0 };
 
+static const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
+
 static int8_t ReadBarShowingMode(
     struct json_object_s *obj, const char *name, int8_t default_value)
 {

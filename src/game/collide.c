@@ -311,8 +311,9 @@ int32_t CollideStaticObjects(
 
     GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
 
-    for (int i = 0; i < RoomsToDrawNum; i++) {
-        ROOM_INFO *r = &RoomInfo[RoomsToDraw[i]];
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t room_num = RoomsToDraw[i];
+        ROOM_INFO *r = &RoomInfo[room_num];
         MESH_INFO *mesh = r->mesh;
 
         for (int j = 0; j < r->num_meshes; j++, mesh++) {
@@ -455,8 +456,10 @@ int32_t CollideStaticObjects(
 void GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
 {
-    RoomsToDraw[0] = room_num;
-    RoomsToDrawNum = 1;
+    RoomsToDrawCount = 0;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = room_num;
+    }
     GetNewRoom(x + r, y, z + r, room_num);
     GetNewRoom(x - r, y, z + r, room_num);
     GetNewRoom(x + r, y, z - r, room_num);
@@ -471,19 +474,15 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     GetFloor(x, y, z, &room_num);
 
-    int i;
-    for (i = 0; i < RoomsToDrawNum; i++) {
-        if (RoomsToDraw[i] == room_num) {
-            break;
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t drawn_room = RoomsToDraw[i];
+        if (drawn_room == room_num) {
+            return;
         }
     }
 
-    if (i >= MAX_ROOMS_TO_DRAW) {
-        return;
-    }
-
-    if (i == RoomsToDrawNum) {
-        RoomsToDraw[RoomsToDrawNum++] = room_num;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = room_num;
     }
 }
 

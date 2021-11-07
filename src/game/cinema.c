@@ -13,7 +13,7 @@
 #include "specific/input.h"
 #include "specific/sndpc.h"
 
-static int32_t OldSoundIsActive;
+static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
@@ -24,8 +24,8 @@ int32_t StartCinematic(int32_t level_num)
 
     InitCinematicRooms();
 
-    OldSoundIsActive = SoundIsActive;
-    SoundIsActive = 0;
+    SoundIsActiveOld = SoundIsActive;
+    SoundIsActive = false;
     CineFrame = 0;
     return GF_NOP;
 }
@@ -45,9 +45,9 @@ int32_t StopCinematic(int32_t level_num)
 {
     S_MusicStop();
     S_SoundStopAllSamples();
-    SoundIsActive = OldSoundIsActive;
+    SoundIsActive = SoundIsActiveOld;
 
-    LevelComplete = 1;
+    LevelComplete = true;
     S_FadeInInventory(1);
 
     return level_num | GF_LEVEL_COMPLETE;
@@ -55,16 +55,18 @@ int32_t StopCinematic(int32_t level_num)
 
 void InitCinematicRooms()
 {
-    for (int i = 0; i < RoomCount; i++) {
-        if (RoomInfo[i].flipped_room >= 0) {
-            RoomInfo[RoomInfo[i].flipped_room].bound_active = 1;
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (RoomInfo[room_num].flipped_room >= 0) {
+            RoomInfo[RoomInfo[room_num].flipped_room].bound_active = 1;
         }
     }
 
-    RoomsToDrawNum = 0;
-    for (int i = 0; i < RoomCount; i++) {
-        if (!RoomInfo[i].bound_active) {
-            RoomsToDraw[RoomsToDrawNum++] = i;
+    RoomsToDrawCount = 0;
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (!RoomInfo[room_num].bound_active) {
+            if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+                RoomsToDraw[RoomsToDrawCount++] = room_num;
+            }
         }
     }
 }
