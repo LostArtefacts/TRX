@@ -570,8 +570,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         1,
     };
 
-    if (InputDB.left
-        && (InvMode != INV_DEATH_MODE || SavedGamesCount || page > 1)) {
+    if (InputDB.left && (SavedGamesCount || page > 1)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;
