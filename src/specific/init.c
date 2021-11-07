@@ -58,23 +58,22 @@ static const char *BufferNames[] = {
     "Rolling Ball Stuff", // GBUF_ROLLINGBALL_STUFF
 };
 
+static char *GameMemoryPointer = NULL;
+static char *GameAllocMemPointer = NULL;
+static uint32_t GameAllocMemUsed = 0;
+static uint32_t GameAllocMemFree = 0;
+
 void S_InitialiseSystem()
 {
     S_SeedRandom();
 
     ClockInit();
-    SoundInit();
+    SoundIsActive = SoundInit();
     MusicInit();
     InputInit();
     FMVInit();
 
-    if (!SoundInit1) {
-        SoundIsActive = 0;
-    }
-
     CalculateWibbleTable();
-
-    GameMemorySize = MALLOC_SIZE;
 
     HWR_InitialiseHardware();
 }
@@ -84,17 +83,41 @@ void S_ExitSystem(const char *message)
     while (Input.select) {
         S_UpdateInput();
     }
-    if (GameMemoryPointer) {
-        free(GameMemoryPointer);
-    }
+    game_malloc_shutdown();
     HWR_ShutdownHardware();
     ShowFatalError(message);
 }
 
+void S_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    va_end(va);
+    S_ExitSystem(message);
+}
+
 void init_game_malloc()
 {
+    GameMemoryPointer = malloc(MALLOC_SIZE);
+    if (!GameMemoryPointer) {
+        S_ExitSystem("ERROR: Could not allocate enough memory");
+    }
+
     GameAllocMemPointer = GameMemoryPointer;
-    GameAllocMemFree = GameMemorySize;
+    GameAllocMemFree = MALLOC_SIZE;
+    GameAllocMemUsed = 0;
+}
+
+void game_malloc_shutdown()
+{
+    if (GameMemoryPointer) {
+        free(GameMemoryPointer);
+    }
+    GameMemoryPointer = NULL;
+    GameAllocMemPointer = NULL;
+    GameAllocMemFree = 0;
     GameAllocMemUsed = 0;
 }
 
@@ -105,10 +128,9 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
     aligned_size = (alloc_size + 3) & ~3;
 
     if (aligned_size > GameAllocMemFree) {
-        sprintf(
-            StringToShow, "game_malloc(): OUT OF MEMORY %s %d",
-            BufferNames[buf_index], aligned_size);
-        S_ExitSystem(StringToShow);
+        S_ExitSystemFmt(
+            "game_malloc(): OUT OF MEMORY %s %d", BufferNames[buf_index],
+            aligned_size);
     }
 
     void *result = GameAllocMemPointer;

@@ -17,71 +17,12 @@
 
 #include <assert.h>
 #include <math.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define COLOR_STEPS 5
 #define VISIBLE(vn1, vn2, vn3)                                                                            \
     ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys))) \
      >= 0)
-
-static RGB888 ColorBarMap[][COLOR_STEPS] = {
-    // gold
-    { { 112, 92, 44 },
-      { 164, 120, 72 },
-      { 112, 92, 44 },
-      { 88, 68, 0 },
-      { 80, 48, 20 } },
-    // blue
-    { { 100, 116, 100 },
-      { 92, 160, 156 },
-      { 100, 116, 100 },
-      { 76, 80, 76 },
-      { 48, 48, 48 } },
-    // grey
-    { { 88, 100, 88 },
-      { 116, 132, 116 },
-      { 88, 100, 88 },
-      { 76, 80, 76 },
-      { 48, 48, 48 } },
-    // red
-    { { 160, 40, 28 },
-      { 184, 44, 32 },
-      { 160, 40, 28 },
-      { 124, 32, 32 },
-      { 84, 20, 32 } },
-    // silver
-    { { 150, 150, 150 },
-      { 230, 230, 230 },
-      { 200, 200, 200 },
-      { 140, 140, 140 },
-      { 100, 100, 100 } },
-    // green
-    { { 100, 190, 20 },
-      { 130, 230, 30 },
-      { 100, 190, 20 },
-      { 90, 150, 15 },
-      { 80, 110, 10 } },
-    // gold2
-    { { 220, 170, 0 },
-      { 255, 200, 0 },
-      { 220, 170, 0 },
-      { 185, 140, 0 },
-      { 150, 100, 0 } },
-    // blue2
-    { { 0, 170, 220 },
-      { 0, 200, 255 },
-      { 0, 170, 220 },
-      { 0, 140, 185 },
-      { 0, 100, 150 } },
-    // pink
-    { { 220, 140, 170 },
-      { 255, 150, 200 },
-      { 210, 130, 160 },
-      { 165, 100, 120 },
-      { 120, 60, 70 } },
-};
 
 static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *pic);
 
@@ -110,121 +51,12 @@ int32_t GetRenderScale(int32_t unit)
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
     int32_t scale_x = PhdWinWidth > baseWidth
-        ? ((double)PhdWinWidth * unit * UITextScale) / baseWidth
-        : unit * UITextScale;
+        ? ((double)PhdWinWidth * unit * T1MConfig.ui.text_scale) / baseWidth
+        : unit * T1MConfig.ui.text_scale;
     int32_t scale_y = PhdWinHeight > baseHeight
-        ? ((double)PhdWinHeight * unit * UITextScale) / baseHeight
-        : unit * UITextScale;
+        ? ((double)PhdWinHeight * unit * T1MConfig.ui.text_scale) / baseHeight
+        : unit * T1MConfig.ui.text_scale;
     return MIN(scale_x, scale_y);
-}
-
-void BarLocation(
-    int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
-{
-    const int32_t screen_margin_h = 20;
-    const int32_t screen_margin_v = 18;
-    const int32_t bar_spacing = 8;
-
-    if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_BOTTOM_LEFT) {
-        *x = screen_margin_h;
-    } else if (
-        bar_location == T1M_BL_TOP_RIGHT
-        || bar_location == T1M_BL_BOTTOM_RIGHT) {
-        *x = GetRenderWidthDownscaled() - width * UIBarScale - screen_margin_h;
-    } else {
-        *x = (GetRenderWidthDownscaled() - width) / 2;
-    }
-
-    if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_TOP_CENTER
-        || bar_location == T1M_BL_TOP_RIGHT) {
-        *y = screen_margin_v + BarOffsetY[bar_location];
-    } else {
-        *y = GetRenderHeightDownscaled() - height * UIBarScale - screen_margin_v
-            - BarOffsetY[bar_location];
-    }
-
-    BarOffsetY[bar_location] += height + bar_spacing;
-}
-
-void RenderBar(int32_t value, int32_t value_max, int32_t bar_type)
-{
-    static int32_t blink_counter = 0;
-    const int32_t percent_max = 100;
-
-    if (value < 0) {
-        value = 0;
-    } else if (value > value_max) {
-        value = value_max;
-    }
-    int32_t percent = value * 100 / value_max;
-
-    const RGB888 rgb_bgnd = { 0, 0, 0 };
-    const RGB888 rgb_border_light = { 128, 128, 128 };
-    const RGB888 rgb_border_dark = { 64, 64, 64 };
-
-    int32_t width = 100;
-    int32_t height = 5;
-    int16_t bar_color = bar_type;
-
-    int32_t x = 0;
-    int32_t y = 0;
-    if (bar_type == BT_LARA_HEALTH) {
-        BarLocation(T1MConfig.healthbar_location, width, height, &x, &y);
-        bar_color = T1MConfig.healthbar_color;
-    } else if (bar_type == BT_LARA_AIR) {
-        BarLocation(T1MConfig.airbar_location, width, height, &x, &y);
-        bar_color = T1MConfig.airbar_color;
-    } else if (bar_type == BT_ENEMY_HEALTH) {
-        BarLocation(T1MConfig.enemy_healthbar_location, width, height, &x, &y);
-        bar_color = T1MConfig.enemy_healthbar_color;
-    }
-
-    int32_t padding = DDrawSurfaceWidth <= 800 ? 1 : 2;
-    int32_t border = 1;
-    int32_t sx = GetRenderScale(x) - padding;
-    int32_t sy = GetRenderScale(y) - padding;
-    int32_t sw = GetRenderScale(width) * UIBarScale + padding * 2;
-    int32_t sh = GetRenderScale(height) * UIBarScale + padding * 2;
-
-    // border
-    S_DrawScreenFlatQuad(
-        sx - border, sy - border, sw + border, sh + border, rgb_border_dark);
-    S_DrawScreenFlatQuad(sx, sy, sw + border, sh + border, rgb_border_light);
-
-    // background
-    S_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
-
-    const int32_t blink_interval = 20;
-    const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
-    int32_t blink_time = blink_counter++ % blink_interval;
-    int32_t blink =
-        percent <= blink_threshold && blink_time > blink_interval / 2;
-
-    if (percent && !blink) {
-        width = width * percent / percent_max;
-
-        sx = GetRenderScale(x);
-        sy = GetRenderScale(y);
-        sw = GetRenderScale(width) * UIBarScale;
-        sh = GetRenderScale(height) * UIBarScale;
-
-        if (T1MConfig.enable_smooth_bars) {
-            for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGB888 c1 = ColorBarMap[bar_color][i];
-                RGB888 c2 = ColorBarMap[bar_color][i + 1];
-                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
-                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
-                S_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
-            }
-        } else {
-            for (int i = 0; i < COLOR_STEPS; i++) {
-                RGB888 color = ColorBarMap[bar_color][i];
-                int32_t lsy = sy + i * sh / COLOR_STEPS;
-                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
-                S_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
-            }
-        }
-    }
 }
 
 int32_t GetRenderScaleGLRage(int32_t unit)
@@ -334,27 +166,16 @@ void S_CalculateStaticLight(int16_t adder)
     }
 }
 
-void S_DrawHealthBar(int32_t percent)
+void S_SetupBelowWater(bool underwater)
 {
-    RenderBar(percent, 100, BT_LARA_HEALTH);
+    IsWaterEffect = true;
+    IsWibbleEffect = !underwater;
+    IsShadeEffect = true;
 }
 
-void S_DrawAirBar(int32_t percent)
+void S_SetupAboveWater(bool underwater)
 {
-    RenderBar(percent, 100, BT_LARA_AIR);
-}
-
-void S_SetupBelowWater(int32_t underwater)
-{
-    PhdWet = underwater;
-    IsWaterEffect = 1;
-    IsWibbleEffect = underwater == 0;
-    IsShadeEffect = 1;
-}
-
-void S_SetupAboveWater(int32_t underwater)
-{
-    IsWaterEffect = 0;
+    IsWaterEffect = false;
     IsWibbleEffect = underwater;
     IsShadeEffect = underwater;
 }
@@ -474,10 +295,10 @@ void S_DrawLightningSegment(
     int32_t width)
 {
     if (z1 >= PhdNearZ && z1 <= PhdFarZ && z2 >= PhdNearZ && z2 <= PhdFarZ) {
-        x1 = PhdCenterX + x1 / (z1 / PhdPersp);
-        y1 = PhdCenterY + y1 / (z1 / PhdPersp);
-        x2 = PhdCenterX + x2 / (z2 / PhdPersp);
-        y2 = PhdCenterY + y2 / (z2 / PhdPersp);
+        x1 = PhdWinCenterX + x1 / (z1 / PhdPersp);
+        y1 = PhdWinCenterY + y1 / (z1 / PhdPersp);
+        x2 = PhdWinCenterX + x2 / (z2 / PhdPersp);
+        y2 = PhdWinCenterY + y2 / (z2 / PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / PhdPersp);
         HWR_DrawLightningSegment(
@@ -612,10 +433,10 @@ int S_GetObjectBounds(int16_t *bptr)
         }
     }
 
-    x_min += PhdCenterX;
-    x_max += PhdCenterX;
-    y_min += PhdCenterY;
-    y_max += PhdCenterY;
+    x_min += PhdWinCenterX;
+    x_max += PhdWinCenterX;
+    y_min += PhdWinCenterY;
+    y_max += PhdWinCenterY;
 
     if (!num_z || x_min > PhdRight || y_min > PhdBottom || x_max < PhdLeft
         || y_max < PhdTop) {

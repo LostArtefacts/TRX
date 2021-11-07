@@ -39,7 +39,6 @@
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
 #include "game/hair.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -59,6 +58,7 @@
 #include "game/objects/scion.h"
 #include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
@@ -99,6 +99,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     InitialiseGameFlags();
 
@@ -120,7 +121,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     InitColours();
     T_InitPrint();
-    InitialisePickUpDisplay();
+    Overlay_Init();
 
     HealthBarTimer = 100;
     mn_reset_sound_effects();
@@ -151,7 +152,7 @@ void InitialiseGameFlags()
     }
 
     for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        CDFlags[i] = 0;
+        MusicTrackFlags[i] = 0;
     }
 
     /* Clear Object Loaded flags */
@@ -159,7 +160,7 @@ void InitialiseGameFlags()
         Objects[i].loaded = 0;
     }
 
-    LevelComplete = 0;
+    LevelComplete = false;
     FlipEffect = -1;
     PierreItemNum = NO_ITEM;
 }

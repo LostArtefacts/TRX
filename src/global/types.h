@@ -781,12 +781,6 @@ typedef enum D_FLAGS {
     D_NEXT = 1 << 3,
 } D_FLAGS;
 
-typedef enum RENDER_SETTINGS_FLAG {
-    RSF_PERSPECTIVE = 1 << 0,
-    RSF_BILINEAR = 1 << 1,
-    RSF_FPS = 1 << 2,
-} RENDER_SETTINGS_FLAG;
-
 typedef enum COLL_TYPE {
     COLL_NONE = 0,
     COLL_FRONT = 1,

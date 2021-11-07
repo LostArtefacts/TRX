@@ -6,23 +6,28 @@
 #include "game/control.h"
 #include "game/game.h"
 #include "game/hair.h"
-#include "game/health.h"
 #include "game/inv.h"
+#include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/output.h"
 
 #include <stdlib.h>
 
-static int16_t InterpolatedBounds[6];
+static int16_t InterpolatedBounds[6] = { 0 };
+static PHD_MATRIX *IMMatrixPtr = NULL;
+static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
+static int32_t IMRate = 0;
+static int32_t IMFrac = 0;
+static bool CameraUnderwater = false;
 
 int32_t DrawPhaseCinematic()
 {
     S_InitialisePolyList();
     S_ClearScreen();
-    CameraUnderwater = 0;
-    for (int i = 0; i < RoomsToDrawNum; i++) {
-        int32_t room_num = RoomsToDraw[i];
+    CameraUnderwater = false;
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t room_num = RoomsToDraw[i];
         ROOM_INFO *r = &RoomInfo[room_num];
         r->top = 0;
         r->left = 0;
@@ -40,7 +45,7 @@ int32_t DrawPhaseGame()
 {
     S_InitialisePolyList();
     DrawRooms(Camera.pos.room_number);
-    DrawGameInfo();
+    Overlay_DrawGameInfo();
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
     S_AnimateTextures(Camera.number_frames);
@@ -61,8 +66,10 @@ void DrawRooms(int16_t current_room)
     r->bottom = PhdBottom;
     r->bound_active = 1;
 
-    RoomsToDrawNum = 0;
-    RoomsToDraw[RoomsToDrawNum++] = current_room;
+    RoomsToDrawCount = 0;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = current_room;
+    }
 
     CameraUnderwater = r->flags & RF_UNDERWATER;
 
@@ -79,7 +86,7 @@ void DrawRooms(int16_t current_room)
     phd_PopMatrix();
     S_ClearScreen();
 
-    for (int i = 0; i < RoomsToDrawNum; i++) {
+    for (int i = 0; i < RoomsToDrawCount; i++) {
         PrintRooms(RoomsToDraw[i]);
     }
 
@@ -241,7 +248,9 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     }
 
     if (!r->bound_active) {
-        RoomsToDraw[RoomsToDrawNum++] = room_num;
+        if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+            RoomsToDraw[RoomsToDrawCount++] = room_num;
+        }
         r->bound_active = 1;
     }
     return 1;

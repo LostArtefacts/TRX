@@ -69,13 +69,13 @@ int16_t Layout[2][KEY_NUMBER_OF] = {
     }
 };
 
-int32_t ConflictLayout[KEY_NUMBER_OF] = { 0 };
+bool ConflictLayout[KEY_NUMBER_OF] = { false };
 
-static LPDIRECTINPUT8 DInput;
-static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard;
-static uint8_t DIKeys[256];
+static LPDIRECTINPUT8 DInput = NULL;
+static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard = NULL;
+static uint8_t DIKeys[256] = { 0 };
 
-static LPDIRECTINPUTDEVICE8 IDID_Joystick;
+static LPDIRECTINPUTDEVICE8 IDID_Joystick = NULL;
 
 static int32_t MedipackCoolDown = 0;
 
@@ -467,21 +467,21 @@ void S_UpdateInput()
     }
 
     if (KEY_DOWN(DIK_F3)) {
-        RenderSettings ^= RSF_BILINEAR;
+        T1MConfig.render_flags.bilinear ^= 1;
         while (KEY_DOWN(DIK_F3)) {
             DInputKeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F4)) {
-        RenderSettings ^= RSF_PERSPECTIVE;
+        T1MConfig.render_flags.perspective ^= 1;
         while (KEY_DOWN(DIK_F4)) {
             DInputKeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F2)) {
-        RenderSettings ^= RSF_FPS;
+        T1MConfig.render_flags.fps_counter ^= 1;
         while (KEY_DOWN(DIK_F2)) {
             DInputKeyboardRead();
         }

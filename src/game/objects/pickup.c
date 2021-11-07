@@ -3,10 +3,10 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/overlay.h"
 #include "global/vars.h"
 
 PHD_VECTOR PickUpPosition = { 0, 0, -100 };
@@ -59,7 +59,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
                 Lara.mesh_ptrs[LM_TORSO] =
                     Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
             }
-            AddDisplayPickup(item->object_number);
+            Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
@@ -86,7 +86,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             if (lara_item->frame_number != AF_PICKUP_UW) {
                 return;
             }
-            AddDisplayPickup(item->object_number);
+            Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);

@@ -20,6 +20,9 @@ MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
     case FILE_OPEN_READ:
         file->fp = fopen(path, "rb");
         break;
+    default:
+        file->fp = NULL;
+        break;
     }
     if (!file->fp) {
         free(file);

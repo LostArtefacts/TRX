@@ -4,10 +4,10 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/objects/pickup.h"
+#include "game/overlay.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -143,7 +143,7 @@ void PickUpScionCollision(
     if (lara_item->current_anim_state == AS_PICKUP) {
         if (lara_item->frame_number
             == Anims[lara_item->anim_number].frame_base + AF_PICKUPSCION) {
-            AddDisplayPickup(item->object_number);
+            Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);

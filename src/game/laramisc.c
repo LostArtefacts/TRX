@@ -29,7 +29,7 @@ void LaraControl(int16_t item_num)
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
     if (Input.level_skip_cheat) {
-        LevelComplete = 1;
+        LevelComplete = true;
     }
 
     if (Input.health_cheat) {
@@ -437,7 +437,7 @@ void InitialiseLara()
     LaraItem->hit_points = LARA_HITPOINTS;
     if (T1MConfig.disable_healing_between_levels && LevelRestart) {
         LaraItem->hit_points = LevelStartLaraHealth;
-        LevelRestart = 0;
+        LevelRestart = false;
     } else if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = StoredLaraHealth;
     }

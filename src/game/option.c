@@ -47,20 +47,36 @@ typedef enum COMPASS_TEXT {
 } COMPASS_TEXT;
 
 typedef enum DETAIL_HW_TEXT {
-    DETAIL_HW_TITLE = 0,
-    DETAIL_HW_TITLE_BORDER = 1,
-    DETAIL_HW_PERSPECTIVE = 2,
-    DETAIL_HW_BILINEAR = 3,
-    DETAIL_HW_UI_TEXT_SCALE = 4,
-    DETAIL_HW_UI_BAR_SCALE = 5,
-    DETAIL_HW_RESOLUTION = 6,
+    DETAIL_HW_PERSPECTIVE = 0,
+    DETAIL_HW_BILINEAR = 1,
+    DETAIL_HW_UI_TEXT_SCALE = 2,
+    DETAIL_HW_UI_BAR_SCALE = 3,
+    DETAIL_HW_RESOLUTION = 4,
+    DETAIL_HW_TITLE = 5,
+    DETAIL_HW_TITLE_BORDER = 6,
     DETAIL_HW_NUMBER_OF = 7,
+    DETAIL_HW_OPTION_MIN = DETAIL_HW_PERSPECTIVE,
+    DETAIL_HW_OPTION_MAX = DETAIL_HW_RESOLUTION,
 } DETAIL_HW_TEXT;
+
+typedef enum SOUND_TEXT {
+    SOUND_MUSIC_VOLUME = 0,
+    SOUND_SOUND_VOLUME = 1,
+    SOUND_TITLE = 2,
+    SOUND_TITLE_BORDER = 3,
+    SOUND_NUMBER_OF = 4,
+    SOUND_OPTION_MIN = SOUND_MUSIC_VOLUME,
+    SOUND_OPTION_MAX = SOUND_SOUND_VOLUME,
+} SOUND_TEXT;
 
 typedef struct TEXT_COLUMN_PLACEMENT {
     int option;
     int col_num;
 } TEXT_COLUMN_PLACEMENT;
+
+static int32_t PassportMode = 0;
+static int32_t KeyMode = 0;
+static int32_t KeyChange = 0;
 
 static TEXTSTRING *PassportText = NULL;
 static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
@@ -128,11 +144,8 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { -1, -1 },
 };
 
-static int32_t PassportMode = 0;
-static int32_t KeyMode = 0;
-
-static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH];
-REQUEST_INFO NewGameRequester = {
+static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
+static REQUEST_INFO NewGameRequester = {
     MAX_GAME_MODES, // items
     0, // requested
     MAX_GAME_MODES, // vis_lines
@@ -149,7 +162,7 @@ REQUEST_INFO NewGameRequester = {
     MAX_GAME_MODE_LENGTH, // item_text_len
 };
 
-static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH];
+static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
 REQUEST_INFO LoadSaveGameRequester = {
     1, // items
     0, // requested
@@ -165,6 +178,121 @@ REQUEST_INFO LoadSaveGameRequester = {
     NULL, // heading_text
     &LoadSaveGameStrings[0][0], // item_texts
     MAX_LEVEL_NAME_LENGTH, // item_text_len
+};
+
+static const char *GetScanCodeName(int16_t key)
+{
+    // clang-format off
+    switch (key) {
+        case DIK_ESCAPE:       return "ESC";
+        case DIK_1:            return "1";
+        case DIK_2:            return "2";
+        case DIK_3:            return "3";
+        case DIK_4:            return "4";
+        case DIK_5:            return "5";
+        case DIK_6:            return "6";
+        case DIK_7:            return "7";
+        case DIK_8:            return "8";
+        case DIK_9:            return "9";
+        case DIK_0:            return "0";
+        case DIK_MINUS:        return "-";
+        case DIK_EQUALS:       return "+";
+        case DIK_BACK:         return "BKSP";
+        case DIK_TAB:          return "TAB";
+        case DIK_Q:            return "Q";
+        case DIK_W:            return "W";
+        case DIK_E:            return "E";
+        case DIK_R:            return "R";
+        case DIK_T:            return "T";
+        case DIK_Y:            return "Y";
+        case DIK_U:            return "U";
+        case DIK_I:            return "I";
+        case DIK_O:            return "O";
+        case DIK_P:            return "P";
+        case DIK_LBRACKET:     return "<";
+        case DIK_RBRACKET:     return ">";
+        case DIK_RETURN:       return "RET";
+        case DIK_LCONTROL:     return "CTRL";
+        case DIK_A:            return "A";
+        case DIK_S:            return "S";
+        case DIK_D:            return "D";
+        case DIK_F:            return "F";
+        case DIK_G:            return "G";
+        case DIK_H:            return "H";
+        case DIK_J:            return "J";
+        case DIK_K:            return "K";
+        case DIK_L:            return "L";
+        case DIK_SEMICOLON:    return ";";
+        case DIK_APOSTROPHE:   return "\'";
+        case DIK_GRAVE:        return "`";
+        case DIK_LSHIFT:       return "SHIFT";
+        case DIK_BACKSLASH:    return "\\";
+        case DIK_Z:            return "Z";
+        case DIK_X:            return "X";
+        case DIK_C:            return "C";
+        case DIK_V:            return "V";
+        case DIK_B:            return "B";
+        case DIK_N:            return "N";
+        case DIK_M:            return "M";
+        case DIK_COMMA:        return ",";
+        case DIK_PERIOD:       return ".";
+        case DIK_SLASH:        return "/";
+        case DIK_RSHIFT:       return "SHIFT";
+        case DIK_MULTIPLY:     return "PADx";
+        case DIK_LMENU:        return "ALT";
+        case DIK_SPACE:        return "SPACE";
+        case DIK_CAPITAL:      return "CAPS";
+        case DIK_F1:           return "F1";
+        case DIK_F2:           return "F2";
+        case DIK_F3:           return "F3";
+        case DIK_F4:           return "F4";
+        case DIK_F5:           return "F5";
+        case DIK_F6:           return "F6";
+        case DIK_F7:           return "F7";
+        case DIK_F8:           return "F8";
+        case DIK_F9:           return "F9";
+        case DIK_F10:          return "F10";
+        case DIK_NUMLOCK:      return "NMLK";
+        case DIK_SCROLL:       return "SCLK";
+        case DIK_NUMPAD7:      return "PAD7";
+        case DIK_NUMPAD8:      return "PAD8";
+        case DIK_NUMPAD9:      return "PAD9";
+        case DIK_SUBTRACT:     return "PAD-";
+        case DIK_NUMPAD4:      return "PAD4";
+        case DIK_NUMPAD5:      return "PAD5";
+        case DIK_NUMPAD6:      return "PAD6";
+        case DIK_ADD:          return "PAD+";
+        case DIK_NUMPAD1:      return "PAD1";
+        case DIK_NUMPAD2:      return "PAD2";
+        case DIK_NUMPAD3:      return "PAD3";
+        case DIK_NUMPAD0:      return "PAD0";
+        case DIK_DECIMAL:      return "PAD.";
+        case DIK_F11:          return "F11";
+        case DIK_F12:          return "F12";
+        case DIK_F13:          return "F13";
+        case DIK_F14:          return "F14";
+        case DIK_F15:          return "F15";
+        case DIK_NUMPADEQUALS: return "PAD=";
+        case DIK_AT:           return "@";
+        case DIK_COLON:        return ":";
+        case DIK_UNDERLINE:    return "_";
+        case DIK_NUMPADENTER:  return "ENTER";
+        case DIK_RCONTROL:     return "CTRL";
+        case DIK_DIVIDE:       return "PAD/";
+        case DIK_RMENU:        return "ALT";
+        case DIK_HOME:         return "HOME";
+        case DIK_UP:           return "UP";
+        case DIK_PRIOR:        return "PGUP";
+        case DIK_LEFT:         return "LEFT";
+        case DIK_RIGHT:        return "RIGHT";
+        case DIK_END:          return "END";
+        case DIK_DOWN:         return "DOWN";
+        case DIK_NEXT:         return "PGDN";
+        case DIK_INSERT:       return "INS";
+        case DIK_DELETE:       return "DEL";
+    }
+    // clang-format on
+    return "????";
 };
 
 static void InitLoadSaveGameRequester()
@@ -522,9 +650,6 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
     static char buf[256];
-    static int32_t current_row = DETAIL_HW_PERSPECTIVE;
-    const int32_t min_row = DETAIL_HW_PERSPECTIVE;
-    static int32_t max_row = DETAIL_HW_RESOLUTION;
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
@@ -537,42 +662,42 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         sprintf(
             buf, GF.strings[GS_DETAIL_PERSPECTIVE_FMT],
             GF.strings
-                [RenderSettings & RSF_PERSPECTIVE ? GS_MISC_ON : GS_MISC_OFF]);
+                [T1MConfig.render_flags.perspective ? GS_MISC_ON
+                                                    : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings
-                [RenderSettings & RSF_BILINEAR ? GS_MISC_ON : GS_MISC_OFF]);
+                [T1MConfig.render_flags.bilinear ? GS_MISC_ON : GS_MISC_OFF]);
         DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        sprintf(buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT], UITextScale);
+        sprintf(
+            buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
+            T1MConfig.ui.text_scale);
         DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        sprintf(buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT], UIBarScale);
+        sprintf(
+            buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT],
+            T1MConfig.ui.bar_scale);
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (InvDisableResolutionSwitch) {
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
-            max_row = DETAIL_HW_UI_BAR_SCALE;
-        } else {
-            static char tmp[10];
-            sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
-            sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-            DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
-            max_row = DETAIL_HW_RESOLUTION;
-        }
+        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
+        static char tmp[10];
+        sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
+        sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
+        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        if (current_row < min_row) {
-            current_row = min_row;
+        if (OptionSelected < DETAIL_HW_OPTION_MIN) {
+            OptionSelected = DETAIL_HW_OPTION_MIN;
         }
-        if (current_row > max_row) {
-            current_row = max_row;
+        if (OptionSelected > DETAIL_HW_OPTION_MAX) {
+            OptionSelected = DETAIL_HW_OPTION_MAX;
         }
 
         T_AddBackground(
@@ -585,8 +710,8 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
 
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
-        T_AddOutline(DetailTextHW[current_row], 1);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
             T_CentreH(DetailTextHW[i], 1);
@@ -594,52 +719,52 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && current_row > min_row) {
-        T_RemoveOutline(DetailTextHW[current_row]);
-        T_RemoveBackground(DetailTextHW[current_row]);
-        current_row--;
-        T_AddOutline(DetailTextHW[current_row], 1);
+    if (InputDB.forward && OptionSelected > DETAIL_HW_OPTION_MIN) {
+        T_RemoveOutline(DetailTextHW[OptionSelected]);
+        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        OptionSelected--;
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    if (InputDB.back && current_row < max_row) {
-        T_RemoveOutline(DetailTextHW[current_row]);
-        T_RemoveBackground(DetailTextHW[current_row]);
-        current_row++;
-        T_AddOutline(DetailTextHW[current_row], 1);
+    if (InputDB.back && OptionSelected < DETAIL_HW_OPTION_MAX) {
+        T_RemoveOutline(DetailTextHW[OptionSelected]);
+        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        OptionSelected++;
+        T_AddOutline(DetailTextHW[OptionSelected], 1);
         T_AddBackground(
-            DetailTextHW[current_row], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
     int8_t reset = 0;
 
     if (InputDB.right) {
-        switch (current_row) {
+        switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
-            if (!(RenderSettings & RSF_PERSPECTIVE)) {
-                RenderSettings |= RSF_PERSPECTIVE;
+            if (!T1MConfig.render_flags.perspective) {
+                T1MConfig.render_flags.perspective = 1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (!(RenderSettings & RSF_BILINEAR)) {
-                RenderSettings |= RSF_BILINEAR;
+            if (!T1MConfig.render_flags.bilinear) {
+                T1MConfig.render_flags.bilinear = 1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_TEXT_SCALE:
-            if (UITextScale < MAX_UI_SCALE) {
-                UITextScale += 0.1;
+            if (T1MConfig.ui.text_scale < MAX_UI_SCALE) {
+                T1MConfig.ui.text_scale += 0.1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
-            if (UIBarScale < MAX_UI_SCALE) {
-                UIBarScale += 0.1;
+            if (T1MConfig.ui.bar_scale < MAX_UI_SCALE) {
+                T1MConfig.ui.bar_scale += 0.1;
                 reset = 1;
             }
             break;
@@ -653,31 +778,31 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 
     if (InputDB.left) {
-        switch (current_row) {
+        switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
-            if (RenderSettings & RSF_PERSPECTIVE) {
-                RenderSettings &= ~RSF_PERSPECTIVE;
+            if (T1MConfig.render_flags.perspective) {
+                T1MConfig.render_flags.perspective = 0;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
-            if (RenderSettings & RSF_BILINEAR) {
-                RenderSettings &= ~RSF_BILINEAR;
+            if (T1MConfig.render_flags.bilinear) {
+                T1MConfig.render_flags.bilinear = 0;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_TEXT_SCALE:
-            if (UITextScale > MIN_UI_SCALE) {
-                UITextScale -= 0.1;
+            if (T1MConfig.ui.text_scale > MIN_UI_SCALE) {
+                T1MConfig.ui.text_scale -= 0.1;
                 reset = 1;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
-            if (UIBarScale > MIN_UI_SCALE) {
-                UIBarScale -= 0.1;
+            if (T1MConfig.ui.bar_scale > MIN_UI_SCALE) {
+                T1MConfig.ui.bar_scale -= 0.1;
                 reset = 1;
             }
             break;
@@ -708,69 +833,70 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     static char buf[20];
 
     if (!SoundText[0]) {
-        if (OptionMusicVolume > 10) {
-            OptionMusicVolume = 10;
+        if (T1MConfig.music_volume > 10) {
+            T1MConfig.music_volume = 10;
         }
-        sprintf(buf, "| %2d", OptionMusicVolume);
-        SoundText[0] = T_Print(0, 0, buf);
+        sprintf(buf, "| %2d", T1MConfig.music_volume);
+        SoundText[SOUND_MUSIC_VOLUME] = T_Print(0, 0, buf);
 
-        if (OptionSoundFXVolume > 10) {
-            OptionSoundFXVolume = 10;
+        if (T1MConfig.sound_volume > 10) {
+            T1MConfig.sound_volume = 10;
         }
-        sprintf(buf, "} %2d", OptionSoundFXVolume);
-        SoundText[1] = T_Print(0, 25, buf);
+        sprintf(buf, "} %2d", T1MConfig.sound_volume);
+        SoundText[SOUND_SOUND_VOLUME] = T_Print(0, 25, buf);
 
-        SoundText[2] = T_Print(0, -32, " ");
-        SoundText[3] = T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[SOUND_TITLE] =
+            T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[SOUND_TITLE_BORDER] = T_Print(0, -32, " ");
 
-        T_AddBackground(SoundText[0], 128, 0, 0, 0);
-        T_AddOutline(SoundText[0], 1);
-        T_AddBackground(SoundText[2], 140, 85, 0, 0);
-        T_AddOutline(SoundText[2], 1);
-        T_AddBackground(SoundText[3], 136, 0, 0, 0);
-        T_AddOutline(SoundText[3], 1);
+        T_AddBackground(SoundText[OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
+        T_AddBackground(SoundText[SOUND_TITLE], 136, 0, 0, 0);
+        T_AddOutline(SoundText[SOUND_TITLE], 1);
+        T_AddBackground(SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
+        T_AddOutline(SoundText[SOUND_TITLE_BORDER], 1);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SOUND_NUMBER_OF; i++) {
             T_CentreH(SoundText[i], 1);
             T_CentreV(SoundText[i], 1);
         }
     }
 
-    if (InputDB.forward && Item_Data > 0) {
-        T_RemoveOutline(SoundText[Item_Data]);
-        T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[--Item_Data], 128, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1);
+    if (InputDB.forward && OptionSelected > SOUND_OPTION_MIN) {
+        T_RemoveOutline(SoundText[OptionSelected]);
+        T_RemoveBackground(SoundText[OptionSelected]);
+        T_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    if (InputDB.back && Item_Data < 1) {
-        T_RemoveOutline(SoundText[Item_Data]);
-        T_RemoveBackground(SoundText[Item_Data]);
-        T_AddBackground(SoundText[++Item_Data], 128, 0, 0, 0);
-        T_AddOutline(SoundText[Item_Data], 1);
+    if (InputDB.back && OptionSelected < SOUND_OPTION_MAX) {
+        T_RemoveOutline(SoundText[OptionSelected]);
+        T_RemoveBackground(SoundText[OptionSelected]);
+        T_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
+        T_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    switch (Item_Data) {
-    case 0:
-        if (Input.left && OptionMusicVolume > 0) {
-            OptionMusicVolume--;
-            IDelay = 1;
+    switch (OptionSelected) {
+    case SOUND_MUSIC_VOLUME:
+        if (Input.left && T1MConfig.music_volume > 0) {
+            T1MConfig.music_volume--;
+            IDelay = true;
             IDCount = 10;
-            sprintf(buf, "| %2d", OptionMusicVolume);
-            T_ChangeText(SoundText[0], buf);
+            sprintf(buf, "| %2d", T1MConfig.music_volume);
+            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
-        } else if (Input.right && OptionMusicVolume < 10) {
-            OptionMusicVolume++;
-            IDelay = 1;
+        } else if (Input.right && T1MConfig.music_volume < 10) {
+            T1MConfig.music_volume++;
+            IDelay = true;
             IDCount = 10;
-            sprintf(buf, "| %2d", OptionMusicVolume);
-            T_ChangeText(SoundText[0], buf);
+            sprintf(buf, "| %2d", T1MConfig.music_volume);
+            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         }
 
         if (Input.left || Input.right) {
-            if (OptionMusicVolume) {
-                S_MusicVolume(25 * OptionMusicVolume + 5);
+            if (T1MConfig.music_volume) {
+                S_MusicVolume(25 * T1MConfig.music_volume + 5);
             } else {
                 S_MusicVolume(0);
             }
@@ -778,26 +904,26 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
         break;
 
-    case 1:
-        if (Input.left && OptionSoundFXVolume > 0) {
-            OptionSoundFXVolume--;
-            IDelay = 1;
+    case SOUND_SOUND_VOLUME:
+        if (Input.left && T1MConfig.sound_volume > 0) {
+            T1MConfig.sound_volume--;
+            IDelay = true;
             IDCount = 10;
-            sprintf(buf, "} %2d", OptionSoundFXVolume);
-            T_ChangeText(SoundText[1], buf);
+            sprintf(buf, "} %2d", T1MConfig.sound_volume);
+            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
-        } else if (Input.right && OptionSoundFXVolume < 10) {
-            OptionSoundFXVolume++;
-            IDelay = 1;
+        } else if (Input.right && T1MConfig.sound_volume < 10) {
+            T1MConfig.sound_volume++;
+            IDelay = true;
             IDCount = 10;
-            sprintf(buf, "} %2d", OptionSoundFXVolume);
-            T_ChangeText(SoundText[1], buf);
+            sprintf(buf, "} %2d", T1MConfig.sound_volume);
+            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         }
 
         if (Input.left || Input.right) {
-            if (OptionSoundFXVolume) {
-                mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
+            if (T1MConfig.sound_volume) {
+                mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
             } else {
                 mn_adjust_master_volume(0);
             }
@@ -807,7 +933,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     }
 
     if (InputDB.deselect || InputDB.select) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SOUND_NUMBER_OF; i++) {
             T_RemovePrint(SoundText[i]);
             SoundText[i] = NULL;
         }
@@ -820,7 +946,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
     static char time_buf[100];
 
     if (T1MConfig.enable_compass_stats) {
-        if (!CompassText[COMPASS_TITLE_BORDER]) {
+        if (!CompassText[0]) {
             int32_t y = COMPASS_TOP_Y;
 
             CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, " ");
@@ -911,13 +1037,13 @@ void FlashConflicts()
         if (item1->option == -1) {
             continue;
         }
-        int16_t key1 = Layout[IConfig][item1->option];
+        int16_t key1 = Layout[T1MConfig.input.layout][item1->option];
         for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
              item2->col_num != -1; item2++) {
             if (item2->option == -1) {
                 continue;
             }
-            int16_t key2 = Layout[IConfig][item2->option];
+            int16_t key2 = Layout[T1MConfig.input.layout][item2->option];
             if (item1 != item2 && key1 == key2) {
                 T_FlashText(CtrlTextB[item1->option], 1, 20);
                 T_FlashText(CtrlTextB[item2->option], 1, 20);
@@ -930,10 +1056,10 @@ void DefaultConflict()
 {
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
         int16_t key = Layout[INPUT_LAYOUT_DEFAULT][i];
-        ConflictLayout[i] = 0;
+        ConflictLayout[i] = false;
         for (int j = 0; j < KEY_NUMBER_OF; j++) {
             if (key == Layout[INPUT_LAYOUT_USER][j]) {
-                ConflictLayout[i] = 1;
+                ConflictLayout[i] = true;
                 break;
             }
         }
@@ -952,7 +1078,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                    - CONTROLS_ROW_HEIGHT)
                     / 2,
             GF.strings
-                [IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
+                [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
+                                        : GS_CONTROL_DEFAULT_KEYS]);
         T_CentreH(CtrlText[0], 1);
         T_CentreV(CtrlText[0], 1);
         S_ShowControls();
@@ -982,7 +1109,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     case 0:
         if (InputDB.left || InputDB.right) {
             if (KeyChange == -1) {
-                IConfig = IConfig ? 0 : 1;
+                T1MConfig.input.layout ^= 1;
                 S_ChangeCtrlText();
                 FlashConflicts();
                 S_WriteUserSettings();
@@ -1026,7 +1153,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             return;
         }
 
-        if (IConfig) {
+        if (T1MConfig.input.layout) {
             if (InputDB.select) {
                 KeyMode = 1;
                 T_RemoveBackground(CtrlTextA[KeyChange]);
@@ -1114,11 +1241,12 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     case 2:
         key = KeyGet();
 
-        if (key >= 0 && ScanCodeNames[key] && key != DIK_ESCAPE
-            && key != DIK_RETURN && key != DIK_LEFT && key != DIK_RIGHT
-            && key != DIK_UP && key != DIK_DOWN) {
-            Layout[IConfig][KeyChange] = key;
-            T_ChangeText(CtrlTextB[KeyChange], ScanCodeNames[key]);
+        const char *scancode_name = GetScanCodeName(key);
+        if (key >= 0 && scancode_name && key != DIK_ESCAPE && key != DIK_RETURN
+            && key != DIK_LEFT && key != DIK_RIGHT && key != DIK_UP
+            && key != DIK_DOWN) {
+            Layout[T1MConfig.input.layout][KeyChange] = key;
+            T_ChangeText(CtrlTextB[KeyChange], scancode_name);
             T_RemoveBackground(CtrlTextB[KeyChange]);
             T_RemoveOutline(CtrlTextB[KeyChange]);
             T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
@@ -1130,7 +1258,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 3:
-        key = Layout[IConfig][KeyChange];
+        key = Layout[T1MConfig.input.layout][KeyChange];
 
         if (KeyGet() < 0 || KeyGet() != key) {
             KeyMode = 0;
@@ -1159,8 +1287,8 @@ void S_ShowControls()
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    if (!CtrlTextB[KEY_UP]) {
-        int16_t *layout = Layout[IConfig];
+    if (!CtrlTextB[0]) {
+        int16_t *layout = Layout[T1MConfig.input.layout];
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1170,9 +1298,9 @@ void S_ShowControls()
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
-            if (col->option != -1) {
-                CtrlTextB[col->option] =
-                    T_Print(x, y, ScanCodeNames[layout[col->option]]);
+            const char *scancode_name = GetScanCodeName(layout[col->option]);
+            if (col->option != -1 && scancode_name) {
+                CtrlTextB[col->option] = T_Print(x, y, scancode_name);
                 T_CentreV(CtrlTextB[col->option], 1);
             }
 
@@ -1183,7 +1311,7 @@ void S_ShowControls()
         KeyChange = 0;
     }
 
-    if (!CtrlTextA[KEY_UP]) {
+    if (!CtrlTextA[0]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1216,18 +1344,20 @@ void S_ChangeCtrlText()
 {
     T_ChangeText(
         CtrlText[0],
-        GF.strings[IConfig ? GS_CONTROL_USER_KEYS : GS_CONTROL_DEFAULT_KEYS]);
+        GF.strings
+            [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
+                                    : GS_CONTROL_DEFAULT_KEYS]);
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    int16_t *layout = Layout[IConfig];
+    int16_t *layout = Layout[T1MConfig.input.layout];
     for (const TEXT_COLUMN_PLACEMENT *col = cols;
          col->col_num >= 0 && col->col_num <= 1; col++) {
-        if (col->option != -1) {
-            T_ChangeText(
-                CtrlTextB[col->option], ScanCodeNames[layout[col->option]]);
+        const char *scancode_name = GetScanCodeName(layout[col->option]);
+        if (col->option != -1 && scancode_name) {
+            T_ChangeText(CtrlTextB[col->option], scancode_name);
         }
     }
 }

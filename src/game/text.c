@@ -13,8 +13,8 @@
 #define TEXT_BOX_OFFSET 2
 
 static int16_t TextStringCount = 0;
-static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
-static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS] = { 0 };
+static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE] = { 0 };
 
 static int8_t TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,

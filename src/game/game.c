@@ -20,10 +20,12 @@
 
 #include <stdio.h>
 
+static int32_t Rand1 = 0xD371F947;
+static int32_t Rand2 = 0xD371F947;
+
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     CurrentLevel = level_num;
-    TitleLoaded = 0;
     if (level_type != GFL_SAVED) {
         InitialiseLevelFlags();
     }
@@ -64,7 +66,7 @@ int32_t StopGame()
 int32_t GameLoop(int32_t demo_mode)
 {
     NoInputCount = 0;
-    ResetFlag = 0;
+    ResetFlag = false;
     OverlayFlag = 1;
     InitialiseCamera();
 
@@ -80,8 +82,8 @@ int32_t GameLoop(int32_t demo_mode)
 
     S_SoundStopAllSamples();
     S_MusicStop();
-    if (OptionMusicVolume) {
-        S_MusicVolume(OptionMusicVolume * 25 + 5);
+    if (T1MConfig.music_volume) {
+        S_MusicVolume(T1MConfig.music_volume * 25 + 5);
     }
 
     if (ret == GF_NOP_BREAK) {
@@ -130,6 +132,7 @@ void LevelStats(int32_t level_num)
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);

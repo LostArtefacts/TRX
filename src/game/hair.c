@@ -14,13 +14,13 @@
 #define HAIR_OFFSET_Y (20) // up-down
 #define HAIR_OFFSET_Z (-45) // front-back
 
-static int FirstHair;
-static PHD_3DPOS Hair[HAIR_SEGMENTS + 1];
-static PHD_VECTOR HVel[HAIR_SEGMENTS + 1];
+static bool FirstHair = false;
+static PHD_3DPOS Hair[HAIR_SEGMENTS + 1] = { 0 };
+static PHD_VECTOR HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 void InitialiseHair()
 {
-    FirstHair = 1;
+    FirstHair = true;
 
     int32_t *bone = &AnimBones[Objects[O_HAIR].bone_index];
 
@@ -167,7 +167,7 @@ void HairControl(int in_cutscene)
     bone = &AnimBones[Objects[O_HAIR].bone_index];
 
     if (FirstHair) {
-        FirstHair = 0;
+        FirstHair = false;
 
         Hair[0].x = pos.x;
         Hair[0].y = pos.y;

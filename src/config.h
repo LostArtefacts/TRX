@@ -75,6 +75,24 @@ typedef struct {
     float brightness;
     bool enable_round_shadow;
     bool enable_3d_pickups;
+
+    struct {
+        int32_t layout;
+    } input;
+
+    struct {
+        uint32_t perspective : 1;
+        uint32_t bilinear : 1;
+        uint32_t fps_counter : 1;
+    } render_flags;
+
+    struct {
+        double text_scale;
+        double bar_scale;
+    } ui;
+
+    int32_t sound_volume;
+    int32_t music_volume;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;

@@ -10,13 +10,14 @@
 
 #include <math.h>
 
-static PHD_VECTOR LsVectorView;
-
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
+
+static PHD_VECTOR LsVectorView = { 0 };
+static PHD_MATRIX MatrixStack[MAX_MATRICES] = { 0 };
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
@@ -360,13 +361,11 @@ void phd_InitWindow(
     PhdWinMaxY = height - 1;
     PhdWinWidth = width;
     PhdWinHeight = height;
-    PhdCenterX = width / 2;
-    PhdCenterY = height / 2;
+    PhdWinCenterX = width / 2;
+    PhdWinCenterY = height / 2;
     PhdNearZ = nearz << W2V_SHIFT;
     PhdFarZ = farz << W2V_SHIFT;
     PhdViewDist = farz;
-    PhdScrWidth = width;
-    PhdScrHeight = height;
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
@@ -566,8 +565,8 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
                 }
             }
 
-            int32_t xs = PhdCenterX + xv / (zv / PhdPersp);
-            int32_t ys = PhdCenterY + yv / (zv / PhdPersp);
+            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
+            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
             if (IsWibbleEffect) {
                 xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
                 ys += WibbleTable[(xs + WibbleOffset) & 0x1F];
@@ -625,11 +624,6 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
     obj_ptr += 4;
     obj_ptr = calc_object_vertices(obj_ptr);
     if (obj_ptr) {
-        FltWinTop = 0.0;
-        FltWinLeft = 0.0;
-        FltWinRight = PhdWinMaxX;
-        FltWinBottom = PhdWinMaxY;
-
         obj_ptr = calc_vertice_light(obj_ptr);
         obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
         obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
@@ -640,10 +634,6 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
 
 void S_InsertRoom(const int16_t *obj_ptr)
 {
-    FltWinLeft = PhdLeft;
-    FltWinRight = PhdRight;
-    FltWinTop = PhdTop;
-    FltWinBottom = PhdBottom;
     obj_ptr = calc_roomvert(obj_ptr);
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
