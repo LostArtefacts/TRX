@@ -56,6 +56,7 @@ uint32_t *DemoPtr;
 int32_t DemoCount;
 int32_t TitleLoaded;
 int32_t LevelComplete;
+int32_t LevelRestart;
 int32_t ResetFlag;
 int32_t OverlayFlag;
 int32_t ChunkyFlag = 0;
@@ -63,6 +64,7 @@ int32_t HeightType = 0;
 
 int32_t HealthBarTimer;
 int16_t StoredLaraHealth = 0;
+int16_t LevelStartLaraHealth = 0;
 
 int16_t *FloorData;
 int16_t *MeshBase;

@@ -145,6 +145,7 @@ extern uint32_t *DemoPtr;
 extern int32_t DemoCount;
 extern int32_t TitleLoaded;
 extern int32_t LevelComplete;
+extern int32_t LevelRestart;
 extern int32_t ResetFlag;
 extern int32_t OverlayFlag;
 extern int32_t ChunkyFlag;
@@ -216,6 +217,7 @@ extern REQUEST_INFO NewGameRequester;
 
 extern int32_t HealthBarTimer;
 extern int16_t StoredLaraHealth;
+extern int16_t LevelStartLaraHealth;
 
 extern int16_t InvMode;
 extern int32_t InvExtraData[];

@@ -25,6 +25,8 @@
 
 #include <stddef.h>
 
+#include "log.h"
+
 static const int32_t AnimationRate = 0x8000;
 
 void CheckCheatMode()
@@ -140,6 +142,9 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CheckCheatMode();
         if (LevelComplete) {
+            if (T1MConfig.disable_healing_between_levels) {
+                LevelStartLaraHealth = StoredLaraHealth;
+            }
             return GF_NOP_BREAK;
         }
 
@@ -168,6 +173,8 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             if (OverlayFlag == 2) {
                 OverlayFlag = 1;
                 return_val = Display_Inventory(INV_DEATH_MODE);
+                LOG_DEBUG("\nAfter Display_Inventory:");
+                LOG_DEBUG("return_val: %d", return_val);
                 if (return_val != GF_NOP) {
                     return return_val;
                 }
@@ -237,6 +244,11 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         HealthBarTimer--;
 
         if (T1MConfig.disable_healing_between_levels) {
+            LOG_DEBUG("\n\nBegin:");
+            LOG_DEBUG("return_val: %d", return_val);
+            LOG_DEBUG("LaraItem->hit_points: %d", LaraItem->hit_points);
+            LOG_DEBUG("StoredLaraHealth: %d", StoredLaraHealth);
+
             int8_t lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
                 if (Items[i].object_number == O_LARA) {

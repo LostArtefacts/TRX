@@ -52,11 +52,6 @@ int32_t StopGame()
         return GF_START_SAVED_GAME | InvExtraData[1];
     } else if (InvExtraData[0] == 1) {
         if (InvMode == INV_DEATH_MODE) {
-            // if (CurrentLevel >= GF.first_level_num) {
-            // SaveGame.start[CurrentLevel] = SaveGame.start[CurrentLevel];
-            // } else {
-            // ModifyStartInfo(CurrentLevel);
-            // }
             return GF_START_GAME | CurrentLevel;
         } else {
             return GF_START_GAME | GF.first_level_num;
