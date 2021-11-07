@@ -498,8 +498,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     PassportText =
                         T_Print(0, -16, GF.strings[GS_PASSPORT_NEW_GAME]);
                 } else if (InvMode == INV_DEATH_MODE) {
-                    if (SavedGamesCount == 0)
+                    if (SavedGamesCount == 0) {
                         InputDB.left = 0;
+                    }
                     PassportText =
                         T_Print(0, -16, GF.strings[GS_PASSPORT_RESTART_LEVEL]);
                 } else {

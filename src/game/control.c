@@ -244,10 +244,6 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         HealthBarTimer--;
 
         if (T1MConfig.disable_healing_between_levels) {
-            LOG_DEBUG("\n\nBegin:");
-            LOG_DEBUG("return_val: %d", return_val);
-            LOG_DEBUG("LaraItem->hit_points: %d", LaraItem->hit_points);
-            LOG_DEBUG("StoredLaraHealth: %d", StoredLaraHealth);
 
             int8_t lara_found = 0;
             for (int i = 0; i < LevelItemCount; i++) {
