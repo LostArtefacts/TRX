@@ -1213,8 +1213,6 @@ enum INPUT_STATE {
     IN_DESELECT = 1 << 21,
     IN_SAVE = 1 << 22,
     IN_LOAD = 1 << 23,
-    IN_FLY_CHEAT = 1 << 24,
-    IN_ITEM_CHEAT = 1 << 25,
 };
 
 enum TEXTSTRING_FLAG {
@@ -2215,6 +2213,17 @@ struct LIGHTNING {
     int start[2];
     PHD_VECTOR end[2];
     PHD_VECTOR shoot[2][8];
+};
+
+struct HWR_LIGHTNING {
+    int32_t x1;
+    int32_t y1;
+    int32_t z1;
+    int32_t thickness1;
+    int32_t x2;
+    int32_t y2;
+    int32_t z2;
+    int32_t thickness2;
 };
 
 #pragma pack(pop)

@@ -4,10 +4,10 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/objects/pickup.h"
+#include "game/overlay.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -46,13 +46,13 @@ int16_t PickUpScion4Bounds[12] = {
 
 void SetupScion1(OBJECT_INFO *obj)
 {
-    Objects[O_SCION_ITEM].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM].collision = PickUpScionCollision;
 }
 
 void SetupScion2(OBJECT_INFO *obj)
 {
-    Objects[O_SCION_ITEM2].draw_routine = DrawSpriteItem;
+    Objects[O_SCION_ITEM2].draw_routine = DrawPickupItem;
     Objects[O_SCION_ITEM2].collision = PickUpCollision;
     Objects[O_SCION_ITEM2].save_flags = 1;
 }
@@ -143,14 +143,14 @@ void PickUpScionCollision(
     if (lara_item->current_anim_state == AS_PICKUP) {
         if (lara_item->frame_number
             == Anims[lara_item->anim_number].frame_base + AF_PICKUPSCION) {
-            AddDisplayPickup(item->object_number);
+            Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
             SaveGame.pickups++;
         }
     } else if (
-        CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
+        Input.action && Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == AS_STOP) {
         AlignLaraPosition(&PickUpScionPosition, item, lara_item);
@@ -177,7 +177,7 @@ void PickUpScion4Collision(
         return;
     }
 
-    if (CHK_ANY(Input, IN_ACTION) && Lara.gun_status == LGS_ARMLESS
+    if (Input.action && Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == AS_STOP) {
         AlignLaraPosition(&PickUpScion4Position, item, lara_item);

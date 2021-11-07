@@ -1,7 +1,7 @@
-#include "init.h"
 #include "config.h"
+#include "init.h"
 #include "inject.h"
-#include "util.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <windows.h>

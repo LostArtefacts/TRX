@@ -4,13 +4,13 @@
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
+#include "log.h"
 #include "specific/ati.h"
 #include "specific/display.h"
 #include "specific/smain.h"
-#include "util.h"
 
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 typedef struct HWR_LIGHTNING {
     int32_t x1;
@@ -23,36 +23,57 @@ typedef struct HWR_LIGHTNING {
     int32_t thickness2;
 } HWR_LIGHTNING;
 
-#define HWR_LightningTable ARRAY_(0x005DA800, HWR_LIGHTNING, [100])
-#define HWR_LightningCount VAR_U_(0x00463618, int32_t)
+HWR_LIGHTNING HWR_LightningTable[100];
+int32_t HWR_LightningCount = 0;
+
+static bool HWR_IsPaletteActive = false;
+static bool HWR_IsRendering = false;
+static bool HWR_IsRenderingOld = false;
+static bool HWR_IsTextureMode = false;
+static int32_t HWR_SelectedTexture = -1;
+static bool HWR_TextureLoaded[MAX_TEXTPAGES] = { false };
+static RGBF HWR_WaterColor = { 0 };
 
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
 
 static void HWR_EnableTextureMode(void)
 {
-    BOOL enable;
-
     if (HWR_IsTextureMode) {
         return;
     }
 
-    HWR_IsTextureMode = 1;
-    enable = TRUE;
+    HWR_IsTextureMode = true;
+    BOOL enable = TRUE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
 }
 
 static void HWR_DisableTextureMode(void)
 {
-    BOOL enable;
-
     if (!HWR_IsTextureMode) {
         return;
     }
 
-    HWR_IsTextureMode = 0;
-    enable = FALSE;
+    HWR_IsTextureMode = false;
+    BOOL enable = FALSE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_EN, &enable);
+}
+
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
+{
+    if (IsShadeEffect) {
+        *r *= HWR_WaterColor.r;
+        *g *= HWR_WaterColor.g;
+        *b *= HWR_WaterColor.b;
+    }
+}
+
+void HWR_ChangeWaterColor(const RGBF *color)
+{
+    HWR_WaterColor.r = color->r;
+    HWR_WaterColor.g = color->g;
+    HWR_WaterColor.b = color->b;
 }
 
 void HWR_CheckError(HRESULT result)
@@ -65,25 +86,25 @@ void HWR_CheckError(HRESULT result)
 
 void HWR_RenderBegin()
 {
-    HWR_OldIsRendering = HWR_IsRendering;
+    HWR_IsRenderingOld = HWR_IsRendering;
     if (!HWR_IsRendering) {
         ATI3DCIF_RenderBegin(ATIRenderContext);
-        HWR_IsRendering = 1;
+        HWR_IsRendering = true;
     }
 }
 
 void HWR_RenderEnd()
 {
-    HWR_OldIsRendering = HWR_IsRendering;
+    HWR_IsRenderingOld = HWR_IsRendering;
     if (HWR_IsRendering) {
         ATI3DCIF_RenderEnd();
-        HWR_IsRendering = 0;
+        HWR_IsRendering = false;
     }
 }
 
 void HWR_RenderToggle()
 {
-    if (HWR_OldIsRendering) {
+    if (HWR_IsRenderingOld) {
         HWR_RenderBegin();
     } else {
         HWR_RenderEnd();
@@ -188,7 +209,7 @@ void HWR_SetPalette()
     ATIChromaKey.b = 0;
     ATIChromaKey.a = 0;
 
-    HWR_IsPaletteActive = 1;
+    HWR_IsPaletteActive = true;
     LOG_INFO("    complete");
 }
 
@@ -241,6 +262,9 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 void HWR_CopyPicture()
 {
     LOG_INFO("CopyPictureHardware:");
+
+    HRESULT result;
+
     if (!Surface3) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -250,7 +274,7 @@ void HWR_CopyPicture()
             DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
         surface_desc.dwWidth = DDrawSurfaceWidth;
         surface_desc.dwHeight = DDrawSurfaceHeight;
-        HRESULT result =
+        result =
             IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
     }
@@ -261,7 +285,7 @@ void HWR_CopyPicture()
     LOG_INFO("    complete");
 }
 
-void HWR_DownloadPicture()
+void HWR_DownloadPicture(const PICTURE *pic)
 {
     LOG_INFO("DownloadPictureHardware:");
 
@@ -288,13 +312,17 @@ void HWR_DownloadPicture()
         IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
     HWR_CheckError(result);
 
+    // TODO: allow pics of any size
+    assert(pic->width == DDrawSurfaceWidth);
+    assert(pic->height == DDrawSurfaceHeight);
+
     uint16_t *output_ptr = surface_desc.lpSurface;
-    uint8_t *input_ptr = ScrPtr;
-    for (int i = 0; i < DDrawSurfaceHeight * DDrawSurfaceWidth; i++) {
-        uint8_t idx = *input_ptr++;
-        uint16_t r = GamePalette[idx].r & 0x3E;
-        uint16_t g = GamePalette[idx].g & 0x3E;
-        uint16_t b = GamePalette[idx].b & 0x3E;
+    RGB888 *input_ptr = pic->data;
+    for (int i = 0; i < pic->height * pic->width; i++) {
+        uint16_t r = input_ptr->r & 0x3E;
+        uint16_t g = input_ptr->g & 0x3E;
+        uint16_t b = input_ptr->b & 0x3E;
+        input_ptr++;
         *output_ptr++ = (b >> 1) | (16 * g) | (r << 9);
     }
 
@@ -415,12 +443,8 @@ void HWR_DrawSprite(
     if (HWR_TextureLoaded[sprite->tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(sprite->tpage);
+        HWR_RenderTriangleStrip(vertices, vertex_count);
     }
-
-    // NOTE: original .exe has some additional logic for the case when
-    // the requested texture page was not loaded.
-
-    HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
 void HWR_Draw2DLine(
@@ -448,7 +472,7 @@ void HWR_Draw2DLine(
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_PRIM_TYPE, &prim_type);
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
 
@@ -490,19 +514,9 @@ void HWR_Draw2DQuad(
     vertices[3].g = bl.g;
     vertices[3].b = bl.b;
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     HWR_RenderTriangleStrip(vertices, 4);
-}
-
-void HWR_DisableTextures()
-{
-    if (HWR_IsTextureMode) {
-        int32_t textures_enabled = 0;
-        ATI3DCIF_ContextSetState(
-            ATIRenderContext, C3D_ERS_TMAP_EN, &textures_enabled);
-        HWR_IsTextureMode = 0;
-    }
 }
 
 void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
@@ -541,7 +555,7 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     vertices[3].r = 0.0f;
     vertices[3].a = 128.0f;
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
@@ -619,7 +633,7 @@ void HWR_RenderLightningSegment(
 {
     C3D_VTCF vertices[4];
 
-    HWR_DisableTextures();
+    HWR_DisableTextureMode();
 
     int32_t alpha_src = 4;
     int32_t alpha_dst = 5;
@@ -1046,9 +1060,6 @@ void HWR_FadeWait()
 
 void HWR_SwitchResolution()
 {
-    GameVidWidth = AvailableResolutions[HiRes].width;
-    GameVidHeight = AvailableResolutions[HiRes].height;
-
     HWR_SetHardwareVideoMode();
     SetupScreenSize();
 }
@@ -1061,10 +1072,12 @@ int32_t HWR_SetHardwareVideoMode()
     LOG_INFO("SetHardwareVideoMode:");
     HWR_ReleaseSurfaces();
 
-    DDrawSurfaceWidth = AvailableResolutions[HiRes].width;
-    DDrawSurfaceHeight = AvailableResolutions[HiRes].height;
-    DDrawSurfaceMaxX = AvailableResolutions[HiRes].width - 1.0f;
-    DDrawSurfaceMaxY = AvailableResolutions[HiRes].height - 1.0f;
+    DDrawSurfaceWidth = GetScreenWidth();
+    DDrawSurfaceHeight = GetScreenHeight();
+    DDrawSurfaceMinX = 0.0f;
+    DDrawSurfaceMinY = 0.0f;
+    DDrawSurfaceMaxX = GetScreenWidth() - 1.0f;
+    DDrawSurfaceMaxY = GetScreenHeight() - 1.0f;
 
     LOG_INFO("    Switching to %dx%d", DDrawSurfaceWidth, DDrawSurfaceHeight);
     result = IDirectDraw_SetDisplayMode(
@@ -1101,7 +1114,7 @@ int32_t HWR_SetHardwareVideoMode()
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags =
@@ -1153,8 +1166,6 @@ void HWR_InitialiseHardware()
 
     LOG_INFO("InitialiseHardware:");
 
-    IsHardwareRenderer = 0;
-
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         ATITextureMap[i] = NULL;
         TextureSurfaces[i] = NULL;
@@ -1167,8 +1178,6 @@ void HWR_InitialiseHardware()
     if (!HWR_SetHardwareVideoMode()) {
         return;
     }
-
-    IsHardwareRenderer = 1;
 
     tmp = C3D_EV_VTCF;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_VERTEX_TYPE, &tmp);
@@ -1194,14 +1203,12 @@ void HWR_InitialiseHardware()
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PF, &tmp);
 
     LOG_INFO("    Detected %dk video memory", 4096);
-    // NOTE: skipped dead code related to caching textures
     LOG_INFO("    Complete, hardware ready");
 }
 
 void HWR_ShutdownHardware()
 {
     LOG_INFO("ShutdownHardware:");
-    IsHardwareRenderer = 0;
     LOG_INFO("    complete");
 }
 
@@ -1241,8 +1248,8 @@ void HWR_SetupRenderContextAndRender()
     ATI3DCIF_ContextSetState(
         ATIRenderContext, C3D_ERS_SURF_DRAW_PTR, &Surface2DrawPtr);
     int32_t perspective =
-        (RenderSettings & RSF_PERSPECTIVE) ? C3D_ETPC_THREE : C3D_ETPC_NONE;
-    int32_t filter = (RenderSettings & RSF_BILINEAR)
+        T1MConfig.render_flags.perspective ? C3D_ETPC_THREE : C3D_ETPC_NONE;
+    int32_t filter = T1MConfig.render_flags.bilinear
         ? C3D_ETFILT_MIN2BY2_MAG2BY2
         : C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_ContextSetState(
@@ -1361,10 +1368,7 @@ void HWR_DrawFlatTriangle(
     g = GamePalette[color].g;
     b = GamePalette[color].b;
 
-    if (IsShadeEffect) {
-        r *= 0.6f;
-        g *= 0.7f;
-    }
+    HWR_ApplyWaterEffect(&r, &g, &b);
 
     divisor = (1.0f / T1MConfig.brightness) * 1024.0f;
 
@@ -1450,10 +1454,8 @@ void HWR_DrawTexturedTriangle(
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
 
-            if (IsShadeEffect) {
-                vertices[i].r *= 0.6f;
-                vertices[i].g *= 0.7f;
-            }
+            HWR_ApplyWaterEffect(
+                &vertices[i].r, &vertices[i].g, &vertices[i].b);
         }
 
         vertex_count = 3;
@@ -1490,9 +1492,8 @@ void HWR_DrawTexturedTriangle(
     if (HWR_TextureLoaded[tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
+        HWR_RenderTriangleStrip(vertices, vertex_count);
     }
-
-    HWR_RenderTriangleStrip(vertices, vertex_count);
 }
 
 void HWR_DrawTexturedQuad(
@@ -1558,10 +1559,7 @@ void HWR_DrawTexturedQuad(
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
 
-        if (IsShadeEffect) {
-            vertices[i].r *= 0.6f;
-            vertices[i].g *= 0.7f;
-        }
+        HWR_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
     if (HWR_TextureLoaded[tpage]) {
@@ -1570,13 +1568,10 @@ void HWR_DrawTexturedQuad(
     }
 
     ATI3DCIF_RenderPrimStrip(vertices, 4);
-
-    // NOTE: original .exe has some additional logic for the case when
-    // the requested texture page was not loaded.
 }
 
-int32_t
-HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
+int32_t HWR_ZedClipper(
+    int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 {
     int32_t i;
     int32_t count;
@@ -1604,9 +1599,9 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdCenterX;
+                + PhdWinCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdCenterY;
+                + PhdWinCenterY;
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -1615,20 +1610,17 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
             v++;
         }
 
         if (near_z > pts0->zv) {
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdCenterX;
+                + PhdWinCenterX;
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdCenterY;
+                + PhdWinCenterY;
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -1637,10 +1629,8 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
+
             v++;
         } else {
             v->x = pts0->xs;
@@ -1652,11 +1642,8 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
             v->t = pts0->v * v->w * 0.00390625f;
 
             v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
+            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
-            if (IsShadeEffect) {
-                v->r *= 0.6f;
-                v->g *= 0.7f;
-            }
             v++;
         }
     }
@@ -1665,47 +1652,102 @@ HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
     return count < 3 ? 0 : count;
 }
 
-void T1MInjectSpecificHWR()
+void HWR_InitPolyList()
 {
-    INJECT(0x004077D0, HWR_CheckError);
-    INJECT(0x00407827, HWR_RenderBegin);
-    INJECT(0x0040783B, HWR_RenderEnd);
-    INJECT(0x00407862, HWR_RenderToggle);
-    INJECT(0x0040787C, HWR_GetSurfaceAndPitch);
-    INJECT(0x0040795F, HWR_SetupRenderContextAndRender);
-    INJECT(0x004079E9, HWR_FlipPrimaryBuffer);
-    INJECT(0x00407A49, HWR_ClearSurface);
-    INJECT(0x00407A91, HWR_ReleaseSurfaces);
-    INJECT(0x00407BD2, HWR_SetHardwareVideoMode);
-    INJECT(0x00408005, HWR_InitialiseHardware);
-    INJECT(0x00408323, HWR_ShutdownHardware);
-    INJECT(0x0040834C, HWR_PrepareFMV);
-    INJECT(0x00408368, HWR_FMVDone);
-    INJECT(0x0040837F, HWR_FMVInit);
-    INJECT(0x004087EA, HWR_SetPalette);
-    INJECT(0x004089F4, HWR_SwitchResolution);
-    INJECT(0x00408A70, HWR_DumpScreen);
-    INJECT(0x00408AC7, HWR_ClearSurfaceDepth);
-    INJECT(0x00408B2C, HWR_BlitSurface);
-    INJECT(0x00408B85, HWR_CopyPicture);
-    INJECT(0x00408C3A, HWR_DownloadPicture);
-    INJECT(0x00408E32, HWR_FadeWait);
-    INJECT(0x00408E6D, HWR_RenderTriangleStrip);
-    INJECT(0x00408FF0, HWR_SelectTexture);
-    INJECT(0x0040904D, HWR_ClipVertices);
-    INJECT(0x00409C0F, HWR_DrawFlatTriangle);
-    INJECT(0x00409F44, HWR_InsertObjectG4);
-    INJECT(0x0040A01D, HWR_InsertObjectG3);
-    INJECT(0x0040A0C4, HWR_ZedClipper);
-    INJECT(0x0040A6B1, HWR_ClipVertices2);
-    INJECT(0x0040B510, HWR_DrawTexturedTriangle);
-    INJECT(0x0040BBE2, HWR_DrawTexturedQuad);
-    INJECT(0x0040C25A, HWR_InsertObjectGT4);
-    INJECT(0x0040C34E, HWR_InsertObjectGT3);
-    INJECT(0x0040C425, HWR_DrawSprite);
-    INJECT(0x0040C7EE, HWR_Draw2DLine);
-    INJECT(0x0040C8E7, HWR_DrawTranslucentQuad);
-    INJECT(0x0040CADB, HWR_PrintShadow);
-    INJECT(0x0040CC5D, HWR_RenderLightningSegment);
-    INJECT(0x0040D056, HWR_DrawLightningSegment);
+    HWR_RenderBegin();
+    HWR_LightningCount = 0;
+}
+
+void HWR_OutputPolyList()
+{
+    int i;
+    for (i = 0; i < HWR_LightningCount; i++) {
+        HWR_RenderLightningSegment(
+            HWR_LightningTable[i].x1, HWR_LightningTable[i].y1,
+            HWR_LightningTable[i].z1, HWR_LightningTable[i].thickness1,
+            HWR_LightningTable[i].x2, HWR_LightningTable[i].y2,
+            HWR_LightningTable[i].z2, HWR_LightningTable[i].thickness2);
+    }
+    HWR_RenderEnd();
+}
+
+void HWR_DownloadTextures(int32_t pages)
+{
+    int i;
+
+    LOG_INFO(
+        "DownloadTexturesToHardware: level %d, pages %d", CurrentLevel, pages);
+
+    if (pages > MAX_TEXTPAGES) {
+        ShowFatalError("Attempt to download more than texture page limit");
+    }
+
+    for (i = 0; i < MAX_TEXTPAGES; i++) {
+        if (ATITextureMap[i]) {
+            if (ATI3DCIF_TextureUnreg(ATITextureMap[i])) {
+                ShowFatalError("ERROR: Could not unregister texture");
+            }
+            ATITextureMap[i] = 0;
+        }
+        HWR_TextureLoaded[i] = false;
+    }
+
+    if (HWR_IsPaletteActive) {
+        LOG_INFO("    Resetting texture palette handle");
+        if (ATITexturePalette) {
+            if (ATI3DCIF_TexturePaletteDestroy(ATITexturePalette)) {
+                ShowFatalError("ERROR: Cannot release old texture palette");
+            }
+            ATITexturePalette = NULL;
+        }
+        if (ATI3DCIF_TexturePaletteCreate(
+                C3D_ECI_TMAP_8BIT, ATIPalette, &ATITexturePalette)) {
+            ShowFatalError("ERROR: Cannot create texture palette");
+        }
+        HWR_IsPaletteActive = false;
+    }
+
+    for (i = 0; i < pages; i++) {
+        DDSURFACEDESC surface_desc;
+        HRESULT result;
+
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        result = IDirectDrawSurface2_Lock(
+            TextureSurfaces[i], NULL, &surface_desc, DDLOCK_WAIT, 0);
+        HWR_CheckError(result);
+
+        memcpy(
+            surface_desc.lpSurface, TexturePagePtrs[i],
+            0x10000); // TODO: magic number
+
+        result = IDirectDrawSurface2_Unlock(
+            TextureSurfaces[i], surface_desc.lpSurface);
+        HWR_CheckError(result);
+
+        LOG_INFO("    registering");
+
+        C3D_TMAP tmap;
+        tmap.u32Size = sizeof(C3D_TMAP);
+        tmap.bMipMap = FALSE;
+        tmap.apvLevels[0] = (C3D_PVOID)surface_desc.lpSurface;
+        tmap.u32MaxMapXSizeLg2 = 8;
+        tmap.u32MaxMapYSizeLg2 = 8;
+        tmap.eTexFormat = C3D_ETF_CI8;
+        tmap.clrTexChromaKey = ATIChromaKey;
+        tmap.htxpalTexPalette = ATITexturePalette;
+        tmap.bClampS = FALSE;
+        tmap.bClampT = FALSE;
+        tmap.bAlphaBlend = FALSE;
+        if (ATI3DCIF_TextureReg(&tmap, &ATITextureMap[i])) {
+            ShowFatalError("ERROR: Could not register texture");
+        }
+
+        HWR_TextureLoaded[i] = true;
+        LOG_INFO("    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
+    }
+
+    HWR_SelectedTexture = -1;
+
+    LOG_INFO("    complete");
 }

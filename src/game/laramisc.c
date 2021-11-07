@@ -13,6 +13,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/sndpc.h"
 #include "util.h"
 
@@ -27,11 +28,21 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-    if (Input & IN_ITEM_CHEAT) {
+    if (Input.level_skip_cheat) {
+        LevelComplete = true;
+    }
+
+    if (Input.health_cheat) {
+        item->hit_points +=
+            (Input.slow ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
+        CLAMP(item->hit_points, 0, LARA_HITPOINTS);
+    }
+
+    if (InputDB.item_cheat) {
         LaraCheatGetStuff();
     }
 
-    if (Lara.water_status != LWS_CHEAT && (Input & IN_FLY_CHEAT)) {
+    if (Lara.water_status != LWS_CHEAT && Input.fly_cheat) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
@@ -155,17 +166,17 @@ void LaraControl(int16_t item_num)
 
     int16_t camera_move_delta = PHD_45 / 30;
 
-    if (Input & IN_CAMERA_LEFT) {
+    if (Input.camera_left) {
         CameraOffsetAdditionalAngle(camera_move_delta);
-    } else if (Input & IN_CAMERA_RIGHT) {
+    } else if (Input.camera_right) {
         CameraOffsetAdditionalAngle(-camera_move_delta);
     }
-    if (Input & IN_CAMERA_UP) {
+    if (Input.camera_up) {
         CameraOffsetAdditionalElevation(-camera_move_delta);
-    } else if (Input & IN_CAMERA_DOWN) {
+    } else if (Input.camera_down) {
         CameraOffsetAdditionalElevation(camera_move_delta);
     }
-    if (Input & IN_CAMERA_RESET) {
+    if (Input.camera_reset) {
         CameraOffsetReset();
     }
 
@@ -200,8 +211,7 @@ void LaraControl(int16_t item_num)
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
-        if (CHK_ANY(Input, IN_SLOW)
-            && !CHK_ANY(Input, IN_LOOK | IN_FLY_CHEAT)) {
+        if (Input.slow && !Input.look && !Input.fly_cheat) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
@@ -606,7 +616,7 @@ void LaraCheatGetStuff()
         return;
     }
 
-    // play istols drawing sound
+    // play pistols drawing sound
     SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
 
     if (Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
@@ -710,16 +720,3 @@ void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     LaraColSurfLeft,  LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
     LaraColSwanDive,  LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
 };
-
-void T1MInjectGameLaraMisc()
-{
-    INJECT(0x00427850, LaraControl);
-    INJECT(0x00427BD0, LaraSwapMeshExtra);
-    INJECT(0x00427C00, AnimateLara);
-    INJECT(0x00427E80, UseItem);
-    INJECT(0x00427FD0, ControlLaraExtra);
-    INJECT(0x00427FF0, InitialiseLaraLoad);
-    INJECT(0x00428020, InitialiseLara);
-    INJECT(0x00428170, InitialiseLaraInventory);
-    INJECT(0x00428340, LaraInitialiseMeshes);
-}

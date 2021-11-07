@@ -21,7 +21,7 @@ void SetupMovingBar(OBJECT_INFO *obj)
 
 void SetupLeadBar(OBJECT_INFO *obj)
 {
-    obj->draw_routine = DrawSpriteItem;
+    obj->draw_routine = DrawPickupItem;
     obj->collision = PickUpCollision;
     obj->save_flags = 1;
 }

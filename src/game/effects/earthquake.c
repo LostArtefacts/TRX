@@ -13,7 +13,6 @@ void SetupEarthquake(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-// original name: EarthQuakeFX
 void EarthQuake(ITEM_INFO *item)
 {
     if (FlipTimer == 0) {
@@ -33,7 +32,6 @@ void EarthQuake(ITEM_INFO *item)
     }
 }
 
-// original name: EarthQuake
 void EarthQuakeControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

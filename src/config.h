@@ -1,6 +1,7 @@
 #ifndef T1M_CONFIG_H
 #define T1M_CONFIG_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef enum {
@@ -33,21 +34,21 @@ typedef enum {
 } T1M_BAR_SHOW_MODE;
 
 typedef struct {
-    int8_t disable_healing_between_levels;
-    int8_t disable_medpacks;
-    int8_t disable_magnums;
-    int8_t disable_uzis;
-    int8_t disable_shotgun;
-    int8_t enable_enemy_healthbar;
-    int8_t enable_enhanced_look;
-    int8_t enable_numeric_keys;
-    int8_t enable_shotgun_flash;
-    int8_t enable_cheats;
-    int8_t enable_tr3_sidesteps;
-    int8_t enable_braid;
-    int8_t enable_compass_stats;
-    int8_t enable_timer_in_inventory;
-    int8_t enable_smooth_bars;
+    bool disable_healing_between_levels;
+    bool disable_medpacks;
+    bool disable_magnums;
+    bool disable_uzis;
+    bool disable_shotgun;
+    bool enable_enemy_healthbar;
+    bool enable_enhanced_look;
+    bool enable_numeric_keys;
+    bool enable_shotgun_flash;
+    bool enable_cheats;
+    bool enable_tr3_sidesteps;
+    bool enable_braid;
+    bool enable_compass_stats;
+    bool enable_timer_in_inventory;
+    bool enable_smooth_bars;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
@@ -56,20 +57,42 @@ typedef struct {
     int8_t airbar_color;
     int8_t enemy_healthbar_location;
     int8_t enemy_healthbar_color;
-    int8_t fix_tihocan_secret_sound;
-    int8_t fix_pyramid_secret_trigger;
-    int8_t fix_secrets_killing_music;
+    bool fix_tihocan_secret_sound;
+    bool fix_pyramid_secret_trigger;
+    bool fix_secrets_killing_music;
+    bool fix_descending_glitch;
+    bool fix_wall_jump_glitch;
+    bool fix_qwop_glitch;
     int32_t fov_value;
-    int8_t fov_vertical;
-    int8_t disable_demo;
-    int8_t disable_fmv;
-    int8_t disable_cine;
-    int8_t disable_music_in_menu;
+    bool fov_vertical;
+    bool disable_demo;
+    bool disable_fmv;
+    bool disable_cine;
+    bool disable_music_in_menu;
     int32_t resolution_width;
     int32_t resolution_height;
-    int8_t enable_xbox_one_controller;
+    bool enable_xbox_one_controller;
     float brightness;
-    int8_t enable_round_shadow;
+    bool enable_round_shadow;
+    bool enable_3d_pickups;
+
+    struct {
+        int32_t layout;
+    } input;
+
+    struct {
+        uint32_t perspective : 1;
+        uint32_t bilinear : 1;
+        uint32_t fps_counter : 1;
+    } render_flags;
+
+    struct {
+        double text_scale;
+        double bar_scale;
+    } ui;
+
+    int32_t sound_volume;
+    int32_t music_volume;
 } T1MConfigStruct;
 
 extern T1MConfigStruct T1MConfig;

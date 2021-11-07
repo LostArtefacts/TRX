@@ -15,6 +15,4 @@ void InitialisePlayer1(int16_t item_num);
 void InitialiseGenPlayer(int16_t item_num);
 void InGameCinematicCamera();
 
-void T1MInjectGameCinema();
-
 #endif

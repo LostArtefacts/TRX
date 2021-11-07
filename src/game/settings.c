@@ -1,5 +1,6 @@
 #include "game/settings.h"
 
+#include "config.h"
 #include "filesystem.h"
 #include "game/mnsound.h"
 #include "game/option.h"
@@ -7,13 +8,17 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "json.h"
+#include "log.h"
+#include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+static const char *ATIUserSettingsPath = "atiset.dat";
+static const char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
 static int32_t S_ReadUserSettingsATI();
 static int32_t S_ReadUserSettingsT1M();
@@ -29,16 +34,33 @@ static int32_t S_ReadUserSettingsATI()
 
     LOG_INFO("Loading user settings (T1M)");
 
-    FileRead(&OptionMusicVolume, sizeof(int16_t), 1, fp);
-    FileRead(&OptionSoundFXVolume, sizeof(int16_t), 1, fp);
+    FileRead(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
+    FileRead(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
     FileRead(Layout[1], sizeof(int16_t), 13, fp);
-    FileRead(&RenderSettings, sizeof(int32_t), 1, fp);
-    FileRead(&GameHiRes, sizeof(int32_t), 1, fp);
-    FileRead(&GameSizer, sizeof(double), 1, fp);
-    FileRead(&IConfig, sizeof(int32_t), 1, fp);
+    {
+        uint32_t render_flags;
+        FileRead(&render_flags, sizeof(int32_t), 1, fp);
+        T1MConfig.render_flags.perspective = (bool)(render_flags & 1);
+        T1MConfig.render_flags.bilinear = (bool)(render_flags & 2);
+        T1MConfig.render_flags.fps_counter = (bool)(render_flags & 4);
+    }
 
-    UITextScale = DEFAULT_UI_SCALE;
-    UIBarScale = DEFAULT_UI_SCALE;
+    {
+        int32_t resolution_idx;
+        FileRead(&resolution_idx, sizeof(int32_t), 1, fp);
+        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
+        SetGameScreenSizeIdx(resolution_idx);
+    }
+
+    // Skip GameSizer from TombATI, which is no longer used in T1M.
+    // In the original game, it's expected to be 1.0 everywhere and changing it
+    // to any other value results in uninteresting window clipping anomalies.
+    FileSeek(fp, sizeof(double), FILE_SEEK_CUR);
+
+    FileRead(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
+
+    T1MConfig.ui.text_scale = DEFAULT_UI_SCALE;
+    T1MConfig.ui.bar_scale = DEFAULT_UI_SCALE;
 
     FileClose(fp);
     return 1;
@@ -66,41 +88,37 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     result = 1;
 
     struct json_object_s *root_obj = json_value_as_object(root);
-    if (json_object_get_bool(root_obj, "bilinear", 1)) {
-        RenderSettings |= RSF_BILINEAR;
-    } else {
-        RenderSettings &= ~RSF_BILINEAR;
+    T1MConfig.render_flags.bilinear =
+        json_object_get_bool(root_obj, "bilinear", true);
+    T1MConfig.render_flags.perspective =
+        json_object_get_bool(root_obj, "perspective", true);
+
+    {
+        int32_t resolution_idx = json_object_get_number_int(
+            root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
+        SetGameScreenSizeIdx(resolution_idx);
     }
 
-    if (json_object_get_bool(root_obj, "perspective", 1)) {
-        RenderSettings |= RSF_PERSPECTIVE;
-    } else {
-        RenderSettings &= ~RSF_PERSPECTIVE;
-    }
+    T1MConfig.music_volume =
+        json_object_get_number_int(root_obj, "music_volume", 8);
+    CLAMP(T1MConfig.music_volume, 0, 10);
 
-    GameHiRes =
-        json_object_get_number_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
-    CLAMP(GameHiRes, 0, RESOLUTIONS_SIZE - 1);
-
-    GameSizer = json_object_get_number_double(root_obj, "game_sizer", 1.0);
-
-    OptionMusicVolume = json_object_get_number_int(root_obj, "music_volume", 8);
-    CLAMP(OptionMusicVolume, 0, 10);
-
-    OptionSoundFXVolume =
+    T1MConfig.sound_volume =
         json_object_get_number_int(root_obj, "sound_volume", 8);
-    CLAMP(OptionSoundFXVolume, 0, 10);
+    CLAMP(T1MConfig.sound_volume, 0, 10);
 
-    IConfig = json_object_get_number_int(root_obj, "layout_num", 0);
-    CLAMP(IConfig, 0, 1);
+    T1MConfig.input.layout =
+        json_object_get_number_int(root_obj, "layout_num", 0);
+    CLAMP(T1MConfig.input.layout, 0, 1);
 
-    UITextScale = json_object_get_number_double(
+    T1MConfig.ui.text_scale = json_object_get_number_double(
         root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
-    CLAMP(UITextScale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(T1MConfig.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    UIBarScale = json_object_get_number_double(
+    T1MConfig.ui.bar_scale = json_object_get_number_double(
         root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
-    CLAMP(UIBarScale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(T1MConfig.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -163,17 +181,20 @@ static int32_t S_WriteUserSettingsT1M()
     size_t size;
     struct json_object_s *root_obj = json_object_new();
     json_object_append_bool(
-        root_obj, "bilinear", RenderSettings & RSF_BILINEAR);
+        root_obj, "bilinear", T1MConfig.render_flags.bilinear);
     json_object_append_bool(
-        root_obj, "perspective", RenderSettings & RSF_PERSPECTIVE);
-    json_object_append_number_int(root_obj, "hi_res", GameHiRes);
-    json_object_append_number_double(root_obj, "game_sizer", GameSizer);
-    json_object_append_number_int(root_obj, "music_volume", OptionMusicVolume);
+        root_obj, "perspective", T1MConfig.render_flags.perspective);
+    json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
     json_object_append_number_int(
-        root_obj, "sound_volume", OptionSoundFXVolume);
-    json_object_append_number_int(root_obj, "layout_num", IConfig);
-    json_object_append_number_double(root_obj, "ui_text_scale", UITextScale);
-    json_object_append_number_double(root_obj, "ui_bar_scale", UIBarScale);
+        root_obj, "music_volume", T1MConfig.music_volume);
+    json_object_append_number_int(
+        root_obj, "sound_volume", T1MConfig.sound_volume);
+    json_object_append_number_int(
+        root_obj, "layout_num", T1MConfig.input.layout);
+    json_object_append_number_double(
+        root_obj, "ui_text_scale", T1MConfig.ui.text_scale);
+    json_object_append_number_double(
+        root_obj, "ui_bar_scale", T1MConfig.ui.bar_scale);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
@@ -204,14 +225,14 @@ void S_ReadUserSettings()
 
     DefaultConflict();
 
-    if (OptionMusicVolume) {
-        S_MusicVolume(25 * OptionMusicVolume + 5);
+    if (T1MConfig.music_volume) {
+        S_MusicVolume(25 * T1MConfig.music_volume + 5);
     } else {
         S_MusicVolume(0);
     }
 
-    if (OptionSoundFXVolume) {
-        mn_adjust_master_volume(6 * OptionSoundFXVolume + 3);
+    if (T1MConfig.sound_volume) {
+        mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
     } else {
         mn_adjust_master_volume(0);
     }

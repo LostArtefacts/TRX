@@ -1,46 +1,41 @@
 #ifndef T1M_GLOBAL_VARS_PLATFORM_H
 #define T1M_GLOBAL_VARS_PLATFORM_H
 
-#include "util.h"
-
+#include "global/const.h"
 #include "specific/ati.h"
+
 #include <ddraw.h>
 #include <dsound.h>
 #include <windows.h>
 
-// clang-format off
-#define TombHWND                VAR_U_(0x00463600, HWND)
-#define AuxDeviceID             VAR_U_(0x0045B984, uint32_t)
-#define MCIDeviceID             VAR_U_(0x0045B994, uint32_t)
-#define DSound                  VAR_U_(0x0045F1CC, LPDIRECTSOUND)
-#define HATI3DCIFModule         VAR_U_(0x00459CF0, HMODULE)
-#define DDrawSurfaceMinX        VAR_I_(0x00459F24, float, 0.0)
-#define DDrawSurfaceMinY        VAR_I_(0x00459F20, float, 0.0)
-#define DDrawSurfaceMaxX        VAR_I_(0x00453068, float, 639.0)
-#define DDrawSurfaceMaxY        VAR_I_(0x00453064, float, 479.0)
-#define DDrawSurfaceWidth       VAR_U_(0x00456D90, int32_t)
-#define DDrawSurfaceHeight      VAR_U_(0x00456D94, int32_t)
-#define Surface1                VAR_U_(0x005DA6A4, LPDIRECTDRAWSURFACE)
-#define Surface2                VAR_U_(0x005DB484, LPDIRECTDRAWSURFACE)
-#define Surface3                VAR_U_(0x005DA744, LPDIRECTDRAWSURFACE)
-#define Surface4                VAR_U_(0x00463608, LPDIRECTDRAWSURFACE)
-#define TextureSurfaces         ARRAY_(0x005DA6C0, LPDIRECTDRAWSURFACE, [MAX_TEXTPAGES])
-#define Surface1DrawPtr         VAR_U_(0x00463564, void*)
-#define Surface2DrawPtr         VAR_U_(0x005DB480, void*)
-#define DDraw                   VAR_U_(0x0045A998, LPDIRECTDRAW)
-#define ATIRenderContext        VAR_U_(0x0045A994, C3D_HRC)
-#define ATIInfo                 VAR_U_(0x0045A960, C3D_3DCIFINFO)
-#define ATITextureMap           ARRAY_(0x00463580, C3D_PHTX, [MAX_TEXTPAGES])
-#define ATIPalette              ARRAY_(0x00462DC0, C3D_PALETTENTRY, [256])
-#define ATIChromaKey            VAR_U_(0x00463614, C3D_COLOR)
-#define HWR_OldIsRendering      VAR_U_(0x00463568, int32_t)
-#define HWR_IsPaletteActive     VAR_U_(0x00459F38, BOOL)
-#define HWR_IsRendering         VAR_U_(0x00459F34, int32_t)
-#define HWR_IsTextureMode       VAR_U_(0x00459F28, int32_t)
-#define HWR_SelectedTexture     VAR_I_(0x00453060, int32_t, -1)
-#define HWR_TextureLoaded       ARRAY_(0x005DA760, int32_t, [MAX_TEXTPAGES])
-// clang-format on
-
 extern HINSTANCE TombModule;
+extern HWND TombHWND;
+
+extern LPDIRECTSOUND DSound;
+extern uint32_t AuxDeviceID;
+extern uint32_t MCIDeviceID;
+
+extern LPDIRECTDRAW DDraw;
+extern float DDrawSurfaceMinX;
+extern float DDrawSurfaceMinY;
+extern float DDrawSurfaceMaxX;
+extern float DDrawSurfaceMaxY;
+extern int32_t DDrawSurfaceWidth;
+extern int32_t DDrawSurfaceHeight;
+extern LPDIRECTDRAWSURFACE Surface1;
+extern LPDIRECTDRAWSURFACE Surface2;
+extern LPDIRECTDRAWSURFACE Surface3;
+extern LPDIRECTDRAWSURFACE Surface4;
+extern LPDIRECTDRAWSURFACE TextureSurfaces[MAX_TEXTPAGES];
+extern void *Surface1DrawPtr;
+extern void *Surface2DrawPtr;
+
+extern HMODULE HATI3DCIFModule;
+extern C3D_HRC ATIRenderContext;
+extern C3D_3DCIFINFO ATIInfo;
+extern C3D_HTX ATITextureMap[MAX_TEXTPAGES];
+extern C3D_HTXPAL ATITexturePalette;
+extern C3D_PALETTENTRY ATIPalette[256];
+extern C3D_COLOR ATIChromaKey;
 
 #endif

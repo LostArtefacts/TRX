@@ -6,7 +6,6 @@
 #include "specific/clock.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -14,8 +13,8 @@
 #define TEXT_BOX_OFFSET 2
 
 static int16_t TextStringCount = 0;
-static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS];
-static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE];
+static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS] = { 0 };
+static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE] = { 0 };
 
 static int8_t TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
@@ -410,25 +409,4 @@ void T_DrawThisText(TEXTSTRING *textstring)
         sv = GetRenderScale(bheight);
         S_DrawScreenBox(sx, sy, sh, sv);
     }
-}
-
-void T1MInjectGameText()
-{
-    INJECT(0x00439750, T_InitPrint);
-    INJECT(0x00439780, T_Print);
-    INJECT(0x00439860, T_ChangeText);
-    INJECT(0x004398A0, T_SetScale);
-    INJECT(0x004398C0, T_FlashText);
-    INJECT(0x004398F0, T_AddBackground);
-    INJECT(0x00439950, T_RemoveBackground);
-    INJECT(0x00439960, T_AddOutline);
-    INJECT(0x00439990, T_RemoveOutline);
-    INJECT(0x004399A0, T_CentreH);
-    INJECT(0x004399C0, T_CentreV);
-    INJECT(0x004399E0, T_RightAlign);
-    INJECT(0x00439A00, T_BottomAlign);
-    INJECT(0x00439A20, T_GetTextWidth);
-    INJECT(0x00439AD0, T_RemovePrint);
-    INJECT(0x00439B00, T_DrawText);
-    INJECT(0x00439C60, T_DrawThisText);
 }

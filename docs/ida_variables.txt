@@ -74,7 +74,8 @@
 0x00408368 void HWR_FMVDone();
 0x0040837F void HWR_FMVInit();
 # 0x00408409 sub_408409
-0x004084DE void HWR_DownloadTextures(int16_t tpage);
+0x004084DE void HWR_DownloadTextures(int32_t pages);
+0x005DA7E0 C3D_HTXPAL ATITexturePalette;
 0x004087EA void HWR_SetPalette();
 0x004089F4 void HWR_SwitchResolution();
 0x00408A70 void HWR_DumpScreen();
@@ -104,9 +105,9 @@
 0x0040CADB void HWR_PrintShadow(PHD_VBUF *vbufs, int clip);
 0x0040CC5D void HWR_RenderLightningSegment(int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2, int32_t z2, int thickness2);
 0x0040D056 void HWR_DrawLightningSegment(int x1, int y1, int z1, int thickness1, int x2, int y2, int z2, int thickness2);
-# 0x0040D0F7 HWR_InitPolyList
+0x0040D0F7 void HWR_InitPolyList();
 # 0x0040D140 HWR_CacheTexture
-# 0x0040D2E0 HWR_OutputPolyList
+0x0040D2E0 void HWR_OutputPolyList();
 # 0x0040D465 DoNothing
 0x0040D470 void BatControl(int16_t item_num);
 0x0040D600 void BearControl(int16_t item_num);
@@ -184,7 +185,7 @@
 0x004160F0 void DinoControl(int16_t item_num);
 0x004163A0 void LaraDinoDeath(ITEM_INFO *item);
 0x00416470 void SetupScreenSize();
-0x00416550 void TempVideoAdjust(int32_t hi_res, double sizer);
+0x00416550 void TempVideoAdjust(int32_t hi_res);
 0x004167D0 void TempVideoRemove();
 0x00416A60 void S_CopyBufferToScreen();
 0x00416B10 void S_NoFade();
@@ -997,23 +998,25 @@
 0x004634E0 LPDIRECTDRAWSURFACE TextureCacheSurfaces[16];
 0x00463564 void* Surface1DrawPtr;
 0x00463568 int32_t HWR_OldIsRendering;
-0x00463580 C3D_PHTX ATITextureMap[32];
+0x00463580 C3D_HTX ATITextureMap[32];
 0x00463600 HWND TombHWND;
 0x00463600 uint32_t TombHWND;
 0x00463608 LPDIRECTDRAWSURFACE Surface4;
 0x0046360C int32_t IsTextureCacheAvailable;
 0x00463610 int32_t IsHardwareRenderer;
 0x00463614 C3D_COLOR ATIChromaKey;
+0x00463618 int32_t HWR_LightningCount;
 0x0046361C uint32_t VideoMemoryAvailable;
 0x005DA6A4 LPDIRECTDRAWSURFACE Surface1;
 0x005DA6C0 LPDIRECTDRAWSURFACE TextureSurfaces[32];
 0x005DA744 LPDIRECTDRAWSURFACE Surface3;
 0x005DA760 int32_t HWR_TextureLoaded[32];
+0x005DA800 HWR_LIGHTNING HWR_LightningTable[100];
 0x005DB480 void* Surface2DrawPtr;
 0x005DB484 LPDIRECTDRAWSURFACE Surface2;
 0x0068B380 uint8_t GouraudTable[256][32];
 0x0068D380 int32_t PhdTop;
-0x0068D3A0 PHD_SPRITE PhdSpriteInfo[4][512];
+0x0068D3A0 PHD_SPRITE PhdSpriteInfo[512];
 0x0068F3A0 int32_t LsAdder;
 0x0068F3A4 float FltWinBottom;
 0x0068F3A8 int32_t PhdWinHeight;

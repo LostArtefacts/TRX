@@ -5,15 +5,14 @@
 #include "global/vars.h"
 #include "specific/clock.h"
 #include "specific/file.h"
+#include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/input.h"
-#include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
-#include <stdarg.h>
+#include <stdio.h>
 #include <time.h>
 #include <windows.h>
 
@@ -59,67 +58,66 @@ static const char *BufferNames[] = {
     "Rolling Ball Stuff", // GBUF_ROLLINGBALL_STUFF
 };
 
-void DB_Log(const char *fmt, ...)
-{
-    va_list va;
-    char buf[256] = { 0 };
-
-    va_start(va, fmt);
-    vsprintf(buf, fmt, va);
-    va_end(va);
-
-    LOG_INFO("%s", buf);
-    OutputDebugStringA(buf);
-    OutputDebugStringA("\n");
-}
+static char *GameMemoryPointer = NULL;
+static char *GameAllocMemPointer = NULL;
+static uint32_t GameAllocMemUsed = 0;
+static uint32_t GameAllocMemFree = 0;
 
 void S_InitialiseSystem()
 {
     S_SeedRandom();
 
-    GameVidWidth = 640;
-    GameVidHeight = 480;
-
-    DumpX = 0;
-    DumpY = 0;
-    DumpWidth = 640;
-    DumpHeight = 480;
-
-    SWRInit();
     ClockInit();
-    SoundInit();
+    SoundIsActive = SoundInit();
     MusicInit();
     InputInit();
     FMVInit();
 
-    if (!SoundInit1) {
-        SoundIsActive = 0;
-    }
-
     CalculateWibbleTable();
-
-    GameMemorySize = MALLOC_SIZE;
 
     HWR_InitialiseHardware();
 }
 
 void S_ExitSystem(const char *message)
 {
-    while (Input & IN_SELECT) {
+    while (Input.select) {
         S_UpdateInput();
     }
-    if (GameMemoryPointer) {
-        free(GameMemoryPointer);
-    }
+    game_malloc_shutdown();
     HWR_ShutdownHardware();
     ShowFatalError(message);
 }
 
+void S_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    va_end(va);
+    S_ExitSystem(message);
+}
+
 void init_game_malloc()
 {
-    LOG_DEBUG("");
+    GameMemoryPointer = malloc(MALLOC_SIZE);
+    if (!GameMemoryPointer) {
+        S_ExitSystem("ERROR: Could not allocate enough memory");
+    }
+
     GameAllocMemPointer = GameMemoryPointer;
-    GameAllocMemFree = GameMemorySize;
+    GameAllocMemFree = MALLOC_SIZE;
+    GameAllocMemUsed = 0;
+}
+
+void game_malloc_shutdown()
+{
+    if (GameMemoryPointer) {
+        free(GameMemoryPointer);
+    }
+    GameMemoryPointer = NULL;
+    GameAllocMemPointer = NULL;
+    GameAllocMemFree = 0;
     GameAllocMemUsed = 0;
 }
 
@@ -130,10 +128,9 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
     aligned_size = (alloc_size + 3) & ~3;
 
     if (aligned_size > GameAllocMemFree) {
-        sprintf(
-            StringToShow, "game_malloc(): OUT OF MEMORY %s %d",
-            BufferNames[buf_index], aligned_size);
-        S_ExitSystem(StringToShow);
+        S_ExitSystemFmt(
+            "game_malloc(): OUT OF MEMORY %s %d", BufferNames[buf_index],
+            aligned_size);
     }
 
     void *result = GameAllocMemPointer;
@@ -145,7 +142,6 @@ void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
 
 void game_free(int32_t free_size, int32_t type)
 {
-    LOG_DEBUG("");
     GameAllocMemPointer -= free_size;
     GameAllocMemFree += free_size;
     GameAllocMemPointer -= free_size;
@@ -167,14 +163,4 @@ void S_SeedRandom()
     struct tm *tptr = localtime(&lt);
     SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
     SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
-}
-
-void T1MInjectSpecificInit()
-{
-    INJECT(0x0041E100, S_InitialiseSystem);
-    INJECT(0x0041E2C0, init_game_malloc);
-    INJECT(0x0041E3B0, game_free);
-
-    // va_args causes crashes on certain platforms
-    // INJECT(0x0042A2C0, DB_Log);
 }

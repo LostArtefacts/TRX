@@ -1,5 +1,6 @@
 {
     // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
 
     // path to the savegame file
     "savegame_fmt": "saveati.%d",
@@ -12,6 +13,11 @@
 
     // seconds to pass in the main menu before playing the demo
     "demo_delay": 16,
+
+    // water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+    // [0.6, 0.7, 1.0] is original DOS version filter,
+    // [0.45, 1.0, 1.0] is default TombATI filter.
+    "water_color": [0.45, 1.0, 1.0],
 
     // list of levels
     "levels": [
@@ -45,6 +51,9 @@
 
             // keys and puzzle items names
             "strings": {},
+
+            // water color can be customized per level, too.
+            // "water_color": [0.45, 1.0, 1.0],
         },
 
         // level 1
@@ -536,7 +545,6 @@
         "INV_ITEM_DETAILS": "Detail Levels",
         "INV_ITEM_SOUND": "Sound",
         "INV_ITEM_CONTROLS": "Controls",
-        "INV_ITEM_GAMMA": "Gamma",
         "INV_ITEM_LARAS_HOME": "Lara's Home"
     },
 }

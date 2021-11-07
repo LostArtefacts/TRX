@@ -2,6 +2,7 @@
 
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/blood.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -12,6 +13,19 @@ BITE_INFO Teeth2B = { 71, 10, -1718, 1 };
 BITE_INFO Teeth3A = { -23, -10, -1718, 0 };
 BITE_INFO Teeth3B = { 71, -10, -1718, 1 };
 
+static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite);
+
+static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
+{
+    PHD_VECTOR pos;
+    pos.x = bite->x;
+    pos.y = bite->y;
+    pos.z = bite->z;
+    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    DoBloodSplat(
+        pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
+}
+
 void SetupTeethTrap(OBJECT_INFO *obj)
 {
     obj->control = TeethTrapControl;
@@ -20,7 +34,6 @@ void SetupTeethTrap(OBJECT_INFO *obj)
     obj->save_anim = 1;
 }
 
-// original name: TeethTrap
 void TeethTrapControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

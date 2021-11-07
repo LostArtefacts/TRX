@@ -18,8 +18,8 @@ typedef struct MYFILE MYFILE;
 
 MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode);
 size_t FileRead(void *data, size_t item_size, size_t count, MYFILE *file);
-size_t
-FileWrite(const void *data, size_t item_size, size_t count, MYFILE *file);
+size_t FileWrite(
+    const void *data, size_t item_size, size_t count, MYFILE *file);
 size_t FileSize(MYFILE *file);
 void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
 void FileClose(MYFILE *file);

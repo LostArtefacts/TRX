@@ -14,7 +14,6 @@ void SetupFallingBlock(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-// original name: FallingBlock
 void FallingBlockControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

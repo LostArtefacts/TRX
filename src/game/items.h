@@ -20,6 +20,4 @@ int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
 
-void T1MInjectGameItems();
-
 #endif

@@ -58,6 +58,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to disable FMVs
 - added ability to disable cutscenes
 - added ability to disable healing between levels
+- added rendering of pickups on the ground as 3D meshes
 - added braid (currently only works in Lost Valley)
 - added support for more than 3 pickup sprites
 - added a choice whether to play NG or NG+
@@ -91,8 +92,11 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - Right Stick = Camera Movement
     - R3 = Reset Camera
 - added rounded shadows (instead of the default octagon)
+- added per-level customizable water color (with customizable blue component)
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
+- changed maximum textures from 2048 to 8192
+- changed maximum texture pages from 32 to 128
 - changed input method to DirectInput
 - fixed inability to switch Control keys during shimmy
 - fixed skipping FMVs triggering inventory
@@ -112,6 +116,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed infamous Tihocan crocodile bug
 - fixed Lara jumping forever when alt+tabbing out of the game
 - fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
+- fixed bats being positioned too high
 
 ## Showcase
 
@@ -168,7 +173,10 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 ## Decompilation progress
 
-![](docs/progress.svg)
+Currently the entirety of TombATI.exe's code is decompiled. Our goal now is to
+ship with our own .exe rather than a DLL. To make it possible, we must reverse
+portions of the glrage patch (glrage.dll) and the ATI renderer (ati3dcif.dll)
+and that is the current project focus.
 
 ## Importing data to IDA
 

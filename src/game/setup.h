@@ -14,6 +14,4 @@ void TrapObjects();
 void ObjectObjects();
 void InitialiseObjects();
 
-void T1MInjectGameSetup();
-
 #endif

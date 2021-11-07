@@ -14,6 +14,7 @@ void PrintRooms(int16_t room_number);
 void DrawEffect(int16_t fxnum);
 void DrawSpriteItem(ITEM_INFO *item);
 void DrawDummyItem(ITEM_INFO *item);
+void DrawPickupItem(ITEM_INFO *item);
 void DrawAnimatingItem(ITEM_INFO *item);
 void DrawUnclippedItem(ITEM_INFO *item);
 void DrawLara(ITEM_INFO *item);
@@ -41,7 +42,5 @@ void InterpolateArmMatrix();
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);
-
-void T1MInjectGameDraw();
 
 #endif

@@ -38,8 +38,8 @@
     "enable_tr3_sidesteps": true,
 
     // Enables various cheats:
-    // - X: immediately end the level.
     // - F11: heal Lara. Hold WALK key to hurt instead.
+    // - L: immediately end the level.
     // - I: gives Lara all the guns, ammo, medpacks and plot items for the
     //   current level.
     // - O: enable DOZY cheat (swimming midair).
@@ -127,6 +127,17 @@
     // Fixes the sound of collecting a secret resetting the active music track.
     "fix_secrets_killing_music": true,
 
+    // Fixes sidestepping and walking backwards on breakable tiles
+    // causing Lara to immediately descend down to the tile underneath.
+    "fix_descending_glitch": false,
+
+    // Fixes Lara jumping through objects and Lara moving up certain slopes.
+    "fix_wall_jump_glitch": false,
+
+    // Fixes Lara jumping on small steps sometimes resulting in a weird running
+    // animation, known as a QWOP state.
+    "fix_qwop_glitch": false,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,
@@ -158,11 +169,14 @@
     "resolution_height": -1,
 
     // Enables XBox One Controller with PS1 layout and Per Axis Dead Zone.
-    "enable_xbox_one_controller": true,
+    "enable_xbox_one_controller": false,
 
     // Overrides ingame brightness.
     "brightness": 1.0,
 
-    // Enable round shadow instead of the default octagon one.
+    // Enables round shadow instead of the default octagon one.
     "enable_round_shadow": true,
+
+    // Enables 3D models to be rendered in place of the sprites for pickup items
+    "enable_3d_pickups" : true,
 }

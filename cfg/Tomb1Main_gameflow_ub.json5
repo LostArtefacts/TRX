@@ -5,6 +5,7 @@
     "enable_game_modes": true,
     "enable_save_crystals": false,
     "demo_delay": 16,
+    "water_color": [0.45, 1.0, 1.0],
 
     "levels": [
         // level 0
@@ -195,7 +196,6 @@
         "INV_ITEM_DETAILS": "Detail Levels",
         "INV_ITEM_SOUND": "Sound",
         "INV_ITEM_CONTROLS": "Controls",
-        "INV_ITEM_GAMMA": "Gamma",
         "INV_ITEM_LARAS_HOME": "Lara's Home",
     },
 }

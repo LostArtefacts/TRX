@@ -7,36 +7,88 @@
 #include "global/vars_platform.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <stdlib.h>
 
-void SetupScreenSize()
+// The screen resolution is controlled by two variables that are indices within
+// an array of predefined screen resolutions.
+// Actual screen resolution, sometimes different from the game resolution
+// (during FMVs, main menu sequence, static pictures etc.)
+static int32_t HiRes = 0;
+// The resolution to render the game in. This is what gets saved in settings
+// and the like.
+static int32_t GameHiRes = 0;
+
+bool SetGameScreenSizeIdx(int32_t idx)
 {
-    int32_t width = ((double)GameVidWidth * ScreenSizer);
-    int32_t height = ((double)GameVidHeight * ScreenSizer);
-    int32_t x = (GameVidWidth - width) / 2;
-    int32_t y = (GameVidHeight - height) / 2;
-    phd_InitWindow(
-        x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV, GameVidWidth,
-        GameVidHeight, ScrPtr);
-    DumpX = x;
-    DumpY = y;
-    DumpWidth = width;
-    DumpHeight = height;
-    if (!BackScreenSize) {
-        BackScreenSize = 640 * 480;
-        BackScreen = malloc(BackScreenSize);
-        if (!BackScreen) {
-            S_ExitSystem("ERROR: Could not allocate enough memory to run (0)");
-        }
+    if (idx >= 0 && idx < RESOLUTIONS_SIZE) {
+        GameHiRes = idx;
+        return true;
     }
+    return false;
 }
 
-void TempVideoAdjust(int32_t hi_res, double sizer)
+bool SetPrevGameScreenSize()
 {
-    ModeLock = 1;
-    if (hi_res == HiRes && sizer == ScreenSizer) {
+    if (GameHiRes - 1 >= 0) {
+        GameHiRes--;
+        return true;
+    }
+    return false;
+}
+
+bool SetNextGameScreenSize()
+{
+    if (GameHiRes + 1 < RESOLUTIONS_SIZE) {
+        GameHiRes++;
+        return true;
+    }
+    return false;
+}
+
+int32_t GetGameScreenSizeIdx()
+{
+    return GameHiRes;
+}
+
+int32_t GetGameScreenWidth()
+{
+    return AvailableResolutions[GameHiRes].width;
+}
+
+int32_t GetGameScreenHeight()
+{
+    return AvailableResolutions[GameHiRes].height;
+}
+
+int32_t GetScreenSizeIdx()
+{
+    return HiRes;
+}
+
+int32_t GetScreenWidth()
+{
+    return AvailableResolutions[HiRes].width;
+}
+
+int32_t GetScreenHeight()
+{
+    return AvailableResolutions[HiRes].height;
+}
+
+void SetupScreenSize()
+{
+    int32_t width = GetScreenWidth();
+    int32_t height = GetScreenHeight();
+    int32_t x = (width - width) / 2;
+    int32_t y = (height - height) / 2;
+    phd_InitWindow(x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV);
+}
+
+void TempVideoAdjust(int32_t hi_res)
+{
+    ModeLock = true;
+    if (hi_res == HiRes) {
         return;
     }
 
@@ -46,8 +98,8 @@ void TempVideoAdjust(int32_t hi_res, double sizer)
 
 void TempVideoRemove()
 {
-    ModeLock = 0;
-    if (GameHiRes == HiRes && GameSizer == ScreenSizer) {
+    ModeLock = false;
+    if (GameHiRes == HiRes) {
         return;
     }
 
@@ -57,26 +109,19 @@ void TempVideoRemove()
 
 void S_NoFade()
 {
-    FadeValue = 0x100000;
-    FadeLimit = 0x100000;
+    // not implemented in TombATI
 }
 
 void S_FadeInInventory(int32_t fade)
 {
-    if (CurrentLevel == GF.title_level_num) {
-        HWR_DownloadPicture();
-    } else {
+    if (CurrentLevel != GF.title_level_num) {
         HWR_CopyPicture();
     }
 }
 
 void S_FadeOutInventory(int32_t fade)
 {
-    if (fade) {
-        FadeValue = 0x180000;
-        FadeLimit = 0x100000;
-        FadeAdder = -32768;
-    }
+    // not implemented in TombATI
 }
 
 void S_CopyBufferToScreen()
@@ -85,14 +130,4 @@ void S_CopyBufferToScreen()
     HWR_RenderEnd();
     HWR_BlitSurface(Surface3, Surface2);
     HWR_RenderToggle();
-}
-
-void T1MInjectSpecificDisplay()
-{
-    INJECT(0x00416470, SetupScreenSize);
-    INJECT(0x00416550, TempVideoAdjust);
-    INJECT(0x004167D0, TempVideoRemove);
-    INJECT(0x00416B10, S_NoFade);
-    INJECT(0x00416B20, S_FadeInInventory);
-    INJECT(0x00416BB0, S_FadeOutInventory);
 }

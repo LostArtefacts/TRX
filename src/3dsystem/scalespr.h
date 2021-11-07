@@ -12,6 +12,4 @@ void S_DrawUISprite(
 
 const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count);
 
-void T1MInject3DSystemScaleSpr();
-
 #endif

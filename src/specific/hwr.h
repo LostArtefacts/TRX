@@ -11,19 +11,12 @@
 // TODO: function naming, Render vs. Draw vs. Insert
 // TODO: port ATI3DCIF to actual D3D calls
 
-// clang-format off
-#define HWR_DownloadTextures        ((void      (*)(int16_t level_num))0x004084DE)
-#define HWR_InitPolyList            ((void      (*)())0x0040D0F7)
-#define HWR_OutputPolyList          ((void      (*)())0x0040D2E0)
-// clang-format on
-
 void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
 void HWR_GetSurfaceAndPitch(
     LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch);
-void HWR_DisableTextures();
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_ReleaseSurfaces();
 void HWR_DumpScreen();
@@ -33,7 +26,7 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_FadeWait();
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
 void HWR_CopyPicture();
-void HWR_DownloadPicture();
+void HWR_DownloadPicture(const PICTURE *pic);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);
 void HWR_SelectTexture(int tex_num);
 void HWR_DrawSprite(
@@ -60,9 +53,12 @@ void HWR_FMVDone();
 void HWR_FMVInit();
 void HWR_SetPalette();
 void HWR_SetupRenderContextAndRender();
+void HWR_DownloadTextures(int32_t pages);
+void HWR_InitPolyList();
+void HWR_OutputPolyList();
 
-int32_t
-HWR_ZedClipper(int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices);
+int32_t HWR_ZedClipper(
+    int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices);
 
 void HWR_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
@@ -73,11 +69,11 @@ void HWR_DrawTexturedQuad(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype);
 
+void HWR_ChangeWaterColor(const RGBF *color);
+
 const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
 const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
-
-void T1MInjectSpecificHWR();
 
 #endif

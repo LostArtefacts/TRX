@@ -1,14 +1,13 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/health.h"
 #include "game/items.h"
+#include "game/overlay.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/frontend.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -16,6 +15,7 @@
 TEXTSTRING *InvItemText[2] = { NULL, NULL };
 TEXTSTRING *InvRingText = NULL;
 
+static int16_t InvColours[IC_NUMBER_OF] = { 0 };
 static TEXTSTRING *InvDownArrow1 = NULL;
 static TEXTSTRING *InvDownArrow2 = NULL;
 static TEXTSTRING *InvUpArrow1 = NULL;
@@ -186,7 +186,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SHOTGUN_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -196,7 +196,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_MAGNUM_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d B", Lara.magnums.ammo);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -206,7 +206,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_UZI_OPTION:
         if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d C", Lara.uzis.ammo);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -216,7 +216,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SG_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -226,7 +226,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_MAG_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -236,7 +236,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_UZI_AMMO_OPTION:
         if (!InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -245,10 +245,10 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     case O_MEDI_OPTION:
         HealthBarTimer = 40;
-        DrawHealthBar();
+        Overlay_DrawHealthBar();
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -257,10 +257,10 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     case O_BIGMEDI_OPTION:
         HealthBarTimer = 40;
-        DrawHealthBar();
+        Overlay_DrawHealthBar();
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -281,7 +281,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_SCION_OPTION:
         if (!InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
-            MakeAmmoString(temp_text);
+            Overlay_MakeAmmoString(temp_text);
             InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
             T_BottomAlign(InvItemText[IT_QTY], 1);
             T_CentreH(InvItemText[IT_QTY], 1);
@@ -956,34 +956,4 @@ void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
     imo->item_ytrans_rate = -inv_item->ytrans_sel / imo->count;
     imo->item_ztrans_target = 0;
     imo->item_ztrans_rate = -inv_item->ztrans_sel / imo->count;
-}
-
-void T1MInjectGameInvFunc()
-{
-    INJECT(0x0041FEF0, InitColours);
-    INJECT(0x00420000, RingIsOpen);
-    INJECT(0x00420150, RingIsNotOpen);
-    INJECT(0x004201D0, RingNotActive);
-    INJECT(0x00420980, RingActive);
-    INJECT(0x004209C0, Inv_AddItem);
-    INJECT(0x004210D0, Inv_InsertItem);
-    INJECT(0x00421200, Inv_RequestItem);
-    INJECT(0x00421280, Inv_RemoveAllItems);
-    INJECT(0x004212A0, Inv_RemoveItem);
-    INJECT(0x004213B0, Inv_GetItemOption);
-    INJECT(0x00421550, RemoveInventoryText);
-    INJECT(0x00421580, Inv_RingInit);
-    INJECT(0x00421700, Inv_RingGetView);
-    INJECT(0x00421760, Inv_RingLight);
-    INJECT(0x004217A0, Inv_RingCalcAdders);
-    INJECT(0x004217D0, Inv_RingDoMotions);
-    INJECT(0x00421910, Inv_RingRotateLeft);
-    INJECT(0x00421940, Inv_RingRotateRight);
-    INJECT(0x00421970, Inv_RingMotionSetup);
-    INJECT(0x004219A0, Inv_RingMotionRadius);
-    INJECT(0x004219D0, Inv_RingMotionRotation);
-    INJECT(0x00421A00, Inv_RingMotionCameraPos);
-    INJECT(0x00421A30, Inv_RingMotionCameraPitch);
-    INJECT(0x00421A50, Inv_RingMotionItemSelect);
-    INJECT(0x00421AB0, Inv_RingMotionItemDeselect);
 }

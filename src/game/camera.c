@@ -9,7 +9,6 @@
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -48,7 +47,7 @@ void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
     Camera.pos.y += (ideal->y - Camera.pos.y) / speed;
     Camera.pos.room_number = ideal->room_number;
 
-    ChunkyFlag = 0;
+    ChunkyFlag = false;
 
     FLOOR_INFO *floor = GetFloor(
         Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
@@ -522,7 +521,7 @@ void CalculateCamera()
     }
 
     if (Camera.flags != NO_CHUNKY) {
-        ChunkyFlag = 1;
+        ChunkyFlag = true;
     }
 
     int32_t fixed_camera =
@@ -632,7 +631,7 @@ void CalculateCamera()
             &Camera.target.room_number);
         if (Camera.target.y > GetHeight(
                 floor, Camera.target.x, Camera.target.y, Camera.target.z)) {
-            ChunkyFlag = 0;
+            ChunkyFlag = false;
         }
 
         if (Camera.type == CAM_CHASE || Camera.flags == CHASE_OBJECT) {
@@ -667,7 +666,7 @@ void CalculateCamera()
         Camera.flags = 0;
     }
 
-    ChunkyFlag = 0;
+    ChunkyFlag = false;
 }
 
 void CameraOffsetAdditionalAngle(int16_t delta)
@@ -697,18 +696,4 @@ void CameraOffsetReset()
 {
     Camera.additional_angle = 0;
     Camera.additional_elevation = 0;
-}
-
-void T1MInjectGameCamera()
-{
-    INJECT(0x0040F920, InitialiseCamera);
-    INJECT(0x0040F9B0, MoveCamera);
-    INJECT(0x0040FCA0, ClipCamera);
-    INJECT(0x0040FD40, ShiftCamera);
-    INJECT(0x0040FEA0, SmartShift);
-    INJECT(0x00410410, ChaseCamera);
-    INJECT(0x00410530, ShiftClamp);
-    INJECT(0x004107B0, CombatCamera);
-    INJECT(0x004108F0, LookCamera);
-    INJECT(0x00410B40, CalculateCamera);
 }

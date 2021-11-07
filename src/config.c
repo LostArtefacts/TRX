@@ -4,7 +4,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
-#include "util.h"
+#include "log.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -36,6 +36,8 @@
     READ_CUSTOM(ReadBarColor, opt, default_value)
 
 T1MConfigStruct T1MConfig = { 0 };
+
+static const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
 
 static int8_t ReadBarShowingMode(
     struct json_object_s *obj, const char *name, int8_t default_value)
@@ -77,8 +79,8 @@ static int8_t ReadBarLocation(
     return default_value;
 }
 
-static int8_t
-ReadBarColor(struct json_object_s *obj, const char *name, int8_t default_value)
+static int8_t ReadBarColor(
+    struct json_object_s *obj, const char *name, int8_t default_value)
 {
     const char *value_str = json_object_get_string(obj, name, NULL);
     if (value_str) {
@@ -126,35 +128,39 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
 
     struct json_object_s *root_obj = json_value_as_object(root);
 
-    READ_BOOL(disable_healing_between_levels, 0);
-    READ_BOOL(disable_medpacks, 0);
-    READ_BOOL(disable_magnums, 0);
-    READ_BOOL(disable_uzis, 0);
-    READ_BOOL(disable_shotgun, 0);
-    READ_BOOL(enable_enemy_healthbar, 1);
-    READ_BOOL(enable_enhanced_look, 1);
-    READ_BOOL(enable_shotgun_flash, 1);
-    READ_BOOL(enable_cheats, 0);
-    READ_BOOL(enable_numeric_keys, 1);
-    READ_BOOL(enable_tr3_sidesteps, 1);
-    READ_BOOL(enable_braid, 0);
-    READ_BOOL(enable_compass_stats, 1);
-    READ_BOOL(enable_timer_in_inventory, 1);
-    READ_BOOL(enable_smooth_bars, 1);
-    READ_BOOL(fix_tihocan_secret_sound, 1);
-    READ_BOOL(fix_pyramid_secret_trigger, 1);
-    READ_BOOL(fix_secrets_killing_music, 1);
+    READ_BOOL(disable_healing_between_levels, false);
+    READ_BOOL(disable_medpacks, false);
+    READ_BOOL(disable_magnums, false);
+    READ_BOOL(disable_uzis, false);
+    READ_BOOL(disable_shotgun, false);
+    READ_BOOL(enable_enemy_healthbar, true);
+    READ_BOOL(enable_enhanced_look, true);
+    READ_BOOL(enable_shotgun_flash, true);
+    READ_BOOL(enable_cheats, false);
+    READ_BOOL(enable_numeric_keys, true);
+    READ_BOOL(enable_tr3_sidesteps, true);
+    READ_BOOL(enable_braid, false);
+    READ_BOOL(enable_compass_stats, true);
+    READ_BOOL(enable_timer_in_inventory, true);
+    READ_BOOL(enable_smooth_bars, true);
+    READ_BOOL(fix_tihocan_secret_sound, true);
+    READ_BOOL(fix_pyramid_secret_trigger, true);
+    READ_BOOL(fix_secrets_killing_music, true);
+    READ_BOOL(fix_descending_glitch, false);
+    READ_BOOL(fix_wall_jump_glitch, false);
+    READ_BOOL(fix_qwop_glitch, false);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);
-    READ_BOOL(fov_vertical, 1);
-    READ_BOOL(disable_demo, 0);
-    READ_BOOL(disable_fmv, 0);
-    READ_BOOL(disable_cine, 0);
-    READ_BOOL(disable_music_in_menu, 0);
-    READ_BOOL(enable_xbox_one_controller, 0);
+    READ_BOOL(fov_vertical, true);
+    READ_BOOL(disable_demo, false);
+    READ_BOOL(disable_fmv, false);
+    READ_BOOL(disable_cine, false);
+    READ_BOOL(disable_music_in_menu, false);
+    READ_BOOL(enable_xbox_one_controller, false);
     READ_FLOAT(brightness, 1.0);
-    READ_BOOL(enable_round_shadow, 1);
+    READ_BOOL(enable_round_shadow, true);
+    READ_BOOL(enable_3d_pickups, true);
 
     READ_BAR_SHOWING_MODE(healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT);
     READ_BAR_SHOWING_MODE(airbar_showing_mode, T1M_BSM_DEFAULT);

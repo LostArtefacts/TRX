@@ -5,9 +5,6 @@
 
 #include <stdint.h>
 
-// clang-format off
-// clang-format on
-
 void FMVInit();
 int32_t WinPlayFMV(int32_t sequence, int32_t mode);
 int32_t S_PlayFMV(int32_t sequence, int32_t mode);
@@ -36,7 +33,5 @@ void S_DrawScreenSprite2d(
 void S_FadeToBlack();
 
 void S_FinishInventory();
-
-void T1MInjectSpecificFrontend();
 
 #endif

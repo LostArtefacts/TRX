@@ -5,7 +5,51 @@
 
 #include <stdint.h>
 
-extern TEXTSTRING *InvItemText[2];
+extern int16_t InvKeysCurrent;
+extern int16_t InvKeysObjects;
+extern int16_t InvKeysQtys[];
+extern INVENTORY_ITEM *InvKeysList[];
+
+extern int16_t InvMainCurrent;
+extern int16_t InvMainObjects;
+extern int16_t InvMainQtys[];
+extern INVENTORY_ITEM *InvMainList[];
+
+extern int16_t InvOptionCurrent;
+extern int16_t InvOptionObjects;
+extern INVENTORY_ITEM *InvOptionList[];
+
+extern INVENTORY_ITEM InvItemCompass;
+extern INVENTORY_ITEM InvItemMedi;
+extern INVENTORY_ITEM InvItemBigMedi;
+extern INVENTORY_ITEM InvItemLeadBar;
+extern INVENTORY_ITEM InvItemPickup1;
+extern INVENTORY_ITEM InvItemPickup2;
+extern INVENTORY_ITEM InvItemScion;
+extern INVENTORY_ITEM InvItemPuzzle1;
+extern INVENTORY_ITEM InvItemPuzzle2;
+extern INVENTORY_ITEM InvItemPuzzle3;
+extern INVENTORY_ITEM InvItemPuzzle4;
+extern INVENTORY_ITEM InvItemKey1;
+extern INVENTORY_ITEM InvItemKey2;
+extern INVENTORY_ITEM InvItemKey3;
+extern INVENTORY_ITEM InvItemKey4;
+extern INVENTORY_ITEM InvItemPistols;
+extern INVENTORY_ITEM InvItemShotgun;
+extern INVENTORY_ITEM InvItemMagnum;
+extern INVENTORY_ITEM InvItemUzi;
+extern INVENTORY_ITEM InvItemGrenade;
+extern INVENTORY_ITEM InvItemPistolAmmo;
+extern INVENTORY_ITEM InvItemShotgunAmmo;
+extern INVENTORY_ITEM InvItemMagnumAmmo;
+extern INVENTORY_ITEM InvItemUziAmmo;
+extern INVENTORY_ITEM InvItemGame;
+extern INVENTORY_ITEM InvItemDetails;
+extern INVENTORY_ITEM InvItemSound;
+extern INVENTORY_ITEM InvItemControls;
+extern INVENTORY_ITEM InvItemLarasHome;
+
+extern TEXTSTRING *InvItemText[];
 extern TEXTSTRING *InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
@@ -46,8 +90,5 @@ void Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target);
 void Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target);
 void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item);
 void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item);
-
-void T1MInjectGameInvEntry();
-void T1MInjectGameInvFunc();
 
 #endif

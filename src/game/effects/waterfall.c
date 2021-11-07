@@ -4,7 +4,6 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "global/vars.h"
-#include "util.h"
 
 void SetupWaterfall(OBJECT_INFO *obj)
 {
@@ -12,7 +11,6 @@ void SetupWaterfall(OBJECT_INFO *obj)
     Objects[O_WATERFALL].draw_routine = DrawDummyItem;
 }
 
-// original name: WaterFall
 void ControlWaterFall(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];

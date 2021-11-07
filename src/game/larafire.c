@@ -14,7 +14,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -162,7 +161,7 @@ void LaraGun()
             } else if (Lara.gun_status == LGS_READY) {
                 draw = 1;
             }
-        } else if (Input & IN_DRAW) {
+        } else if (Input.draw) {
             if (Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
                 Lara.gun_type = LGT_PISTOLS;
                 InitialiseNewWeapon();
@@ -240,7 +239,7 @@ void LaraGun()
         Lara.mesh_ptrs[LM_HEAD] = Meshes[Objects[O_LARA].mesh_index + LM_HEAD];
         switch (Lara.gun_type) {
         case LGT_PISTOLS:
-            if (Lara.pistols.ammo && (Input & IN_ACTION)) {
+            if (Lara.pistols.ammo && Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -251,7 +250,7 @@ void LaraGun()
             break;
 
         case LGT_MAGNUMS:
-            if (Lara.magnums.ammo && (Input & IN_ACTION)) {
+            if (Lara.magnums.ammo && Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -262,7 +261,7 @@ void LaraGun()
             break;
 
         case LGT_UZIS:
-            if (Lara.uzis.ammo && (Input & IN_ACTION)) {
+            if (Lara.uzis.ammo && Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -273,7 +272,7 @@ void LaraGun()
             break;
 
         case LGT_SHOTGUN:
-            if (Lara.shotgun.ammo && (Input & IN_ACTION)) {
+            if (Lara.shotgun.ammo && Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -634,16 +633,4 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
             break;
         }
     }
-}
-
-void T1MInjectGameLaraFire()
-{
-    INJECT(0x00426BD0, LaraGun);
-    INJECT(0x00426E60, InitialiseNewWeapon);
-    INJECT(0x00426F20, LaraTargetInfo);
-    INJECT(0x004270C0, LaraGetNewTarget);
-    INJECT(0x004272A0, find_target_point);
-    INJECT(0x00427360, AimWeapon);
-    INJECT(0x00427430, FireWeapon);
-    INJECT(0x00427730, HitTarget);
 }

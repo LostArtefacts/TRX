@@ -7,7 +7,6 @@
 #include "global/vars.h"
 #include "specific/hwr.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <math.h>
 
@@ -16,6 +15,9 @@
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
+
+static PHD_VECTOR LsVectorView = { 0 };
+static PHD_MATRIX MatrixStack[MAX_MATRICES] = { 0 };
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
@@ -333,8 +335,6 @@ int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 
 void phd_RotateLight(int16_t pitch, int16_t yaw)
 {
-    LsYaw = yaw;
-    LsPitch = pitch;
     int32_t cp = phd_cos(pitch);
     int32_t sp = phd_sin(pitch);
     int32_t cy = phd_cos(yaw);
@@ -355,21 +355,17 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
 
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
-    int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
-    uint8_t *scrptr)
+    int32_t farz, int32_t view_angle)
 {
-    PhdWinPtr = &scrptr[x + y * scrwidth];
     PhdWinMaxX = width - 1;
     PhdWinMaxY = height - 1;
     PhdWinWidth = width;
     PhdWinHeight = height;
-    PhdCenterX = width / 2;
-    PhdCenterY = height / 2;
+    PhdWinCenterX = width / 2;
+    PhdWinCenterY = height / 2;
     PhdNearZ = nearz << W2V_SHIFT;
     PhdFarZ = farz << W2V_SHIFT;
     PhdViewDist = farz;
-    PhdScrHeight = scrheight;
-    PhdScrWidth = scrwidth;
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
@@ -399,14 +395,12 @@ void AlterFOV(PHD_ANGLE fov)
     PhdPersp = ((PhdWinWidth / 2) * c) / s;
 }
 
-// originally in shell.c
 void phd_PushMatrix()
 {
     PhdMatrixPtr++;
     PhdMatrixPtr[0] = PhdMatrixPtr[-1];
 }
 
-// originally in shell.c
 void phd_PushUnitMatrix()
 {
     PHD_MATRIX *mptr = ++PhdMatrixPtr;
@@ -571,8 +565,8 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
                 }
             }
 
-            int32_t xs = PhdCenterX + xv / (zv / PhdPersp);
-            int32_t ys = PhdCenterY + yv / (zv / PhdPersp);
+            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
+            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
             if (IsWibbleEffect) {
                 xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
                 ys += WibbleTable[(xs + WibbleOffset) & 0x1F];
@@ -630,11 +624,6 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
     obj_ptr += 4;
     obj_ptr = calc_object_vertices(obj_ptr);
     if (obj_ptr) {
-        FltWinTop = 0.0;
-        FltWinLeft = 0.0;
-        FltWinRight = PhdWinMaxX;
-        FltWinBottom = PhdWinMaxY;
-
         obj_ptr = calc_vertice_light(obj_ptr);
         obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
         obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
@@ -645,37 +634,8 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
 
 void S_InsertRoom(const int16_t *obj_ptr)
 {
-    FltWinLeft = PhdLeft;
-    FltWinRight = PhdRight;
-    FltWinTop = PhdTop;
-    FltWinBottom = PhdBottom;
     obj_ptr = calc_roomvert(obj_ptr);
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
     obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
-}
-
-void T1MInject3DSystem3DGen()
-{
-    INJECT(0x00401000, phd_GenerateW2V);
-    INJECT(0x004011A0, phd_LookAt);
-    INJECT(0x00401270, phd_GetVectorAngles);
-    INJECT(0x004012F0, phd_RotX);
-    INJECT(0x004013A0, phd_RotY);
-    INJECT(0x00401450, phd_RotZ);
-    INJECT(0x00401500, phd_RotYXZ);
-    INJECT(0x004016F0, phd_RotYXZpack);
-    INJECT(0x004018F0, phd_TranslateRel);
-    INJECT(0x004019A0, phd_TranslateAbs);
-    INJECT(0x00401A20, phd_VisibleZClip);
-    INJECT(0x00401AD0, phd_PutPolygons);
-    INJECT(0x00401C40, calc_object_vertices);
-    INJECT(0x00401E00, calc_vertice_light);
-    INJECT(0x00401F70, calc_roomvert);
-    INJECT(0x004023A0, phd_RotateLight);
-    INJECT(0x00402470, phd_InitPolyList);
-    INJECT(0x004025D0, phd_InitWindow);
-    INJECT(0x004026D0, AlterFOV);
-    INJECT(0x0043EA01, phd_PushMatrix);
-    INJECT(0x0043EA21, phd_PushUnitMatrix);
 }

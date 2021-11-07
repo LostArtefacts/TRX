@@ -5,9 +5,6 @@
 
 #include <stdint.h>
 
-// clang-format off
-// clang-format on
-
 void phd_GenerateW2V(PHD_3DPOS *viewpos);
 void phd_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
@@ -24,8 +21,7 @@ int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_InitWindow(
     int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
-    int32_t farz, int32_t view_angle, int32_t scrwidth, int32_t scrheight,
-    uint8_t *scrptr);
+    int32_t farz, int32_t view_angle);
 void AlterFOV(PHD_ANGLE fov);
 
 void phd_PushMatrix();
@@ -40,7 +36,5 @@ void S_InsertRoom(const int16_t *obj_ptr);
 const int16_t *calc_object_vertices(const int16_t *obj_ptr);
 const int16_t *calc_vertice_light(const int16_t *obj_ptr);
 const int16_t *calc_roomvert(const int16_t *obj_ptr);
-
-void T1MInject3DSystem3DGen();
 
 #endif

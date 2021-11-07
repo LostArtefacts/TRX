@@ -2,8 +2,6 @@
 
 #include "global/const.h"
 
-#include "util.h"
-
 static int16_t SinTable[0x402] = {
     0x0000, 0x0019, 0x0032, 0x004B, 0x0065, 0x007E, 0x0097, 0x00B0, 0x00C9,
     0x00E2, 0x00FB, 0x0114, 0x012E, 0x0147, 0x0160, 0x0179, 0x0192, 0x01AB,
@@ -427,12 +425,4 @@ uint32_t phd_sqrt(uint32_t n)
     } while (base);
 
     return result;
-}
-
-void T1MInject3DSystemPHDMath()
-{
-    INJECT(0x0042A7F0, phd_cos);
-    INJECT(0x0042A850, phd_sin);
-    INJECT(0x0042A8A0, phd_atan);
-    INJECT(0x0042A900, phd_sqrt);
 }

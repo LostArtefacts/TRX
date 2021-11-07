@@ -24,5 +24,6 @@ extern BITE_INFO BatBite;
 
 void SetupBat(OBJECT_INFO *obj);
 void BatControl(int16_t item_num);
+void InitialiseBat(int16_t item_num);
 
 #endif

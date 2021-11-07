@@ -3,7 +3,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <stdio.h>
 
@@ -172,10 +171,8 @@ void AddActiveItem(int16_t item_num)
     }
 
     if (item->active) {
-        sprintf(
-            StringToShow, "Item(%d)(Obj%d) already Active\n", item_num,
-            item->object_number);
-        S_ExitSystem(StringToShow);
+        S_ExitSystemFmt(
+            "Item(%d)(Obj%d) already Active\n", item_num, item->object_number);
     }
 
     item->active = 1;
@@ -322,22 +319,4 @@ void EffectNewRoom(int16_t fx_num, int16_t room_num)
     fx->room_number = room_num;
     fx->next_fx = r->fx_number;
     r->fx_number = fx_num;
-}
-
-void T1MInjectGameItems()
-{
-    INJECT(0x00421B10, InitialiseItemArray);
-    INJECT(0x00421B50, KillItem);
-    INJECT(0x00421C80, CreateItem);
-    INJECT(0x00421CC0, InitialiseItem);
-    INJECT(0x00421EB0, RemoveActiveItem);
-    INJECT(0x00421F60, RemoveDrawnItem);
-    INJECT(0x00421FE0, AddActiveItem);
-    INJECT(0x00422060, ItemNewRoom);
-    INJECT(0x00422110, SpawnItem);
-    INJECT(0x004221D0, GlobalItemReplace);
-    INJECT(0x00422250, InitialiseFXArray);
-    INJECT(0x00422280, CreateEffect);
-    INJECT(0x004222F0, KillEffect);
-    INJECT(0x004223E0, EffectNewRoom);
 }

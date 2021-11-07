@@ -760,40 +760,6 @@ typedef enum KEY_NUMBER {
     KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
-typedef enum INPUT_STATE {
-    IN_FORWARD = 1 << 0,
-    IN_BACK = 1 << 1,
-    IN_LEFT = 1 << 2,
-    IN_RIGHT = 1 << 3,
-    IN_JUMP = 1 << 4,
-    IN_DRAW = 1 << 5,
-    IN_ACTION = 1 << 6,
-    IN_SLOW = 1 << 7,
-    IN_OPTION = 1 << 8,
-    IN_LOOK = 1 << 9,
-    IN_STEPL = 1 << 10,
-    IN_STEPR = 1 << 11,
-    IN_ROLL = 1 << 12,
-    IN_PAUSE = 1 << 13,
-    IN_A = 1 << 14,
-    IN_B = 1 << 15,
-    IN_C = 1 << 16,
-    IN_MENUBACK = 1 << 17,
-    IN_UP = 1 << 18,
-    IN_DOWN = 1 << 19,
-    IN_SELECT = 1 << 20,
-    IN_DESELECT = 1 << 21,
-    IN_SAVE = 1 << 22,
-    IN_LOAD = 1 << 23,
-    IN_FLY_CHEAT = 1 << 24,
-    IN_ITEM_CHEAT = 1 << 25,
-    IN_CAMERA_UP = 1 << 26,
-    IN_CAMERA_DOWN = 1 << 27,
-    IN_CAMERA_LEFT = 1 << 28,
-    IN_CAMERA_RIGHT = 1 << 29,
-    IN_CAMERA_RESET = 1 << 30,
-} INPUT_STATE;
-
 typedef enum TEXTSTRING_FLAG {
     TF_ACTIVE = 1 << 0,
     TF_FLASH = 1 << 1,
@@ -814,12 +780,6 @@ typedef enum D_FLAGS {
     D_TRANS4 = 4,
     D_NEXT = 1 << 3,
 } D_FLAGS;
-
-typedef enum RENDER_SETTINGS_FLAG {
-    RSF_PERSPECTIVE = 1 << 0,
-    RSF_BILINEAR = 1 << 1,
-    RSF_FPS = 1 << 2,
-} RENDER_SETTINGS_FLAG;
 
 typedef enum COLL_TYPE {
     COLL_NONE = 0,
@@ -1208,6 +1168,12 @@ typedef struct HWR_Resolution {
     int width;
     int height;
 } HWR_Resolution;
+
+typedef struct RGBF {
+    float r;
+    float g;
+    float b;
+} RGBF;
 
 typedef struct RGB888 {
     uint8_t r;
@@ -1994,6 +1960,8 @@ typedef struct GAMEFLOW_LEVEL {
     int8_t demo;
     int16_t secrets;
     GAMEFLOW_SEQUENCE *sequence;
+    int8_t water_color_override;
+    RGBF water_color;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -2009,6 +1977,7 @@ typedef struct GAMEFLOW {
     int8_t enable_save_crystals;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
+    RGBF water_color;
 } GAMEFLOW;
 
 typedef struct MN_SFX_PLAY_INFO {
@@ -2041,6 +2010,45 @@ typedef struct SAMPLE_DATA {
 } SAMPLE_DATA;
 
 #pragma pack(pop)
+
+typedef struct PICTURE {
+    int32_t width;
+    int32_t height;
+    RGB888 *data;
+} PICTURE;
+
+typedef union INPUT_STATE {
+    uint32_t any;
+    struct {
+        uint32_t forward : 1;
+        uint32_t back : 1;
+        uint32_t left : 1;
+        uint32_t right : 1;
+        uint32_t jump : 1;
+        uint32_t draw : 1;
+        uint32_t action : 1;
+        uint32_t slow : 1;
+        uint32_t option : 1;
+        uint32_t look : 1;
+        uint32_t step_left : 1;
+        uint32_t step_right : 1;
+        uint32_t roll : 1;
+        uint32_t pause : 1;
+        uint32_t select : 1;
+        uint32_t deselect : 1;
+        uint32_t save : 1;
+        uint32_t load : 1;
+        uint32_t fly_cheat : 1;
+        uint32_t item_cheat : 1;
+        uint32_t level_skip_cheat : 1;
+        uint32_t health_cheat : 1;
+        uint32_t camera_up : 1;
+        uint32_t camera_down : 1;
+        uint32_t camera_left : 1;
+        uint32_t camera_right : 1;
+        uint32_t camera_reset : 1;
+    };
+} INPUT_STATE;
 
 typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
 typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);

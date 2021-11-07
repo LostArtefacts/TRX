@@ -39,7 +39,6 @@
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
 #include "game/hair.h"
-#include "game/health.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -59,6 +58,7 @@
 #include "game/objects/scion.h"
 #include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
@@ -79,11 +79,11 @@
 #include "game/traps/thors_hammer.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -99,6 +99,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     InitialiseGameFlags();
 
@@ -120,7 +121,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     InitColours();
     T_InitPrint();
-    InitialisePickUpDisplay();
+    Overlay_Init();
 
     HealthBarTimer = 100;
     mn_reset_sound_effects();
@@ -151,7 +152,7 @@ void InitialiseGameFlags()
     }
 
     for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        CDFlags[i] = 0;
+        MusicTrackFlags[i] = 0;
     }
 
     /* Clear Object Loaded flags */
@@ -159,7 +160,7 @@ void InitialiseGameFlags()
         Objects[i].loaded = 0;
     }
 
-    LevelComplete = 0;
+    LevelComplete = false;
     FlipEffect = -1;
     PierreItemNum = NO_ITEM;
 }
@@ -437,15 +438,4 @@ void InitialiseObjects()
         Objects[O_SG_AMMO_ITEM].floor = NULL;
         Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }
-}
-
-void T1MInjectGameSetup()
-{
-    INJECT(0x004362A0, InitialiseLevel);
-    INJECT(0x004363C0, InitialiseLevelFlags);
-
-    INJECT(0x004363E0, BaddyObjects);
-    INJECT(0x00437010, TrapObjects);
-    INJECT(0x00437370, ObjectObjects);
-    INJECT(0x00437A50, InitialiseObjects);
 }

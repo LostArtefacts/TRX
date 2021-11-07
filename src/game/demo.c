@@ -10,13 +10,26 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/frontend.h"
-#include "util.h"
+
+#include <stdbool.h>
+
+static int32_t DemoLevel = -1;
+static uint32_t *DemoPtr = NULL;
 
 int32_t StartDemo()
 {
-    LOG_DEBUG("");
     TEXTSTRING *txt;
     START_INFO start, *s;
+
+    bool any_demos = false;
+    for (int i = GF.first_level_num; i < GF.last_level_num; i++) {
+        if (GF.levels[i].demo) {
+            any_demos = true;
+        }
+    }
+    if (!any_demos) {
+        return GF_EXIT_TO_TITLE;
+    }
 
     int16_t level_num = DemoLevel;
     do {
@@ -44,8 +57,6 @@ int32_t StartDemo()
     T1MConfig.enable_enhanced_look = 0;
 
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
-        TitleLoaded = 0;
-
         LoadLaraDemoPos();
 
         SeedRandomDraw(0xD371F947);
@@ -71,15 +82,15 @@ int32_t StartDemo()
 
 void LoadLaraDemoPos()
 {
+    DemoPtr = DemoData;
     ITEM_INFO *item = LaraItem;
-    item->pos.x = DemoPtr[0];
-    item->pos.y = DemoPtr[1];
-    item->pos.z = DemoPtr[2];
-    item->pos.x_rot = DemoPtr[3];
-    item->pos.y_rot = DemoPtr[4];
-    item->pos.z_rot = DemoPtr[5];
-    int16_t room_num = DemoPtr[6];
-    DemoCount += 7;
+    item->pos.x = *DemoPtr++;
+    item->pos.y = *DemoPtr++;
+    item->pos.z = *DemoPtr++;
+    item->pos.x_rot = *DemoPtr++;
+    item->pos.y_rot = *DemoPtr++;
+    item->pos.z_rot = *DemoPtr++;
+    int16_t room_num = *DemoPtr++;
 
     if (item->room_number != room_num) {
         ItemNewRoom(Lara.item_number, room_num);
@@ -90,21 +101,34 @@ void LoadLaraDemoPos()
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 
-void GetDemoInput()
+bool ProcessDemoInput()
 {
-    if (DemoCount >= DEMO_COUNT_MAX) {
-        Input = -1;
-    } else {
-        Input = DemoPtr[DemoCount];
+    if (DemoPtr >= &DemoData[DEMO_COUNT_MAX] || *DemoPtr == -1) {
+        return false;
     }
-    if (Input != -1) {
-        DemoCount++;
-    }
-}
 
-void T1MInjectGameDemo()
-{
-    INJECT(0x00415B70, StartDemo);
-    INJECT(0x00415CB0, LoadLaraDemoPos);
-    INJECT(0x00415D70, GetDemoInput);
+    // Translate demo inputs (that use TombATI key values) to T1M inputs.
+    Input = (INPUT_STATE) {
+        0,
+        .forward = (bool)(*DemoPtr & (1 << 0)),
+        .back = (bool)(*DemoPtr & (1 << 1)),
+        .left = (bool)(*DemoPtr & (1 << 2)),
+        .right = (bool)(*DemoPtr & (1 << 3)),
+        .jump = (bool)(*DemoPtr & (1 << 4)),
+        .draw = (bool)(*DemoPtr & (1 << 5)),
+        .action = (bool)(*DemoPtr & (1 << 6)),
+        .slow = (bool)(*DemoPtr & (1 << 7)),
+        .option = (bool)(*DemoPtr & (1 << 8)),
+        .look = (bool)(*DemoPtr & (1 << 9)),
+        .step_left = (bool)(*DemoPtr & (1 << 10)),
+        .step_right = (bool)(*DemoPtr & (1 << 11)),
+        .roll = (bool)(*DemoPtr & (1 << 12)),
+        .select = (bool)(*DemoPtr & (1 << 20)),
+        .deselect = (bool)(*DemoPtr & (1 << 21)),
+        .save = (bool)(*DemoPtr & (1 << 22)),
+        .load = (bool)(*DemoPtr & (1 << 23)),
+    };
+
+    DemoPtr++;
+    return true;
 }

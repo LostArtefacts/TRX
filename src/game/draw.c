@@ -2,23 +2,32 @@
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/scalespr.h"
+#include "config.h"
+#include "game/control.h"
 #include "game/game.h"
 #include "game/hair.h"
-#include "game/health.h"
+#include "game/inv.h"
+#include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/output.h"
-#include "util.h"
 
-static int16_t InterpolatedBounds[6];
+#include <stdlib.h>
+
+static int16_t InterpolatedBounds[6] = { 0 };
+static PHD_MATRIX *IMMatrixPtr = NULL;
+static PHD_MATRIX IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
+static int32_t IMRate = 0;
+static int32_t IMFrac = 0;
+static bool CameraUnderwater = false;
 
 int32_t DrawPhaseCinematic()
 {
     S_InitialisePolyList();
     S_ClearScreen();
-    CameraUnderwater = 0;
-    for (int i = 0; i < RoomsToDrawNum; i++) {
-        int32_t room_num = RoomsToDraw[i];
+    CameraUnderwater = false;
+    for (int i = 0; i < RoomsToDrawCount; i++) {
+        int16_t room_num = RoomsToDraw[i];
         ROOM_INFO *r = &RoomInfo[room_num];
         r->top = 0;
         r->left = 0;
@@ -36,7 +45,7 @@ int32_t DrawPhaseGame()
 {
     S_InitialisePolyList();
     DrawRooms(Camera.pos.room_number);
-    DrawGameInfo();
+    Overlay_DrawGameInfo();
     S_OutputPolyList();
     Camera.number_frames = S_DumpScreen();
     S_AnimateTextures(Camera.number_frames);
@@ -57,8 +66,10 @@ void DrawRooms(int16_t current_room)
     r->bottom = PhdBottom;
     r->bound_active = 1;
 
-    RoomsToDrawNum = 0;
-    RoomsToDraw[RoomsToDrawNum++] = current_room;
+    RoomsToDrawCount = 0;
+    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        RoomsToDraw[RoomsToDrawCount++] = current_room;
+    }
 
     CameraUnderwater = r->flags & RF_UNDERWATER;
 
@@ -75,7 +86,7 @@ void DrawRooms(int16_t current_room)
     phd_PopMatrix();
     S_ClearScreen();
 
-    for (int i = 0; i < RoomsToDrawNum; i++) {
+    for (int i = 0; i < RoomsToDrawCount; i++) {
         PrintRooms(RoomsToDraw[i]);
     }
 
@@ -237,7 +248,9 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     }
 
     if (!r->bound_active) {
-        RoomsToDraw[RoomsToDrawNum++] = room_num;
+        if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+            RoomsToDraw[RoomsToDrawCount++] = room_num;
+        }
         r->bound_active = 1;
     }
     return 1;
@@ -341,6 +354,207 @@ void DrawSpriteItem(ITEM_INFO *item)
 
 void DrawDummyItem(ITEM_INFO *item)
 {
+}
+
+void DrawPickupItem(ITEM_INFO *item)
+{
+    if (!T1MConfig.enable_3d_pickups) {
+        DrawSpriteItem(item);
+        return;
+    }
+
+    // Convert item to menu display item.
+    int16_t item_num_option = Inv_GetItemOption(item->object_number);
+    // Save the frame number.
+    int16_t old_frame_number = item->frame_number;
+    // Modify item to be the anim for inv item and animation 0.
+    item->anim_number = Objects[item_num_option].anim_index;
+    item->frame_number = Anims[item->anim_number].frame_base;
+
+    OBJECT_INFO *object = &Objects[item_num_option];
+
+    int16_t *frmptr[2];
+    int32_t rate;
+    int32_t frac = GetFrames(item, frmptr, &rate);
+
+    // Restore the old frame number in case we need to get the sprite again.
+    item->frame_number = old_frame_number;
+
+    // Fall back to normal sprite rendering if not found.
+    if (object->nmeshes < 0) {
+        DrawSpriteItem(item);
+        return;
+    }
+
+    // Good news is there is a mesh, we just need to work out where to put it
+
+    // First - Is there floor under the item?
+    // This is mostly true, but for example the 4 items in the Obelisk of
+    // Kharmoon the 4 items are sitting ontop of a static mesh which is not
+    // floor.
+    FLOOR_INFO *floor =
+        GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    int16_t floor_height =
+        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    // Assume this is our offset.
+    int16_t offset = floor_height;
+    // Is the floor "just below" the item?
+    int16_t floor_mapped_delta = abs(floor_height - item->pos.y);
+    if (floor_mapped_delta > WALL_L / 4 || floor_mapped_delta == 0) {
+        // No, now we need to move it a bit.
+        // First get the sprite that was to be used,
+
+        int16_t spr_num =
+            Objects[item->object_number].mesh_index - item->frame_number;
+        PHD_SPRITE *sprite = &PhdSpriteInfo[spr_num];
+
+        // and get the animation bounding box, which is not the mesh one.
+        int16_t min_y = frmptr[0][FRAME_BOUND_MIN_Y];
+        int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
+        int16_t anim_y = frmptr[0][FRAME_POS_Y];
+
+        // Sifferent objects need different heuristics.
+        switch (item_num_option) {
+        case O_GUN_OPTION:
+        case O_SHOTGUN_OPTION:
+        case O_MAGNUM_OPTION:
+        case O_UZI_OPTION:
+        case O_MAG_AMMO_OPTION:
+        case O_UZI_AMMO_OPTION:
+        case O_EXPLOSIVE_OPTION:
+        case O_LEADBAR_OPTION:
+        case O_PICKUP_OPTION1:
+        case O_PICKUP_OPTION2:
+        case O_SCION_OPTION:
+            // Ignore the sprite and just position based upon the anim.
+            offset = item->pos.y + (min_y - anim_y) / 2;
+            break;
+        case O_MEDI_OPTION:
+        case O_BIGMEDI_OPTION:
+        case O_SG_AMMO_OPTION:
+        case O_PUZZLE_OPTION1:
+        case O_PUZZLE_OPTION2:
+        case O_PUZZLE_OPTION3:
+        case O_PUZZLE_OPTION4:
+        case O_KEY_OPTION1:
+        case O_KEY_OPTION2:
+        case O_KEY_OPTION3:
+        case O_KEY_OPTION4: {
+            // Take the difference from the bottom of the sprite and the bottom
+            // of the animation and divide it by 8.
+            // 8 was chosen because in testing it positioned objects correctly.
+            // Specifically the 4 items in the Obelisk of Kharmoon and keys.
+            // Some objects have a centred mesh and some have one that is from
+            // the bottom, for the centred ones; move up from the
+            // bottom is necessary.
+            int centred = abs(min_y + max_y) < 8;
+            if (floor_mapped_delta) {
+                offset = item->pos.y - abs(min_y - sprite->y1) / 8;
+            } else if (centred) {
+                offset = item->pos.y + min_y;
+            }
+            break;
+        }
+        }
+    }
+
+    phd_PushMatrix();
+    phd_TranslateAbs(item->pos.x, offset, item->pos.z);
+
+    int16_t *frame = &object->frame_base[(object->nmeshes * 2 + 10)];
+    CalculateObjectLighting(item, frame);
+
+    int32_t x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    S_CalculateLight(x, y, z, item->room_number);
+
+    int32_t clip = S_GetObjectBounds(frame);
+    if (clip) {
+        // From this point on the function is a slightly customised version
+        // of the code in DrawAnimatingItem starting with the line that
+        // matches the following line.
+        int32_t bit = 1;
+        int16_t **meshpp = &Meshes[object->mesh_index];
+        int32_t *bone = &AnimBones[object->bone_index];
+
+        if (!frac) {
+            phd_TranslateRel(
+                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+                frmptr[0][FRAME_POS_Z]);
+
+            int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
+            phd_RotYXZpack(*packed_rotation++);
+
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons(*meshpp++, clip);
+            }
+
+            for (int i = 1; i < object->nmeshes; i++) {
+                int32_t bone_extra_flags = *bone;
+                if (bone_extra_flags & BEB_POP) {
+                    phd_PopMatrix();
+                }
+
+                if (bone_extra_flags & BEB_PUSH) {
+                    phd_PushMatrix();
+                }
+
+                phd_TranslateRel(bone[1], bone[2], bone[3]);
+                phd_RotYXZpack(*packed_rotation++);
+
+                // Extra rotation is ignored in this case as it's not needed.
+
+                bit <<= 1;
+                if (item->mesh_bits & bit) {
+                    phd_PutPolygons(*meshpp, clip);
+                }
+
+                bone += 4;
+                meshpp++;
+            }
+        } else {
+            // This should never happen but is here "just in case".
+            InitInterpolate(frac, rate);
+            phd_TranslateRel_ID(
+                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
+                frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
+                frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
+            int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
+            int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
+            phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+            if (item->mesh_bits & bit) {
+                phd_PutPolygons_I(*meshpp++, clip);
+            }
+
+            for (int i = 1; i < object->nmeshes; i++) {
+                int32_t bone_extra_flags = *bone;
+                if (bone_extra_flags & BEB_POP) {
+                    phd_PopMatrix_I();
+                }
+
+                if (bone_extra_flags & BEB_PUSH) {
+                    phd_PushMatrix_I();
+                }
+
+                phd_TranslateRel_I(bone[1], bone[2], bone[3]);
+                phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+                // Extra rotation is ignored in this case as it's not needed.
+
+                bit <<= 1;
+                if (item->mesh_bits & bit) {
+                    phd_PutPolygons_I(*meshpp, clip);
+                }
+
+                bone += 4;
+                meshpp++;
+            }
+        }
+    }
+    phd_PopMatrix();
 }
 
 void DrawAnimatingItem(ITEM_INFO *item)
@@ -465,7 +679,6 @@ void DrawAnimatingItem(ITEM_INFO *item)
     phd_PopMatrix();
 }
 
-// originally in moveblok.c
 void DrawUnclippedItem(ITEM_INFO *item)
 {
     int32_t left = PhdLeft;
@@ -1351,26 +1564,4 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
-}
-
-void T1MInjectGameDraw()
-{
-    INJECT(0x00416BE0, DrawPhaseCinematic);
-    INJECT(0x00416C70, DrawPhaseGame);
-    INJECT(0x00416CB0, DrawRooms);
-    INJECT(0x00416E30, GetRoomBounds);
-    INJECT(0x00416EB0, SetRoomBounds);
-    INJECT(0x004171E0, PrintRooms);
-    INJECT(0x00417400, DrawEffect);
-    INJECT(0x00417510, DrawSpriteItem);
-    INJECT(0x00417550, DrawAnimatingItem);
-    INJECT(0x00417AA0, DrawLara);
-    INJECT(0x004185B0, CalculateObjectLighting);
-    INJECT(0x00418680, DrawLaraInt);
-    INJECT(0x00419A60, InterpolateMatrix);
-    INJECT(0x00419C30, InterpolateArmMatrix);
-    INJECT(0x00419D30, GetFrames);
-    INJECT(0x00419DD0, GetBoundsAccurate);
-    INJECT(0x00419E50, GetBestFrame);
-    INJECT(0x0042BDF0, DrawUnclippedItem);
 }

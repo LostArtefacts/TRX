@@ -12,29 +12,27 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/shed.h"
 #include "specific/smain.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
+static const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+
 void GameMain()
 {
-    SoundIsActive = 1;
-    HiRes = 0;
-    GameHiRes = 0;
-    ScreenSizer = 1.0;
-    GameSizer = 1.0;
+    SoundIsActive = true;
 
     const char *gameflow_path = T1MGameflowPath;
 
@@ -63,10 +61,7 @@ void GameMain()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    GameSizer = 1.0;
-    OldRenderSettings = RenderSettings;
-    HiRes = 0;
-    TempVideoAdjust(2, 1.0);
+    TempVideoAdjust(2);
     S_DisplayPicture("data\\eidospc");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
@@ -79,12 +74,6 @@ void GameMain()
     WinPlayFMV(FMV_ESCAPE, 1);
     WinPlayFMV(FMV_INTRO, 1);
     HWR_FMVDone();
-
-    GameMemoryPointer = malloc(MALLOC_SIZE);
-    if (!GameMemoryPointer) {
-        S_ExitSystem("ERROR: Could not allocate enough memory");
-        return;
-    }
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
 
@@ -119,22 +108,18 @@ void GameMain()
 
         case GF_EXIT_TO_TITLE:
             T_InitPrint();
-            TempVideoAdjust(2, 1.0);
+            TempVideoAdjust(2);
             S_DisplayPicture("data\\titleh");
             NoInputCount = 0;
             if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }
-            TitleLoaded = 1;
 
-            dword_45B940 = 0;
             gf_option = Display_Inventory(INV_TITLE_MODE);
-            dword_45B940 = 1;
 
             S_FadeToBlack();
             S_MusicStop();
-
             break;
 
         case GF_EXIT_GAME:
@@ -142,19 +127,11 @@ void GameMain()
             break;
 
         default:
-            sprintf(
-                StringToShow, "MAIN: Unknown request %x %d", gf_direction,
-                gf_param);
-            S_ExitSystem(StringToShow);
+            S_ExitSystemFmt(
+                "MAIN: Unknown request %x %d", gf_direction, gf_param);
             return;
         }
     }
 
     S_WriteUserSettings();
-}
-
-void T1MInjectSpecificShell()
-{
-    INJECT(0x0041E260, S_ExitSystem);
-    INJECT(0x00438410, GameMain);
 }

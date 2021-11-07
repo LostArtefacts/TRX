@@ -13,6 +13,4 @@ void CreateZone(ITEM_INFO *item);
 int32_t InitialiseLOT(LOT_INFO *LOT);
 void ClearLOT(LOT_INFO *LOT);
 
-void T1MInjectGameLOT();
-
 #endif

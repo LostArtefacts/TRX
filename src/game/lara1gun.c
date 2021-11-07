@@ -6,12 +6,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
-// original name: draw_shotgun
 void DrawShotgun()
 {
     int16_t ani = Lara.left_arm.frame_number;
@@ -30,7 +28,6 @@ void DrawShotgun()
     Lara.right_arm.frame_number = ani;
 }
 
-// origianl name: undraw_shotgun
 void UndrawShotgun()
 {
     int16_t ani = ani = Lara.left_arm.frame_number;
@@ -78,7 +75,6 @@ void UndrawShotgun()
     Lara.left_arm.frame_number = ani;
 }
 
-// original name: draw_shotgun_meshes
 void DrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] =
@@ -88,7 +84,6 @@ void DrawShotgunMeshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-// original name: undraw_shotgun_meshes
 void UndrawShotgunMeshes()
 {
     Lara.mesh_ptrs[LM_HAND_L] = Meshes[Objects[O_LARA].mesh_index + LM_HAND_L];
@@ -96,7 +91,6 @@ void UndrawShotgunMeshes()
     Lara.mesh_ptrs[LM_TORSO] = Meshes[Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-// original name: ReadyShotgun
 void ReadyShotgun()
 {
     Lara.gun_status = LGS_READY;
@@ -121,7 +115,7 @@ void RifleHandler(int32_t weapon_type)
 {
     WEAPON_INFO *winfo = &Weapons[LGT_SHOTGUN];
 
-    if (Input & IN_ACTION) {
+    if (Input.action) {
         LaraTargetInfo(winfo);
     } else {
         Lara.target = NULL;
@@ -152,7 +146,7 @@ void AnimateShotgun()
                 ani = AF_SG_RECOIL;
             }
         } else if (ani == AF_SG_RECOIL) {
-            if (Input & IN_ACTION) {
+            if (Input.action) {
                 FireShotgun();
                 ani++;
             }
@@ -170,20 +164,16 @@ void AnimateShotgun()
             }
         }
     } else {
-        if (ani == AF_SG_AIM && (Input & IN_ACTION)) {
+        if (ani == AF_SG_AIM && Input.action) {
             ani++;
         } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
             ani++;
             if (ani == AF_SG_DRAW) {
-                if (Input & IN_ACTION) {
-                    ani = AF_SG_RECOIL;
-                } else {
-                    ani = AF_SG_UNAIM;
-                }
+                ani = Input.action ? AF_SG_RECOIL : AF_SG_UNAIM;
             }
         } else {
             if (ani == AF_SG_RECOIL) {
-                if (Input & IN_ACTION) {
+                if (Input.action) {
                     FireShotgun();
                     ani++;
                 } else {
@@ -236,11 +226,4 @@ void FireShotgun()
         SoundEffect(
             Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, SPM_NORMAL);
     }
-}
-
-void T1MInjectGameLaraGun1()
-{
-    INJECT(0x00425E30, DrawShotgun);
-    INJECT(0x00425F50, UndrawShotgun);
-    INJECT(0x004260F0, RifleHandler);
 }

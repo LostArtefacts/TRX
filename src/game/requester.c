@@ -5,14 +5,12 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/output.h"
-#include "util.h"
 
 #include <string.h>
 
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-// original name: Init_Requester
 void InitRequester(REQUEST_INFO *req)
 {
     req->heading = NULL;
@@ -27,7 +25,6 @@ void InitRequester(REQUEST_INFO *req)
     req->items = 0;
 }
 
-// original name: Remove_Requester
 void RemoveRequester(REQUEST_INFO *req)
 {
     T_RemovePrint(req->heading);
@@ -44,7 +41,6 @@ void RemoveRequester(REQUEST_INFO *req)
     }
 }
 
-// original name: Display_Requester
 int32_t DisplayRequester(REQUEST_INFO *req)
 {
     int32_t edge_y = req->y;
@@ -133,7 +129,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         }
     }
 
-    if (CHK_ANY(InputDB, IN_BACK)) {
+    if (InputDB.back) {
         if (req->requested < req->items - 1) {
             req->requested++;
         }
@@ -145,7 +141,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (CHK_ANY(InputDB, IN_FORWARD)) {
+    if (InputDB.forward) {
         if (req->requested) {
             req->requested--;
         }
@@ -157,16 +153,16 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (CHK_ANY(InputDB, IN_SELECT)) {
+    if (InputDB.select) {
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
-            Input = 0;
+            Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
             RemoveRequester(req);
             return req->requested + 1;
         }
-    } else if (InputDB & IN_DESELECT) {
+    } else if (InputDB.deselect) {
         RemoveRequester(req);
         return -1;
     }

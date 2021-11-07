@@ -1,6 +1,8 @@
 #ifndef T1M_GLOBAL_CONST_H
 #define T1M_GLOBAL_CONST_H
 
+#include "util.h"
+
 #define MALLOC_SIZE 0x1000000 // 16 MB
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
@@ -28,15 +30,13 @@
 #define MAX_SAVE_SLOTS 16
 #define MAX_LEVEL_NAME_LENGTH 48
 #define NUM_SLOTS 8
-#define MAX_ROOMS 1024
-#define MAX_ROOMS_TO_DRAW 100
 #define MAX_FRAMES 10
 #define MAX_CD_TRACKS 64
-#define MAX_TEXTURES 2048
-#define MAX_TEXTPAGES 32
-#define MAX_SPRITES_PAGE 4
+#define MAX_TEXTURES 8192
+#define MAX_TEXTPAGES 128
 #define MAX_SPRITES 512
 #define MAX_FLIP_MAPS 10
+#define MAX_ROOMS_TO_DRAW 100
 #define DEMO_COUNT_MAX 9000
 #define MAX_ITEMS 10240
 #define MAX_SECRETS 16

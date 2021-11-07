@@ -9,7 +9,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -72,16 +71,16 @@ static int32_t DisplayPauseRequester(
         AddRequesterItem(&PauseRequester, option2, 0);
 
         is_pause_text_ready = 1;
-        InputDB = 0;
-        Input = 0;
+        InputDB = (INPUT_STATE) { 0 };
+        Input = (INPUT_STATE) { 0 };
     }
 
     int select = DisplayRequester(&PauseRequester);
     if (select > 0) {
         is_pause_text_ready = 0;
     } else {
-        InputDB = 0;
-        Input = 0;
+        InputDB = (INPUT_STATE) { 0 };
+        Input = (INPUT_STATE) { 0 };
     }
     return select;
 }
@@ -99,14 +98,12 @@ static int32_t PauseLoop()
         S_DumpScreen();
         S_UpdateInput();
 
-        InputDB = GetDebouncedInput(Input);
-
         switch (state) {
         case 0:
-            if (CHK_ANY(InputDB, IN_PAUSE)) {
+            if (InputDB.pause) {
                 return 1;
             }
-            if (CHK_ANY(InputDB, IN_OPTION)) {
+            if (InputDB.option) {
                 state = 1;
             }
             break;
@@ -142,18 +139,20 @@ static int32_t PauseLoop()
 
 int8_t S_Pause()
 {
-    LOG_DEBUG("");
     OldInputDB = Input;
 
     int old_overlay_flag = OverlayFlag;
     OverlayFlag = -3;
     InvMode = INV_PAUSE_MODE;
+
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
+
     S_FadeInInventory(1);
-    TempVideoAdjust(HiRes, 1.0);
-    S_SetupAboveWater(0);
+    TempVideoAdjust(GetScreenSizeIdx());
+    S_SetupAboveWater(false);
 
     S_MusicPause();
 

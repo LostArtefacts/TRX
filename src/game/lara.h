@@ -3,6 +3,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 extern WEAPON_INFO Weapons[NUM_WEAPONS];
@@ -141,22 +142,23 @@ void LaraColJumper(ITEM_INFO *item, COLL_INFO *coll);
 
 void GetLaraCollisionInfo(ITEM_INFO *item, COLL_INFO *coll);
 void LaraSlideSlope(ITEM_INFO *item, COLL_INFO *coll);
-int32_t LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraFallen(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll);
 void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll);
-int32_t LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraDeflectEdge(ITEM_INFO *item, COLL_INFO *coll);
 void LaraDeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll);
 void LaraSlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll);
-int32_t TestLaraVault(ITEM_INFO *item, COLL_INFO *coll);
-int32_t LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll);
-int32_t LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll);
-int32_t TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle);
-int32_t TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll);
+bool TestLaraVault(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraTestHangJump(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll);
+bool TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle);
+bool TestLaraSlide(ITEM_INFO *item, COLL_INFO *coll);
 int16_t LaraFloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
-int32_t LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraLandedBad(ITEM_INFO *item, COLL_INFO *coll);
 void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll);
 void LaraWaterCurrent(COLL_INFO *coll);
 void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll);
-int32_t LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll);
+bool LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll);
 
 extern void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
 extern void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
@@ -194,13 +196,5 @@ void LookUpDown();
 void ResetLook();
 
 void LaraCheatGetStuff();
-
-void T1MInjectGameLara();
-void T1MInjectGameLaraMisc();
-void T1MInjectGameLaraSurf();
-void T1MInjectGameLaraSwim();
-void T1MInjectGameLaraFire();
-void T1MInjectGameLaraGun1();
-void T1MInjectGameLaraGun2();
 
 #endif

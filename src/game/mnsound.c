@@ -7,6 +7,8 @@
 #include "specific/sndpc.h"
 #include "util.h"
 
+#include <stdio.h>
+
 #define SOUND_RANGE 8
 #define SOUND_RADIUS (SOUND_RANGE << 10)
 #define SOUND_RANGE_MULT_CONSTANT ((int32_t)(32768 / SOUND_RADIUS))
@@ -34,14 +36,17 @@ typedef enum SAMPLE_FLAG {
     VOLUME_WIBBLE = 1 << 14,
 } SAMPLE_FLAG;
 
+static MN_SFX_PLAY_INFO SFXPlaying[MAX_PLAYING_FX] = { 0 };
+static int32_t MnSoundMasterVolumeDefault = 32;
+static int16_t MnAmbientLookup[MAX_AMBIENT_FX] = { -1 };
+static int32_t MnAmbientLookupIdx = 0;
+
 void mn_reset_sound_effects()
 {
     if (!SoundIsActive) {
         return;
     }
     MnSoundMasterVolume = MnSoundMasterVolumeDefault;
-    MnSoundMasterFadeOn = 0;
-    MnSoundFadeCounter = 0;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         mn_clear_fx_slot(&SFXPlaying[i]);
@@ -57,11 +62,9 @@ void mn_reset_sound_effects()
         }
         SAMPLE_INFO *s = &SampleInfos[SampleLUT[i]];
         if (s->volume < 0) {
-            sprintf(
-                StringToShow,
+            S_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
                 s->volume);
-            S_ExitSystem(StringToShow);
         }
 
         if ((s->flags & 3) == SOUND_AMBIENT) {
@@ -75,7 +78,6 @@ void mn_reset_sound_effects()
     }
 }
 
-// original name: SoundEffect
 int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
     if (!SoundIsActive) {
@@ -242,8 +244,8 @@ int32_t mn_sound_effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     return 0;
 }
 
-MN_SFX_PLAY_INFO *
-mn_get_fx_slot(int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
+MN_SFX_PLAY_INFO *mn_get_fx_slot(
+    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
 {
     switch (mode) {
     case SOUND_WAIT:
@@ -312,19 +314,6 @@ void mn_update_sound_effects()
         return;
     }
 
-    MnSoundsPlaying = 0;
-
-    if (MnSoundMasterFadeOn) {
-        if (MnSoundFadeCounter == MnSoundFadeRate) {
-            MnSoundFadeCounter = 0;
-            if (MnSoundMasterVolume > 0) {
-                MnSoundMasterVolume--;
-            }
-        } else {
-            MnSoundFadeCounter++;
-        }
-    }
-
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         MN_SFX_PLAY_INFO *slot = &SFXPlaying[i];
         if (slot->mn_flags & MN_FX_USED) {
@@ -333,7 +322,6 @@ void mn_update_sound_effects()
                     && slot->handle != SOUND_INVALID_HANDLE) {
                     S_SoundSetPanAndVolume(
                         slot->handle, slot->pan, slot->volume);
-                    MnSoundsPlaying++;
                 } else {
                     if (slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundStopSample(slot->handle);
@@ -347,7 +335,6 @@ void mn_update_sound_effects()
                         && slot->handle != SOUND_INVALID_HANDLE) {
                         S_SoundSetPanAndVolume(
                             slot->handle, slot->pan, slot->volume);
-                        MnSoundsPlaying++;
                     } else {
                         if (slot->handle != SOUND_INVALID_HANDLE) {
                             S_SoundStopSample(slot->handle);
@@ -399,7 +386,6 @@ void mn_get_sound_params(MN_SFX_PLAY_INFO *slot)
     slot->pan = angle;
 }
 
-// original name: StopSoundEffect
 void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
 {
     if (!SoundIsActive) {
@@ -436,7 +422,6 @@ void mn_stop_sound_effect(int sfx_num, PHD_3DPOS *pos)
     }
 }
 
-// original name: adjust_master_volume
 void mn_adjust_master_volume(int8_t volume)
 {
     MnSoundMasterVolumeDefault = volume & 0x3F;
@@ -462,16 +447,4 @@ void mn_clear_handles(MN_SFX_PLAY_INFO *slot)
             rslot->handle = SOUND_INVALID_HANDLE;
         }
     }
-}
-
-void T1MInjectGameMNSound()
-{
-    INJECT(0x0042A940, mn_reset_sound_effects);
-    INJECT(0x0042AA30, mn_sound_effect);
-    INJECT(0x0042AF00, mn_get_fx_slot);
-    INJECT(0x0042AFD0, mn_reset_ambient_loudness);
-    INJECT(0x0042B000, mn_stop_ambient_samples);
-    INJECT(0x0042B080, mn_update_sound_effects);
-    INJECT(0x0042B300, mn_stop_sound_effect);
-    INJECT(0x0042B410, mn_adjust_master_volume);
 }

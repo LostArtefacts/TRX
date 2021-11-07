@@ -12,12 +12,12 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
+#include "log.h"
 #include "specific/display.h"
 #include "specific/file.h"
 #include "specific/frontend.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <limits.h>
 #include <stdlib.h>
@@ -156,6 +156,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
     const char *tmp_s;
     int tmp_i;
     double tmp_d;
+    struct json_array_s *tmp_arr;
 
     tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
@@ -185,6 +186,19 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         return 0;
     }
     GF.enable_save_crystals = tmp_i;
+
+    tmp_arr = json_object_get_array(obj, "water_color");
+    GF.water_color.r = 0.6;
+    GF.water_color.g = 0.7;
+    GF.water_color.b = 1.0;
+    if (tmp_arr) {
+        GF.water_color.r =
+            json_array_get_number_double(tmp_arr, 0, GF.water_color.r);
+        GF.water_color.g =
+            json_array_get_number_double(tmp_arr, 1, GF.water_color.g);
+        GF.water_color.b =
+            json_array_get_number_double(tmp_arr, 2, GF.water_color.b);
+    }
 
     return 1;
 }
@@ -525,6 +539,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 
         const char *tmp_s;
         int32_t tmp_i;
+        struct json_array_s *tmp_arr;
 
         tmp_i =
             json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
@@ -598,6 +613,19 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             GF.has_demo |= tmp_i;
         } else {
             cur->demo = 0;
+        }
+
+        tmp_arr = json_object_get_array(jlvl_obj, "water_color");
+        if (tmp_arr) {
+            cur->water_color_override = 1;
+            cur->water_color.r =
+                json_array_get_number_double(tmp_arr, 0, GF.water_color.r);
+            cur->water_color.g =
+                json_array_get_number_double(tmp_arr, 1, GF.water_color.g);
+            cur->water_color.b =
+                json_array_get_number_double(tmp_arr, 2, GF.water_color.b);
+        } else {
+            cur->water_color_override = 0;
         }
 
         struct json_object_s *jlbl_strings_obj =
@@ -803,7 +831,6 @@ int8_t GF_LoadScriptFile(const char *file_name)
     InvItemDetails.string = GF.strings[GS_INV_ITEM_DETAILS];
     InvItemSound.string = GF.strings[GS_INV_ITEM_SOUND];
     InvItemControls.string = GF.strings[GS_INV_ITEM_CONTROLS];
-    InvItemGamma.string = GF.strings[GS_INV_ITEM_GAMMA];
     InvItemLarasHome.string = GF.strings[GS_INV_ITEM_LARAS_HOME];
 
     return result;
@@ -975,7 +1002,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
                 GAME_FLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                TempVideoAdjust(2, 1.0);
+                TempVideoAdjust(2);
                 S_DisplayPicture(data->path);
                 S_InitialisePolyList();
                 S_CopyBufferToScreen();

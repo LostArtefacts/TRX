@@ -4,7 +4,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-// original name: ChainBlockFX
 void ChainBlock(ITEM_INFO *item)
 {
     if (T1MConfig.fix_tihocan_secret_sound) {

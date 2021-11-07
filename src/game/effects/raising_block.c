@@ -3,7 +3,6 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-// original name: RaisingBlockFX
 void RaisingBlock(ITEM_INFO *item)
 {
     SoundEffect(SFX_RAISINGBLOCK_FX, NULL, SPM_NORMAL);

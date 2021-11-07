@@ -13,14 +13,13 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/init.h"
-#include "util.h"
 
 #include <stddef.h>
 
 #define SAVE_CREATURE (1 << 7)
 
-static int SGCount;
-static char *SGPoint;
+static int SGCount = 0;
+static char *SGPoint = NULL;
 
 void InitialiseStartInfo()
 {
@@ -399,7 +398,7 @@ void ExtractSaveGameInfo()
                 SpawnItem(item, O_SCION_ITEM2);
                 SpawnItem(item, O_KEY_ITEM1);
             }
-            CDFlags[55] |= IF_ONESHOT;
+            MusicTrackFlags[55] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
@@ -412,18 +411,18 @@ void ExtractSaveGameInfo()
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
                 SpawnItem(item, O_MAGNUM_ITEM);
             }
-            CDFlags[52] |= IF_ONESHOT;
+            MusicTrackFlags[52] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
                 SpawnItem(item, O_SHOTGUN_ITEM);
             }
-            CDFlags[51] |= IF_ONESHOT;
+            MusicTrackFlags[51] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_LARSON && item->hit_points <= 0) {
-            CDFlags[51] |= IF_ONESHOT;
+            MusicTrackFlags[51] |= IF_ONESHOT;
         }
     }
 
@@ -637,13 +636,4 @@ void ReadSGLOT(LOT_INFO *lot)
     ReadSG(&lot->target_box, sizeof(int16_t));
     ReadSG(&lot->required_box, sizeof(int16_t));
     ReadSG(&lot->target, sizeof(PHD_VECTOR));
-}
-
-void T1MInjectGameSaveGame()
-{
-    INJECT(0x004344D0, InitialiseStartInfo);
-    INJECT(0x00434520, ModifyStartInfo);
-    INJECT(0x004345E0, CreateStartInfo)
-    INJECT(0x00434720, CreateSaveGameInfo);
-    INJECT(0x00434F90, ExtractSaveGameInfo);
 }

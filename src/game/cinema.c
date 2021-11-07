@@ -12,9 +12,8 @@
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
-static int32_t OldSoundIsActive;
+static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
@@ -25,8 +24,8 @@ int32_t StartCinematic(int32_t level_num)
 
     InitCinematicRooms();
 
-    OldSoundIsActive = SoundIsActive;
-    SoundIsActive = 0;
+    SoundIsActiveOld = SoundIsActive;
+    SoundIsActive = false;
     CineFrame = 0;
     return GF_NOP;
 }
@@ -46,9 +45,9 @@ int32_t StopCinematic(int32_t level_num)
 {
     S_MusicStop();
     S_SoundStopAllSamples();
-    SoundIsActive = OldSoundIsActive;
+    SoundIsActive = SoundIsActiveOld;
 
-    LevelComplete = 1;
+    LevelComplete = true;
     S_FadeInInventory(1);
 
     return level_num | GF_LEVEL_COMPLETE;
@@ -56,16 +55,18 @@ int32_t StopCinematic(int32_t level_num)
 
 void InitCinematicRooms()
 {
-    for (int i = 0; i < RoomCount; i++) {
-        if (RoomInfo[i].flipped_room >= 0) {
-            RoomInfo[RoomInfo[i].flipped_room].bound_active = 1;
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (RoomInfo[room_num].flipped_room >= 0) {
+            RoomInfo[RoomInfo[room_num].flipped_room].bound_active = 1;
         }
     }
 
-    RoomsToDrawNum = 0;
-    for (int i = 0; i < RoomCount; i++) {
-        if (!RoomInfo[i].bound_active) {
-            RoomsToDraw[RoomsToDrawNum++] = i;
+    RoomsToDrawCount = 0;
+    for (int16_t room_num = 0; room_num < RoomCount; room_num++) {
+        if (!RoomInfo[room_num].bound_active) {
+            if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+                RoomsToDraw[RoomsToDrawCount++] = room_num;
+            }
         }
     }
 }
@@ -77,7 +78,7 @@ int32_t DoCinematic(int32_t nframes)
     frame_count += CinematicAnimationRate * nframes;
     while (frame_count >= 0) {
         S_UpdateInput();
-        if (Input & IN_OPTION) {
+        if (Input.option) {
             return 1;
         }
 
@@ -217,15 +218,4 @@ void InGameCinematicCamera()
         Camera.pos.x, Camera.pos.y, Camera.pos.z, Camera.target.x,
         Camera.target.y, Camera.target.z, roll);
     GetFloor(Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
-}
-
-void T1MInjectGameCinema()
-{
-    INJECT(0x004110A0, StartCinematic);
-    INJECT(0x00411240, DoCinematic);
-    INJECT(0x00411370, CalculateCinematicCamera);
-    INJECT(0x004114A0, ControlCinematicPlayer);
-    INJECT(0x004114F0, InitialisePlayer1);
-    INJECT(0x004115C0, InitialiseGenPlayer);
-    INJECT(0x004115F0, InGameCinematicCamera);
 }

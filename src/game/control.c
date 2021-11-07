@@ -22,7 +22,6 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -105,7 +104,7 @@ void CheckCheatMode()
     case 8:
         if (LaraItem->fall_speed > 0) {
             if (as == AS_FORWARDJUMP) {
-                LevelComplete = 1;
+                LevelComplete = true;
             } else if (as == AS_BACKJUMP) {
                 Inv_AddItem(O_SHOTGUN_ITEM);
                 Inv_AddItem(O_MAGNUM_ITEM);
@@ -135,7 +134,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
-        if (CDTrack > 0) {
+        if (MusicTrack > 0) {
             S_MusicLoop();
         }
 
@@ -151,17 +150,17 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (demo_mode) {
-            if (Input) {
+            if (Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
-            GetDemoInput();
-            if (Input == -1) {
+            if (!ProcessDemoInput()) {
                 return GF_EXIT_TO_TITLE;
             }
         }
 
         if (Lara.death_count > DEATH_WAIT
-            || (Lara.death_count > DEATH_WAIT_MIN && (Input & ~IN_FLY_CHEAT))
+            || (Lara.death_count > DEATH_WAIT_MIN && Input.any
+                && !Input.fly_cheat)
             || OverlayFlag == 2) {
             if (demo_mode) {
                 return GF_EXIT_TO_TITLE;
@@ -177,12 +176,12 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if ((Input & (IN_OPTION | IN_SAVE | IN_LOAD) || OverlayFlag <= 0)
+        if ((Input.option || Input.save || Input.load || OverlayFlag <= 0)
             && !Lara.death_count) {
             if (OverlayFlag > 0) {
-                if (Input & IN_LOAD) {
+                if (Input.load) {
                     OverlayFlag = -1;
-                } else if (Input & IN_SAVE) {
+                } else if (Input.save) {
                     OverlayFlag = -2;
                 } else {
                     OverlayFlag = 0;
@@ -203,7 +202,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if (!Lara.death_count && CHK_ANY(GetDebouncedInput(Input), IN_PAUSE)) {
+        if (!Lara.death_count && InputDB.pause) {
             if (S_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }
@@ -914,7 +913,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_FINISH:
-            LevelComplete = 1;
+            LevelComplete = true;
             break;
 
         case TO_CD:
@@ -1396,7 +1395,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
 
     switch (value) {
     case 28:
-        if ((CDFlags[value] & IF_ONESHOT)
+        if ((MusicTrackFlags[value] & IF_ONESHOT)
             && LaraItem->current_anim_state == AS_UPJUMP) {
             value = 29;
         }
@@ -1415,7 +1414,7 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         break;
 
     case 42:
-        if ((CDFlags[value] & IF_ONESHOT)
+        if ((MusicTrackFlags[value] & IF_ONESHOT)
             && LaraItem->current_anim_state == AS_HANG) {
             value = 43;
         }
@@ -1428,11 +1427,11 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
         break;
 
     case 50:
-        if (CDFlags[value] & IF_ONESHOT) {
+        if (MusicTrackFlags[value] & IF_ONESHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
-                LevelComplete = 1;
+                LevelComplete = true;
                 gym_completion_counter = 0;
             }
         } else if (LaraItem->current_anim_state != AS_WATEROUT) {
@@ -1446,23 +1445,23 @@ void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
 
 void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
 {
-    if (CDFlags[value] & IF_ONESHOT) {
+    if (MusicTrackFlags[value] & IF_ONESHOT) {
         return;
     }
 
     if (type == TT_SWITCH) {
-        CDFlags[value] ^= flags & IF_CODE_BITS;
+        MusicTrackFlags[value] ^= flags & IF_CODE_BITS;
     } else if (type == TT_ANTIPAD) {
-        CDFlags[value] &= -1 - (flags & IF_CODE_BITS);
+        MusicTrackFlags[value] &= -1 - (flags & IF_CODE_BITS);
     } else if (flags & IF_CODE_BITS) {
-        CDFlags[value] |= flags & IF_CODE_BITS;
+        MusicTrackFlags[value] |= flags & IF_CODE_BITS;
     }
 
-    if ((CDFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
+    if ((MusicTrackFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
         if (flags & IF_ONESHOT) {
-            CDFlags[value] |= IF_ONESHOT;
+            MusicTrackFlags[value] |= IF_ONESHOT;
         }
-        if (value != CDTrack) {
+        if (value != MusicTrack) {
             S_MusicPlay(value);
         }
     } else {
@@ -1534,27 +1533,4 @@ int GetSecretCount()
     }
 
     return count;
-}
-
-void T1MInjectGameControl()
-{
-    INJECT(0x004133B0, ControlPhase);
-    INJECT(0x00413660, AnimateItem);
-    INJECT(0x00413960, GetChange);
-    INJECT(0x00413A10, TranslateItem);
-    INJECT(0x00413A80, GetFloor);
-    INJECT(0x00413C60, GetWaterHeight);
-    INJECT(0x00413D60, GetHeight);
-    INJECT(0x00413FA0, RefreshCamera);
-    INJECT(0x00414080, TestTriggers);
-    INJECT(0x00414820, TriggerActive);
-    INJECT(0x00414880, GetCeiling);
-    INJECT(0x00414AE0, GetDoor);
-    INJECT(0x00414B30, LOS);
-    INJECT(0x00414BD0, zLOS);
-    INJECT(0x00414E50, xLOS);
-    INJECT(0x004150C0, ClipTarget);
-    INJECT(0x004151A0, FlipMap);
-    INJECT(0x00415310, TriggerCDTrack);
-    INJECT(0x00438920, CheckCheatMode);
 }

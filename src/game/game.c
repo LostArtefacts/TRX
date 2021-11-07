@@ -10,20 +10,22 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/sndpc.h"
-#include "util.h"
 
 #include <stdio.h>
+
+static int32_t Rand1 = 0xD371F947;
+static int32_t Rand2 = 0xD371F947;
 
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     CurrentLevel = level_num;
-    TitleLoaded = 0;
     if (level_type != GFL_SAVED) {
         InitialiseLevelFlags();
     }
@@ -60,7 +62,7 @@ int32_t StopGame()
 int32_t GameLoop(int32_t demo_mode)
 {
     NoInputCount = 0;
-    ResetFlag = 0;
+    ResetFlag = false;
     OverlayFlag = 1;
     InitialiseCamera();
 
@@ -76,8 +78,8 @@ int32_t GameLoop(int32_t demo_mode)
 
     S_SoundStopAllSamples();
     S_MusicStop();
-    if (OptionMusicVolume) {
-        S_MusicVolume(OptionMusicVolume * 25 + 5);
+    if (T1MConfig.music_volume) {
+        S_MusicVolume(T1MConfig.music_volume * 25 + 5);
     }
 
     if (ret == GF_NOP_BREAK) {
@@ -122,10 +124,11 @@ void LevelStats(int32_t level_num)
     static char time_str[100];
     TEXTSTRING *txt;
 
-    TempVideoAdjust(HiRes, 1.0);
+    TempVideoAdjust(GetScreenSizeIdx());
     T_RemoveAllPrints();
     AmmoText = NULL;
     FPSText = NULL;
+    VersionText = NULL;
 
     // heading
     sprintf(string, "%s", GF.levels[level_num].level_title);
@@ -180,7 +183,7 @@ void LevelStats(int32_t level_num)
     T_CentreV(txt, 1);
 
     // wait till action key release
-    while (CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+    while (Input.select || Input.deselect) {
         S_UpdateInput();
         S_InitialisePolyList();
         S_CopyBufferToScreen();
@@ -191,7 +194,7 @@ void LevelStats(int32_t level_num)
     }
 
     // wait till action or escape key press
-    while (!CHK_ANY(Input, IN_SELECT | IN_DESELECT)) {
+    while (!Input.select && !Input.deselect) {
         if (ResetFlag) {
             break;
         }
@@ -204,7 +207,7 @@ void LevelStats(int32_t level_num)
     }
 
     // wait till escape key release
-    while (CHK_ANY(Input, IN_DESELECT)) {
+    while (Input.deselect) {
         S_InitialisePolyList();
         S_CopyBufferToScreen();
         S_UpdateInput();
@@ -276,31 +279,20 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 
 void GetSavedGamesList(REQUEST_INFO *req)
 {
-    switch (HiRes) {
-    case 0:
+    int32_t height = GetScreenHeight();
+
+    if (height <= 200) {
         req->y = -32;
         req->vis_lines = 5;
-        break;
-
-    case 1:
+    } else if (height <= 384) {
         req->y = -62;
         req->vis_lines = 8;
-        break;
-
-    case 2:
+    } else if (height <= 480) {
         req->y = -90;
         req->vis_lines = 10;
-        break;
-
-    case 3:
+    } else {
         req->y = -100;
         req->vis_lines = 12;
-        break;
-
-    case 4:
-        req->y = -100;
-        req->vis_lines = 12;
-        break;
     }
 
     if (req->requested >= req->vis_lines) {
@@ -408,20 +400,4 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     SavedGamesCount++;
     SaveCounter++;
     return 1;
-}
-
-void T1MInjectGameGame()
-{
-    INJECT(0x0041D0C0, StartGame);
-    INJECT(0x0041D2C0, GameLoop);
-    INJECT(0x0041D330, LevelCompleteSequence);
-    INJECT(0x0041D5A0, LevelStats);
-    INJECT(0x0041D8F0, GetRandomControl);
-    INJECT(0x0041D910, SeedRandomControl);
-    INJECT(0x0041D920, GetRandomDraw);
-    INJECT(0x0041D940, SeedRandomDraw);
-    INJECT(0x0041D9B0, GetSavedGamesList);
-    INJECT(0x0041DA20, S_FrontEndCheck);
-    INJECT(0x0041DB70, S_SaveGame);
-    INJECT(0x0041DC70, S_LoadGame);
 }
