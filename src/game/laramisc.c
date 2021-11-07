@@ -436,7 +436,13 @@ void InitialiseLara()
     LaraItem->data = &Lara;
     LaraItem->hit_points = LARA_HITPOINTS;
     if (T1MConfig.disable_healing_between_levels && LevelRestart) {
-        LaraItem->hit_points = LevelStartLaraHealth;
+        if (LevelStartLaraHealth > 0) {
+            LaraItem->hit_points = LevelStartLaraHealth;
+        } else {
+            // TODO Default to full health if using an old save before health
+            // saved
+            LaraItem->hit_points = LARA_HITPOINTS;
+        }
         LevelRestart = false;
     } else if (T1MConfig.disable_healing_between_levels) {
         LaraItem->hit_points = StoredLaraHealth;

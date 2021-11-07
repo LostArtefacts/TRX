@@ -1551,6 +1551,7 @@ typedef struct SAVEGAME_INFO {
     uint8_t num_key4;
     uint8_t num_leadbar;
     uint8_t challenge_failed;
+    int16_t level_start_lara_health;
     char buffer[MAX_SAVEGAME_BUFFER];
 } SAVEGAME_INFO;
 

@@ -266,6 +266,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     FileRead(&save->num_key4, sizeof(uint8_t), 1, fp);
     FileRead(&save->num_leadbar, sizeof(uint8_t), 1, fp);
     FileRead(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileRead(&save->level_start_lara_health, sizeof(int16_t), 1, fp);
     FileRead(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     FileClose(fp);
 
@@ -390,6 +391,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     FileWrite(&save->num_key4, sizeof(uint8_t), 1, fp);
     FileWrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
     FileWrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    FileWrite(&save->level_start_lara_health, sizeof(int16_t), 1, fp);
     FileWrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     FileClose(fp);
 
