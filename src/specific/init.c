@@ -3,6 +3,7 @@
 #include "global/lib.h"
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
+#include "game/text.h"
 #include "global/vars.h"
 #include "specific/clock.h"
 #include "specific/file.h"
@@ -69,7 +70,7 @@ void S_InitialiseSystem()
     S_SeedRandom();
 
     Lib_Init();
-
+    Text_Init();
     ClockInit();
     SoundIsActive = SoundInit();
     MusicInit();

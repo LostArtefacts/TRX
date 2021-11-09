@@ -107,7 +107,7 @@ void GameMain()
             break;
 
         case GF_EXIT_TO_TITLE:
-            Text_Init();
+            Text_RemoveAll();
             TempVideoAdjust(2);
             S_DisplayPicture("data\\titleh");
             NoInputCount = 0;
