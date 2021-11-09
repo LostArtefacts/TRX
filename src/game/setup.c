@@ -115,7 +115,6 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseLOTArray();
 
     InitColours();
-    Text_Init();
     Overlay_Init();
 
     HealthBarTimer = 100;
