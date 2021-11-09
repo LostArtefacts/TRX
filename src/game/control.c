@@ -304,8 +304,7 @@ void AnimateItem(ITEM_INFO *item)
             }
         }
 
-        item->anim_number = anim->jump_anim_num;
-        item->frame_number = anim->jump_frame_num;
+        Item_SetAnim(item, anim->jump_anim_num, anim->jump_frame_num);
 
         anim = &Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
@@ -375,8 +374,8 @@ int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
             for (int j = 0; j < change->number_ranges; j++, range++) {
                 if (item->frame_number >= range->start_frame
                     && item->frame_number <= range->end_frame) {
-                    item->anim_number = range->link_anim_num;
-                    item->frame_number = range->link_frame_num;
+                    Item_SetAnim(
+                        item, range->link_anim_num, range->link_frame_num);
                     return 1;
                 }
             }

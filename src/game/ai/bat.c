@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -129,8 +130,7 @@ static void FixEmbeddedBatPosition(int16_t item_num)
         old_anim = item->anim_number;
         old_frame = item->frame_number;
 
-        item->anim_number = Objects[item->object_number].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
+        Item_SetAnimBase(item, Objects[item->object_number].anim_index);
         bounds = GetBoundsAccurate(item);
 
         item->anim_number = old_anim;

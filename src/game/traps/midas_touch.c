@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "global/vars.h"
 
 int16_t MidasBounds[12] = {
@@ -37,8 +38,7 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         && lara_item->pos.z < item->pos.z + 512) {
         lara_item->current_anim_state = AS_DIEMIDAS;
         lara_item->goal_anim_state = AS_DIEMIDAS;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index + 1;
-        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        Item_SetAnimBase(lara_item, Objects[O_LARA_EXTRA].anim_index + 1);
         lara_item->hit_points = -1;
         lara_item->gravity_status = 0;
         Lara.air = -1;
@@ -85,8 +85,7 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         Inv_AddItem(O_PUZZLE_ITEM1);
         lara_item->current_anim_state = AS_USEMIDAS;
         lara_item->goal_anim_state = AS_USEMIDAS;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = Anims[item->anim_number].frame_base;
+        Item_SetAnimBase(lara_item, Objects[O_LARA_EXTRA].anim_index);
         Lara.gun_status = LGS_HANDSBUSY;
     }
 }

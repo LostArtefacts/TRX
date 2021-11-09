@@ -68,8 +68,8 @@ void PierreControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != PIERRE_DEATH) {
             item->current_anim_state = PIERRE_DEATH;
-            item->anim_number = Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM);
             SpawnItem(item, O_MAGNUM_ITEM);
             SpawnItem(item, O_SCION_ITEM2);
             SpawnItem(item, O_KEY_ITEM1);

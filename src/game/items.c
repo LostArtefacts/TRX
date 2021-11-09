@@ -5,6 +5,7 @@
 #include "specific/init.h"
 
 #include <stdio.h>
+#include <assert.h>
 
 void InitialiseItemArray(int32_t num_items)
 {
@@ -319,4 +320,16 @@ void EffectNewRoom(int16_t fx_num, int16_t room_num)
     fx->room_number = room_num;
     fx->next_fx = r->fx_number;
     r->fx_number = fx_num;
+}
+
+void Item_SetAnimBase(ITEM_INFO* item, const int16_t anim_num)
+{
+    Item_SetAnim(item, anim_num, Anims[anim_num].frame_base);
+}
+
+void Item_SetAnim(ITEM_INFO* item, const int16_t anim_num, const int16_t anim_frame)
+{
+    assert(item);
+    item->anim_number = anim_num;
+    item->frame_number = anim_frame;
 }

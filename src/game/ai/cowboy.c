@@ -49,9 +49,9 @@ void CowboyControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != COWBOY_DEATH) {
             item->current_anim_state = COWBOY_DEATH;
-            item->anim_number =
-                Objects[O_MERCENARY2].anim_index + COWBOY_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_MERCENARY2].anim_index + COWBOY_DIE_ANIM);
+
             SpawnItem(item, O_MAGNUM_ITEM);
         }
     } else {

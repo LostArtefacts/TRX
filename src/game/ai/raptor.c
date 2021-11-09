@@ -4,6 +4,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -49,9 +50,10 @@ void RaptorControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != RAPTOR_DEATH) {
             item->current_anim_state = RAPTOR_DEATH;
-            item->anim_number = Objects[O_RAPTOR].anim_index + RAPTOR_DIE_ANIM
-                + (GetRandomControl() / 16200);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item,
+                Objects[O_RAPTOR].anim_index + RAPTOR_DIE_ANIM
+                    + (GetRandomControl() / 16200));
         }
     } else {
         AI_INFO info;

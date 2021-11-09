@@ -54,9 +54,8 @@ void CentaurControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != CENTAUR_DEATH) {
             item->current_anim_state = CENTAUR_DEATH;
-            item->anim_number =
-                Objects[O_CENTAUR].anim_index + CENTAUR_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_CENTAUR].anim_index + CENTAUR_DIE_ANIM);
         }
     } else {
         AI_INFO info;

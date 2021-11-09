@@ -63,8 +63,7 @@ void ControlEvilLara(int16_t item_num)
         if (h >= lh + WALL_L && !LaraItem->gravity_status) {
             item->current_anim_state = AS_FASTFALL;
             item->goal_anim_state = AS_FASTFALL;
-            item->anim_number = AA_FASTFALL;
-            item->frame_number = AF_FASTFALL;
+            Item_SetAnim(item, AA_FASTFALL, AF_FASTFALL);
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity_status = 1;

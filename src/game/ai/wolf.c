@@ -4,6 +4,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -55,9 +56,10 @@ void WolfControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != WOLF_DEATH) {
             item->current_anim_state = WOLF_DEATH;
-            item->anim_number = Objects[O_WOLF].anim_index + WOLF_DIE_ANIM
-                + (int16_t)(GetRandomControl() / 11000);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item,
+                Objects[O_WOLF].anim_index + WOLF_DIE_ANIM
+                    + (int16_t)(GetRandomControl() / 11000));
         }
     } else {
         AI_INFO info;

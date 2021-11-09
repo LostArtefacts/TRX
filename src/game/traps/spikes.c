@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -47,8 +48,7 @@ void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (lara_item->hit_points <= 0) {
         lara_item->current_anim_state = AS_DEATH;
         lara_item->goal_anim_state = AS_DEATH;
-        lara_item->anim_number = AA_SPIKE_DEATH;
-        lara_item->frame_number = AF_SPIKE_DEATH;
+        Item_SetAnim(lara_item, AA_SPIKE_DEATH, AF_SPIKE_DEATH);
         lara_item->pos.y = item->pos.y;
         lara_item->gravity_status = 0;
     }

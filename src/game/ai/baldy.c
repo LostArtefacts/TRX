@@ -54,9 +54,8 @@ void BaldyControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != BALDY_DEATH) {
             item->current_anim_state = BALDY_DEATH;
-            item->anim_number =
-                Objects[O_MERCENARY3].anim_index + BALDY_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_MERCENARY3].anim_index + BALDY_DIE_ANIM);
             SpawnItem(item, O_SHOTGUN_ITEM);
         }
     } else {

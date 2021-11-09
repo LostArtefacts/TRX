@@ -47,8 +47,7 @@ void LaraControl(int16_t item_num)
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
             item->goal_anim_state = AS_SWIM;
-            item->anim_number = AA_SWIMGLIDE;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(item, AA_SWIMGLIDE);
             item->gravity_status = 0;
             item->pos.x_rot = 30 * PHD_DEGREE;
             item->fall_speed = 30;
@@ -88,8 +87,7 @@ void LaraControl(int16_t item_num)
         } else {
             item->current_anim_state = AS_DIVE;
             item->goal_anim_state = AS_SWIM;
-            item->anim_number = AA_JUMPIN;
-            item->frame_number = AF_JUMPIN;
+            Item_SetAnim(item, AA_JUMPIN, AF_JUMPIN);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
         }
@@ -106,8 +104,7 @@ void LaraControl(int16_t item_num)
             Lara.dive_count = DIVE_COUNT + 1;
             item->current_anim_state = AS_SURFTREAD;
             item->goal_anim_state = AS_SURFTREAD;
-            item->anim_number = AA_SURFTREAD;
-            item->frame_number = AF_SURFTREAD;
+            Item_SetAnim(item, AA_SURFTREAD, AF_SURFTREAD);
             item->fall_speed = 0;
             item->pos.y = wh + 1;
             item->pos.x_rot = 0;
@@ -123,8 +120,7 @@ void LaraControl(int16_t item_num)
             Lara.gun_status = LGS_ARMLESS;
             item->current_anim_state = AS_FORWARDJUMP;
             item->goal_anim_state = AS_FORWARDJUMP;
-            item->anim_number = AA_FALLDOWN;
-            item->frame_number = AF_FALLDOWN;
+            Item_SetAnim(item, AA_FALLDOWN, AF_FALLDOWN);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
             item->gravity_status = 1;
@@ -140,8 +136,7 @@ void LaraControl(int16_t item_num)
         Lara.gun_status = LGS_ARMLESS;
         item->current_anim_state = AS_FORWARDJUMP;
         item->goal_anim_state = AS_FORWARDJUMP;
-        item->anim_number = AA_FALLDOWN;
-        item->frame_number = AF_FALLDOWN;
+        Item_SetAnim(item, AA_FALLDOWN, AF_FALLDOWN);
         item->speed = item->fall_speed / 4;
         item->fall_speed = 0;
         item->gravity_status = 1;
@@ -218,8 +213,7 @@ void LaraControl(int16_t item_num)
                 Lara.water_status = LWS_UNDERWATER;
             } else {
                 Lara.water_status = LWS_ABOVEWATER;
-                item->anim_number = AA_STOP;
-                item->frame_number = Anims[item->anim_number].frame_base;
+                Item_SetAnimBase(item, AA_STOP);
                 item->pos.x_rot = item->pos.z_rot = 0;
                 Lara.head_x_rot = 0;
                 Lara.head_y_rot = 0;
@@ -287,8 +281,7 @@ void AnimateLara(ITEM_INFO *item)
             }
         }
 
-        item->anim_number = anim->jump_anim_num;
-        item->frame_number = anim->jump_frame_num;
+        Item_SetAnim(item, anim->jump_anim_num, anim->jump_frame_num);
 
         anim = &Anims[anim->jump_anim_num];
         item->current_anim_state = anim->current_anim_state;
@@ -466,14 +459,12 @@ void InitialiseLara()
         LaraItem->fall_speed = 0;
         LaraItem->goal_anim_state = AS_TREAD;
         LaraItem->current_anim_state = AS_TREAD;
-        LaraItem->anim_number = AA_TREAD;
-        LaraItem->frame_number = AF_TREAD;
+        Item_SetAnim(LaraItem, AA_TREAD, AF_TREAD);
     } else {
         Lara.water_status = LWS_ABOVEWATER;
         LaraItem->goal_anim_state = AS_STOP;
         LaraItem->current_anim_state = AS_STOP;
-        LaraItem->anim_number = AA_STOP;
-        LaraItem->frame_number = AF_STOP;
+        Item_SetAnim(LaraItem, AA_STOP, AF_STOP);
     }
 
     Lara.current_active = 0;

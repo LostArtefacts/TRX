@@ -41,8 +41,8 @@ void InitialiseStatue(int16_t item_num)
 
     InitialiseItem(centaur_item_num);
 
-    centaur->anim_number = Objects[O_CENTAUR].anim_index + 7;
-    centaur->frame_number = Anims[centaur->anim_number].frame_base + 36;
+    int16_t anim_num = Objects[O_CENTAUR].anim_index + 7;
+    Item_SetAnim(item, anim_num, Anims[anim_num].frame_base + 36);
     centaur->current_anim_state =
         Anims[centaur->anim_number].current_anim_state;
     centaur->goal_anim_state = centaur->current_anim_state;

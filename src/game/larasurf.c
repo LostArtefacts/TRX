@@ -4,6 +4,7 @@
 #include "config.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/items.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -258,8 +259,7 @@ void LaraAsSurfTread(ITEM_INFO *item, COLL_INFO *coll)
         if (Lara.dive_count == DIVE_COUNT) {
             item->goal_anim_state = AS_SWIM;
             item->current_anim_state = AS_DIVE;
-            item->anim_number = AA_SURFDIVE;
-            item->frame_number = AF_SURFDIVE;
+            Item_SetAnim(item, AA_SURFDIVE, AF_SURFDIVE);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = 80;
             Lara.water_status = LWS_UNDERWATER;
@@ -328,8 +328,7 @@ void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
     if (wh - item->pos.y <= -100) {
         item->goal_anim_state = AS_SWIM;
         item->current_anim_state = AS_DIVE;
-        item->anim_number = AA_SURFDIVE;
-        item->frame_number = AF_SURFDIVE;
+        Item_SetAnim(item, AA_SURFDIVE, AF_SURFDIVE);
         item->pos.x_rot = -45 * PHD_DEGREE;
         item->fall_speed = 80;
         Lara.water_status = LWS_UNDERWATER;
@@ -393,8 +392,7 @@ bool LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
         break;
     }
 
-    item->anim_number = AA_SURFCLIMB;
-    item->frame_number = AF_SURFCLIMB;
+    Item_SetAnim(item, AA_SURFCLIMB, AF_SURFCLIMB);
     item->current_anim_state = AS_WATEROUT;
     item->goal_anim_state = AS_STOP;
     item->pos.x_rot = 0;

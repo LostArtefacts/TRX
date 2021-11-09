@@ -90,8 +90,7 @@ void ThorsHandleControl(int16_t item_num)
                 LaraItem->gravity_status = 0;
                 LaraItem->current_anim_state = AS_SPECIAL;
                 LaraItem->goal_anim_state = AS_SPECIAL;
-                LaraItem->anim_number = AA_RBALL_DEATH;
-                LaraItem->frame_number = AF_RBALL_DEATH;
+                Item_SetAnim(LaraItem, AA_RBALL_DEATH, AF_RBALL_DEATH);
             }
         }
         break;
@@ -141,8 +140,8 @@ void ThorsHandleControl(int16_t item_num)
     ITEM_INFO *head_item = item->data;
     int32_t anim = item->anim_number - Objects[O_THORS_HANDLE].anim_index;
     int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
-    head_item->anim_number = Objects[O_THORS_HEAD].anim_index + anim;
-    head_item->frame_number = Anims[head_item->anim_number].frame_base + frm;
+    int32_t base_anim = Objects[O_THORS_HEAD].anim_index + anim;
+    Item_SetAnim(head_item, base_anim, Anims[base_anim].frame_base + frm);
     head_item->current_anim_state = item->current_anim_state;
 }
 

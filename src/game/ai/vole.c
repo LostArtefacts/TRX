@@ -5,6 +5,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -46,8 +47,7 @@ void VoleControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != VOLE_DEATH) {
             item->current_anim_state = VOLE_DEATH;
-            item->anim_number = Objects[O_VOLE].anim_index + VOLE_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(item, Objects[O_VOLE].anim_index + VOLE_DIE_ANIM);
         }
 
         CreatureHead(item, head);
@@ -60,8 +60,7 @@ void VoleControl(int16_t item_num)
             item->object_number = O_RAT;
             item->current_anim_state = RAT_DEATH;
             item->goal_anim_state = RAT_DEATH;
-            item->anim_number = Objects[O_RAT].anim_index + RAT_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(item, Objects[O_RAT].anim_index + RAT_DIE_ANIM);
             item->pos.y = item->floor;
         }
     } else {
@@ -101,8 +100,7 @@ void VoleControl(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_RAT;
-            item->anim_number = Objects[O_RAT].anim_index;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(item, Objects[O_RAT].anim_index);
             item->current_anim_state =
                 Anims[item->anim_number].current_anim_state;
             item->goal_anim_state = item->current_anim_state;

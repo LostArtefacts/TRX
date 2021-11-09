@@ -94,8 +94,7 @@ void RollingBallControl(int16_t item_num)
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;
-        item->anim_number = Objects[item->object_number].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
+        Item_SetAnimBase(item, Objects[item->object_number].anim_index);
         item->current_anim_state = Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         item->required_anim_state = TRAP_SET;
@@ -153,8 +152,7 @@ void RollingBallCollision(
 
             lara_item->current_anim_state = AS_SPECIAL;
             lara_item->goal_anim_state = AS_SPECIAL;
-            lara_item->anim_number = AA_RBALL_DEATH;
-            lara_item->frame_number = AF_RBALL_DEATH;
+            Item_SetAnim(lara_item, AA_RBALL_DEATH, AF_RBALL_DEATH);
 
             Camera.flags = FOLLOW_CENTRE;
             Camera.target_angle = 170 * PHD_DEGREE;

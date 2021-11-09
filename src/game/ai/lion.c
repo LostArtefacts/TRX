@@ -4,6 +4,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -91,17 +92,18 @@ void LionControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != LION_DEATH) {
             item->current_anim_state = LION_DEATH;
+            int16_t anim_number = -1;
             if (item->object_number == O_PUMA) {
-                item->anim_number = Objects[O_PUMA].anim_index + PUMA_DIE_ANIM
+                anim_number = Objects[O_PUMA].anim_index + PUMA_DIE_ANIM
                     + (int16_t)(GetRandomControl() / 0x4000);
             } else if (item->object_number == O_LION) {
-                item->anim_number = Objects[O_LION].anim_index + LION_DIE_ANIM
+                anim_number = Objects[O_LION].anim_index + LION_DIE_ANIM
                     + (int16_t)(GetRandomControl() / 0x4000);
             } else {
-                item->anim_number = Objects[O_LIONESS].anim_index
+                anim_number = Objects[O_LIONESS].anim_index
                     + LION_DIE_ANIM + (int16_t)(GetRandomControl() / 0x4000);
             }
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(item, anim_number);
         }
     } else {
         AI_INFO info;

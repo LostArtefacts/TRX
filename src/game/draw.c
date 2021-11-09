@@ -7,6 +7,7 @@
 #include "game/game.h"
 #include "game/hair.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -368,8 +369,7 @@ void DrawPickupItem(ITEM_INFO *item)
     // Save the frame number.
     int16_t old_frame_number = item->frame_number;
     // Modify item to be the anim for inv item and animation 0.
-    item->anim_number = Objects[item_num_option].anim_index;
-    item->frame_number = Anims[item->anim_number].frame_base;
+    Item_SetAnimBase(item, Objects[item_num_option].anim_index);
 
     OBJECT_INFO *object = &Objects[item_num_option];
 

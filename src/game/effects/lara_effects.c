@@ -2,14 +2,14 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/items.h"
 #include "global/vars.h"
 
 void LaraNormal(ITEM_INFO *item)
 {
     item->current_anim_state = AS_STOP;
     item->goal_anim_state = AS_STOP;
-    item->anim_number = AA_STOP;
-    item->frame_number = AF_STOP;
+    Item_SetAnim(item, AA_STOP, AF_STOP);
     Camera.type = CAM_CHASE;
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 }

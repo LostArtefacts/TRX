@@ -4,6 +4,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -48,9 +49,8 @@ void CrocControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != CROCODILE_DEATH) {
             item->current_anim_state = CROCODILE_DEATH;
-            item->anim_number =
-                Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM);
         }
     } else {
         AI_INFO info;
@@ -139,8 +139,7 @@ void CrocControl(int16_t item_num)
         item->object_number = O_ALLIGATOR;
         item->current_anim_state = Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
-        item->anim_number = Objects[O_ALLIGATOR].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
+        Item_SetAnimBase(item, Objects[O_ALLIGATOR].anim_index);
         if (croc) {
             croc->LOT.step = WALL_L * 20;
             croc->LOT.drop = -WALL_L * 20;

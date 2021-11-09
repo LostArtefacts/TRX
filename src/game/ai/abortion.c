@@ -49,9 +49,8 @@ void AbortionControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != ABORTION_DEATH) {
             item->current_anim_state = ABORTION_DEATH;
-            item->anim_number =
-                Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item, Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM);
         }
     } else {
         AI_INFO info;
@@ -169,9 +168,7 @@ void AbortionControl(int16_t item_num)
                 || LaraItem->hit_points <= 0) {
                 item->goal_anim_state = ABORTION_KILL;
 
-                LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index;
-                LaraItem->frame_number =
-                    Anims[LaraItem->anim_number].frame_base;
+                Item_SetAnimBase(LaraItem, Objects[O_LARA_EXTRA].anim_index);
                 LaraItem->current_anim_state = AS_SPECIAL;
                 LaraItem->goal_anim_state = AS_SPECIAL;
                 LaraItem->room_number = item->room_number;

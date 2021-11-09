@@ -154,8 +154,7 @@ void LaraDinoDeath(ITEM_INFO *item)
     LaraItem->gravity_status = 0;
     LaraItem->current_anim_state = AS_SPECIAL;
     LaraItem->goal_anim_state = AS_SPECIAL;
-    LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index + 1;
-    LaraItem->frame_number = Anims[LaraItem->anim_number].frame_base;
+    Item_SetAnimBase(LaraItem, Objects[O_LARA_EXTRA].anim_index + 1);
     LaraSwapMeshExtra();
 
     LaraItem->hit_points = -1;

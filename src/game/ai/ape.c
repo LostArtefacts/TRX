@@ -4,6 +4,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
 
@@ -79,8 +80,7 @@ void ApeVault(int16_t item_num, int16_t angle)
 
     item->pos.y = y;
     item->current_anim_state = APE_VAULT;
-    item->anim_number = Objects[O_APE].anim_index + APE_VAULT_ANIM;
-    item->frame_number = Anims[item->anim_number].frame_base;
+    Item_SetAnimBase(item, Objects[O_APE].anim_index + APE_VAULT_ANIM);
 }
 
 void ApeControl(int16_t item_num)
@@ -101,9 +101,10 @@ void ApeControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != APE_DEATH) {
             item->current_anim_state = APE_DEATH;
-            item->anim_number = Objects[O_APE].anim_index + APE_DIE_ANIM
-                + (int16_t)(GetRandomControl() / 0x4000);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            Item_SetAnimBase(
+                item,
+                Objects[O_APE].anim_index + APE_DIE_ANIM
+                    + (int16_t)(GetRandomControl() / 0x4000));
         }
     } else {
         AI_INFO info;
