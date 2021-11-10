@@ -1,5 +1,6 @@
 #include "specific/init.h"
 
+#include "global/lib.h"
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
 #include "global/vars.h"
@@ -66,6 +67,8 @@ static uint32_t GameAllocMemFree = 0;
 void S_InitialiseSystem()
 {
     S_SeedRandom();
+
+    Lib_Init();
 
     ClockInit();
     SoundIsActive = SoundInit();
