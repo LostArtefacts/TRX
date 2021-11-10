@@ -560,7 +560,7 @@ void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
 {
-    C3D_VTCF vertices[4];
+    C3D_VTCF vertices[4 * HWR_CLIP_VERTCOUNT_SCALE];
 
     HWR_DisableTextureMode();
 
