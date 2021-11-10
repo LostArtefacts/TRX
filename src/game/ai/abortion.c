@@ -135,8 +135,8 @@ void AbortionControl(int16_t item_num)
         case ABORTION_TURN_R:
             if (!abortion->flags) {
                 abortion->flags = item->frame_number;
-            } else if (
-                Item_AnimInRange(item, abortion->flags + 17, abortion->flags + 22)) {
+            } else if (Item_AnimInRange(
+                           item, abortion->flags + 17, abortion->flags + 22)) {
                 item->pos.y_rot += PHD_DEGREE * 14;
             }
 

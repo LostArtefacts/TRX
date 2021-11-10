@@ -100,8 +100,8 @@ void LionControl(int16_t item_num)
                 anim_number = Objects[O_LION].anim_index + LION_DIE_ANIM
                     + (int16_t)(GetRandomControl() / 0x4000);
             } else {
-                anim_number = Objects[O_LIONESS].anim_index
-                    + LION_DIE_ANIM + (int16_t)(GetRandomControl() / 0x4000);
+                anim_number = Objects[O_LIONESS].anim_index + LION_DIE_ANIM
+                    + (int16_t)(GetRandomControl() / 0x4000);
             }
             Item_SetAnimBase(item, anim_number);
         }

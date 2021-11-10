@@ -914,7 +914,8 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     if (LaraDeflectEdge(item, coll)) {
         if (Item_AnimInRange(item, 29, 47)) {
             Item_SetAnim(item, AA_STOP_RIGHT, AF_STOP_RIGHT);
-        } else if (Item_AnimInRange(item, 22, 28) || Item_AnimInRange(item, 48, 57)) {
+        } else if (
+            Item_AnimInRange(item, 22, 28) || Item_AnimInRange(item, 48, 57)) {
             Item_SetAnim(item, AA_STOP_LEFT, AF_STOP_LEFT);
         } else {
             Item_SetAnim(item, AA_STOP, AF_STOP);

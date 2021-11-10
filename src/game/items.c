@@ -322,19 +322,21 @@ void EffectNewRoom(int16_t fx_num, int16_t room_num)
     r->fx_number = fx_num;
 }
 
-void Item_SetAnimBase(ITEM_INFO* item, const int16_t anim_num)
+void Item_SetAnimBase(ITEM_INFO *item, const int16_t anim_num)
 {
     Item_SetAnim(item, anim_num, Anims[anim_num].frame_base);
 }
 
-void Item_SetAnim(ITEM_INFO* item, const int16_t anim_num, const int16_t anim_frame)
+void Item_SetAnim(
+    ITEM_INFO *item, const int16_t anim_num, const int16_t anim_frame)
 {
     assert(item);
     item->anim_number = anim_num;
     item->frame_number = anim_frame;
 }
 
-bool Item_AnimInRange(const ITEM_INFO* item, const int16_t start, const int16_t end)
+bool Item_AnimInRange(
+    const ITEM_INFO *item, const int16_t start, const int16_t end)
 {
     return item->frame_number >= start && item->frame_number <= end;
 }
