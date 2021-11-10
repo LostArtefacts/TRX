@@ -122,9 +122,8 @@ void AbortionControl(int16_t item_num)
         case ABORTION_TURN_L:
             if (!abortion->flags) {
                 abortion->flags = item->frame_number;
-            } else if (
-                item->frame_number - abortion->flags > 13
-                && item->frame_number - abortion->flags < 23) {
+            } else if (Item_AnimInRange(
+                           item, abortion->flags + 14, abortion->flags + 22)) {
                 item->pos.y_rot -= PHD_DEGREE * 9;
             }
 
@@ -137,8 +136,7 @@ void AbortionControl(int16_t item_num)
             if (!abortion->flags) {
                 abortion->flags = item->frame_number;
             } else if (
-                item->frame_number - abortion->flags > 16
-                && item->frame_number - abortion->flags < 23) {
+                Item_AnimInRange(item, abortion->flags + 17, abortion->flags + 22)) {
                 item->pos.y_rot += PHD_DEGREE * 14;
             }
 

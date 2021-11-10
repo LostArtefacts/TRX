@@ -333,3 +333,8 @@ void Item_SetAnim(ITEM_INFO* item, const int16_t anim_num, const int16_t anim_fr
     item->anim_number = anim_num;
     item->frame_number = anim_frame;
 }
+
+bool Item_AnimInRange(const ITEM_INFO* item, const int16_t start, const int16_t end)
+{
+    return item->frame_number >= start && item->frame_number <= end;
+}

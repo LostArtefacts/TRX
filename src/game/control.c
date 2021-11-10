@@ -372,8 +372,8 @@ int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
         if (change->goal_anim_state == item->goal_anim_state) {
             ANIM_RANGE_STRUCT *range = &AnimRanges[change->range_index];
             for (int j = 0; j < change->number_ranges; j++, range++) {
-                if (item->frame_number >= range->start_frame
-                    && item->frame_number <= range->end_frame) {
+                if (Item_AnimInRange(
+                        item, range->start_frame, range->end_frame)) {
                     Item_SetAnim(
                         item, range->link_anim_num, range->link_frame_num);
                     return 1;

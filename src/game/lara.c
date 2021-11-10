@@ -912,11 +912,9 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (LaraDeflectEdge(item, coll)) {
-        if (item->frame_number >= 29 && item->frame_number <= 47) {
+        if (Item_AnimInRange(item, 29, 47)) {
             Item_SetAnim(item, AA_STOP_RIGHT, AF_STOP_RIGHT);
-        } else if (
-            (item->frame_number >= 22 && item->frame_number <= 28)
-            || (item->frame_number >= 48 && item->frame_number <= 57)) {
+        } else if (Item_AnimInRange(item, 22, 28) || Item_AnimInRange(item, 48, 57)) {
             Item_SetAnim(item, AA_STOP_LEFT, AF_STOP_LEFT);
         } else {
             Item_SetAnim(item, AA_STOP, AF_STOP);
@@ -928,7 +926,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2) {
-        if (item->frame_number >= 28 && item->frame_number <= 45) {
+        if (Item_AnimInRange(item, 28, 45)) {
             Item_SetAnim(item, AA_WALKSTEPD_RIGHT, AF_WALKSTEPD_RIGHT);
         } else {
             Item_SetAnim(item, AA_WALKSTEPD_LEFT, AF_WALKSTEPD_LEFT);
@@ -936,7 +934,7 @@ void LaraColWalk(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= 27 && item->frame_number <= 44) {
+        if (Item_AnimInRange(item, 27, 44)) {
             Item_SetAnim(item, AA_WALKSTEPUP_RIGHT, AF_WALKSTEPUP_RIGHT);
         } else {
             Item_SetAnim(item, AA_WALKSTEPUP_LEFT, AF_WALKSTEPUP_LEFT);
@@ -977,11 +975,11 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
         if (coll->front_type == HT_WALL
             && coll->front_floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = AS_SPLAT;
-            if (item->frame_number >= 0 && item->frame_number <= 9) {
+            if (Item_AnimInRange(item, 0, 9)) {
                 Item_SetAnim(item, AA_HITWALLLEFT, AF_HITWALLLEFT);
                 return;
             }
-            if (item->frame_number >= 10 && item->frame_number <= 21) {
+            if (Item_AnimInRange(item, 10, 21)) {
                 Item_SetAnim(item, AA_HITWALLRIGHT, AF_HITWALLRIGHT);
                 return;
             }
@@ -994,7 +992,7 @@ void LaraColRun(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
-        if (item->frame_number >= 3 && item->frame_number <= 14) {
+        if (Item_AnimInRange(item, 3, 14)) {
             Item_SetAnim(item, AA_RUNSTEPUP_LEFT, AF_RUNSTEPUP_LEFT);
         } else {
             Item_SetAnim(item, AA_RUNSTEPUP_RIGHT, AF_RUNSTEPUP_RIGHT);
@@ -1295,7 +1293,7 @@ void LaraColBack(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
-        if (item->frame_number >= 964 && item->frame_number <= 993) {
+        if (Item_AnimInRange(item, 964, 993)) {
             Item_SetAnim(item, AA_BACKSTEPD_RIGHT, AF_BACKSTEPD_RIGHT);
         } else {
             Item_SetAnim(item, AA_BACKSTEPD_LEFT, AF_BACKSTEPD_LEFT);
