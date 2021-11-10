@@ -462,14 +462,9 @@ void DrawPickupItem(ITEM_INFO *item)
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, offset, item->pos.z);
 
-    int16_t *frame = &object->frame_base[(object->nmeshes * 2 + 10)];
-    CalculateObjectLighting(item, frame);
+    S_CalculateLight(item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
-    int32_t x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    int32_t y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    int32_t z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-    S_CalculateLight(x, y, z, item->room_number);
-
+    int16_t *frame = &object->frame_base[object->nmeshes * 2 + 10];
     int32_t clip = S_GetObjectBounds(frame);
     if (clip) {
         // From this point on the function is a slightly customised version
