@@ -5,11 +5,9 @@
 #include "global/vars.h"
 #include "specific/music.h"
 
-static struct {
-    bool loop;
-    int16_t track;
-    int16_t track_looped;
-} S = { 0 };
+static bool m_Loop = false;
+static int16_t m_Track = 0;
+static int16_t m_TrackLooped = 0;
 
 bool Music_Init()
 {
@@ -27,10 +25,10 @@ bool Music_Play(int16_t track)
     }
 
     if (track >= 57) {
-        S.track_looped = track;
+        m_TrackLooped = track;
     }
 
-    S.loop = false;
+    m_Loop = false;
 
     if (T1MConfig.fix_secrets_killing_music && track == 13) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
@@ -45,28 +43,28 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    S.track = track;
+    m_Track = track;
     return S_Music_Play(track);
 }
 
 void Music_PlayLooped()
 {
-    if (S.loop && S.track_looped > 0) {
-        S_Music_Play(S.track_looped);
+    if (m_Loop && m_TrackLooped > 0) {
+        S_Music_Play(m_TrackLooped);
     }
 }
 
 bool Music_Stop()
 {
-    S.track = 0;
-    S.track_looped = 0;
-    S.loop = false;
+    m_Track = 0;
+    m_TrackLooped = 0;
+    m_Loop = false;
     return S_Music_Stop();
 }
 
 void Music_Loop()
 {
-    S.loop = true;
+    m_Loop = true;
 }
 
 void Music_SetVolume(int16_t volume)
@@ -87,5 +85,5 @@ void Music_Unpause()
 
 int16_t Music_CurrentTrack()
 {
-    return S.track;
+    return m_Track;
 }
