@@ -486,7 +486,7 @@ void Sound_StopAllSamples()
     S_Sound_StopAllSamples();
 }
 
-void Sound_AdjustMasterVolume(int8_t volume)
+void Sound_SetMasterVolume(int8_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
     S.master_volume_default = raw_volume & 0x3F;

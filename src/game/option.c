@@ -890,7 +890,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
 
         if (Input.left || Input.right) {
-            Music_AdjustVolume(T1MConfig.music_volume);
+            Music_SetVolume(T1MConfig.music_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
@@ -913,7 +913,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
 
         if (Input.left || Input.right) {
-            Sound_AdjustMasterVolume(T1MConfig.sound_volume);
+            Sound_SetMasterVolume(T1MConfig.sound_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
