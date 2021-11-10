@@ -12,20 +12,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-typedef struct HWR_LIGHTNING {
-    int32_t x1;
-    int32_t y1;
-    int32_t z1;
-    int32_t thickness1;
-    int32_t x2;
-    int32_t y2;
-    int32_t z2;
-    int32_t thickness2;
-} HWR_LIGHTNING;
-
-HWR_LIGHTNING HWR_LightningTable[100];
-int32_t HWR_LightningCount = 0;
-
 static bool HWR_IsPaletteActive = false;
 static bool HWR_IsRendering = false;
 static bool HWR_IsRenderingOld = false;
@@ -557,15 +543,15 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 
     HWR_DisableTextureMode();
 
-    int32_t alpha_src = 4;
-    int32_t alpha_dst = 5;
+    int32_t alpha_src = C3D_EASRC_SRCALPHA;
+    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 
     HWR_RenderTriangleStrip(vertices, 4);
 
-    alpha_src = 1;
-    alpha_dst = 0;
+    alpha_src = C3D_EASRC_ONE;
+    alpha_dst = C3D_EADST_ZERO;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
@@ -574,69 +560,12 @@ void HWR_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
 {
-    HWR_LightningTable[HWR_LightningCount].x1 = x1;
-    HWR_LightningTable[HWR_LightningCount].y1 = y1;
-    HWR_LightningTable[HWR_LightningCount].z1 = z1;
-    HWR_LightningTable[HWR_LightningCount].thickness1 = thickness1;
-    HWR_LightningTable[HWR_LightningCount].x2 = x2;
-    HWR_LightningTable[HWR_LightningCount].y2 = y2;
-    HWR_LightningTable[HWR_LightningCount].z2 = z2;
-    HWR_LightningTable[HWR_LightningCount].thickness2 = thickness2;
-    HWR_LightningCount++;
-}
-
-void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
-{
-    // needs to be more than 8 cause clipping might return more polygons.
-    C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
-    int i;
-    int32_t tmp;
-
-    for (i = 0; i < vertex_count; i++) {
-        C3D_VTCF *vertex = &vertices[i];
-        PHD_VBUF *vbuf = &vbufs[i];
-        vertex->x = vbuf->xs;
-        vertex->y = vbuf->ys;
-        vertex->z = vbuf->zv * 0.0001f - 16.0f;
-        vertex->b = 0.0f;
-        vertex->g = 0.0f;
-        vertex->r = 0.0f;
-        vertex->a = 128.0f;
-    }
-
-    if (clip) {
-        int original = vertex_count;
-        vertex_count = HWR_ClipVertices(vertex_count, vertices);
-        assert(vertex_count < original * HWR_CLIP_VERTCOUNT_SCALE);
-    }
-
-    if (!vertex_count) {
-        return;
-    }
+    C3D_VTCF vertices[4 * HWR_CLIP_VERTCOUNT_SCALE];
 
     HWR_DisableTextureMode();
 
-    tmp = C3D_EASRC_SRCALPHA;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
-    tmp = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
-    HWR_RenderTriangleStrip(vertices, vertex_count);
-    tmp = C3D_EASRC_ONE;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
-    tmp = C3D_EADST_ZERO;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
-}
-
-void HWR_RenderLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int thickness1, int32_t x2, int32_t y2,
-    int32_t z2, int thickness2)
-{
-    C3D_VTCF vertices[4];
-
-    HWR_DisableTextureMode();
-
-    int32_t alpha_src = 4;
-    int32_t alpha_dst = 5;
+    int32_t alpha_src = C3D_EASRC_SRCALPHA;
+    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
     vertices[0].x = x1;
@@ -713,10 +642,52 @@ void HWR_RenderLightningSegment(
         HWR_RenderTriangleStrip(vertices, num);
     }
 
-    alpha_src = 1;
-    alpha_dst = 0;
+    alpha_src = C3D_EASRC_ONE;
+    alpha_dst = C3D_EADST_ZERO;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
+}
+
+void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
+{
+    // needs to be more than 8 cause clipping might return more polygons.
+    C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
+    int i;
+    int32_t tmp;
+
+    for (i = 0; i < vertex_count; i++) {
+        C3D_VTCF *vertex = &vertices[i];
+        PHD_VBUF *vbuf = &vbufs[i];
+        vertex->x = vbuf->xs;
+        vertex->y = vbuf->ys;
+        vertex->z = vbuf->zv * 0.0001f - 16.0f;
+        vertex->b = 0.0f;
+        vertex->g = 0.0f;
+        vertex->r = 0.0f;
+        vertex->a = 128.0f;
+    }
+
+    if (clip) {
+        int original = vertex_count;
+        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+        assert(vertex_count < original * HWR_CLIP_VERTCOUNT_SCALE);
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    HWR_DisableTextureMode();
+
+    tmp = C3D_EASRC_SRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_INVSRCALPHA;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
+    HWR_RenderTriangleStrip(vertices, vertex_count);
+    tmp = C3D_EASRC_ONE;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &tmp);
+    tmp = C3D_EADST_ZERO;
+    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &tmp);
 }
 
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
@@ -1655,19 +1626,10 @@ int32_t HWR_ZedClipper(
 void HWR_InitPolyList()
 {
     HWR_RenderBegin();
-    HWR_LightningCount = 0;
 }
 
 void HWR_OutputPolyList()
 {
-    int i;
-    for (i = 0; i < HWR_LightningCount; i++) {
-        HWR_RenderLightningSegment(
-            HWR_LightningTable[i].x1, HWR_LightningTable[i].y1,
-            HWR_LightningTable[i].z1, HWR_LightningTable[i].thickness1,
-            HWR_LightningTable[i].x2, HWR_LightningTable[i].y2,
-            HWR_LightningTable[i].z2, HWR_LightningTable[i].thickness2);
-    }
     HWR_RenderEnd();
 }
 
