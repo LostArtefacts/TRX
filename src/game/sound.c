@@ -44,13 +44,11 @@ typedef enum SOUND_FLAG {
     SOUND_FLAG_RESTARTED = 1 << 2,
 } SOUND_FLAG;
 
-static struct {
-    SOUND_SLOT sfx_playing[MAX_PLAYING_FX];
-    int32_t master_volume;
-    int32_t master_volume_default;
-    int16_t ambient_lookup[MAX_AMBIENT_FX];
-    int32_t ambient_lookup_idx;
-} S = { 0 };
+static SOUND_SLOT m_SFXPlaying[MAX_PLAYING_FX] = { 0 };
+static int32_t m_MasterVolume = 0;
+static int32_t m_MasterVolumeDefault = 0;
+static int16_t m_AmbientLookup[MAX_AMBIENT_FX] = { 0 };
+static int32_t m_AmbientLookupIdx = 0;
 
 static SOUND_SLOT *Sound_GetSlot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
@@ -65,8 +63,8 @@ static SOUND_SLOT *Sound_GetSlot(
     case SOUND_MODE_WAIT:
     case SOUND_MODE_RESTART: {
         SOUND_SLOT *last_free_slot = NULL;
-        for (int i = S.ambient_lookup_idx; i < MAX_PLAYING_FX; i++) {
-            SOUND_SLOT *result = &S.sfx_playing[i];
+        for (int i = m_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
+            SOUND_SLOT *result = &m_SFXPlaying[i];
             if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
                 && result->pos == pos) {
                 result->flags |= SOUND_FLAG_RESTARTED;
@@ -80,8 +78,8 @@ static SOUND_SLOT *Sound_GetSlot(
 
     case SOUND_MODE_AMBIENT:
         for (int i = 0; i < MAX_AMBIENT_FX; i++) {
-            if (S.ambient_lookup[i] == sfx_num) {
-                SOUND_SLOT *result = &S.sfx_playing[i];
+            if (m_AmbientLookup[i] == sfx_num) {
+                SOUND_SLOT *result = &m_SFXPlaying[i];
                 if (result->flags != SOUND_FLAG_UNUSED
                     && result->loudness <= loudness) {
                     return NULL;
@@ -146,7 +144,7 @@ static void Sound_ClearSlot(SOUND_SLOT *slot)
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
 {
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *rslot = &S.sfx_playing[i];
+        SOUND_SLOT *rslot = &m_SFXPlaying[i];
         if (rslot != slot && rslot->handle == slot->handle) {
             rslot->handle = NULL;
         }
@@ -155,8 +153,8 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
 
 bool Sound_Init()
 {
-    S.master_volume = 32;
-    S.master_volume_default = 32;
+    m_MasterVolume = 32;
+    m_MasterVolumeDefault = 32;
     return S_Sound_Init();
 }
 
@@ -184,7 +182,7 @@ void Sound_UpdateEffects()
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *slot = &S.sfx_playing[i];
+        SOUND_SLOT *slot = &m_SFXPlaying[i];
         if (!(slot->flags & SOUND_FLAG_USED)) {
             continue;
         }
@@ -193,7 +191,7 @@ void Sound_UpdateEffects()
             if (slot->loudness != SOUND_NOT_AUDIBLE && slot->handle) {
                 S_Sound_SetPanAndVolume(
                     slot->handle, slot->pan,
-                    (S.master_volume * slot->volume) >> 6);
+                    (m_MasterVolume * slot->volume) >> 6);
             } else {
                 if (slot->handle) {
                     S_Sound_StopSample(slot->handle);
@@ -206,7 +204,7 @@ void Sound_UpdateEffects()
                 if (slot->volume > 0 && slot->handle) {
                     S_Sound_SetPanAndVolume(
                         slot->handle, slot->pan,
-                        (S.master_volume * slot->volume) >> 6);
+                        (m_MasterVolume * slot->volume) >> 6);
                 } else {
                     if (slot->handle) {
                         S_Sound_StopSample(slot->handle);
@@ -299,7 +297,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         volume = SOUND_MAX_VOLUME;
     }
 
-    volume = (S.master_volume * volume) >> 6;
+    volume = (m_MasterVolume * volume) >> 6;
 
     switch (mode) {
     case SOUND_MODE_WAIT: {
@@ -395,7 +393,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        SOUND_SLOT *slot = &S.sfx_playing[i];
+        SOUND_SLOT *slot = &m_SFXPlaying[i];
         if ((slot->flags & SOUND_FLAG_USED)
             && S_Sound_SampleIsPlaying(slot->handle)) {
             if ((!pos && slot->fxnum == sfx_num)
@@ -416,15 +414,15 @@ void Sound_ResetEffects()
     if (!SoundIsActive) {
         return;
     }
-    S.master_volume = S.master_volume_default;
+    m_MasterVolume = m_MasterVolumeDefault;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        Sound_ClearSlot(&S.sfx_playing[i]);
+        Sound_ClearSlot(&m_SFXPlaying[i]);
     }
 
     Sound_StopAllSamples();
 
-    S.ambient_lookup_idx = 0;
+    m_AmbientLookupIdx = 0;
 
     for (int i = 0; i < MAX_SAMPLES; i++) {
         if (SampleLUT[i] < 0) {
@@ -439,12 +437,12 @@ void Sound_ResetEffects()
 
         int32_t mode = s->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
-            if (S.ambient_lookup_idx >= MAX_AMBIENT_FX) {
+            if (m_AmbientLookupIdx >= MAX_AMBIENT_FX) {
                 S_ExitSystem("Ran out of ambient fx slots in "
                              "Sound_ResetEffects()");
             }
-            S.ambient_lookup[S.ambient_lookup_idx] = i;
-            S.ambient_lookup_idx++;
+            m_AmbientLookup[m_AmbientLookupIdx] = i;
+            m_AmbientLookupIdx++;
         }
     }
 }
@@ -455,8 +453,8 @@ void Sound_ResetAmbientLoudness()
         return;
     }
 
-    for (int i = 0; i < S.ambient_lookup_idx; i++) {
-        SOUND_SLOT *slot = &S.sfx_playing[i];
+    for (int i = 0; i < m_AmbientLookupIdx; i++) {
+        SOUND_SLOT *slot = &m_SFXPlaying[i];
         slot->loudness = SOUND_NOT_AUDIBLE;
     }
 }
@@ -467,8 +465,8 @@ void Sound_StopAmbientSounds()
         return;
     }
 
-    for (int i = 0; i < S.ambient_lookup_idx; i++) {
-        SOUND_SLOT *slot = &S.sfx_playing[i];
+    for (int i = 0; i < m_AmbientLookupIdx; i++) {
+        SOUND_SLOT *slot = &m_SFXPlaying[i];
         if (S_Sound_SampleIsPlaying(slot->handle)) {
             S_Sound_StopSample(slot->handle);
             Sound_ClearSlot(slot);
@@ -489,6 +487,6 @@ void Sound_StopAllSamples()
 void Sound_SetMasterVolume(int8_t volume)
 {
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
-    S.master_volume_default = raw_volume & 0x3F;
-    S.master_volume = raw_volume & 0x3F;
+    m_MasterVolumeDefault = raw_volume & 0x3F;
+    m_MasterVolume = raw_volume & 0x3F;
 }
