@@ -15,13 +15,11 @@
 #define TEXT_MAX_STRING_SIZE 100
 #define TEXT_MAX_STRINGS 64
 
-static struct {
-    int16_t textstring_count;
-    TEXTSTRING textstring_table[TEXT_MAX_STRINGS];
-    char text_strings[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE];
-} S = { 0 };
+static int16_t m_TextstringCount = 0;
+static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
+static char m_TextstringBuffers[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE] = { 0 };
 
-static int8_t Text_Spacing[110] = {
+static int8_t m_TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
     13 /*H*/,  8 /*I*/,  11 /*J*/, 12 /*K*/, 11 /*L*/, 13 /*M*/, 13 /*N*/,
     12 /*O*/,  11 /*P*/, 12 /*Q*/, 12 /*R*/, 11 /*S*/, 12 /*T*/, 13 /*U*/,
@@ -40,7 +38,7 @@ static int8_t Text_Spacing[110] = {
     8,         8,        8,        8,        8
 };
 
-static int8_t Text_ASCIIMap[95] = {
+static int8_t m_TextASCIIMap[95] = {
     0 /* */,   64 /*!*/,  66 /*"*/,  78 /*#*/, 77 /*$*/, 74 /*%*/, 78 /*&*/,
     79 /*'*/,  69 /*(*/,  70 /*)*/,  92 /***/, 72 /*+*/, 63 /*,*/, 71 /*-*/,
     62 /*.*/,  68 /**/,   52 /*0*/,  53 /*1*/, 54 /*2*/, 55 /*3*/, 56 /*4*/,
@@ -62,18 +60,18 @@ static void Text_DrawText(TEXTSTRING *textstring);
 void Text_Init()
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        S.textstring_table[i].flags.all = 0;
+        m_TextstringTable[i].flags.all = 0;
     }
-    S.textstring_count = 0;
+    m_TextstringCount = 0;
 }
 
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
 {
-    if (S.textstring_count == TEXT_MAX_STRINGS) {
+    if (m_TextstringCount == TEXT_MAX_STRINGS) {
         return NULL;
     }
 
-    TEXTSTRING *result = &S.textstring_table[0];
+    TEXTSTRING *result = &m_TextstringTable[0];
     int n;
     for (n = 0; n < TEXT_MAX_STRINGS; n++) {
         if (!result->flags.active) {
@@ -89,7 +87,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
         return NULL;
     }
 
-    result->string = S.text_strings[n];
+    result->string = m_TextstringBuffers[n];
     result->pos.x = x;
     result->pos.y = y;
     result->letter_spacing = 1;
@@ -109,7 +107,7 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
 
     Text_ChangeText(result, string);
 
-    S.textstring_count++;
+    m_TextstringCount++;
 
     return result;
 }
@@ -240,14 +238,14 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
         }
 
         if (letter >= 16) {
-            letter = Text_ASCIIMap[letter - 32];
+            letter = m_TextASCIIMap[letter - 32];
         } else if (letter >= 11) {
             letter = letter + 91;
         } else {
             letter = letter + 81;
         }
 
-        width += ((Text_Spacing[(uint8_t)letter] + textstring->letter_spacing)
+        width += ((m_TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
                   * textstring->scale.h)
             / PHD_ONE;
     }
@@ -266,14 +264,14 @@ void Text_Remove(TEXTSTRING *textstring)
             textstring->on_remove(textstring);
         }
         textstring->flags.active = 0;
-        S.textstring_count--;
+        m_TextstringCount--;
     }
 }
 
 void Text_RemoveAll()
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *textstring = &S.textstring_table[i];
+        TEXTSTRING *textstring = &m_TextstringTable[i];
         if (textstring->flags.active) {
             Text_Remove(textstring);
         }
@@ -284,7 +282,7 @@ void Text_RemoveAll()
 void Text_Draw()
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *textstring = &S.textstring_table[i];
+        TEXTSTRING *textstring = &m_TextstringTable[i];
         if (textstring->flags.active) {
             Text_DrawText(textstring);
         }
@@ -338,7 +336,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
 
         int32_t sprite_num = letter;
         if (letter >= 16) {
-            sprite_num = Text_ASCIIMap[letter - 32];
+            sprite_num = m_TextASCIIMap[letter - 32];
         } else if (letter >= 11) {
             sprite_num = letter + 91;
         } else {
@@ -358,7 +356,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
-        x += (((int32_t)textstring->letter_spacing + Text_Spacing[sprite_num])
+        x += (((int32_t)textstring->letter_spacing + m_TextSpacing[sprite_num])
               * textstring->scale.h)
             / PHD_ONE;
     }
