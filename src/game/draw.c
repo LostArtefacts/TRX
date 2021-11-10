@@ -390,7 +390,7 @@ void DrawPickupItem(ITEM_INFO *item)
 
     // First - Is there floor under the item?
     // This is mostly true, but for example the 4 items in the Obelisk of
-    // Kharmoon the 4 items are sitting ontop of a static mesh which is not
+    // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
@@ -414,7 +414,7 @@ void DrawPickupItem(ITEM_INFO *item)
         int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
         int16_t anim_y = frmptr[0][FRAME_POS_Y];
 
-        // Sifferent objects need different heuristics.
+        // Different objects need different heuristics.
         switch (item_num_option) {
         case O_GUN_OPTION:
         case O_SHOTGUN_OPTION:
@@ -444,7 +444,7 @@ void DrawPickupItem(ITEM_INFO *item)
             // Take the difference from the bottom of the sprite and the bottom
             // of the animation and divide it by 8.
             // 8 was chosen because in testing it positioned objects correctly.
-            // Specifically the 4 items in the Obelisk of Kharmoon and keys.
+            // Specifically the 4 items in the Obelisk of Khamoon and keys.
             // Some objects have a centred mesh and some have one that is from
             // the bottom, for the centred ones; move up from the
             // bottom is necessary.
@@ -554,6 +554,7 @@ void DrawPickupItem(ITEM_INFO *item)
             }
         }
     }
+
     phd_PopMatrix();
 }
 
