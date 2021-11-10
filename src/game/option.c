@@ -49,12 +49,13 @@ typedef enum COMPASS_TEXT {
 typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_PERSPECTIVE = 0,
     DETAIL_HW_BILINEAR = 1,
-    DETAIL_HW_UI_TEXT_SCALE = 2,
-    DETAIL_HW_UI_BAR_SCALE = 3,
-    DETAIL_HW_RESOLUTION = 4,
-    DETAIL_HW_TITLE = 5,
-    DETAIL_HW_TITLE_BORDER = 6,
-    DETAIL_HW_NUMBER_OF = 7,
+    DETAIL_HW_BRIGHTNESS = 2,
+    DETAIL_HW_UI_TEXT_SCALE = 3,
+    DETAIL_HW_UI_BAR_SCALE = 4,
+    DETAIL_HW_RESOLUTION = 5,
+    DETAIL_HW_TITLE = 6,
+    DETAIL_HW_TITLE_BORDER = 7,
+    DETAIL_HW_NUMBER_OF = 8,
     DETAIL_HW_OPTION_MIN = DETAIL_HW_PERSPECTIVE,
     DETAIL_HW_OPTION_MAX = DETAIL_HW_RESOLUTION,
 } DETAIL_HW_TEXT;
@@ -671,6 +672,11 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
+            buf, GF.strings[GS_DETAIL_BRIGHTNESS_FMT], T1MConfig.brightness);
+        DetailTextHW[DETAIL_HW_BRIGHTNESS] = T_Print(0, y, buf);
+        y += DETAIL_HW_ROW_HEIGHT;
+
+        sprintf(
             buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
             T1MConfig.ui.text_scale);
         DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, buf);
@@ -751,6 +757,13 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             }
             break;
 
+        case DETAIL_HW_BRIGHTNESS:
+            if (T1MConfig.brightness < MAX_BRIGHTNESS) {
+                T1MConfig.brightness += 0.1f;
+                reset = 1;
+            }
+            break;
+
         case DETAIL_HW_UI_TEXT_SCALE:
             if (T1MConfig.ui.text_scale < MAX_UI_SCALE) {
                 T1MConfig.ui.text_scale += 0.1;
@@ -785,6 +798,13 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_BILINEAR:
             if (T1MConfig.render_flags.bilinear) {
                 T1MConfig.render_flags.bilinear = 0;
+                reset = 1;
+            }
+            break;
+
+        case DETAIL_HW_BRIGHTNESS:
+            if (T1MConfig.brightness > MIN_BRIGHTNESS) {
+                T1MConfig.brightness -= 0.1f;
                 reset = 1;
             }
             break;
