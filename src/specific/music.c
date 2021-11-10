@@ -43,7 +43,7 @@ bool S_Music_Init()
     return true;
 }
 
-void S_Music_AdjustVolume(int16_t volume)
+void S_Music_SetVolume(int16_t volume)
 {
     int32_t volume_aux = volume * 0xFFFF / 0xFF;
     volume_aux |= volume_aux << 16;

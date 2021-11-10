@@ -11,7 +11,7 @@ void Music_PlayLooped();
 bool Music_Play(int16_t track);
 bool Music_Stop();
 void Music_Loop();
-void Music_AdjustVolume(int16_t volume);
+void Music_SetVolume(int16_t volume);
 void Music_Pause();
 void Music_Unpause();
 int16_t Music_CurrentTrack();

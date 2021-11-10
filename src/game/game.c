@@ -79,7 +79,7 @@ int32_t GameLoop(int32_t demo_mode)
 
     Sound_StopAllSamples();
     Music_Stop();
-    Music_AdjustVolume(T1MConfig.music_volume);
+    Music_SetVolume(T1MConfig.music_volume);
 
     if (ret == GF_NOP_BREAK) {
         return GF_NOP;

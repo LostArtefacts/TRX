@@ -69,10 +69,10 @@ void Music_Loop()
     S.loop = true;
 }
 
-void Music_AdjustVolume(int16_t volume)
+void Music_SetVolume(int16_t volume)
 {
     int16_t volume_raw = volume ? 25 * volume + 5 : 0;
-    S_Music_AdjustVolume(volume_raw);
+    S_Music_SetVolume(volume_raw);
 }
 
 void Music_Pause()

@@ -230,8 +230,8 @@ void S_ReadUserSettings()
 
     DefaultConflict();
 
-    Music_AdjustVolume(T1MConfig.music_volume);
-    Sound_AdjustMasterVolume(T1MConfig.sound_volume);
+    Music_SetVolume(T1MConfig.music_volume);
+    Sound_SetMasterVolume(T1MConfig.sound_volume);
 }
 
 void S_WriteUserSettings()
