@@ -543,15 +543,15 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 
     HWR_DisableTextureMode();
 
-    int32_t alpha_src = 4;
-    int32_t alpha_dst = 5;
+    int32_t alpha_src = C3D_EASRC_SRCALPHA;
+    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 
     HWR_RenderTriangleStrip(vertices, 4);
 
-    alpha_src = 1;
-    alpha_dst = 0;
+    alpha_src = C3D_EASRC_ONE;
+    alpha_dst = C3D_EADST_ZERO;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
@@ -564,8 +564,8 @@ void HWR_DrawLightningSegment(
 
     HWR_DisableTextureMode();
 
-    int32_t alpha_src = 4;
-    int32_t alpha_dst = 5;
+    int32_t alpha_src = C3D_EASRC_SRCALPHA;
+    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
     vertices[0].x = x1;
@@ -642,8 +642,8 @@ void HWR_DrawLightningSegment(
         HWR_RenderTriangleStrip(vertices, num);
     }
 
-    alpha_src = 1;
-    alpha_dst = 0;
+    alpha_src = C3D_EASRC_ONE;
+    alpha_dst = C3D_EADST_ZERO;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_ALPHA_DST, &alpha_dst);
 }
