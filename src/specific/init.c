@@ -104,6 +104,7 @@ void init_game_malloc()
     if (!GameMemoryPointer) {
         S_ExitSystem("ERROR: Could not allocate enough memory");
     }
+    memset(GameMemoryPointer, 0, MALLOC_SIZE);
 
     GameAllocMemPointer = GameMemoryPointer;
     GameAllocMemFree = MALLOC_SIZE;
