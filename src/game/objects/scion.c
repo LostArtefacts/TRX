@@ -156,8 +156,7 @@ void PickUpScionCollision(
         AlignLaraPosition(&PickUpScionPosition, item, lara_item);
         lara_item->current_anim_state = AS_PICKUP;
         lara_item->goal_anim_state = AS_PICKUP;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        Item_SetAnimBase(lara_item, Objects[O_LARA_EXTRA].anim_index);
         Lara.gun_status = LGS_HANDSBUSY;
         Camera.type = CAM_CINEMATIC;
         CineFrame = 0;
@@ -183,8 +182,7 @@ void PickUpScion4Collision(
         AlignLaraPosition(&PickUpScion4Position, item, lara_item);
         lara_item->current_anim_state = AS_PICKUP;
         lara_item->goal_anim_state = AS_PICKUP;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        Item_SetAnimBase(lara_item, Objects[O_LARA_EXTRA].anim_index);
         Lara.gun_status = LGS_HANDSBUSY;
         Camera.type = CAM_CINEMATIC;
         CineFrame = 0;
