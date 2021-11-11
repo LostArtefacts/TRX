@@ -16,9 +16,6 @@
 #include "global/vars.h"
 
 char *GameMemoryPointer = NULL;
-TEXTSTRING *VersionText = NULL;
-TEXTSTRING *AmmoText = NULL;
-TEXTSTRING *FPSText = NULL;
 int32_t FPSCounter = 0;
 
 void (*EffectRoutines[])(ITEM_INFO *item) = {

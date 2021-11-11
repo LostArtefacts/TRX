@@ -56,9 +56,6 @@ extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t MnSoundMasterVolume;
 
-extern TEXTSTRING *VersionText;
-extern TEXTSTRING *AmmoText;
-extern TEXTSTRING *FPSText;
 extern int32_t FPSCounter;
 
 extern void (*EffectRoutines[])(ITEM_INFO *item);

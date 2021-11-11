@@ -17,8 +17,10 @@
 #define MAX_PICKUP_COLUMNS 4
 #define MAX_PICKUPS 16
 
-static int16_t BarOffsetY[6] = { 0 };
-static DISPLAYPU Pickups[MAX_PICKUPS] = { 0 };
+static TEXTSTRING *m_AmmoText = NULL;
+static TEXTSTRING *m_FPSText = NULL;
+static int16_t m_BarOffsetY[6] = { 0 };
+static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
 
 static RGB888 ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -80,6 +82,8 @@ static RGB888 ColorBarMap[][COLOR_STEPS] = {
 static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y);
 static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type);
+static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
+static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 
 static void Overlay_GetBarLocation(
     int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
@@ -101,13 +105,13 @@ static void Overlay_GetBarLocation(
 
     if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_TOP_CENTER
         || bar_location == T1M_BL_TOP_RIGHT) {
-        *y = screen_margin_v + BarOffsetY[bar_location];
+        *y = screen_margin_v + m_BarOffsetY[bar_location];
     } else {
         *y = GetRenderHeightDownscaled() - height * T1MConfig.ui.bar_scale
-            - screen_margin_v - BarOffsetY[bar_location];
+            - screen_margin_v - m_BarOffsetY[bar_location];
     }
 
-    BarOffsetY[bar_location] += height + bar_spacing;
+    m_BarOffsetY[bar_location] += height + bar_spacing;
 }
 
 static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
@@ -194,10 +198,20 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
     }
 }
 
+static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring)
+{
+    m_AmmoText = NULL;
+}
+
+static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring)
+{
+    m_FPSText = NULL;
+}
+
 void Overlay_Init()
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        Pickups[i].duration = 0;
+        m_Pickups[i].duration = 0;
     }
 }
 
@@ -206,7 +220,7 @@ void Overlay_DrawHealthBar()
     static int32_t old_hit_points = 0;
 
     for (int i = 0; i < 6; i++) {
-        BarOffsetY[i] = 0;
+        m_BarOffsetY[i] = 0;
     }
 
     int hit_points = LaraItem->hit_points;
@@ -305,9 +319,9 @@ void Overlay_DrawAmmoInfo()
 
     if (Lara.gun_status != LGS_READY || OverlayFlag <= 0
         || (SaveGame.bonus_flag & GBF_NGPLUS)) {
-        if (AmmoText) {
-            T_RemovePrint(AmmoText);
-            AmmoText = NULL;
+        if (m_AmmoText) {
+            Text_Remove(m_AmmoText);
+            m_AmmoText = NULL;
         }
         return;
     }
@@ -330,18 +344,19 @@ void Overlay_DrawAmmoInfo()
 
     Overlay_MakeAmmoString(ammostring);
 
-    if (AmmoText) {
-        T_ChangeText(AmmoText, ammostring);
+    if (m_AmmoText) {
+        Text_ChangeText(m_AmmoText, ammostring);
     } else {
-        AmmoText = T_Print(
+        m_AmmoText = Text_Create(
             -screen_margin_h - text_offset_x, text_height + screen_margin_v,
             ammostring);
-        T_SetScale(AmmoText, PHD_ONE * scale, PHD_ONE * scale);
-        T_RightAlign(AmmoText, 1);
+        m_AmmoText->on_remove = Overlay_OnAmmoTextRemoval;
+        Text_SetScale(m_AmmoText, PHD_ONE * scale, PHD_ONE * scale);
+        Text_AlignRight(m_AmmoText, 1);
     }
 
-    AmmoText->ypos = BarOffsetY[T1M_BL_TOP_RIGHT]
-        ? text_height + screen_margin_v + BarOffsetY[T1M_BL_TOP_RIGHT]
+    m_AmmoText->pos.y = m_BarOffsetY[T1M_BL_TOP_RIGHT]
+        ? text_height + screen_margin_v + m_BarOffsetY[T1M_BL_TOP_RIGHT]
         : text_height + screen_margin_v;
 }
 
@@ -357,7 +372,7 @@ void Overlay_DrawPickups()
         int32_t y = PhdWinHeight - sprite_height;
         int32_t x = PhdWinWidth - sprite_height;
         for (int i = 0; i < MAX_PICKUPS; i++) {
-            DISPLAYPU *pu = &Pickups[i];
+            DISPLAYPU *pu = &m_Pickups[i];
             pu->duration -= time;
             if (pu->duration <= 0) {
                 pu->duration = 0;
@@ -378,24 +393,26 @@ void Overlay_DrawPickups()
 
 void Overlay_DrawFPSInfo()
 {
-    static char fps_buf[20];
     static int32_t elapsed = 0;
 
     if (T1MConfig.render_flags.fps_counter) {
         if (ClockGetMS() - elapsed >= 1000) {
-            if (FPSText) {
+            if (m_FPSText) {
+                char fps_buf[20];
                 sprintf(fps_buf, "%d FPS", FPSCounter);
-                T_ChangeText(FPSText, fps_buf);
+                Text_ChangeText(m_FPSText, fps_buf);
             } else {
+                char fps_buf[20];
                 sprintf(fps_buf, "? FPS");
-                FPSText = T_Print(10, 30, fps_buf);
+                m_FPSText = Text_Create(10, 30, fps_buf);
+                m_FPSText->on_remove = Overlay_OnFPSTextRemoval;
             }
             FPSCounter = 0;
             elapsed = ClockGetMS();
         }
-    } else if (FPSText) {
-        T_RemovePrint(FPSText);
-        FPSText = NULL;
+    } else if (m_FPSText) {
+        Text_Remove(m_FPSText);
+        m_FPSText = NULL;
         FPSCounter = 0;
     }
 }
@@ -412,15 +429,15 @@ void Overlay_DrawGameInfo()
     Overlay_DrawAmmoInfo();
     Overlay_DrawFPSInfo();
 
-    T_DrawText();
+    Text_Draw();
 }
 
 void Overlay_AddPickup(int16_t object_num)
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        if (Pickups[i].duration <= 0) {
-            Pickups[i].duration = 75;
-            Pickups[i].sprnum = Objects[object_num].mesh_index;
+        if (m_Pickups[i].duration <= 0) {
+            m_Pickups[i].duration = 75;
+            m_Pickups[i].sprnum = Objects[object_num].mesh_index;
             return;
         }
     }

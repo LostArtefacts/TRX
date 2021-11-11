@@ -760,19 +760,6 @@ typedef enum KEY_NUMBER {
     KEY_NUMBER_OF = 22,
 } KEY_NUMBER;
 
-typedef enum TEXTSTRING_FLAG {
-    TF_ACTIVE = 1 << 0,
-    TF_FLASH = 1 << 1,
-    TF_ROTATE_H = 1 << 2,
-    TF_ROTATE_V = 1 << 3,
-    TF_CENTRE_H = 1 << 4,
-    TF_CENTRE_V = 1 << 5,
-    TF_RIGHT = 1 << 7,
-    TF_BOTTOM = 1 << 8,
-    TF_BGND = 1 << 9,
-    TF_OUTLINE = 1 << 10,
-} TEXTSTRING_FLAG;
-
 typedef enum D_FLAGS {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
@@ -1204,331 +1191,305 @@ typedef struct PcxHeader_t {
 } PCX_HEADER;
 
 typedef struct POS_2D {
-    /* 0000 */ uint16_t x;
-    /* 0002 */ uint16_t y;
-    /* 0004 end */
+    uint16_t x;
+    uint16_t y;
 } POS_2D;
 
 typedef struct POS_3D {
-    /* 0000 */ uint16_t x;
-    /* 0002 */ uint16_t y;
-    /* 0004 */ uint16_t z;
-    /* 0006 end */
+    uint16_t x;
+    uint16_t y;
+    uint16_t z;
 } POS_3D;
 
 typedef struct PHD_VECTOR {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
 } PHD_VECTOR;
 
 typedef struct PHD_MATRIX {
-    /* 0000 */ int32_t _00;
-    /* 0004 */ int32_t _01;
-    /* 0008 */ int32_t _02;
-    /* 000C */ int32_t _03;
-    /* 0010 */ int32_t _10;
-    /* 0014 */ int32_t _11;
-    /* 0018 */ int32_t _12;
-    /* 001C */ int32_t _13;
-    /* 0020 */ int32_t _20;
-    /* 0024 */ int32_t _21;
-    /* 0028 */ int32_t _22;
-    /* 002C */ int32_t _23;
-    /* 0030 end */
+    int32_t _00;
+    int32_t _01;
+    int32_t _02;
+    int32_t _03;
+    int32_t _10;
+    int32_t _11;
+    int32_t _12;
+    int32_t _13;
+    int32_t _20;
+    int32_t _21;
+    int32_t _22;
+    int32_t _23;
 } PHD_MATRIX;
 
 typedef struct PHD_3DPOS {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int16_t x_rot;
-    /* 000E */ int16_t y_rot;
-    /* 0010 */ int16_t z_rot;
-    /* 0012 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t x_rot;
+    int16_t y_rot;
+    int16_t z_rot;
 } PHD_3DPOS;
 
 typedef struct POINT_INFO {
-    /* 0000 */ float xv;
-    /* 0004 */ float yv;
-    /* 0008 */ float zv;
-    /* 000C */ float xs;
-    /* 0010 */ float ys;
-    /* 0014 */ float u;
-    /* 0018 */ float v;
-    /* 001C */ float g;
-    /* 0020 end */
+    float xv;
+    float yv;
+    float zv;
+    float xs;
+    float ys;
+    float u;
+    float v;
+    float g;
 } POINT_INFO;
 
 typedef struct PHD_VBUF {
-    /* 0000 */ int32_t xv;
-    /* 0004 */ int32_t yv;
-    /* 0008 */ int32_t zv;
-    /* 000C */ int32_t xs;
-    /* 0010 */ int32_t ys;
-    /* 0014 */ int32_t dist;
-    /* 0018 */ int16_t clip;
-    /* 001A */ int16_t g;
-    /* 001C */ uint16_t u;
-    /* 001E */ uint16_t v;
-    /* 0020 end */
+    int32_t xv;
+    int32_t yv;
+    int32_t zv;
+    int32_t xs;
+    int32_t ys;
+    int32_t dist;
+    int16_t clip;
+    int16_t g;
+    uint16_t u;
+    uint16_t v;
 } PHD_VBUF;
 
 typedef struct PHD_UV {
-    /* 0000 */ uint16_t u1;
-    /* 0002 */ uint16_t v1;
-    /* 0004 end */
+    uint16_t u1;
+    uint16_t v1;
 } PHD_UV;
 
 typedef struct PHD_TEXTURE {
-    /* 0000 */ uint16_t drawtype;
-    /* 0002 */ uint16_t tpage;
-    /* 0004 */ PHD_UV uv[4];
-    /* 0014 end */
+    uint16_t drawtype;
+    uint16_t tpage;
+    PHD_UV uv[4];
 } PHD_TEXTURE;
 
 typedef struct PHD_SPRITE {
-    /* 0000 */ uint16_t tpage;
-    /* 0002 */ uint16_t offset;
-    /* 0004 */ uint16_t width;
-    /* 0006 */ uint16_t height;
-    /* 0008 */ int16_t x1;
-    /* 000A */ int16_t y1;
-    /* 000C */ int16_t x2;
-    /* 000E */ int16_t y2;
-    /* 0010 end */
+    uint16_t tpage;
+    uint16_t offset;
+    uint16_t width;
+    uint16_t height;
+    int16_t x1;
+    int16_t y1;
+    int16_t x2;
+    int16_t y2;
 } PHD_SPRITE;
 
 typedef struct DOOR_INFO {
-    /* 0000 */ int16_t room_num;
-    /* 0002 */ int16_t x;
-    /* 0004 */ int16_t y;
-    /* 0006 */ int16_t z;
-    /* 0008 */ POS_3D vertex[4];
-    /* 0020 end */
+    int16_t room_num;
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    POS_3D vertex[4];
 } DOOR_INFO;
 
 typedef struct DOOR_INFOS {
-    /* 0000 */ uint16_t count;
-    /* 0002 */ DOOR_INFO door[];
-    /* 0006 end */
+    uint16_t count;
+    DOOR_INFO door[];
 } DOOR_INFOS;
 
 typedef struct FLOOR_INFO {
-    /* 0000 */ uint16_t index;
-    /* 0002 */ int16_t box;
-    /* 0004 */ uint8_t pit_room;
-    /* 0005 */ int8_t floor;
-    /* 0006 */ uint8_t sky_room;
-    /* 0007 */ int8_t ceiling;
-    /* 0008 end */
+    uint16_t index;
+    int16_t box;
+    uint8_t pit_room;
+    int8_t floor;
+    uint8_t sky_room;
+    int8_t ceiling;
 } FLOOR_INFO;
 
 typedef struct DOORPOS_DATA {
-    /* 0000 */ FLOOR_INFO *floor;
-    /* 0004 */ FLOOR_INFO old_floor;
-    /* 000C */ int16_t block;
-    /* 000E end */
+    FLOOR_INFO *floor;
+    FLOOR_INFO old_floor;
+    int16_t block;
 } DOORPOS_DATA;
 
 typedef struct DOOR_DATA {
-    /* 0000 */ DOORPOS_DATA d1;
-    /* 000E */ DOORPOS_DATA d1flip;
-    /* 001C */ DOORPOS_DATA d2;
-    /* 002A */ DOORPOS_DATA d2flip;
-    /* 0038 end */
+    DOORPOS_DATA d1;
+    DOORPOS_DATA d1flip;
+    DOORPOS_DATA d2;
+    DOORPOS_DATA d2flip;
 } DOOR_DATA;
 
 typedef struct LIGHT_INFO {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int16_t intensity;
-    /* 000E */ int32_t falloff;
-    /* 0012 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t intensity;
+    int32_t falloff;
 } LIGHT_INFO;
 
 typedef struct MESH_INFO {
-    /* 0000 */ uint32_t x;
-    /* 0004 */ uint32_t y;
-    /* 0008 */ uint32_t z;
-    /* 000C */ PHD_ANGLE y_rot;
-    /* 000E */ uint16_t shade;
-    /* 0010 */ uint16_t static_number;
-    /* 0012 end */
+    uint32_t x;
+    uint32_t y;
+    uint32_t z;
+    PHD_ANGLE y_rot;
+    uint16_t shade;
+    uint16_t static_number;
 } MESH_INFO;
 
 typedef struct ROOM_INFO {
-    /* 0000 */ int16_t *data;
-    /* 0004 */ DOOR_INFOS *doors;
-    /* 0008 */ FLOOR_INFO *floor;
-    /* 000C */ LIGHT_INFO *light;
-    /* 0010 */ MESH_INFO *mesh;
-    /* 0014 */ int32_t x;
-    /* 0018 */ int32_t y;
-    /* 001C */ int32_t z;
-    /* 0020 */ int32_t min_floor;
-    /* 0024 */ int32_t max_ceiling;
-    /* 0028 */ int16_t x_size;
-    /* 002A */ int16_t y_size;
-    /* 002C */ int16_t ambient;
-    /* 002E */ int16_t num_lights;
-    /* 0030 */ int16_t num_meshes;
-    /* 0032 */ int16_t left;
-    /* 0034 */ int16_t right;
-    /* 0036 */ int16_t top;
-    /* 0038 */ int16_t bottom;
-    /* 003A */ int16_t bound_active;
-    /* 003C */ int16_t item_number;
-    /* 003E */ int16_t fx_number;
-    /* 0040 */ int16_t flipped_room;
-    /* 0042 */ uint16_t flags;
-    /* 0044 end */
+    int16_t *data;
+    DOOR_INFOS *doors;
+    FLOOR_INFO *floor;
+    LIGHT_INFO *light;
+    MESH_INFO *mesh;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t min_floor;
+    int32_t max_ceiling;
+    int16_t x_size;
+    int16_t y_size;
+    int16_t ambient;
+    int16_t num_lights;
+    int16_t num_meshes;
+    int16_t left;
+    int16_t right;
+    int16_t top;
+    int16_t bottom;
+    int16_t bound_active;
+    int16_t item_number;
+    int16_t fx_number;
+    int16_t flipped_room;
+    uint16_t flags;
 } ROOM_INFO;
 
 typedef struct ITEM_INFO {
-    /* 0000 */ int32_t floor;
-    /* 0004 */ uint32_t touch_bits;
-    /* 0008 */ uint32_t mesh_bits;
-    /* 000C */ int16_t object_number;
-    /* 000E */ int16_t current_anim_state;
-    /* 0010 */ int16_t goal_anim_state;
-    /* 0012 */ int16_t required_anim_state;
-    /* 0014 */ int16_t anim_number;
-    /* 0016 */ int16_t frame_number;
-    /* 0018 */ int16_t room_number;
-    /* 001A */ int16_t next_item;
-    /* 001C */ int16_t next_active;
-    /* 001E */ int16_t speed;
-    /* 0020 */ int16_t fall_speed;
-    /* 0022 */ int16_t hit_points;
-    /* 0024 */ int16_t box_number;
-    /* 0026 */ int16_t timer;
-    /* 0028 */ int16_t flags;
-    /* 002A */ int16_t shade;
-    /* 002C */ void *data;
-    /* 0030 */ PHD_3DPOS pos;
-    /* 0042 */ uint16_t active : 1;
-    /*      */ uint16_t status : 2;
-    /*      */ uint16_t gravity_status : 1;
-    /*      */ uint16_t hit_status : 1;
-    /*      */ uint16_t collidable : 1;
-    /*      */ uint16_t looked_at : 1;
-    /* 0044 end */
+    int32_t floor;
+    uint32_t touch_bits;
+    uint32_t mesh_bits;
+    int16_t object_number;
+    int16_t current_anim_state;
+    int16_t goal_anim_state;
+    int16_t required_anim_state;
+    int16_t anim_number;
+    int16_t frame_number;
+    int16_t room_number;
+    int16_t next_item;
+    int16_t next_active;
+    int16_t speed;
+    int16_t fall_speed;
+    int16_t hit_points;
+    int16_t box_number;
+    int16_t timer;
+    int16_t flags;
+    int16_t shade;
+    void *data;
+    PHD_3DPOS pos;
+    uint16_t active : 1;
+    uint16_t status : 2;
+    uint16_t gravity_status : 1;
+    uint16_t hit_status : 1;
+    uint16_t collidable : 1;
+    uint16_t looked_at : 1;
 } ITEM_INFO;
 
 typedef struct LARA_ARM {
-    /* 0000 */ int16_t *frame_base;
-    /* 0004 */ int16_t frame_number;
-    /* 0006 */ int16_t lock;
-    /* 0008 */ PHD_ANGLE y_rot;
-    /* 000A */ PHD_ANGLE x_rot;
-    /* 000C */ PHD_ANGLE z_rot;
-    /* 000E */ uint16_t flash_gun;
-    /* 0010 end */
+    int16_t *frame_base;
+    int16_t frame_number;
+    int16_t lock;
+    PHD_ANGLE y_rot;
+    PHD_ANGLE x_rot;
+    PHD_ANGLE z_rot;
+    uint16_t flash_gun;
 } LARA_ARM;
 
 typedef struct AMMO_INFO {
-    /* 0000 */ int32_t ammo;
-    /* 0004 */ int32_t hit;
-    /* 0008 */ int32_t miss;
-    /* 000C end */
+    int32_t ammo;
+    int32_t hit;
+    int32_t miss;
 } AMMO_INFO;
 
 typedef struct BOX_NODE {
-    /* 0000 */ int16_t exit_box;
-    /* 0002 */ uint16_t search_number;
-    /* 0004 */ int16_t next_expansion;
-    /* 0006 */ int16_t box_number;
-    /* 0008 end */
+    int16_t exit_box;
+    uint16_t search_number;
+    int16_t next_expansion;
+    int16_t box_number;
 } BOX_NODE;
 
 typedef struct LOT_INFO {
-    /* 0000 */ BOX_NODE *node;
-    /* 0004 */ int16_t head;
-    /* 0006 */ int16_t tail;
-    /* 0008 */ uint16_t search_number;
-    /* 000A */ uint16_t block_mask;
-    /* 000C */ int16_t step;
-    /* 000E */ int16_t drop;
-    /* 0010 */ int16_t fly;
-    /* 0012 */ int16_t zone_count;
-    /* 0014 */ int16_t target_box;
-    /* 0016 */ int16_t required_box;
-    /* 0018 */ PHD_VECTOR target;
-    /* 0024 end */
+    BOX_NODE *node;
+    int16_t head;
+    int16_t tail;
+    uint16_t search_number;
+    uint16_t block_mask;
+    int16_t step;
+    int16_t drop;
+    int16_t fly;
+    int16_t zone_count;
+    int16_t target_box;
+    int16_t required_box;
+    PHD_VECTOR target;
 } LOT_INFO;
 
 typedef struct FX_INFO {
-    /* 0000 */ PHD_3DPOS pos;
-    /* 0012 */ int16_t room_number;
-    /* 0014 */ int16_t object_number;
-    /* 0016 */ int16_t next_fx;
-    /* 0018 */ int16_t next_active;
-    /* 001A */ int16_t speed;
-    /* 001C */ int16_t fall_speed;
-    /* 001E */ int16_t frame_number;
-    /* 0020 */ int16_t counter;
-    /* 0022 */ int16_t shade;
-    /* 0024 end */
+    PHD_3DPOS pos;
+    int16_t room_number;
+    int16_t object_number;
+    int16_t next_fx;
+    int16_t next_active;
+    int16_t speed;
+    int16_t fall_speed;
+    int16_t frame_number;
+    int16_t counter;
+    int16_t shade;
 } FX_INFO;
 
 typedef struct LARA_INFO {
-    /* 0000 */ int16_t item_number;
-    /* 0002 */ int16_t gun_status;
-    /* 0004 */ int16_t gun_type;
-    /* 0006 */ int16_t request_gun_type;
-    /* 0008 */ int16_t calc_fall_speed;
-    /* 000A */ int16_t water_status;
-    /* 000C */ int16_t pose_count;
-    /* 000E */ int16_t hit_frame;
-    /* 0010 */ int16_t hit_direction;
-    /* 0012 */ int16_t air;
-    /* 0014 */ int16_t dive_count;
-    /* 0016 */ int16_t death_count;
-    /* 0018 */ int16_t current_active;
-    /* 001A */ int16_t spaz_effect_count;
-    /* 001C */ FX_INFO *spaz_effect;
-    /* 0020 */ int32_t mesh_effects;
-    /* 0024 */ int16_t *mesh_ptrs[LM_NUMBER_OF];
-    /* 0060 */ ITEM_INFO *target;
-    /* 0064 */ PHD_ANGLE target_angles[2];
-    /* 0068 */ int16_t turn_rate;
-    /* 006A */ int16_t move_angle;
-    /* 006C */ int16_t head_y_rot;
-    /* 006E */ int16_t head_x_rot;
-    /* 0070 */ int16_t head_z_rot;
-    /* 0072 */ int16_t torso_y_rot;
-    /* 0074 */ int16_t torso_x_rot;
-    /* 0076 */ int16_t torso_z_rot;
-    /* 0078 */ LARA_ARM left_arm;
-    /* 0088 */ LARA_ARM right_arm;
-    /* 0098 */ AMMO_INFO pistols;
-    /* 00A4 */ AMMO_INFO magnums;
-    /* 00B0 */ AMMO_INFO uzis;
-    /* 00BC */ AMMO_INFO shotgun;
-    /* 00C8 */ LOT_INFO LOT;
-    /* 00E6 end */
+    int16_t item_number;
+    int16_t gun_status;
+    int16_t gun_type;
+    int16_t request_gun_type;
+    int16_t calc_fall_speed;
+    int16_t water_status;
+    int16_t pose_count;
+    int16_t hit_frame;
+    int16_t hit_direction;
+    int16_t air;
+    int16_t dive_count;
+    int16_t death_count;
+    int16_t current_active;
+    int16_t spaz_effect_count;
+    FX_INFO *spaz_effect;
+    int32_t mesh_effects;
+    int16_t *mesh_ptrs[LM_NUMBER_OF];
+    ITEM_INFO *target;
+    PHD_ANGLE target_angles[2];
+    int16_t turn_rate;
+    int16_t move_angle;
+    int16_t head_y_rot;
+    int16_t head_x_rot;
+    int16_t head_z_rot;
+    int16_t torso_y_rot;
+    int16_t torso_x_rot;
+    int16_t torso_z_rot;
+    LARA_ARM left_arm;
+    LARA_ARM right_arm;
+    AMMO_INFO pistols;
+    AMMO_INFO magnums;
+    AMMO_INFO uzis;
+    AMMO_INFO shotgun;
+    LOT_INFO LOT;
 } LARA_INFO;
 
 typedef struct START_INFO {
-    /* 0000 */ uint16_t pistol_ammo;
-    /* 0002 */ uint16_t magnum_ammo;
-    /* 0004 */ uint16_t uzi_ammo;
-    /* 0006 */ uint16_t shotgun_ammo;
-    /* 0008 */ uint8_t num_medis;
-    /* 0009 */ uint8_t num_big_medis;
-    /* 000A */ uint8_t num_scions;
-    /* 000B */ int8_t gun_status;
-    /* 000C */ int8_t gun_type;
-    /* 000D */ uint16_t available : 1;
-    /*      */ uint16_t got_pistols : 1;
-    /*      */ uint16_t got_magnums : 1;
-    /*      */ uint16_t got_uzis : 1;
-    /*      */ uint16_t got_shotgun : 1;
-    /*      */ uint16_t costume : 1;
-    /* 000F end */
+    uint16_t pistol_ammo;
+    uint16_t magnum_ammo;
+    uint16_t uzi_ammo;
+    uint16_t shotgun_ammo;
+    uint8_t num_medis;
+    uint8_t num_big_medis;
+    uint8_t num_scions;
+    int8_t gun_status;
+    int8_t gun_type;
+    uint16_t available : 1;
+    uint16_t got_pistols : 1;
+    uint16_t got_magnums : 1;
+    uint16_t got_uzis : 1;
+    uint16_t got_shotgun : 1;
+    uint16_t costume : 1;
 } START_INFO;
 
 typedef struct SAVEGAME_INFO {
@@ -1556,387 +1517,378 @@ typedef struct SAVEGAME_INFO {
 } SAVEGAME_INFO;
 
 typedef struct CREATURE_INFO {
-    /* 0000 */ int16_t head_rotation;
-    /* 0002 */ int16_t neck_rotation;
-    /* 0004 */ int16_t maximum_turn;
-    /* 0006 */ uint16_t flags;
-    /* 0008 */ int16_t item_num;
-    /* 000A */ int32_t mood;
-    /* 000E */ LOT_INFO LOT;
-    /* 002C */ PHD_VECTOR target;
-    /* 003E end */
+    int16_t head_rotation;
+    int16_t neck_rotation;
+    int16_t maximum_turn;
+    uint16_t flags;
+    int16_t item_num;
+    int32_t mood;
+    LOT_INFO LOT;
+    PHD_VECTOR target;
 } CREATURE_INFO;
 
 typedef struct TEXTSTRING {
-    /* 0000 */ uint32_t flags;
-    /* 0004 */ uint16_t text_flags;
-    /* 0006 */ uint16_t bgnd_flags;
-    /* 0008 */ uint16_t outl_flags;
-    /* 000A */ int16_t xpos;
-    /* 000C */ int16_t ypos;
-    /* 000E */ int16_t zpos; // unused
-    /* 0010 */ int16_t letter_spacing;
-    /* 0012 */ int16_t word_spacing;
-    /* 0014 */ int16_t flash_rate;
-    /* 0016 */ int16_t flash_count;
-    /* 0018 */ int16_t bgnd_colour; // unused
-    /* 001A */ SG_COL *bgnd_gour; // unused
-    /* 001E */ int16_t outl_colour; // unused
-    /* 0020 */ SG_COL *outl_gour; // unused
-    /* 0024 */ int16_t bgnd_size_x;
-    /* 0026 */ int16_t bgnd_size_y;
-    /* 0028 */ int16_t bgnd_off_x;
-    /* 002A */ int16_t bgnd_off_y;
-    /* 002C */ int16_t bgnd_off_z; // unused
-    /* 002E */ int32_t scale_h;
-    /* 0032 */ int32_t scale_v;
-    /* 0034 */ char *string;
-    /* 0038 end */
+    union {
+        uint32_t all;
+        struct {
+            uint32_t active : 1;
+            uint32_t flash : 1;
+            uint32_t rotate_h : 1;
+            uint32_t centre_h : 1;
+            uint32_t centre_v : 1;
+            uint32_t right : 1;
+            uint32_t bottom : 1;
+            uint32_t background : 1;
+            uint32_t outline : 1;
+        };
+    } flags;
+    struct {
+        int16_t x;
+        int16_t y;
+    } pos;
+    int16_t letter_spacing;
+    int16_t word_spacing;
+    struct {
+        int16_t rate;
+        int16_t count;
+    } flash;
+    struct {
+        int16_t x;
+        int16_t y;
+    } bgnd_size;
+    struct {
+        int16_t x;
+        int16_t y;
+    } bgnd_off;
+    struct {
+        int32_t h;
+        int32_t v;
+    } scale;
+    char *string;
+
+    void (*on_remove)(const struct TEXTSTRING *);
 } TEXTSTRING;
 
 typedef struct DISPLAYPU {
-    /* 0000 */ int16_t duration;
-    /* 0002 */ int16_t sprnum;
-    /* 0004 end */
+    int16_t duration;
+    int16_t sprnum;
 } DISPLAYPU;
 
 typedef struct COLL_INFO {
-    /* 0000 */ int32_t mid_floor;
-    /* 0004 */ int32_t mid_ceiling;
-    /* 0008 */ int32_t mid_type;
-    /* 000C */ int32_t front_floor;
-    /* 0010 */ int32_t front_ceiling;
-    /* 0014 */ int32_t front_type;
-    /* 0018 */ int32_t left_floor;
-    /* 001C */ int32_t left_ceiling;
-    /* 0020 */ int32_t left_type;
-    /* 0024 */ int32_t right_floor;
-    /* 0028 */ int32_t right_ceiling;
-    /* 002C */ int32_t right_type;
-    /* 0030 */ int32_t radius;
-    /* 0034 */ int32_t bad_pos;
-    /* 0038 */ int32_t bad_neg;
-    /* 003C */ int32_t bad_ceiling;
-    /* 0040 */ PHD_VECTOR shift;
-    /* 0046 */ PHD_VECTOR old;
-    /* 004C */ int16_t facing;
-    /* 004E */ int16_t quadrant;
-    /* 0050 */ int16_t coll_type;
-    /* 0052 */ int16_t *trigger;
-    /* 0056 */ int8_t tilt_x;
-    /* 0057 */ int8_t tilt_z;
-    /* 0058 */ int8_t hit_by_baddie;
-    /* 0059 */ int8_t hit_static;
-    /* 005A */ uint16_t slopes_are_walls : 1;
-    /*      */ uint16_t slopes_are_pits : 1;
-    /*      */ uint16_t lava_is_pit : 1;
-    /*      */ uint16_t enable_baddie_push : 1;
-    /*      */ uint16_t enable_spaz : 1;
-    /* 005C end */
+    int32_t mid_floor;
+    int32_t mid_ceiling;
+    int32_t mid_type;
+    int32_t front_floor;
+    int32_t front_ceiling;
+    int32_t front_type;
+    int32_t left_floor;
+    int32_t left_ceiling;
+    int32_t left_type;
+    int32_t right_floor;
+    int32_t right_ceiling;
+    int32_t right_type;
+    int32_t radius;
+    int32_t bad_pos;
+    int32_t bad_neg;
+    int32_t bad_ceiling;
+    PHD_VECTOR shift;
+    PHD_VECTOR old;
+    int16_t facing;
+    int16_t quadrant;
+    int16_t coll_type;
+    int16_t *trigger;
+    int8_t tilt_x;
+    int8_t tilt_z;
+    int8_t hit_by_baddie;
+    int8_t hit_static;
+    uint16_t slopes_are_walls : 1;
+    uint16_t slopes_are_pits : 1;
+    uint16_t lava_is_pit : 1;
+    uint16_t enable_baddie_push : 1;
+    uint16_t enable_spaz : 1;
 } COLL_INFO;
 
 typedef struct OBJECT_INFO {
-    /* 0000 */ int16_t nmeshes;
-    /* 0002 */ int16_t mesh_index;
-    /* 0004 */ int32_t bone_index;
-    /* 0008 */ int16_t *frame_base;
-    /* 000C */ void (*initialise)(int16_t item_num);
-    /* 0010 */ void (*control)(int16_t item_num);
-    /* 0014 */ void (*floor)(
+    int16_t nmeshes;
+    int16_t mesh_index;
+    int32_t bone_index;
+    int16_t *frame_base;
+    void (*initialise)(int16_t item_num);
+    void (*control)(int16_t item_num);
+    void (*floor)(
         ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-    /* 0018 */ void (*ceiling)(
+    void (*ceiling)(
         ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-    /* 001C */ void (*draw_routine)(ITEM_INFO *item);
-    /* 0020 */ void (*collision)(
-        int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-    /* 0024 */ int16_t anim_index;
-    /* 0026 */ int16_t hit_points;
-    /* 0028 */ int16_t pivot_length;
-    /* 002A */ int16_t radius;
-    /* 002C */ int16_t smartness;
-    /* 002E */ int16_t shadow_size;
-    /* 0030 */ uint16_t loaded : 1;
-    /*      */ uint16_t intelligent : 1;
-    /*      */ uint16_t save_position : 1;
-    /*      */ uint16_t save_hitpoints : 1;
-    /*      */ uint16_t save_flags : 1;
-    /*      */ uint16_t save_anim : 1;
-    /* 0032 end */
+    void (*draw_routine)(ITEM_INFO *item);
+    void (*collision)(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+    int16_t anim_index;
+    int16_t hit_points;
+    int16_t pivot_length;
+    int16_t radius;
+    int16_t smartness;
+    int16_t shadow_size;
+    uint16_t loaded : 1;
+    uint16_t intelligent : 1;
+    uint16_t save_position : 1;
+    uint16_t save_hitpoints : 1;
+    uint16_t save_flags : 1;
+    uint16_t save_anim : 1;
 } OBJECT_INFO;
 
 typedef struct SHADOW_INFO {
-    /* 0000 */ int16_t x;
-    /* 0002 */ int16_t y;
-    /* 0004 */ int16_t z;
-    /* 0006 */ int16_t radius;
-    /* 0008 */ int16_t poly_count;
-    /* 000A */ int16_t vertex_count;
-    /* 000C */ POS_3D vertex[32];
-    /* 003C end */
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    int16_t radius;
+    int16_t poly_count;
+    int16_t vertex_count;
+    POS_3D vertex[32];
 } SHADOW_INFO;
 
 typedef struct STATIC_INFO {
-    /* 0000 */ int16_t mesh_number;
-    /* 0002 */ int16_t flags;
-    /* 0004 */ int16_t x_minp;
-    /* 0006 */ int16_t x_maxp;
-    /* 0008 */ int16_t y_minp;
-    /* 000A */ int16_t y_maxp;
-    /* 000C */ int16_t z_minp;
-    /* 000E */ int16_t z_maxp;
-    /* 0010 */ int16_t x_minc;
-    /* 0012 */ int16_t x_maxc;
-    /* 0014 */ int16_t y_minc;
-    /* 0016 */ int16_t y_maxc;
-    /* 0018 */ int16_t z_minc;
-    /* 001A */ int16_t z_maxc;
-    /* 001C end */
+    int16_t mesh_number;
+    int16_t flags;
+    int16_t x_minp;
+    int16_t x_maxp;
+    int16_t y_minp;
+    int16_t y_maxp;
+    int16_t z_minp;
+    int16_t z_maxp;
+    int16_t x_minc;
+    int16_t x_maxc;
+    int16_t y_minc;
+    int16_t y_maxc;
+    int16_t z_minc;
+    int16_t z_maxc;
 } STATIC_INFO;
 
 typedef struct GAME_VECTOR {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int16_t room_number;
-    /* 000E */ int16_t box_number;
-    /* 0010 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t room_number;
+    int16_t box_number;
 } GAME_VECTOR;
 
 typedef struct OBJECT_VECTOR {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int16_t data;
-    /* 000E */ int16_t flags;
-    /* 0010 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t data;
+    int16_t flags;
 } OBJECT_VECTOR;
 
 typedef struct CAMERA_INFO {
-    /* 0000 */ GAME_VECTOR pos;
-    /* 0010 */ GAME_VECTOR target;
-    /* 0020 */ int32_t type;
-    /* 0024 */ int32_t shift;
-    /* 0028 */ int32_t flags;
-    /* 002C */ int32_t fixed_camera;
-    /* 0030 */ int32_t number_frames;
-    /* 0034 */ int32_t bounce;
-    /* 0038 */ int32_t underwater;
-    /* 003C */ int32_t target_distance;
-    /* 0040 */ int32_t target_square;
-    /* 0044 */ int16_t target_angle;
-    /* 0046 */ int16_t actual_angle;
-    /* 0048 */ int16_t target_elevation;
-    /* 004A */ int16_t box;
-    /* 004C */ int16_t number;
-    /* 004E */ int16_t last;
-    /* 0050 */ int16_t timer;
-    /* 0052 */ int16_t speed;
-    /* 0054 */ ITEM_INFO *item;
-    /* 0058 */ ITEM_INFO *last_item;
-    /* 005C */ OBJECT_VECTOR *fixed;
-    /* 0060 end */
+    GAME_VECTOR pos;
+    GAME_VECTOR target;
+    int32_t type;
+    int32_t shift;
+    int32_t flags;
+    int32_t fixed_camera;
+    int32_t number_frames;
+    int32_t bounce;
+    int32_t underwater;
+    int32_t target_distance;
+    int32_t target_square;
+    int16_t target_angle;
+    int16_t actual_angle;
+    int16_t target_elevation;
+    int16_t box;
+    int16_t number;
+    int16_t last;
+    int16_t timer;
+    int16_t speed;
+    ITEM_INFO *item;
+    ITEM_INFO *last_item;
+    OBJECT_VECTOR *fixed;
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {
-    /* 0000 */ int16_t *frame_ptr;
-    /* 0004 */ int16_t interpolation;
-    /* 0006 */ int16_t current_anim_state;
-    /* 0008 */ int32_t velocity;
-    /* 000C */ int32_t acceleration;
-    /* 0010 */ int16_t frame_base;
-    /* 0012 */ int16_t frame_end;
-    /* 0014 */ int16_t jump_anim_num;
-    /* 0016 */ int16_t jump_frame_num;
-    /* 0018 */ int16_t number_changes;
-    /* 001A */ int16_t change_index;
-    /* 001C */ int16_t number_commands;
-    /* 001E */ int16_t command_index;
-    /* 0020 end */
+    int16_t *frame_ptr;
+    int16_t interpolation;
+    int16_t current_anim_state;
+    int32_t velocity;
+    int32_t acceleration;
+    int16_t frame_base;
+    int16_t frame_end;
+    int16_t jump_anim_num;
+    int16_t jump_frame_num;
+    int16_t number_changes;
+    int16_t change_index;
+    int16_t number_commands;
+    int16_t command_index;
 } ANIM_STRUCT;
 
 typedef struct ANIM_CHANGE_STRUCT {
-    /* 0000 */ int16_t goal_anim_state;
-    /* 0004 */ int16_t number_ranges;
-    /* 0006 */ int16_t range_index;
-    /* 0008 end */
+    int16_t goal_anim_state;
+    int16_t number_ranges;
+    int16_t range_index;
 } ANIM_CHANGE_STRUCT;
 
 typedef struct ANIM_RANGE_STRUCT {
-    /* 0000 */ int16_t start_frame;
-    /* 0004 */ int16_t end_frame;
-    /* 0006 */ int16_t link_anim_num;
-    /* 0008 */ int16_t link_frame_num;
-    /* 000A end */
+    int16_t start_frame;
+    int16_t end_frame;
+    int16_t link_anim_num;
+    int16_t link_frame_num;
 } ANIM_RANGE_STRUCT;
 
 typedef struct DOOR_VBUF {
-    /* 0000 */ int32_t xv;
-    /* 0004 */ int32_t yv;
-    /* 0008 */ int32_t zv;
-    /* 000C end */
+    int32_t xv;
+    int32_t yv;
+    int32_t zv;
 } DOOR_VBUF;
 
 typedef struct WEAPON_INFO {
-    /* 0000 */ PHD_ANGLE lock_angles[4];
-    /* 0008 */ PHD_ANGLE left_angles[4];
-    /* 0010 */ PHD_ANGLE right_angles[4];
-    /* 0018 */ PHD_ANGLE aim_speed;
-    /* 001A */ PHD_ANGLE shot_accuracy;
-    /* 001C */ int32_t gun_height;
-    /* 0020 */ int32_t damage;
-    /* 0024 */ int32_t target_dist;
-    /* 0028 */ int16_t recoil_frame;
-    /* 002A */ int16_t flash_time;
-    /* 002C */ int16_t sample_num;
-    /* 002E end */
+    PHD_ANGLE lock_angles[4];
+    PHD_ANGLE left_angles[4];
+    PHD_ANGLE right_angles[4];
+    PHD_ANGLE aim_speed;
+    PHD_ANGLE shot_accuracy;
+    int32_t gun_height;
+    int32_t damage;
+    int32_t target_dist;
+    int16_t recoil_frame;
+    int16_t flash_time;
+    int16_t sample_num;
 } WEAPON_INFO;
 
 typedef struct SPHERE {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int32_t r;
-    /* 0010 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t r;
 } SPHERE;
 
 typedef struct BITE_INFO {
-    /* 0000 */ int32_t x;
-    /* 0004 */ int32_t y;
-    /* 0008 */ int32_t z;
-    /* 000C */ int32_t mesh_num;
-    /* 0010 end */
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t mesh_num;
 } BITE_INFO;
 
 typedef struct AI_INFO {
-    /* 0000 */ int16_t zone_number;
-    /* 0002 */ int16_t enemy_zone;
-    /* 0004 */ int32_t distance;
-    /* 0008 */ int32_t ahead;
-    /* 000C */ int32_t bite;
-    /* 000E */ int16_t angle;
-    /* 0010 */ int16_t enemy_facing;
-    /* 0012 end */
+    int16_t zone_number;
+    int16_t enemy_zone;
+    int32_t distance;
+    int32_t ahead;
+    int32_t bite;
+    int16_t angle;
+    int16_t enemy_facing;
 } AI_INFO;
 
 typedef struct BOX_INFO {
-    /* 0000 */ int32_t left;
-    /* 0004 */ int32_t right;
-    /* 0008 */ int32_t top;
-    /* 000C */ int32_t bottom;
-    /* 0010 */ int16_t height;
-    /* 0012 */ int16_t overlap_index;
-    /* 0014 end */
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+    int16_t height;
+    int16_t overlap_index;
 } BOX_INFO;
 
 typedef struct REQUEST_INFO {
-    /* 0000 */ uint16_t items;
-    /* 0002 */ uint16_t requested;
-    /* 0004 */ uint16_t vis_lines;
-    /* 0006 */ uint16_t line_offset;
-    /* 0008 */ uint16_t line_old_offset;
-    /* 000A */ uint16_t pix_width;
-    /* 000C */ uint16_t line_height;
-    /* 000E */ int16_t x;
-    /* 0010 */ int16_t y;
-    /* 0012 */ int16_t z; // unused
-    /* 0014 */ uint16_t flags;
-    /* 0016 */ const char *heading_text;
-    /* 0020 */ char *item_texts;
-    /* 001E */ int16_t item_text_len;
-    /* 0020 */ TEXTSTRING *heading;
-    /* 0024 */ TEXTSTRING *background;
-    /* 0028 */ TEXTSTRING *moreup;
-    /* 002C */ TEXTSTRING *moredown;
-    /* 0030 */ TEXTSTRING *texts[MAX_REQLINES];
-    /* 0070 */ uint16_t item_flags[MAX_REQLINES];
-    /* 0090 end */
+    uint16_t items;
+    uint16_t requested;
+    uint16_t vis_lines;
+    uint16_t line_offset;
+    uint16_t line_old_offset;
+    uint16_t pix_width;
+    uint16_t line_height;
+    int16_t x;
+    int16_t y;
+    int16_t z; // unused
+    uint16_t flags;
+    const char *heading_text;
+    char *item_texts;
+    int16_t item_text_len;
+    TEXTSTRING *heading;
+    TEXTSTRING *background;
+    TEXTSTRING *moreup;
+    TEXTSTRING *moredown;
+    TEXTSTRING *texts[MAX_REQLINES];
+    uint16_t item_flags[MAX_REQLINES];
 } REQUEST_INFO;
 
 typedef struct IMOTION_INFO {
-    /* 0000 */ int16_t count;
-    /* 0002 */ int16_t status;
-    /* 0004 */ int16_t status_target;
-    /* 0006 */ int16_t radius_target;
-    /* 0008 */ int16_t radius_rate;
-    /* 000A */ int16_t camera_ytarget;
-    /* 000C */ int16_t camera_yrate;
-    /* 000E */ int16_t camera_pitch_target;
-    /* 0010 */ int16_t camera_pitch_rate;
-    /* 0012 */ int16_t rotate_target;
-    /* 0014 */ int16_t rotate_rate;
-    /* 0016 */ PHD_ANGLE item_ptxrot_target;
-    /* 0018 */ PHD_ANGLE item_ptxrot_rate;
-    /* 001A */ PHD_ANGLE item_xrot_target;
-    /* 001C */ PHD_ANGLE item_xrot_rate;
-    /* 001E */ int32_t item_ytrans_target;
-    /* 0022 */ int32_t item_ytrans_rate;
-    /* 0026 */ int32_t item_ztrans_target;
-    /* 002A */ int32_t item_ztrans_rate;
-    /* 002E */ int32_t misc;
-    /* 0032 end */
+    int16_t count;
+    int16_t status;
+    int16_t status_target;
+    int16_t radius_target;
+    int16_t radius_rate;
+    int16_t camera_ytarget;
+    int16_t camera_yrate;
+    int16_t camera_pitch_target;
+    int16_t camera_pitch_rate;
+    int16_t rotate_target;
+    int16_t rotate_rate;
+    PHD_ANGLE item_ptxrot_target;
+    PHD_ANGLE item_ptxrot_rate;
+    PHD_ANGLE item_xrot_target;
+    PHD_ANGLE item_xrot_rate;
+    int32_t item_ytrans_target;
+    int32_t item_ytrans_rate;
+    int32_t item_ztrans_target;
+    int32_t item_ztrans_rate;
+    int32_t misc;
 } IMOTION_INFO;
 
 typedef struct INVENTORY_SPRITE {
-    /* 0000 */ int16_t shape;
-    /* 0002 */ int16_t x;
-    /* 0004 */ int16_t y;
-    /* 0006 */ int16_t z;
-    /* 0008 */ int32_t param1;
-    /* 000C */ int32_t param2;
-    /* 0010 */ SG_COL *grdptr;
-    /* 0014 */ int16_t sprnum;
-    /* 0016 end */
+    int16_t shape;
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    int32_t param1;
+    int32_t param2;
+    SG_COL *grdptr;
+    int16_t sprnum;
 } INVENTORY_SPRITE;
 
 typedef struct INVENTORY_ITEM {
-    /* 0000 */ char *string;
-    /* 0004 */ int16_t object_number;
-    /* 0006 */ int16_t frames_total;
-    /* 0008 */ int16_t current_frame;
-    /* 000A */ int16_t goal_frame;
-    /* 000C */ int16_t open_frame;
-    /* 000E */ int16_t anim_direction;
-    /* 0010 */ int16_t anim_speed;
-    /* 0012 */ int16_t anim_count;
-    /* 0014 */ PHD_ANGLE pt_xrot_sel;
-    /* 0016 */ PHD_ANGLE pt_xrot;
-    /* 0018 */ PHD_ANGLE x_rot_sel;
-    /* 001A */ PHD_ANGLE x_rot;
-    /* 001C */ PHD_ANGLE y_rot_sel;
-    /* 001E */ PHD_ANGLE y_rot;
-    /* 0020 */ int32_t ytrans_sel;
-    /* 0024 */ int32_t ytrans;
-    /* 0028 */ int32_t ztrans_sel;
-    /* 002C */ int32_t ztrans;
-    /* 0030 */ uint32_t which_meshes;
-    /* 0034 */ uint32_t drawn_meshes;
-    /* 0038 */ int16_t inv_pos;
-    /* 003A */ INVENTORY_SPRITE **sprlist;
-    /* 003E end */
+    char *string;
+    int16_t object_number;
+    int16_t frames_total;
+    int16_t current_frame;
+    int16_t goal_frame;
+    int16_t open_frame;
+    int16_t anim_direction;
+    int16_t anim_speed;
+    int16_t anim_count;
+    PHD_ANGLE pt_xrot_sel;
+    PHD_ANGLE pt_xrot;
+    PHD_ANGLE x_rot_sel;
+    PHD_ANGLE x_rot;
+    PHD_ANGLE y_rot_sel;
+    PHD_ANGLE y_rot;
+    int32_t ytrans_sel;
+    int32_t ytrans;
+    int32_t ztrans_sel;
+    int32_t ztrans;
+    uint32_t which_meshes;
+    uint32_t drawn_meshes;
+    int16_t inv_pos;
+    INVENTORY_SPRITE **sprlist;
 } INVENTORY_ITEM;
 
 typedef struct RING_INFO {
-    /* 0000 */ INVENTORY_ITEM **list;
-    /* 0004 */ int16_t type;
-    /* 0006 */ int16_t radius;
-    /* 0008 */ int16_t camera_pitch;
-    /* 000A */ int16_t rotating;
-    /* 000C */ int16_t rot_count;
-    /* 000E */ int16_t current_object;
-    /* 0010 */ int16_t target_object;
-    /* 0012 */ int16_t number_of_objects;
-    /* 0014 */ int16_t angle_adder;
-    /* 0016 */ int16_t rot_adder;
-    /* 0018 */ int16_t rot_adder_l;
-    /* 001A */ int16_t rot_adder_r;
-    /* 001C */ PHD_3DPOS ringpos;
-    /* 002E */ PHD_3DPOS camera;
-    /* 0040 */ PHD_VECTOR light;
-    /* 004C */ IMOTION_INFO *imo;
-    /* 0050 end */
+    INVENTORY_ITEM **list;
+    int16_t type;
+    int16_t radius;
+    int16_t camera_pitch;
+    int16_t rotating;
+    int16_t rot_count;
+    int16_t current_object;
+    int16_t target_object;
+    int16_t number_of_objects;
+    int16_t angle_adder;
+    int16_t rot_adder;
+    int16_t rot_adder_l;
+    int16_t rot_adder_r;
+    PHD_3DPOS ringpos;
+    PHD_3DPOS camera;
+    PHD_VECTOR light;
+    IMOTION_INFO *imo;
 } RING_INFO;
 
 typedef struct GAMEFLOW_SEQUENCE {
