@@ -162,10 +162,6 @@
 
 #define BIFF (WALL_L >> 1)
 
-#define MAX_STRING_SIZE 100
-#define MAX_TEXT_STRINGS 64
-
-#define TEXT_HEIGHT 11
 #define FRAME_BOUND_MIN_X 0
 #define FRAME_BOUND_MAX_X 1
 #define FRAME_BOUND_MIN_Y 2

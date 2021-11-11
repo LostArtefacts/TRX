@@ -27,16 +27,16 @@ void InitRequester(REQUEST_INFO *req)
 
 void RemoveRequester(REQUEST_INFO *req)
 {
-    T_RemovePrint(req->heading);
+    Text_Remove(req->heading);
     req->heading = NULL;
-    T_RemovePrint(req->background);
+    Text_Remove(req->background);
     req->background = NULL;
-    T_RemovePrint(req->moreup);
+    Text_Remove(req->moreup);
     req->moreup = NULL;
-    T_RemovePrint(req->moredown);
+    Text_Remove(req->moredown);
     req->moredown = NULL;
     for (int i = 0; i < MAX_REQLINES; i++) {
-        T_RemovePrint(req->texts[i]);
+        Text_Remove(req->texts[i]);
         req->texts[i] = NULL;
     }
 }
@@ -57,71 +57,72 @@ int32_t DisplayRequester(REQUEST_INFO *req)
     }
 
     if (!req->heading) {
-        req->heading = T_Print(
+        req->heading = Text_Create(
             req->x, line_one_off - req->line_height - BOX_PADDING,
             req->heading_text);
-        T_CentreH(req->heading, 1);
-        T_BottomAlign(req->heading, 1);
-        T_AddBackground(req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0);
-        T_AddOutline(req->heading, 1);
+        Text_CentreH(req->heading, 1);
+        Text_AlignBottom(req->heading, 1);
+        Text_AddBackground(
+            req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0);
+        Text_AddOutline(req->heading, 1);
     }
 
     if (!req->background) {
-        req->background = T_Print(req->x, box_y, " ");
-        T_CentreH(req->background, 1);
-        T_BottomAlign(req->background, 1);
-        T_AddBackground(req->background, box_width, box_height, 0, 0);
-        T_AddOutline(req->background, 1);
+        req->background = Text_Create(req->x, box_y, " ");
+        Text_CentreH(req->background, 1);
+        Text_AlignBottom(req->background, 1);
+        Text_AddBackground(req->background, box_width, box_height, 0, 0);
+        Text_AddOutline(req->background, 1);
     }
 
     if (req->line_offset) {
         if (!req->moreup) {
             req->moreup =
-                T_Print(req->x, line_one_off - req->line_height + 2, "[");
-            T_SetScale(req->moreup, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-            T_CentreH(req->moreup, 1);
-            T_BottomAlign(req->moreup, 1);
+                Text_Create(req->x, line_one_off - req->line_height + 2, "[");
+            Text_SetScale(req->moreup, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
+            Text_CentreH(req->moreup, 1);
+            Text_AlignBottom(req->moreup, 1);
         }
     } else {
-        T_RemovePrint(req->moreup);
+        Text_Remove(req->moreup);
         req->moreup = NULL;
     }
 
     if (req->items > req->vis_lines + req->line_offset) {
         if (!req->moredown) {
-            req->moredown = T_Print(req->x, edge_y - 12, "]");
-            T_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-            T_CentreH(req->moredown, 1);
-            T_BottomAlign(req->moredown, 1);
+            req->moredown = Text_Create(req->x, edge_y - 12, "]");
+            Text_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
+            Text_CentreH(req->moredown, 1);
+            Text_AlignBottom(req->moredown, 1);
         }
     } else {
-        T_RemovePrint(req->moredown);
+        Text_Remove(req->moredown);
         req->moredown = NULL;
     }
 
     for (int i = 0; i < line_qty; i++) {
         if (!req->texts[i]) {
-            req->texts[i] = T_Print(
+            req->texts[i] = Text_Create(
                 0, line_one_off + req->line_height * i,
                 &req->item_texts[req->item_text_len * (req->line_offset + i)]);
-            T_CentreH(req->texts[i], 1);
-            T_BottomAlign(req->texts[i], 1);
+            Text_CentreH(req->texts[i], 1);
+            Text_AlignBottom(req->texts[i], 1);
         }
         if (req->line_offset + i == req->requested) {
-            T_AddBackground(
+            Text_AddBackground(
                 req->texts[i], req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0,
                 0, 0);
-            T_AddOutline(req->texts[i], 1);
+            Text_AddOutline(req->texts[i], 1);
         } else {
-            T_RemoveBackground(req->texts[i]);
-            T_RemoveOutline(req->texts[i]);
+            Text_RemoveBackground(req->texts[i]);
+            Text_RemoveOutline(req->texts[i]);
         }
     }
 
     if (req->line_offset != req->line_old_offset) {
         for (int i = 0; i < line_qty; i++) {
             if (req->texts[i]) {
-                T_ChangeText(
+                Text_ChangeText(
                     req->texts[i],
                     &req->item_texts
                          [req->item_text_len * (req->line_offset + i)]);
@@ -172,7 +173,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
 
 void SetRequesterHeading(REQUEST_INFO *req, const char *string)
 {
-    T_RemovePrint(req->heading);
+    Text_Remove(req->heading);
     req->heading = NULL;
 
     if (string) {

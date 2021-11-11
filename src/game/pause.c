@@ -44,16 +44,16 @@ static int32_t PauseLoop();
 
 static void RemovePausedText()
 {
-    T_RemovePrint(PausedText);
+    Text_Remove(PausedText);
     PausedText = NULL;
 }
 
 static void DisplayPausedText()
 {
     if (PausedText == NULL) {
-        PausedText = T_Print(0, -24, GF.strings[GS_PAUSE_PAUSED]);
-        T_CentreH(PausedText, 1);
-        T_BottomAlign(PausedText, 1);
+        PausedText = Text_Create(0, -24, GF.strings[GS_PAUSE_PAUSED]);
+        Text_CentreH(PausedText, 1);
+        Text_AlignBottom(PausedText, 1);
     }
 }
 
@@ -93,7 +93,7 @@ static int32_t PauseLoop()
         S_InitialisePolyList(0);
         S_CopyBufferToScreen();
         DisplayPausedText();
-        T_DrawText();
+        Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
         S_UpdateInput();
@@ -145,11 +145,7 @@ int8_t S_Pause()
     OverlayFlag = -3;
     InvMode = INV_PAUSE_MODE;
 
-    T_RemoveAllPrints();
-    AmmoText = NULL;
-    FPSText = NULL;
-    VersionText = NULL;
-
+    Text_RemoveAll();
     S_FadeInInventory(1);
     TempVideoAdjust(GetScreenSizeIdx());
     S_SetupAboveWater(false);

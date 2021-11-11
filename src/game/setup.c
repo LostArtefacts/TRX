@@ -96,15 +96,10 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         CurrentLevel = level_num;
     }
 
-    T_RemoveAllPrints();
-    AmmoText = NULL;
-    FPSText = NULL;
-    VersionText = NULL;
-
+    Text_RemoveAll();
     InitialiseGameFlags();
 
     Lara.item_number = NO_ITEM;
-
     S_InitialiseScreen();
 
     if (!S_LoadLevel(CurrentLevel)) {
@@ -120,7 +115,6 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseLOTArray();
 
     InitColours();
-    T_InitPrint();
     Overlay_Init();
 
     HealthBarTimer = 100;

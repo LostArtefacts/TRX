@@ -4,7 +4,7 @@ WINDRES=i686-w64-mingw32-windres
 LDFLAGS=-ldbghelp -lwinmm -ldsound -lddraw -ldinput8 -ldxguid
 CFLAGS=-Wall -Isrc -DVERSION='"T1M ${VERSION}"'
 
-VERSION = $(shell git describe --abbrev=7 --tags master)
+VERSION = $(shell git describe --abbrev=7 --tags)
 CWD = $(shell pwd)
 C_FILES = $(shell find src/ -type f -name '*.c')
 H_FILES = $(shell find src/ -type f -name '*.h')

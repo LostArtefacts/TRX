@@ -398,7 +398,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
 
 void DoPassportOption(INVENTORY_ITEM *inv_item)
 {
-    T_RemovePrint(InvItemText[0]);
+    Text_Remove(InvItemText[0]);
     InvItemText[IT_NAME] = NULL;
 
     int16_t page = (inv_item->goal_frame - inv_item->open_frame) / 5;
@@ -437,14 +437,14 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             } else {
                 if (!PassportText) {
                     PassportText =
-                        T_Print(0, -16, GF.strings[GS_PASSPORT_LOAD_GAME]);
-                    T_BottomAlign(PassportText, 1);
-                    T_CentreH(PassportText, 1);
+                        Text_Create(0, -16, GF.strings[GS_PASSPORT_LOAD_GAME]);
+                    Text_AlignBottom(PassportText, 1);
+                    Text_CentreH(PassportText, 1);
                 }
                 if (InputDB.select || InvMode == INV_LOAD_MODE) {
-                    T_RemovePrint(InvRingText);
+                    Text_Remove(InvRingText);
                     InvRingText = NULL;
-                    T_RemovePrint(InvItemText[IT_NAME]);
+                    Text_Remove(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
                     LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
@@ -503,21 +503,21 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
                     PassportText =
-                        T_Print(0, -16, GF.strings[GS_PASSPORT_NEW_GAME]);
+                        Text_Create(0, -16, GF.strings[GS_PASSPORT_NEW_GAME]);
                 } else {
                     PassportText =
-                        T_Print(0, -16, GF.strings[GS_PASSPORT_SAVE_GAME]);
+                        Text_Create(0, -16, GF.strings[GS_PASSPORT_SAVE_GAME]);
                 }
-                T_BottomAlign(PassportText, 1);
-                T_CentreH(PassportText, 1);
+                Text_AlignBottom(PassportText, 1);
+                Text_CentreH(PassportText, 1);
             }
             if (InputDB.select || InvMode == INV_SAVE_MODE
                 || InvMode == INV_SAVE_CRYSTAL_MODE) {
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
-                    T_RemovePrint(InvRingText);
+                    Text_Remove(InvRingText);
                     InvRingText = NULL;
-                    T_RemovePrint(InvItemText[IT_NAME]);
+                    Text_Remove(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
                     if (GF.enable_game_modes) {
@@ -529,9 +529,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                         InvExtraData[1] = SaveGame.bonus_flag;
                     }
                 } else {
-                    T_RemovePrint(InvRingText);
+                    Text_Remove(InvRingText);
                     InvRingText = NULL;
-                    T_RemovePrint(InvItemText[IT_NAME]);
+                    Text_Remove(InvItemText[IT_NAME]);
                     InvItemText[IT_NAME] = NULL;
 
                     LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
@@ -548,13 +548,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (!PassportText) {
             if (InvMode == INV_TITLE_MODE) {
                 PassportText =
-                    T_Print(0, -16, GF.strings[GS_PASSPORT_EXIT_GAME]);
+                    Text_Create(0, -16, GF.strings[GS_PASSPORT_EXIT_GAME]);
             } else {
                 PassportText =
-                    T_Print(0, -16, GF.strings[GS_PASSPORT_EXIT_TO_TITLE]);
+                    Text_Create(0, -16, GF.strings[GS_PASSPORT_EXIT_TO_TITLE]);
             }
-            T_BottomAlign(PassportText, 1);
-            T_CentreH(PassportText, 1);
+            Text_AlignBottom(PassportText, 1);
+            Text_CentreH(PassportText, 1);
         }
         break;
     }
@@ -578,7 +578,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
             SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
-                T_RemovePrint(PassportText);
+                Text_Remove(PassportText);
                 PassportText = NULL;
             }
         }
@@ -602,7 +602,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
             SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
-                T_RemovePrint(PassportText);
+                Text_Remove(PassportText);
                 PassportText = NULL;
             }
         }
@@ -621,7 +621,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 inv_item->anim_direction = -1;
             }
             if (PassportText) {
-                T_RemovePrint(PassportText);
+                Text_Remove(PassportText);
                 PassportText = NULL;
             }
         }
@@ -637,7 +637,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->anim_direction = -1;
         }
         if (PassportText) {
-            T_RemovePrint(PassportText);
+            Text_Remove(PassportText);
             PassportText = NULL;
         }
     }
@@ -645,14 +645,14 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
 void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[256];
+    char buf[256];
 
     if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
-        DetailTextHW[DETAIL_HW_TITLE_BORDER] = T_Print(0, y - 2, " ");
+        DetailTextHW[DETAIL_HW_TITLE_BORDER] = Text_Create(0, y - 2, " ");
 
         DetailTextHW[DETAIL_HW_TITLE] =
-            T_Print(0, y, GF.strings[GS_DETAIL_SELECT_DETAIL]);
+            Text_Create(0, y, GF.strings[GS_DETAIL_SELECT_DETAIL]);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
@@ -660,33 +660,33 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             GF.strings
                 [T1MConfig.render_flags.perspective ? GS_MISC_ON
                                                     : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_PERSPECTIVE] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_PERSPECTIVE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BILINEAR_FMT],
             GF.strings
                 [T1MConfig.render_flags.bilinear ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_BILINEAR] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_BILINEAR] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
             T1MConfig.ui.text_scale);
-        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT],
             T1MConfig.ui.bar_scale);
-        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, " ");
-        static char tmp[10];
+        DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, " ");
+        char tmp[10];
         sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
         sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-        DetailTextHW[DETAIL_HW_RESOLUTION] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         if (OptionSelected < DETAIL_HW_OPTION_MIN) {
@@ -696,40 +696,40 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             OptionSelected = DETAIL_HW_OPTION_MAX;
         }
 
-        T_AddBackground(
+        Text_AddBackground(
             DetailTextHW[DETAIL_HW_TITLE_BORDER], DETAIL_HW_ROW_WIDHT,
             y - DETAIL_HW_TOP_Y, 0, 0);
-        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1);
+        Text_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1);
 
-        T_AddBackground(
+        Text_AddBackground(
             DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0);
-        T_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
+        Text_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
 
-        T_AddBackground(
+        Text_AddBackground(
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
-        T_AddOutline(DetailTextHW[OptionSelected], 1);
+        Text_AddOutline(DetailTextHW[OptionSelected], 1);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
-            T_CentreH(DetailTextHW[i], 1);
-            T_CentreV(DetailTextHW[i], 1);
+            Text_CentreH(DetailTextHW[i], 1);
+            Text_CentreV(DetailTextHW[i], 1);
         }
     }
 
     if (InputDB.forward && OptionSelected > DETAIL_HW_OPTION_MIN) {
-        T_RemoveOutline(DetailTextHW[OptionSelected]);
-        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        Text_RemoveOutline(DetailTextHW[OptionSelected]);
+        Text_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected--;
-        T_AddOutline(DetailTextHW[OptionSelected], 1);
-        T_AddBackground(
+        Text_AddOutline(DetailTextHW[OptionSelected], 1);
+        Text_AddBackground(
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
     if (InputDB.back && OptionSelected < DETAIL_HW_OPTION_MAX) {
-        T_RemoveOutline(DetailTextHW[OptionSelected]);
-        T_RemoveBackground(DetailTextHW[OptionSelected]);
+        Text_RemoveOutline(DetailTextHW[OptionSelected]);
+        Text_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected++;
-        T_AddOutline(DetailTextHW[OptionSelected], 1);
-        T_AddBackground(
+        Text_AddOutline(DetailTextHW[OptionSelected], 1);
+        Text_AddBackground(
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
@@ -817,7 +817,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
     if (reset) {
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
-            T_RemovePrint(DetailTextHW[i]);
+            Text_Remove(DetailTextHW[i]);
             DetailTextHW[i] = NULL;
         }
         S_WriteUserSettings();
@@ -826,50 +826,50 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
 void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[20];
+    char buf[20];
 
     if (!SoundText[0]) {
         if (T1MConfig.music_volume > 10) {
             T1MConfig.music_volume = 10;
         }
         sprintf(buf, "| %2d", T1MConfig.music_volume);
-        SoundText[SOUND_MUSIC_VOLUME] = T_Print(0, 0, buf);
+        SoundText[SOUND_MUSIC_VOLUME] = Text_Create(0, 0, buf);
 
         if (T1MConfig.sound_volume > 10) {
             T1MConfig.sound_volume = 10;
         }
         sprintf(buf, "} %2d", T1MConfig.sound_volume);
-        SoundText[SOUND_SOUND_VOLUME] = T_Print(0, 25, buf);
+        SoundText[SOUND_SOUND_VOLUME] = Text_Create(0, 25, buf);
 
         SoundText[SOUND_TITLE] =
-            T_Print(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
-        SoundText[SOUND_TITLE_BORDER] = T_Print(0, -32, " ");
+            Text_Create(0, -30, GF.strings[GS_SOUND_SET_VOLUMES]);
+        SoundText[SOUND_TITLE_BORDER] = Text_Create(0, -32, " ");
 
-        T_AddBackground(SoundText[OptionSelected], 128, 0, 0, 0);
-        T_AddOutline(SoundText[OptionSelected], 1);
-        T_AddBackground(SoundText[SOUND_TITLE], 136, 0, 0, 0);
-        T_AddOutline(SoundText[SOUND_TITLE], 1);
-        T_AddBackground(SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
-        T_AddOutline(SoundText[SOUND_TITLE_BORDER], 1);
+        Text_AddBackground(SoundText[OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(SoundText[OptionSelected], 1);
+        Text_AddBackground(SoundText[SOUND_TITLE], 136, 0, 0, 0);
+        Text_AddOutline(SoundText[SOUND_TITLE], 1);
+        Text_AddBackground(SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
+        Text_AddOutline(SoundText[SOUND_TITLE_BORDER], 1);
 
         for (int i = 0; i < SOUND_NUMBER_OF; i++) {
-            T_CentreH(SoundText[i], 1);
-            T_CentreV(SoundText[i], 1);
+            Text_CentreH(SoundText[i], 1);
+            Text_CentreV(SoundText[i], 1);
         }
     }
 
     if (InputDB.forward && OptionSelected > SOUND_OPTION_MIN) {
-        T_RemoveOutline(SoundText[OptionSelected]);
-        T_RemoveBackground(SoundText[OptionSelected]);
-        T_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
-        T_AddOutline(SoundText[OptionSelected], 1);
+        Text_RemoveOutline(SoundText[OptionSelected]);
+        Text_RemoveBackground(SoundText[OptionSelected]);
+        Text_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(SoundText[OptionSelected], 1);
     }
 
     if (InputDB.back && OptionSelected < SOUND_OPTION_MAX) {
-        T_RemoveOutline(SoundText[OptionSelected]);
-        T_RemoveBackground(SoundText[OptionSelected]);
-        T_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
-        T_AddOutline(SoundText[OptionSelected], 1);
+        Text_RemoveOutline(SoundText[OptionSelected]);
+        Text_RemoveBackground(SoundText[OptionSelected]);
+        Text_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(SoundText[OptionSelected], 1);
     }
 
     switch (OptionSelected) {
@@ -879,14 +879,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
-            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
+            Text_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.music_volume < 10) {
             T1MConfig.music_volume++;
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
-            T_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
+            Text_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -906,14 +906,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
-            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
+            Text_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         } else if (Input.right && T1MConfig.sound_volume < 10) {
             T1MConfig.sound_volume++;
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
-            T_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
+            Text_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -930,7 +930,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
     if (InputDB.deselect || InputDB.select) {
         for (int i = 0; i < SOUND_NUMBER_OF; i++) {
-            T_RemovePrint(SoundText[i]);
+            Text_Remove(SoundText[i]);
             SoundText[i] = NULL;
         }
     }
@@ -938,20 +938,20 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
 void DoCompassOption(INVENTORY_ITEM *inv_item)
 {
-    static char buf[100];
-    static char time_buf[100];
+    char buf[100];
+    char time_buf[100];
 
     if (T1MConfig.enable_compass_stats) {
         if (!CompassText[0]) {
             int32_t y = COMPASS_TOP_Y;
 
-            CompassText[COMPASS_TITLE_BORDER] = T_Print(0, y - 2, " ");
+            CompassText[COMPASS_TITLE_BORDER] = Text_Create(0, y - 2, " ");
 
             sprintf(buf, "%s", GF.levels[CurrentLevel].level_title);
-            CompassText[COMPASS_TITLE] = T_Print(0, y, buf);
+            CompassText[COMPASS_TITLE] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
-            CompassText[COMPASS_TIME] = T_Print(0, y, " ");
+            CompassText[COMPASS_TIME] = Text_Create(0, y, " ");
             y += COMPASS_ROW_HEIGHT;
 
             int32_t secrets_taken = 0;
@@ -967,28 +967,28 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             sprintf(
                 buf, GF.strings[GS_STATS_SECRETS_FMT], secrets_taken,
                 GF.levels[CurrentLevel].secrets);
-            CompassText[COMPASS_SECRETS] = T_Print(0, y, buf);
+            CompassText[COMPASS_SECRETS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_PICKUPS_FMT], SaveGame.pickups);
-            CompassText[COMPASS_PICKUPS] = T_Print(0, y, buf);
+            CompassText[COMPASS_PICKUPS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(buf, GF.strings[GS_STATS_KILLS_FMT], SaveGame.kills);
-            CompassText[COMPASS_KILLS] = T_Print(0, y, buf);
+            CompassText[COMPASS_KILLS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
-            T_AddBackground(
+            Text_AddBackground(
                 CompassText[COMPASS_TITLE_BORDER], COMPASS_ROW_WIDTH,
                 y - COMPASS_TOP_Y, 0, 0);
-            T_AddOutline(CompassText[COMPASS_TITLE_BORDER], 1);
-            T_AddBackground(
+            Text_AddOutline(CompassText[COMPASS_TITLE_BORDER], 1);
+            Text_AddBackground(
                 CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0);
-            T_AddOutline(CompassText[COMPASS_TITLE], 1);
+            Text_AddOutline(CompassText[COMPASS_TITLE], 1);
 
             for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
-                T_CentreH(CompassText[i], 1);
-                T_CentreV(CompassText[i], 1);
+                Text_CentreH(CompassText[i], 1);
+                Text_CentreV(CompassText[i], 1);
             }
         }
 
@@ -1004,12 +1004,12 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             sprintf(time_buf, "%d:%d%d", minutes, seconds / 10, seconds % 10);
         }
         sprintf(buf, GF.strings[GS_STATS_TIME_TAKEN_FMT], time_buf);
-        T_ChangeText(CompassText[COMPASS_TIME], buf);
+        Text_ChangeText(CompassText[COMPASS_TIME], buf);
     }
 
     if (InputDB.deselect || InputDB.select) {
         for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
-            T_RemovePrint(CompassText[i]);
+            Text_Remove(CompassText[i]);
             CompassText[i] = NULL;
         }
         inv_item->goal_frame = inv_item->frames_total - 1;
@@ -1025,7 +1025,7 @@ void FlashConflicts()
 
     for (const TEXT_COLUMN_PLACEMENT *item = cols; item->col_num != -1;
          item++) {
-        T_FlashText(CtrlTextB[item->option], 0, 0);
+        Text_Flash(CtrlTextB[item->option], 0, 0);
     }
 
     for (const TEXT_COLUMN_PLACEMENT *item1 = cols; item1->col_num != -1;
@@ -1041,8 +1041,8 @@ void FlashConflicts()
             }
             int16_t key2 = Layout[T1MConfig.input.layout][item2->option];
             if (item1 != item2 && key1 == key2) {
-                T_FlashText(CtrlTextB[item1->option], 1, 20);
-                T_FlashText(CtrlTextB[item2->option], 1, 20);
+                Text_Flash(CtrlTextB[item1->option], 1, 20);
+                Text_Flash(CtrlTextB[item2->option], 1, 20);
             }
         }
     }
@@ -1067,7 +1067,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     int16_t key;
 
     if (!CtrlText[0]) {
-        CtrlText[0] = T_Print(
+        CtrlText[0] = Text_Create(
             0,
             CONTROLS_TOP_Y - CONTROLS_BORDER
                 + (CONTROLS_HEADER_HEIGHT + CONTROLS_BORDER
@@ -1076,13 +1076,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             GF.strings
                 [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
                                         : GS_CONTROL_DEFAULT_KEYS]);
-        T_CentreH(CtrlText[0], 1);
-        T_CentreV(CtrlText[0], 1);
+        Text_CentreH(CtrlText[0], 1);
+        Text_CentreV(CtrlText[0], 1);
         S_ShowControls();
 
         KeyChange = -1;
-        T_AddBackground(CtrlText[0], 0, 0, 0, 0);
-        T_AddOutline(CtrlText[0], 1);
+        Text_AddBackground(CtrlText[0], 0, 0, 0, 0);
+        Text_AddOutline(CtrlText[0], 1);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
@@ -1110,8 +1110,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 FlashConflicts();
                 S_WriteUserSettings();
             } else {
-                T_RemoveBackground(CtrlTextA[KeyChange]);
-                T_RemoveOutline(CtrlTextA[KeyChange]);
+                Text_RemoveBackground(CtrlTextA[KeyChange]);
+                Text_RemoveOutline(CtrlTextA[KeyChange]);
 
                 int col_idx[2] = { 0, 0 };
                 const TEXT_COLUMN_PLACEMENT *sel_col;
@@ -1140,8 +1140,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
-                T_AddOutline(CtrlTextA[KeyChange], 1);
+                Text_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
+                Text_AddOutline(CtrlTextA[KeyChange], 1);
             }
         } else if (InputDB.deselect || (InputDB.select && KeyChange == -1)) {
             S_RemoveCtrl();
@@ -1152,14 +1152,14 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (T1MConfig.input.layout) {
             if (InputDB.select) {
                 KeyMode = 1;
-                T_RemoveBackground(CtrlTextA[KeyChange]);
-                T_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
-                T_RemoveOutline(CtrlTextA[KeyChange]);
-                T_AddOutline(CtrlTextB[KeyChange], 1);
+                Text_RemoveBackground(CtrlTextA[KeyChange]);
+                Text_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
+                Text_RemoveOutline(CtrlTextA[KeyChange]);
+                Text_AddOutline(CtrlTextB[KeyChange], 1);
             } else if (InputDB.forward) {
-                T_RemoveBackground(
+                Text_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
-                T_RemoveOutline(
+                Text_RemoveOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 if (KeyChange == -1) {
@@ -1185,15 +1185,15 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                T_AddBackground(
+                Text_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
                     0, 0);
-                T_AddOutline(
+                Text_AddOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
             } else if (InputDB.back) {
-                T_RemoveBackground(
+                Text_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
-                T_RemoveOutline(
+                Text_RemoveOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
 
                 if (KeyChange == -1) {
@@ -1219,10 +1219,10 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                T_AddBackground(
+                Text_AddBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
                     0, 0);
-                T_AddOutline(
+                Text_AddOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
             }
         }
@@ -1242,11 +1242,11 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             && key != DIK_LEFT && key != DIK_RIGHT && key != DIK_UP
             && key != DIK_DOWN) {
             Layout[T1MConfig.input.layout][KeyChange] = key;
-            T_ChangeText(CtrlTextB[KeyChange], scancode_name);
-            T_RemoveBackground(CtrlTextB[KeyChange]);
-            T_RemoveOutline(CtrlTextB[KeyChange]);
-            T_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
-            T_AddOutline(CtrlTextA[KeyChange], 1);
+            Text_ChangeText(CtrlTextB[KeyChange], scancode_name);
+            Text_RemoveBackground(CtrlTextB[KeyChange]);
+            Text_RemoveOutline(CtrlTextB[KeyChange]);
+            Text_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
+            Text_AddOutline(CtrlTextA[KeyChange], 1);
             KeyMode = 3;
             FlashConflicts();
             S_WriteUserSettings();
@@ -1275,9 +1275,9 @@ void S_ShowControls()
     const int16_t centre = GetRenderWidthDownscaled() / 2;
     int16_t max_y = 0;
 
-    CtrlText[1] = T_Print(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");
-    T_CentreH(CtrlText[1], 1);
-    T_CentreV(CtrlText[1], 1);
+    CtrlText[1] = Text_Create(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");
+    Text_CentreH(CtrlText[1], 1);
+    Text_CentreV(CtrlText[1], 1);
 
     const TEXT_COLUMN_PLACEMENT *cols = T1MConfig.enable_cheats
         ? CtrlTextPlacementCheats
@@ -1296,8 +1296,8 @@ void S_ShowControls()
 
             const char *scancode_name = GetScanCodeName(layout[col->option]);
             if (col->option != -1 && scancode_name) {
-                CtrlTextB[col->option] = T_Print(x, y, scancode_name);
-                T_CentreV(CtrlTextB[col->option], 1);
+                CtrlTextB[col->option] = Text_Create(x, y, scancode_name);
+                Text_CentreV(CtrlTextB[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
@@ -1318,9 +1318,9 @@ void S_ShowControls()
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                CtrlTextA[col->option] = T_Print(
+                CtrlTextA[col->option] = Text_Create(
                     x, y, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
-                T_CentreV(CtrlTextA[col->option], 1);
+                Text_CentreV(CtrlTextA[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
@@ -1330,15 +1330,15 @@ void S_ShowControls()
 
     int16_t width = 420;
     int16_t height = max_y + CONTROLS_BORDER * 2 - CONTROLS_TOP_Y;
-    T_AddBackground(CtrlText[1], width, height, 0, 0);
-    T_AddOutline(CtrlText[1], 1);
+    Text_AddBackground(CtrlText[1], width, height, 0, 0);
+    Text_AddOutline(CtrlText[1], 1);
 
     FlashConflicts();
 }
 
 void S_ChangeCtrlText()
 {
-    T_ChangeText(
+    Text_ChangeText(
         CtrlText[0],
         GF.strings
             [T1MConfig.input.layout ? GS_CONTROL_USER_KEYS
@@ -1353,7 +1353,7 @@ void S_ChangeCtrlText()
          col->col_num >= 0 && col->col_num <= 1; col++) {
         const char *scancode_name = GetScanCodeName(layout[col->option]);
         if (col->option != -1 && scancode_name) {
-            T_ChangeText(CtrlTextB[col->option], scancode_name);
+            Text_ChangeText(CtrlTextB[col->option], scancode_name);
         }
     }
 }
@@ -1361,8 +1361,8 @@ void S_ChangeCtrlText()
 void S_RemoveCtrlText()
 {
     for (int i = 0; i < KEY_NUMBER_OF; i++) {
-        T_RemovePrint(CtrlTextA[i]);
-        T_RemovePrint(CtrlTextB[i]);
+        Text_Remove(CtrlTextA[i]);
+        Text_Remove(CtrlTextB[i]);
         CtrlTextB[i] = NULL;
         CtrlTextA[i] = NULL;
     }
@@ -1370,8 +1370,8 @@ void S_RemoveCtrlText()
 
 void S_RemoveCtrl()
 {
-    T_RemovePrint(CtrlText[0]);
-    T_RemovePrint(CtrlText[1]);
+    Text_Remove(CtrlText[0]);
+    Text_Remove(CtrlText[1]);
     CtrlText[0] = NULL;
     CtrlText[1] = NULL;
     S_RemoveCtrlText();
