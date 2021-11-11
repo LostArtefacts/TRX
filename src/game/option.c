@@ -560,11 +560,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    int8_t pages_available[3] = {
-        SavedGamesCount,
+    bool pages_available[3] = {
+        SavedGamesCount > 0,
         InvMode == INV_TITLE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
             || !GF.enable_save_crystals,
-        1,
+        true,
     };
 
     if (InputDB.left && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
@@ -739,21 +739,21 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    int8_t reset = 0;
+    bool reset = false;
 
     if (InputDB.right) {
         switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (!T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
             if (!T1MConfig.render_flags.bilinear) {
                 T1MConfig.render_flags.bilinear = 1;
-                reset = 1;
+                reset = true;
             }
             break;
 
@@ -767,20 +767,20 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_UI_TEXT_SCALE:
             if (T1MConfig.ui.text_scale < MAX_UI_SCALE) {
                 T1MConfig.ui.text_scale += 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
             if (T1MConfig.ui.bar_scale < MAX_UI_SCALE) {
                 T1MConfig.ui.bar_scale += 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_RESOLUTION:
             if (SetNextGameScreenSize()) {
-                reset = 1;
+                reset = true;
             }
             break;
         }
@@ -791,14 +791,14 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_PERSPECTIVE:
             if (T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 0;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
             if (T1MConfig.render_flags.bilinear) {
                 T1MConfig.render_flags.bilinear = 0;
-                reset = 1;
+                reset = true;
             }
             break;
 
@@ -812,27 +812,27 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_UI_TEXT_SCALE:
             if (T1MConfig.ui.text_scale > MIN_UI_SCALE) {
                 T1MConfig.ui.text_scale -= 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
             if (T1MConfig.ui.bar_scale > MIN_UI_SCALE) {
                 T1MConfig.ui.bar_scale -= 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_RESOLUTION:
             if (SetPrevGameScreenSize()) {
-                reset = 1;
+                reset = true;
             }
             break;
         }
     }
 
     if (InputDB.deselect || InputDB.select) {
-        reset = 1;
+        reset = true;
     }
 
     if (reset) {
