@@ -50,8 +50,7 @@ void ControlEvilLara(int16_t item_num)
         int32_t lh =
             GetHeight(floor, LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z);
 
-        item->anim_number = LaraItem->anim_number;
-        item->frame_number = LaraItem->frame_number;
+        Item_SetAnim(item, LaraItem->anim_number, LaraItem->frame_number);
         item->pos.x = x;
         item->pos.y = y;
         item->pos.z = z;

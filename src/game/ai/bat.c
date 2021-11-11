@@ -133,8 +133,7 @@ static void FixEmbeddedBatPosition(int16_t item_num)
         Item_SetAnimBase(item, Objects[item->object_number].anim_index);
         bounds = GetBoundsAccurate(item);
 
-        item->anim_number = old_anim;
-        item->frame_number = old_frame;
+        Item_SetAnim(item, old_anim, old_frame);
 
         bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
 
