@@ -682,7 +682,6 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, " ");
         char tmp[10];
         sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
         sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
