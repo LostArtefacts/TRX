@@ -20,10 +20,12 @@ void InitialiseFXArray();
 int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
+
 void Item_SetAnimBase(ITEM_INFO *item, const int16_t anim_num);
 void Item_SetAnim(
     ITEM_INFO *item, const int16_t anim_num, const int16_t anim_frame);
 // Range is inclusive
 bool Item_AnimInRange(
     const ITEM_INFO *item, const int16_t start, const int16_t end);
+
 #endif
