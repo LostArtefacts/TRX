@@ -501,8 +501,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     if (SavedGamesCount == 0) {
                         InputDB.left = 0;
                     }
-                    PassportText =
-                        Text_Create(0, -16, GF.strings[GS_PASSPORT_RESTART_LEVEL]);
+                    PassportText = Text_Create(
+                        0, -16, GF.strings[GS_PASSPORT_RESTART_LEVEL]);
                 } else {
                     PassportText =
                         Text_Create(0, -16, GF.strings[GS_PASSPORT_SAVE_GAME]);
