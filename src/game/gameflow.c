@@ -205,24 +205,24 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         double value = json_object_get_number_double(
             obj, "draw_distance_fade", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
-            LOG_ERROR("'draw_distance_fade' must be an integer");
+            LOG_ERROR("'draw_distance_fade' must be a number");
             return 0;
         }
         GF.draw_distance_fade = value;
     } else {
-        GF.draw_distance_fade = 12;
+        GF.draw_distance_fade = 12.0f;
     }
 
     if (json_object_get_value(obj, "draw_distance_max")) {
         double value = json_object_get_number_double(
             obj, "draw_distance_max", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
-            LOG_ERROR("'draw_distance_max' must be an integer");
+            LOG_ERROR("'draw_distance_max' must be a number");
             return 0;
         }
         GF.draw_distance_max = value;
     } else {
-        GF.draw_distance_max = 20;
+        GF.draw_distance_max = 20.0f;
     }
 
     return 1;
