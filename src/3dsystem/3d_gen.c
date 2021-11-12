@@ -18,6 +18,8 @@
 
 static PHD_VECTOR LsVectorView = { 0 };
 static PHD_MATRIX MatrixStack[MAX_MATRICES] = { 0 };
+static int32_t m_DrawDistFade = 0;
+static int32_t m_DrawDistMax = 0;
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
@@ -642,12 +644,22 @@ int32_t phd_GetDrawDistMin()
 
 int32_t phd_GetDrawDistFade()
 {
-    return phd_GetDrawDistMax() - 8 * WALL_L;
+    return m_DrawDistFade;
 }
 
 int32_t phd_GetDrawDistMax()
 {
-    return 20 * WALL_L;
+    return m_DrawDistMax;
+}
+
+void phd_SetDrawDistFade(int32_t dist)
+{
+    m_DrawDistFade = dist;
+}
+
+void phd_SetDrawDistMax(int32_t dist)
+{
+    m_DrawDistMax = dist;
 }
 
 int32_t phd_GetNearZ()

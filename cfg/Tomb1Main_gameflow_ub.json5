@@ -6,6 +6,8 @@
     "enable_save_crystals": false,
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
+    "draw_distance_fade": 22,
+    "draw_distance_max": 30,
 
     "levels": [
         // level 0

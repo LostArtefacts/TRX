@@ -3,6 +3,7 @@
 
 #include "global/const.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;
@@ -1913,8 +1914,18 @@ typedef struct GAMEFLOW_LEVEL {
     int8_t demo;
     int16_t secrets;
     GAMEFLOW_SEQUENCE *sequence;
-    int8_t water_color_override;
-    RGBF water_color;
+    struct {
+        bool override;
+        RGBF value;
+    } water_color;
+    struct {
+        bool override;
+        float value;
+    } draw_distance_fade;
+    struct {
+        bool override;
+        float value;
+    } draw_distance_max;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -1931,6 +1942,8 @@ typedef struct GAMEFLOW {
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
     RGBF water_color;
+    float draw_distance_fade;
+    float draw_distance_max;
 } GAMEFLOW;
 
 typedef struct MN_SFX_PLAY_INFO {
