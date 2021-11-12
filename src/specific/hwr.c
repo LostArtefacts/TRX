@@ -55,7 +55,7 @@ static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
     }
 }
 
-void HWR_ChangeWaterColor(const RGBF *color)
+void HWR_SetWaterColor(const RGBF *color)
 {
     HWR_WaterColor.r = color->r;
     HWR_WaterColor.g = color->g;
