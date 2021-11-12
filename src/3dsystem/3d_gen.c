@@ -548,13 +548,13 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
         } else {
             int16_t clip_flags = 0;
             int32_t depth = zv >> W2V_SHIFT;
-            if (depth > DEPTH_Q_END) {
+            if (depth > phd_GetDrawDistMax()) {
                 PhdVBuf[i].g = 0x1FFF;
                 clip_flags |= 16;
-            } else if (depth <= DEPTH_Q_START) {
+            } else if (depth <= phd_GetDrawDistFade()) {
                 PhdVBuf[i].g = obj_ptr[3];
             } else {
-                PhdVBuf[i].g = obj_ptr[3] + depth - DEPTH_Q_START;
+                PhdVBuf[i].g = obj_ptr[3] + depth - phd_GetDrawDistFade();
                 if (!IsWaterEffect) {
                     CLAMPG(PhdVBuf[i].g, 0x1FFF);
                 }
@@ -635,17 +635,27 @@ void S_InsertRoom(const int16_t *obj_ptr)
     obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
+int32_t phd_GetDrawDistMin()
+{
+    return 127;
+}
+
+int32_t phd_GetDrawDistFade()
+{
+    return phd_GetDrawDistMax() - 8 * WALL_L;
+}
+
+int32_t phd_GetDrawDistMax()
+{
+    return 20 * WALL_L;
+}
+
 int32_t phd_GetNearZ()
 {
-    return VIEW_NEAR << W2V_SHIFT;
+    return phd_GetDrawDistMin() << W2V_SHIFT;
 }
 
 int32_t phd_GetFarZ()
 {
-    return VIEW_FAR << W2V_SHIFT;
-}
-
-int32_t phd_GetViewDist()
-{
-    return VIEW_FAR;
+    return phd_GetDrawDistMax() << W2V_SHIFT;
 }

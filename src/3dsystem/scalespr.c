@@ -13,15 +13,15 @@ void S_DrawSprite(
     y -= W2VMatrix._13;
     z -= W2VMatrix._23;
 
-    if (x < -phd_GetViewDist() || x > phd_GetViewDist()) {
+    if (x < -phd_GetDrawDistMax() || x > phd_GetDrawDistMax()) {
         return;
     }
 
-    if (y < -phd_GetViewDist() || y > phd_GetViewDist()) {
+    if (y < -phd_GetDrawDistMax() || y > phd_GetDrawDistMax()) {
         return;
     }
 
-    if (z < -phd_GetViewDist() || z > phd_GetViewDist()) {
+    if (z < -phd_GetDrawDistMax() || z > phd_GetDrawDistMax()) {
         return;
     }
 
@@ -41,8 +41,8 @@ void S_DrawSprite(
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
         int32_t depth = zv >> W2V_SHIFT;
-        if (depth > DEPTH_Q_START) {
-            shade += depth - DEPTH_Q_START;
+        if (depth > phd_GetDrawDistFade()) {
+            shade += depth - phd_GetDrawDistFade();
             if (shade > 0x1FFF) {
                 return;
             }
@@ -73,8 +73,8 @@ void S_DrawSpriteRel(
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
         int32_t depth = (zv >> W2V_SHIFT);
-        if (depth > DEPTH_Q_START) {
-            shade += depth - DEPTH_Q_START;
+        if (depth > phd_GetDrawDistFade()) {
+            shade += depth - phd_GetDrawDistFade();
             if (shade > 0x1FFF) {
                 return;
             }
