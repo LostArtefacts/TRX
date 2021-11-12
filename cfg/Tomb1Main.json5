@@ -171,9 +171,6 @@
     // Enables XBox One Controller with PS1 layout and Per Axis Dead Zone.
     "enable_xbox_one_controller": false,
 
-    // Overrides ingame brightness.
-    "brightness": 1.0,
-
     // Enables round shadow instead of the default octagon one.
     "enable_round_shadow": true,
 

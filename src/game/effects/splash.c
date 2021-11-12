@@ -19,7 +19,7 @@ void Splash(ITEM_INFO *item)
     int16_t room_num = item->room_number;
     GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
-    SoundEffect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
 
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(room_num);

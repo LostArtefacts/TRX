@@ -9,7 +9,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/mnsound.h"
+#include "game/music.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
@@ -21,7 +21,6 @@
 #include "global/vars.h"
 #include "specific/init.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
 
 #include <stddef.h>
 
@@ -114,7 +113,7 @@ void CheckCheatMode()
                 Lara.shotgun.ammo = 500;
                 Lara.magnums.ammo = 500;
                 Lara.uzis.ammo = 5000;
-                SoundEffect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
+                Sound_Effect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
             }
             cheat_mode = 0;
         }
@@ -136,8 +135,8 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
-        if (MusicTrack > 0) {
-            S_MusicLoop();
+        if (Music_CurrentTrack() > 0) {
+            Music_Loop();
         }
 
         CheckCheatMode();
@@ -237,7 +236,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         HairControl(0);
 
         CalculateCamera();
-        SoundEffects();
+        Sound_UpdateEffects();
         SaveGame.timer++;
         HealthBarTimer--;
 
@@ -335,7 +334,7 @@ void AnimateItem(ITEM_INFO *item)
 
             case AC_SOUND_FX:
                 if (item->frame_number == command[0]) {
-                    SoundEffect(
+                    Sound_Effect(
                         command[1], &item->pos,
                         RoomInfo[item->room_number].flags);
                 }
@@ -931,7 +930,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                 break;
             }
             SaveGame.secrets |= 1 << value;
-            S_MusicPlay(13);
+            Music_Play(13);
             break;
         }
     } while (!(trigger & END_BIT));
@@ -1323,7 +1322,7 @@ int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
 
 void FlipMap()
 {
-    mn_stop_ambient_samples();
+    Sound_StopAmbientSounds();
 
     for (int i = 0; i < RoomCount; i++) {
         ROOM_INFO *r = &RoomInfo[i];
@@ -1467,11 +1466,11 @@ void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
         if (flags & IF_ONESHOT) {
             MusicTrackFlags[value] |= IF_ONESHOT;
         }
-        if (value != MusicTrack) {
-            S_MusicPlay(value);
+        if (value != Music_CurrentTrack()) {
+            Music_Play(value);
         }
     } else {
-        S_MusicStop();
+        Music_Stop();
     }
 }
 

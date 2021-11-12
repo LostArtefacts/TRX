@@ -3,10 +3,17 @@
 
 #include "global/const.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
+
+typedef enum SAMPLE_FLAG {
+    SAMPLE_FLAG_NO_PAN = 1 << 12,
+    SAMPLE_FLAG_PITCH_WIBBLE = 1 << 13,
+    SAMPLE_FLAG_VOLUME_WIBBLE = 1 << 14,
+} SAMPLE_FLAG;
 
 typedef enum CAMERA_TYPE {
     CAM_CHASE = 0,
@@ -1043,6 +1050,7 @@ typedef enum GAME_STRING_ID {
     GS_DETAIL_LEVEL_LOW,
     GS_DETAIL_PERSPECTIVE_FMT,
     GS_DETAIL_BILINEAR_FMT,
+    GS_DETAIL_BRIGHTNESS_FMT,
     GS_DETAIL_UI_TEXT_SCALE_FMT,
     GS_DETAIL_UI_BAR_SCALE_FMT,
     GS_DETAIL_VIDEO_MODE_FMT,
@@ -1914,8 +1922,18 @@ typedef struct GAMEFLOW_LEVEL {
     int8_t demo;
     int16_t secrets;
     GAMEFLOW_SEQUENCE *sequence;
-    int8_t water_color_override;
-    RGBF water_color;
+    struct {
+        bool override;
+        RGBF value;
+    } water_color;
+    struct {
+        bool override;
+        float value;
+    } draw_distance_fade;
+    struct {
+        bool override;
+        float value;
+    } draw_distance_max;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -1932,17 +1950,9 @@ typedef struct GAMEFLOW {
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
     RGBF water_color;
+    float draw_distance_fade;
+    float draw_distance_max;
 } GAMEFLOW;
-
-typedef struct MN_SFX_PLAY_INFO {
-    void *handle;
-    PHD_3DPOS *pos;
-    uint32_t loudness;
-    int16_t volume;
-    int16_t pan;
-    int16_t fxnum;
-    int16_t mn_flags;
-} MN_SFX_PLAY_INFO;
 
 typedef struct SAMPLE_INFO {
     int16_t number;
@@ -1950,18 +1960,6 @@ typedef struct SAMPLE_INFO {
     int16_t randomness;
     int16_t flags;
 } SAMPLE_INFO;
-
-typedef struct SAMPLE_DATA {
-    char *data;
-    int32_t length;
-    int16_t bits_per_sample;
-    int16_t channels;
-    int16_t sample_rate;
-    int16_t block_align;
-    int16_t volume;
-    int32_t pan;
-    void *handle;
-} SAMPLE_DATA;
 
 #pragma pack(pop)
 

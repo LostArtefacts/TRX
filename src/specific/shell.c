@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
+#include "game/music.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/setup.h"
@@ -20,7 +21,6 @@
 #include "specific/input.h"
 #include "specific/output.h"
 #include "specific/smain.h"
-#include "specific/sndpc.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -119,7 +119,7 @@ void GameMain()
             gf_option = Display_Inventory(INV_TITLE_MODE);
 
             S_FadeToBlack();
-            S_MusicStop();
+            Music_Stop();
             break;
 
         case GF_EXIT_GAME:

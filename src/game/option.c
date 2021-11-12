@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/inv.h"
-#include "game/mnsound.h"
+#include "game/music.h"
 #include "game/requester.h"
 #include "game/settings.h"
 #include "game/sound.h"
@@ -13,7 +13,6 @@
 #include "specific/display.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <dinput.h>
 #include <stdio.h>
@@ -49,12 +48,13 @@ typedef enum COMPASS_TEXT {
 typedef enum DETAIL_HW_TEXT {
     DETAIL_HW_PERSPECTIVE = 0,
     DETAIL_HW_BILINEAR = 1,
-    DETAIL_HW_UI_TEXT_SCALE = 2,
-    DETAIL_HW_UI_BAR_SCALE = 3,
-    DETAIL_HW_RESOLUTION = 4,
-    DETAIL_HW_TITLE = 5,
-    DETAIL_HW_TITLE_BORDER = 6,
-    DETAIL_HW_NUMBER_OF = 7,
+    DETAIL_HW_BRIGHTNESS = 2,
+    DETAIL_HW_UI_TEXT_SCALE = 3,
+    DETAIL_HW_UI_BAR_SCALE = 4,
+    DETAIL_HW_RESOLUTION = 5,
+    DETAIL_HW_TITLE = 6,
+    DETAIL_HW_TITLE_BORDER = 7,
+    DETAIL_HW_NUMBER_OF = 8,
     DETAIL_HW_OPTION_MIN = DETAIL_HW_PERSPECTIVE,
     DETAIL_HW_OPTION_MAX = DETAIL_HW_RESOLUTION,
 } DETAIL_HW_TEXT;
@@ -563,11 +563,11 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    int8_t pages_available[3] = {
-        SavedGamesCount,
+    bool pages_available[3] = {
+        SavedGamesCount > 0,
         InvMode == INV_TITLE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
             || !GF.enable_save_crystals,
-        1,
+        true,
     };
 
     if (InputDB.left && (SavedGamesCount || page > 1)) {
@@ -580,7 +580,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (page >= 0) {
             inv_item->anim_direction = -1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
                 Text_Remove(PassportText);
                 PassportText = NULL;
@@ -604,7 +604,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         if (page < PASSPORT_PAGE_COUNT) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             if (PassportText) {
                 Text_Remove(PassportText);
                 PassportText = NULL;
@@ -675,6 +675,11 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
+            buf, GF.strings[GS_DETAIL_BRIGHTNESS_FMT], T1MConfig.brightness);
+        DetailTextHW[DETAIL_HW_BRIGHTNESS] = Text_Create(0, y, buf);
+        y += DETAIL_HW_ROW_HEIGHT;
+
+        sprintf(
             buf, GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
             T1MConfig.ui.text_scale);
         DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = Text_Create(0, y, buf);
@@ -686,7 +691,6 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
-        DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, " ");
         char tmp[10];
         sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
         sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
@@ -737,20 +741,27 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    int8_t reset = 0;
+    bool reset = false;
 
     if (InputDB.right) {
         switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (!T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
             if (!T1MConfig.render_flags.bilinear) {
                 T1MConfig.render_flags.bilinear = 1;
+                reset = true;
+            }
+            break;
+
+        case DETAIL_HW_BRIGHTNESS:
+            if (T1MConfig.brightness < MAX_BRIGHTNESS) {
+                T1MConfig.brightness += 0.1f;
                 reset = 1;
             }
             break;
@@ -758,20 +769,20 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_UI_TEXT_SCALE:
             if (T1MConfig.ui.text_scale < MAX_UI_SCALE) {
                 T1MConfig.ui.text_scale += 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
             if (T1MConfig.ui.bar_scale < MAX_UI_SCALE) {
                 T1MConfig.ui.bar_scale += 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_RESOLUTION:
             if (SetNextGameScreenSize()) {
-                reset = 1;
+                reset = true;
             }
             break;
         }
@@ -782,13 +793,20 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_PERSPECTIVE:
             if (T1MConfig.render_flags.perspective) {
                 T1MConfig.render_flags.perspective = 0;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_BILINEAR:
             if (T1MConfig.render_flags.bilinear) {
                 T1MConfig.render_flags.bilinear = 0;
+                reset = true;
+            }
+            break;
+
+        case DETAIL_HW_BRIGHTNESS:
+            if (T1MConfig.brightness > MIN_BRIGHTNESS) {
+                T1MConfig.brightness -= 0.1f;
                 reset = 1;
             }
             break;
@@ -796,27 +814,27 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         case DETAIL_HW_UI_TEXT_SCALE:
             if (T1MConfig.ui.text_scale > MIN_UI_SCALE) {
                 T1MConfig.ui.text_scale -= 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_UI_BAR_SCALE:
             if (T1MConfig.ui.bar_scale > MIN_UI_SCALE) {
                 T1MConfig.ui.bar_scale -= 0.1;
-                reset = 1;
+                reset = true;
             }
             break;
 
         case DETAIL_HW_RESOLUTION:
             if (SetPrevGameScreenSize()) {
-                reset = 1;
+                reset = true;
             }
             break;
         }
     }
 
     if (InputDB.deselect || InputDB.select) {
-        reset = 1;
+        reset = true;
     }
 
     if (reset) {
@@ -895,12 +913,8 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
 
         if (Input.left || Input.right) {
-            if (T1MConfig.music_volume) {
-                S_MusicVolume(25 * T1MConfig.music_volume + 5);
-            } else {
-                S_MusicVolume(0);
-            }
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Music_SetVolume(T1MConfig.music_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
 
@@ -922,12 +936,8 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
 
         if (Input.left || Input.right) {
-            if (T1MConfig.sound_volume) {
-                mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
-            } else {
-                mn_adjust_master_volume(0);
-            }
-            SoundEffect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            Sound_SetMasterVolume(T1MConfig.sound_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
     }

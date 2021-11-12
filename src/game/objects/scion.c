@@ -117,7 +117,7 @@ void Scion3Control(int16_t item_num)
             fx->frame_number = 0;
             fx->object_number = O_EXPLOSION1;
             fx->counter = 0;
-            SoundEffect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
+            Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
             Camera.bounce = -200;
         }
     }

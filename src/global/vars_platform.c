@@ -6,8 +6,6 @@ HINSTANCE TombModule;
 HWND TombHWND;
 
 LPDIRECTSOUND DSound;
-uint32_t AuxDeviceID;
-uint32_t MCIDeviceID;
 
 LPDIRECTDRAW DDraw;
 float DDrawSurfaceMinX;

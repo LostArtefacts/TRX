@@ -21,7 +21,7 @@ void Ricochet(GAME_VECTOR *pos)
         fx->counter = 4;
         fx->object_number = O_RICOCHET1;
         fx->frame_number = -3 * GetRandomDraw() / 0x8000;
-        SoundEffect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
     }
 }
 

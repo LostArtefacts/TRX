@@ -74,6 +74,6 @@ void StatueControl(int16_t item_num)
         EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 
-        SoundEffect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
+        Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
     }
 }

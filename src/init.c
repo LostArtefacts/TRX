@@ -35,6 +35,7 @@ void T1MInit()
     GF.strings[GS_DETAIL_LEVEL_LOW] = "Low";
     GF.strings[GS_DETAIL_PERSPECTIVE_FMT] = "Perspective     %s";
     GF.strings[GS_DETAIL_BILINEAR_FMT] = "Bilinear        %s";
+    GF.strings[GS_DETAIL_BRIGHTNESS_FMT] = "Brightness      %.1f";
     GF.strings[GS_DETAIL_UI_TEXT_SCALE_FMT] = "UI text scale   %.1f";
     GF.strings[GS_DETAIL_UI_BAR_SCALE_FMT] = "UI bar scale    %.1f";
     GF.strings[GS_DETAIL_VIDEO_MODE_FMT] = "Game Video Mode %s";

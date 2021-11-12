@@ -152,7 +152,7 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
         objptr += 3;
 
         if (zv > 0) {
-            if (zv > PhdFarZ) {
+            if (zv > phd_GetFarZ()) {
                 z_toofar++;
             }
 
@@ -329,7 +329,8 @@ void DrawEffect(int16_t fxnum)
     } else {
         phd_PushMatrix();
         phd_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
-        if (PhdMatrixPtr->_23 > PhdNearZ && PhdMatrixPtr->_23 < PhdFarZ) {
+        if (PhdMatrixPtr->_23 > phd_GetNearZ()
+            && PhdMatrixPtr->_23 < phd_GetFarZ()) {
             phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
             if (object->nmeshes) {
                 S_CalculateStaticLight(fx->shade);

@@ -66,7 +66,7 @@ void DartEmitterControl(int16_t item_num)
                 fx->frame_number = 0;
                 fx->counter = 0;
                 fx->object_number = O_DART_EFFECT;
-                SoundEffect(SFX_DARTS, &fx->pos, SPM_NORMAL);
+                Sound_Effect(SFX_DARTS, &fx->pos, SPM_NORMAL);
             }
         }
     }
