@@ -41,12 +41,8 @@ void S_DrawSprite(
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
         int32_t depth = zv >> W2V_SHIFT;
-        if (depth > phd_GetDrawDistFade()) {
-            shade += depth - phd_GetDrawDistFade();
-            if (shade > 0x1FFF) {
-                return;
-            }
-        }
+        shade += phd_CalculateFogShade(depth);
+        CLAMPG(shade, 0x1FFF);
         HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }
@@ -72,13 +68,9 @@ void S_DrawSpriteRel(
     int32_t x2 = PhdWinCenterX + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
-        int32_t depth = (zv >> W2V_SHIFT);
-        if (depth > phd_GetDrawDistFade()) {
-            shade += depth - phd_GetDrawDistFade();
-            if (shade > 0x1FFF) {
-                return;
-            }
-        }
+        int32_t depth = zv >> W2V_SHIFT;
+        shade += phd_CalculateFogShade(depth);
+        CLAMPG(shade, 0x1FFF);
         HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }

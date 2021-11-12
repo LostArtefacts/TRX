@@ -543,20 +543,18 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
         PhdVBuf[i].xv = xv;
         PhdVBuf[i].yv = yv;
         PhdVBuf[i].zv = zv;
+        PhdVBuf[i].g = obj_ptr[3];
 
         if (zv < phd_GetNearZ()) {
             PhdVBuf[i].clip = 0x8000;
-            PhdVBuf[i].g = obj_ptr[3];
         } else {
             int16_t clip_flags = 0;
             int32_t depth = zv >> W2V_SHIFT;
             if (depth > phd_GetDrawDistMax()) {
                 PhdVBuf[i].g = 0x1FFF;
                 clip_flags |= 16;
-            } else if (depth <= phd_GetDrawDistFade()) {
-                PhdVBuf[i].g = obj_ptr[3];
-            } else {
-                PhdVBuf[i].g = obj_ptr[3] + depth - phd_GetDrawDistFade();
+            } else if (depth) {
+                PhdVBuf[i].g += phd_CalculateFogShade(depth);
                 if (!IsWaterEffect) {
                     CLAMPG(PhdVBuf[i].g, 0x1FFF);
                 }
@@ -670,4 +668,19 @@ int32_t phd_GetNearZ()
 int32_t phd_GetFarZ()
 {
     return phd_GetDrawDistMax() << W2V_SHIFT;
+}
+
+int32_t phd_CalculateFogShade(int32_t depth)
+{
+    int32_t fog_begin = phd_GetDrawDistFade();
+    int32_t fog_end = phd_GetDrawDistMax();
+
+    if (depth < fog_begin) {
+        return 0;
+    }
+    if (depth >= fog_end) {
+        return 0x1FFF;
+    }
+
+    return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
 }
