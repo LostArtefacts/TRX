@@ -19,20 +19,21 @@ static TEXTSTRING *PausedText = NULL;
 
 static char PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
 static REQUEST_INFO PauseRequester = {
-    0, // items
-    0, // requested
-    0, // vis_lines
-    0, // line_offset
-    0, // line_old_offset
-    160, // pix_width
-    TEXT_HEIGHT + 7, // line_height
-    0, // x
-    0, // y
-    0, // z
-    0, // flags
-    NULL, // heading_text
-    &PauseStrings[0][0], // item_texts
-    PAUSE_MAX_TEXT_LENGTH, // item_text_len
+    .items = 0,
+    .requested = 0,
+    .vis_lines = 0,
+    .line_offset = 0,
+    .line_old_offset = 0,
+    .pix_width = 160,
+    .line_height = TEXT_HEIGHT + 7,
+    .x = 0,
+    .y = 0,
+    .z = 0,
+    .flags = 0,
+    .heading_text = NULL,
+    .item_texts = &PauseStrings[0][0],
+    .item_text_len = PAUSE_MAX_TEXT_LENGTH,
+    0,
 };
 
 static void RemovePausedText();
