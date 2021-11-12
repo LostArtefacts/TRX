@@ -673,7 +673,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
         sprintf(
             buf, GF.strings[GS_DETAIL_BRIGHTNESS_FMT], T1MConfig.brightness);
-        DetailTextHW[DETAIL_HW_BRIGHTNESS] = T_Print(0, y, buf);
+        DetailTextHW[DETAIL_HW_BRIGHTNESS] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
