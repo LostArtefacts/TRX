@@ -12,9 +12,13 @@
 #define PHD_45 (PHD_ONE / 8) // = 8192 = 0x2000
 #define PHD_135 (PHD_45 * 3) // = 24576 = 0x6000
 
-#define MIN_UI_SCALE 0.5
-#define MAX_UI_SCALE 2.0
-#define DEFAULT_UI_SCALE 1.0
+#define MIN_UI_SCALE 0.5f
+#define MAX_UI_SCALE 2.0f
+#define DEFAULT_UI_SCALE 1.0f
+
+#define MIN_BRIGHTNESS 0.1f
+#define MAX_BRIGHTNESS 2.0f
+#define DEFAULT_BRIGHTNESS 1.0f
 
 #define FRAMES_PER_SECOND 30
 #define TICKS_PER_FRAME 2
@@ -202,11 +206,6 @@
 #define CAMERA_2_RING 598
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
-
-#define VIEW_NEAR 127
-#define VIEW_FAR (0x14 * 0x400)
-#define DEPTH_Q_END (20 * 1024) // = 20480
-#define DEPTH_Q_START ((DEPTH_Q_END) - (8 * 1024)) // = 12288
 
 #define NO_ACTION 0
 #define GAME_ACTION 1

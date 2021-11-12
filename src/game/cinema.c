@@ -5,13 +5,14 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/music.h"
 #include "game/setup.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
 
 static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;
@@ -43,8 +44,8 @@ int32_t CinematicLoop()
 
 int32_t StopCinematic(int32_t level_num)
 {
-    S_MusicStop();
-    S_SoundStopAllSamples();
+    Music_Stop();
+    Sound_StopAllSamples();
     SoundIsActive = SoundIsActiveOld;
 
     LevelComplete = true;

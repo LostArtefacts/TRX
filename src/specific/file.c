@@ -1,16 +1,17 @@
 #include "specific/file.h"
 
+#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "filesystem.h"
 #include "game/control.h"
 #include "game/items.h"
 #include "game/setup.h"
+#include "game/sound.h"
 #include "global/vars.h"
 #include "log.h"
 #include "specific/hwr.h"
 #include "specific/init.h"
 #include "specific/smain.h"
-#include "specific/sndpc.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -578,7 +579,7 @@ static bool LoadSamples(MYFILE *fp)
         sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    SoundLoadSamples(sample_pointers, num_samples);
+    Sound_LoadSamples(sample_pointers, num_samples);
 
     game_free(sizeof(char *) * num_samples, GBUF_SAMPLE_OFFSETS);
 
@@ -603,11 +604,22 @@ bool S_LoadLevel(int level_num)
     LOG_INFO("%d (%s)", level_num, GF.levels[level_num].level_file);
     bool ret = LoadLevel(GF.levels[level_num].level_file, level_num);
 
-    if (GF.levels[level_num].water_color_override) {
-        HWR_ChangeWaterColor(&GF.levels[level_num].water_color);
-    } else {
-        HWR_ChangeWaterColor(&GF.water_color);
-    }
+    HWR_SetWaterColor(
+        GF.levels[level_num].water_color.override
+            ? &GF.levels[level_num].water_color.value
+            : &GF.water_color);
+
+    phd_SetDrawDistFade(
+        (GF.levels[level_num].draw_distance_fade.override
+             ? GF.levels[level_num].draw_distance_fade.value
+             : GF.draw_distance_fade)
+        * WALL_L);
+
+    phd_SetDrawDistMax(
+        (GF.levels[level_num].draw_distance_max.override
+             ? GF.levels[level_num].draw_distance_max.value
+             : GF.draw_distance_max)
+        * WALL_L);
 
     if (T1MConfig.disable_healing_between_levels) {
         // check if we're in main menu by seeing if there is Lara item in the

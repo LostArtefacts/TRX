@@ -6,6 +6,8 @@
     "enable_save_crystals": false,
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
+    "draw_distance_fade": 22,
+    "draw_distance_max": 30,
 
     "levels": [
         // level 0
@@ -125,6 +127,7 @@
         "DETAIL_LEVEL_LOW": "Low",
         "DETAIL_PERSPECTIVE_FMT": "Perspective     %s",
         "DETAIL_BILINEAR_FMT": "Bilinear        %s",
+        "DETAIL_BRIGHTNESS_FMT": "Brightness      %.1f",
         "DETAIL_UI_TEXT_SCALE_FMT": "UI text scale   %.1f",
         "DETAIL_UI_BAR_SCALE_FMT": "UI bar scale    %.1f",
         "DETAIL_VIDEO_MODE_FMT": "Game Video Mode %s",

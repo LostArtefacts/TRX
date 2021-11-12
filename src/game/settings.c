@@ -2,8 +2,9 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/mnsound.h"
+#include "game/music.h"
 #include "game/option.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -11,7 +12,6 @@
 #include "log.h"
 #include "specific/display.h"
 #include "specific/input.h"
-#include "specific/sndpc.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -59,6 +59,7 @@ static int32_t S_ReadUserSettingsATI()
 
     FileRead(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
 
+    T1MConfig.brightness = DEFAULT_BRIGHTNESS;
     T1MConfig.ui.text_scale = DEFAULT_UI_SCALE;
     T1MConfig.ui.bar_scale = DEFAULT_UI_SCALE;
 
@@ -111,6 +112,10 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     T1MConfig.input.layout =
         json_object_get_number_int(root_obj, "layout_num", 0);
     CLAMP(T1MConfig.input.layout, 0, 1);
+
+    T1MConfig.brightness = json_object_get_number_double(
+        root_obj, "brightness", DEFAULT_BRIGHTNESS);
+    CLAMP(T1MConfig.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 
     T1MConfig.ui.text_scale = json_object_get_number_double(
         root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
@@ -225,17 +230,8 @@ void S_ReadUserSettings()
 
     DefaultConflict();
 
-    if (T1MConfig.music_volume) {
-        S_MusicVolume(25 * T1MConfig.music_volume + 5);
-    } else {
-        S_MusicVolume(0);
-    }
-
-    if (T1MConfig.sound_volume) {
-        mn_adjust_master_volume(6 * T1MConfig.sound_volume + 3);
-    } else {
-        mn_adjust_master_volume(0);
-    }
+    Music_SetVolume(T1MConfig.music_volume);
+    Sound_SetMasterVolume(T1MConfig.sound_volume);
 }
 
 void S_WriteUserSettings()

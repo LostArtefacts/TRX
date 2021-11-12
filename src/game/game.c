@@ -5,8 +5,10 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/music.h"
 #include "game/savegame.h"
 #include "game/setup.h"
+#include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -16,7 +18,6 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stdio.h>
 
@@ -76,11 +77,9 @@ int32_t GameLoop(int32_t demo_mode)
         nframes = DrawPhaseGame();
     }
 
-    S_SoundStopAllSamples();
-    S_MusicStop();
-    if (T1MConfig.music_volume) {
-        S_MusicVolume(T1MConfig.music_volume * 25 + 5);
-    }
+    Sound_StopAllSamples();
+    Music_Stop();
+    Music_SetVolume(T1MConfig.music_volume);
 
     if (ret == GF_NOP_BREAK) {
         return GF_NOP;

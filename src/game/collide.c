@@ -596,7 +596,7 @@ void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
     PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
     Lara.hit_direction = (hitang + PHD_45) / PHD_90;
     if (!Lara.hit_frame) {
-        SoundEffect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
     }
 
     Lara.hit_frame++;
@@ -732,7 +732,7 @@ void ItemPushLara(
                 lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
             Lara.hit_direction = (hitang + PHD_45) / PHD_90;
             if (!Lara.hit_frame) {
-                SoundEffect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+                Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
             }
 
             Lara.hit_frame++;

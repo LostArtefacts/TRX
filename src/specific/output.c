@@ -149,21 +149,16 @@ void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 
     int32_t distance = PhdMatrixPtr->_23 >> W2V_SHIFT;
-    if (distance > DEPTH_Q_START) {
-        LsAdder += distance - DEPTH_Q_START;
-        if (LsAdder > 0x1FFF) {
-            LsAdder = 0x1FFF;
-        }
-    }
+    LsAdder += phd_CalculateFogShade(distance);
+    CLAMPG(LsAdder, 0x1FFF);
 }
 
 void S_CalculateStaticLight(int16_t adder)
 {
     LsAdder = adder - 16 * 256;
-    int32_t z_dist = PhdMatrixPtr->_23 >> W2V_SHIFT;
-    if (z_dist > DEPTH_Q_START) {
-        LsAdder += z_dist - DEPTH_Q_START;
-    }
+    int32_t distance = PhdMatrixPtr->_23 >> W2V_SHIFT;
+    LsAdder += phd_CalculateFogShade(distance);
+    CLAMPG(LsAdder, 0x1FFF);
 }
 
 void S_SetupBelowWater(bool underwater)
@@ -294,7 +289,8 @@ void S_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width)
 {
-    if (z1 >= PhdNearZ && z1 <= PhdFarZ && z2 >= PhdNearZ && z2 <= PhdFarZ) {
+    if (z1 >= phd_GetNearZ() && z1 <= phd_GetFarZ() && z2 >= phd_GetNearZ()
+        && z2 <= phd_GetFarZ()) {
         x1 = PhdWinCenterX + x1 / (z1 / PhdPersp);
         y1 = PhdWinCenterY + y1 / (z1 / PhdPersp);
         x2 = PhdWinCenterX + x2 / (z2 / PhdPersp);
@@ -360,7 +356,7 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 
 int S_GetObjectBounds(int16_t *bptr)
 {
-    if (PhdMatrixPtr->_23 >= PhdFarZ) {
+    if (PhdMatrixPtr->_23 >= phd_GetFarZ()) {
         return 0;
     }
 
@@ -407,7 +403,7 @@ int S_GetObjectBounds(int16_t *bptr)
         int32_t zv = PhdMatrixPtr->_20 * vtx[i].x + PhdMatrixPtr->_21 * vtx[i].y
             + PhdMatrixPtr->_22 * vtx[i].z + PhdMatrixPtr->_23;
 
-        if (zv > PhdNearZ && zv < PhdFarZ) {
+        if (zv > phd_GetNearZ() && zv < phd_GetFarZ()) {
             ++num_z;
             int32_t zp = zv / PhdPersp;
             int32_t xv =

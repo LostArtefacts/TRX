@@ -134,7 +134,7 @@ void CentaurControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 
     if (item->status == IS_DEACTIVATED) {
-        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         ExplodingDeath(item_num, -1, CENTAUR_PART_DAMAGE);
         KillItem(item_num);
         item->status = IS_DEACTIVATED;

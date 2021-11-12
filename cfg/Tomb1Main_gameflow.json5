@@ -19,6 +19,17 @@
     // [0.45, 1.0, 1.0] is default TombATI filter.
     "water_color": [0.45, 1.0, 1.0],
 
+    // The distance (in tiles) at which objects and the world
+    // start to fade into blackness.
+    // The default hardcoded value in TR1 is 12.
+    // The default (disabled) value in TombATI is 72.
+    "draw_distance_fade": 22.0,
+
+    // The distance (in tiles) at which objects and the world are clipped away.
+    // The default hardcoded value in TR1 is 20.
+    // The default (disabled) value in TombATI is 80.
+    "draw_distance_max": 30.0,
+
     // list of levels
     "levels": [
         // level 0
@@ -54,6 +65,12 @@
 
             // water color can be customized per level, too.
             // "water_color": [0.45, 1.0, 1.0],
+
+            // draw_distance_fade can be customized per level, too.
+            // "draw_distance_fade": 22.0,
+
+            // draw_distance_max can be customized per level, too.
+            // "draw_distance_max": 30.0,
         },
 
         // level 1
@@ -474,6 +491,7 @@
         "DETAIL_LEVEL_LOW": "Low",
         "DETAIL_PERSPECTIVE_FMT": "Perspective     %s",
         "DETAIL_BILINEAR_FMT": "Bilinear        %s",
+        "DETAIL_BRIGHTNESS_FMT": "Brightness      %.1f",
         "DETAIL_UI_TEXT_SCALE_FMT": "UI text scale   %.1f",
         "DETAIL_UI_BAR_SCALE_FMT": "UI bar scale    %.1f",
         "DETAIL_VIDEO_MODE_FMT": "Game Video Mode %s",

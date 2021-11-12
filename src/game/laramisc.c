@@ -9,12 +9,12 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/sndpc.h"
 #include "util.h"
 
 #include <stddef.h>
@@ -74,7 +74,7 @@ void LaraControl(int16_t item_num)
         item->pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
-        StopSoundEffect(SFX_LARA_FALL, NULL);
+        Sound_StopEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
@@ -117,7 +117,7 @@ void LaraControl(int16_t item_num)
             Lara.torso_x_rot = 0;
             Lara.torso_y_rot = 0;
             UpdateLaraRoom(item, -LARA_HITE / 2);
-            SoundEffect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
+            Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             Lara.water_status = LWS_ABOVEWATER;
             Lara.gun_status = LGS_ARMLESS;
@@ -156,7 +156,7 @@ void LaraControl(int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (!Lara.death_count) {
-            S_MusicStop();
+            Music_Stop();
         }
         Lara.death_count++;
         // make sure the enemy healthbar is no longer rendered. If Lara later
@@ -308,7 +308,7 @@ void AnimateLara(ITEM_INFO *item)
 
             case AC_SOUND_FX:
                 if (item->frame_number == command[0]) {
-                    SoundEffect(command[1], &item->pos, SPM_ALWAYS);
+                    Sound_Effect(command[1], &item->pos, SPM_ALWAYS);
                 }
                 command += 2;
                 break;
@@ -400,7 +400,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_MEDI_ITEM);
-        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
+        Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
 
     case O_BIGMEDI_ITEM:
@@ -414,7 +414,7 @@ void UseItem(int16_t object_num)
             LaraItem->hit_points = LARA_HITPOINTS;
         }
         Inv_RemoveItem(O_BIGMEDI_ITEM);
-        SoundEffect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
+        Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
     }
 }
@@ -617,7 +617,7 @@ void LaraCheatGetStuff()
     }
 
     // play pistols drawing sound
-    SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
+    Sound_Effect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
 
     if (Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
         Inv_AddItem(O_GUN_ITEM);

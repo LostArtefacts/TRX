@@ -5,7 +5,6 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/lara.h"
-#include "game/mnsound.h"
 #include "game/option.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -19,7 +18,6 @@
 #include "specific/frontend.h"
 #include "specific/input.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -65,8 +63,8 @@ int32_t Display_Inventory(int inv_mode)
         S_FadeInInventory(0);
     }
 
-    mn_stop_ambient_samples();
-    S_SoundStopAllSamples();
+    Sound_StopAmbientSounds();
+    Sound_StopAllSamples();
 
     switch (InvMode) {
     case INV_DEATH_MODE:
@@ -97,7 +95,7 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
+    Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
     InvNFrames = 2;
 
@@ -232,7 +230,7 @@ int32_t Display_Inventory(int inv_mode)
 
         phd_PopMatrix();
 
-        mn_update_sound_effects();
+        Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
         S_OutputPolyList();
@@ -258,19 +256,19 @@ int32_t Display_Inventory(int inv_mode)
         case RNG_OPEN:
             if (Input.right && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
-                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
+                Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if (Input.left && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
-                SoundEffect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
+                Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if ((ResetFlag || InputDB.option)
                 && (ResetFlag || InvMode != INV_TITLE_MODE)) {
-                SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
+                Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 InvChosen = -1;
 
                 if (ring.type == RT_MAIN) {
@@ -329,26 +327,26 @@ int32_t Display_Inventory(int inv_mode)
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
-                    SoundEffect(SFX_MENU_COMPASS, NULL, SPM_ALWAYS);
+                    Sound_Effect(SFX_MENU_COMPASS, NULL, SPM_ALWAYS);
                     break;
 
                 case O_PHOTO_OPTION:
-                    SoundEffect(SFX_MENU_CHOOSE, NULL, SPM_ALWAYS);
+                    Sound_Effect(SFX_MENU_CHOOSE, NULL, SPM_ALWAYS);
                     break;
 
                 case O_CONTROL_OPTION:
-                    SoundEffect(SFX_MENU_GAMEBOY, NULL, SPM_ALWAYS);
+                    Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_ALWAYS);
                     break;
 
                 case O_GUN_OPTION:
                 case O_SHOTGUN_OPTION:
                 case O_MAGNUM_OPTION:
                 case O_UZI_OPTION:
-                    SoundEffect(SFX_MENU_GUNS, NULL, SPM_ALWAYS);
+                    Sound_Effect(SFX_MENU_GUNS, NULL, SPM_ALWAYS);
                     break;
 
                 default:
-                    SoundEffect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
+                    Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
                     break;
                 }
             }
@@ -556,7 +554,7 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_DESELECT:
-            SoundEffect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
+            Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
             Inv_RingMotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
@@ -828,7 +826,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
-            if (zv < PhdNearZ || zv > PhdFarZ) {
+            if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
                 break;
             }
 

@@ -74,7 +74,7 @@ void FlyerControl(int16_t item_num)
 
     if (item->hit_points <= 0) {
         if (ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
-            SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
             DisableBaddieAI(item_num);
             KillItem(item_num);
             item->status = IS_DEACTIVATED;

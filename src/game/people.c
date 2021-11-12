@@ -75,7 +75,7 @@ int16_t GunHit(
     DoBloodSplat(
         pos.x, pos.y, pos.z, LaraItem->speed, LaraItem->pos.y_rot,
         LaraItem->room_number);
-    SoundEffect(SFX_LARA_BULLETHIT, &LaraItem->pos, SPM_NORMAL);
+    Sound_Effect(SFX_LARA_BULLETHIT, &LaraItem->pos, SPM_NORMAL);
     return GunShot(x, y, z, speed, y_rot, room_num);
 }
 

@@ -14,10 +14,7 @@ extern int32_t PhdWinMaxX;
 extern int32_t PhdWinMaxY;
 extern int32_t PhdWinCenterX;
 extern int32_t PhdWinCenterY;
-extern int32_t PhdViewDist;
 extern int32_t PhdPersp;
-extern int32_t PhdFarZ;
-extern int32_t PhdNearZ;
 extern int32_t PhdLeft;
 extern int32_t PhdBottom;
 extern int32_t PhdRight;
@@ -51,10 +48,8 @@ extern int32_t OptionSelected;
 extern bool SoundIsActive;
 extern int16_t SampleLUT[MAX_SAMPLES];
 extern SAMPLE_INFO *SampleInfos;
-extern int16_t MusicTrack;
-extern bool MusicLoop;
 extern uint16_t MusicTrackFlags[MAX_CD_TRACKS];
-extern int32_t MnSoundMasterVolume;
+extern int32_t Sound_MasterVolume;
 
 extern int32_t FPSCounter;
 

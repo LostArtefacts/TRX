@@ -43,7 +43,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/mnsound.h"
+#include "game/music.h"
 #include "game/objects/boat.h"
 #include "game/objects/bridge.h"
 #include "game/objects/cabin.h"
@@ -60,6 +60,7 @@
 #include "game/objects/trapdoor.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/sound.h"
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
 #include "game/traps/dart.h"
@@ -83,7 +84,6 @@
 #include "specific/file.h"
 #include "specific/init.h"
 #include "specific/output.h"
-#include "specific/sndpc.h"
 
 #include <stddef.h>
 
@@ -118,7 +118,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     Overlay_Init();
 
     HealthBarTimer = 100;
-    mn_reset_sound_effects();
+    Sound_ResetEffects();
 
     if (level_type == GFL_SAVED) {
         ExtractSaveGameInfo();
@@ -132,7 +132,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
     if (GF.levels[CurrentLevel].music) {
-        S_MusicPlay(GF.levels[CurrentLevel].music);
+        Music_Play(GF.levels[CurrentLevel].music);
     }
     Camera.underwater = 0;
     return 1;

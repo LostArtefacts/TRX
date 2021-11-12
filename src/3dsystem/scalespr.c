@@ -1,5 +1,6 @@
 #include "3dsystem/scalespr.h"
 
+#include "3dsystem/3d_gen.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "global/types.h"
@@ -12,20 +13,20 @@ void S_DrawSprite(
     y -= W2VMatrix._13;
     z -= W2VMatrix._23;
 
-    if (x < -PhdViewDist || x > PhdViewDist) {
+    if (x < -phd_GetDrawDistMax() || x > phd_GetDrawDistMax()) {
         return;
     }
 
-    if (y < -PhdViewDist || y > PhdViewDist) {
+    if (y < -phd_GetDrawDistMax() || y > phd_GetDrawDistMax()) {
         return;
     }
 
-    if (z < -PhdViewDist || z > PhdViewDist) {
+    if (z < -phd_GetDrawDistMax() || z > phd_GetDrawDistMax()) {
         return;
     }
 
     int32_t zv = W2VMatrix._20 * x + W2VMatrix._21 * y + W2VMatrix._22 * z;
-    if (zv < PhdNearZ || zv > PhdFarZ) {
+    if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 
@@ -40,12 +41,8 @@ void S_DrawSprite(
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
         int32_t depth = zv >> W2V_SHIFT;
-        if (depth > DEPTH_Q_START) {
-            shade += depth - DEPTH_Q_START;
-            if (shade > 0x1FFF) {
-                return;
-            }
-        }
+        shade += phd_CalculateFogShade(depth);
+        CLAMPG(shade, 0x1FFF);
         HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }
@@ -55,7 +52,7 @@ void S_DrawSpriteRel(
 {
     int32_t zv = PhdMatrixPtr->_20 * x + PhdMatrixPtr->_21 * y
         + PhdMatrixPtr->_22 * z + PhdMatrixPtr->_23;
-    if (zv < PhdNearZ || zv > PhdFarZ) {
+    if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 
@@ -71,13 +68,9 @@ void S_DrawSpriteRel(
     int32_t x2 = PhdWinCenterX + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
     int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
     if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
-        int32_t depth = (zv >> W2V_SHIFT);
-        if (depth > DEPTH_Q_START) {
-            shade += depth - DEPTH_Q_START;
-            if (shade > 0x1FFF) {
-                return;
-            }
-        }
+        int32_t depth = zv >> W2V_SHIFT;
+        shade += phd_CalculateFogShade(depth);
+        CLAMPG(shade, 0x1FFF);
         HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }

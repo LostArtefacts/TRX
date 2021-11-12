@@ -12,8 +12,6 @@ extern HINSTANCE TombModule;
 extern HWND TombHWND;
 
 extern LPDIRECTSOUND DSound;
-extern uint32_t AuxDeviceID;
-extern uint32_t MCIDeviceID;
 
 extern LPDIRECTDRAW DDraw;
 extern float DDrawSurfaceMinX;

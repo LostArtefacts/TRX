@@ -19,7 +19,7 @@ void DrawShotgun()
         ani = AF_SG_DRAW;
     } else if (ani == AF_SG_DRAW + 10) {
         DrawShotgunMeshes();
-        SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
+        Sound_Effect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
     } else if (ani == AF_SG_RECOIL) {
         ReadyShotgun();
         ani = AF_SG_AIM;
@@ -57,7 +57,7 @@ void UndrawShotgun()
         ani++;
         if (ani == AF_SG_UNDRAW + 20) {
             UndrawShotgunMeshes();
-            SoundEffect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
+            Sound_Effect(SFX_LARA_DRAW, &LaraItem->pos, SPM_NORMAL);
         } else if (ani == AF_SG_UNAIM) {
             ani = AF_SG_AIM;
             Lara.gun_status = LGS_ARMLESS;
@@ -155,7 +155,7 @@ void AnimateShotgun()
             if (ani == AF_SG_UNDRAW) {
                 ani = AF_SG_RECOIL;
             } else if (ani == AF_SG_RECOIL + 10) {
-                SoundEffect(SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
+                Sound_Effect(SFX_LARA_RELOAD, &LaraItem->pos, SPM_NORMAL);
             }
         } else if (ani >= AF_SG_UNAIM && ani < AF_SG_END) {
             ani++;
@@ -279,7 +279,7 @@ void FireShotgun()
         if (T1MConfig.enable_shotgun_flash) {
             Lara.right_arm.flash_gun = Weapons[LGT_SHOTGUN].flash_time;
         }
-        SoundEffect(
+        Sound_Effect(
             Weapons[LGT_SHOTGUN].sample_num, &LaraItem->pos, SPM_NORMAL);
     }
 }

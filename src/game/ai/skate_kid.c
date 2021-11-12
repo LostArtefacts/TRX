@@ -6,9 +6,9 @@
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/people.h"
 #include "global/vars.h"
-#include "specific/sndpc.h"
 
 BITE_INFO KidGun1 = { 0, 150, 34, 7 };
 BITE_INFO KidGun2 = { 0, 150, 37, 4 };
@@ -67,8 +67,8 @@ void SkateKidControl(int16_t item_num)
 
         angle = CreatureTurn(item, SKATE_KID_SKATE_TURN);
 
-        if (item->hit_points < 120 && MusicTrack != 56) {
-            S_MusicPlay(56);
+        if (item->hit_points < 120 && Music_CurrentTrack() != 56) {
+            Music_Play(56);
         }
 
         switch (item->current_anim_state) {

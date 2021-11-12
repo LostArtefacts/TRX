@@ -1,6 +1,7 @@
 #include "specific/smain.h"
 
 #include "config.h"
+#include "game/music.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "inject_util.h"
@@ -11,7 +12,6 @@
 #include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shell.h"
-#include "specific/sndpc.h"
 
 #include <windows.h>
 #include <ddraw.h>
@@ -125,14 +125,10 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
-        if (wParam && !IsGameWindowActive) {
-            if (T1MConfig.music_volume) {
-                S_MusicVolume(T1MConfig.music_volume * 25 + 5);
-            } else {
-                S_MusicVolume(0);
-            }
-        } else if (!wParam && IsGameWindowActive) {
-            S_MusicVolume(0);
+        if (!IsGameWindowActive && wParam) {
+            Music_SetVolume(T1MConfig.music_volume);
+        } else if (IsGameWindowActive && !wParam) {
+            Music_SetVolume(0);
         }
         IsGameWindowActive = wParam != 0;
         return 1;
@@ -162,7 +158,7 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 
     case MM_MCINOTIFY:
-        MusicPlayLooped();
+        Music_PlayLooped();
         return 0;
 
     default:

@@ -215,7 +215,7 @@ void AbortionControl(int16_t item_num)
     }
 
     if (item->status == IS_DEACTIVATED) {
-        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);

@@ -40,7 +40,7 @@ void DamoclesSwordControl(int16_t item_num)
         item->pos.z += item->goal_anim_state;
 
         if (item->pos.y > item->floor) {
-            SoundEffect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
             item->gravity_status = 0;
             item->status = IS_DEACTIVATED;

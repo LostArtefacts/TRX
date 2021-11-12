@@ -52,7 +52,7 @@ void MovableBlockControl(int16_t item_num)
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         DinoStomp(item);
-        SoundEffect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     }
 
     if (item->room_number != room_num) {
