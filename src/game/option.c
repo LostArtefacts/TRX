@@ -295,7 +295,7 @@ static const char *GetScanCodeName(int16_t key)
     }
     // clang-format on
     return "????";
-};
+}
 
 static void InitLoadSaveGameRequester()
 {
