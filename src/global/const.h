@@ -207,11 +207,6 @@
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
 
-#define VIEW_NEAR 127
-#define VIEW_FAR (0x14 * 0x400)
-#define DEPTH_Q_END (20 * 1024) // = 20480
-#define DEPTH_Q_START ((DEPTH_Q_END) - (8 * 1024)) // = 12288
-
 #define NO_ACTION 0
 #define GAME_ACTION 1
 #define END_ACTION 2

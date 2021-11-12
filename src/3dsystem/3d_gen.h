@@ -22,9 +22,11 @@ void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_InitWindow(int32_t x, int32_t y, int32_t width, int32_t height);
 void AlterFOV(PHD_ANGLE fov);
 
+int32_t phd_GetDrawDistMin();
+int32_t phd_GetDrawDistFade();
+int32_t phd_GetDrawDistMax();
 int32_t phd_GetNearZ();
 int32_t phd_GetFarZ();
-int32_t phd_GetViewDist();
 
 void phd_PushMatrix();
 void phd_PushUnitMatrix();
