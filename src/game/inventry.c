@@ -828,7 +828,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
-            if (zv < PhdNearZ || zv > PhdFarZ) {
+            if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
                 break;
             }
 

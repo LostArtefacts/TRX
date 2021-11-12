@@ -1550,12 +1550,11 @@ int32_t HWR_ZedClipper(
     POINT_INFO *pts1;
     C3D_VTCF *v;
     float clip;
-    float near_z;
     float persp_o_near_z;
     float multiplier;
 
     multiplier = 0.0625f * T1MConfig.brightness;
-    near_z = PhdNearZ;
+    float near_z = phd_GetNearZ();
     persp_o_near_z = PhdPersp / near_z;
 
     v = &vertices[0];

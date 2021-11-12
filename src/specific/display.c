@@ -82,7 +82,7 @@ void SetupScreenSize()
     int32_t height = GetScreenHeight();
     int32_t x = (width - width) / 2;
     int32_t y = (height - height) / 2;
-    phd_InitWindow(x, y, width, height, VIEW_NEAR, VIEW_FAR, GAME_FOV);
+    phd_InitWindow(x, y, width, height);
 }
 
 void TempVideoAdjust(int32_t hi_res)
