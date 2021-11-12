@@ -26,20 +26,20 @@ Subsequent builds:
 
     - `sudo apt-get install -y gcc-mingw-w64-i686`
     - `sudo apt-get install -y make`
+    - `sudo apt-get install -y meson`
     - `sudo apt-get install -y git`
     - `sudo apt-get install -y python3`
     - `sudo apt-get install -y python3-pip`
     - `python3 -m pip install --user pyjson5`
 
-    Then for a clean build, run:
+    Then to initialize meson build, run:
 
-    - `make clean build`
+    - `make debug_linux`
 
-    For a debug build, run:
+    Then after each code change run:
 
-    - `make clean debug`
+    - `make`
 
-    For incremental builds remove `clean` from the above.
     The DLL should appear in the `build/` directory.
 
 ## Compiling on Windows

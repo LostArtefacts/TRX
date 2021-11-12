@@ -18,12 +18,13 @@ jobs:
           fetch-depth: 1
       - name: Install dependencies
         run: |
-          sudo apt-get install -y gcc-mingw-w64-i686 make
-          sudo python3 -m pip install pyjson5
-      - run: git checkout master
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-i686 make python3-pip p7zip-full
+          sudo python3 -m pip install pyjson5 meson ninja
       - name: Build project
         run: |
-          make build
+          make release_linux
+          make
           7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll cfg
       - name: Create Release
         id: create_release
