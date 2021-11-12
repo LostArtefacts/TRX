@@ -103,7 +103,7 @@ void LoadLaraDemoPos()
 
 bool ProcessDemoInput()
 {
-    if (DemoPtr >= &DemoData[DEMO_COUNT_MAX] || *DemoPtr == -1) {
+    if (DemoPtr >= &DemoData[DEMO_COUNT_MAX] || (int)*DemoPtr == -1) {
         return false;
     }
 

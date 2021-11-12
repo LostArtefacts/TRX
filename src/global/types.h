@@ -1528,7 +1528,7 @@ typedef struct CREATURE_INFO {
     int16_t maximum_turn;
     uint16_t flags;
     int16_t item_num;
-    int32_t mood;
+    MOOD_TYPE mood;
     LOT_INFO LOT;
     PHD_VECTOR target;
 } CREATURE_INFO;

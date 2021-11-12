@@ -25,7 +25,7 @@ bool S_Music_Init()
     m_MCIDeviceID = open_parms.wDeviceID;
 
     m_AUXDeviceID = 0;
-    for (int i = 0; i < auxGetNumDevs(); i++) {
+    for (int i = 0; i < (int)auxGetNumDevs(); i++) {
         AUXCAPSA caps;
         auxGetDevCapsA((UINT_PTR)i, &caps, sizeof(AUXCAPSA));
         if (caps.wTechnology == AUXCAPS_CDAUDIO) {
