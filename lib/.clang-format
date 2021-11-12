@@ -1,0 +1,25 @@
+# inherit Mozilla style
+BasedOnStyle: Mozilla
+
+# set a column limit, but don't be super strict about it
+ColumnLimit: 80
+PenaltyExcessCharacter: 100
+
+# set indent widths
+IndentWidth: 4
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+AccessModifierOffset: -4
+
+# don't squeeze short functions into one line
+AllowShortFunctionsOnASingleLine: false
+
+# try to keep return type on the same line
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+
+# use C++11 list style
+Cpp11BracedListStyle: true
+
+# don't try to squeeze parameters to the right if they don't fit in one line
+AlignAfterOpenBracket: DontAlign
