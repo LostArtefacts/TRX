@@ -301,8 +301,8 @@ int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
     mptr->_03 += mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 += mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 += mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
-    return ABS(mptr->_03) <= PhdFarZ && ABS(mptr->_13) <= PhdFarZ
-        && ABS(mptr->_23) <= PhdFarZ;
+    return ABS(mptr->_03) <= phd_GetFarZ() && ABS(mptr->_13) <= phd_GetFarZ()
+        && ABS(mptr->_23) <= phd_GetFarZ();
 }
 
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
@@ -353,9 +353,7 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
         >> W2V_SHIFT;
 }
 
-void phd_InitWindow(
-    int32_t x, int32_t y, int32_t width, int32_t height, int32_t nearz,
-    int32_t farz, int32_t view_angle)
+void phd_InitWindow(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     PhdWinMaxX = width - 1;
     PhdWinMaxY = height - 1;
@@ -363,9 +361,6 @@ void phd_InitWindow(
     PhdWinHeight = height;
     PhdWinCenterX = width / 2;
     PhdWinCenterY = height / 2;
-    PhdNearZ = nearz << W2V_SHIFT;
-    PhdFarZ = farz << W2V_SHIFT;
-    PhdViewDist = farz;
 
     AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
@@ -441,7 +436,7 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
         PhdVBuf[i].zv = zv;
 
         int32_t clip_flags;
-        if (zv < PhdNearZ) {
+        if (zv < phd_GetNearZ()) {
             clip_flags = -32768;
         } else {
             clip_flags = 0;
@@ -547,7 +542,7 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
         PhdVBuf[i].yv = yv;
         PhdVBuf[i].zv = zv;
 
-        if (zv < PhdNearZ) {
+        if (zv < phd_GetNearZ()) {
             PhdVBuf[i].clip = 0x8000;
             PhdVBuf[i].g = obj_ptr[3];
         } else {
@@ -638,4 +633,19 @@ void S_InsertRoom(const int16_t *obj_ptr)
     obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
     obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
+}
+
+int32_t phd_GetNearZ()
+{
+    return VIEW_NEAR << W2V_SHIFT;
+}
+
+int32_t phd_GetFarZ()
+{
+    return VIEW_FAR << W2V_SHIFT;
+}
+
+int32_t phd_GetViewDist()
+{
+    return VIEW_FAR;
 }

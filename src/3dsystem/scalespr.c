@@ -1,5 +1,6 @@
 #include "3dsystem/scalespr.h"
 
+#include "3dsystem/3d_gen.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "global/types.h"
@@ -12,20 +13,20 @@ void S_DrawSprite(
     y -= W2VMatrix._13;
     z -= W2VMatrix._23;
 
-    if (x < -PhdViewDist || x > PhdViewDist) {
+    if (x < -phd_GetViewDist() || x > phd_GetViewDist()) {
         return;
     }
 
-    if (y < -PhdViewDist || y > PhdViewDist) {
+    if (y < -phd_GetViewDist() || y > phd_GetViewDist()) {
         return;
     }
 
-    if (z < -PhdViewDist || z > PhdViewDist) {
+    if (z < -phd_GetViewDist() || z > phd_GetViewDist()) {
         return;
     }
 
     int32_t zv = W2VMatrix._20 * x + W2VMatrix._21 * y + W2VMatrix._22 * z;
-    if (zv < PhdNearZ || zv > PhdFarZ) {
+    if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 
@@ -55,7 +56,7 @@ void S_DrawSpriteRel(
 {
     int32_t zv = PhdMatrixPtr->_20 * x + PhdMatrixPtr->_21 * y
         + PhdMatrixPtr->_22 * z + PhdMatrixPtr->_23;
-    if (zv < PhdNearZ || zv > PhdFarZ) {
+    if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 

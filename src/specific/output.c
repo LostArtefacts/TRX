@@ -294,7 +294,8 @@ void S_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width)
 {
-    if (z1 >= PhdNearZ && z1 <= PhdFarZ && z2 >= PhdNearZ && z2 <= PhdFarZ) {
+    if (z1 >= phd_GetNearZ() && z1 <= phd_GetFarZ() && z2 >= phd_GetNearZ()
+        && z2 <= phd_GetFarZ()) {
         x1 = PhdWinCenterX + x1 / (z1 / PhdPersp);
         y1 = PhdWinCenterY + y1 / (z1 / PhdPersp);
         x2 = PhdWinCenterX + x2 / (z2 / PhdPersp);
@@ -360,7 +361,7 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 
 int S_GetObjectBounds(int16_t *bptr)
 {
-    if (PhdMatrixPtr->_23 >= PhdFarZ) {
+    if (PhdMatrixPtr->_23 >= phd_GetFarZ()) {
         return 0;
     }
 
@@ -407,7 +408,7 @@ int S_GetObjectBounds(int16_t *bptr)
         int32_t zv = PhdMatrixPtr->_20 * vtx[i].x + PhdMatrixPtr->_21 * vtx[i].y
             + PhdMatrixPtr->_22 * vtx[i].z + PhdMatrixPtr->_23;
 
-        if (zv > PhdNearZ && zv < PhdFarZ) {
+        if (zv > phd_GetNearZ() && zv < phd_GetFarZ()) {
             ++num_z;
             int32_t zp = zv / PhdPersp;
             int32_t xv =
