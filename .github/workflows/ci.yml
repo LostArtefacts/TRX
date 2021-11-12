@@ -5,10 +5,15 @@ on:
   - pull_request
 
 jobs:
-  build:
+  lint:
     name: Run code linters
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          path: .
+          fetch-depth: 1
       - name: Install dependencies
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
@@ -19,10 +24,6 @@ jobs:
           sudo ln -s /usr/bin/clang-format-12 /usr/local/bin/clang-format
           sudo apt-get install -y make python3-pip
           sudo python3 -m pip install pyjson5
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
       - name: Check formatted code differences
         run: |
           make lint

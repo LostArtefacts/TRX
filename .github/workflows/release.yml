@@ -7,19 +7,19 @@ on:
     - 'v?[0-9]*'
 
 jobs:
-  build:
+  publish_release:
     name: Publish new release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          path: .
+          fetch-depth: 1
       - name: Install dependencies
         run: |
           sudo apt-get install -y gcc-mingw-w64-i686 make
           sudo python3 -m pip install pyjson5
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
       - run: git checkout master
       - name: Build project
         run: |
