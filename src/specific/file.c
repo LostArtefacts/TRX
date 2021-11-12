@@ -604,7 +604,7 @@ bool S_LoadLevel(int level_num)
     LOG_INFO("%d (%s)", level_num, GF.levels[level_num].level_file);
     bool ret = LoadLevel(GF.levels[level_num].level_file, level_num);
 
-    HWR_ChangeWaterColor(
+    HWR_SetWaterColor(
         GF.levels[level_num].water_color.override
             ? &GF.levels[level_num].water_color.value
             : &GF.water_color);
