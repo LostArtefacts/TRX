@@ -30,6 +30,8 @@ int32_t phd_GetDrawDistMax();
 int32_t phd_GetNearZ();
 int32_t phd_GetFarZ();
 
+int32_t phd_CalculateFogShade(int32_t depth);
+
 void phd_PushMatrix();
 void phd_PushUnitMatrix();
 void phd_PopMatrix();
