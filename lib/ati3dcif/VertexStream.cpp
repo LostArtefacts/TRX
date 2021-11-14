@@ -36,9 +36,12 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
         case C3D_EV_VTCF: {
             auto vStripVtcf = reinterpret_cast<C3D_VTCF*>(vertStrip);
 
-            if (m_primType == C3D_EPRIM_QUAD) {
-                // TODO: triangulate quads
-            } else if (numVert <= 2) {
+            if (m_primType != C3D_EPRIM_TRI) {
+                throw Error("Unsupported prim type: " + std::to_string(m_primType),
+                    C3D_EC_NOTIMPYET);
+            }
+
+            if (numVert <= 2) {
                 for (C3D_UINT32 i = 0; i < numVert; i++) {
                     m_vtcBuffer.push_back(vStripVtcf[i]);
                 }
