@@ -13,11 +13,10 @@ Config& Config::instance()
     return instance;
 }
 
-void Config::load(const std::wstring& path)
+void Config::load(const std::string& path)
 {
-    std::string pathUtf = StringUtils::wideToUtf8(path);
-    if (ini_parse(pathUtf.c_str(), valueHandler, this)) {
-        LOG_INFO("Can't open ini file %s", pathUtf.c_str());
+    if (ini_parse(path.c_str(), valueHandler, this)) {
+        LOG_INFO("Can't open ini file %s", path.c_str());
     }
 }
 

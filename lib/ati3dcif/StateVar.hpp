@@ -3,8 +3,10 @@
 #include "ati3dcif.hpp"
 
 #include <array>
-#include <vector>
+#include <cstring>
 #include <functional>
+#include <stdexcept>
+#include <vector>
 
 namespace glrage {
 namespace cif {

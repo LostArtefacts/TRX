@@ -7,8 +7,8 @@
 #include <glrage_util/ErrorUtils.hpp>
 #include <glrage_util/StringUtils.hpp>
 
-#include <Shlwapi.h>
-#include <Windows.h>
+#include <shlwapi.h>
+#include <windows.h>
 
 #include <algorithm>
 #include <cstdint>
@@ -32,30 +32,15 @@ void RuntimePatcher::patch()
 
     // run known patches
     // clang-format off
-    std::map<std::string, std::shared_ptr<Patch>> patches = {
-        {"Tomb Raider",      std::make_shared<TombRaiderPatch>(false)},
-        {"Tomb Raider Gold", std::make_shared<TombRaiderPatch>(true)},
-        {"Assault Rigs",     std::make_shared<AssaultRigsPatch>()},
-        {"Wipeout",          std::make_shared<WipeoutPatch>()}
-    };
-    // clang-format on
-
     ContextImpl& ctx = ContextImpl::instance();
     Config& config = Config::instance();
 
     // load game patch config
-    config.load(ctx.getBasePath() + L"\\patches\\" + m_ctx.fileNameW + L".ini");
+    config.load(ctx.getBasePath() + "\\patches\\" + m_ctx.fileNameW + ".ini");
 
-    // apply patch module as defined in the config
-    std::string game = config.getString("patch.game", "");
-    auto patchResult = patches.find(game);
-    if (patchResult == patches.end()) {
-        ErrorUtils::error("Invalid patch module '" + game + "'");
-    }
-
-    auto patch = patchResult->second;
+    auto patch = std::make_shared<TombRaiderPatch>(false);
     patch->setContext(m_ctx);
-    patch->apply();
+    // patch->apply();
 
     ctx.setGameID(patch->gameID());
 }
@@ -71,14 +56,14 @@ void RuntimePatcher::getModulePath()
 
     // remove extension
     m_ctx.fileNameW =
-        m_ctx.fileNameW.substr(0, m_ctx.fileNameW.find_last_of(L"."));
+        m_ctx.fileNameW.substr(0, m_ctx.fileNameW.find_last_of("."));
 
     // convert to lower case
     transform(m_ctx.fileNameW.begin(), m_ctx.fileNameW.end(),
         m_ctx.fileNameW.begin(), ::towlower);
 
     // convert to UTF-8
-    m_ctx.fileName = StringUtils::wideToUtf8(m_ctx.fileNameW);
+    m_ctx.fileName = m_ctx.fileNameW;
 }
 
 void RuntimePatcher::getModuleVersion()
@@ -95,7 +80,7 @@ void RuntimePatcher::getModuleVersion()
 
     UINT fileInfoLen = 0;
     VS_FIXEDFILEINFO* fileInfoBuf;
-    if (VerQueryValue(&versionInfo[0], L"\\",
+    if (VerQueryValue(&versionInfo[0], "\\",
             reinterpret_cast<LPVOID*>(&fileInfoBuf), &fileInfoLen)) {
         m_ctx.fileInfo = *fileInfoBuf;
     }

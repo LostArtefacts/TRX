@@ -11,7 +11,7 @@ class Config
 public:
     static Config& instance();
 
-    void load(const std::wstring& path);
+    void load(const std::string& path);
     std::string getString(
         const std::string& name, const std::string& defaultValue);
     int32_t getInt(const std::string& name, const int32_t defaultValue);

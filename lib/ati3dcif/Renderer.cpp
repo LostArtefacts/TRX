@@ -60,11 +60,11 @@ Renderer::Renderer()
     }
 
     // compile and link shaders and configure program
-    std::wstring basePath = m_context.getBasePath();
+    std::string basePath = m_context.getBasePath();
     m_program.attach(gl::Shader(GL_VERTEX_SHADER)
-                         .fromFile(basePath + L"\\shaders\\ati3dcif.vsh"));
+                         .fromFile(basePath + "\\shaders\\ati3dcif.vsh"));
     m_program.attach(gl::Shader(GL_FRAGMENT_SHADER)
-                         .fromFile(basePath + L"\\shaders\\ati3dcif.fsh"));
+                         .fromFile(basePath + "\\shaders\\ati3dcif.fsh"));
     m_program.link();
     m_program.fragmentData("fragColor");
     m_program.bind();
@@ -201,7 +201,7 @@ void Renderer::texturePaletteAnimate(C3D_HTXPAL htxpalToAnimate,
     C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries,
     C3D_PPALETTENTRY pclrPalette)
 {
-    throw Error(__FUNCTION__ ": Not implemented", C3D_EC_NOTIMPYET);
+    throw Error(std::string(__FUNCTION__) + ": Not implemented", C3D_EC_NOTIMPYET);
 }
 
 void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)

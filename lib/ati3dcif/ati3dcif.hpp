@@ -18,4 +18,4 @@
 #define C3D_FALSE 0
 
 // include actual ATI3DCIF.H from 3D Rage SDK
-#include <ragesdk/include/ATI3DCIF.H>
+#include <ati3dcif/ATI3DCIF.h>

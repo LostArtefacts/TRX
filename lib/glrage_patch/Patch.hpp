@@ -5,7 +5,7 @@
 #include <glrage/GameID.hpp>
 #include <glrage_util/Config.hpp>
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <array>
 #include <cstdint>
@@ -16,9 +16,9 @@ namespace glrage {
 
 struct ModuleContext
 {
-    std::wstring path;
+    std::string path;
     std::string fileName;
-    std::wstring fileNameW;
+    std::string fileNameW;
     VS_FIXEDFILEINFO fileInfo;
 };
 

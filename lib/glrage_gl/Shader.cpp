@@ -30,14 +30,14 @@ void Shader::bind()
 {
 }
 
-Shader& Shader::fromFile(const std::wstring& path)
+Shader& Shader::fromFile(const std::string& path)
 {
     // open and check shader file
     std::ifstream file;
     file.open(path.c_str());
     if (!file.good()) {
         throw std::runtime_error("Can't open shader file '" +
-                                 StringUtils::wideToUtf8(path) + "': " +
+                                 path + "': " +
                                  ErrorUtils::getSystemErrorString());
     }
 

@@ -12,7 +12,7 @@ class DebugUtils
 public:
     static void dumpInfo(DDSURFACEDESC& desc);
     static void dumpBuffer(
-        DDSURFACEDESC& desc, void* buffer, const std::wstring& path);
+        DDSURFACEDESC& desc, void* buffer, const std::string& path);
     static std::string getSurfaceName(DDSURFACEDESC& desc);
 };
 

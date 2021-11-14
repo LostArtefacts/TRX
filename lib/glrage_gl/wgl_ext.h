@@ -8,10 +8,10 @@
 #define __wglext_h_
 
 #ifndef WIN32_LEAN_AND_MEAN
-	#define WIN32_LEAN_AND_MEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #endif
 #ifndef NOMINMAX
-	#define NOMINMAX
+#define NOMINMAX
 #endif
 #include <windows.h>
 
@@ -41,19 +41,18 @@ typedef double GLclampd;
 
 #endif /*GL_LOAD_GEN_BASIC_OPENGL_TYPEDEFS*/
 
-
 #ifndef GL_LOAD_GEN_BASIC_OPENGL_TYPEDEFS
 #define GL_LOAD_GEN_BASIC_OPENGL_TYPEDEFS
 
-
 #endif /*GL_LOAD_GEN_BASIC_OPENGL_TYPEDEFS*/
 
-struct _GPU_DEVICE {
-    DWORD  cb;
-    CHAR   DeviceName[32];
-    CHAR   DeviceString[128];
-    DWORD  Flags;
-    RECT   rcVirtualScreen;
+struct _GPU_DEVICE
+{
+    DWORD cb;
+    CHAR DeviceName[32];
+    CHAR DeviceString[128];
+    DWORD Flags;
+    RECT rcVirtualScreen;
 };
 DECLARE_HANDLE(HPBUFFERARB);
 DECLARE_HANDLE(HPBUFFEREXT);
@@ -61,25 +60,25 @@ DECLARE_HANDLE(HVIDEOOUTPUTDEVICENV);
 DECLARE_HANDLE(HPVIDEODEV);
 DECLARE_HANDLE(HGPUNV);
 DECLARE_HANDLE(HVIDEOINPUTDEVICENV);
-typedef struct _GPU_DEVICE *PGPU_DEVICE;
+typedef struct _GPU_DEVICE* PGPU_DEVICE;
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif /*__cplusplus*/
 
-/***********************/
-/* Extension Variables*/
+    /***********************/
+    /* Extension Variables*/
 
-extern int wgl_ext_EXT_swap_control;
+    extern int wgl_ext_EXT_swap_control;
 
-
-/* Extension: EXT_swap_control*/
-extern int (CODEGEN_FUNCPTR *_ptrc_wglGetSwapIntervalEXT)(void);
+    /* Extension: EXT_swap_control*/
+    extern int(CODEGEN_FUNCPTR* _ptrc_wglGetSwapIntervalEXT)(void);
 #define wglGetSwapIntervalEXT _ptrc_wglGetSwapIntervalEXT
-extern BOOL (CODEGEN_FUNCPTR *_ptrc_wglSwapIntervalEXT)(int interval);
+    extern BOOL(CODEGEN_FUNCPTR* _ptrc_wglSwapIntervalEXT)(int interval);
 #define wglSwapIntervalEXT _ptrc_wglSwapIntervalEXT
 
-void wgl_CheckExtensions(HDC hdc);
+    void wgl_CheckExtensions(HDC hdc);
 #ifdef __cplusplus
 }
 #endif /*__cplusplus*/

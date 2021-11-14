@@ -38,14 +38,29 @@ HandleException()
     }
 }
 
-// export macro for CIF implementation
-#define EXPORT(function_name, return_type, parameters)                         \
-function_name##_t function_name##_lib = function_name;                         \
-return_type WINAPI function_name parameters
-
 extern "C" {
 
-EXPORT(ATI3DCIF_Init, C3D_EC, (void))
+C3D_EC WINAPI ATI3DCIF_Term(void)
+{
+    LOG_TRACE("");
+
+    try {
+        if (renderer) {
+            renderer.release();
+        }
+    } catch (...) {
+        return HandleException();
+    }
+
+    // SDK PDF says "TRUE if successful, otherwise FALSE", but the
+    // function uses C3D_EC as return value.
+    // In other words: TRUE = C3D_EC_GENFAIL and FALSE = C3D_EC_OK? WTF...
+    // Anyway, most apps don't seem to care about the return value
+    // of this function, so stick with C3D_EC_OK for now.
+    return C3D_EC_OK;
+}
+
+C3D_EC WINAPI ATI3DCIF_Init(void)
 {
     LOG_TRACE("");
 
@@ -69,27 +84,7 @@ EXPORT(ATI3DCIF_Init, C3D_EC, (void))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_Term, C3D_EC, (void))
-{
-    LOG_TRACE("");
-
-    try {
-        if (renderer) {
-            renderer.release();
-        }
-    } catch (...) {
-        return HandleException();
-    }
-
-    // SDK PDF says "TRUE if successful, otherwise FALSE", but the
-    // function uses C3D_EC as return value.
-    // In other words: TRUE = C3D_EC_GENFAIL and FALSE = C3D_EC_OK? WTF...
-    // Anyway, most apps don't seem to care about the return value
-    // of this function, so stick with C3D_EC_OK for now.
-    return C3D_EC_OK;
-}
-
-EXPORT(ATI3DCIF_GetInfo, C3D_EC, (PC3D_3DCIFINFO p3DCIFInfo))
+C3D_EC WINAPI ATI3DCIF_GetInfo(PC3D_3DCIFINFO p3DCIFInfo)
 {
     LOG_TRACE("");
 
@@ -103,7 +98,7 @@ EXPORT(ATI3DCIF_GetInfo, C3D_EC, (PC3D_3DCIFINFO p3DCIFInfo))
     // Host pointer to frame buffer base (TODO: allocate memory?)
     p3DCIFInfo->u32FrameBuffBase = 0;
     // Host pointer to offscreen heap (TODO: allocate memory?)
-    p3DCIFInfo->u32OffScreenHeap = 0; 
+    p3DCIFInfo->u32OffScreenHeap = 0;
     p3DCIFInfo->u32OffScreenSize = 0x4fe800; // Size of offscreen heap
     p3DCIFInfo->u32TotalRAM = 8 << 20;       // Total amount of RAM on the card
     p3DCIFInfo->u32ASICID = 0x409;           // ASIC Id. code
@@ -131,7 +126,7 @@ EXPORT(ATI3DCIF_GetInfo, C3D_EC, (PC3D_3DCIFINFO p3DCIFInfo))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_TextureReg, C3D_EC, (C3D_PTMAP ptmapToReg, C3D_PHTX phtmap))
+C3D_EC WINAPI ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     LOG_TRACE("0x%p, 0x%p", *ptmapToReg, *phtmap);
 
@@ -144,7 +139,7 @@ EXPORT(ATI3DCIF_TextureReg, C3D_EC, (C3D_PTMAP ptmapToReg, C3D_PHTX phtmap))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_TextureUnreg, C3D_EC, (C3D_HTX htxToUnreg))
+C3D_EC WINAPI ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
 {
     LOG_TRACE("0x%p", htxToUnreg);
 
@@ -157,8 +152,7 @@ EXPORT(ATI3DCIF_TextureUnreg, C3D_EC, (C3D_HTX htxToUnreg))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_TexturePaletteCreate, C3D_EC,
-    (C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated))
+C3D_EC WINAPI ATI3DCIF_TexturePaletteCreate(C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated)
 {
     LOG_TRACE("%s, 0x%p, 0x%p", cif::C3D_ECI_TMAP_TYPE_NAMES[epalette],
         pPalette, phtpalCreated);
@@ -172,7 +166,7 @@ EXPORT(ATI3DCIF_TexturePaletteCreate, C3D_EC,
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_TexturePaletteDestroy, C3D_EC, (C3D_HTXPAL htxpalToDestroy))
+C3D_EC WINAPI ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
 {
     LOG_TRACE("0x%p", htxpalToDestroy);
 
@@ -185,9 +179,7 @@ EXPORT(ATI3DCIF_TexturePaletteDestroy, C3D_EC, (C3D_HTXPAL htxpalToDestroy))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_TexturePaletteAnimate, C3D_EC,
-    (C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex,
-        C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette))
+C3D_EC WINAPI ATI3DCIF_TexturePaletteAnimate(C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette)
 {
     LOG_TRACE("0x%p, %d, %d, 0x%p", htxpalToAnimate, u32StartIndex,
         u32NumEntries, *pclrPalette);
@@ -202,7 +194,7 @@ EXPORT(ATI3DCIF_TexturePaletteAnimate, C3D_EC,
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_ContextCreate, C3D_HRC, (void))
+C3D_HRC WINAPI ATI3DCIF_ContextCreate(void)
 {
     LOG_TRACE("");
 
@@ -220,7 +212,7 @@ EXPORT(ATI3DCIF_ContextCreate, C3D_HRC, (void))
     return (C3D_HRC)1;
 }
 
-EXPORT(ATI3DCIF_ContextDestroy, C3D_EC, (C3D_HRC hRC))
+C3D_EC WINAPI ATI3DCIF_ContextDestroy(C3D_HRC hRC)
 {
     LOG_TRACE("0x%p", hRC);
 
@@ -234,8 +226,7 @@ EXPORT(ATI3DCIF_ContextDestroy, C3D_EC, (C3D_HRC hRC))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_ContextSetState, C3D_EC,
-    (C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData))
+C3D_EC WINAPI ATI3DCIF_ContextSetState(C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
 #ifdef LOG_TRACE_ENABLED
     std::string stateDataStr =
@@ -253,7 +244,7 @@ EXPORT(ATI3DCIF_ContextSetState, C3D_EC,
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_RenderBegin, C3D_EC, (C3D_HRC hRC))
+C3D_EC WINAPI ATI3DCIF_RenderBegin(C3D_HRC hRC)
 {
     LOG_TRACE("0x%p", hRC);
 
@@ -266,7 +257,7 @@ EXPORT(ATI3DCIF_RenderBegin, C3D_EC, (C3D_HRC hRC))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_RenderEnd, C3D_EC, (void))
+C3D_EC WINAPI ATI3DCIF_RenderEnd(void)
 {
     LOG_TRACE("");
 
@@ -279,15 +270,14 @@ EXPORT(ATI3DCIF_RenderEnd, C3D_EC, (void))
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_RenderSwitch, C3D_EC, (C3D_HRC hRC))
+C3D_EC WINAPI ATI3DCIF_RenderSwitch(C3D_HRC hRC)
 {
     LOG_TRACE("0x%p", hRC);
     // function has officially never been implemented
     return C3D_EC_NOTIMPYET;
 }
 
-EXPORT(ATI3DCIF_RenderPrimStrip, C3D_EC,
-    (C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert))
+C3D_EC WINAPI ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
 {
     LOG_TRACE("0x%p, %d", vStrip, u32NumVert);
 
@@ -300,8 +290,7 @@ EXPORT(ATI3DCIF_RenderPrimStrip, C3D_EC,
     return C3D_EC_OK;
 }
 
-EXPORT(
-    ATI3DCIF_RenderPrimList, C3D_EC, (C3D_VLIST vList, C3D_UINT32 u32NumVert))
+C3D_EC WINAPI ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 {
     LOG_TRACE("0x%p, %d", vList, u32NumVert);
 
@@ -314,14 +303,37 @@ EXPORT(
     return C3D_EC_OK;
 }
 
-EXPORT(ATI3DCIF_RenderPrimMesh, C3D_EC,
-    (C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicies, C3D_UINT32 u32NumIndicies))
+C3D_EC WINAPI ATI3DCIF_RenderPrimMesh(C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicies, C3D_UINT32 u32NumIndicies)
 {
     LOG_TRACE("0x%p, %d", vMesh, u32NumIndicies);
 
     // TODO
     return C3D_EC_NOTIMPYET;
 }
+
+// export macro for CIF implementation
+#define EXPORT(function_name, return_type, parameters)                         \
+function_name##_t function_name##_lib = function_name;                         \
+return_type WINAPI function_name parameters                                    \
+
+
+C3D_EC (*WINAPI ATI3DCIF_Term_lib)(void) = ATI3DCIF_Term;
+C3D_EC (*WINAPI ATI3DCIF_Init_lib)(void) = ATI3DCIF_Init;
+C3D_EC (*WINAPI ATI3DCIF_GetInfo_lib)(PC3D_3DCIFINFO p3DCIFInfo) = ATI3DCIF_GetInfo;
+C3D_EC (*WINAPI ATI3DCIF_TextureReg_lib)(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap) = ATI3DCIF_TextureReg;
+C3D_EC (*WINAPI ATI3DCIF_TextureUnreg_lib)(C3D_HTX htxToUnreg) = ATI3DCIF_TextureUnreg;
+C3D_EC (*WINAPI ATI3DCIF_TexturePaletteCreate_lib)(C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated) = ATI3DCIF_TexturePaletteCreate;
+C3D_EC (*WINAPI ATI3DCIF_TexturePaletteDestroy_lib)(C3D_HTXPAL htxpalToDestroy) = ATI3DCIF_TexturePaletteDestroy;
+C3D_EC (*WINAPI ATI3DCIF_TexturePaletteAnimate_lib)(C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette) = ATI3DCIF_TexturePaletteAnimate;
+C3D_HRC (*WINAPI ATI3DCIF_ContextCreate_lib)(void) = ATI3DCIF_ContextCreate;
+C3D_EC (*WINAPI ATI3DCIF_ContextDestroy_lib)(C3D_HRC hRC) = ATI3DCIF_ContextDestroy;
+C3D_EC (*WINAPI ATI3DCIF_ContextSetState_lib)(C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData) = ATI3DCIF_ContextSetState;
+C3D_EC (*WINAPI ATI3DCIF_RenderBegin_lib)(C3D_HRC hRC) = ATI3DCIF_RenderBegin;
+C3D_EC (*WINAPI ATI3DCIF_RenderEnd_lib)(void) = ATI3DCIF_RenderEnd;
+C3D_EC (*WINAPI ATI3DCIF_RenderSwitch_lib)(C3D_HRC hRC) = ATI3DCIF_RenderSwitch;
+C3D_EC (*WINAPI ATI3DCIF_RenderPrimStrip_lib)(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimStrip;
+C3D_EC (*WINAPI ATI3DCIF_RenderPrimList_lib)(C3D_VLIST vList, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimList;
+C3D_EC (*WINAPI ATI3DCIF_RenderPrimMesh_lib)(C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicies, C3D_UINT32 u32NumIndicies) = ATI3DCIF_RenderPrimMesh;
 
 } // extern "C"
 

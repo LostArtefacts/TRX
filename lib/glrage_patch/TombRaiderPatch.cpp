@@ -34,7 +34,6 @@ void TombRaiderPatch::apply()
     // optional patches
     applyGraphicPatches();
     applySoundPatches();
-    applyFMVPatches();
     applyKeyboardPatches();
     applyLogicPatches();
 }
@@ -96,7 +95,9 @@ void TombRaiderPatch::applyGraphicPatches()
         float filterRed = m_config.getFloat("patch.watercolor_filter_red", 0.45f);
         float filterGreen = m_config.getFloat("patch.watercolor_filter_green", 1.0f);
 
-        Chunk c = Chunk() << filterRed << filterGreen;
+        Chunk c = Chunk();
+        c = c << filterRed;
+        c = c << filterGreen;
         patch(0x451028, "9A 99 19 3F 33 33 33 3F", c);
     }
 
@@ -121,9 +122,9 @@ void TombRaiderPatch::applyGraphicPatches()
         patch(m_ub ? 0x407CB4 : 0x407CA7, "58 02 00 00", height);
 
         patch(m_ub ? 0x407CBE : 0x407CB1, "00 C0 47 44",
-            static_cast<float_t>(width - 1));
+            static_cast<float>(width - 1));
         patch(m_ub ? 0x407CC8 : 0x407CBB, "00 C0 15 44",
-            static_cast<float_t>(height - 1));
+            static_cast<float>(height - 1));
 
         // update clipping size
         patch(m_ub ? 0x408A64 : 0x408A57, "20 03", static_cast<int16_t>(width));
@@ -142,17 +143,17 @@ void TombRaiderPatch::applyGraphicPatches()
         // UI scale patch, rescales the in-game overlay to keep the proportions
         // of the 800x600 resolution on higher resolutions.
         if (m_ub) {
-            patchAddr(0x41DA85, "E8 76 23 01 00", TombRaiderHooks::renderHealthBar, 0xE8);
-            patchAddr(0x41DC0C, "E8 EF 21 01 00", TombRaiderHooks::renderHealthBar, 0xE8);
-            patchAddr(0x41DAD7, "E8 A4 24 01 00", TombRaiderHooks::renderAirBar, 0xE8);
-            patchAddr(0x41DB71, "E8 8A 7C 01 00", TombRaiderHooks::renderCollectedItem, 0xE8);
-            patchAddr(0x4394C2, "E8 09 FC FF FF", TombRaiderHooks::createFPSText, 0xE8);
+            patchAddr(0x41DA85, "E8 76 23 01 00", (void*)&TombRaiderHooks::renderHealthBar, 0xE8);
+            patchAddr(0x41DC0C, "E8 EF 21 01 00", (void*)&TombRaiderHooks::renderHealthBar, 0xE8);
+            patchAddr(0x41DAD7, "E8 A4 24 01 00", (void*)&TombRaiderHooks::renderAirBar, 0xE8);
+            patchAddr(0x41DB71, "E8 8A 7C 01 00", (void*)&TombRaiderHooks::renderCollectedItem, 0xE8);
+            patchAddr(0x4394C2, "E8 09 FC FF FF", (void*)&TombRaiderHooks::createFPSText, 0xE8);
         } else {
-            patchAddr(0x41DD85, "E8 46 25 01 00", TombRaiderHooks::renderHealthBar, 0xE8);
-            patchAddr(0x41DF0C, "E8 BF 23 01 00", TombRaiderHooks::renderHealthBar, 0xE8);
-            patchAddr(0x41DDD7, "E8 74 26 01 00", TombRaiderHooks::renderAirBar, 0xE8);
-            patchAddr(0x41DE71, "E8 0A 7F 01 00", TombRaiderHooks::renderCollectedItem, 0xE8);
-            patchAddr(0x439B72, "E8 09 FC FF FF", TombRaiderHooks::createFPSText, 0xE8);
+            patchAddr(0x41DD85, "E8 46 25 01 00", (void*)&TombRaiderHooks::renderHealthBar, 0xE8);
+            patchAddr(0x41DF0C, "E8 BF 23 01 00", (void*)&TombRaiderHooks::renderHealthBar, 0xE8);
+            patchAddr(0x41DDD7, "E8 74 26 01 00", (void*)&TombRaiderHooks::renderAirBar, 0xE8);
+            patchAddr(0x41DE71, "E8 0A 7F 01 00", (void*)&TombRaiderHooks::renderCollectedItem, 0xE8);
+            patchAddr(0x439B72, "E8 09 FC FF FF", (void*)&TombRaiderHooks::createFPSText, 0xE8);
         }
     }
 
@@ -183,18 +184,18 @@ void TombRaiderPatch::applyGraphicPatches()
 
             // replace FOV conversion function with custom function
             patchAddr(
-                0x402669, "E8 62 00 00 00", TombRaiderHooks::setFOV, 0xE8);
+                0x402669, "E8 62 00 00 00", (void*)&TombRaiderHooks::setFOV, 0xE8);
 
             if (m_ub) {
-                patchAddr(0x4113E9, "E8 E2 12 FF FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x411624, "E8 A7 10 FF FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x41AACC, "E8 FF 7B FE FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x41E45F, "E8 6C 42 FE FF", TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x4113E9, "E8 E2 12 FF FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x411624, "E8 A7 10 FF FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x41AACC, "E8 FF 7B FE FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x41E45F, "E8 6C 42 FE FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
             } else {
-                patchAddr(0x411469, "E8 62 12 FF FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x41171A, "E8 B1 0F FF FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x41ABBC, "E8 0F 7B FE FF", TombRaiderHooks::setFOV, 0xE8);
-                patchAddr(0x41E7DF, "E8 EC 3E FE FF", TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x411469, "E8 62 12 FF FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x41171A, "E8 B1 0F FF FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x41ABBC, "E8 0F 7B FE FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
+                patchAddr(0x41E7DF, "E8 EC 3E FE FF", (void*)&TombRaiderHooks::setFOV, 0xE8);
             }
         }
     }
@@ -248,14 +249,14 @@ void TombRaiderPatch::applyGraphicPatches()
     // Set the width of diacritical signs to -1 to remove the extra spacing
     // generated by them at end of the strings.
     if (m_ub) {
-        patch(0x4565EB, "0A", "FF"); // ¨ (Combinable Diaeresis/Umlaut)
+        patch(0x4565EB, "0A", "FF"); // ï½¨ (Combinable Diaeresis/Umlaut)
         patch(0x4565ED, "06", "FF"); // ^ (Combinable Circumflex)
-        patch(0x4565EE, "06", "FF"); // ´ (Combinable Acute Accent)
+        patch(0x4565EE, "06", "FF"); // ï½´ (Combinable Acute Accent)
         patch(0x4565F5, "10", "FF"); // ` (Combinable Grave Accent)
     } else {
-        patch(0x456C23, "0A", "FF"); // ¨ (Combinable Diaeresis/Umlaut)
+        patch(0x456C23, "0A", "FF"); // ï½¨ (Combinable Diaeresis/Umlaut)
         patch(0x456C25, "06", "FF"); // ^ (Combinable Circumflex)
-        patch(0x456C26, "06", "FF"); // ´ (Combinable Acute Accent)
+        patch(0x456C26, "06", "FF"); // ï½´ (Combinable Acute Accent)
         patch(0x456C2D, "10", "FF"); // ` (Combinable Grave Accent)
     }
 
@@ -305,19 +306,19 @@ void TombRaiderPatch::applySoundPatches()
     // It also replaces the subroutine for normal sounds to fix the annoying
     // panning issue.
     if (m_ub) {
-        patchAddr(0x437B59, "E8 42 22 FE FF", TombRaiderHooks::soundInit, 0xE8);
-        patchAddr(0x4386CA, "E8 01 18 FF FF", TombRaiderHooks::soundBufferSetVolume, 0xE8);
-        patchAddr(0x4386EA, "E8 E1 17 FF FF", TombRaiderHooks::soundBufferSetPan, 0xE8);
-        patchAddr(0x4385F2, "E8 29 F2 FF FF", TombRaiderHooks::soundPlayOneShot, 0xE8);
-        patchAddr(0x438648, "E8 A3 F2 FF FF", TombRaiderHooks::soundPlayLoop, 0xE8);
-        patchAddr(0x438680, "A1 74 60 45 00", TombRaiderHooks::soundStopAll, 0xE9);
+        patchAddr(0x437B59, "E8 42 22 FE FF", (void*)&TombRaiderHooks::soundInit, 0xE8);
+        patchAddr(0x4386CA, "E8 01 18 FF FF", (void*)&TombRaiderHooks::soundBufferSetVolume, 0xE8);
+        patchAddr(0x4386EA, "E8 E1 17 FF FF", (void*)&TombRaiderHooks::soundBufferSetPan, 0xE8);
+        patchAddr(0x4385F2, "E8 29 F2 FF FF", (void*)&TombRaiderHooks::soundPlayOneShot, 0xE8);
+        patchAddr(0x438648, "E8 A3 F2 FF FF", (void*)&TombRaiderHooks::soundPlayLoop, 0xE8);
+        patchAddr(0x438680, "A1 74 60 45 00", (void*)&TombRaiderHooks::soundStopAll, 0xE9);
     } else {
-        patchAddr(0x438129, "E8 62 1D FE FF", TombRaiderHooks::soundInit, 0xE8);
-        patchAddr(0x438D0A, "E8 21 F2 FF FF", TombRaiderHooks::soundBufferSetVolume, 0xE8);
-        patchAddr(0x438D2A, "E8 01 F2 FF FF", TombRaiderHooks::soundBufferSetPan, 0xE8);
-        patchAddr(0x438C32, "E8 D9 F1 FF FF", TombRaiderHooks::soundPlayOneShot, 0xE8);
-        patchAddr(0x438C88, "E8 33 EF FF FF", TombRaiderHooks::soundPlayLoop, 0xE8);
-        patchAddr(0x438CC0, "A1 88 66 45 00", TombRaiderHooks::soundStopAll, 0xE9);
+        patchAddr(0x438129, "E8 62 1D FE FF", (void*)&TombRaiderHooks::soundInit, 0xE8);
+        patchAddr(0x438D0A, "E8 21 F2 FF FF", (void*)&TombRaiderHooks::soundBufferSetVolume, 0xE8);
+        patchAddr(0x438D2A, "E8 01 F2 FF FF", (void*)&TombRaiderHooks::soundBufferSetPan, 0xE8);
+        patchAddr(0x438C32, "E8 D9 F1 FF FF", (void*)&TombRaiderHooks::soundPlayOneShot, 0xE8);
+        patchAddr(0x438C88, "E8 33 EF FF FF", (void*)&TombRaiderHooks::soundPlayLoop, 0xE8);
+        patchAddr(0x438CC0, "A1 88 66 45 00", (void*)&TombRaiderHooks::soundStopAll, 0xE9);
     }
 
     // Very optional patch: change ambient track in Lost Valley from "derelict"
@@ -332,15 +333,15 @@ void TombRaiderPatch::applySoundPatches()
     // Patch bad mapping function in UB that remaps the music volume from 0-10
     // to 5-255 instead of 0-65536, which is the value range for auxSetVolume.
     if (m_ub) {
-        patchAddr(0x438A70, "0F BF 44 24 04", TombRaiderHooks::musicSetVolume, 0xE9);
+        patchAddr(0x438A70, "0F BF 44 24 04", (void*)&TombRaiderHooks::musicSetVolume, 0xE9);
     }
 
     // Patch missing music volume updates when changing the volume in the
     // options and when reading atiset.dat.
     if (!m_ub) {
-        patchAddr(0x42E941, "E8 EA 95 00 00", TombRaiderHooks::musicSetVolume, 0xE8);
-        patchAddr(0x42E94D, "E8 DE 95 00 00", TombRaiderHooks::musicSetVolume, 0xE8);
-        patchAddr(0x438508, "E8 23 FA FF FF", TombRaiderHooks::musicSetVolume, 0xE8);
+        patchAddr(0x42E941, "E8 EA 95 00 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+        patchAddr(0x42E94D, "E8 DE 95 00 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+        patchAddr(0x438508, "E8 23 FA FF FF", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
     }
 
     // Add missing music volume controls in original TR1 or disable existing ones
@@ -361,52 +362,52 @@ void TombRaiderPatch::applySoundPatches()
         }
     } else {
         if (musicMuteUnderwater) {
-            patchAddr(0x410B7C, "E8 AF 73 02 00", TombRaiderHooks::musicSetVolume, 0xE8);
-            patchAddr(0x410BB3, "E8 78 73 02 00", TombRaiderHooks::musicSetVolume, 0xE8);
+            patchAddr(0x410B7C, "E8 AF 73 02 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+            patchAddr(0x410BB3, "E8 78 73 02 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
         }
 
         if (musicMuteMenu) {
-            patchAddr(0x41E81A, "E8 11 97 01 00", TombRaiderHooks::musicSetVolume, 0xE8);
-            patchAddr(0x41F83C, "E8 EF 86 01 00", TombRaiderHooks::musicSetVolume, 0xE8);
-            patchAddr(0x41F8A4, "E8 87 86 01 00", TombRaiderHooks::musicSetVolume, 0xE8);
+            patchAddr(0x41E81A, "E8 11 97 01 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+            patchAddr(0x41F83C, "E8 EF 86 01 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+            patchAddr(0x41F8A4, "E8 87 86 01 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
         }
 
         // Update volume when loading a level or when starting demo mode.
         // Somewhat redundant, but it doesn't harm.
-        patchAddr(0x41D190, "E8 9B AD 01 00", TombRaiderHooks::musicSetVolume, 0xE8);
-        patchAddr(0x41D318, "E8 13 AC 01 00", TombRaiderHooks::musicSetVolume, 0xE8);
+        patchAddr(0x41D190, "E8 9B AD 01 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
+        patchAddr(0x41D318, "E8 13 AC 01 00", (void*)&TombRaiderHooks::musicSetVolume, 0xE8);
     }
 
     // Hook low-level CD play function to fix a volume bug.
-    patchAddr(m_ub ? 0x4379E0 : 0x437FB0, "83 EC 18 53 8B", TombRaiderHooks::musicPlay, 0xE9);
+    patchAddr(m_ub ? 0x4379E0 : 0x437FB0, "83 EC 18 53 8B", (void*)&TombRaiderHooks::musicPlay, 0xE9);
 
     // Soundtrack patch. Allows both ambient and music cues to be played via
     // MCI.
     if (m_config.getBool("patch.full_soundtrack", false)) {
         // hook play function (level music)
         if (m_ub) {
-            patchAddr(0x438700, "66 83 3D 3C 5D", TombRaiderHooks::musicPlayRemap, 0xE9);
+            patchAddr(0x438700, "66 83 3D 3C 5D", (void*)&TombRaiderHooks::musicPlayRemap, 0xE9);
         } else {
-            patchAddr(0x438D40, "66 83 3D 34 63", TombRaiderHooks::musicPlayRemap, 0xE9);
+            patchAddr(0x438D40, "66 83 3D 34 63", (void*)&TombRaiderHooks::musicPlayRemap, 0xE9);
         }
 
         // hook play function (cutscene music, not present in UB)
         if (!m_ub) {
-            patchAddr(0x439030, "66 83 3D 34 63", TombRaiderHooks::musicPlayRemap, 0xE9);
+            patchAddr(0x439030, "66 83 3D 34 63", (void*)&TombRaiderHooks::musicPlayRemap, 0xE9);
         }
 
         // hook stop function
         if (m_ub) {
-            patchAddr(0x438880, "66 A1 F4 34 45", TombRaiderHooks::musicStop, 0xE9);
+            patchAddr(0x438880, "66 A1 F4 34 45", (void*)&TombRaiderHooks::musicStop, 0xE9);
         } else {
-            patchAddr(0x438E40, "66 A1 DC 34 45", TombRaiderHooks::musicStop, 0xE9);
+            patchAddr(0x438E40, "66 A1 DC 34 45", (void*)&TombRaiderHooks::musicStop, 0xE9);
         }
 
         // hook function that is called when a track has finished
         if (m_ub) {
-            patchAddr(0x437AF0, "A1 0C B3 45 00", TombRaiderHooks::musicPlayLoop, 0xE9);
+            patchAddr(0x437AF0, "A1 0C B3 45 00", (void*)&TombRaiderHooks::musicPlayLoop, 0xE9);
         } else {
-            patchAddr(0x4380C0, "A1 4C B9 45 00", TombRaiderHooks::musicPlayLoop, 0xE9);
+            patchAddr(0x4380C0, "A1 4C B9 45 00", (void*)&TombRaiderHooks::musicPlayLoop, 0xE9);
         }
 
         // also pass 0 to the CD play sub when loading a level so the background
@@ -430,20 +431,15 @@ void TombRaiderPatch::applySoundPatches()
     // insert missing SFX volume initialization by replacing a nullsub call
     // after loading the settings
     if (m_ub) {
-        patchAddr(0x437FA6, "E8 25 1F FF FF", TombRaiderHooks::soundUpdateVolume, 0xE8);
+        patchAddr(0x437FA6, "E8 25 1F FF FF", (void*)&TombRaiderHooks::soundUpdateVolume, 0xE8);
     } else {
-        patchAddr(0x438576, "E8 B5 F9 FF FF", TombRaiderHooks::soundUpdateVolume, 0xE8);
+        patchAddr(0x438576, "E8 B5 F9 FF FF", (void*)&TombRaiderHooks::soundUpdateVolume, 0xE8);
     }
-}
 
-void TombRaiderPatch::applyFMVPatches()
-{
-    if (m_config.getBool("patch.fmv_override", true) && !m_ub) {
-        patchAddr(0x43858B, "E8 60 48 FE FF", TombRaiderHooks::playFMV, 0xE8);
-        patchAddr(0x43859A, "E8 51 48 FE FF", TombRaiderHooks::playFMV, 0xE8);
-        patchAddr(0x4385A4, "E8 47 48 FE FF", TombRaiderHooks::playFMV, 0xE8);
-        patchAddr(0x41D073, "E8 78 FD FF FF", TombRaiderHooks::playFMV, 0xE8);
-    }
+	// Disable an instruction in UB that removes the volume settings from the in-game menu
+	if (m_ub) {
+		patchNop(0x41F655, "66 89 15 0C 5A 45 00");
+	}
 }
 
 void TombRaiderPatch::applyKeyboardPatches()
@@ -468,9 +464,9 @@ void TombRaiderPatch::applyKeyboardPatches()
     // custom key bindings are only implemented for joystick buttons, this
     // patch implements the function stub to return the previously pressed key
     if (m_ub) {
-        patchAddr(0x42EAF8, "E8 F3 8D 00 00", TombRaiderHooks::getPressedKey, 0xE8);
+        patchAddr(0x42EAF8, "E8 F3 8D 00 00", (void*)&TombRaiderHooks::getPressedKey, 0xE8);
     } else {
-        patchAddr(0x42EF35, "E8 86 8C 00 00", TombRaiderHooks::getPressedKey, 0xE8);
+        patchAddr(0x42EF35, "E8 86 8C 00 00", (void*)&TombRaiderHooks::getPressedKey, 0xE8);
     }
 }
 
@@ -582,18 +578,18 @@ void TombRaiderPatch::applyLogicPatches()
 
 void TombRaiderPatch::applyLocalePatches()
 {
-    std::wstring basePath = ContextImpl::instance().getBasePath();
-    std::wstring localePath = basePath + L"\\patches\\locale\\";
+    std::string basePath = ContextImpl::instance().getBasePath();
+    std::string localePath = basePath + "\\patches\\locale\\";
 
     // load locale file
     std::string locale = m_config.getString("patch.localization_locale", "en_GB");
-    std::wstring langPath = localePath + StringUtils::utf8ToWide(locale) + L".txt";
+    std::string langPath = localePath + locale + ".txt";
     std::ifstream langStream(langPath);
 
     if (!langStream.good()) {
         throw std::runtime_error(
             StringUtils::format("Can't open translation file '%s': %s",
-                StringUtils::wideToUtf8(langPath),
+                langPath,
                 ErrorUtils::getSystemErrorString()));
     }
 
@@ -611,13 +607,13 @@ void TombRaiderPatch::applyLocalePatches()
     }
 
     // load string data file
-    std::wstring stringsPath = localePath + L"strings.txt";
+    std::string stringsPath = localePath + "strings.txt";
     std::ifstream stringsStream(stringsPath);
 
     if (!stringsStream.good()) {
         throw std::runtime_error(
             StringUtils::format("Can't open translation strings file '%s': %s",
-                StringUtils::wideToUtf8(stringsPath),
+                stringsPath,
                 ErrorUtils::getSystemErrorString()));
     }
 

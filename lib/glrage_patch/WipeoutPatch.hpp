@@ -2,7 +2,7 @@
 
 #include "Patch.hpp"
 
-#include <Windows.h>
+#include <windows.h>
 
 namespace glrage {
 

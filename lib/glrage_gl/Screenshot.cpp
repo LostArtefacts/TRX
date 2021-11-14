@@ -26,13 +26,13 @@ struct TGAHeader
     uint8_t blank3;
 };
 
-void Screenshot::capture(const std::wstring& path)
+void Screenshot::capture(const std::string& path)
 {
     // open screenshot file
     std::ofstream file(path, std::ofstream::binary);
     if (!file.good()) {
         throw std::runtime_error("Can't open screenshot file '" +
-                                 StringUtils::wideToUtf8(path) + "': " +
+                                 path + "': " +
                                  ErrorUtils::getSystemErrorString());
     }
 
@@ -45,7 +45,7 @@ void Screenshot::capture(const std::wstring& path)
     capture(buffer, width, height, depth, GL_BGR, GL_UNSIGNED_BYTE, false);
 
     // create Targa header
-    TGAHeader tgaHeader = {0};
+    TGAHeader tgaHeader = {{0, 0}, 0, {0,0,0,0,0,0,0,0,0}, 0, 0, 0, 0};
     tgaHeader.format = 2;
     tgaHeader.width = width;
     tgaHeader.height = height;

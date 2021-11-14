@@ -37,7 +37,7 @@ public:
     void setRendered();
     bool isRendered();
     HWND getHWnd();
-    std::wstring getBasePath();
+    std::string getBasePath();
     GameID getGameID();
     void setGameID(GameID gameID);
 
@@ -87,7 +87,7 @@ private:
     Screenshot m_screenshot;
 
     // temporary rectangle
-    RECT m_tmprect{0};
+    RECT m_tmprect = {0, 0, 0, 0};
 
     // DirectDraw display mode
     int32_t m_width = 0;

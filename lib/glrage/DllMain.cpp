@@ -4,8 +4,6 @@
 
 using namespace glrage;
 
-extern "C" { int _afxForceUSRDLL; }
-
 BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpReserved)
 {
     LOG_TRACE("%p,%d", hInst, dwReason);

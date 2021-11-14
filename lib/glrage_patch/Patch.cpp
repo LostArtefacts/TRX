@@ -28,14 +28,19 @@ bool Patch::patch(
     const size_t size = expectedData.size();
     std::vector<uint8_t> actualData(size);
 
+    HANDLE proc = GetCurrentProcess();
+    LPVOID lpaddr = NULL;
+    DWORD numRead = 0;
+    DWORD numWritten = 0;
+    DWORD oldProtect = 0;
+
     // vectors must match in size
     if (size != replacementData.size()) {
         goto end;
     }
 
     // apply read/write flags to the memory page
-    DWORD oldProtect = 0;
-    LPVOID lpaddr = reinterpret_cast<LPVOID>(addr);
+    lpaddr = reinterpret_cast<LPVOID>(addr);
     if (!VirtualProtect(lpaddr, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
         goto end;
     }
@@ -43,8 +48,6 @@ bool Patch::patch(
     restoreProtect = true;
 
     // read current memory to a temporary vector
-    HANDLE proc = GetCurrentProcess();
-    DWORD numRead = 0;
     if (!ReadProcessMemory(proc, lpaddr, &actualData[0], size, &numRead) ||
         numRead != size) {
         goto end;
@@ -56,7 +59,6 @@ bool Patch::patch(
     }
 
     // write patched data to memory
-    DWORD numWritten = 0;
     if (!WriteProcessMemory(
             proc, lpaddr, &replacementData[0], size, &numWritten) ||
         numWritten != size) {
@@ -92,18 +94,19 @@ bool Patch::patch(uint32_t addr, const Chunk& replacement)
     const std::vector<uint8_t> replacementData = replacement.data();
     const size_t size = replacementData.size();
 
-    // apply read/write flags to the memory page
+    HANDLE proc = GetCurrentProcess();
+    DWORD numWritten = 0;
     DWORD oldProtect = 0;
+
+    // apply read/write flags to the memory page
     LPVOID lpaddr = reinterpret_cast<LPVOID>(addr);
     if (!VirtualProtect(lpaddr, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
         goto end;
     }
 
     restoreProtect = true;
-    HANDLE proc = GetCurrentProcess();
 
     // write patched data to memory
-    DWORD numWritten = 0;
     if (!WriteProcessMemory(
             proc, lpaddr, &replacementData[0], size, &numWritten) ||
         numWritten != size) {
@@ -135,7 +138,10 @@ void Patch::patchAddr(
     int32_t addrFunc = reinterpret_cast<int32_t>(func);
     int32_t addrCallNew = addrFunc - addr - 5;
 
-    patch(addr, expected, Chunk() << op << addrCallNew);
+    auto c = Chunk();
+    c = c << op;
+    c = c << addrCallNew;
+    patch(addr, expected, c);
 }
 
 bool Patch::patchNop(uint32_t addr, const Chunk& expected)

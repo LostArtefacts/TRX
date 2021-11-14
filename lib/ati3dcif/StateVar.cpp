@@ -1,5 +1,8 @@
 #include "StateVar.hpp"
 
+#include <cstring>
+#include <stdexcept>
+
 namespace glrage {
 namespace cif {
 

@@ -1,5 +1,9 @@
 #include "TransDelay.hpp"
 
+#include <cfloat>
+#include <cmath>
+#include <algorithm>
+
 #include <glrage_util/Logger.hpp>
 
 namespace glrage {
@@ -38,10 +42,10 @@ bool TransDelay::delayTriangle(C3D_VTCF *verts)
                 if (y < ymin) ymin = y;
                 if (y > ymax) ymax = y;
             }
-            int32_t ixmin = max(static_cast<int32_t>(floorf(xmin)), 0);
-            int32_t iymin = max(static_cast<int32_t>(floorf(ymin)), 0);
-            int32_t ixmax = min(static_cast<int32_t>(ceilf(xmax)), 32);
-            int32_t iymax = min(static_cast<int32_t>(ceilf(ymax)), 32);
+            int32_t ixmin = std::max(static_cast<int32_t>(floorf(xmin)), 0);
+            int32_t iymin = std::max(static_cast<int32_t>(floorf(ymin)), 0);
+            int32_t ixmax = std::min(static_cast<int32_t>(ceilf(xmax)), 32);
+            int32_t iymax = std::min(static_cast<int32_t>(ceilf(ymax)), 32);
             auto map = group->texture->translucencyMap();
             for (int32_t iy = iymin; iy < iymax; iy++)
             {

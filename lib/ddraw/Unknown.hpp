@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Unknwnbase.h>
-#include <Windows.h>
+#include <unknwnbase.h>
+#include <windows.h>
 
 namespace glrage {
 namespace ddraw {

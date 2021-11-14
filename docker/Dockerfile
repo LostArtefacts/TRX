@@ -5,6 +5,7 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
         gcc-mingw-w64-i686 \
+        g++-mingw-w64-i686 \
         make \
         git \
         python3-pip \

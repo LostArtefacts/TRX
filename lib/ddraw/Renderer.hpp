@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlimage.h>
+// #include <atlimage.h>
 #include "ddraw.hpp"
 
 #include <glrage/GLRage.hpp>
@@ -41,7 +41,7 @@ private:
     gl::Texture m_surfaceTexture = GL_TEXTURE_2D;
     gl::Sampler m_sampler;
     gl::Program m_program;
-    CImage m_overrideImage;
+    // CImage m_overrideImage;
 };
 
 } // namespace ddraw

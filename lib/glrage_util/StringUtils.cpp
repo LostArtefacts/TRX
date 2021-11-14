@@ -77,18 +77,4 @@ std::vector<uint8_t> StringUtils::hexToBytes(const std::string& str)
     return data;
 }
 
-std::wstring StringUtils::utf8ToWide(const std::string& str)
-{
-    static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>
-        convert;
-    return convert.from_bytes(str);
-}
-
-std::string StringUtils::wideToUtf8(const std::wstring& str)
-{
-    static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>
-        convert;
-    return convert.to_bytes(str);
-}
-
 } // namespace glrage

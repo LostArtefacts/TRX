@@ -15,7 +15,6 @@ private:
     void applyCrashPatches();
     void applyGraphicPatches();
     void applySoundPatches();
-    void applyFMVPatches();
     void applyKeyboardPatches();
     void applyLogicPatches();
     void applyLocalePatches();

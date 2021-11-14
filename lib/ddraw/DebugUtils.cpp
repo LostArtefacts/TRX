@@ -181,7 +181,7 @@ void DebugUtils::dumpInfo(DDSURFACEDESC& desc)
 }
 
 void DebugUtils::dumpBuffer(
-    DDSURFACEDESC& desc, void* buffer, const std::wstring& path)
+    DDSURFACEDESC& desc, void* buffer, const std::string& path)
 {
     uint32_t imageSize = desc.dwWidth * desc.dwHeight;
     uint32_t dataSize = imageSize * 3;
@@ -219,7 +219,7 @@ void DebugUtils::dumpBuffer(
     std::ofstream file(path, std::ofstream::binary);
     if (!file.good()) {
         throw std::runtime_error("Can't open file '" +
-                                 StringUtils::wideToUtf8(path) + "': " +
+                                 path + "': " +
                                  ErrorUtils::getSystemErrorString());
     }
 

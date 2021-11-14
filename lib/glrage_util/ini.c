@@ -7,8 +7,8 @@ http://code.google.com/p/inih/
 
 */
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "ini.h"
@@ -60,9 +60,8 @@ static char* strncpy0(char* dest, const char* src, size_t size)
 
 /* See documentation in header file. */
 int ini_parse_file(FILE* file,
-                   int (*handler)(void*, const char*, const char*,
-                                  const char*),
-                   void* user)
+    int (*handler)(void*, const char*, const char*, const char*),
+    void* user)
 {
     /* Uses a fair bit of stack (use heap instead if you need to) */
 #if INI_USE_STACK
@@ -94,8 +93,8 @@ int ini_parse_file(FILE* file,
         start = line;
 #if INI_ALLOW_BOM
         if (lineno == 1 && (unsigned char)start[0] == 0xEF &&
-                           (unsigned char)start[1] == 0xBB &&
-                           (unsigned char)start[2] == 0xBF) {
+            (unsigned char)start[1] == 0xBB &&
+            (unsigned char)start[2] == 0xBF) {
             start += 3;
         }
 #endif
@@ -119,13 +118,11 @@ int ini_parse_file(FILE* file,
                 *end = '\0';
                 strncpy0(section, start + 1, sizeof(section));
                 *prev_name = '\0';
-            }
-            else if (!error) {
+            } else if (!error) {
                 /* No ']' found on section line */
                 error = lineno;
             }
-        }
-        else if (*start && *start != ';') {
+        } else if (*start && *start != ';') {
             /* Not a comment, must be a name[=:]value pair */
             end = find_char_or_comment(start, '=');
             if (*end != '=') {
@@ -144,8 +141,7 @@ int ini_parse_file(FILE* file,
                 strncpy0(prev_name, name, sizeof(prev_name));
                 if (!handler(user, section, name, value) && !error)
                     error = lineno;
-            }
-            else if (!error) {
+            } else if (!error) {
                 /* No '=' or ':' found on name[=:]value line */
                 error = lineno;
             }
@@ -166,8 +162,8 @@ int ini_parse_file(FILE* file,
 
 /* See documentation in header file. */
 int ini_parse(const char* filename,
-              int (*handler)(void*, const char*, const char*, const char*),
-              void* user)
+    int (*handler)(void*, const char*, const char*, const char*),
+    void* user)
 {
     FILE* file;
     int error;

@@ -20,16 +20,16 @@ State::State()
           {C3D_EASRC{C3D_EASRC_ONE}},                   // C3D_ERS_ALPHA_SRC
           {C3D_EADST{C3D_EADST_ZERO}},                  // C3D_ERS_ALPHA_DST
           {C3D_PVOID{NULL}},                            // C3D_ERS_SURF_DRAW_PTR
-          {C3D_UINT32{NULL}},                           // C3D_ERS_SURF_DRAW_PITCH
+          {C3D_UINT32{0}},                           // C3D_ERS_SURF_DRAW_PITCH
           {C3D_EPIXFMT{C3D_EPF_RGB8888}},               // C3D_ERS_SURF_DRAW_PF
-          {C3D_RECT{NULL}},                             // C3D_ERS_SURF_VPORT
+          {C3D_RECT{0, 0, 0, 0}},                             // C3D_ERS_SURF_VPORT
           {C3D_BOOL{C3D_FALSE}},                        // C3D_ERS_FOG_EN
           {C3D_BOOL{C3D_TRUE}},                         // C3D_ERS_DITHER_EN
           {C3D_EZCMP{C3D_EZCMP_ALWAYS}},                // C3D_ERS_Z_CMP_FNC
           {C3D_EZMODE{C3D_EZMODE_OFF}},                 // C3D_ERS_Z_MODE
           {C3D_PVOID{NULL}},                            // C3D_ERS_SURF_Z_PTR
-          {C3D_UINT32{NULL}},                           // C3D_ERS_SURF_Z_PITCH
-          {C3D_RECT{NULL}},                             // C3D_ERS_SURF_SCISSOR
+          {C3D_UINT32{0}},                           // C3D_ERS_SURF_Z_PITCH
+          {C3D_RECT{0, 0, 0, 0}},                             // C3D_ERS_SURF_SCISSOR
           {C3D_BOOL{C3D_FALSE}},                        // C3D_ERS_COMPOSITE_EN
           {C3D_HTX{NULL}},                              // C3D_ERS_COMPOSITE_SELECT
           {C3D_ETEXCOMPFCN{C3D_ETEXCOMPFCN_MAX}},       // C3D_ERS_COMPOSITE_FNC

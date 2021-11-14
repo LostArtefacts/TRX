@@ -31,7 +31,7 @@ const char* Utils::getErrorString(GLenum err)
     }
 }
 
-void Utils::checkError(char* section)
+void Utils::checkError(const char* section)
 {
     for (GLenum err; (err = glGetError()) != GL_NO_ERROR;) {
 #ifdef _DEBUG

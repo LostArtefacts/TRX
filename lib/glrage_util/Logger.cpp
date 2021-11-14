@@ -7,19 +7,11 @@ static const size_t bufferSize = 1024;
 
 void Logger::printf(const char* format, ...)
 {
-    char output[bufferSize + 2]; // reserve 2 chars for \r\n
     va_list list;
     va_start(list, format);
-    vsnprintf_s(output, bufferSize, _TRUNCATE, &format[0], list);
+    vprintf(format, list);
     va_end(list);
-
-    auto len = strnlen_s(output, bufferSize);
-    auto tmp = &output[len];
-    *tmp++ = '\r';
-    *tmp++ = '\n';
-    *tmp++ = 0;
-
-    OutputDebugStringA(output);
+    puts("");
 }
 
 void Logger::printf(const std::string& msg)

@@ -14,7 +14,7 @@ public:
     Shader(GLenum shaderType);
     ~Shader();
     void bind();
-    Shader& fromFile(const std::wstring& path);
+    Shader& fromFile(const std::string& path);
     Shader& fromString(const std::string& program);
     std::string infoLog();
     bool compiled();

@@ -3,7 +3,7 @@
 #include <glrage_gl/Shader.hpp>
 #include <glrage_gl/Utils.hpp>
 
-#include "openssl/md5.h"
+// #include "openssl/md5.h"
 #include <glrage_util/StringUtils.hpp>
 
 namespace glrage {
@@ -37,11 +37,11 @@ Renderer::Renderer()
     m_sampler.parameteri(GL_TEXTURE_MIN_FILTER, filterMethodEnum);
 
     // configure shaders
-    std::wstring basePath = m_context.getBasePath();
+    std::string basePath = m_context.getBasePath();
     m_program.attach(gl::Shader(GL_VERTEX_SHADER)
-                         .fromFile(basePath + L"\\shaders\\ddraw.vsh"));
+                         .fromFile(basePath + "\\shaders\\ddraw.vsh"));
     m_program.attach(gl::Shader(GL_FRAGMENT_SHADER)
-                         .fromFile(basePath + L"\\shaders\\ddraw.fsh"));
+                         .fromFile(basePath + "\\shaders\\ddraw.fsh"));
     m_program.link();
     m_program.fragmentData("fragColor");
 
@@ -58,35 +58,35 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     GLenum tex_type = TEX_TYPE;
     m_surfaceTexture.bind();
 
-    if (texDir.length() > 0 && desc.dwWidth == TITLE_WIDTH && desc.dwHeight == TITLE_HEIGHT)
-    {
-        uint8_t md5sum[16];
-        MD5(&data[0], data.size(), md5sum);
-        uint8_t *key = reinterpret_cast<uint8_t *>("\x4D\xD5\x68\xAD\xD2\x7E\x5B\xC2\x07\xF0\xD3\xC4\xB8\xEC\xCE\x67");
-        if (memcmp(md5sum, key, 16) == 0)
-        {
-            if (m_overrideImage.IsNull())
-            {
-                std::string fileName = texDir + "\\TITLEH.PNG";
-                std::wstring wFileName(fileName.begin(), fileName.end());
-                CImage image;
-                if (SUCCEEDED(image.Load(wFileName.c_str())))
-                {
-                    m_overrideImage.Create(image.GetWidth(), -image.GetHeight(), 24, 0);
-                    image.BitBlt(m_overrideImage.GetDC(), 0, 0);
-                }
-            }
+    // if (texDir.length() > 0 && desc.dwWidth == TITLE_WIDTH && desc.dwHeight == TITLE_HEIGHT)
+    // {
+    //     uint8_t md5sum[16];
+    //     MD5(&data[0], data.size(), md5sum);
+    //     uint8_t *key = reinterpret_cast<uint8_t *>("\x4D\xD5\x68\xAD\xD2\x7E\x5B\xC2\x07\xF0\xD3\xC4\xB8\xEC\xCE\x67");
+    //     if (memcmp(md5sum, key, 16) == 0)
+    //     {
+    //         if (m_overrideImage.IsNull())
+    //         {
+    //             std::string fileName = texDir + "\\TITLEH.PNG";
+    //             std::string wFileName(fileName.begin(), fileName.end());
+    //             CImage image;
+    //             if (SUCCEEDED(image.Load(wFileName.c_str())))
+    //             {
+    //                 m_overrideImage.Create(image.GetWidth(), -image.GetHeight(), 24, 0);
+    //                 image.BitBlt(m_overrideImage.GetDC(), 0, 0);
+    //             }
+    //         }
 
-            if (!m_overrideImage.IsNull())
-            {
-                bits = reinterpret_cast<uint8_t *>(m_overrideImage.GetBits());
-                width = m_overrideImage.GetWidth();
-                height = m_overrideImage.GetHeight();
-                tex_format = GL_BGR;
-                tex_type = GL_UNSIGNED_BYTE;
-            }
-        }
-    }
+    //         if (!m_overrideImage.IsNull())
+    //         {
+    //             bits = reinterpret_cast<uint8_t *>(m_overrideImage.GetBits());
+    //             width = m_overrideImage.GetWidth();
+    //             height = m_overrideImage.GetHeight();
+    //             tex_format = GL_BGR;
+    //             tex_type = GL_UNSIGNED_BYTE;
+    //         }
+    //     }
+    // }
 
     // update buffer if the size is unchanged, otherwise create a new one
     if (width != m_width || height != m_height) {

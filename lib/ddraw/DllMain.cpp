@@ -9,7 +9,8 @@
 namespace glrage {
 namespace ddraw {
 
-HRESULT WINAPI DirectDrawCreate(
+extern "C" {
+HRESULT __declspec(dllexport) WINAPI DirectDrawCreate(
     GUID FAR* lpGUID, LPDIRECTDRAW FAR* lplpDD, IUnknown FAR* pUnkOuter)
 {
     LOG_TRACE("%p, %p, %p", lpGUID, lplpDD, pUnkOuter);
@@ -28,6 +29,7 @@ HRESULT WINAPI DirectDrawCreate(
     }
 
     return DD_OK;
+}
 }
 
 } // namespace ddraw

@@ -9,7 +9,7 @@ class Utils
 {
 public:
     static const char* getErrorString(GLenum);
-    static void checkError(char*);
+    static void checkError(const char*);
 };
 
 } // namespace gl

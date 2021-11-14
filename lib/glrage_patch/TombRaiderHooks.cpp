@@ -1,13 +1,8 @@
-#include <shlwapi.h>
 #include "TombRaiderHooks.hpp"
 
 #include <glrage_util/Logger.hpp>
 
 #include <cmath>
-//#include <vector>
-
-#include <glrage/MoviePlayer.hpp>
-#include <glrage/GLRage.hpp>
 
 namespace glrage {
 
@@ -22,7 +17,6 @@ typedef void* TombRaiderCreateOverlayText(
     int16_t x, int16_t y, int16_t a3, const char* text);
 typedef int16_t TombRaiderSetFOV(int16_t fov);
 typedef BOOL TombRaiderSoundSetVolume(uint8_t volume);
-typedef BOOL TombRaiderPlayRplFile(int32_t fmvIndex, int32_t unknown);
 
 /** Tomb Raider structs **/
 
@@ -67,9 +61,6 @@ static TombRaiderRenderCollectedItem* m_tombRenderCollectedItem = nullptr;
 // changes the global sound effect volume
 static TombRaiderSoundSetVolume* m_tombSoundSetVolume = nullptr;
 
-// Call back into game exe to play standard FMV file
-static TombRaiderPlayRplFile* m_tombPlayRplFile = nullptr;
-
 /** Tomb Raider var pointers **/
 
 // Pointer to the key state table. If an entry is 1, then the key is pressed.
@@ -80,9 +71,6 @@ static int32_t* m_tombNumAudioSamples = nullptr;
 
 // Audio sample pointer table.
 static TombRaiderAudioSample*** m_tombSampleTable = nullptr;
-
-// Table of in-game video file paths
-static char **m_tombFMVPaths = nullptr;
 
 // Sound init booleans. There are two for some reason and both are set to 1 at
 // the same location.
@@ -165,13 +153,11 @@ void TombRaiderHooks::init(bool ub)
     m_tombSetFOV = reinterpret_cast<TombRaiderSetFOV*>(0x4026D0);
     m_tombRenderCollectedItem = reinterpret_cast<TombRaiderRenderCollectedItem*>(ub ? 0x435800 : 0x435D80);
     m_tombSoundSetVolume = reinterpret_cast<TombRaiderSoundSetVolume*>(ub ? 0x42AFF0 : 0x42B410);
-    m_tombPlayRplFile = reinterpret_cast<TombRaiderPlayRplFile*>(0x41CDF0);
 
     // var pointers
     m_tombKeyStates = reinterpret_cast<uint8_t**>(ub ? 0x45B348 : 0x45B998);
     m_tombNumAudioSamples = reinterpret_cast<int32_t*>(ub ? 0x45B324 : 0x45B96C);
     m_tombSampleTable = reinterpret_cast<TombRaiderAudioSample***>(ub ? 0x45B314 : 0x45B954);
-    m_tombFMVPaths = reinterpret_cast < char **>(0x453AC0);
     m_tombSoundInit1 = reinterpret_cast<BOOL*>(ub ? 0x459CF4 : 0x45A31C);
     m_tombSoundInit2 = reinterpret_cast<BOOL*>(ub ? 0x459CF8 : 0x45A320);
     m_tombSFXVolume = reinterpret_cast<uint8_t*>(ub ? 0x455D38 : 0x456330);
@@ -450,46 +436,6 @@ int16_t TombRaiderHooks::setFOV(int16_t fov)
 
     // call original setFOV function that expects a horizontal FOV
     return m_tombSetFOV(fov);
-}
-
-BOOL TombRaiderHooks::playFMV(int32_t fmvIndex, int32_t unknown)
-{
-    std::string path(m_tombFMVPaths[fmvIndex]);
-    std::string newPath = path.substr(0, path.find_last_of('.')) + ".avi";
-    if (::PathFileExists(std::wstring(newPath.begin(), newPath.end()).c_str()))
-        playAviFile(newPath.c_str());
-    else if (::PathFileExists(std::wstring(path.begin(), path.end()).c_str()))
-        m_tombPlayRplFile(fmvIndex, unknown);
-
-    return TRUE;
-}
-
-void TombRaiderHooks::playAviFile(const char *path)
-{
-    LOG_TRACE("Play FMV: %s", path);
-    Context& m_context(GLRage::getContext());
-    MoviePlayer *moviePlayer = MoviePlayer::GetPlayer();
-    HRESULT hr = moviePlayer->Create(m_context.getHWnd());
-    if (FAILED(hr))
-        goto exit;
-    hr = moviePlayer->Play(path);
-    if (FAILED(hr))
-        goto exit;
-    moviePlayer->WaitForPlayback();
-
-exit:
-    delete moviePlayer;
-
-    if (FAILED(hr) && hr != 0x80040216)
-    {
-        std::string str;
-        if (hr == 0x80040265)
-            str = "Try installing the codec pack from https://www.codecguide.com/";
-        else
-            str = StringUtils::format("0x%08x", hr);
-
-        MessageBox(m_context.getHWnd(), std::wstring(str.begin(), str.end()).c_str(), L"Movie playback failed", MB_OK);
-    }
 }
 
 BOOL TombRaiderHooks::musicPlayRemap(int16_t trackID)

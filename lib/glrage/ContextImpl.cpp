@@ -7,7 +7,7 @@
 #include <glrage_gl/gl_core_3_3.h>
 #include <glrage_gl/wgl_ext.h>
 
-#include <Shlwapi.h>
+#include <shlwapi.h>
 
 #include <stdexcept>
 
@@ -33,7 +33,7 @@ BOOL CALLBACK ContextImpl::callbackEnumWindowsProc(HWND hwnd, LPARAM _this)
 ContextImpl::ContextImpl()
 {
     // load main config file
-    m_config.load(getBasePath() + L"\\glrage.ini");
+    m_config.load(getBasePath() + "\\glrage.ini");
 
     // init rect
     SetRectEmpty(&m_tmprect);
@@ -65,7 +65,7 @@ void ContextImpl::init()
     // The exact point where the application will create its window is unknown,
     // but a valid OpenGL context is required at this point, so just create a
     // dummy window for now and transfer the context later.
-    auto m_hwndTmp = CreateWindow(L"STATIC", L"", WS_POPUP | WS_DISABLED, 0, 0,
+    auto m_hwndTmp = CreateWindow("STATIC", "", WS_POPUP | WS_DISABLED, 0, 0,
         1, 1, NULL, NULL, GetModuleHandle(NULL), NULL);
     ShowWindow(m_hwndTmp, SW_HIDE);
 
@@ -157,7 +157,7 @@ void ContextImpl::attach()
     }
 
     m_pid = GetCurrentProcessId();
-    EnumWindows(&callbackEnumWindowsProc, NULL);
+    EnumWindows(&callbackEnumWindowsProc, (LPARAM)NULL);
 }
 
 void ContextImpl::detach()
@@ -442,13 +442,13 @@ HWND ContextImpl::getHWnd()
     return m_hwnd;
 }
 
-std::wstring ContextImpl::getBasePath()
+std::string ContextImpl::getBasePath()
 {
     HMODULE hModule = nullptr;
     DWORD dwFlags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
                     GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
 
-    auto windowProc = reinterpret_cast<LPCWSTR>(&callbackWindowProc);
+    auto windowProc = reinterpret_cast<LPCSTR>(&callbackWindowProc);
     if (!GetModuleHandleEx(dwFlags, windowProc, &hModule)) {
         throw std::runtime_error("Can't get module handle");
     }

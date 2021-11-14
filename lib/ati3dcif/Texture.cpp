@@ -1,5 +1,4 @@
 #include <windows.h>
-#include <atlimage.h>
 #include "Texture.hpp"
 #include "Error.hpp"
 #include "Utils.hpp"
@@ -13,7 +12,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "openssl/md5.h"
+// #include "openssl/md5.h"
 #include <glrage_util/StringUtils.hpp>
 
 #undef max
@@ -120,63 +119,63 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY>& palette)
             case C3D_ETF_CI8: {
                 uint8_t* src = static_cast<uint8_t*>(tmap->apvLevels[level]);
 
-                unsigned char md5sum[16];
-                MD5(&src[0], size, md5sum);
-                std::string hex;
-                for (int i = 0; i < 16; i++)
-                    hex += StringUtils::format("%02X", md5sum[i]);
+                // unsigned char md5sum[16];
+                // MD5(&src[0], size, md5sum);
+                // std::string hex;
+                // for (int i = 0; i < 16; i++)
+                //     hex += StringUtils::format("%02X", md5sum[i]);
 
-                std::map<std::string, std::string>& keys = getTextureKeys();
+                // std::map<std::string, std::string>& keys = getTextureKeys();
                 std::vector<uint8_t> dst;
-                bool override = false;
-                CImage image;
-                if (level == 0 && keys.find(hex) != keys.end())
-                {
-                    std::string fileName = m_config.getString("patch.texture_directory", "") + "\\" + keys[hex];
-                    std::wstring wFileName(fileName.begin(), fileName.end());
-                    if (SUCCEEDED(image.Load(wFileName.c_str())))
-                        override = true;
-                    else
-                        LOG_INFO("Missing texture file: %s", fileName.c_str());
-                }
+                // bool override = false;
+                // CImage image;
+                // if (level == 0 && keys.find(hex) != keys.end())
+                // {
+                //     std::string fileName = m_config.getString("patch.texture_directory", "") + "\\" + keys[hex];
+                //     std::string wFileName(fileName.begin(), fileName.end());
+                //     if (SUCCEEDED(image.Load(wFileName.c_str())))
+                //         override = true;
+                //     else
+                //         LOG_INFO("Missing texture file: %s", fileName.c_str());
+                // }
 
-                if (override)
-                {
-                    // This texture has a replacement image on disc.
-                    // Use it for all levels, even if mimmaps are available
-                    levels = 1;
-                    m_keyOnAlpha = true;
-                    width = image.GetWidth();
-                    height = image.GetHeight();
-                    bool use_map = (width == TRANS_TEX_DIM && height == TRANS_TEX_DIM);
-                    if (use_map)
-                        m_translucency_map.assign(TRANS_MAP_DIM * TRANS_MAP_DIM, 0);
-                    int pitch = image.GetPitch();
-                    uint8_t *bits = reinterpret_cast<uint8_t *>(image.GetBits());
-                    dst.resize(abs(pitch) * height);
-                    uint8_t *dstp = &dst[0];
-                    for (size_t y = 0; y < height; y++)
-                    {
-                        for (size_t x = 0; x < width; x++)
-                        {
-                            if (use_map && bits[4 * x + 3] != 255)
-                            {
-                                uint32_t map_x = x / TRANS_MAP_FACTOR;
-                                uint32_t map_y = y / TRANS_MAP_FACTOR;
-                                m_translucency_map[map_y * TRANS_MAP_DIM + map_x] = 1;
-                                if (bits[4 * x + 3] != 0)
-                                    m_is_translucent = true;
-                            }
-                            dstp[4 * x + 0] = bits[4 * x + 2];
-                            dstp[4 * x + 1] = bits[4 * x + 1];
-                            dstp[4 * x + 2] = bits[4 * x + 0];
-                            dstp[4 * x + 3] = bits[4 * x + 3];
-                        }
-                        bits += pitch;
-                        dstp += abs(pitch);
-                    }
-                }
-                else
+                // if (override)
+                // {
+                //     // This texture has a replacement image on disc.
+                //     // Use it for all levels, even if mimmaps are available
+                //     levels = 1;
+                //     m_keyOnAlpha = true;
+                //     width = image.GetWidth();
+                //     height = image.GetHeight();
+                //     bool use_map = (width == TRANS_TEX_DIM && height == TRANS_TEX_DIM);
+                //     if (use_map)
+                //         m_translucency_map.assign(TRANS_MAP_DIM * TRANS_MAP_DIM, 0);
+                //     int pitch = image.GetPitch();
+                //     uint8_t *bits = reinterpret_cast<uint8_t *>(image.GetBits());
+                //     dst.resize(abs(pitch) * height);
+                //     uint8_t *dstp = &dst[0];
+                //     for (size_t y = 0; y < height; y++)
+                //     {
+                //         for (size_t x = 0; x < width; x++)
+                //         {
+                //             if (use_map && bits[4 * x + 3] != 255)
+                //             {
+                //                 uint32_t map_x = x / TRANS_MAP_FACTOR;
+                //                 uint32_t map_y = y / TRANS_MAP_FACTOR;
+                //                 m_translucency_map[map_y * TRANS_MAP_DIM + map_x] = 1;
+                //                 if (bits[4 * x + 3] != 0)
+                //                     m_is_translucent = true;
+                //             }
+                //             dstp[4 * x + 0] = bits[4 * x + 2];
+                //             dstp[4 * x + 1] = bits[4 * x + 1];
+                //             dstp[4 * x + 2] = bits[4 * x + 0];
+                //             dstp[4 * x + 3] = bits[4 * x + 3];
+                //         }
+                //         bits += pitch;
+                //         dstp += abs(pitch);
+                //     }
+                // }
+                // else
                 {
                     // Resolve indices to RGBA, which requires less code and is
                     // faster than texture palettes in shaders.

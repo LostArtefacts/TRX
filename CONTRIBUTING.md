@@ -4,6 +4,7 @@
 
 Initial build:
 
+- Pull Git submodules (`git submodule init` and `git submodule update`)
 - Compile the project (described in the next section)
 - Copy `build/Tomb1Main.dll` and the `cfg` directory to your TombATI directory
 

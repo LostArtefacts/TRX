@@ -10,6 +10,9 @@ exe_wrapper = 'wine'
 ld = '/usr/bin/i686-w64-mingw32-ld'
 cmake = '/usr/bin/cmake'
 
+[properties]
+skip_sanity_check = true
+
 [host_machine]
 system = 'windows'
 cpu_family = 'x86'

@@ -29,13 +29,13 @@ void Screenshot::captureScheduled()
 void Screenshot::capture()
 {
     // find unused screenshot file name
-    std::wstring basePath = ContextImpl::instance().getBasePath();
-    std::wstring path;
+    std::string basePath = ContextImpl::instance().getBasePath();
+    std::string path;
     DWORD dwAttrib;
     do {
         std::string fileName =
             StringUtils::format("screenshot%04d.tga", m_index++);
-        path = basePath + L"\\" + StringUtils::utf8ToWide(fileName);
+        path = basePath + "\\" + fileName;
         dwAttrib = GetFileAttributes(path.c_str());
     } while (dwAttrib != INVALID_FILE_ATTRIBUTES && m_index < 9999);
 
