@@ -197,13 +197,6 @@ void Renderer::texturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
     m_palettes.erase(htxpalToDestroy);
 }
 
-void Renderer::texturePaletteAnimate(C3D_HTXPAL htxpalToAnimate,
-    C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries,
-    C3D_PPALETTENTRY pclrPalette)
-{
-    throw Error(std::string(__FUNCTION__) + ": Not implemented", C3D_EC_NOTIMPYET);
-}
-
 void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
 {
     m_context.setRendered();

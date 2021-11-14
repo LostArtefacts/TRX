@@ -81,8 +81,6 @@ public:
     void textureUnreg(C3D_HTX);
     void texturePaletteCreate(C3D_ECI_TMAP_TYPE, void*, C3D_PHTXPAL);
     void texturePaletteDestroy(C3D_HTXPAL);
-    void texturePaletteAnimate(
-        C3D_HTXPAL, C3D_UINT32, C3D_UINT32, C3D_PPALETTENTRY);
     void renderPrimStrip(C3D_VSTRIP, C3D_UINT32);
     void renderPrimList(C3D_VLIST, C3D_UINT32);
     void setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
