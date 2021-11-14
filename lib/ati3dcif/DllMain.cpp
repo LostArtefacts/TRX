@@ -1,8 +1,8 @@
-#include "ati3dcif.hpp"
 #include "Error.hpp"
 #include "Renderer.hpp"
 #include "Utils.hpp"
 
+#include <ati3dcif/ATI3DCIF.h>
 #include <glrage/GLRage.hpp>
 #include <glrage_util/ErrorUtils.hpp>
 #include <glrage_util/Logger.hpp>

@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+#define C3D_FALSE 0
+#define C3D_TRUE 1
+
 #pragma pack(push, 8)
 typedef unsigned int C3D_BOOL;
 typedef int C3D_INT32;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ati3dcif.hpp"
+#include <ati3dcif/ATI3DCIF.h>
 
 #include <string>
 
