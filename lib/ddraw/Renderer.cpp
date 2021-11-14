@@ -22,15 +22,8 @@ Renderer::Renderer()
     m_surfaceFormat.attribute(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     // configure sampler
-    std::string filterMethod =
-        m_config.getString("directdraw.filter_method", "linear");
-    GLint filterMethodEnum;
-
-    if (filterMethod == "nearest") {
-        filterMethodEnum = GL_NEAREST;
-    } else {
-        filterMethodEnum = GL_LINEAR;
-    }
+    // TODO: make me configurable
+    GLint filterMethodEnum = GL_LINEAR; // GL_NEAREST
 
     m_sampler.bind(0);
     m_sampler.parameteri(GL_TEXTURE_MAG_FILTER, filterMethodEnum);
@@ -50,7 +43,6 @@ Renderer::Renderer()
 
 void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
 {
-    std::string texDir = m_config.getString("patch.texture_directory", "");
     uint32_t width = desc.dwWidth;
     uint32_t height = desc.dwHeight;
     uint8_t* bits = &data[0];
@@ -58,38 +50,7 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     GLenum tex_type = TEX_TYPE;
     m_surfaceTexture.bind();
 
-    // if (texDir.length() > 0 && desc.dwWidth == TITLE_WIDTH && desc.dwHeight
-    // == TITLE_HEIGHT)
-    // {
-    //     uint8_t md5sum[16];
-    //     MD5(&data[0], data.size(), md5sum);
-    //     uint8_t *key = reinterpret_cast<uint8_t
-    //     *>("\x4D\xD5\x68\xAD\xD2\x7E\x5B\xC2\x07\xF0\xD3\xC4\xB8\xEC\xCE\x67");
-    //     if (memcmp(md5sum, key, 16) == 0)
-    //     {
-    //         if (m_overrideImage.IsNull())
-    //         {
-    //             std::string fileName = texDir + "\\TITLEH.PNG";
-    //             std::string wFileName(fileName.begin(), fileName.end());
-    //             CImage image;
-    //             if (SUCCEEDED(image.Load(wFileName.c_str())))
-    //             {
-    //                 m_overrideImage.Create(image.GetWidth(),
-    //                 -image.GetHeight(), 24, 0);
-    //                 image.BitBlt(m_overrideImage.GetDC(), 0, 0);
-    //             }
-    //         }
-
-    //         if (!m_overrideImage.IsNull())
-    //         {
-    //             bits = reinterpret_cast<uint8_t *>(m_overrideImage.GetBits());
-    //             width = m_overrideImage.GetWidth();
-    //             height = m_overrideImage.GetHeight();
-    //             tex_format = GL_BGR;
-    //             tex_type = GL_UNSIGNED_BYTE;
-    //         }
-    //     }
-    // }
+    // TODO: implement texture packs
 
     // update buffer if the size is unchanged, otherwise create a new one
     if (width != m_width || height != m_height) {

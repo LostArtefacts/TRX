@@ -9,7 +9,6 @@
 #include <glrage_gl/Sampler.hpp>
 #include <glrage_gl/Texture.hpp>
 #include <glrage_gl/VertexArray.hpp>
-#include <glrage_util/Config.hpp>
 
 #include <cstdint>
 #include <vector>
@@ -32,7 +31,6 @@ private:
     static const int32_t TITLE_HEIGHT = 480;
 
     Context& m_context{GLRage::getContext()};
-    Config& m_config{GLRage::getConfig()};
     uint32_t m_width = 0;
     uint32_t m_height = 0;
     gl::VertexArray m_surfaceFormat;

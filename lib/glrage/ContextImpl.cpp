@@ -34,9 +34,6 @@ BOOL CALLBACK ContextImpl::callbackEnumWindowsProc(HWND hwnd, LPARAM _this)
 
 ContextImpl::ContextImpl()
 {
-    // load main config file
-    m_config.load(getBasePath() + "\\glrage.ini");
-
     // init rect
     SetRectEmpty(&m_tmprect);
 
@@ -50,12 +47,8 @@ ContextImpl::ContextImpl()
     m_pfd.iLayerType = PFD_MAIN_PLANE;
 
     // get screen dimensions
-    bool virtualScreen = m_config.getBool("context.fullscreen_virtual", false);
-    m_fullscreenMode = m_config.getInt("context.fullscreen_mode", 0);
-    m_screenWidth =
-        GetSystemMetrics(virtualScreen ? SM_CXVIRTUALSCREEN : SM_CXSCREEN);
-    m_screenHeight =
-        GetSystemMetrics(virtualScreen ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
+    m_screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    m_screenHeight = GetSystemMetrics(SM_CYSCREEN);
 }
 
 void ContextImpl::init()
@@ -106,7 +99,9 @@ void ContextImpl::init()
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
 
-    if (m_config.getBool("context.vsync", true)) {
+    // TODO: make me configurable
+    bool vsync = true;
+    if (vsync) {
         wglSwapIntervalEXT(1);
     }
 }
@@ -258,15 +253,6 @@ void ContextImpl::setFullscreen(bool fullscreen)
 {
     m_fullscreen = fullscreen;
 
-    switch (m_fullscreenMode) {
-        case 1:
-            m_fullscreen = true;
-            break;
-        case 2:
-            m_fullscreen = false;
-            break;
-    }
-
     if (!m_hwnd) {
         return;
     }
@@ -290,7 +276,8 @@ void ContextImpl::setFullscreen(bool fullscreen)
     int32_t width;
     int32_t height;
 
-    bool fullscreen_hack = m_config.getBool("context.fullscreen_hack", false);
+    // TODO: what is this?
+    bool fullscreen_hack = false;
     if (m_fullscreen) {
         width = m_screenWidth + (fullscreen_hack ? 1 : 0);
         height = m_screenHeight;

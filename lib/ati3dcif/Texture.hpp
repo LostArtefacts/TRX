@@ -25,10 +25,8 @@ public:
     std::vector<uint8_t>& translucencyMap();
 
 private:
-    Config& m_config{GLRage::getConfig()};
     C3D_COLOR m_chromaKey;
     bool m_keyOnAlpha;
-    std::map<std::string, std::string>& getTextureKeys();
     std::vector<uint8_t> m_translucency_map;
     bool m_is_translucent;
 };

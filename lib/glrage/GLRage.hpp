@@ -2,8 +2,6 @@
 
 #include "ContextImpl.hpp"
 
-#include <glrage_util/Config.hpp>
-
 namespace glrage {
 
 #ifdef _LIB
@@ -18,7 +16,6 @@ class GLRage
 {
 public:
     static GLRAPI Context& getContext();
-    static GLRAPI Config& getConfig();
 
 private:
     static ContextImpl m_context;

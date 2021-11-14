@@ -26,7 +26,8 @@ Renderer::Renderer()
     m_sampler.bind(0);
 
     // improve texture filtering quality
-    float filterAniso = m_config.getFloat("ati3dcif.filter_anisotropy", 16.0f);
+    // TODO: make me configurable
+    float filterAniso = 16.0f;
     if (filterAniso > 0) {
         m_sampler.parameterf(GL_TEXTURE_MAX_ANISOTROPY_EXT, filterAniso);
     }
@@ -48,8 +49,8 @@ Renderer::Renderer()
     m_program.uniformMatrix4fv(
         "matModelView", 1, GL_FALSE, glm::value_ptr(modelView));
 
-    // cache frequently used config values
-    m_wireframe = m_config.getBool("ati3dcif.wireframe", false);
+    // TODO: make me configurable
+    m_wireframe = false;
 
     gl::Utils::checkError(__FUNCTION__);
 }
@@ -58,7 +59,6 @@ void Renderer::renderBegin(C3D_HRC hRC)
 {
     glEnable(GL_BLEND);
 
-    // set wireframe mode if set
     if (m_wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }

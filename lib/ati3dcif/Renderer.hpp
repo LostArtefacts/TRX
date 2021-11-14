@@ -8,7 +8,6 @@
 #include <glrage_gl/Program.hpp>
 #include <glrage_gl/Sampler.hpp>
 #include <glrage_gl/Shader.hpp>
-#include <glrage_util/Config.hpp>
 
 #include <array>
 #include <map>
@@ -106,7 +105,6 @@ private:
     void tmapRestore();
 
     Context& m_context{GLRage::getContext()};
-    Config& m_config{GLRage::getConfig()};
     bool m_wireframe;
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
