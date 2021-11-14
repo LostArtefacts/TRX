@@ -10,8 +10,9 @@
 namespace glrage {
 namespace ddraw {
 
-DirectDrawSurface::DirectDrawSurface(
-    DirectDraw& lpDD, Renderer& renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
+DirectDrawSurface::DirectDrawSurface(DirectDraw& lpDD,
+    Renderer& renderer,
+    LPDDSURFACEDESC lpDDSurfaceDesc)
     : m_dd(lpDD)
     , m_renderer(renderer)
     , m_desc(*lpDDSurfaceDesc)
@@ -149,7 +150,9 @@ HRESULT WINAPI DirectDrawSurface::AddOverlayDirtyRect(LPRECT lpRect)
 }
 
 HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
-    LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags,
+    LPDIRECTDRAWSURFACE lpDDSrcSurface,
+    LPRECT lpSrcRect,
+    DWORD dwFlags,
     LPDDBLTFX lpDDBltFx)
 {
     LOG_TRACE("");
@@ -185,7 +188,11 @@ HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
             GLint height;
             std::vector<uint8_t> buffer;
 
-            gl::Screenshot::capture(buffer, width, height, depth, GL_BGRA,
+            gl::Screenshot::capture(buffer,
+                width,
+                height,
+                depth,
+                GL_BGRA,
                 GL_UNSIGNED_SHORT_1_5_5_5_REV);
 
             Blitter::Rect srcRect{0, height, width, 0};
@@ -228,8 +235,9 @@ HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::BltBatch(
-    LPDDBLTBATCH lpDDBltBatch, DWORD dwCount, DWORD dwFlags)
+HRESULT WINAPI DirectDrawSurface::BltBatch(LPDDBLTBATCH lpDDBltBatch,
+    DWORD dwCount,
+    DWORD dwFlags)
 {
     LOG_TRACE("");
 
@@ -241,8 +249,11 @@ HRESULT WINAPI DirectDrawSurface::BltBatch(
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::BltFast(DWORD dwX, DWORD dwY,
-    LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwTrans)
+HRESULT WINAPI DirectDrawSurface::BltFast(DWORD dwX,
+    DWORD dwY,
+    LPDIRECTDRAWSURFACE lpDDSrcSurface,
+    LPRECT lpSrcRect,
+    DWORD dwTrans)
 {
     LOG_TRACE("");
 
@@ -254,24 +265,25 @@ HRESULT WINAPI DirectDrawSurface::BltFast(DWORD dwX, DWORD dwY,
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE lpDDSurface)
+HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(DWORD dwFlags,
+    LPDIRECTDRAWSURFACE lpDDSurface)
 {
     LOG_TRACE("");
 
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::EnumAttachedSurfaces(
-    LPVOID lpContext, LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback)
+HRESULT WINAPI DirectDrawSurface::EnumAttachedSurfaces(LPVOID lpContext,
+    LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback)
 {
     LOG_TRACE("");
 
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::EnumOverlayZOrders(
-    DWORD dwFlags, LPVOID lpContext, LPDDENUMSURFACESCALLBACK lpfnCallback)
+HRESULT WINAPI DirectDrawSurface::EnumOverlayZOrders(DWORD dwFlags,
+    LPVOID lpContext,
+    LPDDENUMSURFACESCALLBACK lpfnCallback)
 {
     LOG_TRACE("");
 
@@ -279,7 +291,8 @@ HRESULT WINAPI DirectDrawSurface::EnumOverlayZOrders(
 }
 
 HRESULT WINAPI DirectDrawSurface::Flip(
-    LPDIRECTDRAWSURFACE lpDDSurfaceTargetOverride, DWORD dwFlags)
+    LPDIRECTDRAWSURFACE lpDDSurfaceTargetOverride,
+    DWORD dwFlags)
 {
     LOG_TRACE("");
 
@@ -336,8 +349,8 @@ HRESULT WINAPI DirectDrawSurface::Flip(
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(
-    LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE* lplpDDAttachedSurface)
+HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(LPDDSCAPS lpDDSCaps,
+    LPDIRECTDRAWSURFACE* lplpDDAttachedSurface)
 {
     LOG_TRACE("");
 
@@ -377,8 +390,8 @@ HRESULT WINAPI DirectDrawSurface::GetClipper(LPDIRECTDRAWCLIPPER* lplpDDClipper)
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::GetColorKey(
-    DWORD dwFlags, LPDDCOLORKEY lpDDColorKey)
+HRESULT WINAPI DirectDrawSurface::GetColorKey(DWORD dwFlags,
+    LPDDCOLORKEY lpDDColorKey)
 {
     LOG_TRACE("");
 
@@ -433,8 +446,8 @@ HRESULT WINAPI DirectDrawSurface::GetSurfaceDesc(
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::Initialize(
-    LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpDDSurfaceDesc)
+HRESULT WINAPI DirectDrawSurface::Initialize(LPDIRECTDRAW lpDD,
+    LPDDSURFACEDESC lpDDSurfaceDesc)
 {
     LOG_TRACE("");
 
@@ -455,7 +468,9 @@ HRESULT WINAPI DirectDrawSurface::IsLost()
 }
 
 HRESULT WINAPI DirectDrawSurface::Lock(LPRECT lpDestRect,
-    LPDDSURFACEDESC lpDDSurfaceDesc, DWORD dwFlags, HANDLE hEvent)
+    LPDDSURFACEDESC lpDDSurfaceDesc,
+    DWORD dwFlags,
+    HANDLE hEvent)
 {
     LOG_TRACE("%p, %p, %d, %p", lpDestRect, lpDDSurfaceDesc, dwFlags, hEvent);
 
@@ -500,8 +515,8 @@ HRESULT WINAPI DirectDrawSurface::SetClipper(LPDIRECTDRAWCLIPPER lpDDClipper)
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::SetColorKey(
-    DWORD dwFlags, LPDDCOLORKEY lpDDColorKey)
+HRESULT WINAPI DirectDrawSurface::SetColorKey(DWORD dwFlags,
+    LPDDCOLORKEY lpDDColorKey)
 {
     LOG_TRACE("");
 
@@ -546,8 +561,7 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
         // fix black lines by copying even to odd lines
         for (DWORD i = 0; i < m_desc.dwHeight; i += 2) {
             auto itrEven = std::next(m_buffer.begin(), i * m_desc.lPitch);
-            auto itrOdd =
-                std::next(m_buffer.begin(), (i + 1) * m_desc.lPitch);
+            auto itrOdd = std::next(m_buffer.begin(), (i + 1) * m_desc.lPitch);
             std::copy(itrEven, std::next(itrEven, m_desc.lPitch), itrOdd);
         }
 
@@ -568,7 +582,9 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
 }
 
 HRESULT WINAPI DirectDrawSurface::UpdateOverlay(LPRECT lpSrcRect,
-    LPDIRECTDRAWSURFACE lpDDDestSurface, LPRECT lpDestRect, DWORD dwFlags,
+    LPDIRECTDRAWSURFACE lpDDDestSurface,
+    LPRECT lpDestRect,
+    DWORD dwFlags,
     LPDDOVERLAYFX lpDDOverlayFx)
 {
     LOG_TRACE("");
@@ -583,8 +599,8 @@ HRESULT WINAPI DirectDrawSurface::UpdateOverlayDisplay(DWORD dwFlags)
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE lpDDSReference)
+HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(DWORD dwFlags,
+    LPDIRECTDRAWSURFACE lpDDSReference)
 {
     LOG_TRACE("");
 
@@ -601,23 +617,28 @@ HRESULT WINAPI DirectDrawSurface::AddAttachedSurface(
 }
 
 HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
-    LPDIRECTDRAWSURFACE2 lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags,
+    LPDIRECTDRAWSURFACE2 lpDDSrcSurface,
+    LPRECT lpSrcRect,
+    DWORD dwFlags,
     LPDDBLTFX lpDDBltFx)
 {
     LOG_TRACE("");
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::BltFast(DWORD dwX, DWORD dwY,
-    LPDIRECTDRAWSURFACE2 lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwTrans)
+HRESULT WINAPI DirectDrawSurface::BltFast(DWORD dwX,
+    DWORD dwY,
+    LPDIRECTDRAWSURFACE2 lpDDSrcSurface,
+    LPRECT lpSrcRect,
+    DWORD dwTrans)
 {
     LOG_TRACE("");
 
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE2 lpDDSurface)
+HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(DWORD dwFlags,
+    LPDIRECTDRAWSURFACE2 lpDDSurface)
 {
     LOG_TRACE("");
 
@@ -625,15 +646,16 @@ HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(
 }
 
 HRESULT WINAPI DirectDrawSurface::Flip(
-    LPDIRECTDRAWSURFACE2 lpDDSurfaceTargetOverride, DWORD dwFlags)
+    LPDIRECTDRAWSURFACE2 lpDDSurfaceTargetOverride,
+    DWORD dwFlags)
 {
     LOG_TRACE("");
 
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(
-    LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE2* lplpDDAttachedSurface)
+HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(LPDDSCAPS lpDDSCaps,
+    LPDIRECTDRAWSURFACE2* lplpDDAttachedSurface)
 {
     LOG_TRACE("");
 
@@ -641,7 +663,9 @@ HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(
 }
 
 HRESULT WINAPI DirectDrawSurface::UpdateOverlay(LPRECT lpSrcRect,
-    LPDIRECTDRAWSURFACE2 lpDDDestSurface, LPRECT lpDestRect, DWORD dwFlags,
+    LPDIRECTDRAWSURFACE2 lpDDDestSurface,
+    LPRECT lpDestRect,
+    DWORD dwFlags,
     LPDDOVERLAYFX lpDDOverlayFx)
 {
     LOG_TRACE("");
@@ -649,8 +673,8 @@ HRESULT WINAPI DirectDrawSurface::UpdateOverlay(LPRECT lpSrcRect,
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE2 lpDDSReference)
+HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(DWORD dwFlags,
+    LPDIRECTDRAWSURFACE2 lpDDSReference)
 {
     LOG_TRACE("");
 

@@ -4,12 +4,10 @@ namespace glrage {
 namespace ddraw {
 
 Unknown::Unknown()
-{
-}
+{}
 
 Unknown::~Unknown()
-{
-}
+{}
 
 HRESULT WINAPI Unknown::QueryInterface(REFIID riid, LPVOID* ppvObj)
 {

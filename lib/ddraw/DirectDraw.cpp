@@ -56,8 +56,9 @@ HRESULT WINAPI DirectDraw::Compact()
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDraw::CreateClipper(
-    DWORD dwFlags, LPDIRECTDRAWCLIPPER* lplpDDClipper, IUnknown* pUnkOuter)
+HRESULT WINAPI DirectDraw::CreateClipper(DWORD dwFlags,
+    LPDIRECTDRAWCLIPPER* lplpDDClipper,
+    IUnknown* pUnkOuter)
 {
     LOG_TRACE("");
 
@@ -67,7 +68,8 @@ HRESULT WINAPI DirectDraw::CreateClipper(
 }
 
 HRESULT WINAPI DirectDraw::CreatePalette(DWORD dwFlags,
-    LPPALETTEENTRY lpDDColorArray, LPDIRECTDRAWPALETTE* lplpDDPalette,
+    LPPALETTEENTRY lpDDColorArray,
+    LPDIRECTDRAWPALETTE* lplpDDPalette,
     IUnknown* pUnkOuter)
 {
     LOG_TRACE("");
@@ -76,7 +78,8 @@ HRESULT WINAPI DirectDraw::CreatePalette(DWORD dwFlags,
 }
 
 HRESULT WINAPI DirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
-    LPDIRECTDRAWSURFACE* lplpDDSurface, IUnknown* pUnkOuter)
+    LPDIRECTDRAWSURFACE* lplpDDSurface,
+    IUnknown* pUnkOuter)
 {
     LOG_TRACE("");
 
@@ -85,8 +88,8 @@ HRESULT WINAPI DirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDraw::DuplicateSurface(
-    LPDIRECTDRAWSURFACE lpDDSurface, LPDIRECTDRAWSURFACE* lplpDupDDSurface)
+HRESULT WINAPI DirectDraw::DuplicateSurface(LPDIRECTDRAWSURFACE lpDDSurface,
+    LPDIRECTDRAWSURFACE* lplpDupDDSurface)
 {
     LOG_TRACE("");
 
@@ -94,7 +97,8 @@ HRESULT WINAPI DirectDraw::DuplicateSurface(
 }
 
 HRESULT WINAPI DirectDraw::EnumDisplayModes(DWORD dwFlags,
-    LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext,
+    LPDDSURFACEDESC lpDDSurfaceDesc,
+    LPVOID lpContext,
     LPDDENUMMODESCALLBACK lpEnumModesCallback)
 {
     LOG_TRACE("");
@@ -116,7 +120,8 @@ HRESULT WINAPI DirectDraw::EnumDisplayModes(DWORD dwFlags,
 }
 
 HRESULT WINAPI DirectDraw::EnumSurfaces(DWORD dwFlags,
-    LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext,
+    LPDDSURFACEDESC lpDDSurfaceDesc,
+    LPVOID lpContext,
     LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback)
 {
     LOG_TRACE("");
@@ -131,8 +136,8 @@ HRESULT WINAPI DirectDraw::FlipToGDISurface()
     return DDERR_UNSUPPORTED;
 }
 
-HRESULT WINAPI DirectDraw::GetCaps(
-    LPDDCAPS lpDDDriverCaps, LPDDCAPS lpDDHELCaps)
+HRESULT WINAPI DirectDraw::GetCaps(LPDDCAPS lpDDDriverCaps,
+    LPDDCAPS lpDDHELCaps)
 {
     LOG_TRACE("");
 
@@ -241,8 +246,9 @@ HRESULT WINAPI DirectDraw::SetCooperativeLevel(HWND hWnd, DWORD dwFlags)
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDraw::SetDisplayMode(
-    DWORD dwWidth, DWORD dwHeight, DWORD dwBPP)
+HRESULT WINAPI DirectDraw::SetDisplayMode(DWORD dwWidth,
+    DWORD dwHeight,
+    DWORD dwBPP)
 {
     LOG_TRACE("");
 
@@ -257,8 +263,11 @@ HRESULT WINAPI DirectDraw::WaitForVerticalBlank(DWORD dwFlags, HANDLE hEvent)
 }
 
 /*** IDirectDraw2 methods ***/
-HRESULT WINAPI DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
-    DWORD dwBPP, DWORD dwRefreshRate, DWORD dwFlags)
+HRESULT WINAPI DirectDraw::SetDisplayMode(DWORD dwWidth,
+    DWORD dwHeight,
+    DWORD dwBPP,
+    DWORD dwRefreshRate,
+    DWORD dwFlags)
 {
     LOG_TRACE("");
 
@@ -272,8 +281,9 @@ HRESULT WINAPI DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDraw::GetAvailableVidMem(
-    LPDDSCAPS lpDDSCaps, LPDWORD lpdwTotal, LPDWORD lpdwFree)
+HRESULT WINAPI DirectDraw::GetAvailableVidMem(LPDDSCAPS lpDDSCaps,
+    LPDWORD lpdwTotal,
+    LPDWORD lpdwFree)
 {
     LOG_TRACE("");
 

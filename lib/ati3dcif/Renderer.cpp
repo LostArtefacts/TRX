@@ -15,10 +15,12 @@ using std::placeholders::_1;
 
 Renderer::Renderer()
 {
-    // The vertex stream passes primitives to the delayer to test if they have translucency and
-    // in that case delay them. When the delayer needs to display the delayed primitives it calls
-    // back to the vertex stream to do so.
-    m_vertexStream.setDelayer([this](C3D_VTCF *verts) {return m_transDelay.delayTriangle(verts);});
+    // The vertex stream passes primitives to the delayer to test if they have
+    // translucency and in that case delay them. When the delayer needs to
+    // display the delayed primitives it calls back to the vertex stream to do
+    // so.
+    m_vertexStream.setDelayer(
+        [this](C3D_VTCF* verts) { return m_transDelay.delayTriangle(verts); });
 
     // bind sampler
     m_sampler.bind(0);
@@ -86,7 +88,9 @@ void Renderer::renderEnd()
     m_vertexStream.renderPending();
     // including the delayed translucent primitives
     m_program.uniform1i("keyOnAlpha", true);
-    m_transDelay.render([this](std::vector<C3D_VTCF> verts) {m_vertexStream.renderPrims(verts);});
+    m_transDelay.render([this](std::vector<C3D_VTCF> verts) {
+        m_vertexStream.renderPrims(verts);
+    });
 
     // restore polygon mode
     if (m_wireframe) {
@@ -136,8 +140,9 @@ void Renderer::textureUnreg(C3D_HTX htxToUnreg)
     m_textures.erase(htxToUnreg);
 }
 
-void Renderer::texturePaletteCreate(
-    C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated)
+void Renderer::texturePaletteCreate(C3D_ECI_TMAP_TYPE epalette,
+    void* pPalette,
+    C3D_PHTXPAL phtpalCreated)
 {
     if (epalette != C3D_ECI_TMAP_8BIT) {
         throw Error("Unsupported palette type: " +
@@ -178,21 +183,48 @@ void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 void Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     switch (eRStateID) {
-    case C3D_ERS_VERTEX_TYPE: vertexType(*reinterpret_cast<C3D_EVERTEX*>(pRStateData)); break;
-    case C3D_ERS_PRIM_TYPE:   primType(*reinterpret_cast<C3D_EPRIM*>(pRStateData)); break;
-    case C3D_ERS_SOLID_CLR:   solidColor(*reinterpret_cast<C3D_COLOR*>(pRStateData)); break;
-    case C3D_ERS_SHADE_MODE:  shadeMode(*reinterpret_cast<C3D_ESHADE*>(pRStateData)); break;
-    case C3D_ERS_TMAP_EN:     tmapEnable(*reinterpret_cast<C3D_BOOL*>(pRStateData)); break;
-    case C3D_ERS_TMAP_SELECT: tmapSelect(*reinterpret_cast<C3D_HTX*>(pRStateData)); break;
-    case C3D_ERS_TMAP_LIGHT:  tmapLight(*reinterpret_cast<C3D_ETLIGHT*>(pRStateData)); break;
-    case C3D_ERS_TMAP_FILTER: tmapFilter(*reinterpret_cast<C3D_ETEXFILTER*>(pRStateData)); break;
-    case C3D_ERS_TMAP_TEXOP:  tmapTexOp(*reinterpret_cast<C3D_ETEXOP*>(pRStateData)); break;
-    case C3D_ERS_ALPHA_SRC:   alphaSrc(*reinterpret_cast<C3D_EASRC*>(pRStateData)); break;
-    case C3D_ERS_ALPHA_DST:   alphaDst(*reinterpret_cast<C3D_EADST*>(pRStateData)); break;
-    case C3D_ERS_Z_CMP_FNC:   zCmpFunc(*reinterpret_cast<C3D_EZCMP*>(pRStateData)); break;
-    case C3D_ERS_Z_MODE:      zMode(*reinterpret_cast<C3D_EZMODE*>(pRStateData)); break;
-    default:
-        throw Error("Unsupported state: " + std::to_string(eRStateID), C3D_EC_NOTIMPYET);
+        case C3D_ERS_VERTEX_TYPE:
+            vertexType(*reinterpret_cast<C3D_EVERTEX*>(pRStateData));
+            break;
+        case C3D_ERS_PRIM_TYPE:
+            primType(*reinterpret_cast<C3D_EPRIM*>(pRStateData));
+            break;
+        case C3D_ERS_SOLID_CLR:
+            solidColor(*reinterpret_cast<C3D_COLOR*>(pRStateData));
+            break;
+        case C3D_ERS_SHADE_MODE:
+            shadeMode(*reinterpret_cast<C3D_ESHADE*>(pRStateData));
+            break;
+        case C3D_ERS_TMAP_EN:
+            tmapEnable(*reinterpret_cast<C3D_BOOL*>(pRStateData));
+            break;
+        case C3D_ERS_TMAP_SELECT:
+            tmapSelect(*reinterpret_cast<C3D_HTX*>(pRStateData));
+            break;
+        case C3D_ERS_TMAP_LIGHT:
+            tmapLight(*reinterpret_cast<C3D_ETLIGHT*>(pRStateData));
+            break;
+        case C3D_ERS_TMAP_FILTER:
+            tmapFilter(*reinterpret_cast<C3D_ETEXFILTER*>(pRStateData));
+            break;
+        case C3D_ERS_TMAP_TEXOP:
+            tmapTexOp(*reinterpret_cast<C3D_ETEXOP*>(pRStateData));
+            break;
+        case C3D_ERS_ALPHA_SRC:
+            alphaSrc(*reinterpret_cast<C3D_EASRC*>(pRStateData));
+            break;
+        case C3D_ERS_ALPHA_DST:
+            alphaDst(*reinterpret_cast<C3D_EADST*>(pRStateData));
+            break;
+        case C3D_ERS_Z_CMP_FNC:
+            zCmpFunc(*reinterpret_cast<C3D_EZCMP*>(pRStateData));
+            break;
+        case C3D_ERS_Z_MODE:
+            zMode(*reinterpret_cast<C3D_EZMODE*>(pRStateData));
+            break;
+        default:
+            throw Error("Unsupported state: " + std::to_string(eRStateID),
+                C3D_EC_NOTIMPYET);
     }
 }
 
@@ -212,8 +244,11 @@ void Renderer::solidColor(C3D_COLOR value)
 {
     m_vertexStream.renderPending();
     C3D_COLOR color = value;
-    m_program.uniform4f("solidColor", color.r / 255.0f, color.g / 255.0f,
-        color.b / 255.0f, color.a / 255.0f);
+    m_program.uniform4f("solidColor",
+        color.r / 255.0f,
+        color.g / 255.0f,
+        color.b / 255.0f,
+        color.a / 255.0f);
 }
 
 void Renderer::shadeMode(C3D_ESHADE value)
@@ -269,7 +304,8 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
     m_program.uniform1i("keyOnAlpha", texture->keyOnAlpha());
 }
 
-void Renderer::tmapRestore() {
+void Renderer::tmapRestore()
+{
     tmapSelectImpl(m_tmapSelect);
 }
 
@@ -308,7 +344,7 @@ void Renderer::alphaDst(C3D_EADST value)
 {
     m_vertexStream.renderPending();
     m_eadst = value;
-    C3D_EASRC alphaSrc =  m_easrc;
+    C3D_EASRC alphaSrc = m_easrc;
     C3D_EADST alphaDst = value;
     glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
 }

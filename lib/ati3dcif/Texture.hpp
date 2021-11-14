@@ -20,17 +20,17 @@ public:
     ~Texture();
     void load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY>& palette);
     C3D_COLOR& chromaKey();
-    bool       keyOnAlpha();
+    bool keyOnAlpha();
     bool isTranslucent();
     std::vector<uint8_t>& translucencyMap();
 
 private:
     Config& m_config{GLRage::getConfig()};
     C3D_COLOR m_chromaKey;
-    bool      m_keyOnAlpha;
+    bool m_keyOnAlpha;
     std::map<std::string, std::string>& getTextureKeys();
     std::vector<uint8_t> m_translucency_map;
-    bool                 m_is_translucent;
+    bool m_is_translucent;
 };
 
 } // namespace cif

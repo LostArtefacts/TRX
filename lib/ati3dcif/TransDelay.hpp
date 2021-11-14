@@ -4,8 +4,8 @@
 
 #include "Texture.hpp"
 
-#include <memory>
 #include <functional>
+#include <memory>
 
 namespace glrage {
 namespace cif {
@@ -17,7 +17,7 @@ class TransDelay
 public:
     void setTexture(std::shared_ptr<Texture> texture);
     void setTexturingEnabled(bool enabled);
-    bool delayTriangle(C3D_VTCF *verts);
+    bool delayTriangle(C3D_VTCF* verts);
     void render(const std::function<void(std::vector<C3D_VTCF>)>& renderer);
 
 private:

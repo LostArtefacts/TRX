@@ -92,8 +92,10 @@ GLint Program::uniformLocation(const std::string& name)
     return location;
 }
 
-void Program::uniform3f(
-    const std::string& name, GLfloat v0, GLfloat v1, GLfloat v2)
+void Program::uniform3f(const std::string& name,
+    GLfloat v0,
+    GLfloat v1,
+    GLfloat v2)
 {
     GLint loc = uniformLocation(name);
     if (loc != -1) {
@@ -101,8 +103,11 @@ void Program::uniform3f(
     }
 }
 
-void Program::uniform4f(
-    const std::string& name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+void Program::uniform4f(const std::string& name,
+    GLfloat v0,
+    GLfloat v1,
+    GLfloat v2,
+    GLfloat v3)
 {
     GLint loc = uniformLocation(name);
     if (loc != -1) {
@@ -118,8 +123,10 @@ void Program::uniform1i(const std::string& name, GLint v0)
     }
 }
 
-void Program::uniformMatrix4fv(const std::string& name, GLsizei count,
-    GLboolean transpose, const GLfloat* value)
+void Program::uniformMatrix4fv(const std::string& name,
+    GLsizei count,
+    GLboolean transpose,
+    const GLfloat* value)
 {
     GLint loc = uniformLocation(name);
     if (loc != -1) {
@@ -132,7 +139,8 @@ std::string Program::infoLog()
     GLint infoLogLength;
     std::string infoLogString;
     infoLogString.resize(4096);
-    glGetProgramInfoLog(m_id, infoLogString.capacity(), &infoLogLength, &infoLogString[0]);
+    glGetProgramInfoLog(
+        m_id, infoLogString.capacity(), &infoLogLength, &infoLogString[0]);
     infoLogString.resize(infoLogLength);
     return infoLogString;
 }

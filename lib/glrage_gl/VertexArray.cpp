@@ -18,8 +18,12 @@ void VertexArray::bind()
     glBindVertexArray(m_id);
 }
 
-void VertexArray::attribute(GLuint index, GLint size, GLenum type,
-    GLboolean normalized, GLsizei stride, GLsizei offset)
+void VertexArray::attribute(GLuint index,
+    GLint size,
+    GLenum type,
+    GLboolean normalized,
+    GLsizei stride,
+    GLsizei offset)
 {
     glEnableVertexAttribArray(index);
     glVertexAttribPointer(

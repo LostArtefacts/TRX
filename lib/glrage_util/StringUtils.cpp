@@ -1,9 +1,9 @@
 #include "StringUtils.hpp"
 
-#include <sstream>
 #include <algorithm>
-#include <iomanip>
 #include <codecvt>
+#include <iomanip>
+#include <sstream>
 
 namespace glrage {
 

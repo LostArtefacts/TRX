@@ -23,7 +23,7 @@ VertexStream::VertexStream()
     gl::Utils::checkError(__FUNCTION__);
 }
 
-void VertexStream::setDelayer(std::function<BOOL(C3D_VTCF *)> delayer)
+void VertexStream::setDelayer(std::function<BOOL(C3D_VTCF*)> delayer)
 {
     m_delayer = delayer;
 }
@@ -37,7 +37,8 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
             auto vStripVtcf = reinterpret_cast<C3D_VTCF*>(vertStrip);
 
             if (m_primType != C3D_EPRIM_TRI) {
-                throw Error("Unsupported prim type: " + std::to_string(m_primType),
+                throw Error(
+                    "Unsupported prim type: " + std::to_string(m_primType),
                     C3D_EC_NOTIMPYET);
             }
 
@@ -60,7 +61,7 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
 
         default:
             throw Error("Unsupported vertex type: " +
-                               std::string(C3D_EVERTEX_NAMES[m_vertexType]),
+                            std::string(C3D_EVERTEX_NAMES[m_vertexType]),
                 C3D_EC_NOTIMPYET);
     }
 }
@@ -95,7 +96,7 @@ void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
 
         default:
             throw Error("Unsupported vertex type: " +
-                               std::string(C3D_EVERTEX_NAMES[m_vertexType]),
+                            std::string(C3D_EVERTEX_NAMES[m_vertexType]),
                 C3D_EC_NOTIMPYET);
     }
 }
@@ -108,7 +109,8 @@ void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
     // resize GPU buffer if required
     size_t vertexBufferSize = sizeof(C3D_VTCF) * prims.size();
     if (vertexBufferSize > m_vertexBufferSize) {
-        LOG_INFO("Vertex buffer resize: %d -> %d", m_vertexBufferSize,
+        LOG_INFO("Vertex buffer resize: %d -> %d",
+            m_vertexBufferSize,
             vertexBufferSize);
         m_vertexBuffer.data(vertexBufferSize, nullptr, GL_STREAM_DRAW);
         m_vertexBufferSize = vertexBufferSize;

@@ -3,13 +3,13 @@
 #include <glrage_util/ErrorUtils.hpp>
 #include <glrage_util/StringUtils.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <exception>
 #include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 namespace glrage {
 namespace gl {
@@ -31,9 +31,8 @@ void Screenshot::capture(const std::string& path)
     // open screenshot file
     std::ofstream file(path, std::ofstream::binary);
     if (!file.good()) {
-        throw std::runtime_error("Can't open screenshot file '" +
-                                 path + "': " +
-                                 ErrorUtils::getSystemErrorString());
+        throw std::runtime_error("Can't open screenshot file '" + path +
+                                 "': " + ErrorUtils::getSystemErrorString());
     }
 
     // copy framebuffer to local buffer
@@ -45,7 +44,7 @@ void Screenshot::capture(const std::string& path)
     capture(buffer, width, height, depth, GL_BGR, GL_UNSIGNED_BYTE, false);
 
     // create Targa header
-    TGAHeader tgaHeader = {{0, 0}, 0, {0,0,0,0,0,0,0,0,0}, 0, 0, 0, 0};
+    TGAHeader tgaHeader = {{0, 0}, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0, 0, 0};
     tgaHeader.format = 2;
     tgaHeader.width = width;
     tgaHeader.height = height;
@@ -56,8 +55,13 @@ void Screenshot::capture(const std::string& path)
     file.close();
 }
 
-void Screenshot::capture(std::vector<uint8_t>& buffer, GLint& width,
-    GLint& height, GLint depth, GLenum format, GLenum type, bool vflip)
+void Screenshot::capture(std::vector<uint8_t>& buffer,
+    GLint& width,
+    GLint& height,
+    GLint depth,
+    GLenum format,
+    GLenum type,
+    bool vflip)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);

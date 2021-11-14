@@ -31,8 +31,8 @@ extern const char* C3D_ETEXFMT_NAMES[];
 class Utils
 {
 public:
-    static std::string dumpRenderStateData(
-        C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
+    static std::string dumpRenderStateData(C3D_ERSID eRStateID,
+        C3D_PRSDATA pRStateData);
 };
 
 } // namespace cif

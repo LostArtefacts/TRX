@@ -126,21 +126,21 @@ void DebugUtils::dumpInfo(DDSURFACEDESC& desc)
         LOG_INFO("    DDSCAPS_STANDARDVGAMODE");
     if (desc.ddsCaps.dwCaps & DDSCAPS_OPTIMIZED)
         LOG_INFO("    DDSCAPS_OPTIMIZED");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED4) LOG_INFO(" DDSCAPS2_RESERVED4");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_HARDWAREDEINTERLACE) LOG_INFO("
-    // DDSCAPS2_HARDWAREDEINTERLACE");
+    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED4) LOG_INFO("
+    // DDSCAPS2_RESERVED4"); if (desc.ddsCaps.dwCaps &
+    // DDSCAPS2_HARDWAREDEINTERLACE) LOG_INFO(" DDSCAPS2_HARDWAREDEINTERLACE");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_HINTDYNAMIC) LOG_INFO("
     // DDSCAPS2_HINTDYNAMIC");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_HINTSTATIC) LOG_INFO("
     // DDSCAPS2_HINTSTATIC");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_TEXTUREMANAGE) LOG_INFO("
     // DDSCAPS2_TEXTUREMANAGE");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED1) LOG_INFO(" DDSCAPS2_RESERVED1");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED2) LOG_INFO(" DDSCAPS2_RESERVED2");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_OPAQUE) LOG_INFO("    DDSCAPS2_OPAQUE");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_HINTANTIALIASING) LOG_INFO("
-    // DDSCAPS2_HINTANTIALIASING");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_CUBEMAP) LOG_INFO("    DDSCAPS2_CUBEMAP");
+    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED1) LOG_INFO("
+    // DDSCAPS2_RESERVED1"); if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED2)
+    // LOG_INFO(" DDSCAPS2_RESERVED2"); if (desc.ddsCaps.dwCaps &
+    // DDSCAPS2_OPAQUE) LOG_INFO("    DDSCAPS2_OPAQUE"); if (desc.ddsCaps.dwCaps
+    // & DDSCAPS2_HINTANTIALIASING) LOG_INFO(" DDSCAPS2_HINTANTIALIASING"); if
+    // (desc.ddsCaps.dwCaps & DDSCAPS2_CUBEMAP) LOG_INFO(" DDSCAPS2_CUBEMAP");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_CUBEMAP_POSITIVEX) LOG_INFO("
     // DDSCAPS2_CUBEMAP_POSITIVEX");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_CUBEMAP_NEGATIVEX) LOG_INFO("
@@ -161,14 +161,15 @@ void DebugUtils::dumpInfo(DDSURFACEDESC& desc)
     // DDSCAPS2_DONOTPERSIST");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_STEREOSURFACELEFT) LOG_INFO("
     // DDSCAPS2_STEREOSURFACELEFT");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_VOLUME) LOG_INFO("    DDSCAPS2_VOLUME");
+    // if (desc.ddsCaps.dwCaps & DDSCAPS2_VOLUME) LOG_INFO(" DDSCAPS2_VOLUME");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_NOTUSERLOCKABLE) LOG_INFO("
     // DDSCAPS2_NOTUSERLOCKABLE");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_POINTS) LOG_INFO("    DDSCAPS2_POINTS");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RTPATCHES) LOG_INFO(" DDSCAPS2_RTPATCHES");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_NPATCHES) LOG_INFO(" DDSCAPS2_NPATCHES");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RESERVED3) LOG_INFO(" DDSCAPS2_RESERVED3");
-    // if (desc.ddsCaps.dwCaps & DDSCAPS2_DISCARDBACKBUFFER) LOG_INFO("
+    // if (desc.ddsCaps.dwCaps & DDSCAPS2_POINTS) LOG_INFO(" DDSCAPS2_POINTS");
+    // if (desc.ddsCaps.dwCaps & DDSCAPS2_RTPATCHES) LOG_INFO("
+    // DDSCAPS2_RTPATCHES"); if (desc.ddsCaps.dwCaps & DDSCAPS2_NPATCHES)
+    // LOG_INFO(" DDSCAPS2_NPATCHES"); if (desc.ddsCaps.dwCaps &
+    // DDSCAPS2_RESERVED3) LOG_INFO(" DDSCAPS2_RESERVED3"); if
+    // (desc.ddsCaps.dwCaps & DDSCAPS2_DISCARDBACKBUFFER) LOG_INFO("
     // DDSCAPS2_DISCARDBACKBUFFER");
     // if (desc.ddsCaps.dwCaps & DDSCAPS2_ENABLEALPHACHANNEL) LOG_INFO("
     // DDSCAPS2_ENABLEALPHACHANNEL");
@@ -180,8 +181,9 @@ void DebugUtils::dumpInfo(DDSURFACEDESC& desc)
 #endif
 }
 
-void DebugUtils::dumpBuffer(
-    DDSURFACEDESC& desc, void* buffer, const std::string& path)
+void DebugUtils::dumpBuffer(DDSURFACEDESC& desc,
+    void* buffer,
+    const std::string& path)
 {
     uint32_t imageSize = desc.dwWidth * desc.dwHeight;
     uint32_t dataSize = imageSize * 3;
@@ -218,9 +220,8 @@ void DebugUtils::dumpBuffer(
 
     std::ofstream file(path, std::ofstream::binary);
     if (!file.good()) {
-        throw std::runtime_error("Can't open file '" +
-                                 path + "': " +
-                                 ErrorUtils::getSystemErrorString());
+        throw std::runtime_error("Can't open file '" + path +
+                                 "': " + ErrorUtils::getSystemErrorString());
     }
 
     file.write(reinterpret_cast<char*>(dst[0]), dataSize);

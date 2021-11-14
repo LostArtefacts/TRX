@@ -27,8 +27,7 @@ Shader::~Shader()
 }
 
 void Shader::bind()
-{
-}
+{}
 
 Shader& Shader::fromFile(const std::string& path)
 {
@@ -36,9 +35,8 @@ Shader& Shader::fromFile(const std::string& path)
     std::ifstream file;
     file.open(path.c_str());
     if (!file.good()) {
-        throw std::runtime_error("Can't open shader file '" +
-                                 path + "': " +
-                                 ErrorUtils::getSystemErrorString());
+        throw std::runtime_error("Can't open shader file '" + path +
+                                 "': " + ErrorUtils::getSystemErrorString());
     }
 
     // read file to a string stream
@@ -79,7 +77,8 @@ std::string Shader::infoLog()
     GLint infoLogLength;
     std::string infoLogString;
     infoLogString.resize(4096);
-    glGetShaderInfoLog(m_id, infoLogString.size(), &infoLogLength, &infoLogString[0]);
+    glGetShaderInfoLog(
+        m_id, infoLogString.size(), &infoLogLength, &infoLogString[0]);
     infoLogString.resize(infoLogLength);
     return infoLogString;
 }

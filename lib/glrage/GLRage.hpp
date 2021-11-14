@@ -14,7 +14,8 @@ namespace glrage {
 #define GLRAPI __declspec(dllimport)
 #endif
 
-class GLRage {
+class GLRage
+{
 public:
     static GLRAPI Context& getContext();
     static GLRAPI Config& getConfig();

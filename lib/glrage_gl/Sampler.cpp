@@ -14,8 +14,7 @@ Sampler::~Sampler()
 }
 
 void Sampler::bind()
-{
-}
+{}
 
 void Sampler::bind(GLuint unit)
 {

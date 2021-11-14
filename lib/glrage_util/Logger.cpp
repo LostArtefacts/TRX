@@ -19,7 +19,10 @@ void Logger::printf(const std::string& msg)
     printf(msg.c_str());
 }
 
-void Logger::tracef(void* returnAddress, const char* function, const char* format, ...)
+void Logger::tracef(void* returnAddress,
+    const char* function,
+    const char* format,
+    ...)
 {
     if (strlen(format) == 0) {
         printf("%p %s", returnAddress, function);
@@ -35,7 +38,9 @@ void Logger::tracef(void* returnAddress, const char* function, const char* forma
     printf("%p %s: %s", returnAddress, function, output);
 }
 
-void Logger::tracef(void* returnAddress, const char* function, const std::string& msg)
+void Logger::tracef(void* returnAddress,
+    const char* function,
+    const std::string& msg)
 {
     tracef(returnAddress, function, msg.c_str());
 }

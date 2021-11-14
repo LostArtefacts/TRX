@@ -11,7 +11,10 @@
 namespace glrage {
 namespace ddraw {
 
-class DirectDraw : public Unknown, public IDirectDraw, public IDirectDraw2
+class DirectDraw
+    : public Unknown
+    , public IDirectDraw
+    , public IDirectDraw2
 {
 public:
     DirectDraw();
@@ -24,19 +27,26 @@ public:
 
     /*** IDirectDraw methods ***/
     HRESULT WINAPI Compact();
-    HRESULT WINAPI CreateClipper(
-        DWORD dwFlags, LPDIRECTDRAWCLIPPER* lplpDDClipper, IUnknown* pUnkOuter);
-    HRESULT WINAPI CreatePalette(DWORD dwFlags, LPPALETTEENTRY lpDDColorArray,
-        LPDIRECTDRAWPALETTE* lplpDDPalette, IUnknown* pUnkOuter);
+    HRESULT WINAPI CreateClipper(DWORD dwFlags,
+        LPDIRECTDRAWCLIPPER* lplpDDClipper,
+        IUnknown* pUnkOuter);
+    HRESULT WINAPI CreatePalette(DWORD dwFlags,
+        LPPALETTEENTRY lpDDColorArray,
+        LPDIRECTDRAWPALETTE* lplpDDPalette,
+        IUnknown* pUnkOuter);
     HRESULT WINAPI CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
-        LPDIRECTDRAWSURFACE* lplpDDSurface, IUnknown* pUnkOuter);
-    HRESULT WINAPI DuplicateSurface(
-        LPDIRECTDRAWSURFACE lpDDSurface, LPDIRECTDRAWSURFACE* lplpDupDDSurface);
+        LPDIRECTDRAWSURFACE* lplpDDSurface,
+        IUnknown* pUnkOuter);
+    HRESULT WINAPI DuplicateSurface(LPDIRECTDRAWSURFACE lpDDSurface,
+        LPDIRECTDRAWSURFACE* lplpDupDDSurface);
     HRESULT WINAPI EnumDisplayModes(DWORD dwFlags,
-        LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext,
+        LPDDSURFACEDESC lpDDSurfaceDesc,
+        LPVOID lpContext,
         LPDDENUMMODESCALLBACK lpEnumModesCallback);
-    HRESULT WINAPI EnumSurfaces(DWORD dwFlags, LPDDSURFACEDESC lpDDSurfaceDesc,
-        LPVOID lpContext, LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback);
+    HRESULT WINAPI EnumSurfaces(DWORD dwFlags,
+        LPDDSURFACEDESC lpDDSurfaceDesc,
+        LPVOID lpContext,
+        LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback);
     HRESULT WINAPI FlipToGDISurface();
     HRESULT WINAPI GetCaps(LPDDCAPS lpDDDriverCaps, LPDDCAPS lpDDHELCaps);
     HRESULT WINAPI GetDisplayMode(LPDDSURFACEDESC lpDDSurfaceDesc);
@@ -52,10 +62,13 @@ public:
     HRESULT WINAPI WaitForVerticalBlank(DWORD dwFlags, HANDLE hEvent);
 
     /*** IDirectDraw2 methods ***/
-    HRESULT WINAPI SetDisplayMode(DWORD dwWidth, DWORD dwHeight, DWORD dwBPP,
+    HRESULT WINAPI SetDisplayMode(DWORD dwWidth,
+        DWORD dwHeight,
+        DWORD dwBPP,
         DWORD dwRefreshRate,
         DWORD dwFlags); // updated in v2
-    HRESULT WINAPI GetAvailableVidMem(LPDDSCAPS lpDDSCaps, LPDWORD lpdwTotal,
+    HRESULT WINAPI GetAvailableVidMem(LPDDSCAPS lpDDSCaps,
+        LPDWORD lpdwTotal,
         LPDWORD lpdwFree); // added in v2
 
 private:

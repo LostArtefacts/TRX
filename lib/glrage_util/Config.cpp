@@ -1,6 +1,6 @@
 #include "Config.hpp"
-#include "StringUtils.hpp"
 #include "Logger.hpp"
+#include "StringUtils.hpp"
 #include "ini.h"
 
 #include <algorithm>
@@ -20,8 +20,8 @@ void Config::load(const std::string& path)
     }
 }
 
-std::string Config::getString(
-    const std::string& name, const std::string& defaultValue)
+std::string Config::getString(const std::string& name,
+    const std::string& defaultValue)
 {
     auto result = m_values.find(name);
     if (result == m_values.end()) {
@@ -46,8 +46,10 @@ bool Config::getBool(const std::string& name, const bool defaultValue)
     return getString(name, defaultValue ? "true" : "false") == "true";
 }
 
-int Config::valueHandler(void* user, const char* section, const char* name,
-                            const char* value)
+int Config::valueHandler(void* user,
+    const char* section,
+    const char* name,
+    const char* value)
 {
     std::string key = std::string() + section + "." + name;
 

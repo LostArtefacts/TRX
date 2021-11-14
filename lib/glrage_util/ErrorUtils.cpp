@@ -8,8 +8,8 @@ void ErrorUtils::warning(const std::string& message)
     MessageBox(hwnd, message.c_str(), "Warning", MB_ICONWARNING | MB_OK);
 }
 
-void ErrorUtils::warning(
-    const std::string& message, const std::exception& exception)
+void ErrorUtils::warning(const std::string& message,
+    const std::exception& exception)
 {
     warning(message, exception.what());
 }
@@ -34,8 +34,8 @@ void ErrorUtils::error(const std::string& message)
     ExitProcess(1);
 }
 
-void ErrorUtils::error(
-    const std::string& message, const std::exception& exception)
+void ErrorUtils::error(const std::string& message,
+    const std::exception& exception)
 {
     error(message, exception.what());
 }
@@ -74,8 +74,12 @@ std::string ErrorUtils::getWindowsErrorString()
     DWORD bufLen = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
                                      FORMAT_MESSAGE_FROM_SYSTEM |
                                      FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, nullptr);
+        nullptr,
+        error,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        reinterpret_cast<LPTSTR>(&lpMsgBuf),
+        0,
+        nullptr);
 
     if (!bufLen) {
         return "Unknown error";

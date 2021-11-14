@@ -11,8 +11,10 @@ class ContextImpl : public Context
 {
 public:
     static ContextImpl& instance();
-    static LRESULT CALLBACK callbackWindowProc(
-        HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK callbackWindowProc(HWND hwnd,
+        UINT msg,
+        WPARAM wParam,
+        LPARAM lParam);
     static BOOL CALLBACK callbackEnumWindowsProc(HWND hwnd, LPARAM _this);
 
     void init();

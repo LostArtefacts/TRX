@@ -1,8 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <vector>
-#include <algorithm>
 
 namespace glrage {
 namespace ddraw {

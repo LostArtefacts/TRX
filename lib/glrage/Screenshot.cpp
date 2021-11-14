@@ -1,8 +1,8 @@
 #include "Screenshot.hpp"
 #include "ContextImpl.hpp"
 
-#include <glrage_util/StringUtils.hpp>
 #include <glrage_gl/Screenshot.hpp>
+#include <glrage_util/StringUtils.hpp>
 
 #include <cstdint>
 #include <exception>

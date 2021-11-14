@@ -45,8 +45,9 @@ ULONG WINAPI DirectDrawClipper::Release()
 }
 
 /*** IDirectDrawClipper methods ***/
-HRESULT WINAPI DirectDrawClipper::GetClipList(
-    LPRECT lpRect, LPRGNDATA lpClipList, LPDWORD lpdwSize)
+HRESULT WINAPI DirectDrawClipper::GetClipList(LPRECT lpRect,
+    LPRGNDATA lpClipList,
+    LPDWORD lpdwSize)
 {
     LOG_TRACE("");
 
@@ -77,8 +78,8 @@ HRESULT WINAPI DirectDrawClipper::IsClipListChanged(BOOL* lpbChanged)
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawClipper::SetClipList(
-    LPRGNDATA lpClipList, DWORD dwFlags)
+HRESULT WINAPI DirectDrawClipper::SetClipList(LPRGNDATA lpClipList,
+    DWORD dwFlags)
 {
     LOG_TRACE("");
 

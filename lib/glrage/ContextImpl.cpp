@@ -19,8 +19,10 @@ ContextImpl& ContextImpl::instance()
     return instance;
 }
 
-LRESULT CALLBACK ContextImpl::callbackWindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK ContextImpl::callbackWindowProc(HWND hwnd,
+    UINT msg,
+    WPARAM wParam,
+    LPARAM lParam)
 {
     return instance().windowProc(hwnd, msg, wParam, lParam);
 }
@@ -65,8 +67,17 @@ void ContextImpl::init()
     // The exact point where the application will create its window is unknown,
     // but a valid OpenGL context is required at this point, so just create a
     // dummy window for now and transfer the context later.
-    auto m_hwndTmp = CreateWindow("STATIC", "", WS_POPUP | WS_DISABLED, 0, 0,
-        1, 1, NULL, NULL, GetModuleHandle(NULL), NULL);
+    auto m_hwndTmp = CreateWindow("STATIC",
+        "",
+        WS_POPUP | WS_DISABLED,
+        0,
+        0,
+        1,
+        1,
+        NULL,
+        NULL,
+        GetModuleHandle(NULL),
+        NULL);
     ShowWindow(m_hwndTmp, SW_HIDE);
 
     m_hdc = GetDC(m_hwndTmp);
@@ -281,7 +292,7 @@ void ContextImpl::setFullscreen(bool fullscreen)
 
     bool fullscreen_hack = m_config.getBool("context.fullscreen_hack", false);
     if (m_fullscreen) {
-        width = m_screenWidth + (fullscreen_hack?1:0);
+        width = m_screenWidth + (fullscreen_hack ? 1 : 0);
         height = m_screenHeight;
     } else {
         width = m_width;
@@ -330,7 +341,8 @@ void ContextImpl::setWindowSize(int32_t width, int32_t height)
     LOG_INFO("Window size: %dx%d", width, height);
 
     // reduce window size as long as its greater or equal to the desktop size
-    while (!m_fullscreen && width >= m_screenWidth && height >= m_screenHeight) {
+    while (
+        !m_fullscreen && width >= m_screenWidth && height >= m_screenHeight) {
         width /= 2;
         height /= 2;
     }
@@ -347,8 +359,12 @@ void ContextImpl::setWindowSize(int32_t width, int32_t height)
     AdjustWindowRectEx(&rect, style, FALSE, styleEx);
 
     // resize window
-    SetWindowPos(m_hwnd, HWND_NOTOPMOST, rect.left, rect.top,
-        rect.right - rect.left, rect.bottom - rect.top,
+    SetWindowPos(m_hwnd,
+        HWND_NOTOPMOST,
+        rect.left,
+        rect.top,
+        rect.right - rect.left,
+        rect.bottom - rect.top,
         SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 }
 

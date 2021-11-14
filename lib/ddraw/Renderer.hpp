@@ -31,7 +31,6 @@ private:
     static const int32_t TITLE_WIDTH = 640;
     static const int32_t TITLE_HEIGHT = 480;
 
-
     Context& m_context{GLRage::getContext()};
     Config& m_config{GLRage::getConfig()};
     uint32_t m_width = 0;

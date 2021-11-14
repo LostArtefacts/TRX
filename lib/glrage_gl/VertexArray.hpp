@@ -12,8 +12,12 @@ public:
     VertexArray();
     ~VertexArray();
     void bind();
-    void attribute(GLuint index, GLint size, GLenum type, GLboolean normalized,
-        GLsizei stride, GLsizei offset);
+    void attribute(GLuint index,
+        GLint size,
+        GLenum type,
+        GLboolean normalized,
+        GLsizei stride,
+        GLsizei offset);
 };
 
 } // namespace gl

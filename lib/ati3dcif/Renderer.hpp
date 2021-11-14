@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Texture.hpp"
-#include "VertexStream.hpp"
 #include "TransDelay.hpp"
+#include "VertexStream.hpp"
 
 #include <glrage/GLRage.hpp>
 #include <glrage_gl/Program.hpp>

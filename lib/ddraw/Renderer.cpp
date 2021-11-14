@@ -14,8 +14,8 @@ Renderer::Renderer()
 {
     // configure buffer
     m_surfaceBuffer.bind();
-    GLfloat verts[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
-                        0.0, 1.0, 1.0, 0.0, 1.0, 1.0 };
+    GLfloat verts[] = {
+        0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0};
     m_surfaceBuffer.data(sizeof(verts), verts, GL_STATIC_DRAW);
 
     m_surfaceFormat.bind();
@@ -53,16 +53,18 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     std::string texDir = m_config.getString("patch.texture_directory", "");
     uint32_t width = desc.dwWidth;
     uint32_t height = desc.dwHeight;
-    uint8_t *bits = &data[0];
+    uint8_t* bits = &data[0];
     GLenum tex_format = TEX_FORMAT;
     GLenum tex_type = TEX_TYPE;
     m_surfaceTexture.bind();
 
-    // if (texDir.length() > 0 && desc.dwWidth == TITLE_WIDTH && desc.dwHeight == TITLE_HEIGHT)
+    // if (texDir.length() > 0 && desc.dwWidth == TITLE_WIDTH && desc.dwHeight
+    // == TITLE_HEIGHT)
     // {
     //     uint8_t md5sum[16];
     //     MD5(&data[0], data.size(), md5sum);
-    //     uint8_t *key = reinterpret_cast<uint8_t *>("\x4D\xD5\x68\xAD\xD2\x7E\x5B\xC2\x07\xF0\xD3\xC4\xB8\xEC\xCE\x67");
+    //     uint8_t *key = reinterpret_cast<uint8_t
+    //     *>("\x4D\xD5\x68\xAD\xD2\x7E\x5B\xC2\x07\xF0\xD3\xC4\xB8\xEC\xCE\x67");
     //     if (memcmp(md5sum, key, 16) == 0)
     //     {
     //         if (m_overrideImage.IsNull())
@@ -72,7 +74,8 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     //             CImage image;
     //             if (SUCCEEDED(image.Load(wFileName.c_str())))
     //             {
-    //                 m_overrideImage.Create(image.GetWidth(), -image.GetHeight(), 24, 0);
+    //                 m_overrideImage.Create(image.GetWidth(),
+    //                 -image.GetHeight(), 24, 0);
     //                 image.BitBlt(m_overrideImage.GetDC(), 0, 0);
     //             }
     //         }
@@ -92,11 +95,25 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     if (width != m_width || height != m_height) {
         m_width = width;
         m_height = height;
-        glTexImage2D(GL_TEXTURE_2D, 0, TEX_INTERNAL_FORMAT, m_width, m_height,
-            0, tex_format, tex_type, bits);
+        glTexImage2D(GL_TEXTURE_2D,
+            0,
+            TEX_INTERNAL_FORMAT,
+            m_width,
+            m_height,
+            0,
+            tex_format,
+            tex_type,
+            bits);
     } else {
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, tex_format,
-            tex_type, bits);
+        glTexSubImage2D(GL_TEXTURE_2D,
+            0,
+            0,
+            0,
+            m_width,
+            m_height,
+            tex_format,
+            tex_type,
+            bits);
     }
 }
 

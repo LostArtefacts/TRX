@@ -9,27 +9,29 @@
 namespace glrage {
 namespace ddraw {
 
-extern "C" {
-HRESULT __declspec(dllexport) WINAPI DirectDrawCreate(
-    GUID FAR* lpGUID, LPDIRECTDRAW FAR* lplpDD, IUnknown FAR* pUnkOuter)
+extern "C"
 {
-    LOG_TRACE("%p, %p, %p", lpGUID, lplpDD, pUnkOuter);
+    HRESULT __declspec(dllexport) WINAPI DirectDrawCreate(GUID FAR* lpGUID,
+        LPDIRECTDRAW FAR* lplpDD,
+        IUnknown FAR* pUnkOuter)
+    {
+        LOG_TRACE("%p, %p, %p", lpGUID, lplpDD, pUnkOuter);
 
-    Context& context = GLRage::getContext();
-    context.init();
-    context.attach();
+        Context& context = GLRage::getContext();
+        context.init();
+        context.attach();
 
-    ErrorUtils::setHWnd(context.getHWnd());
+        ErrorUtils::setHWnd(context.getHWnd());
 
-    try {
-        *lplpDD = new DirectDraw();
-    } catch (const std::exception& ex) {
-        ErrorUtils::warning(ex);
-        return DDERR_GENERIC;
+        try {
+            *lplpDD = new DirectDraw();
+        } catch (const std::exception& ex) {
+            ErrorUtils::warning(ex);
+            return DDERR_GENERIC;
+        }
+
+        return DD_OK;
     }
-
-    return DD_OK;
-}
 }
 
 } // namespace ddraw
