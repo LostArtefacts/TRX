@@ -38,8 +38,6 @@ public:
     bool isRendered();
     HWND getHWnd();
     std::string getBasePath();
-    GameID getGameID();
-    void setGameID(GameID gameID);
 
 private:
     ContextImpl();
@@ -96,9 +94,6 @@ private:
     // Screen display mode
     int32_t m_screenWidth = 0;
     int32_t m_screenHeight = 0;
-
-    // detected game
-    GameID m_gameID = GameID::Unknown;
 };
 
 } // namespace glrage

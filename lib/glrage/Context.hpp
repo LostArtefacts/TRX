@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GameID.hpp"
-
 #include <windows.h>
 
 #include <cstdint>
@@ -36,8 +34,6 @@ public:
     virtual bool isRendered() = 0;
     virtual HWND getHWnd() = 0;
     virtual std::string getBasePath() = 0;
-    virtual GameID getGameID() = 0;
-    virtual void setGameID(GameID gameID) = 0;
 
     virtual ~Context() = default;
 };

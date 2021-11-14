@@ -195,10 +195,8 @@ HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
 
             Blitter::blit(srcImg, srcRect, dstImg, dstRect);
 
-            if (isTombRaider()) {
-                // simulate dimming of DOS/PSX menu
-                rgba5551AdjustBrightness(false);
-            }
+            // simulate dimming of DOS/PSX menu
+            rgba5551AdjustBrightness(false);
         } else {
             int32_t srcWidth = src->m_desc.dwWidth;
             int32_t srcHeight = src->m_desc.dwHeight;
@@ -543,20 +541,18 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
     // (used for video sequences)
     if (m_desc.ddsCaps.dwCaps & DDSCAPS_PRIMARYSURFACE &&
         !(m_desc.ddsCaps.dwCaps & DDSCAPS_FLIP)) {
-        // FMV hack for Tomb Raider
-        bool tomb = isTombRaider();
-        if (tomb) {
-            // fix black lines by copying even to odd lines
-            for (DWORD i = 0; i < m_desc.dwHeight; i += 2) {
-                auto itrEven = std::next(m_buffer.begin(), i * m_desc.lPitch);
-                auto itrOdd =
-                    std::next(m_buffer.begin(), (i + 1) * m_desc.lPitch);
-                std::copy(itrEven, std::next(itrEven, m_desc.lPitch), itrOdd);
-            }
 
-            // video frames have only half brightness, fix it
-            rgba5551AdjustBrightness(true);
+        // FMV hack for Tomb Raider
+        // fix black lines by copying even to odd lines
+        for (DWORD i = 0; i < m_desc.dwHeight; i += 2) {
+            auto itrEven = std::next(m_buffer.begin(), i * m_desc.lPitch);
+            auto itrOdd =
+                std::next(m_buffer.begin(), (i + 1) * m_desc.lPitch);
+            std::copy(itrEven, std::next(itrEven, m_desc.lPitch), itrOdd);
         }
+
+        // video frames have only half brightness, fix it
+        rgba5551AdjustBrightness(true);
 
         m_context.swapBuffers();
         m_context.setupViewport();
@@ -565,9 +561,7 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
 
         // the video codec updates changed pixels only. so the original
         // brightness must be restored after rendering to avoid errors
-        if (tomb) {
-            rgba5551AdjustBrightness(false);
-        }
+        rgba5551AdjustBrightness(false);
     }
 
     return DD_OK;
@@ -734,12 +728,6 @@ void DirectDrawSurface::rgba5551AdjustBrightness(bool brighten)
             buf[i] |= c << j;
         }
     }
-}
-
-bool DirectDrawSurface::isTombRaider()
-{
-    GameID gameID = m_context.getGameID();
-    return gameID == GameID::TombRaider || gameID == GameID::TombRaiderGold;
 }
 
 } // namespace ddraw
