@@ -14,7 +14,7 @@ namespace glrage {
 namespace cif {
 
 static Context& context = GLRage::getContext();
-static std::unique_ptr<Renderer> renderer;
+static std::unique_ptr<Renderer> renderer = NULL;
 static bool contextCreated = false;
 
 C3D_EC
@@ -79,48 +79,6 @@ C3D_EC WINAPI ATI3DCIF_Init(void)
         renderer = std::make_unique<Renderer>();
     } catch (...) {
         return HandleException();
-    }
-
-    return C3D_EC_OK;
-}
-
-C3D_EC WINAPI ATI3DCIF_GetInfo(PC3D_3DCIFINFO p3DCIFInfo)
-{
-    LOG_TRACE("");
-
-    // check for invalid struct
-    if (!p3DCIFInfo || p3DCIFInfo->u32Size > 48) {
-        return C3D_EC_BADPARAM;
-    }
-
-    // values from an ATI Xpert 98 with a 3D Rage Pro AGP 2x
-
-    // Host pointer to frame buffer base (TODO: allocate memory?)
-    p3DCIFInfo->u32FrameBuffBase = 0;
-    // Host pointer to offscreen heap (TODO: allocate memory?)
-    p3DCIFInfo->u32OffScreenHeap = 0;
-    p3DCIFInfo->u32OffScreenSize = 0x4fe800; // Size of offscreen heap
-    p3DCIFInfo->u32TotalRAM = 8 << 20;       // Total amount of RAM on the card
-    p3DCIFInfo->u32ASICID = 0x409;           // ASIC Id. code
-    p3DCIFInfo->u32ASICRevision = 0x47ff;    // ASIC revision
-
-    // older CIF versions don't have CIF caps, so check the size first
-    if (p3DCIFInfo->u32Size == 48) {
-        // note: 0x400 and 0x800 are reported in 4.10.2690 and later but are not
-        // defined in ATI3DCIF.H
-        p3DCIFInfo->u32CIFCaps1 = C3D_CAPS1_FOG | C3D_CAPS1_POINT |
-                                  C3D_CAPS1_RECT | C3D_CAPS1_Z_BUFFER |
-                                  C3D_CAPS1_CI4_TMAP | C3D_CAPS1_CI8_TMAP |
-                                  C3D_CAPS1_DITHER_EN | C3D_CAPS1_ENH_PERSP |
-                                  C3D_CAPS1_SCISSOR | 0x400 | 0x800;
-        p3DCIFInfo->u32CIFCaps2 = C3D_CAPS2_TEXTURE_CLAMP |
-                                  C3D_CAPS2_DESTINATION_ALPHA_BLEND |
-                                  C3D_CAPS2_TEXTURE_TILING;
-
-        // unused caps
-        p3DCIFInfo->u32CIFCaps3 = 0;
-        p3DCIFInfo->u32CIFCaps4 = 0;
-        p3DCIFInfo->u32CIFCaps5 = 0;
     }
 
     return C3D_EC_OK;
@@ -283,7 +241,6 @@ C3D_EC WINAPI ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 
 C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_Term_lib)(void) = ATI3DCIF_Term;
 C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_Init_lib)(void) = ATI3DCIF_Init;
-C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_GetInfo_lib)(PC3D_3DCIFINFO p3DCIFInfo) = ATI3DCIF_GetInfo;
 C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TextureReg_lib)(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap) = ATI3DCIF_TextureReg;
 C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TextureUnreg_lib)(C3D_HTX htxToUnreg) = ATI3DCIF_TextureUnreg;
 C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TexturePaletteCreate_lib)(C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated) = ATI3DCIF_TexturePaletteCreate;

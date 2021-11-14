@@ -181,6 +181,7 @@ C3D_HRC S_ATI_GetRenderContext()
 {
     return m_RenderContext;
 }
+
 C3D_EC ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     return m_ATI3DCIF_TextureReg_lib
