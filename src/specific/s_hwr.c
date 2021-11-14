@@ -314,14 +314,20 @@ void HWR_SelectTexture(int tex_num)
         return;
     }
 
+    if (!HWR_TextureLoaded[tex_num]) {
+        return;
+    }
+
     if (!m_ATITextureMap[tex_num]) {
-        ShowFatalError("ERROR: Attempt to select unloaded texture");
+        LOG_ERROR("ERROR: Attempt to select unloaded texture");
+        return;
     }
 
     if (ATI3DCIF_ContextSetState(
             S_ATI_GetRenderContext(), C3D_ERS_TMAP_SELECT,
             &m_ATITextureMap[tex_num])) {
         LOG_ERROR("    Texture error");
+        return;
     }
 
     HWR_SelectedTexture = tex_num;
@@ -409,6 +415,9 @@ void HWR_DrawSprite(
     if (HWR_TextureLoaded[sprite->tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(sprite->tpage);
+        HWR_RenderTriangleStrip(vertices, vertex_count);
+    } else {
+        HWR_DisableTextureMode();
         HWR_RenderTriangleStrip(vertices, vertex_count);
     }
 }
@@ -1427,6 +1436,9 @@ void HWR_DrawTexturedTriangle(
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
         HWR_RenderTriangleStrip(vertices, vertex_count);
+    } else {
+        HWR_DisableTextureMode();
+        HWR_RenderTriangleStrip(vertices, vertex_count);
     }
 }
 
@@ -1499,6 +1511,8 @@ void HWR_DrawTexturedQuad(
     if (HWR_TextureLoaded[tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
+    } else {
+        HWR_DisableTextureMode();
     }
 
     ATI3DCIF_RenderPrimStrip(vertices, 4);
@@ -1664,11 +1678,13 @@ void HWR_DownloadTextures(int32_t pages)
         tmap.bClampT = FALSE;
         tmap.bAlphaBlend = FALSE;
         if (ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i])) {
-            ShowFatalError("ERROR: Could not register texture");
+            LOG_ERROR("ERROR: Could not register texture");
+            HWR_TextureLoaded[i] = false;
+        } else {
+            LOG_INFO(
+                "    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
+            HWR_TextureLoaded[i] = true;
         }
-
-        HWR_TextureLoaded[i] = true;
-        LOG_INFO("    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
     }
 
     HWR_SelectedTexture = -1;
