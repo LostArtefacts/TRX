@@ -1,6 +1,5 @@
 #pragma once
 
-#include "State.hpp"
 #include "Texture.hpp"
 #include "VertexStream.hpp"
 #include "TransDelay.hpp"
@@ -88,20 +87,19 @@ public:
 
 private:
     // state functions start
-    void switchState(StateVar::Value& value);
-    void vertexType(StateVar::Value& value);
-    void primType(StateVar::Value& value);
-    void solidColor(StateVar::Value& value);
-    void shadeMode(StateVar::Value& value);
-    void tmapEnable(StateVar::Value& value);
-    void tmapSelect(StateVar::Value& value);
-    void tmapLight(StateVar::Value& value);
-    void tmapFilter(StateVar::Value& value);
-    void tmapTexOp(StateVar::Value& value);
-    void alphaSrc(StateVar::Value& value);
-    void alphaDst(StateVar::Value& value);
-    void zCmpFunc(StateVar::Value& value);
-    void zMode(StateVar::Value& value);
+    void vertexType(C3D_EVERTEX value);
+    void primType(C3D_EPRIM value);
+    void solidColor(C3D_COLOR value);
+    void shadeMode(C3D_ESHADE value);
+    void tmapEnable(C3D_BOOL value);
+    void tmapSelect(C3D_HTX value);
+    void tmapLight(C3D_ETLIGHT value);
+    void tmapFilter(C3D_ETEXFILTER value);
+    void tmapTexOp(C3D_ETEXOP value);
+    void alphaSrc(C3D_EASRC value);
+    void alphaDst(C3D_EADST value);
+    void zCmpFunc(C3D_EZCMP value);
+    void zMode(C3D_EZMODE value);
     // state functions end
 
     void tmapSelectImpl(C3D_HTX handle);
@@ -116,8 +114,13 @@ private:
     gl::Program m_program;
     gl::Sampler m_sampler;
     VertexStream m_vertexStream;
-    State m_state;
     TransDelay m_transDelay;
+
+    // state data
+    C3D_HTX m_tmapSelect;
+    C3D_EASRC m_easrc;
+    C3D_EADST m_eadst;
+    // state data end
 };
 
 } // namespace cif

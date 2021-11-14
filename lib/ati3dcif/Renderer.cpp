@@ -19,36 +19,6 @@ Renderer::Renderer()
     // in that case delay them. When the delayer needs to display the delayed primitives it calls
     // back to the vertex stream to do so.
     m_vertexStream.setDelayer([this](C3D_VTCF *verts) {return m_transDelay.delayTriangle(verts);});
-    // register state observers
-    // clang-format off
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_VERTEX_TYPE);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_PRIM_TYPE);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_SOLID_CLR);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_SHADE_MODE);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_TMAP_EN);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_TMAP_SELECT);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_TMAP_LIGHT);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_TMAP_FILTER);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_TMAP_TEXOP);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_ALPHA_SRC);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_ALPHA_DST);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_Z_CMP_FNC);
-    m_state.registerObserver(std::bind(&Renderer::switchState, this, _1), C3D_ERS_Z_MODE);
-
-    m_state.registerObserver(std::bind(&Renderer::vertexType, this, _1), C3D_ERS_VERTEX_TYPE);
-    m_state.registerObserver(std::bind(&Renderer::primType, this, _1), C3D_ERS_PRIM_TYPE);
-    m_state.registerObserver(std::bind(&Renderer::solidColor, this, _1), C3D_ERS_SOLID_CLR);
-    m_state.registerObserver(std::bind(&Renderer::shadeMode, this, _1), C3D_ERS_SHADE_MODE);
-    m_state.registerObserver(std::bind(&Renderer::tmapEnable, this, _1), C3D_ERS_TMAP_EN);
-    m_state.registerObserver(std::bind(&Renderer::tmapSelect, this, _1), C3D_ERS_TMAP_SELECT);
-    m_state.registerObserver(std::bind(&Renderer::tmapLight, this, _1), C3D_ERS_TMAP_LIGHT);
-    m_state.registerObserver(std::bind(&Renderer::tmapFilter, this, _1), C3D_ERS_TMAP_FILTER);
-    m_state.registerObserver(std::bind(&Renderer::tmapTexOp, this, _1), C3D_ERS_TMAP_TEXOP);
-    m_state.registerObserver(std::bind(&Renderer::alphaSrc, this, _1), C3D_ERS_ALPHA_SRC);
-    m_state.registerObserver(std::bind(&Renderer::alphaDst, this, _1), C3D_ERS_ALPHA_DST);
-    m_state.registerObserver(std::bind(&Renderer::zCmpFunc, this, _1), C3D_ERS_Z_CMP_FNC);
-    m_state.registerObserver(std::bind(&Renderer::zMode, this, _1), C3D_ERS_Z_MODE);
-    // clang-format on
 
     // bind sampler
     m_sampler.bind(0);
@@ -70,18 +40,14 @@ Renderer::Renderer()
     m_program.bind();
 
     // negate Z axis so the model is rendered behind the viewport, which is
-    // better
-    // than having a negative zNear in the ortho matrix, which seems to mess up
-    // depth testing
+    // better than having a negative zNear in the ortho matrix, which seems
+    // to mess up depth testing
     auto modelView = glm::scale(glm::mat4(), glm::vec3(1, 1, -1));
     m_program.uniformMatrix4fv(
         "matModelView", 1, GL_FALSE, glm::value_ptr(modelView));
 
     // cache frequently used config values
     m_wireframe = m_config.getBool("ati3dcif.wireframe", false);
-
-    // apply default state
-    resetState();
 
     gl::Utils::checkError(__FUNCTION__);
 }
@@ -162,8 +128,8 @@ void Renderer::textureUnreg(C3D_HTX htxToUnreg)
     }
 
     // unbind texture if currently bound
-    if (htxToUnreg == m_state.get(C3D_ERS_TMAP_SELECT).htx) {
-        m_state.set(C3D_ERS_TMAP_SELECT, StateVar::Value{0});
+    if (htxToUnreg == m_tmapSelect) {
+        tmapSelect(0);
     }
 
     std::shared_ptr<Texture> texture = it->second;
@@ -211,45 +177,55 @@ void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 
 void Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
-    m_state.set(eRStateID, pRStateData);
+    switch (eRStateID) {
+    case C3D_ERS_VERTEX_TYPE: vertexType(*reinterpret_cast<C3D_EVERTEX*>(pRStateData)); break;
+    case C3D_ERS_PRIM_TYPE:   primType(*reinterpret_cast<C3D_EPRIM*>(pRStateData)); break;
+    case C3D_ERS_SOLID_CLR:   solidColor(*reinterpret_cast<C3D_COLOR*>(pRStateData)); break;
+    case C3D_ERS_SHADE_MODE:  shadeMode(*reinterpret_cast<C3D_ESHADE*>(pRStateData)); break;
+    case C3D_ERS_TMAP_EN:     tmapEnable(*reinterpret_cast<C3D_BOOL*>(pRStateData)); break;
+    case C3D_ERS_TMAP_SELECT: tmapSelect(*reinterpret_cast<C3D_HTX*>(pRStateData)); break;
+    case C3D_ERS_TMAP_LIGHT:  tmapLight(*reinterpret_cast<C3D_ETLIGHT*>(pRStateData)); break;
+    case C3D_ERS_TMAP_FILTER: tmapFilter(*reinterpret_cast<C3D_ETEXFILTER*>(pRStateData)); break;
+    case C3D_ERS_TMAP_TEXOP:  tmapTexOp(*reinterpret_cast<C3D_ETEXOP*>(pRStateData)); break;
+    case C3D_ERS_ALPHA_SRC:   alphaSrc(*reinterpret_cast<C3D_EASRC*>(pRStateData)); break;
+    case C3D_ERS_ALPHA_DST:   alphaDst(*reinterpret_cast<C3D_EADST*>(pRStateData)); break;
+    case C3D_ERS_Z_CMP_FNC:   zCmpFunc(*reinterpret_cast<C3D_EZCMP*>(pRStateData)); break;
+    case C3D_ERS_Z_MODE:      zMode(*reinterpret_cast<C3D_EZMODE*>(pRStateData)); break;
+    default:
+        throw Error("Unsupported state: " + std::to_string(eRStateID), C3D_EC_NOTIMPYET);
+    }
 }
 
-void Renderer::resetState()
+void Renderer::vertexType(C3D_EVERTEX value)
 {
-    m_state.reset();
-}
-
-void Renderer::switchState(StateVar::Value& value)
-{
-    // render pending polygons from the previous state
     m_vertexStream.renderPending();
+    m_vertexStream.vertexType(value);
 }
 
-void Renderer::vertexType(StateVar::Value& value)
+void Renderer::primType(C3D_EPRIM value)
 {
-    m_vertexStream.vertexType(value.evertex);
+    m_vertexStream.renderPending();
+    m_vertexStream.primType(value);
 }
 
-void Renderer::primType(StateVar::Value& value)
+void Renderer::solidColor(C3D_COLOR value)
 {
-    m_vertexStream.primType(value.eprim);
-}
-
-void Renderer::solidColor(StateVar::Value& value)
-{
-    C3D_COLOR color = value.color;
+    m_vertexStream.renderPending();
+    C3D_COLOR color = value;
     m_program.uniform4f("solidColor", color.r / 255.0f, color.g / 255.0f,
         color.b / 255.0f, color.a / 255.0f);
 }
 
-void Renderer::shadeMode(StateVar::Value& value)
+void Renderer::shadeMode(C3D_ESHADE value)
 {
-    m_program.uniform1i("shadeMode", value.eshade);
+    m_vertexStream.renderPending();
+    m_program.uniform1i("shadeMode", value);
 }
 
-void Renderer::tmapEnable(StateVar::Value& value)
+void Renderer::tmapEnable(C3D_BOOL value)
 {
-    C3D_BOOL enable = value.boolean;
+    m_vertexStream.renderPending();
+    C3D_BOOL enable = value;
     m_program.uniform1i("tmapEn", enable);
     m_transDelay.setTexturingEnabled(enable != C3D_FALSE);
     if (enable) {
@@ -259,9 +235,11 @@ void Renderer::tmapEnable(StateVar::Value& value)
     }
 }
 
-void Renderer::tmapSelect(StateVar::Value& value)
+void Renderer::tmapSelect(C3D_HTX value)
 {
-    tmapSelectImpl(value.htx);
+    m_vertexStream.renderPending();
+    m_tmapSelect = value;
+    tmapSelectImpl(value);
 }
 
 void Renderer::tmapSelectImpl(C3D_HTX handle)
@@ -292,53 +270,62 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
 }
 
 void Renderer::tmapRestore() {
-    tmapSelectImpl(m_state.get(C3D_ERS_TMAP_SELECT).htx);
+    tmapSelectImpl(m_tmapSelect);
 }
 
-void Renderer::tmapLight(StateVar::Value& value)
+void Renderer::tmapLight(C3D_ETLIGHT value)
 {
-    m_program.uniform1i("tmapLight", value.etlight);
+    m_vertexStream.renderPending();
+    m_program.uniform1i("tmapLight", value);
 }
 
-void Renderer::tmapFilter(StateVar::Value& value)
+void Renderer::tmapFilter(C3D_ETEXFILTER value)
 {
-    auto filter = value.etexfilter;
+    m_vertexStream.renderPending();
+    auto filter = value;
     m_sampler.parameteri(
         GL_TEXTURE_MAG_FILTER, GLCIF_TEXTURE_MAG_FILTER[filter]);
     m_sampler.parameteri(
         GL_TEXTURE_MIN_FILTER, GLCIF_TEXTURE_MIN_FILTER[filter]);
 }
 
-void Renderer::tmapTexOp(StateVar::Value& value)
+void Renderer::tmapTexOp(C3D_ETEXOP value)
 {
-    m_program.uniform1i("texOp", value.etexop);
+    m_vertexStream.renderPending();
+    m_program.uniform1i("texOp", value);
 }
 
-void Renderer::alphaSrc(StateVar::Value& value)
+void Renderer::alphaSrc(C3D_EASRC value)
 {
-    C3D_EASRC alphaSrc = value.easrc;
-    C3D_EADST alphaDst = m_state.get(C3D_ERS_ALPHA_DST).eadst;
+    m_vertexStream.renderPending();
+    m_easrc = value;
+    C3D_EASRC alphaSrc = value;
+    C3D_EADST alphaDst = m_eadst;
     glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
 }
 
-void Renderer::alphaDst(StateVar::Value& value)
+void Renderer::alphaDst(C3D_EADST value)
 {
-    C3D_EASRC alphaSrc =  m_state.get(C3D_ERS_ALPHA_SRC).easrc;
-    C3D_EADST alphaDst = value.eadst;
+    m_vertexStream.renderPending();
+    m_eadst = value;
+    C3D_EASRC alphaSrc =  m_easrc;
+    C3D_EADST alphaDst = value;
     glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
 }
 
-void Renderer::zCmpFunc(StateVar::Value& value)
+void Renderer::zCmpFunc(C3D_EZCMP value)
 {
-    C3D_EZCMP func = value.ezcmp;
+    m_vertexStream.renderPending();
+    C3D_EZCMP func = value;
     if (func < C3D_EZCMP_MAX) {
         glDepthFunc(GLCIF_DEPTH_FUNC[func]);
     }
 }
 
-void Renderer::zMode(StateVar::Value& value)
+void Renderer::zMode(C3D_EZMODE value)
 {
-    auto mode = value.ezmode;
+    m_vertexStream.renderPending();
+    auto mode = value;
     glDepthMask(GLCIF_DEPTH_MASK[mode]);
 
     if (mode > C3D_EZMODE_TESTON) {

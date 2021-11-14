@@ -74,8 +74,6 @@ glrage = shared_library(
     'lib/ati3dcif/DllMain.cpp',
     'lib/ati3dcif/Error.cpp',
     'lib/ati3dcif/Renderer.cpp',
-    'lib/ati3dcif/State.cpp',
-    'lib/ati3dcif/StateVar.cpp',
     'lib/ati3dcif/Texture.cpp',
     'lib/ati3dcif/TransDelay.cpp',
     'lib/ati3dcif/Utils.cpp',
