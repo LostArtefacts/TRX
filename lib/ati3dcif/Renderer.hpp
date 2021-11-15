@@ -105,19 +105,19 @@ private:
     void tmapRestore();
 
     Context& m_context{GLRage::getContext()};
-    bool m_wireframe;
+    bool m_wireframe = false;
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
-    int32_t m_paletteID{0};
+    int32_t m_paletteID = 0;
     gl::Program m_program;
     gl::Sampler m_sampler;
     VertexStream m_vertexStream;
     TransDelay m_transDelay;
 
     // state data
-    C3D_HTX m_tmapSelect;
-    C3D_EASRC m_easrc;
-    C3D_EADST m_eadst;
+    C3D_HTX m_tmapSelect = NULL;
+    C3D_EASRC m_easrc = C3D_EASRC_ONE;
+    C3D_EADST m_eadst = C3D_EADST_ZERO;
     // state data end
 };
 

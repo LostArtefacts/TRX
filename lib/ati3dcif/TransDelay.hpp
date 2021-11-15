@@ -27,7 +27,7 @@ private:
         std::vector<C3D_VTCF> vtcBuffer;
     };
     std::vector<std::shared_ptr<TexGroup>> m_store;
-    bool m_texturing_enabled;
+    bool m_texturing_enabled = false;
 };
 
 } // namespace cif

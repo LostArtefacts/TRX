@@ -25,10 +25,10 @@ public:
     std::vector<uint8_t>& translucencyMap();
 
 private:
-    C3D_COLOR m_chromaKey;
-    bool m_keyOnAlpha;
+    C3D_COLOR m_chromaKey = {0, 0, 0, 0};
+    bool m_keyOnAlpha = false;
     std::vector<uint8_t> m_translucency_map;
-    bool m_is_translucent;
+    bool m_is_translucent = false;
 };
 
 } // namespace cif

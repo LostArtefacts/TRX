@@ -30,7 +30,7 @@ public:
     HRESULT WINAPI SetHWnd(DWORD dwFlags, HWND hWnd);
 
 private:
-    HWND m_hWnd;
+    HWND m_hWnd = nullptr;
     RGNDATA m_clipList;
 };
 

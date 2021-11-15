@@ -36,8 +36,8 @@ public:
     void setDelayer(std::function<BOOL(C3D_VTCF*)> delayer);
 
 private:
-    C3D_EVERTEX m_vertexType;
-    C3D_EPRIM m_primType;
+    C3D_EVERTEX m_vertexType = C3D_EV_VTCF;
+    C3D_EPRIM m_primType = C3D_EPRIM_TRI;
     size_t m_vertexBufferSize = 0;
     gl::Buffer m_vertexBuffer;
     gl::VertexArray m_vtcFormat;
