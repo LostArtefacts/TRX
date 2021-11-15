@@ -11,8 +11,6 @@
 extern HINSTANCE TombModule;
 extern HWND TombHWND;
 
-extern LPDIRECTSOUND DSound;
-
 extern LPDIRECTDRAW DDraw;
 extern float DDrawSurfaceMinX;
 extern float DDrawSurfaceMinY;
