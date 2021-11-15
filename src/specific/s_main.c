@@ -73,22 +73,6 @@ static int InitDirectDraw()
         return 0;
     }
 
-    ATIInfo.u32Size = sizeof(C3D_3DCIFINFO);
-    if (ATI3DCIF_GetInfo(&ATIInfo)) {
-        ShowFatalError("Failed to parse ATI3DCIF capabilities");
-        return 0;
-    }
-
-    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_Z_BUFFER)) {
-        ShowFatalError("Z-Buffer capability not found");
-        return 0;
-    }
-
-    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_CI8_TMAP)) {
-        ShowFatalError("8-bit texture capability not found");
-        return 0;
-    }
-
     return 1;
 }
 

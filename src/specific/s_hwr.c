@@ -96,29 +96,6 @@ void HWR_RenderToggle()
     }
 }
 
-void HWR_GetSurfaceAndPitch(
-    LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch)
-{
-    DDSURFACEDESC surface_desc;
-    HRESULT result;
-
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
-    result =
-        IDirectDrawSurface2_Lock(surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
-    HWR_CheckError(result);
-
-    if (out_surface) {
-        *out_surface = surface_desc.lpSurface;
-    }
-    if (out_pitch) {
-        *out_pitch = surface_desc.lPitch / 2;
-    }
-
-    result = IDirectDrawSurface2_Unlock(surface, surface_desc.lpSurface);
-    HWR_CheckError(result);
-}
-
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     DDBLTFX blt_fx;
@@ -227,10 +204,6 @@ void HWR_FlipPrimaryBuffer()
     HRESULT result = IDirectDrawSurface_Flip(Surface1, NULL, DDFLIP_WAIT);
     HWR_CheckError(result);
     HWR_RenderToggle();
-
-    void *old_ptr = Surface2DrawPtr;
-    Surface2DrawPtr = Surface1DrawPtr;
-    Surface1DrawPtr = old_ptr;
 
     HWR_SetupRenderContextAndRender();
 }
@@ -1101,29 +1074,8 @@ int32_t HWR_SetHardwareVideoMode()
         HWR_CheckError(result);
     }
 
-    void *surface;
-    int32_t pitch;
-    HWR_GetSurfaceAndPitch(Surface2, &Surface2DrawPtr, &pitch);
-    HWR_GetSurfaceAndPitch(Surface1, &Surface1DrawPtr, &pitch);
-    LOG_INFO(
-        "Pitch = %x Draw1Ptr = %x Draw2Ptr = %x", pitch, Surface1DrawPtr,
-        Surface2DrawPtr);
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PITCH, &pitch);
     HWR_SetupRenderContextAndRender();
 
-    HWR_RenderEnd();
-    HWR_GetSurfaceAndPitch(Surface4, &surface, &pitch);
-    HWR_RenderToggle();
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_Z_PTR, &surface);
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_Z_PITCH, &pitch);
-
-    C3D_RECT viewport;
-    viewport.top = 0;
-    viewport.left = 0;
-    viewport.right = DDrawSurfaceWidth - 1;
-    viewport.bottom = DDrawSurfaceHeight - 1;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_VPORT, &viewport);
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_SCISSOR, &viewport);
     LOG_INFO("    complete");
     return 1;
 }
@@ -1161,16 +1113,10 @@ void HWR_InitialiseHardware()
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_TEXOP, &tmp);
     tmp = C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &tmp);
-    tmp = FALSE;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_FOG_EN, &tmp);
-    tmp = TRUE;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_DITHER_EN, &tmp);
     tmp = C3D_EZCMP_LEQUAL;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_CMP_FNC, &tmp);
     tmp = C3D_EZMODE_TESTON_WRITEZ;
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_Z_MODE, &tmp);
-    tmp = C3D_EPF_RGB1555;
-    ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_SURF_DRAW_PF, &tmp);
 
     LOG_INFO("    Detected %dk video memory", 4096);
     LOG_INFO("    Complete, hardware ready");
@@ -1215,15 +1161,9 @@ void HWR_FMVInit()
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();
-    ATI3DCIF_ContextSetState(
-        ATIRenderContext, C3D_ERS_SURF_DRAW_PTR, &Surface2DrawPtr);
-    int32_t perspective =
-        T1MConfig.render_flags.perspective ? C3D_ETPC_THREE : C3D_ETPC_NONE;
     int32_t filter = T1MConfig.render_flags.bilinear
         ? C3D_ETFILT_MIN2BY2_MAG2BY2
         : C3D_ETFILT_MINPNT_MAGPNT;
-    ATI3DCIF_ContextSetState(
-        ATIRenderContext, C3D_ERS_TMAP_PERSP_COR, &perspective);
     ATI3DCIF_ContextSetState(ATIRenderContext, C3D_ERS_TMAP_FILTER, &filter);
     HWR_RenderToggle();
 }

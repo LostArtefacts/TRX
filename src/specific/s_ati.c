@@ -8,7 +8,6 @@
 
 C3D_EC(__stdcall **m_ATI3DCIF_Init_lib)(void) = NULL;
 C3D_EC(__stdcall **m_ATI3DCIF_Term_lib)(void) = NULL;
-C3D_EC(__stdcall **m_ATI3DCIF_GetInfo_lib)(PC3D_3DCIFINFO info) = NULL;
 C3D_EC(__stdcall **m_ATI3DCIF_TextureReg_lib)
 (C3D_PTMAP ptmapToReg, C3D_PHTX phtmap) = NULL;
 C3D_EC(__stdcall **m_ATI3DCIF_TextureUnreg_lib)(C3D_HTX htxToUnreg) = NULL;
@@ -47,14 +46,6 @@ C3D_EC InitATI3DCIF()
         HATI3DCIFModule, "ATI3DCIF_Term_lib");
     if (!m_ATI3DCIF_Term_lib) {
         LOG_ERROR("cannot find ATI3DCIF_Term_lib");
-        goto fail;
-    }
-
-    m_ATI3DCIF_GetInfo_lib =
-        (C3D_EC(__stdcall **)(C3D_3DCIFINFO *))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_GetInfo_lib");
-    if (!m_ATI3DCIF_GetInfo_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_GetInfo_lib");
         goto fail;
     }
 
@@ -170,12 +161,6 @@ C3D_EC ShutdownATI3DCIF()
     HATI3DCIFModule = NULL;
 
     return result;
-}
-
-C3D_EC ATI3DCIF_GetInfo(PC3D_3DCIFINFO info)
-{
-    return m_ATI3DCIF_GetInfo_lib ? (*m_ATI3DCIF_GetInfo_lib)(info)
-                                  : C3D_EC_GENFAIL;
 }
 
 C3D_EC ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
