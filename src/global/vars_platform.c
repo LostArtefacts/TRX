@@ -5,8 +5,6 @@
 HINSTANCE TombModule;
 HWND TombHWND;
 
-LPDIRECTSOUND DSound;
-
 LPDIRECTDRAW DDraw;
 float DDrawSurfaceMinX;
 float DDrawSurfaceMinY;
