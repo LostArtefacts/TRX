@@ -1,12 +1,39 @@
 #include "filesystem.h"
 
+#include "log.h"
 #include "memory.h"
 
+#include <assert.h>
+#include <shlwapi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct MYFILE {
     FILE *fp;
 };
+
+bool File_IsRelative(const char *path)
+{
+    return PathIsRelativeA(path);
+}
+
+const char *File_GetGameDirectory()
+{
+    HMODULE module = NULL;
+    DWORD flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
+        | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
+
+    if (!GetModuleHandleEx(flags, NULL, &module)) {
+        LOG_ERROR("Can't get module handle");
+        return NULL;
+    }
+
+    static char path[MAX_PATH];
+    GetModuleFileNameA(module, path, sizeof(path));
+    PathRemoveFileSpecA(path);
+
+    return path;
+}
 
 MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
 {
@@ -21,6 +48,27 @@ MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
     default:
         file->fp = NULL;
         break;
+    }
+    if (!file->fp && File_IsRelative(path)) {
+        const char *game_path = File_GetGameDirectory();
+        if (game_path) {
+            assert(strlen(game_path) + 1 + strlen(path) < MAX_PATH);
+            char new_path[MAX_PATH] = "";
+            strcpy(new_path, game_path);
+            strcat(new_path, "\\");
+            strcat(new_path, path);
+            switch (mode) {
+            case FILE_OPEN_WRITE:
+                file->fp = fopen(new_path, "wb");
+                break;
+            case FILE_OPEN_READ:
+                file->fp = fopen(new_path, "rb");
+                break;
+            default:
+                file->fp = NULL;
+                break;
+            }
+        }
     }
     if (!file->fp) {
         Memory_Free(file);

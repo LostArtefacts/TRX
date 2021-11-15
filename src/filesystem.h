@@ -1,6 +1,7 @@
 #ifndef T1M_FILESYSTEM_H
 #define T1M_FILESYSTEM_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef enum {
@@ -15,6 +16,9 @@ typedef enum {
 } FILE_OPEN_MODE;
 
 typedef struct MYFILE MYFILE;
+
+bool File_IsRelative(const char *path);
+const char *File_GetGameDirectory();
 
 MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode);
 size_t FileRead(void *data, size_t item_size, size_t count, MYFILE *file);
