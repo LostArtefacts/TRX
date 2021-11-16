@@ -1,13 +1,13 @@
-#include "specific/hwr.h"
+#include "specific/s_hwr.h"
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/ati.h"
-#include "specific/display.h"
-#include "specific/smain.h"
+#include "specific/s_ati.h"
+#include "specific/s_display.h"
+#include "specific/s_main.h"
 
 #include <assert.h>
 

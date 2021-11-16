@@ -1,4 +1,4 @@
-#include "specific/file.h"
+#include "specific/s_file.h"
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
@@ -11,9 +11,9 @@
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/hwr.h"
-#include "specific/init.h"
-#include "specific/smain.h"
+#include "specific/s_hwr.h"
+#include "specific/s_init.h"
+#include "specific/s_main.h"
 
 #include <stdio.h>
 #include <windows.h>

@@ -2,7 +2,7 @@
 #define T1M_GLOBAL_VARS_PLATFORM_H
 
 #include "global/const.h"
-#include "specific/ati.h"
+#include "specific/s_ati.h"
 
 #include <ddraw.h>
 #include <dsound.h>

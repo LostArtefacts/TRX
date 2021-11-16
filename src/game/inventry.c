@@ -14,10 +14,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/display.h"
-#include "specific/frontend.h"
-#include "specific/input.h"
-#include "specific/output.h"
+#include "specific/s_display.h"
+#include "specific/s_frontend.h"
+#include "specific/s_input.h"
+#include "specific/s_output.h"
 
 #include <stdint.h>
 #include <string.h>

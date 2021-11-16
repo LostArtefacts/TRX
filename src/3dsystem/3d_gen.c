@@ -5,8 +5,8 @@
 #include "config.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/hwr.h"
-#include "specific/output.h"
+#include "specific/s_hwr.h"
+#include "specific/s_output.h"
 
 #include <math.h>
 

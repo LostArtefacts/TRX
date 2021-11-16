@@ -1,4 +1,4 @@
-#include "specific/music.h"
+#include "specific/s_music.h"
 
 #include "global/vars_platform.h"
 #include "log.h"

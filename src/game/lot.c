@@ -3,7 +3,7 @@
 #include "game/gamebuf.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 #include <stddef.h>
 

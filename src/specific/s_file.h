@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_FILE_H
-#define T1M_SPECIFIC_FILE_H
+#ifndef T1M_SPECIFIC_S_FILE_H
+#define T1M_SPECIFIC_S_FILE_H
 
 #include <stdbool.h>
 #include <stddef.h>

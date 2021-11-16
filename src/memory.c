@@ -1,6 +1,6 @@
 #include "memory.h"
 
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 #include <stdlib.h>
 #include <string.h>

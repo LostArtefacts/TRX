@@ -10,7 +10,7 @@
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/output.h"
+#include "specific/s_output.h"
 
 static int16_t InterpolatedBounds[6] = { 0 };
 static PHD_MATRIX *IMMatrixPtr = NULL;

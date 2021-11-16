@@ -11,8 +11,8 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/display.h"
-#include "specific/input.h"
+#include "specific/s_display.h"
+#include "specific/s_input.h"
 
 #include <stdint.h>
 #include <string.h>

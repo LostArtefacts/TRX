@@ -10,9 +10,9 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/display.h"
-#include "specific/input.h"
-#include "specific/output.h"
+#include "specific/s_display.h"
+#include "specific/s_input.h"
+#include "specific/s_output.h"
 
 #include <dinput.h>
 #include <stdio.h>

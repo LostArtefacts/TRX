@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_ATI_H
-#define T1M_SPECIFIC_ATI_H
+#ifndef T1M_SPECIFIC_S_ATI_H
+#define T1M_SPECIFIC_S_ATI_H
 
 #include <stdint.h>
 

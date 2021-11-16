@@ -1,4 +1,4 @@
-#include "specific/ati.h"
+#include "specific/s_ati.h"
 
 #include "global/vars_platform.h"
 #include "inject_util.h"

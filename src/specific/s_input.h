@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_INPUT_H
-#define T1M_SPECIFIC_INPUT_H
+#ifndef T1M_SPECIFIC_S_INPUT_H
+#define T1M_SPECIFIC_S_INPUT_H
 
 #include "global/types.h"
 

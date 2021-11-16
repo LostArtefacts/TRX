@@ -1,4 +1,4 @@
-#include "specific/input.h"
+#include "specific/s_input.h"
 
 #include "config.h"
 #include "game/inv.h"
@@ -6,7 +6,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/smain.h"
+#include "specific/s_main.h"
 
 #include <stdbool.h>
 #include <dinput.h>

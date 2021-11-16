@@ -1,6 +1,6 @@
 #include "global/lib.h"
 
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 static struct {
     HMODULE player_module;
