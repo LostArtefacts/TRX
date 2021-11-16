@@ -267,7 +267,7 @@ void S_DisplayPicture(const char *file_stem)
 
     char *file_data = NULL;
     size_t file_size = 0;
-    FileLoad(file_name, &file_data, &file_size);
+    File_Load(file_name, &file_data, &file_size);
 
     PICTURE pic = { 0 };
     if (!DecompPCX(file_data, file_size, &pic)) {

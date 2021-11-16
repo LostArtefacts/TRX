@@ -36,7 +36,7 @@ const char *File_GetGameDirectory()
     return path;
 }
 
-MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
+MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     switch (mode) {
@@ -78,17 +78,18 @@ MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
     return file;
 }
 
-size_t FileRead(void *data, size_t item_size, size_t count, MYFILE *file)
+size_t File_Read(void *data, size_t item_size, size_t count, MYFILE *file)
 {
     return fread(data, item_size, count, file->fp);
 }
 
-size_t FileWrite(const void *data, size_t item_size, size_t count, MYFILE *file)
+size_t File_Write(
+    const void *data, size_t item_size, size_t count, MYFILE *file)
 {
     return fwrite(data, item_size, count, file->fp);
 }
 
-void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
+void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
 {
     switch (mode) {
     case FILE_SEEK_SET:
@@ -103,7 +104,7 @@ void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
     }
 }
 
-size_t FileSize(MYFILE *file)
+size_t File_Size(MYFILE *file)
 {
     size_t old = ftell(file->fp);
     fseek(file->fp, 0, SEEK_END);
@@ -112,36 +113,36 @@ size_t FileSize(MYFILE *file)
     return size;
 }
 
-void FileClose(MYFILE *file)
+void File_Close(MYFILE *file)
 {
     fclose(file->fp);
     Memory_Free(file);
 }
 
-int FileDelete(const char *path)
+int File_Delete(const char *path)
 {
     return remove(path);
 }
 
-void FileLoad(const char *path, char **output_data, size_t *output_size)
+void File_Load(const char *path, char **output_data, size_t *output_size)
 {
-    MYFILE *fp = FileOpen(path, FILE_OPEN_READ);
+    MYFILE *fp = File_Open(path, FILE_OPEN_READ);
     if (!fp) {
         ShowFatalError("File load error");
         return;
     }
 
-    size_t data_size = FileSize(fp);
+    size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size);
     if (!data) {
         ShowFatalError("Failed to allocate memory");
         return;
     }
-    if (FileRead(data, sizeof(char), data_size, fp) != data_size) {
+    if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
         ShowFatalError("File read error");
         return;
     }
-    FileClose(fp);
+    File_Close(fp);
 
     *output_data = data;
     *output_size = data_size;

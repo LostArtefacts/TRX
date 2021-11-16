@@ -20,15 +20,15 @@ typedef struct MYFILE MYFILE;
 bool File_IsRelative(const char *path);
 const char *File_GetGameDirectory();
 
-MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode);
-size_t FileRead(void *data, size_t item_size, size_t count, MYFILE *file);
-size_t FileWrite(
+MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode);
+size_t File_Read(void *data, size_t item_size, size_t count, MYFILE *file);
+size_t File_Write(
     const void *data, size_t item_size, size_t count, MYFILE *file);
-size_t FileSize(MYFILE *file);
-void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
-void FileClose(MYFILE *file);
-int FileDelete(const char *path);
+size_t File_Size(MYFILE *file);
+void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
+void File_Close(MYFILE *file);
+int File_Delete(const char *path);
 
-void FileLoad(const char *path, char **output_data, size_t *output_size);
+void File_Load(const char *path, char **output_data, size_t *output_size);
 
 #endif

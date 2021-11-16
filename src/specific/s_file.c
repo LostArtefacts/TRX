@@ -56,13 +56,13 @@ bool LoadLevel(const char *filename, int32_t level_num)
     int32_t file_level_num;
 
     GameBuf_Init();
-    MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
+    MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
         S_ExitSystemFmt("S_LoadLevel(): Could not open %s", filename);
         return false;
     }
 
-    FileRead(&version, sizeof(int32_t), 1, fp);
+    File_Read(&version, sizeof(int32_t), 1, fp);
     if (version != 32) {
         S_ExitSystemFmt(
             "Level %d (%s) is version %d (this game code is version %d)",
@@ -74,7 +74,7 @@ bool LoadLevel(const char *filename, int32_t level_num)
         return false;
     }
 
-    FileRead(&file_level_num, sizeof(int32_t), 1, fp);
+    File_Read(&file_level_num, sizeof(int32_t), 1, fp);
     LOG_INFO("file level num: %d", file_level_num);
 
     if (!LoadRooms(fp)) {
@@ -129,7 +129,7 @@ bool LoadLevel(const char *filename, int32_t level_num)
         return false;
     }
 
-    FileClose(fp);
+    File_Close(fp);
 
     HWR_DownloadTextures(TexturePageCount);
 
@@ -141,7 +141,7 @@ static bool LoadRooms(MYFILE *fp)
     uint16_t count2;
     uint32_t count4;
 
-    FileRead(&RoomCount, sizeof(uint16_t), 1, fp);
+    File_Read(&RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", RoomCount);
 
     RoomInfo = GameBuf_Alloc(sizeof(ROOM_INFO) * RoomCount, GBUF_ROOM_INFOS);
@@ -149,72 +149,72 @@ static bool LoadRooms(MYFILE *fp)
     for (ROOM_INFO *current_room_info = RoomInfo; i < RoomCount;
          i++, current_room_info++) {
         // Room position
-        FileRead(&current_room_info->x, sizeof(uint32_t), 1, fp);
+        File_Read(&current_room_info->x, sizeof(uint32_t), 1, fp);
         current_room_info->y = 0;
-        FileRead(&current_room_info->z, sizeof(uint32_t), 1, fp);
+        File_Read(&current_room_info->z, sizeof(uint32_t), 1, fp);
 
         // Room floor/ceiling
-        FileRead(&current_room_info->min_floor, sizeof(uint32_t), 1, fp);
-        FileRead(&current_room_info->max_ceiling, sizeof(uint32_t), 1, fp);
+        File_Read(&current_room_info->min_floor, sizeof(uint32_t), 1, fp);
+        File_Read(&current_room_info->max_ceiling, sizeof(uint32_t), 1, fp);
 
         // Room mesh
-        FileRead(&count4, sizeof(uint32_t), 1, fp);
+        File_Read(&count4, sizeof(uint32_t), 1, fp);
         current_room_info->data =
             GameBuf_Alloc(sizeof(uint16_t) * count4, GBUF_ROOM_MESH);
-        FileRead(current_room_info->data, sizeof(uint16_t), count4, fp);
+        File_Read(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
-        FileRead(&count2, sizeof(uint16_t), 1, fp);
+        File_Read(&count2, sizeof(uint16_t), 1, fp);
         if (!count2) {
             current_room_info->doors = NULL;
         } else {
             current_room_info->doors = GameBuf_Alloc(
                 sizeof(uint16_t) + sizeof(DOOR_INFO) * count2, GBUF_ROOM_DOOR);
             current_room_info->doors->count = count2;
-            FileRead(
+            File_Read(
                 &current_room_info->doors->door, sizeof(DOOR_INFO), count2, fp);
         }
 
         // Room floor
-        FileRead(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
-        FileRead(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
         count4 = current_room_info->y_size * current_room_info->x_size;
         current_room_info->floor =
             GameBuf_Alloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
-        FileRead(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
+        File_Read(current_room_info->floor, sizeof(FLOOR_INFO), count4, fp);
 
         // Room lights
-        FileRead(&current_room_info->ambient, sizeof(uint16_t), 1, fp);
-        FileRead(&current_room_info->num_lights, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->ambient, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->num_lights, sizeof(uint16_t), 1, fp);
         if (!current_room_info->num_lights) {
             current_room_info->light = NULL;
         } else {
             current_room_info->light = GameBuf_Alloc(
                 sizeof(LIGHT_INFO) * current_room_info->num_lights,
                 GBUF_ROOM_LIGHTS);
-            FileRead(
+            File_Read(
                 current_room_info->light, sizeof(LIGHT_INFO),
                 current_room_info->num_lights, fp);
         }
 
         // Static mesh infos
-        FileRead(&current_room_info->num_meshes, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->num_meshes, sizeof(uint16_t), 1, fp);
         if (!current_room_info->num_meshes) {
             current_room_info->mesh = NULL;
         } else {
             current_room_info->mesh = GameBuf_Alloc(
                 sizeof(MESH_INFO) * current_room_info->num_meshes,
                 GBUF_ROOM_STATIC_MESH_INFOS);
-            FileRead(
+            File_Read(
                 current_room_info->mesh, sizeof(MESH_INFO),
                 current_room_info->num_meshes, fp);
         }
 
         // Flipped (alternative) room
-        FileRead(&current_room_info->flipped_room, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->flipped_room, sizeof(uint16_t), 1, fp);
 
         // Room flags
-        FileRead(&current_room_info->flags, sizeof(uint16_t), 1, fp);
+        File_Read(&current_room_info->flags, sizeof(uint16_t), 1, fp);
 
         // Initialise some variables
         current_room_info->bound_active = 0;
@@ -226,25 +226,25 @@ static bool LoadRooms(MYFILE *fp)
         current_room_info->fx_number = -1;
     }
 
-    FileRead(&FloorDataSize, sizeof(uint32_t), 1, fp);
+    File_Read(&FloorDataSize, sizeof(uint32_t), 1, fp);
     FloorData =
         GameBuf_Alloc(sizeof(uint16_t) * FloorDataSize, GBUF_FLOOR_DATA);
-    FileRead(FloorData, sizeof(uint16_t), FloorDataSize, fp);
+    File_Read(FloorData, sizeof(uint16_t), FloorDataSize, fp);
 
     return true;
 }
 
 static bool LoadObjects(MYFILE *fp)
 {
-    FileRead(&MeshCount, sizeof(int32_t), 1, fp);
+    File_Read(&MeshCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d meshes", MeshCount);
     MeshBase = GameBuf_Alloc(sizeof(int16_t) * MeshCount, GBUF_MESHES);
-    FileRead(MeshBase, sizeof(int16_t), MeshCount, fp);
+    File_Read(MeshBase, sizeof(int16_t), MeshCount, fp);
 
-    FileRead(&MeshPtrCount, sizeof(int32_t), 1, fp);
+    File_Read(&MeshPtrCount, sizeof(int32_t), 1, fp);
     uint32_t *mesh_indices =
         GameBuf_Alloc(sizeof(uint32_t) * MeshPtrCount, GBUF_MESH_POINTERS);
-    FileRead(mesh_indices, sizeof(uint32_t), MeshPtrCount, fp);
+    File_Read(mesh_indices, sizeof(uint32_t), MeshPtrCount, fp);
 
     Meshes =
         GameBuf_Alloc(sizeof(int16_t *) * MeshPtrCount, GBUF_MESH_POINTERS);
@@ -252,107 +252,107 @@ static bool LoadObjects(MYFILE *fp)
         Meshes[i] = &MeshBase[mesh_indices[i] / 2];
     }
 
-    FileRead(&AnimCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anims", AnimCount);
     Anims = GameBuf_Alloc(sizeof(ANIM_STRUCT) * AnimCount, GBUF_ANIMS);
-    FileRead(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
+    File_Read(Anims, sizeof(ANIM_STRUCT), AnimCount, fp);
 
-    FileRead(&AnimChangeCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimChangeCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim changes", AnimChangeCount);
     AnimChanges = GameBuf_Alloc(
         sizeof(ANIM_CHANGE_STRUCT) * AnimChangeCount, GBUF_ANIM_CHANGES);
-    FileRead(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, fp);
+    File_Read(AnimChanges, sizeof(ANIM_CHANGE_STRUCT), AnimChangeCount, fp);
 
-    FileRead(&AnimRangeCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimRangeCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim ranges", AnimRangeCount);
     AnimRanges = GameBuf_Alloc(
         sizeof(ANIM_RANGE_STRUCT) * AnimRangeCount, GBUF_ANIM_RANGES);
-    FileRead(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
+    File_Read(AnimRanges, sizeof(ANIM_RANGE_STRUCT), AnimRangeCount, fp);
 
-    FileRead(&AnimCommandCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimCommandCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim commands", AnimCommandCount);
     AnimCommands =
         GameBuf_Alloc(sizeof(int16_t) * AnimCommandCount, GBUF_ANIM_COMMANDS);
-    FileRead(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
+    File_Read(AnimCommands, sizeof(int16_t), AnimCommandCount, fp);
 
-    FileRead(&AnimBoneCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimBoneCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim bones", AnimBoneCount);
     AnimBones = GameBuf_Alloc(sizeof(int32_t) * AnimBoneCount, GBUF_ANIM_BONES);
-    FileRead(AnimBones, sizeof(int32_t), AnimBoneCount, fp);
+    File_Read(AnimBones, sizeof(int32_t), AnimBoneCount, fp);
 
-    FileRead(&AnimFrameCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimFrameCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim frames", AnimFrameCount);
     AnimFrames =
         GameBuf_Alloc(sizeof(int16_t) * AnimFrameCount, GBUF_ANIM_FRAMES);
-    FileRead(AnimFrames, sizeof(int16_t), AnimFrameCount, fp);
+    File_Read(AnimFrames, sizeof(int16_t), AnimFrameCount, fp);
     for (int i = 0; i < AnimCount; i++) {
         Anims[i].frame_ptr = &AnimFrames[(size_t)Anims[i].frame_ptr / 2];
     }
 
-    FileRead(&ObjectCount, sizeof(int32_t), 1, fp);
+    File_Read(&ObjectCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d objects", ObjectCount);
     for (int i = 0; i < ObjectCount; i++) {
         int32_t tmp;
-        FileRead(&tmp, sizeof(int32_t), 1, fp);
+        File_Read(&tmp, sizeof(int32_t), 1, fp);
         OBJECT_INFO *object = &Objects[tmp];
 
-        FileRead(&object->nmeshes, sizeof(int16_t), 1, fp);
-        FileRead(&object->mesh_index, sizeof(int16_t), 1, fp);
-        FileRead(&object->bone_index, sizeof(int32_t), 1, fp);
+        File_Read(&object->nmeshes, sizeof(int16_t), 1, fp);
+        File_Read(&object->mesh_index, sizeof(int16_t), 1, fp);
+        File_Read(&object->bone_index, sizeof(int32_t), 1, fp);
 
-        FileRead(&tmp, sizeof(int32_t), 1, fp);
+        File_Read(&tmp, sizeof(int32_t), 1, fp);
         object->frame_base = &AnimFrames[tmp / 2];
-        FileRead(&object->anim_index, sizeof(int16_t), 1, fp);
+        File_Read(&object->anim_index, sizeof(int16_t), 1, fp);
         object->loaded = 1;
     }
 
     InitialiseObjects();
 
-    FileRead(&StaticCount, sizeof(int32_t), 1, fp);
+    File_Read(&StaticCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d statics", StaticCount);
     for (int i = 0; i < StaticCount; i++) {
         int32_t tmp;
-        FileRead(&tmp, sizeof(int32_t), 1, fp);
+        File_Read(&tmp, sizeof(int32_t), 1, fp);
         STATIC_INFO *object = &StaticObjects[tmp];
 
-        FileRead(&object->mesh_number, sizeof(int16_t), 1, fp);
-        FileRead(&object->x_minp, sizeof(int16_t), 6, fp);
-        FileRead(&object->x_minc, sizeof(int16_t), 6, fp);
-        FileRead(&object->flags, sizeof(int16_t), 1, fp);
+        File_Read(&object->mesh_number, sizeof(int16_t), 1, fp);
+        File_Read(&object->x_minp, sizeof(int16_t), 6, fp);
+        File_Read(&object->x_minc, sizeof(int16_t), 6, fp);
+        File_Read(&object->flags, sizeof(int16_t), 1, fp);
     }
 
-    FileRead(&TextureCount, sizeof(int32_t), 1, fp);
+    File_Read(&TextureCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d textures", TextureCount);
     if (TextureCount > MAX_TEXTURES) {
         S_ExitSystem("Too many Textures in level");
         return false;
     }
-    FileRead(PhdTextureInfo, sizeof(PHD_TEXTURE), TextureCount, fp);
+    File_Read(PhdTextureInfo, sizeof(PHD_TEXTURE), TextureCount, fp);
 
     return true;
 }
 
 static bool LoadSprites(MYFILE *fp)
 {
-    FileRead(&SpriteInfoCount, sizeof(int32_t), 1, fp);
+    File_Read(&SpriteInfoCount, sizeof(int32_t), 1, fp);
     if (SpriteInfoCount > MAX_SPRITES) {
         S_ExitSystem("Too many sprites in level");
         return false;
     }
-    FileRead(&PhdSpriteInfo, sizeof(PHD_SPRITE), SpriteInfoCount, fp);
+    File_Read(&PhdSpriteInfo, sizeof(PHD_SPRITE), SpriteInfoCount, fp);
 
-    FileRead(&SpriteCount, sizeof(int32_t), 1, fp);
+    File_Read(&SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < SpriteCount; i++) {
         int32_t object_num;
-        FileRead(&object_num, sizeof(int32_t), 1, fp);
+        File_Read(&object_num, sizeof(int32_t), 1, fp);
         if (object_num < O_NUMBER_OF) {
-            FileRead(&Objects[object_num], sizeof(int16_t), 1, fp);
-            FileRead(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
+            File_Read(&Objects[object_num], sizeof(int16_t), 1, fp);
+            File_Read(&Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
             Objects[object_num].loaded = 1;
         } else {
             int32_t static_num = object_num - O_NUMBER_OF;
-            FileSeek(fp, 2, FILE_SEEK_CUR);
-            FileRead(
+            File_Seek(fp, 2, FILE_SEEK_CUR);
+            File_Read(
                 &StaticObjects[static_num].mesh_number, sizeof(int16_t), 1, fp);
         }
     }
@@ -362,7 +362,7 @@ static bool LoadSprites(MYFILE *fp)
 static bool LoadItems(MYFILE *fp)
 {
     int32_t item_count = 0;
-    FileRead(&item_count, sizeof(int32_t), 1, fp);
+    File_Read(&item_count, sizeof(int32_t), 1, fp);
 
     LOG_INFO("%d items", item_count);
 
@@ -378,14 +378,14 @@ static bool LoadItems(MYFILE *fp)
 
         for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &Items[i];
-            FileRead(&item->object_number, sizeof(int16_t), 1, fp);
-            FileRead(&item->room_number, sizeof(int16_t), 1, fp);
-            FileRead(&item->pos.x, sizeof(int32_t), 1, fp);
-            FileRead(&item->pos.y, sizeof(int32_t), 1, fp);
-            FileRead(&item->pos.z, sizeof(int32_t), 1, fp);
-            FileRead(&item->pos.y_rot, sizeof(int16_t), 1, fp);
-            FileRead(&item->shade, sizeof(int16_t), 1, fp);
-            FileRead(&item->flags, sizeof(uint16_t), 1, fp);
+            File_Read(&item->object_number, sizeof(int16_t), 1, fp);
+            File_Read(&item->room_number, sizeof(int16_t), 1, fp);
+            File_Read(&item->pos.x, sizeof(int32_t), 1, fp);
+            File_Read(&item->pos.y, sizeof(int32_t), 1, fp);
+            File_Read(&item->pos.z, sizeof(int32_t), 1, fp);
+            File_Read(&item->pos.y_rot, sizeof(int16_t), 1, fp);
+            File_Read(&item->shade, sizeof(int16_t), 1, fp);
+            File_Read(&item->flags, sizeof(uint16_t), 1, fp);
 
             if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
                 S_ExitSystemFmt(
@@ -403,14 +403,14 @@ static bool LoadItems(MYFILE *fp)
 static bool LoadDepthQ(MYFILE *fp)
 {
     LOG_INFO("");
-    FileSeek(fp, sizeof(uint8_t) * 32 * 256, FILE_SEEK_CUR);
+    File_Seek(fp, sizeof(uint8_t) * 32 * 256, FILE_SEEK_CUR);
     return true;
 }
 
 static bool LoadPalette(MYFILE *fp)
 {
     LOG_INFO("");
-    FileRead(GamePalette, sizeof(uint8_t), 256 * 3, fp);
+    File_Read(GamePalette, sizeof(uint8_t), 256 * 3, fp);
     GamePalette[0].r = 0;
     GamePalette[0].g = 0;
     GamePalette[0].b = 0;
@@ -420,7 +420,7 @@ static bool LoadPalette(MYFILE *fp)
 
 static bool LoadCameras(MYFILE *fp)
 {
-    FileRead(&NumberCameras, sizeof(int32_t), 1, fp);
+    File_Read(&NumberCameras, sizeof(int32_t), 1, fp);
     LOG_INFO("%d cameras", NumberCameras);
     if (!NumberCameras) {
         return true;
@@ -430,13 +430,13 @@ static bool LoadCameras(MYFILE *fp)
     if (!Camera.fixed) {
         return false;
     }
-    FileRead(Camera.fixed, sizeof(OBJECT_VECTOR), NumberCameras, fp);
+    File_Read(Camera.fixed, sizeof(OBJECT_VECTOR), NumberCameras, fp);
     return true;
 }
 
 static bool LoadSoundEffects(MYFILE *fp)
 {
-    FileRead(&NumberSoundEffects, sizeof(int32_t), 1, fp);
+    File_Read(&NumberSoundEffects, sizeof(int32_t), 1, fp);
     LOG_INFO("%d sound effects", NumberSoundEffects);
     if (!NumberSoundEffects) {
         return true;
@@ -446,22 +446,22 @@ static bool LoadSoundEffects(MYFILE *fp)
     if (!SoundEffectsTable) {
         return false;
     }
-    FileRead(SoundEffectsTable, sizeof(OBJECT_VECTOR), NumberSoundEffects, fp);
+    File_Read(SoundEffectsTable, sizeof(OBJECT_VECTOR), NumberSoundEffects, fp);
     return true;
 }
 
 static bool LoadBoxes(MYFILE *fp)
 {
-    FileRead(&NumberBoxes, sizeof(int32_t), 1, fp);
+    File_Read(&NumberBoxes, sizeof(int32_t), 1, fp);
     Boxes = GameBuf_Alloc(sizeof(BOX_INFO) * NumberBoxes, GBUF_BOXES);
-    if (!FileRead(Boxes, sizeof(BOX_INFO), NumberBoxes, fp)) {
+    if (!File_Read(Boxes, sizeof(BOX_INFO), NumberBoxes, fp)) {
         S_ExitSystem("LoadBoxes(): Unable to load boxes");
         return false;
     }
 
-    FileRead(&OverlapCount, sizeof(int32_t), 1, fp);
+    File_Read(&OverlapCount, sizeof(int32_t), 1, fp);
     Overlap = GameBuf_Alloc(sizeof(uint16_t) * OverlapCount, 22);
-    if (!FileRead(Overlap, sizeof(uint16_t), OverlapCount, fp)) {
+    if (!File_Read(Overlap, sizeof(uint16_t), OverlapCount, fp)) {
         S_ExitSystem("LoadBoxes(): Unable to load box overlaps");
         return false;
     }
@@ -470,7 +470,7 @@ static bool LoadBoxes(MYFILE *fp)
         GroundZone[i] =
             GameBuf_Alloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone[i]
-            || !FileRead(GroundZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !File_Read(GroundZone[i], sizeof(int16_t), NumberBoxes, fp)) {
             S_ExitSystem("LoadBoxes(): Unable to load 'ground_zone'");
             return false;
         }
@@ -478,14 +478,14 @@ static bool LoadBoxes(MYFILE *fp)
         GroundZone2[i] =
             GameBuf_Alloc(sizeof(int16_t) * NumberBoxes, GBUF_GROUNDZONE);
         if (!GroundZone2[i]
-            || !FileRead(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !File_Read(GroundZone2[i], sizeof(int16_t), NumberBoxes, fp)) {
             S_ExitSystem("LoadBoxes(): Unable to load 'ground2_zone'");
             return false;
         }
 
         FlyZone[i] = GameBuf_Alloc(sizeof(int16_t) * NumberBoxes, GBUF_FLYZONE);
         if (!FlyZone[i]
-            || !FileRead(FlyZone[i], sizeof(int16_t), NumberBoxes, fp)) {
+            || !File_Read(FlyZone[i], sizeof(int16_t), NumberBoxes, fp)) {
             S_ExitSystem("LoadBoxes(): Unable to load 'fly_zone'");
             return false;
         }
@@ -496,24 +496,24 @@ static bool LoadBoxes(MYFILE *fp)
 
 static bool LoadAnimatedTextures(MYFILE *fp)
 {
-    FileRead(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
+    File_Read(&AnimTextureRangeCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d animated textures", AnimTextureRangeCount);
     AnimTextureRanges = GameBuf_Alloc(
         sizeof(int16_t) * AnimTextureRangeCount, GBUF_ANIMATING_TEXTURE_RANGES);
-    FileRead(AnimTextureRanges, sizeof(int16_t), AnimTextureRangeCount, fp);
+    File_Read(AnimTextureRanges, sizeof(int16_t), AnimTextureRangeCount, fp);
     return true;
 }
 
 static bool LoadCinematic(MYFILE *fp)
 {
-    FileRead(&NumCineFrames, sizeof(int16_t), 1, fp);
+    File_Read(&NumCineFrames, sizeof(int16_t), 1, fp);
     LOG_INFO("%d cinematic frames", NumCineFrames);
     if (!NumCineFrames) {
         return true;
     }
     Cine = GameBuf_Alloc(
         sizeof(int16_t) * 8 * NumCineFrames, GBUF_CINEMATIC_FRAMES);
-    FileRead(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);
+    File_Read(Cine, sizeof(int16_t) * 8, NumCineFrames, fp);
     return true;
 }
 
@@ -522,12 +522,12 @@ static bool LoadDemo(MYFILE *fp)
     DemoData =
         GameBuf_Alloc(sizeof(uint32_t) * DEMO_COUNT_MAX, GBUF_LOADDEMO_BUFFER);
     uint16_t size = 0;
-    FileRead(&size, sizeof(int16_t), 1, fp);
+    File_Read(&size, sizeof(int16_t), 1, fp);
     LOG_INFO("%d demo buffer size", size);
     if (!size) {
         return true;
     }
-    FileRead(DemoData, 1, size, fp);
+    File_Read(DemoData, 1, size, fp);
     return true;
 }
 
@@ -537,9 +537,9 @@ static bool LoadSamples(MYFILE *fp)
         return true;
     }
 
-    FileRead(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
+    File_Read(SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
     int32_t num_sample_infos;
-    FileRead(&num_sample_infos, sizeof(int32_t), 1, fp);
+    File_Read(&num_sample_infos, sizeof(int32_t), 1, fp);
     LOG_INFO("%d sample infos", num_sample_infos);
     if (!num_sample_infos) {
         S_ExitSystem("No Sample Infos");
@@ -548,10 +548,10 @@ static bool LoadSamples(MYFILE *fp)
 
     SampleInfos = GameBuf_Alloc(
         sizeof(SAMPLE_INFO) * num_sample_infos, GBUF_SAMPLE_INFOS);
-    FileRead(SampleInfos, sizeof(SAMPLE_INFO), num_sample_infos, fp);
+    File_Read(SampleInfos, sizeof(SAMPLE_INFO), num_sample_infos, fp);
 
     int32_t sample_data_size;
-    FileRead(&sample_data_size, sizeof(int32_t), 1, fp);
+    File_Read(&sample_data_size, sizeof(int32_t), 1, fp);
     LOG_INFO("%d sample data size", sample_data_size);
     if (!sample_data_size) {
         S_ExitSystem("No Sample Data");
@@ -559,10 +559,10 @@ static bool LoadSamples(MYFILE *fp)
     }
 
     char *sample_data = GameBuf_Alloc(sample_data_size, GBUF_SAMPLES);
-    FileRead(sample_data, sizeof(char), sample_data_size, fp);
+    File_Read(sample_data, sizeof(char), sample_data_size, fp);
 
     int32_t num_samples;
-    FileRead(&num_samples, sizeof(int32_t), 1, fp);
+    File_Read(&num_samples, sizeof(int32_t), 1, fp);
     LOG_INFO("%d samples", num_samples);
     if (!num_samples) {
         S_ExitSystem("No Samples");
@@ -570,7 +570,7 @@ static bool LoadSamples(MYFILE *fp)
     }
 
     int32_t *sample_offsets = Memory_Alloc(sizeof(int32_t) * num_samples);
-    FileRead(sample_offsets, sizeof(int32_t), num_samples, fp);
+    File_Read(sample_offsets, sizeof(int32_t), num_samples, fp);
 
     char **sample_pointers = Memory_Alloc(sizeof(char *) * num_samples);
     for (int i = 0; i < num_samples; i++) {
@@ -587,10 +587,10 @@ static bool LoadSamples(MYFILE *fp)
 
 static bool LoadTexturePages(MYFILE *fp)
 {
-    FileRead(&TexturePageCount, sizeof(int32_t), 1, fp);
+    File_Read(&TexturePageCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d texture pages", TexturePageCount);
     int8_t *base = GameBuf_Alloc(TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
-    FileRead(base, 65536, TexturePageCount, fp);
+    File_Read(base, 65536, TexturePageCount, fp);
     for (int i = 0; i < TexturePageCount; i++) {
         TexturePagePtrs[i] = base;
         base += 65536;

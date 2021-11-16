@@ -27,19 +27,19 @@ static int32_t S_WriteUserSettingsT1M();
 
 static int32_t S_ReadUserSettingsATI()
 {
-    MYFILE *fp = FileOpen(ATIUserSettingsPath, FILE_OPEN_READ);
+    MYFILE *fp = File_Open(ATIUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         return 0;
     }
 
     LOG_INFO("Loading user settings (T1M)");
 
-    FileRead(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
-    FileRead(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
-    FileRead(Layout[1], sizeof(int16_t), 13, fp);
+    File_Read(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
+    File_Read(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
+    File_Read(Layout[1], sizeof(int16_t), 13, fp);
     {
         uint32_t render_flags;
-        FileRead(&render_flags, sizeof(int32_t), 1, fp);
+        File_Read(&render_flags, sizeof(int32_t), 1, fp);
         T1MConfig.render_flags.perspective = (bool)(render_flags & 1);
         T1MConfig.render_flags.bilinear = (bool)(render_flags & 2);
         T1MConfig.render_flags.fps_counter = (bool)(render_flags & 4);
@@ -47,7 +47,7 @@ static int32_t S_ReadUserSettingsATI()
 
     {
         int32_t resolution_idx;
-        FileRead(&resolution_idx, sizeof(int32_t), 1, fp);
+        File_Read(&resolution_idx, sizeof(int32_t), 1, fp);
         CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
         SetGameScreenSizeIdx(resolution_idx);
     }
@@ -55,15 +55,15 @@ static int32_t S_ReadUserSettingsATI()
     // Skip GameSizer from TombATI, which is no longer used in T1M.
     // In the original game, it's expected to be 1.0 everywhere and changing it
     // to any other value results in uninteresting window clipping anomalies.
-    FileSeek(fp, sizeof(double), FILE_SEEK_CUR);
+    File_Seek(fp, sizeof(double), FILE_SEEK_CUR);
 
-    FileRead(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
+    File_Read(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
 
     T1MConfig.brightness = DEFAULT_BRIGHTNESS;
     T1MConfig.ui.text_scale = DEFAULT_UI_SCALE;
     T1MConfig.ui.bar_scale = DEFAULT_UI_SCALE;
 
-    FileClose(fp);
+    File_Close(fp);
     return 1;
 }
 
@@ -143,25 +143,25 @@ static int32_t S_ReadUserSettingsT1M()
     char *cfg_data = NULL;
     MYFILE *fp = NULL;
 
-    fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_READ);
+    fp = File_Open(T1MUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("Failed to open file '%s'", T1MUserSettingsPath);
         result = S_ReadUserSettingsT1MFromJson("");
         goto cleanup;
     }
 
-    cfg_data_size = FileSize(fp);
+    cfg_data_size = File_Size(fp);
     cfg_data = Memory_Alloc(cfg_data_size + 1);
-    FileRead(cfg_data, 1, cfg_data_size, fp);
+    File_Read(cfg_data, 1, cfg_data_size, fp);
     cfg_data[cfg_data_size] = '\0';
-    FileClose(fp);
+    File_Close(fp);
     fp = NULL;
 
     result = S_ReadUserSettingsT1MFromJson(cfg_data);
 
 cleanup:
     if (fp) {
-        FileClose(fp);
+        File_Close(fp);
     }
     if (cfg_data) {
         Memory_Free(cfg_data);
@@ -173,7 +173,7 @@ static int32_t S_WriteUserSettingsT1M()
 {
     LOG_INFO("Saving user settings (T1M)");
 
-    MYFILE *fp = FileOpen(T1MUserSettingsPath, FILE_OPEN_WRITE);
+    MYFILE *fp = File_Open(T1MUserSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
     }
@@ -206,8 +206,8 @@ static int32_t S_WriteUserSettingsT1M()
     char *data = json_write_pretty(root, "  ", "\n", &size);
     json_value_free(root);
 
-    FileWrite(data, sizeof(char), size - 1, fp);
-    FileClose(fp);
+    File_Write(data, sizeof(char), size - 1, fp);
+    File_Close(fp);
     Memory_Free(data);
 
     return 1;
@@ -216,7 +216,7 @@ static int32_t S_WriteUserSettingsT1M()
 void S_ReadUserSettings()
 {
     if (S_ReadUserSettingsATI()) {
-        if (!FileDelete(ATIUserSettingsPath)) {
+        if (!File_Delete(ATIUserSettingsPath)) {
             // only save settings if we successfully removed the file
             S_WriteUserSettingsT1M();
         }
