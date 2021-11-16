@@ -1,13 +1,12 @@
 #include "filesystem.h"
 
-#include "log.h"
 #include "memory.h"
-#include "specific/s_main.h"
+#include "specific/s_init.h"
+#include "specific/s_filesystem.h"
 
-#include <assert.h>
-#include <shlwapi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct MYFILE {
     FILE *fp;
@@ -15,25 +14,12 @@ struct MYFILE {
 
 bool File_IsRelative(const char *path)
 {
-    return PathIsRelativeA(path);
+    return S_File_IsRelative(path);
 }
 
 const char *File_GetGameDirectory()
 {
-    HMODULE module = NULL;
-    DWORD flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
-        | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
-
-    if (!GetModuleHandleEx(flags, NULL, &module)) {
-        LOG_ERROR("Can't get module handle");
-        return NULL;
-    }
-
-    static char path[MAX_PATH];
-    GetModuleFileNameA(module, path, sizeof(path));
-    PathRemoveFileSpecA(path);
-
-    return path;
+    return S_File_GetGameDirectory();
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
@@ -53,8 +39,10 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
     if (!file->fp && File_IsRelative(path)) {
         const char *game_path = File_GetGameDirectory();
         if (game_path) {
-            assert(strlen(game_path) + 1 + strlen(path) < MAX_PATH);
-            char new_path[MAX_PATH] = "";
+            char new_path[S_File_GetMaxPath()];
+            if (strlen(game_path) + 1 + strlen(path) >= sizeof(new_path)) {
+                S_ExitSystem("Too long path");
+            }
             strcpy(new_path, game_path);
             strcat(new_path, "\\");
             strcat(new_path, path);
@@ -128,18 +116,18 @@ void File_Load(const char *path, char **output_data, size_t *output_size)
 {
     MYFILE *fp = File_Open(path, FILE_OPEN_READ);
     if (!fp) {
-        ShowFatalError("File load error");
+        S_ExitSystem("File load error");
         return;
     }
 
     size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size);
     if (!data) {
-        ShowFatalError("Failed to allocate memory");
+        S_ExitSystem("Failed to allocate memory");
         return;
     }
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
-        ShowFatalError("File read error");
+        S_ExitSystem("File read error");
         return;
     }
     File_Close(fp);
