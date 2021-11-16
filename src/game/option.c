@@ -146,38 +146,40 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 
 static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
 static REQUEST_INFO NewGameRequester = {
-    MAX_GAME_MODES, // items
-    0, // requested
-    MAX_GAME_MODES, // vis_lines
-    0, // line_offset
-    0, // line_old_offset
-    162, // pix_width
-    TEXT_HEIGHT + 7, // line_height
-    0, // x
-    0, // y
-    0, // z
-    0, // flags
-    NULL, // heading_text
-    &NewGameStrings[0][0], // item_texts
-    MAX_GAME_MODE_LENGTH, // item_text_len
+    .items = MAX_GAME_MODES,
+    .requested = 0,
+    .vis_lines = MAX_GAME_MODES,
+    .line_offset = 0,
+    .line_old_offset = 0,
+    .pix_width = 162,
+    .line_height = TEXT_HEIGHT + 7,
+    .x = 0,
+    .y = 0,
+    .z = 0,
+    .flags = 0,
+    .heading_text = NULL,
+    .item_texts = &NewGameStrings[0][0],
+    .item_text_len = MAX_GAME_MODE_LENGTH,
+    0,
 };
 
 static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
 REQUEST_INFO LoadSaveGameRequester = {
-    1, // items
-    0, // requested
-    -1, // vis_lines
-    0, // line_offset
-    0, // line_old_offset
-    272, // pix_width
-    TEXT_HEIGHT + 7, // line_height
-    0, // x
-    -32, // y
-    0, // z
-    0, // flags
-    NULL, // heading_text
-    &LoadSaveGameStrings[0][0], // item_texts
-    MAX_LEVEL_NAME_LENGTH, // item_text_len
+    .items = 1,
+    .requested = 0,
+    .vis_lines = -1,
+    .line_offset = 0,
+    .line_old_offset = 0,
+    .pix_width = 272,
+    .line_height = TEXT_HEIGHT + 7,
+    .x = 0,
+    .y = -32,
+    .z = 0,
+    .flags = 0,
+    .heading_text = NULL,
+    .item_texts = &LoadSaveGameStrings[0][0],
+    .item_text_len = MAX_LEVEL_NAME_LENGTH,
+    0,
 };
 
 static const char *GetScanCodeName(int16_t key)
@@ -293,7 +295,7 @@ static const char *GetScanCodeName(int16_t key)
     }
     // clang-format on
     return "????";
-};
+}
 
 static void InitLoadSaveGameRequester()
 {

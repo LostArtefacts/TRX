@@ -13,7 +13,7 @@ PHD_VECTOR PickUpPosition = { 0, 0, -100 };
 PHD_VECTOR PickUpPositionUW = { 0, -200, -350 };
 
 int16_t PickUpBounds[12] = {
-    -256, +256, -100, +100, -256, +100, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
+    -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
     0,    0,    0,    0,
 };
 

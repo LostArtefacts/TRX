@@ -63,8 +63,8 @@ static const char *BufferNames[] = {
 
 static char *GameMemoryPointer = NULL;
 static char *GameAllocMemPointer = NULL;
-static uint32_t GameAllocMemUsed = 0;
-static uint32_t GameAllocMemFree = 0;
+static size_t GameAllocMemUsed = 0;
+static size_t GameAllocMemFree = 0;
 
 void S_InitialiseSystem()
 {
@@ -129,9 +129,7 @@ void game_malloc_shutdown()
 
 void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index)
 {
-    int32_t aligned_size;
-
-    aligned_size = (alloc_size + 3) & ~3;
+    size_t aligned_size = (alloc_size + 3) & ~3;
 
     if (aligned_size > GameAllocMemFree) {
         S_ExitSystemFmt(
