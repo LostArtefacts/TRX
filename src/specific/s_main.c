@@ -24,7 +24,7 @@ static bool IsGameWindowActive = true;
 static void WinGameFinish();
 static LRESULT CALLBACK
 WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-static int InitDirectDraw();
+static bool InitDirectDraw();
 
 void TerminateGame(int exit_code)
 {
@@ -55,25 +55,19 @@ void WinSpinMessageLoop()
     } while (!IsGameWindowActive);
 }
 
-static int InitDirectDraw()
+static bool InitDirectDraw()
 {
     if (DirectDrawCreate(0, &DDraw, 0)) {
         ShowFatalError("DirectDraw could not be started");
-        return 0;
+        return false;
     }
 
-    if (InitATI3DCIF()) {
+    if (S_ATI_Init()) {
         ShowFatalError("ATI3DCIF could not be started");
-        return 0;
+        return false;
     }
 
-    ATIRenderContext = ATI3DCIF_ContextCreate();
-    if (!ATIRenderContext) {
-        ShowFatalError("ATI3DCIF could not be started");
-        return 0;
-    }
-
-    return 1;
+    return true;
 }
 
 static LRESULT CALLBACK
@@ -160,11 +154,7 @@ static void WinGameFinish()
         IDirectDraw_Release(DDraw);
         DDraw = NULL;
     }
-    if (ATIRenderContext) {
-        ATI3DCIF_ContextDestroy(ATIRenderContext);
-        ShutdownATI3DCIF();
-        ATIRenderContext = 0;
-    }
+    S_ATI_Shutdown();
     PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
 }
 

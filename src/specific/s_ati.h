@@ -444,8 +444,9 @@ typedef enum {
 
 #pragma pack(pop)
 
-C3D_EC InitATI3DCIF();
-C3D_EC ShutdownATI3DCIF();
+C3D_EC S_ATI_Init();
+C3D_EC S_ATI_Shutdown();
+C3D_HRC S_ATI_GetRenderContext();
 
 C3D_EC ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap);
 C3D_EC ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg);
