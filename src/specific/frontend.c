@@ -1,6 +1,7 @@
 #include "specific/frontend.h"
 
 #include "config.h"
+#include "game/gamebuf.h"
 #include "global/const.h"
 #include "global/lib.h"
 #include "global/types.h"
@@ -16,7 +17,6 @@
 #include "specific/smain.h"
 
 #include <dinput.h>
-#include <stdlib.h>
 
 const char *FMVPaths[] = {
     "fmv\\cafe.rpl",    "fmv\\mansion.rpl", "fmv\\snow.rpl",
@@ -247,14 +247,14 @@ cleanup:
 
 int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
-    game_malloc_shutdown();
+    GameBuf_Shutdown();
 
     TempVideoAdjust(2);
     HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);
 
-    init_game_malloc();
+    GameBuf_Init();
 
     HWR_FMVDone();
     TempVideoRemove();

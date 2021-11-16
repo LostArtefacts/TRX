@@ -4,9 +4,9 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "global/vars.h"
-#include "specific/init.h"
 
 void SetupMummy(OBJECT_INFO *obj)
 {
@@ -28,7 +28,7 @@ void InitialiseMummy(int16_t item_num)
     ITEM_INFO *item = &Items[item_num];
     item->touch_bits = 0;
     item->mesh_bits = 0xFFFF87FF;
-    item->data = game_malloc(sizeof(int16_t), GBUF_MUMMY_HEAD_TURN);
+    item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
     *(int16_t *)item->data = 0;
 }
 

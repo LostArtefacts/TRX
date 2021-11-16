@@ -2,6 +2,7 @@
 
 #include "game/collide.h"
 #include "game/effects/body_part.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/sound.h"
@@ -48,7 +49,7 @@ void InitialiseStatue(int16_t item_num)
     centaur->goal_anim_state = centaur->current_anim_state;
     centaur->pos.y_rot = item->pos.y_rot;
 
-    item->data = game_malloc(sizeof(int16_t), 0);
+    item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
     *(int16_t *)item->data = centaur_item_num;
 
     LevelItemCount++;

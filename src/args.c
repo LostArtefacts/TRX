@@ -1,6 +1,7 @@
 #include "args.h"
 
 #include "log.h"
+#include "memory.h"
 
 #include <windows.h>
 #include <shellapi.h>
@@ -17,11 +18,11 @@ int get_command_line(char ***args, int *arg_count)
         return 0;
     }
 
-    *args = malloc(l_arg_count * sizeof(char **));
+    *args = Memory_Alloc(l_arg_count * sizeof(char **));
     *arg_count = l_arg_count;
     for (int i = 0; i < l_arg_count; i++) {
         size_t size = wcslen(l_arg_list[i]) + 1;
-        (*args)[i] = malloc(size);
+        (*args)[i] = Memory_Alloc(size);
         wcstombs((*args)[i], l_arg_list[i], size);
     }
 

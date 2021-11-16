@@ -10,7 +10,6 @@
 #include "specific/smain.h"
 
 #include <assert.h>
-#include <stdlib.h>
 
 static bool HWR_IsPaletteActive = false;
 static bool HWR_IsRendering = false;

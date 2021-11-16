@@ -1,7 +1,8 @@
 #include "filesystem.h"
 
+#include "memory.h"
+
 #include <stdio.h>
-#include <stdlib.h>
 
 struct MYFILE {
     FILE *fp;
@@ -9,10 +10,7 @@ struct MYFILE {
 
 MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
 {
-    MYFILE *file = malloc(sizeof(MYFILE));
-    if (!file) {
-        return NULL;
-    }
+    MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     switch (mode) {
     case FILE_OPEN_WRITE:
         file->fp = fopen(path, "wb");
@@ -25,7 +23,7 @@ MYFILE *FileOpen(const char *path, FILE_OPEN_MODE mode)
         break;
     }
     if (!file->fp) {
-        free(file);
+        Memory_Free(file);
         return NULL;
     }
     return file;
@@ -68,7 +66,7 @@ size_t FileSize(MYFILE *file)
 void FileClose(MYFILE *file)
 {
     fclose(file->fp);
-    free(file);
+    Memory_Free(file);
 }
 
 int FileDelete(const char *path)
