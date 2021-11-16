@@ -194,6 +194,7 @@ sources = [
   'src/specific/s_clock.c',
   'src/specific/s_display.c',
   'src/specific/s_file.c',
+  'src/specific/s_filesystem.c',
   'src/specific/s_frontend.c',
   'src/specific/s_hwr.c',
   'src/specific/s_init.c',
