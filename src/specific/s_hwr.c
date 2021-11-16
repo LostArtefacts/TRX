@@ -218,10 +218,20 @@ void HWR_FlipPrimaryBuffer()
 
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
 {
-    RECT rect;
-    SetRect(&rect, 0, 0, DDrawSurfaceWidth, DDrawSurfaceHeight);
-    HRESULT result =
-        IDirectDrawSurface_Blt(source, &rect, target, &rect, DDBLT_WAIT, NULL);
+    DDSURFACEDESC source_surface_desc;
+    DDSURFACEDESC target_surface_desc;
+    IDirectDrawSurface_GetSurfaceDesc(source, &source_surface_desc);
+    IDirectDrawSurface_GetSurfaceDesc(target, &target_surface_desc);
+    RECT source_rect;
+    RECT target_rect;
+    SetRect(
+        &source_rect, 0, 0, source_surface_desc.dwWidth,
+        source_surface_desc.dwHeight);
+    SetRect(
+        &target_rect, 0, 0, target_surface_desc.dwWidth,
+        target_surface_desc.dwHeight);
+    HRESULT result = IDirectDrawSurface_Blt(
+        source, &source_rect, target, &target_rect, DDBLT_WAIT, NULL);
     HWR_CheckError(result);
 }
 
@@ -258,14 +268,19 @@ void HWR_DownloadPicture(const PICTURE *pic)
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
+    if (Surface3) {
+        result = IDirectDrawSurface_Release(Surface3);
+        HWR_CheckError(result);
+        Surface3 = NULL;
+    }
     if (!Surface3) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.ddsCaps.dwCaps =
             DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
-        surface_desc.dwWidth = DDrawSurfaceWidth;
-        surface_desc.dwHeight = DDrawSurfaceHeight;
+        surface_desc.dwWidth = pic->width;
+        surface_desc.dwHeight = pic->height;
         result =
             IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
         HWR_CheckError(result);
@@ -278,13 +293,9 @@ void HWR_DownloadPicture(const PICTURE *pic)
         IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
     HWR_CheckError(result);
 
-    // TODO: allow pics of any size
-    assert(pic->width == DDrawSurfaceWidth);
-    assert(pic->height == DDrawSurfaceHeight);
-
     uint16_t *output_ptr = surface_desc.lpSurface;
     RGB888 *input_ptr = pic->data;
-    for (int i = 0; i < pic->height * pic->width; i++) {
+    for (int i = 0; i < pic->width * pic->height; i++) {
         uint16_t r = input_ptr->r & 0x3E;
         uint16_t g = input_ptr->g & 0x3E;
         uint16_t b = input_ptr->b & 0x3E;
