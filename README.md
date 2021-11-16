@@ -38,12 +38,12 @@ such as Notepad. All the configuration is explained in that file.
 
 Not all options are turned on by default. Refer to `Tomb1Main.json5` for details.
 
-- added proper UI scaling
+- added proper UI and bar scaling
 - added enemy health bar
 - added more control over when to show health bar and air bar
-- added ability to customize of health bar and air bar
+- added customizability to health bar and air bar
 - added ability to set user-defined FOV
-- added selecting weapons / using items with numeric keys
+- added ability to select weapons / using items with numeric keys
 - added ability to look around while running
 - added TR3-like sidesteps
 - added shotgun flash sprites
@@ -60,11 +60,10 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to disable healing between levels
 - added rendering of pickups on the ground as 3D meshes
 - added braid (currently only works in Lost Valley)
-- added support for more than 3 pickup sprites
+- added support for displaying more than 3 pickup sprites
 - added a choice whether to play NG or NG+
 - added Japanese mode (guns deal twice the damage); available for both NG and NG+
-- added external game flow (no longer 2 different .exes for TR1 and TR1IB)
-    For TRLE builders:
+- added external game flow (no longer 2 different .exes for TR1 and TR1UB). For TRLE builders:
     - the levels can be reordered
     - the levels can be renamed
     - all the strings can be translated, including keys and items
@@ -73,7 +72,6 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added automatic calculation of secret numbers
 - added compass level stats
 - added ability to keep timer on in inventory
-- added UI and bar scaling
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
 - added movable camera on W,A,S,D
@@ -114,8 +112,8 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed a crash when Lara is on fire and goes too far away from where she caught fire
 - fixed settings not being saved when exiting the game with Alt+F4
 - fixed settings not persisting chosen layout (default vs. user keys)
-- fixed the sound of collecting a secret killing music
-- fixed infamous Tihocan crocodile bug
+- fixed the sound of collecting a secret killing the music
+- fixed the infamous Tihocan crocodile bug (integer overflow causing creatures to deal damage across the entire level)
 - fixed Lara jumping forever when alt+tabbing out of the game
 - fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
 - fixed bats being positioned too high
