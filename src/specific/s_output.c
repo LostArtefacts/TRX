@@ -1,4 +1,4 @@
-#include "specific/output.h"
+#include "specific/s_output.h"
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
@@ -9,12 +9,12 @@
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/clock.h"
-#include "specific/display.h"
-#include "specific/file.h"
-#include "specific/frontend.h"
-#include "specific/hwr.h"
-#include "specific/smain.h"
+#include "specific/s_clock.h"
+#include "specific/s_display.h"
+#include "specific/s_file.h"
+#include "specific/s_frontend.h"
+#include "specific/s_hwr.h"
+#include "specific/s_main.h"
 
 #include <assert.h>
 #include <math.h>

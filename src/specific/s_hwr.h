@@ -1,8 +1,8 @@
-#ifndef T1M_SPECIFIC_HWR_H
-#define T1M_SPECIFIC_HWR_H
+#ifndef T1M_SPECIFIC_S_HWR_H
+#define T1M_SPECIFIC_S_HWR_H
 
 #include "global/types.h"
-#include "specific/ati.h"
+#include "specific/s_ati.h"
 
 #include <windows.h>
 #include <ddraw.h>

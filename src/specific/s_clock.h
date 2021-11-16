@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_CLOCK_H
-#define T1M_SPECIFIC_CLOCK_H
+#ifndef T1M_SPECIFIC_S_CLOCK_H
+#define T1M_SPECIFIC_S_CLOCK_H
 
 #include <stdint.h>
 

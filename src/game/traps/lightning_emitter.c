@@ -11,7 +11,7 @@
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
-#include "specific/output.h"
+#include "specific/s_output.h"
 
 void SetupLightningEmitter(OBJECT_INFO *obj)
 {

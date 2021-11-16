@@ -16,10 +16,10 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/display.h"
-#include "specific/file.h"
-#include "specific/frontend.h"
-#include "specific/output.h"
+#include "specific/s_display.h"
+#include "specific/s_file.h"
+#include "specific/s_frontend.h"
+#include "specific/s_output.h"
 
 #include <limits.h>
 #include <string.h>

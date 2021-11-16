@@ -1,4 +1,4 @@
-#include "specific/smain.h"
+#include "specific/s_main.h"
 
 #include "config.h"
 #include "game/music.h"
@@ -6,11 +6,11 @@
 #include "global/vars_platform.h"
 #include "inject_util.h"
 #include "log.h"
-#include "specific/ati.h"
-#include "specific/clock.h"
-#include "specific/hwr.h"
-#include "specific/input.h"
-#include "specific/shell.h"
+#include "specific/s_ati.h"
+#include "specific/s_clock.h"
+#include "specific/s_hwr.h"
+#include "specific/s_input.h"
+#include "specific/s_shell.h"
 
 #include <windows.h>
 #include <ddraw.h>

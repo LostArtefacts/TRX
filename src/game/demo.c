@@ -9,7 +9,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/frontend.h"
+#include "specific/s_frontend.h"
 
 #include <stdbool.h>
 

@@ -1,4 +1,4 @@
-#include "specific/clock.h"
+#include "specific/s_clock.h"
 
 #include "global/vars.h"
 

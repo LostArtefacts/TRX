@@ -1,4 +1,4 @@
-#include "specific/frontend.h"
+#include "specific/s_frontend.h"
 
 #include "config.h"
 #include "game/gamebuf.h"
@@ -8,13 +8,13 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/clock.h"
-#include "specific/display.h"
-#include "specific/file.h"
-#include "specific/hwr.h"
-#include "specific/init.h"
-#include "specific/input.h"
-#include "specific/smain.h"
+#include "specific/s_clock.h"
+#include "specific/s_display.h"
+#include "specific/s_file.h"
+#include "specific/s_hwr.h"
+#include "specific/s_init.h"
+#include "specific/s_input.h"
+#include "specific/s_main.h"
 
 #include <dinput.h>
 

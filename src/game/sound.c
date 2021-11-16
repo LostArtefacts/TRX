@@ -3,8 +3,8 @@
 #include "3dsystem/phd_math.h"
 #include "game/game.h"
 #include "global/vars.h"
-#include "specific/init.h"
-#include "specific/sound.h"
+#include "specific/s_init.h"
+#include "specific/s_sound.h"
 #include "util.h"
 
 #include <stddef.h>

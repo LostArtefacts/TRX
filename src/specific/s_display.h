@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_DISPLAY_H
-#define T1M_SPECIFIC_DISPLAY_H
+#ifndef T1M_SPECIFIC_S_DISPLAY_H
+#define T1M_SPECIFIC_S_DISPLAY_H
 
 #include <stdbool.h>
 #include <stdint.h>

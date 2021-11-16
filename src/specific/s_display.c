@@ -1,11 +1,11 @@
-#include "specific/display.h"
+#include "specific/s_display.h"
 
 #include "3dsystem/3d_gen.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
-#include "specific/hwr.h"
+#include "specific/s_hwr.h"
 
 // The screen resolution is controlled by two variables that are indices within
 // an array of predefined screen resolutions.
