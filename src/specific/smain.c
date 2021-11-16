@@ -9,7 +9,6 @@
 #include "specific/ati.h"
 #include "specific/clock.h"
 #include "specific/hwr.h"
-#include "specific/init.h"
 #include "specific/input.h"
 #include "specific/shell.h"
 

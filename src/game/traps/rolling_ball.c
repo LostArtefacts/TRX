@@ -5,10 +5,10 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/game.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/sphere.h"
 #include "global/vars.h"
-#include "specific/init.h"
 
 void SetupRollingBall(OBJECT_INFO *obj)
 {
@@ -23,12 +23,12 @@ void SetupRollingBall(OBJECT_INFO *obj)
 void InitialiseRollingBall(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
-    GAME_VECTOR *old = game_malloc(sizeof(GAME_VECTOR), GBUF_ROLLINGBALL_STUFF);
-    item->data = old;
-    old->x = item->pos.x;
-    old->y = item->pos.y;
-    old->z = item->pos.z;
-    old->room_number = item->room_number;
+    GAME_VECTOR *data = GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_TRAP_DATA);
+    item->data = data;
+    data->x = item->pos.x;
+    data->y = item->pos.y;
+    data->z = item->pos.z;
+    data->room_number = item->room_number;
 }
 
 void RollingBallControl(int16_t item_num)
@@ -81,16 +81,16 @@ void RollingBallControl(int16_t item_num)
         }
     } else if (item->status == IS_DEACTIVATED && !TriggerActive(item)) {
         item->status = IS_NOT_ACTIVE;
-        GAME_VECTOR *old = item->data;
-        item->pos.x = old->x;
-        item->pos.y = old->y;
-        item->pos.z = old->z;
-        if (item->room_number != old->room_number) {
+        GAME_VECTOR *data = item->data;
+        item->pos.x = data->x;
+        item->pos.y = data->y;
+        item->pos.z = data->z;
+        if (item->room_number != data->room_number) {
             RemoveDrawnItem(item_num);
-            ROOM_INFO *r = &RoomInfo[old->room_number];
+            ROOM_INFO *r = &RoomInfo[data->room_number];
             item->next_item = r->item_number;
             r->item_number = item_num;
-            item->room_number = old->room_number;
+            item->room_number = data->room_number;
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;

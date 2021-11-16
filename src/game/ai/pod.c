@@ -3,11 +3,11 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/body_part.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/init.h"
 
 void SetupPod(OBJECT_INFO *obj)
 {
@@ -69,7 +69,7 @@ void InitialisePod(int16_t item_num)
 
         InitialiseItem(bug_item_num);
 
-        item->data = game_malloc(sizeof(int16_t), 0);
+        item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
         *(int16_t *)item->data = bug_item_num;
 
         LevelItemCount++;

@@ -38,6 +38,7 @@
 #include "game/effects/splash.h"
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
+#include "game/gamebuf.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -82,7 +83,6 @@
 #include "global/vars.h"
 #include "log.h"
 #include "specific/file.h"
-#include "specific/init.h"
 #include "specific/output.h"
 
 #include <stddef.h>
@@ -110,7 +110,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         InitialiseLara();
     }
 
-    Effects = game_malloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
+    Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
     InitialiseFXArray();
     InitialiseLOTArray();
 
