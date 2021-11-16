@@ -17,7 +17,6 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_display.h"
-#include "specific/s_file.h"
 #include "specific/s_frontend.h"
 #include "specific/s_output.h"
 
@@ -790,8 +789,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
     MYFILE *fp = NULL;
     char *script_data = NULL;
 
-    const char *file_path = GetFullPath(file_name);
-    fp = FileOpen(file_path, FILE_OPEN_READ);
+    fp = FileOpen(file_name, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("failed to open script file");
         goto cleanup;
