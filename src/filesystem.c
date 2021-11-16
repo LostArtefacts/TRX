@@ -2,6 +2,7 @@
 
 #include "log.h"
 #include "memory.h"
+#include "specific/s_main.h"
 
 #include <assert.h>
 #include <shlwapi.h>
@@ -120,4 +121,28 @@ void FileClose(MYFILE *file)
 int FileDelete(const char *path)
 {
     return remove(path);
+}
+
+void FileLoad(const char *path, char **output_data, size_t *output_size)
+{
+    MYFILE *fp = FileOpen(path, FILE_OPEN_READ);
+    if (!fp) {
+        ShowFatalError("File load error");
+        return;
+    }
+
+    size_t data_size = FileSize(fp);
+    char *data = Memory_Alloc(data_size);
+    if (!data) {
+        ShowFatalError("Failed to allocate memory");
+        return;
+    }
+    if (FileRead(data, sizeof(char), data_size, fp) != data_size) {
+        ShowFatalError("File read error");
+        return;
+    }
+    FileClose(fp);
+
+    *output_data = data;
+    *output_size = data_size;
 }

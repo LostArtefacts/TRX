@@ -3,6 +3,7 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
+#include "filesystem.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
