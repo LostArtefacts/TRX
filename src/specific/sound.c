@@ -3,6 +3,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/init.h"
 
 #include <math.h>
@@ -89,8 +90,7 @@ static SAMPLE_DATA *S_Sound_LoadSample(char *content)
         return NULL;
     }
 
-    SAMPLE_DATA *sample_data = malloc(sizeof(SAMPLE_DATA));
-    memset(sample_data, 0, sizeof(SAMPLE_DATA));
+    SAMPLE_DATA *sample_data = Memory_Alloc(sizeof(SAMPLE_DATA));
     sample_data->data = content + sizeof(WAVE_FILE_HEADER);
     sample_data->length =
         hdr->data_chunk.subchunk_size - sizeof(WAVE_FILE_HEADER);
@@ -220,7 +220,8 @@ void *S_Sound_PlaySample(
                 return NULL;
             }
 
-            DUPE_SOUND_BUFFER *dupe_buffer = malloc(sizeof(DUPE_SOUND_BUFFER));
+            DUPE_SOUND_BUFFER *dupe_buffer =
+                Memory_Alloc(sizeof(DUPE_SOUND_BUFFER));
             dupe_buffer->buffer = buffer_new;
             dupe_buffer->next = m_DupeBuffers;
             m_DupeBuffers = dupe_buffer;
@@ -313,7 +314,7 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
     }
 
     m_NumSampleData = num_samples;
-    m_SampleData = malloc(sizeof(SAMPLE_DATA *) * num_samples);
+    m_SampleData = Memory_Alloc(sizeof(SAMPLE_DATA *) * num_samples);
     for (int i = 0; i < m_NumSampleData; i++) {
         m_SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
     }

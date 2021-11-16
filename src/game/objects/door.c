@@ -3,9 +3,9 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "global/vars.h"
-#include "specific/init.h"
 
 static void OpenThatDoor(DOORPOS_DATA *d);
 static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item);
@@ -76,7 +76,7 @@ static void OpenThatDoor(DOORPOS_DATA *d)
 void InitialiseDoor(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
-    DOOR_DATA *door = game_malloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
+    DOOR_DATA *door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
     item->data = door;
 
     int32_t dx = 0;

@@ -14,6 +14,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/display.h"
 #include "specific/frontend.h"
 #include "specific/hwr.h"
@@ -24,7 +25,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
@@ -46,9 +46,9 @@ void GameMain()
     }
 
     for (int i = 0; i < arg_count; i++) {
-        free(args[i]);
+        Memory_Free(args[i]);
     }
-    free(args);
+    Memory_Free(args);
 
     S_InitialiseSystem();
 

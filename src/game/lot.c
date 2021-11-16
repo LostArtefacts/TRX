@@ -1,5 +1,6 @@
 #include "game/lot.h"
 
+#include "game/gamebuf.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/init.h"
@@ -12,12 +13,12 @@ static CREATURE_INFO *BaddieSlots = NULL;
 void InitialiseLOTArray()
 {
     BaddieSlots =
-        game_malloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_DATA);
+        GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_INFO);
     for (int i = 0; i < NUM_SLOTS; i++) {
         CREATURE_INFO *creature = &BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->LOT.node =
-            game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
+            GameBuf_Alloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
     }
     SlotsUsed = 0;
 }
@@ -172,7 +173,8 @@ void CreateZone(ITEM_INFO *item)
 
 int32_t InitialiseLOT(LOT_INFO *LOT)
 {
-    LOT->node = game_malloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
+    LOT->node =
+        GameBuf_Alloc(sizeof(BOX_NODE) * NumberBoxes, GBUF_CREATURE_LOT);
     ClearLOT(LOT);
     return 1;
 }

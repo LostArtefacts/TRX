@@ -2,6 +2,7 @@
 
 #include "game/ai/pod.h"
 #include "game/control.h"
+#include "game/gamebuf.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"

@@ -8,6 +8,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/clock.h"
 #include "specific/display.h"
 #include "specific/file.h"
@@ -17,7 +18,6 @@
 
 #include <assert.h>
 #include <math.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define VISIBLE(vn1, vn2, vn3)                                                                            \
@@ -213,8 +213,7 @@ static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *pic)
         return false;
     }
 
-    pic->data = malloc(pic->width * pic->height * sizeof(RGB888));
-    assert(pic->data);
+    pic->data = Memory_Alloc(pic->width * pic->height * sizeof(RGB888));
 
     RGB888 pal[256];
     {
@@ -276,12 +275,12 @@ void S_DisplayPicture(const char *file_stem)
         LOG_ERROR("failed to decompress PCX %s", file_path);
     }
 
-    free(file_data);
+    Memory_Free(file_data);
 
     HWR_DownloadPicture(&pic);
 
     if (pic.data) {
-        free(pic.data);
+        Memory_Free(pic.data);
     }
 }
 
