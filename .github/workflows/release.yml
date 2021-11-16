@@ -7,23 +7,24 @@ on:
     - 'v?[0-9]*'
 
 jobs:
-  build:
+  publish_release:
     name: Publish new release
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y gcc-mingw-w64-i686 make
-          sudo python3 -m pip install pyjson5
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-      - run: git checkout master
+          path: .
+          fetch-depth: 1
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-i686 make python3-pip p7zip-full
+          sudo python3 -m pip install pyjson5 meson ninja
       - name: Build project
         run: |
-          make build
+          make release_linux
+          make
           7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll cfg
       - name: Create Release
         id: create_release

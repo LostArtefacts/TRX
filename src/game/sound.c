@@ -188,7 +188,7 @@ void Sound_UpdateEffects()
         }
 
         if (slot->flags & SOUND_FLAG_AMBIENT) {
-            if (slot->loudness != SOUND_NOT_AUDIBLE && slot->handle) {
+            if (slot->loudness != (uint32_t)SOUND_NOT_AUDIBLE && slot->handle) {
                 S_Sound_SetPanAndVolume(
                     slot->handle, slot->pan,
                     (m_MasterVolume * slot->volume) >> 6);

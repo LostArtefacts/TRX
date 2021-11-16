@@ -7,6 +7,5 @@
 
 void T1MLogFunc(
     const char *file, int line, const char *func, const char *fmt, ...);
-void T1MPrintStackTrace();
 
 #endif
