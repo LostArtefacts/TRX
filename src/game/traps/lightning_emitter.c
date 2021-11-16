@@ -6,11 +6,11 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/game.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
-#include "specific/init.h"
 #include "specific/output.h"
 
 void SetupLightningEmitter(OBJECT_INFO *obj)
@@ -24,7 +24,7 @@ void SetupLightningEmitter(OBJECT_INFO *obj)
 
 void InitialiseLightning(int16_t item_num)
 {
-    LIGHTNING *l = game_malloc(sizeof(LIGHTNING), 0);
+    LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_TRAP_DATA);
     Items[item_num].data = l;
 
     if (Objects[Items[item_num].object_number].nmeshes > 1) {

@@ -13,9 +13,4 @@ void S_ExitSystemFmt(const char *fmt, ...);
 void CalculateWibbleTable();
 void S_SeedRandom();
 
-void init_game_malloc();
-void *game_malloc(int32_t alloc_size, GAMEALLOC_BUFFER buf_index);
-void game_free(int32_t free_size, int32_t type);
-void game_malloc_shutdown();
-
 #endif
