@@ -19,7 +19,7 @@ bool S_Music_Init()
     MCIERROR result = mciSendCommandA(
         0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID, (DWORD_PTR)&open_parms);
     if (result) {
-        LOG_ERROR("cannot initailize music device: %x", result);
+        LOG_ERROR("cannot initialize music device: %x", result);
         return false;
     }
     m_MCIDeviceID = open_parms.wDeviceID;
