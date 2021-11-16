@@ -6,6 +6,9 @@
 
 #include <windows.h>
 
+static HMODULE m_ATIModule = NULL;
+static C3D_HRC m_RenderContext = NULL;
+
 C3D_EC(__stdcall **m_ATI3DCIF_Init_lib)(void) = NULL;
 C3D_EC(__stdcall **m_ATI3DCIF_Term_lib)(void) = NULL;
 C3D_EC(__stdcall **m_ATI3DCIF_TextureReg_lib)
@@ -26,143 +29,158 @@ C3D_EC(__stdcall **m_ATI3DCIF_RenderPrimStrip_lib)
 C3D_EC(__stdcall **m_ATI3DCIF_RenderPrimList_lib)
 (C3D_VLIST vList, C3D_UINT32 u32NumVert) = NULL;
 
-C3D_EC InitATI3DCIF()
+C3D_EC S_ATI_Init()
 {
-    HATI3DCIFModule = LoadLibraryA("ati3dcif");
-    if (!HATI3DCIFModule) {
-        LOG_ERROR("cannot find ati3dcif.dll");
+    m_ATIModule = LoadLibraryA("ati3dcif");
+    if (!m_ATIModule) {
+        LOG_ERROR("Cannot find ati3dcif.dll");
         return C3D_EC_GENFAIL;
     }
 
     C3D_EC result = C3D_EC_OK;
     m_ATI3DCIF_Init_lib = (C3D_EC(__stdcall **)(void))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_Init_lib");
+        m_ATIModule, "ATI3DCIF_Init_lib");
     if (!m_ATI3DCIF_Init_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_Init_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_Init_lib");
         goto fail;
     }
 
     m_ATI3DCIF_Term_lib = (C3D_EC(__stdcall **)(void))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_Term_lib");
+        m_ATIModule, "ATI3DCIF_Term_lib");
     if (!m_ATI3DCIF_Term_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_Term_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_Term_lib");
         goto fail;
     }
 
     m_ATI3DCIF_TextureReg_lib =
         (C3D_EC(__stdcall **)(C3D_PTMAP, C3D_PHTX))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_TextureReg_lib");
+            m_ATIModule, "ATI3DCIF_TextureReg_lib");
     if (!m_ATI3DCIF_TextureReg_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_TextureReg_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_TextureReg_lib");
         goto fail;
     }
 
     m_ATI3DCIF_TextureUnreg_lib = (C3D_EC(__stdcall **)(C3D_HTX))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_TextureUnreg_lib");
+        m_ATIModule, "ATI3DCIF_TextureUnreg_lib");
     if (!m_ATI3DCIF_TextureUnreg_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_TextureUnreg_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_TextureUnreg_lib");
         goto fail;
     }
 
-    m_ATI3DCIF_TexturePaletteCreate_lib = (C3D_EC(__stdcall **)(
-        C3D_ECI_TMAP_TYPE, void *, C3D_PHTXPAL))
-        GetProcAddress(HATI3DCIFModule, "ATI3DCIF_TexturePaletteCreate_lib");
+    m_ATI3DCIF_TexturePaletteCreate_lib =
+        (C3D_EC(__stdcall **)(C3D_ECI_TMAP_TYPE, void *, C3D_PHTXPAL))
+            GetProcAddress(m_ATIModule, "ATI3DCIF_TexturePaletteCreate_lib");
     if (!m_ATI3DCIF_TexturePaletteCreate_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_TexturePaletteCreate_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_TexturePaletteCreate_lib");
         goto fail;
     }
 
     m_ATI3DCIF_TexturePaletteDestroy_lib =
         (C3D_EC(__stdcall **)(C3D_HTXPAL))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_TexturePaletteDestroy_lib");
+            m_ATIModule, "ATI3DCIF_TexturePaletteDestroy_lib");
     if (!m_ATI3DCIF_TexturePaletteDestroy_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_TexturePaletteDestroy_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_TexturePaletteDestroy_lib");
         goto fail;
     }
 
     m_ATI3DCIF_ContextCreate_lib = (C3D_HRC(__stdcall **)(void))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_ContextCreate_lib");
+        m_ATIModule, "ATI3DCIF_ContextCreate_lib");
     if (!m_ATI3DCIF_ContextCreate_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_ContextCreate_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_ContextCreate_lib");
         goto fail;
     }
 
     m_ATI3DCIF_ContextDestroy_lib = (C3D_EC(__stdcall **)(
-        C3D_HRC))GetProcAddress(HATI3DCIFModule, "ATI3DCIF_ContextDestroy_lib");
+        C3D_HRC))GetProcAddress(m_ATIModule, "ATI3DCIF_ContextDestroy_lib");
     if (!m_ATI3DCIF_ContextDestroy_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_ContextDestroy_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_ContextDestroy_lib");
         goto fail;
     }
 
     m_ATI3DCIF_ContextSetState_lib =
         (C3D_EC(__stdcall **)(C3D_HRC, C3D_ERSID, C3D_PRSDATA))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_ContextSetState_lib");
+            m_ATIModule, "ATI3DCIF_ContextSetState_lib");
     if (!m_ATI3DCIF_ContextSetState_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_ContextSetState_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_ContextSetState_lib");
         goto fail;
     }
 
     m_ATI3DCIF_RenderBegin_lib = (C3D_EC(__stdcall **)(C3D_HRC))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_RenderBegin_lib");
+        m_ATIModule, "ATI3DCIF_RenderBegin_lib");
     if (!m_ATI3DCIF_RenderBegin_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_RenderBegin_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_RenderBegin_lib");
         goto fail;
     }
 
     m_ATI3DCIF_RenderEnd_lib = (C3D_EC(__stdcall **)(void))GetProcAddress(
-        HATI3DCIFModule, "ATI3DCIF_RenderEnd_lib");
+        m_ATIModule, "ATI3DCIF_RenderEnd_lib");
     if (!m_ATI3DCIF_RenderEnd_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_RenderEnd_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_RenderEnd_lib");
         goto fail;
     }
 
     m_ATI3DCIF_RenderPrimStrip_lib =
         (C3D_EC(__stdcall **)(C3D_VSTRIP, C3D_UINT32))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_RenderPrimStrip_lib");
+            m_ATIModule, "ATI3DCIF_RenderPrimStrip_lib");
     if (!m_ATI3DCIF_RenderPrimStrip_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_RenderPrimStrip_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_RenderPrimStrip_lib");
         goto fail;
     }
 
     m_ATI3DCIF_RenderPrimList_lib =
         (C3D_EC(__stdcall **)(C3D_VLIST, C3D_UINT32))GetProcAddress(
-            HATI3DCIFModule, "ATI3DCIF_RenderPrimList_lib");
+            m_ATIModule, "ATI3DCIF_RenderPrimList_lib");
     if (!m_ATI3DCIF_RenderPrimList_lib) {
-        LOG_ERROR("cannot find ATI3DCIF_RenderPrimList_lib");
+        LOG_ERROR("Cannot find ATI3DCIF_RenderPrimList_lib");
         goto fail;
     }
 
     result = (*m_ATI3DCIF_Init_lib)();
     if (result != C3D_EC_OK) {
-        LOG_ERROR("error while initializing ATI3DCIF");
-        return result;
+        LOG_ERROR("Error while initializing ATI3DCIF: 0x%lx", result);
+        goto fail;
+    }
+
+    m_RenderContext = ATI3DCIF_ContextCreate();
+    if (!m_RenderContext) {
+        LOG_ERROR("Error while creating ATI3DCIF context");
+        goto fail;
     }
 
     return result;
 
 fail:
-    if (HATI3DCIFModule) {
-        FreeLibrary(HATI3DCIFModule);
-        HATI3DCIFModule = NULL;
+    if (m_ATIModule) {
+        FreeLibrary(m_ATIModule);
+        m_ATIModule = NULL;
     }
     return C3D_EC_GENFAIL;
 }
 
-C3D_EC ShutdownATI3DCIF()
+C3D_EC S_ATI_Shutdown()
 {
-    if (!HATI3DCIFModule) {
+    if (!m_ATIModule) {
         return C3D_EC_GENFAIL;
+    }
+
+    if (m_RenderContext) {
+        ATI3DCIF_ContextDestroy(m_RenderContext);
+        m_RenderContext = 0;
     }
 
     C3D_EC result =
         m_ATI3DCIF_Term_lib ? (*m_ATI3DCIF_Term_lib)() : C3D_EC_GENFAIL;
 
-    FreeLibrary(HATI3DCIFModule);
-    HATI3DCIFModule = NULL;
+    FreeLibrary(m_ATIModule);
+    m_ATIModule = NULL;
 
     return result;
 }
 
+C3D_HRC S_ATI_GetRenderContext()
+{
+    return m_RenderContext;
+}
 C3D_EC ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     return m_ATI3DCIF_TextureReg_lib
