@@ -12,7 +12,6 @@
 #include "memory.h"
 #include "specific/s_clock.h"
 #include "specific/s_display.h"
-#include "specific/s_file.h"
 #include "specific/s_frontend.h"
 #include "specific/s_hwr.h"
 #include "specific/s_main.h"
@@ -265,15 +264,14 @@ void S_DisplayPicture(const char *file_stem)
     char file_name[128];
     strcpy(file_name, file_stem);
     strcat(file_name, ".pcx");
-    const char *file_path = GetFullPath(file_name);
 
     char *file_data = NULL;
     size_t file_size = 0;
-    FileLoad(file_path, &file_data, &file_size);
+    FileLoad(file_name, &file_data, &file_size);
 
     PICTURE pic = { 0 };
     if (!DecompPCX(file_data, file_size, &pic)) {
-        LOG_ERROR("failed to decompress PCX %s", file_path);
+        LOG_ERROR("failed to decompress PCX %s", file_name);
     }
 
     Memory_Free(file_data);

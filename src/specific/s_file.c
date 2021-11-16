@@ -16,7 +16,6 @@
 #include "specific/s_main.h"
 
 #include <stdio.h>
-#include <windows.h>
 
 int32_t MeshCount = 0;
 int32_t MeshPtrCount = 0;
@@ -56,13 +55,10 @@ bool LoadLevel(const char *filename, int32_t level_num)
     int32_t version;
     int32_t file_level_num;
 
-    const char *full_path = GetFullPath(filename);
-    LOG_INFO("%s", full_path);
-
     GameBuf_Init();
-    MYFILE *fp = FileOpen(full_path, FILE_OPEN_READ);
+    MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
     if (!fp) {
-        S_ExitSystemFmt("S_LoadLevel(): Could not open %s", full_path);
+        S_ExitSystemFmt("S_LoadLevel(): Could not open %s", filename);
         return false;
     }
 
@@ -70,7 +66,7 @@ bool LoadLevel(const char *filename, int32_t level_num)
     if (version != 32) {
         S_ExitSystemFmt(
             "Level %d (%s) is version %d (this game code is version %d)",
-            level_num, full_path, version, 32);
+            level_num, filename, version, 32);
         return false;
     }
 
@@ -648,12 +644,4 @@ bool S_LoadLevel(int level_num)
     GF.levels[level_num].secrets = GetSecretCount();
 
     return ret;
-}
-
-const char *GetFullPath(const char *filename)
-{
-    static char newpath[128];
-    LOG_INFO("%s", filename);
-    sprintf(newpath, ".\\%s", filename);
-    return newpath;
 }

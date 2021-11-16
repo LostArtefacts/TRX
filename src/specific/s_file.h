@@ -7,6 +7,5 @@
 
 bool LoadLevel(const char *filename, int32_t level_num);
 bool S_LoadLevel(int32_t level_num);
-const char *GetFullPath(const char *filename);
 
 #endif
