@@ -29,4 +29,6 @@ void FileSeek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
 void FileClose(MYFILE *file);
 int FileDelete(const char *path);
 
+void FileLoad(const char *path, char **output_data, size_t *output_size);
+
 #endif
