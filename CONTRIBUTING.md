@@ -22,25 +22,9 @@ Subsequent builds:
 
 - **Without docker**:
 
-    Install dependencies:
-
-    - `sudo apt-get install -y gcc-mingw-w64-i686`
-    - `sudo apt-get install -y make`
-    - `sudo apt-get install -y meson`
-    - `sudo apt-get install -y git`
-    - `sudo apt-get install -y python3`
-    - `sudo apt-get install -y python3-pip`
-    - `python3 -m pip install --user pyjson5`
-
-    Then to initialize meson build, run:
-
-    - `make debug_linux`
-
-    Then after each code change run:
-
-    - `make`
-
-    The DLL should appear in the `build/` directory.
+    This scenario is not officially supported, but you can see how it's done by
+    examining `docker/Dockerfile` and `docker/entrypoint.sh`, then tailoring
+    your system to match the process.
 
 ## Compiling on Windows
 

@@ -6,8 +6,9 @@ from pathlib import Path
 import pyjson5
 
 REPO_DIR = Path(__file__).parent.parent
-CONFIG_DIR = REPO_DIR / "cfg"
+BIN_DIR = REPO_DIR / "bin"
 SRC_DIR = REPO_DIR / "src"
+CONFIG_DIR = BIN_DIR / "cfg"
 
 
 def main() -> None:

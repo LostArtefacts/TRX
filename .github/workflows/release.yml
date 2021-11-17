@@ -19,14 +19,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-mingw-w64-i686 make python3-pip p7zip-full
-          sudo python3 -m pip install pyjson5 meson ninja
+          sudo apt-get install -y make p7zip-full moby-engine moby-cli
       - name: Build project
         run: |
-          make release_linux
-          make
-          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll cfg
-      - name: Create Release
+          make clean release
+      - name: Package release
+        run: |
+          7z a release.zip ./bin/tombati.exe ./bin/cfg/ ./build/Tomb1Main.dll
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -39,7 +39,7 @@ jobs:
       - name: Extract tag name
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: Upload Release Asset
+      - name: Upload release asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
