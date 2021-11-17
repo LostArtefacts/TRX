@@ -53,7 +53,7 @@ if python3.found()
     'fake_version',
     output: ['version.rc'],
     command: [python3, meson.source_root() + '/scripts/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
-    build_by_default: true
+    build_always: true
   )
   if host_machine.system() == 'windows'
     windows = import('windows')
