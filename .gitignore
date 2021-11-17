@@ -1,6 +1,11 @@
-TR1Main.dll
-build/
+Tomb1Main.dll
+Tomb1Main.exe
+Tomb1Main.log
 
+# Docker builds garbage
+/build
+
+# VS garbage
 v15/
 v16/
 *.def
@@ -15,7 +20,6 @@ Release/
 *.user
 *.ipch
 .vs/
-
 *.sln
 *.vcxproj
 *.filters
