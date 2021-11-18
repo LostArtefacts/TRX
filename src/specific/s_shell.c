@@ -4,6 +4,7 @@
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/music.h"
+#include "game/random.h"
 #include "game/shell.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
@@ -35,8 +36,8 @@ void S_Shell_SeedRandom()
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
-    SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
-    SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
+    Random_SeedControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
+    Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
 static bool S_Shell_InitDirectDraw()

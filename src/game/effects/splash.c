@@ -2,8 +2,8 @@
 
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -28,10 +28,10 @@ void Splash(ITEM_INFO *item)
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
-            fx->pos.y_rot = PHD_180 + 2 * GetRandomDraw();
+            fx->pos.y_rot = PHD_180 + 2 * Random_GetDraw();
             fx->object_number = O_SPLASH1;
             fx->frame_number = 0;
-            fx->speed = GetRandomDraw() / 256;
+            fx->speed = Random_GetDraw() / 256;
         }
     }
 }

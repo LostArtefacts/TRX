@@ -5,8 +5,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -53,13 +53,13 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
             fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-            fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
+            fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
             if (abortion) {
-                fx->speed = GetRandomControl() >> 7;
-                fx->fall_speed = -GetRandomControl() >> 7;
+                fx->speed = Random_GetControl() >> 7;
+                fx->fall_speed = -Random_GetControl() >> 7;
             } else {
-                fx->speed = GetRandomControl() >> 8;
-                fx->fall_speed = -GetRandomControl() >> 8;
+                fx->speed = Random_GetControl() >> 8;
+                fx->fall_speed = -Random_GetControl() >> 8;
             }
             fx->counter = damage;
             fx->frame_number = object->mesh_index;
@@ -105,13 +105,13 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
                 fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-                fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
+                fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
                 if (abortion) {
-                    fx->speed = GetRandomControl() >> 7;
-                    fx->fall_speed = -GetRandomControl() >> 7;
+                    fx->speed = Random_GetControl() >> 7;
+                    fx->fall_speed = -Random_GetControl() >> 7;
                 } else {
-                    fx->speed = GetRandomControl() >> 8;
-                    fx->fall_speed = -GetRandomControl() >> 8;
+                    fx->speed = Random_GetControl() >> 8;
+                    fx->fall_speed = -Random_GetControl() >> 8;
                 }
                 fx->counter = damage;
                 fx->object_number = O_BODY_PART;

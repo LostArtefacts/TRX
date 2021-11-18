@@ -4,10 +4,10 @@
 #include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/overlay.h"
+#include "game/random.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -1035,7 +1035,7 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip)
     }
 
     phd_TranslateRel(0, len, off);
-    phd_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(GetRandomDraw() * 2));
+    phd_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(Random_GetDraw() * 2));
     S_CalculateStaticLight(light);
     phd_PutPolygons(Meshes[Objects[O_GUN_FLASH].mesh_index], clip);
 }

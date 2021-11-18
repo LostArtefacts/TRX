@@ -1,7 +1,7 @@
 #include "game/effects/twinkle.h"
 
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -35,11 +35,11 @@ void ItemSparkle(ITEM_INFO *item, int meshmask)
         if (meshmask & (1 << i)) {
             SPHERE *sptr = &slist[i];
             effect_pos.x =
-                sptr->x + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+                sptr->x + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             effect_pos.y =
-                sptr->y + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+                sptr->y + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             effect_pos.z =
-                sptr->z + sptr->r * (GetRandomDraw() - 0x4000) / 0x4000;
+                sptr->z + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             Twinkle(&effect_pos);
         }
     }

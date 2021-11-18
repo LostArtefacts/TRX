@@ -158,6 +158,7 @@ sources = [
   'src/game/overlay.c',
   'src/game/pause.c',
   'src/game/people.c',
+  'src/game/random.c',
   'src/game/requester.c',
   'src/game/savegame.c',
   'src/game/screen.c',

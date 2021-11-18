@@ -5,9 +5,9 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/body_part.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -92,7 +92,7 @@ void AbortionControl(int16_t item_num)
             } else if (info.distance >= ABORTION_ATTACK_RANGE) {
                 item->goal_anim_state = ABORTION_FORWARD;
             } else if (LaraItem->hit_points > ABORTION_ATTACK_DAMAGE) {
-                if (GetRandomControl() < 0x4000) {
+                if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = ABORTION_ATTACK1;
                 } else {
                     item->goal_anim_state = ABORTION_ATTACK2;

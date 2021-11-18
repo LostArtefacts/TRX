@@ -1,7 +1,7 @@
 #include "game/sound.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/game.h"
+#include "game/random.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"
 #include "specific/s_sound.h"
@@ -235,7 +235,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     SAMPLE_INFO *s = &SampleInfos[SampleLUT[sfx_num]];
-    if (s->randomness && GetRandomDraw() > (int32_t)s->randomness) {
+    if (s->randomness && Random_GetDraw() > (int32_t)s->randomness) {
         return false;
     }
 
@@ -263,7 +263,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
     if (s->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
-        volume -= GetRandomDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
+        volume -= Random_GetDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
     if (s->flags & SAMPLE_FLAG_NO_PAN) {
@@ -283,14 +283,14 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     int32_t pitch = 100;
     if (s->flags & SAMPLE_FLAG_PITCH_WIBBLE) {
-        pitch += ((GetRandomDraw() * SOUND_MAX_PITCH_CHANGE) / 16384)
+        pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 16384)
             - SOUND_MAX_PITCH_CHANGE;
     }
 
     int32_t vars = (s->flags >> 2) & 15;
     int32_t sfx_id = s->number;
     if (vars != 1) {
-        sfx_id += (GetRandomDraw() * vars) / 0x8000;
+        sfx_id += (Random_GetDraw() * vars) / 0x8000;
     }
 
     if (volume > SOUND_MAX_VOLUME) {

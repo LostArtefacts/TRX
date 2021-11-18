@@ -3,11 +3,11 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 BITE_INFO KidGun1 = { 0, 150, 34, 7 };
@@ -85,7 +85,7 @@ void SkateKidControl(int16_t item_num)
 
         case SKATE_KID_SKATE:
             kid->flags = 0;
-            if (GetRandomControl() < SKATE_KID_PUSH_CHANCE) {
+            if (Random_GetControl() < SKATE_KID_PUSH_CHANCE) {
                 item->goal_anim_state = SKATE_KID_PUSH;
             } else if (Targetable(item, &info)) {
                 if (info.distance > SKATE_KID_DONT_STOP_RANGE
@@ -99,7 +99,7 @@ void SkateKidControl(int16_t item_num)
             break;
 
         case SKATE_KID_PUSH:
-            if (GetRandomControl() < SKATE_KID_SKATE_CHANCE) {
+            if (Random_GetControl() < SKATE_KID_SKATE_CHANCE) {
                 item->goal_anim_state = SKATE_KID_SKATE;
             }
             break;

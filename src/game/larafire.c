@@ -7,8 +7,8 @@
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/effects/ricochet.h"
-#include "game/game.h"
 #include "game/inv.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/const.h"
@@ -544,9 +544,9 @@ int32_t FireWeapon(
     view.y = src->pos.y - winfo->gun_height;
     view.z = src->pos.z;
     view.x_rot = angles[1]
-        + (winfo->shot_accuracy * (GetRandomControl() - PHD_90)) / PHD_ONE;
+        + (winfo->shot_accuracy * (Random_GetControl() - PHD_90)) / PHD_ONE;
     view.y_rot = angles[0]
-        + (winfo->shot_accuracy * (GetRandomControl() - PHD_90)) / PHD_ONE;
+        + (winfo->shot_accuracy * (Random_GetControl() - PHD_90)) / PHD_ONE;
     view.z_rot = 0;
     phd_GenerateW2V(&view);
 

@@ -4,8 +4,8 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 void SetupDart(OBJECT_INFO *obj)
@@ -50,7 +50,7 @@ void DartsControl(int16_t item_num)
             fx->pos = item->pos;
             fx->speed = 0;
             fx->counter = 6;
-            fx->frame_number = -3 * GetRandomControl() / 0x8000;
+            fx->frame_number = -3 * Random_GetControl() / 0x8000;
             fx->object_number = O_RICOCHET1;
         }
     }

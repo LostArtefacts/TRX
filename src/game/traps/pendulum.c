@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 void SetupPendulum(OBJECT_INFO *obj)
@@ -32,10 +32,10 @@ void PendulumControl(int16_t item_num)
     if (item->current_anim_state == TRAP_WORKING && item->touch_bits) {
         LaraItem->hit_points -= PENDULUM_DAMAGE;
         LaraItem->hit_status = 1;
-        int32_t x = LaraItem->pos.x + (GetRandomControl() - 0x4000) / 256;
-        int32_t z = LaraItem->pos.z + (GetRandomControl() - 0x4000) / 256;
-        int32_t y = LaraItem->pos.y - GetRandomControl() / 44;
-        int32_t d = LaraItem->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+        int32_t x = LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
+        int32_t z = LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
+        int32_t y = LaraItem->pos.y - Random_GetControl() / 44;
+        int32_t d = LaraItem->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
         DoBloodSplat(x, y, z, LaraItem->speed, d, LaraItem->room_number);
     }
 

@@ -3,10 +3,10 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 void SetupDino(OBJECT_INFO *obj)
@@ -98,7 +98,7 @@ void DinoControl(int16_t item_num)
             dino->maximum_turn = DINO_WALK_TURN;
             if (dino->mood != MOOD_BORED || !dino->flags) {
                 item->goal_anim_state = DINO_STOP;
-            } else if (info.ahead && GetRandomControl() < DINO_ROAR_CHANCE) {
+            } else if (info.ahead && Random_GetControl() < DINO_ROAR_CHANCE) {
                 item->required_anim_state = DINO_ROAR;
                 item->goal_anim_state = DINO_STOP;
             }
@@ -112,7 +112,7 @@ void DinoControl(int16_t item_num)
                 item->goal_anim_state = DINO_STOP;
             } else if (
                 dino->mood != MOOD_ESCAPE && info.ahead
-                && GetRandomControl() < DINO_ROAR_CHANCE) {
+                && Random_GetControl() < DINO_ROAR_CHANCE) {
                 item->required_anim_state = DINO_ROAR;
                 item->goal_anim_state = DINO_STOP;
             } else if (dino->mood == MOOD_BORED) {

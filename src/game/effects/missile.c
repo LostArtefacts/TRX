@@ -5,8 +5,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -32,7 +32,7 @@ void ControlMissile(int16_t fx_num)
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {
         if (fx->object_number == O_MISSILE2) {
             fx->object_number = O_RICOCHET1;
-            fx->frame_number = -GetRandomControl() / 11000;
+            fx->frame_number = -Random_GetControl() / 11000;
             fx->speed = 0;
             fx->counter = 6;
             Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
@@ -99,8 +99,8 @@ void ShootAtLara(FX_INFO *fx)
     int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(z));
     fx->pos.x_rot = -(PHD_ANGLE)phd_atan(dist, y);
     fx->pos.y_rot = phd_atan(z, x);
-    fx->pos.x_rot += (GetRandomControl() - 0x4000) / 0x40;
-    fx->pos.y_rot += (GetRandomControl() - 0x4000) / 0x40;
+    fx->pos.x_rot += (Random_GetControl() - 0x4000) / 0x40;
+    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 0x40;
 }
 
 int16_t ShardGun(

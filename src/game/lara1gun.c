@@ -1,7 +1,7 @@
 #include "game/lara.h"
 
 #include "config.h"
-#include "game/game.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -212,9 +212,9 @@ void FireShotgun()
 
     for (int i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
         dangles[0] = angles[0]
-            + (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
+            + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
         dangles[1] = angles[1]
-            + (int)((GetRandomControl() - 16384) * PELLET_SCATTER) / 65536;
+            + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
         if (FireWeapon(LGT_SHOTGUN, Lara.target, LaraItem, dangles)) {
             fired = 1;
         }
