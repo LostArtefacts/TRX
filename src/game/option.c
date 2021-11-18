@@ -303,13 +303,13 @@ static void InitLoadSaveGameRequester()
     GetSavedGamesList(req);
     SetRequesterHeading(req, GF.strings[GS_PASSPORT_SELECT_LEVEL]);
 
-    if (GetRenderHeightDownscaled() <= 240) {
+    if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
         req->vis_lines = 5;
-    } else if (GetRenderHeightDownscaled() <= 384) {
+    } else if (Screen_GetResHeightDownscaled() <= 384) {
         req->y = -30;
         req->vis_lines = 8;
-    } else if (GetRenderHeightDownscaled() <= 480) {
+    } else if (Screen_GetResHeightDownscaled() <= 480) {
         req->y = -80;
         req->vis_lines = 10;
     } else {
@@ -330,7 +330,7 @@ static void InitNewGameRequester()
     AddRequesterItem(req, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME], 0);
     AddRequesterItem(
         req, GF.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS], 0);
-    req->y = -30 * GetRenderHeightDownscaled() / 100;
+    req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;
 }
 
@@ -1284,7 +1284,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
 void S_ShowControls()
 {
-    const int16_t centre = GetRenderWidthDownscaled() / 2;
+    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
 
     CtrlText[1] = Text_Create(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");

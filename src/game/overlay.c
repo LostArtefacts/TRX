@@ -96,17 +96,17 @@ static void Overlay_GetBarLocation(
     } else if (
         bar_location == T1M_BL_TOP_RIGHT
         || bar_location == T1M_BL_BOTTOM_RIGHT) {
-        *x = GetRenderWidthDownscaled() - width * T1MConfig.ui.bar_scale
+        *x = Screen_GetResWidthDownscaled() - width * T1MConfig.ui.bar_scale
             - screen_margin_h;
     } else {
-        *x = (GetRenderWidthDownscaled() - width) / 2;
+        *x = (Screen_GetResWidthDownscaled() - width) / 2;
     }
 
     if (bar_location == T1M_BL_TOP_LEFT || bar_location == T1M_BL_TOP_CENTER
         || bar_location == T1M_BL_TOP_RIGHT) {
         *y = screen_margin_v + m_BarOffsetY[bar_location];
     } else {
-        *y = GetRenderHeightDownscaled() - height * T1MConfig.ui.bar_scale
+        *y = Screen_GetResHeightDownscaled() - height * T1MConfig.ui.bar_scale
             - screen_margin_v - m_BarOffsetY[bar_location];
     }
 
@@ -151,10 +151,12 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
 
     int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
     int32_t border = 1;
-    int32_t sx = GetRenderScale(x) - padding;
-    int32_t sy = GetRenderScale(y) - padding;
-    int32_t sw = GetRenderScale(width) * T1MConfig.ui.bar_scale + padding * 2;
-    int32_t sh = GetRenderScale(height) * T1MConfig.ui.bar_scale + padding * 2;
+    int32_t sx = Screen_GetRenderScale(x) - padding;
+    int32_t sy = Screen_GetRenderScale(y) - padding;
+    int32_t sw =
+        Screen_GetRenderScale(width) * T1MConfig.ui.bar_scale + padding * 2;
+    int32_t sh =
+        Screen_GetRenderScale(height) * T1MConfig.ui.bar_scale + padding * 2;
 
     // border
     S_DrawScreenFlatQuad(
@@ -173,10 +175,10 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
     if (percent && !blink) {
         width = width * percent / percent_max;
 
-        sx = GetRenderScale(x);
-        sy = GetRenderScale(y);
-        sw = GetRenderScale(width) * T1MConfig.ui.bar_scale;
-        sh = GetRenderScale(height) * T1MConfig.ui.bar_scale;
+        sx = Screen_GetRenderScale(x);
+        sy = Screen_GetRenderScale(y);
+        sw = Screen_GetRenderScale(width) * T1MConfig.ui.bar_scale;
+        sh = Screen_GetRenderScale(height) * T1MConfig.ui.bar_scale;
 
         if (T1MConfig.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
@@ -377,7 +379,7 @@ void Overlay_DrawPickups()
                 pu->duration = 0;
             } else {
                 S_DrawUISprite(
-                    x, y, GetRenderScaleGLRage(12288), pu->sprnum, 4096);
+                    x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
                     x = PhdWinWidth - sprite_height;
