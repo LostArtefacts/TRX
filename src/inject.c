@@ -1,8 +1,8 @@
 #include "inject.h"
 
-#include "specific/s_main.h"
+#include "specific/s_shell.h"
 
 void T1MInject()
 {
-    T1MInjectSpecificSMain();
+    S_Shell_Inject();
 }

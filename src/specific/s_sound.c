@@ -4,7 +4,7 @@
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_init.h"
+#include "specific/s_shell.h"
 
 #include <math.h>
 
@@ -88,7 +88,7 @@ static SAMPLE_DATA *S_Sound_LoadSample(char *content)
 {
     WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
     if (strncmp(hdr->chunk_id, "RIFF", 4)) {
-        S_ExitSystem("Samples must be in WAVE format.");
+        S_Shell_ExitSystem("Samples must be in WAVE format.");
         return NULL;
     }
 
@@ -136,7 +136,7 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
         LOG_ERROR(
             "Error while calling IDirectSound_CreateSoundBuffer: 0x%lx",
             result);
-        S_ExitSystem("Fatal DirectSound error!");
+        S_Shell_ExitSystem("Fatal DirectSound error!");
     }
 
     DWORD audio_data_size;
@@ -147,7 +147,7 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
         &audio_data, &audio_data_size, 0, 0, 0);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling IDirectSoundBuffer_Lock: 0x%lx", result);
-        S_ExitSystem("Fatal DirectSound error!");
+        S_Shell_ExitSystem("Fatal DirectSound error!");
     }
 
     memcpy(audio_data, sample_data->data, buffer_desc.dwBufferBytes);
@@ -158,7 +158,7 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSoundBuffer_Unlock: 0x%lx", result);
-        S_ExitSystem("Fatal DirectSound error!");
+        S_Shell_ExitSystem("Fatal DirectSound error!");
     }
 
     return true;

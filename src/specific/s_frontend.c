@@ -12,9 +12,8 @@
 #include "specific/s_display.h"
 #include "specific/s_file.h"
 #include "specific/s_hwr.h"
-#include "specific/s_init.h"
 #include "specific/s_input.h"
-#include "specific/s_main.h"
+#include "specific/s_shell.h"
 
 #include <dinput.h>
 
@@ -225,7 +224,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
             break;
         }
         S_UpdateInput();
-        WinSpinMessageLoop();
+        S_Shell_SpinMessageLoop();
         ClockSync();
 
         if (Input.deselect) {
@@ -264,10 +263,10 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 void FMVInit()
 {
     if (Player_PassInDirectDrawObject(DDraw)) {
-        S_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
+        S_Shell_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
     }
     if (Player_InitSoundSystem(TombHWND)) {
         Player_GetDSErrorCode();
-        S_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
+        S_Shell_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
     }
 }

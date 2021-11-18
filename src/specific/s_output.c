@@ -14,7 +14,7 @@
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
 #include "specific/s_hwr.h"
-#include "specific/s_main.h"
+#include "specific/s_shell.h"
 
 #include <assert.h>
 #include <math.h>
@@ -82,7 +82,7 @@ void S_InitialisePolyList()
 int32_t S_DumpScreen()
 {
     HWR_DumpScreen();
-    WinSpinMessageLoop();
+    S_Shell_SpinMessageLoop();
     FPSCounter++;
     return ClockSyncTicks(TICKS_PER_FRAME);
 }

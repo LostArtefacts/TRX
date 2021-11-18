@@ -15,9 +15,9 @@
 #include "log.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
-#include "specific/s_init.h"
 #include "specific/s_input.h"
 #include "specific/s_output.h"
+#include "specific/s_shell.h"
 
 #include <stdio.h>
 
@@ -239,7 +239,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     File_Read(&counter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
-        S_ExitSystem("null save->start");
+        S_Shell_ExitSystem("null save->start");
         return 0;
     }
     File_Read(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
@@ -363,7 +363,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     File_Write(&SaveCounter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
-        S_ExitSystem("null save->start");
+        S_Shell_ExitSystem("null save->start");
         return 0;
     }
     File_Write(&save->start[0], sizeof(START_INFO), GF.level_count, fp);

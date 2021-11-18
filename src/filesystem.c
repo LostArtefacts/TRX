@@ -1,7 +1,7 @@
 #include "filesystem.h"
 
 #include "memory.h"
-#include "specific/s_init.h"
+#include "specific/s_shell.h"
 #include "specific/s_filesystem.h"
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
         if (game_path) {
             char new_path[S_File_GetMaxPath()];
             if (strlen(game_path) + 1 + strlen(path) >= sizeof(new_path)) {
-                S_ExitSystem("Too long path");
+                S_Shell_ExitSystem("Too long path");
             }
             strcpy(new_path, game_path);
             strcat(new_path, "\\");
@@ -116,18 +116,18 @@ void File_Load(const char *path, char **output_data, size_t *output_size)
 {
     MYFILE *fp = File_Open(path, FILE_OPEN_READ);
     if (!fp) {
-        S_ExitSystem("File load error");
+        S_Shell_ExitSystem("File load error");
         return;
     }
 
     size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size);
     if (!data) {
-        S_ExitSystem("Failed to allocate memory");
+        S_Shell_ExitSystem("Failed to allocate memory");
         return;
     }
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
-        S_ExitSystem("File read error");
+        S_Shell_ExitSystem("File read error");
         return;
     }
     File_Close(fp);
