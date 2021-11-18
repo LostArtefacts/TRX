@@ -4,6 +4,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/music.h"
 #include "game/setup.h"
@@ -12,7 +13,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_display.h"
-#include "specific/s_input.h"
 
 static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;
@@ -78,7 +78,7 @@ int32_t DoCinematic(int32_t nframes)
 
     frame_count += CinematicAnimationRate * nframes;
     while (frame_count >= 0) {
-        S_UpdateInput();
+        Input_Update();
         if (g_Input.option) {
             return 1;
         }

@@ -2,6 +2,7 @@
 
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "global/vars.h"

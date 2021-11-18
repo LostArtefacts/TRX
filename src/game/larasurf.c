@@ -4,6 +4,7 @@
 #include "config.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/input.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"

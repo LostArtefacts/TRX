@@ -4,6 +4,7 @@
 #include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/game.h"
+#include "game/input.h"
 #include "game/lara.h"
 #include "game/option.h"
 #include "game/overlay.h"
@@ -18,7 +19,6 @@
 #include "global/vars.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
-#include "specific/s_input.h"
 #include "specific/s_output.h"
 
 #include <stdint.h>
@@ -103,7 +103,7 @@ int32_t Display_Inventory(int inv_mode)
 
     do {
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
-        S_UpdateInput();
+        Input_Update();
 
         if (InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             NoInputCount = 0;

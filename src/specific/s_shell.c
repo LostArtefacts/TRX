@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
+#include "game/input.h"
 #include "game/music.h"
 #include "game/random.h"
 #include "game/shell.h"
@@ -216,7 +217,7 @@ int WINAPI WinMain(
 void S_Shell_ExitSystem(const char *message)
 {
     while (g_Input.select) {
-        S_UpdateInput();
+        Input_Update();
     }
     GameBuf_Shutdown();
     HWR_ShutdownHardware();

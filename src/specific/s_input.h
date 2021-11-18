@@ -4,21 +4,19 @@
 #include "global/types.h"
 
 #include <stdbool.h>
-#include <stdint.h>
 
-typedef enum INPUT_LAYOUT {
-    INPUT_LAYOUT_DEFAULT,
-    INPUT_LAYOUT_USER,
-    INPUT_LAYOUT_NUMBER_OF,
-} INPUT_LAYOUT;
+void S_Input_Init();
 
-extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_KEY_NUMBER_OF];
-extern bool ConflictLayout[INPUT_KEY_NUMBER_OF];
-extern INPUT_STATE g_OldInputDB;
+INPUT_STATE S_Input_GetCurrentState();
 
-void InputInit();
-int16_t KeyGet();
-void S_UpdateInput();
-INPUT_STATE GetDebouncedInput(INPUT_STATE input);
+int16_t S_Input_ReadKeyCode();
+
+const char *S_Input_GetKeyCodeName(int16_t key);
+
+bool S_Input_IsKeyConflicted(INPUT_KEY key);
+void S_Input_SetKeyAsConflicted(INPUT_KEY key, bool is_conflicted);
+
+int16_t S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key);
+void S_Input_AssignKeyCode(int16_t layout_num, INPUT_KEY key, int16_t key_code);
 
 #endif

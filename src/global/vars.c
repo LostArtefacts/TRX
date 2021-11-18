@@ -33,8 +33,6 @@ uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
 int32_t NoInputCount = 0;
 bool IDelay = false;
 int32_t IDCount = 0;
-INPUT_STATE g_Input = { 0 };
-INPUT_STATE g_InputDB = { 0 };
 int32_t OptionSelected = 0;
 
 int32_t PhdPersp = 0;

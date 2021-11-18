@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/demo.h"
 #include "game/hair.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -19,7 +20,6 @@
 #include "game/traps/movable_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_input.h"
 #include "specific/s_shell.h"
 
 #include <stddef.h>
@@ -142,7 +142,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             return GF_NOP_BREAK;
         }
 
-        S_UpdateInput();
+        Input_Update();
 
         if (ResetFlag) {
             return GF_NOP_BREAK;

@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/gamebuf.h"
+#include "game/input.h"
 #include "game/screen.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -13,7 +14,6 @@
 #include "log.h"
 #include "specific/s_file.h"
 #include "specific/s_hwr.h"
-#include "specific/s_input.h"
 #include "specific/s_shell.h"
 
 #include <dinput.h>
@@ -137,14 +137,14 @@ void S_FadeToBlack()
 void S_Wait(int32_t nticks)
 {
     for (int i = 0; i < nticks; i++) {
-        S_UpdateInput();
+        Input_Update();
         if (g_Input.any) {
             break;
         }
         Clock_SyncTicks(1);
     }
     while (g_Input.any) {
-        S_UpdateInput();
+        Input_Update();
     }
 }
 
@@ -214,7 +214,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
     }
 
     result = 1;
-    int8_t keypress = 0;
+    bool keypress = false;
     int32_t total_frames = Movie_GetTotalFrames(movie_context);
     if (Player_StartTimer(movie_context)) {
         LOG_ERROR("cannot start timer");
@@ -226,12 +226,12 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
                 movie_context, fmv_context, sound_context, 0, 0, 0, 0, 0)) {
             break;
         }
-        S_UpdateInput();
+        Input_Update();
         S_Shell_SpinMessageLoop();
         Clock_Sync();
 
         if (g_Input.deselect) {
-            keypress = 1;
+            keypress = true;
         } else if (keypress && !g_Input.deselect) {
             break;
         }

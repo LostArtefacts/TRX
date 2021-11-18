@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/input.h"
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -16,7 +17,6 @@
 #include "log.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
-#include "specific/s_input.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 
@@ -154,10 +154,10 @@ void LevelStats(int32_t level_num)
 
     // wait till action key release
     while (g_Input.select || g_Input.deselect) {
-        S_UpdateInput();
+        Input_Update();
         S_InitialisePolyList();
         S_CopyBufferToScreen();
-        S_UpdateInput();
+        Input_Update();
         Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
@@ -170,7 +170,7 @@ void LevelStats(int32_t level_num)
         }
         S_InitialisePolyList();
         S_CopyBufferToScreen();
-        S_UpdateInput();
+        Input_Update();
         Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
@@ -180,7 +180,7 @@ void LevelStats(int32_t level_num)
     while (g_Input.deselect) {
         S_InitialisePolyList();
         S_CopyBufferToScreen();
-        S_UpdateInput();
+        Input_Update();
         Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();

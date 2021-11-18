@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/twinkle.h"
+#include "game/input.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"

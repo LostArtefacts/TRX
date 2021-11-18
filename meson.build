@@ -127,6 +127,7 @@ sources = [
   'src/game/gamebuf.c',
   'src/game/gameflow.c',
   'src/game/hair.c',
+  'src/game/input.c',
   'src/game/inventry.c',
   'src/game/invfunc.c',
   'src/game/invvars.c',

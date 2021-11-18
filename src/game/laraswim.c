@@ -5,6 +5,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/input.h"
 #include "game/objects/door.h"
 #include "global/const.h"
 #include "global/types.h"
