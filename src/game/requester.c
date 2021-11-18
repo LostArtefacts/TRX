@@ -1,10 +1,10 @@
 #include "game/requester.h"
 
+#include "game/screen.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
 
 #include <string.h>
 

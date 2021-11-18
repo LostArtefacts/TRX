@@ -16,7 +16,6 @@
 #include "specific/s_shell.h"
 
 #include <assert.h>
-#include <math.h>
 #include <string.h>
 
 #define VISIBLE(vn1, vn2, vn3)                                                                            \
@@ -24,54 +23,6 @@
      >= 0)
 
 static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *pic);
-
-int32_t GetRenderHeightDownscaled()
-{
-    return PhdWinHeight * PHD_ONE / GetRenderScale(PHD_ONE);
-}
-
-int32_t GetRenderWidthDownscaled()
-{
-    return PhdWinWidth * PHD_ONE / GetRenderScale(PHD_ONE);
-}
-
-int32_t GetRenderHeight()
-{
-    return PhdWinHeight;
-}
-
-int32_t GetRenderWidth()
-{
-    return PhdWinWidth;
-}
-
-int32_t GetRenderScale(int32_t unit)
-{
-    int32_t baseWidth = 640;
-    int32_t baseHeight = 480;
-    int32_t scale_x = PhdWinWidth > baseWidth
-        ? ((double)PhdWinWidth * unit * T1MConfig.ui.text_scale) / baseWidth
-        : unit * T1MConfig.ui.text_scale;
-    int32_t scale_y = PhdWinHeight > baseHeight
-        ? ((double)PhdWinHeight * unit * T1MConfig.ui.text_scale) / baseHeight
-        : unit * T1MConfig.ui.text_scale;
-    return MIN(scale_x, scale_y);
-}
-
-int32_t GetRenderScaleGLRage(int32_t unit)
-{
-    // GLRage-style UI scaler
-    double result = PhdWinWidth;
-    result *= unit;
-    result /= 800.0;
-
-    // only scale up, not down
-    if (result < unit) {
-        result = unit;
-    }
-
-    return round(result);
-}
 
 void S_InitialisePolyList()
 {

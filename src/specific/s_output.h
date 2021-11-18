@@ -22,12 +22,4 @@ void S_DrawLightningSegment(
 void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item);
 int S_GetObjectBounds(int16_t *bptr);
 
-int32_t GetRenderScaleGLRage(int32_t unit);
-
-int32_t GetRenderScale(int32_t unit);
-int32_t GetRenderHeightDownscaled();
-int32_t GetRenderWidthDownscaled();
-int32_t GetRenderHeight();
-int32_t GetRenderWidth();
-
 #endif

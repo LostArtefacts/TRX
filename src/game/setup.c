@@ -84,7 +84,6 @@
 #include "global/vars.h"
 #include "log.h"
 #include "specific/s_file.h"
-#include "specific/s_output.h"
 
 #include <stddef.h>
 

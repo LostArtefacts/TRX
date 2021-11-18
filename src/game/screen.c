@@ -1,8 +1,11 @@
 #include "game/screen.h"
 
 #include "3dsystem/3d_gen.h"
+#include "config.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
+
+#include <math.h>
 
 // The screen resolution is controlled by two variables that are indices within
 // an array of predefined screen resolutions.
@@ -99,4 +102,54 @@ void Screen_RestoreResolution()
 
     m_HiRes = m_GameHiRes;
     HWR_SwitchResolution();
+}
+
+int32_t GetRenderHeightDownscaled()
+{
+    return Screen_GetResHeight() * PHD_ONE / GetRenderScale(PHD_ONE);
+}
+
+int32_t GetRenderWidthDownscaled()
+{
+    return Screen_GetResWidth() * PHD_ONE / GetRenderScale(PHD_ONE);
+}
+
+int32_t GetRenderHeight()
+{
+    return Screen_GetResHeight();
+}
+
+int32_t GetRenderWidth()
+{
+    return Screen_GetResWidth();
+}
+
+int32_t GetRenderScale(int32_t unit)
+{
+    int32_t baseWidth = 640;
+    int32_t baseHeight = 480;
+    int32_t scale_x = Screen_GetResWidth() > baseWidth
+        ? ((double)Screen_GetResWidth() * unit * T1MConfig.ui.text_scale)
+            / baseWidth
+        : unit * T1MConfig.ui.text_scale;
+    int32_t scale_y = Screen_GetResHeight() > baseHeight
+        ? ((double)Screen_GetResHeight() * unit * T1MConfig.ui.text_scale)
+            / baseHeight
+        : unit * T1MConfig.ui.text_scale;
+    return MIN(scale_x, scale_y);
+}
+
+int32_t GetRenderScaleGLRage(int32_t unit)
+{
+    // GLRage-style UI scaler
+    double result = Screen_GetResWidth();
+    result *= unit;
+    result /= 800.0;
+
+    // only scale up, not down
+    if (result < unit) {
+        result = unit;
+    }
+
+    return round(result);
 }
