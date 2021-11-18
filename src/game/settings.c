@@ -146,11 +146,10 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        S_Input_AssignKeyCode(
-            INPUT_LAYOUT_USER, i,
-            json_array_get_number_int(
-                layout_arr, i,
-                S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i)));
+        S_INPUT_KEYCODE key_code =
+            S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i);
+        key_code = json_array_get_number_int(layout_arr, i, key_code);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, i, key_code);
     }
 
     if (root) {

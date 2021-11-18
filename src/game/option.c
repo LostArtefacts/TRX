@@ -931,14 +931,14 @@ void FlashConflicts()
         if (item1->option == -1) {
             continue;
         }
-        int16_t key_code1 =
+        S_INPUT_KEYCODE key_code1 =
             S_Input_GetAssignedKeyCode(T1MConfig.input.layout, item1->option);
         for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
              item2->col_num != -1; item2++) {
             if (item2->option == -1) {
                 continue;
             }
-            int16_t key_code2 = S_Input_GetAssignedKeyCode(
+            S_INPUT_KEYCODE key_code2 = S_Input_GetAssignedKeyCode(
                 T1MConfig.input.layout, item2->option);
             if (item1 != item2 && key_code1 == key_code2) {
                 Text_Flash(CtrlTextB[item1->option], 1, 20);
@@ -951,7 +951,8 @@ void FlashConflicts()
 void DefaultConflict()
 {
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        int16_t key_code = S_Input_GetAssignedKeyCode(INPUT_LAYOUT_DEFAULT, i);
+        S_INPUT_KEYCODE key_code =
+            S_Input_GetAssignedKeyCode(INPUT_LAYOUT_DEFAULT, i);
         S_Input_SetKeyAsConflicted(i, false);
         for (int j = 0; j < INPUT_KEY_NUMBER_OF; j++) {
             if (key_code == S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, j)) {
@@ -1134,7 +1135,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 2: {
-        int16_t key_code = S_Input_ReadKeyCode();
+        S_INPUT_KEYCODE key_code = S_Input_ReadKeyCode();
 
         const char *scancode_name = S_Input_GetKeyCodeName(key_code);
         if (key_code >= 0 && scancode_name && key_code != DIK_ESCAPE
@@ -1155,7 +1156,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     }
 
     case 3: {
-        int16_t key_code =
+        S_INPUT_KEYCODE key_code =
             S_Input_GetAssignedKeyCode(T1MConfig.input.layout, KeyChange);
 
         if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
