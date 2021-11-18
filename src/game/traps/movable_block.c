@@ -76,14 +76,14 @@ void MovableBlockCollision(
 {
     ITEM_INFO *item = &Items[item_num];
 
-    if (!Input.action || item->status == IS_ACTIVE || lara_item->gravity_status
-        || lara_item->pos.y != item->pos.y) {
+    if (!g_Input.action || item->status == IS_ACTIVE
+        || lara_item->gravity_status || lara_item->pos.y != item->pos.y) {
         return;
     }
 
     uint16_t quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
     if (lara_item->current_anim_state == AS_STOP) {
-        if (Input.forward || Input.back || Lara.gun_status != LGS_ARMLESS) {
+        if (g_Input.forward || g_Input.back || Lara.gun_status != LGS_ARMLESS) {
             return;
         }
 
@@ -142,13 +142,13 @@ void MovableBlockCollision(
             return;
         }
 
-        if (Input.forward) {
+        if (g_Input.forward) {
             if (!TestBlockPush(item, 1024, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PUSH;
             lara_item->goal_anim_state = AS_PUSHBLOCK;
-        } else if (Input.back) {
+        } else if (g_Input.back) {
             if (!TestBlockPull(item, 1024, quadrant)) {
                 return;
             }

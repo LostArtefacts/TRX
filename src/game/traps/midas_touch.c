@@ -50,7 +50,7 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if ((InvChosen == -1 && !Input.action) || Lara.gun_status != LGS_ARMLESS
+    if ((InvChosen == -1 && !g_Input.action) || Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status
         || lara_item->current_anim_state != AS_STOP) {
         return;

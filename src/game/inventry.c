@@ -105,7 +105,7 @@ int32_t Display_Inventory(int inv_mode)
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
         S_UpdateInput();
 
-        if (InvMode != INV_TITLE_MODE || Input.any || InputDB.any) {
+        if (InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             NoInputCount = 0;
             ResetFlag = false;
         } else {
@@ -177,7 +177,7 @@ int32_t Display_Inventory(int inv_mode)
                         }
                     } else if (
                         ring.number_of_objects == 1
-                        || (!Input.left && !Input.right) || !Input.left) {
+                        || (!g_Input.left && !g_Input.right) || !g_Input.left) {
                         LsAdder = HIGH_LIGHT;
                         inv_item->y_rot += 256;
                     }
@@ -188,7 +188,7 @@ int32_t Display_Inventory(int inv_mode)
                      || imo.status == RNG_DESELECTING
                      || imo.status == RNG_DESELECT
                      || imo.status == RNG_CLOSING_ITEM)
-                    && !ring.rotating && !Input.left && !Input.right) {
+                    && !ring.rotating && !g_Input.left && !g_Input.right) {
                     RingNotActive(inv_item);
                 }
             } else {
@@ -251,24 +251,24 @@ int32_t Display_Inventory(int inv_mode)
         if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
              || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
-            InputDB = (INPUT_STATE) { 0, .select = 1 };
+            g_InputDB = (INPUT_STATE) { 0, .select = 1 };
         }
 
         switch (imo.status) {
         case RNG_OPEN:
-            if (Input.right && ring.number_of_objects > 1) {
+            if (g_Input.right && ring.number_of_objects > 1) {
                 Inv_RingRotateLeft(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
-            if (Input.left && ring.number_of_objects > 1) {
+            if (g_Input.left && ring.number_of_objects > 1) {
                 Inv_RingRotateRight(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
-            if ((ResetFlag || InputDB.option)
+            if ((ResetFlag || g_InputDB.option)
                 && (ResetFlag || InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 InvChosen = -1;
@@ -290,11 +290,11 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
                 Inv_RingMotionRotation(
                     &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
-                Input = (INPUT_STATE) { 0 };
-                InputDB = (INPUT_STATE) { 0 };
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
             }
 
-            if (InputDB.select) {
+            if (g_InputDB.select) {
                 if ((InvMode == INV_SAVE_MODE
                      || InvMode == INV_SAVE_CRYSTAL_MODE
                      || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
@@ -324,8 +324,8 @@ int32_t Display_Inventory(int inv_mode)
                 Inv_RingMotionRotation(
                     &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
                 Inv_RingMotionItemSelect(&ring, inv_item);
-                Input = (INPUT_STATE) { 0 };
-                InputDB = (INPUT_STATE) { 0 };
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
 
                 switch (inv_item->object_number) {
                 case O_MAP_OPTION:
@@ -353,7 +353,7 @@ int32_t Display_Inventory(int inv_mode)
                 }
             }
 
-            if (InputDB.forward && InvMode != INV_TITLE_MODE
+            if (g_InputDB.forward && InvMode != INV_TITLE_MODE
                 && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (InvKeysObjects) {
@@ -367,8 +367,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_OPTION) {
                     if (InvMainObjects) {
                         Inv_RingMotionSetup(
@@ -381,10 +381,10 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
             } else if (
-                InputDB.back && InvMode != INV_TITLE_MODE
+                g_InputDB.back && InvMode != INV_TITLE_MODE
                 && InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (InvMainObjects) {
@@ -398,8 +398,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_MAIN) {
                     if (InvOptionObjects) {
                         Inv_RingMotionSetup(
@@ -412,7 +412,7 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
             }
             break;
@@ -512,23 +512,23 @@ int32_t Display_Inventory(int inv_mode)
             if (!busy && !IDelay) {
                 DoInventoryOptions(inv_item);
 
-                if (InputDB.deselect) {
+                if (g_InputDB.deselect) {
                     inv_item->sprlist = NULL;
                     Inv_RingMotionSetup(
                         &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
 
                     if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
                         || InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
-                        Input = (INPUT_STATE) { 0 };
-                        InputDB = (INPUT_STATE) { 0 };
+                        g_Input = (INPUT_STATE) { 0 };
+                        g_InputDB = (INPUT_STATE) { 0 };
                     }
                 }
 
-                if (InputDB.select) {
+                if (g_InputDB.select) {
                     inv_item->sprlist = NULL;
                     InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {
@@ -548,8 +548,8 @@ int32_t Display_Inventory(int inv_mode)
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     }
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
             }
             break;
@@ -561,8 +561,8 @@ int32_t Display_Inventory(int inv_mode)
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
             Inv_RingMotionRotation(
                 &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
-            Input = (INPUT_STATE) { 0 };
-            InputDB = (INPUT_STATE) { 0 };
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
             break;
 
         case RNG_CLOSING_ITEM: {

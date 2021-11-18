@@ -149,7 +149,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (demo_mode) {
-            if (Input.any) {
+            if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
             if (!ProcessDemoInput()) {
@@ -158,8 +158,8 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         }
 
         if (Lara.death_count > DEATH_WAIT
-            || (Lara.death_count > DEATH_WAIT_MIN && Input.any
-                && !Input.fly_cheat)
+            || (Lara.death_count > DEATH_WAIT_MIN && g_Input.any
+                && !g_Input.fly_cheat)
             || OverlayFlag == 2) {
             if (demo_mode) {
                 return GF_EXIT_TO_TITLE;
@@ -175,12 +175,12 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if ((Input.option || Input.save || Input.load || OverlayFlag <= 0)
+        if ((g_Input.option || g_Input.save || g_Input.load || OverlayFlag <= 0)
             && !Lara.death_count) {
             if (OverlayFlag > 0) {
-                if (Input.load) {
+                if (g_Input.load) {
                     OverlayFlag = -1;
-                } else if (Input.save) {
+                } else if (g_Input.save) {
                     OverlayFlag = -2;
                 } else {
                     OverlayFlag = 0;
@@ -201,7 +201,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if (!Lara.death_count && InputDB.pause) {
+        if (!Lara.death_count && g_InputDB.pause) {
             if (S_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }

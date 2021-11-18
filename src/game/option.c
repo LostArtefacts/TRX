@@ -379,7 +379,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
     case O_PICKUP_OPTION1:
     case O_PICKUP_OPTION2:
     case O_SCION_OPTION:
-        InputDB.select = 1;
+        g_InputDB.select = 1;
         break;
 
     case O_GUN_AMMO_OPTION:
@@ -389,7 +389,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
         break;
 
     default:
-        if (InputDB.deselect || InputDB.select) {
+        if (g_InputDB.deselect || g_InputDB.select) {
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
         }
@@ -409,8 +409,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
         || InvMode == INV_SAVE_CRYSTAL_MODE) {
-        InputDB.left = 0;
-        InputDB.right = 0;
+        g_InputDB.left = 0;
+        g_InputDB.right = 0;
     }
 
     switch (page) {
@@ -423,18 +423,18 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 } else if (
                     InvMode != INV_SAVE_MODE && InvMode != INV_SAVE_CRYSTAL_MODE
                     && InvMode != INV_LOAD_MODE) {
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
                 PassportMode = 0;
             } else {
-                Input = (INPUT_STATE) { 0 };
-                InputDB = (INPUT_STATE) { 0 };
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
             }
         } else if (PassportMode == 0) {
             if (!SavedGamesCount || InvMode == INV_SAVE_MODE
                 || InvMode == INV_SAVE_CRYSTAL_MODE) {
-                InputDB = (INPUT_STATE) { 0, .right = 1 };
+                g_InputDB = (INPUT_STATE) { 0, .right = 1 };
             } else {
                 if (!PassportText) {
                     PassportText =
@@ -442,7 +442,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     Text_AlignBottom(PassportText, 1);
                     Text_CentreH(PassportText, 1);
                 }
-                if (InputDB.select || InvMode == INV_LOAD_MODE) {
+                if (g_InputDB.select || InvMode == INV_LOAD_MODE) {
                     Text_Remove(InvRingText);
                     InvRingText = NULL;
                     Text_Remove(InvItemText[IT_NAME]);
@@ -451,8 +451,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
                     PassportMode = 1;
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
             }
         }
@@ -465,13 +465,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 if (select > 0) {
                     InvExtraData[1] = select - 1;
                 } else if (InvMode != INV_GAME_MODE) {
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
                 PassportMode = 0;
             } else {
-                Input = (INPUT_STATE) { 0 };
-                InputDB = (INPUT_STATE) { 0 };
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
             }
         } else if (PassportMode == 1) {
             int32_t select = DisplayRequester(&LoadSaveGameRequester);
@@ -483,21 +483,21 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     if (InvMode != INV_SAVE_MODE
                         && InvMode != INV_SAVE_CRYSTAL_MODE
                         && InvMode != INV_LOAD_MODE) {
-                        Input = (INPUT_STATE) { 0 };
-                        InputDB = (INPUT_STATE) { 0 };
+                        g_Input = (INPUT_STATE) { 0 };
+                        g_InputDB = (INPUT_STATE) { 0 };
                     }
                     PassportMode = 0;
                 }
             } else {
-                Input = (INPUT_STATE) { 0 };
-                InputDB = (INPUT_STATE) { 0 };
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
             }
         } else if (PassportMode == 0) {
             if (InvMode == INV_DEATH_MODE) {
                 if (inv_item->anim_direction == -1) {
-                    InputDB = (INPUT_STATE) { 0, .left = 1 };
+                    g_InputDB = (INPUT_STATE) { 0, .left = 1 };
                 } else {
-                    InputDB = (INPUT_STATE) { 0, .right = 1 };
+                    g_InputDB = (INPUT_STATE) { 0, .right = 1 };
                 }
             }
             if (!PassportText) {
@@ -512,7 +512,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 Text_AlignBottom(PassportText, 1);
                 Text_CentreH(PassportText, 1);
             }
-            if (InputDB.select || InvMode == INV_SAVE_MODE
+            if (g_InputDB.select || InvMode == INV_SAVE_MODE
                 || InvMode == INV_SAVE_CRYSTAL_MODE) {
                 if (InvMode == INV_TITLE_MODE
                     || CurrentLevel == GF.gym_level_num) {
@@ -524,8 +524,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     if (GF.enable_game_modes) {
                         InitNewGameRequester();
                         PassportMode = 2;
-                        Input = (INPUT_STATE) { 0 };
-                        InputDB = (INPUT_STATE) { 0 };
+                        g_Input = (INPUT_STATE) { 0 };
+                        g_InputDB = (INPUT_STATE) { 0 };
                     } else {
                         InvExtraData[1] = SaveGame.bonus_flag;
                     }
@@ -538,8 +538,8 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
                     PassportMode = 1;
-                    Input = (INPUT_STATE) { 0 };
-                    InputDB = (INPUT_STATE) { 0 };
+                    g_Input = (INPUT_STATE) { 0 };
+                    g_InputDB = (INPUT_STATE) { 0 };
                 }
             }
         }
@@ -567,7 +567,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         true,
     };
 
-    if (InputDB.left && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
+    if (g_InputDB.left && (InvMode != INV_DEATH_MODE || SavedGamesCount)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;
@@ -584,13 +584,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             }
         }
 
-        Input = (INPUT_STATE) { 0 };
-        InputDB = (INPUT_STATE) { 0 };
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
     }
 
-    if (InputDB.right) {
-        Input = (INPUT_STATE) { 0 };
-        InputDB = (INPUT_STATE) { 0 };
+    if (g_InputDB.right) {
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
 
         while (++page < PASSPORT_PAGE_COUNT) {
             if (pages_available[page]) {
@@ -609,10 +609,10 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.deselect) {
+    if (g_InputDB.deselect) {
         if (InvMode == INV_DEATH_MODE) {
-            Input = (INPUT_STATE) { 0 };
-            InputDB = (INPUT_STATE) { 0 };
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
         } else {
             if (page == 2) {
                 inv_item->anim_direction = 1;
@@ -628,7 +628,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.select) {
+    if (g_InputDB.select) {
         InvExtraData[0] = page;
         if (page == 2) {
             inv_item->anim_direction = 1;
@@ -721,7 +721,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && OptionSelected > DETAIL_HW_OPTION_MIN) {
+    if (g_InputDB.forward && OptionSelected > DETAIL_HW_OPTION_MIN) {
         Text_RemoveOutline(DetailTextHW[OptionSelected]);
         Text_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected--;
@@ -730,7 +730,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             DetailTextHW[OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
     }
 
-    if (InputDB.back && OptionSelected < DETAIL_HW_OPTION_MAX) {
+    if (g_InputDB.back && OptionSelected < DETAIL_HW_OPTION_MAX) {
         Text_RemoveOutline(DetailTextHW[OptionSelected]);
         Text_RemoveBackground(DetailTextHW[OptionSelected]);
         OptionSelected++;
@@ -741,7 +741,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
     bool reset = false;
 
-    if (InputDB.right) {
+    if (g_InputDB.right) {
         switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (!T1MConfig.render_flags.perspective) {
@@ -786,7 +786,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.left) {
+    if (g_InputDB.left) {
         switch (OptionSelected) {
         case DETAIL_HW_PERSPECTIVE:
             if (T1MConfig.render_flags.perspective) {
@@ -831,7 +831,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.deselect || InputDB.select) {
+    if (g_InputDB.deselect || g_InputDB.select) {
         reset = true;
     }
 
@@ -878,14 +878,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (InputDB.forward && OptionSelected > SOUND_OPTION_MIN) {
+    if (g_InputDB.forward && OptionSelected > SOUND_OPTION_MIN) {
         Text_RemoveOutline(SoundText[OptionSelected]);
         Text_RemoveBackground(SoundText[OptionSelected]);
         Text_AddBackground(SoundText[--OptionSelected], 128, 0, 0, 0);
         Text_AddOutline(SoundText[OptionSelected], 1);
     }
 
-    if (InputDB.back && OptionSelected < SOUND_OPTION_MAX) {
+    if (g_InputDB.back && OptionSelected < SOUND_OPTION_MAX) {
         Text_RemoveOutline(SoundText[OptionSelected]);
         Text_RemoveBackground(SoundText[OptionSelected]);
         Text_AddBackground(SoundText[++OptionSelected], 128, 0, 0, 0);
@@ -894,14 +894,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
     switch (OptionSelected) {
     case SOUND_MUSIC_VOLUME:
-        if (Input.left && T1MConfig.music_volume > 0) {
+        if (g_Input.left && T1MConfig.music_volume > 0) {
             T1MConfig.music_volume--;
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "| %2d", T1MConfig.music_volume);
             Text_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
-        } else if (Input.right && T1MConfig.music_volume < 10) {
+        } else if (g_Input.right && T1MConfig.music_volume < 10) {
             T1MConfig.music_volume++;
             IDelay = true;
             IDCount = 10;
@@ -910,21 +910,21 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             S_WriteUserSettings();
         }
 
-        if (Input.left || Input.right) {
+        if (g_Input.left || g_Input.right) {
             Music_SetVolume(T1MConfig.music_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
 
     case SOUND_SOUND_VOLUME:
-        if (Input.left && T1MConfig.sound_volume > 0) {
+        if (g_Input.left && T1MConfig.sound_volume > 0) {
             T1MConfig.sound_volume--;
             IDelay = true;
             IDCount = 10;
             sprintf(buf, "} %2d", T1MConfig.sound_volume);
             Text_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
-        } else if (Input.right && T1MConfig.sound_volume < 10) {
+        } else if (g_Input.right && T1MConfig.sound_volume < 10) {
             T1MConfig.sound_volume++;
             IDelay = true;
             IDCount = 10;
@@ -933,14 +933,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             S_WriteUserSettings();
         }
 
-        if (Input.left || Input.right) {
+        if (g_Input.left || g_Input.right) {
             Sound_SetMasterVolume(T1MConfig.sound_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
         break;
     }
 
-    if (InputDB.deselect || InputDB.select) {
+    if (g_InputDB.deselect || g_InputDB.select) {
         for (int i = 0; i < SOUND_NUMBER_OF; i++) {
             Text_Remove(SoundText[i]);
             SoundText[i] = NULL;
@@ -1019,7 +1019,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
         Text_ChangeText(CompassText[COMPASS_TIME], buf);
     }
 
-    if (InputDB.deselect || InputDB.select) {
+    if (g_InputDB.deselect || g_InputDB.select) {
         for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
             Text_Remove(CompassText[i]);
             CompassText[i] = NULL;
@@ -1115,7 +1115,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     switch (KeyMode) {
     case 0:
-        if (InputDB.left || InputDB.right) {
+        if (g_InputDB.left || g_InputDB.right) {
             if (KeyChange == -1) {
                 T1MConfig.input.layout ^= 1;
                 S_ChangeCtrlText();
@@ -1155,20 +1155,21 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 Text_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
                 Text_AddOutline(CtrlTextA[KeyChange], 1);
             }
-        } else if (InputDB.deselect || (InputDB.select && KeyChange == -1)) {
+        } else if (
+            g_InputDB.deselect || (g_InputDB.select && KeyChange == -1)) {
             S_RemoveCtrl();
             DefaultConflict();
             return;
         }
 
         if (T1MConfig.input.layout) {
-            if (InputDB.select) {
+            if (g_InputDB.select) {
                 KeyMode = 1;
                 Text_RemoveBackground(CtrlTextA[KeyChange]);
                 Text_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
                 Text_RemoveOutline(CtrlTextA[KeyChange]);
                 Text_AddOutline(CtrlTextB[KeyChange], 1);
-            } else if (InputDB.forward) {
+            } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
                 Text_RemoveOutline(
@@ -1202,7 +1203,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                     0, 0);
                 Text_AddOutline(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
-            } else if (InputDB.back) {
+            } else if (g_InputDB.back) {
                 Text_RemoveBackground(
                     KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
                 Text_RemoveOutline(
@@ -1241,7 +1242,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (!Input.select) {
+        if (!g_Input.select) {
             KeyMode = 2;
         }
         break;
@@ -1278,8 +1279,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    Input = (INPUT_STATE) { 0 };
-    InputDB = (INPUT_STATE) { 0 };
+    g_Input = (INPUT_STATE) { 0 };
+    g_InputDB = (INPUT_STATE) { 0 };
 }
 
 void S_ShowControls()

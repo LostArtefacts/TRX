@@ -28,21 +28,21 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
-    if (Input.level_skip_cheat) {
+    if (g_Input.level_skip_cheat) {
         LevelComplete = true;
     }
 
-    if (Input.health_cheat) {
+    if (g_Input.health_cheat) {
         item->hit_points +=
-            (Input.slow ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
+            (g_Input.slow ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
         CLAMP(item->hit_points, 0, LARA_HITPOINTS);
     }
 
-    if (InputDB.item_cheat) {
+    if (g_InputDB.item_cheat) {
         LaraCheatGetStuff();
     }
 
-    if (Lara.water_status != LWS_CHEAT && Input.fly_cheat) {
+    if (Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
         if (Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
             item->current_anim_state = AS_SWIM;
@@ -166,17 +166,17 @@ void LaraControl(int16_t item_num)
 
     int16_t camera_move_delta = PHD_45 / 30;
 
-    if (Input.camera_left) {
+    if (g_Input.camera_left) {
         CameraOffsetAdditionalAngle(camera_move_delta);
-    } else if (Input.camera_right) {
+    } else if (g_Input.camera_right) {
         CameraOffsetAdditionalAngle(-camera_move_delta);
     }
-    if (Input.camera_up) {
+    if (g_Input.camera_up) {
         CameraOffsetAdditionalElevation(-camera_move_delta);
-    } else if (Input.camera_down) {
+    } else if (g_Input.camera_down) {
         CameraOffsetAdditionalElevation(camera_move_delta);
     }
-    if (Input.camera_reset) {
+    if (g_Input.camera_reset) {
         CameraOffsetReset();
     }
 
@@ -211,7 +211,7 @@ void LaraControl(int16_t item_num)
         item->hit_points = LARA_HITPOINTS;
         Lara.death_count = 0;
         LaraUnderWater(item, &coll);
-        if (Input.slow && !Input.look && !Input.fly_cheat) {
+        if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {

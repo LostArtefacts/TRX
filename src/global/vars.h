@@ -35,8 +35,8 @@ extern bool ModeLock;
 extern int32_t NoInputCount;
 extern bool IDelay;
 extern int32_t IDCount;
-extern INPUT_STATE Input;
-extern INPUT_STATE InputDB;
+extern INPUT_STATE g_Input;
+extern INPUT_STATE g_InputDB;
 extern int32_t OptionSelected;
 
 extern bool SoundIsActive;
