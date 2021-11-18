@@ -79,7 +79,7 @@ void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &Items[item_num];
 
-    if (!Input.action || item->status != IS_NOT_ACTIVE
+    if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
         return;
     }
@@ -116,7 +116,7 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &Items[item_num];
 
-    if (!Input.action || item->status != IS_NOT_ACTIVE
+    if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || Lara.water_status != LWS_UNDERWATER) {
         return;
     }

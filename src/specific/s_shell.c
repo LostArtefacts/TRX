@@ -215,7 +215,7 @@ int WINAPI WinMain(
 
 void S_Shell_ExitSystem(const char *message)
 {
-    while (Input.select) {
+    while (g_Input.select) {
         S_UpdateInput();
     }
     GameBuf_Shutdown();

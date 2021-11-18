@@ -109,7 +109,7 @@ bool ProcessDemoInput()
     }
 
     // Translate demo inputs (that use TombATI key values) to T1M inputs.
-    Input = (INPUT_STATE) {
+    g_Input = (INPUT_STATE) {
         0,
         .forward = (bool)(*DemoPtr & (1 << 0)),
         .back = (bool)(*DemoPtr & (1 << 1)),

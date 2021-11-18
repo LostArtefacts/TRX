@@ -13,7 +13,7 @@
 
 #define KEY_DOWN(a) ((DIKeys[(a)] & 0x80) != 0)
 
-INPUT_STATE OldInputDB = { 0 };
+INPUT_STATE g_OldInputDB = { 0 };
 
 int16_t Layout[2][KEY_NUMBER_OF] = {
     // built-in controls
@@ -574,14 +574,14 @@ void S_UpdateInput()
         }
     }
 
-    Input = linput;
-    InputDB = GetDebouncedInput(Input);
+    g_Input = linput;
+    g_InputDB = GetDebouncedInput(g_Input);
 }
 
 INPUT_STATE GetDebouncedInput(INPUT_STATE input)
 {
     INPUT_STATE result;
-    result.any = input.any & ~OldInputDB.any;
-    OldInputDB = input;
+    result.any = input.any & ~g_OldInputDB.any;
+    g_OldInputDB = input;
     return result;
 }

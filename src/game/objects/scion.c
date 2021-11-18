@@ -151,7 +151,7 @@ void PickUpScionCollision(
             SaveGame.pickups++;
         }
     } else if (
-        Input.action && Lara.gun_status == LGS_ARMLESS
+        g_Input.action && Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == AS_STOP) {
         AlignLaraPosition(&PickUpScionPosition, item, lara_item);
@@ -178,7 +178,7 @@ void PickUpScion4Collision(
         return;
     }
 
-    if (Input.action && Lara.gun_status == LGS_ARMLESS
+    if (g_Input.action && Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == AS_STOP) {
         AlignLaraPosition(&PickUpScion4Position, item, lara_item);

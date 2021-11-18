@@ -73,16 +73,16 @@ static int32_t DisplayPauseRequester(
         AddRequesterItem(&PauseRequester, option2, 0);
 
         is_pause_text_ready = 1;
-        InputDB = (INPUT_STATE) { 0 };
-        Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
+        g_Input = (INPUT_STATE) { 0 };
     }
 
     int select = DisplayRequester(&PauseRequester);
     if (select > 0) {
         is_pause_text_ready = 0;
     } else {
-        InputDB = (INPUT_STATE) { 0 };
-        Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
+        g_Input = (INPUT_STATE) { 0 };
     }
     return select;
 }
@@ -102,10 +102,10 @@ static int32_t PauseLoop()
 
         switch (state) {
         case 0:
-            if (InputDB.pause) {
+            if (g_InputDB.pause) {
                 return 1;
             }
-            if (InputDB.option) {
+            if (g_InputDB.option) {
                 state = 1;
             }
             break;
@@ -141,7 +141,7 @@ static int32_t PauseLoop()
 
 int8_t S_Pause()
 {
-    OldInputDB = Input;
+    g_OldInputDB = g_Input;
 
     int old_overlay_flag = OverlayFlag;
     OverlayFlag = -3;

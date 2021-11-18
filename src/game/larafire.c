@@ -161,7 +161,7 @@ void LaraGun()
             } else if (Lara.gun_status == LGS_READY) {
                 draw = 1;
             }
-        } else if (Input.draw) {
+        } else if (g_Input.draw) {
             if (Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
                 Lara.gun_type = LGT_PISTOLS;
                 InitialiseNewWeapon();
@@ -239,7 +239,7 @@ void LaraGun()
         Lara.mesh_ptrs[LM_HEAD] = Meshes[Objects[O_LARA].mesh_index + LM_HEAD];
         switch (Lara.gun_type) {
         case LGT_PISTOLS:
-            if (Lara.pistols.ammo && Input.action) {
+            if (Lara.pistols.ammo && g_Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -250,7 +250,7 @@ void LaraGun()
             break;
 
         case LGT_MAGNUMS:
-            if (Lara.magnums.ammo && Input.action) {
+            if (Lara.magnums.ammo && g_Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -261,7 +261,7 @@ void LaraGun()
             break;
 
         case LGT_UZIS:
-            if (Lara.uzis.ammo && Input.action) {
+            if (Lara.uzis.ammo && g_Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
@@ -272,7 +272,7 @@ void LaraGun()
             break;
 
         case LGT_SHOTGUN:
-            if (Lara.shotgun.ammo && Input.action) {
+            if (Lara.shotgun.ammo && g_Input.action) {
                 Lara.mesh_ptrs[LM_HEAD] =
                     Meshes[Objects[O_UZI].mesh_index + LM_HEAD];
             }
