@@ -160,6 +160,7 @@ sources = [
   'src/game/people.c',
   'src/game/requester.c',
   'src/game/savegame.c',
+  'src/game/screen.c',
   'src/game/settings.c',
   'src/game/setup.c',
   'src/game/shell.c',

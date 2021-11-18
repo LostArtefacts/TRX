@@ -8,6 +8,7 @@
 #include "game/option.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/screen.h"
 #include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"

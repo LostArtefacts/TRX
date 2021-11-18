@@ -2,11 +2,11 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/screen.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_ati.h"
-#include "specific/s_display.h"
 #include "specific/s_shell.h"
 
 #include <assert.h>

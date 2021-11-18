@@ -10,6 +10,7 @@
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/savegame.h"
+#include "game/screen.h"
 #include "game/settings.h"
 #include "global/const.h"
 #include "global/vars.h"

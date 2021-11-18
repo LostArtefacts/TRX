@@ -3,11 +3,11 @@
 #include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/clock.h"
+#include "game/screen.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_display.h"
 #include "specific/s_frontend.h"
 #include "specific/s_output.h"
 

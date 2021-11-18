@@ -2,6 +2,7 @@
 
 #include "game/music.h"
 #include "game/requester.h"
+#include "game/screen.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"

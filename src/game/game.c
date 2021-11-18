@@ -7,6 +7,7 @@
 #include "game/draw.h"
 #include "game/music.h"
 #include "game/savegame.h"
+#include "game/screen.h"
 #include "game/setup.h"
 #include "game/sound.h"
 #include "game/text.h"
