@@ -6,7 +6,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/s_main.h"
+#include "specific/s_shell.h"
 
 #include <stdbool.h>
 #include <dinput.h>
@@ -123,7 +123,7 @@ static void DInputCreate()
 
     if (result) {
         LOG_ERROR("DirectInput error code %x", result);
-        ShowFatalError("Fatal DirectInput error!");
+        S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 }
 
@@ -143,27 +143,27 @@ void DInputKeyboardCreate()
         DInput, &GUID_SysKeyboard, &IDID_SysKeyboard, NULL);
     if (result) {
         LOG_ERROR("DirectInput error code %x", result);
-        ShowFatalError("Fatal DirectInput error!");
+        S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     result = IDirectInputDevice_SetCooperativeLevel(
         IDID_SysKeyboard, TombHWND, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
     if (result) {
         LOG_ERROR("DirectInput error code %x", result);
-        ShowFatalError("Fatal DirectInput error!");
+        S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     result =
         IDirectInputDevice_SetDataFormat(IDID_SysKeyboard, &c_dfDIKeyboard);
     if (result) {
         LOG_ERROR("DirectInput error code %x", result);
-        ShowFatalError("Fatal DirectInput error!");
+        S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     result = IDirectInputDevice_Acquire(IDID_SysKeyboard);
     if (result) {
         LOG_ERROR("DirectInput error code %x", result);
-        ShowFatalError("Fatal DirectInput error!");
+        S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 }
 
@@ -398,7 +398,7 @@ static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
 void S_UpdateInput()
 {
     DInputKeyboardRead();
-    WinSpinMessageLoop();
+    S_Shell_SpinMessageLoop();
 
     INPUT_STATE linput = { 0 };
 

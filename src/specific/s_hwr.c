@@ -7,7 +7,7 @@
 #include "log.h"
 #include "specific/s_ati.h"
 #include "specific/s_display.h"
-#include "specific/s_main.h"
+#include "specific/s_shell.h"
 
 #include <assert.h>
 
@@ -72,7 +72,7 @@ void HWR_CheckError(HRESULT result)
 {
     if (result != DD_OK) {
         LOG_ERROR("DirectDraw error code %x", result);
-        ShowFatalError("Fatal DirectDraw error!");
+        S_Shell_ExitSystem("Fatal DirectDraw error!");
     }
 }
 
@@ -1617,13 +1617,13 @@ void HWR_DownloadTextures(int32_t pages)
         "DownloadTexturesToHardware: level %d, pages %d", CurrentLevel, pages);
 
     if (pages > MAX_TEXTPAGES) {
-        ShowFatalError("Attempt to download more than texture page limit");
+        S_Shell_ExitSystem("Attempt to download more than texture page limit");
     }
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_ATITextureMap[i]) {
             if (ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
-                ShowFatalError("ERROR: Could not unregister texture");
+                S_Shell_ExitSystem("ERROR: Could not unregister texture");
             }
             m_ATITextureMap[i] = 0;
         }
@@ -1634,13 +1634,13 @@ void HWR_DownloadTextures(int32_t pages)
         LOG_INFO("    Resetting texture palette handle");
         if (m_ATITexturePalette) {
             if (ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette)) {
-                ShowFatalError("ERROR: Cannot release old texture palette");
+                S_Shell_ExitSystem("ERROR: Cannot release old texture palette");
             }
             m_ATITexturePalette = NULL;
         }
         if (ATI3DCIF_TexturePaletteCreate(
                 C3D_ECI_TMAP_8BIT, m_ATIPalette, &m_ATITexturePalette)) {
-            ShowFatalError("ERROR: Cannot create texture palette");
+            S_Shell_ExitSystem("ERROR: Cannot create texture palette");
         }
         HWR_IsPaletteActive = false;
     }

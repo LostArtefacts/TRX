@@ -1,137 +1,241 @@
 #include "specific/s_shell.h"
 
-#include "args.h"
-#include "game/demo.h"
+#include "config.h"
 #include "game/game.h"
-#include "game/gameflow.h"
-#include "game/inv.h"
+#include "game/gamebuf.h"
 #include "game/music.h"
-#include "game/savegame.h"
-#include "game/settings.h"
-#include "game/setup.h"
-#include "game/text.h"
-#include "global/const.h"
-#include "global/types.h"
+#include "game/shell.h"
 #include "global/vars.h"
+#include "global/vars_platform.h"
+#include "inject_util.h"
 #include "log.h"
-#include "memory.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
+#include "specific/s_ati.h"
+#include "specific/s_clock.h"
 #include "specific/s_hwr.h"
-#include "specific/s_init.h"
 #include "specific/s_input.h"
-#include "specific/s_output.h"
-#include "specific/s_main.h"
 
-#include <stdint.h>
+#include <ddraw.h>
+#include <dinput.h>
+#include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
+#include <time.h>
+#include <windows.h>
 
-static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
-static const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+static const char *ClassName = "TRClass";
+static const char *WindowName = "Tomb Raider";
+static UINT CloseMsg = 0;
+static bool IsGameWindowActive = true;
 
-void GameMain()
+static LRESULT CALLBACK
+WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+static bool S_Shell_InitDirectDraw();
+static void S_Shell_TerminateGame(int exit_code);
+static void S_Shell_ShowFatalError(const char *message);
+
+void S_Shell_SeedRandom()
 {
-    SoundIsActive = true;
+    time_t lt = time(0);
+    struct tm *tptr = localtime(&lt);
+    SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
+    SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
+}
 
-    const char *gameflow_path = T1MGameflowPath;
-
-    char **args;
-    int arg_count;
-    get_command_line(&args, &arg_count);
-    for (int i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            gameflow_path = T1MGameflowGoldPath;
-        }
+static bool S_Shell_InitDirectDraw()
+{
+    if (DirectDrawCreate(0, &DDraw, 0)) {
+        S_Shell_ShowFatalError("DirectDraw could not be started");
+        return false;
     }
 
-    for (int i = 0; i < arg_count; i++) {
-        Memory_Free(args[i]);
-    }
-    Memory_Free(args);
-
-    S_InitialiseSystem();
-
-    if (!GF_LoadScriptFile(gameflow_path)) {
-        ShowFatalError("MAIN: unable to load script file");
-        return;
+    if (S_ATI_Init()) {
+        S_Shell_ShowFatalError("ATI3DCIF could not be started");
+        return false;
     }
 
-    InitialiseStartInfo();
-    S_FrontEndCheck();
-    S_ReadUserSettings();
+    return true;
+}
 
-    TempVideoAdjust(2);
-    S_DisplayPicture("data\\eidospc");
-    S_InitialisePolyList();
-    S_CopyBufferToScreen();
-    S_OutputPolyList();
-    S_DumpScreen();
-    S_Wait(TICKS_PER_SECOND);
+static void S_Shell_TerminateGame(int exit_code)
+{
+    if (DDraw) {
+        HWR_ReleaseSurfaces();
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_RestoreDisplayMode(DDraw);
+        IDirectDraw_SetCooperativeLevel(DDraw, TombHWND, 8);
+        IDirectDraw_Release(DDraw);
+        DDraw = NULL;
+    }
 
-    HWR_PrepareFMV();
-    WinPlayFMV(FMV_CORE, 1);
-    WinPlayFMV(FMV_ESCAPE, 1);
-    WinPlayFMV(FMV_INTRO, 1);
-    HWR_FMVDone();
+    S_ATI_Shutdown();
 
-    int32_t gf_option = GF_EXIT_TO_TITLE;
+    PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
+    exit(exit_code);
+}
 
-    int8_t loop_continue = 1;
-    while (loop_continue) {
-        TempVideoRemove();
-        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("%d %d", gf_direction, gf_param);
+static void S_Shell_ShowFatalError(const char *message)
+{
+    LOG_ERROR("%s", message);
+    MessageBoxA(
+        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    S_Shell_TerminateGame(1);
+}
 
-        switch (gf_direction) {
-        case GF_START_GAME:
-            gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
-            break;
-
-        case GF_START_SAVED_GAME:
-            S_LoadGame(&SaveGame, gf_param);
-            gf_option = GF_InterpretSequence(SaveGame.current_level, GFL_SAVED);
-            break;
-
-        case GF_START_CINE:
-            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE);
-            break;
-
-        case GF_START_DEMO:
-            gf_option = StartDemo();
-            break;
-
-        case GF_LEVEL_COMPLETE:
-            gf_option = LevelCompleteSequence(gf_param);
-            break;
-
-        case GF_EXIT_TO_TITLE:
-            Text_RemoveAll();
-            TempVideoAdjust(2);
-            S_DisplayPicture("data\\titleh");
-            NoInputCount = 0;
-            if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
-                gf_option = GF_EXIT_GAME;
-                break;
+void S_Shell_SpinMessageLoop()
+{
+    MSG msg;
+    do {
+        while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
+            if (!GetMessageA(&msg, 0, 0, 0)) {
+                S_Shell_TerminateGame(0);
             }
 
-            gf_option = Display_Inventory(INV_TITLE_MODE);
-
-            S_FadeToBlack();
-            Music_Stop();
-            break;
-
-        case GF_EXIT_GAME:
-            loop_continue = 0;
-            break;
-
-        default:
-            S_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", gf_direction, gf_param);
-            return;
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
         }
+    } while (!IsGameWindowActive);
+}
+
+static LRESULT CALLBACK
+WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (uMsg == CloseMsg) {
+        DestroyWindow(TombHWND);
+        return 0;
     }
 
-    S_WriteUserSettings();
+    switch (uMsg) {
+    case WM_CLOSE:
+        DestroyWindow(TombHWND);
+        return 0;
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+
+    case WM_SIZE:
+        return 1;
+
+    case WM_MOVE:
+        return 0;
+
+    case WM_SETCURSOR:
+        SetCursor(0);
+        return 1;
+
+    case WM_ERASEBKGND:
+        return 1;
+
+    case WM_ACTIVATEAPP:
+        // mute the music when the game is not active
+        if (!IsGameWindowActive && wParam) {
+            Music_SetVolume(T1MConfig.music_volume);
+        } else if (IsGameWindowActive && !wParam) {
+            Music_SetVolume(0);
+        }
+        IsGameWindowActive = wParam != 0;
+        return 1;
+
+    case WM_NCPAINT:
+        return 0;
+
+    case WM_GETMINMAXINFO: {
+        MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
+        min_max_info->ptMinTrackSize.x = DDrawSurfaceWidth;
+        min_max_info->ptMinTrackSize.y = DDrawSurfaceHeight;
+        min_max_info->ptMaxTrackSize.x = DDrawSurfaceWidth;
+        min_max_info->ptMaxTrackSize.y = DDrawSurfaceHeight;
+        return DefWindowProcA(
+            hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
+    }
+
+    case WM_MOVING:
+        GetWindowRect(TombHWND, (LPRECT)lParam);
+        return 1;
+
+    case WM_SYSCOMMAND:
+        // ignore alt keypresses to bring window menu
+        if (wParam == SC_KEYMENU && (lParam >> 16) <= 0) {
+            return 0;
+        }
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+
+    case MM_MCINOTIFY:
+        Music_PlayLooped();
+        return 0;
+
+    default:
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    }
+}
+
+int WINAPI WinMain(
+    HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+    WNDCLASSA WndClass = { 0 };
+    WndClass.style = CS_HREDRAW | CS_VREDRAW;
+    WndClass.lpfnWndProc = (WNDPROC)WndProc;
+    WndClass.cbClsExtra = 0;
+    WndClass.cbWndExtra = 0;
+    WndClass.hInstance = hInstance;
+    WndClass.hIcon = LoadIconA(hInstance, IDI_APPLICATION);
+    WndClass.hCursor = LoadCursorA(0, IDC_ARROW);
+    WndClass.lpszMenuName = 0;
+    WndClass.lpszClassName = ClassName;
+    RegisterClassA(&WndClass);
+
+    int32_t scr_height = GetSystemMetrics(SM_CYSCREEN);
+    int32_t scr_width = GetSystemMetrics(SM_CXSCREEN);
+
+    TombModule = hInstance;
+    TombHWND = CreateWindowExA(
+        0, ClassName, WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
+        scr_width, scr_height, 0, 0, hInstance, 0);
+
+    if (!TombHWND) {
+        S_Shell_ShowFatalError("System Error: cannot create window");
+        return 1;
+    }
+
+    SetWindowPos(TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
+    ShowWindow(TombHWND, nShowCmd);
+    UpdateWindow(TombHWND);
+    CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
+
+    if (!S_Shell_InitDirectDraw()) {
+        S_Shell_TerminateGame(1);
+        return 1;
+    }
+
+    Shell_Main();
+
+    S_Shell_TerminateGame(0);
+    return 0;
+}
+
+void S_Shell_ExitSystem(const char *message)
+{
+    while (Input.select) {
+        S_UpdateInput();
+    }
+    GameBuf_Shutdown();
+    HWR_ShutdownHardware();
+    S_Shell_ShowFatalError(message);
+}
+
+void S_Shell_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    va_end(va);
+    S_Shell_ExitSystem(message);
+}
+
+void S_Shell_Inject()
+{
+    INJECT(0x0043DA80, WinMain);
+    INJECT(0x0043DE00, WndProc);
 }

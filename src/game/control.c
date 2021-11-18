@@ -19,8 +19,8 @@
 #include "game/traps/movable_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_init.h"
 #include "specific/s_input.h"
+#include "specific/s_shell.h"
 
 #include <stddef.h>
 
@@ -618,7 +618,7 @@ int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
             break;
 
         default:
-            S_ExitSystem("GetHeight(): Unknown type");
+            S_Shell_ExitSystem("GetHeight(): Unknown type");
             break;
         }
     } while (!(type & END_BIT));
@@ -1059,7 +1059,7 @@ int16_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
             break;
 
         default:
-            S_ExitSystem("GetCeiling(): Unknown type");
+            S_Shell_ExitSystem("GetCeiling(): Unknown type");
             break;
         }
     } while (!(type & END_BIT));
