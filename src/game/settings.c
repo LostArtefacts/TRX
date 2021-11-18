@@ -126,7 +126,7 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     CLAMP(T1MConfig.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         Layout[1][i] = json_array_get_number_int(layout_arr, i, Layout[1][i]);
     }
 
@@ -197,7 +197,7 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "ui_bar_scale", T1MConfig.ui.bar_scale);
 
     struct json_array_s *layout_arr = json_array_new();
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         json_array_append_number_int(layout_arr, Layout[1][i]);
     }
     json_object_append_array(root_obj, "layout", layout_arr);

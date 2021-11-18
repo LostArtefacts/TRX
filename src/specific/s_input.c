@@ -15,61 +15,61 @@
 
 INPUT_STATE g_OldInputDB = { 0 };
 
-int16_t Layout[2][KEY_NUMBER_OF] = {
+int16_t Layout[2][INPUT_KEY_NUMBER_OF] = {
     // built-in controls
     {
-        DIK_UP, // KEY_UP
-        DIK_DOWN, // KEY_DOWN
-        DIK_LEFT, // KEY_LEFT
-        DIK_RIGHT, // KEY_RIGHT
-        DIK_DELETE, // KEY_STEP_L
-        DIK_NEXT, // KEY_STEP_R
-        DIK_RSHIFT, // KEY_SLOW
-        DIK_RMENU, // KEY_JUMP
-        DIK_RCONTROL, // KEY_ACTION
-        DIK_SPACE, // KEY_DRAW
-        DIK_NUMPAD0, // KEY_LOOK
-        DIK_END, // KEY_ROLL
-        DIK_ESCAPE, // KEY_OPTION
-        DIK_O, // KEY_FLY_CHEAT,
-        DIK_I, // KEY_ITEM_CHEAT,
-        DIK_L, // KEY_LEVEL_SKIP_CHEAT,
-        DIK_P, // KEY_PAUSE,
-        DIK_W, // KEY_CAMERA_UP
-        DIK_S, // KEY_CAMERA_DOWN
-        DIK_A, // KEY_CAMERA_LEFT
-        DIK_D, // KEY_CAMERA_RIGHT
-        DIK_SLASH, // KEY_CAMERA_RESET
+        DIK_UP, // INPUT_KEY_UP
+        DIK_DOWN, // INPUT_KEY_DOWN
+        DIK_LEFT, // INPUT_KEY_LEFT
+        DIK_RIGHT, // INPUT_KEY_RIGHT
+        DIK_DELETE, // INPUT_KEY_STEP_L
+        DIK_NEXT, // INPUT_KEY_STEP_R
+        DIK_RSHIFT, // INPUT_KEY_SLOW
+        DIK_RMENU, // INPUT_KEY_JUMP
+        DIK_RCONTROL, // INPUT_KEY_ACTION
+        DIK_SPACE, // INPUT_KEY_DRAW
+        DIK_NUMPAD0, // INPUT_KEY_LOOK
+        DIK_END, // INPUT_KEY_ROLL
+        DIK_ESCAPE, // INPUT_KEY_OPTION
+        DIK_O, // INPUT_KEY_FLY_CHEAT,
+        DIK_I, // INPUT_KEY_ITEM_CHEAT,
+        DIK_L, // INPUT_KEY_LEVEL_SKIP_CHEAT,
+        DIK_P, // INPUT_KEY_PAUSE,
+        DIK_W, // INPUT_KEY_CAMERA_UP
+        DIK_S, // INPUT_KEY_CAMERA_DOWN
+        DIK_A, // INPUT_KEY_CAMERA_LEFT
+        DIK_D, // INPUT_KEY_CAMERA_RIGHT
+        DIK_SLASH, // INPUT_KEY_CAMERA_RESET
     },
 
     // default user controls
     {
-        DIK_NUMPAD8, // KEY_UP
-        DIK_NUMPAD2, // KEY_DOWN
-        DIK_NUMPAD4, // KEY_LEFT
-        DIK_NUMPAD6, // KEY_RIGHT
-        DIK_NUMPAD7, // KEY_STEP_L
-        DIK_NUMPAD9, // KEY_STEP_R
-        DIK_NUMPAD1, // KEY_SLOW
-        DIK_ADD, // KEY_JUMP
-        DIK_NUMPADENTER, // KEY_ACTION
-        DIK_NUMPAD3, // KEY_DRAW
-        DIK_NUMPAD0, // KEY_LOOK
-        DIK_NUMPAD5, // KEY_ROLL
-        DIK_DECIMAL, // KEY_OPTION
-        DIK_O, // KEY_FLY_CHEAT,
-        DIK_I, // KEY_ITEM_CHEAT,
-        DIK_L, // KEY_LEVEL_SKIP_CHEAT,
-        DIK_P, // KEY_PAUSE,
-        DIK_W, // KEY_CAMERA_UP
-        DIK_S, // KEY_CAMERA_DOWN
-        DIK_A, // KEY_CAMERA_LEFT
-        DIK_D, // KEY_CAMERA_RIGHT
-        DIK_SLASH, // KEY_CAMERA_RESET
+        DIK_NUMPAD8, // INPUT_KEY_UP
+        DIK_NUMPAD2, // INPUT_KEY_DOWN
+        DIK_NUMPAD4, // INPUT_KEY_LEFT
+        DIK_NUMPAD6, // INPUT_KEY_RIGHT
+        DIK_NUMPAD7, // INPUT_KEY_STEP_L
+        DIK_NUMPAD9, // INPUT_KEY_STEP_R
+        DIK_NUMPAD1, // INPUT_KEY_SLOW
+        DIK_ADD, // INPUT_KEY_JUMP
+        DIK_NUMPADENTER, // INPUT_KEY_ACTION
+        DIK_NUMPAD3, // INPUT_KEY_DRAW
+        DIK_NUMPAD0, // INPUT_KEY_LOOK
+        DIK_NUMPAD5, // INPUT_KEY_ROLL
+        DIK_DECIMAL, // INPUT_KEY_OPTION
+        DIK_O, // INPUT_KEY_FLY_CHEAT,
+        DIK_I, // INPUT_KEY_ITEM_CHEAT,
+        DIK_L, // INPUT_KEY_LEVEL_SKIP_CHEAT,
+        DIK_P, // INPUT_KEY_PAUSE,
+        DIK_W, // INPUT_KEY_CAMERA_UP
+        DIK_S, // INPUT_KEY_CAMERA_DOWN
+        DIK_A, // INPUT_KEY_CAMERA_LEFT
+        DIK_D, // INPUT_KEY_CAMERA_RIGHT
+        DIK_SLASH, // INPUT_KEY_CAMERA_RESET
     }
 };
 
-bool ConflictLayout[KEY_NUMBER_OF] = { false };
+bool ConflictLayout[INPUT_KEY_NUMBER_OF] = { false };
 
 static LPDIRECTINPUT8 DInput = NULL;
 static LPDIRECTINPUTDEVICE8 IDID_SysKeyboard = NULL;
@@ -84,8 +84,8 @@ static void DInputShutdown();
 static void DInputKeyboardCreate();
 static void DInputKeyboardRelease();
 static void DInputKeyboardRead();
-static bool KbdKey(KEY_NUMBER number, bool user);
-static bool Key_(KEY_NUMBER number);
+static bool KbdKey(INPUT_KEY number, bool user);
+static bool Key_(INPUT_KEY number);
 
 static HRESULT DInputJoystickCreate();
 static void DInputJoystickRelease();
@@ -187,7 +187,7 @@ static void DInputKeyboardRead()
     }
 }
 
-static bool KbdKey(KEY_NUMBER number, bool user)
+static bool KbdKey(INPUT_KEY number, bool user)
 {
     uint16_t key =
         Layout[user ? INPUT_LAYOUT_USER : INPUT_LAYOUT_DEFAULT][number];
@@ -215,7 +215,7 @@ static bool KbdKey(KEY_NUMBER number, bool user)
     return false;
 }
 
-static bool Key_(KEY_NUMBER number)
+static bool Key_(INPUT_KEY number)
 {
     return KbdKey(number, true)
         || (!ConflictLayout[number] && KbdKey(number, false));
@@ -402,30 +402,30 @@ void S_UpdateInput()
 
     INPUT_STATE linput = { 0 };
 
-    linput.forward = Key_(KEY_UP);
-    linput.back = Key_(KEY_DOWN);
-    linput.left = Key_(KEY_LEFT);
-    linput.right = Key_(KEY_RIGHT);
-    linput.step_left = Key_(KEY_STEP_L);
-    linput.step_right = Key_(KEY_STEP_R);
-    linput.slow = Key_(KEY_SLOW);
-    linput.jump = Key_(KEY_JUMP);
-    linput.action = Key_(KEY_ACTION);
-    linput.draw = Key_(KEY_DRAW);
-    linput.look = Key_(KEY_LOOK);
-    linput.roll = Key_(KEY_ROLL) || (linput.forward && linput.back);
-    linput.option = Key_(KEY_OPTION) && Camera.type != CAM_CINEMATIC;
-    linput.pause = Key_(KEY_PAUSE);
-    linput.camera_up = Key_(KEY_CAMERA_UP);
-    linput.camera_down = Key_(KEY_CAMERA_DOWN);
-    linput.camera_left = Key_(KEY_CAMERA_LEFT);
-    linput.camera_right = Key_(KEY_CAMERA_RIGHT);
-    linput.camera_reset = Key_(KEY_CAMERA_RESET);
+    linput.forward = Key_(INPUT_KEY_UP);
+    linput.back = Key_(INPUT_KEY_DOWN);
+    linput.left = Key_(INPUT_KEY_LEFT);
+    linput.right = Key_(INPUT_KEY_RIGHT);
+    linput.step_left = Key_(INPUT_KEY_STEP_L);
+    linput.step_right = Key_(INPUT_KEY_STEP_R);
+    linput.slow = Key_(INPUT_KEY_SLOW);
+    linput.jump = Key_(INPUT_KEY_JUMP);
+    linput.action = Key_(INPUT_KEY_ACTION);
+    linput.draw = Key_(INPUT_KEY_DRAW);
+    linput.look = Key_(INPUT_KEY_LOOK);
+    linput.roll = Key_(INPUT_KEY_ROLL) || (linput.forward && linput.back);
+    linput.option = Key_(INPUT_KEY_OPTION) && Camera.type != CAM_CINEMATIC;
+    linput.pause = Key_(INPUT_KEY_PAUSE);
+    linput.camera_up = Key_(INPUT_KEY_CAMERA_UP);
+    linput.camera_down = Key_(INPUT_KEY_CAMERA_DOWN);
+    linput.camera_left = Key_(INPUT_KEY_CAMERA_LEFT);
+    linput.camera_right = Key_(INPUT_KEY_CAMERA_RIGHT);
+    linput.camera_reset = Key_(INPUT_KEY_CAMERA_RESET);
 
     if (T1MConfig.enable_cheats) {
-        linput.item_cheat = Key_(KEY_ITEM_CHEAT);
-        linput.fly_cheat = Key_(KEY_FLY_CHEAT);
-        linput.level_skip_cheat = Key_(KEY_LEVEL_SKIP_CHEAT);
+        linput.item_cheat = Key_(INPUT_KEY_ITEM_CHEAT);
+        linput.fly_cheat = Key_(INPUT_KEY_FLY_CHEAT);
+        linput.level_skip_cheat = Key_(INPUT_KEY_LEVEL_SKIP_CHEAT);
         linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 
