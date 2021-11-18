@@ -381,7 +381,8 @@ void AlterFOV(PHD_ANGLE fov)
     // unchanged, otherwise the game renders the low camera in the Lost Valley
     // cutscene wrong.
     if (T1MConfig.fov_vertical) {
-        double aspect_ratio = GetRenderWidth() / (double)GetRenderHeight();
+        double aspect_ratio =
+            Screen_GetResWidth() / (double)Screen_GetResHeight();
         double fov_rad_h = fov * M_PI / 32760;
         double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
         fov = round((fov_rad_v / M_PI) * 32760);
@@ -389,7 +390,7 @@ void AlterFOV(PHD_ANGLE fov)
 
     int16_t c = phd_cos(fov / 2);
     int16_t s = phd_sin(fov / 2);
-    PhdPersp = ((PhdWinWidth / 2) * c) / s;
+    PhdPersp = ((Screen_GetResWidth() / 2) * c) / s;
 }
 
 void phd_PushMatrix()

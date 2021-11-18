@@ -104,27 +104,17 @@ void Screen_RestoreResolution()
     HWR_SwitchResolution();
 }
 
-int32_t GetRenderHeightDownscaled()
+int32_t Screen_GetResWidthDownscaled()
 {
-    return Screen_GetResHeight() * PHD_ONE / GetRenderScale(PHD_ONE);
+    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
 }
 
-int32_t GetRenderWidthDownscaled()
+int32_t Screen_GetResHeightDownscaled()
 {
-    return Screen_GetResWidth() * PHD_ONE / GetRenderScale(PHD_ONE);
+    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
 }
 
-int32_t GetRenderHeight()
-{
-    return Screen_GetResHeight();
-}
-
-int32_t GetRenderWidth()
-{
-    return Screen_GetResWidth();
-}
-
-int32_t GetRenderScale(int32_t unit)
+int32_t Screen_GetRenderScale(int32_t unit)
 {
     int32_t baseWidth = 640;
     int32_t baseHeight = 480;
@@ -139,7 +129,7 @@ int32_t GetRenderScale(int32_t unit)
     return MIN(scale_x, scale_y);
 }
 
-int32_t GetRenderScaleGLRage(int32_t unit)
+int32_t Screen_GetRenderScaleGLRage(int32_t unit)
 {
     // GLRage-style UI scaler
     double result = Screen_GetResWidth();
