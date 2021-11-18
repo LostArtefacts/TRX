@@ -20,4 +20,11 @@ int32_t Screen_GetResHeight();
 void Screen_SetResolution(int32_t hi_res);
 void Screen_RestoreResolution();
 
+int32_t GetRenderScaleGLRage(int32_t unit);
+int32_t GetRenderScale(int32_t unit);
+int32_t GetRenderHeightDownscaled();
+int32_t GetRenderWidthDownscaled();
+int32_t GetRenderHeight();
+int32_t GetRenderWidth();
+
 #endif

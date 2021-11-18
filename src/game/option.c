@@ -12,7 +12,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/s_input.h"
-#include "specific/s_output.h"
 
 #include <dinput.h>
 #include <stdio.h>
