@@ -1,8 +1,8 @@
 #include "game/effects/waterfall.h"
 
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 void SetupWaterfall(OBJECT_INFO *obj)
@@ -28,9 +28,9 @@ void ControlWaterFall(int16_t item_num)
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &Effects[fx_num];
             fx->pos.x = item->pos.x
-                + ((GetRandomDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+                + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
             fx->pos.z = item->pos.z
-                + ((GetRandomDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+                + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
             fx->pos.y = item->pos.y;
             fx->speed = 0;
             fx->frame_number = 0;

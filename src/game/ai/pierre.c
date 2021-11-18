@@ -3,10 +3,10 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
@@ -95,7 +95,7 @@ void PierreControl(int16_t item_num)
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (pierre->mood == MOOD_BORED) {
-                item->goal_anim_state = GetRandomControl() < PIERRE_POSE_CHANCE
+                item->goal_anim_state = Random_GetControl() < PIERRE_POSE_CHANCE
                     ? PIERRE_POSE
                     : PIERRE_WALK;
             } else if (pierre->mood == MOOD_ESCAPE) {
@@ -108,7 +108,7 @@ void PierreControl(int16_t item_num)
         case PIERRE_POSE:
             if (pierre->mood != MOOD_BORED) {
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (GetRandomControl() < PIERRE_POSE_CHANCE) {
+            } else if (Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_WALK;
                 item->goal_anim_state = PIERRE_STOP;
             }
@@ -117,7 +117,7 @@ void PierreControl(int16_t item_num)
         case PIERRE_WALK:
             pierre->maximum_turn = PIERRE_WALK_TURN;
             if (pierre->mood == MOOD_BORED
-                && GetRandomControl() < PIERRE_POSE_CHANCE) {
+                && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (pierre->mood == MOOD_ESCAPE) {
@@ -136,7 +136,7 @@ void PierreControl(int16_t item_num)
             pierre->maximum_turn = PIERRE_RUN_TURN;
             tilt = angle / 2;
             if (pierre->mood == MOOD_BORED
-                && GetRandomControl() < PIERRE_POSE_CHANCE) {
+                && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (Targetable(item, &info)) {
@@ -171,7 +171,7 @@ void PierreControl(int16_t item_num)
                 item->required_anim_state = PIERRE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE
-                && GetRandomControl() > PIERRE_WIMP_CHANCE) {
+                && Random_GetControl() > PIERRE_WIMP_CHANCE) {
                 item->required_anim_state = PIERRE_STOP;
             }
             break;

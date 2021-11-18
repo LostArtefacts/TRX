@@ -4,9 +4,9 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -160,10 +160,10 @@ void RollingBallCollision(
             Camera.target_angle = 170 * PHD_DEGREE;
             Camera.target_elevation = -25 * PHD_DEGREE;
             for (int i = 0; i < 15; i++) {
-                x = lara_item->pos.x + (GetRandomControl() - 0x4000) / 256;
-                z = lara_item->pos.z + (GetRandomControl() - 0x4000) / 256;
-                y = lara_item->pos.y - GetRandomControl() / 64;
-                d = item->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+                x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
+                z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
+                y = lara_item->pos.y - Random_GetControl() / 64;
+                d = item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
                 DoBloodSplat(x, y, z, item->speed * 2, d, item->room_number);
             }
         }

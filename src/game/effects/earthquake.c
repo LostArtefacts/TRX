@@ -2,7 +2,7 @@
 
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -36,10 +36,10 @@ void EarthQuakeControl(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
     if (TriggerActive(item)) {
-        if (GetRandomDraw() < 0x100) {
+        if (Random_GetDraw() < 0x100) {
             Camera.bounce = -150;
             Sound_Effect(SFX_ROLLING_BALL, NULL, SPM_NORMAL);
-        } else if (GetRandomControl() < 0x400) {
+        } else if (Random_GetControl() < 0x400) {
             Camera.bounce = 50;
             Sound_Effect(SFX_T_REX_FOOTSTOMP, NULL, SPM_NORMAL);
         }

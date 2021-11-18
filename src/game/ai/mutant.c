@@ -5,10 +5,10 @@
 #include "game/effects/blood.h"
 #include "game/effects/body_part.h"
 #include "game/effects/missile.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -171,7 +171,7 @@ void FlyerControl(int16_t item_num)
             } else if (flyer->mood == MOOD_STALK) {
                 if (info.distance < FLYER_WALK_RANGE) {
                     if (info.zone_number == info.enemy_zone
-                        || GetRandomControl() < FLYER_UNPOSE_CHANCE) {
+                        || Random_GetControl() < FLYER_UNPOSE_CHANCE) {
                         item->goal_anim_state = FLYER_WALK;
                     }
                 } else {
@@ -179,7 +179,7 @@ void FlyerControl(int16_t item_num)
                 }
             } else if (
                 flyer->mood == MOOD_BORED
-                && GetRandomControl() < FLYER_UNPOSE_CHANCE) {
+                && Random_GetControl() < FLYER_UNPOSE_CHANCE) {
                 item->goal_anim_state = FLYER_WALK;
             } else if (
                 flyer->mood == MOOD_ATTACK || flyer->mood == MOOD_ESCAPE) {
@@ -198,7 +198,7 @@ void FlyerControl(int16_t item_num)
                 flyer->mood == MOOD_BORED
                 || (flyer->mood == MOOD_STALK
                     && info.zone_number != info.enemy_zone)) {
-                if (GetRandomControl() < FLYER_POSE_CHANCE) {
+                if (Random_GetControl() < FLYER_POSE_CHANCE) {
                     item->goal_anim_state = FLYER_POSE;
                 }
             } else if (

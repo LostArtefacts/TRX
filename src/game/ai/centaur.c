@@ -5,10 +5,10 @@
 #include "game/effects/blood.h"
 #include "game/effects/body_part.h"
 #include "game/effects/missile.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -91,7 +91,7 @@ void CentaurControl(int16_t item_num)
             } else if (Targetable(item, &info)) {
                 item->required_anim_state = CENTAUR_AIM;
                 item->goal_anim_state = CENTAUR_STOP;
-            } else if (GetRandomControl() < CENTAUR_REAR_CHANCE) {
+            } else if (Random_GetControl() < CENTAUR_REAR_CHANCE) {
                 item->required_anim_state = CENTAUR_WARNING;
                 item->goal_anim_state = CENTAUR_STOP;
             }

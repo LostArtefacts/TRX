@@ -1,7 +1,7 @@
 #include "game/effects/ricochet.h"
 
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -20,7 +20,7 @@ void Ricochet(GAME_VECTOR *pos)
         fx->pos.z = pos->z;
         fx->counter = 4;
         fx->object_number = O_RICOCHET1;
-        fx->frame_number = -3 * GetRandomDraw() / 0x8000;
+        fx->frame_number = -3 * Random_GetDraw() / 0x8000;
         Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
     }
 }

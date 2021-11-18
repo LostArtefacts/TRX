@@ -4,8 +4,8 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/effects/ricochet.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
@@ -38,7 +38,7 @@ void ControlGunShot(int16_t fx_num)
         KillEffect(fx_num);
         return;
     }
-    fx->pos.z_rot = GetRandomControl();
+    fx->pos.z_rot = Random_GetControl();
 }
 
 int16_t GunShot(
@@ -71,7 +71,7 @@ int16_t GunHit(
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    GetJointAbsPosition(LaraItem, &pos, (GetRandomControl() * 25) / 0x7FFF);
+    GetJointAbsPosition(LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
     DoBloodSplat(
         pos.x, pos.y, pos.z, LaraItem->speed, LaraItem->pos.y_rot,
         LaraItem->room_number);
@@ -85,10 +85,10 @@ int16_t GunMiss(
 {
     GAME_VECTOR pos;
     pos.x =
-        LaraItem->pos.x + ((GetRandomDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
+        LaraItem->pos.x + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
     pos.y = LaraItem->floor;
     pos.z =
-        LaraItem->pos.z + ((GetRandomDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
+        LaraItem->pos.z + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
     pos.room_number = LaraItem->room_number;
     Ricochet(&pos);
     return GunShot(x, y, z, speed, y_rot, room_num);
@@ -101,7 +101,7 @@ int32_t ShotLara(
     if (distance > PEOPLE_SHOOT_RANGE) {
         hit = 0;
     } else {
-        hit = GetRandomControl()
+        hit = Random_GetControl()
             < ((PEOPLE_SHOOT_RANGE - distance) / (PEOPLE_SHOOT_RANGE / 0x7FFF)
                - PEOPLE_MISS_CHANCE);
     }

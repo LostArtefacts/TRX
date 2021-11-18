@@ -5,11 +5,11 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/missile.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -166,7 +166,7 @@ void NatlaControl(int16_t item_num)
             && info.angle < NATLA_FIRE_ARC && Targetable(item, &info);
         if (item->current_anim_state == NATLA_FLY
             && (natla->flags & NATLA_FLY_MODE)) {
-            if (shoot && GetRandomControl() < NATLA_LAND_CHANCE) {
+            if (shoot && Random_GetControl() < NATLA_LAND_CHANCE) {
                 natla->flags &= ~NATLA_FLY_MODE;
             }
             if (!(natla->flags & NATLA_FLY_MODE)) {
@@ -252,12 +252,12 @@ void NatlaControl(int16_t item_num)
                 fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
-                    fx->pos.y_rot += (GetRandomControl() - 0x4000) / 4;
+                    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
                 }
                 fx_num = CreatureEffect(item, &NatlaGun, RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &Effects[fx_num];
-                    fx->pos.y_rot += (GetRandomControl() - 0x4000) / 4;
+                    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
                 }
                 item->required_anim_state = NATLA_STOP;
             }

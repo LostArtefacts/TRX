@@ -4,9 +4,9 @@
 #include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -19,7 +19,7 @@ void InitialiseCreature(int16_t item_num)
 {
     ITEM_INFO *item = &Items[item_num];
 
-    item->pos.y_rot += (PHD_ANGLE)((GetRandomControl() - PHD_90) >> 1);
+    item->pos.y_rot += (PHD_ANGLE)((Random_GetControl() - PHD_90) >> 1);
     item->collidable = 1;
     item->data = NULL;
 }
@@ -191,9 +191,9 @@ void TargetBox(LOT_INFO *LOT, int16_t box_number)
     BOX_INFO *box = &Boxes[box_number];
 
     LOT->target.z = box->left + WALL_L / 2
-        + (GetRandomControl() * (box->right - box->left - WALL_L) >> 15);
+        + (Random_GetControl() * (box->right - box->left - WALL_L) >> 15);
     LOT->target.x = box->top + WALL_L / 2
-        + (GetRandomControl() * (box->bottom - box->top - WALL_L) >> 15);
+        + (Random_GetControl() * (box->bottom - box->top - WALL_L) >> 15);
     LOT->required_box = box_number;
 
     if (LOT->fly) {
@@ -333,7 +333,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
         switch (mood) {
         case MOOD_ATTACK:
             if (item->hit_status
-                && (GetRandomControl() < ESCAPE_CHANCE
+                && (Random_GetControl() < ESCAPE_CHANCE
                     || info->zone_number != info->enemy_zone)) {
                 creature->mood = MOOD_ESCAPE;
             } else if (info->zone_number != info->enemy_zone) {
@@ -344,7 +344,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
         case MOOD_BORED:
         case MOOD_STALK:
             if (item->hit_status
-                && (GetRandomControl() < ESCAPE_CHANCE
+                && (Random_GetControl() < ESCAPE_CHANCE
                     || info->zone_number != info->enemy_zone)) {
                 creature->mood = MOOD_ESCAPE;
             } else if (info->zone_number == info->enemy_zone) {
@@ -360,7 +360,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
 
         case MOOD_ESCAPE:
             if (info->zone_number == info->enemy_zone
-                && GetRandomControl() < RECOVER_CHANCE) {
+                && Random_GetControl() < RECOVER_CHANCE) {
                 creature->mood = MOOD_STALK;
             }
             break;
@@ -376,7 +376,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
 
     switch (creature->mood) {
     case MOOD_ATTACK:
-        if (GetRandomControl() < Objects[item->object_number].smartness) {
+        if (Random_GetControl() < Objects[item->object_number].smartness) {
             LOT->target.x = LaraItem->pos.x;
             LOT->target.y = LaraItem->pos.y;
             LOT->target.z = LaraItem->pos.z;
@@ -390,7 +390,8 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
 
     case MOOD_BORED: {
         int box_number =
-            LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF].box_number;
+            LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
+                .box_number;
         if (ValidBox(item, info->zone_number, box_number)) {
             if (StalkBox(item, box_number)) {
                 TargetBox(LOT, box_number);
@@ -405,7 +406,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
     case MOOD_STALK: {
         if (LOT->required_box == NO_BOX || !StalkBox(item, LOT->required_box)) {
             int box_number =
-                LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF]
+                LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                     .box_number;
             if (ValidBox(item, info->zone_number, box_number)) {
                 if (StalkBox(item, box_number)) {
@@ -423,7 +424,8 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
 
     case MOOD_ESCAPE: {
         int box_number =
-            LOT->node[GetRandomControl() * LOT->zone_count / 0x7FFF].box_number;
+            LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
+                .box_number;
         if (ValidBox(item, info->zone_number, box_number)
             && LOT->required_box == NO_BOX) {
             if (EscapeBox(item, box_number)) {
@@ -633,7 +635,7 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
 
     if (prime_free & (CLIP_LEFT | CLIP_RIGHT)) {
         target->z = box->left + WALL_L / 2
-            + (GetRandomControl() * (box->right - box->left - WALL_L) >> 15);
+            + (Random_GetControl() * (box->right - box->left - WALL_L) >> 15);
     } else if (!(prime_free & SECONDARY_CLIP)) {
         if (target->z < box->left + BIFF) {
             target->z = box->left + BIFF;
@@ -644,7 +646,7 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
 
     if (prime_free & (CLIP_TOP | CLIP_BOTTOM)) {
         target->x = box->top + WALL_L / 2
-            + (GetRandomControl() * (box->bottom - box->top - WALL_L) >> 15);
+            + (Random_GetControl() * (box->bottom - box->top - WALL_L) >> 15);
     } else if (!(prime_free & SECONDARY_CLIP)) {
         if (target->x < box->top + BIFF) {
             target->x = box->top + BIFF;

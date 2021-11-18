@@ -4,8 +4,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -55,8 +55,8 @@ void LavaBurn(ITEM_INFO *item)
             FX_INFO *fx = &Effects[fx_num];
             fx->object_number = O_FLAME;
             fx->frame_number =
-                (Objects[O_FLAME].nmeshes * GetRandomControl()) / 0x7FFF;
-            fx->counter = -1 - GetRandomControl() * 24 / 0x7FFF;
+                (Objects[O_FLAME].nmeshes * Random_GetControl()) / 0x7FFF;
+            fx->counter = -1 - Random_GetControl() * 24 / 0x7FFF;
         }
     }
 }
@@ -70,10 +70,10 @@ void LavaEmitterControl(int16_t item_num)
         fx->pos.x = item->pos.x;
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
-        fx->pos.y_rot = (GetRandomControl() - 0x4000) * 2;
-        fx->speed = GetRandomControl() >> 10;
-        fx->fall_speed = -GetRandomControl() / 200;
-        fx->frame_number = -4 * GetRandomControl() / 0x7FFF;
+        fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
+        fx->speed = Random_GetControl() >> 10;
+        fx->fall_speed = -Random_GetControl() / 200;
+        fx->frame_number = -4 * Random_GetControl() / 0x7FFF;
         fx->object_number = O_LAVA;
         Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
     }

@@ -2,9 +2,9 @@
 
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/game.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 BITE_INFO LarsonGun = { -60, 170, 0, 14 };
@@ -68,7 +68,7 @@ void LarsonControl(int16_t item_num)
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (person->mood == MOOD_BORED) {
-                item->goal_anim_state = GetRandomControl() < LARSON_POSE_CHANCE
+                item->goal_anim_state = Random_GetControl() < LARSON_POSE_CHANCE
                     ? LARSON_POSE
                     : LARSON_WALK;
             } else if (person->mood == MOOD_ESCAPE) {
@@ -81,7 +81,7 @@ void LarsonControl(int16_t item_num)
         case LARSON_POSE:
             if (person->mood != MOOD_BORED) {
                 item->goal_anim_state = LARSON_STOP;
-            } else if (GetRandomControl() < LARSON_POSE_CHANCE) {
+            } else if (Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_WALK;
                 item->goal_anim_state = LARSON_STOP;
             }
@@ -90,7 +90,7 @@ void LarsonControl(int16_t item_num)
         case LARSON_WALK:
             person->maximum_turn = LARSON_WALK_TURN;
             if (person->mood == MOOD_BORED
-                && GetRandomControl() < LARSON_POSE_CHANCE) {
+                && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
             } else if (person->mood == MOOD_ESCAPE) {
@@ -109,7 +109,7 @@ void LarsonControl(int16_t item_num)
             person->maximum_turn = LARSON_RUN_TURN;
             tilt = angle / 2;
             if (person->mood == MOOD_BORED
-                && GetRandomControl() < LARSON_POSE_CHANCE) {
+                && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
             } else if (Targetable(item, &info)) {

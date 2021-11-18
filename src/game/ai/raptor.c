@@ -3,8 +3,8 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 BITE_INFO RaptorBite = { 0, 66, 318, 22 };
@@ -50,7 +50,7 @@ void RaptorControl(int16_t item_num)
         if (item->current_anim_state != RAPTOR_DEATH) {
             item->current_anim_state = RAPTOR_DEATH;
             item->anim_number = Objects[O_RAPTOR].anim_index + RAPTOR_DIE_ANIM
-                + (GetRandomControl() / 16200);
+                + (Random_GetControl() / 16200);
             item->frame_number = Anims[item->anim_number].frame_base;
         }
     } else {
@@ -86,7 +86,7 @@ void RaptorControl(int16_t item_num)
             raptor->maximum_turn = RAPTOR_WALK_TURN;
             if (raptor->mood != MOOD_BORED) {
                 item->goal_anim_state = RAPTOR_STOP;
-            } else if (info.ahead && GetRandomControl() < RAPTOR_ROAR_CHANCE) {
+            } else if (info.ahead && Random_GetControl() < RAPTOR_ROAR_CHANCE) {
                 item->required_anim_state = RAPTOR_WARNING;
                 item->goal_anim_state = RAPTOR_STOP;
             }
@@ -99,7 +99,7 @@ void RaptorControl(int16_t item_num)
                 item->goal_anim_state = RAPTOR_STOP;
             } else if (info.bite && info.distance < RAPTOR_ATTACK_RANGE) {
                 if (item->goal_anim_state == RAPTOR_RUN) {
-                    if (GetRandomControl() < 0x2000) {
+                    if (Random_GetControl() < 0x2000) {
                         item->goal_anim_state = RAPTOR_STOP;
                     } else {
                         item->goal_anim_state = RAPTOR_ATTACK2;
@@ -107,7 +107,7 @@ void RaptorControl(int16_t item_num)
                 }
             } else if (
                 info.ahead && raptor->mood != MOOD_ESCAPE
-                && GetRandomControl() < RAPTOR_ROAR_CHANCE) {
+                && Random_GetControl() < RAPTOR_ROAR_CHANCE) {
                 item->required_anim_state = RAPTOR_WARNING;
                 item->goal_anim_state = RAPTOR_STOP;
             } else if (raptor->mood == MOOD_BORED) {

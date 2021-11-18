@@ -9,6 +9,7 @@
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/music.h"
+#include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
@@ -44,7 +45,7 @@ static void Shell_CalculateWibbleTable()
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
         WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
         ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        RandTable[i] = (GetRandomDraw() >> 5) - 0x01FF;
+        RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
 

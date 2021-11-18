@@ -3,8 +3,8 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/types.h"
 #include "global/vars.h"
 
@@ -120,7 +120,7 @@ void BearControl(int16_t item_num)
                 if (bear->mood == MOOD_ESCAPE) {
                     item->required_anim_state = BEAR_STROLL;
                 }
-            } else if (GetRandomControl() < BEAR_ROAR_CHANCE) {
+            } else if (Random_GetControl() < BEAR_ROAR_CHANCE) {
                 item->required_anim_state = BEAR_ROAR;
                 item->goal_anim_state = BEAR_STOP;
             }
@@ -136,7 +136,7 @@ void BearControl(int16_t item_num)
                 item->goal_anim_state = BEAR_STOP;
             } else if (info.ahead && !item->required_anim_state) {
                 if (!bear->flags && info.distance < BEAR_REAR_RANGE
-                    && GetRandomControl() < BEAR_REAR_CHANCE) {
+                    && Random_GetControl() < BEAR_REAR_CHANCE) {
                     item->required_anim_state = BEAR_REAR;
                     item->goal_anim_state = BEAR_STOP;
                 } else if (info.distance < BEAR_ATTACK_RANGE) {
@@ -171,12 +171,12 @@ void BearControl(int16_t item_num)
                 item->required_anim_state = BEAR_STROLL;
             } else if (
                 bear->mood == MOOD_BORED
-                || GetRandomControl() < BEAR_ROAR_CHANCE) {
+                || Random_GetControl() < BEAR_ROAR_CHANCE) {
                 item->required_anim_state = BEAR_ROAR;
                 item->goal_anim_state = BEAR_REAR;
             } else if (
                 info.distance > BEAR_REAR_RANGE
-                || GetRandomControl() < BEAR_DROP_CHANCE) {
+                || Random_GetControl() < BEAR_DROP_CHANCE) {
                 item->required_anim_state = BEAR_STOP;
                 item->goal_anim_state = BEAR_REAR;
             }

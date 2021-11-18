@@ -22,9 +22,6 @@
 
 #include <stdio.h>
 
-static int32_t Rand1 = 0xD371F947;
-static int32_t Rand2 = 0xD371F947;
-
 int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     CurrentLevel = level_num;
@@ -92,30 +89,6 @@ int32_t GameLoop(int32_t demo_mode)
 int32_t LevelCompleteSequence(int32_t level_num)
 {
     return GF_EXIT_TO_TITLE;
-}
-
-void SeedRandomControl(int32_t seed)
-{
-    LOG_DEBUG("%d", seed);
-    Rand1 = seed;
-}
-
-int32_t GetRandomControl()
-{
-    Rand1 = 0x41C64E6D * Rand1 + 0x3039;
-    return (Rand1 >> 10) & 0x7FFF;
-}
-
-void SeedRandomDraw(int32_t seed)
-{
-    LOG_DEBUG("%d", seed);
-    Rand2 = seed;
-}
-
-int32_t GetRandomDraw()
-{
-    Rand2 = 0x41C64E6D * Rand2 + 0x3039;
-    return (Rand2 >> 10) & 0x7FFF;
 }
 
 void LevelStats(int32_t level_num)

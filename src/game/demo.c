@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -48,8 +49,8 @@ int32_t StartDemo()
     s->gun_status = LGS_ARMLESS;
     s->gun_type = LGT_PISTOLS;
 
-    SeedRandomDraw(0xD371F947);
-    SeedRandomControl(0xD371F947);
+    Random_SeedDraw(0xD371F947);
+    Random_SeedControl(0xD371F947);
 
     // changing the controls affects negatively the original game demo data,
     // so temporarily turn off all the T1M enhancements
@@ -59,8 +60,8 @@ int32_t StartDemo()
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         LoadLaraDemoPos();
 
-        SeedRandomDraw(0xD371F947);
-        SeedRandomControl(0xD371F947);
+        Random_SeedDraw(0xD371F947);
+        Random_SeedControl(0xD371F947);
 
         txt = Text_Create(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
         Text_Flash(txt, 1, 20);

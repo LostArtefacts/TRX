@@ -3,11 +3,11 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/objects/pickup.h"
 #include "game/overlay.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -110,9 +110,10 @@ void Scion3Control(int16_t item_num)
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &Effects[fx_num];
-            fx->pos.x = item->pos.x + (GetRandomControl() - 0x4000) / 32;
-            fx->pos.y = item->pos.y + (GetRandomControl() - 0x4000) / 256 - 500;
-            fx->pos.z = item->pos.z + (GetRandomControl() - 0x4000) / 32;
+            fx->pos.x = item->pos.x + (Random_GetControl() - 0x4000) / 32;
+            fx->pos.y =
+                item->pos.y + (Random_GetControl() - 0x4000) / 256 - 500;
+            fx->pos.z = item->pos.z + (Random_GetControl() - 0x4000) / 32;
             fx->speed = 0;
             fx->frame_number = 0;
             fx->object_number = O_EXPLOSION1;

@@ -4,8 +4,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/vars.h"
 
 BITE_INFO RatBite = { 0, -11, 108, 3 };
@@ -80,7 +80,7 @@ void RatControl(int16_t item_num)
                 item->goal_anim_state = RAT_STOP;
             } else if (info.bite && info.distance < RAT_CHARGE_RANGE) {
                 item->goal_anim_state = RAT_ATTACK2;
-            } else if (info.ahead && GetRandomControl() < RAT_POSE_CHANCE) {
+            } else if (info.ahead && Random_GetControl() < RAT_POSE_CHANCE) {
                 item->required_anim_state = RAT_POSE;
                 item->goal_anim_state = RAT_STOP;
             }
@@ -108,7 +108,7 @@ void RatControl(int16_t item_num)
 
         case RAT_POSE:
             if (rat->mood != MOOD_BORED
-                || GetRandomControl() < RAT_POSE_CHANCE) {
+                || Random_GetControl() < RAT_POSE_CHANCE) {
                 item->goal_anim_state = RAT_STOP;
             }
             break;

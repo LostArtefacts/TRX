@@ -5,9 +5,9 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "game/viewport.h"
@@ -66,7 +66,7 @@ void LightningControl(int16_t item_num)
 
     if (l->onstate) {
         l->onstate = 0;
-        l->count = 35 + (GetRandomControl() * 45) / 0x8000;
+        l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = 0;
         if (FlipStatus) {
             FlipMap();
@@ -104,15 +104,15 @@ void LightningControl(int16_t item_num)
             l->target.y = 0;
             l->target.z = 0;
             GetJointAbsPosition(
-                item, &l->target, 1 + (GetRandomControl() * 5) / 0x7FFF);
+                item, &l->target, 1 + (Random_GetControl() * 5) / 0x7FFF);
             l->zapped = 0;
         }
 
         for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
-            l->start[i] = GetRandomControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
-            l->end[i].x = l->target.x + (GetRandomControl() * WALL_L) / 0x7FFF;
+            l->start[i] = Random_GetControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
+            l->end[i].x = l->target.x + (Random_GetControl() * WALL_L) / 0x7FFF;
             l->end[i].y = l->target.y;
-            l->end[i].z = l->target.z + (GetRandomControl() * WALL_L) / 0x7FFF;
+            l->end[i].z = l->target.z + (Random_GetControl() * WALL_L) / 0x7FFF;
 
             for (int j = 0; j < LIGHTNING_STEPS; j++) {
                 l->shoot[i][j].x = 0;
@@ -136,7 +136,7 @@ void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    Lara.hit_direction = 1 + (GetRandomControl() * 4) / (PHD_180 - 1);
+    Lara.hit_direction = 1 + (Random_GetControl() * 4) / (PHD_180 - 1);
     Lara.hit_frame++;
     if (Lara.hit_frame > 34) {
         Lara.hit_frame = 34;
@@ -192,9 +192,9 @@ void DrawLightning(ITEM_INFO *item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         PHD_VECTOR *pos = &l->wibble[i];
-        pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-        pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-        pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+        pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
         if (i == LIGHTNING_STEPS - 1) {
             pos->y = 0;
         }
@@ -244,9 +244,9 @@ void DrawLightning(ITEM_INFO *item)
 
         for (j = 0; j < steps; j++) {
             PHD_VECTOR *pos = l->shoot[i];
-            pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-            pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-            pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+            pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             if (j == steps - 1) {
                 pos->y = 0;
             }

@@ -5,7 +5,7 @@
 #include "game/cinema.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -77,13 +77,13 @@ void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
             Camera.bounce = 0;
         } else {
             int32_t shake;
-            shake = (GetRandomControl() - 0x4000) * Camera.bounce / 0x7FFF;
+            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
             Camera.pos.x += shake;
             Camera.target.y += shake;
-            shake = (GetRandomControl() - 0x4000) * Camera.bounce / 0x7FFF;
+            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
             Camera.pos.y += shake;
             Camera.target.y += shake;
-            shake = (GetRandomControl() - 0x4000) * Camera.bounce / 0x7FFF;
+            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
             Camera.pos.z += shake;
             Camera.target.z += shake;
             Camera.bounce += 5;
