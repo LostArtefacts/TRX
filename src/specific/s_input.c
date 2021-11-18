@@ -479,8 +479,8 @@ INPUT_STATE S_Input_GetCurrentState()
         }
     }
 
-    linput.select = KEY_DOWN(DIK_RETURN) || linput.action;
-    linput.deselect = KEY_DOWN(DIK_ESCAPE);
+    linput.select = linput.action || KEY_DOWN(DIK_RETURN);
+    linput.deselect = m_Key(INPUT_KEY_OPTION);
 
     if (linput.left && linput.right) {
         linput.left = 0;
