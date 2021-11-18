@@ -4,47 +4,49 @@
 
 #include <windows.h>
 
-static LONGLONG Ticks = 0;
-static double Frequency = 0;
+static LONGLONG m_Ticks = 0;
+static double m_Frequency = 0.0;
 
-int32_t ClockSyncTicks(int32_t target)
-{
-    double elapsed = 0.0;
-    uint64_t last_ticks = Ticks;
-    do {
-        ClockUpdateTicks();
-        elapsed = (double)(Ticks - last_ticks) / Frequency;
-    } while (elapsed < (double)target);
-    return elapsed;
-}
+static void m_UpdateTicks();
 
-void ClockUpdateTicks()
+static void m_UpdateTicks()
 {
     LARGE_INTEGER counter;
     QueryPerformanceCounter(&counter);
-    Ticks = counter.QuadPart;
+    m_Ticks = counter.QuadPart;
 }
 
-int8_t ClockInit()
+bool S_Clock_Init()
 {
-    LARGE_INTEGER frequency;
-    if (!QueryPerformanceFrequency(&frequency)) {
-        return 0;
+    LARGE_INTEGER ticks_per_second;
+    if (!QueryPerformanceFrequency(&ticks_per_second)) {
+        return false;
     }
 
-    Frequency = (double)frequency.QuadPart / (double)TICKS_PER_SECOND;
-    ClockUpdateTicks();
-    return 1;
+    m_Frequency = (double)ticks_per_second.QuadPart / (double)TICKS_PER_SECOND;
+    m_UpdateTicks();
+    return true;
 }
 
-int32_t ClockSync()
-{
-    LONGLONG last_ticks = Ticks;
-    ClockUpdateTicks();
-    return ((double)(Ticks - last_ticks) / Frequency);
-}
-
-int32_t ClockGetMS()
+int32_t S_Clock_GetMS()
 {
     return GetTickCount();
+}
+
+int32_t S_Clock_Sync()
+{
+    LONGLONG last_ticks = m_Ticks;
+    m_UpdateTicks();
+    return ((double)(m_Ticks - last_ticks) / m_Frequency);
+}
+
+int32_t S_Clock_SyncTicks(int32_t target)
+{
+    double elapsed = 0.0;
+    LONGLONG last_ticks = m_Ticks;
+    do {
+        m_UpdateTicks();
+        elapsed = (double)(m_Ticks - last_ticks) / m_Frequency;
+    } while (elapsed < (double)target);
+    return elapsed;
 }

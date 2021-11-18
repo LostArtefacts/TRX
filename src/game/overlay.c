@@ -2,11 +2,11 @@
 
 #include "3dsystem/scalespr.h"
 #include "config.h"
+#include "game/clock.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_clock.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
 #include "specific/s_output.h"
@@ -396,7 +396,7 @@ void Overlay_DrawFPSInfo()
     static int32_t elapsed = 0;
 
     if (T1MConfig.render_flags.fps_counter) {
-        if (ClockGetMS() - elapsed >= 1000) {
+        if (Clock_GetMS() - elapsed >= 1000) {
             if (m_FPSText) {
                 char fps_buf[20];
                 sprintf(fps_buf, "%d FPS", FPSCounter);
@@ -408,7 +408,7 @@ void Overlay_DrawFPSInfo()
                 m_FPSText->on_remove = Overlay_OnFPSTextRemoval;
             }
             FPSCounter = 0;
-            elapsed = ClockGetMS();
+            elapsed = Clock_GetMS();
         }
     } else if (m_FPSText) {
         Text_Remove(m_FPSText);

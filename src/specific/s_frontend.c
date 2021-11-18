@@ -1,6 +1,7 @@
 #include "specific/s_frontend.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/gamebuf.h"
 #include "global/const.h"
 #include "global/lib.h"
@@ -8,7 +9,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/s_clock.h"
 #include "specific/s_display.h"
 #include "specific/s_file.h"
 #include "specific/s_hwr.h"
@@ -138,7 +138,7 @@ void S_Wait(int32_t nticks)
         if (Input.any) {
             break;
         }
-        ClockSyncTicks(1);
+        Clock_SyncTicks(1);
     }
     while (Input.any) {
         S_UpdateInput();
@@ -225,7 +225,7 @@ int32_t WinPlayFMV(int32_t sequence, int32_t mode)
         }
         S_UpdateInput();
         S_Shell_SpinMessageLoop();
-        ClockSync();
+        Clock_Sync();
 
         if (Input.deselect) {
             keypress = 1;

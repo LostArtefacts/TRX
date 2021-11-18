@@ -96,6 +96,7 @@ sources = [
   'src/game/box.c',
   'src/game/camera.c',
   'src/game/cinema.c',
+  'src/game/clock.c',
   'src/game/collide.c',
   'src/game/control.c',
   'src/game/demo.c',

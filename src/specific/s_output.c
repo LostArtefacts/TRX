@@ -4,13 +4,13 @@
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "filesystem.h"
+#include "game/clock.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_clock.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
 #include "specific/s_hwr.h"
@@ -84,7 +84,7 @@ int32_t S_DumpScreen()
     HWR_DumpScreen();
     S_Shell_SpinMessageLoop();
     FPSCounter++;
-    return ClockSyncTicks(TICKS_PER_FRAME);
+    return Clock_SyncTicks(TICKS_PER_FRAME);
 }
 
 void S_ClearScreen()
