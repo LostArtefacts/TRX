@@ -1,10 +1,7 @@
-#include "specific/s_shell.h"
+#include "specific/s_main.h"
 
 #include "config.h"
-#include "game/game.h"
-#include "game/gamebuf.h"
 #include "game/music.h"
-#include "game/shell.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "inject_util.h"
@@ -12,88 +9,64 @@
 #include "specific/s_ati.h"
 #include "specific/s_hwr.h"
 #include "specific/s_input.h"
+#include "specific/s_shell.h"
 
+#include <windows.h>
 #include <ddraw.h>
 #include <dinput.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <time.h>
-#include <windows.h>
 
 static const char *ClassName = "TRClass";
 static const char *WindowName = "Tomb Raider";
 static UINT CloseMsg = 0;
 static bool IsGameWindowActive = true;
 
+static void WinGameFinish();
 static LRESULT CALLBACK
 WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static bool InitDirectDraw();
 
-static bool S_Shell_InitDirectDraw();
-static void S_Shell_TerminateGame(int exit_code);
-static void S_Shell_ShowFatalError(const char *message);
-
-void S_Shell_SeedRandom()
+void TerminateGame(int exit_code)
 {
-    time_t lt = time(0);
-    struct tm *tptr = localtime(&lt);
-    SeedRandomControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
-    SeedRandomDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
-}
-
-static bool S_Shell_InitDirectDraw()
-{
-    if (DirectDrawCreate(0, &DDraw, 0)) {
-        S_Shell_ShowFatalError("DirectDraw could not be started");
-        return false;
-    }
-
-    if (S_ATI_Init()) {
-        S_Shell_ShowFatalError("ATI3DCIF could not be started");
-        return false;
-    }
-
-    return true;
-}
-
-static void S_Shell_TerminateGame(int exit_code)
-{
-    if (DDraw) {
-        HWR_ReleaseSurfaces();
-        IDirectDraw_FlipToGDISurface(DDraw);
-        IDirectDraw_FlipToGDISurface(DDraw);
-        IDirectDraw_RestoreDisplayMode(DDraw);
-        IDirectDraw_SetCooperativeLevel(DDraw, TombHWND, 8);
-        IDirectDraw_Release(DDraw);
-        DDraw = NULL;
-    }
-
-    S_ATI_Shutdown();
-
-    PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
+    WinGameFinish();
     exit(exit_code);
 }
 
-static void S_Shell_ShowFatalError(const char *message)
+void ShowFatalError(const char *message)
 {
     LOG_ERROR("%s", message);
     MessageBoxA(
         0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
-    S_Shell_TerminateGame(1);
+    TerminateGame(1);
 }
 
-void S_Shell_SpinMessageLoop()
+void WinSpinMessageLoop()
 {
     MSG msg;
     do {
         while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
             if (!GetMessageA(&msg, 0, 0, 0)) {
-                S_Shell_TerminateGame(0);
+                TerminateGame(0);
             }
 
             TranslateMessage(&msg);
             DispatchMessageA(&msg);
         }
     } while (!IsGameWindowActive);
+}
+
+static bool InitDirectDraw()
+{
+    if (DirectDrawCreate(0, &DDraw, 0)) {
+        ShowFatalError("DirectDraw could not be started");
+        return false;
+    }
+
+    if (S_ATI_Init()) {
+        ShowFatalError("ATI3DCIF could not be started");
+        return false;
+    }
+
+    return true;
 }
 
 static LRESULT CALLBACK
@@ -169,6 +142,21 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
+static void WinGameFinish()
+{
+    if (DDraw) {
+        HWR_ReleaseSurfaces();
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_FlipToGDISurface(DDraw);
+        IDirectDraw_RestoreDisplayMode(DDraw);
+        IDirectDraw_SetCooperativeLevel(DDraw, TombHWND, 8);
+        IDirectDraw_Release(DDraw);
+        DDraw = NULL;
+    }
+    S_ATI_Shutdown();
+    PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
+}
+
 int WINAPI WinMain(
     HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -193,7 +181,7 @@ int WINAPI WinMain(
         scr_width, scr_height, 0, 0, hInstance, 0);
 
     if (!TombHWND) {
-        S_Shell_ShowFatalError("System Error: cannot create window");
+        ShowFatalError("System Error: cannot create window");
         return 1;
     }
 
@@ -202,38 +190,20 @@ int WINAPI WinMain(
     UpdateWindow(TombHWND);
     CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
 
-    if (!S_Shell_InitDirectDraw()) {
-        S_Shell_TerminateGame(1);
+    if (!InitDirectDraw()) {
+        WinGameFinish();
+        exit(1);
         return 1;
     }
 
-    Shell_Main();
+    GameMain();
 
-    S_Shell_TerminateGame(0);
+    WinGameFinish();
+    exit(0);
     return 0;
 }
 
-void S_Shell_ExitSystem(const char *message)
-{
-    while (Input.select) {
-        S_UpdateInput();
-    }
-    GameBuf_Shutdown();
-    HWR_ShutdownHardware();
-    S_Shell_ShowFatalError(message);
-}
-
-void S_Shell_ExitSystemFmt(const char *fmt, ...)
-{
-    va_list va;
-    va_start(va, fmt);
-    char message[150];
-    vsnprintf(message, 150, fmt, va);
-    va_end(va);
-    S_Shell_ExitSystem(message);
-}
-
-void S_Shell_Inject()
+void T1MInjectSpecificSMain()
 {
     INJECT(0x0043DA80, WinMain);
     INJECT(0x0043DE00, WndProc);

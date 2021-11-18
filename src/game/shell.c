@@ -2,6 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "args.h"
+#include "game/clock.h"
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
@@ -19,7 +20,6 @@
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_clock.h"
 #include "specific/s_display.h"
 #include "specific/s_frontend.h"
 #include "specific/s_hwr.h"
@@ -71,7 +71,7 @@ void Shell_Main()
 
     Lib_Init();
     Text_Init();
-    ClockInit();
+    Clock_Init();
     SoundIsActive = Sound_Init();
     Music_Init();
     InputInit();
