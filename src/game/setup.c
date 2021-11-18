@@ -61,6 +61,7 @@
 #include "game/objects/trapdoor.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
@@ -82,7 +83,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/s_display.h"
 #include "specific/s_file.h"
 #include "specific/s_output.h"
 

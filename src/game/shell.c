@@ -10,6 +10,7 @@
 #include "game/inv.h"
 #include "game/music.h"
 #include "game/savegame.h"
+#include "game/screen.h"
 #include "game/settings.h"
 #include "game/setup.h"
 #include "game/sound.h"

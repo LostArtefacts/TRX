@@ -9,7 +9,6 @@
 #include "global/vars_platform.h"
 #include "inject_util.h"
 #include "log.h"
-#include "specific/s_ati.h"
 #include "specific/s_hwr.h"
 #include "specific/s_input.h"
 

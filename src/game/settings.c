@@ -4,6 +4,7 @@
 #include "filesystem.h"
 #include "game/music.h"
 #include "game/option.h"
+#include "game/screen.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -11,7 +12,6 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_display.h"
 #include "specific/s_input.h"
 
 #include <stdint.h>
