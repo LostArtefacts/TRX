@@ -14,7 +14,6 @@
 #include "global/vars.h"
 #include "specific/s_input.h"
 
-#include <dinput.h>
 #include <stdio.h>
 
 #define GAMMA_MODIFIER 8
@@ -1138,10 +1137,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         S_INPUT_KEYCODE key_code = S_Input_ReadKeyCode();
 
         const char *scancode_name = S_Input_GetKeyCodeName(key_code);
-        if (key_code >= 0 && scancode_name && key_code != DIK_ESCAPE
-            && key_code != DIK_RETURN && key_code != DIK_LEFT
-            && key_code != DIK_RIGHT && key_code != DIK_UP
-            && key_code != DIK_DOWN) {
+        if (key_code >= 0 && scancode_name) {
             S_Input_AssignKeyCode(T1MConfig.input.layout, KeyChange, key_code);
             Text_ChangeText(CtrlTextB[KeyChange], scancode_name);
             Text_RemoveBackground(CtrlTextB[KeyChange]);
