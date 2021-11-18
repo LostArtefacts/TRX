@@ -97,13 +97,6 @@ void S_OutputPolyList()
     HWR_OutputPolyList();
 }
 
-void S_InitialiseScreen()
-{
-    if (CurrentLevel != GF.title_level_num) {
-        TempVideoRemove();
-    }
-}
-
 void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     ROOM_INFO *r = &RoomInfo[room_num];
