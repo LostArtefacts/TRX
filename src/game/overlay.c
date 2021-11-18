@@ -150,7 +150,7 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
         bar_color = T1MConfig.enemy_healthbar_color;
     }
 
-    int32_t padding = GetScreenWidth() <= 800 ? 1 : 2;
+    int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
     int32_t border = 1;
     int32_t sx = GetRenderScale(x) - padding;
     int32_t sy = GetRenderScale(y) - padding;

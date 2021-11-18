@@ -1031,7 +1031,7 @@ void HWR_FadeWait()
 void HWR_SwitchResolution()
 {
     HWR_SetHardwareVideoMode();
-    SetupScreenSize();
+    Screen_SetupSize();
 }
 
 int32_t HWR_SetHardwareVideoMode()
@@ -1042,12 +1042,12 @@ int32_t HWR_SetHardwareVideoMode()
     LOG_INFO("SetHardwareVideoMode:");
     HWR_ReleaseSurfaces();
 
-    DDrawSurfaceWidth = GetScreenWidth();
-    DDrawSurfaceHeight = GetScreenHeight();
+    DDrawSurfaceWidth = Screen_GetResWidth();
+    DDrawSurfaceHeight = Screen_GetResHeight();
     DDrawSurfaceMinX = 0.0f;
     DDrawSurfaceMinY = 0.0f;
-    DDrawSurfaceMaxX = GetScreenWidth() - 1.0f;
-    DDrawSurfaceMaxY = GetScreenHeight() - 1.0f;
+    DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
+    DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
     LOG_INFO("    Switching to %dx%d", DDrawSurfaceWidth, DDrawSurfaceHeight);
     result = IDirectDraw_SetDisplayMode(

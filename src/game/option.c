@@ -690,7 +690,8 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         y += DETAIL_HW_ROW_HEIGHT;
 
         char tmp[10];
-        sprintf(tmp, "%dx%d", GetGameScreenWidth(), GetGameScreenHeight());
+        sprintf(
+            tmp, "%dx%d", Screen_GetGameResWidth(), Screen_GetGameResHeight());
         sprintf(buf, GF.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
         DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
@@ -779,7 +780,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (SetNextGameScreenSize()) {
+            if (Screen_SetNextGameRes()) {
                 reset = true;
             }
             break;
@@ -824,7 +825,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             break;
 
         case DETAIL_HW_RESOLUTION:
-            if (SetPrevGameScreenSize()) {
+            if (Screen_SetPrevGameRes()) {
                 reset = true;
             }
             break;
