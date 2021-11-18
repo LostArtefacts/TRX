@@ -82,6 +82,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
+#include "specific/s_display.h"
 #include "specific/s_file.h"
 #include "specific/s_output.h"
 
@@ -100,7 +101,9 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseGameFlags();
 
     Lara.item_number = NO_ITEM;
-    S_InitialiseScreen();
+    if (level_num != GF.title_level_num) {
+        TempVideoRemove();
+    }
 
     if (!S_LoadLevel(CurrentLevel)) {
         return 0;

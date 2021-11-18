@@ -10,7 +10,6 @@ void S_InitialisePolyList();
 int32_t S_DumpScreen();
 void S_ClearScreen();
 void S_OutputPolyList();
-void S_InitialiseScreen();
 void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void S_CalculateStaticLight(int16_t adder);
 void S_SetupBelowWater(bool underwater);
