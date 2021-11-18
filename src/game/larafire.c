@@ -7,6 +7,7 @@
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/effects/ricochet.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/random.h"
 #include "game/sound.h"

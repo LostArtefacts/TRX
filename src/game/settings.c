@@ -36,7 +36,26 @@ static int32_t S_ReadUserSettingsATI()
 
     File_Read(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
     File_Read(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
-    File_Read(Layout[1], sizeof(int16_t), 13, fp);
+
+    {
+        int16_t layout[13];
+        File_Read(layout, sizeof(int16_t), 13, fp);
+
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_UP, layout[0]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_DOWN, layout[1]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_LEFT, layout[2]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_RIGHT, layout[3]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_STEP_L, layout[4]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_STEP_R, layout[5]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_SLOW, layout[6]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_JUMP, layout[7]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_ACTION, layout[8]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_DRAW, layout[9]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_LOOK, layout[10]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_ROLL, layout[11]);
+        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_OPTION, layout[12]);
+    }
+
     {
         uint32_t render_flags;
         File_Read(&render_flags, sizeof(int32_t), 1, fp);
@@ -127,7 +146,11 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        Layout[1][i] = json_array_get_number_int(layout_arr, i, Layout[1][i]);
+        S_Input_AssignKeyCode(
+            INPUT_LAYOUT_USER, i,
+            json_array_get_number_int(
+                layout_arr, i,
+                S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i)));
     }
 
     if (root) {
@@ -198,7 +221,8 @@ static int32_t S_WriteUserSettingsT1M()
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        json_array_append_number_int(layout_arr, Layout[1][i]);
+        json_array_append_number_int(
+            layout_arr, S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i));
     }
     json_object_append_array(root_obj, "layout", layout_arr);
 

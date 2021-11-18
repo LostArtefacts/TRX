@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/control.h"
 #include "game/game.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/random.h"
 #include "game/setup.h"

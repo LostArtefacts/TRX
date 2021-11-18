@@ -7,6 +7,7 @@
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/music.h"
 #include "game/random.h"
@@ -76,7 +77,7 @@ void Shell_Main()
     Clock_Init();
     SoundIsActive = Sound_Init();
     Music_Init();
-    InputInit();
+    Input_Init();
     FMVInit();
 
     HWR_InitialiseHardware();

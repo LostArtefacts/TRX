@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/collide.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/sound.h"

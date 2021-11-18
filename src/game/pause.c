@@ -1,5 +1,6 @@
 #include "game/pause.h"
 
+#include "game/input.h"
 #include "game/music.h"
 #include "game/requester.h"
 #include "game/screen.h"
@@ -8,7 +9,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_display.h"
-#include "specific/s_input.h"
 #include "specific/s_output.h"
 
 #include <stddef.h>
@@ -98,7 +98,7 @@ static int32_t PauseLoop()
         Text_Draw();
         S_OutputPolyList();
         S_DumpScreen();
-        S_UpdateInput();
+        Input_Update();
 
         switch (state) {
         case 0:

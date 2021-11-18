@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/game.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/music.h"
 #include "game/requester.h"
@@ -180,121 +181,6 @@ REQUEST_INFO LoadSaveGameRequester = {
     .item_text_len = MAX_LEVEL_NAME_LENGTH,
     0,
 };
-
-static const char *GetScanCodeName(int16_t key)
-{
-    // clang-format off
-    switch (key) {
-        case DIK_ESCAPE:       return "ESC";
-        case DIK_1:            return "1";
-        case DIK_2:            return "2";
-        case DIK_3:            return "3";
-        case DIK_4:            return "4";
-        case DIK_5:            return "5";
-        case DIK_6:            return "6";
-        case DIK_7:            return "7";
-        case DIK_8:            return "8";
-        case DIK_9:            return "9";
-        case DIK_0:            return "0";
-        case DIK_MINUS:        return "-";
-        case DIK_EQUALS:       return "+";
-        case DIK_BACK:         return "BKSP";
-        case DIK_TAB:          return "TAB";
-        case DIK_Q:            return "Q";
-        case DIK_W:            return "W";
-        case DIK_E:            return "E";
-        case DIK_R:            return "R";
-        case DIK_T:            return "T";
-        case DIK_Y:            return "Y";
-        case DIK_U:            return "U";
-        case DIK_I:            return "I";
-        case DIK_O:            return "O";
-        case DIK_P:            return "P";
-        case DIK_LBRACKET:     return "<";
-        case DIK_RBRACKET:     return ">";
-        case DIK_RETURN:       return "RET";
-        case DIK_LCONTROL:     return "CTRL";
-        case DIK_A:            return "A";
-        case DIK_S:            return "S";
-        case DIK_D:            return "D";
-        case DIK_F:            return "F";
-        case DIK_G:            return "G";
-        case DIK_H:            return "H";
-        case DIK_J:            return "J";
-        case DIK_K:            return "K";
-        case DIK_L:            return "L";
-        case DIK_SEMICOLON:    return ";";
-        case DIK_APOSTROPHE:   return "\'";
-        case DIK_GRAVE:        return "`";
-        case DIK_LSHIFT:       return "SHIFT";
-        case DIK_BACKSLASH:    return "\\";
-        case DIK_Z:            return "Z";
-        case DIK_X:            return "X";
-        case DIK_C:            return "C";
-        case DIK_V:            return "V";
-        case DIK_B:            return "B";
-        case DIK_N:            return "N";
-        case DIK_M:            return "M";
-        case DIK_COMMA:        return ",";
-        case DIK_PERIOD:       return ".";
-        case DIK_SLASH:        return "/";
-        case DIK_RSHIFT:       return "SHIFT";
-        case DIK_MULTIPLY:     return "PADx";
-        case DIK_LMENU:        return "ALT";
-        case DIK_SPACE:        return "SPACE";
-        case DIK_CAPITAL:      return "CAPS";
-        case DIK_F1:           return "F1";
-        case DIK_F2:           return "F2";
-        case DIK_F3:           return "F3";
-        case DIK_F4:           return "F4";
-        case DIK_F5:           return "F5";
-        case DIK_F6:           return "F6";
-        case DIK_F7:           return "F7";
-        case DIK_F8:           return "F8";
-        case DIK_F9:           return "F9";
-        case DIK_F10:          return "F10";
-        case DIK_NUMLOCK:      return "NMLK";
-        case DIK_SCROLL:       return "SCLK";
-        case DIK_NUMPAD7:      return "PAD7";
-        case DIK_NUMPAD8:      return "PAD8";
-        case DIK_NUMPAD9:      return "PAD9";
-        case DIK_SUBTRACT:     return "PAD-";
-        case DIK_NUMPAD4:      return "PAD4";
-        case DIK_NUMPAD5:      return "PAD5";
-        case DIK_NUMPAD6:      return "PAD6";
-        case DIK_ADD:          return "PAD+";
-        case DIK_NUMPAD1:      return "PAD1";
-        case DIK_NUMPAD2:      return "PAD2";
-        case DIK_NUMPAD3:      return "PAD3";
-        case DIK_NUMPAD0:      return "PAD0";
-        case DIK_DECIMAL:      return "PAD.";
-        case DIK_F11:          return "F11";
-        case DIK_F12:          return "F12";
-        case DIK_F13:          return "F13";
-        case DIK_F14:          return "F14";
-        case DIK_F15:          return "F15";
-        case DIK_NUMPADEQUALS: return "PAD=";
-        case DIK_AT:           return "@";
-        case DIK_COLON:        return ":";
-        case DIK_UNDERLINE:    return "_";
-        case DIK_NUMPADENTER:  return "ENTER";
-        case DIK_RCONTROL:     return "CTRL";
-        case DIK_DIVIDE:       return "PAD/";
-        case DIK_RMENU:        return "ALT";
-        case DIK_HOME:         return "HOME";
-        case DIK_UP:           return "UP";
-        case DIK_PRIOR:        return "PGUP";
-        case DIK_LEFT:         return "LEFT";
-        case DIK_RIGHT:        return "RIGHT";
-        case DIK_END:          return "END";
-        case DIK_DOWN:         return "DOWN";
-        case DIK_NEXT:         return "PGDN";
-        case DIK_INSERT:       return "INS";
-        case DIK_DELETE:       return "DEL";
-    }
-    // clang-format on
-    return "????";
-}
 
 static void InitLoadSaveGameRequester()
 {
@@ -1045,14 +931,16 @@ void FlashConflicts()
         if (item1->option == -1) {
             continue;
         }
-        int16_t key1 = Layout[T1MConfig.input.layout][item1->option];
+        int16_t key_code1 =
+            S_Input_GetAssignedKeyCode(T1MConfig.input.layout, item1->option);
         for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
              item2->col_num != -1; item2++) {
             if (item2->option == -1) {
                 continue;
             }
-            int16_t key2 = Layout[T1MConfig.input.layout][item2->option];
-            if (item1 != item2 && key1 == key2) {
+            int16_t key_code2 = S_Input_GetAssignedKeyCode(
+                T1MConfig.input.layout, item2->option);
+            if (item1 != item2 && key_code1 == key_code2) {
                 Text_Flash(CtrlTextB[item1->option], 1, 20);
                 Text_Flash(CtrlTextB[item2->option], 1, 20);
             }
@@ -1063,11 +951,11 @@ void FlashConflicts()
 void DefaultConflict()
 {
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        int16_t key = Layout[INPUT_LAYOUT_DEFAULT][i];
-        ConflictLayout[i] = false;
+        int16_t key_code = S_Input_GetAssignedKeyCode(INPUT_LAYOUT_DEFAULT, i);
+        S_Input_SetKeyAsConflicted(i, false);
         for (int j = 0; j < INPUT_KEY_NUMBER_OF; j++) {
-            if (key == Layout[INPUT_LAYOUT_USER][j]) {
-                ConflictLayout[i] = true;
+            if (key_code == S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, j)) {
+                S_Input_SetKeyAsConflicted(i, true);
                 break;
             }
         }
@@ -1076,8 +964,6 @@ void DefaultConflict()
 
 void DoControlOption(INVENTORY_ITEM *inv_item)
 {
-    int16_t key;
-
     if (!CtrlText[0]) {
         CtrlText[0] = Text_Create(
             0,
@@ -1247,14 +1133,15 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         }
         break;
 
-    case 2:
-        key = KeyGet();
+    case 2: {
+        int16_t key_code = S_Input_ReadKeyCode();
 
-        const char *scancode_name = GetScanCodeName(key);
-        if (key >= 0 && scancode_name && key != DIK_ESCAPE && key != DIK_RETURN
-            && key != DIK_LEFT && key != DIK_RIGHT && key != DIK_UP
-            && key != DIK_DOWN) {
-            Layout[T1MConfig.input.layout][KeyChange] = key;
+        const char *scancode_name = S_Input_GetKeyCodeName(key_code);
+        if (key_code >= 0 && scancode_name && key_code != DIK_ESCAPE
+            && key_code != DIK_RETURN && key_code != DIK_LEFT
+            && key_code != DIK_RIGHT && key_code != DIK_UP
+            && key_code != DIK_DOWN) {
+            S_Input_AssignKeyCode(T1MConfig.input.layout, KeyChange, key_code);
             Text_ChangeText(CtrlTextB[KeyChange], scancode_name);
             Text_RemoveBackground(CtrlTextB[KeyChange]);
             Text_RemoveOutline(CtrlTextB[KeyChange]);
@@ -1265,11 +1152,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             S_WriteUserSettings();
         }
         break;
+    }
 
-    case 3:
-        key = Layout[T1MConfig.input.layout][KeyChange];
+    case 3: {
+        int16_t key_code =
+            S_Input_GetAssignedKeyCode(T1MConfig.input.layout, KeyChange);
 
-        if (KeyGet() < 0 || KeyGet() != key) {
+        if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
             KeyMode = 0;
             FlashConflicts();
             S_WriteUserSettings();
@@ -1277,6 +1166,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         KeyMode = 0;
         break;
+    }
     }
 
     g_Input = (INPUT_STATE) { 0 };
@@ -1297,7 +1187,6 @@ void S_ShowControls()
         : CtrlTextPlacementNormal;
 
     if (!CtrlTextB[0]) {
-        int16_t *layout = Layout[T1MConfig.input.layout];
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1307,7 +1196,9 @@ void S_ShowControls()
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
-            const char *scancode_name = GetScanCodeName(layout[col->option]);
+            const char *scancode_name =
+                S_Input_GetKeyCodeName(S_Input_GetAssignedKeyCode(
+                    T1MConfig.input.layout, col->option));
             if (col->option != -1 && scancode_name) {
                 CtrlTextB[col->option] = Text_Create(x, y, scancode_name);
                 Text_CentreV(CtrlTextB[col->option], 1);
@@ -1362,10 +1253,10 @@ void S_ChangeCtrlText()
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    int16_t *layout = Layout[T1MConfig.input.layout];
     for (const TEXT_COLUMN_PLACEMENT *col = cols;
          col->col_num >= 0 && col->col_num <= 1; col++) {
-        const char *scancode_name = GetScanCodeName(layout[col->option]);
+        const char *scancode_name = S_Input_GetKeyCodeName(
+            S_Input_GetAssignedKeyCode(T1MConfig.input.layout, col->option));
         if (col->option != -1 && scancode_name) {
             Text_ChangeText(CtrlTextB[col->option], scancode_name);
         }

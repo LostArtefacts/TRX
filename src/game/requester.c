@@ -1,5 +1,6 @@
 #include "game/requester.h"
 
+#include "game/input.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "global/const.h"

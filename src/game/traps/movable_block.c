@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/dino_stomp.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"

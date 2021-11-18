@@ -1,6 +1,7 @@
 #include "game/objects/puzzle_hole.h"
 
 #include "game/collide.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/objects/keyhole.h"
