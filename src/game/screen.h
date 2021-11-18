@@ -4,18 +4,20 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void SetupScreenSize();
-bool SetGameScreenSizeIdx(int32_t idx);
-bool SetPrevGameScreenSize();
-bool SetNextGameScreenSize();
-int32_t GetGameScreenSizeIdx();
-int32_t GetGameScreenWidth();
-int32_t GetGameScreenHeight();
-int32_t GetScreenSizeIdx();
-int32_t GetScreenWidth();
-int32_t GetScreenHeight();
+void Screen_SetupSize();
 
-void TempVideoAdjust(int32_t hi_res);
-void TempVideoRemove();
+bool Screen_SetGameResIdx(int32_t idx);
+bool Screen_SetPrevGameRes();
+bool Screen_SetNextGameRes();
+int32_t Screen_GetGameResIdx();
+int32_t Screen_GetGameResWidth();
+int32_t Screen_GetGameResHeight();
+
+int32_t Screen_GetResIdx();
+int32_t Screen_GetResWidth();
+int32_t Screen_GetResHeight();
+
+void Screen_SetResolution(int32_t hi_res);
+void Screen_RestoreResolution();
 
 #endif

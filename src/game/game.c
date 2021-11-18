@@ -124,7 +124,7 @@ void LevelStats(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    TempVideoAdjust(GetScreenSizeIdx());
+    Screen_SetResolution(Screen_GetResIdx());
     Text_RemoveAll();
 
     // heading
@@ -222,7 +222,7 @@ void LevelStats(int32_t level_num)
 
     SaveGame.start[CurrentLevel].available = 0;
     S_FadeToBlack();
-    TempVideoRemove();
+    Screen_RestoreResolution();
 }
 
 int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
@@ -276,7 +276,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
 
 void GetSavedGamesList(REQUEST_INFO *req)
 {
-    int32_t height = GetScreenHeight();
+    int32_t height = Screen_GetResHeight();
 
     if (height <= 200) {
         req->y = -32;

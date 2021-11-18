@@ -89,7 +89,7 @@ void Shell_Main()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    TempVideoAdjust(2);
+    Screen_SetResolution(2);
     S_DisplayPicture("data\\eidospc");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
@@ -107,7 +107,7 @@ void Shell_Main()
 
     bool loop_continue = true;
     while (loop_continue) {
-        TempVideoRemove();
+        Screen_RestoreResolution();
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
         LOG_INFO("%d %d", gf_direction, gf_param);
@@ -136,7 +136,7 @@ void Shell_Main()
 
         case GF_EXIT_TO_TITLE:
             Text_RemoveAll();
-            TempVideoAdjust(2);
+            Screen_SetResolution(2);
             S_DisplayPicture("data\\titleh");
             NoInputCount = 0;
             if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {

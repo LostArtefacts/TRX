@@ -149,7 +149,7 @@ int8_t S_Pause()
 
     Text_RemoveAll();
     S_FadeInInventory(1);
-    TempVideoAdjust(GetScreenSizeIdx());
+    Screen_SetResolution(Screen_GetResIdx());
     S_SetupAboveWater(false);
 
     Music_Pause();
@@ -159,7 +159,7 @@ int8_t S_Pause()
     Music_Unpause();
     RemoveRequester(&PauseRequester);
     RemovePausedText();
-    TempVideoRemove();
+    Screen_RestoreResolution();
     S_FadeOutInventory(1);
     OverlayFlag = old_overlay_flag;
     return select < 0;

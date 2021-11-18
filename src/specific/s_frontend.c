@@ -119,7 +119,7 @@ void S_DrawScreenSprite2d(
 void S_FinishInventory()
 {
     if (InvMode != INV_TITLE_MODE) {
-        TempVideoRemove();
+        Screen_RestoreResolution();
     }
     ModeLock = false;
 }
@@ -247,7 +247,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
 {
     GameBuf_Shutdown();
 
-    TempVideoAdjust(2);
+    Screen_SetResolution(2);
     HWR_PrepareFMV();
 
     int32_t ret = WinPlayFMV(sequence, mode);
@@ -255,7 +255,7 @@ int32_t S_PlayFMV(int32_t sequence, int32_t mode)
     GameBuf_Init();
 
     HWR_FMVDone();
-    TempVideoRemove();
+    Screen_RestoreResolution();
 
     return ret;
 }

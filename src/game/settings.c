@@ -49,7 +49,7 @@ static int32_t S_ReadUserSettingsATI()
         int32_t resolution_idx;
         File_Read(&resolution_idx, sizeof(int32_t), 1, fp);
         CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
-        SetGameScreenSizeIdx(resolution_idx);
+        Screen_SetGameResIdx(resolution_idx);
     }
 
     // Skip GameSizer from TombATI, which is no longer used in T1M.
@@ -98,7 +98,7 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         int32_t resolution_idx = json_object_get_number_int(
             root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
         CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
-        SetGameScreenSizeIdx(resolution_idx);
+        Screen_SetGameResIdx(resolution_idx);
     }
 
     T1MConfig.music_volume =
@@ -184,7 +184,7 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "bilinear", T1MConfig.render_flags.bilinear);
     json_object_append_bool(
         root_obj, "perspective", T1MConfig.render_flags.perspective);
-    json_object_append_number_int(root_obj, "hi_res", GetGameScreenSizeIdx());
+    json_object_append_number_int(root_obj, "hi_res", Screen_GetGameResIdx());
     json_object_append_number_int(
         root_obj, "music_volume", T1MConfig.music_volume);
     json_object_append_number_int(

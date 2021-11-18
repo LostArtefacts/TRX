@@ -102,7 +102,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     Lara.item_number = NO_ITEM;
     if (level_num != GF.title_level_num) {
-        TempVideoRemove();
+        Screen_RestoreResolution();
     }
 
     if (!S_LoadLevel(CurrentLevel)) {

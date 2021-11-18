@@ -13,7 +13,16 @@ static int32_t m_HiRes = 0;
 // and the like.
 static int32_t m_GameHiRes = 0;
 
-bool SetGameScreenSizeIdx(int32_t idx)
+void Screen_SetupSize()
+{
+    int32_t width = Screen_GetResWidth();
+    int32_t height = Screen_GetResHeight();
+    int32_t x = (width - width) / 2;
+    int32_t y = (height - height) / 2;
+    phd_InitWindow(x, y, width, height);
+}
+
+bool Screen_SetGameResIdx(int32_t idx)
 {
     if (idx >= 0 && idx < RESOLUTIONS_SIZE) {
         m_GameHiRes = idx;
@@ -22,7 +31,7 @@ bool SetGameScreenSizeIdx(int32_t idx)
     return false;
 }
 
-bool SetPrevGameScreenSize()
+bool Screen_SetPrevGameRes()
 {
     if (m_GameHiRes - 1 >= 0) {
         m_GameHiRes--;
@@ -31,7 +40,7 @@ bool SetPrevGameScreenSize()
     return false;
 }
 
-bool SetNextGameScreenSize()
+bool Screen_SetNextGameRes()
 {
     if (m_GameHiRes + 1 < RESOLUTIONS_SIZE) {
         m_GameHiRes++;
@@ -40,46 +49,37 @@ bool SetNextGameScreenSize()
     return false;
 }
 
-int32_t GetGameScreenSizeIdx()
+int32_t Screen_GetGameResIdx()
 {
     return m_GameHiRes;
 }
 
-int32_t GetGameScreenWidth()
+int32_t Screen_GetGameResWidth()
 {
     return AvailableResolutions[m_GameHiRes].width;
 }
 
-int32_t GetGameScreenHeight()
+int32_t Screen_GetGameResHeight()
 {
     return AvailableResolutions[m_GameHiRes].height;
 }
 
-int32_t GetScreenSizeIdx()
+int32_t Screen_GetResIdx()
 {
     return m_HiRes;
 }
 
-int32_t GetScreenWidth()
+int32_t Screen_GetResWidth()
 {
     return AvailableResolutions[m_HiRes].width;
 }
 
-int32_t GetScreenHeight()
+int32_t Screen_GetResHeight()
 {
     return AvailableResolutions[m_HiRes].height;
 }
 
-void SetupScreenSize()
-{
-    int32_t width = GetScreenWidth();
-    int32_t height = GetScreenHeight();
-    int32_t x = (width - width) / 2;
-    int32_t y = (height - height) / 2;
-    phd_InitWindow(x, y, width, height);
-}
-
-void TempVideoAdjust(int32_t hi_res)
+void Screen_SetResolution(int32_t hi_res)
 {
     ModeLock = true;
     if (hi_res == m_HiRes) {
@@ -90,7 +90,7 @@ void TempVideoAdjust(int32_t hi_res)
     HWR_SwitchResolution();
 }
 
-void TempVideoRemove()
+void Screen_RestoreResolution()
 {
     ModeLock = false;
     if (m_GameHiRes == m_HiRes) {
