@@ -13,8 +13,8 @@
 
 #define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
 
-static int16_t m_KeyConflict[INPUT_KEY_NUMBER_OF] = { false };
-static int16_t m_Layout[2][INPUT_KEY_NUMBER_OF] = {
+static bool m_KeyConflict[INPUT_KEY_NUMBER_OF] = { false };
+static S_INPUT_KEYCODE m_Layout[2][INPUT_KEY_NUMBER_OF] = {
     // clang-format off
     // built-in controls
     {
@@ -200,7 +200,7 @@ static void m_DInput_KeyboardRead()
 
 static bool m_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
 {
-    uint16_t key_code = m_Layout[layout][key];
+    S_INPUT_KEYCODE key_code = m_Layout[layout][key];
     if (KEY_DOWN(key_code)) {
         return true;
     }
@@ -232,9 +232,9 @@ static bool m_Key(INPUT_KEY key)
             && m_KbdKey(key, INPUT_LAYOUT_DEFAULT));
 }
 
-int16_t S_Input_ReadKeyCode()
+S_INPUT_KEYCODE S_Input_ReadKeyCode()
 {
-    for (int16_t key = 0; key < 256; key++) {
+    for (S_INPUT_KEYCODE key = 0; key < 256; key++) {
         if (KEY_DOWN(key)) {
             return key;
         }
@@ -590,7 +590,7 @@ INPUT_STATE S_Input_GetCurrentState()
     return linput;
 }
 
-const char *S_Input_GetKeyCodeName(int16_t key)
+const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key)
 {
     // clang-format off
     switch (key) {
@@ -715,12 +715,13 @@ void S_Input_SetKeyAsConflicted(INPUT_KEY key, bool is_conflicted)
     m_KeyConflict[key] = is_conflicted;
 }
 
-int16_t S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key)
+S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key)
 {
     return m_Layout[layout_num][key];
 }
 
-void S_Input_AssignKeyCode(int16_t layout_num, INPUT_KEY key, int16_t key_code)
+void S_Input_AssignKeyCode(
+    int16_t layout_num, INPUT_KEY key, S_INPUT_KEYCODE key_code)
 {
     m_Layout[layout_num][key] = key_code;
 }
