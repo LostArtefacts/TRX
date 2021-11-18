@@ -12,8 +12,8 @@ typedef enum INPUT_LAYOUT {
     INPUT_LAYOUT_NUMBER_OF,
 } INPUT_LAYOUT;
 
-extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][KEY_NUMBER_OF];
-extern bool ConflictLayout[KEY_NUMBER_OF];
+extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_KEY_NUMBER_OF];
+extern bool ConflictLayout[INPUT_KEY_NUMBER_OF];
 extern INPUT_STATE g_OldInputDB;
 
 void InputInit();

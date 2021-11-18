@@ -82,32 +82,32 @@ static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
 static TEXTSTRING *SoundText[4] = { 0 };
 static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
 static TEXTSTRING *CtrlText[2] = { 0 };
-static TEXTSTRING *CtrlTextA[KEY_NUMBER_OF] = { 0 };
-static TEXTSTRING *CtrlTextB[KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *CtrlTextA[INPUT_KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *CtrlTextB[INPUT_KEY_NUMBER_OF] = { 0 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
-    { KEY_UP, 0 },
-    { KEY_DOWN, 0 },
-    { KEY_LEFT, 0 },
-    { KEY_RIGHT, 0 },
-    { KEY_STEP_L, 0 },
-    { KEY_STEP_R, 0 },
-    { KEY_CAMERA_UP, 0 },
-    { KEY_CAMERA_DOWN, 0 },
-    { KEY_CAMERA_LEFT, 0 },
-    { KEY_CAMERA_RIGHT, 0 },
-    { KEY_CAMERA_RESET, 0 },
+    { INPUT_KEY_UP, 0 },
+    { INPUT_KEY_DOWN, 0 },
+    { INPUT_KEY_LEFT, 0 },
+    { INPUT_KEY_RIGHT, 0 },
+    { INPUT_KEY_STEP_L, 0 },
+    { INPUT_KEY_STEP_R, 0 },
+    { INPUT_KEY_CAMERA_UP, 0 },
+    { INPUT_KEY_CAMERA_DOWN, 0 },
+    { INPUT_KEY_CAMERA_LEFT, 0 },
+    { INPUT_KEY_CAMERA_RIGHT, 0 },
+    { INPUT_KEY_CAMERA_RESET, 0 },
     // right column
-    { KEY_SLOW, 1 },
-    { KEY_JUMP, 1 },
-    { KEY_ACTION, 1 },
-    { KEY_DRAW, 1 },
-    { KEY_LOOK, 1 },
-    { KEY_ROLL, 1 },
+    { INPUT_KEY_SLOW, 1 },
+    { INPUT_KEY_JUMP, 1 },
+    { INPUT_KEY_ACTION, 1 },
+    { INPUT_KEY_DRAW, 1 },
+    { INPUT_KEY_LOOK, 1 },
+    { INPUT_KEY_ROLL, 1 },
     { -1, 1 },
-    { KEY_OPTION, 1 },
-    { KEY_PAUSE, 1 },
+    { INPUT_KEY_OPTION, 1 },
+    { INPUT_KEY_PAUSE, 1 },
     { -1, 1 },
     { -1, 1 },
     // end
@@ -116,29 +116,29 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     // left column
-    { KEY_UP, 0 },
-    { KEY_DOWN, 0 },
-    { KEY_LEFT, 0 },
-    { KEY_RIGHT, 0 },
-    { KEY_STEP_L, 0 },
-    { KEY_STEP_R, 0 },
-    { KEY_CAMERA_UP, 0 },
-    { KEY_CAMERA_DOWN, 0 },
-    { KEY_CAMERA_LEFT, 0 },
-    { KEY_CAMERA_RIGHT, 0 },
-    { KEY_CAMERA_RESET, 0 },
+    { INPUT_KEY_UP, 0 },
+    { INPUT_KEY_DOWN, 0 },
+    { INPUT_KEY_LEFT, 0 },
+    { INPUT_KEY_RIGHT, 0 },
+    { INPUT_KEY_STEP_L, 0 },
+    { INPUT_KEY_STEP_R, 0 },
+    { INPUT_KEY_CAMERA_UP, 0 },
+    { INPUT_KEY_CAMERA_DOWN, 0 },
+    { INPUT_KEY_CAMERA_LEFT, 0 },
+    { INPUT_KEY_CAMERA_RIGHT, 0 },
+    { INPUT_KEY_CAMERA_RESET, 0 },
     // right column
-    { KEY_SLOW, 1 },
-    { KEY_JUMP, 1 },
-    { KEY_ACTION, 1 },
-    { KEY_DRAW, 1 },
-    { KEY_LOOK, 1 },
-    { KEY_ROLL, 1 },
-    { KEY_OPTION, 1 },
-    { KEY_PAUSE, 1 },
-    { KEY_FLY_CHEAT, 1 },
-    { KEY_ITEM_CHEAT, 1 },
-    { KEY_LEVEL_SKIP_CHEAT, 1 },
+    { INPUT_KEY_SLOW, 1 },
+    { INPUT_KEY_JUMP, 1 },
+    { INPUT_KEY_ACTION, 1 },
+    { INPUT_KEY_DRAW, 1 },
+    { INPUT_KEY_LOOK, 1 },
+    { INPUT_KEY_ROLL, 1 },
+    { INPUT_KEY_OPTION, 1 },
+    { INPUT_KEY_PAUSE, 1 },
+    { INPUT_KEY_FLY_CHEAT, 1 },
+    { INPUT_KEY_ITEM_CHEAT, 1 },
+    { INPUT_KEY_LEVEL_SKIP_CHEAT, 1 },
     // end
     { -1, -1 },
 };
@@ -1062,10 +1062,10 @@ void FlashConflicts()
 
 void DefaultConflict()
 {
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         int16_t key = Layout[INPUT_LAYOUT_DEFAULT][i];
         ConflictLayout[i] = false;
-        for (int j = 0; j < KEY_NUMBER_OF; j++) {
+        for (int j = 0; j < INPUT_KEY_NUMBER_OF; j++) {
             if (key == Layout[INPUT_LAYOUT_USER][j]) {
                 ConflictLayout[i] = true;
                 break;
@@ -1332,7 +1332,8 @@ void S_ShowControls()
 
             if (col->option != -1) {
                 CtrlTextA[col->option] = Text_Create(
-                    x, y, GF.strings[col->option + GS_KEYMAP_RUN - KEY_UP]);
+                    x, y,
+                    GF.strings[col->option + GS_KEYMAP_RUN - INPUT_KEY_UP]);
                 Text_CentreV(CtrlTextA[col->option], 1);
             }
 
@@ -1373,7 +1374,7 @@ void S_ChangeCtrlText()
 
 void S_RemoveCtrlText()
 {
-    for (int i = 0; i < KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         Text_Remove(CtrlTextA[i]);
         Text_Remove(CtrlTextB[i]);
         CtrlTextB[i] = NULL;
