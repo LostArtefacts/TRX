@@ -13,11 +13,11 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/display.h"
-#include "specific/frontend.h"
-#include "specific/init.h"
-#include "specific/input.h"
-#include "specific/output.h"
+#include "specific/s_display.h"
+#include "specific/s_frontend.h"
+#include "specific/s_init.h"
+#include "specific/s_input.h"
+#include "specific/s_output.h"
 
 #include <stdio.h>
 
@@ -230,41 +230,40 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     char filename[80];
     sprintf(filename, GF.save_game_fmt, slot);
     LOG_DEBUG("%s", filename);
-    MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
+    MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
         return 0;
     }
-    FileRead(filename, sizeof(char), 75, fp);
+    File_Read(filename, sizeof(char), 75, fp);
     int32_t counter;
 
-    FileRead(&counter, sizeof(int32_t), 1, fp);
+    File_Read(&counter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
         S_ExitSystem("null save->start");
         return 0;
     }
-    FileRead(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
-    FileRead(&save->timer, sizeof(uint32_t), 1, fp);
-    FileRead(&save->kills, sizeof(uint32_t), 1, fp);
-    FileRead(&save->secrets, sizeof(uint16_t), 1, fp);
-    FileRead(&save->current_level, sizeof(uint16_t), 1, fp);
-    FileRead(&save->pickups, sizeof(uint8_t), 1, fp);
-    FileRead(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_key1, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_key2, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_key3, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_key4, sizeof(uint8_t), 1, fp);
-    FileRead(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    FileRead(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    FileRead(&save->level_start_lara_health, sizeof(int16_t), 1, fp);
-    FileRead(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    FileClose(fp);
+    File_Read(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    File_Read(&save->timer, sizeof(uint32_t), 1, fp);
+    File_Read(&save->kills, sizeof(uint32_t), 1, fp);
+    File_Read(&save->secrets, sizeof(uint16_t), 1, fp);
+    File_Read(&save->current_level, sizeof(uint16_t), 1, fp);
+    File_Read(&save->pickups, sizeof(uint8_t), 1, fp);
+    File_Read(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_key1, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_key2, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_key3, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_key4, sizeof(uint8_t), 1, fp);
+    File_Read(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    File_Read(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    File_Read(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    File_Close(fp);
 
     for (int i = 0; i < GF.level_count; i++) {
         if (GF.levels[i].level_type == GFL_CURRENT) {
@@ -309,12 +308,12 @@ int32_t S_FrontEndCheck()
         char filename[80];
         sprintf(filename, GF.save_game_fmt, i);
 
-        MYFILE *fp = FileOpen(filename, FILE_OPEN_READ);
+        MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
         if (fp) {
-            FileRead(filename, sizeof(char), 75, fp);
+            File_Read(filename, sizeof(char), 75, fp);
             int32_t counter;
-            FileRead(&counter, sizeof(int32_t), 1, fp);
-            FileClose(fp);
+            File_Read(&counter, sizeof(int32_t), 1, fp);
+            File_Close(fp);
 
             req->item_flags[req->items] &= ~RIF_BLOCKED;
 
@@ -349,7 +348,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     sprintf(filename, GF.save_game_fmt, slot);
     LOG_DEBUG("%s", filename);
 
-    MYFILE *fp = FileOpen(filename, FILE_OPEN_WRITE);
+    MYFILE *fp = File_Open(filename, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
     }
@@ -361,35 +360,34 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     }
 
     sprintf(filename, "%s", GF.levels[SaveGame.current_level].level_title);
-    FileWrite(filename, sizeof(char), 75, fp);
-    FileWrite(&SaveCounter, sizeof(int32_t), 1, fp);
+    File_Write(filename, sizeof(char), 75, fp);
+    File_Write(&SaveCounter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
         S_ExitSystem("null save->start");
         return 0;
     }
-    FileWrite(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
-    FileWrite(&save->timer, sizeof(uint32_t), 1, fp);
-    FileWrite(&save->kills, sizeof(uint32_t), 1, fp);
-    FileWrite(&save->secrets, sizeof(uint16_t), 1, fp);
-    FileWrite(&save->current_level, sizeof(uint16_t), 1, fp);
-    FileWrite(&save->pickups, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_key1, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_key2, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_key3, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_key4, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    FileWrite(&save->level_start_lara_health, sizeof(int16_t), 1, fp);
-    FileWrite(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    FileClose(fp);
+    File_Write(&save->start[0], sizeof(START_INFO), GF.level_count, fp);
+    File_Write(&save->timer, sizeof(uint32_t), 1, fp);
+    File_Write(&save->kills, sizeof(uint32_t), 1, fp);
+    File_Write(&save->secrets, sizeof(uint16_t), 1, fp);
+    File_Write(&save->current_level, sizeof(uint16_t), 1, fp);
+    File_Write(&save->pickups, sizeof(uint8_t), 1, fp);
+    File_Write(&save->bonus_flag, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_pickup1, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_pickup2, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_key1, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_key2, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_key3, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_key4, sizeof(uint8_t), 1, fp);
+    File_Write(&save->num_leadbar, sizeof(uint8_t), 1, fp);
+    File_Write(&save->challenge_failed, sizeof(uint8_t), 1, fp);
+    File_Write(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    File_Close(fp);
 
     REQUEST_INFO *req = &LoadSaveGameRequester;
     req->item_flags[slot] &= ~RIF_BLOCKED;

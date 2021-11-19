@@ -19,8 +19,8 @@
 #include "game/traps/movable_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/init.h"
-#include "specific/input.h"
+#include "specific/s_init.h"
+#include "specific/s_input.h"
 
 #include <stddef.h>
 

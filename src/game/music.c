@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/music.h"
+#include "specific/s_music.h"
 
 static bool m_Loop = false;
 static int16_t m_Track = 0;

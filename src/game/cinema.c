@@ -11,8 +11,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/display.h"
-#include "specific/input.h"
+#include "specific/s_display.h"
+#include "specific/s_input.h"
 
 static bool SoundIsActiveOld = false;
 static const int32_t CinematicAnimationRate = 0x8000;

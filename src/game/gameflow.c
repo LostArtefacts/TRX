@@ -16,10 +16,9 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/display.h"
-#include "specific/file.h"
-#include "specific/frontend.h"
-#include "specific/output.h"
+#include "specific/s_display.h"
+#include "specific/s_frontend.h"
+#include "specific/s_output.h"
 
 #include <limits.h>
 #include <string.h>
@@ -791,23 +790,22 @@ static int8_t S_LoadGameFlow(const char *file_name)
     MYFILE *fp = NULL;
     char *script_data = NULL;
 
-    const char *file_path = GetFullPath(file_name);
-    fp = FileOpen(file_path, FILE_OPEN_READ);
+    fp = File_Open(file_name, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("failed to open script file");
         goto cleanup;
     }
 
-    size_t script_data_size = FileSize(fp);
+    size_t script_data_size = File_Size(fp);
 
     script_data = Memory_Alloc(script_data_size + 1);
     if (!script_data) {
         LOG_ERROR("failed to allocate memory");
         goto cleanup;
     }
-    FileRead(script_data, 1, script_data_size, fp);
+    File_Read(script_data, 1, script_data_size, fp);
     script_data[script_data_size] = '\0';
-    FileClose(fp);
+    File_Close(fp);
     fp = NULL;
 
     struct json_parse_result_s parse_result;
@@ -831,7 +829,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
 cleanup:
     if (fp) {
-        FileClose(fp);
+        File_Close(fp);
     }
     if (root) {
         json_value_free(root);

@@ -1,7 +1,7 @@
 #include "game/gamebuf.h"
 
 #include "memory.h"
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 #define MALLOC_SIZE 0x1000000 // 16 MB
 

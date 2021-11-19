@@ -10,9 +10,7 @@
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/output.h"
-
-#include <stdlib.h>
+#include "specific/s_output.h"
 
 static int16_t InterpolatedBounds[6] = { 0 };
 static PHD_MATRIX *IMMatrixPtr = NULL;
@@ -401,7 +399,7 @@ void DrawPickupItem(ITEM_INFO *item)
     // Assume this is our offset.
     int16_t offset = floor_height;
     // Is the floor "just below" the item?
-    int16_t floor_mapped_delta = abs(floor_height - item->pos.y);
+    int16_t floor_mapped_delta = ABS(floor_height - item->pos.y);
     if (floor_mapped_delta > WALL_L / 4 || floor_mapped_delta == 0) {
         // No, now we need to move it a bit.
         // First get the sprite that was to be used,
@@ -449,9 +447,9 @@ void DrawPickupItem(ITEM_INFO *item)
             // Some objects have a centred mesh and some have one that is from
             // the bottom, for the centred ones; move up from the
             // bottom is necessary.
-            int centred = abs(min_y + max_y) < 8;
+            int centred = ABS(min_y + max_y) < 8;
             if (floor_mapped_delta) {
-                offset = item->pos.y - abs(min_y - sprite->y1) / 8;
+                offset = item->pos.y - ABS(min_y - sprite->y1) / 8;
             } else if (centred) {
                 offset = item->pos.y + min_y;
             }

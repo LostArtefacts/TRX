@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_OUTPUT_H
-#define T1M_SPECIFIC_OUTPUT_H
+#ifndef T1M_SPECIFIC_S_OUTPUT_H
+#define T1M_SPECIFIC_S_OUTPUT_H
 
 #include <stdbool.h>
 #include <stdint.h>

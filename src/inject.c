@@ -1,10 +1,8 @@
 #include "inject.h"
 
-#include "specific/ati.h"
-#include "specific/smain.h"
+#include "specific/s_main.h"
 
 void T1MInject()
 {
-    T1MInjectSpecificATI();
     T1MInjectSpecificSMain();
 }

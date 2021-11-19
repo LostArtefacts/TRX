@@ -1,8 +1,8 @@
-#ifndef T1M_SPECIFIC_HWR_H
-#define T1M_SPECIFIC_HWR_H
+#ifndef T1M_SPECIFIC_S_HWR_H
+#define T1M_SPECIFIC_S_HWR_H
 
 #include "global/types.h"
-#include "specific/ati.h"
+#include "specific/s_ati.h"
 
 #include <windows.h>
 #include <ddraw.h>
@@ -15,8 +15,6 @@ void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
-void HWR_GetSurfaceAndPitch(
-    LPDIRECTDRAWSURFACE surface, LPVOID *out_surface, int32_t *out_pitch);
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface);
 void HWR_ReleaseSurfaces();
 void HWR_DumpScreen();

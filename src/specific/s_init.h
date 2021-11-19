@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_INIT_H
-#define T1M_SPECIFIC_INIT_H
+#ifndef T1M_SPECIFIC_S_INIT_H
+#define T1M_SPECIFIC_S_INIT_H
 
 #include "global/types.h"
 

@@ -13,7 +13,7 @@
 #include "game/traps/rolling_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 #include <stddef.h>
 
@@ -153,7 +153,6 @@ void CreateSaveGameInfo()
     SaveGame.num_key3 = Inv_RequestItem(O_KEY_ITEM3);
     SaveGame.num_key4 = Inv_RequestItem(O_KEY_ITEM4);
     SaveGame.num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
-    SaveGame.level_start_lara_health = LevelStartLaraHealth;
 
     ResetSG();
 
@@ -270,8 +269,6 @@ void ExtractSaveGameInfo()
     for (int i = 0; i < SaveGame.num_leadbar; i++) {
         Inv_AddItem(O_LEADBAR_ITEM);
     }
-
-    LevelStartLaraHealth = SaveGame.level_start_lara_health;
 
     ResetSG();
 

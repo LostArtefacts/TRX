@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_FRONTEND_H
-#define T1M_SPECIFIC_FRONTEND_H
+#ifndef T1M_SPECIFIC_S_FRONTEND_H
+#define T1M_SPECIFIC_S_FRONTEND_H
 
 #include "global/types.h"
 
