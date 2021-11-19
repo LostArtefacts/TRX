@@ -1,6 +1,7 @@
 #ifndef T1M_SPECIFIC_S_HWR_H
 #define T1M_SPECIFIC_S_HWR_H
 
+#include "game/picture.h"
 #include "global/types.h"
 #include "specific/s_ati.h"
 
