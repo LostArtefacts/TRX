@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/setup.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
@@ -217,8 +218,8 @@ static bool LoadRooms(MYFILE *fp)
 
         // Initialise some variables
         current_room_info->bound_active = 0;
-        current_room_info->left = PhdWinMaxX;
-        current_room_info->top = PhdWinMaxY;
+        current_room_info->left = ViewPort_GetMaxX();
+        current_room_info->top = ViewPort_GetMaxY();
         current_room_info->bottom = 0;
         current_room_info->right = 0;
         current_room_info->item_number = -1;

@@ -10,17 +10,11 @@
 
 extern const char *T1MVersion;
 
-extern int32_t PhdWinMaxX;
-extern int32_t PhdWinMaxY;
-extern int32_t PhdWinCenterX;
-extern int32_t PhdWinCenterY;
 extern int32_t PhdPersp;
 extern int32_t PhdLeft;
 extern int32_t PhdBottom;
 extern int32_t PhdRight;
 extern int32_t PhdTop;
-extern int32_t PhdWinWidth;
-extern int32_t PhdWinHeight;
 extern PHD_VBUF PhdVBuf[1500];
 extern PHD_SPRITE PhdSpriteInfo[MAX_SPRITES];
 extern PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES];

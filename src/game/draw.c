@@ -8,6 +8,7 @@
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/overlay.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/s_output.h"
@@ -29,8 +30,8 @@ int32_t DrawPhaseCinematic()
         ROOM_INFO *r = &RoomInfo[room_num];
         r->top = 0;
         r->left = 0;
-        r->right = PhdWinMaxX;
-        r->bottom = PhdWinMaxY;
+        r->right = ViewPort_GetMaxX();
+        r->bottom = ViewPort_GetMaxY();
         PrintRooms(room_num);
     }
     S_OutputPolyList();
@@ -52,10 +53,10 @@ int32_t DrawPhaseGame()
 
 void DrawRooms(int16_t current_room)
 {
-    PhdLeft = 0;
-    PhdTop = 0;
-    PhdRight = PhdWinMaxX;
-    PhdBottom = PhdWinMaxY;
+    PhdLeft = ViewPort_GetMinX();
+    PhdTop = ViewPort_GetMinY();
+    PhdRight = ViewPort_GetMaxX();
+    PhdBottom = ViewPort_GetMaxY();
 
     ROOM_INFO *r = &RoomInfo[current_room];
     r->left = PhdLeft;
@@ -157,8 +158,8 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
             zv /= PhdPersp;
             int32_t xs, ys;
             if (zv) {
-                xs = PhdWinCenterX + xv / zv;
-                ys = PhdWinCenterY + yv / zv;
+                xs = ViewPort_GetCenterX() + xv / zv;
+                ys = ViewPort_GetCenterY() + yv / zv;
             } else {
                 xs = xv >= 0 ? PhdRight : PhdLeft;
                 ys = yv >= 0 ? PhdBottom : PhdTop;
@@ -193,19 +194,19 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
                 if (dest->xv < 0 && last->xv < 0) {
                     left = 0;
                 } else if (dest->xv > 0 && last->xv > 0) {
-                    right = PhdWinMaxX;
+                    right = ViewPort_GetMaxX();
                 } else {
                     left = 0;
-                    right = PhdWinMaxX;
+                    right = ViewPort_GetMaxX();
                 }
 
                 if (dest->yv < 0 && last->yv < 0) {
                     top = 0;
                 } else if (dest->yv > 0 && last->yv > 0) {
-                    bottom = PhdWinMaxY;
+                    bottom = ViewPort_GetMaxY();
                 } else {
                     top = 0;
-                    bottom = PhdWinMaxY;
+                    bottom = ViewPort_GetMaxY();
                 }
             }
 
@@ -306,10 +307,10 @@ void PrintRooms(int16_t room_number)
 
     phd_PopMatrix();
 
-    r->left = PhdWinMaxX;
+    r->left = ViewPort_GetMaxX();
     r->bottom = 0;
     r->right = 0;
-    r->top = PhdWinMaxY;
+    r->top = ViewPort_GetMaxY();
 }
 
 void DrawEffect(int16_t fxnum)
@@ -681,10 +682,10 @@ void DrawUnclippedItem(ITEM_INFO *item)
     int32_t right = PhdRight;
     int32_t bottom = PhdBottom;
 
-    PhdLeft = 0;
-    PhdTop = 0;
-    PhdRight = PhdWinMaxX;
-    PhdBottom = PhdWinMaxY;
+    PhdLeft = ViewPort_GetMinX();
+    PhdTop = ViewPort_GetMinY();
+    PhdRight = ViewPort_GetMaxX();
+    PhdBottom = ViewPort_GetMaxY();
 
     DrawAnimatingItem(item);
 
@@ -705,10 +706,11 @@ void DrawLara(ITEM_INFO *item)
     int32_t left = PhdLeft;
     int32_t bottom = PhdBottom;
     int32_t right = PhdRight;
-    PhdBottom = PhdWinMaxY;
-    PhdTop = 0;
-    PhdLeft = 0;
-    PhdRight = PhdWinMaxX;
+
+    PhdLeft = ViewPort_GetMinX();
+    PhdTop = ViewPort_GetMinY();
+    PhdBottom = ViewPort_GetMaxY();
+    PhdRight = ViewPort_GetMaxX();
 
     if (Lara.hit_direction < 0) {
         int32_t rate;

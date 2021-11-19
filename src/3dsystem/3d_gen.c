@@ -4,6 +4,7 @@
 #include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/screen.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
@@ -355,26 +356,12 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
         >> W2V_SHIFT;
 }
 
-void phd_InitWindow(int32_t x, int32_t y, int32_t width, int32_t height)
+void phd_ResetMatrixStack()
 {
-    PhdWinMaxX = width - 1;
-    PhdWinMaxY = height - 1;
-    PhdWinWidth = width;
-    PhdWinHeight = height;
-    PhdWinCenterX = width / 2;
-    PhdWinCenterY = height / 2;
-
-    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-
-    PhdLeft = 0;
-    PhdTop = 0;
-    PhdRight = PhdWinMaxX;
-    PhdBottom = PhdWinMaxY;
-
     PhdMatrixPtr = &MatrixStack[0];
 }
 
-void AlterFOV(PHD_ANGLE fov)
+void phd_AlterFOV(PHD_ANGLE fov)
 {
     // In places that use GAME_FOV, it can be safely changed to user's choice.
     // But for cinematics, the FOV value chosen by devs needs to stay
@@ -444,8 +431,8 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
         } else {
             clip_flags = 0;
 
-            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
-            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
+            int32_t xs = ViewPort_GetCenterX() + xv / (zv / PhdPersp);
+            int32_t ys = ViewPort_GetCenterY() + yv / (zv / PhdPersp);
 
             if (xs < PhdLeft) {
                 if (xs < -32760) {
@@ -561,8 +548,8 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
                 }
             }
 
-            int32_t xs = PhdWinCenterX + xv / (zv / PhdPersp);
-            int32_t ys = PhdWinCenterY + yv / (zv / PhdPersp);
+            int32_t xs = ViewPort_GetCenterX() + xv / (zv / PhdPersp);
+            int32_t ys = ViewPort_GetCenterY() + yv / (zv / PhdPersp);
             if (IsWibbleEffect) {
                 xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
                 ys += WibbleTable[(xs + WibbleOffset) & 0x1F];

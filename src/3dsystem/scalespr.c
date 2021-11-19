@@ -1,9 +1,10 @@
 #include "3dsystem/scalespr.h"
 
 #include "3dsystem/3d_gen.h"
+#include "game/viewport.h"
 #include "global/const.h"
-#include "global/vars.h"
 #include "global/types.h"
+#include "global/vars.h"
 #include "specific/s_hwr.h"
 
 void S_DrawSprite(
@@ -35,11 +36,12 @@ void S_DrawSprite(
     int32_t zp = zv / PhdPersp;
 
     PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
-    int32_t x1 = PhdWinCenterX + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = PhdWinCenterY + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = PhdWinCenterX + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
-    int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
+    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
+        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += phd_CalculateFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -63,11 +65,12 @@ void S_DrawSpriteRel(
     int32_t zp = zv / PhdPersp;
 
     PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
-    int32_t x1 = PhdWinCenterX + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = PhdWinCenterY + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = PhdWinCenterX + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t y2 = PhdWinCenterY + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
+        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += phd_CalculateFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -83,7 +86,8 @@ void S_DrawUISprite(
     int32_t x2 = x + (scale * sprite->x2 >> 16);
     int32_t y1 = y + (scale * sprite->y1 >> 16);
     int32_t y2 = y + (scale * sprite->y2 >> 16);
-    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
+        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
         HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
@@ -104,13 +108,13 @@ const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
         PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
         int32_t zp = (zv / PhdPersp);
         int32_t x1 =
-            PhdWinCenterX + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
         int32_t y1 =
-            PhdWinCenterY + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
         int32_t x2 =
-            PhdWinCenterX + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
         int32_t y2 =
-            PhdWinCenterY + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
         if (x2 >= PhdLeft && y2 >= PhdTop && x1 < PhdRight && y1 < PhdBottom) {
             HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
         }

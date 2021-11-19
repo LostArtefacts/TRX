@@ -37,17 +37,11 @@ INPUT_STATE Input = { 0 };
 INPUT_STATE InputDB = { 0 };
 int32_t OptionSelected = 0;
 
-int32_t PhdWinMaxX = 0;
-int32_t PhdWinMaxY = 0;
-int32_t PhdWinCenterX = 0;
-int32_t PhdWinCenterY = 0;
 int32_t PhdPersp = 0;
 int32_t PhdLeft = 0;
 int32_t PhdBottom = 0;
 int32_t PhdRight = 0;
 int32_t PhdTop = 0;
-int32_t PhdWinWidth = 0;
-int32_t PhdWinHeight = 0;
 PHD_VBUF PhdVBuf[1500] = { 0 };
 PHD_SPRITE PhdSpriteInfo[MAX_SPRITES] = { 0 };
 PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES] = { 0 };

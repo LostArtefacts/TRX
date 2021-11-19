@@ -147,7 +147,7 @@ void CalculateCinematicCamera()
     campos.y = Camera.pos.y + cy;
     campos.z = Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
 
-    AlterFOV(fov);
+    phd_AlterFOV(fov);
     phd_LookAt(
         campos.x, campos.y, campos.z, camtar.x, camtar.y, camtar.z, roll);
 }
@@ -213,7 +213,7 @@ void InGameCinematicCamera()
     Camera.pos.y = CinePosition.y + cy;
     Camera.pos.z = CinePosition.z + ((c * cz - s * cx) >> 14);
 
-    AlterFOV(fov);
+    phd_AlterFOV(fov);
 
     phd_LookAt(
         Camera.pos.x, Camera.pos.y, Camera.pos.z, Camera.target.x,

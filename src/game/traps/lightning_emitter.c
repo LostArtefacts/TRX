@@ -10,6 +10,7 @@
 #include "game/items.h"
 #include "game/sound.h"
 #include "game/sphere.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 #include "specific/s_output.h"
 
@@ -204,9 +205,11 @@ void DrawLightning(ITEM_INFO *item)
 
         if (i > 0) {
             S_DrawLightningSegment(
-                x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2, PhdWinWidth / 6);
+                x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
+                ViewPort_GetWidth() / 6);
         } else {
-            S_DrawLightningSegment(x1, y1, z1, x2, y2, z2, PhdWinWidth / 6);
+            S_DrawLightningSegment(
+                x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 6);
         }
 
         x1 = x2;
@@ -255,10 +258,10 @@ void DrawLightning(ITEM_INFO *item)
             if (j > 0) {
                 S_DrawLightningSegment(
                     x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
-                    PhdWinWidth / 16);
+                    ViewPort_GetWidth() / 16);
             } else {
                 S_DrawLightningSegment(
-                    x1, y1, z1, x2, y2, z2, PhdWinWidth / 16);
+                    x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 16);
             }
 
             x1 = x2;
