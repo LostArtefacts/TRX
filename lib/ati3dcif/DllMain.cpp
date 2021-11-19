@@ -311,29 +311,23 @@ C3D_EC WINAPI ATI3DCIF_RenderPrimMesh(C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicie
     return C3D_EC_NOTIMPYET;
 }
 
-// export macro for CIF implementation
-#define EXPORT(function_name, return_type, parameters)                         \
-function_name##_t function_name##_lib = function_name;                         \
-return_type WINAPI function_name parameters                                    \
-
-
-C3D_EC (*WINAPI ATI3DCIF_Term_lib)(void) = ATI3DCIF_Term;
-C3D_EC (*WINAPI ATI3DCIF_Init_lib)(void) = ATI3DCIF_Init;
-C3D_EC (*WINAPI ATI3DCIF_GetInfo_lib)(PC3D_3DCIFINFO p3DCIFInfo) = ATI3DCIF_GetInfo;
-C3D_EC (*WINAPI ATI3DCIF_TextureReg_lib)(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap) = ATI3DCIF_TextureReg;
-C3D_EC (*WINAPI ATI3DCIF_TextureUnreg_lib)(C3D_HTX htxToUnreg) = ATI3DCIF_TextureUnreg;
-C3D_EC (*WINAPI ATI3DCIF_TexturePaletteCreate_lib)(C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated) = ATI3DCIF_TexturePaletteCreate;
-C3D_EC (*WINAPI ATI3DCIF_TexturePaletteDestroy_lib)(C3D_HTXPAL htxpalToDestroy) = ATI3DCIF_TexturePaletteDestroy;
-C3D_EC (*WINAPI ATI3DCIF_TexturePaletteAnimate_lib)(C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette) = ATI3DCIF_TexturePaletteAnimate;
-C3D_HRC (*WINAPI ATI3DCIF_ContextCreate_lib)(void) = ATI3DCIF_ContextCreate;
-C3D_EC (*WINAPI ATI3DCIF_ContextDestroy_lib)(C3D_HRC hRC) = ATI3DCIF_ContextDestroy;
-C3D_EC (*WINAPI ATI3DCIF_ContextSetState_lib)(C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData) = ATI3DCIF_ContextSetState;
-C3D_EC (*WINAPI ATI3DCIF_RenderBegin_lib)(C3D_HRC hRC) = ATI3DCIF_RenderBegin;
-C3D_EC (*WINAPI ATI3DCIF_RenderEnd_lib)(void) = ATI3DCIF_RenderEnd;
-C3D_EC (*WINAPI ATI3DCIF_RenderSwitch_lib)(C3D_HRC hRC) = ATI3DCIF_RenderSwitch;
-C3D_EC (*WINAPI ATI3DCIF_RenderPrimStrip_lib)(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimStrip;
-C3D_EC (*WINAPI ATI3DCIF_RenderPrimList_lib)(C3D_VLIST vList, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimList;
-C3D_EC (*WINAPI ATI3DCIF_RenderPrimMesh_lib)(C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicies, C3D_UINT32 u32NumIndicies) = ATI3DCIF_RenderPrimMesh;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_Term_lib)(void) = ATI3DCIF_Term;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_Init_lib)(void) = ATI3DCIF_Init;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_GetInfo_lib)(PC3D_3DCIFINFO p3DCIFInfo) = ATI3DCIF_GetInfo;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TextureReg_lib)(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap) = ATI3DCIF_TextureReg;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TextureUnreg_lib)(C3D_HTX htxToUnreg) = ATI3DCIF_TextureUnreg;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TexturePaletteCreate_lib)(C3D_ECI_TMAP_TYPE epalette, void* pPalette, C3D_PHTXPAL phtpalCreated) = ATI3DCIF_TexturePaletteCreate;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TexturePaletteDestroy_lib)(C3D_HTXPAL htxpalToDestroy) = ATI3DCIF_TexturePaletteDestroy;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_TexturePaletteAnimate_lib)(C3D_HTXPAL htxpalToAnimate, C3D_UINT32 u32StartIndex, C3D_UINT32 u32NumEntries, C3D_PPALETTENTRY pclrPalette) = ATI3DCIF_TexturePaletteAnimate;
+C3D_HRC __declspec(dllexport) (*WINAPI ATI3DCIF_ContextCreate_lib)(void) = ATI3DCIF_ContextCreate;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_ContextDestroy_lib)(C3D_HRC hRC) = ATI3DCIF_ContextDestroy;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_ContextSetState_lib)(C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData) = ATI3DCIF_ContextSetState;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderBegin_lib)(C3D_HRC hRC) = ATI3DCIF_RenderBegin;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderEnd_lib)(void) = ATI3DCIF_RenderEnd;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderSwitch_lib)(C3D_HRC hRC) = ATI3DCIF_RenderSwitch;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderPrimStrip_lib)(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimStrip;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderPrimList_lib)(C3D_VLIST vList, C3D_UINT32 u32NumVert) = ATI3DCIF_RenderPrimList;
+C3D_EC __declspec(dllexport) (*WINAPI ATI3DCIF_RenderPrimMesh_lib)(C3D_PVARRAY vMesh, C3D_PUINT32 pu32Indicies, C3D_UINT32 u32NumIndicies) = ATI3DCIF_RenderPrimMesh;
 
 } // extern "C"
 
