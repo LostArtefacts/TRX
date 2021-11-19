@@ -1,4 +1,4 @@
-#include "specific/shell.h"
+#include "specific/s_shell.h"
 
 #include "args.h"
 #include "game/demo.h"
@@ -15,13 +15,13 @@
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/display.h"
-#include "specific/frontend.h"
-#include "specific/hwr.h"
-#include "specific/init.h"
-#include "specific/input.h"
-#include "specific/output.h"
-#include "specific/smain.h"
+#include "specific/s_display.h"
+#include "specific/s_frontend.h"
+#include "specific/s_hwr.h"
+#include "specific/s_init.h"
+#include "specific/s_input.h"
+#include "specific/s_output.h"
+#include "specific/s_main.h"
 
 #include <stdint.h>
 #include <stdio.h>

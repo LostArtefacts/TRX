@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_SMAIN_H
-#define T1M_SPECIFIC_SMAIN_H
+#ifndef T1M_SPECIFIC_S_MAIN_H
+#define T1M_SPECIFIC_S_MAIN_H
 
 #include <stdint.h>
 

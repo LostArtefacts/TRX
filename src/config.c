@@ -186,19 +186,19 @@ int8_t T1MReadConfig()
     MYFILE *fp = NULL;
     char *cfg_data = NULL;
 
-    fp = FileOpen(T1MGlobalSettingsPath, FILE_OPEN_READ);
+    fp = File_Open(T1MGlobalSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("Failed to open file '%s'", T1MGlobalSettingsPath);
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }
 
-    size_t cfg_data_size = FileSize(fp);
+    size_t cfg_data_size = File_Size(fp);
 
     cfg_data = Memory_Alloc(cfg_data_size + 1);
-    FileRead(cfg_data, 1, cfg_data_size, fp);
+    File_Read(cfg_data, 1, cfg_data_size, fp);
     cfg_data[cfg_data_size] = '\0';
-    FileClose(fp);
+    File_Close(fp);
     fp = NULL;
 
     result = T1MReadConfigFromJson(cfg_data);
@@ -217,7 +217,7 @@ int8_t T1MReadConfig()
 
 cleanup:
     if (fp) {
-        FileClose(fp);
+        File_Close(fp);
     }
     if (cfg_data) {
         Memory_Free(cfg_data);

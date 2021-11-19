@@ -1,5 +1,5 @@
-#ifndef T1M_SPECIFIC_SOUND_H
-#define T1M_SPECIFIC_SOUND_H
+#ifndef T1M_SPECIFIC_S_SOUND_H
+#define T1M_SPECIFIC_S_SOUND_H
 
 #include "global/types.h"
 

@@ -1,10 +1,10 @@
-#include "specific/sound.h"
+#include "specific/s_sound.h"
 
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/init.h"
+#include "specific/s_init.h"
 
 #include <math.h>
 
@@ -54,6 +54,8 @@ typedef struct WAVE_FILE_HEADER {
     WAVE_DATA_CHUNK data_chunk;
 } WAVE_FILE_HEADER;
 #pragma pack(pop)
+
+static LPDIRECTSOUND m_DSound = NULL;
 
 static int32_t m_NumSampleData = 0;
 static SAMPLE_DATA **m_SampleData = 0;
@@ -129,7 +131,7 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
     CLAMP(buffer_desc.dwBufferBytes, DSBSIZE_MIN, DSBSIZE_MAX);
 
     HRESULT result = IDirectSound_CreateSoundBuffer(
-        DSound, &buffer_desc, (LPLPDIRECTSOUNDBUFFER)&sample_data->handle, 0);
+        m_DSound, &buffer_desc, (LPLPDIRECTSOUNDBUFFER)&sample_data->handle, 0);
     if (result != DS_OK) {
         LOG_ERROR(
             "Error while calling IDirectSound_CreateSoundBuffer: 0x%lx",
@@ -211,7 +213,7 @@ void *S_Sound_PlaySample(
         if (!buffer) {
             LPDIRECTSOUNDBUFFER buffer_new;
             result = IDirectSound8_DuplicateSoundBuffer(
-                DSound, (LPDIRECTSOUNDBUFFER)sample->handle, &buffer_new);
+                m_DSound, (LPDIRECTSOUNDBUFFER)sample->handle, &buffer_new);
             if (result != DS_OK) {
                 LOG_ERROR(
                     "Error while calling IDirectSound8_DuplicateSoundBuffer: "
@@ -276,12 +278,12 @@ void *S_Sound_PlaySample(
 
 bool S_Sound_Init()
 {
-    HRESULT result = DirectSoundCreate(0, &DSound, 0);
+    HRESULT result = DirectSoundCreate(0, &m_DSound, 0);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling DirectSoundCreate: 0x%lx", result);
         return false;
     }
-    result = DSound->lpVtbl->SetCooperativeLevel(DSound, TombHWND, 1);
+    result = m_DSound->lpVtbl->SetCooperativeLevel(m_DSound, TombHWND, 1);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
         return false;

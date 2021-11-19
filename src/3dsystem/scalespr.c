@@ -4,7 +4,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "global/types.h"
-#include "specific/hwr.h"
+#include "specific/s_hwr.h"
 
 void S_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)

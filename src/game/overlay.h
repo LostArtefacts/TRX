@@ -1,5 +1,5 @@
-#ifndef T1M_GAME_HEALTH_H
-#define T1M_GAME_HEALTH_H
+#ifndef T1M_GAME_OVERLAY_H
+#define T1M_GAME_OVERLAY_H
 
 #include <stdint.h>
 

@@ -1,4 +1,4 @@
-#include "specific/smain.h"
+#include "specific/s_main.h"
 
 #include "config.h"
 #include "game/music.h"
@@ -6,11 +6,11 @@
 #include "global/vars_platform.h"
 #include "inject_util.h"
 #include "log.h"
-#include "specific/ati.h"
-#include "specific/clock.h"
-#include "specific/hwr.h"
-#include "specific/input.h"
-#include "specific/shell.h"
+#include "specific/s_ati.h"
+#include "specific/s_clock.h"
+#include "specific/s_hwr.h"
+#include "specific/s_input.h"
+#include "specific/s_shell.h"
 
 #include <windows.h>
 #include <ddraw.h>
@@ -24,7 +24,7 @@ static bool IsGameWindowActive = true;
 static void WinGameFinish();
 static LRESULT CALLBACK
 WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-static int InitDirectDraw();
+static bool InitDirectDraw();
 
 void TerminateGame(int exit_code)
 {
@@ -55,41 +55,19 @@ void WinSpinMessageLoop()
     } while (!IsGameWindowActive);
 }
 
-static int InitDirectDraw()
+static bool InitDirectDraw()
 {
     if (DirectDrawCreate(0, &DDraw, 0)) {
         ShowFatalError("DirectDraw could not be started");
-        return 0;
+        return false;
     }
 
-    if (InitATI3DCIF()) {
+    if (S_ATI_Init()) {
         ShowFatalError("ATI3DCIF could not be started");
-        return 0;
+        return false;
     }
 
-    ATIRenderContext = ATI3DCIF_ContextCreate();
-    if (!ATIRenderContext) {
-        ShowFatalError("ATI3DCIF could not be started");
-        return 0;
-    }
-
-    ATIInfo.u32Size = sizeof(C3D_3DCIFINFO);
-    if (ATI3DCIF_GetInfo(&ATIInfo)) {
-        ShowFatalError("Failed to parse ATI3DCIF capabilities");
-        return 0;
-    }
-
-    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_Z_BUFFER)) {
-        ShowFatalError("Z-Buffer capability not found");
-        return 0;
-    }
-
-    if (!(ATIInfo.u32CIFCaps1 & C3D_CAPS1_CI8_TMAP)) {
-        ShowFatalError("8-bit texture capability not found");
-        return 0;
-    }
-
-    return 1;
+    return true;
 }
 
 static LRESULT CALLBACK
@@ -176,11 +154,7 @@ static void WinGameFinish()
         IDirectDraw_Release(DDraw);
         DDraw = NULL;
     }
-    if (ATIRenderContext) {
-        ATI3DCIF_ContextDestroy(ATIRenderContext);
-        ShutdownATI3DCIF();
-        ATIRenderContext = 0;
-    }
+    S_ATI_Shutdown();
     PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
 }
 
