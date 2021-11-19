@@ -3,6 +3,7 @@
 #include "global/vars_platform.h"
 #include "log.h"
 
+#include <SDL2/SDL.h>
 #include <mmsystem.h>
 
 static MCIDEVICEID m_MCIDeviceID = (MCIDEVICEID)-1;
@@ -11,6 +12,14 @@ static int32_t m_NumTracks = 0;
 
 bool S_Music_Init()
 {
+    {
+        int32_t result = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+        if (result < 0) {
+            LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
+            return false;
+        }
+    }
+
     {
         MCI_OPEN_PARMS open_parms;
         open_parms.dwCallback = 0;

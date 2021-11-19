@@ -21,6 +21,7 @@ cp /usr/i686-w64-mingw32/bin/avcodec-59.dll /app/build/
 cp /usr/i686-w64-mingw32/bin/avdevice-59.dll /app/build/
 cp /usr/i686-w64-mingw32/bin/zlib1.dll /app/build/
 cp /usr/i686-w64-mingw32/bin/avformat-59.dll /app/build/
+cp /usr/i686-w64-mingw32/bin/SDL2.dll /app/build/
 
 cd /app/build; meson compile
 

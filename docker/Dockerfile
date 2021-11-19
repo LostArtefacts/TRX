@@ -55,6 +55,23 @@ RUN cd FFmpeg \
     && make -j 4 \
     && make install
 
+# SDL
+RUN git clone https://github.com/libsdl-org/SDL
+RUN apt-get install -y automake
+RUN cd SDL \
+    && aclocal -I acinclude \
+    && autoconf \
+    && mkdir build \
+    && cd build \
+    && ../configure \
+        --host=i686-w64-mingw32 \
+        --build=i686-pc-mingw32 \
+        --prefix=/usr/i686-w64-mingw32 \
+        --enable-shared \
+        --disable-static \
+    && make -j 4 \
+    && make install
+
 # set the build dir - actual files are mounted with a Docker volume
 RUN mkdir /app
 WORKDIR /app

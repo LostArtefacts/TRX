@@ -159,6 +159,12 @@ fail:
         av_frame_free(&frame);
     }
 
+    if (codec_ctx) {
+        avcodec_close(codec_ctx);
+        av_free(codec_ctx);
+        codec_ctx = NULL;
+    }
+
     if (format_ctx) {
         avformat_close_input(&format_ctx);
     }
