@@ -69,11 +69,13 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
 {
     char *file_data = NULL;
     size_t file_size = 0;
-    File_Load(file_path, &file_data, &file_size);
+    if (!File_Load(file_path, &file_data, &file_size)) {
+        LOG_ERROR("Error while opening PCX file %s", file_path);
+        return false;
+    }
 
     if (!DecompPCX(file_data, file_size, picture)) {
-        LOG_ERROR("failed to decompress PCX %s", file_path);
-        Memory_Free(picture);
+        LOG_ERROR("Error while decompressing PCX data for file %s", file_path);
         return false;
     }
 

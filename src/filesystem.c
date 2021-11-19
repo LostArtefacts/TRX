@@ -1,5 +1,6 @@
 #include "filesystem.h"
 
+#include "log.h"
 #include "memory.h"
 #include "specific/s_shell.h"
 #include "specific/s_filesystem.h"
@@ -120,26 +121,24 @@ int File_Delete(const char *path)
     return remove(path);
 }
 
-void File_Load(const char *path, char **output_data, size_t *output_size)
+bool File_Load(const char *path, char **output_data, size_t *output_size)
 {
     MYFILE *fp = File_Open(path, FILE_OPEN_READ);
     if (!fp) {
-        S_Shell_ExitSystem("File load error");
-        return;
+        LOG_ERROR("Can't open file %s", path);
+        return false;
     }
 
     size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size);
-    if (!data) {
-        S_Shell_ExitSystem("Failed to allocate memory");
-        return;
-    }
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
-        S_Shell_ExitSystem("File read error");
-        return;
+        LOG_ERROR("Can't read file %s", path);
+        Memory_Free(data);
+        return false;
     }
     File_Close(fp);
 
     *output_data = data;
     *output_size = data_size;
+    return true;
 }

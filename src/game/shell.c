@@ -97,7 +97,7 @@ void Shell_Main()
     S_ReadUserSettings();
 
     Screen_SetResolution(2);
-    S_DisplayPicture("data\\eidospc");
+    S_DisplayPicture("data\\eidospc.pcx");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
     S_OutputPolyList();
@@ -142,7 +142,7 @@ void Shell_Main()
         case GF_EXIT_TO_TITLE:
             Text_RemoveAll();
             Screen_SetResolution(2);
-            S_DisplayPicture("data\\titleh");
+            S_DisplayPicture(GF.main_menu_background_path);
             NoInputCount = 0;
             if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
                 gf_option = GF_EXIT_GAME;
