@@ -154,31 +154,39 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
-static int8_t S_LoadScriptMeta(struct json_object_s *obj)
+static bool S_LoadScriptMeta(struct json_object_s *obj)
 {
     const char *tmp_s;
     int tmp_i;
     double tmp_d;
     struct json_array_s *tmp_arr;
 
+    tmp_s =
+        json_object_get_string(obj, "main_menu_picture", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        LOG_ERROR("'main_menu_picture' must be a string");
+        return false;
+    }
+    GF.main_menu_background_path = strdup(tmp_s);
+
     tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         LOG_ERROR("'savegame_fmt' must be a string");
-        return 0;
+        return false;
     }
     GF.save_game_fmt = strdup(tmp_s);
 
     tmp_d = json_object_get_number_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
         LOG_ERROR("'demo_delay' must be a positive number");
-        return 0;
+        return false;
     }
     GF.demo_delay = tmp_d * FRAMES_PER_SECOND;
 
     tmp_i = json_object_get_bool(obj, "enable_game_modes", JSON_INVALID_BOOL);
     if (tmp_i == JSON_INVALID_BOOL) {
         LOG_ERROR("'enable_game_modes' must be a boolean");
-        return 0;
+        return false;
     }
     GF.enable_game_modes = tmp_i;
 
@@ -186,7 +194,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
         json_object_get_bool(obj, "enable_save_crystals", JSON_INVALID_BOOL);
     if (tmp_i == JSON_INVALID_BOOL) {
         LOG_ERROR("'enable_save_crystals' must be a boolean");
-        return 0;
+        return false;
     }
     GF.enable_save_crystals = tmp_i;
 
@@ -208,7 +216,7 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
             obj, "draw_distance_fade", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_fade' must be a number");
-            return 0;
+            return false;
         }
         GF.draw_distance_fade = value;
     } else {
@@ -220,22 +228,22 @@ static int8_t S_LoadScriptMeta(struct json_object_s *obj)
             obj, "draw_distance_max", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_max' must be a number");
-            return 0;
+            return false;
         }
         GF.draw_distance_max = value;
     } else {
         GF.draw_distance_max = 20.0f;
     }
 
-    return 1;
+    return true;
 }
 
-static int8_t S_LoadScriptGameStrings(struct json_object_s *obj)
+static bool S_LoadScriptGameStrings(struct json_object_s *obj)
 {
     struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
     if (!strings_obj) {
         LOG_ERROR("'strings' must be a dictionary");
-        return 0;
+        return false;
     }
 
     struct json_object_element_s *strings_elem = strings_obj->start;
@@ -250,15 +258,15 @@ static int8_t S_LoadScriptGameStrings(struct json_object_s *obj)
         strings_elem = strings_elem->next;
     }
 
-    return 1;
+    return true;
 }
 
-static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
+static bool GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 {
     struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
     if (!jseq_arr) {
         LOG_ERROR("level %d: 'sequence' must be a list", level_num);
-        return 0;
+        return false;
     }
 
     struct json_array_element_s *jseq_elem = jseq_arr->start;
@@ -272,14 +280,14 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         struct json_object_s *jseq_obj = json_value_as_object(jseq_elem->value);
         if (!jseq_obj) {
             LOG_ERROR("level %d: 'sequence' elements must be dictionaries");
-            return 0;
+            return false;
         }
 
         const char *type_str =
             json_object_get_string(jseq_obj, "type", JSON_INVALID_STRING);
         if (type_str == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: sequence 'type' must be a string", level_num);
-            return 0;
+            return false;
         }
 
         if (!strcmp(type_str, "start_game")) {
@@ -314,7 +322,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'fmv_path' must be a string",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = strdup(tmp_s);
 
@@ -325,7 +333,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 Memory_Alloc(sizeof(GAME_FLOW_DISPLAY_PICTURE_DATA));
             if (!data) {
                 LOG_ERROR("failed to allocate memory");
-                return 0;
+                return false;
             }
 
             const char *tmp_s = json_object_get_string(
@@ -334,12 +342,12 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'picture_path' must be a string",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             data->path = strdup(tmp_s);
             if (!data->path) {
                 LOG_ERROR("failed to allocate memory");
-                return 0;
+                return false;
             }
 
             double tmp_d =
@@ -349,7 +357,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                     "level %d, sequence %s: 'display_time' must be a positive "
                     "number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             data->display_time = tmp_d * TICKS_PER_SECOND;
             if (!data->display_time) {
@@ -366,7 +374,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -381,7 +389,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -393,7 +401,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -405,7 +413,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -417,7 +425,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -429,7 +437,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -441,7 +449,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -462,7 +470,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'audio_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
             seq->data = (void *)tmp;
 
@@ -473,7 +481,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 Memory_Alloc(sizeof(GAME_FLOW_MESH_SWAP_DATA));
             if (!swap_data) {
                 LOG_ERROR("failed to allocate memory");
-                return 0;
+                return false;
             }
 
             swap_data->object1_num = json_object_get_number_int(
@@ -482,7 +490,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'object1_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
 
             swap_data->object2_num = json_object_get_number_int(
@@ -491,7 +499,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'object2_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
 
             swap_data->mesh_num = json_object_get_number_int(
@@ -500,7 +508,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 LOG_ERROR(
                     "level %d, sequence %s: 'mesh_id' must be a number",
                     level_num, type_str);
-                return 0;
+                return false;
             }
 
             seq->data = swap_data;
@@ -510,7 +518,7 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         } else {
             LOG_ERROR("unknown sequence type %s", type_str);
-            return 0;
+            return false;
         }
 
         jseq_elem = jseq_elem->next;
@@ -521,15 +529,15 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
     seq->type = GFS_END;
     seq->data = NULL;
 
-    return 1;
+    return true;
 }
 
-static int8_t S_LoadScriptLevels(struct json_object_s *obj)
+static bool S_LoadScriptLevels(struct json_object_s *obj)
 {
     struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
     if (!jlvl_arr) {
         LOG_ERROR("'levels' must be a list");
-        return 0;
+        return false;
     }
 
     int32_t level_count = jlvl_arr->length;
@@ -537,13 +545,13 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
     GF.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
     if (!GF.levels) {
         LOG_ERROR("failed to allocate memory");
-        return 0;
+        return false;
     }
 
     SaveGame.start = Memory_Alloc(sizeof(START_INFO) * level_count);
     if (!SaveGame.start) {
         LOG_ERROR("failed to allocate memory");
-        return 0;
+        return false;
     }
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
@@ -561,7 +569,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         struct json_object_s *jlvl_obj = json_value_as_object(jlvl_elem->value);
         if (!jlvl_obj) {
             LOG_ERROR("'levels' elements must be dictionaries");
-            return 0;
+            return false;
         }
 
         const char *tmp_s;
@@ -572,43 +580,43 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
         if (tmp_i == JSON_INVALID_NUMBER) {
             LOG_ERROR("level %d: 'music' must be a number", level_num);
-            return 0;
+            return false;
         }
         cur->music = tmp_i;
 
         tmp_s = json_object_get_string(jlvl_obj, "file", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'file' must be a string", level_num);
-            return 0;
+            return false;
         }
         cur->level_file = strdup(tmp_s);
         if (!cur->level_file) {
             LOG_ERROR("failed to allocate memory");
-            return 0;
+            return false;
         }
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'title' must be a string", level_num);
-            return 0;
+            return false;
         }
         cur->level_title = strdup(tmp_s);
         if (!cur->level_title) {
             LOG_ERROR("failed to allocate memory");
-            return 0;
+            return false;
         }
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'type' must be a string", level_num);
-            return 0;
+            return false;
         }
         if (!strcmp(tmp_s, "title")) {
             cur->level_type = GFL_TITLE;
             if (GF.title_level_num != -1) {
                 LOG_ERROR(
                     "level %d: there can be only one title level", level_num);
-                return 0;
+                return false;
             }
             GF.title_level_num = level_num;
         } else if (!strcmp(tmp_s, "gym")) {
@@ -616,7 +624,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             if (GF.gym_level_num != -1) {
                 LOG_ERROR(
                     "level %d: there can be only one gym level", level_num);
-                return 0;
+                return false;
             }
             GF.gym_level_num = level_num;
         } else if (!strcmp(tmp_s, "normal")) {
@@ -631,7 +639,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             cur->level_type = GFL_CURRENT;
         } else {
             LOG_ERROR("level %d: unknown level type %s", level_num, tmp_s);
-            return 0;
+            return false;
         }
 
         tmp_i = json_object_get_bool(jlvl_obj, "demo", JSON_INVALID_BOOL);
@@ -681,7 +689,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
             json_object_get_object(jlvl_obj, "strings");
         if (!jlbl_strings_obj) {
             LOG_ERROR("level %d: 'strings' must be a dictionary", level_num);
-            return 0;
+            return false;
         } else {
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
@@ -765,7 +773,7 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
         }
 
         if (!GF_LoadLevelSequence(jlvl_obj, level_num)) {
-            return 0;
+            return false;
         }
 
         jlvl_elem = jlvl_elem->next;
@@ -775,18 +783,18 @@ static int8_t S_LoadScriptLevels(struct json_object_s *obj)
 
     if (GF.title_level_num == -1) {
         LOG_ERROR("at least one level must be of title type");
-        return 0;
+        return false;
     }
     if (GF.first_level_num == -1 || GF.last_level_num == -1) {
         LOG_ERROR("at least one level must be of normal type");
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
-static int8_t S_LoadGameFlow(const char *file_name)
+static bool S_LoadGameFlow(const char *file_name)
 {
-    int8_t result = 0;
+    bool result = false;
     struct json_value_s *root = NULL;
     MYFILE *fp = NULL;
     char *script_data = NULL;
@@ -823,7 +831,7 @@ static int8_t S_LoadGameFlow(const char *file_name)
 
     struct json_object_s *root_obj = json_value_as_object(root);
 
-    result = 1;
+    result = true;
     result &= S_LoadScriptMeta(root_obj);
     result &= S_LoadScriptGameStrings(root_obj);
     result &= S_LoadScriptLevels(root_obj);
@@ -841,9 +849,9 @@ cleanup:
     return result;
 }
 
-int8_t GF_LoadScriptFile(const char *file_name)
+bool GF_LoadScriptFile(const char *file_name)
 {
-    int8_t result = S_LoadGameFlow(file_name);
+    bool result = S_LoadGameFlow(file_name);
 
     InvItemMedi.string = GF.strings[GS_INV_ITEM_MEDI],
     InvItemBigMedi.string = GF.strings[GS_INV_ITEM_BIG_MEDI],
@@ -966,17 +974,17 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         if (T1MConfig.disable_cine
             && GF.levels[level_num].level_type == GFL_CUTSCENE) {
-            int8_t skip;
+            bool skip;
             switch (seq->type) {
             case GFS_EXIT_TO_TITLE:
             case GFS_EXIT_TO_LEVEL:
             case GFS_EXIT_TO_CINE:
             case GFS_PLAY_FMV:
             case GFS_LEVEL_STATS:
-                skip = 0;
+                skip = false;
                 break;
             default:
-                skip = 1;
+                skip = true;
                 break;
             }
             if (skip) {

@@ -7,6 +7,6 @@
 
 GAMEFLOW_OPTION
 GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
-int8_t GF_LoadScriptFile(const char *file_name);
+bool GF_LoadScriptFile(const char *file_name);
 
 #endif

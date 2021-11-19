@@ -1852,6 +1852,7 @@ typedef struct GAMEFLOW_LEVEL {
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
+    const char *main_menu_background_path;
     int32_t gym_level_num;
     int32_t first_level_num;
     int32_t last_level_num;

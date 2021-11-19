@@ -144,15 +144,13 @@ void S_AnimateTextures(int32_t ticks)
     }
 }
 
-void S_DisplayPicture(const char *file_stem)
+void S_DisplayPicture(const char *filename)
 {
-    char file_name[128];
-    strcpy(file_name, file_stem);
-    strcat(file_name, ".pcx");
-
-    PICTURE *picture = Picture_Create(file_name);
-    HWR_DownloadPicture(picture);
-    Picture_Free(picture);
+    PICTURE *picture = Picture_Create(filename);
+    if (picture) {
+        HWR_DownloadPicture(picture);
+        Picture_Free(picture);
+    }
 }
 
 void S_DrawLightningSegment(
