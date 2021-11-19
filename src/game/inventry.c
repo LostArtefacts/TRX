@@ -12,6 +12,7 @@
 #include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -52,7 +53,7 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     int32_t pass_mode_open = 0;
-    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+    phd_AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
     InvMode = inv_mode;
 
     InvNFrames = 2;
@@ -711,10 +712,10 @@ void Construct_Inventory()
         Screen_SetResolution(Screen_GetResIdx());
     }
 
-    PhdLeft = 0;
-    PhdTop = 0;
-    PhdBottom = PhdWinMaxY;
-    PhdRight = PhdWinMaxX;
+    PhdLeft = ViewPort_GetMinX();
+    PhdTop = ViewPort_GetMinY();
+    PhdBottom = ViewPort_GetMaxY();
+    PhdRight = ViewPort_GetMaxX();
 
     for (int i = 0; i < 8; i++) {
         InvExtraData[i] = 0;
@@ -821,8 +822,8 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     if (inv_item->sprlist) {
         int32_t zv = PhdMatrixPtr->_23;
         int32_t zp = zv / PhdPersp;
-        int32_t sx = PhdWinCenterX + PhdMatrixPtr->_03 / zp;
-        int32_t sy = PhdWinCenterY + PhdMatrixPtr->_13 / zp;
+        int32_t sx = ViewPort_GetCenterX() + PhdMatrixPtr->_03 / zp;
+        int32_t sy = ViewPort_GetCenterY() + PhdMatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;

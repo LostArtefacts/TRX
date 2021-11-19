@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
 
@@ -20,9 +21,10 @@ void Screen_SetupSize()
 {
     int32_t width = Screen_GetResWidth();
     int32_t height = Screen_GetResHeight();
-    int32_t x = (width - width) / 2;
-    int32_t y = (height - height) / 2;
-    phd_InitWindow(x, y, width, height);
+    ViewPort_Init(width, height);
+
+    phd_ResetMatrixStack();
+    phd_AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 }
 
 bool Screen_SetGameResIdx(int32_t idx)

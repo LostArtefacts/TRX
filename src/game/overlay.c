@@ -5,6 +5,7 @@
 #include "game/clock.h"
 #include "game/screen.h"
 #include "game/text.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -368,10 +369,11 @@ void Overlay_DrawPickups()
     old_game_timer = SaveGame.timer;
 
     if (time > 0 && time < 60) {
-        int32_t sprite_height = MIN(PhdWinWidth, PhdWinHeight * 320 / 200) / 10;
+        int32_t sprite_height =
+            MIN(ViewPort_GetWidth(), ViewPort_GetHeight() * 320 / 200) / 10;
         int32_t sprite_width = sprite_height * 4 / 3;
-        int32_t y = PhdWinHeight - sprite_height;
-        int32_t x = PhdWinWidth - sprite_height;
+        int32_t y = ViewPort_GetHeight() - sprite_height;
+        int32_t x = ViewPort_GetWidth() - sprite_height;
         for (int i = 0; i < MAX_PICKUPS; i++) {
             DISPLAYPU *pu = &m_Pickups[i];
             pu->duration -= time;
@@ -382,7 +384,7 @@ void Overlay_DrawPickups()
                     x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
-                    x = PhdWinWidth - sprite_height;
+                    x = ViewPort_GetWidth() - sprite_height;
                     y -= sprite_height;
                 } else {
                     x -= sprite_width;

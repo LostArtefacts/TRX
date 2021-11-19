@@ -5,6 +5,7 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -232,10 +233,10 @@ void S_DrawLightningSegment(
 {
     if (z1 >= phd_GetNearZ() && z1 <= phd_GetFarZ() && z2 >= phd_GetNearZ()
         && z2 <= phd_GetFarZ()) {
-        x1 = PhdWinCenterX + x1 / (z1 / PhdPersp);
-        y1 = PhdWinCenterY + y1 / (z1 / PhdPersp);
-        x2 = PhdWinCenterX + x2 / (z2 / PhdPersp);
-        y2 = PhdWinCenterY + y2 / (z2 / PhdPersp);
+        x1 = ViewPort_GetCenterX() + x1 / (z1 / PhdPersp);
+        y1 = ViewPort_GetCenterY() + y1 / (z1 / PhdPersp);
+        x2 = ViewPort_GetCenterX() + x2 / (z2 / PhdPersp);
+        y2 = ViewPort_GetCenterY() + y2 / (z2 / PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / PhdPersp);
         HWR_DrawLightningSegment(
@@ -370,18 +371,18 @@ int S_GetObjectBounds(int16_t *bptr)
         }
     }
 
-    x_min += PhdWinCenterX;
-    x_max += PhdWinCenterX;
-    y_min += PhdWinCenterY;
-    y_max += PhdWinCenterY;
+    x_min += ViewPort_GetCenterX();
+    x_max += ViewPort_GetCenterX();
+    y_min += ViewPort_GetCenterY();
+    y_max += ViewPort_GetCenterY();
 
     if (!num_z || x_min > PhdRight || y_min > PhdBottom || x_max < PhdLeft
         || y_max < PhdTop) {
         return 0; // out of screen
     }
 
-    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > PhdWinMaxX
-        || y_max > PhdWinMaxY) {
+    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > ViewPort_GetMaxX()
+        || y_max > ViewPort_GetMaxY()) {
         return -1; // clipped
     }
 

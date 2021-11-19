@@ -19,8 +19,8 @@ int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
 int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 void phd_RotateLight(int16_t pitch, int16_t yaw);
-void phd_InitWindow(int32_t x, int32_t y, int32_t width, int32_t height);
-void AlterFOV(PHD_ANGLE fov);
+void phd_ResetMatrixStack();
+void phd_AlterFOV(PHD_ANGLE fov);
 
 void phd_SetDrawDistFade(int32_t dist);
 void phd_SetDrawDistMax(int32_t dist);

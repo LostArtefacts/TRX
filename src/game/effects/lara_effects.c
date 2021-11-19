@@ -11,7 +11,7 @@ void LaraNormal(ITEM_INFO *item)
     item->anim_number = AA_STOP;
     item->frame_number = AF_STOP;
     Camera.type = CAM_CHASE;
-    AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
+    phd_AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 }
 
 void LaraHandsFree(ITEM_INFO *item)

@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/gamebuf.h"
 #include "game/screen.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/lib.h"
 #include "global/types.h"
@@ -97,7 +98,8 @@ void S_DrawScreenSprite(
     int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
     int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
     int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
+        && y1 < ViewPort_GetHeight()) {
         HWR_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
     }
 }
@@ -111,7 +113,8 @@ void S_DrawScreenSprite2d(
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < PhdWinWidth && y1 < PhdWinHeight) {
+    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
+        && y1 < ViewPort_GetHeight()) {
         HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
     }
 }

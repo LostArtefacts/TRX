@@ -3,6 +3,7 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/screen.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
@@ -404,7 +405,8 @@ void HWR_DrawSprite(
     vertices[3].b = vshade;
 
     vertex_count = 4;
-    if (x1 < 0 || y1 < 0 || x2 > PhdWinWidth || y2 > PhdWinHeight) {
+    if (x1 < 0 || y1 < 0 || x2 > ViewPort_GetWidth()
+        || y2 > ViewPort_GetHeight()) {
         vertex_count = HWR_ClipVertices2(vertex_count, vertices);
     }
 
@@ -1546,9 +1548,9 @@ int32_t HWR_ZedClipper(
 
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdWinCenterX;
+                + ViewPort_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdWinCenterY;
+                + ViewPort_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -1565,9 +1567,9 @@ int32_t HWR_ZedClipper(
         if (near_z > pts0->zv) {
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + PhdWinCenterX;
+                + ViewPort_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + PhdWinCenterY;
+                + ViewPort_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
