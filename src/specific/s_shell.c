@@ -9,7 +9,6 @@
 #include "game/shell.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
-#include "inject_util.h"
 #include "log.h"
 #include "specific/s_hwr.h"
 #include "specific/s_input.h"
@@ -232,10 +231,4 @@ void S_Shell_ExitSystemFmt(const char *fmt, ...)
     vsnprintf(message, 150, fmt, va);
     va_end(va);
     S_Shell_ExitSystem(message);
-}
-
-void S_Shell_Inject()
-{
-    INJECT(0x0043DA80, WinMain);
-    INJECT(0x0043DE00, WndProc);
 }

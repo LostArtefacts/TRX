@@ -12,10 +12,9 @@ This project is inspired by Arsunt's
 
 ## Installing
 
-1. Install the [TombATI v1.7 patch](http://www.glidos.net/tombati.html).
-2. Get a copy of the latest Tomb1Main release from
+1. Get a copy of the latest Tomb1Main release from
     [here](https://github.com/rr-/Tomb1Main/releases).
-3. Unpack the contents to your game directory. Make sure you overwrite existing
+2. Unpack the contents to your game directory. Make sure you overwrite existing
     files (Tomb1Main_config.json5 can be left alone).
 
 To play the Unfinished Business expansion pack, launch the game with `-gold`

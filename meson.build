@@ -249,10 +249,8 @@ sources = [
   'src/global/vars.c',
   'src/global/vars_platform.c',
   'src/init.c',
-  'src/inject_util.c',
   'src/json.c',
   'src/log.c',
-  'src/main.c',
   'src/memory.c',
   'src/specific/s_ati.c',
   'src/specific/s_clock.c',
@@ -270,17 +268,20 @@ sources = [
   version_res,
 ]
 
-library(
+executable(
   'Tomb1Main',
   sources,
   name_prefix: '',
+  link_with: [
+    glrage,
+  ],
   include_directories: ['src/'],
   dependencies: [
-    dep_ddraw,
     dep_dinput8,
     dep_dsound,
     dep_dxguid,
     dep_shlwapi,
     dep_winmm,
   ],
+  gui_app: true,
 )

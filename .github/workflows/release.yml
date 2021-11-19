@@ -25,7 +25,7 @@ jobs:
           make clean release
       - name: Package release
         run: |
-          7z a release.zip ./bin/tombati.exe ./bin/cfg/ ./build/Tomb1Main.dll
+          7z a release.zip ./bin/* ./build/*.dll ./build/*.exe
       - name: Create release
         id: create_release
         uses: actions/create-release@v1

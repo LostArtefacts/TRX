@@ -1,7 +1,6 @@
 #include "specific/s_ati.h"
 
 #include "global/vars_platform.h"
-#include "inject_util.h"
 #include "log.h"
 
 #include <windows.h>
@@ -31,9 +30,9 @@ C3D_EC(__stdcall **m_ATI3DCIF_RenderPrimList_lib)
 
 C3D_EC S_ATI_Init()
 {
-    m_ATIModule = LoadLibraryA("ati3dcif");
+    m_ATIModule = LoadLibraryA("glrage");
     if (!m_ATIModule) {
-        LOG_ERROR("Cannot find ati3dcif.dll");
+        LOG_ERROR("Cannot find glrage.dll");
         return C3D_EC_GENFAIL;
     }
 
