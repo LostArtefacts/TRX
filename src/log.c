@@ -2,9 +2,13 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <windows.h>
 
-void T1MLogFunc(
+void Log_Init()
+{
+    freopen("./Tomb1Main.log", "w", stdout);
+}
+
+void Log_Message(
     const char *file, int line, const char *func, const char *fmt, ...)
 {
     va_list va;
