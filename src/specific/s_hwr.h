@@ -23,7 +23,7 @@ void HWR_ClearSurfaceDepth();
 void HWR_FlipPrimaryBuffer();
 void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_FadeWait();
-void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source);
+void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target);
 void HWR_CopyPicture();
 void HWR_DownloadPicture(const PICTURE *pic);
 void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num);

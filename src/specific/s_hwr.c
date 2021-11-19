@@ -216,8 +216,9 @@ void HWR_FlipPrimaryBuffer()
     HWR_SetupRenderContextAndRender();
 }
 
-void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
+void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
+    // get source and target texture sizes
     DDSURFACEDESC source_surface_desc;
     DDSURFACEDESC target_surface_desc;
     IDirectDrawSurface_GetSurfaceDesc(source, &source_surface_desc);
@@ -230,8 +231,29 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE target, LPDIRECTDRAWSURFACE source)
     SetRect(
         &target_rect, 0, 0, target_surface_desc.dwWidth,
         target_surface_desc.dwHeight);
+
+    int32_t target_width = target_rect.right - target_rect.left;
+    int32_t target_height = target_rect.bottom - target_rect.top;
+    int32_t source_width = source_rect.right - source_rect.left;
+    int32_t source_height = source_rect.bottom - source_rect.top;
+
+    // keep aspect ratio and fit inside, adding black bars on the sides
+    const float source_ratio = source_width / (float)source_height;
+    const float target_ratio = target_width / (float)target_height;
+    int32_t new_width = source_ratio < target_ratio
+        ? target_height * source_ratio
+        : target_width;
+    int32_t new_height = source_ratio < target_ratio
+        ? target_height
+        : target_width / source_ratio;
+
+    target_rect.left += (target_width - new_width) / 2;
+    target_rect.top += (target_height - new_height) / 2;
+    target_rect.right = target_rect.left + new_width;
+    target_rect.bottom = target_rect.top + new_height;
+
     HRESULT result = IDirectDrawSurface_Blt(
-        source, &source_rect, target, &target_rect, DDBLT_WAIT, NULL);
+        target, &target_rect, source, &source_rect, DDBLT_WAIT, NULL);
     HWR_CheckError(result);
 }
 
