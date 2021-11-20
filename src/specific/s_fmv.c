@@ -14,7 +14,7 @@
 
 #include <stdbool.h>
 
-const char *FMVPaths[] = {
+const char *m_FMVPaths[] = {
     "fmv\\cafe.rpl",    "fmv\\mansion.rpl", "fmv\\snow.rpl",
     "fmv\\lift.rpl",    "fmv\\vision.rpl",  "fmv\\canyon.rpl",
     "fmv\\pyramid.rpl", "fmv\\prison.rpl",  "fmv\\end.rpl",
@@ -32,20 +32,25 @@ void S_FMV_Init()
     }
 }
 
-int32_t S_FMV_WinPlayFMV(int32_t sequence, int32_t mode)
+void S_FMV_Play(int32_t sequence)
 {
     if (T1MConfig.disable_fmv) {
-        return -1;
+        return;
     }
 
-    int32_t result = 0;
+    GameBuf_Shutdown();
+
+    Screen_SetResolution(2);
+    HWR_PrepareFMV();
+
     void *movie_context = NULL;
     void *fmv_context = NULL;
     void *sound_context = NULL;
 
     HWR_FMVInit();
 
-    if (Player_InitMovie(&movie_context, 0, 0, FMVPaths[sequence], 0x100000)) {
+    if (Player_InitMovie(
+            &movie_context, 0, 0, m_FMVPaths[sequence], 0x100000)) {
         LOG_ERROR("cannot load video");
         goto cleanup;
     }
@@ -54,18 +59,12 @@ int32_t S_FMV_WinPlayFMV(int32_t sequence, int32_t mode)
     int32_t height = Movie_GetYSize(movie_context);
     int32_t x = 0;
     int32_t y = 0;
-    int32_t tmp = 0;
-    if (mode) {
-        y = (480 - 2 * height) / 2;
-        tmp = 13;
-    } else {
-        y = 0;
-        tmp = 5;
-    }
+    int32_t flags = 13;
+    y = (480 - 2 * height) / 2;
 
     if (Player_InitVideo(
             &fmv_context, movie_context, width, height, x, y, 0, 0, 640, 480, 0,
-            1, tmp)) {
+            1, flags)) {
         LOG_ERROR("cannot init video");
         goto cleanup;
     }
@@ -97,7 +96,6 @@ int32_t S_FMV_WinPlayFMV(int32_t sequence, int32_t mode)
         goto cleanup;
     }
 
-    result = 1;
     bool keypress = false;
     int32_t total_frames = Movie_GetTotalFrames(movie_context);
     if (Player_StartTimer(movie_context)) {
@@ -127,22 +125,9 @@ int32_t S_FMV_WinPlayFMV(int32_t sequence, int32_t mode)
 
 cleanup:
     Player_ReturnPlaybackMode();
-    return result;
-}
-
-int32_t S_FMV_PlayFMV(int32_t sequence, int32_t mode)
-{
-    GameBuf_Shutdown();
-
-    Screen_SetResolution(2);
-    HWR_PrepareFMV();
-
-    int32_t ret = S_FMV_WinPlayFMV(sequence, mode);
 
     GameBuf_Init();
 
     HWR_FMVDone();
     Screen_RestoreResolution();
-
-    return ret;
 }

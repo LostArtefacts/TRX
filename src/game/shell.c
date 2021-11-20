@@ -85,7 +85,7 @@ void Shell_Main()
     SoundIsActive = Sound_Init();
     Music_Init();
     Input_Init();
-    FMVInit();
+    FMV_Init();
 
     HWR_InitialiseHardware();
 
@@ -106,11 +106,9 @@ void Shell_Main()
     S_DumpScreen();
     S_Wait(TICKS_PER_SECOND);
 
-    HWR_PrepareFMV();
-    WinPlayFMV(FMV_CORE, 1);
-    WinPlayFMV(FMV_ESCAPE, 1);
-    WinPlayFMV(FMV_INTRO, 1);
-    HWR_FMVDone();
+    FMV_Play(FMV_CORE);
+    FMV_Play(FMV_ESCAPE);
+    FMV_Play(FMV_INTRO);
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
 

@@ -1039,7 +1039,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_PLAY_FMV:
             if (level_type != GFL_SAVED) {
-                S_PlayFMV((int32_t)seq->data, 1);
+                FMV_Play((int32_t)seq->data);
             }
             break;
 

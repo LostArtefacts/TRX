@@ -2,17 +2,12 @@
 
 #include "specific/s_fmv.h"
 
-void FMVInit()
+void FMV_Init()
 {
     S_FMV_Init();
 }
 
-int32_t WinPlayFMV(int32_t sequence, int32_t mode)
+void FMV_Play(int32_t sequence)
 {
-    return S_FMV_WinPlayFMV(sequence, mode);
-}
-
-int32_t S_PlayFMV(int32_t sequence, int32_t mode)
-{
-    return S_FMV_PlayFMV(sequence, mode);
+    S_FMV_Play(sequence);
 }

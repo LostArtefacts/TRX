@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 void S_FMV_Init();
-int32_t S_FMV_WinPlayFMV(int32_t sequence, int32_t mode);
-int32_t S_FMV_PlayFMV(int32_t sequence, int32_t mode);
+void S_FMV_Play(int32_t sequence);
 
 #endif
