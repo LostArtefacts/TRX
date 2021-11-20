@@ -218,42 +218,10 @@ void HWR_FlipPrimaryBuffer()
 
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
-    // get source and target texture sizes
-    DDSURFACEDESC source_surface_desc;
-    DDSURFACEDESC target_surface_desc;
-    IDirectDrawSurface_GetSurfaceDesc(source, &source_surface_desc);
-    IDirectDrawSurface_GetSurfaceDesc(target, &target_surface_desc);
-    RECT source_rect;
-    RECT target_rect;
-    SetRect(
-        &source_rect, 0, 0, source_surface_desc.dwWidth,
-        source_surface_desc.dwHeight);
-    SetRect(
-        &target_rect, 0, 0, target_surface_desc.dwWidth,
-        target_surface_desc.dwHeight);
-
-    int32_t target_width = target_rect.right - target_rect.left;
-    int32_t target_height = target_rect.bottom - target_rect.top;
-    int32_t source_width = source_rect.right - source_rect.left;
-    int32_t source_height = source_rect.bottom - source_rect.top;
-
-    // keep aspect ratio and fit inside, adding black bars on the sides
-    const float source_ratio = source_width / (float)source_height;
-    const float target_ratio = target_width / (float)target_height;
-    int32_t new_width = source_ratio < target_ratio
-        ? target_height * source_ratio
-        : target_width;
-    int32_t new_height = source_ratio < target_ratio
-        ? target_height
-        : target_width / source_ratio;
-
-    target_rect.left += (target_width - new_width) / 2;
-    target_rect.top += (target_height - new_height) / 2;
-    target_rect.right = target_rect.left + new_width;
-    target_rect.bottom = target_rect.top + new_height;
-
-    HRESULT result = IDirectDrawSurface_Blt(
-        target, &target_rect, source, &source_rect, DDBLT_WAIT, NULL);
+    RECT rect;
+    SetRect(&rect, 0, 0, DDrawSurfaceWidth, DDrawSurfaceHeight);
+    HRESULT result =
+        IDirectDrawSurface_Blt(target, &rect, source, &rect, DDBLT_WAIT, NULL);
     HWR_CheckError(result);
 }
 
@@ -287,32 +255,26 @@ void HWR_DownloadPicture(const PICTURE *pic)
 {
     LOG_INFO("DownloadPictureHardware:");
 
+    LPDIRECTDRAWSURFACE picture_surface = NULL;
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
-    if (Surface3) {
-        result = IDirectDrawSurface_Release(Surface3);
-        HWR_CheckError(result);
-        Surface3 = NULL;
-    }
-    if (!Surface3) {
-        memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwSize = sizeof(surface_desc);
-        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.ddsCaps.dwCaps =
-            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
-        surface_desc.dwWidth = pic->width;
-        surface_desc.dwHeight = pic->height;
-        result =
-            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
-        HWR_CheckError(result);
-    }
+    // first, download the picture directly to a temporary surface
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwSize = sizeof(surface_desc);
+    surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+    surface_desc.dwWidth = pic->width;
+    surface_desc.dwHeight = pic->height;
+    result = IDirectDraw2_CreateSurface(
+        DDraw, &surface_desc, &picture_surface, NULL);
+    HWR_CheckError(result);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwSize = sizeof(surface_desc);
 
-    result =
-        IDirectDrawSurface2_Lock(Surface3, NULL, &surface_desc, DDLOCK_WAIT, 0);
+    result = IDirectDrawSurface2_Lock(
+        picture_surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
     HWR_CheckError(result);
 
     uint16_t *output_ptr = surface_desc.lpSurface;
@@ -325,8 +287,55 @@ void HWR_DownloadPicture(const PICTURE *pic)
         *output_ptr++ = (b >> 1) | (16 * g) | (r << 9);
     }
 
-    result = IDirectDrawSurface2_Unlock(Surface3, surface_desc.lpSurface);
+    result =
+        IDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
     HWR_CheckError(result);
+
+    if (!Surface3) {
+        memset(&surface_desc, 0, sizeof(surface_desc));
+        surface_desc.dwSize = sizeof(surface_desc);
+        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+        surface_desc.ddsCaps.dwCaps =
+            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        surface_desc.dwWidth = DDrawSurfaceWidth;
+        surface_desc.dwHeight = DDrawSurfaceHeight;
+        result =
+            IDirectDraw2_CreateSurface(DDraw, &surface_desc, &Surface3, NULL);
+        HWR_CheckError(result);
+    }
+
+    int32_t target_width = DDrawSurfaceWidth;
+    int32_t target_height = DDrawSurfaceHeight;
+    int32_t source_width = pic->width;
+    int32_t source_height = pic->height;
+
+    // keep aspect ratio and fit inside, adding black bars on the sides
+    const float source_ratio = source_width / (float)source_height;
+    const float target_ratio = target_width / (float)target_height;
+    int32_t new_width = source_ratio < target_ratio
+        ? target_height * source_ratio
+        : target_width;
+    int32_t new_height = source_ratio < target_ratio
+        ? target_height
+        : target_width / source_ratio;
+
+    RECT source_rect;
+    source_rect.left = 0;
+    source_rect.top = 0;
+    source_rect.right = pic->width;
+    source_rect.bottom = pic->height;
+    RECT target_rect;
+    target_rect.left = (target_width - new_width) / 2;
+    target_rect.top = (target_height - new_height) / 2;
+    target_rect.right = target_rect.left + new_width;
+    target_rect.bottom = target_rect.top + new_height;
+
+    result = IDirectDrawSurface_Blt(
+        Surface3, &target_rect, picture_surface, &source_rect, DDBLT_WAIT,
+        NULL);
+    HWR_CheckError(result);
+
+    IDirectDrawSurface_Release(picture_surface);
 
     LOG_INFO("    complete");
 }
