@@ -18,7 +18,9 @@ typedef enum {
 typedef struct MYFILE MYFILE;
 
 bool File_IsRelative(const char *path);
+bool File_Exists(const char *path);
 const char *File_GetGameDirectory();
+void File_GetFullPath(const char *path, char **out);
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode);
 size_t File_Read(void *data, size_t item_size, size_t count, MYFILE *file);
