@@ -4,9 +4,9 @@
 #include "log.h"
 #include "memory.h"
 
-static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *picture);
+static bool m_DecompPCX(const char *pcx, size_t pcx_size, PICTURE *picture);
 
-static bool DecompPCX(const char *pcx, size_t pcx_size, PICTURE *picture)
+static bool m_DecompPCX(const char *pcx, size_t pcx_size, PICTURE *picture)
 {
     PCX_HEADER *header = (PCX_HEADER *)pcx;
     picture->width = header->x_max - header->x_min + 1;
@@ -74,8 +74,9 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         return false;
     }
 
-    if (!DecompPCX(file_data, file_size, picture)) {
+    if (!m_DecompPCX(file_data, file_size, picture)) {
         LOG_ERROR("Error while decompressing PCX data for file %s", file_path);
+        Memory_Free(file_data);
         return false;
     }
 
