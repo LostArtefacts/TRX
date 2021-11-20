@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ ! -d /app/build/meson-info ]; then
+if [ ! -f /app/build/build.ninja ]; then
     if [ "$TARGET" = debug ]; then
         meson --buildtype debug /app/build/ --cross /app/docker/meson_linux_mingw32.txt
     elif [ "$TARGET" = release ]; then
