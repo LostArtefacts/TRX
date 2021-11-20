@@ -108,7 +108,7 @@ void S_DrawScreenSprite2d(
 void S_FinishInventory()
 {
     if (g_InvMode != INV_TITLE_MODE) {
-        Screen_RestoreResolution();
+        Screen_ApplyResolution();
     }
     g_ModeLock = false;
 }

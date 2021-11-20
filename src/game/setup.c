@@ -102,7 +102,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     g_Lara.item_number = NO_ITEM;
     if (level_num != g_GameFlow.title_level_num) {
-        Screen_RestoreResolution();
+        Screen_ApplyResolution();
     }
 
     if (!Level_Load(g_CurrentLevel)) {
