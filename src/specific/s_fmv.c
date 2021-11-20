@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include <windows.h>
 
-HMODULE m_PlayerModule;
+HMODULE m_PlayerModule = NULL;
 
 int32_t (*Movie_GetCurrentFrame)(void *) = NULL;
 int32_t (*Movie_GetSoundChannels)(void *) = NULL;
@@ -50,92 +50,106 @@ int32_t (*Player_ShutDownSound)(void *) = NULL;
 int32_t (*Player_ShutDownVideo)(void *) = NULL;
 int32_t (*Player_StartTimer)(void *) = NULL;
 
-void S_FMV_Init()
+bool S_FMV_Init()
 {
     m_PlayerModule = LoadLibraryA("winplay");
     if (!m_PlayerModule) {
-        S_Shell_ExitSystem("cannot find winplay.dll");
+        LOG_ERROR("cannot find winplay.dll");
+        goto fail;
     }
 
     Movie_GetCurrentFrame = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Movie_GetCurrentFrame");
     if (!Movie_GetCurrentFrame) {
-        S_Shell_ExitSystem("cannot find Movie_GetCurrentFrame");
+        LOG_ERROR("cannot find Movie_GetCurrentFrame");
+        goto fail;
     }
 
     Movie_GetSoundChannels = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Movie_GetSoundChannels");
     if (!Movie_GetSoundChannels) {
-        S_Shell_ExitSystem("cannot find Movie_GetSoundChannels");
+        LOG_ERROR("cannot find Movie_GetSoundChannels");
+        goto fail;
     }
 
     Movie_GetSoundPrecision = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Movie_GetSoundPrecision");
     if (!Movie_GetSoundPrecision) {
-        S_Shell_ExitSystem("cannot find Movie_GetSoundPrecision");
+        LOG_ERROR("cannot find Movie_GetSoundPrecision");
+        goto fail;
     }
 
     Movie_GetSoundRate = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Movie_GetSoundRate");
     if (!Movie_GetSoundRate) {
-        S_Shell_ExitSystem("cannot find Movie_GetSoundRate");
+        LOG_ERROR("cannot find Movie_GetSoundRate");
+        goto fail;
     }
 
     Movie_GetTotalFrames = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Movie_GetTotalFrames");
     if (!Movie_GetTotalFrames) {
-        S_Shell_ExitSystem("cannot find Movie_GetTotalFrames");
+        LOG_ERROR("cannot find Movie_GetTotalFrames");
+        goto fail;
     }
 
     Movie_GetXSize =
         (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Movie_GetXSize");
     if (!Movie_GetXSize) {
-        S_Shell_ExitSystem("cannot find Movie_GetXSize");
+        LOG_ERROR("cannot find Movie_GetXSize");
+        goto fail;
     }
 
     Movie_GetYSize =
         (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Movie_GetYSize");
     if (!Movie_GetYSize) {
-        S_Shell_ExitSystem("cannot find Movie_GetYSize");
+        LOG_ERROR("cannot find Movie_GetYSize");
+        goto fail;
     }
 
     Player_GetDSErrorCode =
         (int32_t(*)())GetProcAddress(m_PlayerModule, "Player_GetDSErrorCode");
     if (!Player_GetDSErrorCode) {
-        S_Shell_ExitSystem("cannot find Player_GetDSErrorCode");
+        LOG_ERROR("cannot find Player_GetDSErrorCode");
+        goto fail;
     }
 
     Player_InitMovie =
         (int32_t(*)(void *, uint32_t, uint32_t, const char *, uint32_t))
             GetProcAddress(m_PlayerModule, "Player_InitMovie");
     if (!Player_InitMovie) {
-        S_Shell_ExitSystem("cannot find Player_InitMovie");
+        LOG_ERROR("cannot find Player_InitMovie");
+        goto fail;
     }
 
     Player_InitMoviePlayback = (int32_t(*)(HWND, void *, void *))GetProcAddress(
         m_PlayerModule, "Player_InitMoviePlayback");
     if (!Player_InitMoviePlayback) {
-        S_Shell_ExitSystem("cannot find Player_InitMoviePlayback");
+        LOG_ERROR("cannot find Player_InitMoviePlayback");
+        goto fail;
     }
 
     Player_InitPlaybackMode =
         (int32_t(*)(void *, void *, uint32_t, uint32_t))GetProcAddress(
             m_PlayerModule, "Player_InitPlaybackMode");
     if (!Player_InitPlaybackMode) {
-        S_Shell_ExitSystem("cannot find Player_InitPlaybackMode");
+        LOG_ERROR("cannot find Player_InitPlaybackMode");
+        goto fail;
     }
 
     Player_InitSound = (int32_t(*)(
         void *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
         int32_t))GetProcAddress(m_PlayerModule, "Player_InitSound");
     if (!Player_InitSound) {
-        S_Shell_ExitSystem("cannot find Player_InitSound");
+        LOG_ERROR("cannot find Player_InitSound");
+        goto fail;
     }
 
     Player_InitSoundSystem = (int32_t(*)(HWND))GetProcAddress(
         m_PlayerModule, "Player_InitSoundSystem");
     if (!Player_InitSoundSystem) {
-        S_Shell_ExitSystem("cannot find Player_InitSoundSystem");
+        LOG_ERROR("cannot find Player_InitSoundSystem");
+        goto fail;
     }
 
     Player_InitVideo = (int32_t(*)(
@@ -143,70 +157,90 @@ void S_FMV_Init()
         int32_t, int32_t, int32_t, int32_t,
         int32_t))GetProcAddress(m_PlayerModule, "Player_InitVideo");
     if (!Player_InitVideo) {
-        S_Shell_ExitSystem("cannot find Player_InitVideo");
+        LOG_ERROR("cannot find Player_InitVideo");
+        goto fail;
     }
 
     Player_MapVideo = (int32_t(*)(void *, int32_t))GetProcAddress(
         m_PlayerModule, "Player_MapVideo");
     if (!Player_MapVideo) {
-        S_Shell_ExitSystem("cannot find Player_MapVideo");
+        LOG_ERROR("cannot find Player_MapVideo");
+        goto fail;
     }
 
     Player_PassInDirectDrawObject = (int32_t(*)(LPDIRECTDRAW))GetProcAddress(
         m_PlayerModule, "Player_PassInDirectDrawObject");
     if (!Player_PassInDirectDrawObject) {
-        S_Shell_ExitSystem("cannot find Player_PassInDirectDrawObject");
+        LOG_ERROR("cannot find Player_PassInDirectDrawObject");
+        goto fail;
     }
 
     Player_PlayFrame = (int32_t(*)(
         void *, void *, void *, uint32_t, void *, uint32_t, uint32_t,
         uint32_t))GetProcAddress(m_PlayerModule, "Player_PlayFrame");
     if (!Player_PlayFrame) {
-        S_Shell_ExitSystem("cannot find Player_PlayFrame");
+        LOG_ERROR("cannot find Player_PlayFrame");
+        goto fail;
     }
 
     Player_ReturnPlaybackMode = (int32_t(*)())GetProcAddress(
         m_PlayerModule, "Player_ReturnPlaybackMode");
     if (!Player_ReturnPlaybackMode) {
-        S_Shell_ExitSystem("cannot find Player_ReturnPlaybackMode");
+        LOG_ERROR("cannot find Player_ReturnPlaybackMode");
+        goto fail;
     }
 
     Player_ShutDownMovie = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Player_ShutDownMovie");
     if (!Player_ShutDownMovie) {
-        S_Shell_ExitSystem("cannot find Player_ShutDownMovie");
+        LOG_ERROR("cannot find Player_ShutDownMovie");
+        goto fail;
     }
 
     Player_ShutDownSound = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Player_ShutDownSound");
     if (!Player_ShutDownSound) {
-        S_Shell_ExitSystem("cannot find Player_ShutDownSound");
+        LOG_ERROR("cannot find Player_ShutDownSound");
+        goto fail;
     }
 
     Player_ShutDownVideo = (int32_t(*)(void *))GetProcAddress(
         m_PlayerModule, "Player_ShutDownVideo");
     if (!Player_ShutDownVideo) {
-        S_Shell_ExitSystem("cannot find Player_ShutDownVideo");
+        LOG_ERROR("cannot find Player_ShutDownVideo");
+        goto fail;
     }
 
     Player_StartTimer =
         (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Player_StartTimer");
 
     if (!Player_StartTimer) {
-        S_Shell_ExitSystem("cannot find Player_StartTimer");
+        LOG_ERROR("cannot find Player_StartTimer");
+        goto fail;
     }
     if (Player_PassInDirectDrawObject(DDraw)) {
-        S_Shell_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
+        LOG_ERROR("ERROR: Cannot initialise FMV player videosystem");
+        goto fail;
     }
     if (Player_InitSoundSystem(TombHWND)) {
         Player_GetDSErrorCode();
-        S_Shell_ExitSystem("ERROR: Cannot prepare FMV player soundsystem");
+        LOG_ERROR("ERROR: Cannot prepare FMV player soundsystem");
+        goto fail;
     }
+
+    return true;
+
+fail:
+    if (m_PlayerModule) {
+        FreeLibrary(m_PlayerModule);
+        m_PlayerModule = NULL;
+    }
+    return false;
 }
 
 void S_FMV_Play(const char *file_path)
 {
-    if (T1MConfig.disable_fmv) {
+    if (T1MConfig.disable_fmv || !m_PlayerModule) {
         return;
     }
 

@@ -2,9 +2,9 @@
 
 #include "specific/s_fmv.h"
 
-void FMV_Init()
+bool FMV_Init()
 {
-    S_FMV_Init();
+    return S_FMV_Init();
 }
 
 void FMV_Play(const char *file_path)
