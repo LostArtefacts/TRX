@@ -4,6 +4,6 @@
 #include <stdint.h>
 
 void S_FMV_Init();
-void S_FMV_Play(int32_t sequence);
+void S_FMV_Play(const char *file_path);
 
 #endif

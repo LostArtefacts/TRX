@@ -1,6 +1,7 @@
 #include "specific/s_fmv.h"
 
 #include "config.h"
+#include "filesystem.h"
 #include "game/clock.h"
 #include "game/gamebuf.h"
 #include "game/input.h"
@@ -8,6 +9,7 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/s_hwr.h"
 #include "specific/s_shell.h"
 
@@ -47,13 +49,6 @@ int32_t (*Player_ShutDownMovie)(void *) = NULL;
 int32_t (*Player_ShutDownSound)(void *) = NULL;
 int32_t (*Player_ShutDownVideo)(void *) = NULL;
 int32_t (*Player_StartTimer)(void *) = NULL;
-
-const char *m_FMVPaths[] = {
-    "fmv\\cafe.rpl",    "fmv\\mansion.rpl", "fmv\\snow.rpl",
-    "fmv\\lift.rpl",    "fmv\\vision.rpl",  "fmv\\canyon.rpl",
-    "fmv\\pyramid.rpl", "fmv\\prison.rpl",  "fmv\\end.rpl",
-    "fmv\\core.rpl",    "fmv\\escape.rpl",  NULL,
-};
 
 void S_FMV_Init()
 {
@@ -209,11 +204,14 @@ void S_FMV_Init()
     }
 }
 
-void S_FMV_Play(int32_t sequence)
+void S_FMV_Play(const char *file_path)
 {
     if (T1MConfig.disable_fmv) {
         return;
     }
+
+    char *full_path = NULL;
+    File_GetFullPath(file_path, &full_path);
 
     GameBuf_Shutdown();
 
@@ -226,8 +224,7 @@ void S_FMV_Play(int32_t sequence)
 
     HWR_FMVInit();
 
-    if (Player_InitMovie(
-            &movie_context, 0, 0, m_FMVPaths[sequence], 0x100000)) {
+    if (Player_InitMovie(&movie_context, 0, 0, full_path, 0x100000)) {
         LOG_ERROR("cannot load video");
         goto cleanup;
     }
@@ -301,10 +298,13 @@ void S_FMV_Play(int32_t sequence)
     Player_ShutDownMovie(&movie_context);
 
 cleanup:
+    if (full_path) {
+        Memory_Free(full_path);
+    }
+
     Player_ReturnPlaybackMode();
-
     GameBuf_Init();
-
     HWR_FMVDone();
+
     Screen_RestoreResolution();
 }

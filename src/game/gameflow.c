@@ -308,15 +308,15 @@ static int8_t GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         } else if (!strcmp(type_str, "play_fmv")) {
             seq->type = GFS_PLAY_FMV;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "fmv_id", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
+            const char *tmp_s = json_object_get_string(
+                jseq_obj, "fmv_path", JSON_INVALID_STRING);
+            if (tmp_s == JSON_INVALID_STRING) {
                 LOG_ERROR(
-                    "level %d, sequence %s: 'fmv_id' must be a number",
+                    "level %d, sequence %s: 'fmv_path' must be a string",
                     level_num, type_str);
                 return 0;
             }
-            seq->data = (void *)tmp;
+            seq->data = strdup(tmp_s);
 
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
@@ -1039,7 +1039,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_PLAY_FMV:
             if (level_type != GFL_SAVED) {
-                FMV_Play((int32_t)seq->data);
+                FMV_Play((char *)seq->data);
             }
             break;
 

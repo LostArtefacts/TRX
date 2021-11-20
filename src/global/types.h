@@ -802,21 +802,6 @@ typedef enum ITEM_FLAG {
     IF_KILLED_ITEM = 0x8000,
 } ITEM_FLAG;
 
-typedef enum FMV_SEQUENCE {
-    FMV_INTRO = 0,
-    FMV_GYM = 1,
-    FMV_SNOW = 2,
-    FMV_LIFT = 3,
-    FMV_VISION = 4,
-    FMV_CANYON = 5,
-    FMV_PYRAMID = 6,
-    FMV_PRISON = 7,
-    FMV_ENDSEQ = 8,
-    FMV_CORE = 9,
-    FMV_ESCAPE = 10,
-    FMV_NUMBER_OF = 11,
-} FMV_SEQUENCE;
-
 typedef enum INV_MODE {
     INV_GAME_MODE = 0,
     INV_TITLE_MODE = 1,
