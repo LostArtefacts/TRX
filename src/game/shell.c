@@ -2,6 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "args.h"
+#include "config.h"
 #include "game/clock.h"
 #include "game/demo.h"
 #include "game/game.h"
@@ -20,6 +21,7 @@
 #include "global/lib.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "init.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_display.h"
@@ -52,6 +54,10 @@ static void Shell_CalculateWibbleTable()
 void Shell_Main()
 {
     SoundIsActive = true;
+
+    Log_Init();
+    T1MInit();
+    T1MReadConfig();
 
     const char *gameflow_path = m_T1MGameflowPath;
 
