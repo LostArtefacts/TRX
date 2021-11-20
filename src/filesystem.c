@@ -22,42 +22,50 @@ const char *File_GetGameDirectory()
     return S_File_GetGameDirectory();
 }
 
+bool File_Exists(const char *path)
+{
+    FILE *fp = fopen(path, "rb");
+    if (fp) {
+        fclose(fp);
+        return true;
+    }
+    return false;
+}
+
+void File_GetFullPath(const char *path, char **out)
+{
+    if (!File_Exists(path) && File_IsRelative(path)) {
+        const char *game_path = File_GetGameDirectory();
+        if (game_path) {
+            size_t target_size = strlen(game_path) + 1 + strlen(path) + 1;
+            *out = Memory_Alloc(target_size);
+            strcpy(*out, game_path);
+            strcat(*out, "\\");
+            strcat(*out, path);
+            return;
+        }
+    }
+    *out = strdup(path);
+}
+
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
+    char *full_path = NULL;
+    File_GetFullPath(path, &full_path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     switch (mode) {
     case FILE_OPEN_WRITE:
-        file->fp = fopen(path, "wb");
+        file->fp = fopen(full_path, "wb");
         break;
     case FILE_OPEN_READ:
-        file->fp = fopen(path, "rb");
+        file->fp = fopen(full_path, "rb");
         break;
     default:
         file->fp = NULL;
         break;
     }
-    if (!file->fp && File_IsRelative(path)) {
-        const char *game_path = File_GetGameDirectory();
-        if (game_path) {
-            char new_path[S_File_GetMaxPath()];
-            if (strlen(game_path) + 1 + strlen(path) >= sizeof(new_path)) {
-                S_Shell_ExitSystem("Too long path");
-            }
-            strcpy(new_path, game_path);
-            strcat(new_path, "\\");
-            strcat(new_path, path);
-            switch (mode) {
-            case FILE_OPEN_WRITE:
-                file->fp = fopen(new_path, "wb");
-                break;
-            case FILE_OPEN_READ:
-                file->fp = fopen(new_path, "rb");
-                break;
-            default:
-                file->fp = NULL;
-                break;
-            }
-        }
+    if (full_path) {
+        Memory_Free(full_path);
     }
     if (!file->fp) {
         Memory_Free(file);
