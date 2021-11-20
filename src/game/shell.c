@@ -97,7 +97,8 @@ void Shell_Main()
     S_FrontEndCheck();
     S_ReadUserSettings();
 
-    Screen_SetResolution(2);
+    Screen_ApplyResolution();
+
     S_DisplayPicture("data\\eidospc.pcx");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
@@ -113,7 +114,6 @@ void Shell_Main()
 
     bool loop_continue = true;
     while (loop_continue) {
-        Screen_RestoreResolution();
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
         LOG_INFO("%d %d", gf_direction, gf_param);
@@ -143,7 +143,6 @@ void Shell_Main()
 
         case GF_EXIT_TO_TITLE:
             Text_RemoveAll();
-            Screen_SetResolution(2);
             S_DisplayPicture(g_GameFlow.main_menu_background_path);
             g_NoInputCount = 0;
             if (!InitialiseLevel(g_GameFlow.title_level_num, GFL_TITLE)) {

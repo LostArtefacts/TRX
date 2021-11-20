@@ -713,7 +713,7 @@ void Construct_Inventory()
 {
     S_SetupAboveWater(false);
     if (g_InvMode != INV_TITLE_MODE) {
-        Screen_SetResolution(Screen_GetResIdx());
+        Screen_ApplyResolution();
     }
 
     g_PhdLeft = ViewPort_GetMinX();

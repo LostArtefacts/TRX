@@ -98,7 +98,7 @@ void LevelStats(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    Screen_SetResolution(Screen_GetResIdx());
+    Screen_ApplyResolution();
     Text_RemoveAll();
 
     // heading
@@ -197,7 +197,7 @@ void LevelStats(int32_t level_num)
 
     g_SaveGame.start[g_CurrentLevel].available = 0;
     S_FadeToBlack();
-    Screen_RestoreResolution();
+    Screen_ApplyResolution();
 }
 
 int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)

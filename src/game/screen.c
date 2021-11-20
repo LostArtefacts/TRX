@@ -8,14 +8,8 @@
 
 #include <math.h>
 
-// The screen resolution is controlled by two variables that are indices within
-// an array of predefined screen resolutions.
-// Actual screen resolution, sometimes different from the game resolution
-// (during FMVs, main menu sequence, static pictures etc.)
-static int32_t m_HiRes = 0;
-// The resolution to render the game in. This is what gets saved in settings
-// and the like.
-static int32_t m_GameHiRes = 0;
+static int32_t m_ResolutionIdx = 0;
+static int32_t m_PendingResolutionIdx = 0;
 
 void Screen_SetupSize()
 {
@@ -27,83 +21,61 @@ void Screen_SetupSize()
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }
 
-bool Screen_SetGameResIdx(int32_t idx)
+bool Screen_SetResIdx(int32_t idx)
 {
     if (idx >= 0 && idx < RESOLUTIONS_SIZE) {
-        m_GameHiRes = idx;
+        m_PendingResolutionIdx = idx;
         return true;
     }
     return false;
 }
 
-bool Screen_SetPrevGameRes()
+bool Screen_SetPrevRes()
 {
-    if (m_GameHiRes - 1 >= 0) {
-        m_GameHiRes--;
+    if (m_PendingResolutionIdx - 1 >= 0) {
+        m_PendingResolutionIdx--;
         return true;
     }
     return false;
 }
 
-bool Screen_SetNextGameRes()
+bool Screen_SetNextRes()
 {
-    if (m_GameHiRes + 1 < RESOLUTIONS_SIZE) {
-        m_GameHiRes++;
+    if (m_PendingResolutionIdx + 1 < RESOLUTIONS_SIZE) {
+        m_PendingResolutionIdx++;
         return true;
     }
     return false;
-}
-
-int32_t Screen_GetGameResIdx()
-{
-    return m_GameHiRes;
-}
-
-int32_t Screen_GetGameResWidth()
-{
-    return g_AvailableResolutions[m_GameHiRes].width;
-}
-
-int32_t Screen_GetGameResHeight()
-{
-    return g_AvailableResolutions[m_GameHiRes].height;
 }
 
 int32_t Screen_GetResIdx()
 {
-    return m_HiRes;
+    return m_ResolutionIdx;
 }
 
 int32_t Screen_GetResWidth()
 {
-    return g_AvailableResolutions[m_HiRes].width;
+    return g_AvailableResolutions[m_ResolutionIdx].width;
 }
 
 int32_t Screen_GetResHeight()
 {
-    return g_AvailableResolutions[m_HiRes].height;
+    return g_AvailableResolutions[m_ResolutionIdx].height;
 }
 
-void Screen_SetResolution(int32_t hi_res)
+int32_t Screen_GetPendingResIdx()
 {
-    g_ModeLock = true;
-    if (hi_res == m_HiRes) {
-        return;
-    }
-
-    m_HiRes = hi_res;
-    HWR_SwitchResolution();
+    return m_PendingResolutionIdx;
 }
 
-void Screen_RestoreResolution()
+int32_t Screen_GetPendingResWidth()
 {
-    g_ModeLock = false;
-    if (m_GameHiRes == m_HiRes) {
-        return;
-    }
+    return g_AvailableResolutions[m_PendingResolutionIdx].width;
+}
 
-    m_HiRes = m_GameHiRes;
-    HWR_SwitchResolution();
+int32_t Screen_GetPendingResHeight()
+{
+    return g_AvailableResolutions[m_PendingResolutionIdx].height;
 }
 
 int32_t Screen_GetResWidthDownscaled()
@@ -144,4 +116,10 @@ int32_t Screen_GetRenderScaleGLRage(int32_t unit)
     }
 
     return round(result);
+}
+
+void Screen_ApplyResolution()
+{
+    m_ResolutionIdx = m_PendingResolutionIdx;
+    HWR_SwitchResolution();
 }
