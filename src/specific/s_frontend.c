@@ -12,7 +12,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/s_file.h"
 #include "specific/s_hwr.h"
 #include "specific/s_shell.h"
 

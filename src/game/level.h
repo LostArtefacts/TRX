@@ -5,7 +5,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-bool LoadLevel(const char *filename, int32_t level_num);
-bool S_LoadLevel(int32_t level_num);
+bool Level_Load(int32_t level_num);
 
 #endif

@@ -1,4 +1,4 @@
-#include "specific/s_file.h"
+#include "game/level.h"
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
@@ -50,7 +50,9 @@ static bool LoadDemo(MYFILE *fp);
 static bool LoadSamples(MYFILE *fp);
 static bool LoadTexturePages(MYFILE *fp);
 
-bool LoadLevel(const char *filename, int32_t level_num)
+static bool Level_LoadFromFile(const char *filename, int32_t level_num);
+
+static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 {
     int32_t version;
     int32_t file_level_num;
@@ -58,7 +60,8 @@ bool LoadLevel(const char *filename, int32_t level_num)
     GameBuf_Init();
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
-        S_Shell_ExitSystemFmt("S_LoadLevel(): Could not open %s", filename);
+        S_Shell_ExitSystemFmt(
+            "Level_LoadFromFile(): Could not open %s", filename);
         return false;
     }
 
@@ -598,10 +601,10 @@ static bool LoadTexturePages(MYFILE *fp)
     return true;
 }
 
-bool S_LoadLevel(int level_num)
+bool Level_Load(int level_num)
 {
     LOG_INFO("%d (%s)", level_num, GF.levels[level_num].level_file);
-    bool ret = LoadLevel(GF.levels[level_num].level_file, level_num);
+    bool ret = Level_LoadFromFile(GF.levels[level_num].level_file, level_num);
 
     HWR_SetWaterColor(
         GF.levels[level_num].water_color.override

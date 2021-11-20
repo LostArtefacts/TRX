@@ -43,6 +43,7 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/level.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/boat.h"
@@ -83,7 +84,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/s_file.h"
 
 #include <stddef.h>
 
@@ -104,7 +104,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         Screen_RestoreResolution();
     }
 
-    if (!S_LoadLevel(CurrentLevel)) {
+    if (!Level_Load(CurrentLevel)) {
         return 0;
     }
 
