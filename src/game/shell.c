@@ -20,7 +20,6 @@
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
-#include "global/lib.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "init.h"
@@ -79,7 +78,6 @@ void Shell_Main()
     S_Shell_SeedRandom();
     Shell_CalculateWibbleTable();
 
-    Lib_Init();
     Text_Init();
     Clock_Init();
     SoundIsActive = Sound_Init();

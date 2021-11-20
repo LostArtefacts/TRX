@@ -188,7 +188,6 @@ sources = [
   'src/game/traps/teeth_trap.c',
   'src/game/traps/thors_hammer.c',
   'src/game/viewport.c',
-  'src/global/lib.c',
   'src/global/vars.c',
   'src/global/vars_platform.c',
   'src/init.c',

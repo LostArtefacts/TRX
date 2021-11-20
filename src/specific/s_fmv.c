@@ -5,14 +5,48 @@
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/screen.h"
-#include "global/lib.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_hwr.h"
 #include "specific/s_shell.h"
 
+#include <ddraw.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <windows.h>
+
+HMODULE m_PlayerModule;
+
+int32_t (*Movie_GetCurrentFrame)(void *) = NULL;
+int32_t (*Movie_GetSoundChannels)(void *) = NULL;
+int32_t (*Movie_GetSoundPrecision)(void *) = NULL;
+int32_t (*Movie_GetSoundRate)(void *) = NULL;
+int32_t (*Movie_GetTotalFrames)(void *) = NULL;
+int32_t (*Movie_GetXSize)(void *) = NULL;
+int32_t (*Movie_GetYSize)(void *) = NULL;
+int32_t (*Player_GetDSErrorCode)() = NULL;
+int32_t (*Player_InitMovie)(
+    void *, uint32_t, uint32_t, const char *, uint32_t) = NULL;
+int32_t (*Player_InitMoviePlayback)(HWND, void *, void *) = NULL;
+int32_t (*Player_InitPlaybackMode)(void *, void *, uint32_t, uint32_t) = NULL;
+int32_t (*Player_InitSound)(
+    void *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+    int32_t) = NULL;
+int32_t (*Player_InitSoundSystem)(HWND) = NULL;
+int32_t (*Player_InitVideo)(
+    void *, void *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+    int32_t, int32_t, int32_t, int32_t, int32_t) = NULL;
+int32_t (*Player_MapVideo)(void *, int32_t) = NULL;
+int32_t (*Player_PassInDirectDrawObject)(LPDIRECTDRAW) = NULL;
+int32_t (*Player_PlayFrame)(
+    void *, void *, void *, uint32_t, void *, uint32_t, uint32_t,
+    uint32_t) = NULL;
+int32_t (*Player_ReturnPlaybackMode)() = NULL;
+int32_t (*Player_ShutDownMovie)(void *) = NULL;
+int32_t (*Player_ShutDownSound)(void *) = NULL;
+int32_t (*Player_ShutDownVideo)(void *) = NULL;
+int32_t (*Player_StartTimer)(void *) = NULL;
 
 const char *m_FMVPaths[] = {
     "fmv\\cafe.rpl",    "fmv\\mansion.rpl", "fmv\\snow.rpl",
@@ -23,6 +57,149 @@ const char *m_FMVPaths[] = {
 
 void S_FMV_Init()
 {
+    m_PlayerModule = LoadLibraryA("winplay");
+    if (!m_PlayerModule) {
+        S_Shell_ExitSystem("cannot find winplay.dll");
+    }
+
+    Movie_GetCurrentFrame = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Movie_GetCurrentFrame");
+    if (!Movie_GetCurrentFrame) {
+        S_Shell_ExitSystem("cannot find Movie_GetCurrentFrame");
+    }
+
+    Movie_GetSoundChannels = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Movie_GetSoundChannels");
+    if (!Movie_GetSoundChannels) {
+        S_Shell_ExitSystem("cannot find Movie_GetSoundChannels");
+    }
+
+    Movie_GetSoundPrecision = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Movie_GetSoundPrecision");
+    if (!Movie_GetSoundPrecision) {
+        S_Shell_ExitSystem("cannot find Movie_GetSoundPrecision");
+    }
+
+    Movie_GetSoundRate = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Movie_GetSoundRate");
+    if (!Movie_GetSoundRate) {
+        S_Shell_ExitSystem("cannot find Movie_GetSoundRate");
+    }
+
+    Movie_GetTotalFrames = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Movie_GetTotalFrames");
+    if (!Movie_GetTotalFrames) {
+        S_Shell_ExitSystem("cannot find Movie_GetTotalFrames");
+    }
+
+    Movie_GetXSize =
+        (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Movie_GetXSize");
+    if (!Movie_GetXSize) {
+        S_Shell_ExitSystem("cannot find Movie_GetXSize");
+    }
+
+    Movie_GetYSize =
+        (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Movie_GetYSize");
+    if (!Movie_GetYSize) {
+        S_Shell_ExitSystem("cannot find Movie_GetYSize");
+    }
+
+    Player_GetDSErrorCode =
+        (int32_t(*)())GetProcAddress(m_PlayerModule, "Player_GetDSErrorCode");
+    if (!Player_GetDSErrorCode) {
+        S_Shell_ExitSystem("cannot find Player_GetDSErrorCode");
+    }
+
+    Player_InitMovie =
+        (int32_t(*)(void *, uint32_t, uint32_t, const char *, uint32_t))
+            GetProcAddress(m_PlayerModule, "Player_InitMovie");
+    if (!Player_InitMovie) {
+        S_Shell_ExitSystem("cannot find Player_InitMovie");
+    }
+
+    Player_InitMoviePlayback = (int32_t(*)(HWND, void *, void *))GetProcAddress(
+        m_PlayerModule, "Player_InitMoviePlayback");
+    if (!Player_InitMoviePlayback) {
+        S_Shell_ExitSystem("cannot find Player_InitMoviePlayback");
+    }
+
+    Player_InitPlaybackMode =
+        (int32_t(*)(void *, void *, uint32_t, uint32_t))GetProcAddress(
+            m_PlayerModule, "Player_InitPlaybackMode");
+    if (!Player_InitPlaybackMode) {
+        S_Shell_ExitSystem("cannot find Player_InitPlaybackMode");
+    }
+
+    Player_InitSound = (int32_t(*)(
+        void *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+        int32_t))GetProcAddress(m_PlayerModule, "Player_InitSound");
+    if (!Player_InitSound) {
+        S_Shell_ExitSystem("cannot find Player_InitSound");
+    }
+
+    Player_InitSoundSystem = (int32_t(*)(HWND))GetProcAddress(
+        m_PlayerModule, "Player_InitSoundSystem");
+    if (!Player_InitSoundSystem) {
+        S_Shell_ExitSystem("cannot find Player_InitSoundSystem");
+    }
+
+    Player_InitVideo = (int32_t(*)(
+        void *, void *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+        int32_t, int32_t, int32_t, int32_t,
+        int32_t))GetProcAddress(m_PlayerModule, "Player_InitVideo");
+    if (!Player_InitVideo) {
+        S_Shell_ExitSystem("cannot find Player_InitVideo");
+    }
+
+    Player_MapVideo = (int32_t(*)(void *, int32_t))GetProcAddress(
+        m_PlayerModule, "Player_MapVideo");
+    if (!Player_MapVideo) {
+        S_Shell_ExitSystem("cannot find Player_MapVideo");
+    }
+
+    Player_PassInDirectDrawObject = (int32_t(*)(LPDIRECTDRAW))GetProcAddress(
+        m_PlayerModule, "Player_PassInDirectDrawObject");
+    if (!Player_PassInDirectDrawObject) {
+        S_Shell_ExitSystem("cannot find Player_PassInDirectDrawObject");
+    }
+
+    Player_PlayFrame = (int32_t(*)(
+        void *, void *, void *, uint32_t, void *, uint32_t, uint32_t,
+        uint32_t))GetProcAddress(m_PlayerModule, "Player_PlayFrame");
+    if (!Player_PlayFrame) {
+        S_Shell_ExitSystem("cannot find Player_PlayFrame");
+    }
+
+    Player_ReturnPlaybackMode = (int32_t(*)())GetProcAddress(
+        m_PlayerModule, "Player_ReturnPlaybackMode");
+    if (!Player_ReturnPlaybackMode) {
+        S_Shell_ExitSystem("cannot find Player_ReturnPlaybackMode");
+    }
+
+    Player_ShutDownMovie = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Player_ShutDownMovie");
+    if (!Player_ShutDownMovie) {
+        S_Shell_ExitSystem("cannot find Player_ShutDownMovie");
+    }
+
+    Player_ShutDownSound = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Player_ShutDownSound");
+    if (!Player_ShutDownSound) {
+        S_Shell_ExitSystem("cannot find Player_ShutDownSound");
+    }
+
+    Player_ShutDownVideo = (int32_t(*)(void *))GetProcAddress(
+        m_PlayerModule, "Player_ShutDownVideo");
+    if (!Player_ShutDownVideo) {
+        S_Shell_ExitSystem("cannot find Player_ShutDownVideo");
+    }
+
+    Player_StartTimer =
+        (int32_t(*)(void *))GetProcAddress(m_PlayerModule, "Player_StartTimer");
+
+    if (!Player_StartTimer) {
+        S_Shell_ExitSystem("cannot find Player_StartTimer");
+    }
     if (Player_PassInDirectDrawObject(DDraw)) {
         S_Shell_ExitSystem("ERROR: Cannot initialise FMV player videosystem");
     }
