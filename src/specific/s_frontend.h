@@ -5,10 +5,6 @@
 
 #include <stdint.h>
 
-void FMVInit();
-int32_t WinPlayFMV(int32_t sequence, int32_t mode);
-int32_t S_PlayFMV(int32_t sequence, int32_t mode);
-
 void S_Wait(int32_t nframes);
 
 SG_COL S_Colour(int32_t red, int32_t green, int32_t blue);

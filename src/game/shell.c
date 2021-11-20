@@ -5,6 +5,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/demo.h"
+#include "game/fmv.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"

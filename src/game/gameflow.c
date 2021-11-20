@@ -4,6 +4,7 @@
 #include "filesystem.h"
 #include "game/cinema.h"
 #include "game/control.h"
+#include "game/fmv.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/inv.h"
