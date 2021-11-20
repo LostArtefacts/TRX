@@ -104,9 +104,9 @@ void Shell_Main()
     S_DumpScreen();
     S_Wait(TICKS_PER_SECOND);
 
-    FMV_Play(FMV_CORE);
-    FMV_Play(FMV_ESCAPE);
-    FMV_Play(FMV_INTRO);
+    FMV_Play("fmv\\core.rpl");
+    FMV_Play("fmv\\escape.rpl");
+    FMV_Play("fmv\\cafe.rpl");
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
 

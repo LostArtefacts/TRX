@@ -53,7 +53,7 @@
 
             // list of actions to execute when this level is played
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 1},
+                {"type": "play_fmv", "fmv_path": "fmv\\mansion.rpl"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -80,7 +80,7 @@
             "type": "normal",
             "music": 57,
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 2},
+                {"type": "play_fmv", "fmv_path": "fmv\\snow.rpl"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -151,7 +151,7 @@
             "type": "normal",
             "music": 59,
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 3},
+                {"type": "play_fmv", "fmv_path": "fmv\\lift.rpl"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -248,7 +248,7 @@
             "type": "normal",
             "music": 59,
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 4},
+                {"type": "play_fmv", "fmv_path": "fmv\\vision.rpl"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -309,7 +309,7 @@
             "type": "normal",
             "music": 58,
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 5},
+                {"type": "play_fmv", "fmv_path": "fmv\\canyon.rpl"},
                 {"type": "start_game"},
                 {"type": "remove_scions"},
                 {"type": "remove_guns"},
@@ -331,11 +331,11 @@
             "type": "normal",
             "music": 60,
             "sequence": [
-                {"type": "play_fmv", "fmv_id": 6},
+                {"type": "play_fmv", "fmv_path": "fmv\\pyramid.rpl"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
-                {"type": "play_fmv", "fmv_id": 7},
+                {"type": "play_fmv", "fmv_path": "fmv\\prison.rpl"},
                 {"type": "exit_to_cine", "level_id": 19},
             ],
             "strings": {},
@@ -353,7 +353,7 @@
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 15},
-                {"type": "play_fmv", "fmv_id": 8},
+                {"type": "play_fmv", "fmv_path": "fmv\\end.rpl"},
                 {"type": "display_picture", "picture_path": "data\\end", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred1", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred2", "display_time": 7.5},
