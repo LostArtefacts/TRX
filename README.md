@@ -69,6 +69,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - all the strings can be translated, including keys and items
     - you no longer are constrained to 4 or 21 levels only
     - you can offer a custom Gym level
+    - you can change the main menu backdrop
 - added automatic calculation of secret numbers
 - added compass level stats
 - added ability to keep timer on in inventory
