@@ -8,6 +8,7 @@ RUN apt-get update \
         g++-mingw-w64-i686 \
         make \
         git \
+        upx \
         python3-pip \
     && python3 -m pip install \
         pyjson5 \
