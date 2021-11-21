@@ -272,9 +272,6 @@ executable(
   'Tomb1Main',
   sources,
   name_prefix: '',
-  link_with: [
-    glrage,
-  ],
   include_directories: ['src/'],
   dependencies: [
     dep_dinput8,

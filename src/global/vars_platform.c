@@ -4,6 +4,7 @@
 
 HINSTANCE TombModule;
 HWND TombHWND;
+HMODULE g_GLRage;
 
 LPDIRECTDRAW DDraw;
 float DDrawSurfaceMinX;

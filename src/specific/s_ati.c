@@ -30,7 +30,11 @@ C3D_EC(__stdcall **m_ATI3DCIF_RenderPrimList_lib)
 
 C3D_EC S_ATI_Init()
 {
-    m_ATIModule = LoadLibraryA("glrage");
+    if (!g_GLRage) {
+        g_GLRage = LoadLibrary("glrage");
+    }
+
+    m_ATIModule = g_GLRage;
     if (!m_ATIModule) {
         LOG_ERROR("Cannot find glrage.dll");
         return C3D_EC_GENFAIL;

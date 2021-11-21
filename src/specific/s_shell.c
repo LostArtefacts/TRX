@@ -28,6 +28,9 @@ static bool IsGameWindowActive = true;
 static LRESULT CALLBACK
 WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+HMODULE m_DDraw = NULL;
+HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
+
 static bool S_Shell_InitDirectDraw();
 static void S_Shell_TerminateGame(int exit_code);
 static void S_Shell_ShowFatalError(const char *message);
@@ -42,7 +45,25 @@ void S_Shell_SeedRandom()
 
 static bool S_Shell_InitDirectDraw()
 {
-    if (DirectDrawCreate(0, &DDraw, 0)) {
+    if (!g_GLRage) {
+        g_GLRage = LoadLibrary("glrage.dll");
+    }
+
+    m_DDraw = g_GLRage;
+    if (!m_DDraw) {
+        S_Shell_ShowFatalError("Cannot find glrage.dll");
+        return false;
+    }
+
+    m_DirectDrawCreate =
+        (HRESULT(*)(GUID *, LPDIRECTDRAW *, IUnknown *))GetProcAddress(
+            m_DDraw, "DirectDrawCreate");
+    if (!m_DirectDrawCreate) {
+        S_Shell_ShowFatalError("Cannot find DirectDrawCreate");
+        return false;
+    }
+
+    if (m_DirectDrawCreate(NULL, &DDraw, NULL)) {
         S_Shell_ShowFatalError("DirectDraw could not be started");
         return false;
     }

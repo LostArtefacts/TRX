@@ -42,7 +42,6 @@ HandleException()
 
 extern "C"
 {
-
     C3D_EC WINAPI ATI3DCIF_Term(void)
     {
         LOG_TRACE("");

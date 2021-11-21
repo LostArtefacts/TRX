@@ -10,6 +10,7 @@
 
 extern HINSTANCE TombModule;
 extern HWND TombHWND;
+extern HMODULE g_GLRage;
 
 extern LPDIRECTDRAW DDraw;
 extern float DDrawSurfaceMinX;

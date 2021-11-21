@@ -11,7 +11,7 @@ namespace ddraw {
 
 extern "C"
 {
-    HRESULT __declspec(dllexport) WINAPI DirectDrawCreate(GUID FAR* lpGUID,
+    HRESULT __declspec(dllexport) DirectDrawCreate(GUID FAR* lpGUID,
         LPDIRECTDRAW FAR* lplpDD,
         IUnknown FAR* pUnkOuter)
     {
