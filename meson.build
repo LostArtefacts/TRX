@@ -23,8 +23,8 @@ cpp_compiler = meson.get_compiler('cpp')
 
 is_mingw = c_compiler.get_id() == 'gcc' and host_machine.system() == 'windows'
 if is_mingw
-  add_project_link_arguments(['-static-libgcc'], language: 'c')
-  add_project_link_arguments(['-static', '-static-libgcc', '-static-libstdc++'], language: 'cpp')
+  add_project_link_arguments([], language: 'c')
+  add_project_link_arguments(['-static'], language: 'cpp')
 endif
 
 build_opts = [
