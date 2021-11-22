@@ -27,8 +27,6 @@ private:
     static const GLenum TEX_INTERNAL_FORMAT = GL_RGBA;
     static const GLenum TEX_FORMAT = GL_BGRA;
     static const GLenum TEX_TYPE = GL_UNSIGNED_SHORT_1_5_5_5_REV;
-    static const int32_t TITLE_WIDTH = 640;
-    static const int32_t TITLE_HEIGHT = 480;
 
     Context& m_context{GLRage::getContext()};
     uint32_t m_width = 0;
