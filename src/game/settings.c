@@ -217,6 +217,8 @@ static int32_t S_WriteUserSettingsT1M()
         root_obj, "ui_text_scale", T1MConfig.ui.text_scale);
     json_object_append_number_double(
         root_obj, "ui_bar_scale", T1MConfig.ui.bar_scale);
+    json_object_append_number_double(
+        root_obj, "brightness", T1MConfig.brightness);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
