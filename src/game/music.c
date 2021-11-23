@@ -1,9 +1,9 @@
 #include "game/music.h"
 
 #include "config.h"
-#include "log.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/s_audio.h"
 
 #include <stdio.h>
@@ -18,8 +18,6 @@ static void Music_StreamFinished(int sound_id, void *user_data);
 static void Music_StreamFinished(int sound_id, void *user_data)
 {
     // When a stream finishes, play the remembered background BGM.
-
-    LOG_DEBUG("%d", sound_id);
     if (sound_id == m_AudioStreamID) {
         m_AudioStreamID = -1;
         if (m_TrackLooped >= 0) {
