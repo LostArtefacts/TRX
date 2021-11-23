@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 
-typedef struct SOUND_STREAM SOUND_STREAM;
-
 bool S_Audio_Init();
 bool S_Audio_StreamPause(int stream_id);
 bool S_Audio_StreamUnpause(int stream_id);
