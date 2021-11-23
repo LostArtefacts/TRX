@@ -14,7 +14,7 @@ static int16_t m_Track = 0;
 static int16_t m_TrackLooped = -1;
 
 static void Music_StopActiveStream();
-static void Music_StreamFinished(int sound_id, void *user_data);
+static void Music_StreamFinished(int stream_id, void *user_data);
 
 static void Music_StopActiveStream()
 {
@@ -26,15 +26,15 @@ static void Music_StopActiveStream()
     // finished by itself. In cases where we end the streams early by hand,
     // we clear the finish callback in order to avoid resuming the BGM playback
     // just after we stop it.
-    S_Audio_SetStreamFinishCallback(m_AudioStreamID, NULL, NULL);
-    S_Audio_StopStreaming(m_AudioStreamID);
+    S_Audio_StreamSetFinishCallback(m_AudioStreamID, NULL, NULL);
+    S_Audio_StreamStop(m_AudioStreamID);
 }
 
-static void Music_StreamFinished(int sound_id, void *user_data)
+static void Music_StreamFinished(int stream_id, void *user_data)
 {
     // When a stream finishes, play the remembered background BGM.
 
-    if (sound_id == m_AudioStreamID) {
+    if (stream_id == m_AudioStreamID) {
         m_AudioStreamID = -1;
         if (m_TrackLooped >= 0) {
             Music_PlayLooped(m_TrackLooped);
@@ -74,7 +74,7 @@ bool Music_Play(int16_t track)
     sprintf(file_path, "music\\track%02d.flac", track);
 
     Music_StopActiveStream();
-    m_AudioStreamID = S_Audio_StartStreaming(file_path);
+    m_AudioStreamID = S_Audio_StreamCreateFromFile(file_path);
 
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
@@ -83,8 +83,8 @@ bool Music_Play(int16_t track)
 
     m_Track = track;
 
-    S_Audio_SetStreamVolume(m_AudioStreamID, m_MusicVolume);
-    S_Audio_SetStreamFinishCallback(
+    S_Audio_StreamSetVolume(m_AudioStreamID, m_MusicVolume);
+    S_Audio_StreamSetFinishCallback(
         m_AudioStreamID, Music_StreamFinished, NULL);
 
     return true;
@@ -104,17 +104,17 @@ bool Music_PlayLooped(int16_t track)
     sprintf(file_path, "music\\track%02d.flac", track);
 
     Music_StopActiveStream();
-    m_AudioStreamID = S_Audio_StartStreaming(file_path);
+    m_AudioStreamID = S_Audio_StreamCreateFromFile(file_path);
 
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
         return false;
     }
 
-    S_Audio_SetStreamVolume(m_AudioStreamID, m_MusicVolume);
-    S_Audio_SetStreamFinishCallback(
+    S_Audio_StreamSetVolume(m_AudioStreamID, m_MusicVolume);
+    S_Audio_StreamSetFinishCallback(
         m_AudioStreamID, Music_StreamFinished, NULL);
-    S_Audio_SetStreamIsLooped(m_AudioStreamID, true);
+    S_Audio_StreamSetIsLooped(m_AudioStreamID, true);
 
     m_TrackLooped = track;
 
@@ -138,7 +138,7 @@ void Music_Pause()
     if (m_AudioStreamID < 0) {
         return;
     }
-    S_Audio_PauseStreaming(m_AudioStreamID);
+    S_Audio_StreamPause(m_AudioStreamID);
 }
 
 void Music_Unpause()
@@ -146,7 +146,7 @@ void Music_Unpause()
     if (m_AudioStreamID < 0) {
         return;
     }
-    S_Audio_UnpauseStreaming(m_AudioStreamID);
+    S_Audio_StreamUnpause(m_AudioStreamID);
 }
 
 int16_t Music_CurrentTrack()
