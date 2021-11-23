@@ -265,7 +265,6 @@ sources = [
   'src/specific/s_frontend.c',
   'src/specific/s_hwr.c',
   'src/specific/s_input.c',
-  'src/specific/s_music.c',
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',
