@@ -13,7 +13,7 @@
 #define WORKING_RATE 44100
 #define WORKING_CHANNELS 2
 #define WORKING_FORMAT AUDIO_F32
-#define AUDIO_SAMPLES 10240
+#define AUDIO_SAMPLES 4410
 #define STREAM_READ_BUFFER_SIZE                                                \
     (AUDIO_SAMPLES * WORKING_CHANNELS * sizeof(float))
 
