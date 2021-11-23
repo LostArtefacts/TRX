@@ -6,8 +6,24 @@
 
 #include <stdio.h>
 
-static int m_MusicAudioStreamID = -1;
+static int m_LoopedTrack = -1;
+static int m_AudioStreamID = -1;
 static float m_MusicVolume = 0.0f;
+
+static void S_Music_StreamFinished(int sound_id, void *user_data);
+
+static void S_Music_StreamFinished(int sound_id, void *user_data)
+{
+    // When a stream finishes, play the remembered background BGM.
+
+    LOG_DEBUG("%d", sound_id);
+    if (sound_id == m_AudioStreamID) {
+        m_AudioStreamID = -1;
+        if (m_LoopedTrack >= 0) {
+            S_Music_PlayLooped(m_LoopedTrack);
+        }
+    }
+}
 
 bool S_Music_Init()
 {
@@ -22,12 +38,18 @@ bool S_Music_SetVolume(int16_t volume)
 
 bool S_Music_Pause()
 {
-    return S_Audio_PauseStreaming(m_MusicAudioStreamID);
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return S_Audio_PauseStreaming(m_AudioStreamID);
 }
 
 bool S_Music_Unpause()
 {
-    return S_Audio_UnpauseStreaming(m_MusicAudioStreamID);
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return S_Audio_UnpauseStreaming(m_AudioStreamID);
 }
 
 bool S_Music_Play(int16_t track)
@@ -35,19 +57,41 @@ bool S_Music_Play(int16_t track)
     char file_path[64];
     sprintf(file_path, "music\\track%02d.flac", track);
 
-    m_MusicAudioStreamID = S_Audio_StartStreaming(file_path);
+    if (m_AudioStreamID >= 0) {
+        // We're about to stop the currently playing track to play a new
+        // foreground track. Chances are this is the looped background music.
+        // Make sure not to execute the finish callback, otherwise it would
+        // immediately try to resume the old BGM track which we want to stop.
+        S_Audio_SetStreamFinishCallback(m_AudioStreamID, NULL, NULL);
+        S_Audio_StopStreaming(m_AudioStreamID);
+    }
 
-    if (m_MusicAudioStreamID < 0) {
+    m_AudioStreamID = S_Audio_StartStreaming(file_path);
+
+    if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
         return false;
     }
 
-    S_Audio_SetStreamVolume(m_MusicAudioStreamID, m_MusicVolume);
+    S_Audio_SetStreamVolume(m_AudioStreamID, m_MusicVolume);
+    S_Audio_SetStreamFinishCallback(
+        m_AudioStreamID, S_Music_StreamFinished, NULL);
 
+    return true;
+}
+
+bool S_Music_PlayLooped(int16_t track)
+{
+    bool ret = S_Music_Play(track);
+    m_LoopedTrack = track;
+    if (ret) {
+        ret &= S_Audio_SetStreamIsLooped(m_AudioStreamID, true);
+    }
     return true;
 }
 
 bool S_Music_Stop()
 {
-    return S_Audio_StopStreaming(m_MusicAudioStreamID);
+    m_LoopedTrack = -1;
+    return S_Audio_StopStreaming(m_AudioStreamID);
 }

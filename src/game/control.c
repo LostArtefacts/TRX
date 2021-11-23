@@ -26,6 +26,87 @@
 
 static const int32_t AnimationRate = 0x8000;
 
+static void Control_TriggerMusicTrack(
+    int16_t track, int16_t flags, int16_t type);
+
+static void Control_TriggerMusicTrack(
+    int16_t track, int16_t flags, int16_t type)
+{
+    if (track <= 1 || track >= MAX_CD_TRACKS) {
+        return;
+    }
+
+    // handle Lara gym routines
+    switch (track) {
+    case 28:
+        if ((MusicTrackFlags[track] & IF_ONESHOT)
+            && LaraItem->current_anim_state == AS_UPJUMP) {
+            track = 29;
+        }
+        break;
+
+    case 37:
+        if (LaraItem->current_anim_state != AS_HANG) {
+            return;
+        }
+        break;
+
+    case 41:
+        if (LaraItem->current_anim_state != AS_HANG) {
+            return;
+        }
+        break;
+
+    case 42:
+        if ((MusicTrackFlags[track] & IF_ONESHOT)
+            && LaraItem->current_anim_state == AS_HANG) {
+            track = 43;
+        }
+        break;
+
+    case 49:
+        if (LaraItem->current_anim_state != AS_SURFTREAD) {
+            return;
+        }
+        break;
+
+    case 50:
+        if (MusicTrackFlags[track] & IF_ONESHOT) {
+            static int16_t gym_completion_counter = 0;
+            gym_completion_counter++;
+            if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
+                LevelComplete = true;
+                gym_completion_counter = 0;
+            }
+        } else if (LaraItem->current_anim_state != AS_WATEROUT) {
+            return;
+        }
+        break;
+    }
+    // end of Lara gym routines
+
+    if (MusicTrackFlags[track] & IF_ONESHOT) {
+        return;
+    }
+
+    if (type == TT_SWITCH) {
+        MusicTrackFlags[track] ^= flags & IF_CODE_BITS;
+    } else if (type == TT_ANTIPAD) {
+        MusicTrackFlags[track] &= -1 - (flags & IF_CODE_BITS);
+    } else if (flags & IF_CODE_BITS) {
+        MusicTrackFlags[track] |= flags & IF_CODE_BITS;
+    }
+
+    if ((MusicTrackFlags[track] & IF_CODE_BITS) == IF_CODE_BITS) {
+        if (flags & IF_ONESHOT) {
+            MusicTrackFlags[track] |= IF_ONESHOT;
+        }
+        Music_Play(track);
+    } else {
+        Music_Stop();
+    }
+}
+
 void CheckCheatMode()
 {
     static int32_t cheat_mode = 0;
@@ -133,10 +214,6 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
     frame_count += AnimationRate * nframes;
     while (frame_count >= 0) {
-        if (Music_CurrentTrack() > 0) {
-            Music_Loop();
-        }
-
         CheckCheatMode();
         if (LevelComplete) {
             return GF_NOP_BREAK;
@@ -916,7 +993,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_CD:
-            TriggerCDTrack(value, flags, type);
+            Control_TriggerMusicTrack(value, flags, type);
             break;
 
         case TO_SECRET:
@@ -1383,88 +1460,6 @@ void AddRoomFlipItems(ROOM_INFO *r)
             AlterFloorHeight(item, -WALL_L * 2);
             break;
         }
-    }
-}
-
-void TriggerCDTrack(int16_t value, int16_t flags, int16_t type)
-{
-    if (value <= 1 || value >= MAX_CD_TRACKS) {
-        return;
-    }
-
-    switch (value) {
-    case 28:
-        if ((MusicTrackFlags[value] & IF_ONESHOT)
-            && LaraItem->current_anim_state == AS_UPJUMP) {
-            value = 29;
-        }
-        break;
-
-    case 37:
-        if (LaraItem->current_anim_state != AS_HANG) {
-            return;
-        }
-        break;
-
-    case 41:
-        if (LaraItem->current_anim_state != AS_HANG) {
-            return;
-        }
-        break;
-
-    case 42:
-        if ((MusicTrackFlags[value] & IF_ONESHOT)
-            && LaraItem->current_anim_state == AS_HANG) {
-            value = 43;
-        }
-        break;
-
-    case 49:
-        if (LaraItem->current_anim_state != AS_SURFTREAD) {
-            return;
-        }
-        break;
-
-    case 50:
-        if (MusicTrackFlags[value] & IF_ONESHOT) {
-            static int16_t gym_completion_counter = 0;
-            gym_completion_counter++;
-            if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
-                LevelComplete = true;
-                gym_completion_counter = 0;
-            }
-        } else if (LaraItem->current_anim_state != AS_WATEROUT) {
-            return;
-        }
-        break;
-    }
-
-    TriggerNormalCDTrack(value, flags, type);
-}
-
-void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type)
-{
-    if (MusicTrackFlags[value] & IF_ONESHOT) {
-        return;
-    }
-
-    if (type == TT_SWITCH) {
-        MusicTrackFlags[value] ^= flags & IF_CODE_BITS;
-    } else if (type == TT_ANTIPAD) {
-        MusicTrackFlags[value] &= -1 - (flags & IF_CODE_BITS);
-    } else if (flags & IF_CODE_BITS) {
-        MusicTrackFlags[value] |= flags & IF_CODE_BITS;
-    }
-
-    if ((MusicTrackFlags[value] & IF_CODE_BITS) == IF_CODE_BITS) {
-        if (flags & IF_ONESHOT) {
-            MusicTrackFlags[value] |= IF_ONESHOT;
-        }
-        if (value != Music_CurrentTrack()) {
-            Music_Play(value);
-        }
-    } else {
-        Music_Stop();
     }
 }
 

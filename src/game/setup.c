@@ -134,7 +134,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     phd_AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
 
     if (GF.levels[CurrentLevel].music) {
-        Music_Play(GF.levels[CurrentLevel].music);
+        Music_PlayLooped(GF.levels[CurrentLevel].music);
     }
     Camera.underwater = 0;
     return 1;

@@ -18,10 +18,14 @@
     (AUDIO_SAMPLES * WORKING_CHANNELS * sizeof(float))
 
 typedef struct SOUND_STREAM {
-    bool used;
-    bool playing;
-    bool read_done;
+    bool is_used;
+    bool is_playing;
+    bool is_read_done;
+    bool is_looped;
     float volume;
+
+    void (*finish_callback)(int sound_id, void *user_data);
+    void *finish_callback_user_data;
 
     struct {
         AVStream *stream;
@@ -38,11 +42,9 @@ typedef struct SOUND_STREAM {
 } SOUND_STREAM;
 
 static SDL_AudioDeviceID m_DeviceID = 0;
-
 static size_t m_WorkingBufferSize = 0;
 static float *m_WorkingBuffer = NULL;
 static Uint8 m_WorkingSilence = 0;
-
 static float m_DecodeBuffer[AUDIO_SAMPLES * WORKING_CHANNELS];
 static SOUND_STREAM m_SoundStreams[MAX_STREAM_PLAYING_SOUNDS];
 
@@ -85,6 +87,14 @@ static bool S_Audio_DecodeStreamFrame(SOUND_STREAM *stream)
     assert(stream);
 
     error_code = av_read_frame(stream->av.format_ctx, stream->av.packet);
+
+    if (error_code == AVERROR_EOF && stream->is_looped) {
+        avio_seek(stream->av.format_ctx->pb, 0, SEEK_SET);
+        avformat_seek_file(
+            stream->av.format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_FRAME);
+        return S_Audio_DecodeStreamFrame(stream);
+    }
+
     if (error_code < 0) {
         return false;
     }
@@ -108,9 +118,10 @@ static bool S_Audio_EnqueueStreamFrame(SOUND_STREAM *stream)
     while (error_code >= 0) {
         error_code =
             avcodec_receive_frame(stream->av.codec_ctx, stream->av.frame);
-        if (error_code < 0) {
+        if (error_code < 0 && error_code != AVERROR(EAGAIN)) {
             LOG_DEBUG(
-                "Got an error when decoding frame: %s", av_err2str(error_code));
+                "Got an error when decoding frame: %d, %s", error_code,
+                av_err2str(error_code));
             continue;
         }
 
@@ -132,9 +143,12 @@ static bool S_Audio_ShutdownStream(int sound_id)
         return false;
     }
 
+    SDL_LockAudioDevice(m_DeviceID);
+
+    SOUND_STREAM *stream = &m_SoundStreams[sound_id];
+
     AVPacket *packet;
     AVFrame *frame;
-    SOUND_STREAM *stream = &m_SoundStreams[sound_id];
 
     if (stream->av.codec_ctx) {
         avcodec_close(stream->av.codec_ctx);
@@ -160,16 +174,20 @@ static bool S_Audio_ShutdownStream(int sound_id)
     stream->av.stream = NULL;
     stream->av.codec = NULL;
 
-    // SDL_LockAudioDevice(m_DeviceID);
     if (stream->sdl.stream) {
         SDL_FreeAudioStream(stream->sdl.stream);
         stream->sdl.stream = NULL;
     }
+
+    stream->is_read_done = true;
+    stream->is_used = false;
+    stream->is_playing = false;
+    stream->is_looped = false;
     SDL_UnlockAudioDevice(m_DeviceID);
 
-    stream->read_done = true;
-    stream->used = false;
-    stream->playing = false;
+    if (stream->finish_callback) {
+        stream->finish_callback(sound_id, stream->finish_callback_user_data);
+    }
 
     return true;
 }
@@ -181,6 +199,8 @@ static bool S_Audio_InitializeStreamFromPath(
     if (!m_DeviceID || sound_id < 0 || sound_id >= MAX_STREAM_PLAYING_SOUNDS) {
         return false;
     }
+
+    SDL_LockAudioDevice(m_DeviceID);
 
     int32_t error_code;
     char *full_path = NULL;
@@ -264,15 +284,18 @@ static bool S_Audio_InitializeStreamFromPath(
     int32_t sdl_sample_rate = stream->av.codec_ctx->sample_rate;
     int32_t sdl_channels = stream->av.codec_ctx->channels;
 
-    stream->read_done = false;
-    stream->used = true;
-    stream->playing = true;
+    stream->is_read_done = false;
+    stream->is_used = true;
+    stream->is_playing = true;
+    stream->is_looped = false;
+    stream->finish_callback = NULL;
 
     stream->sdl.stream = SDL_NewAudioStream(
         sdl_format, sdl_channels, sdl_sample_rate, WORKING_FORMAT, sdl_channels,
         WORKING_RATE);
 
     S_Audio_EnqueueStreamFrame(stream);
+    SDL_UnlockAudioDevice(m_DeviceID);
 
     return true;
 
@@ -287,6 +310,7 @@ fail:
         full_path = NULL;
     }
 
+    SDL_UnlockAudioDevice(m_DeviceID);
     return false;
 }
 
@@ -296,18 +320,18 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
 
     memset(m_WorkingBuffer, m_WorkingSilence, len);
 
-    for (int i = 0; i < MAX_STREAM_PLAYING_SOUNDS; i++) {
-        SOUND_STREAM *stream = &m_SoundStreams[i];
-        if (!stream->playing) {
+    for (int sound_id = 0; sound_id < MAX_STREAM_PLAYING_SOUNDS; sound_id++) {
+        SOUND_STREAM *stream = &m_SoundStreams[sound_id];
+        if (!stream->is_playing) {
             continue;
         }
 
         while ((SDL_AudioStreamAvailable(stream->sdl.stream) < len)
-               && !stream->read_done) {
+               && !stream->is_read_done) {
             if (S_Audio_DecodeStreamFrame(stream)) {
                 S_Audio_EnqueueStreamFrame(stream);
             } else {
-                stream->read_done = true;
+                stream->is_read_done = true;
             }
         }
 
@@ -316,44 +340,41 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
             stream->sdl.stream, m_DecodeBuffer, STREAM_READ_BUFFER_SIZE);
         if (gotten < 0) {
             LOG_ERROR("Error reading from sdl.stream: %s", SDL_GetError());
-            stream->playing = false;
-            stream->used = false;
-            stream->read_done = true;
-            continue;
+            stream->is_playing = false;
+            stream->is_used = false;
+            stream->is_read_done = true;
         } else if (gotten == 0) {
-            // legit end of stream
-            stream->playing = false;
-            stream->used = false;
-            stream->read_done = true;
-        }
+            // legit end of stream. looping is handled in
+            // S_Audio_DecodeStreamFrame
+            stream->is_playing = false;
+            stream->is_used = false;
+            stream->is_read_done = true;
+        } else {
+            int samples_gotten = gotten
+                / (stream->av.codec_ctx->channels * sizeof(m_DecodeBuffer[0]));
 
-        int samples_gotten = gotten
-            / (stream->av.codec_ctx->channels * sizeof(m_DecodeBuffer[0]));
+            for (int s = 0; s < samples_gotten; s++) {
+                int stream_idx = s * WORKING_CHANNELS;
+                int decode_idx = s * stream->av.codec_ctx->channels;
 
-        for (int s = 0; s < samples_gotten; s++) {
-            int stream_idx = s * WORKING_CHANNELS;
-            int decode_idx = s * stream->av.codec_ctx->channels;
-
-            float pan = 0.0f;
-            if (stream->av.codec_ctx->channels == 1) {
-                float data = m_DecodeBuffer[decode_idx] * stream->volume;
-                m_WorkingBuffer[stream_idx] +=
-                    data * S_Audio_InverseLerp(1.0f, 0.0f, pan);
-                m_WorkingBuffer[stream_idx + 1] +=
-                    data * S_Audio_InverseLerp(-1.0f, 0.0f, pan);
-            } else {
-                m_WorkingBuffer[stream_idx] +=
-                    m_DecodeBuffer[decode_idx] * stream->volume;
-                m_WorkingBuffer[stream_idx + 1] +=
-                    m_DecodeBuffer[decode_idx + 1] * stream->volume;
+                float pan = 0.0f;
+                if (stream->av.codec_ctx->channels == 1) {
+                    float data = m_DecodeBuffer[decode_idx] * stream->volume;
+                    m_WorkingBuffer[stream_idx] +=
+                        data * S_Audio_InverseLerp(1.0f, 0.0f, pan);
+                    m_WorkingBuffer[stream_idx + 1] +=
+                        data * S_Audio_InverseLerp(-1.0f, 0.0f, pan);
+                } else {
+                    m_WorkingBuffer[stream_idx] +=
+                        m_DecodeBuffer[decode_idx] * stream->volume;
+                    m_WorkingBuffer[stream_idx + 1] +=
+                        m_DecodeBuffer[decode_idx + 1] * stream->volume;
+                }
             }
         }
-    }
 
-    for (int i = 0; i < MAX_STREAM_PLAYING_SOUNDS; i++) {
-        SOUND_STREAM *stream = &m_SoundStreams[i];
-        if (!stream->used) {
-            S_Audio_ShutdownStream(i);
+        if (!stream->is_used) {
+            S_Audio_ShutdownStream(sound_id);
         }
     }
 
@@ -369,12 +390,13 @@ bool S_Audio_Init()
         return false;
     }
 
-    for (int i = 0; i < MAX_STREAM_PLAYING_SOUNDS; i++) {
-        SOUND_STREAM *stream = &m_SoundStreams[i];
-        stream->playing = false;
-        stream->read_done = true;
+    for (int sound_id = 0; sound_id < MAX_STREAM_PLAYING_SOUNDS; sound_id++) {
+        SOUND_STREAM *stream = &m_SoundStreams[sound_id];
+        stream->is_playing = false;
+        stream->is_read_done = true;
         stream->volume = 0.0;
         stream->sdl.stream = NULL;
+        stream->finish_callback = NULL;
     }
 
     SDL_AudioSpec desired;
@@ -417,9 +439,9 @@ bool S_Audio_PauseStreaming(int sound_id)
         return false;
     }
 
-    if (m_SoundStreams[sound_id].playing) {
+    if (m_SoundStreams[sound_id].is_playing) {
         SDL_LockAudioDevice(m_DeviceID);
-        m_SoundStreams[sound_id].playing = false;
+        m_SoundStreams[sound_id].is_playing = false;
         SDL_UnlockAudioDevice(m_DeviceID);
     }
 
@@ -433,9 +455,9 @@ bool S_Audio_UnpauseStreaming(int sound_id)
         return false;
     }
 
-    if (!m_SoundStreams[sound_id].playing) {
+    if (!m_SoundStreams[sound_id].is_playing) {
         SDL_LockAudioDevice(m_DeviceID);
-        m_SoundStreams[sound_id].playing = true;
+        m_SoundStreams[sound_id].is_playing = true;
         SDL_UnlockAudioDevice(m_DeviceID);
     }
 
@@ -445,17 +467,17 @@ bool S_Audio_UnpauseStreaming(int sound_id)
 int S_Audio_StartStreaming(const char *file_path)
 {
     LOG_DEBUG("%s", file_path);
-    for (int i = 0; i < MAX_STREAM_PLAYING_SOUNDS; i++) {
-        SOUND_STREAM *stream = &m_SoundStreams[i];
-        if (stream->used) {
+    for (int sound_id = 0; sound_id < MAX_STREAM_PLAYING_SOUNDS; sound_id++) {
+        SOUND_STREAM *stream = &m_SoundStreams[sound_id];
+        if (stream->is_used) {
             continue;
         }
 
-        if (!S_Audio_InitializeStreamFromPath(i, file_path)) {
+        if (!S_Audio_InitializeStreamFromPath(sound_id, file_path)) {
             return -1;
         }
 
-        return i;
+        return sound_id;
     }
 
     return -1;
@@ -468,7 +490,6 @@ bool S_Audio_StopStreaming(int sound_id)
         return false;
     }
 
-    SDL_LockAudioDevice(m_DeviceID);
     S_Audio_ShutdownStream(sound_id);
     return true;
 }
@@ -481,6 +502,43 @@ bool S_Audio_SetStreamVolume(int sound_id, float volume)
     }
 
     m_SoundStreams[sound_id].volume = volume;
+
+    return true;
+}
+
+bool S_Audio_IsStreamLooped(int sound_id)
+{
+    LOG_DEBUG("%d", sound_id);
+    if (!m_DeviceID || sound_id < 0 || sound_id >= MAX_STREAM_PLAYING_SOUNDS) {
+        return false;
+    }
+
+    return m_SoundStreams[sound_id].is_looped;
+}
+
+bool S_Audio_SetStreamIsLooped(int sound_id, bool is_looped)
+{
+    LOG_DEBUG("%d %d", sound_id, is_looped);
+    if (!m_DeviceID || sound_id < 0 || sound_id >= MAX_STREAM_PLAYING_SOUNDS) {
+        return false;
+    }
+
+    m_SoundStreams[sound_id].is_looped = is_looped;
+
+    return true;
+}
+
+bool S_Audio_SetStreamFinishCallback(
+    int sound_id, void (*callback)(int sound_id, void *user_data),
+    void *user_data)
+{
+    LOG_DEBUG("%d %p", sound_id, callback);
+    if (!m_DeviceID || sound_id < 0 || sound_id >= MAX_STREAM_PLAYING_SOUNDS) {
+        return false;
+    }
+
+    m_SoundStreams[sound_id].finish_callback = callback;
+    m_SoundStreams[sound_id].finish_callback_user_data = user_data;
 
     return true;
 }

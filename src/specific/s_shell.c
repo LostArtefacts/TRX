@@ -181,11 +181,6 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 
-    // TODO: make looped music tracks work with SDL
-    case MM_MCINOTIFY:
-        Music_PlayLooped();
-        return 0;
-
     default:
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }

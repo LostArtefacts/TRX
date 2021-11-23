@@ -5,7 +5,6 @@
 #include "global/vars.h"
 #include "specific/s_music.h"
 
-static bool m_Loop = false;
 static int16_t m_Track = 0;
 static int16_t m_TrackLooped = 0;
 
@@ -16,6 +15,10 @@ bool Music_Init()
 
 bool Music_Play(int16_t track)
 {
+    if (track == Music_CurrentTrack()) {
+        return false;
+    }
+
     if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
         return false;
     }
@@ -23,12 +26,6 @@ bool Music_Play(int16_t track)
     if (track <= 1) {
         return false;
     }
-
-    if (track >= 57) {
-        m_TrackLooped = track;
-    }
-
-    m_Loop = false;
 
     if (T1MConfig.fix_secrets_killing_music && track == 13) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
@@ -47,24 +44,15 @@ bool Music_Play(int16_t track)
     return S_Music_Play(track);
 }
 
-void Music_PlayLooped()
+void Music_PlayLooped(int16_t track)
 {
-    if (m_Loop && m_TrackLooped > 0) {
-        S_Music_Play(m_TrackLooped);
-    }
+    S_Music_PlayLooped(track);
 }
 
 bool Music_Stop()
 {
     m_Track = 0;
-    m_TrackLooped = 0;
-    m_Loop = false;
     return S_Music_Stop();
-}
-
-void Music_Loop()
-{
-    m_Loop = true;
 }
 
 void Music_SetVolume(int16_t volume)

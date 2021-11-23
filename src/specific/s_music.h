@@ -10,5 +10,6 @@ bool S_Music_Stop();
 bool S_Music_SetVolume(int16_t volume);
 bool S_Music_Pause();
 bool S_Music_Unpause();
+bool S_Music_PlayLooped(int16_t track);
 
 #endif
