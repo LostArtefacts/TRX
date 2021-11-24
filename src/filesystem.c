@@ -130,15 +130,18 @@ bool File_Load(const char *path, char **output_data, size_t *output_size)
     }
 
     size_t data_size = File_Size(fp);
-    char *data = Memory_Alloc(data_size);
+    char *data = Memory_Alloc(data_size + 1);
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
         LOG_ERROR("Can't read file %s", path);
         Memory_Free(data);
         return false;
     }
     File_Close(fp);
+    data[data_size] = '\0';
 
     *output_data = data;
-    *output_size = data_size;
+    if (output_size) {
+        *output_size = data_size;
+    }
     return true;
 }

@@ -57,7 +57,7 @@ void Shell_Main()
 
     Log_Init();
     T1MInit();
-    T1MReadConfig();
+    Config_Read();
 
     const char *gameflow_path = m_T1MGameflowPath;
 

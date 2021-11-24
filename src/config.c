@@ -107,23 +107,23 @@ static int8_t ReadBarColor(
     return default_value;
 }
 
-int8_t T1MReadConfigFromJson(const char *cfg_data)
+bool Config_ReadFromJson(const char *cfg_data)
 {
-    int8_t result = 0;
+    bool result = false;
     struct json_value_s *root;
     struct json_parse_result_s parse_result;
 
     root = json_parse_ex(
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
         &parse_result);
-    if (!root) {
+    if (root) {
+        result = true;
+    } else {
         LOG_ERROR(
             "failed to parse config file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no);
         // continue to supply the default values
-    } else {
-        result = 1;
     }
 
     struct json_object_s *root_obj = json_value_as_object(root);
@@ -179,28 +179,18 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     return result;
 }
 
-int8_t T1MReadConfig()
+bool Config_Read()
 {
-    int8_t result = 0;
-    MYFILE *fp = NULL;
+    bool result = false;
     char *cfg_data = NULL;
 
-    fp = File_Open(m_T1MGlobalSettingsPath, FILE_OPEN_READ);
-    if (!fp) {
+    if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
         LOG_ERROR("Failed to open file '%s'", m_T1MGlobalSettingsPath);
-        result = T1MReadConfigFromJson("");
+        result = Config_ReadFromJson("");
         goto cleanup;
     }
 
-    size_t cfg_data_size = File_Size(fp);
-
-    cfg_data = Memory_Alloc(cfg_data_size + 1);
-    File_Read(cfg_data, 1, cfg_data_size, fp);
-    cfg_data[cfg_data_size] = '\0';
-    File_Close(fp);
-    fp = NULL;
-
-    result = T1MReadConfigFromJson(cfg_data);
+    result = Config_ReadFromJson(cfg_data);
 
     if (g_Config.resolution_width > 0) {
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
@@ -215,9 +205,6 @@ int8_t T1MReadConfig()
     }
 
 cleanup:
-    if (fp) {
-        File_Close(fp);
-    }
     if (cfg_data) {
         Memory_Free(cfg_data);
     }

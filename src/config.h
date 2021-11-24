@@ -97,7 +97,7 @@ typedef struct {
 
 extern CONFIG g_Config;
 
-int8_t T1MReadConfigFromJson(const char *json);
-int8_t T1MReadConfig();
+bool Config_ReadFromJson(const char *json);
+bool Config_Read();
 
 #endif
