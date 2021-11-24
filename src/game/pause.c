@@ -1,5 +1,6 @@
 #include "game/pause.h"
 
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/requester.h"

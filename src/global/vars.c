@@ -54,7 +54,6 @@ int32_t g_RandTable[WIBBLE_SIZE] = { 0 };
 RGB888 g_GamePalette[256] = { 0 };
 bool g_ModeLock = false;
 
-GAMEFLOW g_GameFlow = { 0 };
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
 CAMERA_INFO g_Camera = { 0 };

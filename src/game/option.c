@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/game.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/music.h"

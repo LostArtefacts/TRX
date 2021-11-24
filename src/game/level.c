@@ -5,6 +5,7 @@
 #include "filesystem.h"
 #include "game/control.h"
 #include "game/gamebuf.h"
+#include "game/gameflow.h"
 #include "game/items.h"
 #include "game/setup.h"
 #include "game/sound.h"

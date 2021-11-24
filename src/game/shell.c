@@ -86,7 +86,7 @@ void Shell_Main()
 
     HWR_InitialiseHardware();
 
-    if (!GF_LoadScriptFile(gameflow_path)) {
+    if (!GameFlow_LoadFromFile(gameflow_path)) {
         S_Shell_ExitSystem("MAIN: unable to load script file");
         return;
     }
@@ -118,17 +118,17 @@ void Shell_Main()
 
         switch (gf_direction) {
         case GF_START_GAME:
-            gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
             break;
 
         case GF_START_SAVED_GAME:
             S_LoadGame(&g_SaveGame, gf_param);
             gf_option =
-                GF_InterpretSequence(g_SaveGame.current_level, GFL_SAVED);
+                GameFlow_InterpretSequence(g_SaveGame.current_level, GFL_SAVED);
             break;
 
         case GF_START_CINE:
-            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE);
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:

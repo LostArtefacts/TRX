@@ -25,25 +25,25 @@
 #include <limits.h>
 #include <string.h>
 
-typedef struct {
+typedef struct ENUM_TO_STRING {
     const char *str;
     const int32_t val;
-} EnumToString;
+} ENUM_TO_STRING;
 
-typedef struct GAME_FLOW_DISPLAY_PICTURE_DATA {
+typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
     char *path;
     int32_t display_time;
-} GAME_FLOW_DISPLAY_PICTURE_DATA;
+} GAMEFLOW_DISPLAY_PICTURE_DATA;
 
-typedef struct GAME_FLOW_MESH_SWAP_DATA {
+typedef struct GAMEFLOW_MESH_SWAP_DATA {
     int32_t object1_num;
     int32_t object2_num;
     int32_t mesh_num;
-} GAME_FLOW_MESH_SWAP_DATA;
+} GAMEFLOW_MESH_SWAP_DATA;
 
 static GAME_STRING_ID StringToGameStringID(const char *str)
 {
-    static const EnumToString map[] = {
+    static const ENUM_TO_STRING map[] = {
         { "HEADING_INVENTORY", GS_HEADING_INVENTORY },
         { "HEADING_GAME_OVER", GS_HEADING_GAME_OVER },
         { "HEADING_OPTION", GS_HEADING_OPTION },
@@ -142,7 +142,7 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
         { NULL, 0 },
     };
 
-    const EnumToString *current = &map[0];
+    const ENUM_TO_STRING *current = &map[0];
     while (current->str) {
         if (!strcmp(str, current->str)) {
             return current->val;
@@ -152,7 +152,9 @@ static GAME_STRING_ID StringToGameStringID(const char *str)
     return -1;
 }
 
-static bool S_LoadScriptMeta(struct json_object_s *obj)
+GAMEFLOW g_GameFlow = { 0 };
+
+static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
 {
     const char *tmp_s;
     int tmp_i;
@@ -236,7 +238,7 @@ static bool S_LoadScriptMeta(struct json_object_s *obj)
     return true;
 }
 
-static bool S_LoadScriptGameStrings(struct json_object_s *obj)
+static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
 {
     struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
     if (!strings_obj) {
@@ -259,7 +261,8 @@ static bool S_LoadScriptGameStrings(struct json_object_s *obj)
     return true;
 }
 
-static bool GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
+static bool GameFlow_LoadLevelSequence(
+    struct json_object_s *obj, int32_t level_num)
 {
     struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
     if (!jseq_arr) {
@@ -327,8 +330,8 @@ static bool GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
 
-            GAME_FLOW_DISPLAY_PICTURE_DATA *data =
-                Memory_Alloc(sizeof(GAME_FLOW_DISPLAY_PICTURE_DATA));
+            GAMEFLOW_DISPLAY_PICTURE_DATA *data =
+                Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
             if (!data) {
                 LOG_ERROR("failed to allocate memory");
                 return false;
@@ -475,8 +478,8 @@ static bool GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         } else if (!strcmp(type_str, "mesh_swap")) {
             seq->type = GFS_MESH_SWAP;
 
-            GAME_FLOW_MESH_SWAP_DATA *swap_data =
-                Memory_Alloc(sizeof(GAME_FLOW_MESH_SWAP_DATA));
+            GAMEFLOW_MESH_SWAP_DATA *swap_data =
+                Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
             if (!swap_data) {
                 LOG_ERROR("failed to allocate memory");
                 return false;
@@ -530,7 +533,7 @@ static bool GF_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
     return true;
 }
 
-static bool S_LoadScriptLevels(struct json_object_s *obj)
+static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
 {
     struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
     if (!jlvl_arr) {
@@ -770,7 +773,7 @@ static bool S_LoadScriptLevels(struct json_object_s *obj)
             }
         }
 
-        if (!GF_LoadLevelSequence(jlvl_obj, level_num)) {
+        if (!GameFlow_LoadLevelSequence(jlvl_obj, level_num)) {
             return false;
         }
 
@@ -790,7 +793,7 @@ static bool S_LoadScriptLevels(struct json_object_s *obj)
     return true;
 }
 
-static bool S_LoadGameFlow(const char *file_name)
+static bool GameFlow_LoadFromFileImpl(const char *file_name)
 {
     bool result = false;
     struct json_value_s *root = NULL;
@@ -830,9 +833,9 @@ static bool S_LoadGameFlow(const char *file_name)
     struct json_object_s *root_obj = json_value_as_object(root);
 
     result = true;
-    result &= S_LoadScriptMeta(root_obj);
-    result &= S_LoadScriptGameStrings(root_obj);
-    result &= S_LoadScriptLevels(root_obj);
+    result &= GameFlow_LoadScriptMeta(root_obj);
+    result &= GameFlow_LoadScriptGameStrings(root_obj);
+    result &= GameFlow_LoadScriptLevels(root_obj);
 
 cleanup:
     if (fp) {
@@ -847,9 +850,9 @@ cleanup:
     return result;
 }
 
-bool GF_LoadScriptFile(const char *file_name)
+bool GameFlow_LoadFromFile(const char *file_name)
 {
-    bool result = S_LoadGameFlow(file_name);
+    bool result = GameFlow_LoadFromFileImpl(file_name);
 
     g_InvItemMedi.string = g_GameFlow.strings[GS_INV_ITEM_MEDI],
     g_InvItemBigMedi.string = g_GameFlow.strings[GS_INV_ITEM_BIG_MEDI],
@@ -961,7 +964,7 @@ static void FixPyramidSecretTrigger()
 }
 
 GAMEFLOW_OPTION
-GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     LOG_INFO("%d", level_num);
 
@@ -1055,7 +1058,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
-                GAME_FLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Screen_SetResolution(2);
                 S_DisplayPicture(data->path);
                 S_InitialisePolyList();
@@ -1117,7 +1120,7 @@ GF_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_MESH_SWAP: {
-            GAME_FLOW_MESH_SWAP_DATA *swap_data = seq->data;
+            GAMEFLOW_MESH_SWAP_DATA *swap_data = seq->data;
             int16_t *temp;
 
             temp = g_Meshes

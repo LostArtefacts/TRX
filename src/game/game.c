@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/savegame.h"

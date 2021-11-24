@@ -4,6 +4,7 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/demo.h"
+#include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/input.h"
 #include "game/inv.h"

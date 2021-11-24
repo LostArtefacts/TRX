@@ -1,6 +1,7 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
+#include "game/gameflow.h"
 #include "game/items.h"
 #include "game/overlay.h"
 #include "game/text.h"

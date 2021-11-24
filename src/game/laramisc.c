@@ -6,6 +6,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/splash.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"

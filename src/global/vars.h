@@ -47,7 +47,6 @@ extern int32_t g_FPSCounter;
 
 extern void (*g_EffectRoutines[])(ITEM_INFO *item);
 
-extern GAMEFLOW g_GameFlow;
 extern LARA_INFO g_Lara;
 extern ITEM_INFO *g_LaraItem;
 extern CAMERA_INFO g_Camera;

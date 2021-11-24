@@ -1,5 +1,6 @@
 #include "specific/s_display.h"
 
+#include "game/gameflow.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "specific/s_hwr.h"

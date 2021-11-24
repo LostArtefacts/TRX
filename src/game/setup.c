@@ -39,6 +39,7 @@
 #include "game/effects/twinkle.h"
 #include "game/effects/waterfall.h"
 #include "game/gamebuf.h"
+#include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/items.h"
