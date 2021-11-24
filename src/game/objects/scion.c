@@ -125,8 +125,8 @@ void Scion3Control(int16_t item_num)
     }
 
     counter++;
-    if (counter == FRAMES_PER_SECOND * 3) {
-        RemoveActiveItem(item_num);
+    if (counter >= FRAMES_PER_SECOND * 3) {
+        KillItem(item_num);
     }
 }
 
