@@ -16,10 +16,10 @@
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_MAX_TEXT_LENGTH 50
 
-static TEXTSTRING *PausedText = NULL;
+static TEXTSTRING *m_PausedText = NULL;
 
-static char PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
-static REQUEST_INFO PauseRequester = {
+static char m_PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
+static REQUEST_INFO m_PauseRequester = {
     .items = 0,
     .requested = 0,
     .vis_lines = 0,
@@ -32,7 +32,7 @@ static REQUEST_INFO PauseRequester = {
     .z = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &PauseStrings[0][0],
+    .item_texts = &m_PauseStrings[0][0],
     .item_text_len = PAUSE_MAX_TEXT_LENGTH,
     0,
 };
@@ -46,16 +46,16 @@ static int32_t PauseLoop();
 
 static void RemovePausedText()
 {
-    Text_Remove(PausedText);
-    PausedText = NULL;
+    Text_Remove(m_PausedText);
+    m_PausedText = NULL;
 }
 
 static void DisplayPausedText()
 {
-    if (PausedText == NULL) {
-        PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
-        Text_CentreH(PausedText, 1);
-        Text_AlignBottom(PausedText, 1);
+    if (m_PausedText == NULL) {
+        m_PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
+        Text_CentreH(m_PausedText, 1);
+        Text_AlignBottom(m_PausedText, 1);
     }
 }
 
@@ -65,19 +65,19 @@ static int32_t DisplayPauseRequester(
 {
     static int8_t is_pause_text_ready = 0;
     if (!is_pause_text_ready) {
-        InitRequester(&PauseRequester);
-        SetRequesterSize(&PauseRequester, 2, -48);
-        PauseRequester.requested = requested;
-        SetRequesterHeading(&PauseRequester, header);
-        AddRequesterItem(&PauseRequester, option1, 0);
-        AddRequesterItem(&PauseRequester, option2, 0);
+        InitRequester(&m_PauseRequester);
+        SetRequesterSize(&m_PauseRequester, 2, -48);
+        m_PauseRequester.requested = requested;
+        SetRequesterHeading(&m_PauseRequester, header);
+        AddRequesterItem(&m_PauseRequester, option1, 0);
+        AddRequesterItem(&m_PauseRequester, option2, 0);
 
         is_pause_text_ready = 1;
         g_InputDB = (INPUT_STATE) { 0 };
         g_Input = (INPUT_STATE) { 0 };
     }
 
-    int select = DisplayRequester(&PauseRequester);
+    int select = DisplayRequester(&m_PauseRequester);
     if (select > 0) {
         is_pause_text_ready = 0;
     } else {
@@ -159,7 +159,7 @@ int8_t S_Pause()
     int32_t select = PauseLoop();
 
     Music_Unpause();
-    RemoveRequester(&PauseRequester);
+    RemoveRequester(&m_PauseRequester);
     RemovePausedText();
     Screen_RestoreResolution();
     S_FadeOutInventory(1);

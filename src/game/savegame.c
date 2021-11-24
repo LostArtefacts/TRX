@@ -19,8 +19,8 @@
 
 #define SAVE_CREATURE (1 << 7)
 
-static int SGCount = 0;
-static char *SGPoint = NULL;
+static int m_SGCount = 0;
+static char *m_SGPoint = NULL;
 
 void InitialiseStartInfo()
 {
@@ -158,7 +158,7 @@ void CreateSaveGameInfo()
     ResetSG();
 
     for (int i = 0; i < MAX_SAVEGAME_BUFFER; i++) {
-        SGPoint[i] = 0;
+        m_SGPoint[i] = 0;
     }
 
     WriteSG(&g_FlipStatus, sizeof(int32_t));
@@ -439,26 +439,26 @@ void ExtractSaveGameInfo()
 
 void ResetSG()
 {
-    SGCount = 0;
-    SGPoint = g_SaveGame.buffer;
+    m_SGCount = 0;
+    m_SGPoint = g_SaveGame.buffer;
 }
 
 void SkipSG(int size)
 {
-    SGPoint += size;
-    SGCount += size; // missing from OG
+    m_SGPoint += size;
+    m_SGCount += size; // missing from OG
 }
 
 void WriteSG(void *pointer, int size)
 {
-    SGCount += size;
-    if (SGCount >= MAX_SAVEGAME_BUFFER) {
+    m_SGCount += size;
+    if (m_SGCount >= MAX_SAVEGAME_BUFFER) {
         S_Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++) {
-        *SGPoint++ = *data++;
+        *m_SGPoint++ = *data++;
     }
 }
 
@@ -551,10 +551,10 @@ void WriteSGLOT(LOT_INFO *lot)
 
 void ReadSG(void *pointer, int size)
 {
-    SGCount += size;
+    m_SGCount += size;
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++)
-        *data++ = *SGPoint++;
+        *data++ = *m_SGPoint++;
 }
 
 void ReadSGLara(LARA_INFO *lara)

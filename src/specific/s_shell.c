@@ -22,13 +22,13 @@
 #include <time.h>
 #include <windows.h>
 
-static const char *ClassName = "TRClass";
-static const char *WindowName = "Tomb Raider";
-static UINT CloseMsg = 0;
-static bool IsGameWindowActive = true;
+static const char *m_ClassName = "TRClass";
+static const char *m_WindowName = "Tomb Raider";
+static UINT m_CloseMsg = 0;
+static bool m_IsGameWindowActive = true;
 
 static LRESULT CALLBACK
-WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+m_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 HMODULE m_DDraw = NULL;
 HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
@@ -92,7 +92,7 @@ static void S_Shell_TerminateGame(int exit_code)
 
     S_ATI_Shutdown();
 
-    PostMessageA(HWND_BROADCAST, CloseMsg, 0, 0);
+    PostMessageA(HWND_BROADCAST, m_CloseMsg, 0, 0);
     exit(exit_code);
 }
 
@@ -116,13 +116,13 @@ void S_Shell_SpinMessageLoop()
             TranslateMessage(&msg);
             DispatchMessageA(&msg);
         }
-    } while (!IsGameWindowActive);
+    } while (!m_IsGameWindowActive);
 }
 
 static LRESULT CALLBACK
-WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+m_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (uMsg == CloseMsg) {
+    if (uMsg == m_CloseMsg) {
         DestroyWindow(g_TombHWND);
         return 0;
     }
@@ -151,12 +151,12 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
-        if (!IsGameWindowActive && wParam) {
+        if (!m_IsGameWindowActive && wParam) {
             Music_SetVolume(g_Config.music_volume);
-        } else if (IsGameWindowActive && !wParam) {
+        } else if (m_IsGameWindowActive && !wParam) {
             Music_SetVolume(0);
         }
-        IsGameWindowActive = wParam != 0;
+        m_IsGameWindowActive = wParam != 0;
         return 1;
 
     case WM_NCPAINT:
@@ -193,14 +193,14 @@ int WINAPI WinMain(
 {
     WNDCLASSA WndClass = { 0 };
     WndClass.style = CS_HREDRAW | CS_VREDRAW;
-    WndClass.lpfnWndProc = (WNDPROC)WndProc;
+    WndClass.lpfnWndProc = (WNDPROC)m_WndProc;
     WndClass.cbClsExtra = 0;
     WndClass.cbWndExtra = 0;
     WndClass.hInstance = hInstance;
     WndClass.hIcon = LoadIconA(hInstance, IDI_APPLICATION);
     WndClass.hCursor = LoadCursorA(0, IDC_ARROW);
     WndClass.lpszMenuName = 0;
-    WndClass.lpszClassName = ClassName;
+    WndClass.lpszClassName = m_ClassName;
     RegisterClassA(&WndClass);
 
     int32_t scr_height = GetSystemMetrics(SM_CYSCREEN);
@@ -208,7 +208,7 @@ int WINAPI WinMain(
 
     g_TombModule = hInstance;
     g_TombHWND = CreateWindowExA(
-        0, ClassName, WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
+        0, m_ClassName, m_WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
         scr_width, scr_height, 0, 0, hInstance, 0);
 
     if (!g_TombHWND) {
@@ -219,7 +219,7 @@ int WINAPI WinMain(
     SetWindowPos(g_TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
     ShowWindow(g_TombHWND, nShowCmd);
     UpdateWindow(g_TombHWND);
-    CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
+    m_CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
 
     if (!S_Shell_InitDirectDraw()) {
         S_Shell_TerminateGame(1);

@@ -14,28 +14,28 @@
 #define HAIR_OFFSET_Y (20) // up-down
 #define HAIR_OFFSET_Z (-45) // front-back
 
-static bool FirstHair = false;
-static PHD_3DPOS Hair[HAIR_SEGMENTS + 1] = { 0 };
-static PHD_VECTOR HVel[HAIR_SEGMENTS + 1] = { 0 };
+static bool m_FirstHair = false;
+static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
+static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 void InitialiseHair()
 {
-    FirstHair = true;
+    m_FirstHair = true;
 
     int32_t *bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
 
-    Hair[0].y_rot = 0;
-    Hair[0].x_rot = -PHD_90;
+    m_Hair[0].y_rot = 0;
+    m_Hair[0].x_rot = -PHD_90;
 
     for (int i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
-        Hair[i].x = *(bone + 1);
-        Hair[i].y = *(bone + 2);
-        Hair[i].z = *(bone + 3);
-        Hair[i].x_rot = -PHD_90;
-        Hair[i].y_rot = Hair[i].z_rot = 0;
-        HVel[i].x = 0;
-        HVel[i].y = 0;
-        HVel[i].z = 0;
+        m_Hair[i].x = *(bone + 1);
+        m_Hair[i].y = *(bone + 2);
+        m_Hair[i].z = *(bone + 3);
+        m_Hair[i].x_rot = -PHD_90;
+        m_Hair[i].y_rot = m_Hair[i].z_rot = 0;
+        m_HVel[i].x = 0;
+        m_HVel[i].y = 0;
+        m_HVel[i].z = 0;
     }
 }
 
@@ -168,31 +168,31 @@ void HairControl(int in_cutscene)
 
     bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
 
-    if (FirstHair) {
-        FirstHair = false;
+    if (m_FirstHair) {
+        m_FirstHair = false;
 
-        Hair[0].x = pos.x;
-        Hair[0].y = pos.y;
-        Hair[0].z = pos.z;
+        m_Hair[0].x = pos.x;
+        m_Hair[0].y = pos.y;
+        m_Hair[0].z = pos.z;
 
         for (i = 0; i < HAIR_SEGMENTS; i++, bone += 4) {
             phd_PushUnitMatrix();
-            g_PhdMatrixPtr->_03 = Hair[i].x << W2V_SHIFT;
-            g_PhdMatrixPtr->_13 = Hair[i].y << W2V_SHIFT;
-            g_PhdMatrixPtr->_23 = Hair[i].z << W2V_SHIFT;
-            phd_RotYXZ(Hair[i].y_rot, Hair[i].x_rot, 0);
+            g_PhdMatrixPtr->_03 = m_Hair[i].x << W2V_SHIFT;
+            g_PhdMatrixPtr->_13 = m_Hair[i].y << W2V_SHIFT;
+            g_PhdMatrixPtr->_23 = m_Hair[i].z << W2V_SHIFT;
+            phd_RotYXZ(m_Hair[i].y_rot, m_Hair[i].x_rot, 0);
             phd_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
 
-            Hair[i + 1].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-            Hair[i + 1].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-            Hair[i + 1].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i + 1].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i + 1].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i + 1].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
 
             phd_PopMatrix();
         }
     } else {
-        Hair[0].x = pos.x;
-        Hair[0].y = pos.y;
-        Hair[0].z = pos.z;
+        m_Hair[0].x = pos.x;
+        m_Hair[0].y = pos.y;
+        m_Hair[0].z = pos.z;
 
         room_number = g_LaraItem->room_number;
 
@@ -209,45 +209,47 @@ void HairControl(int in_cutscene)
         }
 
         for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
-            HVel[0].x = Hair[i].x;
-            HVel[0].y = Hair[i].y;
-            HVel[0].z = Hair[i].z;
+            m_HVel[0].x = m_Hair[i].x;
+            m_HVel[0].y = m_Hair[i].y;
+            m_HVel[0].z = m_Hair[i].z;
 
             if (!in_cutscene) {
-                floor = GetFloor(Hair[i].x, Hair[i].y, Hair[i].z, &room_number);
-                height = GetHeight(floor, Hair[i].x, Hair[i].y, Hair[i].z);
+                floor = GetFloor(
+                    m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
+                height =
+                    GetHeight(floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
             } else
                 height = 32767;
 
-            Hair[i].x += HVel[i].x * 3 / 4;
-            Hair[i].y += HVel[i].y * 3 / 4;
-            Hair[i].z += HVel[i].z * 3 / 4;
+            m_Hair[i].x += m_HVel[i].x * 3 / 4;
+            m_Hair[i].y += m_HVel[i].y * 3 / 4;
+            m_Hair[i].z += m_HVel[i].z * 3 / 4;
 
             switch (g_Lara.water_status) {
             case LWS_ABOVEWATER:
-                Hair[i].y += 10;
-                if (water_level != NO_HEIGHT && Hair[i].y > water_level)
-                    Hair[i].y = water_level;
-                else if (Hair[i].y > height) {
-                    Hair[i].x = HVel[0].x;
-                    Hair[i].z = HVel[0].z;
+                m_Hair[i].y += 10;
+                if (water_level != NO_HEIGHT && m_Hair[i].y > water_level)
+                    m_Hair[i].y = water_level;
+                else if (m_Hair[i].y > height) {
+                    m_Hair[i].x = m_HVel[0].x;
+                    m_Hair[i].z = m_HVel[0].z;
                 }
                 break;
 
             case LWS_UNDERWATER:
             case LWS_SURFACE:
-                if (Hair[i].y < water_level) {
-                    Hair[i].y = water_level;
-                } else if (Hair[i].y > height) {
-                    Hair[i].y = height;
+                if (m_Hair[i].y < water_level) {
+                    m_Hair[i].y = water_level;
+                } else if (m_Hair[i].y > height) {
+                    m_Hair[i].y = height;
                 }
                 break;
             }
 
             for (j = 0; j < 5; j++) {
-                x = Hair[i].x - sphere[j].x;
-                y = Hair[i].y - sphere[j].y;
-                z = Hair[i].z - sphere[j].z;
+                x = m_Hair[i].x - sphere[j].x;
+                y = m_Hair[i].y - sphere[j].y;
+                z = m_Hair[i].z - sphere[j].z;
 
                 distance = x * x + y * y + z * z;
 
@@ -257,24 +259,25 @@ void HairControl(int in_cutscene)
                     if (distance == 0)
                         distance = 1;
 
-                    Hair[i].x = sphere[j].x + x * sphere[j].r / distance;
-                    Hair[i].y = sphere[j].y + y * sphere[j].r / distance;
-                    Hair[i].z = sphere[j].z + z * sphere[j].r / distance;
+                    m_Hair[i].x = sphere[j].x + x * sphere[j].r / distance;
+                    m_Hair[i].y = sphere[j].y + y * sphere[j].r / distance;
+                    m_Hair[i].z = sphere[j].z + z * sphere[j].r / distance;
                 }
             }
 
             distance = phd_sqrt(
-                SQUARE(Hair[i].z - Hair[i - 1].z)
-                + SQUARE(Hair[i].x - Hair[i - 1].x));
-            Hair[i - 1].y_rot =
-                phd_atan(Hair[i].z - Hair[i - 1].z, Hair[i].x - Hair[i - 1].x);
-            Hair[i - 1].x_rot = -phd_atan(distance, Hair[i].y - Hair[i - 1].y);
+                SQUARE(m_Hair[i].z - m_Hair[i - 1].z)
+                + SQUARE(m_Hair[i].x - m_Hair[i - 1].x));
+            m_Hair[i - 1].y_rot = phd_atan(
+                m_Hair[i].z - m_Hair[i - 1].z, m_Hair[i].x - m_Hair[i - 1].x);
+            m_Hair[i - 1].x_rot =
+                -phd_atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
 
             phd_PushUnitMatrix();
-            g_PhdMatrixPtr->_03 = Hair[i - 1].x << W2V_SHIFT;
-            g_PhdMatrixPtr->_13 = Hair[i - 1].y << W2V_SHIFT;
-            g_PhdMatrixPtr->_23 = Hair[i - 1].z << W2V_SHIFT;
-            phd_RotYXZ(Hair[i - 1].y_rot, Hair[i - 1].x_rot, 0);
+            g_PhdMatrixPtr->_03 = m_Hair[i - 1].x << W2V_SHIFT;
+            g_PhdMatrixPtr->_13 = m_Hair[i - 1].y << W2V_SHIFT;
+            g_PhdMatrixPtr->_23 = m_Hair[i - 1].z << W2V_SHIFT;
+            phd_RotYXZ(m_Hair[i - 1].y_rot, m_Hair[i - 1].x_rot, 0);
 
             if (i == HAIR_SEGMENTS) {
                 phd_TranslateRel(*(bone - 3), *(bone - 2), *(bone - 1));
@@ -282,13 +285,13 @@ void HairControl(int in_cutscene)
                 phd_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
             }
 
-            Hair[i].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-            Hair[i].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-            Hair[i].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
 
-            HVel[i].x = Hair[i].x - HVel[0].x;
-            HVel[i].y = Hair[i].y - HVel[0].y;
-            HVel[i].z = Hair[i].z - HVel[0].z;
+            m_HVel[i].x = m_Hair[i].x - m_HVel[0].x;
+            m_HVel[i].y = m_Hair[i].y - m_HVel[0].y;
+            m_HVel[i].z = m_Hair[i].z - m_HVel[0].z;
 
             phd_PopMatrix();
         }
@@ -307,9 +310,9 @@ void DrawHair()
     for (int i = 0; i < HAIR_SEGMENTS; i++) {
         phd_PushMatrix();
 
-        phd_TranslateAbs(Hair[i].x, Hair[i].y, Hair[i].z);
-        phd_RotY(Hair[i].y_rot);
-        phd_RotX(Hair[i].x_rot);
+        phd_TranslateAbs(m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
+        phd_RotY(m_Hair[i].y_rot);
+        phd_RotX(m_Hair[i].x_rot);
         phd_PutPolygons(*mesh++, 1);
 
         phd_PopMatrix();

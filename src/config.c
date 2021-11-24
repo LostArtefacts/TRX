@@ -37,7 +37,7 @@
 
 CONFIG g_Config = { 0 };
 
-static const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
+static const char *m_T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
 
 static int8_t ReadBarShowingMode(
     struct json_object_s *obj, const char *name, int8_t default_value)
@@ -185,9 +185,9 @@ int8_t T1MReadConfig()
     MYFILE *fp = NULL;
     char *cfg_data = NULL;
 
-    fp = File_Open(T1MGlobalSettingsPath, FILE_OPEN_READ);
+    fp = File_Open(m_T1MGlobalSettingsPath, FILE_OPEN_READ);
     if (!fp) {
-        LOG_ERROR("Failed to open file '%s'", T1MGlobalSettingsPath);
+        LOG_ERROR("Failed to open file '%s'", m_T1MGlobalSettingsPath);
         result = T1MReadConfigFromJson("");
         goto cleanup;
     }

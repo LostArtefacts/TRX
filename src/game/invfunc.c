@@ -15,10 +15,10 @@
 TEXTSTRING *g_InvItemText[2] = { NULL, NULL };
 TEXTSTRING *g_InvRingText = NULL;
 
-static TEXTSTRING *InvDownArrow1 = NULL;
-static TEXTSTRING *InvDownArrow2 = NULL;
-static TEXTSTRING *InvUpArrow1 = NULL;
-static TEXTSTRING *InvUpArrow2 = NULL;
+static TEXTSTRING *m_InvDownArrow1 = NULL;
+static TEXTSTRING *m_InvDownArrow2 = NULL;
+static TEXTSTRING *m_InvUpArrow1 = NULL;
+static TEXTSTRING *m_InvUpArrow2 = NULL;
 
 void RingIsOpen(RING_INFO *ring)
 {
@@ -56,22 +56,22 @@ void RingIsOpen(RING_INFO *ring)
         return;
     }
 
-    if (!InvUpArrow1) {
+    if (!m_InvUpArrow1) {
         if (ring->type == RT_OPTION
             || (ring->type == RT_MAIN && g_InvKeysObjects)) {
-            InvUpArrow1 = Text_Create(20, 28, "[");
-            InvUpArrow2 = Text_Create(-20, 28, "[");
-            Text_AlignRight(InvUpArrow2, 1);
+            m_InvUpArrow1 = Text_Create(20, 28, "[");
+            m_InvUpArrow2 = Text_Create(-20, 28, "[");
+            Text_AlignRight(m_InvUpArrow2, 1);
         }
     }
 
-    if (!InvDownArrow1) {
+    if (!m_InvDownArrow1) {
         if (ring->type == RT_MAIN || ring->type == RT_KEYS) {
-            InvDownArrow1 = Text_Create(20, -15, "]");
-            InvDownArrow2 = Text_Create(-20, -15, "]");
-            Text_AlignBottom(InvDownArrow1, 1);
-            Text_AlignBottom(InvDownArrow2, 1);
-            Text_AlignRight(InvDownArrow2, 1);
+            m_InvDownArrow1 = Text_Create(20, -15, "]");
+            m_InvDownArrow2 = Text_Create(-20, -15, "]");
+            Text_AlignBottom(m_InvDownArrow1, 1);
+            Text_AlignBottom(m_InvDownArrow2, 1);
+            Text_AlignRight(m_InvDownArrow2, 1);
         }
     }
 }
@@ -85,17 +85,17 @@ void RingIsNotOpen(RING_INFO *ring)
     Text_Remove(g_InvRingText);
     g_InvRingText = NULL;
 
-    if (InvUpArrow1) {
-        Text_Remove(InvUpArrow1);
-        Text_Remove(InvUpArrow2);
-        InvUpArrow1 = NULL;
-        InvUpArrow2 = NULL;
+    if (m_InvUpArrow1) {
+        Text_Remove(m_InvUpArrow1);
+        Text_Remove(m_InvUpArrow2);
+        m_InvUpArrow1 = NULL;
+        m_InvUpArrow2 = NULL;
     }
-    if (InvDownArrow1) {
-        Text_Remove(InvDownArrow1);
-        Text_Remove(InvDownArrow2);
-        InvDownArrow1 = NULL;
-        InvDownArrow2 = NULL;
+    if (m_InvDownArrow1) {
+        Text_Remove(m_InvDownArrow1);
+        Text_Remove(m_InvDownArrow2);
+        m_InvDownArrow1 = NULL;
+        m_InvDownArrow2 = NULL;
     }
 }
 

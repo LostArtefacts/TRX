@@ -17,13 +17,13 @@ static C3D_HTXPAL m_ATITexturePalette;
 static C3D_PALETTENTRY m_ATIPalette[256];
 static C3D_COLOR m_ATIChromaKey;
 
-static bool HWR_IsPaletteActive = false;
-static bool HWR_IsRendering = false;
-static bool HWR_IsRenderingOld = false;
-static bool HWR_IsTextureMode = false;
-static int32_t HWR_SelectedTexture = -1;
-static bool HWR_TextureLoaded[MAX_TEXTPAGES] = { false };
-static RGBF HWR_WaterColor = { 0 };
+static bool m_IsPaletteActive = false;
+static bool m_IsRendering = false;
+static bool m_IsRenderingOld = false;
+static bool m_IsTextureMode = false;
+static int32_t m_SelectedTexture = -1;
+static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
+static RGBF m_WaterColor = { 0 };
 
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
@@ -31,11 +31,11 @@ static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
 
 static void HWR_EnableTextureMode(void)
 {
-    if (HWR_IsTextureMode) {
+    if (m_IsTextureMode) {
         return;
     }
 
-    HWR_IsTextureMode = true;
+    m_IsTextureMode = true;
     BOOL enable = TRUE;
     ATI3DCIF_ContextSetState(
         S_ATI_GetRenderContext(), C3D_ERS_TMAP_EN, &enable);
@@ -43,11 +43,11 @@ static void HWR_EnableTextureMode(void)
 
 static void HWR_DisableTextureMode(void)
 {
-    if (!HWR_IsTextureMode) {
+    if (!m_IsTextureMode) {
         return;
     }
 
-    HWR_IsTextureMode = false;
+    m_IsTextureMode = false;
     BOOL enable = FALSE;
     ATI3DCIF_ContextSetState(
         S_ATI_GetRenderContext(), C3D_ERS_TMAP_EN, &enable);
@@ -56,17 +56,17 @@ static void HWR_DisableTextureMode(void)
 static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
 {
     if (g_IsShadeEffect) {
-        *r *= HWR_WaterColor.r;
-        *g *= HWR_WaterColor.g;
-        *b *= HWR_WaterColor.b;
+        *r *= m_WaterColor.r;
+        *g *= m_WaterColor.g;
+        *b *= m_WaterColor.b;
     }
 }
 
 void HWR_SetWaterColor(const RGBF *color)
 {
-    HWR_WaterColor.r = color->r;
-    HWR_WaterColor.g = color->g;
-    HWR_WaterColor.b = color->b;
+    m_WaterColor.r = color->r;
+    m_WaterColor.g = color->g;
+    m_WaterColor.b = color->b;
 }
 
 void HWR_CheckError(HRESULT result)
@@ -79,25 +79,25 @@ void HWR_CheckError(HRESULT result)
 
 void HWR_RenderBegin()
 {
-    HWR_IsRenderingOld = HWR_IsRendering;
-    if (!HWR_IsRendering) {
+    m_IsRenderingOld = m_IsRendering;
+    if (!m_IsRendering) {
         ATI3DCIF_RenderBegin(S_ATI_GetRenderContext());
-        HWR_IsRendering = true;
+        m_IsRendering = true;
     }
 }
 
 void HWR_RenderEnd()
 {
-    HWR_IsRenderingOld = HWR_IsRendering;
-    if (HWR_IsRendering) {
+    m_IsRenderingOld = m_IsRendering;
+    if (m_IsRendering) {
         ATI3DCIF_RenderEnd();
-        HWR_IsRendering = false;
+        m_IsRendering = false;
     }
 }
 
 void HWR_RenderToggle()
 {
-    if (HWR_IsRenderingOld) {
+    if (m_IsRenderingOld) {
         HWR_RenderBegin();
     } else {
         HWR_RenderEnd();
@@ -179,14 +179,14 @@ void HWR_SetPalette()
     m_ATIChromaKey.b = 0;
     m_ATIChromaKey.a = 0;
 
-    HWR_IsPaletteActive = true;
+    m_IsPaletteActive = true;
     LOG_INFO("    complete");
 }
 
 void HWR_DumpScreen()
 {
     HWR_FlipPrimaryBuffer();
-    HWR_SelectedTexture = -1;
+    m_SelectedTexture = -1;
 }
 
 void HWR_ClearSurfaceDepth()
@@ -353,11 +353,11 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
 
 void HWR_SelectTexture(int tex_num)
 {
-    if (tex_num == HWR_SelectedTexture) {
+    if (tex_num == m_SelectedTexture) {
         return;
     }
 
-    if (!HWR_TextureLoaded[tex_num]) {
+    if (!m_TextureLoaded[tex_num]) {
         return;
     }
 
@@ -373,7 +373,7 @@ void HWR_SelectTexture(int tex_num)
         return;
     }
 
-    HWR_SelectedTexture = tex_num;
+    m_SelectedTexture = tex_num;
 }
 
 void HWR_DrawSprite(
@@ -456,7 +456,7 @@ void HWR_DrawSprite(
         return;
     }
 
-    if (HWR_TextureLoaded[sprite->tpage]) {
+    if (m_TextureLoaded[sprite->tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(sprite->tpage);
         HWR_RenderTriangleStrip(vertices, vertex_count);
@@ -1480,7 +1480,7 @@ void HWR_DrawTexturedTriangle(
         return;
     }
 
-    if (HWR_TextureLoaded[tpage]) {
+    if (m_TextureLoaded[tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
         HWR_RenderTriangleStrip(vertices, vertex_count);
@@ -1556,7 +1556,7 @@ void HWR_DrawTexturedQuad(
         HWR_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
-    if (HWR_TextureLoaded[tpage]) {
+    if (m_TextureLoaded[tpage]) {
         HWR_EnableTextureMode();
         HWR_SelectTexture(tpage);
     } else {
@@ -1676,10 +1676,10 @@ void HWR_DownloadTextures(int32_t pages)
             }
             m_ATITextureMap[i] = 0;
         }
-        HWR_TextureLoaded[i] = false;
+        m_TextureLoaded[i] = false;
     }
 
-    if (HWR_IsPaletteActive) {
+    if (m_IsPaletteActive) {
         LOG_INFO("    Resetting texture palette handle");
         if (m_ATITexturePalette) {
             if (ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette)) {
@@ -1691,7 +1691,7 @@ void HWR_DownloadTextures(int32_t pages)
                 C3D_ECI_TMAP_8BIT, m_ATIPalette, &m_ATITexturePalette)) {
             S_Shell_ExitSystem("ERROR: Cannot create texture palette");
         }
-        HWR_IsPaletteActive = false;
+        m_IsPaletteActive = false;
     }
 
     for (i = 0; i < pages; i++) {
@@ -1728,15 +1728,15 @@ void HWR_DownloadTextures(int32_t pages)
         tmap.bAlphaBlend = FALSE;
         if (ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i])) {
             LOG_ERROR("ERROR: Could not register texture");
-            HWR_TextureLoaded[i] = false;
+            m_TextureLoaded[i] = false;
         } else {
             LOG_INFO(
                 "    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
-            HWR_TextureLoaded[i] = true;
+            m_TextureLoaded[i] = true;
         }
     }
 
-    HWR_SelectedTexture = -1;
+    m_SelectedTexture = -1;
 
     LOG_INFO("    complete");
 }

@@ -73,17 +73,17 @@ typedef struct TEXT_COLUMN_PLACEMENT {
     int col_num;
 } TEXT_COLUMN_PLACEMENT;
 
-static int32_t PassportMode = 0;
-static int32_t KeyMode = 0;
-static int32_t KeyChange = 0;
+static int32_t m_PassportMode = 0;
+static int32_t m_KeyMode = 0;
+static int32_t m_KeyChange = 0;
 
-static TEXTSTRING *PassportText = NULL;
-static TEXTSTRING *DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
-static TEXTSTRING *SoundText[4] = { 0 };
-static TEXTSTRING *CompassText[COMPASS_NUMBER_OF] = { 0 };
-static TEXTSTRING *CtrlText[2] = { 0 };
-static TEXTSTRING *CtrlTextA[INPUT_KEY_NUMBER_OF] = { 0 };
-static TEXTSTRING *CtrlTextB[INPUT_KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_PassportText = NULL;
+static TEXTSTRING *m_DetailTextHW[DETAIL_HW_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_SoundText[4] = { 0 };
+static TEXTSTRING *m_CompassText[COMPASS_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_CtrlText[2] = { 0 };
+static TEXTSTRING *m_CtrlTextA[INPUT_KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_CtrlTextB[INPUT_KEY_NUMBER_OF] = { 0 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
@@ -143,7 +143,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { -1, -1 },
 };
 
-static char NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
+static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
 static REQUEST_INFO NewGameRequester = {
     .items = MAX_GAME_MODES,
     .requested = 0,
@@ -157,12 +157,14 @@ static REQUEST_INFO NewGameRequester = {
     .z = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &NewGameStrings[0][0],
+    .item_texts = &m_NewGameStrings[0][0],
     .item_text_len = MAX_GAME_MODE_LENGTH,
     0,
 };
 
-static char LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
+static char m_LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = {
+    0
+};
 REQUEST_INFO g_LoadSaveGameRequester = {
     .items = 1,
     .requested = 0,
@@ -176,7 +178,7 @@ REQUEST_INFO g_LoadSaveGameRequester = {
     .z = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &LoadSaveGameStrings[0][0],
+    .item_texts = &m_LoadSaveGameStrings[0][0],
     .item_text_len = MAX_LEVEL_NAME_LENGTH,
     0,
 };
@@ -302,7 +304,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
     switch (page) {
     case 0:
-        if (PassportMode == 1) {
+        if (m_PassportMode == 1) {
             int32_t select = DisplayRequester(&g_LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
@@ -314,21 +316,21 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
-                PassportMode = 0;
+                m_PassportMode = 0;
             } else {
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
             }
-        } else if (PassportMode == 0) {
+        } else if (m_PassportMode == 0) {
             if (!g_SavedGamesCount || g_InvMode == INV_SAVE_MODE
                 || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
                 g_InputDB = (INPUT_STATE) { 0, .right = 1 };
             } else {
-                if (!PassportText) {
-                    PassportText = Text_Create(
+                if (!m_PassportText) {
+                    m_PassportText = Text_Create(
                         0, -16, g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]);
-                    Text_AlignBottom(PassportText, 1);
-                    Text_CentreH(PassportText, 1);
+                    Text_AlignBottom(m_PassportText, 1);
+                    Text_CentreH(m_PassportText, 1);
                 }
                 if (g_InputDB.select || g_InvMode == INV_LOAD_MODE) {
                     Text_Remove(g_InvRingText);
@@ -338,7 +340,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
                     g_LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
-                    PassportMode = 1;
+                    m_PassportMode = 1;
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
@@ -347,7 +349,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (PassportMode == 2) {
+        if (m_PassportMode == 2) {
             int32_t select = DisplayRequester(&NewGameRequester);
             if (select) {
                 if (select > 0) {
@@ -356,16 +358,16 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
-                PassportMode = 0;
+                m_PassportMode = 0;
             } else {
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
             }
-        } else if (PassportMode == 1) {
+        } else if (m_PassportMode == 1) {
             int32_t select = DisplayRequester(&g_LoadSaveGameRequester);
             if (select) {
                 if (select > 0) {
-                    PassportMode = 0;
+                    m_PassportMode = 0;
                     g_InvExtraData[1] = select - 1;
                 } else {
                     if (g_InvMode != INV_SAVE_MODE
@@ -374,13 +376,13 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     }
-                    PassportMode = 0;
+                    m_PassportMode = 0;
                 }
             } else {
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
             }
-        } else if (PassportMode == 0) {
+        } else if (m_PassportMode == 0) {
             if (g_InvMode == INV_DEATH_MODE) {
                 if (inv_item->anim_direction == -1) {
                     g_InputDB = (INPUT_STATE) { 0, .left = 1 };
@@ -388,17 +390,17 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                     g_InputDB = (INPUT_STATE) { 0, .right = 1 };
                 }
             }
-            if (!PassportText) {
+            if (!m_PassportText) {
                 if (g_InvMode == INV_TITLE_MODE
                     || g_CurrentLevel == g_GameFlow.gym_level_num) {
-                    PassportText = Text_Create(
+                    m_PassportText = Text_Create(
                         0, -16, g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
                 } else {
-                    PassportText = Text_Create(
+                    m_PassportText = Text_Create(
                         0, -16, g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
                 }
-                Text_AlignBottom(PassportText, 1);
-                Text_CentreH(PassportText, 1);
+                Text_AlignBottom(m_PassportText, 1);
+                Text_CentreH(m_PassportText, 1);
             }
             if (g_InputDB.select || g_InvMode == INV_SAVE_MODE
                 || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
@@ -411,7 +413,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
                     if (g_GameFlow.enable_game_modes) {
                         InitNewGameRequester();
-                        PassportMode = 2;
+                        m_PassportMode = 2;
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
@@ -425,7 +427,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
 
                     g_LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
                     InitLoadSaveGameRequester();
-                    PassportMode = 1;
+                    m_PassportMode = 1;
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
@@ -434,16 +436,16 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
         break;
 
     case 2:
-        if (!PassportText) {
+        if (!m_PassportText) {
             if (g_InvMode == INV_TITLE_MODE) {
-                PassportText = Text_Create(
+                m_PassportText = Text_Create(
                     0, -16, g_GameFlow.strings[GS_PASSPORT_EXIT_GAME]);
             } else {
-                PassportText = Text_Create(
+                m_PassportText = Text_Create(
                     0, -16, g_GameFlow.strings[GS_PASSPORT_EXIT_TO_TITLE]);
             }
-            Text_AlignBottom(PassportText, 1);
-            Text_CentreH(PassportText, 1);
+            Text_AlignBottom(m_PassportText, 1);
+            Text_CentreH(m_PassportText, 1);
         }
         break;
     }
@@ -466,9 +468,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->anim_direction = -1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
-            if (PassportText) {
-                Text_Remove(PassportText);
-                PassportText = NULL;
+            if (m_PassportText) {
+                Text_Remove(m_PassportText);
+                m_PassportText = NULL;
             }
         }
 
@@ -490,9 +492,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->open_frame + 5 * page;
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
-            if (PassportText) {
-                Text_Remove(PassportText);
-                PassportText = NULL;
+            if (m_PassportText) {
+                Text_Remove(m_PassportText);
+                m_PassportText = NULL;
             }
         }
     }
@@ -509,9 +511,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
                 inv_item->goal_frame = 0;
                 inv_item->anim_direction = -1;
             }
-            if (PassportText) {
-                Text_Remove(PassportText);
-                PassportText = NULL;
+            if (m_PassportText) {
+                Text_Remove(m_PassportText);
+                m_PassportText = NULL;
             }
         }
     }
@@ -525,9 +527,9 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
         }
-        if (PassportText) {
-            Text_Remove(PassportText);
-            PassportText = NULL;
+        if (m_PassportText) {
+            Text_Remove(m_PassportText);
+            m_PassportText = NULL;
         }
     }
 }
@@ -536,11 +538,11 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 {
     char buf[256];
 
-    if (!DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
+    if (!m_DetailTextHW[DETAIL_HW_TITLE_BORDER]) {
         int32_t y = DETAIL_HW_TOP_Y;
-        DetailTextHW[DETAIL_HW_TITLE_BORDER] = Text_Create(0, y - 2, " ");
+        m_DetailTextHW[DETAIL_HW_TITLE_BORDER] = Text_Create(0, y - 2, " ");
 
-        DetailTextHW[DETAIL_HW_TITLE] =
+        m_DetailTextHW[DETAIL_HW_TITLE] =
             Text_Create(0, y, g_GameFlow.strings[GS_DETAIL_SELECT_DETAIL]);
         y += DETAIL_HW_ROW_HEIGHT;
 
@@ -548,39 +550,39 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             buf, g_GameFlow.strings[GS_DETAIL_PERSPECTIVE_FMT],
             g_GameFlow.strings
                 [g_Config.render_flags.perspective ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_PERSPECTIVE] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_PERSPECTIVE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_BILINEAR_FMT],
             g_GameFlow.strings
                 [g_Config.render_flags.bilinear ? GS_MISC_ON : GS_MISC_OFF]);
-        DetailTextHW[DETAIL_HW_BILINEAR] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_BILINEAR] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_BRIGHTNESS_FMT],
             g_Config.brightness);
-        DetailTextHW[DETAIL_HW_BRIGHTNESS] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_BRIGHTNESS] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_UI_TEXT_SCALE_FMT],
             g_Config.ui.text_scale);
-        DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_UI_TEXT_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_UI_BAR_SCALE_FMT],
             g_Config.ui.bar_scale);
-        DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_UI_BAR_SCALE] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         char tmp[10];
         sprintf(
             tmp, "%dx%d", Screen_GetGameResWidth(), Screen_GetGameResHeight());
         sprintf(buf, g_GameFlow.strings[GS_DETAIL_VIDEO_MODE_FMT], tmp);
-        DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, buf);
+        m_DetailTextHW[DETAIL_HW_RESOLUTION] = Text_Create(0, y, buf);
         y += DETAIL_HW_ROW_HEIGHT;
 
         if (g_OptionSelected < DETAIL_HW_OPTION_MIN) {
@@ -591,40 +593,43 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
         }
 
         Text_AddBackground(
-            DetailTextHW[DETAIL_HW_TITLE_BORDER], DETAIL_HW_ROW_WIDHT,
+            m_DetailTextHW[DETAIL_HW_TITLE_BORDER], DETAIL_HW_ROW_WIDHT,
             y - DETAIL_HW_TOP_Y, 0, 0);
-        Text_AddOutline(DetailTextHW[DETAIL_HW_TITLE_BORDER], 1);
+        Text_AddOutline(m_DetailTextHW[DETAIL_HW_TITLE_BORDER], 1);
 
         Text_AddBackground(
-            DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0);
-        Text_AddOutline(DetailTextHW[DETAIL_HW_TITLE], 1);
+            m_DetailTextHW[DETAIL_HW_TITLE], DETAIL_HW_ROW_WIDHT - 4, 0, 0, 0);
+        Text_AddOutline(m_DetailTextHW[DETAIL_HW_TITLE], 1);
 
         Text_AddBackground(
-            DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
-        Text_AddOutline(DetailTextHW[g_OptionSelected], 1);
+            m_DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0,
+            0);
+        Text_AddOutline(m_DetailTextHW[g_OptionSelected], 1);
 
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
-            Text_CentreH(DetailTextHW[i], 1);
-            Text_CentreV(DetailTextHW[i], 1);
+            Text_CentreH(m_DetailTextHW[i], 1);
+            Text_CentreV(m_DetailTextHW[i], 1);
         }
     }
 
     if (g_InputDB.forward && g_OptionSelected > DETAIL_HW_OPTION_MIN) {
-        Text_RemoveOutline(DetailTextHW[g_OptionSelected]);
-        Text_RemoveBackground(DetailTextHW[g_OptionSelected]);
+        Text_RemoveOutline(m_DetailTextHW[g_OptionSelected]);
+        Text_RemoveBackground(m_DetailTextHW[g_OptionSelected]);
         g_OptionSelected--;
-        Text_AddOutline(DetailTextHW[g_OptionSelected], 1);
+        Text_AddOutline(m_DetailTextHW[g_OptionSelected], 1);
         Text_AddBackground(
-            DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            m_DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0,
+            0);
     }
 
     if (g_InputDB.back && g_OptionSelected < DETAIL_HW_OPTION_MAX) {
-        Text_RemoveOutline(DetailTextHW[g_OptionSelected]);
-        Text_RemoveBackground(DetailTextHW[g_OptionSelected]);
+        Text_RemoveOutline(m_DetailTextHW[g_OptionSelected]);
+        Text_RemoveBackground(m_DetailTextHW[g_OptionSelected]);
         g_OptionSelected++;
-        Text_AddOutline(DetailTextHW[g_OptionSelected], 1);
+        Text_AddOutline(m_DetailTextHW[g_OptionSelected], 1);
         Text_AddBackground(
-            DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0, 0);
+            m_DetailTextHW[g_OptionSelected], DETAIL_HW_ROW_WIDHT - 12, 0, 0,
+            0);
     }
 
     bool reset = false;
@@ -725,8 +730,8 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
 
     if (reset) {
         for (int i = 0; i < DETAIL_HW_NUMBER_OF; i++) {
-            Text_Remove(DetailTextHW[i]);
-            DetailTextHW[i] = NULL;
+            Text_Remove(m_DetailTextHW[i]);
+            m_DetailTextHW[i] = NULL;
         }
         S_WriteUserSettings();
     }
@@ -736,48 +741,48 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 {
     char buf[20];
 
-    if (!SoundText[0]) {
+    if (!m_SoundText[0]) {
         if (g_Config.music_volume > 10) {
             g_Config.music_volume = 10;
         }
         sprintf(buf, "| %2d", g_Config.music_volume);
-        SoundText[SOUND_MUSIC_VOLUME] = Text_Create(0, 0, buf);
+        m_SoundText[SOUND_MUSIC_VOLUME] = Text_Create(0, 0, buf);
 
         if (g_Config.sound_volume > 10) {
             g_Config.sound_volume = 10;
         }
         sprintf(buf, "} %2d", g_Config.sound_volume);
-        SoundText[SOUND_SOUND_VOLUME] = Text_Create(0, 25, buf);
+        m_SoundText[SOUND_SOUND_VOLUME] = Text_Create(0, 25, buf);
 
-        SoundText[SOUND_TITLE] =
+        m_SoundText[SOUND_TITLE] =
             Text_Create(0, -30, g_GameFlow.strings[GS_SOUND_SET_VOLUMES]);
-        SoundText[SOUND_TITLE_BORDER] = Text_Create(0, -32, " ");
+        m_SoundText[SOUND_TITLE_BORDER] = Text_Create(0, -32, " ");
 
-        Text_AddBackground(SoundText[g_OptionSelected], 128, 0, 0, 0);
-        Text_AddOutline(SoundText[g_OptionSelected], 1);
-        Text_AddBackground(SoundText[SOUND_TITLE], 136, 0, 0, 0);
-        Text_AddOutline(SoundText[SOUND_TITLE], 1);
-        Text_AddBackground(SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
-        Text_AddOutline(SoundText[SOUND_TITLE_BORDER], 1);
+        Text_AddBackground(m_SoundText[g_OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(m_SoundText[g_OptionSelected], 1);
+        Text_AddBackground(m_SoundText[SOUND_TITLE], 136, 0, 0, 0);
+        Text_AddOutline(m_SoundText[SOUND_TITLE], 1);
+        Text_AddBackground(m_SoundText[SOUND_TITLE_BORDER], 140, 85, 0, 0);
+        Text_AddOutline(m_SoundText[SOUND_TITLE_BORDER], 1);
 
         for (int i = 0; i < SOUND_NUMBER_OF; i++) {
-            Text_CentreH(SoundText[i], 1);
-            Text_CentreV(SoundText[i], 1);
+            Text_CentreH(m_SoundText[i], 1);
+            Text_CentreV(m_SoundText[i], 1);
         }
     }
 
     if (g_InputDB.forward && g_OptionSelected > SOUND_OPTION_MIN) {
-        Text_RemoveOutline(SoundText[g_OptionSelected]);
-        Text_RemoveBackground(SoundText[g_OptionSelected]);
-        Text_AddBackground(SoundText[--g_OptionSelected], 128, 0, 0, 0);
-        Text_AddOutline(SoundText[g_OptionSelected], 1);
+        Text_RemoveOutline(m_SoundText[g_OptionSelected]);
+        Text_RemoveBackground(m_SoundText[g_OptionSelected]);
+        Text_AddBackground(m_SoundText[--g_OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(m_SoundText[g_OptionSelected], 1);
     }
 
     if (g_InputDB.back && g_OptionSelected < SOUND_OPTION_MAX) {
-        Text_RemoveOutline(SoundText[g_OptionSelected]);
-        Text_RemoveBackground(SoundText[g_OptionSelected]);
-        Text_AddBackground(SoundText[++g_OptionSelected], 128, 0, 0, 0);
-        Text_AddOutline(SoundText[g_OptionSelected], 1);
+        Text_RemoveOutline(m_SoundText[g_OptionSelected]);
+        Text_RemoveBackground(m_SoundText[g_OptionSelected]);
+        Text_AddBackground(m_SoundText[++g_OptionSelected], 128, 0, 0, 0);
+        Text_AddOutline(m_SoundText[g_OptionSelected], 1);
     }
 
     switch (g_OptionSelected) {
@@ -787,14 +792,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "| %2d", g_Config.music_volume);
-            Text_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
+            Text_ChangeText(m_SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         } else if (g_Input.right && g_Config.music_volume < 10) {
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "| %2d", g_Config.music_volume);
-            Text_ChangeText(SoundText[SOUND_MUSIC_VOLUME], buf);
+            Text_ChangeText(m_SoundText[SOUND_MUSIC_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -810,14 +815,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "} %2d", g_Config.sound_volume);
-            Text_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
+            Text_ChangeText(m_SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         } else if (g_Input.right && g_Config.sound_volume < 10) {
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "} %2d", g_Config.sound_volume);
-            Text_ChangeText(SoundText[SOUND_SOUND_VOLUME], buf);
+            Text_ChangeText(m_SoundText[SOUND_SOUND_VOLUME], buf);
             S_WriteUserSettings();
         }
 
@@ -830,8 +835,8 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
 
     if (g_InputDB.deselect || g_InputDB.select) {
         for (int i = 0; i < SOUND_NUMBER_OF; i++) {
-            Text_Remove(SoundText[i]);
-            SoundText[i] = NULL;
+            Text_Remove(m_SoundText[i]);
+            m_SoundText[i] = NULL;
         }
     }
 }
@@ -842,16 +847,16 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
     char time_buf[100];
 
     if (g_Config.enable_compass_stats) {
-        if (!CompassText[0]) {
+        if (!m_CompassText[0]) {
             int32_t y = COMPASS_TOP_Y;
 
-            CompassText[COMPASS_TITLE_BORDER] = Text_Create(0, y - 2, " ");
+            m_CompassText[COMPASS_TITLE_BORDER] = Text_Create(0, y - 2, " ");
 
             sprintf(buf, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
-            CompassText[COMPASS_TITLE] = Text_Create(0, y, buf);
+            m_CompassText[COMPASS_TITLE] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
-            CompassText[COMPASS_TIME] = Text_Create(0, y, " ");
+            m_CompassText[COMPASS_TIME] = Text_Create(0, y, " ");
             y += COMPASS_ROW_HEIGHT;
 
             int32_t secrets_taken = 0;
@@ -867,31 +872,31 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             sprintf(
                 buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secrets_taken,
                 g_GameFlow.levels[g_CurrentLevel].secrets);
-            CompassText[COMPASS_SECRETS] = Text_Create(0, y, buf);
+            m_CompassText[COMPASS_SECRETS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(
                 buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT],
                 g_SaveGame.pickups);
-            CompassText[COMPASS_PICKUPS] = Text_Create(0, y, buf);
+            m_CompassText[COMPASS_PICKUPS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             sprintf(
                 buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_SaveGame.kills);
-            CompassText[COMPASS_KILLS] = Text_Create(0, y, buf);
+            m_CompassText[COMPASS_KILLS] = Text_Create(0, y, buf);
             y += COMPASS_ROW_HEIGHT;
 
             Text_AddBackground(
-                CompassText[COMPASS_TITLE_BORDER], COMPASS_ROW_WIDTH,
+                m_CompassText[COMPASS_TITLE_BORDER], COMPASS_ROW_WIDTH,
                 y - COMPASS_TOP_Y, 0, 0);
-            Text_AddOutline(CompassText[COMPASS_TITLE_BORDER], 1);
+            Text_AddOutline(m_CompassText[COMPASS_TITLE_BORDER], 1);
             Text_AddBackground(
-                CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0);
-            Text_AddOutline(CompassText[COMPASS_TITLE], 1);
+                m_CompassText[COMPASS_TITLE], COMPASS_ROW_WIDTH - 4, 0, 0, 0);
+            Text_AddOutline(m_CompassText[COMPASS_TITLE], 1);
 
             for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
-                Text_CentreH(CompassText[i], 1);
-                Text_CentreV(CompassText[i], 1);
+                Text_CentreH(m_CompassText[i], 1);
+                Text_CentreV(m_CompassText[i], 1);
             }
         }
 
@@ -907,13 +912,13 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
             sprintf(time_buf, "%d:%d%d", minutes, seconds / 10, seconds % 10);
         }
         sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_buf);
-        Text_ChangeText(CompassText[COMPASS_TIME], buf);
+        Text_ChangeText(m_CompassText[COMPASS_TIME], buf);
     }
 
     if (g_InputDB.deselect || g_InputDB.select) {
         for (int i = 0; i < COMPASS_NUMBER_OF; i++) {
-            Text_Remove(CompassText[i]);
-            CompassText[i] = NULL;
+            Text_Remove(m_CompassText[i]);
+            m_CompassText[i] = NULL;
         }
         inv_item->goal_frame = inv_item->frames_total - 1;
         inv_item->anim_direction = 1;
@@ -928,7 +933,7 @@ void FlashConflicts()
 
     for (const TEXT_COLUMN_PLACEMENT *item = cols; item->col_num != -1;
          item++) {
-        Text_Flash(CtrlTextB[item->option], 0, 0);
+        Text_Flash(m_CtrlTextB[item->option], 0, 0);
     }
 
     for (const TEXT_COLUMN_PLACEMENT *item1 = cols; item1->col_num != -1;
@@ -946,8 +951,8 @@ void FlashConflicts()
             S_INPUT_KEYCODE key_code2 = S_Input_GetAssignedKeyCode(
                 g_Config.input.layout, item2->option);
             if (item1 != item2 && key_code1 == key_code2) {
-                Text_Flash(CtrlTextB[item1->option], 1, 20);
-                Text_Flash(CtrlTextB[item2->option], 1, 20);
+                Text_Flash(m_CtrlTextB[item1->option], 1, 20);
+                Text_Flash(m_CtrlTextB[item2->option], 1, 20);
             }
         }
     }
@@ -970,8 +975,8 @@ void DefaultConflict()
 
 void DoControlOption(INVENTORY_ITEM *inv_item)
 {
-    if (!CtrlText[0]) {
-        CtrlText[0] = Text_Create(
+    if (!m_CtrlText[0]) {
+        m_CtrlText[0] = Text_Create(
             0,
             CONTROLS_TOP_Y - CONTROLS_BORDER
                 + (CONTROLS_HEADER_HEIGHT + CONTROLS_BORDER
@@ -980,13 +985,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             g_GameFlow.strings
                 [g_Config.input.layout ? GS_CONTROL_USER_KEYS
                                        : GS_CONTROL_DEFAULT_KEYS]);
-        Text_CentreH(CtrlText[0], 1);
-        Text_CentreV(CtrlText[0], 1);
+        Text_CentreH(m_CtrlText[0], 1);
+        Text_CentreV(m_CtrlText[0], 1);
         S_ShowControls();
 
-        KeyChange = -1;
-        Text_AddBackground(CtrlText[0], 0, 0, 0, 0);
-        Text_AddOutline(CtrlText[0], 1);
+        m_KeyChange = -1;
+        Text_AddBackground(m_CtrlText[0], 0, 0, 0, 0);
+        Text_AddOutline(m_CtrlText[0], 1);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
@@ -1005,17 +1010,17 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         }
     }
 
-    switch (KeyMode) {
+    switch (m_KeyMode) {
     case 0:
         if (g_InputDB.left || g_InputDB.right) {
-            if (KeyChange == -1) {
+            if (m_KeyChange == -1) {
                 g_Config.input.layout ^= 1;
                 S_ChangeCtrlText();
                 FlashConflicts();
                 S_WriteUserSettings();
             } else {
-                Text_RemoveBackground(CtrlTextA[KeyChange]);
-                Text_RemoveOutline(CtrlTextA[KeyChange]);
+                Text_RemoveBackground(m_CtrlTextA[m_KeyChange]);
+                Text_RemoveOutline(m_CtrlTextA[m_KeyChange]);
 
                 int col_idx[2] = { 0, 0 };
                 const TEXT_COLUMN_PLACEMENT *sel_col;
@@ -1024,7 +1029,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                      sel_col->col_num >= 0 && sel_col->col_num <= 1;
                      sel_col++) {
                     col_idx[sel_col->col_num]++;
-                    if (sel_col->option == KeyChange) {
+                    if (sel_col->option == m_KeyChange) {
                         break;
                     }
                 }
@@ -1038,17 +1043,17 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                         if (dst_col->option != -1
                             && col_idx[dst_col->col_num]
                                 >= col_idx[sel_col->col_num]) {
-                            KeyChange = dst_col->option;
+                            m_KeyChange = dst_col->option;
                             break;
                         }
                     }
                 }
 
-                Text_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
-                Text_AddOutline(CtrlTextA[KeyChange], 1);
+                Text_AddBackground(m_CtrlTextA[m_KeyChange], 0, 0, 0, 0);
+                Text_AddOutline(m_CtrlTextA[m_KeyChange], 1);
             }
         } else if (
-            g_InputDB.deselect || (g_InputDB.select && KeyChange == -1)) {
+            g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
             S_RemoveCtrl();
             DefaultConflict();
             return;
@@ -1056,34 +1061,36 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         if (g_Config.input.layout) {
             if (g_InputDB.select) {
-                KeyMode = 1;
-                Text_RemoveBackground(CtrlTextA[KeyChange]);
-                Text_AddBackground(CtrlTextB[KeyChange], 0, 0, 0, 0);
-                Text_RemoveOutline(CtrlTextA[KeyChange]);
-                Text_AddOutline(CtrlTextB[KeyChange], 1);
+                m_KeyMode = 1;
+                Text_RemoveBackground(m_CtrlTextA[m_KeyChange]);
+                Text_AddBackground(m_CtrlTextB[m_KeyChange], 0, 0, 0, 0);
+                Text_RemoveOutline(m_CtrlTextA[m_KeyChange]);
+                Text_AddOutline(m_CtrlTextB[m_KeyChange], 1);
             } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange]);
                 Text_RemoveOutline(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange]);
 
-                if (KeyChange == -1) {
-                    KeyChange = last_col->option;
-                } else if (KeyChange == first_col->option) {
-                    KeyChange = -1;
+                if (m_KeyChange == -1) {
+                    m_KeyChange = last_col->option;
+                } else if (m_KeyChange == first_col->option) {
+                    m_KeyChange = -1;
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
                          sel_col->col_num >= 0 && sel_col->col_num <= 1;
                          sel_col++) {
-                        if (sel_col->option == KeyChange) {
+                        if (sel_col->option == m_KeyChange) {
                             break;
                         }
                     }
                     sel_col--;
                     while (sel_col >= cols) {
                         if (sel_col->option != -1) {
-                            KeyChange = sel_col->option;
+                            m_KeyChange = sel_col->option;
                             break;
                         }
                         sel_col--;
@@ -1091,33 +1098,38 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 }
 
                 Text_AddBackground(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
-                    0, 0);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange],
+                    0, 0, 0, 0);
                 Text_AddOutline(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange],
+                    1);
             } else if (g_InputDB.back) {
                 Text_RemoveBackground(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange]);
                 Text_RemoveOutline(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange]);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange]);
 
-                if (KeyChange == -1) {
-                    KeyChange = first_col->option;
-                } else if (KeyChange == last_col->option) {
-                    KeyChange = -1;
+                if (m_KeyChange == -1) {
+                    m_KeyChange = first_col->option;
+                } else if (m_KeyChange == last_col->option) {
+                    m_KeyChange = -1;
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
                          sel_col->col_num >= 0 && sel_col->col_num <= 1;
                          sel_col++) {
-                        if (sel_col->option == KeyChange) {
+                        if (sel_col->option == m_KeyChange) {
                             break;
                         }
                     }
                     sel_col++;
                     while (sel_col >= cols) {
                         if (sel_col->option != -1) {
-                            KeyChange = sel_col->option;
+                            m_KeyChange = sel_col->option;
                             break;
                         }
                         sel_col++;
@@ -1125,17 +1137,20 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 }
 
                 Text_AddBackground(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 0, 0,
-                    0, 0);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange],
+                    0, 0, 0, 0);
                 Text_AddOutline(
-                    KeyChange == -1 ? CtrlText[0] : CtrlTextA[KeyChange], 1);
+                    m_KeyChange == -1 ? m_CtrlText[0]
+                                      : m_CtrlTextA[m_KeyChange],
+                    1);
             }
         }
         break;
 
     case 1:
         if (!g_Input.select) {
-            KeyMode = 2;
+            m_KeyMode = 2;
         }
         break;
 
@@ -1144,13 +1159,13 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         const char *scancode_name = S_Input_GetKeyCodeName(key_code);
         if (key_code >= 0 && scancode_name) {
-            S_Input_AssignKeyCode(g_Config.input.layout, KeyChange, key_code);
-            Text_ChangeText(CtrlTextB[KeyChange], scancode_name);
-            Text_RemoveBackground(CtrlTextB[KeyChange]);
-            Text_RemoveOutline(CtrlTextB[KeyChange]);
-            Text_AddBackground(CtrlTextA[KeyChange], 0, 0, 0, 0);
-            Text_AddOutline(CtrlTextA[KeyChange], 1);
-            KeyMode = 3;
+            S_Input_AssignKeyCode(g_Config.input.layout, m_KeyChange, key_code);
+            Text_ChangeText(m_CtrlTextB[m_KeyChange], scancode_name);
+            Text_RemoveBackground(m_CtrlTextB[m_KeyChange]);
+            Text_RemoveOutline(m_CtrlTextB[m_KeyChange]);
+            Text_AddBackground(m_CtrlTextA[m_KeyChange], 0, 0, 0, 0);
+            Text_AddOutline(m_CtrlTextA[m_KeyChange], 1);
+            m_KeyMode = 3;
             FlashConflicts();
             S_WriteUserSettings();
         }
@@ -1159,15 +1174,15 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
     case 3: {
         S_INPUT_KEYCODE key_code =
-            S_Input_GetAssignedKeyCode(g_Config.input.layout, KeyChange);
+            S_Input_GetAssignedKeyCode(g_Config.input.layout, m_KeyChange);
 
         if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
-            KeyMode = 0;
+            m_KeyMode = 0;
             FlashConflicts();
             S_WriteUserSettings();
         }
 
-        KeyMode = 0;
+        m_KeyMode = 0;
         break;
     }
     }
@@ -1181,15 +1196,15 @@ void S_ShowControls()
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
 
-    CtrlText[1] = Text_Create(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");
-    Text_CentreH(CtrlText[1], 1);
-    Text_CentreV(CtrlText[1], 1);
+    m_CtrlText[1] = Text_Create(0, CONTROLS_TOP_Y - CONTROLS_BORDER, " ");
+    Text_CentreH(m_CtrlText[1], 1);
+    Text_CentreV(m_CtrlText[1], 1);
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    if (!CtrlTextB[0]) {
+    if (!m_CtrlTextB[0]) {
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1202,18 +1217,18 @@ void S_ShowControls()
             const char *scancode_name = S_Input_GetKeyCodeName(
                 S_Input_GetAssignedKeyCode(g_Config.input.layout, col->option));
             if (col->option != -1 && scancode_name) {
-                CtrlTextB[col->option] = Text_Create(x, y, scancode_name);
-                Text_CentreV(CtrlTextB[col->option], 1);
+                m_CtrlTextB[col->option] = Text_Create(x, y, scancode_name);
+                Text_CentreV(m_CtrlTextB[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
             max_y = MAX(max_y, ys[col->col_num]);
         }
 
-        KeyChange = 0;
+        m_KeyChange = 0;
     }
 
-    if (!CtrlTextA[0]) {
+    if (!m_CtrlTextA[0]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
         int16_t ys[2] = { CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT,
                           CONTROLS_TOP_Y + CONTROLS_HEADER_HEIGHT };
@@ -1224,11 +1239,11 @@ void S_ShowControls()
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                CtrlTextA[col->option] = Text_Create(
+                m_CtrlTextA[col->option] = Text_Create(
                     x, y,
                     g_GameFlow
                         .strings[col->option + GS_KEYMAP_RUN - INPUT_KEY_UP]);
-                Text_CentreV(CtrlTextA[col->option], 1);
+                Text_CentreV(m_CtrlTextA[col->option], 1);
             }
 
             ys[col->col_num] += CONTROLS_ROW_HEIGHT;
@@ -1238,8 +1253,8 @@ void S_ShowControls()
 
     int16_t width = 420;
     int16_t height = max_y + CONTROLS_BORDER * 2 - CONTROLS_TOP_Y;
-    Text_AddBackground(CtrlText[1], width, height, 0, 0);
-    Text_AddOutline(CtrlText[1], 1);
+    Text_AddBackground(m_CtrlText[1], width, height, 0, 0);
+    Text_AddOutline(m_CtrlText[1], 1);
 
     FlashConflicts();
 }
@@ -1247,7 +1262,7 @@ void S_ShowControls()
 void S_ChangeCtrlText()
 {
     Text_ChangeText(
-        CtrlText[0],
+        m_CtrlText[0],
         g_GameFlow.strings
             [g_Config.input.layout ? GS_CONTROL_USER_KEYS
                                    : GS_CONTROL_DEFAULT_KEYS]);
@@ -1261,7 +1276,7 @@ void S_ChangeCtrlText()
         const char *scancode_name = S_Input_GetKeyCodeName(
             S_Input_GetAssignedKeyCode(g_Config.input.layout, col->option));
         if (col->option != -1 && scancode_name) {
-            Text_ChangeText(CtrlTextB[col->option], scancode_name);
+            Text_ChangeText(m_CtrlTextB[col->option], scancode_name);
         }
     }
 }
@@ -1269,18 +1284,18 @@ void S_ChangeCtrlText()
 void S_RemoveCtrlText()
 {
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        Text_Remove(CtrlTextA[i]);
-        Text_Remove(CtrlTextB[i]);
-        CtrlTextB[i] = NULL;
-        CtrlTextA[i] = NULL;
+        Text_Remove(m_CtrlTextA[i]);
+        Text_Remove(m_CtrlTextB[i]);
+        m_CtrlTextB[i] = NULL;
+        m_CtrlTextA[i] = NULL;
     }
 }
 
 void S_RemoveCtrl()
 {
-    Text_Remove(CtrlText[0]);
-    Text_Remove(CtrlText[1]);
-    CtrlText[0] = NULL;
-    CtrlText[1] = NULL;
+    Text_Remove(m_CtrlText[0]);
+    Text_Remove(m_CtrlText[1]);
+    m_CtrlText[0] = NULL;
+    m_CtrlText[1] = NULL;
     S_RemoveCtrlText();
 }

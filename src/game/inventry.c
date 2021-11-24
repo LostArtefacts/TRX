@@ -34,10 +34,10 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
-static TEXTSTRING *VersionText = NULL;
-static int16_t InvNFrames = 2;
-static int16_t CompassNeedle = 0;
-static int16_t CompassSpeed = 0;
+static TEXTSTRING *m_VersionText = NULL;
+static int16_t m_InvNFrames = 2;
+static int16_t m_CompassNeedle = 0;
+static int16_t m_CompassSpeed = 0;
 
 int32_t Display_Inventory(int inv_mode)
 {
@@ -56,7 +56,7 @@ int32_t Display_Inventory(int inv_mode)
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
     g_InvMode = inv_mode;
 
-    InvNFrames = 2;
+    m_InvNFrames = 2;
     Construct_Inventory();
 
     if (g_InvMode != INV_TITLE_MODE) {
@@ -100,7 +100,7 @@ int32_t Display_Inventory(int inv_mode)
 
     Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
-    InvNFrames = 2;
+    m_InvNFrames = 2;
 
     do {
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
@@ -119,7 +119,7 @@ int32_t Display_Inventory(int inv_mode)
             }
         }
 
-        for (int i = 0; i < InvNFrames; i++) {
+        for (int i = 0; i < m_InvNFrames; i++) {
             if (g_IDelay) {
                 if (g_IDCount) {
                     g_IDCount--;
@@ -150,7 +150,7 @@ int32_t Display_Inventory(int inv_mode)
             INVENTORY_ITEM *inv_item = ring.list[i];
 
             if (i == ring.current_object) {
-                for (int j = 0; j < InvNFrames; j++) {
+                for (int j = 0; j < m_InvNFrames; j++) {
                     if (ring.rotating) {
                         g_LsAdder = LOW_LIGHT;
                         if (inv_item->y_rot) {
@@ -195,7 +195,7 @@ int32_t Display_Inventory(int inv_mode)
                 }
             } else {
                 g_LsAdder = LOW_LIGHT;
-                for (int j = 0; j < InvNFrames; j++) {
+                for (int j = 0; j < m_InvNFrames; j++) {
                     if (inv_item->y_rot) {
                         if (inv_item->y_rot < 0) {
                             inv_item->y_rot += 256;
@@ -239,11 +239,11 @@ int32_t Display_Inventory(int inv_mode)
         Text_Draw();
         S_OutputPolyList();
 
-        InvNFrames = S_DumpScreen();
-        g_Camera.number_frames = InvNFrames;
+        m_InvNFrames = S_DumpScreen();
+        g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
-            g_SaveGame.timer += InvNFrames / 2;
+            g_SaveGame.timer += m_InvNFrames / 2;
         }
 
         if (ring.rotating) {
@@ -505,7 +505,7 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             int32_t busy = 0;
-            for (int j = 0; j < InvNFrames; j++) {
+            for (int j = 0; j < m_InvNFrames; j++) {
                 busy = 0;
                 if (inv_item->y_rot == inv_item->y_rot_sel) {
                     busy = AnimateInventoryItem(inv_item);
@@ -570,7 +570,7 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_CLOSING_ITEM: {
             INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
-            for (int j = 0; j < InvNFrames; j++) {
+            for (int j = 0; j < m_InvNFrames; j++) {
                 if (!AnimateInventoryItem(inv_item)) {
                     if (inv_item->object_number == O_PASSPORT_OPTION) {
                         inv_item->object_number = O_PASSPORT_CLOSED;
@@ -604,9 +604,9 @@ int32_t Display_Inventory(int inv_mode)
 
     RemoveInventoryText();
     S_FinishInventory();
-    if (VersionText) {
-        Text_Remove(VersionText);
-        VersionText = NULL;
+    if (m_VersionText) {
+        Text_Remove(m_VersionText);
+        m_VersionText = NULL;
     }
 
     if (g_ResetFlag) {
@@ -727,14 +727,14 @@ void Construct_Inventory()
     g_InvChosen = 0;
     if (g_InvMode == INV_TITLE_MODE) {
         g_InvOptionObjects = TITLE_RING_OBJECTS;
-        VersionText = Text_Create(-20, -18, g_T1MVersion);
-        Text_AlignRight(VersionText, 1);
-        Text_AlignBottom(VersionText, 1);
-        Text_SetScale(VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
+        m_VersionText = Text_Create(-20, -18, g_T1MVersion);
+        Text_AlignRight(m_VersionText, 1);
+        Text_AlignBottom(m_VersionText, 1);
+        Text_SetScale(m_VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
     } else {
         g_InvOptionObjects = OPTION_RING_OBJECTS;
-        Text_Remove(VersionText);
-        VersionText = NULL;
+        Text_Remove(m_VersionText);
+        m_VersionText = NULL;
     }
 
     for (int i = 0; i < g_InvMainObjects; i++) {
@@ -897,11 +897,11 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
             phd_RotYXZpack(*packed_rotation++);
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
-                CompassSpeed = CompassSpeed * 19 / 20
-                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - CompassNeedle)
+                m_CompassSpeed = m_CompassSpeed * 19 / 20
+                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle)
                         / 50;
-                CompassNeedle += CompassSpeed;
-                phd_RotY(CompassNeedle);
+                m_CompassNeedle += m_CompassSpeed;
+                phd_RotY(m_CompassNeedle);
             }
 
             if (inv_item->drawn_meshes & mesh_num) {

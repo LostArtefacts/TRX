@@ -2,14 +2,14 @@
 
 #include "global/vars.h"
 
-int32_t m_MinX = 0;
-int32_t m_MinY = 0;
-int32_t m_CenterX = 0;
-int32_t m_CenterY = 0;
-int32_t m_MaxX = 0;
-int32_t m_MaxY = 0;
-int32_t m_Width = 0;
-int32_t m_Height = 0;
+static int32_t m_MinX = 0;
+static int32_t m_MinY = 0;
+static int32_t m_CenterX = 0;
+static int32_t m_CenterY = 0;
+static int32_t m_MaxX = 0;
+static int32_t m_MaxY = 0;
+static int32_t m_Width = 0;
+static int32_t m_Height = 0;
 
 void ViewPort_Init(int32_t width, int32_t height)
 {

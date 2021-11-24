@@ -17,23 +17,23 @@
 
 #include <stdio.h>
 
-int32_t m_MeshCount = 0;
-int32_t m_MeshPtrCount = 0;
-int32_t m_AnimCount = 0;
-int32_t m_AnimChangeCount = 0;
-int32_t m_AnimRangeCount = 0;
-int32_t m_AnimCommandCount = 0;
-int32_t m_AnimBoneCount = 0;
-int32_t m_AnimFrameCount = 0;
-int32_t m_ObjectCount = 0;
-int32_t m_StaticCount = 0;
-int32_t m_TextureCount = 0;
-int32_t m_FloorDataSize = 0;
-int32_t m_TexturePageCount = 0;
-int32_t m_AnimTextureRangeCount = 0;
-int32_t m_SpriteInfoCount = 0;
-int32_t m_SpriteCount = 0;
-int32_t m_OverlapCount = 0;
+static int32_t m_MeshCount = 0;
+static int32_t m_MeshPtrCount = 0;
+static int32_t m_AnimCount = 0;
+static int32_t m_AnimChangeCount = 0;
+static int32_t m_AnimRangeCount = 0;
+static int32_t m_AnimCommandCount = 0;
+static int32_t m_AnimBoneCount = 0;
+static int32_t m_AnimFrameCount = 0;
+static int32_t m_ObjectCount = 0;
+static int32_t m_StaticCount = 0;
+static int32_t m_TextureCount = 0;
+static int32_t m_FloorDataSize = 0;
+static int32_t m_TexturePageCount = 0;
+static int32_t m_AnimTextureRangeCount = 0;
+static int32_t m_SpriteInfoCount = 0;
+static int32_t m_SpriteCount = 0;
+static int32_t m_OverlapCount = 0;
 
 static bool Level_LoadRooms(MYFILE *fp);
 static bool Level_LoadObjects(MYFILE *fp);

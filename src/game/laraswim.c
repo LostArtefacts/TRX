@@ -14,7 +14,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static int32_t OpenDoorsCheatCooldown = 0;
+static int32_t m_OpenDoorsCheatCooldown = 0;
 
 void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
 {
@@ -85,10 +85,10 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Lara.water_status == LWS_CHEAT) {
-        if (OpenDoorsCheatCooldown) {
-            OpenDoorsCheatCooldown--;
+        if (m_OpenDoorsCheatCooldown) {
+            m_OpenDoorsCheatCooldown--;
         } else if (g_Input.draw) {
-            OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
+            m_OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
             OpenNearestDoors(g_LaraItem);
         }
     }

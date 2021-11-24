@@ -17,8 +17,8 @@
 #include <stdint.h>
 #include <string.h>
 
-static const char *ATIUserSettingsPath = "atiset.dat";
-static const char *T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
+static const char *m_ATIUserSettingsPath = "atiset.dat";
+static const char *m_T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
 static int32_t S_ReadUserSettingsATI();
 static int32_t S_ReadUserSettingsT1M();
@@ -27,7 +27,7 @@ static int32_t S_WriteUserSettingsT1M();
 
 static int32_t S_ReadUserSettingsATI()
 {
-    MYFILE *fp = File_Open(ATIUserSettingsPath, FILE_OPEN_READ);
+    MYFILE *fp = File_Open(m_ATIUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         return 0;
     }
@@ -165,9 +165,9 @@ static int32_t S_ReadUserSettingsT1M()
     char *cfg_data = NULL;
     MYFILE *fp = NULL;
 
-    fp = File_Open(T1MUserSettingsPath, FILE_OPEN_READ);
+    fp = File_Open(m_T1MUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
-        LOG_ERROR("Failed to open file '%s'", T1MUserSettingsPath);
+        LOG_ERROR("Failed to open file '%s'", m_T1MUserSettingsPath);
         result = S_ReadUserSettingsT1MFromJson("");
         goto cleanup;
     }
@@ -195,7 +195,7 @@ static int32_t S_WriteUserSettingsT1M()
 {
     LOG_INFO("Saving user settings (T1M)");
 
-    MYFILE *fp = File_Open(T1MUserSettingsPath, FILE_OPEN_WRITE);
+    MYFILE *fp = File_Open(m_T1MUserSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
         return 0;
     }
@@ -241,7 +241,7 @@ static int32_t S_WriteUserSettingsT1M()
 void S_ReadUserSettings()
 {
     if (S_ReadUserSettingsATI()) {
-        if (!File_Delete(ATIUserSettingsPath)) {
+        if (!File_Delete(m_ATIUserSettingsPath)) {
             // only save settings if we successfully removed the file
             S_WriteUserSettingsT1M();
         }

@@ -7,20 +7,20 @@
 
 #include <stddef.h>
 
-static int32_t SlotsUsed = 0;
-static CREATURE_INFO *BaddieSlots = NULL;
+static int32_t m_SlotsUsed = 0;
+static CREATURE_INFO *m_BaddieSlots = NULL;
 
 void InitialiseLOTArray()
 {
-    BaddieSlots =
+    m_BaddieSlots =
         GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_INFO);
     for (int i = 0; i < NUM_SLOTS; i++) {
-        CREATURE_INFO *creature = &BaddieSlots[i];
+        CREATURE_INFO *creature = &m_BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->LOT.node =
             GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
     }
-    SlotsUsed = 0;
+    m_SlotsUsed = 0;
 }
 
 void DisableBaddieAI(int16_t item_num)
@@ -30,7 +30,7 @@ void DisableBaddieAI(int16_t item_num)
     item->data = NULL;
     if (creature) {
         creature->item_num = NO_ITEM;
-        SlotsUsed--;
+        m_SlotsUsed--;
     }
 }
 
@@ -40,9 +40,9 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
         return 1;
     }
 
-    if (SlotsUsed < NUM_SLOTS) {
+    if (m_SlotsUsed < NUM_SLOTS) {
         for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-            CREATURE_INFO *creature = &BaddieSlots[slot];
+            CREATURE_INFO *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
                 InitialiseSlot(item_num, slot);
                 return 1;
@@ -62,7 +62,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
 
     int32_t worst_slot = -1;
     for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-        CREATURE_INFO *creature = &BaddieSlots[slot];
+        CREATURE_INFO *creature = &m_BaddieSlots[slot];
         ITEM_INFO *item = &g_Items[creature->item_num];
         int32_t x = (item->pos.x - g_Camera.pos.x) >> 8;
         int32_t y = (item->pos.y - g_Camera.pos.y) >> 8;
@@ -78,15 +78,15 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
         return 0;
     }
 
-    g_Items[BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
-    DisableBaddieAI(BaddieSlots[worst_slot].item_num);
+    g_Items[m_BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
+    DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
     InitialiseSlot(item_num, worst_slot);
     return 1;
 }
 
 void InitialiseSlot(int16_t item_num, int32_t slot)
 {
-    CREATURE_INFO *creature = &BaddieSlots[slot];
+    CREATURE_INFO *creature = &m_BaddieSlots[slot];
     ITEM_INFO *item = &g_Items[item_num];
     item->data = creature;
     creature->item_num = item_num;
@@ -132,7 +132,7 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
     ClearLOT(&creature->LOT);
     CreateZone(item);
 
-    SlotsUsed++;
+    m_SlotsUsed++;
 }
 
 void CreateZone(ITEM_INFO *item)

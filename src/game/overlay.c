@@ -22,7 +22,7 @@ static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
 
-static RGB888 ColorBarMap[][COLOR_STEPS] = {
+static RGB888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
     { { 112, 92, 44 },
       { 164, 120, 72 },
@@ -182,15 +182,15 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGB888 c1 = ColorBarMap[bar_color][i];
-                RGB888 c2 = ColorBarMap[bar_color][i + 1];
+                RGB888 c1 = m_ColorBarMap[bar_color][i];
+                RGB888 c2 = m_ColorBarMap[bar_color][i + 1];
                 int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
                 int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
                 S_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
             for (int i = 0; i < COLOR_STEPS; i++) {
-                RGB888 color = ColorBarMap[bar_color][i];
+                RGB888 color = m_ColorBarMap[bar_color][i];
                 int32_t lsy = sy + i * sh / COLOR_STEPS;
                 int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
                 S_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);

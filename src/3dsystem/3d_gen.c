@@ -17,14 +17,14 @@
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)
 
-static PHD_VECTOR LsVectorView = { 0 };
-static PHD_MATRIX MatrixStack[MAX_MATRICES] = { 0 };
+static PHD_VECTOR m_LsVectorView = { 0 };
+static PHD_MATRIX m_MatrixStack[MAX_MATRICES] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
-    g_PhdMatrixPtr = &MatrixStack[0];
+    g_PhdMatrixPtr = &m_MatrixStack[0];
     int32_t sx = phd_sin(viewpos->x_rot);
     int32_t cx = phd_cos(viewpos->x_rot);
     int32_t sy = phd_sin(viewpos->y_rot);
@@ -32,19 +32,19 @@ void phd_GenerateW2V(PHD_3DPOS *viewpos)
     int32_t sz = phd_sin(viewpos->z_rot);
     int32_t cz = phd_cos(viewpos->z_rot);
 
-    MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-    MatrixStack[0]._01 = TRIGMULT2(cx, sz);
-    MatrixStack[0]._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-    MatrixStack[0]._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-    MatrixStack[0]._11 = TRIGMULT2(cx, cz);
-    MatrixStack[0]._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-    MatrixStack[0]._20 = TRIGMULT2(cx, sy);
-    MatrixStack[0]._21 = -sx;
-    MatrixStack[0]._22 = TRIGMULT2(cx, cy);
-    MatrixStack[0]._03 = viewpos->x;
-    MatrixStack[0]._13 = viewpos->y;
-    MatrixStack[0]._23 = viewpos->z;
-    g_W2VMatrix = MatrixStack[0];
+    m_MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+    m_MatrixStack[0]._01 = TRIGMULT2(cx, sz);
+    m_MatrixStack[0]._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+    m_MatrixStack[0]._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+    m_MatrixStack[0]._11 = TRIGMULT2(cx, cz);
+    m_MatrixStack[0]._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+    m_MatrixStack[0]._20 = TRIGMULT2(cx, sy);
+    m_MatrixStack[0]._21 = -sx;
+    m_MatrixStack[0]._22 = TRIGMULT2(cx, cy);
+    m_MatrixStack[0]._03 = viewpos->x;
+    m_MatrixStack[0]._13 = viewpos->y;
+    m_MatrixStack[0]._23 = viewpos->z;
+    g_W2VMatrix = m_MatrixStack[0];
 }
 
 void phd_LookAt(
@@ -345,20 +345,20 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
     int32_t ls_x = TRIGMULT2(cp, sy);
     int32_t ls_y = -sp;
     int32_t ls_z = TRIGMULT2(cp, cy);
-    LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
-                      + g_W2VMatrix._02 * ls_z)
+    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
+                        + g_W2VMatrix._02 * ls_z)
         >> W2V_SHIFT;
-    LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
-                      + g_W2VMatrix._12 * ls_z)
+    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
+                        + g_W2VMatrix._12 * ls_z)
         >> W2V_SHIFT;
-    LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
-                      + g_W2VMatrix._22 * ls_z)
+    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
+                        + g_W2VMatrix._22 * ls_z)
         >> W2V_SHIFT;
 }
 
 void phd_ResetMatrixStack()
 {
-    g_PhdMatrixPtr = &MatrixStack[0];
+    g_PhdMatrixPtr = &m_MatrixStack[0];
 }
 
 void phd_AlterFOV(PHD_ANGLE fov)
@@ -475,17 +475,17 @@ const int16_t *calc_vertice_light(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
         if (g_LsDivider) {
-            int32_t xv = (g_PhdMatrixPtr->_00 * LsVectorView.x
-                          + g_PhdMatrixPtr->_10 * LsVectorView.y
-                          + g_PhdMatrixPtr->_20 * LsVectorView.z)
+            int32_t xv = (g_PhdMatrixPtr->_00 * m_LsVectorView.x
+                          + g_PhdMatrixPtr->_10 * m_LsVectorView.y
+                          + g_PhdMatrixPtr->_20 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t yv = (g_PhdMatrixPtr->_01 * LsVectorView.x
-                          + g_PhdMatrixPtr->_11 * LsVectorView.y
-                          + g_PhdMatrixPtr->_21 * LsVectorView.z)
+            int32_t yv = (g_PhdMatrixPtr->_01 * m_LsVectorView.x
+                          + g_PhdMatrixPtr->_11 * m_LsVectorView.y
+                          + g_PhdMatrixPtr->_21 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t zv = (g_PhdMatrixPtr->_02 * LsVectorView.x
-                          + g_PhdMatrixPtr->_12 * LsVectorView.y
-                          + g_PhdMatrixPtr->_22 * LsVectorView.z)
+            int32_t zv = (g_PhdMatrixPtr->_02 * m_LsVectorView.x
+                          + g_PhdMatrixPtr->_12 * m_LsVectorView.y
+                          + g_PhdMatrixPtr->_22 * m_LsVectorView.z)
                 / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
                 int16_t shade = g_LsAdder
