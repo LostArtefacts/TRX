@@ -28,7 +28,7 @@ static void Music_StopActiveStream()
     // we clear the finish callback in order to avoid resuming the BGM playback
     // just after we stop it.
     S_Audio_StreamSetFinishCallback(m_AudioStreamID, NULL, NULL);
-    S_Audio_StreamStop(m_AudioStreamID);
+    S_Audio_StreamClose(m_AudioStreamID);
 }
 
 static void Music_StreamFinished(int stream_id, void *user_data)
