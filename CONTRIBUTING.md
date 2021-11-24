@@ -52,12 +52,14 @@ the original Core Design's naming, new code should adhere to the following
 guidelines:
 
 - Variables are `lower_snake_case`
-- Global variables are `PascalCase`
+- Global variables are `g_PascalCase`
+- Module variables are `m_PascalCase`
 - Function names are `Module_PascalCase`
 - Macros are `UPPER_SNAKE_CASE`
 - Struct names are `UPPER_SNAKE_CASE`
 - Struct members are `lower_snake_case`
 - Enum names are `UPPER_SNAKE_CASE`
+- Enum members are `UPPER_SNAKE_CASE`
 
 Try to avoid global variables, if possible declare them as `static` in the
 module you're using them. Changes to original game functionality most often
