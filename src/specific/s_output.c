@@ -20,10 +20,6 @@
 #include <assert.h>
 #include <string.h>
 
-#define VISIBLE(vn1, vn2, vn3)                                                                            \
-    ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys))) \
-     >= 0)
-
 void S_InitialisePolyList()
 {
     phd_InitPolyList();
@@ -211,7 +207,9 @@ void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         PHD_VBUF *vn2 = &PhdVBuf[T1MConfig.enable_round_shadow ? 4 : 1];
         PHD_VBUF *vn3 = &PhdVBuf[T1MConfig.enable_round_shadow ? 8 : 2];
 
-        int visible = VISIBLE(vn1, vn2, vn3);
+        bool visible =
+            ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))
+             >= 0);
 
         if (!clip_and && clip_positive && visible) {
             HWR_PrintShadow(
