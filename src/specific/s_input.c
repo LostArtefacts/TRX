@@ -77,33 +77,33 @@ static uint8_t m_DIKeys[256] = { 0 };
 
 static int32_t m_MedipackCoolDown = 0;
 
-static bool m_DInput_Create();
-static void m_DInput_Shutdown();
-static bool m_DInput_KeyboardCreate();
-static void m_DInput_KeyboardRelease();
-static void m_DInput_KeyboardRead();
-static bool m_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout);
-static bool m_Key(INPUT_KEY key);
+static bool S_Input_DInput_Create();
+static void S_Input_DInput_Shutdown();
+static bool S_Input_DInput_KeyboardCreate();
+static void S_Input_DInput_KeyboardRelease();
+static void S_Input_DInput_KeyboardRead();
+static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout);
+static bool S_Input_Key(INPUT_KEY key);
 
-static HRESULT m_DInput_JoystickCreate();
-static void m_DInput_JoystickRelease();
+static HRESULT S_Input_DInput_JoystickCreate();
+static void S_Input_DInput_JoystickRelease();
 static BOOL CALLBACK
-m_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
+S_Input_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
 static BOOL CALLBACK
-m_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
+S_Input_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
 
 void S_Input_Init()
 {
-    if (!m_DInput_Create()) {
+    if (!S_Input_DInput_Create()) {
         S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
-    if (!m_DInput_KeyboardCreate()) {
+    if (!S_Input_DInput_KeyboardCreate()) {
         S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     if (T1MConfig.enable_xbox_one_controller) {
-        m_DInput_JoystickCreate();
+        S_Input_DInput_JoystickCreate();
     } else {
         m_IDID_Joystick = NULL;
     }
@@ -111,14 +111,14 @@ void S_Input_Init()
 
 void InputShutdown()
 {
-    m_DInput_KeyboardRelease();
+    S_Input_DInput_KeyboardRelease();
     if (T1MConfig.enable_xbox_one_controller) {
-        m_DInput_JoystickRelease();
+        S_Input_DInput_JoystickRelease();
     }
-    m_DInput_Shutdown();
+    S_Input_DInput_Shutdown();
 }
 
-static bool m_DInput_Create()
+static bool S_Input_DInput_Create()
 {
     HRESULT result = DirectInput8Create(
         TombModule, DIRECTINPUT_VERSION, &IID_IDirectInput8,
@@ -132,7 +132,7 @@ static bool m_DInput_Create()
     return true;
 }
 
-static void m_DInput_Shutdown()
+static void S_Input_DInput_Shutdown()
 {
     if (m_DInput) {
         IDirectInput_Release(m_DInput);
@@ -140,7 +140,7 @@ static void m_DInput_Shutdown()
     }
 }
 
-bool m_DInput_KeyboardCreate()
+bool S_Input_DInput_KeyboardCreate()
 {
     HRESULT result = IDirectInput8_CreateDevice(
         m_DInput, &GUID_SysKeyboard, &m_IDID_SysKeyboard, NULL);
@@ -178,7 +178,7 @@ bool m_DInput_KeyboardCreate()
     return true;
 }
 
-void m_DInput_KeyboardRelease()
+void S_Input_DInput_KeyboardRelease()
 {
     if (m_IDID_SysKeyboard) {
         IDirectInputDevice_Unacquire(m_IDID_SysKeyboard);
@@ -187,7 +187,7 @@ void m_DInput_KeyboardRelease()
     }
 }
 
-static void m_DInput_KeyboardRead()
+static void S_Input_DInput_KeyboardRead()
 {
     while (IDirectInputDevice_GetDeviceState(
         m_IDID_SysKeyboard, sizeof(m_DIKeys), m_DIKeys)) {
@@ -198,7 +198,7 @@ static void m_DInput_KeyboardRead()
     }
 }
 
-static bool m_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
+static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
 {
     S_INPUT_KEYCODE key_code = m_Layout[layout][key];
     if (KEY_DOWN(key_code)) {
@@ -225,11 +225,11 @@ static bool m_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
     return false;
 }
 
-static bool m_Key(INPUT_KEY key)
+static bool S_Input_Key(INPUT_KEY key)
 {
-    return m_KbdKey(key, INPUT_LAYOUT_USER)
+    return S_Input_KbdKey(key, INPUT_LAYOUT_USER)
         || (!S_Input_IsKeyConflicted(key)
-            && m_KbdKey(key, INPUT_LAYOUT_DEFAULT));
+            && S_Input_KbdKey(key, INPUT_LAYOUT_DEFAULT));
 }
 
 S_INPUT_KEYCODE S_Input_ReadKeyCode()
@@ -242,14 +242,14 @@ S_INPUT_KEYCODE S_Input_ReadKeyCode()
     return -1;
 }
 
-static HRESULT m_DInput_JoystickCreate()
+static HRESULT S_Input_DInput_JoystickCreate()
 {
     HRESULT result;
 
     // Look for the first simple joystick we can find.
     if (FAILED(
             result = IDirectInput8_EnumDevices(
-                m_DInput, DI8DEVCLASS_GAMECTRL, m_EnumCallback, NULL,
+                m_DInput, DI8DEVCLASS_GAMECTRL, S_Input_EnumCallback, NULL,
                 DIEDFL_ATTACHEDONLY))) {
         LOG_ERROR(
             "Error while calling IDirectInput8_EnumDevices: 0x%lx", result);
@@ -271,7 +271,7 @@ static HRESULT m_DInput_JoystickCreate()
         LOG_ERROR(
             "Error while calling IDirectInputDevice_SetDataFormat: 0x%lx",
             result);
-        m_DInput_JoystickRelease();
+        S_Input_DInput_JoystickRelease();
         return result;
     }
 
@@ -283,7 +283,7 @@ static HRESULT m_DInput_JoystickCreate()
         LOG_ERROR(
             "Error while calling IDirectInputDevice_SetCooperativeLevel: 0x%lx",
             result);
-        m_DInput_JoystickRelease();
+        S_Input_DInput_JoystickRelease();
         return result;
     }
 
@@ -295,24 +295,24 @@ static HRESULT m_DInput_JoystickCreate()
         LOG_ERROR(
             "Error while calling IDirectInputDevice_GetCapabilities: 0x%lx",
             result);
-        m_DInput_JoystickRelease();
+        S_Input_DInput_JoystickRelease();
         return result;
     }
 
     // set the range we expect each axis to report back in
     if (FAILED(
             result = IDirectInputDevice_EnumObjects(
-                m_IDID_Joystick, m_EnumAxesCallback, NULL, DIDFT_AXIS))) {
+                m_IDID_Joystick, S_Input_EnumAxesCallback, NULL, DIDFT_AXIS))) {
         LOG_ERROR(
             "Error while calling IDirectInputDevice_EnumObjects: 0x%lx",
             result);
-        m_DInput_JoystickRelease();
+        S_Input_DInput_JoystickRelease();
         return result;
     }
     return result;
 }
 
-static void m_DInput_JoystickRelease()
+static void S_Input_DInput_JoystickRelease()
 {
     if (m_IDID_Joystick) {
         IDirectInputDevice_Unacquire(m_IDID_Joystick);
@@ -322,7 +322,7 @@ static void m_DInput_JoystickRelease()
 }
 
 static BOOL CALLBACK
-m_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
+S_Input_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
 {
     HRESULT result;
     DIPROPRANGE propRange;
@@ -348,7 +348,7 @@ m_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context)
 }
 
 static BOOL CALLBACK
-m_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context)
+S_Input_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context)
 {
     HRESULT result;
 
@@ -410,35 +410,37 @@ static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
 
 INPUT_STATE S_Input_GetCurrentState()
 {
-    m_DInput_KeyboardRead();
+    S_Input_DInput_KeyboardRead();
     S_Shell_SpinMessageLoop();
 
     INPUT_STATE linput = { 0 };
 
-    linput.forward = m_Key(INPUT_KEY_UP);
-    linput.back = m_Key(INPUT_KEY_DOWN);
-    linput.left = m_Key(INPUT_KEY_LEFT);
-    linput.right = m_Key(INPUT_KEY_RIGHT);
-    linput.step_left = m_Key(INPUT_KEY_STEP_L);
-    linput.step_right = m_Key(INPUT_KEY_STEP_R);
-    linput.slow = m_Key(INPUT_KEY_SLOW);
-    linput.jump = m_Key(INPUT_KEY_JUMP);
-    linput.action = m_Key(INPUT_KEY_ACTION);
-    linput.draw = m_Key(INPUT_KEY_DRAW);
-    linput.look = m_Key(INPUT_KEY_LOOK);
-    linput.roll = m_Key(INPUT_KEY_ROLL) || (linput.forward && linput.back);
-    linput.option = m_Key(INPUT_KEY_OPTION) && Camera.type != CAM_CINEMATIC;
-    linput.pause = m_Key(INPUT_KEY_PAUSE);
-    linput.camera_up = m_Key(INPUT_KEY_CAMERA_UP);
-    linput.camera_down = m_Key(INPUT_KEY_CAMERA_DOWN);
-    linput.camera_left = m_Key(INPUT_KEY_CAMERA_LEFT);
-    linput.camera_right = m_Key(INPUT_KEY_CAMERA_RIGHT);
-    linput.camera_reset = m_Key(INPUT_KEY_CAMERA_RESET);
+    linput.forward = S_Input_Key(INPUT_KEY_UP);
+    linput.back = S_Input_Key(INPUT_KEY_DOWN);
+    linput.left = S_Input_Key(INPUT_KEY_LEFT);
+    linput.right = S_Input_Key(INPUT_KEY_RIGHT);
+    linput.step_left = S_Input_Key(INPUT_KEY_STEP_L);
+    linput.step_right = S_Input_Key(INPUT_KEY_STEP_R);
+    linput.slow = S_Input_Key(INPUT_KEY_SLOW);
+    linput.jump = S_Input_Key(INPUT_KEY_JUMP);
+    linput.action = S_Input_Key(INPUT_KEY_ACTION);
+    linput.draw = S_Input_Key(INPUT_KEY_DRAW);
+    linput.look = S_Input_Key(INPUT_KEY_LOOK);
+    linput.roll =
+        S_Input_Key(INPUT_KEY_ROLL) || (linput.forward && linput.back);
+    linput.option =
+        S_Input_Key(INPUT_KEY_OPTION) && Camera.type != CAM_CINEMATIC;
+    linput.pause = S_Input_Key(INPUT_KEY_PAUSE);
+    linput.camera_up = S_Input_Key(INPUT_KEY_CAMERA_UP);
+    linput.camera_down = S_Input_Key(INPUT_KEY_CAMERA_DOWN);
+    linput.camera_left = S_Input_Key(INPUT_KEY_CAMERA_LEFT);
+    linput.camera_right = S_Input_Key(INPUT_KEY_CAMERA_RIGHT);
+    linput.camera_reset = S_Input_Key(INPUT_KEY_CAMERA_RESET);
 
     if (T1MConfig.enable_cheats) {
-        linput.item_cheat = m_Key(INPUT_KEY_ITEM_CHEAT);
-        linput.fly_cheat = m_Key(INPUT_KEY_FLY_CHEAT);
-        linput.level_skip_cheat = m_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
+        linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
+        linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
+        linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
         linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 
@@ -480,7 +482,7 @@ INPUT_STATE S_Input_GetCurrentState()
     }
 
     linput.select = linput.action || KEY_DOWN(DIK_RETURN);
-    linput.deselect = m_Key(INPUT_KEY_OPTION);
+    linput.deselect = S_Input_Key(INPUT_KEY_OPTION);
 
     if (linput.left && linput.right) {
         linput.left = 0;
@@ -495,21 +497,21 @@ INPUT_STATE S_Input_GetCurrentState()
     if (KEY_DOWN(DIK_F3)) {
         T1MConfig.render_flags.bilinear ^= 1;
         while (KEY_DOWN(DIK_F3)) {
-            m_DInput_KeyboardRead();
+            S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F4)) {
         T1MConfig.render_flags.perspective ^= 1;
         while (KEY_DOWN(DIK_F4)) {
-            m_DInput_KeyboardRead();
+            S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F2)) {
         T1MConfig.render_flags.fps_counter ^= 1;
         while (KEY_DOWN(DIK_F2)) {
-            m_DInput_KeyboardRead();
+            S_Input_DInput_KeyboardRead();
         }
     }
 

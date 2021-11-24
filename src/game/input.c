@@ -6,9 +6,9 @@ INPUT_STATE g_Input = { 0 };
 INPUT_STATE g_InputDB = { 0 };
 INPUT_STATE g_OldInputDB = { 0 };
 
-static INPUT_STATE m_Input_GetDebounced(INPUT_STATE input);
+static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
 
-INPUT_STATE m_Input_GetDebounced(INPUT_STATE input)
+INPUT_STATE Input_GetDebounced(INPUT_STATE input)
 {
     INPUT_STATE result;
     result.any = input.any & ~g_OldInputDB.any;
@@ -24,5 +24,5 @@ void Input_Init()
 void Input_Update()
 {
     g_Input = S_Input_GetCurrentState();
-    g_InputDB = m_Input_GetDebounced(g_Input);
+    g_InputDB = Input_GetDebounced(g_Input);
 }
