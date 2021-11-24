@@ -28,13 +28,13 @@ def main() -> None:
         print('    #define VERSION "T1M (unknown version)"', file=handle)
         print("#endif", file=handle)
         print("", file=handle)
-        print("const char *T1MVersion = VERSION;", file=handle)
+        print("const char *g_T1MVersion = VERSION;", file=handle)
         print("", file=handle)
         print("void T1MInit()", file=handle)
         print("{", file=handle)
         for key, value in gf["strings"].items():
             print(
-                f"    GF.strings[GS_{key}] = {json.dumps(value)};",
+                f"    g_GameFlow.strings[GS_{key}] = {json.dumps(value)};",
                 file=handle,
             )
         print("}", file=handle)

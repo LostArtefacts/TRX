@@ -28,7 +28,7 @@ typedef enum {
     CROCODILE_DEATH = 7,
 } CROCODILE_ANIM;
 
-extern BITE_INFO CrocodileBite;
+extern BITE_INFO g_CrocodileBite;
 
 void SetupCrocodile(OBJECT_INFO *obj);
 void CrocControl(int16_t item_num);

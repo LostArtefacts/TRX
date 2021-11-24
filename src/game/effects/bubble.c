@@ -16,8 +16,8 @@ void SetupBubble(OBJECT_INFO *obj)
 void LaraBubbles(ITEM_INFO *item)
 {
     // XXX: until we get Robolara, it makes sense for her to breathe underwater
-    if (Lara.water_status == LWS_CHEAT
-        && !(RoomInfo[LaraItem->room_number].flags & RF_UNDERWATER)) {
+    if (g_Lara.water_status == LWS_CHEAT
+        && !(g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER)) {
         return;
     }
 
@@ -37,7 +37,7 @@ void LaraBubbles(ITEM_INFO *item)
     for (int i = 0; i < count; i++) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &Effects[fx_num];
+            FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = offset.x;
             fx->pos.y = offset.y;
             fx->pos.z = offset.z;
@@ -50,7 +50,7 @@ void LaraBubbles(ITEM_INFO *item)
 
 void ControlBubble1(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->pos.y_rot += 9 * PHD_DEGREE;
     fx->pos.x_rot += 13 * PHD_DEGREE;
 
@@ -60,7 +60,7 @@ void ControlBubble1(int16_t fx_num)
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    if (!floor || !(RoomInfo[room_num].flags & RF_UNDERWATER)) {
+    if (!floor || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
         KillEffect(fx_num);
         return;
     }

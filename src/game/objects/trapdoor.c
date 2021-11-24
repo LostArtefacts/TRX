@@ -14,7 +14,7 @@ void SetupTrapDoor(OBJECT_INFO *obj)
 
 void TrapDoorControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;

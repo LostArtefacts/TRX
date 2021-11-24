@@ -32,7 +32,7 @@ typedef enum {
     RAPTOR_ATTACK3 = 8,
 } RAPTOR_ANIM;
 
-extern BITE_INFO RaptorBite;
+extern BITE_INFO g_RaptorBite;
 
 void SetupRaptor(OBJECT_INFO *obj);
 void RaptorControl(int16_t item_num);

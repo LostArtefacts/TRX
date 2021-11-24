@@ -21,12 +21,12 @@ void SetupFlame(OBJECT_INFO *obj)
 
 void FlameEmitterControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {
         if (!item->data) {
             int16_t fx_num = CreateEffect(item->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO *fx = &Effects[fx_num];
+                FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos.x = item->pos.x;
                 fx->pos.y = item->pos.y;
                 fx->pos.z = item->pos.z;
@@ -45,15 +45,15 @@ void FlameEmitterControl(int16_t item_num)
 
 void FlameControl(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
 
     fx->frame_number--;
-    if (fx->frame_number <= Objects[O_FLAME].nmeshes) {
+    if (fx->frame_number <= g_Objects[O_FLAME].nmeshes) {
         fx->frame_number = 0;
     }
 
     if (fx->counter < 0) {
-        if (Lara.water_status == LWS_CHEAT) {
+        if (g_Lara.water_status == LWS_CHEAT) {
             fx->counter = 0;
             Sound_StopEffect(SFX_FIRE, NULL);
             KillEffect(fx_num);
@@ -67,11 +67,12 @@ void FlameControl(int16_t fx_num)
             fx->pos.z = 0;
         }
 
-        GetJointAbsPosition(LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
+        GetJointAbsPosition(
+            g_LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
 
         int32_t y = GetWaterHeight(
-            LaraItem->pos.x, LaraItem->pos.y, LaraItem->pos.z,
-            LaraItem->room_number);
+            g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
+            g_LaraItem->room_number);
 
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
@@ -79,8 +80,8 @@ void FlameControl(int16_t fx_num)
             KillEffect(fx_num);
         } else {
             Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
-            LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
-            LaraItem->hit_status = 1;
+            g_LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
+            g_LaraItem->hit_status = 1;
         }
         return;
     }
@@ -89,23 +90,23 @@ void FlameControl(int16_t fx_num)
     if (fx->counter) {
         fx->counter--;
     } else if (ItemNearLara(&fx->pos, 600)) {
-        if (Lara.water_status == LWS_CHEAT) {
+        if (g_Lara.water_status == LWS_CHEAT) {
             return;
         }
 
-        int32_t x = LaraItem->pos.x - fx->pos.x;
-        int32_t z = LaraItem->pos.z - fx->pos.z;
+        int32_t x = g_LaraItem->pos.x - fx->pos.x;
+        int32_t z = g_LaraItem->pos.z - fx->pos.z;
         int32_t distance = SQUARE(x) + SQUARE(z);
 
-        LaraItem->hit_points -= FLAME_TOONEAR_DAMAGE;
-        LaraItem->hit_status = 1;
+        g_LaraItem->hit_points -= FLAME_TOONEAR_DAMAGE;
+        g_LaraItem->hit_status = 1;
 
         if (distance < SQUARE(300)) {
             fx->counter = 100;
 
-            fx_num = CreateEffect(LaraItem->room_number);
+            fx_num = CreateEffect(g_LaraItem->room_number);
             if (fx_num != NO_ITEM) {
-                fx = &Effects[fx_num];
+                fx = &g_Effects[fx_num];
                 fx->frame_number = 0;
                 fx->object_number = O_FLAME;
                 fx->counter = -1;

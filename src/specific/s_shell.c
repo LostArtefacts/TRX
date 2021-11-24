@@ -65,7 +65,7 @@ static bool S_Shell_InitDirectDraw()
         return false;
     }
 
-    if (m_DirectDrawCreate(NULL, &DDraw, NULL)) {
+    if (m_DirectDrawCreate(NULL, &g_DDraw, NULL)) {
         S_Shell_ShowFatalError("DirectDraw could not be started");
         return false;
     }
@@ -80,14 +80,14 @@ static bool S_Shell_InitDirectDraw()
 
 static void S_Shell_TerminateGame(int exit_code)
 {
-    if (DDraw) {
+    if (g_DDraw) {
         HWR_ReleaseSurfaces();
-        IDirectDraw_FlipToGDISurface(DDraw);
-        IDirectDraw_FlipToGDISurface(DDraw);
-        IDirectDraw_RestoreDisplayMode(DDraw);
-        IDirectDraw_SetCooperativeLevel(DDraw, TombHWND, 8);
-        IDirectDraw_Release(DDraw);
-        DDraw = NULL;
+        IDirectDraw_FlipToGDISurface(g_DDraw);
+        IDirectDraw_FlipToGDISurface(g_DDraw);
+        IDirectDraw_RestoreDisplayMode(g_DDraw);
+        IDirectDraw_SetCooperativeLevel(g_DDraw, g_TombHWND, 8);
+        IDirectDraw_Release(g_DDraw);
+        g_DDraw = NULL;
     }
 
     S_ATI_Shutdown();
@@ -123,13 +123,13 @@ static LRESULT CALLBACK
 WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == CloseMsg) {
-        DestroyWindow(TombHWND);
+        DestroyWindow(g_TombHWND);
         return 0;
     }
 
     switch (uMsg) {
     case WM_CLOSE:
-        DestroyWindow(TombHWND);
+        DestroyWindow(g_TombHWND);
         return 0;
 
     case WM_DESTROY:
@@ -152,7 +152,7 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_ACTIVATEAPP:
         // mute the music when the game is not active
         if (!IsGameWindowActive && wParam) {
-            Music_SetVolume(T1MConfig.music_volume);
+            Music_SetVolume(g_Config.music_volume);
         } else if (IsGameWindowActive && !wParam) {
             Music_SetVolume(0);
         }
@@ -164,16 +164,16 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_GETMINMAXINFO: {
         MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
-        min_max_info->ptMinTrackSize.x = DDrawSurfaceWidth;
-        min_max_info->ptMinTrackSize.y = DDrawSurfaceHeight;
-        min_max_info->ptMaxTrackSize.x = DDrawSurfaceWidth;
-        min_max_info->ptMaxTrackSize.y = DDrawSurfaceHeight;
+        min_max_info->ptMinTrackSize.x = g_DDrawSurfaceWidth;
+        min_max_info->ptMinTrackSize.y = g_DDrawSurfaceHeight;
+        min_max_info->ptMaxTrackSize.x = g_DDrawSurfaceWidth;
+        min_max_info->ptMaxTrackSize.y = g_DDrawSurfaceHeight;
         return DefWindowProcA(
             hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
     }
 
     case WM_MOVING:
-        GetWindowRect(TombHWND, (LPRECT)lParam);
+        GetWindowRect(g_TombHWND, (LPRECT)lParam);
         return 1;
 
     case WM_SYSCOMMAND:
@@ -206,19 +206,19 @@ int WINAPI WinMain(
     int32_t scr_height = GetSystemMetrics(SM_CYSCREEN);
     int32_t scr_width = GetSystemMetrics(SM_CXSCREEN);
 
-    TombModule = hInstance;
-    TombHWND = CreateWindowExA(
+    g_TombModule = hInstance;
+    g_TombHWND = CreateWindowExA(
         0, ClassName, WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
         scr_width, scr_height, 0, 0, hInstance, 0);
 
-    if (!TombHWND) {
+    if (!g_TombHWND) {
         S_Shell_ShowFatalError("System Error: cannot create window");
         return 1;
     }
 
-    SetWindowPos(TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
-    ShowWindow(TombHWND, nShowCmd);
-    UpdateWindow(TombHWND);
+    SetWindowPos(g_TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
+    ShowWindow(g_TombHWND, nShowCmd);
+    UpdateWindow(g_TombHWND);
     CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
 
     if (!S_Shell_InitDirectDraw()) {

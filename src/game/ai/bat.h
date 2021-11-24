@@ -20,7 +20,7 @@ typedef enum {
     BAT_DEATH = 5,
 } BAT_ANIM;
 
-extern BITE_INFO BatBite;
+extern BITE_INFO g_BatBite;
 
 void SetupBat(OBJECT_INFO *obj);
 void BatControl(int16_t item_num);

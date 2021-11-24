@@ -292,7 +292,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
     if (textstring->flags.flash) {
-        textstring->flash.count -= (int16_t)Camera.number_frames;
+        textstring->flash.count -= (int16_t)g_Camera.number_frames;
         if (textstring->flash.count <= -textstring->flash.rate) {
             textstring->flash.count = textstring->flash.rate;
         } else if (textstring->flash.count < 0) {
@@ -348,7 +348,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sv = Screen_GetRenderScale(textstring->scale.v);
 
         S_DrawScreenSprite2d(
-            sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
+            sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, 0, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {

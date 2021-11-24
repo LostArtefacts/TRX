@@ -26,10 +26,10 @@ void SetupLightningEmitter(OBJECT_INFO *obj)
 void InitialiseLightning(int16_t item_num)
 {
     LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_TRAP_DATA);
-    Items[item_num].data = l;
+    g_Items[item_num].data = l;
 
-    if (Objects[Items[item_num].object_number].nmeshes > 1) {
-        Items[item_num].mesh_bits = 1;
+    if (g_Objects[g_Items[item_num].object_number].nmeshes > 1) {
+        g_Items[item_num].mesh_bits = 1;
         l->notarget = 0;
     } else {
         l->notarget = 1;
@@ -42,7 +42,7 @@ void InitialiseLightning(int16_t item_num)
 
 void LightningControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
 
     if (!TriggerActive(item)) {
@@ -50,7 +50,7 @@ void LightningControl(int16_t item_num)
         l->onstate = 0;
         l->zapped = 0;
 
-        if (FlipStatus) {
+        if (g_FlipStatus) {
             FlipMap();
         }
 
@@ -68,7 +68,7 @@ void LightningControl(int16_t item_num)
         l->onstate = 0;
         l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = 0;
-        if (FlipStatus) {
+        if (g_FlipStatus) {
             FlipMap();
         }
     } else {
@@ -83,12 +83,12 @@ void LightningControl(int16_t item_num)
 
         int32_t radius = l->notarget ? WALL_L : WALL_L * 5 / 2;
         if (ItemNearLara(&item->pos, radius)) {
-            l->target.x = LaraItem->pos.x;
-            l->target.y = LaraItem->pos.y;
-            l->target.z = LaraItem->pos.z;
+            l->target.x = g_LaraItem->pos.x;
+            l->target.y = g_LaraItem->pos.y;
+            l->target.z = g_LaraItem->pos.z;
 
-            LaraItem->hit_points -= LIGHTNING_DAMAGE;
-            LaraItem->hit_status = 1;
+            g_LaraItem->hit_points -= LIGHTNING_DAMAGE;
+            g_LaraItem->hit_status = 1;
 
             l->zapped = 1;
         } else if (l->notarget) {
@@ -121,7 +121,7 @@ void LightningControl(int16_t item_num)
             }
         }
 
-        if (!FlipStatus) {
+        if (!g_FlipStatus) {
             FlipMap();
         }
     }
@@ -131,15 +131,15 @@ void LightningControl(int16_t item_num)
 
 void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    LIGHTNING *l = Items[item_num].data;
+    LIGHTNING *l = g_Items[item_num].data;
     if (!l->zapped) {
         return;
     }
 
-    Lara.hit_direction = 1 + (Random_GetControl() * 4) / (PHD_180 - 1);
-    Lara.hit_frame++;
-    if (Lara.hit_frame > 34) {
-        Lara.hit_frame = 34;
+    g_Lara.hit_direction = 1 + (Random_GetControl() * 4) / (PHD_180 - 1);
+    g_Lara.hit_frame++;
+    if (g_Lara.hit_frame > 34) {
+        g_Lara.hit_frame = 34;
     }
 }
 
@@ -164,11 +164,11 @@ void DrawLightning(ITEM_INFO *item)
     phd_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);
 
-    int32_t x1 = PhdMatrixPtr->_03;
-    int32_t y1 = PhdMatrixPtr->_13;
-    int32_t z1 = PhdMatrixPtr->_23;
+    int32_t x1 = g_PhdMatrixPtr->_03;
+    int32_t y1 = g_PhdMatrixPtr->_13;
+    int32_t z1 = g_PhdMatrixPtr->_23;
 
-    phd_PutPolygons(Meshes[Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
+    phd_PutPolygons(g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
 
     phd_PopMatrix();
 
@@ -182,9 +182,9 @@ void DrawLightning(ITEM_INFO *item)
     phd_TranslateAbs(l->target.x, l->target.y, l->target.z);
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t x2 = PhdMatrixPtr->_03;
-    int32_t y2 = PhdMatrixPtr->_13;
-    int32_t z2 = PhdMatrixPtr->_23;
+    int32_t x2 = g_PhdMatrixPtr->_03;
+    int32_t y2 = g_PhdMatrixPtr->_13;
+    int32_t z2 = g_PhdMatrixPtr->_23;
 
     int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
     int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
@@ -233,9 +233,9 @@ void DrawLightning(ITEM_INFO *item)
         phd_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
         phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-        x2 = PhdMatrixPtr->_03;
-        y2 = PhdMatrixPtr->_13;
-        z2 = PhdMatrixPtr->_23;
+        x2 = g_PhdMatrixPtr->_03;
+        y2 = g_PhdMatrixPtr->_13;
+        z2 = g_PhdMatrixPtr->_23;
 
         int32_t steps = LIGHTNING_STEPS - j;
         dx = (x2 - x1) / steps;

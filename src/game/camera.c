@@ -14,100 +14,104 @@
 
 void InitialiseCamera()
 {
-    Camera.shift = LaraItem->pos.y - WALL_L;
+    g_Camera.shift = g_LaraItem->pos.y - WALL_L;
 
-    Camera.target.x = LaraItem->pos.x;
-    Camera.target.y = Camera.shift;
-    Camera.target.z = LaraItem->pos.z;
-    Camera.target.room_number = LaraItem->room_number;
+    g_Camera.target.x = g_LaraItem->pos.x;
+    g_Camera.target.y = g_Camera.shift;
+    g_Camera.target.z = g_LaraItem->pos.z;
+    g_Camera.target.room_number = g_LaraItem->room_number;
 
-    Camera.pos.x = Camera.target.x;
-    Camera.pos.y = Camera.target.y;
-    Camera.pos.z = Camera.target.z - 100;
-    Camera.pos.room_number = Camera.target.room_number;
+    g_Camera.pos.x = g_Camera.target.x;
+    g_Camera.pos.y = g_Camera.target.y;
+    g_Camera.pos.z = g_Camera.target.z - 100;
+    g_Camera.pos.room_number = g_Camera.target.room_number;
 
-    Camera.target_distance = WALL_L * 3 / 2;
-    Camera.item = NULL;
+    g_Camera.target_distance = WALL_L * 3 / 2;
+    g_Camera.item = NULL;
 
-    Camera.number_frames = 1;
-    Camera.type = CAM_CHASE;
-    Camera.flags = 0;
-    Camera.bounce = 0;
-    Camera.number = NO_CAMERA;
-    Camera.additional_angle = 0;
-    Camera.additional_elevation = 0;
+    g_Camera.number_frames = 1;
+    g_Camera.type = CAM_CHASE;
+    g_Camera.flags = 0;
+    g_Camera.bounce = 0;
+    g_Camera.number = NO_CAMERA;
+    g_Camera.additional_angle = 0;
+    g_Camera.additional_elevation = 0;
 
     CalculateCamera();
 }
 
 void MoveCamera(GAME_VECTOR *ideal, int32_t speed)
 {
-    Camera.pos.x += (ideal->x - Camera.pos.x) / speed;
-    Camera.pos.z += (ideal->z - Camera.pos.z) / speed;
-    Camera.pos.y += (ideal->y - Camera.pos.y) / speed;
-    Camera.pos.room_number = ideal->room_number;
+    g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
+    g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
+    g_Camera.pos.y += (ideal->y - g_Camera.pos.y) / speed;
+    g_Camera.pos.room_number = ideal->room_number;
 
-    ChunkyFlag = false;
+    g_ChunkyFlag = false;
 
     FLOOR_INFO *floor = GetFloor(
-        Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
-    int32_t height = GetHeight(floor, Camera.pos.x, Camera.pos.y, Camera.pos.z)
+        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
+        &g_Camera.pos.room_number);
+    int32_t height =
+        GetHeight(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
         - GROUND_SHIFT;
 
-    if (Camera.pos.y >= height && ideal->y >= height) {
-        LOS(&Camera.target, &Camera.pos);
+    if (g_Camera.pos.y >= height && ideal->y >= height) {
+        LOS(&g_Camera.target, &g_Camera.pos);
         floor = GetFloor(
-            Camera.pos.x, Camera.pos.y, Camera.pos.z, &Camera.pos.room_number);
-        height = GetHeight(floor, Camera.pos.x, Camera.pos.y, Camera.pos.z)
+            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
+            &g_Camera.pos.room_number);
+        height =
+            GetHeight(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
             - GROUND_SHIFT;
     }
 
     int32_t ceiling =
-        GetCeiling(floor, Camera.pos.x, Camera.pos.y, Camera.pos.z)
+        GetCeiling(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
         + GROUND_SHIFT;
     if (height < ceiling) {
         ceiling = (height + ceiling) >> 1;
         height = ceiling;
     }
 
-    if (Camera.bounce) {
-        if (Camera.bounce > 0) {
-            Camera.pos.y += Camera.bounce;
-            Camera.target.y += Camera.bounce;
-            Camera.bounce = 0;
+    if (g_Camera.bounce) {
+        if (g_Camera.bounce > 0) {
+            g_Camera.pos.y += g_Camera.bounce;
+            g_Camera.target.y += g_Camera.bounce;
+            g_Camera.bounce = 0;
         } else {
             int32_t shake;
-            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
-            Camera.pos.x += shake;
-            Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
-            Camera.pos.y += shake;
-            Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * Camera.bounce / 0x7FFF;
-            Camera.pos.z += shake;
-            Camera.target.z += shake;
-            Camera.bounce += 5;
+            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
+            g_Camera.pos.x += shake;
+            g_Camera.target.y += shake;
+            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
+            g_Camera.pos.y += shake;
+            g_Camera.target.y += shake;
+            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
+            g_Camera.pos.z += shake;
+            g_Camera.target.z += shake;
+            g_Camera.bounce += 5;
         }
     }
 
-    if (Camera.pos.y > height) {
-        Camera.shift = height - Camera.pos.y;
-    } else if (Camera.pos.y < ceiling) {
-        Camera.shift = ceiling - Camera.pos.y;
+    if (g_Camera.pos.y > height) {
+        g_Camera.shift = height - g_Camera.pos.y;
+    } else if (g_Camera.pos.y < ceiling) {
+        g_Camera.shift = ceiling - g_Camera.pos.y;
     } else {
-        Camera.shift = 0;
+        g_Camera.shift = 0;
     }
 
     GetFloor(
-        Camera.pos.x, Camera.pos.y + Camera.shift, Camera.pos.z,
-        &Camera.pos.room_number);
+        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
+        &g_Camera.pos.room_number);
 
     phd_LookAt(
-        Camera.pos.x, Camera.pos.y + Camera.shift, Camera.pos.z,
-        Camera.target.x, Camera.target.y, Camera.target.z, 0);
+        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
+        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, 0);
 
-    Camera.actual_angle = phd_atan(
-        Camera.target.z - Camera.pos.z, Camera.target.x - Camera.pos.x);
+    g_Camera.actual_angle = phd_atan(
+        g_Camera.target.z - g_Camera.pos.z, g_Camera.target.x - g_Camera.pos.x);
 }
 
 void ClipCamera(
@@ -136,9 +140,9 @@ void ShiftCamera(
     int32_t BL_square = SQUARE(target_x - left) + SQUARE(target_y - bottom);
     int32_t TR_square = SQUARE(target_x - right) + SQUARE(target_y - top);
 
-    if (Camera.target_square < TL_square) {
+    if (g_Camera.target_square < TL_square) {
         *x = left;
-        shift = Camera.target_square - SQUARE(target_x - left);
+        shift = g_Camera.target_square - SQUARE(target_x - left);
         if (shift < 0) {
             return;
         }
@@ -148,9 +152,9 @@ void ShiftCamera(
     } else if (TL_square > MIN_SQUARE) {
         *x = left;
         *y = top;
-    } else if (Camera.target_square < BL_square) {
+    } else if (g_Camera.target_square < BL_square) {
         *x = left;
-        shift = Camera.target_square - SQUARE(target_x - left);
+        shift = g_Camera.target_square - SQUARE(target_x - left);
         if (shift < 0) {
             return;
         }
@@ -160,8 +164,8 @@ void ShiftCamera(
     } else if (BL_square > MIN_SQUARE) {
         *x = left;
         *y = bottom;
-    } else if (Camera.target_square < TR_square) {
-        shift = Camera.target_square - SQUARE(target_y - top);
+    } else if (g_Camera.target_square < TR_square) {
+        shift = g_Camera.target_square - SQUARE(target_y - top);
         if (shift < 0) {
             return;
         }
@@ -190,16 +194,16 @@ void SmartShift(
         int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
         int32_t left, int32_t top, int32_t right, int32_t bottom))
 {
-    LOS(&Camera.target, ideal);
+    LOS(&g_Camera.target, ideal);
 
-    ROOM_INFO *r = &RoomInfo[Camera.target.room_number];
-    int32_t x_floor = (Camera.target.z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (Camera.target.x - r->x) >> WALL_SHIFT;
+    ROOM_INFO *r = &g_RoomInfo[g_Camera.target.room_number];
+    int32_t x_floor = (g_Camera.target.z - r->z) >> WALL_SHIFT;
+    int32_t y_floor = (g_Camera.target.x - r->x) >> WALL_SHIFT;
 
     int16_t item_box = r->floor[x_floor + y_floor * r->x_size].box;
-    BOX_INFO *box = &Boxes[item_box];
+    BOX_INFO *box = &g_Boxes[item_box];
 
-    r = &RoomInfo[ideal->room_number];
+    r = &g_RoomInfo[ideal->room_number];
     x_floor = (ideal->z - r->z) >> WALL_SHIFT;
     y_floor = (ideal->x - r->x) >> WALL_SHIFT;
 
@@ -207,7 +211,7 @@ void SmartShift(
     if (camera_box != NO_BOX
         && (ideal->z < box->left || ideal->z > box->right || ideal->x < box->top
             || ideal->x > box->bottom)) {
-        box = &Boxes[camera_box];
+        box = &g_Boxes[camera_box];
     }
 
     int32_t left = box->left;
@@ -220,8 +224,8 @@ void SmartShift(
         BadPosition(ideal->x, ideal->y, test, ideal->room_number);
     if (!bad_left) {
         camera_box = r->floor[x_floor - 1 + y_floor * r->x_size].box;
-        if (camera_box != NO_ITEM && Boxes[camera_box].left < left) {
-            left = Boxes[camera_box].left;
+        if (camera_box != NO_ITEM && g_Boxes[camera_box].left < left) {
+            left = g_Boxes[camera_box].left;
         }
     }
 
@@ -230,8 +234,8 @@ void SmartShift(
         BadPosition(ideal->x, ideal->y, test, ideal->room_number);
     if (!bad_right) {
         camera_box = r->floor[x_floor + 1 + y_floor * r->x_size].box;
-        if (camera_box != NO_ITEM && Boxes[camera_box].right > right) {
-            right = Boxes[camera_box].right;
+        if (camera_box != NO_ITEM && g_Boxes[camera_box].right > right) {
+            right = g_Boxes[camera_box].right;
         }
     }
 
@@ -239,8 +243,8 @@ void SmartShift(
     int32_t bad_top = BadPosition(test, ideal->y, ideal->z, ideal->room_number);
     if (!bad_top) {
         camera_box = r->floor[x_floor + (y_floor - 1) * r->x_size].box;
-        if (camera_box != NO_ITEM && Boxes[camera_box].top < top) {
-            top = Boxes[camera_box].top;
+        if (camera_box != NO_ITEM && g_Boxes[camera_box].top < top) {
+            top = g_Boxes[camera_box].top;
         }
     }
 
@@ -249,8 +253,8 @@ void SmartShift(
         BadPosition(test, ideal->y, ideal->z, ideal->room_number);
     if (!bad_bottom) {
         camera_box = r->floor[x_floor + (y_floor + 1) * r->x_size].box;
-        if (camera_box != NO_ITEM && Boxes[camera_box].bottom > bottom) {
-            bottom = Boxes[camera_box].bottom;
+        if (camera_box != NO_ITEM && g_Boxes[camera_box].bottom > bottom) {
+            bottom = g_Boxes[camera_box].bottom;
         }
     }
 
@@ -262,49 +266,49 @@ void SmartShift(
     int32_t noclip = 1;
     if (ideal->z < left && bad_left) {
         noclip = 0;
-        if (ideal->x < Camera.target.x) {
+        if (ideal->x < g_Camera.target.x) {
             shift(
-                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, left,
-                top, right, bottom);
+                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
+                left, top, right, bottom);
         } else {
             shift(
-                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, left,
-                bottom, right, top);
+                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
+                left, bottom, right, top);
         }
     } else if (ideal->z > right && bad_right) {
         noclip = 0;
-        if (ideal->x < Camera.target.x) {
+        if (ideal->x < g_Camera.target.x) {
             shift(
-                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, right,
-                top, left, bottom);
+                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
+                right, top, left, bottom);
         } else {
             shift(
-                &ideal->z, &ideal->x, Camera.target.z, Camera.target.x, right,
-                bottom, left, top);
+                &ideal->z, &ideal->x, g_Camera.target.z, g_Camera.target.x,
+                right, bottom, left, top);
         }
     }
 
     if (noclip) {
         if (ideal->x < top && bad_top) {
             noclip = 0;
-            if (ideal->z < Camera.target.z) {
+            if (ideal->z < g_Camera.target.z) {
                 shift(
-                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z, top,
-                    left, bottom, right);
+                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
+                    top, left, bottom, right);
             } else {
                 shift(
-                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z, top,
-                    right, bottom, left);
+                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
+                    top, right, bottom, left);
             }
         } else if (ideal->x > bottom && bad_bottom) {
             noclip = 0;
-            if (ideal->z < Camera.target.z) {
+            if (ideal->z < g_Camera.target.z) {
                 shift(
-                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z,
+                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
                     bottom, left, top, right);
             } else {
                 shift(
-                    &ideal->x, &ideal->z, Camera.target.x, Camera.target.z,
+                    &ideal->x, &ideal->z, g_Camera.target.x, g_Camera.target.z,
                     bottom, right, top, left);
             }
         }
@@ -319,30 +323,31 @@ void ChaseCamera(ITEM_INFO *item)
 {
     GAME_VECTOR ideal;
 
-    Camera.target_elevation += item->pos.x_rot;
-    if (Camera.target_elevation > MAX_ELEVATION) {
-        Camera.target_elevation = MAX_ELEVATION;
-    } else if (Camera.target_elevation < -MAX_ELEVATION) {
-        Camera.target_elevation = -MAX_ELEVATION;
+    g_Camera.target_elevation += item->pos.x_rot;
+    if (g_Camera.target_elevation > MAX_ELEVATION) {
+        g_Camera.target_elevation = MAX_ELEVATION;
+    } else if (g_Camera.target_elevation < -MAX_ELEVATION) {
+        g_Camera.target_elevation = -MAX_ELEVATION;
     }
 
     int32_t distance =
-        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
-    ideal.y = Camera.target.y
-        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+        g_Camera.target_distance * phd_cos(g_Camera.target_elevation)
+        >> W2V_SHIFT;
+    ideal.y = g_Camera.target.y
+        + (g_Camera.target_distance * phd_sin(g_Camera.target_elevation)
            >> W2V_SHIFT);
 
-    Camera.target_square = SQUARE(distance);
+    g_Camera.target_square = SQUARE(distance);
 
-    PHD_ANGLE angle = item->pos.y_rot + Camera.target_angle;
-    ideal.x = Camera.target.x - (distance * phd_sin(angle) >> W2V_SHIFT);
-    ideal.z = Camera.target.z - (distance * phd_cos(angle) >> W2V_SHIFT);
-    ideal.room_number = Camera.pos.room_number;
+    PHD_ANGLE angle = item->pos.y_rot + g_Camera.target_angle;
+    ideal.x = g_Camera.target.x - (distance * phd_sin(angle) >> W2V_SHIFT);
+    ideal.z = g_Camera.target.z - (distance * phd_cos(angle) >> W2V_SHIFT);
+    ideal.room_number = g_Camera.pos.room_number;
 
     SmartShift(&ideal, ShiftCamera);
 
-    if (Camera.fixed_camera) {
-        MoveCamera(&ideal, Camera.speed);
+    if (g_Camera.fixed_camera) {
+        MoveCamera(&ideal, g_Camera.speed);
     } else {
         MoveCamera(&ideal, CHASE_SPEED);
     }
@@ -356,7 +361,7 @@ int32_t ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
 
     FLOOR_INFO *floor = GetFloor(x, y, z, &pos->room_number);
 
-    BOX_INFO *box = &Boxes[floor->box];
+    BOX_INFO *box = &g_Boxes[floor->box];
     if (z < box->left + clamp
         && BadPosition(x, y, z - clamp, pos->room_number)) {
         pos->z = box->left + clamp;
@@ -396,35 +401,36 @@ void CombatCamera(ITEM_INFO *item)
 {
     GAME_VECTOR ideal;
 
-    Camera.target.z = item->pos.z;
-    Camera.target.x = item->pos.x;
+    g_Camera.target.z = item->pos.z;
+    g_Camera.target.x = item->pos.x;
 
-    if (Lara.target) {
-        Camera.target_angle = item->pos.y_rot + Lara.target_angles[0];
-        Camera.target_elevation = item->pos.x_rot + Lara.target_angles[1];
+    if (g_Lara.target) {
+        g_Camera.target_angle = item->pos.y_rot + g_Lara.target_angles[0];
+        g_Camera.target_elevation = item->pos.x_rot + g_Lara.target_angles[1];
     } else {
-        Camera.target_angle =
-            item->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
-        Camera.target_elevation =
-            item->pos.x_rot + Lara.torso_x_rot + Lara.head_x_rot;
+        g_Camera.target_angle =
+            item->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+        g_Camera.target_elevation =
+            item->pos.x_rot + g_Lara.torso_x_rot + g_Lara.head_x_rot;
     }
 
-    Camera.target_distance = COMBAT_DISTANCE;
+    g_Camera.target_distance = COMBAT_DISTANCE;
 
     int32_t distance =
-        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
+        g_Camera.target_distance * phd_cos(g_Camera.target_elevation)
+        >> W2V_SHIFT;
 
-    ideal.x = Camera.target.x
-        - (distance * phd_sin(Camera.target_angle) >> W2V_SHIFT);
-    ideal.y = Camera.target.y
-        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+    ideal.x = g_Camera.target.x
+        - (distance * phd_sin(g_Camera.target_angle) >> W2V_SHIFT);
+    ideal.y = g_Camera.target.y
+        + (g_Camera.target_distance * phd_sin(g_Camera.target_elevation)
            >> W2V_SHIFT);
-    ideal.z = Camera.target.z
-        - (distance * phd_cos(Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_number = Camera.pos.room_number;
+    ideal.z = g_Camera.target.z
+        - (distance * phd_cos(g_Camera.target_angle) >> W2V_SHIFT);
+    ideal.room_number = g_Camera.pos.room_number;
 
     SmartShift(&ideal, ShiftCamera);
-    MoveCamera(&ideal, Camera.speed);
+    MoveCamera(&ideal, g_Camera.speed);
 }
 
 void LookCamera(ITEM_INFO *item)
@@ -432,48 +438,51 @@ void LookCamera(ITEM_INFO *item)
     GAME_VECTOR old;
     GAME_VECTOR ideal;
 
-    old.z = Camera.target.z;
-    old.x = Camera.target.x;
+    old.z = g_Camera.target.z;
+    old.x = g_Camera.target.x;
 
-    Camera.target.z = item->pos.z;
-    Camera.target.x = item->pos.x;
+    g_Camera.target.z = item->pos.z;
+    g_Camera.target.x = item->pos.x;
 
-    Camera.target_angle = item->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
-    Camera.target_elevation =
-        item->pos.x_rot + Lara.torso_x_rot + Lara.head_x_rot;
-    Camera.target_distance = WALL_L * 3 / 2;
+    g_Camera.target_angle =
+        item->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+    g_Camera.target_elevation =
+        item->pos.x_rot + g_Lara.torso_x_rot + g_Lara.head_x_rot;
+    g_Camera.target_distance = WALL_L * 3 / 2;
 
     int32_t distance =
-        Camera.target_distance * phd_cos(Camera.target_elevation) >> W2V_SHIFT;
+        g_Camera.target_distance * phd_cos(g_Camera.target_elevation)
+        >> W2V_SHIFT;
 
-    Camera.shift = -STEP_L * 2 * phd_sin(Camera.target_elevation) >> W2V_SHIFT;
-    Camera.target.z += Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
-    Camera.target.x += Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+    g_Camera.shift =
+        -STEP_L * 2 * phd_sin(g_Camera.target_elevation) >> W2V_SHIFT;
+    g_Camera.target.z += g_Camera.shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
+    g_Camera.target.x += g_Camera.shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
 
     if (BadPosition(
-            Camera.target.x, Camera.target.y, Camera.target.z,
-            Camera.target.room_number)) {
-        Camera.target.x = item->pos.x;
-        Camera.target.z = item->pos.z;
+            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
+            g_Camera.target.room_number)) {
+        g_Camera.target.x = item->pos.x;
+        g_Camera.target.z = item->pos.z;
     }
 
-    Camera.target.y += ShiftClamp(&Camera.target, STEP_L + 50);
+    g_Camera.target.y += ShiftClamp(&g_Camera.target, STEP_L + 50);
 
-    ideal.x = Camera.target.x
-        - (distance * phd_sin(Camera.target_angle) >> W2V_SHIFT);
-    ideal.y = Camera.target.y
-        + (Camera.target_distance * phd_sin(Camera.target_elevation)
+    ideal.x = g_Camera.target.x
+        - (distance * phd_sin(g_Camera.target_angle) >> W2V_SHIFT);
+    ideal.y = g_Camera.target.y
+        + (g_Camera.target_distance * phd_sin(g_Camera.target_elevation)
            >> W2V_SHIFT);
-    ideal.z = Camera.target.z
-        - (distance * phd_cos(Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_number = Camera.pos.room_number;
+    ideal.z = g_Camera.target.z
+        - (distance * phd_cos(g_Camera.target_angle) >> W2V_SHIFT);
+    ideal.room_number = g_Camera.pos.room_number;
 
     SmartShift(&ideal, ClipCamera);
 
-    Camera.target.z = old.z + (Camera.target.z - old.z) / Camera.speed;
-    Camera.target.x = old.x + (Camera.target.x - old.x) / Camera.speed;
+    g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
+    g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
 
-    MoveCamera(&ideal, Camera.speed);
+    MoveCamera(&ideal, g_Camera.speed);
 }
 
 void FixedCamera()
@@ -481,52 +490,52 @@ void FixedCamera()
     GAME_VECTOR ideal;
     OBJECT_VECTOR *fixed;
 
-    fixed = &Camera.fixed[Camera.number];
+    fixed = &g_Camera.fixed[g_Camera.number];
     ideal.x = fixed->x;
     ideal.y = fixed->y;
     ideal.z = fixed->z;
     ideal.room_number = fixed->data;
 
-    if (!LOS(&Camera.target, &ideal)) {
+    if (!LOS(&g_Camera.target, &ideal)) {
         ShiftClamp(&ideal, STEP_L);
     }
 
-    Camera.fixed_camera = 1;
+    g_Camera.fixed_camera = 1;
 
-    MoveCamera(&ideal, Camera.speed);
+    MoveCamera(&ideal, g_Camera.speed);
 
-    if (Camera.timer) {
-        Camera.timer--;
-        if (!Camera.timer) {
-            Camera.timer = -1;
+    if (g_Camera.timer) {
+        g_Camera.timer--;
+        if (!g_Camera.timer) {
+            g_Camera.timer = -1;
         }
     }
 }
 
 void CalculateCamera()
 {
-    if (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER) {
-        if (!Camera.underwater) {
+    if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+        if (!g_Camera.underwater) {
             Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
-            Camera.underwater = 1;
+            g_Camera.underwater = 1;
         }
-    } else if (Camera.underwater) {
+    } else if (g_Camera.underwater) {
         Sound_StopEffect(SFX_UNDERWATER, NULL);
-        Camera.underwater = 0;
+        g_Camera.underwater = 0;
     }
 
-    if (Camera.type == CAM_CINEMATIC) {
+    if (g_Camera.type == CAM_CINEMATIC) {
         InGameCinematicCamera();
         return;
     }
 
-    if (Camera.flags != NO_CHUNKY) {
-        ChunkyFlag = true;
+    if (g_Camera.flags != NO_CHUNKY) {
+        g_ChunkyFlag = true;
     }
 
-    int32_t fixed_camera =
-        Camera.item && (Camera.type == CAM_FIXED || Camera.type == CAM_HEAVY);
-    ITEM_INFO *item = fixed_camera ? Camera.item : LaraItem;
+    int32_t fixed_camera = g_Camera.item
+        && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
+    ITEM_INFO *item = fixed_camera ? g_Camera.item : g_LaraItem;
 
     int16_t *bounds = GetBoundsAccurate(item);
 
@@ -539,19 +548,19 @@ void CalculateCamera()
         y += (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y]) / 2;
     }
 
-    if (Camera.item && !fixed_camera) {
-        bounds = GetBoundsAccurate(Camera.item);
+    if (g_Camera.item && !fixed_camera) {
+        bounds = GetBoundsAccurate(g_Camera.item);
         int16_t shift = phd_sqrt(
-            SQUARE(Camera.item->pos.z - item->pos.z)
-            + SQUARE(Camera.item->pos.x - item->pos.x));
+            SQUARE(g_Camera.item->pos.z - item->pos.z)
+            + SQUARE(g_Camera.item->pos.x - item->pos.x));
         int16_t angle = phd_atan(
-                            Camera.item->pos.z - item->pos.z,
-                            Camera.item->pos.x - item->pos.x)
+                            g_Camera.item->pos.z - item->pos.z,
+                            g_Camera.item->pos.x - item->pos.x)
             - item->pos.y_rot;
         int16_t tilt = phd_atan(
             shift,
             y
-                - (Camera.item->pos.y
+                - (g_Camera.item->pos.y
                    + (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y])
                        / 2));
         angle >>= 1;
@@ -559,141 +568,143 @@ void CalculateCamera()
 
         if (angle > -MAX_HEAD_ROTATION && angle < MAX_HEAD_ROTATION
             && tilt > MIN_HEAD_TILT_CAM && tilt < MAX_HEAD_TILT_CAM) {
-            int16_t change = angle - Lara.head_y_rot;
+            int16_t change = angle - g_Lara.head_y_rot;
             if (change > HEAD_TURN) {
-                Lara.head_y_rot += HEAD_TURN;
+                g_Lara.head_y_rot += HEAD_TURN;
             } else if (change < -HEAD_TURN) {
-                Lara.head_y_rot -= HEAD_TURN;
+                g_Lara.head_y_rot -= HEAD_TURN;
             } else {
-                Lara.head_y_rot += change;
+                g_Lara.head_y_rot += change;
             }
 
-            change = tilt - Lara.head_x_rot;
+            change = tilt - g_Lara.head_x_rot;
             if (change > HEAD_TURN) {
-                Lara.head_x_rot += HEAD_TURN;
+                g_Lara.head_x_rot += HEAD_TURN;
             } else if (change < -HEAD_TURN) {
-                Lara.head_x_rot -= HEAD_TURN;
+                g_Lara.head_x_rot -= HEAD_TURN;
             } else {
-                Lara.head_x_rot += change;
+                g_Lara.head_x_rot += change;
             }
 
-            Lara.torso_y_rot = Lara.head_y_rot;
-            Lara.torso_x_rot = Lara.head_x_rot;
+            g_Lara.torso_y_rot = g_Lara.head_y_rot;
+            g_Lara.torso_x_rot = g_Lara.head_x_rot;
 
-            Camera.type = CAM_LOOK;
-            Camera.item->looked_at = 1;
+            g_Camera.type = CAM_LOOK;
+            g_Camera.item->looked_at = 1;
         }
     }
 
-    if (Camera.type == CAM_LOOK || Camera.type == CAM_COMBAT) {
+    if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
         y -= STEP_L;
-        Camera.target.room_number = item->room_number;
+        g_Camera.target.room_number = item->room_number;
 
-        if (Camera.fixed_camera) {
-            Camera.target.y = y;
-            Camera.speed = 1;
+        if (g_Camera.fixed_camera) {
+            g_Camera.target.y = y;
+            g_Camera.speed = 1;
         } else {
-            Camera.target.y += (y - Camera.target.y) >> 2;
-            Camera.speed = Camera.type == CAM_LOOK ? LOOK_SPEED : COMBAT_SPEED;
+            g_Camera.target.y += (y - g_Camera.target.y) >> 2;
+            g_Camera.speed =
+                g_Camera.type == CAM_LOOK ? LOOK_SPEED : COMBAT_SPEED;
         }
 
-        Camera.fixed_camera = 0;
+        g_Camera.fixed_camera = 0;
 
-        if (Camera.type == CAM_LOOK) {
+        if (g_Camera.type == CAM_LOOK) {
             LookCamera(item);
         } else {
             CombatCamera(item);
         }
     } else {
-        Camera.target.x = item->pos.x;
-        Camera.target.z = item->pos.z;
+        g_Camera.target.x = item->pos.x;
+        g_Camera.target.z = item->pos.z;
 
-        if (Camera.flags == FOLLOW_CENTRE) {
+        if (g_Camera.flags == FOLLOW_CENTRE) {
             int16_t shift =
                 (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
-            Camera.target.z += phd_cos(item->pos.y_rot) * shift >> W2V_SHIFT;
-            Camera.target.x += phd_sin(item->pos.y_rot) * shift >> W2V_SHIFT;
+            g_Camera.target.z += phd_cos(item->pos.y_rot) * shift >> W2V_SHIFT;
+            g_Camera.target.x += phd_sin(item->pos.y_rot) * shift >> W2V_SHIFT;
         }
 
-        Camera.target.room_number = item->room_number;
+        g_Camera.target.room_number = item->room_number;
 
-        if (Camera.fixed_camera != fixed_camera) {
-            Camera.target.y = y;
-            Camera.fixed_camera = 1;
-            Camera.speed = 1;
+        if (g_Camera.fixed_camera != fixed_camera) {
+            g_Camera.target.y = y;
+            g_Camera.fixed_camera = 1;
+            g_Camera.speed = 1;
         } else {
-            Camera.target.y += (y - Camera.target.y) / 4;
-            Camera.fixed_camera = 0;
+            g_Camera.target.y += (y - g_Camera.target.y) / 4;
+            g_Camera.fixed_camera = 0;
         }
 
         FLOOR_INFO *floor = GetFloor(
-            Camera.target.x, Camera.target.y, Camera.target.z,
-            &Camera.target.room_number);
-        if (Camera.target.y > GetHeight(
-                floor, Camera.target.x, Camera.target.y, Camera.target.z)) {
-            ChunkyFlag = false;
+            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
+            &g_Camera.target.room_number);
+        if (g_Camera.target.y > GetHeight(
+                floor, g_Camera.target.x, g_Camera.target.y,
+                g_Camera.target.z)) {
+            g_ChunkyFlag = false;
         }
 
-        if (Camera.type == CAM_CHASE || Camera.flags == CHASE_OBJECT) {
+        if (g_Camera.type == CAM_CHASE || g_Camera.flags == CHASE_OBJECT) {
             ChaseCamera(item);
         } else {
             FixedCamera();
         }
     }
 
-    Camera.last = Camera.number;
-    Camera.fixed_camera = fixed_camera;
+    g_Camera.last = g_Camera.number;
+    g_Camera.fixed_camera = fixed_camera;
 
     // should we clear the manual camera
-    switch (Camera.type) {
+    switch (g_Camera.type) {
     case CAM_LOOK:
     case CAM_CINEMATIC:
     case CAM_COMBAT:
     case CAM_FIXED:
-        Camera.additional_angle = 0;
-        Camera.additional_elevation = 0;
+        g_Camera.additional_angle = 0;
+        g_Camera.additional_elevation = 0;
         break;
     }
 
-    if (Camera.type != CAM_HEAVY || Camera.timer == -1) {
-        Camera.type = CAM_CHASE;
-        Camera.number = NO_CAMERA;
-        Camera.last_item = Camera.item;
-        Camera.item = NULL;
-        Camera.target_angle = Camera.additional_angle;
-        Camera.target_elevation = Camera.additional_elevation;
-        Camera.target_distance = WALL_L * 3 / 2;
-        Camera.flags = 0;
+    if (g_Camera.type != CAM_HEAVY || g_Camera.timer == -1) {
+        g_Camera.type = CAM_CHASE;
+        g_Camera.number = NO_CAMERA;
+        g_Camera.last_item = g_Camera.item;
+        g_Camera.item = NULL;
+        g_Camera.target_angle = g_Camera.additional_angle;
+        g_Camera.target_elevation = g_Camera.additional_elevation;
+        g_Camera.target_distance = WALL_L * 3 / 2;
+        g_Camera.flags = 0;
     }
 
-    ChunkyFlag = false;
+    g_ChunkyFlag = false;
 }
 
 void CameraOffsetAdditionalAngle(int16_t delta)
 {
-    Camera.additional_angle += delta;
+    g_Camera.additional_angle += delta;
 }
 
 void CameraOffsetAdditionalElevation(int16_t delta)
 {
     // don't let this value wrap, so clamp it.
     if (delta > 0) {
-        if (Camera.additional_elevation > INT16_MAX - delta) {
-            Camera.additional_elevation = INT16_MAX;
+        if (g_Camera.additional_elevation > INT16_MAX - delta) {
+            g_Camera.additional_elevation = INT16_MAX;
         } else {
-            Camera.additional_elevation += delta;
+            g_Camera.additional_elevation += delta;
         }
     } else {
-        if (Camera.additional_elevation < INT16_MIN - delta) {
-            Camera.additional_elevation = INT16_MIN;
+        if (g_Camera.additional_elevation < INT16_MIN - delta) {
+            g_Camera.additional_elevation = INT16_MIN;
         } else {
-            Camera.additional_elevation += delta;
+            g_Camera.additional_elevation += delta;
         }
     }
 }
 
 void CameraOffsetReset()
 {
-    Camera.additional_angle = 0;
-    Camera.additional_elevation = 0;
+    g_Camera.additional_angle = 0;
+    g_Camera.additional_elevation = 0;
 }

@@ -7,7 +7,7 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO RaptorBite = { 0, 66, 318, 22 };
+BITE_INFO g_RaptorBite = { 0, 66, 318, 22 };
 
 void SetupRaptor(OBJECT_INFO *obj)
 {
@@ -27,12 +27,12 @@ void SetupRaptor(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 84] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 84] |= BEB_ROT_Y;
 }
 
 void RaptorControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -49,9 +49,9 @@ void RaptorControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != RAPTOR_DEATH) {
             item->current_anim_state = RAPTOR_DEATH;
-            item->anim_number = Objects[O_RAPTOR].anim_index + RAPTOR_DIE_ANIM
+            item->anim_number = g_Objects[O_RAPTOR].anim_index + RAPTOR_DIE_ANIM
                 + (Random_GetControl() / 16200);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -119,9 +119,9 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &RaptorBite, DoBloodSplat);
-                LaraItem->hit_points -= RAPTOR_LUNGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_RaptorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= RAPTOR_LUNGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;
             }
             break;
@@ -130,9 +130,9 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &RaptorBite, DoBloodSplat);
-                LaraItem->hit_points -= RAPTOR_CHARGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_RaptorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= RAPTOR_CHARGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_RUN;
             }
             break;
@@ -141,9 +141,9 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &RaptorBite, DoBloodSplat);
-                LaraItem->hit_points -= RAPTOR_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_RaptorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= RAPTOR_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;
             }
             break;

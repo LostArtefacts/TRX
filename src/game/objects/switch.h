@@ -9,9 +9,9 @@ typedef enum {
     SWITCH_STATE_LINK = 2,
 } SWITCH_STATE;
 
-extern PHD_VECTOR Switch2Position;
-extern int16_t Switch1Bounds[12];
-extern int16_t Switch2Bounds[12];
+extern PHD_VECTOR g_Switch2Position;
+extern int16_t g_Switch1Bounds[12];
+extern int16_t g_Switch2Bounds[12];
 
 void SetupSwitch1(OBJECT_INFO *obj);
 void SetupSwitch2(OBJECT_INFO *obj);

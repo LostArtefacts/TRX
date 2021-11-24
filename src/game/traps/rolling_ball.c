@@ -22,7 +22,7 @@ void SetupRollingBall(OBJECT_INFO *obj)
 
 void InitialiseRollingBall(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     GAME_VECTOR *data = GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_TRAP_DATA);
     item->data = data;
     data->x = item->pos.x;
@@ -33,7 +33,7 @@ void InitialiseRollingBall(int16_t item_num)
 
 void RollingBallControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
         if (item->pos.y < item->floor) {
             if (!item->gravity_status) {
@@ -57,7 +57,7 @@ void RollingBallControl(int16_t item_num)
 
         item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-        TestTriggers(TriggerIndex, 1);
+        TestTriggers(g_TriggerIndex, 1);
 
         if (item->pos.y >= item->floor - STEP_L) {
             item->gravity_status = 0;
@@ -87,16 +87,17 @@ void RollingBallControl(int16_t item_num)
         item->pos.z = data->z;
         if (item->room_number != data->room_number) {
             RemoveDrawnItem(item_num);
-            ROOM_INFO *r = &RoomInfo[data->room_number];
+            ROOM_INFO *r = &g_RoomInfo[data->room_number];
             item->next_item = r->item_number;
             r->item_number = item_num;
             item->room_number = data->room_number;
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;
-        item->anim_number = Objects[item->object_number].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
-        item->current_anim_state = Anims[item->anim_number].current_anim_state;
+        item->anim_number = g_Objects[item->object_number].anim_index;
+        item->frame_number = g_Anims[item->anim_number].frame_base;
+        item->current_anim_state =
+            g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         item->required_anim_state = TRAP_SET;
         RemoveActiveItem(item_num);
@@ -106,7 +107,7 @@ void RollingBallControl(int16_t item_num)
 void RollingBallCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
@@ -144,7 +145,7 @@ void RollingBallCollision(
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
             if (lara_item->room_number != item->room_number) {
-                ItemNewRoom(Lara.item_number, item->room_number);
+                ItemNewRoom(g_Lara.item_number, item->room_number);
             }
 
             lara_item->pos.x_rot = 0;
@@ -156,9 +157,9 @@ void RollingBallCollision(
             lara_item->anim_number = AA_RBALL_DEATH;
             lara_item->frame_number = AF_RBALL_DEATH;
 
-            Camera.flags = FOLLOW_CENTRE;
-            Camera.target_angle = 170 * PHD_DEGREE;
-            Camera.target_elevation = -25 * PHD_DEGREE;
+            g_Camera.flags = FOLLOW_CENTRE;
+            g_Camera.target_angle = 170 * PHD_DEGREE;
+            g_Camera.target_elevation = -25 * PHD_DEGREE;
             for (int i = 0; i < 15; i++) {
                 x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
                 z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;

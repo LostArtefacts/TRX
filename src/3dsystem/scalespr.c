@@ -10,9 +10,9 @@
 void S_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
 {
-    x -= W2VMatrix._03;
-    y -= W2VMatrix._13;
-    z -= W2VMatrix._23;
+    x -= g_W2VMatrix._03;
+    y -= g_W2VMatrix._13;
+    z -= g_W2VMatrix._23;
 
     if (x < -phd_GetDrawDistMax() || x > phd_GetDrawDistMax()) {
         return;
@@ -26,16 +26,19 @@ void S_DrawSprite(
         return;
     }
 
-    int32_t zv = W2VMatrix._20 * x + W2VMatrix._21 * y + W2VMatrix._22 * z;
+    int32_t zv =
+        g_W2VMatrix._20 * x + g_W2VMatrix._21 * y + g_W2VMatrix._22 * z;
     if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 
-    int32_t xv = W2VMatrix._00 * x + W2VMatrix._01 * y + W2VMatrix._02 * z;
-    int32_t yv = W2VMatrix._10 * x + W2VMatrix._11 * y + W2VMatrix._12 * z;
-    int32_t zp = zv / PhdPersp;
+    int32_t xv =
+        g_W2VMatrix._00 * x + g_W2VMatrix._01 * y + g_W2VMatrix._02 * z;
+    int32_t yv =
+        g_W2VMatrix._10 * x + g_W2VMatrix._11 * y + g_W2VMatrix._12 * z;
+    int32_t zp = zv / g_PhdPersp;
 
-    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
     int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
     int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
@@ -52,19 +55,19 @@ void S_DrawSprite(
 void S_DrawSpriteRel(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
 {
-    int32_t zv = PhdMatrixPtr->_20 * x + PhdMatrixPtr->_21 * y
-        + PhdMatrixPtr->_22 * z + PhdMatrixPtr->_23;
+    int32_t zv = g_PhdMatrixPtr->_20 * x + g_PhdMatrixPtr->_21 * y
+        + g_PhdMatrixPtr->_22 * z + g_PhdMatrixPtr->_23;
     if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
         return;
     }
 
-    int32_t xv = PhdMatrixPtr->_00 * x + PhdMatrixPtr->_01 * y
-        + PhdMatrixPtr->_02 * z + PhdMatrixPtr->_03;
-    int32_t yv = PhdMatrixPtr->_10 * x + PhdMatrixPtr->_11 * y
-        + PhdMatrixPtr->_12 * z + PhdMatrixPtr->_13;
-    int32_t zp = zv / PhdPersp;
+    int32_t xv = g_PhdMatrixPtr->_00 * x + g_PhdMatrixPtr->_01 * y
+        + g_PhdMatrixPtr->_02 * z + g_PhdMatrixPtr->_03;
+    int32_t yv = g_PhdMatrixPtr->_10 * x + g_PhdMatrixPtr->_11 * y
+        + g_PhdMatrixPtr->_12 * z + g_PhdMatrixPtr->_13;
+    int32_t zp = zv / g_PhdPersp;
 
-    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
     int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
     int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
@@ -81,7 +84,7 @@ void S_DrawSpriteRel(
 void S_DrawUISprite(
     int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade)
 {
-    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     int32_t x1 = x + (scale * sprite->x1 >> 16);
     int32_t x2 = x + (scale * sprite->x2 >> 16);
     int32_t y1 = y + (scale * sprite->y1 >> 16);
@@ -99,14 +102,14 @@ const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
         int16_t sprnum = obj_ptr[1];
         obj_ptr += 2;
 
-        PHD_VBUF *vbuf = &PhdVBuf[vbuf_num];
+        PHD_VBUF *vbuf = &g_PhdVBuf[vbuf_num];
         if (vbuf->clip < 0) {
             continue;
         }
 
         int32_t zv = vbuf->zv;
-        PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
-        int32_t zp = (zv / PhdPersp);
+        PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
+        int32_t zp = (zv / g_PhdPersp);
         int32_t x1 =
             ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
         int32_t y1 =
@@ -115,7 +118,8 @@ const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
             ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
         int32_t y2 =
             ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
-        if (x2 >= PhdLeft && y2 >= PhdTop && x1 < PhdRight && y1 < PhdBottom) {
+        if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
+            && y1 < g_PhdBottom) {
             HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
         }
     }

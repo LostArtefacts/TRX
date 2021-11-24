@@ -10,8 +10,8 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO KidGun1 = { 0, 150, 34, 7 };
-BITE_INFO KidGun2 = { 0, 150, 37, 4 };
+BITE_INFO g_KidGun1 = { 0, 150, 34, 7 };
+BITE_INFO g_KidGun2 = { 0, 150, 37, 4 };
 
 void SetupSkateKid(OBJECT_INFO *obj)
 {
@@ -31,18 +31,18 @@ void SetupSkateKid(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
 void InitialiseSkateKid(int16_t item_num)
 {
     InitialiseCreature(item_num);
-    Items[item_num].current_anim_state = SKATE_KID_SKATE;
+    g_Items[item_num].current_anim_state = SKATE_KID_SKATE;
 }
 
 void SkateKidControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *kid = item->data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -51,8 +51,8 @@ void SkateKidControl(int16_t item_num)
         if (item->current_anim_state != SKATE_KID_DEATH) {
             item->current_anim_state = SKATE_KID_DEATH;
             item->anim_number =
-                Objects[O_MERCENARY1].anim_index + SKATE_KID_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+                g_Objects[O_MERCENARY1].anim_index + SKATE_KID_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_UZI_ITEM);
         }
     } else {
@@ -107,20 +107,20 @@ void SkateKidControl(int16_t item_num)
         case SKATE_KID_SHOOT:
         case SKATE_KID_SHOOT2:
             if (!kid->flags && Targetable(item, &info)) {
-                if (ShotLara(item, info.distance, &KidGun1, head)) {
-                    LaraItem->hit_points -=
+                if (ShotLara(item, info.distance, &g_KidGun1, head)) {
+                    g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
                         : SKATE_KID_SKATE_SHOT_DAMAGE;
-                    LaraItem->hit_status = 1;
+                    g_LaraItem->hit_status = 1;
                 }
 
-                if (ShotLara(item, info.distance, &KidGun2, head)) {
-                    LaraItem->hit_points -=
+                if (ShotLara(item, info.distance, &g_KidGun2, head)) {
+                    g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
                         : SKATE_KID_SKATE_SHOT_DAMAGE;
-                    LaraItem->hit_status = 1;
+                    g_LaraItem->hit_status = 1;
                 }
 
                 kid->flags = 1;
@@ -143,8 +143,8 @@ void DrawSkateKid(ITEM_INFO *item)
     int16_t anim = item->anim_number;
     int16_t frame = item->frame_number;
     item->object_number = O_SKATEBOARD;
-    item->anim_number = anim + Objects[O_SKATEBOARD].anim_index
-        - Objects[O_MERCENARY1].anim_index;
+    item->anim_number = anim + g_Objects[O_SKATEBOARD].anim_index
+        - g_Objects[O_MERCENARY1].anim_index;
     DrawAnimatingItem(item);
     item->anim_number = anim;
     item->frame_number = frame;

@@ -218,11 +218,11 @@ bool S_FMV_Init()
         LOG_ERROR("cannot find Player_StartTimer");
         goto fail;
     }
-    if (Player_PassInDirectDrawObject(DDraw)) {
+    if (Player_PassInDirectDrawObject(g_DDraw)) {
         LOG_ERROR("ERROR: Cannot initialise FMV player videosystem");
         goto fail;
     }
-    if (Player_InitSoundSystem(TombHWND)) {
+    if (Player_InitSoundSystem(g_TombHWND)) {
         Player_GetDSErrorCode();
         LOG_ERROR("ERROR: Cannot prepare FMV player soundsystem");
         goto fail;
@@ -240,7 +240,7 @@ fail:
 
 void S_FMV_Play(const char *file_path)
 {
-    if (T1MConfig.disable_fmv || !m_PlayerModule) {
+    if (g_Config.disable_fmv || !m_PlayerModule) {
         return;
     }
 
@@ -277,12 +277,12 @@ void S_FMV_Play(const char *file_path)
         goto cleanup;
     }
 
-    if (Player_InitPlaybackMode(TombHWND, fmv_context, 1, 0)) { //
+    if (Player_InitPlaybackMode(g_TombHWND, fmv_context, 1, 0)) { //
         LOG_ERROR("cannot init playback mode");
         goto cleanup;
     }
 
-    if (SoundIsActive) {
+    if (g_SoundIsActive) {
         int32_t precision = Movie_GetSoundPrecision(movie_context);
         int32_t rate = Movie_GetSoundRate(movie_context);
         int32_t channels = Movie_GetSoundChannels(movie_context);

@@ -15,7 +15,7 @@ static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
     switch (buffer) {
         case GBUF_TEXTURE_PAGES:            return "Texture Pages";
         case GBUF_MESH_POINTERS:            return "Mesh Pointers";
-        case GBUF_MESHES:                   return "Meshes";
+        case GBUF_MESHES:                   return "g_Meshes";
         case GBUF_ANIMS:                    return "Animations";
         case GBUF_ANIM_CHANGES:             return "Animation changes";
         case GBUF_ANIM_RANGES:              return "Animation ranges";
@@ -29,17 +29,17 @@ static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
         case GBUF_ROOM_LIGHTS:              return "Room lights";
         case GBUF_ROOM_STATIC_MESH_INFOS:   return "Room static meshes";
         case GBUF_FLOOR_DATA:               return "Floor data";
-        case GBUF_ITEMS:                    return "Items";
+        case GBUF_ITEMS:                    return "g_Items";
         case GBUF_CAMERAS:                  return "Cameras";
         case GBUF_SOUND_FX:                 return "Sound effects";
-        case GBUF_BOXES:                    return "Boxes";
-        case GBUF_GROUNDZONE:               return "GroundZone";
-        case GBUF_FLYZONE:                  return "FlyZone";
+        case GBUF_BOXES:                    return "g_Boxes";
+        case GBUF_GROUNDZONE:               return "g_GroundZone";
+        case GBUF_FLYZONE:                  return "g_FlyZone";
         case GBUF_ANIMATING_TEXTURE_RANGES: return "Animating texture ranges";
         case GBUF_CINEMATIC_FRAMES:         return "Cinematic frames";
         case GBUF_LOADDEMO_BUFFER:          return "Load demo buffer";
         case GBUF_EXTRA_DOOR_STUFF:         return "Room doors (2)";
-        case GBUF_EFFECTS:                  return "Effects";
+        case GBUF_EFFECTS:                  return "g_Effects";
         case GBUF_CREATURE_INFO:            return "Creature information";
         case GBUF_CREATURE_LOT:             return "Creature pathfinding";
         case GBUF_SAMPLE_INFOS:             return "Sample information";

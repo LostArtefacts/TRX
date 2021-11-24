@@ -7,18 +7,18 @@ void Flood(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
 
-    if (FlipTimer > FRAMES_PER_SECOND * 4) {
-        FlipEffect = -1;
+    if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
+        g_FlipEffect = -1;
     } else {
-        pos.x = LaraItem->pos.x;
-        if (FlipTimer < FRAMES_PER_SECOND) {
-            pos.y = Camera.target.y + (FRAMES_PER_SECOND - FlipTimer) * 100;
+        pos.x = g_LaraItem->pos.x;
+        if (g_FlipTimer < FRAMES_PER_SECOND) {
+            pos.y = g_Camera.target.y + (FRAMES_PER_SECOND - g_FlipTimer) * 100;
         } else {
-            pos.y = Camera.target.y + (FlipTimer - FRAMES_PER_SECOND) * 100;
+            pos.y = g_Camera.target.y + (g_FlipTimer - FRAMES_PER_SECOND) * 100;
         }
-        pos.z = LaraItem->pos.z;
+        pos.z = g_LaraItem->pos.z;
         Sound_Effect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
 
-    FlipTimer++;
+    g_FlipTimer++;
 }

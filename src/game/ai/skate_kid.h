@@ -27,8 +27,8 @@ typedef enum {
     SKATE_KID_DEATH = 5,
 } SKATE_KID_ANIM;
 
-extern BITE_INFO KidGun1;
-extern BITE_INFO KidGun2;
+extern BITE_INFO g_KidGun1;
+extern BITE_INFO g_KidGun2;
 
 void SetupSkateKid(OBJECT_INFO *obj);
 void InitialiseSkateKid(int16_t item_num);

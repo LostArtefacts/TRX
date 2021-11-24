@@ -13,7 +13,7 @@ void SetupSpikes(OBJECT_INFO *obj)
 
 void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (lara_item->hit_points < 0) {
         return;
     }

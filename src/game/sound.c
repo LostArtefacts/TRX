@@ -95,11 +95,11 @@ static SOUND_SLOT *Sound_GetSlot(
 
 static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
 {
-    SAMPLE_INFO *s = &SampleInfos[SampleLUT[slot->fxnum]];
+    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[slot->fxnum]];
 
-    int32_t x = slot->pos->x - Camera.target.x;
-    int32_t y = slot->pos->y - Camera.target.y;
-    int32_t z = slot->pos->z - Camera.target.z;
+    int32_t x = slot->pos->x - g_Camera.target.x;
+    int32_t y = slot->pos->y - g_Camera.target.y;
+    int32_t z = slot->pos->z - g_Camera.target.z;
     if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
         || ABS(z) > SOUND_RADIUS) {
         slot->volume = 0;
@@ -125,8 +125,8 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
     }
 
     int16_t angle = phd_atan(
-        slot->pos->z - LaraItem->pos.z, slot->pos->x - LaraItem->pos.x);
-    angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+        slot->pos->z - g_LaraItem->pos.z, slot->pos->x - g_LaraItem->pos.x);
+    angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
     slot->pan = angle;
 }
 
@@ -160,25 +160,25 @@ bool Sound_Init()
 
 void Sound_UpdateEffects()
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
 
     Sound_ResetAmbientLoudness();
 
-    for (int i = 0; i < NumberSoundEffects; i++) {
-        OBJECT_VECTOR *sound = &SoundEffectsTable[i];
-        if (FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
+    for (int i = 0; i < g_NumberSoundEffects; i++) {
+        OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
+        if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
             Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
-        } else if (!FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
+        } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
             Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
         }
     }
 
     // XXX: Why are we firing this here? Some of the FX routines rely on the
     // item to be not null!
-    if (FlipEffect != -1) {
-        EffectRoutines[FlipEffect](NULL);
+    if (g_FlipEffect != -1) {
+        g_EffectRoutines[g_FlipEffect](NULL);
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
@@ -220,21 +220,21 @@ void Sound_UpdateEffects()
 
 bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return false;
     }
 
     if (flags != SPM_ALWAYS
         && (flags & SPM_UNDERWATER)
-            != (RoomInfo[Camera.pos.room_number].flags & RF_UNDERWATER)) {
+            != (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER)) {
         return false;
     }
 
-    if (SampleLUT[sfx_num] < 0) {
+    if (g_SampleLUT[sfx_num] < 0) {
         return false;
     }
 
-    SAMPLE_INFO *s = &SampleInfos[SampleLUT[sfx_num]];
+    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[sfx_num]];
     if (s->randomness && Random_GetDraw() > (int32_t)s->randomness) {
         return false;
     }
@@ -244,9 +244,9 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     int32_t mode = s->flags & 3;
     uint32_t distance;
     if (pos) {
-        int32_t x = pos->x - Camera.target.x;
-        int32_t y = pos->y - Camera.target.y;
-        int32_t z = pos->z - Camera.target.z;
+        int32_t x = pos->x - g_Camera.target.x;
+        int32_t y = pos->y - g_Camera.target.y;
+        int32_t z = pos->z - g_Camera.target.z;
         if (ABS(x) > SOUND_RADIUS || ABS(y) > SOUND_RADIUS
             || ABS(z) > SOUND_RADIUS) {
             return false;
@@ -276,8 +276,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     if (pan) {
         int16_t angle =
-            phd_atan(pos->z - LaraItem->pos.z, pos->x - LaraItem->pos.x);
-        angle -= LaraItem->pos.y_rot + Lara.torso_y_rot + Lara.head_y_rot;
+            phd_atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
+        angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
         pan = angle;
     }
 
@@ -388,7 +388,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
 bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return false;
     }
 
@@ -411,7 +411,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
 
 void Sound_ResetEffects()
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
     m_MasterVolume = m_MasterVolumeDefault;
@@ -425,10 +425,10 @@ void Sound_ResetEffects()
     m_AmbientLookupIdx = 0;
 
     for (int i = 0; i < MAX_SAMPLES; i++) {
-        if (SampleLUT[i] < 0) {
+        if (g_SampleLUT[i] < 0) {
             continue;
         }
-        SAMPLE_INFO *s = &SampleInfos[SampleLUT[i]];
+        SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[i]];
         if (s->volume < 0) {
             S_Shell_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
@@ -449,7 +449,7 @@ void Sound_ResetEffects()
 
 void Sound_ResetAmbientLoudness()
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
 
@@ -461,7 +461,7 @@ void Sound_ResetAmbientLoudness()
 
 void Sound_StopAmbientSounds()
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
 

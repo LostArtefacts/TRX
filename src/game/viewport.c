@@ -22,10 +22,10 @@ void ViewPort_Init(int32_t width, int32_t height)
     m_Width = width;
     m_Height = height;
 
-    PhdLeft = ViewPort_GetMinX();
-    PhdTop = ViewPort_GetMinY();
-    PhdRight = ViewPort_GetMaxX();
-    PhdBottom = ViewPort_GetMaxY();
+    g_PhdLeft = ViewPort_GetMinX();
+    g_PhdTop = ViewPort_GetMinY();
+    g_PhdRight = ViewPort_GetMaxX();
+    g_PhdBottom = ViewPort_GetMaxY();
 }
 
 int32_t ViewPort_GetMinX()

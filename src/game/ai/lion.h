@@ -37,7 +37,7 @@ typedef enum {
     LION_ATTACK2 = 7,
 } LION_ANIM;
 
-extern BITE_INFO LionBite;
+extern BITE_INFO g_LionBite;
 
 void SetupLion(OBJECT_INFO *obj);
 void SetupLioness(OBJECT_INFO *obj);

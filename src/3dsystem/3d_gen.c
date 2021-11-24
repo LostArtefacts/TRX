@@ -24,7 +24,7 @@ static int32_t m_DrawDistMax = 0;
 
 void phd_GenerateW2V(PHD_3DPOS *viewpos)
 {
-    PhdMatrixPtr = &MatrixStack[0];
+    g_PhdMatrixPtr = &MatrixStack[0];
     int32_t sx = phd_sin(viewpos->x_rot);
     int32_t cx = phd_cos(viewpos->x_rot);
     int32_t sy = phd_sin(viewpos->y_rot);
@@ -44,7 +44,7 @@ void phd_GenerateW2V(PHD_3DPOS *viewpos)
     MatrixStack[0]._03 = viewpos->x;
     MatrixStack[0]._13 = viewpos->y;
     MatrixStack[0]._23 = viewpos->z;
-    W2VMatrix = MatrixStack[0];
+    g_W2VMatrix = MatrixStack[0];
 }
 
 void phd_LookAt(
@@ -88,7 +88,7 @@ void phd_RotX(PHD_ANGLE rx)
         return;
     }
 
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t sx = phd_sin(rx);
     int32_t cx = phd_cos(rx);
 
@@ -115,7 +115,7 @@ void phd_RotY(PHD_ANGLE ry)
         return;
     }
 
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t sy = phd_sin(ry);
     int32_t cy = phd_cos(ry);
 
@@ -142,7 +142,7 @@ void phd_RotZ(PHD_ANGLE rz)
         return;
     }
 
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t sz = phd_sin(rz);
     int32_t cz = phd_cos(rz);
 
@@ -165,7 +165,7 @@ void phd_RotZ(PHD_ANGLE rz)
 
 void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 {
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t r0, r1;
 
     if (ry) {
@@ -231,7 +231,7 @@ void phd_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 
 void phd_RotYXZpack(int32_t rots)
 {
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t r0, r1;
 
     PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
@@ -300,7 +300,7 @@ void phd_RotYXZpack(int32_t rots)
 
 int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
 {
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     mptr->_03 += mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 += mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 += mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
@@ -310,10 +310,10 @@ int32_t phd_TranslateRel(int32_t x, int32_t y, int32_t z)
 
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
 {
-    PHD_MATRIX *mptr = PhdMatrixPtr;
-    x -= W2VMatrix._03;
-    y -= W2VMatrix._13;
-    z -= W2VMatrix._23;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    x -= g_W2VMatrix._03;
+    y -= g_W2VMatrix._13;
+    z -= g_W2VMatrix._23;
     mptr->_03 = mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 = mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 = mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
@@ -345,20 +345,20 @@ void phd_RotateLight(int16_t pitch, int16_t yaw)
     int32_t ls_x = TRIGMULT2(cp, sy);
     int32_t ls_y = -sp;
     int32_t ls_z = TRIGMULT2(cp, cy);
-    LsVectorView.x =
-        (W2VMatrix._00 * ls_x + W2VMatrix._01 * ls_y + W2VMatrix._02 * ls_z)
+    LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
+                      + g_W2VMatrix._02 * ls_z)
         >> W2V_SHIFT;
-    LsVectorView.y =
-        (W2VMatrix._10 * ls_x + W2VMatrix._11 * ls_y + W2VMatrix._12 * ls_z)
+    LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
+                      + g_W2VMatrix._12 * ls_z)
         >> W2V_SHIFT;
-    LsVectorView.z =
-        (W2VMatrix._20 * ls_x + W2VMatrix._21 * ls_y + W2VMatrix._22 * ls_z)
+    LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
+                      + g_W2VMatrix._22 * ls_z)
         >> W2V_SHIFT;
 }
 
 void phd_ResetMatrixStack()
 {
-    PhdMatrixPtr = &MatrixStack[0];
+    g_PhdMatrixPtr = &MatrixStack[0];
 }
 
 void phd_AlterFOV(PHD_ANGLE fov)
@@ -367,7 +367,7 @@ void phd_AlterFOV(PHD_ANGLE fov)
     // But for cinematics, the FOV value chosen by devs needs to stay
     // unchanged, otherwise the game renders the low camera in the Lost Valley
     // cutscene wrong.
-    if (T1MConfig.fov_vertical) {
+    if (g_Config.fov_vertical) {
         double aspect_ratio =
             Screen_GetResWidth() / (double)Screen_GetResHeight();
         double fov_rad_h = fov * M_PI / 32760;
@@ -377,18 +377,18 @@ void phd_AlterFOV(PHD_ANGLE fov)
 
     int16_t c = phd_cos(fov / 2);
     int16_t s = phd_sin(fov / 2);
-    PhdPersp = ((Screen_GetResWidth() / 2) * c) / s;
+    g_PhdPersp = ((Screen_GetResWidth() / 2) * c) / s;
 }
 
 void phd_PushMatrix()
 {
-    PhdMatrixPtr++;
-    PhdMatrixPtr[0] = PhdMatrixPtr[-1];
+    g_PhdMatrixPtr++;
+    g_PhdMatrixPtr[0] = g_PhdMatrixPtr[-1];
 }
 
 void phd_PushUnitMatrix()
 {
-    PHD_MATRIX *mptr = ++PhdMatrixPtr;
+    PHD_MATRIX *mptr = ++g_PhdMatrixPtr;
     mptr->_00 = W2V_SCALE;
     mptr->_01 = 0;
     mptr->_02 = 0;
@@ -402,7 +402,7 @@ void phd_PushUnitMatrix()
 
 void phd_PopMatrix()
 {
-    PhdMatrixPtr--;
+    g_PhdMatrixPtr--;
 }
 
 const int16_t *calc_object_vertices(const int16_t *obj_ptr)
@@ -412,18 +412,18 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
     obj_ptr++;
     int vertex_count = *obj_ptr++;
     for (int i = 0; i < vertex_count; i++) {
-        int32_t xv = PhdMatrixPtr->_00 * obj_ptr[0]
-            + PhdMatrixPtr->_01 * obj_ptr[1] + PhdMatrixPtr->_02 * obj_ptr[2]
-            + PhdMatrixPtr->_03;
-        int32_t yv = PhdMatrixPtr->_10 * obj_ptr[0]
-            + PhdMatrixPtr->_11 * obj_ptr[1] + PhdMatrixPtr->_12 * obj_ptr[2]
-            + PhdMatrixPtr->_13;
-        int32_t zv = PhdMatrixPtr->_20 * obj_ptr[0]
-            + PhdMatrixPtr->_21 * obj_ptr[1] + PhdMatrixPtr->_22 * obj_ptr[2]
-            + PhdMatrixPtr->_23;
-        PhdVBuf[i].xv = xv;
-        PhdVBuf[i].yv = yv;
-        PhdVBuf[i].zv = zv;
+        int32_t xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
+            + g_PhdMatrixPtr->_01 * obj_ptr[1]
+            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
+        int32_t yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
+            + g_PhdMatrixPtr->_11 * obj_ptr[1]
+            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
+        int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
+            + g_PhdMatrixPtr->_21 * obj_ptr[1]
+            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        g_PhdVBuf[i].xv = xv;
+        g_PhdVBuf[i].yv = yv;
+        g_PhdVBuf[i].zv = zv;
 
         int32_t clip_flags;
         if (zv < phd_GetNearZ()) {
@@ -431,38 +431,38 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
         } else {
             clip_flags = 0;
 
-            int32_t xs = ViewPort_GetCenterX() + xv / (zv / PhdPersp);
-            int32_t ys = ViewPort_GetCenterY() + yv / (zv / PhdPersp);
+            int32_t xs = ViewPort_GetCenterX() + xv / (zv / g_PhdPersp);
+            int32_t ys = ViewPort_GetCenterY() + yv / (zv / g_PhdPersp);
 
-            if (xs < PhdLeft) {
+            if (xs < g_PhdLeft) {
                 if (xs < -32760) {
                     xs = -32760;
                 }
                 clip_flags |= 1;
-            } else if (xs > PhdRight) {
+            } else if (xs > g_PhdRight) {
                 if (xs > 32760) {
                     xs = 32760;
                 }
                 clip_flags |= 2;
             }
 
-            if (ys < PhdTop) {
+            if (ys < g_PhdTop) {
                 if (ys < -32760) {
                     ys = -32760;
                 }
                 clip_flags |= 4;
-            } else if (ys > PhdBottom) {
+            } else if (ys > g_PhdBottom) {
                 if (ys > 32760) {
                     ys = 32760;
                 }
                 clip_flags |= 8;
             }
 
-            PhdVBuf[i].xs = xs;
-            PhdVBuf[i].ys = ys;
+            g_PhdVBuf[i].xs = xs;
+            g_PhdVBuf[i].ys = ys;
         }
 
-        PhdVBuf[i].clip = clip_flags;
+        g_PhdVBuf[i].clip = clip_flags;
         total_clip &= clip_flags;
         obj_ptr += 3;
     }
@@ -474,41 +474,41 @@ const int16_t *calc_vertice_light(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
-        if (LsDivider) {
-            int32_t xv = (PhdMatrixPtr->_00 * LsVectorView.x
-                          + PhdMatrixPtr->_10 * LsVectorView.y
-                          + PhdMatrixPtr->_20 * LsVectorView.z)
-                / LsDivider;
-            int32_t yv = (PhdMatrixPtr->_01 * LsVectorView.x
-                          + PhdMatrixPtr->_11 * LsVectorView.y
-                          + PhdMatrixPtr->_21 * LsVectorView.z)
-                / LsDivider;
-            int32_t zv = (PhdMatrixPtr->_02 * LsVectorView.x
-                          + PhdMatrixPtr->_12 * LsVectorView.y
-                          + PhdMatrixPtr->_22 * LsVectorView.z)
-                / LsDivider;
+        if (g_LsDivider) {
+            int32_t xv = (g_PhdMatrixPtr->_00 * LsVectorView.x
+                          + g_PhdMatrixPtr->_10 * LsVectorView.y
+                          + g_PhdMatrixPtr->_20 * LsVectorView.z)
+                / g_LsDivider;
+            int32_t yv = (g_PhdMatrixPtr->_01 * LsVectorView.x
+                          + g_PhdMatrixPtr->_11 * LsVectorView.y
+                          + g_PhdMatrixPtr->_21 * LsVectorView.z)
+                / g_LsDivider;
+            int32_t zv = (g_PhdMatrixPtr->_02 * LsVectorView.x
+                          + g_PhdMatrixPtr->_12 * LsVectorView.y
+                          + g_PhdMatrixPtr->_22 * LsVectorView.z)
+                / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
-                int16_t shade = LsAdder
+                int16_t shade = g_LsAdder
                     + ((obj_ptr[0] * xv + obj_ptr[1] * yv + obj_ptr[2] * zv)
                        >> 16);
                 CLAMP(shade, 0, 0x1FFF);
-                PhdVBuf[i].g = shade;
+                g_PhdVBuf[i].g = shade;
                 obj_ptr += 3;
             }
             return obj_ptr;
         } else {
-            int16_t shade = LsAdder;
+            int16_t shade = g_LsAdder;
             CLAMP(shade, 0, 0x1FFF);
             for (int i = 0; i < vertex_count; i++) {
-                PhdVBuf[i].g = shade;
+                g_PhdVBuf[i].g = shade;
             }
             obj_ptr += 3 * vertex_count;
         }
     } else {
         for (int i = 0; i < -vertex_count; i++) {
-            int16_t shade = LsAdder + *obj_ptr++;
+            int16_t shade = g_LsAdder + *obj_ptr++;
             CLAMP(shade, 0, 0x1FFF);
-            PhdVBuf[i].g = shade;
+            g_PhdVBuf[i].g = shade;
         }
     }
     return obj_ptr;
@@ -519,77 +519,77 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
 
     for (int i = 0; i < vertex_count; i++) {
-        int32_t xv = PhdMatrixPtr->_00 * obj_ptr[0]
-            + PhdMatrixPtr->_01 * obj_ptr[1] + PhdMatrixPtr->_02 * obj_ptr[2]
-            + PhdMatrixPtr->_03;
-        int32_t yv = PhdMatrixPtr->_10 * obj_ptr[0]
-            + PhdMatrixPtr->_11 * obj_ptr[1] + PhdMatrixPtr->_12 * obj_ptr[2]
-            + PhdMatrixPtr->_13;
-        int32_t zv = PhdMatrixPtr->_20 * obj_ptr[0]
-            + PhdMatrixPtr->_21 * obj_ptr[1] + PhdMatrixPtr->_22 * obj_ptr[2]
-            + PhdMatrixPtr->_23;
-        PhdVBuf[i].xv = xv;
-        PhdVBuf[i].yv = yv;
-        PhdVBuf[i].zv = zv;
-        PhdVBuf[i].g = obj_ptr[3];
+        int32_t xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
+            + g_PhdMatrixPtr->_01 * obj_ptr[1]
+            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
+        int32_t yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
+            + g_PhdMatrixPtr->_11 * obj_ptr[1]
+            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
+        int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
+            + g_PhdMatrixPtr->_21 * obj_ptr[1]
+            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        g_PhdVBuf[i].xv = xv;
+        g_PhdVBuf[i].yv = yv;
+        g_PhdVBuf[i].zv = zv;
+        g_PhdVBuf[i].g = obj_ptr[3];
 
         if (zv < phd_GetNearZ()) {
-            PhdVBuf[i].clip = 0x8000;
+            g_PhdVBuf[i].clip = 0x8000;
         } else {
             int16_t clip_flags = 0;
             int32_t depth = zv >> W2V_SHIFT;
             if (depth > phd_GetDrawDistMax()) {
-                PhdVBuf[i].g = 0x1FFF;
+                g_PhdVBuf[i].g = 0x1FFF;
                 clip_flags |= 16;
             } else if (depth) {
-                PhdVBuf[i].g += phd_CalculateFogShade(depth);
-                if (!IsWaterEffect) {
-                    CLAMPG(PhdVBuf[i].g, 0x1FFF);
+                g_PhdVBuf[i].g += phd_CalculateFogShade(depth);
+                if (!g_IsWaterEffect) {
+                    CLAMPG(g_PhdVBuf[i].g, 0x1FFF);
                 }
             }
 
-            int32_t xs = ViewPort_GetCenterX() + xv / (zv / PhdPersp);
-            int32_t ys = ViewPort_GetCenterY() + yv / (zv / PhdPersp);
-            if (IsWibbleEffect) {
-                xs += WibbleTable[(ys + WibbleOffset) & 0x1F];
-                ys += WibbleTable[(xs + WibbleOffset) & 0x1F];
+            int32_t xs = ViewPort_GetCenterX() + xv / (zv / g_PhdPersp);
+            int32_t ys = ViewPort_GetCenterY() + yv / (zv / g_PhdPersp);
+            if (g_IsWibbleEffect) {
+                xs += g_WibbleTable[(ys + g_WibbleOffset) & 0x1F];
+                ys += g_WibbleTable[(xs + g_WibbleOffset) & 0x1F];
             }
 
-            if (xs < PhdLeft) {
+            if (xs < g_PhdLeft) {
                 if (xs < -32760) {
                     xs = -32760;
                 }
                 clip_flags |= 1;
-            } else if (xs > PhdRight) {
+            } else if (xs > g_PhdRight) {
                 if (xs > 32760) {
                     xs = 32760;
                 }
                 clip_flags |= 2;
             }
 
-            if (ys < PhdTop) {
+            if (ys < g_PhdTop) {
                 if (ys < -32760) {
                     ys = -32760;
                 }
                 clip_flags |= 4;
-            } else if (ys > PhdBottom) {
+            } else if (ys > g_PhdBottom) {
                 if (ys > 32760) {
                     ys = 32760;
                 }
                 clip_flags |= 8;
             }
 
-            if (IsWaterEffect) {
-                PhdVBuf[i].g += ShadeTable[(
-                    ((uint8_t)WibbleOffset
-                     + (uint8_t)RandTable[(vertex_count - i) % WIBBLE_SIZE])
+            if (g_IsWaterEffect) {
+                g_PhdVBuf[i].g += g_ShadeTable[(
+                    ((uint8_t)g_WibbleOffset
+                     + (uint8_t)g_RandTable[(vertex_count - i) % WIBBLE_SIZE])
                     % WIBBLE_SIZE)];
-                CLAMP(PhdVBuf[i].g, 0, 0x1FFF);
+                CLAMP(g_PhdVBuf[i].g, 0, 0x1FFF);
             }
 
-            PhdVBuf[i].xs = xs;
-            PhdVBuf[i].ys = ys;
-            PhdVBuf[i].clip = clip_flags;
+            g_PhdVBuf[i].xs = xs;
+            g_PhdVBuf[i].ys = ys;
+            g_PhdVBuf[i].clip = clip_flags;
         }
         obj_ptr += 4;
     }

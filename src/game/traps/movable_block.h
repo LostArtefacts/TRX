@@ -11,7 +11,7 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-extern int16_t MovingBlockBounds[12];
+extern int16_t g_MovingBlockBounds[12];
 
 void SetupMovableBlock(OBJECT_INFO *obj);
 void InitialiseMovableBlock(int16_t item_num);

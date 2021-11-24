@@ -24,7 +24,7 @@ typedef enum {
     BALDY_SHOOT = 6,
 } BALDY_ANIM;
 
-extern BITE_INFO BaldyGun;
+extern BITE_INFO g_BaldyGun;
 
 void SetupBaldy(OBJECT_INFO *obj);
 void InitialiseBaldy(int16_t item_num);

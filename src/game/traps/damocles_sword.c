@@ -23,7 +23,7 @@ void SetupDamoclesSword(OBJECT_INFO *obj)
 
 void InitialiseDamoclesSword(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     item->pos.y_rot = Random_GetControl();
     item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
@@ -31,7 +31,7 @@ void InitialiseDamoclesSword(int16_t item_num)
 
 void DamoclesSwordControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (item->gravity_status) {
         item->pos.y_rot += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
@@ -48,9 +48,9 @@ void DamoclesSwordControl(int16_t item_num)
         }
     } else if (item->pos.y != item->floor) {
         item->pos.y_rot += item->required_anim_state;
-        int32_t x = LaraItem->pos.x - item->pos.x;
-        int32_t y = LaraItem->pos.y - item->pos.y;
-        int32_t z = LaraItem->pos.z - item->pos.z;
+        int32_t x = g_LaraItem->pos.x - item->pos.x;
+        int32_t y = g_LaraItem->pos.y - item->pos.y;
+        int32_t z = g_LaraItem->pos.z - item->pos.z;
         if (ABS(x) <= DAMOCLES_SWORD_ACTIVATE_DIST
             && ABS(z) <= DAMOCLES_SWORD_ACTIVATE_DIST && y > 0
             && y < WALL_L * 3) {
@@ -64,7 +64,7 @@ void DamoclesSwordControl(int16_t item_num)
 void DamoclesSwordCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }

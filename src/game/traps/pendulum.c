@@ -17,7 +17,7 @@ void SetupPendulum(OBJECT_INFO *obj)
 
 void PendulumControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (TriggerActive(item)) {
         if (item->current_anim_state == TRAP_SET) {
@@ -30,13 +30,13 @@ void PendulumControl(int16_t item_num)
     }
 
     if (item->current_anim_state == TRAP_WORKING && item->touch_bits) {
-        LaraItem->hit_points -= PENDULUM_DAMAGE;
-        LaraItem->hit_status = 1;
-        int32_t x = LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
-        int32_t z = LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
-        int32_t y = LaraItem->pos.y - Random_GetControl() / 44;
-        int32_t d = LaraItem->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
-        DoBloodSplat(x, y, z, LaraItem->speed, d, LaraItem->room_number);
+        g_LaraItem->hit_points -= PENDULUM_DAMAGE;
+        g_LaraItem->hit_status = 1;
+        int32_t x = g_LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
+        int32_t z = g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
+        int32_t y = g_LaraItem->pos.y - Random_GetControl() / 44;
+        int32_t d = g_LaraItem->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
+        DoBloodSplat(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_number);
     }
 
     FLOOR_INFO *floor =

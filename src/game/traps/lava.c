@@ -32,7 +32,7 @@ void SetupLavaWedge(OBJECT_INFO *obj)
 
 void LavaBurn(ITEM_INFO *item)
 {
-    if (Lara.water_status == LWS_CHEAT) {
+    if (g_Lara.water_status == LWS_CHEAT) {
         return;
     }
 
@@ -52,10 +52,10 @@ void LavaBurn(ITEM_INFO *item)
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &Effects[fx_num];
+            FX_INFO *fx = &g_Effects[fx_num];
             fx->object_number = O_FLAME;
             fx->frame_number =
-                (Objects[O_FLAME].nmeshes * Random_GetControl()) / 0x7FFF;
+                (g_Objects[O_FLAME].nmeshes * Random_GetControl()) / 0x7FFF;
             fx->counter = -1 - Random_GetControl() * 24 / 0x7FFF;
         }
     }
@@ -63,10 +63,10 @@ void LavaBurn(ITEM_INFO *item)
 
 void LavaEmitterControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     int16_t fx_num = CreateEffect(item->room_number);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &Effects[fx_num];
+        FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = item->pos.x;
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
@@ -81,7 +81,7 @@ void LavaEmitterControl(int16_t item_num)
 
 void LavaControl(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
@@ -93,8 +93,8 @@ void LavaControl(int16_t fx_num)
         || fx->pos.y < GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
         KillEffect(fx_num);
     } else if (ItemNearLara(&fx->pos, 200)) {
-        LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
-        LaraItem->hit_status = 1;
+        g_LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
+        g_LaraItem->hit_status = 1;
         KillEffect(fx_num);
     } else if (room_num != fx->room_number) {
         EffectNewRoom(fx_num, room_num);
@@ -103,7 +103,7 @@ void LavaControl(int16_t fx_num)
 
 void LavaWedgeControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     int16_t room_num = item->room_number;
     GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -140,19 +140,19 @@ void LavaWedgeControl(int16_t item_num)
         }
     }
 
-    if (Lara.water_status == LWS_CHEAT) {
+    if (g_Lara.water_status == LWS_CHEAT) {
         item->touch_bits = 0;
     }
 
     if (item->touch_bits) {
-        if (LaraItem->hit_points > 0) {
-            LavaBurn(LaraItem);
+        if (g_LaraItem->hit_points > 0) {
+            LavaBurn(g_LaraItem);
         }
 
-        Camera.item = item;
-        Camera.flags = CHASE_OBJECT;
-        Camera.type = CAM_FIXED;
-        Camera.target_angle = -PHD_180;
-        Camera.target_distance = WALL_L * 3;
+        g_Camera.item = item;
+        g_Camera.flags = CHASE_OBJECT;
+        g_Camera.type = CAM_FIXED;
+        g_Camera.target_angle = -PHD_180;
+        g_Camera.target_distance = WALL_L * 3;
     }
 }

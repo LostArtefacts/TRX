@@ -167,7 +167,7 @@ static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data)
 void *S_Sound_PlaySample(
     int32_t sample_id, int32_t volume, int16_t pitch, uint16_t pan, bool loop)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return NULL;
     }
 
@@ -283,7 +283,7 @@ bool S_Sound_Init()
         LOG_ERROR("Error while calling DirectSoundCreate: 0x%lx", result);
         return false;
     }
-    result = m_DSound->lpVtbl->SetCooperativeLevel(m_DSound, TombHWND, 1);
+    result = m_DSound->lpVtbl->SetCooperativeLevel(m_DSound, g_TombHWND, 1);
     if (result != DS_OK) {
         LOG_ERROR("Error while calling SetCooperativeLevel: 0x%lx", result);
         return false;
@@ -297,7 +297,7 @@ bool S_Sound_Init()
 
 void S_Sound_StopAllSamples()
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
 
@@ -311,7 +311,7 @@ void S_Sound_StopAllSamples()
 
 void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
 
@@ -324,7 +324,7 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
 
 void S_Sound_StopSample(void *handle)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
     if (!handle) {
@@ -339,7 +339,7 @@ void S_Sound_StopSample(void *handle)
 
 void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return;
     }
     if (!handle) {
@@ -363,7 +363,7 @@ void S_Sound_SetPanAndVolume(void *handle, int16_t pan, int16_t volume)
 
 bool S_Sound_SampleIsPlaying(void *handle)
 {
-    if (!SoundIsActive) {
+    if (!g_SoundIsActive) {
         return false;
     }
     if (!handle) {

@@ -34,8 +34,8 @@ static int32_t S_ReadUserSettingsATI()
 
     LOG_INFO("Loading user settings (T1M)");
 
-    File_Read(&T1MConfig.music_volume, sizeof(int16_t), 1, fp);
-    File_Read(&T1MConfig.sound_volume, sizeof(int16_t), 1, fp);
+    File_Read(&g_Config.music_volume, sizeof(int16_t), 1, fp);
+    File_Read(&g_Config.sound_volume, sizeof(int16_t), 1, fp);
 
     {
         int16_t layout[13];
@@ -59,9 +59,9 @@ static int32_t S_ReadUserSettingsATI()
     {
         uint32_t render_flags;
         File_Read(&render_flags, sizeof(int32_t), 1, fp);
-        T1MConfig.render_flags.perspective = (bool)(render_flags & 1);
-        T1MConfig.render_flags.bilinear = (bool)(render_flags & 2);
-        T1MConfig.render_flags.fps_counter = (bool)(render_flags & 4);
+        g_Config.render_flags.perspective = (bool)(render_flags & 1);
+        g_Config.render_flags.bilinear = (bool)(render_flags & 2);
+        g_Config.render_flags.fps_counter = (bool)(render_flags & 4);
     }
 
     {
@@ -76,11 +76,11 @@ static int32_t S_ReadUserSettingsATI()
     // to any other value results in uninteresting window clipping anomalies.
     File_Seek(fp, sizeof(double), FILE_SEEK_CUR);
 
-    File_Read(&T1MConfig.input.layout, sizeof(int32_t), 1, fp);
+    File_Read(&g_Config.input.layout, sizeof(int32_t), 1, fp);
 
-    T1MConfig.brightness = DEFAULT_BRIGHTNESS;
-    T1MConfig.ui.text_scale = DEFAULT_UI_SCALE;
-    T1MConfig.ui.bar_scale = DEFAULT_UI_SCALE;
+    g_Config.brightness = DEFAULT_BRIGHTNESS;
+    g_Config.ui.text_scale = DEFAULT_UI_SCALE;
+    g_Config.ui.bar_scale = DEFAULT_UI_SCALE;
 
     File_Close(fp);
     return 1;
@@ -108,9 +108,9 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     result = 1;
 
     struct json_object_s *root_obj = json_value_as_object(root);
-    T1MConfig.render_flags.bilinear =
+    g_Config.render_flags.bilinear =
         json_object_get_bool(root_obj, "bilinear", true);
-    T1MConfig.render_flags.perspective =
+    g_Config.render_flags.perspective =
         json_object_get_bool(root_obj, "perspective", true);
 
     {
@@ -120,29 +120,29 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
         Screen_SetGameResIdx(resolution_idx);
     }
 
-    T1MConfig.music_volume =
+    g_Config.music_volume =
         json_object_get_number_int(root_obj, "music_volume", 8);
-    CLAMP(T1MConfig.music_volume, 0, 10);
+    CLAMP(g_Config.music_volume, 0, 10);
 
-    T1MConfig.sound_volume =
+    g_Config.sound_volume =
         json_object_get_number_int(root_obj, "sound_volume", 8);
-    CLAMP(T1MConfig.sound_volume, 0, 10);
+    CLAMP(g_Config.sound_volume, 0, 10);
 
-    T1MConfig.input.layout =
+    g_Config.input.layout =
         json_object_get_number_int(root_obj, "layout_num", 0);
-    CLAMP(T1MConfig.input.layout, 0, 1);
+    CLAMP(g_Config.input.layout, 0, 1);
 
-    T1MConfig.brightness = json_object_get_number_double(
+    g_Config.brightness = json_object_get_number_double(
         root_obj, "brightness", DEFAULT_BRIGHTNESS);
-    CLAMP(T1MConfig.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+    CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 
-    T1MConfig.ui.text_scale = json_object_get_number_double(
+    g_Config.ui.text_scale = json_object_get_number_double(
         root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
-    CLAMP(T1MConfig.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(g_Config.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    T1MConfig.ui.bar_scale = json_object_get_number_double(
+    g_Config.ui.bar_scale = json_object_get_number_double(
         root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
-    CLAMP(T1MConfig.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
@@ -203,22 +203,22 @@ static int32_t S_WriteUserSettingsT1M()
     size_t size;
     struct json_object_s *root_obj = json_object_new();
     json_object_append_bool(
-        root_obj, "bilinear", T1MConfig.render_flags.bilinear);
+        root_obj, "bilinear", g_Config.render_flags.bilinear);
     json_object_append_bool(
-        root_obj, "perspective", T1MConfig.render_flags.perspective);
+        root_obj, "perspective", g_Config.render_flags.perspective);
     json_object_append_number_int(root_obj, "hi_res", Screen_GetGameResIdx());
     json_object_append_number_int(
-        root_obj, "music_volume", T1MConfig.music_volume);
+        root_obj, "music_volume", g_Config.music_volume);
     json_object_append_number_int(
-        root_obj, "sound_volume", T1MConfig.sound_volume);
+        root_obj, "sound_volume", g_Config.sound_volume);
     json_object_append_number_int(
-        root_obj, "layout_num", T1MConfig.input.layout);
+        root_obj, "layout_num", g_Config.input.layout);
     json_object_append_number_double(
-        root_obj, "ui_text_scale", T1MConfig.ui.text_scale);
+        root_obj, "ui_text_scale", g_Config.ui.text_scale);
     json_object_append_number_double(
-        root_obj, "ui_bar_scale", T1MConfig.ui.bar_scale);
+        root_obj, "ui_bar_scale", g_Config.ui.bar_scale);
     json_object_append_number_double(
-        root_obj, "brightness", T1MConfig.brightness);
+        root_obj, "brightness", g_Config.brightness);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
@@ -250,8 +250,8 @@ void S_ReadUserSettings()
 
     DefaultConflict();
 
-    Music_SetVolume(T1MConfig.music_volume);
-    Sound_SetMasterVolume(T1MConfig.sound_volume);
+    Music_SetVolume(g_Config.music_volume);
+    Sound_SetMasterVolume(g_Config.sound_volume);
 }
 
 void S_WriteUserSettings()

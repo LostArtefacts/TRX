@@ -15,7 +15,7 @@
 void SetupSaveGameCrystal(OBJECT_INFO *obj)
 {
     obj->initialise = InitialiseSaveGameItem;
-    if (GF.enable_save_crystals) {
+    if (g_GameFlow.enable_save_crystals) {
         obj->control = ControlSaveGameItem;
         obj->collision = PickUpSaveGameCollision;
         obj->save_flags = 1;
@@ -24,26 +24,26 @@ void SetupSaveGameCrystal(OBJECT_INFO *obj)
 
 void InitialiseSaveGameItem(int16_t item_num)
 {
-    if (GF.enable_save_crystals) {
+    if (g_GameFlow.enable_save_crystals) {
         AddActiveItem(item_num);
     } else {
-        Items[item_num].status = IS_INVISIBLE;
+        g_Items[item_num].status = IS_INVISIBLE;
     }
 }
 
 void ControlSaveGameItem(int16_t item_num)
 {
-    if (GF.enable_save_crystals) {
-        AnimateItem(&Items[item_num]);
+    if (g_GameFlow.enable_save_crystals) {
+        AnimateItem(&g_Items[item_num]);
     }
 }
 
 void PickUpSaveGameCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
-    if (!g_Input.action || Lara.gun_status != LGS_ARMLESS
+    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status) {
         return;
     }
@@ -55,7 +55,7 @@ void PickUpSaveGameCollision(
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.z_rot = 0;
     item->pos.x_rot = 0;
-    if (!TestLaraPosition(PickUpBounds, item, lara_item)) {
+    if (!TestLaraPosition(g_PickUpBounds, item, lara_item)) {
         return;
     }
 
@@ -64,7 +64,7 @@ void PickUpSaveGameCollision(
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
         CreateSaveGameInfo();
-        S_SaveGame(&SaveGame, InvExtraData[1]);
+        S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
         S_WriteUserSettings();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {

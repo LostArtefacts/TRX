@@ -8,7 +8,7 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO RatBite = { 0, -11, 108, 3 };
+BITE_INFO g_RatBite = { 0, -11, 108, 3 };
 
 void SetupRat(OBJECT_INFO *obj)
 {
@@ -28,12 +28,12 @@ void SetupRat(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
 }
 
 void RatControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -49,8 +49,8 @@ void RatControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != RAT_DEATH) {
             item->current_anim_state = RAT_DEATH;
-            item->anim_number = Objects[O_RAT].anim_index + RAT_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->anim_number = g_Objects[O_RAT].anim_index + RAT_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -89,9 +89,9 @@ void RatControl(int16_t item_num)
         case RAT_ATTACK1:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &RatBite, DoBloodSplat);
-                LaraItem->hit_points -= RAT_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_RatBite, DoBloodSplat);
+                g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_STOP;
             }
             break;
@@ -99,9 +99,9 @@ void RatControl(int16_t item_num)
         case RAT_ATTACK2:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &RatBite, DoBloodSplat);
-                LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_RatBite, DoBloodSplat);
+                g_LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_RUN;
             }
             break;
@@ -121,9 +121,10 @@ void RatControl(int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT) {
         item->object_number = O_VOLE;
-        item->anim_number = Objects[O_VOLE].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
-        item->current_anim_state = Anims[item->anim_number].current_anim_state;
+        item->anim_number = g_Objects[O_VOLE].anim_index;
+        item->frame_number = g_Anims[item->anim_number].frame_base;
+        item->current_anim_state =
+            g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         item->pos.y = wh;
     }

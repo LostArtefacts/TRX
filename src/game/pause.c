@@ -53,7 +53,7 @@ static void RemovePausedText()
 static void DisplayPausedText()
 {
     if (PausedText == NULL) {
-        PausedText = Text_Create(0, -24, GF.strings[GS_PAUSE_PAUSED]);
+        PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
         Text_CentreH(PausedText, 1);
         Text_AlignBottom(PausedText, 1);
     }
@@ -112,8 +112,9 @@ static int32_t PauseLoop()
 
         case 1: {
             int32_t choice = DisplayPauseRequester(
-                GF.strings[GS_PAUSE_EXIT_TO_TITLE],
-                GF.strings[GS_PAUSE_CONTINUE], GF.strings[GS_PAUSE_QUIT], 1);
+                g_GameFlow.strings[GS_PAUSE_EXIT_TO_TITLE],
+                g_GameFlow.strings[GS_PAUSE_CONTINUE],
+                g_GameFlow.strings[GS_PAUSE_QUIT], 1);
             if (choice == 1) {
                 return 1;
             } else if (choice == 2) {
@@ -124,8 +125,9 @@ static int32_t PauseLoop()
 
         case 2: {
             int32_t choice = DisplayPauseRequester(
-                GF.strings[GS_PAUSE_ARE_YOU_SURE], GF.strings[GS_PAUSE_YES],
-                GF.strings[GS_PAUSE_NO], 1);
+                g_GameFlow.strings[GS_PAUSE_ARE_YOU_SURE],
+                g_GameFlow.strings[GS_PAUSE_YES],
+                g_GameFlow.strings[GS_PAUSE_NO], 1);
             if (choice == 1) {
                 return -1;
             } else if (choice == 2) {
@@ -143,9 +145,9 @@ int8_t S_Pause()
 {
     g_OldInputDB = g_Input;
 
-    int old_overlay_flag = OverlayFlag;
-    OverlayFlag = -3;
-    InvMode = INV_PAUSE_MODE;
+    int old_overlay_flag = g_OverlayFlag;
+    g_OverlayFlag = -3;
+    g_InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
     S_FadeInInventory(1);
@@ -161,6 +163,6 @@ int8_t S_Pause()
     RemovePausedText();
     Screen_RestoreResolution();
     S_FadeOutInventory(1);
-    OverlayFlag = old_overlay_flag;
+    g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }

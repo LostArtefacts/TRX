@@ -16,11 +16,11 @@ void SetupFallingBlock(OBJECT_INFO *obj)
 
 void FallingBlockControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case TRAP_SET:
-        if (LaraItem->pos.y == item->pos.y - STEP_L * 2) {
+        if (g_LaraItem->pos.y == item->pos.y - STEP_L * 2) {
             item->goal_anim_state = TRAP_ACTIVATE;
         } else {
             item->status = IS_NOT_ACTIVE;

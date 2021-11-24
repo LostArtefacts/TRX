@@ -24,8 +24,9 @@ int32_t StartDemo()
     START_INFO start, *s;
 
     bool any_demos = false;
-    for (int i = GF.first_level_num; i < GF.last_level_num; i++) {
-        if (GF.levels[i].demo) {
+    for (int i = g_GameFlow.first_level_num; i < g_GameFlow.last_level_num;
+         i++) {
+        if (g_GameFlow.levels[i].demo) {
             any_demos = true;
         }
     }
@@ -36,13 +37,13 @@ int32_t StartDemo()
     int16_t level_num = DemoLevel;
     do {
         level_num++;
-        if (level_num > GF.last_level_num) {
-            level_num = GF.first_level_num;
+        if (level_num > g_GameFlow.last_level_num) {
+            level_num = g_GameFlow.first_level_num;
         }
-    } while (!GF.levels[level_num].demo);
+    } while (!g_GameFlow.levels[level_num].demo);
     DemoLevel = level_num;
 
-    s = &SaveGame.start[DemoLevel];
+    s = &g_SaveGame.start[DemoLevel];
     start = *s;
     s->available = 1;
     s->got_pistols = 1;
@@ -55,8 +56,8 @@ int32_t StartDemo()
 
     // changing the controls affects negatively the original game demo data,
     // so temporarily turn off all the T1M enhancements
-    int8_t old_enhanced_look = T1MConfig.enable_enhanced_look;
-    T1MConfig.enable_enhanced_look = 0;
+    int8_t old_enhanced_look = g_Config.enable_enhanced_look;
+    g_Config.enable_enhanced_look = 0;
 
     if (InitialiseLevel(DemoLevel, GFL_DEMO)) {
         LoadLaraDemoPos();
@@ -64,7 +65,7 @@ int32_t StartDemo()
         Random_SeedDraw(0xD371F947);
         Random_SeedControl(0xD371F947);
 
-        txt = Text_Create(0, -16, GF.strings[GS_MISC_DEMO_MODE]);
+        txt = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
         Text_Flash(txt, 1, 20);
         Text_AlignBottom(txt, 1);
         Text_CentreH(txt, 1);
@@ -77,15 +78,15 @@ int32_t StartDemo()
         S_FadeToBlack();
     }
 
-    T1MConfig.enable_enhanced_look = old_enhanced_look;
+    g_Config.enable_enhanced_look = old_enhanced_look;
 
     return GF_EXIT_TO_TITLE;
 }
 
 void LoadLaraDemoPos()
 {
-    DemoPtr = DemoData;
-    ITEM_INFO *item = LaraItem;
+    DemoPtr = g_DemoData;
+    ITEM_INFO *item = g_LaraItem;
     item->pos.x = *DemoPtr++;
     item->pos.y = *DemoPtr++;
     item->pos.z = *DemoPtr++;
@@ -95,7 +96,7 @@ void LoadLaraDemoPos()
     int16_t room_num = *DemoPtr++;
 
     if (item->room_number != room_num) {
-        ItemNewRoom(Lara.item_number, room_num);
+        ItemNewRoom(g_Lara.item_number, room_num);
     }
 
     FLOOR_INFO *floor =
@@ -105,7 +106,7 @@ void LoadLaraDemoPos()
 
 bool ProcessDemoInput()
 {
-    if (DemoPtr >= &DemoData[DEMO_COUNT_MAX] || (int)*DemoPtr == -1) {
+    if (DemoPtr >= &g_DemoData[DEMO_COUNT_MAX] || (int)*DemoPtr == -1) {
         return false;
     }
 

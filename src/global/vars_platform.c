@@ -2,19 +2,19 @@
 
 #include "global/const.h"
 
-HINSTANCE TombModule;
-HWND TombHWND;
+HINSTANCE g_TombModule;
+HWND g_TombHWND;
 HMODULE g_GLRage;
 
-LPDIRECTDRAW DDraw;
-float DDrawSurfaceMinX;
-float DDrawSurfaceMinY;
-float DDrawSurfaceMaxX;
-float DDrawSurfaceMaxY;
-int32_t DDrawSurfaceWidth;
-int32_t DDrawSurfaceHeight;
-LPDIRECTDRAWSURFACE Surface1 = NULL;
-LPDIRECTDRAWSURFACE Surface2 = NULL;
-LPDIRECTDRAWSURFACE Surface3 = NULL;
-LPDIRECTDRAWSURFACE Surface4 = NULL;
-LPDIRECTDRAWSURFACE TextureSurfaces[MAX_TEXTPAGES] = { NULL };
+LPDIRECTDRAW g_DDraw;
+float g_DDrawSurfaceMinX;
+float g_DDrawSurfaceMinY;
+float g_DDrawSurfaceMaxX;
+float g_DDrawSurfaceMaxY;
+int32_t g_DDrawSurfaceWidth;
+int32_t g_DDrawSurfaceHeight;
+LPDIRECTDRAWSURFACE g_Surface1 = NULL;
+LPDIRECTDRAWSURFACE g_Surface2 = NULL;
+LPDIRECTDRAWSURFACE g_Surface3 = NULL;
+LPDIRECTDRAWSURFACE g_Surface4 = NULL;
+LPDIRECTDRAWSURFACE g_TextureSurfaces[MAX_TEXTPAGES] = { NULL };

@@ -16,7 +16,7 @@ SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
     int32_t best_dist = SQUARE(256) * 3;
     SG_COL best_entry = 0;
     for (int i = 0; i < 256; i++) {
-        RGB888 *col = &GamePalette[i];
+        RGB888 *col = &g_GamePalette[i];
         int32_t dr = red - col->r;
         int32_t dg = green - col->g;
         int32_t db = blue - col->b;
@@ -32,9 +32,9 @@ SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
 RGB888 S_ColourFromPalette(int8_t idx)
 {
     RGB888 ret;
-    ret.r = 4 * GamePalette[idx].r;
-    ret.g = 4 * GamePalette[idx].g;
-    ret.b = 4 * GamePalette[idx].b;
+    ret.r = 4 * g_GamePalette[idx].r;
+    ret.g = 4 * g_GamePalette[idx].g;
+    ret.b = 4 * g_GamePalette[idx].b;
     return ret;
 }
 
@@ -79,7 +79,7 @@ void S_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int16_t sprnum, int16_t shade, uint16_t flags)
 {
-    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     int32_t x1 = sx + (scale_h * (sprite->x1 >> 3) / PHD_ONE);
     int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
     int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
@@ -94,7 +94,7 @@ void S_DrawScreenSprite2d(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
 {
-    PHD_SPRITE *sprite = &PhdSpriteInfo[sprnum];
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     int32_t x1 = sx + (scale_h * sprite->x1 / PHD_ONE);
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
@@ -107,16 +107,16 @@ void S_DrawScreenSprite2d(
 
 void S_FinishInventory()
 {
-    if (InvMode != INV_TITLE_MODE) {
+    if (g_InvMode != INV_TITLE_MODE) {
         Screen_RestoreResolution();
     }
-    ModeLock = false;
+    g_ModeLock = false;
 }
 
 void S_FadeToBlack()
 {
-    memset(GamePalette, 0, sizeof(GamePalette));
-    HWR_FadeToPal(20, GamePalette);
+    memset(g_GamePalette, 0, sizeof(g_GamePalette));
+    HWR_FadeToPal(20, g_GamePalette);
     HWR_FadeWait();
 }
 

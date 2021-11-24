@@ -12,9 +12,9 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-BITE_INFO WarriorBite = { -27, 98, 0, 10 };
-BITE_INFO WarriorRocket = { 51, 213, 0, 14 };
-BITE_INFO WarriorShard = { -35, 269, 0, 9 };
+BITE_INFO g_WarriorBite = { -27, 98, 0, 10 };
+BITE_INFO g_WarriorRocket = { 51, 213, 0, 14 };
+BITE_INFO g_WarriorShard = { -35, 269, 0, 9 };
 
 void SetupWarrior(OBJECT_INFO *obj)
 {
@@ -34,8 +34,8 @@ void SetupWarrior(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index] |= BEB_ROT_Y;
-    AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
 void SetupWarrior2(OBJECT_INFO *obj)
@@ -43,7 +43,7 @@ void SetupWarrior2(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    *obj = Objects[O_WARRIOR1];
+    *obj = g_Objects[O_WARRIOR1];
     obj->initialise = InitialiseWarrior2;
     obj->smartness = WARRIOR2_SMARTNESS;
 }
@@ -53,13 +53,13 @@ void SetupWarrior3(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    *obj = Objects[O_WARRIOR1];
+    *obj = g_Objects[O_WARRIOR1];
     obj->initialise = InitialiseWarrior2;
 }
 
 void FlyerControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -230,9 +230,9 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK1:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &WarriorBite, DoBloodSplat);
-                LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_WarriorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
             }
             break;
@@ -240,9 +240,9 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK2:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &WarriorBite, DoBloodSplat);
-                LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_WarriorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_RUN;
             }
             break;
@@ -250,9 +250,9 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK3:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &WarriorBite, DoBloodSplat);
-                LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_WarriorBite, DoBloodSplat);
+                g_LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
             }
             break;
@@ -279,10 +279,10 @@ void FlyerControl(int16_t item_num)
         case FLYER_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                CreatureEffect(item, &WarriorShard, ShardGun);
+                CreatureEffect(item, &g_WarriorShard, ShardGun);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                CreatureEffect(item, &WarriorRocket, RocketGun);
+                CreatureEffect(item, &g_WarriorRocket, RocketGun);
             }
             break;
 
@@ -313,5 +313,5 @@ void FlyerControl(int16_t item_num)
 void InitialiseWarrior2(int16_t item_num)
 {
     InitialiseCreature(item_num);
-    Items[item_num].mesh_bits = 0xFFE07FFF;
+    g_Items[item_num].mesh_bits = 0xFFE07FFF;
 }

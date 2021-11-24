@@ -57,7 +57,7 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    if (T1MConfig.fix_secrets_killing_music && track == 13) {
+    if (g_Config.fix_secrets_killing_music && track == 13) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
@@ -96,7 +96,8 @@ bool Music_PlayLooped(int16_t track)
         return false;
     }
 
-    if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
+    if (g_CurrentLevel == g_GameFlow.title_level_num
+        && g_Config.disable_music_in_menu) {
         return false;
     }
 

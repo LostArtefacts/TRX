@@ -14,7 +14,7 @@ void Ricochet(GAME_VECTOR *pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &Effects[fx_num];
+        FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = pos->x;
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
@@ -27,7 +27,7 @@ void Ricochet(GAME_VECTOR *pos)
 
 void ControlRicochet1(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->counter--;
     if (!fx->counter) {
         KillEffect(fx_num);

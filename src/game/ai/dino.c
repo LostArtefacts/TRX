@@ -28,13 +28,13 @@ void SetupDino(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 40] |= BEB_ROT_Y;
-    AnimBones[obj->bone_index + 44] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 40] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 44] |= BEB_ROT_Y;
 }
 
 void DinoControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -67,9 +67,9 @@ void DinoControl(int16_t item_num)
 
         if (item->touch_bits) {
             if (item->current_anim_state == DINO_RUN) {
-                LaraItem->hit_points -= DINO_TRAMPLE_DAMAGE;
+                g_LaraItem->hit_points -= DINO_TRAMPLE_DAMAGE;
             } else {
-                LaraItem->hit_points -= DINO_TOUCH_DAMAGE;
+                g_LaraItem->hit_points -= DINO_TOUCH_DAMAGE;
             }
         }
 
@@ -122,8 +122,8 @@ void DinoControl(int16_t item_num)
 
         case DINO_ATTACK2:
             if (item->touch_bits & DINO_TOUCH) {
-                LaraItem->hit_points -= DINO_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= DINO_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->goal_anim_state = DINO_KILL;
                 LaraDinoDeath(item);
             }
@@ -141,29 +141,29 @@ void DinoControl(int16_t item_num)
 void LaraDinoDeath(ITEM_INFO *item)
 {
     item->goal_anim_state = DINO_KILL;
-    if (LaraItem->room_number != item->room_number) {
-        ItemNewRoom(Lara.item_number, item->room_number);
+    if (g_LaraItem->room_number != item->room_number) {
+        ItemNewRoom(g_Lara.item_number, item->room_number);
     }
 
-    LaraItem->pos.x = item->pos.x;
-    LaraItem->pos.y = item->pos.y;
-    LaraItem->pos.z = item->pos.z;
-    LaraItem->pos.x_rot = 0;
-    LaraItem->pos.y_rot = item->pos.y_rot;
-    LaraItem->pos.z_rot = 0;
-    LaraItem->gravity_status = 0;
-    LaraItem->current_anim_state = AS_SPECIAL;
-    LaraItem->goal_anim_state = AS_SPECIAL;
-    LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index + 1;
-    LaraItem->frame_number = Anims[LaraItem->anim_number].frame_base;
+    g_LaraItem->pos.x = item->pos.x;
+    g_LaraItem->pos.y = item->pos.y;
+    g_LaraItem->pos.z = item->pos.z;
+    g_LaraItem->pos.x_rot = 0;
+    g_LaraItem->pos.y_rot = item->pos.y_rot;
+    g_LaraItem->pos.z_rot = 0;
+    g_LaraItem->gravity_status = 0;
+    g_LaraItem->current_anim_state = AS_SPECIAL;
+    g_LaraItem->goal_anim_state = AS_SPECIAL;
+    g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index + 1;
+    g_LaraItem->frame_number = g_Anims[g_LaraItem->anim_number].frame_base;
     LaraSwapMeshExtra();
 
-    LaraItem->hit_points = -1;
-    Lara.air = -1;
-    Lara.gun_status = LGS_HANDSBUSY;
-    Lara.gun_type = LGT_UNARMED;
+    g_LaraItem->hit_points = -1;
+    g_Lara.air = -1;
+    g_Lara.gun_status = LGS_HANDSBUSY;
+    g_Lara.gun_type = LGT_UNARMED;
 
-    Camera.flags = FOLLOW_CENTRE;
-    Camera.target_angle = 170 * PHD_DEGREE;
-    Camera.target_elevation = -25 * PHD_DEGREE;
+    g_Camera.flags = FOLLOW_CENTRE;
+    g_Camera.target_angle = 170 * PHD_DEGREE;
+    g_Camera.target_elevation = -25 * PHD_DEGREE;
 }

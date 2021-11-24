@@ -102,7 +102,7 @@ void S_Input_Init()
         S_Shell_ExitSystem("Fatal DirectInput error!");
     }
 
-    if (T1MConfig.enable_xbox_one_controller) {
+    if (g_Config.enable_xbox_one_controller) {
         S_Input_DInput_JoystickCreate();
     } else {
         m_IDID_Joystick = NULL;
@@ -112,7 +112,7 @@ void S_Input_Init()
 void InputShutdown()
 {
     S_Input_DInput_KeyboardRelease();
-    if (T1MConfig.enable_xbox_one_controller) {
+    if (g_Config.enable_xbox_one_controller) {
         S_Input_DInput_JoystickRelease();
     }
     S_Input_DInput_Shutdown();
@@ -121,7 +121,7 @@ void InputShutdown()
 static bool S_Input_DInput_Create()
 {
     HRESULT result = DirectInput8Create(
-        TombModule, DIRECTINPUT_VERSION, &IID_IDirectInput8,
+        g_TombModule, DIRECTINPUT_VERSION, &IID_IDirectInput8,
         (LPVOID *)&m_DInput, NULL);
 
     if (result) {
@@ -151,7 +151,7 @@ bool S_Input_DInput_KeyboardCreate()
     }
 
     result = IDirectInputDevice_SetCooperativeLevel(
-        m_IDID_SysKeyboard, TombHWND, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+        m_IDID_SysKeyboard, g_TombHWND, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
     if (result) {
         LOG_ERROR(
             "Error while calling IDirectInputDevice_SetCooperativeLevel: 0x%lx",
@@ -429,7 +429,7 @@ INPUT_STATE S_Input_GetCurrentState()
     linput.roll =
         S_Input_Key(INPUT_KEY_ROLL) || (linput.forward && linput.back);
     linput.option =
-        S_Input_Key(INPUT_KEY_OPTION) && Camera.type != CAM_CINEMATIC;
+        S_Input_Key(INPUT_KEY_OPTION) && g_Camera.type != CAM_CINEMATIC;
     linput.pause = S_Input_Key(INPUT_KEY_PAUSE);
     linput.camera_up = S_Input_Key(INPUT_KEY_CAMERA_UP);
     linput.camera_down = S_Input_Key(INPUT_KEY_CAMERA_DOWN);
@@ -437,14 +437,14 @@ INPUT_STATE S_Input_GetCurrentState()
     linput.camera_right = S_Input_Key(INPUT_KEY_CAMERA_RIGHT);
     linput.camera_reset = S_Input_Key(INPUT_KEY_CAMERA_RESET);
 
-    if (T1MConfig.enable_cheats) {
+    if (g_Config.enable_cheats) {
         linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
         linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
         linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
         linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 
-    if (T1MConfig.enable_tr3_sidesteps) {
+    if (g_Config.enable_tr3_sidesteps) {
         if (linput.slow && !linput.forward && !linput.back && !linput.step_left
             && !linput.step_right) {
             if (linput.left) {
@@ -457,15 +457,15 @@ INPUT_STATE S_Input_GetCurrentState()
         }
     }
 
-    if (T1MConfig.enable_numeric_keys) {
+    if (g_Config.enable_numeric_keys) {
         if (KEY_DOWN(DIK_1) && Inv_RequestItem(O_GUN_ITEM)) {
-            Lara.request_gun_type = LGT_PISTOLS;
+            g_Lara.request_gun_type = LGT_PISTOLS;
         } else if (KEY_DOWN(DIK_2) && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Lara.request_gun_type = LGT_SHOTGUN;
+            g_Lara.request_gun_type = LGT_SHOTGUN;
         } else if (KEY_DOWN(DIK_3) && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Lara.request_gun_type = LGT_MAGNUMS;
+            g_Lara.request_gun_type = LGT_MAGNUMS;
         } else if (KEY_DOWN(DIK_4) && Inv_RequestItem(O_UZI_ITEM)) {
-            Lara.request_gun_type = LGT_UZIS;
+            g_Lara.request_gun_type = LGT_UZIS;
         }
 
         if (m_MedipackCoolDown) {
@@ -489,27 +489,27 @@ INPUT_STATE S_Input_GetCurrentState()
         linput.right = 0;
     }
 
-    if (!ModeLock && Camera.type != CAM_CINEMATIC) {
+    if (!g_ModeLock && g_Camera.type != CAM_CINEMATIC) {
         linput.save = KEY_DOWN(DIK_F5);
         linput.load = KEY_DOWN(DIK_F6);
     }
 
     if (KEY_DOWN(DIK_F3)) {
-        T1MConfig.render_flags.bilinear ^= 1;
+        g_Config.render_flags.bilinear ^= 1;
         while (KEY_DOWN(DIK_F3)) {
             S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F4)) {
-        T1MConfig.render_flags.perspective ^= 1;
+        g_Config.render_flags.perspective ^= 1;
         while (KEY_DOWN(DIK_F4)) {
             S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F2)) {
-        T1MConfig.render_flags.fps_counter ^= 1;
+        g_Config.render_flags.fps_counter ^= 1;
         while (KEY_DOWN(DIK_F2)) {
             S_Input_DInput_KeyboardRead();
         }

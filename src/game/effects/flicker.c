@@ -6,13 +6,13 @@
 
 void Flicker(ITEM_INFO *item)
 {
-    if (FlipTimer > 125) {
+    if (g_FlipTimer > 125) {
         FlipMap();
-        FlipEffect = -1;
+        g_FlipEffect = -1;
     } else if (
-        FlipTimer == 90 || FlipTimer == 92 || FlipTimer == 105
-        || FlipTimer == 107) {
+        g_FlipTimer == 90 || g_FlipTimer == 92 || g_FlipTimer == 105
+        || g_FlipTimer == 107) {
         FlipMap();
     }
-    FlipTimer++;
+    g_FlipTimer++;
 }

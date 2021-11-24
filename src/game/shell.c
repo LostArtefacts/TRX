@@ -45,15 +45,15 @@ static void Shell_CalculateWibbleTable()
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
+        g_WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
+        g_ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
 
 void Shell_Main()
 {
-    SoundIsActive = true;
+    g_SoundIsActive = true;
 
     Log_Init();
     T1MInit();
@@ -79,7 +79,7 @@ void Shell_Main()
 
     Text_Init();
     Clock_Init();
-    SoundIsActive = Sound_Init();
+    g_SoundIsActive = Sound_Init();
     Music_Init();
     Input_Init();
     FMV_Init();
@@ -122,8 +122,9 @@ void Shell_Main()
             break;
 
         case GF_START_SAVED_GAME:
-            S_LoadGame(&SaveGame, gf_param);
-            gf_option = GF_InterpretSequence(SaveGame.current_level, GFL_SAVED);
+            S_LoadGame(&g_SaveGame, gf_param);
+            gf_option =
+                GF_InterpretSequence(g_SaveGame.current_level, GFL_SAVED);
             break;
 
         case GF_START_CINE:
@@ -141,9 +142,9 @@ void Shell_Main()
         case GF_EXIT_TO_TITLE:
             Text_RemoveAll();
             Screen_SetResolution(2);
-            S_DisplayPicture(GF.main_menu_background_path);
-            NoInputCount = 0;
-            if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
+            S_DisplayPicture(g_GameFlow.main_menu_background_path);
+            g_NoInputCount = 0;
+            if (!InitialiseLevel(g_GameFlow.title_level_num, GFL_TITLE)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }

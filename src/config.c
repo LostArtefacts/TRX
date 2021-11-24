@@ -15,7 +15,7 @@
 
 #define READ_PRIMITIVE(func, opt, default_value)                               \
     do {                                                                       \
-        T1MConfig.opt = func(root_obj, QUOTE(opt), default_value);             \
+        g_Config.opt = func(root_obj, QUOTE(opt), default_value);              \
     } while (0)
 #define READ_BOOL(opt, default_value)                                          \
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
@@ -26,7 +26,7 @@
 
 #define READ_CUSTOM(func, opt, default_value)                                  \
     do {                                                                       \
-        T1MConfig.opt = func(root_obj, QUOTE(opt), default_value);             \
+        g_Config.opt = func(root_obj, QUOTE(opt), default_value);              \
     } while (0)
 #define READ_BAR_SHOWING_MODE(opt, default_value)                              \
     READ_CUSTOM(ReadBarShowingMode, opt, default_value)
@@ -35,7 +35,7 @@
 #define READ_BAR_COLOR(opt, default_value)                                     \
     READ_CUSTOM(ReadBarColor, opt, default_value)
 
-T1MConfigStruct T1MConfig = { 0 };
+CONFIG g_Config = { 0 };
 
 static const char *T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
 
@@ -171,7 +171,7 @@ int8_t T1MReadConfigFromJson(const char *cfg_data)
     READ_BAR_COLOR(airbar_color, T1M_BC_BLUE);
     READ_BAR_COLOR(enemy_healthbar_color, T1M_BC_GREY);
 
-    CLAMP(T1MConfig.fov_value, 30, 255);
+    CLAMP(g_Config.fov_value, 30, 255);
 
     if (root) {
         json_value_free(root);
@@ -202,15 +202,15 @@ int8_t T1MReadConfig()
 
     result = T1MReadConfigFromJson(cfg_data);
 
-    if (T1MConfig.resolution_width > 0) {
-        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
-            T1MConfig.resolution_width;
-        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
-            T1MConfig.resolution_height;
+    if (g_Config.resolution_width > 0) {
+        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+            g_Config.resolution_width;
+        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+            g_Config.resolution_height;
     } else {
-        AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
+        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
             GetSystemMetrics(SM_CXSCREEN);
-        AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
+        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
             GetSystemMetrics(SM_CYSCREEN);
     }
 

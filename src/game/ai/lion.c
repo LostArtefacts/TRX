@@ -7,7 +7,7 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO LionBite = { -2, -10, 132, 21 };
+BITE_INFO g_LionBite = { -2, -10, 132, 21 };
 
 void SetupLion(OBJECT_INFO *obj)
 {
@@ -27,7 +27,7 @@ void SetupLion(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
 void SetupLioness(OBJECT_INFO *obj)
@@ -48,7 +48,7 @@ void SetupLioness(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
 void SetupPuma(OBJECT_INFO *obj)
@@ -69,12 +69,12 @@ void SetupPuma(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
 void LionControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -92,16 +92,16 @@ void LionControl(int16_t item_num)
         if (item->current_anim_state != LION_DEATH) {
             item->current_anim_state = LION_DEATH;
             if (item->object_number == O_PUMA) {
-                item->anim_number = Objects[O_PUMA].anim_index + PUMA_DIE_ANIM
+                item->anim_number = g_Objects[O_PUMA].anim_index + PUMA_DIE_ANIM
                     + (int16_t)(Random_GetControl() / 0x4000);
             } else if (item->object_number == O_LION) {
-                item->anim_number = Objects[O_LION].anim_index + LION_DIE_ANIM
+                item->anim_number = g_Objects[O_LION].anim_index + LION_DIE_ANIM
                     + (int16_t)(Random_GetControl() / 0x4000);
             } else {
-                item->anim_number = Objects[O_LIONESS].anim_index
+                item->anim_number = g_Objects[O_LIONESS].anim_index
                     + LION_DIE_ANIM + (int16_t)(Random_GetControl() / 0x4000);
             }
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -160,8 +160,8 @@ void LionControl(int16_t item_num)
         case LION_ATTACK1:
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
-                LaraItem->hit_points -= LION_POUNCE_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= LION_POUNCE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = LION_STOP;
             }
             break;
@@ -169,9 +169,9 @@ void LionControl(int16_t item_num)
         case LION_ATTACK2:
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
-                CreatureEffect(item, &LionBite, DoBloodSplat);
-                LaraItem->hit_points -= LION_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_LionBite, DoBloodSplat);
+                g_LaraItem->hit_points -= LION_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = LION_STOP;
             }
             break;

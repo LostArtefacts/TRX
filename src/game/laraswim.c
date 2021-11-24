@@ -32,7 +32,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    if (T1MConfig.enable_enhanced_look && item->hit_points > 0) {
+    if (g_Config.enable_enhanced_look && item->hit_points > 0) {
         if (g_Input.look) {
             LookLeftRight();
         } else {
@@ -40,7 +40,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         }
     }
 
-    LaraControlRoutines[item->current_anim_state](item, coll);
+    g_LaraControlRoutines[item->current_anim_state](item, coll);
 
     if (item->pos.z_rot >= -(2 * LARA_LEAN_UNDO)
         && item->pos.z_rot <= 2 * LARA_LEAN_UNDO) {
@@ -63,7 +63,7 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.z_rot = LARA_LEAN_MAX_UW;
     }
 
-    if (Lara.current_active && Lara.water_status != LWS_CHEAT) {
+    if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         LaraWaterCurrent(coll);
     }
 
@@ -80,20 +80,20 @@ void LaraUnderWater(ITEM_INFO *item, COLL_INFO *coll)
          * phd_cos(item->pos.x_rot))
         >> W2V_SHIFT;
 
-    if (Lara.water_status != LWS_CHEAT) {
+    if (g_Lara.water_status != LWS_CHEAT) {
         LaraBaddieCollision(item, coll);
     }
 
-    if (Lara.water_status == LWS_CHEAT) {
+    if (g_Lara.water_status == LWS_CHEAT) {
         if (OpenDoorsCheatCooldown) {
             OpenDoorsCheatCooldown--;
         } else if (g_Input.draw) {
             OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
-            OpenNearestDoors(LaraItem);
+            OpenNearestDoors(g_LaraItem);
         }
     }
 
-    LaraCollisionRoutines[item->current_anim_state](item, coll);
+    g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     UpdateLaraRoom(item, 0);
     LaraGun();
     TestTriggers(coll->trigger, 0);
@@ -121,7 +121,7 @@ void LaraAsSwim(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->fall_speed += 8;
-    if (Lara.water_status == LWS_CHEAT) {
+    if (g_Lara.water_status == LWS_CHEAT) {
         if (item->fall_speed > UW_MAXSPEED * 2) {
             item->fall_speed = UW_MAXSPEED * 2;
         }
@@ -169,7 +169,7 @@ void LaraAsGlide(ITEM_INFO *item, COLL_INFO *coll)
 
 void LaraAsTread(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (T1MConfig.enable_enhanced_look) {
+    if (g_Config.enable_enhanced_look) {
         if (g_Input.look) {
             LookUpDown();
         }
@@ -249,8 +249,8 @@ void LaraColDive(ITEM_INFO *item, COLL_INFO *coll)
 void LaraColUWDeath(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->hit_points = -1;
-    Lara.air = -1;
-    Lara.gun_status = LGS_HANDSBUSY;
+    g_Lara.air = -1;
+    g_Lara.gun_status = LGS_HANDSBUSY;
     int16_t wh = GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
@@ -262,9 +262,9 @@ void LaraColUWDeath(ITEM_INFO *item, COLL_INFO *coll)
 void LaraSwimCollision(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (item->pos.x_rot >= -PHD_90 && item->pos.x_rot <= PHD_90) {
-        Lara.move_angle = coll->facing = item->pos.y_rot;
+        g_Lara.move_angle = coll->facing = item->pos.y_rot;
     } else {
-        Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
+        g_Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
     GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
@@ -319,46 +319,46 @@ void LaraWaterCurrent(COLL_INFO *coll)
 {
     PHD_VECTOR target;
 
-    ITEM_INFO *item = LaraItem;
-    ROOM_INFO *r = &RoomInfo[item->room_number];
+    ITEM_INFO *item = g_LaraItem;
+    ROOM_INFO *r = &g_RoomInfo[item->room_number];
     FLOOR_INFO *floor =
         &r->floor
              [((item->pos.z - r->z) >> WALL_SHIFT)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->x_size];
     item->box_number = floor->box;
 
-    if (CalculateTarget(&target, item, &Lara.LOT) == TARGET_NONE) {
+    if (CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
         return;
     }
 
     target.x -= item->pos.x;
-    if (target.x > Lara.current_active) {
-        item->pos.x += Lara.current_active;
-    } else if (target.x < -Lara.current_active) {
-        item->pos.x -= Lara.current_active;
+    if (target.x > g_Lara.current_active) {
+        item->pos.x += g_Lara.current_active;
+    } else if (target.x < -g_Lara.current_active) {
+        item->pos.x -= g_Lara.current_active;
     } else {
         item->pos.x += target.x;
     }
 
     target.z -= item->pos.z;
-    if (target.z > Lara.current_active) {
-        item->pos.z += Lara.current_active;
-    } else if (target.z < -Lara.current_active) {
-        item->pos.z -= Lara.current_active;
+    if (target.z > g_Lara.current_active) {
+        item->pos.z += g_Lara.current_active;
+    } else if (target.z < -g_Lara.current_active) {
+        item->pos.z -= g_Lara.current_active;
     } else {
         item->pos.z += target.z;
     }
 
     target.y -= item->pos.y;
-    if (target.y > Lara.current_active) {
-        item->pos.y += Lara.current_active;
-    } else if (target.y < -Lara.current_active) {
-        item->pos.y -= Lara.current_active;
+    if (target.y > g_Lara.current_active) {
+        item->pos.y += g_Lara.current_active;
+    } else if (target.y < -g_Lara.current_active) {
+        item->pos.y -= g_Lara.current_active;
     } else {
         item->pos.y += target.y;
     }
 
-    Lara.current_active = 0;
+    g_Lara.current_active = 0;
 
     coll->facing =
         (int16_t)phd_atan(item->pos.z - coll->old.z, item->pos.x - coll->old.x);

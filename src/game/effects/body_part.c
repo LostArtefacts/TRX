@@ -19,16 +19,16 @@ void SetupBodyPart(OBJECT_INFO *obj)
 
 int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
 {
-    ITEM_INFO *item = &Items[item_num];
-    OBJECT_INFO *object = &Objects[item->object_number];
+    ITEM_INFO *item = &g_Items[item_num];
+    OBJECT_INFO *object = &g_Objects[item->object_number];
     int32_t abortion = item->object_number == O_ABORTION;
 
     int16_t *frame = GetBestFrame(item);
 
     phd_PushUnitMatrix();
-    PhdMatrixPtr->_03 = 0;
-    PhdMatrixPtr->_13 = 0;
-    PhdMatrixPtr->_23 = 0;
+    g_PhdMatrixPtr->_03 = 0;
+    g_PhdMatrixPtr->_13 = 0;
+    g_PhdMatrixPtr->_23 = 0;
 
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
     phd_TranslateRel(
@@ -37,7 +37,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    int32_t *bone = &AnimBones[object->bone_index];
+    int32_t *bone = &g_AnimBones[object->bone_index];
 #if 0
     // XXX: present in OG, removed by GLrage on the grounds that it sometimes
     // crashes.
@@ -48,11 +48,11 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &Effects[fx_num];
+            FX_INFO *fx = &g_Effects[fx_num];
             fx->room_number = item->room_number;
-            fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-            fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-            fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+            fx->pos.x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+            fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+            fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
             fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
             if (abortion) {
                 fx->speed = Random_GetControl() >> 7;
@@ -100,11 +100,11 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
             int16_t fx_num = CreateEffect(item->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO *fx = &Effects[fx_num];
+                FX_INFO *fx = &g_Effects[fx_num];
                 fx->room_number = item->room_number;
-                fx->pos.x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-                fx->pos.y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-                fx->pos.z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+                fx->pos.x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+                fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+                fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
                 fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
                 if (abortion) {
                     fx->speed = Random_GetControl() >> 7;
@@ -130,7 +130,7 @@ int32_t ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
 
 void ControlBodyPart(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->pos.x_rot += 5 * PHD_DEGREE;
     fx->pos.z_rot += 10 * PHD_DEGREE;
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
@@ -162,8 +162,8 @@ void ControlBodyPart(int16_t fx_num)
     }
 
     if (ItemNearLara(&fx->pos, fx->counter * 2)) {
-        LaraItem->hit_points -= fx->counter;
-        LaraItem->hit_status = 1;
+        g_LaraItem->hit_points -= fx->counter;
+        g_LaraItem->hit_status = 1;
 
         if (fx->counter) {
             fx->speed = 0;
@@ -172,8 +172,8 @@ void ControlBodyPart(int16_t fx_num)
             fx->object_number = O_EXPLOSION1;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
 
-            Lara.spaz_effect_count = 5;
-            Lara.spaz_effect = fx;
+            g_Lara.spaz_effect_count = 5;
+            g_Lara.spaz_effect = fx;
         } else {
             KillEffect(fx_num);
         }

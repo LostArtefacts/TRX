@@ -47,19 +47,19 @@ int32_t Display_Inventory(int inv_mode)
     memset(&imo, 0, sizeof(IMOTION_INFO));
     memset(&ring, 0, sizeof(RING_INFO));
 
-    if (inv_mode == RT_KEYS && !InvKeysObjects) {
-        InvChosen = -1;
+    if (inv_mode == RT_KEYS && !g_InvKeysObjects) {
+        g_InvChosen = -1;
         return GF_NOP;
     }
 
     int32_t pass_mode_open = 0;
-    phd_AlterFOV(T1MConfig.fov_value * PHD_DEGREE);
-    InvMode = inv_mode;
+    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    g_InvMode = inv_mode;
 
     InvNFrames = 2;
     Construct_Inventory();
 
-    if (InvMode != INV_TITLE_MODE) {
+    if (g_InvMode != INV_TITLE_MODE) {
         S_FadeInInventory(1);
     } else {
         S_FadeInInventory(0);
@@ -68,31 +68,32 @@ int32_t Display_Inventory(int inv_mode)
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
 
-    switch (InvMode) {
+    switch (g_InvMode) {
     case INV_DEATH_MODE:
     case INV_SAVE_MODE:
     case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_TITLE_MODE:
         Inv_RingInit(
-            &ring, RT_OPTION, InvOptionList, InvOptionObjects, InvOptionCurrent,
-            &imo);
+            &ring, RT_OPTION, g_InvOptionList, g_InvOptionObjects,
+            g_InvOptionCurrent, &imo);
         break;
 
     case INV_KEYS_MODE:
         Inv_RingInit(
-            &ring, RT_KEYS, InvKeysList, InvKeysObjects, InvMainCurrent, &imo);
+            &ring, RT_KEYS, g_InvKeysList, g_InvKeysObjects, g_InvMainCurrent,
+            &imo);
         break;
 
     default:
-        if (InvMainObjects) {
+        if (g_InvMainObjects) {
             Inv_RingInit(
-                &ring, RT_MAIN, InvMainList, InvMainObjects, InvMainCurrent,
-                &imo);
+                &ring, RT_MAIN, g_InvMainList, g_InvMainObjects,
+                g_InvMainCurrent, &imo);
         } else {
             Inv_RingInit(
-                &ring, RT_OPTION, InvOptionList, InvOptionObjects,
-                InvOptionCurrent, &imo);
+                &ring, RT_OPTION, g_InvOptionList, g_InvOptionObjects,
+                g_InvOptionCurrent, &imo);
         }
         break;
     }
@@ -105,24 +106,25 @@ int32_t Display_Inventory(int inv_mode)
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
         Input_Update();
 
-        if (InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
-            NoInputCount = 0;
-            ResetFlag = false;
+        if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
+            g_NoInputCount = 0;
+            g_ResetFlag = false;
         } else {
-            if (!T1MConfig.disable_demo) {
-                NoInputCount++;
-                if (GF.has_demo && NoInputCount > GF.demo_delay) {
-                    ResetFlag = true;
+            if (!g_Config.disable_demo) {
+                g_NoInputCount++;
+                if (g_GameFlow.has_demo
+                    && g_NoInputCount > g_GameFlow.demo_delay) {
+                    g_ResetFlag = true;
                 }
             }
         }
 
         for (int i = 0; i < InvNFrames; i++) {
-            if (IDelay) {
-                if (IDCount) {
-                    IDCount--;
+            if (g_IDelay) {
+                if (g_IDCount) {
+                    g_IDCount--;
                 } else {
-                    IDelay = false;
+                    g_IDelay = false;
                 }
             }
             Inv_RingDoMotions(&ring);
@@ -150,7 +152,7 @@ int32_t Display_Inventory(int inv_mode)
             if (i == ring.current_object) {
                 for (int j = 0; j < InvNFrames; j++) {
                     if (ring.rotating) {
-                        LsAdder = LOW_LIGHT;
+                        g_LsAdder = LOW_LIGHT;
                         if (inv_item->y_rot) {
                             if (inv_item->y_rot < 0) {
                                 inv_item->y_rot += 512;
@@ -164,7 +166,7 @@ int32_t Display_Inventory(int inv_mode)
                         || imo.status == RNG_SELECTING
                         || imo.status == RNG_DESELECT
                         || imo.status == RNG_CLOSING_ITEM) {
-                        LsAdder = HIGH_LIGHT;
+                        g_LsAdder = HIGH_LIGHT;
                         if (inv_item->y_rot != inv_item->y_rot_sel) {
                             if (inv_item->y_rot_sel - inv_item->y_rot > 0
                                 && inv_item->y_rot_sel - inv_item->y_rot
@@ -178,7 +180,7 @@ int32_t Display_Inventory(int inv_mode)
                     } else if (
                         ring.number_of_objects == 1
                         || (!g_Input.left && !g_Input.right) || !g_Input.left) {
-                        LsAdder = HIGH_LIGHT;
+                        g_LsAdder = HIGH_LIGHT;
                         inv_item->y_rot += 256;
                     }
                 }
@@ -192,7 +194,7 @@ int32_t Display_Inventory(int inv_mode)
                     RingNotActive(inv_item);
                 }
             } else {
-                LsAdder = LOW_LIGHT;
+                g_LsAdder = LOW_LIGHT;
                 for (int j = 0; j < InvNFrames; j++) {
                     if (inv_item->y_rot) {
                         if (inv_item->y_rot < 0) {
@@ -238,18 +240,18 @@ int32_t Display_Inventory(int inv_mode)
         S_OutputPolyList();
 
         InvNFrames = S_DumpScreen();
-        Camera.number_frames = InvNFrames;
+        g_Camera.number_frames = InvNFrames;
 
-        if (T1MConfig.enable_timer_in_inventory) {
-            SaveGame.timer += InvNFrames / 2;
+        if (g_Config.enable_timer_in_inventory) {
+            g_SaveGame.timer += InvNFrames / 2;
         }
 
         if (ring.rotating) {
             continue;
         }
 
-        if ((InvMode == INV_SAVE_MODE || InvMode == INV_SAVE_CRYSTAL_MODE
-             || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
+        if ((g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
+             || g_InvMode == INV_LOAD_MODE || g_InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
             g_InputDB = (INPUT_STATE) { 0, .select = 1 };
         }
@@ -268,18 +270,18 @@ int32_t Display_Inventory(int inv_mode)
                 break;
             }
 
-            if ((ResetFlag || g_InputDB.option)
-                && (ResetFlag || InvMode != INV_TITLE_MODE)) {
+            if ((g_ResetFlag || g_InputDB.option)
+                && (g_ResetFlag || g_InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
-                InvChosen = -1;
+                g_InvChosen = -1;
 
                 if (ring.type == RT_MAIN) {
-                    InvMainCurrent = ring.current_object;
+                    g_InvMainCurrent = ring.current_object;
                 } else {
-                    InvOptionCurrent = ring.current_object;
+                    g_InvOptionCurrent = ring.current_object;
                 }
 
-                if (InvMode == INV_TITLE_MODE) {
+                if (g_InvMode == INV_TITLE_MODE) {
                     S_FadeOutInventory(0);
                 } else {
                     S_FadeOutInventory(1);
@@ -295,25 +297,26 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (g_InputDB.select) {
-                if ((InvMode == INV_SAVE_MODE
-                     || InvMode == INV_SAVE_CRYSTAL_MODE
-                     || InvMode == INV_LOAD_MODE || InvMode == INV_DEATH_MODE)
+                if ((g_InvMode == INV_SAVE_MODE
+                     || g_InvMode == INV_SAVE_CRYSTAL_MODE
+                     || g_InvMode == INV_LOAD_MODE
+                     || g_InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
                     pass_mode_open = 1;
                 }
 
-                OptionSelected = 0;
+                g_OptionSelected = 0;
 
                 INVENTORY_ITEM *inv_item;
                 if (ring.type == RT_MAIN) {
-                    InvMainCurrent = ring.current_object;
-                    inv_item = InvMainList[ring.current_object];
+                    g_InvMainCurrent = ring.current_object;
+                    inv_item = g_InvMainList[ring.current_object];
                 } else if (ring.type == RT_OPTION) {
-                    InvOptionCurrent = ring.current_object;
-                    inv_item = InvOptionList[ring.current_object];
+                    g_InvOptionCurrent = ring.current_object;
+                    inv_item = g_InvOptionList[ring.current_object];
                 } else {
-                    InvKeysCurrent = ring.current_object;
-                    inv_item = InvKeysList[ring.current_object];
+                    g_InvKeysCurrent = ring.current_object;
+                    inv_item = g_InvKeysList[ring.current_object];
                 }
 
                 inv_item->goal_frame = inv_item->open_frame;
@@ -353,10 +356,10 @@ int32_t Display_Inventory(int inv_mode)
                 }
             }
 
-            if (g_InputDB.forward && InvMode != INV_TITLE_MODE
-                && InvMode != INV_KEYS_MODE) {
+            if (g_InputDB.forward && g_InvMode != INV_TITLE_MODE
+                && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
-                    if (InvKeysObjects) {
+                    if (g_InvKeysObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2KEYS,
                             RINGSWITCH_FRAMES / 2);
@@ -370,7 +373,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_OPTION) {
-                    if (InvMainObjects) {
+                    if (g_InvMainObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_OPTION2MAIN,
                             RINGSWITCH_FRAMES / 2);
@@ -384,10 +387,10 @@ int32_t Display_Inventory(int inv_mode)
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
             } else if (
-                g_InputDB.back && InvMode != INV_TITLE_MODE
-                && InvMode != INV_KEYS_MODE) {
+                g_InputDB.back && g_InvMode != INV_TITLE_MODE
+                && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
-                    if (InvMainObjects) {
+                    if (g_InvMainObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_KEYS2MAIN,
                             RINGSWITCH_FRAMES / 2);
@@ -401,7 +404,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_MAIN) {
-                    if (InvOptionObjects) {
+                    if (g_InvOptionObjects) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2OPTION,
                             RINGSWITCH_FRAMES / 2);
@@ -424,11 +427,11 @@ int32_t Display_Inventory(int inv_mode)
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
-            InvMainCurrent = ring.current_object;
-            ring.list = InvOptionList;
+            g_InvMainCurrent = ring.current_object;
+            ring.list = g_InvOptionList;
             ring.type = RT_OPTION;
-            ring.number_of_objects = InvOptionObjects;
-            ring.current_object = InvOptionCurrent;
+            ring.number_of_objects = g_InvOptionObjects;
+            ring.current_object = g_InvOptionCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
@@ -443,12 +446,12 @@ int32_t Display_Inventory(int inv_mode)
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
-            InvMainCurrent = ring.current_object;
-            InvMainObjects = ring.number_of_objects;
-            ring.list = InvKeysList;
+            g_InvMainCurrent = ring.current_object;
+            g_InvMainObjects = ring.number_of_objects;
+            ring.list = g_InvKeysList;
             ring.type = RT_KEYS;
-            ring.number_of_objects = InvKeysObjects;
-            ring.current_object = InvKeysCurrent;
+            ring.number_of_objects = g_InvKeysObjects;
+            ring.current_object = g_InvKeysCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
@@ -463,11 +466,11 @@ int32_t Display_Inventory(int inv_mode)
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
-            InvKeysCurrent = ring.current_object;
-            ring.list = InvMainList;
+            g_InvKeysCurrent = ring.current_object;
+            ring.list = g_InvMainList;
             ring.type = RT_MAIN;
-            ring.number_of_objects = InvMainObjects;
-            ring.current_object = InvMainCurrent;
+            ring.number_of_objects = g_InvMainObjects;
+            ring.current_object = g_InvMainCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
@@ -482,12 +485,12 @@ int32_t Display_Inventory(int inv_mode)
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
-            InvOptionObjects = ring.number_of_objects;
-            InvOptionCurrent = ring.current_object;
-            ring.list = InvMainList;
+            g_InvOptionObjects = ring.number_of_objects;
+            g_InvOptionCurrent = ring.current_object;
+            ring.list = g_InvMainList;
             ring.type = RT_MAIN;
-            ring.number_of_objects = InvMainObjects;
-            ring.current_object = InvMainCurrent;
+            ring.number_of_objects = g_InvMainObjects;
+            ring.current_object = g_InvMainCurrent;
             Inv_RingCalcAdders(&ring, ROTATE_DURATION);
             Inv_RingMotionRotation(
                 &ring, OPEN_ROTATION,
@@ -509,7 +512,7 @@ int32_t Display_Inventory(int inv_mode)
                 }
             }
 
-            if (!busy && !IDelay) {
+            if (!busy && !g_IDelay) {
                 DoInventoryOptions(inv_item);
 
                 if (g_InputDB.deselect) {
@@ -519,8 +522,8 @@ int32_t Display_Inventory(int inv_mode)
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
 
-                    if (InvMode == INV_LOAD_MODE || InvMode == INV_SAVE_MODE
-                        || InvMode == INV_SAVE_CRYSTAL_MODE) {
+                    if (g_InvMode == INV_LOAD_MODE || g_InvMode == INV_SAVE_MODE
+                        || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
                         Inv_RingMotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                         g_Input = (INPUT_STATE) { 0 };
@@ -530,14 +533,14 @@ int32_t Display_Inventory(int inv_mode)
 
                 if (g_InputDB.select) {
                     inv_item->sprlist = NULL;
-                    InvChosen = inv_item->object_number;
+                    g_InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {
-                        InvMainCurrent = ring.current_object;
+                        g_InvMainCurrent = ring.current_object;
                     } else {
-                        InvOptionCurrent = ring.current_object;
+                        g_InvOptionCurrent = ring.current_object;
                     }
 
-                    if (InvMode == INV_TITLE_MODE
+                    if (g_InvMode == INV_TITLE_MODE
                         && ((inv_item->object_number == O_DETAIL_OPTION)
                             || inv_item->object_number == O_SOUND_OPTION
                             || inv_item->object_number == O_CONTROL_OPTION
@@ -584,7 +587,7 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_EXITING_INVENTORY:
             if (!imo.count) {
-                if (InvMode != INV_TITLE_MODE) {
+                if (g_InvMode != INV_TITLE_MODE) {
                     S_FadeOutInventory(1);
                 } else {
                     S_FadeOutInventory(0);
@@ -606,64 +609,64 @@ int32_t Display_Inventory(int inv_mode)
         VersionText = NULL;
     }
 
-    if (ResetFlag) {
+    if (g_ResetFlag) {
         return GF_START_DEMO;
     }
 
-    switch (InvChosen) {
+    switch (g_InvChosen) {
     case O_PASSPORT_OPTION:
-        if (InvMode == INV_TITLE_MODE) {
-            if (InvExtraData[0] == 0) {
+        if (g_InvMode == INV_TITLE_MODE) {
+            if (g_InvExtraData[0] == 0) {
                 // page 1: load game
-                return GF_START_SAVED_GAME | InvExtraData[1];
-            } else if (InvExtraData[0] == 1) {
+                return GF_START_SAVED_GAME | g_InvExtraData[1];
+            } else if (g_InvExtraData[0] == 1) {
                 // page 2: new game
-                switch (InvExtraData[1]) {
+                switch (g_InvExtraData[1]) {
                 case 0:
-                    SaveGame.bonus_flag = 0;
+                    g_SaveGame.bonus_flag = 0;
                     break;
                 case 1:
-                    SaveGame.bonus_flag = GBF_NGPLUS;
+                    g_SaveGame.bonus_flag = GBF_NGPLUS;
                     break;
                 case 2:
-                    SaveGame.bonus_flag = GBF_JAPANESE;
+                    g_SaveGame.bonus_flag = GBF_JAPANESE;
                     break;
                 case 3:
-                    SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
                 InitialiseStartInfo();
-                return GF_START_GAME | GF.first_level_num;
+                return GF_START_GAME | g_GameFlow.first_level_num;
             } else {
                 // page 3: exit game
                 return GF_EXIT_GAME;
             }
         } else {
-            if (InvExtraData[0] == 0) {
+            if (g_InvExtraData[0] == 0) {
                 // page 1: load game
-                return GF_START_SAVED_GAME | InvExtraData[1];
-            } else if (InvExtraData[0] == 1) {
+                return GF_START_SAVED_GAME | g_InvExtraData[1];
+            } else if (g_InvExtraData[0] == 1) {
                 // page 1: save game, or new game in gym
-                if (CurrentLevel == GF.gym_level_num) {
-                    switch (InvExtraData[1]) {
+                if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+                    switch (g_InvExtraData[1]) {
                     case 0:
-                        SaveGame.bonus_flag = 0;
+                        g_SaveGame.bonus_flag = 0;
                         break;
                     case 1:
-                        SaveGame.bonus_flag = GBF_NGPLUS;
+                        g_SaveGame.bonus_flag = GBF_NGPLUS;
                         break;
                     case 2:
-                        SaveGame.bonus_flag = GBF_JAPANESE;
+                        g_SaveGame.bonus_flag = GBF_JAPANESE;
                         break;
                     case 3:
-                        SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
                     InitialiseStartInfo();
-                    return GF_START_GAME | GF.first_level_num;
+                    return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
                     CreateSaveGameInfo();
-                    S_SaveGame(&SaveGame, InvExtraData[1]);
+                    S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
                     S_WriteUserSettings();
                     return GF_NOP;
                 }
@@ -674,8 +677,8 @@ int32_t Display_Inventory(int inv_mode)
         }
 
     case O_PHOTO_OPTION:
-        InvExtraData[1] = 0;
-        return GF_START_GAME | GF.gym_level_num;
+        g_InvExtraData[1] = 0;
+        return GF_START_GAME | g_GameFlow.gym_level_num;
 
     case O_GUN_OPTION:
         UseItem(O_GUN_OPTION);
@@ -708,34 +711,34 @@ int32_t Display_Inventory(int inv_mode)
 void Construct_Inventory()
 {
     S_SetupAboveWater(false);
-    if (InvMode != INV_TITLE_MODE) {
+    if (g_InvMode != INV_TITLE_MODE) {
         Screen_SetResolution(Screen_GetResIdx());
     }
 
-    PhdLeft = ViewPort_GetMinX();
-    PhdTop = ViewPort_GetMinY();
-    PhdBottom = ViewPort_GetMaxY();
-    PhdRight = ViewPort_GetMaxX();
+    g_PhdLeft = ViewPort_GetMinX();
+    g_PhdTop = ViewPort_GetMinY();
+    g_PhdBottom = ViewPort_GetMaxY();
+    g_PhdRight = ViewPort_GetMaxX();
 
     for (int i = 0; i < 8; i++) {
-        InvExtraData[i] = 0;
+        g_InvExtraData[i] = 0;
     }
 
-    InvChosen = 0;
-    if (InvMode == INV_TITLE_MODE) {
-        InvOptionObjects = TITLE_RING_OBJECTS;
-        VersionText = Text_Create(-20, -18, T1MVersion);
+    g_InvChosen = 0;
+    if (g_InvMode == INV_TITLE_MODE) {
+        g_InvOptionObjects = TITLE_RING_OBJECTS;
+        VersionText = Text_Create(-20, -18, g_T1MVersion);
         Text_AlignRight(VersionText, 1);
         Text_AlignBottom(VersionText, 1);
         Text_SetScale(VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
     } else {
-        InvOptionObjects = OPTION_RING_OBJECTS;
+        g_InvOptionObjects = OPTION_RING_OBJECTS;
         Text_Remove(VersionText);
         VersionText = NULL;
     }
 
-    for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM *inv_item = InvMainList[i];
+    for (int i = 0; i < g_InvMainObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvMainList[i];
         inv_item->drawn_meshes = inv_item->which_meshes;
         inv_item->current_frame = 0;
         inv_item->goal_frame = inv_item->current_frame;
@@ -743,19 +746,19 @@ void Construct_Inventory()
         inv_item->y_rot = 0;
     }
 
-    for (int i = 0; i < InvOptionObjects; i++) {
-        INVENTORY_ITEM *inv_item = InvOptionList[i];
+    for (int i = 0; i < g_InvOptionObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvOptionList[i];
         inv_item->current_frame = 0;
         inv_item->goal_frame = 0;
         inv_item->anim_count = 0;
         inv_item->y_rot = 0;
     }
 
-    InvMainCurrent = 0;
-    InvOptionCurrent = 0;
-    OptionSelected = 0;
+    g_InvMainCurrent = 0;
+    g_InvOptionCurrent = 0;
+    g_OptionSelected = 0;
 
-    if (GF.gym_level_num == -1) {
+    if (g_GameFlow.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
     }
 }
@@ -813,17 +816,17 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     phd_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     phd_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
-    OBJECT_INFO *obj = &Objects[inv_item->object_number];
+    OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
     if (obj->nmeshes < 0) {
         S_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
         return;
     }
 
     if (inv_item->sprlist) {
-        int32_t zv = PhdMatrixPtr->_23;
-        int32_t zp = zv / PhdPersp;
-        int32_t sx = ViewPort_GetCenterX() + PhdMatrixPtr->_03 / zp;
-        int32_t sy = ViewPort_GetCenterY() + PhdMatrixPtr->_13 / zp;
+        int32_t zv = g_PhdMatrixPtr->_23;
+        int32_t zp = zv / g_PhdPersp;
+        int32_t sx = ViewPort_GetCenterX() + g_PhdMatrixPtr->_03 / zp;
+        int32_t sy = ViewPort_GetCenterY() + g_PhdMatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
@@ -838,7 +841,8 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
                     S_DrawScreenSprite(
                         sx + spr->x, sy + spr->y, spr->z, spr->param1,
                         spr->param2,
-                        Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096, 0);
+                        g_Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096,
+                        0);
                     break;
                 case SHAPE_LINE:
                     S_DrawScreenLine(
@@ -873,9 +877,9 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
         int32_t mesh_num = 1;
 
-        int32_t *bone = &AnimBones[obj->bone_index];
+        int32_t *bone = &g_AnimBones[obj->bone_index];
         if (inv_item->drawn_meshes & mesh_num) {
-            phd_PutPolygons(Meshes[obj->mesh_index], clip);
+            phd_PutPolygons(g_Meshes[obj->mesh_index], clip);
         }
 
         for (int i = 1; i < obj->nmeshes; i++) {
@@ -894,14 +898,14 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
                 CompassSpeed = CompassSpeed * 19 / 20
-                    + (int16_t)(-inv_item->y_rot - LaraItem->pos.y_rot - CompassNeedle)
+                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - CompassNeedle)
                         / 50;
                 CompassNeedle += CompassSpeed;
                 phd_RotY(CompassNeedle);
             }
 
             if (inv_item->drawn_meshes & mesh_num) {
-                phd_PutPolygons(Meshes[obj->mesh_index + i], clip);
+                phd_PutPolygons(g_Meshes[obj->mesh_index + i], clip);
             }
 
             bone += 4;

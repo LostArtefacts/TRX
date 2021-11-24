@@ -93,9 +93,9 @@ typedef struct {
 
     int32_t sound_volume;
     int32_t music_volume;
-} T1MConfigStruct;
+} CONFIG;
 
-extern T1MConfigStruct T1MConfig;
+extern CONFIG g_Config;
 
 int8_t T1MReadConfigFromJson(const char *json);
 int8_t T1MReadConfig();
