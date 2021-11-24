@@ -127,7 +127,6 @@ sources = [
   'src/3dsystem/3d_gen.c',
   'src/3dsystem/phd_math.c',
   'src/3dsystem/scalespr.c',
-  'src/args.c',
   'src/config.c',
   'src/filesystem.c',
   'src/game/ai/abortion.c',

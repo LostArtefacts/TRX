@@ -10,13 +10,15 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/s_hwr.h"
 #include "specific/s_input.h"
 
 #include <ddraw.h>
-#include <dinput.h>
+#include <shellapi.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include <windows.h>
 
@@ -248,4 +250,28 @@ void S_Shell_ExitSystemFmt(const char *fmt, ...)
     vsnprintf(message, 150, fmt, va);
     va_end(va);
     S_Shell_ExitSystem(message);
+}
+
+int S_Shell_GetCommandLine(char ***args, int *arg_count)
+{
+    LPWSTR *l_arg_list;
+    int l_arg_count;
+
+    l_arg_list = CommandLineToArgvW(GetCommandLineW(), &l_arg_count);
+    if (!l_arg_list) {
+        LOG_ERROR("CommandLineToArgvW failed");
+        return 0;
+    }
+
+    *args = Memory_Alloc(l_arg_count * sizeof(char **));
+    *arg_count = l_arg_count;
+    for (int i = 0; i < l_arg_count; i++) {
+        size_t size = wcslen(l_arg_list[i]) + 1;
+        (*args)[i] = Memory_Alloc(size);
+        wcstombs((*args)[i], l_arg_list[i], size);
+    }
+
+    LocalFree(l_arg_list);
+
+    return 1;
 }
