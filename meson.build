@@ -257,6 +257,7 @@ sources = [
   'src/memory.c',
   'src/specific/s_ati.c',
   'src/specific/s_audio.c',
+  'src/specific/s_audio_stream.c',
   'src/specific/s_clock.c',
   'src/specific/s_display.c',
   'src/specific/s_filesystem.c',
