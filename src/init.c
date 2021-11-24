@@ -21,9 +21,8 @@ void T1MInit()
     g_GameFlow.strings[GS_PASSPORT_SELECT_MODE] = "Select Mode";
     g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME] = "New Game";
     g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS] = "New Game+";
-    g_GameFlow.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME] = "Japanese NG";
-    g_GameFlow.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS] =
-        "Japanese NG+";
+    g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP] = "Japanese NG";
+    g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS] = "Japanese NG+";
     g_GameFlow.strings[GS_PASSPORT_NEW_GAME] = "New Game";
     g_GameFlow.strings[GS_PASSPORT_LOAD_GAME] = "Load Game";
     g_GameFlow.strings[GS_PASSPORT_SAVE_GAME] = "Save Game";

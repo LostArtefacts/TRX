@@ -215,10 +215,9 @@ static void InitNewGameRequester()
     AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
     AddRequesterItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
+    AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
     AddRequesterItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME], 0);
-    AddRequesterItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS], 0);
+        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
     req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;
 }
