@@ -37,7 +37,7 @@ float S_Audio_InverseLerp(float from, float to, float val)
 static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
 {
     memset(m_WorkingBuffer, m_WorkingSilence, len);
-    S_Audio_StreamProcessSamples(m_WorkingBuffer, len);
+    S_Audio_StreamSoundMix(m_WorkingBuffer, len);
     memcpy(stream_data, m_WorkingBuffer, len);
 }
 
@@ -49,7 +49,7 @@ bool S_Audio_Init()
         return false;
     }
 
-    S_Audio_StreamInit();
+    S_Audio_StreamSoundInit();
 
     SDL_AudioSpec desired;
     SDL_memset(&desired, 0, sizeof(desired));

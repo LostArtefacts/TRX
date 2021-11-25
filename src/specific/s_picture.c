@@ -57,7 +57,7 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
 
     codec_ctx = avcodec_alloc_context3(codec);
     if (!codec_ctx) {
-        error_code = AVERROR_UNKNOWN;
+        error_code = AVERROR(ENOMEM);
         goto fail;
     }
 
@@ -80,7 +80,7 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
 
     frame = av_frame_alloc();
     if (!frame) {
-        error_code = AVERROR_UNKNOWN;
+        error_code = AVERROR(ENOMEM);
         goto fail;
     }
 
