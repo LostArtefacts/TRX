@@ -440,26 +440,30 @@ void S_Audio_StreamSoundMix(float *target_buffer, size_t len)
                 / (stream->av.codec_ctx->channels
                    * sizeof(AUDIO_WORKING_FORMAT));
 
-            const float *source_ptr = &m_DecodeBuffer[0];
-            float *target_ptr = target_buffer;
+            const float *src_ptr = &m_DecodeBuffer[0];
+            float *dst_ptr = target_buffer;
 
-            for (int s = 0; s < samples_gotten; s++) {
-                float pan = 0.0f;
-                float volume = stream->volume;
-
-                if (stream->av.codec_ctx->channels == 1) {
-                    *target_ptr++ += source_ptr[0]
-                        * S_Audio_InverseLerp(1.0f, 0.0f, pan) * volume;
-                    *target_ptr++ += source_ptr[0]
-                        * S_Audio_InverseLerp(-1.0f, 0.0f, pan) * volume;
-                } else if (stream->av.codec_ctx->channels == 2) {
-                    *target_ptr++ += source_ptr[0] * volume;
-                    *target_ptr++ += source_ptr[1] * volume;
-                } else {
-                    break;
+            if (stream->av.codec_ctx->channels == 2) {
+                for (int s = 0; s < samples_gotten; s++) {
+                    *dst_ptr++ += *src_ptr++ * stream->volume;
+                    *dst_ptr++ += *src_ptr++ * stream->volume;
                 }
-
-                source_ptr += stream->av.codec_ctx->channels;
+            } else if (stream->av.codec_ctx->channels == 1) {
+                for (int s = 0; s < samples_gotten; s++) {
+                    *dst_ptr++ += *src_ptr * stream->volume;
+                    *dst_ptr++ += *src_ptr++ * stream->volume;
+                }
+            } else {
+                for (int s = 0; s < samples_gotten; s++) {
+                    // downmix to mono
+                    float src_sample = 0.0f;
+                    for (int i = 0; i < stream->av.codec_ctx->channels; i++) {
+                        src_sample += *src_ptr++;
+                    }
+                    src_sample /= (float)stream->av.codec_ctx->channels;
+                    *dst_ptr++ += src_sample * stream->volume;
+                    *dst_ptr++ += src_sample * stream->volume;
+                }
             }
         }
 
