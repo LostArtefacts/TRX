@@ -234,6 +234,10 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     stream->sdl.stream = SDL_NewAudioStream(
         sdl_format, sdl_channels, sdl_sample_rate, AUDIO_WORKING_FORMAT,
         sdl_channels, AUDIO_WORKING_RATE);
+    if (!stream->sdl.stream) {
+        LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
+        goto fail;
+    }
 
     S_Audio_StreamSoundEnqueueFrame(stream);
     SDL_UnlockAudioDevice(g_AudioDeviceID);
@@ -414,7 +418,7 @@ bool S_Audio_StreamSoundSetFinishCallback(
     return true;
 }
 
-void S_Audio_StreamSoundMix(float *target_buffer, size_t len)
+void S_Audio_StreamSoundMix(float *dst_buffer, size_t len)
 {
     for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
@@ -451,7 +455,7 @@ void S_Audio_StreamSoundMix(float *target_buffer, size_t len)
                    * sizeof(AUDIO_WORKING_FORMAT));
 
             const float *src_ptr = &m_DecodeBuffer[0];
-            float *dst_ptr = target_buffer;
+            float *dst_ptr = dst_buffer;
 
             if (stream->av.codec_ctx->channels == 2) {
                 for (int s = 0; s < samples_gotten; s++) {

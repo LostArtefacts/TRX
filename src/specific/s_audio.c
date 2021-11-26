@@ -38,17 +38,24 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
 {
     memset(m_WorkingBuffer, m_WorkingSilence, len);
     S_Audio_StreamSoundMix(m_WorkingBuffer, len);
+    S_Audio_SampleSoundMix(m_WorkingBuffer, len);
     memcpy(stream_data, m_WorkingBuffer, len);
 }
 
 bool S_Audio_Init()
 {
+    if (g_AudioDeviceID) {
+        // already initialized
+        return true;
+    }
+
     int32_t result = SDL_Init(SDL_INIT_AUDIO);
     if (result < 0) {
         LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
         return false;
     }
 
+    S_Audio_SampleSoundInit();
     S_Audio_StreamSoundInit();
 
     SDL_AudioSpec desired;

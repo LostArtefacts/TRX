@@ -2,6 +2,7 @@
 #define T1M_SPECIFIC_S_AUDIO_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define AUDIO_NO_SOUND (-1)
 
@@ -18,6 +19,17 @@ bool S_Audio_StreamSoundSetFinishCallback(
     int sound_id, void (*callback)(int sound_id, void *user_data),
     void *user_data);
 
+bool S_Audio_SamplesClear();
+bool S_Audio_SamplesLoad(size_t count, const char **contents, size_t *sizes);
+
+int S_Audio_SampleSoundPlay(
+    int sample_id, int volume, float pitch, int pan, bool is_looped);
+bool S_Audio_SampleSoundIsPlaying(int sound_id);
+bool S_Audio_SampleSoundClose(int sound_id);
+bool S_Audio_SampleSoundCloseAll();
+bool S_Audio_SampleSoundSetPan(int sound_id, int pan);
+bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
+
 #ifdef S_AUDIO_IMPL
     #include <SDL2/SDL.h>
 
@@ -31,8 +43,12 @@ extern SDL_AudioDeviceID g_AudioDeviceID;
 float S_Audio_Clamp(float min, float max, float val);
 float S_Audio_InverseLerp(float from, float to, float val);
 
+void S_Audio_SampleSoundInit();
+void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
+
 void S_Audio_StreamSoundInit();
-void S_Audio_StreamSoundMix(float *target_buffer, size_t len);
+void S_Audio_StreamSoundMix(float *dst_buffer, size_t len);
+
 #endif
 
 #endif
