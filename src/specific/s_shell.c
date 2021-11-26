@@ -22,10 +22,8 @@ static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_TerminateGame(int exit_code);
 static void S_Shell_ShowFatalError(const char *message);
 static void S_Shell_PostWindowResize();
-static void S_Shell_ToggleFullscreen();
 
 void S_Shell_SeedRandom()
 {
@@ -33,16 +31,6 @@ void S_Shell_SeedRandom()
     struct tm *tptr = localtime(&lt);
     Random_SeedControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
-}
-
-static void S_Shell_TerminateGame(int exit_code)
-{
-    HWR_Shutdown();
-    if (m_Window) {
-        SDL_DestroyWindow(m_Window);
-    }
-    SDL_Quit();
-    exit(exit_code);
 }
 
 static void S_Shell_ShowFatalError(const char *message)
@@ -61,7 +49,7 @@ static void S_Shell_PostWindowResize()
     HWR_SetViewport(width, height);
 }
 
-static void S_Shell_ToggleFullscreen()
+void S_Shell_ToggleFullscreen()
 {
     m_Fullscreen = !m_Fullscreen;
     HWR_SetFullscreen(m_Fullscreen);
@@ -69,6 +57,16 @@ static void S_Shell_ToggleFullscreen()
         m_Window, m_Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
     SDL_ShowCursor(m_Fullscreen ? SDL_DISABLE : SDL_ENABLE);
     S_Shell_PostWindowResize();
+}
+
+void S_Shell_TerminateGame(int exit_code)
+{
+    HWR_Shutdown();
+    if (m_Window) {
+        SDL_DestroyWindow(m_Window);
+    }
+    SDL_Quit();
+    exit(exit_code);
 }
 
 void S_Shell_SpinMessageLoop()
@@ -186,4 +184,9 @@ bool S_Shell_GetCommandLine(int *arg_count, char ***args)
         strcpy((*args)[i], m_ArgStrings[i]);
     }
     return true;
+}
+
+void *S_Shell_GetWindowHandle()
+{
+    return (void *)m_Window;
 }

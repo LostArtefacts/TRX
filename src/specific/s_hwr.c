@@ -1224,34 +1224,6 @@ void HWR_Shutdown()
     GLRage_Detach();
 }
 
-void HWR_FMVInit()
-{
-    LOG_INFO("HardwarePrepareFMV");
-    HWR_ClearSurfaceDepth();
-    HWR_ReleaseSurfaces();
-
-    DDSURFACEDESC surface_desc;
-    HRESULT result;
-
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
-    surface_desc.dwFlags = DDSD_CAPS;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE;
-    result =
-        IDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &g_Surface1, NULL);
-    HWR_CheckError(result);
-
-    HWR_ClearSurface(g_Surface1);
-    IDirectDrawSurface_Release(g_Surface1);
-    g_Surface1 = NULL;
-}
-
-void HWR_FMVDone()
-{
-    LOG_INFO("HardwareFMVDone");
-    HWR_SetHardwareVideoMode();
-}
-
 void HWR_SetupRenderContextAndRender()
 {
     HWR_RenderBegin();

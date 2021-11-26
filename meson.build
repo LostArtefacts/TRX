@@ -48,6 +48,7 @@ dep_avcodec = c_compiler.find_library('avcodec.dll')
 dep_avformat = c_compiler.find_library('avformat.dll')
 dep_avutil = c_compiler.find_library('avutil.dll')
 dep_swscale = c_compiler.find_library('swscale.dll')
+dep_swresample = c_compiler.find_library('swresample.dll')
 
 dep_sdl2 = c_compiler.find_library('SDL2')
 
@@ -282,6 +283,7 @@ dependencies = [
     dep_sdl2,
     dep_shlwapi,
     dep_swscale,
+    dep_swresample,
   ]
 
 executable(

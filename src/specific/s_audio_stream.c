@@ -64,6 +64,10 @@ static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream)
         return false;
     }
 
+    if (stream->av.packet->stream_index != stream->av.stream->index) {
+        return true;
+    }
+
     error_code = avcodec_send_packet(stream->av.codec_ctx, stream->av.packet);
     if (error_code < 0) {
         LOG_ERROR(
@@ -183,6 +187,10 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     }
 
     stream->av.packet = av_packet_alloc();
+    if (!stream->av.packet) {
+        error_code = AVERROR(ENOMEM);
+        goto fail;
+    }
     av_new_packet(stream->av.packet, 0);
 
     stream->av.frame = av_frame_alloc();
@@ -220,6 +228,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     stream->is_used = true;
     stream->is_playing = true;
     stream->is_looped = false;
+    stream->volume = 1.0f;
     stream->finish_callback = NULL;
 
     stream->sdl.stream = SDL_NewAudioStream(
@@ -350,6 +359,7 @@ bool S_Audio_StreamSoundClose(int sound_id)
     stream->is_used = false;
     stream->is_playing = false;
     stream->is_looped = false;
+    stream->volume = 0.0f;
     SDL_UnlockAudioDevice(g_AudioDeviceID);
 
     if (stream->finish_callback) {

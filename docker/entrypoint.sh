@@ -1,5 +1,6 @@
 #!/bin/sh
 set -x
+set -e
 
 if [ ! -f /app/build/build.ninja ]; then
     if [ "$TARGET" = debug ]; then

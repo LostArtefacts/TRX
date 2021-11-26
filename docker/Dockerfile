@@ -41,6 +41,24 @@ RUN cd FFmpeg \
         --prefix=/usr/i686-w64-mingw32 \
         --cc=i686-w64-mingw32-gcc \
         --pkg-config=i686-w64-mingw32-pkg-config \
+        --enable-gpl \
+        --enable-decoder=pcx \
+        --enable-decoder=png \
+        --enable-decoder=gif \
+        --enable-decoder=mjpeg \
+        --enable-decoder=mpeg2 \
+        --enable-decoder=mpeg4 \
+        --enable-decoder=mp4 \
+        --enable-decoder=h264 \
+        --enable-decoder=h264_qsv \
+        --enable-decoder=libopenh264 \
+        --enable-decoder=png \
+        --enable-demuxer=mov \
+        --enable-demuxer=mkv \
+        --enable-demuxer=avi \
+        --enable-demuxer=mp4 \
+        --enable-demuxer=h264 \
+        --enable-demuxer=image2 \
         --enable-zlib \
         --enable-shared \
         --enable-static \

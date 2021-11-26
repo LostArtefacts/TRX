@@ -49,8 +49,6 @@ void HWR_SwitchResolution();
 void HWR_SetHardwareVideoMode();
 bool HWR_Init();
 void HWR_Shutdown();
-void HWR_FMVInit();
-void HWR_FMVDone();
 void HWR_SetPalette();
 void HWR_SetupRenderContextAndRender();
 void HWR_DownloadTextures(int32_t pages);
