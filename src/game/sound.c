@@ -474,9 +474,10 @@ void Sound_StopAmbientSounds()
     }
 }
 
-void Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
+void Sound_LoadSamples(
+    size_t num_samples, const char **sample_pointers, size_t *sizes)
 {
-    S_Sound_LoadSamples(sample_pointers, num_samples);
+    S_Sound_LoadSamples(num_samples, sample_pointers, sizes);
 }
 
 void Sound_StopAllSamples()

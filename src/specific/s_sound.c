@@ -11,7 +11,7 @@
 #define DECIBEL_LUT_SIZE 512
 
 typedef struct SAMPLE_DATA {
-    char *data;
+    const char *data;
     int32_t length;
     int16_t bits_per_sample;
     int16_t channels;
@@ -64,7 +64,7 @@ static int32_t m_DecibleLUT[DECIBEL_LUT_SIZE] = { 0 };
 
 static int32_t S_Sound_ConvertVolumeToDecibel(int32_t volume);
 static int32_t S_Sound_ConvertPanToDecibel(uint16_t pan);
-static SAMPLE_DATA *S_Sound_LoadSample(char *content);
+static SAMPLE_DATA *S_Sound_LoadSample(const char *content, size_t size);
 static bool S_Sound_MakeSample(SAMPLE_DATA *sample_data);
 
 static int32_t S_Sound_ConvertVolumeToDecibel(int32_t volume)
@@ -84,7 +84,7 @@ static int32_t S_Sound_ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static SAMPLE_DATA *S_Sound_LoadSample(char *content)
+static SAMPLE_DATA *S_Sound_LoadSample(const char *content, size_t size)
 {
     WAVE_FILE_HEADER *hdr = (WAVE_FILE_HEADER *)content;
     if (strncmp(hdr->chunk_id, "RIFF", 4)) {
@@ -309,7 +309,8 @@ void S_Sound_StopAllSamples()
     }
 }
 
-void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
+void S_Sound_LoadSamples(
+    size_t num_samples, const char **sample_pointers, size_t *sizes)
 {
     if (!g_SoundIsActive) {
         return;
@@ -318,7 +319,7 @@ void S_Sound_LoadSamples(char **sample_pointers, int32_t num_samples)
     m_NumSampleData = num_samples;
     m_SampleData = Memory_Alloc(sizeof(SAMPLE_DATA *) * num_samples);
     for (int i = 0; i < m_NumSampleData; i++) {
-        m_SampleData[i] = S_Sound_LoadSample(sample_pointers[i]);
+        m_SampleData[i] = S_Sound_LoadSample(sample_pointers[i], sizes[i]);
     }
 }
 

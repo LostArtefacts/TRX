@@ -587,17 +587,27 @@ static bool Level_LoadSamples(MYFILE *fp)
     }
 
     int32_t *sample_offsets = Memory_Alloc(sizeof(int32_t) * num_samples);
+    size_t *sample_sizes = Memory_Alloc(sizeof(size_t) * num_samples);
     File_Read(sample_offsets, sizeof(int32_t), num_samples, fp);
 
-    char **sample_pointers = Memory_Alloc(sizeof(char *) * num_samples);
+    const char **sample_pointers = Memory_Alloc(sizeof(char *) * num_samples);
     for (int i = 0; i < num_samples; i++) {
         sample_pointers[i] = sample_data + sample_offsets[i];
     }
 
-    Sound_LoadSamples(sample_pointers, num_samples);
+    // NOTE: this assumes that sample pointers are sorted
+    for (int i = 0; i < num_samples; i++) {
+        int current_offset = sample_offsets[i];
+        int next_offset =
+            i + 1 >= num_samples ? (int)File_Size(fp) : sample_offsets[i + 1];
+        sample_sizes[i] = next_offset - current_offset;
+    }
+
+    Sound_LoadSamples(num_samples, sample_pointers, sample_sizes);
 
     Memory_Free(sample_offsets);
     Memory_Free(sample_pointers);
+    Memory_Free(sample_sizes);
 
     return true;
 }
