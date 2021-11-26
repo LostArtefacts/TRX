@@ -171,6 +171,12 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
         goto fail;
     }
 
+    error_code = avcodec_parameters_to_context(
+        stream->av.codec_ctx, stream->av.stream->codecpar);
+    if (error_code) {
+        goto fail;
+    }
+
     error_code = avcodec_open2(stream->av.codec_ctx, stream->av.codec, NULL);
     if (error_code < 0) {
         goto fail;

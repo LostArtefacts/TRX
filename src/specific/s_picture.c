@@ -61,6 +61,12 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         goto fail;
     }
 
+    error_code =
+        avcodec_parameters_to_context(codec_ctx, video_stream->codecpar);
+    if (error_code) {
+        goto fail;
+    }
+
     error_code = avcodec_open2(codec_ctx, codec, NULL);
     if (error_code < 0) {
         goto fail;
