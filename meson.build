@@ -257,6 +257,7 @@ sources = [
   'src/memory.c',
   'src/specific/s_ati.c',
   'src/specific/s_audio.c',
+  'src/specific/s_audio_sample.c',
   'src/specific/s_audio_stream.c',
   'src/specific/s_clock.c',
   'src/specific/s_ddraw.c',
@@ -269,7 +270,6 @@ sources = [
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',
-  'src/specific/s_sound.c',
   version_res,
 ]
 
