@@ -1,6 +1,5 @@
 #include "Renderer.hpp"
 #include "Error.hpp"
-#include "Utils.hpp"
 
 #include <glrage_gl/Utils.hpp>
 
@@ -102,10 +101,6 @@ void Renderer::renderEnd()
 
 void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
-    // LOG_TRACE("fmt=%d, xlg2=%d, ylg2=%d, mip=%d",
-    //    ptmapToReg->eTexFormat, ptmapToReg->u32MaxMapXSizeLg2,
-    //    ptmapToReg->u32MaxMapYSizeLg2, ptmapToReg->bMipMap);
-
     auto texture = std::make_shared<Texture>();
     texture->bind();
     texture->load(ptmapToReg, m_palettes[ptmapToReg->htxpalTexPalette]);
@@ -124,8 +119,6 @@ void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 
 void Renderer::textureUnreg(C3D_HTX htxToUnreg)
 {
-    // LOG_TRACE("id=%d", id);
-
     auto it = m_textures.find(htxToUnreg);
     if (it == m_textures.end()) {
         throw Error("Invalid texture handle", C3D_EC_BADPARAM);
@@ -145,8 +138,7 @@ void Renderer::texturePaletteCreate(C3D_ECI_TMAP_TYPE epalette,
     C3D_PHTXPAL phtpalCreated)
 {
     if (epalette != C3D_ECI_TMAP_8BIT) {
-        throw Error("Unsupported palette type: " +
-                        std::string(C3D_ECI_TMAP_TYPE_NAMES[epalette]),
+        throw Error("Unsupported palette type: " + std::to_string(epalette),
             C3D_EC_NOTIMPYET);
     }
 

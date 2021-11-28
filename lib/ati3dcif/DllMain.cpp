@@ -1,6 +1,5 @@
 #include "Error.hpp"
 #include "Renderer.hpp"
-#include "Utils.hpp"
 
 #include <ati3dcif/ATI3DCIF.h>
 #include <glrage/GLRage.hpp>
@@ -17,19 +16,12 @@ static Context& context = GLRage::getContext();
 static std::unique_ptr<Renderer> renderer = NULL;
 static bool contextCreated = false;
 
-C3D_EC
-HandleException()
+C3D_EC HandleException()
 {
     try {
         throw;
     } catch (const Error& ex) {
-#ifdef _DEBUG
-        ErrorUtils::warning(ex);
-#endif
-        LOG_INFO("CIF error: %s (0x%x %s)",
-            ex.what(),
-            ex.getErrorCode(),
-            ex.getErrorName());
+        LOG_INFO("CIF error: %s (0x%x)", ex.what(), ex.getErrorCode());
         return ex.getErrorCode();
     } catch (const std::runtime_error& ex) {
         ErrorUtils::warning(ex);
@@ -44,8 +36,6 @@ extern "C"
 {
     C3D_EC WINAPI ATI3DCIF_Term(void)
     {
-        LOG_TRACE("");
-
         try {
             if (renderer) {
                 renderer.release();
@@ -64,8 +54,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_Init(void)
     {
-        LOG_TRACE("");
-
         context.init();
         context.attach();
 
@@ -88,8 +76,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
     {
-        LOG_TRACE("0x%p, 0x%p", *ptmapToReg, *phtmap);
-
         try {
             renderer->textureReg(ptmapToReg, phtmap);
         } catch (...) {
@@ -101,8 +87,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
     {
-        LOG_TRACE("0x%p", htxToUnreg);
-
         try {
             renderer->textureUnreg(htxToUnreg);
         } catch (...) {
@@ -116,11 +100,6 @@ extern "C"
         void* pPalette,
         C3D_PHTXPAL phtpalCreated)
     {
-        LOG_TRACE("%s, 0x%p, 0x%p",
-            cif::C3D_ECI_TMAP_TYPE_NAMES[epalette],
-            pPalette,
-            phtpalCreated);
-
         try {
             renderer->texturePaletteCreate(epalette, pPalette, phtpalCreated);
         } catch (...) {
@@ -132,8 +111,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
     {
-        LOG_TRACE("0x%p", htxpalToDestroy);
-
         try {
             renderer->texturePaletteDestroy(htxpalToDestroy);
         } catch (...) {
@@ -145,8 +122,6 @@ extern "C"
 
     C3D_HRC WINAPI ATI3DCIF_ContextCreate(void)
     {
-        LOG_TRACE("");
-
         context.attach();
 
         // can't create more than one context
@@ -163,8 +138,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_ContextDestroy(C3D_HRC hRC)
     {
-        LOG_TRACE("0x%p", hRC);
-
         // can't destroy a context that wasn't created
         if (!contextCreated) {
             return C3D_EC_BADPARAM;
@@ -179,14 +152,6 @@ extern "C"
         C3D_ERSID eRStateID,
         C3D_PRSDATA pRStateData)
     {
-#ifdef LOG_TRACE_ENABLED
-        std::string stateDataStr =
-            cif::Utils::dumpRenderStateData(eRStateID, pRStateData);
-        LOG_TRACE("0x%p, %s, %s",
-            hRC,
-            cif::C3D_ERSID_NAMES[eRStateID],
-            stateDataStr.c_str());
-#endif
 
         try {
             renderer->setState(eRStateID, pRStateData);
@@ -199,8 +164,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_RenderBegin(C3D_HRC hRC)
     {
-        LOG_TRACE("0x%p", hRC);
-
         try {
             renderer->renderBegin(hRC);
         } catch (...) {
@@ -212,8 +175,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_RenderEnd(void)
     {
-        LOG_TRACE("");
-
         try {
             renderer->renderEnd();
         } catch (...) {
@@ -226,8 +187,6 @@ extern "C"
     C3D_EC WINAPI ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip,
         C3D_UINT32 u32NumVert)
     {
-        LOG_TRACE("0x%p, %d", vStrip, u32NumVert);
-
         try {
             renderer->renderPrimStrip(vStrip, u32NumVert);
         } catch (...) {
@@ -240,8 +199,6 @@ extern "C"
     C3D_EC WINAPI ATI3DCIF_RenderPrimList(C3D_VLIST vList,
         C3D_UINT32 u32NumVert)
     {
-        LOG_TRACE("0x%p, %d", vList, u32NumVert);
-
         try {
             renderer->renderPrimList(vList, u32NumVert);
         } catch (...) {

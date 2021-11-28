@@ -81,7 +81,6 @@ glrage = shared_library(
     'lib/ati3dcif/Renderer.cpp',
     'lib/ati3dcif/Texture.cpp',
     'lib/ati3dcif/TransDelay.cpp',
-    'lib/ati3dcif/Utils.cpp',
     'lib/ati3dcif/VertexStream.cpp',
     'lib/ddraw/Blitter.cpp',
     'lib/ddraw/DebugUtils.cpp',

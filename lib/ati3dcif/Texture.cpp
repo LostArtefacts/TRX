@@ -1,6 +1,5 @@
 #include "Texture.hpp"
 #include "Error.hpp"
-#include "Utils.hpp"
 #include <windows.h>
 
 #include <glrage_gl/Utils.hpp>
@@ -142,9 +141,8 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY>& palette)
             }
 
             default:
-                throw Error(
-                    "Unsupported texture format: " +
-                        std::string(C3D_ETEXFMT_NAMES[tmap->eTexFormat]),
+                throw Error("Unsupported texture format: " +
+                                std::to_string(tmap->eTexFormat),
                     C3D_EC_NOTIMPYET);
         }
 

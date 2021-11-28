@@ -1,5 +1,4 @@
 #include "Error.hpp"
-#include "Utils.hpp"
 
 namespace glrage {
 namespace cif {
@@ -25,11 +24,6 @@ C3D_EC
 Error::getErrorCode() const
 {
     return m_errorCode;
-}
-
-const char* Error::getErrorName() const
-{
-    return C3D_EC_NAMES[m_errorCode];
 }
 
 } // namespace cif

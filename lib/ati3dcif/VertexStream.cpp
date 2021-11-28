@@ -1,6 +1,5 @@
 #include "VertexStream.hpp"
 #include "Error.hpp"
-#include "Utils.hpp"
 
 #include <glrage_gl/Utils.hpp>
 #include <glrage_util/Logger.hpp>
@@ -60,8 +59,8 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
         }
 
         default:
-            throw Error("Unsupported vertex type: " +
-                            std::string(C3D_EVERTEX_NAMES[m_vertexType]),
+            throw Error(
+                "Unsupported vertex type: " + std::to_string(m_vertexType),
                 C3D_EC_NOTIMPYET);
     }
 }
@@ -95,8 +94,8 @@ void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
         }
 
         default:
-            throw Error("Unsupported vertex type: " +
-                            std::string(C3D_EVERTEX_NAMES[m_vertexType]),
+            throw Error(
+                "Unsupported vertex type: " + std::to_string(m_vertexType),
                 C3D_EC_NOTIMPYET);
     }
 }
