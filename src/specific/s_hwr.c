@@ -237,9 +237,7 @@ void HWR_CopyPicture()
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
-        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.ddsCaps.dwCaps =
-            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = g_DDrawSurfaceWidth;
         surface_desc.dwHeight = g_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
@@ -264,8 +262,7 @@ void HWR_DownloadPicture(const PICTURE *pic)
     // first, download the picture directly to a temporary surface
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwSize = sizeof(surface_desc);
-    surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+    surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
     result = IDirectDraw2_CreateSurface(
@@ -286,7 +283,7 @@ void HWR_DownloadPicture(const PICTURE *pic)
         uint16_t g = input_ptr->g & 0x3E;
         uint16_t b = input_ptr->b & 0x3E;
         input_ptr++;
-        *output_ptr++ = (b >> 1) | (16 * g) | (r << 9);
+        *output_ptr++ = (b >> 1) | (g << 4) | (r << 9);
     }
 
     result =
@@ -296,9 +293,7 @@ void HWR_DownloadPicture(const PICTURE *pic)
     if (!g_Surface3) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
-        surface_desc.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.ddsCaps.dwCaps =
-            DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = g_DDrawSurfaceWidth;
         surface_desc.dwHeight = g_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
