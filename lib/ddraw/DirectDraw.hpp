@@ -7,6 +7,7 @@
 #include <glrage/GLRage.hpp>
 
 #include <cstdint>
+#include <memory>
 
 namespace glrage {
 namespace ddraw {
@@ -78,7 +79,7 @@ private:
     const uint32_t DEFAULT_REFRESH_RATE = 60;
 
     Context& m_context = GLRage::getContext();
-    Renderer m_renderer;
+    std::unique_ptr<Renderer> m_renderer = nullptr;
     uint32_t m_width = DEFAULT_WIDTH;
     uint32_t m_height = DEFAULT_HEIGHT;
     uint32_t m_refreshRate = DEFAULT_REFRESH_RATE;

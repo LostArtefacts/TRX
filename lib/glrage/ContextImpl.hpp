@@ -13,14 +13,10 @@ public:
         UINT msg,
         WPARAM wParam,
         LPARAM lParam);
-    static BOOL CALLBACK callbackEnumWindowsProc(HWND hwnd, LPARAM _this);
 
-    void init();
     void attach(HWND hwnd);
-    void attach();
     void detach();
     LRESULT windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-    BOOL enumWindowsProc(HWND hwnd);
     bool isFullscreen();
     void setFullscreen(bool fullscreen);
     void setWindowSize(int32_t width, int32_t height);
@@ -51,7 +47,6 @@ private:
 
     // window handle
     HWND m_hwnd = nullptr;
-    HWND m_hwndTmp = nullptr;
 
     // GDI device context
     HDC m_hdc = nullptr;

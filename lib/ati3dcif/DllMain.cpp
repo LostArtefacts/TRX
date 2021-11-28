@@ -38,7 +38,7 @@ extern "C"
     {
         try {
             if (renderer) {
-                renderer.release();
+                renderer.reset();
             }
         } catch (...) {
             return HandleException();
@@ -54,11 +54,6 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_Init(void)
     {
-        context.init();
-        context.attach();
-
-        ErrorUtils::setHWnd(context.getHWnd());
-
         // do some cleanup in case the app forgets to call ATI3DCIF_Term
         if (renderer) {
             LOG_INFO("Previous instance was not terminated by ATI3DCIF_Term!");
@@ -76,6 +71,10 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->textureReg(ptmapToReg, phtmap);
         } catch (...) {
@@ -87,6 +86,10 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->textureUnreg(htxToUnreg);
         } catch (...) {
@@ -100,6 +103,10 @@ extern "C"
         void* pPalette,
         C3D_PHTXPAL phtpalCreated)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->texturePaletteCreate(epalette, pPalette, phtpalCreated);
         } catch (...) {
@@ -111,6 +118,10 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->texturePaletteDestroy(htxpalToDestroy);
         } catch (...) {
@@ -122,8 +133,6 @@ extern "C"
 
     C3D_HRC WINAPI ATI3DCIF_ContextCreate(void)
     {
-        context.attach();
-
         // can't create more than one context
         if (contextCreated) {
             return nullptr;
@@ -152,6 +161,9 @@ extern "C"
         C3D_ERSID eRStateID,
         C3D_PRSDATA pRStateData)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
 
         try {
             renderer->setState(eRStateID, pRStateData);
@@ -164,6 +176,10 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_RenderBegin(C3D_HRC hRC)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->renderBegin(hRC);
         } catch (...) {
@@ -175,6 +191,10 @@ extern "C"
 
     C3D_EC WINAPI ATI3DCIF_RenderEnd(void)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->renderEnd();
         } catch (...) {
@@ -187,6 +207,10 @@ extern "C"
     C3D_EC WINAPI ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip,
         C3D_UINT32 u32NumVert)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->renderPrimStrip(vStrip, u32NumVert);
         } catch (...) {
@@ -199,6 +223,10 @@ extern "C"
     C3D_EC WINAPI ATI3DCIF_RenderPrimList(C3D_VLIST vList,
         C3D_UINT32 u32NumVert)
     {
+        if (!renderer) {
+            return C3D_EC_BADSTATE;
+        }
+
         try {
             renderer->renderPrimList(vList, u32NumVert);
         } catch (...) {

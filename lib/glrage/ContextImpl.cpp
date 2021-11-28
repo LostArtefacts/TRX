@@ -27,11 +27,6 @@ LRESULT CALLBACK ContextImpl::callbackWindowProc(HWND hwnd,
     return instance().windowProc(hwnd, msg, wParam, lParam);
 }
 
-BOOL CALLBACK ContextImpl::callbackEnumWindowsProc(HWND hwnd, LPARAM _this)
-{
-    return instance().enumWindowsProc(hwnd);
-}
-
 ContextImpl::ContextImpl()
 {
     // set pixel format
@@ -48,29 +43,17 @@ ContextImpl::ContextImpl()
     m_screenHeight = GetSystemMetrics(SM_CYSCREEN);
 }
 
-void ContextImpl::init()
+void ContextImpl::attach(HWND hwnd)
 {
-    if (m_hglrc) {
+    if (m_hglrc || m_hwnd) {
         return;
     }
 
-    // The exact point where the application will create its window is unknown,
-    // but a valid OpenGL context is required at this point, so just create a
-    // dummy window for now and transfer the context later.
-    auto m_hwndTmp = CreateWindow("STATIC",
-        "",
-        WS_POPUP | WS_DISABLED,
-        0,
-        0,
-        1,
-        1,
-        NULL,
-        NULL,
-        GetModuleHandle(NULL),
-        NULL);
-    ShowWindow(m_hwndTmp, SW_HIDE);
+    LOG_INFO("Attaching to HWND %p", hwnd);
 
-    m_hdc = GetDC(m_hwndTmp);
+    m_hwnd = hwnd;
+
+    m_hdc = GetDC(m_hwnd);
     if (!m_hdc) {
         ErrorUtils::error(
             "Can't get device context", ErrorUtils::getWindowsErrorString());
@@ -96,22 +79,10 @@ void ContextImpl::init()
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
 
-    // TODO: make me configurable
     bool vsync = true;
     if (vsync) {
         wglSwapIntervalEXT(1);
     }
-}
-
-void ContextImpl::attach(HWND hwnd)
-{
-    if (m_hwnd) {
-        return;
-    }
-
-    LOG_INFO("Attaching to HWND %p", hwnd);
-
-    m_hwnd = hwnd;
 
     ErrorUtils::setHWnd(m_hwnd);
 
@@ -120,39 +91,6 @@ void ContextImpl::attach(HWND hwnd)
     m_windowProc = reinterpret_cast<WNDPROC>(windowProc);
     windowProc = reinterpret_cast<LONG_PTR>(&callbackWindowProc);
     SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, windowProc);
-
-    // detach from current window
-    wglMakeCurrent(NULL, NULL);
-
-    // destroy temporary window
-    if (m_hwndTmp) {
-        DestroyWindow(m_hwndTmp);
-        m_hwndTmp = nullptr;
-    }
-
-    // get DC of window
-    m_hdc = GetDC(m_hwnd);
-    auto pf = ChoosePixelFormat(m_hdc, &m_pfd);
-    if (!pf || !SetPixelFormat(m_hdc, pf, &m_pfd)) {
-        ErrorUtils::error(
-            "Can't set pixel format", ErrorUtils::getWindowsErrorString());
-    }
-
-    // set context on new window
-    if (!m_hglrc || !wglMakeCurrent(m_hdc, m_hglrc)) {
-        ErrorUtils::error("Can't attach window to OpenGL context",
-            ErrorUtils::getWindowsErrorString());
-    }
-}
-
-void ContextImpl::attach()
-{
-    if (m_hwnd) {
-        return;
-    }
-
-    m_pid = GetCurrentProcessId();
-    EnumWindows(&callbackEnumWindowsProc, (LPARAM)NULL);
 }
 
 void ContextImpl::detach()
@@ -202,26 +140,6 @@ ContextImpl::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 
     return CallWindowProc(m_windowProc, hwnd, msg, wParam, lParam);
-}
-
-BOOL ContextImpl::enumWindowsProc(HWND hwnd)
-{
-    // ignore invisible windows
-    if (!(GetWindowLong(hwnd, GWL_STYLE) & WS_VISIBLE)) {
-        return TRUE;
-    }
-
-    // check if the window is using the correct thread ID
-    DWORD pidwin;
-    GetWindowThreadProcessId(hwnd, &pidwin);
-    if (pidwin != m_pid) {
-        return TRUE;
-    }
-
-    // attach to window
-    attach(hwnd);
-
-    return FALSE;
 }
 
 bool ContextImpl::isFullscreen()

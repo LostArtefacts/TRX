@@ -28,15 +28,19 @@ bool S_DDraw_Init()
         return false;
     }
 
+    IDirectDraw_Initialize(g_DDraw, NULL);
+
     return true;
 }
 
 void S_DDraw_Shutdown()
 {
-    IDirectDraw_FlipToGDISurface(g_DDraw);
-    IDirectDraw_FlipToGDISurface(g_DDraw);
-    IDirectDraw_RestoreDisplayMode(g_DDraw);
-    IDirectDraw_SetCooperativeLevel(g_DDraw, g_TombHWND, 8);
-    IDirectDraw_Release(g_DDraw);
-    g_DDraw = NULL;
+    if (g_DDraw) {
+        IDirectDraw_FlipToGDISurface(g_DDraw);
+        IDirectDraw_FlipToGDISurface(g_DDraw);
+        IDirectDraw_RestoreDisplayMode(g_DDraw);
+        IDirectDraw_SetCooperativeLevel(g_DDraw, g_TombHWND, 8);
+        IDirectDraw_Release(g_DDraw);
+        g_DDraw = NULL;
+    }
 }

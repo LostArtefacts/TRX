@@ -75,8 +75,6 @@ DirectDrawSurface::~DirectDrawSurface()
         m_depthBuffer = nullptr;
     }
 
-    m_dd.Release();
-
     if (m_desc.lpSurface) {
         m_desc.lpSurface = nullptr;
     }

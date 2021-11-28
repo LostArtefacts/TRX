@@ -1168,6 +1168,7 @@ bool HWR_Init()
     int32_t tmp;
     HRESULT result;
 
+    GLRage_Attach(g_TombHWND);
     if (!S_DDraw_Init()) {
         LOG_ERROR("DDraw emulation layer could not be started");
         return false;
@@ -1217,10 +1218,10 @@ void HWR_Shutdown()
 {
     LOG_INFO("ShutdownHardware:");
     LOG_INFO("    complete");
-    HWR_ClearSurfaceDepth();
     HWR_ReleaseSurfaces();
     S_ATI_Shutdown();
     S_DDraw_Shutdown();
+    GLRage_Detach();
 }
 
 void HWR_FMVInit()

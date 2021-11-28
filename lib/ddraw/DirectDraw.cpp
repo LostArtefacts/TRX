@@ -35,6 +35,7 @@ ULONG WINAPI DirectDraw::AddRef()
 
 ULONG WINAPI DirectDraw::Release()
 {
+    m_renderer.reset();
     return Unknown::Release();
 }
 
@@ -65,7 +66,7 @@ HRESULT WINAPI DirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
     LPDIRECTDRAWSURFACE* lplpDDSurface,
     IUnknown* pUnkOuter)
 {
-    *lplpDDSurface = new DirectDrawSurface(*this, m_renderer, lpDDSurfaceDesc);
+    *lplpDDSurface = new DirectDrawSurface(*this, *m_renderer, lpDDSurfaceDesc);
 
     return DD_OK;
 }
@@ -184,6 +185,7 @@ HRESULT WINAPI DirectDraw::GetVerticalBlankStatus(LPBOOL lpbIsInVB)
 
 HRESULT WINAPI DirectDraw::Initialize(GUID* lpGUID)
 {
+    m_renderer = std::make_unique<Renderer>();
     return DD_OK;
 }
 

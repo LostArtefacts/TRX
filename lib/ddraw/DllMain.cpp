@@ -16,10 +16,6 @@ extern "C"
         IUnknown FAR* pUnkOuter)
     {
         Context& context = GLRage::getContext();
-        context.init();
-        context.attach();
-
-        ErrorUtils::setHWnd(context.getHWnd());
 
         try {
             *lplpDD = new DirectDraw();
