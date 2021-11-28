@@ -2290,16 +2290,27 @@ bool S_FMV_Play(const char *file_path)
         return true;
     }
 
-    GameBuf_Shutdown();
-    HWR_Shutdown();
-
     char *full_path = NULL;
     File_GetFullPath(file_path, &full_path);
+
+    // exit early in case the file does not exist
+    {
+        MYFILE *fp = File_Open(full_path, FILE_OPEN_READ);
+        if (fp) {
+            File_Close(fp);
+        } else {
+            LOG_ERROR("FMV does not exist: %s", full_path);
+            return false;
+        }
+    }
+
+    GameBuf_Shutdown();
+    HWR_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
     if (SDL_Init(flags)) {
         LOG_ERROR("Could not initialize SDL - %s", SDL_GetError());
-        return false;
+        goto cleanup;
     }
 
     SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
