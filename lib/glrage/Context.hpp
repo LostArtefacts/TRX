@@ -21,11 +21,10 @@ public:
     virtual BOOL enumWindowsProc(HWND hwnd) = 0;
     virtual bool isFullscreen() = 0;
     virtual void setFullscreen(bool fullscreen) = 0;
-    virtual void toggleFullscreen() = 0;
+    virtual void setWindowSize(int32_t width, int32_t height) = 0;
     virtual void setDisplaySize(int32_t width, int32_t height) = 0;
     virtual int32_t getDisplayWidth() = 0;
     virtual int32_t getDisplayHeight() = 0;
-    virtual void setWindowSize(int32_t width, int32_t height) = 0;
     virtual int32_t getWindowWidth() = 0;
     virtual int32_t getWindowHeight() = 0;
     virtual int32_t getScreenWidth() = 0;

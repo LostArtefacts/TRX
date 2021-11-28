@@ -24,7 +24,7 @@ cpp_compiler = meson.get_compiler('cpp')
 is_mingw = c_compiler.get_id() == 'gcc' and host_machine.system() == 'windows'
 if is_mingw
   add_project_link_arguments([], language: 'c')
-  add_project_link_arguments(['-static'], language: 'cpp')
+  add_project_link_arguments([], language: 'cpp')
 endif
 
 build_opts = [
@@ -92,6 +92,7 @@ glrage = shared_library(
     'lib/glrage/ContextImpl.cpp',
     'lib/glrage/DllMain.cpp',
     'lib/glrage/GLRage.cpp',
+    'lib/glrage/GLRageInterop.cpp',
     'lib/glrage/Screenshot.cpp',
     'lib/glrage_gl/Buffer.cpp',
     'lib/glrage_gl/Program.cpp',
@@ -287,6 +288,7 @@ executable(
   sources,
   name_prefix: '',
   include_directories: ['src/'],
+  link_with: [glrage],
   dependencies: dependencies,
   gui_app: true,
 )

@@ -55,7 +55,6 @@ void Shell_Main()
 {
     g_SoundIsActive = true;
 
-    Log_Init();
     T1MInit();
     Config_Read();
 
@@ -63,7 +62,7 @@ void Shell_Main()
 
     char **args;
     int arg_count;
-    S_Shell_GetCommandLine(&args, &arg_count);
+    S_Shell_GetCommandLine(&arg_count, &args);
     for (int i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
             gameflow_path = m_T1MGameflowGoldPath;

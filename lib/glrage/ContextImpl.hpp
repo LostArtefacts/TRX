@@ -23,11 +23,10 @@ public:
     BOOL enumWindowsProc(HWND hwnd);
     bool isFullscreen();
     void setFullscreen(bool fullscreen);
-    void toggleFullscreen();
+    void setWindowSize(int32_t width, int32_t height);
     void setDisplaySize(int32_t width, int32_t height);
     int32_t getDisplayWidth();
     int32_t getDisplayHeight();
-    void setWindowSize(int32_t width, int32_t height);
     int32_t getWindowWidth();
     int32_t getWindowHeight();
     int32_t getScreenWidth();
@@ -78,16 +77,17 @@ private:
     // screenshot object
     Screenshot m_screenshot;
 
-    // temporary rectangle
-    RECT m_tmprect = {0, 0, 0, 0};
-
     // DirectDraw display mode
-    int32_t m_width = 0;
-    int32_t m_height = 0;
+    int32_t m_displayWidth = 0;
+    int32_t m_displayHeight = 0;
 
     // Screen display mode
     int32_t m_screenWidth = 0;
     int32_t m_screenHeight = 0;
+
+    // Window size, controlled by SDL
+    int32_t m_windowWidth = 0;
+    int32_t m_windowHeight = 0;
 };
 
 } // namespace glrage

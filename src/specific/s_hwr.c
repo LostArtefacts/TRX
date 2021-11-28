@@ -10,6 +10,8 @@
 #include "specific/s_ati.h"
 #include "specific/s_shell.h"
 
+#include <lib/glrage/GLRageInterop.hpp>
+
 #include <assert.h>
 
 static C3D_HTX m_ATITextureMap[MAX_TEXTPAGES];
@@ -1155,6 +1157,16 @@ int32_t HWR_SetHardwareVideoMode()
     return 1;
 }
 
+void HWR_SetViewport(int width, int height)
+{
+    GLRage_SetWindowSize(width, height);
+}
+
+void HWR_SetFullscreen(bool fullscreen)
+{
+    GLRage_SetFullscreen(fullscreen);
+}
+
 void HWR_InitialiseHardware()
 {
     int32_t i;
@@ -1167,10 +1179,6 @@ void HWR_InitialiseHardware()
         m_ATITextureMap[i] = NULL;
         g_TextureSurfaces[i] = NULL;
     }
-
-    result = IDirectDraw_SetCooperativeLevel(
-        g_DDraw, g_TombHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
-    HWR_CheckError(result);
 
     if (!HWR_SetHardwareVideoMode()) {
         return;

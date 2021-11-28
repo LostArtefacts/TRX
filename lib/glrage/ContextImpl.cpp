@@ -34,9 +34,6 @@ BOOL CALLBACK ContextImpl::callbackEnumWindowsProc(HWND hwnd, LPARAM _this)
 
 ContextImpl::ContextImpl()
 {
-    // init rect
-    SetRectEmpty(&m_tmprect);
-
     // set pixel format
     m_pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     m_pfd.nVersion = 1;
@@ -146,14 +143,6 @@ void ContextImpl::attach(HWND hwnd)
         ErrorUtils::error("Can't attach window to OpenGL context",
             ErrorUtils::getWindowsErrorString());
     }
-
-    // apply previously applied window size
-    if (m_width > 0 && m_height > 0) {
-        setWindowSize(m_width, m_height);
-    }
-
-    // apply previously applied fullscreen mode
-    setFullscreen(m_fullscreen);
 }
 
 void ContextImpl::attach()
@@ -193,15 +182,6 @@ ContextImpl::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_KEYUP:
             if (wParam == VK_SNAPSHOT) {
                 m_screenshot.schedule(true);
-                return TRUE;
-            }
-            break;
-
-        // toggle fullscreen if alt + return is pressed
-        case WM_SYSKEYDOWN:
-            if (wParam == VK_RETURN && lParam & 1 << 29 &&
-                !(lParam & 1 << 30)) {
-                toggleFullscreen();
                 return TRUE;
             }
             break;
@@ -252,127 +232,40 @@ bool ContextImpl::isFullscreen()
 void ContextImpl::setFullscreen(bool fullscreen)
 {
     m_fullscreen = fullscreen;
-
-    if (!m_hwnd) {
-        return;
-    }
-
-    // change window style
-    auto style = GetWindowLong(m_hwnd, GWL_STYLE);
-    auto styleEx = GetWindowLong(m_hwnd, GWL_EXSTYLE);
-
-    if (m_fullscreen) {
-        style &= ~STYLE_WINDOW;
-        styleEx &= ~STYLE_WINDOW_EX;
-    } else {
-        style |= STYLE_WINDOW;
-        styleEx |= STYLE_WINDOW_EX;
-    }
-
-    SetWindowLong(m_hwnd, GWL_STYLE, style);
-    SetWindowLong(m_hwnd, GWL_EXSTYLE, styleEx);
-
-    // change window size
-    int32_t width;
-    int32_t height;
-
-    // TODO: what is this?
-    bool fullscreen_hack = false;
-    if (m_fullscreen) {
-        width = m_screenWidth + (fullscreen_hack ? 1 : 0);
-        height = m_screenHeight;
-    } else {
-        width = m_width;
-        height = m_height;
-    }
-
-    ShowCursor(!m_fullscreen);
-
-    setWindowSize(width, height);
 }
 
-void ContextImpl::toggleFullscreen()
+void ContextImpl::setWindowSize(int width, int height)
 {
-    setFullscreen(!m_fullscreen);
+    m_windowWidth = width;
+    m_windowHeight = height;
 }
 
 void ContextImpl::setDisplaySize(int32_t width, int32_t height)
 {
     LOG_INFO("Display size: %dx%d", width, height);
 
-    m_width = width;
-    m_height = height;
-
-    // update window size if not fullscreen
-    if (!m_fullscreen) {
-        setWindowSize(m_width, m_height);
-    }
+    m_displayWidth = width;
+    m_displayHeight = height;
 }
 
 int32_t ContextImpl::getDisplayWidth()
 {
-    return m_width;
+    return m_displayWidth;
 }
 
 int32_t ContextImpl::getDisplayHeight()
 {
-    return m_height;
-}
-
-void ContextImpl::setWindowSize(int32_t width, int32_t height)
-{
-    if (!m_hwnd) {
-        return;
-    }
-
-    LOG_INFO("Window size: %dx%d", width, height);
-
-    // reduce window size as long as its greater or equal to the desktop size
-    while (
-        !m_fullscreen && width >= m_screenWidth && height >= m_screenHeight) {
-        width /= 2;
-        height /= 2;
-    }
-
-    // center window on desktop
-    auto left = m_screenWidth / 2 - width / 2;
-    auto top = m_screenHeight / 2 - height / 2;
-
-    // get corrected client area
-    auto style = GetWindowLong(m_hwnd, GWL_STYLE);
-    auto styleEx = GetWindowLong(m_hwnd, GWL_EXSTYLE);
-
-    RECT rect{left, top, left + width, top + height};
-    AdjustWindowRectEx(&rect, style, FALSE, styleEx);
-
-    // resize window
-    SetWindowPos(m_hwnd,
-        HWND_NOTOPMOST,
-        rect.left,
-        rect.top,
-        rect.right - rect.left,
-        rect.bottom - rect.top,
-        SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+    return m_displayHeight;
 }
 
 int32_t ContextImpl::getWindowWidth()
 {
-    if (!m_hwnd) {
-        return m_width;
-    }
-
-    GetClientRect(m_hwnd, &m_tmprect);
-    return m_tmprect.right - m_tmprect.left;
+    return m_windowWidth ? m_windowWidth : m_displayWidth;
 }
 
 int32_t ContextImpl::getWindowHeight()
 {
-    if (!m_hwnd) {
-        return m_height;
-    }
-
-    GetClientRect(m_hwnd, &m_tmprect);
-    return m_tmprect.bottom - m_tmprect.top;
+    return m_windowHeight ? m_windowHeight : m_displayHeight;
 }
 
 int32_t ContextImpl::getScreenWidth()
@@ -394,17 +287,17 @@ void ContextImpl::setupViewport()
     auto vpX = 0;
     auto vpY = 0;
 
-    auto hw = m_height * vpWidth;
-    auto wh = m_width * vpHeight;
+    auto hw = m_displayHeight * vpWidth;
+    auto wh = m_displayWidth * vpHeight;
 
     // create viewport offset if the window has a different
     // aspect ratio than the current display mode
     if (hw > wh) {
-        auto wMax = wh / m_height;
+        auto wMax = wh / m_displayHeight;
         vpX = (vpWidth - wMax) / 2;
         vpWidth = wMax;
     } else if (hw < wh) {
-        auto hMax = hw / m_width;
+        auto hMax = hw / m_displayWidth;
         vpY = (vpHeight - hMax) / 2;
         vpHeight = hMax;
     }

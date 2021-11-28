@@ -1,41 +1,35 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
-#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/random.h"
 #include "game/shell.h"
-#include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_hwr.h"
-#include "specific/s_input.h"
 
+#define SDL_MAIN_HANDLED
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <ddraw.h>
-#include <shellapi.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
 #include <time.h>
-#include <windows.h>
 
-static const char *m_ClassName = "TRClass";
-static const char *m_WindowName = "Tomb Raider";
-static UINT m_CloseMsg = 0;
-static bool m_IsGameWindowActive = true;
-
-static LRESULT CALLBACK
-m_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-HMODULE m_DDraw = NULL;
-HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
+static int m_ArgCount = 0;
+static char **m_ArgStrings = NULL;
+static bool m_Fullscreen = true;
+static SDL_Window *m_Window = NULL;
+static HMODULE m_DDraw = NULL;
+static HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
 
 static bool S_Shell_InitDirectDraw();
 static void S_Shell_TerminateGame(int exit_code);
 static void S_Shell_ShowFatalError(const char *message);
+static void S_Shell_PostWindowResize();
+static void S_Shell_ToggleFullscreen();
 
 void S_Shell_SeedRandom()
 {
@@ -92,7 +86,10 @@ static void S_Shell_TerminateGame(int exit_code)
 
     S_ATI_Shutdown();
 
-    PostMessageA(HWND_BROADCAST, m_CloseMsg, 0, 0);
+    if (m_Window) {
+        SDL_DestroyWindow(m_Window);
+    }
+    SDL_Quit();
     exit(exit_code);
 }
 
@@ -104,122 +101,97 @@ static void S_Shell_ShowFatalError(const char *message)
     S_Shell_TerminateGame(1);
 }
 
+static void S_Shell_PostWindowResize()
+{
+    int width;
+    int height;
+    SDL_GetWindowSize(m_Window, &width, &height);
+    HWR_SetViewport(width, height);
+}
+
+static void S_Shell_ToggleFullscreen()
+{
+    m_Fullscreen = !m_Fullscreen;
+    HWR_SetFullscreen(m_Fullscreen);
+    SDL_SetWindowFullscreen(
+        m_Window, m_Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    SDL_ShowCursor(m_Fullscreen ? SDL_DISABLE : SDL_ENABLE);
+    S_Shell_PostWindowResize();
+}
+
 void S_Shell_SpinMessageLoop()
 {
-    MSG msg;
-    do {
-        while (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE)) {
-            if (!GetMessageA(&msg, 0, 0, 0)) {
-                S_Shell_TerminateGame(0);
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        switch (event.type) {
+        case SDL_QUIT:
+            S_Shell_TerminateGame(0);
+            break;
+
+        case SDL_KEYDOWN: {
+            const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
+            if (keyboard_state[SDL_SCANCODE_LALT]
+                && keyboard_state[SDL_SCANCODE_RETURN]) {
+                S_Shell_ToggleFullscreen();
             }
-
-            TranslateMessage(&msg);
-            DispatchMessageA(&msg);
+            break;
         }
-    } while (!m_IsGameWindowActive);
-}
 
-static LRESULT CALLBACK
-m_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    if (uMsg == m_CloseMsg) {
-        DestroyWindow(g_TombHWND);
-        return 0;
-    }
+        case SDL_WINDOWEVENT:
+            switch (event.window.event) {
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+                Music_SetVolume(g_Config.music_volume);
+                break;
 
-    switch (uMsg) {
-    case WM_CLOSE:
-        DestroyWindow(g_TombHWND);
-        return 0;
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+                Music_SetVolume(0);
+                break;
 
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-
-    case WM_SIZE:
-        return 1;
-
-    case WM_MOVE:
-        return 0;
-
-    case WM_SETCURSOR:
-        SetCursor(0);
-        return 1;
-
-    case WM_ERASEBKGND:
-        return 1;
-
-    case WM_ACTIVATEAPP:
-        // mute the music when the game is not active
-        if (!m_IsGameWindowActive && wParam) {
-            Music_SetVolume(g_Config.music_volume);
-        } else if (m_IsGameWindowActive && !wParam) {
-            Music_SetVolume(0);
+            case SDL_WINDOWEVENT_RESIZED: {
+                HWR_SetViewport(event.window.data1, event.window.data2);
+                break;
+            }
+            }
+            break;
         }
-        m_IsGameWindowActive = wParam != 0;
-        return 1;
-
-    case WM_NCPAINT:
-        return 0;
-
-    case WM_GETMINMAXINFO: {
-        MINMAXINFO *min_max_info = (MINMAXINFO *)lParam;
-        min_max_info->ptMinTrackSize.x = g_DDrawSurfaceWidth;
-        min_max_info->ptMinTrackSize.y = g_DDrawSurfaceHeight;
-        min_max_info->ptMaxTrackSize.x = g_DDrawSurfaceWidth;
-        min_max_info->ptMaxTrackSize.y = g_DDrawSurfaceHeight;
-        return DefWindowProcA(
-            hWnd, WM_GETMINMAXINFO, wParam, (LPARAM)min_max_info);
-    }
-
-    case WM_MOVING:
-        GetWindowRect(g_TombHWND, (LPRECT)lParam);
-        return 1;
-
-    case WM_SYSCOMMAND:
-        // ignore alt keypresses to bring window menu
-        if (wParam == SC_KEYMENU && (lParam >> 16) <= 0) {
-            return 0;
-        }
-        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-
-    default:
-        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
 }
 
-int WINAPI WinMain(
-    HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int main(int argc, char **argv)
 {
-    WNDCLASSA WndClass = { 0 };
-    WndClass.style = CS_HREDRAW | CS_VREDRAW;
-    WndClass.lpfnWndProc = (WNDPROC)m_WndProc;
-    WndClass.cbClsExtra = 0;
-    WndClass.cbWndExtra = 0;
-    WndClass.hInstance = hInstance;
-    WndClass.hIcon = LoadIconA(hInstance, IDI_APPLICATION);
-    WndClass.hCursor = LoadCursorA(0, IDC_ARROW);
-    WndClass.lpszMenuName = 0;
-    WndClass.lpszClassName = m_ClassName;
-    RegisterClassA(&WndClass);
+    Log_Init();
 
-    int32_t scr_height = GetSystemMetrics(SM_CYSCREEN);
-    int32_t scr_width = GetSystemMetrics(SM_CXSCREEN);
+    m_ArgCount = argc;
+    m_ArgStrings = argv;
 
-    g_TombModule = hInstance;
-    g_TombHWND = CreateWindowExA(
-        0, m_ClassName, m_WindowName, WS_VISIBLE | WS_POPUP | WS_SYSMENU, 0, 0,
-        scr_width, scr_height, 0, 0, hInstance, 0);
+    if (SDL_Init(SDL_INIT_EVENTS) < 0) {
+        S_Shell_ExitSystemFmt("Cannot initialize SDL: %s", SDL_GetError());
+        return 1;
+    }
+
+    m_Window = SDL_CreateWindow(
+        "Tomb1Main", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP
+            | SDL_WINDOW_RESIZABLE);
+    if (!m_Window) {
+        S_Shell_ShowFatalError("System Error: cannot create window");
+        return 1;
+    }
+
+    S_Shell_PostWindowResize();
+
+    SDL_ShowCursor(SDL_DISABLE);
+
+    SDL_SysWMinfo wm_info;
+    SDL_VERSION(&wm_info.version);
+    SDL_GetWindowWMInfo(m_Window, &wm_info);
+    g_TombModule = wm_info.info.win.hinstance;
+    g_TombHWND = wm_info.info.win.window;
 
     if (!g_TombHWND) {
         S_Shell_ShowFatalError("System Error: cannot create window");
         return 1;
     }
-
-    SetWindowPos(g_TombHWND, 0, 0, 0, scr_width, scr_height, SWP_NOCOPYBITS);
-    ShowWindow(g_TombHWND, nShowCmd);
-    UpdateWindow(g_TombHWND);
-    m_CloseMsg = RegisterWindowMessageA("CLOSE_HACK");
 
     if (!S_Shell_InitDirectDraw()) {
         S_Shell_TerminateGame(1);
@@ -252,26 +224,13 @@ void S_Shell_ExitSystemFmt(const char *fmt, ...)
     S_Shell_ExitSystem(message);
 }
 
-int S_Shell_GetCommandLine(char ***args, int *arg_count)
+bool S_Shell_GetCommandLine(int *arg_count, char ***args)
 {
-    LPWSTR *l_arg_list;
-    int l_arg_count;
-
-    l_arg_list = CommandLineToArgvW(GetCommandLineW(), &l_arg_count);
-    if (!l_arg_list) {
-        LOG_ERROR("CommandLineToArgvW failed");
-        return 0;
+    *arg_count = m_ArgCount;
+    *args = Memory_Alloc(m_ArgCount * sizeof(char *));
+    for (int i = 0; i < m_ArgCount; i++) {
+        (*args)[i] = Memory_Alloc(strlen(m_ArgStrings[i]) + 1);
+        strcpy((*args)[i], m_ArgStrings[i]);
     }
-
-    *args = Memory_Alloc(l_arg_count * sizeof(char **));
-    *arg_count = l_arg_count;
-    for (int i = 0; i < l_arg_count; i++) {
-        size_t size = wcslen(l_arg_list[i]) + 1;
-        (*args)[i] = Memory_Alloc(size);
-        wcstombs((*args)[i], l_arg_list[i], size);
-    }
-
-    LocalFree(l_arg_list);
-
-    return 1;
+    return true;
 }
