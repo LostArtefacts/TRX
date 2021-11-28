@@ -1208,21 +1208,12 @@ void HWR_ShutdownHardware()
     LOG_INFO("    complete");
 }
 
-void HWR_PrepareFMV()
+void HWR_FMVInit()
 {
     LOG_INFO("HardwarePrepareFMV");
     HWR_ClearSurfaceDepth();
     HWR_ReleaseSurfaces();
-}
 
-void HWR_FMVDone()
-{
-    LOG_INFO("HardwareFMVDone");
-    HWR_SetHardwareVideoMode();
-}
-
-void HWR_FMVInit()
-{
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
@@ -1237,6 +1228,12 @@ void HWR_FMVInit()
     HWR_ClearSurface(g_Surface1);
     IDirectDrawSurface_Release(g_Surface1);
     g_Surface1 = NULL;
+}
+
+void HWR_FMVDone()
+{
+    LOG_INFO("HardwareFMVDone");
+    HWR_SetHardwareVideoMode();
 }
 
 void HWR_SetupRenderContextAndRender()

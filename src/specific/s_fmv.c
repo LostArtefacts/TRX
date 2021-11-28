@@ -248,16 +248,12 @@ void S_FMV_Play(const char *file_path)
     File_GetFullPath(file_path, &full_path);
 
     GameBuf_Shutdown();
-
     Screen_SetResolution(2);
-    HWR_PrepareFMV();
+    HWR_FMVInit();
 
     void *movie_context = NULL;
     void *fmv_context = NULL;
     void *sound_context = NULL;
-
-    HWR_FMVInit();
-
     if (Player_InitMovie(&movie_context, 0, 0, full_path, 0x100000)) {
         LOG_ERROR("cannot load video");
         goto cleanup;
