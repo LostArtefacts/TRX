@@ -8,6 +8,7 @@
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_ati.h"
+#include "specific/s_ddraw.h"
 #include "specific/s_shell.h"
 
 #include <lib/glrage/GLRageInterop.hpp>
@@ -1161,11 +1162,20 @@ void HWR_SetFullscreen(bool fullscreen)
     GLRage_SetFullscreen(fullscreen);
 }
 
-void HWR_InitialiseHardware()
+bool HWR_Init()
 {
     int32_t i;
     int32_t tmp;
     HRESULT result;
+
+    if (!S_DDraw_Init()) {
+        LOG_ERROR("DDraw emulation layer could not be started");
+        return false;
+    }
+    if (S_ATI_Init()) {
+        LOG_ERROR("ATI3DCIF could not be started");
+        return false;
+    }
 
     LOG_INFO("InitialiseHardware:");
 
@@ -1200,12 +1210,17 @@ void HWR_InitialiseHardware()
 
     LOG_INFO("    Detected %dk video memory", 4096);
     LOG_INFO("    Complete, hardware ready");
+    return true;
 }
 
-void HWR_ShutdownHardware()
+void HWR_Shutdown()
 {
     LOG_INFO("ShutdownHardware:");
     LOG_INFO("    complete");
+    HWR_ClearSurfaceDepth();
+    HWR_ReleaseSurfaces();
+    S_ATI_Shutdown();
+    S_DDraw_Shutdown();
 }
 
 void HWR_FMVInit()

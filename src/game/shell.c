@@ -76,14 +76,17 @@ void Shell_Main()
     S_Shell_SeedRandom();
     Shell_CalculateWibbleTable();
 
+    if (!HWR_Init()) {
+        S_Shell_ExitSystem("Could not initialise video system");
+        return;
+    }
+
     Text_Init();
     Clock_Init();
     g_SoundIsActive = Sound_Init();
     Music_Init();
     Input_Init();
     FMV_Init();
-
-    HWR_InitialiseHardware();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         S_Shell_ExitSystem("MAIN: unable to load script file");

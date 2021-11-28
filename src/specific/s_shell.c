@@ -15,17 +15,13 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
-#include <ddraw.h>
 #include <time.h>
 
 static int m_ArgCount = 0;
 static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
-static HMODULE m_DDraw = NULL;
-static HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
 
-static bool S_Shell_InitDirectDraw();
 static void S_Shell_TerminateGame(int exit_code);
 static void S_Shell_ShowFatalError(const char *message);
 static void S_Shell_PostWindowResize();
@@ -39,53 +35,9 @@ void S_Shell_SeedRandom()
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static bool S_Shell_InitDirectDraw()
-{
-    if (!g_GLRage) {
-        g_GLRage = LoadLibrary("glrage.dll");
-    }
-
-    m_DDraw = g_GLRage;
-    if (!m_DDraw) {
-        S_Shell_ShowFatalError("Cannot find glrage.dll");
-        return false;
-    }
-
-    m_DirectDrawCreate =
-        (HRESULT(*)(GUID *, LPDIRECTDRAW *, IUnknown *))GetProcAddress(
-            m_DDraw, "DirectDrawCreate");
-    if (!m_DirectDrawCreate) {
-        S_Shell_ShowFatalError("Cannot find DirectDrawCreate");
-        return false;
-    }
-
-    if (m_DirectDrawCreate(NULL, &g_DDraw, NULL)) {
-        S_Shell_ShowFatalError("DirectDraw could not be started");
-        return false;
-    }
-
-    if (S_ATI_Init()) {
-        S_Shell_ShowFatalError("ATI3DCIF could not be started");
-        return false;
-    }
-
-    return true;
-}
-
 static void S_Shell_TerminateGame(int exit_code)
 {
-    if (g_DDraw) {
-        HWR_ReleaseSurfaces();
-        IDirectDraw_FlipToGDISurface(g_DDraw);
-        IDirectDraw_FlipToGDISurface(g_DDraw);
-        IDirectDraw_RestoreDisplayMode(g_DDraw);
-        IDirectDraw_SetCooperativeLevel(g_DDraw, g_TombHWND, 8);
-        IDirectDraw_Release(g_DDraw);
-        g_DDraw = NULL;
-    }
-
-    S_ATI_Shutdown();
-
+    HWR_Shutdown();
     if (m_Window) {
         SDL_DestroyWindow(m_Window);
     }
@@ -193,9 +145,10 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (!S_Shell_InitDirectDraw()) {
-        S_Shell_TerminateGame(1);
-        return 1;
+    g_GLRage = LoadLibrary("glrage.dll");
+    if (!g_GLRage) {
+        S_Shell_ShowFatalError("Cannot find glrage.dll");
+        return false;
     }
 
     Shell_Main();
@@ -210,7 +163,7 @@ void S_Shell_ExitSystem(const char *message)
         Input_Update();
     }
     GameBuf_Shutdown();
-    HWR_ShutdownHardware();
+    HWR_Shutdown();
     S_Shell_ShowFatalError(message);
 }
 
