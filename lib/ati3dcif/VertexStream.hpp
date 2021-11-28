@@ -27,9 +27,7 @@ public:
     void addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert);
     void addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert);
     void renderPending();
-    C3D_EVERTEX vertexType();
     void vertexType(C3D_EVERTEX vertexType);
-    C3D_EPRIM primType();
     void primType(C3D_EPRIM primType);
     void bind();
     void renderPrims(std::vector<C3D_VTCF> prims);

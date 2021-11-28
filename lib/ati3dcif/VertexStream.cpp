@@ -139,16 +139,6 @@ void VertexStream::renderPending()
     m_vtcBuffer.clear();
 }
 
-C3D_EVERTEX VertexStream::vertexType()
-{
-    return m_vertexType;
-}
-
-C3D_EPRIM VertexStream::primType()
-{
-    return m_primType;
-}
-
 void VertexStream::primType(C3D_EPRIM primType)
 {
     m_primType = primType;
