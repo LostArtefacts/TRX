@@ -83,7 +83,6 @@ glrage = shared_library(
     'lib/ati3dcif/TransDelay.cpp',
     'lib/ati3dcif/VertexStream.cpp',
     'lib/ddraw/Blitter.cpp',
-    'lib/ddraw/DebugUtils.cpp',
     'lib/ddraw/DirectDraw.cpp',
     'lib/ddraw/DirectDrawClipper.cpp',
     'lib/ddraw/DirectDrawSurface.cpp',

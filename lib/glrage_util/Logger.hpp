@@ -7,13 +7,6 @@
 
 #define LOG_INFO(...) Logger::printf(__VA_ARGS__)
 
-#ifdef LOG_TRACE_ENABLED
-#define LOG_TRACE(...)                                                         \
-    Logger::tracef(_ReturnAddress(), __FUNCTION__, __VA_ARGS__)
-#else
-#define LOG_TRACE(...)
-#endif
-
 class Logger
 {
 public:

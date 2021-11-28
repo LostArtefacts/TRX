@@ -15,8 +15,6 @@ extern "C"
         LPDIRECTDRAW FAR* lplpDD,
         IUnknown FAR* pUnkOuter)
     {
-        LOG_TRACE("%p, %p, %p", lpGUID, lplpDD, pUnkOuter);
-
         Context& context = GLRage::getContext();
         context.init();
         context.attach();
