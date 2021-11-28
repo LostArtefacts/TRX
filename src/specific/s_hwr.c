@@ -1075,7 +1075,7 @@ void HWR_SwitchResolution()
     Screen_SetupSize();
 }
 
-int32_t HWR_SetHardwareVideoMode()
+void HWR_SetHardwareVideoMode()
 {
     DDSURFACEDESC surface_desc;
     HRESULT result;
@@ -1149,7 +1149,6 @@ int32_t HWR_SetHardwareVideoMode()
     HWR_SetupRenderContextAndRender();
 
     LOG_INFO("    complete");
-    return 1;
 }
 
 void HWR_SetViewport(int width, int height)
@@ -1175,9 +1174,7 @@ void HWR_InitialiseHardware()
         g_TextureSurfaces[i] = NULL;
     }
 
-    if (!HWR_SetHardwareVideoMode()) {
-        return;
-    }
+    HWR_SetHardwareVideoMode();
 
     tmp = C3D_EV_VTCF;
     ATI3DCIF_ContextSetState(

@@ -46,7 +46,7 @@ void HWR_DrawLightningSegment(
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source);
 int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source);
 void HWR_SwitchResolution();
-int32_t HWR_SetHardwareVideoMode();
+void HWR_SetHardwareVideoMode();
 void HWR_InitialiseHardware();
 void HWR_ShutdownHardware();
 void HWR_PrepareFMV();
