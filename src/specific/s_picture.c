@@ -95,10 +95,12 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         goto fail;
     }
 
+    picture->width = frame->width;
+    picture->height = frame->height;
+
     sws_ctx = sws_getContext(
-        codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
-        codec_ctx->width, codec_ctx->height, AV_PIX_FMT_RGB24, SWS_BILINEAR,
-        NULL, NULL, NULL);
+        codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt, picture->width,
+        picture->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
 
     if (!sws_ctx) {
         LOG_ERROR("Failed to get SWS context");
@@ -109,8 +111,8 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
     uint8_t *dst_data[4];
     int dst_linesize[4];
     error_code = av_image_alloc(
-        dst_data, dst_linesize, frame->width, frame->height, AV_PIX_FMT_RGB24,
-        1);
+        dst_data, dst_linesize, picture->width, picture->height,
+        AV_PIX_FMT_RGB24, 1);
     if (error_code < 0) {
         goto fail;
     }
@@ -119,8 +121,6 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         sws_ctx, (const uint8_t *const *)frame->data, frame->linesize, 0,
         frame->height, dst_data, dst_linesize);
 
-    picture->width = frame->width;
-    picture->height = frame->height;
     picture->data =
         Memory_Alloc(picture->height * picture->width * sizeof(RGB888));
 
@@ -128,7 +128,7 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         (uint8_t *)picture->data,
         picture->width * picture->height * sizeof(RGB888),
         (const uint8_t *const *)dst_data, dst_linesize, AV_PIX_FMT_RGB24,
-        frame->width, frame->height, 1);
+        picture->width, picture->height, 1);
 
     return true;
 
@@ -137,6 +137,8 @@ fail:
         "Error while opening picture %s: %s", full_path,
         av_err2str(error_code));
 
+    picture->width = 0;
+    picture->height = 0;
     if (picture->data) {
         Memory_Free(picture->data);
         picture->data = NULL;
