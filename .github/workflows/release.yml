@@ -25,7 +25,7 @@ jobs:
           sudo apt-get install -y make p7zip-full moby-engine moby-cli
       - name: Build project
         run: |
-          make clean debug
+          make clean release
       - name: Package release
         run: |
           7z a Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip ./bin/* ./build/*.dll ./build/*.exe
