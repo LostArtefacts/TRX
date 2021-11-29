@@ -4,8 +4,6 @@
 #include <glrage_util/ErrorUtils.hpp>
 #include <glrage_util/StringUtils.hpp>
 
-#include <fstream>
-#include <sstream>
 #include <string>
 
 namespace glrage {
@@ -31,21 +29,21 @@ void Shader::bind()
 
 Shader& Shader::fromFile(const std::string& path)
 {
-    // open and check shader file
-    std::ifstream file;
-    file.open(path.c_str());
-    if (!file.good()) {
+    FILE* fp = fopen(path.c_str(), "rb");
+    if (!fp) {
         throw std::runtime_error("Can't open shader file '" + path +
                                  "': " + ErrorUtils::getSystemErrorString());
     }
 
-    // read file to a string stream
-    std::stringstream stream;
-    stream << file.rdbuf();
-    file.close();
+    fseek(fp, 0, SEEK_END);
+    const auto size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
 
-    // convert stream to string
-    fromString(stream.str());
+    std::string content(size + 1, '\0');
+    fread(&content[0], 1, size, fp);
+    fclose(fp);
+
+    fromString(content.c_str());
 
     return *this;
 }
