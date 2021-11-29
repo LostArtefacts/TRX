@@ -148,8 +148,8 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 2. **Can we get HD textures? Reflections? Other graphical updates?**
 
-    Eventually, probably yes. But first we need to decompile the renderer,
-    which is going to take a while (can't give an estimate).
+    Eventually, probably yes. Please see the road map to have a general idea
+    what is currently being worked on.
 
 3. **Can we get braid in every level? Skyboxes? Flyby cameras? New animations? etc.**
 
@@ -162,16 +162,16 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    Currently only Windows version is available.
+    Currently only Windows version is available, but there is some ongoing work
+    towards reducing the amount of Windows-only code.
 
 5. **Do I really need to install this TombATI patch? Why not have just the .exe?**
 
-    One of our goals is to eventually provide a single .exe file (maybe with
-    some .dll-s related to multimedia) and only require the players to supply
-    the game data, i.e. the level files, music and FMVs. However, this requires
-    decompiling GFX and SFX routines which, again, is going to take a while.
+    We're currently on it! :D
 
 ## Current road map
+
+Note: this section may be subject to change.
 
 - [x] Reverse engineer the entire game - done!
 - [ ] Break off TombATI, ship our own .EXE rather than a .DLL
