@@ -171,12 +171,27 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     the game data, i.e. the level files, music and FMVs. However, this requires
     decompiling GFX and SFX routines which, again, is going to take a while.
 
-## Decompilation progress
+## Current road map
 
-Currently the entirety of TombATI.exe's code is decompiled. Our goal now is to
-ship with our own .exe rather than a DLL. To make it possible, we must reverse
-portions of the glrage patch (glrage.dll) and the ATI renderer (ati3dcif.dll)
-and that is the current project focus.
+- [x] Reverse engineer the entire game - done!
+- [ ] Break off TombATI, ship our own .EXE rather than a .DLL
+    - [x] Integrate glrage with Tomb1Main
+    - [x] Replace the music player (`winmm.dll` / `libzplay.dll`) with libavcodec and SDL
+    - [x] Replace the FMV player (`Dec130.dll`, `Edec.dll`, `Winplay.dll`, `Winsdec.dll` and `Winstr.dll`) with libavcodec and SDL
+    - [ ] Test for performance and crash resilience
+    - [ ] 2.0
+- [ ] Work on cross platform builds
+    - [ ] Replace the sample player (DirectSound) with libavcodec and SDL
+    - [ ] Refactor GLRage to no longer emulate ATI3DCIF and DDraw
+    - [ ] Port DirectInput to SDL
+    - [ ] Test for performance and crash resilience
+    - [ ] ...
+    - [ ] 3.0
+- [ ] Beautify the code
+    - [ ] Apply rigid name conventions to function names
+    - [ ] Refactor specific/ away
+    - [ ] ...
+- [ ] Work on data injection and other features?
 
 ## Importing data to IDA
 
