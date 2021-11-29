@@ -130,17 +130,6 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         (const uint8_t *const *)dst_data, dst_linesize, AV_PIX_FMT_RGB24,
         frame->width, frame->height, 1);
 
-    // TODO: remove this
-    RGB888 *dst = picture->data;
-    for (int x = 0; x < picture->width; x++) {
-        for (int y = 0; y < picture->height; y++) {
-            dst->r = (dst->r >> 2) & 0x3F;
-            dst->g = (dst->g >> 2) & 0x3F;
-            dst->b = (dst->b >> 2) & 0x3F;
-            dst++;
-        }
-    }
-
     return true;
 
 fail:
