@@ -5,7 +5,8 @@
 
 #include <stdint.h>
 
-PICTURE *Picture_Create(const char *file_path);
+PICTURE *Picture_Create();
+PICTURE *Picture_CreateFromFile(const char *file_path);
 void Picture_Free(PICTURE *picture);
 
 #endif
