@@ -3,11 +3,7 @@ set -x
 set -e
 
 if [ ! -f /app/build/build.ninja ]; then
-    if [ "$TARGET" = debug ]; then
-        meson --buildtype debug /app/build/ --cross /app/docker/meson_linux_mingw32.txt
-    elif [ "$TARGET" = release ]; then
-        meson --buildtype release /app/build/ --cross /app/docker/meson_linux_mingw32.txt
-    fi
+    meson --buildtype "$TARGET" /app/build/ --cross /app/docker/meson_linux_mingw32.txt
 fi
 
 cp /usr/lib/gcc/i686-w64-mingw32/9.3-posix/libgomp-1.dll /app/build/

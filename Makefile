@@ -2,21 +2,24 @@ CWD = $(shell pwd)
 HOST_USER_UID = $(shell id -u)
 HOST_USER_GID = $(shell id -g)
 
-debug: docker
+define build
+	$(eval TARGET := $(1))
 	mkdir -p build
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		-e TARGET=debug \
+		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
 		tomb1main
+endef
+
+debug: docker
+	$(call build,debug)
+
+debugopt: docker
+	$(call build,debugoptimized)
 
 release:
-	mkdir -p build
-	docker run --rm \
-		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		-e TARGET=release \
-		-v $(CWD):/app/ \
-		tomb1main
+	$(call build,release)
 
 docker:
 	docker build -t tomb1main . -f docker/Dockerfile
