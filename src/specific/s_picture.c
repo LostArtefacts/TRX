@@ -232,13 +232,6 @@ bool S_Picture_Scale(
         dst_planes, dst_linesize, (const uint8_t *)target_pic->data,
         AV_PIX_FMT_RGB24, target_pic->width, target_pic->height, 1);
 
-    for (int i = 0; i < 4; i++) {
-        LOG_DEBUG("%p %d", src_planes[i], src_linesize[i]);
-    }
-    for (int i = 0; i < 4; i++) {
-        LOG_DEBUG("%p %d", dst_planes[i], dst_linesize[i]);
-    }
-
     sws_scale(
         sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
         source_height, (uint8_t *const *)dst_planes, dst_linesize);
