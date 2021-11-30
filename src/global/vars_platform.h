@@ -10,7 +10,6 @@
 
 extern HINSTANCE g_TombModule;
 extern HWND g_TombHWND;
-extern HMODULE g_GLRage;
 extern LPDIRECTDRAW g_DDraw;
 
 #endif

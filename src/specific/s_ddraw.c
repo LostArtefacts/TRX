@@ -3,27 +3,11 @@
 #include "log.h"
 #include "global/vars_platform.h"
 
-#include <ddraw.h>
-
-static HRESULT (*m_DirectDrawCreate)(GUID *, LPDIRECTDRAW *, IUnknown *) = NULL;
+#include "ddraw/Interop.hpp"
 
 bool S_DDraw_Init()
 {
-    if (!g_GLRage) {
-        LOG_ERROR("Cannot find glrage.dll");
-        return false;
-    }
-
-    m_DirectDrawCreate =
-        (HRESULT(*)(GUID *, LPDIRECTDRAW *, IUnknown *))GetProcAddress(
-            g_GLRage, "DirectDrawCreate");
-
-    if (!m_DirectDrawCreate) {
-        LOG_ERROR("Cannot find DirectDrawCreate");
-        return false;
-    }
-
-    if (m_DirectDrawCreate(NULL, &g_DDraw, NULL)) {
+    if (MyDirectDrawCreate(NULL, &g_DDraw, NULL)) {
         LOG_ERROR("DirectDraw could not be started");
         return false;
     }

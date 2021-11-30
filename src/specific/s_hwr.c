@@ -11,7 +11,8 @@
 #include "specific/s_ddraw.h"
 #include "specific/s_shell.h"
 
-#include <lib/glrage/GLRageInterop.hpp>
+#include "ati3dcif/Interop.hpp"
+#include "glrage/Interop.hpp"
 
 #include <assert.h>
 
@@ -1163,7 +1164,7 @@ bool HWR_Init()
         LOG_ERROR("DDraw emulation layer could not be started");
         return false;
     }
-    if (S_ATI_Init()) {
+    if (!S_ATI_Init()) {
         LOG_ERROR("ATI3DCIF could not be started");
         return false;
     }

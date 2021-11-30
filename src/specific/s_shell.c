@@ -144,12 +144,6 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    g_GLRage = LoadLibrary("glrage.dll");
-    if (!g_GLRage) {
-        S_Shell_ShowFatalError("Cannot find glrage.dll");
-        return false;
-    }
-
     Shell_Main();
 
     S_Shell_TerminateGame(0);
