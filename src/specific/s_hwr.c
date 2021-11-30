@@ -36,6 +36,12 @@ static int32_t m_SelectedTexture = -1;
 static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
 static RGBF m_WaterColor = { 0 };
 
+static int32_t m_DDrawSurfaceWidth = 0;
+static int32_t m_DDrawSurfaceHeight = 0;
+static float m_DDrawSurfaceMinX = 0.0f;
+static float m_DDrawSurfaceMinY = 0.0f;
+static float m_DDrawSurfaceMaxX = 0.0f;
+static float m_DDrawSurfaceMaxY = 0.0f;
 static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
@@ -212,7 +218,7 @@ void HWR_FlipPrimaryBuffer()
 void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
     RECT rect;
-    SetRect(&rect, 0, 0, g_DDrawSurfaceWidth, g_DDrawSurfaceHeight);
+    SetRect(&rect, 0, 0, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     HRESULT result =
         IDirectDrawSurface_Blt(target, &rect, source, &rect, DDBLT_WAIT, NULL);
     HWR_CheckError(result);
@@ -229,8 +235,8 @@ void HWR_CopyFromPicture()
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.dwWidth = g_DDrawSurfaceWidth;
-        surface_desc.dwHeight = g_DDrawSurfaceHeight;
+        surface_desc.dwWidth = m_DDrawSurfaceWidth;
+        surface_desc.dwHeight = m_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
             g_DDraw, &surface_desc, &m_PictureSurface, NULL);
         HWR_CheckError(result);
@@ -293,15 +299,15 @@ void HWR_DownloadPicture(const PICTURE *pic)
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.dwWidth = g_DDrawSurfaceWidth;
-        surface_desc.dwHeight = g_DDrawSurfaceHeight;
+        surface_desc.dwWidth = m_DDrawSurfaceWidth;
+        surface_desc.dwHeight = m_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
             g_DDraw, &surface_desc, &m_PictureSurface, NULL);
         HWR_CheckError(result);
     }
 
-    int32_t target_width = g_DDrawSurfaceWidth;
-    int32_t target_height = g_DDrawSurfaceHeight;
+    int32_t target_width = m_DDrawSurfaceWidth;
+    int32_t target_height = m_DDrawSurfaceHeight;
     int32_t source_width = pic->width;
     int32_t source_height = pic->height;
 
@@ -744,12 +750,12 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &source[i];
 
-        if (v2->x < g_DDrawSurfaceMinX) {
-            if (l->x < g_DDrawSurfaceMinX) {
+        if (v2->x < m_DDrawSurfaceMinX) {
+            if (l->x < m_DDrawSurfaceMinX) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMinX;
+            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -757,12 +763,12 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &vertices[++j];
-        } else if (v2->x > g_DDrawSurfaceMaxX) {
-            if (l->x > g_DDrawSurfaceMaxX) {
+        } else if (v2->x > m_DDrawSurfaceMaxX) {
+            if (l->x > m_DDrawSurfaceMaxX) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMaxX;
+            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -772,9 +778,9 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
             v1 = &vertices[++j];
         }
 
-        if (l->x < g_DDrawSurfaceMinX) {
-            scale = (g_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMinX;
+        if (l->x < m_DDrawSurfaceMinX) {
+            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -782,9 +788,9 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &vertices[++j];
-        } else if (l->x > g_DDrawSurfaceMaxX) {
-            scale = (g_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMaxX;
+        } else if (l->x > m_DDrawSurfaceMaxX) {
+            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -817,26 +823,26 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &vertices[i];
 
-        if (v2->y < g_DDrawSurfaceMinY) {
-            if (l->y < g_DDrawSurfaceMinY) {
+        if (v2->y < m_DDrawSurfaceMinY) {
+            if (l->y < m_DDrawSurfaceMinY) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMinY;
+            v1->y = m_DDrawSurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &source[++j];
-        } else if (v2->y > g_DDrawSurfaceMaxY) {
-            if (l->y > g_DDrawSurfaceMaxY) {
+        } else if (v2->y > m_DDrawSurfaceMaxY) {
+            if (l->y > m_DDrawSurfaceMaxY) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMaxY;
+            v1->y = m_DDrawSurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -845,20 +851,20 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
             v1 = &source[++j];
         }
 
-        if (l->y < g_DDrawSurfaceMinY) {
-            scale = (g_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+        if (l->y < m_DDrawSurfaceMinY) {
+            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMinY;
+            v1->y = m_DDrawSurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &source[++j];
-        } else if (l->y > g_DDrawSurfaceMaxY) {
-            scale = (g_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+        } else if (l->y > m_DDrawSurfaceMaxY) {
+            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMaxY;
+            v1->y = m_DDrawSurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -897,12 +903,12 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &source[i];
 
-        if (v2->x < g_DDrawSurfaceMinX) {
-            if (l->x < g_DDrawSurfaceMinX) {
+        if (v2->x < m_DDrawSurfaceMinX) {
+            if (l->x < m_DDrawSurfaceMinX) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMinX;
+            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -912,12 +918,12 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &vertices[++j];
-        } else if (v2->x > g_DDrawSurfaceMaxX) {
-            if (l->x > g_DDrawSurfaceMaxX) {
+        } else if (v2->x > m_DDrawSurfaceMaxX) {
+            if (l->x > m_DDrawSurfaceMaxX) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMaxX;
+            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -929,9 +935,9 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1 = &vertices[++j];
         }
 
-        if (l->x < g_DDrawSurfaceMinX) {
-            scale = (g_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMinX;
+        if (l->x < m_DDrawSurfaceMinX) {
+            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -941,9 +947,9 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &vertices[++j];
-        } else if (l->x > g_DDrawSurfaceMaxX) {
-            scale = (g_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = g_DDrawSurfaceMaxX;
+        } else if (l->x > m_DDrawSurfaceMaxX) {
+            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_DDrawSurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -980,13 +986,13 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &vertices[i];
 
-        if (v2->y < g_DDrawSurfaceMinY) {
-            if (l->y < g_DDrawSurfaceMinY) {
+        if (v2->y < m_DDrawSurfaceMinY) {
+            if (l->y < m_DDrawSurfaceMinY) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMinY;
+            v1->y = m_DDrawSurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -995,13 +1001,13 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &source[++j];
-        } else if (v2->y > g_DDrawSurfaceMaxY) {
-            if (l->y > g_DDrawSurfaceMaxY) {
+        } else if (v2->y > m_DDrawSurfaceMaxY) {
+            if (l->y > m_DDrawSurfaceMaxY) {
                 continue;
             }
-            scale = (g_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMaxY;
+            v1->y = m_DDrawSurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -1012,10 +1018,10 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1 = &source[++j];
         }
 
-        if (l->y < g_DDrawSurfaceMinY) {
-            scale = (g_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+        if (l->y < m_DDrawSurfaceMinY) {
+            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMinY;
+            v1->y = m_DDrawSurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -1024,10 +1030,10 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &source[++j];
-        } else if (l->y > g_DDrawSurfaceMaxY) {
-            scale = (g_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+        } else if (l->y > m_DDrawSurfaceMaxY) {
+            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = g_DDrawSurfaceMaxY;
+            v1->y = m_DDrawSurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -1082,17 +1088,17 @@ void HWR_SetHardwareVideoMode()
     LOG_INFO("SetHardwareVideoMode:");
     HWR_ReleaseSurfaces();
 
-    g_DDrawSurfaceWidth = Screen_GetResWidth();
-    g_DDrawSurfaceHeight = Screen_GetResHeight();
-    g_DDrawSurfaceMinX = 0.0f;
-    g_DDrawSurfaceMinY = 0.0f;
-    g_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
-    g_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
+    m_DDrawSurfaceWidth = Screen_GetResWidth();
+    m_DDrawSurfaceHeight = Screen_GetResHeight();
+    m_DDrawSurfaceMinX = 0.0f;
+    m_DDrawSurfaceMinY = 0.0f;
+    m_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
+    m_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
     LOG_INFO(
-        "    Switching to %dx%d", g_DDrawSurfaceWidth, g_DDrawSurfaceHeight);
+        "    Switching to %dx%d", m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     result = IDirectDraw_SetDisplayMode(
-        g_DDraw, g_DDrawSurfaceWidth, g_DDrawSurfaceHeight, 16);
+        g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight, 16);
     HWR_CheckError(result);
 
     LOG_INFO("    Allocating front/back buffers");

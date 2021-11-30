@@ -10,7 +10,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_frontend.h"
@@ -147,8 +146,8 @@ void S_DisplayPicture(const char *filename)
         PICTURE *scaled_pic = Picture_Create();
         if (scaled_pic) {
             Picture_Scale(
-                scaled_pic, orig_pic, g_DDrawSurfaceWidth,
-                g_DDrawSurfaceHeight);
+                scaled_pic, orig_pic, ViewPort_GetWidth(),
+                ViewPort_GetHeight());
             HWR_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
         }
