@@ -558,7 +558,7 @@ void S_Audio_SampleSoundMix(float *dst_buffer, size_t len)
 
             *dst_ptr++ += src_sample * sound->volume_l;
             *dst_ptr++ += src_sample * sound->volume_r;
-            src_sample_idx += 1.0f; // sound->pitch;
+            src_sample_idx += sound->pitch;
 
             if ((int)src_sample_idx >= sound->sample->num_samples) {
                 if (sound->is_looped) {
