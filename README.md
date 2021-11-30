@@ -181,11 +181,11 @@ Note: this section may be subject to change.
     - [ ] Test for performance and crash resilience
     - [ ] 2.0
 - [ ] Work on cross platform builds
-    - [ ] Replace the sample player (DirectSound) with libavcodec and SDL
+    - [x] Replace the sample player (DirectSound) with libavcodec and SDL
     - [ ] Refactor GLRage to no longer emulate ATI3DCIF and DDraw
     - [ ] Port DirectInput to SDL
-    - [ ] Test for performance and crash resilience
     - [ ] ...
+    - [ ] Test for performance and crash resilience
     - [ ] 3.0
 - [ ] Beautify the code
     - [ ] Apply rigid name conventions to function names
