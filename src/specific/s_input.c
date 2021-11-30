@@ -196,6 +196,7 @@ static void S_Input_DInput_KeyboardRead()
             break;
         }
     }
+    S_Shell_SpinMessageLoop();
 }
 
 static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
@@ -411,7 +412,6 @@ static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
 INPUT_STATE S_Input_GetCurrentState()
 {
     S_Input_DInput_KeyboardRead();
-    S_Shell_SpinMessageLoop();
 
     INPUT_STATE linput = { 0 };
 
