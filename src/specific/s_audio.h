@@ -7,6 +7,7 @@
 #define AUDIO_NO_SOUND (-1)
 
 bool S_Audio_Init();
+bool S_Audio_Shutdown();
 
 bool S_Audio_StreamSoundPause(int sound_id);
 bool S_Audio_StreamSoundUnpause(int sound_id);
@@ -44,9 +45,11 @@ float S_Audio_Clamp(float min, float max, float val);
 float S_Audio_InverseLerp(float from, float to, float val);
 
 void S_Audio_SampleSoundInit();
+void S_Audio_SampleSoundShutdown();
 void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
 
 void S_Audio_StreamSoundInit();
+void S_Audio_StreamSoundShutdown();
 void S_Audio_StreamSoundMix(float *dst_buffer, size_t len);
 
 #endif

@@ -374,6 +374,15 @@ void S_Audio_SampleSoundInit()
     }
 }
 
+void S_Audio_SampleSoundShutdown()
+{
+    if (!g_AudioDeviceID) {
+        return;
+    }
+
+    S_Audio_SampleSoundCloseAll();
+}
+
 bool S_Audio_SamplesClear()
 {
     if (!g_AudioDeviceID) {

@@ -90,3 +90,19 @@ bool S_Audio_Init()
 
     return true;
 }
+
+bool S_Audio_Shutdown()
+{
+    if (!g_AudioDeviceID) {
+        return true;
+    }
+
+    S_Audio_SampleSoundShutdown();
+    S_Audio_StreamSoundShutdown();
+
+    SDL_PauseAudioDevice(g_AudioDeviceID, 1);
+    SDL_CloseAudioDevice(g_AudioDeviceID);
+    g_AudioDeviceID = 0;
+
+    return true;
+}

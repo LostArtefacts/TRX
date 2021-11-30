@@ -272,6 +272,19 @@ void S_Audio_StreamSoundInit()
     }
 }
 
+void S_Audio_StreamSoundShutdown()
+{
+    if (!g_AudioDeviceID) {
+        return;
+    }
+
+    for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
+        if (m_StreamSounds[sound_id].is_used) {
+            S_Audio_StreamSoundClose(sound_id);
+        }
+    }
+}
+
 bool S_Audio_StreamSoundPause(int sound_id)
 {
     if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
