@@ -36,6 +36,12 @@ static int32_t m_SelectedTexture = -1;
 static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
 static RGBF m_WaterColor = { 0 };
 
+static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
+static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
+static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
+static LPDIRECTDRAWSURFACE m_ZSurface = NULL;
+static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
+
 static void HWR_EnableTextureMode(void);
 static void HWR_DisableTextureMode(void);
 static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
@@ -122,34 +128,34 @@ void HWR_ReleaseSurfaces()
     int i;
     HRESULT result;
 
-    if (g_Surface1) {
-        HWR_ClearSurface(g_Surface1);
-        HWR_ClearSurface(g_Surface2);
+    if (m_PrimarySurface) {
+        HWR_ClearSurface(m_PrimarySurface);
+        HWR_ClearSurface(m_BackSurface);
 
-        result = IDirectDrawSurface_Release(g_Surface1);
+        result = IDirectDrawSurface_Release(m_PrimarySurface);
         HWR_CheckError(result);
-        g_Surface1 = NULL;
-        g_Surface2 = NULL;
+        m_PrimarySurface = NULL;
+        m_BackSurface = NULL;
     }
 
-    if (g_Surface4) {
-        result = IDirectDrawSurface_Release(g_Surface4);
+    if (m_ZSurface) {
+        result = IDirectDrawSurface_Release(m_ZSurface);
         HWR_CheckError(result);
-        g_Surface4 = NULL;
+        m_ZSurface = NULL;
     }
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
-        if (g_TextureSurfaces[i]) {
-            result = IDirectDrawSurface_Release(g_TextureSurfaces[i]);
+        if (m_TextureSurfaces[i]) {
+            result = IDirectDrawSurface_Release(m_TextureSurfaces[i]);
             HWR_CheckError(result);
-            g_TextureSurfaces[i] = NULL;
+            m_TextureSurfaces[i] = NULL;
         }
     }
 
-    if (g_Surface3) {
-        result = IDirectDrawSurface_Release(g_Surface3);
+    if (m_PictureSurface) {
+        result = IDirectDrawSurface_Release(m_PictureSurface);
         HWR_CheckError(result);
-        g_Surface3 = NULL;
+        m_PictureSurface = NULL;
     }
 }
 
@@ -198,12 +204,12 @@ void HWR_ClearSurfaceDepth()
     HRESULT result;
 
     HWR_RenderEnd();
-    HWR_ClearSurface(g_Surface2);
+    HWR_ClearSurface(m_BackSurface);
 
     bltfx.dwSize = sizeof(bltfx);
     bltfx.dwFillDepth = 0xFFFF;
     result = IDirectDrawSurface_Blt(
-        g_Surface4, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_DEPTHFILL, &bltfx);
+        m_ZSurface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_DEPTHFILL, &bltfx);
     HWR_CheckError(result);
 
     HWR_RenderToggle();
@@ -212,7 +218,8 @@ void HWR_ClearSurfaceDepth()
 void HWR_FlipPrimaryBuffer()
 {
     HWR_RenderEnd();
-    HRESULT result = IDirectDrawSurface_Flip(g_Surface1, NULL, DDFLIP_WAIT);
+    HRESULT result =
+        IDirectDrawSurface_Flip(m_PrimarySurface, NULL, DDFLIP_WAIT);
     HWR_CheckError(result);
     HWR_RenderToggle();
 
@@ -228,13 +235,13 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
     HWR_CheckError(result);
 }
 
-void HWR_CopyPicture()
+void HWR_CopyFromPicture()
 {
     LOG_INFO("CopyPictureHardware:");
 
     HRESULT result;
 
-    if (!g_Surface3) {
+    if (!m_PictureSurface) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
@@ -242,14 +249,22 @@ void HWR_CopyPicture()
         surface_desc.dwWidth = g_DDrawSurfaceWidth;
         surface_desc.dwHeight = g_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &g_Surface3, NULL);
+            g_DDraw, &surface_desc, &m_PictureSurface, NULL);
         HWR_CheckError(result);
     }
 
     HWR_RenderEnd();
-    HWR_BlitSurface(g_Surface2, g_Surface3);
+    HWR_BlitSurface(m_BackSurface, m_PictureSurface);
     HWR_RenderToggle();
     LOG_INFO("    complete");
+}
+
+void HWR_CopyToPicture()
+{
+    HWR_ClearSurfaceDepth();
+    HWR_RenderEnd();
+    HWR_BlitSurface(m_PictureSurface, m_BackSurface);
+    HWR_RenderToggle();
 }
 
 void HWR_DownloadPicture(const PICTURE *pic)
@@ -291,14 +306,14 @@ void HWR_DownloadPicture(const PICTURE *pic)
         IDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
     HWR_CheckError(result);
 
-    if (!g_Surface3) {
+    if (!m_PictureSurface) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = g_DDrawSurfaceWidth;
         surface_desc.dwHeight = g_DDrawSurfaceHeight;
         result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &g_Surface3, NULL);
+            g_DDraw, &surface_desc, &m_PictureSurface, NULL);
         HWR_CheckError(result);
     }
 
@@ -329,8 +344,8 @@ void HWR_DownloadPicture(const PICTURE *pic)
     target_rect.bottom = target_rect.top + new_height;
 
     result = IDirectDrawSurface_Blt(
-        g_Surface3, &target_rect, picture_surface, &source_rect, DDBLT_WAIT,
-        NULL);
+        m_PictureSurface, &target_rect, picture_surface, &source_rect,
+        DDBLT_WAIT, NULL);
     HWR_CheckError(result);
 
     IDirectDrawSurface_Release(picture_surface);
@@ -1104,18 +1119,18 @@ void HWR_SetHardwareVideoMode()
     surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE
         | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
     surface_desc.dwBackBufferCount = 1;
-    result =
-        IDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &g_Surface1, NULL);
+    result = IDirectDraw2_CreateSurface(
+        g_DDraw, &surface_desc, &m_PrimarySurface, NULL);
     HWR_CheckError(result);
 
-    HWR_ClearSurface(g_Surface1);
+    HWR_ClearSurface(m_PrimarySurface);
     LOG_INFO("    Picking up back buffer");
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
-    result =
-        IDirectDrawSurface_GetAttachedSurface(g_Surface1, &caps, &g_Surface2);
+    result = IDirectDrawSurface_GetAttachedSurface(
+        m_PrimarySurface, &caps, &m_BackSurface);
     HWR_CheckError(result);
 
-    HWR_ClearSurface(g_Surface2);
+    HWR_ClearSurface(m_BackSurface);
     LOG_INFO("    Allocating Z-buffer");
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwSize = sizeof(surface_desc);
@@ -1126,7 +1141,7 @@ void HWR_SetHardwareVideoMode()
     surface_desc.dwHeight = g_DDrawSurfaceHeight;
     surface_desc.dwZBufferBitDepth = 16;
     result =
-        IDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &g_Surface4, NULL);
+        IDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &m_ZSurface, NULL);
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
@@ -1143,7 +1158,7 @@ void HWR_SetHardwareVideoMode()
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
         result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &g_TextureSurfaces[i], NULL);
+            g_DDraw, &surface_desc, &m_TextureSurfaces[i], NULL);
         HWR_CheckError(result);
     }
 
@@ -1182,7 +1197,7 @@ bool HWR_Init()
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         m_ATITextureMap[i] = NULL;
-        g_TextureSurfaces[i] = NULL;
+        m_TextureSurfaces[i] = NULL;
     }
 
     HWR_SetHardwareVideoMode();
@@ -1686,7 +1701,7 @@ void HWR_DownloadTextures(int32_t pages)
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwSize = sizeof(surface_desc);
         result = IDirectDrawSurface2_Lock(
-            g_TextureSurfaces[i], NULL, &surface_desc, DDLOCK_WAIT, 0);
+            m_TextureSurfaces[i], NULL, &surface_desc, DDLOCK_WAIT, 0);
         HWR_CheckError(result);
 
         memcpy(
@@ -1694,7 +1709,7 @@ void HWR_DownloadTextures(int32_t pages)
             0x10000); // TODO: magic number
 
         result = IDirectDrawSurface2_Unlock(
-            g_TextureSurfaces[i], surface_desc.lpSurface);
+            m_TextureSurfaces[i], surface_desc.lpSurface);
         HWR_CheckError(result);
 
         LOG_INFO("    registering");

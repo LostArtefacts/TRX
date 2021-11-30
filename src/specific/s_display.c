@@ -13,7 +13,7 @@ void S_NoFade()
 void S_FadeInInventory(int32_t fade)
 {
     if (g_CurrentLevel != g_GameFlow.title_level_num) {
-        HWR_CopyPicture();
+        HWR_CopyFromPicture();
     }
 }
 
@@ -24,8 +24,5 @@ void S_FadeOutInventory(int32_t fade)
 
 void S_CopyBufferToScreen()
 {
-    HWR_ClearSurfaceDepth();
-    HWR_RenderEnd();
-    HWR_BlitSurface(g_Surface3, g_Surface2);
-    HWR_RenderToggle();
+    HWR_CopyToPicture();
 }

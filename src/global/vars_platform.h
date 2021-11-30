@@ -19,11 +19,6 @@ extern float g_DDrawSurfaceMaxX;
 extern float g_DDrawSurfaceMaxY;
 extern int32_t g_DDrawSurfaceWidth;
 extern int32_t g_DDrawSurfaceHeight;
-extern LPDIRECTDRAWSURFACE g_Surface1;
-extern LPDIRECTDRAWSURFACE g_Surface2;
-extern LPDIRECTDRAWSURFACE g_Surface3;
-extern LPDIRECTDRAWSURFACE g_Surface4;
-extern LPDIRECTDRAWSURFACE g_TextureSurfaces[MAX_TEXTPAGES];
 
 extern C3D_HTX g_ATITextureMap[MAX_TEXTPAGES];
 extern C3D_HTXPAL g_ATITexturePalette;
