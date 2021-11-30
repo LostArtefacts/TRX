@@ -72,7 +72,7 @@ static const GLenum GLCIF_TEXTURE_MAG_FILTER[] = {
 class Renderer {
 public:
     Renderer();
-    void renderBegin(C3D_HRC);
+    void renderBegin();
     void renderEnd();
     void textureReg(C3D_PTMAP, C3D_PHTX);
     void textureUnreg(C3D_HTX);

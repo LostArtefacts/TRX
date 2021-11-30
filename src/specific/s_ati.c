@@ -7,8 +7,6 @@
 
 #include <windows.h>
 
-static C3D_HRC m_RenderContext = NULL;
-
 bool S_ATI_Init()
 {
     C3D_EC result = ATI3DCIF_Init();
@@ -17,26 +15,10 @@ bool S_ATI_Init()
         return false;
     }
 
-    m_RenderContext = ATI3DCIF_ContextCreate();
-    if (!m_RenderContext) {
-        LOG_ERROR("Error while creating ATI3DCIF context");
-        return false;
-    }
-
     return true;
 }
 
 bool S_ATI_Shutdown()
 {
-    if (m_RenderContext) {
-        ATI3DCIF_ContextDestroy(m_RenderContext);
-        m_RenderContext = 0;
-    }
-
     return ATI3DCIF_Term() == C3D_EC_OK;
-}
-
-C3D_HRC S_ATI_GetRenderContext()
-{
-    return m_RenderContext;
 }

@@ -7,6 +7,5 @@
 
 bool S_ATI_Init();
 bool S_ATI_Shutdown();
-C3D_HRC S_ATI_GetRenderContext();
 
 #endif

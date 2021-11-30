@@ -60,8 +60,7 @@ static void HWR_EnableTextureMode(void)
 
     m_IsTextureMode = true;
     BOOL enable = TRUE;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_EN, &enable);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
 static void HWR_DisableTextureMode(void)
@@ -72,8 +71,7 @@ static void HWR_DisableTextureMode(void)
 
     m_IsTextureMode = false;
     BOOL enable = FALSE;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_EN, &enable);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
 static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
@@ -96,7 +94,7 @@ void HWR_RenderBegin()
 {
     m_IsRenderingOld = m_IsRendering;
     if (!m_IsRendering) {
-        ATI3DCIF_RenderBegin(S_ATI_GetRenderContext());
+        ATI3DCIF_RenderBegin();
         m_IsRendering = true;
     }
 }
@@ -369,9 +367,7 @@ void HWR_SelectTexture(int tex_num)
         return;
     }
 
-    if (ATI3DCIF_ContextSetState(
-            S_ATI_GetRenderContext(), C3D_ERS_TMAP_SELECT,
-            &m_ATITextureMap[tex_num])) {
+    if (ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_ATITextureMap[tex_num])) {
         LOG_ERROR("    Texture error");
         return;
     }
@@ -492,16 +488,14 @@ void HWR_Draw2DLine(
     C3D_VTCF *v_list[2] = { &vertices[0], &vertices[1] };
 
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_PRIM_TYPE, &prim_type);
+    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
 
     HWR_DisableTextureMode();
 
     ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
 
     prim_type = C3D_EPRIM_TRI;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_PRIM_TYPE, &prim_type);
+    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
 }
 
 void HWR_Draw2DQuad(
@@ -583,19 +577,15 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 
     int32_t alpha_src = C3D_EASRC_SRCALPHA;
     int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &alpha_dst);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 
     HWR_RenderTriangleStrip(vertices, 4);
 
     alpha_src = C3D_EASRC_ONE;
     alpha_dst = C3D_EADST_ZERO;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &alpha_dst);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
 void HWR_DrawLightningSegment(
@@ -608,10 +598,8 @@ void HWR_DrawLightningSegment(
 
     int32_t alpha_src = C3D_EASRC_SRCALPHA;
     int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &alpha_dst);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
     vertices[0].x = x1;
     vertices[0].y = y1;
     vertices[0].z = z1 * 0.0001f;
@@ -688,10 +676,8 @@ void HWR_DrawLightningSegment(
 
     alpha_src = C3D_EASRC_ONE;
     alpha_dst = C3D_EADST_ZERO;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &alpha_dst);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
 void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
@@ -726,14 +712,14 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     HWR_DisableTextureMode();
 
     tmp = C3D_EASRC_SRCALPHA;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
     tmp = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
     HWR_RenderTriangleStrip(vertices, vertex_count);
     tmp = C3D_EASRC_ONE;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_ALPHA_SRC, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
     tmp = C3D_EADST_ZERO;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_ALPHA_DST, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
 }
 
 int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
@@ -1179,26 +1165,21 @@ bool HWR_Init()
     HWR_SetHardwareVideoMode();
 
     tmp = C3D_EV_VTCF;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_VERTEX_TYPE, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_VERTEX_TYPE, &tmp);
     tmp = C3D_EPRIM_TRI;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_PRIM_TYPE, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &tmp);
     tmp = C3D_ESH_SMOOTH;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_SHADE_MODE, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_SHADE_MODE, &tmp);
     tmp = C3D_ETL_MODULATE;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_LIGHT, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_LIGHT, &tmp);
     tmp = C3D_ETEXOP_CHROMAKEY;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_TEXOP, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_TEXOP, &tmp);
     tmp = C3D_ETFILT_MINPNT_MAGPNT;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_FILTER, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &tmp);
     tmp = C3D_EZCMP_LEQUAL;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_Z_CMP_FNC, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_Z_CMP_FNC, &tmp);
     tmp = C3D_EZMODE_TESTON_WRITEZ;
-    ATI3DCIF_ContextSetState(S_ATI_GetRenderContext(), C3D_ERS_Z_MODE, &tmp);
+    ATI3DCIF_SetState(C3D_ERS_Z_MODE, &tmp);
 
     LOG_INFO("    Detected %dk video memory", 4096);
     LOG_INFO("    Complete, hardware ready");
@@ -1220,8 +1201,7 @@ void HWR_SetupRenderContextAndRender()
     HWR_RenderBegin();
     int32_t filter = g_Config.render_flags.bilinear ? C3D_ETFILT_MIN2BY2_MAG2BY2
                                                     : C3D_ETFILT_MINPNT_MAGPNT;
-    ATI3DCIF_ContextSetState(
-        S_ATI_GetRenderContext(), C3D_ERS_TMAP_FILTER, &filter);
+    ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &filter);
     HWR_RenderToggle();
 }
 

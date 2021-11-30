@@ -34,6 +34,7 @@ C3D_EC HandleException()
 }
 
 extern "C" {
+
 C3D_EC ATI3DCIF_Term(void)
 {
     try {
@@ -130,34 +131,7 @@ C3D_EC ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
     return C3D_EC_OK;
 }
 
-C3D_HRC ATI3DCIF_ContextCreate(void)
-{
-    // can't create more than one context
-    if (contextCreated) {
-        return nullptr;
-    }
-
-    contextCreated = true;
-
-    // According to ATI3DCIF.H, "only one context may be exist at a time",
-    // so always returning 1 should be fine
-    return (C3D_HRC)1;
-}
-
-C3D_EC ATI3DCIF_ContextDestroy(C3D_HRC hRC)
-{
-    // can't destroy a context that wasn't created
-    if (!contextCreated) {
-        return C3D_EC_BADPARAM;
-    }
-
-    contextCreated = false;
-
-    return C3D_EC_OK;
-}
-
-C3D_EC ATI3DCIF_ContextSetState(
-    C3D_HRC hRC, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
+C3D_EC ATI3DCIF_SetState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     if (!renderer) {
         return C3D_EC_BADSTATE;
@@ -172,14 +146,14 @@ C3D_EC ATI3DCIF_ContextSetState(
     return C3D_EC_OK;
 }
 
-C3D_EC ATI3DCIF_RenderBegin(C3D_HRC hRC)
+C3D_EC ATI3DCIF_RenderBegin(void)
 {
     if (!renderer) {
         return C3D_EC_BADSTATE;
     }
 
     try {
-        renderer->renderBegin(hRC);
+        renderer->renderBegin();
     } catch (...) {
         return HandleException();
     }
@@ -231,8 +205,7 @@ C3D_EC ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 
     return C3D_EC_OK;
 }
-
-} // extern "C"
+}
 
 }
 }

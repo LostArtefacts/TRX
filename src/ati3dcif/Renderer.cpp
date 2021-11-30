@@ -52,7 +52,7 @@ Renderer::Renderer()
     gl::Utils::checkError(__FUNCTION__);
 }
 
-void Renderer::renderBegin(C3D_HRC hRC)
+void Renderer::renderBegin()
 {
     glEnable(GL_BLEND);
 
