@@ -174,11 +174,15 @@ HRESULT WINAPI DirectDrawSurface::Blt(LPRECT lpDestRect,
                 height,
                 depth,
                 GL_BGRA,
-                GL_UNSIGNED_SHORT_1_5_5_5_REV);
+                GL_UNSIGNED_INT_8_8_8_8_REV);
 
             Blitter::Rect srcRect{0, height, width, 0};
 
             Blitter::Image srcImg{width, height, depth, buffer};
+            // simulate dimming of DOS/PSX menu
+            for (auto& pix : srcImg.buffer) {
+                pix /= 2;
+            }
             Blitter::Image dstImg{dstWidth, dstHeight, depth, m_buffer};
 
             Blitter::blit(srcImg, srcRect, dstImg, dstRect);
