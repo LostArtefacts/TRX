@@ -110,7 +110,7 @@ cleanup:
         Memory_Free(cfg_data);
     }
 
-    DefaultConflict();
+    Option_DefaultConflict();
 
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);

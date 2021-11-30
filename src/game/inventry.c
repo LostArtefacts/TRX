@@ -514,7 +514,7 @@ int32_t Display_Inventory(int inv_mode)
             }
 
             if (!busy && !g_IDelay) {
-                DoInventoryOptions(inv_item);
+                Option_DoInventory(inv_item);
 
                 if (g_InputDB.deselect) {
                     inv_item->sprlist = NULL;

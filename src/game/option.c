@@ -223,27 +223,27 @@ static void InitNewGameRequester()
     req->vis_lines = MAX_GAME_MODES;
 }
 
-void DoInventoryOptions(INVENTORY_ITEM *inv_item)
+void Option_DoInventory(INVENTORY_ITEM *inv_item)
 {
     switch (inv_item->object_number) {
     case O_PASSPORT_OPTION:
-        DoPassportOption(inv_item);
+        Option_DoPassport(inv_item);
         break;
 
     case O_MAP_OPTION:
-        DoCompassOption(inv_item);
+        Option_DoCompass(inv_item);
         break;
 
     case O_DETAIL_OPTION:
-        DoDetailOption(inv_item);
+        Option_DoDetail(inv_item);
         break;
 
     case O_SOUND_OPTION:
-        DoSoundOption(inv_item);
+        Option_DoSound(inv_item);
         break;
 
     case O_CONTROL_OPTION:
-        DoControlOption(inv_item);
+        Option_Control(inv_item);
         break;
 
     case O_GAMMA_OPTION:
@@ -286,7 +286,7 @@ void DoInventoryOptions(INVENTORY_ITEM *inv_item)
     }
 }
 
-void DoPassportOption(INVENTORY_ITEM *inv_item)
+void Option_DoPassport(INVENTORY_ITEM *inv_item)
 {
     Text_Remove(g_InvItemText[0]);
     g_InvItemText[IT_NAME] = NULL;
@@ -534,7 +534,7 @@ void DoPassportOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-void DoDetailOption(INVENTORY_ITEM *inv_item)
+void Option_DoDetail(INVENTORY_ITEM *inv_item)
 {
     char buf[256];
 
@@ -738,7 +738,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-void DoSoundOption(INVENTORY_ITEM *inv_item)
+void Option_DoSound(INVENTORY_ITEM *inv_item)
 {
     char buf[20];
 
@@ -842,7 +842,7 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-void DoCompassOption(INVENTORY_ITEM *inv_item)
+void Option_DoCompass(INVENTORY_ITEM *inv_item)
 {
     char buf[100];
     char time_buf[100];
@@ -926,7 +926,7 @@ void DoCompassOption(INVENTORY_ITEM *inv_item)
     }
 }
 
-void FlashConflicts()
+void Option_FlashConflicts()
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -959,7 +959,7 @@ void FlashConflicts()
     }
 }
 
-void DefaultConflict()
+void Option_DefaultConflict()
 {
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         S_INPUT_KEYCODE key_code =
@@ -974,7 +974,7 @@ void DefaultConflict()
     }
 }
 
-void DoControlOption(INVENTORY_ITEM *inv_item)
+void Option_Control(INVENTORY_ITEM *inv_item)
 {
     if (!m_CtrlText[0]) {
         m_CtrlText[0] = Text_Create(
@@ -988,7 +988,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                                        : GS_CONTROL_DEFAULT_KEYS]);
         Text_CentreH(m_CtrlText[0], 1);
         Text_CentreV(m_CtrlText[0], 1);
-        S_ShowControls();
+        Option_ControlShowControls();
 
         m_KeyChange = -1;
         Text_AddBackground(m_CtrlText[0], 0, 0, 0, 0);
@@ -1016,8 +1016,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (g_InputDB.left || g_InputDB.right) {
             if (m_KeyChange == -1) {
                 g_Config.input.layout ^= 1;
-                S_ChangeCtrlText();
-                FlashConflicts();
+                Option_ControlUpdateText();
+                Option_FlashConflicts();
                 Settings_Write();
             } else {
                 Text_RemoveBackground(m_CtrlTextA[m_KeyChange]);
@@ -1055,8 +1055,8 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             }
         } else if (
             g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
-            S_RemoveCtrl();
-            DefaultConflict();
+            Option_ControlCleanup();
+            Option_DefaultConflict();
             return;
         }
 
@@ -1167,7 +1167,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             Text_AddBackground(m_CtrlTextA[m_KeyChange], 0, 0, 0, 0);
             Text_AddOutline(m_CtrlTextA[m_KeyChange], 1);
             m_KeyMode = 3;
-            FlashConflicts();
+            Option_FlashConflicts();
             Settings_Write();
         }
         break;
@@ -1179,7 +1179,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
 
         if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
             m_KeyMode = 0;
-            FlashConflicts();
+            Option_FlashConflicts();
             Settings_Write();
         }
 
@@ -1192,7 +1192,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
     g_InputDB = (INPUT_STATE) { 0 };
 }
 
-void S_ShowControls()
+void Option_ControlShowControls()
 {
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
@@ -1257,10 +1257,10 @@ void S_ShowControls()
     Text_AddBackground(m_CtrlText[1], width, height, 0, 0);
     Text_AddOutline(m_CtrlText[1], 1);
 
-    FlashConflicts();
+    Option_FlashConflicts();
 }
 
-void S_ChangeCtrlText()
+void Option_ControlUpdateText()
 {
     Text_ChangeText(
         m_CtrlText[0],
@@ -1282,21 +1282,16 @@ void S_ChangeCtrlText()
     }
 }
 
-void S_RemoveCtrlText()
+void Option_ControlCleanup()
 {
+    Text_Remove(m_CtrlText[0]);
+    Text_Remove(m_CtrlText[1]);
+    m_CtrlText[0] = NULL;
+    m_CtrlText[1] = NULL;
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         Text_Remove(m_CtrlTextA[i]);
         Text_Remove(m_CtrlTextB[i]);
         m_CtrlTextB[i] = NULL;
         m_CtrlTextA[i] = NULL;
     }
-}
-
-void S_RemoveCtrl()
-{
-    Text_Remove(m_CtrlText[0]);
-    Text_Remove(m_CtrlText[1]);
-    m_CtrlText[0] = NULL;
-    m_CtrlText[1] = NULL;
-    S_RemoveCtrlText();
 }
