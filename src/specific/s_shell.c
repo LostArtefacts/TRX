@@ -120,7 +120,8 @@ int main(int argc, char **argv)
     }
 
     m_Window = SDL_CreateWindow(
-        "Tomb1Main", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600,
+        "Tomb1Main", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280,
+        720,
         SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP
             | SDL_WINDOW_RESIZABLE);
     if (!m_Window) {
