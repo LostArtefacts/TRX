@@ -35,7 +35,7 @@ int32_t S_DumpScreen()
 
 void S_ClearScreen()
 {
-    HWR_ClearSurfaceDepth();
+    HWR_ClearBackBuffer();
 }
 
 void S_OutputPolyList()

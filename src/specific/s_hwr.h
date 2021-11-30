@@ -20,7 +20,7 @@ void HWR_ReleaseSurfaces();
 void HWR_DumpScreen();
 void HWR_SetViewport(int width, int height);
 void HWR_SetFullscreen(bool fullscreen);
-void HWR_ClearSurfaceDepth();
+void HWR_ClearBackBuffer();
 void HWR_FlipPrimaryBuffer();
 void HWR_FadeToPal(int32_t fade_value, RGB888 *palette);
 void HWR_FadeWait();

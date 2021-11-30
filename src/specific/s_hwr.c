@@ -39,7 +39,6 @@ static RGBF m_WaterColor = { 0 };
 static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
-static LPDIRECTDRAWSURFACE m_ZSurface = NULL;
 static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
 
 static void HWR_EnableTextureMode(void);
@@ -138,12 +137,6 @@ void HWR_ReleaseSurfaces()
         m_BackSurface = NULL;
     }
 
-    if (m_ZSurface) {
-        result = IDirectDrawSurface_Release(m_ZSurface);
-        HWR_CheckError(result);
-        m_ZSurface = NULL;
-    }
-
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_TextureSurfaces[i]) {
             result = IDirectDrawSurface_Release(m_TextureSurfaces[i]);
@@ -198,20 +191,10 @@ void HWR_DumpScreen()
     m_SelectedTexture = -1;
 }
 
-void HWR_ClearSurfaceDepth()
+void HWR_ClearBackBuffer()
 {
-    DDBLTFX bltfx;
-    HRESULT result;
-
     HWR_RenderEnd();
     HWR_ClearSurface(m_BackSurface);
-
-    bltfx.dwSize = sizeof(bltfx);
-    bltfx.dwFillDepth = 0xFFFF;
-    result = IDirectDrawSurface_Blt(
-        m_ZSurface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_DEPTHFILL, &bltfx);
-    HWR_CheckError(result);
-
     HWR_RenderToggle();
 }
 
@@ -261,7 +244,7 @@ void HWR_CopyFromPicture()
 
 void HWR_CopyToPicture()
 {
-    HWR_ClearSurfaceDepth();
+    HWR_ClearBackBuffer();
     HWR_RenderEnd();
     HWR_BlitSurface(m_PictureSurface, m_BackSurface);
     HWR_RenderToggle();
@@ -1081,7 +1064,7 @@ void HWR_FadeToPal(int32_t fade_value, RGB888 *palette)
 
 void HWR_FadeWait()
 {
-    HWR_ClearSurfaceDepth();
+    HWR_ClearBackBuffer();
     HWR_DumpScreen();
 }
 
@@ -1128,20 +1111,6 @@ void HWR_SetHardwareVideoMode()
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
     result = IDirectDrawSurface_GetAttachedSurface(
         m_PrimarySurface, &caps, &m_BackSurface);
-    HWR_CheckError(result);
-
-    HWR_ClearSurface(m_BackSurface);
-    LOG_INFO("    Allocating Z-buffer");
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
-    surface_desc.dwFlags =
-        DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_ZBUFFERBITDEPTH;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY;
-    surface_desc.dwWidth = g_DDrawSurfaceWidth;
-    surface_desc.dwHeight = g_DDrawSurfaceHeight;
-    surface_desc.dwZBufferBitDepth = 16;
-    result =
-        IDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &m_ZSurface, NULL);
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
