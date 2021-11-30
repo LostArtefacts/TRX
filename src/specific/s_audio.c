@@ -78,11 +78,8 @@ bool S_Audio_Init()
     SDL_PauseAudioDevice(g_AudioDeviceID, 0);
 
     m_WorkingSilence = desired.silence;
-
-    // TODO: this is wrong
     m_WorkingBufferSize = desired.samples * desired.channels
-        * ((SDL_AUDIO_MASK_BITSIZE & AUDIO_WORKING_FORMAT) / 8);
-    m_WorkingBufferSize *= 1000;
+        * SDL_AUDIO_BITSIZE(desired.format) / 8;
 
     SDL_LockAudioDevice(g_AudioDeviceID);
     m_WorkingBuffer = Memory_Alloc(m_WorkingBufferSize);
