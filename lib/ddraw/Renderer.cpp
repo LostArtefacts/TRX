@@ -3,7 +3,7 @@
 #include <glrage_gl/Shader.hpp>
 #include <glrage_gl/Utils.hpp>
 
-// #include "openssl/md5.h"
+#include <glrage_util/Logger.hpp>
 #include <glrage_util/StringUtils.hpp>
 
 namespace glrage {
@@ -46,8 +46,9 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
     uint32_t width = desc.dwWidth;
     uint32_t height = desc.dwHeight;
     uint8_t* bits = &data[0];
-    GLenum tex_format = TEX_FORMAT;
-    GLenum tex_type = TEX_TYPE;
+
+    GLenum tex_format = GL_BGRA;
+    GLenum tex_type = GL_UNSIGNED_INT_8_8_8_8_REV;
     m_surfaceTexture.bind();
 
     // TODO: implement texture packs
@@ -58,7 +59,7 @@ void Renderer::upload(DDSURFACEDESC& desc, std::vector<uint8_t>& data)
         m_height = height;
         glTexImage2D(GL_TEXTURE_2D,
             0,
-            TEX_INTERNAL_FORMAT,
+            GL_RGBA,
             m_width,
             m_height,
             0,

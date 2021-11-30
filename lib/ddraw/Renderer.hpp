@@ -1,6 +1,5 @@
 #pragma once
 
-// #include <atlimage.h>
 #include "ddraw.hpp"
 
 #include <glrage/GLRage.hpp>
@@ -24,10 +23,6 @@ public:
     void render();
 
 private:
-    static const GLenum TEX_INTERNAL_FORMAT = GL_RGBA;
-    static const GLenum TEX_FORMAT = GL_BGRA;
-    static const GLenum TEX_TYPE = GL_UNSIGNED_SHORT_1_5_5_5_REV;
-
     Context& m_context{GLRage::getContext()};
     uint32_t m_width = 0;
     uint32_t m_height = 0;
@@ -36,7 +31,6 @@ private:
     gl::Texture m_surfaceTexture = GL_TEXTURE_2D;
     gl::Sampler m_sampler;
     gl::Program m_program;
-    // CImage m_overrideImage;
 };
 
 } // namespace ddraw

@@ -134,7 +134,6 @@ private:
 
     /*** Custom methods ***/
     void clear(int32_t color);
-    void rgba5551AdjustBrightness(bool brighten);
 };
 
 } // namespace ddraw
