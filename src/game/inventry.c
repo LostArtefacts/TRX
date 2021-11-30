@@ -668,7 +668,7 @@ int32_t Display_Inventory(int inv_mode)
                 } else {
                     CreateSaveGameInfo();
                     S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
-                    S_WriteUserSettings();
+                    Settings_Write();
                     return GF_NOP;
                 }
             } else {

@@ -1003,7 +1003,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 if (return_val != GF_NOP) {
                     CreateSaveGameInfo();
                     S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
-                    S_WriteUserSettings();
+                    Settings_Write();
                 }
             }
 

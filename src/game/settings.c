@@ -20,12 +20,12 @@
 static const char *m_ATIUserSettingsPath = "atiset.dat";
 static const char *m_T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
-static int32_t S_ReadUserSettingsATI();
-static int32_t S_ReadUserSettingsT1M();
-static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data);
-static int32_t S_WriteUserSettingsT1M();
+static int32_t Settings_ReadATI();
+static int32_t Settings_ReadT1M();
+static int32_t Settings_ReadT1MFromJSON(const char *cfg_data);
+static int32_t Settings_WriteT1M();
 
-static int32_t S_ReadUserSettingsATI()
+static int32_t Settings_ReadATI()
 {
     MYFILE *fp = File_Open(m_ATIUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
@@ -86,7 +86,7 @@ static int32_t S_ReadUserSettingsATI()
     return 1;
 }
 
-static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
+static int32_t Settings_ReadT1MFromJSON(const char *cfg_data)
 {
     int32_t result = 0;
     struct json_value_s *root = NULL;
@@ -158,7 +158,7 @@ static int32_t S_ReadUserSettingsT1MFromJson(const char *cfg_data)
     return result;
 }
 
-static int32_t S_ReadUserSettingsT1M()
+static int32_t Settings_ReadT1M()
 {
     int32_t result = 0;
     size_t cfg_data_size;
@@ -168,7 +168,7 @@ static int32_t S_ReadUserSettingsT1M()
     fp = File_Open(m_T1MUserSettingsPath, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("Failed to open file '%s'", m_T1MUserSettingsPath);
-        result = S_ReadUserSettingsT1MFromJson("");
+        result = Settings_ReadT1MFromJSON("");
         goto cleanup;
     }
 
@@ -179,7 +179,7 @@ static int32_t S_ReadUserSettingsT1M()
     File_Close(fp);
     fp = NULL;
 
-    result = S_ReadUserSettingsT1MFromJson(cfg_data);
+    result = Settings_ReadT1MFromJSON(cfg_data);
 
 cleanup:
     if (fp) {
@@ -191,7 +191,7 @@ cleanup:
     return result;
 }
 
-static int32_t S_WriteUserSettingsT1M()
+static int32_t Settings_WriteT1M()
 {
     LOG_INFO("Saving user settings (T1M)");
 
@@ -239,15 +239,15 @@ static int32_t S_WriteUserSettingsT1M()
     return 1;
 }
 
-void S_ReadUserSettings()
+void Settings_Read()
 {
-    if (S_ReadUserSettingsATI()) {
+    if (Settings_ReadATI()) {
         if (!File_Delete(m_ATIUserSettingsPath)) {
             // only save settings if we successfully removed the file
-            S_WriteUserSettingsT1M();
+            Settings_WriteT1M();
         }
     }
-    S_ReadUserSettingsT1M();
+    Settings_ReadT1M();
 
     DefaultConflict();
 
@@ -255,7 +255,7 @@ void S_ReadUserSettings()
     Sound_SetMasterVolume(g_Config.sound_volume);
 }
 
-void S_WriteUserSettings()
+void Settings_Write()
 {
-    S_WriteUserSettingsT1M();
+    Settings_WriteT1M();
 }

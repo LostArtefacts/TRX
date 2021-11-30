@@ -107,7 +107,7 @@ static int8_t ReadBarColor(
     return default_value;
 }
 
-bool Config_ReadFromJson(const char *cfg_data)
+bool Config_ReadFromJSON(const char *cfg_data)
 {
     bool result = false;
     struct json_value_s *root;
@@ -186,11 +186,11 @@ bool Config_Read()
 
     if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
         LOG_ERROR("Failed to open file '%s'", m_T1MGlobalSettingsPath);
-        result = Config_ReadFromJson("");
+        result = Config_ReadFromJSON("");
         goto cleanup;
     }
 
-    result = Config_ReadFromJson(cfg_data);
+    result = Config_ReadFromJSON(cfg_data);
 
     if (g_Config.resolution_width > 0) {
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =

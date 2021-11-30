@@ -66,7 +66,7 @@ void PickUpSaveGameCollision(
         RemoveDrawnItem(item_num);
         CreateSaveGameInfo();
         S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
-        S_WriteUserSettings();
+        Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
         item->status = IS_ACTIVE;

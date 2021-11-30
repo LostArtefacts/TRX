@@ -95,7 +95,7 @@ void Shell_Main()
 
     InitialiseStartInfo();
     S_FrontEndCheck();
-    S_ReadUserSettings();
+    Settings_Read();
 
     Screen_ApplyResolution();
 
@@ -167,5 +167,5 @@ void Shell_Main()
         }
     }
 
-    S_WriteUserSettings();
+    Settings_Write();
 }

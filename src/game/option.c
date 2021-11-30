@@ -734,7 +734,7 @@ void DoDetailOption(INVENTORY_ITEM *inv_item)
             Text_Remove(m_DetailTextHW[i]);
             m_DetailTextHW[i] = NULL;
         }
-        S_WriteUserSettings();
+        Settings_Write();
     }
 }
 
@@ -794,14 +794,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             g_IDCount = 10;
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_SoundText[SOUND_MUSIC_VOLUME], buf);
-            S_WriteUserSettings();
+            Settings_Write();
         } else if (g_Input.right && g_Config.music_volume < 10) {
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_SoundText[SOUND_MUSIC_VOLUME], buf);
-            S_WriteUserSettings();
+            Settings_Write();
         }
 
         if (g_Input.left || g_Input.right) {
@@ -817,14 +817,14 @@ void DoSoundOption(INVENTORY_ITEM *inv_item)
             g_IDCount = 10;
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_SoundText[SOUND_SOUND_VOLUME], buf);
-            S_WriteUserSettings();
+            Settings_Write();
         } else if (g_Input.right && g_Config.sound_volume < 10) {
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_SoundText[SOUND_SOUND_VOLUME], buf);
-            S_WriteUserSettings();
+            Settings_Write();
         }
 
         if (g_Input.left || g_Input.right) {
@@ -1018,7 +1018,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
                 g_Config.input.layout ^= 1;
                 S_ChangeCtrlText();
                 FlashConflicts();
-                S_WriteUserSettings();
+                Settings_Write();
             } else {
                 Text_RemoveBackground(m_CtrlTextA[m_KeyChange]);
                 Text_RemoveOutline(m_CtrlTextA[m_KeyChange]);
@@ -1168,7 +1168,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
             Text_AddOutline(m_CtrlTextA[m_KeyChange], 1);
             m_KeyMode = 3;
             FlashConflicts();
-            S_WriteUserSettings();
+            Settings_Write();
         }
         break;
     }
@@ -1180,7 +1180,7 @@ void DoControlOption(INVENTORY_ITEM *inv_item)
         if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
             m_KeyMode = 0;
             FlashConflicts();
-            S_WriteUserSettings();
+            Settings_Write();
         }
 
         m_KeyMode = 0;
