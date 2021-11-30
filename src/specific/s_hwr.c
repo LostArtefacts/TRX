@@ -15,6 +15,14 @@
 
 #include <assert.h>
 
+#define HWR_CheckError(result)                                                 \
+    {                                                                          \
+        if (result != DD_OK) {                                                 \
+            LOG_ERROR("DirectDraw error code %x", result);                     \
+            S_Shell_ExitSystem("Fatal DirectDraw error!");                     \
+        }                                                                      \
+    }
+
 static C3D_HTX m_ATITextureMap[MAX_TEXTPAGES];
 static C3D_HTXPAL m_ATITexturePalette;
 static C3D_PALETTENTRY m_ATIPalette[256];
@@ -70,14 +78,6 @@ void HWR_SetWaterColor(const RGBF *color)
     m_WaterColor.r = color->r;
     m_WaterColor.g = color->g;
     m_WaterColor.b = color->b;
-}
-
-void HWR_CheckError(HRESULT result)
-{
-    if (result != DD_OK) {
-        LOG_ERROR("DirectDraw error code %x", result);
-        S_Shell_ExitSystem("Fatal DirectDraw error!");
-    }
 }
 
 void HWR_RenderBegin()

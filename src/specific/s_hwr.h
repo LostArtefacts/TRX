@@ -12,7 +12,6 @@
 // TODO: function naming, Render vs. Draw vs. Insert
 // TODO: port ATI3DCIF to actual D3D calls
 
-void HWR_CheckError(HRESULT result);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
