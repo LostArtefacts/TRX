@@ -4,13 +4,17 @@
 #include "log.h"
 #include "memory.h"
 
+#include <assert.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 
-bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
+bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
 {
+    assert(target_pic);
+    assert(!target_pic->data);
+
     int32_t error_code;
     char *full_path = NULL;
     AVFormatContext *format_ctx = NULL;
@@ -20,9 +24,9 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
     struct SwsContext *sws_ctx = NULL;
     AVPacket *packet = NULL;
 
-    picture->width = 0;
-    picture->height = 0;
-    picture->data = NULL;
+    target_pic->width = 0;
+    target_pic->height = 0;
+    target_pic->data = NULL;
 
     File_GetFullPath(file_path, &full_path);
 
@@ -95,12 +99,13 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         goto fail;
     }
 
-    picture->width = frame->width;
-    picture->height = frame->height;
+    target_pic->width = frame->width;
+    target_pic->height = frame->height;
 
     sws_ctx = sws_getContext(
-        codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt, picture->width,
-        picture->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+        codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
+        target_pic->width, target_pic->height, AV_PIX_FMT_RGB24, SWS_BILINEAR,
+        NULL, NULL, NULL);
 
     if (!sws_ctx) {
         LOG_ERROR("Failed to get SWS context");
@@ -111,7 +116,7 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
     uint8_t *dst_data[4];
     int dst_linesize[4];
     error_code = av_image_alloc(
-        dst_data, dst_linesize, picture->width, picture->height,
+        dst_data, dst_linesize, target_pic->width, target_pic->height,
         AV_PIX_FMT_RGB24, 1);
     if (error_code < 0) {
         goto fail;
@@ -121,14 +126,14 @@ bool S_Picture_LoadFromFile(PICTURE *picture, const char *file_path)
         sws_ctx, (const uint8_t *const *)frame->data, frame->linesize, 0,
         frame->height, dst_data, dst_linesize);
 
-    picture->data =
-        Memory_Alloc(picture->height * picture->width * sizeof(RGB888));
+    target_pic->data =
+        Memory_Alloc(target_pic->height * target_pic->width * sizeof(RGB888));
 
     av_image_copy_to_buffer(
-        (uint8_t *)picture->data,
-        picture->width * picture->height * sizeof(RGB888),
+        (uint8_t *)target_pic->data,
+        target_pic->width * target_pic->height * sizeof(RGB888),
         (const uint8_t *const *)dst_data, dst_linesize, AV_PIX_FMT_RGB24,
-        picture->width, picture->height, 1);
+        target_pic->width, target_pic->height, 1);
 
     return true;
 
@@ -137,11 +142,11 @@ fail:
         "Error while opening picture %s: %s", full_path,
         av_err2str(error_code));
 
-    picture->width = 0;
-    picture->height = 0;
-    if (picture->data) {
-        Memory_Free(picture->data);
-        picture->data = NULL;
+    target_pic->width = 0;
+    target_pic->height = 0;
+    if (target_pic->data) {
+        Memory_Free(target_pic->data);
+        target_pic->data = NULL;
     }
 
     if (sws_ctx) {
@@ -171,4 +176,88 @@ fail:
     }
 
     return false;
+}
+
+bool S_Picture_Scale(
+    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
+    int target_height)
+{
+    assert(source_pic);
+    assert(source_pic->data);
+    assert(target_pic);
+    assert(!target_pic->data);
+
+    int source_width = source_pic->width;
+    int source_height = source_pic->height;
+
+    // keep aspect ratio and fit inside, adding black bars on the sides
+    const float source_ratio = source_width / (float)source_height;
+    const float target_ratio = target_width / (float)target_height;
+    {
+        int new_width = source_ratio < target_ratio
+            ? target_height * source_ratio
+            : target_width;
+        int new_height = source_ratio < target_ratio
+            ? target_height
+            : target_width / source_ratio;
+        target_width = new_width;
+        target_height = new_height;
+    }
+
+    bool ret = false;
+    struct SwsContext *sws_ctx = sws_getContext(
+        source_width, source_height, AV_PIX_FMT_RGB24, target_width,
+        target_height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+
+    if (!sws_ctx) {
+        LOG_ERROR("Failed to get SWS context");
+        goto cleanup;
+    }
+
+    target_pic->width = target_width;
+    target_pic->height = target_height;
+    target_pic->data =
+        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+
+    uint8_t *src_planes[4];
+    uint8_t *dst_planes[4];
+    int src_linesize[4];
+    int dst_linesize[4];
+
+    av_image_fill_arrays(
+        src_planes, src_linesize, (const uint8_t *)source_pic->data,
+        AV_PIX_FMT_RGB24, source_width, source_height, 1);
+
+    av_image_fill_arrays(
+        dst_planes, dst_linesize, (const uint8_t *)target_pic->data,
+        AV_PIX_FMT_RGB24, target_pic->width, target_pic->height, 1);
+
+    for (int i = 0; i < 4; i++) {
+        LOG_DEBUG("%p %d", src_planes[i], src_linesize[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        LOG_DEBUG("%p %d", dst_planes[i], dst_linesize[i]);
+    }
+
+    sws_scale(
+        sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
+        source_height, (uint8_t *const *)dst_planes, dst_linesize);
+
+    ret = true;
+
+cleanup:
+    if (sws_ctx) {
+        sws_freeContext(sws_ctx);
+    }
+
+    if (!ret) {
+        if (target_pic) {
+            Memory_Free(target_pic->data);
+            target_pic->width = 0;
+            target_pic->height = 0;
+            target_pic->data = NULL;
+        }
+    }
+
+    return ret;
 }
