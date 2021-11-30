@@ -4,7 +4,8 @@
 #include "global/const.h"
 #include "specific/s_ati.h"
 
-#include <ddraw.h>
+#include "ddraw/ddraw.h"
+
 #include <dsound.h>
 #include <windows.h>
 

@@ -5,8 +5,9 @@
 #include "global/types.h"
 #include "specific/s_ati.h"
 
+#include "ddraw/ddraw.h"
+
 #include <windows.h>
-#include <ddraw.h>
 #include <stdint.h>
 
 // TODO: function naming, Render vs. Draw vs. Insert

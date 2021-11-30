@@ -40,7 +40,6 @@ add_project_arguments(build_opts + cpp_opts, language: 'cpp')
 dep_opengl32 = cpp_compiler.find_library('opengl32')
 dep_dinput8 = c_compiler.find_library('dinput8')
 dep_dxguid = c_compiler.find_library('dxguid')
-dep_version = c_compiler.find_library('version')
 dep_shlwapi = c_compiler.find_library('shlwapi')
 
 dep_avcodec = c_compiler.find_library('avcodec.dll')
@@ -86,11 +85,9 @@ sources = [
   'src/config.c',
   'src/ddraw/Blitter.cpp',
   'src/ddraw/DirectDraw.cpp',
-  'src/ddraw/DirectDrawClipper.cpp',
   'src/ddraw/DirectDrawSurface.cpp',
   'src/ddraw/Interop.cpp',
   'src/ddraw/Renderer.cpp',
-  'src/ddraw/Unknown.cpp',
   'src/filesystem.c',
   'src/game/ai/abortion.c',
   'src/game/ai/alligator.c',
@@ -245,7 +242,6 @@ sources = [
   'src/specific/s_audio_sample.c',
   'src/specific/s_audio_stream.c',
   'src/specific/s_clock.c',
-  'src/specific/s_ddraw.c',
   'src/specific/s_display.c',
   'src/specific/s_filesystem.c',
   'src/specific/s_fmv.c',
@@ -268,7 +264,6 @@ dependencies = [
     dep_shlwapi,
     dep_swscale,
     dep_swresample,
-    dep_version,
     dep_shlwapi,
     dep_opengl32,
   ]

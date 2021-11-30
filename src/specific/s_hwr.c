@@ -8,10 +8,10 @@
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_ati.h"
-#include "specific/s_ddraw.h"
 #include "specific/s_shell.h"
 
 #include "ati3dcif/Interop.hpp"
+#include "ddraw/Interop.hpp"
 #include "glrage/Interop.hpp"
 
 #include <assert.h>
@@ -119,11 +119,8 @@ void HWR_RenderToggle()
 
 void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
-    DDBLTFX blt_fx;
-    blt_fx.dwSize = sizeof(DDBLTFX);
-    blt_fx.dwFillColor = 0;
-    HRESULT result = IDirectDrawSurface_Blt(
-        surface, NULL, NULL, NULL, DDBLT_WAIT | DDBLT_COLORFILL, &blt_fx);
+    HRESULT result =
+        MyIDirectDrawSurface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
     HWR_CheckError(result);
 }
 
@@ -136,7 +133,7 @@ void HWR_ReleaseSurfaces()
         HWR_ClearSurface(m_PrimarySurface);
         HWR_ClearSurface(m_BackSurface);
 
-        result = IDirectDrawSurface_Release(m_PrimarySurface);
+        result = MyIDirectDrawSurface_Release(m_PrimarySurface);
         HWR_CheckError(result);
         m_PrimarySurface = NULL;
         m_BackSurface = NULL;
@@ -144,14 +141,14 @@ void HWR_ReleaseSurfaces()
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_TextureSurfaces[i]) {
-            result = IDirectDrawSurface_Release(m_TextureSurfaces[i]);
+            result = MyIDirectDrawSurface_Release(m_TextureSurfaces[i]);
             HWR_CheckError(result);
             m_TextureSurfaces[i] = NULL;
         }
     }
 
     if (m_PictureSurface) {
-        result = IDirectDrawSurface_Release(m_PictureSurface);
+        result = MyIDirectDrawSurface_Release(m_PictureSurface);
         HWR_CheckError(result);
         m_PictureSurface = NULL;
     }
@@ -206,8 +203,7 @@ void HWR_ClearBackBuffer()
 void HWR_FlipPrimaryBuffer()
 {
     HWR_RenderEnd();
-    HRESULT result =
-        IDirectDrawSurface_Flip(m_PrimarySurface, NULL, DDFLIP_WAIT);
+    HRESULT result = MyIDirectDrawSurface_Flip(m_PrimarySurface);
     HWR_CheckError(result);
     HWR_RenderToggle();
 
@@ -218,8 +214,7 @@ void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
-    HRESULT result =
-        IDirectDrawSurface_Blt(target, &rect, source, &rect, DDBLT_WAIT, NULL);
+    HRESULT result = MyIDirectDrawSurface_Blt(target, &rect, source, &rect, 0);
     HWR_CheckError(result);
 }
 
@@ -232,12 +227,11 @@ void HWR_CopyFromPicture()
     if (!m_PictureSurface) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_DDrawSurfaceWidth;
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
-        result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_PictureSurface, NULL);
+        result = MyIDirectDraw2_CreateSurface(
+            g_DDraw, &surface_desc, &m_PictureSurface);
         HWR_CheckError(result);
     }
 
@@ -265,19 +259,16 @@ void HWR_DownloadPicture(const PICTURE *pic)
 
     // first, download the picture directly to a temporary surface
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
     surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
-    result = IDirectDraw2_CreateSurface(
-        g_DDraw, &surface_desc, &picture_surface, NULL);
+    result =
+        MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &picture_surface);
     HWR_CheckError(result);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
 
-    result = IDirectDrawSurface2_Lock(
-        picture_surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
+    result = MyIDirectDrawSurface2_Lock(picture_surface, &surface_desc);
     HWR_CheckError(result);
 
     uint32_t *output_ptr = surface_desc.lpSurface;
@@ -291,17 +282,16 @@ void HWR_DownloadPicture(const PICTURE *pic)
     }
 
     result =
-        IDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
+        MyIDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
     HWR_CheckError(result);
 
     if (!m_PictureSurface) {
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwSize = sizeof(surface_desc);
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_DDrawSurfaceWidth;
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
-        result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_PictureSurface, NULL);
+        result = MyIDirectDraw2_CreateSurface(
+            g_DDraw, &surface_desc, &m_PictureSurface);
         HWR_CheckError(result);
     }
 
@@ -331,12 +321,11 @@ void HWR_DownloadPicture(const PICTURE *pic)
     target_rect.right = target_rect.left + new_width;
     target_rect.bottom = target_rect.top + new_height;
 
-    result = IDirectDrawSurface_Blt(
-        m_PictureSurface, &target_rect, picture_surface, &source_rect,
-        DDBLT_WAIT, NULL);
+    result = MyIDirectDrawSurface_Blt(
+        m_PictureSurface, &target_rect, picture_surface, &source_rect, 0);
     HWR_CheckError(result);
 
-    IDirectDrawSurface_Release(picture_surface);
+    MyIDirectDrawSurface_Release(picture_surface);
 
     LOG_INFO("    complete");
 }
@@ -1084,43 +1073,35 @@ void HWR_SetHardwareVideoMode()
 
     LOG_INFO(
         "    Switching to %dx%d", m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
-    result = IDirectDraw_SetDisplayMode(
-        g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight, 16);
+    result = MyIDirectDraw_SetDisplayMode(
+        g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     HWR_CheckError(result);
 
     LOG_INFO("    Allocating front/back buffers");
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwSize = sizeof(surface_desc);
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_PRIMARYSURFACE
-        | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    result = IDirectDraw2_CreateSurface(
-        g_DDraw, &surface_desc, &m_PrimarySurface, NULL);
+    result =
+        MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &m_PrimarySurface);
     HWR_CheckError(result);
-
     HWR_ClearSurface(m_PrimarySurface);
+
     LOG_INFO("    Picking up back buffer");
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
-    result = IDirectDrawSurface_GetAttachedSurface(
+    result = MyIDirectDrawSurface_GetAttachedSurface(
         m_PrimarySurface, &caps, &m_BackSurface);
     HWR_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwSize = sizeof(surface_desc);
-        surface_desc.dwFlags =
-            DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-        surface_desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_VIDEOMEMORY;
-        surface_desc.ddpfPixelFormat.dwSize =
-            sizeof(surface_desc.ddpfPixelFormat);
+        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
-        surface_desc.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
-        result = IDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_TextureSurfaces[i], NULL);
+        result = MyIDirectDraw2_CreateSurface(
+            g_DDraw, &surface_desc, &m_TextureSurfaces[i]);
         HWR_CheckError(result);
     }
 
@@ -1146,12 +1127,12 @@ bool HWR_Init()
     HRESULT result;
 
     GLRage_Attach(g_TombHWND);
-    if (!S_DDraw_Init()) {
+    if (MyDirectDrawCreate(&g_DDraw) != DD_OK) {
         LOG_ERROR("DDraw emulation layer could not be started");
         return false;
     }
     if (!S_ATI_Init()) {
-        LOG_ERROR("ATI3DCIF could not be started");
+        LOG_ERROR("ATI3DCIF emulation layer could not be started");
         return false;
     }
 
@@ -1192,7 +1173,10 @@ void HWR_Shutdown()
     LOG_INFO("    complete");
     HWR_ReleaseSurfaces();
     S_ATI_Shutdown();
-    S_DDraw_Shutdown();
+    if (g_DDraw) {
+        MyIDirectDraw_Release(g_DDraw);
+        g_DDraw = NULL;
+    }
     GLRage_Detach();
 }
 
@@ -1655,16 +1639,15 @@ void HWR_DownloadTextures(int32_t pages)
         HRESULT result;
 
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwSize = sizeof(surface_desc);
-        result = IDirectDrawSurface2_Lock(
-            m_TextureSurfaces[i], NULL, &surface_desc, DDLOCK_WAIT, 0);
+        result =
+            MyIDirectDrawSurface2_Lock(m_TextureSurfaces[i], &surface_desc);
         HWR_CheckError(result);
 
         memcpy(
             surface_desc.lpSurface, g_TexturePagePtrs[i],
             0x10000); // TODO: magic number
 
-        result = IDirectDrawSurface2_Unlock(
+        result = MyIDirectDrawSurface2_Unlock(
             m_TextureSurfaces[i], surface_desc.lpSurface);
         HWR_CheckError(result);
 

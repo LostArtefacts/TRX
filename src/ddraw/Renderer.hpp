@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ddraw/ddraw.hpp"
+#include "ddraw/ddraw.h"
 
 #include "glrage/GLRage.hpp"
 #include "glrage_gl/Buffer.hpp"

@@ -1,7 +1,6 @@
 #include "ddraw/DirectDrawSurface.hpp"
 
 #include "ddraw/Blitter.hpp"
-#include "ddraw/DirectDrawClipper.hpp"
 #include "glrage_gl/Screenshot.hpp"
 #include "glrage_util/Logger.hpp"
 
@@ -12,128 +11,43 @@ namespace ddraw {
 
 DirectDrawSurface::DirectDrawSurface(
     DirectDraw &lpDD, Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
-    : m_dd(lpDD)
-    , m_renderer(renderer)
+    : m_renderer(renderer)
     , m_desc(*lpDDSurfaceDesc)
 {
-    m_dd.AddRef();
-
     DDSURFACEDESC displayDesc;
-    m_dd.GetDisplayMode(&displayDesc);
+    lpDD.GetDisplayMode(&displayDesc);
 
-    // use display size if surface has no defined dimensions
     if (!(m_desc.dwFlags & (DDSD_WIDTH | DDSD_HEIGHT))) {
         m_desc.dwWidth = displayDesc.dwWidth;
         m_desc.dwHeight = displayDesc.dwHeight;
         m_desc.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
     }
 
-    // use display pixel format if surface has no defined pixel format
     if (!(m_desc.dwFlags & DDSD_PIXELFORMAT)) {
         m_desc.ddpfPixelFormat = displayDesc.ddpfPixelFormat;
         m_desc.dwFlags |= DDSD_PIXELFORMAT;
     }
 
-    // calculate pitch if surface has no defined pitch
-    if (!(m_desc.dwFlags & DDSD_PITCH)) {
-        m_desc.lPitch =
-            m_desc.dwWidth * (m_desc.ddpfPixelFormat.dwRGBBitCount / 8);
-        m_desc.dwFlags |= DDSD_PITCH;
-    }
+    m_desc.lPitch = m_desc.dwWidth * (m_desc.ddpfPixelFormat.dwRGBBitCount / 8);
 
-    // allocate surface buffer
     m_buffer.resize(m_desc.lPitch * m_desc.dwHeight, 0);
     m_desc.lpSurface = nullptr;
 
-    // attach back buffer if defined
     if (m_desc.dwFlags & DDSD_BACKBUFFERCOUNT && m_desc.dwBackBufferCount > 0) {
-
         DDSURFACEDESC backBufferDesc = m_desc;
         backBufferDesc.ddsCaps.dwCaps |= DDSCAPS_BACKBUFFER | DDSCAPS_FLIP;
-        backBufferDesc.ddsCaps.dwCaps &=
-            ~(DDSCAPS_FRONTBUFFER | DDSCAPS_VISIBLE);
+        backBufferDesc.ddsCaps.dwCaps &= ~DDSCAPS_FRONTBUFFER;
         backBufferDesc.dwFlags &= ~DDSD_BACKBUFFERCOUNT;
         backBufferDesc.dwBackBufferCount = 0;
-        m_backBuffer = new DirectDrawSurface(lpDD, m_renderer, &backBufferDesc);
-
-        m_desc.ddsCaps.dwCaps |=
-            DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP | DDSCAPS_VISIBLE;
+        m_backBuffer = std::make_unique<DirectDrawSurface>(
+            lpDD, m_renderer, &backBufferDesc);
+        m_desc.ddsCaps.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
     }
 }
 
-DirectDrawSurface::~DirectDrawSurface()
-{
-    if (m_backBuffer) {
-        m_backBuffer->Release();
-        m_backBuffer = nullptr;
-    }
-
-    if (m_depthBuffer) {
-        m_depthBuffer->Release();
-        m_depthBuffer = nullptr;
-    }
-
-    if (m_desc.lpSurface) {
-        m_desc.lpSurface = nullptr;
-    }
-}
-
-/*** IUnknown methods ***/
-HRESULT WINAPI DirectDrawSurface::QueryInterface(REFIID riid, LPVOID *ppvObj)
-{
-    if (IsEqualGUID(riid, IID_IDirectDrawSurface)) {
-        *ppvObj = static_cast<IDirectDrawSurface *>(this);
-    } else if (IsEqualGUID(riid, IID_IDirectDrawSurface2)) {
-        *ppvObj = static_cast<IDirectDrawSurface2 *>(this);
-    } else {
-        return Unknown::QueryInterface(riid, ppvObj);
-    }
-
-    Unknown::AddRef();
-    return S_OK;
-}
-
-ULONG WINAPI DirectDrawSurface::AddRef()
-{
-    return Unknown::AddRef();
-}
-
-ULONG WINAPI DirectDrawSurface::Release()
-{
-    return Unknown::Release();
-}
-
-/*** IDirectDrawSurface methods ***/
-HRESULT WINAPI
-DirectDrawSurface::AddAttachedSurface(LPDIRECTDRAWSURFACE lpDDSAttachedSurface)
-{
-    if (!lpDDSAttachedSurface) {
-        return DDERR_INVALIDOBJECT;
-    }
-
-    DirectDrawSurface *ps =
-        static_cast<DirectDrawSurface *>(lpDDSAttachedSurface);
-    DWORD caps = ps->m_desc.ddsCaps.dwCaps;
-    if (caps & DDSCAPS_ZBUFFER) {
-        m_depthBuffer = ps;
-    } else if (caps & DDSCAPS_BACKBUFFER) {
-        m_backBuffer = ps;
-    } else {
-        return DDERR_CANNOTATTACHSURFACE;
-    }
-
-    ps->AddRef();
-    return DD_OK;
-}
-
-HRESULT WINAPI DirectDrawSurface::AddOverlayDirtyRect(LPRECT lpRect)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Blt(
+HRESULT DirectDrawSurface::Blt(
     LPRECT lpDestRect, LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect,
-    DWORD dwFlags, LPDDBLTFX lpDDBltFx)
+    DWORD dwFlags)
 {
     // can't blit while locked
     if (m_locked) {
@@ -202,59 +116,14 @@ HRESULT WINAPI DirectDrawSurface::Blt(
     }
 
     if (dwFlags & DDBLT_COLORFILL) {
-        clear(lpDDBltFx->dwFillColor);
-    }
-
-    if (dwFlags & DDBLT_DEPTHFILL && m_depthBuffer) {
-        m_depthBuffer->clear(0);
+        m_dirty = true;
+        std::fill(m_buffer.begin(), m_buffer.end(), 0);
     }
 
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::BltBatch(
-    LPDDBLTBATCH lpDDBltBatch, DWORD dwCount, DWORD dwFlags)
-{
-    // can't blit while locked
-    if (m_locked) {
-        return DDERR_LOCKEDSURFACES;
-    }
-
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::BltFast(
-    DWORD dwX, DWORD dwY, LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect,
-    DWORD dwTrans)
-{
-    // can't blit while locked
-    if (m_locked) {
-        return DDERR_LOCKEDSURFACES;
-    }
-
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE lpDDSurface)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::EnumAttachedSurfaces(
-    LPVOID lpContext, LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::EnumOverlayZOrders(
-    DWORD dwFlags, LPVOID lpContext, LPDDENUMSURFACESCALLBACK lpfnCallback)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Flip(
-    LPDIRECTDRAWSURFACE lpDDSurfaceTargetOverride, DWORD dwFlags)
+HRESULT DirectDrawSurface::Flip()
 {
     // check if the surface can be flipped
     if (!(m_desc.ddsCaps.dwCaps & DDSCAPS_FLIP)
@@ -307,66 +176,18 @@ HRESULT WINAPI DirectDrawSurface::Flip(
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(
+HRESULT DirectDrawSurface::GetAttachedSurface(
     LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
 {
     if (lpDDSCaps->dwCaps & DDSCAPS_BACKBUFFER) {
-        *lplpDDAttachedSurface = m_backBuffer;
-        return DD_OK;
-    }
-
-    if (lpDDSCaps->dwCaps & DDSCAPS_ZBUFFER) {
-        *lplpDDAttachedSurface = m_depthBuffer;
+        *lplpDDAttachedSurface = m_backBuffer.get();
         return DD_OK;
     }
 
     return DDERR_SURFACENOTATTACHED;
 }
 
-HRESULT WINAPI DirectDrawSurface::GetBltStatus(DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetCaps(LPDDSCAPS lpDDSCaps)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetClipper(LPDIRECTDRAWCLIPPER *lplpDDClipper)
-{
-    *lplpDDClipper = reinterpret_cast<LPDIRECTDRAWCLIPPER>(m_clipper);
-
-    return DD_OK;
-}
-
-HRESULT WINAPI
-DirectDrawSurface::GetColorKey(DWORD dwFlags, LPDDCOLORKEY lpDDColorKey)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetDC(HDC *phDC)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetFlipStatus(DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetOverlayPosition(LPLONG lplX, LPLONG lplY)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetPalette(LPDIRECTDRAWPALETTE *lplpDDPalette)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI
+HRESULT
 DirectDrawSurface::GetPixelFormat(LPDDPIXELFORMAT lpDDPixelFormat)
 {
     *lpDDPixelFormat = m_desc.ddpfPixelFormat;
@@ -374,7 +195,7 @@ DirectDrawSurface::GetPixelFormat(LPDDPIXELFORMAT lpDDPixelFormat)
     return DD_OK;
 }
 
-HRESULT WINAPI
+HRESULT
 DirectDrawSurface::GetSurfaceDesc(LPDDSURFACEDESC lpDDSurfaceDesc)
 {
     *lpDDSurfaceDesc = m_desc;
@@ -382,33 +203,14 @@ DirectDrawSurface::GetSurfaceDesc(LPDDSURFACEDESC lpDDSurfaceDesc)
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::Initialize(
-    LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpDDSurfaceDesc)
+HRESULT DirectDrawSurface::Lock(LPDDSURFACEDESC lpDDSurfaceDesc)
 {
-    // "This method is provided for compliance with the Component Object
-    // Model (COM). Because the DirectDrawSurface object is initialized when
-    // it is created, this method always returns DDERR_ALREADYINITIALIZED."
-    return DDERR_ALREADYINITIALIZED;
-}
-
-HRESULT WINAPI DirectDrawSurface::IsLost()
-{
-    // we're never lost..
-    return DD_OK;
-}
-
-HRESULT WINAPI DirectDrawSurface::Lock(
-    LPRECT lpDestRect, LPDDSURFACEDESC lpDDSurfaceDesc, DWORD dwFlags,
-    HANDLE hEvent)
-{
-    // ensure that the surface is not already locked
     if (m_locked) {
         return DDERR_SURFACEBUSY;
     }
 
     // assign lpSurface
     m_desc.lpSurface = &m_buffer[0];
-    m_desc.dwFlags |= DDSD_LPSURFACE;
 
     m_locked = true;
     m_dirty = true;
@@ -418,41 +220,7 @@ HRESULT WINAPI DirectDrawSurface::Lock(
     return DD_OK;
 }
 
-HRESULT WINAPI DirectDrawSurface::ReleaseDC(HDC hDC)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Restore()
-{
-    // we can't lose surfaces..
-    return DD_OK;
-}
-
-HRESULT WINAPI DirectDrawSurface::SetClipper(LPDIRECTDRAWCLIPPER lpDDClipper)
-{
-    m_clipper = reinterpret_cast<DirectDrawClipper *>(lpDDClipper);
-
-    return DD_OK;
-}
-
-HRESULT WINAPI
-DirectDrawSurface::SetColorKey(DWORD dwFlags, LPDDCOLORKEY lpDDColorKey)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::SetOverlayPosition(LONG lX, LONG lY)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::SetPalette(LPDIRECTDRAWPALETTE lpDDPalette)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
+HRESULT DirectDrawSurface::Unlock(LPVOID lp)
 {
     // ensure that the surface is actually locked
     if (!m_locked) {
@@ -461,7 +229,6 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
 
     // unassign lpSurface
     m_desc.lpSurface = nullptr;
-    m_desc.dwFlags &= ~DDSD_LPSURFACE;
 
     m_locked = false;
 
@@ -485,110 +252,6 @@ HRESULT WINAPI DirectDrawSurface::Unlock(LPVOID lp)
     }
 
     return DD_OK;
-}
-
-HRESULT WINAPI DirectDrawSurface::UpdateOverlay(
-    LPRECT lpSrcRect, LPDIRECTDRAWSURFACE lpDDDestSurface, LPRECT lpDestRect,
-    DWORD dwFlags, LPDDOVERLAYFX lpDDOverlayFx)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::UpdateOverlayDisplay(DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE lpDDSReference)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-/*** IDirectDrawSurface2 methods ***/
-HRESULT WINAPI
-DirectDrawSurface::AddAttachedSurface(LPDIRECTDRAWSURFACE2 lpDDSAttachedSurface)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Blt(
-    LPRECT lpDestRect, LPDIRECTDRAWSURFACE2 lpDDSrcSurface, LPRECT lpSrcRect,
-    DWORD dwFlags, LPDDBLTFX lpDDBltFx)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::BltFast(
-    DWORD dwX, DWORD dwY, LPDIRECTDRAWSURFACE2 lpDDSrcSurface, LPRECT lpSrcRect,
-    DWORD dwTrans)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::DeleteAttachedSurface(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE2 lpDDSurface)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::Flip(
-    LPDIRECTDRAWSURFACE2 lpDDSurfaceTargetOverride, DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetAttachedSurface(
-    LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE2 *lplpDDAttachedSurface)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::UpdateOverlay(
-    LPRECT lpSrcRect, LPDIRECTDRAWSURFACE2 lpDDDestSurface, LPRECT lpDestRect,
-    DWORD dwFlags, LPDDOVERLAYFX lpDDOverlayFx)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::UpdateOverlayZOrder(
-    DWORD dwFlags, LPDIRECTDRAWSURFACE2 lpDDSReference)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::GetDDInterface(LPVOID *lplpDD)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::PageLock(DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-HRESULT WINAPI DirectDrawSurface::PageUnlock(DWORD dwFlags)
-{
-    return DDERR_UNSUPPORTED;
-}
-
-/*** Custom methods ***/
-void DirectDrawSurface::clear(int32_t color)
-{
-    if (m_desc.ddpfPixelFormat.dwRGBBitCount == 8 || color == 0) {
-        std::fill(m_buffer.begin(), m_buffer.end(), color & 0xff);
-    } else if (m_desc.ddpfPixelFormat.dwRGBBitCount % 8 == 0) {
-        int32_t i = 0;
-        std::generate(m_buffer.begin(), m_buffer.end(), [this, &i, &color]() {
-            int32_t colorOffset =
-                i++ * 8 % this->m_desc.ddpfPixelFormat.dwRGBBitCount;
-            return (color >> colorOffset) & 0xff;
-        });
-    } else {
-        // TODO: support odd bit counts?
-    }
-
-    m_dirty = true;
 }
 
 }
