@@ -142,10 +142,17 @@ void S_AnimateTextures(int32_t ticks)
 
 void S_DisplayPicture(const char *filename)
 {
-    PICTURE *picture = Picture_CreateFromFile(filename);
-    if (picture) {
-        HWR_DownloadPicture(picture);
-        Picture_Free(picture);
+    PICTURE *orig_pic = Picture_CreateFromFile(filename);
+    if (orig_pic) {
+        PICTURE *scaled_pic = Picture_Create();
+        if (scaled_pic) {
+            Picture_Scale(
+                scaled_pic, orig_pic, g_DDrawSurfaceWidth,
+                g_DDrawSurfaceHeight);
+            HWR_DownloadPicture(scaled_pic);
+            Picture_Free(scaled_pic);
+        }
+        Picture_Free(orig_pic);
     }
 }
 

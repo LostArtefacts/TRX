@@ -3,6 +3,8 @@
 #include "memory.h"
 #include "specific/s_picture.h"
 
+#include <assert.h>
+
 PICTURE *Picture_Create()
 {
     PICTURE *picture = Memory_Alloc(sizeof(picture));
@@ -23,6 +25,15 @@ PICTURE *Picture_CreateFromFile(const char *file_path)
         return NULL;
     }
     return picture;
+}
+
+bool Picture_Scale(
+    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
+    size_t target_height)
+{
+    assert(target_pic);
+    assert(source_pic);
+    return S_Picture_Scale(target_pic, source_pic, target_width, target_height);
 }
 
 void Picture_Free(PICTURE *picture)
