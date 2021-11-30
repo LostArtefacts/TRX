@@ -277,14 +277,14 @@ void HWR_DownloadPicture(const PICTURE *pic)
         picture_surface, NULL, &surface_desc, DDLOCK_WAIT, 0);
     HWR_CheckError(result);
 
-    uint16_t *output_ptr = surface_desc.lpSurface;
+    uint32_t *output_ptr = surface_desc.lpSurface;
     RGB888 *input_ptr = pic->data;
     for (int i = 0; i < pic->width * pic->height; i++) {
-        uint16_t r = (input_ptr->r >> 2) & 0x3E;
-        uint16_t g = (input_ptr->g >> 2) & 0x3E;
-        uint16_t b = (input_ptr->b >> 2) & 0x3E;
+        uint8_t r = input_ptr->r;
+        uint8_t g = input_ptr->g;
+        uint8_t b = input_ptr->b;
         input_ptr++;
-        *output_ptr++ = (b >> 1) | (g << 4) | (r << 9);
+        *output_ptr++ = b | (g << 8) | (r << 16);
     }
 
     result =

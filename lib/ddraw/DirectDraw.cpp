@@ -133,20 +133,12 @@ HRESULT WINAPI DirectDraw::GetCaps(LPDDCAPS lpDDDriverCaps,
 HRESULT WINAPI DirectDraw::GetDisplayMode(LPDDSURFACEDESC lpDDSurfaceDesc)
 {
     LPDDSURFACEDESC desc = lpDDSurfaceDesc;
-
     desc->ddpfPixelFormat.dwFlags = DDPF_RGB;
-    desc->ddpfPixelFormat.dwRGBBitCount = 16;
-    desc->ddpfPixelFormat.dwRBitMask = 15 << 10;
-    desc->ddpfPixelFormat.dwGBitMask = 15 << 5;
-    desc->ddpfPixelFormat.dwBBitMask = 15;
-    desc->ddpfPixelFormat.dwRGBAlphaBitMask = 1 << 15;
-
+    desc->ddpfPixelFormat.dwRGBBitCount = 32;
     desc->dwWidth = m_width;
     desc->dwHeight = m_height;
     desc->lPitch = m_width * (desc->ddpfPixelFormat.dwRGBBitCount / 8);
-
     desc->dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PITCH | DDSD_PIXELFORMAT;
-
     return DD_OK;
 }
 
