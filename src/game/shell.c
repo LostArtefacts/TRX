@@ -99,7 +99,7 @@ void Shell_Main()
 
     Screen_ApplyResolution();
 
-    S_DisplayPicture("data\\eidospc.pcx");
+    S_DisplayPicture("data\\eidospc.png");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
     S_OutputPolyList();
