@@ -5,15 +5,13 @@
 
 void Option_DoInventory(INVENTORY_ITEM *inv_item);
 
-void Option_DoPassport(INVENTORY_ITEM *inv_item);
-void Option_DoCompass(INVENTORY_ITEM *inv_item);
-void Option_DoDetail(INVENTORY_ITEM *inv_item);
+void Option_Passport(INVENTORY_ITEM *inv_item);
+void Option_Compass(INVENTORY_ITEM *inv_item);
+void Option_Graphics(INVENTORY_ITEM *inv_item);
 void Option_Control(INVENTORY_ITEM *inv_item);
+void Option_Sound(INVENTORY_ITEM *inv_item);
+
 void Option_FlashConflicts();
 void Option_DefaultConflict();
-void Option_DoSound(INVENTORY_ITEM *inv_item);
-void Option_ControlShowControls();
-void Option_ControlUpdateText();
-void Option_ControlCleanup();
 
 #endif
