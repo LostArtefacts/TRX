@@ -17,95 +17,30 @@
 #include <stdint.h>
 #include <string.h>
 
-static const char *m_ATIUserSettingsPath = "atiset.dat";
-static const char *m_T1MUserSettingsPath = "cfg/Tomb1Main_runtime.json5";
+static const char *m_UserSettingsPath = "cfg/Tomb1Main_runtime.json5";
 
-static int32_t Settings_ReadATI();
-static int32_t Settings_ReadT1M();
-static int32_t Settings_ReadT1MFromJSON(const char *cfg_data);
-static int32_t Settings_WriteT1M();
+static bool Settings_ReadFromJSON(const char *cfg_data);
 
-static int32_t Settings_ReadATI()
+static bool Settings_ReadFromJSON(const char *cfg_data)
 {
-    MYFILE *fp = File_Open(m_ATIUserSettingsPath, FILE_OPEN_READ);
-    if (!fp) {
-        return 0;
-    }
-
-    LOG_INFO("Loading user settings (T1M)");
-
-    File_Read(&g_Config.music_volume, sizeof(int16_t), 1, fp);
-    File_Read(&g_Config.sound_volume, sizeof(int16_t), 1, fp);
-
-    {
-        int16_t layout[13];
-        File_Read(layout, sizeof(int16_t), 13, fp);
-
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_UP, layout[0]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_DOWN, layout[1]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_LEFT, layout[2]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_RIGHT, layout[3]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_STEP_L, layout[4]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_STEP_R, layout[5]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_SLOW, layout[6]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_JUMP, layout[7]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_ACTION, layout[8]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_DRAW, layout[9]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_LOOK, layout[10]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_ROLL, layout[11]);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, INPUT_KEY_OPTION, layout[12]);
-    }
-
-    {
-        uint32_t render_flags;
-        File_Read(&render_flags, sizeof(int32_t), 1, fp);
-        g_Config.render_flags.perspective = (bool)(render_flags & 1);
-        g_Config.render_flags.bilinear = (bool)(render_flags & 2);
-        g_Config.render_flags.fps_counter = (bool)(render_flags & 4);
-    }
-
-    {
-        int32_t resolution_idx;
-        File_Read(&resolution_idx, sizeof(int32_t), 1, fp);
-        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
-        Screen_SetResIdx(resolution_idx);
-    }
-
-    // Skip GameSizer from TombATI, which is no longer used in T1M.
-    // In the original game, it's expected to be 1.0 everywhere and changing it
-    // to any other value results in uninteresting window clipping anomalies.
-    File_Seek(fp, sizeof(double), FILE_SEEK_CUR);
-
-    File_Read(&g_Config.input.layout, sizeof(int32_t), 1, fp);
-
-    g_Config.brightness = DEFAULT_BRIGHTNESS;
-    g_Config.ui.text_scale = DEFAULT_UI_SCALE;
-    g_Config.ui.bar_scale = DEFAULT_UI_SCALE;
-
-    File_Close(fp);
-    return 1;
-}
-
-static int32_t Settings_ReadT1MFromJSON(const char *cfg_data)
-{
-    int32_t result = 0;
+    bool result = false;
     struct json_value_s *root = NULL;
     struct json_parse_result_s parse_result;
 
-    LOG_INFO("Loading user settings (T1M)");
+    LOG_INFO("Loading user settings");
 
     root = json_parse_ex(
         cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
         &parse_result);
     if (!root) {
         LOG_ERROR(
-            "failed to parse script file: %s in line %d, char %d",
+            "failed to parse config file: %s in line %d, char %d",
             json_get_error_description(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, cfg_data);
         // continue to supply the default values
     }
 
-    result = 1;
+    result = true;
 
     struct json_object_s *root_obj = json_value_as_object(root);
     g_Config.render_flags.bilinear =
@@ -158,46 +93,37 @@ static int32_t Settings_ReadT1MFromJSON(const char *cfg_data)
     return result;
 }
 
-static int32_t Settings_ReadT1M()
+bool Settings_Read()
 {
-    int32_t result = 0;
-    size_t cfg_data_size;
-    char *cfg_data = NULL;
-    MYFILE *fp = NULL;
+    bool result = false;
 
-    fp = File_Open(m_T1MUserSettingsPath, FILE_OPEN_READ);
-    if (!fp) {
-        LOG_ERROR("Failed to open file '%s'", m_T1MUserSettingsPath);
-        result = Settings_ReadT1MFromJSON("");
+    size_t cfg_data_size = 0;
+    char *cfg_data = NULL;
+    if (!File_Load(m_UserSettingsPath, &cfg_data, &cfg_data_size)) {
         goto cleanup;
     }
 
-    cfg_data_size = File_Size(fp);
-    cfg_data = Memory_Alloc(cfg_data_size + 1);
-    File_Read(cfg_data, 1, cfg_data_size, fp);
-    cfg_data[cfg_data_size] = '\0';
-    File_Close(fp);
-    fp = NULL;
-
-    result = Settings_ReadT1MFromJSON(cfg_data);
+    result = Settings_ReadFromJSON(cfg_data);
 
 cleanup:
-    if (fp) {
-        File_Close(fp);
-    }
     if (cfg_data) {
         Memory_Free(cfg_data);
     }
+
+    DefaultConflict();
+
+    Music_SetVolume(g_Config.music_volume);
+    Sound_SetMasterVolume(g_Config.sound_volume);
     return result;
 }
 
-static int32_t Settings_WriteT1M()
+bool Settings_Write()
 {
-    LOG_INFO("Saving user settings (T1M)");
+    LOG_INFO("Saving user settings");
 
-    MYFILE *fp = File_Open(m_T1MUserSettingsPath, FILE_OPEN_WRITE);
+    MYFILE *fp = File_Open(m_UserSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
-        return 0;
+        return false;
     }
 
     size_t size;
@@ -236,26 +162,5 @@ static int32_t Settings_WriteT1M()
     File_Close(fp);
     Memory_Free(data);
 
-    return 1;
-}
-
-void Settings_Read()
-{
-    if (Settings_ReadATI()) {
-        if (!File_Delete(m_ATIUserSettingsPath)) {
-            // only save settings if we successfully removed the file
-            Settings_WriteT1M();
-        }
-    }
-    Settings_ReadT1M();
-
-    DefaultConflict();
-
-    Music_SetVolume(g_Config.music_volume);
-    Sound_SetMasterVolume(g_Config.sound_volume);
-}
-
-void Settings_Write()
-{
-    Settings_WriteT1M();
+    return true;
 }
