@@ -3,7 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     // path to the main menu background image
-    "main_menu_picture": "data\\titleh.pcx",
+    "main_menu_picture": "data\\titleh.png",
 
     // path to the savegame file
     "savegame_fmt": "saveati.%d",

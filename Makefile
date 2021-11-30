@@ -34,7 +34,7 @@ lint:
 test_base:
 	cp build/*.exe test/
 	cp build/*.dll test/
-	ln -rsft test/ bin/*
+	rsync -r bin/ test/
 	rm -f test/Winplay.dll
 
 test: build test_base
