@@ -1,13 +1,37 @@
 #include "game/fmv.h"
 
+#include "filesystem.h"
+#include "memory.h"
 #include "specific/s_fmv.h"
+
+static const char *m_Extensions[] = {
+    ".mp4", ".mkv", "mpeg", ".avi", ".webm", ".rpl", NULL,
+};
 
 bool FMV_Init()
 {
     return S_FMV_Init();
 }
 
-void FMV_Play(const char *file_path)
+bool FMV_Play(const char *file_path)
 {
-    S_FMV_Play(file_path);
+    bool ret = false;
+    char *full_path = NULL;
+    char *final_path = NULL;
+
+    File_GetFullPath(file_path, &full_path);
+    File_GuessExtension(full_path, &final_path, m_Extensions);
+
+    ret = S_FMV_Play(final_path);
+
+    if (final_path) {
+        Memory_Free(final_path);
+        final_path = NULL;
+    }
+
+    if (full_path) {
+        Memory_Free(full_path);
+    }
+
+    return ret;
 }

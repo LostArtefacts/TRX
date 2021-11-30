@@ -25,7 +25,6 @@
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "log.h"
-#include "memory.h"
 #include "specific/s_hwr.h"
 #include "specific/s_shell.h"
 
@@ -2290,18 +2289,9 @@ bool S_FMV_Play(const char *file_path)
         return true;
     }
 
-    char *full_path = NULL;
-    File_GetFullPath(file_path, &full_path);
-
-    // exit early in case the file does not exist
-    {
-        MYFILE *fp = File_Open(full_path, FILE_OPEN_READ);
-        if (fp) {
-            File_Close(fp);
-        } else {
-            LOG_ERROR("FMV does not exist: %s", full_path);
-            return false;
-        }
+    if (!File_Exists(file_path)) {
+        LOG_ERROR("FMV does not exist: %s", file_path);
+        return false;
     }
 
     GameBuf_Shutdown();
@@ -2336,7 +2326,7 @@ bool S_FMV_Play(const char *file_path)
         goto cleanup;
     }
 
-    VideoState *is = S_FMV_StreamOpen(full_path, NULL);
+    VideoState *is = S_FMV_StreamOpen(file_path, NULL);
     if (!is) {
         LOG_ERROR("Failed to initialize VideoState!");
         goto cleanup;
@@ -2353,10 +2343,6 @@ cleanup:
 
     if (m_Renderer) {
         SDL_DestroyRenderer(m_Renderer);
-    }
-
-    if (full_path) {
-        Memory_Free(full_path);
     }
 
     HWR_Init();
