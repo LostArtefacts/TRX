@@ -5,6 +5,7 @@
 #include "specific/s_shell.h"
 #include "specific/s_filesystem.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,6 +48,30 @@ void File_GetFullPath(const char *path, char **out)
         }
     }
     *out = strdup(path);
+    assert(*out);
+}
+
+void File_GuessExtension(const char *path, char **out, const char **extensions)
+{
+    if (!File_Exists(path)) {
+        const char *dot = strrchr(path, '.');
+        if (dot) {
+            for (const char **ext = &extensions[0]; *ext; ext++) {
+                size_t target_size = dot - path + strlen(*ext) + 1;
+                *out = Memory_Alloc(target_size);
+                strncpy(*out, path, dot - path);
+                out[dot - path] = '\0';
+                strcat(*out, *ext);
+                if (File_Exists(*out)) {
+                    return;
+                }
+                Memory_Free(*out);
+                *out = NULL;
+            }
+        }
+    }
+    *out = strdup(path);
+    assert(*out);
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)

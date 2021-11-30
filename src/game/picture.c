@@ -1,9 +1,14 @@
 #include "game/picture.h"
 
+#include "filesystem.h"
 #include "memory.h"
 #include "specific/s_picture.h"
 
 #include <assert.h>
+
+static const char *m_Extensions[] = {
+    ".png", ".jpg", ".jpeg", ".pcx", NULL,
+};
 
 PICTURE *Picture_Create()
 {
@@ -16,14 +21,36 @@ PICTURE *Picture_Create()
 
 PICTURE *Picture_CreateFromFile(const char *file_path)
 {
+    bool result = false;
+    char *full_path = NULL;
+    char *final_path = NULL;
+
     PICTURE *picture = Picture_Create();
     if (!picture) {
-        return NULL;
+        goto cleanup;
     }
-    if (!S_Picture_LoadFromFile(picture, file_path)) {
+
+    File_GetFullPath(file_path, &full_path);
+    File_GuessExtension(full_path, &final_path, m_Extensions);
+
+    result = S_Picture_LoadFromFile(picture, final_path);
+
+cleanup:
+    if (!result && picture) {
         Memory_Free(picture);
-        return NULL;
+        picture = NULL;
     }
+
+    if (final_path) {
+        Memory_Free(final_path);
+        final_path = NULL;
+    }
+
+    if (full_path) {
+        Memory_Free(full_path);
+        full_path = NULL;
+    }
+
     return picture;
 }
 

@@ -1,6 +1,5 @@
 #include "specific/s_picture.h"
 
-#include "filesystem.h"
 #include "log.h"
 #include "memory.h"
 
@@ -16,7 +15,6 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
     assert(!target_pic->data);
 
     int32_t error_code;
-    char *full_path = NULL;
     AVFormatContext *format_ctx = NULL;
     const AVCodec *codec = NULL;
     AVCodecContext *codec_ctx = NULL;
@@ -28,9 +26,7 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
     target_pic->height = 0;
     target_pic->data = NULL;
 
-    File_GetFullPath(file_path, &full_path);
-
-    error_code = avformat_open_input(&format_ctx, full_path, NULL, NULL);
+    error_code = avformat_open_input(&format_ctx, file_path, NULL, NULL);
     if (error_code != 0) {
         goto fail;
     }
@@ -139,7 +135,7 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
 
 fail:
     LOG_ERROR(
-        "Error while opening picture %s: %s", full_path,
+        "Error while opening picture %s: %s", file_path,
         av_err2str(error_code));
 
     target_pic->width = 0;
@@ -169,10 +165,6 @@ fail:
 
     if (format_ctx) {
         avformat_close_input(&format_ctx);
-    }
-
-    if (full_path) {
-        Memory_Free(full_path);
     }
 
     return false;
