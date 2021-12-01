@@ -20,7 +20,7 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_output.h"
+#include "specific/s_misc.h"
 
 #include <limits.h>
 #include <string.h>

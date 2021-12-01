@@ -1,16 +1,16 @@
 #include "game/output.h"
 
-#include "config.h"
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/clock.h"
 #include "game/random.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
+#include "specific/s_misc.h"
 #include "specific/s_shell.h"
-#include "specific/s_output.h"
 
 PHD_VECTOR g_LsVectorView = { 0 };
 

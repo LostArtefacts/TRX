@@ -1,4 +1,4 @@
-#include "specific/s_output.h"
+#include "specific/s_misc.h"
 
 #include "game/gameflow.h"
 #include "game/output.h"

@@ -27,7 +27,7 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
-#include "specific/s_output.h"
+#include "specific/s_misc.h"
 #include "specific/s_shell.h"
 
 #include <stdarg.h>

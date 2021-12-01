@@ -12,7 +12,7 @@
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
+#include "specific/s_misc.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
 static bool m_CameraUnderwater = false;

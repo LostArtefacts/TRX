@@ -12,7 +12,7 @@
 #include "game/sphere.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
+#include "specific/s_misc.h"
 
 void SetupLightningEmitter(OBJECT_INFO *obj)
 {
