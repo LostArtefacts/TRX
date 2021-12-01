@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
@@ -35,7 +36,6 @@ static bool m_IsRenderingOld = false;
 static bool m_IsTextureMode = false;
 static int32_t m_SelectedTexture = -1;
 static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
-static RGBF m_WaterColor = { 0 };
 
 static int32_t m_DDrawSurfaceWidth = 0;
 static int32_t m_DDrawSurfaceHeight = 0;
@@ -47,17 +47,6 @@ static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
 static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
-
-static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
-
-static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
-{
-    if (g_IsShadeEffect) {
-        *r *= m_WaterColor.r;
-        *g *= m_WaterColor.g;
-        *b *= m_WaterColor.b;
-    }
-}
 
 void HWR_EnableTextureMode(void)
 {
@@ -79,13 +68,6 @@ void HWR_DisableTextureMode(void)
     m_IsTextureMode = false;
     BOOL enable = FALSE;
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
-}
-
-void HWR_SetWaterColor(const RGBF *color)
-{
-    m_WaterColor.r = color->r;
-    m_WaterColor.g = color->g;
-    m_WaterColor.b = color->b;
 }
 
 void HWR_RenderBegin()
@@ -1210,7 +1192,7 @@ void HWR_DrawFlatTriangle(
     g = g_GamePalette[color].g;
     b = g_GamePalette[color].b;
 
-    HWR_ApplyWaterEffect(&r, &g, &b);
+    Output_ApplyWaterEffect(&r, &g, &b);
 
     divisor = (1.0f / g_Config.brightness) * 1024.0f;
 
@@ -1296,7 +1278,7 @@ void HWR_DrawTexturedTriangle(
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
 
-            HWR_ApplyWaterEffect(
+            Output_ApplyWaterEffect(
                 &vertices[i].r, &vertices[i].g, &vertices[i].b);
         }
 
@@ -1404,7 +1386,7 @@ void HWR_DrawTexturedQuad(
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
 
-        HWR_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
     if (m_TextureLoaded[tpage]) {
@@ -1430,7 +1412,7 @@ int32_t HWR_ZedClipper(
     float multiplier;
 
     multiplier = 0.0625f * g_Config.brightness;
-    float near_z = phd_GetNearZ();
+    float near_z = Output_GetNearZ();
     persp_o_near_z = g_PhdPersp / near_z;
 
     v = &vertices[0];
@@ -1456,7 +1438,7 @@ int32_t HWR_ZedClipper(
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
-            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
+            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
             v++;
         }
@@ -1475,7 +1457,7 @@ int32_t HWR_ZedClipper(
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
-            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
+            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
             v++;
         } else {
@@ -1488,7 +1470,7 @@ int32_t HWR_ZedClipper(
             v->t = pts0->v * v->w * 0.00390625f;
 
             v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
-            HWR_ApplyWaterEffect(&v->r, &v->g, &v->b);
+            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
             v++;
         }

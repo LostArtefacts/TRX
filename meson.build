@@ -185,6 +185,7 @@ sources = [
   'src/game/option_graphics.c',
   'src/game/option_passport.c',
   'src/game/option_sound.c',
+  'src/game/output.c',
   'src/game/overlay.c',
   'src/game/people.c',
   'src/game/picture.c',

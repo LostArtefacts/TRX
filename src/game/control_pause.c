@@ -3,6 +3,7 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/requester.h"
 #include "game/screen.h"
 #include "game/text.h"
@@ -92,11 +93,11 @@ static int32_t Control_Pause_Loop()
     int32_t state = 0;
 
     while (1) {
-        S_InitialisePolyList(0);
-        S_CopyBufferToScreen();
+        Output_InitialisePolyList(0);
+        Output_CopyBufferToScreen();
         Control_Pause_DisplayText();
         Text_Draw();
-        S_DumpScreen();
+        Output_DumpScreen();
         Input_Update();
 
         switch (state) {
@@ -150,7 +151,7 @@ bool Control_Pause()
 
     Text_RemoveAll();
     S_FadeInInventory(1);
-    S_SetupAboveWater(false);
+    Output_SetupAboveWater(false);
 
     Music_Pause();
 

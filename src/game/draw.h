@@ -23,7 +23,6 @@ void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
 void DrawLaraInt(
     ITEM_INFO *item, int16_t *frame1, int16_t *frame2, int32_t frac,
     int32_t rate);
-void InitInterpolate(int32_t frac, int32_t rate);
 
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);

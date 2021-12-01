@@ -1,13 +1,12 @@
 #include "game/traps/lightning_emitter.h"
 
-#include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
@@ -169,7 +168,8 @@ void DrawLightning(ITEM_INFO *item)
     int32_t y1 = g_PhdMatrixPtr->_13;
     int32_t z1 = g_PhdMatrixPtr->_23;
 
-    phd_PutPolygons(g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
+    Output_DrawPolygons(
+        g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
 
     phd_PopMatrix();
 
@@ -205,11 +205,11 @@ void DrawLightning(ITEM_INFO *item)
         z2 = z1 + dz + pos->z;
 
         if (i > 0) {
-            S_DrawLightningSegment(
+            Output_DrawLightningSegment(
                 x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
                 ViewPort_GetWidth() / 6);
         } else {
-            S_DrawLightningSegment(
+            Output_DrawLightningSegment(
                 x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 6);
         }
 
@@ -257,11 +257,11 @@ void DrawLightning(ITEM_INFO *item)
             z2 = z1 + dz + pos->z;
 
             if (j > 0) {
-                S_DrawLightningSegment(
+                Output_DrawLightningSegment(
                     x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
                     ViewPort_GetWidth() / 16);
             } else {
-                S_DrawLightningSegment(
+                Output_DrawLightningSegment(
                     x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 16);
             }
 

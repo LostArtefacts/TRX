@@ -10,6 +10,7 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
@@ -1058,10 +1059,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                S_DisplayPicture(data->path);
-                S_InitialisePolyList();
-                S_CopyBufferToScreen();
-                S_DumpScreen();
+                Output_DisplayPicture(data->path);
+                Output_InitialisePolyList();
+                Output_CopyBufferToScreen();
+                Output_DumpScreen();
                 Shell_Wait(data->display_time);
                 S_FadeToBlack();
                 S_NoFade();

@@ -8,6 +8,7 @@
 #include "game/input.h"
 #include "game/lara.h"
 #include "game/option.h"
+#include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -137,8 +138,8 @@ int32_t Display_Inventory(int inv_mode)
 
         Inv_RingLight(&ring);
 
-        S_InitialisePolyList();
-        S_CopyBufferToScreen();
+        Output_InitialisePolyList();
+        Output_CopyBufferToScreen();
 
         phd_PushMatrix();
         phd_TranslateAbs(ring.ringpos.x, ring.ringpos.y, ring.ringpos.z);
@@ -237,7 +238,7 @@ int32_t Display_Inventory(int inv_mode)
         Overlay_DrawFPSInfo();
         Text_Draw();
 
-        m_InvNFrames = S_DumpScreen();
+        m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
@@ -708,7 +709,7 @@ int32_t Display_Inventory(int inv_mode)
 
 void Construct_Inventory()
 {
-    S_SetupAboveWater(false);
+    Output_SetupAboveWater(false);
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
     }
@@ -816,7 +817,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
     OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
     if (obj->nmeshes < 0) {
-        S_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
+        Output_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
         return;
     }
 
@@ -829,30 +830,30 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
-            if (zv < phd_GetNearZ() || zv > phd_GetFarZ()) {
+            if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
                 break;
             }
 
             while (spr->shape) {
                 switch (spr->shape) {
                 case SHAPE_SPRITE:
-                    S_DrawScreenSprite(
+                    Output_DrawScreenSprite(
                         sx + spr->x, sy + spr->y, spr->z, spr->param1,
                         spr->param2,
                         g_Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096,
                         0);
                     break;
                 case SHAPE_LINE:
-                    S_DrawScreenLine(
+                    Output_DrawScreenLine(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2,
                         S_ColourFromPalette(spr->sprnum));
                     break;
                 case SHAPE_BOX:
-                    S_DrawScreenBox(
+                    Output_DrawScreenBox(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2);
                     break;
                 case SHAPE_FBOX:
-                    S_DrawScreenFBox(
+                    Output_DrawScreenFBox(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2);
                     break;
                 }
@@ -877,7 +878,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
         int32_t *bone = &g_AnimBones[obj->bone_index];
         if (inv_item->drawn_meshes & mesh_num) {
-            phd_PutPolygons(g_Meshes[obj->mesh_index], clip);
+            Output_DrawPolygons(g_Meshes[obj->mesh_index], clip);
         }
 
         for (int i = 1; i < obj->nmeshes; i++) {
@@ -903,7 +904,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
             }
 
             if (inv_item->drawn_meshes & mesh_num) {
-                phd_PutPolygons(g_Meshes[obj->mesh_index + i], clip);
+                Output_DrawPolygons(g_Meshes[obj->mesh_index + i], clip);
             }
 
             bone += 4;

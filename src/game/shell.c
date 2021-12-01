@@ -11,6 +11,7 @@
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -38,18 +39,6 @@
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
-static void Shell_CalculateWibbleTable();
-
-static void Shell_CalculateWibbleTable()
-{
-    for (int i = 0; i < WIBBLE_SIZE; i++) {
-        PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        g_WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        g_ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
-    }
-}
-
 void Shell_Main()
 {
     T1MInit();
@@ -71,7 +60,7 @@ void Shell_Main()
     Memory_Free(args);
 
     S_Shell_SeedRandom();
-    Shell_CalculateWibbleTable();
+    Output_CalculateWibbleTable();
 
     if (!HWR_Init()) {
         Shell_ExitSystem("Could not initialise video system");
@@ -96,10 +85,10 @@ void Shell_Main()
 
     Screen_ApplyResolution();
 
-    S_DisplayPicture("data\\eidospc.png");
-    S_InitialisePolyList();
-    S_CopyBufferToScreen();
-    S_DumpScreen();
+    Output_DisplayPicture("data\\eidospc.png");
+    Output_InitialisePolyList();
+    Output_CopyBufferToScreen();
+    Output_DumpScreen();
     Shell_Wait(TICKS_PER_SECOND);
 
     FMV_Play("fmv\\core.rpl");
@@ -139,7 +128,7 @@ void Shell_Main()
 
         case GF_EXIT_TO_TITLE:
             Text_RemoveAll();
-            S_DisplayPicture(g_GameFlow.main_menu_background_path);
+            Output_DisplayPicture(g_GameFlow.main_menu_background_path);
             g_NoInputCount = 0;
             if (!InitialiseLevel(g_GameFlow.title_level_num, GFL_TITLE)) {
                 gf_option = GF_EXIT_GAME;

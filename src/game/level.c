@@ -1,12 +1,12 @@
 #include "game/level.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "filesystem.h"
 #include "game/control.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/items.h"
+#include "game/output.h"
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -627,18 +627,18 @@ bool Level_Load(int level_num)
     bool ret =
         Level_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num);
 
-    HWR_SetWaterColor(
+    Output_SetWaterColor(
         g_GameFlow.levels[level_num].water_color.override
             ? &g_GameFlow.levels[level_num].water_color.value
             : &g_GameFlow.water_color);
 
-    phd_SetDrawDistFade(
+    Output_SetDrawDistFade(
         (g_GameFlow.levels[level_num].draw_distance_fade.override
              ? g_GameFlow.levels[level_num].draw_distance_fade.value
              : g_GameFlow.draw_distance_fade)
         * WALL_L);
 
-    phd_SetDrawDistMax(
+    Output_SetDrawDistMax(
         (g_GameFlow.levels[level_num].draw_distance_max.override
              ? g_GameFlow.levels[level_num].draw_distance_max.value
              : g_GameFlow.draw_distance_max)

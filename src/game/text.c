@@ -1,10 +1,10 @@
 #include "game/text.h"
 
+#include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
 #include "util.h"
 
 #include <stdio.h>
@@ -347,7 +347,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(textstring->scale.h);
         sv = Screen_GetRenderScale(textstring->scale.v);
 
-        S_DrawScreenSprite2d(
+        Output_DrawScreenSprite2D(
             sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, 0, 0);
 
@@ -383,7 +383,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        S_DrawScreenFBox(sx, sy, sh, sv);
+        Output_DrawScreenFBox(sx, sy, sh, sv);
     }
 
     if (textstring->flags.outline) {
@@ -391,6 +391,6 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sy = Screen_GetRenderScale(bypos);
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
-        S_DrawScreenBox(sx, sy, sh, sv);
+        Output_DrawScreenBox(sx, sy, sh, sv);
     }
 }

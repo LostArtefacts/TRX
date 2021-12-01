@@ -8,6 +8,7 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/setup.h"
@@ -155,11 +156,11 @@ void LevelStats(int32_t level_num)
     // wait till action key release
     while (g_Input.select || g_Input.deselect) {
         Input_Update();
-        S_InitialisePolyList();
-        S_CopyBufferToScreen();
+        Output_InitialisePolyList();
+        Output_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_DumpScreen();
+        Output_DumpScreen();
     }
 
     // wait till action or escape key press
@@ -167,20 +168,20 @@ void LevelStats(int32_t level_num)
         if (g_ResetFlag) {
             break;
         }
-        S_InitialisePolyList();
-        S_CopyBufferToScreen();
+        Output_InitialisePolyList();
+        Output_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_DumpScreen();
+        Output_DumpScreen();
     }
 
     // wait till escape key release
     while (g_Input.deselect) {
-        S_InitialisePolyList();
-        S_CopyBufferToScreen();
+        Output_InitialisePolyList();
+        Output_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_DumpScreen();
+        Output_DumpScreen();
     }
 
     if (level_num == g_GameFlow.last_level_num) {

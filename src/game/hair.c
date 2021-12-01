@@ -1,11 +1,11 @@
 #include "game/hair.h"
 
-#include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/output.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -314,7 +314,7 @@ void DrawHair()
         phd_TranslateAbs(m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
         phd_RotY(m_Hair[i].y_rot);
         phd_RotX(m_Hair[i].x_rot);
-        phd_PutPolygons(*mesh++, 1);
+        Output_DrawPolygons(*mesh++, 1);
 
         phd_PopMatrix();
     }

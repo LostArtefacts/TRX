@@ -2,13 +2,13 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
 
 #include <stdio.h>
 
@@ -158,12 +158,13 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
         Screen_GetRenderScale(height) * g_Config.ui.bar_scale + padding * 2;
 
     // border
-    S_DrawScreenFlatQuad(
+    Output_DrawScreenFlatQuad(
         sx - border, sy - border, sw + border, sh + border, rgb_border_dark);
-    S_DrawScreenFlatQuad(sx, sy, sw + border, sh + border, rgb_border_light);
+    Output_DrawScreenFlatQuad(
+        sx, sy, sw + border, sh + border, rgb_border_light);
 
     // background
-    S_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
+    Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
 
     const int32_t blink_interval = 20;
     const int32_t blink_threshold = bar_type == BT_ENEMY_HEALTH ? 0 : 20;
@@ -185,14 +186,14 @@ static void Overlay_DrawBar(int32_t value, int32_t value_max, int32_t bar_type)
                 RGB888 c2 = m_ColorBarMap[bar_color][i + 1];
                 int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
                 int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
-                S_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
+                Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
             for (int i = 0; i < COLOR_STEPS; i++) {
                 RGB888 color = m_ColorBarMap[bar_color][i];
                 int32_t lsy = sy + i * sh / COLOR_STEPS;
                 int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
-                S_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
+                Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
             }
         }
     }
@@ -378,7 +379,7 @@ void Overlay_DrawPickups()
             if (pu->duration <= 0) {
                 pu->duration = 0;
             } else {
-                S_DrawUISprite(
+                Output_DrawUISprite(
                     x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
