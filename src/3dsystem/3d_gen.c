@@ -11,6 +11,7 @@
 
 #include <math.h>
 
+static PHD_VBUF m_VBuf[1500] = { 0 };
 static PHD_VECTOR m_LsVectorView = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
@@ -129,9 +130,9 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
         int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
             + g_PhdMatrixPtr->_21 * obj_ptr[1]
             + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
-        g_PhdVBuf[i].xv = xv;
-        g_PhdVBuf[i].yv = yv;
-        g_PhdVBuf[i].zv = zv;
+        m_VBuf[i].xv = xv;
+        m_VBuf[i].yv = yv;
+        m_VBuf[i].zv = zv;
 
         int32_t clip_flags;
         if (zv < phd_GetNearZ()) {
@@ -166,11 +167,11 @@ const int16_t *calc_object_vertices(const int16_t *obj_ptr)
                 clip_flags |= 8;
             }
 
-            g_PhdVBuf[i].xs = xs;
-            g_PhdVBuf[i].ys = ys;
+            m_VBuf[i].xs = xs;
+            m_VBuf[i].ys = ys;
         }
 
-        g_PhdVBuf[i].clip = clip_flags;
+        m_VBuf[i].clip = clip_flags;
         total_clip &= clip_flags;
         obj_ptr += 3;
     }
@@ -200,7 +201,7 @@ const int16_t *calc_vertice_light(const int16_t *obj_ptr)
                     + ((obj_ptr[0] * xv + obj_ptr[1] * yv + obj_ptr[2] * zv)
                        >> 16);
                 CLAMP(shade, 0, 0x1FFF);
-                g_PhdVBuf[i].g = shade;
+                m_VBuf[i].g = shade;
                 obj_ptr += 3;
             }
             return obj_ptr;
@@ -208,7 +209,7 @@ const int16_t *calc_vertice_light(const int16_t *obj_ptr)
             int16_t shade = g_LsAdder;
             CLAMP(shade, 0, 0x1FFF);
             for (int i = 0; i < vertex_count; i++) {
-                g_PhdVBuf[i].g = shade;
+                m_VBuf[i].g = shade;
             }
             obj_ptr += 3 * vertex_count;
         }
@@ -216,7 +217,7 @@ const int16_t *calc_vertice_light(const int16_t *obj_ptr)
         for (int i = 0; i < -vertex_count; i++) {
             int16_t shade = g_LsAdder + *obj_ptr++;
             CLAMP(shade, 0, 0x1FFF);
-            g_PhdVBuf[i].g = shade;
+            m_VBuf[i].g = shade;
         }
     }
     return obj_ptr;
@@ -236,23 +237,23 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
         int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
             + g_PhdMatrixPtr->_21 * obj_ptr[1]
             + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
-        g_PhdVBuf[i].xv = xv;
-        g_PhdVBuf[i].yv = yv;
-        g_PhdVBuf[i].zv = zv;
-        g_PhdVBuf[i].g = obj_ptr[3];
+        m_VBuf[i].xv = xv;
+        m_VBuf[i].yv = yv;
+        m_VBuf[i].zv = zv;
+        m_VBuf[i].g = obj_ptr[3];
 
         if (zv < phd_GetNearZ()) {
-            g_PhdVBuf[i].clip = 0x8000;
+            m_VBuf[i].clip = 0x8000;
         } else {
             int16_t clip_flags = 0;
             int32_t depth = zv >> W2V_SHIFT;
             if (depth > phd_GetDrawDistMax()) {
-                g_PhdVBuf[i].g = 0x1FFF;
+                m_VBuf[i].g = 0x1FFF;
                 clip_flags |= 16;
             } else if (depth) {
-                g_PhdVBuf[i].g += phd_CalculateFogShade(depth);
+                m_VBuf[i].g += phd_CalculateFogShade(depth);
                 if (!g_IsWaterEffect) {
-                    CLAMPG(g_PhdVBuf[i].g, 0x1FFF);
+                    CLAMPG(m_VBuf[i].g, 0x1FFF);
                 }
             }
 
@@ -288,16 +289,16 @@ const int16_t *calc_roomvert(const int16_t *obj_ptr)
             }
 
             if (g_IsWaterEffect) {
-                g_PhdVBuf[i].g += g_ShadeTable[(
+                m_VBuf[i].g += g_ShadeTable[(
                     ((uint8_t)g_WibbleOffset
                      + (uint8_t)g_RandTable[(vertex_count - i) % WIBBLE_SIZE])
                     % WIBBLE_SIZE)];
-                CLAMP(g_PhdVBuf[i].g, 0, 0x1FFF);
+                CLAMP(m_VBuf[i].g, 0, 0x1FFF);
             }
 
-            g_PhdVBuf[i].xs = xs;
-            g_PhdVBuf[i].ys = ys;
-            g_PhdVBuf[i].clip = clip_flags;
+            m_VBuf[i].xs = xs;
+            m_VBuf[i].ys = ys;
+            m_VBuf[i].clip = clip_flags;
         }
         obj_ptr += 4;
     }
@@ -393,9 +394,9 @@ static const int16_t *phd_PutObjectG3(const int16_t *obj_ptr, int32_t number)
     HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        vns[0] = &m_VBuf[*obj_ptr++];
+        vns[1] = &m_VBuf[*obj_ptr++];
+        vns[2] = &m_VBuf[*obj_ptr++];
         color = *obj_ptr++;
 
         HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
@@ -413,10 +414,10 @@ static const int16_t *phd_PutObjectG4(const int16_t *obj_ptr, int32_t number)
     HWR_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        vns[3] = &g_PhdVBuf[*obj_ptr++];
+        vns[0] = &m_VBuf[*obj_ptr++];
+        vns[1] = &m_VBuf[*obj_ptr++];
+        vns[2] = &m_VBuf[*obj_ptr++];
+        vns[3] = &m_VBuf[*obj_ptr++];
         color = *obj_ptr++;
 
         HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
@@ -435,9 +436,9 @@ static const int16_t *phd_PutObjectGT3(const int16_t *obj_ptr, int32_t number)
     HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        vns[0] = &m_VBuf[*obj_ptr++];
+        vns[1] = &m_VBuf[*obj_ptr++];
+        vns[2] = &m_VBuf[*obj_ptr++];
         tex = &g_PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedTriangle(
@@ -457,10 +458,10 @@ static const int16_t *phd_PutObjectGT4(const int16_t *obj_ptr, int32_t number)
     HWR_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        vns[3] = &g_PhdVBuf[*obj_ptr++];
+        vns[0] = &m_VBuf[*obj_ptr++];
+        vns[1] = &m_VBuf[*obj_ptr++];
+        vns[2] = &m_VBuf[*obj_ptr++];
+        vns[3] = &m_VBuf[*obj_ptr++];
         tex = &g_PhdTextureInfo[*obj_ptr++];
 
         HWR_DrawTexturedQuad(
@@ -479,7 +480,7 @@ static const int16_t *phd_PutRoomSprites(
         int16_t sprnum = obj_ptr[1];
         obj_ptr += 2;
 
-        PHD_VBUF *vbuf = &g_PhdVBuf[vbuf_num];
+        PHD_VBUF *vbuf = &m_VBuf[vbuf_num];
         if (vbuf->clip < 0) {
             continue;
         }
@@ -539,13 +540,13 @@ void phd_PutShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         int16_t clip_positive = 1;
         int16_t clip_or = 0;
         for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
-            clip_and &= g_PhdVBuf[i].clip;
-            clip_positive &= g_PhdVBuf[i].clip >= 0;
-            clip_or |= g_PhdVBuf[i].clip;
+            clip_and &= m_VBuf[i].clip;
+            clip_positive &= m_VBuf[i].clip >= 0;
+            clip_or |= m_VBuf[i].clip;
         }
-        PHD_VBUF *vn1 = &g_PhdVBuf[0];
-        PHD_VBUF *vn2 = &g_PhdVBuf[g_Config.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &g_PhdVBuf[g_Config.enable_round_shadow ? 8 : 2];
+        PHD_VBUF *vn1 = &m_VBuf[0];
+        PHD_VBUF *vn2 = &m_VBuf[g_Config.enable_round_shadow ? 4 : 1];
+        PHD_VBUF *vn3 = &m_VBuf[g_Config.enable_round_shadow ? 8 : 2];
 
         bool visible =
             ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))
@@ -553,7 +554,7 @@ void phd_PutShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 
         if (!clip_and && clip_positive && visible) {
             HWR_PrintShadow(
-                &g_PhdVBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
+                &m_VBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
         }
     }
 

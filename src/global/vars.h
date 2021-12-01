@@ -15,7 +15,6 @@ extern int32_t g_PhdLeft;
 extern int32_t g_PhdBottom;
 extern int32_t g_PhdRight;
 extern int32_t g_PhdTop;
-extern PHD_VBUF g_PhdVBuf[1500];
 extern PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES];
 extern PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES];
 extern PHD_MATRIX *g_PhdMatrixPtr;
