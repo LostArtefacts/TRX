@@ -232,25 +232,6 @@ HRESULT DirectDrawSurface::Unlock(LPVOID lp)
 
     m_locked = false;
 
-    // re-draw stand-alone back buffers immediately after unlocking
-    // (used for video sequences)
-    if (m_desc.ddsCaps.dwCaps & DDSCAPS_PRIMARYSURFACE
-        && !(m_desc.ddsCaps.dwCaps & DDSCAPS_FLIP)) {
-
-        // FMV hack for Tomb Raider
-        // fix black lines by copying even to odd lines
-        for (DWORD i = 0; i < m_desc.dwHeight; i += 2) {
-            auto itrEven = std::next(m_buffer.begin(), i * m_desc.lPitch);
-            auto itrOdd = std::next(m_buffer.begin(), (i + 1) * m_desc.lPitch);
-            std::copy(itrEven, std::next(itrEven, m_desc.lPitch), itrOdd);
-        }
-
-        m_context.swapBuffers();
-        m_context.setupViewport();
-        m_renderer.upload(m_desc, m_buffer);
-        m_renderer.render();
-    }
-
     return DD_OK;
 }
 
