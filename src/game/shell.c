@@ -52,8 +52,6 @@ static void Shell_CalculateWibbleTable()
 
 void Shell_Main()
 {
-    g_SoundIsActive = true;
-
     T1MInit();
     Config_Read();
 
@@ -82,7 +80,7 @@ void Shell_Main()
 
     Text_Init();
     Clock_Init();
-    g_SoundIsActive = Sound_Init();
+    Sound_Init();
     Music_Init();
     Input_Init();
     FMV_Init();

@@ -14,7 +14,6 @@
 #include "global/vars.h"
 #include "specific/s_output.h"
 
-static bool m_SoundIsActiveOld = false;
 static const int32_t m_CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
@@ -25,8 +24,6 @@ int32_t StartCinematic(int32_t level_num)
 
     InitCinematicRooms();
 
-    m_SoundIsActiveOld = g_SoundIsActive;
-    g_SoundIsActive = false;
     g_CineFrame = 0;
     return GF_NOP;
 }
@@ -46,7 +43,6 @@ int32_t StopCinematic(int32_t level_num)
 {
     Music_Stop();
     Sound_StopAllSamples();
-    g_SoundIsActive = m_SoundIsActiveOld;
 
     g_LevelComplete = true;
     S_FadeInInventory(1);

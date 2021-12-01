@@ -549,10 +549,6 @@ static bool Level_LoadDemo(MYFILE *fp)
 
 static bool Level_LoadSamples(MYFILE *fp)
 {
-    if (!g_SoundIsActive) {
-        return true;
-    }
-
     File_Read(g_SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
     int32_t num_sample_infos;
     File_Read(&num_sample_infos, sizeof(int32_t), 1, fp);

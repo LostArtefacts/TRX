@@ -25,7 +25,6 @@ void (*g_EffectRoutines[])(ITEM_INFO *item) = {
     ChainBlock, Flicker,
 };
 
-bool g_SoundIsActive = true;
 int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *g_SampleInfos = NULL;
 uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = { 0 };

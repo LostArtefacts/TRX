@@ -53,6 +53,7 @@ static int32_t m_MasterVolumeDefault = 0;
 static int16_t m_AmbientLookup[MAX_AMBIENT_FX] = { 0 };
 static int32_t m_AmbientLookupIdx = 0;
 static int m_DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
+static bool m_SoundIsActive = false;
 
 static SOUND_SLOT *Sound_GetSlot(
     int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
@@ -186,12 +187,13 @@ bool Sound_Init()
 
     m_MasterVolume = 32;
     m_MasterVolumeDefault = 32;
-    return S_Audio_Init();
+    m_SoundIsActive = S_Audio_Init();
+    return m_SoundIsActive;
 }
 
 void Sound_UpdateEffects()
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return;
     }
 
@@ -258,7 +260,7 @@ void Sound_UpdateEffects()
 
 bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return false;
     }
 
@@ -432,7 +434,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
 bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return false;
     }
 
@@ -455,7 +457,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
 
 void Sound_ResetEffects()
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return;
     }
     m_MasterVolume = m_MasterVolumeDefault;
@@ -493,7 +495,7 @@ void Sound_ResetEffects()
 
 void Sound_ResetAmbientLoudness()
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return;
     }
 
@@ -505,7 +507,7 @@ void Sound_ResetAmbientLoudness()
 
 void Sound_StopAmbientSounds()
 {
-    if (!g_SoundIsActive) {
+    if (!m_SoundIsActive) {
         return;
     }
 
