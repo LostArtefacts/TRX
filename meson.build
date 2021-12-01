@@ -272,7 +272,7 @@ executable(
   'Tomb1Main',
   sources,
   name_prefix: '',
-  include_directories: ['lib/glm/', 'src/'],
+  include_directories: ['src/'],
   dependencies: dependencies,
   gui_app: true,
 )

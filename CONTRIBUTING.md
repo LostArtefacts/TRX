@@ -4,7 +4,6 @@
 
 Initial build:
 
-- Pull Git submodules (`git submodule init` and `git submodule update`)
 - Compile the project (described in the next section)
 - In case you're using TombATI, remove all the existing .dll and .exe files from your game directory
 - Copy all .dll and .exe files from the `build/` directory to your game directory

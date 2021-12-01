@@ -3,10 +3,6 @@
 #include "ati3dcif/Error.hpp"
 #include "glrage_gl/Utils.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/mat4x4.hpp>
-
 namespace glrage {
 namespace cif {
 
@@ -40,11 +36,15 @@ Renderer::Renderer()
     m_program.bind();
 
     // negate Z axis so the model is rendered behind the viewport, which is
-    // better than having a negative zNear in the ortho matrix, which seems
+    // better than having a negative z_near in the ortho matrix, which seems
     // to mess up depth testing
-    auto modelView = glm::scale(glm::mat4(), glm::vec3(1, 1, -1));
-    m_program.uniformMatrix4fv(
-        "matModelView", 1, GL_FALSE, glm::value_ptr(modelView));
+    GLfloat model_view[4][4] = {
+        { +1.0f, +0.0f, +0.0, +0.0f },
+        { +0.0f, +1.0f, +0.0, +0.0f },
+        { +0.0f, +0.0f, -1.0, -0.0f },
+        { +0.0f, +0.0f, +0.0, +1.0f },
+    };
+    m_program.uniformMatrix4fv("matModelView", 1, GL_FALSE, &model_view[0][0]);
 
     // TODO: make me configurable
     m_wireframe = false;
@@ -70,11 +70,21 @@ void Renderer::renderBegin()
 
     // CIF always uses an orthographic view, the application deals with the
     // perspective when required
-    auto width = static_cast<float>(m_context.getDisplayWidth());
-    auto height = static_cast<float>(m_context.getDisplayHeight());
-    auto projection = glm::ortho<float>(0, width, height, 0, -1e6, 1e6);
-    m_program.uniformMatrix4fv(
-        "matProjection", 1, GL_FALSE, glm::value_ptr(projection));
+    const auto left = 0.0f;
+    const auto top = 0.0f;
+    const auto right = static_cast<float>(m_context.getDisplayWidth());
+    const auto bottom = static_cast<float>(m_context.getDisplayHeight());
+    const auto z_near = -1e6;
+    const auto z_far = 1e6;
+    GLfloat projection[4][4] = {
+        { 2.0f / (right - left), 0.0f, 0.0f, 0.0f },
+        { 0.0f, 2.0f / (top - bottom), 0.0f, 0.0f },
+        { 0.0f, 0.0f, -2.0f / (z_far - z_near), 0.0f },
+        { -(right + left) / (right - left), -(top + bottom) / (top - bottom),
+          -(z_far + z_near) / (z_far - z_near), 1.0f }
+    };
+
+    m_program.uniformMatrix4fv("matProjection", 1, GL_FALSE, &projection[0][0]);
 
     gl::Utils::checkError(__FUNCTION__);
 }
