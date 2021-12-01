@@ -25,20 +25,6 @@ void DrawLaraInt(
     int32_t rate);
 void InitInterpolate(int32_t frac, int32_t rate);
 
-void phd_PushMatrix_I();
-void phd_PopMatrix_I();
-void phd_TranslateRel_I(int32_t x, int32_t y, int32_t z);
-void phd_TranslateRel_ID(
-    int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2);
-void phd_RotY_I(int16_t ang);
-void phd_RotX_I(int16_t ang);
-void phd_RotZ_I(int16_t ang);
-void phd_RotYXZ_I(int16_t y, int16_t x, int16_t z);
-void phd_RotYXZpack_I(int32_t r1, int32_t r2);
-void phd_PutPolygons_I(int16_t *ptr, int32_t clip);
-
-void InterpolateMatrix();
-void InterpolateArmMatrix();
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);

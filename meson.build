@@ -74,6 +74,7 @@ endif
 
 sources = [
   'src/3dsystem/3d_gen.c',
+  'src/3dsystem/matrix.c',
   'src/3dsystem/phd_math.c',
   'src/ati3dcif/Error.cpp',
   'src/ati3dcif/Interop.cpp',

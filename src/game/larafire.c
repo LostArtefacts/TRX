@@ -1,6 +1,7 @@
 #include "game/lara.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/control.h"

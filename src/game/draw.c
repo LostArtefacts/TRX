@@ -1,6 +1,7 @@
 #include "game/draw.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/control.h"
 #include "game/hair.h"
@@ -13,10 +14,6 @@
 #include "specific/s_output.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
-static PHD_MATRIX *m_IMMatrixPtr = NULL;
-static PHD_MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
-static int32_t m_IMRate = 0;
-static int32_t m_IMFrac = 0;
 static bool m_CameraUnderwater = false;
 
 int32_t DrawPhaseCinematic()
@@ -1323,189 +1320,6 @@ void DrawLaraInt(
 
     phd_PopMatrix();
     phd_PopMatrix();
-}
-
-void InitInterpolate(int32_t frac, int32_t rate)
-{
-    m_IMFrac = frac;
-    m_IMRate = rate;
-    m_IMMatrixPtr = &m_IMMatrixStack[0];
-    m_IMMatrixPtr->_00 = g_PhdMatrixPtr->_00;
-    m_IMMatrixPtr->_01 = g_PhdMatrixPtr->_01;
-    m_IMMatrixPtr->_02 = g_PhdMatrixPtr->_02;
-    m_IMMatrixPtr->_03 = g_PhdMatrixPtr->_03;
-    m_IMMatrixPtr->_10 = g_PhdMatrixPtr->_10;
-    m_IMMatrixPtr->_11 = g_PhdMatrixPtr->_11;
-    m_IMMatrixPtr->_12 = g_PhdMatrixPtr->_12;
-    m_IMMatrixPtr->_13 = g_PhdMatrixPtr->_13;
-    m_IMMatrixPtr->_20 = g_PhdMatrixPtr->_20;
-    m_IMMatrixPtr->_21 = g_PhdMatrixPtr->_21;
-    m_IMMatrixPtr->_22 = g_PhdMatrixPtr->_22;
-    m_IMMatrixPtr->_23 = g_PhdMatrixPtr->_23;
-}
-
-void phd_PushMatrix_I()
-{
-    phd_PushMatrix();
-    m_IMMatrixPtr[1]._00 = m_IMMatrixPtr[0]._00;
-    m_IMMatrixPtr[1]._01 = m_IMMatrixPtr[0]._01;
-    m_IMMatrixPtr[1]._02 = m_IMMatrixPtr[0]._02;
-    m_IMMatrixPtr[1]._03 = m_IMMatrixPtr[0]._03;
-    m_IMMatrixPtr[1]._10 = m_IMMatrixPtr[0]._10;
-    m_IMMatrixPtr[1]._11 = m_IMMatrixPtr[0]._11;
-    m_IMMatrixPtr[1]._12 = m_IMMatrixPtr[0]._12;
-    m_IMMatrixPtr[1]._13 = m_IMMatrixPtr[0]._13;
-    m_IMMatrixPtr[1]._20 = m_IMMatrixPtr[0]._20;
-    m_IMMatrixPtr[1]._21 = m_IMMatrixPtr[0]._21;
-    m_IMMatrixPtr[1]._22 = m_IMMatrixPtr[0]._22;
-    m_IMMatrixPtr[1]._23 = m_IMMatrixPtr[0]._23;
-    m_IMMatrixPtr++;
-}
-
-void phd_PopMatrix_I()
-{
-    phd_PopMatrix();
-    m_IMMatrixPtr--;
-}
-
-void phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
-{
-    phd_TranslateRel(x, y, z);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_TranslateRel(x, y, z);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_TranslateRel_ID(
-    int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2)
-{
-    phd_TranslateRel(x, y, z);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_TranslateRel(x2, y2, z2);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_RotY_I(PHD_ANGLE ang)
-{
-    phd_RotY(ang);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_RotY(ang);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_RotX_I(PHD_ANGLE ang)
-{
-    phd_RotX(ang);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_RotX(ang);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_RotZ_I(PHD_ANGLE ang)
-{
-    phd_RotZ(ang);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_RotZ(ang);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
-{
-    phd_RotYXZ(y, x, z);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_RotYXZ(y, x, z);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_RotYXZpack_I(int32_t r1, int32_t r2)
-{
-    phd_RotYXZpack(r1);
-    PHD_MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
-    phd_RotYXZpack(r2);
-    g_PhdMatrixPtr = old_matrix;
-}
-
-void phd_PutPolygons_I(int16_t *ptr, int32_t clip)
-{
-    phd_PushMatrix();
-    InterpolateMatrix();
-    phd_PutPolygons(ptr, clip);
-    phd_PopMatrix();
-}
-
-void InterpolateMatrix()
-{
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
-    PHD_MATRIX *iptr = m_IMMatrixPtr;
-
-    if (m_IMRate == 2) {
-        mptr->_00 = (mptr->_00 + iptr->_00) / 2;
-        mptr->_01 = (mptr->_01 + iptr->_01) / 2;
-        mptr->_02 = (mptr->_02 + iptr->_02) / 2;
-        mptr->_03 = (mptr->_03 + iptr->_03) / 2;
-        mptr->_10 = (mptr->_10 + iptr->_10) / 2;
-        mptr->_11 = (mptr->_11 + iptr->_11) / 2;
-        mptr->_12 = (mptr->_12 + iptr->_12) / 2;
-        mptr->_13 = (mptr->_13 + iptr->_13) / 2;
-        mptr->_20 = (mptr->_20 + iptr->_20) / 2;
-        mptr->_21 = (mptr->_21 + iptr->_21) / 2;
-        mptr->_22 = (mptr->_22 + iptr->_22) / 2;
-        mptr->_23 = (mptr->_23 + iptr->_23) / 2;
-    } else {
-        mptr->_00 += ((iptr->_00 - mptr->_00) * m_IMFrac) / m_IMRate;
-        mptr->_01 += ((iptr->_01 - mptr->_01) * m_IMFrac) / m_IMRate;
-        mptr->_02 += ((iptr->_02 - mptr->_02) * m_IMFrac) / m_IMRate;
-        mptr->_03 += ((iptr->_03 - mptr->_03) * m_IMFrac) / m_IMRate;
-        mptr->_10 += ((iptr->_10 - mptr->_10) * m_IMFrac) / m_IMRate;
-        mptr->_11 += ((iptr->_11 - mptr->_11) * m_IMFrac) / m_IMRate;
-        mptr->_12 += ((iptr->_12 - mptr->_12) * m_IMFrac) / m_IMRate;
-        mptr->_13 += ((iptr->_13 - mptr->_13) * m_IMFrac) / m_IMRate;
-        mptr->_20 += ((iptr->_20 - mptr->_20) * m_IMFrac) / m_IMRate;
-        mptr->_21 += ((iptr->_21 - mptr->_21) * m_IMFrac) / m_IMRate;
-        mptr->_22 += ((iptr->_22 - mptr->_22) * m_IMFrac) / m_IMRate;
-        mptr->_23 += ((iptr->_23 - mptr->_23) * m_IMFrac) / m_IMRate;
-    }
-}
-
-void InterpolateArmMatrix()
-{
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
-    PHD_MATRIX *iptr = m_IMMatrixPtr;
-
-    if (m_IMRate == 2) {
-        mptr->_00 = mptr[-2]._00;
-        mptr->_01 = mptr[-2]._01;
-        mptr->_02 = mptr[-2]._02;
-        mptr->_03 = (mptr->_03 + iptr->_03) / 2;
-        mptr->_10 = mptr[-2]._10;
-        mptr->_11 = mptr[-2]._11;
-        mptr->_12 = mptr[-2]._12;
-        mptr->_13 = (mptr->_13 + iptr->_13) / 2;
-        mptr->_20 = mptr[-2]._20;
-        mptr->_21 = mptr[-2]._21;
-        mptr->_22 = mptr[-2]._22;
-        mptr->_23 = (mptr->_23 + iptr->_23) / 2;
-    } else {
-        mptr->_00 = mptr[-2]._00;
-        mptr->_01 = mptr[-2]._01;
-        mptr->_02 = mptr[-2]._02;
-        mptr->_03 += ((iptr->_03 - mptr->_03) * m_IMFrac) / m_IMRate;
-        mptr->_10 = mptr[-2]._10;
-        mptr->_11 = mptr[-2]._11;
-        mptr->_12 = mptr[-2]._12;
-        mptr->_13 += ((iptr->_13 - mptr->_13) * m_IMFrac) / m_IMRate;
-        mptr->_20 = mptr[-2]._20;
-        mptr->_21 = mptr[-2]._21;
-        mptr->_22 = mptr[-2]._22;
-        mptr->_23 += ((iptr->_23 - mptr->_23) * m_IMFrac) / m_IMRate;
-    }
 }
 
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)

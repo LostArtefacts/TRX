@@ -1,6 +1,7 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/game.h"
 #include "game/gameflow.h"

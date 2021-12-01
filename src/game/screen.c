@@ -1,6 +1,7 @@
 #include "game/screen.h"
 
 #include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/viewport.h"
 #include "global/vars.h"
