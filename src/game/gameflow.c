@@ -18,8 +18,6 @@
 #include "json.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
 #include "specific/s_output.h"
 
 #include <limits.h>

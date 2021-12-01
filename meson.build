@@ -75,7 +75,6 @@ endif
 sources = [
   'src/3dsystem/3d_gen.c',
   'src/3dsystem/phd_math.c',
-  'src/3dsystem/scalespr.c',
   'src/ati3dcif/Error.cpp',
   'src/ati3dcif/Interop.cpp',
   'src/ati3dcif/Renderer.cpp',
@@ -242,10 +241,8 @@ sources = [
   'src/specific/s_audio_sample.c',
   'src/specific/s_audio_stream.c',
   'src/specific/s_clock.c',
-  'src/specific/s_display.c',
   'src/specific/s_filesystem.c',
   'src/specific/s_fmv.c',
-  'src/specific/s_frontend.c',
   'src/specific/s_hwr.c',
   'src/specific/s_input.c',
   'src/specific/s_output.c',

@@ -24,8 +24,6 @@
 #include "init.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
 #include "specific/s_hwr.h"
 #include "specific/s_input.h"
 #include "specific/s_output.h"

@@ -1,7 +1,6 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/game.h"
 #include "game/gameflow.h"
@@ -18,8 +17,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
 #include "specific/s_output.h"
 
 #include <stdint.h>

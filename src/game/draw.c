@@ -1,7 +1,6 @@
 #include "game/draw.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/control.h"
 #include "game/hair.h"

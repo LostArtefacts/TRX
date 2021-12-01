@@ -16,8 +16,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 

@@ -1,6 +1,5 @@
 #include "game/overlay.h"
 
-#include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/screen.h"
@@ -9,7 +8,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_frontend.h"
+#include "specific/s_output.h"
 
 #include <stdio.h>
 

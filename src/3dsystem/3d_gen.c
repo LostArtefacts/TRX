@@ -1,13 +1,13 @@
 #include "3dsystem/3d_gen.h"
 
 #include "3dsystem/phd_math.h"
-#include "3dsystem/scalespr.h"
 #include "config.h"
 #include "game/screen.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
+#include "specific/s_output.h"
 
 #include <math.h>
 
