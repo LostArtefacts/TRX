@@ -10,9 +10,11 @@
 #include <windows.h>
 #include <stdint.h>
 
-// TODO: function naming, Render vs. Draw vs. Insert
+// TODO: function naming, Render vs. Draw
 // TODO: port ATI3DCIF to actual D3D calls
 
+void HWR_EnableTextureMode(void);
+void HWR_DisableTextureMode(void);
 void HWR_RenderBegin();
 void HWR_RenderEnd();
 void HWR_RenderToggle();
@@ -69,10 +71,5 @@ void HWR_DrawTexturedQuad(
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype);
 
 void HWR_SetWaterColor(const RGBF *color);
-
-const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number);
-const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number);
-const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number);
-const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number);
 
 #endif

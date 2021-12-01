@@ -526,35 +526,3 @@ void S_DrawUISprite(
         HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
-
-const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count)
-{
-    for (int i = 0; i < vertex_count; i++) {
-        int16_t vbuf_num = obj_ptr[0];
-        int16_t sprnum = obj_ptr[1];
-        obj_ptr += 2;
-
-        PHD_VBUF *vbuf = &g_PhdVBuf[vbuf_num];
-        if (vbuf->clip < 0) {
-            continue;
-        }
-
-        int32_t zv = vbuf->zv;
-        PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-        int32_t zp = (zv / g_PhdPersp);
-        int32_t x1 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
-        int32_t y1 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
-        int32_t x2 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
-        int32_t y2 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
-        if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
-            && y1 < g_PhdBottom) {
-            HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
-        }
-    }
-
-    return obj_ptr;
-}

@@ -56,6 +56,4 @@ void S_DrawSpriteRel(
 void S_DrawUISprite(
     int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade);
 
-const int16_t *S_DrawRoomSprites(const int16_t *obj_ptr, int32_t vertex_count);
-
 #endif

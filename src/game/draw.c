@@ -270,7 +270,7 @@ void PrintRooms(int16_t room_number)
     g_PhdTop = r->top;
     g_PhdBottom = r->bottom;
 
-    S_InsertRoom(r->data);
+    phd_PutRoom(r->data);
 
     for (int i = r->item_number; i != NO_ITEM; i = g_Items[i].next_item) {
         ITEM_INFO *item = &g_Items[i];

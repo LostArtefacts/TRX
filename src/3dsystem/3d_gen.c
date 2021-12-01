@@ -8,13 +8,19 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "specific/s_hwr.h"
-#include "specific/s_output.h"
 
 #include <math.h>
 
 static PHD_VECTOR m_LsVectorView = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
+
+static const int16_t *phd_PutObjectG3(const int16_t *obj_ptr, int32_t number);
+static const int16_t *phd_PutObjectG4(const int16_t *obj_ptr, int32_t number);
+static const int16_t *phd_PutObjectGT3(const int16_t *obj_ptr, int32_t number);
+static const int16_t *phd_PutObjectGT4(const int16_t *obj_ptr, int32_t number);
+static const int16_t *phd_PutRoomSprites(
+    const int16_t *obj_ptr, int32_t vertex_count);
 
 void phd_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
@@ -310,27 +316,27 @@ void phd_PutPolygons(const int16_t *obj_ptr, int clip)
     obj_ptr = calc_object_vertices(obj_ptr);
     if (obj_ptr) {
         obj_ptr = calc_vertice_light(obj_ptr);
-        obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
-        obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
-        obj_ptr = HWR_InsertObjectG4(obj_ptr + 1, *obj_ptr);
-        obj_ptr = HWR_InsertObjectG3(obj_ptr + 1, *obj_ptr);
+        obj_ptr = phd_PutObjectGT4(obj_ptr + 1, *obj_ptr);
+        obj_ptr = phd_PutObjectGT3(obj_ptr + 1, *obj_ptr);
+        obj_ptr = phd_PutObjectG4(obj_ptr + 1, *obj_ptr);
+        obj_ptr = phd_PutObjectG3(obj_ptr + 1, *obj_ptr);
     }
 }
 
-void phd_PutPolygons_I(int16_t *ptr, int32_t clip)
+void phd_PutPolygons_I(const int16_t *obj_ptr, int32_t clip)
 {
     phd_PushMatrix();
     InterpolateMatrix();
-    phd_PutPolygons(ptr, clip);
+    phd_PutPolygons(obj_ptr, clip);
     phd_PopMatrix();
 }
 
-void S_InsertRoom(const int16_t *obj_ptr)
+void phd_PutRoom(const int16_t *obj_ptr)
 {
     obj_ptr = calc_roomvert(obj_ptr);
-    obj_ptr = HWR_InsertObjectGT4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = HWR_InsertObjectGT3(obj_ptr + 1, *obj_ptr);
-    obj_ptr = S_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
+    obj_ptr = phd_PutObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = phd_PutObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = phd_PutRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
 int32_t phd_GetDrawDistMin()
@@ -381,4 +387,124 @@ int32_t phd_CalculateFogShade(int32_t depth)
     }
 
     return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
+}
+
+static const int16_t *phd_PutObjectG3(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    PHD_VBUF *vns[3];
+    int32_t color;
+
+    HWR_DisableTextureMode();
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &g_PhdVBuf[*obj_ptr++];
+        vns[1] = &g_PhdVBuf[*obj_ptr++];
+        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        color = *obj_ptr++;
+
+        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *phd_PutObjectG4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    PHD_VBUF *vns[4];
+    int32_t color;
+
+    HWR_DisableTextureMode();
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &g_PhdVBuf[*obj_ptr++];
+        vns[1] = &g_PhdVBuf[*obj_ptr++];
+        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        vns[3] = &g_PhdVBuf[*obj_ptr++];
+        color = *obj_ptr++;
+
+        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        HWR_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *phd_PutObjectGT3(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    PHD_VBUF *vns[3];
+    PHD_TEXTURE *tex;
+
+    HWR_EnableTextureMode();
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &g_PhdVBuf[*obj_ptr++];
+        vns[1] = &g_PhdVBuf[*obj_ptr++];
+        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        tex = &g_PhdTextureInfo[*obj_ptr++];
+
+        HWR_DrawTexturedTriangle(
+            vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
+            &tex->uv[2], tex->drawtype);
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *phd_PutObjectGT4(const int16_t *obj_ptr, int32_t number)
+{
+    int32_t i;
+    PHD_VBUF *vns[4];
+    PHD_TEXTURE *tex;
+
+    HWR_EnableTextureMode();
+
+    for (i = 0; i < number; i++) {
+        vns[0] = &g_PhdVBuf[*obj_ptr++];
+        vns[1] = &g_PhdVBuf[*obj_ptr++];
+        vns[2] = &g_PhdVBuf[*obj_ptr++];
+        vns[3] = &g_PhdVBuf[*obj_ptr++];
+        tex = &g_PhdTextureInfo[*obj_ptr++];
+
+        HWR_DrawTexturedQuad(
+            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
+            &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *phd_PutRoomSprites(
+    const int16_t *obj_ptr, int32_t vertex_count)
+{
+    for (int i = 0; i < vertex_count; i++) {
+        int16_t vbuf_num = obj_ptr[0];
+        int16_t sprnum = obj_ptr[1];
+        obj_ptr += 2;
+
+        PHD_VBUF *vbuf = &g_PhdVBuf[vbuf_num];
+        if (vbuf->clip < 0) {
+            continue;
+        }
+
+        int32_t zv = vbuf->zv;
+        PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
+        int32_t zp = (zv / g_PhdPersp);
+        int32_t x1 =
+            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+        int32_t y1 =
+            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+        int32_t x2 =
+            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+        int32_t y2 =
+            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+        if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
+            && y1 < g_PhdBottom) {
+            HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
+        }
+    }
+
+    return obj_ptr;
 }

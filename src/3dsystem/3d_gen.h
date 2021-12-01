@@ -25,10 +25,8 @@ int32_t phd_CalculateFogShade(int32_t depth);
 
 void phd_InitPolyList();
 void phd_PutPolygons(const int16_t *obj_ptr, int clip);
-
-void phd_PutPolygons_I(int16_t *ptr, int32_t clip);
-
-void S_InsertRoom(const int16_t *obj_ptr);
+void phd_PutPolygons_I(const int16_t *obj_ptr, int32_t clip);
+void phd_PutRoom(const int16_t *obj_ptr);
 
 const int16_t *calc_object_vertices(const int16_t *obj_ptr);
 const int16_t *calc_vertice_light(const int16_t *obj_ptr);

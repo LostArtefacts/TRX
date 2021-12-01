@@ -48,11 +48,18 @@ static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
 static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
 
-static void HWR_EnableTextureMode(void);
-static void HWR_DisableTextureMode(void);
 static void HWR_ApplyWaterEffect(float *r, float *g, float *b);
 
-static void HWR_EnableTextureMode(void)
+static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
+{
+    if (g_IsShadeEffect) {
+        *r *= m_WaterColor.r;
+        *g *= m_WaterColor.g;
+        *b *= m_WaterColor.b;
+    }
+}
+
+void HWR_EnableTextureMode(void)
 {
     if (m_IsTextureMode) {
         return;
@@ -63,7 +70,7 @@ static void HWR_EnableTextureMode(void)
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
-static void HWR_DisableTextureMode(void)
+void HWR_DisableTextureMode(void)
 {
     if (!m_IsTextureMode) {
         return;
@@ -72,15 +79,6 @@ static void HWR_DisableTextureMode(void)
     m_IsTextureMode = false;
     BOOL enable = FALSE;
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
-}
-
-static void HWR_ApplyWaterEffect(float *r, float *g, float *b)
-{
-    if (g_IsShadeEffect) {
-        *r *= m_WaterColor.r;
-        *g *= m_WaterColor.g;
-        *b *= m_WaterColor.b;
-    }
 }
 
 void HWR_SetWaterColor(const RGBF *color)
@@ -1187,93 +1185,6 @@ void HWR_SetupRenderContextAndRender()
                                                     : C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &filter);
     HWR_RenderToggle();
-}
-
-const int16_t *HWR_InsertObjectG3(const int16_t *obj_ptr, int32_t number)
-{
-    int32_t i;
-    PHD_VBUF *vns[3];
-    int32_t color;
-
-    HWR_DisableTextureMode();
-
-    for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
-        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-    }
-
-    return obj_ptr;
-}
-
-const int16_t *HWR_InsertObjectG4(const int16_t *obj_ptr, int32_t number)
-{
-    int32_t i;
-    PHD_VBUF *vns[4];
-    int32_t color;
-
-    HWR_DisableTextureMode();
-
-    for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        vns[3] = &g_PhdVBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
-        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-        HWR_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
-    }
-
-    return obj_ptr;
-}
-
-const int16_t *HWR_InsertObjectGT3(const int16_t *obj_ptr, int32_t number)
-{
-    int32_t i;
-    PHD_VBUF *vns[3];
-    PHD_TEXTURE *tex;
-
-    HWR_EnableTextureMode();
-
-    for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
-
-        HWR_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
-            &tex->uv[2], tex->drawtype);
-    }
-
-    return obj_ptr;
-}
-
-const int16_t *HWR_InsertObjectGT4(const int16_t *obj_ptr, int32_t number)
-{
-    int32_t i;
-    PHD_VBUF *vns[4];
-    PHD_TEXTURE *tex;
-
-    HWR_EnableTextureMode();
-
-    for (i = 0; i < number; i++) {
-        vns[0] = &g_PhdVBuf[*obj_ptr++];
-        vns[1] = &g_PhdVBuf[*obj_ptr++];
-        vns[2] = &g_PhdVBuf[*obj_ptr++];
-        vns[3] = &g_PhdVBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
-
-        HWR_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
-            &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
-    }
-
-    return obj_ptr;
 }
 
 void HWR_DrawFlatTriangle(
