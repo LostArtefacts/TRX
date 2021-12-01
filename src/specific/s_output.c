@@ -44,24 +44,6 @@ void S_CopyBufferToScreen()
     HWR_CopyToPicture();
 }
 
-SG_COL S_Colour(int32_t red, int32_t green, int32_t blue)
-{
-    int32_t best_dist = SQUARE(256) * 3;
-    SG_COL best_entry = 0;
-    for (int i = 0; i < 256; i++) {
-        RGB888 *col = &g_GamePalette[i];
-        int32_t dr = red - col->r;
-        int32_t dg = green - col->g;
-        int32_t db = blue - col->b;
-        int32_t dist = SQUARE(dr) + SQUARE(dg) + SQUARE(db);
-        if (dist < best_dist) {
-            best_dist = dist;
-            best_entry = i;
-        }
-    }
-    return best_entry;
-}
-
 RGB888 S_ColourFromPalette(int8_t idx)
 {
     RGB888 ret;

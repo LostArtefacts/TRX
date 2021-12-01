@@ -13,7 +13,6 @@ void S_CopyBufferToScreen();
 
 void S_Wait(int32_t nframes);
 
-SG_COL S_Colour(int32_t red, int32_t green, int32_t blue);
 RGB888 S_ColourFromPalette(int8_t idx);
 
 void S_DrawScreenFlatQuad(
