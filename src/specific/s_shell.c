@@ -1,6 +1,7 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/music.h"

@@ -13,6 +13,7 @@
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
+#include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
@@ -1062,7 +1063,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 S_CopyBufferToScreen();
                 S_OutputPolyList();
                 S_DumpScreen();
-                S_Wait(data->display_time);
+                Shell_Wait(data->display_time);
                 S_FadeToBlack();
                 S_NoFade();
             }

@@ -11,8 +11,6 @@ void S_FadeOutInventory(int32_t fade);
 
 void S_CopyBufferToScreen();
 
-void S_Wait(int32_t nframes);
-
 RGB888 S_ColourFromPalette(int8_t idx);
 
 void S_DrawScreenFlatQuad(

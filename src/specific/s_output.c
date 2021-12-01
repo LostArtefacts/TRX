@@ -135,20 +135,6 @@ void S_FadeToBlack()
     HWR_FadeWait();
 }
 
-void S_Wait(int32_t nticks)
-{
-    for (int i = 0; i < nticks; i++) {
-        Input_Update();
-        if (g_Input.any) {
-            break;
-        }
-        Clock_SyncTicks(1);
-    }
-    while (g_Input.any) {
-        Input_Update();
-    }
-}
-
 void S_InitialisePolyList()
 {
     phd_InitPolyList();

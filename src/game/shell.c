@@ -16,6 +16,7 @@
 #include "game/screen.h"
 #include "game/settings.h"
 #include "game/setup.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -102,7 +103,7 @@ void Shell_Main()
     S_CopyBufferToScreen();
     S_OutputPolyList();
     S_DumpScreen();
-    S_Wait(TICKS_PER_SECOND);
+    Shell_Wait(TICKS_PER_SECOND);
 
     FMV_Play("fmv\\core.rpl");
     FMV_Play("fmv\\escape.rpl");
@@ -166,4 +167,18 @@ void Shell_Main()
     }
 
     Settings_Write();
+}
+
+void Shell_Wait(int nticks)
+{
+    for (int i = 0; i < nticks; i++) {
+        Input_Update();
+        if (g_Input.any) {
+            break;
+        }
+        Clock_SyncTicks(1);
+    }
+    while (g_Input.any) {
+        Input_Update();
+    }
 }
