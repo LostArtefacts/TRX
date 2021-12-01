@@ -12,16 +12,6 @@
 static int32_t m_ResolutionIdx = 0;
 static int32_t m_PendingResolutionIdx = 0;
 
-void Screen_SetupSize()
-{
-    int32_t width = Screen_GetResWidth();
-    int32_t height = Screen_GetResHeight();
-    ViewPort_Init(width, height);
-
-    phd_ResetMatrixStack();
-    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
-}
-
 bool Screen_SetResIdx(int32_t idx)
 {
     if (idx >= 0 && idx < RESOLUTIONS_SIZE) {
@@ -123,4 +113,11 @@ void Screen_ApplyResolution()
 {
     m_ResolutionIdx = m_PendingResolutionIdx;
     Output_ApplyResolution();
+
+    int32_t width = Screen_GetResWidth();
+    int32_t height = Screen_GetResHeight();
+    ViewPort_Init(width, height);
+
+    phd_ResetMatrixStack();
+    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }

@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void Screen_SetupSize();
-
 bool Screen_SetResIdx(int32_t idx);
 bool Screen_SetPrevRes();
 bool Screen_SetNextRes();

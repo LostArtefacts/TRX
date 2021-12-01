@@ -1194,7 +1194,6 @@ void S_Output_FadeWait()
 void S_Output_ApplyResolution()
 {
     S_Output_SetHardwareVideoMode();
-    Screen_SetupSize();
 }
 
 void S_Output_SetViewport(int width, int height)
