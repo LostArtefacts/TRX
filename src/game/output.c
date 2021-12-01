@@ -399,7 +399,7 @@ void Output_SetFullscreen(bool fullscreen)
 
 void Output_ApplyResolution()
 {
-    S_Output_SwitchResolution();
+    S_Output_ApplyResolution();
 }
 
 void Output_DownloadTextures(int page_count)
@@ -564,7 +564,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
              >= 0);
 
         if (!clip_and && clip_positive && visible) {
-            S_Output_PrintShadow(
+            S_Output_DrawShadow(
                 &m_VBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
         }
     }
