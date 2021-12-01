@@ -9,7 +9,13 @@ PICTURE *Picture_Create();
 PICTURE *Picture_CreateFromFile(const char *file_path);
 void Picture_Free(PICTURE *picture);
 
-bool Picture_Scale(
+bool Picture_ScaleFit(
+    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
+    size_t target_height);
+bool Picture_ScaleCover(
+    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
+    size_t target_height);
+bool Picture_ScaleSmart(
     PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
     size_t target_height);
 

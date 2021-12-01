@@ -170,7 +170,7 @@ fail:
     return false;
 }
 
-bool S_Picture_Scale(
+bool S_Picture_ScaleLetterbox(
     PICTURE *target_pic, const PICTURE *source_pic, int target_width,
     int target_height)
 {
@@ -182,7 +182,6 @@ bool S_Picture_Scale(
     int source_width = source_pic->width;
     int source_height = source_pic->height;
 
-    // keep aspect ratio and fit inside, adding black bars on the sides
     const float source_ratio = source_width / (float)source_height;
     const float target_ratio = target_width / (float)target_height;
     {
@@ -196,6 +195,142 @@ bool S_Picture_Scale(
         target_height = new_height;
     }
 
+    bool ret = false;
+    struct SwsContext *sws_ctx = sws_getContext(
+        source_width, source_height, AV_PIX_FMT_RGB24, target_width,
+        target_height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+
+    if (!sws_ctx) {
+        LOG_ERROR("Failed to get SWS context");
+        goto cleanup;
+    }
+
+    target_pic->width = target_width;
+    target_pic->height = target_height;
+    target_pic->data =
+        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+
+    uint8_t *src_planes[4];
+    uint8_t *dst_planes[4];
+    int src_linesize[4];
+    int dst_linesize[4];
+
+    av_image_fill_arrays(
+        src_planes, src_linesize, (const uint8_t *)source_pic->data,
+        AV_PIX_FMT_RGB24, source_width, source_height, 1);
+
+    av_image_fill_arrays(
+        dst_planes, dst_linesize, (const uint8_t *)target_pic->data,
+        AV_PIX_FMT_RGB24, target_pic->width, target_pic->height, 1);
+
+    sws_scale(
+        sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
+        source_height, (uint8_t *const *)dst_planes, dst_linesize);
+
+    ret = true;
+
+cleanup:
+    if (sws_ctx) {
+        sws_freeContext(sws_ctx);
+    }
+
+    if (!ret) {
+        if (target_pic) {
+            Memory_Free(target_pic->data);
+            target_pic->width = 0;
+            target_pic->height = 0;
+            target_pic->data = NULL;
+        }
+    }
+
+    return ret;
+}
+
+bool S_Picture_ScaleCrop(
+    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
+    int target_height)
+{
+    assert(source_pic);
+    assert(source_pic->data);
+    assert(target_pic);
+    assert(!target_pic->data);
+
+    int source_width = source_pic->width;
+    int source_height = source_pic->height;
+
+    const float source_ratio = source_width / (float)source_height;
+    const float target_ratio = target_width / (float)target_height;
+
+    int crop_width = source_ratio < target_ratio ? source_width
+                                                 : source_height * target_ratio;
+    int crop_height = source_ratio < target_ratio ? source_width / target_ratio
+                                                  : source_height;
+
+    bool ret = false;
+    struct SwsContext *sws_ctx = sws_getContext(
+        crop_width, crop_height, AV_PIX_FMT_RGB24, target_width, target_height,
+        AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+
+    if (!sws_ctx) {
+        LOG_ERROR("Failed to get SWS context");
+        goto cleanup;
+    }
+
+    target_pic->width = target_width;
+    target_pic->height = target_height;
+    target_pic->data =
+        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+
+    uint8_t *src_planes[4];
+    uint8_t *dst_planes[4];
+    int src_linesize[4];
+    int dst_linesize[4];
+
+    av_image_fill_arrays(
+        src_planes, src_linesize, (const uint8_t *)source_pic->data,
+        AV_PIX_FMT_RGB24, source_width, source_height, 1);
+
+    src_planes[0] += ((source_height - crop_height) / 2) * src_linesize[0];
+    src_planes[0] += ((source_width - crop_width) / 2) * sizeof(RGB888);
+
+    av_image_fill_arrays(
+        dst_planes, dst_linesize, (const uint8_t *)target_pic->data,
+        AV_PIX_FMT_RGB24, target_pic->width, target_pic->height, 1);
+
+    sws_scale(
+        sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
+        crop_height, (uint8_t *const *)dst_planes, dst_linesize);
+
+    ret = true;
+
+cleanup:
+    if (sws_ctx) {
+        sws_freeContext(sws_ctx);
+    }
+
+    if (!ret) {
+        if (target_pic) {
+            Memory_Free(target_pic->data);
+            target_pic->width = 0;
+            target_pic->height = 0;
+            target_pic->data = NULL;
+        }
+    }
+
+    return ret;
+}
+
+bool S_Picture_ScaleStretch(
+    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
+    int target_height)
+{
+    assert(source_pic);
+    assert(source_pic->data);
+    assert(target_pic);
+    assert(!target_pic->data);
+
+    int source_width = source_pic->width;
+    int source_height = source_pic->height;
     bool ret = false;
     struct SwsContext *sws_ctx = sws_getContext(
         source_width, source_height, AV_PIX_FMT_RGB24, target_width,

@@ -781,7 +781,7 @@ void Output_DisplayPicture(const char *filename)
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_Create();
         if (scaled_pic) {
-            Picture_Scale(
+            Picture_ScaleSmart(
                 scaled_pic, orig_pic, ViewPort_GetWidth(),
                 ViewPort_GetHeight());
             S_Output_DownloadPicture(scaled_pic);
