@@ -26,13 +26,12 @@
 #include "init.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_hwr.h"
 #include "specific/s_input.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 
+#include <stdarg.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -60,9 +59,8 @@ void Shell_Main()
     Memory_Free(args);
 
     S_Shell_SeedRandom();
-    Output_CalculateWibbleTable();
 
-    if (!HWR_Init()) {
+    if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
         return;
     }
@@ -161,7 +159,7 @@ void Shell_ExitSystem(const char *message)
         Input_Update();
     }
     GameBuf_Shutdown();
-    HWR_Shutdown();
+    Output_Shutdown();
     S_Shell_ShowFatalError(message);
 }
 

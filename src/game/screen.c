@@ -3,9 +3,9 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
+#include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_hwr.h"
 
 #include <math.h>
 
@@ -122,5 +122,5 @@ int32_t Screen_GetRenderScaleGLRage(int32_t unit)
 void Screen_ApplyResolution()
 {
     m_ResolutionIdx = m_PendingResolutionIdx;
-    HWR_SwitchResolution();
+    Output_ApplyResolution();
 }

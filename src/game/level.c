@@ -14,7 +14,6 @@
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_hwr.h"
 
 #include <stdio.h>
 
@@ -135,7 +134,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 
     File_Close(fp);
 
-    HWR_DownloadTextures(m_TexturePageCount);
+    Output_DownloadTextures(m_TexturePageCount);
 
     return true;
 }
@@ -423,7 +422,7 @@ static bool Level_LoadPalette(MYFILE *fp)
     g_GamePalette[0].r = 0;
     g_GamePalette[0].g = 0;
     g_GamePalette[0].b = 0;
-    HWR_SetPalette();
+    Output_SetPalette();
     return true;
 }
 

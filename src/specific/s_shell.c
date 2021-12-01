@@ -5,12 +5,12 @@
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/shell.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_hwr.h"
 
 #define SDL_MAIN_HANDLED
 
@@ -38,7 +38,7 @@ static void S_Shell_PostWindowResize()
     int width;
     int height;
     SDL_GetWindowSize(m_Window, &width, &height);
-    HWR_SetViewport(width, height);
+    Output_SetViewport(width, height);
 }
 
 void S_Shell_ShowFatalError(const char *message)
@@ -52,7 +52,7 @@ void S_Shell_ShowFatalError(const char *message)
 void S_Shell_ToggleFullscreen()
 {
     m_Fullscreen = !m_Fullscreen;
-    HWR_SetFullscreen(m_Fullscreen);
+    Output_SetFullscreen(m_Fullscreen);
     SDL_SetWindowFullscreen(
         m_Window, m_Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
     SDL_ShowCursor(m_Fullscreen ? SDL_DISABLE : SDL_ENABLE);
@@ -61,7 +61,7 @@ void S_Shell_ToggleFullscreen()
 
 void S_Shell_TerminateGame(int exit_code)
 {
-    HWR_Shutdown();
+    Output_Shutdown();
     if (m_Window) {
         SDL_DestroyWindow(m_Window);
     }
@@ -98,7 +98,7 @@ void S_Shell_SpinMessageLoop()
                 break;
 
             case SDL_WINDOWEVENT_RESIZED: {
-                HWR_SetViewport(event.window.data1, event.window.data2);
+                Output_SetViewport(event.window.data1, event.window.data2);
                 break;
             }
             }

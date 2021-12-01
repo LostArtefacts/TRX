@@ -5,7 +5,14 @@
 
 extern PHD_VECTOR g_LsVectorView;
 
-void Output_CalculateWibbleTable();
+bool Output_Init();
+void Output_Shutdown();
+
+void Output_SetViewport(int width, int height);
+void Output_SetFullscreen(bool fullscreen);
+void Output_ApplyResolution();
+void Output_DownloadTextures(int page_count);
+void Output_SetPalette();
 
 int32_t Output_GetNearZ();
 int32_t Output_GetFarZ();

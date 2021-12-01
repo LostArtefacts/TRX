@@ -33,6 +33,7 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr);
 static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
+static void Output_CalcWibbleTable();
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
@@ -365,7 +366,7 @@ static int32_t Output_CalcFogShade(int32_t depth)
     return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
 }
 
-void Output_CalculateWibbleTable()
+static void Output_CalcWibbleTable()
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
@@ -373,6 +374,42 @@ void Output_CalculateWibbleTable()
         g_ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
         g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
+}
+
+bool Output_Init()
+{
+    Output_CalcWibbleTable();
+    return HWR_Init();
+}
+
+void Output_Shutdown()
+{
+    HWR_Shutdown();
+}
+
+void Output_SetViewport(int width, int height)
+{
+    HWR_SetViewport(width, height);
+}
+
+void Output_SetFullscreen(bool fullscreen)
+{
+    HWR_SetFullscreen(fullscreen);
+}
+
+void Output_ApplyResolution()
+{
+    HWR_SwitchResolution();
+}
+
+void Output_DownloadTextures(int page_count)
+{
+    HWR_DownloadTextures(page_count);
+}
+
+void Output_SetPalette()
+{
+    HWR_SetPalette();
 }
 
 void Output_ClearScreen()

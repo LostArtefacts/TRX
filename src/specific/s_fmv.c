@@ -24,9 +24,9 @@
 #include "filesystem.h"
 #include "game/gamebuf.h"
 #include "game/input.h"
+#include "game/output.h"
 #include "log.h"
 #include "specific/s_audio.h"
-#include "specific/s_hwr.h"
 #include "specific/s_shell.h"
 
 #include <SDL2/SDL.h>
@@ -2296,7 +2296,7 @@ bool S_FMV_Play(const char *file_path)
     }
 
     GameBuf_Shutdown();
-    HWR_Shutdown();
+    Output_Shutdown();
     S_Audio_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
@@ -2348,7 +2348,7 @@ cleanup:
     }
 
     S_Audio_Init();
-    HWR_Init();
+    Output_Init();
     GameBuf_Init();
     return ret;
 }
