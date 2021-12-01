@@ -68,7 +68,6 @@ static void S_Output_SetHardwareVideoMode()
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
-    LOG_INFO("SetHardwareVideoMode:");
     S_Output_ReleaseSurfaces();
 
     m_DDrawSurfaceWidth = Screen_GetResWidth();
@@ -78,13 +77,10 @@ static void S_Output_SetHardwareVideoMode()
     m_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
     m_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
-    LOG_INFO(
-        "    Switching to %dx%d", m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     result = MyIDirectDraw_SetDisplayMode(
         g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     S_Output_CheckError(result);
 
-    LOG_INFO("    Allocating front/back buffers");
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
@@ -94,13 +90,11 @@ static void S_Output_SetHardwareVideoMode()
     S_Output_CheckError(result);
     S_Output_ClearSurface(m_PrimarySurface);
 
-    LOG_INFO("    Picking up back buffer");
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
     result = MyIDirectDrawSurface_GetAttachedSurface(
         m_PrimarySurface, &caps, &m_BackSurface);
     S_Output_CheckError(result);
 
-    LOG_INFO("    Creating texture surfaces");
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
@@ -113,8 +107,6 @@ static void S_Output_SetHardwareVideoMode()
     }
 
     S_Output_SetupRenderContextAndRender();
-
-    LOG_INFO("    complete");
 }
 
 static void S_Output_SetupRenderContextAndRender()
@@ -655,8 +647,6 @@ void S_Output_SetPalette()
 {
     int32_t i;
 
-    LOG_INFO("PaletteSetHardware:");
-
     m_ATIPalette[0].r = 0;
     m_ATIPalette[0].g = 0;
     m_ATIPalette[0].b = 0;
@@ -681,7 +671,6 @@ void S_Output_SetPalette()
     m_ATIChromaKey.a = 0;
 
     m_IsPaletteActive = true;
-    LOG_INFO("    complete");
 }
 
 void S_Output_DumpScreen()
@@ -699,8 +688,6 @@ void S_Output_ClearBackBuffer()
 
 void S_Output_CopyFromPicture()
 {
-    LOG_INFO("CopyPictureHardware:");
-
     HRESULT result;
 
     if (!m_PictureSurface) {
@@ -717,7 +704,6 @@ void S_Output_CopyFromPicture()
     S_Output_RenderEnd();
     S_Output_BlitSurface(m_BackSurface, m_PictureSurface);
     S_Output_RenderToggle();
-    LOG_INFO("    complete");
 }
 
 void S_Output_CopyToPicture()
@@ -730,8 +716,6 @@ void S_Output_CopyToPicture()
 
 void S_Output_DownloadPicture(const PICTURE *pic)
 {
-    LOG_INFO("DownloadPictureHardware:");
-
     LPDIRECTDRAWSURFACE picture_surface = NULL;
     DDSURFACEDESC surface_desc;
     HRESULT result;
@@ -805,8 +789,6 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     S_Output_CheckError(result);
 
     MyIDirectDrawSurface_Release(picture_surface);
-
-    LOG_INFO("    complete");
 }
 
 void S_Output_SelectTexture(int tex_num)
@@ -1222,8 +1204,6 @@ bool S_Output_Init()
         return false;
     }
 
-    LOG_INFO("InitialiseHardware:");
-
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         m_ATITextureMap[i] = NULL;
         m_TextureSurfaces[i] = NULL;
@@ -1248,15 +1228,11 @@ bool S_Output_Init()
     tmp = C3D_EZMODE_TESTON_WRITEZ;
     ATI3DCIF_SetState(C3D_ERS_Z_MODE, &tmp);
 
-    LOG_INFO("    Detected %dk video memory", 4096);
-    LOG_INFO("    Complete, hardware ready");
     return true;
 }
 
 void S_Output_Shutdown()
 {
-    LOG_INFO("ShutdownHardware:");
-    LOG_INFO("    complete");
     S_Output_ReleaseSurfaces();
     S_ATI_Shutdown();
     if (g_DDraw) {
@@ -1500,17 +1476,11 @@ void S_Output_DrawTexturedQuad(
 
 void S_Output_DownloadTextures(int32_t pages)
 {
-    int i;
-
-    LOG_INFO(
-        "DownloadTexturesToHardware: level %d, pages %d", g_CurrentLevel,
-        pages);
-
     if (pages > MAX_TEXTPAGES) {
         Shell_ExitSystem("Attempt to download more than texture page limit");
     }
 
-    for (i = 0; i < MAX_TEXTPAGES; i++) {
+    for (int i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_ATITextureMap[i]) {
             if (ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
                 Shell_ExitSystem("ERROR: Could not unregister texture");
@@ -1521,7 +1491,6 @@ void S_Output_DownloadTextures(int32_t pages)
     }
 
     if (m_IsPaletteActive) {
-        LOG_INFO("    Resetting texture palette handle");
         if (m_ATITexturePalette) {
             if (ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette)) {
                 Shell_ExitSystem("ERROR: Cannot release old texture palette");
@@ -1535,7 +1504,7 @@ void S_Output_DownloadTextures(int32_t pages)
         m_IsPaletteActive = false;
     }
 
-    for (i = 0; i < pages; i++) {
+    for (int i = 0; i < pages; i++) {
         DDSURFACEDESC surface_desc;
         HRESULT result;
 
@@ -1551,8 +1520,6 @@ void S_Output_DownloadTextures(int32_t pages)
         result = MyIDirectDrawSurface2_Unlock(
             m_TextureSurfaces[i], surface_desc.lpSurface);
         S_Output_CheckError(result);
-
-        LOG_INFO("    registering");
 
         C3D_TMAP tmap;
         tmap.u32Size = sizeof(C3D_TMAP);
@@ -1570,13 +1537,9 @@ void S_Output_DownloadTextures(int32_t pages)
             LOG_ERROR("ERROR: Could not register texture");
             m_TextureLoaded[i] = false;
         } else {
-            LOG_INFO(
-                "    Texture %d, uploaded at %x", i, surface_desc.lpSurface);
             m_TextureLoaded[i] = true;
         }
     }
 
     m_SelectedTexture = -1;
-
-    LOG_INFO("    complete");
 }
