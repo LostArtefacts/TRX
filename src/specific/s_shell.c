@@ -23,7 +23,6 @@ static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_ShowFatalError(const char *message);
 static void S_Shell_PostWindowResize();
 
 void S_Shell_SeedRandom()
@@ -34,20 +33,20 @@ void S_Shell_SeedRandom()
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static void S_Shell_ShowFatalError(const char *message)
-{
-    LOG_ERROR("%s", message);
-    MessageBoxA(
-        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
-    S_Shell_TerminateGame(1);
-}
-
 static void S_Shell_PostWindowResize()
 {
     int width;
     int height;
     SDL_GetWindowSize(m_Window, &width, &height);
     HWR_SetViewport(width, height);
+}
+
+void S_Shell_ShowFatalError(const char *message)
+{
+    LOG_ERROR("%s", message);
+    MessageBoxA(
+        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    S_Shell_TerminateGame(1);
 }
 
 void S_Shell_ToggleFullscreen()
@@ -116,7 +115,9 @@ int main(int argc, char **argv)
     m_ArgStrings = argv;
 
     if (SDL_Init(SDL_INIT_EVENTS) < 0) {
-        S_Shell_ExitSystemFmt("Cannot initialize SDL: %s", SDL_GetError());
+        char buf[256];
+        sprintf(buf, "Cannot initialize SDL: %s", SDL_GetError());
+        S_Shell_ShowFatalError(buf);
         return 1;
     }
 
@@ -149,26 +150,6 @@ int main(int argc, char **argv)
 
     S_Shell_TerminateGame(0);
     return 0;
-}
-
-void S_Shell_ExitSystem(const char *message)
-{
-    while (g_Input.select) {
-        Input_Update();
-    }
-    GameBuf_Shutdown();
-    HWR_Shutdown();
-    S_Shell_ShowFatalError(message);
-}
-
-void S_Shell_ExitSystemFmt(const char *fmt, ...)
-{
-    va_list va;
-    va_start(va, fmt);
-    char message[150];
-    vsnprintf(message, 150, fmt, va);
-    va_end(va);
-    S_Shell_ExitSystem(message);
 }
 
 bool S_Shell_GetCommandLine(int *arg_count, char ***args)

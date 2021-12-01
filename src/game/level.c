@@ -8,13 +8,13 @@
 #include "game/gameflow.h"
 #include "game/items.h"
 #include "game/setup.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_hwr.h"
-#include "specific/s_shell.h"
 
 #include <stdio.h>
 
@@ -61,14 +61,14 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     GameBuf_Init();
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
-        S_Shell_ExitSystemFmt(
+        Shell_ExitSystemFmt(
             "Level_LoadFromFile(): Could not open %s", filename);
         return false;
     }
 
     File_Read(&version, sizeof(int32_t), 1, fp);
     if (version != 32) {
-        S_Shell_ExitSystemFmt(
+        Shell_ExitSystemFmt(
             "Level %d (%s) is version %d (this game code is version %d)",
             level_num, filename, version, 32);
         return false;
@@ -330,7 +330,7 @@ static bool Level_LoadObjects(MYFILE *fp)
     File_Read(&m_TextureCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d textures", m_TextureCount);
     if (m_TextureCount > MAX_TEXTURES) {
-        S_Shell_ExitSystem("Too many Textures in level");
+        Shell_ExitSystem("Too many Textures in level");
         return false;
     }
     File_Read(g_PhdTextureInfo, sizeof(PHD_TEXTURE), m_TextureCount, fp);
@@ -342,7 +342,7 @@ static bool Level_LoadSprites(MYFILE *fp)
 {
     File_Read(&m_SpriteInfoCount, sizeof(int32_t), 1, fp);
     if (m_SpriteInfoCount > MAX_SPRITES) {
-        S_Shell_ExitSystem("Too many sprites in level");
+        Shell_ExitSystem("Too many sprites in level");
         return false;
     }
     File_Read(&g_PhdSpriteInfo, sizeof(PHD_SPRITE), m_SpriteInfoCount, fp);
@@ -376,7 +376,7 @@ static bool Level_LoadItems(MYFILE *fp)
 
     if (item_count) {
         if (item_count > MAX_ITEMS) {
-            S_Shell_ExitSystem(
+            Shell_ExitSystem(
                 "Level_LoadItems(): Too Many g_Items being Loaded!!");
             return false;
         }
@@ -397,7 +397,7 @@ static bool Level_LoadItems(MYFILE *fp)
             File_Read(&item->flags, sizeof(uint16_t), 1, fp);
 
             if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
-                S_Shell_ExitSystemFmt(
+                Shell_ExitSystemFmt(
                     "Level_LoadItems(): Bad Object number (%d) on Item %d",
                     item->object_number, i);
             }
@@ -465,14 +465,14 @@ static bool Level_LoadBoxes(MYFILE *fp)
     File_Read(&g_NumberBoxes, sizeof(int32_t), 1, fp);
     g_Boxes = GameBuf_Alloc(sizeof(BOX_INFO) * g_NumberBoxes, GBUF_BOXES);
     if (!File_Read(g_Boxes, sizeof(BOX_INFO), g_NumberBoxes, fp)) {
-        S_Shell_ExitSystem("Level_LoadBoxes(): Unable to load boxes");
+        Shell_ExitSystem("Level_LoadBoxes(): Unable to load boxes");
         return false;
     }
 
     File_Read(&m_OverlapCount, sizeof(int32_t), 1, fp);
     g_Overlap = GameBuf_Alloc(sizeof(uint16_t) * m_OverlapCount, 22);
     if (!File_Read(g_Overlap, sizeof(uint16_t), m_OverlapCount, fp)) {
-        S_Shell_ExitSystem("Level_LoadBoxes(): Unable to load box overlaps");
+        Shell_ExitSystem("Level_LoadBoxes(): Unable to load box overlaps");
         return false;
     }
 
@@ -482,8 +482,7 @@ static bool Level_LoadBoxes(MYFILE *fp)
         if (!g_GroundZone[i]
             || !File_Read(
                 g_GroundZone[i], sizeof(int16_t), g_NumberBoxes, fp)) {
-            S_Shell_ExitSystem(
-                "Level_LoadBoxes(): Unable to load 'ground_zone'");
+            Shell_ExitSystem("Level_LoadBoxes(): Unable to load 'ground_zone'");
             return false;
         }
 
@@ -492,7 +491,7 @@ static bool Level_LoadBoxes(MYFILE *fp)
         if (!g_GroundZone2[i]
             || !File_Read(
                 g_GroundZone2[i], sizeof(int16_t), g_NumberBoxes, fp)) {
-            S_Shell_ExitSystem(
+            Shell_ExitSystem(
                 "Level_LoadBoxes(): Unable to load 'ground2_zone'");
             return false;
         }
@@ -501,7 +500,7 @@ static bool Level_LoadBoxes(MYFILE *fp)
             GameBuf_Alloc(sizeof(int16_t) * g_NumberBoxes, GBUF_FLYZONE);
         if (!g_FlyZone[i]
             || !File_Read(g_FlyZone[i], sizeof(int16_t), g_NumberBoxes, fp)) {
-            S_Shell_ExitSystem("Level_LoadBoxes(): Unable to load 'fly_zone'");
+            Shell_ExitSystem("Level_LoadBoxes(): Unable to load 'fly_zone'");
             return false;
         }
     }
@@ -559,7 +558,7 @@ static bool Level_LoadSamples(MYFILE *fp)
     File_Read(&num_sample_infos, sizeof(int32_t), 1, fp);
     LOG_INFO("%d sample infos", num_sample_infos);
     if (!num_sample_infos) {
-        S_Shell_ExitSystem("No Sample Infos");
+        Shell_ExitSystem("No Sample Infos");
         return false;
     }
 
@@ -571,7 +570,7 @@ static bool Level_LoadSamples(MYFILE *fp)
     File_Read(&sample_data_size, sizeof(int32_t), 1, fp);
     LOG_INFO("%d sample data size", sample_data_size);
     if (!sample_data_size) {
-        S_Shell_ExitSystem("No Sample Data");
+        Shell_ExitSystem("No Sample Data");
         return false;
     }
 
@@ -582,7 +581,7 @@ static bool Level_LoadSamples(MYFILE *fp)
     File_Read(&num_samples, sizeof(int32_t), 1, fp);
     LOG_INFO("%d samples", num_samples);
     if (!num_samples) {
-        S_Shell_ExitSystem("No Samples");
+        Shell_ExitSystem("No Samples");
         return false;
     }
 

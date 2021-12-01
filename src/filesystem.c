@@ -2,7 +2,6 @@
 
 #include "log.h"
 #include "memory.h"
-#include "specific/s_shell.h"
 #include "specific/s_filesystem.h"
 
 #include <assert.h>

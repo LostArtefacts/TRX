@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/inv.h"
 #include "game/lara.h"
+#include "game/shell.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
@@ -95,11 +96,11 @@ S_Input_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
 void S_Input_Init()
 {
     if (!S_Input_DInput_Create()) {
-        S_Shell_ExitSystem("Fatal DirectInput error!");
+        Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     if (!S_Input_DInput_KeyboardCreate()) {
-        S_Shell_ExitSystem("Fatal DirectInput error!");
+        Shell_ExitSystem("Fatal DirectInput error!");
     }
 
     if (g_Config.enable_xbox_one_controller) {

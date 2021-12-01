@@ -1,7 +1,7 @@
 #include "game/gamebuf.h"
 
+#include "game/shell.h"
 #include "memory.h"
-#include "specific/s_shell.h"
 
 #define MALLOC_SIZE 0x1000000 // 16 MB
 
@@ -71,7 +71,7 @@ void *GameBuf_Alloc(int32_t alloc_size, GAME_BUFFER buffer)
     size_t aligned_size = (alloc_size + 3) & ~3;
 
     if (aligned_size > m_GameAllocMemFree) {
-        S_Shell_ExitSystemFmt(
+        Shell_ExitSystemFmt(
             "GameBuf_Alloc(): OUT OF MEMORY %s %d",
             GameBuf_GetBufferName(buffer), aligned_size);
     }

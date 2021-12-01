@@ -3,12 +3,12 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/screen.h"
+#include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_ati.h"
-#include "specific/s_shell.h"
 
 #include "ati3dcif/Interop.hpp"
 #include "ddraw/Interop.hpp"
@@ -20,7 +20,7 @@
     {                                                                          \
         if (result != DD_OK) {                                                 \
             LOG_ERROR("DirectDraw error code %x", result);                     \
-            S_Shell_ExitSystem("Fatal DirectDraw error!");                     \
+            Shell_ExitSystem("Fatal DirectDraw error!");                       \
         }                                                                      \
     }
 
@@ -1606,13 +1606,13 @@ void HWR_DownloadTextures(int32_t pages)
         pages);
 
     if (pages > MAX_TEXTPAGES) {
-        S_Shell_ExitSystem("Attempt to download more than texture page limit");
+        Shell_ExitSystem("Attempt to download more than texture page limit");
     }
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_ATITextureMap[i]) {
             if (ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
-                S_Shell_ExitSystem("ERROR: Could not unregister texture");
+                Shell_ExitSystem("ERROR: Could not unregister texture");
             }
             m_ATITextureMap[i] = 0;
         }
@@ -1623,13 +1623,13 @@ void HWR_DownloadTextures(int32_t pages)
         LOG_INFO("    Resetting texture palette handle");
         if (m_ATITexturePalette) {
             if (ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette)) {
-                S_Shell_ExitSystem("ERROR: Cannot release old texture palette");
+                Shell_ExitSystem("ERROR: Cannot release old texture palette");
             }
             m_ATITexturePalette = NULL;
         }
         if (ATI3DCIF_TexturePaletteCreate(
                 C3D_ECI_TMAP_8BIT, m_ATIPalette, &m_ATITexturePalette)) {
-            S_Shell_ExitSystem("ERROR: Cannot create texture palette");
+            Shell_ExitSystem("ERROR: Cannot create texture palette");
         }
         m_IsPaletteActive = false;
     }

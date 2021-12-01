@@ -1,8 +1,8 @@
 #include "game/items.h"
 
+#include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 #include <stdio.h>
 
@@ -124,7 +124,7 @@ void InitialiseItem(int16_t item_num)
 void RemoveActiveItem(int16_t item_num)
 {
     if (!g_Items[item_num].active) {
-        S_Shell_ExitSystem("Item already deactive");
+        Shell_ExitSystem("Item already deactive");
     }
 
     g_Items[item_num].active = 0;
@@ -171,7 +171,7 @@ void AddActiveItem(int16_t item_num)
     }
 
     if (item->active) {
-        S_Shell_ExitSystemFmt(
+        Shell_ExitSystemFmt(
             "Item(%d)(Obj%d) already Active\n", item_num, item->object_number);
     }
 

@@ -1,11 +1,11 @@
 #include "game/sound.h"
 
-#include "log.h"
 #include "3dsystem/phd_math.h"
 #include "game/random.h"
+#include "game/shell.h"
 #include "global/vars.h"
+#include "log.h"
 #include "specific/s_audio.h"
-#include "specific/s_shell.h"
 #include "util.h"
 
 #include <math.h>
@@ -474,7 +474,7 @@ void Sound_ResetEffects()
         }
         SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[i]];
         if (s->volume < 0) {
-            S_Shell_ExitSystemFmt(
+            Shell_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
                 s->volume);
         }
@@ -482,8 +482,8 @@ void Sound_ResetEffects()
         int32_t mode = s->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
             if (m_AmbientLookupIdx >= MAX_AMBIENT_FX) {
-                S_Shell_ExitSystem("Ran out of ambient fx slots in "
-                                   "Sound_ResetEffects()");
+                Shell_ExitSystem("Ran out of ambient fx slots in "
+                                 "Sound_ResetEffects()");
             }
             m_AmbientLookup[m_AmbientLookupIdx] = i;
             m_AmbientLookupIdx++;

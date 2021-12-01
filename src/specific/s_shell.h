@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+void S_Shell_ShowFatalError(const char *message);
+
 void S_Shell_SeedRandom();
-void S_Shell_ExitSystem(const char *message);
-void S_Shell_ExitSystemFmt(const char *fmt, ...);
 void S_Shell_SpinMessageLoop();
 bool S_Shell_GetCommandLine(int *arg_count, char ***args);
 void *S_Shell_GetWindowHandle();

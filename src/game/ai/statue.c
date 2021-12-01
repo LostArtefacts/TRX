@@ -5,9 +5,9 @@
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 void SetupStatue(OBJECT_INFO *obj)
 {
@@ -27,7 +27,7 @@ void InitialiseStatue(int16_t item_num)
 
     int16_t centaur_item_num = CreateItem();
     if (centaur_item_num == NO_ITEM) {
-        S_Shell_ExitSystem("FATAL: Cannot create CENTAUR in STATUE");
+        Shell_ExitSystem("FATAL: Cannot create CENTAUR in STATUE");
         return;
     }
 

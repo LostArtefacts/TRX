@@ -76,7 +76,7 @@ void Shell_Main()
     Shell_CalculateWibbleTable();
 
     if (!HWR_Init()) {
-        S_Shell_ExitSystem("Could not initialise video system");
+        Shell_ExitSystem("Could not initialise video system");
         return;
     }
 
@@ -88,7 +88,7 @@ void Shell_Main()
     FMV_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
-        S_Shell_ExitSystem("MAIN: unable to load script file");
+        Shell_ExitSystem("MAIN: unable to load script file");
         return;
     }
 
@@ -160,13 +160,33 @@ void Shell_Main()
             break;
 
         default:
-            S_Shell_ExitSystemFmt(
+            Shell_ExitSystemFmt(
                 "MAIN: Unknown request %x %d", gf_direction, gf_param);
             return;
         }
     }
 
     Settings_Write();
+}
+
+void Shell_ExitSystem(const char *message)
+{
+    while (g_Input.select) {
+        Input_Update();
+    }
+    GameBuf_Shutdown();
+    HWR_Shutdown();
+    S_Shell_ShowFatalError(message);
+}
+
+void Shell_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    va_end(va);
+    Shell_ExitSystem(message);
 }
 
 void Shell_Wait(int nticks)

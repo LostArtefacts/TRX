@@ -10,11 +10,11 @@
 #include "game/lot.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
+#include "game/shell.h"
 #include "game/traps/movable_block.h"
 #include "game/traps/rolling_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 #include <stddef.h>
 
@@ -454,7 +454,7 @@ void WriteSG(void *pointer, int size)
 {
     m_SGCount += size;
     if (m_SGCount >= MAX_SAVEGAME_BUFFER) {
-        S_Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
+        Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
     char *data = (char *)pointer;

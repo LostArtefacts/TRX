@@ -1,9 +1,9 @@
 #define S_AUDIO_IMPL
 #include "specific/s_audio.h"
 
+#include "game/shell.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_shell.h"
 #include "util.h"
 
 #include <libavcodec/avcodec.h>
@@ -408,7 +408,7 @@ bool S_Audio_SamplesLoad(size_t count, const char **contents, size_t *sizes)
     }
 
     if (count > MAX_SAMPLES) {
-        S_Shell_ExitSystemFmt(
+        Shell_ExitSystemFmt(
             "Trying to load too many samples (maximum supported count: %d)",
             MAX_SAMPLES);
         return false;

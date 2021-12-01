@@ -11,13 +11,13 @@
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/setup.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
 #include "specific/s_output.h"
-#include "specific/s_shell.h"
 
 #include <stdio.h>
 
@@ -213,7 +213,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     File_Read(&counter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
-        S_Shell_ExitSystem("null save->start");
+        Shell_ExitSystem("null save->start");
         return 0;
     }
     File_Read(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
@@ -339,7 +339,7 @@ int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
     File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
 
     if (!save->start) {
-        S_Shell_ExitSystem("null save->start");
+        Shell_ExitSystem("null save->start");
         return 0;
     }
     File_Write(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);

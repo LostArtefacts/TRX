@@ -1,9 +1,9 @@
 #include "game/lot.h"
 
 #include "game/gamebuf.h"
+#include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 #include <stddef.h>
 
@@ -48,7 +48,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
                 return 1;
             }
         }
-        S_Shell_ExitSystem("UnpauseBaddie() grimmer!");
+        Shell_ExitSystem("UnpauseBaddie() grimmer!");
     }
 
     int32_t worst_dist = 0;
