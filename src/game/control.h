@@ -27,4 +27,6 @@ void AddRoomFlipItems(ROOM_INFO *r);
 
 int32_t GetSecretCount();
 
+bool Control_Pause();
+
 #endif
