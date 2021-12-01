@@ -1076,10 +1076,10 @@ typedef enum GAME_BONUS_FLAG {
 
 #pragma pack(push, 1)
 
-typedef struct HWR_Resolution {
+typedef struct RESOLUTION {
     int width;
     int height;
-} HWR_Resolution;
+} RESOLUTION;
 
 typedef struct RGBF {
     float r;

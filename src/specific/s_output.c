@@ -1,4 +1,4 @@
-#include "specific/s_hwr.h"
+#include "specific/s_output.h"
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
@@ -17,7 +17,9 @@
 
 #include <assert.h>
 
-#define HWR_CheckError(result)                                                 \
+#define CLIP_VERTCOUNT_SCALE 4
+
+#define S_Output_CheckError(result)                                            \
     {                                                                          \
         if (result != DD_OK) {                                                 \
             LOG_ERROR("DirectDraw error code %x", result);                     \
@@ -48,7 +50,7 @@ static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
 static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
 
-void HWR_EnableTextureMode(void)
+void S_Output_EnableTextureMode(void)
 {
     if (m_IsTextureMode) {
         return;
@@ -59,7 +61,7 @@ void HWR_EnableTextureMode(void)
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
-void HWR_DisableTextureMode(void)
+void S_Output_DisableTextureMode(void)
 {
     if (!m_IsTextureMode) {
         return;
@@ -70,7 +72,7 @@ void HWR_DisableTextureMode(void)
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
-void HWR_RenderBegin()
+void S_Output_RenderBegin()
 {
     m_IsRenderingOld = m_IsRendering;
     if (!m_IsRendering) {
@@ -79,7 +81,7 @@ void HWR_RenderBegin()
     }
 }
 
-void HWR_RenderEnd()
+void S_Output_RenderEnd()
 {
     m_IsRenderingOld = m_IsRendering;
     if (m_IsRendering) {
@@ -88,33 +90,33 @@ void HWR_RenderEnd()
     }
 }
 
-void HWR_RenderToggle()
+void S_Output_RenderToggle()
 {
     if (m_IsRenderingOld) {
-        HWR_RenderBegin();
+        S_Output_RenderBegin();
     } else {
-        HWR_RenderEnd();
+        S_Output_RenderEnd();
     }
 }
 
-void HWR_ClearSurface(LPDIRECTDRAWSURFACE surface)
+void S_Output_ClearSurface(LPDIRECTDRAWSURFACE surface)
 {
     HRESULT result =
         MyIDirectDrawSurface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 }
 
-void HWR_ReleaseSurfaces()
+void S_Output_ReleaseSurfaces()
 {
     int i;
     HRESULT result;
 
     if (m_PrimarySurface) {
-        HWR_ClearSurface(m_PrimarySurface);
-        HWR_ClearSurface(m_BackSurface);
+        S_Output_ClearSurface(m_PrimarySurface);
+        S_Output_ClearSurface(m_BackSurface);
 
         result = MyIDirectDrawSurface_Release(m_PrimarySurface);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
         m_PrimarySurface = NULL;
         m_BackSurface = NULL;
     }
@@ -122,19 +124,19 @@ void HWR_ReleaseSurfaces()
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_TextureSurfaces[i]) {
             result = MyIDirectDrawSurface_Release(m_TextureSurfaces[i]);
-            HWR_CheckError(result);
+            S_Output_CheckError(result);
             m_TextureSurfaces[i] = NULL;
         }
     }
 
     if (m_PictureSurface) {
         result = MyIDirectDrawSurface_Release(m_PictureSurface);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
         m_PictureSurface = NULL;
     }
 }
 
-void HWR_SetPalette()
+void S_Output_SetPalette()
 {
     int32_t i;
 
@@ -167,38 +169,39 @@ void HWR_SetPalette()
     LOG_INFO("    complete");
 }
 
-void HWR_DumpScreen()
+void S_Output_DumpScreen()
 {
-    HWR_FlipPrimaryBuffer();
+    S_Output_FlipPrimaryBuffer();
     m_SelectedTexture = -1;
 }
 
-void HWR_ClearBackBuffer()
+void S_Output_ClearBackBuffer()
 {
-    HWR_RenderEnd();
-    HWR_ClearSurface(m_BackSurface);
-    HWR_RenderToggle();
+    S_Output_RenderEnd();
+    S_Output_ClearSurface(m_BackSurface);
+    S_Output_RenderToggle();
 }
 
-void HWR_FlipPrimaryBuffer()
+void S_Output_FlipPrimaryBuffer()
 {
-    HWR_RenderEnd();
+    S_Output_RenderEnd();
     HRESULT result = MyIDirectDrawSurface_Flip(m_PrimarySurface);
-    HWR_CheckError(result);
-    HWR_RenderToggle();
+    S_Output_CheckError(result);
+    S_Output_RenderToggle();
 
-    HWR_SetupRenderContextAndRender();
+    S_Output_SetupRenderContextAndRender();
 }
 
-void HWR_BlitSurface(LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
+void S_Output_BlitSurface(
+    LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     HRESULT result = MyIDirectDrawSurface_Blt(target, &rect, source, &rect, 0);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 }
 
-void HWR_CopyFromPicture()
+void S_Output_CopyFromPicture()
 {
     LOG_INFO("CopyPictureHardware:");
 
@@ -212,24 +215,24 @@ void HWR_CopyFromPicture()
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
         result = MyIDirectDraw2_CreateSurface(
             g_DDraw, &surface_desc, &m_PictureSurface);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
     }
 
-    HWR_RenderEnd();
-    HWR_BlitSurface(m_BackSurface, m_PictureSurface);
-    HWR_RenderToggle();
+    S_Output_RenderEnd();
+    S_Output_BlitSurface(m_BackSurface, m_PictureSurface);
+    S_Output_RenderToggle();
     LOG_INFO("    complete");
 }
 
-void HWR_CopyToPicture()
+void S_Output_CopyToPicture()
 {
-    HWR_ClearBackBuffer();
-    HWR_RenderEnd();
-    HWR_BlitSurface(m_PictureSurface, m_BackSurface);
-    HWR_RenderToggle();
+    S_Output_ClearBackBuffer();
+    S_Output_RenderEnd();
+    S_Output_BlitSurface(m_PictureSurface, m_BackSurface);
+    S_Output_RenderToggle();
 }
 
-void HWR_DownloadPicture(const PICTURE *pic)
+void S_Output_DownloadPicture(const PICTURE *pic)
 {
     LOG_INFO("DownloadPictureHardware:");
 
@@ -244,12 +247,12 @@ void HWR_DownloadPicture(const PICTURE *pic)
     surface_desc.dwHeight = pic->height;
     result =
         MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &picture_surface);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
 
     result = MyIDirectDrawSurface2_Lock(picture_surface, &surface_desc);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     uint32_t *output_ptr = surface_desc.lpSurface;
     RGB888 *input_ptr = pic->data;
@@ -263,7 +266,7 @@ void HWR_DownloadPicture(const PICTURE *pic)
 
     result =
         MyIDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     if (!m_PictureSurface) {
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -272,7 +275,7 @@ void HWR_DownloadPicture(const PICTURE *pic)
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
         result = MyIDirectDraw2_CreateSurface(
             g_DDraw, &surface_desc, &m_PictureSurface);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
     }
 
     int32_t target_width = m_DDrawSurfaceWidth;
@@ -303,14 +306,14 @@ void HWR_DownloadPicture(const PICTURE *pic)
 
     result = MyIDirectDrawSurface_Blt(
         m_PictureSurface, &target_rect, picture_surface, &source_rect, 0);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     MyIDirectDrawSurface_Release(picture_surface);
 
     LOG_INFO("    complete");
 }
 
-void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
+void S_Output_RenderTriangleStrip(C3D_VTCF *vertices, int num)
 {
     ATI3DCIF_RenderPrimStrip(vertices, 3);
     int left = num - 2;
@@ -321,7 +324,7 @@ void HWR_RenderTriangleStrip(C3D_VTCF *vertices, int num)
     }
 }
 
-void HWR_SelectTexture(int tex_num)
+void S_Output_SelectTexture(int tex_num)
 {
     if (tex_num == m_SelectedTexture) {
         return;
@@ -344,7 +347,7 @@ void HWR_SelectTexture(int tex_num)
     m_SelectedTexture = tex_num;
 }
 
-void HWR_DrawSprite(
+void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade)
 {
     C3D_FLOAT32 t1;
@@ -417,7 +420,7 @@ void HWR_DrawSprite(
     vertex_count = 4;
     if (x1 < 0 || y1 < 0 || x2 > ViewPort_GetWidth()
         || y2 > ViewPort_GetHeight()) {
-        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+        vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
     }
 
     if (!vertex_count) {
@@ -425,16 +428,16 @@ void HWR_DrawSprite(
     }
 
     if (m_TextureLoaded[sprite->tpage]) {
-        HWR_EnableTextureMode();
-        HWR_SelectTexture(sprite->tpage);
-        HWR_RenderTriangleStrip(vertices, vertex_count);
+        S_Output_EnableTextureMode();
+        S_Output_SelectTexture(sprite->tpage);
+        S_Output_RenderTriangleStrip(vertices, vertex_count);
     } else {
-        HWR_DisableTextureMode();
-        HWR_RenderTriangleStrip(vertices, vertex_count);
+        S_Output_DisableTextureMode();
+        S_Output_RenderTriangleStrip(vertices, vertex_count);
     }
 }
 
-void HWR_Draw2DLine(
+void S_Output_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
 {
@@ -459,7 +462,7 @@ void HWR_Draw2DLine(
     C3D_EPRIM prim_type = C3D_EPRIM_LINE;
     ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
 
@@ -467,7 +470,7 @@ void HWR_Draw2DLine(
     ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
 }
 
-void HWR_Draw2DQuad(
+void S_Output_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br)
 {
@@ -501,12 +504,13 @@ void HWR_Draw2DQuad(
     vertices[3].g = bl.g;
     vertices[3].b = bl.b;
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
-    HWR_RenderTriangleStrip(vertices, 4);
+    S_Output_RenderTriangleStrip(vertices, 4);
 }
 
-void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+void S_Output_DrawTranslucentQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
     C3D_VTCF vertices[4];
 
@@ -542,14 +546,14 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     vertices[3].r = 0.0f;
     vertices[3].a = 128.0f;
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     int32_t alpha_src = C3D_EASRC_SRCALPHA;
     int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 
-    HWR_RenderTriangleStrip(vertices, 4);
+    S_Output_RenderTriangleStrip(vertices, 4);
 
     alpha_src = C3D_EASRC_ONE;
     alpha_dst = C3D_EADST_ZERO;
@@ -557,13 +561,13 @@ void HWR_DrawTranslucentQuad(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
-void HWR_DrawLightningSegment(
+void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
 {
-    C3D_VTCF vertices[4 * HWR_CLIP_VERTCOUNT_SCALE];
+    C3D_VTCF vertices[4 * CLIP_VERTCOUNT_SCALE];
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     int32_t alpha_src = C3D_EASRC_SRCALPHA;
     int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
@@ -601,9 +605,9 @@ void HWR_DrawLightningSegment(
     vertices[3].b = 255.0f;
     vertices[3].a = 128.0f;
 
-    int num = HWR_ClipVertices(4, vertices);
+    int num = S_Output_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertices, num);
+        S_Output_RenderTriangleStrip(vertices, num);
     }
 
     vertices[0].x = thickness1 / 2 + x1;
@@ -638,9 +642,9 @@ void HWR_DrawLightningSegment(
     vertices[3].r = 255.0f;
     vertices[3].a = 128.0f;
 
-    num = HWR_ClipVertices(4, vertices);
+    num = S_Output_ClipVertices(4, vertices);
     if (num) {
-        HWR_RenderTriangleStrip(vertices, num);
+        S_Output_RenderTriangleStrip(vertices, num);
     }
 
     alpha_src = C3D_EASRC_ONE;
@@ -649,10 +653,10 @@ void HWR_DrawLightningSegment(
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
 }
 
-void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
+void S_Output_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
-    C3D_VTCF vertices[vertex_count * HWR_CLIP_VERTCOUNT_SCALE];
+    C3D_VTCF vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
     int i;
     int32_t tmp;
 
@@ -670,38 +674,38 @@ void HWR_PrintShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
     if (clip) {
         int original = vertex_count;
-        vertex_count = HWR_ClipVertices(vertex_count, vertices);
-        assert(vertex_count < original * HWR_CLIP_VERTCOUNT_SCALE);
+        vertex_count = S_Output_ClipVertices(vertex_count, vertices);
+        assert(vertex_count < original * CLIP_VERTCOUNT_SCALE);
     }
 
     if (!vertex_count) {
         return;
     }
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     tmp = C3D_EASRC_SRCALPHA;
     ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
     tmp = C3D_EADST_INVSRCALPHA;
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
-    HWR_RenderTriangleStrip(vertices, vertex_count);
+    S_Output_RenderTriangleStrip(vertices, vertex_count);
     tmp = C3D_EASRC_ONE;
     ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
     tmp = C3D_EADST_ZERO;
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
 }
 
-int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
+int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
 {
     float scale;
-    C3D_VTCF vertices[num * HWR_CLIP_VERTCOUNT_SCALE];
+    C3D_VTCF vertices[num * CLIP_VERTCOUNT_SCALE];
 
     C3D_VTCF *l = &source[num - 1];
     int j = 0;
     int i;
 
     for (i = 0; i < num; i++) {
-        assert(j < num * HWR_CLIP_VERTCOUNT_SCALE);
+        assert(j < num * CLIP_VERTCOUNT_SCALE);
         C3D_VTCF *v1 = &vertices[j];
         C3D_VTCF *v2 = l;
         l = &source[i];
@@ -846,7 +850,7 @@ int32_t HWR_ClipVertices(int32_t num, C3D_VTCF *source)
     return j;
 }
 
-int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
+int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
 {
     float scale;
     C3D_VTCF vertices[8];
@@ -1019,30 +1023,30 @@ int32_t HWR_ClipVertices2(int32_t num, C3D_VTCF *source)
     return j;
 }
 
-void HWR_FadeToPal(int32_t fade_value, RGB888 *palette)
+void S_Output_FadeToPal(int32_t fade_value, RGB888 *palette)
 {
     // null sub
 }
 
-void HWR_FadeWait()
+void S_Output_FadeWait()
 {
-    HWR_ClearBackBuffer();
-    HWR_DumpScreen();
+    S_Output_ClearBackBuffer();
+    S_Output_DumpScreen();
 }
 
-void HWR_SwitchResolution()
+void S_Output_SwitchResolution()
 {
-    HWR_SetHardwareVideoMode();
+    S_Output_SetHardwareVideoMode();
     Screen_SetupSize();
 }
 
-void HWR_SetHardwareVideoMode()
+void S_Output_SetHardwareVideoMode()
 {
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
     LOG_INFO("SetHardwareVideoMode:");
-    HWR_ReleaseSurfaces();
+    S_Output_ReleaseSurfaces();
 
     m_DDrawSurfaceWidth = Screen_GetResWidth();
     m_DDrawSurfaceHeight = Screen_GetResHeight();
@@ -1055,7 +1059,7 @@ void HWR_SetHardwareVideoMode()
         "    Switching to %dx%d", m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     result = MyIDirectDraw_SetDisplayMode(
         g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     LOG_INFO("    Allocating front/back buffers");
     memset(&surface_desc, 0, sizeof(surface_desc));
@@ -1064,14 +1068,14 @@ void HWR_SetHardwareVideoMode()
     surface_desc.dwBackBufferCount = 1;
     result =
         MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &m_PrimarySurface);
-    HWR_CheckError(result);
-    HWR_ClearSurface(m_PrimarySurface);
+    S_Output_CheckError(result);
+    S_Output_ClearSurface(m_PrimarySurface);
 
     LOG_INFO("    Picking up back buffer");
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
     result = MyIDirectDrawSurface_GetAttachedSurface(
         m_PrimarySurface, &caps, &m_BackSurface);
-    HWR_CheckError(result);
+    S_Output_CheckError(result);
 
     LOG_INFO("    Creating texture surfaces");
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
@@ -1082,25 +1086,25 @@ void HWR_SetHardwareVideoMode()
         surface_desc.dwHeight = 256;
         result = MyIDirectDraw2_CreateSurface(
             g_DDraw, &surface_desc, &m_TextureSurfaces[i]);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
     }
 
-    HWR_SetupRenderContextAndRender();
+    S_Output_SetupRenderContextAndRender();
 
     LOG_INFO("    complete");
 }
 
-void HWR_SetViewport(int width, int height)
+void S_Output_SetViewport(int width, int height)
 {
     GLRage_SetWindowSize(width, height);
 }
 
-void HWR_SetFullscreen(bool fullscreen)
+void S_Output_SetFullscreen(bool fullscreen)
 {
     GLRage_SetFullscreen(fullscreen);
 }
 
-bool HWR_Init()
+bool S_Output_Init()
 {
     int32_t i;
     int32_t tmp;
@@ -1123,7 +1127,7 @@ bool HWR_Init()
         m_TextureSurfaces[i] = NULL;
     }
 
-    HWR_SetHardwareVideoMode();
+    S_Output_SetHardwareVideoMode();
 
     tmp = C3D_EV_VTCF;
     ATI3DCIF_SetState(C3D_ERS_VERTEX_TYPE, &tmp);
@@ -1147,11 +1151,11 @@ bool HWR_Init()
     return true;
 }
 
-void HWR_Shutdown()
+void S_Output_Shutdown()
 {
     LOG_INFO("ShutdownHardware:");
     LOG_INFO("    complete");
-    HWR_ReleaseSurfaces();
+    S_Output_ReleaseSurfaces();
     S_ATI_Shutdown();
     if (g_DDraw) {
         MyIDirectDraw_Release(g_DDraw);
@@ -1160,16 +1164,16 @@ void HWR_Shutdown()
     GLRage_Detach();
 }
 
-void HWR_SetupRenderContextAndRender()
+void S_Output_SetupRenderContextAndRender()
 {
-    HWR_RenderBegin();
+    S_Output_RenderBegin();
     int32_t filter = g_Config.render_flags.bilinear ? C3D_ETFILT_MIN2BY2_MAG2BY2
                                                     : C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &filter);
-    HWR_RenderToggle();
+    S_Output_RenderToggle();
 }
 
-void HWR_DrawFlatTriangle(
+void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color)
 {
     int32_t vertex_count;
@@ -1222,16 +1226,16 @@ void HWR_DrawFlatTriangle(
 
     vertex_count = 3;
     if (vn1->clip || vn2->clip || vn3->clip) {
-        vertex_count = HWR_ClipVertices(vertex_count, vertices);
+        vertex_count = S_Output_ClipVertices(vertex_count, vertices);
     }
     if (!vertex_count) {
         return;
     }
 
-    HWR_RenderTriangleStrip(vertices, vertex_count);
+    S_Output_RenderTriangleStrip(vertices, vertex_count);
 }
 
-void HWR_DrawTexturedTriangle(
+void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
 {
@@ -1284,7 +1288,7 @@ void HWR_DrawTexturedTriangle(
 
         vertex_count = 3;
         if (vn1->clip || vn2->clip || vn3->clip) {
-            vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+            vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
         }
     } else {
         if (!phd_VisibleZClip(vn1, vn2, vn3)) {
@@ -1302,11 +1306,11 @@ void HWR_DrawTexturedTriangle(
             points[i].v = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f;
         }
 
-        vertex_count = HWR_ZedClipper(3, points, vertices);
+        vertex_count = S_Output_ZedClipper(3, points, vertices);
         if (!vertex_count) {
             return;
         }
-        vertex_count = HWR_ClipVertices2(vertex_count, vertices);
+        vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
     }
 
     if (!vertex_count) {
@@ -1314,16 +1318,16 @@ void HWR_DrawTexturedTriangle(
     }
 
     if (m_TextureLoaded[tpage]) {
-        HWR_EnableTextureMode();
-        HWR_SelectTexture(tpage);
-        HWR_RenderTriangleStrip(vertices, vertex_count);
+        S_Output_EnableTextureMode();
+        S_Output_SelectTexture(tpage);
+        S_Output_RenderTriangleStrip(vertices, vertex_count);
     } else {
-        HWR_DisableTextureMode();
-        HWR_RenderTriangleStrip(vertices, vertex_count);
+        S_Output_DisableTextureMode();
+        S_Output_RenderTriangleStrip(vertices, vertex_count);
     }
 }
 
-void HWR_DrawTexturedQuad(
+void S_Output_DrawTexturedQuad(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
 {
@@ -1349,8 +1353,10 @@ void HWR_DrawTexturedQuad(
             return;
         }
 
-        HWR_DrawTexturedTriangle(vn1, vn2, vn3, tpage, uv1, uv2, uv3, textype);
-        HWR_DrawTexturedTriangle(vn3, vn4, vn1, tpage, uv3, uv4, uv1, textype);
+        S_Output_DrawTexturedTriangle(
+            vn1, vn2, vn3, tpage, uv1, uv2, uv3, textype);
+        S_Output_DrawTexturedTriangle(
+            vn3, vn4, vn1, tpage, uv3, uv4, uv1, textype);
         return;
     }
 
@@ -1390,16 +1396,16 @@ void HWR_DrawTexturedQuad(
     }
 
     if (m_TextureLoaded[tpage]) {
-        HWR_EnableTextureMode();
-        HWR_SelectTexture(tpage);
+        S_Output_EnableTextureMode();
+        S_Output_SelectTexture(tpage);
     } else {
-        HWR_DisableTextureMode();
+        S_Output_DisableTextureMode();
     }
 
     ATI3DCIF_RenderPrimStrip(vertices, 4);
 }
 
-int32_t HWR_ZedClipper(
+int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
 {
     int32_t i;
@@ -1480,7 +1486,7 @@ int32_t HWR_ZedClipper(
     return count < 3 ? 0 : count;
 }
 
-void HWR_DownloadTextures(int32_t pages)
+void S_Output_DownloadTextures(int32_t pages)
 {
     int i;
 
@@ -1524,15 +1530,15 @@ void HWR_DownloadTextures(int32_t pages)
         memset(&surface_desc, 0, sizeof(surface_desc));
         result =
             MyIDirectDrawSurface2_Lock(m_TextureSurfaces[i], &surface_desc);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
 
         memcpy(
             surface_desc.lpSurface, g_TexturePagePtrs[i],
-            0x10000); // TODO: magic number
+            256 * 256); // paletted 256x256 textures
 
         result = MyIDirectDrawSurface2_Unlock(
             m_TextureSurfaces[i], surface_desc.lpSurface);
-        HWR_CheckError(result);
+        S_Output_CheckError(result);
 
         LOG_INFO("    registering");
 

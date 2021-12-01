@@ -8,8 +8,8 @@
 #include "game/random.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_hwr.h"
 #include "specific/s_misc.h"
+#include "specific/s_output.h"
 #include "specific/s_shell.h"
 
 PHD_VECTOR g_LsVectorView = { 0 };
@@ -42,7 +42,7 @@ static const int16_t *Output_DrawObjectG3(
     PHD_VBUF *vns[3];
     int32_t color;
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &m_VBuf[*obj_ptr++];
@@ -50,7 +50,7 @@ static const int16_t *Output_DrawObjectG3(
         vns[2] = &m_VBuf[*obj_ptr++];
         color = *obj_ptr++;
 
-        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
     }
 
     return obj_ptr;
@@ -63,7 +63,7 @@ static const int16_t *Output_DrawObjectG4(
     PHD_VBUF *vns[4];
     int32_t color;
 
-    HWR_DisableTextureMode();
+    S_Output_DisableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &m_VBuf[*obj_ptr++];
@@ -72,8 +72,8 @@ static const int16_t *Output_DrawObjectG4(
         vns[3] = &m_VBuf[*obj_ptr++];
         color = *obj_ptr++;
 
-        HWR_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-        HWR_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
     }
 
     return obj_ptr;
@@ -86,7 +86,7 @@ static const int16_t *Output_DrawObjectGT3(
     PHD_VBUF *vns[3];
     PHD_TEXTURE *tex;
 
-    HWR_EnableTextureMode();
+    S_Output_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &m_VBuf[*obj_ptr++];
@@ -94,7 +94,7 @@ static const int16_t *Output_DrawObjectGT3(
         vns[2] = &m_VBuf[*obj_ptr++];
         tex = &g_PhdTextureInfo[*obj_ptr++];
 
-        HWR_DrawTexturedTriangle(
+        S_Output_DrawTexturedTriangle(
             vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
             &tex->uv[2], tex->drawtype);
     }
@@ -109,7 +109,7 @@ static const int16_t *Output_DrawObjectGT4(
     PHD_VBUF *vns[4];
     PHD_TEXTURE *tex;
 
-    HWR_EnableTextureMode();
+    S_Output_EnableTextureMode();
 
     for (i = 0; i < number; i++) {
         vns[0] = &m_VBuf[*obj_ptr++];
@@ -118,7 +118,7 @@ static const int16_t *Output_DrawObjectGT4(
         vns[3] = &m_VBuf[*obj_ptr++];
         tex = &g_PhdTextureInfo[*obj_ptr++];
 
-        HWR_DrawTexturedQuad(
+        S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
             &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
     }
@@ -152,7 +152,7 @@ static const int16_t *Output_DrawRoomSprites(
             ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
         if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
             && y1 < g_PhdBottom) {
-            HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
+            S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
         }
     }
 
@@ -379,52 +379,52 @@ static void Output_CalcWibbleTable()
 bool Output_Init()
 {
     Output_CalcWibbleTable();
-    return HWR_Init();
+    return S_Output_Init();
 }
 
 void Output_Shutdown()
 {
-    HWR_Shutdown();
+    S_Output_Shutdown();
 }
 
 void Output_SetViewport(int width, int height)
 {
-    HWR_SetViewport(width, height);
+    S_Output_SetViewport(width, height);
 }
 
 void Output_SetFullscreen(bool fullscreen)
 {
-    HWR_SetFullscreen(fullscreen);
+    S_Output_SetFullscreen(fullscreen);
 }
 
 void Output_ApplyResolution()
 {
-    HWR_SwitchResolution();
+    S_Output_SwitchResolution();
 }
 
 void Output_DownloadTextures(int page_count)
 {
-    HWR_DownloadTextures(page_count);
+    S_Output_DownloadTextures(page_count);
 }
 
 void Output_SetPalette()
 {
-    HWR_SetPalette();
+    S_Output_SetPalette();
 }
 
 void Output_ClearScreen()
 {
-    HWR_ClearBackBuffer();
+    S_Output_ClearBackBuffer();
 }
 
 void Output_InitialisePolyList()
 {
-    HWR_RenderBegin();
+    S_Output_RenderBegin();
 }
 
 int32_t Output_DumpScreen()
 {
-    HWR_DumpScreen();
+    S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
     return Clock_SyncTicks(TICKS_PER_FRAME);
@@ -564,7 +564,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
              >= 0);
 
         if (!clip_and && clip_positive && visible) {
-            HWR_PrintShadow(
+            S_Output_PrintShadow(
                 &m_VBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
         }
     }
@@ -655,32 +655,32 @@ void Output_DrawSprite(
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
-        HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
+        S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }
 
 void Output_CopyBufferToScreen()
 {
-    HWR_CopyToPicture();
+    S_Output_CopyToPicture();
 }
 
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
 {
-    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br)
 {
-    HWR_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col)
 {
-    HWR_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
+    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
 void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
@@ -699,7 +699,7 @@ void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    HWR_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
+    S_Output_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
 }
 
 void Output_DrawScreenSprite(
@@ -713,7 +713,7 @@ void Output_DrawScreenSprite(
     int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
     if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
         && y1 < ViewPort_GetHeight()) {
-        HWR_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
+        S_Output_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
     }
 }
 
@@ -728,7 +728,7 @@ void Output_DrawScreenSprite2D(
     int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
     if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
         && y1 < ViewPort_GetHeight()) {
-        HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
+        S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
     }
 }
 
@@ -757,7 +757,7 @@ void Output_DrawSpriteRel(
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
-        HWR_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
+        S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
 }
 
@@ -771,7 +771,7 @@ void Output_DrawUISprite(
     int32_t y2 = y + (scale * sprite->y2 >> 16);
     if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
         && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
-        HWR_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
+        S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
 
@@ -784,7 +784,7 @@ void Output_DisplayPicture(const char *filename)
             Picture_Scale(
                 scaled_pic, orig_pic, ViewPort_GetWidth(),
                 ViewPort_GetHeight());
-            HWR_DownloadPicture(scaled_pic);
+            S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
         }
         Picture_Free(orig_pic);
@@ -803,7 +803,7 @@ void Output_DrawLightningSegment(
         y2 = ViewPort_GetCenterY() + y2 / (z2 / g_PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
-        HWR_DrawLightningSegment(
+        S_Output_DrawLightningSegment(
             x1, y1, z1, thickness1, x2, y2, z2, thickness2);
     }
 }

@@ -133,6 +133,6 @@ extern int16_t g_InvMode;
 extern int32_t g_InvExtraData[8];
 extern int16_t g_InvChosen;
 
-extern HWR_Resolution g_AvailableResolutions[RESOLUTIONS_SIZE];
+extern RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE];
 
 #endif

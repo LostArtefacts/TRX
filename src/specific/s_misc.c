@@ -5,7 +5,7 @@
 #include "game/screen.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_hwr.h"
+#include "specific/s_output.h"
 
 #include <string.h>
 
@@ -17,7 +17,7 @@ void S_NoFade()
 void S_FadeInInventory(int32_t fade)
 {
     if (g_CurrentLevel != g_GameFlow.title_level_num) {
-        HWR_CopyFromPicture();
+        S_Output_CopyFromPicture();
     }
 }
 
@@ -29,8 +29,8 @@ void S_FadeOutInventory(int32_t fade)
 void S_FadeToBlack()
 {
     memset(g_GamePalette, 0, sizeof(g_GamePalette));
-    HWR_FadeToPal(20, g_GamePalette);
-    HWR_FadeWait();
+    S_Output_FadeToPal(20, g_GamePalette);
+    S_Output_FadeWait();
 }
 
 void S_FinishInventory()

@@ -215,8 +215,6 @@
 
 #define RESOLUTIONS_SIZE 12
 
-#define HWR_CLIP_VERTCOUNT_SCALE 4
-
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function
     #define _USE_MATH_DEFINES // makes maths.h also define M_PI
