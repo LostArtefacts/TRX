@@ -30,7 +30,6 @@ int32_t DrawPhaseCinematic()
         r->bottom = ViewPort_GetMaxY();
         PrintRooms(room_num);
     }
-    S_OutputPolyList();
     g_Camera.number_frames = S_DumpScreen();
     S_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;
@@ -41,7 +40,6 @@ int32_t DrawPhaseGame()
     S_InitialisePolyList();
     DrawRooms(g_Camera.pos.room_number);
     Overlay_DrawGameInfo();
-    S_OutputPolyList();
     g_Camera.number_frames = S_DumpScreen();
     S_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;
@@ -559,7 +557,7 @@ void DrawAnimatingItem(ITEM_INFO *item)
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     if (object->shadow_size) {
-        S_PrintShadow(object->shadow_size, frmptr[0], item);
+        phd_PutShadow(object->shadow_size, frmptr[0], item);
     }
 
     phd_PushMatrix();
@@ -747,7 +745,7 @@ void DrawLara(ITEM_INFO *item)
     // save matrix for hair
     saved_matrix = *g_PhdMatrixPtr;
 
-    S_PrintShadow(object->shadow_size, frame, item);
+    phd_PutShadow(object->shadow_size, frame, item);
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
@@ -1076,7 +1074,7 @@ void DrawLaraInt(
 
     saved_matrix = *g_PhdMatrixPtr;
 
-    S_PrintShadow(object->shadow_size, bounds, item);
+    phd_PutShadow(object->shadow_size, bounds, item);
     phd_PushMatrix();
     phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);

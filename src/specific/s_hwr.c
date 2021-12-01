@@ -1498,16 +1498,6 @@ int32_t HWR_ZedClipper(
     return count < 3 ? 0 : count;
 }
 
-void HWR_InitPolyList()
-{
-    HWR_RenderBegin();
-}
-
-void HWR_OutputPolyList()
-{
-    HWR_RenderEnd();
-}
-
 void HWR_DownloadTextures(int32_t pages)
 {
     int i;

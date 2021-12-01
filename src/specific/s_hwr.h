@@ -56,7 +56,6 @@ void HWR_SetPalette();
 void HWR_SetupRenderContextAndRender();
 void HWR_DownloadTextures(int32_t pages);
 void HWR_InitPolyList();
-void HWR_OutputPolyList();
 
 int32_t HWR_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices);

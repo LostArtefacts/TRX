@@ -159,7 +159,6 @@ void LevelStats(int32_t level_num)
         S_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_OutputPolyList();
         S_DumpScreen();
     }
 
@@ -172,7 +171,6 @@ void LevelStats(int32_t level_num)
         S_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_OutputPolyList();
         S_DumpScreen();
     }
 
@@ -182,7 +180,6 @@ void LevelStats(int32_t level_num)
         S_CopyBufferToScreen();
         Input_Update();
         Text_Draw();
-        S_OutputPolyList();
         S_DumpScreen();
     }
 

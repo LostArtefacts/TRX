@@ -99,7 +99,6 @@ void Shell_Main()
     S_DisplayPicture("data\\eidospc.png");
     S_InitialisePolyList();
     S_CopyBufferToScreen();
-    S_OutputPolyList();
     S_DumpScreen();
     Shell_Wait(TICKS_PER_SECOND);
 

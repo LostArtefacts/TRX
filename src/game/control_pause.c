@@ -96,7 +96,6 @@ static int32_t Control_Pause_Loop()
         S_CopyBufferToScreen();
         Control_Pause_DisplayText();
         Text_Draw();
-        S_OutputPolyList();
         S_DumpScreen();
         Input_Update();
 

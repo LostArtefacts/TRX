@@ -138,7 +138,7 @@ void S_FadeToBlack()
 
 void S_InitialisePolyList()
 {
-    phd_InitPolyList();
+    HWR_RenderBegin();
 }
 
 int32_t S_DumpScreen()
@@ -152,11 +152,6 @@ int32_t S_DumpScreen()
 void S_ClearScreen()
 {
     HWR_ClearBackBuffer();
-}
-
-void S_OutputPolyList()
-{
-    HWR_OutputPolyList();
 }
 
 void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -287,62 +282,6 @@ void S_DrawLightningSegment(
         HWR_DrawLightningSegment(
             x1, y1, z1, thickness1, x2, y2, z2, thickness2);
     }
-}
-
-void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
-{
-    int i;
-
-    g_ShadowInfo.vertex_count = g_Config.enable_round_shadow ? 32 : 8;
-
-    int32_t x0 = bptr[FRAME_BOUND_MIN_X];
-    int32_t x1 = bptr[FRAME_BOUND_MAX_X];
-    int32_t z0 = bptr[FRAME_BOUND_MIN_Z];
-    int32_t z1 = bptr[FRAME_BOUND_MAX_Z];
-
-    int32_t x_mid = (x0 + x1) / 2;
-    int32_t z_mid = (z0 + z1) / 2;
-
-    int32_t x_add = (x1 - x0) * size / 1024;
-    int32_t z_add = (z1 - z0) * size / 1024;
-
-    for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
-        int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
-        g_ShadowInfo.vertex[i].x =
-            x_mid + (x_add * 2) * phd_sin(angle) / PHD_90;
-        g_ShadowInfo.vertex[i].z =
-            z_mid + (z_add * 2) * phd_cos(angle) / PHD_90;
-        g_ShadowInfo.vertex[i].y = 0;
-    }
-
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
-    phd_RotY(item->pos.y_rot);
-
-    if (calc_object_vertices(&g_ShadowInfo.poly_count)) {
-        int16_t clip_and = 1;
-        int16_t clip_positive = 1;
-        int16_t clip_or = 0;
-        for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
-            clip_and &= g_PhdVBuf[i].clip;
-            clip_positive &= g_PhdVBuf[i].clip >= 0;
-            clip_or |= g_PhdVBuf[i].clip;
-        }
-        PHD_VBUF *vn1 = &g_PhdVBuf[0];
-        PHD_VBUF *vn2 = &g_PhdVBuf[g_Config.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &g_PhdVBuf[g_Config.enable_round_shadow ? 8 : 2];
-
-        bool visible =
-            ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys)) - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))
-             >= 0);
-
-        if (!clip_and && clip_positive && visible) {
-            HWR_PrintShadow(
-                &g_PhdVBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
-        }
-    }
-
-    phd_PopMatrix();
 }
 
 int S_GetObjectBounds(int16_t *bptr)
