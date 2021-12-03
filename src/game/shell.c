@@ -190,9 +190,19 @@ void Shell_Wait(int nticks)
 
 bool Shell_MakeScreenshot()
 {
+    const char *ext;
+    switch (g_Config.screenshot_format) {
+    case SCREENSHOT_FORMAT_JPEG:
+        ext = "jpg";
+        break;
+    case SCREENSHOT_FORMAT_PNG:
+        ext = "png";
+        break;
+    }
+
     char path[20];
     for (int i = 0; i < 10000; i++) {
-        sprintf(path, "screenshot%04d.jpg", i);
+        sprintf(path, "screenshot%04d.%s", i, ext);
         if (File_Exists(path)) {
             continue;
         }

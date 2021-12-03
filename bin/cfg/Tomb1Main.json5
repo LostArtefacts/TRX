@@ -176,4 +176,7 @@
 
     // Enables 3D models to be rendered in place of the sprites for pickup items
     "enable_3d_pickups" : true,
+
+    // Screenshot file format. Must be either "jpg" or "png".
+    "screenshot_format": "png",
 }
