@@ -87,6 +87,13 @@ void S_Shell_SpinMessageLoop()
             break;
         }
 
+        case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_PRINTSCREEN) {
+                Shell_MakeScreenshot();
+                break;
+            }
+            break;
+
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:

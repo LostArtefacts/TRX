@@ -11,10 +11,10 @@ namespace gl {
 
 class Screenshot {
 public:
-    static void capture(const std::string &path);
+    static bool capture(const std::string &path);
     static void capture(
         std::vector<uint8_t> &buffer, GLint &width, GLint &height, GLint depth,
-        GLenum format, GLenum type, bool vflip = false);
+        GLenum format, GLenum type, bool vflip);
 };
 
 }

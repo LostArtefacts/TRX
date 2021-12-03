@@ -1,5 +1,6 @@
 #include "glrage/ContextImpl.hpp"
 
+#include "glrage_gl/Screenshot.hpp"
 #include "glrage_gl/gl_core_3_3.h"
 #include "glrage_gl/wgl_ext.h"
 #include "glrage_util/ErrorUtils.hpp"
@@ -109,17 +110,6 @@ LRESULT
 ContextImpl::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
-    // Printscreen on Windows with OpenGL doesn't work in fullscreen, so
-    // hook the key and implement screenshot saving to files.
-    // For some reason, VK_SNAPSHOT doesn't generate WM_KEYDOWN events but
-    // only WM_KEYUP. Works just as well, though.
-    case WM_KEYUP:
-        if (wParam == VK_SNAPSHOT) {
-            m_screenshot.schedule(true);
-            return TRUE;
-        }
-        break;
-
     // force default handling for some window messages when in windowed
     // mode, especially important for Tomb Raider
     case WM_MOVE:
@@ -223,11 +213,9 @@ void ContextImpl::swapBuffers()
 {
     glFinish();
 
-    try {
-        m_screenshot.captureScheduled();
-    } catch (const std::exception &ex) {
-        ErrorUtils::warning("Can't capture screenshot", ex);
-        m_screenshot.schedule(false);
+    if (!m_screenshotScheduledPath.empty()) {
+        gl::Screenshot::capture(m_screenshotScheduledPath);
+        m_screenshotScheduledPath.clear();
     }
 
     SwapBuffers(m_hdc);
@@ -268,6 +256,11 @@ std::string ContextImpl::getBasePath()
     PathRemoveFileSpec(path);
 
     return path;
+}
+
+void ContextImpl::scheduleScreenshot(const std::string &path)
+{
+    m_screenshotScheduledPath = path;
 }
 
 }

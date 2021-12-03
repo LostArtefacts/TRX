@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glrage/Context.hpp"
-#include "glrage/Screenshot.hpp"
 
 namespace glrage {
 
@@ -30,6 +29,7 @@ public:
     bool isRendered();
     HWND getHWnd();
     std::string getBasePath();
+    void scheduleScreenshot(const std::string &path);
 
 private:
     ContextImpl();
@@ -66,9 +66,6 @@ private:
     // rendering flag
     bool m_render = false;
 
-    // screenshot object
-    Screenshot m_screenshot;
-
     // DirectDraw display mode
     int32_t m_displayWidth = 0;
     int32_t m_displayHeight = 0;
@@ -80,6 +77,9 @@ private:
     // Window size, controlled by SDL
     int32_t m_windowWidth = 0;
     int32_t m_windowHeight = 0;
+
+    // whether to capture screenshot on next redraw
+    std::string m_screenshotScheduledPath;
 };
 
 }

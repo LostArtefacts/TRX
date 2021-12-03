@@ -856,3 +856,8 @@ void Output_ApplyWaterEffect(float *r, float *g, float *b)
         *b *= m_WaterColor.b;
     }
 }
+
+bool Output_MakeScreenshot(const char *path)
+{
+    return S_Output_MakeScreenshot(path);
+}

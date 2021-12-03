@@ -2,6 +2,7 @@
 
 #include "3dsystem/phd_math.h"
 #include "config.h"
+#include "filesystem.h"
 #include "game/clock.h"
 #include "game/demo.h"
 #include "game/fmv.h"
@@ -185,4 +186,17 @@ void Shell_Wait(int nticks)
     while (g_Input.any) {
         Input_Update();
     }
+}
+
+bool Shell_MakeScreenshot()
+{
+    char path[20];
+    for (int i = 0; i < 10000; i++) {
+        sprintf(path, "screenshot%04d.jpg", i);
+        if (File_Exists(path)) {
+            continue;
+        }
+        return Output_MakeScreenshot(path);
+    }
+    return false;
 }

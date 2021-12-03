@@ -54,4 +54,6 @@ void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2);
 
+bool S_Output_MakeScreenshot(const char *path);
+
 #endif

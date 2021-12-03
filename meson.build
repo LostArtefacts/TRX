@@ -221,7 +221,6 @@ sources = [
   'src/glrage/ContextImpl.cpp',
   'src/glrage/GLRage.cpp',
   'src/glrage/Interop.cpp',
-  'src/glrage/Screenshot.cpp',
   'src/glrage_gl/Buffer.cpp',
   'src/glrage_gl/Program.cpp',
   'src/glrage_gl/Sampler.cpp',

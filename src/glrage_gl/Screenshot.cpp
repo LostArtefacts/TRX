@@ -3,6 +3,11 @@
 #include "glrage_util/ErrorUtils.hpp"
 #include "glrage_util/StringUtils.hpp"
 
+extern "C" {
+#include "memory.h"
+#include "game/picture.h"
+}
+
 #include <algorithm>
 #include <cstdint>
 #include <exception>
@@ -14,46 +19,34 @@
 namespace glrage {
 namespace gl {
 
-// heavily simplified Targa header struct for raw BGR(A) data
-struct TGAHeader {
-    uint8_t blank1[2];
-    uint8_t format;
-    uint8_t blank2[9];
-    uint16_t width;
-    uint16_t height;
-    uint8_t depth;
-    uint8_t blank3;
-};
-
-void Screenshot::capture(const std::string &path)
+bool Screenshot::capture(const std::string &path)
 {
-    // open screenshot file
-    std::ofstream file(path, std::ofstream::binary);
-    if (!file.good()) {
-        throw std::runtime_error(
-            "Can't open screenshot file '" + path
-            + "': " + ErrorUtils::getSystemErrorString());
-    }
+    bool ret = false;
 
-    // copy framebuffer to local buffer
     GLint width;
     GLint height;
-    GLint depth = 3;
-
     std::vector<uint8_t> buffer;
-    capture(buffer, width, height, depth, GL_BGR, GL_UNSIGNED_BYTE, false);
 
-    // create Targa header
-    TGAHeader tgaHeader = { { 0, 0 }, 0, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0, 0,
-                            0,        0 };
-    tgaHeader.format = 2;
-    tgaHeader.width = width;
-    tgaHeader.height = height;
-    tgaHeader.depth = depth * 8;
+    Screenshot::capture(
+        buffer, width, height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
 
-    file.write(reinterpret_cast<char *>(&tgaHeader), sizeof(TGAHeader));
-    file.write(reinterpret_cast<char *>(&buffer[0]), buffer.size());
-    file.close();
+    PICTURE *pic = Picture_Create();
+    if (!pic) {
+        goto cleanup;
+    }
+    pic->width = width;
+    pic->height = height;
+    pic->data = static_cast<RGB888 *>(Memory_Alloc(width * height * 3));
+    std::copy(
+        buffer.begin(), buffer.end(), reinterpret_cast<uint8_t *>(pic->data));
+
+    ret = Picture_SaveToFile(pic, path.c_str());
+
+cleanup:
+    if (pic) {
+        Picture_Free(pic);
+    }
+    return ret;
 }
 
 void Screenshot::capture(

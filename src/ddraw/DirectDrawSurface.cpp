@@ -83,7 +83,7 @@ HRESULT DirectDrawSurface::Blt(
 
             gl::Screenshot::capture(
                 buffer, width, height, depth, GL_BGRA,
-                GL_UNSIGNED_INT_8_8_8_8_REV);
+                GL_UNSIGNED_INT_8_8_8_8_REV, false);
 
             Blitter::Rect srcRect { 0, height, width, 0 };
 

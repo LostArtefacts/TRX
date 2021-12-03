@@ -1543,3 +1543,8 @@ void S_Output_DownloadTextures(int32_t pages)
 
     m_SelectedTexture = -1;
 }
+
+bool S_Output_MakeScreenshot(const char *path)
+{
+    return GLRage_MakeScreenshot(path);
+}

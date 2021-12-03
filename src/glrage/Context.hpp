@@ -28,6 +28,7 @@ public:
     virtual bool isRendered() = 0;
     virtual HWND getHWnd() = 0;
     virtual std::string getBasePath() = 0;
+    virtual void scheduleScreenshot(const std::string &path) = 0;
 
     virtual ~Context() = default;
 };
