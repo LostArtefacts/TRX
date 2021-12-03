@@ -19,7 +19,7 @@ PICTURE *Picture_Create()
     return picture;
 }
 
-PICTURE *Picture_CreateFromFile(const char *file_path)
+PICTURE *Picture_CreateFromFile(const char *path)
 {
     bool result = false;
     char *full_path = NULL;
@@ -30,7 +30,7 @@ PICTURE *Picture_CreateFromFile(const char *file_path)
         goto cleanup;
     }
 
-    File_GetFullPath(file_path, &full_path);
+    File_GetFullPath(path, &full_path);
     File_GuessExtension(full_path, &final_path, m_Extensions);
 
     result = S_Picture_LoadFromFile(picture, final_path);
@@ -52,6 +52,24 @@ cleanup:
     }
 
     return picture;
+}
+
+bool Picture_SaveToFile(const PICTURE *pic, const char *path)
+{
+    assert(pic);
+    assert(path);
+
+    char *full_path = NULL;
+    File_GetFullPath(path, &full_path);
+
+    bool ret = S_Picture_SaveToFile(pic, full_path);
+
+    if (full_path) {
+        Memory_Free(full_path);
+        full_path = NULL;
+    }
+
+    return ret;
 }
 
 bool Picture_ScaleLetterbox(

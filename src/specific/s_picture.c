@@ -1,5 +1,6 @@
 #include "specific/s_picture.h"
 
+#include "filesystem.h"
 #include "log.h"
 #include "memory.h"
 
@@ -9,24 +10,24 @@
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 
-bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
+bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
 {
     assert(target_pic);
     assert(!target_pic->data);
 
-    int32_t error_code;
+    int error_code;
     AVFormatContext *format_ctx = NULL;
     const AVCodec *codec = NULL;
     AVCodecContext *codec_ctx = NULL;
     AVFrame *frame = NULL;
-    struct SwsContext *sws_ctx = NULL;
     AVPacket *packet = NULL;
+    struct SwsContext *sws_ctx = NULL;
 
     target_pic->width = 0;
     target_pic->height = 0;
     target_pic->data = NULL;
 
-    error_code = avformat_open_input(&format_ctx, file_path, NULL, NULL);
+    error_code = avformat_open_input(&format_ctx, path, NULL, NULL);
     if (error_code != 0) {
         goto fail;
     }
@@ -135,8 +136,7 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *file_path)
 
 fail:
     LOG_ERROR(
-        "Error while opening picture %s: %s", file_path,
-        av_err2str(error_code));
+        "Error while opening picture %s: %s", path, av_err2str(error_code));
 
     target_pic->width = 0;
     target_pic->height = 0;
@@ -168,6 +168,163 @@ fail:
     }
 
     return false;
+}
+
+bool S_Picture_SaveToFile(const PICTURE *pic, const char *path)
+{
+    assert(pic);
+    assert(path);
+
+    bool ret = false;
+
+    int error_code = 0;
+    const AVCodec *codec = NULL;
+    AVCodecContext *codec_ctx = NULL;
+    AVFrame *frame = NULL;
+    AVPacket *packet = NULL;
+    struct SwsContext *sws_ctx = NULL;
+    MYFILE *fp = NULL;
+
+    enum AVPixelFormat source_pix_fmt = AV_PIX_FMT_RGB24;
+    enum AVPixelFormat target_pix_fmt;
+    enum AVCodecID codec_id;
+
+    if (strstr(path, ".jpg")) {
+        target_pix_fmt = AV_PIX_FMT_YUVJ420P;
+        codec_id = AV_CODEC_ID_MJPEG;
+    } else if (strstr(path, ".png")) {
+        target_pix_fmt = AV_PIX_FMT_RGB24;
+        codec_id = AV_CODEC_ID_PNG;
+    } else {
+        LOG_ERROR("Cannot determine picture format based on path '%s'", path);
+        goto cleanup;
+    }
+
+    fp = File_Open(path, FILE_OPEN_WRITE);
+    if (!fp) {
+        LOG_ERROR("Cannot create picture file: %s", path);
+        goto cleanup;
+    }
+
+    codec = avcodec_find_encoder(codec_id);
+    if (!codec) {
+        error_code = AVERROR_MUXER_NOT_FOUND;
+        goto cleanup;
+    }
+
+    codec_ctx = avcodec_alloc_context3(codec);
+    if (!codec_ctx) {
+        error_code = AVERROR(ENOMEM);
+        goto cleanup;
+    }
+
+    codec_ctx->bit_rate = 400000;
+    codec_ctx->width = pic->width;
+    codec_ctx->height = pic->height;
+    codec_ctx->time_base = (AVRational) { 1, 25 };
+    codec_ctx->pix_fmt = target_pix_fmt;
+
+    if (codec_id == AV_CODEC_ID_MJPEG) {
+        // 9 JPEG quality
+        codec_ctx->flags |= AV_CODEC_FLAG_QSCALE;
+        codec_ctx->global_quality = FF_QP2LAMBDA * 9;
+    }
+
+    error_code = avcodec_open2(codec_ctx, codec, NULL);
+    if (error_code < 0) {
+        goto cleanup;
+    }
+
+    frame = av_frame_alloc();
+    if (!frame) {
+        error_code = AVERROR(ENOMEM);
+        goto cleanup;
+    }
+    frame->format = codec_ctx->pix_fmt;
+    frame->width = codec_ctx->width;
+    frame->height = codec_ctx->height;
+    frame->pts = 0;
+
+    error_code = av_image_alloc(
+        frame->data, frame->linesize, codec_ctx->width, codec_ctx->height,
+        codec_ctx->pix_fmt, 32);
+    if (error_code < 0) {
+        goto cleanup;
+    }
+
+    packet = av_packet_alloc();
+    av_new_packet(packet, 0);
+
+    sws_ctx = sws_getContext(
+        pic->width, pic->height, source_pix_fmt, frame->width, frame->height,
+        target_pix_fmt, SWS_BILINEAR, NULL, NULL, NULL);
+
+    if (!sws_ctx) {
+        LOG_ERROR("Failed to get SWS context");
+        error_code = AVERROR_EXTERNAL;
+        goto cleanup;
+    }
+
+    uint8_t *src_planes[4];
+    int src_linesize[4];
+    av_image_fill_arrays(
+        src_planes, src_linesize, (const uint8_t *)pic->data, source_pix_fmt,
+        pic->width, pic->height, 1);
+
+    sws_scale(
+        sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
+        pic->height, frame->data, frame->linesize);
+
+    error_code = avcodec_send_frame(codec_ctx, frame);
+    if (error_code < 0) {
+        goto cleanup;
+    }
+
+    while (error_code >= 0) {
+        error_code = avcodec_receive_packet(codec_ctx, packet);
+        if (error_code == AVERROR(EAGAIN) || error_code == AVERROR_EOF) {
+            error_code = 0;
+            break;
+        }
+        if (error_code < 0) {
+            goto cleanup;
+        }
+
+        File_Write(packet->data, 1, packet->size, fp);
+        av_packet_unref(packet);
+    }
+
+cleanup:
+    if (error_code) {
+        LOG_ERROR(
+            "Error while saving picture %s: %s", path, av_err2str(error_code));
+    }
+
+    if (fp) {
+        File_Close(fp);
+        fp = NULL;
+    }
+
+    if (sws_ctx) {
+        sws_freeContext(sws_ctx);
+    }
+
+    if (packet) {
+        av_packet_free(&packet);
+    }
+
+    if (codec) {
+        avcodec_close(codec_ctx);
+        av_free(codec_ctx);
+        codec_ctx = NULL;
+    }
+
+    if (frame) {
+        av_freep(&frame->data[0]);
+        av_frame_free(&frame);
+    }
+
+    return ret;
 }
 
 bool S_Picture_ScaleLetterbox(
