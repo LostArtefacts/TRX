@@ -46,8 +46,8 @@ void Shell_Main()
 
     const char *gameflow_path = m_T1MGameflowPath;
 
-    char **args;
-    int arg_count;
+    char **args = NULL;
+    int arg_count = 0;
     S_Shell_GetCommandLine(&arg_count, &args);
     for (int i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
@@ -56,8 +56,10 @@ void Shell_Main()
     }
     for (int i = 0; i < arg_count; i++) {
         Memory_Free(args[i]);
+        args[i] = NULL;
     }
     Memory_Free(args);
+    args = NULL;
 
     S_Shell_SeedRandom();
 

@@ -12,7 +12,7 @@ static const char *m_Extensions[] = {
 
 PICTURE *Picture_Create()
 {
-    PICTURE *picture = Memory_Alloc(sizeof(picture));
+    PICTURE *picture = Memory_Alloc(sizeof(PICTURE));
     picture->width = 0;
     picture->height = 0;
     picture->data = NULL;
@@ -127,7 +127,9 @@ void Picture_Free(PICTURE *picture)
     if (picture) {
         if (picture->data) {
             Memory_Free(picture->data);
+            picture->data = NULL;
         }
         Memory_Free(picture);
+        picture = NULL;
     }
 }
