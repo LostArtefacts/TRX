@@ -304,6 +304,16 @@ static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
     return 0;
 }
 
+static int S_FMV_NextPowerOf2(int dim)
+{
+    int power = 2;
+    dim--;
+    while (dim >>= 1) {
+        power <<= 1;
+    }
+    return power;
+}
+
 static int S_FMV_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
 {
     AVPacket *pkt1;
@@ -695,10 +705,18 @@ static void S_FMV_DecoderAbort(Decoder *d, FrameQueue *fq)
 }
 
 static int S_FMV_ReallocPrimarySurface(
-    VideoState *is, int new_width, int new_height, bool clear)
+    VideoState *is, int frame_width, int frame_height, bool clear)
 {
-    if (is->primary_surface && is->surface_width == new_width
-        && is->surface_height == new_height) {
+    int surface_width = S_FMV_NextPowerOf2(frame_width);
+    int surface_height = S_FMV_NextPowerOf2(frame_height);
+    if (surface_width < surface_height) {
+        surface_width = surface_height;
+    } else {
+        surface_height = surface_width;
+    }
+
+    if (is->primary_surface && is->surface_width == surface_width
+        && is->surface_height == surface_height) {
         return 0;
     }
 
@@ -711,8 +729,8 @@ static int S_FMV_ReallocPrimarySurface(
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags =
         DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    surface_desc.dwWidth = new_width;
-    surface_desc.dwHeight = new_height;
+    surface_desc.dwWidth = surface_width;
+    surface_desc.dwHeight = surface_height;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
     HRESULT result = MyIDirectDraw2_CreateSurface(
@@ -734,16 +752,15 @@ static int S_FMV_ReallocPrimarySurface(
             LOG_ERROR("DirectDraw error code 0x%lx", result);
             return -1;
         }
-        memset(surface_desc.lpSurface, 0, surface_desc.lPitch * new_height);
+        memset(surface_desc.lpSurface, 0, surface_desc.lPitch * surface_height);
         MyIDirectDrawSurface2_Unlock(
             is->primary_surface, surface_desc.lpSurface);
     }
 
-    is->surface_width = new_width;
-    is->surface_height = new_height;
+    is->surface_width = surface_width;
+    is->surface_height = surface_height;
 
-    result = MyIDirectDraw_SetDisplayMode(
-        g_DDraw, is->surface_width, is->surface_height);
+    result = MyIDirectDraw_SetDisplayMode(g_DDraw, frame_width, frame_height);
     if (result != DD_OK) {
         LOG_ERROR("DirectDraw error code 0x%lx", result);
         return 0;
@@ -790,8 +807,8 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
     is->img_convert_ctx = sws_getCachedContext(
         is->img_convert_ctx, frame->width, frame->height, frame->format,
-        frame->width, frame->height, AV_PIX_FMT_BGRA, SWS_BICUBIC, NULL, NULL,
-        NULL);
+        is->surface_width, is->surface_height, AV_PIX_FMT_BGRA, SWS_BICUBIC,
+        NULL, NULL, NULL);
 
     if (is->img_convert_ctx) {
         DDSURFACEDESC surface_desc;

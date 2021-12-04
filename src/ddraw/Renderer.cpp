@@ -10,7 +10,6 @@ namespace ddraw {
 Renderer::Renderer()
     : m_surfaceBuffer(GL_ARRAY_BUFFER)
 {
-    // configure buffer
     m_surfaceBuffer.bind();
     GLfloat verts[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
                         0.0, 1.0, 1.0, 0.0, 1.0, 1.0 };
@@ -19,9 +18,7 @@ Renderer::Renderer()
     m_surfaceFormat.bind();
     m_surfaceFormat.attribute(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    // configure sampler
-    // TODO: make me configurable
-    GLint filterMethodEnum = GL_LINEAR; // GL_NEAREST
+    GLint filterMethodEnum = GL_LINEAR;
 
     m_sampler.bind(0);
     m_sampler.parameteri(GL_TEXTURE_MAG_FILTER, filterMethodEnum);
@@ -29,7 +26,6 @@ Renderer::Renderer()
     m_sampler.parameteri(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     m_sampler.parameteri(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-    // configure shaders
     std::string basePath = m_context.getBasePath();
     m_program.attach(gl::Shader(GL_VERTEX_SHADER)
                          .fromFile(basePath + "\\shaders\\ddraw.vsh"));
