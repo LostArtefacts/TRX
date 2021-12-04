@@ -3,12 +3,12 @@
 #include "filesystem.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "specific/s_shell.h"
 #include "json.h"
 #include "log.h"
 #include "memory.h"
 
 #include <string.h>
-#include <windows.h>
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
@@ -182,9 +182,9 @@ bool Config_Read()
             g_Config.resolution_height;
     } else {
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
-            GetSystemMetrics(SM_CXSCREEN);
+            S_Shell_GetCurrentDisplayWidth();
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
-            GetSystemMetrics(SM_CYSCREEN);
+            S_Shell_GetCurrentDisplayHeight();
     }
 
 cleanup:

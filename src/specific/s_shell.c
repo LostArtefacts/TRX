@@ -172,3 +172,17 @@ void *S_Shell_GetWindowHandle()
 {
     return (void *)m_Window;
 }
+
+int S_Shell_GetCurrentDisplayWidth()
+{
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    return dm.w;
+}
+
+int S_Shell_GetCurrentDisplayHeight()
+{
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    return dm.h;
+}

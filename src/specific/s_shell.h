@@ -12,5 +12,7 @@ bool S_Shell_GetCommandLine(int *arg_count, char ***args);
 void *S_Shell_GetWindowHandle();
 void S_Shell_TerminateGame(int exit_code);
 void S_Shell_ToggleFullscreen();
+int S_Shell_GetCurrentDisplayWidth();
+int S_Shell_GetCurrentDisplayHeight();
 
 #endif
