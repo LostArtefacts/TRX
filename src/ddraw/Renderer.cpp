@@ -19,14 +19,12 @@ Renderer::Renderer()
     m_surfaceFormat.bind();
     m_surfaceFormat.attribute(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    GLint filterMethodEnum = GL_LINEAR;
+    GLRage_GLTexture_Init(&m_surfaceTexture, GL_TEXTURE_2D);
 
     GLRage_GLSampler_Init(&m_sampler);
     GLRage_GLSampler_Bind(&m_sampler, 0);
-    GLRage_GLSampler_Parameteri(
-        &m_sampler, GL_TEXTURE_MAG_FILTER, filterMethodEnum);
-    GLRage_GLSampler_Parameteri(
-        &m_sampler, GL_TEXTURE_MIN_FILTER, filterMethodEnum);
+    GLRage_GLSampler_Parameteri(&m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    GLRage_GLSampler_Parameteri(&m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     GLRage_GLSampler_Parameteri(
         &m_sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     GLRage_GLSampler_Parameteri(
@@ -46,6 +44,7 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
     GLRage_GLBuffer_Close(&m_surfaceBuffer);
+    GLRage_GLTexture_Close(&m_surfaceTexture);
     GLRage_GLSampler_Close(&m_sampler);
 }
 
@@ -57,7 +56,7 @@ void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
 
     GLenum tex_format = GL_BGRA;
     GLenum tex_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-    m_surfaceTexture.bind();
+    GLRage_GLTexture_Bind(&m_surfaceTexture);
 
     // TODO: implement texture packs
 
@@ -80,7 +79,7 @@ void Renderer::render()
     m_program.bind();
     GLRage_GLBuffer_Bind(&m_surfaceBuffer);
     m_surfaceFormat.bind();
-    m_surfaceTexture.bind();
+    GLRage_GLTexture_Bind(&m_surfaceTexture);
     GLRage_GLSampler_Bind(&m_sampler, 0);
 
     GLboolean texture2d = glIsEnabled(GL_TEXTURE_2D);

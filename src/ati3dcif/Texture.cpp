@@ -18,12 +18,28 @@ namespace glrage {
 namespace cif {
 
 Texture::Texture()
-    : gl::Texture(GL_TEXTURE_2D)
 {
+    GLRage_GLTexture_Init(&m_GLTexture, GL_TEXTURE_2D);
 }
 
 Texture::~Texture()
 {
+    GLRage_GLTexture_Close(&m_GLTexture);
+}
+
+void Texture::bind()
+{
+    GLRage_GLTexture_Bind(&m_GLTexture);
+}
+
+GLenum Texture::target()
+{
+    return GLRage_GLTexture_Target(&m_GLTexture);
+}
+
+GLuint Texture::id()
+{
+    return m_GLTexture.id;
 }
 
 void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)

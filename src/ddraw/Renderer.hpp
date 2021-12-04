@@ -4,10 +4,10 @@
 
 #include "glrage/Context.hpp"
 #include "glrage_gl/Program.hpp"
-#include "glrage_gl/Texture.hpp"
 #include "glrage_gl/VertexArray.hpp"
 #include "glrage_gl/buffer.h"
 #include "glrage_gl/sampler.h"
+#include "glrage_gl/texture.h"
 
 #include <cstdint>
 #include <vector>
@@ -29,7 +29,7 @@ private:
     uint32_t m_height = 0;
     gl::VertexArray m_surfaceFormat;
     GLRage_GLBuffer m_surfaceBuffer;
-    gl::Texture m_surfaceTexture = GL_TEXTURE_2D;
+    GLRage_GLTexture m_surfaceTexture;
     GLRage_GLSampler m_sampler;
     gl::Program m_program;
 };
