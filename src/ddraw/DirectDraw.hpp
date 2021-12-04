@@ -17,7 +17,6 @@ public:
     HRESULT CreateSurface(
         LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
     HRESULT GetDisplayMode(LPDDSURFACEDESC lpDDSurfaceDesc);
-    HRESULT SetDisplayMode(DWORD dwWidth, DWORD dwHeight);
 
 private:
     Context &m_context = Context::instance();

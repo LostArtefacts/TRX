@@ -26,6 +26,11 @@ void GLRage_SetWindowSize(int width, int height)
     context.setWindowSize(width, height);
 }
 
+void GLRage_SetDisplaySize(int width, int height)
+{
+    context.setDisplaySize(width, height);
+}
+
 bool GLRage_MakeScreenshot(const char *path)
 {
     context.scheduleScreenshot(std::string(path));

@@ -34,6 +34,7 @@
 #include "specific/s_shell.h"
 
 #include "ddraw/Interop.hpp"
+#include "glrage/Interop.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
@@ -760,11 +761,7 @@ static int S_FMV_ReallocPrimarySurface(
     is->surface_width = surface_width;
     is->surface_height = surface_height;
 
-    result = MyIDirectDraw_SetDisplayMode(frame_width, frame_height);
-    if (result != DD_OK) {
-        LOG_ERROR("DirectDraw error code 0x%lx", result);
-        return 0;
-    }
+    GLRage_SetDisplaySize(frame_width, frame_height);
 
     return 0;
 }

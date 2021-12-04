@@ -36,11 +36,6 @@ HRESULT MyIDirectDraw_Release()
     return DD_OK;
 }
 
-HRESULT MyIDirectDraw_SetDisplayMode(DWORD dwWidth, DWORD dwHeight)
-{
-    return m_DDraw->SetDisplayMode(dwWidth, dwHeight);
-}
-
 HRESULT MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {

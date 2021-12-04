@@ -10,8 +10,6 @@ HRESULT MyDirectDrawCreate();
 
 HRESULT MyIDirectDraw_Release();
 
-HRESULT MyIDirectDraw_SetDisplayMode(DWORD dwWidth, DWORD dwHeight);
-
 HRESULT MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
 

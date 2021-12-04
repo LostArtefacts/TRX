@@ -13,6 +13,7 @@ void GLRage_Detach();
 
 void GLRage_SetFullscreen(bool fullscreen);
 void GLRage_SetWindowSize(int width, int height);
+void GLRage_SetDisplaySize(int width, int height);
 
 bool GLRage_MakeScreenshot(const char *path);
 

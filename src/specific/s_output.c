@@ -77,9 +77,7 @@ static void S_Output_SetHardwareVideoMode()
     m_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
     m_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
-    result =
-        MyIDirectDraw_SetDisplayMode(m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
-    S_Output_CheckError(result);
+    GLRage_SetDisplaySize(m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;

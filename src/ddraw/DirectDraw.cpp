@@ -22,11 +22,5 @@ HRESULT DirectDraw::GetDisplayMode(LPDDSURFACEDESC lpDDSurfaceDesc)
     return DD_OK;
 }
 
-HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight)
-{
-    m_context.setDisplaySize(dwWidth, dwHeight);
-    return DD_OK;
-}
-
 }
 }
