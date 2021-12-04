@@ -4,7 +4,7 @@ namespace glrage {
 
 Context &GLRage::getContext()
 {
-    return ContextImpl::instance();
+    return Context::instance();
 }
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glrage/ContextImpl.hpp"
+#include "glrage/Context.hpp"
 
 namespace glrage {
 
@@ -9,7 +9,7 @@ public:
     static Context &getContext();
 
 private:
-    static ContextImpl m_context;
+    static Context m_context;
 };
 
 }

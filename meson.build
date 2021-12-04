@@ -218,7 +218,7 @@ sources = [
   'src/game/viewport.c',
   'src/global/vars.c',
   'src/global/vars_platform.c',
-  'src/glrage/ContextImpl.cpp',
+  'src/glrage/Context.cpp',
   'src/glrage/GLRage.cpp',
   'src/glrage/Interop.cpp',
   'src/glrage_gl/Buffer.cpp',

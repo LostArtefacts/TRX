@@ -1,4 +1,4 @@
-#include "glrage/ContextImpl.hpp"
+#include "glrage/Context.hpp"
 
 #include "glrage_gl/Screenshot.hpp"
 #include "glrage_gl/gl_core_3_3.h"
@@ -12,19 +12,19 @@
 
 namespace glrage {
 
-ContextImpl &ContextImpl::instance()
+Context &Context::instance()
 {
-    static ContextImpl instance;
+    static Context instance;
     return instance;
 }
 
-LRESULT CALLBACK ContextImpl::callbackWindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK
+Context::callbackWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     return instance().windowProc(hwnd, msg, wParam, lParam);
 }
 
-ContextImpl::ContextImpl()
+Context::Context()
 {
     // set pixel format
     m_pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -40,7 +40,7 @@ ContextImpl::ContextImpl()
     m_screenHeight = GetSystemMetrics(SM_CYSCREEN);
 }
 
-void ContextImpl::attach(HWND hwnd)
+void Context::attach(HWND hwnd)
 {
     if (m_hglrc || m_hwnd) {
         return;
@@ -90,7 +90,7 @@ void ContextImpl::attach(HWND hwnd)
     SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, windowProc);
 }
 
-void ContextImpl::detach()
+void Context::detach()
 {
     if (!m_hwnd) {
         return;
@@ -107,7 +107,7 @@ void ContextImpl::detach()
 }
 
 LRESULT
-ContextImpl::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+Context::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
     // force default handling for some window messages when in windowed
@@ -128,61 +128,61 @@ ContextImpl::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return CallWindowProc(m_windowProc, hwnd, msg, wParam, lParam);
 }
 
-bool ContextImpl::isFullscreen()
+bool Context::isFullscreen()
 {
     return m_fullscreen;
 }
 
-void ContextImpl::setFullscreen(bool fullscreen)
+void Context::setFullscreen(bool fullscreen)
 {
     m_fullscreen = fullscreen;
 }
 
-void ContextImpl::setWindowSize(int width, int height)
+void Context::setWindowSize(int width, int height)
 {
     LOG_INFO("Window size: %dx%d", width, height);
     m_windowWidth = width;
     m_windowHeight = height;
 }
 
-void ContextImpl::setDisplaySize(int32_t width, int32_t height)
+void Context::setDisplaySize(int32_t width, int32_t height)
 {
     LOG_INFO("Display size: %dx%d", width, height);
     m_displayWidth = width;
     m_displayHeight = height;
 }
 
-int32_t ContextImpl::getDisplayWidth()
+int32_t Context::getDisplayWidth()
 {
     return m_displayWidth;
 }
 
-int32_t ContextImpl::getDisplayHeight()
+int32_t Context::getDisplayHeight()
 {
     return m_displayHeight;
 }
 
-int32_t ContextImpl::getWindowWidth()
+int32_t Context::getWindowWidth()
 {
     return m_windowWidth ? m_windowWidth : m_displayWidth;
 }
 
-int32_t ContextImpl::getWindowHeight()
+int32_t Context::getWindowHeight()
 {
     return m_windowHeight ? m_windowHeight : m_displayHeight;
 }
 
-int32_t ContextImpl::getScreenWidth()
+int32_t Context::getScreenWidth()
 {
     return m_screenWidth;
 }
 
-int32_t ContextImpl::getScreenHeight()
+int32_t Context::getScreenHeight()
 {
     return m_screenHeight;
 }
 
-void ContextImpl::setupViewport()
+void Context::setupViewport()
 {
     auto vpWidth = getWindowWidth();
     auto vpHeight = getWindowHeight();
@@ -209,7 +209,7 @@ void ContextImpl::setupViewport()
     glViewport(vpX, vpY, vpWidth, vpHeight);
 }
 
-void ContextImpl::swapBuffers()
+void Context::swapBuffers()
 {
     glFinish();
 
@@ -225,22 +225,22 @@ void ContextImpl::swapBuffers()
     m_render = false;
 }
 
-void ContextImpl::setRendered()
+void Context::setRendered()
 {
     m_render = true;
 }
 
-bool ContextImpl::isRendered()
+bool Context::isRendered()
 {
     return m_render;
 }
 
-HWND ContextImpl::getHWnd()
+HWND Context::getHWnd()
 {
     return m_hwnd;
 }
 
-std::string ContextImpl::getBasePath()
+std::string Context::getBasePath()
 {
     HMODULE hModule = nullptr;
     DWORD dwFlags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
@@ -258,7 +258,7 @@ std::string ContextImpl::getBasePath()
     return path;
 }
 
-void ContextImpl::scheduleScreenshot(const std::string &path)
+void Context::scheduleScreenshot(const std::string &path)
 {
     m_screenshotScheduledPath = path;
 }
