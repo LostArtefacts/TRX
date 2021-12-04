@@ -2,8 +2,8 @@
 
 #include "ati3dcif/ATI3DCIF.h"
 #include "ati3dcif/TransDelay.hpp"
-#include "glrage_gl/Buffer.hpp"
 #include "glrage_gl/VertexArray.hpp"
+#include "glrage_gl/buffer.h"
 
 #include <vector>
 
@@ -21,6 +21,7 @@ static const GLenum GLCIF_PRIM_MODES[] = {
 class VertexStream {
 public:
     VertexStream();
+    ~VertexStream();
     void addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert);
     void addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert);
     void renderPending();
@@ -34,7 +35,7 @@ private:
     C3D_EVERTEX m_vertexType = C3D_EV_VTCF;
     C3D_EPRIM m_primType = C3D_EPRIM_TRI;
     size_t m_vertexBufferSize = 0;
-    gl::Buffer m_vertexBuffer;
+    GLRage_GLBuffer m_vertexBuffer;
     gl::VertexArray m_vtcFormat;
     std::vector<C3D_VTCF> m_vtcBuffer;
     std::function<BOOL(C3D_VTCF *)> m_delayer;

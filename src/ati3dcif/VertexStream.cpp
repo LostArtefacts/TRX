@@ -8,18 +8,21 @@ namespace glrage {
 namespace cif {
 
 VertexStream::VertexStream()
-    : m_vertexBuffer(GL_ARRAY_BUFFER)
 {
-    // bind vertex buffer
-    m_vertexBuffer.bind();
+    GLRage_GLBuffer_Init(&m_vertexBuffer, GL_ARRAY_BUFFER);
+    GLRage_GLBuffer_Bind(&m_vertexBuffer);
 
-    // define vertex formats
     m_vtcFormat.bind();
     m_vtcFormat.attribute(0, 3, GL_FLOAT, GL_FALSE, 40, 0);
     m_vtcFormat.attribute(1, 3, GL_FLOAT, GL_FALSE, 40, 12);
     m_vtcFormat.attribute(2, 4, GL_FLOAT, GL_FALSE, 40, 24);
 
     gl::Utils::checkError(__FUNCTION__);
+}
+
+VertexStream::~VertexStream()
+{
+    GLRage_GLBuffer_Close(&m_vertexBuffer);
 }
 
 void VertexStream::setDelayer(std::function<BOOL(C3D_VTCF *)> delayer)
@@ -102,7 +105,6 @@ void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
 
 void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
 {
-    // bind vertex format
     m_vtcFormat.bind();
 
     // resize GPU buffer if required
@@ -111,17 +113,15 @@ void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
         LOG_INFO(
             "Vertex buffer resize: %d -> %d", m_vertexBufferSize,
             vertexBufferSize);
-        m_vertexBuffer.data(vertexBufferSize, nullptr, GL_STREAM_DRAW);
+        GLRage_GLBuffer_Data(
+            &m_vertexBuffer, vertexBufferSize, nullptr, GL_STREAM_DRAW);
         m_vertexBufferSize = vertexBufferSize;
     }
 
-    // upload vertices
-    m_vertexBuffer.subData(0, vertexBufferSize, &prims[0]);
+    GLRage_GLBuffer_SubData(&m_vertexBuffer, 0, vertexBufferSize, &prims[0]);
 
-    // draw vertices
     glDrawArrays(GLCIF_PRIM_MODES[m_primType], 0, prims.size());
 
-    // check for errors
     gl::Utils::checkError(__FUNCTION__);
 }
 
@@ -150,7 +150,7 @@ void VertexStream::vertexType(C3D_EVERTEX vertexType)
 
 void VertexStream::bind()
 {
-    m_vertexBuffer.bind();
+    GLRage_GLBuffer_Bind(&m_vertexBuffer);
 }
 
 }

@@ -8,12 +8,13 @@ namespace glrage {
 namespace ddraw {
 
 Renderer::Renderer()
-    : m_surfaceBuffer(GL_ARRAY_BUFFER)
 {
-    m_surfaceBuffer.bind();
+    GLRage_GLBuffer_Init(&m_surfaceBuffer, GL_ARRAY_BUFFER);
+    GLRage_GLBuffer_Bind(&m_surfaceBuffer);
     GLfloat verts[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
                         0.0, 1.0, 1.0, 0.0, 1.0, 1.0 };
-    m_surfaceBuffer.data(sizeof(verts), verts, GL_STATIC_DRAW);
+    GLRage_GLBuffer_Data(
+        &m_surfaceBuffer, sizeof(verts), verts, GL_STATIC_DRAW);
 
     m_surfaceFormat.bind();
     m_surfaceFormat.attribute(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
@@ -35,6 +36,11 @@ Renderer::Renderer()
     m_program.fragmentData("fragColor");
 
     gl::Utils::checkError(__FUNCTION__);
+}
+
+Renderer::~Renderer()
+{
+    GLRage_GLBuffer_Close(&m_surfaceBuffer);
 }
 
 void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
@@ -66,7 +72,7 @@ void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
 void Renderer::render()
 {
     m_program.bind();
-    m_surfaceBuffer.bind();
+    GLRage_GLBuffer_Bind(&m_surfaceBuffer);
     m_surfaceFormat.bind();
     m_surfaceTexture.bind();
     m_sampler.bind(0);
