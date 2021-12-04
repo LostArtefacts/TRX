@@ -140,6 +140,7 @@ void ContextImpl::setFullscreen(bool fullscreen)
 
 void ContextImpl::setWindowSize(int width, int height)
 {
+    LOG_INFO("Window size: %dx%d", width, height);
     m_windowWidth = width;
     m_windowHeight = height;
 }
@@ -147,7 +148,6 @@ void ContextImpl::setWindowSize(int width, int height)
 void ContextImpl::setDisplaySize(int32_t width, int32_t height)
 {
     LOG_INFO("Display size: %dx%d", width, height);
-
     m_displayWidth = width;
     m_displayHeight = height;
 }

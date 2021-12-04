@@ -57,6 +57,7 @@ int32_t ViewPort_GetMaxY()
 {
     return m_MaxY;
 }
+
 int32_t ViewPort_GetWidth()
 {
     return m_Width;

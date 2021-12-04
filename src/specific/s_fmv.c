@@ -25,9 +25,14 @@
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/output.h"
+#include "game/viewport.h"
+#include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_audio.h"
 #include "specific/s_shell.h"
+#include "specific/s_output.h"
+
+#include "ddraw/Interop.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
@@ -41,6 +46,10 @@
 #include <libswresample/swresample.h>
 #include <libswscale/swscale.h>
 
+// NOTE: subtitles require implementing surface blending.
+#define ENABLE_SUBTITLES 0
+
+#define SDL_FMV_RENDERER 0
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25
 #define SDL_AUDIO_MIN_BUFFER_SIZE 512
@@ -195,8 +204,10 @@ typedef struct VideoState {
     int frame_drops_early;
     int frame_drops_late;
 
-    SDL_Texture *sub_texture;
-    SDL_Texture *vid_texture;
+    int surface_width;
+    int surface_height;
+    LPDIRECTDRAWSURFACE primary_surface;
+    LPDIRECTDRAWSURFACE back_surface;
 
     int subtitle_stream;
     AVStream *subtitle_st;
@@ -222,7 +233,6 @@ typedef struct VideoState {
 static int64_t m_AudioCallbackTime;
 
 static SDL_Window *m_Window;
-static SDL_Renderer *m_Renderer;
 static SDL_RendererInfo m_RendererInfo = { 0 };
 static SDL_AudioDeviceID m_AudioDevice;
 
@@ -683,35 +693,61 @@ static void S_FMV_DecoderAbort(Decoder *d, FrameQueue *fq)
     S_FMV_PacketQueueFlush(d->queue);
 }
 
-static int S_FMV_ReallocTexture(
-    SDL_Texture **texture, Uint32 new_format, int new_width, int new_height,
-    SDL_BlendMode blendmode, int init_texture)
+static int S_FMV_ReallocPrimarySurface(
+    VideoState *is, int new_width, int new_height, bool clear)
 {
-    Uint32 format;
-    int access, w, h;
-    if (!*texture || SDL_QueryTexture(*texture, &format, &access, &w, &h) < 0
-        || new_width != w || new_height != h || new_format != format) {
-        void *pixels;
-        int pitch;
-        if (*texture) {
-            SDL_DestroyTexture(*texture);
-        }
-        if (!(*texture = SDL_CreateTexture(
-                  m_Renderer, new_format, SDL_TEXTUREACCESS_STREAMING,
-                  new_width, new_height))) {
-            return -1;
-        }
-        if (SDL_SetTextureBlendMode(*texture, blendmode) < 0) {
-            return -1;
-        }
-        if (init_texture) {
-            if (SDL_LockTexture(*texture, NULL, &pixels, &pitch) < 0) {
-                return -1;
-            }
-            memset(pixels, 0, pitch * new_height);
-            SDL_UnlockTexture(*texture);
-        }
+    if (is->primary_surface && is->surface_width == new_width
+        && is->surface_height == new_height) {
+        return 0;
     }
+
+    if (is->primary_surface) {
+        MyIDirectDrawSurface_Release(is->primary_surface);
+        is->primary_surface = NULL;
+    }
+
+    DDSURFACEDESC surface_desc;
+    memset(&surface_desc, 0, sizeof(surface_desc));
+    surface_desc.dwFlags =
+        DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+    surface_desc.dwWidth = new_width;
+    surface_desc.dwHeight = new_height;
+    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
+    surface_desc.dwBackBufferCount = 1;
+    HRESULT result = MyIDirectDraw2_CreateSurface(
+        g_DDraw, &surface_desc, &is->primary_surface);
+    if (result != DD_OK) {
+        LOG_ERROR("DirectDraw error code 0x%lx", result);
+    }
+
+    DDSCAPS caps = { DDSCAPS_BACKBUFFER };
+    result = MyIDirectDrawSurface_GetAttachedSurface(
+        is->primary_surface, &caps, &is->back_surface);
+    if (result != DD_OK) {
+        LOG_ERROR("DirectDraw error code 0x%lx", result);
+    }
+
+    if (clear) {
+        result = MyIDirectDrawSurface2_Lock(is->primary_surface, &surface_desc);
+        if (result != DD_OK) {
+            LOG_ERROR("DirectDraw error code 0x%lx", result);
+            return -1;
+        }
+        memset(surface_desc.lpSurface, 0, surface_desc.lPitch * new_height);
+        MyIDirectDrawSurface2_Unlock(
+            is->primary_surface, surface_desc.lpSurface);
+    }
+
+    is->surface_width = new_width;
+    is->surface_height = new_height;
+
+    result = MyIDirectDraw_SetDisplayMode(
+        g_DDraw, is->surface_width, is->surface_height);
+    if (result != DD_OK) {
+        LOG_ERROR("DirectDraw error code 0x%lx", result);
+        return 0;
+    }
+
     return 0;
 }
 
@@ -742,119 +778,44 @@ static void S_FMV_CalculateDisplayRect(
     rect->h = FFMAX((int)height, 1);
 }
 
-static int S_FMV_UploadTexture(
-    SDL_Texture **tex, AVFrame *frame, struct SwsContext **img_convert_ctx)
+static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 {
-    int ret = 0;
-
-    SDL_BlendMode sdl_blendmode = SDL_BLENDMODE_NONE;
-    if (frame->format == AV_PIX_FMT_RGB32 || frame->format == AV_PIX_FMT_RGB32_1
-        || frame->format == AV_PIX_FMT_BGR32
-        || frame->format == AV_PIX_FMT_BGR32_1) {
-        sdl_blendmode = SDL_BLENDMODE_BLEND;
-    }
-
-    Uint32 sdl_pix_fmt = SDL_PIXELFORMAT_UNKNOWN;
-    for (int i = 0; i < (signed)FF_ARRAY_ELEMS(sdl_texture_format_map) - 1;
-         i++) {
-        if (frame->format == sdl_texture_format_map[i].format) {
-            sdl_pix_fmt = sdl_texture_format_map[i].texture_fmt;
-            break;
-        }
-    }
-
-    if (S_FMV_ReallocTexture(
-            tex,
-            sdl_pix_fmt == SDL_PIXELFORMAT_UNKNOWN ? SDL_PIXELFORMAT_ARGB8888
-                                                   : sdl_pix_fmt,
-            frame->width, frame->height, sdl_blendmode, 0)
+    if (S_FMV_ReallocPrimarySurface(is, frame->width, frame->height, false)
         < 0) {
         return -1;
     }
 
-    switch (sdl_pix_fmt) {
-    case SDL_PIXELFORMAT_UNKNOWN:
-        *img_convert_ctx = sws_getCachedContext(
-            *img_convert_ctx, frame->width, frame->height, frame->format,
-            frame->width, frame->height, AV_PIX_FMT_BGRA, SWS_BICUBIC, NULL,
-            NULL, NULL);
-        if (*img_convert_ctx != NULL) {
-            uint8_t *pixels[4];
-            int pitch[4];
-            if (!SDL_LockTexture(*tex, NULL, (void **)pixels, pitch)) {
-                sws_scale(
-                    *img_convert_ctx, (const uint8_t *const *)frame->data,
-                    frame->linesize, 0, frame->height, pixels, pitch);
-                SDL_UnlockTexture(*tex);
-            }
-        } else {
-            LOG_ERROR("Cannot initialize the conversion context");
-            ret = -1;
-        }
-        break;
+    int ret = 0;
 
-    case SDL_PIXELFORMAT_IYUV:
-        if (frame->linesize[0] > 0 && frame->linesize[1] > 0
-            && frame->linesize[2] > 0) {
-            ret = SDL_UpdateYUVTexture(
-                *tex, NULL, frame->data[0], frame->linesize[0], frame->data[1],
-                frame->linesize[1], frame->data[2], frame->linesize[2]);
-        } else if (
-            frame->linesize[0] < 0 && frame->linesize[1] < 0
-            && frame->linesize[2] < 0) {
-            ret = SDL_UpdateYUVTexture(
-                *tex, NULL,
-                frame->data[0] + frame->linesize[0] * (frame->height - 1),
-                -frame->linesize[0],
-                frame->data[1]
-                    + frame->linesize[1]
-                        * (AV_CEIL_RSHIFT(frame->height, 1) - 1),
-                -frame->linesize[1],
-                frame->data[2]
-                    + frame->linesize[2]
-                        * (AV_CEIL_RSHIFT(frame->height, 1) - 1),
-                -frame->linesize[2]);
-        } else {
-            LOG_ERROR(
-                "Mixed negative and positive linesizes are not supported.");
-            return -1;
-        }
-        break;
+    is->img_convert_ctx = sws_getCachedContext(
+        is->img_convert_ctx, frame->width, frame->height, frame->format,
+        frame->width, frame->height, AV_PIX_FMT_BGRA, SWS_BICUBIC, NULL, NULL,
+        NULL);
 
-    default:
-        if (frame->linesize[0] < 0) {
-            ret = SDL_UpdateTexture(
-                *tex, NULL,
-                frame->data[0] + frame->linesize[0] * (frame->height - 1),
-                -frame->linesize[0]);
-        } else {
-            ret = SDL_UpdateTexture(
-                *tex, NULL, frame->data[0], frame->linesize[0]);
+    if (is->img_convert_ctx) {
+        DDSURFACEDESC surface_desc;
+        HRESULT result =
+            MyIDirectDrawSurface2_Lock(is->back_surface, &surface_desc);
+        if (result == DD_OK) {
+            uint8_t *surf_planes[4];
+            int surf_linesize[4];
+            av_image_fill_arrays(
+                surf_planes, surf_linesize,
+                (const uint8_t *)surface_desc.lpSurface, AV_PIX_FMT_BGRA,
+                surface_desc.dwWidth, surface_desc.dwHeight, 1);
+
+            sws_scale(
+                is->img_convert_ctx, (const uint8_t *const *)frame->data,
+                frame->linesize, 0, frame->height, surf_planes, surf_linesize);
+            MyIDirectDrawSurface2_Unlock(
+                is->back_surface, surface_desc.lpSurface);
         }
-        break;
+    } else {
+        LOG_ERROR("Cannot initialize the conversion context");
+        ret = -1;
     }
 
     return ret;
-}
-
-static void S_FMV_SetSDLYUVConversionMode(AVFrame *frame)
-{
-    SDL_YUV_CONVERSION_MODE mode = SDL_YUV_CONVERSION_AUTOMATIC;
-    if (frame
-        && (frame->format == AV_PIX_FMT_YUV420P
-            || frame->format == AV_PIX_FMT_YUYV422
-            || frame->format == AV_PIX_FMT_UYVY422)) {
-        if (frame->color_range == AVCOL_RANGE_JPEG) {
-            mode = SDL_YUV_CONVERSION_JPEG;
-        } else if (frame->colorspace == AVCOL_SPC_BT709) {
-            mode = SDL_YUV_CONVERSION_BT709;
-        } else if (
-            frame->colorspace == AVCOL_SPC_BT470BG
-            || frame->colorspace == AVCOL_SPC_SMPTE170M) {
-            mode = SDL_YUV_CONVERSION_BT601;
-        }
-    }
-    SDL_SetYUVConversionMode(mode);
 }
 
 static void S_FMV_VideoImageDisplay(VideoState *is)
@@ -877,12 +838,14 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
                         sp->width = vp->width;
                         sp->height = vp->height;
                     }
-                    if (S_FMV_ReallocTexture(
-                            &is->sub_texture, SDL_PIXELFORMAT_ARGB8888,
-                            sp->width, sp->height, SDL_BLENDMODE_BLEND, 1)
+#if ENABLE_SUBTITLES
+                    if (S_FMV_ReallocPrimarySurface(
+                            SDL_PIXELFORMAT_ARGB8888, sp->width, sp->height,
+                            SDL_BLENDMODE_BLEND, true)
                         < 0) {
                         return;
                     }
+#endif
 
                     for (int i = 0; i < (signed)sp->sub.num_rects; i++) {
                         AVSubtitleRect *sub_rect = sp->sub.rects[i];
@@ -903,6 +866,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
                                 "Cannot initialize the conversion context");
                             return;
                         }
+#if ENABLE_SUBTITLES
                         if (!SDL_LockTexture(
                                 is->sub_texture, (SDL_Rect *)sub_rect,
                                 (void **)pixels, pitch)) {
@@ -913,6 +877,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
                                 pitch);
                             SDL_UnlockTexture(is->sub_texture);
                         }
+#endif
                     }
                     sp->uploaded = true;
                 }
@@ -926,23 +891,19 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
         &rect, 0, 0, is->width, is->height, vp->width, vp->height, vp->sar);
 
     if (!vp->uploaded) {
-        if (S_FMV_UploadTexture(
-                &is->vid_texture, vp->frame, &is->img_convert_ctx)
-            < 0) {
+        if (S_FMV_UploadTexture(is, vp->frame) < 0) {
             return;
         }
         vp->uploaded = true;
         vp->flip_v = vp->frame->linesize[0] < 0;
     }
 
-    S_FMV_SetSDLYUVConversionMode(vp->frame);
-    SDL_RenderCopyEx(
-        m_Renderer, is->vid_texture, NULL, &rect, 0, NULL,
-        vp->flip_v ? SDL_FLIP_VERTICAL : 0);
-    S_FMV_SetSDLYUVConversionMode(NULL);
-    if (sp) {
-        SDL_RenderCopy(m_Renderer, is->sub_texture, NULL, &rect);
+    S_Output_RenderEnd();
+    HRESULT result = MyIDirectDrawSurface_Flip(is->primary_surface);
+    if (result != DD_OK) {
+        LOG_ERROR("Cannot flip surface: 0x%lx", result);
     }
+    S_Output_RenderToggle();
 }
 
 static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
@@ -1024,23 +985,17 @@ static void S_FMV_StreamClose(VideoState *is)
     sws_freeContext(is->img_convert_ctx);
     sws_freeContext(is->sub_convert_ctx);
     av_free(is->filename);
-    if (is->vid_texture) {
-        SDL_DestroyTexture(is->vid_texture);
-    }
-    if (is->sub_texture) {
-        SDL_DestroyTexture(is->sub_texture);
+    if (is->primary_surface) {
+        MyIDirectDrawSurface_Release(is->primary_surface);
     }
     av_free(is);
 }
 
 static void S_FMV_VideoDisplay(VideoState *is)
 {
-    SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
-    SDL_RenderClear(m_Renderer);
     if (is->video_st) {
         S_FMV_VideoImageDisplay(is);
     }
-    SDL_RenderPresent(m_Renderer);
 }
 
 static double S_FMV_GetClock(Clock *c)
@@ -1255,6 +1210,7 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
                                 uint8_t *pixels;
                                 int pitch;
 
+#if ENABLE_SUBTITLES
                                 if (!SDL_LockTexture(
                                         is->sub_texture, (SDL_Rect *)sub_rect,
                                         (void **)&pixels, &pitch)) {
@@ -1264,6 +1220,7 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
                                     }
                                     SDL_UnlockTexture(is->sub_texture);
                                 }
+#endif
                             }
                         }
                         S_FMV_FrameQueueNext(&is->subpq);
@@ -2260,6 +2217,7 @@ static void S_FMV_EventLoop(VideoState *is)
                 is->width = event.window.data1;
                 is->height = event.window.data2;
                 is->force_refresh = true;
+                Output_SetViewport(event.window.data1, event.window.data2);
                 break;
 
             case SDL_WINDOWEVENT_EXPOSED:
@@ -2290,13 +2248,14 @@ bool S_FMV_Play(const char *file_path)
         return true;
     }
 
+    LOG_DEBUG("Playing FMV: %s", file_path);
+
     if (!File_Exists(file_path)) {
         LOG_ERROR("FMV does not exist: %s", file_path);
         return false;
     }
 
     GameBuf_Shutdown();
-    Output_Shutdown();
     S_Audio_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
@@ -2309,24 +2268,6 @@ bool S_FMV_Play(const char *file_path)
     SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
 
     m_Window = (SDL_Window *)S_Shell_GetWindowHandle();
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    if (m_Window) {
-        m_Renderer = SDL_CreateRenderer(
-            m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-        if (!m_Renderer) {
-            LOG_INFO(
-                "Failed to initialize a hardware accelerated renderer: %s",
-                SDL_GetError());
-            m_Renderer = SDL_CreateRenderer(m_Window, -1, 0);
-        }
-        if (m_Renderer) {
-            SDL_GetRendererInfo(m_Renderer, &m_RendererInfo);
-        }
-    }
-    if (!m_Window || !m_Renderer || !m_RendererInfo.num_texture_formats) {
-        LOG_ERROR("Failed to create window or renderer: %s", SDL_GetError());
-        goto cleanup;
-    }
 
     VideoState *is = S_FMV_StreamOpen(file_path, NULL);
     if (!is) {
@@ -2343,12 +2284,12 @@ cleanup:
         S_FMV_StreamClose(is);
     }
 
-    if (m_Renderer) {
-        SDL_DestroyRenderer(m_Renderer);
-    }
+    LOG_DEBUG("Finished playing FMV: %s", file_path);
 
     S_Audio_Init();
-    Output_Init();
     GameBuf_Init();
+
+    S_Output_ApplyResolution();
+
     return ret;
 }

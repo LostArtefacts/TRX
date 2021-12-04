@@ -22,7 +22,7 @@
 #define S_Output_CheckError(result)                                            \
     {                                                                          \
         if (result != DD_OK) {                                                 \
-            LOG_ERROR("DirectDraw error code %x", result);                     \
+            LOG_ERROR("DirectDraw error code 0x%lx", result);                  \
             Shell_ExitSystem("Fatal DirectDraw error!");                       \
         }                                                                      \
     }
