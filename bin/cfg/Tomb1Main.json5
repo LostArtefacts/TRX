@@ -178,5 +178,5 @@
     "enable_3d_pickups" : true,
 
     // Screenshot file format. Must be either "jpg" or "png".
-    "screenshot_format": "png",
+    "screenshot_format": "jpg",
 }
