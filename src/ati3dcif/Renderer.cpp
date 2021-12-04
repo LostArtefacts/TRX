@@ -16,14 +16,10 @@ Renderer::Renderer()
         [this](C3D_VTCF *verts) { return m_transDelay.delayTriangle(verts); });
 
     // bind sampler
-    m_sampler.bind(0);
-
-    // improve texture filtering quality
-    // TODO: make me configurable
-    float filterAniso = 16.0f;
-    if (filterAniso > 0) {
-        m_sampler.parameterf(GL_TEXTURE_MAX_ANISOTROPY_EXT, filterAniso);
-    }
+    GLRage_GLSampler_Init(&m_sampler);
+    GLRage_GLSampler_Bind(&m_sampler, 0);
+    GLRage_GLSampler_Parameterf(
+        &m_sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
     // compile and link shaders and configure program
     std::string basePath = m_context.getBasePath();
@@ -52,6 +48,11 @@ Renderer::Renderer()
     gl::Utils::checkError(__FUNCTION__);
 }
 
+Renderer::~Renderer()
+{
+    GLRage_GLSampler_Close(&m_sampler);
+}
+
 void Renderer::renderBegin()
 {
     glEnable(GL_BLEND);
@@ -63,7 +64,7 @@ void Renderer::renderBegin()
     // bind objects
     m_program.bind();
     m_vertexStream.bind();
-    m_sampler.bind(0);
+    GLRage_GLSampler_Bind(&m_sampler, 0);
 
     // restore texture binding
     tmapRestore();
@@ -319,10 +320,10 @@ void Renderer::tmapFilter(C3D_ETEXFILTER value)
 {
     m_vertexStream.renderPending();
     auto filter = value;
-    m_sampler.parameteri(
-        GL_TEXTURE_MAG_FILTER, GLCIF_TEXTURE_MAG_FILTER[filter]);
-    m_sampler.parameteri(
-        GL_TEXTURE_MIN_FILTER, GLCIF_TEXTURE_MIN_FILTER[filter]);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_MAG_FILTER, GLCIF_TEXTURE_MAG_FILTER[filter]);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_MIN_FILTER, GLCIF_TEXTURE_MIN_FILTER[filter]);
 }
 
 void Renderer::tmapTexOp(C3D_ETEXOP value)

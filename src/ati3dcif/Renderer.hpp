@@ -5,8 +5,8 @@
 #include "ati3dcif/VertexStream.hpp"
 #include "glrage/Context.hpp"
 #include "glrage_gl/Program.hpp"
-#include "glrage_gl/Sampler.hpp"
 #include "glrage_gl/Shader.hpp"
+#include "glrage_gl/sampler.h"
 
 #include <array>
 #include <map>
@@ -72,6 +72,8 @@ static const GLenum GLCIF_TEXTURE_MAG_FILTER[] = {
 class Renderer {
 public:
     Renderer();
+    ~Renderer();
+
     void renderBegin();
     void renderEnd();
     void textureReg(C3D_PTMAP, C3D_PHTX);
@@ -109,7 +111,7 @@ private:
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
     int32_t m_paletteID = 0;
     gl::Program m_program;
-    gl::Sampler m_sampler;
+    GLRage_GLSampler m_sampler;
     VertexStream m_vertexStream;
     TransDelay m_transDelay;
 

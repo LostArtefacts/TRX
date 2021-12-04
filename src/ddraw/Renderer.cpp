@@ -21,11 +21,16 @@ Renderer::Renderer()
 
     GLint filterMethodEnum = GL_LINEAR;
 
-    m_sampler.bind(0);
-    m_sampler.parameteri(GL_TEXTURE_MAG_FILTER, filterMethodEnum);
-    m_sampler.parameteri(GL_TEXTURE_MIN_FILTER, filterMethodEnum);
-    m_sampler.parameteri(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    m_sampler.parameteri(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    GLRage_GLSampler_Init(&m_sampler);
+    GLRage_GLSampler_Bind(&m_sampler, 0);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_MAG_FILTER, filterMethodEnum);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_MIN_FILTER, filterMethodEnum);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    GLRage_GLSampler_Parameteri(
+        &m_sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
     std::string basePath = m_context.getBasePath();
     m_program.attach(gl::Shader(GL_VERTEX_SHADER)
@@ -41,6 +46,7 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
     GLRage_GLBuffer_Close(&m_surfaceBuffer);
+    GLRage_GLSampler_Close(&m_sampler);
 }
 
 void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
@@ -75,7 +81,7 @@ void Renderer::render()
     GLRage_GLBuffer_Bind(&m_surfaceBuffer);
     m_surfaceFormat.bind();
     m_surfaceTexture.bind();
-    m_sampler.bind(0);
+    GLRage_GLSampler_Bind(&m_sampler, 0);
 
     GLboolean texture2d = glIsEnabled(GL_TEXTURE_2D);
     if (!texture2d) {
