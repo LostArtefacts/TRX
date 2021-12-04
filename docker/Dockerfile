@@ -32,7 +32,10 @@ RUN cd zlib \
         -j 4 install
 
 # ffmpeg
-RUN git clone https://github.com/FFmpeg/FFmpeg --depth 1
+RUN git clone \
+    --depth 1 \
+    --branch "n4.4.1" \
+    https://github.com/FFmpeg/FFmpeg
 RUN cd FFmpeg \
     && ./configure \
         --arch=x86 \

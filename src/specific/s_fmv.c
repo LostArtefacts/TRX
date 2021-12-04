@@ -158,7 +158,7 @@ typedef struct Decoder {
 
 typedef struct VideoState {
     SDL_Thread *read_tid;
-    const AVInputFormat *iformat;
+    AVInputFormat *iformat;
     bool abort_request;
     bool force_refresh;
     bool paused;
@@ -1919,7 +1919,7 @@ static int S_FMV_ReadThread(void *arg)
     }
     ic->interrupt_callback.callback = S_FMV_DecodeInterruptCB;
     ic->interrupt_callback.opaque = is;
-    err = avformat_open_input(&ic, is->filename, is->iformat, NULL);
+    err = avformat_open_input(&ic, is->filename, NULL, NULL);
     if (err < 0) {
         LOG_ERROR("Error while opening file %s: %s", av_err2str(err));
         ret = -1;
@@ -2090,8 +2090,7 @@ fail:
     return 0;
 }
 
-static VideoState *S_FMV_StreamOpen(
-    const char *filename, const AVInputFormat *iformat)
+static VideoState *S_FMV_StreamOpen(const char *filename)
 {
     VideoState *is;
 
@@ -2106,7 +2105,7 @@ static VideoState *S_FMV_StreamOpen(
     if (!is->filename) {
         goto fail;
     }
-    is->iformat = iformat;
+    is->iformat = NULL;
 
     SDL_GetWindowSize(m_Window, &is->width, &is->height);
 
@@ -2276,7 +2275,7 @@ bool S_FMV_Play(const char *file_path)
 
     m_Window = (SDL_Window *)S_Shell_GetWindowHandle();
 
-    VideoState *is = S_FMV_StreamOpen(file_path, NULL);
+    VideoState *is = S_FMV_StreamOpen(file_path);
     if (!is) {
         LOG_ERROR("Failed to initialize VideoState!");
         goto cleanup;
