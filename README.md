@@ -93,6 +93,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
 - added adjustable in-game brightness
+- added .jpeg/.png screenshots
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
