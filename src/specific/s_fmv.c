@@ -733,8 +733,8 @@ static int S_FMV_ReallocPrimarySurface(
     surface_desc.dwHeight = surface_height;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    HRESULT result = MyIDirectDraw2_CreateSurface(
-        g_DDraw, &surface_desc, &is->primary_surface);
+    HRESULT result =
+        MyIDirectDraw2_CreateSurface(&surface_desc, &is->primary_surface);
     if (result != DD_OK) {
         LOG_ERROR("DirectDraw error code 0x%lx", result);
     }
@@ -760,7 +760,7 @@ static int S_FMV_ReallocPrimarySurface(
     is->surface_width = surface_width;
     is->surface_height = surface_height;
 
-    result = MyIDirectDraw_SetDisplayMode(g_DDraw, frame_width, frame_height);
+    result = MyIDirectDraw_SetDisplayMode(frame_width, frame_height);
     if (result != DD_OK) {
         LOG_ERROR("DirectDraw error code 0x%lx", result);
         return 0;

@@ -15,10 +15,12 @@ static Context &context = Context::instance();
 
 extern "C" {
 
-HRESULT MyDirectDrawCreate(LPDIRECTDRAW *lplpDD)
+static DirectDraw *m_DDraw = nullptr;
+
+HRESULT MyDirectDrawCreate()
 {
     try {
-        *lplpDD = new DirectDraw();
+        m_DDraw = new DirectDraw();
     } catch (const std::exception &ex) {
         ErrorUtils::warning(ex);
         return DDERR_GENERIC;
@@ -27,27 +29,22 @@ HRESULT MyDirectDrawCreate(LPDIRECTDRAW *lplpDD)
     return DD_OK;
 }
 
-HRESULT MyIDirectDraw_Release(LPDIRECTDRAW p)
+HRESULT MyIDirectDraw_Release()
 {
-    assert(p);
-    delete reinterpret_cast<DirectDraw *>(p);
+    assert(m_DDraw);
+    delete m_DDraw;
     return DD_OK;
 }
 
-HRESULT MyIDirectDraw_SetDisplayMode(
-    LPDIRECTDRAW p, DWORD dwWidth, DWORD dwHeight)
+HRESULT MyIDirectDraw_SetDisplayMode(DWORD dwWidth, DWORD dwHeight)
 {
-    assert(p);
-    return reinterpret_cast<DirectDraw *>(p)->SetDisplayMode(dwWidth, dwHeight);
+    return m_DDraw->SetDisplayMode(dwWidth, dwHeight);
 }
 
 HRESULT MyIDirectDraw2_CreateSurface(
-    LPDIRECTDRAW p, LPDDSURFACEDESC lpDDSurfaceDesc,
-    LPDIRECTDRAWSURFACE *lplpDDSurface)
+    LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {
-    assert(p);
-    return reinterpret_cast<DirectDraw *>(p)->CreateSurface(
-        lpDDSurfaceDesc, lplpDDSurface);
+    return m_DDraw->CreateSurface(lpDDSurfaceDesc, lplpDDSurface);
 }
 
 HRESULT MyIDirectDrawSurface_GetAttachedSurface(

@@ -6,16 +6,14 @@
 extern "C" {
 #endif
 
-HRESULT MyDirectDrawCreate(LPDIRECTDRAW *lplpDD);
+HRESULT MyDirectDrawCreate();
 
-HRESULT MyIDirectDraw_Release(LPDIRECTDRAW p);
+HRESULT MyIDirectDraw_Release();
 
-HRESULT MyIDirectDraw_SetDisplayMode(
-    LPDIRECTDRAW p, DWORD dwWidth, DWORD dwHeight);
+HRESULT MyIDirectDraw_SetDisplayMode(DWORD dwWidth, DWORD dwHeight);
 
 HRESULT MyIDirectDraw2_CreateSurface(
-    LPDIRECTDRAW p, LPDDSURFACEDESC lpDDSurfaceDesc,
-    LPDIRECTDRAWSURFACE *lplpDDSurface);
+    LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
 
 HRESULT MyIDirectDrawSurface_GetAttachedSurface(
     LPDIRECTDRAWSURFACE p, LPDDSCAPS lpDDSCaps,

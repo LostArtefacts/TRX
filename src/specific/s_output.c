@@ -77,16 +77,15 @@ static void S_Output_SetHardwareVideoMode()
     m_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
     m_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
-    result = MyIDirectDraw_SetDisplayMode(
-        g_DDraw, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
+    result =
+        MyIDirectDraw_SetDisplayMode(m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
     S_Output_CheckError(result);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    result =
-        MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &m_PrimarySurface);
+    result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PrimarySurface);
     S_Output_CheckError(result);
     S_Output_ClearSurface(m_PrimarySurface);
 
@@ -101,8 +100,8 @@ static void S_Output_SetHardwareVideoMode()
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
-        result = MyIDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_TextureSurfaces[i]);
+        result =
+            MyIDirectDraw2_CreateSurface(&surface_desc, &m_TextureSurfaces[i]);
         S_Output_CheckError(result);
     }
 
@@ -696,8 +695,7 @@ void S_Output_CopyFromPicture()
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_DDrawSurfaceWidth;
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
-        result = MyIDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_PictureSurface);
+        result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
         S_Output_CheckError(result);
     }
 
@@ -725,8 +723,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
-    result =
-        MyIDirectDraw2_CreateSurface(g_DDraw, &surface_desc, &picture_surface);
+    result = MyIDirectDraw2_CreateSurface(&surface_desc, &picture_surface);
     S_Output_CheckError(result);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
@@ -753,8 +750,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_DDrawSurfaceWidth;
         surface_desc.dwHeight = m_DDrawSurfaceHeight;
-        result = MyIDirectDraw2_CreateSurface(
-            g_DDraw, &surface_desc, &m_PictureSurface);
+        result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
         S_Output_CheckError(result);
     }
 
@@ -1195,7 +1191,7 @@ bool S_Output_Init()
     HRESULT result;
 
     GLRage_Attach(g_TombHWND);
-    if (MyDirectDrawCreate(&g_DDraw) != DD_OK) {
+    if (MyDirectDrawCreate() != DD_OK) {
         LOG_ERROR("DDraw emulation layer could not be started");
         return false;
     }
@@ -1235,10 +1231,7 @@ void S_Output_Shutdown()
 {
     S_Output_ReleaseSurfaces();
     S_ATI_Shutdown();
-    if (g_DDraw) {
-        MyIDirectDraw_Release(g_DDraw);
-        g_DDraw = NULL;
-    }
+    MyIDirectDraw_Release();
     GLRage_Detach();
 }
 
