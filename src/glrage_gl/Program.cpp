@@ -1,7 +1,7 @@
 #include "glrage_gl/Program.hpp"
 
+#include "log.h"
 #include "glrage_gl/ProgramException.hpp"
-#include "glrage_util/Logger.hpp"
 
 namespace glrage {
 namespace gl {
@@ -67,7 +67,7 @@ GLint Program::attributeLocation(const std::string &name)
 
     GLint location = glGetAttribLocation(m_id, name.c_str());
     if (location == -1) {
-        LOG_INFO("Shader attribute not found: " + name);
+        LOG_INFO("Shader attribute not found: %s", name.c_str());
     }
 
     m_attributeLocations[name] = location;
@@ -84,7 +84,7 @@ GLint Program::uniformLocation(const std::string &name)
 
     GLint location = glGetUniformLocation(m_id, name.c_str());
     if (location == -1) {
-        LOG_INFO("Shader uniform not found: " + name);
+        LOG_INFO("Shader uniform not found: %s", name.c_str());
     }
 
     m_uniformLocations[name] = location;

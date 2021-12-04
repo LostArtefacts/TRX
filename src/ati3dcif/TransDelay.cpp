@@ -1,7 +1,5 @@
 #include "ati3dcif/TransDelay.hpp"
 
-#include "glrage_util/Logger.hpp"
-
 #include <algorithm>
 #include <cfloat>
 #include <cmath>

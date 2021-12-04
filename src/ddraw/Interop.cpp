@@ -4,7 +4,6 @@
 #include "ddraw/DirectDrawSurface.hpp"
 #include "glrage/GLRage.hpp"
 #include "glrage_util/ErrorUtils.hpp"
-#include "glrage_util/Logger.hpp"
 
 #include <cassert>
 #include <string>

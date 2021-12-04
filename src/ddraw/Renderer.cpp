@@ -2,7 +2,6 @@
 
 #include "glrage_gl/Shader.hpp"
 #include "glrage_gl/Utils.hpp"
-#include "glrage_util/Logger.hpp"
 #include "glrage_util/StringUtils.hpp"
 
 namespace glrage {

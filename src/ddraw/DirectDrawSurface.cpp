@@ -2,7 +2,6 @@
 
 #include "ddraw/Blitter.hpp"
 #include "glrage_gl/Screenshot.hpp"
-#include "glrage_util/Logger.hpp"
 
 #include <algorithm>
 

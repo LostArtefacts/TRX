@@ -1,8 +1,8 @@
 #include "glrage_gl/Utils.hpp"
 
+#include "log.h"
 #include "glrage_gl/gl_core_3_3.h"
 #include "glrage_util/ErrorUtils.hpp"
-#include "glrage_util/Logger.hpp"
 
 namespace glrage {
 namespace gl {

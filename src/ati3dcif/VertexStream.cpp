@@ -2,7 +2,7 @@
 
 #include "ati3dcif/Error.hpp"
 #include "glrage_gl/Utils.hpp"
-#include "glrage_util/Logger.hpp"
+#include "log.h"
 
 namespace glrage {
 namespace cif {

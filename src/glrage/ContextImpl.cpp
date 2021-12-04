@@ -4,8 +4,8 @@
 #include "glrage_gl/gl_core_3_3.h"
 #include "glrage_gl/wgl_ext.h"
 #include "glrage_util/ErrorUtils.hpp"
-#include "glrage_util/Logger.hpp"
 #include "glrage_util/StringUtils.hpp"
+#include "log.h"
 
 #include <shlwapi.h>
 #include <stdexcept>

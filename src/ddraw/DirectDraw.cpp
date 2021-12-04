@@ -1,7 +1,6 @@
 #include "ddraw/DirectDraw.hpp"
 
 #include "ddraw/DirectDrawSurface.hpp"
-#include "glrage_util/Logger.hpp"
 
 namespace glrage {
 namespace ddraw {

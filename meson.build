@@ -232,7 +232,6 @@ sources = [
   'src/glrage_gl/gl_core_3_3.c',
   'src/glrage_gl/wgl_ext.c',
   'src/glrage_util/ErrorUtils.cpp',
-  'src/glrage_util/Logger.cpp',
   'src/glrage_util/StringUtils.cpp',
   'src/init.c',
   'src/json.c',

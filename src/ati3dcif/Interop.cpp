@@ -5,7 +5,7 @@
 #include "ati3dcif/Renderer.hpp"
 #include "glrage/GLRage.hpp"
 #include "glrage_util/ErrorUtils.hpp"
-#include "glrage_util/Logger.hpp"
+#include "log.h"
 
 #include <memory>
 #include <stdexcept>
@@ -22,7 +22,7 @@ C3D_EC HandleException()
     try {
         throw;
     } catch (const Error &ex) {
-        LOG_INFO("CIF error: %s (0x%x)", ex.what(), ex.getErrorCode());
+        LOG_ERROR("CIF error: %s (0x%lx)", ex.what(), ex.getErrorCode());
         return ex.getErrorCode();
     } catch (const std::runtime_error &ex) {
         ErrorUtils::warning(ex);
@@ -57,7 +57,7 @@ C3D_EC ATI3DCIF_Init(void)
 {
     // do some cleanup in case the app forgets to call ATI3DCIF_Term
     if (renderer) {
-        LOG_INFO("Previous instance was not terminated by ATI3DCIF_Term!");
+        LOG_ERROR("Previous instance was not terminated by ATI3DCIF_Term!");
         ATI3DCIF_Term();
     }
 
