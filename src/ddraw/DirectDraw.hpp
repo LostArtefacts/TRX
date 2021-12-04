@@ -2,7 +2,7 @@
 
 #include "ddraw/Renderer.hpp"
 #include "ddraw/ddraw.h"
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -20,7 +20,7 @@ public:
     HRESULT SetDisplayMode(DWORD dwWidth, DWORD dwHeight);
 
 private:
-    Context &m_context = GLRage::getContext();
+    Context &m_context = Context::instance();
     Renderer m_renderer;
 };
 

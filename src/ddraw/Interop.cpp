@@ -2,7 +2,7 @@
 
 #include "ddraw/DirectDraw.hpp"
 #include "ddraw/DirectDrawSurface.hpp"
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 #include "glrage_util/ErrorUtils.hpp"
 
 #include <cassert>
@@ -11,12 +11,12 @@
 namespace glrage {
 namespace ddraw {
 
+static Context &context = Context::instance();
+
 extern "C" {
 
 HRESULT MyDirectDrawCreate(LPDIRECTDRAW *lplpDD)
 {
-    Context &context = GLRage::getContext();
-
     try {
         *lplpDD = new DirectDraw();
     } catch (const std::exception &ex) {

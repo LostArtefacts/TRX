@@ -3,7 +3,7 @@
 #include "ati3dcif/Texture.hpp"
 #include "ati3dcif/TransDelay.hpp"
 #include "ati3dcif/VertexStream.hpp"
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 #include "glrage_gl/Program.hpp"
 #include "glrage_gl/Sampler.hpp"
 #include "glrage_gl/Shader.hpp"
@@ -103,7 +103,7 @@ private:
     void tmapSelectImpl(C3D_HTX handle);
     void tmapRestore();
 
-    Context &m_context { GLRage::getContext() };
+    Context &m_context = Context::instance();
     bool m_wireframe = false;
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;

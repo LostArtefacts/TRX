@@ -3,7 +3,7 @@
 #include "ati3dcif/ATI3DCIF.h"
 #include "ati3dcif/Error.hpp"
 #include "ati3dcif/Renderer.hpp"
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 #include "glrage_util/ErrorUtils.hpp"
 #include "log.h"
 
@@ -13,7 +13,7 @@
 namespace glrage {
 namespace cif {
 
-static Context &context = GLRage::getContext();
+static Context &context = Context::instance();
 static std::unique_ptr<Renderer> renderer = NULL;
 static bool contextCreated = false;
 

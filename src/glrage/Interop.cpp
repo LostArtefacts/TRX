@@ -1,36 +1,33 @@
 #include "glrage/Interop.hpp"
 
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 
 using namespace glrage;
 
+static Context &context = Context::instance();
+
 void GLRage_Attach(HWND hwnd)
 {
-    auto &context = GLRage::getContext();
     context.attach(hwnd);
 }
 
 void GLRage_Detach()
 {
-    auto &context = GLRage::getContext();
     context.detach();
 }
 
 void GLRage_SetFullscreen(bool fullscreen)
 {
-    auto &context = GLRage::getContext();
     context.setFullscreen(fullscreen);
 }
 
 void GLRage_SetWindowSize(int width, int height)
 {
-    auto &context = GLRage::getContext();
     context.setWindowSize(width, height);
 }
 
 bool GLRage_MakeScreenshot(const char *path)
 {
-    auto &context = GLRage::getContext();
     context.scheduleScreenshot(std::string(path));
     return true;
 }

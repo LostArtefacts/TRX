@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ati3dcif/ATI3DCIF.h"
-#include "glrage/GLRage.hpp"
 #include "glrage_gl/Texture.hpp"
 
 #include <vector>

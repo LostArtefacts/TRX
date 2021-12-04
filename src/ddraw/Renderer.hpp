@@ -2,7 +2,7 @@
 
 #include "ddraw/ddraw.h"
 
-#include "glrage/GLRage.hpp"
+#include "glrage/Context.hpp"
 #include "glrage_gl/Buffer.hpp"
 #include "glrage_gl/Program.hpp"
 #include "glrage_gl/Sampler.hpp"
@@ -22,7 +22,7 @@ public:
     void render();
 
 private:
-    Context &m_context { GLRage::getContext() };
+    Context &m_context = Context::instance();
     uint32_t m_width = 0;
     uint32_t m_height = 0;
     gl::VertexArray m_surfaceFormat;

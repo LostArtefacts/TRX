@@ -219,7 +219,6 @@ sources = [
   'src/global/vars.c',
   'src/global/vars_platform.c',
   'src/glrage/Context.cpp',
-  'src/glrage/GLRage.cpp',
   'src/glrage/Interop.cpp',
   'src/glrage_gl/Buffer.cpp',
   'src/glrage_gl/Program.cpp',
