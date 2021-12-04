@@ -41,7 +41,7 @@ typedef struct GAMEFLOW_MESH_SWAP_DATA {
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 
-static GAME_STRING_ID StringToGameStringID(const char *str)
+static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
 {
     static const ENUM_TO_STRING map[] = {
         { "HEADING_INVENTORY", GS_HEADING_INVENTORY },
@@ -248,11 +248,16 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
 
     struct json_object_element_s *strings_elem = strings_obj->start;
     while (strings_elem) {
-        GAME_STRING_ID key = StringToGameStringID(strings_elem->name->string);
+        GAME_STRING_ID key =
+            GameFlow_StringToGameStringID(strings_elem->name->string);
         struct json_string_s *value = json_value_as_string(strings_elem->value);
-        if (!value || key < 0 || key >= GS_NUMBER_OF) {
+        if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
+            if (g_GameFlow.strings[key]) {
+                Memory_Free(g_GameFlow.strings[key]);
+                g_GameFlow.strings[key] = NULL;
+            }
             g_GameFlow.strings[key] = strdup(value->string);
         }
         strings_elem = strings_elem->next;
