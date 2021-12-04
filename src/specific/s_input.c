@@ -82,7 +82,7 @@ static bool S_Input_DInput_Create();
 static void S_Input_DInput_Shutdown();
 static bool S_Input_DInput_KeyboardCreate();
 static void S_Input_DInput_KeyboardRelease();
-static void S_Input_DInput_KeyboardRead();
+static bool S_Input_DInput_KeyboardRead();
 static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_KEY key);
 
@@ -188,8 +188,12 @@ void S_Input_DInput_KeyboardRelease()
     }
 }
 
-static void S_Input_DInput_KeyboardRead()
+static bool S_Input_DInput_KeyboardRead()
 {
+    if (!m_IDID_SysKeyboard) {
+        return false;
+    }
+
     while (IDirectInputDevice_GetDeviceState(
         m_IDID_SysKeyboard, sizeof(m_DIKeys), m_DIKeys)) {
         if (IDirectInputDevice_Acquire(m_IDID_SysKeyboard)) {
@@ -198,6 +202,8 @@ static void S_Input_DInput_KeyboardRead()
         }
     }
     S_Shell_SpinMessageLoop();
+
+    return true;
 }
 
 static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
@@ -259,7 +265,7 @@ static HRESULT S_Input_DInput_JoystickCreate()
     }
 
     // Make sure we got a joystick
-    if (m_IDID_Joystick == NULL) {
+    if (!m_IDID_Joystick) {
         LOG_ERROR("Joystick not found.\n");
         return E_FAIL;
     }
