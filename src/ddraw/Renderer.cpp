@@ -26,6 +26,8 @@ Renderer::Renderer()
     m_sampler.bind(0);
     m_sampler.parameteri(GL_TEXTURE_MAG_FILTER, filterMethodEnum);
     m_sampler.parameteri(GL_TEXTURE_MIN_FILTER, filterMethodEnum);
+    m_sampler.parameteri(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    m_sampler.parameteri(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
     // configure shaders
     std::string basePath = m_context.getBasePath();
