@@ -17,8 +17,7 @@ bool S_File_IsRelative(const char *path)
 const char *S_File_GetGameDirectory()
 {
     HMODULE module = NULL;
-    DWORD flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
-        | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
+    DWORD flags = GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
 
     if (!GetModuleHandleEx(flags, NULL, &module)) {
         LOG_ERROR("Can't get module handle");
