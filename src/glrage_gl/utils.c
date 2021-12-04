@@ -1,13 +1,9 @@
-#include "glrage_gl/Utils.hpp"
+#include "glrage_gl/utils.h"
 
 #include "log.h"
 #include "glrage_gl/gl_core_3_3.h"
-#include "glrage_util/ErrorUtils.hpp"
 
-namespace glrage {
-namespace gl {
-
-const char *Utils::getErrorString(GLenum err)
+const char *GLRage_GLGetErrorString(GLenum err)
 {
     switch (err) {
     case GL_NO_ERROR:
@@ -29,17 +25,4 @@ const char *Utils::getErrorString(GLenum err)
     default:
         return "UNKNOWN";
     }
-}
-
-void Utils::checkError(const char *section)
-{
-    for (GLenum err; (err = glGetError()) != GL_NO_ERROR;) {
-#ifdef _DEBUG
-        ErrorUtils::warning("glGetError", getErrorString(err));
-#endif
-        LOG_INFO("glGetError: %s (%s)", getErrorString(err), section);
-    }
-}
-
-}
 }

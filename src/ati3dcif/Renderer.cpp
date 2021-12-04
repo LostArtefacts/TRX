@@ -1,7 +1,7 @@
 #include "ati3dcif/Renderer.hpp"
 
 #include "ati3dcif/Error.hpp"
-#include "glrage_gl/Utils.hpp"
+#include "glrage_gl/utils.h"
 
 namespace glrage {
 namespace cif {
@@ -45,7 +45,7 @@ Renderer::Renderer()
     // TODO: make me configurable
     m_wireframe = false;
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 Renderer::~Renderer()
@@ -87,7 +87,7 @@ void Renderer::renderBegin()
 
     m_program.uniformMatrix4fv("matProjection", 1, GL_FALSE, &projection[0][0]);
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 void Renderer::renderEnd()
@@ -105,7 +105,7 @@ void Renderer::renderEnd()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
@@ -123,7 +123,7 @@ void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
     // restore previously bound texture
     tmapRestore();
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 void Renderer::textureUnreg(C3D_HTX htxToUnreg)

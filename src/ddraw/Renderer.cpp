@@ -1,7 +1,7 @@
 #include "ddraw/Renderer.hpp"
 
 #include "glrage_gl/Shader.hpp"
-#include "glrage_gl/Utils.hpp"
+#include "glrage_gl/utils.h"
 #include "glrage_util/StringUtils.hpp"
 
 namespace glrage {
@@ -40,7 +40,7 @@ Renderer::Renderer()
     m_program.link();
     m_program.fragmentData("fragColor");
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 Renderer::~Renderer()
@@ -114,7 +114,7 @@ void Renderer::render()
         glEnable(GL_DEPTH_TEST);
     }
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 }

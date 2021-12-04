@@ -1,7 +1,7 @@
 #include "ati3dcif/VertexStream.hpp"
 
 #include "ati3dcif/Error.hpp"
-#include "glrage_gl/Utils.hpp"
+#include "glrage_gl/utils.h"
 #include "log.h"
 
 namespace glrage {
@@ -21,7 +21,7 @@ VertexStream::VertexStream()
     GLRage_GLVertexArray_Attribute(
         &m_vtcFormat, 2, 4, GL_FLOAT, GL_FALSE, 40, 24);
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 VertexStream::~VertexStream()
@@ -127,7 +127,7 @@ void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
 
     glDrawArrays(GLCIF_PRIM_MODES[m_primType], 0, prims.size());
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 void VertexStream::renderPending()

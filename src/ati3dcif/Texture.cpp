@@ -1,7 +1,7 @@
 #include "ati3dcif/Texture.hpp"
 
 #include "ati3dcif/Error.hpp"
-#include "glrage_gl/Utils.hpp"
+#include "glrage_gl/utils.h"
 #include "log.h"
 
 #include <algorithm>
@@ -162,7 +162,7 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
     //    }
     //}
 
-    gl::Utils::checkError(__FUNCTION__);
+    GLRage_GLCheckError();
 }
 
 C3D_COLOR &Texture::chromaKey()
