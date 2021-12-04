@@ -78,20 +78,18 @@ void S_Shell_SpinMessageLoop()
             S_Shell_TerminateGame(0);
             break;
 
-        case SDL_KEYDOWN: {
-            const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
-            if (keyboard_state[SDL_SCANCODE_LALT]
-                && keyboard_state[SDL_SCANCODE_RETURN]) {
-                S_Shell_ToggleFullscreen();
-            }
-            break;
-        }
-
         case SDL_KEYUP:
             if (event.key.keysym.sym == SDLK_PRINTSCREEN) {
                 Shell_MakeScreenshot();
                 break;
             }
+
+            if (event.key.keysym.sym == SDLK_RETURN
+                && event.key.keysym.mod & KMOD_LALT) {
+                S_Shell_ToggleFullscreen();
+                break;
+            }
+
             break;
 
         case SDL_WINDOWEVENT:
