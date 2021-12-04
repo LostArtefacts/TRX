@@ -14,7 +14,10 @@ DirectDrawSurface::DirectDrawSurface(
     , m_desc(*lpDDSurfaceDesc)
 {
     DDSURFACEDESC displayDesc;
-    lpDD.GetDisplayMode(&displayDesc);
+    displayDesc.ddpfPixelFormat.dwRGBBitCount = 32;
+    displayDesc.dwWidth = m_context.getDisplayWidth();
+    displayDesc.dwHeight = m_context.getDisplayHeight();
+    displayDesc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
 
     if (!(m_desc.dwFlags & (DDSD_WIDTH | DDSD_HEIGHT))) {
         m_desc.dwWidth = displayDesc.dwWidth;
