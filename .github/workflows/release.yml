@@ -15,20 +15,25 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: .
-          fetch-depth: 1
+          fetch-depth: 0
+
       - name: Extract tag name
         id: get_version
         run: echo ::set-output name=VERSION::$(git describe --abbrev=7 --tags)
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y make p7zip-full moby-engine moby-cli
+
       - name: Build project
         run: |
           make clean release
+
       - name: Package release
         run: |
           7z a Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip ./bin/* ./build/*.dll ./build/*.exe
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -39,6 +44,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+
       - name: Upload release asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1

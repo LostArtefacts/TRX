@@ -9,20 +9,17 @@ define build
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
-		tomb1main
+		rrdash/tomb1main:latest
 endef
 
-debug: docker
+debug:
 	$(call build,debug)
 
-debugopt: docker
+debugopt:
 	$(call build,debugoptimized)
 
 release:
 	$(call build,release)
-
-docker:
-	docker build -t tomb1main . -f docker/Dockerfile
 
 clean:
 	-find build/ -type f -delete
@@ -43,4 +40,4 @@ test: build test_base
 test_gold: build test_base
 	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe -gold
 
-.PHONY: debug release docker clean lint test_base test test_gold
+.PHONY: debug debugopt release clean lint test_base test test_gold

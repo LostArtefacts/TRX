@@ -5,6 +5,9 @@ Tomb1Main.log
 
 # Docker builds garbage
 /build
+/.secrets
+/workflow
+/Tomb1Main*.zip
 
 # VS garbage
 v15/
