@@ -169,13 +169,6 @@ bool S_Input_DInput_KeyboardCreate()
         return false;
     }
 
-    result = IDirectInputDevice_Acquire(m_IDID_SysKeyboard);
-    if (result) {
-        LOG_ERROR(
-            "Error while calling IDirectInputDevice_Acquire: 0x%lx", result);
-        return false;
-    }
-
     return true;
 }
 
