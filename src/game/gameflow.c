@@ -802,26 +802,12 @@ static bool GameFlow_LoadFromFileImpl(const char *file_name)
 {
     bool result = false;
     struct json_value_s *root = NULL;
-    MYFILE *fp = NULL;
     char *script_data = NULL;
 
-    fp = File_Open(file_name, FILE_OPEN_READ);
-    if (!fp) {
+    if (!File_Load(file_name, &script_data, NULL)) {
         LOG_ERROR("failed to open script file");
         goto cleanup;
     }
-
-    size_t script_data_size = File_Size(fp);
-
-    script_data = Memory_Alloc(script_data_size + 1);
-    if (!script_data) {
-        LOG_ERROR("failed to allocate memory");
-        goto cleanup;
-    }
-    File_Read(script_data, 1, script_data_size, fp);
-    script_data[script_data_size] = '\0';
-    File_Close(fp);
-    fp = NULL;
 
     struct json_parse_result_s parse_result;
     root = json_parse_ex(
@@ -843,15 +829,16 @@ static bool GameFlow_LoadFromFileImpl(const char *file_name)
     result &= GameFlow_LoadScriptLevels(root_obj);
 
 cleanup:
-    if (fp) {
-        File_Close(fp);
-    }
     if (root) {
         json_value_free(root);
+        root = NULL;
     }
+
     if (script_data) {
         Memory_Free(script_data);
+        script_data = NULL;
     }
+
     return result;
 }
 
