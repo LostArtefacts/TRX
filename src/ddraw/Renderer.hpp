@@ -4,10 +4,10 @@
 
 #include "glrage/Context.hpp"
 #include "glrage_gl/Program.hpp"
-#include "glrage_gl/VertexArray.hpp"
 #include "glrage_gl/buffer.h"
 #include "glrage_gl/sampler.h"
 #include "glrage_gl/texture.h"
+#include "glrage_gl/vertex_array.h"
 
 #include <cstdint>
 #include <vector>
@@ -27,7 +27,7 @@ private:
     Context &m_context = Context::instance();
     uint32_t m_width = 0;
     uint32_t m_height = 0;
-    gl::VertexArray m_surfaceFormat;
+    GLRage_GLVertexArray m_surfaceFormat;
     GLRage_GLBuffer m_surfaceBuffer;
     GLRage_GLTexture m_surfaceTexture;
     GLRage_GLSampler m_sampler;

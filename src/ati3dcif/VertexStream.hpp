@@ -2,8 +2,8 @@
 
 #include "ati3dcif/ATI3DCIF.h"
 #include "ati3dcif/TransDelay.hpp"
-#include "glrage_gl/VertexArray.hpp"
 #include "glrage_gl/buffer.h"
+#include "glrage_gl/vertex_array.h"
 
 #include <vector>
 
@@ -36,7 +36,7 @@ private:
     C3D_EPRIM m_primType = C3D_EPRIM_TRI;
     size_t m_vertexBufferSize = 0;
     GLRage_GLBuffer m_vertexBuffer;
-    gl::VertexArray m_vtcFormat;
+    GLRage_GLVertexArray m_vtcFormat;
     std::vector<C3D_VTCF> m_vtcBuffer;
     std::function<BOOL(C3D_VTCF *)> m_delayer;
 };

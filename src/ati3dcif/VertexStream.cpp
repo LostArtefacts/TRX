@@ -12,16 +12,21 @@ VertexStream::VertexStream()
     GLRage_GLBuffer_Init(&m_vertexBuffer, GL_ARRAY_BUFFER);
     GLRage_GLBuffer_Bind(&m_vertexBuffer);
 
-    m_vtcFormat.bind();
-    m_vtcFormat.attribute(0, 3, GL_FLOAT, GL_FALSE, 40, 0);
-    m_vtcFormat.attribute(1, 3, GL_FLOAT, GL_FALSE, 40, 12);
-    m_vtcFormat.attribute(2, 4, GL_FLOAT, GL_FALSE, 40, 24);
+    GLRage_GLVertexArray_Init(&m_vtcFormat);
+    GLRage_GLVertexArray_Bind(&m_vtcFormat);
+    GLRage_GLVertexArray_Attribute(
+        &m_vtcFormat, 0, 3, GL_FLOAT, GL_FALSE, 40, 0);
+    GLRage_GLVertexArray_Attribute(
+        &m_vtcFormat, 1, 3, GL_FLOAT, GL_FALSE, 40, 12);
+    GLRage_GLVertexArray_Attribute(
+        &m_vtcFormat, 2, 4, GL_FLOAT, GL_FALSE, 40, 24);
 
     gl::Utils::checkError(__FUNCTION__);
 }
 
 VertexStream::~VertexStream()
 {
+    GLRage_GLVertexArray_Close(&m_vtcFormat);
     GLRage_GLBuffer_Close(&m_vertexBuffer);
 }
 
@@ -105,7 +110,7 @@ void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
 
 void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
 {
-    m_vtcFormat.bind();
+    GLRage_GLVertexArray_Bind(&m_vtcFormat);
 
     // resize GPU buffer if required
     size_t vertexBufferSize = sizeof(C3D_VTCF) * prims.size();

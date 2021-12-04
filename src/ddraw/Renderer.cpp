@@ -16,8 +16,10 @@ Renderer::Renderer()
     GLRage_GLBuffer_Data(
         &m_surfaceBuffer, sizeof(verts), verts, GL_STATIC_DRAW);
 
-    m_surfaceFormat.bind();
-    m_surfaceFormat.attribute(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    GLRage_GLVertexArray_Init(&m_surfaceFormat);
+    GLRage_GLVertexArray_Bind(&m_surfaceFormat);
+    GLRage_GLVertexArray_Attribute(
+        &m_surfaceFormat, 0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     GLRage_GLTexture_Init(&m_surfaceTexture, GL_TEXTURE_2D);
 
@@ -43,6 +45,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+    GLRage_GLVertexArray_Close(&m_surfaceFormat);
     GLRage_GLBuffer_Close(&m_surfaceBuffer);
     GLRage_GLTexture_Close(&m_surfaceTexture);
     GLRage_GLSampler_Close(&m_sampler);
@@ -78,7 +81,7 @@ void Renderer::render()
 {
     m_program.bind();
     GLRage_GLBuffer_Bind(&m_surfaceBuffer);
-    m_surfaceFormat.bind();
+    GLRage_GLVertexArray_Bind(&m_surfaceFormat);
     GLRage_GLTexture_Bind(&m_surfaceTexture);
     GLRage_GLSampler_Bind(&m_sampler, 0);
 
