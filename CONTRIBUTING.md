@@ -5,15 +5,14 @@
 Initial build:
 
 - Compile the project (described in the next section)
-- In case you're using TombATI, remove all the existing .dll and .exe files from your game directory
-- Copy all .dll and .exe files from the `build/` directory to your game directory
-- Copy the contents of the `bin/` directory to your game directory
+- Copy all .dll and .exe files from `build/` to your game directory
+- Copy the contents of `bin/` to your game directory
 
 Subsequent builds:
 
 - Compile the project
-- Copy all .dll and .exe files from the `build/` directory to your game directory
-  (we recommend making a small batch or other script file to do this)
+- Copy all .dll and .exe files from `build/` to your game directory
+  (we recommend making a script file to do this)
 
 ## Compiling on Ubuntu
 
@@ -22,11 +21,12 @@ Subsequent builds:
     Make sure to install Docker and make, then run `make debug`.
     The binaries should appear in the `build/` directory.
 
-- **Without docker**:
+- **Without Docker**:
 
     This scenario is not officially supported, but you can see how it's done by
-    examining `docker/Dockerfile` and `docker/entrypoint.sh`, then tailoring
-    your system to match the process.
+    examining `docker/Dockerfile` and `docker/entrypoint.sh` for the external
+    dependencies and `meson.build` for the local files, then tailoring your
+    system to match the process.
 
 ## Compiling on Windows
 
