@@ -1,7 +1,7 @@
 #include "glrage/Context.hpp"
 
-#include "glrage_gl/Screenshot.hpp"
 #include "glrage_gl/gl_core_3_3.h"
+#include "glrage_gl/screenshot.h"
 #include "glrage_gl/wgl_ext.h"
 #include "glrage_util/ErrorUtils.hpp"
 #include "glrage_util/StringUtils.hpp"
@@ -214,7 +214,7 @@ void Context::swapBuffers()
     glFinish();
 
     if (!m_screenshotScheduledPath.empty()) {
-        gl::Screenshot::capture(m_screenshotScheduledPath);
+        GLRage_Screenshot_CaptureToFile(m_screenshotScheduledPath.c_str());
         m_screenshotScheduledPath.clear();
     }
 
