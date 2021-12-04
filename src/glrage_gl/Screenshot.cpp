@@ -28,7 +28,7 @@ bool Screenshot::capture(const std::string &path)
     std::vector<uint8_t> buffer;
 
     Screenshot::capture(
-        buffer, width, height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
+        buffer, width, height, 3, GL_RGB, GL_UNSIGNED_BYTE, true, false);
 
     PICTURE *pic = Picture_Create();
     if (!pic) {
@@ -51,7 +51,7 @@ cleanup:
 
 void Screenshot::capture(
     std::vector<uint8_t> &buffer, GLint &width, GLint &height, GLint depth,
-    GLenum format, GLenum type, bool vflip)
+    GLenum format, GLenum type, bool vflip, bool front_buffer)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -67,8 +67,8 @@ void Screenshot::capture(
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    // GL_FRONT does not work on Intel cards and on Wine
-    glReadBuffer(GL_BACK);
+    // NOTE: GL_FRONT does not work on Intel cards and on Wine
+    glReadBuffer(front_buffer ? GL_FRONT : GL_BACK);
     glReadPixels(x, y, width, height, format, type, &buffer[0]);
 
     if (vflip) {
