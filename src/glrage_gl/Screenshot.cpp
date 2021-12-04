@@ -66,7 +66,9 @@ void Screenshot::capture(
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glReadBuffer(GL_FRONT);
+
+    // GL_FRONT does not work on Intel cards and on Wine
+    glReadBuffer(GL_BACK);
     glReadPixels(x, y, width, height, format, type, &buffer[0]);
 
     if (vflip) {
