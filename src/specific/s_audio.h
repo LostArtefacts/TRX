@@ -36,7 +36,7 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
 
     #define AUDIO_WORKING_RATE 44100
     #define AUDIO_WORKING_FORMAT AUDIO_F32
-    #define AUDIO_SAMPLES 4410
+    #define AUDIO_SAMPLES 500
     #define AUDIO_WORKING_CHANNELS 2
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
