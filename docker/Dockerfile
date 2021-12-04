@@ -73,6 +73,7 @@ RUN cd FFmpeg \
         --disable-manpages \
         --disable-podpages \
         --disable-txtpages \
+        --disable-asm \
     && make -j 4 \
     && make install
 
