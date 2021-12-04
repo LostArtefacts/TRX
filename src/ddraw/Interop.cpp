@@ -1,7 +1,7 @@
 #include "ddraw/Interop.hpp"
 
-#include "ddraw/DirectDraw.hpp"
 #include "ddraw/DirectDrawSurface.hpp"
+#include "ddraw/Renderer.hpp"
 #include "glrage/Context.hpp"
 #include "glrage_util/ErrorUtils.hpp"
 
@@ -11,16 +11,15 @@
 namespace glrage {
 namespace ddraw {
 
-static Context &context = Context::instance();
-
 extern "C" {
 
-static DirectDraw *m_DDraw = nullptr;
+static Context &m_Context = Context::instance();
+static Renderer *m_Renderer = nullptr;
 
 HRESULT MyDirectDrawCreate()
 {
     try {
-        m_DDraw = new DirectDraw();
+        m_Renderer = new Renderer();
     } catch (const std::exception &ex) {
         ErrorUtils::warning(ex);
         return DDERR_GENERIC;
@@ -31,15 +30,16 @@ HRESULT MyDirectDrawCreate()
 
 HRESULT MyIDirectDraw_Release()
 {
-    assert(m_DDraw);
-    delete m_DDraw;
+    assert(m_Renderer);
+    delete m_Renderer;
     return DD_OK;
 }
 
 HRESULT MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {
-    return m_DDraw->CreateSurface(lpDDSurfaceDesc, lplpDDSurface);
+    *lplpDDSurface = new DirectDrawSurface(*m_Renderer, lpDDSurfaceDesc);
+    return DD_OK;
 }
 
 HRESULT MyIDirectDrawSurface_GetAttachedSurface(

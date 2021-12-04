@@ -84,7 +84,6 @@ sources = [
   'src/ati3dcif/VertexStream.cpp',
   'src/config.c',
   'src/ddraw/Blitter.cpp',
-  'src/ddraw/DirectDraw.cpp',
   'src/ddraw/DirectDrawSurface.cpp',
   'src/ddraw/Interop.cpp',
   'src/ddraw/Renderer.cpp',

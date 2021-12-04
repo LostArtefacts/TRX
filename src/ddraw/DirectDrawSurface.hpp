@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ddraw/DirectDraw.hpp"
 #include "ddraw/Renderer.hpp"
 #include "ddraw/ddraw.h"
 #include "glrage/Context.hpp"
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace glrage {
@@ -13,8 +13,7 @@ namespace ddraw {
 
 class DirectDrawSurface {
 public:
-    DirectDrawSurface(
-        DirectDraw &lpDD, Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc);
+    DirectDrawSurface(Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc);
     virtual ~DirectDrawSurface() = default;
 
     HRESULT Blt(

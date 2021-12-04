@@ -9,7 +9,7 @@ namespace glrage {
 namespace ddraw {
 
 DirectDrawSurface::DirectDrawSurface(
-    DirectDraw &lpDD, Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
+    Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
     : m_renderer(renderer)
     , m_desc(*lpDDSurfaceDesc)
 {
@@ -41,8 +41,8 @@ DirectDrawSurface::DirectDrawSurface(
         backBufferDesc.ddsCaps.dwCaps &= ~DDSCAPS_FRONTBUFFER;
         backBufferDesc.dwFlags &= ~DDSD_BACKBUFFERCOUNT;
         backBufferDesc.dwBackBufferCount = 0;
-        m_backBuffer = std::make_unique<DirectDrawSurface>(
-            lpDD, m_renderer, &backBufferDesc);
+        m_backBuffer =
+            std::make_unique<DirectDrawSurface>(m_renderer, &backBufferDesc);
         m_desc.ddsCaps.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
     }
 }
