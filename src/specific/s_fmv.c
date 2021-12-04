@@ -2190,7 +2190,7 @@ static void S_FMV_EventLoop(VideoState *is)
             S_Shell_TerminateGame(0);
             break;
 
-        case SDL_KEYDOWN:
+        case SDL_KEYUP:
             if (event.key.keysym.sym == SDLK_ESCAPE) {
                 is->abort_request = true;
                 break;
