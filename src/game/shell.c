@@ -205,10 +205,19 @@ bool Shell_MakeScreenshot()
     char path[20];
     for (int i = 0; i < 10000; i++) {
         sprintf(path, "screenshot%04d.%s", i, ext);
-        if (File_Exists(path)) {
-            continue;
+        char *full_path = NULL;
+        File_GetFullPath(path, &full_path);
+
+        if (!File_Exists(full_path)) {
+            bool result = Output_MakeScreenshot(full_path);
+            Memory_Free(full_path);
+            full_path = NULL;
+            return result;
         }
-        return Output_MakeScreenshot(path);
+
+        Memory_Free(full_path);
+        full_path = NULL;
     }
+
     return false;
 }
