@@ -183,12 +183,13 @@ Note: this section may be subject to change.
     - [ ] 2.0
 - [ ] Work on cross platform builds
     - [x] Replace the sample player (DirectSound) with libavcodec and SDL
-    - [ ] Refactor GLRage to no longer emulate ATI3DCIF and DDraw
     - [ ] Port DirectInput to SDL
     - [ ] ...
     - [ ] Test for performance and crash resilience
     - [ ] 3.0
 - [ ] Beautify the code
+    - [x] Refactor GLRage to no longer emulate DDraw
+    - [ ] Refactor GLRage to no longer emulate ATI3DCIF
     - [ ] Apply rigid name conventions to function names
     - [ ] Refactor specific/ away
     - [ ] ...
