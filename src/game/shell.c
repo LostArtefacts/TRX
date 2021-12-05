@@ -86,17 +86,8 @@ void Shell_Main()
 
     Screen_ApplyResolution();
 
-    Output_DisplayPicture("data\\eidospc.png");
-    Output_InitialisePolyList();
-    Output_CopyBufferToScreen();
-    Output_DumpScreen();
-    Shell_Wait(TICKS_PER_SECOND);
-
-    FMV_Play("fmv\\core.rpl");
-    FMV_Play("fmv\\escape.rpl");
-    FMV_Play("fmv\\cafe.rpl");
-
     int32_t gf_option = GF_EXIT_TO_TITLE;
+    bool intro_played = false;
 
     bool loop_continue = true;
     while (loop_continue) {
@@ -128,6 +119,12 @@ void Shell_Main()
             break;
 
         case GF_EXIT_TO_TITLE:
+            if (!intro_played) {
+                GameFlow_InterpretSequence(
+                    g_GameFlow.title_level_num, GFL_NORMAL);
+                intro_played = true;
+            }
+
             Text_RemoveAll();
             Output_DisplayPicture(g_GameFlow.main_menu_background_path);
             g_NoInputCount = 0;
