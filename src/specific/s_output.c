@@ -137,7 +137,7 @@ static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
-    bool result = GFX_2D_Surface_Blt(target, &rect, source, &rect, 0);
+    bool result = GFX_2D_Surface_Blt(target, &rect, source, &rect);
     S_Output_CheckError(result);
 }
 
@@ -153,8 +153,7 @@ static void S_Output_FlipPrimaryBuffer()
 
 static void S_Output_ClearSurface(GFX_2D_Surface *surface)
 {
-    bool result =
-        GFX_2D_Surface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
+    bool result = GFX_2D_Surface_Clear(surface);
     S_Output_CheckError(result);
 }
 
@@ -759,7 +758,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     target_rect.bottom = target_rect.top + new_height;
 
     result = GFX_2D_Surface_Blt(
-        m_PictureSurface, &target_rect, picture_surface, &source_rect, 0);
+        m_PictureSurface, &target_rect, picture_surface, &source_rect);
     S_Output_CheckError(result);
 
     GFX_2D_Surface_Free(picture_surface);

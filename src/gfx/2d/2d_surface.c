@@ -83,11 +83,22 @@ void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
     }
 }
 
+bool GFX_2D_Surface_Clear(GFX_2D_Surface *surface)
+{
+    if (surface->is_locked) {
+        LOG_ERROR("Surface is locked");
+        return false;
+    }
+
+    surface->is_dirty = true;
+    memset(surface->buffer, 0, surface->desc.lPitch * surface->desc.dwHeight);
+    return true;
+}
+
 bool GFX_2D_Surface_Blt(
     GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *src,
-    LPRECT lpSrcRect, DWORD dwFlags)
+    LPRECT lpSrcRect)
 {
-    // can't blit while locked
     if (surface->is_locked) {
         LOG_ERROR("Surface is locked");
         return false;
@@ -153,12 +164,6 @@ bool GFX_2D_Surface_Blt(
 
             GFX_Blit(&src_img, &src_rect, &dst_img, &dst_rect);
         }
-    }
-
-    if (dwFlags & DDBLT_COLORFILL) {
-        surface->is_dirty = true;
-        memset(
-            surface->buffer, 0, surface->desc.lPitch * surface->desc.dwHeight);
     }
 
     return true;

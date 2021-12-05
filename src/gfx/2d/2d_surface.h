@@ -29,9 +29,10 @@ void GFX_2D_Surface_Init(
     LPDDSURFACEDESC lpDDSurfaceDesc);
 void GFX_2D_Surface_Close(GFX_2D_Surface *surface);
 
+bool GFX_2D_Surface_Clear(GFX_2D_Surface *surface);
 bool GFX_2D_Surface_Blt(
     GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *lpDDSrcSurface,
-    LPRECT lpSrcRect, DWORD dwFlags);
+    LPRECT lpSrcRect);
 bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface);
 GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface);
 
