@@ -13,7 +13,6 @@ typedef struct GFX_Context {
     HWND hwnd; // window handle
     HDC hdc; // GDI device context
     HGLRC hglrc; // OpenGL context handle
-    WNDPROC window_proc; // Original window properties
     bool is_fullscreen; // fullscreen flag
     bool is_rendered; // rendering flag
     int32_t display_width;
@@ -26,11 +25,6 @@ typedef struct GFX_Context {
 } GFX_Context;
 
 static GFX_Context m_Context = { 0 };
-
-static LRESULT CALLBACK GFX_Context_CallbackWindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-static LRESULT GFX_Context_WindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 static const char *GFX_Context_GetWindowsErrorStr()
 {
@@ -49,34 +43,6 @@ static const char *GFX_Context_GetWindowsErrorStr()
     }
 
     return "Unknown error";
-}
-
-static LRESULT CALLBACK GFX_Context_CallbackWindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    return GFX_Context_WindowProc(hwnd, msg, wParam, lParam);
-}
-
-static LRESULT GFX_Context_WindowProc(
-    HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch (msg) {
-    // force default handling for some window messages when in windowed
-    // mode, especially important for Tomb Raider
-    case WM_MOVE:
-    case WM_MOVING:
-    case WM_SIZE:
-    case WM_NCPAINT:
-    case WM_SETCURSOR:
-    case WM_GETMINMAXINFO:
-    case WM_ERASEBKGND:
-        if (!GFX_Context_IsFullscreen()) {
-            return CallWindowProc(DefWindowProc, hwnd, msg, wParam, lParam);
-        }
-        break;
-    }
-
-    return CallWindowProc(m_Context.window_proc, hwnd, msg, wParam, lParam);
 }
 
 void GFX_Context_Attach(HWND hwnd)
@@ -134,12 +100,6 @@ void GFX_Context_Attach(HWND hwnd)
     if (vsync) {
         wglSwapIntervalEXT(1);
     }
-
-    // get window procedure pointer and replace it with custom procedure
-    LONG_PTR window_proc = GetWindowLongPtr(m_Context.hwnd, GWLP_WNDPROC);
-    m_Context.window_proc = (WNDPROC)window_proc;
-    window_proc = (LONG_PTR)&GFX_Context_CallbackWindowProc;
-    SetWindowLongPtr(m_Context.hwnd, GWLP_WNDPROC, window_proc);
 }
 
 void GFX_Context_Detach()
@@ -150,10 +110,6 @@ void GFX_Context_Detach()
 
     wglDeleteContext(m_Context.hglrc);
     m_Context.hglrc = NULL;
-
-    LONG_PTR window_proc = (LONG_PTR)m_Context.window_proc;
-    SetWindowLongPtr(m_Context.hwnd, GWLP_WNDPROC, window_proc);
-    m_Context.window_proc = NULL;
 
     m_Context.hwnd = NULL;
 }
