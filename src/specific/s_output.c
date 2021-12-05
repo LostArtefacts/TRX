@@ -83,8 +83,7 @@ static void S_Output_SetHardwareVideoMode()
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PrimarySurface);
-    S_Output_CheckError(result);
+    MyIDirectDraw2_CreateSurface(&surface_desc, &m_PrimarySurface);
     S_Output_ClearSurface(m_PrimarySurface);
 
     DDSCAPS caps = { DDSCAPS_BACKBUFFER };
@@ -98,9 +97,7 @@ static void S_Output_SetHardwareVideoMode()
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
-        result =
-            MyIDirectDraw2_CreateSurface(&surface_desc, &m_TextureSurfaces[i]);
-        S_Output_CheckError(result);
+        MyIDirectDraw2_CreateSurface(&surface_desc, &m_TextureSurfaces[i]);
     }
 
     S_Output_SetupRenderContextAndRender();
@@ -124,23 +121,20 @@ static void S_Output_ReleaseSurfaces()
         S_Output_ClearSurface(m_PrimarySurface);
         S_Output_ClearSurface(m_BackSurface);
 
-        result = MyIDirectDrawSurface_Release(m_PrimarySurface);
-        S_Output_CheckError(result);
+        MyIDirectDrawSurface_Release(m_PrimarySurface);
         m_PrimarySurface = NULL;
         m_BackSurface = NULL;
     }
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_TextureSurfaces[i]) {
-            result = MyIDirectDrawSurface_Release(m_TextureSurfaces[i]);
-            S_Output_CheckError(result);
+            MyIDirectDrawSurface_Release(m_TextureSurfaces[i]);
             m_TextureSurfaces[i] = NULL;
         }
     }
 
     if (m_PictureSurface) {
-        result = MyIDirectDrawSurface_Release(m_PictureSurface);
-        S_Output_CheckError(result);
+        MyIDirectDrawSurface_Release(m_PictureSurface);
         m_PictureSurface = NULL;
     }
 }
@@ -693,8 +687,7 @@ void S_Output_CopyFromPicture()
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
-        S_Output_CheckError(result);
+        MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
     }
 
     S_Output_RenderEnd();
@@ -721,8 +714,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
-    result = MyIDirectDraw2_CreateSurface(&surface_desc, &picture_surface);
-    S_Output_CheckError(result);
+    MyIDirectDraw2_CreateSurface(&surface_desc, &picture_surface);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
 
@@ -748,8 +740,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
-        S_Output_CheckError(result);
+        MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
     }
 
     int32_t target_width = m_SurfaceWidth;

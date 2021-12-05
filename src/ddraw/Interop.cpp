@@ -28,20 +28,18 @@ HRESULT MyDirectDrawCreate()
     return DD_OK;
 }
 
-HRESULT MyIDirectDraw_Release()
+void MyIDirectDraw_Release()
 {
     if (m_Renderer) {
         delete m_Renderer;
         m_Renderer = nullptr;
     }
-    return DD_OK;
 }
 
-HRESULT MyIDirectDraw2_CreateSurface(
+void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {
     *lplpDDSurface = new DirectDrawSurface(*m_Renderer, lpDDSurfaceDesc);
-    return DD_OK;
 }
 
 HRESULT MyIDirectDrawSurface_GetAttachedSurface(
@@ -75,11 +73,10 @@ HRESULT MyIDirectDrawSurface_Blt(
         lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags);
 }
 
-HRESULT MyIDirectDrawSurface_Release(LPDIRECTDRAWSURFACE p)
+void MyIDirectDrawSurface_Release(LPDIRECTDRAWSURFACE p)
 {
     assert(p);
     delete reinterpret_cast<DirectDrawSurface *>(p);
-    return DD_OK;
 }
 
 HRESULT MyIDirectDrawSurface_Flip(LPDIRECTDRAWSURFACE p)

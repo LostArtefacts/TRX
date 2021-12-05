@@ -8,9 +8,9 @@ extern "C" {
 
 HRESULT MyDirectDrawCreate();
 
-HRESULT MyIDirectDraw_Release();
+void MyIDirectDraw_Release();
 
-HRESULT MyIDirectDraw2_CreateSurface(
+void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
 
 HRESULT MyIDirectDrawSurface_GetAttachedSurface(
@@ -26,7 +26,7 @@ HRESULT MyIDirectDrawSurface_Blt(
     LPDIRECTDRAWSURFACE p, LPRECT lpDestRect,
     LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags);
 
-HRESULT MyIDirectDrawSurface_Release(LPDIRECTDRAWSURFACE p);
+void MyIDirectDrawSurface_Release(LPDIRECTDRAWSURFACE p);
 
 HRESULT MyIDirectDrawSurface_Flip(LPDIRECTDRAWSURFACE p);
 
