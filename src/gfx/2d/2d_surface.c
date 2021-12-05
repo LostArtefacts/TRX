@@ -8,11 +8,11 @@
 
 #include <string.h>
 
-GFX_2D_Surface *GFX_2D_Surface_Create(LPDDSURFACEDESC lpDDSurfaceDesc)
+GFX_2D_Surface *GFX_2D_Surface_Create(const GFX_2D_SurfaceDesc *desc)
 {
     GFX_2D_Renderer *renderer = GFX_Context_GetRenderer2D();
     GFX_2D_Surface *surface = Memory_Alloc(sizeof(GFX_2D_Surface));
-    GFX_2D_Surface_Init(surface, renderer, lpDDSurfaceDesc);
+    GFX_2D_Surface_Init(surface, renderer, desc);
     return surface;
 }
 
@@ -26,42 +26,42 @@ void GFX_2D_Surface_Free(GFX_2D_Surface *surface)
 
 void GFX_2D_Surface_Init(
     GFX_2D_Surface *surface, GFX_2D_Renderer *renderer,
-    LPDDSURFACEDESC lpDDSurfaceDesc)
+    const GFX_2D_SurfaceDesc *desc)
 {
     surface->back_buffer = NULL;
     surface->is_locked = false;
     surface->is_dirty = false;
     surface->renderer = renderer;
-    surface->desc = *lpDDSurfaceDesc;
+    surface->desc = *desc;
 
-    DDSURFACEDESC displayDesc;
-    displayDesc.dwRGBBitCount = 32;
-    displayDesc.dwWidth = GFX_Context_GetDisplayWidth();
-    displayDesc.dwHeight = GFX_Context_GetDisplayHeight();
+    GFX_2D_SurfaceDesc display_desc = {
+        .bit_count = 32,
+        .width = GFX_Context_GetDisplayWidth(),
+        .height = GFX_Context_GetDisplayHeight(),
+    };
 
-    if (!surface->desc.dwWidth || !surface->desc.dwHeight) {
-        surface->desc.dwWidth = displayDesc.dwWidth;
-        surface->desc.dwHeight = displayDesc.dwHeight;
+    if (!surface->desc.width || !surface->desc.height) {
+        surface->desc.width = display_desc.width;
+        surface->desc.height = display_desc.height;
     }
 
-    if (!surface->desc.dwRGBBitCount) {
-        surface->desc.dwRGBBitCount = displayDesc.dwRGBBitCount;
+    if (!surface->desc.bit_count) {
+        surface->desc.bit_count = display_desc.bit_count;
     }
 
-    surface->desc.lPitch =
-        surface->desc.dwWidth * (surface->desc.dwRGBBitCount / 8);
+    surface->desc.pitch = surface->desc.width * (surface->desc.bit_count / 8);
 
-    surface->buffer =
-        Memory_Alloc(surface->desc.lPitch * surface->desc.dwHeight);
-    surface->desc.lpSurface = NULL;
+    surface->buffer = Memory_Alloc(surface->desc.pitch * surface->desc.height);
+    surface->desc.pixels = NULL;
 
-    if (surface->desc.dwBackBufferCount > 0) {
-        DDSURFACEDESC back_buffer_desc = surface->desc;
-        back_buffer_desc.dwCaps |= DDSCAPS_FLIP;
-        back_buffer_desc.dwCaps &= ~DDSCAPS_FRONTBUFFER;
-        back_buffer_desc.dwBackBufferCount = 0;
+    if (surface->desc.has_back_buffer > 0) {
+        GFX_2D_SurfaceDesc back_buffer_desc = surface->desc;
+        back_buffer_desc.flags.flip = 1;
+        back_buffer_desc.flags.front = 0;
+        back_buffer_desc.has_back_buffer = 0;
         surface->back_buffer = GFX_2D_Surface_Create(&back_buffer_desc);
-        surface->desc.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
+        surface->desc.flags.front = 1;
+        surface->desc.flags.flip = 1;
     }
 }
 
@@ -86,13 +86,13 @@ bool GFX_2D_Surface_Clear(GFX_2D_Surface *surface)
     }
 
     surface->is_dirty = true;
-    memset(surface->buffer, 0, surface->desc.lPitch * surface->desc.dwHeight);
+    memset(surface->buffer, 0, surface->desc.pitch * surface->desc.height);
     return true;
 }
 
 bool GFX_2D_Surface_Blt(
-    GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *src,
-    LPRECT lpSrcRect)
+    GFX_2D_Surface *surface, const GFX_BlitterRect *dst_rect,
+    GFX_2D_Surface *src, const GFX_BlitterRect *src_rect)
 {
     if (surface->is_locked) {
         LOG_ERROR("Surface is locked");
@@ -102,20 +102,14 @@ bool GFX_2D_Surface_Blt(
     if (src) {
         surface->is_dirty = true;
 
-        int32_t dst_width = surface->desc.dwWidth;
-        int32_t dst_height = surface->desc.dwHeight;
+        int32_t dst_width = surface->desc.width;
+        int32_t dst_height = surface->desc.height;
+        const GFX_BlitterRect default_dst_rect = { 0, 0, dst_width,
+                                                   dst_height };
 
-        GFX_BlitterRect dst_rect = { 0, 0, dst_width, dst_height };
-        if (lpDestRect) {
-            dst_rect.left = lpDestRect->left;
-            dst_rect.top = lpDestRect->top;
-            dst_rect.right = lpDestRect->right;
-            dst_rect.bottom = lpDestRect->bottom;
-        }
+        int32_t depth = surface->desc.bit_count / 8;
 
-        int32_t depth = surface->desc.dwRGBBitCount / 8;
-
-        if (src->desc.dwCaps & DDSCAPS_PRIMARYSURFACE) {
+        if (src->desc.flags.primary) {
             // This is a somewhat ugly and slow hack to get a rescaled and
             // converted copy of the framebuffer for the surface, which is
             // required to display the in-game menu of Tomb Raider
@@ -134,30 +128,31 @@ bool GFX_2D_Surface_Blt(
                 buffer[i] /= 2;
             }
 
-            GFX_BlitterRect src_rect = { 0, height, width, 0 };
+            GFX_BlitterRect src_rect = {
+                .left = 0, .top = height, .right = width, .bottom = 0
+            };
             GFX_BlitterImage src_img = { width, height, depth, buffer };
             GFX_BlitterImage dst_img = { dst_width, dst_height, depth,
                                          surface->buffer };
-            GFX_Blit(&src_img, &src_rect, &dst_img, &dst_rect);
+            GFX_Blit(
+                &src_img, &src_rect, &dst_img,
+                dst_rect ? dst_rect : &default_dst_rect);
             Memory_Free(buffer);
         } else {
-            int32_t src_width = src->desc.dwWidth;
-            int32_t src_height = src->desc.dwHeight;
-
-            GFX_BlitterRect src_rect = { 0, 0, src_width, src_height };
-            if (lpSrcRect) {
-                src_rect.left = lpSrcRect->left;
-                src_rect.top = lpSrcRect->top;
-                src_rect.right = lpSrcRect->right;
-                src_rect.bottom = lpSrcRect->bottom;
-            }
+            int32_t src_width = src->desc.width;
+            int32_t src_height = src->desc.height;
+            const GFX_BlitterRect default_src_rect = {
+                .left = 0, .top = 0, .right = src_width, .bottom = src_height
+            };
 
             GFX_BlitterImage src_img = { src_width, src_height, depth,
                                          src->buffer };
             GFX_BlitterImage dst_img = { dst_width, dst_height, depth,
                                          surface->buffer };
 
-            GFX_Blit(&src_img, &src_rect, &dst_img, &dst_rect);
+            GFX_Blit(
+                &src_img, src_rect ? src_rect : &default_src_rect, &dst_img,
+                dst_rect ? dst_rect : &default_dst_rect);
         }
     }
 
@@ -167,8 +162,7 @@ bool GFX_2D_Surface_Blt(
 bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
 {
     // check if the surface can be flipped
-    if (!(surface->desc.dwCaps & DDSCAPS_FLIP)
-        || !(surface->desc.dwCaps & DDSCAPS_FRONTBUFFER)
+    if (!surface->desc.flags.flip || !surface->desc.flags.front
         || !surface->back_buffer) {
         LOG_ERROR("Surface cannot be flipped");
         return false;
@@ -225,21 +219,20 @@ GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface)
     return surface->back_buffer;
 }
 
-bool GFX_2D_Surface_Lock(
-    GFX_2D_Surface *surface, LPDDSURFACEDESC lpDDSurfaceDesc)
+bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc)
 {
     if (surface->is_locked) {
         LOG_ERROR("Surface is busy");
         return false;
     }
 
-    // assign lpSurface
-    surface->desc.lpSurface = surface->buffer;
+    // assign pixels
+    surface->desc.pixels = surface->buffer;
 
     surface->is_locked = true;
     surface->is_dirty = true;
 
-    *lpDDSurfaceDesc = surface->desc;
+    *out_desc = surface->desc;
 
     return true;
 }
@@ -252,8 +245,8 @@ bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp)
         return false;
     }
 
-    // unassign lpSurface
-    surface->desc.lpSurface = NULL;
+    // unassign pixels
+    surface->desc.pixels = NULL;
 
     surface->is_locked = false;
 

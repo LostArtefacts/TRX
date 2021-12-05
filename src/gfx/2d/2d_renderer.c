@@ -50,10 +50,10 @@ void GFX_2D_Renderer_Close(GFX_2D_Renderer *renderer)
 }
 
 void GFX_2D_Renderer_Upload(
-    GFX_2D_Renderer *renderer, DDSURFACEDESC *desc, const uint8_t *data)
+    GFX_2D_Renderer *renderer, GFX_2D_SurfaceDesc *desc, const uint8_t *data)
 {
-    uint32_t width = desc->dwWidth;
-    uint32_t height = desc->dwHeight;
+    uint32_t width = desc->width;
+    uint32_t height = desc->height;
 
     GLenum tex_format = GL_BGRA;
     GLenum tex_type = GL_UNSIGNED_INT_8_8_8_8_REV;

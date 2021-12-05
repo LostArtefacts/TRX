@@ -725,22 +725,29 @@ static int S_FMV_ReallocPrimarySurface(
         is->primary_surface = NULL;
     }
 
-    DDSURFACEDESC surface_desc;
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwWidth = surface_width;
-    surface_desc.dwHeight = surface_height;
-    surface_desc.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
-    surface_desc.dwBackBufferCount = 1;
-    is->primary_surface = GFX_2D_Surface_Create(&surface_desc);
-    is->back_surface = GFX_2D_Surface_GetAttachedSurface(is->primary_surface);
+    {
+        GFX_2D_SurfaceDesc surface_desc = {
+            .width = surface_width,
+            .height = surface_height,
+            .flags = {
+                .primary = 1,
+                .flip = 1,
+            },
+            .has_back_buffer = 1,
+        };
+        is->primary_surface = GFX_2D_Surface_Create(&surface_desc);
+        is->back_surface =
+            GFX_2D_Surface_GetAttachedSurface(is->primary_surface);
+    }
 
     if (clear) {
+        GFX_2D_SurfaceDesc surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
         if (!result) {
             return -1;
         }
-        memset(surface_desc.lpSurface, 0, surface_desc.lPitch * surface_height);
-        GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.lpSurface);
+        memset(surface_desc.pixels, 0, surface_desc.pitch * surface_height);
+        GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.pixels);
     }
 
     is->surface_width = surface_width;
@@ -793,20 +800,20 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
         NULL, NULL, NULL);
 
     if (is->img_convert_ctx) {
-        DDSURFACEDESC surface_desc;
+        GFX_2D_SurfaceDesc surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(is->back_surface, &surface_desc);
         if (result) {
             uint8_t *surf_planes[4];
             int surf_linesize[4];
             av_image_fill_arrays(
                 surf_planes, surf_linesize,
-                (const uint8_t *)surface_desc.lpSurface, AV_PIX_FMT_BGRA,
-                surface_desc.dwWidth, surface_desc.dwHeight, 1);
+                (const uint8_t *)surface_desc.pixels, AV_PIX_FMT_BGRA,
+                surface_desc.width, surface_desc.height, 1);
 
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
                 frame->linesize, 0, frame->height, surf_planes, surf_linesize);
-            GFX_2D_Surface_Unlock(is->back_surface, surface_desc.lpSurface);
+            GFX_2D_Surface_Unlock(is->back_surface, surface_desc.pixels);
         }
     } else {
         LOG_ERROR("Cannot initialize the conversion context");

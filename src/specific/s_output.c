@@ -64,8 +64,6 @@ static int32_t S_Output_ZedClipper(
 
 static void S_Output_SetHardwareVideoMode()
 {
-    DDSURFACEDESC surface_desc;
-
     S_Output_ReleaseSurfaces();
 
     m_SurfaceWidth = Screen_GetResWidth();
@@ -77,19 +75,26 @@ static void S_Output_SetHardwareVideoMode()
 
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
 
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
-    surface_desc.dwBackBufferCount = 1;
-    m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
-    S_Output_ClearSurface(m_PrimarySurface);
+    {
+        GFX_2D_SurfaceDesc surface_desc = {
+            .flags = {
+                .primary = 1,
+                .flip = 1,
+            },
+            .has_back_buffer = 1,
+        };
+        m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
+        m_BackSurface = GFX_2D_Surface_GetAttachedSurface(m_PrimarySurface);
 
-    m_BackSurface = GFX_2D_Surface_GetAttachedSurface(m_PrimarySurface);
+        S_Output_ClearSurface(m_PrimarySurface);
+    }
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
-        memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwRGBBitCount = 8;
-        surface_desc.dwWidth = 256;
-        surface_desc.dwHeight = 256;
+        GFX_2D_SurfaceDesc surface_desc = {
+            .width = 256,
+            .height = 256,
+            .bit_count = 8,
+        };
         m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
     }
 
@@ -133,8 +138,12 @@ static void S_Output_ReleaseSurfaces()
 
 static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
 {
-    RECT rect;
-    SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
+    GFX_BlitterRect rect = {
+        .left = 0,
+        .top = 0,
+        .right = m_SurfaceWidth,
+        .bottom = m_SurfaceHeight,
+    };
     bool result = GFX_2D_Surface_Blt(target, &rect, source, &rect);
     S_Output_CheckError(result);
 }
@@ -670,10 +679,10 @@ void S_Output_ClearBackBuffer()
 void S_Output_CopyFromPicture()
 {
     if (!m_PictureSurface) {
-        DDSURFACEDESC surface_desc;
-        memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwWidth = m_SurfaceWidth;
-        surface_desc.dwHeight = m_SurfaceHeight;
+        GFX_2D_SurfaceDesc surface_desc = {
+            .width = m_SurfaceWidth,
+            .height = m_SurfaceHeight,
+        };
         m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
     }
 
@@ -693,36 +702,40 @@ void S_Output_CopyToPicture()
 void S_Output_DownloadPicture(const PICTURE *pic)
 {
     GFX_2D_Surface *picture_surface = NULL;
-    DDSURFACEDESC surface_desc;
 
     // first, download the picture directly to a temporary surface
-    memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwWidth = pic->width;
-    surface_desc.dwHeight = pic->height;
-    picture_surface = GFX_2D_Surface_Create(&surface_desc);
-
-    memset(&surface_desc, 0, sizeof(surface_desc));
-
-    bool result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
-    S_Output_CheckError(result);
-
-    uint32_t *output_ptr = surface_desc.lpSurface;
-    RGB888 *input_ptr = pic->data;
-    for (int i = 0; i < pic->width * pic->height; i++) {
-        uint8_t r = input_ptr->r;
-        uint8_t g = input_ptr->g;
-        uint8_t b = input_ptr->b;
-        input_ptr++;
-        *output_ptr++ = b | (g << 8) | (r << 16);
+    {
+        GFX_2D_SurfaceDesc surface_desc = {
+            .width = pic->width,
+            .height = pic->height,
+        };
+        picture_surface = GFX_2D_Surface_Create(&surface_desc);
     }
 
-    result = GFX_2D_Surface_Unlock(picture_surface, surface_desc.lpSurface);
-    S_Output_CheckError(result);
+    {
+        GFX_2D_SurfaceDesc surface_desc = { 0 };
+        bool result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
+        S_Output_CheckError(result);
+
+        uint32_t *output_ptr = surface_desc.pixels;
+        RGB888 *input_ptr = pic->data;
+        for (int i = 0; i < pic->width * pic->height; i++) {
+            uint8_t r = input_ptr->r;
+            uint8_t g = input_ptr->g;
+            uint8_t b = input_ptr->b;
+            input_ptr++;
+            *output_ptr++ = b | (g << 8) | (r << 16);
+        }
+
+        result = GFX_2D_Surface_Unlock(picture_surface, surface_desc.pixels);
+        S_Output_CheckError(result);
+    }
 
     if (!m_PictureSurface) {
-        memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwWidth = m_SurfaceWidth;
-        surface_desc.dwHeight = m_SurfaceHeight;
+        GFX_2D_SurfaceDesc surface_desc = {
+            .width = m_SurfaceWidth,
+            .height = m_SurfaceHeight,
+        };
         m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
     }
 
@@ -741,18 +754,20 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         ? target_height
         : target_width / source_ratio;
 
-    RECT source_rect;
-    source_rect.left = 0;
-    source_rect.top = 0;
-    source_rect.right = pic->width;
-    source_rect.bottom = pic->height;
-    RECT target_rect;
-    target_rect.left = (target_width - new_width) / 2;
-    target_rect.top = (target_height - new_height) / 2;
-    target_rect.right = target_rect.left + new_width;
-    target_rect.bottom = target_rect.top + new_height;
+    GFX_BlitterRect source_rect = {
+        .left = 0,
+        .top = 0,
+        .right = pic->width,
+        .bottom = pic->height,
+    };
+    GFX_BlitterRect target_rect = {
+        .left = (target_width - new_width) / 2,
+        .top = (target_height - new_height) / 2,
+        .right = target_rect.left + new_width,
+        .bottom = target_rect.top + new_height,
+    };
 
-    result = GFX_2D_Surface_Blt(
+    bool result = GFX_2D_Surface_Blt(
         m_PictureSurface, &target_rect, picture_surface, &source_rect);
     S_Output_CheckError(result);
 
@@ -1464,24 +1479,22 @@ void S_Output_DownloadTextures(int32_t pages)
     }
 
     for (int i = 0; i < pages; i++) {
-        DDSURFACEDESC surface_desc;
-
-        memset(&surface_desc, 0, sizeof(surface_desc));
+        GFX_2D_SurfaceDesc surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
         memcpy(
-            surface_desc.lpSurface, g_TexturePagePtrs[i],
+            surface_desc.pixels, g_TexturePagePtrs[i],
             256 * 256); // paletted 256x256 textures
 
         result =
-            GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.lpSurface);
+            GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
         S_Output_CheckError(result);
 
         C3D_TMAP tmap;
         tmap.u32Size = sizeof(C3D_TMAP);
         tmap.bMipMap = FALSE;
-        tmap.apvLevels[0] = (C3D_PVOID)surface_desc.lpSurface;
+        tmap.apvLevels[0] = (C3D_PVOID)surface_desc.pixels;
         tmap.u32MaxMapXSizeLg2 = 8;
         tmap.u32MaxMapYSizeLg2 = 8;
         tmap.eTexFormat = C3D_ETF_CI8;
