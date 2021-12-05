@@ -10,8 +10,6 @@
 #include <sstream>
 #include <vector>
 
-#include <glrage_util/StringUtils.hpp>
-
 #undef max
 
 namespace glrage {

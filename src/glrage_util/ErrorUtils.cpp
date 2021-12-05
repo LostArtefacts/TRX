@@ -1,7 +1,5 @@
 #include "glrage_util/ErrorUtils.hpp"
 
-#include "glrage_util/StringUtils.hpp"
-
 namespace glrage {
 
 void ErrorUtils::warning(const std::string &message)

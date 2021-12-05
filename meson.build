@@ -228,7 +228,6 @@ sources = [
   'src/global/vars.c',
   'src/global/vars_platform.c',
   'src/glrage_util/ErrorUtils.cpp',
-  'src/glrage_util/StringUtils.cpp',
   'src/init.c',
   'src/json.c',
   'src/log.c',

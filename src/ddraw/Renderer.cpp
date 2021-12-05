@@ -1,7 +1,6 @@
 #include "ddraw/Renderer.hpp"
 
 #include "gfx/gl/utils.h"
-#include "glrage_util/StringUtils.hpp"
 
 namespace glrage {
 namespace ddraw {
