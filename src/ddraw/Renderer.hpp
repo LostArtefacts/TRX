@@ -3,7 +3,7 @@
 #include "ddraw/ddraw.h"
 
 #include "glrage/Context.hpp"
-#include "glrage_gl/Program.hpp"
+#include "glrage_gl/program.h"
 #include "glrage_gl/buffer.h"
 #include "glrage_gl/sampler.h"
 #include "glrage_gl/texture.h"
@@ -31,7 +31,7 @@ private:
     GLRage_GLBuffer m_surfaceBuffer;
     GLRage_GLTexture m_surfaceTexture;
     GLRage_GLSampler m_sampler;
-    gl::Program m_program;
+    GLRage_GLProgram m_program;
 };
 
 }

@@ -7,7 +7,6 @@
 #include "glrage_util/StringUtils.hpp"
 #include "log.h"
 
-#include <shlwapi.h>
 #include <stdexcept>
 
 namespace glrage {
@@ -238,24 +237,6 @@ bool Context::isRendered()
 HWND Context::getHWnd()
 {
     return m_hwnd;
-}
-
-std::string Context::getBasePath()
-{
-    HMODULE hModule = nullptr;
-    DWORD dwFlags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
-        | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
-
-    auto windowProc = reinterpret_cast<LPCSTR>(&callbackWindowProc);
-    if (!GetModuleHandleEx(dwFlags, windowProc, &hModule)) {
-        throw std::runtime_error("Can't get module handle");
-    }
-
-    TCHAR path[MAX_PATH];
-    GetModuleFileName(hModule, path, sizeof(path));
-    PathRemoveFileSpec(path);
-
-    return path;
 }
 
 void Context::scheduleScreenshot(const std::string &path)

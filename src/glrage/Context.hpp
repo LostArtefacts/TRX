@@ -30,7 +30,6 @@ public:
     void setRendered();
     bool isRendered();
     HWND getHWnd();
-    std::string getBasePath();
     void scheduleScreenshot(const std::string &path);
 
 private:

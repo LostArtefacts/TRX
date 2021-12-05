@@ -31,13 +31,13 @@ Renderer::Renderer()
     GLRage_GLSampler_Parameteri(
         &m_sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-    std::string basePath = m_context.getBasePath();
-    m_program.attachShader(GL_VERTEX_SHADER, basePath + "\\shaders\\ddraw.vsh");
-    m_program.attachShader(
-        GL_FRAGMENT_SHADER, basePath + "\\shaders\\ddraw.fsh");
-
-    m_program.link();
-    m_program.fragmentData("fragColor");
+    GLRage_GLProgram_Init(&m_program);
+    GLRage_GLProgram_AttachShader(
+        &m_program, GL_VERTEX_SHADER, "shaders\\ddraw.vsh");
+    GLRage_GLProgram_AttachShader(
+        &m_program, GL_FRAGMENT_SHADER, "shaders\\ddraw.fsh");
+    GLRage_GLProgram_Link(&m_program);
+    GLRage_GLProgram_FragmentData(&m_program, "fragColor");
 
     GLRage_GLCheckError();
 }
@@ -48,6 +48,7 @@ Renderer::~Renderer()
     GLRage_GLBuffer_Close(&m_surfaceBuffer);
     GLRage_GLTexture_Close(&m_surfaceTexture);
     GLRage_GLSampler_Close(&m_sampler);
+    GLRage_GLProgram_Close(&m_program);
 }
 
 void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
@@ -78,7 +79,7 @@ void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
 
 void Renderer::render()
 {
-    m_program.bind();
+    GLRage_GLProgram_Bind(&m_program);
     GLRage_GLBuffer_Bind(&m_surfaceBuffer);
     GLRage_GLVertexArray_Bind(&m_surfaceFormat);
     GLRage_GLTexture_Bind(&m_surfaceTexture);

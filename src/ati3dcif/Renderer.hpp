@@ -4,7 +4,7 @@
 #include "ati3dcif/TransDelay.hpp"
 #include "ati3dcif/VertexStream.hpp"
 #include "glrage/Context.hpp"
-#include "glrage_gl/Program.hpp"
+#include "glrage_gl/program.h"
 #include "glrage_gl/sampler.h"
 
 #include <array>
@@ -109,7 +109,7 @@ private:
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
     int32_t m_paletteID = 0;
-    gl::Program m_program;
+    GLRage_GLProgram m_program;
     GLRage_GLSampler m_sampler;
     VertexStream m_vertexStream;
     TransDelay m_transDelay;
@@ -118,7 +118,17 @@ private:
     C3D_HTX m_tmapSelect = NULL;
     C3D_EASRC m_easrc = C3D_EASRC_ONE;
     C3D_EADST m_eadst = C3D_EADST_ZERO;
-    // state data end
+
+    // shader variable locations
+    GLint m_loc_matProjection;
+    GLint m_loc_matModelView;
+    GLint m_loc_solidColor;
+    GLint m_loc_shadeMode;
+    GLint m_loc_tmapEn;
+    GLint m_loc_texOp;
+    GLint m_loc_tmapLight;
+    GLint m_loc_chromaKey;
+    GLint m_loc_keyOnAlpha;
 };
 
 }

@@ -20,15 +20,29 @@ Renderer::Renderer()
     GLRage_GLSampler_Parameterf(
         &m_sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
-    std::string basePath = m_context.getBasePath();
-    m_program.attachShader(
-        GL_VERTEX_SHADER, basePath + "\\shaders\\ati3dcif.vsh");
-    m_program.attachShader(
-        GL_FRAGMENT_SHADER, basePath + "\\shaders\\ati3dcif.fsh");
+    GLRage_GLProgram_Init(&m_program);
+    GLRage_GLProgram_AttachShader(
+        &m_program, GL_VERTEX_SHADER, "shaders\\ati3dcif.vsh");
+    GLRage_GLProgram_AttachShader(
+        &m_program, GL_FRAGMENT_SHADER, "shaders\\ati3dcif.fsh");
+    GLRage_GLProgram_Link(&m_program);
 
-    m_program.link();
-    m_program.fragmentData("fragColor");
-    m_program.bind();
+    m_loc_matProjection =
+        GLRage_GLProgram_UniformLocation(&m_program, "matProjection");
+    m_loc_matModelView =
+        GLRage_GLProgram_UniformLocation(&m_program, "matModelView");
+    m_loc_solidColor =
+        GLRage_GLProgram_UniformLocation(&m_program, "solidColor");
+    m_loc_shadeMode = GLRage_GLProgram_UniformLocation(&m_program, "shadeMode");
+    m_loc_tmapEn = GLRage_GLProgram_UniformLocation(&m_program, "tmapEn");
+    m_loc_texOp = GLRage_GLProgram_UniformLocation(&m_program, "texOp");
+    m_loc_tmapLight = GLRage_GLProgram_UniformLocation(&m_program, "tmapLight");
+    m_loc_chromaKey = GLRage_GLProgram_UniformLocation(&m_program, "chromaKey");
+    m_loc_keyOnAlpha =
+        GLRage_GLProgram_UniformLocation(&m_program, "keyOnAlpha");
+
+    GLRage_GLProgram_FragmentData(&m_program, "fragColor");
+    GLRage_GLProgram_Bind(&m_program);
 
     // negate Z axis so the model is rendered behind the viewport, which is
     // better than having a negative z_near in the ortho matrix, which seems
@@ -39,7 +53,8 @@ Renderer::Renderer()
         { +0.0f, +0.0f, -1.0, -0.0f },
         { +0.0f, +0.0f, +0.0, +1.0f },
     };
-    m_program.uniformMatrix4fv("matModelView", 1, GL_FALSE, &model_view[0][0]);
+    GLRage_GLProgram_UniformMatrix4fv(
+        &m_program, m_loc_matModelView, 1, GL_FALSE, &model_view[0][0]);
 
     // TODO: make me configurable
     m_wireframe = false;
@@ -49,6 +64,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+    GLRage_GLProgram_Close(&m_program);
     GLRage_GLSampler_Close(&m_sampler);
 }
 
@@ -60,8 +76,7 @@ void Renderer::renderBegin()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    // bind objects
-    m_program.bind();
+    GLRage_GLProgram_Bind(&m_program);
     m_vertexStream.bind();
     GLRage_GLSampler_Bind(&m_sampler, 0);
 
@@ -84,7 +99,8 @@ void Renderer::renderBegin()
           -(z_far + z_near) / (z_far - z_near), 1.0f }
     };
 
-    m_program.uniformMatrix4fv("matProjection", 1, GL_FALSE, &projection[0][0]);
+    GLRage_GLProgram_UniformMatrix4fv(
+        &m_program, m_loc_matProjection, 1, GL_FALSE, &projection[0][0]);
 
     GLRage_GLCheckError();
 }
@@ -94,7 +110,7 @@ void Renderer::renderEnd()
     // make sure everything has been rendered
     m_vertexStream.renderPending();
     // including the delayed translucent primitives
-    m_program.uniform1i("keyOnAlpha", true);
+    GLRage_GLProgram_Uniform1i(&m_program, m_loc_keyOnAlpha, true);
     m_transDelay.render([this](std::vector<C3D_VTCF> verts) {
         m_vertexStream.renderPrims(verts);
     });
@@ -245,22 +261,22 @@ void Renderer::solidColor(C3D_COLOR value)
 {
     m_vertexStream.renderPending();
     C3D_COLOR color = value;
-    m_program.uniform4f(
-        "solidColor", color.r / 255.0f, color.g / 255.0f, color.b / 255.0f,
-        color.a / 255.0f);
+    GLRage_GLProgram_Uniform4f(
+        &m_program, m_loc_solidColor, color.r / 255.0f, color.g / 255.0f,
+        color.b / 255.0f, color.a / 255.0f);
 }
 
 void Renderer::shadeMode(C3D_ESHADE value)
 {
     m_vertexStream.renderPending();
-    m_program.uniform1i("shadeMode", value);
+    GLRage_GLProgram_Uniform1i(&m_program, m_loc_shadeMode, value);
 }
 
 void Renderer::tmapEnable(C3D_BOOL value)
 {
     m_vertexStream.renderPending();
     C3D_BOOL enable = value;
-    m_program.uniform1i("tmapEn", enable);
+    GLRage_GLProgram_Uniform1i(&m_program, m_loc_tmapEn, enable);
     m_transDelay.setTexturingEnabled(enable != C3D_FALSE);
     if (enable) {
         glEnable(GL_TEXTURE_2D);
@@ -299,9 +315,11 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
 
     // send chroma key color to shader
     auto ck = texture->chromaKey();
-    m_program.uniform3f(
-        "chromaKey", ck.r / 255.0f, ck.g / 255.0f, ck.b / 255.0f);
-    m_program.uniform1i("keyOnAlpha", texture->keyOnAlpha());
+    GLRage_GLProgram_Uniform3f(
+        &m_program, m_loc_chromaKey, ck.r / 255.0f, ck.g / 255.0f,
+        ck.b / 255.0f);
+    GLRage_GLProgram_Uniform1i(
+        &m_program, m_loc_keyOnAlpha, texture->keyOnAlpha());
 }
 
 void Renderer::tmapRestore()
@@ -312,7 +330,7 @@ void Renderer::tmapRestore()
 void Renderer::tmapLight(C3D_ETLIGHT value)
 {
     m_vertexStream.renderPending();
-    m_program.uniform1i("tmapLight", value);
+    GLRage_GLProgram_Uniform1i(&m_program, m_loc_tmapLight, value);
 }
 
 void Renderer::tmapFilter(C3D_ETEXFILTER value)
@@ -328,7 +346,7 @@ void Renderer::tmapFilter(C3D_ETEXFILTER value)
 void Renderer::tmapTexOp(C3D_ETEXOP value)
 {
     m_vertexStream.renderPending();
-    m_program.uniform1i("texOp", value);
+    GLRage_GLProgram_Uniform1i(&m_program, m_loc_texOp, value);
 }
 
 void Renderer::alphaSrc(C3D_EASRC value)
