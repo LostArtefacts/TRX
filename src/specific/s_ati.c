@@ -5,8 +5,6 @@
 
 #include "ati3dcif/Interop.hpp"
 
-#include <windows.h>
-
 bool S_ATI_Init()
 {
     C3D_EC result = ATI3DCIF_Init();

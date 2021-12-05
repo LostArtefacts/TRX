@@ -8,7 +8,6 @@ extern "C" {
     #include <stdbool.h>
     #include <stdint.h>
 #endif
-#include <windows.h>
 
 #include "gfx/2d/2d_renderer.h"
 

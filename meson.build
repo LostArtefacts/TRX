@@ -40,7 +40,6 @@ add_project_arguments(build_opts + cpp_opts, language: 'cpp')
 dep_opengl32 = cpp_compiler.find_library('opengl32')
 dep_dinput8 = c_compiler.find_library('dinput8')
 dep_dxguid = c_compiler.find_library('dxguid')
-dep_shlwapi = c_compiler.find_library('shlwapi')
 
 dep_avcodec = c_compiler.find_library('avcodec.dll')
 dep_avformat = c_compiler.find_library('avformat.dll')
@@ -251,12 +250,10 @@ dependencies = [
     dep_avutil,
     dep_dinput8,
     dep_dxguid,
-    dep_sdl2,
-    dep_shlwapi,
-    dep_swscale,
-    dep_swresample,
-    dep_shlwapi,
     dep_opengl32,
+    dep_sdl2,
+    dep_swresample,
+    dep_swscale,
   ]
 
 executable(

@@ -13,9 +13,14 @@ struct MYFILE {
     FILE *fp;
 };
 
+bool File_IsAbsolute(const char *path)
+{
+    return path && (path[0] == '/' || strstr(path, ":\\"));
+}
+
 bool File_IsRelative(const char *path)
 {
-    return S_File_IsRelative(path);
+    return path && !File_IsAbsolute(path);
 }
 
 const char *File_GetGameDirectory()
