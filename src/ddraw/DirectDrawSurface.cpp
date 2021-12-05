@@ -1,6 +1,6 @@
 #include "ddraw/DirectDrawSurface.hpp"
 
-#include "ddraw/Blitter.hpp"
+#include "gfx/blitter.h"
 #include "gfx/screenshot.h"
 
 #include <algorithm>
@@ -62,7 +62,7 @@ HRESULT DirectDrawSurface::Blt(
         int32_t dstWidth = m_desc.dwWidth;
         int32_t dstHeight = m_desc.dwHeight;
 
-        Blitter::Rect dstRect { 0, 0, dstWidth, dstHeight };
+        GFX_BlitterRect dstRect { 0, 0, dstWidth, dstHeight };
         if (lpDestRect) {
             dstRect.left = lpDestRect->left;
             dstRect.top = lpDestRect->top;
@@ -90,22 +90,20 @@ HRESULT DirectDrawSurface::Blt(
                 buffer.data(), &width, &height, depth, GL_BGRA,
                 GL_UNSIGNED_INT_8_8_8_8_REV, false, true);
 
-            Blitter::Rect srcRect { 0, height, width, 0 };
-
-            Blitter::Image srcImg { width, height, depth, buffer };
-            // simulate dimming of DOS/PSX menu
-            for (auto &pix : srcImg.buffer) {
+            for (auto &pix : buffer) {
                 pix /= 2;
             }
-            Blitter::Image dstImg { dstWidth, dstHeight, depth, m_buffer };
 
-            Blitter::blit(srcImg, srcRect, dstImg, dstRect);
+            GFX_BlitterRect srcRect { 0, height, width, 0 };
+            GFX_BlitterImage srcImg { width, height, depth, buffer.data() };
+            GFX_BlitterImage dstImg { dstWidth, dstHeight, depth,
+                                      m_buffer.data() };
+            GFX_Blit(&srcImg, &srcRect, &dstImg, &dstRect);
         } else {
             int32_t srcWidth = src->m_desc.dwWidth;
             int32_t srcHeight = src->m_desc.dwHeight;
 
-            Blitter::Rect srcRect { 0, 0, srcWidth, srcHeight };
-
+            GFX_BlitterRect srcRect { 0, 0, srcWidth, srcHeight };
             if (lpSrcRect) {
                 srcRect.left = lpSrcRect->left;
                 srcRect.top = lpSrcRect->top;
@@ -113,10 +111,12 @@ HRESULT DirectDrawSurface::Blt(
                 srcRect.bottom = lpSrcRect->bottom;
             }
 
-            Blitter::Image srcImg { srcWidth, srcHeight, depth, src->m_buffer };
-            Blitter::Image dstImg { dstWidth, dstHeight, depth, m_buffer };
+            GFX_BlitterImage srcImg { srcWidth, srcHeight, depth,
+                                      src->m_buffer.data() };
+            GFX_BlitterImage dstImg { dstWidth, dstHeight, depth,
+                                      m_buffer.data() };
 
-            Blitter::blit(srcImg, srcRect, dstImg, dstRect);
+            GFX_Blit(&srcImg, &srcRect, &dstImg, &dstRect);
         }
     }
 
