@@ -736,15 +736,12 @@ static int S_FMV_ReallocPrimarySurface(
     surface_desc.dwBackBufferCount = 1;
     MyIDirectDraw2_CreateSurface(&surface_desc, &is->primary_surface);
 
-    DDSCAPS caps = { DDSCAPS_BACKBUFFER };
-    HRESULT result = MyIDirectDrawSurface_GetAttachedSurface(
-        is->primary_surface, &caps, &is->back_surface);
-    if (result != DD_OK) {
-        LOG_ERROR("DirectDraw error code 0x%lx", result);
-    }
+    MyIDirectDrawSurface_GetAttachedSurface(
+        is->primary_surface, &is->back_surface);
 
     if (clear) {
-        result = MyIDirectDrawSurface2_Lock(is->primary_surface, &surface_desc);
+        HRESULT result =
+            MyIDirectDrawSurface2_Lock(is->primary_surface, &surface_desc);
         if (result != DD_OK) {
             LOG_ERROR("DirectDraw error code 0x%lx", result);
             return -1;

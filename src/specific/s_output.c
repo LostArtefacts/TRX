@@ -86,10 +86,7 @@ static void S_Output_SetHardwareVideoMode()
     MyIDirectDraw2_CreateSurface(&surface_desc, &m_PrimarySurface);
     S_Output_ClearSurface(m_PrimarySurface);
 
-    DDSCAPS caps = { DDSCAPS_BACKBUFFER };
-    result = MyIDirectDrawSurface_GetAttachedSurface(
-        m_PrimarySurface, &caps, &m_BackSurface);
-    S_Output_CheckError(result);
+    MyIDirectDrawSurface_GetAttachedSurface(m_PrimarySurface, &m_BackSurface);
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));

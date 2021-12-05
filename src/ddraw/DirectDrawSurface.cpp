@@ -37,7 +37,7 @@ DirectDrawSurface::DirectDrawSurface(
 
     if (m_desc.dwFlags & DDSD_BACKBUFFERCOUNT && m_desc.dwBackBufferCount > 0) {
         DDSURFACEDESC backBufferDesc = m_desc;
-        backBufferDesc.ddsCaps.dwCaps |= DDSCAPS_BACKBUFFER | DDSCAPS_FLIP;
+        backBufferDesc.ddsCaps.dwCaps |= DDSCAPS_FLIP;
         backBufferDesc.ddsCaps.dwCaps &= ~DDSCAPS_FRONTBUFFER;
         backBufferDesc.dwFlags &= ~DDSD_BACKBUFFERCOUNT;
         backBufferDesc.dwBackBufferCount = 0;
@@ -181,15 +181,10 @@ HRESULT DirectDrawSurface::Flip()
     return DD_OK;
 }
 
-HRESULT DirectDrawSurface::GetAttachedSurface(
-    LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
+void DirectDrawSurface::GetAttachedSurface(
+    LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
 {
-    if (lpDDSCaps->dwCaps & DDSCAPS_BACKBUFFER) {
-        *lplpDDAttachedSurface = m_backBuffer.get();
-        return DD_OK;
-    }
-
-    return DDERR_SURFACENOTATTACHED;
+    *lplpDDAttachedSurface = m_backBuffer.get();
 }
 
 HRESULT

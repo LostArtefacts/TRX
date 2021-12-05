@@ -42,13 +42,12 @@ void MyIDirectDraw2_CreateSurface(
     *lplpDDSurface = new DirectDrawSurface(*m_Renderer, lpDDSurfaceDesc);
 }
 
-HRESULT MyIDirectDrawSurface_GetAttachedSurface(
-    LPDIRECTDRAWSURFACE p, LPDDSCAPS lpDDSCaps,
-    LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
+void MyIDirectDrawSurface_GetAttachedSurface(
+    LPDIRECTDRAWSURFACE p, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
 {
     assert(p);
-    return reinterpret_cast<DirectDrawSurface *>(p)->GetAttachedSurface(
-        lpDDSCaps, lplpDDAttachedSurface);
+    reinterpret_cast<DirectDrawSurface *>(p)->GetAttachedSurface(
+        lplpDDAttachedSurface);
 }
 
 HRESULT MyIDirectDrawSurface2_Lock(

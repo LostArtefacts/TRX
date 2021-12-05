@@ -20,8 +20,7 @@ public:
         LPRECT lpDestRect, LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect,
         DWORD dwFlags);
     HRESULT Flip();
-    HRESULT GetAttachedSurface(
-        LPDDSCAPS lpDDSCaps, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
+    void GetAttachedSurface(LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
     HRESULT GetPixelFormat(LPDDPIXELFORMAT lpDDPixelFormat);
     HRESULT GetSurfaceDesc(LPDDSURFACEDESC lpDDSurfaceDesc);
     HRESULT Lock(LPDDSURFACEDESC lpDDSurfaceDesc);

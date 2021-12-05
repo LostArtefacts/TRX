@@ -13,9 +13,8 @@ void MyIDirectDraw_Release();
 void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
 
-HRESULT MyIDirectDrawSurface_GetAttachedSurface(
-    LPDIRECTDRAWSURFACE p, LPDDSCAPS lpDDSCaps,
-    LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
+void MyIDirectDrawSurface_GetAttachedSurface(
+    LPDIRECTDRAWSURFACE p, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
 
 HRESULT MyIDirectDrawSurface2_Lock(
     LPDIRECTDRAWSURFACE p, LPDDSURFACEDESC lpDDSurfaceDesc);
