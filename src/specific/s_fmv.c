@@ -727,11 +727,9 @@ static int S_FMV_ReallocPrimarySurface(
 
     DDSURFACEDESC surface_desc;
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwFlags =
-        DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.dwWidth = surface_width;
     surface_desc.dwHeight = surface_height;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
+    surface_desc.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
     is->primary_surface = GFX_2D_Surface_Create(&surface_desc);
     is->back_surface = GFX_2D_Surface_GetAttachedSurface(is->primary_surface);

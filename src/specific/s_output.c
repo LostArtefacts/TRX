@@ -78,8 +78,7 @@ static void S_Output_SetHardwareVideoMode()
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
+    surface_desc.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
     m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
     S_Output_ClearSurface(m_PrimarySurface);
@@ -88,8 +87,7 @@ static void S_Output_SetHardwareVideoMode()
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-        surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
+        surface_desc.dwRGBBitCount = 8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
         m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
@@ -674,7 +672,6 @@ void S_Output_CopyFromPicture()
     if (!m_PictureSurface) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
         m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
@@ -700,7 +697,6 @@ void S_Output_DownloadPicture(const PICTURE *pic)
 
     // first, download the picture directly to a temporary surface
     memset(&surface_desc, 0, sizeof(surface_desc));
-    surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
     picture_surface = GFX_2D_Surface_Create(&surface_desc);
@@ -725,7 +721,6 @@ void S_Output_DownloadPicture(const PICTURE *pic)
 
     if (!m_PictureSurface) {
         memset(&surface_desc, 0, sizeof(surface_desc));
-        surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
         m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);

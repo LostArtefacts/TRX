@@ -35,38 +35,33 @@ void GFX_2D_Surface_Init(
     surface->desc = *lpDDSurfaceDesc;
 
     DDSURFACEDESC displayDesc;
-    displayDesc.ddpfPixelFormat.dwRGBBitCount = 32;
+    displayDesc.dwRGBBitCount = 32;
     displayDesc.dwWidth = GFX_Context_GetDisplayWidth();
     displayDesc.dwHeight = GFX_Context_GetDisplayHeight();
-    displayDesc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
 
-    if (!(surface->desc.dwFlags & (DDSD_WIDTH | DDSD_HEIGHT))) {
+    if (!surface->desc.dwWidth || !surface->desc.dwHeight) {
         surface->desc.dwWidth = displayDesc.dwWidth;
         surface->desc.dwHeight = displayDesc.dwHeight;
-        surface->desc.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
     }
 
-    if (!(surface->desc.dwFlags & DDSD_PIXELFORMAT)) {
-        surface->desc.ddpfPixelFormat = displayDesc.ddpfPixelFormat;
-        surface->desc.dwFlags |= DDSD_PIXELFORMAT;
+    if (!surface->desc.dwRGBBitCount) {
+        surface->desc.dwRGBBitCount = displayDesc.dwRGBBitCount;
     }
 
-    surface->desc.lPitch = surface->desc.dwWidth
-        * (surface->desc.ddpfPixelFormat.dwRGBBitCount / 8);
+    surface->desc.lPitch =
+        surface->desc.dwWidth * (surface->desc.dwRGBBitCount / 8);
 
     surface->buffer =
         Memory_Alloc(surface->desc.lPitch * surface->desc.dwHeight);
     surface->desc.lpSurface = NULL;
 
-    if (surface->desc.dwFlags & DDSD_BACKBUFFERCOUNT
-        && surface->desc.dwBackBufferCount > 0) {
+    if (surface->desc.dwBackBufferCount > 0) {
         DDSURFACEDESC back_buffer_desc = surface->desc;
-        back_buffer_desc.ddsCaps.dwCaps |= DDSCAPS_FLIP;
-        back_buffer_desc.ddsCaps.dwCaps &= ~DDSCAPS_FRONTBUFFER;
-        back_buffer_desc.dwFlags &= ~DDSD_BACKBUFFERCOUNT;
+        back_buffer_desc.dwCaps |= DDSCAPS_FLIP;
+        back_buffer_desc.dwCaps &= ~DDSCAPS_FRONTBUFFER;
         back_buffer_desc.dwBackBufferCount = 0;
         surface->back_buffer = GFX_2D_Surface_Create(&back_buffer_desc);
-        surface->desc.ddsCaps.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
+        surface->desc.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
     }
 }
 
@@ -118,9 +113,9 @@ bool GFX_2D_Surface_Blt(
             dst_rect.bottom = lpDestRect->bottom;
         }
 
-        int32_t depth = surface->desc.ddpfPixelFormat.dwRGBBitCount / 8;
+        int32_t depth = surface->desc.dwRGBBitCount / 8;
 
-        if (src->desc.ddsCaps.dwCaps & DDSCAPS_PRIMARYSURFACE) {
+        if (src->desc.dwCaps & DDSCAPS_PRIMARYSURFACE) {
             // This is a somewhat ugly and slow hack to get a rescaled and
             // converted copy of the framebuffer for the surface, which is
             // required to display the in-game menu of Tomb Raider
@@ -172,8 +167,8 @@ bool GFX_2D_Surface_Blt(
 bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
 {
     // check if the surface can be flipped
-    if (!(surface->desc.ddsCaps.dwCaps & DDSCAPS_FLIP)
-        || !(surface->desc.ddsCaps.dwCaps & DDSCAPS_FRONTBUFFER)
+    if (!(surface->desc.dwCaps & DDSCAPS_FLIP)
+        || !(surface->desc.dwCaps & DDSCAPS_FRONTBUFFER)
         || !surface->back_buffer) {
         LOG_ERROR("Surface cannot be flipped");
         return false;
