@@ -84,7 +84,7 @@ sources = [
   'src/ati3dcif/VertexStream.cpp',
   'src/config.c',
   'src/ddraw/2d_renderer.c',
-  'src/ddraw/DirectDrawSurface.cpp',
+  'src/ddraw/2d_surface.c',
   'src/ddraw/Interop.cpp',
   'src/filesystem.c',
   'src/game/ai/abortion.c',

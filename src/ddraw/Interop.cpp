@@ -1,7 +1,7 @@
 #include "ddraw/Interop.hpp"
 
-#include "ddraw/DirectDrawSurface.hpp"
 #include "ddraw/2d_renderer.h"
+#include "ddraw/2d_surface.h"
 #include "log.h"
 
 #include <cassert>
@@ -34,28 +34,31 @@ void MyIDirectDraw_Release()
 void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {
-    *lplpDDSurface = new DirectDrawSurface(m_Renderer2D, lpDDSurfaceDesc);
+    GFX_2D_Surface *surface = new GFX_2D_Surface();
+    *lplpDDSurface = surface;
+    GFX_2D_Surface_Init(surface, m_Renderer2D, lpDDSurfaceDesc);
 }
 
 void MyIDirectDrawSurface_GetAttachedSurface(
     LPDIRECTDRAWSURFACE p, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
 {
     assert(p);
-    reinterpret_cast<DirectDrawSurface *>(p)->GetAttachedSurface(
-        lplpDDAttachedSurface);
+    GFX_2D_Surface_GetAttachedSurface(
+        reinterpret_cast<GFX_2D_Surface *>(p), lplpDDAttachedSurface);
 }
 
 HRESULT MyIDirectDrawSurface2_Lock(
     LPDIRECTDRAWSURFACE p, LPDDSURFACEDESC lpDDSurfaceDesc)
 {
     assert(p);
-    return reinterpret_cast<DirectDrawSurface *>(p)->Lock(lpDDSurfaceDesc);
+    return GFX_2D_Surface_Lock(
+        reinterpret_cast<GFX_2D_Surface *>(p), lpDDSurfaceDesc);
 }
 
 HRESULT MyIDirectDrawSurface2_Unlock(LPDIRECTDRAWSURFACE p, LPVOID lp)
 {
     assert(p);
-    return reinterpret_cast<DirectDrawSurface *>(p)->Unlock(lp);
+    return GFX_2D_Surface_Unlock(reinterpret_cast<GFX_2D_Surface *>(p), lp);
 }
 
 HRESULT MyIDirectDrawSurface_Blt(
@@ -63,20 +66,22 @@ HRESULT MyIDirectDrawSurface_Blt(
     LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags)
 {
     assert(p);
-    return reinterpret_cast<DirectDrawSurface *>(p)->Blt(
-        lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags);
+    return GFX_2D_Surface_Blt(
+        reinterpret_cast<GFX_2D_Surface *>(p), lpDestRect, lpDDSrcSurface,
+        lpSrcRect, dwFlags);
 }
 
 void MyIDirectDrawSurface_Release(LPDIRECTDRAWSURFACE p)
 {
     assert(p);
-    delete reinterpret_cast<DirectDrawSurface *>(p);
+    GFX_2D_Surface_Close(reinterpret_cast<GFX_2D_Surface *>(p));
+    delete reinterpret_cast<GFX_2D_Surface *>(p);
 }
 
 HRESULT MyIDirectDrawSurface_Flip(LPDIRECTDRAWSURFACE p)
 {
     assert(p);
-    return reinterpret_cast<DirectDrawSurface *>(p)->Flip();
+    return GFX_2D_Surface_Flip(reinterpret_cast<GFX_2D_Surface *>(p));
 }
 }
 
