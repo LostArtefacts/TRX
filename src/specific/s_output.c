@@ -6,6 +6,7 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
+#include "gfx/context.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
@@ -13,7 +14,6 @@
 
 #include "ati3dcif/Interop.hpp"
 #include "ddraw/Interop.hpp"
-#include "glrage/Interop.hpp"
 
 #include <assert.h>
 
@@ -77,7 +77,7 @@ static void S_Output_SetHardwareVideoMode()
     m_SurfaceMaxX = Screen_GetResWidth() - 1.0f;
     m_SurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
-    GLRage_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
+    GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
@@ -1162,12 +1162,12 @@ void S_Output_ApplyResolution()
 
 void S_Output_SetViewport(int width, int height)
 {
-    GLRage_SetWindowSize(width, height);
+    GFX_Context_SetWindowSize(width, height);
 }
 
 void S_Output_SetFullscreen(bool fullscreen)
 {
-    GLRage_SetFullscreen(fullscreen);
+    GFX_Context_SetFullscreen(fullscreen);
 }
 
 bool S_Output_Init()
@@ -1176,7 +1176,7 @@ bool S_Output_Init()
     int32_t tmp;
     HRESULT result;
 
-    GLRage_Attach(g_TombHWND);
+    GFX_Context_Attach(g_TombHWND);
     if (MyDirectDrawCreate() != DD_OK) {
         LOG_ERROR("DDraw emulation layer could not be started");
         return false;
@@ -1218,7 +1218,7 @@ void S_Output_Shutdown()
     S_Output_ReleaseSurfaces();
     S_ATI_Shutdown();
     MyIDirectDraw_Release();
-    GLRage_Detach();
+    GFX_Context_Detach();
 }
 
 void S_Output_DrawFlatTriangle(
@@ -1525,5 +1525,6 @@ void S_Output_DownloadTextures(int32_t pages)
 
 bool S_Output_MakeScreenshot(const char *path)
 {
-    return GLRage_MakeScreenshot(path);
+    GFX_Context_ScheduleScreenshot(path);
+    return true;
 }

@@ -2,7 +2,6 @@
 
 #include "ddraw/DirectDrawSurface.hpp"
 #include "ddraw/Renderer.hpp"
-#include "glrage/Context.hpp"
 #include "glrage_util/ErrorUtils.hpp"
 
 #include <cassert>
@@ -13,7 +12,6 @@ namespace ddraw {
 
 extern "C" {
 
-static Context &m_Context = Context::instance();
 static Renderer *m_Renderer = nullptr;
 
 HRESULT MyDirectDrawCreate()

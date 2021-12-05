@@ -5,7 +5,6 @@
 #include "ati3dcif/VertexStream.hpp"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
-#include "glrage/Context.hpp"
 
 #include <array>
 #include <map>
@@ -104,7 +103,6 @@ private:
     void tmapSelectImpl(C3D_HTX handle);
     void tmapRestore();
 
-    Context &m_context = Context::instance();
     bool m_wireframe = false;
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;

@@ -2,7 +2,6 @@
 
 #include "ddraw/Renderer.hpp"
 #include "ddraw/ddraw.h"
-#include "glrage/Context.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -27,7 +26,6 @@ public:
     HRESULT Unlock(LPVOID lp);
 
 private:
-    Context &m_context = Context::instance();
     Renderer &m_renderer;
     std::vector<uint8_t> m_buffer;
     DDSURFACEDESC m_desc;

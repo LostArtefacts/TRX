@@ -27,6 +27,7 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/viewport.h"
+#include "gfx/context.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_audio.h"
@@ -34,7 +35,6 @@
 #include "specific/s_shell.h"
 
 #include "ddraw/Interop.hpp"
-#include "glrage/Interop.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
@@ -754,7 +754,7 @@ static int S_FMV_ReallocPrimarySurface(
     is->surface_width = surface_width;
     is->surface_height = surface_height;
 
-    GLRage_SetDisplaySize(frame_width, frame_height);
+    GFX_Context_SetDisplaySize(frame_width, frame_height);
 
     return 0;
 }

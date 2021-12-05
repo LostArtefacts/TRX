@@ -1,6 +1,7 @@
 #include "ati3dcif/Renderer.hpp"
 
 #include "ati3dcif/Error.hpp"
+#include "gfx/context.h"
 #include "gfx/gl/utils.h"
 
 namespace glrage {
@@ -84,8 +85,8 @@ void Renderer::renderBegin()
     // perspective when required
     const auto left = 0.0f;
     const auto top = 0.0f;
-    const auto right = static_cast<float>(m_context.getDisplayWidth());
-    const auto bottom = static_cast<float>(m_context.getDisplayHeight());
+    const auto right = static_cast<float>(GFX_Context_GetDisplayWidth());
+    const auto bottom = static_cast<float>(GFX_Context_GetDisplayHeight());
     const auto z_near = -1e6;
     const auto z_far = 1e6;
     GLfloat projection[4][4] = {
@@ -183,13 +184,13 @@ void Renderer::texturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
 
 void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
 {
-    m_context.setRendered();
+    GFX_Context_SetRendered();
     m_vertexStream.addPrimStrip(vStrip, u32NumVert);
 }
 
 void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 {
-    m_context.setRendered();
+    GFX_Context_SetRendered();
     m_vertexStream.addPrimList(vList, u32NumVert);
 }
 

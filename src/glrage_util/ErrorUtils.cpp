@@ -62,32 +62,6 @@ std::string ErrorUtils::getSystemErrorString()
     return error;
 }
 
-// https://stackoverflow.com/a/17387176: Create a string from the last error
-// code
-std::string ErrorUtils::getWindowsErrorString()
-{
-    DWORD error = GetLastError();
-    if (!error) {
-        return "Unknown error";
-    }
-
-    LPVOID lpMsgBuf;
-    DWORD bufLen = FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
-            | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, nullptr);
-
-    if (!bufLen) {
-        return "Unknown error";
-    }
-
-    LPCSTR lpMsgStr = static_cast<LPCSTR>(lpMsgBuf);
-    std::string result(lpMsgStr, lpMsgStr + bufLen);
-    LocalFree(lpMsgBuf);
-    return result;
-}
-
 HWND ErrorUtils::hwnd = nullptr;
 
 void ErrorUtils::setHWnd(HWND _hwnd)

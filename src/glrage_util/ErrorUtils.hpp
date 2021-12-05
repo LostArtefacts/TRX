@@ -19,7 +19,6 @@ public:
         const std::string &message, const std::exception &exception);
     static void error(const std::exception &exception);
     static std::string getSystemErrorString();
-    static std::string getWindowsErrorString();
 
     static void setHWnd(HWND hwnd);
 

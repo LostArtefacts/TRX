@@ -1,6 +1,7 @@
 #include "ddraw/DirectDrawSurface.hpp"
 
 #include "gfx/blitter.h"
+#include "gfx/context.h"
 #include "gfx/screenshot.h"
 
 #include <algorithm>
@@ -15,8 +16,8 @@ DirectDrawSurface::DirectDrawSurface(
 {
     DDSURFACEDESC displayDesc;
     displayDesc.ddpfPixelFormat.dwRGBBitCount = 32;
-    displayDesc.dwWidth = m_context.getDisplayWidth();
-    displayDesc.dwHeight = m_context.getDisplayHeight();
+    displayDesc.dwWidth = GFX_Context_GetDisplayWidth();
+    displayDesc.dwHeight = GFX_Context_GetDisplayHeight();
     displayDesc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
 
     if (!(m_desc.dwFlags & (DDSD_WIDTH | DDSD_HEIGHT))) {
@@ -136,7 +137,7 @@ HRESULT DirectDrawSurface::Flip()
         return DDERR_NOTFLIPPABLE;
     }
 
-    bool rendered = m_context.isRendered();
+    bool rendered = GFX_Context_IsRendered();
 
     // don't re-upload surfaces if external rendering was active after
     // lock() has been called, since it wouldn't be visible anyway
@@ -162,11 +163,11 @@ HRESULT DirectDrawSurface::Flip()
     // swap buffer now if there was external rendering, otherwise the
     // surface would overwrite it
     if (rendered) {
-        m_context.swapBuffers();
+        GFX_Context_SwapBuffers();
     }
 
     // update viewport in case the window size has changed
-    m_context.setupViewport();
+    GFX_Context_SetupViewport();
 
     // render surface
     m_renderer.render();
@@ -175,7 +176,7 @@ HRESULT DirectDrawSurface::Flip()
     // external rendering for this frame, fixes title screens and other pure
     // 2D operations that aren't continuously updated
     if (!rendered) {
-        m_context.swapBuffers();
+        GFX_Context_SwapBuffers();
     }
 
     return DD_OK;
