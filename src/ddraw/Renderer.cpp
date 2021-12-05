@@ -1,6 +1,5 @@
 #include "ddraw/Renderer.hpp"
 
-#include "glrage_gl/Shader.hpp"
 #include "glrage_gl/utils.h"
 #include "glrage_util/StringUtils.hpp"
 
@@ -33,10 +32,10 @@ Renderer::Renderer()
         &m_sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
     std::string basePath = m_context.getBasePath();
-    m_program.attach(gl::Shader(GL_VERTEX_SHADER)
-                         .fromFile(basePath + "\\shaders\\ddraw.vsh"));
-    m_program.attach(gl::Shader(GL_FRAGMENT_SHADER)
-                         .fromFile(basePath + "\\shaders\\ddraw.fsh"));
+    m_program.attachShader(GL_VERTEX_SHADER, basePath + "\\shaders\\ddraw.vsh");
+    m_program.attachShader(
+        GL_FRAGMENT_SHADER, basePath + "\\shaders\\ddraw.fsh");
+
     m_program.link();
     m_program.fragmentData("fragColor");
 

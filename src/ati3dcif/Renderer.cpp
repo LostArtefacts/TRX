@@ -15,18 +15,17 @@ Renderer::Renderer()
     m_vertexStream.setDelayer(
         [this](C3D_VTCF *verts) { return m_transDelay.delayTriangle(verts); });
 
-    // bind sampler
     GLRage_GLSampler_Init(&m_sampler);
     GLRage_GLSampler_Bind(&m_sampler, 0);
     GLRage_GLSampler_Parameterf(
         &m_sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
-    // compile and link shaders and configure program
     std::string basePath = m_context.getBasePath();
-    m_program.attach(gl::Shader(GL_VERTEX_SHADER)
-                         .fromFile(basePath + "\\shaders\\ati3dcif.vsh"));
-    m_program.attach(gl::Shader(GL_FRAGMENT_SHADER)
-                         .fromFile(basePath + "\\shaders\\ati3dcif.fsh"));
+    m_program.attachShader(
+        GL_VERTEX_SHADER, basePath + "\\shaders\\ati3dcif.vsh");
+    m_program.attachShader(
+        GL_FRAGMENT_SHADER, basePath + "\\shaders\\ati3dcif.fsh");
+
     m_program.link();
     m_program.fragmentData("fragColor");
     m_program.bind();

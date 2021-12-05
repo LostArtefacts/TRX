@@ -220,7 +220,6 @@ sources = [
   'src/glrage/Context.cpp',
   'src/glrage/Interop.cpp',
   'src/glrage_gl/Program.cpp',
-  'src/glrage_gl/Shader.cpp',
   'src/glrage_gl/buffer.c',
   'src/glrage_gl/gl_core_3_3.c',
   'src/glrage_gl/sampler.c',

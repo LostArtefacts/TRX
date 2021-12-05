@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glrage_gl/Object.hpp"
-#include "glrage_gl/Shader.hpp"
 #include "glrage_gl/gl_core_3_3.h"
 
 #include <map>
@@ -14,8 +13,7 @@ public:
     Program();
     ~Program();
     void bind();
-    void attach(Shader &shader);
-    void detach(Shader &shader);
+    void attachShader(GLenum type, const std::string &path);
     void link();
     void fragmentData(const std::string &name);
     GLint attributeLocation(const std::string &name);

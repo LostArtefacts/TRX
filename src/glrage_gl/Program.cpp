@@ -1,7 +1,13 @@
 #include "glrage_gl/Program.hpp"
 
-#include "log.h"
 #include "glrage_gl/ProgramException.hpp"
+
+extern "C" {
+#include "filesystem.h"
+#include "log.h"
+#include "memory.h"
+#include "game/shell.h"
+}
 
 namespace glrage {
 namespace gl {
@@ -26,14 +32,39 @@ void Program::bind()
     glUseProgram(m_id);
 }
 
-void Program::attach(Shader &shader)
+void Program::attachShader(GLenum type, const std::string &path)
 {
-    glAttachShader(m_id, shader.id());
-}
+    GLuint shader_id = glCreateShader(type);
+    if (!shader_id) {
+        Shell_ExitSystem("Failed to create shader");
+    }
 
-void Program::detach(Shader &shader)
-{
-    glDetachShader(m_id, shader.id());
+    char *program = NULL;
+    if (!File_Load(path.c_str(), &program, NULL)) {
+        Shell_ExitSystemFmt("Unable to find shader file: %s", path.c_str());
+    }
+
+    glShaderSource(shader_id, 1, &program, NULL);
+    glCompileShader(shader_id);
+
+    int compile_status;
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compile_status);
+    if (compile_status != GL_TRUE) {
+        GLsizei info_log_size = 4096;
+        char info_log[info_log_size];
+        glGetShaderInfoLog(shader_id, info_log_size, &info_log_size, info_log);
+        if (info_log[0]) {
+            Shell_ExitSystemFmt("Shader compilation failed:\n%s", info_log);
+        } else {
+            Shell_ExitSystemFmt("Shader compilation failed.");
+        }
+    }
+
+    if (program) {
+        Memory_Free(program);
+    }
+    glAttachShader(m_id, shader_id);
+    glDeleteShader(shader_id);
 }
 
 void Program::link()

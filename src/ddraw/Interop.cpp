@@ -30,8 +30,10 @@ HRESULT MyDirectDrawCreate()
 
 HRESULT MyIDirectDraw_Release()
 {
-    assert(m_Renderer);
-    delete m_Renderer;
+    if (m_Renderer) {
+        delete m_Renderer;
+        m_Renderer = nullptr;
+    }
     return DD_OK;
 }
 

@@ -5,7 +5,6 @@
 #include "ati3dcif/VertexStream.hpp"
 #include "glrage/Context.hpp"
 #include "glrage_gl/Program.hpp"
-#include "glrage_gl/Shader.hpp"
 #include "glrage_gl/sampler.h"
 
 #include <array>
