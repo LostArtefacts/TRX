@@ -21,9 +21,8 @@
 
 #define S_Output_CheckError(result)                                            \
     {                                                                          \
-        if (result != DD_OK) {                                                 \
-            LOG_ERROR("DirectDraw error code 0x%lx", result);                  \
-            Shell_ExitSystem("Fatal DirectDraw error!");                       \
+        if (!result) {                                                         \
+            Shell_ExitSystem("Fatal 2D renderer error!");                      \
         }                                                                      \
     }
 
@@ -66,7 +65,6 @@ static int32_t S_Output_ZedClipper(
 static void S_Output_SetHardwareVideoMode()
 {
     DDSURFACEDESC surface_desc;
-    HRESULT result;
 
     S_Output_ReleaseSurfaces();
 
@@ -112,7 +110,6 @@ static void S_Output_SetupRenderContextAndRender()
 static void S_Output_ReleaseSurfaces()
 {
     int i;
-    HRESULT result;
 
     if (m_PrimarySurface) {
         S_Output_ClearSurface(m_PrimarySurface);
@@ -140,14 +137,14 @@ static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
-    HRESULT result = GFX_2D_Surface_Blt(target, &rect, source, &rect, 0);
+    bool result = GFX_2D_Surface_Blt(target, &rect, source, &rect, 0);
     S_Output_CheckError(result);
 }
 
 static void S_Output_FlipPrimaryBuffer()
 {
     S_Output_RenderEnd();
-    HRESULT result = GFX_2D_Surface_Flip(m_PrimarySurface);
+    bool result = GFX_2D_Surface_Flip(m_PrimarySurface);
     S_Output_CheckError(result);
     S_Output_RenderToggle();
 
@@ -156,7 +153,7 @@ static void S_Output_FlipPrimaryBuffer()
 
 static void S_Output_ClearSurface(GFX_2D_Surface *surface)
 {
-    HRESULT result =
+    bool result =
         GFX_2D_Surface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
     S_Output_CheckError(result);
 }
@@ -675,8 +672,6 @@ void S_Output_ClearBackBuffer()
 
 void S_Output_CopyFromPicture()
 {
-    HRESULT result;
-
     if (!m_PictureSurface) {
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -703,7 +698,6 @@ void S_Output_DownloadPicture(const PICTURE *pic)
 {
     GFX_2D_Surface *picture_surface = NULL;
     DDSURFACEDESC surface_desc;
-    HRESULT result;
 
     // first, download the picture directly to a temporary surface
     memset(&surface_desc, 0, sizeof(surface_desc));
@@ -714,7 +708,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
 
     memset(&surface_desc, 0, sizeof(surface_desc));
 
-    result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
+    bool result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
     S_Output_CheckError(result);
 
     uint32_t *output_ptr = surface_desc.lpSurface;
@@ -1172,7 +1166,6 @@ bool S_Output_Init()
 {
     int32_t i;
     int32_t tmp;
-    HRESULT result;
 
     GFX_Context_Attach(g_TombHWND);
     if (!S_ATI_Init()) {
@@ -1478,10 +1471,9 @@ void S_Output_DownloadTextures(int32_t pages)
 
     for (int i = 0; i < pages; i++) {
         DDSURFACEDESC surface_desc;
-        HRESULT result;
 
         memset(&surface_desc, 0, sizeof(surface_desc));
-        result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
+        bool result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
         memcpy(

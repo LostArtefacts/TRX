@@ -737,10 +737,8 @@ static int S_FMV_ReallocPrimarySurface(
     is->back_surface = GFX_2D_Surface_GetAttachedSurface(is->primary_surface);
 
     if (clear) {
-        HRESULT result =
-            GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
-        if (result != DD_OK) {
-            LOG_ERROR("DirectDraw error code 0x%lx", result);
+        bool result = GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
+        if (!result) {
             return -1;
         }
         memset(surface_desc.lpSurface, 0, surface_desc.lPitch * surface_height);
@@ -798,8 +796,8 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
     if (is->img_convert_ctx) {
         DDSURFACEDESC surface_desc;
-        HRESULT result = GFX_2D_Surface_Lock(is->back_surface, &surface_desc);
-        if (result == DD_OK) {
+        bool result = GFX_2D_Surface_Lock(is->back_surface, &surface_desc);
+        if (result) {
             uint8_t *surf_planes[4];
             int surf_linesize[4];
             av_image_fill_arrays(
@@ -901,10 +899,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
     }
 
     S_Output_RenderEnd();
-    HRESULT result = GFX_2D_Surface_Flip(is->primary_surface);
-    if (result != DD_OK) {
-        LOG_ERROR("Cannot flip surface: 0x%lx", result);
-    }
+    GFX_2D_Surface_Flip(is->primary_surface);
     S_Output_RenderToggle();
 }
 

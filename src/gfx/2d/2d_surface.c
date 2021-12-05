@@ -3,6 +3,7 @@
 #include "gfx/blitter.h"
 #include "gfx/context.h"
 #include "gfx/screenshot.h"
+#include "log.h"
 #include "memory.h"
 
 #include <string.h>
@@ -82,13 +83,14 @@ void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
     }
 }
 
-HRESULT GFX_2D_Surface_Blt(
+bool GFX_2D_Surface_Blt(
     GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *src,
     LPRECT lpSrcRect, DWORD dwFlags)
 {
     // can't blit while locked
     if (surface->is_locked) {
-        return DDERR_LOCKEDSURFACES;
+        LOG_ERROR("Surface is locked");
+        return false;
     }
 
     if (src) {
@@ -159,16 +161,17 @@ HRESULT GFX_2D_Surface_Blt(
             surface->buffer, 0, surface->desc.lPitch * surface->desc.dwHeight);
     }
 
-    return DD_OK;
+    return true;
 }
 
-HRESULT GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
+bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
 {
     // check if the surface can be flipped
     if (!(surface->desc.ddsCaps.dwCaps & DDSCAPS_FLIP)
         || !(surface->desc.ddsCaps.dwCaps & DDSCAPS_FRONTBUFFER)
         || !surface->back_buffer) {
-        return DDERR_NOTFLIPPABLE;
+        LOG_ERROR("Surface cannot be flipped");
+        return false;
     }
 
     bool rendered = GFX_Context_IsRendered();
@@ -214,7 +217,7 @@ HRESULT GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
         GFX_Context_SwapBuffers();
     }
 
-    return DD_OK;
+    return true;
 }
 
 GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface)
@@ -222,27 +225,12 @@ GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface)
     return surface->back_buffer;
 }
 
-HRESULT GFX_2D_Surface_GetPixelFormat(
-    GFX_2D_Surface *surface, LPDDPIXELFORMAT lpDDPixelFormat)
-{
-    *lpDDPixelFormat = surface->desc.ddpfPixelFormat;
-
-    return DD_OK;
-}
-
-HRESULT GFX_2D_Surface_GetSurfaceDesc(
-    GFX_2D_Surface *surface, LPDDSURFACEDESC lpDDSurfaceDesc)
-{
-    *lpDDSurfaceDesc = surface->desc;
-
-    return DD_OK;
-}
-
-HRESULT GFX_2D_Surface_Lock(
+bool GFX_2D_Surface_Lock(
     GFX_2D_Surface *surface, LPDDSURFACEDESC lpDDSurfaceDesc)
 {
     if (surface->is_locked) {
-        return DDERR_SURFACEBUSY;
+        LOG_ERROR("Surface is busy");
+        return false;
     }
 
     // assign lpSurface
@@ -253,14 +241,15 @@ HRESULT GFX_2D_Surface_Lock(
 
     *lpDDSurfaceDesc = surface->desc;
 
-    return DD_OK;
+    return true;
 }
 
-HRESULT GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp)
+bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp)
 {
     // ensure that the surface is actually locked
     if (!surface->is_locked) {
-        return DDERR_NOTLOCKED;
+        LOG_ERROR("Surface is not locked");
+        return false;
     }
 
     // unassign lpSurface
@@ -268,5 +257,5 @@ HRESULT GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp)
 
     surface->is_locked = false;
 
-    return DD_OK;
+    return true;
 }
