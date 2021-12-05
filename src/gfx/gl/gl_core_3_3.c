@@ -1,4 +1,4 @@
-#include "glrage_gl/gl_core_3_3.h"
+#include "gfx/gl/gl_core_3_3.h"
 
 #include <stddef.h>
 #include <stdlib.h>

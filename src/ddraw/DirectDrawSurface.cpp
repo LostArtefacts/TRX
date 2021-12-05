@@ -1,7 +1,7 @@
 #include "ddraw/DirectDrawSurface.hpp"
 
 #include "ddraw/Blitter.hpp"
-#include "glrage_gl/screenshot.h"
+#include "gfx/screenshot.h"
 
 #include <algorithm>
 
@@ -82,11 +82,11 @@ HRESULT DirectDrawSurface::Blt(
             GLint width;
             GLint height;
             std::vector<uint8_t> buffer;
-            GLRage_Screenshot_CaptureToBuffer(
+            GFX_Screenshot_CaptureToBuffer(
                 NULL, &width, &height, depth, GL_BGRA,
                 GL_UNSIGNED_INT_8_8_8_8_REV, false, true);
             buffer.resize(width * height * depth);
-            GLRage_Screenshot_CaptureToBuffer(
+            GFX_Screenshot_CaptureToBuffer(
                 buffer.data(), &width, &height, depth, GL_BGRA,
                 GL_UNSIGNED_INT_8_8_8_8_REV, false, true);
 

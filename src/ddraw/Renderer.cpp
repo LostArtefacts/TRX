@@ -1,6 +1,6 @@
 #include "ddraw/Renderer.hpp"
 
-#include "glrage_gl/utils.h"
+#include "gfx/gl/utils.h"
 #include "glrage_util/StringUtils.hpp"
 
 namespace glrage {
@@ -8,47 +8,46 @@ namespace ddraw {
 
 Renderer::Renderer()
 {
-    GLRage_GLBuffer_Init(&m_surfaceBuffer, GL_ARRAY_BUFFER);
-    GLRage_GLBuffer_Bind(&m_surfaceBuffer);
+    GFX_GL_Buffer_Init(&m_surfaceBuffer, GL_ARRAY_BUFFER);
+    GFX_GL_Buffer_Bind(&m_surfaceBuffer);
     GLfloat verts[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
                         0.0, 1.0, 1.0, 0.0, 1.0, 1.0 };
-    GLRage_GLBuffer_Data(
-        &m_surfaceBuffer, sizeof(verts), verts, GL_STATIC_DRAW);
+    GFX_GL_Buffer_Data(&m_surfaceBuffer, sizeof(verts), verts, GL_STATIC_DRAW);
 
-    GLRage_GLVertexArray_Init(&m_surfaceFormat);
-    GLRage_GLVertexArray_Bind(&m_surfaceFormat);
-    GLRage_GLVertexArray_Attribute(
+    GFX_GL_VertexArray_Init(&m_surfaceFormat);
+    GFX_GL_VertexArray_Bind(&m_surfaceFormat);
+    GFX_GL_VertexArray_Attribute(
         &m_surfaceFormat, 0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    GLRage_GLTexture_Init(&m_surfaceTexture, GL_TEXTURE_2D);
+    GFX_GL_Texture_Init(&m_surfaceTexture, GL_TEXTURE_2D);
 
-    GLRage_GLSampler_Init(&m_sampler);
-    GLRage_GLSampler_Bind(&m_sampler, 0);
-    GLRage_GLSampler_Parameteri(&m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    GLRage_GLSampler_Parameteri(&m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    GLRage_GLSampler_Parameteri(
+    GFX_GL_Sampler_Init(&m_sampler);
+    GFX_GL_Sampler_Bind(&m_sampler, 0);
+    GFX_GL_Sampler_Parameteri(&m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    GFX_GL_Sampler_Parameteri(&m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    GFX_GL_Sampler_Parameteri(
         &m_sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    GLRage_GLSampler_Parameteri(
+    GFX_GL_Sampler_Parameteri(
         &m_sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-    GLRage_GLProgram_Init(&m_program);
-    GLRage_GLProgram_AttachShader(
+    GFX_GL_Program_Init(&m_program);
+    GFX_GL_Program_AttachShader(
         &m_program, GL_VERTEX_SHADER, "shaders\\ddraw.vsh");
-    GLRage_GLProgram_AttachShader(
+    GFX_GL_Program_AttachShader(
         &m_program, GL_FRAGMENT_SHADER, "shaders\\ddraw.fsh");
-    GLRage_GLProgram_Link(&m_program);
-    GLRage_GLProgram_FragmentData(&m_program, "fragColor");
+    GFX_GL_Program_Link(&m_program);
+    GFX_GL_Program_FragmentData(&m_program, "fragColor");
 
-    GLRage_GLCheckError();
+    GFX_GL_CheckError();
 }
 
 Renderer::~Renderer()
 {
-    GLRage_GLVertexArray_Close(&m_surfaceFormat);
-    GLRage_GLBuffer_Close(&m_surfaceBuffer);
-    GLRage_GLTexture_Close(&m_surfaceTexture);
-    GLRage_GLSampler_Close(&m_sampler);
-    GLRage_GLProgram_Close(&m_program);
+    GFX_GL_VertexArray_Close(&m_surfaceFormat);
+    GFX_GL_Buffer_Close(&m_surfaceBuffer);
+    GFX_GL_Texture_Close(&m_surfaceTexture);
+    GFX_GL_Sampler_Close(&m_sampler);
+    GFX_GL_Program_Close(&m_program);
 }
 
 void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
@@ -59,7 +58,7 @@ void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
 
     GLenum tex_format = GL_BGRA;
     GLenum tex_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-    GLRage_GLTexture_Bind(&m_surfaceTexture);
+    GFX_GL_Texture_Bind(&m_surfaceTexture);
 
     // TODO: implement texture packs
 
@@ -79,11 +78,11 @@ void Renderer::upload(DDSURFACEDESC &desc, std::vector<uint8_t> &data)
 
 void Renderer::render()
 {
-    GLRage_GLProgram_Bind(&m_program);
-    GLRage_GLBuffer_Bind(&m_surfaceBuffer);
-    GLRage_GLVertexArray_Bind(&m_surfaceFormat);
-    GLRage_GLTexture_Bind(&m_surfaceTexture);
-    GLRage_GLSampler_Bind(&m_sampler, 0);
+    GFX_GL_Program_Bind(&m_program);
+    GFX_GL_Buffer_Bind(&m_surfaceBuffer);
+    GFX_GL_VertexArray_Bind(&m_surfaceFormat);
+    GFX_GL_Texture_Bind(&m_surfaceTexture);
+    GFX_GL_Sampler_Bind(&m_sampler, 0);
 
     GLboolean texture2d = glIsEnabled(GL_TEXTURE_2D);
     if (!texture2d) {
@@ -114,7 +113,7 @@ void Renderer::render()
         glEnable(GL_DEPTH_TEST);
     }
 
-    GLRage_GLCheckError();
+    GFX_GL_CheckError();
 }
 
 }

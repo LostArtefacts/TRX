@@ -1,13 +1,13 @@
-#include "glrage_gl/program.h"
+#include "gfx/gl/program.h"
 
 #include "filesystem.h"
+#include "game/shell.h"
 #include "log.h"
 #include "memory.h"
-#include "game/shell.h"
 
 #include <assert.h>
 
-bool GLRage_GLProgram_Init(GLRage_GLProgram *program)
+bool GFX_GL_Program_Init(GFX_GL_Program *program)
 {
     assert(program);
     program->id = glCreateProgram();
@@ -18,7 +18,7 @@ bool GLRage_GLProgram_Init(GLRage_GLProgram *program)
     return true;
 }
 
-void GLRage_GLProgram_Close(GLRage_GLProgram *program)
+void GFX_GL_Program_Close(GFX_GL_Program *program)
 {
     if (program->id) {
         glDeleteProgram(program->id);
@@ -26,13 +26,13 @@ void GLRage_GLProgram_Close(GLRage_GLProgram *program)
     }
 }
 
-void GLRage_GLProgram_Bind(GLRage_GLProgram *program)
+void GFX_GL_Program_Bind(GFX_GL_Program *program)
 {
     glUseProgram(program->id);
 }
 
-void GLRage_GLProgram_AttachShader(
-    GLRage_GLProgram *program, GLenum type, const char *path)
+void GFX_GL_Program_AttachShader(
+    GFX_GL_Program *program, GLenum type, const char *path)
 {
     GLuint shader_id = glCreateShader(type);
     if (!shader_id) {
@@ -67,7 +67,7 @@ void GLRage_GLProgram_AttachShader(
     glDeleteShader(shader_id);
 }
 
-void GLRage_GLProgram_Link(GLRage_GLProgram *program)
+void GFX_GL_Program_Link(GFX_GL_Program *program)
 {
     glLinkProgram(program->id);
 
@@ -86,13 +86,12 @@ void GLRage_GLProgram_Link(GLRage_GLProgram *program)
     }
 }
 
-void GLRage_GLProgram_FragmentData(GLRage_GLProgram *program, const char *name)
+void GFX_GL_Program_FragmentData(GFX_GL_Program *program, const char *name)
 {
     glBindFragDataLocation(program->id, 0, name);
 }
 
-GLint GLRage_GLProgram_UniformLocation(
-    GLRage_GLProgram *program, const char *name)
+GLint GFX_GL_Program_UniformLocation(GFX_GL_Program *program, const char *name)
 {
     GLint location = glGetUniformLocation(program->id, name);
     if (location == -1) {
@@ -101,26 +100,26 @@ GLint GLRage_GLProgram_UniformLocation(
     return location;
 }
 
-void GLRage_GLProgram_Uniform3f(
-    GLRage_GLProgram *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2)
+void GFX_GL_Program_Uniform3f(
+    GFX_GL_Program *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2)
 {
     glUniform3f(loc, v0, v1, v2);
 }
 
-void GLRage_GLProgram_Uniform4f(
-    GLRage_GLProgram *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2,
+void GFX_GL_Program_Uniform4f(
+    GFX_GL_Program *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2,
     GLfloat v3)
 {
     glUniform4f(loc, v0, v1, v2, v3);
 }
 
-void GLRage_GLProgram_Uniform1i(GLRage_GLProgram *program, GLint loc, GLint v0)
+void GFX_GL_Program_Uniform1i(GFX_GL_Program *program, GLint loc, GLint v0)
 {
     glUniform1i(loc, v0);
 }
 
-void GLRage_GLProgram_UniformMatrix4fv(
-    GLRage_GLProgram *program, GLint loc, GLsizei count, GLboolean transpose,
+void GFX_GL_Program_UniformMatrix4fv(
+    GFX_GL_Program *program, GLint loc, GLsizei count, GLboolean transpose,
     const GLfloat *value)
 {
     glUniformMatrix4fv(loc, count, transpose, value);

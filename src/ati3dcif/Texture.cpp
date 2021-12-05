@@ -1,7 +1,7 @@
 #include "ati3dcif/Texture.hpp"
 
 #include "ati3dcif/Error.hpp"
-#include "glrage_gl/utils.h"
+#include "gfx/gl/utils.h"
 #include "log.h"
 
 #include <algorithm>
@@ -19,22 +19,22 @@ namespace cif {
 
 Texture::Texture()
 {
-    GLRage_GLTexture_Init(&m_GLTexture, GL_TEXTURE_2D);
+    GFX_GL_Texture_Init(&m_GLTexture, GL_TEXTURE_2D);
 }
 
 Texture::~Texture()
 {
-    GLRage_GLTexture_Close(&m_GLTexture);
+    GFX_GL_Texture_Close(&m_GLTexture);
 }
 
 void Texture::bind()
 {
-    GLRage_GLTexture_Bind(&m_GLTexture);
+    GFX_GL_Texture_Bind(&m_GLTexture);
 }
 
 GLenum Texture::target()
 {
-    return GLRage_GLTexture_Target(&m_GLTexture);
+    return GFX_GL_Texture_Target(&m_GLTexture);
 }
 
 GLuint Texture::id()
@@ -162,7 +162,7 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
     //    }
     //}
 
-    GLRage_GLCheckError();
+    GFX_GL_CheckError();
 }
 
 C3D_COLOR &Texture::chromaKey()

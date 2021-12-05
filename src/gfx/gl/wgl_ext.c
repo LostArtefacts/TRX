@@ -1,4 +1,4 @@
-#include "glrage_gl/wgl_ext.h"
+#include "gfx/gl/wgl_ext.h"
 
 #include <stddef.h>
 #include <stdlib.h>

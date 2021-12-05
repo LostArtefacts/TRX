@@ -2,12 +2,12 @@
 
 #include "ddraw/ddraw.h"
 
+#include "gfx/gl/buffer.h"
+#include "gfx/gl/program.h"
+#include "gfx/gl/sampler.h"
+#include "gfx/gl/texture.h"
+#include "gfx/gl/vertex_array.h"
 #include "glrage/Context.hpp"
-#include "glrage_gl/program.h"
-#include "glrage_gl/buffer.h"
-#include "glrage_gl/sampler.h"
-#include "glrage_gl/texture.h"
-#include "glrage_gl/vertex_array.h"
 
 #include <cstdint>
 #include <vector>
@@ -27,11 +27,11 @@ private:
     Context &m_context = Context::instance();
     uint32_t m_width = 0;
     uint32_t m_height = 0;
-    GLRage_GLVertexArray m_surfaceFormat;
-    GLRage_GLBuffer m_surfaceBuffer;
-    GLRage_GLTexture m_surfaceTexture;
-    GLRage_GLSampler m_sampler;
-    GLRage_GLProgram m_program;
+    GFX_GL_VertexArray m_surfaceFormat;
+    GFX_GL_Buffer m_surfaceBuffer;
+    GFX_GL_Texture m_surfaceTexture;
+    GFX_GL_Sampler m_sampler;
+    GFX_GL_Program m_program;
 };
 
 }

@@ -1,4 +1,4 @@
-#include "glrage_gl/screenshot.h"
+#include "gfx/screenshot.h"
 
 #include "memory.h"
 #include "game/picture.h"
@@ -6,13 +6,13 @@
 #include <assert.h>
 #include <string.h>
 
-bool GLRage_Screenshot_CaptureToFile(const char *path)
+bool GFX_Screenshot_CaptureToFile(const char *path)
 {
     bool ret = false;
 
     GLint width;
     GLint height;
-    GLRage_Screenshot_CaptureToBuffer(
+    GFX_Screenshot_CaptureToBuffer(
         NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true, false);
 
     PICTURE *pic = Picture_Create();
@@ -23,7 +23,7 @@ bool GLRage_Screenshot_CaptureToFile(const char *path)
     pic->height = height;
     pic->data = Memory_Alloc(width * height * 3);
 
-    GLRage_Screenshot_CaptureToBuffer(
+    GFX_Screenshot_CaptureToBuffer(
         (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
         true, false);
 
@@ -36,7 +36,7 @@ cleanup:
     return ret;
 }
 
-void GLRage_Screenshot_CaptureToBuffer(
+void GFX_Screenshot_CaptureToBuffer(
     uint8_t *out_buffer, GLint *out_width, GLint *out_height, GLint depth,
     GLenum format, GLenum type, bool vflip, bool front_buffer)
 {

@@ -1,53 +1,53 @@
-#include "glrage_gl/buffer.h"
+#include "gfx/gl/buffer.h"
 
 #include <assert.h>
 
-void GLRage_GLBuffer_Init(GLRage_GLBuffer *buf, GLenum target)
+void GFX_GL_Buffer_Init(GFX_GL_Buffer *buf, GLenum target)
 {
     assert(buf);
     buf->target = target;
     glGenBuffers(1, &buf->id);
 }
 
-void GLRage_GLBuffer_Close(GLRage_GLBuffer *buf)
+void GFX_GL_Buffer_Close(GFX_GL_Buffer *buf)
 {
     assert(buf);
     glDeleteBuffers(1, &buf->id);
 }
 
-void GLRage_GLBuffer_Bind(GLRage_GLBuffer *buf)
+void GFX_GL_Buffer_Bind(GFX_GL_Buffer *buf)
 {
     assert(buf);
     glBindBuffer(buf->target, buf->id);
 }
 
-void GLRage_GLBuffer_Data(
-    GLRage_GLBuffer *buf, GLsizei size, const void *data, GLenum usage)
+void GFX_GL_Buffer_Data(
+    GFX_GL_Buffer *buf, GLsizei size, const void *data, GLenum usage)
 {
     assert(buf);
     glBufferData(buf->target, size, data, usage);
 }
 
-void GLRage_GLBuffer_SubData(
-    GLRage_GLBuffer *buf, GLsizei offset, GLsizei size, const void *data)
+void GFX_GL_Buffer_SubData(
+    GFX_GL_Buffer *buf, GLsizei offset, GLsizei size, const void *data)
 {
     assert(buf);
     glBufferSubData(buf->target, offset, size, data);
 }
 
-void *GLRage_GLBuffer_Map(GLRage_GLBuffer *buf, GLenum access)
+void *GFX_GL_Buffer_Map(GFX_GL_Buffer *buf, GLenum access)
 {
     assert(buf);
     return glMapBuffer(buf->target, access);
 }
 
-void GLRage_GLBuffer_Unmap(GLRage_GLBuffer *buf)
+void GFX_GL_Buffer_Unmap(GFX_GL_Buffer *buf)
 {
     assert(buf);
     glUnmapBuffer(buf->target);
 }
 
-GLint GLRage_GLBuffer_Parameter(GLRage_GLBuffer *buf, GLenum pname)
+GLint GFX_GL_Buffer_Parameter(GFX_GL_Buffer *buf, GLenum pname)
 {
     assert(buf);
     GLint params = 0;

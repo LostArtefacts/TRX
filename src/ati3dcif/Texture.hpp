@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ati3dcif/ATI3DCIF.h"
-#include "glrage_gl/texture.h"
+#include "gfx/gl/texture.h"
 
 #include <vector>
 
@@ -27,7 +27,7 @@ public:
     std::vector<uint8_t> &translucencyMap();
 
 private:
-    GLRage_GLTexture m_GLTexture;
+    GFX_GL_Texture m_GLTexture;
     C3D_COLOR m_chromaKey = { 0, 0, 0, 0 };
     bool m_keyOnAlpha = false;
     std::vector<uint8_t> m_translucency_map;

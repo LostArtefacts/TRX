@@ -1,9 +1,9 @@
-#include "glrage_gl/utils.h"
+#include "gfx/gl/utils.h"
 
+#include "gfx/gl/gl_core_3_3.h"
 #include "log.h"
-#include "glrage_gl/gl_core_3_3.h"
 
-const char *GLRage_GLGetErrorString(GLenum err)
+const char *GFX_GL_GetErrorString(GLenum err)
 {
     switch (err) {
     case GL_NO_ERROR:

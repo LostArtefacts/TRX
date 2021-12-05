@@ -1,27 +1,27 @@
-#include "glrage_gl/texture.h"
+#include "gfx/gl/texture.h"
 
 #include <assert.h>
 
-void GLRage_GLTexture_Init(GLRage_GLTexture *texture, GLenum target)
+void GFX_GL_Texture_Init(GFX_GL_Texture *texture, GLenum target)
 {
     assert(texture);
     texture->target = target;
     glGenTextures(1, &texture->id);
 }
 
-void GLRage_GLTexture_Close(GLRage_GLTexture *texture)
+void GFX_GL_Texture_Close(GFX_GL_Texture *texture)
 {
     assert(texture);
     glDeleteTextures(1, &texture->id);
 }
 
-void GLRage_GLTexture_Bind(GLRage_GLTexture *texture)
+void GFX_GL_Texture_Bind(GFX_GL_Texture *texture)
 {
     assert(texture);
     glBindTexture(texture->target, texture->id);
 }
 
-GLenum GLRage_GLTexture_Target(GLRage_GLTexture *texture)
+GLenum GFX_GL_Texture_Target(GFX_GL_Texture *texture)
 {
     assert(texture);
     return texture->target;

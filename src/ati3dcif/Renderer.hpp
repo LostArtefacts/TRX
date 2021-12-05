@@ -3,9 +3,9 @@
 #include "ati3dcif/Texture.hpp"
 #include "ati3dcif/TransDelay.hpp"
 #include "ati3dcif/VertexStream.hpp"
+#include "gfx/gl/program.h"
+#include "gfx/gl/sampler.h"
 #include "glrage/Context.hpp"
-#include "glrage_gl/program.h"
-#include "glrage_gl/sampler.h"
 
 #include <array>
 #include <map>
@@ -109,8 +109,8 @@ private:
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
     std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
     int32_t m_paletteID = 0;
-    GLRage_GLProgram m_program;
-    GLRage_GLSampler m_sampler;
+    GFX_GL_Program m_program;
+    GFX_GL_Sampler m_sampler;
     VertexStream m_vertexStream;
     TransDelay m_transDelay;
 
