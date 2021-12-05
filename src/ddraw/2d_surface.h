@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ddraw/2d_renderer.h"
 #include "ddraw/ddraw.h"
+#include "gfx/2d/2d_renderer.h"
 
 #ifdef __cplusplus
     #include <cstdint>

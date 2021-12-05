@@ -22,6 +22,7 @@ typedef struct GFX_Context {
     int32_t window_width;
     int32_t window_height;
     char *scheduled_screenshot_path;
+    GFX_2D_Renderer renderer_2d;
 } GFX_Context;
 
 static GFX_Context m_Context = { 0 };
@@ -100,6 +101,8 @@ void GFX_Context_Attach(HWND hwnd)
     if (vsync) {
         wglSwapIntervalEXT(1);
     }
+
+    GFX_2D_Renderer_Init(&m_Context.renderer_2d);
 }
 
 void GFX_Context_Detach()
@@ -107,6 +110,8 @@ void GFX_Context_Detach()
     if (!m_Context.hwnd) {
         return;
     }
+
+    GFX_2D_Renderer_Close(&m_Context.renderer_2d);
 
     wglDeleteContext(m_Context.hglrc);
     m_Context.hglrc = NULL;
@@ -232,4 +237,9 @@ HWND GFX_Context_GetHWnd()
 void GFX_Context_ScheduleScreenshot(const char *path)
 {
     m_Context.scheduled_screenshot_path = strdup(path);
+}
+
+GFX_2D_Renderer *GFX_Context_GetRenderer2D()
+{
+    return &m_Context.renderer_2d;
 }

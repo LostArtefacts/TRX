@@ -1,4 +1,4 @@
-#include "ddraw/2d_renderer.h"
+#include "gfx/2d/2d_renderer.h"
 
 #include "gfx/gl/utils.h"
 

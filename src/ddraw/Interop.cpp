@@ -1,7 +1,8 @@
 #include "ddraw/Interop.hpp"
 
-#include "ddraw/2d_renderer.h"
 #include "ddraw/2d_surface.h"
+#include "gfx/2d/2d_renderer.h"
+#include "gfx/context.h"
 #include "log.h"
 
 #include <cassert>
@@ -12,31 +13,13 @@ namespace ddraw {
 
 extern "C" {
 
-static GFX_2D_Renderer *m_Renderer2D;
-
-HRESULT MyDirectDrawCreate()
-{
-    if (!m_Renderer2D) {
-        m_Renderer2D = new GFX_2D_Renderer();
-        GFX_2D_Renderer_Init(m_Renderer2D);
-    }
-    return DD_OK;
-}
-
-void MyIDirectDraw_Release()
-{
-    if (m_Renderer2D) {
-        GFX_2D_Renderer_Close(m_Renderer2D);
-        delete m_Renderer2D;
-    }
-}
-
 void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface)
 {
+    GFX_2D_Renderer *renderer = GFX_Context_GetRenderer2D();
     GFX_2D_Surface *surface = new GFX_2D_Surface();
     *lplpDDSurface = surface;
-    GFX_2D_Surface_Init(surface, m_Renderer2D, lpDDSurfaceDesc);
+    GFX_2D_Surface_Init(surface, renderer, lpDDSurfaceDesc);
 }
 
 void MyIDirectDrawSurface_GetAttachedSurface(

@@ -6,10 +6,6 @@
 extern "C" {
 #endif
 
-HRESULT MyDirectDrawCreate();
-
-void MyIDirectDraw_Release();
-
 void MyIDirectDraw2_CreateSurface(
     LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSURFACE *lplpDDSurface);
 

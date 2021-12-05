@@ -1177,10 +1177,6 @@ bool S_Output_Init()
     HRESULT result;
 
     GFX_Context_Attach(g_TombHWND);
-    if (MyDirectDrawCreate() != DD_OK) {
-        LOG_ERROR("DDraw emulation layer could not be started");
-        return false;
-    }
     if (!S_ATI_Init()) {
         LOG_ERROR("ATI3DCIF emulation layer could not be started");
         return false;
@@ -1217,7 +1213,6 @@ void S_Output_Shutdown()
 {
     S_Output_ReleaseSurfaces();
     S_ATI_Shutdown();
-    MyIDirectDraw_Release();
     GFX_Context_Detach();
 }
 
