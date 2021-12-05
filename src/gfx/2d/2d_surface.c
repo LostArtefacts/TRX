@@ -1,4 +1,4 @@
-#include "ddraw/2d_surface.h"
+#include "gfx/2d/2d_surface.h"
 
 #include "gfx/blitter.h"
 #include "gfx/context.h"
@@ -6,6 +6,22 @@
 #include "memory.h"
 
 #include <string.h>
+
+GFX_2D_Surface *GFX_2D_Surface_Create(LPDDSURFACEDESC lpDDSurfaceDesc)
+{
+    GFX_2D_Renderer *renderer = GFX_Context_GetRenderer2D();
+    GFX_2D_Surface *surface = Memory_Alloc(sizeof(GFX_2D_Surface));
+    GFX_2D_Surface_Init(surface, renderer, lpDDSurfaceDesc);
+    return surface;
+}
+
+void GFX_2D_Surface_Free(GFX_2D_Surface *surface)
+{
+    if (surface) {
+        GFX_2D_Surface_Close(surface);
+        Memory_Free(surface);
+    }
+}
 
 void GFX_2D_Surface_Init(
     GFX_2D_Surface *surface, GFX_2D_Renderer *renderer,
@@ -48,9 +64,7 @@ void GFX_2D_Surface_Init(
         back_buffer_desc.ddsCaps.dwCaps &= ~DDSCAPS_FRONTBUFFER;
         back_buffer_desc.dwFlags &= ~DDSD_BACKBUFFERCOUNT;
         back_buffer_desc.dwBackBufferCount = 0;
-        surface->back_buffer = Memory_Alloc(sizeof(GFX_2D_Surface));
-        GFX_2D_Surface_Init(
-            surface->back_buffer, surface->renderer, &back_buffer_desc);
+        surface->back_buffer = GFX_2D_Surface_Create(&back_buffer_desc);
         surface->desc.ddsCaps.dwCaps |= DDSCAPS_FRONTBUFFER | DDSCAPS_FLIP;
     }
 }
@@ -58,8 +72,7 @@ void GFX_2D_Surface_Init(
 void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
 {
     if (surface->back_buffer) {
-        GFX_2D_Surface_Close(surface->back_buffer);
-        Memory_Free(surface->back_buffer);
+        GFX_2D_Surface_Free(surface->back_buffer);
         surface->back_buffer = NULL;
     }
 

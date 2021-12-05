@@ -27,14 +27,13 @@
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/viewport.h"
+#include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
-
-#include "ddraw/Interop.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
@@ -722,7 +721,7 @@ static int S_FMV_ReallocPrimarySurface(
     }
 
     if (is->primary_surface) {
-        MyIDirectDrawSurface_Release(is->primary_surface);
+        GFX_2D_Surface_Free(is->primary_surface);
         is->primary_surface = NULL;
     }
 
@@ -734,20 +733,18 @@ static int S_FMV_ReallocPrimarySurface(
     surface_desc.dwHeight = surface_height;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    is->primary_surface = MyIDirectDraw2_CreateSurface(&surface_desc);
-    is->back_surface =
-        MyIDirectDrawSurface_GetAttachedSurface(is->primary_surface);
+    is->primary_surface = GFX_2D_Surface_Create(&surface_desc);
+    is->back_surface = GFX_2D_Surface_GetAttachedSurface(is->primary_surface);
 
     if (clear) {
         HRESULT result =
-            MyIDirectDrawSurface2_Lock(is->primary_surface, &surface_desc);
+            GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
         if (result != DD_OK) {
             LOG_ERROR("DirectDraw error code 0x%lx", result);
             return -1;
         }
         memset(surface_desc.lpSurface, 0, surface_desc.lPitch * surface_height);
-        MyIDirectDrawSurface2_Unlock(
-            is->primary_surface, surface_desc.lpSurface);
+        GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.lpSurface);
     }
 
     is->surface_width = surface_width;
@@ -801,8 +798,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
     if (is->img_convert_ctx) {
         DDSURFACEDESC surface_desc;
-        HRESULT result =
-            MyIDirectDrawSurface2_Lock(is->back_surface, &surface_desc);
+        HRESULT result = GFX_2D_Surface_Lock(is->back_surface, &surface_desc);
         if (result == DD_OK) {
             uint8_t *surf_planes[4];
             int surf_linesize[4];
@@ -814,8 +810,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
                 frame->linesize, 0, frame->height, surf_planes, surf_linesize);
-            MyIDirectDrawSurface2_Unlock(
-                is->back_surface, surface_desc.lpSurface);
+            GFX_2D_Surface_Unlock(is->back_surface, surface_desc.lpSurface);
         }
     } else {
         LOG_ERROR("Cannot initialize the conversion context");
@@ -906,7 +901,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
     }
 
     S_Output_RenderEnd();
-    HRESULT result = MyIDirectDrawSurface_Flip(is->primary_surface);
+    HRESULT result = GFX_2D_Surface_Flip(is->primary_surface);
     if (result != DD_OK) {
         LOG_ERROR("Cannot flip surface: 0x%lx", result);
     }
@@ -993,7 +988,7 @@ static void S_FMV_StreamClose(VideoState *is)
     sws_freeContext(is->sub_convert_ctx);
     av_free(is->filename);
     if (is->primary_surface) {
-        MyIDirectDrawSurface_Release(is->primary_surface);
+        GFX_2D_Surface_Free(is->primary_surface);
     }
     av_free(is);
 }

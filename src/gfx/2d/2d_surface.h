@@ -19,6 +19,9 @@ typedef struct GFX_2D_Surface {
     bool is_dirty;
 } GFX_2D_Surface;
 
+GFX_2D_Surface *GFX_2D_Surface_Create(LPDDSURFACEDESC lpDDSurfaceDesc);
+void GFX_2D_Surface_Free(GFX_2D_Surface *surface);
+
 void GFX_2D_Surface_Init(
     GFX_2D_Surface *surface, GFX_2D_Renderer *renderer,
     LPDDSURFACEDESC lpDDSurfaceDesc);

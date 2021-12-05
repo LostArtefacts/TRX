@@ -13,7 +13,7 @@
 #include "specific/s_ati.h"
 
 #include "ati3dcif/Interop.hpp"
-#include "ddraw/Interop.hpp"
+#include "gfx/2d/2d_surface.h"
 
 #include <assert.h>
 
@@ -83,10 +83,10 @@ static void S_Output_SetHardwareVideoMode()
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    m_PrimarySurface = MyIDirectDraw2_CreateSurface(&surface_desc);
+    m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
     S_Output_ClearSurface(m_PrimarySurface);
 
-    m_BackSurface = MyIDirectDrawSurface_GetAttachedSurface(m_PrimarySurface);
+    m_BackSurface = GFX_2D_Surface_GetAttachedSurface(m_PrimarySurface);
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -94,7 +94,7 @@ static void S_Output_SetHardwareVideoMode()
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
-        m_TextureSurfaces[i] = MyIDirectDraw2_CreateSurface(&surface_desc);
+        m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
     }
 
     S_Output_SetupRenderContextAndRender();
@@ -118,20 +118,20 @@ static void S_Output_ReleaseSurfaces()
         S_Output_ClearSurface(m_PrimarySurface);
         S_Output_ClearSurface(m_BackSurface);
 
-        MyIDirectDrawSurface_Release(m_PrimarySurface);
+        GFX_2D_Surface_Free(m_PrimarySurface);
         m_PrimarySurface = NULL;
         m_BackSurface = NULL;
     }
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_TextureSurfaces[i]) {
-            MyIDirectDrawSurface_Release(m_TextureSurfaces[i]);
+            GFX_2D_Surface_Free(m_TextureSurfaces[i]);
             m_TextureSurfaces[i] = NULL;
         }
     }
 
     if (m_PictureSurface) {
-        MyIDirectDrawSurface_Release(m_PictureSurface);
+        GFX_2D_Surface_Free(m_PictureSurface);
         m_PictureSurface = NULL;
     }
 }
@@ -140,14 +140,14 @@ static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
-    HRESULT result = MyIDirectDrawSurface_Blt(target, &rect, source, &rect, 0);
+    HRESULT result = GFX_2D_Surface_Blt(target, &rect, source, &rect, 0);
     S_Output_CheckError(result);
 }
 
 static void S_Output_FlipPrimaryBuffer()
 {
     S_Output_RenderEnd();
-    HRESULT result = MyIDirectDrawSurface_Flip(m_PrimarySurface);
+    HRESULT result = GFX_2D_Surface_Flip(m_PrimarySurface);
     S_Output_CheckError(result);
     S_Output_RenderToggle();
 
@@ -157,7 +157,7 @@ static void S_Output_FlipPrimaryBuffer()
 static void S_Output_ClearSurface(GFX_2D_Surface *surface)
 {
     HRESULT result =
-        MyIDirectDrawSurface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
+        GFX_2D_Surface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
     S_Output_CheckError(result);
 }
 
@@ -683,7 +683,7 @@ void S_Output_CopyFromPicture()
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        m_PictureSurface = MyIDirectDraw2_CreateSurface(&surface_desc);
+        m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
     }
 
     S_Output_RenderEnd();
@@ -710,11 +710,11 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
-    picture_surface = MyIDirectDraw2_CreateSurface(&surface_desc);
+    picture_surface = GFX_2D_Surface_Create(&surface_desc);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
 
-    result = MyIDirectDrawSurface2_Lock(picture_surface, &surface_desc);
+    result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
     S_Output_CheckError(result);
 
     uint32_t *output_ptr = surface_desc.lpSurface;
@@ -727,8 +727,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         *output_ptr++ = b | (g << 8) | (r << 16);
     }
 
-    result =
-        MyIDirectDrawSurface2_Unlock(picture_surface, surface_desc.lpSurface);
+    result = GFX_2D_Surface_Unlock(picture_surface, surface_desc.lpSurface);
     S_Output_CheckError(result);
 
     if (!m_PictureSurface) {
@@ -736,7 +735,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        m_PictureSurface = MyIDirectDraw2_CreateSurface(&surface_desc);
+        m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
     }
 
     int32_t target_width = m_SurfaceWidth;
@@ -765,11 +764,11 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     target_rect.right = target_rect.left + new_width;
     target_rect.bottom = target_rect.top + new_height;
 
-    result = MyIDirectDrawSurface_Blt(
+    result = GFX_2D_Surface_Blt(
         m_PictureSurface, &target_rect, picture_surface, &source_rect, 0);
     S_Output_CheckError(result);
 
-    MyIDirectDrawSurface_Release(picture_surface);
+    GFX_2D_Surface_Free(picture_surface);
 }
 
 void S_Output_SelectTexture(int tex_num)
@@ -1482,16 +1481,15 @@ void S_Output_DownloadTextures(int32_t pages)
         HRESULT result;
 
         memset(&surface_desc, 0, sizeof(surface_desc));
-        result =
-            MyIDirectDrawSurface2_Lock(m_TextureSurfaces[i], &surface_desc);
+        result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
         memcpy(
             surface_desc.lpSurface, g_TexturePagePtrs[i],
             256 * 256); // paletted 256x256 textures
 
-        result = MyIDirectDrawSurface2_Unlock(
-            m_TextureSurfaces[i], surface_desc.lpSurface);
+        result =
+            GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.lpSurface);
         S_Output_CheckError(result);
 
         C3D_TMAP tmap;
