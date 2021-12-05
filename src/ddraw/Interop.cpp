@@ -2,7 +2,7 @@
 
 #include "ddraw/DirectDrawSurface.hpp"
 #include "ddraw/Renderer.hpp"
-#include "glrage_util/ErrorUtils.hpp"
+#include "log.h"
 
 #include <cassert>
 #include <string>
@@ -19,7 +19,7 @@ HRESULT MyDirectDrawCreate()
     try {
         m_Renderer = new Renderer();
     } catch (const std::exception &ex) {
-        ErrorUtils::warning(ex);
+        LOG_WARNING("%s", ex.what());
         return DDERR_GENERIC;
     }
 

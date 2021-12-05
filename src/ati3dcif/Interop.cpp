@@ -3,7 +3,6 @@
 #include "ati3dcif/ATI3DCIF.h"
 #include "ati3dcif/Error.hpp"
 #include "ati3dcif/Renderer.hpp"
-#include "glrage_util/ErrorUtils.hpp"
 #include "log.h"
 
 #include <memory>
@@ -22,10 +21,10 @@ C3D_EC HandleException()
         LOG_ERROR("CIF error: %s (0x%lx)", ex.what(), ex.getErrorCode());
         return ex.getErrorCode();
     } catch (const std::runtime_error &ex) {
-        ErrorUtils::warning(ex);
+        LOG_WARNING("%s", ex.what());
         return C3D_EC_GENFAIL;
     } catch (const std::logic_error &ex) {
-        ErrorUtils::warning(ex);
+        LOG_WARNING("%s", ex.what());
         return C3D_EC_GENFAIL;
     }
 }
