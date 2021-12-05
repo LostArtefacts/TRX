@@ -25,11 +25,10 @@ void GFX_2D_Surface_Init(
 void GFX_2D_Surface_Close(GFX_2D_Surface *surface);
 
 HRESULT GFX_2D_Surface_Blt(
-    GFX_2D_Surface *surface, LPRECT lpDestRect,
-    LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags);
+    GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *lpDDSrcSurface,
+    LPRECT lpSrcRect, DWORD dwFlags);
 HRESULT GFX_2D_Surface_Flip(GFX_2D_Surface *surface);
-void GFX_2D_Surface_GetAttachedSurface(
-    GFX_2D_Surface *surface, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
+GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface);
 HRESULT GFX_2D_Surface_GetPixelFormat(
     GFX_2D_Surface *surface, LPDDPIXELFORMAT lpDDPixelFormat);
 HRESULT GFX_2D_Surface_GetSurfaceDesc(

@@ -208,8 +208,8 @@ typedef struct VideoState {
 
     int surface_width;
     int surface_height;
-    LPDIRECTDRAWSURFACE primary_surface;
-    LPDIRECTDRAWSURFACE back_surface;
+    GFX_2D_Surface *primary_surface;
+    GFX_2D_Surface *back_surface;
 
     int subtitle_stream;
     AVStream *subtitle_st;
@@ -734,10 +734,9 @@ static int S_FMV_ReallocPrimarySurface(
     surface_desc.dwHeight = surface_height;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    MyIDirectDraw2_CreateSurface(&surface_desc, &is->primary_surface);
-
-    MyIDirectDrawSurface_GetAttachedSurface(
-        is->primary_surface, &is->back_surface);
+    is->primary_surface = MyIDirectDraw2_CreateSurface(&surface_desc);
+    is->back_surface =
+        MyIDirectDrawSurface_GetAttachedSurface(is->primary_surface);
 
     if (clear) {
         HRESULT result =

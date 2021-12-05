@@ -42,5 +42,3 @@ typedef struct _DDSURFACEDESC {
     DDPIXELFORMAT ddpfPixelFormat;
     DDSCAPS ddsCaps;
 } DDSURFACEDESC, *LPDDSURFACEDESC;
-
-typedef void *LPDIRECTDRAWSURFACE;

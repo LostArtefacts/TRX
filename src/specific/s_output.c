@@ -45,18 +45,18 @@ static float m_SurfaceMinX = 0.0f;
 static float m_SurfaceMinY = 0.0f;
 static float m_SurfaceMaxX = 0.0f;
 static float m_SurfaceMaxY = 0.0f;
-static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
-static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
-static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
-static LPDIRECTDRAWSURFACE m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
+static GFX_2D_Surface *m_PrimarySurface = NULL;
+static GFX_2D_Surface *m_BackSurface = NULL;
+static GFX_2D_Surface *m_PictureSurface = NULL;
+static GFX_2D_Surface *m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
 
 static void S_Output_SetHardwareVideoMode();
 static void S_Output_SetupRenderContextAndRender();
 static void S_Output_ReleaseSurfaces();
 static void S_Output_BlitSurface(
-    LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target);
+    GFX_2D_Surface *source, GFX_2D_Surface *target);
 static void S_Output_FlipPrimaryBuffer();
-static void S_Output_ClearSurface(LPDIRECTDRAWSURFACE surface);
+static void S_Output_ClearSurface(GFX_2D_Surface *surface);
 static void S_Output_DrawTriangleStrip(C3D_VTCF *vertices, int num);
 static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source);
 static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source);
@@ -83,10 +83,10 @@ static void S_Output_SetHardwareVideoMode()
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
     surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP;
     surface_desc.dwBackBufferCount = 1;
-    MyIDirectDraw2_CreateSurface(&surface_desc, &m_PrimarySurface);
+    m_PrimarySurface = MyIDirectDraw2_CreateSurface(&surface_desc);
     S_Output_ClearSurface(m_PrimarySurface);
 
-    MyIDirectDrawSurface_GetAttachedSurface(m_PrimarySurface, &m_BackSurface);
+    m_BackSurface = MyIDirectDrawSurface_GetAttachedSurface(m_PrimarySurface);
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         memset(&surface_desc, 0, sizeof(surface_desc));
@@ -94,7 +94,7 @@ static void S_Output_SetHardwareVideoMode()
         surface_desc.ddpfPixelFormat.dwRGBBitCount = 8;
         surface_desc.dwWidth = 256;
         surface_desc.dwHeight = 256;
-        MyIDirectDraw2_CreateSurface(&surface_desc, &m_TextureSurfaces[i]);
+        m_TextureSurfaces[i] = MyIDirectDraw2_CreateSurface(&surface_desc);
     }
 
     S_Output_SetupRenderContextAndRender();
@@ -136,8 +136,7 @@ static void S_Output_ReleaseSurfaces()
     }
 }
 
-static void S_Output_BlitSurface(
-    LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
+static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
 {
     RECT rect;
     SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
@@ -155,7 +154,7 @@ static void S_Output_FlipPrimaryBuffer()
     S_Output_SetupRenderContextAndRender();
 }
 
-static void S_Output_ClearSurface(LPDIRECTDRAWSURFACE surface)
+static void S_Output_ClearSurface(GFX_2D_Surface *surface)
 {
     HRESULT result =
         MyIDirectDrawSurface_Blt(surface, NULL, NULL, NULL, DDBLT_COLORFILL);
@@ -684,7 +683,7 @@ void S_Output_CopyFromPicture()
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
+        m_PictureSurface = MyIDirectDraw2_CreateSurface(&surface_desc);
     }
 
     S_Output_RenderEnd();
@@ -702,7 +701,7 @@ void S_Output_CopyToPicture()
 
 void S_Output_DownloadPicture(const PICTURE *pic)
 {
-    LPDIRECTDRAWSURFACE picture_surface = NULL;
+    GFX_2D_Surface *picture_surface = NULL;
     DDSURFACEDESC surface_desc;
     HRESULT result;
 
@@ -711,7 +710,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
     surface_desc.dwWidth = pic->width;
     surface_desc.dwHeight = pic->height;
-    MyIDirectDraw2_CreateSurface(&surface_desc, &picture_surface);
+    picture_surface = MyIDirectDraw2_CreateSurface(&surface_desc);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
 
@@ -737,7 +736,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
         surface_desc.dwWidth = m_SurfaceWidth;
         surface_desc.dwHeight = m_SurfaceHeight;
-        MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
+        m_PictureSurface = MyIDirectDraw2_CreateSurface(&surface_desc);
     }
 
     int32_t target_width = m_SurfaceWidth;

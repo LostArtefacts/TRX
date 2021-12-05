@@ -70,15 +70,15 @@ void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
 }
 
 HRESULT GFX_2D_Surface_Blt(
-    GFX_2D_Surface *surface, LPRECT lpDestRect,
-    LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags)
+    GFX_2D_Surface *surface, LPRECT lpDestRect, GFX_2D_Surface *src,
+    LPRECT lpSrcRect, DWORD dwFlags)
 {
     // can't blit while locked
     if (surface->is_locked) {
         return DDERR_LOCKEDSURFACES;
     }
 
-    if (lpDDSrcSurface) {
+    if (src) {
         surface->is_dirty = true;
 
         int32_t dst_width = surface->desc.dwWidth;
@@ -91,8 +91,6 @@ HRESULT GFX_2D_Surface_Blt(
             dst_rect.right = lpDestRect->right;
             dst_rect.bottom = lpDestRect->bottom;
         }
-
-        GFX_2D_Surface *src = lpDDSrcSurface;
 
         int32_t depth = surface->desc.ddpfPixelFormat.dwRGBBitCount / 8;
 
@@ -206,10 +204,9 @@ HRESULT GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
     return DD_OK;
 }
 
-void GFX_2D_Surface_GetAttachedSurface(
-    GFX_2D_Surface *surface, LPDIRECTDRAWSURFACE *lplpDDAttachedSurface)
+GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface)
 {
-    *lplpDDAttachedSurface = surface->back_buffer;
+    return surface->back_buffer;
 }
 
 HRESULT GFX_2D_Surface_GetPixelFormat(
