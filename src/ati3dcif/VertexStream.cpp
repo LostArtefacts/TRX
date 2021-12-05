@@ -28,11 +28,6 @@ VertexStream::~VertexStream()
     GFX_GL_Buffer_Close(&m_vertexBuffer);
 }
 
-void VertexStream::setDelayer(std::function<BOOL(C3D_VTCF *)> delayer)
-{
-    m_delayer = delayer;
-}
-
 bool VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
 {
     bool result = false;
@@ -54,11 +49,9 @@ bool VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
             }
         } else {
             for (C3D_UINT32 i = 2; i < numVert; i++) {
-                if (!m_delayer(&vStripVtcf[i - 2])) {
-                    m_vtcBuffer.push_back(vStripVtcf[i - 2]);
-                    m_vtcBuffer.push_back(vStripVtcf[i - 1]);
-                    m_vtcBuffer.push_back(vStripVtcf[i]);
-                }
+                m_vtcBuffer.push_back(vStripVtcf[i - 2]);
+                m_vtcBuffer.push_back(vStripVtcf[i - 1]);
+                m_vtcBuffer.push_back(vStripVtcf[i]);
             }
         }
 

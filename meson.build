@@ -78,7 +78,6 @@ sources = [
   'src/ati3dcif/Interop.cpp',
   'src/ati3dcif/Renderer.cpp',
   'src/ati3dcif/Texture.cpp',
-  'src/ati3dcif/TransDelay.cpp',
   'src/ati3dcif/VertexStream.cpp',
   'src/config.c',
   'src/filesystem.c',

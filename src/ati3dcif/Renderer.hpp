@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ati3dcif/Texture.hpp"
-#include "ati3dcif/TransDelay.hpp"
 #include "ati3dcif/VertexStream.hpp"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
@@ -110,7 +109,6 @@ private:
     GFX_GL_Program m_program;
     GFX_GL_Sampler m_sampler;
     VertexStream m_vertexStream;
-    TransDelay m_transDelay;
 
     // state data
     C3D_HTX m_tmapSelect = NULL;
@@ -126,7 +124,6 @@ private:
     GLint m_loc_texOp;
     GLint m_loc_tmapLight;
     GLint m_loc_chromaKey;
-    GLint m_loc_keyOnAlpha;
 };
 
 }

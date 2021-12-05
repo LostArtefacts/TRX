@@ -10,13 +10,6 @@ namespace cif {
 
 Renderer::Renderer()
 {
-    // The vertex stream passes primitives to the delayer to test if they
-    // have translucency and in that case delay them. When the delayer needs
-    // to display the delayed primitives it calls back to the vertex stream
-    // to do so.
-    m_vertexStream.setDelayer(
-        [this](C3D_VTCF *verts) { return m_transDelay.delayTriangle(verts); });
-
     GFX_GL_Sampler_Init(&m_sampler);
     GFX_GL_Sampler_Bind(&m_sampler, 0);
     GFX_GL_Sampler_Parameterf(&m_sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
@@ -38,7 +31,6 @@ Renderer::Renderer()
     m_loc_texOp = GFX_GL_Program_UniformLocation(&m_program, "texOp");
     m_loc_tmapLight = GFX_GL_Program_UniformLocation(&m_program, "tmapLight");
     m_loc_chromaKey = GFX_GL_Program_UniformLocation(&m_program, "chromaKey");
-    m_loc_keyOnAlpha = GFX_GL_Program_UniformLocation(&m_program, "keyOnAlpha");
 
     GFX_GL_Program_FragmentData(&m_program, "fragColor");
     GFX_GL_Program_Bind(&m_program);
@@ -106,15 +98,8 @@ void Renderer::renderBegin()
 
 void Renderer::renderEnd()
 {
-    // make sure everything has been rendered
     m_vertexStream.renderPending();
-    // including the delayed translucent primitives
-    GFX_GL_Program_Uniform1i(&m_program, m_loc_keyOnAlpha, true);
-    m_transDelay.render([this](std::vector<C3D_VTCF> verts) {
-        m_vertexStream.renderPrims(verts);
-    });
 
-    // restore polygon mode
     if (m_wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -281,7 +266,6 @@ void Renderer::tmapEnable(C3D_BOOL value)
     m_vertexStream.renderPending();
     C3D_BOOL enable = value;
     GFX_GL_Program_Uniform1i(&m_program, m_loc_tmapEn, enable);
-    m_transDelay.setTexturingEnabled(enable != C3D_FALSE);
     if (enable) {
         glEnable(GL_TEXTURE_2D);
     } else {
@@ -311,17 +295,12 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
     // get texture object and bind it
     auto texture = it->second;
     texture->bind();
-    // Tell the transparent primitive delayer what texture is currently in
-    // use
-    m_transDelay.setTexture(texture);
 
     // send chroma key color to shader
     auto ck = texture->chromaKey();
     GFX_GL_Program_Uniform3f(
         &m_program, m_loc_chromaKey, ck.r / 255.0f, ck.g / 255.0f,
         ck.b / 255.0f);
-    GFX_GL_Program_Uniform1i(
-        &m_program, m_loc_keyOnAlpha, texture->keyOnAlpha());
 }
 
 void Renderer::tmapRestore()

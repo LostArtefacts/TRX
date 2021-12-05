@@ -42,8 +42,6 @@ GLuint Texture::id()
 bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
 {
     m_chromaKey = tmap->clrTexChromaKey;
-    m_keyOnAlpha = false;
-    m_is_translucent = false;
 
     // convert and generate texture for each level
     uint32_t width = 1 << tmap->u32MaxMapXSizeLg2;
@@ -113,7 +111,7 @@ bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
                 dst[i * 4 + 0] = c.r;
                 dst[i * 4 + 1] = c.g;
                 dst[i * 4 + 2] = c.b;
-                dst[i * 4 + 3] = 0xff;
+                dst[i * 4 + 3] = 0xFF;
             }
 
             // upload texture data
@@ -164,21 +162,6 @@ bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
 C3D_COLOR &Texture::chromaKey()
 {
     return m_chromaKey;
-}
-
-bool Texture::keyOnAlpha()
-{
-    return m_keyOnAlpha;
-}
-
-bool Texture::isTranslucent()
-{
-    return m_is_translucent;
-}
-
-std::vector<uint8_t> &Texture::translucencyMap()
-{
-    return m_translucency_map;
 }
 
 }
