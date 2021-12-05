@@ -10,7 +10,6 @@
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-#include "specific/s_ati.h"
 
 #include "ati3dcif/Interop.hpp"
 #include "gfx/2d/2d_surface.h"
@@ -789,7 +788,7 @@ void S_Output_SelectTexture(int tex_num)
         return;
     }
 
-    if (ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_ATITextureMap[tex_num])) {
+    if (!ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_ATITextureMap[tex_num])) {
         LOG_ERROR("    Texture error");
         return;
     }
@@ -1177,10 +1176,7 @@ bool S_Output_Init()
     int32_t tmp;
 
     GFX_Context_Attach(g_TombHWND);
-    if (!S_ATI_Init()) {
-        LOG_ERROR("ATI3DCIF emulation layer could not be started");
-        return false;
-    }
+    ATI3DCIF_Init();
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
         m_ATITextureMap[i] = NULL;
@@ -1212,7 +1208,7 @@ bool S_Output_Init()
 void S_Output_Shutdown()
 {
     S_Output_ReleaseSurfaces();
-    S_ATI_Shutdown();
+    ATI3DCIF_Term();
     GFX_Context_Detach();
 }
 
@@ -1456,7 +1452,7 @@ void S_Output_DownloadTextures(int32_t pages)
 
     for (int i = 0; i < MAX_TEXTPAGES; i++) {
         if (m_ATITextureMap[i]) {
-            if (ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
+            if (!ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
                 Shell_ExitSystem("ERROR: Could not unregister texture");
             }
             m_ATITextureMap[i] = 0;
@@ -1466,12 +1462,10 @@ void S_Output_DownloadTextures(int32_t pages)
 
     if (m_IsPaletteActive) {
         if (m_ATITexturePalette) {
-            if (ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette)) {
-                Shell_ExitSystem("ERROR: Cannot release old texture palette");
-            }
+            ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette);
             m_ATITexturePalette = NULL;
         }
-        if (ATI3DCIF_TexturePaletteCreate(
+        if (!ATI3DCIF_TexturePaletteCreate(
                 C3D_ECI_TMAP_8BIT, m_ATIPalette, &m_ATITexturePalette)) {
             Shell_ExitSystem("ERROR: Cannot create texture palette");
         }
@@ -1503,12 +1497,7 @@ void S_Output_DownloadTextures(int32_t pages)
         tmap.bClampS = FALSE;
         tmap.bClampT = FALSE;
         tmap.bAlphaBlend = FALSE;
-        if (ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i])) {
-            LOG_ERROR("ERROR: Could not register texture");
-            m_TextureLoaded[i] = false;
-        } else {
-            m_TextureLoaded[i] = true;
-        }
+        m_TextureLoaded[i] = ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i]);
     }
 
     m_SelectedTexture = -1;

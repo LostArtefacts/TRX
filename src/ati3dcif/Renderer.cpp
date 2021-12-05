@@ -1,8 +1,9 @@
 #include "ati3dcif/Renderer.hpp"
 
-#include "ati3dcif/Error.hpp"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
+
+#include <cassert>
 
 namespace glrage {
 namespace cif {
@@ -121,11 +122,13 @@ void Renderer::renderEnd()
     GFX_GL_CheckError();
 }
 
-void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
+bool Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     auto texture = std::make_shared<Texture>();
     texture->bind();
-    texture->load(ptmapToReg, m_palettes[ptmapToReg->htxpalTexPalette]);
+    if (!texture->load(ptmapToReg, m_palettes[ptmapToReg->htxpalTexPalette])) {
+        return false;
+    }
 
     // use id as texture handle
     *phtmap = reinterpret_cast<C3D_HTX>(texture->id());
@@ -137,13 +140,15 @@ void Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
     tmapRestore();
 
     GFX_GL_CheckError();
+    return true;
 }
 
-void Renderer::textureUnreg(C3D_HTX htxToUnreg)
+bool Renderer::textureUnreg(C3D_HTX htxToUnreg)
 {
     auto it = m_textures.find(htxToUnreg);
     if (it == m_textures.end()) {
-        throw Error("Invalid texture handle", C3D_EC_BADPARAM);
+        LOG_ERROR("Invalid texture handle");
+        return false;
     }
 
     // unbind texture if currently bound
@@ -153,15 +158,15 @@ void Renderer::textureUnreg(C3D_HTX htxToUnreg)
 
     std::shared_ptr<Texture> texture = it->second;
     m_textures.erase(htxToUnreg);
+    return true;
 }
 
-void Renderer::texturePaletteCreate(
+bool Renderer::texturePaletteCreate(
     C3D_ECI_TMAP_TYPE epalette, void *pPalette, C3D_PHTXPAL phtpalCreated)
 {
     if (epalette != C3D_ECI_TMAP_8BIT) {
-        throw Error(
-            "Unsupported palette type: " + std::to_string(epalette),
-            C3D_EC_NOTIMPYET);
+        LOG_ERROR("Unsupported palette type: %d", epalette);
+        return false;
     }
 
     // copy palette entries to vector
@@ -175,6 +180,7 @@ void Renderer::texturePaletteCreate(
     m_palettes[handle] = palette;
 
     *phtpalCreated = handle;
+    return true;
 }
 
 void Renderer::texturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
@@ -194,7 +200,7 @@ void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
     m_vertexStream.addPrimList(vList, u32NumVert);
 }
 
-void Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
+bool Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     switch (eRStateID) {
     case C3D_ERS_VERTEX_TYPE:
@@ -237,10 +243,10 @@ void Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
         zMode(*reinterpret_cast<C3D_EZMODE *>(pRStateData));
         break;
     default:
-        throw Error(
-            "Unsupported state: " + std::to_string(eRStateID),
-            C3D_EC_NOTIMPYET);
+        LOG_ERROR("Unsupported state: %d", eRStateID);
+        return false;
     }
+    return true;
 }
 
 void Renderer::vertexType(C3D_EVERTEX value)
@@ -300,9 +306,7 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
 
     // check if handle is correct
     auto it = m_textures.find(handle);
-    if (it == m_textures.end()) {
-        throw Error("Invalid texture handle", C3D_EC_BADPARAM);
-    }
+    assert(it != m_textures.end());
 
     // get texture object and bind it
     auto texture = it->second;

@@ -20,7 +20,7 @@ public:
     GLenum target();
     GLuint id();
 
-    void load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette);
+    bool load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette);
     C3D_COLOR &chromaKey();
     bool keyOnAlpha();
     bool isTranslucent();

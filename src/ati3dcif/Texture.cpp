@@ -1,6 +1,5 @@
 #include "ati3dcif/Texture.hpp"
 
-#include "ati3dcif/Error.hpp"
 #include "gfx/gl/utils.h"
 #include "log.h"
 
@@ -40,7 +39,7 @@ GLuint Texture::id()
     return m_GLTexture.id;
 }
 
-void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
+bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
 {
     m_chromaKey = tmap->clrTexChromaKey;
     m_keyOnAlpha = false;
@@ -126,10 +125,8 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
         }
 
         default:
-            throw Error(
-                "Unsupported texture format: "
-                    + std::to_string(tmap->eTexFormat),
-                C3D_EC_NOTIMPYET);
+            LOG_ERROR("Unsupported texture format: %d", tmap->eTexFormat);
+            return false;
         }
 
         // set dimensions for next level
@@ -161,6 +158,7 @@ void Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
     //}
 
     GFX_GL_CheckError();
+    return true;
 }
 
 C3D_COLOR &Texture::chromaKey()

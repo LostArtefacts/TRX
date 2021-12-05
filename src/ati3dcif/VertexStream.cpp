@@ -1,6 +1,5 @@
 #include "ati3dcif/VertexStream.hpp"
 
-#include "ati3dcif/Error.hpp"
 #include "gfx/gl/utils.h"
 #include "log.h"
 
@@ -34,8 +33,10 @@ void VertexStream::setDelayer(std::function<BOOL(C3D_VTCF *)> delayer)
     m_delayer = delayer;
 }
 
-void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
+bool VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
 {
+    bool result = false;
+
     // note: strips are converted to lists, since they can't be properly
     // batched otherwise
     switch (m_vertexType) {
@@ -43,9 +44,8 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
         auto vStripVtcf = reinterpret_cast<C3D_VTCF *>(vertStrip);
 
         if (m_primType != C3D_EPRIM_TRI) {
-            throw Error(
-                "Unsupported prim type: " + std::to_string(m_primType),
-                C3D_EC_NOTIMPYET);
+            LOG_ERROR("Unsupported prim type: %d", m_primType);
+            return false;
         }
 
         if (numVert <= 2) {
@@ -62,18 +62,21 @@ void VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
             }
         }
 
+        result = true;
         break;
     }
 
     default:
-        throw Error(
-            "Unsupported vertex type: " + std::to_string(m_vertexType),
-            C3D_EC_NOTIMPYET);
+        LOG_ERROR("Unsupported vertex type: %d", m_vertexType);
     }
+
+    return result;
 }
 
-void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
+bool VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
 {
+    bool result = false;
+
     switch (m_vertexType) {
     case C3D_EV_VTCF: {
         // copy vertices to vertex vector buffer, then to the vertex buffer
@@ -97,14 +100,16 @@ void VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
                 m_vtcBuffer.push_back(*vListVtcf[i]);
             }
         }
+
+        result = true;
         break;
     }
 
     default:
-        throw Error(
-            "Unsupported vertex type: " + std::to_string(m_vertexType),
-            C3D_EC_NOTIMPYET);
+        LOG_ERROR("Unsupported vertex type: %d", m_vertexType);
     }
+
+    return result;
 }
 
 void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)

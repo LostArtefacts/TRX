@@ -74,13 +74,13 @@ public:
 
     void renderBegin();
     void renderEnd();
-    void textureReg(C3D_PTMAP, C3D_PHTX);
-    void textureUnreg(C3D_HTX);
-    void texturePaletteCreate(C3D_ECI_TMAP_TYPE, void *, C3D_PHTXPAL);
+    bool textureReg(C3D_PTMAP, C3D_PHTX);
+    bool textureUnreg(C3D_HTX);
+    bool texturePaletteCreate(C3D_ECI_TMAP_TYPE, void *, C3D_PHTXPAL);
     void texturePaletteDestroy(C3D_HTXPAL);
     void renderPrimStrip(C3D_VSTRIP, C3D_UINT32);
     void renderPrimList(C3D_VLIST, C3D_UINT32);
-    void setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
+    bool setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
     void resetState();
 
 private:

@@ -22,8 +22,8 @@ class VertexStream {
 public:
     VertexStream();
     ~VertexStream();
-    void addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert);
-    void addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert);
+    bool addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert);
+    bool addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert);
     void renderPending();
     void vertexType(C3D_EVERTEX vertexType);
     void primType(C3D_EPRIM primType);

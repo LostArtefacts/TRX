@@ -3,7 +3,6 @@
 
 #include "game/picture.h"
 #include "global/types.h"
-#include "specific/s_ati.h"
 
 bool S_Output_Init();
 void S_Output_Shutdown();
