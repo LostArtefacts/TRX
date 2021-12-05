@@ -39,12 +39,12 @@ static bool m_IsTextureMode = false;
 static int32_t m_SelectedTexture = -1;
 static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
 
-static int32_t m_DDrawSurfaceWidth = 0;
-static int32_t m_DDrawSurfaceHeight = 0;
-static float m_DDrawSurfaceMinX = 0.0f;
-static float m_DDrawSurfaceMinY = 0.0f;
-static float m_DDrawSurfaceMaxX = 0.0f;
-static float m_DDrawSurfaceMaxY = 0.0f;
+static int32_t m_SurfaceWidth = 0;
+static int32_t m_SurfaceHeight = 0;
+static float m_SurfaceMinX = 0.0f;
+static float m_SurfaceMinY = 0.0f;
+static float m_SurfaceMaxX = 0.0f;
+static float m_SurfaceMaxY = 0.0f;
 static LPDIRECTDRAWSURFACE m_PrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE m_BackSurface = NULL;
 static LPDIRECTDRAWSURFACE m_PictureSurface = NULL;
@@ -70,14 +70,14 @@ static void S_Output_SetHardwareVideoMode()
 
     S_Output_ReleaseSurfaces();
 
-    m_DDrawSurfaceWidth = Screen_GetResWidth();
-    m_DDrawSurfaceHeight = Screen_GetResHeight();
-    m_DDrawSurfaceMinX = 0.0f;
-    m_DDrawSurfaceMinY = 0.0f;
-    m_DDrawSurfaceMaxX = Screen_GetResWidth() - 1.0f;
-    m_DDrawSurfaceMaxY = Screen_GetResHeight() - 1.0f;
+    m_SurfaceWidth = Screen_GetResWidth();
+    m_SurfaceHeight = Screen_GetResHeight();
+    m_SurfaceMinX = 0.0f;
+    m_SurfaceMinY = 0.0f;
+    m_SurfaceMaxX = Screen_GetResWidth() - 1.0f;
+    m_SurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
-    GLRage_SetDisplaySize(m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
+    GLRage_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
 
     memset(&surface_desc, 0, sizeof(surface_desc));
     surface_desc.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
@@ -149,7 +149,7 @@ static void S_Output_BlitSurface(
     LPDIRECTDRAWSURFACE source, LPDIRECTDRAWSURFACE target)
 {
     RECT rect;
-    SetRect(&rect, 0, 0, m_DDrawSurfaceWidth, m_DDrawSurfaceHeight);
+    SetRect(&rect, 0, 0, m_SurfaceWidth, m_SurfaceHeight);
     HRESULT result = MyIDirectDrawSurface_Blt(target, &rect, source, &rect, 0);
     S_Output_CheckError(result);
 }
@@ -197,12 +197,12 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &source[i];
 
-        if (v2->x < m_DDrawSurfaceMinX) {
-            if (l->x < m_DDrawSurfaceMinX) {
+        if (v2->x < m_SurfaceMinX) {
+            if (l->x < m_SurfaceMinX) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMinX;
+            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -210,12 +210,12 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &vertices[++j];
-        } else if (v2->x > m_DDrawSurfaceMaxX) {
-            if (l->x > m_DDrawSurfaceMaxX) {
+        } else if (v2->x > m_SurfaceMaxX) {
+            if (l->x > m_SurfaceMaxX) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMaxX;
+            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -225,9 +225,9 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
             v1 = &vertices[++j];
         }
 
-        if (l->x < m_DDrawSurfaceMinX) {
-            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMinX;
+        if (l->x < m_SurfaceMinX) {
+            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -235,9 +235,9 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &vertices[++j];
-        } else if (l->x > m_DDrawSurfaceMaxX) {
-            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMaxX;
+        } else if (l->x > m_SurfaceMaxX) {
+            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -270,26 +270,26 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &vertices[i];
 
-        if (v2->y < m_DDrawSurfaceMinY) {
-            if (l->y < m_DDrawSurfaceMinY) {
+        if (v2->y < m_SurfaceMinY) {
+            if (l->y < m_SurfaceMinY) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMinY;
+            v1->y = m_SurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &source[++j];
-        } else if (v2->y > m_DDrawSurfaceMaxY) {
-            if (l->y > m_DDrawSurfaceMaxY) {
+        } else if (v2->y > m_SurfaceMaxY) {
+            if (l->y > m_SurfaceMaxY) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMaxY;
+            v1->y = m_SurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -298,20 +298,20 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
             v1 = &source[++j];
         }
 
-        if (l->y < m_DDrawSurfaceMinY) {
-            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+        if (l->y < m_SurfaceMinY) {
+            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMinY;
+            v1->y = m_SurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
             v1 = &source[++j];
-        } else if (l->y > m_DDrawSurfaceMaxY) {
-            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+        } else if (l->y > m_SurfaceMaxY) {
+            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMaxY;
+            v1->y = m_SurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -350,12 +350,12 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &source[i];
 
-        if (v2->x < m_DDrawSurfaceMinX) {
-            if (l->x < m_DDrawSurfaceMinX) {
+        if (v2->x < m_SurfaceMinX) {
+            if (l->x < m_SurfaceMinX) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMinX;
+            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -365,12 +365,12 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &vertices[++j];
-        } else if (v2->x > m_DDrawSurfaceMaxX) {
-            if (l->x > m_DDrawSurfaceMaxX) {
+        } else if (v2->x > m_SurfaceMaxX) {
+            if (l->x > m_SurfaceMaxX) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMaxX;
+            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -382,9 +382,9 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1 = &vertices[++j];
         }
 
-        if (l->x < m_DDrawSurfaceMinX) {
-            scale = (m_DDrawSurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMinX;
+        if (l->x < m_SurfaceMinX) {
+            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMinX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -394,9 +394,9 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &vertices[++j];
-        } else if (l->x > m_DDrawSurfaceMaxX) {
-            scale = (m_DDrawSurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_DDrawSurfaceMaxX;
+        } else if (l->x > m_SurfaceMaxX) {
+            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
+            v1->x = m_SurfaceMaxX;
             v1->y = (v2->y - l->y) * scale + l->y;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
@@ -433,13 +433,13 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
         C3D_VTCF *v2 = l;
         l = &vertices[i];
 
-        if (v2->y < m_DDrawSurfaceMinY) {
-            if (l->y < m_DDrawSurfaceMinY) {
+        if (v2->y < m_SurfaceMinY) {
+            if (l->y < m_SurfaceMinY) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMinY;
+            v1->y = m_SurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -448,13 +448,13 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &source[++j];
-        } else if (v2->y > m_DDrawSurfaceMaxY) {
-            if (l->y > m_DDrawSurfaceMaxY) {
+        } else if (v2->y > m_SurfaceMaxY) {
+            if (l->y > m_SurfaceMaxY) {
                 continue;
             }
-            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMaxY;
+            v1->y = m_SurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -465,10 +465,10 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1 = &source[++j];
         }
 
-        if (l->y < m_DDrawSurfaceMinY) {
-            scale = (m_DDrawSurfaceMinY - l->y) / (v2->y - l->y);
+        if (l->y < m_SurfaceMinY) {
+            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMinY;
+            v1->y = m_SurfaceMinY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -477,10 +477,10 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
             v1 = &source[++j];
-        } else if (l->y > m_DDrawSurfaceMaxY) {
-            scale = (m_DDrawSurfaceMaxY - l->y) / (v2->y - l->y);
+        } else if (l->y > m_SurfaceMaxY) {
+            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
             v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_DDrawSurfaceMaxY;
+            v1->y = m_SurfaceMaxY;
             v1->z = (v2->z - l->z) * scale + l->z;
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
@@ -691,8 +691,8 @@ void S_Output_CopyFromPicture()
         DDSURFACEDESC surface_desc;
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.dwWidth = m_DDrawSurfaceWidth;
-        surface_desc.dwHeight = m_DDrawSurfaceHeight;
+        surface_desc.dwWidth = m_SurfaceWidth;
+        surface_desc.dwHeight = m_SurfaceHeight;
         result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
         S_Output_CheckError(result);
     }
@@ -746,14 +746,14 @@ void S_Output_DownloadPicture(const PICTURE *pic)
     if (!m_PictureSurface) {
         memset(&surface_desc, 0, sizeof(surface_desc));
         surface_desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
-        surface_desc.dwWidth = m_DDrawSurfaceWidth;
-        surface_desc.dwHeight = m_DDrawSurfaceHeight;
+        surface_desc.dwWidth = m_SurfaceWidth;
+        surface_desc.dwHeight = m_SurfaceHeight;
         result = MyIDirectDraw2_CreateSurface(&surface_desc, &m_PictureSurface);
         S_Output_CheckError(result);
     }
 
-    int32_t target_width = m_DDrawSurfaceWidth;
-    int32_t target_height = m_DDrawSurfaceHeight;
+    int32_t target_width = m_SurfaceWidth;
+    int32_t target_height = m_SurfaceHeight;
     int32_t source_width = pic->width;
     int32_t source_height = pic->height;
 
