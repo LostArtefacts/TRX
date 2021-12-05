@@ -10,7 +10,7 @@ namespace glrage {
 namespace ddraw {
 
 DirectDrawSurface::DirectDrawSurface(
-    Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
+    GFX_2D_Renderer *renderer, LPDDSURFACEDESC lpDDSurfaceDesc)
     : m_renderer(renderer)
     , m_desc(*lpDDSurfaceDesc)
 {
@@ -156,7 +156,7 @@ HRESULT DirectDrawSurface::Flip()
 
     // upload surface if dirty
     if (m_dirty) {
-        m_renderer.upload(m_desc, m_buffer);
+        GFX_2D_Renderer_Upload(m_renderer, &m_desc, m_buffer.data());
         m_dirty = false;
     }
 
@@ -170,7 +170,7 @@ HRESULT DirectDrawSurface::Flip()
     GFX_Context_SetupViewport();
 
     // render surface
-    m_renderer.render();
+    GFX_2D_Renderer_Render(m_renderer);
 
     // swap buffer after the surface has been rendered if there was no
     // external rendering for this frame, fixes title screens and other pure

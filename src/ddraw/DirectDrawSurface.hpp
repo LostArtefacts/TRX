@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ddraw/Renderer.hpp"
+#include "ddraw/2d_renderer.h"
 #include "ddraw/ddraw.h"
 
 #include <cstdint>
@@ -12,7 +12,8 @@ namespace ddraw {
 
 class DirectDrawSurface {
 public:
-    DirectDrawSurface(Renderer &renderer, LPDDSURFACEDESC lpDDSurfaceDesc);
+    DirectDrawSurface(
+        GFX_2D_Renderer *renderer, LPDDSURFACEDESC lpDDSurfaceDesc);
     virtual ~DirectDrawSurface() = default;
 
     HRESULT Blt(
@@ -26,7 +27,7 @@ public:
     HRESULT Unlock(LPVOID lp);
 
 private:
-    Renderer &m_renderer;
+    GFX_2D_Renderer *m_renderer;
     std::vector<uint8_t> m_buffer;
     DDSURFACEDESC m_desc;
     std::unique_ptr<DirectDrawSurface> m_backBuffer = nullptr;
