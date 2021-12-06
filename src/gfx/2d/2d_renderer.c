@@ -83,32 +83,23 @@ void GFX_2D_Renderer_Render(GFX_2D_Renderer *renderer)
     GFX_GL_Texture_Bind(&renderer->surface_texture);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
 
-    GLboolean texture2d = glIsEnabled(GL_TEXTURE_2D);
-    if (!texture2d) {
-        glEnable(GL_TEXTURE_2D);
-    }
-
     GLboolean blend = glIsEnabled(GL_BLEND);
     if (blend) {
         glDisable(GL_BLEND);
     }
 
-    GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST);
-    if (depthTest) {
+    GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
+    if (depth_test) {
         glDisable(GL_DEPTH_TEST);
     }
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    if (!texture2d) {
-        glDisable(GL_TEXTURE_2D);
-    }
-
     if (blend) {
         glEnable(GL_BLEND);
     }
 
-    if (depthTest) {
+    if (depth_test) {
         glEnable(GL_DEPTH_TEST);
     }
 

@@ -197,11 +197,6 @@ void Renderer::tmapEnable(bool value)
     m_vertexStream.renderPending();
     bool enable = value;
     GFX_GL_Program_Uniform1i(&m_program, m_loc_tmapEn, enable);
-    if (enable) {
-        glEnable(GL_TEXTURE_2D);
-    } else {
-        glDisable(GL_TEXTURE_2D);
-    }
 }
 
 void Renderer::tmapSelect(C3D_HTX value)
