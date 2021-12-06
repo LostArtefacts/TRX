@@ -189,7 +189,7 @@ Note: this section may be subject to change.
     - [ ] 3.0
 - [ ] Beautify the code
     - [x] Refactor GLRage to no longer emulate DDraw
-    - [ ] Refactor GLRage to no longer emulate ATI3DCIF
+    - [x] Refactor GLRage to no longer emulate ATI3DCIF
     - [ ] Apply rigid name conventions to function names
     - [ ] Refactor specific/ away
     - [ ] ...

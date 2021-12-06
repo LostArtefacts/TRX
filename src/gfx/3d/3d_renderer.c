@@ -39,9 +39,9 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_VERTEX_SHADER, "shaders\\ati3dcif.vsh");
+        &renderer->program, GL_VERTEX_SHADER, "shaders\\3d.vsh");
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_FRAGMENT_SHADER, "shaders\\ati3dcif.fsh");
+        &renderer->program, GL_FRAGMENT_SHADER, "shaders\\3d.fsh");
     GFX_GL_Program_Link(&renderer->program);
 
     renderer->loc_mat_projection =
@@ -93,8 +93,6 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
 
     GFX_3D_Renderer_RestoreTexture(renderer);
 
-    // CIF always uses an orthographic view, the application deals with the
-    // perspective when required
     const float left = 0.0f;
     const float top = 0.0f;
     const float right = GFX_Context_GetDisplayWidth();
@@ -176,7 +174,7 @@ bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 }
 
 void GFX_3D_Renderer_RenderPrimStrip(
-    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count)
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
     GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimStrip(
@@ -184,7 +182,7 @@ void GFX_3D_Renderer_RenderPrimStrip(
 }
 
 void GFX_3D_Renderer_RenderPrimList(
-    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count)
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
     GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, vertices, count);
@@ -202,7 +200,8 @@ void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer)
     GFX_3D_Renderer_SelectTextureImpl(renderer, renderer->selected_texture_num);
 }
 
-void GFX_3D_Renderer_SetPrimType(GFX_3D_Renderer *renderer, C3D_EPRIM value)
+void GFX_3D_Renderer_SetPrimType(
+    GFX_3D_Renderer *renderer, GFX_3D_PrimType value)
 {
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);

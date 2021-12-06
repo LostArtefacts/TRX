@@ -44,11 +44,12 @@ void GFX_3D_Renderer_SelectTexture(GFX_3D_Renderer *renderer, int texture_num);
 void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_RenderPrimStrip(
-    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count);
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 void GFX_3D_Renderer_RenderPrimList(
-    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count);
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 
-void GFX_3D_Renderer_SetPrimType(GFX_3D_Renderer *renderer, C3D_EPRIM value);
+void GFX_3D_Renderer_SetPrimType(
+    GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetSmoothingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetBlendingEnabled(

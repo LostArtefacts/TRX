@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ati3dcif/ATI3DCIF.h"
 #include "gfx/gl/buffer.h"
 #include "gfx/gl/vertex_array.h"
 
@@ -11,13 +10,24 @@ extern "C" {
     #include <stdbool.h>
 #endif
 
+typedef enum {
+    GFX_3D_PRIM_LINE = 0,
+    GFX_3D_PRIM_TRI = 1,
+} GFX_3D_PrimType;
+
+typedef struct {
+    float x, y, z;
+    float s, t, w;
+    float r, g, b, a;
+} GFX_3D_Vertex;
+
 typedef struct GFX_3D_VertexStream {
-    C3D_EPRIM prim_type;
+    GFX_3D_PrimType prim_type;
     size_t buffer_size;
     GFX_GL_Buffer buffer;
     GFX_GL_VertexArray vtc_format;
     struct {
-        C3D_VTCF *data;
+        GFX_3D_Vertex *data;
         size_t count;
         size_t capacity;
     } pending_vertices;
@@ -29,12 +39,12 @@ void GFX_3D_VertexStream_Close(GFX_3D_VertexStream *vertex_stream);
 void GFX_3D_VertexStream_Bind(GFX_3D_VertexStream *vertex_stream);
 
 void GFX_3D_VertexStream_SetPrimType(
-    GFX_3D_VertexStream *vertex_stream, C3D_EPRIM prim_type);
+    GFX_3D_VertexStream *vertex_stream, GFX_3D_PrimType prim_type);
 
 bool GFX_3D_VertexStream_PushPrimStrip(
-    GFX_3D_VertexStream *vertex_stream, C3D_VTCF *vertices, int count);
+    GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
 bool GFX_3D_VertexStream_PushPrimList(
-    GFX_3D_VertexStream *vertex_stream, C3D_VTCF *vertices, int count);
+    GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
 
 void GFX_3D_VertexStream_RenderPending(GFX_3D_VertexStream *vertex_stream);
 

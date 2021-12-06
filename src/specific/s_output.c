@@ -25,7 +25,7 @@
     }
 
 static int m_TextureMap[GFX_MAX_TEXTURES];
-static C3D_PALETTENTRY m_ATIPalette[256];
+static RGB888 m_ATIPalette[256];
 
 static GFX_3D_Renderer *m_Renderer3D;
 static RGB888 m_GamePalette[256];
@@ -53,11 +53,11 @@ static void S_Output_BlitSurface(
     GFX_2D_Surface *source, GFX_2D_Surface *target);
 static void S_Output_FlipPrimaryBuffer();
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
-static void S_Output_DrawTriangleStrip(C3D_VTCF *vertices, int num);
-static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source);
-static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source);
+static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int num);
+static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source);
+static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source);
 static int32_t S_Output_ZedClipper(
-    int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices);
+    int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
 static void S_Output_SetHardwareVideoMode()
 {
@@ -159,30 +159,30 @@ static void S_Output_ClearSurface(GFX_2D_Surface *surface)
     S_Output_CheckError(result);
 }
 
-static void S_Output_DrawTriangleStrip(C3D_VTCF *vertices, int num)
+static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int num)
 {
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
     int left = num - 2;
     for (int i = num - 3; i > 0; i--) {
-        memcpy(&vertices[1], &vertices[2], left * sizeof(C3D_VTCF));
+        memcpy(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
         GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
         left--;
     }
 }
 
-static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
+static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source)
 {
     float scale;
-    C3D_VTCF vertices[num * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_Vertex vertices[num * CLIP_VERTCOUNT_SCALE];
 
-    C3D_VTCF *l = &source[num - 1];
+    GFX_3D_Vertex *l = &source[num - 1];
     int j = 0;
     int i;
 
     for (i = 0; i < num; i++) {
         assert(j < num * CLIP_VERTCOUNT_SCALE);
-        C3D_VTCF *v1 = &vertices[j];
-        C3D_VTCF *v2 = l;
+        GFX_3D_Vertex *v1 = &vertices[j];
+        GFX_3D_Vertex *v2 = l;
         l = &source[i];
 
         if (v2->x < m_SurfaceMinX) {
@@ -254,8 +254,8 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
     j = 0;
 
     for (i = 0; i < num; i++) {
-        C3D_VTCF *v1 = &source[j];
-        C3D_VTCF *v2 = l;
+        GFX_3D_Vertex *v1 = &source[j];
+        GFX_3D_Vertex *v2 = l;
         l = &vertices[i];
 
         if (v2->y < m_SurfaceMinY) {
@@ -325,17 +325,17 @@ static int32_t S_Output_ClipVertices(int32_t num, C3D_VTCF *source)
     return j;
 }
 
-static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
+static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
 {
     float scale;
-    C3D_VTCF vertices[8];
+    GFX_3D_Vertex vertices[8];
 
-    C3D_VTCF *l = &source[num - 1];
+    GFX_3D_Vertex *l = &source[num - 1];
     int j = 0;
 
     for (int i = 0; i < num; i++) {
-        C3D_VTCF *v1 = &vertices[j];
-        C3D_VTCF *v2 = l;
+        GFX_3D_Vertex *v1 = &vertices[j];
+        GFX_3D_Vertex *v2 = l;
         l = &source[i];
 
         if (v2->x < m_SurfaceMinX) {
@@ -417,8 +417,8 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
     j = 0;
 
     for (int i = 0; i < num; i++) {
-        C3D_VTCF *v1 = &source[j];
-        C3D_VTCF *v2 = l;
+        GFX_3D_Vertex *v1 = &source[j];
+        GFX_3D_Vertex *v2 = l;
         l = &vertices[i];
 
         if (v2->y < m_SurfaceMinY) {
@@ -499,13 +499,13 @@ static int32_t S_Output_ClipVertices2(int32_t num, C3D_VTCF *source)
 }
 
 static int32_t S_Output_ZedClipper(
-    int32_t vertex_count, POINT_INFO *pts, C3D_VTCF *vertices)
+    int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices)
 {
     int32_t i;
     int32_t count;
     POINT_INFO *pts0;
     POINT_INFO *pts1;
-    C3D_VTCF *v;
+    GFX_3D_Vertex *v;
     float clip;
     float persp_o_near_z;
     float multiplier;
@@ -640,11 +640,7 @@ void S_Output_SetPalette(RGB888 palette[256])
 
 RGB888 S_Output_GetPaletteColor(uint8_t idx)
 {
-    RGB888 ret;
-    ret.r = m_ATIPalette[idx].r;
-    ret.g = m_ATIPalette[idx].g;
-    ret.b = m_ATIPalette[idx].b;
-    return ret;
+    return m_ATIPalette[idx];
 }
 
 void S_Output_DumpScreen()
@@ -785,7 +781,7 @@ void S_Output_DrawSprite(
     float vshade;
     int32_t vertex_count;
     PHD_SPRITE *sprite;
-    C3D_VTCF vertices[10];
+    GFX_3D_Vertex vertices[10];
     float multiplier;
 
     multiplier = 0.0625f * g_Config.brightness;
@@ -867,7 +863,7 @@ void S_Output_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
     RGB888 color2)
 {
-    C3D_VTCF vertices[2];
+    GFX_3D_Vertex vertices[2];
 
     vertices[0].x = x1;
     vertices[0].y = y1;
@@ -883,17 +879,17 @@ void S_Output_Draw2DLine(
     vertices[1].g = color2.g;
     vertices[1].b = color2.b;
 
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_LINE);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
     S_Output_DisableTextureMode();
     GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, 2);
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_TRI);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
 void S_Output_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
     RGB888 bl, RGB888 br)
 {
-    C3D_VTCF vertices[4];
+    GFX_3D_Vertex vertices[4];
 
     vertices[0].x = x1;
     vertices[0].y = y1;
@@ -931,7 +927,7 @@ void S_Output_Draw2DQuad(
 void S_Output_DrawTranslucentQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2)
 {
-    C3D_VTCF vertices[4];
+    GFX_3D_Vertex vertices[4];
 
     vertices[0].x = x1;
     vertices[0].y = y1;
@@ -976,7 +972,7 @@ void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
 {
-    C3D_VTCF vertices[4 * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_Vertex vertices[4 * CLIP_VERTCOUNT_SCALE];
 
     S_Output_DisableTextureMode();
 
@@ -1060,12 +1056,12 @@ void S_Output_DrawLightningSegment(
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
-    C3D_VTCF vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
     int i;
     int32_t tmp;
 
     for (i = 0; i < vertex_count; i++) {
-        C3D_VTCF *vertex = &vertices[i];
+        GFX_3D_Vertex *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
         vertex->y = vbuf->ys;
@@ -1126,7 +1122,7 @@ bool S_Output_Init()
 
     S_Output_SetHardwareVideoMode();
 
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_TRI);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 
     return true;
 }
@@ -1142,7 +1138,7 @@ void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color)
 {
     int32_t vertex_count;
-    C3D_VTCF vertices[8];
+    GFX_3D_Vertex vertices[8];
     float r;
     float g;
     float b;
@@ -1206,7 +1202,7 @@ void S_Output_DrawTexturedTriangle(
 {
     int32_t i;
     int32_t vertex_count;
-    C3D_VTCF vertices[8];
+    GFX_3D_Vertex vertices[8];
     POINT_INFO points[3];
     PHD_VBUF *src_vbuf[4];
     PHD_UV *src_uv[4];
@@ -1298,7 +1294,7 @@ void S_Output_DrawTexturedQuad(
 {
     int32_t i;
     float multiplier;
-    C3D_VTCF vertices[4];
+    GFX_3D_Vertex vertices[4];
     PHD_VBUF *src_vbuf[4];
     PHD_UV *src_uv[4];
 
