@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_ITEMS_H
-#define T1M_GAME_ITEMS_H
+#pragma once
 
 #include "global/types.h"
 
@@ -19,5 +18,3 @@ void InitialiseFXArray();
 int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
-
-#endif

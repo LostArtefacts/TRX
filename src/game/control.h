@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_CONTROL_H
-#define T1M_GAME_CONTROL_H
+#pragma once
 
 #include "global/types.h"
 
@@ -28,5 +27,3 @@ void AddRoomFlipItems(ROOM_INFO *r);
 int32_t GetSecretCount();
 
 bool Control_Pause();
-
-#endif

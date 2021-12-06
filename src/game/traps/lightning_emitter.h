@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_LIGHTNING_EMITTER_H
-#define T1M_GAME_TRAPS_LIGHTNING_EMITTER_H
+#pragma once
 
 #include "global/types.h"
 
@@ -26,5 +25,3 @@ void LightningControl(int16_t item_num);
 void LightningCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void DrawLightning(ITEM_INFO *item);
-
-#endif

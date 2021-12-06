@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_NATLA_H
-#define T1M_GAME_AI_NATLA_H
+#pragma once
 
 #include "global/types.h"
 
@@ -38,5 +37,3 @@ void SetupNatla(OBJECT_INFO *obj);
 void SetupNatlaGun(OBJECT_INFO *obj);
 void NatlaControl(int16_t item_num);
 void ControlNatlaGun(int16_t fx_num);
-
-#endif

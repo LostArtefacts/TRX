@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_PUZZLE_HOLE_H
-#define T1M_GAME_OBJECTS_PUZZLE_HOLE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -13,5 +12,3 @@ void SetupPuzzleDone(OBJECT_INFO *obj);
 void PuzzleHoleCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 int32_t PickupTrigger(int16_t item_num);
-
-#endif

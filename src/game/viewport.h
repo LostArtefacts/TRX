@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_VIEWPORT_H
-#define T1M_GAME_VIEWPORT_H
+#pragma once
 
 #include <stdint.h>
 
@@ -13,5 +12,3 @@ int32_t ViewPort_GetMaxX();
 int32_t ViewPort_GetMaxY();
 int32_t ViewPort_GetWidth();
 int32_t ViewPort_GetHeight();
-
-#endif

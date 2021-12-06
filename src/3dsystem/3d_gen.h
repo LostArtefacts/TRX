@@ -1,5 +1,4 @@
-#ifndef T1M_3DSYSTEM_3D_GEN_H
-#define T1M_3DSYSTEM_3D_GEN_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,5 +11,3 @@ void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest);
 int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 void phd_RotateLight(int16_t pitch, int16_t yaw);
 void phd_AlterFOV(PHD_ANGLE fov);
-
-#endif

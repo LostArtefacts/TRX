@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_ALLIGATOR_H
-#define T1M_GAME_AI_ALLIGATOR_H
+#pragma once
 
 #include "global/types.h"
 
@@ -22,5 +21,3 @@ typedef enum {
 
 void SetupAlligator(OBJECT_INFO *obj);
 void AlligatorControl(int16_t item_num);
-
-#endif

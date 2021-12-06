@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_FLAME_H
-#define T1M_GAME_TRAPS_FLAME_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,5 +11,3 @@ void SetupFlameEmitter(OBJECT_INFO *obj);
 void SetupFlame(OBJECT_INFO *obj);
 void FlameEmitterControl(int16_t item_num);
 void FlameControl(int16_t fx_num);
-
-#endif

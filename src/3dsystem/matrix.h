@@ -1,5 +1,4 @@
-#ifndef T1M_3DSYSTEM_MATRIX_H
-#define T1M_3DSYSTEM_MATRIX_H
+#pragma once
 
 #include "global/types.h"
 
@@ -37,5 +36,3 @@ void phd_TranslateRel_ID(
 void InitInterpolate(int32_t frac, int32_t rate);
 void InterpolateMatrix();
 void InterpolateArmMatrix();
-
-#endif

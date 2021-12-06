@@ -1,5 +1,4 @@
-#ifndef T1M_SPECIFIC_S_AUDIO_H
-#define T1M_SPECIFIC_S_AUDIO_H
+#pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -48,7 +47,5 @@ void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
 void S_Audio_StreamSoundInit();
 void S_Audio_StreamSoundShutdown();
 void S_Audio_StreamSoundMix(float *dst_buffer, size_t len);
-
-#endif
 
 #endif

@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_PIERRE_H
-#define T1M_GAME_AI_PIERRE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -35,5 +34,3 @@ extern BITE_INFO g_PierreGun2;
 
 void SetupPierre(OBJECT_INFO *obj);
 void PierreControl(int16_t item_num);
-
-#endif

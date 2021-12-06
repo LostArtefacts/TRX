@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_DRAW_H
-#define T1M_GAME_DRAW_H
+#pragma once
 
 #include "global/types.h"
 
@@ -27,5 +26,3 @@ void DrawLaraInt(
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);
-
-#endif

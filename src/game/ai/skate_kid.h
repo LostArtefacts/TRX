@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_SKATE_KID_H
-#define T1M_GAME_AI_SKATE_KID_H
+#pragma once
 
 #include "global/types.h"
 
@@ -34,5 +33,3 @@ void SetupSkateKid(OBJECT_INFO *obj);
 void InitialiseSkateKid(int16_t item_num);
 void SkateKidControl(int16_t item_num);
 void DrawSkateKid(ITEM_INFO *item);
-
-#endif

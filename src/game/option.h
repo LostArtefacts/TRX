@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OPTION_H
-#define T1M_GAME_OPTION_H
+#pragma once
 
 #include "global/types.h"
 
@@ -13,5 +12,3 @@ void Option_Sound(INVENTORY_ITEM *inv_item);
 
 void Option_FlashConflicts();
 void Option_DefaultConflict();
-
-#endif

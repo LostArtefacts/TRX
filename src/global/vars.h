@@ -1,5 +1,4 @@
-#ifndef T1M_GLOBAL_VARS_H
-#define T1M_GLOBAL_VARS_H
+#pragma once
 
 #include "global/const.h"
 #include "global/types.h"
@@ -133,5 +132,3 @@ extern int32_t g_InvExtraData[8];
 extern int16_t g_InvChosen;
 
 extern RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE];
-
-#endif

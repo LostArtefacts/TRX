@@ -1,5 +1,4 @@
-#ifndef T1M_FILESYSTEM_H
-#define T1M_FILESYSTEM_H
+#pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -34,5 +33,3 @@ void File_Close(MYFILE *file);
 int File_Delete(const char *path);
 
 bool File_Load(const char *path, char **output_data, size_t *output_size);
-
-#endif

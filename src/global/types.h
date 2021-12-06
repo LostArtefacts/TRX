@@ -1,5 +1,4 @@
-#ifndef T1M_GLOBAL_TYPES_H
-#define T1M_GLOBAL_TYPES_H
+#pragma once
 
 #include "global/const.h"
 
@@ -1872,5 +1871,3 @@ typedef enum INPUT_LAYOUT {
     INPUT_LAYOUT_USER,
     INPUT_LAYOUT_NUMBER_OF,
 } INPUT_LAYOUT;
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_GAMEFLOW_H
-#define T1M_GAME_GAMEFLOW_H
+#pragma once
 
 #include "global/types.h"
 
@@ -66,5 +65,3 @@ extern GAMEFLOW g_GameFlow;
 GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 bool GameFlow_LoadFromFile(const char *file_name);
-
-#endif

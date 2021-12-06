@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_INPUT_H
-#define T1M_GAME_INPUT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -10,5 +9,3 @@ extern bool g_ConflictLayout[INPUT_KEY_NUMBER_OF];
 
 void Input_Init();
 void Input_Update();
-
-#endif

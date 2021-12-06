@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_PEOPLE_H
-#define T1M_GAME_PEOPLE_H
+#pragma once
 
 #include "global/const.h"
 #include "global/types.h"
@@ -26,5 +25,3 @@ int16_t GunMiss(
     int16_t room_num);
 int32_t ShotLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation);
-
-#endif

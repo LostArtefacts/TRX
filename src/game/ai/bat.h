@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_BAT_H
-#define T1M_GAME_AI_BAT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -25,5 +24,3 @@ extern BITE_INFO g_BatBite;
 void SetupBat(OBJECT_INFO *obj);
 void BatControl(int16_t item_num);
 void InitialiseBat(int16_t item_num);
-
-#endif

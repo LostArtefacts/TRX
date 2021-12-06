@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OVERLAY_H
-#define T1M_GAME_OVERLAY_H
+#pragma once
 
 #include <stdint.h>
 
@@ -16,5 +15,3 @@ void Overlay_DrawGameInfo();
 void Overlay_AddPickup(int16_t object_num);
 
 void Overlay_MakeAmmoString(char *string);
-
-#endif

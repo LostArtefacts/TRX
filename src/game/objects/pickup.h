@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_PICKUP_H
-#define T1M_GAME_OBJECTS_PICKUP_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,5 +11,3 @@ extern int16_t g_PickUpBoundsUW[12];
 
 void SetupPickupObject(OBJECT_INFO *obj);
 void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-
-#endif

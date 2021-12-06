@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_MUTANT_H
-#define T1M_GAME_AI_MUTANT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -57,5 +56,3 @@ void SetupWarrior3(OBJECT_INFO *obj);
 void FlyerControl(int16_t item_num);
 
 void InitialiseWarrior2(int16_t item_num);
-
-#endif

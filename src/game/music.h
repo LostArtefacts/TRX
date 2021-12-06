@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_MUSIC_H
-#define T1M_GAME_MUSIC_H
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -33,5 +32,3 @@ void Music_Unpause();
 // Returns currently playing track. If there is a track playing "over" a looped
 // track, returns the "overriding" track number.
 int16_t Music_CurrentTrack();
-
-#endif

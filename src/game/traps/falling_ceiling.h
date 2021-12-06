@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_FALLING_CEILING_H
-#define T1M_GAME_TRAPS_FALLING_CEILING_H
+#pragma once
 
 #include "global/types.h"
 
@@ -9,5 +8,3 @@
 
 void SetupFallingCeilling(OBJECT_INFO *obj);
 void FallingCeilingControl(int16_t item_num);
-
-#endif

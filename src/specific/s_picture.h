@@ -1,5 +1,4 @@
-#ifndef T1M_SPECIFIC_S_PICTURE_H
-#define T1M_SPECIFIC_S_PICTURE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -17,5 +16,3 @@ bool S_Picture_ScaleCrop(
 bool S_Picture_ScaleStretch(
     PICTURE *target_pic, const PICTURE *source_pic, int target_width,
     int target_height);
-
-#endif

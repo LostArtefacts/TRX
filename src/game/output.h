@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OUTPUT_H
-#define T1M_GAME_OUTPUT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -76,5 +75,3 @@ void Output_FadeToBlack();
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
 bool Output_MakeScreenshot(const char *path);
-
-#endif

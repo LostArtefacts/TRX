@@ -1,5 +1,4 @@
-#ifndef T1M_SPECIFIC_S_OUTPUT_H
-#define T1M_SPECIFIC_S_OUTPUT_H
+#pragma once
 
 #include "game/picture.h"
 #include "global/types.h"
@@ -55,5 +54,3 @@ void S_Output_DrawLightningSegment(
     int thickness2);
 
 bool S_Output_MakeScreenshot(const char *path);
-
-#endif

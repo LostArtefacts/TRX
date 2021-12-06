@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_EFFECTS_RICOCHET_H
-#define T1M_GAME_EFFECTS_RICOCHET_H
+#pragma once
 
 #include "global/types.h"
 
@@ -8,5 +7,3 @@
 void SetupRicochet(OBJECT_INFO *obj);
 void Ricochet(GAME_VECTOR *pos);
 void ControlRicochet1(int16_t fx_num);
-
-#endif
