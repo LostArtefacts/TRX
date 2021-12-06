@@ -106,11 +106,12 @@ void Renderer::renderEnd()
     GFX_GL_CheckError();
 }
 
-bool Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
+bool Renderer::textureReg(
+    const void *data, int width, int height, C3D_PHTX phtmap)
 {
     auto texture = std::make_shared<Texture>();
     texture->bind();
-    if (!texture->load(ptmapToReg)) {
+    if (!texture->load(data, width, height)) {
         return false;
     }
 

@@ -55,7 +55,7 @@ public:
 
     void renderBegin();
     void renderEnd();
-    bool textureReg(C3D_PTMAP, C3D_PHTX);
+    bool textureReg(const void *, int, int, C3D_PHTX);
     bool textureUnreg(C3D_HTX);
     void renderPrimStrip(C3D_VSTRIP, int);
     void renderPrimList(C3D_VLIST, int);

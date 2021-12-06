@@ -1439,7 +1439,7 @@ void S_Output_DownloadTextures(int32_t pages)
 
         uint32_t *output_ptr = surface_desc.pixels;
         uint8_t *input_ptr = g_TexturePagePtrs[i];
-        for (int j = 0; j < 256 * 256; j++) {
+        for (int j = 0; j < surface_desc.width * surface_desc.height; j++) {
             uint8_t pal_idx = *input_ptr++;
             // first color in the palette is chroma key, make it transparent
             uint8_t alpha = pal_idx == 0 ? 0 : 0xFF;
@@ -1452,12 +1452,9 @@ void S_Output_DownloadTextures(int32_t pages)
             GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
         S_Output_CheckError(result);
 
-        C3D_TMAP tmap;
-        tmap.bMipMap = false;
-        tmap.apvLevels[0] = surface_desc.pixels;
-        tmap.u32MaxMapXSizeLg2 = 8;
-        tmap.u32MaxMapYSizeLg2 = 8;
-        m_TextureLoaded[i] = ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i]);
+        m_TextureLoaded[i] = ATI3DCIF_TextureReg(
+            surface_desc.pixels, surface_desc.width, surface_desc.height,
+            &m_ATITextureMap[i]);
     }
 
     m_SelectedTexture = -1;

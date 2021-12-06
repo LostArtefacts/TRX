@@ -16,7 +16,7 @@ public:
     GLenum target();
     GLuint id();
 
-    bool load(C3D_PTMAP tmap);
+    bool load(const void *data, int width, int height);
 
 private:
     GFX_GL_Texture m_GLTexture;

@@ -32,10 +32,11 @@ void ATI3DCIF_Init(void)
     renderer = std::make_unique<Renderer>();
 }
 
-bool ATI3DCIF_TextureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
+bool ATI3DCIF_TextureReg(
+    const void *data, int width, int height, C3D_PHTX phtmap)
 {
     assert(renderer);
-    return renderer->textureReg(ptmapToReg, phtmap);
+    return renderer->textureReg(data, width, height, phtmap);
 }
 
 bool ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)

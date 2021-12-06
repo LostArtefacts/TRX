@@ -39,37 +39,14 @@ GLuint Texture::id()
     return m_GLTexture.id;
 }
 
-bool Texture::load(C3D_PTMAP tmap)
+bool Texture::load(const void *data, int width, int height)
 {
-    // convert and generate texture for each level
-    uint32_t width = 1 << tmap->u32MaxMapXSizeLg2;
-    uint32_t height = 1 << tmap->u32MaxMapYSizeLg2;
-    uint32_t size = width * height;
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+        data);
 
-    uint32_t levels = 1;
-    if (tmap->bMipMap) {
-        levels = std::max(tmap->u32MaxMapXSizeLg2, tmap->u32MaxMapYSizeLg2) + 1;
-    }
-
-    for (uint32_t level = 0; level < levels; level++) {
-        LOG_INFO("level %d (%dx%d)", level, width, height);
-
-        // convert texture data
-        glTexImage2D(
-            GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
-            GL_UNSIGNED_BYTE, tmap->apvLevels[level]);
-
-        // set dimensions for next level
-        width = std::max(1u, width / 2);
-        height = std::max(1u, height / 2);
-        size = width * height;
-    }
-
-    // generate mipmaps automatically if the application doesn't provide any
-    if (levels == 1) {
-        bind();
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
+    bind();
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     GFX_GL_CheckError();
     return true;

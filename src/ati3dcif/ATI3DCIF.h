@@ -74,14 +74,6 @@ typedef enum {
     C3D_ETFILT_NUM = 7,
 } C3D_ETEXFILTER;
 
-typedef struct {
-    bool bMipMap;
-    void *apvLevels[11];
-    uint32_t u32MaxMapXSizeLg2;
-    uint32_t u32MaxMapYSizeLg2;
-} C3D_TMAP, *C3D_PTMAP;
-
-typedef void *C3D_HRC;
 typedef void *C3D_PRSDATA;
 
 typedef enum {
