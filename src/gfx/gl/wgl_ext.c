@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if __GNUC__ || __MINGW32__
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+
 #if defined(__APPLE__)
     #include <dlfcn.h>
 
@@ -194,3 +199,7 @@ void wgl_CheckExtensions(HDC hdc)
         ProcExtsFromExtString((const char *)InternalGetExtensionString(hdc));
     }
 }
+
+#if __GNUC__ || __MINGW32__
+    #pragma GCC diagnostic pop
+#endif
