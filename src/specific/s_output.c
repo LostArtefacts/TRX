@@ -6,13 +6,12 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
+#include "gfx/2d/2d_surface.h"
+#include "gfx/3d/3d_renderer.h"
 #include "gfx/context.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
-
-#include "ati3dcif/Interop.hpp"
-#include "gfx/2d/2d_surface.h"
 
 #include <assert.h>
 
@@ -25,9 +24,10 @@
         }                                                                      \
     }
 
-static C3D_HTX m_TextureMap[GFX_MAX_TEXTURES];
+static int m_TextureMap[GFX_MAX_TEXTURES];
 static C3D_PALETTENTRY m_ATIPalette[256];
 
+static GFX_3D_Renderer *m_Renderer3D;
 static RGB888 m_GamePalette[256];
 static bool m_IsPaletteActive = false;
 static bool m_IsRendering = false;
@@ -100,9 +100,8 @@ static void S_Output_SetHardwareVideoMode()
 static void S_Output_SetupRenderContextAndRender()
 {
     S_Output_RenderBegin();
-    int32_t filter = g_Config.render_flags.bilinear ? C3D_ETFILT_MIN2BY2_MAG2BY2
-                                                    : C3D_ETFILT_MINPNT_MAGPNT;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &filter);
+    GFX_3D_Renderer_SetSmoothingEnabled(
+        m_Renderer3D, g_Config.render_flags.bilinear);
     S_Output_RenderToggle();
 }
 
@@ -162,11 +161,11 @@ static void S_Output_ClearSurface(GFX_2D_Surface *surface)
 
 static void S_Output_DrawTriangleStrip(C3D_VTCF *vertices, int num)
 {
-    ATI3DCIF_RenderPrimStrip(vertices, 3);
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
     int left = num - 2;
     for (int i = num - 3; i > 0; i--) {
         memcpy(&vertices[1], &vertices[2], left * sizeof(C3D_VTCF));
-        ATI3DCIF_RenderPrimStrip(vertices, 3);
+        GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
         left--;
     }
 }
@@ -587,8 +586,7 @@ void S_Output_EnableTextureMode(void)
     }
 
     m_IsTextureMode = true;
-    BOOL enable = TRUE;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
+    GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
 }
 
 void S_Output_DisableTextureMode(void)
@@ -598,15 +596,14 @@ void S_Output_DisableTextureMode(void)
     }
 
     m_IsTextureMode = false;
-    bool enable = false;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
+    GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
 }
 
 void S_Output_RenderBegin()
 {
     m_IsRenderingOld = m_IsRendering;
     if (!m_IsRendering) {
-        ATI3DCIF_RenderBegin();
+        GFX_3D_Renderer_RenderBegin(m_Renderer3D);
         m_IsRendering = true;
     }
 }
@@ -615,7 +612,7 @@ void S_Output_RenderEnd()
 {
     m_IsRenderingOld = m_IsRendering;
     if (m_IsRendering) {
-        ATI3DCIF_RenderEnd();
+        GFX_3D_Renderer_RenderEnd(m_Renderer3D);
         m_IsRendering = false;
     }
 }
@@ -772,11 +769,7 @@ void S_Output_SelectTexture(int tex_num)
         return;
     }
 
-    if (!ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_TextureMap[tex_num])) {
-        LOG_ERROR("    Texture error");
-        return;
-    }
-
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[tex_num]);
     m_SelectedTexture = tex_num;
 }
 
@@ -890,17 +883,10 @@ void S_Output_Draw2DLine(
     vertices[1].g = color2.g;
     vertices[1].b = color2.b;
 
-    C3D_VTCF *v_list[2] = { &vertices[0], &vertices[1] };
-
-    C3D_EPRIM prim_type = C3D_EPRIM_LINE;
-    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
-
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_LINE);
     S_Output_DisableTextureMode();
-
-    ATI3DCIF_RenderPrimList((C3D_VLIST)v_list, 2);
-
-    prim_type = C3D_EPRIM_TRI;
-    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &prim_type);
+    GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, 2);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_TRI);
 }
 
 void S_Output_Draw2DQuad(
@@ -981,17 +967,9 @@ void S_Output_DrawTranslucentQuad(
 
     S_Output_DisableTextureMode();
 
-    int32_t alpha_src = C3D_EASRC_SRCALPHA;
-    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
-
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     S_Output_DrawTriangleStrip(vertices, 4);
-
-    alpha_src = C3D_EASRC_ONE;
-    alpha_dst = C3D_EADST_ZERO;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
 void S_Output_DrawLightningSegment(
@@ -1002,10 +980,7 @@ void S_Output_DrawLightningSegment(
 
     S_Output_DisableTextureMode();
 
-    int32_t alpha_src = C3D_EASRC_SRCALPHA;
-    int32_t alpha_dst = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     vertices[0].x = x1;
     vertices[0].y = y1;
     vertices[0].z = z1 * 0.0001f;
@@ -1079,11 +1054,7 @@ void S_Output_DrawLightningSegment(
     if (num) {
         S_Output_DrawTriangleStrip(vertices, num);
     }
-
-    alpha_src = C3D_EASRC_ONE;
-    alpha_dst = C3D_EADST_ZERO;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &alpha_src);
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &alpha_dst);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
@@ -1117,15 +1088,9 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
     S_Output_DisableTextureMode();
 
-    tmp = C3D_EASRC_SRCALPHA;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
-    tmp = C3D_EADST_INVSRCALPHA;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     S_Output_DrawTriangleStrip(vertices, vertex_count);
-    tmp = C3D_EASRC_ONE;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_SRC, &tmp);
-    tmp = C3D_EADST_ZERO;
-    ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
 void S_Output_FadeToBlack()
@@ -1152,6 +1117,7 @@ void S_Output_SetFullscreen(bool fullscreen)
 bool S_Output_Init()
 {
     GFX_Context_Attach(g_TombHWND);
+    m_Renderer3D = GFX_Context_GetRenderer3D();
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         m_TextureMap[i] = GFX_NO_TEXTURE;
@@ -1160,11 +1126,7 @@ bool S_Output_Init()
 
     S_Output_SetHardwareVideoMode();
 
-    int32_t tmp;
-    tmp = C3D_EPRIM_TRI;
-    ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &tmp);
-    tmp = C3D_ETFILT_MINPNT_MAGPNT;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &tmp);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, C3D_EPRIM_TRI);
 
     return true;
 }
@@ -1173,6 +1135,7 @@ void S_Output_Shutdown()
 {
     S_Output_ReleaseSurfaces();
     GFX_Context_Detach();
+    m_Renderer3D = NULL;
 }
 
 void S_Output_DrawFlatTriangle(
@@ -1404,7 +1367,7 @@ void S_Output_DrawTexturedQuad(
         S_Output_DisableTextureMode();
     }
 
-    ATI3DCIF_RenderPrimStrip(vertices, 4);
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 4);
 }
 
 void S_Output_DownloadTextures(int32_t pages)
@@ -1415,7 +1378,7 @@ void S_Output_DownloadTextures(int32_t pages)
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureMap[i] != GFX_NO_TEXTURE) {
-            ATI3DCIF_TextureUnreg(m_TextureMap[i]);
+            GFX_3D_Renderer_TextureUnreg(m_Renderer3D, m_TextureMap[i]);
             m_TextureMap[i] = GFX_NO_TEXTURE;
         }
     }
@@ -1440,8 +1403,9 @@ void S_Output_DownloadTextures(int32_t pages)
             GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
         S_Output_CheckError(result);
 
-        m_TextureMap[i] = ATI3DCIF_TextureReg(
-            surface_desc.pixels, surface_desc.width, surface_desc.height);
+        m_TextureMap[i] = GFX_3D_Renderer_TextureReg(
+            m_Renderer3D, surface_desc.pixels, surface_desc.width,
+            surface_desc.height);
     }
 
     m_SelectedTexture = -1;

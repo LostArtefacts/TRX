@@ -5,46 +5,10 @@
 
 #include <assert.h>
 
-static const GLenum GLCIF_BLEND_FUNC[] = {
-    GL_ZERO, // C3D_EASRC_ZERO / C3D_EADST_ZERO
-    GL_ONE, // C3D_EASRC_ONE / C3D_EADST_ONE
-    GL_DST_COLOR, // C3D_EASRC_DSTCLR / C3D_EADST_DSTCLR
-    GL_ONE_MINUS_DST_COLOR, // C3D_EASRC_INVDSTCLR / C3D_EADST_INVDSTCLR
-    GL_SRC_ALPHA, // C3D_EASRC_SRCALPHA / C3D_EADST_SRCALPHA
-    GL_ONE_MINUS_SRC_ALPHA, // C3D_EASRC_INVSRCALPHA / C3D_EADST_INVSRCALPHA
-    GL_DST_ALPHA, // C3D_EASRC_DSTALPHA / C3D_EADST_DSTALPHA
-    GL_ONE_MINUS_DST_ALPHA // C3D_EASRC_INVDSTALPHA / C3D_EADST_INVDSTALPHA
-};
-
-static const GLenum GLCIF_TEXTURE_MIN_FILTER[] = {
-    GL_NEAREST, // C3D_ETFILT_MINPNT_MAGPNT
-    GL_LINEAR, // C3D_ETFILT_MINPNT_MAG2BY2
-    GL_LINEAR, // C3D_ETFILT_MIN2BY2_MAG2BY2
-    GL_LINEAR_MIPMAP_LINEAR, // C3D_ETFILT_MIPLIN_MAGPNT
-    GL_LINEAR_MIPMAP_NEAREST, // C3D_ETFILT_MIPLIN_MAG2BY2
-    GL_LINEAR_MIPMAP_LINEAR, // C3D_ETFILT_MIPTRI_MAG2BY2
-    GL_NEAREST // C3D_ETFILT_MIN2BY2_MAGPNT
-};
-
-static const GLenum GLCIF_TEXTURE_MAG_FILTER[] = {
-    GL_NEAREST, // C3D_ETFILT_MINPNT_MAGPNT (pick nearest texel (pnt)
-                // min/mag)
-    GL_NEAREST, // C3D_ETFILT_MINPNT_MAG2BY2 (pnt min/bi-linear mag)
-    GL_LINEAR, // C3D_ETFILT_MIN2BY2_MAG2BY2 (2x2 blend min/bi-linear mag)
-    GL_NEAREST, // C3D_ETFILT_MIPLIN_MAGPNT (1x1 blend min(between
-                // maps)/pick nearest mag)
-    GL_LINEAR, // C3D_ETFILT_MIPLIN_MAG2BY2 (1x1 blend min(between
-               // maps)/bi-linear mag)
-    GL_LINEAR, // C3D_ETFILT_MIPTRI_MAG2BY2 (Rage3: (2x2)x(2x2)(between
-               // maps)/bi-linear mag)
-    GL_LINEAR // C3D_ETFILT_MIN2BY2_MAGPNT (Rage3:2x2 blend min/pick nearest
-              // mag)
-};
-
-static void GFX_3D_Renderer_TmapSelectImpl(
+static void GFX_3D_Renderer_SelectTextureImpl(
     GFX_3D_Renderer *renderer, int texture_num);
 
-static void GFX_3D_Renderer_TmapSelectImpl(
+static void GFX_3D_Renderer_SelectTextureImpl(
     GFX_3D_Renderer *renderer, int texture_num)
 {
     if (texture_num == GFX_NO_TEXTURE) {
@@ -64,8 +28,6 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     // TODO: make me configurable
     renderer->wireframe = false;
     renderer->selected_texture_num = GFX_NO_TEXTURE;
-    renderer->easrc = C3D_EASRC_ONE;
-    renderer->eadst = C3D_EADST_ZERO;
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         renderer->textures[i] = NULL;
     }
@@ -96,10 +58,10 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     // better than having a negative z_near in the ortho matrix, which seems
     // to mess up depth testing
     GLfloat model_view[4][4] = {
-        { +1.0f, +0.0f, +0.0, +0.0f },
-        { +0.0f, +1.0f, +0.0, +0.0f },
-        { +0.0f, +0.0f, -1.0, -0.0f },
-        { +0.0f, +0.0f, +0.0, +1.0f },
+        { +1.0f, +0.0f, +0.0f, +0.0f },
+        { +0.0f, +1.0f, +0.0f, +0.0f },
+        { +0.0f, +0.0f, -1.0f, +0.0f },
+        { +0.0f, +0.0f, +0.0f, +1.0f },
     };
     GFX_GL_Program_UniformMatrix4fv(
         &renderer->program, renderer->loc_mat_model_view, 1, GL_FALSE,
@@ -129,8 +91,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
 
-    // restore texture binding
-    GFX_3D_Renderer_TmapRestore(renderer);
+    GFX_3D_Renderer_RestoreTexture(renderer);
 
     // CIF always uses an orthographic view, the application deals with the
     // perspective when required
@@ -186,7 +147,7 @@ int GFX_3D_Renderer_TextureReg(
         }
     }
 
-    GFX_3D_Renderer_TmapRestore(renderer);
+    GFX_3D_Renderer_RestoreTexture(renderer);
 
     GFX_GL_CheckError();
     return texture_num;
@@ -205,7 +166,7 @@ bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 
     // unbind texture if currently bound
     if (texture_num == renderer->selected_texture_num) {
-        GFX_3D_Renderer_TmapSelectImpl(renderer, GFX_NO_TEXTURE);
+        GFX_3D_Renderer_SelectTextureImpl(renderer, GFX_NO_TEXTURE);
         renderer->selected_texture_num = GFX_NO_TEXTURE;
     }
 
@@ -215,77 +176,30 @@ bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 }
 
 void GFX_3D_Renderer_RenderPrimStrip(
-    GFX_3D_Renderer *renderer, C3D_VSTRIP strip, int count)
+    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count)
 {
     GFX_Context_SetRendered();
-    GFX_3D_VertexStream_PushPrimStrip(&renderer->vertex_stream, strip, count);
+    GFX_3D_VertexStream_PushPrimStrip(
+        &renderer->vertex_stream, vertices, count);
 }
 
 void GFX_3D_Renderer_RenderPrimList(
-    GFX_3D_Renderer *renderer, C3D_VLIST list, int count)
+    GFX_3D_Renderer *renderer, C3D_VTCF *vertices, int count)
 {
     GFX_Context_SetRendered();
-    GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, list, count);
+    GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, vertices, count);
 }
 
-bool GFX_3D_Renderer_SetState(
-    GFX_3D_Renderer *renderer, C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
-{
-    switch (eRStateID) {
-    case C3D_ERS_PRIM_TYPE:
-        GFX_3D_Renderer_SetPrimType(renderer, *((C3D_EPRIM *)pRStateData));
-        break;
-    case C3D_ERS_TMAP_EN:
-        GFX_3D_Renderer_TmapEnable(renderer, *((bool *)pRStateData));
-        break;
-    case C3D_ERS_TMAP_SELECT:
-        GFX_3D_Renderer_TmapSelect(renderer, *((int *)pRStateData));
-        break;
-    case C3D_ERS_TMAP_FILTER:
-        GFX_3D_Renderer_TmapFilter(renderer, *((C3D_ETEXFILTER *)pRStateData));
-        break;
-    case C3D_ERS_ALPHA_SRC:
-        GFX_3D_Renderer_SetAlphaSrc(renderer, *((C3D_EASRC *)pRStateData));
-        break;
-    case C3D_ERS_ALPHA_DST:
-        GFX_3D_Renderer_SetAlphaDst(renderer, *((C3D_EADST *)pRStateData));
-        break;
-    default:
-        LOG_ERROR("Unsupported state: %d", eRStateID);
-        return false;
-    }
-    return true;
-}
-
-void GFX_3D_Renderer_TmapEnable(GFX_3D_Renderer *renderer, bool is_enabled)
-{
-    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-    GFX_GL_Program_Uniform1i(
-        &renderer->program, renderer->loc_tmap_en, is_enabled);
-}
-
-void GFX_3D_Renderer_TmapSelect(GFX_3D_Renderer *renderer, int texture_num)
+void GFX_3D_Renderer_SelectTexture(GFX_3D_Renderer *renderer, int texture_num)
 {
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     renderer->selected_texture_num = texture_num;
-    GFX_3D_Renderer_TmapSelectImpl(renderer, texture_num);
+    GFX_3D_Renderer_SelectTextureImpl(renderer, texture_num);
 }
 
-void GFX_3D_Renderer_TmapRestore(GFX_3D_Renderer *renderer)
+void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer)
 {
-    GFX_3D_Renderer_TmapSelectImpl(renderer, renderer->selected_texture_num);
-}
-
-void GFX_3D_Renderer_TmapFilter(
-    GFX_3D_Renderer *renderer, C3D_ETEXFILTER filter)
-{
-    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-    GFX_GL_Sampler_Parameteri(
-        &renderer->sampler, GL_TEXTURE_MAG_FILTER,
-        GLCIF_TEXTURE_MAG_FILTER[filter]);
-    GFX_GL_Sampler_Parameteri(
-        &renderer->sampler, GL_TEXTURE_MIN_FILTER,
-        GLCIF_TEXTURE_MIN_FILTER[filter]);
+    GFX_3D_Renderer_SelectTextureImpl(renderer, renderer->selected_texture_num);
 }
 
 void GFX_3D_Renderer_SetPrimType(GFX_3D_Renderer *renderer, C3D_EPRIM value)
@@ -294,20 +208,33 @@ void GFX_3D_Renderer_SetPrimType(GFX_3D_Renderer *renderer, C3D_EPRIM value)
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);
 }
 
-void GFX_3D_Renderer_SetAlphaSrc(GFX_3D_Renderer *renderer, C3D_EASRC value)
+void GFX_3D_Renderer_SetSmoothingEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled)
 {
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-    renderer->easrc = value;
-    C3D_EASRC alphaSrc = value;
-    C3D_EADST alphaDst = renderer->eadst;
-    glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
+    GFX_GL_Sampler_Parameteri(
+        &renderer->sampler, GL_TEXTURE_MAG_FILTER,
+        is_enabled ? GL_LINEAR : GL_NEAREST);
+    GFX_GL_Sampler_Parameteri(
+        &renderer->sampler, GL_TEXTURE_MIN_FILTER,
+        is_enabled ? GL_LINEAR : GL_NEAREST);
 }
 
-void GFX_3D_Renderer_SetAlphaDst(GFX_3D_Renderer *renderer, C3D_EADST value)
+void GFX_3D_Renderer_SetBlendingEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled)
 {
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-    renderer->eadst = value;
-    C3D_EASRC alphaSrc = renderer->easrc;
-    C3D_EADST alphaDst = value;
-    glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
+    if (is_enabled) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glBlendFunc(GL_ONE, GL_ZERO);
+    }
+}
+
+void GFX_3D_Renderer_SetTexturingEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled)
+{
+    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
+    GFX_GL_Program_Uniform1i(
+        &renderer->program, renderer->loc_tmap_en, is_enabled);
 }

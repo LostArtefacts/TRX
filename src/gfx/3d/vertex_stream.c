@@ -73,12 +73,8 @@ void GFX_3D_VertexStream_SetPrimType(
 }
 
 bool GFX_3D_VertexStream_PushPrimStrip(
-    GFX_3D_VertexStream *vertex_stream, C3D_VSTRIP vert_strip, int count)
+    GFX_3D_VertexStream *vertex_stream, C3D_VTCF *vertices, int count)
 {
-    // NOTE: strips are converted to lists, since they can't be properly
-    // batched otherwise
-    C3D_VTCF *vertices = (C3D_VTCF *)vert_strip;
-
     if (vertex_stream->prim_type != C3D_EPRIM_TRI) {
         LOG_ERROR("Unsupported prim type: %d", vertex_stream->prim_type);
         return false;
@@ -100,13 +96,10 @@ bool GFX_3D_VertexStream_PushPrimStrip(
 }
 
 bool GFX_3D_VertexStream_PushPrimList(
-    GFX_3D_VertexStream *vertex_stream, C3D_VLIST vert_list, int count)
+    GFX_3D_VertexStream *vertex_stream, C3D_VTCF *vertices, int count)
 {
-    // copy vertices to vertex vector buffer, then to the vertex buffer
-    // (OpenGL can't handle arrays of pointers)
-    C3D_VTCF **vertices = (C3D_VTCF **)vert_list;
     for (int i = 0; i < count; i++) {
-        GFX_3D_VertexStream_PushVertex(vertex_stream, vertices[i]);
+        GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i]);
     }
     return true;
 }
