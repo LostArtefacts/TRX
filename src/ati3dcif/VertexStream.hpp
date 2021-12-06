@@ -12,25 +12,20 @@ namespace cif {
 static const GLenum GLCIF_PRIM_MODES[] = {
     GL_LINES, // C3D_EPRIM_LINE
     GL_TRIANGLES, // C3D_EPRIM_TRI
-    GL_TRIANGLES, // C3D_EPRIM_QUAD
-    GL_TRIANGLES, // C3D_EPRIM_RECT
-    GL_POINTS // C3D_EPRIM_POINT
 };
 
 class VertexStream {
 public:
     VertexStream();
     ~VertexStream();
-    bool addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert);
-    bool addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert);
+    bool addPrimStrip(C3D_VSTRIP vertStrip, int numVert);
+    bool addPrimList(C3D_VLIST vertList, int numVert);
     void renderPending();
-    void vertexType(C3D_EVERTEX vertexType);
     void primType(C3D_EPRIM primType);
     void bind();
     void renderPrims(std::vector<C3D_VTCF> prims);
 
 private:
-    C3D_EVERTEX m_vertexType = C3D_EV_VTCF;
     C3D_EPRIM m_primType = C3D_EPRIM_TRI;
     size_t m_vertexBufferSize = 0;
     GFX_GL_Buffer m_vertexBuffer;

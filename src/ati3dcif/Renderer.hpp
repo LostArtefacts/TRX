@@ -12,24 +12,6 @@
 namespace glrage {
 namespace cif {
 
-// ATI3DCIF -> OpenGL mapping tables
-static const GLenum GLCIF_DEPTH_MASK[] = {
-    GL_FALSE, // C3D_EZMODE_OFF (ignore z)
-    GL_FALSE, // C3D_EZMODE_TESTON (test z, but do not update the z buffer)
-    GL_TRUE // C3D_EZMODE_TESTON_WRITEZ (test z and update the z buffer)
-};
-
-static const GLenum GLCIF_DEPTH_FUNC[] = {
-    GL_NEVER, // C3D_EZCMP_NEVER
-    GL_LESS, // C3D_EZCMP_LESS
-    GL_LEQUAL, // C3D_EZCMP_LEQUAL
-    GL_EQUAL, // C3D_EZCMP_EQUAL
-    GL_GEQUAL, // C3D_EZCMP_GEQUAL
-    GL_GREATER, // C3D_EZCMP_GREATER
-    GL_NOTEQUAL, // C3D_EZCMP_NOTEQUAL
-    GL_ALWAYS // C3D_EZCMP_ALWAYS
-};
-
 static const GLenum GLCIF_BLEND_FUNC[] = {
     GL_ZERO, // C3D_EASRC_ZERO / C3D_EADST_ZERO
     GL_ONE, // C3D_EASRC_ONE / C3D_EADST_ONE
@@ -75,26 +57,19 @@ public:
     void renderEnd();
     bool textureReg(C3D_PTMAP, C3D_PHTX);
     bool textureUnreg(C3D_HTX);
-    void renderPrimStrip(C3D_VSTRIP, C3D_UINT32);
-    void renderPrimList(C3D_VLIST, C3D_UINT32);
+    void renderPrimStrip(C3D_VSTRIP, int);
+    void renderPrimList(C3D_VLIST, int);
     bool setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
     void resetState();
 
 private:
     // state functions start
-    void vertexType(C3D_EVERTEX value);
     void primType(C3D_EPRIM value);
-    void solidColor(C3D_COLOR value);
-    void shadeMode(C3D_ESHADE value);
-    void tmapEnable(C3D_BOOL value);
+    void tmapEnable(bool value);
     void tmapSelect(C3D_HTX value);
-    void tmapLight(C3D_ETLIGHT value);
     void tmapFilter(C3D_ETEXFILTER value);
-    void tmapTexOp(C3D_ETEXOP value);
     void alphaSrc(C3D_EASRC value);
     void alphaDst(C3D_EADST value);
-    void zCmpFunc(C3D_EZCMP value);
-    void zMode(C3D_EZMODE value);
     // state functions end
 
     void tmapSelectImpl(C3D_HTX handle);
@@ -114,11 +89,7 @@ private:
     // shader variable locations
     GLint m_loc_matProjection;
     GLint m_loc_matModelView;
-    GLint m_loc_solidColor;
-    GLint m_loc_shadeMode;
     GLint m_loc_tmapEn;
-    GLint m_loc_texOp;
-    GLint m_loc_tmapLight;
     GLint m_loc_chromaKey;
 };
 

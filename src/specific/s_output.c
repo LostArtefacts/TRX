@@ -600,7 +600,7 @@ void S_Output_DisableTextureMode(void)
     }
 
     m_IsTextureMode = false;
-    BOOL enable = FALSE;
+    bool enable = false;
     ATI3DCIF_SetState(C3D_ERS_TMAP_EN, &enable);
 }
 
@@ -640,7 +640,6 @@ void S_Output_SetPalette(RGB888 palette[256])
     m_ATIPalette[0].r = 0;
     m_ATIPalette[0].g = 0;
     m_ATIPalette[0].b = 0;
-    m_ATIPalette[0].flags = C3D_LOAD_PALETTE_ENTRY;
 
     for (int i = 1; i < 256; i++) {
         if (palette[i].r || palette[i].g || palette[i].b) {
@@ -652,7 +651,6 @@ void S_Output_SetPalette(RGB888 palette[256])
             m_ATIPalette[i].g = 1;
             m_ATIPalette[i].b = 1;
         }
-        m_ATIPalette[i].flags = C3D_LOAD_PALETTE_ENTRY;
     }
 
     m_ATIChromaKey.r = 0;
@@ -809,13 +807,13 @@ void S_Output_SelectTexture(int tex_num)
 void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade)
 {
-    C3D_FLOAT32 t1;
-    C3D_FLOAT32 t2;
-    C3D_FLOAT32 t3;
-    C3D_FLOAT32 t4;
-    C3D_FLOAT32 t5;
-    C3D_FLOAT32 vz;
-    C3D_FLOAT32 vshade;
+    float t1;
+    float t2;
+    float t3;
+    float t4;
+    float t5;
+    float vz;
+    float vshade;
     int32_t vertex_count;
     PHD_SPRITE *sprite;
     C3D_VTCF vertices[10];
@@ -1190,22 +1188,10 @@ bool S_Output_Init()
 
     S_Output_SetHardwareVideoMode();
 
-    tmp = C3D_EV_VTCF;
-    ATI3DCIF_SetState(C3D_ERS_VERTEX_TYPE, &tmp);
     tmp = C3D_EPRIM_TRI;
     ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &tmp);
-    tmp = C3D_ESH_SMOOTH;
-    ATI3DCIF_SetState(C3D_ERS_SHADE_MODE, &tmp);
-    tmp = C3D_ETL_MODULATE;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_LIGHT, &tmp);
-    tmp = C3D_ETEXOP_CHROMAKEY;
-    ATI3DCIF_SetState(C3D_ERS_TMAP_TEXOP, &tmp);
     tmp = C3D_ETFILT_MINPNT_MAGPNT;
     ATI3DCIF_SetState(C3D_ERS_TMAP_FILTER, &tmp);
-    tmp = C3D_EZCMP_LEQUAL;
-    ATI3DCIF_SetState(C3D_ERS_Z_CMP_FNC, &tmp);
-    tmp = C3D_EZMODE_TESTON_WRITEZ;
-    ATI3DCIF_SetState(C3D_ERS_Z_MODE, &tmp);
 
     return true;
 }
@@ -1482,16 +1468,11 @@ void S_Output_DownloadTextures(int32_t pages)
         S_Output_CheckError(result);
 
         C3D_TMAP tmap;
-        tmap.u32Size = sizeof(C3D_TMAP);
-        tmap.bMipMap = FALSE;
-        tmap.apvLevels[0] = (C3D_PVOID)surface_desc.pixels;
+        tmap.bMipMap = false;
+        tmap.apvLevels[0] = surface_desc.pixels;
         tmap.u32MaxMapXSizeLg2 = 8;
         tmap.u32MaxMapYSizeLg2 = 8;
-        tmap.eTexFormat = C3D_ETF_RGB8888;
         tmap.clrTexChromaKey = m_ATIChromaKey;
-        tmap.bClampS = FALSE;
-        tmap.bClampT = FALSE;
-        tmap.bAlphaBlend = FALSE;
         m_TextureLoaded[i] = ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i]);
     }
 

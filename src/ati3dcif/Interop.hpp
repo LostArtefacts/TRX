@@ -16,8 +16,8 @@ bool ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg);
 bool ATI3DCIF_SetState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
 void ATI3DCIF_RenderBegin(void);
 void ATI3DCIF_RenderEnd(void);
-void ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert);
-void ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert);
+void ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip, int u32NumVert);
+void ATI3DCIF_RenderPrimList(C3D_VLIST vList, int u32NumVert);
 
 #ifdef __cplusplus
 }

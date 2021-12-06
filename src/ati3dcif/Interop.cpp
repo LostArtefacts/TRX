@@ -62,13 +62,13 @@ void ATI3DCIF_RenderEnd(void)
     renderer->renderEnd();
 }
 
-void ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
+void ATI3DCIF_RenderPrimStrip(C3D_VSTRIP vStrip, int u32NumVert)
 {
     assert(renderer);
     renderer->renderPrimStrip(vStrip, u32NumVert);
 }
 
-void ATI3DCIF_RenderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
+void ATI3DCIF_RenderPrimList(C3D_VLIST vList, int u32NumVert)
 {
     assert(renderer);
     renderer->renderPrimList(vList, u32NumVert);

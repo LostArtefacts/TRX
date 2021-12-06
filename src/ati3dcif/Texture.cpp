@@ -57,56 +57,9 @@ bool Texture::load(C3D_PTMAP tmap)
         LOG_INFO("level %d (%dx%d)", level, width, height);
 
         // convert texture data
-        switch (tmap->eTexFormat) {
-        case C3D_ETF_RGB1555: {
-            uint16_t *src = static_cast<uint16_t *>(tmap->apvLevels[level]);
-
-            // toggle alpha bit, which has the opposite meaning in OpenGL
-            for (uint32_t i = 0; i < size; i++) {
-                src[i] ^= 1 << 15;
-            }
-
-            // upload texture data
-            glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
-                GL_UNSIGNED_SHORT_1_5_5_5_REV, tmap->apvLevels[level]);
-
-            break;
-        }
-
-        case C3D_ETF_RGB332: {
-            glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGB, width, height, 0, GL_RGB,
-                GL_UNSIGNED_BYTE_3_3_2, tmap->apvLevels[level]);
-            break;
-        }
-
-        case C3D_ETF_RGB565: {
-            glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGB, width, height, 0, GL_RGB,
-                GL_UNSIGNED_SHORT_5_6_5_REV, tmap->apvLevels[level]);
-            break;
-        }
-
-        case C3D_ETF_RGB4444: {
-            glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
-                GL_UNSIGNED_SHORT_4_4_4_4_REV, tmap->apvLevels[level]);
-            break;
-        }
-
-        case C3D_ETF_RGB8888: {
-            glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
-                GL_UNSIGNED_BYTE, tmap->apvLevels[level]);
-
-            break;
-        }
-
-        default:
-            LOG_ERROR("Unsupported texture format: %d", tmap->eTexFormat);
-            return false;
-        }
+        glTexImage2D(
+            GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
+            GL_UNSIGNED_BYTE, tmap->apvLevels[level]);
 
         // set dimensions for next level
         width = std::max(1u, width / 2);
@@ -119,22 +72,6 @@ bool Texture::load(C3D_PTMAP tmap)
         bind();
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-
-    // FIXME: sampler object overrides these parameters
-    // if (tmap->u32Size > 68) {
-    //    bind();
-
-    //    // set static texture parameters
-    //    if (tmap->bClampS) {
-    //        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-    //        GL_CLAMP_TO_EDGE);
-    //    }
-
-    //    if (tmap->bClampT) {
-    //        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-    //        GL_CLAMP_TO_EDGE);
-    //    }
-    //}
 
     GFX_GL_CheckError();
     return true;

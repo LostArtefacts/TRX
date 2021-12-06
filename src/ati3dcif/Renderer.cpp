@@ -25,11 +25,7 @@ Renderer::Renderer()
         GFX_GL_Program_UniformLocation(&m_program, "matProjection");
     m_loc_matModelView =
         GFX_GL_Program_UniformLocation(&m_program, "matModelView");
-    m_loc_solidColor = GFX_GL_Program_UniformLocation(&m_program, "solidColor");
-    m_loc_shadeMode = GFX_GL_Program_UniformLocation(&m_program, "shadeMode");
     m_loc_tmapEn = GFX_GL_Program_UniformLocation(&m_program, "tmapEn");
-    m_loc_texOp = GFX_GL_Program_UniformLocation(&m_program, "texOp");
-    m_loc_tmapLight = GFX_GL_Program_UniformLocation(&m_program, "tmapLight");
     m_loc_chromaKey = GFX_GL_Program_UniformLocation(&m_program, "chromaKey");
 
     GFX_GL_Program_FragmentData(&m_program, "fragColor");
@@ -93,6 +89,10 @@ void Renderer::renderBegin()
     GFX_GL_Program_UniformMatrix4fv(
         &m_program, m_loc_matProjection, 1, GL_FALSE, &projection[0][0]);
 
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+
     GFX_GL_CheckError();
 }
 
@@ -146,13 +146,13 @@ bool Renderer::textureUnreg(C3D_HTX htxToUnreg)
     return true;
 }
 
-void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)
+void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, int u32NumVert)
 {
     GFX_Context_SetRendered();
     m_vertexStream.addPrimStrip(vStrip, u32NumVert);
 }
 
-void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
+void Renderer::renderPrimList(C3D_VLIST vList, int u32NumVert)
 {
     GFX_Context_SetRendered();
     m_vertexStream.addPrimList(vList, u32NumVert);
@@ -161,44 +161,23 @@ void Renderer::renderPrimList(C3D_VLIST vList, C3D_UINT32 u32NumVert)
 bool Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     switch (eRStateID) {
-    case C3D_ERS_VERTEX_TYPE:
-        vertexType(*reinterpret_cast<C3D_EVERTEX *>(pRStateData));
-        break;
     case C3D_ERS_PRIM_TYPE:
         primType(*reinterpret_cast<C3D_EPRIM *>(pRStateData));
         break;
-    case C3D_ERS_SOLID_CLR:
-        solidColor(*reinterpret_cast<C3D_COLOR *>(pRStateData));
-        break;
-    case C3D_ERS_SHADE_MODE:
-        shadeMode(*reinterpret_cast<C3D_ESHADE *>(pRStateData));
-        break;
     case C3D_ERS_TMAP_EN:
-        tmapEnable(*reinterpret_cast<C3D_BOOL *>(pRStateData));
+        tmapEnable(*reinterpret_cast<bool *>(pRStateData));
         break;
     case C3D_ERS_TMAP_SELECT:
         tmapSelect(*reinterpret_cast<C3D_HTX *>(pRStateData));
         break;
-    case C3D_ERS_TMAP_LIGHT:
-        tmapLight(*reinterpret_cast<C3D_ETLIGHT *>(pRStateData));
-        break;
     case C3D_ERS_TMAP_FILTER:
         tmapFilter(*reinterpret_cast<C3D_ETEXFILTER *>(pRStateData));
-        break;
-    case C3D_ERS_TMAP_TEXOP:
-        tmapTexOp(*reinterpret_cast<C3D_ETEXOP *>(pRStateData));
         break;
     case C3D_ERS_ALPHA_SRC:
         alphaSrc(*reinterpret_cast<C3D_EASRC *>(pRStateData));
         break;
     case C3D_ERS_ALPHA_DST:
         alphaDst(*reinterpret_cast<C3D_EADST *>(pRStateData));
-        break;
-    case C3D_ERS_Z_CMP_FNC:
-        zCmpFunc(*reinterpret_cast<C3D_EZCMP *>(pRStateData));
-        break;
-    case C3D_ERS_Z_MODE:
-        zMode(*reinterpret_cast<C3D_EZMODE *>(pRStateData));
         break;
     default:
         LOG_ERROR("Unsupported state: %d", eRStateID);
@@ -207,37 +186,16 @@ bool Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
     return true;
 }
 
-void Renderer::vertexType(C3D_EVERTEX value)
-{
-    m_vertexStream.renderPending();
-    m_vertexStream.vertexType(value);
-}
-
 void Renderer::primType(C3D_EPRIM value)
 {
     m_vertexStream.renderPending();
     m_vertexStream.primType(value);
 }
 
-void Renderer::solidColor(C3D_COLOR value)
+void Renderer::tmapEnable(bool value)
 {
     m_vertexStream.renderPending();
-    C3D_COLOR color = value;
-    GFX_GL_Program_Uniform4f(
-        &m_program, m_loc_solidColor, color.r / 255.0f, color.g / 255.0f,
-        color.b / 255.0f, color.a / 255.0f);
-}
-
-void Renderer::shadeMode(C3D_ESHADE value)
-{
-    m_vertexStream.renderPending();
-    GFX_GL_Program_Uniform1i(&m_program, m_loc_shadeMode, value);
-}
-
-void Renderer::tmapEnable(C3D_BOOL value)
-{
-    m_vertexStream.renderPending();
-    C3D_BOOL enable = value;
+    bool enable = value;
     GFX_GL_Program_Uniform1i(&m_program, m_loc_tmapEn, enable);
     if (enable) {
         glEnable(GL_TEXTURE_2D);
@@ -281,12 +239,6 @@ void Renderer::tmapRestore()
     tmapSelectImpl(m_tmapSelect);
 }
 
-void Renderer::tmapLight(C3D_ETLIGHT value)
-{
-    m_vertexStream.renderPending();
-    GFX_GL_Program_Uniform1i(&m_program, m_loc_tmapLight, value);
-}
-
 void Renderer::tmapFilter(C3D_ETEXFILTER value)
 {
     m_vertexStream.renderPending();
@@ -295,12 +247,6 @@ void Renderer::tmapFilter(C3D_ETEXFILTER value)
         &m_sampler, GL_TEXTURE_MAG_FILTER, GLCIF_TEXTURE_MAG_FILTER[filter]);
     GFX_GL_Sampler_Parameteri(
         &m_sampler, GL_TEXTURE_MIN_FILTER, GLCIF_TEXTURE_MIN_FILTER[filter]);
-}
-
-void Renderer::tmapTexOp(C3D_ETEXOP value)
-{
-    m_vertexStream.renderPending();
-    GFX_GL_Program_Uniform1i(&m_program, m_loc_texOp, value);
 }
 
 void Renderer::alphaSrc(C3D_EASRC value)
@@ -319,28 +265,6 @@ void Renderer::alphaDst(C3D_EADST value)
     C3D_EASRC alphaSrc = m_easrc;
     C3D_EADST alphaDst = value;
     glBlendFunc(GLCIF_BLEND_FUNC[alphaSrc], GLCIF_BLEND_FUNC[alphaDst]);
-}
-
-void Renderer::zCmpFunc(C3D_EZCMP value)
-{
-    m_vertexStream.renderPending();
-    C3D_EZCMP func = value;
-    if (func < C3D_EZCMP_MAX) {
-        glDepthFunc(GLCIF_DEPTH_FUNC[func]);
-    }
-}
-
-void Renderer::zMode(C3D_EZMODE value)
-{
-    m_vertexStream.renderPending();
-    auto mode = value;
-    glDepthMask(GLCIF_DEPTH_MASK[mode]);
-
-    if (mode > C3D_EZMODE_TESTON) {
-        glEnable(GL_DEPTH_TEST);
-    } else {
-        glDisable(GL_DEPTH_TEST);
-    }
 }
 
 }

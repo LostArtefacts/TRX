@@ -28,81 +28,41 @@ VertexStream::~VertexStream()
     GFX_GL_Buffer_Close(&m_vertexBuffer);
 }
 
-bool VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, C3D_UINT32 numVert)
+bool VertexStream::addPrimStrip(C3D_VSTRIP vertStrip, int numVert)
 {
-    bool result = false;
-
     // note: strips are converted to lists, since they can't be properly
     // batched otherwise
-    switch (m_vertexType) {
-    case C3D_EV_VTCF: {
-        auto vStripVtcf = reinterpret_cast<C3D_VTCF *>(vertStrip);
+    auto vStripVtcf = reinterpret_cast<C3D_VTCF *>(vertStrip);
 
-        if (m_primType != C3D_EPRIM_TRI) {
-            LOG_ERROR("Unsupported prim type: %d", m_primType);
-            return false;
-        }
-
-        if (numVert <= 2) {
-            for (C3D_UINT32 i = 0; i < numVert; i++) {
-                m_vtcBuffer.push_back(vStripVtcf[i]);
-            }
-        } else {
-            for (C3D_UINT32 i = 2; i < numVert; i++) {
-                m_vtcBuffer.push_back(vStripVtcf[i - 2]);
-                m_vtcBuffer.push_back(vStripVtcf[i - 1]);
-                m_vtcBuffer.push_back(vStripVtcf[i]);
-            }
-        }
-
-        result = true;
-        break;
+    if (m_primType != C3D_EPRIM_TRI) {
+        LOG_ERROR("Unsupported prim type: %d", m_primType);
+        return false;
     }
 
-    default:
-        LOG_ERROR("Unsupported vertex type: %d", m_vertexType);
+    if (numVert <= 2) {
+        for (int i = 0; i < numVert; i++) {
+            m_vtcBuffer.push_back(vStripVtcf[i]);
+        }
+    } else {
+        for (int i = 2; i < numVert; i++) {
+            m_vtcBuffer.push_back(vStripVtcf[i - 2]);
+            m_vtcBuffer.push_back(vStripVtcf[i - 1]);
+            m_vtcBuffer.push_back(vStripVtcf[i]);
+        }
     }
 
-    return result;
+    return true;
 }
 
-bool VertexStream::addPrimList(C3D_VLIST vertList, C3D_UINT32 numVert)
+bool VertexStream::addPrimList(C3D_VLIST vertList, int numVert)
 {
-    bool result = false;
-
-    switch (m_vertexType) {
-    case C3D_EV_VTCF: {
-        // copy vertices to vertex vector buffer, then to the vertex buffer
-        // (OpenGL can't handle arrays of pointers)
-        auto vListVtcf = reinterpret_cast<C3D_VTCF **>(vertList);
-
-        if (m_primType == C3D_EPRIM_QUAD) {
-            // triangulate quads
-            for (C3D_UINT32 i = 0; i < numVert; i += 4) {
-                m_vtcBuffer.push_back(*vListVtcf[i + 0]);
-                m_vtcBuffer.push_back(*vListVtcf[i + 1]);
-                m_vtcBuffer.push_back(*vListVtcf[i + 3]);
-
-                m_vtcBuffer.push_back(*vListVtcf[i + 1]);
-                m_vtcBuffer.push_back(*vListVtcf[i + 2]);
-                m_vtcBuffer.push_back(*vListVtcf[i + 3]);
-            }
-        } else {
-            // direct copy
-            for (C3D_UINT32 i = 0; i < numVert; i++) {
-                m_vtcBuffer.push_back(*vListVtcf[i]);
-            }
-        }
-
-        result = true;
-        break;
+    // copy vertices to vertex vector buffer, then to the vertex buffer
+    // (OpenGL can't handle arrays of pointers)
+    auto vListVtcf = reinterpret_cast<C3D_VTCF **>(vertList);
+    for (int i = 0; i < numVert; i++) {
+        m_vtcBuffer.push_back(*vListVtcf[i]);
     }
-
-    default:
-        LOG_ERROR("Unsupported vertex type: %d", m_vertexType);
-    }
-
-    return result;
+    return true;
 }
 
 void VertexStream::renderPrims(std::vector<C3D_VTCF> prims)
@@ -143,11 +103,6 @@ void VertexStream::renderPending()
 void VertexStream::primType(C3D_EPRIM primType)
 {
     m_primType = primType;
-}
-
-void VertexStream::vertexType(C3D_EVERTEX vertexType)
-{
-    m_vertexType = vertexType;
 }
 
 void VertexStream::bind()
