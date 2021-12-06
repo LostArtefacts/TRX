@@ -41,9 +41,6 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
-float S_Audio_Clamp(float min, float max, float val);
-float S_Audio_InverseLerp(float from, float to, float val);
-
 void S_Audio_SampleSoundInit();
 void S_Audio_SampleSoundShutdown();
 void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
