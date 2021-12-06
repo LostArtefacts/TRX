@@ -79,7 +79,6 @@ typedef struct {
     void *apvLevels[11];
     uint32_t u32MaxMapXSizeLg2;
     uint32_t u32MaxMapYSizeLg2;
-    C3D_COLOR clrTexChromaKey;
 } C3D_TMAP, *C3D_PTMAP;
 
 typedef void *C3D_HRC;

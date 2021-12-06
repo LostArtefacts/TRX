@@ -26,7 +26,6 @@ Renderer::Renderer()
     m_loc_matModelView =
         GFX_GL_Program_UniformLocation(&m_program, "matModelView");
     m_loc_tmapEn = GFX_GL_Program_UniformLocation(&m_program, "tmapEn");
-    m_loc_chromaKey = GFX_GL_Program_UniformLocation(&m_program, "chromaKey");
 
     GFX_GL_Program_FragmentData(&m_program, "fragColor");
     GFX_GL_Program_Bind(&m_program);
@@ -221,12 +220,6 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
     // get texture object and bind it
     auto texture = it->second;
     texture->bind();
-
-    // send chroma key color to shader
-    auto ck = texture->chromaKey();
-    GFX_GL_Program_Uniform3f(
-        &m_program, m_loc_chromaKey, ck.r / 255.0f, ck.g / 255.0f,
-        ck.b / 255.0f);
 }
 
 void Renderer::tmapRestore()

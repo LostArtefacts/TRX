@@ -41,8 +41,6 @@ GLuint Texture::id()
 
 bool Texture::load(C3D_PTMAP tmap)
 {
-    m_chromaKey = tmap->clrTexChromaKey;
-
     // convert and generate texture for each level
     uint32_t width = 1 << tmap->u32MaxMapXSizeLg2;
     uint32_t height = 1 << tmap->u32MaxMapYSizeLg2;
@@ -75,11 +73,6 @@ bool Texture::load(C3D_PTMAP tmap)
 
     GFX_GL_CheckError();
     return true;
-}
-
-C3D_COLOR &Texture::chromaKey()
-{
-    return m_chromaKey;
 }
 
 }

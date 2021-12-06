@@ -27,7 +27,6 @@
 
 static C3D_HTX m_ATITextureMap[MAX_TEXTPAGES];
 static C3D_PALETTENTRY m_ATIPalette[256];
-static C3D_COLOR m_ATIChromaKey;
 
 static RGB888 m_GamePalette[256];
 static bool m_IsPaletteActive = false;
@@ -635,28 +634,10 @@ void S_Output_SetPalette(RGB888 palette[256])
 {
     for (int i = 0; i < 256; i++) {
         m_GamePalette[i] = palette[i];
+        m_ATIPalette[i].r = 4 * palette[i].r;
+        m_ATIPalette[i].g = 4 * palette[i].g;
+        m_ATIPalette[i].b = 4 * palette[i].b;
     }
-
-    m_ATIPalette[0].r = 0;
-    m_ATIPalette[0].g = 0;
-    m_ATIPalette[0].b = 0;
-
-    for (int i = 1; i < 256; i++) {
-        if (palette[i].r || palette[i].g || palette[i].b) {
-            m_ATIPalette[i].r = 4 * palette[i].r;
-            m_ATIPalette[i].g = 4 * palette[i].g;
-            m_ATIPalette[i].b = 4 * palette[i].b;
-        } else {
-            m_ATIPalette[i].r = 1;
-            m_ATIPalette[i].g = 1;
-            m_ATIPalette[i].b = 1;
-        }
-    }
-
-    m_ATIChromaKey.r = 0;
-    m_ATIChromaKey.g = 0;
-    m_ATIChromaKey.b = 0;
-    m_ATIChromaKey.a = 0;
 
     m_IsPaletteActive = true;
 }
@@ -1459,8 +1440,12 @@ void S_Output_DownloadTextures(int32_t pages)
         uint32_t *output_ptr = surface_desc.pixels;
         uint8_t *input_ptr = g_TexturePagePtrs[i];
         for (int j = 0; j < 256 * 256; j++) {
-            RGB888 pix = S_Output_GetPaletteColor(*input_ptr++);
-            *output_ptr++ = pix.b | (pix.g << 8) | (pix.r << 16) | (0xFF << 24);
+            uint8_t pal_idx = *input_ptr++;
+            // first color in the palette is chroma key, make it transparent
+            uint8_t alpha = pal_idx == 0 ? 0 : 0xFF;
+            RGB888 pix = S_Output_GetPaletteColor(pal_idx);
+            *output_ptr++ =
+                pix.b | (pix.g << 8) | (pix.r << 16) | (alpha << 24);
         }
 
         result =
@@ -1472,7 +1457,6 @@ void S_Output_DownloadTextures(int32_t pages)
         tmap.apvLevels[0] = surface_desc.pixels;
         tmap.u32MaxMapXSizeLg2 = 8;
         tmap.u32MaxMapYSizeLg2 = 8;
-        tmap.clrTexChromaKey = m_ATIChromaKey;
         m_TextureLoaded[i] = ATI3DCIF_TextureReg(&tmap, &m_ATITextureMap[i]);
     }
 

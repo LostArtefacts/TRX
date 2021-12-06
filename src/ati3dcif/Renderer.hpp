@@ -90,7 +90,6 @@ private:
     GLint m_loc_matProjection;
     GLint m_loc_matModelView;
     GLint m_loc_tmapEn;
-    GLint m_loc_chromaKey;
 };
 
 }
