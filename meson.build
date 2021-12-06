@@ -77,7 +77,6 @@ sources = [
   'src/3dsystem/phd_math.c',
   'src/ati3dcif/Interop.cpp',
   'src/ati3dcif/Renderer.cpp',
-  'src/ati3dcif/Texture.cpp',
   'src/ati3dcif/VertexStream.cpp',
   'src/config.c',
   'src/filesystem.c',

@@ -53,7 +53,7 @@ typedef enum {
     C3D_EADST_NUM = 8,
 } C3D_EADST;
 
-typedef void *C3D_HTX;
+typedef int C3D_HTX;
 typedef C3D_HTX *C3D_PHTX;
 
 typedef enum {

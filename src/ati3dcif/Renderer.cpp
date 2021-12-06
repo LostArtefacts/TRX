@@ -109,14 +109,12 @@ void Renderer::renderEnd()
 bool Renderer::textureReg(
     const void *data, int width, int height, C3D_PHTX phtmap)
 {
-    auto texture = std::make_shared<Texture>();
-    texture->bind();
-    if (!texture->load(data, width, height)) {
-        return false;
-    }
+    GFX_GL_Texture *texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
+    GFX_GL_Texture_Bind(texture);
+    GFX_GL_Texture_Load(texture, data, width, height);
 
     // use id as texture handle
-    *phtmap = reinterpret_cast<C3D_HTX>(texture->id());
+    *phtmap = static_cast<C3D_HTX>(texture->id);
 
     // store in texture map
     m_textures[*phtmap] = texture;
@@ -141,7 +139,8 @@ bool Renderer::textureUnreg(C3D_HTX htxToUnreg)
         tmapSelect(0);
     }
 
-    std::shared_ptr<Texture> texture = it->second;
+    GFX_GL_Texture *texture = it->second;
+    GFX_GL_Texture_Free(texture);
     m_textures.erase(htxToUnreg);
     return true;
 }
@@ -219,8 +218,8 @@ void Renderer::tmapSelectImpl(C3D_HTX handle)
     assert(it != m_textures.end());
 
     // get texture object and bind it
-    auto texture = it->second;
-    texture->bind();
+    GFX_GL_Texture *texture = it->second;
+    GFX_GL_Texture_Bind(texture);
 }
 
 void Renderer::tmapRestore()

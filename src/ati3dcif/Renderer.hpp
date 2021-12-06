@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ati3dcif/Texture.hpp"
 #include "ati3dcif/VertexStream.hpp"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
+#include "gfx/gl/texture.h"
 
 #include <array>
 #include <map>
@@ -76,13 +76,13 @@ private:
     void tmapRestore();
 
     bool m_wireframe = false;
-    std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
+    std::map<C3D_HTX, GFX_GL_Texture *> m_textures;
     GFX_GL_Program m_program;
     GFX_GL_Sampler m_sampler;
     VertexStream m_vertexStream;
 
     // state data
-    C3D_HTX m_tmapSelect = NULL;
+    C3D_HTX m_tmapSelect = 0;
     C3D_EASRC m_easrc = C3D_EASRC_ONE;
     C3D_EADST m_eadst = C3D_EADST_ZERO;
 

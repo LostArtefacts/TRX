@@ -1163,7 +1163,7 @@ bool S_Output_Init()
     ATI3DCIF_Init();
 
     for (i = 0; i < MAX_TEXTPAGES; i++) {
-        m_ATITextureMap[i] = NULL;
+        m_ATITextureMap[i] = 0;
         m_TextureSurfaces[i] = NULL;
     }
 
