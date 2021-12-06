@@ -25,7 +25,7 @@
         }                                                                      \
     }
 
-static C3D_HTX m_ATITextureMap[MAX_TEXTPAGES];
+static C3D_HTX m_TextureMap[GFX_MAX_TEXTURES];
 static C3D_PALETTENTRY m_ATIPalette[256];
 
 static RGB888 m_GamePalette[256];
@@ -34,7 +34,6 @@ static bool m_IsRendering = false;
 static bool m_IsRenderingOld = false;
 static bool m_IsTextureMode = false;
 static int32_t m_SelectedTexture = -1;
-static bool m_TextureLoaded[MAX_TEXTPAGES] = { false };
 
 static int32_t m_SurfaceWidth = 0;
 static int32_t m_SurfaceHeight = 0;
@@ -45,7 +44,7 @@ static float m_SurfaceMaxY = 0.0f;
 static GFX_2D_Surface *m_PrimarySurface = NULL;
 static GFX_2D_Surface *m_BackSurface = NULL;
 static GFX_2D_Surface *m_PictureSurface = NULL;
-static GFX_2D_Surface *m_TextureSurfaces[MAX_TEXTPAGES] = { NULL };
+static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
 static void S_Output_SetHardwareVideoMode();
 static void S_Output_SetupRenderContextAndRender();
@@ -87,7 +86,7 @@ static void S_Output_SetHardwareVideoMode()
         S_Output_ClearSurface(m_PrimarySurface);
     }
 
-    for (int i = 0; i < MAX_TEXTPAGES; i++) {
+    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         GFX_2D_SurfaceDesc surface_desc = {
             .width = 256,
             .height = 256,
@@ -120,7 +119,7 @@ static void S_Output_ReleaseSurfaces()
         m_BackSurface = NULL;
     }
 
-    for (i = 0; i < MAX_TEXTPAGES; i++) {
+    for (i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureSurfaces[i]) {
             GFX_2D_Surface_Free(m_TextureSurfaces[i]);
             m_TextureSurfaces[i] = NULL;
@@ -768,16 +767,12 @@ void S_Output_SelectTexture(int tex_num)
         return;
     }
 
-    if (!m_TextureLoaded[tex_num]) {
-        return;
-    }
-
-    if (!m_ATITextureMap[tex_num]) {
+    if (m_TextureMap[tex_num] == GFX_NO_TEXTURE) {
         LOG_ERROR("ERROR: Attempt to select unloaded texture");
         return;
     }
 
-    if (!ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_ATITextureMap[tex_num])) {
+    if (!ATI3DCIF_SetState(C3D_ERS_TMAP_SELECT, &m_TextureMap[tex_num])) {
         LOG_ERROR("    Texture error");
         return;
     }
@@ -865,7 +860,7 @@ void S_Output_DrawSprite(
         return;
     }
 
-    if (m_TextureLoaded[sprite->tpage]) {
+    if (m_TextureMap[sprite->tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(sprite->tpage);
         S_Output_DrawTriangleStrip(vertices, vertex_count);
@@ -1156,19 +1151,16 @@ void S_Output_SetFullscreen(bool fullscreen)
 
 bool S_Output_Init()
 {
-    int32_t i;
-    int32_t tmp;
-
     GFX_Context_Attach(g_TombHWND);
-    ATI3DCIF_Init();
 
-    for (i = 0; i < MAX_TEXTPAGES; i++) {
-        m_ATITextureMap[i] = 0;
+    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
+        m_TextureMap[i] = GFX_NO_TEXTURE;
         m_TextureSurfaces[i] = NULL;
     }
 
     S_Output_SetHardwareVideoMode();
 
+    int32_t tmp;
     tmp = C3D_EPRIM_TRI;
     ATI3DCIF_SetState(C3D_ERS_PRIM_TYPE, &tmp);
     tmp = C3D_ETFILT_MINPNT_MAGPNT;
@@ -1180,7 +1172,6 @@ bool S_Output_Init()
 void S_Output_Shutdown()
 {
     S_Output_ReleaseSurfaces();
-    ATI3DCIF_Term();
     GFX_Context_Detach();
 }
 
@@ -1328,7 +1319,7 @@ void S_Output_DrawTexturedTriangle(
         return;
     }
 
-    if (m_TextureLoaded[tpage]) {
+    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
         S_Output_DrawTriangleStrip(vertices, vertex_count);
@@ -1406,7 +1397,7 @@ void S_Output_DrawTexturedQuad(
         Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
-    if (m_TextureLoaded[tpage]) {
+    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
     } else {
@@ -1418,18 +1409,15 @@ void S_Output_DrawTexturedQuad(
 
 void S_Output_DownloadTextures(int32_t pages)
 {
-    if (pages > MAX_TEXTPAGES) {
+    if (pages > GFX_MAX_TEXTURES) {
         Shell_ExitSystem("Attempt to download more than texture page limit");
     }
 
-    for (int i = 0; i < MAX_TEXTPAGES; i++) {
-        if (m_ATITextureMap[i]) {
-            if (!ATI3DCIF_TextureUnreg(m_ATITextureMap[i])) {
-                Shell_ExitSystem("ERROR: Could not unregister texture");
-            }
-            m_ATITextureMap[i] = 0;
+    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
+            ATI3DCIF_TextureUnreg(m_TextureMap[i]);
+            m_TextureMap[i] = GFX_NO_TEXTURE;
         }
-        m_TextureLoaded[i] = false;
     }
 
     for (int i = 0; i < pages; i++) {
@@ -1452,9 +1440,8 @@ void S_Output_DownloadTextures(int32_t pages)
             GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
         S_Output_CheckError(result);
 
-        m_TextureLoaded[i] = ATI3DCIF_TextureReg(
-            surface_desc.pixels, surface_desc.width, surface_desc.height,
-            &m_ATITextureMap[i]);
+        m_TextureMap[i] = ATI3DCIF_TextureReg(
+            surface_desc.pixels, surface_desc.width, surface_desc.height);
     }
 
     m_SelectedTexture = -1;

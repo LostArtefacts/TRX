@@ -9,11 +9,8 @@ extern "C" {
     #include <stdbool.h>
 #endif
 
-void ATI3DCIF_Term(void);
-void ATI3DCIF_Init(void);
-bool ATI3DCIF_TextureReg(
-    const void *data, int width, int height, C3D_PHTX phtmap);
-bool ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg);
+int ATI3DCIF_TextureReg(const void *data, int width, int height);
+bool ATI3DCIF_TextureUnreg(int texture_num);
 bool ATI3DCIF_SetState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
 void ATI3DCIF_RenderBegin(void);
 void ATI3DCIF_RenderEnd(void);
