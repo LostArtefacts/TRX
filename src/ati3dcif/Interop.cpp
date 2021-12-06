@@ -44,19 +44,6 @@ bool ATI3DCIF_TextureUnreg(C3D_HTX htxToUnreg)
     return renderer->textureUnreg(htxToUnreg);
 }
 
-bool ATI3DCIF_TexturePaletteCreate(
-    C3D_ECI_TMAP_TYPE epalette, void *pPalette, C3D_PHTXPAL phtpalCreated)
-{
-    assert(renderer);
-    return renderer->texturePaletteCreate(epalette, pPalette, phtpalCreated);
-}
-
-void ATI3DCIF_TexturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
-{
-    assert(renderer);
-    renderer->texturePaletteDestroy(htxpalToDestroy);
-}
-
 bool ATI3DCIF_SetState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 {
     assert(renderer);

@@ -16,7 +16,7 @@ public:
     GLenum target();
     GLuint id();
 
-    bool load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette);
+    bool load(C3D_PTMAP tmap);
     C3D_COLOR &chromaKey();
 
 private:

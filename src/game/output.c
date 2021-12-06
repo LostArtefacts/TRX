@@ -412,7 +412,7 @@ void Output_SetPalette(RGB888 palette[256])
     S_Output_SetPalette(palette);
 }
 
-RGB888 Output_GetPaletteColor(int8_t idx)
+RGB888 Output_GetPaletteColor(uint8_t idx)
 {
     return S_Output_GetPaletteColor(idx);
 }

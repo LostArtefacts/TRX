@@ -26,10 +26,10 @@
     }
 
 static C3D_HTX m_ATITextureMap[MAX_TEXTPAGES];
-static C3D_HTXPAL m_ATITexturePalette;
 static C3D_PALETTENTRY m_ATIPalette[256];
 static C3D_COLOR m_ATIChromaKey;
 
+static RGB888 m_GamePalette[256];
 static bool m_IsPaletteActive = false;
 static bool m_IsRendering = false;
 static bool m_IsRenderingOld = false;
@@ -92,7 +92,6 @@ static void S_Output_SetHardwareVideoMode()
         GFX_2D_SurfaceDesc surface_desc = {
             .width = 256,
             .height = 256,
-            .bit_count = 8,
         };
         m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
     }
@@ -634,14 +633,16 @@ void S_Output_RenderToggle()
 
 void S_Output_SetPalette(RGB888 palette[256])
 {
-    int32_t i;
+    for (int i = 0; i < 256; i++) {
+        m_GamePalette[i] = palette[i];
+    }
 
     m_ATIPalette[0].r = 0;
     m_ATIPalette[0].g = 0;
     m_ATIPalette[0].b = 0;
     m_ATIPalette[0].flags = C3D_LOAD_PALETTE_ENTRY;
 
-    for (i = 1; i < 256; i++) {
+    for (int i = 1; i < 256; i++) {
         if (palette[i].r || palette[i].g || palette[i].b) {
             m_ATIPalette[i].r = 4 * palette[i].r;
             m_ATIPalette[i].g = 4 * palette[i].g;
@@ -662,7 +663,7 @@ void S_Output_SetPalette(RGB888 palette[256])
     m_IsPaletteActive = true;
 }
 
-RGB888 S_Output_GetPaletteColor(int8_t idx)
+RGB888 S_Output_GetPaletteColor(uint8_t idx)
 {
     RGB888 ret;
     ret.r = m_ATIPalette[idx].r;
@@ -1235,9 +1236,9 @@ void S_Output_DrawFlatTriangle(
         return;
     }
 
-    r = m_ATIPalette[color].r / 4;
-    g = m_ATIPalette[color].g / 4;
-    b = m_ATIPalette[color].b / 4;
+    r = m_GamePalette[color].r;
+    g = m_GamePalette[color].g;
+    b = m_GamePalette[color].b;
 
     Output_ApplyWaterEffect(&r, &g, &b);
 
@@ -1464,26 +1465,17 @@ void S_Output_DownloadTextures(int32_t pages)
         m_TextureLoaded[i] = false;
     }
 
-    if (m_IsPaletteActive) {
-        if (m_ATITexturePalette) {
-            ATI3DCIF_TexturePaletteDestroy(m_ATITexturePalette);
-            m_ATITexturePalette = NULL;
-        }
-        if (!ATI3DCIF_TexturePaletteCreate(
-                C3D_ECI_TMAP_8BIT, m_ATIPalette, &m_ATITexturePalette)) {
-            Shell_ExitSystem("ERROR: Cannot create texture palette");
-        }
-        m_IsPaletteActive = false;
-    }
-
     for (int i = 0; i < pages; i++) {
         GFX_2D_SurfaceDesc surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
-        memcpy(
-            surface_desc.pixels, g_TexturePagePtrs[i],
-            256 * 256); // paletted 256x256 textures
+        uint32_t *output_ptr = surface_desc.pixels;
+        uint8_t *input_ptr = g_TexturePagePtrs[i];
+        for (int j = 0; j < 256 * 256; j++) {
+            RGB888 pix = S_Output_GetPaletteColor(*input_ptr++);
+            *output_ptr++ = pix.b | (pix.g << 8) | (pix.r << 16) | (0xFF << 24);
+        }
 
         result =
             GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
@@ -1495,9 +1487,8 @@ void S_Output_DownloadTextures(int32_t pages)
         tmap.apvLevels[0] = (C3D_PVOID)surface_desc.pixels;
         tmap.u32MaxMapXSizeLg2 = 8;
         tmap.u32MaxMapYSizeLg2 = 8;
-        tmap.eTexFormat = C3D_ETF_CI8;
+        tmap.eTexFormat = C3D_ETF_RGB8888;
         tmap.clrTexChromaKey = m_ATIChromaKey;
-        tmap.htxpalTexPalette = m_ATITexturePalette;
         tmap.bClampS = FALSE;
         tmap.bClampT = FALSE;
         tmap.bAlphaBlend = FALSE;

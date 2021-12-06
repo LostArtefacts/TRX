@@ -611,12 +611,12 @@ static bool Level_LoadTexturePages(MYFILE *fp)
 {
     File_Read(&m_TexturePageCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d texture pages", m_TexturePageCount);
-    int8_t *base =
-        GameBuf_Alloc(m_TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
-    File_Read(base, 65536, m_TexturePageCount, fp);
+    uint8_t *base =
+        GameBuf_Alloc(m_TexturePageCount * 256 * 256, GBUF_TEXTURE_PAGES);
+    File_Read(base, 256 * 256, m_TexturePageCount, fp);
     for (int i = 0; i < m_TexturePageCount; i++) {
         g_TexturePagePtrs[i] = base;
-        base += 65536;
+        base += 256 * 256;
     }
     return true;
 }

@@ -111,7 +111,7 @@ bool Renderer::textureReg(C3D_PTMAP ptmapToReg, C3D_PHTX phtmap)
 {
     auto texture = std::make_shared<Texture>();
     texture->bind();
-    if (!texture->load(ptmapToReg, m_palettes[ptmapToReg->htxpalTexPalette])) {
+    if (!texture->load(ptmapToReg)) {
         return false;
     }
 
@@ -144,33 +144,6 @@ bool Renderer::textureUnreg(C3D_HTX htxToUnreg)
     std::shared_ptr<Texture> texture = it->second;
     m_textures.erase(htxToUnreg);
     return true;
-}
-
-bool Renderer::texturePaletteCreate(
-    C3D_ECI_TMAP_TYPE epalette, void *pPalette, C3D_PHTXPAL phtpalCreated)
-{
-    if (epalette != C3D_ECI_TMAP_8BIT) {
-        LOG_ERROR("Unsupported palette type: %d", epalette);
-        return false;
-    }
-
-    // copy palette entries to vector
-    auto palettePtr = static_cast<C3D_PPALETTENTRY>(pPalette);
-    std::vector<C3D_PALETTENTRY> palette(palettePtr, palettePtr + 256);
-
-    // create new palette handle
-    auto handle = reinterpret_cast<C3D_HTXPAL>(m_paletteID++);
-
-    // store palette
-    m_palettes[handle] = palette;
-
-    *phtpalCreated = handle;
-    return true;
-}
-
-void Renderer::texturePaletteDestroy(C3D_HTXPAL htxpalToDestroy)
-{
-    m_palettes.erase(htxpalToDestroy);
 }
 
 void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, C3D_UINT32 u32NumVert)

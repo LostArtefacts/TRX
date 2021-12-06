@@ -39,7 +39,7 @@ GLuint Texture::id()
     return m_GLTexture.id;
 }
 
-bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
+bool Texture::load(C3D_PTMAP tmap)
 {
     m_chromaKey = tmap->clrTexChromaKey;
 
@@ -95,29 +95,10 @@ bool Texture::load(C3D_PTMAP tmap, std::vector<C3D_PALETTENTRY> &palette)
             break;
         }
 
-        case C3D_ETF_CI8: {
-            uint8_t *src = static_cast<uint8_t *>(tmap->apvLevels[level]);
-
-            std::vector<uint8_t> dst;
-            // TODO: implement texture packs
-
-            // Resolve indices to RGBA, which requires less code and is
-            // faster than texture palettes in shaders.
-            // Modern hardware really doesn't care about a few KB more
-            // or less per texture anyway.
-            dst.resize(size * 4);
-            for (uint32_t i = 0; i < size; i++) {
-                C3D_PALETTENTRY c = palette[src[i]];
-                dst[i * 4 + 0] = c.r;
-                dst[i * 4 + 1] = c.g;
-                dst[i * 4 + 2] = c.b;
-                dst[i * 4 + 3] = 0xFF;
-            }
-
-            // upload texture data
+        case C3D_ETF_RGB8888: {
             glTexImage2D(
-                GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA,
-                GL_UNSIGNED_BYTE, &dst[0]);
+                GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_BGRA,
+                GL_UNSIGNED_BYTE, tmap->apvLevels[level]);
 
             break;
         }

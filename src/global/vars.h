@@ -64,7 +64,7 @@ extern int16_t *g_MeshBase;
 extern int16_t **g_Meshes;
 extern OBJECT_INFO g_Objects[O_NUMBER_OF];
 extern STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF];
-extern int8_t *g_TexturePagePtrs[MAX_TEXTPAGES];
+extern uint8_t *g_TexturePagePtrs[MAX_TEXTPAGES];
 extern int16_t g_RoomCount;
 extern int32_t g_LevelItemCount;
 extern ITEM_INFO *g_Items;

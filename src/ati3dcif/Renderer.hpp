@@ -75,8 +75,6 @@ public:
     void renderEnd();
     bool textureReg(C3D_PTMAP, C3D_PHTX);
     bool textureUnreg(C3D_HTX);
-    bool texturePaletteCreate(C3D_ECI_TMAP_TYPE, void *, C3D_PHTXPAL);
-    void texturePaletteDestroy(C3D_HTXPAL);
     void renderPrimStrip(C3D_VSTRIP, C3D_UINT32);
     void renderPrimList(C3D_VLIST, C3D_UINT32);
     bool setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData);
@@ -104,8 +102,6 @@ private:
 
     bool m_wireframe = false;
     std::map<C3D_HTX, std::shared_ptr<Texture>> m_textures;
-    std::map<C3D_HTXPAL, std::vector<C3D_PALETTENTRY>> m_palettes;
-    int32_t m_paletteID = 0;
     GFX_GL_Program m_program;
     GFX_GL_Sampler m_sampler;
     VertexStream m_vertexStream;

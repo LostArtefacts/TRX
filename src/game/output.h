@@ -14,7 +14,7 @@ void Output_ApplyResolution();
 void Output_DownloadTextures(int page_count);
 
 void Output_SetPalette(RGB888 palette[256]);
-RGB888 Output_GetPaletteColor(int8_t idx);
+RGB888 Output_GetPaletteColor(uint8_t idx);
 
 int32_t Output_GetNearZ();
 int32_t Output_GetFarZ();
