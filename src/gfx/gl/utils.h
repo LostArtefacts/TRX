@@ -10,12 +10,4 @@
         }                                                                      \
     }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 const char *GFX_GL_GetErrorString(GLenum err);
-
-#ifdef __cplusplus
-}
-#endif

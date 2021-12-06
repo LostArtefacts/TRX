@@ -1,13 +1,7 @@
 #pragma once
 
-#ifdef __cplusplus
-    #include <cstdbool>
-    #include <cstdint>
-extern "C" {
-#else
-    #include <stdbool.h>
-    #include <stdint.h>
-#endif
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef struct GFX_BlitterRect {
     int32_t left;
@@ -26,7 +20,3 @@ typedef struct GFX_BlitterImage {
 void GFX_Blit(
     const GFX_BlitterImage *src_img, const GFX_BlitterRect *src_rect,
     GFX_BlitterImage *dst_img, const GFX_BlitterRect *dst_rect);
-
-#ifdef __cplusplus
-}
-#endif

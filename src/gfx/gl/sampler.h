@@ -2,10 +2,6 @@
 
 #include "gfx/gl/gl_core_3_3.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct GFX_GL_Sampler {
     GLuint id;
 } GFX_GL_Sampler;
@@ -18,7 +14,3 @@ void GFX_GL_Sampler_Parameteri(
     GFX_GL_Sampler *sampler, GLenum pname, GLint param);
 void GFX_GL_Sampler_Parameterf(
     GFX_GL_Sampler *sampler, GLenum pname, GLfloat param);
-
-#ifdef __cplusplus
-}
-#endif

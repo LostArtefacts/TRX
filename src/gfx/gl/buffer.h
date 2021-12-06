@@ -2,10 +2,6 @@
 
 #include "gfx/gl/gl_core_3_3.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct GFX_GL_Buffer {
     GLuint id;
     GLenum target;
@@ -22,7 +18,3 @@ void GFX_GL_Buffer_SubData(
 void *GFX_GL_Buffer_Map(GFX_GL_Buffer *buf, GLenum access);
 void GFX_GL_Buffer_Unmap(GFX_GL_Buffer *buf);
 GLint GFX_GL_Buffer_Parameter(GFX_GL_Buffer *buf, GLenum pname);
-
-#ifdef __cplusplus
-}
-#endif

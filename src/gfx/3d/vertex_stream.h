@@ -3,12 +3,7 @@
 #include "gfx/gl/buffer.h"
 #include "gfx/gl/vertex_array.h"
 
-#ifdef __cplusplus
-    #include <cstdbool>
-extern "C" {
-#else
-    #include <stdbool.h>
-#endif
+#include <stdbool.h>
 
 typedef enum {
     GFX_3D_PRIM_LINE = 0,
@@ -47,7 +42,3 @@ bool GFX_3D_VertexStream_PushPrimList(
     GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
 
 void GFX_3D_VertexStream_RenderPending(GFX_3D_VertexStream *vertex_stream);
-
-#ifdef __cplusplus
-}
-#endif

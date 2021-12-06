@@ -8,12 +8,7 @@
 #define GFX_MAX_TEXTURES 128
 #define GFX_NO_TEXTURE (-1)
 
-#ifdef __cplusplus
-    #include <cstdint>
-extern "C" {
-#else
-    #include <stdint.h>
-#endif
+#include <stdint.h>
 
 typedef struct GFX_3D_Renderer {
     bool wireframe;
@@ -56,7 +51,3 @@ void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
-
-#ifdef __cplusplus
-}
-#endif
