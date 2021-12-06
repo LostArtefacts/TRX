@@ -22,7 +22,9 @@ void S_Output_ApplyResolution();
 
 void S_Output_FadeToBlack();
 
-void S_Output_SetPalette();
+void S_Output_SetPalette(RGB888 palette[256]);
+RGB888 S_Output_GetPaletteColor(int8_t idx);
+
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_DownloadPicture(const PICTURE *pic);
 void S_Output_SelectTexture(int tex_num);

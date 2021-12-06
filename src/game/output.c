@@ -407,9 +407,14 @@ void Output_DownloadTextures(int page_count)
     S_Output_DownloadTextures(page_count);
 }
 
-void Output_SetPalette()
+void Output_SetPalette(RGB888 palette[256])
 {
-    S_Output_SetPalette();
+    S_Output_SetPalette(palette);
+}
+
+RGB888 Output_GetPaletteColor(int8_t idx)
+{
+    return S_Output_GetPaletteColor(idx);
 }
 
 void Output_ClearScreen()
@@ -685,8 +690,8 @@ void Output_DrawScreenLine(
 
 void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    RGB888 rgb_border_light = S_ColourFromPalette(15);
-    RGB888 rgb_border_dark = S_ColourFromPalette(31);
+    RGB888 rgb_border_light = Output_GetPaletteColor(15);
+    RGB888 rgb_border_dark = Output_GetPaletteColor(31);
     Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
     Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
     Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);

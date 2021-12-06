@@ -28,7 +28,6 @@ extern int32_t g_LsAdder;
 extern int32_t g_LsDivider;
 extern SHADOW_INFO g_ShadowInfo;
 
-extern RGB888 g_GamePalette[256];
 extern bool g_ModeLock;
 
 extern int32_t g_NoInputCount;

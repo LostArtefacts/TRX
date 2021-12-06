@@ -49,7 +49,6 @@ int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };
 int32_t g_ShadeTable[WIBBLE_SIZE] = { 0 };
 int32_t g_RandTable[WIBBLE_SIZE] = { 0 };
 
-RGB888 g_GamePalette[256] = { 0 };
 bool g_ModeLock = false;
 
 LARA_INFO g_Lara = { 0 };

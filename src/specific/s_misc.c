@@ -29,15 +29,6 @@ void S_FinishInventory()
     g_ModeLock = false;
 }
 
-RGB888 S_ColourFromPalette(int8_t idx)
-{
-    RGB888 ret;
-    ret.r = 4 * g_GamePalette[idx].r;
-    ret.g = 4 * g_GamePalette[idx].g;
-    ret.b = 4 * g_GamePalette[idx].b;
-    return ret;
-}
-
 int S_GetObjectBounds(int16_t *bptr)
 {
     if (g_PhdMatrixPtr->_23 >= Output_GetFarZ()) {

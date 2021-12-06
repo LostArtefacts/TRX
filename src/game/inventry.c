@@ -846,7 +846,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
                 case SHAPE_LINE:
                     Output_DrawScreenLine(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2,
-                        S_ColourFromPalette(spr->sprnum));
+                        Output_GetPaletteColor(spr->sprnum));
                     break;
                 case SHAPE_BOX:
                     Output_DrawScreenBox(

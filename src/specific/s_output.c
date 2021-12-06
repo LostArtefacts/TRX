@@ -632,7 +632,7 @@ void S_Output_RenderToggle()
     }
 }
 
-void S_Output_SetPalette()
+void S_Output_SetPalette(RGB888 palette[256])
 {
     int32_t i;
 
@@ -642,10 +642,10 @@ void S_Output_SetPalette()
     m_ATIPalette[0].flags = C3D_LOAD_PALETTE_ENTRY;
 
     for (i = 1; i < 256; i++) {
-        if (g_GamePalette[i].r || g_GamePalette[i].g || g_GamePalette[i].b) {
-            m_ATIPalette[i].r = 4 * g_GamePalette[i].r;
-            m_ATIPalette[i].g = 4 * g_GamePalette[i].g;
-            m_ATIPalette[i].b = 4 * g_GamePalette[i].b;
+        if (palette[i].r || palette[i].g || palette[i].b) {
+            m_ATIPalette[i].r = 4 * palette[i].r;
+            m_ATIPalette[i].g = 4 * palette[i].g;
+            m_ATIPalette[i].b = 4 * palette[i].b;
         } else {
             m_ATIPalette[i].r = 1;
             m_ATIPalette[i].g = 1;
@@ -660,6 +660,15 @@ void S_Output_SetPalette()
     m_ATIChromaKey.a = 0;
 
     m_IsPaletteActive = true;
+}
+
+RGB888 S_Output_GetPaletteColor(int8_t idx)
+{
+    RGB888 ret;
+    ret.r = m_ATIPalette[idx].r;
+    ret.g = m_ATIPalette[idx].g;
+    ret.b = m_ATIPalette[idx].b;
+    return ret;
 }
 
 void S_Output_DumpScreen()
@@ -1226,9 +1235,9 @@ void S_Output_DrawFlatTriangle(
         return;
     }
 
-    r = g_GamePalette[color].r;
-    g = g_GamePalette[color].g;
-    b = g_GamePalette[color].b;
+    r = m_ATIPalette[color].r / 4;
+    g = m_ATIPalette[color].g / 4;
+    b = m_ATIPalette[color].b / 4;
 
     Output_ApplyWaterEffect(&r, &g, &b);
 
