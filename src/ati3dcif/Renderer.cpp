@@ -45,11 +45,14 @@ Renderer::Renderer()
     // TODO: make me configurable
     m_wireframe = false;
 
+    GFX_3D_VertexStream_Init(&m_vertexStream);
+
     GFX_GL_CheckError();
 }
 
 Renderer::~Renderer()
 {
+    GFX_3D_VertexStream_Close(&m_vertexStream);
     GFX_GL_Program_Close(&m_program);
     GFX_GL_Sampler_Close(&m_sampler);
 }
@@ -63,7 +66,7 @@ void Renderer::renderBegin()
     }
 
     GFX_GL_Program_Bind(&m_program);
-    m_vertexStream.bind();
+    GFX_3D_VertexStream_Bind(&m_vertexStream);
     GFX_GL_Sampler_Bind(&m_sampler, 0);
 
     // restore texture binding
@@ -97,7 +100,7 @@ void Renderer::renderBegin()
 
 void Renderer::renderEnd()
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
 
     if (m_wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -148,13 +151,13 @@ bool Renderer::textureUnreg(C3D_HTX htxToUnreg)
 void Renderer::renderPrimStrip(C3D_VSTRIP vStrip, int u32NumVert)
 {
     GFX_Context_SetRendered();
-    m_vertexStream.addPrimStrip(vStrip, u32NumVert);
+    GFX_3D_VertexStream_PushPrimStrip(&m_vertexStream, vStrip, u32NumVert);
 }
 
 void Renderer::renderPrimList(C3D_VLIST vList, int u32NumVert)
 {
     GFX_Context_SetRendered();
-    m_vertexStream.addPrimList(vList, u32NumVert);
+    GFX_3D_VertexStream_PushPrimList(&m_vertexStream, vList, u32NumVert);
 }
 
 bool Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
@@ -187,20 +190,20 @@ bool Renderer::setState(C3D_ERSID eRStateID, C3D_PRSDATA pRStateData)
 
 void Renderer::primType(C3D_EPRIM value)
 {
-    m_vertexStream.renderPending();
-    m_vertexStream.primType(value);
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
+    GFX_3D_VertexStream_SetPrimType(&m_vertexStream, value);
 }
 
 void Renderer::tmapEnable(bool value)
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
     bool enable = value;
     GFX_GL_Program_Uniform1i(&m_program, m_loc_tmapEn, enable);
 }
 
 void Renderer::tmapSelect(C3D_HTX value)
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
     m_tmapSelect = value;
     tmapSelectImpl(value);
 }
@@ -229,7 +232,7 @@ void Renderer::tmapRestore()
 
 void Renderer::tmapFilter(C3D_ETEXFILTER value)
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
     auto filter = value;
     GFX_GL_Sampler_Parameteri(
         &m_sampler, GL_TEXTURE_MAG_FILTER, GLCIF_TEXTURE_MAG_FILTER[filter]);
@@ -239,7 +242,7 @@ void Renderer::tmapFilter(C3D_ETEXFILTER value)
 
 void Renderer::alphaSrc(C3D_EASRC value)
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
     m_easrc = value;
     C3D_EASRC alphaSrc = value;
     C3D_EADST alphaDst = m_eadst;
@@ -248,7 +251,7 @@ void Renderer::alphaSrc(C3D_EASRC value)
 
 void Renderer::alphaDst(C3D_EADST value)
 {
-    m_vertexStream.renderPending();
+    GFX_3D_VertexStream_RenderPending(&m_vertexStream);
     m_eadst = value;
     C3D_EASRC alphaSrc = m_easrc;
     C3D_EADST alphaDst = value;

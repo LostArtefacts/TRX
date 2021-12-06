@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ati3dcif/VertexStream.hpp"
+#include "gfx/3d/vertex_stream.h"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
 #include "gfx/gl/texture.h"
@@ -79,7 +79,7 @@ private:
     std::map<C3D_HTX, GFX_GL_Texture *> m_textures;
     GFX_GL_Program m_program;
     GFX_GL_Sampler m_sampler;
-    VertexStream m_vertexStream;
+    GFX_3D_VertexStream m_vertexStream;
 
     // state data
     C3D_HTX m_tmapSelect = 0;
