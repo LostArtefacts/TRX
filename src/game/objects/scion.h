@@ -5,10 +5,10 @@
 
 #include <stdint.h>
 
-extern PHD_VECTOR PickUpScionPosition;
-extern PHD_VECTOR PickUpScion4Position;
-extern int16_t PickUpScionBounds[12];
-extern int16_t PickUpScion4Bounds[12];
+extern PHD_VECTOR g_PickUpScionPosition;
+extern PHD_VECTOR g_PickUpScion4Position;
+extern int16_t g_PickUpScionBounds[12];
+extern int16_t g_PickUpScion4Bounds[12];
 
 void SetupScion1(OBJECT_INFO *obj);
 void SetupScion2(OBJECT_INFO *obj);

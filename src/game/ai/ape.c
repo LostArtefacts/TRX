@@ -3,11 +3,11 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO ApeBite = { 0, -19, 75, 15 };
+BITE_INFO g_ApeBite = { 0, -19, 75, 15 };
 
 void SetupApe(OBJECT_INFO *obj)
 {
@@ -27,12 +27,12 @@ void SetupApe(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
 }
 
 void ApeVault(int16_t item_num, int16_t angle)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *ape = item->data;
 
     if (ape->flags & APE_TURN_L_FLAG) {
@@ -79,13 +79,13 @@ void ApeVault(int16_t item_num, int16_t angle)
 
     item->pos.y = y;
     item->current_anim_state = APE_VAULT;
-    item->anim_number = Objects[O_APE].anim_index + APE_VAULT_ANIM;
-    item->frame_number = Anims[item->anim_number].frame_base;
+    item->anim_number = g_Objects[O_APE].anim_index + APE_VAULT_ANIM;
+    item->frame_number = g_Anims[item->anim_number].frame_base;
 }
 
 void ApeControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -101,9 +101,9 @@ void ApeControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != APE_DEATH) {
             item->current_anim_state = APE_DEATH;
-            item->anim_number = Objects[O_APE].anim_index + APE_DIE_ANIM
-                + (int16_t)(GetRandomControl() / 0x4000);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->anim_number = g_Objects[O_APE].anim_index + APE_DIE_ANIM
+                + (int16_t)(Random_GetControl() / 0x4000);
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -138,7 +138,7 @@ void ApeControl(int16_t item_num)
             } else if (
                 !(ape->flags & APE_ATTACK_FLAG)
                 && info.zone_number == info.enemy_zone && info.ahead) {
-                int16_t random = GetRandomControl() >> 5;
+                int16_t random = Random_GetControl() >> 5;
                 if (random < APE_JUMP_CHANCE) {
                     item->goal_anim_state = APE_JUMP;
                 } else if (random < APE_WARN1_CHANCE) {
@@ -166,7 +166,7 @@ void ApeControl(int16_t item_num)
                 item->required_anim_state = APE_ATTACK1;
                 item->goal_anim_state = APE_STOP;
             } else if (ape->mood != MOOD_ESCAPE) {
-                int16_t random = GetRandomControl();
+                int16_t random = Random_GetControl();
                 if (random < APE_JUMP_CHANCE) {
                     item->required_anim_state = APE_JUMP;
                     item->goal_anim_state = APE_STOP;
@@ -198,9 +198,9 @@ void ApeControl(int16_t item_num)
 
         case APE_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
-                CreatureEffect(item, &ApeBite, DoBloodSplat);
-                LaraItem->hit_points -= APE_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_ApeBite, DoBloodSplat);
+                g_LaraItem->hit_points -= APE_ATTACK_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = APE_STOP;
             }
             break;

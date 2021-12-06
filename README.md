@@ -12,10 +12,9 @@ This project is inspired by Arsunt's
 
 ## Installing
 
-1. Install the [TombATI v1.7 patch](http://www.glidos.net/tombati.html).
-2. Get a copy of the latest Tomb1Main release from
+1. Get a copy of the latest Tomb1Main release from
     [here](https://github.com/rr-/Tomb1Main/releases).
-3. Unpack the contents to your game directory. Make sure you overwrite existing
+2. Unpack the contents to your game directory. Make sure you overwrite existing
     files (Tomb1Main_config.json5 can be left alone).
 
 To play the Unfinished Business expansion pack, launch the game with `-gold`
@@ -69,6 +68,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     - all the strings can be translated, including keys and items
     - you no longer are constrained to 4 or 21 levels only
     - you can offer a custom Gym level
+    - you can change the main menu backdrop
 - added automatic calculation of secret numbers
 - added compass level stats
 - added ability to keep timer on in inventory
@@ -93,6 +93,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
 - added adjustable in-game brightness
+- added .jpeg/.png screenshots
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
@@ -148,8 +149,8 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 2. **Can we get HD textures? Reflections? Other graphical updates?**
 
-    Eventually, probably yes. But first we need to decompile the renderer,
-    which is going to take a while (can't give an estimate).
+    Eventually, probably yes. Please see the road map to have a general idea
+    what is currently being worked on.
 
 3. **Can we get braid in every level? Skyboxes? Flyby cameras? New animations? etc.**
 
@@ -162,21 +163,37 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    Currently only Windows version is available.
+    Currently only Windows version is available, but there is some ongoing work
+    towards reducing the amount of Windows-only code.
 
 5. **Do I really need to install this TombATI patch? Why not have just the .exe?**
 
-    One of our goals is to eventually provide a single .exe file (maybe with
-    some .dll-s related to multimedia) and only require the players to supply
-    the game data, i.e. the level files, music and FMVs. However, this requires
-    decompiling GFX and SFX routines which, again, is going to take a while.
+    We're currently on it! :D
 
-## Decompilation progress
+## Current road map
 
-Currently the entirety of TombATI.exe's code is decompiled. Our goal now is to
-ship with our own .exe rather than a DLL. To make it possible, we must reverse
-portions of the glrage patch (glrage.dll) and the ATI renderer (ati3dcif.dll)
-and that is the current project focus.
+Note: this section may be subject to change.
+
+- [x] Reverse engineer the entire game - done!
+- [ ] Break off TombATI, ship our own .EXE rather than a .DLL
+    - [x] Integrate glrage with Tomb1Main
+    - [x] Replace the music player (`winmm.dll` / `libzplay.dll`) with libavcodec and SDL
+    - [x] Replace the FMV player (`Dec130.dll`, `Edec.dll`, `Winplay.dll`, `Winsdec.dll` and `Winstr.dll`) with libavcodec and SDL
+    - [ ] Test for performance and crash resilience
+    - [ ] 2.0
+- [ ] Work on cross platform builds
+    - [x] Replace the sample player (DirectSound) with libavcodec and SDL
+    - [ ] Port DirectInput to SDL
+    - [ ] ...
+    - [ ] Test for performance and crash resilience
+    - [ ] 3.0
+- [ ] Beautify the code
+    - [x] Refactor GLRage to no longer emulate DDraw
+    - [ ] Refactor GLRage to no longer emulate ATI3DCIF
+    - [ ] Apply rigid name conventions to function names
+    - [ ] Refactor specific/ away
+    - [ ] ...
+- [ ] Work on data injection and other features?
 
 ## Importing data to IDA
 
@@ -192,4 +209,4 @@ This project is licensed under the GNU General Public License - see the
 
 (c) 2021 Marcin Kurczewski. All rights reserved. Original game is created by
 Core Design Ltd. in 1996. Lara Croft and Tomb Raider are trademarks of Square
-Enix Ltd.
+Enix Ltd. Title image by Kidd Bowyer.

@@ -1,22 +1,56 @@
 #include "game/music.h"
 
 #include "config.h"
+#include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/s_music.h"
+#include "log.h"
+#include "specific/s_audio.h"
 
-static bool m_Loop = false;
+#include <stdio.h>
+
+static float m_MusicVolume = 0.0f;
+static int m_AudioStreamID = -1;
 static int16_t m_Track = 0;
-static int16_t m_TrackLooped = 0;
+static int16_t m_TrackLooped = -1;
+
+static void Music_StopActiveStream();
+static void Music_StreamFinished(int stream_id, void *user_data);
+
+static void Music_StopActiveStream()
+{
+    if (m_AudioStreamID < 0) {
+        return;
+    }
+
+    // We are only interested in calling Music_StreamFinished if a stream
+    // finished by itself. In cases where we end the streams early by hand,
+    // we clear the finish callback in order to avoid resuming the BGM playback
+    // just after we stop it.
+    S_Audio_StreamSoundSetFinishCallback(m_AudioStreamID, NULL, NULL);
+    S_Audio_StreamSoundClose(m_AudioStreamID);
+}
+
+static void Music_StreamFinished(int stream_id, void *user_data)
+{
+    // When a stream finishes, play the remembered background BGM.
+
+    if (stream_id == m_AudioStreamID) {
+        m_AudioStreamID = -1;
+        if (m_TrackLooped >= 0) {
+            Music_PlayLooped(m_TrackLooped);
+        }
+    }
+}
 
 bool Music_Init()
 {
-    return S_Music_Init();
+    return S_Audio_Init();
 }
 
 bool Music_Play(int16_t track)
 {
-    if (CurrentLevel == GF.title_level_num && T1MConfig.disable_music_in_menu) {
+    if (track == Music_CurrentTrack()) {
         return false;
     }
 
@@ -24,18 +58,12 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    if (track >= 57) {
-        m_TrackLooped = track;
-    }
-
-    m_Loop = false;
-
-    if (T1MConfig.fix_secrets_killing_music && track == 13) {
+    if (g_Config.fix_secrets_killing_music && track == 13) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
     if (track == 0) {
-        S_Music_Stop();
+        Music_Stop();
         return false;
     }
 
@@ -43,44 +71,87 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    m_Track = track;
-    return S_Music_Play(track);
-}
+    char file_path[64];
+    sprintf(file_path, "music\\track%02d.flac", track);
 
-void Music_PlayLooped()
-{
-    if (m_Loop && m_TrackLooped > 0) {
-        S_Music_Play(m_TrackLooped);
+    Music_StopActiveStream();
+    m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+
+    if (m_AudioStreamID < 0) {
+        LOG_ERROR("All music streams are busy");
+        return false;
     }
+
+    m_Track = track;
+
+    S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
+    S_Audio_StreamSoundSetFinishCallback(
+        m_AudioStreamID, Music_StreamFinished, NULL);
+
+    return true;
 }
 
-bool Music_Stop()
+bool Music_PlayLooped(int16_t track)
+{
+    if (track == Music_CurrentTrack()) {
+        return false;
+    }
+
+    if (g_CurrentLevel == g_GameFlow.title_level_num
+        && g_Config.disable_music_in_menu) {
+        return false;
+    }
+
+    char file_path[64];
+    sprintf(file_path, "music\\track%02d.flac", track);
+
+    Music_StopActiveStream();
+    m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+
+    if (m_AudioStreamID < 0) {
+        LOG_ERROR("All music streams are busy");
+        return false;
+    }
+
+    S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
+    S_Audio_StreamSoundSetFinishCallback(
+        m_AudioStreamID, Music_StreamFinished, NULL);
+    S_Audio_StreamSoundSetIsLooped(m_AudioStreamID, true);
+
+    m_TrackLooped = track;
+
+    return true;
+}
+
+void Music_Stop()
 {
     m_Track = 0;
-    m_TrackLooped = 0;
-    m_Loop = false;
-    return S_Music_Stop();
-}
-
-void Music_Loop()
-{
-    m_Loop = true;
+    m_TrackLooped = -1;
+    Music_StopActiveStream();
 }
 
 void Music_SetVolume(int16_t volume)
 {
-    int16_t volume_raw = volume ? 25 * volume + 5 : 0;
-    S_Music_SetVolume(volume_raw);
+    m_MusicVolume = volume ? (25 * volume + 5) / 255.0f : 0.0f;
+    if (m_AudioStreamID >= 0) {
+        S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
+    }
 }
 
 void Music_Pause()
 {
-    S_Music_Pause();
+    if (m_AudioStreamID < 0) {
+        return;
+    }
+    S_Audio_StreamSoundPause(m_AudioStreamID);
 }
 
 void Music_Unpause()
 {
-    S_Music_Unpause();
+    if (m_AudioStreamID < 0) {
+        return;
+    }
+    S_Audio_StreamSoundUnpause(m_AudioStreamID);
 }
 
 int16_t Music_CurrentTrack()

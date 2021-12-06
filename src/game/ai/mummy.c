@@ -20,12 +20,12 @@ void SetupMummy(OBJECT_INFO *obj)
     obj->save_flags = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
-    AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
 void InitialiseMummy(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     item->touch_bits = 0;
     item->mesh_bits = 0xFFFF87FF;
     item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
@@ -34,12 +34,13 @@ void InitialiseMummy(int16_t item_num)
 
 void MummyControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     int16_t head = 0;
 
     if (item->current_anim_state == MUMMY_STOP) {
         head = phd_atan(
-                   LaraItem->pos.z - item->pos.z, LaraItem->pos.x - item->pos.x)
+                   g_LaraItem->pos.z - item->pos.z,
+                   g_LaraItem->pos.x - item->pos.x)
             - item->pos.y_rot;
         CLAMP(head, -FRONT_ARC, FRONT_ARC);
 

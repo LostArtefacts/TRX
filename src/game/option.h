@@ -3,17 +3,15 @@
 
 #include "global/types.h"
 
-void DoInventoryOptions(INVENTORY_ITEM *inv_item);
-void DoPassportOption(INVENTORY_ITEM *inv_item);
-void DoCompassOption(INVENTORY_ITEM *inv_item);
-void DoDetailOption(INVENTORY_ITEM *inv_item);
-void FlashConflicts();
-void DefaultConflict();
-void DoControlOption(INVENTORY_ITEM *inv_item);
-void DoSoundOption(INVENTORY_ITEM *inv_item);
-void S_ShowControls();
-void S_ChangeCtrlText();
-void S_RemoveCtrlText();
-void S_RemoveCtrl();
+void Option_DoInventory(INVENTORY_ITEM *inv_item);
+
+void Option_Passport(INVENTORY_ITEM *inv_item);
+void Option_Compass(INVENTORY_ITEM *inv_item);
+void Option_Graphics(INVENTORY_ITEM *inv_item);
+void Option_Control(INVENTORY_ITEM *inv_item);
+void Option_Sound(INVENTORY_ITEM *inv_item);
+
+void Option_FlashConflicts();
+void Option_DefaultConflict();
 
 #endif

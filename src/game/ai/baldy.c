@@ -7,7 +7,7 @@
 #include "game/people.h"
 #include "global/vars.h"
 
-BITE_INFO BaldyGun = { -20, 440, 20, 9 };
+BITE_INFO g_BaldyGun = { -20, 440, 20, 9 };
 
 void SetupBaldy(OBJECT_INFO *obj)
 {
@@ -26,18 +26,18 @@ void SetupBaldy(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
 void InitialiseBaldy(int16_t item_num)
 {
     InitialiseCreature(item_num);
-    Items[item_num].current_anim_state = BALDY_RUN;
+    g_Items[item_num].current_anim_state = BALDY_RUN;
 }
 
 void BaldyControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -55,8 +55,8 @@ void BaldyControl(int16_t item_num)
         if (item->current_anim_state != BALDY_DEATH) {
             item->current_anim_state = BALDY_DEATH;
             item->anim_number =
-                Objects[O_MERCENARY3].anim_index + BALDY_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+                g_Objects[O_MERCENARY3].anim_index + BALDY_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_SHOTGUN_ITEM);
         }
     } else {
@@ -125,9 +125,9 @@ void BaldyControl(int16_t item_num)
 
         case BALDY_SHOOT:
             if (!baldy->flags) {
-                if (ShotLara(item, info.distance / 2, &BaldyGun, head)) {
-                    LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
-                    LaraItem->hit_status = 1;
+                if (ShotLara(item, info.distance / 2, &g_BaldyGun, head)) {
+                    g_LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
+                    g_LaraItem->hit_status = 1;
                 }
                 baldy->flags = 1;
             }

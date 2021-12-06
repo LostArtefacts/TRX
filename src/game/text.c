@@ -1,11 +1,10 @@
 #include "game/text.h"
 
+#include "game/output.h"
+#include "game/screen.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_clock.h"
-#include "specific/s_frontend.h"
-#include "specific/s_output.h"
 #include "util.h"
 
 #include <stdio.h>
@@ -293,7 +292,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
     if (textstring->flags.flash) {
-        textstring->flash.count -= (int16_t)Camera.number_frames;
+        textstring->flash.count -= (int16_t)g_Camera.number_frames;
         if (textstring->flash.count <= -textstring->flash.rate) {
             textstring->flash.count = textstring->flash.rate;
         } else if (textstring->flash.count < 0) {
@@ -307,15 +306,15 @@ static void Text_DrawText(TEXTSTRING *textstring)
     int32_t textwidth = Text_GetWidth(textstring);
 
     if (textstring->flags.centre_h) {
-        x += (GetRenderWidthDownscaled() - textwidth) / 2;
+        x += (Screen_GetResWidthDownscaled() - textwidth) / 2;
     } else if (textstring->flags.right) {
-        x += GetRenderWidthDownscaled() - textwidth;
+        x += Screen_GetResWidthDownscaled() - textwidth;
     }
 
     if (textstring->flags.centre_v) {
-        y += GetRenderHeightDownscaled() / 2;
+        y += Screen_GetResHeightDownscaled() / 2;
     } else if (textstring->flags.bottom) {
-        y += GetRenderHeightDownscaled();
+        y += Screen_GetResHeightDownscaled();
     }
 
     int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
@@ -343,13 +342,13 @@ static void Text_DrawText(TEXTSTRING *textstring)
             sprite_num = letter + 81;
         }
 
-        sx = GetRenderScale(x);
-        sy = GetRenderScale(y);
-        sh = GetRenderScale(textstring->scale.h);
-        sv = GetRenderScale(textstring->scale.v);
+        sx = Screen_GetRenderScale(x);
+        sy = Screen_GetRenderScale(y);
+        sh = Screen_GetRenderScale(textstring->scale.h);
+        sv = Screen_GetRenderScale(textstring->scale.v);
 
-        S_DrawScreenSprite2d(
-            sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
+        Output_DrawScreenSprite2D(
+            sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
             16 << 8, 0, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
@@ -379,19 +378,19 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.background) {
-        sx = GetRenderScale(bxpos);
-        sy = GetRenderScale(bypos);
-        sh = GetRenderScale(bwidth);
-        sv = GetRenderScale(bheight);
+        sx = Screen_GetRenderScale(bxpos);
+        sy = Screen_GetRenderScale(bypos);
+        sh = Screen_GetRenderScale(bwidth);
+        sv = Screen_GetRenderScale(bheight);
 
-        S_DrawScreenFBox(sx, sy, sh, sv);
+        Output_DrawScreenFBox(sx, sy, sh, sv);
     }
 
     if (textstring->flags.outline) {
-        sx = GetRenderScale(bxpos);
-        sy = GetRenderScale(bypos);
-        sh = GetRenderScale(bwidth);
-        sv = GetRenderScale(bheight);
-        S_DrawScreenBox(sx, sy, sh, sv);
+        sx = Screen_GetRenderScale(bxpos);
+        sy = Screen_GetRenderScale(bypos);
+        sh = Screen_GetRenderScale(bwidth);
+        sv = Screen_GetRenderScale(bheight);
+        Output_DrawScreenBox(sx, sy, sh, sv);
     }
 }

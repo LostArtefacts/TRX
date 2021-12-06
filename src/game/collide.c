@@ -1,6 +1,6 @@
 #include "game/collide.h"
 
-#include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -41,10 +41,10 @@ void GetCollisionInfo(
 
     coll->mid_floor = height;
     coll->mid_ceiling = ceiling;
-    coll->mid_type = HeightType;
-    coll->trigger = TriggerIndex;
+    coll->mid_type = g_HeightType;
+    coll->trigger = g_TriggerIndex;
 
-    int16_t tilt = GetTiltType(floor, x, LaraItem->pos.y, z);
+    int16_t tilt = GetTiltType(floor, x, g_LaraItem->pos.y, z);
     coll->tilt_z = tilt >> 8;
     coll->tilt_x = (int8_t)tilt;
 
@@ -116,7 +116,7 @@ void GetCollisionInfo(
 
     coll->front_floor = height;
     coll->front_ceiling = ceiling;
-    coll->front_type = HeightType;
+    coll->front_type = g_HeightType;
     if (coll->slopes_are_walls && coll->front_type == HT_BIG_SLOPE
         && coll->front_floor < 0) {
         coll->front_floor = -32767;
@@ -125,8 +125,8 @@ void GetCollisionInfo(
         && coll->front_floor > 0) {
         coll->front_floor = 512;
     } else if (
-        coll->lava_is_pit && coll->front_floor > 0 && TriggerIndex
-        && (TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+        coll->lava_is_pit && coll->front_floor > 0 && g_TriggerIndex
+        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
         coll->front_floor = 512;
     }
 
@@ -145,7 +145,7 @@ void GetCollisionInfo(
 
     coll->left_floor = height;
     coll->left_ceiling = ceiling;
-    coll->left_type = HeightType;
+    coll->left_type = g_HeightType;
     if (coll->slopes_are_walls && coll->left_type == HT_BIG_SLOPE
         && coll->left_floor < 0) {
         coll->left_floor = -32767;
@@ -154,8 +154,8 @@ void GetCollisionInfo(
         && coll->left_floor > 0) {
         coll->left_floor = 512;
     } else if (
-        coll->lava_is_pit && coll->left_floor > 0 && TriggerIndex
-        && (TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+        coll->lava_is_pit && coll->left_floor > 0 && g_TriggerIndex
+        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
         coll->left_floor = 512;
     }
 
@@ -174,7 +174,7 @@ void GetCollisionInfo(
 
     coll->right_floor = height;
     coll->right_ceiling = ceiling;
-    coll->right_type = HeightType;
+    coll->right_type = g_HeightType;
     if (coll->slopes_are_walls && coll->right_type == HT_BIG_SLOPE
         && coll->right_floor < 0) {
         coll->right_floor = -32767;
@@ -183,8 +183,8 @@ void GetCollisionInfo(
         && coll->right_floor > 0) {
         coll->right_floor = 512;
     } else if (
-        coll->lava_is_pit && coll->right_floor > 0 && TriggerIndex
-        && (TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+        coll->lava_is_pit && coll->right_floor > 0 && g_TriggerIndex
+        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
         coll->right_floor = 512;
     }
 
@@ -311,13 +311,13 @@ int32_t CollideStaticObjects(
 
     GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
 
-    for (int i = 0; i < RoomsToDrawCount; i++) {
-        int16_t room_num = RoomsToDraw[i];
-        ROOM_INFO *r = &RoomInfo[room_num];
+    for (int i = 0; i < g_RoomsToDrawCount; i++) {
+        int16_t room_num = g_RoomsToDraw[i];
+        ROOM_INFO *r = &g_RoomInfo[room_num];
         MESH_INFO *mesh = r->mesh;
 
         for (int j = 0; j < r->num_meshes; j++, mesh++) {
-            STATIC_INFO *sinfo = &StaticObjects[mesh->static_number];
+            STATIC_INFO *sinfo = &g_StaticObjects[mesh->static_number];
             if (sinfo->flags & 1) {
                 continue;
             }
@@ -456,9 +456,9 @@ int32_t CollideStaticObjects(
 void GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
 {
-    RoomsToDrawCount = 0;
-    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-        RoomsToDraw[RoomsToDrawCount++] = room_num;
+    g_RoomsToDrawCount = 0;
+    if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
     GetNewRoom(x + r, y, z + r, room_num);
     GetNewRoom(x - r, y, z + r, room_num);
@@ -474,15 +474,15 @@ void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     GetFloor(x, y, z, &room_num);
 
-    for (int i = 0; i < RoomsToDrawCount; i++) {
-        int16_t drawn_room = RoomsToDraw[i];
+    for (int i = 0; i < g_RoomsToDrawCount; i++) {
+        int16_t drawn_room = g_RoomsToDraw[i];
         if (drawn_room == room_num) {
             return;
         }
     }
 
-    if (RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-        RoomsToDraw[RoomsToDrawCount++] = room_num;
+    if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
 }
 
@@ -505,7 +505,7 @@ void UpdateLaraRoom(ITEM_INFO *item, int32_t height)
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     item->floor = GetHeight(floor, x, y, z);
     if (item->room_number != room_num) {
-        ItemNewRoom(Lara.item_number, room_num);
+        ItemNewRoom(g_Lara.item_number, room_num);
     }
 }
 
@@ -514,7 +514,7 @@ int16_t GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
     ROOM_INFO *r;
 
     while (floor->pit_room != NO_ROOM) {
-        r = &RoomInfo[floor->pit_room];
+        r = &g_RoomInfo[floor->pit_room];
         floor = &r->floor
                      [((z - r->z) >> WALL_SHIFT)
                       + ((x - r->x) >> WALL_SHIFT) * r->x_size];
@@ -525,7 +525,7 @@ int16_t GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
     }
 
     if (floor->index) {
-        int16_t *data = &FloorData[floor->index];
+        int16_t *data = &g_FloorData[floor->index];
         if ((data[0] & DATA_TYPE) == FT_TILT) {
             return data[1];
         }
@@ -537,7 +537,7 @@ int16_t GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;
-    Lara.hit_direction = -1;
+    g_Lara.hit_direction = -1;
     if (lara_item->hit_points <= 0) {
         return;
     }
@@ -547,7 +547,7 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 
     roomies[numroom++] = lara_item->room_number;
 
-    DOOR_INFOS *door = RoomInfo[lara_item->room_number].doors;
+    DOOR_INFOS *door = g_RoomInfo[lara_item->room_number].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
             if (numroom >= MAX_BADDIE_COLLISION) {
@@ -558,11 +558,11 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     for (int i = 0; i < numroom; i++) {
-        int16_t item_num = RoomInfo[roomies[i]].item_number;
+        int16_t item_num = g_RoomInfo[roomies[i]].item_number;
         while (item_num != NO_ITEM) {
-            ITEM_INFO *item = &Items[item_num];
+            ITEM_INFO *item = &g_Items[item_num];
             if (item->collidable && item->status != IS_INVISIBLE) {
-                OBJECT_INFO *object = &Objects[item->object_number];
+                OBJECT_INFO *object = &g_Objects[item->object_number];
                 if (object->collision) {
                     int32_t x = lara_item->pos.x - item->pos.x;
                     int32_t y = lara_item->pos.y - item->pos.y;
@@ -578,38 +578,38 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     }
 
-    if (Lara.spaz_effect_count) {
+    if (g_Lara.spaz_effect_count) {
         EffectSpaz(lara_item, coll);
     }
 
-    if (Lara.hit_direction == -1) {
-        Lara.hit_frame = 0;
+    if (g_Lara.hit_direction == -1) {
+        g_Lara.hit_frame = 0;
     }
 
-    InvChosen = -1;
+    g_InvChosen = -1;
 }
 
 void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    int32_t x = Lara.spaz_effect->pos.x - lara_item->pos.x;
-    int32_t z = Lara.spaz_effect->pos.z - lara_item->pos.z;
+    int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
+    int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
     PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
-    Lara.hit_direction = (hitang + PHD_45) / PHD_90;
-    if (!Lara.hit_frame) {
+    g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
+    if (!g_Lara.hit_frame) {
         Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
     }
 
-    Lara.hit_frame++;
-    if (Lara.hit_frame > 34) {
-        Lara.hit_frame = 34;
+    g_Lara.hit_frame++;
+    if (g_Lara.hit_frame > 34) {
+        g_Lara.hit_frame = 34;
     }
 
-    Lara.spaz_effect_count--;
+    g_Lara.spaz_effect_count--;
 }
 
 void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -629,7 +629,7 @@ void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -645,7 +645,7 @@ void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
@@ -665,7 +665,7 @@ void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_ACTIVE) {
         if (TestBoundsCollide(item, lara_item, coll->radius)) {
@@ -730,14 +730,14 @@ void ItemPushLara(
         if (spazon) {
             PHD_ANGLE hitang =
                 lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
-            Lara.hit_direction = (hitang + PHD_45) / PHD_90;
-            if (!Lara.hit_frame) {
+            g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
+            if (!g_Lara.hit_frame) {
                 Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
             }
 
-            Lara.hit_frame++;
-            if (Lara.hit_frame > 34) {
-                Lara.hit_frame = 34;
+            g_Lara.hit_frame++;
+            if (g_Lara.hit_frame > 34) {
+                g_Lara.hit_frame = 34;
             }
         }
 
@@ -813,7 +813,7 @@ int32_t TestLaraPosition(int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item)
     int32_t z = lara_item->pos.z - item->pos.z;
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
     int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
     int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
@@ -839,7 +839,7 @@ void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
 
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     lara_item->pos.x = item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -860,7 +860,7 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
     dest.z_rot = item->pos.z_rot;
     phd_PushUnitMatrix();
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX *mptr = PhdMatrixPtr;
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
     dest.x = item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -927,14 +927,14 @@ int32_t Move3DPosTo3DPos(
 
 int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance)
 {
-    int32_t x = pos->x - LaraItem->pos.x;
-    int32_t y = pos->y - LaraItem->pos.y;
-    int32_t z = pos->z - LaraItem->pos.z;
+    int32_t x = pos->x - g_LaraItem->pos.x;
+    int32_t y = pos->y - g_LaraItem->pos.y;
+    int32_t z = pos->z - g_LaraItem->pos.z;
 
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        int16_t *bounds = GetBoundsAccurate(LaraItem);
+        int16_t *bounds = GetBoundsAccurate(g_LaraItem);
         if (y >= bounds[FRAME_BOUND_MIN_Y]
             && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
             return 1;

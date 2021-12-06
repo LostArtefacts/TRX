@@ -32,7 +32,7 @@ typedef enum {
     NATLA_DEATH = 9,
 } NATLA_ANIM;
 
-extern BITE_INFO NatlaGun;
+extern BITE_INFO g_NatlaGun;
 
 void SetupNatla(OBJECT_INFO *obj);
 void SetupNatlaGun(OBJECT_INFO *obj);

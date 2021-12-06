@@ -46,9 +46,9 @@ enum FLYER_ANIM {
     FLYER_FLY = 13,
 };
 
-extern BITE_INFO WarriorBite;
-extern BITE_INFO WarriorRocket;
-extern BITE_INFO WarriorShard;
+extern BITE_INFO g_WarriorBite;
+extern BITE_INFO g_WarriorRocket;
+extern BITE_INFO g_WarriorShard;
 
 void SetupWarrior(OBJECT_INFO *obj);
 void SetupWarrior2(OBJECT_INFO *obj);

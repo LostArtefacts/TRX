@@ -94,7 +94,7 @@ void DrawBridgeCeiling(
 void DrawBridgeCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (item->current_anim_state == DOOR_CLOSED) {
         DoorCollision(item_num, lara_item, coll);
     }

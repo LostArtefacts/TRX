@@ -24,8 +24,8 @@ typedef enum {
     COWBOY_SHOOT = 6,
 } COWBOY_ANIM;
 
-extern BITE_INFO CowboyGun1;
-extern BITE_INFO CowboyGun2;
+extern BITE_INFO g_CowboyGun1;
+extern BITE_INFO g_CowboyGun2;
 
 void SetupCowboy(OBJECT_INFO *obj);
 void CowboyControl(int16_t item_num);

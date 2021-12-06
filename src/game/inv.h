@@ -5,52 +5,52 @@
 
 #include <stdint.h>
 
-extern int16_t InvKeysCurrent;
-extern int16_t InvKeysObjects;
-extern int16_t InvKeysQtys[];
-extern INVENTORY_ITEM *InvKeysList[];
+extern int16_t g_InvKeysCurrent;
+extern int16_t g_InvKeysObjects;
+extern int16_t g_InvKeysQtys[];
+extern INVENTORY_ITEM *g_InvKeysList[];
 
-extern int16_t InvMainCurrent;
-extern int16_t InvMainObjects;
-extern int16_t InvMainQtys[];
-extern INVENTORY_ITEM *InvMainList[];
+extern int16_t g_InvMainCurrent;
+extern int16_t g_InvMainObjects;
+extern int16_t g_InvMainQtys[];
+extern INVENTORY_ITEM *g_InvMainList[];
 
-extern int16_t InvOptionCurrent;
-extern int16_t InvOptionObjects;
-extern INVENTORY_ITEM *InvOptionList[];
+extern int16_t g_InvOptionCurrent;
+extern int16_t g_InvOptionObjects;
+extern INVENTORY_ITEM *g_InvOptionList[];
 
-extern INVENTORY_ITEM InvItemCompass;
-extern INVENTORY_ITEM InvItemMedi;
-extern INVENTORY_ITEM InvItemBigMedi;
-extern INVENTORY_ITEM InvItemLeadBar;
-extern INVENTORY_ITEM InvItemPickup1;
-extern INVENTORY_ITEM InvItemPickup2;
-extern INVENTORY_ITEM InvItemScion;
-extern INVENTORY_ITEM InvItemPuzzle1;
-extern INVENTORY_ITEM InvItemPuzzle2;
-extern INVENTORY_ITEM InvItemPuzzle3;
-extern INVENTORY_ITEM InvItemPuzzle4;
-extern INVENTORY_ITEM InvItemKey1;
-extern INVENTORY_ITEM InvItemKey2;
-extern INVENTORY_ITEM InvItemKey3;
-extern INVENTORY_ITEM InvItemKey4;
-extern INVENTORY_ITEM InvItemPistols;
-extern INVENTORY_ITEM InvItemShotgun;
-extern INVENTORY_ITEM InvItemMagnum;
-extern INVENTORY_ITEM InvItemUzi;
-extern INVENTORY_ITEM InvItemGrenade;
-extern INVENTORY_ITEM InvItemPistolAmmo;
-extern INVENTORY_ITEM InvItemShotgunAmmo;
-extern INVENTORY_ITEM InvItemMagnumAmmo;
-extern INVENTORY_ITEM InvItemUziAmmo;
-extern INVENTORY_ITEM InvItemGame;
-extern INVENTORY_ITEM InvItemDetails;
-extern INVENTORY_ITEM InvItemSound;
-extern INVENTORY_ITEM InvItemControls;
-extern INVENTORY_ITEM InvItemLarasHome;
+extern INVENTORY_ITEM g_InvItemCompass;
+extern INVENTORY_ITEM g_InvItemMedi;
+extern INVENTORY_ITEM g_InvItemBigMedi;
+extern INVENTORY_ITEM g_InvItemLeadBar;
+extern INVENTORY_ITEM g_InvItemPickup1;
+extern INVENTORY_ITEM g_InvItemPickup2;
+extern INVENTORY_ITEM g_InvItemScion;
+extern INVENTORY_ITEM g_InvItemPuzzle1;
+extern INVENTORY_ITEM g_InvItemPuzzle2;
+extern INVENTORY_ITEM g_InvItemPuzzle3;
+extern INVENTORY_ITEM g_InvItemPuzzle4;
+extern INVENTORY_ITEM g_InvItemKey1;
+extern INVENTORY_ITEM g_InvItemKey2;
+extern INVENTORY_ITEM g_InvItemKey3;
+extern INVENTORY_ITEM g_InvItemKey4;
+extern INVENTORY_ITEM g_InvItemPistols;
+extern INVENTORY_ITEM g_InvItemShotgun;
+extern INVENTORY_ITEM g_InvItemMagnum;
+extern INVENTORY_ITEM g_InvItemUzi;
+extern INVENTORY_ITEM g_InvItemGrenade;
+extern INVENTORY_ITEM g_InvItemPistolAmmo;
+extern INVENTORY_ITEM g_InvItemShotgunAmmo;
+extern INVENTORY_ITEM g_InvItemMagnumAmmo;
+extern INVENTORY_ITEM g_InvItemUziAmmo;
+extern INVENTORY_ITEM g_InvItemGame;
+extern INVENTORY_ITEM g_InvItemDetails;
+extern INVENTORY_ITEM g_InvItemSound;
+extern INVENTORY_ITEM g_InvItemControls;
+extern INVENTORY_ITEM g_InvItemLarasHome;
 
-extern TEXTSTRING *InvItemText[];
-extern TEXTSTRING *InvRingText;
+extern TEXTSTRING *g_InvItemText[];
+extern TEXTSTRING *g_InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
 void Construct_Inventory();
@@ -58,7 +58,6 @@ void SelectMeshes(INVENTORY_ITEM *inv_item);
 int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item);
 void DrawInventoryItem(INVENTORY_ITEM *inv_item);
 
-void InitColours();
 void RingIsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);
 void RingNotActive(INVENTORY_ITEM *inv_item);

@@ -3,15 +3,15 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO PierreGun1 = { 60, 200, 0, 11 };
-BITE_INFO PierreGun2 = { -57, 200, 0, 14 };
-int16_t PierreItemNum = NO_ITEM;
+BITE_INFO g_PierreGun1 = { 60, 200, 0, 11 };
+BITE_INFO g_PierreGun2 = { -57, 200, 0, 14 };
+int16_t g_PierreItemNum = NO_ITEM;
 
 void SetupPierre(OBJECT_INFO *obj)
 {
@@ -30,18 +30,18 @@ void SetupPierre(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
 }
 
 void PierreControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
-    if (PierreItemNum == NO_ITEM) {
-        PierreItemNum = item_num;
-    } else if (PierreItemNum != item_num) {
+    if (g_PierreItemNum == NO_ITEM) {
+        g_PierreItemNum = item_num;
+    } else if (g_PierreItemNum != item_num) {
         if (item->flags & IF_ONESHOT) {
-            KillItem(PierreItemNum);
+            KillItem(g_PierreItemNum);
         } else {
             KillItem(item_num);
         }
@@ -68,8 +68,9 @@ void PierreControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != PIERRE_DEATH) {
             item->current_anim_state = PIERRE_DEATH;
-            item->anim_number = Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->anim_number =
+                g_Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_MAGNUM_ITEM);
             SpawnItem(item, O_SCION_ITEM2);
             SpawnItem(item, O_KEY_ITEM1);
@@ -95,7 +96,7 @@ void PierreControl(int16_t item_num)
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (pierre->mood == MOOD_BORED) {
-                item->goal_anim_state = GetRandomControl() < PIERRE_POSE_CHANCE
+                item->goal_anim_state = Random_GetControl() < PIERRE_POSE_CHANCE
                     ? PIERRE_POSE
                     : PIERRE_WALK;
             } else if (pierre->mood == MOOD_ESCAPE) {
@@ -108,7 +109,7 @@ void PierreControl(int16_t item_num)
         case PIERRE_POSE:
             if (pierre->mood != MOOD_BORED) {
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (GetRandomControl() < PIERRE_POSE_CHANCE) {
+            } else if (Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_WALK;
                 item->goal_anim_state = PIERRE_STOP;
             }
@@ -117,7 +118,7 @@ void PierreControl(int16_t item_num)
         case PIERRE_WALK:
             pierre->maximum_turn = PIERRE_WALK_TURN;
             if (pierre->mood == MOOD_BORED
-                && GetRandomControl() < PIERRE_POSE_CHANCE) {
+                && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (pierre->mood == MOOD_ESCAPE) {
@@ -136,7 +137,7 @@ void PierreControl(int16_t item_num)
             pierre->maximum_turn = PIERRE_RUN_TURN;
             tilt = angle / 2;
             if (pierre->mood == MOOD_BORED
-                && GetRandomControl() < PIERRE_POSE_CHANCE) {
+                && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (Targetable(item, &info)) {
@@ -160,18 +161,18 @@ void PierreControl(int16_t item_num)
 
         case PIERRE_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &PierreGun1, head)) {
-                    LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    LaraItem->hit_status = 1;
+                if (ShotLara(item, info.distance, &g_PierreGun1, head)) {
+                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
+                    g_LaraItem->hit_status = 1;
                 }
-                if (ShotLara(item, info.distance, &PierreGun2, head)) {
-                    LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    LaraItem->hit_status = 1;
+                if (ShotLara(item, info.distance, &g_PierreGun2, head)) {
+                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
+                    g_LaraItem->hit_status = 1;
                 }
                 item->required_anim_state = PIERRE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE
-                && GetRandomControl() > PIERRE_WIMP_CHANCE) {
+                && Random_GetControl() > PIERRE_WIMP_CHANCE) {
                 item->required_anim_state = PIERRE_STOP;
             }
             break;
@@ -189,10 +190,10 @@ void PierreControl(int16_t item_num)
         target.z = item->pos.z;
 
         GAME_VECTOR start;
-        start.x = Camera.pos.x;
-        start.y = Camera.pos.y;
-        start.z = Camera.pos.z;
-        start.room_number = Camera.pos.room_number;
+        start.x = g_Camera.pos.x;
+        start.y = g_Camera.pos.y;
+        start.z = g_Camera.pos.z;
+        start.room_number = g_Camera.pos.room_number;
 
         if (LOS(&start, &target)) {
             pierre->flags = 1;
@@ -200,7 +201,7 @@ void PierreControl(int16_t item_num)
             item->hit_points = DONT_TARGET;
             DisableBaddieAI(item_num);
             KillItem(item_num);
-            PierreItemNum = NO_ITEM;
+            g_PierreItemNum = NO_ITEM;
         }
     }
 
@@ -210,6 +211,6 @@ void PierreControl(int16_t item_num)
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
         KillItem(item_num);
-        PierreItemNum = NO_ITEM;
+        g_PierreItemNum = NO_ITEM;
     }
 }

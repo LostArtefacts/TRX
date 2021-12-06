@@ -699,32 +699,6 @@ typedef enum TARGET_TYPE {
     TARGET_SECONDARY = 2,
 } TARGET_TYPE;
 
-typedef enum KEY_NUMBER {
-    KEY_UP = 0,
-    KEY_DOWN = 1,
-    KEY_LEFT = 2,
-    KEY_RIGHT = 3,
-    KEY_STEP_L = 4,
-    KEY_STEP_R = 5,
-    KEY_SLOW = 6,
-    KEY_JUMP = 7,
-    KEY_ACTION = 8,
-    KEY_DRAW = 9,
-    KEY_LOOK = 10,
-    KEY_ROLL = 11,
-    KEY_OPTION = 12,
-    KEY_FLY_CHEAT = 13,
-    KEY_ITEM_CHEAT = 14,
-    KEY_LEVEL_SKIP_CHEAT = 15,
-    KEY_PAUSE = 16,
-    KEY_CAMERA_UP = 17,
-    KEY_CAMERA_DOWN = 18,
-    KEY_CAMERA_LEFT = 19,
-    KEY_CAMERA_RIGHT = 20,
-    KEY_CAMERA_RESET = 21,
-    KEY_NUMBER_OF = 22,
-} KEY_NUMBER;
-
 typedef enum D_FLAGS {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
@@ -827,21 +801,6 @@ typedef enum ITEM_FLAG {
     IF_NOT_VISIBLE = 0x0100,
     IF_KILLED_ITEM = 0x8000,
 } ITEM_FLAG;
-
-typedef enum FMV_SEQUENCE {
-    FMV_INTRO = 0,
-    FMV_GYM = 1,
-    FMV_SNOW = 2,
-    FMV_LIFT = 3,
-    FMV_VISION = 4,
-    FMV_CANYON = 5,
-    FMV_PYRAMID = 6,
-    FMV_PRISON = 7,
-    FMV_ENDSEQ = 8,
-    FMV_CORE = 9,
-    FMV_ESCAPE = 10,
-    FMV_NUMBER_OF = 11,
-} FMV_SEQUENCE;
 
 typedef enum INV_MODE {
     INV_GAME_MODE = 0,
@@ -994,8 +953,8 @@ typedef enum GAME_STRING_ID {
     GS_PASSPORT_SELECT_MODE,
     GS_PASSPORT_MODE_NEW_GAME,
     GS_PASSPORT_MODE_NEW_GAME_PLUS,
-    GS_PASSPORT_MODE_JAPANESE_NEW_GAME,
-    GS_PASSPORT_MODE_JAPANESE_NEW_GAME_PLUS,
+    GS_PASSPORT_MODE_NEW_GAME_JP,
+    GS_PASSPORT_MODE_NEW_GAME_JP_PLUS,
     GS_PASSPORT_NEW_GAME,
     GS_PASSPORT_LOAD_GAME,
     GS_PASSPORT_SAVE_GAME,
@@ -1118,10 +1077,10 @@ typedef enum GAME_BONUS_FLAG {
 
 #pragma pack(push, 1)
 
-typedef struct HWR_Resolution {
+typedef struct RESOLUTION {
     int width;
     int height;
-} HWR_Resolution;
+} RESOLUTION;
 
 typedef struct RGBF {
     float r;
@@ -1856,61 +1815,6 @@ typedef struct RING_INFO {
     IMOTION_INFO *imo;
 } RING_INFO;
 
-typedef struct GAMEFLOW_SEQUENCE {
-    GAMEFLOW_SEQUENCE_TYPE type;
-    void *data;
-} GAMEFLOW_SEQUENCE;
-
-typedef struct GAMEFLOW_LEVEL {
-    GAMEFLOW_LEVEL_TYPE level_type;
-    int16_t music;
-    const char *level_title;
-    const char *level_file;
-    const char *key1;
-    const char *key2;
-    const char *key3;
-    const char *key4;
-    const char *pickup1;
-    const char *pickup2;
-    const char *puzzle1;
-    const char *puzzle2;
-    const char *puzzle3;
-    const char *puzzle4;
-    int8_t demo;
-    int16_t secrets;
-    GAMEFLOW_SEQUENCE *sequence;
-    struct {
-        bool override;
-        RGBF value;
-    } water_color;
-    struct {
-        bool override;
-        float value;
-    } draw_distance_fade;
-    struct {
-        bool override;
-        float value;
-    } draw_distance_max;
-} GAMEFLOW_LEVEL;
-
-typedef struct GAMEFLOW {
-    int32_t gym_level_num;
-    int32_t first_level_num;
-    int32_t last_level_num;
-    int32_t title_level_num;
-    int32_t level_count;
-    const char *save_game_fmt;
-    int8_t has_demo;
-    int32_t demo_delay;
-    int8_t enable_game_modes;
-    int8_t enable_save_crystals;
-    GAMEFLOW_LEVEL *levels;
-    char *strings[GS_NUMBER_OF];
-    RGBF water_color;
-    float draw_distance_fade;
-    float draw_distance_max;
-} GAMEFLOW;
-
 typedef struct SAMPLE_INFO {
     int16_t number;
     int16_t volume;
@@ -1959,8 +1863,36 @@ typedef union INPUT_STATE {
     };
 } INPUT_STATE;
 
-typedef void (*ControlRoutine)(ITEM_INFO *, COLL_INFO *);
-typedef void (*CollisionRoutine)(ITEM_INFO *, COLL_INFO *);
-typedef void (*EffectRoutine)(ITEM_INFO *item);
+typedef enum INPUT_KEY {
+    INPUT_KEY_UP = 0,
+    INPUT_KEY_DOWN = 1,
+    INPUT_KEY_LEFT = 2,
+    INPUT_KEY_RIGHT = 3,
+    INPUT_KEY_STEP_L = 4,
+    INPUT_KEY_STEP_R = 5,
+    INPUT_KEY_SLOW = 6,
+    INPUT_KEY_JUMP = 7,
+    INPUT_KEY_ACTION = 8,
+    INPUT_KEY_DRAW = 9,
+    INPUT_KEY_LOOK = 10,
+    INPUT_KEY_ROLL = 11,
+    INPUT_KEY_OPTION = 12,
+    INPUT_KEY_FLY_CHEAT = 13,
+    INPUT_KEY_ITEM_CHEAT = 14,
+    INPUT_KEY_LEVEL_SKIP_CHEAT = 15,
+    INPUT_KEY_PAUSE = 16,
+    INPUT_KEY_CAMERA_UP = 17,
+    INPUT_KEY_CAMERA_DOWN = 18,
+    INPUT_KEY_CAMERA_LEFT = 19,
+    INPUT_KEY_CAMERA_RIGHT = 20,
+    INPUT_KEY_CAMERA_RESET = 21,
+    INPUT_KEY_NUMBER_OF = 22,
+} INPUT_KEY;
+
+typedef enum INPUT_LAYOUT {
+    INPUT_LAYOUT_DEFAULT,
+    INPUT_LAYOUT_USER,
+    INPUT_LAYOUT_NUMBER_OF,
+} INPUT_LAYOUT;
 
 #endif

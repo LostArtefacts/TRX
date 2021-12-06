@@ -1,11 +1,12 @@
 ---
-BasedOnStyle: Webkit
-IndentPPDirectives: BeforeHash
-ColumnLimit: 80
-AllowShortFunctionsOnASingleLine: InlineOnly
-BreakBeforeBinaryOperators: NonAssignment
 AlignAfterOpenBracket: AlwaysBreak
-SortIncludes: false
-PointerAlignment: Right
+AllowShortFunctionsOnASingleLine: None
 AlwaysBreakAfterReturnType: None
+BasedOnStyle: Webkit
+BreakBeforeBinaryOperators: NonAssignment
+ColumnLimit: 80
+IndentPPDirectives: BeforeHash
+NamespaceIndentation: None
 PenaltyReturnTypeOnItsOwnLine: 1000
+PointerAlignment: Right
+SortIncludes: false

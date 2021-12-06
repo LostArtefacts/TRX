@@ -36,7 +36,7 @@ typedef enum {
     BEAR_DEATH = 9,
 } BEAR_ANIM;
 
-extern BITE_INFO BearHeadBite;
+extern BITE_INFO g_BearHeadBite;
 
 void SetupBear(OBJECT_INFO *obj);
 void BearControl(int16_t item_num);

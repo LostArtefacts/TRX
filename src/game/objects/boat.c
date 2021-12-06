@@ -14,7 +14,7 @@ void SetupBoat(OBJECT_INFO *obj)
 
 void BoatControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case BOAT_SET:

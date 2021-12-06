@@ -7,8 +7,8 @@
 #include "game/people.h"
 #include "global/vars.h"
 
-BITE_INFO CowboyGun1 = { 1, 200, 41, 5 };
-BITE_INFO CowboyGun2 = { -2, 200, 40, 8 };
+BITE_INFO g_CowboyGun1 = { 1, 200, 41, 5 };
+BITE_INFO g_CowboyGun2 = { -2, 200, 40, 8 };
 
 void SetupCowboy(OBJECT_INFO *obj)
 {
@@ -27,12 +27,12 @@ void SetupCowboy(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
 void CowboyControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -50,8 +50,8 @@ void CowboyControl(int16_t item_num)
         if (item->current_anim_state != COWBOY_DEATH) {
             item->current_anim_state = COWBOY_DEATH;
             item->anim_number =
-                Objects[O_MERCENARY2].anim_index + COWBOY_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+                g_Objects[O_MERCENARY2].anim_index + COWBOY_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_MAGNUM_ITEM);
         }
     } else {
@@ -120,20 +120,21 @@ void CowboyControl(int16_t item_num)
 
         case COWBOY_SHOOT:
             if (!cowboy->flags) {
-                if (ShotLara(item, info.distance, &CowboyGun1, head)) {
-                    LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                    LaraItem->hit_status = 1;
+                if (ShotLara(item, info.distance, &g_CowboyGun1, head)) {
+                    g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
+                    g_LaraItem->hit_status = 1;
                 }
             } else if (cowboy->flags == 6) {
                 if (Targetable(item, &info)) {
-                    if (ShotLara(item, info.distance, &CowboyGun2, head)) {
-                        LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                        LaraItem->hit_status = 1;
+                    if (ShotLara(item, info.distance, &g_CowboyGun2, head)) {
+                        g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
+                        g_LaraItem->hit_status = 1;
                     }
                 } else {
-                    int16_t fx_num = CreatureEffect(item, &CowboyGun2, GunShot);
+                    int16_t fx_num =
+                        CreatureEffect(item, &g_CowboyGun2, GunShot);
                     if (fx_num != NO_ITEM) {
-                        Effects[fx_num].pos.y_rot += head;
+                        g_Effects[fx_num].pos.y_rot += head;
                     }
                 }
             }

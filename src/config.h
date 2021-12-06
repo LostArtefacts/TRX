@@ -5,6 +5,11 @@
 #include <stdint.h>
 
 typedef enum {
+    SCREENSHOT_FORMAT_JPEG,
+    SCREENSHOT_FORMAT_PNG,
+} SCREENSHOT_FORMAT;
+
+typedef enum {
     T1M_BL_TOP_LEFT = 0,
     T1M_BL_TOP_CENTER = 1,
     T1M_BL_TOP_RIGHT = 2,
@@ -93,11 +98,13 @@ typedef struct {
 
     int32_t sound_volume;
     int32_t music_volume;
-} T1MConfigStruct;
 
-extern T1MConfigStruct T1MConfig;
+    SCREENSHOT_FORMAT screenshot_format;
+} CONFIG;
 
-int8_t T1MReadConfigFromJson(const char *json);
-int8_t T1MReadConfig();
+extern CONFIG g_Config;
+
+bool Config_ReadFromJSON(const char *json);
+bool Config_Read();
 
 #endif

@@ -1,34 +1,58 @@
 #ifndef T1M_SPECIFIC_S_OUTPUT_H
 #define T1M_SPECIFIC_S_OUTPUT_H
 
-#include <stdbool.h>
-#include <stdint.h>
-
+#include "game/picture.h"
 #include "global/types.h"
 
-void S_InitialisePolyList();
-int32_t S_DumpScreen();
-void S_ClearScreen();
-void S_OutputPolyList();
-void S_InitialiseScreen();
-void S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
-void S_CalculateStaticLight(int16_t adder);
-void S_SetupBelowWater(bool underwater);
-void S_SetupAboveWater(bool underwater);
-void S_AnimateTextures(int32_t ticks);
-void S_DisplayPicture(const char *filename);
-void S_DrawLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
-    int32_t width);
-void S_PrintShadow(int16_t size, int16_t *bptr, ITEM_INFO *item);
-int S_GetObjectBounds(int16_t *bptr);
+bool S_Output_Init();
+void S_Output_Shutdown();
 
-int32_t GetRenderScaleGLRage(int32_t unit);
+void S_Output_EnableTextureMode(void);
+void S_Output_DisableTextureMode(void);
 
-int32_t GetRenderScale(int32_t unit);
-int32_t GetRenderHeightDownscaled();
-int32_t GetRenderWidthDownscaled();
-int32_t GetRenderHeight();
-int32_t GetRenderWidth();
+void S_Output_RenderBegin();
+void S_Output_RenderEnd();
+void S_Output_RenderToggle();
+void S_Output_DumpScreen();
+void S_Output_ClearBackBuffer();
+
+void S_Output_SetViewport(int width, int height);
+void S_Output_SetFullscreen(bool fullscreen);
+void S_Output_ApplyResolution();
+
+void S_Output_FadeToPal(int32_t fade_value, RGB888 *palette);
+void S_Output_FadeWait();
+
+void S_Output_SetPalette();
+void S_Output_DownloadTextures(int32_t pages);
+void S_Output_DownloadPicture(const PICTURE *pic);
+void S_Output_SelectTexture(int tex_num);
+void S_Output_CopyFromPicture();
+void S_Output_CopyToPicture();
+
+void S_Output_DrawFlatTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
+void S_Output_DrawTexturedTriangle(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
+    PHD_UV *uv2, PHD_UV *uv3, uint16_t textype);
+void S_Output_DrawTexturedQuad(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype);
+void S_Output_DrawSprite(
+    int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
+void S_Output_Draw2DLine(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
+    RGB888 color2);
+void S_Output_Draw2DQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
+    RGB888 bl, RGB888 br);
+void S_Output_DrawTranslucentQuad(
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count);
+void S_Output_DrawLightningSegment(
+    int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
+    int thickness2);
+
+bool S_Output_MakeScreenshot(const char *path);
 
 #endif
