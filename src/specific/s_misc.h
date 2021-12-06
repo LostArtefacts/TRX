@@ -5,10 +5,8 @@
 
 // TODO: these do not belong to specific/ and are badly named
 
-void S_NoFade();
 void S_FadeInInventory(int32_t fade);
 void S_FadeOutInventory(int32_t fade);
-void S_FadeToBlack();
 void S_FinishInventory();
 
 RGB888 S_ColourFromPalette(int8_t idx);

@@ -1144,12 +1144,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     ATI3DCIF_SetState(C3D_ERS_ALPHA_DST, &tmp);
 }
 
-void S_Output_FadeToPal(int32_t fade_value, RGB888 *palette)
-{
-    // null sub
-}
-
-void S_Output_FadeWait()
+void S_Output_FadeToBlack()
 {
     S_Output_ClearBackBuffer();
     S_Output_DumpScreen();

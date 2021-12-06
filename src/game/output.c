@@ -848,6 +848,11 @@ void Output_AnimateTextures(int32_t ticks)
     }
 }
 
+void Output_FadeToBlack()
+{
+    S_Output_FadeToBlack();
+}
+
 void Output_ApplyWaterEffect(float *r, float *g, float *b)
 {
     if (g_IsShadeEffect) {

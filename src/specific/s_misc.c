@@ -9,11 +9,6 @@
 
 #include <string.h>
 
-void S_NoFade()
-{
-    // not implemented in TombATI
-}
-
 void S_FadeInInventory(int32_t fade)
 {
     if (g_CurrentLevel != g_GameFlow.title_level_num) {
@@ -24,13 +19,6 @@ void S_FadeInInventory(int32_t fade)
 void S_FadeOutInventory(int32_t fade)
 {
     // not implemented in TombATI
-}
-
-void S_FadeToBlack()
-{
-    memset(g_GamePalette, 0, sizeof(g_GamePalette));
-    S_Output_FadeToPal(20, g_GamePalette);
-    S_Output_FadeWait();
 }
 
 void S_FinishInventory()

@@ -6,13 +6,13 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/items.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_misc.h"
 
 #include <stdbool.h>
 
@@ -76,7 +76,7 @@ int32_t StartDemo()
         Text_Remove(txt);
 
         *s = start;
-        S_FadeToBlack();
+        Output_FadeToBlack();
     }
 
     g_Config.enable_enhanced_look = old_enhanced_look;

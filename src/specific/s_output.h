@@ -20,8 +20,7 @@ void S_Output_SetViewport(int width, int height);
 void S_Output_SetFullscreen(bool fullscreen);
 void S_Output_ApplyResolution();
 
-void S_Output_FadeToPal(int32_t fade_value, RGB888 *palette);
-void S_Output_FadeWait();
+void S_Output_FadeToBlack();
 
 void S_Output_SetPalette();
 void S_Output_DownloadTextures(int32_t pages);
