@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_DINO_H
-#define T1M_GAME_AI_DINO_H
+#pragma once
 
 #include "global/types.h"
 
@@ -34,5 +33,3 @@ typedef enum {
 void SetupDino(OBJECT_INFO *obj);
 void DinoControl(int16_t item_num);
 void LaraDinoDeath(ITEM_INFO *item);
-
-#endif

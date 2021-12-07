@@ -99,11 +99,11 @@ bool Settings_Read()
 
     size_t cfg_data_size = 0;
     char *cfg_data = NULL;
-    if (!File_Load(m_UserSettingsPath, &cfg_data, &cfg_data_size)) {
-        goto cleanup;
+    if (File_Load(m_UserSettingsPath, &cfg_data, &cfg_data_size)) {
+        result = Settings_ReadFromJSON(cfg_data);
+    } else {
+        Settings_ReadFromJSON("");
     }
-
-    result = Settings_ReadFromJSON(cfg_data);
 
 cleanup:
     if (cfg_data) {

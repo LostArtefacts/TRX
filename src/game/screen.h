@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_SCREEN_H
-#define T1M_GAME_SCREEN_H
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -22,5 +21,3 @@ int32_t Screen_GetRenderScale(int32_t unit);
 int32_t Screen_GetRenderScaleGLRage(int32_t unit);
 
 void Screen_ApplyResolution();
-
-#endif

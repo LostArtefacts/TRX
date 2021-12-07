@@ -44,7 +44,7 @@ int32_t StopGame()
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
 
-    S_FadeToBlack();
+    Output_FadeToBlack();
     if (!g_InvChosen) {
         return GF_EXIT_TO_TITLE;
     }
@@ -192,7 +192,7 @@ void LevelStats(int32_t level_num)
     }
 
     g_SaveGame.start[g_CurrentLevel].available = 0;
-    S_FadeToBlack();
+    Output_FadeToBlack();
     Screen_ApplyResolution();
 }
 

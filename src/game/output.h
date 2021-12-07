@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OUTPUT_H
-#define T1M_GAME_OUTPUT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,7 +11,9 @@ void Output_SetViewport(int width, int height);
 void Output_SetFullscreen(bool fullscreen);
 void Output_ApplyResolution();
 void Output_DownloadTextures(int page_count);
-void Output_SetPalette();
+
+void Output_SetPalette(RGB888 palette[256]);
+RGB888 Output_GetPaletteColor(uint8_t idx);
 
 int32_t Output_GetNearZ();
 int32_t Output_GetFarZ();
@@ -69,8 +70,8 @@ void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t ticks);
 
+void Output_FadeToBlack();
+
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
 bool Output_MakeScreenshot(const char *path);
-
-#endif

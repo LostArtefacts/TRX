@@ -3,14 +3,8 @@
 #include "gfx/2d/2d_renderer.h"
 #include "gfx/blitter.h"
 
-#ifdef __cplusplus
-    #include <cstdbool>
-    #include <cstdint>
-extern "C" {
-#else
-    #include <stdbool.h>
-    #include <stdint.h>
-#endif
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef struct GFX_2D_Surface {
     GFX_2D_Renderer *renderer;
@@ -38,7 +32,3 @@ GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface);
 
 bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc);
 bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp);
-
-#ifdef __cplusplus
-}
-#endif

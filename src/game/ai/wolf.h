@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_WOLF_H
-#define T1M_GAME_AI_WOLF_H
+#pragma once
 
 #include "global/types.h"
 
@@ -44,5 +43,3 @@ extern BITE_INFO g_WolfJawBite;
 void SetupWolf(OBJECT_INFO *obj);
 void InitialiseWolf(int16_t item_num);
 void WolfControl(int16_t item_num);
-
-#endif

@@ -418,11 +418,12 @@ static bool Level_LoadDepthQ(MYFILE *fp)
 static bool Level_LoadPalette(MYFILE *fp)
 {
     LOG_INFO("");
-    File_Read(g_GamePalette, sizeof(uint8_t), 256 * 3, fp);
-    g_GamePalette[0].r = 0;
-    g_GamePalette[0].g = 0;
-    g_GamePalette[0].b = 0;
-    Output_SetPalette();
+    RGB888 palette[256];
+    File_Read(palette, sizeof(RGB888), 256, fp);
+    palette[0].r = 0;
+    palette[0].g = 0;
+    palette[0].b = 0;
+    Output_SetPalette(palette);
     return true;
 }
 
@@ -610,12 +611,12 @@ static bool Level_LoadTexturePages(MYFILE *fp)
 {
     File_Read(&m_TexturePageCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d texture pages", m_TexturePageCount);
-    int8_t *base =
-        GameBuf_Alloc(m_TexturePageCount * 65536, GBUF_TEXTURE_PAGES);
-    File_Read(base, 65536, m_TexturePageCount, fp);
+    uint8_t *base =
+        GameBuf_Alloc(m_TexturePageCount * 256 * 256, GBUF_TEXTURE_PAGES);
+    File_Read(base, 256 * 256, m_TexturePageCount, fp);
     for (int i = 0; i < m_TexturePageCount; i++) {
         g_TexturePagePtrs[i] = base;
-        base += 65536;
+        base += 256 * 256;
     }
     return true;
 }

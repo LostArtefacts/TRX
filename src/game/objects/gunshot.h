@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_GUNSHOT_H
-#define T1M_GAME_OBJECTS_GUNSHOT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -7,5 +6,3 @@
 
 void SetupGunShot(OBJECT_INFO *obj);
 void ControlGunShot(int16_t fx_num);
-
-#endif

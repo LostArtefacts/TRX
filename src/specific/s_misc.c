@@ -9,11 +9,6 @@
 
 #include <string.h>
 
-void S_NoFade()
-{
-    // not implemented in TombATI
-}
-
 void S_FadeInInventory(int32_t fade)
 {
     if (g_CurrentLevel != g_GameFlow.title_level_num) {
@@ -26,28 +21,12 @@ void S_FadeOutInventory(int32_t fade)
     // not implemented in TombATI
 }
 
-void S_FadeToBlack()
-{
-    memset(g_GamePalette, 0, sizeof(g_GamePalette));
-    S_Output_FadeToPal(20, g_GamePalette);
-    S_Output_FadeWait();
-}
-
 void S_FinishInventory()
 {
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
     }
     g_ModeLock = false;
-}
-
-RGB888 S_ColourFromPalette(int8_t idx)
-{
-    RGB888 ret;
-    ret.r = 4 * g_GamePalette[idx].r;
-    ret.g = 4 * g_GamePalette[idx].g;
-    ret.b = 4 * g_GamePalette[idx].b;
-    return ret;
 }
 
 int S_GetObjectBounds(int16_t *bptr)

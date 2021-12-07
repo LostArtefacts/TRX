@@ -1,15 +1,10 @@
 #pragma once
 
-#ifdef __cplusplus
-    #include <cstdbool>
-    #include <cstdint>
-extern "C" {
-#else
-    #include <stdbool.h>
-    #include <stdint.h>
-#endif
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "gfx/2d/2d_renderer.h"
+#include "gfx/3d/3d_renderer.h"
 
 typedef struct GFX_Context GFX_Context;
 
@@ -32,7 +27,4 @@ bool GFX_Context_IsRendered();
 HWND GFX_Context_GetHWnd();
 void GFX_Context_ScheduleScreenshot(const char *path);
 GFX_2D_Renderer *GFX_Context_GetRenderer2D();
-
-#ifdef __cplusplus
-}
-#endif
+GFX_3D_Renderer *GFX_Context_GetRenderer3D();

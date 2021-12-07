@@ -2,12 +2,7 @@
 
 #include "gfx/gl/gl_core_3_3.h"
 
-#ifdef __cplusplus
-    #include <cstdbool>
-extern "C" {
-#else
-    #include <stdbool.h>
-#endif
+#include <stdbool.h>
 
 typedef struct GFX_GL_Program {
     GLuint id;
@@ -32,7 +27,3 @@ void GFX_GL_Program_Uniform1i(GFX_GL_Program *program, GLint loc, GLint v0);
 void GFX_GL_Program_UniformMatrix4fv(
     GFX_GL_Program *program, GLint loc, GLsizei count, GLboolean transpose,
     const GLfloat *value);
-
-#ifdef __cplusplus
-}
-#endif

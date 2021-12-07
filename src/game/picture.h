@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_PICTURE_H
-#define T1M_GAME_PICTURE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -20,5 +19,3 @@ bool Picture_ScaleCover(
 bool Picture_ScaleSmart(
     PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
     size_t target_height);
-
-#endif

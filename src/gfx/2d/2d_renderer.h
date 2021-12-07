@@ -6,12 +6,8 @@
 #include "gfx/gl/texture.h"
 #include "gfx/gl/vertex_array.h"
 
-#ifdef __cplusplus
-    #include <cstdint>
-extern "C" {
-#else
-    #include <stdint.h>
-#endif
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef struct GFX_2D_SurfaceDesc {
     int width;
@@ -43,7 +39,3 @@ void GFX_2D_Renderer_Close(GFX_2D_Renderer *renderer);
 void GFX_2D_Renderer_Upload(
     GFX_2D_Renderer *renderer, GFX_2D_SurfaceDesc *desc, const uint8_t *data);
 void GFX_2D_Renderer_Render(GFX_2D_Renderer *renderer);
-
-#ifdef __cplusplus
-}
-#endif

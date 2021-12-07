@@ -1,5 +1,4 @@
-#ifndef T1M_GLOBAL_VARS_H
-#define T1M_GLOBAL_VARS_H
+#pragma once
 
 #include "global/const.h"
 #include "global/types.h"
@@ -28,7 +27,6 @@ extern int32_t g_LsAdder;
 extern int32_t g_LsDivider;
 extern SHADOW_INFO g_ShadowInfo;
 
-extern RGB888 g_GamePalette[256];
 extern bool g_ModeLock;
 
 extern int32_t g_NoInputCount;
@@ -66,7 +64,7 @@ extern int16_t *g_MeshBase;
 extern int16_t **g_Meshes;
 extern OBJECT_INFO g_Objects[O_NUMBER_OF];
 extern STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF];
-extern int8_t *g_TexturePagePtrs[MAX_TEXTPAGES];
+extern uint8_t *g_TexturePagePtrs[MAX_TEXTPAGES];
 extern int16_t g_RoomCount;
 extern int32_t g_LevelItemCount;
 extern ITEM_INFO *g_Items;
@@ -136,5 +134,3 @@ extern int32_t g_InvExtraData[8];
 extern int16_t g_InvChosen;
 
 extern RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE];
-
-#endif

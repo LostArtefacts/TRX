@@ -1,5 +1,4 @@
-#ifndef T1M_GLOBAL_TYPES_H
-#define T1M_GLOBAL_TYPES_H
+#pragma once
 
 #include "global/const.h"
 
@@ -1094,27 +1093,6 @@ typedef struct RGB888 {
     uint8_t b;
 } RGB888;
 
-typedef struct PcxHeader_t {
-    uint8_t manufacturer;
-    uint8_t version;
-    uint8_t rle;
-    uint8_t bpp;
-    uint16_t x_min;
-    uint16_t y_min;
-    uint16_t x_max;
-    uint16_t y_max;
-    uint16_t h_dpi;
-    uint16_t v_dpi;
-    RGB888 header_palette[16];
-    uint8_t reserved;
-    uint8_t planes;
-    uint16_t bytes_per_line;
-    uint16_t pal_interpret;
-    uint16_t h_res;
-    uint16_t v_res;
-    uint8_t reserved_data[54];
-} PCX_HEADER;
-
 typedef struct POS_2D {
     uint16_t x;
     uint16_t y;
@@ -1894,5 +1872,3 @@ typedef enum INPUT_LAYOUT {
     INPUT_LAYOUT_USER,
     INPUT_LAYOUT_NUMBER_OF,
 } INPUT_LAYOUT;
-
-#endif

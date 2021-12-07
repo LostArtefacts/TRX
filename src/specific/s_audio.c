@@ -13,27 +13,6 @@ static Uint8 m_WorkingSilence = 0;
 
 static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len);
 
-float S_Audio_Clamp(float min, float max, float val)
-{
-    assert(min <= max);
-    if (val < min) {
-        return min;
-    }
-    if (val > max) {
-        return max;
-    }
-    return val;
-}
-
-float S_Audio_InverseLerp(float from, float to, float val)
-{
-    if (from < to) {
-        return S_Audio_Clamp(0.0f, 1.0f, ((val - from) / (to - from)));
-    } else {
-        return S_Audio_Clamp(0.0f, 1.0f, (1.0f - ((val - to) / (from - to))));
-    }
-}
-
 static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
 {
     memset(m_WorkingBuffer, m_WorkingSilence, len);

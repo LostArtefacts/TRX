@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_SOUND_H
-#define T1M_GAME_SOUND_H
+#pragma once
 
 #include "global/types.h"
 
@@ -17,5 +16,3 @@ void Sound_StopAllSamples();
 void Sound_SetMasterVolume(int8_t volume);
 void Sound_LoadSamples(
     size_t num_samples, const char **sample_pointers, size_t *sizes);
-
-#endif

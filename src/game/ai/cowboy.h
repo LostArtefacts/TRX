@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_COWBOY_H
-#define T1M_GAME_AI_COWBOY_H
+#pragma once
 
 #include "global/types.h"
 
@@ -29,5 +28,3 @@ extern BITE_INFO g_CowboyGun2;
 
 void SetupCowboy(OBJECT_INFO *obj);
 void CowboyControl(int16_t item_num);
-
-#endif

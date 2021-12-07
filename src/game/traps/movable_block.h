@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_MOVABLE_BLOCK_H
-#define T1M_GAME_TRAPS_MOVABLE_BLOCK_H
+#pragma once
 
 #include "global/types.h"
 
@@ -25,5 +24,3 @@ int32_t TestBlockPush(ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
 int32_t TestBlockPull(ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
 
 void AlterFloorHeight(ITEM_INFO *item, int32_t height);
-
-#endif

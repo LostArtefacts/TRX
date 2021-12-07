@@ -1,5 +1,4 @@
-#ifndef T1M_JSON_H
-#define T1M_JSON_H
+#pragma once
 
 #define JSON_INVALID_BOOL -1
 #define JSON_INVALID_STRING NULL
@@ -370,5 +369,3 @@ struct json_value_s *json_value_from_string(struct json_string_s *str);
 struct json_value_s *json_value_from_array(struct json_array_s *arr);
 struct json_value_s *json_value_from_object(struct json_object_s *obj);
 void json_value_free(struct json_value_s *value);
-
-#endif

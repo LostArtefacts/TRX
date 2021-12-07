@@ -1,5 +1,4 @@
-#ifndef T1M_CONFIG_H
-#define T1M_CONFIG_H
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -106,5 +105,3 @@ extern CONFIG g_Config;
 
 bool Config_ReadFromJSON(const char *json);
 bool Config_Read();
-
-#endif

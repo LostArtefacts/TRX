@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_TEETH_TRAP_H
-#define T1M_GAME_TRAPS_TEETH_TRAP_H
+#pragma once
 
 #include "global/types.h"
 
@@ -19,5 +18,3 @@ extern BITE_INFO g_Teeth3B;
 
 void SetupTeethTrap(OBJECT_INFO *obj);
 void TeethTrapControl(int16_t item_num);
-
-#endif

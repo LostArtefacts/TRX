@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_GAME_H
-#define T1M_GAME_GAME_H
+#pragma once
 
 #include "global/types.h"
 
@@ -14,5 +13,3 @@ void LevelStats(int32_t level_num);
 int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot);
 int32_t S_FrontEndCheck();
 int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot);
-
-#endif

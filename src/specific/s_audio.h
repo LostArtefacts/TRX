@@ -1,5 +1,4 @@
-#ifndef T1M_SPECIFIC_S_AUDIO_H
-#define T1M_SPECIFIC_S_AUDIO_H
+#pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -41,9 +40,6 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
-float S_Audio_Clamp(float min, float max, float val);
-float S_Audio_InverseLerp(float from, float to, float val);
-
 void S_Audio_SampleSoundInit();
 void S_Audio_SampleSoundShutdown();
 void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
@@ -51,7 +47,5 @@ void S_Audio_SampleSoundMix(float *dst_buffer, size_t len);
 void S_Audio_StreamSoundInit();
 void S_Audio_StreamSoundShutdown();
 void S_Audio_StreamSoundMix(float *dst_buffer, size_t len);
-
-#endif
 
 #endif

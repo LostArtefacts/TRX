@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_LARA_H
-#define T1M_GAME_LARA_H
+#pragma once
 
 #include "global/types.h"
 
@@ -196,5 +195,3 @@ void LookUpDown();
 void ResetLook();
 
 void LaraCheatGetStuff();
-
-#endif

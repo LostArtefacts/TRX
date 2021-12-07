@@ -1057,8 +1057,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Output_CopyBufferToScreen();
                 Output_DumpScreen();
                 Shell_Wait(data->display_time);
-                S_FadeToBlack();
-                S_NoFade();
+                Output_FadeToBlack();
             }
             break;
 

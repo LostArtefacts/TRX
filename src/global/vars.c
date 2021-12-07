@@ -49,7 +49,6 @@ int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };
 int32_t g_ShadeTable[WIBBLE_SIZE] = { 0 };
 int32_t g_RandTable[WIBBLE_SIZE] = { 0 };
 
-RGB888 g_GamePalette[256] = { 0 };
 bool g_ModeLock = false;
 
 LARA_INFO g_Lara = { 0 };
@@ -77,7 +76,7 @@ int16_t *g_MeshBase = NULL;
 int16_t **g_Meshes = NULL;
 OBJECT_INFO g_Objects[O_NUMBER_OF] = { 0 };
 STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF] = { 0 };
-int8_t *g_TexturePagePtrs[MAX_TEXTPAGES] = { NULL };
+uint8_t *g_TexturePagePtrs[MAX_TEXTPAGES] = { NULL };
 int16_t g_RoomCount = 0;
 int32_t g_LevelItemCount = 0;
 ITEM_INFO *g_Items = NULL;

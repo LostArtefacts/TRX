@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_LION_H
-#define T1M_GAME_AI_LION_H
+#pragma once
 
 #include "global/types.h"
 
@@ -43,5 +42,3 @@ void SetupLion(OBJECT_INFO *obj);
 void SetupLioness(OBJECT_INFO *obj);
 void SetupPuma(OBJECT_INFO *obj);
 void LionControl(int16_t item_num);
-
-#endif

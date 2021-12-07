@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_SCION_H
-#define T1M_GAME_OBJECTS_SCION_H
+#pragma once
 
 #include "global/types.h"
 
@@ -21,5 +20,3 @@ void PickUpScionCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void PickUpScion4Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-
-#endif

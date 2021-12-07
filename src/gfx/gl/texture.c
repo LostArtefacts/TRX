@@ -1,6 +1,24 @@
 #include "gfx/gl/texture.h"
 
+#include "gfx/gl/utils.h"
+#include "memory.h"
+
 #include <assert.h>
+
+GFX_GL_Texture *GFX_GL_Texture_Create(GLenum target)
+{
+    GFX_GL_Texture *texture = Memory_Alloc(sizeof(GFX_GL_Texture));
+    GFX_GL_Texture_Init(texture, target);
+    return texture;
+}
+
+void GFX_GL_Texture_Free(GFX_GL_Texture *texture)
+{
+    if (texture) {
+        GFX_GL_Texture_Close(texture);
+        Memory_Free(texture);
+    }
+}
 
 void GFX_GL_Texture_Init(GFX_GL_Texture *texture, GLenum target)
 {
@@ -21,8 +39,18 @@ void GFX_GL_Texture_Bind(GFX_GL_Texture *texture)
     glBindTexture(texture->target, texture->id);
 }
 
-GLenum GFX_GL_Texture_Target(GFX_GL_Texture *texture)
+void GFX_GL_Texture_Load(
+    GFX_GL_Texture *texture, const void *data, int width, int height)
 {
     assert(texture);
-    return texture->target;
+    assert(data);
+
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+        data);
+
+    GFX_GL_Texture_Bind(texture);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    GFX_GL_CheckError();
 }
