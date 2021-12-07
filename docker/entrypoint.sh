@@ -6,8 +6,6 @@ if [ ! -f /app/build/build.ninja ]; then
     meson --buildtype "$TARGET" /app/build/ --cross /app/docker/meson_linux_mingw32.txt
 fi
 
-cp /usr/lib/gcc/i686-w64-mingw32/9.3-posix/libgomp-1.dll /app/build/
-cp /usr/lib/gcc/i686-w64-mingw32/9.3-posix/libstdc++-6.dll /app/build/
 cp /usr/lib/gcc/i686-w64-mingw32/9.3-posix/libgcc_s_sjlj-1.dll /app/build/
 cp /usr/i686-w64-mingw32/lib/libwinpthread-1.dll /app/build/
 cp /usr/i686-w64-mingw32/bin/swscale-5.dll /app/build/

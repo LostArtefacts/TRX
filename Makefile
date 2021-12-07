@@ -32,7 +32,6 @@ test_base:
 	cp build/*.exe test/
 	cp build/*.dll test/
 	rsync -r bin/ test/
-	rm -f test/Winplay.dll
 
 test: build test_base
 	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe

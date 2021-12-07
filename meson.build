@@ -1,7 +1,6 @@
-project('Tomb1Main', ['c', 'cpp'],
+project('Tomb1Main', ['c'],
   default_options: [
     'c_std=c11',
-    'cpp_std=c++17',
     'warning_level=2',
   ],
 )
@@ -19,12 +18,10 @@ if git.found()
 endif
 
 c_compiler = meson.get_compiler('c')
-cpp_compiler = meson.get_compiler('cpp')
 
 is_mingw = c_compiler.get_id() == 'gcc' and host_machine.system() == 'windows'
 if is_mingw
   add_project_link_arguments([], language: 'c')
-  add_project_link_arguments([], language: 'cpp')
 endif
 
 build_opts = [
@@ -33,11 +30,9 @@ build_opts = [
   '-DVERSION="T1M ' + version_pretty + '"'
 ]
 c_opts = []
-cpp_opts = []
 add_project_arguments(build_opts + c_opts, language: 'c')
-add_project_arguments(build_opts + cpp_opts, language: 'cpp')
 
-dep_opengl32 = cpp_compiler.find_library('opengl32')
+dep_opengl32 = c_compiler.find_library('opengl32')
 dep_dinput8 = c_compiler.find_library('dinput8')
 dep_dxguid = c_compiler.find_library('dxguid')
 
