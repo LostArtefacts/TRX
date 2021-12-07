@@ -2,46 +2,30 @@
 import argparse
 from pathlib import Path
 
-TEMPLATE = """
-    1 VERSIONINFO
-    FILEVERSION     0,0,0,0
-    PRODUCTVERSION  0,0,0,0
-    BEGIN
-      BLOCK "StringFileInfo"
-      BEGIN
-        BLOCK "080904E4"
-        BEGIN
-          VALUE "CompanyName", "rr-"
-          VALUE "FileDescription", "Tomb Raider 1 / TombATI enhancing library"
-          VALUE "FileVersion", "{version}"
-          VALUE "InternalName", "Tomb1Main"
-          VALUE "OriginalFilename", "Tomb1Main.dll"
-          VALUE "ProductName", "Tomb1Main"
-          VALUE "ProductVersion", "{version}"
-        END
-      END
-      BLOCK "VarFileInfo"
-      BEGIN
-        VALUE "Translation", 0x809, 1252
-      END
-    END
-"""
-
 REPO_DIR = Path(__file__).parent.parent
+SCRIPTS_BIN_DIR = REPO_DIR / "scripts" / "bin"
 SRC_DIR = REPO_DIR / "src"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--version")
-    parser.add_argument("--output", type=Path)
+    parser.add_argument("--output", type=Path, nargs="+")
     return parser.parse_args()
+
+
+def write_rc_template(output_path: Path, args: argparse.Namespace) -> None:
+    input_path = SCRIPTS_BIN_DIR / output_path.name
+    template = input_path.read_text()
+    template = template.replace("{version}", args.version)
+    template = template.replace("{icon_path}", str(SCRIPTS_BIN_DIR / "icon.ico"))
+    output_path.write_text(template)
 
 
 def main() -> None:
     args = parse_args()
-    resource_path = SRC_DIR / "version.rc"
-    args.output.write_text(TEMPLATE.replace("{version}", args.version))
+    for output in args.output:
+        write_rc_template(output, args)
 
 
 if __name__ == "__main__":
