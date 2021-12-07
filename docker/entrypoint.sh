@@ -16,7 +16,6 @@ cp /ext/bin/avcodec-58.dll /app/build/
 cp /ext/bin/avdevice-58.dll /app/build/
 cp /ext/bin/zlib1.dll /app/build/
 cp /ext/bin/avformat-58.dll /app/build/
-cp /ext/bin/SDL2.dll /app/build/
 
 cd /app/build; meson compile
 

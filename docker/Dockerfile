@@ -92,7 +92,7 @@ RUN cd SDL \
         --build=i686-pc-mingw32 \
         --prefix=/ext/ \
         --enable-shared \
-        --disable-static \
+        --enable-static \
     && make -j 4 \
     && make install
 
