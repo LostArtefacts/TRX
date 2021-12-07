@@ -25,6 +25,7 @@
 #include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/output.h"
+#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "gfx/2d/2d_surface.h"
@@ -205,8 +206,14 @@ typedef struct VideoState {
     int frame_drops_early;
     int frame_drops_late;
 
+    // surface size at the size of the display buffer
     int surface_width;
     int surface_height;
+    // target surface coordinates, keeping the video A:R
+    int target_surface_x;
+    int target_surface_y;
+    int target_surface_width;
+    int target_surface_height;
     GFX_2D_Surface *primary_surface;
     GFX_2D_Surface *back_surface;
 
@@ -263,22 +270,6 @@ static const struct TextureFormatEntry {
     { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
 };
 
-void avcodec_free_context(AVCodecContext **pavctx)
-{
-    AVCodecContext *avctx = *pavctx;
-    if (!avctx) {
-        return;
-    }
-
-    avcodec_close(avctx);
-    av_freep(&avctx->extradata);
-    av_freep(&avctx->subtitle_header);
-    av_freep(&avctx->intra_matrix);
-    av_freep(&avctx->inter_matrix);
-    av_freep(&avctx->rc_override);
-    av_freep(pavctx);
-}
-
 static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
 {
     MyAVPacketList pkt1;
@@ -302,16 +293,6 @@ static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
     q->duration += pkt1.pkt->duration;
     SDL_CondSignal(q->cond);
     return 0;
-}
-
-static int S_FMV_NextPowerOf2(int dim)
-{
-    int power = 2;
-    dim--;
-    while (dim >>= 1) {
-        power <<= 1;
-    }
-    return power;
 }
 
 static int S_FMV_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
@@ -707,18 +688,29 @@ static void S_FMV_DecoderAbort(Decoder *d, FrameQueue *fq)
 static int S_FMV_ReallocPrimarySurface(
     VideoState *is, int frame_width, int frame_height, bool clear)
 {
-    int surface_width = S_FMV_NextPowerOf2(frame_width);
-    int surface_height = S_FMV_NextPowerOf2(frame_height);
-    if (surface_width < surface_height) {
-        surface_width = surface_height;
-    } else {
-        surface_height = surface_width;
-    }
+    int surface_width = Screen_GetResWidth();
+    int surface_height = Screen_GetResHeight();
 
     if (is->primary_surface && is->surface_width == surface_width
         && is->surface_height == surface_height) {
         return 0;
     }
+
+    const float source_ratio = frame_width / (float)frame_height;
+    const float target_ratio = surface_width / (float)surface_height;
+    {
+        is->target_surface_width = source_ratio < target_ratio
+            ? surface_height * source_ratio
+            : surface_width;
+        is->target_surface_height = source_ratio < target_ratio
+            ? surface_height
+            : surface_width / source_ratio;
+        is->target_surface_x = (surface_width - is->target_surface_width) / 2;
+        is->target_surface_y = (surface_height - is->target_surface_height) / 2;
+    }
+
+    is->surface_width = surface_width;
+    is->surface_height = surface_height;
 
     if (is->primary_surface) {
         GFX_2D_Surface_Free(is->primary_surface);
@@ -727,8 +719,8 @@ static int S_FMV_ReallocPrimarySurface(
 
     {
         GFX_2D_SurfaceDesc surface_desc = {
-            .width = surface_width,
-            .height = surface_height,
+            .width = is->surface_width,
+            .height = is->surface_height,
             .flags = {
                 .primary = 1,
                 .flip = 1,
@@ -750,11 +742,7 @@ static int S_FMV_ReallocPrimarySurface(
         GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.pixels);
     }
 
-    is->surface_width = surface_width;
-    is->surface_height = surface_height;
-
-    GFX_Context_SetDisplaySize(frame_width, frame_height);
-
+    GFX_Context_SetDisplaySize(is->surface_width, is->surface_height);
     return 0;
 }
 
@@ -796,8 +784,8 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
     is->img_convert_ctx = sws_getCachedContext(
         is->img_convert_ctx, frame->width, frame->height, frame->format,
-        is->surface_width, is->surface_height, AV_PIX_FMT_BGRA, SWS_BICUBIC,
-        NULL, NULL, NULL);
+        is->target_surface_width, is->target_surface_height, AV_PIX_FMT_BGRA,
+        SWS_BILINEAR, NULL, NULL, NULL);
 
     if (is->img_convert_ctx) {
         GFX_2D_SurfaceDesc surface_desc = { 0 };
@@ -808,7 +796,10 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
             av_image_fill_arrays(
                 surf_planes, surf_linesize,
                 (const uint8_t *)surface_desc.pixels, AV_PIX_FMT_BGRA,
-                surface_desc.width, surface_desc.height, 1);
+                is->surface_width, is->surface_height, 1);
+
+            surf_planes[0] += is->target_surface_y * surf_linesize[0];
+            surf_planes[0] += is->target_surface_x * 4;
 
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
@@ -2255,6 +2246,7 @@ bool S_FMV_Play(const char *file_path)
         return true;
     }
 
+    VideoState *is = NULL;
     LOG_DEBUG("Playing FMV: %s", file_path);
 
     if (!File_Exists(file_path)) {
@@ -2276,7 +2268,7 @@ bool S_FMV_Play(const char *file_path)
 
     m_Window = (SDL_Window *)S_Shell_GetWindowHandle();
 
-    VideoState *is = S_FMV_StreamOpen(file_path);
+    is = S_FMV_StreamOpen(file_path);
     if (!is) {
         LOG_ERROR("Failed to initialize VideoState!");
         goto cleanup;

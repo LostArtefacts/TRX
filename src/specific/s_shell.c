@@ -116,6 +116,12 @@ int main(int argc, char **argv)
 {
     Log_Init();
 
+#ifdef _WIN32
+    // necessary for SDL_OpenAudioDevice to work with WASAPI
+    // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
+
     m_ArgCount = argc;
     m_ArgStrings = argv;
 

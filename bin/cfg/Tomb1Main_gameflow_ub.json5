@@ -1,7 +1,7 @@
 {
     // NOTE: bad changes to this file may result in crashes.
 
-    "main_menu_picture": "data\\titleh.png",
+    "main_menu_picture": "data\\titleh_ub.png",
     "savegame_fmt": "saveuba.%d",
     "enable_game_modes": true,
     "enable_save_crystals": false,

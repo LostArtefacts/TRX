@@ -32,7 +32,7 @@ jobs:
 
       - name: Package release
         run: |
-          7z a Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip ./bin/* ./build/*.dll ./build/*.exe
+          7z a Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip ./bin/* ./build/*.exe
 
       - name: Create release
         id: create_release

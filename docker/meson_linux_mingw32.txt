@@ -8,7 +8,6 @@ pkgconfig = '/usr/bin/i686-w64-mingw32-pkg-config'
 windres = '/usr/bin/i686-w64-mingw32-windres'
 exe_wrapper = 'wine'
 ld = '/usr/bin/i686-w64-mingw32-ld'
-cmake = '/usr/bin/cmake'
 
 [properties]
 skip_sanity_check = true
