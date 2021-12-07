@@ -271,7 +271,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         true,
     };
 
-    if (g_InputDB.left && (g_InvMode != INV_DEATH_MODE || g_SavedGamesCount)) {
+    if (g_InputDB.left && (g_SavedGamesCount || page > 1)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;
