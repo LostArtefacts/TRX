@@ -2246,6 +2246,7 @@ bool S_FMV_Play(const char *file_path)
         return true;
     }
 
+    VideoState *is = NULL;
     LOG_DEBUG("Playing FMV: %s", file_path);
 
     if (!File_Exists(file_path)) {
@@ -2267,7 +2268,7 @@ bool S_FMV_Play(const char *file_path)
 
     m_Window = (SDL_Window *)S_Shell_GetWindowHandle();
 
-    VideoState *is = S_FMV_StreamOpen(file_path);
+    is = S_FMV_StreamOpen(file_path);
     if (!is) {
         LOG_ERROR("Failed to initialize VideoState!");
         goto cleanup;
