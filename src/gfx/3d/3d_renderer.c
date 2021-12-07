@@ -48,8 +48,10 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
         GFX_GL_Program_UniformLocation(&renderer->program, "matProjection");
     renderer->loc_mat_model_view =
         GFX_GL_Program_UniformLocation(&renderer->program, "matModelView");
-    renderer->loc_tmap_en =
-        GFX_GL_Program_UniformLocation(&renderer->program, "tmapEn");
+    renderer->loc_texturing_enabled =
+        GFX_GL_Program_UniformLocation(&renderer->program, "texturingEnabled");
+    renderer->loc_smoothing_enabled =
+        GFX_GL_Program_UniformLocation(&renderer->program, "smoothingEnabled");
 
     GFX_GL_Program_FragmentData(&renderer->program, "fragColor");
     GFX_GL_Program_Bind(&renderer->program);
@@ -217,6 +219,8 @@ void GFX_3D_Renderer_SetSmoothingEnabled(
     GFX_GL_Sampler_Parameteri(
         &renderer->sampler, GL_TEXTURE_MIN_FILTER,
         is_enabled ? GL_LINEAR : GL_NEAREST);
+    GFX_GL_Program_Uniform1i(
+        &renderer->program, renderer->loc_smoothing_enabled, is_enabled);
 }
 
 void GFX_3D_Renderer_SetBlendingEnabled(
@@ -235,5 +239,5 @@ void GFX_3D_Renderer_SetTexturingEnabled(
 {
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_GL_Program_Uniform1i(
-        &renderer->program, renderer->loc_tmap_en, is_enabled);
+        &renderer->program, renderer->loc_texturing_enabled, is_enabled);
 }

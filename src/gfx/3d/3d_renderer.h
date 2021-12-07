@@ -22,7 +22,8 @@ typedef struct GFX_3D_Renderer {
     // shader variable locations
     GLint loc_mat_projection;
     GLint loc_mat_model_view;
-    GLint loc_tmap_en;
+    GLint loc_texturing_enabled;
+    GLint loc_smoothing_enabled;
 } GFX_3D_Renderer;
 
 void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer);

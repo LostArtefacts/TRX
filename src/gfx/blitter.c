@@ -97,9 +97,10 @@ void GFX_Blit(
             }
 
             for (int32_t n = 0; n < dst_img->depth; n++) {
-                dst_img->buffer[(y * dst_img->width + x) * dst_img->depth + n] =
-                    src_img
-                        ->buffer[(y * src_img->width + x) * src_img->depth + n];
+                dst_img
+                    ->buffer[(y1 * dst_img->width + x1) * dst_img->depth + n] =
+                    src_img->buffer
+                        [(y2 * src_img->width + x2) * src_img->depth + n];
             }
         }
     }
