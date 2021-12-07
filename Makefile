@@ -30,7 +30,6 @@ lint:
 
 test_base:
 	cp build/*.exe test/
-	cp build/*.dll test/
 	rsync -r bin/ test/
 
 test: build test_base

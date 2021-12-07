@@ -36,11 +36,11 @@ dep_opengl32 = c_compiler.find_library('opengl32')
 dep_dinput8 = c_compiler.find_library('dinput8')
 dep_dxguid = c_compiler.find_library('dxguid')
 
-dep_avcodec = dependency('libavcodec', static: false)
-dep_avformat = dependency('libavformat', static: false)
-dep_avutil = dependency('libavutil', static: false)
-dep_swscale = dependency('libswscale', static: false)
-dep_swresample = dependency('libswresample', static: false)
+dep_avcodec = dependency('libavcodec', static: true)
+dep_avformat = dependency('libavformat', static: true)
+dep_avutil = dependency('libavutil', static: true)
+dep_swscale = dependency('libswscale', static: true)
+dep_swresample = dependency('libswresample', static: true)
 
 dep_sdl2 = dependency('SDL2', static: true)
 

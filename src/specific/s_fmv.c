@@ -270,22 +270,6 @@ static const struct TextureFormatEntry {
     { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
 };
 
-void avcodec_free_context(AVCodecContext **pavctx)
-{
-    AVCodecContext *avctx = *pavctx;
-    if (!avctx) {
-        return;
-    }
-
-    avcodec_close(avctx);
-    av_freep(&avctx->extradata);
-    av_freep(&avctx->subtitle_header);
-    av_freep(&avctx->intra_matrix);
-    av_freep(&avctx->inter_matrix);
-    av_freep(&avctx->rc_override);
-    av_freep(pavctx);
-}
-
 static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
 {
     MyAVPacketList pkt1;

@@ -64,7 +64,6 @@ RUN cd FFmpeg \
         --enable-demuxer=h264 \
         --enable-demuxer=image2 \
         --enable-zlib \
-        --enable-shared \
         --enable-static \
         --disable-ffplay \
         --disable-ffprobe \
