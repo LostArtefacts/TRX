@@ -44,6 +44,7 @@ RUN cd FFmpeg \
         --cross-prefix=i686-w64-mingw32- \
         --prefix=/ext/ \
         --cc=i686-w64-mingw32-gcc \
+        --strip=i686-w64-mingw32-strip \
         --pkg-config=i686-w64-mingw32-pkg-config \
         --enable-gpl \
         --enable-decoder=pcx \
@@ -65,6 +66,8 @@ RUN cd FFmpeg \
         --enable-demuxer=image2 \
         --enable-zlib \
         --enable-static \
+        --enable-small \
+        --disable-debug \
         --disable-ffplay \
         --disable-ffprobe \
         --disable-doc \
