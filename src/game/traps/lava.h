@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_LAVA_H
-#define T1M_GAME_TRAPS_LAVA_H
+#pragma once
 
 #include "global/types.h"
 
@@ -15,5 +14,3 @@ void LavaBurn(ITEM_INFO *item);
 void LavaEmitterControl(int16_t item_num);
 void LavaControl(int16_t fx_num);
 void LavaWedgeControl(int16_t item_num);
-
-#endif

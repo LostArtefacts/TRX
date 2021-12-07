@@ -1,6 +1,3 @@
-#ifndef T1M_INIT_H
-#define T1M_INIT_H
+#pragma once
 
 void T1MInit();
-
-#endif

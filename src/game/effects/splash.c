@@ -2,8 +2,8 @@
 
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -24,23 +24,23 @@ void Splash(ITEM_INFO *item)
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = CreateEffect(room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &Effects[fx_num];
+            FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
-            fx->pos.y_rot = PHD_180 + 2 * GetRandomDraw();
+            fx->pos.y_rot = PHD_180 + 2 * Random_GetDraw();
             fx->object_number = O_SPLASH1;
             fx->frame_number = 0;
-            fx->speed = GetRandomDraw() / 256;
+            fx->speed = Random_GetDraw() / 256;
         }
     }
 }
 
 void ControlSplash1(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->frame_number--;
-    if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
+    if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
         KillEffect(fx_num);
         return;
     }

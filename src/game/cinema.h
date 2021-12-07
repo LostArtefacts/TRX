@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_CINEMA_H
-#define T1M_GAME_CINEMA_H
+#pragma once
 
 #include <stdint.h>
 
@@ -14,5 +13,3 @@ void ControlCinematicPlayer4(int16_t item_num);
 void InitialisePlayer1(int16_t item_num);
 void InitialiseGenPlayer(int16_t item_num);
 void InGameCinematicCamera();
-
-#endif

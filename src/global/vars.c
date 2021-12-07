@@ -16,126 +16,114 @@
 #include "global/vars.h"
 
 char *GameMemoryPointer = NULL;
-int32_t FPSCounter = 0;
+int32_t g_FPSCounter = 0;
 
-void (*EffectRoutines[])(ITEM_INFO *item) = {
+void (*g_EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,
     EarthQuake, Flood,     RaisingBlock,  Stairs2Slope, DropSand,
     PowerUp,    Explosion, LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
     ChainBlock, Flicker,
 };
 
-bool SoundIsActive = true;
-int16_t SampleLUT[MAX_SAMPLES] = { 0 };
-SAMPLE_INFO *SampleInfos = NULL;
-uint16_t MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
+int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
+SAMPLE_INFO *g_SampleInfos = NULL;
+uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
 
-int32_t NoInputCount = 0;
-bool IDelay = false;
-int32_t IDCount = 0;
-INPUT_STATE Input = { 0 };
-INPUT_STATE InputDB = { 0 };
-int32_t OptionSelected = 0;
+int32_t g_NoInputCount = 0;
+bool g_IDelay = false;
+int32_t g_IDCount = 0;
+int32_t g_OptionSelected = 0;
 
-int32_t PhdWinMaxX = 0;
-int32_t PhdWinMaxY = 0;
-int32_t PhdWinCenterX = 0;
-int32_t PhdWinCenterY = 0;
-int32_t PhdPersp = 0;
-int32_t PhdLeft = 0;
-int32_t PhdBottom = 0;
-int32_t PhdRight = 0;
-int32_t PhdTop = 0;
-int32_t PhdWinWidth = 0;
-int32_t PhdWinHeight = 0;
-PHD_VBUF PhdVBuf[1500] = { 0 };
-PHD_SPRITE PhdSpriteInfo[MAX_SPRITES] = { 0 };
-PHD_TEXTURE PhdTextureInfo[MAX_TEXTURES] = { 0 };
-PHD_MATRIX *PhdMatrixPtr = NULL;
-PHD_MATRIX W2VMatrix = { 0 };
+int32_t g_PhdPersp = 0;
+int32_t g_PhdLeft = 0;
+int32_t g_PhdBottom = 0;
+int32_t g_PhdRight = 0;
+int32_t g_PhdTop = 0;
+PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES] = { 0 };
+PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES] = { 0 };
+PHD_MATRIX *g_PhdMatrixPtr = NULL;
+PHD_MATRIX g_W2VMatrix = { 0 };
 
-int32_t WibbleOffset = 0;
-int32_t WibbleTable[WIBBLE_SIZE] = { 0 };
-int32_t ShadeTable[WIBBLE_SIZE] = { 0 };
-int32_t RandTable[WIBBLE_SIZE] = { 0 };
+int32_t g_WibbleOffset = 0;
+int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };
+int32_t g_ShadeTable[WIBBLE_SIZE] = { 0 };
+int32_t g_RandTable[WIBBLE_SIZE] = { 0 };
 
-RGB888 GamePalette[256] = { 0 };
-bool ModeLock = false;
+bool g_ModeLock = false;
 
-GAMEFLOW GF = { 0 };
-LARA_INFO Lara = { 0 };
-ITEM_INFO *LaraItem = NULL;
-CAMERA_INFO Camera = { 0 };
-SAVEGAME_INFO SaveGame = { 0 };
-int32_t SavedGamesCount = 0;
-int32_t SaveCounter = 0;
-int32_t CurrentLevel = -1;
-uint32_t *DemoData = NULL;
-bool LevelComplete = false;
-bool ResetFlag = false;
-bool ChunkyFlag = false;
-int32_t OverlayFlag = 0;
-int32_t HeightType = 0;
+LARA_INFO g_Lara = { 0 };
+ITEM_INFO *g_LaraItem = NULL;
+CAMERA_INFO g_Camera = { 0 };
+SAVEGAME_INFO g_SaveGame = { 0 };
+int32_t g_SavedGamesCount = 0;
+int32_t g_SaveCounter = 0;
+int32_t g_CurrentLevel = -1;
+uint32_t *g_DemoData = NULL;
+bool g_LevelComplete = false;
+bool g_ResetFlag = false;
+bool g_ChunkyFlag = false;
+int32_t g_OverlayFlag = 0;
+int32_t g_HeightType = 0;
 
-int32_t HealthBarTimer = 0;
-int16_t StoredLaraHealth = 0;
+int32_t g_HealthBarTimer = 0;
+int16_t g_StoredLaraHealth = 0;
 
-ROOM_INFO *RoomInfo = NULL;
-int16_t *FloorData = NULL;
-int16_t *MeshBase = NULL;
-int16_t **Meshes = NULL;
-OBJECT_INFO Objects[O_NUMBER_OF] = { 0 };
-STATIC_INFO StaticObjects[STATIC_NUMBER_OF] = { 0 };
-int8_t *TexturePagePtrs[MAX_TEXTPAGES] = { NULL };
-int16_t RoomCount = 0;
-int32_t LevelItemCount = 0;
-ITEM_INFO *Items = NULL;
-int16_t NextItemFree = -1;
-int16_t NextItemActive = -1;
-FX_INFO *Effects = NULL;
-int16_t NextFxFree = -1;
-int16_t NextFxActive = -1;
-int32_t NumberBoxes = 0;
-BOX_INFO *Boxes = NULL;
-uint16_t *Overlap = NULL;
-int16_t *GroundZone[2] = { NULL };
-int16_t *GroundZone2[2] = { NULL };
-int16_t *FlyZone[2] = { NULL };
-ANIM_STRUCT *Anims = NULL;
-ANIM_CHANGE_STRUCT *AnimChanges = NULL;
-ANIM_RANGE_STRUCT *AnimRanges = NULL;
-int16_t *AnimTextureRanges = NULL;
-int16_t *AnimCommands = NULL;
-int32_t *AnimBones = NULL;
-int16_t *AnimFrames = NULL;
-int16_t *Cine = NULL;
-int16_t NumCineFrames = 0;
-int16_t CineFrame = -1;
-PHD_3DPOS CinePosition = { 0 };
-int32_t NumberCameras = 0;
-int32_t NumberSoundEffects = 0;
-OBJECT_VECTOR *SoundEffectsTable = NULL;
-int16_t RoomsToDraw[MAX_ROOMS_TO_DRAW] = { -1 };
-int16_t RoomsToDrawCount = 0;
-bool IsWibbleEffect = false;
-bool IsWaterEffect = false;
-bool IsShadeEffect = false;
+ROOM_INFO *g_RoomInfo = NULL;
+int16_t *g_FloorData = NULL;
+int16_t *g_MeshBase = NULL;
+int16_t **g_Meshes = NULL;
+OBJECT_INFO g_Objects[O_NUMBER_OF] = { 0 };
+STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF] = { 0 };
+uint8_t *g_TexturePagePtrs[MAX_TEXTPAGES] = { NULL };
+int16_t g_RoomCount = 0;
+int32_t g_LevelItemCount = 0;
+ITEM_INFO *g_Items = NULL;
+int16_t g_NextItemFree = -1;
+int16_t g_NextItemActive = -1;
+FX_INFO *g_Effects = NULL;
+int16_t g_NextFxFree = -1;
+int16_t g_NextFxActive = -1;
+int32_t g_NumberBoxes = 0;
+BOX_INFO *g_Boxes = NULL;
+uint16_t *g_Overlap = NULL;
+int16_t *g_GroundZone[2] = { NULL };
+int16_t *g_GroundZone2[2] = { NULL };
+int16_t *g_FlyZone[2] = { NULL };
+ANIM_STRUCT *g_Anims = NULL;
+ANIM_CHANGE_STRUCT *g_AnimChanges = NULL;
+ANIM_RANGE_STRUCT *g_AnimRanges = NULL;
+int16_t *g_AnimTextureRanges = NULL;
+int16_t *g_AnimCommands = NULL;
+int32_t *g_AnimBones = NULL;
+int16_t *g_AnimFrames = NULL;
+int16_t *g_Cine = NULL;
+int16_t g_NumCineFrames = 0;
+int16_t g_CineFrame = -1;
+PHD_3DPOS g_CinePosition = { 0 };
+int32_t g_NumberCameras = 0;
+int32_t g_NumberSoundEffects = 0;
+OBJECT_VECTOR *g_SoundEffectsTable = NULL;
+int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW] = { -1 };
+int16_t g_RoomsToDrawCount = 0;
+bool g_IsWibbleEffect = false;
+bool g_IsWaterEffect = false;
+bool g_IsShadeEffect = false;
 
-int16_t *TriggerIndex = NULL;
-int32_t FlipTimer = 0;
-int32_t FlipEffect = -1;
-int32_t FlipStatus = 0;
-int32_t FlipMapTable[MAX_FLIP_MAPS] = { 0 };
+int16_t *g_TriggerIndex = NULL;
+int32_t g_FlipTimer = 0;
+int32_t g_FlipEffect = -1;
+int32_t g_FlipStatus = 0;
+int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 
-int16_t InvMode = INV_TITLE_MODE;
-int32_t InvExtraData[8] = { 0 };
-int16_t InvChosen = -1;
+int16_t g_InvMode = INV_TITLE_MODE;
+int32_t g_InvExtraData[8] = { 0 };
+int16_t g_InvChosen = -1;
 
-int32_t LsAdder = 0;
-int32_t LsDivider = 0;
-SHADOW_INFO ShadowInfo = { 0 };
+int32_t g_LsAdder = 0;
+int32_t g_LsDivider = 0;
+SHADOW_INFO g_ShadowInfo = { 0 };
 
-HWR_Resolution AvailableResolutions[RESOLUTIONS_SIZE] = {
+RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE] = {
     { 320, 200 },   { 512, 384 },   { 640, 480 },   { 800, 600 },
     { 1024, 768 },  { 1280, 720 },  { 1920, 1080 }, { 2560, 1440 },
     { 3840, 2160 }, { 4096, 2160 }, { 7680, 4320 }, { -1, -1 },

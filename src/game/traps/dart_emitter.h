@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_DART_EMITTER_H
-#define T1M_GAME_TRAPS_DART_EMITTER_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,5 +11,3 @@ typedef enum {
 
 void SetupDartEmitter(OBJECT_INFO *obj);
 void DartEmitterControl(int16_t item_num);
-
-#endif

@@ -16,13 +16,13 @@ void SetupFallingCeilling(OBJECT_INFO *obj)
 
 void FallingCeilingControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity_status = 1;
     } else if (item->current_anim_state == TRAP_ACTIVATE && item->touch_bits) {
-        LaraItem->hit_points -= FALLING_CEILING_DAMAGE;
-        LaraItem->hit_status = 1;
+        g_LaraItem->hit_points -= FALLING_CEILING_DAMAGE;
+        g_LaraItem->hit_status = 1;
     }
     AnimateItem(item);
     if (item->status == IS_DEACTIVATED) {

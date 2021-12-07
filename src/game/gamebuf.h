@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_GAMEBUF_H
-#define T1M_GAME_GAMEBUF_H
+#pragma once
 
 #include <stdint.h>
 
@@ -49,5 +48,3 @@ typedef enum GAME_BUFFER {
 void GameBuf_Init();
 void *GameBuf_Alloc(int32_t alloc_size, GAME_BUFFER buffer);
 void GameBuf_Shutdown();
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_WOLF_H
-#define T1M_GAME_AI_WOLF_H
+#pragma once
 
 #include "global/types.h"
 
@@ -39,10 +38,8 @@ typedef enum {
     WOLF_BITE = 12,
 } WOLF_ANIM;
 
-extern BITE_INFO WolfJawBite;
+extern BITE_INFO g_WolfJawBite;
 
 void SetupWolf(OBJECT_INFO *obj);
 void InitialiseWolf(int16_t item_num);
 void WolfControl(int16_t item_num);
-
-#endif

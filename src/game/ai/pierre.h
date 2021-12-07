@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_PIERRE_H
-#define T1M_GAME_AI_PIERRE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -29,11 +28,9 @@ typedef enum {
     PIERRE_SHOOT = 7,
 } PIERRE_ANIM;
 
-extern int16_t PierreItemNum;
-extern BITE_INFO PierreGun1;
-extern BITE_INFO PierreGun2;
+extern int16_t g_PierreItemNum;
+extern BITE_INFO g_PierreGun1;
+extern BITE_INFO g_PierreGun2;
 
 void SetupPierre(OBJECT_INFO *obj);
 void PierreControl(int16_t item_num);
-
-#endif

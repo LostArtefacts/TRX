@@ -1,5 +1,4 @@
-#ifndef T1M_UTIL_H
-#define T1M_UTIL_H
+#pragma once
 
 #define SQUARE(A) ((A) * (A))
 #ifndef ABS
@@ -31,5 +30,3 @@
         (a) = (b);                                                             \
         (b) = (c);                                                             \
     } while (0)
-
-#endif

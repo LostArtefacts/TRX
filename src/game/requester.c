@@ -1,10 +1,11 @@
 #include "game/requester.h"
 
+#include "game/input.h"
+#include "game/screen.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
 
 #include <string.h>
 
@@ -130,7 +131,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         }
     }
 
-    if (InputDB.back) {
+    if (g_InputDB.back) {
         if (req->requested < req->items - 1) {
             req->requested++;
         }
@@ -142,7 +143,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (InputDB.forward) {
+    if (g_InputDB.forward) {
         if (req->requested) {
             req->requested--;
         }
@@ -154,16 +155,16 @@ int32_t DisplayRequester(REQUEST_INFO *req)
         return 0;
     }
 
-    if (InputDB.select) {
+    if (g_InputDB.select) {
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
-            Input = (INPUT_STATE) { 0 };
+            g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
             RemoveRequester(req);
             return req->requested + 1;
         }
-    } else if (InputDB.deselect) {
+    } else if (g_InputDB.deselect) {
         RemoveRequester(req);
         return -1;
     }
@@ -209,7 +210,7 @@ void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
 void SetRequesterSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)
 {
     req->y = y;
-    req->vis_lines = GetRenderHeightDownscaled() / 2 / MAX_REQLINES;
+    req->vis_lines = Screen_GetResHeightDownscaled() / 2 / MAX_REQLINES;
     if (req->vis_lines > max_lines) {
         req->vis_lines = max_lines;
     }

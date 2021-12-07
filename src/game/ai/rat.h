@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_RAT_H
-#define T1M_GAME_AI_RAT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -27,9 +26,7 @@ typedef enum {
     RAT_POSE = 6,
 } RAT_ANIM;
 
-extern BITE_INFO RatBite;
+extern BITE_INFO g_RatBite;
 
 void SetupRat(OBJECT_INFO *obj);
 void RatControl(int16_t item_num);
-
-#endif

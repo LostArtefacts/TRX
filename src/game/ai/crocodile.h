@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_CROCODILE_H
-#define T1M_GAME_AI_CROCODILE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -28,9 +27,7 @@ typedef enum {
     CROCODILE_DEATH = 7,
 } CROCODILE_ANIM;
 
-extern BITE_INFO CrocodileBite;
+extern BITE_INFO g_CrocodileBite;
 
 void SetupCrocodile(OBJECT_INFO *obj);
 void CrocControl(int16_t item_num);
-
-#endif

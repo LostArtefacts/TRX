@@ -1,12 +1,11 @@
 #include "game/effects/missile.h"
 
-#include "3dsystem/3d_gen.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -17,7 +16,7 @@ void SetupMissile(OBJECT_INFO *obj)
 
 void ControlMissile(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
 
     int32_t speed = (fx->speed * phd_cos(fx->pos.x_rot)) >> W2V_SHIFT;
     fx->pos.y += (fx->speed * phd_sin(-fx->pos.x_rot)) >> W2V_SHIFT;
@@ -32,7 +31,7 @@ void ControlMissile(int16_t fx_num)
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {
         if (fx->object_number == O_MISSILE2) {
             fx->object_number = O_RICOCHET1;
-            fx->frame_number = -GetRandomControl() / 11000;
+            fx->frame_number = -Random_GetControl() / 11000;
             fx->speed = 0;
             fx->counter = 6;
             Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
@@ -43,14 +42,14 @@ void ControlMissile(int16_t fx_num)
             fx->counter = 0;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
 
-            int32_t x = fx->pos.x - LaraItem->pos.x;
-            int32_t y = fx->pos.y - LaraItem->pos.y;
-            int32_t z = fx->pos.z - LaraItem->pos.z;
+            int32_t x = fx->pos.x - g_LaraItem->pos.x;
+            int32_t y = fx->pos.y - g_LaraItem->pos.y;
+            int32_t z = fx->pos.z - g_LaraItem->pos.z;
             int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
             if (range < ROCKET_RANGE) {
-                LaraItem->hit_points -=
+                g_LaraItem->hit_points -=
                     (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_status = 1;
             }
         }
         return;
@@ -65,42 +64,42 @@ void ControlMissile(int16_t fx_num)
     }
 
     if (fx->object_number == O_MISSILE2) {
-        LaraItem->hit_points -= SHARD_DAMAGE;
+        g_LaraItem->hit_points -= SHARD_DAMAGE;
         fx->object_number = O_BLOOD1;
         Sound_Effect(SFX_LARA_BULLETHIT, &fx->pos, SPM_NORMAL);
     } else {
-        LaraItem->hit_points -= ROCKET_DAMAGE;
+        g_LaraItem->hit_points -= ROCKET_DAMAGE;
         fx->object_number = O_EXPLOSION1;
-        if (LaraItem->hit_points > 0) {
-            Sound_Effect(SFX_LARA_INJURY, &LaraItem->pos, SPM_NORMAL);
-            Lara.spaz_effect = fx;
-            Lara.spaz_effect_count = 5;
+        if (g_LaraItem->hit_points > 0) {
+            Sound_Effect(SFX_LARA_INJURY, &g_LaraItem->pos, SPM_NORMAL);
+            g_Lara.spaz_effect = fx;
+            g_Lara.spaz_effect_count = 5;
         }
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
     }
-    LaraItem->hit_status = 1;
+    g_LaraItem->hit_status = 1;
 
     fx->frame_number = 0;
-    fx->pos.y_rot = LaraItem->pos.y_rot;
-    fx->speed = LaraItem->speed;
+    fx->pos.y_rot = g_LaraItem->pos.y_rot;
+    fx->speed = g_LaraItem->speed;
     fx->counter = 0;
 }
 
 void ShootAtLara(FX_INFO *fx)
 {
-    int32_t x = LaraItem->pos.x - fx->pos.x;
-    int32_t y = LaraItem->pos.y - fx->pos.y;
-    int32_t z = LaraItem->pos.z - fx->pos.z;
+    int32_t x = g_LaraItem->pos.x - fx->pos.x;
+    int32_t y = g_LaraItem->pos.y - fx->pos.y;
+    int32_t z = g_LaraItem->pos.z - fx->pos.z;
 
-    int16_t *bounds = GetBoundsAccurate(LaraItem);
+    int16_t *bounds = GetBoundsAccurate(g_LaraItem);
     y += bounds[FRAME_BOUND_MAX_Y]
         + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
 
     int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(z));
     fx->pos.x_rot = -(PHD_ANGLE)phd_atan(dist, y);
     fx->pos.y_rot = phd_atan(z, x);
-    fx->pos.x_rot += (GetRandomControl() - 0x4000) / 0x40;
-    fx->pos.y_rot += (GetRandomControl() - 0x4000) / 0x40;
+    fx->pos.x_rot += (Random_GetControl() - 0x4000) / 0x40;
+    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 0x40;
 }
 
 int16_t ShardGun(
@@ -109,7 +108,7 @@ int16_t ShardGun(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &Effects[fx_num];
+        FX_INFO *fx = &g_Effects[fx_num];
         fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
@@ -132,7 +131,7 @@ int16_t RocketGun(
 {
     int16_t fx_num = CreateEffect(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &Effects[fx_num];
+        FX_INFO *fx = &g_Effects[fx_num];
         fx->room_number = room_num;
         fx->pos.x = x;
         fx->pos.y = y;

@@ -1,12 +1,9 @@
-#ifndef T1M_SPECIFIC_S_CLOCK_H
-#define T1M_SPECIFIC_S_CLOCK_H
+#pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
-int32_t ClockSyncTicks(int32_t target);
-void ClockUpdateTicks();
-int8_t ClockInit();
-int32_t ClockSync();
-int32_t ClockGetMS();
-
-#endif
+bool S_Clock_Init();
+int32_t S_Clock_GetMS();
+int32_t S_Clock_Sync();
+int32_t S_Clock_SyncTicks(int32_t target);

@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_POD_H
-#define T1M_GAME_AI_POD_H
+#pragma once
 
 #include "global/types.h"
 
@@ -16,5 +15,3 @@ void SetupPod(OBJECT_INFO *obj);
 void SetupBigPod(OBJECT_INFO *obj);
 void InitialisePod(int16_t item_num);
 void PodControl(int16_t item_num);
-
-#endif

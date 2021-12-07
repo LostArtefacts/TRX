@@ -5,7 +5,7 @@
 #include "game/traps/movable_block.h"
 #include "global/vars.h"
 
-int16_t MovingBlockBounds[12] = {
+int16_t g_MovingBlockBounds[12] = {
     -300,
     +300,
     0,
@@ -31,13 +31,13 @@ void SetupRollingBlock(OBJECT_INFO *obj)
 
 void InitialiseRollingBlock(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     AlterFloorHeight(item, -WALL_L * 2);
 }
 
 void RollingBlockControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {
         if (item->current_anim_state == RBS_START) {
             item->goal_anim_state = RBS_END;

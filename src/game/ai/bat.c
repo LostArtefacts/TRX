@@ -10,7 +10,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-BITE_INFO BatBite = { 0, 16, 45, 4 };
+BITE_INFO g_BatBite = { 0, 16, 45, 4 };
 
 static void FixEmbeddedBatPosition(int16_t item_num);
 
@@ -35,7 +35,7 @@ void SetupBat(OBJECT_INFO *obj)
 
 void BatControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -80,9 +80,9 @@ void BatControl(int16_t item_num)
 
         case BAT_ATTACK:
             if (item->touch_bits) {
-                CreatureEffect(item, &BatBite, DoBloodSplat);
-                LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_BatBite, DoBloodSplat);
+                g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
+                g_LaraItem->hit_status = 1;
             } else {
                 item->goal_anim_state = BAT_FLY;
                 bat->mood = MOOD_BORED;
@@ -112,7 +112,7 @@ static void FixEmbeddedBatPosition(int16_t item_num)
     int16_t room_number, ceiling, old_anim, old_frame, bat_height;
     int16_t *bounds;
 
-    item = &Items[item_num];
+    item = &g_Items[item_num];
     if (item->status != IS_ACTIVE) {
         x = item->pos.x;
         y = item->pos.y;
@@ -129,8 +129,8 @@ static void FixEmbeddedBatPosition(int16_t item_num)
         old_anim = item->anim_number;
         old_frame = item->frame_number;
 
-        item->anim_number = Objects[item->object_number].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
+        item->anim_number = g_Objects[item->object_number].anim_index;
+        item->frame_number = g_Anims[item->anim_number].frame_base;
         bounds = GetBoundsAccurate(item);
 
         item->anim_number = old_anim;

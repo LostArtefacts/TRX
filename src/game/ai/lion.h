@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_LION_H
-#define T1M_GAME_AI_LION_H
+#pragma once
 
 #include "global/types.h"
 
@@ -37,11 +36,9 @@ typedef enum {
     LION_ATTACK2 = 7,
 } LION_ANIM;
 
-extern BITE_INFO LionBite;
+extern BITE_INFO g_LionBite;
 
 void SetupLion(OBJECT_INFO *obj);
 void SetupLioness(OBJECT_INFO *obj);
 void SetupPuma(OBJECT_INFO *obj);
 void LionControl(int16_t item_num);
-
-#endif

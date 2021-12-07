@@ -3,11 +3,11 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO WolfJawBite = { 0, -14, 174, 6 };
+BITE_INFO g_WolfJawBite = { 0, -14, 174, 6 };
 
 void SetupWolf(OBJECT_INFO *obj)
 {
@@ -27,18 +27,18 @@ void SetupWolf(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
 void InitialiseWolf(int16_t item_num)
 {
-    Items[item_num].frame_number = WOLF_SLEEP_FRAME;
+    g_Items[item_num].frame_number = WOLF_SLEEP_FRAME;
     InitialiseCreature(item_num);
 }
 
 void WolfControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -55,9 +55,9 @@ void WolfControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != WOLF_DEATH) {
             item->current_anim_state = WOLF_DEATH;
-            item->anim_number = Objects[O_WOLF].anim_index + WOLF_DIE_ANIM
-                + (int16_t)(GetRandomControl() / 11000);
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->anim_number = g_Objects[O_WOLF].anim_index + WOLF_DIE_ANIM
+                + (int16_t)(Random_GetControl() / 11000);
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -78,7 +78,7 @@ void WolfControl(int16_t item_num)
                 || info.zone_number == info.enemy_zone) {
                 item->required_anim_state = WOLF_CROUCH;
                 item->goal_anim_state = WOLF_STOP;
-            } else if (GetRandomControl() < WOLF_WAKE_CHANCE) {
+            } else if (Random_GetControl() < WOLF_WAKE_CHANCE) {
                 item->required_anim_state = WOLF_WALK;
                 item->goal_anim_state = WOLF_STOP;
             }
@@ -97,7 +97,7 @@ void WolfControl(int16_t item_num)
             if (wolf->mood != MOOD_BORED) {
                 item->goal_anim_state = WOLF_STALK;
                 item->required_anim_state = WOLF_EMPTY;
-            } else if (GetRandomControl() < WOLF_SLEEP_CHANCE) {
+            } else if (Random_GetControl() < WOLF_SLEEP_CHANCE) {
                 item->required_anim_state = WOLF_SLEEP;
                 item->goal_anim_state = WOLF_STOP;
             }
@@ -133,7 +133,7 @@ void WolfControl(int16_t item_num)
                         && info.enemy_facing > -FRONT_ARC)) {
                     item->goal_anim_state = WOLF_RUN;
                 }
-            } else if (GetRandomControl() < WOLF_HOWL_CHANCE) {
+            } else if (Random_GetControl() < WOLF_HOWL_CHANCE) {
                 item->required_anim_state = WOLF_HOWL;
                 item->goal_anim_state = WOLF_CROUCH;
             } else if (wolf->mood == MOOD_BORED) {
@@ -167,9 +167,9 @@ void WolfControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH)) {
-                CreatureEffect(item, &WolfJawBite, DoBloodSplat);
-                LaraItem->hit_points -= WOLF_POUNCE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_WolfJawBite, DoBloodSplat);
+                g_LaraItem->hit_points -= WOLF_POUNCE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_RUN;
             }
             item->goal_anim_state = WOLF_RUN;
@@ -178,9 +178,9 @@ void WolfControl(int16_t item_num)
         case WOLF_BITE:
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH) && info.ahead) {
-                CreatureEffect(item, &WolfJawBite, DoBloodSplat);
-                LaraItem->hit_points -= WOLF_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_WolfJawBite, DoBloodSplat);
+                g_LaraItem->hit_points -= WOLF_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_CROUCH;
             }
             break;

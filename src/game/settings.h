@@ -1,7 +1,6 @@
-#ifndef T1M_GAME_SETTINGS_H
-#define T1M_GAME_SETTINGS_H
+#pragma once
 
-void S_ReadUserSettings();
-void S_WriteUserSettings();
+#include <stdbool.h>
 
-#endif
+bool Settings_Read();
+bool Settings_Write();

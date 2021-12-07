@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_LARSON_H
-#define T1M_GAME_AI_LARSON_H
+#pragma once
 
 #include "global/types.h"
 
@@ -26,9 +25,7 @@ typedef enum {
     LARSON_SHOOT = 7,
 } LARSON_ANIM;
 
-extern BITE_INFO LarsonGun;
+extern BITE_INFO g_LarsonGun;
 
 void SetupLarson(OBJECT_INFO *obj);
 void LarsonControl(int16_t item_num);
-
-#endif

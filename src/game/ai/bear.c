@@ -3,12 +3,12 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "global/types.h"
 #include "global/vars.h"
 
-BITE_INFO BearHeadBite = { 0, 96, 335, 14 };
+BITE_INFO g_BearHeadBite = { 0, 96, 335, 14 };
 
 void SetupBear(OBJECT_INFO *obj)
 {
@@ -28,12 +28,12 @@ void SetupBear(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
 }
 
 void BearControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -71,8 +71,8 @@ void BearControl(int16_t item_num)
 
         case BEAR_DEATH:
             if (bear->flags && (item->touch_bits & BEAR_TOUCH)) {
-                LaraItem->hit_points -= BEAR_SLAM_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= BEAR_SLAM_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 bear->flags = 0;
             }
             break;
@@ -89,7 +89,7 @@ void BearControl(int16_t item_num)
 
         angle = CreatureTurn(item, bear->maximum_turn);
 
-        int dead_enemy = LaraItem->hit_points <= 0;
+        int dead_enemy = g_LaraItem->hit_points <= 0;
         if (item->hit_status) {
             bear->flags = 1;
         }
@@ -120,7 +120,7 @@ void BearControl(int16_t item_num)
                 if (bear->mood == MOOD_ESCAPE) {
                     item->required_anim_state = BEAR_STROLL;
                 }
-            } else if (GetRandomControl() < BEAR_ROAR_CHANCE) {
+            } else if (Random_GetControl() < BEAR_ROAR_CHANCE) {
                 item->required_anim_state = BEAR_ROAR;
                 item->goal_anim_state = BEAR_STOP;
             }
@@ -129,14 +129,14 @@ void BearControl(int16_t item_num)
         case BEAR_RUN:
             bear->maximum_turn = BEAR_RUN_TURN;
             if (item->touch_bits & BEAR_TOUCH) {
-                LaraItem->hit_points -= BEAR_CHARGE_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= BEAR_CHARGE_DAMAGE;
+                g_LaraItem->hit_status = 1;
             }
             if (bear->mood == MOOD_BORED || dead_enemy) {
                 item->goal_anim_state = BEAR_STOP;
             } else if (info.ahead && !item->required_anim_state) {
                 if (!bear->flags && info.distance < BEAR_REAR_RANGE
-                    && GetRandomControl() < BEAR_REAR_CHANCE) {
+                    && Random_GetControl() < BEAR_REAR_CHANCE) {
                     item->required_anim_state = BEAR_REAR;
                     item->goal_anim_state = BEAR_STOP;
                 } else if (info.distance < BEAR_ATTACK_RANGE) {
@@ -171,12 +171,12 @@ void BearControl(int16_t item_num)
                 item->required_anim_state = BEAR_STROLL;
             } else if (
                 bear->mood == MOOD_BORED
-                || GetRandomControl() < BEAR_ROAR_CHANCE) {
+                || Random_GetControl() < BEAR_ROAR_CHANCE) {
                 item->required_anim_state = BEAR_ROAR;
                 item->goal_anim_state = BEAR_REAR;
             } else if (
                 info.distance > BEAR_REAR_RANGE
-                || GetRandomControl() < BEAR_DROP_CHANCE) {
+                || Random_GetControl() < BEAR_DROP_CHANCE) {
                 item->required_anim_state = BEAR_STOP;
                 item->goal_anim_state = BEAR_REAR;
             }
@@ -184,17 +184,17 @@ void BearControl(int16_t item_num)
 
         case BEAR_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                CreatureEffect(item, &BearHeadBite, DoBloodSplat);
-                LaraItem->hit_points -= BEAR_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_BearHeadBite, DoBloodSplat);
+                g_LaraItem->hit_points -= BEAR_ATTACK_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = BEAR_STOP;
             }
             break;
 
         case BEAR_ATTACK2:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                LaraItem->hit_points -= BEAR_PAT_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= BEAR_PAT_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = BEAR_REAR;
             }
             break;

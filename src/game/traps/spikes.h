@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_SPIKES_H
-#define T1M_GAME_TRAPS_SPIKES_H
+#pragma once
 
 #include "global/types.h"
 
@@ -7,5 +6,3 @@
 
 void SetupSpikes(OBJECT_INFO *obj);
 void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-
-#endif

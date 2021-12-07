@@ -1,137 +1,194 @@
 #include "specific/s_shell.h"
 
-#include "args.h"
-#include "game/demo.h"
-#include "game/game.h"
-#include "game/gameflow.h"
-#include "game/inv.h"
+#include "config.h"
+#include "game/clock.h"
+#include "game/gamebuf.h"
+#include "game/input.h"
 #include "game/music.h"
-#include "game/savegame.h"
-#include "game/settings.h"
-#include "game/setup.h"
-#include "game/text.h"
-#include "global/const.h"
-#include "global/types.h"
-#include "global/vars.h"
+#include "game/output.h"
+#include "game/random.h"
+#include "game/shell.h"
+#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_display.h"
-#include "specific/s_frontend.h"
-#include "specific/s_hwr.h"
-#include "specific/s_init.h"
-#include "specific/s_input.h"
-#include "specific/s_output.h"
-#include "specific/s_main.h"
 
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
+#define SDL_MAIN_HANDLED
 
-static const char *T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
-static const char *T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
+#include <time.h>
 
-void GameMain()
+static int m_ArgCount = 0;
+static char **m_ArgStrings = NULL;
+static bool m_Fullscreen = true;
+static SDL_Window *m_Window = NULL;
+
+static void S_Shell_PostWindowResize();
+
+void S_Shell_SeedRandom()
 {
-    SoundIsActive = true;
+    time_t lt = time(0);
+    struct tm *tptr = localtime(&lt);
+    Random_SeedControl(tptr->tm_sec + 57 * tptr->tm_min + 3543 * tptr->tm_hour);
+    Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
+}
 
-    const char *gameflow_path = T1MGameflowPath;
+static void S_Shell_PostWindowResize()
+{
+    int width;
+    int height;
+    SDL_GetWindowSize(m_Window, &width, &height);
+    Output_SetViewport(width, height);
+}
 
-    char **args;
-    int arg_count;
-    get_command_line(&args, &arg_count);
-    for (int i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            gameflow_path = T1MGameflowGoldPath;
-        }
+void S_Shell_ShowFatalError(const char *message)
+{
+    LOG_ERROR("%s", message);
+    MessageBoxA(
+        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    S_Shell_TerminateGame(1);
+}
+
+void S_Shell_ToggleFullscreen()
+{
+    m_Fullscreen = !m_Fullscreen;
+    Output_SetFullscreen(m_Fullscreen);
+    SDL_SetWindowFullscreen(
+        m_Window, m_Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    SDL_ShowCursor(m_Fullscreen ? SDL_DISABLE : SDL_ENABLE);
+    S_Shell_PostWindowResize();
+}
+
+void S_Shell_TerminateGame(int exit_code)
+{
+    Output_Shutdown();
+    if (m_Window) {
+        SDL_DestroyWindow(m_Window);
     }
+    SDL_Quit();
+    exit(exit_code);
+}
 
-    for (int i = 0; i < arg_count; i++) {
-        Memory_Free(args[i]);
-    }
-    Memory_Free(args);
-
-    S_InitialiseSystem();
-
-    if (!GF_LoadScriptFile(gameflow_path)) {
-        ShowFatalError("MAIN: unable to load script file");
-        return;
-    }
-
-    InitialiseStartInfo();
-    S_FrontEndCheck();
-    S_ReadUserSettings();
-
-    TempVideoAdjust(2);
-    S_DisplayPicture("data\\eidospc");
-    S_InitialisePolyList();
-    S_CopyBufferToScreen();
-    S_OutputPolyList();
-    S_DumpScreen();
-    S_Wait(TICKS_PER_SECOND);
-
-    HWR_PrepareFMV();
-    WinPlayFMV(FMV_CORE, 1);
-    WinPlayFMV(FMV_ESCAPE, 1);
-    WinPlayFMV(FMV_INTRO, 1);
-    HWR_FMVDone();
-
-    int32_t gf_option = GF_EXIT_TO_TITLE;
-
-    int8_t loop_continue = 1;
-    while (loop_continue) {
-        TempVideoRemove();
-        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("%d %d", gf_direction, gf_param);
-
-        switch (gf_direction) {
-        case GF_START_GAME:
-            gf_option = GF_InterpretSequence(gf_param, GFL_NORMAL);
+void S_Shell_SpinMessageLoop()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        switch (event.type) {
+        case SDL_QUIT:
+            S_Shell_TerminateGame(0);
             break;
 
-        case GF_START_SAVED_GAME:
-            S_LoadGame(&SaveGame, gf_param);
-            gf_option = GF_InterpretSequence(SaveGame.current_level, GFL_SAVED);
-            break;
-
-        case GF_START_CINE:
-            gf_option = GF_InterpretSequence(gf_param, GFL_CUTSCENE);
-            break;
-
-        case GF_START_DEMO:
-            gf_option = StartDemo();
-            break;
-
-        case GF_LEVEL_COMPLETE:
-            gf_option = LevelCompleteSequence(gf_param);
-            break;
-
-        case GF_EXIT_TO_TITLE:
-            Text_RemoveAll();
-            TempVideoAdjust(2);
-            S_DisplayPicture("data\\titleh");
-            NoInputCount = 0;
-            if (!InitialiseLevel(GF.title_level_num, GFL_TITLE)) {
-                gf_option = GF_EXIT_GAME;
+        case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_PRINTSCREEN) {
+                Shell_MakeScreenshot();
                 break;
             }
 
-            gf_option = Display_Inventory(INV_TITLE_MODE);
+            if (event.key.keysym.sym == SDLK_RETURN
+                && event.key.keysym.mod & KMOD_LALT) {
+                S_Shell_ToggleFullscreen();
+                break;
+            }
 
-            S_FadeToBlack();
-            Music_Stop();
             break;
 
-        case GF_EXIT_GAME:
-            loop_continue = 0;
-            break;
+        case SDL_WINDOWEVENT:
+            switch (event.window.event) {
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+                Music_SetVolume(g_Config.music_volume);
+                break;
 
-        default:
-            S_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", gf_direction, gf_param);
-            return;
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+                Music_SetVolume(0);
+                break;
+
+            case SDL_WINDOWEVENT_RESIZED: {
+                Output_SetViewport(event.window.data1, event.window.data2);
+                break;
+            }
+            }
+            break;
         }
     }
+}
 
-    S_WriteUserSettings();
+int main(int argc, char **argv)
+{
+    Log_Init();
+
+#ifdef _WIN32
+    // necessary for SDL_OpenAudioDevice to work with WASAPI
+    // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
+
+    m_ArgCount = argc;
+    m_ArgStrings = argv;
+
+    if (SDL_Init(SDL_INIT_EVENTS) < 0) {
+        char buf[256];
+        sprintf(buf, "Cannot initialize SDL: %s", SDL_GetError());
+        S_Shell_ShowFatalError(buf);
+        return 1;
+    }
+
+    m_Window = SDL_CreateWindow(
+        "Tomb1Main", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280,
+        720,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP
+            | SDL_WINDOW_RESIZABLE);
+    if (!m_Window) {
+        S_Shell_ShowFatalError("System Error: cannot create window");
+        return 1;
+    }
+
+    S_Shell_PostWindowResize();
+
+    SDL_ShowCursor(SDL_DISABLE);
+
+    SDL_SysWMinfo wm_info;
+    SDL_VERSION(&wm_info.version);
+    SDL_GetWindowWMInfo(m_Window, &wm_info);
+    g_TombModule = wm_info.info.win.hinstance;
+    g_TombHWND = wm_info.info.win.window;
+
+    if (!g_TombHWND) {
+        S_Shell_ShowFatalError("System Error: cannot create window");
+        return 1;
+    }
+
+    Shell_Main();
+
+    S_Shell_TerminateGame(0);
+    return 0;
+}
+
+bool S_Shell_GetCommandLine(int *arg_count, char ***args)
+{
+    *arg_count = m_ArgCount;
+    *args = Memory_Alloc(m_ArgCount * sizeof(char *));
+    for (int i = 0; i < m_ArgCount; i++) {
+        (*args)[i] = Memory_Alloc(strlen(m_ArgStrings[i]) + 1);
+        strcpy((*args)[i], m_ArgStrings[i]);
+    }
+    return true;
+}
+
+void *S_Shell_GetWindowHandle()
+{
+    return (void *)m_Window;
+}
+
+int S_Shell_GetCurrentDisplayWidth()
+{
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    return dm.w;
+}
+
+int S_Shell_GetCurrentDisplayHeight()
+{
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    return dm.h;
 }

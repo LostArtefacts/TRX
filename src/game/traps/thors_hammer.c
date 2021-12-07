@@ -27,21 +27,21 @@ void SetupThorsHead(OBJECT_INFO *obj)
 
 void InitialiseThorsHandle(int16_t item_num)
 {
-    ITEM_INFO *hand_item = &Items[item_num];
+    ITEM_INFO *hand_item = &g_Items[item_num];
     int16_t head_item_num = CreateItem();
-    ITEM_INFO *head_item = &Items[head_item_num];
+    ITEM_INFO *head_item = &g_Items[head_item_num];
     head_item->object_number = O_THORS_HEAD;
     head_item->room_number = hand_item->room_number;
     head_item->pos = hand_item->pos;
     head_item->shade = hand_item->shade;
     InitialiseItem(head_item_num);
     hand_item->data = head_item;
-    LevelItemCount++;
+    g_LevelItemCount++;
 }
 
 void ThorsHandleControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case THS_SET:
@@ -62,7 +62,8 @@ void ThorsHandleControl(int16_t item_num)
         break;
 
     case THS_ACTIVE: {
-        int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
+        int32_t frm =
+            item->frame_number - g_Anims[item->anim_number].frame_base;
         if (frm > 30) {
             int32_t x = item->pos.x;
             int32_t z = item->pos.z;
@@ -82,16 +83,16 @@ void ThorsHandleControl(int16_t item_num)
                 break;
             }
 
-            if (LaraItem->hit_points >= 0 && LaraItem->pos.x > x - 520
-                && LaraItem->pos.x < x + 520 && LaraItem->pos.z > z - 520
-                && LaraItem->pos.z < z + 520) {
-                LaraItem->hit_points = -1;
-                LaraItem->pos.y = item->pos.y;
-                LaraItem->gravity_status = 0;
-                LaraItem->current_anim_state = AS_SPECIAL;
-                LaraItem->goal_anim_state = AS_SPECIAL;
-                LaraItem->anim_number = AA_RBALL_DEATH;
-                LaraItem->frame_number = AF_RBALL_DEATH;
+            if (g_LaraItem->hit_points >= 0 && g_LaraItem->pos.x > x - 520
+                && g_LaraItem->pos.x < x + 520 && g_LaraItem->pos.z > z - 520
+                && g_LaraItem->pos.z < z + 520) {
+                g_LaraItem->hit_points = -1;
+                g_LaraItem->pos.y = item->pos.y;
+                g_LaraItem->gravity_status = 0;
+                g_LaraItem->current_anim_state = AS_SPECIAL;
+                g_LaraItem->goal_anim_state = AS_SPECIAL;
+                g_LaraItem->anim_number = AA_RBALL_DEATH;
+                g_LaraItem->frame_number = AF_RBALL_DEATH;
             }
         }
         break;
@@ -106,7 +107,7 @@ void ThorsHandleControl(int16_t item_num)
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
         GetHeight(floor, x, item->pos.y, z);
-        TestTriggers(TriggerIndex, 1);
+        TestTriggers(g_TriggerIndex, 1);
 
         switch (item->pos.y_rot) {
         case 0:
@@ -125,7 +126,7 @@ void ThorsHandleControl(int16_t item_num)
 
         item->pos.x = x;
         item->pos.z = z;
-        if (LaraItem->hit_points >= 0) {
+        if (g_LaraItem->hit_points >= 0) {
             AlterFloorHeight(item, -WALL_L * 2);
         }
         item->pos.x = old_x;
@@ -139,17 +140,17 @@ void ThorsHandleControl(int16_t item_num)
     AnimateItem(item);
 
     ITEM_INFO *head_item = item->data;
-    int32_t anim = item->anim_number - Objects[O_THORS_HANDLE].anim_index;
-    int32_t frm = item->frame_number - Anims[item->anim_number].frame_base;
-    head_item->anim_number = Objects[O_THORS_HEAD].anim_index + anim;
-    head_item->frame_number = Anims[head_item->anim_number].frame_base + frm;
+    int32_t anim = item->anim_number - g_Objects[O_THORS_HANDLE].anim_index;
+    int32_t frm = item->frame_number - g_Anims[item->anim_number].frame_base;
+    head_item->anim_number = g_Objects[O_THORS_HEAD].anim_index + anim;
+    head_item->frame_number = g_Anims[head_item->anim_number].frame_base + frm;
     head_item->current_anim_state = item->current_anim_state;
 }
 
 void ThorsHandleCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
@@ -160,7 +161,7 @@ void ThorsHandleCollision(
 
 void ThorsHeadCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }

@@ -1,24 +1,23 @@
-#ifndef T1M_SPECIFIC_S_INPUT_H
-#define T1M_SPECIFIC_S_INPUT_H
+#pragma once
 
 #include "global/types.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum INPUT_LAYOUT {
-    INPUT_LAYOUT_DEFAULT,
-    INPUT_LAYOUT_USER,
-    INPUT_LAYOUT_NUMBER_OF,
-} INPUT_LAYOUT;
+typedef int16_t S_INPUT_KEYCODE;
 
-extern int16_t Layout[INPUT_LAYOUT_NUMBER_OF][KEY_NUMBER_OF];
-extern bool ConflictLayout[KEY_NUMBER_OF];
-extern INPUT_STATE OldInputDB;
+void S_Input_Init();
 
-void InputInit();
-int16_t KeyGet();
-void S_UpdateInput();
-INPUT_STATE GetDebouncedInput(INPUT_STATE input);
+INPUT_STATE S_Input_GetCurrentState();
 
-#endif
+S_INPUT_KEYCODE S_Input_ReadKeyCode();
+
+const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key);
+
+bool S_Input_IsKeyConflicted(INPUT_KEY key);
+void S_Input_SetKeyAsConflicted(INPUT_KEY key, bool is_conflicted);
+
+S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key);
+void S_Input_AssignKeyCode(
+    int16_t layout_num, INPUT_KEY key, S_INPUT_KEYCODE key_code);

@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_CAMERA_H
-#define T1M_GAME_CAMERA_H
+#pragma once
 
 #include "global/types.h"
 
@@ -29,5 +28,3 @@ void CalculateCamera();
 void CameraOffsetAdditionalAngle(int16_t delta);
 void CameraOffsetAdditionalElevation(int16_t delta);
 void CameraOffsetReset();
-
-#endif

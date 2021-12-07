@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_BOAT_H
-#define T1M_GAME_OBJECTS_BOAT_H
+#pragma once
 
 #include "global/types.h"
 
@@ -14,5 +13,3 @@ typedef enum {
 
 void SetupBoat(OBJECT_INFO *obj);
 void BoatControl(int16_t item_num);
-
-#endif

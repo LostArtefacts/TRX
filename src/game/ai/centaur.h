@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_CENTAUR_H
-#define T1M_GAME_AI_CENTAUR_H
+#pragma once
 
 #include "global/types.h"
 
@@ -26,10 +25,8 @@ typedef enum {
     CENTAUR_WARNING = 6,
 } CENTAUR_ANIM;
 
-extern BITE_INFO CentaurRocket;
-extern BITE_INFO CentaurRear;
+extern BITE_INFO g_CentaurRocket;
+extern BITE_INFO g_CentaurRear;
 
 void SetupCentaur(OBJECT_INFO *obj);
 void CentaurControl(int16_t item_num);
-
-#endif

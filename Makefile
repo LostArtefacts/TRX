@@ -2,35 +2,40 @@ CWD = $(shell pwd)
 HOST_USER_UID = $(shell id -u)
 HOST_USER_GID = $(shell id -g)
 
-build:
-	cd build; meson compile
+define build
+	$(eval TARGET := $(1))
+	mkdir -p build
+	docker run --rm \
+		--user $(HOST_USER_UID):$(HOST_USER_GID) \
+		-e TARGET="$(TARGET)" \
+		-v $(CWD):/app/ \
+		rrdash/tomb1main:latest
+endef
 
 debug:
-	meson --buildtype debug build/
+	$(call build,debug)
+
+debugopt:
+	$(call build,debugoptimized)
+
 release:
-	meson --buildtype release build/
-debug_linux:
-	meson --buildtype debug build/ --cross meson_linux_mingw32.txt
-release_linux:
-	meson --buildtype release build/ --cross meson_linux_mingw32.txt
+	$(call build,release)
 
 clean:
 	-find build/ -type f -delete
 	-find build/ -mindepth 1 -empty -type d -delete
 
 lint:
-	clang-format -i **/*.c **/*.h
+	sh -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
 
-docker:
-	docker build -t tomb1main .
+test_base:
+	cp build/*.exe test/
+	rsync -r bin/ test/
 
-docker_build: docker
-	-mkdir -p build
-	docker run --rm \
-		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		-v $(CWD)/.git:/app/.git \
-		-v $(CWD)/build:/app/build \
-		-v $(CWD)/src/init.c:/app/src/init.c \
-		tomb1main
+test: build test_base
+	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe
 
-.PHONY: release debug build clean lint docker docker_build
+test_gold: build test_base
+	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe -gold
+
+.PHONY: debug debugopt release clean lint test_base test test_gold

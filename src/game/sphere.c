@@ -1,6 +1,6 @@
 #include "game/sphere.h"
 
-#include "3dsystem/3d_gen.h"
+#include "3dsystem/matrix.h"
 #include "game/draw.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -57,9 +57,9 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         y = item->pos.y;
         z = item->pos.z;
         phd_PushUnitMatrix();
-        PhdMatrixPtr->_03 = 0;
-        PhdMatrixPtr->_13 = 0;
-        PhdMatrixPtr->_23 = 0;
+        g_PhdMatrixPtr->_03 = 0;
+        g_PhdMatrixPtr->_13 = 0;
+        g_PhdMatrixPtr->_23 = 0;
     } else {
         x = 0;
         y = 0;
@@ -77,16 +77,16 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    OBJECT_INFO *object = &Objects[item->object_number];
-    int16_t **meshpp = &Meshes[object->mesh_index];
-    int32_t *bone = &AnimBones[object->bone_index];
+    OBJECT_INFO *object = &g_Objects[item->object_number];
+    int16_t **meshpp = &g_Meshes[object->mesh_index];
+    int32_t *bone = &g_AnimBones[object->bone_index];
 
     int16_t *objptr = *meshpp++;
     phd_PushMatrix();
     phd_TranslateRel(objptr[0], objptr[1], objptr[2]);
-    ptr->x = x + (PhdMatrixPtr->_03 >> W2V_SHIFT);
-    ptr->y = y + (PhdMatrixPtr->_13 >> W2V_SHIFT);
-    ptr->z = z + (PhdMatrixPtr->_23 >> W2V_SHIFT);
+    ptr->x = x + (g_PhdMatrixPtr->_03 >> W2V_SHIFT);
+    ptr->y = y + (g_PhdMatrixPtr->_13 >> W2V_SHIFT);
+    ptr->z = z + (g_PhdMatrixPtr->_23 >> W2V_SHIFT);
     ptr->r = objptr[3];
     ptr++;
     phd_PopMatrix();
@@ -117,9 +117,9 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         objptr = *meshpp++;
         phd_PushMatrix();
         phd_TranslateRel(objptr[0], objptr[1], objptr[2]);
-        ptr->x = x + (PhdMatrixPtr->_03 >> W2V_SHIFT);
-        ptr->y = y + (PhdMatrixPtr->_13 >> W2V_SHIFT);
-        ptr->z = z + (PhdMatrixPtr->_23 >> W2V_SHIFT);
+        ptr->x = x + (g_PhdMatrixPtr->_03 >> W2V_SHIFT);
+        ptr->y = y + (g_PhdMatrixPtr->_13 >> W2V_SHIFT);
+        ptr->z = z + (g_PhdMatrixPtr->_23 >> W2V_SHIFT);
         ptr->r = objptr[3];
         phd_PopMatrix();
 
@@ -133,12 +133,12 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
 
 void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
 {
-    OBJECT_INFO *object = &Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_number];
 
     phd_PushUnitMatrix();
-    PhdMatrixPtr->_03 = 0;
-    PhdMatrixPtr->_13 = 0;
-    PhdMatrixPtr->_23 = 0;
+    g_PhdMatrixPtr->_03 = 0;
+    g_PhdMatrixPtr->_13 = 0;
+    g_PhdMatrixPtr->_23 = 0;
 
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
@@ -149,7 +149,7 @@ void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
     phd_RotYXZpack(*packed_rotation++);
 
-    int32_t *bone = &AnimBones[object->bone_index];
+    int32_t *bone = &g_AnimBones[object->bone_index];
 
     int16_t *extra_rotation = (int16_t *)item->data;
     for (int i = 0; i < joint; i++) {
@@ -178,8 +178,8 @@ void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
     }
 
     phd_TranslateRel(vec->x, vec->y, vec->z);
-    vec->x = (PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    vec->y = (PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    vec->z = (PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    vec->x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    vec->y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    vec->z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
     phd_PopMatrix();
 }

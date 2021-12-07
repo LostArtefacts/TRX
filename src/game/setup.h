@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_SETUP_H
-#define T1M_GAME_SETUP_H
+#pragma once
 
 #include "global/types.h"
 
@@ -13,5 +12,3 @@ void BaddyObjects();
 void TrapObjects();
 void ObjectObjects();
 void InitialiseObjects();
-
-#endif

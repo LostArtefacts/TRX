@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_PENDULUM_H
-#define T1M_GAME_TRAPS_PENDULUM_H
+#pragma once
 
 #include "global/types.h"
 
@@ -9,5 +8,3 @@
 
 void SetupPendulum(OBJECT_INFO *obj);
 void PendulumControl(int16_t item_num);
-
-#endif

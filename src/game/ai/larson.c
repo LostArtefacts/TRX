@@ -2,12 +2,12 @@
 
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/game.h"
 #include "game/lot.h"
 #include "game/people.h"
+#include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO LarsonGun = { -60, 170, 0, 14 };
+BITE_INFO g_LarsonGun = { -60, 170, 0, 14 };
 
 void SetupLarson(OBJECT_INFO *obj)
 {
@@ -26,12 +26,12 @@ void SetupLarson(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
 }
 
 void LarsonControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -48,8 +48,9 @@ void LarsonControl(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != LARSON_DEATH) {
             item->current_anim_state = LARSON_DEATH;
-            item->anim_number = Objects[O_LARSON].anim_index + LARSON_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+            item->anim_number =
+                g_Objects[O_LARSON].anim_index + LARSON_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -68,7 +69,7 @@ void LarsonControl(int16_t item_num)
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (person->mood == MOOD_BORED) {
-                item->goal_anim_state = GetRandomControl() < LARSON_POSE_CHANCE
+                item->goal_anim_state = Random_GetControl() < LARSON_POSE_CHANCE
                     ? LARSON_POSE
                     : LARSON_WALK;
             } else if (person->mood == MOOD_ESCAPE) {
@@ -81,7 +82,7 @@ void LarsonControl(int16_t item_num)
         case LARSON_POSE:
             if (person->mood != MOOD_BORED) {
                 item->goal_anim_state = LARSON_STOP;
-            } else if (GetRandomControl() < LARSON_POSE_CHANCE) {
+            } else if (Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_WALK;
                 item->goal_anim_state = LARSON_STOP;
             }
@@ -90,7 +91,7 @@ void LarsonControl(int16_t item_num)
         case LARSON_WALK:
             person->maximum_turn = LARSON_WALK_TURN;
             if (person->mood == MOOD_BORED
-                && GetRandomControl() < LARSON_POSE_CHANCE) {
+                && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
             } else if (person->mood == MOOD_ESCAPE) {
@@ -109,7 +110,7 @@ void LarsonControl(int16_t item_num)
             person->maximum_turn = LARSON_RUN_TURN;
             tilt = angle / 2;
             if (person->mood == MOOD_BORED
-                && GetRandomControl() < LARSON_POSE_CHANCE) {
+                && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
             } else if (Targetable(item, &info)) {
@@ -133,9 +134,9 @@ void LarsonControl(int16_t item_num)
 
         case LARSON_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &LarsonGun, head)) {
-                    LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
-                    LaraItem->hit_status = 1;
+                if (ShotLara(item, info.distance, &g_LarsonGun, head)) {
+                    g_LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
+                    g_LaraItem->hit_status = 1;
                 }
                 item->required_anim_state = LARSON_AIM;
             }

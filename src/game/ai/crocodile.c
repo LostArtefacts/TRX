@@ -7,7 +7,7 @@
 #include "game/lot.h"
 #include "global/vars.h"
 
-BITE_INFO CrocodileBite = { 5, -21, 467, 9 };
+BITE_INFO g_CrocodileBite = { 5, -21, 467, 9 };
 
 void SetupCrocodile(OBJECT_INFO *obj)
 {
@@ -27,12 +27,12 @@ void SetupCrocodile(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
 }
 
 void CrocControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -49,8 +49,8 @@ void CrocControl(int16_t item_num)
         if (item->current_anim_state != CROCODILE_DEATH) {
             item->current_anim_state = CROCODILE_DEATH;
             item->anim_number =
-                Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+                g_Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -122,9 +122,9 @@ void CrocControl(int16_t item_num)
 
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
-                CreatureEffect(item, &CrocodileBite, DoBloodSplat);
-                LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
-                LaraItem->hit_status = 1;
+                CreatureEffect(item, &g_CrocodileBite, DoBloodSplat);
+                g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 item->required_anim_state = CROCODILE_STOP;
             }
             break;
@@ -135,12 +135,13 @@ void CrocControl(int16_t item_num)
         CreatureHead(item, head);
     }
 
-    if (RoomInfo[item->room_number].flags & RF_UNDERWATER) {
+    if (g_RoomInfo[item->room_number].flags & RF_UNDERWATER) {
         item->object_number = O_ALLIGATOR;
-        item->current_anim_state = Anims[item->anim_number].current_anim_state;
+        item->current_anim_state =
+            g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
-        item->anim_number = Objects[O_ALLIGATOR].anim_index;
-        item->frame_number = Anims[item->anim_number].frame_base;
+        item->anim_number = g_Objects[O_ALLIGATOR].anim_index;
+        item->frame_number = g_Anims[item->anim_number].frame_base;
         if (croc) {
             croc->LOT.step = WALL_L * 20;
             croc->LOT.drop = -WALL_L * 20;

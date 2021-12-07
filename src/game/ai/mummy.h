@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_MUMMY_H
-#define T1M_GAME_AI_MUMMY_H
+#pragma once
 
 #include "global/types.h"
 
@@ -16,5 +15,3 @@ typedef enum {
 void SetupMummy(OBJECT_INFO *obj);
 void InitialiseMummy(int16_t item_num);
 void MummyControl(int16_t item_num);
-
-#endif
