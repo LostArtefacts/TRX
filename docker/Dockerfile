@@ -103,14 +103,23 @@ FROM mingw
 RUN mkdir /app
 WORKDIR /app
 
-COPY --from=zlib /ext/ /usr/i686-w64-mingw32/
-COPY --from=libav /ext/ /usr/i686-w64-mingw32/
-COPY --from=sdl /ext/ /usr/i686-w64-mingw32/
+COPY --from=zlib /ext/ /ext/
+COPY --from=libav /ext/ /ext/
+COPY --from=sdl /ext/ /ext/
 
 # system dependencies
+# don't prompt during tzinfo installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Warsaw
+# configure pkgconfig manually
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=967969
+ENV PKG_CONFIG_LIBDIR=/ext/lib/
+ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
+        mingw-w64-tools \
+        pkg-config \
         upx \
         python3-pip \
     && python3 -m pip install \
