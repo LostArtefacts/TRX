@@ -1,6 +1,7 @@
 #include "game/ai/crocodile.h"
 
 #include "game/ai/alligator.h"
+#include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -109,8 +110,14 @@ void AlligatorControl(int16_t item_num)
         break;
 
     case ALLIGATOR_ATTACK:
-        if (item->frame_number == g_Anims[item->anim_number].frame_base) {
-            item->required_anim_state = ALLIGATOR_EMPTY;
+        if (g_Config.fix_alligator_ai) {
+            if (item->frame_number == ALLIGATOR_FIX_DMG_AF) {
+                item->required_anim_state = ALLIGATOR_EMPTY;
+            }
+        } else {
+            if (item->frame_number == g_Anims[item->anim_number].frame_base) {
+                item->required_anim_state = ALLIGATOR_EMPTY;
+            }
         }
 
         if (info.bite && item->touch_bits) {
