@@ -1920,6 +1920,7 @@ static int S_FMV_ReadThread(void *arg)
 
     is->ic = ic;
 
+    avformat_find_stream_info(ic, NULL);
     av_format_inject_global_side_data(ic);
 
     if (ic->pb) {
@@ -1968,8 +1969,7 @@ static int S_FMV_ReadThread(void *arg)
     }
 
     if (is->video_stream < 0 && is->audio_stream < 0) {
-        LOG_ERROR(
-            "Failed to open file '%s' or configure filtergraph", is->filename);
+        LOG_ERROR("Failed to decode file");
         ret = -1;
         goto fail;
     }
