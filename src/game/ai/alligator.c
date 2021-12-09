@@ -9,7 +9,6 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
-#include "log.h"
 
 void SetupAlligator(OBJECT_INFO *obj)
 {
