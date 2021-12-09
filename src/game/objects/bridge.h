@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+bool isSameSector(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void SetupBridgeFlat(OBJECT_INFO *obj);
 void SetupBridgeTilt1(OBJECT_INFO *obj);
 void SetupBridgeTilt2(OBJECT_INFO *obj);

@@ -13,6 +13,8 @@
 
 #include <stddef.h>
 
+#include "log.h"
+
 void LookLeftRight()
 {
     g_Camera.type = CAM_LOOK;
@@ -2115,23 +2117,28 @@ bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        LOG_DEBUG("Fail 1 ABS: %d", ABS(coll->left_floor - coll->right_floor));
         return false;
     }
 
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -384) {
+        LOG_DEBUG("Fail 2 coll->front_ceiling: %d, coll->mid_ceiling: %d", coll->front_ceiling, coll->mid_ceiling);
         return false;
     }
 
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
+        LOG_DEBUG("Fail 3 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
         return false;
     }
     if (hdif > 0 && hdif + item->fall_speed > 0) {
+        LOG_DEBUG("Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
         return false;
     }
+    LOG_DEBUG("PASSED Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
 
-    int angle = item->pos.y_rot;
+    PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
         angle = 0;
     } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
@@ -2145,8 +2152,10 @@ bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (angle & (PHD_90 - 1)) {
+        LOG_DEBUG("Fail 5 angle: %d", angle);
         return false;
     }
+    LOG_DEBUG("PASSED Fail 5 angle: %d", angle);
 
     item->goal_anim_state = AS_HANG;
     item->current_anim_state = AS_HANG;

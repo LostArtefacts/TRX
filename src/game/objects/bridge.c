@@ -4,6 +4,23 @@
 #include "game/draw.h"
 #include "game/objects/cog.h"
 #include "global/vars.h"
+#include "src/config.h"
+#include "log.h"
+
+bool isSameSector(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
+{
+    int32_t a_Sector_x = x / WALL_L;
+    int32_t a_Sector_z = z / WALL_L;
+    int32_t b_Sector_x = item->pos.x / WALL_L;
+    int32_t b_Sector_z = item->pos.z / WALL_L;
+
+    // LOG_DEBUG("a_Sector_x: %d", a_Sector_x);
+    // LOG_DEBUG("b_Sector_x: %d", a_Sector_x);
+    // LOG_DEBUG("a_Sector_z: %d", a_Sector_x);
+    // LOG_DEBUG("b_Sector_z: %d", a_Sector_x);
+
+    return a_Sector_x == b_Sector_x && a_Sector_z == b_Sector_z;
+}
 
 void SetupBridgeFlat(OBJECT_INFO *obj)
 {
@@ -103,14 +120,42 @@ void DrawBridgeCollision(
 void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (y <= item->pos.y) {
-        *height = item->pos.y;
+    if (g_Config.fix_grab) {
+        if (item->pos.y >= y)
+        {
+            *height = item->pos.y;
+            // height_type = WALL;
+            // OnObject = 1;
+        }
+        // if (!isSameSector(item, x, y, z)) {
+        //     LOG_DEBUG("BridgeFlatFloor !isSameSector");
+        //     return;
+        // }
+
+        // if (y > item->pos.y) {
+        //     LOG_DEBUG("BridgeFlatFloor y > item->pos.y");
+        //     return;
+        // }
+
+        // LOG_DEBUG("BridgeFlatFloor item->pos.y: %d", item->pos.y);
+        // *height = item->pos.y;
+    } else {
+        if (y <= item->pos.y) {
+            *height = item->pos.y;
+        }
     }
 }
 
 void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
+    // if (g_Config.fix_grab) {
+    //     if (!isSameSector(item, x, y, z)) {
+    //         LOG_DEBUG("BridgeFlatCeiling !isSameSector");
+    //         return;
+    //     }
+    // }
+
     if (y > item->pos.y) {
         *height = item->pos.y + STEP_L;
     }
@@ -133,6 +178,25 @@ void BridgeTilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+
+    // if (g_Config.fix_grab) {
+    //     if (!isSameSector(item, x, y, z)) {
+    //         LOG_DEBUG("BridgeTilt1Floor !isSameSector");
+    //         return;
+    //     }
+
+    //     if (y > item->pos.y) {
+    //         LOG_DEBUG("BridgeTilt1Floor y > item->pos.y");
+    //         return;
+    //     }
+
+    //     LOG_DEBUG("BridgeTilt1Floor level: %d", level);
+    //     *height = level;
+    // } else {
+    //     if (y <= level) {
+    //         *height = level;
+    //     }
+    // }
     if (y <= level) {
         *height = level;
     }
@@ -141,6 +205,13 @@ void BridgeTilt1Floor(
 void BridgeTilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
+    // if (g_Config.fix_grab) {
+    //     if (!isSameSector(item, x, y, z)) {
+    //         LOG_DEBUG("BridgeTilt1Ceiling !isSameSector");
+    //         return;
+    //     }
+    // }
+
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
     if (y > level) {
         *height = level + STEP_L;
@@ -151,6 +222,25 @@ void BridgeTilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
+
+    // if (g_Config.fix_grab) {
+    //     if (!isSameSector(item, x, y, z)) {
+    //         LOG_DEBUG("BridgeTilt2Floor !isSameSector");
+    //         return;
+    //     }
+
+    //     if (y > item->pos.y) {
+    //         LOG_DEBUG("BridgeTilt2Floor y > item->pos.y");
+    //         return;
+    //     }
+
+    //     LOG_DEBUG("BridgeTilt2Floor level: %d", level);
+    //     *height = level;
+    // } else {
+    //     if (y <= level) {
+    //         *height = level;
+    //     }
+    // }
     if (y <= level) {
         *height = level;
     }
@@ -159,6 +249,13 @@ void BridgeTilt2Floor(
 void BridgeTilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
+    // if (g_Config.fix_grab) {
+    //     if (!isSameSector(item, x, y, z)) {
+    //         LOG_DEBUG("BridgeTilt2Ceiling !isSameSector");
+    //         return;
+    //     }
+    // }
+
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
     if (y > level) {
         *height = level + STEP_L;
