@@ -51,18 +51,16 @@ RUN cd FFmpeg \
         --enable-decoder=png \
         --enable-decoder=gif \
         --enable-decoder=mjpeg \
-        --enable-decoder=mpeg2 \
         --enable-decoder=mpeg4 \
-        --enable-decoder=mp4 \
+        --enable-decoder=mdec \
         --enable-decoder=h264 \
         --enable-decoder=h264_qsv \
         --enable-decoder=libopenh264 \
         --enable-decoder=png \
         --enable-demuxer=mov \
-        --enable-demuxer=mkv \
         --enable-demuxer=avi \
-        --enable-demuxer=mp4 \
         --enable-demuxer=h264 \
+        --enable-demuxer=str \
         --enable-demuxer=image2 \
         --enable-zlib \
         --enable-static \
