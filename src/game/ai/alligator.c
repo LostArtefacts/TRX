@@ -9,6 +9,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "global/vars.h"
+#include "log.h"
 
 void SetupAlligator(OBJECT_INFO *obj)
 {
@@ -106,6 +107,9 @@ void AlligatorControl(int16_t item_num)
     case ALLIGATOR_SWIM:
         if (info.bite && item->touch_bits) {
             item->goal_anim_state = ALLIGATOR_ATTACK;
+            if (g_Config.fix_alligator_ai) {
+                item->required_anim_state = ALLIGATOR_SWIM;
+            }
         }
         break;
 
