@@ -26,7 +26,7 @@ clean:
 	-find build/ -mindepth 1 -empty -type d -delete
 
 lint:
-	sh -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
+	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
 
 test_base:
 	cp build/*.exe test/
