@@ -114,29 +114,21 @@ void DrawBridgeCollision(
 void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
-        if (y > item->pos.y) {
-            return;
-        }
-
-        *height = item->pos.y;
-    } else {
-        if (y <= item->pos.y) {
-            *height = item->pos.y;
-        }
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
     }
+    if (y > item->pos.y) {
+        return;
+    }
+
+    *height = item->pos.y;
 }
 
 void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
     }
 
     if (y > item->pos.y) {
@@ -160,34 +152,23 @@ int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z)
 void BridgeTilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
+    }
+
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
-
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
-        if (y > level) {
-            return;
-        }
-
-        *height = level;
-    } else {
-        if (y <= level) {
-            *height = level;
-        }
+    if (y > level) {
+        return;
     }
-    if (y <= level) {
-        *height = level;
-    }
+
+    *height = level;
 }
 
 void BridgeTilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
     }
 
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
@@ -199,34 +180,23 @@ void BridgeTilt1Ceiling(
 void BridgeTilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
-
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
-        if (y > level) {
-            return;
-        }
-
-        *height = level;
-    } else {
-        if (y <= level) {
-            *height = level;
-        }
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
     }
-    if (y <= level) {
-        *height = level;
+
+    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+    if (y > level) {
+        return;
     }
+
+    *height = level;
 }
 
 void BridgeTilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_grabs) {
-        if (!IsSameBridgeSector(x, y, z, item)) {
-            return;
-        }
+    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+        return;
     }
 
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
