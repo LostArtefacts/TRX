@@ -6,14 +6,14 @@
 #include "global/vars.h"
 #include "src/config.h"
 
-bool isSameSector(int32_t x, int32_t y, int32_t z, ITEM_INFO *item)
+bool IsSameBridgeSector(int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
 {
-    int32_t a_Sector_x = x / WALL_L;
-    int32_t a_Sector_z = z / WALL_L;
-    int32_t b_Sector_x = item->pos.x / WALL_L;
-    int32_t b_Sector_z = item->pos.z / WALL_L;
+    int32_t sector_x = x / WALL_L;
+    int32_t sector_z = z / WALL_L;
+    int32_t item_sector_x = item->pos.x / WALL_L;
+    int32_t item_sector_z = item->pos.z / WALL_L;
 
-    return a_Sector_x == b_Sector_x && a_Sector_z == b_Sector_z;
+    return sector_x == item_sector_x && sector_z == item_sector_z;
 }
 
 void SetupBridgeFlat(OBJECT_INFO *obj)
@@ -115,7 +115,7 @@ void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
         if (y > item->pos.y) {
@@ -134,7 +134,7 @@ void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
     }
@@ -163,7 +163,7 @@ void BridgeTilt1Floor(
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
 
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
         if (y > level) {
@@ -185,7 +185,7 @@ void BridgeTilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
     }
@@ -202,7 +202,7 @@ void BridgeTilt2Floor(
     int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
 
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
         if (y > level) {
@@ -224,7 +224,7 @@ void BridgeTilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_grabs) {
-        if (!isSameSector(x, y, z, item)) {
+        if (!IsSameBridgeSector(x, y, z, item)) {
             return;
         }
     }
