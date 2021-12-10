@@ -2122,21 +2122,26 @@ bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->front_ceiling > 0 || coll->mid_ceiling > -384) {
-        LOG_DEBUG("Fail 2 coll->front_ceiling: %d, coll->mid_ceiling: %d", coll->front_ceiling, coll->mid_ceiling);
+        LOG_DEBUG(
+            "Fail 2 coll->front_ceiling: %d, coll->mid_ceiling: %d",
+            coll->front_ceiling, coll->mid_ceiling);
         return false;
     }
 
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
-        LOG_DEBUG("Fail 3 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
+        LOG_DEBUG(
+            "Fail 3 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
         return false;
     }
     if (hdif > 0 && hdif + item->fall_speed > 0) {
-        LOG_DEBUG("Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
+        LOG_DEBUG(
+            "Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
         return false;
     }
-    LOG_DEBUG("PASSED Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
+    LOG_DEBUG(
+        "PASSED Fail 4 hdif: %d, item->fall_speed: %d", hdif, item->fall_speed);
 
     PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
