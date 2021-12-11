@@ -185,7 +185,7 @@ void BridgeTilt2Floor(
         return;
     }
 
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
     if (y > level) {
         return;
     }
