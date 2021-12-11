@@ -2124,7 +2124,9 @@ bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
 
     bounds = GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
-    if (hdif < 0 && hdif + item->fall_speed < 0) { }
+    if (hdif < 0 && hdif + item->fall_speed < 0) {
+        return false;
+    }
     if (hdif > 0 && hdif + item->fall_speed > 0) {
         return false;
     }
