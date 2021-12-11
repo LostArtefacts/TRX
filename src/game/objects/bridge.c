@@ -6,7 +6,8 @@
 #include "global/vars.h"
 #include "src/config.h"
 
-bool IsSameBridgeSector(int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
+static bool IsSameBridgeSector(
+    int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
 {
     int32_t sector_x = x / WALL_L;
     int32_t sector_z = z / WALL_L;
