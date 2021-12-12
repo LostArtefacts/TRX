@@ -115,7 +115,7 @@ void DrawBridgeCollision(
 void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
     if (y > item->pos.y) {
@@ -128,7 +128,7 @@ void BridgeFlatFloor(
 void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
@@ -152,7 +152,7 @@ int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
         // Offset would get set to 0 on a specific z pos on bottom of slope
         // This sets the offset to the max value (1023) when Lara's at the
         // bottom of the slope
-        if (g_Config.fix_bridge_grabs && offset == 0) {
+        if (g_Config.fix_bridge_collision && offset == 0) {
             if (y < item->pos.y) {
                 offset = (-z - 1) & 0x3FF;
             }
@@ -164,7 +164,7 @@ int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 void BridgeTilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
@@ -179,7 +179,7 @@ void BridgeTilt1Floor(
 void BridgeTilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
@@ -192,7 +192,7 @@ void BridgeTilt1Ceiling(
 void BridgeTilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
@@ -207,7 +207,7 @@ void BridgeTilt2Floor(
 void BridgeTilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
-    if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 

@@ -134,8 +134,8 @@
     // Fixes Lara jumping through objects and Lara moving up certain slopes.
     "fix_wall_jump_glitch": false,
 
-    // Fixes Lara not being able to grab parts of some bridges
-    "fix_bridge_grabs": true,
+    // Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge
+    "fix_bridge_collision": true,
 
     // Fixes Lara jumping on small steps sometimes resulting in a weird running
     // animation, known as a QWOP state.
