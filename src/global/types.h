@@ -1517,9 +1517,9 @@ typedef struct OBJECT_INFO {
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
     void (*floor)(
-        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height);
     void (*ceiling)(
-        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height);
     void (*draw_routine)(ITEM_INFO *item);
     void (*collision)(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
     int16_t anim_index;

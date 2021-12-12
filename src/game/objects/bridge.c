@@ -74,7 +74,7 @@ int32_t OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y)
 }
 
 void DrawBridgeFloor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return;
@@ -89,7 +89,7 @@ void DrawBridgeFloor(
 }
 
 void DrawBridgeCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return;
@@ -113,7 +113,7 @@ void DrawBridgeCollision(
 }
 
 void BridgeFlatFloor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
@@ -126,7 +126,7 @@ void BridgeFlatFloor(
 }
 
 void BridgeFlatCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
@@ -137,27 +137,38 @@ void BridgeFlatCeiling(
     }
 }
 
-int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z)
+int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
-    if (item->pos.y_rot == 0) {
-        return (WALL_L - x) & (WALL_L - 1);
-    } else if (item->pos.y_rot == -PHD_180) {
-        return x & (WALL_L - 1);
-    } else if (item->pos.y_rot == PHD_90) {
-        return z & (WALL_L - 1);
-    } else {
-        return (WALL_L - z) & (WALL_L - 1);
+    int32_t offset = 0;
+    if (item->pos.y_rot == 0)
+        offset = -x & 0x3FF;
+    else if (item->pos.y_rot == -0x8000)
+        offset = x & 0x3FF;
+    else if (item->pos.y_rot == 0x4000)
+        offset = z & 0x3FF;
+    else {
+        offset = -z & 0x3FF;
+        // Fixes edge case of an invisible wall on the tilt2 bridge floor
+        // Offset would get set to 0 on a specific z pos on bottom of slope
+        // This sets the offset to the max value (1023) when Lara's at the
+        // bottom of the slope
+        if (g_Config.fix_bridge_grabs && offset == 0) {
+            if (y < item->pos.y) {
+                offset = (-z - 1) & 0x3FF;
+            }
+        }
     }
+    return offset;
 }
 
 void BridgeTilt1Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+    int32_t level = item->pos.y + (GetOffset(item, x, y, z) >> 2);
     if (y > level) {
         return;
     }
@@ -166,26 +177,26 @@ void BridgeTilt1Floor(
 }
 
 void BridgeTilt1Ceiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 2);
+    int32_t level = item->pos.y + (GetOffset(item, x, y, z) >> 2);
     if (y > level) {
         *height = level + STEP_L;
     }
 }
 
 void BridgeTilt2Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
+    int32_t level = item->pos.y + (GetOffset(item, x, y, z) >> 1);
     if (y > level) {
         return;
     }
@@ -194,13 +205,13 @@ void BridgeTilt2Floor(
 }
 
 void BridgeTilt2Ceiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (g_Config.fix_bridge_grabs && !IsSameBridgeSector(x, y, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (GetOffset(item, x, z) >> 1);
+    int32_t level = item->pos.y + (GetOffset(item, x, y, z) >> 1);
     if (y > level) {
         *height = level + STEP_L;
     }

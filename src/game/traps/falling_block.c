@@ -65,7 +65,7 @@ void FallingBlockControl(int16_t item_num)
 }
 
 void FallingBlockFloor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (y <= item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
@@ -75,7 +75,7 @@ void FallingBlockFloor(
 }
 
 void FallingBlockCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int32_t *height)
 {
     if (y > item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
