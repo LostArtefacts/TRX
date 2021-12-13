@@ -169,7 +169,7 @@ void AnimateShotgun()
             }
         }
     } else {
-        if (g_Config.enable_shotgun_target_fix) {
+        if (g_Config.fix_shotgun_targeting) {
             if (g_Lara.target) {
                 if (ani == AF_SG_RECOIL) {
                     ani = AF_SG_UNAIM;
@@ -222,7 +222,7 @@ void AnimateShotgun()
                     }
                 }
             }
-        } else if (!g_Config.enable_shotgun_target_fix) {
+        } else if (!g_Config.fix_shotgun_targeting) {
             if (ani == AF_SG_AIM && g_Input.action) {
                 ani++;
             } else if (ani > AF_SG_AIM && ani < AF_SG_DRAW) {
