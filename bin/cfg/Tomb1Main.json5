@@ -96,7 +96,7 @@
     // - default: show the airbar only in the water (as in OG)
     // - flashing-or-default: flash the airbar when Lara's oxygen is 20% or
     //   below, or show under normal circumstances
-    // - flashing-only: show and the airbar *only* when Lara's oxygen is 20% or /
+    // - flashing-only: show and the airbar *only* when Lara's oxygen is 20% or
     //   below (useful for challenge runs)
     // - always: always show the airbar
     // - never: never display the airbar (for challenge runs)

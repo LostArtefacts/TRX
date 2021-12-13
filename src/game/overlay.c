@@ -244,9 +244,6 @@ void Overlay_DrawHealthBar()
     int32_t show = g_HealthBarTimer > 0 || hit_points <= 0
         || g_Lara.gun_status == LGS_READY;
     switch (g_Config.healthbar_showing_mode) {
-    case T1M_BSM_DEFAULT:
-        show;
-        break;
     case T1M_BSM_FLASHING_OR_DEFAULT:
         show |= hit_points <= (LARA_HITPOINTS * 20) / 100;
         break;
@@ -258,6 +255,8 @@ void Overlay_DrawHealthBar()
         break;
     case T1M_BSM_NEVER:
         show = 0;
+        break;
+    default:
         break;
     }
     if (!show) {
@@ -272,9 +271,6 @@ void Overlay_DrawAirBar()
     int32_t show = g_Lara.water_status == LWS_UNDERWATER
         || g_Lara.water_status == LWS_SURFACE;
     switch (g_Config.airbar_showing_mode) {
-    case T1M_BSM_DEFAULT:
-        show;
-        break;
     case T1M_BSM_FLASHING_OR_DEFAULT:
         show |= g_Lara.air <= (LARA_AIR * 20) / 100;
         break;
@@ -286,6 +282,8 @@ void Overlay_DrawAirBar()
         break;
     case T1M_BSM_NEVER:
         show = 0;
+        break;
+    default:
         break;
     }
     if (!show) {
