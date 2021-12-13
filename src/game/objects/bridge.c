@@ -152,10 +152,8 @@ int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
         // Offset would get set to 0 on a specific z pos on bottom of slope
         // This fix sets the offset to the max value (1023) when Lara's at the
         // bottom of the slope
-        if (g_Config.fix_bridge_collision && offset == 0) {
-            if (y < item->pos.y) {
-                offset = (-z - 1) & (WALL_L - 1);
-            }
+        if (g_Config.fix_bridge_collision && offset == 0 && y < item->pos.y) {
+            offset = (WALL_L - z - 1) & (WALL_L - 1);
         }
     }
     return offset;
