@@ -108,7 +108,6 @@ int32_t Display_Inventory(int inv_mode)
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             g_NoInputCount = 0;
-            g_ResetFlag = false;
         } else {
             if (!g_Config.disable_demo) {
                 g_NoInputCount++;
