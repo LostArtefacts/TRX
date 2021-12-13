@@ -165,7 +165,7 @@ int16_t GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-int32_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     g_HeightType = HT_WALL;
     while (floor->pit_room != NO_ROOM) {
@@ -175,7 +175,7 @@ int32_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
         floor = &r->floor[x_floor + y_floor * r->x_size];
     }
 
-    int32_t height = floor->floor << 8;
+    int16_t height = floor->floor << 8;
 
     g_TriggerIndex = NULL;
 
@@ -202,15 +202,17 @@ int32_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
                 }
 
                 if (xoff < 0) {
-                    height -= ((xoff * (z & (WALL_L - 1))) >> 2);
+                    height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height += ((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
-                    height -= ((yoff * (x & (WALL_L - 1))) >> 2);
+                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 } else {
-                    height += ((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 }
             }
 
@@ -258,7 +260,7 @@ int32_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
-int32_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     int16_t *data;
     int16_t type;
@@ -272,7 +274,7 @@ int32_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
         f = &r->floor[x_floor + y_floor * r->x_size];
     }
 
-    int32_t height = f->ceiling << 8;
+    int16_t height = f->ceiling << 8;
 
     if (f->index) {
         data = &g_FloorData[f->index];
@@ -290,15 +292,17 @@ int32_t GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
             if (!g_ChunkyFlag
                 || (xoff >= -2 && xoff <= 2 && yoff >= -2 && yoff <= 2)) {
                 if (xoff < 0) {
-                    height += ((xoff * (z & (WALL_L - 1))) >> 2);
+                    height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
-                    height -= ((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                    height -=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
                 }
 
                 if (yoff < 0) {
-                    height += ((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
                 } else {
-                    height -= ((yoff * (x & (WALL_L - 1))) >> 2);
+                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 }
             }
         }
