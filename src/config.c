@@ -40,6 +40,7 @@ typedef struct ENUM_MAP {
 } ENUM_MAP;
 
 const ENUM_MAP m_BarShowingModes[] = {
+    { "default", T1M_BSM_DEFAULT },
     { "flashing-or-default", T1M_BSM_FLASHING_OR_DEFAULT },
     { "flashing-only", T1M_BSM_FLASHING_ONLY },
     { "always", T1M_BSM_ALWAYS },

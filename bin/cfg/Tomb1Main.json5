@@ -61,13 +61,13 @@
     "enable_smooth_bars": true,
 
     // Changes how the healthbar is displayed. Possible values:
-    // - always: always show the healthbar
     // - default: show the healthbar at the beginning of a level, after
     //   getting hit or while having weapons equipped (as in OG)
-    // - flashing-or-default: show the healthbar when Lara's health is 20% or
-    //   below, or under default circumstances
+    // - flashing-or-default: flash the healthbar when Lara's health is 20% or
+    //   below, or show under default circumstances
     // - flashing-only: show the healthbar *only* when Lara's health is 20% or
     //   below (useful for challenge runs)
+    // - always: always show the healthbar
     // - never: never display the healthbar (for challenge runs)
     "healthbar_showing_mode": "flashing-or-default",
 
@@ -93,17 +93,17 @@
     "healthbar_color": "red",
 
     // Changes how the airbar is displayed. Possible values:
-    // - always: always show the airbar
-    // - default: show the airbar only in the water
-    // - flashing-or-default: show the airbar when Lara's oxygen is 20% or
-    //   below or under normal circumstances
-    // - flashing-only: show the airbar *only* when Lara's oxygen is 20% or /
+    // - default: show the airbar only in the water (as in OG)
+    // - flashing-or-default: flash the airbar when Lara's oxygen is 20% or
+    //   below, or show under normal circumstances
+    // - flashing-only: show and the airbar *only* when Lara's oxygen is 20% or /
     //   below (useful for challenge runs)
+    // - always: always show the airbar
     // - never: never display the airbar (for challenge runs)
     // In case of airbar, the flashing-or-default mode is there mostly for
     // consistency and the only practical difference is that it's shown when
     // Lara dies. When using the fly cheat, the airbar is never shown.
-    "airbar_showing_mode": "default",
+    "airbar_showing_mode": "flashing-or-default",
 
     // Location where the airbar is displayed.
     "airbar_location": "top-right",
