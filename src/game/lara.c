@@ -2131,7 +2131,7 @@ bool LaraTestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    int angle = item->pos.y_rot;
+    PHD_ANGLE angle = item->pos.y_rot;
     if (angle >= 0 - HANG_ANGLE && angle <= 0 + HANG_ANGLE) {
         angle = 0;
     } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
