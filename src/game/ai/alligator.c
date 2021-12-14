@@ -113,14 +113,10 @@ void AlligatorControl(int16_t item_num)
         break;
 
     case ALLIGATOR_ATTACK:
-        if (g_Config.fix_alligator_ai) {
-            if (item->frame_number == ALLIGATOR_FIX_DMG_AF) {
-                item->required_anim_state = ALLIGATOR_EMPTY;
-            }
-        } else {
-            if (item->frame_number == g_Anims[item->anim_number].frame_base) {
-                item->required_anim_state = ALLIGATOR_EMPTY;
-            }
+        if (g_Config.fix_alligator_ai && item->frame_number == ALLIGATOR_BITE_AF) {
+            item->required_anim_state = ALLIGATOR_EMPTY;
+        } else if (!g_Config.fix_alligator_ai && item->frame_number == g_Anims[item->anim_number].frame_base) {
+            item->required_anim_state = ALLIGATOR_EMPTY;
         }
 
         if (info.bite && item->touch_bits) {
@@ -129,6 +125,9 @@ void AlligatorControl(int16_t item_num)
                 g_LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = ALLIGATOR_SWIM;
+            }
+            if (g_Config.fix_alligator_ai) {
+                item->goal_anim_state = ALLIGATOR_SWIM;
             }
         } else {
             item->goal_anim_state = ALLIGATOR_SWIM;
