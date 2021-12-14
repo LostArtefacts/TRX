@@ -29,6 +29,7 @@ size_t File_Write(
     const void *data, size_t item_size, size_t count, MYFILE *file);
 size_t File_Size(MYFILE *file);
 void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
+size_t File_GetPos(MYFILE *file);
 void File_Close(MYFILE *file);
 int File_Delete(const char *path);
 

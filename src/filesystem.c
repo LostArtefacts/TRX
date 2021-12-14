@@ -130,6 +130,12 @@ void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
     }
 }
 
+size_t File_GetPos(MYFILE *file)
+{
+    assert(file);
+    return ftell(file->fp);
+}
+
 size_t File_Size(MYFILE *file)
 {
     size_t old = ftell(file->fp);

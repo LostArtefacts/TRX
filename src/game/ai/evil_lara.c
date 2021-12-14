@@ -16,7 +16,6 @@ void SetupEvilLara(OBJECT_INFO *obj)
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
-    obj->save_flags = 1;
 }
 
 void InitialiseEvilLara(int16_t item_num)
