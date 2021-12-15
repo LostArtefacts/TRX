@@ -113,12 +113,10 @@ void AlligatorControl(int16_t item_num)
         break;
 
     case ALLIGATOR_ATTACK:
-        if (g_Config.fix_alligator_ai
-            && item->frame_number == ALLIGATOR_BITE_AF) {
-            item->required_anim_state = ALLIGATOR_EMPTY;
-        } else if (
-            !g_Config.fix_alligator_ai
-            && item->frame_number == g_Anims[item->anim_number].frame_base) {
+        if (item->frame_number
+            == (g_Config.fix_alligator_ai
+                    ? ALLIGATOR_BITE_AF
+                    : g_Anims[item->anim_number].frame_base)) {
             item->required_anim_state = ALLIGATOR_EMPTY;
         }
 
