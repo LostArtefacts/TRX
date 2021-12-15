@@ -99,7 +99,7 @@ void RingIsNotOpen(RING_INFO *ring)
     }
 }
 
-void RingNotActive(INVENTORY_ITEM *inv_item)
+void RingActive(INVENTORY_ITEM *inv_item)
 {
     if (!g_InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
@@ -279,7 +279,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     }
 }
 
-void RingActive()
+void RingNotActive()
 {
     if (g_InvItemText[IT_NAME]) {
         Text_Remove(g_InvItemText[IT_NAME]);
