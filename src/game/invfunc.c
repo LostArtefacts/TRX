@@ -281,14 +281,7 @@ void RingActive(INVENTORY_ITEM *inv_item)
 
 void RingNotActive()
 {
-    if (g_InvItemText[IT_NAME]) {
-        Text_Remove(g_InvItemText[IT_NAME]);
-        g_InvItemText[IT_NAME] = NULL;
-    }
-    if (g_InvItemText[IT_QTY]) {
-        Text_Remove(g_InvItemText[IT_QTY]);
-        g_InvItemText[IT_QTY] = NULL;
-    }
+    RemoveInventoryText();
 }
 
 int32_t Inv_AddItem(int32_t item_num)
