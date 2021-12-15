@@ -656,7 +656,7 @@ void S_Output_ClearBackBuffer()
     S_Output_RenderToggle();
 }
 
-void S_Output_CopyFromPicture()
+void S_Output_CopyToPicture()
 {
     if (!m_PictureSurface) {
         GFX_2D_SurfaceDesc surface_desc = {
@@ -671,7 +671,7 @@ void S_Output_CopyFromPicture()
     S_Output_RenderToggle();
 }
 
-void S_Output_CopyToPicture()
+void S_Output_CopyFromPicture()
 {
     S_Output_ClearBackBuffer();
     S_Output_RenderEnd();

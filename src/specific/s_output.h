@@ -27,8 +27,8 @@ RGB888 S_Output_GetPaletteColor(uint8_t idx);
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_DownloadPicture(const PICTURE *pic);
 void S_Output_SelectTexture(int tex_num);
-void S_Output_CopyFromPicture();
 void S_Output_CopyToPicture();
+void S_Output_CopyFromPicture();
 
 void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
