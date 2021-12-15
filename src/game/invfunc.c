@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-TEXTSTRING *g_InvItemText[2] = { NULL, NULL };
+TEXTSTRING *g_InvItemText[IT_NUMBER_OF] = { NULL };
 TEXTSTRING *g_InvRingText = NULL;
 
 static TEXTSTRING *m_InvDownArrow1 = NULL;
