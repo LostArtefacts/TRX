@@ -273,6 +273,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara jumping forever when alt+tabbing out of the game
 - fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
 - fixed bats being positioned too high
+- fixed Lara not being able to grab parts of some bridges
 - fixed shotgun shooting when a locked target moves out of Lara's sight
 - fixed shotgun shooting too fast when not aiming at a target
 
