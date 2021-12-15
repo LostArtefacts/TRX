@@ -66,6 +66,7 @@ typedef struct {
     bool fix_secrets_killing_music;
     bool fix_descending_glitch;
     bool fix_wall_jump_glitch;
+    bool fix_bridge_collision;
     bool fix_qwop_glitch;
     bool fix_alligator_ai;
     int32_t fov_value;

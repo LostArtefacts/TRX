@@ -129,6 +129,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(fix_secrets_killing_music, true);
     READ_BOOL(fix_descending_glitch, false);
     READ_BOOL(fix_wall_jump_glitch, false);
+    READ_BOOL(fix_bridge_collision, true);
     READ_BOOL(fix_qwop_glitch, false);
     READ_BOOL(fix_alligator_ai, true);
     READ_INTEGER(fov_value, 65);

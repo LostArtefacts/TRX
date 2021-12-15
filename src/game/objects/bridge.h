@@ -17,7 +17,7 @@ void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z);
+int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void BridgeTilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt1Ceiling(
