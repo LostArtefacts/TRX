@@ -93,10 +93,6 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    if (req->requested >= req->vis_lines) {
-        req->line_offset = req->requested - req->vis_lines + 1;
-    }
-
     if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
         req->vis_lines = 5;
