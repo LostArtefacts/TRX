@@ -245,29 +245,6 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     return 1;
 }
 
-void GetSavedGamesList(REQUEST_INFO *req)
-{
-    int32_t height = Screen_GetResHeight();
-
-    if (height <= 200) {
-        req->y = -32;
-        req->vis_lines = 5;
-    } else if (height <= 384) {
-        req->y = -62;
-        req->vis_lines = 8;
-    } else if (height <= 480) {
-        req->y = -90;
-        req->vis_lines = 10;
-    } else {
-        req->y = -100;
-        req->vis_lines = 12;
-    }
-
-    if (req->requested >= req->vis_lines) {
-        req->line_offset = req->requested - req->vis_lines + 1;
-    }
-}
-
 int32_t S_FrontEndCheck()
 {
     REQUEST_INFO *req = &g_LoadSaveGameRequester;

@@ -76,8 +76,26 @@ static void InitLoadSaveGameRequester()
 {
     REQUEST_INFO *req = &g_LoadSaveGameRequester;
     InitRequester(req);
-    GetSavedGamesList(req);
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
+
+    int32_t height = Screen_GetResHeight();
+    if (height <= 200) {
+        req->y = -32;
+        req->vis_lines = 5;
+    } else if (height <= 384) {
+        req->y = -62;
+        req->vis_lines = 8;
+    } else if (height <= 480) {
+        req->y = -90;
+        req->vis_lines = 10;
+    } else {
+        req->y = -100;
+        req->vis_lines = 12;
+    }
+
+    if (req->requested >= req->vis_lines) {
+        req->line_offset = req->requested - req->vis_lines + 1;
+    }
 
     if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
