@@ -111,7 +111,7 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    S_FrontEndCheck();
+    Game_ScanSavedGames();
 }
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
