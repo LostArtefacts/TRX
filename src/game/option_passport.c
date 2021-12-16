@@ -98,7 +98,7 @@ static void InitLoadSaveGameRequester()
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
 {
-    Text_Remove(g_InvItemText[0]);
+    Text_Remove(g_InvItemText[IT_NAME]);
     g_InvItemText[IT_NAME] = NULL;
 
     int16_t page = (inv_item->goal_frame - inv_item->open_frame) / 5;

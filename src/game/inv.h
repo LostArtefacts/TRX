@@ -59,8 +59,8 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item);
 
 void RingIsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);
-void RingNotActive(INVENTORY_ITEM *inv_item);
-void RingActive();
+void RingActive(INVENTORY_ITEM *inv_item);
+void RingNotActive();
 
 int32_t Inv_AddItem(int32_t item_num);
 void Inv_InsertItem(INVENTORY_ITEM *inv_item);

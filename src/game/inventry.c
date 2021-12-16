@@ -190,7 +190,7 @@ int32_t Display_Inventory(int inv_mode)
                      || imo.status == RNG_DESELECT
                      || imo.status == RNG_CLOSING_ITEM)
                     && !ring.rotating && !g_Input.left && !g_Input.right) {
-                    RingNotActive(inv_item);
+                    RingActive(inv_item);
                 }
             } else {
                 g_LsAdder = LOW_LIGHT;
@@ -219,7 +219,7 @@ int32_t Display_Inventory(int inv_mode)
                 || imo.status == RNG_OPTION2MAIN
                 || imo.status == RNG_EXITING_INVENTORY || imo.status == RNG_DONE
                 || ring.rotating) {
-                RingActive();
+                RingNotActive();
             }
 
             phd_PushMatrix();
