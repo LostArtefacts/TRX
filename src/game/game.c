@@ -245,7 +245,7 @@ int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
     return 1;
 }
 
-int32_t S_FrontEndCheck()
+void Game_ScanSavedGames()
 {
     REQUEST_INFO *req = &g_LoadSaveGameRequester;
 
@@ -287,7 +287,6 @@ int32_t S_FrontEndCheck()
     }
 
     g_SaveCounter++;
-    return 1;
 }
 
 int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)

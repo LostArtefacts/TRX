@@ -81,7 +81,7 @@ void Shell_Main()
     }
 
     InitialiseStartInfo();
-    S_FrontEndCheck();
+    Game_ScanSavedGames();
     Settings_Read();
 
     Screen_ApplyResolution();
