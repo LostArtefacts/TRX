@@ -286,6 +286,10 @@ void Game_ScanSavedGames()
         req->items++;
     }
 
+    if (req->requested >= req->vis_lines) {
+        req->line_offset = req->requested - req->vis_lines + 1;
+    }
+
     g_SaveCounter++;
 }
 
