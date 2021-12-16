@@ -24,6 +24,9 @@
     // Draws flame when firing a shotgun, like for other guns.
     "enable_shotgun_flash": true,
 
+    // Shotgun no longer fires when a locked target moves out of Lara's sight like other guns.
+    "fix_shotgun_targeting": true,
+
     // Enables quick weapon draws and medpack usage.
     // - 1: draw pistols
     // - 2: draw shotgun

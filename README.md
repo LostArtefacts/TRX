@@ -275,6 +275,8 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed bats being positioned too high
 - fixed Lara not being able to grab parts of some bridges
 - fixed alligators dealing no damage if Lara remains still in the water
+- fixed shotgun shooting when a locked target moves out of Lara's sight
+- fixed shotgun shooting too fast when not aiming at a target
 
 ## Showcase
 

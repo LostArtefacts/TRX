@@ -117,6 +117,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_enemy_healthbar, true);
     READ_BOOL(enable_enhanced_look, true);
     READ_BOOL(enable_shotgun_flash, true);
+    READ_BOOL(fix_shotgun_targeting, true);
     READ_BOOL(enable_cheats, false);
     READ_BOOL(enable_numeric_keys, true);
     READ_BOOL(enable_tr3_sidesteps, true);
