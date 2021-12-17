@@ -80,7 +80,7 @@
     // - bottom-left
     // - bottom-center
     // - bottom-right
-    "healthbar_location": "top-right",
+    "healthbar_location": "top-left",
 
     // Color of the healthbar. Possible values:
     // - gold (game default)
