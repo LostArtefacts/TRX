@@ -71,7 +71,7 @@
     // - always: always show the healthbar
     // - never: never display the healthbar (for challenge runs)
     // - ps1: show the healthbar under default circumstances with no flashing
-    "healthbar_showing_mode": "default",
+    "healthbar_showing_mode": "flashing-or-default",
 
     // Location where the healthbar is displayed. Possible values:
     // - top-left
