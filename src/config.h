@@ -9,34 +9,34 @@ typedef enum {
 } SCREENSHOT_FORMAT;
 
 typedef enum {
-    T1M_BL_TOP_LEFT = 0,
-    T1M_BL_TOP_CENTER = 1,
-    T1M_BL_TOP_RIGHT = 2,
-    T1M_BL_BOTTOM_LEFT = 3,
-    T1M_BL_BOTTOM_CENTER = 4,
-    T1M_BL_BOTTOM_RIGHT = 5,
-} T1M_BAR_LOCATION;
+    BL_TOP_LEFT = 0,
+    BL_TOP_CENTER = 1,
+    BL_TOP_RIGHT = 2,
+    BL_BOTTOM_LEFT = 3,
+    BL_BOTTOM_CENTER = 4,
+    BL_BOTTOM_RIGHT = 5,
+} BAR_LOCATION;
 
 typedef enum {
-    T1M_BC_GOLD = 0,
-    T1M_BC_BLUE = 1,
-    T1M_BC_GREY = 2,
-    T1M_BC_RED = 3,
-    T1M_BC_SILVER = 4,
-    T1M_BC_GREEN = 5,
-    T1M_BC_GOLD2 = 6,
-    T1M_BC_BLUE2 = 7,
-    T1M_BC_PINK = 8,
-} T1M_BAR_COLOR;
+    BC_GOLD = 0,
+    BC_BLUE = 1,
+    BC_GREY = 2,
+    BC_RED = 3,
+    BC_SILVER = 4,
+    BC_GREEN = 5,
+    BC_GOLD2 = 6,
+    BC_BLUE2 = 7,
+    BC_PINK = 8,
+} BAR_COLOR;
 
 typedef enum {
-    T1M_BSM_DEFAULT = 0,
-    T1M_BSM_FLASHING_OR_DEFAULT = 1,
-    T1M_BSM_FLASHING_ONLY = 2,
-    T1M_BSM_ALWAYS = 3,
-    T1M_BSM_NEVER = 4,
-    T1M_BSM_PS1 = 5,
-} T1M_BAR_SHOW_MODE;
+    BSM_DEFAULT = 0,
+    BSM_FLASHING_OR_DEFAULT = 1,
+    BSM_FLASHING_ONLY = 2,
+    BSM_ALWAYS = 3,
+    BSM_NEVER = 4,
+    BSM_PS1 = 5,
+} BAR_SHOW_MODE;
 
 typedef struct {
     bool disable_healing_between_levels;

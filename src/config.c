@@ -40,31 +40,30 @@ typedef struct ENUM_MAP {
 } ENUM_MAP;
 
 const ENUM_MAP m_BarShowingModes[] = {
-    { "default", T1M_BSM_DEFAULT },
-    { "flashing-or-default", T1M_BSM_FLASHING_OR_DEFAULT },
-    { "flashing-only", T1M_BSM_FLASHING_ONLY },
-    { "always", T1M_BSM_ALWAYS },
-    { "never", T1M_BSM_NEVER },
-    { "ps1", T1M_BSM_PS1 },
+    { "default", BSM_DEFAULT },
+    { "flashing-or-default", BSM_FLASHING_OR_DEFAULT },
+    { "flashing-only", BSM_FLASHING_ONLY },
+    { "always", BSM_ALWAYS },
+    { "never", BSM_NEVER },
+    { "ps1", BSM_PS1 },
     { NULL, -1 },
 };
 
 const ENUM_MAP m_BarLocations[] = {
-    { "top-left", T1M_BL_TOP_LEFT },
-    { "top-center", T1M_BL_TOP_CENTER },
-    { "top-right", T1M_BL_TOP_RIGHT },
-    { "bottom-left", T1M_BL_BOTTOM_LEFT },
-    { "bottom-center", T1M_BL_BOTTOM_CENTER },
-    { "bottom-right", T1M_BL_BOTTOM_RIGHT },
+    { "top-left", BL_TOP_LEFT },
+    { "top-center", BL_TOP_CENTER },
+    { "top-right", BL_TOP_RIGHT },
+    { "bottom-left", BL_BOTTOM_LEFT },
+    { "bottom-center", BL_BOTTOM_CENTER },
+    { "bottom-right", BL_BOTTOM_RIGHT },
     { NULL, -1 },
 };
 
 const ENUM_MAP m_BarColors[] = {
-    { "gold", T1M_BC_GOLD },     { "blue", T1M_BC_BLUE },
-    { "grey", T1M_BC_GREY },     { "red", T1M_BC_RED },
-    { "silver", T1M_BC_SILVER }, { "green", T1M_BC_GREEN },
-    { "gold2", T1M_BC_GOLD2 },   { "blue2", T1M_BC_BLUE2 },
-    { "pink", T1M_BC_PINK },     { NULL, -1 },
+    { "gold", BC_GOLD },   { "blue", BC_BLUE },     { "grey", BC_GREY },
+    { "red", BC_RED },     { "silver", BC_SILVER }, { "green", BC_GREEN },
+    { "gold2", BC_GOLD2 }, { "blue2", BC_BLUE2 },   { "pink", BC_PINK },
+    { NULL, -1 },
 };
 
 const ENUM_MAP m_ScreenshotFormats[] = {
@@ -146,14 +145,14 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_3d_pickups, true);
 
     READ_ENUM(
-        healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
-    READ_ENUM(airbar_showing_mode, T1M_BSM_DEFAULT, m_BarShowingModes);
-    READ_ENUM(healthbar_location, T1M_BL_TOP_LEFT, m_BarLocations);
-    READ_ENUM(airbar_location, T1M_BL_TOP_RIGHT, m_BarLocations);
-    READ_ENUM(enemy_healthbar_location, T1M_BL_BOTTOM_LEFT, m_BarLocations);
-    READ_ENUM(healthbar_color, T1M_BC_RED, m_BarColors);
-    READ_ENUM(airbar_color, T1M_BC_BLUE, m_BarColors);
-    READ_ENUM(enemy_healthbar_color, T1M_BC_GREY, m_BarColors);
+        healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
+    READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
+    READ_ENUM(healthbar_location, BL_TOP_LEFT, m_BarLocations);
+    READ_ENUM(airbar_location, BL_TOP_RIGHT, m_BarLocations);
+    READ_ENUM(enemy_healthbar_location, BL_BOTTOM_LEFT, m_BarLocations);
+    READ_ENUM(healthbar_color, BC_RED, m_BarColors);
+    READ_ENUM(airbar_color, BC_BLUE, m_BarColors);
+    READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
 
     CLAMP(g_Config.fov_value, 30, 255);
