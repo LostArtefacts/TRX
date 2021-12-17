@@ -310,7 +310,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         CalculateCamera();
         Sound_UpdateEffects();
         g_SaveGame.timer++;
-        Overlay_TimerTick();
+        Overlay_BarHealthTimerTick();
 
         if (g_Config.disable_healing_between_levels) {
             int8_t lara_found = 0;

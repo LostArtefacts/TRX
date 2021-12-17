@@ -233,8 +233,8 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_MEDI_OPTION:
-        Overlay_SetHealtBarTimer(40);
-        Overlay_DrawHealthBar();
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -245,8 +245,8 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_BIGMEDI_OPTION:
-        Overlay_SetHealtBarTimer(40);
-        Overlay_DrawHealthBar();
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);

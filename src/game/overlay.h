@@ -4,11 +4,11 @@
 
 void Overlay_Init();
 
-void Overlay_SetHealtBarTimer(int16_t health_bar_timer);
-void Overlay_TimerTick();
-void Overlay_DrawHealthBar();
-void Overlay_DrawAirBar();
-void Overlay_DrawEnemyBar();
+void Overlay_BarSetHealthTimer(int16_t health_bar_timer);
+void Overlay_BarHealthTimerTick();
+void Overlay_BarDrawHealth();
+void Overlay_BarDrawAir();
+void Overlay_BarDrawEnemy();
 void Overlay_DrawAmmoInfo();
 void Overlay_DrawPickups();
 void Overlay_DrawFPSInfo();

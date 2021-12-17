@@ -12,11 +12,10 @@
 
 #include <stdio.h>
 
-#include "log.h"
-
 #define COLOR_STEPS 5
 #define MAX_PICKUP_COLUMNS 4
 #define MAX_PICKUPS 16
+#define BLINK_THRESHOLD 20
 
 static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
@@ -81,91 +80,104 @@ static RGB888 m_ColorBarMap[][COLOR_STEPS] = {
 };
 
 typedef struct BAR_INFO {
-    int32_t type;
+    BAR_TYPE type;
     int32_t value;
     int32_t max_value;
-    int32_t show;
-    int32_t show_mode;
-    int32_t blink;
+    int32_t percent;
+    bool show;
+    T1M_BAR_SHOW_MODE show_mode;
+    bool blink;
+    int32_t blink_counter;
     int32_t timer;
     int32_t color;
-    int32_t bar_location;
+    T1M_BAR_LOCATION bar_location;
 } BAR_INFO;
 
 static BAR_INFO m_HealthBar = { 0 };
-static void Overlay_SetupHealthBar()
+static BAR_INFO m_AirBar = { 0 };
+static BAR_INFO m_EnemyBar = { 0 };
+
+static void Overlay_BarSetupHealth();
+static void Overlay_BarSetupAir();
+static void Overlay_BarSetupEnemy();
+static void Overlay_BarBlink(BAR_INFO *bar_info);
+static void Overlay_BarGetPercent(BAR_INFO *bar_info);
+static void Overlay_BarGetLocation(
+    T1M_BAR_LOCATION bar_location, int32_t width, int32_t height, int32_t *x,
+    int32_t *y);
+static void Overlay_BarDraw(BAR_INFO *bar_info);
+static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
+static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
+
+static void Overlay_BarSetupHealth()
 {
     m_HealthBar.type = BT_LARA_HEALTH;
     m_HealthBar.value = LARA_HITPOINTS;
     m_HealthBar.max_value = LARA_HITPOINTS;
+    m_HealthBar.percent = 100;
     m_HealthBar.show_mode = g_Config.healthbar_showing_mode;
-    m_HealthBar.show = 0;
-    m_HealthBar.blink = 0;
+    m_HealthBar.show = false;
+    m_HealthBar.blink = false;
+    m_HealthBar.blink_counter = 0;
     m_HealthBar.timer = 40;
     m_HealthBar.color = g_Config.healthbar_color;
     m_HealthBar.bar_location = g_Config.healthbar_location;
 }
 
-static BAR_INFO m_AirBar = { 0 };
-static void Overlay_SetupAirBar()
+static void Overlay_BarSetupAir()
 {
     m_AirBar.type = BT_LARA_AIR;
     m_AirBar.value = LARA_AIR;
     m_AirBar.max_value = LARA_AIR;
+    m_AirBar.percent = 100;
     m_AirBar.show_mode = g_Config.airbar_showing_mode;
-    m_AirBar.show = 0;
-    m_AirBar.blink = 0;
+    m_AirBar.show = false;
+    m_AirBar.blink = false;
+    m_AirBar.blink_counter = 0;
     m_AirBar.timer = 0;
     m_AirBar.color = g_Config.airbar_color;
     m_AirBar.bar_location = g_Config.airbar_location;
 }
 
-static BAR_INFO m_EnemyBar = { 0 };
-static void Overlay_SetupEnemyBar()
+static void Overlay_BarSetupEnemy()
 {
     m_EnemyBar.type = BT_ENEMY_HEALTH;
     m_EnemyBar.value = 0;
     m_EnemyBar.max_value = 0;
+    m_EnemyBar.percent = 100;
     m_EnemyBar.show_mode = g_Config.healthbar_showing_mode;
     m_EnemyBar.show = g_Config.enable_enemy_healthbar;
-    m_EnemyBar.blink = 0;
+    m_EnemyBar.blink = false;
+    m_EnemyBar.blink_counter = 0;
     m_EnemyBar.timer = 0;
     m_EnemyBar.color = g_Config.enemy_healthbar_color;
     m_EnemyBar.bar_location = g_Config.enemy_healthbar_location;
 }
 
-static void Overlay_GetBarLocation(
-    int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y);
-static void Overlay_DrawBar(BAR_INFO *draw_bar);
-static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
-static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
-
-static void Overlay_GetBlink(BAR_INFO *blink_bar)
+static void Overlay_BarGetPercent(BAR_INFO *bar_info)
 {
-    if (blink_bar->show_mode == T1M_BSM_PS1) {
-        blink_bar->blink = 0;
-    }
-
-    static int32_t blink_counter = 0;
-    const int32_t percent_max = 100;
-
-    if (blink_bar->value < 0) {
-        blink_bar->value = 0;
-    } else if (blink_bar->value > blink_bar->max_value) {
-        blink_bar->value = blink_bar->max_value;
-    }
-    int32_t percent = blink_bar->value * 100 / blink_bar->max_value;
-
-    const int32_t blink_interval = 20;
-    const int32_t blink_threshold = blink_bar->type == BT_ENEMY_HEALTH ? 0 : 20;
-    int32_t blink_time = blink_counter++ % blink_interval;
-
-    blink_bar->blink =
-        percent <= blink_threshold && blink_time > blink_interval / 2;
+    bar_info->percent = bar_info->value * 100 / bar_info->max_value;
 }
 
-static void Overlay_GetBarLocation(
-    int8_t bar_location, int32_t width, int32_t height, int32_t *x, int32_t *y)
+static void Overlay_BarBlink(BAR_INFO *bar_info)
+{
+    if (bar_info->show_mode == T1M_BSM_PS1
+        || bar_info->type == BT_ENEMY_HEALTH) {
+        bar_info->blink = false;
+        return;
+    }
+
+    Overlay_BarGetPercent(bar_info);
+    const int32_t blink_interval = 20;
+    int32_t blink_time = bar_info->blink_counter++ % blink_interval;
+
+    bar_info->blink =
+        bar_info->percent <= BLINK_THRESHOLD && blink_time > blink_interval / 2;
+}
+
+static void Overlay_BarGetLocation(
+    T1M_BAR_LOCATION bar_location, int32_t width, int32_t height, int32_t *x,
+    int32_t *y)
 {
     const int32_t screen_margin_h = 20;
     const int32_t screen_margin_v = 18;
@@ -193,16 +205,9 @@ static void Overlay_GetBarLocation(
     m_BarOffsetY[bar_location] += height + bar_spacing;
 }
 
-static void Overlay_DrawBar(BAR_INFO *draw_bar)
+static void Overlay_BarDraw(BAR_INFO *bar_info)
 {
-    const int32_t percent_max = 100;
-
-    if (draw_bar->value < 0) {
-        draw_bar->value = 0;
-    } else if (draw_bar->value > draw_bar->max_value) {
-        draw_bar->value = draw_bar->max_value;
-    }
-    int32_t percent = draw_bar->value * 100 / draw_bar->max_value;
+    int32_t percent = bar_info->value * 100 / bar_info->max_value;
 
     const RGB888 rgb_bgnd = { 0, 0, 0 };
     const RGB888 rgb_border_light = { 128, 128, 128 };
@@ -213,7 +218,7 @@ static void Overlay_DrawBar(BAR_INFO *draw_bar)
 
     int32_t x = 0;
     int32_t y = 0;
-    Overlay_GetBarLocation(draw_bar->bar_location, width, height, &x, &y);
+    Overlay_BarGetLocation(bar_info->bar_location, width, height, &x, &y);
 
     int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
     int32_t border = 1;
@@ -233,11 +238,13 @@ static void Overlay_DrawBar(BAR_INFO *draw_bar)
     // background
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
 
-    // Check if bar should flash or not
-    Overlay_GetBlink(draw_bar);
+    Overlay_BarGetPercent(bar_info);
 
-    if (percent && !draw_bar->blink) {
-        width = width * percent / percent_max;
+    // Check if bar should flash or not
+    Overlay_BarBlink(bar_info);
+
+    if (percent && !bar_info->blink) {
+        width = width * bar_info->percent / 100;
 
         sx = Screen_GetRenderScale(x);
         sy = Screen_GetRenderScale(y);
@@ -246,15 +253,15 @@ static void Overlay_DrawBar(BAR_INFO *draw_bar)
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGB888 c1 = m_ColorBarMap[draw_bar->color][i];
-                RGB888 c2 = m_ColorBarMap[draw_bar->color][i + 1];
+                RGB888 c1 = m_ColorBarMap[bar_info->color][i];
+                RGB888 c2 = m_ColorBarMap[bar_info->color][i + 1];
                 int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
                 int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
                 Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
             for (int i = 0; i < COLOR_STEPS; i++) {
-                RGB888 color = m_ColorBarMap[draw_bar->color][i];
+                RGB888 color = m_ColorBarMap[bar_info->color][i];
                 int32_t lsy = sy + i * sh / COLOR_STEPS;
                 int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
                 Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
@@ -279,60 +286,54 @@ void Overlay_Init()
         m_Pickups[i].duration = 0;
     }
 
-    Overlay_SetupHealthBar();
-    Overlay_SetupAirBar();
-    Overlay_SetupEnemyBar();
+    Overlay_BarSetupHealth();
+    Overlay_BarSetupAir();
+    Overlay_BarSetupEnemy();
 }
 
-void Overlay_SetHealtBarTimer(int16_t health_bar_timer)
+void Overlay_BarSetHealthTimer(int16_t timer)
 {
-    m_HealthBar.timer = health_bar_timer;
+    m_HealthBar.timer = timer;
 }
 
-void Overlay_TimerTick()
+void Overlay_BarHealthTimerTick()
 {
     m_HealthBar.timer--;
-    if (m_HealthBar.timer < 0) {
-        Overlay_SetHealtBarTimer(0);
-    }
+    CLAMPL(m_HealthBar.timer, 0);
 }
 
-void Overlay_DrawHealthBar()
+void Overlay_BarDrawHealth()
 {
     static int32_t old_hit_points = 0;
 
-    for (int32_t i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
         m_BarOffsetY[i] = 0;
     }
 
     m_HealthBar.value = g_LaraItem->hit_points;
-    if (m_HealthBar.value < 0) {
-        m_HealthBar.value = 0;
-    } else if (m_HealthBar.value > m_HealthBar.max_value) {
-        m_HealthBar.value = m_HealthBar.max_value;
-    }
+    CLAMP(m_HealthBar.value, 0, m_HealthBar.max_value);
 
     if (old_hit_points != m_HealthBar.value) {
         old_hit_points = m_HealthBar.value;
-        Overlay_SetHealtBarTimer(40);
+        m_HealthBar.timer = 40;
     }
 
     m_HealthBar.show = m_HealthBar.timer > 0 || m_HealthBar.value <= 0
         || g_Lara.gun_status == LGS_READY;
     switch (m_HealthBar.show_mode) {
     case T1M_BSM_FLASHING_OR_DEFAULT:
-        m_HealthBar.show |=
-            m_HealthBar.value <= (m_HealthBar.max_value * 20) / 100;
+        m_HealthBar.show |= m_HealthBar.value
+            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
         break;
     case T1M_BSM_FLASHING_ONLY:
-        m_HealthBar.show =
-            m_HealthBar.value <= (m_HealthBar.max_value * 20) / 100;
+        m_HealthBar.show = m_HealthBar.value
+            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
         break;
     case T1M_BSM_ALWAYS:
-        m_HealthBar.show = 1;
+        m_HealthBar.show = true;
         break;
     case T1M_BSM_NEVER:
-        m_HealthBar.show = 0;
+        m_HealthBar.show = false;
         break;
     default:
         break;
@@ -341,29 +342,27 @@ void Overlay_DrawHealthBar()
         return;
     }
 
-    Overlay_DrawBar(&m_HealthBar);
+    Overlay_BarDraw(&m_HealthBar);
 }
 
-void Overlay_DrawAirBar()
+void Overlay_BarDrawAir()
 {
     m_AirBar.value = g_Lara.air;
-    if (m_AirBar.value < 0) {
-        m_AirBar.value = 0;
-    } else if (g_Lara.air > m_AirBar.max_value) {
-        m_AirBar.value = m_AirBar.max_value;
-    }
+    CLAMP(m_AirBar.value, 0, m_AirBar.max_value);
 
     m_AirBar.show = g_Lara.water_status == LWS_UNDERWATER
         || g_Lara.water_status == LWS_SURFACE;
     switch (m_AirBar.show_mode) {
     case T1M_BSM_DEFAULT:
-        m_AirBar.show |= g_Lara.air <= (m_AirBar.max_value * 20) / 100;
+        m_AirBar.show |=
+            g_Lara.air <= (m_AirBar.max_value * BLINK_THRESHOLD) / 100;
         break;
     case T1M_BSM_FLASHING_ONLY:
-        m_AirBar.show = g_Lara.air <= (m_AirBar.max_value * 20) / 100;
+        m_AirBar.show =
+            g_Lara.air <= (m_AirBar.max_value * BLINK_THRESHOLD) / 100;
         break;
     case T1M_BSM_NEVER:
-        m_AirBar.show = 0;
+        m_AirBar.show = false;
         break;
     default:
         break;
@@ -372,10 +371,10 @@ void Overlay_DrawAirBar()
         return;
     }
 
-    Overlay_DrawBar(&m_AirBar);
+    Overlay_BarDraw(&m_AirBar);
 }
 
-void Overlay_DrawEnemyBar()
+void Overlay_BarDrawEnemy()
 {
     if (!m_EnemyBar.show || !g_Lara.target) {
         return;
@@ -384,8 +383,9 @@ void Overlay_DrawEnemyBar()
     m_EnemyBar.value = g_Lara.target->hit_points;
     m_EnemyBar.max_value = g_Objects[g_Lara.target->object_number].hit_points
         * ((g_SaveGame.bonus_flag & GBF_NGPLUS) ? 2 : 1);
+    CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
-    Overlay_DrawBar(&m_EnemyBar);
+    Overlay_BarDraw(&m_EnemyBar);
 }
 
 void Overlay_DrawAmmoInfo()
@@ -502,9 +502,9 @@ void Overlay_DrawFPSInfo()
 void Overlay_DrawGameInfo()
 {
     if (g_OverlayFlag > 0) {
-        Overlay_DrawHealthBar();
-        Overlay_DrawAirBar();
-        Overlay_DrawEnemyBar();
+        Overlay_BarDrawHealth();
+        Overlay_BarDrawAir();
+        Overlay_BarDrawEnemy();
         Overlay_DrawPickups();
     }
 
