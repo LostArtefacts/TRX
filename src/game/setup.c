@@ -118,8 +118,8 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseLOTArray();
 
     Overlay_Init();
+    Overlay_BarSetHealthTimer(100);
 
-    g_HealthBarTimer = 100;
     Sound_ResetEffects();
 
     if (level_type == GFL_SAVED) {
