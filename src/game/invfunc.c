@@ -233,7 +233,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_MEDI_OPTION:
-        g_HealthBarTimer = 40;
+        Overlay_SetHealtBarTimer(40);
         Overlay_DrawHealthBar();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
@@ -245,7 +245,7 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_BIGMEDI_OPTION:
-        g_HealthBarTimer = 40;
+        Overlay_SetHealtBarTimer(40);
         Overlay_DrawHealthBar();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);

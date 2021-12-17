@@ -61,15 +61,17 @@
     "enable_smooth_bars": true,
 
     // Changes how the healthbar is displayed. Possible values:
-    // - default: show the healthbar at the beginning of a level, after
-    //   getting hit or while having weapons equipped (as in OG)
-    // - flashing-or-default: flash the healthbar when Lara's health is 20% or
-    //   below, or show under default circumstances
+    // - default: show the healthbar at the start of a level, after getting
+    //   hit, or while having weapons equipped; flash the healthbar if it's already
+    //   on screen when Lara's health is 20% or below (TombATI)
+    // - flashing-or-default: constantly flash the healthbar when Lara's
+    //   health is 20% or below, or show under default circumstances
     // - flashing-only: show the healthbar *only* when Lara's health is 20% or
-    //   below (useful for challenge runs)
+    //   below (for challenge runs)
     // - always: always show the healthbar
     // - never: never display the healthbar (for challenge runs)
-    "healthbar_showing_mode": "flashing-or-default",
+    // - ps1: show the healthbar under default circumstances with no flashing
+    "healthbar_showing_mode": "default",
 
     // Location where the healthbar is displayed. Possible values:
     // - top-left
@@ -78,7 +80,7 @@
     // - bottom-left
     // - bottom-center
     // - bottom-right
-    "healthbar_location": "top-left",
+    "healthbar_location": "top-right",
 
     // Color of the healthbar. Possible values:
     // - gold (game default)
@@ -93,17 +95,13 @@
     "healthbar_color": "red",
 
     // Changes how the airbar is displayed. Possible values:
-    // - default: show the airbar only in the water (as in OG)
-    // - flashing-or-default: flash the airbar when Lara's oxygen is 20% or
-    //   below, or show under normal circumstances
-    // - flashing-only: show and the airbar *only* when Lara's oxygen is 20% or
-    //   below (useful for challenge runs)
-    // - always: always show the airbar
+    // - default: show the airbar only in the water and flash the airbar when
+    //   Lara's oxygen is 20% or below (TombATI)
+    // - flashing-only: show the airbar *only* when Lara's oxygen is 20% or
+    //   below (for challenge runs)
     // - never: never display the airbar (for challenge runs)
-    // In case of airbar, the flashing-or-default mode is there mostly for
-    // consistency and the only practical difference is that it's shown when
-    // Lara dies. When using the fly cheat, the airbar is never shown.
-    "airbar_showing_mode": "flashing-or-default",
+    // - ps1: show the airbar under default circumstances with no flashing
+    "airbar_showing_mode": "default",
 
     // Location where the airbar is displayed.
     "airbar_location": "top-right",

@@ -35,6 +35,7 @@ typedef enum {
     T1M_BSM_FLASHING_ONLY = 2,
     T1M_BSM_ALWAYS = 3,
     T1M_BSM_NEVER = 4,
+    T1M_BSM_PS1 = 5,
 } T1M_BAR_SHOW_MODE;
 
 typedef struct {

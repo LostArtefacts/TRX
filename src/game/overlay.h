@@ -4,6 +4,8 @@
 
 void Overlay_Init();
 
+void Overlay_SetHealtBarTimer(int16_t health_bar_timer);
+void Overlay_TimerTick();
 void Overlay_DrawHealthBar();
 void Overlay_DrawAirBar();
 void Overlay_DrawEnemyBar();

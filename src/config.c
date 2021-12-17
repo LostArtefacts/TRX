@@ -45,6 +45,7 @@ const ENUM_MAP m_BarShowingModes[] = {
     { "flashing-only", T1M_BSM_FLASHING_ONLY },
     { "always", T1M_BSM_ALWAYS },
     { "never", T1M_BSM_NEVER },
+    { "ps1", T1M_BSM_PS1 },
     { NULL, -1 },
 };
 
