@@ -1749,23 +1749,6 @@ bool LaraHitCeiling(ITEM_INFO *item, COLL_INFO *coll)
     return true;
 }
 
-int16_t LaraCeilingFront(ITEM_INFO *item, int16_t ang, int32_t dist, int32_t h)
-{
-    int32_t x, y, z, height;
-    int16_t room_num;
-
-    x = item->pos.x + ((dist * phd_sin(ang)) >> 14);
-    y = item->pos.y - h;
-    z = item->pos.z + ((dist * phd_cos(ang)) >> 14);
-    room_num = item->room_number;
-    height = GetCeiling(GetFloor(x, y, z, &room_num), x, y, z);
-
-    if (height != NO_HEIGHT)
-        height += h - item->pos.y;
-
-    return (int16_t)height;
-}
-
 void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
 {
     int flag = 0;
@@ -1825,11 +1808,10 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
 
     bounds = GetBoundsAccurate(item);
     int32_t hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
-    int16_t ceiling = LaraCeilingFront(item, angle, 100, 0);
 
     if ((ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF)
         || (coll->mid_ceiling >= 0) || (coll->coll_type != COLL_FRONT)
-        || (ceiling > -950) || (hdif < -SLOPE_DIF) || (hdif > SLOPE_DIF)
+        || (hdif < -SLOPE_DIF) || (hdif > SLOPE_DIF)
         || (flag)) {
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
