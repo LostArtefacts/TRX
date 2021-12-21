@@ -10,7 +10,7 @@
 #include <libavformat/avformat.h>
 
 #define MAX_SAMPLES 1000
-#define MAX_ACTIVE_SAMPLES 10
+#define MAX_ACTIVE_SAMPLES 20
 
 typedef struct AUDIO_SAMPLE {
     float *sample_data;
