@@ -101,7 +101,7 @@ static void S_Output_SetupRenderContextAndRender()
 {
     S_Output_RenderBegin();
     GFX_3D_Renderer_SetSmoothingEnabled(
-        m_Renderer3D, g_Config.render_flags.bilinear);
+        m_Renderer3D, g_Config.rendering.enable_bilinear_filter);
     S_Output_RenderToggle();
 }
 
