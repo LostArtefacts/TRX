@@ -45,14 +45,16 @@ static void Option_GraphicsInitText()
     sprintf(
         buf, g_GameFlow.strings[GS_DETAIL_PERSPECTIVE_FMT],
         g_GameFlow.strings
-            [g_Config.render_flags.perspective ? GS_MISC_ON : GS_MISC_OFF]);
+            [g_Config.rendering.enable_perspective_filter ? GS_MISC_ON
+                                                          : GS_MISC_OFF]);
     m_Text[TEXT_PERSPECTIVE] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
     sprintf(
         buf, g_GameFlow.strings[GS_DETAIL_BILINEAR_FMT],
         g_GameFlow.strings
-            [g_Config.render_flags.bilinear ? GS_MISC_ON : GS_MISC_OFF]);
+            [g_Config.rendering.enable_bilinear_filter ? GS_MISC_ON
+                                                       : GS_MISC_OFF]);
     m_Text[TEXT_BILINEAR] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
@@ -130,15 +132,15 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
     if (g_InputDB.right) {
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
-            if (!g_Config.render_flags.perspective) {
-                g_Config.render_flags.perspective = 1;
+            if (!g_Config.rendering.enable_perspective_filter) {
+                g_Config.rendering.enable_perspective_filter = 1;
                 reset = true;
             }
             break;
 
         case TEXT_BILINEAR:
-            if (!g_Config.render_flags.bilinear) {
-                g_Config.render_flags.bilinear = 1;
+            if (!g_Config.rendering.enable_bilinear_filter) {
+                g_Config.rendering.enable_bilinear_filter = 1;
                 reset = true;
             }
             break;
@@ -175,15 +177,15 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
     if (g_InputDB.left) {
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
-            if (g_Config.render_flags.perspective) {
-                g_Config.render_flags.perspective = 0;
+            if (g_Config.rendering.enable_perspective_filter) {
+                g_Config.rendering.enable_perspective_filter = 0;
                 reset = true;
             }
             break;
 
         case TEXT_BILINEAR:
-            if (g_Config.render_flags.bilinear) {
-                g_Config.render_flags.bilinear = 0;
+            if (g_Config.rendering.enable_bilinear_filter) {
+                g_Config.rendering.enable_bilinear_filter = 0;
                 reset = true;
             }
             break;
