@@ -30,6 +30,8 @@ lint:
 
 test_base:
 	cp build/*.exe test/
+
+test_bin:
 	rsync -r bin/ test/
 
 test: build test_base
@@ -38,4 +40,4 @@ test: build test_base
 test_gold: build test_base
 	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe -gold
 
-.PHONY: debug debugopt release clean lint test_base test test_gold
+.PHONY: debug debugopt release clean lint test_base test_bin test test_gold
