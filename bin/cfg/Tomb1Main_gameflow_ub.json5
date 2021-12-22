@@ -88,8 +88,8 @@
             "music": 2,
             "sequence": [
                 {"type": "display_picture", "picture_path": "data\\eidospc.png", "display_time": 1},
-                {"type": "play_fmv", "fmv_path": "fmv\\core.rpl"},
-                {"type": "play_fmv", "fmv_path": "fmv\\escape.rpl"},
+                {"type": "play_fmv", "fmv_path": "fmv\\core.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv\\escape.avi"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
