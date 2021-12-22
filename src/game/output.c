@@ -166,15 +166,16 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
     obj_ptr++;
     int vertex_count = *obj_ptr++;
     for (int i = 0; i < vertex_count; i++) {
-        int32_t xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
+        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
             + g_PhdMatrixPtr->_01 * obj_ptr[1]
             + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        int32_t yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
+        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
             + g_PhdMatrixPtr->_11 * obj_ptr[1]
             + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
+        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
             + g_PhdMatrixPtr->_21 * obj_ptr[1]
             + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
         m_VBuf[i].zv = zv;
@@ -185,30 +186,19 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
         } else {
             clip_flags = 0;
 
-            int32_t xs = ViewPort_GetCenterX() + xv / (zv / g_PhdPersp);
-            int32_t ys = ViewPort_GetCenterY() + yv / (zv / g_PhdPersp);
+            double persp = g_PhdPersp / zv;
+            double xs = ViewPort_GetCenterX() + xv * persp;
+            double ys = ViewPort_GetCenterY() + yv * persp;
 
             if (xs < g_PhdLeft) {
-                if (xs < -32760) {
-                    xs = -32760;
-                }
                 clip_flags |= 1;
             } else if (xs > g_PhdRight) {
-                if (xs > 32760) {
-                    xs = 32760;
-                }
                 clip_flags |= 2;
             }
 
             if (ys < g_PhdTop) {
-                if (ys < -32760) {
-                    ys = -32760;
-                }
                 clip_flags |= 4;
             } else if (ys > g_PhdBottom) {
-                if (ys > 32760) {
-                    ys = 32760;
-                }
                 clip_flags |= 8;
             }
 
@@ -273,15 +263,16 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
 
     for (int i = 0; i < vertex_count; i++) {
-        int32_t xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
+        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
             + g_PhdMatrixPtr->_01 * obj_ptr[1]
             + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        int32_t yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
+        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
             + g_PhdMatrixPtr->_11 * obj_ptr[1]
             + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv = g_PhdMatrixPtr->_20 * obj_ptr[0]
+        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
             + g_PhdMatrixPtr->_21 * obj_ptr[1]
             + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
         m_VBuf[i].zv = zv;
@@ -291,7 +282,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             m_VBuf[i].clip = 0x8000;
         } else {
             int16_t clip_flags = 0;
-            int32_t depth = zv >> W2V_SHIFT;
+            int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
                 m_VBuf[i].g = 0x1FFF;
                 clip_flags |= 16;
@@ -302,34 +293,23 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 }
             }
 
-            int32_t xs = ViewPort_GetCenterX() + xv / (zv / g_PhdPersp);
-            int32_t ys = ViewPort_GetCenterY() + yv / (zv / g_PhdPersp);
+            double persp = g_PhdPersp / zv;
+            double xs = ViewPort_GetCenterX() + xv * persp;
+            double ys = ViewPort_GetCenterY() + yv * persp;
             if (g_IsWibbleEffect) {
-                xs += g_WibbleTable[(ys + g_WibbleOffset) & 0x1F];
-                ys += g_WibbleTable[(xs + g_WibbleOffset) & 0x1F];
+                xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
+                ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
             }
 
             if (xs < g_PhdLeft) {
-                if (xs < -32760) {
-                    xs = -32760;
-                }
                 clip_flags |= 1;
             } else if (xs > g_PhdRight) {
-                if (xs > 32760) {
-                    xs = 32760;
-                }
                 clip_flags |= 2;
             }
 
             if (ys < g_PhdTop) {
-                if (ys < -32760) {
-                    ys = -32760;
-                }
                 clip_flags |= 4;
             } else if (ys > g_PhdBottom) {
-                if (ys > 32760) {
-                    ys = 32760;
-                }
                 clip_flags |= 8;
             }
 
