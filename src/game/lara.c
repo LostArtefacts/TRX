@@ -1809,9 +1809,9 @@ void LaraHangTest(ITEM_INFO *item, COLL_INFO *coll)
     bounds = GetBoundsAccurate(item);
     int32_t hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
 
-    if ((ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF)
-        || (coll->mid_ceiling >= 0) || (coll->coll_type != COLL_FRONT)
-        || (hdif < -SLOPE_DIF) || (hdif > SLOPE_DIF) || (flag)) {
+    if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
+        || coll->mid_ceiling >= 0 || coll->coll_type != COLL_FRONT
+        || hdif < -SLOPE_DIF || hdif > SLOPE_DIF || flag) {
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
