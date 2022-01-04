@@ -747,7 +747,10 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         .bottom = target_rect.top + new_height,
     };
 
-    bool result = GFX_2D_Surface_Blt(
+    bool result = GFX_2D_Surface_Clear(m_PictureSurface);
+    S_Output_CheckError(result);
+
+    result = GFX_2D_Surface_Blt(
         m_PictureSurface, &target_rect, picture_surface, &source_rect);
     S_Output_CheckError(result);
 
