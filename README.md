@@ -277,6 +277,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed alligators dealing no damage if Lara remains still in the water
 - fixed shotgun shooting when a locked target moves out of Lara's sight
 - fixed shotgun shooting too fast when not aiming at a target
+- fixed rare cases of Lara getting set on fire on a bridge over lava
 
 ## Showcase
 
