@@ -279,6 +279,8 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed shotgun shooting too fast when not aiming at a target
 - fixed Lara grabbing ledges she shouldn't in stacked rooms (mainly St. Francis Folly tower)
 - fixed rare cases of Lara getting set on fire on a bridge over lava
+- fixed saving the game near Bacon Lara breaking her movement
+- fixed thin black lines between polygons
 
 ## Showcase
 
