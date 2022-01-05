@@ -46,7 +46,7 @@ void LavaBurn(ITEM_INFO *item)
     // OG fix: check if floor index has lava
     int16_t *data = &g_FloorData[floor->index];
     int16_t type;
-    bool on_lava = true;
+    bool on_lava = false;
     do {
         type = *data++;
 
