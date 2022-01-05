@@ -7,6 +7,7 @@
 
 #define TEXT_HEIGHT 11
 
+void Text_ReplaceChar(char *str, char orig_char, char rep_char);
 void Text_Init();
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string);
 void Text_ChangeText(TEXTSTRING *textstring, const char *string);

@@ -194,7 +194,7 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    char path[35];
+    char path[120];
     for (int i = 0; i < 10000; i++) {
 #if defined(_WIN32)
     #include <direct.h>
@@ -204,7 +204,11 @@ bool Shell_MakeScreenshot()
     #include <sys/stat.h>
         mkdir("screenshots", 0664);
 #endif
-        sprintf(path, "screenshots/screenshot%04d.%s", i, ext);
+        char level_title[100];
+        sprintf(
+            level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
+        Text_ReplaceChar(level_title, ' ', '-');
+        sprintf(path, "screenshots/%s-%04d.%s", level_title, i, ext);
         char *full_path = NULL;
         File_GetFullPath(path, &full_path);
 
