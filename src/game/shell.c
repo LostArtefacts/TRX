@@ -194,9 +194,17 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    char path[20];
+    char path[35];
     for (int i = 0; i < 10000; i++) {
-        sprintf(path, "screenshot%04d.%s", i, ext);
+#if defined(_WIN32)
+    #include <direct.h>
+        _mkdir("screenshots");
+#else
+    #include <sys/types.h>
+    #include <sys/stat.h>
+        mkdir("screenshots", 0664);
+#endif
+        sprintf(path, "screenshots/screenshot%04d.%s", i, ext);
         char *full_path = NULL;
         File_GetFullPath(path, &full_path);
 
