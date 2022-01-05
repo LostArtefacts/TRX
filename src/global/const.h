@@ -212,7 +212,7 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define RESOLUTIONS_SIZE 12
+#define RESOLUTIONS_SIZE 10
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function
