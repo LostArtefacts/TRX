@@ -344,6 +344,11 @@ void Overlay_BarDrawAir()
 
     m_AirBar.show = g_Lara.water_status == LWS_UNDERWATER
         || g_Lara.water_status == LWS_SURFACE;
+
+    if (!m_AirBar.show) {
+        return;
+    }
+
     switch (m_AirBar.show_mode) {
     case BSM_DEFAULT:
         m_AirBar.show |=
