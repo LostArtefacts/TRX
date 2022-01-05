@@ -15,7 +15,8 @@
 
 #define READ_PRIMITIVE(func, opt, default_value)                               \
     do {                                                                       \
-        g_Config.opt = func(root_obj, QUOTE(opt), default_value);              \
+        g_Config.opt =                                                         \
+            func(root_obj, Config_ProcessKey(QUOTE(opt)), default_value);      \
     } while (0)
 #define READ_BOOL(opt, default_value)                                          \
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
@@ -26,8 +27,8 @@
 
 #define READ_ENUM(opt, default_value, enum_map)                                \
     do {                                                                       \
-        g_Config.opt =                                                         \
-            Config_ReadEnum(root_obj, QUOTE(opt), default_value, enum_map);    \
+        g_Config.opt = Config_ReadEnum(                                        \
+            root_obj, Config_ProcessKey(QUOTE(opt)), default_value, enum_map); \
     } while (0)
 
 CONFIG g_Config = { 0 };
@@ -72,6 +73,16 @@ const ENUM_MAP m_ScreenshotFormats[] = {
     { "png", SCREENSHOT_FORMAT_PNG },
     { NULL, -1 },
 };
+
+static const char *Config_ProcessKey(const char *key);
+static int Config_ReadEnum(
+    struct json_object_s *obj, const char *name, int8_t default_value,
+    const ENUM_MAP *enum_map);
+
+static const char *Config_ProcessKey(const char *key)
+{
+    return strchr(key, '.') ? strrchr(key, '.') + 1 : key;
+}
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
@@ -146,6 +157,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
+    READ_FLOAT(rendering.anisotropy_filter, 16.0f);
 
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);

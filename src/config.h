@@ -89,10 +89,11 @@ typedef struct {
     } input;
 
     struct {
-        uint32_t perspective : 1;
-        uint32_t bilinear : 1;
-        uint32_t fps_counter : 1;
-    } render_flags;
+        uint32_t enable_perspective_filter : 1;
+        uint32_t enable_bilinear_filter : 1;
+        uint32_t enable_fps_counter : 1;
+        float anisotropy_filter;
+    } rendering;
 
     struct {
         double text_scale;

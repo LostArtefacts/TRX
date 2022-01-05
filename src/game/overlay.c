@@ -469,7 +469,7 @@ void Overlay_DrawFPSInfo()
 {
     static int32_t elapsed = 0;
 
-    if (g_Config.render_flags.fps_counter) {
+    if (g_Config.rendering.enable_fps_counter) {
         if (Clock_GetMS() - elapsed >= 1000) {
             if (m_FPSText) {
                 char fps_buf[20];

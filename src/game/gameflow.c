@@ -990,7 +990,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_START_GAME:
             ret = StartGame((int32_t)seq->data, level_type);
             if (g_GameFlow.enable_save_crystals && level_type != GFL_SAVED
-                && (int32_t)seq->data != g_GameFlow.first_level_num) {
+                && (int32_t)seq->data != g_GameFlow.first_level_num
+                && (int32_t)seq->data != g_GameFlow.gym_level_num) {
                 int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
                 if (return_val != GF_NOP) {
                     CreateSaveGameInfo();
