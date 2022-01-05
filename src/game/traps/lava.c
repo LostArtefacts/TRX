@@ -43,7 +43,44 @@ void LavaBurn(ITEM_INFO *item)
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
 
-    if (item->floor != GetHeight(floor, item->pos.x, 32000, item->pos.z)) {
+    // OG fix: check if floor index has lava
+    int16_t *data = &g_FloorData[floor->index];
+    int16_t type;
+    bool on_lava = false;
+    do {
+        type = *data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_TILT: {
+            data++;
+            break;
+        }
+
+        case FT_ROOF:
+        case FT_DOOR:
+            data++;
+            break;
+
+        case FT_LAVA:
+            on_lava = true;
+            break;
+
+        case FT_TRIGGER:
+            data++;
+            break;
+
+        default:
+            break;
+        }
+    } while (!(type & END_BIT));
+
+    if (!on_lava) {
+        return;
+    }
+
+    int16_t height = GetHeight(floor, item->pos.x, 32000, item->pos.z);
+
+    if (item->floor != height) {
         return;
     }
 
