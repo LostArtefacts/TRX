@@ -56,14 +56,6 @@ static int8_t m_TextASCIIMap[95] = {
 
 static void Text_DrawText(TEXTSTRING *textstring);
 
-void Text_ReplaceChar(char *str, char orig_char, char rep_char)
-{
-    char *ix = str;
-    while ((ix = strchr(ix, orig_char)) != NULL) {
-        *ix++ = rep_char;
-    }
-}
-
 void Text_Init()
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {

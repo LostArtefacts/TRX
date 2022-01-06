@@ -603,7 +603,9 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             LOG_ERROR("level %d: 'title' must be a string", level_num);
             return false;
         }
-        cur->level_title = Memory_Dup(tmp_s);
+        char *title_check = Memory_Dup(tmp_s);
+        Shell_ValidateLevelTitle(title_check);
+        cur->level_title = title_check;
         if (!cur->level_title) {
             LOG_ERROR("failed to allocate memory");
             return false;

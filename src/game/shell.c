@@ -36,6 +36,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define LEVEL_TITLE_SIZE 25
+
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
@@ -182,6 +184,60 @@ void Shell_Wait(int nticks)
     }
 }
 
+void Shell_ValidateLevelTitle(char *str)
+{
+    // Strip non alphanumeric chars
+    char *ix = str;
+    int idx = 0;
+    while (*ix != '\0') {
+        if ((*ix >= 'A' && *ix <= 'Z') || (*ix >= 'a' && *ix <= 'z')
+            || (*ix >= '0' && *ix <= '9') || *ix == '\'' || *ix == '.'
+            || *ix == ' ') {
+            idx++;
+            *ix++;
+        } else {
+            memmove(&str[idx], &str[idx + 1], strlen(str) - idx);
+        }
+    }
+
+    // Make sure title between 0 and LEVEL_TITLE_SIZE chars
+    if (strlen(str) == 0) {
+        memmove(str + 1, str, 2);
+        str[0] = 'x';
+        return;
+    } else if (strlen(str) > LEVEL_TITLE_SIZE) {
+        str[LEVEL_TITLE_SIZE] = '\0';
+    }
+}
+
+void Shell_GetScreenshotName(char *str)
+{
+    // Replace spaces with underscores
+    char *check = str;
+    while ((check = strchr(check, ' ')) != NULL) {
+        *check++ = '_';
+    }
+
+    // Remove special chars from screenshots that are allowed in titles
+    int idx = 0;
+    check = str;
+    while (*check != '\0') {
+        if (*check == '\'' || *check == '.') {
+            memmove(&str[idx], &str[idx + 1], strlen(str) - idx);
+        } else {
+            idx++;
+            *check++;
+        }
+    }
+
+    // Make sure title has at least 1 char
+    if (strlen(str) == 0) {
+        memmove(str + 1, str, 2);
+        str[0] = 'x';
+        return;
+    }
+}
+
 bool Shell_MakeScreenshot()
 {
     const char *ext;
@@ -194,7 +250,7 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    char path[120];
+    char path[LEVEL_TITLE_SIZE + 20];
     for (int i = 0; i < 10000; i++) {
 #if defined(_WIN32)
     #include <direct.h>
@@ -204,10 +260,10 @@ bool Shell_MakeScreenshot()
     #include <sys/stat.h>
         mkdir("screenshots", 0664);
 #endif
-        char level_title[100];
+        char level_title[LEVEL_TITLE_SIZE];
         sprintf(
             level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
-        Text_ReplaceChar(level_title, ' ', '-');
+        Shell_GetScreenshotName(level_title);
         sprintf(path, "screenshots/%s-%04d.%s", level_title, i, ext);
         char *full_path = NULL;
         File_GetFullPath(path, &full_path);
