@@ -12,6 +12,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#define MAX_PLAYING_FX AUDIO_MAX_ACTIVE_SAMPLES
+#define MAX_AMBIENT_FX 8
 #define DECIBEL_LUT_SIZE 512
 #define SOUND_FLIPFLAG 0x40
 #define SOUND_UNFLIPFLAG 0x80
@@ -161,7 +163,7 @@ static void Sound_ClearSlot(SOUND_SLOT *slot)
 {
     slot->sound_id = AUDIO_NO_SOUND;
     slot->pos = NULL;
-    slot->flags = 0;
+    slot->flags = SOUND_FLAG_UNUSED;
     slot->volume = 0;
     slot->pan = 0;
     slot->loudness = SOUND_NOT_AUDIBLE;
@@ -279,7 +281,6 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         return false;
     }
 
-    flags = 0;
     int32_t pan = 0x7FFF;
     int32_t mode = s->flags & 3;
     uint32_t distance;
@@ -346,7 +347,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return false;
         }
         if (fxslot->flags & SOUND_FLAG_RESTARTED) {
-            fxslot->flags &= 0xFFFF - SOUND_FLAG_RESTARTED;
+            fxslot->flags &= ~SOUND_FLAG_RESTARTED;
             return true;
         }
         fxslot->sound_id = S_Audio_SampleSoundPlay(
@@ -356,7 +357,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return false;
         }
         Sound_ClearSlotHandles(fxslot);
-        fxslot->flags = flags | SOUND_FLAG_USED;
+        fxslot->flags = SOUND_FLAG_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
         return true;
@@ -381,7 +382,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             return false;
         }
         Sound_ClearSlotHandles(fxslot);
-        fxslot->flags = flags | SOUND_FLAG_USED;
+        fxslot->flags = SOUND_FLAG_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
         return true;

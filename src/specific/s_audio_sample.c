@@ -10,9 +10,6 @@
 #include <libavformat/avformat.h>
 #include <libswresample/swresample.h>
 
-#define MAX_SAMPLES 1000
-#define MAX_ACTIVE_SAMPLES 20
-
 typedef struct AUDIO_SAMPLE {
     float *sample_data;
     int channels;
@@ -44,8 +41,8 @@ typedef struct AUDIO_AV_BUFFER {
 } AUDIO_AV_BUFFER;
 
 static int m_LoadedSamplesCount = 0;
-static AUDIO_SAMPLE m_LoadedSamples[MAX_SAMPLES] = { 0 };
-static AUDIO_SAMPLE_SOUND m_SampleSounds[MAX_ACTIVE_SAMPLES] = { 0 };
+static AUDIO_SAMPLE m_LoadedSamples[AUDIO_MAX_SAMPLES] = { 0 };
+static AUDIO_SAMPLE_SOUND m_SampleSounds[AUDIO_MAX_ACTIVE_SAMPLES] = { 0 };
 
 static double S_Audio_DecibelToMultiplier(double db_gain)
 {
@@ -54,7 +51,8 @@ static double S_Audio_DecibelToMultiplier(double db_gain)
 
 static bool S_Audio_SampleRecalculateChannelVolumes(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -82,7 +80,7 @@ static int S_Audio_ReadAVBuffer(void *opaque, uint8_t *dst, int dst_size)
 
 static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 {
-    if (!g_AudioDeviceID || sample_id < 0 || sample_id >= MAX_SAMPLES) {
+    if (!g_AudioDeviceID || sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
         return false;
     }
 
@@ -338,7 +336,7 @@ fail:
 
 void S_Audio_SampleSoundInit()
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         sound->is_used = false;
         sound->is_playing = false;
@@ -367,7 +365,7 @@ bool S_Audio_SamplesClear()
 
     S_Audio_SampleSoundCloseAll();
 
-    for (int i = 0; i < MAX_SAMPLES; i++) {
+    for (int i = 0; i < AUDIO_MAX_ACTIVE_SAMPLES; i++) {
         Memory_FreePointer(&m_LoadedSamples[i].sample_data);
     }
 
@@ -380,10 +378,10 @@ bool S_Audio_SamplesLoad(size_t count, const char **contents, size_t *sizes)
         return false;
     }
 
-    if (count > MAX_SAMPLES) {
+    if (count > AUDIO_MAX_SAMPLES) {
         Shell_ExitSystemFmt(
             "Trying to load too many samples (maximum supported count: %d)",
-            MAX_SAMPLES);
+            AUDIO_MAX_SAMPLES);
         return false;
     }
 
@@ -413,7 +411,7 @@ int S_Audio_SampleSoundPlay(
     int result = AUDIO_NO_SOUND;
 
     SDL_LockAudioDevice(g_AudioDeviceID);
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         if (sound->is_used) {
             continue;
@@ -435,12 +433,17 @@ int S_Audio_SampleSoundPlay(
     }
     SDL_UnlockAudioDevice(g_AudioDeviceID);
 
+    if (result == AUDIO_NO_SOUND) {
+        LOG_ERROR("All sample buffers are used!");
+    }
+
     return result;
 }
 
 bool S_Audio_SampleSoundIsPlaying(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -449,7 +452,8 @@ bool S_Audio_SampleSoundIsPlaying(int sound_id)
 
 bool S_Audio_SampleSoundClose(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -467,7 +471,7 @@ bool S_Audio_SampleSoundCloseAll()
         return false;
     }
 
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         if (m_SampleSounds[sound_id].is_used) {
             S_Audio_SampleSoundClose(sound_id);
         }
@@ -478,7 +482,8 @@ bool S_Audio_SampleSoundCloseAll()
 
 bool S_Audio_SampleSoundSetPan(int sound_id, int pan)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -492,7 +497,8 @@ bool S_Audio_SampleSoundSetPan(int sound_id, int pan)
 
 bool S_Audio_SampleSoundSetVolume(int sound_id, int volume)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -506,7 +512,7 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume)
 
 void S_Audio_SampleSoundMix(float *dst_buffer, size_t len)
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         if (!sound->is_playing) {
             continue;
@@ -537,16 +543,14 @@ void S_Audio_SampleSoundMix(float *dst_buffer, size_t len)
                 if (sound->is_looped) {
                     src_sample_idx = 0.0f;
                 } else {
-                    sound->is_playing = false;
-                    sound->is_used = false;
                     break;
                 }
             }
         }
 
         sound->current_sample = src_sample_idx;
-
-        if (!sound->is_used) {
+        if (sound->current_sample >= sound->sample->num_samples
+            && !sound->is_looped) {
             S_Audio_SampleSoundClose(sound_id);
         }
     }
