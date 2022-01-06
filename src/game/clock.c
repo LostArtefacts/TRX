@@ -56,7 +56,6 @@ int32_t Clock_GetSeconds()
 
 char *Clock_GetDateTime(char *date_time)
 {
-#include "log.h"
     sprintf(
         date_time, "%04d%02d%02d_%02d%02d%02d", Clock_GetYear(),
         Clock_GetMonth(), Clock_GetDay(), Clock_GetHours(), Clock_GetMinutes(),
