@@ -515,8 +515,8 @@ void FixedCamera()
 void CalculateCamera()
 {
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+        Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
         if (!g_Camera.underwater) {
-            Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
             g_Camera.underwater = 1;
         }
     } else if (g_Camera.underwater) {
