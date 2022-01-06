@@ -201,21 +201,9 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
 
     S_Audio_StreamSoundDecodeFrame(stream);
 
-    int32_t sdl_format;
-    switch (stream->av.codec_ctx->sample_fmt) {
-    case AV_SAMPLE_FMT_U8:
-        sdl_format = AUDIO_U8;
-        break;
-
-    case AV_SAMPLE_FMT_S16:
-        sdl_format = AUDIO_S16;
-        break;
-
-    case AV_SAMPLE_FMT_S32:
-        sdl_format = AUDIO_S32;
-        break;
-
-    default:
+    int32_t sdl_format =
+        S_Audio_GetSDLAudioFormat(stream->av.codec_ctx->sample_fmt);
+    if (sdl_format < 0) {
         LOG_ERROR(
             "Unknown sample format: %d", stream->av.codec_ctx->sample_fmt);
         goto fail;

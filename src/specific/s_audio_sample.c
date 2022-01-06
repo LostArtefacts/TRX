@@ -8,6 +8,7 @@
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
 
 #define MAX_SAMPLES 1000
 #define MAX_ACTIVE_SAMPLES 20
@@ -87,6 +88,7 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 
     AUDIO_SAMPLE *sample = &m_LoadedSamples[sample_id];
 
+    size_t working_buffer_size = 0;
     float *working_buffer = NULL;
 
     struct {
@@ -115,10 +117,11 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         int src_format;
         int src_channels;
         int src_sample_rate;
-        SDL_AudioStream *stream;
-    } sdl = {
-        .stream = NULL,
-    };
+        int dst_format;
+        int dst_channels;
+        int dst_sample_rate;
+        SwrContext *ctx;
+    } swr = { 0 };
 
     int error_code;
 
@@ -197,9 +200,6 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         goto fail;
     }
 
-    size_t num_samples = 0;
-    bool first_sample = true;
-
     while (1) {
         error_code = av_read_frame(av.format_ctx, av.packet);
         if (error_code == AVERROR_EOF) {
@@ -215,45 +215,29 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             goto fail;
         }
 
-        if (first_sample) {
-            first_sample = false;
-
-            sdl.src_sample_rate = av.codec_ctx->sample_rate;
-            sdl.src_channels = av.codec_ctx->channels;
-            switch (av.codec_ctx->sample_fmt) {
-            case AV_SAMPLE_FMT_U8:
-                sdl.src_format = AUDIO_U8;
-                break;
-
-            case AV_SAMPLE_FMT_S16:
-                sdl.src_format = AUDIO_S16;
-                break;
-
-            case AV_SAMPLE_FMT_S32:
-                sdl.src_format = AUDIO_S32;
-                break;
-
-            default:
-                LOG_ERROR(
-                    "Unknown sample format: %d", av.codec_ctx->sample_fmt);
-                error_code = AVERROR(ENOTRECOVERABLE);
+        if (!swr.ctx) {
+            swr.src_sample_rate = av.codec_ctx->sample_rate;
+            swr.src_channels = av.codec_ctx->channels;
+            swr.src_format = av.codec_ctx->sample_fmt;
+            swr.dst_sample_rate = AUDIO_WORKING_RATE;
+            swr.dst_channels = 1;
+            swr.dst_format = S_Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+            swr.ctx = swr_alloc_set_opts(
+                swr.ctx, swr.dst_channels, swr.dst_format, swr.dst_sample_rate,
+                swr.src_channels, swr.src_format, swr.src_sample_rate, 0, 0);
+            if (!swr.ctx) {
+                error_code = AVERROR(ENOMEM);
                 goto fail;
             }
 
-            sdl.stream = SDL_NewAudioStream(
-                sdl.src_format, sdl.src_channels, sdl.src_sample_rate,
-                AUDIO_WORKING_FORMAT, sdl.src_channels, AUDIO_WORKING_RATE);
-
-            if (!sdl.stream) {
-                LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
-                error_code = AVERROR(ENOTRECOVERABLE);
+            error_code = swr_init(swr.ctx);
+            if (error_code != 0) {
                 goto fail;
             }
         }
 
         while (1) {
             error_code = avcodec_receive_frame(av.codec_ctx, av.frame);
-
             if (error_code == AVERROR(EAGAIN)) {
                 break;
             }
@@ -262,45 +246,40 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
                 goto fail;
             }
 
-            error_code = av_samples_get_buffer_size(
-                NULL, av.codec_ctx->channels, av.frame->nb_samples,
-                av.codec_ctx->sample_fmt, 1);
+            uint8_t *out_buffer = NULL;
+            const int out_samples =
+                swr_get_out_samples(swr.ctx, av.frame->nb_samples);
+            av_samples_alloc(
+                &out_buffer, NULL, swr.dst_channels, out_samples,
+                swr.dst_format, 1);
+            int resampled_size = swr_convert(
+                swr.ctx, &out_buffer, out_samples,
+                (const uint8_t **)av.frame->data, av.frame->nb_samples);
+            int out_buffer_size = av_samples_get_buffer_size(
+                NULL, swr.dst_channels, resampled_size, swr.dst_format, 1);
 
-            if (error_code == AVERROR(EAGAIN)) {
-                break;
+            if (out_buffer_size > 0) {
+                working_buffer = Memory_Realloc(
+                    working_buffer, working_buffer_size + out_buffer_size);
+                if (!working_buffer) {
+                    error_code = AVERROR(ENOMEM);
+                    goto fail;
+                }
+                if (out_buffer) {
+                    memcpy(
+                        (uint8_t *)working_buffer + working_buffer_size,
+                        out_buffer, out_buffer_size);
+                }
+                working_buffer_size += out_buffer_size;
             }
 
-            if (error_code < 0) {
-                goto fail;
-            }
-
-            int data_size = error_code;
-
-            if (SDL_AudioStreamPut(sdl.stream, av.frame->data[0], data_size)) {
-                LOG_ERROR(
-                    "Failed to put data in the SDL stream: %s", SDL_GetError());
-                error_code = AVERROR(ENOTRECOVERABLE);
-                goto fail;
-            }
-
-            num_samples += av.frame->nb_samples;
+            av_freep(&out_buffer);
         }
     }
 
-    SDL_AudioStreamFlush(sdl.stream);
-
-    size_t working_buffer_size = SDL_AudioStreamAvailable(sdl.stream);
-    working_buffer = Memory_Alloc(working_buffer_size);
-    if (SDL_AudioStreamGet(sdl.stream, working_buffer, working_buffer_size)
-        < 0) {
-        LOG_ERROR("Failed to get data from the SDL stream: %s", SDL_GetError());
-        error_code = AVERROR(ENOTRECOVERABLE);
-        goto fail;
-    }
-
     sample->num_samples =
-        working_buffer_size / sizeof(AUDIO_WORKING_FORMAT) / sdl.src_channels;
-    sample->channels = sdl.src_channels;
+        working_buffer_size / sizeof(swr.dst_channels) / swr.dst_channels;
+    sample->channels = swr.src_channels;
     sample->sample_data = working_buffer;
 
     return true;
@@ -349,9 +328,9 @@ fail:
         av.avio_context = NULL;
     }
 
-    if (sdl.stream) {
-        SDL_FreeAudioStream(sdl.stream);
-        sdl.stream = NULL;
+    if (swr.ctx) {
+        swr_free(&swr.ctx);
+        swr.ctx = NULL;
     }
 
     return false;
