@@ -3,7 +3,6 @@
 #include "global/vars.h"
 
 #include <time.h>
-#include <windows.h>
 
 static LONGLONG m_Ticks = 0;
 static double m_Frequency = 0.0;
@@ -52,44 +51,9 @@ int32_t S_Clock_SyncTicks(int32_t target)
     return elapsed;
 }
 
-struct tm *S_Clock_GetLocalTime()
+SYSTEMTIME S_Clock_GetLocalTime()
 {
-    time_t lt = time(0);
-    return localtime(&lt);
-}
-
-int32_t S_Clock_GetYear()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_year + 1900;
-}
-
-int32_t S_Clock_GetMonth()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_mon + 1;
-}
-
-int32_t S_Clock_GetDay()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_mday;
-}
-
-int32_t S_Clock_GetHours()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_hour;
-}
-
-int32_t S_Clock_GetMinutes()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_min;
-}
-
-int32_t S_Clock_GetSeconds()
-{
-    struct tm *tptr = S_Clock_GetLocalTime();
-    return tptr->tm_sec;
+    SYSTEMTIME lt;
+    GetLocalTime(&lt);
+    return lt;
 }

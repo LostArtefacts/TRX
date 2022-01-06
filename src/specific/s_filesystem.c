@@ -4,6 +4,13 @@
 
 #include <SDL2/SDL.h>
 
+#if defined(_WIN32)
+    #include <direct.h>
+#else
+    #include <sys/types.h>
+    #include <sys/stat.h>
+#endif
+
 const char *m_GameDir = NULL;
 
 const char *S_File_GetGameDirectory()
@@ -21,11 +28,8 @@ const char *S_File_GetGameDirectory()
 void S_File_CreateDirectory(const char *path)
 {
 #if defined(_WIN32)
-    #include <direct.h>
     _mkdir(path);
 #else
-    #include <sys/types.h>
-    #include <sys/stat.h>
     mkdir(path, 0664);
 #endif
 }

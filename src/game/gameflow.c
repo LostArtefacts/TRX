@@ -604,12 +604,17 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
         char *title_check = Memory_Dup(tmp_s);
+        if (!title_check) {
+            LOG_ERROR("failed to allocate memory");
+            return false;
+        }
         Shell_ValidateLevelTitle(title_check);
         cur->level_title = title_check;
         if (!cur->level_title) {
             LOG_ERROR("failed to allocate memory");
             return false;
         }
+        Memory_Free(title_check);
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {

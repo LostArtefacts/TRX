@@ -3,6 +3,7 @@
 #include "specific/s_clock.h"
 
 #include <stdio.h>
+#include <windows.h>
 
 bool Clock_Init()
 {
@@ -24,41 +25,14 @@ int32_t Clock_SyncTicks(int32_t target)
     return S_Clock_SyncTicks(target);
 }
 
-int32_t Clock_GetYear()
+void Clock_GetDateTime(char *date_time)
 {
-    return S_Clock_GetYear();
-}
-
-int32_t Clock_GetMonth()
-{
-    return S_Clock_GetMonth();
-}
-
-int32_t Clock_GetDay()
-{
-    return S_Clock_GetDay();
-}
-
-int32_t Clock_GetHours()
-{
-    return S_Clock_GetHours();
-}
-
-int32_t Clock_GetMinutes()
-{
-    return S_Clock_GetMinutes();
-}
-
-int32_t Clock_GetSeconds()
-{
-    return S_Clock_GetSeconds();
-}
-
-char *Clock_GetDateTime(char *date_time)
-{
+    SYSTEMTIME lt = S_Clock_GetLocalTime();
+    // sprintf(
+    //     date_time, "%04d%02d%02d_%02d%02d%02d_%03f", Clock_GetYear(),
+    //     Clock_GetMonth(), Clock_GetDay(), Clock_GetHours(),
+    //     Clock_GetMinutes(), Clock_GetSeconds());
     sprintf(
-        date_time, "%04d%02d%02d_%02d%02d%02d", Clock_GetYear(),
-        Clock_GetMonth(), Clock_GetDay(), Clock_GetHours(), Clock_GetMinutes(),
-        Clock_GetSeconds());
-    return date_time;
+        date_time, "%04d%02d%02d_%02d%02d%02d_%03d", lt.wYear, lt.wMonth,
+        lt.wDay, lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds);
 }
