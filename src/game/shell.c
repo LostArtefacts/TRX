@@ -252,14 +252,7 @@ bool Shell_MakeScreenshot()
 
     char path[LEVEL_TITLE_SIZE + 20];
     for (int i = 0; i < 10000; i++) {
-#if defined(_WIN32)
-    #include <direct.h>
-        _mkdir("screenshots");
-#else
-    #include <sys/types.h>
-    #include <sys/stat.h>
-        mkdir("screenshots", 0664);
-#endif
+        File_CreateDirectory("screenshots");
         char level_title[LEVEL_TITLE_SIZE];
         sprintf(
             level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
