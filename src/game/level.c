@@ -57,6 +57,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     int32_t version;
     int32_t file_level_num;
 
+    GameBuf_Shutdown();
     GameBuf_Init();
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {

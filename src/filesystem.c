@@ -51,7 +51,7 @@ void File_GetFullPath(const char *path, char **out)
             return;
         }
     }
-    *out = strdup(path);
+    *out = Memory_Dup(path);
     assert(*out);
 }
 
@@ -74,7 +74,7 @@ void File_GuessExtension(const char *path, char **out, const char **extensions)
             }
         }
     }
-    *out = strdup(path);
+    *out = Memory_Dup(path);
     assert(*out);
 }
 
@@ -94,12 +94,9 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
         file->fp = NULL;
         break;
     }
-    if (full_path) {
-        Memory_Free(full_path);
-    }
+    Memory_FreePointer(&full_path);
     if (!file->fp) {
-        Memory_Free(file);
-        return NULL;
+        Memory_FreePointer(&file);
     }
     return file;
 }

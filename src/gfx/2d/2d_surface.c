@@ -72,10 +72,7 @@ void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
         surface->back_buffer = NULL;
     }
 
-    if (surface->buffer) {
-        Memory_Free(surface->buffer);
-        surface->buffer = NULL;
-    }
+    Memory_FreePointer(&surface->buffer);
 }
 
 bool GFX_2D_Surface_Clear(GFX_2D_Surface *surface)

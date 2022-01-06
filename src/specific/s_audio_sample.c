@@ -337,10 +337,7 @@ fail:
     sample->num_samples = 0;
     sample->channels = 0;
 
-    if (working_buffer) {
-        Memory_Free(working_buffer);
-        working_buffer = NULL;
-    }
+    Memory_FreePointer(&working_buffer);
 
     if (av.read_buffer) {
         av_free(av.read_buffer);
@@ -380,7 +377,7 @@ void S_Audio_SampleSoundShutdown()
         return;
     }
 
-    S_Audio_SampleSoundCloseAll();
+    S_Audio_SamplesClear();
 }
 
 bool S_Audio_SamplesClear()
@@ -391,11 +388,8 @@ bool S_Audio_SamplesClear()
 
     S_Audio_SampleSoundCloseAll();
 
-    for (int i = 0; i < MAX_ACTIVE_SAMPLES; i++) {
-        if (m_LoadedSamples[i].sample_data) {
-            Memory_Free(m_LoadedSamples[i].sample_data);
-            m_LoadedSamples[i].sample_data = NULL;
-        }
+    for (int i = 0; i < MAX_SAMPLES; i++) {
+        Memory_FreePointer(&m_LoadedSamples[i].sample_data);
     }
 
     return true;

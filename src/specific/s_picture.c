@@ -529,11 +529,10 @@ cleanup:
 
     if (!ret) {
         if (target_pic) {
-            Memory_Free(target_pic->data);
             target_pic->width = 0;
             target_pic->height = 0;
-            target_pic->data = NULL;
         }
+        Memory_FreePointer(&target_pic->data);
     }
 
     return ret;

@@ -241,6 +241,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
 
     S_Audio_StreamSoundEnqueueFrame(stream);
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Memory_FreePointer(&full_path);
 
     return true;
 
@@ -249,13 +250,8 @@ fail:
         "Error while opening audio %s: %s", file_path, av_err2str(error_code));
 
     S_Audio_StreamSoundClose(sound_id);
-
-    if (full_path) {
-        Memory_Free(full_path);
-        full_path = NULL;
-    }
-
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Memory_FreePointer(&full_path);
     return false;
 }
 

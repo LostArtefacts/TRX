@@ -60,8 +60,7 @@ void GameBuf_Init()
 
 void GameBuf_Shutdown()
 {
-    Memory_Free(m_GameMemoryPointer);
-    m_GameMemoryPointer = NULL;
+    Memory_FreePointer(&m_GameMemoryPointer);
     m_GameAllocMemPointer = NULL;
     m_GameAllocMemFree = 0;
 }

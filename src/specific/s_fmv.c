@@ -1913,7 +1913,8 @@ static int S_FMV_ReadThread(void *arg)
     ic->interrupt_callback.opaque = is;
     err = avformat_open_input(&ic, is->filename, NULL, NULL);
     if (err < 0) {
-        LOG_ERROR("Error while opening file %s: %s", av_err2str(err));
+        LOG_ERROR(
+            "Error while opening file %s: %s", is->filename, av_err2str(err));
         ret = -1;
         goto fail;
     }

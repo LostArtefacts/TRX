@@ -211,8 +211,7 @@ void GFX_Context_SwapBuffers()
 
     if (m_Context.scheduled_screenshot_path) {
         GFX_Screenshot_CaptureToFile(m_Context.scheduled_screenshot_path);
-        Memory_Free(m_Context.scheduled_screenshot_path);
-        m_Context.scheduled_screenshot_path = NULL;
+        Memory_FreePointer(&m_Context.scheduled_screenshot_path);
     }
 
     SwapBuffers(m_Context.hdc);

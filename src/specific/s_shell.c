@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/gamebuf.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
@@ -11,6 +12,7 @@
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_audio.h"
 
 #define SDL_MAIN_HANDLED
 
@@ -24,6 +26,17 @@ static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
 static void S_Shell_PostWindowResize();
+
+void S_Shell_Shutdown()
+{
+    while (g_Input.select) {
+        Input_Update();
+    }
+    GameFlow_Shutdown();
+    GameBuf_Shutdown();
+    Output_Shutdown();
+    S_Audio_Shutdown();
+}
 
 void S_Shell_SeedRandom()
 {
@@ -61,7 +74,7 @@ void S_Shell_ToggleFullscreen()
 
 void S_Shell_TerminateGame(int exit_code)
 {
-    Output_Shutdown();
+    S_Shell_Shutdown();
     if (m_Window) {
         SDL_DestroyWindow(m_Window);
     }
