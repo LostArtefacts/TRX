@@ -250,24 +250,41 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    char path[LEVEL_TITLE_SIZE + 20];
-    for (int i = 0; i < 10000; i++) {
-        File_CreateDirectory("screenshots");
-        char level_title[LEVEL_TITLE_SIZE];
-        sprintf(
-            level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
-        Shell_GetScreenshotName(level_title);
-        sprintf(path, "screenshots/%s-%04d.%s", level_title, i, ext);
-        char *full_path = NULL;
-        File_GetFullPath(path, &full_path);
+    char path[LEVEL_TITLE_SIZE + 40];
+    File_CreateDirectory("screenshots");
 
-        if (!File_Exists(full_path)) {
-            bool result = Output_MakeScreenshot(full_path);
-            Memory_FreePointer(&full_path);
-            return result;
+    char level_title[LEVEL_TITLE_SIZE];
+    sprintf(level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
+    Shell_GetScreenshotName(level_title);
+
+    char date_time[20];
+    Clock_GetDateTime(date_time);
+
+    sprintf(path, "screenshots/%s_%s.%s", date_time, level_title, ext);
+    char *full_path = NULL;
+    File_GetFullPath(path, &full_path);
+    if (!File_Exists(full_path)) {
+        bool result = Output_MakeScreenshot(full_path);
+        Memory_Free(full_path);
+        full_path = NULL;
+        return result;
+    } else {
+        for (int i = 0; i < 1000; i++) {
+            sprintf(
+                path, "screenshots/%s_%s_%04d.%s", date_time, level_title, i,
+                ext);
+            char *full_path = NULL;
+            File_GetFullPath(path, &full_path);
+
+            if (!File_Exists(full_path)) {
+                bool result = Output_MakeScreenshot(full_path);
+                Memory_Free(full_path);
+                full_path = NULL;
+                return result;
+            }
         }
-
-        Memory_FreePointer(&full_path);
+        Memory_Free(full_path);
+        full_path = NULL;
     }
 
     return false;
