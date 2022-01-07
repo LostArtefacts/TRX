@@ -194,7 +194,7 @@ void Shell_GetScreenshotName(char *str)
 
     // Get level title of unknown length
     char level_title[100];
-    sprintf(level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
+    snprintf(level_title, LEVEL_TITLE_SIZE, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
 
     // Trim level titles that are too long
     if (strlen(level_title) >= LEVEL_TITLE_SIZE) {
@@ -220,14 +220,8 @@ void Shell_GetScreenshotName(char *str)
             }
         } else if (
             (*check < 'A' || *check > 'Z') && (*check < 'a' || *check > 'z')
-            && (*check < '0' || *check > '9') && *check != '\''
-            && *check != '.') {
+            && (*check < '0' || *check > '9') || *check == '\'' || *check == '.') {
             // Strip non alphanumeric chars
-            memmove(
-                &level_title[idx], &level_title[idx + 1],
-                strlen(level_title) - idx);
-        } else if (*check == '\'' || *check == '.') {
-            // Strip ' and .
             memmove(
                 &level_title[idx], &level_title[idx + 1],
                 strlen(level_title) - idx);
@@ -276,7 +270,7 @@ bool Shell_MakeScreenshot()
     }
 
     // Screenshot folder
-    char ss_folder[SS_FOLDER_NAME_SIZE];
+    const char ss_folder[SS_FOLDER_NAME_SIZE] = "screenshots";
     sprintf(ss_folder, "screenshots");
     File_CreateDirectory(ss_folder);
 
@@ -307,8 +301,8 @@ bool Shell_MakeScreenshot()
             Memory_FreePointer(&full_path);
             return result;
         }
+        Memory_FreePointer(&full_path);
     }
 
-    Memory_FreePointer(&full_path);
     return false;
 }
