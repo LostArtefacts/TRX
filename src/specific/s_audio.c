@@ -69,16 +69,15 @@ bool S_Audio_Init()
 
 bool S_Audio_Shutdown()
 {
-    if (!g_AudioDeviceID) {
-        return true;
-    }
-
     S_Audio_SampleSoundShutdown();
     S_Audio_StreamSoundShutdown();
 
-    SDL_PauseAudioDevice(g_AudioDeviceID, 1);
-    SDL_CloseAudioDevice(g_AudioDeviceID);
-    g_AudioDeviceID = 0;
+    if (g_AudioDeviceID) {
+        SDL_PauseAudioDevice(g_AudioDeviceID, 1);
+        SDL_CloseAudioDevice(g_AudioDeviceID);
+        g_AudioDeviceID = 0;
+    }
 
+    Memory_FreePointer(&m_WorkingBuffer);
     return true;
 }

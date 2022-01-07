@@ -204,8 +204,6 @@ bool Config_Read()
     }
 
 cleanup:
-    if (cfg_data) {
-        Memory_Free(cfg_data);
-    }
+    Memory_FreePointer(&cfg_data);
     return result;
 }

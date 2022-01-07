@@ -55,11 +55,9 @@ void Shell_Main()
         }
     }
     for (int i = 0; i < arg_count; i++) {
-        Memory_Free(args[i]);
-        args[i] = NULL;
+        Memory_FreePointer(&args[i]);
     }
-    Memory_Free(args);
-    args = NULL;
+    Memory_FreePointer(&args);
 
     S_Shell_SeedRandom();
 
@@ -151,15 +149,12 @@ void Shell_Main()
     }
 
     Settings_Write();
+    S_Shell_Shutdown();
 }
 
 void Shell_ExitSystem(const char *message)
 {
-    while (g_Input.select) {
-        Input_Update();
-    }
-    GameBuf_Shutdown();
-    Output_Shutdown();
+    S_Shell_Shutdown();
     S_Shell_ShowFatalError(message);
 }
 
@@ -207,13 +202,11 @@ bool Shell_MakeScreenshot()
 
         if (!File_Exists(full_path)) {
             bool result = Output_MakeScreenshot(full_path);
-            Memory_Free(full_path);
-            full_path = NULL;
+            Memory_FreePointer(&full_path);
             return result;
         }
 
-        Memory_Free(full_path);
-        full_path = NULL;
+        Memory_FreePointer(&full_path);
     }
 
     return false;
