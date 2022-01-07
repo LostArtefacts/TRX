@@ -281,6 +281,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed rare cases of Lara getting set on fire on a bridge over lava
 - fixed saving the game near Bacon Lara breaking her movement
 - fixed thin black lines between polygons
+- fixed Lara glitching through static objects into a black void
 
 ## Showcase
 
