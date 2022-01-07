@@ -72,7 +72,6 @@ void GFX_Screenshot_CaptureToBuffer(
             memcpy(&out_buffer[y1 * pitch], &out_buffer[y2 * pitch], pitch);
             memcpy(&out_buffer[y2 * pitch], scanline, pitch);
         }
-        Memory_Free(scanline);
-        scanline = NULL;
+        Memory_FreePointer(&scanline);
     }
 }

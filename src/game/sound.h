@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 bool Sound_Init();
+bool Sound_Shutdown();
 bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
 bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
 void Sound_UpdateEffects();

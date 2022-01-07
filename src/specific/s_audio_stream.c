@@ -9,7 +9,6 @@
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 
-#define MAX_ACTIVE_STREAMS 10
 #define READ_BUFFER_SIZE                                                       \
     (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
 
@@ -39,7 +38,7 @@ typedef struct AUDIO_STREAM_SOUND {
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
-static AUDIO_STREAM_SOUND m_StreamSounds[MAX_ACTIVE_STREAMS] = { 0 };
+static AUDIO_STREAM_SOUND m_StreamSounds[AUDIO_MAX_ACTIVE_STREAMS] = { 0 };
 static float m_DecodeBuffer[AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS] = { 0 };
 
 static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream);
@@ -126,7 +125,8 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
 static bool S_Audio_StreamSoundInitialiseFromPath(
     int sound_id, const char *file_path)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -201,21 +201,9 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
 
     S_Audio_StreamSoundDecodeFrame(stream);
 
-    int32_t sdl_format;
-    switch (stream->av.codec_ctx->sample_fmt) {
-    case AV_SAMPLE_FMT_U8:
-        sdl_format = AUDIO_U8;
-        break;
-
-    case AV_SAMPLE_FMT_S16:
-        sdl_format = AUDIO_S16;
-        break;
-
-    case AV_SAMPLE_FMT_S32:
-        sdl_format = AUDIO_S32;
-        break;
-
-    default:
+    int32_t sdl_format =
+        S_Audio_GetSDLAudioFormat(stream->av.codec_ctx->sample_fmt);
+    if (sdl_format < 0) {
         LOG_ERROR(
             "Unknown sample format: %d", stream->av.codec_ctx->sample_fmt);
         goto fail;
@@ -241,6 +229,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
 
     S_Audio_StreamSoundEnqueueFrame(stream);
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Memory_FreePointer(&full_path);
 
     return true;
 
@@ -249,19 +238,14 @@ fail:
         "Error while opening audio %s: %s", file_path, av_err2str(error_code));
 
     S_Audio_StreamSoundClose(sound_id);
-
-    if (full_path) {
-        Memory_Free(full_path);
-        full_path = NULL;
-    }
-
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Memory_FreePointer(&full_path);
     return false;
 }
 
 void S_Audio_StreamSoundInit()
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         stream->is_used = false;
         stream->is_playing = false;
@@ -278,7 +262,7 @@ void S_Audio_StreamSoundShutdown()
         return;
     }
 
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         if (m_StreamSounds[sound_id].is_used) {
             S_Audio_StreamSoundClose(sound_id);
         }
@@ -287,7 +271,8 @@ void S_Audio_StreamSoundShutdown()
 
 bool S_Audio_StreamSoundPause(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -302,7 +287,8 @@ bool S_Audio_StreamSoundPause(int sound_id)
 
 bool S_Audio_StreamSoundUnpause(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -317,7 +303,7 @@ bool S_Audio_StreamSoundUnpause(int sound_id)
 
 int S_Audio_StreamSoundCreateFromFile(const char *file_path)
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         if (stream->is_used) {
             continue;
@@ -335,7 +321,8 @@ int S_Audio_StreamSoundCreateFromFile(const char *file_path)
 
 bool S_Audio_StreamSoundClose(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -388,7 +375,8 @@ bool S_Audio_StreamSoundClose(int sound_id)
 
 bool S_Audio_StreamSoundSetVolume(int sound_id, float volume)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -399,7 +387,8 @@ bool S_Audio_StreamSoundSetVolume(int sound_id, float volume)
 
 bool S_Audio_StreamSoundIsLooped(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -408,7 +397,8 @@ bool S_Audio_StreamSoundIsLooped(int sound_id)
 
 bool S_Audio_StreamSoundSetIsLooped(int sound_id, bool is_looped)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -421,7 +411,8 @@ bool S_Audio_StreamSoundSetFinishCallback(
     int sound_id, void (*callback)(int sound_id, void *user_data),
     void *user_data)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_STREAMS) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
         return false;
     }
 
@@ -433,7 +424,7 @@ bool S_Audio_StreamSoundSetFinishCallback(
 
 void S_Audio_StreamSoundMix(float *dst_buffer, size_t len)
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_STREAMS; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         if (!stream->is_playing) {
             continue;

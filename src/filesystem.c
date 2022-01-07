@@ -51,7 +51,7 @@ void File_GetFullPath(const char *path, char **out)
             return;
         }
     }
-    *out = strdup(path);
+    *out = Memory_Dup(path);
     assert(*out);
 }
 
@@ -69,12 +69,11 @@ void File_GuessExtension(const char *path, char **out, const char **extensions)
                 if (File_Exists(*out)) {
                     return;
                 }
-                Memory_Free(*out);
-                *out = NULL;
+                Memory_FreePointer(out);
             }
         }
     }
-    *out = strdup(path);
+    *out = Memory_Dup(path);
     assert(*out);
 }
 
@@ -94,12 +93,9 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
         file->fp = NULL;
         break;
     }
-    if (full_path) {
-        Memory_Free(full_path);
-    }
+    Memory_FreePointer(&full_path);
     if (!file->fp) {
-        Memory_Free(file);
-        return NULL;
+        Memory_FreePointer(&file);
     }
     return file;
 }
@@ -142,7 +138,7 @@ size_t File_Size(MYFILE *file)
 void File_Close(MYFILE *file)
 {
     fclose(file->fp);
-    Memory_Free(file);
+    Memory_FreePointer(&file);
 }
 
 int File_Delete(const char *path)
@@ -162,7 +158,7 @@ bool File_Load(const char *path, char **output_data, size_t *output_size)
     char *data = Memory_Alloc(data_size + 1);
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
         LOG_ERROR("Can't read file %s", path);
-        Memory_Free(data);
+        Memory_FreePointer(&data);
         return false;
     }
     File_Close(fp);
