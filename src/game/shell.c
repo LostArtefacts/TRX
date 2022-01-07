@@ -31,6 +31,7 @@
 #include "specific/s_misc.h"
 #include "specific/s_shell.h"
 
+#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -189,6 +190,8 @@ void Shell_Wait(int nticks)
 
 void Shell_GetScreenshotName(char *str)
 {
+    assert(str);
+
     // Get level title of unknown length
     char level_title[100];
     sprintf(level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
@@ -204,14 +207,7 @@ void Shell_GetScreenshotName(char *str)
     int idx = 0;
 
     while (*check != '\0') {
-        if ((*check < 'A' || *check > 'Z') && (*check < 'a' || *check > 'z')
-            && (*check < '0' || *check > '9') && *check != '\'' && *check != '.'
-            && *check != ' ') {
-            // Strip non alphanumeric chars
-            memmove(
-                &level_title[idx], &level_title[idx + 1],
-                strlen(level_title) - idx);
-        } else if (*check == ' ') {
+        if (*check == ' ') {
             // Replace spaces with a single underscore
             if (prev_us) {
                 memmove(
@@ -222,6 +218,14 @@ void Shell_GetScreenshotName(char *str)
                 idx++;
                 prev_us = true;
             }
+        } else if (
+            (*check < 'A' || *check > 'Z') && (*check < 'a' || *check > 'z')
+            && (*check < '0' || *check > '9') && *check != '\''
+            && *check != '.') {
+            // Strip non alphanumeric chars
+            memmove(
+                &level_title[idx], &level_title[idx + 1],
+                strlen(level_title) - idx);
         } else if (*check == '\'' || *check == '.') {
             // Strip ' and .
             memmove(
@@ -238,7 +242,7 @@ void Shell_GetScreenshotName(char *str)
     if (strlen(level_title) == 0) {
         char new_title[LEVEL_TITLE_SIZE];
         sprintf(new_title, "Level_%d", g_CurrentLevel);
-        memmove(level_title, new_title, strlen(new_title));
+        strcpy(level_title, new_title);
         prev_us = false;
     }
 
@@ -289,7 +293,7 @@ bool Shell_MakeScreenshot()
     File_GetFullPath(path, &full_path);
     if (!File_Exists(full_path)) {
         bool result = Output_MakeScreenshot(full_path);
-        Memory_FreePointer(full_path);
+        Memory_FreePointer(&full_path);
         return result;
     }
 
@@ -300,11 +304,11 @@ bool Shell_MakeScreenshot()
         File_GetFullPath(path, &full_path);
         if (!File_Exists(full_path)) {
             bool result = Output_MakeScreenshot(full_path);
-            Memory_FreePointer(full_path);
+            Memory_FreePointer(&full_path);
             return result;
         }
     }
 
-    Memory_FreePointer(full_path);
+    Memory_FreePointer(&full_path);
     return false;
 }

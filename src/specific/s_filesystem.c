@@ -2,6 +2,7 @@
 
 #include "log.h"
 
+#include <assert.h>
 #include <SDL2/SDL.h>
 
 #if defined(_WIN32)
@@ -27,6 +28,7 @@ const char *S_File_GetGameDirectory()
 
 void S_File_CreateDirectory(const char *path)
 {
+    assert(path);
 #if defined(_WIN32)
     _mkdir(path);
 #else

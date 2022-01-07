@@ -3,6 +3,7 @@
 #include "global/vars.h"
 
 #include <time.h>
+#include <windows.h>
 
 static LONGLONG m_Ticks = 0;
 static double m_Frequency = 0.0;
