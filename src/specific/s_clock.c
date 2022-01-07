@@ -50,10 +50,3 @@ int32_t S_Clock_SyncTicks(int32_t target)
     } while (elapsed < (double)target);
     return elapsed;
 }
-
-SYSTEMTIME S_Clock_GetLocalTime()
-{
-    SYSTEMTIME lt;
-    GetLocalTime(&lt);
-    return lt;
-}

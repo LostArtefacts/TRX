@@ -37,7 +37,9 @@
 #include <string.h>
 
 #define LEVEL_TITLE_SIZE 25
-#define SS_FOLDER_NAME_SIZE 12
+#define SS_FOLDER_NAME_SIZE 20
+#define TIMESTAMP_SIZE 20
+#define EXTENSION_SIZE 10
 
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
@@ -185,53 +187,32 @@ void Shell_Wait(int nticks)
     }
 }
 
-void Shell_ValidateLevelTitle(char *str)
+void Shell_GetScreenshotName(char *str)
 {
-    // Strip non alphanumeric chars
-    char *ix = str;
-    int idx = 0;
-    while (*ix != '\0') {
-        if ((*ix >= 'A' && *ix <= 'Z') || (*ix >= 'a' && *ix <= 'z')
-            || (*ix >= '0' && *ix <= '9') || *ix == '\'' || *ix == '.'
-            || *ix == ' ') {
-            idx++;
-            *ix++;
-        } else {
-            memmove(&str[idx], &str[idx + 1], strlen(str) - idx);
-        }
-    }
-
-    // Large level titles write outside compass and passport bounds
-    if (strlen(str) > LEVEL_TITLE_SIZE) {
-        str[LEVEL_TITLE_SIZE] = '\0';
-        return;
-    }
-
-    // If title totally invalid, name it based on level number
-    if (strlen(str) == 0) {
-        char new_title[10]; // 3 digit level num max
-        sprintf(new_title, "Level_%d", g_CurrentLevel);
-        memmove(str, new_title, strlen(new_title));
-        Memory_Free(new_title);
-        return;
-    }
-}
-
-void Shell_GetScreenshotName(char *str, const char *ext)
-{
-    // Prepare level title for screenshot
-    char level_title[LEVEL_TITLE_SIZE];
+    // Get level title of unknown length
+    char level_title[100];
     sprintf(level_title, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
 
-    // Replace spaces with underscores
+    // Trim level titles that are too long
+    if (strlen(level_title) >= LEVEL_TITLE_SIZE) {
+        level_title[LEVEL_TITLE_SIZE] = '\0';
+    }
+
+    // Prepare level title for screenshot
     char *check = level_title;
-    bool prev_us = true; // '_' after time field
+    bool prev_us = true; // '_' after timestamp before title
     int idx = 0;
 
-    // Remove special chars from screenshots that are allowed in titles
     while (*check != '\0') {
-        // Replace spaces with a single underscore
-        if (*check == ' ') {
+        if ((*check < 'A' || *check > 'Z') && (*check < 'a' || *check > 'z')
+            && (*check < '0' || *check > '9') && *check != '\'' && *check != '.'
+            && *check != ' ') {
+            // Strip non alphanumeric chars
+            memmove(
+                &level_title[idx], &level_title[idx + 1],
+                strlen(level_title) - idx);
+        } else if (*check == ' ') {
+            // Replace spaces with a single underscore
             if (prev_us) {
                 memmove(
                     &level_title[idx], &level_title[idx + 1],
@@ -242,6 +223,7 @@ void Shell_GetScreenshotName(char *str, const char *ext)
                 prev_us = true;
             }
         } else if (*check == '\'' || *check == '.') {
+            // Strip ' and .
             memmove(
                 &level_title[idx], &level_title[idx + 1],
                 strlen(level_title) - idx);
@@ -253,12 +235,10 @@ void Shell_GetScreenshotName(char *str, const char *ext)
     }
 
     // If title totally invalid, name it based on level number
-    // Check again for valid level titles with only ' ', '\'', or '.'
     if (strlen(level_title) == 0) {
-        char new_title[10]; // 3 digit level num max
+        char new_title[LEVEL_TITLE_SIZE];
         sprintf(new_title, "Level_%d", g_CurrentLevel);
         memmove(level_title, new_title, strlen(new_title));
-        Memory_Free(new_title);
         prev_us = false;
     }
 
@@ -272,11 +252,11 @@ void Shell_GetScreenshotName(char *str, const char *ext)
     }
 
     // Get timestamp
-    char date_time[20];
+    char date_time[TIMESTAMP_SIZE];
     Clock_GetDateTime(date_time);
 
     // Full screenshot name
-    sprintf(str, "%s_%s.%s", date_time, level_title, ext);
+    sprintf(str, "%s_%s", date_time, level_title);
 }
 
 bool Shell_MakeScreenshot()
@@ -291,27 +271,40 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    // Screenshot name
-    char ss_name[LEVEL_TITLE_SIZE + 25]; // 50
-    Shell_GetScreenshotName(ss_name, ext);
-
     // Screenshot folder
     char ss_folder[SS_FOLDER_NAME_SIZE];
     sprintf(ss_folder, "screenshots");
     File_CreateDirectory(ss_folder);
 
-    // Screenshot folder/name path
-    char path[LEVEL_TITLE_SIZE + SS_FOLDER_NAME_SIZE + 63]; // 100
-    sprintf(path, "%s/%s", ss_folder, ss_name);
+    // Screenshot name
+    char ss_name[TIMESTAMP_SIZE + LEVEL_TITLE_SIZE];
+    Shell_GetScreenshotName(ss_name);
 
+    // Screenshot folder/name path
+    char path
+        [SS_FOLDER_NAME_SIZE + TIMESTAMP_SIZE + LEVEL_TITLE_SIZE
+         + EXTENSION_SIZE];
+    sprintf(path, "%s/%s.%s", ss_folder, ss_name, ext);
     char *full_path = NULL;
     File_GetFullPath(path, &full_path);
     if (!File_Exists(full_path)) {
         bool result = Output_MakeScreenshot(full_path);
-        Memory_Free(full_path);
-        full_path = NULL;
+        Memory_FreePointer(full_path);
         return result;
     }
 
+    // Name already exists so add number to name
+    for (int i = 2; i < 1000; i++) {
+        sprintf(path, "%s/%s_%d.%s", ss_folder, ss_name, i, ext);
+        char *full_path = NULL;
+        File_GetFullPath(path, &full_path);
+        if (!File_Exists(full_path)) {
+            bool result = Output_MakeScreenshot(full_path);
+            Memory_FreePointer(full_path);
+            return result;
+        }
+    }
+
+    Memory_FreePointer(full_path);
     return false;
 }

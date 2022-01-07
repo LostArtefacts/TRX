@@ -3,7 +3,7 @@
 #include "specific/s_clock.h"
 
 #include <stdio.h>
-#include <windows.h>
+#include <time.h>
 
 bool Clock_Init()
 {
@@ -27,8 +27,11 @@ int32_t Clock_SyncTicks(int32_t target)
 
 void Clock_GetDateTime(char *date_time)
 {
-    SYSTEMTIME lt = S_Clock_GetLocalTime();
+    time_t lt = time(0);
+    struct tm *tptr = localtime(&lt);
+
     sprintf(
-        date_time, "%04d%02d%02d_%02d%02d%02d_%03d", lt.wYear, lt.wMonth,
-        lt.wDay, lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds);
+        date_time, "%04d%02d%02d_%02d%02d%02d", tptr->tm_year + 1900,
+        tptr->tm_mon + 1, tptr->tm_mday, tptr->tm_hour, tptr->tm_min,
+        tptr->tm_sec);
 }
