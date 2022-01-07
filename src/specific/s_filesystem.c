@@ -3,7 +3,9 @@
 #include "log.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <SDL2/SDL.h>
+#include <string.h>
 
 #if defined(_WIN32)
     #include <direct.h>
@@ -29,9 +31,13 @@ const char *S_File_GetGameDirectory()
 void S_File_CreateDirectory(const char *path)
 {
     assert(path);
+    int32_t err_check = 0;
 #if defined(_WIN32)
-    _mkdir(path);
+    err_check = _mkdir(path);
 #else
-    mkdir(path, 0664);
+    err_check = mkdir(path, 0664);
 #endif
+    if (err_check != 0) {
+        LOG_ERROR("mkdir failed! %s\n", strerror(errno));
+    }
 }
