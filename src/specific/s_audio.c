@@ -69,16 +69,41 @@ bool S_Audio_Init()
 
 bool S_Audio_Shutdown()
 {
-    if (!g_AudioDeviceID) {
-        return true;
-    }
-
     S_Audio_SampleSoundShutdown();
     S_Audio_StreamSoundShutdown();
 
-    SDL_PauseAudioDevice(g_AudioDeviceID, 1);
-    SDL_CloseAudioDevice(g_AudioDeviceID);
-    g_AudioDeviceID = 0;
+    if (g_AudioDeviceID) {
+        SDL_PauseAudioDevice(g_AudioDeviceID, 1);
+        SDL_CloseAudioDevice(g_AudioDeviceID);
+        g_AudioDeviceID = 0;
+    }
 
+    Memory_FreePointer(&m_WorkingBuffer);
     return true;
+}
+
+int S_Audio_GetAVAudioFormat(const int sample_fmt)
+{
+    // clang-format off
+    switch (sample_fmt) {
+        case AUDIO_U8: return AV_SAMPLE_FMT_U8;
+        case AUDIO_S16: return AV_SAMPLE_FMT_S16;
+        case AUDIO_S32: return AV_SAMPLE_FMT_S32;
+        case AUDIO_F32: return AV_SAMPLE_FMT_FLT;
+        default: return -1;
+    }
+    // clang-format on
+}
+
+int S_Audio_GetSDLAudioFormat(const enum AVSampleFormat sample_fmt)
+{
+    // clang-format off
+    switch (sample_fmt) {
+        case AV_SAMPLE_FMT_U8: return AUDIO_U8;
+        case AV_SAMPLE_FMT_S16: return AUDIO_S16;
+        case AV_SAMPLE_FMT_S32: return AUDIO_S32;
+        case AV_SAMPLE_FMT_FLT: return AUDIO_F32;
+        default: return -1;
+    }
+    // clang-format on
 }

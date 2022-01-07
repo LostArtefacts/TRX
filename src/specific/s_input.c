@@ -533,7 +533,7 @@ INPUT_STATE S_Input_GetCurrentState()
         }
         // check Z
         if (state.lZ > 512) {
-            linput.step_left = 0;
+            linput.step_left = 1;
         } else if (state.lZ < -512) {
             linput.step_right = 1;
         }

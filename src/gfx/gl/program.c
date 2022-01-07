@@ -60,9 +60,7 @@ void GFX_GL_Program_AttachShader(
         }
     }
 
-    if (content) {
-        Memory_Free(content);
-    }
+    Memory_FreePointer(&content);
     glAttachShader(program->id, shader_id);
     glDeleteShader(shader_id);
 }

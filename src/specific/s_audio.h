@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#define AUDIO_MAX_SAMPLES 1000
+#define AUDIO_MAX_ACTIVE_SAMPLES 50
+#define AUDIO_MAX_ACTIVE_STREAMS 10
 #define AUDIO_NO_SOUND (-1)
 
 bool S_Audio_Init();
@@ -31,6 +34,7 @@ bool S_Audio_SampleSoundSetPan(int sound_id, int pan);
 bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
 
 #ifdef S_AUDIO_IMPL
+    #include <libavformat/avformat.h>
     #include <SDL2/SDL.h>
 
     #define AUDIO_WORKING_RATE 44100
@@ -39,6 +43,9 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
     #define AUDIO_WORKING_CHANNELS 2
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
+
+int S_Audio_GetAVAudioFormat(const int sample_fmt);
+int S_Audio_GetSDLAudioFormat(const enum AVSampleFormat sample_fmt);
 
 void S_Audio_SampleSoundInit();
 void S_Audio_SampleSoundShutdown();

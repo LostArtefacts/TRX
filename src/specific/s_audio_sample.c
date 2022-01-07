@@ -8,9 +8,7 @@
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-
-#define MAX_SAMPLES 1000
-#define MAX_ACTIVE_SAMPLES 20
+#include <libswresample/swresample.h>
 
 typedef struct AUDIO_SAMPLE {
     float *sample_data;
@@ -43,8 +41,8 @@ typedef struct AUDIO_AV_BUFFER {
 } AUDIO_AV_BUFFER;
 
 static int m_LoadedSamplesCount = 0;
-static AUDIO_SAMPLE m_LoadedSamples[MAX_SAMPLES] = { 0 };
-static AUDIO_SAMPLE_SOUND m_SampleSounds[MAX_ACTIVE_SAMPLES] = { 0 };
+static AUDIO_SAMPLE m_LoadedSamples[AUDIO_MAX_SAMPLES] = { 0 };
+static AUDIO_SAMPLE_SOUND m_SampleSounds[AUDIO_MAX_ACTIVE_SAMPLES] = { 0 };
 
 static double S_Audio_DecibelToMultiplier(double db_gain)
 {
@@ -53,7 +51,8 @@ static double S_Audio_DecibelToMultiplier(double db_gain)
 
 static bool S_Audio_SampleRecalculateChannelVolumes(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -81,12 +80,13 @@ static int S_Audio_ReadAVBuffer(void *opaque, uint8_t *dst, int dst_size)
 
 static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 {
-    if (!g_AudioDeviceID || sample_id < 0 || sample_id >= MAX_SAMPLES) {
+    if (!g_AudioDeviceID || sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
         return false;
     }
 
     AUDIO_SAMPLE *sample = &m_LoadedSamples[sample_id];
 
+    size_t working_buffer_size = 0;
     float *working_buffer = NULL;
 
     struct {
@@ -115,10 +115,11 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         int src_format;
         int src_channels;
         int src_sample_rate;
-        SDL_AudioStream *stream;
-    } sdl = {
-        .stream = NULL,
-    };
+        int dst_format;
+        int dst_channels;
+        int dst_sample_rate;
+        SwrContext *ctx;
+    } swr = { 0 };
 
     int error_code;
 
@@ -197,9 +198,6 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         goto fail;
     }
 
-    size_t num_samples = 0;
-    bool first_sample = true;
-
     while (1) {
         error_code = av_read_frame(av.format_ctx, av.packet);
         if (error_code == AVERROR_EOF) {
@@ -215,45 +213,29 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             goto fail;
         }
 
-        if (first_sample) {
-            first_sample = false;
-
-            sdl.src_sample_rate = av.codec_ctx->sample_rate;
-            sdl.src_channels = av.codec_ctx->channels;
-            switch (av.codec_ctx->sample_fmt) {
-            case AV_SAMPLE_FMT_U8:
-                sdl.src_format = AUDIO_U8;
-                break;
-
-            case AV_SAMPLE_FMT_S16:
-                sdl.src_format = AUDIO_S16;
-                break;
-
-            case AV_SAMPLE_FMT_S32:
-                sdl.src_format = AUDIO_S32;
-                break;
-
-            default:
-                LOG_ERROR(
-                    "Unknown sample format: %d", av.codec_ctx->sample_fmt);
-                error_code = AVERROR(ENOTRECOVERABLE);
+        if (!swr.ctx) {
+            swr.src_sample_rate = av.codec_ctx->sample_rate;
+            swr.src_channels = av.codec_ctx->channels;
+            swr.src_format = av.codec_ctx->sample_fmt;
+            swr.dst_sample_rate = AUDIO_WORKING_RATE;
+            swr.dst_channels = 1;
+            swr.dst_format = S_Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+            swr.ctx = swr_alloc_set_opts(
+                swr.ctx, swr.dst_channels, swr.dst_format, swr.dst_sample_rate,
+                swr.src_channels, swr.src_format, swr.src_sample_rate, 0, 0);
+            if (!swr.ctx) {
+                error_code = AVERROR(ENOMEM);
                 goto fail;
             }
 
-            sdl.stream = SDL_NewAudioStream(
-                sdl.src_format, sdl.src_channels, sdl.src_sample_rate,
-                AUDIO_WORKING_FORMAT, sdl.src_channels, AUDIO_WORKING_RATE);
-
-            if (!sdl.stream) {
-                LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
-                error_code = AVERROR(ENOTRECOVERABLE);
+            error_code = swr_init(swr.ctx);
+            if (error_code != 0) {
                 goto fail;
             }
         }
 
         while (1) {
             error_code = avcodec_receive_frame(av.codec_ctx, av.frame);
-
             if (error_code == AVERROR(EAGAIN)) {
                 break;
             }
@@ -262,45 +244,40 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
                 goto fail;
             }
 
-            error_code = av_samples_get_buffer_size(
-                NULL, av.codec_ctx->channels, av.frame->nb_samples,
-                av.codec_ctx->sample_fmt, 1);
+            uint8_t *out_buffer = NULL;
+            const int out_samples =
+                swr_get_out_samples(swr.ctx, av.frame->nb_samples);
+            av_samples_alloc(
+                &out_buffer, NULL, swr.dst_channels, out_samples,
+                swr.dst_format, 1);
+            int resampled_size = swr_convert(
+                swr.ctx, &out_buffer, out_samples,
+                (const uint8_t **)av.frame->data, av.frame->nb_samples);
+            int out_buffer_size = av_samples_get_buffer_size(
+                NULL, swr.dst_channels, resampled_size, swr.dst_format, 1);
 
-            if (error_code == AVERROR(EAGAIN)) {
-                break;
+            if (out_buffer_size > 0) {
+                working_buffer = Memory_Realloc(
+                    working_buffer, working_buffer_size + out_buffer_size);
+                if (!working_buffer) {
+                    error_code = AVERROR(ENOMEM);
+                    goto fail;
+                }
+                if (out_buffer) {
+                    memcpy(
+                        (uint8_t *)working_buffer + working_buffer_size,
+                        out_buffer, out_buffer_size);
+                }
+                working_buffer_size += out_buffer_size;
             }
 
-            if (error_code < 0) {
-                goto fail;
-            }
-
-            int data_size = error_code;
-
-            if (SDL_AudioStreamPut(sdl.stream, av.frame->data[0], data_size)) {
-                LOG_ERROR(
-                    "Failed to put data in the SDL stream: %s", SDL_GetError());
-                error_code = AVERROR(ENOTRECOVERABLE);
-                goto fail;
-            }
-
-            num_samples += av.frame->nb_samples;
+            av_freep(&out_buffer);
         }
     }
 
-    SDL_AudioStreamFlush(sdl.stream);
-
-    size_t working_buffer_size = SDL_AudioStreamAvailable(sdl.stream);
-    working_buffer = Memory_Alloc(working_buffer_size);
-    if (SDL_AudioStreamGet(sdl.stream, working_buffer, working_buffer_size)
-        < 0) {
-        LOG_ERROR("Failed to get data from the SDL stream: %s", SDL_GetError());
-        error_code = AVERROR(ENOTRECOVERABLE);
-        goto fail;
-    }
-
     sample->num_samples =
-        working_buffer_size / sizeof(AUDIO_WORKING_FORMAT) / sdl.src_channels;
-    sample->channels = sdl.src_channels;
+        working_buffer_size / sizeof(swr.dst_channels) / swr.dst_channels;
+    sample->channels = swr.src_channels;
     sample->sample_data = working_buffer;
 
     return true;
@@ -337,10 +314,7 @@ fail:
     sample->num_samples = 0;
     sample->channels = 0;
 
-    if (working_buffer) {
-        Memory_Free(working_buffer);
-        working_buffer = NULL;
-    }
+    Memory_FreePointer(&working_buffer);
 
     if (av.read_buffer) {
         av_free(av.read_buffer);
@@ -352,9 +326,9 @@ fail:
         av.avio_context = NULL;
     }
 
-    if (sdl.stream) {
-        SDL_FreeAudioStream(sdl.stream);
-        sdl.stream = NULL;
+    if (swr.ctx) {
+        swr_free(&swr.ctx);
+        swr.ctx = NULL;
     }
 
     return false;
@@ -362,7 +336,7 @@ fail:
 
 void S_Audio_SampleSoundInit()
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         sound->is_used = false;
         sound->is_playing = false;
@@ -380,7 +354,7 @@ void S_Audio_SampleSoundShutdown()
         return;
     }
 
-    S_Audio_SampleSoundCloseAll();
+    S_Audio_SamplesClear();
 }
 
 bool S_Audio_SamplesClear()
@@ -391,11 +365,8 @@ bool S_Audio_SamplesClear()
 
     S_Audio_SampleSoundCloseAll();
 
-    for (int i = 0; i < MAX_ACTIVE_SAMPLES; i++) {
-        if (m_LoadedSamples[i].sample_data) {
-            Memory_Free(m_LoadedSamples[i].sample_data);
-            m_LoadedSamples[i].sample_data = NULL;
-        }
+    for (int i = 0; i < AUDIO_MAX_ACTIVE_SAMPLES; i++) {
+        Memory_FreePointer(&m_LoadedSamples[i].sample_data);
     }
 
     return true;
@@ -407,10 +378,10 @@ bool S_Audio_SamplesLoad(size_t count, const char **contents, size_t *sizes)
         return false;
     }
 
-    if (count > MAX_SAMPLES) {
+    if (count > AUDIO_MAX_SAMPLES) {
         Shell_ExitSystemFmt(
             "Trying to load too many samples (maximum supported count: %d)",
-            MAX_SAMPLES);
+            AUDIO_MAX_SAMPLES);
         return false;
     }
 
@@ -440,7 +411,7 @@ int S_Audio_SampleSoundPlay(
     int result = AUDIO_NO_SOUND;
 
     SDL_LockAudioDevice(g_AudioDeviceID);
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         if (sound->is_used) {
             continue;
@@ -462,12 +433,17 @@ int S_Audio_SampleSoundPlay(
     }
     SDL_UnlockAudioDevice(g_AudioDeviceID);
 
+    if (result == AUDIO_NO_SOUND) {
+        LOG_ERROR("All sample buffers are used!");
+    }
+
     return result;
 }
 
 bool S_Audio_SampleSoundIsPlaying(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -476,7 +452,8 @@ bool S_Audio_SampleSoundIsPlaying(int sound_id)
 
 bool S_Audio_SampleSoundClose(int sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -494,7 +471,7 @@ bool S_Audio_SampleSoundCloseAll()
         return false;
     }
 
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         if (m_SampleSounds[sound_id].is_used) {
             S_Audio_SampleSoundClose(sound_id);
         }
@@ -505,7 +482,8 @@ bool S_Audio_SampleSoundCloseAll()
 
 bool S_Audio_SampleSoundSetPan(int sound_id, int pan)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -519,7 +497,8 @@ bool S_Audio_SampleSoundSetPan(int sound_id, int pan)
 
 bool S_Audio_SampleSoundSetVolume(int sound_id, int volume)
 {
-    if (!g_AudioDeviceID || sound_id < 0 || sound_id >= MAX_ACTIVE_SAMPLES) {
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
         return false;
     }
 
@@ -533,7 +512,7 @@ bool S_Audio_SampleSoundSetVolume(int sound_id, int volume)
 
 void S_Audio_SampleSoundMix(float *dst_buffer, size_t len)
 {
-    for (int sound_id = 0; sound_id < MAX_ACTIVE_SAMPLES; sound_id++) {
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
         if (!sound->is_playing) {
             continue;
@@ -564,16 +543,14 @@ void S_Audio_SampleSoundMix(float *dst_buffer, size_t len)
                 if (sound->is_looped) {
                     src_sample_idx = 0.0f;
                 } else {
-                    sound->is_playing = false;
-                    sound->is_used = false;
                     break;
                 }
             }
         }
 
         sound->current_sample = src_sample_idx;
-
-        if (!sound->is_used) {
+        if (sound->current_sample >= sound->sample->num_samples
+            && !sound->is_looped) {
             S_Audio_SampleSoundClose(sound_id);
         }
     }

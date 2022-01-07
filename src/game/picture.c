@@ -36,21 +36,12 @@ PICTURE *Picture_CreateFromFile(const char *path)
     result = S_Picture_LoadFromFile(picture, final_path);
 
 cleanup:
-    if (!result && picture) {
-        Memory_Free(picture);
-        picture = NULL;
+    if (!result) {
+        Memory_FreePointer(&picture);
     }
 
-    if (final_path) {
-        Memory_Free(final_path);
-        final_path = NULL;
-    }
-
-    if (full_path) {
-        Memory_Free(full_path);
-        full_path = NULL;
-    }
-
+    Memory_FreePointer(&final_path);
+    Memory_FreePointer(&full_path);
     return picture;
 }
 
@@ -64,11 +55,7 @@ bool Picture_SaveToFile(const PICTURE *pic, const char *path)
 
     bool ret = S_Picture_SaveToFile(pic, full_path);
 
-    if (full_path) {
-        Memory_Free(full_path);
-        full_path = NULL;
-    }
-
+    Memory_FreePointer(&full_path);
     return ret;
 }
 
@@ -125,11 +112,7 @@ bool Picture_ScaleSmart(
 void Picture_Free(PICTURE *picture)
 {
     if (picture) {
-        if (picture->data) {
-            Memory_Free(picture->data);
-            picture->data = NULL;
-        }
-        Memory_Free(picture);
-        picture = NULL;
+        Memory_FreePointer(&picture->data);
     }
+    Memory_FreePointer(&picture);
 }
