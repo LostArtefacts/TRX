@@ -69,8 +69,7 @@ void File_GuessExtension(const char *path, char **out, const char **extensions)
                 if (File_Exists(*out)) {
                     return;
                 }
-                Memory_Free(*out);
-                *out = NULL;
+                Memory_FreePointer(out);
             }
         }
     }
@@ -139,7 +138,7 @@ size_t File_Size(MYFILE *file)
 void File_Close(MYFILE *file)
 {
     fclose(file->fp);
-    Memory_Free(file);
+    Memory_FreePointer(&file);
 }
 
 int File_Delete(const char *path)
@@ -159,7 +158,7 @@ bool File_Load(const char *path, char **output_data, size_t *output_size)
     char *data = Memory_Alloc(data_size + 1);
     if (File_Read(data, sizeof(char), data_size, fp) != data_size) {
         LOG_ERROR("Can't read file %s", path);
-        Memory_Free(data);
+        Memory_FreePointer(&data);
         return false;
     }
     File_Close(fp);

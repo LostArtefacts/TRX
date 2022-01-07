@@ -140,10 +140,7 @@ fail:
 
     target_pic->width = 0;
     target_pic->height = 0;
-    if (target_pic->data) {
-        Memory_Free(target_pic->data);
-        target_pic->data = NULL;
-    }
+    Memory_FreePointer(&target_pic->data);
 
     if (sws_ctx) {
         sws_freeContext(sws_ctx);

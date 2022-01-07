@@ -20,7 +20,7 @@ void GFX_2D_Surface_Free(GFX_2D_Surface *surface)
 {
     if (surface) {
         GFX_2D_Surface_Close(surface);
-        Memory_Free(surface);
+        Memory_FreePointer(&surface);
     }
 }
 
@@ -134,7 +134,7 @@ bool GFX_2D_Surface_Blt(
             GFX_Blit(
                 &src_img, &src_rect, &dst_img,
                 dst_rect ? dst_rect : &default_dst_rect);
-            Memory_Free(buffer);
+            Memory_FreePointer(&buffer);
         } else {
             int32_t src_width = src->desc.width;
             int32_t src_height = src->desc.height;

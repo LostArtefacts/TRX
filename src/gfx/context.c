@@ -238,7 +238,7 @@ HWND GFX_Context_GetHWnd()
 
 void GFX_Context_ScheduleScreenshot(const char *path)
 {
-    m_Context.scheduled_screenshot_path = strdup(path);
+    m_Context.scheduled_screenshot_path = Memory_Dup(path);
 }
 
 GFX_2D_Renderer *GFX_Context_GetRenderer2D()

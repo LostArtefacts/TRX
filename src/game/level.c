@@ -601,9 +601,9 @@ static bool Level_LoadSamples(MYFILE *fp)
 
     Sound_LoadSamples(num_samples, sample_pointers, sample_sizes);
 
-    Memory_Free(sample_offsets);
-    Memory_Free(sample_pointers);
-    Memory_Free(sample_sizes);
+    Memory_FreePointer(&sample_offsets);
+    Memory_FreePointer(&sample_pointers);
+    Memory_FreePointer(&sample_sizes);
 
     return true;
 }
