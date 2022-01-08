@@ -220,10 +220,9 @@ void Shell_GetScreenshotName(char *str)
                 idx++;
                 prev_us = true;
             }
-        } else if (
-            ((*check < 'A' || *check > 'Z') && (*check < 'a' || *check > 'z')
-             && (*check < '0' || *check > '9'))
-            || *check == '\'' || *check == '.') {
+        } else if (((*check < 'A' || *check > 'Z')
+                    && (*check < 'a' || *check > 'z')
+                    && (*check < '0' || *check > '9'))) {
             // Strip non alphanumeric chars
             memmove(
                 &level_title[idx], &level_title[idx + 1],
