@@ -274,7 +274,10 @@ bool Shell_MakeScreenshot()
 
     // Screenshot folder
     const char ss_folder[SS_FOLDER_NAME_SIZE] = "screenshots";
-    File_CreateDirectory(ss_folder);
+    char *full_ss_path = NULL;
+    File_GetFullPath(ss_folder, &full_ss_path);
+    File_CreateDirectory(full_ss_path);
+    Memory_FreePointer(&full_ss_path);
 
     // Screenshot name
     char ss_name[TIMESTAMP_SIZE + LEVEL_TITLE_SIZE];
