@@ -106,9 +106,7 @@ bool Settings_Read()
     }
 
 cleanup:
-    if (cfg_data) {
-        Memory_Free(cfg_data);
-    }
+    Memory_FreePointer(&cfg_data);
 
     Option_DefaultConflict();
 
@@ -160,7 +158,7 @@ bool Settings_Write()
 
     File_Write(data, sizeof(char), size - 1, fp);
     File_Close(fp);
-    Memory_Free(data);
+    Memory_FreePointer(&data);
 
     return true;
 }

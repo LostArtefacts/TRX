@@ -24,14 +24,7 @@ bool FMV_Play(const char *file_path)
 
     ret = S_FMV_Play(final_path);
 
-    if (final_path) {
-        Memory_Free(final_path);
-        final_path = NULL;
-    }
-
-    if (full_path) {
-        Memory_Free(full_path);
-    }
-
+    Memory_FreePointer(&final_path);
+    Memory_FreePointer(&full_path);
     return ret;
 }

@@ -12,18 +12,18 @@ typedef struct GAMEFLOW_SEQUENCE {
 typedef struct GAMEFLOW_LEVEL {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
-    const char *level_title;
-    const char *level_file;
-    const char *key1;
-    const char *key2;
-    const char *key3;
-    const char *key4;
-    const char *pickup1;
-    const char *pickup2;
-    const char *puzzle1;
-    const char *puzzle2;
-    const char *puzzle3;
-    const char *puzzle4;
+    char *level_title;
+    char *level_file;
+    char *key1;
+    char *key2;
+    char *key3;
+    char *key4;
+    char *pickup1;
+    char *pickup2;
+    char *puzzle1;
+    char *puzzle2;
+    char *puzzle3;
+    char *puzzle4;
     int8_t demo;
     int16_t secrets;
     GAMEFLOW_SEQUENCE *sequence;
@@ -42,13 +42,13 @@ typedef struct GAMEFLOW_LEVEL {
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
-    const char *main_menu_background_path;
+    char *main_menu_background_path;
     int32_t gym_level_num;
     int32_t first_level_num;
     int32_t last_level_num;
     int32_t title_level_num;
     int32_t level_count;
-    const char *save_game_fmt;
+    char *save_game_fmt;
     int8_t has_demo;
     int32_t demo_delay;
     int8_t enable_game_modes;
@@ -65,3 +65,4 @@ extern GAMEFLOW g_GameFlow;
 GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 bool GameFlow_LoadFromFile(const char *file_name);
+void GameFlow_Shutdown();

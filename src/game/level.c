@@ -57,6 +57,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     int32_t version;
     int32_t file_level_num;
 
+    GameBuf_Shutdown();
     GameBuf_Init();
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
@@ -600,9 +601,9 @@ static bool Level_LoadSamples(MYFILE *fp)
 
     Sound_LoadSamples(num_samples, sample_pointers, sample_sizes);
 
-    Memory_Free(sample_offsets);
-    Memory_Free(sample_pointers);
-    Memory_Free(sample_sizes);
+    Memory_FreePointer(&sample_offsets);
+    Memory_FreePointer(&sample_pointers);
+    Memory_FreePointer(&sample_sizes);
 
     return true;
 }

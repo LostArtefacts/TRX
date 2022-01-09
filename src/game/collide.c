@@ -188,7 +188,18 @@ void GetCollisionInfo(
         coll->right_floor = 512;
     }
 
-    CollideStaticObjects(coll, xpos, ypos, zpos, room_num, objheight);
+    if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, objheight)) {
+        floor = GetFloor(
+            xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
+        if (GetHeight(floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
+                < ypos - 512
+            || GetCeiling(
+                   floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
+                > y) {
+            coll->shift.x = -coll->shift.x;
+            coll->shift.z = -coll->shift.z;
+        }
+    }
 
     if (coll->mid_floor == NO_HEIGHT) {
         coll->shift.x = coll->old.x - xpos;
