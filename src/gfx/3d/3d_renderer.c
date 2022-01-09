@@ -1,5 +1,6 @@
 #include "gfx/3d/3d_renderer.h"
 
+#include "config.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
 
@@ -35,7 +36,8 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     GFX_GL_Sampler_Init(&renderer->sampler);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
     GFX_GL_Sampler_Parameterf(
-        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+        g_Config.rendering.anisotropy_filter);
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(

@@ -140,10 +140,7 @@ fail:
 
     target_pic->width = 0;
     target_pic->height = 0;
-    if (target_pic->data) {
-        Memory_Free(target_pic->data);
-        target_pic->data = NULL;
-    }
+    Memory_FreePointer(&target_pic->data);
 
     if (sws_ctx) {
         sws_freeContext(sws_ctx);
@@ -391,13 +388,10 @@ cleanup:
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret) {
-        if (target_pic) {
-            Memory_Free(target_pic->data);
-            target_pic->width = 0;
-            target_pic->height = 0;
-            target_pic->data = NULL;
-        }
+    if (!ret && target_pic) {
+        target_pic->width = 0;
+        target_pic->height = 0;
+        Memory_FreePointer(&target_pic->data);
     }
 
     return ret;
@@ -465,13 +459,10 @@ cleanup:
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret) {
-        if (target_pic) {
-            Memory_Free(target_pic->data);
-            target_pic->width = 0;
-            target_pic->height = 0;
-            target_pic->data = NULL;
-        }
+    if (!ret && target_pic) {
+        target_pic->width = 0;
+        target_pic->height = 0;
+        Memory_FreePointer(&target_pic->data);
     }
 
     return ret;
@@ -527,13 +518,10 @@ cleanup:
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret) {
-        if (target_pic) {
-            Memory_Free(target_pic->data);
-            target_pic->width = 0;
-            target_pic->height = 0;
-            target_pic->data = NULL;
-        }
+    if (!ret && target_pic) {
+        target_pic->width = 0;
+        target_pic->height = 0;
+        Memory_FreePointer(&target_pic->data);
     }
 
     return ret;

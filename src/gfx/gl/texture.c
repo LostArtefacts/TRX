@@ -16,7 +16,7 @@ void GFX_GL_Texture_Free(GFX_GL_Texture *texture)
 {
     if (texture) {
         GFX_GL_Texture_Close(texture);
-        Memory_Free(texture);
+        Memory_FreePointer(&texture);
     }
 }
 

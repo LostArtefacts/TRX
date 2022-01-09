@@ -25,8 +25,6 @@
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
 #define MAX_REQLINES 16
-#define MAX_PLAYING_FX 24
-#define MAX_AMBIENT_FX 8
 #define MAX_SAMPLES 256
 #define MAX_SAVE_SLOTS 16
 #define MAX_LEVEL_NAME_LENGTH 48
@@ -212,7 +210,7 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define RESOLUTIONS_SIZE 12
+#define RESOLUTIONS_SIZE 10
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function

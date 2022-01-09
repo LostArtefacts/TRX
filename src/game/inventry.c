@@ -108,7 +108,6 @@ int32_t Display_Inventory(int inv_mode)
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             g_NoInputCount = 0;
-            g_ResetFlag = false;
         } else {
             if (!g_Config.disable_demo) {
                 g_NoInputCount++;
@@ -191,7 +190,7 @@ int32_t Display_Inventory(int inv_mode)
                      || imo.status == RNG_DESELECT
                      || imo.status == RNG_CLOSING_ITEM)
                     && !ring.rotating && !g_Input.left && !g_Input.right) {
-                    RingNotActive(inv_item);
+                    RingActive(inv_item);
                 }
             } else {
                 g_LsAdder = LOW_LIGHT;
@@ -220,7 +219,7 @@ int32_t Display_Inventory(int inv_mode)
                 || imo.status == RNG_OPTION2MAIN
                 || imo.status == RNG_EXITING_INVENTORY || imo.status == RNG_DONE
                 || ring.rotating) {
-                RingActive();
+                RingNotActive();
             }
 
             phd_PushMatrix();

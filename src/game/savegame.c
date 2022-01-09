@@ -15,6 +15,7 @@
 #include "game/traps/rolling_block.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "log.h"
 
 #include <stddef.h>
 
@@ -22,6 +23,77 @@
 
 static int m_SGCount = 0;
 static char *m_SGPoint = NULL;
+
+static bool SaveGame_NeedsEvilLaraFix();
+
+static bool SaveGame_NeedsEvilLaraFix()
+{
+    // Heuristic for issue #261.
+    // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
+    // a consequence, Atlantis saves made with OG TombATI (which includes the
+    // ones available for download on Stella's website) have different layout
+    // than the saves made with Tomb1Main. This was discovered after it was too
+    // late to make a backwards incompatible change. At the same time, enabling
+    // save_flags for Evil Lara is desirable, as not doing this causes her to
+    // freeze when the player reloads a save made in her room. This function is
+    // used to determine whether the save about to be loaded includes
+    // save_flags for Evil Lara or not. Since savegames only contain very
+    // concise information, we must make an educated guess here.
+
+    bool result = false;
+    if (g_SaveGame.current_level != 14) {
+        return result;
+    }
+
+    ResetSG();
+    SkipSG(sizeof(int32_t));
+    SkipSG(MAX_FLIP_MAPS * sizeof(int8_t));
+    SkipSG(g_NumberCameras * sizeof(int16_t));
+
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        ITEM_INFO tmp_item;
+
+        if (obj->save_position) {
+            ReadSG(&tmp_item.pos, sizeof(PHD_3DPOS));
+            SkipSG(sizeof(int16_t));
+            ReadSG(&tmp_item.speed, sizeof(int16_t));
+            ReadSG(&tmp_item.fall_speed, sizeof(int16_t));
+        }
+        if (obj->save_anim) {
+            ReadSG(&tmp_item.current_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.goal_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.required_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.anim_number, sizeof(int16_t));
+            ReadSG(&tmp_item.frame_number, sizeof(int16_t));
+        }
+        if (obj->save_hitpoints) {
+            ReadSG(&tmp_item.hit_points, sizeof(int16_t));
+        }
+        if (obj->save_flags) {
+            ReadSG(&tmp_item.flags, sizeof(int16_t));
+            ReadSG(&tmp_item.timer, sizeof(int16_t));
+            if (tmp_item.flags & SAVE_CREATURE) {
+                CREATURE_INFO tmp_creature;
+                ReadSG(&tmp_creature.head_rotation, sizeof(int16_t));
+                ReadSG(&tmp_creature.neck_rotation, sizeof(int16_t));
+                ReadSG(&tmp_creature.maximum_turn, sizeof(int16_t));
+                ReadSG(&tmp_creature.flags, sizeof(int16_t));
+                ReadSG(&tmp_creature.mood, sizeof(int32_t));
+            }
+        }
+
+        // check for exceptionally high item positions.
+        if ((ABS(tmp_item.pos.x) | ABS(tmp_item.pos.y) | ABS(tmp_item.pos.z))
+            & 0xFF000000) {
+            result = true;
+        }
+    }
+
+    return result;
+}
 
 void InitialiseStartInfo()
 {
@@ -272,6 +344,11 @@ void ExtractSaveGameInfo()
         Inv_AddItem(O_LEADBAR_ITEM);
     }
 
+    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix();
+    if (skip_reading_evil_lara) {
+        LOG_INFO("Enabling Evil Lara savegame fix");
+    }
+
     ResetSG();
 
     ReadSG(&tmp32, sizeof(int32_t));
@@ -329,7 +406,9 @@ void ExtractSaveGameInfo()
             ReadSG(&item->hit_points, sizeof(int16_t));
         }
 
-        if (obj->save_flags) {
+        if (obj->save_flags
+            && (item->object_number != O_EVIL_LARA
+                || !skip_reading_evil_lara)) {
             ReadSG(&item->flags, sizeof(int16_t));
             ReadSG(&item->timer, sizeof(int16_t));
 

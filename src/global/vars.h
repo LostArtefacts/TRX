@@ -125,7 +125,6 @@ extern int32_t g_OverlapCount;
 
 extern REQUEST_INFO g_LoadSaveGameRequester;
 
-extern int32_t g_HealthBarTimer;
 extern int16_t g_StoredLaraHealth;
 extern int16_t g_LevelStartLaraHealth;
 

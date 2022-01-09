@@ -48,6 +48,7 @@ static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
 static void S_Output_SetHardwareVideoMode();
 static void S_Output_SetupRenderContextAndRender();
+static void S_Output_ReleaseTextures();
 static void S_Output_ReleaseSurfaces();
 static void S_Output_BlitSurface(
     GFX_2D_Surface *source, GFX_2D_Surface *target);
@@ -58,6 +59,16 @@ static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source);
 static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source);
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
+
+static void S_Output_ReleaseTextures()
+{
+    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
+        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
+            GFX_3D_Renderer_TextureUnreg(m_Renderer3D, m_TextureMap[i]);
+            m_TextureMap[i] = GFX_NO_TEXTURE;
+        }
+    }
+}
 
 static void S_Output_SetHardwareVideoMode()
 {
@@ -101,7 +112,7 @@ static void S_Output_SetupRenderContextAndRender()
 {
     S_Output_RenderBegin();
     GFX_3D_Renderer_SetSmoothingEnabled(
-        m_Renderer3D, g_Config.render_flags.bilinear);
+        m_Renderer3D, g_Config.rendering.enable_bilinear_filter);
     S_Output_RenderToggle();
 }
 
@@ -656,7 +667,7 @@ void S_Output_ClearBackBuffer()
     S_Output_RenderToggle();
 }
 
-void S_Output_CopyFromPicture()
+void S_Output_CopyToPicture()
 {
     if (!m_PictureSurface) {
         GFX_2D_SurfaceDesc surface_desc = {
@@ -671,7 +682,7 @@ void S_Output_CopyFromPicture()
     S_Output_RenderToggle();
 }
 
-void S_Output_CopyToPicture()
+void S_Output_CopyFromPicture()
 {
     S_Output_ClearBackBuffer();
     S_Output_RenderEnd();
@@ -747,7 +758,10 @@ void S_Output_DownloadPicture(const PICTURE *pic)
         .bottom = target_rect.top + new_height,
     };
 
-    bool result = GFX_2D_Surface_Blt(
+    bool result = GFX_2D_Surface_Clear(m_PictureSurface);
+    S_Output_CheckError(result);
+
+    result = GFX_2D_Surface_Blt(
         m_PictureSurface, &target_rect, picture_surface, &source_rect);
     S_Output_CheckError(result);
 
@@ -1129,6 +1143,7 @@ bool S_Output_Init()
 
 void S_Output_Shutdown()
 {
+    S_Output_ReleaseTextures();
     S_Output_ReleaseSurfaces();
     GFX_Context_Detach();
     m_Renderer3D = NULL;
@@ -1372,12 +1387,7 @@ void S_Output_DownloadTextures(int32_t pages)
         Shell_ExitSystem("Attempt to download more than texture page limit");
     }
 
-    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
-        if (m_TextureMap[i] != GFX_NO_TEXTURE) {
-            GFX_3D_Renderer_TextureUnreg(m_Renderer3D, m_TextureMap[i]);
-            m_TextureMap[i] = GFX_NO_TEXTURE;
-        }
-    }
+    S_Output_ReleaseTextures();
 
     for (int i = 0; i < pages; i++) {
         GFX_2D_SurfaceDesc surface_desc = { 0 };

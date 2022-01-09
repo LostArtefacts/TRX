@@ -43,9 +43,9 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
     result = true;
 
     struct json_object_s *root_obj = json_value_as_object(root);
-    g_Config.render_flags.bilinear =
+    g_Config.rendering.enable_bilinear_filter =
         json_object_get_bool(root_obj, "bilinear", true);
-    g_Config.render_flags.perspective =
+    g_Config.rendering.enable_perspective_filter =
         json_object_get_bool(root_obj, "perspective", true);
 
     {
@@ -106,9 +106,7 @@ bool Settings_Read()
     }
 
 cleanup:
-    if (cfg_data) {
-        Memory_Free(cfg_data);
-    }
+    Memory_FreePointer(&cfg_data);
 
     Option_DefaultConflict();
 
@@ -129,9 +127,9 @@ bool Settings_Write()
     size_t size;
     struct json_object_s *root_obj = json_object_new();
     json_object_append_bool(
-        root_obj, "bilinear", g_Config.render_flags.bilinear);
+        root_obj, "bilinear", g_Config.rendering.enable_bilinear_filter);
     json_object_append_bool(
-        root_obj, "perspective", g_Config.render_flags.perspective);
+        root_obj, "perspective", g_Config.rendering.enable_perspective_filter);
     json_object_append_number_int(
         root_obj, "hi_res", Screen_GetPendingResIdx());
     json_object_append_number_int(
@@ -160,7 +158,7 @@ bool Settings_Write()
 
     File_Write(data, sizeof(char), size - 1, fp);
     File_Close(fp);
-    Memory_Free(data);
+    Memory_FreePointer(&data);
 
     return true;
 }

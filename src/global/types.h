@@ -1146,16 +1146,15 @@ typedef struct POINT_INFO {
 } POINT_INFO;
 
 typedef struct PHD_VBUF {
-    int32_t xv;
-    int32_t yv;
-    int32_t zv;
-    int32_t xs;
-    int32_t ys;
-    int32_t dist;
+    float xv;
+    float yv;
+    float zv;
+    float xs;
+    float ys;
     int16_t clip;
     int16_t g;
-    uint16_t u;
-    uint16_t v;
+    int16_t u;
+    int16_t v;
 } PHD_VBUF;
 
 typedef struct PHD_UV {

@@ -273,6 +273,17 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara jumping forever when alt+tabbing out of the game
 - fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
 - fixed bats being positioned too high
+- fixed Lara not being able to grab parts of some bridges
+- fixed alligators dealing no damage if Lara remains still in the water
+- fixed shotgun shooting when a locked target moves out of Lara's sight
+- fixed shotgun shooting too fast when not aiming at a target
+- fixed Lara grabbing ledges she shouldn't in stacked rooms (mainly St. Francis Folly tower)
+- fixed rare cases of Lara getting set on fire on a bridge over lava
+- fixed saving the game near Bacon Lara breaking her movement
+- fixed thin black lines between polygons
+- fixed audio mixer stopping playing sounds on big explosions
+- fixed underwater ambient sound effect not playing
+- fixed Lara glitching through static objects into a black void
 
 ## Showcase
 

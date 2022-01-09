@@ -76,8 +76,22 @@ static void InitLoadSaveGameRequester()
 {
     REQUEST_INFO *req = &g_LoadSaveGameRequester;
     InitRequester(req);
-    GetSavedGamesList(req);
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
+
+    int32_t height = Screen_GetResHeight();
+    if (height <= 200) {
+        req->y = -32;
+        req->vis_lines = 5;
+    } else if (height <= 384) {
+        req->y = -62;
+        req->vis_lines = 8;
+    } else if (height <= 480) {
+        req->y = -90;
+        req->vis_lines = 10;
+    } else {
+        req->y = -100;
+        req->vis_lines = 12;
+    }
 
     if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
@@ -93,12 +107,12 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    S_FrontEndCheck();
+    Game_ScanSavedGames();
 }
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
 {
-    Text_Remove(g_InvItemText[0]);
+    Text_Remove(g_InvItemText[IT_NAME]);
     g_InvItemText[IT_NAME] = NULL;
 
     int16_t page = (inv_item->goal_frame - inv_item->open_frame) / 5;

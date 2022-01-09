@@ -15,6 +15,7 @@
 #include "game/objects/keyhole.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/switch.h"
+#include "game/overlay.h"
 #include "game/sound.h"
 #include "game/traps/lava.h"
 #include "game/traps/movable_block.h"
@@ -312,7 +313,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
         CalculateCamera();
         Sound_UpdateEffects();
         g_SaveGame.timer++;
-        g_HealthBarTimer--;
+        Overlay_BarHealthTimerTick();
 
         if (g_Config.disable_healing_between_levels) {
             int8_t lara_found = 0;

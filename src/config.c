@@ -15,7 +15,8 @@
 
 #define READ_PRIMITIVE(func, opt, default_value)                               \
     do {                                                                       \
-        g_Config.opt = func(root_obj, QUOTE(opt), default_value);              \
+        g_Config.opt =                                                         \
+            func(root_obj, Config_ProcessKey(QUOTE(opt)), default_value);      \
     } while (0)
 #define READ_BOOL(opt, default_value)                                          \
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
@@ -26,8 +27,8 @@
 
 #define READ_ENUM(opt, default_value, enum_map)                                \
     do {                                                                       \
-        g_Config.opt =                                                         \
-            Config_ReadEnum(root_obj, QUOTE(opt), default_value, enum_map);    \
+        g_Config.opt = Config_ReadEnum(                                        \
+            root_obj, Config_ProcessKey(QUOTE(opt)), default_value, enum_map); \
     } while (0)
 
 CONFIG g_Config = { 0 };
@@ -40,29 +41,30 @@ typedef struct ENUM_MAP {
 } ENUM_MAP;
 
 const ENUM_MAP m_BarShowingModes[] = {
-    { "flashing-or-default", T1M_BSM_FLASHING_OR_DEFAULT },
-    { "flashing-only", T1M_BSM_FLASHING_ONLY },
-    { "always", T1M_BSM_ALWAYS },
-    { "never", T1M_BSM_NEVER },
+    { "default", BSM_DEFAULT },
+    { "flashing-or-default", BSM_FLASHING_OR_DEFAULT },
+    { "flashing-only", BSM_FLASHING_ONLY },
+    { "always", BSM_ALWAYS },
+    { "never", BSM_NEVER },
+    { "ps1", BSM_PS1 },
     { NULL, -1 },
 };
 
 const ENUM_MAP m_BarLocations[] = {
-    { "top-left", T1M_BL_TOP_LEFT },
-    { "top-center", T1M_BL_TOP_CENTER },
-    { "top-right", T1M_BL_TOP_RIGHT },
-    { "bottom-left", T1M_BL_BOTTOM_LEFT },
-    { "bottom-center", T1M_BL_BOTTOM_CENTER },
-    { "bottom-right", T1M_BL_BOTTOM_RIGHT },
+    { "top-left", BL_TOP_LEFT },
+    { "top-center", BL_TOP_CENTER },
+    { "top-right", BL_TOP_RIGHT },
+    { "bottom-left", BL_BOTTOM_LEFT },
+    { "bottom-center", BL_BOTTOM_CENTER },
+    { "bottom-right", BL_BOTTOM_RIGHT },
     { NULL, -1 },
 };
 
 const ENUM_MAP m_BarColors[] = {
-    { "gold", T1M_BC_GOLD },     { "blue", T1M_BC_BLUE },
-    { "grey", T1M_BC_GREY },     { "red", T1M_BC_RED },
-    { "silver", T1M_BC_SILVER }, { "green", T1M_BC_GREEN },
-    { "gold2", T1M_BC_GOLD2 },   { "blue2", T1M_BC_BLUE2 },
-    { "pink", T1M_BC_PINK },     { NULL, -1 },
+    { "gold", BC_GOLD },   { "blue", BC_BLUE },     { "grey", BC_GREY },
+    { "red", BC_RED },     { "silver", BC_SILVER }, { "green", BC_GREEN },
+    { "gold2", BC_GOLD2 }, { "blue2", BC_BLUE2 },   { "pink", BC_PINK },
+    { NULL, -1 },
 };
 
 const ENUM_MAP m_ScreenshotFormats[] = {
@@ -71,6 +73,16 @@ const ENUM_MAP m_ScreenshotFormats[] = {
     { "png", SCREENSHOT_FORMAT_PNG },
     { NULL, -1 },
 };
+
+static const char *Config_ProcessKey(const char *key);
+static int Config_ReadEnum(
+    struct json_object_s *obj, const char *name, int8_t default_value,
+    const ENUM_MAP *enum_map);
+
+static const char *Config_ProcessKey(const char *key)
+{
+    return strchr(key, '.') ? strrchr(key, '.') + 1 : key;
+}
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
@@ -117,6 +129,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_enemy_healthbar, true);
     READ_BOOL(enable_enhanced_look, true);
     READ_BOOL(enable_shotgun_flash, true);
+    READ_BOOL(fix_shotgun_targeting, true);
     READ_BOOL(enable_cheats, false);
     READ_BOOL(enable_numeric_keys, true);
     READ_BOOL(enable_tr3_sidesteps, true);
@@ -129,7 +142,9 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(fix_secrets_killing_music, true);
     READ_BOOL(fix_descending_glitch, false);
     READ_BOOL(fix_wall_jump_glitch, false);
+    READ_BOOL(fix_bridge_collision, true);
     READ_BOOL(fix_qwop_glitch, false);
+    READ_BOOL(fix_alligator_ai, true);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);
@@ -142,16 +157,17 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
+    READ_FLOAT(rendering.anisotropy_filter, 16.0f);
 
     READ_ENUM(
-        healthbar_showing_mode, T1M_BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
-    READ_ENUM(airbar_showing_mode, T1M_BSM_DEFAULT, m_BarShowingModes);
-    READ_ENUM(healthbar_location, T1M_BL_TOP_LEFT, m_BarLocations);
-    READ_ENUM(airbar_location, T1M_BL_TOP_RIGHT, m_BarLocations);
-    READ_ENUM(enemy_healthbar_location, T1M_BL_BOTTOM_LEFT, m_BarLocations);
-    READ_ENUM(healthbar_color, T1M_BC_RED, m_BarColors);
-    READ_ENUM(airbar_color, T1M_BC_BLUE, m_BarColors);
-    READ_ENUM(enemy_healthbar_color, T1M_BC_GREY, m_BarColors);
+        healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
+    READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
+    READ_ENUM(healthbar_location, BL_TOP_LEFT, m_BarLocations);
+    READ_ENUM(airbar_location, BL_TOP_RIGHT, m_BarLocations);
+    READ_ENUM(enemy_healthbar_location, BL_BOTTOM_LEFT, m_BarLocations);
+    READ_ENUM(healthbar_color, BC_RED, m_BarColors);
+    READ_ENUM(airbar_color, BC_BLUE, m_BarColors);
+    READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
 
     CLAMP(g_Config.fov_value, 30, 255);
@@ -188,8 +204,6 @@ bool Config_Read()
     }
 
 cleanup:
-    if (cfg_data) {
-        Memory_Free(cfg_data);
-    }
+    Memory_FreePointer(&cfg_data);
     return result;
 }

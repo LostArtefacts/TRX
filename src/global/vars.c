@@ -66,7 +66,6 @@ bool g_ChunkyFlag = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
 
-int32_t g_HealthBarTimer = 0;
 int16_t g_StoredLaraHealth = 0;
 int16_t g_LevelStartLaraHealth = 0;
 
@@ -126,7 +125,7 @@ int32_t g_LsDivider = 0;
 SHADOW_INFO g_ShadowInfo = { 0 };
 
 RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE] = {
-    { 320, 200 },   { 512, 384 },   { 640, 480 },   { 800, 600 },
-    { 1024, 768 },  { 1280, 720 },  { 1920, 1080 }, { 2560, 1440 },
-    { 3840, 2160 }, { 4096, 2160 }, { 7680, 4320 }, { -1, -1 },
+    { 640, 480 },   { 800, 600 },   { 1024, 768 },  { 1280, 720 },
+    { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 }, { 4096, 2160 },
+    { 7680, 4320 }, { -1, -1 },
 };

@@ -62,6 +62,29 @@ Try to avoid global variables, if possible declare them as `static` in the
 module you're using them. Changes to original game functionality most often
 should be configurable.
 
+Other things:
+
+- We use clang-format to automatically format the code
+- We do not omit `{` and `}`
+- We use K&R brace style
+- We condense `if` expressions into one, so:
+    ```
+    if (a && b) {
+    }
+    ```
+
+    and not:
+
+    ```
+    if (a) {
+        if (b) {
+        }
+    }
+    ```
+
+    If the expressions are extraordinarily complex, we refactor these into
+    smaller conditions or functions.
+
 ## Code formatting
 
 This project uses `clang-format` to take care of automatic code formatting. To

@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-TEXTSTRING *g_InvItemText[2] = { NULL, NULL };
+TEXTSTRING *g_InvItemText[IT_NUMBER_OF] = { NULL };
 TEXTSTRING *g_InvRingText = NULL;
 
 static TEXTSTRING *m_InvDownArrow1 = NULL;
@@ -99,7 +99,7 @@ void RingIsNotOpen(RING_INFO *ring)
     }
 }
 
-void RingNotActive(INVENTORY_ITEM *inv_item)
+void RingActive(INVENTORY_ITEM *inv_item)
 {
     if (!g_InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
@@ -233,8 +233,8 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_MEDI_OPTION:
-        g_HealthBarTimer = 40;
-        Overlay_DrawHealthBar();
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -245,8 +245,8 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_BIGMEDI_OPTION:
-        g_HealthBarTimer = 40;
-        Overlay_DrawHealthBar();
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -279,16 +279,9 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     }
 }
 
-void RingActive()
+void RingNotActive()
 {
-    if (g_InvItemText[IT_NAME]) {
-        Text_Remove(g_InvItemText[IT_NAME]);
-        g_InvItemText[IT_NAME] = NULL;
-    }
-    if (g_InvItemText[IT_QTY]) {
-        Text_Remove(g_InvItemText[IT_QTY]);
-        g_InvItemText[IT_QTY] = NULL;
-    }
+    RemoveInventoryText();
 }
 
 int32_t Inv_AddItem(int32_t item_num)

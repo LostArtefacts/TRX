@@ -24,6 +24,9 @@
     // Draws flame when firing a shotgun, like for other guns.
     "enable_shotgun_flash": true,
 
+    // Shotgun no longer fires when a locked target moves out of Lara's sight like other guns.
+    "fix_shotgun_targeting": true,
+
     // Enables quick weapon draws and medpack usage.
     // - 1: draw pistols
     // - 2: draw shotgun
@@ -61,14 +64,16 @@
     "enable_smooth_bars": true,
 
     // Changes how the healthbar is displayed. Possible values:
-    // - always: always show the healthbar
-    // - default: show the healthbar at the beginning of a level, after
-    //   getting hit or while having weapons equipped (as in OG)
-    // - flashing-or-default: show the healthbar when Lara's health is 20% or
-    //   below, or under default circumstances
+    // - default: show the healthbar at the start of a level, after getting
+    //   hit, or while having weapons equipped; flash the healthbar if it's already
+    //   on screen when Lara's health is 20% or below (TombATI)
+    // - flashing-or-default: constantly flash the healthbar when Lara's
+    //   health is 20% or below, or show under default circumstances
     // - flashing-only: show the healthbar *only* when Lara's health is 20% or
-    //   below (useful for challenge runs)
+    //   below (for challenge runs)
+    // - always: always show the healthbar
     // - never: never display the healthbar (for challenge runs)
+    // - ps1: show the healthbar under default circumstances with no flashing
     "healthbar_showing_mode": "flashing-or-default",
 
     // Location where the healthbar is displayed. Possible values:
@@ -93,16 +98,12 @@
     "healthbar_color": "red",
 
     // Changes how the airbar is displayed. Possible values:
-    // - always: always show the airbar
-    // - default: show the airbar only in the water
-    // - flashing-or-default: show the airbar when Lara's oxygen is 20% or
-    //   below or under normal circumstances
-    // - flashing-only: show the airbar *only* when Lara's oxygen is 20% or /
-    //   below (useful for challenge runs)
+    // - default: show the airbar only in the water and flash the airbar when
+    //   Lara's oxygen is 20% or below (TombATI)
+    // - flashing-only: show the airbar *only* when Lara's oxygen is 20% or
+    //   below (for challenge runs)
     // - never: never display the airbar (for challenge runs)
-    // In case of airbar, the flashing-or-default mode is there mostly for
-    // consistency and the only practical difference is that it's shown when
-    // Lara dies. When using the fly cheat, the airbar is never shown.
+    // - ps1: show the airbar under default circumstances with no flashing
     "airbar_showing_mode": "default",
 
     // Location where the airbar is displayed.
@@ -134,9 +135,15 @@
     // Fixes Lara jumping through objects and Lara moving up certain slopes.
     "fix_wall_jump_glitch": false,
 
+    // Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge
+    "fix_bridge_collision": true,
+
     // Fixes Lara jumping on small steps sometimes resulting in a weird running
     // animation, known as a QWOP state.
     "fix_qwop_glitch": false,
+
+    // Fixes alligators dealing no damage if Lara remains still in the water
+    "fix_alligator_ai": true,
 
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
@@ -179,4 +186,7 @@
 
     // Screenshot file format. Must be either "jpg" or "png".
     "screenshot_format": "jpg",
+
+    // Enhances texture filtering at distances.
+    "anisotropy_filter": 16.0,
 }

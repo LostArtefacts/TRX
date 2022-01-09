@@ -12,7 +12,7 @@
 void S_FadeInInventory(int32_t fade)
 {
     if (g_CurrentLevel != g_GameFlow.title_level_num) {
-        S_Output_CopyFromPicture();
+        S_Output_CopyToPicture();
     }
 }
 

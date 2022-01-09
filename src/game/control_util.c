@@ -191,8 +191,8 @@ int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 
         switch (type & DATA_TYPE) {
         case FT_TILT: {
-            int16_t xoff = data[0] >> 8;
-            int16_t yoff = (int8_t)data[0];
+            int32_t xoff = data[0] >> 8;
+            int32_t yoff = (int8_t)data[0];
 
             if (!g_ChunkyFlag || (ABS(xoff) <= 2 && ABS(yoff) <= 2)) {
                 if (ABS(xoff) > 2 || ABS(yoff) > 2) {
