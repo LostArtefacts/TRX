@@ -1,7 +1,6 @@
 #include "game/input.h"
 
 #include "specific/s_input.h"
-#include "log.h"
 
 INPUT_STATE g_Input = { 0 };
 INPUT_STATE g_InputDB = { 0 };
