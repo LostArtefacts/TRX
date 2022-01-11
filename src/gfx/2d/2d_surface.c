@@ -165,8 +165,6 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
         return false;
     }
 
-    // don't re-upload surfaces if external rendering was active after
-    // lock() has been called, since it wouldn't be visible anyway
     surface->is_dirty = false;
 
     // swap front and back buffers
@@ -185,8 +183,6 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
         surface->is_dirty = false;
     }
 
-    // swap buffer now if there was external rendering, otherwise the
-    // surface would overwrite it
     GFX_Context_SwapBuffers();
 
     // update viewport in case the window size has changed
