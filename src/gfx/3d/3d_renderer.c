@@ -243,3 +243,8 @@ void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_GL_Program_Uniform1i(
         &renderer->program, renderer->loc_texturing_enabled, is_enabled);
 }
+
+void GFX_3D_Renderer_RenderEmpty()
+{
+    GFX_Context_SetRendered();
+}

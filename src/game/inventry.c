@@ -236,6 +236,7 @@ int32_t Display_Inventory(int inv_mode)
         Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
+        Output_DrawEmpty();
 
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;

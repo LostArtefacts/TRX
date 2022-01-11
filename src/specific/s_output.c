@@ -667,6 +667,11 @@ void S_Output_ClearBackBuffer()
     S_Output_RenderToggle();
 }
 
+void S_Output_DrawEmpty()
+{
+    GFX_3D_Renderer_RenderEmpty();
+}
+
 void S_Output_CopyToPicture()
 {
     if (!m_PictureSurface) {

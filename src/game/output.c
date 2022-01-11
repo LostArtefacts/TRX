@@ -402,6 +402,11 @@ void Output_ClearScreen()
     S_Output_ClearBackBuffer();
 }
 
+void Output_DrawEmpty()
+{
+    S_Output_DrawEmpty();
+}
+
 void Output_InitialisePolyList()
 {
     S_Output_RenderBegin();
