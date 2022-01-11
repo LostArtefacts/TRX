@@ -284,6 +284,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed audio mixer stopping playing sounds on big explosions
 - fixed underwater ambient sound effect not playing
 - fixed Lara glitching through static objects into a black void
+- fixed black screen flashes while moving through the inventory
 
 ## Showcase
 
