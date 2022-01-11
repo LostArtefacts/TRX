@@ -37,7 +37,7 @@ static void Music_StreamFinished(int stream_id, void *user_data)
 
     if (stream_id == m_AudioStreamID) {
         m_AudioStreamID = -1;
-        if (m_Track == 13) {
+        if (m_Track == MX_SECRET) {
             m_Track = 0;
         }
         if (m_TrackLooped >= 0) {
@@ -61,7 +61,7 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    if (g_Config.fix_secrets_killing_music && track == 13) {
+    if (g_Config.fix_secrets_killing_music && track == MX_SECRET) {
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
