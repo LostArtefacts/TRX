@@ -14,6 +14,7 @@ void S_Output_RenderEnd();
 void S_Output_RenderToggle();
 void S_Output_DumpScreen();
 void S_Output_ClearBackBuffer();
+void S_Output_DrawEmpty();
 
 void S_Output_SetViewport(int width, int height);
 void S_Output_SetFullscreen(bool fullscreen);
