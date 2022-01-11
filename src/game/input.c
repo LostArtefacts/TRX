@@ -8,6 +8,7 @@
 INPUT_STATE g_Input = { 0 };
 INPUT_STATE g_InputDB = { 0 };
 INPUT_STATE g_OldInputDB = { 0 };
+
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
