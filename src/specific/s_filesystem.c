@@ -30,10 +30,9 @@ const char *S_File_GetGameDirectory()
 void S_File_CreateDirectory(const char *path)
 {
     assert(path);
-    int32_t err_check = 0;
 #if defined(_WIN32)
-    err_check = _mkdir(path);
+    _mkdir(path);
 #else
-    err_check = mkdir(path, 0664);
+    mkdir(path, 0664);
 #endif
 }
