@@ -39,7 +39,7 @@
 
 #define LEVEL_TITLE_SIZE 25
 #define TIMESTAMP_SIZE 20
-#define EXTENSION_SIZE 10
+#define EXTRA_CHARS 6
 
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
@@ -260,6 +260,16 @@ void Shell_GetScreenshotName(char *str)
 
 bool Shell_MakeScreenshot()
 {
+    // Screenshot folder
+    char *ss_folder_path = NULL;
+    File_GetFullPath("screenshots", &ss_folder_path);
+    File_CreateDirectory(ss_folder_path);
+
+    // Screenshot name
+    char *ss_name = Memory_Alloc(TIMESTAMP_SIZE + LEVEL_TITLE_SIZE);
+    Shell_GetScreenshotName(ss_name);
+
+    // Screenshot extension
     const char *ext;
     switch (g_Config.screenshot_format) {
     case SCREENSHOT_FORMAT_JPEG:
@@ -270,41 +280,26 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    // Screenshot folder
-    char *ss_folder_path = NULL;
-    File_GetFullPath("screenshots", &ss_folder_path);
-    File_CreateDirectory(ss_folder_path);
-
-    // Screenshot name
-    char *ss_name =
-        Memory_Alloc(TIMESTAMP_SIZE + LEVEL_TITLE_SIZE + EXTENSION_SIZE);
-    Shell_GetScreenshotName(ss_name);
-
-    // Screenshot folder/name path
-    char *path = Memory_Alloc(strlen(ss_folder_path) + strlen(ss_name));
+    // Screenshot full path
+    bool result = false;
+    char *path = Memory_Alloc(
+        strlen(ss_folder_path) + strlen(ss_name) + strlen(ext) + EXTRA_CHARS);
     sprintf(path, "%s/%s.%s", ss_folder_path, ss_name, ext);
     if (!File_Exists(path)) {
-        bool result = Output_MakeScreenshot(path);
-        Memory_FreePointer(&ss_name);
-        Memory_FreePointer(&ss_folder_path);
-        Memory_FreePointer(&path);
-        return result;
-    }
-
-    // Name already exists so add number to name
-    for (int i = 2; i < 1000; i++) {
-        sprintf(path, "%s/%s_%d.%s", ss_folder_path, ss_name, i, ext);
-        if (!File_Exists(path)) {
-            bool result = Output_MakeScreenshot(path);
-            Memory_FreePointer(&ss_name);
-            Memory_FreePointer(&ss_folder_path);
-            Memory_FreePointer(&path);
-            return result;
+        result = Output_MakeScreenshot(path);
+    } else {
+        // Name already exists so add number to name
+        for (int i = 2; i < 100; i++) {
+            sprintf(path, "%s/%s_%d.%s", ss_folder_path, ss_name, i, ext);
+            if (!File_Exists(path)) {
+                result = Output_MakeScreenshot(path);
+                break;
+            }
         }
     }
 
     Memory_FreePointer(&ss_name);
     Memory_FreePointer(&ss_folder_path);
     Memory_FreePointer(&path);
-    return false;
+    return result;
 }
