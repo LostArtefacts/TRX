@@ -111,6 +111,11 @@ size_t File_Write(
     return fwrite(data, item_size, count, file->fp);
 }
 
+void File_CreateDirectory(const char *path)
+{
+    S_File_CreateDirectory(path);
+}
+
 void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
 {
     switch (mode) {

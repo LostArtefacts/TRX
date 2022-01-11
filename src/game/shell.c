@@ -31,10 +31,15 @@
 #include "specific/s_misc.h"
 #include "specific/s_shell.h"
 
+#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+#define LEVEL_TITLE_SIZE 25
+#define TIMESTAMP_SIZE 20
+#define EXTRA_CHARS 6
 
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
@@ -182,8 +187,89 @@ void Shell_Wait(int nticks)
     }
 }
 
+void Shell_GetScreenshotName(char *str)
+{
+    assert(str);
+
+    // Get level title of unknown length
+    char level_title[100];
+    snprintf(
+        level_title, LEVEL_TITLE_SIZE, "%s",
+        g_GameFlow.levels[g_CurrentLevel].level_title);
+
+    // Trim level titles that are too long
+    if (strlen(level_title) >= LEVEL_TITLE_SIZE) {
+        level_title[LEVEL_TITLE_SIZE] = '\0';
+    }
+
+    // Prepare level title for screenshot
+    char *check = level_title;
+    bool prev_us = true; // '_' after timestamp before title
+    int idx = 0;
+
+    while (*check != '\0') {
+        if (*check == ' ') {
+            // Replace spaces with a single underscore
+            if (prev_us) {
+                memmove(
+                    &level_title[idx], &level_title[idx + 1],
+                    strlen(level_title) - idx);
+            } else {
+                *check++ = '_';
+                idx++;
+                prev_us = true;
+            }
+        } else if (((*check < 'A' || *check > 'Z')
+                    && (*check < 'a' || *check > 'z')
+                    && (*check < '0' || *check > '9'))) {
+            // Strip non alphanumeric chars
+            memmove(
+                &level_title[idx], &level_title[idx + 1],
+                strlen(level_title) - idx);
+        } else {
+            *check++;
+            idx++;
+            prev_us = false;
+        }
+    }
+
+    // If title totally invalid, name it based on level number
+    if (strlen(level_title) == 0) {
+        char new_title[LEVEL_TITLE_SIZE];
+        sprintf(new_title, "Level_%d", g_CurrentLevel);
+        strcpy(level_title, new_title);
+        prev_us = false;
+    }
+
+    // Strip trailing underscores
+    if (prev_us) {
+        *check--;
+        idx--;
+        memmove(
+            &level_title[idx], &level_title[idx + 1], strlen(level_title) - 1);
+        prev_us = false;
+    }
+
+    // Get timestamp
+    char date_time[TIMESTAMP_SIZE];
+    Clock_GetDateTime(date_time);
+
+    // Full screenshot name
+    sprintf(str, "%s_%s", date_time, level_title);
+}
+
 bool Shell_MakeScreenshot()
 {
+    // Screenshot folder
+    char *ss_folder_path = NULL;
+    File_GetFullPath("screenshots", &ss_folder_path);
+    File_CreateDirectory(ss_folder_path);
+
+    // Screenshot name
+    char *ss_name = Memory_Alloc(TIMESTAMP_SIZE + LEVEL_TITLE_SIZE);
+    Shell_GetScreenshotName(ss_name);
+
+    // Screenshot extension
     const char *ext;
     switch (g_Config.screenshot_format) {
     case SCREENSHOT_FORMAT_JPEG:
@@ -194,20 +280,26 @@ bool Shell_MakeScreenshot()
         break;
     }
 
-    char path[20];
-    for (int i = 0; i < 10000; i++) {
-        sprintf(path, "screenshot%04d.%s", i, ext);
-        char *full_path = NULL;
-        File_GetFullPath(path, &full_path);
-
-        if (!File_Exists(full_path)) {
-            bool result = Output_MakeScreenshot(full_path);
-            Memory_FreePointer(&full_path);
-            return result;
+    // Screenshot full path
+    bool result = false;
+    char *path = Memory_Alloc(
+        strlen(ss_folder_path) + strlen(ss_name) + strlen(ext) + EXTRA_CHARS);
+    sprintf(path, "%s/%s.%s", ss_folder_path, ss_name, ext);
+    if (!File_Exists(path)) {
+        result = Output_MakeScreenshot(path);
+    } else {
+        // Name already exists so add number to name
+        for (int i = 2; i < 100; i++) {
+            sprintf(path, "%s/%s_%d.%s", ss_folder_path, ss_name, i, ext);
+            if (!File_Exists(path)) {
+                result = Output_MakeScreenshot(path);
+                break;
+            }
         }
-
-        Memory_FreePointer(&full_path);
     }
 
-    return false;
+    Memory_FreePointer(&ss_name);
+    Memory_FreePointer(&ss_folder_path);
+    Memory_FreePointer(&path);
+    return result;
 }
