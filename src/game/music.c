@@ -37,7 +37,9 @@ static void Music_StreamFinished(int stream_id, void *user_data)
 
     if (stream_id == m_AudioStreamID) {
         m_AudioStreamID = -1;
-        m_Track = 0;
+        if (m_Track == 13) {
+            m_Track = 0;
+        }
         if (m_TrackLooped >= 0) {
             Music_PlayLooped(m_TrackLooped);
         }
