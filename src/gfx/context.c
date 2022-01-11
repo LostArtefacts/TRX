@@ -14,7 +14,6 @@ typedef struct GFX_Context {
     HDC hdc; // GDI device context
     HGLRC hglrc; // OpenGL context handle
     bool is_fullscreen; // fullscreen flag
-    bool is_rendered; // rendering flag
     int32_t display_width;
     int32_t display_height;
     int32_t screen_width;
@@ -217,18 +216,6 @@ void GFX_Context_SwapBuffers()
     SwapBuffers(m_Context.hdc);
     glDrawBuffer(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    m_Context.is_rendered = false;
-}
-
-void GFX_Context_SetRendered()
-{
-    m_Context.is_rendered = true;
-}
-
-bool GFX_Context_IsRendered()
-{
-    return m_Context.is_rendered;
 }
 
 HWND GFX_Context_GetHWnd()

@@ -22,8 +22,6 @@ int32_t GFX_Context_GetScreenWidth();
 int32_t GFX_Context_GetScreenHeight();
 void GFX_Context_SetupViewport();
 void GFX_Context_SwapBuffers();
-void GFX_Context_SetRendered();
-bool GFX_Context_IsRendered();
 HWND GFX_Context_GetHWnd();
 void GFX_Context_ScheduleScreenshot(const char *path);
 GFX_2D_Renderer *GFX_Context_GetRenderer2D();

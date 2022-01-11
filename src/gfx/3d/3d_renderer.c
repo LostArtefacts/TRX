@@ -180,7 +180,6 @@ bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 void GFX_3D_Renderer_RenderPrimStrip(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
-    GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimStrip(
         &renderer->vertex_stream, vertices, count);
 }
@@ -188,7 +187,6 @@ void GFX_3D_Renderer_RenderPrimStrip(
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
-    GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, vertices, count);
 }
 

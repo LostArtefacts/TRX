@@ -165,13 +165,9 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
         return false;
     }
 
-    bool rendered = GFX_Context_IsRendered();
-
     // don't re-upload surfaces if external rendering was active after
     // lock() has been called, since it wouldn't be visible anyway
-    if (rendered) {
-        surface->is_dirty = false;
-    }
+    surface->is_dirty = false;
 
     // swap front and back buffers
     uint8_t *buffer_tmp = surface->back_buffer->buffer;
@@ -191,22 +187,13 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
 
     // swap buffer now if there was external rendering, otherwise the
     // surface would overwrite it
-    if (rendered) {
-        GFX_Context_SwapBuffers();
-    }
+    GFX_Context_SwapBuffers();
 
     // update viewport in case the window size has changed
     GFX_Context_SetupViewport();
 
     // render surface
     GFX_2D_Renderer_Render(surface->renderer);
-
-    // swap buffer after the surface has been rendered if there was no
-    // external rendering for this frame, fixes title screens and other pure
-    // 2D operations that aren't continuously updated
-    if (!rendered) {
-        GFX_Context_SwapBuffers();
-    }
 
     return true;
 }

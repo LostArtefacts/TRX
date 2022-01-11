@@ -237,9 +237,6 @@ int32_t Display_Inventory(int inv_mode)
         Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
-        // TODO Acceptable fix? Nothing renders for 3 frames
-        // So a second GFX_Context_SwapBuffers is called in 2d_surface.c
-        GFX_Context_SetRendered();
 
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
