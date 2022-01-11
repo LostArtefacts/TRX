@@ -38,7 +38,6 @@
 #include <string.h>
 
 #define LEVEL_TITLE_SIZE 25
-#define SS_FOLDER_NAME_SIZE 20
 #define TIMESTAMP_SIZE 20
 #define EXTENSION_SIZE 10
 
@@ -272,41 +271,40 @@ bool Shell_MakeScreenshot()
     }
 
     // Screenshot folder
-    const char ss_folder[SS_FOLDER_NAME_SIZE] = "screenshots";
-    char *full_ss_path = NULL;
-    File_GetFullPath(ss_folder, &full_ss_path);
-    File_CreateDirectory(full_ss_path);
-    Memory_FreePointer(&full_ss_path);
+    char *ss_folder_path = NULL;
+    File_GetFullPath("screenshots", &ss_folder_path);
+    File_CreateDirectory(ss_folder_path);
 
     // Screenshot name
-    char ss_name[TIMESTAMP_SIZE + LEVEL_TITLE_SIZE];
+    char *ss_name =
+        Memory_Alloc(TIMESTAMP_SIZE + LEVEL_TITLE_SIZE + EXTENSION_SIZE);
     Shell_GetScreenshotName(ss_name);
 
     // Screenshot folder/name path
-    char path
-        [SS_FOLDER_NAME_SIZE + TIMESTAMP_SIZE + LEVEL_TITLE_SIZE
-         + EXTENSION_SIZE];
-    sprintf(path, "%s/%s.%s", ss_folder, ss_name, ext);
-    char *full_path = NULL;
-    File_GetFullPath(path, &full_path);
-    if (!File_Exists(full_path)) {
-        bool result = Output_MakeScreenshot(full_path);
-        Memory_FreePointer(&full_path);
+    char *path = Memory_Alloc(strlen(ss_folder_path) + strlen(ss_name));
+    sprintf(path, "%s/%s.%s", ss_folder_path, ss_name, ext);
+    if (!File_Exists(path)) {
+        bool result = Output_MakeScreenshot(path);
+        Memory_FreePointer(&ss_name);
+        Memory_FreePointer(&ss_folder_path);
+        Memory_FreePointer(&path);
         return result;
     }
 
     // Name already exists so add number to name
     for (int i = 2; i < 1000; i++) {
-        sprintf(path, "%s/%s_%d.%s", ss_folder, ss_name, i, ext);
-        char *full_path = NULL;
-        File_GetFullPath(path, &full_path);
-        if (!File_Exists(full_path)) {
-            bool result = Output_MakeScreenshot(full_path);
-            Memory_FreePointer(&full_path);
+        sprintf(path, "%s/%s_%d.%s", ss_folder_path, ss_name, i, ext);
+        if (!File_Exists(path)) {
+            bool result = Output_MakeScreenshot(path);
+            Memory_FreePointer(&ss_name);
+            Memory_FreePointer(&ss_folder_path);
+            Memory_FreePointer(&path);
             return result;
         }
-        Memory_FreePointer(&full_path);
     }
 
+    Memory_FreePointer(&ss_name);
+    Memory_FreePointer(&ss_folder_path);
+    Memory_FreePointer(&path);
     return false;
 }

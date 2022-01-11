@@ -3,7 +3,6 @@
 #include "log.h"
 
 #include <assert.h>
-#include <errno.h>
 #include <SDL2/SDL.h>
 #include <string.h>
 
@@ -37,7 +36,4 @@ void S_File_CreateDirectory(const char *path)
 #else
     err_check = mkdir(path, 0664);
 #endif
-    if (err_check != 0) {
-        LOG_ERROR("mkdir failed! %s\n", strerror(errno));
-    }
 }
