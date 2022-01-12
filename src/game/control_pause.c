@@ -11,6 +11,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_misc.h"
+#include "src/game/sound.h"
 
 #include <stddef.h>
 
@@ -154,6 +155,8 @@ bool Control_Pause()
     Output_SetupAboveWater(false);
 
     Music_Pause();
+    Sound_StopAmbientSounds();
+    Sound_StopAllSamples();
 
     int32_t select = Control_Pause_Loop();
 
