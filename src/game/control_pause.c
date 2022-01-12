@@ -11,6 +11,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_misc.h"
+#include "src/game/sound.h"
 
 #include <stddef.h>
 
