@@ -154,6 +154,8 @@ bool Control_Pause()
     Output_SetupAboveWater(false);
 
     Music_Pause();
+    Sound_StopAmbientSounds();
+    Sound_StopAllSamples();
 
     int32_t select = Control_Pause_Loop();
 
