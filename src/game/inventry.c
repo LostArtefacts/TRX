@@ -3,7 +3,6 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
-#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
@@ -664,7 +663,7 @@ int32_t Display_Inventory(int inv_mode)
                     InitialiseStartInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
+                    SaveGame_SaveToFile(&g_SaveGame, g_InvExtraData[1]);
                     Settings_Write();
                     return GF_NOP;
                 }

@@ -1,6 +1,6 @@
 #include "game/option.h"
 
-#include "game/game.h"
+#include "game/savegame.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -107,7 +107,7 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    Game_ScanSavedGames();
+    SaveGame_ScanSavedGames();
 }
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
