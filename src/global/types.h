@@ -1465,18 +1465,6 @@ typedef struct SAVEGAME_INFO {
     uint16_t current_level;
     uint8_t pickups;
     uint8_t bonus_flag;
-    uint8_t num_pickup1;
-    uint8_t num_pickup2;
-    uint8_t num_puzzle1;
-    uint8_t num_puzzle2;
-    uint8_t num_puzzle3;
-    uint8_t num_puzzle4;
-    uint8_t num_key1;
-    uint8_t num_key2;
-    uint8_t num_key3;
-    uint8_t num_key4;
-    uint8_t num_leadbar;
-    uint8_t challenge_failed;
     char buffer[MAX_SAVEGAME_BUFFER];
 } SAVEGAME_INFO;
 

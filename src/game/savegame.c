@@ -18,11 +18,27 @@
 #include "global/vars.h"
 #include "log.h"
 
+#include <string.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stddef.h>
 
 #define SAVE_CREATURE (1 << 7)
+
+typedef struct SAVEGAME_ITEM_STATS {
+    uint8_t num_pickup1;
+    uint8_t num_pickup2;
+    uint8_t num_puzzle1;
+    uint8_t num_puzzle2;
+    uint8_t num_puzzle3;
+    uint8_t num_puzzle4;
+    uint8_t num_key1;
+    uint8_t num_key2;
+    uint8_t num_key3;
+    uint8_t num_key4;
+    uint8_t num_leadbar;
+    uint8_t dummy;
+} SAVEGAME_ITEM_STATS;
 
 static int m_SGCount = 0;
 static char *m_SGPoint = NULL;
@@ -229,23 +245,25 @@ void SaveGame_SaveToSave(SAVEGAME_INFO *save)
 
     CreateStartInfo(g_CurrentLevel);
 
-    save->num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
-    save->num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
-    save->num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
-    save->num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
-    save->num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
-    save->num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
-    save->num_key1 = Inv_RequestItem(O_KEY_ITEM1);
-    save->num_key2 = Inv_RequestItem(O_KEY_ITEM2);
-    save->num_key3 = Inv_RequestItem(O_KEY_ITEM3);
-    save->num_key4 = Inv_RequestItem(O_KEY_ITEM4);
-    save->num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
-
     SaveGame_ResetSG(save);
+    memset(m_SGPoint, 0, MAX_SAVEGAME_BUFFER);
 
-    for (int i = 0; i < MAX_SAVEGAME_BUFFER; i++) {
-        m_SGPoint[i] = 0;
-    }
+    SAVEGAME_ITEM_STATS item_stats = {
+        .num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1),
+        .num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2),
+        .num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1),
+        .num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2),
+        .num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3),
+        .num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4),
+        .num_key1 = Inv_RequestItem(O_KEY_ITEM1),
+        .num_key2 = Inv_RequestItem(O_KEY_ITEM2),
+        .num_key3 = Inv_RequestItem(O_KEY_ITEM3),
+        .num_key4 = Inv_RequestItem(O_KEY_ITEM4),
+        .num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM),
+        0
+    };
+
+    SaveGame_WriteSG(&item_stats, sizeof(item_stats));
 
     SaveGame_WriteSG(&g_FlipStatus, sizeof(int32_t));
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
@@ -311,58 +329,26 @@ void SaveGame_LoadFromSave(SAVEGAME_INFO *save)
     int16_t tmp16;
     int32_t tmp32;
 
-    InitialiseLaraInventory(g_CurrentLevel);
-
-    for (int i = 0; i < save->num_pickup1; i++) {
-        Inv_AddItem(O_PICKUP_ITEM1);
-    }
-
-    for (int i = 0; i < save->num_pickup2; i++) {
-        Inv_AddItem(O_PICKUP_ITEM2);
-    }
-
-    for (int i = 0; i < save->num_puzzle1; i++) {
-        Inv_AddItem(O_PUZZLE_ITEM1);
-    }
-
-    for (int i = 0; i < save->num_puzzle2; i++) {
-        Inv_AddItem(O_PUZZLE_ITEM2);
-    }
-
-    for (int i = 0; i < save->num_puzzle3; i++) {
-        Inv_AddItem(O_PUZZLE_ITEM3);
-    }
-
-    for (int i = 0; i < save->num_puzzle4; i++) {
-        Inv_AddItem(O_PUZZLE_ITEM4);
-    }
-
-    for (int i = 0; i < save->num_key1; i++) {
-        Inv_AddItem(O_KEY_ITEM1);
-    }
-
-    for (int i = 0; i < save->num_key2; i++) {
-        Inv_AddItem(O_KEY_ITEM2);
-    }
-
-    for (int i = 0; i < save->num_key3; i++) {
-        Inv_AddItem(O_KEY_ITEM3);
-    }
-
-    for (int i = 0; i < save->num_key4; i++) {
-        Inv_AddItem(O_KEY_ITEM4);
-    }
-
-    for (int i = 0; i < save->num_leadbar; i++) {
-        Inv_AddItem(O_LEADBAR_ITEM);
-    }
-
     bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix(save);
     if (skip_reading_evil_lara) {
         LOG_INFO("Enabling Evil Lara savegame fix");
     }
 
     SaveGame_ResetSG(save);
+    InitialiseLaraInventory(g_CurrentLevel);
+    SAVEGAME_ITEM_STATS item_stats = { 0 };
+    SaveGame_ReadSG(&item_stats, sizeof(item_stats));
+    Inv_AddItemNTimes(O_PICKUP_ITEM1, item_stats.num_pickup1);
+    Inv_AddItemNTimes(O_PICKUP_ITEM2, item_stats.num_pickup2);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM1, item_stats.num_puzzle1);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM2, item_stats.num_puzzle2);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM3, item_stats.num_puzzle3);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM4, item_stats.num_puzzle4);
+    Inv_AddItemNTimes(O_KEY_ITEM1, item_stats.num_key1);
+    Inv_AddItemNTimes(O_KEY_ITEM2, item_stats.num_key2);
+    Inv_AddItemNTimes(O_KEY_ITEM3, item_stats.num_key3);
+    Inv_AddItemNTimes(O_KEY_ITEM4, item_stats.num_key4);
+    Inv_AddItemNTimes(O_LEADBAR_ITEM, item_stats.num_leadbar);
 
     SaveGame_ReadSG(&tmp32, sizeof(int32_t));
     if (tmp32) {
@@ -743,8 +729,8 @@ bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot)
         return false;
     }
     File_Read(filename, sizeof(char), 75, fp);
-    int32_t counter;
 
+    int32_t counter;
     File_Read(&counter, sizeof(int32_t), 1, fp);
 
     assert(save->start);
@@ -755,18 +741,6 @@ bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot)
     File_Read(&save->current_level, sizeof(uint16_t), 1, fp);
     File_Read(&save->pickups, sizeof(uint8_t), 1, fp);
     File_Read(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key3, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key4, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    File_Read(&save->challenge_failed, sizeof(uint8_t), 1, fp);
     File_Read(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
 
@@ -810,18 +784,6 @@ bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot)
     File_Write(&save->current_level, sizeof(uint16_t), 1, fp);
     File_Write(&save->pickups, sizeof(uint8_t), 1, fp);
     File_Write(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key3, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key4, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    File_Write(&save->challenge_failed, sizeof(uint8_t), 1, fp);
     File_Write(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
 

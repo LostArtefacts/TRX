@@ -445,6 +445,13 @@ bool Inv_AddItem(int32_t item_num)
     return false;
 }
 
+void Inv_AddItemNTimes(int32_t item_num, int32_t qty)
+{
+    for (int i = 0; i < qty; i++) {
+        Inv_AddItem(item_num);
+    }
+}
+
 void Inv_InsertItem(INVENTORY_ITEM *inv_item)
 {
     int n;
