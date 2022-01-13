@@ -123,7 +123,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     Sound_ResetEffects();
 
     if (level_type == GFL_SAVED) {
-        ExtractSaveGameInfo();
+        SaveGame_LoadFromSave(&g_SaveGame);
     }
 
     // LaraGun() expects request_gun_type to be set only when it really is

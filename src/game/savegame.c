@@ -28,7 +28,7 @@ static int m_SGCount = 0;
 static char *m_SGPoint = NULL;
 
 static bool SaveGame_NeedsEvilLaraFix();
-static void SaveGame_ResetSG();
+static void SaveGame_ResetSG(SAVEGAME_INFO *save);
 static void SaveGame_SkipSG(int size);
 static void SaveGame_ReadSG(void *pointer, int size);
 static void SaveGame_ReadSGARM(LARA_ARM *arm);
@@ -39,7 +39,7 @@ static void SaveGame_WriteSGARM(LARA_ARM *arm);
 static void SaveGame_WriteSGLara(LARA_INFO *lara);
 static void SaveGame_WriteSGLOT(LOT_INFO *lot);
 
-static bool SaveGame_NeedsEvilLaraFix()
+static bool SaveGame_NeedsEvilLaraFix(SAVEGAME_INFO *save)
 {
     // Heuristic for issue #261.
     // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
@@ -54,11 +54,11 @@ static bool SaveGame_NeedsEvilLaraFix()
     // concise information, we must make an educated guess here.
 
     bool result = false;
-    if (g_SaveGame.current_level != 14) {
+    if (save->current_level != 14) {
         return result;
     }
 
-    SaveGame_ResetSG();
+    SaveGame_ResetSG(save);
     SaveGame_SkipSG(sizeof(int32_t));
     SaveGame_SkipSG(MAX_FLIP_MAPS * sizeof(int8_t));
     SaveGame_SkipSG(g_NumberCameras * sizeof(int16_t));
@@ -223,25 +223,25 @@ void CreateStartInfo(int level_num)
     }
 }
 
-void CreateSaveGameInfo()
+void SaveGame_SaveToSave(SAVEGAME_INFO *save)
 {
-    g_SaveGame.current_level = g_CurrentLevel;
+    save->current_level = g_CurrentLevel;
 
     CreateStartInfo(g_CurrentLevel);
 
-    g_SaveGame.num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
-    g_SaveGame.num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
-    g_SaveGame.num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
-    g_SaveGame.num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
-    g_SaveGame.num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
-    g_SaveGame.num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
-    g_SaveGame.num_key1 = Inv_RequestItem(O_KEY_ITEM1);
-    g_SaveGame.num_key2 = Inv_RequestItem(O_KEY_ITEM2);
-    g_SaveGame.num_key3 = Inv_RequestItem(O_KEY_ITEM3);
-    g_SaveGame.num_key4 = Inv_RequestItem(O_KEY_ITEM4);
-    g_SaveGame.num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
+    save->num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
+    save->num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
+    save->num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
+    save->num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
+    save->num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
+    save->num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
+    save->num_key1 = Inv_RequestItem(O_KEY_ITEM1);
+    save->num_key2 = Inv_RequestItem(O_KEY_ITEM2);
+    save->num_key3 = Inv_RequestItem(O_KEY_ITEM3);
+    save->num_key4 = Inv_RequestItem(O_KEY_ITEM4);
+    save->num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
 
-    SaveGame_ResetSG();
+    SaveGame_ResetSG(save);
 
     for (int i = 0; i < MAX_SAVEGAME_BUFFER; i++) {
         m_SGPoint[i] = 0;
@@ -305,7 +305,7 @@ void CreateSaveGameInfo()
     SaveGame_WriteSG(&g_FlipTimer, sizeof(int32_t));
 }
 
-void ExtractSaveGameInfo()
+void SaveGame_LoadFromSave(SAVEGAME_INFO *save)
 {
     int8_t tmp8;
     int16_t tmp16;
@@ -313,56 +313,56 @@ void ExtractSaveGameInfo()
 
     InitialiseLaraInventory(g_CurrentLevel);
 
-    for (int i = 0; i < g_SaveGame.num_pickup1; i++) {
+    for (int i = 0; i < save->num_pickup1; i++) {
         Inv_AddItem(O_PICKUP_ITEM1);
     }
 
-    for (int i = 0; i < g_SaveGame.num_pickup2; i++) {
+    for (int i = 0; i < save->num_pickup2; i++) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
 
-    for (int i = 0; i < g_SaveGame.num_puzzle1; i++) {
+    for (int i = 0; i < save->num_puzzle1; i++) {
         Inv_AddItem(O_PUZZLE_ITEM1);
     }
 
-    for (int i = 0; i < g_SaveGame.num_puzzle2; i++) {
+    for (int i = 0; i < save->num_puzzle2; i++) {
         Inv_AddItem(O_PUZZLE_ITEM2);
     }
 
-    for (int i = 0; i < g_SaveGame.num_puzzle3; i++) {
+    for (int i = 0; i < save->num_puzzle3; i++) {
         Inv_AddItem(O_PUZZLE_ITEM3);
     }
 
-    for (int i = 0; i < g_SaveGame.num_puzzle4; i++) {
+    for (int i = 0; i < save->num_puzzle4; i++) {
         Inv_AddItem(O_PUZZLE_ITEM4);
     }
 
-    for (int i = 0; i < g_SaveGame.num_key1; i++) {
+    for (int i = 0; i < save->num_key1; i++) {
         Inv_AddItem(O_KEY_ITEM1);
     }
 
-    for (int i = 0; i < g_SaveGame.num_key2; i++) {
+    for (int i = 0; i < save->num_key2; i++) {
         Inv_AddItem(O_KEY_ITEM2);
     }
 
-    for (int i = 0; i < g_SaveGame.num_key3; i++) {
+    for (int i = 0; i < save->num_key3; i++) {
         Inv_AddItem(O_KEY_ITEM3);
     }
 
-    for (int i = 0; i < g_SaveGame.num_key4; i++) {
+    for (int i = 0; i < save->num_key4; i++) {
         Inv_AddItem(O_KEY_ITEM4);
     }
 
-    for (int i = 0; i < g_SaveGame.num_leadbar; i++) {
+    for (int i = 0; i < save->num_leadbar; i++) {
         Inv_AddItem(O_LEADBAR_ITEM);
     }
 
-    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix();
+    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix(save);
     if (skip_reading_evil_lara) {
         LOG_INFO("Enabling Evil Lara savegame fix");
     }
 
-    SaveGame_ResetSG();
+    SaveGame_ResetSG(save);
 
     SaveGame_ReadSG(&tmp32, sizeof(int32_t));
     if (tmp32) {
@@ -530,10 +530,10 @@ void ExtractSaveGameInfo()
     SaveGame_ReadSG(&g_FlipTimer, sizeof(int32_t));
 }
 
-static void SaveGame_ResetSG()
+static void SaveGame_ResetSG(SAVEGAME_INFO *save)
 {
     m_SGCount = 0;
-    m_SGPoint = g_SaveGame.buffer;
+    m_SGPoint = save->buffer;
 }
 
 static void SaveGame_SkipSG(int size)
@@ -781,7 +781,7 @@ bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot)
 
 bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot)
 {
-    CreateSaveGameInfo();
+    SaveGame_SaveToSave(save);
 
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);
@@ -798,9 +798,7 @@ bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot)
         }
     }
 
-    sprintf(
-        filename, "%s",
-        g_GameFlow.levels[g_SaveGame.current_level].level_title);
+    sprintf(filename, "%s", g_GameFlow.levels[save->current_level].level_title);
     File_Write(filename, sizeof(char), 75, fp);
     File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
 
