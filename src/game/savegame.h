@@ -21,3 +21,7 @@ void WriteSG(void *pointer, int size);
 void WriteSGARM(LARA_ARM *arm);
 void WriteSGLara(LARA_INFO *lara);
 void WriteSGLOT(LOT_INFO *lot);
+
+bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot);
+bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot);
+void SaveGame_ScanSavedGames();
