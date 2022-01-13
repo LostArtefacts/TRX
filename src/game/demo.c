@@ -44,7 +44,7 @@ int32_t StartDemo()
     } while (!g_GameFlow.levels[level_num].demo);
     m_DemoLevel = level_num;
 
-    s = &g_SaveGame.start[m_DemoLevel];
+    s = &g_GameInfo.start[m_DemoLevel];
     start = *s;
     s->available = 1;
     s->got_pistols = 1;

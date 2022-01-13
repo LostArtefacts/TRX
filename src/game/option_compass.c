@@ -42,7 +42,7 @@ static void Option_CompassInitText()
 
     int32_t secrets_taken = 0;
     int32_t secrets_total = MAX_SECRETS;
-    int32_t secrets_flags = g_SaveGame.secrets;
+    int32_t secrets_flags = g_GameInfo.secrets;
     do {
         if (secrets_flags & 1) {
             secrets_taken++;
@@ -56,11 +56,11 @@ static void Option_CompassInitText()
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
-    sprintf(buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_SaveGame.pickups);
+    sprintf(buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups);
     m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
-    sprintf(buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_SaveGame.kills);
+    sprintf(buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills);
     m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
@@ -85,7 +85,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
             Option_CompassInitText();
         }
 
-        int32_t seconds = g_SaveGame.timer / 30;
+        int32_t seconds = g_GameInfo.timer / 30;
         int32_t hours = seconds / 3600;
         int32_t minutes = (seconds / 60) % 60;
         seconds %= 60;

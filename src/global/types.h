@@ -1457,7 +1457,7 @@ typedef struct START_INFO {
     uint16_t costume : 1;
 } START_INFO;
 
-typedef struct SAVEGAME_INFO {
+typedef struct GAME_INFO {
     START_INFO *start;
     uint32_t timer;
     uint32_t kills;
@@ -1465,8 +1465,8 @@ typedef struct SAVEGAME_INFO {
     uint16_t current_level;
     uint8_t pickups;
     uint8_t bonus_flag;
-    char buffer[MAX_SAVEGAME_BUFFER];
-} SAVEGAME_INFO;
+    char savegame_buffer[MAX_SAVEGAME_BUFFER];
+} GAME_INFO;
 
 typedef struct CREATURE_INFO {
     int16_t head_rotation;

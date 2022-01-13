@@ -64,7 +64,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            g_SaveGame.pickups++;
+            g_GameInfo.pickups++;
             return;
         }
 
@@ -91,7 +91,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            g_SaveGame.pickups++;
+            g_GameInfo.pickups++;
             return;
         }
 

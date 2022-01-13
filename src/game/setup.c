@@ -92,7 +92,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     LOG_DEBUG("%d", level_num);
     if (level_type == GFL_SAVED) {
-        g_CurrentLevel = g_SaveGame.current_level;
+        g_CurrentLevel = g_GameInfo.current_level;
     } else {
         g_CurrentLevel = level_num;
     }
@@ -123,7 +123,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     Sound_ResetEffects();
 
     if (level_type == GFL_SAVED) {
-        SaveGame_LoadFromSave(&g_SaveGame);
+        SaveGame_LoadFromSave(&g_GameInfo);
     }
 
     // LaraGun() expects request_gun_type to be set only when it really is
@@ -163,10 +163,10 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    g_SaveGame.secrets = 0;
-    g_SaveGame.timer = 0;
-    g_SaveGame.pickups = 0;
-    g_SaveGame.kills = 0;
+    g_GameInfo.secrets = 0;
+    g_GameInfo.timer = 0;
+    g_GameInfo.pickups = 0;
+    g_GameInfo.kills = 0;
 }
 
 void BaddyObjects()
