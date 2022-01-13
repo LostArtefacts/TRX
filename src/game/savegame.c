@@ -44,7 +44,7 @@ static int m_SGCount = 0;
 static char *m_SGPoint = NULL;
 
 static bool SaveGame_NeedsEvilLaraFix();
-static void SaveGame_ResetSG(SAVEGAME_INFO *save);
+static void SaveGame_ResetSG(GAME_INFO *game_info);
 static void SaveGame_SkipSG(int size);
 static void SaveGame_ReadSG(void *pointer, int size);
 static void SaveGame_ReadSGARM(LARA_ARM *arm);
@@ -55,7 +55,7 @@ static void SaveGame_WriteSGARM(LARA_ARM *arm);
 static void SaveGame_WriteSGLara(LARA_INFO *lara);
 static void SaveGame_WriteSGLOT(LOT_INFO *lot);
 
-static bool SaveGame_NeedsEvilLaraFix(SAVEGAME_INFO *save)
+static bool SaveGame_NeedsEvilLaraFix(GAME_INFO *game_info)
 {
     // Heuristic for issue #261.
     // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
@@ -70,11 +70,11 @@ static bool SaveGame_NeedsEvilLaraFix(SAVEGAME_INFO *save)
     // concise information, we must make an educated guess here.
 
     bool result = false;
-    if (save->current_level != 14) {
+    if (game_info->current_level != 14) {
         return result;
     }
 
-    SaveGame_ResetSG(save);
+    SaveGame_ResetSG(game_info);
     SaveGame_SkipSG(sizeof(int32_t));
     SaveGame_SkipSG(MAX_FLIP_MAPS * sizeof(int8_t));
     SaveGame_SkipSG(g_NumberCameras * sizeof(int16_t));
@@ -128,15 +128,15 @@ void InitialiseStartInfo()
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         ModifyStartInfo(i);
-        g_SaveGame.start[i].available = 0;
+        g_GameInfo.start[i].available = 0;
     }
-    g_SaveGame.start[g_GameFlow.gym_level_num].available = 1;
-    g_SaveGame.start[g_GameFlow.first_level_num].available = 1;
+    g_GameInfo.start[g_GameFlow.gym_level_num].available = 1;
+    g_GameInfo.start[g_GameFlow.first_level_num].available = 1;
 }
 
 void ModifyStartInfo(int32_t level_num)
 {
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
     start->got_pistols = 1;
     start->gun_type = LGT_PISTOLS;
@@ -175,7 +175,7 @@ void ModifyStartInfo(int32_t level_num)
         start->gun_status = LGS_ARMLESS;
     }
 
-    if ((g_SaveGame.bonus_flag & GBF_NGPLUS)
+    if ((g_GameInfo.bonus_flag & GBF_NGPLUS)
         && level_num != g_GameFlow.gym_level_num) {
         start->got_pistols = 1;
         start->got_shotgun = 1;
@@ -190,7 +190,7 @@ void ModifyStartInfo(int32_t level_num)
 
 void CreateStartInfo(int level_num)
 {
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
     start->available = 1;
     start->costume = 0;
@@ -239,13 +239,13 @@ void CreateStartInfo(int level_num)
     }
 }
 
-void SaveGame_SaveToSave(SAVEGAME_INFO *save)
+void SaveGame_SaveToSave(GAME_INFO *game_info)
 {
-    save->current_level = g_CurrentLevel;
+    game_info->current_level = g_CurrentLevel;
 
     CreateStartInfo(g_CurrentLevel);
 
-    SaveGame_ResetSG(save);
+    SaveGame_ResetSG(game_info);
     memset(m_SGPoint, 0, MAX_SAVEGAME_BUFFER);
 
     SAVEGAME_ITEM_STATS item_stats = {
@@ -323,18 +323,18 @@ void SaveGame_SaveToSave(SAVEGAME_INFO *save)
     SaveGame_WriteSG(&g_FlipTimer, sizeof(int32_t));
 }
 
-void SaveGame_LoadFromSave(SAVEGAME_INFO *save)
+void SaveGame_LoadFromSave(GAME_INFO *game_info)
 {
     int8_t tmp8;
     int16_t tmp16;
     int32_t tmp32;
 
-    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix(save);
+    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix(game_info);
     if (skip_reading_evil_lara) {
         LOG_INFO("Enabling Evil Lara savegame fix");
     }
 
-    SaveGame_ResetSG(save);
+    SaveGame_ResetSG(game_info);
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_ITEM_STATS item_stats = { 0 };
     SaveGame_ReadSG(&item_stats, sizeof(item_stats));
@@ -516,10 +516,10 @@ void SaveGame_LoadFromSave(SAVEGAME_INFO *save)
     SaveGame_ReadSG(&g_FlipTimer, sizeof(int32_t));
 }
 
-static void SaveGame_ResetSG(SAVEGAME_INFO *save)
+static void SaveGame_ResetSG(GAME_INFO *game_info)
 {
     m_SGCount = 0;
-    m_SGPoint = save->buffer;
+    m_SGPoint = game_info->savegame_buffer;
 }
 
 static void SaveGame_SkipSG(int size)
@@ -719,7 +719,7 @@ static void SaveGame_ReadSGLOT(LOT_INFO *lot)
     SaveGame_ReadSG(&lot->target, sizeof(PHD_VECTOR));
 }
 
-bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot)
+bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
 {
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);
@@ -733,29 +733,31 @@ bool SaveGame_LoadFromFile(SAVEGAME_INFO *save, int32_t slot)
     int32_t counter;
     File_Read(&counter, sizeof(int32_t), 1, fp);
 
-    assert(save->start);
-    File_Read(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Read(&save->timer, sizeof(uint32_t), 1, fp);
-    File_Read(&save->kills, sizeof(uint32_t), 1, fp);
-    File_Read(&save->secrets, sizeof(uint16_t), 1, fp);
-    File_Read(&save->current_level, sizeof(uint16_t), 1, fp);
-    File_Read(&save->pickups, sizeof(uint8_t), 1, fp);
-    File_Read(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Read(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    assert(game_info->start);
+    File_Read(
+        &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
+    File_Read(&game_info->timer, sizeof(uint32_t), 1, fp);
+    File_Read(&game_info->kills, sizeof(uint32_t), 1, fp);
+    File_Read(&game_info->secrets, sizeof(uint16_t), 1, fp);
+    File_Read(&game_info->current_level, sizeof(uint16_t), 1, fp);
+    File_Read(&game_info->pickups, sizeof(uint8_t), 1, fp);
+    File_Read(&game_info->bonus_flag, sizeof(uint8_t), 1, fp);
+    File_Read(
+        &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            save->start[save->current_level] = save->start[i];
+            game_info->start[game_info->current_level] = game_info->start[i];
         }
     }
 
     return true;
 }
 
-bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot)
+bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
 {
-    SaveGame_SaveToSave(save);
+    SaveGame_SaveToSave(game_info);
 
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);
@@ -768,23 +770,27 @@ bool SaveGame_SaveToFile(SAVEGAME_INFO *save, int32_t slot)
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            save->start[i] = save->start[save->current_level];
+            game_info->start[i] = game_info->start[game_info->current_level];
         }
     }
 
-    sprintf(filename, "%s", g_GameFlow.levels[save->current_level].level_title);
+    sprintf(
+        filename, "%s",
+        g_GameFlow.levels[game_info->current_level].level_title);
     File_Write(filename, sizeof(char), 75, fp);
     File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
 
-    assert(save->start);
-    File_Write(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Write(&save->timer, sizeof(uint32_t), 1, fp);
-    File_Write(&save->kills, sizeof(uint32_t), 1, fp);
-    File_Write(&save->secrets, sizeof(uint16_t), 1, fp);
-    File_Write(&save->current_level, sizeof(uint16_t), 1, fp);
-    File_Write(&save->pickups, sizeof(uint8_t), 1, fp);
-    File_Write(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Write(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    assert(game_info->start);
+    File_Write(
+        &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
+    File_Write(&game_info->timer, sizeof(uint32_t), 1, fp);
+    File_Write(&game_info->kills, sizeof(uint32_t), 1, fp);
+    File_Write(&game_info->secrets, sizeof(uint16_t), 1, fp);
+    File_Write(&game_info->current_level, sizeof(uint16_t), 1, fp);
+    File_Write(&game_info->pickups, sizeof(uint8_t), 1, fp);
+    File_Write(&game_info->bonus_flag, sizeof(uint8_t), 1, fp);
+    File_Write(
+        &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
 
     REQUEST_INFO *req = &g_LoadSaveGameRequester;

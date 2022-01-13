@@ -106,7 +106,7 @@ void LevelStats(int32_t level_num)
     Text_CentreV(txt, 1);
 
     // time taken
-    int32_t seconds = g_SaveGame.timer / 30;
+    int32_t seconds = g_GameInfo.timer / 30;
     int32_t hours = seconds / 3600;
     int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
@@ -126,10 +126,10 @@ void LevelStats(int32_t level_num)
     int32_t secrets_taken = 0;
     int32_t secrets_total = MAX_SECRETS;
     do {
-        if (g_SaveGame.secrets & 1) {
+        if (g_GameInfo.secrets & 1) {
             secrets_taken++;
         }
-        g_SaveGame.secrets >>= 1;
+        g_GameInfo.secrets >>= 1;
         secrets_total--;
     } while (secrets_total);
     sprintf(
@@ -141,13 +141,13 @@ void LevelStats(int32_t level_num)
 
     // pickups
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_SaveGame.pickups);
+        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups);
     txt = Text_Create(0, 10, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
     // kills
-    sprintf(string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_SaveGame.kills);
+    sprintf(string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills);
     txt = Text_Create(0, -20, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
@@ -184,13 +184,13 @@ void LevelStats(int32_t level_num)
     }
 
     if (level_num == g_GameFlow.last_level_num) {
-        g_SaveGame.bonus_flag = GBF_NGPLUS;
+        g_GameInfo.bonus_flag = GBF_NGPLUS;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
     }
 
-    g_SaveGame.start[g_CurrentLevel].available = 0;
+    g_GameInfo.start[g_CurrentLevel].available = 0;
     Output_FadeToBlack();
     Screen_ApplyResolution();
 }

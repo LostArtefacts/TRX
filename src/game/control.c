@@ -309,7 +309,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CalculateCamera();
         Sound_UpdateEffects();
-        g_SaveGame.timer++;
+        g_GameInfo.timer++;
         Overlay_BarHealthTimerTick();
 
         if (g_Config.disable_healing_between_levels) {
@@ -742,10 +742,10 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((g_SaveGame.secrets & (1 << value))) {
+            if ((g_GameInfo.secrets & (1 << value))) {
                 break;
             }
-            g_SaveGame.secrets |= 1 << value;
+            g_GameInfo.secrets |= 1 << value;
             Music_Play(13);
             break;
         }

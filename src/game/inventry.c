@@ -241,7 +241,7 @@ int32_t Display_Inventory(int inv_mode)
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
-            g_SaveGame.timer += m_InvNFrames / 2;
+            g_GameInfo.timer += m_InvNFrames / 2;
         }
 
         if (ring.rotating) {
@@ -621,16 +621,16 @@ int32_t Display_Inventory(int inv_mode)
                 // page 2: new game
                 switch (g_InvExtraData[1]) {
                 case 0:
-                    g_SaveGame.bonus_flag = 0;
+                    g_GameInfo.bonus_flag = 0;
                     break;
                 case 1:
-                    g_SaveGame.bonus_flag = GBF_NGPLUS;
+                    g_GameInfo.bonus_flag = GBF_NGPLUS;
                     break;
                 case 2:
-                    g_SaveGame.bonus_flag = GBF_JAPANESE;
+                    g_GameInfo.bonus_flag = GBF_JAPANESE;
                     break;
                 case 3:
-                    g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
                 InitialiseStartInfo();
@@ -648,22 +648,22 @@ int32_t Display_Inventory(int inv_mode)
                 if (g_CurrentLevel == g_GameFlow.gym_level_num) {
                     switch (g_InvExtraData[1]) {
                     case 0:
-                        g_SaveGame.bonus_flag = 0;
+                        g_GameInfo.bonus_flag = 0;
                         break;
                     case 1:
-                        g_SaveGame.bonus_flag = GBF_NGPLUS;
+                        g_GameInfo.bonus_flag = GBF_NGPLUS;
                         break;
                     case 2:
-                        g_SaveGame.bonus_flag = GBF_JAPANESE;
+                        g_GameInfo.bonus_flag = GBF_JAPANESE;
                         break;
                     case 3:
-                        g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
                     InitialiseStartInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    SaveGame_SaveToFile(&g_SaveGame, g_InvExtraData[1]);
+                    SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
                     Settings_Write();
                     return GF_NOP;
                 }

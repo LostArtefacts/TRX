@@ -241,7 +241,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
-                        g_InvExtraData[1] = g_SaveGame.bonus_flag;
+                        g_InvExtraData[1] = g_GameInfo.bonus_flag;
                     }
                 } else {
                     Text_Remove(g_InvRingText);

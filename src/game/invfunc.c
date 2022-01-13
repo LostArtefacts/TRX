@@ -172,7 +172,7 @@ void RingActive(INVENTORY_ITEM *inv_item)
 
     switch (inv_item->object_number) {
     case O_SHOTGUN_OPTION:
-        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+        if (!g_InvItemText[IT_QTY] && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
             sprintf(
                 temp_text, "%5d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
             Overlay_MakeAmmoString(temp_text);
@@ -183,7 +183,7 @@ void RingActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_MAGNUM_OPTION:
-        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+        if (!g_InvItemText[IT_QTY] && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d B", g_Lara.magnums.ammo);
             Overlay_MakeAmmoString(temp_text);
             g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
@@ -193,7 +193,7 @@ void RingActive(INVENTORY_ITEM *inv_item)
         break;
 
     case O_UZI_OPTION:
-        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+        if (!g_InvItemText[IT_QTY] && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
             sprintf(temp_text, "%5d C", g_Lara.uzis.ammo);
             Overlay_MakeAmmoString(temp_text);
             g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
