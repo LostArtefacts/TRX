@@ -51,7 +51,7 @@ int32_t Display_Inventory(int inv_mode)
         return GF_NOP;
     }
 
-    int32_t pass_mode_open = 0;
+    bool pass_mode_open = false;
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
     g_InvMode = inv_mode;
 
@@ -300,7 +300,7 @@ int32_t Display_Inventory(int inv_mode)
                      || g_InvMode == INV_LOAD_MODE
                      || g_InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
-                    pass_mode_open = 1;
+                    pass_mode_open = true;
                 }
 
                 g_OptionSelected = 0;
@@ -502,9 +502,9 @@ int32_t Display_Inventory(int inv_mode)
                 inv_item->object_number = O_PASSPORT_OPTION;
             }
 
-            int32_t busy = 0;
+            bool busy = false;
             for (int j = 0; j < m_InvNFrames; j++) {
-                busy = 0;
+                busy = false;
                 if (inv_item->y_rot == inv_item->y_rot_sel) {
                     busy = AnimateInventoryItem(inv_item);
                 }
@@ -760,11 +760,11 @@ void Construct_Inventory()
     }
 }
 
-int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
+bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
         SelectMeshes(inv_item);
-        return 0;
+        return false;
     }
     if (inv_item->anim_count) {
         inv_item->anim_count--;
@@ -778,7 +778,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
         }
     }
     SelectMeshes(inv_item);
-    return 1;
+    return true;
 }
 
 void SelectMeshes(INVENTORY_ITEM *inv_item)
