@@ -69,6 +69,8 @@ static bool SaveGame_NeedsEvilLaraFix(GAME_INFO *game_info)
     // save_flags for Evil Lara or not. Since savegames only contain very
     // concise information, we must make an educated guess here.
 
+    assert(game_info);
+
     bool result = false;
     if (game_info->current_level != 14) {
         return result;
@@ -241,12 +243,20 @@ void CreateStartInfo(int level_num)
 
 void SaveGame_SaveToSave(GAME_INFO *game_info)
 {
+    assert(game_info);
     game_info->current_level = g_CurrentLevel;
 
     CreateStartInfo(g_CurrentLevel);
 
     SaveGame_ResetSG(game_info);
     memset(m_SGPoint, 0, MAX_SAVEGAME_BUFFER);
+
+    SaveGame_WriteSG(&game_info->timer, sizeof(uint32_t));
+    SaveGame_WriteSG(&game_info->kills, sizeof(uint32_t));
+    SaveGame_WriteSG(&game_info->secrets, sizeof(uint16_t));
+    SaveGame_WriteSG(&game_info->current_level, sizeof(uint16_t));
+    SaveGame_WriteSG(&game_info->pickups, sizeof(uint8_t));
+    SaveGame_WriteSG(&game_info->bonus_flag, sizeof(uint8_t));
 
     SAVEGAME_ITEM_STATS item_stats = {
         .num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1),
@@ -325,6 +335,8 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
 
 void SaveGame_LoadFromSave(GAME_INFO *game_info)
 {
+    assert(game_info);
+
     int8_t tmp8;
     int16_t tmp16;
     int32_t tmp32;
@@ -335,6 +347,14 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
     }
 
     SaveGame_ResetSG(game_info);
+
+    SaveGame_ReadSG(&game_info->timer, sizeof(uint32_t));
+    SaveGame_ReadSG(&game_info->kills, sizeof(uint32_t));
+    SaveGame_ReadSG(&game_info->secrets, sizeof(uint16_t));
+    SaveGame_ReadSG(&game_info->current_level, sizeof(uint16_t));
+    SaveGame_ReadSG(&game_info->pickups, sizeof(uint8_t));
+    SaveGame_ReadSG(&game_info->bonus_flag, sizeof(uint8_t));
+
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_ITEM_STATS item_stats = { 0 };
     SaveGame_ReadSG(&item_stats, sizeof(item_stats));
@@ -518,6 +538,7 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
 
 static void SaveGame_ResetSG(GAME_INFO *game_info)
 {
+    assert(game_info);
     m_SGCount = 0;
     m_SGPoint = game_info->savegame_buffer;
 }
@@ -721,27 +742,23 @@ static void SaveGame_ReadSGLOT(LOT_INFO *lot)
 
 bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
 {
+    assert(game_info);
+
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);
     LOG_DEBUG("%s", filename);
+
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
         return false;
     }
-    File_Read(filename, sizeof(char), 75, fp);
 
-    int32_t counter;
-    File_Read(&counter, sizeof(int32_t), 1, fp);
+    File_Skip(fp, 75);
+    File_Skip(fp, sizeof(int32_t));
 
     assert(game_info->start);
     File_Read(
         &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Read(&game_info->timer, sizeof(uint32_t), 1, fp);
-    File_Read(&game_info->kills, sizeof(uint32_t), 1, fp);
-    File_Read(&game_info->secrets, sizeof(uint16_t), 1, fp);
-    File_Read(&game_info->current_level, sizeof(uint16_t), 1, fp);
-    File_Read(&game_info->pickups, sizeof(uint8_t), 1, fp);
-    File_Read(&game_info->bonus_flag, sizeof(uint8_t), 1, fp);
     File_Read(
         &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
@@ -752,11 +769,18 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
         }
     }
 
+    SaveGame_ResetSG(game_info);
+    SaveGame_SkipSG(sizeof(uint32_t));
+    SaveGame_SkipSG(sizeof(uint32_t));
+    SaveGame_SkipSG(sizeof(uint16_t));
+    SaveGame_ReadSG(&game_info->current_level, sizeof(uint16_t));
+
     return true;
 }
 
 bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
 {
+    assert(game_info);
     SaveGame_SaveToSave(game_info);
 
     char filename[80];
@@ -783,12 +807,6 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
     assert(game_info->start);
     File_Write(
         &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Write(&game_info->timer, sizeof(uint32_t), 1, fp);
-    File_Write(&game_info->kills, sizeof(uint32_t), 1, fp);
-    File_Write(&game_info->secrets, sizeof(uint16_t), 1, fp);
-    File_Write(&game_info->current_level, sizeof(uint16_t), 1, fp);
-    File_Write(&game_info->pickups, sizeof(uint8_t), 1, fp);
-    File_Write(&game_info->bonus_flag, sizeof(uint8_t), 1, fp);
     File_Write(
         &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
