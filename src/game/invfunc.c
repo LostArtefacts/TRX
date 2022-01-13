@@ -284,7 +284,7 @@ void RingNotActive()
     RemoveInventoryText();
 }
 
-int32_t Inv_AddItem(int32_t item_num)
+bool Inv_AddItem(int32_t item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
@@ -292,7 +292,7 @@ int32_t Inv_AddItem(int32_t item_num)
         INVENTORY_ITEM *inv_item = g_InvMainList[i];
         if (inv_item->object_number == item_num_option) {
             g_InvMainQtys[i]++;
-            return 1;
+            return true;
         }
     }
 
@@ -300,7 +300,7 @@ int32_t Inv_AddItem(int32_t item_num)
         INVENTORY_ITEM *inv_item = g_InvKeysList[i];
         if (inv_item->object_number == item_num_option) {
             g_InvKeysQtys[i]++;
-            return 1;
+            return true;
         }
     }
 
@@ -308,7 +308,7 @@ int32_t Inv_AddItem(int32_t item_num)
     case O_GUN_ITEM:
     case O_GUN_OPTION:
         Inv_InsertItem(&g_InvItemPistols);
-        return 1;
+        return true;
 
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
@@ -319,7 +319,7 @@ int32_t Inv_AddItem(int32_t item_num)
         g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         Inv_InsertItem(&g_InvItemShotgun);
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
-        return 0;
+        return false;
 
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
@@ -330,7 +330,7 @@ int32_t Inv_AddItem(int32_t item_num)
         g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         Inv_InsertItem(&g_InvItemMagnum);
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
-        return 0;
+        return false;
 
     case O_UZI_ITEM:
     case O_UZI_OPTION:
@@ -341,7 +341,7 @@ int32_t Inv_AddItem(int32_t item_num)
         g_Lara.uzis.ammo += UZI_AMMO_QTY;
         Inv_InsertItem(&g_InvItemUzi);
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
-        return 0;
+        return false;
 
     case O_SG_AMMO_ITEM:
     case O_SG_AMMO_OPTION:
@@ -350,7 +350,7 @@ int32_t Inv_AddItem(int32_t item_num)
         } else {
             Inv_InsertItem(&g_InvItemShotgunAmmo);
         }
-        return 0;
+        return false;
 
     case O_MAG_AMMO_ITEM:
     case O_MAG_AMMO_OPTION:
@@ -359,7 +359,7 @@ int32_t Inv_AddItem(int32_t item_num)
         } else {
             Inv_InsertItem(&g_InvItemMagnumAmmo);
         }
-        return 0;
+        return false;
 
     case O_UZI_AMMO_ITEM:
     case O_UZI_AMMO_OPTION:
@@ -368,81 +368,81 @@ int32_t Inv_AddItem(int32_t item_num)
         } else {
             Inv_InsertItem(&g_InvItemUziAmmo);
         }
-        return 0;
+        return false;
 
     case O_MEDI_ITEM:
     case O_MEDI_OPTION:
         Inv_InsertItem(&g_InvItemMedi);
-        return 1;
+        return true;
 
     case O_BIGMEDI_ITEM:
     case O_BIGMEDI_OPTION:
         Inv_InsertItem(&g_InvItemBigMedi);
-        return 1;
+        return true;
 
     case O_PUZZLE_ITEM1:
     case O_PUZZLE_OPTION1:
         Inv_InsertItem(&g_InvItemPuzzle1);
-        return 1;
+        return true;
 
     case O_PUZZLE_ITEM2:
     case O_PUZZLE_OPTION2:
         Inv_InsertItem(&g_InvItemPuzzle2);
-        return 1;
+        return true;
 
     case O_PUZZLE_ITEM3:
     case O_PUZZLE_OPTION3:
         Inv_InsertItem(&g_InvItemPuzzle3);
-        return 1;
+        return true;
 
     case O_PUZZLE_ITEM4:
     case O_PUZZLE_OPTION4:
         Inv_InsertItem(&g_InvItemPuzzle4);
-        return 1;
+        return true;
 
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
         Inv_InsertItem(&g_InvItemLeadBar);
-        return 1;
+        return true;
 
     case O_KEY_ITEM1:
     case O_KEY_OPTION1:
         Inv_InsertItem(&g_InvItemKey1);
-        return 1;
+        return true;
 
     case O_KEY_ITEM2:
     case O_KEY_OPTION2:
         Inv_InsertItem(&g_InvItemKey2);
-        return 1;
+        return true;
 
     case O_KEY_ITEM3:
     case O_KEY_OPTION3:
         Inv_InsertItem(&g_InvItemKey3);
-        return 1;
+        return true;
 
     case O_KEY_ITEM4:
     case O_KEY_OPTION4:
         Inv_InsertItem(&g_InvItemKey4);
-        return 1;
+        return true;
 
     case O_PICKUP_ITEM1:
     case O_PICKUP_OPTION1:
         Inv_InsertItem(&g_InvItemPickup1);
-        return 1;
+        return true;
 
     case O_PICKUP_ITEM2:
     case O_PICKUP_OPTION2:
         Inv_InsertItem(&g_InvItemPickup2);
-        return 1;
+        return true;
 
     case O_SCION_ITEM:
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
         Inv_InsertItem(&g_InvItemScion);
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 void Inv_InsertItem(INVENTORY_ITEM *inv_item)
@@ -520,7 +520,7 @@ void Inv_RemoveAllItems()
     g_InvKeysCurrent = 0;
 }
 
-int32_t Inv_RemoveItem(int32_t item_num)
+bool Inv_RemoveItem(int32_t item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
@@ -528,7 +528,7 @@ int32_t Inv_RemoveItem(int32_t item_num)
         if (g_InvMainList[i]->object_number == item_num_option) {
             g_InvMainQtys[i]--;
             if (g_InvMainQtys[i] > 0) {
-                return 1;
+                return true;
             }
             g_InvMainObjects--;
             for (int j = i; j < g_InvMainObjects; j++) {
@@ -542,14 +542,14 @@ int32_t Inv_RemoveItem(int32_t item_num)
         if (g_InvKeysList[i]->object_number == item_num_option) {
             g_InvKeysQtys[i]--;
             if (g_InvKeysQtys[i] > 0) {
-                return 1;
+                return true;
             }
             g_InvKeysObjects--;
             for (int j = i; j < g_InvKeysObjects; j++) {
                 g_InvKeysList[j] = g_InvKeysList[j + 1];
                 g_InvKeysQtys[j] = g_InvKeysQtys[j + 1];
             }
-            return 1;
+            return true;
         }
     }
 
@@ -559,11 +559,11 @@ int32_t Inv_RemoveItem(int32_t item_num)
             for (int j = i; j < g_InvOptionObjects; j++) {
                 g_InvOptionList[j] = g_InvOptionList[j + 1];
             }
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t Inv_GetItemOption(int32_t item_num)
