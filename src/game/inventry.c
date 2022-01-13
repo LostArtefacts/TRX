@@ -664,7 +664,6 @@ int32_t Display_Inventory(int inv_mode)
                     InitialiseStartInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    CreateSaveGameInfo();
                     S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
                     Settings_Write();
                     return GF_NOP;
