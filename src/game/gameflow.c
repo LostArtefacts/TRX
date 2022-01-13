@@ -1056,7 +1056,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 && (int32_t)seq->data != g_GameFlow.gym_level_num) {
                 int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
                 if (return_val != GF_NOP) {
-                    CreateSaveGameInfo();
                     S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
                     Settings_Write();
                 }

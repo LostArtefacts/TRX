@@ -64,7 +64,6 @@ void PickUpSaveGameCollision(
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
-        CreateSaveGameInfo();
         S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
         Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);

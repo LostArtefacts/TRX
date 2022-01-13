@@ -297,6 +297,8 @@ void Game_ScanSavedGames()
 
 int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
 {
+    CreateSaveGameInfo();
+
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);
     LOG_DEBUG("%s", filename);
