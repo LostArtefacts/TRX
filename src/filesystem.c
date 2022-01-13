@@ -116,6 +116,11 @@ void File_CreateDirectory(const char *path)
     S_File_CreateDirectory(path);
 }
 
+void File_Skip(MYFILE *file, size_t bytes)
+{
+    File_Seek(file, bytes, FILE_SEEK_CUR);
+}
+
 void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
 {
     switch (mode) {
