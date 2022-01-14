@@ -46,8 +46,8 @@ int32_t StartDemo()
 
     s = &g_GameInfo.start[m_DemoLevel];
     start = *s;
-    s->available = 1;
-    s->got_pistols = 1;
+    s->flags.available = 1;
+    s->flags.got_pistols = 1;
     s->pistol_ammo = 1000;
     s->gun_status = LGS_ARMLESS;
     s->gun_type = LGT_PISTOLS;
