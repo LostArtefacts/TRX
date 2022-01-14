@@ -2,6 +2,7 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/draw.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -9,9 +10,11 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/3d/3d_renderer.h"
 #include "gfx/context.h"
+#include "gfx/screenshot.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 
 #include <assert.h>
 
@@ -50,8 +53,6 @@ static void S_Output_SetHardwareVideoMode();
 static void S_Output_SetupRenderContextAndRender();
 static void S_Output_ReleaseTextures();
 static void S_Output_ReleaseSurfaces();
-static void S_Output_BlitSurface(
-    GFX_2D_Surface *source, GFX_2D_Surface *target);
 static void S_Output_FlipPrimaryBuffer();
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
 static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int num);
@@ -140,18 +141,6 @@ static void S_Output_ReleaseSurfaces()
         GFX_2D_Surface_Free(m_PictureSurface);
         m_PictureSurface = NULL;
     }
-}
-
-static void S_Output_BlitSurface(GFX_2D_Surface *source, GFX_2D_Surface *target)
-{
-    GFX_BlitterRect rect = {
-        .left = 0,
-        .top = 0,
-        .right = m_SurfaceWidth,
-        .bottom = m_SurfaceHeight,
-    };
-    bool result = GFX_2D_Surface_Blt(target, &rect, source, &rect);
-    S_Output_CheckError(result);
 }
 
 static void S_Output_FlipPrimaryBuffer()
@@ -674,6 +663,14 @@ void S_Output_DrawEmpty()
 
 void S_Output_CopyToPicture()
 {
+    // This function is called BEFORE the scene is rendered, which means the
+    // gl buffer is empty. In order to capture the scene to the picture buffer,
+    // it needs to be drawn again.
+
+    S_Output_RenderBegin();
+    Draw_DrawScene();
+    S_Output_RenderEnd();
+
     if (!m_PictureSurface) {
         GFX_2D_SurfaceDesc surface_desc = {
             .width = m_SurfaceWidth,
@@ -682,8 +679,38 @@ void S_Output_CopyToPicture()
         m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
     }
 
-    S_Output_RenderEnd();
-    S_Output_BlitSurface(m_BackSurface, m_PictureSurface);
+    GLint width;
+    GLint height;
+    GFX_Screenshot_CaptureToBuffer(
+        NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
+
+    PICTURE *pic = Picture_Create();
+    if (!pic) {
+        goto cleanup;
+    }
+    pic->width = width;
+    pic->height = height;
+    pic->data = Memory_Alloc(width * height * 3);
+
+    GFX_Screenshot_CaptureToBuffer(
+        (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
+        true);
+
+    // dim the captured screen
+    for (int i = 0; i < width * height; i++) {
+        pic->data[i].r /= 2;
+        pic->data[i].g /= 2;
+        pic->data[i].b /= 2;
+    }
+
+    S_Output_DownloadPicture(pic);
+
+cleanup:
+    if (pic) {
+        Picture_Free(pic);
+        pic = NULL;
+    }
+
     S_Output_RenderToggle();
 }
 
@@ -691,7 +718,17 @@ void S_Output_CopyFromPicture()
 {
     S_Output_ClearBackBuffer();
     S_Output_RenderEnd();
-    S_Output_BlitSurface(m_PictureSurface, m_BackSurface);
+
+    GFX_BlitterRect rect = {
+        .left = 0,
+        .top = 0,
+        .right = m_SurfaceWidth,
+        .bottom = m_SurfaceHeight,
+    };
+    bool result =
+        GFX_2D_Surface_Blt(m_BackSurface, &rect, m_PictureSurface, &rect);
+    S_Output_CheckError(result);
+
     S_Output_RenderToggle();
 }
 

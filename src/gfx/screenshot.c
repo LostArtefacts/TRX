@@ -13,7 +13,7 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
     GLint width;
     GLint height;
     GFX_Screenshot_CaptureToBuffer(
-        NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true, false);
+        NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
 
     PICTURE *pic = Picture_Create();
     if (!pic) {
@@ -25,7 +25,7 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
 
     GFX_Screenshot_CaptureToBuffer(
         (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
-        true, false);
+        true);
 
     ret = Picture_SaveToFile(pic, path);
 
@@ -38,7 +38,7 @@ cleanup:
 
 void GFX_Screenshot_CaptureToBuffer(
     uint8_t *out_buffer, GLint *out_width, GLint *out_height, GLint depth,
-    GLenum format, GLenum type, bool vflip, bool front_buffer)
+    GLenum format, GLenum type, bool vflip)
 {
     assert(out_width);
     assert(out_height);
@@ -60,8 +60,7 @@ void GFX_Screenshot_CaptureToBuffer(
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    // NOTE: GL_FRONT does not work on Intel cards and on Wine
-    glReadBuffer(front_buffer ? GL_FRONT : GL_BACK);
+    glReadBuffer(GL_BACK);
     glReadPixels(x, y, *out_width, *out_height, format, type, out_buffer);
 
     if (vflip) {

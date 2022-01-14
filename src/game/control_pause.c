@@ -151,7 +151,7 @@ bool Control_Pause()
     g_InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
-    S_FadeInInventory(1);
+    Output_CopyScreenToBuffer();
     Output_SetupAboveWater(false);
 
     Music_Pause();
@@ -163,7 +163,6 @@ bool Control_Pause()
     Music_Unpause();
     RemoveRequester(&m_PauseRequester);
     Control_Pause_RemoveText();
-    S_FadeOutInventory(1);
     g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }

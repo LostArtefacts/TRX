@@ -43,7 +43,7 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 int32_t StopGame()
 {
     if (g_LevelComplete) {
-        S_FadeInInventory(1);
+        Output_CopyScreenToBuffer();
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
 
@@ -75,7 +75,7 @@ int32_t GameLoop(int32_t demo_mode)
         if (ret != GF_NOP) {
             break;
         }
-        nframes = DrawPhaseGame();
+        nframes = Draw_ProcessFrame();
     }
 
     Sound_StopAllSamples();
@@ -100,7 +100,6 @@ void LevelStats(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    Screen_ApplyResolution();
     Text_RemoveAll();
 
     // heading
