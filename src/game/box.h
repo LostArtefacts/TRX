@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_BOX_H
-#define T1M_GAME_BOX_H
+#pragma once
 
 #include "global/types.h"
 
@@ -28,5 +27,3 @@ int16_t CreatureEffect(
     int16_t (*generate)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num));
-
-#endif

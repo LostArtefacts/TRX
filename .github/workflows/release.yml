@@ -7,25 +7,34 @@ on:
     - 'v?[0-9]*'
 
 jobs:
-  build:
+  publish_release:
     name: Publish new release
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y gcc-mingw-w64-i686 make
-          sudo python3 -m pip install pyjson5
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
+          path: .
           fetch-depth: 0
-      - run: git checkout master
+
+      - name: Extract tag name
+        id: get_version
+        run: echo ::set-output name=VERSION::$(git describe --abbrev=7 --tags)
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make p7zip-full moby-engine moby-cli
+
       - name: Build project
         run: |
-          make build
-          7z a release.zip ./bin/tombati.exe ./build/Tomb1Main.dll cfg
-      - name: Create Release
+          make clean release
+
+      - name: Package release
+        run: |
+          7z a Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip ./bin/* ./build/*.exe
+
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -35,16 +44,14 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-      - name: Extract tag name
-        id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: Upload Release Asset
+
+      - name: Upload release asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release.zip
+          asset_path: Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
           asset_name: Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip

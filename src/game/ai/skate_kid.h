@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_SKATE_KID_H
-#define T1M_GAME_AI_SKATE_KID_H
+#pragma once
 
 #include "global/types.h"
 
@@ -27,12 +26,10 @@ typedef enum {
     SKATE_KID_DEATH = 5,
 } SKATE_KID_ANIM;
 
-extern BITE_INFO KidGun1;
-extern BITE_INFO KidGun2;
+extern BITE_INFO g_KidGun1;
+extern BITE_INFO g_KidGun2;
 
 void SetupSkateKid(OBJECT_INFO *obj);
 void InitialiseSkateKid(int16_t item_num);
 void SkateKidControl(int16_t item_num);
 void DrawSkateKid(ITEM_INFO *item);
-
-#endif

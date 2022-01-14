@@ -3,11 +3,11 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/body_part.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/init.h"
 
 void SetupPod(OBJECT_INFO *obj)
 {
@@ -35,11 +35,11 @@ void SetupBigPod(OBJECT_INFO *obj)
 
 void InitialisePod(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     int16_t bug_item_num = CreateItem();
     if (bug_item_num != NO_ITEM) {
-        ITEM_INFO *bug = &Items[bug_item_num];
+        ITEM_INFO *bug = &g_Items[bug_item_num];
 
         switch ((item->flags & IF_CODE_BITS) >> 9) {
         case 1:
@@ -69,10 +69,10 @@ void InitialisePod(int16_t item_num)
 
         InitialiseItem(bug_item_num);
 
-        item->data = game_malloc(sizeof(int16_t), 0);
+        item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
         *(int16_t *)item->data = bug_item_num;
 
-        LevelItemCount++;
+        g_LevelItemCount++;
     }
 
     item->flags = 0;
@@ -81,7 +81,7 @@ void InitialisePod(int16_t item_num)
 
 void PodControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->goal_anim_state != POD_EXPLODE) {
         int32_t explode = 0;
@@ -91,9 +91,9 @@ void PodControl(int16_t item_num)
         } else if (item->object_number == O_BIG_POD) {
             explode = 1;
         } else {
-            int32_t x = LaraItem->pos.x - item->pos.x;
-            int32_t y = LaraItem->pos.y - item->pos.y;
-            int32_t z = LaraItem->pos.z - item->pos.z;
+            int32_t x = g_LaraItem->pos.x - item->pos.x;
+            int32_t y = g_LaraItem->pos.y - item->pos.y;
+            int32_t z = g_LaraItem->pos.z - item->pos.z;
             if (ABS(x) < POD_EXPLODE_DIST && ABS(y) < POD_EXPLODE_DIST
                 && ABS(z) < POD_EXPLODE_DIST) {
                 explode = 1;
@@ -107,7 +107,7 @@ void PodControl(int16_t item_num)
             ExplodingDeath(item_num, 0xFFFE00, 0);
 
             int16_t bug_item_num = *(int16_t *)item->data;
-            ITEM_INFO *bug = &Items[bug_item_num];
+            ITEM_INFO *bug = &g_Items[bug_item_num];
             bug->touch_bits = 0;
             AddActiveItem(bug_item_num);
             if (EnableBaddieAI(bug_item_num, 0)) {

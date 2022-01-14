@@ -1,22 +1,24 @@
 #include "game/text.h"
 
+#include "game/output.h"
+#include "game/screen.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/clock.h"
-#include "specific/frontend.h"
-#include "specific/output.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #define TEXT_BOX_OFFSET 2
+#define TEXT_MAX_STRING_SIZE 100
+#define TEXT_MAX_STRINGS 64
 
-static int16_t TextStringCount = 0;
-static TEXTSTRING TextInfoTable[MAX_TEXT_STRINGS] = { 0 };
-static char TextStrings[MAX_TEXT_STRINGS][MAX_STRING_SIZE] = { 0 };
+static int16_t m_TextstringCount = 0;
+static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
+static char m_TextstringBuffers[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE] = { 0 };
 
-static int8_t TextSpacing[110] = {
+static int8_t m_TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
     13 /*H*/,  8 /*I*/,  11 /*J*/, 12 /*K*/, 11 /*L*/, 13 /*M*/, 13 /*N*/,
     12 /*O*/,  11 /*P*/, 12 /*Q*/, 12 /*R*/, 11 /*S*/, 12 /*T*/, 13 /*U*/,
@@ -35,7 +37,7 @@ static int8_t TextSpacing[110] = {
     8,         8,        8,        8,        8
 };
 
-static int8_t TextRemapASCII[95] = {
+static int8_t m_TextASCIIMap[95] = {
     0 /* */,   64 /*!*/,  66 /*"*/,  78 /*#*/, 77 /*$*/, 74 /*%*/, 78 /*&*/,
     79 /*'*/,  69 /*(*/,  70 /*)*/,  92 /***/, 72 /*+*/, 63 /*,*/, 71 /*-*/,
     62 /*.*/,  68 /**/,   52 /*0*/,  53 /*1*/, 54 /*2*/, 55 /*3*/, 56 /*4*/,
@@ -52,38 +54,31 @@ static int8_t TextRemapASCII[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-int T_GetStringLen(const char *string)
+static void Text_DrawText(TEXTSTRING *textstring);
+
+void Text_Init()
 {
-    int len = 1;
-    while (*string++) {
-        len++;
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
+        m_TextstringTable[i].flags.all = 0;
     }
-    return len;
+    m_TextstringCount = 0;
 }
 
-void T_InitPrint()
+TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
 {
-    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TextInfoTable[i].flags = 0;
-    }
-    TextStringCount = 0;
-}
-
-TEXTSTRING *T_Print(int16_t x, int16_t y, const char *string)
-{
-    if (TextStringCount == MAX_TEXT_STRINGS) {
+    if (m_TextstringCount == TEXT_MAX_STRINGS) {
         return NULL;
     }
 
-    TEXTSTRING *result = &TextInfoTable[0];
+    TEXTSTRING *result = &m_TextstringTable[0];
     int n;
-    for (n = 0; n < MAX_TEXT_STRINGS; n++) {
-        if (!(result->flags & TF_ACTIVE)) {
+    for (n = 0; n < TEXT_MAX_STRINGS; n++) {
+        if (!result->flags.active) {
             break;
         }
         result++;
     }
-    if (n >= MAX_TEXT_STRINGS) {
+    if (n >= TEXT_MAX_STRINGS) {
         return NULL;
     }
 
@@ -91,160 +86,140 @@ TEXTSTRING *T_Print(int16_t x, int16_t y, const char *string)
         return NULL;
     }
 
-    int length = T_GetStringLen(string);
-    if (length >= MAX_STRING_SIZE) {
-        length = MAX_STRING_SIZE - 1;
-    }
-
-    result->xpos = x;
-    result->ypos = y;
+    result->string = m_TextstringBuffers[n];
+    result->pos.x = x;
+    result->pos.y = y;
     result->letter_spacing = 1;
     result->word_spacing = 6;
-    result->scale_h = PHD_ONE;
-    result->scale_v = PHD_ONE;
+    result->scale.h = PHD_ONE;
+    result->scale.v = PHD_ONE;
 
-    result->string = TextStrings[n];
-    memcpy(result->string, string, length + 1);
+    result->flags.all = 0;
+    result->flags.active = 1;
 
-    result->flags = TF_ACTIVE;
-    result->text_flags = 0;
-    result->outl_flags = 0;
-    result->bgnd_flags = 0;
+    result->bgnd_size.x = 0;
+    result->bgnd_size.y = 0;
+    result->bgnd_off.x = 0;
+    result->bgnd_off.y = 0;
 
-    result->bgnd_size_x = 0;
-    result->bgnd_size_y = 0;
-    result->bgnd_off_x = 0;
-    result->bgnd_off_y = 0;
-    result->bgnd_off_z = 0;
+    result->on_remove = NULL;
 
-    TextStringCount++;
+    Text_ChangeText(result, string);
+
+    m_TextstringCount++;
 
     return result;
 }
 
-void T_ChangeText(TEXTSTRING *textstring, const char *string)
+void Text_ChangeText(TEXTSTRING *textstring, const char *string)
 {
     if (!textstring) {
         return;
     }
-    if (!(textstring->flags & TF_ACTIVE)) {
+    if (!textstring->flags.active) {
         return;
     }
-    strncpy(textstring->string, string, MAX_STRING_SIZE);
-    if (T_GetStringLen(string) > MAX_STRING_SIZE) {
-        textstring->string[MAX_STRING_SIZE - 1] = '\0';
+    size_t length = strlen(string) + 1;
+    CLAMPG(length, TEXT_MAX_STRING_SIZE);
+    strncpy(textstring->string, string, length);
+    if (length >= TEXT_MAX_STRING_SIZE) {
+        textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
 }
 
-void T_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
+void Text_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 {
     if (!textstring) {
         return;
     }
-    textstring->scale_h = scale_h;
-    textstring->scale_v = scale_v;
+    textstring->scale.h = scale_h;
+    textstring->scale.v = scale_v;
 }
 
-void T_FlashText(TEXTSTRING *textstring, int16_t b, int16_t rate)
+void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
-        textstring->flags |= TF_FLASH;
-        textstring->flash_rate = rate;
-        textstring->flash_count = rate;
+    if (enable) {
+        textstring->flags.flash = 1;
+        textstring->flash.rate = rate;
+        textstring->flash.count = rate;
     } else {
-        textstring->flags &= ~TF_FLASH;
+        textstring->flags.flash = 0;
     }
 }
 
-void T_AddBackground(
+void Text_AddBackground(
     TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
 {
     if (!textstring) {
         return;
     }
-    textstring->flags |= TF_BGND;
-    textstring->bgnd_size_x = w;
-    textstring->bgnd_size_y = h;
-    textstring->bgnd_off_x = x;
-    textstring->bgnd_off_y = y;
+    textstring->flags.background = 1;
+    textstring->bgnd_size.x = w;
+    textstring->bgnd_size.y = h;
+    textstring->bgnd_off.x = x;
+    textstring->bgnd_off.y = y;
 }
 
-void T_RemoveBackground(TEXTSTRING *textstring)
+void Text_RemoveBackground(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return;
     }
-    textstring->flags &= ~TF_BGND;
+    textstring->flags.background = 0;
 }
 
-void T_AddOutline(TEXTSTRING *textstring, int16_t b)
+void Text_AddOutline(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    textstring->flags |= TF_OUTLINE;
+    textstring->flags.outline = 1;
 }
 
-void T_RemoveOutline(TEXTSTRING *textstring)
+void Text_RemoveOutline(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return;
     }
-    textstring->flags &= ~TF_OUTLINE;
+    textstring->flags.outline = 0;
 }
 
-void T_CentreH(TEXTSTRING *textstring, int16_t b)
+void Text_CentreH(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
-        textstring->flags |= TF_CENTRE_H;
-    } else {
-        textstring->flags &= ~TF_CENTRE_H;
-    }
+    textstring->flags.centre_h = enable;
 }
 
-void T_CentreV(TEXTSTRING *textstring, int16_t b)
+void Text_CentreV(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
-        textstring->flags |= TF_CENTRE_V;
-    } else {
-        textstring->flags &= ~TF_CENTRE_V;
-    }
+    textstring->flags.centre_v = enable;
 }
 
-void T_RightAlign(TEXTSTRING *textstring, int16_t b)
+void Text_AlignRight(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
-        textstring->flags |= TF_RIGHT;
-    } else {
-        textstring->flags &= ~TF_RIGHT;
-    }
+    textstring->flags.right = enable;
 }
 
-void T_BottomAlign(TEXTSTRING *textstring, int16_t b)
+void Text_AlignBottom(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
         return;
     }
-    if (b) {
-        textstring->flags |= TF_BOTTOM;
-    } else {
-        textstring->flags &= ~TF_BOTTOM;
-    }
+    textstring->flags.bottom = enable;
 }
 
-int32_t T_GetTextWidth(TEXTSTRING *textstring)
+int32_t Text_GetWidth(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return 0;
@@ -257,20 +232,20 @@ int32_t T_GetTextWidth(TEXTSTRING *textstring)
         }
 
         if (letter == 32) {
-            width += textstring->word_spacing * textstring->scale_h / PHD_ONE;
+            width += textstring->word_spacing * textstring->scale.h / PHD_ONE;
             continue;
         }
 
         if (letter >= 16) {
-            letter = TextRemapASCII[letter - 32];
+            letter = m_TextASCIIMap[letter - 32];
         } else if (letter >= 11) {
             letter = letter + 91;
         } else {
             letter = letter + 81;
         }
 
-        width += ((TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
-                  * textstring->scale_h)
+        width += ((m_TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
+                  * textstring->scale.h)
             / PHD_ONE;
     }
     width -= textstring->letter_spacing;
@@ -278,64 +253,73 @@ int32_t T_GetTextWidth(TEXTSTRING *textstring)
     return width;
 }
 
-void T_RemovePrint(TEXTSTRING *textstring)
+void Text_Remove(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return;
     }
-    if (textstring->flags & TF_ACTIVE) {
-        textstring->flags &= ~TF_ACTIVE;
-        TextStringCount--;
+    if (textstring->flags.active) {
+        if (textstring->on_remove) {
+            textstring->on_remove(textstring);
+        }
+        textstring->flags.active = 0;
+        m_TextstringCount--;
     }
 }
 
-void T_RemoveAllPrints()
+void Text_RemoveAll()
 {
-    T_InitPrint();
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *textstring = &m_TextstringTable[i];
+        if (textstring->flags.active) {
+            Text_Remove(textstring);
+        }
+    }
+    Text_Init();
 }
 
-void T_DrawText()
+void Text_Draw()
 {
-    for (int i = 0; i < MAX_TEXT_STRINGS; i++) {
-        TEXTSTRING *textstring = &TextInfoTable[i];
-        if (textstring->flags & TF_ACTIVE) {
-            T_DrawThisText(textstring);
+    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *textstring = &m_TextstringTable[i];
+        if (textstring->flags.active) {
+            Text_DrawText(textstring);
         }
     }
 }
 
-void T_DrawThisText(TEXTSTRING *textstring)
+static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
-    if (textstring->flags & TF_FLASH) {
-        textstring->flash_count -= (int16_t)Camera.number_frames;
-        if (textstring->flash_count <= -textstring->flash_rate) {
-            textstring->flash_count = textstring->flash_rate;
-        } else if (textstring->flash_count < 0) {
+    if (textstring->flags.flash) {
+        textstring->flash.count -= (int16_t)g_Camera.number_frames;
+        if (textstring->flash.count <= -textstring->flash.rate) {
+            textstring->flash.count = textstring->flash.rate;
+        } else if (textstring->flash.count < 0) {
             return;
         }
     }
 
     char *string = textstring->string;
-    int32_t x = textstring->xpos;
-    int32_t y = textstring->ypos;
-    int32_t textwidth = T_GetTextWidth(textstring);
+    int32_t x = textstring->pos.x;
+    int32_t y = textstring->pos.y;
+    int32_t textwidth = Text_GetWidth(textstring);
 
-    if (textstring->flags & TF_CENTRE_H) {
-        x += (GetRenderWidthDownscaled() - textwidth) / 2;
-    } else if (textstring->flags & TF_RIGHT) {
-        x += GetRenderWidthDownscaled() - textwidth;
+    if (textstring->flags.centre_h) {
+        x += (Screen_GetResWidthDownscaled() - textwidth) / 2;
+    } else if (textstring->flags.right) {
+        x += Screen_GetResWidthDownscaled() - textwidth;
     }
 
-    if (textstring->flags & TF_CENTRE_V) {
-        y += GetRenderHeightDownscaled() / 2;
-    } else if (textstring->flags & TF_BOTTOM) {
-        y += GetRenderHeightDownscaled();
+    if (textstring->flags.centre_v) {
+        y += Screen_GetResHeightDownscaled() / 2;
+    } else if (textstring->flags.bottom) {
+        y += Screen_GetResHeightDownscaled();
     }
 
-    int32_t bxpos = textstring->bgnd_off_x + x - TEXT_BOX_OFFSET;
+    int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
     int32_t bypos =
-        textstring->bgnd_off_y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+        textstring->bgnd_off.y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
     int32_t letter = '\0';
     while (*string) {
@@ -345,68 +329,68 @@ void T_DrawThisText(TEXTSTRING *textstring)
         }
 
         if (letter == ' ') {
-            x += (textstring->word_spacing * textstring->scale_h) / PHD_ONE;
+            x += (textstring->word_spacing * textstring->scale.h) / PHD_ONE;
             continue;
         }
 
         int32_t sprite_num = letter;
         if (letter >= 16) {
-            sprite_num = TextRemapASCII[letter - 32];
+            sprite_num = m_TextASCIIMap[letter - 32];
         } else if (letter >= 11) {
             sprite_num = letter + 91;
         } else {
             sprite_num = letter + 81;
         }
 
-        sx = GetRenderScale(x);
-        sy = GetRenderScale(y);
-        sh = GetRenderScale(textstring->scale_h);
-        sv = GetRenderScale(textstring->scale_v);
+        sx = Screen_GetRenderScale(x);
+        sy = Screen_GetRenderScale(y);
+        sh = Screen_GetRenderScale(textstring->scale.h);
+        sv = Screen_GetRenderScale(textstring->scale.v);
 
-        S_DrawScreenSprite2d(
-            sx, sy, 0, sh, sv, Objects[O_ALPHABET].mesh_index + sprite_num,
-            16 << 8, textstring->text_flags, 0);
+        Output_DrawScreenSprite2D(
+            sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
+            16 << 8, 0, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {
             continue;
         }
 
-        x += (((int32_t)textstring->letter_spacing + TextSpacing[sprite_num])
-              * textstring->scale_h)
+        x += (((int32_t)textstring->letter_spacing + m_TextSpacing[sprite_num])
+              * textstring->scale.h)
             / PHD_ONE;
     }
 
     int32_t bwidth = 0;
     int32_t bheight = 0;
-    if ((textstring->flags & TF_BGND) || (textstring->flags & TF_OUTLINE)) {
-        if (textstring->bgnd_size_x) {
+    if (textstring->flags.background || textstring->flags.outline) {
+        if (textstring->bgnd_size.x) {
             bxpos += textwidth / 2;
-            bxpos -= textstring->bgnd_size_x / 2;
-            bwidth = textstring->bgnd_size_x + TEXT_BOX_OFFSET * 2;
+            bxpos -= textstring->bgnd_size.x / 2;
+            bwidth = textstring->bgnd_size.x + TEXT_BOX_OFFSET * 2;
         } else {
             bwidth = textwidth + TEXT_BOX_OFFSET * 2;
         }
-        if (textstring->bgnd_size_y) {
-            bheight = textstring->bgnd_size_y;
+        if (textstring->bgnd_size.y) {
+            bheight = textstring->bgnd_size.y;
         } else {
             bheight = TEXT_HEIGHT + 7;
         }
     }
 
-    if (textstring->flags & TF_BGND) {
-        sx = GetRenderScale(bxpos);
-        sy = GetRenderScale(bypos);
-        sh = GetRenderScale(bwidth);
-        sv = GetRenderScale(bheight);
+    if (textstring->flags.background) {
+        sx = Screen_GetRenderScale(bxpos);
+        sy = Screen_GetRenderScale(bypos);
+        sh = Screen_GetRenderScale(bwidth);
+        sv = Screen_GetRenderScale(bheight);
 
-        S_DrawScreenFBox(sx, sy, sh, sv);
+        Output_DrawScreenFBox(sx, sy, sh, sv);
     }
 
-    if (textstring->flags & TF_OUTLINE) {
-        sx = GetRenderScale(bxpos);
-        sy = GetRenderScale(bypos);
-        sh = GetRenderScale(bwidth);
-        sv = GetRenderScale(bheight);
-        S_DrawScreenBox(sx, sy, sh, sv);
+    if (textstring->flags.outline) {
+        sx = Screen_GetRenderScale(bxpos);
+        sy = Screen_GetRenderScale(bypos);
+        sh = Screen_GetRenderScale(bwidth);
+        sv = Screen_GetRenderScale(bheight);
+        Output_DrawScreenBox(sx, sy, sh, sv);
     }
 }

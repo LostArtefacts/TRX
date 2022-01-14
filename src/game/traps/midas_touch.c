@@ -2,10 +2,11 @@
 
 #include "game/collide.h"
 #include "game/draw.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "global/vars.h"
 
-int16_t MidasBounds[12] = {
+int16_t g_MidasBounds[12] = {
     -700,
     +700,
     +384 - 100,
@@ -28,7 +29,7 @@ void SetupMidasTouch(OBJECT_INFO *obj)
 
 void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (!lara_item->gravity_status && lara_item->current_anim_state == AS_STOP
         && lara_item->pos.x > item->pos.x - 512
@@ -37,21 +38,21 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         && lara_item->pos.z < item->pos.z + 512) {
         lara_item->current_anim_state = AS_DIEMIDAS;
         lara_item->goal_anim_state = AS_DIEMIDAS;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index + 1;
-        lara_item->frame_number = Anims[lara_item->anim_number].frame_base;
+        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index + 1;
+        lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
         lara_item->hit_points = -1;
         lara_item->gravity_status = 0;
-        Lara.air = -1;
-        Lara.gun_status = LGS_HANDSBUSY;
-        Lara.gun_type = LGT_UNARMED;
-        Camera.type = CAM_CINEMATIC;
-        CineFrame = 0;
-        CinePosition = lara_item->pos;
+        g_Lara.air = -1;
+        g_Lara.gun_status = LGS_HANDSBUSY;
+        g_Lara.gun_type = LGT_UNARMED;
+        g_Camera.type = CAM_CINEMATIC;
+        g_CineFrame = 0;
+        g_CinePosition = lara_item->pos;
         return;
     }
 
-    if ((InvChosen == -1 && !Input.action) || Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity_status
+    if ((g_InvChosen == -1 && !g_Input.action)
+        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status
         || lara_item->current_anim_state != AS_STOP) {
         return;
     }
@@ -72,21 +73,21 @@ void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         break;
     }
 
-    if (!TestLaraPosition(MidasBounds, item, lara_item)) {
+    if (!TestLaraPosition(g_MidasBounds, item, lara_item)) {
         return;
     }
 
-    if (InvChosen == -1) {
+    if (g_InvChosen == -1) {
         Display_Inventory(INV_KEYS_MODE);
     }
 
-    if (InvChosen == O_LEADBAR_OPTION) {
+    if (g_InvChosen == O_LEADBAR_OPTION) {
         Inv_RemoveItem(O_LEADBAR_OPTION);
         Inv_AddItem(O_PUZZLE_ITEM1);
         lara_item->current_anim_state = AS_USEMIDAS;
         lara_item->goal_anim_state = AS_USEMIDAS;
-        lara_item->anim_number = Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = Anims[item->anim_number].frame_base;
-        Lara.gun_status = LGS_HANDSBUSY;
+        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
+        lara_item->frame_number = g_Anims[item->anim_number].frame_base;
+        g_Lara.gun_status = LGS_HANDSBUSY;
     }
 }

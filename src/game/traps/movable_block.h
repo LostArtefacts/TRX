@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_MOVABLE_BLOCK_H
-#define T1M_GAME_TRAPS_MOVABLE_BLOCK_H
+#pragma once
 
 #include "global/types.h"
 
@@ -11,7 +10,7 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-extern int16_t MovingBlockBounds[12];
+extern int16_t g_MovingBlockBounds[12];
 
 void SetupMovableBlock(OBJECT_INFO *obj);
 void InitialiseMovableBlock(int16_t item_num);
@@ -25,5 +24,3 @@ int32_t TestBlockPush(ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
 int32_t TestBlockPull(ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
 
 void AlterFloorHeight(ITEM_INFO *item, int32_t height);
-
-#endif

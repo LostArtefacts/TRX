@@ -5,9 +5,9 @@
 
 void Stairs2Slope(ITEM_INFO *item)
 {
-    if (FlipTimer == 5) {
-        SoundEffect(SFX_STAIRS2SLOPE_FX, NULL, SPM_NORMAL);
-        FlipEffect = -1;
+    if (g_FlipTimer == 5) {
+        Sound_Effect(SFX_STAIRS2SLOPE_FX, NULL, SPM_NORMAL);
+        g_FlipEffect = -1;
     }
-    FlipTimer++;
+    g_FlipTimer++;
 }

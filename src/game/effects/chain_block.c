@@ -6,19 +6,19 @@
 
 void ChainBlock(ITEM_INFO *item)
 {
-    if (T1MConfig.fix_tihocan_secret_sound) {
-        SoundEffect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
-        FlipEffect = -1;
+    if (g_Config.fix_tihocan_secret_sound) {
+        Sound_Effect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
+        g_FlipEffect = -1;
         return;
     }
 
-    if (FlipTimer == 0) {
-        SoundEffect(SFX_SECRET, NULL, SPM_NORMAL);
+    if (g_FlipTimer == 0) {
+        Sound_Effect(SFX_SECRET, NULL, SPM_NORMAL);
     }
 
-    FlipTimer++;
-    if (FlipTimer == 55) {
-        SoundEffect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
-        FlipEffect = -1;
+    g_FlipTimer++;
+    if (g_FlipTimer == 55) {
+        Sound_Effect(SFX_LARA_SPLASH, NULL, SPM_NORMAL);
+        g_FlipEffect = -1;
     }
 }

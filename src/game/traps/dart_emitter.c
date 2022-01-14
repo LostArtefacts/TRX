@@ -12,7 +12,7 @@ void SetupDartEmitter(OBJECT_INFO *obj)
 
 void DartEmitterControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (TriggerActive(item)) {
         if (item->current_anim_state == DART_EMITTER_IDLE) {
@@ -25,10 +25,10 @@ void DartEmitterControl(int16_t item_num)
     }
 
     if (item->current_anim_state == DART_EMITTER_FIRE
-        && item->frame_number == Anims[item->anim_number].frame_base) {
+        && item->frame_number == g_Anims[item->anim_number].frame_base) {
         int16_t dart_item_num = CreateItem();
         if (dart_item_num != NO_ITEM) {
-            ITEM_INFO *dart = &Items[dart_item_num];
+            ITEM_INFO *dart = &g_Items[dart_item_num];
             dart->object_number = O_DARTS;
             dart->room_number = item->room_number;
             dart->shade = -1;
@@ -60,13 +60,13 @@ void DartEmitterControl(int16_t item_num)
 
             int16_t fx_num = CreateEffect(dart->room_number);
             if (fx_num != NO_ITEM) {
-                FX_INFO *fx = &Effects[fx_num];
+                FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;
                 fx->speed = 0;
                 fx->frame_number = 0;
                 fx->counter = 0;
                 fx->object_number = O_DART_EFFECT;
-                SoundEffect(SFX_DARTS, &fx->pos, SPM_NORMAL);
+                Sound_Effect(SFX_DARTS, &fx->pos, SPM_NORMAL);
             }
         }
     }

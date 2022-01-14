@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_TEETH_TRAP_H
-#define T1M_GAME_TRAPS_TEETH_TRAP_H
+#pragma once
 
 #include "global/types.h"
 
@@ -10,14 +9,12 @@ typedef enum {
     TT_NASTY = 1,
 } TEETH_TRAP_STATE;
 
-extern BITE_INFO Teeth1A;
-extern BITE_INFO Teeth1B;
-extern BITE_INFO Teeth2A;
-extern BITE_INFO Teeth2B;
-extern BITE_INFO Teeth3A;
-extern BITE_INFO Teeth3B;
+extern BITE_INFO g_Teeth1A;
+extern BITE_INFO g_Teeth1B;
+extern BITE_INFO g_Teeth2A;
+extern BITE_INFO g_Teeth2B;
+extern BITE_INFO g_Teeth3A;
+extern BITE_INFO g_Teeth3B;
 
 void SetupTeethTrap(OBJECT_INFO *obj);
 void TeethTrapControl(int16_t item_num);
-
-#endif

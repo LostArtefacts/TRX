@@ -6,16 +6,16 @@
 void DropSand(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
-    if (FlipTimer > FRAMES_PER_SECOND * 4) {
-        FlipEffect = -1;
+    if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
+        g_FlipEffect = -1;
     } else {
-        if (!FlipTimer) {
-            SoundEffect(SFX_TRAPDOOR_OPEN, NULL, SPM_NORMAL);
+        if (!g_FlipTimer) {
+            Sound_Effect(SFX_TRAPDOOR_OPEN, NULL, SPM_NORMAL);
         }
-        pos.x = Camera.target.x;
-        pos.y = Camera.target.y + FlipTimer * 100;
-        pos.z = Camera.target.z;
-        SoundEffect(SFX_SAND_FX, &pos, SPM_NORMAL);
+        pos.x = g_Camera.target.x;
+        pos.y = g_Camera.target.y + g_FlipTimer * 100;
+        pos.z = g_Camera.target.z;
+        Sound_Effect(SFX_SAND_FX, &pos, SPM_NORMAL);
     }
-    FlipTimer++;
+    g_FlipTimer++;
 }

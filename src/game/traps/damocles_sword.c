@@ -2,8 +2,8 @@
 
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/game.h"
 #include "game/items.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -23,15 +23,15 @@ void SetupDamoclesSword(OBJECT_INFO *obj)
 
 void InitialiseDamoclesSword(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
-    item->pos.y_rot = GetRandomControl();
-    item->required_anim_state = (GetRandomControl() - 0x4000) / 16;
+    ITEM_INFO *item = &g_Items[item_num];
+    item->pos.y_rot = Random_GetControl();
+    item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
 }
 
 void DamoclesSwordControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (item->gravity_status) {
         item->pos.y_rot += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
@@ -40,7 +40,7 @@ void DamoclesSwordControl(int16_t item_num)
         item->pos.z += item->goal_anim_state;
 
         if (item->pos.y > item->floor) {
-            SoundEffect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
+            Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
             item->gravity_status = 0;
             item->status = IS_DEACTIVATED;
@@ -48,9 +48,9 @@ void DamoclesSwordControl(int16_t item_num)
         }
     } else if (item->pos.y != item->floor) {
         item->pos.y_rot += item->required_anim_state;
-        int32_t x = LaraItem->pos.x - item->pos.x;
-        int32_t y = LaraItem->pos.y - item->pos.y;
-        int32_t z = LaraItem->pos.z - item->pos.z;
+        int32_t x = g_LaraItem->pos.x - item->pos.x;
+        int32_t y = g_LaraItem->pos.y - item->pos.y;
+        int32_t z = g_LaraItem->pos.z - item->pos.z;
         if (ABS(x) <= DAMOCLES_SWORD_ACTIVATE_DIST
             && ABS(z) <= DAMOCLES_SWORD_ACTIVATE_DIST && y > 0
             && y < WALL_L * 3) {
@@ -64,7 +64,7 @@ void DamoclesSwordControl(int16_t item_num)
 void DamoclesSwordCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
         return;
     }
@@ -73,10 +73,10 @@ void DamoclesSwordCollision(
     }
     if (item->gravity_status) {
         lara_item->hit_points -= DAMOCLES_SWORD_DAMAGE;
-        int32_t x = lara_item->pos.x + (GetRandomControl() - 0x4000) / 256;
-        int32_t z = lara_item->pos.z + (GetRandomControl() - 0x4000) / 256;
-        int32_t y = lara_item->pos.y - GetRandomControl() / 44;
-        int32_t d = lara_item->pos.y_rot + (GetRandomControl() - 0x4000) / 8;
+        int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
+        int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
+        int32_t y = lara_item->pos.y - Random_GetControl() / 44;
+        int32_t d = lara_item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
         DoBloodSplat(x, y, z, lara_item->speed, d, lara_item->room_number);
     }
 }

@@ -1,12 +1,11 @@
-#ifndef T1M_GAME_LARA_H
-#define T1M_GAME_LARA_H
+#pragma once
 
 #include "global/types.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 
-extern WEAPON_INFO Weapons[NUM_WEAPONS];
+extern WEAPON_INFO g_Weapons[NUM_WEAPONS];
 
 void LaraControl(int16_t item_num);
 void LaraSwapMeshExtra();
@@ -160,8 +159,8 @@ void LaraWaterCurrent(COLL_INFO *coll);
 void LaraSurfaceCollision(ITEM_INFO *item, COLL_INFO *coll);
 bool LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll);
 
-extern void (*LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
-extern void (*LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
+extern void (*g_LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
+extern void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
 
 void LaraGun();
 void InitialiseNewWeapon();
@@ -196,5 +195,3 @@ void LookUpDown();
 void ResetLook();
 
 void LaraCheatGetStuff();
-
-#endif

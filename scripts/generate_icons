@@ -1,0 +1,24 @@
+#!/bin/bash
+# regenerate the .ICO file from .PSD.
+set -ex
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "$SCRIPT_DIR"
+
+rm -f bin/icon.ico bin/icon*.png bin/icon*.bmp
+
+# PNG compression for Windows 10+
+for size in 256 128 64 48 32 16; do
+    convert 'bin/icon.psd[0]' -filter lanczos -resize ${size}x${size} bin/icon${size}.png
+    pngquant bin/icon${size}.png
+    zopflipng -y bin/icon${size}-fs8.png bin/icon${size}-fs8.png
+done
+
+# BMP for Windows 7
+for size in 32 16; do
+    convert bin/icon${size}-fs8.png bin/icon${size}.bmp
+done
+
+# NOTE: image order is important for certain software.
+convert `ls bin/icon*.bmp|sort -rV` `ls bin/icon*-fs8.png|sort -rV` bin/icon.ico
+
+rm -f bin/icon*.png bin/icon*.bmp

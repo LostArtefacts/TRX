@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_BEAR_H
-#define T1M_GAME_AI_BEAR_H
+#pragma once
 
 #include "global/types.h"
 
@@ -36,9 +35,7 @@ typedef enum {
     BEAR_DEATH = 9,
 } BEAR_ANIM;
 
-extern BITE_INFO BearHeadBite;
+extern BITE_INFO g_BearHeadBite;
 
 void SetupBear(OBJECT_INFO *obj);
 void BearControl(int16_t item_num);
-
-#endif

@@ -6,4 +6,4 @@ repos:
     entry: clang-format
     args: ["-style=file", "-i"]
     language: system
-    files: \.[ch]$
+    files: \.[ch](pp)?$

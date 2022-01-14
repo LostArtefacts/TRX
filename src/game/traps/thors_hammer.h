@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_THORS_HAMMER_H
-#define T1M_GAME_TRAPS_THORS_HAMMER_H
+#pragma once
 
 #include "global/types.h"
 
@@ -18,5 +17,3 @@ void ThorsHandleCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void ThorsHeadCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-
-#endif

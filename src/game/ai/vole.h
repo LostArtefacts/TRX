@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_VOLE_H
-#define T1M_GAME_AI_VOLE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -18,5 +17,3 @@ typedef enum {
 
 void SetupVole(OBJECT_INFO *obj);
 void VoleControl(int16_t item_num);
-
-#endif

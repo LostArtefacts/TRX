@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_CONTROL_H
-#define T1M_GAME_CONTROL_H
+#pragma once
 
 #include "global/types.h"
 
@@ -24,9 +23,7 @@ int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor);
 void FlipMap();
 void RemoveRoomFlipItems(ROOM_INFO *r);
 void AddRoomFlipItems(ROOM_INFO *r);
-void TriggerCDTrack(int16_t value, int16_t flags, int16_t type);
-void TriggerNormalCDTrack(int16_t value, int16_t flags, int16_t type);
 
 int32_t GetSecretCount();
 
-#endif
+bool Control_Pause();

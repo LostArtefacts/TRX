@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_TRAPS_ROLLING_BALL_H
-#define T1M_GAME_TRAPS_ROLLING_BALL_H
+#pragma once
 
 #include "global/types.h"
 
@@ -10,5 +9,3 @@ void InitialiseRollingBall(int16_t item_num);
 void RollingBallControl(int16_t item_num);
 void RollingBallCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-
-#endif

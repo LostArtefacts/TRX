@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_COLLIDE_H
-#define T1M_GAME_COLLIDE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -37,5 +36,3 @@ int32_t MoveLaraPosition(
 int32_t Move3DPosTo3DPos(
     PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd);
 int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance);
-
-#endif

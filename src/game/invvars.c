@@ -2,24 +2,24 @@
 
 #include "global/vars.h"
 
-int16_t InvKeysCurrent;
-int16_t InvKeysObjects;
-int16_t InvKeysQtys[24] = {
+int16_t g_InvKeysCurrent;
+int16_t g_InvKeysObjects;
+int16_t g_InvKeysQtys[24] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-INVENTORY_ITEM *InvKeysList[23] = {
-    &InvItemLeadBar,
-    &InvItemPuzzle1,
-    &InvItemPuzzle2,
-    &InvItemPuzzle3,
-    &InvItemPuzzle4,
-    &InvItemKey1,
-    &InvItemKey2,
-    &InvItemKey3,
-    &InvItemKey4,
-    &InvItemPickup1,
-    &InvItemPickup2,
+INVENTORY_ITEM *g_InvKeysList[23] = {
+    &g_InvItemLeadBar,
+    &g_InvItemPuzzle1,
+    &g_InvItemPuzzle2,
+    &g_InvItemPuzzle3,
+    &g_InvItemPuzzle4,
+    &g_InvItemKey1,
+    &g_InvItemKey2,
+    &g_InvItemKey3,
+    &g_InvItemKey4,
+    &g_InvItemPickup1,
+    &g_InvItemPickup2,
     NULL,
     NULL,
     NULL,
@@ -33,21 +33,21 @@ INVENTORY_ITEM *InvKeysList[23] = {
     NULL,
 };
 
-int16_t InvMainCurrent;
-int16_t InvMainObjects = 1;
-int16_t InvMainQtys[24] = {
+int16_t g_InvMainCurrent;
+int16_t g_InvMainObjects = 1;
+int16_t g_InvMainQtys[24] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-INVENTORY_ITEM *InvMainList[23] = {
-    &InvItemCompass,
-    &InvItemPistols,
-    &InvItemShotgun,
-    &InvItemMagnum,
-    &InvItemUzi,
-    &InvItemGrenade,
-    &InvItemBigMedi,
-    &InvItemMedi,
+INVENTORY_ITEM *g_InvMainList[23] = {
+    &g_InvItemCompass,
+    &g_InvItemPistols,
+    &g_InvItemShotgun,
+    &g_InvItemMagnum,
+    &g_InvItemUzi,
+    &g_InvItemGrenade,
+    &g_InvItemBigMedi,
+    &g_InvItemMedi,
     NULL,
     NULL,
     NULL,
@@ -65,14 +65,14 @@ INVENTORY_ITEM *InvMainList[23] = {
     NULL,
 };
 
-int16_t InvOptionCurrent;
-int16_t InvOptionObjects = 5;
-INVENTORY_ITEM *InvOptionList[] = {
-    &InvItemGame,    &InvItemControls,  &InvItemSound,
-    &InvItemDetails, &InvItemLarasHome,
+int16_t g_InvOptionCurrent;
+int16_t g_InvOptionObjects = 5;
+INVENTORY_ITEM *g_InvOptionList[] = {
+    &g_InvItemGame,    &g_InvItemControls,  &g_InvItemSound,
+    &g_InvItemDetails, &g_InvItemLarasHome,
 };
 
-INVENTORY_ITEM InvItemCompass = {
+INVENTORY_ITEM g_InvItemCompass = {
     .string = "Compass",
     .object_number = O_MAP_OPTION,
     .frames_total = 25,
@@ -98,7 +98,7 @@ INVENTORY_ITEM InvItemCompass = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemMedi = {
+INVENTORY_ITEM g_InvItemMedi = {
     .string = "Small Medi Pack",
     .object_number = O_MEDI_OPTION,
     .frames_total = 26,
@@ -124,7 +124,7 @@ INVENTORY_ITEM InvItemMedi = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemBigMedi = {
+INVENTORY_ITEM g_InvItemBigMedi = {
     .string = "Large Medi Pack",
     .object_number = O_BIGMEDI_OPTION,
     .frames_total = 20,
@@ -150,7 +150,7 @@ INVENTORY_ITEM InvItemBigMedi = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemLeadBar = {
+INVENTORY_ITEM g_InvItemLeadBar = {
     .string = "Lead Bar",
     .object_number = O_LEADBAR_OPTION,
     .frames_total = 1,
@@ -176,7 +176,7 @@ INVENTORY_ITEM InvItemLeadBar = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPickup1 = {
+INVENTORY_ITEM g_InvItemPickup1 = {
     .string = "Pickup",
     .object_number = O_PICKUP_OPTION1,
     .frames_total = 1,
@@ -202,7 +202,7 @@ INVENTORY_ITEM InvItemPickup1 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPickup2 = {
+INVENTORY_ITEM g_InvItemPickup2 = {
     .string = "Pickup",
     .object_number = O_PICKUP_OPTION2,
     .frames_total = 1,
@@ -228,7 +228,7 @@ INVENTORY_ITEM InvItemPickup2 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemScion = {
+INVENTORY_ITEM g_InvItemScion = {
     .string = "Scion",
     .object_number = O_SCION_OPTION,
     .frames_total = 1,
@@ -254,7 +254,7 @@ INVENTORY_ITEM InvItemScion = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPuzzle1 = {
+INVENTORY_ITEM g_InvItemPuzzle1 = {
     .string = "Puzzle",
     .object_number = O_PUZZLE_OPTION1,
     .frames_total = 1,
@@ -280,7 +280,7 @@ INVENTORY_ITEM InvItemPuzzle1 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPuzzle2 = {
+INVENTORY_ITEM g_InvItemPuzzle2 = {
     .string = "Puzzle",
     .object_number = O_PUZZLE_OPTION2,
     .frames_total = 1,
@@ -306,7 +306,7 @@ INVENTORY_ITEM InvItemPuzzle2 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPuzzle3 = {
+INVENTORY_ITEM g_InvItemPuzzle3 = {
     .string = "Puzzle",
     .object_number = O_PUZZLE_OPTION3,
     .frames_total = 1,
@@ -332,7 +332,7 @@ INVENTORY_ITEM InvItemPuzzle3 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPuzzle4 = {
+INVENTORY_ITEM g_InvItemPuzzle4 = {
     .string = "Puzzle",
     .object_number = O_PUZZLE_OPTION4,
     .frames_total = 1,
@@ -358,7 +358,7 @@ INVENTORY_ITEM InvItemPuzzle4 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemKey1 = {
+INVENTORY_ITEM g_InvItemKey1 = {
     .string = "Key",
     .object_number = O_KEY_OPTION1,
     .frames_total = 1,
@@ -384,7 +384,7 @@ INVENTORY_ITEM InvItemKey1 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemKey2 = {
+INVENTORY_ITEM g_InvItemKey2 = {
     .string = "Key",
     .object_number = O_KEY_OPTION2,
     .frames_total = 1,
@@ -410,7 +410,7 @@ INVENTORY_ITEM InvItemKey2 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemKey3 = {
+INVENTORY_ITEM g_InvItemKey3 = {
     .string = "Key",
     .object_number = O_KEY_OPTION3,
     .frames_total = 1,
@@ -436,7 +436,7 @@ INVENTORY_ITEM InvItemKey3 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemKey4 = {
+INVENTORY_ITEM g_InvItemKey4 = {
     .string = "Key",
     .object_number = O_KEY_OPTION4,
     .frames_total = 1,
@@ -462,7 +462,7 @@ INVENTORY_ITEM InvItemKey4 = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPistols = {
+INVENTORY_ITEM g_InvItemPistols = {
     .string = "Pistols",
     .object_number = O_GUN_OPTION,
     .frames_total = 12,
@@ -488,7 +488,7 @@ INVENTORY_ITEM InvItemPistols = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemShotgun = {
+INVENTORY_ITEM g_InvItemShotgun = {
     .string = "Shotgun",
     .object_number = O_SHOTGUN_OPTION,
     .frames_total = 13,
@@ -514,7 +514,7 @@ INVENTORY_ITEM InvItemShotgun = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemMagnum = {
+INVENTORY_ITEM g_InvItemMagnum = {
     .string = "Magnums",
     .object_number = O_MAGNUM_OPTION,
     .frames_total = 12,
@@ -540,7 +540,7 @@ INVENTORY_ITEM InvItemMagnum = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemUzi = {
+INVENTORY_ITEM g_InvItemUzi = {
     .string = "Uzis",
     .object_number = O_UZI_OPTION,
     .frames_total = 13,
@@ -566,7 +566,7 @@ INVENTORY_ITEM InvItemUzi = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemGrenade = {
+INVENTORY_ITEM g_InvItemGrenade = {
     .string = "Grenade",
     .object_number = O_EXPLOSIVE_OPTION,
     .frames_total = 15,
@@ -592,7 +592,7 @@ INVENTORY_ITEM InvItemGrenade = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemPistolAmmo = {
+INVENTORY_ITEM g_InvItemPistolAmmo = {
     .string = "Pistol Clips",
     .object_number = O_GUN_AMMO_OPTION,
     .frames_total = 1,
@@ -618,7 +618,7 @@ INVENTORY_ITEM InvItemPistolAmmo = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemShotgunAmmo = {
+INVENTORY_ITEM g_InvItemShotgunAmmo = {
     .string = "Shotgun Shells",
     .object_number = O_SG_AMMO_OPTION,
     .frames_total = 1,
@@ -644,7 +644,7 @@ INVENTORY_ITEM InvItemShotgunAmmo = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemMagnumAmmo = {
+INVENTORY_ITEM g_InvItemMagnumAmmo = {
     .string = "Magnum Clips",
     .object_number = O_MAG_AMMO_OPTION,
     .frames_total = 1,
@@ -670,7 +670,7 @@ INVENTORY_ITEM InvItemMagnumAmmo = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemUziAmmo = {
+INVENTORY_ITEM g_InvItemUziAmmo = {
     .string = "Uzi Clips",
     .object_number = O_UZI_AMMO_OPTION,
     .frames_total = 1,
@@ -696,7 +696,7 @@ INVENTORY_ITEM InvItemUziAmmo = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemGame = {
+INVENTORY_ITEM g_InvItemGame = {
     .string = "Game",
     .object_number = O_PASSPORT_CLOSED,
     .frames_total = 30,
@@ -722,7 +722,7 @@ INVENTORY_ITEM InvItemGame = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemDetails = {
+INVENTORY_ITEM g_InvItemDetails = {
     .string = "Detail Levels",
     .object_number = O_DETAIL_OPTION,
     .frames_total = 1,
@@ -748,7 +748,7 @@ INVENTORY_ITEM InvItemDetails = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemSound = {
+INVENTORY_ITEM g_InvItemSound = {
     .string = "Sound",
     .object_number = O_SOUND_OPTION,
     .frames_total = 1,
@@ -774,7 +774,7 @@ INVENTORY_ITEM InvItemSound = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemControls = {
+INVENTORY_ITEM g_InvItemControls = {
     .string = "Controls",
     .object_number = O_CONTROL_OPTION,
     .frames_total = 1,
@@ -800,8 +800,8 @@ INVENTORY_ITEM InvItemControls = {
     .sprlist = NULL,
 };
 
-INVENTORY_ITEM InvItemLarasHome = {
-    .string = "Lara's Home",
+INVENTORY_ITEM g_InvItemLarasHome = {
+    .string = "g_Lara's Home",
     .object_number = O_PHOTO_OPTION,
     .frames_total = 1,
     .current_frame = 0,

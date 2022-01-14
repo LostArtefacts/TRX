@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_OBJECTS_BRIDGE_H
-#define T1M_GAME_OBJECTS_BRIDGE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -18,7 +17,7 @@ void BridgeFlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeFlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t z);
+int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void BridgeTilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt1Ceiling(
@@ -27,5 +26,3 @@ void BridgeTilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void BridgeTilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-
-#endif

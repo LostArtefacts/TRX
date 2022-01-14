@@ -5,9 +5,9 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/body_part.h"
-#include "game/game.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -28,12 +28,12 @@ void SetupAbortion(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
 }
 
 void AbortionControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!EnableBaddieAI(item_num, 0)) {
@@ -50,8 +50,8 @@ void AbortionControl(int16_t item_num)
         if (item->current_anim_state != ABORTION_DEATH) {
             item->current_anim_state = ABORTION_DEATH;
             item->anim_number =
-                Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM;
-            item->frame_number = Anims[item->anim_number].frame_base;
+                g_Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM;
+            item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
         AI_INFO info;
@@ -69,8 +69,8 @@ void AbortionControl(int16_t item_num)
             - item->pos.y_rot;
 
         if (item->touch_bits) {
-            LaraItem->hit_points -= ABORTION_TOUCH_DAMAGE;
-            LaraItem->hit_status = 1;
+            g_LaraItem->hit_points -= ABORTION_TOUCH_DAMAGE;
+            g_LaraItem->hit_status = 1;
         }
 
         switch (item->current_anim_state) {
@@ -80,7 +80,7 @@ void AbortionControl(int16_t item_num)
             break;
 
         case ABORTION_STOP:
-            if (LaraItem->hit_points <= 0) {
+            if (g_LaraItem->hit_points <= 0) {
                 break;
             }
 
@@ -91,8 +91,8 @@ void AbortionControl(int16_t item_num)
                 item->goal_anim_state = ABORTION_TURN_L;
             } else if (info.distance >= ABORTION_ATTACK_RANGE) {
                 item->goal_anim_state = ABORTION_FORWARD;
-            } else if (LaraItem->hit_points > ABORTION_ATTACK_DAMAGE) {
-                if (GetRandomControl() < 0x4000) {
+            } else if (g_LaraItem->hit_points > ABORTION_ATTACK_DAMAGE) {
+                if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = ABORTION_ATTACK1;
                 } else {
                     item->goal_anim_state = ABORTION_ATTACK2;
@@ -150,51 +150,51 @@ void AbortionControl(int16_t item_num)
 
         case ABORTION_ATTACK1:
             if (!abortion->flags && (item->touch_bits & ABORTION_TRIGHT)) {
-                LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 abortion->flags = 1;
             }
             break;
 
         case ABORTION_ATTACK2:
             if (!abortion->flags && (item->touch_bits & ABORTION_TOUCH)) {
-                LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
-                LaraItem->hit_status = 1;
+                g_LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
+                g_LaraItem->hit_status = 1;
                 abortion->flags = 1;
             }
             break;
 
         case ABORTION_ATTACK3:
             if ((item->touch_bits & ABORTION_TRIGHT)
-                || LaraItem->hit_points <= 0) {
+                || g_LaraItem->hit_points <= 0) {
                 item->goal_anim_state = ABORTION_KILL;
 
-                LaraItem->anim_number = Objects[O_LARA_EXTRA].anim_index;
-                LaraItem->frame_number =
-                    Anims[LaraItem->anim_number].frame_base;
-                LaraItem->current_anim_state = AS_SPECIAL;
-                LaraItem->goal_anim_state = AS_SPECIAL;
-                LaraItem->room_number = item->room_number;
-                LaraItem->pos.x = item->pos.x;
-                LaraItem->pos.y = item->pos.y;
-                LaraItem->pos.z = item->pos.z;
-                LaraItem->pos.x_rot = 0;
-                LaraItem->pos.y_rot = item->pos.y_rot;
-                LaraItem->pos.z_rot = 0;
-                LaraItem->gravity_status = 0;
-                LaraItem->hit_points = -1;
-                Lara.air = -1;
-                Lara.gun_status = LGS_HANDSBUSY;
-                Lara.gun_type = LGT_UNARMED;
+                g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
+                g_LaraItem->frame_number =
+                    g_Anims[g_LaraItem->anim_number].frame_base;
+                g_LaraItem->current_anim_state = AS_SPECIAL;
+                g_LaraItem->goal_anim_state = AS_SPECIAL;
+                g_LaraItem->room_number = item->room_number;
+                g_LaraItem->pos.x = item->pos.x;
+                g_LaraItem->pos.y = item->pos.y;
+                g_LaraItem->pos.z = item->pos.z;
+                g_LaraItem->pos.x_rot = 0;
+                g_LaraItem->pos.y_rot = item->pos.y_rot;
+                g_LaraItem->pos.z_rot = 0;
+                g_LaraItem->gravity_status = 0;
+                g_LaraItem->hit_points = -1;
+                g_Lara.air = -1;
+                g_Lara.gun_status = LGS_HANDSBUSY;
+                g_Lara.gun_type = LGT_UNARMED;
 
-                Camera.target_distance = WALL_L * 2;
-                Camera.flags = FOLLOW_CENTRE;
+                g_Camera.target_distance = WALL_L * 2;
+                g_Camera.flags = FOLLOW_CENTRE;
             }
             break;
 
         case ABORTION_KILL:
-            Camera.target_distance = WALL_L * 2;
-            Camera.flags = FOLLOW_CENTRE;
+            g_Camera.target_distance = WALL_L * 2;
+            g_Camera.flags = FOLLOW_CENTRE;
             break;
         }
     }
@@ -208,19 +208,19 @@ void AbortionControl(int16_t item_num)
             item->goal_anim_state = ABORTION_STOP;
             item->gravity_status = 0;
             item->pos.y = item->floor;
-            Camera.bounce = 500;
+            g_Camera.bounce = 500;
         }
     } else {
         CreatureAnimation(item_num, 0, 0);
     }
 
     if (item->status == IS_DEACTIVATED) {
-        SoundEffect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(TriggerIndex, 1);
+        TestTriggers(g_TriggerIndex, 1);
 
         KillItem(item_num);
         item->status = IS_DEACTIVATED;

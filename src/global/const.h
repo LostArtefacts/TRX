@@ -1,9 +1,7 @@
-#ifndef T1M_GLOBAL_CONST_H
-#define T1M_GLOBAL_CONST_H
+#pragma once
 
 #include "util.h"
 
-#define MALLOC_SIZE 0x1000000 // 16 MB
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182
 #define PHD_360 (PHD_ONE) // = 65536 = 0x10000
@@ -12,9 +10,13 @@
 #define PHD_45 (PHD_ONE / 8) // = 8192 = 0x2000
 #define PHD_135 (PHD_45 * 3) // = 24576 = 0x6000
 
-#define MIN_UI_SCALE 0.5
-#define MAX_UI_SCALE 2.0
-#define DEFAULT_UI_SCALE 1.0
+#define MIN_UI_SCALE 0.5f
+#define MAX_UI_SCALE 2.0f
+#define DEFAULT_UI_SCALE 1.0f
+
+#define MIN_BRIGHTNESS 0.1f
+#define MAX_BRIGHTNESS 2.0f
+#define DEFAULT_BRIGHTNESS 1.0f
 
 #define FRAMES_PER_SECOND 30
 #define TICKS_PER_FRAME 2
@@ -23,10 +25,7 @@
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
 #define MAX_REQLINES 16
-#define MAX_PLAYING_FX 24
-#define MAX_AMBIENT_FX 8
 #define MAX_SAMPLES 256
-#define DECIBEL_LUT_SIZE 512
 #define MAX_SAVE_SLOTS 16
 #define MAX_LEVEL_NAME_LENGTH 48
 #define NUM_SLOTS 8
@@ -57,8 +56,8 @@
 #define LARA_LEAN_MAX ((10 * PHD_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
-#define LARA_RAD 100 // global radius of Lara
-#define LARA_HITE 762 // global height of Lara - less than 3/4 block
+#define LARA_RAD 100 // global radius of g_Lara
+#define LARA_HITE 762 // global height of g_Lara - less than 3/4 block
 #define UW_MAXSPEED 200
 #define UW_RADIUS 300
 #define UW_HITE 400
@@ -162,10 +161,6 @@
 
 #define BIFF (WALL_L >> 1)
 
-#define MAX_STRING_SIZE 100
-#define MAX_TEXT_STRINGS 64
-
-#define TEXT_HEIGHT 11
 #define FRAME_BOUND_MIN_X 0
 #define FRAME_BOUND_MAX_X 1
 #define FRAME_BOUND_MIN_Y 2
@@ -207,11 +202,6 @@
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
 
-#define VIEW_NEAR 127
-#define VIEW_FAR (0x14 * 0x400)
-#define DEPTH_Q_END (20 * 1024) // = 20480
-#define DEPTH_Q_START ((DEPTH_Q_END) - (8 * 1024)) // = 12288
-
 #define NO_ACTION 0
 #define GAME_ACTION 1
 #define END_ACTION 2
@@ -220,13 +210,9 @@
 #define SOUND_ACTION 16
 #define VIDEO_ACTION 32
 
-#define RESOLUTIONS_SIZE 12
-
-#define HWR_CLIP_VERTCOUNT_SCALE 4
+#define RESOLUTIONS_SIZE 10
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function
     #define _USE_MATH_DEFINES // makes maths.h also define M_PI
-#endif
-
 #endif

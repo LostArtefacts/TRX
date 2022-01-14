@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_APE_H
-#define T1M_GAME_AI_APE_H
+#pragma once
 
 #include "global/types.h"
 
@@ -40,10 +39,8 @@ typedef enum {
     APE_VAULT = 11,
 } APE_ANIM;
 
-extern BITE_INFO ApeBite;
+extern BITE_INFO g_ApeBite;
 
 void SetupApe(OBJECT_INFO *obj);
 void ApeVault(int16_t item_num, int16_t angle);
 void ApeControl(int16_t item_num);
-
-#endif

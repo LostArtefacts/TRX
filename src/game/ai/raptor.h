@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_RAPTOR_H
-#define T1M_GAME_AI_RAPTOR_H
+#pragma once
 
 #include "global/types.h"
 
@@ -32,9 +31,7 @@ typedef enum {
     RAPTOR_ATTACK3 = 8,
 } RAPTOR_ANIM;
 
-extern BITE_INFO RaptorBite;
+extern BITE_INFO g_RaptorBite;
 
 void SetupRaptor(OBJECT_INFO *obj);
 void RaptorControl(int16_t item_num);
-
-#endif

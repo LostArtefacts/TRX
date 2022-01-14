@@ -1,181 +1,169 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
+#include "game/gameflow.h"
 #include "game/items.h"
 #include "game/overlay.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "specific/frontend.h"
 
 #include <stdint.h>
 #include <stdio.h>
 
-TEXTSTRING *InvItemText[2] = { NULL, NULL };
-TEXTSTRING *InvRingText = NULL;
+TEXTSTRING *g_InvItemText[IT_NUMBER_OF] = { NULL };
+TEXTSTRING *g_InvRingText = NULL;
 
-static int16_t InvColours[IC_NUMBER_OF] = { 0 };
-static TEXTSTRING *InvDownArrow1 = NULL;
-static TEXTSTRING *InvDownArrow2 = NULL;
-static TEXTSTRING *InvUpArrow1 = NULL;
-static TEXTSTRING *InvUpArrow2 = NULL;
-
-void InitColours()
-{
-    InvColours[IC_BLACK] = S_Colour(0, 0, 0);
-    InvColours[IC_GREY] = S_Colour(64, 64, 64);
-    InvColours[IC_WHITE] = S_Colour(255, 255, 255);
-    InvColours[IC_RED] = S_Colour(255, 0, 0);
-    InvColours[IC_ORANGE] = S_Colour(255, 128, 0);
-    InvColours[IC_YELLOW] = S_Colour(255, 255, 0);
-    InvColours[IC_DARKGREEN] = S_Colour(0, 128, 0);
-    InvColours[IC_GREEN] = S_Colour(0, 255, 0);
-    InvColours[IC_CYAN] = S_Colour(0, 255, 255);
-    InvColours[IC_BLUE] = S_Colour(0, 0, 255);
-    InvColours[IC_MAGENTA] = S_Colour(255, 0, 255);
-}
+static TEXTSTRING *m_InvDownArrow1 = NULL;
+static TEXTSTRING *m_InvDownArrow2 = NULL;
+static TEXTSTRING *m_InvUpArrow1 = NULL;
+static TEXTSTRING *m_InvUpArrow2 = NULL;
 
 void RingIsOpen(RING_INFO *ring)
 {
-    if (InvMode == INV_TITLE_MODE) {
+    if (g_InvMode == INV_TITLE_MODE) {
         return;
     }
 
-    if (!InvRingText) {
+    if (!g_InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_INVENTORY]);
+            g_InvRingText =
+                Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_INVENTORY]);
             break;
 
         case RT_OPTION:
-            if (InvMode == INV_DEATH_MODE) {
-                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_GAME_OVER]);
+            if (g_InvMode == INV_DEATH_MODE) {
+                g_InvRingText = Text_Create(
+                    0, 26, g_GameFlow.strings[GS_HEADING_GAME_OVER]);
             } else {
-                InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_OPTION]);
+                g_InvRingText =
+                    Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_OPTION]);
             }
             break;
 
         case RT_KEYS:
-            InvRingText = T_Print(0, 26, GF.strings[GS_HEADING_ITEMS]);
+            g_InvRingText =
+                Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_ITEMS]);
             break;
         }
 
-        T_CentreH(InvRingText, 1);
+        Text_CentreH(g_InvRingText, 1);
     }
 
-    if (InvMode == INV_KEYS_MODE || InvMode == INV_DEATH_MODE) {
+    if (g_InvMode == INV_KEYS_MODE || g_InvMode == INV_DEATH_MODE) {
         return;
     }
 
-    if (!InvUpArrow1) {
+    if (!m_InvUpArrow1) {
         if (ring->type == RT_OPTION
-            || (ring->type == RT_MAIN && InvKeysObjects)) {
-            InvUpArrow1 = T_Print(20, 28, "[");
-            InvUpArrow2 = T_Print(-20, 28, "[");
-            T_RightAlign(InvUpArrow2, 1);
+            || (ring->type == RT_MAIN && g_InvKeysObjects)) {
+            m_InvUpArrow1 = Text_Create(20, 28, "[");
+            m_InvUpArrow2 = Text_Create(-20, 28, "[");
+            Text_AlignRight(m_InvUpArrow2, 1);
         }
     }
 
-    if (!InvDownArrow1) {
+    if (!m_InvDownArrow1) {
         if (ring->type == RT_MAIN || ring->type == RT_KEYS) {
-            InvDownArrow1 = T_Print(20, -15, "]");
-            InvDownArrow2 = T_Print(-20, -15, "]");
-            T_BottomAlign(InvDownArrow1, 1);
-            T_BottomAlign(InvDownArrow2, 1);
-            T_RightAlign(InvDownArrow2, 1);
+            m_InvDownArrow1 = Text_Create(20, -15, "]");
+            m_InvDownArrow2 = Text_Create(-20, -15, "]");
+            Text_AlignBottom(m_InvDownArrow1, 1);
+            Text_AlignBottom(m_InvDownArrow2, 1);
+            Text_AlignRight(m_InvDownArrow2, 1);
         }
     }
 }
 
 void RingIsNotOpen(RING_INFO *ring)
 {
-    if (!InvRingText) {
+    if (!g_InvRingText) {
         return;
     }
 
-    T_RemovePrint(InvRingText);
-    InvRingText = NULL;
+    Text_Remove(g_InvRingText);
+    g_InvRingText = NULL;
 
-    if (InvUpArrow1) {
-        T_RemovePrint(InvUpArrow1);
-        T_RemovePrint(InvUpArrow2);
-        InvUpArrow1 = NULL;
-        InvUpArrow2 = NULL;
+    if (m_InvUpArrow1) {
+        Text_Remove(m_InvUpArrow1);
+        Text_Remove(m_InvUpArrow2);
+        m_InvUpArrow1 = NULL;
+        m_InvUpArrow2 = NULL;
     }
-    if (InvDownArrow1) {
-        T_RemovePrint(InvDownArrow1);
-        T_RemovePrint(InvDownArrow2);
-        InvDownArrow1 = NULL;
-        InvDownArrow2 = NULL;
+    if (m_InvDownArrow1) {
+        Text_Remove(m_InvDownArrow1);
+        Text_Remove(m_InvDownArrow2);
+        m_InvDownArrow1 = NULL;
+        m_InvDownArrow2 = NULL;
     }
 }
 
-void RingNotActive(INVENTORY_ITEM *inv_item)
+void RingActive(INVENTORY_ITEM *inv_item)
 {
-    if (!InvItemText[IT_NAME]) {
+    if (!g_InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
         case O_PUZZLE_OPTION1:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].puzzle1);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle1);
             break;
 
         case O_PUZZLE_OPTION2:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].puzzle2);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle2);
             break;
 
         case O_PUZZLE_OPTION3:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].puzzle3);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle3);
             break;
 
         case O_PUZZLE_OPTION4:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].puzzle4);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle4);
             break;
 
         case O_KEY_OPTION1:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].key1);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key1);
             break;
 
         case O_KEY_OPTION2:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].key2);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key2);
             break;
 
         case O_KEY_OPTION3:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].key3);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key3);
             break;
 
         case O_KEY_OPTION4:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].key4);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key4);
             break;
 
         case O_PICKUP_OPTION1:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].pickup1);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].pickup1);
             break;
 
         case O_PICKUP_OPTION2:
-            InvItemText[IT_NAME] =
-                T_Print(0, -16, GF.levels[CurrentLevel].pickup2);
+            g_InvItemText[IT_NAME] =
+                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].pickup2);
             break;
 
         case O_PASSPORT_OPTION:
             break;
 
         default:
-            InvItemText[IT_NAME] = T_Print(0, -16, inv_item->string);
+            g_InvItemText[IT_NAME] = Text_Create(0, -16, inv_item->string);
             break;
         }
 
-        if (InvItemText[IT_NAME]) {
-            T_BottomAlign(InvItemText[IT_NAME], 1);
-            T_CentreH(InvItemText[IT_NAME], 1);
+        if (g_InvItemText[IT_NAME]) {
+            Text_AlignBottom(g_InvItemText[IT_NAME], 1);
+            Text_CentreH(g_InvItemText[IT_NAME], 1);
         }
     }
 
@@ -184,86 +172,87 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
 
     switch (inv_item->object_number) {
     case O_SHOTGUN_OPTION:
-        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
-            sprintf(temp_text, "%5d A", Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+            sprintf(
+                temp_text, "%5d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_MAGNUM_OPTION:
-        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
-            sprintf(temp_text, "%5d B", Lara.magnums.ammo);
+        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+            sprintf(temp_text, "%5d B", g_Lara.magnums.ammo);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_UZI_OPTION:
-        if (!InvItemText[IT_QTY] && !(SaveGame.bonus_flag & GBF_NGPLUS)) {
-            sprintf(temp_text, "%5d C", Lara.uzis.ammo);
+        if (!g_InvItemText[IT_QTY] && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+            sprintf(temp_text, "%5d C", g_Lara.uzis.ammo);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_SG_AMMO_OPTION:
-        if (!InvItemText[IT_QTY]) {
+        if (!g_InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", qty * NUM_SG_SHELLS);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_MAG_AMMO_OPTION:
-        if (!InvItemText[IT_QTY]) {
+        if (!g_InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_MAG_AMMO_OPTION) * 2);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_UZI_AMMO_OPTION:
-        if (!InvItemText[IT_QTY]) {
+        if (!g_InvItemText[IT_QTY]) {
             sprintf(temp_text, "%d", Inv_RequestItem(O_UZI_AMMO_OPTION) * 2);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_MEDI_OPTION:
-        HealthBarTimer = 40;
-        Overlay_DrawHealthBar();
-        if (!InvItemText[IT_QTY] && qty > 1) {
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
+        if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
     case O_BIGMEDI_OPTION:
-        HealthBarTimer = 40;
-        Overlay_DrawHealthBar();
-        if (!InvItemText[IT_QTY] && qty > 1) {
+        Overlay_BarSetHealthTimer(40);
+        Overlay_BarDrawHealth();
+        if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
 
@@ -279,45 +268,38 @@ void RingNotActive(INVENTORY_ITEM *inv_item)
     case O_PUZZLE_OPTION3:
     case O_PUZZLE_OPTION4:
     case O_SCION_OPTION:
-        if (!InvItemText[IT_QTY] && qty > 1) {
+        if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
-            InvItemText[IT_QTY] = T_Print(64, -56, temp_text);
-            T_BottomAlign(InvItemText[IT_QTY], 1);
-            T_CentreH(InvItemText[IT_QTY], 1);
+            g_InvItemText[IT_QTY] = Text_Create(64, -56, temp_text);
+            Text_AlignBottom(g_InvItemText[IT_QTY], 1);
+            Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
     }
 }
 
-void RingActive()
+void RingNotActive()
 {
-    if (InvItemText[IT_NAME]) {
-        T_RemovePrint(InvItemText[IT_NAME]);
-        InvItemText[IT_NAME] = NULL;
-    }
-    if (InvItemText[IT_QTY]) {
-        T_RemovePrint(InvItemText[IT_QTY]);
-        InvItemText[IT_QTY] = NULL;
-    }
+    RemoveInventoryText();
 }
 
 int32_t Inv_AddItem(int32_t item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
-    for (int i = 0; i < InvMainObjects; i++) {
-        INVENTORY_ITEM *inv_item = InvMainList[i];
+    for (int i = 0; i < g_InvMainObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvMainList[i];
         if (inv_item->object_number == item_num_option) {
-            InvMainQtys[i]++;
+            g_InvMainQtys[i]++;
             return 1;
         }
     }
 
-    for (int i = 0; i < InvKeysObjects; i++) {
-        INVENTORY_ITEM *inv_item = InvKeysList[i];
+    for (int i = 0; i < g_InvKeysObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvKeysList[i];
         if (inv_item->object_number == item_num_option) {
-            InvKeysQtys[i]++;
+            g_InvKeysQtys[i]++;
             return 1;
         }
     }
@@ -325,17 +307,17 @@ int32_t Inv_AddItem(int32_t item_num)
     switch (item_num) {
     case O_GUN_ITEM:
     case O_GUN_OPTION:
-        Inv_InsertItem(&InvItemPistols);
+        Inv_InsertItem(&g_InvItemPistols);
         return 1;
 
     case O_SHOTGUN_ITEM:
     case O_SHOTGUN_OPTION:
         for (int i = Inv_RequestItem(O_SG_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_SG_AMMO_ITEM);
-            Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+            g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         }
-        Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        Inv_InsertItem(&InvItemShotgun);
+        g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+        Inv_InsertItem(&g_InvItemShotgun);
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         return 0;
 
@@ -343,10 +325,10 @@ int32_t Inv_AddItem(int32_t item_num)
     case O_MAGNUM_OPTION:
         for (int i = Inv_RequestItem(O_MAG_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_MAG_AMMO_ITEM);
-            Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+            g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         }
-        Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        Inv_InsertItem(&InvItemMagnum);
+        g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+        Inv_InsertItem(&g_InvItemMagnum);
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         return 0;
 
@@ -354,109 +336,109 @@ int32_t Inv_AddItem(int32_t item_num)
     case O_UZI_OPTION:
         for (int i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_UZI_AMMO_ITEM);
-            Lara.uzis.ammo += UZI_AMMO_QTY;
+            g_Lara.uzis.ammo += UZI_AMMO_QTY;
         }
-        Lara.uzis.ammo += UZI_AMMO_QTY;
-        Inv_InsertItem(&InvItemUzi);
+        g_Lara.uzis.ammo += UZI_AMMO_QTY;
+        Inv_InsertItem(&g_InvItemUzi);
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return 0;
 
     case O_SG_AMMO_ITEM:
     case O_SG_AMMO_OPTION:
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
+            g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         } else {
-            Inv_InsertItem(&InvItemShotgunAmmo);
+            Inv_InsertItem(&g_InvItemShotgunAmmo);
         }
         return 0;
 
     case O_MAG_AMMO_ITEM:
     case O_MAG_AMMO_OPTION:
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Lara.magnums.ammo += MAGNUM_AMMO_QTY;
+            g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         } else {
-            Inv_InsertItem(&InvItemMagnumAmmo);
+            Inv_InsertItem(&g_InvItemMagnumAmmo);
         }
         return 0;
 
     case O_UZI_AMMO_ITEM:
     case O_UZI_AMMO_OPTION:
         if (Inv_RequestItem(O_UZI_ITEM)) {
-            Lara.uzis.ammo += UZI_AMMO_QTY;
+            g_Lara.uzis.ammo += UZI_AMMO_QTY;
         } else {
-            Inv_InsertItem(&InvItemUziAmmo);
+            Inv_InsertItem(&g_InvItemUziAmmo);
         }
         return 0;
 
     case O_MEDI_ITEM:
     case O_MEDI_OPTION:
-        Inv_InsertItem(&InvItemMedi);
+        Inv_InsertItem(&g_InvItemMedi);
         return 1;
 
     case O_BIGMEDI_ITEM:
     case O_BIGMEDI_OPTION:
-        Inv_InsertItem(&InvItemBigMedi);
+        Inv_InsertItem(&g_InvItemBigMedi);
         return 1;
 
     case O_PUZZLE_ITEM1:
     case O_PUZZLE_OPTION1:
-        Inv_InsertItem(&InvItemPuzzle1);
+        Inv_InsertItem(&g_InvItemPuzzle1);
         return 1;
 
     case O_PUZZLE_ITEM2:
     case O_PUZZLE_OPTION2:
-        Inv_InsertItem(&InvItemPuzzle2);
+        Inv_InsertItem(&g_InvItemPuzzle2);
         return 1;
 
     case O_PUZZLE_ITEM3:
     case O_PUZZLE_OPTION3:
-        Inv_InsertItem(&InvItemPuzzle3);
+        Inv_InsertItem(&g_InvItemPuzzle3);
         return 1;
 
     case O_PUZZLE_ITEM4:
     case O_PUZZLE_OPTION4:
-        Inv_InsertItem(&InvItemPuzzle4);
+        Inv_InsertItem(&g_InvItemPuzzle4);
         return 1;
 
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
-        Inv_InsertItem(&InvItemLeadBar);
+        Inv_InsertItem(&g_InvItemLeadBar);
         return 1;
 
     case O_KEY_ITEM1:
     case O_KEY_OPTION1:
-        Inv_InsertItem(&InvItemKey1);
+        Inv_InsertItem(&g_InvItemKey1);
         return 1;
 
     case O_KEY_ITEM2:
     case O_KEY_OPTION2:
-        Inv_InsertItem(&InvItemKey2);
+        Inv_InsertItem(&g_InvItemKey2);
         return 1;
 
     case O_KEY_ITEM3:
     case O_KEY_OPTION3:
-        Inv_InsertItem(&InvItemKey3);
+        Inv_InsertItem(&g_InvItemKey3);
         return 1;
 
     case O_KEY_ITEM4:
     case O_KEY_OPTION4:
-        Inv_InsertItem(&InvItemKey4);
+        Inv_InsertItem(&g_InvItemKey4);
         return 1;
 
     case O_PICKUP_ITEM1:
     case O_PICKUP_OPTION1:
-        Inv_InsertItem(&InvItemPickup1);
+        Inv_InsertItem(&g_InvItemPickup1);
         return 1;
 
     case O_PICKUP_ITEM2:
     case O_PICKUP_OPTION2:
-        Inv_InsertItem(&InvItemPickup2);
+        Inv_InsertItem(&g_InvItemPickup2);
         return 1;
 
     case O_SCION_ITEM:
     case O_SCION_ITEM2:
     case O_SCION_OPTION:
-        Inv_InsertItem(&InvItemScion);
+        Inv_InsertItem(&g_InvItemScion);
         return 1;
     }
 
@@ -468,44 +450,44 @@ void Inv_InsertItem(INVENTORY_ITEM *inv_item)
     int n;
 
     if (inv_item->inv_pos < 100) {
-        for (n = 0; n < InvMainObjects; n++) {
-            if (InvMainList[n]->inv_pos > inv_item->inv_pos) {
+        for (n = 0; n < g_InvMainObjects; n++) {
+            if (g_InvMainList[n]->inv_pos > inv_item->inv_pos) {
                 break;
             }
         }
 
-        if (n == InvMainObjects) {
-            InvMainList[InvMainObjects] = inv_item;
-            InvMainQtys[InvMainObjects] = 1;
-            InvMainObjects++;
+        if (n == g_InvMainObjects) {
+            g_InvMainList[g_InvMainObjects] = inv_item;
+            g_InvMainQtys[g_InvMainObjects] = 1;
+            g_InvMainObjects++;
         } else {
-            for (int i = InvMainObjects; i > n - 1; i--) {
-                InvMainList[i + 1] = InvMainList[i];
-                InvMainQtys[i + 1] = InvMainQtys[i];
+            for (int i = g_InvMainObjects; i > n - 1; i--) {
+                g_InvMainList[i + 1] = g_InvMainList[i];
+                g_InvMainQtys[i + 1] = g_InvMainQtys[i];
             }
-            InvMainList[n] = inv_item;
-            InvMainQtys[n] = 1;
-            InvMainObjects++;
+            g_InvMainList[n] = inv_item;
+            g_InvMainQtys[n] = 1;
+            g_InvMainObjects++;
         }
     } else {
-        for (n = 0; n < InvKeysObjects; n++) {
-            if (InvKeysList[n]->inv_pos > inv_item->inv_pos) {
+        for (n = 0; n < g_InvKeysObjects; n++) {
+            if (g_InvKeysList[n]->inv_pos > inv_item->inv_pos) {
                 break;
             }
         }
 
-        if (n == InvKeysObjects) {
-            InvKeysList[InvKeysObjects] = inv_item;
-            InvKeysQtys[InvKeysObjects] = 1;
-            InvKeysObjects++;
+        if (n == g_InvKeysObjects) {
+            g_InvKeysList[g_InvKeysObjects] = inv_item;
+            g_InvKeysQtys[g_InvKeysObjects] = 1;
+            g_InvKeysObjects++;
         } else {
-            for (int i = InvKeysObjects; i > n - 1; i--) {
-                InvKeysList[i + 1] = InvKeysList[i];
-                InvKeysQtys[i + 1] = InvKeysQtys[i];
+            for (int i = g_InvKeysObjects; i > n - 1; i--) {
+                g_InvKeysList[i + 1] = g_InvKeysList[i];
+                g_InvKeysQtys[i + 1] = g_InvKeysQtys[i];
             }
-            InvKeysList[n] = inv_item;
-            InvKeysQtys[n] = 1;
-            InvKeysObjects++;
+            g_InvKeysList[n] = inv_item;
+            g_InvKeysQtys[n] = 1;
+            g_InvKeysObjects++;
         }
     }
 }
@@ -514,15 +496,15 @@ int32_t Inv_RequestItem(int item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
-    for (int i = 0; i < InvMainObjects; i++) {
-        if (InvMainList[i]->object_number == item_num_option) {
-            return InvMainQtys[i];
+    for (int i = 0; i < g_InvMainObjects; i++) {
+        if (g_InvMainList[i]->object_number == item_num_option) {
+            return g_InvMainQtys[i];
         }
     }
 
-    for (int i = 0; i < InvKeysObjects; i++) {
-        if (InvKeysList[i]->object_number == item_num_option) {
-            return InvKeysQtys[i];
+    for (int i = 0; i < g_InvKeysObjects; i++) {
+        if (g_InvKeysList[i]->object_number == item_num_option) {
+            return g_InvKeysQtys[i];
         }
     }
 
@@ -531,51 +513,51 @@ int32_t Inv_RequestItem(int item_num)
 
 void Inv_RemoveAllItems()
 {
-    InvMainObjects = 1;
-    InvMainCurrent = 0;
+    g_InvMainObjects = 1;
+    g_InvMainCurrent = 0;
 
-    InvKeysObjects = 0;
-    InvKeysCurrent = 0;
+    g_InvKeysObjects = 0;
+    g_InvKeysCurrent = 0;
 }
 
 int32_t Inv_RemoveItem(int32_t item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
 
-    for (int i = 0; i < InvMainObjects; i++) {
-        if (InvMainList[i]->object_number == item_num_option) {
-            InvMainQtys[i]--;
-            if (InvMainQtys[i] > 0) {
+    for (int i = 0; i < g_InvMainObjects; i++) {
+        if (g_InvMainList[i]->object_number == item_num_option) {
+            g_InvMainQtys[i]--;
+            if (g_InvMainQtys[i] > 0) {
                 return 1;
             }
-            InvMainObjects--;
-            for (int j = i; j < InvMainObjects; j++) {
-                InvMainList[j] = InvMainList[j + 1];
-                InvMainQtys[j] = InvMainQtys[j + 1];
+            g_InvMainObjects--;
+            for (int j = i; j < g_InvMainObjects; j++) {
+                g_InvMainList[j] = g_InvMainList[j + 1];
+                g_InvMainQtys[j] = g_InvMainQtys[j + 1];
             }
         }
     }
 
-    for (int i = 0; i < InvKeysObjects; i++) {
-        if (InvKeysList[i]->object_number == item_num_option) {
-            InvKeysQtys[i]--;
-            if (InvKeysQtys[i] > 0) {
+    for (int i = 0; i < g_InvKeysObjects; i++) {
+        if (g_InvKeysList[i]->object_number == item_num_option) {
+            g_InvKeysQtys[i]--;
+            if (g_InvKeysQtys[i] > 0) {
                 return 1;
             }
-            InvKeysObjects--;
-            for (int j = i; j < InvKeysObjects; j++) {
-                InvKeysList[j] = InvKeysList[j + 1];
-                InvKeysQtys[j] = InvKeysQtys[j + 1];
+            g_InvKeysObjects--;
+            for (int j = i; j < g_InvKeysObjects; j++) {
+                g_InvKeysList[j] = g_InvKeysList[j + 1];
+                g_InvKeysQtys[j] = g_InvKeysQtys[j + 1];
             }
             return 1;
         }
     }
 
-    for (int i = 0; i < InvOptionObjects; i++) {
-        if (InvOptionList[i]->object_number == item_num_option) {
-            InvOptionObjects--;
-            for (int j = i; j < InvOptionObjects; j++) {
-                InvOptionList[j] = InvOptionList[j + 1];
+    for (int i = 0; i < g_InvOptionObjects; i++) {
+        if (g_InvOptionList[i]->object_number == item_num_option) {
+            g_InvOptionObjects--;
+            for (int j = i; j < g_InvOptionObjects; j++) {
+                g_InvOptionList[j] = g_InvOptionList[j + 1];
             }
             return 1;
         }
@@ -692,9 +674,9 @@ int32_t Inv_GetItemOption(int32_t item_num)
 void RemoveInventoryText()
 {
     for (int i = 0; i < IT_NUMBER_OF; i++) {
-        if (InvItemText[i]) {
-            T_RemovePrint(InvItemText[i]);
-            InvItemText[i] = NULL;
+        if (g_InvItemText[i]) {
+            Text_Remove(g_InvItemText[i]);
+            g_InvItemText[i] = NULL;
         }
     }
 }
@@ -710,7 +692,7 @@ void Inv_RingInit(
     ring->current_object = current;
     ring->angle_adder = 0x10000 / qty;
 
-    if (InvMode == INV_TITLE_MODE) {
+    if (g_InvMode == INV_TITLE_MODE) {
         ring->camera_pitch = 1024;
     } else {
         ring->camera_pitch = 0;
@@ -768,7 +750,7 @@ void Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
 void Inv_RingLight(RING_INFO *ring)
 {
     PHD_ANGLE angles[2];
-    LsDivider = 0x6000;
+    g_LsDivider = 0x6000;
     phd_GetVectorAngles(ring->light.x, ring->light.y, ring->light.z, angles);
     phd_RotateLight(angles[1], angles[0]);
 }

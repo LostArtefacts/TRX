@@ -1,17 +1,18 @@
 #include "game/traps/lightning_emitter.h"
 
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
+#include "3dsystem/matrix.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/game.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/output.h"
+#include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
+#include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/init.h"
-#include "specific/output.h"
+#include "specific/s_misc.h"
 
 void SetupLightningEmitter(OBJECT_INFO *obj)
 {
@@ -24,11 +25,11 @@ void SetupLightningEmitter(OBJECT_INFO *obj)
 
 void InitialiseLightning(int16_t item_num)
 {
-    LIGHTNING *l = game_malloc(sizeof(LIGHTNING), 0);
-    Items[item_num].data = l;
+    LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_TRAP_DATA);
+    g_Items[item_num].data = l;
 
-    if (Objects[Items[item_num].object_number].nmeshes > 1) {
-        Items[item_num].mesh_bits = 1;
+    if (g_Objects[g_Items[item_num].object_number].nmeshes > 1) {
+        g_Items[item_num].mesh_bits = 1;
         l->notarget = 0;
     } else {
         l->notarget = 1;
@@ -41,7 +42,7 @@ void InitialiseLightning(int16_t item_num)
 
 void LightningControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
 
     if (!TriggerActive(item)) {
@@ -49,7 +50,7 @@ void LightningControl(int16_t item_num)
         l->onstate = 0;
         l->zapped = 0;
 
-        if (FlipStatus) {
+        if (g_FlipStatus) {
             FlipMap();
         }
 
@@ -65,9 +66,9 @@ void LightningControl(int16_t item_num)
 
     if (l->onstate) {
         l->onstate = 0;
-        l->count = 35 + (GetRandomControl() * 45) / 0x8000;
+        l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = 0;
-        if (FlipStatus) {
+        if (g_FlipStatus) {
             FlipMap();
         }
     } else {
@@ -82,12 +83,12 @@ void LightningControl(int16_t item_num)
 
         int32_t radius = l->notarget ? WALL_L : WALL_L * 5 / 2;
         if (ItemNearLara(&item->pos, radius)) {
-            l->target.x = LaraItem->pos.x;
-            l->target.y = LaraItem->pos.y;
-            l->target.z = LaraItem->pos.z;
+            l->target.x = g_LaraItem->pos.x;
+            l->target.y = g_LaraItem->pos.y;
+            l->target.z = g_LaraItem->pos.z;
 
-            LaraItem->hit_points -= LIGHTNING_DAMAGE;
-            LaraItem->hit_status = 1;
+            g_LaraItem->hit_points -= LIGHTNING_DAMAGE;
+            g_LaraItem->hit_status = 1;
 
             l->zapped = 1;
         } else if (l->notarget) {
@@ -103,15 +104,15 @@ void LightningControl(int16_t item_num)
             l->target.y = 0;
             l->target.z = 0;
             GetJointAbsPosition(
-                item, &l->target, 1 + (GetRandomControl() * 5) / 0x7FFF);
+                item, &l->target, 1 + (Random_GetControl() * 5) / 0x7FFF);
             l->zapped = 0;
         }
 
         for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
-            l->start[i] = GetRandomControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
-            l->end[i].x = l->target.x + (GetRandomControl() * WALL_L) / 0x7FFF;
+            l->start[i] = Random_GetControl() * (LIGHTNING_STEPS - 1) / 0x7FFF;
+            l->end[i].x = l->target.x + (Random_GetControl() * WALL_L) / 0x7FFF;
             l->end[i].y = l->target.y;
-            l->end[i].z = l->target.z + (GetRandomControl() * WALL_L) / 0x7FFF;
+            l->end[i].z = l->target.z + (Random_GetControl() * WALL_L) / 0x7FFF;
 
             for (int j = 0; j < LIGHTNING_STEPS; j++) {
                 l->shoot[i][j].x = 0;
@@ -120,25 +121,25 @@ void LightningControl(int16_t item_num)
             }
         }
 
-        if (!FlipStatus) {
+        if (!g_FlipStatus) {
             FlipMap();
         }
     }
 
-    SoundEffect(SFX_THUNDER, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_THUNDER, &item->pos, SPM_NORMAL);
 }
 
 void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
-    LIGHTNING *l = Items[item_num].data;
+    LIGHTNING *l = g_Items[item_num].data;
     if (!l->zapped) {
         return;
     }
 
-    Lara.hit_direction = 1 + (GetRandomControl() * 4) / (PHD_180 - 1);
-    Lara.hit_frame++;
-    if (Lara.hit_frame > 34) {
-        Lara.hit_frame = 34;
+    g_Lara.hit_direction = 1 + (Random_GetControl() * 4) / (PHD_180 - 1);
+    g_Lara.hit_frame++;
+    if (g_Lara.hit_frame > 34) {
+        g_Lara.hit_frame = 34;
     }
 }
 
@@ -163,11 +164,12 @@ void DrawLightning(ITEM_INFO *item)
     phd_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);
 
-    int32_t x1 = PhdMatrixPtr->_03;
-    int32_t y1 = PhdMatrixPtr->_13;
-    int32_t z1 = PhdMatrixPtr->_23;
+    int32_t x1 = g_PhdMatrixPtr->_03;
+    int32_t y1 = g_PhdMatrixPtr->_13;
+    int32_t z1 = g_PhdMatrixPtr->_23;
 
-    phd_PutPolygons(Meshes[Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
+    Output_DrawPolygons(
+        g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
 
     phd_PopMatrix();
 
@@ -181,9 +183,9 @@ void DrawLightning(ITEM_INFO *item)
     phd_TranslateAbs(l->target.x, l->target.y, l->target.z);
     phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t x2 = PhdMatrixPtr->_03;
-    int32_t y2 = PhdMatrixPtr->_13;
-    int32_t z2 = PhdMatrixPtr->_23;
+    int32_t x2 = g_PhdMatrixPtr->_03;
+    int32_t y2 = g_PhdMatrixPtr->_13;
+    int32_t z2 = g_PhdMatrixPtr->_23;
 
     int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
     int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
@@ -191,9 +193,9 @@ void DrawLightning(ITEM_INFO *item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         PHD_VECTOR *pos = &l->wibble[i];
-        pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-        pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-        pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+        pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
         if (i == LIGHTNING_STEPS - 1) {
             pos->y = 0;
         }
@@ -203,10 +205,12 @@ void DrawLightning(ITEM_INFO *item)
         z2 = z1 + dz + pos->z;
 
         if (i > 0) {
-            S_DrawLightningSegment(
-                x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2, PhdWinWidth / 6);
+            Output_DrawLightningSegment(
+                x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
+                ViewPort_GetWidth() / 6);
         } else {
-            S_DrawLightningSegment(x1, y1, z1, x2, y2, z2, PhdWinWidth / 6);
+            Output_DrawLightningSegment(
+                x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 6);
         }
 
         x1 = x2;
@@ -230,9 +234,9 @@ void DrawLightning(ITEM_INFO *item)
         phd_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
         phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-        x2 = PhdMatrixPtr->_03;
-        y2 = PhdMatrixPtr->_13;
-        z2 = PhdMatrixPtr->_23;
+        x2 = g_PhdMatrixPtr->_03;
+        y2 = g_PhdMatrixPtr->_13;
+        z2 = g_PhdMatrixPtr->_23;
 
         int32_t steps = LIGHTNING_STEPS - j;
         dx = (x2 - x1) / steps;
@@ -241,9 +245,9 @@ void DrawLightning(ITEM_INFO *item)
 
         for (j = 0; j < steps; j++) {
             PHD_VECTOR *pos = l->shoot[i];
-            pos->x += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-            pos->y += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
-            pos->z += (GetRandomDraw() - PHD_90) * LIGHTNING_RND;
+            pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             if (j == steps - 1) {
                 pos->y = 0;
             }
@@ -253,12 +257,12 @@ void DrawLightning(ITEM_INFO *item)
             z2 = z1 + dz + pos->z;
 
             if (j > 0) {
-                S_DrawLightningSegment(
+                Output_DrawLightningSegment(
                     x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
-                    PhdWinWidth / 16);
+                    ViewPort_GetWidth() / 16);
             } else {
-                S_DrawLightningSegment(
-                    x1, y1, z1, x2, y2, z2, PhdWinWidth / 16);
+                Output_DrawLightningSegment(
+                    x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 16);
             }
 
             x1 = x2;

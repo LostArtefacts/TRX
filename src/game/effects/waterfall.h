@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_EFFECTS_WATERFALL_H
-#define T1M_GAME_EFFECTS_WATERFALL_H
+#pragma once
 
 #include "global/types.h"
 
@@ -9,5 +8,3 @@
 
 void SetupWaterfall(OBJECT_INFO *obj);
 void ControlWaterFall(int16_t item_num);
-
-#endif

@@ -2,44 +2,118 @@
 
 #include "game/ai/pod.h"
 #include "game/control.h"
+#include "game/gamebuf.h"
+#include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
+#include "game/shell.h"
 #include "game/traps/movable_block.h"
 #include "game/traps/rolling_block.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/init.h"
+#include "log.h"
 
 #include <stddef.h>
 
 #define SAVE_CREATURE (1 << 7)
 
-static int SGCount = 0;
-static char *SGPoint = NULL;
+static int m_SGCount = 0;
+static char *m_SGPoint = NULL;
+
+static bool SaveGame_NeedsEvilLaraFix();
+
+static bool SaveGame_NeedsEvilLaraFix()
+{
+    // Heuristic for issue #261.
+    // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
+    // a consequence, Atlantis saves made with OG TombATI (which includes the
+    // ones available for download on Stella's website) have different layout
+    // than the saves made with Tomb1Main. This was discovered after it was too
+    // late to make a backwards incompatible change. At the same time, enabling
+    // save_flags for Evil Lara is desirable, as not doing this causes her to
+    // freeze when the player reloads a save made in her room. This function is
+    // used to determine whether the save about to be loaded includes
+    // save_flags for Evil Lara or not. Since savegames only contain very
+    // concise information, we must make an educated guess here.
+
+    bool result = false;
+    if (g_SaveGame.current_level != 14) {
+        return result;
+    }
+
+    ResetSG();
+    SkipSG(sizeof(int32_t));
+    SkipSG(MAX_FLIP_MAPS * sizeof(int8_t));
+    SkipSG(g_NumberCameras * sizeof(int16_t));
+
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        ITEM_INFO tmp_item;
+
+        if (obj->save_position) {
+            ReadSG(&tmp_item.pos, sizeof(PHD_3DPOS));
+            SkipSG(sizeof(int16_t));
+            ReadSG(&tmp_item.speed, sizeof(int16_t));
+            ReadSG(&tmp_item.fall_speed, sizeof(int16_t));
+        }
+        if (obj->save_anim) {
+            ReadSG(&tmp_item.current_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.goal_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.required_anim_state, sizeof(int16_t));
+            ReadSG(&tmp_item.anim_number, sizeof(int16_t));
+            ReadSG(&tmp_item.frame_number, sizeof(int16_t));
+        }
+        if (obj->save_hitpoints) {
+            ReadSG(&tmp_item.hit_points, sizeof(int16_t));
+        }
+        if (obj->save_flags) {
+            ReadSG(&tmp_item.flags, sizeof(int16_t));
+            ReadSG(&tmp_item.timer, sizeof(int16_t));
+            if (tmp_item.flags & SAVE_CREATURE) {
+                CREATURE_INFO tmp_creature;
+                ReadSG(&tmp_creature.head_rotation, sizeof(int16_t));
+                ReadSG(&tmp_creature.neck_rotation, sizeof(int16_t));
+                ReadSG(&tmp_creature.maximum_turn, sizeof(int16_t));
+                ReadSG(&tmp_creature.flags, sizeof(int16_t));
+                ReadSG(&tmp_creature.mood, sizeof(int32_t));
+            }
+        }
+
+        // check for exceptionally high item positions.
+        if ((ABS(tmp_item.pos.x) | ABS(tmp_item.pos.y) | ABS(tmp_item.pos.z))
+            & 0xFF000000) {
+            result = true;
+        }
+    }
+
+    return result;
+}
 
 void InitialiseStartInfo()
 {
-    for (int i = 0; i < GF.level_count; i++) {
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
         ModifyStartInfo(i);
-        SaveGame.start[i].available = 0;
+        g_SaveGame.start[i].available = 0;
     }
-    SaveGame.start[GF.gym_level_num].available = 1;
-    SaveGame.start[GF.first_level_num].available = 1;
+    g_SaveGame.start[g_GameFlow.gym_level_num].available = 1;
+    g_SaveGame.start[g_GameFlow.first_level_num].available = 1;
 }
 
 void ModifyStartInfo(int32_t level_num)
 {
-    START_INFO *start = &SaveGame.start[level_num];
+    START_INFO *start = &g_SaveGame.start[level_num];
 
     start->got_pistols = 1;
     start->gun_type = LGT_PISTOLS;
     start->pistol_ammo = 1000;
 
-    if (level_num == GF.gym_level_num) {
+    if (level_num == g_GameFlow.gym_level_num) {
         start->available = 1;
         start->costume = 1;
         start->num_medis = 0;
@@ -57,7 +131,7 @@ void ModifyStartInfo(int32_t level_num)
         start->gun_status = LGS_ARMLESS;
     }
 
-    if (level_num == GF.first_level_num) {
+    if (level_num == g_GameFlow.first_level_num) {
         start->available = 1;
         start->costume = 0;
         start->num_medis = 0;
@@ -72,7 +146,8 @@ void ModifyStartInfo(int32_t level_num)
         start->gun_status = LGS_ARMLESS;
     }
 
-    if ((SaveGame.bonus_flag & GBF_NGPLUS) && level_num != GF.gym_level_num) {
+    if ((g_SaveGame.bonus_flag & GBF_NGPLUS)
+        && level_num != g_GameFlow.gym_level_num) {
         start->got_pistols = 1;
         start->got_shotgun = 1;
         start->got_magnums = 1;
@@ -86,7 +161,7 @@ void ModifyStartInfo(int32_t level_num)
 
 void CreateStartInfo(int level_num)
 {
-    START_INFO *start = &SaveGame.start[level_num];
+    START_INFO *start = &g_SaveGame.start[level_num];
 
     start->available = 1;
     start->costume = 0;
@@ -99,7 +174,7 @@ void CreateStartInfo(int level_num)
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        start->magnum_ammo = Lara.magnums.ammo;
+        start->magnum_ammo = g_Lara.magnums.ammo;
         start->got_magnums = 1;
     } else {
         start->magnum_ammo = Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
@@ -107,7 +182,7 @@ void CreateStartInfo(int level_num)
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        start->uzi_ammo = Lara.uzis.ammo;
+        start->uzi_ammo = g_Lara.uzis.ammo;
         start->got_uzis = 1;
     } else {
         start->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
@@ -115,7 +190,7 @@ void CreateStartInfo(int level_num)
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        start->shotgun_ammo = Lara.shotgun.ammo;
+        start->shotgun_ammo = g_Lara.shotgun.ammo;
         start->got_shotgun = 1;
     } else {
         start->shotgun_ammo =
@@ -127,8 +202,8 @@ void CreateStartInfo(int level_num)
     start->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
     start->num_scions = Inv_RequestItem(O_SCION_ITEM);
 
-    start->gun_type = Lara.gun_type;
-    if (Lara.gun_status == LGS_READY) {
+    start->gun_type = g_Lara.gun_type;
+    if (g_Lara.gun_status == LGS_READY) {
         start->gun_status = LGS_READY;
     } else {
         start->gun_status = LGS_ARMLESS;
@@ -137,41 +212,41 @@ void CreateStartInfo(int level_num)
 
 void CreateSaveGameInfo()
 {
-    SaveGame.current_level = CurrentLevel;
+    g_SaveGame.current_level = g_CurrentLevel;
 
-    CreateStartInfo(CurrentLevel);
+    CreateStartInfo(g_CurrentLevel);
 
-    SaveGame.num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
-    SaveGame.num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
-    SaveGame.num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
-    SaveGame.num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
-    SaveGame.num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
-    SaveGame.num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
-    SaveGame.num_key1 = Inv_RequestItem(O_KEY_ITEM1);
-    SaveGame.num_key2 = Inv_RequestItem(O_KEY_ITEM2);
-    SaveGame.num_key3 = Inv_RequestItem(O_KEY_ITEM3);
-    SaveGame.num_key4 = Inv_RequestItem(O_KEY_ITEM4);
-    SaveGame.num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
+    g_SaveGame.num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1);
+    g_SaveGame.num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2);
+    g_SaveGame.num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1);
+    g_SaveGame.num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2);
+    g_SaveGame.num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3);
+    g_SaveGame.num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4);
+    g_SaveGame.num_key1 = Inv_RequestItem(O_KEY_ITEM1);
+    g_SaveGame.num_key2 = Inv_RequestItem(O_KEY_ITEM2);
+    g_SaveGame.num_key3 = Inv_RequestItem(O_KEY_ITEM3);
+    g_SaveGame.num_key4 = Inv_RequestItem(O_KEY_ITEM4);
+    g_SaveGame.num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM);
 
     ResetSG();
 
     for (int i = 0; i < MAX_SAVEGAME_BUFFER; i++) {
-        SGPoint[i] = 0;
+        m_SGPoint[i] = 0;
     }
 
-    WriteSG(&FlipStatus, sizeof(int32_t));
+    WriteSG(&g_FlipStatus, sizeof(int32_t));
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        int8_t flag = FlipMapTable[i] >> 8;
+        int8_t flag = g_FlipMapTable[i] >> 8;
         WriteSG(&flag, sizeof(int8_t));
     }
 
-    for (int i = 0; i < NumberCameras; i++) {
-        WriteSG(&Camera.fixed[i].flags, sizeof(int16_t));
+    for (int i = 0; i < g_NumberCameras; i++) {
+        WriteSG(&g_Camera.fixed[i].flags, sizeof(int16_t));
     }
 
-    for (int i = 0; i < LevelItemCount; i++) {
-        ITEM_INFO *item = &Items[i];
-        OBJECT_INFO *obj = &Objects[item->object_number];
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->save_position) {
             WriteSG(&item->pos, sizeof(PHD_3DPOS));
@@ -211,10 +286,10 @@ void CreateSaveGameInfo()
         }
     }
 
-    WriteSGLara(&Lara);
+    WriteSGLara(&g_Lara);
 
-    WriteSG(&FlipEffect, sizeof(int32_t));
-    WriteSG(&FlipTimer, sizeof(int32_t));
+    WriteSG(&g_FlipEffect, sizeof(int32_t));
+    WriteSG(&g_FlipTimer, sizeof(int32_t));
 }
 
 void ExtractSaveGameInfo()
@@ -223,50 +298,55 @@ void ExtractSaveGameInfo()
     int16_t tmp16;
     int32_t tmp32;
 
-    InitialiseLaraInventory(CurrentLevel);
+    InitialiseLaraInventory(g_CurrentLevel);
 
-    for (int i = 0; i < SaveGame.num_pickup1; i++) {
+    for (int i = 0; i < g_SaveGame.num_pickup1; i++) {
         Inv_AddItem(O_PICKUP_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame.num_pickup2; i++) {
+    for (int i = 0; i < g_SaveGame.num_pickup2; i++) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame.num_puzzle1; i++) {
+    for (int i = 0; i < g_SaveGame.num_puzzle1; i++) {
         Inv_AddItem(O_PUZZLE_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame.num_puzzle2; i++) {
+    for (int i = 0; i < g_SaveGame.num_puzzle2; i++) {
         Inv_AddItem(O_PUZZLE_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame.num_puzzle3; i++) {
+    for (int i = 0; i < g_SaveGame.num_puzzle3; i++) {
         Inv_AddItem(O_PUZZLE_ITEM3);
     }
 
-    for (int i = 0; i < SaveGame.num_puzzle4; i++) {
+    for (int i = 0; i < g_SaveGame.num_puzzle4; i++) {
         Inv_AddItem(O_PUZZLE_ITEM4);
     }
 
-    for (int i = 0; i < SaveGame.num_key1; i++) {
+    for (int i = 0; i < g_SaveGame.num_key1; i++) {
         Inv_AddItem(O_KEY_ITEM1);
     }
 
-    for (int i = 0; i < SaveGame.num_key2; i++) {
+    for (int i = 0; i < g_SaveGame.num_key2; i++) {
         Inv_AddItem(O_KEY_ITEM2);
     }
 
-    for (int i = 0; i < SaveGame.num_key3; i++) {
+    for (int i = 0; i < g_SaveGame.num_key3; i++) {
         Inv_AddItem(O_KEY_ITEM3);
     }
 
-    for (int i = 0; i < SaveGame.num_key4; i++) {
+    for (int i = 0; i < g_SaveGame.num_key4; i++) {
         Inv_AddItem(O_KEY_ITEM4);
     }
 
-    for (int i = 0; i < SaveGame.num_leadbar; i++) {
+    for (int i = 0; i < g_SaveGame.num_leadbar; i++) {
         Inv_AddItem(O_LEADBAR_ITEM);
+    }
+
+    bool skip_reading_evil_lara = SaveGame_NeedsEvilLaraFix();
+    if (skip_reading_evil_lara) {
+        LOG_INFO("Enabling Evil Lara savegame fix");
     }
 
     ResetSG();
@@ -278,16 +358,16 @@ void ExtractSaveGameInfo()
 
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
         ReadSG(&tmp8, sizeof(int8_t));
-        FlipMapTable[i] = tmp8 << 8;
+        g_FlipMapTable[i] = tmp8 << 8;
     }
 
-    for (int i = 0; i < NumberCameras; i++) {
-        ReadSG(&Camera.fixed[i].flags, sizeof(int16_t));
+    for (int i = 0; i < g_NumberCameras; i++) {
+        ReadSG(&g_Camera.fixed[i].flags, sizeof(int16_t));
     }
 
-    for (int i = 0; i < LevelItemCount; i++) {
-        ITEM_INFO *item = &Items[i];
-        OBJECT_INFO *obj = &Objects[item->object_number];
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->control == MovableBlockControl) {
             AlterFloorHeight(item, WALL_L);
@@ -326,7 +406,9 @@ void ExtractSaveGameInfo()
             ReadSG(&item->hit_points, sizeof(int16_t));
         }
 
-        if (obj->save_flags) {
+        if (obj->save_flags
+            && (item->object_number != O_EVIL_LARA
+                || !skip_reading_evil_lara)) {
             ReadSG(&item->flags, sizeof(int16_t));
             ReadSG(&item->timer, sizeof(int16_t));
 
@@ -398,7 +480,7 @@ void ExtractSaveGameInfo()
                 SpawnItem(item, O_SCION_ITEM2);
                 SpawnItem(item, O_KEY_ITEM1);
             }
-            MusicTrackFlags[55] |= IF_ONESHOT;
+            g_MusicTrackFlags[55] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
@@ -411,52 +493,52 @@ void ExtractSaveGameInfo()
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
                 SpawnItem(item, O_MAGNUM_ITEM);
             }
-            MusicTrackFlags[52] |= IF_ONESHOT;
+            g_MusicTrackFlags[52] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
                 SpawnItem(item, O_SHOTGUN_ITEM);
             }
-            MusicTrackFlags[51] |= IF_ONESHOT;
+            g_MusicTrackFlags[51] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_LARSON && item->hit_points <= 0) {
-            MusicTrackFlags[51] |= IF_ONESHOT;
+            g_MusicTrackFlags[51] |= IF_ONESHOT;
         }
     }
 
-    BOX_NODE *node = Lara.LOT.node;
-    ReadSGLara(&Lara);
-    Lara.LOT.node = node;
-    Lara.LOT.target_box = NO_BOX;
+    BOX_NODE *node = g_Lara.LOT.node;
+    ReadSGLara(&g_Lara);
+    g_Lara.LOT.node = node;
+    g_Lara.LOT.target_box = NO_BOX;
 
-    ReadSG(&FlipEffect, sizeof(int32_t));
-    ReadSG(&FlipTimer, sizeof(int32_t));
+    ReadSG(&g_FlipEffect, sizeof(int32_t));
+    ReadSG(&g_FlipTimer, sizeof(int32_t));
 }
 
 void ResetSG()
 {
-    SGCount = 0;
-    SGPoint = SaveGame.buffer;
+    m_SGCount = 0;
+    m_SGPoint = g_SaveGame.buffer;
 }
 
 void SkipSG(int size)
 {
-    SGPoint += size;
-    SGCount += size; // missing from OG
+    m_SGPoint += size;
+    m_SGCount += size; // missing from OG
 }
 
 void WriteSG(void *pointer, int size)
 {
-    SGCount += size;
-    if (SGCount >= MAX_SAVEGAME_BUFFER) {
-        S_ExitSystem("FATAL: Savegame is too big to fit in buffer");
+    m_SGCount += size;
+    if (m_SGCount >= MAX_SAVEGAME_BUFFER) {
+        Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++) {
-        *SGPoint++ = *data++;
+        *m_SGPoint++ = *data++;
     }
 }
 
@@ -481,19 +563,19 @@ void WriteSGLara(LARA_INFO *lara)
 
     // OG just writes the pointer address (!)
     if (lara->spaz_effect) {
-        tmp32 = (size_t)lara->spaz_effect - (size_t)Effects;
+        tmp32 = (size_t)lara->spaz_effect - (size_t)g_Effects;
     }
     WriteSG(&tmp32, sizeof(int32_t));
 
     WriteSG(&lara->mesh_effects, sizeof(int32_t));
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
-        tmp32 = (size_t)lara->mesh_ptrs[i] - (size_t)MeshBase;
+        tmp32 = (size_t)lara->mesh_ptrs[i] - (size_t)g_MeshBase;
         WriteSG(&tmp32, sizeof(int32_t));
     }
 
     // OG just writes the pointer address (!) assuming it's a non-existing mesh
-    // 16 (!!) which happens to be Lara's current target. Just write NULL.
+    // 16 (!!) which happens to be g_Lara's current target. Just write NULL.
     tmp32 = 0;
     WriteSG(&tmp32, sizeof(int32_t));
 
@@ -519,7 +601,7 @@ void WriteSGLara(LARA_INFO *lara)
 
 void WriteSGARM(LARA_ARM *arm)
 {
-    int32_t frame_base = (size_t)arm->frame_base - (size_t)AnimFrames;
+    int32_t frame_base = (size_t)arm->frame_base - (size_t)g_AnimFrames;
     WriteSG(&frame_base, sizeof(int32_t));
     WriteSG(&arm->frame_number, sizeof(int16_t));
     WriteSG(&arm->lock, sizeof(int16_t));
@@ -549,10 +631,10 @@ void WriteSGLOT(LOT_INFO *lot)
 
 void ReadSG(void *pointer, int size)
 {
-    SGCount += size;
+    m_SGCount += size;
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++)
-        *data++ = *SGPoint++;
+        *data++ = *m_SGPoint++;
 }
 
 void ReadSGLara(LARA_INFO *lara)
@@ -580,7 +662,7 @@ void ReadSGLara(LARA_INFO *lara)
     ReadSG(&lara->mesh_effects, sizeof(int32_t));
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         ReadSG(&tmp32, sizeof(int32_t));
-        lara->mesh_ptrs[i] = (int16_t *)((size_t)MeshBase + (size_t)tmp32);
+        lara->mesh_ptrs[i] = (int16_t *)((size_t)g_MeshBase + (size_t)tmp32);
     }
 
     lara->target = NULL;
@@ -610,7 +692,7 @@ void ReadSGARM(LARA_ARM *arm)
 {
     int32_t frame_base;
     ReadSG(&frame_base, sizeof(int32_t));
-    arm->frame_base = (int16_t *)((size_t)AnimFrames + (size_t)frame_base);
+    arm->frame_base = (int16_t *)((size_t)g_AnimFrames + (size_t)frame_base);
 
     ReadSG(&arm->frame_number, sizeof(int16_t));
     ReadSG(&arm->lock, sizeof(int16_t));

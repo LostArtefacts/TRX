@@ -11,12 +11,12 @@ void SetupExplosion(OBJECT_INFO *obj)
 
 void ControlExplosion1(int16_t fx_num)
 {
-    FX_INFO *fx = &Effects[fx_num];
+    FX_INFO *fx = &g_Effects[fx_num];
     fx->counter++;
     if (fx->counter == 2) {
         fx->counter = 0;
         fx->frame_number--;
-        if (fx->frame_number <= Objects[fx->object_number].nmeshes) {
+        if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
             KillEffect(fx_num);
         }
     }
@@ -24,7 +24,7 @@ void ControlExplosion1(int16_t fx_num)
 
 void Explosion(ITEM_INFO *item)
 {
-    SoundEffect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
-    Camera.bounce = -75;
-    FlipEffect = -1;
+    Sound_Effect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
+    g_Camera.bounce = -75;
+    g_FlipEffect = -1;
 }

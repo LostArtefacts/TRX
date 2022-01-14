@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_BALDY_H
-#define T1M_GAME_AI_BALDY_H
+#pragma once
 
 #include "global/types.h"
 
@@ -24,10 +23,8 @@ typedef enum {
     BALDY_SHOOT = 6,
 } BALDY_ANIM;
 
-extern BITE_INFO BaldyGun;
+extern BITE_INFO g_BaldyGun;
 
 void SetupBaldy(OBJECT_INFO *obj);
 void InitialiseBaldy(int16_t item_num);
 void BaldyControl(int16_t item_num);
-
-#endif

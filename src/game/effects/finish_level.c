@@ -4,5 +4,5 @@
 
 void FinishLevel(ITEM_INFO *item)
 {
-    LevelComplete = true;
+    g_LevelComplete = true;
 }

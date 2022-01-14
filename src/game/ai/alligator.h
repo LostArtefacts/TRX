@@ -1,5 +1,4 @@
-#ifndef T1M_GAME_AI_ALLIGATOR_H
-#define T1M_GAME_AI_ALLIGATOR_H
+#pragma once
 
 #include "global/types.h"
 
@@ -12,6 +11,7 @@
 #define ALLIGATOR_HITPOINTS 20
 #define ALLIGATOR_RADIUS (WALL_L / 3) // = 341
 #define ALLIGATOR_SMARTNESS 0x400
+#define ALLIGATOR_BITE_AF 42
 
 typedef enum {
     ALLIGATOR_EMPTY = 0,
@@ -22,5 +22,3 @@ typedef enum {
 
 void SetupAlligator(OBJECT_INFO *obj);
 void AlligatorControl(int16_t item_num);
-
-#endif

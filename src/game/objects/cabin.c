@@ -17,7 +17,7 @@ void SetupCabin(OBJECT_INFO *obj)
 
 void CabinControl(int16_t item_num)
 {
-    ITEM_INFO *item = &Items[item_num];
+    ITEM_INFO *item = &g_Items[item_num];
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         switch (item->current_anim_state) {
@@ -35,7 +35,7 @@ void CabinControl(int16_t item_num)
     }
 
     if (item->current_anim_state == CABIN_FINISH) {
-        FlipMapTable[3] = IF_CODE_BITS;
+        g_FlipMapTable[3] = IF_CODE_BITS;
         FlipMap();
         KillItem(item_num);
     }
