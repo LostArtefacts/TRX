@@ -131,7 +131,7 @@ void Shell_Main()
             Text_RemoveAll();
             Output_DisplayPicture(g_GameFlow.main_menu_background_path);
             g_NoInputCount = 0;
-            if (!InitialiseLevel(g_GameFlow.title_level_num, GFL_TITLE)) {
+            if (!InitialiseLevel(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }

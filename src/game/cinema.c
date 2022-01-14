@@ -18,7 +18,7 @@ static const int32_t m_CinematicAnimationRate = 0x8000;
 
 int32_t StartCinematic(int32_t level_num)
 {
-    if (!InitialiseLevel(level_num, GFL_CUTSCENE)) {
+    if (!InitialiseLevel(level_num)) {
         return END_ACTION;
     }
 

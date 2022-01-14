@@ -60,7 +60,7 @@ int32_t StartDemo()
     int8_t old_enhanced_look = g_Config.enable_enhanced_look;
     g_Config.enable_enhanced_look = 0;
 
-    if (InitialiseLevel(m_DemoLevel, GFL_DEMO)) {
+    if (InitialiseLevel(m_DemoLevel)) {
         LoadLaraDemoPos();
 
         Random_SeedDraw(0xD371F947);
