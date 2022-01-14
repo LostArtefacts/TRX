@@ -24,10 +24,10 @@
         }                                                                      \
     }
 
-static int m_TextureMap[GFX_MAX_TEXTURES];
+static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static RGB888 m_ATIPalette[256];
 
-static GFX_3D_Renderer *m_Renderer3D;
+static GFX_3D_Renderer *m_Renderer3D = NULL;
 static RGB888 m_GamePalette[256];
 static bool m_IsPaletteActive = false;
 static bool m_IsRendering = false;
@@ -1131,13 +1131,13 @@ void S_Output_SetFullscreen(bool fullscreen)
 
 bool S_Output_Init()
 {
-    GFX_Context_Attach(g_TombHWND);
-    m_Renderer3D = GFX_Context_GetRenderer3D();
-
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         m_TextureMap[i] = GFX_NO_TEXTURE;
         m_TextureSurfaces[i] = NULL;
     }
+
+    GFX_Context_Attach(g_TombHWND);
+    m_Renderer3D = GFX_Context_GetRenderer3D();
 
     S_Output_SetHardwareVideoMode();
 
