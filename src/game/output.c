@@ -649,6 +649,11 @@ void Output_DrawSprite(
     }
 }
 
+void Output_CopyScreenToBuffer()
+{
+    S_Output_CopyToPicture();
+}
+
 void Output_CopyBufferToScreen()
 {
     S_Output_CopyFromPicture();

@@ -7,6 +7,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/setup.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -15,6 +16,7 @@
 #include "specific/s_misc.h"
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
 
 int32_t StartCinematic(int32_t level_num)
 {
@@ -31,10 +33,10 @@ int32_t StartCinematic(int32_t level_num)
 int32_t CinematicLoop()
 {
     DoCinematic(2);
-    DrawPhaseCinematic();
+    Draw_ProcessFrame();
     int32_t nframes;
     do {
-        nframes = DrawPhaseCinematic();
+        nframes = Draw_ProcessFrame();
     } while (!DoCinematic(nframes));
     return GF_NOP;
 }
@@ -45,7 +47,7 @@ int32_t StopCinematic(int32_t level_num)
     Sound_StopAllSamples();
 
     g_LevelComplete = true;
-    S_FadeInInventory(1);
+    Output_CopyScreenToBuffer();
 
     return level_num | GF_LEVEL_COMPLETE;
 }
@@ -68,15 +70,21 @@ void InitCinematicRooms()
     }
 }
 
-int32_t DoCinematic(int32_t nframes)
+bool DoCinematic(int32_t nframes)
 {
-    static int32_t frame_count = 0;
+    m_FrameCount += m_CinematicAnimationRate * nframes;
+    while (m_FrameCount >= 0) {
+        // End the cinematic one frame early (the last frame is handled by
+        // Output_CopyScreenToBuffer). Not doing this causes
+        // Output_CopyScreenToBuffer to attempt rendering non-existing
+        // animation frames.
+        if (g_CineFrame >= g_NumCineFrames - 1) {
+            return true;
+        }
 
-    frame_count += m_CinematicAnimationRate * nframes;
-    while (frame_count >= 0) {
         Input_Update();
         if (g_Input.option) {
-            return 1;
+            return true;
         }
 
         int16_t item_num = g_NextItemActive;
@@ -106,16 +114,12 @@ int32_t DoCinematic(int32_t nframes)
         }
 
         CalculateCinematicCamera();
+
         g_CineFrame++;
-
-        if (g_CineFrame >= g_NumCineFrames) {
-            return 1;
-        }
-
-        frame_count -= 0x10000;
+        m_FrameCount -= 0x10000;
     }
 
-    return 0;
+    return false;
 }
 
 void CalculateCinematicCamera()
@@ -202,12 +206,12 @@ void InGameCinematicCamera()
     int32_t c = phd_cos(g_CinePosition.y_rot);
     int32_t s = phd_sin(g_CinePosition.y_rot);
 
-    g_Camera.target.x = g_CinePosition.x + ((c * tx + s * tz) >> 14);
+    g_Camera.target.x = g_CinePosition.x + ((c * tx + s * tz) >> W2V_SHIFT);
     g_Camera.target.y = g_CinePosition.y + ty;
-    g_Camera.target.z = g_CinePosition.z + ((c * tz - s * tx) >> 14);
-    g_Camera.pos.x = g_CinePosition.x + ((s * cz + c * cx) >> 14);
+    g_Camera.target.z = g_CinePosition.z + ((c * tz - s * tx) >> W2V_SHIFT);
+    g_Camera.pos.x = g_CinePosition.x + ((s * cz + c * cx) >> W2V_SHIFT);
     g_Camera.pos.y = g_CinePosition.y + cy;
-    g_Camera.pos.z = g_CinePosition.z + ((c * cz - s * cx) >> 14);
+    g_Camera.pos.z = g_CinePosition.z + ((c * cz - s * cx) >> W2V_SHIFT);
 
     phd_AlterFOV(fov);
 

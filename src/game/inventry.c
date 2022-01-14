@@ -56,13 +56,11 @@ int32_t Display_Inventory(int inv_mode)
     g_InvMode = inv_mode;
 
     m_InvNFrames = 2;
-    Construct_Inventory();
-
     if (g_InvMode != INV_TITLE_MODE) {
-        S_FadeInInventory(1);
-    } else {
-        S_FadeInInventory(0);
+        Screen_ApplyResolution();
+        Output_CopyScreenToBuffer();
     }
+    Construct_Inventory();
 
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
@@ -277,12 +275,6 @@ int32_t Display_Inventory(int inv_mode)
                     g_InvMainCurrent = ring.current_object;
                 } else {
                     g_InvOptionCurrent = ring.current_object;
-                }
-
-                if (g_InvMode == INV_TITLE_MODE) {
-                    S_FadeOutInventory(0);
-                } else {
-                    S_FadeOutInventory(1);
                 }
 
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
@@ -585,11 +577,6 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_EXITING_INVENTORY:
             if (!imo.count) {
-                if (g_InvMode != INV_TITLE_MODE) {
-                    S_FadeOutInventory(1);
-                } else {
-                    S_FadeOutInventory(0);
-                }
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
                 Inv_RingMotionRadius(&ring, 0);
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
@@ -601,7 +588,12 @@ int32_t Display_Inventory(int inv_mode)
     } while (imo.status != RNG_DONE);
 
     RemoveInventoryText();
-    S_FinishInventory();
+
+    if (g_InvMode != INV_TITLE_MODE) {
+        Screen_ApplyResolution();
+    }
+    g_ModeLock = false;
+
     if (m_VersionText) {
         Text_Remove(m_VersionText);
         m_VersionText = NULL;
@@ -708,9 +700,6 @@ int32_t Display_Inventory(int inv_mode)
 void Construct_Inventory()
 {
     Output_SetupAboveWater(false);
-    if (g_InvMode != INV_TITLE_MODE) {
-        Screen_ApplyResolution();
-    }
 
     g_PhdLeft = ViewPort_GetMinX();
     g_PhdTop = ViewPort_GetMinY();

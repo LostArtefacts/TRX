@@ -27,6 +27,7 @@ void Output_SetWaterColor(const RGBF *color);
 void Output_ClearScreen();
 void Output_DrawEmpty();
 void Output_InitialisePolyList();
+void Output_CopyScreenToBuffer();
 void Output_CopyBufferToScreen();
 int32_t Output_DumpScreen();
 

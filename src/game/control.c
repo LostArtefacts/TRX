@@ -24,6 +24,7 @@
 #include <stddef.h>
 
 static const int32_t m_AnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
 
 static void Control_TriggerMusicTrack(
     int16_t track, int16_t flags, int16_t type);
@@ -205,14 +206,13 @@ void CheckCheatMode()
 
 int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 {
-    static int32_t frame_count = 0;
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
 
-    frame_count += m_AnimationRate * nframes;
-    while (frame_count >= 0) {
+    m_FrameCount += m_AnimationRate * nframes;
+    while (m_FrameCount >= 0) {
         CheckCheatMode();
         if (g_LevelComplete) {
             return GF_NOP_BREAK;
@@ -325,7 +325,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        frame_count -= 0x10000;
+        m_FrameCount -= 0x10000;
     }
 
     return GF_NOP;
