@@ -4,7 +4,7 @@
 #include "game/draw.h"
 #include "game/objects/cog.h"
 #include "global/vars.h"
-#include "src/config.h"
+#include "config.h"
 
 static bool IsSameBridgeSector(
     int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)

@@ -27,3 +27,4 @@ Release/
 *.sln
 *.vcxproj
 *.filters
+libs/
