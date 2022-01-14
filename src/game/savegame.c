@@ -259,6 +259,16 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
     SaveGame_ResetSG(game_info);
     memset(m_SGBufPtr, 0, MAX_SAVEGAME_BUFFER);
 
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
+            game_info->start[i] = game_info->start[game_info->current_level];
+        }
+    }
+
+    assert(game_info->start);
+    SaveGame_WriteSG(
+        &game_info->start[0], sizeof(START_INFO) * g_GameFlow.level_count);
+
     SaveGame_WriteSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->kills, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->secrets, sizeof(uint16_t));
@@ -355,6 +365,16 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
     }
 
     SaveGame_ResetSG(game_info);
+
+    assert(game_info->start);
+    SaveGame_ReadSG(
+        &game_info->start[0], sizeof(START_INFO) * g_GameFlow.level_count);
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
+            game_info->start[game_info->current_level] = game_info->start[i];
+        }
+    }
 
     SaveGame_ReadSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_ReadSG(&game_info->kills, sizeof(uint32_t));
@@ -764,21 +784,13 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
     File_Skip(fp, 75);
     File_Skip(fp, sizeof(int32_t));
 
-    assert(game_info->start);
-    File_Read(
-        &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
     File_Read(
         &game_info->savegame_buffer[0], sizeof(char),
         File_Size(fp) - File_Pos(fp), fp);
     File_Close(fp);
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[game_info->current_level] = game_info->start[i];
-        }
-    }
-
     SaveGame_ResetSG(game_info);
+    SaveGame_SkipSG(sizeof(START_INFO) * g_GameFlow.level_count);
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint16_t));
@@ -801,21 +813,12 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
         return false;
     }
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[i] = game_info->start[game_info->current_level];
-        }
-    }
-
     sprintf(
         filename, "%s",
         g_GameFlow.levels[game_info->current_level].level_title);
     File_Write(filename, sizeof(char), 75, fp);
     File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
 
-    assert(game_info->start);
-    File_Write(
-        &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
     File_Write(&game_info->savegame_buffer[0], sizeof(char), m_SGBufPos, fp);
     File_Close(fp);
 
