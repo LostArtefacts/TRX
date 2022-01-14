@@ -549,7 +549,7 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
                 SpawnItem(item, O_SCION_ITEM2);
                 SpawnItem(item, O_KEY_ITEM1);
             }
-            g_MusicTrackFlags[55] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
@@ -562,18 +562,18 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
                 SpawnItem(item, O_MAGNUM_ITEM);
             }
-            g_MusicTrackFlags[52] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
                 SpawnItem(item, O_SHOTGUN_ITEM);
             }
-            g_MusicTrackFlags[51] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_LARSON && item->hit_points <= 0) {
-            g_MusicTrackFlags[51] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
 
