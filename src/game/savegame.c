@@ -67,6 +67,8 @@ static void SaveGame_WriteSGARM(LARA_ARM *arm);
 static void SaveGame_WriteSGLara(LARA_INFO *lara);
 static void SaveGame_WriteSGLOT(LOT_INFO *lot);
 
+static void SaveGame_FillSaveBuffer(GAME_INFO *game_info);
+
 static bool SaveGame_NeedsEvilLaraFix(GAME_INFO *game_info)
 {
     // Heuristic for issue #261.
@@ -253,8 +255,10 @@ void CreateStartInfo(int level_num)
     }
 }
 
-void SaveGame_SaveToSave(GAME_INFO *game_info)
+static void SaveGame_FillSaveBuffer(GAME_INFO *game_info)
 {
+    // Write current game information into the save buffer.
+
     assert(game_info);
     game_info->current_level = g_CurrentLevel;
 
@@ -373,8 +377,10 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
     SaveGame_WriteSG(&g_FlipTimer, sizeof(int32_t));
 }
 
-void SaveGame_LoadFromSave(GAME_INFO *game_info)
+void SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
 {
+    // Write current game information into the save buffer.
+
     assert(game_info);
 
     int8_t tmp8;
@@ -803,7 +809,7 @@ static void SaveGame_ReadSGLOT(LOT_INFO *lot)
     SaveGame_ReadSG(&lot->target, sizeof(PHD_VECTOR));
 }
 
-bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
+bool SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
 {
     assert(game_info);
 
@@ -845,7 +851,7 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
 bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
 {
     assert(game_info);
-    SaveGame_SaveToSave(game_info);
+    SaveGame_FillSaveBuffer(game_info);
 
     char filename[80];
     sprintf(filename, g_GameFlow.save_game_fmt, slot);

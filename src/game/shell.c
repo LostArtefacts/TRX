@@ -104,7 +104,7 @@ void Shell_Main()
             break;
 
         case GF_START_SAVED_GAME:
-            SaveGame_LoadFromFile(&g_GameInfo, gf_param);
+            SaveGame_LoadSaveBufferFromFile(&g_GameInfo, gf_param);
             gf_option =
                 GameFlow_InterpretSequence(g_GameInfo.current_level, GFL_SAVED);
             break;
