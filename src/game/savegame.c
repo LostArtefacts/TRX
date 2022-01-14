@@ -86,7 +86,7 @@ static bool SaveGame_NeedsEvilLaraFix(GAME_INFO *game_info)
     assert(game_info);
 
     bool result = false;
-    if (game_info->current_level != 14) {
+    if (g_CurrentLevel != 14) {
         return result;
     }
 
@@ -260,7 +260,6 @@ static void SaveGame_FillSaveBuffer(GAME_INFO *game_info)
     // Write current game information into the save buffer.
 
     assert(game_info);
-    game_info->current_level = g_CurrentLevel;
 
     CreateStartInfo(g_CurrentLevel);
 
@@ -270,13 +269,13 @@ static void SaveGame_FillSaveBuffer(GAME_INFO *game_info)
     char title[SAVEGAME_TITLE_SIZE];
     snprintf(
         title, SAVEGAME_TITLE_SIZE, "%s",
-        g_GameFlow.levels[game_info->current_level].level_title);
+        g_GameFlow.levels[g_CurrentLevel].level_title);
     SaveGame_WriteSG(title, SAVEGAME_TITLE_SIZE);
     SaveGame_WriteSG(&g_SaveCounter, sizeof(int32_t));
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[i] = game_info->start[game_info->current_level];
+            game_info->start[i] = game_info->start[g_CurrentLevel];
         }
     }
 
@@ -298,7 +297,7 @@ static void SaveGame_FillSaveBuffer(GAME_INFO *game_info)
     SaveGame_WriteSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->kills, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->secrets, sizeof(uint16_t));
-    SaveGame_WriteSG(&game_info->current_level, sizeof(uint16_t));
+    SaveGame_WriteSG(&g_CurrentLevel, sizeof(uint16_t));
     SaveGame_WriteSG(&game_info->pickups, sizeof(uint8_t));
     SaveGame_WriteSG(&game_info->bonus_flag, sizeof(uint8_t));
 
@@ -411,18 +410,18 @@ void SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
         SaveGame_ReadSG(&start->flags, sizeof(uint16_t));
     }
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[game_info->current_level] = game_info->start[i];
-        }
-    }
-
     SaveGame_ReadSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_ReadSG(&game_info->kills, sizeof(uint32_t));
     SaveGame_ReadSG(&game_info->secrets, sizeof(uint16_t));
-    SaveGame_ReadSG(&game_info->current_level, sizeof(uint16_t));
+    SaveGame_ReadSG(&g_CurrentLevel, sizeof(uint16_t));
     SaveGame_ReadSG(&game_info->pickups, sizeof(uint8_t));
     SaveGame_ReadSG(&game_info->bonus_flag, sizeof(uint8_t));
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
+            game_info->start[g_CurrentLevel] = game_info->start[i];
+        }
+    }
 
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_ITEM_STATS item_stats = { 0 };
@@ -809,7 +808,7 @@ static void SaveGame_ReadSGLOT(LOT_INFO *lot)
     SaveGame_ReadSG(&lot->target, sizeof(PHD_VECTOR));
 }
 
-bool SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
+int16_t SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
 {
     assert(game_info);
 
@@ -819,7 +818,7 @@ bool SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
 
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
-        return false;
+        return -1;
     }
     File_Read(
         &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
@@ -843,9 +842,11 @@ bool SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint16_t));
-    SaveGame_ReadSG(&game_info->current_level, sizeof(uint16_t));
 
-    return true;
+    uint16_t level_num;
+    SaveGame_ReadSG(&level_num, sizeof(int16_t));
+
+    return level_num;
 }
 
 bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
