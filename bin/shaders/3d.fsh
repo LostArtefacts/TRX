@@ -1,4 +1,5 @@
-#version 330 core
+#version 130
+#extension GL_ARB_explicit_attrib_location: enable
 #extension GL_EXT_gpu_shader4: enable
 
 in vec4 vertColor;

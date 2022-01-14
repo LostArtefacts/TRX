@@ -1,4 +1,5 @@
-#version 330 core
+#version 130
+#extension GL_ARB_explicit_attrib_location: enable
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inTexCoords;
