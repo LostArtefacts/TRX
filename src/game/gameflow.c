@@ -334,10 +334,6 @@ static bool GameFlow_LoadLevelSequence(
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
-            if (!data) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             const char *tmp_s = json_object_get_string(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
@@ -348,10 +344,6 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             data->path = Memory_Dup(tmp_s);
-            if (!data->path) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             double tmp_d =
                 json_object_get_number_double(jseq_obj, "display_time", -1.0);
@@ -482,10 +474,6 @@ static bool GameFlow_LoadLevelSequence(
 
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
-            if (!swap_data) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             swap_data->object1_num = json_object_get_number_int(
                 jseq_obj, "object1_id", JSON_INVALID_NUMBER);
@@ -546,16 +534,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     int32_t level_count = jlvl_arr->length;
 
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
-    if (!g_GameFlow.levels) {
-        LOG_ERROR("failed to allocate memory");
-        return false;
-    }
-
     g_GameInfo.start = Memory_Alloc(sizeof(START_INFO) * level_count);
-    if (!g_GameInfo.start) {
-        LOG_ERROR("failed to allocate memory");
-        return false;
-    }
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
@@ -593,10 +572,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
         cur->level_file = Memory_Dup(tmp_s);
-        if (!cur->level_file) {
-            LOG_ERROR("failed to allocate memory");
-            return false;
-        }
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
@@ -604,10 +579,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
         cur->level_title = Memory_Dup(tmp_s);
-        if (!cur->level_title) {
-            LOG_ERROR("failed to allocate memory");
-            return false;
-        }
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
