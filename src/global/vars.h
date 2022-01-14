@@ -49,7 +49,7 @@ extern CAMERA_INFO g_Camera;
 extern GAME_INFO g_GameInfo;
 extern int32_t g_SavedGamesCount;
 extern int32_t g_SaveCounter;
-extern int32_t g_CurrentLevel;
+extern int16_t g_CurrentLevel;
 extern uint32_t *g_DemoData;
 extern bool g_LevelComplete;
 extern bool g_ResetFlag;

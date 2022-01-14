@@ -1467,7 +1467,6 @@ typedef struct GAME_INFO {
     uint32_t timer;
     uint32_t kills;
     uint16_t secrets;
-    uint16_t current_level;
     uint8_t pickups;
     uint8_t bonus_flag;
     char savegame_buffer[MAX_SAVEGAME_BUFFER];
