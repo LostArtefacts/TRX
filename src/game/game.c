@@ -28,9 +28,13 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         InitialiseLevelFlags();
     }
 
-    if (!InitialiseLevel(level_num, level_type)) {
+    if (!InitialiseLevel(level_num)) {
         g_CurrentLevel = 0;
         return GF_EXIT_TO_TITLE;
+    }
+
+    if (level_type == GFL_SAVED) {
+        SaveGame_ApplySaveBuffer(&g_GameInfo);
     }
 
     return GF_NOP;
