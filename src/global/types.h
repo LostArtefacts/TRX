@@ -1449,12 +1449,17 @@ typedef struct START_INFO {
     uint8_t num_scions;
     int8_t gun_status;
     int8_t gun_type;
-    uint16_t available : 1;
-    uint16_t got_pistols : 1;
-    uint16_t got_magnums : 1;
-    uint16_t got_uzis : 1;
-    uint16_t got_shotgun : 1;
-    uint16_t costume : 1;
+    union {
+        uint16_t all;
+        struct {
+            uint16_t available : 1;
+            uint16_t got_pistols : 1;
+            uint16_t got_magnums : 1;
+            uint16_t got_uzis : 1;
+            uint16_t got_shotgun : 1;
+            uint16_t costume : 1;
+        };
+    } flags;
 } START_INFO;
 
 typedef struct GAME_INFO {

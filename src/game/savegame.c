@@ -138,23 +138,23 @@ void InitialiseStartInfo()
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         ModifyStartInfo(i);
-        g_GameInfo.start[i].available = 0;
+        g_GameInfo.start[i].flags.available = 0;
     }
-    g_GameInfo.start[g_GameFlow.gym_level_num].available = 1;
-    g_GameInfo.start[g_GameFlow.first_level_num].available = 1;
+    g_GameInfo.start[g_GameFlow.gym_level_num].flags.available = 1;
+    g_GameInfo.start[g_GameFlow.first_level_num].flags.available = 1;
 }
 
 void ModifyStartInfo(int32_t level_num)
 {
     START_INFO *start = &g_GameInfo.start[level_num];
 
-    start->got_pistols = 1;
+    start->flags.got_pistols = 1;
     start->gun_type = LGT_PISTOLS;
     start->pistol_ammo = 1000;
 
     if (level_num == g_GameFlow.gym_level_num) {
-        start->available = 1;
-        start->costume = 1;
+        start->flags.available = 1;
+        start->flags.costume = 1;
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
@@ -162,35 +162,35 @@ void ModifyStartInfo(int32_t level_num)
         start->shotgun_ammo = 0;
         start->magnum_ammo = 0;
         start->uzi_ammo = 0;
-        start->got_pistols = 0;
-        start->got_shotgun = 0;
-        start->got_magnums = 0;
-        start->got_uzis = 0;
+        start->flags.got_pistols = 0;
+        start->flags.got_shotgun = 0;
+        start->flags.got_magnums = 0;
+        start->flags.got_uzis = 0;
         start->gun_type = LGT_UNARMED;
         start->gun_status = LGS_ARMLESS;
     }
 
     if (level_num == g_GameFlow.first_level_num) {
-        start->available = 1;
-        start->costume = 0;
+        start->flags.available = 1;
+        start->flags.costume = 0;
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
         start->shotgun_ammo = 0;
         start->magnum_ammo = 0;
         start->uzi_ammo = 0;
-        start->got_shotgun = 0;
-        start->got_magnums = 0;
-        start->got_uzis = 0;
+        start->flags.got_shotgun = 0;
+        start->flags.got_magnums = 0;
+        start->flags.got_uzis = 0;
         start->gun_status = LGS_ARMLESS;
     }
 
     if ((g_GameInfo.bonus_flag & GBF_NGPLUS)
         && level_num != g_GameFlow.gym_level_num) {
-        start->got_pistols = 1;
-        start->got_shotgun = 1;
-        start->got_magnums = 1;
-        start->got_uzis = 1;
+        start->flags.got_pistols = 1;
+        start->flags.got_shotgun = 1;
+        start->flags.got_magnums = 1;
+        start->flags.got_uzis = 1;
         start->shotgun_ammo = 1234;
         start->magnum_ammo = 1234;
         start->uzi_ammo = 1234;
@@ -202,39 +202,39 @@ void CreateStartInfo(int level_num)
 {
     START_INFO *start = &g_GameInfo.start[level_num];
 
-    start->available = 1;
-    start->costume = 0;
+    start->flags.available = 1;
+    start->flags.costume = 0;
 
     start->pistol_ammo = 1000;
     if (Inv_RequestItem(O_GUN_ITEM)) {
-        start->got_pistols = 1;
+        start->flags.got_pistols = 1;
     } else {
-        start->got_pistols = 0;
+        start->flags.got_pistols = 0;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
         start->magnum_ammo = g_Lara.magnums.ammo;
-        start->got_magnums = 1;
+        start->flags.got_magnums = 1;
     } else {
         start->magnum_ammo = Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
-        start->got_magnums = 0;
+        start->flags.got_magnums = 0;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
         start->uzi_ammo = g_Lara.uzis.ammo;
-        start->got_uzis = 1;
+        start->flags.got_uzis = 1;
     } else {
         start->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
-        start->got_uzis = 0;
+        start->flags.got_uzis = 0;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
         start->shotgun_ammo = g_Lara.shotgun.ammo;
-        start->got_shotgun = 1;
+        start->flags.got_shotgun = 1;
     } else {
         start->shotgun_ammo =
             Inv_RequestItem(O_SG_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
-        start->got_shotgun = 0;
+        start->flags.got_shotgun = 0;
     }
 
     start->num_medis = Inv_RequestItem(O_MEDI_ITEM);
@@ -266,8 +266,19 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
     }
 
     assert(game_info->start);
-    SaveGame_WriteSG(
-        &game_info->start[0], sizeof(START_INFO) * g_GameFlow.level_count);
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        START_INFO *start = &game_info->start[i];
+        SaveGame_WriteSG(&start->pistol_ammo, sizeof(uint16_t));
+        SaveGame_WriteSG(&start->magnum_ammo, sizeof(uint16_t));
+        SaveGame_WriteSG(&start->uzi_ammo, sizeof(uint16_t));
+        SaveGame_WriteSG(&start->shotgun_ammo, sizeof(uint16_t));
+        SaveGame_WriteSG(&start->num_medis, sizeof(uint8_t));
+        SaveGame_WriteSG(&start->num_big_medis, sizeof(uint8_t));
+        SaveGame_WriteSG(&start->num_scions, sizeof(uint8_t));
+        SaveGame_WriteSG(&start->gun_status, sizeof(int8_t));
+        SaveGame_WriteSG(&start->gun_type, sizeof(int8_t));
+        SaveGame_WriteSG(&start->flags, sizeof(uint16_t));
+    }
 
     SaveGame_WriteSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->kills, sizeof(uint32_t));
@@ -367,8 +378,19 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
     SaveGame_ResetSG(game_info);
 
     assert(game_info->start);
-    SaveGame_ReadSG(
-        &game_info->start[0], sizeof(START_INFO) * g_GameFlow.level_count);
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        START_INFO *start = &game_info->start[i];
+        SaveGame_ReadSG(&start->pistol_ammo, sizeof(uint16_t));
+        SaveGame_ReadSG(&start->magnum_ammo, sizeof(uint16_t));
+        SaveGame_ReadSG(&start->uzi_ammo, sizeof(uint16_t));
+        SaveGame_ReadSG(&start->shotgun_ammo, sizeof(uint16_t));
+        SaveGame_ReadSG(&start->num_medis, sizeof(uint8_t));
+        SaveGame_ReadSG(&start->num_big_medis, sizeof(uint8_t));
+        SaveGame_ReadSG(&start->num_scions, sizeof(uint8_t));
+        SaveGame_ReadSG(&start->gun_status, sizeof(int8_t));
+        SaveGame_ReadSG(&start->gun_type, sizeof(int8_t));
+        SaveGame_ReadSG(&start->flags, sizeof(uint16_t));
+    }
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
@@ -790,7 +812,18 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
     File_Close(fp);
 
     SaveGame_ResetSG(game_info);
-    SaveGame_SkipSG(sizeof(START_INFO) * g_GameFlow.level_count);
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        SaveGame_SkipSG(sizeof(uint16_t));
+        SaveGame_SkipSG(sizeof(uint16_t));
+        SaveGame_SkipSG(sizeof(uint16_t));
+        SaveGame_SkipSG(sizeof(uint16_t));
+        SaveGame_SkipSG(sizeof(uint8_t));
+        SaveGame_SkipSG(sizeof(uint8_t));
+        SaveGame_SkipSG(sizeof(uint8_t));
+        SaveGame_SkipSG(sizeof(int8_t));
+        SaveGame_SkipSG(sizeof(int8_t));
+        SaveGame_SkipSG(sizeof(uint16_t));
+    }
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint32_t));
     SaveGame_SkipSG(sizeof(uint16_t));

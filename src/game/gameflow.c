@@ -1153,10 +1153,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
                 && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-                g_GameInfo.start[level_num].got_pistols = 0;
-                g_GameInfo.start[level_num].got_shotgun = 0;
-                g_GameInfo.start[level_num].got_magnums = 0;
-                g_GameInfo.start[level_num].got_uzis = 0;
+                g_GameInfo.start[level_num].flags.got_pistols = 0;
+                g_GameInfo.start[level_num].flags.got_shotgun = 0;
+                g_GameInfo.start[level_num].flags.got_magnums = 0;
+                g_GameInfo.start[level_num].flags.got_uzis = 0;
                 g_GameInfo.start[level_num].gun_type = LGT_UNARMED;
                 g_GameInfo.start[level_num].gun_status = LGS_ARMLESS;
                 InitialiseLaraInventory(level_num);

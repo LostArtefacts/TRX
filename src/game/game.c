@@ -190,7 +190,7 @@ void LevelStats(int32_t level_num)
         ModifyStartInfo(level_num + 1);
     }
 
-    g_GameInfo.start[g_CurrentLevel].available = 0;
+    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
     Output_FadeToBlack();
     Screen_ApplyResolution();
 }
