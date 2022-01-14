@@ -31,6 +31,7 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
+#define SAVEGAME_TITLE_SIZE 75
 #define SAVE_CREATURE (1 << 7)
 
 typedef struct SAVEGAME_ITEM_STATS {
@@ -52,12 +53,15 @@ static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
 static bool SaveGame_NeedsEvilLaraFix();
+
 static void SaveGame_ResetSG(GAME_INFO *game_info);
 static void SaveGame_SkipSG(int size);
+
 static void SaveGame_ReadSG(void *pointer, int size);
 static void SaveGame_ReadSGARM(LARA_ARM *arm);
 static void SaveGame_ReadSGLara(LARA_INFO *lara);
 static void SaveGame_ReadSGLOT(LOT_INFO *lot);
+
 static void SaveGame_WriteSG(void *pointer, int size);
 static void SaveGame_WriteSGARM(LARA_ARM *arm);
 static void SaveGame_WriteSGLara(LARA_INFO *lara);
@@ -259,6 +263,13 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
     SaveGame_ResetSG(game_info);
     memset(m_SGBufPtr, 0, MAX_SAVEGAME_BUFFER);
 
+    char title[SAVEGAME_TITLE_SIZE];
+    snprintf(
+        title, SAVEGAME_TITLE_SIZE, "%s",
+        g_GameFlow.levels[game_info->current_level].level_title);
+    SaveGame_WriteSG(title, SAVEGAME_TITLE_SIZE);
+    SaveGame_WriteSG(&g_SaveCounter, sizeof(int32_t));
+
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
             game_info->start[i] = game_info->start[game_info->current_level];
@@ -376,6 +387,8 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
     }
 
     SaveGame_ResetSG(game_info);
+    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE);
+    SaveGame_SkipSG(sizeof(int32_t));
 
     assert(game_info->start);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -802,16 +815,13 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
     if (!fp) {
         return false;
     }
-
-    File_Skip(fp, 75);
-    File_Skip(fp, sizeof(int32_t));
-
     File_Read(
-        &game_info->savegame_buffer[0], sizeof(char),
-        File_Size(fp) - File_Pos(fp), fp);
+        &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
     File_Close(fp);
 
     SaveGame_ResetSG(game_info);
+    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE);
+    SaveGame_SkipSG(sizeof(int32_t));
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         SaveGame_SkipSG(sizeof(uint16_t));
         SaveGame_SkipSG(sizeof(uint16_t));
@@ -845,21 +855,14 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
     if (!fp) {
         return false;
     }
-
-    sprintf(
-        filename, "%s",
-        g_GameFlow.levels[game_info->current_level].level_title);
-    File_Write(filename, sizeof(char), 75, fp);
-    File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
-
     File_Write(&game_info->savegame_buffer[0], sizeof(char), m_SGBufPos, fp);
     File_Close(fp);
 
     REQUEST_INFO *req = &g_LoadSaveGameRequester;
     req->item_flags[slot] &= ~RIF_BLOCKED;
     sprintf(
-        &req->item_texts[req->item_text_len * slot], "%s %d", filename,
-        g_SaveCounter);
+        &req->item_texts[req->item_text_len * slot], "%s %d",
+        g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
     g_SavedGamesCount++;
     g_SaveCounter++;
     return true;
@@ -878,7 +881,7 @@ void SaveGame_ScanSavedGames()
 
         MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
         if (fp) {
-            File_Read(filename, sizeof(char), 75, fp);
+            File_Read(filename, sizeof(char), SAVEGAME_TITLE_SIZE, fp);
             int32_t counter;
             File_Read(&counter, sizeof(int32_t), 1, fp);
             File_Close(fp);
