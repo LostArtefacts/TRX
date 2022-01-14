@@ -48,8 +48,8 @@ typedef struct SAVEGAME_ITEM_STATS {
     uint8_t dummy;
 } SAVEGAME_ITEM_STATS;
 
-static int m_SGCount = 0;
-static char *m_SGPoint = NULL;
+static int m_SGBufPos = 0;
+static char *m_SGBufPtr = NULL;
 
 static bool SaveGame_NeedsEvilLaraFix();
 static void SaveGame_ResetSG(GAME_INFO *game_info);
@@ -257,7 +257,7 @@ void SaveGame_SaveToSave(GAME_INFO *game_info)
     CreateStartInfo(g_CurrentLevel);
 
     SaveGame_ResetSG(game_info);
-    memset(m_SGPoint, 0, MAX_SAVEGAME_BUFFER);
+    memset(m_SGBufPtr, 0, MAX_SAVEGAME_BUFFER);
 
     SaveGame_WriteSG(&game_info->timer, sizeof(uint32_t));
     SaveGame_WriteSG(&game_info->kills, sizeof(uint32_t));
@@ -547,26 +547,26 @@ void SaveGame_LoadFromSave(GAME_INFO *game_info)
 static void SaveGame_ResetSG(GAME_INFO *game_info)
 {
     assert(game_info);
-    m_SGCount = 0;
-    m_SGPoint = game_info->savegame_buffer;
+    m_SGBufPos = 0;
+    m_SGBufPtr = game_info->savegame_buffer;
 }
 
 static void SaveGame_SkipSG(int size)
 {
-    m_SGPoint += size;
-    m_SGCount += size; // missing from OG
+    m_SGBufPtr += size;
+    m_SGBufPos += size; // missing from OG
 }
 
 static void SaveGame_WriteSG(void *pointer, int size)
 {
-    m_SGCount += size;
-    if (m_SGCount >= MAX_SAVEGAME_BUFFER) {
+    m_SGBufPos += size;
+    if (m_SGBufPos >= MAX_SAVEGAME_BUFFER) {
         Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++) {
-        *m_SGPoint++ = *data++;
+        *m_SGBufPtr++ = *data++;
     }
 }
 
@@ -659,10 +659,10 @@ static void SaveGame_WriteSGLOT(LOT_INFO *lot)
 
 static void SaveGame_ReadSG(void *pointer, int size)
 {
-    m_SGCount += size;
+    m_SGBufPos += size;
     char *data = (char *)pointer;
     for (int i = 0; i < size; i++)
-        *data++ = *m_SGPoint++;
+        *data++ = *m_SGBufPtr++;
 }
 
 static void SaveGame_ReadSGLara(LARA_INFO *lara)
@@ -768,7 +768,8 @@ bool SaveGame_LoadFromFile(GAME_INFO *game_info, int32_t slot)
     File_Read(
         &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
     File_Read(
-        &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+        &game_info->savegame_buffer[0], sizeof(char),
+        File_Size(fp) - File_Pos(fp), fp);
     File_Close(fp);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -815,8 +816,7 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
     assert(game_info->start);
     File_Write(
         &game_info->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Write(
-        &game_info->savegame_buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
+    File_Write(&game_info->savegame_buffer[0], sizeof(char), m_SGBufPos, fp);
     File_Close(fp);
 
     REQUEST_INFO *req = &g_LoadSaveGameRequester;
