@@ -278,6 +278,9 @@ bool Shell_MakeScreenshot()
     case SCREENSHOT_FORMAT_PNG:
         ext = "png";
         break;
+    default:
+        ext = "jpg";
+        break;
     }
 
     // Screenshot full path
