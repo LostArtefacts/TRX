@@ -91,9 +91,30 @@ static bool SaveGame_NeedsEvilLaraFix(GAME_INFO *game_info)
     }
 
     SaveGame_ResetSG(game_info);
-    SaveGame_SkipSG(sizeof(int32_t));
-    SaveGame_SkipSG(MAX_FLIP_MAPS * sizeof(int8_t));
-    SaveGame_SkipSG(g_NumberCameras * sizeof(int16_t));
+    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE); // level title
+    SaveGame_SkipSG(sizeof(int32_t)); // save counter
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        SaveGame_SkipSG(sizeof(uint16_t)); // pistol ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // magnum ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // uzi ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // shotgun ammo
+        SaveGame_SkipSG(sizeof(uint8_t)); // small medis
+        SaveGame_SkipSG(sizeof(uint8_t)); // big medis
+        SaveGame_SkipSG(sizeof(uint8_t)); // scions
+        SaveGame_SkipSG(sizeof(int8_t)); // gun status
+        SaveGame_SkipSG(sizeof(int8_t)); // gun type
+        SaveGame_SkipSG(sizeof(uint16_t)); // flags
+    }
+    SaveGame_SkipSG(sizeof(uint32_t)); // timer
+    SaveGame_SkipSG(sizeof(uint32_t)); // kills
+    SaveGame_SkipSG(sizeof(uint16_t)); // secrets
+    SaveGame_SkipSG(sizeof(uint16_t)); // current level
+    SaveGame_SkipSG(sizeof(uint8_t)); // pickups
+    SaveGame_SkipSG(sizeof(uint8_t)); // bonus_flag
+    SaveGame_SkipSG(sizeof(SAVEGAME_ITEM_STATS)); // item stats
+    SaveGame_SkipSG(sizeof(int32_t)); // flipmap status
+    SaveGame_SkipSG(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
+    SaveGame_SkipSG(g_NumberCameras * sizeof(int16_t)); // cameras
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -392,8 +413,8 @@ void SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
     }
 
     SaveGame_ResetSG(game_info);
-    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE);
-    SaveGame_SkipSG(sizeof(int32_t));
+    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE); // level title
+    SaveGame_SkipSG(sizeof(int32_t)); // save counter
 
     assert(game_info->start);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -793,7 +814,7 @@ static void SaveGame_ReadSGARM(LARA_ARM *arm)
 static void SaveGame_ReadSGLOT(LOT_INFO *lot)
 {
     lot->node = NULL;
-    SaveGame_SkipSG(4);
+    SaveGame_SkipSG(sizeof(BOX_NODE *));
 
     SaveGame_ReadSG(&lot->head, sizeof(int16_t));
     SaveGame_ReadSG(&lot->tail, sizeof(int16_t));
@@ -825,23 +846,23 @@ int16_t SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
     File_Close(fp);
 
     SaveGame_ResetSG(game_info);
-    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE);
-    SaveGame_SkipSG(sizeof(int32_t));
+    SaveGame_SkipSG(SAVEGAME_TITLE_SIZE); // level title
+    SaveGame_SkipSG(sizeof(int32_t)); // save counter
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        SaveGame_SkipSG(sizeof(uint16_t));
-        SaveGame_SkipSG(sizeof(uint16_t));
-        SaveGame_SkipSG(sizeof(uint16_t));
-        SaveGame_SkipSG(sizeof(uint16_t));
-        SaveGame_SkipSG(sizeof(uint8_t));
-        SaveGame_SkipSG(sizeof(uint8_t));
-        SaveGame_SkipSG(sizeof(uint8_t));
-        SaveGame_SkipSG(sizeof(int8_t));
-        SaveGame_SkipSG(sizeof(int8_t));
-        SaveGame_SkipSG(sizeof(uint16_t));
+        SaveGame_SkipSG(sizeof(uint16_t)); // pistol ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // magnum ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // uzi ammo
+        SaveGame_SkipSG(sizeof(uint16_t)); // shotgun ammo
+        SaveGame_SkipSG(sizeof(uint8_t)); // small medis
+        SaveGame_SkipSG(sizeof(uint8_t)); // big medis
+        SaveGame_SkipSG(sizeof(uint8_t)); // scions
+        SaveGame_SkipSG(sizeof(int8_t)); // gun status
+        SaveGame_SkipSG(sizeof(int8_t)); // gun type
+        SaveGame_SkipSG(sizeof(uint16_t)); // flags
     }
-    SaveGame_SkipSG(sizeof(uint32_t));
-    SaveGame_SkipSG(sizeof(uint32_t));
-    SaveGame_SkipSG(sizeof(uint16_t));
+    SaveGame_SkipSG(sizeof(uint32_t)); // timer
+    SaveGame_SkipSG(sizeof(uint32_t)); // kills
+    SaveGame_SkipSG(sizeof(uint16_t)); // secrets
 
     uint16_t level_num;
     SaveGame_ReadSG(&level_num, sizeof(int16_t));
