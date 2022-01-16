@@ -817,62 +817,64 @@ void GameFlow_Shutdown()
         Memory_FreePointer(&g_GameFlow.strings[i]);
     }
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        Memory_FreePointer(&g_GameFlow.levels[i].level_title);
-        Memory_FreePointer(&g_GameFlow.levels[i].level_file);
-        Memory_FreePointer(&g_GameFlow.levels[i].key1);
-        Memory_FreePointer(&g_GameFlow.levels[i].key2);
-        Memory_FreePointer(&g_GameFlow.levels[i].key3);
-        Memory_FreePointer(&g_GameFlow.levels[i].key4);
-        Memory_FreePointer(&g_GameFlow.levels[i].pickup1);
-        Memory_FreePointer(&g_GameFlow.levels[i].pickup2);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle1);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
+    if (g_GameFlow.levels) {
+        for (int i = 0; i < g_GameFlow.level_count; i++) {
+            Memory_FreePointer(&g_GameFlow.levels[i].level_title);
+            Memory_FreePointer(&g_GameFlow.levels[i].level_file);
+            Memory_FreePointer(&g_GameFlow.levels[i].key1);
+            Memory_FreePointer(&g_GameFlow.levels[i].key2);
+            Memory_FreePointer(&g_GameFlow.levels[i].key3);
+            Memory_FreePointer(&g_GameFlow.levels[i].key4);
+            Memory_FreePointer(&g_GameFlow.levels[i].pickup1);
+            Memory_FreePointer(&g_GameFlow.levels[i].pickup2);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle1);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
 
-        GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;
-        if (seq) {
-            while (seq->type != GFS_END) {
-                switch (seq->type) {
-                case GFS_DISPLAY_PICTURE: {
-                    GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                    Memory_FreePointer(&data->path);
-                    Memory_FreePointer(&data);
-                    break;
+            GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;
+            if (seq) {
+                while (seq->type != GFS_END) {
+                    switch (seq->type) {
+                    case GFS_DISPLAY_PICTURE: {
+                        GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                        Memory_FreePointer(&data->path);
+                        Memory_FreePointer(&data);
+                        break;
+                    }
+                    case GFS_PLAY_FMV:
+                    case GFS_MESH_SWAP:
+                        Memory_FreePointer(&seq->data);
+                        break;
+                    case GFS_END:
+                    case GFS_START_GAME:
+                    case GFS_LOOP_GAME:
+                    case GFS_STOP_GAME:
+                    case GFS_START_CINE:
+                    case GFS_LOOP_CINE:
+                    case GFS_STOP_CINE:
+                    case GFS_LEVEL_STATS:
+                    case GFS_EXIT_TO_TITLE:
+                    case GFS_EXIT_TO_LEVEL:
+                    case GFS_EXIT_TO_CINE:
+                    case GFS_SET_CAM_X:
+                    case GFS_SET_CAM_Y:
+                    case GFS_SET_CAM_Z:
+                    case GFS_SET_CAM_ANGLE:
+                    case GFS_FLIP_MAP:
+                    case GFS_REMOVE_GUNS:
+                    case GFS_REMOVE_SCIONS:
+                    case GFS_PLAY_SYNCED_AUDIO:
+                    case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+                        break;
+                    }
+                    seq++;
                 }
-                case GFS_PLAY_FMV:
-                case GFS_MESH_SWAP:
-                    Memory_FreePointer(&seq->data);
-                    break;
-                case GFS_END:
-                case GFS_START_GAME:
-                case GFS_LOOP_GAME:
-                case GFS_STOP_GAME:
-                case GFS_START_CINE:
-                case GFS_LOOP_CINE:
-                case GFS_STOP_CINE:
-                case GFS_LEVEL_STATS:
-                case GFS_EXIT_TO_TITLE:
-                case GFS_EXIT_TO_LEVEL:
-                case GFS_EXIT_TO_CINE:
-                case GFS_SET_CAM_X:
-                case GFS_SET_CAM_Y:
-                case GFS_SET_CAM_Z:
-                case GFS_SET_CAM_ANGLE:
-                case GFS_FLIP_MAP:
-                case GFS_REMOVE_GUNS:
-                case GFS_REMOVE_SCIONS:
-                case GFS_PLAY_SYNCED_AUDIO:
-                case GFS_FIX_PYRAMID_SECRET_TRIGGER:
-                    break;
-                }
-                seq++;
             }
+            Memory_FreePointer(&g_GameFlow.levels[i].sequence);
         }
-        Memory_FreePointer(&g_GameFlow.levels[i].sequence);
+        Memory_FreePointer(&g_GameFlow.levels);
     }
-    Memory_FreePointer(&g_GameFlow.levels);
 }
 
 bool GameFlow_LoadFromFile(const char *file_name)
