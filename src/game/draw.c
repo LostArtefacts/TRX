@@ -1351,11 +1351,13 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     }
 }
 
-void Draw_DrawScene()
+void Draw_DrawScene(bool draw_overlay)
 {
     if (g_Objects[O_LARA].loaded) {
         DrawRooms(g_Camera.pos.room_number);
-        Overlay_DrawGameInfo();
+        if (draw_overlay) {
+            Overlay_DrawGameInfo();
+        }
     } else {
         // cinematic scene
         m_CameraUnderwater = false;
@@ -1374,7 +1376,7 @@ void Draw_DrawScene()
 int32_t Draw_ProcessFrame()
 {
     Output_InitialisePolyList();
-    Draw_DrawScene();
+    Draw_DrawScene(true);
     g_Camera.number_frames = Output_DumpScreen();
     Output_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;

@@ -668,7 +668,7 @@ void S_Output_CopyToPicture()
     // it needs to be drawn again.
 
     S_Output_RenderBegin();
-    Draw_DrawScene();
+    Draw_DrawScene(false);
     S_Output_RenderEnd();
 
     if (!m_PictureSurface) {
