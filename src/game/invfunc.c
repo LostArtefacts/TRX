@@ -52,7 +52,7 @@ void RingIsOpen(RING_INFO *ring)
         Text_CentreH(g_InvRingText, 1);
     }
 
-    if (g_InvMode == INV_KEYS_MODE || g_InvMode == INV_DEATH_MODE) {
+    if (g_InvMode != INV_GAME_MODE) {
         return;
     }
 
