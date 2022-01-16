@@ -1,5 +1,7 @@
 #include "game/game.h"
 
+#include "game/inv.h"
+#include "game/settings.h"
 #include "config.h"
 #include "game/camera.h"
 #include "game/control.h"
@@ -61,21 +63,35 @@ int32_t StopGame()
     }
 }
 
-int32_t GameLoop(int32_t demo_mode)
+int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_NoInputCount = 0;
     g_ResetFlag = false;
     g_OverlayFlag = 1;
     InitialiseCamera();
 
+    bool ask_for_save = g_GameFlow.enable_save_crystals
+        && level_type == GFL_NORMAL
+        && g_CurrentLevel != g_GameFlow.first_level_num
+        && g_CurrentLevel != g_GameFlow.gym_level_num;
+
     int32_t nframes = 1;
     int32_t ret;
     while (1) {
-        ret = ControlPhase(nframes, demo_mode);
+        ret = ControlPhase(nframes, level_type);
         if (ret != GF_NOP) {
             break;
         }
         nframes = Draw_ProcessFrame();
+
+        if (ask_for_save) {
+            int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+            if (return_val != GF_NOP) {
+                SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
+                Settings_Write();
+            }
+            ask_for_save = false;
+        }
     }
 
     Sound_StopAllSamples();

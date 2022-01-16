@@ -1022,20 +1022,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         switch (seq->type) {
         case GFS_START_GAME:
             ret = StartGame((int32_t)seq->data, level_type);
-            if (g_GameFlow.enable_save_crystals && level_type != GFL_SAVED
-                && (int32_t)seq->data != g_GameFlow.first_level_num
-                && (int32_t)seq->data != g_GameFlow.gym_level_num) {
-                int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
-                if (return_val != GF_NOP) {
-                    SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
-                    Settings_Write();
-                }
-            }
-
             break;
 
         case GFS_LOOP_GAME:
-            ret = GameLoop(0);
+            ret = GameLoop(level_type);
             LOG_DEBUG("GameLoop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;
