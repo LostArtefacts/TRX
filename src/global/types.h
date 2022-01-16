@@ -24,6 +24,7 @@ typedef enum CAMERA_TYPE {
 } CAMERA_TYPE;
 
 typedef enum GAME_OBJECT_ID {
+    O_INVALID = -1,
     O_LARA = 0,
     O_PISTOLS = 1,
     O_SHOTGUN = 2,
