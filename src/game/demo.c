@@ -71,7 +71,7 @@ int32_t StartDemo()
         Text_AlignBottom(txt, 1);
         Text_CentreH(txt, 1);
 
-        GameLoop(1);
+        GameLoop(GFL_DEMO);
 
         Text_Remove(txt);
 

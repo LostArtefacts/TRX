@@ -204,7 +204,7 @@ void CheckCheatMode()
     }
 }
 
-int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
+int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 {
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
@@ -224,7 +224,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             return GF_NOP_BREAK;
         }
 
-        if (demo_mode) {
+        if (level_type == GFL_DEMO) {
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
@@ -237,7 +237,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             || (g_Lara.death_count > DEATH_WAIT_MIN && g_Input.any
                 && !g_Input.fly_cheat)
             || g_OverlayFlag == 2) {
-            if (demo_mode) {
+            if (level_type == GFL_DEMO) {
                 return GF_EXIT_TO_TITLE;
             }
             if (g_OverlayFlag == 2) {
