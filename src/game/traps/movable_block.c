@@ -9,6 +9,7 @@
 #include "game/lara.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "src/game/objects/door.h"
 
 void SetupMovableBlock(OBJECT_INFO *obj)
 {
@@ -105,6 +106,11 @@ void MovableBlockCollision(
         }
 
         if (!TestLaraPosition(g_MovingBlockBounds, item, lara_item)) {
+            return;
+        }
+
+        // OG fix: stop pushing blocks through doors
+        if (CheckLaraDoorCollision()) {
             return;
         }
 

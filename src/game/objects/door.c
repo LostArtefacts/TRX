@@ -7,6 +7,8 @@
 #include "game/items.h"
 #include "global/vars.h"
 
+static bool m_LaraCollideDoor = false;
+
 static void OpenThatDoor(DOORPOS_DATA *d);
 static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item);
 static int8_t LaraDoorCollision(ITEM_INFO *item);
@@ -71,6 +73,16 @@ static void OpenThatDoor(DOORPOS_DATA *d)
     if (box_num != NO_BOX) {
         g_Boxes[box_num].overlap_index &= ~BLOCKED;
     }
+}
+
+void SetLaraDoorCollision(bool is_lara_collide)
+{
+    m_LaraCollideDoor = is_lara_collide;
+}
+
+bool CheckLaraDoorCollision()
+{
+    return m_LaraCollideDoor;
 }
 
 void InitialiseDoor(int16_t item_num)
