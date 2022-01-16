@@ -1324,7 +1324,7 @@ typedef struct ITEM_INFO {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t current_anim_state;
     int16_t goal_anim_state;
     int16_t required_anim_state;
@@ -1391,7 +1391,7 @@ typedef struct LOT_INFO {
 typedef struct FX_INFO {
     PHD_3DPOS pos;
     int16_t room_number;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t next_fx;
     int16_t next_active;
     int16_t speed;
@@ -1802,7 +1802,7 @@ typedef struct INVENTORY_SPRITE {
 
 typedef struct INVENTORY_ITEM {
     char *string;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t frames_total;
     int16_t current_frame;
     int16_t goal_frame;

@@ -837,6 +837,9 @@ void RemoveRoomFlipItems(ROOM_INFO *r)
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, WALL_L * 2);
             break;
+
+        default:
+            break;
         }
     }
 }
@@ -857,6 +860,9 @@ void AddRoomFlipItems(ROOM_INFO *r)
 
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, -WALL_L * 2);
+            break;
+
+        default:
             break;
         }
     }
