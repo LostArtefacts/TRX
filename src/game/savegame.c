@@ -175,10 +175,6 @@ void ModifyStartInfo(int32_t level_num)
 {
     START_INFO *start = &g_GameInfo.start[level_num];
 
-    start->flags.got_pistols = 1;
-    start->gun_type = LGT_PISTOLS;
-    start->pistol_ammo = 1000;
-
     if (level_num == g_GameFlow.gym_level_num) {
         start->flags.available = 1;
         start->flags.costume = 1;
@@ -203,12 +199,15 @@ void ModifyStartInfo(int32_t level_num)
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
+        start->pistol_ammo = 1000;
         start->shotgun_ammo = 0;
         start->magnum_ammo = 0;
         start->uzi_ammo = 0;
+        start->flags.got_pistols = 1;
         start->flags.got_shotgun = 0;
         start->flags.got_magnums = 0;
         start->flags.got_uzis = 0;
+        start->gun_type = LGT_PISTOLS;
         start->gun_status = LGS_ARMLESS;
     }
 
