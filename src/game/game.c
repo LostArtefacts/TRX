@@ -1,7 +1,8 @@
 #include "game/game.h"
 
+#include "game/inv.h"
+#include "game/settings.h"
 #include "config.h"
-#include "filesystem.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -29,9 +30,13 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         InitialiseLevelFlags();
     }
 
-    if (!InitialiseLevel(level_num, level_type)) {
+    if (!InitialiseLevel(level_num)) {
         g_CurrentLevel = 0;
         return GF_EXIT_TO_TITLE;
+    }
+
+    if (level_type == GFL_SAVED) {
+        SaveGame_ApplySaveBuffer(&g_GameInfo);
     }
 
     return GF_NOP;
@@ -40,7 +45,7 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 int32_t StopGame()
 {
     if (g_LevelComplete) {
-        S_FadeInInventory(1);
+        Output_CopyScreenToBuffer();
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
 
@@ -60,21 +65,35 @@ int32_t StopGame()
     }
 }
 
-int32_t GameLoop(int32_t demo_mode)
+int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_NoInputCount = 0;
     g_ResetFlag = false;
     g_OverlayFlag = 1;
     InitialiseCamera();
 
+    bool ask_for_save = g_GameFlow.enable_save_crystals
+        && level_type == GFL_NORMAL
+        && g_CurrentLevel != g_GameFlow.first_level_num
+        && g_CurrentLevel != g_GameFlow.gym_level_num;
+
     int32_t nframes = 1;
     int32_t ret;
     while (1) {
-        ret = ControlPhase(nframes, demo_mode);
+        ret = ControlPhase(nframes, level_type);
         if (ret != GF_NOP) {
             break;
         }
-        nframes = DrawPhaseGame();
+        nframes = Draw_ProcessFrame();
+
+        if (ask_for_save) {
+            int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+            if (return_val != GF_NOP) {
+                SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
+                Settings_Write();
+            }
+            ask_for_save = false;
+        }
     }
 
     Sound_StopAllSamples();
@@ -99,7 +118,6 @@ void LevelStats(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    Screen_ApplyResolution();
     Text_RemoveAll();
 
     // heading
@@ -109,7 +127,7 @@ void LevelStats(int32_t level_num)
     Text_CentreV(txt, 1);
 
     // time taken
-    int32_t seconds = g_SaveGame.timer / 30;
+    int32_t seconds = g_GameInfo.timer / 30;
     int32_t hours = seconds / 3600;
     int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
@@ -129,10 +147,10 @@ void LevelStats(int32_t level_num)
     int32_t secrets_taken = 0;
     int32_t secrets_total = MAX_SECRETS;
     do {
-        if (g_SaveGame.secrets & 1) {
+        if (g_GameInfo.secrets & 1) {
             secrets_taken++;
         }
-        g_SaveGame.secrets >>= 1;
+        g_GameInfo.secrets >>= 1;
         secrets_total--;
     } while (secrets_total);
     sprintf(
@@ -144,13 +162,13 @@ void LevelStats(int32_t level_num)
 
     // pickups
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_SaveGame.pickups);
+        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups);
     txt = Text_Create(0, 10, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
     // kills
-    sprintf(string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_SaveGame.kills);
+    sprintf(string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills);
     txt = Text_Create(0, -20, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
@@ -187,171 +205,13 @@ void LevelStats(int32_t level_num)
     }
 
     if (level_num == g_GameFlow.last_level_num) {
-        g_SaveGame.bonus_flag = GBF_NGPLUS;
+        g_GameInfo.bonus_flag = GBF_NGPLUS;
     } else {
         CreateStartInfo(level_num + 1);
         ModifyStartInfo(level_num + 1);
     }
 
-    g_SaveGame.start[g_CurrentLevel].available = 0;
+    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
     Output_FadeToBlack();
     Screen_ApplyResolution();
-}
-
-int32_t S_LoadGame(SAVEGAME_INFO *save, int32_t slot)
-{
-    char filename[80];
-    sprintf(filename, g_GameFlow.save_game_fmt, slot);
-    LOG_DEBUG("%s", filename);
-    MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
-    if (!fp) {
-        return 0;
-    }
-    File_Read(filename, sizeof(char), 75, fp);
-    int32_t counter;
-
-    File_Read(&counter, sizeof(int32_t), 1, fp);
-
-    if (!save->start) {
-        Shell_ExitSystem("null save->start");
-        return 0;
-    }
-    File_Read(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Read(&save->timer, sizeof(uint32_t), 1, fp);
-    File_Read(&save->kills, sizeof(uint32_t), 1, fp);
-    File_Read(&save->secrets, sizeof(uint16_t), 1, fp);
-    File_Read(&save->current_level, sizeof(uint16_t), 1, fp);
-    File_Read(&save->pickups, sizeof(uint8_t), 1, fp);
-    File_Read(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key1, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key2, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key3, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_key4, sizeof(uint8_t), 1, fp);
-    File_Read(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    File_Read(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    File_Read(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    File_Close(fp);
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            save->start[save->current_level] = save->start[i];
-        }
-    }
-
-    return 1;
-}
-
-void Game_ScanSavedGames()
-{
-    REQUEST_INFO *req = &g_LoadSaveGameRequester;
-
-    req->items = 0;
-    g_SaveCounter = 0;
-    g_SavedGamesCount = 0;
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        char filename[80];
-        sprintf(filename, g_GameFlow.save_game_fmt, i);
-
-        MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
-        if (fp) {
-            File_Read(filename, sizeof(char), 75, fp);
-            int32_t counter;
-            File_Read(&counter, sizeof(int32_t), 1, fp);
-            File_Close(fp);
-
-            req->item_flags[req->items] &= ~RIF_BLOCKED;
-
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len], "%s %d",
-                filename, counter);
-
-            if (counter > g_SaveCounter) {
-                g_SaveCounter = counter;
-                req->requested = i;
-            }
-
-            g_SavedGamesCount++;
-        } else {
-            req->item_flags[req->items] |= RIF_BLOCKED;
-
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len],
-                g_GameFlow.strings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
-        }
-
-        req->items++;
-    }
-
-    if (req->requested >= req->vis_lines) {
-        req->line_offset = req->requested - req->vis_lines + 1;
-    } else if (req->requested < req->vis_lines - req->line_offset) {
-        req->line_offset = req->requested;
-    }
-
-    g_SaveCounter++;
-}
-
-int32_t S_SaveGame(SAVEGAME_INFO *save, int32_t slot)
-{
-    char filename[80];
-    sprintf(filename, g_GameFlow.save_game_fmt, slot);
-    LOG_DEBUG("%s", filename);
-
-    MYFILE *fp = File_Open(filename, FILE_OPEN_WRITE);
-    if (!fp) {
-        return 0;
-    }
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            save->start[i] = save->start[save->current_level];
-        }
-    }
-
-    sprintf(
-        filename, "%s",
-        g_GameFlow.levels[g_SaveGame.current_level].level_title);
-    File_Write(filename, sizeof(char), 75, fp);
-    File_Write(&g_SaveCounter, sizeof(int32_t), 1, fp);
-
-    if (!save->start) {
-        Shell_ExitSystem("null save->start");
-        return 0;
-    }
-    File_Write(&save->start[0], sizeof(START_INFO), g_GameFlow.level_count, fp);
-    File_Write(&save->timer, sizeof(uint32_t), 1, fp);
-    File_Write(&save->kills, sizeof(uint32_t), 1, fp);
-    File_Write(&save->secrets, sizeof(uint16_t), 1, fp);
-    File_Write(&save->current_level, sizeof(uint16_t), 1, fp);
-    File_Write(&save->pickups, sizeof(uint8_t), 1, fp);
-    File_Write(&save->bonus_flag, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_pickup1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_pickup2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle3, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_puzzle4, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key1, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key2, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key3, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_key4, sizeof(uint8_t), 1, fp);
-    File_Write(&save->num_leadbar, sizeof(uint8_t), 1, fp);
-    File_Write(&save->challenge_failed, sizeof(uint8_t), 1, fp);
-    File_Write(&save->buffer[0], sizeof(char), MAX_SAVEGAME_BUFFER, fp);
-    File_Close(fp);
-
-    REQUEST_INFO *req = &g_LoadSaveGameRequester;
-    req->item_flags[slot] &= ~RIF_BLOCKED;
-    sprintf(
-        &req->item_texts[req->item_text_len * slot], "%s %d", filename,
-        g_SaveCounter);
-    g_SavedGamesCount++;
-    g_SaveCounter++;
-    return 1;
 }

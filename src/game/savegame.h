@@ -8,16 +8,8 @@ void InitialiseStartInfo();
 void ModifyStartInfo(int32_t level_num);
 void CreateStartInfo(int level_num);
 
-void CreateSaveGameInfo();
-void ExtractSaveGameInfo();
+int16_t SaveGame_LoadSaveBufferFromFile(GAME_INFO *save, int32_t slot);
+void SaveGame_ApplySaveBuffer(GAME_INFO *save);
 
-void ResetSG();
-void SkipSG(int size);
-void ReadSG(void *pointer, int size);
-void ReadSGARM(LARA_ARM *arm);
-void ReadSGLara(LARA_INFO *lara);
-void ReadSGLOT(LOT_INFO *lot);
-void WriteSG(void *pointer, int size);
-void WriteSGARM(LARA_ARM *arm);
-void WriteSGLara(LARA_INFO *lara);
-void WriteSGLOT(LOT_INFO *lot);
+bool SaveGame_SaveToFile(GAME_INFO *save, int32_t slot);
+void SaveGame_ScanSavedGames();

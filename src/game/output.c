@@ -402,6 +402,11 @@ void Output_ClearScreen()
     S_Output_ClearBackBuffer();
 }
 
+void Output_DrawEmpty()
+{
+    S_Output_DrawEmpty();
+}
+
 void Output_InitialisePolyList()
 {
     S_Output_RenderBegin();
@@ -644,6 +649,11 @@ void Output_DrawSprite(
     }
 }
 
+void Output_CopyScreenToBuffer()
+{
+    S_Output_CopyToPicture();
+}
+
 void Output_CopyBufferToScreen()
 {
     S_Output_CopyFromPicture();
@@ -764,11 +774,9 @@ void Output_DisplayPicture(const char *filename)
 {
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
-        PICTURE *scaled_pic = Picture_Create();
+        PICTURE *scaled_pic = Picture_ScaleSmart(
+            orig_pic, ViewPort_GetWidth(), ViewPort_GetHeight());
         if (scaled_pic) {
-            Picture_ScaleSmart(
-                scaled_pic, orig_pic, ViewPort_GetWidth(),
-                ViewPort_GetHeight());
             S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
         }

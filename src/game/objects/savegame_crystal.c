@@ -2,7 +2,6 @@
 
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -64,8 +63,7 @@ void PickUpSaveGameCollision(
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
-        CreateSaveGameInfo();
-        S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
+        SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
         Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {

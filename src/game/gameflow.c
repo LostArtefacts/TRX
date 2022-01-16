@@ -335,10 +335,6 @@ static bool GameFlow_LoadLevelSequence(
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
-            if (!data) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             const char *tmp_s = json_object_get_string(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
@@ -349,10 +345,6 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             data->path = Memory_Dup(tmp_s);
-            if (!data->path) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             double tmp_d =
                 json_object_get_number_double(jseq_obj, "display_time", -1.0);
@@ -483,10 +475,6 @@ static bool GameFlow_LoadLevelSequence(
 
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
-            if (!swap_data) {
-                LOG_ERROR("failed to allocate memory");
-                return false;
-            }
 
             swap_data->object1_num = json_object_get_number_int(
                 jseq_obj, "object1_id", JSON_INVALID_NUMBER);
@@ -547,16 +535,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     int32_t level_count = jlvl_arr->length;
 
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
-    if (!g_GameFlow.levels) {
-        LOG_ERROR("failed to allocate memory");
-        return false;
-    }
-
-    g_SaveGame.start = Memory_Alloc(sizeof(START_INFO) * level_count);
-    if (!g_SaveGame.start) {
-        LOG_ERROR("failed to allocate memory");
-        return false;
-    }
+    g_GameInfo.start = Memory_Alloc(sizeof(START_INFO) * level_count);
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
@@ -594,10 +573,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
         cur->level_file = Memory_Dup(tmp_s);
-        if (!cur->level_file) {
-            LOG_ERROR("failed to allocate memory");
-            return false;
-        }
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
@@ -605,10 +580,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
         cur->level_title = Memory_Dup(tmp_s);
-        if (!cur->level_title) {
-            LOG_ERROR("failed to allocate memory");
-            return false;
-        }
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
@@ -841,68 +812,70 @@ void GameFlow_Shutdown()
 {
     Memory_FreePointer(&g_GameFlow.main_menu_background_path);
     Memory_FreePointer(&g_GameFlow.save_game_fmt);
-    Memory_FreePointer(&g_SaveGame.start);
+    Memory_FreePointer(&g_GameInfo.start);
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
         Memory_FreePointer(&g_GameFlow.strings[i]);
     }
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        Memory_FreePointer(&g_GameFlow.levels[i].level_title);
-        Memory_FreePointer(&g_GameFlow.levels[i].level_file);
-        Memory_FreePointer(&g_GameFlow.levels[i].key1);
-        Memory_FreePointer(&g_GameFlow.levels[i].key2);
-        Memory_FreePointer(&g_GameFlow.levels[i].key3);
-        Memory_FreePointer(&g_GameFlow.levels[i].key4);
-        Memory_FreePointer(&g_GameFlow.levels[i].pickup1);
-        Memory_FreePointer(&g_GameFlow.levels[i].pickup2);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle1);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
-        Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
+    if (g_GameFlow.levels) {
+        for (int i = 0; i < g_GameFlow.level_count; i++) {
+            Memory_FreePointer(&g_GameFlow.levels[i].level_title);
+            Memory_FreePointer(&g_GameFlow.levels[i].level_file);
+            Memory_FreePointer(&g_GameFlow.levels[i].key1);
+            Memory_FreePointer(&g_GameFlow.levels[i].key2);
+            Memory_FreePointer(&g_GameFlow.levels[i].key3);
+            Memory_FreePointer(&g_GameFlow.levels[i].key4);
+            Memory_FreePointer(&g_GameFlow.levels[i].pickup1);
+            Memory_FreePointer(&g_GameFlow.levels[i].pickup2);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle1);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
+            Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
 
-        GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;
-        if (seq) {
-            while (seq->type != GFS_END) {
-                switch (seq->type) {
-                case GFS_DISPLAY_PICTURE: {
-                    GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                    Memory_FreePointer(&data->path);
-                    Memory_FreePointer(&data);
-                    break;
+            GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;
+            if (seq) {
+                while (seq->type != GFS_END) {
+                    switch (seq->type) {
+                    case GFS_DISPLAY_PICTURE: {
+                        GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                        Memory_FreePointer(&data->path);
+                        Memory_FreePointer(&data);
+                        break;
+                    }
+                    case GFS_PLAY_FMV:
+                    case GFS_MESH_SWAP:
+                        Memory_FreePointer(&seq->data);
+                        break;
+                    case GFS_END:
+                    case GFS_START_GAME:
+                    case GFS_LOOP_GAME:
+                    case GFS_STOP_GAME:
+                    case GFS_START_CINE:
+                    case GFS_LOOP_CINE:
+                    case GFS_STOP_CINE:
+                    case GFS_LEVEL_STATS:
+                    case GFS_EXIT_TO_TITLE:
+                    case GFS_EXIT_TO_LEVEL:
+                    case GFS_EXIT_TO_CINE:
+                    case GFS_SET_CAM_X:
+                    case GFS_SET_CAM_Y:
+                    case GFS_SET_CAM_Z:
+                    case GFS_SET_CAM_ANGLE:
+                    case GFS_FLIP_MAP:
+                    case GFS_REMOVE_GUNS:
+                    case GFS_REMOVE_SCIONS:
+                    case GFS_PLAY_SYNCED_AUDIO:
+                    case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+                        break;
+                    }
+                    seq++;
                 }
-                case GFS_PLAY_FMV:
-                case GFS_MESH_SWAP:
-                    Memory_FreePointer(&seq->data);
-                    break;
-                case GFS_END:
-                case GFS_START_GAME:
-                case GFS_LOOP_GAME:
-                case GFS_STOP_GAME:
-                case GFS_START_CINE:
-                case GFS_LOOP_CINE:
-                case GFS_STOP_CINE:
-                case GFS_LEVEL_STATS:
-                case GFS_EXIT_TO_TITLE:
-                case GFS_EXIT_TO_LEVEL:
-                case GFS_EXIT_TO_CINE:
-                case GFS_SET_CAM_X:
-                case GFS_SET_CAM_Y:
-                case GFS_SET_CAM_Z:
-                case GFS_SET_CAM_ANGLE:
-                case GFS_FLIP_MAP:
-                case GFS_REMOVE_GUNS:
-                case GFS_REMOVE_SCIONS:
-                case GFS_PLAY_SYNCED_AUDIO:
-                case GFS_FIX_PYRAMID_SECRET_TRIGGER:
-                    break;
-                }
-                seq++;
             }
+            Memory_FreePointer(&g_GameFlow.levels[i].sequence);
         }
-        Memory_FreePointer(&g_GameFlow.levels[i].sequence);
+        Memory_FreePointer(&g_GameFlow.levels);
     }
-    Memory_FreePointer(&g_GameFlow.levels);
 }
 
 bool GameFlow_LoadFromFile(const char *file_name)
@@ -1052,21 +1025,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         switch (seq->type) {
         case GFS_START_GAME:
             ret = StartGame((int32_t)seq->data, level_type);
-            if (g_GameFlow.enable_save_crystals && level_type != GFL_SAVED
-                && (int32_t)seq->data != g_GameFlow.first_level_num
-                && (int32_t)seq->data != g_GameFlow.gym_level_num) {
-                int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
-                if (return_val != GF_NOP) {
-                    CreateSaveGameInfo();
-                    S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
-                    Settings_Write();
-                }
-            }
-
             break;
 
         case GFS_LOOP_GAME:
-            ret = GameLoop(0);
+            ret = GameLoop(level_type);
             LOG_DEBUG("GameLoop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;
@@ -1154,20 +1116,20 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
-                && !(g_SaveGame.bonus_flag & GBF_NGPLUS)) {
-                g_SaveGame.start[level_num].got_pistols = 0;
-                g_SaveGame.start[level_num].got_shotgun = 0;
-                g_SaveGame.start[level_num].got_magnums = 0;
-                g_SaveGame.start[level_num].got_uzis = 0;
-                g_SaveGame.start[level_num].gun_type = LGT_UNARMED;
-                g_SaveGame.start[level_num].gun_status = LGS_ARMLESS;
+                && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+                g_GameInfo.start[level_num].flags.got_pistols = 0;
+                g_GameInfo.start[level_num].flags.got_shotgun = 0;
+                g_GameInfo.start[level_num].flags.got_magnums = 0;
+                g_GameInfo.start[level_num].flags.got_uzis = 0;
+                g_GameInfo.start[level_num].gun_type = LGT_UNARMED;
+                g_GameInfo.start[level_num].gun_status = LGS_ARMLESS;
                 InitialiseLaraInventory(level_num);
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
-                g_SaveGame.start[level_num].num_scions = 0;
+                g_GameInfo.start[level_num].num_scions = 0;
                 InitialiseLaraInventory(level_num);
             }
             break;

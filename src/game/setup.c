@@ -88,14 +88,10 @@
 
 #include <stddef.h>
 
-int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+bool InitialiseLevel(int32_t level_num)
 {
     LOG_DEBUG("%d", level_num);
-    if (level_type == GFL_SAVED) {
-        g_CurrentLevel = g_SaveGame.current_level;
-    } else {
-        g_CurrentLevel = level_num;
-    }
+    g_CurrentLevel = level_num;
 
     Text_RemoveAll();
     InitialiseGameFlags();
@@ -106,7 +102,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (!Level_Load(g_CurrentLevel)) {
-        return 0;
+        return false;
     }
 
     if (g_Lara.item_number != NO_ITEM) {
@@ -122,10 +118,6 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     Sound_ResetEffects();
 
-    if (level_type == GFL_SAVED) {
-        ExtractSaveGameInfo();
-    }
-
     // LaraGun() expects request_gun_type to be set only when it really is
     // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
     // times.
@@ -137,7 +129,7 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
     }
     g_Camera.underwater = 0;
-    return 1;
+    return true;
 }
 
 void InitialiseGameFlags()
@@ -163,10 +155,10 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    g_SaveGame.secrets = 0;
-    g_SaveGame.timer = 0;
-    g_SaveGame.pickups = 0;
-    g_SaveGame.kills = 0;
+    g_GameInfo.secrets = 0;
+    g_GameInfo.timer = 0;
+    g_GameInfo.pickups = 0;
+    g_GameInfo.kills = 0;
 }
 
 void BaddyObjects()

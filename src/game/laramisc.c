@@ -503,14 +503,14 @@ void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
     g_Lara.pistols.ammo = 1000;
-    if (start->got_pistols) {
+    if (start->flags.got_pistols) {
         Inv_AddItem(O_GUN_ITEM);
     }
 
-    if (start->got_magnums) {
+    if (start->flags.got_magnums) {
         Inv_AddItem(O_MAGNUM_ITEM);
         g_Lara.magnums.ammo = start->magnum_ammo;
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
@@ -522,7 +522,7 @@ void InitialiseLaraInventory(int32_t level_num)
         g_Lara.magnums.ammo = 0;
     }
 
-    if (start->got_uzis) {
+    if (start->flags.got_uzis) {
         Inv_AddItem(O_UZI_ITEM);
         g_Lara.uzis.ammo = start->uzi_ammo;
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
@@ -534,7 +534,7 @@ void InitialiseLaraInventory(int32_t level_num)
         g_Lara.uzis.ammo = 0;
     }
 
-    if (start->got_shotgun) {
+    if (start->flags.got_shotgun) {
         Inv_AddItem(O_SHOTGUN_ITEM);
         g_Lara.shotgun.ammo = start->shotgun_ammo;
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
@@ -568,9 +568,9 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
-    if (start->costume) {
+    if (start->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
             int32_t use_orig_mesh = i == LM_HEAD;
             g_Lara.mesh_ptrs[i] = g_Meshes
@@ -586,7 +586,8 @@ void LaraInitialiseMeshes(int32_t level_num)
 
     int16_t gun_type = start->gun_type;
     if (gun_type == LGT_SHOTGUN) {
-        if (start->got_uzis || start->got_magnums || start->got_pistols) {
+        if (start->flags.got_uzis || start->flags.got_magnums
+            || start->flags.got_pistols) {
             gun_type = LGT_PISTOLS;
         } else {
             gun_type = LGT_UNARMED;
@@ -607,7 +608,7 @@ void LaraInitialiseMeshes(int32_t level_num)
     }
 
     int16_t back_object_num = -1;
-    if (start->got_shotgun) {
+    if (start->flags.got_shotgun) {
         back_object_num = O_SHOTGUN;
     }
 
@@ -641,21 +642,21 @@ void LaraCheatGetStuff()
         if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddItem(O_SHOTGUN_ITEM);
         }
-        g_Lara.shotgun.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+        g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
     }
 
     if (g_Objects[O_MAGNUM_OPTION].loaded) {
         if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddItem(O_MAGNUM_ITEM);
         }
-        g_Lara.magnums.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+        g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
     }
 
     if (g_Objects[O_UZI_OPTION].loaded) {
         if (!Inv_RequestItem(O_UZI_ITEM)) {
             Inv_AddItem(O_UZI_ITEM);
         }
-        g_Lara.uzis.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+        g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
     }
 
     for (int i = 0; i < 10; i++) {

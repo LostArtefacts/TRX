@@ -379,7 +379,7 @@ void Overlay_BarDrawEnemy()
 
     m_EnemyBar.value = g_Lara.target->hit_points;
     m_EnemyBar.max_value = g_Objects[g_Lara.target->object_number].hit_points
-        * ((g_SaveGame.bonus_flag & GBF_NGPLUS) ? 2 : 1);
+        * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
     Overlay_BarDraw(&m_EnemyBar);
@@ -396,7 +396,7 @@ void Overlay_DrawAmmoInfo()
     char ammostring[80] = "";
 
     if (g_Lara.gun_status != LGS_READY || g_OverlayFlag <= 0
-        || (g_SaveGame.bonus_flag & GBF_NGPLUS)) {
+        || (g_GameInfo.bonus_flag & GBF_NGPLUS)) {
         if (m_AmmoText) {
             Text_Remove(m_AmmoText);
             m_AmmoText = NULL;
@@ -441,8 +441,8 @@ void Overlay_DrawAmmoInfo()
 void Overlay_DrawPickups()
 {
     static int32_t old_game_timer = 0;
-    int16_t time = g_SaveGame.timer - old_game_timer;
-    old_game_timer = g_SaveGame.timer;
+    int16_t time = g_GameInfo.timer - old_game_timer;
+    old_game_timer = g_GameInfo.timer;
 
     if (time > 0 && time < 60) {
         int32_t sprite_height =

@@ -11,6 +11,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_misc.h"
+#include "src/game/sound.h"
 
 #include <stddef.h>
 
@@ -147,20 +148,20 @@ bool Control_Pause()
 
     int old_overlay_flag = g_OverlayFlag;
     g_OverlayFlag = -3;
-    g_InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
-    S_FadeInInventory(1);
+    Output_CopyScreenToBuffer();
     Output_SetupAboveWater(false);
 
     Music_Pause();
+    Sound_StopAmbientSounds();
+    Sound_StopAllSamples();
 
     int32_t select = Control_Pause_Loop();
 
     Music_Unpause();
     RemoveRequester(&m_PauseRequester);
     Control_Pause_RemoveText();
-    S_FadeOutInventory(1);
     g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }

@@ -473,6 +473,70 @@ typedef enum SOUND_EFFECT_ID {
     SFX_LARA_SETUP = 205,
 } SOUND_EFFECT_ID;
 
+typedef enum MUSIC_TRACK_ID {
+    MX_UNUSED_0 = 0,
+    MX_UNUSED_1 = 1,
+    MX_TR_THEME = 2,
+    MX_WHERE_THE_DEPTHS_UNFOLD_1 = 3,
+    MX_TR_THEME_ALT_1 = 4,
+    MX_CAVES_AMBIENT = 5,
+    MX_TIME_TO_RUN_1 = 6,
+    MX_FRIEND_SINCE_GONE = 7,
+    MX_T_REX_1 = 8,
+    MX_A_LONG_WAY_DOWN = 9,
+    MX_LONGING_FOR_HOME = 10,
+    MX_SPOOKY_1 = 11,
+    MX_KEEP_YOUR_BALANCE = 12,
+    MX_SECRET = 13,
+    MX_SPOOKY_3 = 14,
+    MX_WHERE_THE_DEPTHS_UNFOLD_2 = 15,
+    MX_T_REX_2 = 16,
+    MX_WHERE_THE_DEPTHS_UNFOLD_3 = 17,
+    MX_WHERE_THE_DEPTHS_UNFOLD_4 = 18,
+    MX_TR_THEME_ALT_2 = 19,
+    MX_TIME_TO_RUN_2 = 20,
+    MX_LONGING_FOR_HOME_ALT = 21,
+    MX_NATLA_FALLS_CUTSCENE = 22,
+    MX_LARSON_CUTSCENE = 23,
+    MX_NATLA_PLACES_SCION_CUTSCENE = 24,
+    MX_LARA_TIHOCAN_CUTSCENE = 25,
+    MX_GYM_HINT_01 = 26,
+    MX_GYM_HINT_02 = 27,
+    MX_GYM_HINT_03 = 28,
+    MX_GYM_HINT_04 = 29,
+    MX_GYM_HINT_05 = 30,
+    MX_GYM_HINT_06 = 31,
+    MX_GYM_HINT_07 = 32,
+    MX_GYM_HINT_08 = 33,
+    MX_GYM_HINT_09 = 34,
+    MX_GYM_HINT_10 = 35,
+    MX_GYM_HINT_11 = 36,
+    MX_GYM_HINT_12 = 37,
+    MX_GYM_HINT_13 = 38,
+    MX_GYM_HINT_14 = 39,
+    MX_GYM_HINT_15 = 40,
+    MX_GYM_HINT_16 = 41,
+    MX_GYM_HINT_17 = 42,
+    MX_GYM_HINT_18 = 43,
+    MX_GYM_HINT_19 = 44,
+    MX_GYM_HINT_20 = 45,
+    MX_GYM_HINT_21 = 46,
+    MX_GYM_HINT_22 = 47,
+    MX_GYM_HINT_23 = 48,
+    MX_GYM_HINT_24 = 49,
+    MX_GYM_HINT_25 = 50,
+    MX_BALDY_SPEECH = 51,
+    MX_COWBOY_SPEECH = 52,
+    MX_LARSON_SPEECH = 53,
+    MX_NATLA_SPEECH = 54,
+    MX_PIERRE_SPEECH = 55,
+    MX_SKATEKID_SPEECH = 56,
+    MX_ST_FRANCIS_FOLLY_AMBIENCE = 57,
+    MX_CISTERN_AMBIENCE = 58,
+    MX_WINDY_AMBIENCE = 59,
+    MX_ATLANTIS_AMBIENCE = 60,
+} MUSIC_TRACK_ID;
+
 typedef enum LARA_ANIMATION_FRAME {
     AF_VAULT12 = 759,
     AF_VAULT34 = 614,
@@ -809,7 +873,6 @@ typedef enum INV_MODE {
     INV_LOAD_MODE = 4,
     INV_DEATH_MODE = 5,
     INV_SAVE_CRYSTAL_MODE = 6,
-    INV_PAUSE_MODE = 7,
 } INV_MODE;
 
 typedef enum INV_TEXT {
@@ -1386,36 +1449,28 @@ typedef struct START_INFO {
     uint8_t num_scions;
     int8_t gun_status;
     int8_t gun_type;
-    uint16_t available : 1;
-    uint16_t got_pistols : 1;
-    uint16_t got_magnums : 1;
-    uint16_t got_uzis : 1;
-    uint16_t got_shotgun : 1;
-    uint16_t costume : 1;
+    union {
+        uint16_t all;
+        struct {
+            uint16_t available : 1;
+            uint16_t got_pistols : 1;
+            uint16_t got_magnums : 1;
+            uint16_t got_uzis : 1;
+            uint16_t got_shotgun : 1;
+            uint16_t costume : 1;
+        };
+    } flags;
 } START_INFO;
 
-typedef struct SAVEGAME_INFO {
+typedef struct GAME_INFO {
     START_INFO *start;
     uint32_t timer;
     uint32_t kills;
     uint16_t secrets;
-    uint16_t current_level;
     uint8_t pickups;
     uint8_t bonus_flag;
-    uint8_t num_pickup1;
-    uint8_t num_pickup2;
-    uint8_t num_puzzle1;
-    uint8_t num_puzzle2;
-    uint8_t num_puzzle3;
-    uint8_t num_puzzle4;
-    uint8_t num_key1;
-    uint8_t num_key2;
-    uint8_t num_key3;
-    uint8_t num_key4;
-    uint8_t num_leadbar;
-    uint8_t challenge_failed;
-    char buffer[MAX_SAVEGAME_BUFFER];
-} SAVEGAME_INFO;
+    char savegame_buffer[MAX_SAVEGAME_BUFFER];
+} GAME_INFO;
 
 typedef struct CREATURE_INFO {
     int16_t head_rotation;

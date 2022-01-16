@@ -1,6 +1,6 @@
 #include "game/option.h"
 
-#include "game/game.h"
+#include "game/savegame.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -107,7 +107,7 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    Game_ScanSavedGames();
+    SaveGame_ScanSavedGames();
 }
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
@@ -240,7 +240,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
-                        g_InvExtraData[1] = g_SaveGame.bonus_flag;
+                        g_InvExtraData[1] = g_GameInfo.bonus_flag;
                     }
                 } else if (g_InvMode == INV_DEATH_MODE) {
                     Text_Remove(g_InvRingText);

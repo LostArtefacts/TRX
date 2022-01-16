@@ -3,7 +3,6 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
-#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
@@ -52,18 +51,16 @@ int32_t Display_Inventory(int inv_mode)
         return GF_NOP;
     }
 
-    int32_t pass_mode_open = 0;
+    bool pass_mode_open = false;
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
     g_InvMode = inv_mode;
 
     m_InvNFrames = 2;
-    Construct_Inventory();
-
     if (g_InvMode != INV_TITLE_MODE) {
-        S_FadeInInventory(1);
-    } else {
-        S_FadeInInventory(0);
+        Screen_ApplyResolution();
+        Output_CopyScreenToBuffer();
     }
+    Construct_Inventory();
 
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
@@ -236,12 +233,13 @@ int32_t Display_Inventory(int inv_mode)
         Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
+        Output_DrawEmpty();
 
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
-            g_SaveGame.timer += m_InvNFrames / 2;
+            g_GameInfo.timer += m_InvNFrames / 2;
         }
 
         if (ring.rotating) {
@@ -279,12 +277,6 @@ int32_t Display_Inventory(int inv_mode)
                     g_InvOptionCurrent = ring.current_object;
                 }
 
-                if (g_InvMode == INV_TITLE_MODE) {
-                    S_FadeOutInventory(0);
-                } else {
-                    S_FadeOutInventory(1);
-                }
-
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
                 Inv_RingMotionRadius(&ring, 0);
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
@@ -300,7 +292,7 @@ int32_t Display_Inventory(int inv_mode)
                      || g_InvMode == INV_LOAD_MODE
                      || g_InvMode == INV_DEATH_MODE)
                     && !pass_mode_open) {
-                    pass_mode_open = 1;
+                    pass_mode_open = true;
                 }
 
                 g_OptionSelected = 0;
@@ -502,9 +494,9 @@ int32_t Display_Inventory(int inv_mode)
                 inv_item->object_number = O_PASSPORT_OPTION;
             }
 
-            int32_t busy = 0;
+            bool busy = false;
             for (int j = 0; j < m_InvNFrames; j++) {
-                busy = 0;
+                busy = false;
                 if (inv_item->y_rot == inv_item->y_rot_sel) {
                     busy = AnimateInventoryItem(inv_item);
                 }
@@ -585,11 +577,6 @@ int32_t Display_Inventory(int inv_mode)
 
         case RNG_EXITING_INVENTORY:
             if (!imo.count) {
-                if (g_InvMode != INV_TITLE_MODE) {
-                    S_FadeOutInventory(1);
-                } else {
-                    S_FadeOutInventory(0);
-                }
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
                 Inv_RingMotionRadius(&ring, 0);
                 Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
@@ -601,7 +588,12 @@ int32_t Display_Inventory(int inv_mode)
     } while (imo.status != RNG_DONE);
 
     RemoveInventoryText();
-    S_FinishInventory();
+
+    if (g_InvMode != INV_TITLE_MODE) {
+        Screen_ApplyResolution();
+    }
+    g_ModeLock = false;
+
     if (m_VersionText) {
         Text_Remove(m_VersionText);
         m_VersionText = NULL;
@@ -621,16 +613,16 @@ int32_t Display_Inventory(int inv_mode)
                 // page 2: new game
                 switch (g_InvExtraData[1]) {
                 case 0:
-                    g_SaveGame.bonus_flag = 0;
+                    g_GameInfo.bonus_flag = 0;
                     break;
                 case 1:
-                    g_SaveGame.bonus_flag = GBF_NGPLUS;
+                    g_GameInfo.bonus_flag = GBF_NGPLUS;
                     break;
                 case 2:
-                    g_SaveGame.bonus_flag = GBF_JAPANESE;
+                    g_GameInfo.bonus_flag = GBF_JAPANESE;
                     break;
                 case 3:
-                    g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
                 InitialiseStartInfo();
@@ -660,23 +652,22 @@ int32_t Display_Inventory(int inv_mode)
                 if (g_CurrentLevel == g_GameFlow.gym_level_num) {
                     switch (g_InvExtraData[1]) {
                     case 0:
-                        g_SaveGame.bonus_flag = 0;
+                        g_GameInfo.bonus_flag = 0;
                         break;
                     case 1:
-                        g_SaveGame.bonus_flag = GBF_NGPLUS;
+                        g_GameInfo.bonus_flag = GBF_NGPLUS;
                         break;
                     case 2:
-                        g_SaveGame.bonus_flag = GBF_JAPANESE;
+                        g_GameInfo.bonus_flag = GBF_JAPANESE;
                         break;
                     case 3:
-                        g_SaveGame.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                        g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
                     InitialiseStartInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    CreateSaveGameInfo();
-                    S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
+                    SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
                     Settings_Write();
                     return GF_NOP;
                 }
@@ -721,9 +712,6 @@ int32_t Display_Inventory(int inv_mode)
 void Construct_Inventory()
 {
     Output_SetupAboveWater(false);
-    if (g_InvMode != INV_TITLE_MODE) {
-        Screen_ApplyResolution();
-    }
 
     g_PhdLeft = ViewPort_GetMinX();
     g_PhdTop = ViewPort_GetMinY();
@@ -773,11 +761,11 @@ void Construct_Inventory()
     }
 }
 
-int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
+bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
         SelectMeshes(inv_item);
-        return 0;
+        return false;
     }
     if (inv_item->anim_count) {
         inv_item->anim_count--;
@@ -791,7 +779,7 @@ int32_t AnimateInventoryItem(INVENTORY_ITEM *inv_item)
         }
     }
     SelectMeshes(inv_item);
-    return 1;
+    return true;
 }
 
 void SelectMeshes(INVENTORY_ITEM *inv_item)

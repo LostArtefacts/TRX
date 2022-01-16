@@ -12,6 +12,7 @@ static void GFX_3D_Renderer_SelectTextureImpl(
 static void GFX_3D_Renderer_SelectTextureImpl(
     GFX_3D_Renderer *renderer, int texture_num)
 {
+    assert(renderer);
     if (texture_num == GFX_NO_TEXTURE) {
         glBindTexture(GL_TEXTURE_2D, 0);
         return;
@@ -26,6 +27,7 @@ static void GFX_3D_Renderer_SelectTextureImpl(
 
 void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 {
+    assert(renderer);
     // TODO: make me configurable
     renderer->wireframe = false;
     renderer->selected_texture_num = GFX_NO_TEXTURE;
@@ -78,6 +80,7 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
 void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer)
 {
+    assert(renderer);
     GFX_3D_VertexStream_Close(&renderer->vertex_stream);
     GFX_GL_Program_Close(&renderer->program);
     GFX_GL_Sampler_Close(&renderer->sampler);
@@ -85,6 +88,7 @@ void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer)
 
 void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
 {
+    assert(renderer);
     glEnable(GL_BLEND);
 
     if (renderer->wireframe) {
@@ -124,6 +128,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
 
 void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
 
     if (renderer->wireframe) {
@@ -136,6 +141,8 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
 int GFX_3D_Renderer_TextureReg(
     GFX_3D_Renderer *renderer, const void *data, int width, int height)
 {
+    assert(renderer);
+    assert(data);
     GFX_GL_Texture *texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
     GFX_GL_Texture_Bind(texture);
     GFX_GL_Texture_Load(texture, data, width, height);
@@ -157,6 +164,7 @@ int GFX_3D_Renderer_TextureReg(
 
 bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 {
+    assert(renderer);
     assert(texture_num >= 0);
     assert(texture_num < GFX_MAX_TEXTURES);
 
@@ -180,6 +188,8 @@ bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
 void GFX_3D_Renderer_RenderPrimStrip(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
+    assert(renderer);
+    assert(vertices);
     GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimStrip(
         &renderer->vertex_stream, vertices, count);
@@ -188,12 +198,15 @@ void GFX_3D_Renderer_RenderPrimStrip(
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {
+    assert(renderer);
+    assert(vertices);
     GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, vertices, count);
 }
 
 void GFX_3D_Renderer_SelectTexture(GFX_3D_Renderer *renderer, int texture_num)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     renderer->selected_texture_num = texture_num;
     GFX_3D_Renderer_SelectTextureImpl(renderer, texture_num);
@@ -201,12 +214,14 @@ void GFX_3D_Renderer_SelectTexture(GFX_3D_Renderer *renderer, int texture_num)
 
 void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer)
 {
+    assert(renderer);
     GFX_3D_Renderer_SelectTextureImpl(renderer, renderer->selected_texture_num);
 }
 
 void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);
 }
@@ -214,6 +229,7 @@ void GFX_3D_Renderer_SetPrimType(
 void GFX_3D_Renderer_SetSmoothingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_GL_Sampler_Parameteri(
         &renderer->sampler, GL_TEXTURE_MAG_FILTER,
@@ -228,6 +244,7 @@ void GFX_3D_Renderer_SetSmoothingEnabled(
 void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     if (is_enabled) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -239,7 +256,13 @@ void GFX_3D_Renderer_SetBlendingEnabled(
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled)
 {
+    assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_GL_Program_Uniform1i(
         &renderer->program, renderer->loc_texturing_enabled, is_enabled);
+}
+
+void GFX_3D_Renderer_RenderEmpty()
+{
+    GFX_Context_SetRendered();
 }

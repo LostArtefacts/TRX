@@ -52,3 +52,4 @@ void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
+void GFX_3D_Renderer_RenderEmpty();

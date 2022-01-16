@@ -4,8 +4,6 @@
 
 #include <stdint.h>
 
-int32_t DrawPhaseCinematic();
-int32_t DrawPhaseGame();
 void DrawRooms(int16_t current_room);
 void GetRoomBounds(int16_t room_num);
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent);
@@ -26,3 +24,6 @@ void DrawLaraInt(
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);
+
+void Draw_DrawScene(bool draw_overlay);
+int32_t Draw_ProcessFrame();

@@ -24,6 +24,7 @@
 #include <stddef.h>
 
 static const int32_t m_AnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
 
 static void Control_TriggerMusicTrack(
     int16_t track, int16_t flags, int16_t type);
@@ -203,16 +204,15 @@ void CheckCheatMode()
     }
 }
 
-int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
+int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    static int32_t frame_count = 0;
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
 
-    frame_count += m_AnimationRate * nframes;
-    while (frame_count >= 0) {
+    m_FrameCount += m_AnimationRate * nframes;
+    while (m_FrameCount >= 0) {
         CheckCheatMode();
         if (g_LevelComplete) {
             if (g_Config.disable_healing_between_levels) {
@@ -227,7 +227,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             return GF_NOP_BREAK;
         }
 
-        if (demo_mode) {
+        if (level_type == GFL_DEMO) {
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
@@ -240,7 +240,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             || (g_Lara.death_count > DEATH_WAIT_MIN && g_Input.any
                 && !g_Input.fly_cheat)
             || g_OverlayFlag == 2) {
-            if (demo_mode) {
+            if (level_type == GFL_DEMO) {
                 return GF_EXIT_TO_TITLE;
             }
             if (g_OverlayFlag == 2) {
@@ -312,7 +312,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CalculateCamera();
         Sound_UpdateEffects();
-        g_SaveGame.timer++;
+        g_GameInfo.timer++;
         Overlay_BarHealthTimerTick();
 
         if (g_Config.disable_healing_between_levels) {
@@ -328,7 +328,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        frame_count -= 0x10000;
+        m_FrameCount -= 0x10000;
     }
 
     return GF_NOP;
@@ -745,10 +745,10 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((g_SaveGame.secrets & (1 << value))) {
+            if ((g_GameInfo.secrets & (1 << value))) {
                 break;
             }
-            g_SaveGame.secrets |= 1 << value;
+            g_GameInfo.secrets |= 1 << value;
             Music_Play(13);
             break;
         }
