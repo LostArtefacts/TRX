@@ -161,6 +161,7 @@ typedef struct VideoState {
     SDL_Thread *read_tid;
     AVInputFormat *iformat;
     bool abort_request;
+    bool abort_request_pending;
     bool force_refresh;
     bool paused;
     bool last_paused;
@@ -2148,15 +2149,16 @@ static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
     double remaining_time = 0.0;
     SDL_PumpEvents();
 
-    bool keypress = false;
     while (!is->abort_request
            && !SDL_PeepEvents(
                event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
+
         Input_Update();
-        if (g_Input.deselect) {
-            keypress = true;
-        } else if (keypress && !g_Input.deselect) {
-            is->abort_request = 1;
+        if (g_Input.deselect || g_Input.select) {
+            is->abort_request_pending = true;
+        } else if (is->abort_request_pending) {
+            is->abort_request_pending = false;
+            is->abort_request = true;
         }
 
         if (remaining_time > 0.0) {
