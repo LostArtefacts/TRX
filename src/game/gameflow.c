@@ -36,8 +36,8 @@ typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
 } GAMEFLOW_DISPLAY_PICTURE_DATA;
 
 typedef struct GAMEFLOW_MESH_SWAP_DATA {
-    int32_t object1_num;
-    int32_t object2_num;
+    GAME_OBJECT_ID object1_num;
+    GAME_OBJECT_ID object2_num;
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 

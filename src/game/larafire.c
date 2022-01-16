@@ -635,6 +635,9 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
         case O_ABORTION:
             Sound_Effect(SFX_ABORTION_HIT, &item->pos, SPM_NORMAL);
             break;
+
+        default:
+            break;
         }
     }
 }

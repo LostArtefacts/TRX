@@ -63,6 +63,9 @@ void PuzzleHoleCollision(
             case O_PUZZLE_HOLE4:
                 item->object_number = O_PUZZLE_DONE4;
                 break;
+
+            default:
+                break;
             }
         }
 
@@ -133,6 +136,9 @@ void PuzzleHoleCollision(
             Inv_RemoveItem(O_PUZZLE_OPTION4);
             correct = 1;
         }
+        break;
+
+    default:
         break;
     }
 

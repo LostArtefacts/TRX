@@ -276,6 +276,9 @@ void RingActive(INVENTORY_ITEM *inv_item)
             Text_CentreH(g_InvItemText[IT_QTY], 1);
         }
         break;
+
+    default:
+        break;
     }
 }
 

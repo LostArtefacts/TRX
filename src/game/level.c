@@ -349,7 +349,7 @@ static bool Level_LoadSprites(MYFILE *fp)
 
     File_Read(&m_SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < m_SpriteCount; i++) {
-        int32_t object_num;
+        GAME_OBJECT_ID object_num;
         File_Read(&object_num, sizeof(int32_t), 1, fp);
         if (object_num < O_NUMBER_OF) {
             File_Read(&g_Objects[object_num], sizeof(int16_t), 1, fp);
@@ -358,7 +358,7 @@ static bool Level_LoadSprites(MYFILE *fp)
             g_Objects[object_num].loaded = 1;
         } else {
             int32_t static_num = object_num - O_NUMBER_OF;
-            File_Seek(fp, 2, FILE_SEEK_CUR);
+            File_Skip(fp, 2);
             File_Read(
                 &g_StaticObjects[static_num].mesh_number, sizeof(int16_t), 1,
                 fp);
