@@ -4,18 +4,15 @@
 
 #include <stdint.h>
 
-PICTURE *Picture_Create();
+PICTURE *Picture_Create(int width, int height);
 PICTURE *Picture_CreateFromFile(const char *path);
 void Picture_Free(PICTURE *picture);
 
 bool Picture_SaveToFile(const PICTURE *pic, const char *path);
 
-bool Picture_ScaleFit(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height);
-bool Picture_ScaleCover(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height);
-bool Picture_ScaleSmart(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height);
+PICTURE *Picture_ScaleFit(
+    const PICTURE *source_pic, size_t target_width, size_t target_height);
+PICTURE *Picture_ScaleCover(
+    const PICTURE *source_pic, size_t target_width, size_t target_height);
+PICTURE *Picture_ScaleSmart(
+    const PICTURE *source_pic, size_t target_width, size_t target_height);

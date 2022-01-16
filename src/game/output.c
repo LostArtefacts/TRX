@@ -774,11 +774,9 @@ void Output_DisplayPicture(const char *filename)
 {
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
-        PICTURE *scaled_pic = Picture_Create();
+        PICTURE *scaled_pic = Picture_ScaleSmart(
+            orig_pic, ViewPort_GetWidth(), ViewPort_GetHeight());
         if (scaled_pic) {
-            Picture_ScaleSmart(
-                scaled_pic, orig_pic, ViewPort_GetWidth(),
-                ViewPort_GetHeight());
             S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
         }

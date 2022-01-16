@@ -15,13 +15,8 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
     GFX_Screenshot_CaptureToBuffer(
         NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
 
-    PICTURE *pic = Picture_Create();
-    if (!pic) {
-        goto cleanup;
-    }
-    pic->width = width;
-    pic->height = height;
-    pic->data = Memory_Alloc(width * height * 3);
+    PICTURE *pic = Picture_Create(width, height);
+    assert(pic);
 
     GFX_Screenshot_CaptureToBuffer(
         (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
