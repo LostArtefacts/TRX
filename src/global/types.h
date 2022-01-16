@@ -873,7 +873,6 @@ typedef enum INV_MODE {
     INV_LOAD_MODE = 4,
     INV_DEATH_MODE = 5,
     INV_SAVE_CRYSTAL_MODE = 6,
-    INV_PAUSE_MODE = 7,
 } INV_MODE;
 
 typedef enum INV_TEXT {

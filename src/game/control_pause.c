@@ -148,7 +148,6 @@ bool Control_Pause()
 
     int old_overlay_flag = g_OverlayFlag;
     g_OverlayFlag = -3;
-    g_InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
     Output_CopyScreenToBuffer();
