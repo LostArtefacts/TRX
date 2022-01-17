@@ -13,6 +13,7 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
+#include "src/game/sound.h"
 
 #define SDL_MAIN_HANDLED
 
@@ -109,10 +110,12 @@ void S_Shell_SpinMessageLoop()
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
                 Music_SetVolume(g_Config.music_volume);
+                Sound_SetMasterVolume(g_Config.sound_volume);
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
                 Music_SetVolume(0);
+                Sound_SetMasterVolume(0);
                 break;
 
             case SDL_WINDOWEVENT_RESIZED: {
