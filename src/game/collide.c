@@ -660,11 +660,9 @@ void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
-        SetLaraDoorCollision(false);
         return;
     }
     if (!TestCollision(item, lara_item)) {
-        SetLaraDoorCollision(false);
         return;
     }
 
@@ -675,7 +673,6 @@ void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             ItemPushLara(item, lara_item, coll, 0, 1);
         }
     }
-    SetLaraDoorCollision(true);
 }
 
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
