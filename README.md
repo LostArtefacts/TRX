@@ -287,6 +287,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara glitching through static objects into a black void
 - fixed black screen flashing when navigating the inventory
 - fixed Lara pushing blocks through doors
+- fixed game audio not muting when game is minimized
 
 ## Showcase
 
