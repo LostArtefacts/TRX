@@ -34,10 +34,8 @@ static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll)
             continue;
         }
 
-        if (TestBoundsCollide(item, lara_item, coll->radius)) {
-            return true;
-        }
-        if (TestCollision(item, lara_item)) {
+        if (TestBoundsCollide(item, lara_item, coll->radius)
+            && TestCollision(item, lara_item)) {
             return true;
         }
     }
