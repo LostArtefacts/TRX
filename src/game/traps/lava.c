@@ -30,7 +30,7 @@ void SetupLavaWedge(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void TestLavaFloor(ITEM_INFO *item)
+bool TestLavaFloor(ITEM_INFO *item)
 {
     if (g_Lara.water_status == LWS_CHEAT) {
         return;
@@ -75,9 +75,10 @@ void TestLavaFloor(ITEM_INFO *item)
     } while (!(type & END_BIT));
 
     if (!on_lava) {
-        return;
+        return false;
     } else {
         LavaBurn(item);
+        return true;
     }
 }
 
