@@ -33,11 +33,11 @@ void SetupLavaWedge(OBJECT_INFO *obj)
 bool TestLavaFloor(ITEM_INFO *item)
 {
     if (g_Lara.water_status == LWS_CHEAT) {
-        return;
+        return false;
     }
 
     if (item->hit_points < 0) {
-        return;
+        return false;
     }
 
     int16_t room_num = item->room_number;
