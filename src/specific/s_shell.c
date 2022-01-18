@@ -25,6 +25,7 @@ static int m_ArgCount = 0;
 static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
+static float m_Scaling = 0;
 
 static void S_Shell_PostWindowResize();
 
@@ -133,6 +134,32 @@ int main(int argc, char **argv)
     Log_Init();
 
 #ifdef _WIN32
+    // Enable HiDPI mode in Windows to detect DPI scaling
+    typedef enum PROCESS_DPI_AWARENESS {
+        PROCESS_DPI_UNAWARE = 0,
+        PROCESS_SYSTEM_DPI_AWARE = 1,
+        PROCESS_PER_MONITOR_DPI_AWARE = 2
+    } PROCESS_DPI_AWARENESS;
+
+    HRESULT(WINAPI * SetProcessDpiAwareness)
+    (PROCESS_DPI_AWARENESS dpiAwareness); // Windows 8.1 and later
+    void *shcoreDLL = SDL_LoadObject("SHCORE.DLL");
+    if (shcoreDLL) {
+        SetProcessDpiAwareness =
+            (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))SDL_LoadFunction(
+                shcoreDLL, "SetProcessDpiAwareness");
+        if (SetProcessDpiAwareness) {
+            SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+
+            float ddpi;
+            if (SDL_GetDisplayDPI(0, &ddpi, NULL, NULL)
+                != -1) { // SDL_WINDOWPOS_UNDEFINED is Display 0
+                // When using HiDPI mode, set correct DPI scaling
+                m_Scaling = ddpi / 96.f; // = 0 but not needed for some reason
+            }
+        }
+    }
+
     // necessary for SDL_OpenAudioDevice to work with WASAPI
     // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
