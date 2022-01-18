@@ -32,6 +32,7 @@ void SetupLavaWedge(OBJECT_INFO *obj)
 
 bool TestLavaFloor(ITEM_INFO *item)
 {
+    // OG fix: check if floor index has lava
     if (g_Lara.water_status == LWS_CHEAT) {
         return false;
     }
@@ -43,7 +44,6 @@ bool TestLavaFloor(ITEM_INFO *item)
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
 
-    // OG fix: check if floor index has lava
     int16_t *data = &g_FloorData[floor->index];
     int16_t type;
     bool on_lava = false;
@@ -77,7 +77,6 @@ bool TestLavaFloor(ITEM_INFO *item)
     if (!on_lava) {
         return false;
     } else {
-        LavaBurn(item);
         return true;
     }
 }
