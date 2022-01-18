@@ -96,7 +96,6 @@ void LavaBurn(ITEM_INFO *item)
     int16_t height = GetHeight(floor, item->pos.x, 32000, item->pos.z);
 
     if (item->floor != height) {
-        LOG_DEBUG("item->floor: %d != %d: height", item->floor, height);
         return;
     }
 
