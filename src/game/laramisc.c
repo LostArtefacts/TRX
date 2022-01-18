@@ -598,7 +598,7 @@ void LaraInitialiseMeshes(int32_t level_num)
         back_object_num = O_SHOTGUN;
     }
 
-    if (hands_object_num != O_INVALID) {
+    if (g_Lara.gun_status != LGS_ARMLESS && hands_object_num != O_INVALID) {
         g_Lara.mesh_ptrs[LM_HAND_L] =
             g_Meshes[g_Objects[hands_object_num].mesh_index + LM_HAND_L];
         g_Lara.mesh_ptrs[LM_HAND_R] =
