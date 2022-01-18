@@ -30,7 +30,7 @@ void SetupLavaWedge(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void LavaBurn(ITEM_INFO *item)
+void TestLavaFloor(ITEM_INFO *item)
 {
     if (g_Lara.water_status == LWS_CHEAT) {
         return;
@@ -76,11 +76,27 @@ void LavaBurn(ITEM_INFO *item)
 
     if (!on_lava) {
         return;
+    } else {
+        LavaBurn(item);
+    }
+}
+
+void LavaBurn(ITEM_INFO *item)
+{
+    if (g_Lara.water_status == LWS_CHEAT) {
+        return;
     }
 
+    if (item->hit_points < 0) {
+        return;
+    }
+
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
     int16_t height = GetHeight(floor, item->pos.x, 32000, item->pos.z);
 
     if (item->floor != height) {
+        LOG_DEBUG("item->floor: %d != %d: height", item->floor, height);
         return;
     }
 

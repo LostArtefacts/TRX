@@ -501,7 +501,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
     if ((*data & DATA_TYPE) == FT_LAVA) {
         if (!heavy && g_LaraItem->pos.y == g_LaraItem->floor) {
-            LavaBurn(g_LaraItem);
+            TestLavaFloor(g_LaraItem);
         }
 
         if (*data & END_BIT) {
