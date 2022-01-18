@@ -1,4 +1,3 @@
-#include "init.h"
 #include "game/gameflow.h"
 #include "global/vars.h"
 #include "memory.h"
@@ -12,12 +11,7 @@
 
 const char *g_T1MVersion = VERSION;
 
-typedef struct {
-    GAME_STRING_ID key;
-    char *string;
-} STRING_DEF;
-
-STRING_DEF m_StringDefs[] = {
+GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_HEADING_INVENTORY, "INVENTORY" },
     { GS_HEADING_GAME_OVER, "GAME OVER" },
     { GS_HEADING_OPTION, "OPTION" },
@@ -114,10 +108,3 @@ STRING_DEF m_StringDefs[] = {
     { GS_INV_ITEM_LARAS_HOME, "Lara's Home" },
     { 0, NULL },
 };
-
-void T1MInit()
-{
-    for (const STRING_DEF *def = m_StringDefs; def->string; def++) {
-        g_GameFlow.strings[def->key] = Memory_Dup(def->string);
-    }
-}

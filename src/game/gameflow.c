@@ -254,10 +254,16 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
         if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
-            Memory_FreePointer(&g_GameFlow.strings[key]);
             g_GameFlow.strings[key] = Memory_Dup(value->string);
         }
         strings_elem = strings_elem->next;
+    }
+
+    for (const GAMEFLOW_DEFAULT_STRING *def = g_GameFlowDefaultStrings;
+         def->string; def++) {
+        if (!g_GameFlow.strings[def->key]) {
+            g_GameFlow.strings[def->key] = Memory_Dup(def->string);
+        }
     }
 
     return true;

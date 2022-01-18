@@ -24,7 +24,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "init.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
@@ -46,7 +45,6 @@ static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
 void Shell_Main()
 {
-    T1MInit();
     Config_Read();
 
     const char *gameflow_path = m_T1MGameflowPath;
