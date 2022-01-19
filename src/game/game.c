@@ -45,7 +45,6 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 int32_t StopGame()
 {
     if (g_LevelComplete) {
-        Output_CopyScreenToBuffer();
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
 
@@ -177,7 +176,8 @@ void LevelStats(int32_t level_num)
             break;
         }
         Output_InitialisePolyList();
-        Output_CopyBufferToScreen();
+        Draw_DrawScene(false);
+        Draw_DrawOverlayBackground();
         Input_Update();
         Text_Draw();
         Output_DumpScreen();

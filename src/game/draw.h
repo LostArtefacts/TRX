@@ -26,4 +26,5 @@ int16_t *GetBoundsAccurate(ITEM_INFO *item);
 int16_t *GetBestFrame(ITEM_INFO *item);
 
 void Draw_DrawScene(bool draw_overlay);
+void Draw_DrawOverlayBackground();
 int32_t Draw_ProcessFrame();

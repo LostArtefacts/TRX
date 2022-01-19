@@ -507,6 +507,11 @@ void S_Output_DumpScreen()
     m_SelectedTexture = -1;
 }
 
+void S_Output_ClearDepthBuffer()
+{
+    GFX_3D_Renderer_ClearDepth(m_Renderer3D);
+}
+
 void S_Output_ClearBackBuffer()
 {
     S_Output_RenderEnd();
@@ -517,54 +522,6 @@ void S_Output_ClearBackBuffer()
 void S_Output_DrawEmpty()
 {
     GFX_3D_Renderer_RenderEmpty();
-}
-
-void S_Output_CopyToPicture()
-{
-    // This function is called BEFORE the scene is rendered, which means the
-    // gl buffer is empty. In order to capture the scene to the picture buffer,
-    // it needs to be drawn again.
-
-    S_Output_RenderBegin();
-    Draw_DrawScene(false);
-    S_Output_RenderEnd();
-
-    if (!m_PictureSurface) {
-        GFX_2D_SurfaceDesc surface_desc = {
-            .width = m_SurfaceWidth,
-            .height = m_SurfaceHeight,
-        };
-        m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
-    }
-
-    GLint width;
-    GLint height;
-    GFX_Screenshot_CaptureToBuffer(
-        NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
-
-    PICTURE *pic = Picture_Create(width, height);
-    assert(pic);
-
-    GFX_Screenshot_CaptureToBuffer(
-        (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
-        true);
-
-    // dim the captured screen
-    for (int i = 0; i < width * height; i++) {
-        pic->data[i].r /= 2;
-        pic->data[i].g /= 2;
-        pic->data[i].b /= 2;
-    }
-
-    S_Output_DownloadPicture(pic);
-
-cleanup:
-    if (pic) {
-        Picture_Free(pic);
-        pic = NULL;
-    }
-
-    S_Output_RenderToggle();
 }
 
 void S_Output_CopyFromPicture()

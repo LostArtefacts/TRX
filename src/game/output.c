@@ -395,6 +395,11 @@ RGB888 Output_GetPaletteColor(uint8_t idx)
     return S_Output_GetPaletteColor(idx);
 }
 
+void Output_ClearDepth()
+{
+    S_Output_ClearDepthBuffer();
+}
+
 void Output_ClearScreen()
 {
     S_Output_ClearBackBuffer();
@@ -647,12 +652,7 @@ void Output_DrawSprite(
     }
 }
 
-void Output_CopyScreenToBuffer()
-{
-    S_Output_CopyToPicture();
-}
-
-void Output_CopyBufferToScreen()
+void Output_CopyPictureToScreen()
 {
     S_Output_CopyFromPicture();
 }

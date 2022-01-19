@@ -138,6 +138,11 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
     GFX_GL_CheckError();
 }
 
+void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer)
+{
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 int GFX_3D_Renderer_TextureReg(
     GFX_3D_Renderer *renderer, const void *data, int width, int height)
 {

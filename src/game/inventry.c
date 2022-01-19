@@ -3,6 +3,7 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
+#include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
@@ -52,13 +53,11 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     bool pass_mode_open = false;
-    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
     g_InvMode = inv_mode;
 
     m_InvNFrames = 2;
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
-        Output_CopyScreenToBuffer();
     }
     Construct_Inventory();
 
@@ -99,6 +98,8 @@ int32_t Display_Inventory(int inv_mode)
 
     m_InvNFrames = 2;
 
+    CAMERA_INFO old_camera = g_Camera;
+
     do {
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
         Input_Update();
@@ -128,14 +129,29 @@ int32_t Display_Inventory(int inv_mode)
 
         ring.camera.z = ring.radius + CAMERA_2_RING;
 
+        Output_InitialisePolyList();
+
+        if (g_InvMode == INV_TITLE_MODE) {
+            Output_CopyPictureToScreen();
+        } else {
+            phd_LookAt(
+                old_camera.pos.x, old_camera.pos.y + old_camera.shift,
+                old_camera.pos.z, old_camera.target.x, old_camera.target.y,
+                old_camera.target.z, 0);
+            Draw_DrawScene(true);
+            Draw_DrawOverlayBackground();
+
+            Output_ClearDepth();
+
+            int32_t width = Screen_GetResWidth();
+            int32_t height = Screen_GetResHeight();
+            ViewPort_Init(width, height);
+        }
+
         PHD_3DPOS viewer;
         Inv_RingGetView(&ring, &viewer);
         phd_GenerateW2V(&viewer);
-
         Inv_RingLight(&ring);
-
-        Output_InitialisePolyList();
-        Output_CopyBufferToScreen();
 
         phd_PushMatrix();
         phd_TranslateAbs(ring.ringpos.x, ring.ringpos.y, ring.ringpos.z);

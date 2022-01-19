@@ -13,6 +13,7 @@ void S_Output_RenderBegin();
 void S_Output_RenderEnd();
 void S_Output_RenderToggle();
 void S_Output_DumpScreen();
+void S_Output_ClearDepthBuffer();
 void S_Output_ClearBackBuffer();
 void S_Output_DrawEmpty();
 
@@ -28,7 +29,6 @@ RGB888 S_Output_GetPaletteColor(uint8_t idx);
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_DownloadPicture(const PICTURE *pic);
 void S_Output_SelectTexture(int tex_num);
-void S_Output_CopyToPicture();
 void S_Output_CopyFromPicture();
 
 void S_Output_DrawFlatTriangle(

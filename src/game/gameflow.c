@@ -1084,7 +1084,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Output_DisplayPicture(data->path);
                 Output_InitialisePolyList();
-                Output_CopyBufferToScreen();
+                Output_CopyPictureToScreen();
                 Output_DumpScreen();
                 Shell_Wait(data->display_time);
                 Output_FadeToBlack();

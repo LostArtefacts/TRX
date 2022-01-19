@@ -1381,3 +1381,14 @@ int32_t Draw_ProcessFrame()
     Output_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;
 }
+
+void Draw_DrawOverlayBackground()
+{
+    int32_t sx = 0;
+    int32_t sy = 0;
+    int32_t sw = ViewPort_GetMaxX();
+    int32_t sh = ViewPort_GetMaxY();
+
+    RGBA8888 background = { 0, 0, 0, 128 };
+    Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+}

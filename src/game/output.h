@@ -25,11 +25,11 @@ void Output_SetDrawDistFade(int32_t dist);
 void Output_SetDrawDistMax(int32_t dist);
 void Output_SetWaterColor(const RGBF *color);
 
+void Output_ClearDepth();
 void Output_ClearScreen();
 void Output_DrawEmpty();
 void Output_InitialisePolyList();
-void Output_CopyScreenToBuffer();
-void Output_CopyBufferToScreen();
+void Output_CopyPictureToScreen();
 int32_t Output_DumpScreen();
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);

@@ -31,6 +31,7 @@ void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer);
 void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer);
+void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer);
 
 int GFX_3D_Renderer_TextureReg(
     GFX_3D_Renderer *renderer, const void *data, int width, int height);
