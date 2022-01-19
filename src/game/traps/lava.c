@@ -46,7 +46,6 @@ bool TestLavaFloor(ITEM_INFO *item)
 
     int16_t *data = &g_FloorData[floor->index];
     int16_t type;
-    bool on_lava = false;
     do {
         type = *data++;
 
@@ -62,8 +61,7 @@ bool TestLavaFloor(ITEM_INFO *item)
             break;
 
         case FT_LAVA:
-            on_lava = true;
-            break;
+            return true;
 
         case FT_TRIGGER:
             data++;
@@ -74,11 +72,7 @@ bool TestLavaFloor(ITEM_INFO *item)
         }
     } while (!(type & END_BIT));
 
-    if (!on_lava) {
-        return false;
-    } else {
-        return true;
-    }
+    return false;
 }
 
 void LavaBurn(ITEM_INFO *item)
