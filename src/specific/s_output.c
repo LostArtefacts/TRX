@@ -373,7 +373,7 @@ static int32_t S_Output_ZedClipper(
     GFX_3D_Vertex *v;
     float clip;
 
-    float multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = g_Config.brightness / 16.0f;
     float near_z = Output_GetNearZ();
     float persp_o_near_z = g_PhdPersp / near_z;
 
@@ -695,7 +695,7 @@ void S_Output_DrawSprite(
     int vertex_count = 4;
     GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
-    float multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = g_Config.brightness / 16.0f;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
     float vshade = (8192.0f - shade) * multiplier;
@@ -1120,7 +1120,7 @@ void S_Output_DrawTexturedTriangle(
     PHD_VBUF *src_vbuf[3];
     PHD_UV *src_uv[3];
 
-    float multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = g_Config.brightness / 16.0f;
 
     src_vbuf[0] = vn1;
     src_vbuf[1] = vn2;
@@ -1239,7 +1239,7 @@ void S_Output_DrawTexturedQuad(
         return;
     }
 
-    float multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = g_Config.brightness / 16.0f;
 
     src_vbuf[0] = vn2;
     src_vbuf[1] = vn1;
