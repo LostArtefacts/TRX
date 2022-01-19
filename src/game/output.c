@@ -38,18 +38,16 @@ static void Output_CalcWibbleTable();
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[3];
-    int32_t color;
-
     S_Output_DisableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[3] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        uint8_t color_idx = *obj_ptr++;
+        RGB888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
     }
 
@@ -59,19 +57,17 @@ static const int16_t *Output_DrawObjectG3(
 static const int16_t *Output_DrawObjectG4(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[4];
-    int32_t color;
-
     S_Output_DisableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        vns[3] = &m_VBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[4] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        uint8_t color_idx = *obj_ptr++;
+        RGB888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
         S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
     }
@@ -82,17 +78,15 @@ static const int16_t *Output_DrawObjectG4(
 static const int16_t *Output_DrawObjectGT3(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[3];
-    PHD_TEXTURE *tex;
-
     S_Output_EnableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[3] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
 
         S_Output_DrawTexturedTriangle(
             vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
@@ -105,18 +99,16 @@ static const int16_t *Output_DrawObjectGT3(
 static const int16_t *Output_DrawObjectGT4(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[4];
-    PHD_TEXTURE *tex;
-
     S_Output_EnableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        vns[3] = &m_VBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[4] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
 
         S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],

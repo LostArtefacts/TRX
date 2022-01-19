@@ -28,10 +28,9 @@
     }
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
-static RGB888 m_ATIPalette[256];
+static RGB888 m_ColorPalette[256];
 
 static GFX_3D_Renderer *m_Renderer3D = NULL;
-static RGB888 m_GamePalette[256];
 static bool m_IsPaletteActive = false;
 static bool m_IsRendering = false;
 static bool m_IsRenderingOld = false;
@@ -492,18 +491,14 @@ void S_Output_RenderToggle()
 void S_Output_SetPalette(RGB888 palette[256])
 {
     for (int i = 0; i < 256; i++) {
-        m_GamePalette[i] = palette[i];
-        m_ATIPalette[i].r = 4 * palette[i].r;
-        m_ATIPalette[i].g = 4 * palette[i].g;
-        m_ATIPalette[i].b = 4 * palette[i].b;
+        m_ColorPalette[i] = palette[i];
     }
-
     m_IsPaletteActive = true;
 }
 
 RGB888 S_Output_GetPaletteColor(uint8_t idx)
 {
-    return m_ATIPalette[idx];
+    return m_ColorPalette[idx];
 }
 
 void S_Output_DumpScreen()
@@ -1050,13 +1045,10 @@ void S_Output_Shutdown()
 }
 
 void S_Output_DrawFlatTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color)
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB888 color)
 {
     int vertex_count = 3;
     GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    float r;
-    float g;
-    float b;
     float light;
 
     if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
@@ -1067,37 +1059,35 @@ void S_Output_DrawFlatTriangle(
         return;
     }
 
-    r = m_GamePalette[color].r;
-    g = m_GamePalette[color].g;
-    b = m_GamePalette[color].b;
+    float multiplier = g_Config.brightness / (16.0f * 255.0f);
 
-    Output_ApplyWaterEffect(&r, &g, &b);
-
-    float divisor = (1.0f / g_Config.brightness) * 1024.0f;
-
-    light = (8192.0f - vn1->g) / divisor;
+    light = (8192.0f - vn1->g) * multiplier;
     vertices[0].x = vn1->xs;
     vertices[0].y = vn1->ys;
     vertices[0].z = vn1->zv * 0.0001f;
-    vertices[0].r = r * light;
-    vertices[0].g = g * light;
-    vertices[0].b = b * light;
+    vertices[0].r = color.r * light;
+    vertices[0].g = color.g * light;
+    vertices[0].b = color.b * light;
 
-    light = (8192.0f - vn2->g) / divisor;
+    light = (8192.0f - vn2->g) * multiplier;
     vertices[1].x = vn2->xs;
     vertices[1].y = vn2->ys;
     vertices[1].z = vn2->zv * 0.0001f;
-    vertices[1].r = r * light;
-    vertices[1].g = g * light;
-    vertices[1].b = b * light;
+    vertices[1].r = color.r * light;
+    vertices[1].g = color.g * light;
+    vertices[1].b = color.b * light;
 
-    light = (8192.0f - vn3->g) / divisor;
+    light = (8192.0f - vn3->g) * multiplier;
     vertices[2].x = vn3->xs;
     vertices[2].y = vn3->ys;
     vertices[2].z = vn3->zv * 0.0001f;
-    vertices[2].r = r * light;
-    vertices[2].g = g * light;
-    vertices[2].b = b * light;
+    vertices[2].r = color.r * light;
+    vertices[2].g = color.g * light;
+    vertices[2].b = color.b * light;
+
+    for (int i = 0; i < vertex_count; i++) {
+        Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+    }
 
     if (vn1->clip || vn2->clip || vn3->clip) {
         vertex_count = S_Output_ClipVertices(

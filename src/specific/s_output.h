@@ -32,7 +32,7 @@ void S_Output_CopyToPicture();
 void S_Output_CopyFromPicture();
 
 void S_Output_DrawFlatTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int32_t color);
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB888 color);
 void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype);

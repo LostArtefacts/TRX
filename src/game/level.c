@@ -424,6 +424,11 @@ static bool Level_LoadPalette(MYFILE *fp)
     palette[0].r = 0;
     palette[0].g = 0;
     palette[0].b = 0;
+    for (int i = 1; i < 256; i++) {
+        palette[i].r *= 4;
+        palette[i].g *= 4;
+        palette[i].b *= 4;
+    }
     Output_SetPalette(palette);
     return true;
 }
