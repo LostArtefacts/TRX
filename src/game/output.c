@@ -379,6 +379,12 @@ void Output_DownloadTextures(int page_count)
     S_Output_DownloadTextures(page_count);
 }
 
+RGBA8888 Output_RGB2RGBA(const RGB888 color)
+{
+    RGBA8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
+    return ret;
+}
+
 void Output_SetPalette(RGB888 palette[256])
 {
     S_Output_SetPalette(palette);
@@ -652,28 +658,28 @@ void Output_CopyBufferToScreen()
 }
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 tl, RGB888 tr,
-    RGB888 bl, RGB888 br)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col)
 {
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
 void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    RGB888 rgb_border_light = Output_GetPaletteColor(15);
-    RGB888 rgb_border_dark = Output_GetPaletteColor(31);
+    RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
+    RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
     Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
     Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
     Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);

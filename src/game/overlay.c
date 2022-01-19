@@ -22,61 +22,61 @@ static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
 
-static RGB888 m_ColorBarMap[][COLOR_STEPS] = {
+static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
-    { { 112, 92, 44 },
-      { 164, 120, 72 },
-      { 112, 92, 44 },
-      { 88, 68, 0 },
-      { 80, 48, 20 } },
+    { { 112, 92, 44, 255 },
+      { 164, 120, 72, 255 },
+      { 112, 92, 44, 255 },
+      { 88, 68, 0, 255 },
+      { 80, 48, 20, 255 } },
     // blue
-    { { 100, 116, 100 },
-      { 92, 160, 156 },
-      { 100, 116, 100 },
-      { 76, 80, 76 },
-      { 48, 48, 48 } },
+    { { 100, 116, 100, 255 },
+      { 92, 160, 156, 255 },
+      { 100, 116, 100, 255 },
+      { 76, 80, 76, 255 },
+      { 48, 48, 48, 255 } },
     // grey
-    { { 88, 100, 88 },
-      { 116, 132, 116 },
-      { 88, 100, 88 },
-      { 76, 80, 76 },
-      { 48, 48, 48 } },
+    { { 88, 100, 88, 255 },
+      { 116, 132, 116, 255 },
+      { 88, 100, 88, 255 },
+      { 76, 80, 76, 255 },
+      { 48, 48, 48, 255 } },
     // red
-    { { 160, 40, 28 },
-      { 184, 44, 32 },
-      { 160, 40, 28 },
-      { 124, 32, 32 },
-      { 84, 20, 32 } },
+    { { 160, 40, 28, 255 },
+      { 184, 44, 32, 255 },
+      { 160, 40, 28, 255 },
+      { 124, 32, 32, 255 },
+      { 84, 20, 32, 255 } },
     // silver
-    { { 150, 150, 150 },
-      { 230, 230, 230 },
-      { 200, 200, 200 },
-      { 140, 140, 140 },
-      { 100, 100, 100 } },
+    { { 150, 150, 150, 255 },
+      { 230, 230, 230, 255 },
+      { 200, 200, 200, 255 },
+      { 140, 140, 140, 255 },
+      { 100, 100, 100, 255 } },
     // green
-    { { 100, 190, 20 },
-      { 130, 230, 30 },
-      { 100, 190, 20 },
-      { 90, 150, 15 },
-      { 80, 110, 10 } },
+    { { 100, 190, 20, 255 },
+      { 130, 230, 30, 255 },
+      { 100, 190, 20, 255 },
+      { 90, 150, 15, 255 },
+      { 80, 110, 10, 255 } },
     // gold2
-    { { 220, 170, 0 },
-      { 255, 200, 0 },
-      { 220, 170, 0 },
-      { 185, 140, 0 },
-      { 150, 100, 0 } },
+    { { 220, 170, 0, 255 },
+      { 255, 200, 0, 255 },
+      { 220, 170, 0, 255 },
+      { 185, 140, 0, 255 },
+      { 150, 100, 0, 255 } },
     // blue2
-    { { 0, 170, 220 },
-      { 0, 200, 255 },
-      { 0, 170, 220 },
-      { 0, 140, 185 },
-      { 0, 100, 150 } },
+    { { 0, 170, 220, 255 },
+      { 0, 200, 255, 255 },
+      { 0, 170, 220, 255 },
+      { 0, 140, 185, 255 },
+      { 0, 100, 150, 255 } },
     // pink
-    { { 220, 140, 170 },
-      { 255, 150, 200 },
-      { 210, 130, 160 },
-      { 165, 100, 120 },
-      { 120, 60, 70 } },
+    { { 220, 140, 170, 255 },
+      { 255, 150, 200, 255 },
+      { 210, 130, 160, 255 },
+      { 165, 100, 120, 255 },
+      { 120, 60, 70, 255 } },
 };
 
 typedef struct BAR_INFO {
@@ -201,9 +201,9 @@ static void Overlay_BarGetLocation(
 
 static void Overlay_BarDraw(BAR_INFO *bar_info)
 {
-    const RGB888 rgb_bgnd = { 0, 0, 0 };
-    const RGB888 rgb_border_light = { 128, 128, 128 };
-    const RGB888 rgb_border_dark = { 64, 64, 64 };
+    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
+    const RGBA8888 rgb_border_light = { 128, 128, 128, 255 };
+    const RGBA8888 rgb_border_dark = { 64, 64, 64, 255 };
 
     int32_t width = 100;
     int32_t height = 5;
@@ -245,15 +245,15 @@ static void Overlay_BarDraw(BAR_INFO *bar_info)
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGB888 c1 = m_ColorBarMap[bar_info->color][i];
-                RGB888 c2 = m_ColorBarMap[bar_info->color][i + 1];
+                RGBA8888 c1 = m_ColorBarMap[bar_info->color][i];
+                RGBA8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
                 int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
                 int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
                 Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
             for (int i = 0; i < COLOR_STEPS; i++) {
-                RGB888 color = m_ColorBarMap[bar_info->color][i];
+                RGBA8888 color = m_ColorBarMap[bar_info->color][i];
                 int32_t lsy = sy + i * sh / COLOR_STEPS;
                 int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
                 Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);

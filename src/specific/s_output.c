@@ -766,8 +766,8 @@ void S_Output_DrawSprite(
 }
 
 void S_Output_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
-    RGB888 color2)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 color1,
+    RGBA8888 color2)
 {
     int vertex_count = 2;
     GFX_3D_Vertex vertices[vertex_count];
@@ -778,6 +778,7 @@ void S_Output_Draw2DLine(
     vertices[0].r = color1.r;
     vertices[0].g = color1.g;
     vertices[0].b = color1.b;
+    vertices[0].a = color1.a;
 
     vertices[1].x = x2;
     vertices[1].y = y2;
@@ -785,16 +786,19 @@ void S_Output_Draw2DLine(
     vertices[1].r = color2.r;
     vertices[1].g = color2.g;
     vertices[1].b = color2.b;
+    vertices[1].a = color2.a;
 
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
     S_Output_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
 void S_Output_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
-    RGB888 bl, RGB888 br)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br)
 {
     int vertex_count = 4;
     GFX_3D_Vertex vertices[vertex_count];
@@ -805,6 +809,7 @@ void S_Output_Draw2DQuad(
     vertices[0].r = tl.r;
     vertices[0].g = tl.g;
     vertices[0].b = tl.b;
+    vertices[0].a = tl.a;
 
     vertices[1].x = x2;
     vertices[1].y = y1;
@@ -812,6 +817,7 @@ void S_Output_Draw2DQuad(
     vertices[1].r = tr.r;
     vertices[1].g = tr.g;
     vertices[1].b = tr.b;
+    vertices[1].a = tr.a;
 
     vertices[2].x = x2;
     vertices[2].y = y2;
@@ -819,6 +825,7 @@ void S_Output_Draw2DQuad(
     vertices[2].r = br.r;
     vertices[2].g = br.g;
     vertices[2].b = br.b;
+    vertices[2].a = br.a;
 
     vertices[3].x = x1;
     vertices[3].y = y2;
@@ -826,9 +833,12 @@ void S_Output_Draw2DQuad(
     vertices[3].r = bl.r;
     vertices[3].g = bl.g;
     vertices[3].b = bl.b;
+    vertices[3].a = bl.a;
 
     S_Output_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     S_Output_DrawTriangleStrip(vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
 void S_Output_DrawTranslucentQuad(

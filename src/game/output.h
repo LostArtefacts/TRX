@@ -12,6 +12,7 @@ void Output_SetFullscreen(bool fullscreen);
 void Output_ApplyResolution();
 void Output_DownloadTextures(int page_count);
 
+RGBA8888 Output_RGB2RGBA(const RGB888 color);
 void Output_SetPalette(RGB888 palette[256]);
 RGB888 Output_GetPaletteColor(uint8_t idx);
 
@@ -44,12 +45,14 @@ void Output_DrawLightningSegment(
     int32_t width);
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
+void Output_DrawScreenTranslucentQuad(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 tl, RGB888 tr,
-    RGB888 bl, RGB888 br);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br);
 void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col);
 void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 

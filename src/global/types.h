@@ -1156,6 +1156,13 @@ typedef struct RGB888 {
     uint8_t b;
 } RGB888;
 
+typedef struct RGBA8888 {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} RGBA8888;
+
 typedef struct POS_2D {
     uint16_t x;
     uint16_t y;

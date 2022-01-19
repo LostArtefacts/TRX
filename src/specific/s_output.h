@@ -42,11 +42,11 @@ void S_Output_DrawTexturedQuad(
 void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
 void S_Output_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 color1,
-    RGB888 color2);
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 color1,
+    RGBA8888 color2);
 void S_Output_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGB888 tl, RGB888 tr,
-    RGB888 bl, RGB888 br);
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br);
 void S_Output_DrawTranslucentQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count);
