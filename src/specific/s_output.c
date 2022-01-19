@@ -118,8 +118,6 @@ static void S_Output_SetupRenderContextAndRender()
 
 static void S_Output_ReleaseSurfaces()
 {
-    int i;
-
     if (m_PrimarySurface) {
         S_Output_ClearSurface(m_PrimarySurface);
         S_Output_ClearSurface(m_BackSurface);
@@ -129,7 +127,7 @@ static void S_Output_ReleaseSurfaces()
         m_BackSurface = NULL;
     }
 
-    for (i = 0; i < GFX_MAX_TEXTURES; i++) {
+    for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureSurfaces[i]) {
             GFX_2D_Surface_Free(m_TextureSurfaces[i]);
             m_TextureSurfaces[i] = NULL;
@@ -356,22 +354,19 @@ static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source)
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices)
 {
-    int32_t i;
     int32_t count;
     POINT_INFO *pts0;
     POINT_INFO *pts1;
     GFX_3D_Vertex *v;
     float clip;
-    float persp_o_near_z;
-    float multiplier;
 
-    multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = 0.0625f * g_Config.brightness;
     float near_z = Output_GetNearZ();
-    persp_o_near_z = g_PhdPersp / near_z;
+    float persp_o_near_z = g_PhdPersp / near_z;
 
     v = &vertices[0];
     pts0 = &pts[vertex_count - 1];
-    for (i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++) {
         pts1 = pts0;
         pts0 = &pts[i];
         if (near_z > pts1->zv) {
@@ -684,16 +679,13 @@ void S_Output_DrawSprite(
     float t4;
     float t5;
     float vz;
-    float vshade;
     int32_t vertex_count;
-    PHD_SPRITE *sprite;
     GFX_3D_Vertex vertices[10];
-    float multiplier;
 
-    multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = 0.0625f * g_Config.brightness;
 
-    sprite = &g_PhdSpriteInfo[sprnum];
-    vshade = (8192.0f - shade) * multiplier;
+    PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
+    float vshade = (8192.0f - shade) * multiplier;
     if (vshade >= 256.0f) {
         vshade = 255.0f;
     }
@@ -963,10 +955,8 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
     GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    int i;
-    int32_t tmp;
 
-    for (i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++) {
         GFX_3D_Vertex *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
@@ -1050,7 +1040,6 @@ void S_Output_DrawFlatTriangle(
     float g;
     float b;
     float light;
-    float divisor;
 
     if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
           && vn2->clip >= 0 && vn3->clip >= 0
@@ -1066,7 +1055,7 @@ void S_Output_DrawFlatTriangle(
 
     Output_ApplyWaterEffect(&r, &g, &b);
 
-    divisor = (1.0f / g_Config.brightness) * 1024.0f;
+    float divisor = (1.0f / g_Config.brightness) * 1024.0f;
 
     light = (8192.0f - vn1->g) / divisor;
     vertices[0].x = vn1->xs;
@@ -1107,15 +1096,13 @@ void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
 {
-    int32_t i;
     int32_t vertex_count;
     GFX_3D_Vertex vertices[8];
     POINT_INFO points[3];
     PHD_VBUF *src_vbuf[4];
     PHD_UV *src_uv[4];
-    float multiplier;
 
-    multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = 0.0625f * g_Config.brightness;
 
     src_vbuf[0] = vn1;
     src_vbuf[1] = vn2;
@@ -1136,7 +1123,7 @@ void S_Output_DrawTexturedTriangle(
             return;
         }
 
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             vertices[i].x = src_vbuf[i]->xs;
             vertices[i].y = src_vbuf[i]->ys;
             vertices[i].z = src_vbuf[i]->zv * 0.0001f;
@@ -1163,7 +1150,7 @@ void S_Output_DrawTexturedTriangle(
             return;
         }
 
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             points[i].xv = src_vbuf[i]->xv;
             points[i].yv = src_vbuf[i]->yv;
             points[i].zv = src_vbuf[i]->zv;
@@ -1199,8 +1186,6 @@ void S_Output_DrawTexturedQuad(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
 {
-    int32_t i;
-    float multiplier;
     GFX_3D_Vertex vertices[4];
     PHD_VBUF *src_vbuf[4];
     PHD_UV *src_uv[4];
@@ -1234,7 +1219,7 @@ void S_Output_DrawTexturedQuad(
         return;
     }
 
-    multiplier = 0.0625f * g_Config.brightness;
+    float multiplier = 0.0625f * g_Config.brightness;
 
     src_vbuf[0] = vn2;
     src_vbuf[1] = vn1;
@@ -1246,7 +1231,7 @@ void S_Output_DrawTexturedQuad(
     src_uv[2] = uv3;
     src_uv[3] = uv4;
 
-    for (i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
         vertices[i].z = src_vbuf[i]->zv * 0.0001f;
