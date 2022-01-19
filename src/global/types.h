@@ -1221,8 +1221,8 @@ typedef struct PHD_VBUF {
 } PHD_VBUF;
 
 typedef struct PHD_UV {
-    uint16_t u1;
-    uint16_t v1;
+    uint16_t u;
+    uint16_t v;
 } PHD_UV;
 
 typedef struct PHD_TEXTURE {

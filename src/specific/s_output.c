@@ -532,8 +532,8 @@ static int32_t S_Output_ZedClipper(
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) / 256.0f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) / 256.0f;
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
@@ -551,8 +551,8 @@ static int32_t S_Output_ZedClipper(
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) * 0.00390625f;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) * 0.00390625f;
+            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) / 256.0f;
+            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) / 256.0f;
 
             v->r = v->g = v->b =
                 (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
@@ -565,8 +565,8 @@ static int32_t S_Output_ZedClipper(
             v->z = pts0->zv * 0.0001f;
 
             v->w = 65536.0f / pts0->zv;
-            v->s = pts0->u * v->w * 0.00390625f;
-            v->t = pts0->v * v->w * 0.00390625f;
+            v->s = pts0->u * v->w / 256.0f;
+            v->t = pts0->v * v->w / 256.0f;
 
             v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
             Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
@@ -853,8 +853,8 @@ void S_Output_DrawSprite(
     vertices[0].x = x1;
     vertices[0].y = y1;
     vertices[0].z = vz;
-    vertices[0].s = t1 * t5 * 0.00390625f;
-    vertices[0].t = t2 * t5 * 0.00390625f;
+    vertices[0].s = t1 * t5 / 256.0f;
+    vertices[0].t = t2 * t5 / 256.0f;
     vertices[0].w = t5;
     vertices[0].r = vshade;
     vertices[0].g = vshade;
@@ -863,8 +863,8 @@ void S_Output_DrawSprite(
     vertices[1].x = x2;
     vertices[1].y = y1;
     vertices[1].z = vz;
-    vertices[1].s = t3 * t5 * 0.00390625f;
-    vertices[1].t = t2 * t5 * 0.00390625f;
+    vertices[1].s = t3 * t5 / 256.0f;
+    vertices[1].t = t2 * t5 / 256.0f;
     vertices[1].w = t5;
     vertices[1].r = vshade;
     vertices[1].g = vshade;
@@ -873,8 +873,8 @@ void S_Output_DrawSprite(
     vertices[2].x = x2;
     vertices[2].y = y2;
     vertices[2].z = vz;
-    vertices[2].s = t3 * t5 * 0.00390625f;
-    vertices[2].t = t4 * t5 * 0.00390625f;
+    vertices[2].s = t3 * t5 / 256.0f;
+    vertices[2].t = t4 * t5 / 256.0f;
     vertices[2].w = t5;
     vertices[2].r = vshade;
     vertices[2].g = vshade;
@@ -883,8 +883,8 @@ void S_Output_DrawSprite(
     vertices[3].x = x1;
     vertices[3].y = y2;
     vertices[3].z = vz;
-    vertices[3].s = t1 * t5 * 0.00390625f;
-    vertices[3].t = t4 * t5 * 0.00390625f;
+    vertices[3].s = t1 * t5 / 256.0f;
+    vertices[3].t = t4 * t5 / 256.0f;
     vertices[3].w = t5;
     vertices[3].r = vshade;
     vertices[3].g = vshade;
@@ -1287,10 +1287,10 @@ void S_Output_DrawTexturedTriangle(
             vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
             vertices[i].w = 65536.0f / src_vbuf[i]->zv;
-            vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
-                * vertices[i].w * 0.00390625f;
-            vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
-                * vertices[i].w * 0.00390625f;
+            vertices[i].s = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f)
+                * (vertices[i].w / 256.0f);
+            vertices[i].t = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f)
+                * (vertices[i].w / 256.0f);
 
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
@@ -1315,8 +1315,8 @@ void S_Output_DrawTexturedTriangle(
             points[i].xs = src_vbuf[i]->xs;
             points[i].ys = src_vbuf[i]->ys;
             points[i].g = src_vbuf[i]->g;
-            points[i].u = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f;
-            points[i].v = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f;
+            points[i].u = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f);
+            points[i].v = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f);
         }
 
         vertex_count = S_Output_ZedClipper(3, points, vertices);
@@ -1397,10 +1397,10 @@ void S_Output_DrawTexturedQuad(
         vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
         vertices[i].w = 65536.0f / src_vbuf[i]->zv;
-        vertices[i].s = ((src_uv[i]->u1 & 0xFF00) + 127) * 0.00390625f
-            * vertices[i].w * 0.00390625f;
-        vertices[i].t = ((src_uv[i]->v1 & 0xFF00) + 127) * 0.00390625f
-            * vertices[i].w * 0.00390625f;
+        vertices[i].s = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f)
+            * (vertices[i].w / 256.0f);
+        vertices[i].t = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f)
+            * (vertices[i].w / 256.0f);
 
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
