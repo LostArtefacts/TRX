@@ -57,7 +57,6 @@ static void S_Output_FlipPrimaryBuffer();
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
 static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int num);
 static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source);
-static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source);
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
@@ -177,9 +176,8 @@ static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source)
 
     GFX_3D_Vertex *l = &source[num - 1];
     int j = 0;
-    int i;
 
-    for (i = 0; i < num; i++) {
+    for (int i = 0; i < num; i++) {
         assert(j < num * CLIP_VERTCOUNT_SCALE);
         GFX_3D_Vertex *v1 = &vertices[j];
         GFX_3D_Vertex *v2 = l;
@@ -197,158 +195,6 @@ static int32_t S_Output_ClipVertices(int32_t num, GFX_3D_Vertex *source)
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
             v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &vertices[++j];
-        } else if (v2->x > m_SurfaceMaxX) {
-            if (l->x > m_SurfaceMaxX) {
-                continue;
-            }
-            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_SurfaceMaxX;
-            v1->y = (v2->y - l->y) * scale + l->y;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &vertices[++j];
-        }
-
-        if (l->x < m_SurfaceMinX) {
-            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_SurfaceMinX;
-            v1->y = (v2->y - l->y) * scale + l->y;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &vertices[++j];
-        } else if (l->x > m_SurfaceMaxX) {
-            scale = (m_SurfaceMaxX - l->x) / (v2->x - l->x);
-            v1->x = m_SurfaceMaxX;
-            v1->y = (v2->y - l->y) * scale + l->y;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &vertices[++j];
-        } else {
-            v1->x = l->x;
-            v1->y = l->y;
-            v1->z = l->z;
-            v1->r = l->r;
-            v1->g = l->g;
-            v1->b = l->b;
-            v1->a = l->a;
-            v1 = &vertices[++j];
-        }
-    }
-
-    if (j < 3) {
-        return 0;
-    }
-
-    num = j;
-    l = &vertices[j - 1];
-    j = 0;
-
-    for (i = 0; i < num; i++) {
-        GFX_3D_Vertex *v1 = &source[j];
-        GFX_3D_Vertex *v2 = l;
-        l = &vertices[i];
-
-        if (v2->y < m_SurfaceMinY) {
-            if (l->y < m_SurfaceMinY) {
-                continue;
-            }
-            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
-            v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_SurfaceMinY;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &source[++j];
-        } else if (v2->y > m_SurfaceMaxY) {
-            if (l->y > m_SurfaceMaxY) {
-                continue;
-            }
-            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
-            v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_SurfaceMaxY;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &source[++j];
-        }
-
-        if (l->y < m_SurfaceMinY) {
-            scale = (m_SurfaceMinY - l->y) / (v2->y - l->y);
-            v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_SurfaceMinY;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &source[++j];
-        } else if (l->y > m_SurfaceMaxY) {
-            scale = (m_SurfaceMaxY - l->y) / (v2->y - l->y);
-            v1->x = (v2->x - l->x) * scale + l->x;
-            v1->y = m_SurfaceMaxY;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
-            v1->a = (v2->a - l->a) * scale + l->a;
-            v1 = &source[++j];
-        } else {
-            v1->x = l->x;
-            v1->y = l->y;
-            v1->z = l->z;
-            v1->r = l->r;
-            v1->g = l->g;
-            v1->b = l->b;
-            v1->a = l->a;
-            v1 = &source[++j];
-        }
-    }
-
-    if (j < 3) {
-        return 0;
-    }
-
-    return j;
-}
-
-static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
-{
-    float scale;
-    GFX_3D_Vertex vertices[8];
-
-    GFX_3D_Vertex *l = &source[num - 1];
-    int j = 0;
-
-    for (int i = 0; i < num; i++) {
-        GFX_3D_Vertex *v1 = &vertices[j];
-        GFX_3D_Vertex *v2 = l;
-        l = &source[i];
-
-        if (v2->x < m_SurfaceMinX) {
-            if (l->x < m_SurfaceMinX) {
-                continue;
-            }
-            scale = (m_SurfaceMinX - l->x) / (v2->x - l->x);
-            v1->x = m_SurfaceMinX;
-            v1->y = (v2->y - l->y) * scale + l->y;
-            v1->z = (v2->z - l->z) * scale + l->z;
-            v1->r = (v2->r - l->r) * scale + l->r;
-            v1->g = (v2->g - l->g) * scale + l->g;
-            v1->b = (v2->b - l->b) * scale + l->b;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -364,6 +210,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -378,6 +225,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -390,6 +238,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -401,6 +250,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = l->r;
             v1->g = l->g;
             v1->b = l->b;
+            v1->a = l->a;
             v1->w = l->w;
             v1->s = l->s;
             v1->t = l->t;
@@ -432,6 +282,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -447,6 +298,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -461,6 +313,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -473,6 +326,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = (v2->r - l->r) * scale + l->r;
             v1->g = (v2->g - l->g) * scale + l->g;
             v1->b = (v2->b - l->b) * scale + l->b;
+            v1->a = (v2->a - l->a) * scale + l->a;
             v1->w = (v2->w - l->w) * scale + l->w;
             v1->s = (v2->s - l->s) * scale + l->s;
             v1->t = (v2->t - l->t) * scale + l->t;
@@ -484,6 +338,7 @@ static int32_t S_Output_ClipVertices2(int32_t num, GFX_3D_Vertex *source)
             v1->r = l->r;
             v1->g = l->g;
             v1->b = l->b;
+            v1->a = l->a;
             v1->w = l->w;
             v1->s = l->s;
             v1->t = l->t;
@@ -893,7 +748,7 @@ void S_Output_DrawSprite(
     vertex_count = 4;
     if (x1 < 0 || y1 < 0 || x2 > ViewPort_GetWidth()
         || y2 > ViewPort_GetHeight()) {
-        vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
+        vertex_count = S_Output_ClipVertices(vertex_count, vertices);
     }
 
     if (!vertex_count) {
@@ -1301,7 +1156,7 @@ void S_Output_DrawTexturedTriangle(
 
         vertex_count = 3;
         if (vn1->clip || vn2->clip || vn3->clip) {
-            vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
+            vertex_count = S_Output_ClipVertices(vertex_count, vertices);
         }
     } else {
         if (!phd_VisibleZClip(vn1, vn2, vn3)) {
@@ -1323,7 +1178,7 @@ void S_Output_DrawTexturedTriangle(
         if (!vertex_count) {
             return;
         }
-        vertex_count = S_Output_ClipVertices2(vertex_count, vertices);
+        vertex_count = S_Output_ClipVertices(vertex_count, vertices);
     }
 
     if (!vertex_count) {
