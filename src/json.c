@@ -1,6 +1,7 @@
 #include "json.h"
 
 #include "global/const.h"
+#include "memory.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1665,7 +1666,7 @@ struct json_value_s *json_parse_ex(
     total_size = state.dom_size + state.data_size;
 
     if (json_null == alloc_func_ptr) {
-        allocation = malloc(total_size);
+        allocation = Memory_Alloc(total_size);
     } else {
         allocation = alloc_func_ptr(user_data, total_size);
     }
@@ -2342,7 +2343,7 @@ void *json_write_minified(const struct json_value_s *value, size_t *out_size)
 
     size += 1; /* for the '\0' null terminating character. */
 
-    data = (char *)malloc(size);
+    data = (char *)Memory_Alloc(size);
 
     if (json_null == data) {
         /* malloc failed! */
@@ -2353,7 +2354,7 @@ void *json_write_minified(const struct json_value_s *value, size_t *out_size)
 
     if (json_null == data_end) {
         /* bad chi occurred! */
-        free(data);
+        Memory_Free(data);
         return json_null;
     }
 
@@ -2687,7 +2688,7 @@ void *json_write_pretty(
 
     size += 1; /* for the '\0' null terminating character. */
 
-    data = (char *)malloc(size);
+    data = (char *)Memory_Alloc(size);
 
     if (json_null == data) {
         /* malloc failed! */
@@ -2698,7 +2699,7 @@ void *json_write_pretty(
 
     if (json_null == data_end) {
         /* bad chi occurred! */
-        free(data);
+        Memory_Free(data);
         return json_null;
     }
 
@@ -2763,9 +2764,9 @@ struct json_number_s *json_number_new_int(int number)
         size++;
     }
 
-    char *buf = malloc(size);
+    char *buf = Memory_Alloc(size);
     sprintf(buf, "%d", number);
-    struct json_number_s *elem = malloc(sizeof(struct json_number_s));
+    struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
     elem->number = buf;
     elem->number_size = strlen(buf);
     return elem;
@@ -2774,9 +2775,9 @@ struct json_number_s *json_number_new_int(int number)
 struct json_number_s *json_number_new_double(double number)
 {
     size_t size = 30;
-    char *buf = malloc(size);
+    char *buf = Memory_Alloc(size);
     sprintf(buf, "%f", number);
-    struct json_number_s *elem = malloc(sizeof(struct json_number_s));
+    struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
     elem->number = buf;
     elem->number_size = strlen(buf);
     return elem;
@@ -2785,14 +2786,14 @@ struct json_number_s *json_number_new_double(double number)
 void json_number_free(struct json_number_s *num)
 {
     if (!num->ref_count) {
-        free(num->number);
-        free(num);
+        Memory_Free(num->number);
+        Memory_Free(num);
     }
 }
 
 struct json_string_s *json_string_new(const char *string)
 {
-    struct json_string_s *str = malloc(sizeof(struct json_string_s));
+    struct json_string_s *str = Memory_Alloc(sizeof(struct json_string_s));
     str->string = strdup(string);
     str->string_size = strlen(string);
     return str;
@@ -2801,14 +2802,14 @@ struct json_string_s *json_string_new(const char *string)
 void json_string_free(struct json_string_s *str)
 {
     if (!str->ref_count) {
-        free(str->string);
-        free(str);
+        Memory_Free(str->string);
+        Memory_Free(str);
     }
 }
 
 struct json_array_s *json_array_new()
 {
-    struct json_array_s *arr = malloc(sizeof(struct json_array_s));
+    struct json_array_s *arr = Memory_Alloc(sizeof(struct json_array_s));
     arr->start = NULL;
     arr->length = 0;
     return arr;
@@ -2821,17 +2822,17 @@ void json_array_free(struct json_array_s *arr)
         while (elem) {
             struct json_array_element_s *next = elem->next;
             json_value_free(elem->value);
-            free(elem);
+            Memory_Free(elem);
             elem = next;
         }
-        free(arr);
+        Memory_Free(arr);
     }
 }
 
 void json_array_append(struct json_array_s *arr, struct json_value_s *value)
 {
     struct json_array_element_s *elem =
-        malloc(sizeof(struct json_array_element_s));
+        Memory_Alloc(sizeof(struct json_array_element_s));
     elem->value = value;
     elem->next = NULL;
     if (arr->start) {
@@ -2942,7 +2943,7 @@ struct json_object_s *json_array_get_object(
 
 struct json_object_s *json_object_new()
 {
-    struct json_object_s *obj = malloc(sizeof(struct json_object_s));
+    struct json_object_s *obj = Memory_Alloc(sizeof(struct json_object_s));
     obj->start = NULL;
     obj->length = 0;
     return obj;
@@ -2956,10 +2957,10 @@ void json_object_free(struct json_object_s *obj)
             struct json_object_element_s *next = elem->next;
             json_string_free(elem->name);
             json_value_free(elem->value);
-            free(elem);
+            Memory_Free(elem);
             elem = next;
         }
-        free(obj);
+        Memory_Free(obj);
     }
 }
 
@@ -2967,7 +2968,7 @@ void json_object_append(
     struct json_object_s *obj, const char *key, struct json_value_s *value)
 {
     struct json_object_element_s *elem =
-        malloc(sizeof(struct json_object_element_s));
+        Memory_Alloc(sizeof(struct json_object_element_s));
     elem->name = json_string_new(key);
     elem->value = value;
     elem->next = NULL;
@@ -3086,7 +3087,7 @@ struct json_object_s *json_object_get_object(
 
 struct json_value_s *json_value_from_bool(int b)
 {
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
+    struct json_value_s *value = Memory_Alloc(sizeof(struct json_value_s));
     value->type = b ? json_type_true : json_type_false;
     value->payload = NULL;
     return value;
@@ -3094,7 +3095,7 @@ struct json_value_s *json_value_from_bool(int b)
 
 struct json_value_s *json_value_from_number(struct json_number_s *num)
 {
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
+    struct json_value_s *value = Memory_Alloc(sizeof(struct json_value_s));
     value->type = json_type_number;
     value->payload = num;
     return value;
@@ -3102,7 +3103,7 @@ struct json_value_s *json_value_from_number(struct json_number_s *num)
 
 struct json_value_s *json_value_from_string(struct json_string_s *str)
 {
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
+    struct json_value_s *value = Memory_Alloc(sizeof(struct json_value_s));
     value->type = json_type_string;
     value->payload = str;
     return value;
@@ -3110,7 +3111,7 @@ struct json_value_s *json_value_from_string(struct json_string_s *str)
 
 struct json_value_s *json_value_from_array(struct json_array_s *arr)
 {
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
+    struct json_value_s *value = Memory_Alloc(sizeof(struct json_value_s));
     value->type = json_type_array;
     value->payload = arr;
     return value;
@@ -3118,7 +3119,7 @@ struct json_value_s *json_value_from_array(struct json_array_s *arr)
 
 struct json_value_s *json_value_from_object(struct json_object_s *obj)
 {
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
+    struct json_value_s *value = Memory_Alloc(sizeof(struct json_value_s));
     value->type = json_type_object;
     value->payload = obj;
     return value;
@@ -3146,6 +3147,6 @@ void json_value_free(struct json_value_s *value)
             break;
         }
 
-        free(value);
+        Memory_Free(value);
     }
 }
