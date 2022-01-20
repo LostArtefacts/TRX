@@ -49,6 +49,8 @@ void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetSmoothingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
+void GFX_3D_Renderer_SetDepthTestEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetTexturingEnabled(

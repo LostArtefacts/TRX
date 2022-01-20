@@ -63,6 +63,10 @@
     // Makes the healthbar and airbar use smooth color transitions.
     "enable_smooth_bars": true,
 
+    // Makes inventory and pause screen use fade transitions for
+    // the semitransparent backdrop, similar to PS1.
+    "enable_fade_effects": true,
+
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting
     //   hit, or while having weapons equipped; flash the healthbar if it's already

@@ -48,7 +48,6 @@ int32_t StopGame()
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
 
-    Output_FadeToBlack();
     if (!g_InvChosen) {
         return GF_EXIT_TO_TITLE;
     }
@@ -170,6 +169,7 @@ void LevelStats(int32_t level_num)
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
+    Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
     do {
         if (g_ResetFlag) {
@@ -177,11 +177,22 @@ void LevelStats(int32_t level_num)
         }
         Output_InitialisePolyList();
         Draw_DrawScene(false);
-        Draw_DrawOverlayBackground();
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
     } while (!g_InputDB.select && !g_InputDB.deselect);
+
+    Output_FadeToBlack(false);
+    Text_RemoveAll();
+
+    // finish fading
+    while (Output_FadeIsAnimating()) {
+        Output_InitialisePolyList();
+        Draw_DrawScene(false);
+        Output_DumpScreen();
+    }
+
+    Output_FadeReset();
 
     if (level_num == g_GameFlow.last_level_num) {
         g_GameInfo.bonus_flag = GBF_NGPLUS;
@@ -191,6 +202,5 @@ void LevelStats(int32_t level_num)
     }
 
     g_GameInfo.start[g_CurrentLevel].flags.available = 0;
-    Output_FadeToBlack();
     Screen_ApplyResolution();
 }

@@ -100,6 +100,13 @@ int32_t Display_Inventory(int inv_mode)
 
     CAMERA_INFO old_camera = g_Camera;
 
+    if (g_InvMode == INV_TITLE_MODE) {
+        Output_FadeResetToBlack();
+        Output_FadeToTransparent(true);
+    } else {
+        Output_FadeToSemiBlack(true);
+    }
+
     do {
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
         Input_Update();
@@ -133,20 +140,20 @@ int32_t Display_Inventory(int inv_mode)
 
         if (g_InvMode == INV_TITLE_MODE) {
             Output_CopyPictureToScreen();
+            Output_DrawBackdropScreen();
         } else {
             phd_LookAt(
                 old_camera.pos.x, old_camera.pos.y + old_camera.shift,
                 old_camera.pos.z, old_camera.target.x, old_camera.target.y,
                 old_camera.target.z, 0);
-            Draw_DrawScene(true);
-            Draw_DrawOverlayBackground();
-
-            Output_ClearDepth();
+            Draw_DrawScene(false);
 
             int32_t width = Screen_GetResWidth();
             int32_t height = Screen_GetResHeight();
             ViewPort_Init(width, height);
         }
+
+        Output_SetupAboveWater(false);
 
         PHD_3DPOS viewer;
         Inv_RingGetView(&ring, &viewer);
@@ -249,7 +256,6 @@ int32_t Display_Inventory(int inv_mode)
         Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
-        Output_DrawEmpty();
 
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
@@ -291,6 +297,12 @@ int32_t Display_Inventory(int inv_mode)
                     g_InvMainCurrent = ring.current_object;
                 } else {
                     g_InvOptionCurrent = ring.current_object;
+                }
+
+                if (g_InvMode == INV_TITLE_MODE) {
+                    Output_FadeToBlack(false);
+                } else {
+                    Output_FadeToTransparent(false);
                 }
 
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
@@ -592,6 +604,21 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_EXITING_INVENTORY:
+            if (g_InvMode == INV_TITLE_MODE
+                || (g_InvChosen == O_PASSPORT_OPTION
+                    && (g_InvMode == INV_LOAD_MODE /* f6 menu */
+                        || g_InvMode == INV_DEATH_MODE /* Lara died */
+                        || (g_InvMode == INV_GAME_MODE /* esc menu */
+                            && g_InvExtraData[0]
+                                != 1 /* but not the save page */
+                            )
+                        || g_CurrentLevel == g_GameFlow.gym_level_num /* Gym */
+                        ))) {
+                Output_FadeToBlack(false);
+            } else {
+                Output_FadeToTransparent(false);
+            }
+
             if (!imo.count) {
                 Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
                 Inv_RingMotionRadius(&ring, 0);
@@ -603,7 +630,20 @@ int32_t Display_Inventory(int inv_mode)
         }
     } while (imo.status != RNG_DONE);
 
+    // finish fading
+    while (Output_FadeIsAnimating()) {
+        if (g_InvMode == INV_TITLE_MODE) {
+            Output_CopyPictureToScreen();
+            Output_DrawBackdropScreen();
+        } else {
+            Draw_DrawScene(false);
+        }
+        m_InvNFrames = Output_DumpScreen();
+        g_Camera.number_frames = m_InvNFrames;
+    }
+
     RemoveInventoryText();
+    Output_FadeReset();
 
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
@@ -715,8 +755,6 @@ int32_t Display_Inventory(int inv_mode)
 
 void Construct_Inventory()
 {
-    Output_SetupAboveWater(false);
-
     g_PhdLeft = ViewPort_GetMinX();
     g_PhdTop = ViewPort_GetMinY();
     g_PhdBottom = ViewPort_GetMaxY();

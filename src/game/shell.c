@@ -140,8 +140,6 @@ void Shell_Main()
             }
 
             gf_option = Display_Inventory(INV_TITLE_MODE);
-
-            Output_FadeToBlack();
             Music_Stop();
             break;
 

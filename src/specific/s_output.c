@@ -461,6 +461,16 @@ void S_Output_DisableTextureMode(void)
     GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
 }
 
+void S_Output_EnableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, true);
+}
+
+void S_Output_DisableDepthTest(void)
+{
+    GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
+}
+
 void S_Output_RenderBegin()
 {
     m_IsRenderingOld = m_IsRendering;
@@ -798,51 +808,6 @@ void S_Output_Draw2DQuad(
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
-void S_Output_DrawTranslucentQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2)
-{
-    int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count];
-
-    vertices[0].x = x1;
-    vertices[0].y = y1;
-    vertices[0].z = 1.0f;
-    vertices[0].b = 0.0f;
-    vertices[0].g = 0.0f;
-    vertices[0].r = 0.0f;
-    vertices[0].a = 128.0f;
-
-    vertices[1].x = x2;
-    vertices[1].y = y1;
-    vertices[1].z = 1.0f;
-    vertices[1].b = 0.0f;
-    vertices[1].g = 0.0f;
-    vertices[1].r = 0.0f;
-    vertices[1].a = 128.0f;
-
-    vertices[2].x = x2;
-    vertices[2].y = y2;
-    vertices[2].z = 1.0f;
-    vertices[2].b = 0.0f;
-    vertices[2].g = 0.0f;
-    vertices[2].r = 0.0f;
-    vertices[2].a = 128.0f;
-
-    vertices[3].x = x1;
-    vertices[3].y = y2;
-    vertices[3].z = 1.0f;
-    vertices[3].b = 0.0f;
-    vertices[3].g = 0.0f;
-    vertices[3].r = 0.0f;
-    vertices[3].a = 128.0f;
-
-    S_Output_DisableTextureMode();
-
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
-}
-
 void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2)
@@ -963,12 +928,6 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
     S_Output_DrawTriangleStrip(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
-}
-
-void S_Output_FadeToBlack()
-{
-    S_Output_ClearBackBuffer();
-    S_Output_DumpScreen();
 }
 
 void S_Output_ApplyResolution()

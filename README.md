@@ -250,6 +250,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added support for HD FMVs
 - added fanmade 16:9 menu backgrounds
 - added ability to skip FMVs with the Action key
+- added fade effects
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192

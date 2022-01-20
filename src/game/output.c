@@ -14,10 +14,18 @@
 
 PHD_VECTOR g_LsVectorView = { 0 };
 
+static int m_OverlayCurAlpha = 0;
+static int m_OverlayDstAlpha = 0;
+static int m_BackdropCurAlpha = 0;
+static int m_BackdropDstAlpha = 0;
+
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
+
+static void Output_DrawBlackScreen(uint8_t alpha);
+static void Output_FadeAnimate();
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number);
@@ -395,11 +403,6 @@ RGB888 Output_GetPaletteColor(uint8_t idx)
     return S_Output_GetPaletteColor(idx);
 }
 
-void Output_ClearDepth()
-{
-    S_Output_ClearDepthBuffer();
-}
-
 void Output_ClearScreen()
 {
     S_Output_ClearBackBuffer();
@@ -417,6 +420,8 @@ void Output_InitialisePolyList()
 
 int32_t Output_DumpScreen()
 {
+    Output_DrawOverlayScreen();
+    Output_FadeAnimate();
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
@@ -692,7 +697,8 @@ void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    S_Output_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
+    RGBA8888 color = { 0, 0, 0, 128 };
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(
@@ -839,9 +845,107 @@ void Output_AnimateTextures(int32_t ticks)
     }
 }
 
-void Output_FadeToBlack()
+static void Output_DrawBlackScreen(uint8_t alpha)
 {
-    S_Output_FadeToBlack();
+    if (alpha) {
+        int32_t sx = 0;
+        int32_t sy = 0;
+        int32_t sw = ViewPort_GetMaxX();
+        int32_t sh = ViewPort_GetMaxY();
+
+        RGBA8888 background = { 0, 0, 0, alpha };
+        S_Output_DisableDepthTest();
+        S_Output_ClearDepthBuffer();
+        Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+        S_Output_EnableDepthTest();
+    }
+}
+
+static void Output_FadeAnimate()
+{
+    if (!g_Config.enable_fade_effects) {
+        return;
+    }
+
+    const int delta = 10;
+    if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha += delta;
+    } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha -= delta;
+    } else {
+        m_OverlayCurAlpha = m_OverlayDstAlpha;
+    }
+    if (m_BackdropCurAlpha + delta <= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha += delta;
+    } else if (m_BackdropCurAlpha - delta >= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha -= delta;
+    } else {
+        m_BackdropCurAlpha = m_BackdropDstAlpha;
+    }
+}
+
+void Output_DrawBackdropScreen()
+{
+    Output_DrawBlackScreen(m_BackdropCurAlpha);
+}
+
+void Output_DrawOverlayScreen()
+{
+    Output_DrawBlackScreen(m_OverlayCurAlpha);
+}
+
+void Output_FadeReset()
+{
+    m_BackdropCurAlpha = 0;
+    m_OverlayCurAlpha = 0;
+    m_BackdropDstAlpha = 0;
+    m_OverlayDstAlpha = 0;
+}
+
+void Output_FadeResetToBlack()
+{
+    m_OverlayCurAlpha = 255;
+    m_OverlayDstAlpha = 255;
+}
+
+void Output_FadeToBlack(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_OverlayDstAlpha = 255;
+    } else if (allow_immediate) {
+        m_OverlayCurAlpha = 255;
+    }
+}
+
+void Output_FadeToSemiBlack(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_BackdropDstAlpha = 128;
+        m_OverlayDstAlpha = 0;
+    } else if (allow_immediate) {
+        m_BackdropCurAlpha = 128;
+        m_OverlayCurAlpha = 0;
+    }
+}
+
+void Output_FadeToTransparent(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_BackdropDstAlpha = 0;
+        m_OverlayDstAlpha = 0;
+    } else if (allow_immediate) {
+        m_BackdropCurAlpha = 0;
+        m_OverlayCurAlpha = 0;
+    }
+}
+
+bool Output_FadeIsAnimating()
+{
+    if (!g_Config.enable_fade_effects) {
+        return false;
+    }
+    return m_OverlayCurAlpha != m_OverlayDstAlpha
+        || m_BackdropCurAlpha != m_BackdropDstAlpha;
 }
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b)

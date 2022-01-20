@@ -246,6 +246,18 @@ void GFX_3D_Renderer_SetSmoothingEnabled(
         &renderer->program, renderer->loc_smoothing_enabled, is_enabled);
 }
 
+void GFX_3D_Renderer_SetDepthTestEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled)
+{
+    assert(renderer);
+    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
+    if (is_enabled) {
+        glEnable(GL_DEPTH_TEST);
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
+}
+
 void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled)
 {

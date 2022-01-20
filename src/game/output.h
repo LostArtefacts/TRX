@@ -25,7 +25,15 @@ void Output_SetDrawDistFade(int32_t dist);
 void Output_SetDrawDistMax(int32_t dist);
 void Output_SetWaterColor(const RGBF *color);
 
-void Output_ClearDepth();
+void Output_FadeReset();
+void Output_FadeResetToBlack();
+void Output_FadeToBlack(bool allow_immediate);
+void Output_FadeToSemiBlack(bool allow_immediate);
+void Output_FadeToTransparent(bool allow_immediate);
+bool Output_FadeIsAnimating();
+void Output_DrawBackdropScreen();
+void Output_DrawOverlayScreen();
+
 void Output_ClearScreen();
 void Output_DrawEmpty();
 void Output_InitialisePolyList();
@@ -74,8 +82,6 @@ void Output_DisplayPicture(const char *filename);
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t ticks);
-
-void Output_FadeToBlack();
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 

@@ -97,7 +97,6 @@ static int32_t Control_Pause_Loop()
     while (1) {
         Output_InitialisePolyList();
         Draw_DrawScene(false);
-        Draw_DrawOverlayBackground();
         Control_Pause_DisplayText();
         Text_Draw();
         Output_DumpScreen();
@@ -158,7 +157,9 @@ bool Control_Pause()
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
 
+    Output_FadeToSemiBlack(true);
     int32_t select = Control_Pause_Loop();
+    Output_FadeToTransparent(true);
 
     Music_Unpause();
     RemoveRequester(&m_PauseRequester);
