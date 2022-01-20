@@ -83,7 +83,7 @@ bool DoCinematic(int32_t nframes)
         }
 
         Input_Update();
-        if (g_Input.option) {
+        if (g_InputDB.deselect || g_InputDB.select) {
             return true;
         }
 
