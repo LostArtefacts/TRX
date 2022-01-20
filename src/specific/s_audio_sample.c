@@ -259,10 +259,6 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             if (out_buffer_size > 0) {
                 working_buffer = Memory_Realloc(
                     working_buffer, working_buffer_size + out_buffer_size);
-                if (!working_buffer) {
-                    error_code = AVERROR(ENOMEM);
-                    goto fail;
-                }
                 if (out_buffer) {
                     memcpy(
                         (uint8_t *)working_buffer + working_buffer_size,
@@ -365,7 +361,7 @@ bool S_Audio_SamplesClear()
 
     S_Audio_SampleSoundCloseAll();
 
-    for (int i = 0; i < AUDIO_MAX_ACTIVE_SAMPLES; i++) {
+    for (int i = 0; i < AUDIO_MAX_SAMPLES; i++) {
         Memory_FreePointer(&m_LoadedSamples[i].sample_data);
     }
 
