@@ -180,13 +180,10 @@ void Shell_Wait(int nticks)
 {
     for (int i = 0; i < nticks; i++) {
         Input_Update();
-        if (g_Input.any) {
+        if (g_InputDB.any) {
             break;
         }
         Clock_SyncTicks(1);
-    }
-    while (g_Input.any) {
-        Input_Update();
     }
 }
 

@@ -251,7 +251,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if ((g_Input.option || g_Input.save || g_Input.load
+        if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
             && !g_Lara.death_count) {
             if (g_OverlayFlag > 0) {

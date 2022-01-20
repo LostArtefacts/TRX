@@ -171,18 +171,8 @@ void LevelStats(int32_t level_num)
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
-    // wait till action key release
-    while (g_Input.select || g_Input.deselect) {
-        Input_Update();
-        Output_InitialisePolyList();
-        Output_CopyBufferToScreen();
-        Input_Update();
-        Text_Draw();
-        Output_DumpScreen();
-    }
-
-    // wait till action or escape key press
-    while (!g_Input.select && !g_Input.deselect) {
+    // wait till a skip key is pressed
+    do {
         if (g_ResetFlag) {
             break;
         }
@@ -191,16 +181,7 @@ void LevelStats(int32_t level_num)
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
-    }
-
-    // wait till escape key release
-    while (g_Input.deselect) {
-        Output_InitialisePolyList();
-        Output_CopyBufferToScreen();
-        Input_Update();
-        Text_Draw();
-        Output_DumpScreen();
-    }
+    } while (!g_InputDB.select && !g_InputDB.deselect);
 
     if (level_num == g_GameFlow.last_level_num) {
         g_GameInfo.bonus_flag = GBF_NGPLUS;
