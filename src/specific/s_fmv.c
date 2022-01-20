@@ -2187,11 +2187,6 @@ static void S_FMV_EventLoop(VideoState *is)
                 break;
             }
 
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                is->abort_request = true;
-                break;
-            }
-
             if (event.key.keysym.sym == SDLK_RETURN
                 && event.key.keysym.mod & KMOD_LALT) {
                 S_Shell_ToggleFullscreen();
