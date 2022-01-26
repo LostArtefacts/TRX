@@ -2,6 +2,7 @@
 - added CHANGELOG.md
 - added fade animations
 - fixed certain inputs skipping too many things
+- fixed a memory leak in the audio sampler
 
 
 ## [2.4](https://github.com/rr-/Tomb1Main/compare/2.3...2.4) - 2022-01-19
