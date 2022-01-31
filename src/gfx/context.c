@@ -99,7 +99,7 @@ void GFX_Context_Attach(HWND hwnd)
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
 
-    // VSync defaults to on unless user disabled it
+    // VSync defaults to on unless user disabled it in runtime json
     wglSwapIntervalEXT(1);
 
     GFX_2D_Renderer_Init(&m_Context.renderer_2d);
@@ -121,13 +121,9 @@ void GFX_Context_Detach()
     m_Context.hwnd = NULL;
 }
 
-void GFX_Context_SetVsync()
+void GFX_Context_SetVsync(bool vsync)
 {
-    if (g_Config.rendering.enable_vsync) {
-        wglSwapIntervalEXT(1);
-    } else {
-        wglSwapIntervalEXT(0);
-    }
+    wglSwapIntervalEXT(vsync);
 }
 
 bool GFX_Context_IsFullscreen()

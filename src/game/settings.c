@@ -51,7 +51,7 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
 
     g_Config.rendering.enable_vsync =
         json_object_get_bool(root_obj, "vsync", true);
-    GFX_Context_SetVsync();
+    GFX_Context_SetVsync(g_Config.rendering.enable_vsync);
 
     {
         int32_t resolution_idx = json_object_get_number_int(
