@@ -6,6 +6,7 @@
 #include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
+#include "src/config.h"
 
 #include <string.h>
 
@@ -98,10 +99,8 @@ void GFX_Context_Attach(HWND hwnd)
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
 
-    bool vsync = true;
-    if (vsync) {
-        wglSwapIntervalEXT(1);
-    }
+    // VSync defaults to on unless user disabled it
+    wglSwapIntervalEXT(1);
 
     GFX_2D_Renderer_Init(&m_Context.renderer_2d);
     GFX_3D_Renderer_Init(&m_Context.renderer_3d);
@@ -120,6 +119,15 @@ void GFX_Context_Detach()
     m_Context.hglrc = NULL;
 
     m_Context.hwnd = NULL;
+}
+
+void GFX_Context_SetVsync()
+{
+    if (g_Config.rendering.enable_vsync) {
+        wglSwapIntervalEXT(1);
+    } else {
+        wglSwapIntervalEXT(0);
+    }
 }
 
 bool GFX_Context_IsFullscreen()

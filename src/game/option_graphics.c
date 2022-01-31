@@ -7,6 +7,7 @@
 #include "game/settings.h"
 #include "game/text.h"
 #include "global/vars.h"
+#include "src/gfx/context.h"
 
 #include <stdio.h>
 
@@ -17,13 +18,14 @@
 typedef enum GRAPHICS_TEXT {
     TEXT_PERSPECTIVE = 0,
     TEXT_BILINEAR = 1,
-    TEXT_BRIGHTNESS = 2,
-    TEXT_UI_TEXT_SCALE = 3,
-    TEXT_UI_BAR_SCALE = 4,
-    TEXT_RESOLUTION = 5,
-    TEXT_TITLE = 6,
-    TEXT_TITLE_BORDER = 7,
-    TEXT_NUMBER_OF = 8,
+    TEXT_VSYNC = 2,
+    TEXT_BRIGHTNESS = 3,
+    TEXT_UI_TEXT_SCALE = 4,
+    TEXT_UI_BAR_SCALE = 5,
+    TEXT_RESOLUTION = 6,
+    TEXT_TITLE = 7,
+    TEXT_TITLE_BORDER = 8,
+    TEXT_NUMBER_OF = 9,
     TEXT_OPTION_MIN = TEXT_PERSPECTIVE,
     TEXT_OPTION_MAX = TEXT_RESOLUTION,
 } GRAPHICS_TEXT;
@@ -56,6 +58,13 @@ static void Option_GraphicsInitText()
             [g_Config.rendering.enable_bilinear_filter ? GS_MISC_ON
                                                        : GS_MISC_OFF]);
     m_Text[TEXT_BILINEAR] = Text_Create(0, y, buf);
+    y += ROW_HEIGHT;
+
+    sprintf(
+        buf, g_GameFlow.strings[GS_DETAIL_VSYNC_FMT],
+        g_GameFlow.strings
+            [g_Config.rendering.enable_vsync ? GS_MISC_ON : GS_MISC_OFF]);
+    m_Text[TEXT_VSYNC] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
     sprintf(
@@ -145,6 +154,14 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             }
             break;
 
+        case TEXT_VSYNC:
+            if (!g_Config.rendering.enable_vsync) {
+                g_Config.rendering.enable_vsync = 1;
+                reset = true;
+                GFX_Context_SetVsync();
+            }
+            break;
+
         case TEXT_BRIGHTNESS:
             if (g_Config.brightness < MAX_BRIGHTNESS) {
                 g_Config.brightness += 0.1f;
@@ -187,6 +204,14 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.enable_bilinear_filter) {
                 g_Config.rendering.enable_bilinear_filter = 0;
                 reset = true;
+            }
+            break;
+
+        case TEXT_VSYNC:
+            if (g_Config.rendering.enable_vsync) {
+                g_Config.rendering.enable_vsync = 0;
+                reset = true;
+                GFX_Context_SetVsync();
             }
             break;
 

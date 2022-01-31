@@ -13,6 +13,7 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
+#include "src/gfx/context.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -47,6 +48,10 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
         json_object_get_bool(root_obj, "bilinear", true);
     g_Config.rendering.enable_perspective_filter =
         json_object_get_bool(root_obj, "perspective", true);
+
+    g_Config.rendering.enable_vsync =
+        json_object_get_bool(root_obj, "vsync", true);
+    GFX_Context_SetVsync();
 
     {
         int32_t resolution_idx = json_object_get_number_int(
@@ -130,6 +135,7 @@ bool Settings_Write()
         root_obj, "bilinear", g_Config.rendering.enable_bilinear_filter);
     json_object_append_bool(
         root_obj, "perspective", g_Config.rendering.enable_perspective_filter);
+    json_object_append_bool(root_obj, "vsync", g_Config.rendering.enable_vsync);
     json_object_append_number_int(
         root_obj, "hi_res", Screen_GetPendingResIdx());
     json_object_append_number_int(

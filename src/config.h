@@ -92,6 +92,7 @@ typedef struct {
     struct {
         uint32_t enable_perspective_filter : 1;
         uint32_t enable_bilinear_filter : 1;
+        uint32_t enable_vsync : 1;
         uint32_t enable_fps_counter : 1;
         float anisotropy_filter;
     } rendering;
