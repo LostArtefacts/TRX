@@ -142,21 +142,21 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
             if (!g_Config.rendering.enable_perspective_filter) {
-                g_Config.rendering.enable_perspective_filter = 1;
+                g_Config.rendering.enable_perspective_filter = true;
                 reset = true;
             }
             break;
 
         case TEXT_BILINEAR:
             if (!g_Config.rendering.enable_bilinear_filter) {
-                g_Config.rendering.enable_bilinear_filter = 1;
+                g_Config.rendering.enable_bilinear_filter = true;
                 reset = true;
             }
             break;
 
         case TEXT_VSYNC:
             if (!g_Config.rendering.enable_vsync) {
-                g_Config.rendering.enable_vsync = 1;
+                g_Config.rendering.enable_vsync = true;
                 reset = true;
                 GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
             }
@@ -195,21 +195,21 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
             if (g_Config.rendering.enable_perspective_filter) {
-                g_Config.rendering.enable_perspective_filter = 0;
+                g_Config.rendering.enable_perspective_filter = false;
                 reset = true;
             }
             break;
 
         case TEXT_BILINEAR:
             if (g_Config.rendering.enable_bilinear_filter) {
-                g_Config.rendering.enable_bilinear_filter = 0;
+                g_Config.rendering.enable_bilinear_filter = false;
                 reset = true;
             }
             break;
 
         case TEXT_VSYNC:
             if (g_Config.rendering.enable_vsync) {
-                g_Config.rendering.enable_vsync = 0;
+                g_Config.rendering.enable_vsync = false;
                 reset = true;
                 GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
             }
