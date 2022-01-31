@@ -10,7 +10,7 @@ typedef struct GFX_Context GFX_Context;
 
 void GFX_Context_Attach(HWND hwnd);
 void GFX_Context_Detach();
-void GFX_Context_SetVsync(bool vsync);
+void GFX_Context_SetVSync(bool vsync);
 bool GFX_Context_IsFullscreen();
 void GFX_Context_SetFullscreen(bool fullscreen);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);

@@ -158,7 +158,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (!g_Config.rendering.enable_vsync) {
                 g_Config.rendering.enable_vsync = 1;
                 reset = true;
-                GFX_Context_SetVsync(g_Config.rendering.enable_vsync);
+                GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
             }
             break;
 
@@ -211,7 +211,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.enable_vsync) {
                 g_Config.rendering.enable_vsync = 0;
                 reset = true;
-                GFX_Context_SetVsync(g_Config.rendering.enable_vsync);
+                GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
             }
             break;
 

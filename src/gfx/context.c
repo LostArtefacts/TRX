@@ -121,7 +121,7 @@ void GFX_Context_Detach()
     m_Context.hwnd = NULL;
 }
 
-void GFX_Context_SetVsync(bool vsync)
+void GFX_Context_SetVSync(bool vsync)
 {
     wglSwapIntervalEXT(vsync);
 }
