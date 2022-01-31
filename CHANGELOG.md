@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.4...master)
 - added CHANGELOG.md
 - added fade animations
+- added a vsync option
 - fixed certain inputs skipping too many things
 - fixed a memory leak in the audio sampler
 

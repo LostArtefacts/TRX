@@ -33,6 +33,7 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_DETAIL_LEVEL_LOW, "Low" },
     { GS_DETAIL_PERSPECTIVE_FMT, "Perspective     %s" },
     { GS_DETAIL_BILINEAR_FMT, "Bilinear        %s" },
+    { GS_DETAIL_VSYNC_FMT, "VSync           %s" },
     { GS_DETAIL_BRIGHTNESS_FMT, "Brightness      %.1f" },
     { GS_DETAIL_UI_TEXT_SCALE_FMT, "UI text scale   %.1f" },
     { GS_DETAIL_UI_BAR_SCALE_FMT, "UI bar scale    %.1f" },
