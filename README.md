@@ -291,6 +291,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara pushing blocks through doors
 - fixed game audio not muting when game is minimized
 - fixed Lara switching to pistols when completing a level with other guns
+- fixed detail levels text flashing with any option change
 
 ## Showcase
 
