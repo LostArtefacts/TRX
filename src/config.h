@@ -90,10 +90,10 @@ typedef struct {
     } input;
 
     struct {
-        bool enable_perspective_filter : true;
-        bool enable_bilinear_filter : true;
-        bool enable_vsync : true;
-        bool enable_fps_counter : true;
+        bool enable_perspective_filter;
+        bool enable_bilinear_filter;
+        bool enable_vsync;
+        bool enable_fps_counter;
         float anisotropy_filter;
     } rendering;
 
