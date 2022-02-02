@@ -56,11 +56,15 @@ static void Option_CompassInitText()
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
-    sprintf(buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups);
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups,
+        g_GameFlow.levels[g_CurrentLevel].pickups);
     m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 
-    sprintf(buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills);
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills,
+        g_GameFlow.levels[g_CurrentLevel].kills);
     m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
     y += ROW_HEIGHT;
 

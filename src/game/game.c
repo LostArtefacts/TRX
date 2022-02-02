@@ -157,13 +157,16 @@ void LevelStats(int32_t level_num)
 
     // pickups
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups);
+        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups,
+        g_GameFlow.levels[level_num].pickups);
     txt = Text_Create(0, 10, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
     // kills
-    sprintf(string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills);
+    sprintf(
+        string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills,
+        g_GameFlow.levels[level_num].kills);
     txt = Text_Create(0, -20, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
