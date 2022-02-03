@@ -1,6 +1,7 @@
 #include "game/fmv.h"
 
 #include "filesystem.h"
+#include "global/const.h"
 #include "memory.h"
 #include "specific/s_fmv.h"
 

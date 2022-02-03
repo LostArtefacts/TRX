@@ -25,7 +25,7 @@ static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
 
 static void Output_DrawBlackScreen(uint8_t alpha);
-static void Output_FadeAnimate();
+static void Output_FadeAnimate(int ticks);
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number);
@@ -421,11 +421,12 @@ void Output_InitialisePolyList()
 int32_t Output_DumpScreen()
 {
     Output_DrawOverlayScreen();
-    Output_FadeAnimate();
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
-    return Clock_SyncTicks(TICKS_PER_FRAME);
+    int ticks = Clock_SyncTicks(TICKS_PER_FRAME);
+    Output_FadeAnimate(ticks);
+    return ticks;
 }
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -861,13 +862,13 @@ static void Output_DrawBlackScreen(uint8_t alpha)
     }
 }
 
-static void Output_FadeAnimate()
+static void Output_FadeAnimate(int ticks)
 {
     if (!g_Config.enable_fade_effects) {
         return;
     }
 
-    const int delta = 10;
+    const int delta = 5 * ticks;
     if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
         m_OverlayCurAlpha += delta;
     } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {

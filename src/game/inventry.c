@@ -1,5 +1,6 @@
 #include "game/inv.h"
 
+#include "game/clock.h"
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
@@ -175,6 +176,9 @@ int32_t Display_Inventory(int inv_mode)
     CAMERA_INFO old_camera = g_Camera;
 
     if (g_InvMode == INV_TITLE_MODE) {
+        // reset the clock after delay from loading the title level to reset
+        // the initial spike in the lost frames and have smooth fades
+        Clock_SyncTicks(TICKS_PER_FRAME);
         Output_FadeResetToBlack();
         Output_FadeToTransparent(true);
         while (Output_FadeIsAnimating()) {
