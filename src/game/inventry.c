@@ -39,6 +39,82 @@ static int16_t m_InvNFrames = 2;
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
+static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo);
+
+static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
+{
+    Output_SetupAboveWater(false);
+
+    PHD_3DPOS viewer;
+    Inv_RingGetView(ring, &viewer);
+    phd_GenerateW2V(&viewer);
+    Inv_RingLight(ring);
+
+    phd_PushMatrix();
+    phd_TranslateAbs(ring->ringpos.x, ring->ringpos.y, ring->ringpos.z);
+    phd_RotYXZ(ring->ringpos.y_rot, ring->ringpos.x_rot, ring->ringpos.z_rot);
+
+    PHD_ANGLE angle = 0;
+    for (int i = 0; i < ring->number_of_objects; i++) {
+        INVENTORY_ITEM *inv_item = ring->list[i];
+
+        if (imo->status == RNG_DONE) {
+            g_LsAdder = LOW_LIGHT;
+        } else if (i == ring->current_object) {
+            for (int j = 0; j < m_InvNFrames; j++) {
+                if (ring->rotating) {
+                    g_LsAdder = LOW_LIGHT;
+                    if (inv_item->y_rot < 0) {
+                        inv_item->y_rot += 512;
+                    } else if (inv_item->y_rot > 0) {
+                        inv_item->y_rot -= 512;
+                    }
+                } else if (
+                    imo->status == RNG_SELECTED
+                    || imo->status == RNG_DESELECTING
+                    || imo->status == RNG_SELECTING
+                    || imo->status == RNG_DESELECT
+                    || imo->status == RNG_CLOSING_ITEM) {
+                    g_LsAdder = HIGH_LIGHT;
+                    if (inv_item->y_rot != inv_item->y_rot_sel) {
+                        if (inv_item->y_rot_sel - inv_item->y_rot > 0
+                            && inv_item->y_rot_sel - inv_item->y_rot < 0x8000) {
+                            inv_item->y_rot += 1024;
+                        } else {
+                            inv_item->y_rot -= 1024;
+                        }
+                        inv_item->y_rot &= 0xFC00u;
+                    }
+                } else if (
+                    ring->number_of_objects == 1
+                    || (!g_Input.left && !g_Input.right) || !g_Input.left) {
+                    g_LsAdder = HIGH_LIGHT;
+                    inv_item->y_rot += 256;
+                }
+            }
+        } else {
+            g_LsAdder = LOW_LIGHT;
+            for (int j = 0; j < m_InvNFrames; j++) {
+                if (inv_item->y_rot < 0) {
+                    inv_item->y_rot += 256;
+                } else if (inv_item->y_rot > 0) {
+                    inv_item->y_rot -= 256;
+                }
+            }
+        }
+
+        phd_PushMatrix();
+        phd_RotYXZ(angle, 0, 0);
+        phd_TranslateRel(ring->radius, 0, 0);
+        phd_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
+        DrawInventoryItem(inv_item);
+        angle += ring->angle_adder;
+        phd_PopMatrix();
+    }
+
+    phd_PopMatrix();
+}
+
 int32_t Display_Inventory(int inv_mode)
 {
     RING_INFO ring;
@@ -153,105 +229,26 @@ int32_t Display_Inventory(int inv_mode)
             ViewPort_Init(width, height);
         }
 
-        Output_SetupAboveWater(false);
+        Inventory_Draw(&ring, &imo);
 
-        PHD_3DPOS viewer;
-        Inv_RingGetView(&ring, &viewer);
-        phd_GenerateW2V(&viewer);
-        Inv_RingLight(&ring);
-
-        phd_PushMatrix();
-        phd_TranslateAbs(ring.ringpos.x, ring.ringpos.y, ring.ringpos.z);
-        phd_RotYXZ(ring.ringpos.y_rot, ring.ringpos.x_rot, ring.ringpos.z_rot);
-
-        PHD_ANGLE angle = 0;
-        for (int i = 0; i < ring.number_of_objects; i++) {
-            INVENTORY_ITEM *inv_item = ring.list[i];
-
-            if (i == ring.current_object) {
-                for (int j = 0; j < m_InvNFrames; j++) {
-                    if (ring.rotating) {
-                        g_LsAdder = LOW_LIGHT;
-                        if (inv_item->y_rot) {
-                            if (inv_item->y_rot < 0) {
-                                inv_item->y_rot += 512;
-                            } else {
-                                inv_item->y_rot -= 512;
-                            }
-                        }
-                    } else if (
-                        imo.status == RNG_SELECTED
-                        || imo.status == RNG_DESELECTING
-                        || imo.status == RNG_SELECTING
-                        || imo.status == RNG_DESELECT
-                        || imo.status == RNG_CLOSING_ITEM) {
-                        g_LsAdder = HIGH_LIGHT;
-                        if (inv_item->y_rot != inv_item->y_rot_sel) {
-                            if (inv_item->y_rot_sel - inv_item->y_rot > 0
-                                && inv_item->y_rot_sel - inv_item->y_rot
-                                    < 0x8000) {
-                                inv_item->y_rot += 1024;
-                            } else {
-                                inv_item->y_rot -= 1024;
-                            }
-                            inv_item->y_rot &= 0xFC00u;
-                        }
-                    } else if (
-                        ring.number_of_objects == 1
-                        || (!g_Input.left && !g_Input.right) || !g_Input.left) {
-                        g_LsAdder = HIGH_LIGHT;
-                        inv_item->y_rot += 256;
-                    }
-                }
-
-                if ((imo.status == RNG_OPEN || imo.status == RNG_SELECTING
-                     || imo.status == RNG_SELECTED
-                     || imo.status == RNG_DESELECTING
-                     || imo.status == RNG_DESELECT
-                     || imo.status == RNG_CLOSING_ITEM)
-                    && !ring.rotating && !g_Input.left && !g_Input.right) {
-                    RingActive(inv_item);
-                }
-            } else {
-                g_LsAdder = LOW_LIGHT;
-                for (int j = 0; j < m_InvNFrames; j++) {
-                    if (inv_item->y_rot) {
-                        if (inv_item->y_rot < 0) {
-                            inv_item->y_rot += 256;
-                        } else {
-                            inv_item->y_rot -= 256;
-                        }
-                    }
-                }
+        if (imo.status == RNG_OPEN || imo.status == RNG_SELECTING
+            || imo.status == RNG_SELECTED || imo.status == RNG_DESELECTING
+            || imo.status == RNG_DESELECT || imo.status == RNG_CLOSING_ITEM) {
+            if (!ring.rotating && !g_Input.left && !g_Input.right) {
+                INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
+                RingActive(inv_item);
             }
-
-            if (imo.status == RNG_OPEN || imo.status == RNG_SELECTING
-                || imo.status == RNG_SELECTED || imo.status == RNG_DESELECTING
-                || imo.status == RNG_DESELECT
-                || imo.status == RNG_CLOSING_ITEM) {
-                RingIsOpen(&ring);
-            } else {
-                RingIsNotOpen(&ring);
-            }
-
-            if (!imo.status || imo.status == RNG_CLOSING
-                || imo.status == RNG_MAIN2OPTION
-                || imo.status == RNG_OPTION2MAIN
-                || imo.status == RNG_EXITING_INVENTORY || imo.status == RNG_DONE
-                || ring.rotating) {
-                RingNotActive();
-            }
-
-            phd_PushMatrix();
-            phd_RotYXZ(angle, 0, 0);
-            phd_TranslateRel(ring.radius, 0, 0);
-            phd_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
-            DrawInventoryItem(inv_item);
-            angle += ring.angle_adder;
-            phd_PopMatrix();
+            RingIsOpen(&ring);
+        } else {
+            RingIsNotOpen(&ring);
         }
 
-        phd_PopMatrix();
+        if (!imo.status || imo.status == RNG_CLOSING
+            || imo.status == RNG_MAIN2OPTION || imo.status == RNG_OPTION2MAIN
+            || imo.status == RNG_EXITING_INVENTORY || imo.status == RNG_DONE
+            || ring.rotating) {
+            RingNotActive();
+        }
 
         Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
@@ -638,6 +635,7 @@ int32_t Display_Inventory(int inv_mode)
         } else {
             Draw_DrawScene(false);
         }
+        Inventory_Draw(&ring, &imo);
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
     }
