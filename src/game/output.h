@@ -26,6 +26,7 @@ void Output_SetDrawDistMax(int32_t dist);
 void Output_SetWaterColor(const RGBF *color);
 
 void Output_FadeReset();
+void Output_FadeSetSpeed(double speed);
 void Output_FadeResetToBlack();
 void Output_FadeToBlack(bool allow_immediate);
 void Output_FadeToSemiBlack(bool allow_immediate);

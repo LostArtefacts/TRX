@@ -180,6 +180,8 @@ int32_t Display_Inventory(int inv_mode)
         // the initial spike in the lost frames and have smooth fades
         Clock_SyncTicks(TICKS_PER_FRAME);
         Output_FadeResetToBlack();
+        // make main menu fades faster
+        Output_FadeSetSpeed(2.0);
         Output_FadeToTransparent(true);
         while (Output_FadeIsAnimating()) {
             Output_InitialisePolyList();
@@ -656,6 +658,7 @@ int32_t Display_Inventory(int inv_mode)
 
     RemoveInventoryText();
     Output_FadeReset();
+    Output_FadeSetSpeed(1.0);
 
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();

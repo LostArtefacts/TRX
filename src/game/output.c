@@ -18,6 +18,7 @@ static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
+static double m_FadeSpeed = 1.0;
 
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
@@ -868,7 +869,7 @@ static void Output_FadeAnimate(int ticks)
         return;
     }
 
-    const int delta = 5 * ticks;
+    const int delta = 5 * m_FadeSpeed * ticks;
     if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
         m_OverlayCurAlpha += delta;
     } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
@@ -901,6 +902,11 @@ void Output_FadeReset()
     m_OverlayCurAlpha = 0;
     m_BackdropDstAlpha = 0;
     m_OverlayDstAlpha = 0;
+}
+
+void Output_FadeSetSpeed(double speed)
+{
+    m_FadeSpeed = speed;
 }
 
 void Output_FadeResetToBlack()
