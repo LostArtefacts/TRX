@@ -607,16 +607,16 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         case RNG_EXITING_INVENTORY:
-            if (g_InvMode == INV_TITLE_MODE
-                || (g_InvChosen == O_PASSPORT_OPTION
-                    && (g_InvMode == INV_LOAD_MODE /* f6 menu */
-                        || g_InvMode == INV_DEATH_MODE /* Lara died */
-                        || (g_InvMode == INV_GAME_MODE /* esc menu */
-                            && g_InvExtraData[0]
-                                != 1 /* but not the save page */
-                            )
-                        || g_CurrentLevel == g_GameFlow.gym_level_num /* Gym */
-                        ))) {
+            if (g_InvMode == INV_TITLE_MODE) {
+            } else if (
+                g_InvChosen == O_PASSPORT_OPTION
+                && (g_InvMode == INV_LOAD_MODE /* f6 menu */
+                    || g_InvMode == INV_DEATH_MODE /* Lara died */
+                    || (g_InvMode == INV_GAME_MODE /* esc menu */
+                        && g_InvExtraData[0] != 1 /* but not the save page */
+                        )
+                    || g_CurrentLevel == g_GameFlow.gym_level_num /* Gym */
+                    )) {
                 Output_FadeToBlack(false);
             } else {
                 Output_FadeToTransparent(false);
@@ -634,6 +634,10 @@ int32_t Display_Inventory(int inv_mode)
     } while (imo.status != RNG_DONE);
 
     // finish fading
+    if (g_InvMode == INV_TITLE_MODE) {
+        Output_FadeToBlack(true);
+    }
+
     while (Output_FadeIsAnimating()) {
         if (g_InvMode == INV_TITLE_MODE) {
             Output_CopyPictureToScreen();

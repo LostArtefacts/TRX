@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.4...master)
+- improved fade animations in the title menu (#379)
 - fixed detail levels text flashing with any option change (#380)
 - fixed broken poses at the end of cinematics (#390)
 - fixed libavcodec-related memory leaks (#389)
