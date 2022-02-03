@@ -56,6 +56,7 @@ static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream)
         avio_seek(stream->av.format_ctx->pb, 0, SEEK_SET);
         avformat_seek_file(
             stream->av.format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_FRAME);
+        av_frame_unref(stream->av.frame);
         return S_Audio_StreamSoundDecodeFrame(stream);
     }
 
@@ -69,6 +70,7 @@ static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream)
 
     error_code = avcodec_send_packet(stream->av.codec_ctx, stream->av.packet);
     if (error_code < 0) {
+        av_packet_unref(stream->av.packet);
         LOG_ERROR(
             "Got an error when decoding frame: %s", av_err2str(error_code));
         return false;
@@ -85,10 +87,13 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
         int error_code =
             avcodec_receive_frame(stream->av.codec_ctx, stream->av.frame);
         if (error_code == AVERROR(EAGAIN)) {
+            av_frame_unref(stream->av.frame);
             break;
         }
 
         if (error_code < 0) {
+            av_packet_unref(stream->av.packet);
+            av_frame_unref(stream->av.frame);
             LOG_ERROR(
                 "Got an error when decoding frame: %d, %s", error_code,
                 av_err2str(error_code));
@@ -100,6 +105,7 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
             stream->av.codec_ctx->sample_fmt, 1);
 
         if (error_code == AVERROR(EAGAIN)) {
+            av_frame_unref(stream->av.frame);
             break;
         }
 
@@ -107,6 +113,7 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
             LOG_ERROR(
                 "Got an error when decoding frame: %d, %s", error_code,
                 av_err2str(error_code));
+            av_frame_unref(stream->av.frame);
             break;
         }
 
@@ -115,10 +122,14 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
         if (SDL_AudioStreamPut(
                 stream->sdl.stream, stream->av.frame->data[0], data_size)) {
             LOG_ERROR("Got an error when decoding frame: %s", SDL_GetError());
+            av_frame_unref(stream->av.frame);
             break;
         }
+
+        av_frame_unref(stream->av.frame);
     }
 
+    av_packet_unref(stream->av.packet);
     return true;
 }
 
@@ -192,7 +203,6 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
-    av_new_packet(stream->av.packet, 0);
 
     stream->av.frame = av_frame_alloc();
     if (!stream->av.frame) {

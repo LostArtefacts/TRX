@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.4...master)
-- fixed detail levels text flashing with any option change
-- fixed broken poses at the end of cinematics
+- fixed detail levels text flashing with any option change (#380)
+- fixed broken poses at the end of cinematics (#390)
+- fixed libavcodec-related memory leaks (#389)
 
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
