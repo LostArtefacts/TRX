@@ -2248,7 +2248,6 @@ bool S_FMV_Play(const char *file_path)
         return false;
     }
 
-    GameBuf_Shutdown();
     S_Audio_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
@@ -2280,7 +2279,6 @@ cleanup:
     LOG_DEBUG("Finished playing FMV: %s", file_path);
 
     S_Audio_Init();
-    GameBuf_Init();
 
     S_Output_ApplyResolution();
 

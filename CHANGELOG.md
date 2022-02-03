@@ -1,10 +1,11 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.4...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
 - changed fade animations to be FPS-independent
 - changed fade animations to run faster in the main menu
 - fixed detail levels text flashing with any option change (#380)
 - fixed broken poses at the end of cinematics (#390)
 - fixed libavcodec-related memory leaks (#389)
+- fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
 
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
