@@ -17,8 +17,8 @@
 
 #include <stdio.h>
 
-#define NUM_PICKUP_OBJ 28
-#define NUM_KILLABLE_OBJ 26
+#define NUM_PICKUP_OBJ 24
+#define NUM_KILLABLE_OBJ 27
 
 static int32_t m_MeshCount = 0;
 static int32_t m_MeshPtrCount = 0;
@@ -40,23 +40,24 @@ static int32_t m_OverlapCount = 0;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 
+// TODO: game doesn't add O_SCION_ITEM4 (complete Scion Atlantis) as pickup
 int16_t m_PickupObjs[NUM_PICKUP_OBJ] = {
-    O_COG_1,         O_COG_2,          O_COG_3,        O_PICKUP_ITEM1,
-    O_PICKUP_ITEM2,  O_KEY_ITEM1,      O_KEY_ITEM2,    O_KEY_ITEM3,
-    O_KEY_ITEM4,     O_PUZZLE_ITEM1,   O_PUZZLE_ITEM2, O_PUZZLE_ITEM3,
-    O_PUZZLE_ITEM4,  O_GUN_ITEM,       O_SHOTGUN_ITEM, O_MAGNUM_ITEM,
-    O_UZI_ITEM,      O_GUN_AMMO_ITEM,  O_SG_AMMO_ITEM, O_MAG_AMMO_ITEM,
-    O_UZI_AMMO_ITEM, O_EXPLOSIVE_ITEM, O_MEDI_ITEM,    O_BIGMEDI_ITEM,
-    O_SCION_ITEM,    O_SCION_ITEM2,    O_SCION_ITEM4,  O_LEADBAR_ITEM,
+    O_PICKUP_ITEM1,  O_PICKUP_ITEM2,  O_KEY_ITEM1,      O_KEY_ITEM2,
+    O_KEY_ITEM3,     O_KEY_ITEM4,     O_PUZZLE_ITEM1,   O_PUZZLE_ITEM2,
+    O_PUZZLE_ITEM3,  O_PUZZLE_ITEM4,  O_GUN_ITEM,       O_SHOTGUN_ITEM,
+    O_MAGNUM_ITEM,   O_UZI_ITEM,      O_GUN_AMMO_ITEM,  O_SG_AMMO_ITEM,
+    O_MAG_AMMO_ITEM, O_UZI_AMMO_ITEM, O_EXPLOSIVE_ITEM, O_MEDI_ITEM,
+    O_BIGMEDI_ITEM,  O_SCION_ITEM,    O_SCION_ITEM2,    O_LEADBAR_ITEM,
 };
 
+// TODO: need to check only active mummies
 int16_t m_KillableObjs[NUM_KILLABLE_OBJ] = {
     O_WOLF,       O_BEAR,       O_BAT,          O_CROCODILE,  O_ALLIGATOR,
     O_LION,       O_LIONESS,    O_PUMA,         O_APE,        O_RAT,
     O_VOLE,       O_DINOSAUR,   O_RAPTOR,       O_WARRIOR1,   O_WARRIOR2,
     O_WARRIOR3,   O_CENTAUR,    O_DINO_WARRIOR, O_LARSON,     O_PIERRE,
     O_SKATEBOARD, O_MERCENARY1, O_MERCENARY2,   O_MERCENARY3, O_NATLA,
-    O_ABORTION,
+    O_ABORTION,   O_SCION_ITEM3
 };
 
 static bool Level_LoadRooms(MYFILE *fp);
