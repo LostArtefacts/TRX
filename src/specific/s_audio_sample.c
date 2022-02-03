@@ -84,6 +84,7 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         return false;
     }
 
+    bool ret = false;
     AUDIO_SAMPLE *sample = &m_LoadedSamples[sample_id];
 
     size_t working_buffer_size = 0;
@@ -126,7 +127,7 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     av.read_buffer = av_malloc(av.read_buffer_size);
     if (!av.read_buffer) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     AUDIO_AV_BUFFER av_buf = {
@@ -145,12 +146,12 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     error_code =
         avformat_open_input(&av.format_ctx, "dummy_filename", NULL, NULL);
     if (error_code != 0) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avformat_find_stream_info(av.format_ctx, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     av.stream = NULL;
@@ -163,30 +164,30 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     }
     if (!av.stream) {
         error_code = AVERROR_STREAM_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     av.codec = avcodec_find_decoder(av.stream->codecpar->codec_id);
     if (!av.codec) {
         error_code = AVERROR_DEMUXER_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     av.codec_ctx = avcodec_alloc_context3(av.codec);
     if (!av.codec_ctx) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     error_code =
         avcodec_parameters_to_context(av.codec_ctx, av.stream->codecpar);
     if (error_code) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_open2(av.codec_ctx, av.codec, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     av.packet = av_packet_alloc();
@@ -195,22 +196,23 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     av.frame = av_frame_alloc();
     if (!av.frame) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     while (1) {
         error_code = av_read_frame(av.format_ctx, av.packet);
         if (error_code == AVERROR_EOF) {
+            error_code = 0;
             break;
         }
 
         if (error_code < 0) {
-            goto fail;
+            goto cleanup;
         }
 
         error_code = avcodec_send_packet(av.codec_ctx, av.packet);
         if (error_code < 0) {
-            goto fail;
+            goto cleanup;
         }
 
         if (!swr.ctx) {
@@ -225,12 +227,12 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
                 swr.src_channels, swr.src_format, swr.src_sample_rate, 0, 0);
             if (!swr.ctx) {
                 error_code = AVERROR(ENOMEM);
-                goto fail;
+                goto cleanup;
             }
 
             error_code = swr_init(swr.ctx);
             if (error_code != 0) {
-                goto fail;
+                goto cleanup;
             }
         }
 
@@ -241,7 +243,7 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             }
 
             if (error_code < 0) {
-                goto fail;
+                goto cleanup;
             }
 
             uint8_t *out_buffer = NULL;
@@ -276,12 +278,14 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     sample->channels = swr.src_channels;
     sample->sample_data = working_buffer;
 
-    return true;
+    ret = true;
 
-fail:
-    LOG_ERROR(
-        "Error while opening sample ID %d: %s", sample_id,
-        av_err2str(error_code));
+cleanup:
+    if (error_code > 0) {
+        LOG_ERROR(
+            "Error while opening sample ID %d: %s", sample_id,
+            av_err2str(error_code));
+    }
 
     if (av.codec_ctx) {
         avcodec_close(av.codec_ctx);
@@ -306,11 +310,13 @@ fail:
 
     av.codec = NULL;
 
-    sample->sample_data = NULL;
-    sample->num_samples = 0;
-    sample->channels = 0;
+    if (!ret) {
+        sample->sample_data = NULL;
+        sample->num_samples = 0;
+        sample->channels = 0;
 
-    Memory_FreePointer(&working_buffer);
+        Memory_FreePointer(&working_buffer);
+    }
 
     if (av.read_buffer) {
         av_free(av.read_buffer);
@@ -327,7 +333,7 @@ fail:
         swr.ctx = NULL;
     }
 
-    return false;
+    return ret;
 }
 
 void S_Audio_SampleSoundInit()

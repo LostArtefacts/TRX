@@ -130,6 +130,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
         return false;
     }
 
+    bool ret = false;
     SDL_LockAudioDevice(g_AudioDeviceID);
 
     int error_code;
@@ -141,12 +142,12 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     error_code =
         avformat_open_input(&stream->av.format_ctx, full_path, NULL, NULL);
     if (error_code != 0) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avformat_find_stream_info(stream->av.format_ctx, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     stream->av.stream = NULL;
@@ -159,44 +160,44 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     }
     if (!stream->av.stream) {
         error_code = AVERROR_STREAM_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     stream->av.codec =
         avcodec_find_decoder(stream->av.stream->codecpar->codec_id);
     if (!stream->av.codec) {
         error_code = AVERROR_DEMUXER_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     stream->av.codec_ctx = avcodec_alloc_context3(stream->av.codec);
     if (!stream->av.codec_ctx) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_parameters_to_context(
         stream->av.codec_ctx, stream->av.stream->codecpar);
     if (error_code) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_open2(stream->av.codec_ctx, stream->av.codec, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     stream->av.packet = av_packet_alloc();
     if (!stream->av.packet) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
     av_new_packet(stream->av.packet, 0);
 
     stream->av.frame = av_frame_alloc();
     if (!stream->av.frame) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     S_Audio_StreamSoundDecodeFrame(stream);
@@ -206,7 +207,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     if (sdl_format < 0) {
         LOG_ERROR(
             "Unknown sample format: %d", stream->av.codec_ctx->sample_fmt);
-        goto fail;
+        goto cleanup;
     }
 
     int32_t sdl_sample_rate = stream->av.codec_ctx->sample_rate;
@@ -224,23 +225,26 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
         sdl_channels, AUDIO_WORKING_RATE);
     if (!stream->sdl.stream) {
         LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
-        goto fail;
+        goto cleanup;
     }
 
+    ret = true;
     S_Audio_StreamSoundEnqueueFrame(stream);
+
+cleanup:
+    if (error_code) {
+        LOG_ERROR(
+            "Error while opening audio %s: %s", file_path,
+            av_err2str(error_code));
+    }
+
+    if (!ret) {
+        S_Audio_StreamSoundClose(sound_id);
+    }
+
     SDL_UnlockAudioDevice(g_AudioDeviceID);
     Memory_FreePointer(&full_path);
-
-    return true;
-
-fail:
-    LOG_ERROR(
-        "Error while opening audio %s: %s", file_path, av_err2str(error_code));
-
-    S_Audio_StreamSoundClose(sound_id);
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
-    Memory_FreePointer(&full_path);
-    return false;
+    return ret;
 }
 
 void S_Audio_StreamSoundInit()
