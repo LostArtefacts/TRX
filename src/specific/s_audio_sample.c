@@ -78,6 +78,38 @@ static int S_Audio_ReadAVBuffer(void *opaque, uint8_t *dst, int dst_size)
     return read;
 }
 
+static int64_t S_Audio_SeekAVBuffer(void *opaque, int64_t offset, int whence)
+{
+    AUDIO_AV_BUFFER *src = opaque;
+    if (whence & AVSEEK_SIZE) {
+        return src->size;
+    }
+    switch (whence) {
+    case SEEK_SET:
+        if (src->size - offset < 0) {
+            return AVERROR_EOF;
+        }
+        src->ptr = src->data + offset;
+        src->remaining = src->size - offset;
+        break;
+    case SEEK_CUR:
+        if (src->remaining - offset < 0) {
+            return AVERROR_EOF;
+        }
+        src->ptr += offset;
+        src->remaining -= offset;
+        break;
+    case SEEK_END:
+        if (src->size + offset < 0) {
+            return AVERROR_EOF;
+        }
+        src->ptr = src->data - offset;
+        src->remaining = src->size + offset;
+        break;
+    }
+    return src->ptr - src->data;
+}
+
 static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 {
     if (!g_AudioDeviceID || sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
@@ -92,7 +124,6 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 
     struct {
         size_t read_buffer_size;
-        unsigned char *read_buffer;
         AVIOContext *avio_context;
         AVStream *stream;
         AVFormatContext *format_ctx;
@@ -102,7 +133,6 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         AVFrame *frame;
     } av = {
         .read_buffer_size = 8192,
-        .read_buffer = NULL,
         .avio_context = NULL,
         .stream = NULL,
         .format_ctx = NULL,
@@ -124,8 +154,8 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
 
     int error_code;
 
-    av.read_buffer = av_malloc(av.read_buffer_size);
-    if (!av.read_buffer) {
+    unsigned char *read_buffer = av_malloc(av.read_buffer_size);
+    if (!read_buffer) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
@@ -138,8 +168,8 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     };
 
     av.avio_context = avio_alloc_context(
-        av.read_buffer, av.read_buffer_size, 0, &av_buf, S_Audio_ReadAVBuffer,
-        NULL, NULL);
+        read_buffer, av.read_buffer_size, 0, &av_buf, S_Audio_ReadAVBuffer,
+        NULL, S_Audio_SeekAVBuffer);
 
     av.format_ctx = avformat_alloc_context();
     av.format_ctx->pb = av.avio_context;
@@ -191,7 +221,10 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     }
 
     av.packet = av_packet_alloc();
-    av_new_packet(av.packet, 0);
+    if (!av.packet) {
+        error_code = AVERROR(ENOMEM);
+        goto cleanup;
+    }
 
     av.frame = av_frame_alloc();
     if (!av.frame) {
@@ -202,16 +235,19 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
     while (1) {
         error_code = av_read_frame(av.format_ctx, av.packet);
         if (error_code == AVERROR_EOF) {
+            av_packet_unref(av.packet);
             error_code = 0;
             break;
         }
 
         if (error_code < 0) {
+            av_packet_unref(av.packet);
             goto cleanup;
         }
 
         error_code = avcodec_send_packet(av.codec_ctx, av.packet);
         if (error_code < 0) {
+            av_packet_unref(av.packet);
             goto cleanup;
         }
 
@@ -226,12 +262,14 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
                 swr.ctx, swr.dst_channels, swr.dst_format, swr.dst_sample_rate,
                 swr.src_channels, swr.src_format, swr.src_sample_rate, 0, 0);
             if (!swr.ctx) {
+                av_packet_unref(av.packet);
                 error_code = AVERROR(ENOMEM);
                 goto cleanup;
             }
 
             error_code = swr_init(swr.ctx);
             if (error_code != 0) {
+                av_packet_unref(av.packet);
                 goto cleanup;
             }
         }
@@ -239,10 +277,13 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         while (1) {
             error_code = avcodec_receive_frame(av.codec_ctx, av.frame);
             if (error_code == AVERROR(EAGAIN)) {
+                av_frame_unref(av.frame);
                 break;
             }
 
             if (error_code < 0) {
+                av_packet_unref(av.packet);
+                av_frame_unref(av.frame);
                 goto cleanup;
             }
 
@@ -270,7 +311,10 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             }
 
             av_freep(&out_buffer);
+            av_frame_unref(av.frame);
         }
+
+        av_packet_unref(av.packet);
     }
 
     sample->num_samples =
@@ -287,25 +331,16 @@ cleanup:
             av_err2str(error_code));
     }
 
-    if (av.codec_ctx) {
-        avcodec_close(av.codec_ctx);
-        av_free(av.codec_ctx);
-        av.codec_ctx = NULL;
-    }
-
-    if (av.format_ctx) {
-        avformat_close_input(&av.format_ctx);
-        av.format_ctx = NULL;
-    }
-
-    if (av.packet) {
-        av_packet_free(&av.packet);
-        av.packet = NULL;
+    if (swr.ctx) {
+        swr_free(&swr.ctx);
     }
 
     if (av.frame) {
         av_frame_free(&av.frame);
-        av.frame = NULL;
+    }
+
+    if (av.packet) {
+        av_packet_free(&av.packet);
     }
 
     av.codec = NULL;
@@ -318,19 +353,18 @@ cleanup:
         Memory_FreePointer(&working_buffer);
     }
 
-    if (av.read_buffer) {
-        av_free(av.read_buffer);
-        av.read_buffer = NULL;
+    if (av.codec_ctx) {
+        avcodec_close(av.codec_ctx);
+        av_freep(&av.codec_ctx);
+    }
+
+    if (av.format_ctx) {
+        avformat_close_input(&av.format_ctx);
     }
 
     if (av.avio_context) {
-        av_free(av.avio_context);
-        av.avio_context = NULL;
-    }
-
-    if (swr.ctx) {
-        swr_free(&swr.ctx);
-        swr.ctx = NULL;
+        av_freep(&av.avio_context->buffer);
+        avio_context_free(&av.avio_context);
     }
 
     return ret;
