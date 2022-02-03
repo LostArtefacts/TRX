@@ -4,10 +4,11 @@
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
 - added CHANGELOG.md
-- added fade animations
-- added a vsync option
-- fixed certain inputs skipping too many things
-- fixed a memory leak in the audio sampler
+- added ability to skip cinematics with the Action key
+- added fade animations (#363)
+- added a vsync option (#364)
+- fixed certain inputs skipping too many things (#359)
+- fixed a memory leak in the audio sampler (#369)
 
 
 ## [2.4](https://github.com/rr-/Tomb1Main/compare/2.3...2.4) - 2022-01-19
