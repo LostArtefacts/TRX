@@ -2794,7 +2794,7 @@ void json_number_free(struct json_number_s *num)
 struct json_string_s *json_string_new(const char *string)
 {
     struct json_string_s *str = Memory_Alloc(sizeof(struct json_string_s));
-    str->string = strdup(string);
+    str->string = Memory_Dup(string);
     str->string_size = strlen(string);
     return str;
 }
