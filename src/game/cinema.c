@@ -73,7 +73,7 @@ bool DoCinematic(int32_t nframes)
 {
     m_FrameCount += m_CinematicAnimationRate * nframes;
     while (m_FrameCount >= 0) {
-        if (g_CineFrame >= g_NumCineFrames) {
+        if (g_CineFrame >= g_NumCineFrames - 1) {
             return true;
         }
 
