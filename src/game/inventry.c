@@ -170,8 +170,6 @@ int32_t Display_Inventory(int inv_mode)
         break;
     }
 
-    Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
-
     m_InvNFrames = 2;
 
     CAMERA_INFO old_camera = g_Camera;
@@ -179,9 +177,17 @@ int32_t Display_Inventory(int inv_mode)
     if (g_InvMode == INV_TITLE_MODE) {
         Output_FadeResetToBlack();
         Output_FadeToTransparent(true);
+        while (Output_FadeIsAnimating()) {
+            Output_InitialisePolyList();
+            Output_CopyPictureToScreen();
+            Output_DrawBackdropScreen();
+            Output_DumpScreen();
+        }
     } else {
         Output_FadeToSemiBlack(true);
     }
+
+    Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
     do {
         Inv_RingCalcAdders(&ring, ROTATE_DURATION);
