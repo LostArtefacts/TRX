@@ -43,13 +43,18 @@ static int32_t m_SpriteCount = 0;
 static int32_t m_OverlapCount = 0;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
+static FLOOR_INFO **m_FloorArray;
 
-int32_t m_PierreDrops = 0;
-int32_t m_PierreKills = 0;
-int16_t m_PierreIdxs[TT_SIZE] = { 0 };
+typedef struct STAT_INFO {
+    int32_t drops;
+    int32_t kills;
+    int16_t cur_idx;
+    int16_t idxs[TT_SIZE];
+} STAT_INFO;
 
-int32_t m_MummyKills = 0;
-int16_t m_MummyIdxs[TT_SIZE] = { 0 };
+static STAT_INFO m_Pierre = { 0 };
+static STAT_INFO m_Mummy = { 0 };
+static STAT_INFO m_Pod = { 0 };
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
@@ -62,13 +67,15 @@ int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            NO_ITEM };
 
 int16_t m_KillableObjs[] = {
-    O_WOLF,        O_BEAR,     O_BAT,          O_CROCODILE, O_ALLIGATOR,
-    O_LION,        O_LIONESS,  O_PUMA,         O_APE,       O_RAT,
-    O_VOLE,        O_DINOSAUR, O_RAPTOR,       O_WARRIOR1,  O_WARRIOR2,
-    O_WARRIOR3,    O_CENTAUR,  O_DINO_WARRIOR, O_LARSON,    O_SKATEBOARD,
-    O_SKATEKID,    O_COWBOY,   O_BALDY,        O_NATLA,     O_ABORTION,
-    O_SCION_ITEM3, NO_ITEM
+    O_WOLF,         O_BEAR,     O_BAT,        O_CROCODILE,   O_ALLIGATOR,
+    O_LION,         O_LIONESS,  O_PUMA,       O_APE,         O_RAT,
+    O_VOLE,         O_DINOSAUR, O_RAPTOR,     O_WARRIOR1,    O_CENTAUR,
+    O_DINO_WARRIOR, O_LARSON,   O_SKATEBOARD, O_SKATEKID,    O_COWBOY,
+    O_BALDY,        O_NATLA,    O_ABORTION,   O_SCION_ITEM3, NO_ITEM
 };
+
+int16_t m_KillableMutants[] = { O_WARRIOR1, O_WARRIOR2, O_WARRIOR3,
+                                O_CENTAUR,  O_ABORTION, NO_ITEM };
 
 static bool Level_LoadRooms(MYFILE *fp);
 static bool Level_LoadObjects(MYFILE *fp);
@@ -85,7 +92,8 @@ static bool Level_LoadDemo(MYFILE *fp);
 static bool Level_LoadSamples(MYFILE *fp);
 static bool Level_LoadTexturePages(MYFILE *fp);
 static void Level_CalculateStats();
-static void Level_CheckObjTriggers();
+static bool Level_FindElement(int16_t elem, int16_t array[], int16_t size);
+static void Level_CalculateTriggers();
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num);
 
@@ -185,6 +193,10 @@ static bool Level_LoadRooms(MYFILE *fp)
     File_Read(&g_RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", g_RoomCount);
 
+    // Copy for stats info
+    m_FloorArray =
+        GameBuf_Alloc(sizeof(FLOOR_INFO *) * g_RoomCount, GBUF_ROOM_FLOOR);
+
     g_RoomInfo =
         GameBuf_Alloc(sizeof(ROOM_INFO) * g_RoomCount, GBUF_ROOM_INFOS);
     int i = 0;
@@ -266,6 +278,13 @@ static bool Level_LoadRooms(MYFILE *fp)
         current_room_info->right = 0;
         current_room_info->item_number = -1;
         current_room_info->fx_number = -1;
+
+        // Save copy of floor info for stats calculation
+        m_FloorArray[i] =
+            GameBuf_Alloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
+        memcpy(
+            m_FloorArray[i], current_room_info->floor,
+            sizeof(FLOOR_INFO) * count4);
     }
 
     File_Read(&m_FloorDataSize, sizeof(uint32_t), 1, fp);
@@ -711,6 +730,7 @@ bool Level_Load(int level_num)
     Level_CalculateStats();
     g_GameFlow.levels[level_num].pickups = m_LevelPickups;
     g_GameFlow.levels[level_num].kills = m_LevelKillables;
+    Memory_FreePointer(&m_FloorArray);
 
     return ret;
 }
@@ -719,8 +739,9 @@ static void Level_CalculateStats()
 {
     m_LevelPickups = 0;
     m_LevelKillables = 0;
-    memset(m_PierreIdxs, 0, sizeof(m_PierreIdxs));
-    memset(m_MummyIdxs, 0, sizeof(m_MummyIdxs));
+    memset(&m_Pierre, 0, sizeof(m_Pierre));
+    memset(&m_Mummy, 0, sizeof(m_Mummy));
+    memset(&m_Pod, 0, sizeof(m_Pod));
 
     if (g_LevelItemCount) {
         if (g_LevelItemCount > MAX_ITEMS) {
@@ -759,14 +780,25 @@ static void Level_CalculateStats()
             // Calculate number of killable objects in a level
             for (int j = 0; m_KillableObjs[j] != NO_ITEM; j++) {
                 if (item->object_number == m_KillableObjs[j]) {
+                    LOG_DEBUG("Killable: %d", i);
                     m_LevelKillables++;
+                }
+            }
+
+            // Mutants
+            for (int j = 0; m_KillableMutants[j] != NO_ITEM; j++) {
+                if (item->object_number == m_KillableMutants[j]
+                    && !Level_FindElement(i, m_Pod.idxs, TT_SIZE)) {
+                    LOG_DEBUG("Killable mutant: %d", i);
+                    m_LevelKillables++;
+                    m_Pod.idxs[m_Pod.cur_idx++] = i;
                 }
             }
         }
     }
 
     // Check triggers for special pickups / kills
-    Level_CheckObjTriggers();
+    Level_CalculateTriggers();
 }
 
 static bool Level_FindElement(int16_t elem, int16_t array[], int16_t size)
@@ -779,11 +811,8 @@ static bool Level_FindElement(int16_t elem, int16_t array[], int16_t size)
     return false;
 }
 
-static void Level_CheckObjTriggers()
+static void Level_CalculateTriggers()
 {
-    int16_t pierre_idx = 0;
-    int16_t mummy_idx = 0;
-
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
         for (int x_floor = 0; x_floor < r->x_size; x_floor++) {
@@ -795,7 +824,9 @@ static void Level_CheckObjTriggers()
                     }
                 }
 
-                FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
+                FLOOR_INFO *floor =
+                    &m_FloorArray[i][x_floor + y_floor * r->x_size];
+
                 if (!floor->index) {
                     continue;
                 }
@@ -804,6 +835,7 @@ static void Level_CheckObjTriggers()
                 int16_t type;
                 int16_t trigger;
                 int16_t trig_flags;
+                int16_t trig_type;
                 do {
                     type = *data++;
 
@@ -820,8 +852,11 @@ static void Level_CheckObjTriggers()
                     case FT_TRIGGER:
                         trig_flags = *data;
                         data++;
+                        trig_type = (type >> 8) & 0x3F;
+                        LOG_DEBUG("    trig_type: %d", trig_type);
                         do {
                             trigger = *data++;
+                            LOG_DEBUG("    idx: %d", trigger & VALUE_BITS);
                             if (TRIG_BITS(trigger) != TO_OBJECT) {
                                 if (TRIG_BITS(trigger) == TO_CAMERA) {
                                     trigger = *data++;
@@ -830,29 +865,38 @@ static void Level_CheckObjTriggers()
                                 int16_t idx = trigger & VALUE_BITS;
                                 ITEM_INFO *item = &g_Items[idx];
 
-                                LOG_DEBUG("idx: %d", idx);
                                 LOG_DEBUG(
-                                    "  trig_flags: %d",
+                                    "    trig_flags: %d",
                                     trig_flags & IF_ONESHOT);
 
                                 // Add Pierre pickup and kills if oneshot
                                 if (item->object_number == O_PIERRE
                                     && trig_flags & IF_ONESHOT
                                     && !Level_FindElement(
-                                        idx, m_PierreIdxs, TT_SIZE)) {
-                                    LOG_DEBUG("  Add pierre: %d", idx);
+                                        idx, m_Pierre.idxs, TT_SIZE)) {
+                                    LOG_DEBUG("    Add pierre: %d", idx);
                                     m_LevelPickups += PIERRE_ITEMS;
                                     m_LevelKillables += 1;
-                                    m_PierreIdxs[pierre_idx++] = idx;
+                                    m_Pierre.idxs[m_Pierre.cur_idx++] = idx;
                                 }
 
-                                // Check for activated mummies
+                                // Check for mummy triggers
                                 if (item->object_number == O_MUMMY
                                     && !Level_FindElement(
-                                        idx, m_MummyIdxs, TT_SIZE)) {
-                                    LOG_DEBUG("  Add Mummy: %d", idx);
+                                        idx, m_Mummy.idxs, TT_SIZE)) {
+                                    LOG_DEBUG("    Add Mummy: %d", idx);
                                     m_LevelKillables += 1;
-                                    m_MummyIdxs[mummy_idx++] = idx;
+                                    m_Mummy.idxs[m_Mummy.cur_idx++] = idx;
+                                }
+
+                                // Check for mutant triggers
+                                if ((item->object_number == O_PODS
+                                     || item->object_number == O_BIG_POD)
+                                    && !Level_FindElement(
+                                        idx, m_Pod.idxs, TT_SIZE)) {
+                                    LOG_DEBUG("    Add Pod Mutant: %d", idx);
+                                    m_LevelKillables += 1;
+                                    m_Pod.idxs[m_Pod.cur_idx++] = idx;
                                 }
                             }
                         } while (!(trigger & END_BIT));
