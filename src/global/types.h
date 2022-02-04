@@ -55,9 +55,9 @@ typedef enum GAME_OBJECT_ID {
     O_LARSON = 27,
     O_PIERRE = 28,
     O_SKATEBOARD = 29,
-    O_MERCENARY1 = 30,
-    O_MERCENARY2 = 31,
-    O_MERCENARY3 = 32,
+    O_SKATEKID = 30,
+    O_COWBOY = 31,
+    O_BALDY = 32,
     O_NATLA = 33,
     O_ABORTION = 34, // a.k.a. Adam, Torso or Evil Natla
     O_FALLING_BLOCK = 35,
