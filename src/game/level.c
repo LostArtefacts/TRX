@@ -744,16 +744,16 @@ static void Level_CalculateStats()
             // Calculate number of pickups in a level
             for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
                 if (item->object_number == m_PickupObjs[j]) {
-                    if (item->object_number == O_SKATEKID) {
-                        m_LevelPickups += SKATEKID_ITEMS;
-                    } else if (item->object_number == O_COWBOY) {
-                        m_LevelPickups += COWBOY_ITEMS;
-                    } else if (item->object_number == O_BALDY) {
-                        m_LevelPickups += BALDY_ITEMS;
-                    } else {
-                        m_LevelPickups++;
-                    }
+                    m_LevelPickups++;
                 }
+            }
+            // Spawn pickups on death
+            if (item->object_number == O_SKATEKID) {
+                m_LevelPickups += SKATEKID_ITEMS;
+            } else if (item->object_number == O_COWBOY) {
+                m_LevelPickups += COWBOY_ITEMS;
+            } else if (item->object_number == O_BALDY) {
+                m_LevelPickups += BALDY_ITEMS;
             }
 
             // Calculate number of killable objects in a level
@@ -786,88 +786,79 @@ static void Level_CheckObjTriggers()
 
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
-        FLOOR_INFO *floor = &r->floor[0];
-        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
-            LOG_DEBUG("room i: %d", i);
-            int k = floor->index;
-            if (!k) {
-                continue;
-            }
+        for (int x_floor = 0; x_floor < r->x_size; x_floor++) {
+            for (int y_floor = 0; y_floor < r->y_size; y_floor++) {
 
-            while (1) {
-                uint16_t floor = g_FloorData[k++];
-
-                switch (floor & DATA_TYPE) {
-                case FT_DOOR:
-                case FT_ROOF:
-                case FT_TILT:
-                    k++;
-                    break;
-
-                case FT_LAVA:
-                    break;
-
-                case FT_TRIGGER: {
-                    uint16_t trig_type = (floor & 0x3F00) >> 8;
-                    uint16_t trigger_data = g_FloorData[k++];
-
-                    if (trig_type != TT_TRIGGER) {
-                        k++;
+                if (x_floor == 0 || x_floor == r->x_size - 1) {
+                    if (y_floor == 0 || y_floor == r->y_size - 1) {
+                        continue;
                     }
+                }
 
-                    while (1) {
-                        int16_t command = g_FloorData[k++];
-                        int16_t item_idx = command & VALUE_BITS;
-                        if (trig_type == TT_TRIGGER) {
-                            ITEM_INFO *item = &g_Items[item_idx];
-                            OBJECT_INFO *object =
-                                &g_Objects[item->object_number];
-                            LOG_DEBUG(
-                                "item->object_number: %d", item->object_number);
-                            LOG_DEBUG("  item_idx: %d", item_idx);
-                            LOG_DEBUG(
-                                "  trigger_data: %d",
-                                trigger_data & IF_ONESHOT);
-                            LOG_DEBUG(
-                                "  Level_FindElement: %d",
-                                Level_FindElement(
-                                    item_idx, m_PierreIdxs, TT_SIZE));
+                FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
+                if (!floor->index) {
+                    continue;
+                }
 
-                            // Add Pierre pickup and kills if oneshot trigger
-                            if (item->object_number == O_PIERRE
-                                && trigger_data & IF_ONESHOT
-                                && !Level_FindElement(
-                                    item_idx, m_PierreIdxs, TT_SIZE)) {
-                                LOG_DEBUG("  Add Pierre #%d", item_idx);
-                                m_LevelPickups += PIERRE_ITEMS;
-                                m_LevelKillables += 1;
-                                m_PierreIdxs[pierre_idx++] = item_idx;
+                int16_t *data = &g_FloorData[floor->index];
+                int16_t type;
+                int16_t trigger;
+                int16_t trig_flags;
+                do {
+                    type = *data++;
+
+                    switch (type & DATA_TYPE) {
+                    case FT_TILT:
+                    case FT_ROOF:
+                    case FT_DOOR:
+                        data++;
+                        break;
+
+                    case FT_LAVA:
+                        break;
+
+                    case FT_TRIGGER:
+                        trig_flags = *data;
+                        data++;
+                        do {
+                            trigger = *data++;
+                            if (TRIG_BITS(trigger) != TO_OBJECT) {
+                                if (TRIG_BITS(trigger) == TO_CAMERA) {
+                                    trigger = *data++;
+                                }
+                            } else {
+                                int16_t idx = trigger & VALUE_BITS;
+                                ITEM_INFO *item = &g_Items[idx];
+
+                                LOG_DEBUG("idx: %d", idx);
+                                LOG_DEBUG(
+                                    "  trig_flags: %d",
+                                    trig_flags & IF_ONESHOT);
+
+                                // Add Pierre pickup and kills if oneshot
+                                if (item->object_number == O_PIERRE
+                                    && trig_flags & IF_ONESHOT
+                                    && !Level_FindElement(
+                                        idx, m_PierreIdxs, TT_SIZE)) {
+                                    LOG_DEBUG("  Add pierre: %d", idx);
+                                    m_LevelPickups += PIERRE_ITEMS;
+                                    m_LevelKillables += 1;
+                                    m_PierreIdxs[pierre_idx++] = idx;
+                                }
+
+                                // Check for activated mummies
+                                if (item->object_number == O_MUMMY
+                                    && !Level_FindElement(
+                                        idx, m_MummyIdxs, TT_SIZE)) {
+                                    LOG_DEBUG("  Add Mummy: %d", idx);
+                                    m_LevelKillables += 1;
+                                    m_MummyIdxs[mummy_idx++] = idx;
+                                }
                             }
-
-                            // Check for activated mummies
-                            if (item->object_number == O_MUMMY
-                                && !Level_FindElement(
-                                    item_idx, m_MummyIdxs, TT_SIZE)) {
-                                LOG_DEBUG("  Add Mummy #%d", item_idx);
-                                m_LevelKillables += 1;
-                                m_MummyIdxs[mummy_idx++] = item_idx;
-                            }
-
-                        } else {
-                            k++;
-                        }
-
-                        if (command & END_BIT) {
-                            break;
-                        }
+                        } while (!(trigger & END_BIT));
+                        break;
                     }
-                    break;
-                }
-                }
-
-                if (floor & END_BIT) {
-                    break;
-                }
+                } while (!(type & END_BIT));
             }
         }
     }
