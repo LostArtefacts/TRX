@@ -308,9 +308,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_InvOptionCurrent = ring.current_object;
                 }
 
-                if (g_InvMode == INV_TITLE_MODE) {
-                    Output_FadeToBlack(false);
-                } else {
+                if (g_InvMode != INV_TITLE_MODE) {
                     Output_FadeToTransparent(false);
                 }
 
