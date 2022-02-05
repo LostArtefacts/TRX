@@ -17,7 +17,7 @@ static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
 static bool m_KillableItems[MAX_ITEMS] = { 0 };
-bool m_IfKillable[O_NUMBER_OF] = { 0 };
+static bool m_IfKillable[O_NUMBER_OF] = { 0 };
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
