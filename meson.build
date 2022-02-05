@@ -183,6 +183,7 @@ sources = [
   'src/game/random.c',
   'src/game/requester.c',
   'src/game/savegame.c',
+  'src/game/savegame_legacy.c',
   'src/game/screen.c',
   'src/game/settings.c',
   'src/game/setup.c',

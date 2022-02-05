@@ -1478,6 +1478,7 @@ typedef struct GAME_INFO {
     uint8_t pickups;
     uint8_t bonus_flag;
     char savegame_buffer[MAX_SAVEGAME_BUFFER];
+    size_t savegame_buffer_size;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {
