@@ -641,8 +641,9 @@ int32_t Display_Inventory(int inv_mode)
     if (g_InvMode == INV_TITLE_MODE) {
         Output_FadeToBlack(true);
     }
-
-    while (Output_FadeIsAnimating()) {
+    bool fade_finished = false;
+    while (!fade_finished) {
+        fade_finished = !Output_FadeIsAnimating();
         if (g_InvMode == INV_TITLE_MODE) {
             Output_CopyPictureToScreen();
             Output_DrawBackdropScreen();
