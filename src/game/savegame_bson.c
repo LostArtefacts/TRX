@@ -788,41 +788,23 @@ char *SaveGame_BSON_GetSavePath(int32_t slot)
     return out;
 }
 
-int16_t SaveGame_BSON_GetLevelNumber(MYFILE *fp)
+bool SaveGame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
+    bool ret = false;
     struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
     struct json_object_s *root_obj = json_value_as_object(root);
-    int level_num = -1;
     if (root_obj) {
-        level_num = json_object_get_int(root_obj, "level_num", -1);
+        info->counter = json_object_get_int(root_obj, "save_counter", -1);
+        info->level_num = json_object_get_int(root_obj, "level_num", -1);
+        const char *level_title =
+            json_object_get_string(root_obj, "level_title", NULL);
+        if (level_title) {
+            info->level_title = Memory_Dup(level_title);
+        }
+        ret = info->level_num != -1;
     }
     json_value_free(root);
-    return level_num;
-}
-
-int32_t SaveGame_BSON_GetSaveCounter(MYFILE *fp)
-{
-    struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
-    struct json_object_s *root_obj = json_value_as_object(root);
-    int save_counter = -1;
-    if (root_obj) {
-        save_counter = json_object_get_int(root_obj, "save_counter", -1);
-    }
-    json_value_free(root);
-    return save_counter;
-}
-
-char *SaveGame_BSON_GetLevelTitle(MYFILE *fp)
-{
-    struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
-    struct json_object_s *root_obj = json_value_as_object(root);
-    char *level_title = NULL;
-    if (root_obj) {
-        level_title =
-            Memory_Dup(json_object_get_string(root_obj, "level_title", NULL));
-    }
-    json_value_free(root);
-    return level_title;
+    return ret;
 }
 
 bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)

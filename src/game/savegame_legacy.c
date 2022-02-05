@@ -360,11 +360,18 @@ char *SaveGame_Legacy_GetSavePath(int32_t slot)
     return out;
 }
 
-int16_t SaveGame_Legacy_GetLevelNumber(MYFILE *fp)
+bool SaveGame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
     File_Seek(fp, 0, SEEK_SET);
-    File_Skip(fp, SAVEGAME_LEGACY_TITLE_SIZE); // level title
-    File_Skip(fp, sizeof(int32_t)); // save counter
+
+    char title[SAVEGAME_LEGACY_TITLE_SIZE];
+    File_Read(title, sizeof(char), SAVEGAME_LEGACY_TITLE_SIZE, fp);
+    info->level_title = Memory_Dup(title);
+
+    int32_t counter;
+    File_Read(&counter, sizeof(int32_t), 1, fp);
+    info->counter = counter;
+
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         File_Skip(fp, sizeof(uint16_t)); // pistol ammo
         File_Skip(fp, sizeof(uint16_t)); // magnum ammo
@@ -383,24 +390,9 @@ int16_t SaveGame_Legacy_GetLevelNumber(MYFILE *fp)
 
     uint16_t level_num;
     File_Read(&level_num, sizeof(int16_t), 1, fp);
-    return level_num;
-}
+    info->level_num = level_num;
 
-char *SaveGame_Legacy_GetLevelTitle(MYFILE *fp)
-{
-    File_Seek(fp, 0, SEEK_SET);
-    char title[SAVEGAME_LEGACY_TITLE_SIZE];
-    File_Read(title, sizeof(char), SAVEGAME_LEGACY_TITLE_SIZE, fp);
-    return Memory_Dup(title);
-}
-
-int32_t SaveGame_Legacy_GetSaveCounter(MYFILE *fp)
-{
-    File_Seek(fp, 0, SEEK_SET);
-    File_Skip(fp, SAVEGAME_LEGACY_TITLE_SIZE);
-    int32_t counter;
-    File_Read(&counter, sizeof(int32_t), 1, fp);
-    return counter;
+    return true;
 }
 
 bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)

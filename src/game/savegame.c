@@ -28,26 +28,12 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
-typedef enum SAVEGAME_FORMAT {
-    SAVEGAME_FORMAT_LEGACY = 1,
-    SAVEGAME_FORMAT_BSON = 2,
-} SAVEGAME_FORMAT;
-
-typedef struct SAVEGAME_INFO {
-    SAVEGAME_FORMAT format;
-    int32_t counter;
-    int32_t level_num;
-    char *level_title;
-} SAVEGAME_INFO;
-
 typedef struct SAVEGAME_STRATEGY {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
     char *(*get_save_path)(int32_t slot_num);
-    int16_t (*get_level_number)(MYFILE *fp);
-    int32_t (*get_save_counter)(MYFILE *fp);
-    char *(*get_level_title)(MYFILE *fp);
+    bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
@@ -61,9 +47,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
         .get_save_path = SaveGame_BSON_GetSavePath,
-        .get_level_number = SaveGame_BSON_GetLevelNumber,
-        .get_save_counter = SaveGame_BSON_GetSaveCounter,
-        .get_level_title = SaveGame_BSON_GetLevelTitle,
+        .fill_info = SaveGame_BSON_FillInfo,
         .load_from_file = SaveGame_BSON_LoadFromFile,
         .save_to_file = SaveGame_BSON_SaveToFile,
     },
@@ -72,9 +56,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
         .get_save_path = SaveGame_Legacy_GetSavePath,
-        .get_level_number = SaveGame_Legacy_GetLevelNumber,
-        .get_save_counter = SaveGame_Legacy_GetSaveCounter,
-        .get_level_title = SaveGame_Legacy_GetLevelTitle,
+        .fill_info = SaveGame_Legacy_FillInfo,
         .load_from_file = SaveGame_Legacy_LoadFromFile,
         .save_to_file = SaveGame_Legacy_SaveToFile,
     },
@@ -407,14 +389,13 @@ void SaveGame_ScanSavedGames()
 
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
         while (strategy->format) {
-            if (savegame_info->counter == -1 && strategy->allow_load) {
+            if (!savegame_info->format && strategy->allow_load) {
                 char *filename = strategy->get_save_path(i);
                 MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
                 if (fp) {
-                    savegame_info->format = strategy->format;
-                    savegame_info->counter = strategy->get_save_counter(fp);
-                    savegame_info->level_num = strategy->get_level_number(fp);
-                    savegame_info->level_title = strategy->get_level_title(fp);
+                    if (strategy->fill_info(fp, savegame_info)) {
+                        savegame_info->format = strategy->format;
+                    }
                     File_Close(fp);
                 }
                 Memory_FreePointer(&filename);
