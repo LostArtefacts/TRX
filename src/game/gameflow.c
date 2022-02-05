@@ -171,12 +171,21 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.main_menu_background_path = Memory_Dup(tmp_s);
 
-    tmp_s = json_object_get_string(obj, "savegame_fmt", JSON_INVALID_STRING);
+    tmp_s =
+        json_object_get_string(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
-        LOG_ERROR("'savegame_fmt' must be a string");
+        LOG_ERROR("'savegame_fmt_legacy' must be a string");
         return false;
     }
-    g_GameFlow.save_game_fmt = Memory_Dup(tmp_s);
+    g_GameFlow.savegame_fmt_legacy = Memory_Dup(tmp_s);
+
+    tmp_s =
+        json_object_get_string(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        LOG_ERROR("'savegame_fmt_bson' must be a string");
+        return false;
+    }
+    g_GameFlow.savegame_fmt_bson = Memory_Dup(tmp_s);
 
     tmp_d = json_object_get_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
@@ -817,7 +826,8 @@ cleanup:
 void GameFlow_Shutdown()
 {
     Memory_FreePointer(&g_GameFlow.main_menu_background_path);
-    Memory_FreePointer(&g_GameFlow.save_game_fmt);
+    Memory_FreePointer(&g_GameFlow.savegame_fmt_legacy);
+    Memory_FreePointer(&g_GameFlow.savegame_fmt_bson);
     Memory_FreePointer(&g_GameInfo.start);
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
@@ -1028,7 +1038,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         switch (seq->type) {
         case GFS_START_GAME:
-            ret = StartGame((int32_t)seq->data, level_type);
+            if (!StartGame((int32_t)seq->data, level_type)) {
+                g_CurrentLevel = 0;
+                return GF_EXIT_TO_TITLE;
+            }
             break;
 
         case GFS_LOOP_GAME:

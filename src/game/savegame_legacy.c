@@ -1,6 +1,5 @@
 #include "game/savegame_legacy.h"
 
-#include "filesystem.h"
 #include "game/ai/pod.h"
 #include "game/control.h"
 #include "game/gameflow.h"
@@ -359,9 +358,10 @@ static void SaveGame_Legacy_ReadLOT(LOT_INFO *lot)
 
 char *SaveGame_Legacy_GetSavePath(int32_t slot)
 {
-    size_t out_size = snprintf(NULL, 0, g_GameFlow.save_game_fmt, slot) + 1;
+    size_t out_size =
+        snprintf(NULL, 0, g_GameFlow.savegame_fmt_legacy, slot) + 1;
     char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, g_GameFlow.save_game_fmt, slot);
+    snprintf(out, out_size, g_GameFlow.savegame_fmt_legacy, slot);
     return out;
 }
 
@@ -408,7 +408,7 @@ int32_t SaveGame_Legacy_GetSaveCounter(MYFILE *fp)
     return counter;
 }
 
-void SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
+bool SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
 {
     assert(game_info);
 
@@ -446,12 +446,6 @@ void SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
     SaveGame_Legacy_Read(&g_CurrentLevel, sizeof(uint16_t));
     SaveGame_Legacy_Read(&game_info->pickups, sizeof(uint8_t));
     SaveGame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[g_CurrentLevel] = game_info->start[i];
-        }
-    }
 
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
@@ -635,6 +629,7 @@ void SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
 
     SaveGame_Legacy_Read(&g_FlipEffect, sizeof(int32_t));
     SaveGame_Legacy_Read(&g_FlipTimer, sizeof(int32_t));
+    return true;
 }
 
 void SaveGame_Legacy_FillSaveBuffer(GAME_INFO *game_info)
@@ -650,12 +645,6 @@ void SaveGame_Legacy_FillSaveBuffer(GAME_INFO *game_info)
         g_GameFlow.levels[g_CurrentLevel].level_title);
     SaveGame_Legacy_Write(title, SAVEGAME_LEGACY_TITLE_SIZE);
     SaveGame_Legacy_Write(&g_SaveCounter, sizeof(int32_t));
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[i] = game_info->start[g_CurrentLevel];
-        }
-    }
 
     assert(game_info->start);
     for (int i = 0; i < g_GameFlow.level_count; i++) {

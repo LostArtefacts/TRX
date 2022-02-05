@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 
-int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     if (level_type != GFL_SAVED) {
@@ -29,15 +29,17 @@ int32_t StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (!InitialiseLevel(level_num)) {
-        g_CurrentLevel = 0;
-        return GF_EXIT_TO_TITLE;
+        return false;
     }
 
     if (level_type == GFL_SAVED) {
-        SaveGame_ApplySaveBuffer(&g_GameInfo);
+        if (!SaveGame_ApplySaveBuffer(&g_GameInfo)) {
+            LOG_ERROR("Failed to load save file!");
+            return false;
+        }
     }
 
-    return GF_NOP;
+    return true;
 }
 
 int32_t StopGame()

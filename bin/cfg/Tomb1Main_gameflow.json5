@@ -6,7 +6,8 @@
     "main_menu_picture": "data\\titleh.png",
 
     // path to the savegame file
-    "savegame_fmt": "saveati.%d",
+    "savegame_fmt_legacy": "saveati.%d",
+    "savegame_fmt_bson": "save_tr1_%02d.dat",
 
     // whether to allow user to select NG/NG+/etc. modes in the new game dialog
     "enable_game_modes": true,

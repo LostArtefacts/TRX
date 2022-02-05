@@ -105,6 +105,7 @@ void Shell_Main()
             int16_t level_num =
                 SaveGame_LoadSaveBufferFromFile(&g_GameInfo, gf_param);
             if (level_num < 0) {
+                LOG_ERROR("Corrupt save file!");
                 gf_option = GF_EXIT_TO_TITLE;
             } else {
                 gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);

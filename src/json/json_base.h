@@ -94,8 +94,11 @@ void json_array_append(struct json_array_s *arr, struct json_value_s *value);
 void json_array_append_bool(struct json_array_s *arr, int b);
 void json_array_append_int(struct json_array_s *arr, int number);
 void json_array_append_double(struct json_array_s *arr, double number);
+void json_array_append_string(struct json_array_s *arr, const char *string);
 void json_array_append_array(
     struct json_array_s *arr, struct json_array_s *arr2);
+void json_array_append_object(
+    struct json_array_s *arr, struct json_object_s *obj);
 
 struct json_value_s *json_array_get_value(
     struct json_array_s *arr, const size_t idx);
@@ -121,8 +124,12 @@ void json_object_append_int(
     struct json_object_s *obj, const char *key, int number);
 void json_object_append_double(
     struct json_object_s *obj, const char *key, double number);
+void json_object_append_string(
+    struct json_object_s *obj, const char *key, const char *string);
 void json_object_append_array(
     struct json_object_s *obj, const char *key, struct json_array_s *arr);
+void json_object_append_object(
+    struct json_object_s *obj, const char *key, struct json_object_s *obj2);
 
 struct json_value_s *json_object_get_value(
     struct json_object_s *obj, const char *key);
