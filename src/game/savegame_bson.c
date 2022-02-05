@@ -20,8 +20,20 @@
 #include "memory.h"
 
 #include <assert.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <zlib.h>
+
+#define MKTAG(a, b, c, d)                                                      \
+    ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
+#define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
+
+typedef struct SAVEGAME_BSON_HEADER {
+    uint32_t magic;
+    uint32_t version;
+    int32_t compressed_size;
+    int32_t uncompressed_size;
+} SAVEGAME_BSON_HEADER;
 
 static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp);
 static bool SaveGame_BSON_LoadLevels(
@@ -49,15 +61,43 @@ static struct json_object_s *SaveGame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara);
 
+static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
+    const char *buf, size_t buf_size)
+{
+    SAVEGAME_BSON_HEADER *header = (SAVEGAME_BSON_HEADER *)buf;
+    if (header->magic != SAVEGAME_BSON_MAGIC) {
+        LOG_ERROR("Invalid savegame magic");
+        return NULL;
+    }
+
+    const char *compressed = buf + sizeof(SAVEGAME_BSON_HEADER);
+    char *uncompressed = Memory_Alloc(header->uncompressed_size);
+
+    uLongf uncompressed_size = header->uncompressed_size;
+    int error_code = uncompress(
+        (Bytef *)uncompressed, &uncompressed_size, (const Bytef *)compressed,
+        (uLongf)header->compressed_size);
+    if (error_code != Z_OK) {
+        LOG_ERROR("Failed to decompress the data (error %d)", error_code);
+        Memory_FreePointer(&uncompressed);
+        return NULL;
+    }
+
+    struct json_value_s *root = bson_parse(uncompressed, uncompressed_size);
+    Memory_FreePointer(&uncompressed);
+    return root;
+}
+
 static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp)
 {
-    size_t output_size = File_Size(fp);
-    char *output = Memory_Alloc(output_size);
+    size_t buf_size = File_Size(fp);
+    char *buf = Memory_Alloc(buf_size);
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(output, sizeof(char), output_size, fp);
-    struct json_value_s *root = bson_parse(output, output_size);
-    Memory_FreePointer(&output);
-    return root;
+    File_Read(buf, buf_size, 1, fp);
+
+    struct json_value_s *ret = SaveGame_BSON_ParseFromBuffer(buf, buf_size);
+    Memory_FreePointer(&buf);
+    return ret;
 }
 
 static bool SaveGame_BSON_LoadLevels(
@@ -870,8 +910,8 @@ bool SaveGame_BSON_ApplySaveBuffer(GAME_INFO *game_info)
     assert(game_info);
 
     bool ret = false;
-    struct json_value_s *root =
-        bson_parse(game_info->savegame_buffer, game_info->savegame_buffer_size);
+    struct json_value_s *root = SaveGame_BSON_ParseFromBuffer(
+        game_info->savegame_buffer, game_info->savegame_buffer_size);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -954,14 +994,36 @@ void SaveGame_BSON_FillSaveBuffer(GAME_INFO *game_info)
     json_object_append_object(
         root_obj, "lara", SaveGame_BSON_DumpLara(&g_Lara));
 
-    size_t output_size;
+    size_t uncompressed_size;
     struct json_value_s *root = json_value_from_object(root_obj);
-    char *output = bson_write(root, &output_size);
+    char *uncompressed = bson_write(root, &uncompressed_size);
     json_value_free(root);
 
+    uLongf compressed_size = compressBound(uncompressed_size);
+    char *compressed = Memory_Alloc(compressed_size);
+    if (compress(
+            (Bytef *)compressed, &compressed_size, (const Bytef *)uncompressed,
+            (uLongf)uncompressed_size)
+        != Z_OK) {
+        Shell_ExitSystem("Failed to compress savegame data");
+    }
+
+    Memory_FreePointer(&uncompressed);
+
+    SAVEGAME_BSON_HEADER header = {
+        .magic = SAVEGAME_BSON_MAGIC,
+        .version = 0,
+        .compressed_size = compressed_size,
+        .uncompressed_size = uncompressed_size,
+    };
+
+    size_t output_size = sizeof(header) + compressed_size;
     assert(output_size <= MAX_SAVEGAME_BUFFER);
-    memcpy(game_info->savegame_buffer, output, output_size);
+    memcpy(game_info->savegame_buffer, &header, sizeof(header));
+    memcpy(
+        game_info->savegame_buffer + sizeof(header), compressed,
+        compressed_size);
     game_info->savegame_buffer_size = output_size;
 
-    Memory_FreePointer(&output);
+    Memory_FreePointer(&compressed);
 }
