@@ -94,7 +94,6 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 
     Sound_StopAllSamples();
     Music_Stop();
-    Music_SetVolume(g_Config.music_volume);
 
     if (ret == GF_NOP_BREAK) {
         return GF_NOP;
