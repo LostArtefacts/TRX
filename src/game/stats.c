@@ -16,19 +16,8 @@
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
-
-typedef struct STAT_INFO {
-    int32_t drops;
-    int32_t kills;
-    int16_t cur_idx;
-    int16_t idxs[STAT_SIZE];
-} STAT_INFO;
-
-static STAT_INFO m_Pierres = { 0 };
-static STAT_INFO m_Mummies = { 0 };
-static STAT_INFO m_Pods = { 0 };
-static STAT_INFO m_Bats = { 0 };
-static STAT_INFO m_Statues = { 0 };
+static bool m_KillableItems[MAX_ITEMS] = { 0 };
+bool m_IfKillable[O_NUMBER_OF] = { 0 };
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
@@ -40,28 +29,18 @@ int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_SCION_ITEM,     O_SCION_ITEM2,   O_LEADBAR_ITEM,
                            NO_ITEM };
 
-// A few enemies removed because they need trigger checks
+// Pierre has special trigger check
 int16_t m_KillableObjs[] = {
-    O_WOLF,     O_BEAR,     O_CROCODILE,    O_ALLIGATOR, O_LION,
-    O_LIONESS,  O_PUMA,     O_APE,          O_RAT,       O_VOLE,
-    O_DINOSAUR, O_RAPTOR,   O_WARRIOR1,     O_WARRIOR2,  O_WARRIOR3,
-    O_CENTAUR,  O_ABORTION, O_DINO_WARRIOR, O_LARSON,    O_SKATEBOARD,
-    O_SKATEKID, O_COWBOY,   O_BALDY,        O_NATLA,     O_SCION_ITEM3,
+    O_WOLF,     O_BEAR,        O_BAT,      O_CROCODILE, O_ALLIGATOR,
+    O_LION,     O_LIONESS,     O_PUMA,     O_APE,       O_RAT,
+    O_VOLE,     O_DINOSAUR,    O_RAPTOR,   O_WARRIOR1,  O_WARRIOR2,
+    O_WARRIOR3, O_CENTAUR,     O_MUMMY,    O_ABORTION,  O_DINO_WARRIOR,
+    O_FISH,     O_LARSON,      O_SKATEKID, O_COWBOY,    O_BALDY,
+    O_NATLA,    O_SCION_ITEM3, O_STATUE,   O_PODS,      O_BIG_POD,
     NO_ITEM
 };
 
-static bool Stats_FindElement(int16_t elem, int16_t array[], int16_t size);
 static void Stats_CheckTriggers(FLOOR_INFO **floor_array);
-
-static bool Stats_FindElement(int16_t elem, int16_t array[], int16_t size)
-{
-    for (int16_t i = 0; i < size; i++) {
-        if (array[i] == elem) {
-            return true;
-        }
-    }
-    return false;
-}
 
 static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
 {
@@ -127,44 +106,28 @@ static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
                                 // Add Pierre pickup and kills if oneshot
                                 if (item->object_number == O_PIERRE
                                     && trig_flags & IF_ONESHOT
-                                    && !Stats_FindElement(
-                                        idx, m_Pierres.idxs, STAT_SIZE)) {
+                                    && !m_KillableItems[idx]) {
+                                    m_KillableItems[idx] = true;
                                     m_LevelPickups += PIERRE_ITEMS;
                                     m_LevelKillables += 1;
-                                    m_Pierres.idxs[m_Pierres.cur_idx++] = idx;
                                 }
 
-                                // Check for mummy triggers
-                                if (item->object_number == O_MUMMY
-                                    && !Stats_FindElement(
-                                        idx, m_Mummies.idxs, STAT_SIZE)) {
+                                // Add killable if object triggered
+                                if (m_IfKillable[item->object_number]
+                                    && !m_KillableItems[idx]) {
+                                    m_KillableItems[idx] = true;
                                     m_LevelKillables += 1;
-                                    m_Mummies.idxs[m_Mummies.cur_idx++] = idx;
-                                }
 
-                                // Check for mutant triggers
-                                if ((item->object_number == O_PODS
-                                     || item->object_number == O_BIG_POD)
-                                    && !Stats_FindElement(
-                                        idx, m_Pods.idxs, STAT_SIZE)) {
-                                    m_LevelKillables += 1;
-                                    m_Pods.idxs[m_Pods.cur_idx++] = idx;
-                                }
-
-                                // Check for bat triggers
-                                if ((item->object_number == O_BAT)
-                                    && !Stats_FindElement(
-                                        idx, m_Bats.idxs, STAT_SIZE)) {
-                                    m_LevelKillables += 1;
-                                    m_Bats.idxs[m_Bats.cur_idx++] = idx;
-                                }
-
-                                // Check for statue triggers
-                                if ((item->object_number == O_STATUE)
-                                    && !Stats_FindElement(
-                                        idx, m_Statues.idxs, STAT_SIZE)) {
-                                    m_LevelKillables += 1;
-                                    m_Statues.idxs[m_Statues.cur_idx++] = idx;
+                                    // Add mercenary pickups
+                                    if (item->object_number == O_SKATEKID) {
+                                        m_LevelPickups += SKATEKID_ITEMS;
+                                    }
+                                    if (item->object_number == O_COWBOY) {
+                                        m_LevelPickups += COWBOY_ITEMS;
+                                    }
+                                    if (item->object_number == O_BALDY) {
+                                        m_LevelPickups += BALDY_ITEMS;
+                                    }
                                 }
                             }
                         } while (!(trigger & END_BIT));
@@ -176,17 +139,20 @@ static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
     }
 }
 
+void Stats_Init()
+{
+    for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
+        m_IfKillable[m_KillableObjs[i]] = true;
+    }
+}
+
 void Stats_CalculateStats(int32_t uninit_item_count, FLOOR_INFO **floor_array)
 {
     // Clear old values
     m_LevelPickups = 0;
     m_LevelKillables = 0;
     m_LevelSecrets = 0;
-    memset(&m_Pierres, 0, sizeof(m_Pierres));
-    memset(&m_Mummies, 0, sizeof(m_Mummies));
-    memset(&m_Pods, 0, sizeof(m_Pods));
-    memset(&m_Bats, 0, sizeof(m_Bats));
-    memset(&m_Statues, 0, sizeof(m_Statues));
+    memset(&m_KillableItems, 0, sizeof(m_KillableItems));
 
     if (uninit_item_count) {
         if (uninit_item_count > MAX_ITEMS) {
@@ -208,21 +174,6 @@ void Stats_CalculateStats(int32_t uninit_item_count, FLOOR_INFO **floor_array)
             for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
                 if (item->object_number == m_PickupObjs[j]) {
                     m_LevelPickups++;
-                }
-            }
-            // Spawn pickups on death
-            if (item->object_number == O_SKATEKID) {
-                m_LevelPickups += SKATEKID_ITEMS;
-            } else if (item->object_number == O_COWBOY) {
-                m_LevelPickups += COWBOY_ITEMS;
-            } else if (item->object_number == O_BALDY) {
-                m_LevelPickups += BALDY_ITEMS;
-            }
-
-            // Calculate number of killable objects in a level
-            for (int j = 0; m_KillableObjs[j] != NO_ITEM; j++) {
-                if (item->object_number == m_KillableObjs[j]) {
-                    m_LevelKillables++;
                 }
             }
         }

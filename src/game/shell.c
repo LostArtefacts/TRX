@@ -29,6 +29,7 @@
 #include "specific/s_input.h"
 #include "specific/s_misc.h"
 #include "specific/s_shell.h"
+#include "src/game/stats.h"
 
 #include <assert.h>
 #include <stdarg.h>
@@ -75,6 +76,7 @@ void Shell_Main()
     Music_Init();
     Input_Init();
     FMV_Init();
+    Stats_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");
