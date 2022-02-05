@@ -352,9 +352,9 @@ static bool SaveGame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
         return false;
     }
 
-    size_t idx = (size_t)arm->frame_base - (size_t)g_AnimFrames;
+    size_t idx = arm->frame_base - g_AnimFrames;
     idx = json_object_get_int(arm_obj, "frame_base", idx);
-    arm->frame_base = (int16_t *)((size_t)g_AnimFrames + (size_t)idx);
+    arm->frame_base = &g_AnimFrames[idx];
 
     arm->frame_number =
         json_object_get_int(arm_obj, "frame_num", arm->frame_number);
@@ -464,9 +464,9 @@ static bool SaveGame_BSON_LoadLara(
         return false;
     }
     for (int i = 0; i < (signed)lara_meshes_arr->length; i++) {
-        size_t idx = (size_t)lara->mesh_ptrs[i] - (size_t)g_MeshBase;
+        size_t idx = lara->mesh_ptrs[i] - g_MeshBase;
         idx = json_array_get_int(lara_meshes_arr, i, idx);
-        lara->mesh_ptrs[i] = (int16_t *)((size_t)g_MeshBase + (size_t)idx);
+        lara->mesh_ptrs[i] = &g_MeshBase[idx];
     }
 
     lara->target = NULL;
@@ -678,7 +678,7 @@ static struct json_object_s *SaveGame_BSON_DumpArm(LARA_ARM *arm)
     assert(arm);
     struct json_object_s *arm_obj = json_object_new();
     json_object_append_int(
-        arm_obj, "frame_base", (size_t)arm->frame_base - (size_t)g_AnimFrames);
+        arm_obj, "frame_base", arm->frame_base - g_AnimFrames);
     json_object_append_int(arm_obj, "frame_num", arm->frame_number);
     json_object_append_int(arm_obj, "lock", arm->lock);
     json_object_append_int(arm_obj, "x_rot", arm->x_rot);
@@ -742,13 +742,12 @@ static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara)
         lara_obj, "spaz_effect_count", lara->spaz_effect_count);
     json_object_append_int(
         lara_obj, "spaz_effect",
-        lara->spaz_effect ? (size_t)lara->spaz_effect - (size_t)g_Effects : 0);
+        lara->spaz_effect ? lara->spaz_effect - g_Effects : 0);
 
     json_object_append_int(lara_obj, "mesh_effects", lara->mesh_effects);
     struct json_array_s *lara_meshes_arr = json_array_new();
     for (int i = 0; i < LM_NUMBER_OF; i++) {
-        json_array_append_int(
-            lara_meshes_arr, (size_t)lara->mesh_ptrs[i] - (size_t)g_MeshBase);
+        json_array_append_int(lara_meshes_arr, lara->mesh_ptrs[i] - g_MeshBase);
     }
     json_object_append_array(lara_obj, "meshes", lara_meshes_arr);
 
