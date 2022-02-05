@@ -43,6 +43,7 @@ static int32_t m_SpriteCount = 0;
 static int32_t m_OverlapCount = 0;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
+static int32_t m_LevelSecrets = 0;
 static int32_t m_UninitItemCount = 0;
 static FLOOR_INFO **m_FloorArray = NULL;
 
@@ -730,8 +731,8 @@ bool Level_Load(int level_num)
         }
     }
 
-    g_GameFlow.levels[level_num].secrets = GetSecretCount();
     Level_CalculateStats();
+    g_GameFlow.levels[level_num].secrets = m_LevelSecrets;
     g_GameFlow.levels[level_num].pickups = m_LevelPickups;
     g_GameFlow.levels[level_num].kills = m_LevelKillables;
     Memory_FreePointer(&m_FloorArray);
@@ -741,12 +742,15 @@ bool Level_Load(int level_num)
 
 static void Level_CalculateStats()
 {
+    // Clear old values
     m_LevelPickups = 0;
     m_LevelKillables = 0;
+    m_LevelSecrets = 0;
     memset(&m_Pierres, 0, sizeof(m_Pierres));
     memset(&m_Mummies, 0, sizeof(m_Mummies));
     memset(&m_Pods, 0, sizeof(m_Pods));
     memset(&m_Bats, 0, sizeof(m_Bats));
+    memset(&m_Statues, 0, sizeof(m_Statues));
 
     if (m_UninitItemCount) {
         if (m_UninitItemCount > MAX_ITEMS) {
@@ -804,6 +808,8 @@ static bool Level_FindElement(int16_t elem, int16_t array[], int16_t size)
 
 static void Level_CalculateTriggers()
 {
+    uint32_t secrets = 0;
+
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
         for (int x_floor = 0; x_floor < r->x_size; x_floor++) {
@@ -846,6 +852,13 @@ static void Level_CalculateTriggers()
                         trig_type = (type >> 8) & 0x3F;
                         do {
                             trigger = *data++;
+                            if (TRIG_BITS(trigger) == TO_SECRET) {
+                                int16_t number = trigger & VALUE_BITS;
+                                if (!(secrets & (1 << number))) {
+                                    secrets |= (1 << number);
+                                    m_LevelSecrets++;
+                                }
+                            }
                             if (TRIG_BITS(trigger) != TO_OBJECT) {
                                 if (TRIG_BITS(trigger) == TO_CAMERA) {
                                     trigger = *data++;
