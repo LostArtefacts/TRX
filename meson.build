@@ -226,6 +226,8 @@ sources = [
   'src/global/vars.c',
   'src/global/vars_platform.c',
   'src/init.c',
+  'src/json/bson_parse.c',
+  'src/json/bson_write.c',
   'src/json/json_base.c',
   'src/json/json_parse.c',
   'src/json/json_write.c',

@@ -428,6 +428,9 @@ struct json_value_s *json_value_from_object(struct json_object_s *obj)
 
 void json_value_free(struct json_value_s *value)
 {
+    if (!value) {
+        return;
+    }
     if (!value->ref_count) {
         switch (value->type) {
         case json_type_number:
