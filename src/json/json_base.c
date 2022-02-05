@@ -154,12 +154,12 @@ void json_array_append_bool(struct json_array_s *arr, int b)
     json_array_append(arr, json_value_from_bool(b));
 }
 
-void json_array_append_number_int(struct json_array_s *arr, int number)
+void json_array_append_int(struct json_array_s *arr, int number)
 {
     json_array_append(arr, json_value_from_number(json_number_new_int(number)));
 }
 
-void json_array_append_number_double(struct json_array_s *arr, double number)
+void json_array_append_double(struct json_array_s *arr, double number)
 {
     json_array_append(
         arr, json_value_from_number(json_number_new_double(number)));
@@ -195,7 +195,7 @@ int json_array_get_bool(struct json_array_s *arr, const size_t idx, int d)
     return d;
 }
 
-int json_array_get_number_int(struct json_array_s *arr, const size_t idx, int d)
+int json_array_get_int(struct json_array_s *arr, const size_t idx, int d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
     struct json_number_s *num = json_value_as_number(value);
@@ -205,7 +205,7 @@ int json_array_get_number_int(struct json_array_s *arr, const size_t idx, int d)
     return d;
 }
 
-double json_array_get_number_double(
+double json_array_get_double(
     struct json_array_s *arr, const size_t idx, double d)
 {
     struct json_value_s *value = json_array_get_value(arr, idx);
@@ -291,14 +291,14 @@ void json_object_append_bool(struct json_object_s *obj, const char *key, int b)
     json_object_append(obj, key, json_value_from_bool(b));
 }
 
-void json_object_append_number_int(
+void json_object_append_int(
     struct json_object_s *obj, const char *key, int number)
 {
     json_object_append(
         obj, key, json_value_from_number(json_number_new_int(number)));
 }
 
-void json_object_append_number_double(
+void json_object_append_double(
     struct json_object_s *obj, const char *key, double number)
 {
     json_object_append(
@@ -338,8 +338,7 @@ int json_object_get_bool(struct json_object_s *obj, const char *key, int d)
     return d;
 }
 
-int json_object_get_number_int(
-    struct json_object_s *obj, const char *key, int d)
+int json_object_get_int(struct json_object_s *obj, const char *key, int d)
 {
     struct json_value_s *value = json_object_get_value(obj, key);
     struct json_number_s *num = json_value_as_number(value);
@@ -349,7 +348,7 @@ int json_object_get_number_int(
     return d;
 }
 
-double json_object_get_number_double(
+double json_object_get_double(
     struct json_object_s *obj, const char *key, double d)
 {
     struct json_value_s *value = json_object_get_value(obj, key);

@@ -178,7 +178,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.save_game_fmt = Memory_Dup(tmp_s);
 
-    tmp_d = json_object_get_number_double(obj, "demo_delay", -1.0);
+    tmp_d = json_object_get_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
         LOG_ERROR("'demo_delay' must be a positive number");
         return false;
@@ -206,15 +206,15 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     g_GameFlow.water_color.b = 1.0;
     if (tmp_arr) {
         g_GameFlow.water_color.r =
-            json_array_get_number_double(tmp_arr, 0, g_GameFlow.water_color.r);
+            json_array_get_double(tmp_arr, 0, g_GameFlow.water_color.r);
         g_GameFlow.water_color.g =
-            json_array_get_number_double(tmp_arr, 1, g_GameFlow.water_color.g);
+            json_array_get_double(tmp_arr, 1, g_GameFlow.water_color.g);
         g_GameFlow.water_color.b =
-            json_array_get_number_double(tmp_arr, 2, g_GameFlow.water_color.b);
+            json_array_get_double(tmp_arr, 2, g_GameFlow.water_color.b);
     }
 
     if (json_object_get_value(obj, "draw_distance_fade")) {
-        double value = json_object_get_number_double(
+        double value = json_object_get_double(
             obj, "draw_distance_fade", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_fade' must be a number");
@@ -226,7 +226,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
 
     if (json_object_get_value(obj, "draw_distance_max")) {
-        double value = json_object_get_number_double(
+        double value = json_object_get_double(
             obj, "draw_distance_max", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_max' must be a number");
@@ -354,7 +354,7 @@ static bool GameFlow_LoadLevelSequence(
             data->path = Memory_Dup(tmp_s);
 
             double tmp_d =
-                json_object_get_number_double(jseq_obj, "display_time", -1.0);
+                json_object_get_double(jseq_obj, "display_time", -1.0);
             if (tmp_d < 0.0) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'display_time' must be a positive "
@@ -371,8 +371,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "level_stats")) {
             seq->type = GFS_LEVEL_STATS;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
@@ -386,8 +386,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "exit_to_level")) {
             seq->type = GFS_EXIT_TO_LEVEL;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
@@ -398,8 +398,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "exit_to_cine")) {
             seq->type = GFS_EXIT_TO_CINE;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "level_id", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
@@ -410,8 +410,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "set_cam_x")) {
             seq->type = GFS_SET_CAM_X;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "value", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
@@ -422,8 +422,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "set_cam_y")) {
             seq->type = GFS_SET_CAM_Y;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "value", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
@@ -434,8 +434,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "set_cam_z")) {
             seq->type = GFS_SET_CAM_Z;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "value", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
@@ -446,8 +446,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "set_cam_angle")) {
             seq->type = GFS_SET_CAM_ANGLE;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "value", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
@@ -467,8 +467,8 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "play_synced_audio")) {
             seq->type = GFS_PLAY_SYNCED_AUDIO;
-            int tmp = json_object_get_number_int(
-                jseq_obj, "audio_id", JSON_INVALID_NUMBER);
+            int tmp =
+                json_object_get_int(jseq_obj, "audio_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'audio_id' must be a number",
@@ -483,7 +483,7 @@ static bool GameFlow_LoadLevelSequence(
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
 
-            swap_data->object1_num = json_object_get_number_int(
+            swap_data->object1_num = json_object_get_int(
                 jseq_obj, "object1_id", JSON_INVALID_NUMBER);
             if (swap_data->object1_num == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
@@ -492,7 +492,7 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
 
-            swap_data->object2_num = json_object_get_number_int(
+            swap_data->object2_num = json_object_get_int(
                 jseq_obj, "object2_id", JSON_INVALID_NUMBER);
             if (swap_data->object2_num == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
@@ -501,8 +501,8 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
 
-            swap_data->mesh_num = json_object_get_number_int(
-                jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
+            swap_data->mesh_num =
+                json_object_get_int(jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
             if (swap_data->mesh_num == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'mesh_id' must be a number",
@@ -566,8 +566,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         int32_t tmp_i;
         struct json_array_s *tmp_arr;
 
-        tmp_i =
-            json_object_get_number_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
+        tmp_i = json_object_get_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
         if (tmp_i == JSON_INVALID_NUMBER) {
             LOG_ERROR("level %d: 'music' must be a number", level_num);
             return false;
@@ -633,7 +632,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         }
 
         {
-            double value = json_object_get_number_double(
+            double value = json_object_get_double(
                 jlvl_obj, "draw_distance_fade", JSON_INVALID_NUMBER);
             if (value != JSON_INVALID_NUMBER) {
                 cur->draw_distance_fade.override = true;
@@ -644,7 +643,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         }
 
         {
-            double value = json_object_get_number_double(
+            double value = json_object_get_double(
                 jlvl_obj, "draw_distance_max", JSON_INVALID_NUMBER);
             if (value != JSON_INVALID_NUMBER) {
                 cur->draw_distance_max.override = true;
@@ -657,12 +656,12 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         tmp_arr = json_object_get_array(jlvl_obj, "water_color");
         if (tmp_arr) {
             cur->water_color.override = true;
-            cur->water_color.value.r = json_array_get_number_double(
-                tmp_arr, 0, g_GameFlow.water_color.r);
-            cur->water_color.value.g = json_array_get_number_double(
-                tmp_arr, 1, g_GameFlow.water_color.g);
-            cur->water_color.value.b = json_array_get_number_double(
-                tmp_arr, 2, g_GameFlow.water_color.b);
+            cur->water_color.value.r =
+                json_array_get_double(tmp_arr, 0, g_GameFlow.water_color.r);
+            cur->water_color.value.g =
+                json_array_get_double(tmp_arr, 1, g_GameFlow.water_color.g);
+            cur->water_color.value.b =
+                json_array_get_double(tmp_arr, 2, g_GameFlow.water_color.b);
         } else {
             cur->water_color.override = false;
         }

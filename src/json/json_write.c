@@ -39,7 +39,8 @@ static char *json_write_pretty_object(
     const struct json_object_s *object, size_t depth, const char *indent,
     const char *newline, char *data);
 
-static int json_write_get_number_size(const struct json_number_s *number, size_t *size)
+static int json_write_get_number_size(
+    const struct json_number_s *number, size_t *size)
 {
     json_uintmax_t parsed_number;
     size_t i;
@@ -161,7 +162,8 @@ cleanup:
     return 0;
 }
 
-static int json_write_get_string_size(const struct json_string_s *string, size_t *size)
+static int json_write_get_string_size(
+    const struct json_string_s *string, size_t *size)
 {
     size_t i;
     for (i = 0; i < string->string_size; i++) {
@@ -500,7 +502,8 @@ static char *json_write_string(const struct json_string_s *string, char *data)
     return data;
 }
 
-static char *json_write_minified_array(const struct json_array_s *array, char *data)
+static char *json_write_minified_array(
+    const struct json_array_s *array, char *data)
 {
     struct json_array_element_s *element = json_null;
 
@@ -525,7 +528,8 @@ static char *json_write_minified_array(const struct json_array_s *array, char *d
     return data;
 }
 
-static char *json_write_minified_object(const struct json_object_s *object, char *data)
+static char *json_write_minified_object(
+    const struct json_object_s *object, char *data)
 {
     struct json_object_element_s *element = json_null;
 
@@ -559,7 +563,8 @@ static char *json_write_minified_object(const struct json_object_s *object, char
     return data;
 }
 
-static char *json_write_minified_value(const struct json_value_s *value, char *data)
+static char *json_write_minified_value(
+    const struct json_value_s *value, char *data)
 {
     switch (value->type) {
     default:

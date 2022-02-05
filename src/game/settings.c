@@ -54,41 +54,38 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
 
     {
-        int32_t resolution_idx = json_object_get_number_int(
-            root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+        int32_t resolution_idx =
+            json_object_get_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
         CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
         Screen_SetResIdx(resolution_idx);
     }
 
-    g_Config.music_volume =
-        json_object_get_number_int(root_obj, "music_volume", 8);
+    g_Config.music_volume = json_object_get_int(root_obj, "music_volume", 8);
     CLAMP(g_Config.music_volume, 0, 10);
 
-    g_Config.sound_volume =
-        json_object_get_number_int(root_obj, "sound_volume", 8);
+    g_Config.sound_volume = json_object_get_int(root_obj, "sound_volume", 8);
     CLAMP(g_Config.sound_volume, 0, 10);
 
-    g_Config.input.layout =
-        json_object_get_number_int(root_obj, "layout_num", 0);
+    g_Config.input.layout = json_object_get_int(root_obj, "layout_num", 0);
     CLAMP(g_Config.input.layout, 0, 1);
 
-    g_Config.brightness = json_object_get_number_double(
-        root_obj, "brightness", DEFAULT_BRIGHTNESS);
+    g_Config.brightness =
+        json_object_get_double(root_obj, "brightness", DEFAULT_BRIGHTNESS);
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 
-    g_Config.ui.text_scale = json_object_get_number_double(
-        root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
+    g_Config.ui.text_scale =
+        json_object_get_double(root_obj, "ui_text_scale", DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    g_Config.ui.bar_scale = json_object_get_number_double(
-        root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
+    g_Config.ui.bar_scale =
+        json_object_get_double(root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         S_INPUT_KEYCODE key_code =
             S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i);
-        key_code = json_array_get_number_int(layout_arr, i, key_code);
+        key_code = json_array_get_int(layout_arr, i, key_code);
         S_Input_AssignKeyCode(INPUT_LAYOUT_USER, i, key_code);
     }
 
@@ -136,24 +133,18 @@ bool Settings_Write()
     json_object_append_bool(
         root_obj, "perspective", g_Config.rendering.enable_perspective_filter);
     json_object_append_bool(root_obj, "vsync", g_Config.rendering.enable_vsync);
-    json_object_append_number_int(
-        root_obj, "hi_res", Screen_GetPendingResIdx());
-    json_object_append_number_int(
-        root_obj, "music_volume", g_Config.music_volume);
-    json_object_append_number_int(
-        root_obj, "sound_volume", g_Config.sound_volume);
-    json_object_append_number_int(
-        root_obj, "layout_num", g_Config.input.layout);
-    json_object_append_number_double(
+    json_object_append_int(root_obj, "hi_res", Screen_GetPendingResIdx());
+    json_object_append_int(root_obj, "music_volume", g_Config.music_volume);
+    json_object_append_int(root_obj, "sound_volume", g_Config.sound_volume);
+    json_object_append_int(root_obj, "layout_num", g_Config.input.layout);
+    json_object_append_double(
         root_obj, "ui_text_scale", g_Config.ui.text_scale);
-    json_object_append_number_double(
-        root_obj, "ui_bar_scale", g_Config.ui.bar_scale);
-    json_object_append_number_double(
-        root_obj, "brightness", g_Config.brightness);
+    json_object_append_double(root_obj, "ui_bar_scale", g_Config.ui.bar_scale);
+    json_object_append_double(root_obj, "brightness", g_Config.brightness);
 
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        json_array_append_number_int(
+        json_array_append_int(
             layout_arr, S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i));
     }
     json_object_append_array(root_obj, "layout", layout_arr);

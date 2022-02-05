@@ -488,7 +488,8 @@ static int json_get_key_size(struct json_parse_state_s *state)
     }
 }
 
-static int json_get_object_size(struct json_parse_state_s *state, int is_global_object)
+static int json_get_object_size(
+    struct json_parse_state_s *state, int is_global_object)
 {
     const size_t flags_bitset = state->flags_bitset;
     const char *const src = state->src;
@@ -907,7 +908,8 @@ static int json_get_number_size(struct json_parse_state_s *state)
     return 0;
 }
 
-static int json_get_value_size(struct json_parse_state_s *state, int is_global_object)
+static int json_get_value_size(
+    struct json_parse_state_s *state, int is_global_object)
 {
     const size_t flags_bitset = state->flags_bitset;
     const char *const src = state->src;
