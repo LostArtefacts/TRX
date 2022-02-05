@@ -33,7 +33,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_SAVED) {
-        if (!SaveGame_ApplySaveBuffer(&g_GameInfo)) {
+        if (!SaveGame_Load(g_GameInfo.save_slot_to_load, &g_GameInfo)) {
             LOG_ERROR("Failed to load save file!");
             return false;
         }
@@ -90,7 +90,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
+                SaveGame_Save(g_InvExtraData[1], &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;

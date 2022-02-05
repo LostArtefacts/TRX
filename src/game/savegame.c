@@ -11,6 +11,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 // Loading a saved game is divided into two phases. First, the game reads the
 // savegame file contents to look for the level number. The rest of the save
@@ -20,17 +21,31 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
+typedef enum SAVEGAME_FORMAT {
+    SAVEGAME_FORMAT_LEGACY = 1,
+    SAVEGAME_FORMAT_BSON = 2,
+} SAVEGAME_FORMAT;
+
+typedef struct SAVEGAME_INFO {
+    SAVEGAME_FORMAT format;
+    int32_t counter;
+    int32_t level_num;
+    char *level_title;
+} SAVEGAME_INFO;
+
 typedef struct SAVEGAME_STRATEGY {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
-    char *(*get_save_path)(int32_t slot);
+    char *(*get_save_path)(int32_t slot_num);
     int16_t (*get_level_number)(MYFILE *fp);
     int32_t (*get_save_counter)(MYFILE *fp);
     char *(*get_level_title)(MYFILE *fp);
-    bool (*apply_save_buffer)(GAME_INFO *game_info);
-    void (*fill_save_buffer)(GAME_INFO *game_info);
+    bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
+    void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
+
+static SAVEGAME_INFO m_SaveGameInfo[MAX_SAVE_SLOTS] = { 0 };
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -41,8 +56,8 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .get_level_number = SaveGame_BSON_GetLevelNumber,
         .get_save_counter = SaveGame_BSON_GetSaveCounter,
         .get_level_title = SaveGame_BSON_GetLevelTitle,
-        .apply_save_buffer = SaveGame_BSON_ApplySaveBuffer,
-        .fill_save_buffer = SaveGame_BSON_FillSaveBuffer,
+        .load_from_file = SaveGame_BSON_LoadFromFile,
+        .save_to_file = SaveGame_BSON_SaveToFile,
     },
     {
         .allow_load = true,
@@ -52,8 +67,8 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .get_level_number = SaveGame_Legacy_GetLevelNumber,
         .get_save_counter = SaveGame_Legacy_GetSaveCounter,
         .get_level_title = SaveGame_Legacy_GetLevelTitle,
-        .apply_save_buffer = SaveGame_Legacy_ApplySaveBuffer,
-        .fill_save_buffer = SaveGame_Legacy_FillSaveBuffer,
+        .load_from_file = SaveGame_Legacy_LoadFromFile,
+        .save_to_file = SaveGame_Legacy_SaveToFile,
     },
     { 0 },
 };
@@ -172,47 +187,28 @@ void CreateStartInfo(int level_num)
     }
 }
 
-int16_t SaveGame_LoadSaveBufferFromFile(GAME_INFO *game_info, int32_t slot)
+int32_t SaveGame_GetLevelNumber(int32_t slot_num)
 {
-    assert(game_info);
-
-    int16_t level_num = -1;
-
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-    while (strategy->format) {
-        if (level_num == -1 && strategy->allow_load) {
-            char *filename = strategy->get_save_path(slot);
-            MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
-            if (fp) {
-                const size_t size = File_Size(fp);
-                if (size > MAX_SAVEGAME_BUFFER) {
-                    LOG_ERROR("Save is too big to fit in the memory");
-                    continue;
-                }
-                File_Read(
-                    &game_info->savegame_buffer[0], sizeof(char), size, fp);
-                game_info->savegame_buffer_size = size;
-                game_info->savegame_format = strategy->format;
-                level_num = strategy->get_level_number(fp);
-                File_Close(fp);
-            }
-            Memory_FreePointer(&filename);
-        }
-        strategy++;
-    }
-
-    return level_num;
+    return m_SaveGameInfo[slot_num].level_num;
 }
 
-bool SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
+bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
 {
     assert(game_info);
+    SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[slot_num];
+    assert(savegame_info->format);
 
     bool ret = false;
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
-        if (game_info->savegame_format == strategy->format) {
-            ret = strategy->apply_save_buffer(game_info);
+        if (savegame_info->format == strategy->format) {
+            char *filename = strategy->get_save_path(slot_num);
+            MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
+            if (fp) {
+                ret = strategy->load_from_file(fp, game_info);
+                File_Close(fp);
+            }
+            Memory_FreePointer(&filename);
             break;
         }
         strategy++;
@@ -229,7 +225,7 @@ bool SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
     return ret;
 }
 
-bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
+bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
 {
     assert(game_info);
     bool ret = true;
@@ -245,15 +241,11 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (strategy->allow_save) {
-            strategy->fill_save_buffer(game_info);
-
-            char *filename = strategy->get_save_path(slot);
+            char *filename = strategy->get_save_path(slot_num);
 
             MYFILE *fp = File_Open(filename, FILE_OPEN_WRITE);
             if (fp) {
-                File_Write(
-                    &game_info->savegame_buffer[0], sizeof(char),
-                    game_info->savegame_buffer_size, fp);
+                strategy->save_to_file(fp, game_info);
                 File_Close(fp);
             } else {
                 ret = false;
@@ -266,9 +258,9 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
 
     if (ret) {
         REQUEST_INFO *req = &g_LoadSaveGameRequester;
-        req->item_flags[slot] &= ~RIF_BLOCKED;
+        req->item_flags[slot_num] &= ~RIF_BLOCKED;
         sprintf(
-            &req->item_texts[req->item_text_len * slot], "%s %d",
+            &req->item_texts[req->item_text_len * slot_num], "%s %d",
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
         g_SavedGamesCount++;
         g_SaveCounter++;
@@ -277,25 +269,37 @@ bool SaveGame_SaveToFile(GAME_INFO *game_info, int32_t slot)
     return ret;
 }
 
+void SaveGame_Shutdown()
+{
+    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
+        savegame_info->format = 0;
+        savegame_info->counter = -1;
+        savegame_info->level_num = -1;
+        Memory_FreePointer(&savegame_info->level_title);
+    }
+}
+
 void SaveGame_ScanSavedGames()
 {
-    REQUEST_INFO *req = &g_LoadSaveGameRequester;
+    SaveGame_Shutdown();
 
-    req->items = 0;
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
+
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        char *level_title = NULL;
-        int32_t counter = -1;
+        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
 
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
         while (strategy->format) {
-            if (counter == -1 && strategy->allow_load) {
+            if (savegame_info->counter == -1 && strategy->allow_load) {
                 char *filename = strategy->get_save_path(i);
                 MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
                 if (fp) {
-                    level_title = strategy->get_level_title(fp);
-                    counter = strategy->get_save_counter(fp);
+                    savegame_info->format = strategy->format;
+                    savegame_info->counter = strategy->get_save_counter(fp);
+                    savegame_info->level_num = strategy->get_level_number(fp);
+                    savegame_info->level_title = strategy->get_level_title(fp);
                     File_Close(fp);
                 }
                 Memory_FreePointer(&filename);
@@ -303,28 +307,36 @@ void SaveGame_ScanSavedGames()
             strategy++;
         }
 
-        if (level_title) {
+        if (savegame_info->level_title) {
+            if (savegame_info->counter > g_SaveCounter) {
+                g_SaveCounter = savegame_info->counter;
+            }
+            g_SavedGamesCount++;
+        }
+    }
+
+    REQUEST_INFO *req = &g_LoadSaveGameRequester;
+
+    req->items = 0;
+    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
+
+        if (savegame_info->level_title) {
             req->item_flags[req->items] &= ~RIF_BLOCKED;
 
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
-                level_title, counter);
+                savegame_info->level_title, savegame_info->counter);
 
-            if (counter > g_SaveCounter) {
-                g_SaveCounter = counter;
+            if (savegame_info->counter == g_SaveCounter) {
                 req->requested = i;
             }
-
-            g_SavedGamesCount++;
         } else {
             req->item_flags[req->items] |= RIF_BLOCKED;
-
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
                 g_GameFlow.strings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
         }
-
-        Memory_FreePointer(&level_title);
 
         req->items++;
     }

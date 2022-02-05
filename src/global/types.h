@@ -8,11 +8,6 @@
 typedef int16_t PHD_ANGLE;
 typedef uint32_t SG_COL;
 
-typedef enum SAVEGAME_FORMAT {
-    SAVEGAME_FORMAT_LEGACY = 1,
-    SAVEGAME_FORMAT_BSON = 2,
-} SAVEGAME_FORMAT;
-
 typedef enum SAMPLE_FLAG {
     SAMPLE_FLAG_NO_PAN = 1 << 12,
     SAMPLE_FLAG_PITCH_WIBBLE = 1 << 13,
@@ -1482,9 +1477,7 @@ typedef struct GAME_INFO {
     uint16_t secrets;
     uint8_t pickups;
     uint8_t bonus_flag;
-    char savegame_buffer[MAX_SAVEGAME_BUFFER];
-    size_t savegame_buffer_size;
-    SAVEGAME_FORMAT savegame_format;
+    int32_t save_slot_to_load;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

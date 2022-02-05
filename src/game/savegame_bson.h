@@ -13,5 +13,5 @@ int16_t SaveGame_BSON_GetLevelNumber(MYFILE *fp);
 int32_t SaveGame_BSON_GetSaveCounter(MYFILE *fp);
 char *SaveGame_BSON_GetLevelTitle(MYFILE *fp);
 
-bool SaveGame_BSON_ApplySaveBuffer(GAME_INFO *game_info);
-void SaveGame_BSON_FillSaveBuffer(GAME_INFO *game_info);
+bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info);
+void SaveGame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info);

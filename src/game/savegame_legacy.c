@@ -22,6 +22,7 @@
 
 #define SAVE_CREATURE (1 << 7)
 #define SAVEGAME_LEGACY_TITLE_SIZE 75
+#define SAVEGAME_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
 
 typedef struct SAVEGAME_LEGACY_ITEM_STATS {
     uint8_t num_pickup1;
@@ -43,7 +44,7 @@ static char *m_SGBufPtr = NULL;
 
 static bool SaveGame_Legacy_NeedsEvilLaraFix();
 
-static void SaveGame_Legacy_Reset(GAME_INFO *game_info);
+static void SaveGame_Legacy_Reset(char *buffer);
 static void SaveGame_Legacy_Skip(int size);
 
 static void SaveGame_Legacy_Read(void *pointer, int size);
@@ -56,7 +57,7 @@ static void SaveGame_Legacy_WriteArm(LARA_ARM *arm);
 static void SaveGame_Legacy_WriteLara(LARA_INFO *lara);
 static void SaveGame_Legacy_WriteLOT(LOT_INFO *lot);
 
-static bool SaveGame_Legacy_NeedsEvilLaraFix(GAME_INFO *game_info)
+static bool SaveGame_Legacy_NeedsEvilLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
     // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
@@ -70,14 +71,14 @@ static bool SaveGame_Legacy_NeedsEvilLaraFix(GAME_INFO *game_info)
     // save_flags for Evil Lara or not. Since savegames only contain very
     // concise information, we must make an educated guess here.
 
-    assert(game_info);
+    assert(buffer);
 
     bool result = false;
     if (g_CurrentLevel != 14) {
         return result;
     }
 
-    SaveGame_Legacy_Reset(game_info);
+    SaveGame_Legacy_Reset(buffer);
     SaveGame_Legacy_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     SaveGame_Legacy_Skip(sizeof(int32_t)); // save counter
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -152,11 +153,10 @@ static bool SaveGame_Legacy_NeedsEvilLaraFix(GAME_INFO *game_info)
     return result;
 }
 
-static void SaveGame_Legacy_Reset(GAME_INFO *game_info)
+static void SaveGame_Legacy_Reset(char *buffer)
 {
-    assert(game_info);
     m_SGBufPos = 0;
-    m_SGBufPtr = game_info->savegame_buffer;
+    m_SGBufPtr = buffer;
 }
 
 static void SaveGame_Legacy_Skip(int size)
@@ -168,7 +168,7 @@ static void SaveGame_Legacy_Skip(int size)
 static void SaveGame_Legacy_Write(void *pointer, int size)
 {
     m_SGBufPos += size;
-    if (m_SGBufPos >= MAX_SAVEGAME_BUFFER) {
+    if (m_SGBufPos >= SAVEGAME_LEGACY_MAX_BUFFER_SIZE) {
         Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
@@ -408,7 +408,7 @@ int32_t SaveGame_Legacy_GetSaveCounter(MYFILE *fp)
     return counter;
 }
 
-bool SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
+bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
@@ -416,12 +416,16 @@ bool SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
     int16_t tmp16;
     int32_t tmp32;
 
-    bool skip_reading_evil_lara = SaveGame_Legacy_NeedsEvilLaraFix(game_info);
+    char *buffer = Memory_Alloc(File_Size(fp));
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_Read(buffer, sizeof(char), File_Size(fp), fp);
+
+    bool skip_reading_evil_lara = SaveGame_Legacy_NeedsEvilLaraFix(buffer);
     if (skip_reading_evil_lara) {
         LOG_INFO("Enabling Evil Lara savegame fix");
     }
 
-    SaveGame_Legacy_Reset(game_info);
+    SaveGame_Legacy_Reset(buffer);
     SaveGame_Legacy_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     SaveGame_Legacy_Skip(sizeof(int32_t)); // save counter
 
@@ -629,15 +633,17 @@ bool SaveGame_Legacy_ApplySaveBuffer(GAME_INFO *game_info)
 
     SaveGame_Legacy_Read(&g_FlipEffect, sizeof(int32_t));
     SaveGame_Legacy_Read(&g_FlipTimer, sizeof(int32_t));
+    Memory_FreePointer(&buffer);
     return true;
 }
 
-void SaveGame_Legacy_FillSaveBuffer(GAME_INFO *game_info)
+void SaveGame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
-    SaveGame_Legacy_Reset(game_info);
-    memset(m_SGBufPtr, 0, MAX_SAVEGAME_BUFFER);
+    char *buffer = Memory_Alloc(SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
+    SaveGame_Legacy_Reset(buffer);
+    memset(m_SGBufPtr, 0, SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
 
     char title[SAVEGAME_LEGACY_TITLE_SIZE];
     snprintf(
@@ -744,5 +750,6 @@ void SaveGame_Legacy_FillSaveBuffer(GAME_INFO *game_info)
     SaveGame_Legacy_Write(&g_FlipEffect, sizeof(int32_t));
     SaveGame_Legacy_Write(&g_FlipTimer, sizeof(int32_t));
 
-    game_info->savegame_buffer_size = m_SGBufPos;
+    File_Write(buffer, sizeof(char), m_SGBufPos, fp);
+    Memory_FreePointer(&buffer);
 }

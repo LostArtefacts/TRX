@@ -62,15 +62,15 @@ static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara);
 
 static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
-    const char *buf, size_t buf_size)
+    const char *buffer, size_t buffer_size)
 {
-    SAVEGAME_BSON_HEADER *header = (SAVEGAME_BSON_HEADER *)buf;
+    SAVEGAME_BSON_HEADER *header = (SAVEGAME_BSON_HEADER *)buffer;
     if (header->magic != SAVEGAME_BSON_MAGIC) {
         LOG_ERROR("Invalid savegame magic");
         return NULL;
     }
 
-    const char *compressed = buf + sizeof(SAVEGAME_BSON_HEADER);
+    const char *compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
     char *uncompressed = Memory_Alloc(header->uncompressed_size);
 
     uLongf uncompressed_size = header->uncompressed_size;
@@ -90,13 +90,14 @@ static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
 
 static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp)
 {
-    size_t buf_size = File_Size(fp);
-    char *buf = Memory_Alloc(buf_size);
+    size_t buffer_size = File_Size(fp);
+    char *buffer = Memory_Alloc(buffer_size);
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(buf, buf_size, 1, fp);
+    File_Read(buffer, sizeof(char), buffer_size, fp);
 
-    struct json_value_s *ret = SaveGame_BSON_ParseFromBuffer(buf, buf_size);
-    Memory_FreePointer(&buf);
+    struct json_value_s *ret =
+        SaveGame_BSON_ParseFromBuffer(buffer, buffer_size);
+    Memory_FreePointer(&buffer);
     return ret;
 }
 
@@ -905,13 +906,12 @@ char *SaveGame_BSON_GetLevelTitle(MYFILE *fp)
     return level_title;
 }
 
-bool SaveGame_BSON_ApplySaveBuffer(GAME_INFO *game_info)
+bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
     bool ret = false;
-    struct json_value_s *root = SaveGame_BSON_ParseFromBuffer(
-        game_info->savegame_buffer, game_info->savegame_buffer_size);
+    struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -970,7 +970,7 @@ cleanup:
     return ret;
 }
 
-void SaveGame_BSON_FillSaveBuffer(GAME_INFO *game_info)
+void SaveGame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
@@ -1017,13 +1017,8 @@ void SaveGame_BSON_FillSaveBuffer(GAME_INFO *game_info)
         .uncompressed_size = uncompressed_size,
     };
 
-    size_t output_size = sizeof(header) + compressed_size;
-    assert(output_size <= MAX_SAVEGAME_BUFFER);
-    memcpy(game_info->savegame_buffer, &header, sizeof(header));
-    memcpy(
-        game_info->savegame_buffer + sizeof(header), compressed,
-        compressed_size);
-    game_info->savegame_buffer_size = output_size;
+    File_Write(&header, sizeof(header), 1, fp);
+    File_Write(compressed, sizeof(char), compressed_size, fp);
 
     Memory_FreePointer(&compressed);
 }

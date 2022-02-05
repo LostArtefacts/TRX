@@ -720,7 +720,7 @@ int32_t Display_Inventory(int inv_mode)
                     InitialiseStartInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    SaveGame_SaveToFile(&g_GameInfo, g_InvExtraData[1]);
+                    SaveGame_Save(g_InvExtraData[1], &g_GameInfo);
                     Settings_Write();
                     return GF_NOP;
                 }
