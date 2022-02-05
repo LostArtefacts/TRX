@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define STAT_SIZE 512
 #define PIERRE_ITEMS 3
 #define SKATEKID_ITEMS 1
 #define COWBOY_ITEMS 1
