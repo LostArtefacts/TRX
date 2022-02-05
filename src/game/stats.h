@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 
 void Stats_Init();
