@@ -20,6 +20,7 @@
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -29,7 +30,6 @@
 #include "specific/s_input.h"
 #include "specific/s_misc.h"
 #include "specific/s_shell.h"
-#include "src/game/stats.h"
 
 #include <assert.h>
 #include <stdarg.h>
