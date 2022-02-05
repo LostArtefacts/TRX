@@ -8,11 +8,14 @@
 #include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/inv.h"
 #include "game/music.h"
 #include "game/savegame.h"
+#include "game/settings.h"
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
@@ -64,6 +67,11 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     g_ResetFlag = false;
     g_OverlayFlag = 1;
     InitialiseCamera();
+
+    Stats_CalculateStats();
+    g_GameFlow.levels[g_CurrentLevel].pickups = Stats_GetPickups();
+    g_GameFlow.levels[g_CurrentLevel].kills = Stats_GetKillables();
+    g_GameFlow.levels[g_CurrentLevel].secrets = Stats_GetSecrets();
 
     bool ask_for_save = g_GameFlow.enable_save_crystals
         && level_type == GFL_NORMAL

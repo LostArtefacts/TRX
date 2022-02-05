@@ -17,7 +17,6 @@
 #include "memory.h"
 
 #include <stdio.h>
-#include <string.h>
 
 static int32_t m_MeshCount = 0;
 static int32_t m_MeshPtrCount = 0;
@@ -36,8 +35,6 @@ static int32_t m_AnimTextureRangeCount = 0;
 static int32_t m_SpriteInfoCount = 0;
 static int32_t m_SpriteCount = 0;
 static int32_t m_OverlapCount = 0;
-static int32_t m_UninitItemCount = 0;
-static FLOOR_INFO **m_FloorArray = NULL;
 
 static bool Level_LoadRooms(MYFILE *fp);
 static bool Level_LoadObjects(MYFILE *fp);
@@ -88,6 +85,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadRooms(fp)) {
         return false;
     }
+    Stats_ObserveRoomsLoad();
 
     if (!Level_LoadObjects(fp)) {
         return false;
@@ -116,6 +114,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadItems(fp)) {
         return false;
     }
+    Stats_ObserveItemsLoad();
 
     if (!Level_LoadDepthQ(fp)) {
         return false;
@@ -151,10 +150,6 @@ static bool Level_LoadRooms(MYFILE *fp)
 
     File_Read(&g_RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", g_RoomCount);
-
-    // Copy for stats info
-    m_FloorArray =
-        GameBuf_Alloc(sizeof(FLOOR_INFO *) * g_RoomCount, GBUF_ROOM_FLOOR);
 
     g_RoomInfo =
         GameBuf_Alloc(sizeof(ROOM_INFO) * g_RoomCount, GBUF_ROOM_INFOS);
@@ -237,13 +232,6 @@ static bool Level_LoadRooms(MYFILE *fp)
         current_room_info->right = 0;
         current_room_info->item_number = -1;
         current_room_info->fx_number = -1;
-
-        // Save copy of floor info for stats calculation
-        m_FloorArray[i] =
-            GameBuf_Alloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
-        memcpy(
-            m_FloorArray[i], current_room_info->floor,
-            sizeof(FLOOR_INFO) * count4);
     }
 
     File_Read(&m_FloorDataSize, sizeof(uint32_t), 1, fp);
@@ -384,7 +372,6 @@ static bool Level_LoadSprites(MYFILE *fp)
 
 static bool Level_LoadItems(MYFILE *fp)
 {
-    m_UninitItemCount = 0;
     int32_t item_count = 0;
     File_Read(&item_count, sizeof(int32_t), 1, fp);
 
@@ -399,7 +386,7 @@ static bool Level_LoadItems(MYFILE *fp)
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
         g_LevelItemCount = item_count;
-        m_UninitItemCount = item_count;
+        // m_UninitItemCount = item_count;
         InitialiseItemArray(MAX_ITEMS);
 
         for (int i = 0; i < item_count; i++) {
@@ -686,12 +673,6 @@ bool Level_Load(int level_num)
             g_StoredLaraHealth = LARA_HITPOINTS;
         }
     }
-
-    Stats_CalculateStats(m_UninitItemCount, m_FloorArray);
-    g_GameFlow.levels[level_num].pickups = Stats_GetPickups();
-    g_GameFlow.levels[level_num].kills = Stats_GetKillables();
-    g_GameFlow.levels[level_num].secrets = Stats_GetSecrets();
-    Memory_FreePointer(&m_FloorArray);
 
     return ret;
 }

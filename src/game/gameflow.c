@@ -994,8 +994,6 @@ static void FixPyramidSecretTrigger()
         }
         global_secrets |= room_secrets;
     }
-
-    g_GameFlow.levels[g_CurrentLevel].secrets = GetSecretCount();
 }
 
 GAMEFLOW_OPTION

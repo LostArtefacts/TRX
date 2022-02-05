@@ -1,6 +1,7 @@
 #include "game/stats.h"
 
 #include "game/draw.h"
+#include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/output.h"
@@ -19,6 +20,8 @@
 #define COWBOY_ITEMS 1
 #define BALDY_ITEMS 1
 
+static int32_t m_CachedItemCount = 0;
+static FLOOR_INFO **m_CachedFloorArray = NULL;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
@@ -46,9 +49,9 @@ int16_t m_KillableObjs[] = {
     NO_ITEM
 };
 
-static void Stats_CheckTriggers(FLOOR_INFO **floor_array);
+static void Stats_CheckTriggers();
 
-static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
+static void Stats_CheckTriggers()
 {
     uint32_t secrets = 0;
 
@@ -64,7 +67,7 @@ static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
                 }
 
                 FLOOR_INFO *floor =
-                    &floor_array[i][x_floor + y_floor * r->x_size];
+                    &m_CachedFloorArray[i][x_floor + y_floor * r->x_size];
 
                 if (!floor->index) {
                     continue;
@@ -145,6 +148,26 @@ static void Stats_CheckTriggers(FLOOR_INFO **floor_array)
     }
 }
 
+void Stats_ObserveRoomsLoad()
+{
+    m_CachedFloorArray =
+        GameBuf_Alloc(g_RoomCount * sizeof(FLOOR_INFO *), GBUF_ROOM_FLOOR);
+    for (int i = 0; i < g_RoomCount; i++) {
+        const ROOM_INFO *current_room_info = &g_RoomInfo[i];
+        int count = current_room_info->y_size * current_room_info->x_size;
+        m_CachedFloorArray[i] =
+            GameBuf_Alloc(count * sizeof(FLOOR_INFO), GBUF_ROOM_FLOOR);
+        memcpy(
+            m_CachedFloorArray[i], current_room_info->floor,
+            count * sizeof(FLOOR_INFO));
+    }
+}
+
+void Stats_ObserveItemsLoad()
+{
+    m_CachedItemCount = g_LevelItemCount;
+}
+
 void Stats_Init()
 {
     for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
@@ -152,7 +175,7 @@ void Stats_Init()
     }
 }
 
-void Stats_CalculateStats(int32_t uninit_item_count, FLOOR_INFO **floor_array)
+void Stats_CalculateStats()
 {
     // Clear old values
     m_LevelPickups = 0;
@@ -160,19 +183,19 @@ void Stats_CalculateStats(int32_t uninit_item_count, FLOOR_INFO **floor_array)
     m_LevelSecrets = 0;
     memset(&m_KillableItems, 0, sizeof(m_KillableItems));
 
-    if (uninit_item_count) {
-        if (uninit_item_count > MAX_ITEMS) {
+    if (m_CachedItemCount) {
+        if (m_CachedItemCount > MAX_ITEMS) {
             Shell_ExitSystem(
-                "Stats_GetPickupCount(): Too Many g_Items being Loaded!!");
+                "Stats_CalculateStats(): Too Many g_Items being Loaded!!");
             return;
         }
 
-        for (int i = 0; i < uninit_item_count; i++) {
+        for (int i = 0; i < m_CachedItemCount; i++) {
             ITEM_INFO *item = &g_Items[i];
 
             if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
                 Shell_ExitSystemFmt(
-                    "Stats_GetPickupCount(): Bad Object number (%d) on Item %d",
+                    "Stats_CalculateStats(): Bad Object number (%d) on Item %d",
                     item->object_number, i);
             }
 
@@ -186,7 +209,7 @@ void Stats_CalculateStats(int32_t uninit_item_count, FLOOR_INFO **floor_array)
     }
 
     // Check triggers for special pickups / killables
-    Stats_CheckTriggers(floor_array);
+    Stats_CheckTriggers();
 }
 
 int32_t Stats_GetPickups()
