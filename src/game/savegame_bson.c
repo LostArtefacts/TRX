@@ -1,17 +1,12 @@
 #include "game/savegame_bson.h"
 
-#include "game/ai/pod.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/objects/pickup.h"
-#include "game/objects/puzzle_hole.h"
 #include "game/shell.h"
-#include "game/traps/movable_block.h"
-#include "game/traps/rolling_block.h"
 #include "global/vars.h"
 #include "inv.h"
 #include "json.h"
@@ -266,13 +261,6 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
             return false;
         }
 
-        if (obj->control == MovableBlockControl) {
-            AlterFloorHeight(item, WALL_L);
-        }
-        if (obj->control == RollingBlockControl) {
-            AlterFloorHeight(item, WALL_L * 2);
-        }
-
         if (obj->save_position) {
             item->pos.x = json_object_get_int(item_obj, "x", item->pos.x);
             item->pos.y = json_object_get_int(item_obj, "y", item->pos.y);
@@ -290,13 +278,6 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
             int16_t room_num = json_object_get_int(item_obj, "room_num", -1);
             if (room_num != -1 && item->room_number != room_num) {
                 ItemNewRoom(i, room_num);
-            }
-
-            if (obj->shadow_size) {
-                FLOOR_INFO *floor =
-                    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-                item->floor =
-                    GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             }
         }
 
@@ -357,70 +338,9 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
             } else if (obj->intelligent) {
                 item->data = NULL;
             }
-
-            item->flags &= 0xFF00;
-
-            if (obj->collision == PuzzleHoleCollision
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
-            }
-
-            if (obj->control == PodControl && item->status == IS_DEACTIVATED) {
-                item->mesh_bits = 0x1FF;
-                item->collidable = 0;
-            }
-
-            if (obj->collision == PickUpCollision
-                && item->status == IS_DEACTIVATED) {
-                RemoveDrawnItem(i);
-            }
-        }
-
-        if (obj->control == MovableBlockControl
-            && item->status == IS_NOT_ACTIVE) {
-            AlterFloorHeight(item, -WALL_L);
-        }
-
-        if (obj->control == RollingBlockControl
-            && item->current_anim_state != RBS_MOVING) {
-            AlterFloorHeight(item, -WALL_L * 2);
-        }
-
-        if (item->object_number == O_PIERRE && item->hit_points <= 0
-            && (item->flags & IF_ONESHOT)) {
-            if (Inv_RequestItem(O_SCION_ITEM) == 1) {
-                SpawnItem(item, O_MAGNUM_ITEM);
-                SpawnItem(item, O_SCION_ITEM2);
-                SpawnItem(item, O_KEY_ITEM1);
-            }
-            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_UZI_ITEM)) {
-                SpawnItem(item, O_UZI_ITEM);
-            }
-        }
-
-        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
-                SpawnItem(item, O_MAGNUM_ITEM);
-            }
-            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_BALDY && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                SpawnItem(item, O_SHOTGUN_ITEM);
-            }
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_LARSON && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
+
     return true;
 }
 
@@ -953,15 +873,10 @@ bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    BOX_NODE *node = g_Lara.LOT.node;
-
     if (!SaveGame_BSON_LoadLara(
             json_object_get_object(root_obj, "lara"), &g_Lara)) {
         goto cleanup;
     }
-
-    g_Lara.LOT.node = node;
-    g_Lara.LOT.target_box = NO_BOX;
 
     ret = true;
 

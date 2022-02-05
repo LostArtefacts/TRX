@@ -1,17 +1,12 @@
 #include "game/savegame_legacy.h"
 
-#include "game/ai/pod.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
-#include "game/objects/pickup.h"
-#include "game/objects/puzzle_hole.h"
 #include "game/shell.h"
-#include "game/traps/movable_block.h"
-#include "game/traps/rolling_block.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
@@ -484,13 +479,6 @@ bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         ITEM_INFO *item = &g_Items[i];
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
-        if (obj->control == MovableBlockControl) {
-            AlterFloorHeight(item, WALL_L);
-        }
-        if (obj->control == RollingBlockControl) {
-            AlterFloorHeight(item, WALL_L * 2);
-        }
-
         if (obj->save_position) {
             SaveGame_Legacy_Read(&item->pos, sizeof(PHD_3DPOS));
             SaveGame_Legacy_Read(&tmp16, sizeof(int16_t));
@@ -499,13 +487,6 @@ bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
             if (item->room_number != tmp16) {
                 ItemNewRoom(i, tmp16);
-            }
-
-            if (obj->shadow_size) {
-                FLOOR_INFO *floor =
-                    GetFloor(item->pos.x, item->pos.y, item->pos.z, &tmp16);
-                item->floor =
-                    GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             }
         }
 
@@ -561,76 +542,10 @@ bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             } else if (obj->intelligent) {
                 item->data = NULL;
             }
-
-            item->flags &= 0xFF00;
-
-            if (obj->collision == PuzzleHoleCollision
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
-            }
-
-            if (obj->control == PodControl && item->status == IS_DEACTIVATED) {
-                item->mesh_bits = 0x1FF;
-                item->collidable = 0;
-            }
-
-            if (obj->collision == PickUpCollision
-                && item->status == IS_DEACTIVATED) {
-                RemoveDrawnItem(i);
-            }
-        }
-
-        if (obj->control == MovableBlockControl
-            && item->status == IS_NOT_ACTIVE) {
-            AlterFloorHeight(item, -WALL_L);
-        }
-
-        if (obj->control == RollingBlockControl
-            && item->current_anim_state != RBS_MOVING) {
-            AlterFloorHeight(item, -WALL_L * 2);
-        }
-
-        if (item->object_number == O_PIERRE && item->hit_points <= 0
-            && (item->flags & IF_ONESHOT)) {
-            if (Inv_RequestItem(O_SCION_ITEM) == 1) {
-                SpawnItem(item, O_MAGNUM_ITEM);
-                SpawnItem(item, O_SCION_ITEM2);
-                SpawnItem(item, O_KEY_ITEM1);
-            }
-            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_UZI_ITEM)) {
-                SpawnItem(item, O_UZI_ITEM);
-            }
-        }
-
-        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
-                SpawnItem(item, O_MAGNUM_ITEM);
-            }
-            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_BALDY && item->hit_points <= 0) {
-            if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                SpawnItem(item, O_SHOTGUN_ITEM);
-            }
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
-        }
-
-        if (item->object_number == O_LARSON && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
 
-    BOX_NODE *node = g_Lara.LOT.node;
     SaveGame_Legacy_ReadLara(&g_Lara);
-    g_Lara.LOT.node = node;
-    g_Lara.LOT.target_box = NO_BOX;
-
     SaveGame_Legacy_Read(&g_FlipEffect, sizeof(int32_t));
     SaveGame_Legacy_Read(&g_FlipTimer, sizeof(int32_t));
     Memory_FreePointer(&buffer);

@@ -1,10 +1,17 @@
 #include "game/savegame.h"
 
 #include "filesystem.h"
+#include "game/ai/pod.h"
+#include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
+#include "game/items.h"
+#include "game/objects/pickup.h"
+#include "game/objects/puzzle_hole.h"
 #include "game/savegame_bson.h"
 #include "game/savegame_legacy.h"
+#include "game/traps/movable_block.h"
+#include "game/traps/rolling_block.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
@@ -45,6 +52,7 @@ typedef struct SAVEGAME_STRATEGY {
     void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
+static BOX_NODE *m_OldLaraLOTNode;
 static SAVEGAME_INFO m_SaveGameInfo[MAX_SAVE_SLOTS] = { 0 };
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -72,6 +80,115 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
     },
     { 0 },
 };
+
+static void SaveGame_LoadPreprocess();
+static void SaveGame_LoadPostrocess();
+
+static void SaveGame_LoadPreprocess()
+{
+    m_OldLaraLOTNode = g_Lara.LOT.node;
+
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        if (obj->control == MovableBlockControl) {
+            AlterFloorHeight(item, WALL_L);
+        }
+        if (obj->control == RollingBlockControl) {
+            AlterFloorHeight(item, WALL_L * 2);
+        }
+    }
+}
+
+static void SaveGame_LoadPostProcess()
+{
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        if (obj->save_position && obj->shadow_size) {
+            int16_t room_num = item->room_number;
+            FLOOR_INFO *floor =
+                GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+            item->floor =
+                GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        }
+
+        if (obj->save_flags) {
+            item->flags &= 0xFF00;
+
+            if (obj->collision == PuzzleHoleCollision
+                && (item->status == IS_DEACTIVATED
+                    || item->status == IS_ACTIVE)) {
+                item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
+            }
+
+            if (obj->control == PodControl && item->status == IS_DEACTIVATED) {
+                item->mesh_bits = 0x1FF;
+                item->collidable = 0;
+            }
+
+            if (obj->collision == PickUpCollision
+                && item->status == IS_DEACTIVATED) {
+                RemoveDrawnItem(i);
+            }
+        }
+
+        if (obj->control == MovableBlockControl
+            && item->status == IS_NOT_ACTIVE) {
+            AlterFloorHeight(item, -WALL_L);
+        }
+
+        if (obj->control == RollingBlockControl
+            && item->current_anim_state != RBS_MOVING) {
+            AlterFloorHeight(item, -WALL_L * 2);
+        }
+
+        if (item->object_number == O_PIERRE && item->hit_points <= 0
+            && (item->flags & IF_ONESHOT)) {
+            if (Inv_RequestItem(O_SCION_ITEM) == 1) {
+                SpawnItem(item, O_MAGNUM_ITEM);
+                SpawnItem(item, O_SCION_ITEM2);
+                SpawnItem(item, O_KEY_ITEM1);
+            }
+            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_UZI_ITEM)) {
+                SpawnItem(item, O_UZI_ITEM);
+            }
+        }
+
+        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
+                SpawnItem(item, O_MAGNUM_ITEM);
+            }
+            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_BALDY && item->hit_points <= 0) {
+            if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
+                SpawnItem(item, O_SHOTGUN_ITEM);
+            }
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
+        }
+
+        if (item->object_number == O_LARSON && item->hit_points <= 0) {
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
+        }
+    }
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
+            g_GameInfo.start[g_CurrentLevel] = g_GameInfo.start[i];
+        }
+    }
+
+    g_Lara.LOT.node = m_OldLaraLOTNode;
+    g_Lara.LOT.target_box = NO_BOX;
+}
 
 void InitialiseStartInfo()
 {
@@ -198,6 +315,8 @@ bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
     SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[slot_num];
     assert(savegame_info->format);
 
+    SaveGame_LoadPreprocess();
+
     bool ret = false;
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
@@ -215,11 +334,7 @@ bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        for (int i = 0; i < g_GameFlow.level_count; i++) {
-            if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-                game_info->start[g_CurrentLevel] = game_info->start[i];
-            }
-        }
+        SaveGame_LoadPostProcess();
     }
 
     return ret;
