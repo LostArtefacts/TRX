@@ -22,6 +22,7 @@ PICTURE *S_Picture_CreateFromFile(const char *path)
     struct SwsContext *sws_ctx = NULL;
     uint8_t *dst_data[4] = { 0 };
     int dst_linesize[4] = { 0 };
+    PICTURE *target_pic = NULL;
 
     error_code = avformat_open_input(&format_ctx, path, NULL, NULL);
     if (error_code != 0) {
@@ -92,7 +93,7 @@ PICTURE *S_Picture_CreateFromFile(const char *path)
         goto cleanup;
     }
 
-    PICTURE *target_pic = Picture_Create(frame->width, frame->height);
+    target_pic = Picture_Create(frame->width, frame->height);
 
     sws_ctx = sws_getContext(
         codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,

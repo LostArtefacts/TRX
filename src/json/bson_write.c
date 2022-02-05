@@ -196,7 +196,7 @@ static bool bson_write_get_array_size(
 {
     assert(size);
     assert(array);
-    char key[10];
+    char key[12];
     int idx = 0;
     *size += sizeof(int32_t); // object size
     for (struct json_array_element_s *element = array->start;
@@ -431,7 +431,7 @@ static char *bson_write_array(char *data, const struct json_array_s *array)
 {
     assert(data);
     assert(array);
-    char key[10];
+    char key[12];
     int idx = 0;
     char *old = data;
     data += sizeof(int32_t);
