@@ -181,7 +181,6 @@ void Stats_ObserveItemsLoad()
 
 void Stats_CalculateStats()
 {
-    // Clear old values
     m_LevelPickups = 0;
     m_LevelKillables = 0;
     m_LevelSecrets = 0;
@@ -189,8 +188,7 @@ void Stats_CalculateStats()
 
     if (m_CachedItemCount) {
         if (m_CachedItemCount > MAX_ITEMS) {
-            Shell_ExitSystem(
-                "Stats_CalculateStats(): Too Many g_Items being Loaded!!");
+            LOG_ERROR("Too Many g_Items being Loaded!!");
             return;
         }
 
@@ -198,12 +196,11 @@ void Stats_CalculateStats()
             ITEM_INFO *item = &g_Items[i];
 
             if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
-                Shell_ExitSystemFmt(
-                    "Stats_CalculateStats(): Bad Object number (%d) on Item %d",
-                    item->object_number, i);
+                LOG_ERROR(
+                    "Bad Object number (%d) on Item %d", item->object_number,
+                    i);
             }
 
-            // Calculate number of pickups in a level
             for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
                 if (item->object_number == m_PickupObjs[j]) {
                     m_LevelPickups++;
@@ -231,7 +228,7 @@ int32_t Stats_GetSecrets()
     return m_LevelSecrets;
 }
 
-void Stats_LevelEnd(int32_t level_num)
+void Stats_Show(int32_t level_num)
 {
     char string[100];
     char time_str[100];

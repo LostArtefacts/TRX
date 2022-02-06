@@ -386,7 +386,6 @@ static bool Level_LoadItems(MYFILE *fp)
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
         g_LevelItemCount = item_count;
-        // m_UninitItemCount = item_count;
         InitialiseItemArray(MAX_ITEMS);
 
         for (int i = 0; i < item_count; i++) {
@@ -405,6 +404,7 @@ static bool Level_LoadItems(MYFILE *fp)
                     "Level_LoadItems(): Bad Object number (%d) on Item %d",
                     item->object_number, i);
             }
+
             InitialiseItem(i);
         }
     }
