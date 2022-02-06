@@ -160,7 +160,16 @@ static bool SaveGame_BSON_LoadLevels(
         start->num_scions = json_object_get_int(level_obj, "num_scions", 0);
         start->gun_status = json_object_get_int(level_obj, "gun_status", 0);
         start->gun_type = json_object_get_int(level_obj, "gun_type", 0);
-        start->flags.all = json_object_get_int(level_obj, "flags", 0);
+        start->flags.available =
+            json_object_get_bool(level_obj, "available", 0);
+        start->flags.got_pistols =
+            json_object_get_bool(level_obj, "got_pistols", 0);
+        start->flags.got_magnums =
+            json_object_get_bool(level_obj, "got_magnums", 0);
+        start->flags.got_uzis = json_object_get_bool(level_obj, "got_uzis", 0);
+        start->flags.got_shotgun =
+            json_object_get_bool(level_obj, "got_shotgun", 0);
+        start->flags.costume = json_object_get_bool(level_obj, "costume", 0);
     }
     return true;
 }
@@ -579,7 +588,15 @@ static struct json_array_s *SaveGame_BSON_DumpLevels(GAME_INFO *game_info)
         json_object_append_int(level_obj, "num_scions", start->num_scions);
         json_object_append_int(level_obj, "gun_status", start->gun_status);
         json_object_append_int(level_obj, "gun_type", start->gun_type);
-        json_object_append_int(level_obj, "flags", start->flags.all);
+        json_object_append_bool(level_obj, "available", start->flags.available);
+        json_object_append_bool(
+            level_obj, "got_pistols", start->flags.got_pistols);
+        json_object_append_bool(
+            level_obj, "got_magnums", start->flags.got_magnums);
+        json_object_append_bool(level_obj, "got_uzis", start->flags.got_uzis);
+        json_object_append_bool(
+            level_obj, "got_shotgun", start->flags.got_shotgun);
+        json_object_append_bool(level_obj, "costume", start->flags.costume);
         json_array_append_object(levels_arr, level_obj);
     }
     return levels_arr;
