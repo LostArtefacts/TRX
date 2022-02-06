@@ -30,6 +30,8 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
 
+static bool SaveGame_BSON_IsValidItemObject(
+    int16_t saved_obj_num, int16_t current_obj_num);
 static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp);
 static bool SaveGame_BSON_LoadLevels(
     struct json_array_s *levels_arr, GAME_INFO *game_info);
@@ -55,6 +57,36 @@ static struct json_object_s *SaveGame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *SaveGame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara);
+
+static bool SaveGame_BSON_IsValidItemObject(
+    int16_t saved_obj_num, int16_t initial_obj_num)
+{
+    if (saved_obj_num == initial_obj_num) {
+        return true;
+    }
+
+    // clang-format off
+    switch (saved_obj_num) {
+        case O_PUZZLE_DONE1: return initial_obj_num == O_PUZZLE_HOLE1;
+        case O_PUZZLE_DONE2: return initial_obj_num == O_PUZZLE_HOLE2;
+        case O_PUZZLE_DONE3: return initial_obj_num == O_PUZZLE_HOLE3;
+        case O_PUZZLE_DONE4: return initial_obj_num == O_PUZZLE_HOLE4;
+        case O_GUN_AMMO_ITEM: return initial_obj_num == O_PISTOLS;
+        case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
+        case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
+        case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
+        // TODO: these are not valid replacements, but they are needed
+        // because of issue #406. Once we fix that, these can be safely
+        // removed.
+        case O_PISTOLS: return initial_obj_num == O_GUN_AMMO_ITEM;
+        case O_SHOTGUN_ITEM: return initial_obj_num == O_SG_AMMO_ITEM;
+        case O_MAGNUM_ITEM: return initial_obj_num == O_MAG_AMMO_ITEM;
+        case O_UZI_ITEM: return initial_obj_num == O_UZI_AMMO_ITEM;
+    }
+    // clang-format on
+
+    return false;
+}
 
 static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
     const char *buffer, size_t buffer_size)
@@ -254,11 +286,7 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         int obj_num = json_object_get_int(item_obj, "obj_num", -1);
-        if (item->object_number != obj_num
-            && !(
-                item->object_number >= O_PUZZLE_HOLE1
-                && item->object_number <= O_PUZZLE_DONE4
-                && obj_num >= O_PUZZLE_HOLE1 && obj_num <= O_PUZZLE_DONE4)) {
+        if (!SaveGame_BSON_IsValidItemObject(obj_num, item->object_number)) {
             LOG_ERROR(
                 "Malformed save: expected object %d, got %d",
                 item->object_number, obj_num);
