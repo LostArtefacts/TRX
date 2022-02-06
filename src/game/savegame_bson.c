@@ -254,7 +254,11 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         int obj_num = json_object_get_int(item_obj, "obj_num", -1);
-        if (item->object_number != obj_num) {
+        if (item->object_number != obj_num
+            && !(
+                item->object_number >= O_PUZZLE_HOLE1
+                && item->object_number <= O_PUZZLE_DONE4
+                && obj_num >= O_PUZZLE_HOLE1 && obj_num <= O_PUZZLE_DONE4)) {
             LOG_ERROR(
                 "Malformed save: expected object %d, got %d",
                 item->object_number, obj_num);
