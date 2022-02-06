@@ -39,11 +39,29 @@ static TEXTSTRING *m_VersionText = NULL;
 static int16_t m_InvNFrames = 2;
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
+static CAMERA_INFO m_OldCamera;
 
 static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo);
 
 static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
+    Output_InitialisePolyList();
+
+    if (g_InvMode == INV_TITLE_MODE) {
+        Output_CopyPictureToScreen();
+        Output_DrawBackdropScreen();
+    } else {
+        phd_LookAt(
+            m_OldCamera.pos.x, m_OldCamera.pos.y + m_OldCamera.shift,
+            m_OldCamera.pos.z, m_OldCamera.target.x, m_OldCamera.target.y,
+            m_OldCamera.target.z, 0);
+        Draw_DrawScene(false);
+
+        int32_t width = Screen_GetResWidth();
+        int32_t height = Screen_GetResHeight();
+        ViewPort_Init(width, height);
+    }
+
     Output_SetupAboveWater(false);
 
     PHD_3DPOS viewer;
@@ -173,7 +191,7 @@ int32_t Display_Inventory(int inv_mode)
 
     m_InvNFrames = 2;
 
-    CAMERA_INFO old_camera = g_Camera;
+    m_OldCamera = g_Camera;
 
     if (g_InvMode == INV_TITLE_MODE) {
         // reset the clock after delay from loading the title level to reset
@@ -223,23 +241,6 @@ int32_t Display_Inventory(int inv_mode)
         }
 
         ring.camera.z = ring.radius + CAMERA_2_RING;
-
-        Output_InitialisePolyList();
-
-        if (g_InvMode == INV_TITLE_MODE) {
-            Output_CopyPictureToScreen();
-            Output_DrawBackdropScreen();
-        } else {
-            phd_LookAt(
-                old_camera.pos.x, old_camera.pos.y + old_camera.shift,
-                old_camera.pos.z, old_camera.target.x, old_camera.target.y,
-                old_camera.target.z, 0);
-            Draw_DrawScene(false);
-
-            int32_t width = Screen_GetResWidth();
-            int32_t height = Screen_GetResHeight();
-            ViewPort_Init(width, height);
-        }
 
         Inventory_Draw(&ring, &imo);
 
@@ -641,15 +642,9 @@ int32_t Display_Inventory(int inv_mode)
     if (g_InvMode == INV_TITLE_MODE) {
         Output_FadeToBlack(true);
     }
-    bool fade_finished = false;
+    bool fade_finished = !Output_FadeIsAnimating();
     while (!fade_finished) {
         fade_finished = !Output_FadeIsAnimating();
-        if (g_InvMode == INV_TITLE_MODE) {
-            Output_CopyPictureToScreen();
-            Output_DrawBackdropScreen();
-        } else {
-            Draw_DrawScene(false);
-        }
         Inventory_Draw(&ring, &imo);
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
