@@ -199,6 +199,7 @@ void Stats_CalculateStats()
                 LOG_ERROR(
                     "Bad Object number (%d) on Item %d", item->object_number,
                     i);
+                continue;
             }
 
             for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
