@@ -343,6 +343,25 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     and music) and there is planned work towards reducing the amount of
     Windows-only code.
 
+## Level kills and pickup notes
+The game can show the total number of pickups and kills in a level by checking
+the compass in the inventory or at the end of level stats screen. Due to some
+of the levels' designs, some of these kills and pickups are not obtainable.
+See the table below for the discrepancies.
+
+Tomb Raider 1:
+| Level | Kills | Pickups |
+| ----------- | ----------- | ----------- |
+| Palace Midas | | 23 (+1 unreachable medis) |
+| Atlantis |  | 53 (+2 unreachable medis, +1 unreachable uzi ammo) |
+
+Unfinished Business:
+| Level | Kills | Pickups |
+| ----------- | ----------- | ----------- |
+| Return to Egypt | 42 (+1 unreachable enemy) | |
+| Temple of the Cat | | 64 (+1 unreachable magnum ammo) |
+| Atlanetean Stronghold | 32 (+1 unreachable Centaur) | |
+
 ## Current road map
 
 Note: this section may be subject to change.
