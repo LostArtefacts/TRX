@@ -25,6 +25,7 @@ static FLOOR_INFO **m_CachedFloorArray = NULL;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
+static uint32_t m_SecretRoom = 0;
 static bool m_KillableItems[MAX_ITEMS] = { 0 };
 static bool m_IfKillable[O_NUMBER_OF] = { 0 };
 
@@ -48,10 +49,12 @@ int16_t m_KillableObjs[] = {
     O_NATLA,    O_SCION_ITEM3, O_STATUE,   NO_ITEM
 };
 
-static void Stats_CheckTriggers();
+static void Stats_TraverseFloor();
+static void Stats_CheckTriggers(
+    ROOM_INFO *r, int room_num, int x_floor, int y_floor);
 static bool Stats_IsObjectKillable(int32_t obj_num);
 
-static void Stats_CheckTriggers()
+static void Stats_TraverseFloor()
 {
     uint32_t secrets = 0;
 
@@ -59,112 +62,113 @@ static void Stats_CheckTriggers()
         ROOM_INFO *r = &g_RoomInfo[i];
         for (int x_floor = 0; x_floor < r->x_size; x_floor++) {
             for (int y_floor = 0; y_floor < r->y_size; y_floor++) {
-
-                if (x_floor == 0 || x_floor == r->x_size - 1) {
-                    if (y_floor == 0 || y_floor == r->y_size - 1) {
-                        continue;
-                    }
-                }
-
-                FLOOR_INFO *floor =
-                    &m_CachedFloorArray[i][x_floor + y_floor * r->x_size];
-
-                if (!floor->index) {
-                    continue;
-                }
-
-                int16_t *data = &g_FloorData[floor->index];
-                int16_t type;
-                int16_t trigger;
-                int16_t trig_flags;
-                int16_t trig_type;
-                do {
-                    type = *data++;
-
-                    switch (type & DATA_TYPE) {
-                    case FT_TILT:
-                    case FT_ROOF:
-                    case FT_DOOR:
-                        data++;
-                        break;
-
-                    case FT_LAVA:
-                        break;
-
-                    case FT_TRIGGER:
-                        trig_flags = *data;
-                        data++;
-                        trig_type = (type >> 8) & 0x3F;
-                        do {
-                            trigger = *data++;
-                            if (TRIG_BITS(trigger) == TO_SECRET) {
-                                int16_t number = trigger & VALUE_BITS;
-                                if (!(secrets & (1 << number))) {
-                                    secrets |= (1 << number);
-                                    m_LevelSecrets++;
-                                }
-                            }
-                            if (TRIG_BITS(trigger) != TO_OBJECT) {
-                                if (TRIG_BITS(trigger) == TO_CAMERA) {
-                                    trigger = *data++;
-                                }
-                            } else {
-                                int16_t idx = trigger & VALUE_BITS;
-
-                                if (m_KillableItems[idx]) {
-                                    continue;
-                                }
-
-                                ITEM_INFO *item = &g_Items[idx];
-
-                                // Add Pierre pickup and kills if oneshot
-                                if (item->object_number == O_PIERRE
-                                    && trig_flags & IF_ONESHOT) {
-                                    m_KillableItems[idx] = true;
-                                    m_LevelPickups += PIERRE_ITEMS;
-                                    m_LevelKillables += 1;
-                                }
-
-                                // Check for only valid pods
-                                if ((item->object_number == O_PODS
-                                     || item->object_number == O_BIG_POD)
-                                    && item->data != NULL) {
-                                    int16_t bug_item_num =
-                                        *(int16_t *)item->data;
-                                    const ITEM_INFO *bug_item =
-                                        &g_Items[bug_item_num];
-                                    if (g_Objects[bug_item->object_number]
-                                            .loaded) {
-                                        m_KillableItems[idx] = true;
-                                        m_LevelKillables += 1;
-                                    }
-                                }
-
-                                // Add killable if object triggered
-                                if (Stats_IsObjectKillable(
-                                        item->object_number)) {
-                                    m_KillableItems[idx] = true;
-                                    m_LevelKillables += 1;
-
-                                    // Add mercenary pickups
-                                    if (item->object_number == O_SKATEKID) {
-                                        m_LevelPickups += SKATEKID_ITEMS;
-                                    }
-                                    if (item->object_number == O_COWBOY) {
-                                        m_LevelPickups += COWBOY_ITEMS;
-                                    }
-                                    if (item->object_number == O_BALDY) {
-                                        m_LevelPickups += BALDY_ITEMS;
-                                    }
-                                }
-                            }
-                        } while (!(trigger & END_BIT));
-                        break;
-                    }
-                } while (!(type & END_BIT));
+                Stats_CheckTriggers(r, i, x_floor, y_floor);
             }
         }
     }
+}
+
+static void Stats_CheckTriggers(
+    ROOM_INFO *r, int room_num, int x_floor, int y_floor)
+{
+    if (x_floor == 0 || x_floor == r->x_size - 1) {
+        if (y_floor == 0 || y_floor == r->y_size - 1) {
+            return;
+        }
+    }
+
+    FLOOR_INFO *floor =
+        &m_CachedFloorArray[room_num][x_floor + y_floor * r->x_size];
+
+    if (!floor->index) {
+        return;
+    }
+
+    int16_t *data = &g_FloorData[floor->index];
+    int16_t type;
+    int16_t trigger;
+    int16_t trig_flags;
+    int16_t trig_type;
+    do {
+        type = *data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_TILT:
+        case FT_ROOF:
+        case FT_DOOR:
+            data++;
+            break;
+
+        case FT_LAVA:
+            break;
+
+        case FT_TRIGGER:
+            trig_flags = *data;
+            data++;
+            trig_type = (type >> 8) & 0x3F;
+            do {
+                trigger = *data++;
+                if (TRIG_BITS(trigger) == TO_SECRET) {
+                    int16_t number = trigger & VALUE_BITS;
+                    if (!(m_SecretRoom & (1 << number))) {
+                        m_SecretRoom |= (1 << number);
+                        m_LevelSecrets++;
+                    }
+                }
+                if (TRIG_BITS(trigger) != TO_OBJECT) {
+                    if (TRIG_BITS(trigger) == TO_CAMERA) {
+                        trigger = *data++;
+                    }
+                } else {
+                    int16_t idx = trigger & VALUE_BITS;
+
+                    if (m_KillableItems[idx]) {
+                        continue;
+                    }
+
+                    ITEM_INFO *item = &g_Items[idx];
+
+                    // Add Pierre pickup and kills if oneshot
+                    if (item->object_number == O_PIERRE
+                        && trig_flags & IF_ONESHOT) {
+                        m_KillableItems[idx] = true;
+                        m_LevelPickups += PIERRE_ITEMS;
+                        m_LevelKillables += 1;
+                    }
+
+                    // Check for only valid pods
+                    if ((item->object_number == O_PODS
+                         || item->object_number == O_BIG_POD)
+                        && item->data != NULL) {
+                        int16_t bug_item_num = *(int16_t *)item->data;
+                        const ITEM_INFO *bug_item = &g_Items[bug_item_num];
+                        if (g_Objects[bug_item->object_number].loaded) {
+                            m_KillableItems[idx] = true;
+                            m_LevelKillables += 1;
+                        }
+                    }
+
+                    // Add killable if object triggered
+                    if (Stats_IsObjectKillable(item->object_number)) {
+                        m_KillableItems[idx] = true;
+                        m_LevelKillables += 1;
+
+                        // Add mercenary pickups
+                        if (item->object_number == O_SKATEKID) {
+                            m_LevelPickups += SKATEKID_ITEMS;
+                        }
+                        if (item->object_number == O_COWBOY) {
+                            m_LevelPickups += COWBOY_ITEMS;
+                        }
+                        if (item->object_number == O_BALDY) {
+                            m_LevelPickups += BALDY_ITEMS;
+                        }
+                    }
+                }
+            } while (!(trigger & END_BIT));
+            break;
+        }
+    } while (!(type & END_BIT));
 }
 
 static bool Stats_IsObjectKillable(int32_t obj_num)
@@ -202,6 +206,7 @@ void Stats_CalculateStats()
     m_LevelPickups = 0;
     m_LevelKillables = 0;
     m_LevelSecrets = 0;
+    m_SecretRoom = 0;
     memset(&m_KillableItems, 0, sizeof(m_KillableItems));
 
     if (m_CachedItemCount) {
@@ -229,7 +234,7 @@ void Stats_CalculateStats()
     }
 
     // Check triggers for special pickups / killables
-    Stats_CheckTriggers();
+    Stats_TraverseFloor();
 }
 
 int32_t Stats_GetPickups()
