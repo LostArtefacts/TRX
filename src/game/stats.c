@@ -38,15 +38,14 @@ int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_SCION_ITEM,     O_SCION_ITEM2,   O_LEADBAR_ITEM,
                            NO_ITEM };
 
-// Pierre has special trigger check
+// Pierre and pods have special trigger check
 int16_t m_KillableObjs[] = {
     O_WOLF,     O_BEAR,        O_BAT,      O_CROCODILE, O_ALLIGATOR,
     O_LION,     O_LIONESS,     O_PUMA,     O_APE,       O_RAT,
     O_VOLE,     O_DINOSAUR,    O_RAPTOR,   O_WARRIOR1,  O_WARRIOR2,
     O_WARRIOR3, O_CENTAUR,     O_MUMMY,    O_ABORTION,  O_DINO_WARRIOR,
     O_FISH,     O_LARSON,      O_SKATEKID, O_COWBOY,    O_BALDY,
-    O_NATLA,    O_SCION_ITEM3, O_STATUE,   O_PODS,      O_BIG_POD,
-    NO_ITEM
+    O_NATLA,    O_SCION_ITEM3, O_STATUE,   NO_ITEM
 };
 
 static void Stats_CheckTriggers();
@@ -111,20 +110,39 @@ static void Stats_CheckTriggers()
                                 }
                             } else {
                                 int16_t idx = trigger & VALUE_BITS;
+
+                                if (m_KillableItems[idx]) {
+                                    continue;
+                                }
+
                                 ITEM_INFO *item = &g_Items[idx];
 
                                 // Add Pierre pickup and kills if oneshot
                                 if (item->object_number == O_PIERRE
-                                    && trig_flags & IF_ONESHOT
-                                    && !m_KillableItems[idx]) {
+                                    && trig_flags & IF_ONESHOT) {
                                     m_KillableItems[idx] = true;
                                     m_LevelPickups += PIERRE_ITEMS;
                                     m_LevelKillables += 1;
                                 }
 
+                                // Check for only valid pods
+                                if ((item->object_number == O_PODS
+                                     || item->object_number == O_BIG_POD)
+                                    && item->data != NULL) {
+                                    int16_t bug_item_num =
+                                        *(int16_t *)item->data;
+                                    const ITEM_INFO *bug_item =
+                                        &g_Items[bug_item_num];
+                                    if (g_Objects[bug_item->object_number]
+                                            .loaded) {
+                                        m_KillableItems[idx] = true;
+                                        m_LevelKillables += 1;
+                                    }
+                                }
+
                                 // Add killable if object triggered
-                                if (Stats_IsObjectKillable(item->object_number)
-                                    && !m_KillableItems[idx]) {
+                                if (Stats_IsObjectKillable(
+                                        item->object_number)) {
                                     m_KillableItems[idx] = true;
                                     m_LevelKillables += 1;
 
