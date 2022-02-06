@@ -15,6 +15,7 @@
 #include "game/screen.h"
 #include "game/settings.h"
 #include "game/shell.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
@@ -993,8 +994,6 @@ static void FixPyramidSecretTrigger()
         }
         global_secrets |= room_secrets;
     }
-
-    g_GameFlow.levels[g_CurrentLevel].secrets = GetSecretCount();
 }
 
 GAMEFLOW_OPTION
@@ -1077,7 +1076,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LEVEL_STATS:
-            LevelStats((int32_t)seq->data);
+            Stats_Show((int32_t)seq->data);
             break;
 
         case GFS_DISPLAY_PICTURE:

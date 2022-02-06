@@ -590,20 +590,20 @@ void SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
             g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
+        if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_UZI_ITEM)) {
                 SpawnItem(item, O_UZI_ITEM);
             }
         }
 
-        if (item->object_number == O_MERCENARY2 && item->hit_points <= 0) {
+        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
                 SpawnItem(item, O_MAGNUM_ITEM);
             }
             g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
+        if (item->object_number == O_BALDY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
                 SpawnItem(item, O_SHOTGUN_ITEM);
             }

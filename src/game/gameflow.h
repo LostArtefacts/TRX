@@ -31,6 +31,8 @@ typedef struct GAMEFLOW_LEVEL {
     char *puzzle4;
     int8_t demo;
     int16_t secrets;
+    int16_t pickups;
+    int16_t kills;
     GAMEFLOW_SEQUENCE *sequence;
     struct {
         bool override;

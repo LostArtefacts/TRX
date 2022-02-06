@@ -189,6 +189,7 @@ sources = [
   'src/game/shell.c',
   'src/game/sound.c',
   'src/game/sphere.c',
+  'src/game/stats.c',
   'src/game/text.c',
   'src/game/traps/damocles_sword.c',
   'src/game/traps/dart.c',

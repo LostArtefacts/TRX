@@ -10,6 +10,7 @@
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "log.h"
@@ -84,6 +85,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadRooms(fp)) {
         return false;
     }
+    Stats_ObserveRoomsLoad();
 
     if (!Level_LoadObjects(fp)) {
         return false;
@@ -112,6 +114,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadItems(fp)) {
         return false;
     }
+    Stats_ObserveItemsLoad();
 
     if (!Level_LoadDepthQ(fp)) {
         return false;
@@ -670,8 +673,6 @@ bool Level_Load(int level_num)
             g_StoredLaraHealth = LARA_HITPOINTS;
         }
     }
-
-    g_GameFlow.levels[level_num].secrets = GetSecretCount();
 
     return ret;
 }

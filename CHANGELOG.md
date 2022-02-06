@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
+- added total pickups and kills per level to the compass and end level stats screens (#362)
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
 - changed fade animations to be FPS-independent
 - changed fade animations to run faster in the main menu

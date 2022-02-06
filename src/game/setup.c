@@ -195,9 +195,9 @@ void BaddyObjects()
     SetupWarrior3(&g_Objects[O_WARRIOR3]);
     SetupCentaur(&g_Objects[O_CENTAUR]);
     SetupMummy(&g_Objects[O_MUMMY]);
-    SetupSkateKid(&g_Objects[O_MERCENARY1]);
-    SetupCowboy(&g_Objects[O_MERCENARY2]);
-    SetupBaldy(&g_Objects[O_MERCENARY3]);
+    SetupSkateKid(&g_Objects[O_SKATEKID]);
+    SetupCowboy(&g_Objects[O_COWBOY]);
+    SetupBaldy(&g_Objects[O_BALDY]);
     SetupAbortion(&g_Objects[O_ABORTION]);
     SetupNatla(&g_Objects[O_NATLA]);
     SetupPod(&g_Objects[O_PODS]);
