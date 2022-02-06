@@ -346,7 +346,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 ## Level kills and pickup notes
 The game can show the total number of pickups and kills in a level by checking
 the compass in the inventory or at the end of level stats screen. Due to some
-of the levels' designs, some of these kills and pickups are not obtainable.
+of the levels' design, some of these kills and pickups are not obtainable.
 See the table below for the discrepancies.
 
 Tomb Raider 1:
