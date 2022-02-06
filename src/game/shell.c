@@ -20,7 +20,6 @@
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "game/stats.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -76,7 +75,6 @@ void Shell_Main()
     Music_Init();
     Input_Init();
     FMV_Init();
-    Stats_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");

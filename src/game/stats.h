@@ -6,7 +6,6 @@
 
 void Stats_ObserveRoomsLoad();
 void Stats_ObserveItemsLoad();
-void Stats_Init();
 void Stats_CalculateStats();
 int32_t Stats_GetPickups();
 int32_t Stats_GetKillables();

@@ -50,6 +50,7 @@ int16_t m_KillableObjs[] = {
 };
 
 static void Stats_CheckTriggers();
+static bool Stats_IsObjectKillable(int32_t obj_num);
 
 static void Stats_CheckTriggers()
 {
@@ -122,7 +123,7 @@ static void Stats_CheckTriggers()
                                 }
 
                                 // Add killable if object triggered
-                                if (m_IfKillable[item->object_number]
+                                if (Stats_IsObjectKillable(item->object_number)
                                     && !m_KillableItems[idx]) {
                                     m_KillableItems[idx] = true;
                                     m_LevelKillables += 1;
@@ -148,6 +149,16 @@ static void Stats_CheckTriggers()
     }
 }
 
+static bool Stats_IsObjectKillable(int32_t obj_num)
+{
+    for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
+        if (m_KillableObjs[i] == obj_num) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Stats_ObserveRoomsLoad()
 {
     m_CachedFloorArray =
@@ -166,13 +177,6 @@ void Stats_ObserveRoomsLoad()
 void Stats_ObserveItemsLoad()
 {
     m_CachedItemCount = g_LevelItemCount;
-}
-
-void Stats_Init()
-{
-    for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
-        m_IfKillable[m_KillableObjs[i]] = true;
-    }
 }
 
 void Stats_CalculateStats()
