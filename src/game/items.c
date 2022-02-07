@@ -171,8 +171,7 @@ void AddActiveItem(int16_t item_num)
     }
 
     if (item->active) {
-        Shell_ExitSystemFmt(
-            "Item(%d)(Obj%d) already Active\n", item_num, item->object_number);
+        return;
     }
 
     item->active = 1;

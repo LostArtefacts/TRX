@@ -1478,7 +1478,7 @@ typedef struct GAME_INFO {
     uint16_t secrets;
     uint8_t pickups;
     uint8_t bonus_flag;
-    char savegame_buffer[MAX_SAVEGAME_BUFFER];
+    int32_t save_slot_to_load;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

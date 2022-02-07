@@ -2,7 +2,8 @@
     // NOTE: bad changes to this file may result in crashes.
 
     "main_menu_picture": "data\\titleh_ub.png",
-    "savegame_fmt": "saveuba.%d",
+    "savegame_fmt_legacy": "saveuba.%d",
+    "savegame_fmt_bson": "save_trub_%02d.dat",
     "enable_game_modes": true,
     "enable_save_crystals": false,
     "demo_delay": 16,

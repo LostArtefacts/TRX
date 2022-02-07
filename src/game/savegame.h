@@ -8,8 +8,10 @@ void InitialiseStartInfo();
 void ModifyStartInfo(int32_t level_num);
 void CreateStartInfo(int level_num);
 
-int16_t SaveGame_LoadSaveBufferFromFile(GAME_INFO *save, int32_t slot);
-void SaveGame_ApplySaveBuffer(GAME_INFO *save);
+int32_t SaveGame_GetLevelNumber(int32_t slot_num);
 
-bool SaveGame_SaveToFile(GAME_INFO *save, int32_t slot);
+bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info);
+bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info);
+
 void SaveGame_ScanSavedGames();
+void SaveGame_Shutdown();

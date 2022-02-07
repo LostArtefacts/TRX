@@ -8,6 +8,7 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/random.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "global/vars_platform.h"
 #include "log.h"
@@ -37,6 +38,7 @@ void S_Shell_Shutdown()
     GameBuf_Shutdown();
     Output_Shutdown();
     S_Audio_Shutdown();
+    SaveGame_Shutdown();
 }
 
 void S_Shell_SeedRandom()

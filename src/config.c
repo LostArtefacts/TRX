@@ -21,9 +21,9 @@
 #define READ_BOOL(opt, default_value)                                          \
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
 #define READ_INTEGER(opt, default_value)                                       \
-    READ_PRIMITIVE(json_object_get_number_int, opt, default_value)
+    READ_PRIMITIVE(json_object_get_int, opt, default_value)
 #define READ_FLOAT(opt, default_value)                                         \
-    READ_PRIMITIVE(json_object_get_number_double, opt, default_value)
+    READ_PRIMITIVE(json_object_get_double, opt, default_value)
 
 #define READ_ENUM(opt, default_value, enum_map)                                \
     do {                                                                       \
