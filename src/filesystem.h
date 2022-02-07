@@ -21,7 +21,7 @@ bool File_IsRelative(const char *path);
 bool File_Exists(const char *path);
 const char *File_GetGameDirectory();
 char *File_GetFullPath(const char *path);
-void File_GuessExtension(const char *path, char **out, const char **extensions);
+char *File_GuessExtension(const char *path, const char **extensions);
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode);
 size_t File_Read(void *data, size_t item_size, size_t count, MYFILE *file);
