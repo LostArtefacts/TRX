@@ -14,6 +14,18 @@ struct MYFILE {
     const char *path;
 };
 
+static bool File_ExistsRaw(const char *path);
+
+static bool File_ExistsRaw(const char *path)
+{
+    FILE *fp = fopen(path, "rb");
+    if (fp) {
+        fclose(fp);
+        return true;
+    }
+    return false;
+}
+
 bool File_IsAbsolute(const char *path)
 {
     return path && (path[0] == '/' || strstr(path, ":\\"));
@@ -31,17 +43,20 @@ const char *File_GetGameDirectory()
 
 bool File_Exists(const char *path)
 {
-    FILE *fp = fopen(path, "rb");
-    if (fp) {
-        fclose(fp);
-        return true;
-    }
-    return false;
+    char *full_path = File_GetFullPath(path);
+    bool ret = File_ExistsRaw(full_path);
+    Memory_FreePointer(&full_path);
+    return ret;
 }
 
 char *File_GetFullPath(const char *path)
 {
-    if (!File_Exists(path) && File_IsRelative(path)) {
+    // Get the absolute path to the given file, if possible.
+    // Internaly all operations on files within filesystem.c
+    // perform this normalization, so calling this function should
+    // only be necessary when interacting with external libraries.
+
+    if (!File_ExistsRaw(path) && File_IsRelative(path)) {
         const char *game_dir = File_GetGameDirectory();
         if (game_dir) {
             size_t out_size = strlen(game_dir) + strlen(path) + 2;
@@ -110,7 +125,9 @@ size_t File_Write(
 
 void File_CreateDirectory(const char *path)
 {
-    S_File_CreateDirectory(path);
+    char *full_path = File_GetFullPath(path);
+    S_File_CreateDirectory(full_path);
+    Memory_FreePointer(&full_path);
 }
 
 void File_Skip(MYFILE *file, size_t bytes)

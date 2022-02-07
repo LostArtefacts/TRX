@@ -342,8 +342,7 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     assert(game_info);
     bool ret = true;
 
-    char *dir = File_GetFullPath(SAVES_DIR);
-    File_CreateDirectory(dir);
+    File_CreateDirectory(SAVES_DIR);
 
     CreateStartInfo(g_CurrentLevel);
 
@@ -357,8 +356,9 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     while (strategy->format) {
         if (strategy->allow_save) {
             char *filename = strategy->get_save_filename(slot_num);
-            char *full_path = Memory_Alloc(strlen(dir) + strlen(filename) + 2);
-            sprintf(full_path, "%s/%s", dir, filename);
+            char *full_path =
+                Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
+            sprintf(full_path, "%s/%s", SAVES_DIR, filename);
 
             MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp) {
@@ -383,8 +383,6 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
         g_SavedGamesCount++;
         g_SaveCounter++;
     }
-
-    Memory_FreePointer(&dir);
 
     return ret;
 }
