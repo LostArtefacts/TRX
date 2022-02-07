@@ -52,26 +52,25 @@ char *File_GetFullPath(const char *path)
     return Memory_Dup(path);
 }
 
-void File_GuessExtension(const char *path, char **out, const char **extensions)
+char *File_GuessExtension(const char *path, const char **extensions)
 {
     if (!File_Exists(path)) {
         const char *dot = strrchr(path, '.');
         if (dot) {
             for (const char **ext = &extensions[0]; *ext; ext++) {
-                size_t target_size = dot - path + strlen(*ext) + 1;
-                *out = Memory_Alloc(target_size);
-                strncpy(*out, path, dot - path);
+                size_t out_size = dot - path + strlen(*ext) + 1;
+                char *out = Memory_Alloc(out_size);
+                strncpy(out, path, dot - path);
                 out[dot - path] = '\0';
-                strcat(*out, *ext);
-                if (File_Exists(*out)) {
-                    return;
+                strcat(out, *ext);
+                if (File_Exists(out)) {
+                    return out;
                 }
-                Memory_FreePointer(out);
+                Memory_FreePointer(&out);
             }
         }
     }
-    *out = Memory_Dup(path);
-    assert(*out);
+    return Memory_Dup(path);
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
