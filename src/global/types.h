@@ -1448,6 +1448,7 @@ typedef struct LARA_INFO {
 } LARA_INFO;
 
 typedef struct START_INFO {
+    int32_t lara_hitpoints;
     uint16_t pistol_ammo;
     uint16_t magnum_ammo;
     uint16_t uzi_ammo;

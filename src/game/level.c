@@ -60,6 +60,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 
     GameBuf_Shutdown();
     GameBuf_Init();
+
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
         Shell_ExitSystemFmt(
@@ -652,27 +653,6 @@ bool Level_Load(int level_num)
              ? g_GameFlow.levels[level_num].draw_distance_max.value
              : g_GameFlow.draw_distance_max)
         * WALL_L);
-
-    if (g_Config.disable_healing_between_levels) {
-        // check if we're in main menu by seeing if there is g_Lara item in the
-        // currently loaded level.
-        bool lara_found = false;
-        bool in_cutscene = false;
-        for (int i = 0; i < g_LevelItemCount; i++) {
-            if (g_Items[i].object_number == O_LARA) {
-                lara_found = true;
-            }
-            if (g_Items[i].object_number == O_PLAYER_1
-                || g_Items[i].object_number == O_PLAYER_2
-                || g_Items[i].object_number == O_PLAYER_3
-                || g_Items[i].object_number == O_PLAYER_4) {
-                in_cutscene = true;
-            }
-        }
-        if (!lara_found && !in_cutscene) {
-            g_StoredLaraHealth = LARA_HITPOINTS;
-        }
-    }
 
     return ret;
 }

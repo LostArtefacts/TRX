@@ -1,5 +1,6 @@
 #include "game/savegame.h"
 
+#include "config.h"
 #include "filesystem.h"
 #include "game/ai/pod.h"
 #include "game/control.h"
@@ -192,6 +193,12 @@ void ModifyStartInfo(int32_t level_num)
 
     START_INFO *start = &g_GameInfo.start[level_num];
 
+    if (!g_Config.disable_healing_between_levels
+        || level_num == g_GameFlow.gym_level_num
+        || level_num == g_GameFlow.first_level_num) {
+        start->lara_hitpoints = LARA_HITPOINTS;
+    }
+
     if (level_num == g_GameFlow.gym_level_num) {
         start->flags.available = 1;
         start->flags.costume = 1;
@@ -247,6 +254,20 @@ void CreateStartInfo(int level_num)
     // Used to carry over Lara's inventory between levels.
 
     START_INFO *start = &g_GameInfo.start[level_num];
+
+    if (g_LaraItem) {
+        start->lara_hitpoints = g_LaraItem->hit_points;
+    } else {
+        // Carry over variables from previous levels if the current level
+        // has no Lara object (such as the cutscene levels)
+        for (int l = level_num - 1; l >= 0; l--) {
+            START_INFO *prev_start = &g_GameInfo.start[l];
+            if (g_GameFlow.levels[l].level_type == GFL_NORMAL) {
+                start->lara_hitpoints = prev_start->lara_hitpoints;
+                break;
+            }
+        }
+    }
 
     start->flags.available = 1;
     start->flags.costume = 0;

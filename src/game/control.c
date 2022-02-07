@@ -312,19 +312,6 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         g_GameInfo.timer++;
         Overlay_BarHealthTimerTick();
 
-        if (g_Config.disable_healing_between_levels) {
-            int8_t lara_found = 0;
-            for (int i = 0; i < g_LevelItemCount; i++) {
-                if (g_Items[i].object_number == O_LARA) {
-                    lara_found = 1;
-                }
-            }
-            if (lara_found) {
-                g_StoredLaraHealth =
-                    g_LaraItem ? g_LaraItem->hit_points : LARA_HITPOINTS;
-            }
-        }
-
         m_FrameCount -= 0x10000;
     }
 

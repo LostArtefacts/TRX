@@ -96,7 +96,7 @@ bool InitialiseLevel(int32_t level_num)
     Text_RemoveAll();
     InitialiseGameFlags();
 
-    g_Lara.item_number = NO_ITEM;
+    InitialiseLaraLoad(NO_ITEM);
     if (level_num != g_GameFlow.title_level_num) {
         Screen_ApplyResolution();
     }
