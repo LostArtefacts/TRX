@@ -219,13 +219,10 @@ int32_t Display_Inventory(int inv_mode)
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             g_NoInputCount = 0;
-        } else {
-            if (!g_Config.disable_demo) {
-                g_NoInputCount++;
-                if (g_GameFlow.has_demo
-                    && g_NoInputCount > g_GameFlow.demo_delay) {
-                    g_ResetFlag = true;
-                }
+        } else if (!g_Config.disable_demo) {
+            g_NoInputCount++;
+            if (g_GameFlow.has_demo && g_NoInputCount > g_GameFlow.demo_delay) {
+                g_StartDemo = true;
             }
         }
 
@@ -298,8 +295,8 @@ int32_t Display_Inventory(int inv_mode)
                 break;
             }
 
-            if ((g_ResetFlag || g_InputDB.option)
-                && (g_ResetFlag || g_InvMode != INV_TITLE_MODE)) {
+            if ((g_StartDemo || g_InputDB.option)
+                && (g_StartDemo || g_InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 g_InvChosen = -1;
 
@@ -664,7 +661,7 @@ int32_t Display_Inventory(int inv_mode)
         m_VersionText = NULL;
     }
 
-    if (g_ResetFlag) {
+    if (g_StartDemo) {
         return GF_START_DEMO;
     }
 
