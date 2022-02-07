@@ -9,6 +9,7 @@ typedef enum SAVEGAME_FORMAT {
 
 typedef struct SAVEGAME_INFO {
     SAVEGAME_FORMAT format;
+    char *full_path;
     int32_t counter;
     int32_t level_num;
     char *level_title;

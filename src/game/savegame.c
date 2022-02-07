@@ -28,11 +28,13 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
+#define SAVES_DIR "saves"
+
 typedef struct SAVEGAME_STRATEGY {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
-    char *(*get_save_path)(int32_t slot_num);
+    char *(*get_save_filename)(int32_t slot_num);
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
@@ -46,7 +48,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
-        .get_save_path = SaveGame_BSON_GetSavePath,
+        .get_save_filename = SaveGame_BSON_GetSaveFileName,
         .fill_info = SaveGame_BSON_FillInfo,
         .load_from_file = SaveGame_BSON_LoadFromFile,
         .save_to_file = SaveGame_BSON_SaveToFile,
@@ -55,7 +57,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_path = SaveGame_Legacy_GetSavePath,
+        .get_save_filename = SaveGame_Legacy_GetSaveFileName,
         .fill_info = SaveGame_Legacy_FillInfo,
         .load_from_file = SaveGame_Legacy_LoadFromFile,
         .save_to_file = SaveGame_Legacy_SaveToFile,
@@ -318,13 +320,11 @@ bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (savegame_info->format == strategy->format) {
-            char *filename = strategy->get_save_path(slot_num);
-            MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
+            MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
             if (fp) {
                 ret = strategy->load_from_file(fp, game_info);
                 File_Close(fp);
             }
-            Memory_FreePointer(&filename);
             break;
         }
         strategy++;
@@ -342,6 +342,9 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     assert(game_info);
     bool ret = true;
 
+    char *dir = File_GetFullPath(SAVES_DIR);
+    File_CreateDirectory(dir);
+
     CreateStartInfo(g_CurrentLevel);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -353,9 +356,11 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (strategy->allow_save) {
-            char *filename = strategy->get_save_path(slot_num);
+            char *filename = strategy->get_save_filename(slot_num);
+            char *full_path = Memory_Alloc(strlen(dir) + strlen(filename) + 2);
+            sprintf(full_path, "%s/%s", dir, filename);
 
-            MYFILE *fp = File_Open(filename, FILE_OPEN_WRITE);
+            MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp) {
                 strategy->save_to_file(fp, game_info);
                 File_Close(fp);
@@ -364,6 +369,7 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
             }
 
             Memory_FreePointer(&filename);
+            Memory_FreePointer(&full_path);
         }
         strategy++;
     }
@@ -378,6 +384,8 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
         g_SaveCounter++;
     }
 
+    Memory_FreePointer(&dir);
+
     return ret;
 }
 
@@ -388,6 +396,7 @@ void SaveGame_Shutdown()
         savegame_info->format = 0;
         savegame_info->counter = -1;
         savegame_info->level_num = -1;
+        Memory_FreePointer(&savegame_info->full_path);
         Memory_FreePointer(&savegame_info->level_title);
     }
 }
@@ -405,15 +414,30 @@ void SaveGame_ScanSavedGames()
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
         while (strategy->format) {
             if (!savegame_info->format && strategy->allow_load) {
-                char *filename = strategy->get_save_path(i);
-                MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
+                char *filename = strategy->get_save_filename(i);
+
+                char *full_path =
+                    Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
+                sprintf(full_path, "%s/%s", SAVES_DIR, filename);
+
+                MYFILE *fp = NULL;
+                if (!fp) {
+                    fp = File_Open(full_path, FILE_OPEN_READ);
+                }
+                if (!fp) {
+                    fp = File_Open(filename, FILE_OPEN_READ);
+                }
+
                 if (fp) {
                     if (strategy->fill_info(fp, savegame_info)) {
                         savegame_info->format = strategy->format;
+                        savegame_info->full_path = Memory_Dup(File_GetPath(fp));
                     }
                     File_Close(fp);
                 }
+
                 Memory_FreePointer(&filename);
+                Memory_FreePointer(&full_path);
             }
             strategy++;
         }

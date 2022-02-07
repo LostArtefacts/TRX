@@ -351,7 +351,7 @@ static void SaveGame_Legacy_ReadLOT(LOT_INFO *lot)
     SaveGame_Legacy_Read(&lot->target, sizeof(PHD_VECTOR));
 }
 
-char *SaveGame_Legacy_GetSavePath(int32_t slot)
+char *SaveGame_Legacy_GetSaveFileName(int32_t slot)
 {
     size_t out_size =
         snprintf(NULL, 0, g_GameFlow.savegame_fmt_legacy, slot) + 1;

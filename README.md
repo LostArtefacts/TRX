@@ -258,6 +258,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - changed maximum textures from 2048 to 8192
 - changed maximum texture pages from 32 to 128
 - changed input method to DirectInput
+- changed saves to be put in the saves/ directory
 - fixed inability to switch Control keys during shimmy
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
