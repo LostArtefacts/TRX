@@ -220,7 +220,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
         Input_Update();
 
-        if (g_ResetFlag) {
+        if (g_StartDemo) {
             return GF_NOP_BREAK;
         }
 

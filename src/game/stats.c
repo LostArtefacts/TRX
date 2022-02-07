@@ -319,7 +319,7 @@ void Stats_Show(int32_t level_num)
     Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
     do {
-        if (g_ResetFlag) {
+        if (g_StartDemo) {
             break;
         }
         Output_InitialisePolyList();
