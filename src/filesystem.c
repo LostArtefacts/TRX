@@ -51,11 +51,6 @@ bool File_Exists(const char *path)
 
 char *File_GetFullPath(const char *path)
 {
-    // Get the absolute path to the given file, if possible.
-    // Internaly all operations on files within filesystem.c
-    // perform this normalization, so calling this function should
-    // only be necessary when interacting with external libraries.
-
     if (!File_ExistsRaw(path) && File_IsRelative(path)) {
         const char *game_dir = File_GetGameDirectory();
         if (game_dir) {
