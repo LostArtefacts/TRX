@@ -829,7 +829,7 @@ static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara)
     return lara_obj;
 }
 
-char *SaveGame_BSON_GetSavePath(int32_t slot)
+char *SaveGame_BSON_GetSaveFileName(int32_t slot)
 {
     size_t out_size = snprintf(NULL, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
     char *out = Memory_Alloc(out_size);

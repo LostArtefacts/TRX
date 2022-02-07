@@ -11,6 +11,7 @@
 
 struct MYFILE {
     FILE *fp;
+    const char *path;
 };
 
 bool File_IsAbsolute(const char *path)
@@ -77,6 +78,7 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
     char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
+    file->path = Memory_Dup(path);
     switch (mode) {
     case FILE_OPEN_WRITE:
         file->fp = fopen(full_path, "wb");
@@ -145,9 +147,15 @@ size_t File_Size(MYFILE *file)
     return size;
 }
 
+const char *File_GetPath(MYFILE *file)
+{
+    return file->path;
+}
+
 void File_Close(MYFILE *file)
 {
     fclose(file->fp);
+    Memory_FreePointer(&file->path);
     Memory_FreePointer(&file);
 }
 
