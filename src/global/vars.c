@@ -29,7 +29,6 @@ int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *g_SampleInfos = NULL;
 uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
 
-int32_t g_NoInputCount = 0;
 bool g_IDelay = false;
 int32_t g_IDCount = 0;
 int32_t g_OptionSelected = 0;
@@ -60,7 +59,6 @@ int32_t g_SaveCounter = 0;
 int16_t g_CurrentLevel = -1;
 uint32_t *g_DemoData = NULL;
 bool g_LevelComplete = false;
-bool g_StartDemo = false;
 bool g_ChunkyFlag = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
