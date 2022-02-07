@@ -75,13 +75,6 @@ static bool SaveGame_BSON_IsValidItemObject(
         case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
         case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
-        // TODO: these are not valid replacements, but they are needed
-        // because of issue #406. Once we fix that, these can be safely
-        // removed.
-        case O_PISTOLS: return initial_obj_num == O_GUN_AMMO_ITEM;
-        case O_SHOTGUN_ITEM: return initial_obj_num == O_SG_AMMO_ITEM;
-        case O_MAGNUM_ITEM: return initial_obj_num == O_MAG_AMMO_ITEM;
-        case O_UZI_ITEM: return initial_obj_num == O_UZI_AMMO_ITEM;
     }
     // clang-format on
 

@@ -294,6 +294,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara switching to pistols when completing a level with other guns
 - fixed detail levels text flashing with any option change
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips
+- fixed gun pickups disappearing in rare circumstances on save load (#406)
 
 ## Showcase
 

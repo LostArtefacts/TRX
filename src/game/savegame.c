@@ -175,6 +175,7 @@ static void SaveGame_LoadPostProcess()
 void InitialiseStartInfo()
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
+        ResetStartInfo(i);
         ModifyStartInfo(i);
         g_GameInfo.start[i].flags.available = 0;
     }
@@ -182,8 +183,19 @@ void InitialiseStartInfo()
     g_GameInfo.start[g_GameFlow.first_level_num].flags.available = 1;
 }
 
+void ResetStartInfo(int32_t level_num)
+{
+    // Reset the start info to blank state.
+
+    START_INFO *start = &g_GameInfo.start[level_num];
+    memset(start, 0, sizeof(START_INFO));
+    ModifyStartInfo(level_num);
+}
+
 void ModifyStartInfo(int32_t level_num)
 {
+    // Apply game mechanics to the start info.
+
     START_INFO *start = &g_GameInfo.start[level_num];
 
     if (level_num == g_GameFlow.gym_level_num) {
@@ -237,6 +249,9 @@ void ModifyStartInfo(int32_t level_num)
 
 void CreateStartInfo(int level_num)
 {
+    // Persist Lara's inventory to the start info.
+    // Used to carry over Lara's inventory between levels.
+
     START_INFO *start = &g_GameInfo.start[level_num];
 
     start->flags.available = 1;
