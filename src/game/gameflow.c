@@ -15,6 +15,7 @@
 #include "game/screen.h"
 #include "game/settings.h"
 #include "game/shell.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "json.h"
@@ -36,8 +37,8 @@ typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
 } GAMEFLOW_DISPLAY_PICTURE_DATA;
 
 typedef struct GAMEFLOW_MESH_SWAP_DATA {
-    int32_t object1_num;
-    int32_t object2_num;
+    GAME_OBJECT_ID object1_num;
+    GAME_OBJECT_ID object2_num;
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 
@@ -66,6 +67,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "DETAIL_LEVEL_LOW", GS_DETAIL_LEVEL_LOW },
         { "DETAIL_PERSPECTIVE_FMT", GS_DETAIL_PERSPECTIVE_FMT },
         { "DETAIL_BILINEAR_FMT", GS_DETAIL_BILINEAR_FMT },
+        { "DETAIL_VSYNC_FMT", GS_DETAIL_VSYNC_FMT },
         { "DETAIL_BRIGHTNESS_FMT", GS_DETAIL_BRIGHTNESS_FMT },
         { "DETAIL_UI_TEXT_SCALE_FMT", GS_DETAIL_UI_TEXT_SCALE_FMT },
         { "DETAIL_UI_BAR_SCALE_FMT", GS_DETAIL_UI_BAR_SCALE_FMT },
@@ -255,10 +257,16 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
         if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
-            Memory_FreePointer(&g_GameFlow.strings[key]);
             g_GameFlow.strings[key] = Memory_Dup(value->string);
         }
         strings_elem = strings_elem->next;
+    }
+
+    for (const GAMEFLOW_DEFAULT_STRING *def = g_GameFlowDefaultStrings;
+         def->string; def++) {
+        if (!g_GameFlow.strings[def->key]) {
+            g_GameFlow.strings[def->key] = Memory_Dup(def->string);
+        }
     }
 
     return true;
@@ -987,8 +995,6 @@ static void FixPyramidSecretTrigger()
         }
         global_secrets |= room_secrets;
     }
-
-    g_GameFlow.levels[g_CurrentLevel].secrets = GetSecretCount();
 }
 
 GAMEFLOW_OPTION
@@ -1071,18 +1077,18 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LEVEL_STATS:
-            LevelStats((int32_t)seq->data);
+            Stats_Show((int32_t)seq->data);
             break;
 
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
+                Output_FadeToTransparent(true);
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Output_DisplayPicture(data->path);
                 Output_InitialisePolyList();
-                Output_CopyBufferToScreen();
+                Output_CopyPictureToScreen();
                 Output_DumpScreen();
                 Shell_Wait(data->display_time);
-                Output_FadeToBlack();
             }
             break;
 

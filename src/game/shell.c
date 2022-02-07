@@ -24,7 +24,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "init.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
@@ -46,7 +45,6 @@ static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
 void Shell_Main()
 {
-    T1MInit();
     Config_Read();
 
     const char *gameflow_path = m_T1MGameflowPath;
@@ -142,8 +140,6 @@ void Shell_Main()
             }
 
             gf_option = Display_Inventory(INV_TITLE_MODE);
-
-            Output_FadeToBlack();
             Music_Stop();
             break;
 
@@ -182,13 +178,10 @@ void Shell_Wait(int nticks)
 {
     for (int i = 0; i < nticks; i++) {
         Input_Update();
-        if (g_Input.any) {
+        if (g_InputDB.any) {
             break;
         }
         Clock_SyncTicks(1);
-    }
-    while (g_Input.any) {
-        Input_Update();
     }
 }
 

@@ -1371,6 +1371,7 @@ void Draw_DrawScene(bool draw_overlay)
             PrintRooms(room_num);
         }
     }
+    Output_DrawBackdropScreen();
 }
 
 int32_t Draw_ProcessFrame()

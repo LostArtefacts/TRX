@@ -55,6 +55,7 @@ typedef struct {
     bool enable_compass_stats;
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
+    bool enable_fade_effects;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
@@ -89,9 +90,10 @@ typedef struct {
     } input;
 
     struct {
-        uint32_t enable_perspective_filter : 1;
-        uint32_t enable_bilinear_filter : 1;
-        uint32_t enable_fps_counter : 1;
+        bool enable_perspective_filter;
+        bool enable_bilinear_filter;
+        bool enable_vsync;
+        bool enable_fps_counter;
         float anisotropy_filter;
     } rendering;
 

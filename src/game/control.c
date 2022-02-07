@@ -254,7 +254,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if ((g_Input.option || g_Input.save || g_Input.load
+        if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
             && !g_Lara.death_count) {
             if (g_OverlayFlag > 0) {
@@ -504,7 +504,9 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
     if ((*data & DATA_TYPE) == FT_LAVA) {
         if (!heavy && g_LaraItem->pos.y == g_LaraItem->floor) {
-            LavaBurn(g_LaraItem);
+            if (TestLavaFloor(g_LaraItem)) {
+                LavaBurn(g_LaraItem);
+            }
         }
 
         if (*data & END_BIT) {
@@ -840,6 +842,9 @@ void RemoveRoomFlipItems(ROOM_INFO *r)
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, WALL_L * 2);
             break;
+
+        default:
+            break;
         }
     }
 }
@@ -860,6 +865,9 @@ void AddRoomFlipItems(ROOM_INFO *r)
 
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, -WALL_L * 2);
+            break;
+
+        default:
             break;
         }
     }

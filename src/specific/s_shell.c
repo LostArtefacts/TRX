@@ -13,6 +13,7 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
+#include "src/game/sound.h"
 
 #define SDL_MAIN_HANDLED
 
@@ -109,10 +110,12 @@ void S_Shell_SpinMessageLoop()
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
                 Music_SetVolume(g_Config.music_volume);
+                Sound_SetMasterVolume(g_Config.sound_volume);
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
                 Music_SetVolume(0);
+                Sound_SetMasterVolume(0);
                 break;
 
             case SDL_WINDOWEVENT_RESIZED: {
@@ -130,6 +133,25 @@ int main(int argc, char **argv)
     Log_Init();
 
 #ifdef _WIN32
+    // Enable HiDPI mode in Windows to detect DPI scaling
+    typedef enum PROCESS_DPI_AWARENESS {
+        PROCESS_DPI_UNAWARE = 0,
+        PROCESS_SYSTEM_DPI_AWARE = 1,
+        PROCESS_PER_MONITOR_DPI_AWARE = 2
+    } PROCESS_DPI_AWARENESS;
+
+    HRESULT(WINAPI * SetProcessDpiAwareness)
+    (PROCESS_DPI_AWARENESS dpiAwareness); // Windows 8.1 and later
+    void *shcore_dll = SDL_LoadObject("SHCORE.DLL");
+    if (shcore_dll) {
+        SetProcessDpiAwareness =
+            (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))SDL_LoadFunction(
+                shcore_dll, "SetProcessDpiAwareness");
+        if (SetProcessDpiAwareness) {
+            SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+        }
+    }
+
     // necessary for SDL_OpenAudioDevice to work with WASAPI
     // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
     CoInitializeEx(NULL, COINIT_MULTITHREADED);

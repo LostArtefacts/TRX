@@ -14,10 +14,19 @@
 
 PHD_VECTOR g_LsVectorView = { 0 };
 
+static int m_OverlayCurAlpha = 0;
+static int m_OverlayDstAlpha = 0;
+static int m_BackdropCurAlpha = 0;
+static int m_BackdropDstAlpha = 0;
+static double m_FadeSpeed = 1.0;
+
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
+
+static void Output_DrawBlackScreen(uint8_t alpha);
+static void Output_FadeAnimate(int ticks);
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number);
@@ -38,18 +47,16 @@ static void Output_CalcWibbleTable();
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[3];
-    int32_t color;
-
     S_Output_DisableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[3] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        uint8_t color_idx = *obj_ptr++;
+        RGB888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
     }
 
@@ -59,19 +66,17 @@ static const int16_t *Output_DrawObjectG3(
 static const int16_t *Output_DrawObjectG4(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[4];
-    int32_t color;
-
     S_Output_DisableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        vns[3] = &m_VBuf[*obj_ptr++];
-        color = *obj_ptr++;
-
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[4] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        uint8_t color_idx = *obj_ptr++;
+        RGB888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
         S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
     }
@@ -82,17 +87,15 @@ static const int16_t *Output_DrawObjectG4(
 static const int16_t *Output_DrawObjectGT3(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[3];
-    PHD_TEXTURE *tex;
-
     S_Output_EnableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[3] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
 
         S_Output_DrawTexturedTriangle(
             vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
@@ -105,18 +108,16 @@ static const int16_t *Output_DrawObjectGT3(
 static const int16_t *Output_DrawObjectGT4(
     const int16_t *obj_ptr, int32_t number)
 {
-    int32_t i;
-    PHD_VBUF *vns[4];
-    PHD_TEXTURE *tex;
-
     S_Output_EnableTextureMode();
 
-    for (i = 0; i < number; i++) {
-        vns[0] = &m_VBuf[*obj_ptr++];
-        vns[1] = &m_VBuf[*obj_ptr++];
-        vns[2] = &m_VBuf[*obj_ptr++];
-        vns[3] = &m_VBuf[*obj_ptr++];
-        tex = &g_PhdTextureInfo[*obj_ptr++];
+    for (int i = 0; i < number; i++) {
+        PHD_VBUF *vns[4] = {
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+            &m_VBuf[*obj_ptr++],
+        };
+        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
 
         S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
@@ -387,6 +388,12 @@ void Output_DownloadTextures(int page_count)
     S_Output_DownloadTextures(page_count);
 }
 
+RGBA8888 Output_RGB2RGBA(const RGB888 color)
+{
+    RGBA8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
+    return ret;
+}
+
 void Output_SetPalette(RGB888 palette[256])
 {
     S_Output_SetPalette(palette);
@@ -414,10 +421,13 @@ void Output_InitialisePolyList()
 
 int32_t Output_DumpScreen()
 {
+    Output_DrawOverlayScreen();
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
-    return Clock_SyncTicks(TICKS_PER_FRAME);
+    int ticks = Clock_SyncTicks(TICKS_PER_FRAME);
+    Output_FadeAnimate(ticks);
+    return ticks;
 }
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -649,39 +659,34 @@ void Output_DrawSprite(
     }
 }
 
-void Output_CopyScreenToBuffer()
-{
-    S_Output_CopyToPicture();
-}
-
-void Output_CopyBufferToScreen()
+void Output_CopyPictureToScreen()
 {
     S_Output_CopyFromPicture();
 }
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 color)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 tl, RGB888 tr,
-    RGB888 bl, RGB888 br)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGB888 col)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col)
 {
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
 void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    RGB888 rgb_border_light = Output_GetPaletteColor(15);
-    RGB888 rgb_border_dark = Output_GetPaletteColor(31);
+    RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
+    RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
     Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
     Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
     Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);
@@ -694,7 +699,8 @@ void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    S_Output_DrawTranslucentQuad(sx, sy, sx + w, sy + h);
+    RGBA8888 color = { 0, 0, 0, 128 };
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(
@@ -841,9 +847,112 @@ void Output_AnimateTextures(int32_t ticks)
     }
 }
 
-void Output_FadeToBlack()
+static void Output_DrawBlackScreen(uint8_t alpha)
 {
-    S_Output_FadeToBlack();
+    if (alpha) {
+        int32_t sx = 0;
+        int32_t sy = 0;
+        int32_t sw = ViewPort_GetMaxX();
+        int32_t sh = ViewPort_GetMaxY();
+
+        RGBA8888 background = { 0, 0, 0, alpha };
+        S_Output_DisableDepthTest();
+        S_Output_ClearDepthBuffer();
+        Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+        S_Output_EnableDepthTest();
+    }
+}
+
+static void Output_FadeAnimate(int ticks)
+{
+    if (!g_Config.enable_fade_effects) {
+        return;
+    }
+
+    const int delta = 5 * m_FadeSpeed * ticks;
+    if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha += delta;
+    } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha -= delta;
+    } else {
+        m_OverlayCurAlpha = m_OverlayDstAlpha;
+    }
+    if (m_BackdropCurAlpha + delta <= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha += delta;
+    } else if (m_BackdropCurAlpha - delta >= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha -= delta;
+    } else {
+        m_BackdropCurAlpha = m_BackdropDstAlpha;
+    }
+}
+
+void Output_DrawBackdropScreen()
+{
+    Output_DrawBlackScreen(m_BackdropCurAlpha);
+}
+
+void Output_DrawOverlayScreen()
+{
+    Output_DrawBlackScreen(m_OverlayCurAlpha);
+}
+
+void Output_FadeReset()
+{
+    m_BackdropCurAlpha = 0;
+    m_OverlayCurAlpha = 0;
+    m_BackdropDstAlpha = 0;
+    m_OverlayDstAlpha = 0;
+}
+
+void Output_FadeSetSpeed(double speed)
+{
+    m_FadeSpeed = speed;
+}
+
+void Output_FadeResetToBlack()
+{
+    m_OverlayCurAlpha = 255;
+    m_OverlayDstAlpha = 255;
+}
+
+void Output_FadeToBlack(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_OverlayDstAlpha = 255;
+    } else if (allow_immediate) {
+        m_OverlayCurAlpha = 255;
+    }
+}
+
+void Output_FadeToSemiBlack(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_BackdropDstAlpha = 128;
+        m_OverlayDstAlpha = 0;
+    } else if (allow_immediate) {
+        m_BackdropCurAlpha = 128;
+        m_OverlayCurAlpha = 0;
+    }
+}
+
+void Output_FadeToTransparent(bool allow_immediate)
+{
+    if (g_Config.enable_fade_effects) {
+        m_BackdropDstAlpha = 0;
+        m_OverlayDstAlpha = 0;
+    } else if (allow_immediate) {
+        m_BackdropCurAlpha = 0;
+        m_OverlayCurAlpha = 0;
+    }
+}
+
+bool Output_FadeIsAnimating()
+{
+    if (!g_Config.enable_fade_effects) {
+        return false;
+    }
+    return m_OverlayCurAlpha != m_OverlayDstAlpha
+        || m_BackdropCurAlpha != m_BackdropDstAlpha;
 }
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b)

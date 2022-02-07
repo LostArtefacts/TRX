@@ -628,12 +628,15 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
             Sound_Effect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
             break;
 
-        case O_MERCENARY1:
+        case O_SKATEKID:
             Sound_Effect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
             break;
 
         case O_ABORTION:
             Sound_Effect(SFX_ABORTION_HIT, &item->pos, SPM_NORMAL);
+            break;
+
+        default:
             break;
         }
     }

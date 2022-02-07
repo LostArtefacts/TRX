@@ -4,6 +4,11 @@
 
 #include <stdint.h>
 
+typedef struct GAMEFLOW_DEFUALT_STRING {
+    GAME_STRING_ID key;
+    char *string;
+} GAMEFLOW_DEFAULT_STRING;
+
 typedef struct GAMEFLOW_SEQUENCE {
     GAMEFLOW_SEQUENCE_TYPE type;
     void *data;
@@ -26,6 +31,8 @@ typedef struct GAMEFLOW_LEVEL {
     char *puzzle4;
     int8_t demo;
     int16_t secrets;
+    int16_t pickups;
+    int16_t kills;
     GAMEFLOW_SEQUENCE *sequence;
     struct {
         bool override;
@@ -61,6 +68,7 @@ typedef struct GAMEFLOW {
 } GAMEFLOW;
 
 extern GAMEFLOW g_GameFlow;
+extern GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[];
 
 GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);

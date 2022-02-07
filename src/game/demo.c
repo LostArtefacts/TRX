@@ -76,7 +76,6 @@ int32_t StartDemo()
         Text_Remove(txt);
 
         *s = start;
-        Output_FadeToBlack();
     }
 
     g_Config.enable_enhanced_look = old_enhanced_look;

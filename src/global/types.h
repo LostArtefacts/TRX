@@ -24,6 +24,7 @@ typedef enum CAMERA_TYPE {
 } CAMERA_TYPE;
 
 typedef enum GAME_OBJECT_ID {
+    O_INVALID = -1,
     O_LARA = 0,
     O_PISTOLS = 1,
     O_SHOTGUN = 2,
@@ -54,9 +55,9 @@ typedef enum GAME_OBJECT_ID {
     O_LARSON = 27,
     O_PIERRE = 28,
     O_SKATEBOARD = 29,
-    O_MERCENARY1 = 30,
-    O_MERCENARY2 = 31,
-    O_MERCENARY3 = 32,
+    O_SKATEKID = 30,
+    O_COWBOY = 31,
+    O_BALDY = 32,
     O_NATLA = 33,
     O_ABORTION = 34, // a.k.a. Adam, Torso or Evil Natla
     O_FALLING_BLOCK = 35,
@@ -1029,6 +1030,7 @@ typedef enum GAME_STRING_ID {
     GS_DETAIL_LEVEL_LOW,
     GS_DETAIL_PERSPECTIVE_FMT,
     GS_DETAIL_BILINEAR_FMT,
+    GS_DETAIL_VSYNC_FMT,
     GS_DETAIL_BRIGHTNESS_FMT,
     GS_DETAIL_UI_TEXT_SCALE_FMT,
     GS_DETAIL_UI_BAR_SCALE_FMT,
@@ -1156,6 +1158,13 @@ typedef struct RGB888 {
     uint8_t b;
 } RGB888;
 
+typedef struct RGBA8888 {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} RGBA8888;
+
 typedef struct POS_2D {
     uint16_t x;
     uint16_t y;
@@ -1221,8 +1230,8 @@ typedef struct PHD_VBUF {
 } PHD_VBUF;
 
 typedef struct PHD_UV {
-    uint16_t u1;
-    uint16_t v1;
+    uint16_t u;
+    uint16_t v;
 } PHD_UV;
 
 typedef struct PHD_TEXTURE {
@@ -1325,7 +1334,7 @@ typedef struct ITEM_INFO {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t current_anim_state;
     int16_t goal_anim_state;
     int16_t required_anim_state;
@@ -1392,7 +1401,7 @@ typedef struct LOT_INFO {
 typedef struct FX_INFO {
     PHD_3DPOS pos;
     int16_t room_number;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t next_fx;
     int16_t next_active;
     int16_t speed;
@@ -1803,7 +1812,7 @@ typedef struct INVENTORY_SPRITE {
 
 typedef struct INVENTORY_ITEM {
     char *string;
-    int16_t object_number;
+    GAME_OBJECT_ID object_number;
     int16_t frames_total;
     int16_t current_frame;
     int16_t goal_frame;

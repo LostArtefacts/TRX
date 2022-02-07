@@ -47,7 +47,6 @@ int32_t StopCinematic(int32_t level_num)
     Sound_StopAllSamples();
 
     g_LevelComplete = true;
-    Output_CopyScreenToBuffer();
 
     return level_num | GF_LEVEL_COMPLETE;
 }
@@ -74,16 +73,12 @@ bool DoCinematic(int32_t nframes)
 {
     m_FrameCount += m_CinematicAnimationRate * nframes;
     while (m_FrameCount >= 0) {
-        // End the cinematic one frame early (the last frame is handled by
-        // Output_CopyScreenToBuffer). Not doing this causes
-        // Output_CopyScreenToBuffer to attempt rendering non-existing
-        // animation frames.
         if (g_CineFrame >= g_NumCineFrames - 1) {
             return true;
         }
 
         Input_Update();
-        if (g_Input.option) {
+        if (g_InputDB.deselect || g_InputDB.select) {
             return true;
         }
 

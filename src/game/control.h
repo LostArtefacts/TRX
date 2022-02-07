@@ -24,6 +24,4 @@ void FlipMap();
 void RemoveRoomFlipItems(ROOM_INFO *r);
 void AddRoomFlipItems(ROOM_INFO *r);
 
-int32_t GetSecretCount();
-
 bool Control_Pause();

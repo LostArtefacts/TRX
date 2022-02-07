@@ -10,6 +10,7 @@
 void SetupLavaEmitter(OBJECT_INFO *obj);
 void SetupLava(OBJECT_INFO *obj);
 void SetupLavaWedge(OBJECT_INFO *obj);
+bool TestLavaFloor(ITEM_INFO *item);
 void LavaBurn(ITEM_INFO *item);
 void LavaEmitterControl(int16_t item_num);
 void LavaControl(int16_t fx_num);

@@ -10,6 +10,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "src/game/objects/door.h"
 
 #define MAX_BADDIE_COLLISION 12
 

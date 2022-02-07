@@ -138,6 +138,11 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
     GFX_GL_CheckError();
 }
 
+void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer)
+{
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 int GFX_3D_Renderer_TextureReg(
     GFX_3D_Renderer *renderer, const void *data, int width, int height)
 {
@@ -239,6 +244,18 @@ void GFX_3D_Renderer_SetSmoothingEnabled(
         is_enabled ? GL_LINEAR : GL_NEAREST);
     GFX_GL_Program_Uniform1i(
         &renderer->program, renderer->loc_smoothing_enabled, is_enabled);
+}
+
+void GFX_3D_Renderer_SetDepthTestEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled)
+{
+    assert(renderer);
+    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
+    if (is_enabled) {
+        glEnable(GL_DEPTH_TEST);
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
 }
 
 void GFX_3D_Renderer_SetBlendingEnabled(

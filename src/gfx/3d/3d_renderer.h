@@ -31,6 +31,7 @@ void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer);
 void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer);
+void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer);
 
 int GFX_3D_Renderer_TextureReg(
     GFX_3D_Renderer *renderer, const void *data, int width, int height);
@@ -47,6 +48,8 @@ void GFX_3D_Renderer_RenderPrimList(
 void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetSmoothingEnabled(
+    GFX_3D_Renderer *renderer, bool is_enabled);
+void GFX_3D_Renderer_SetDepthTestEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);

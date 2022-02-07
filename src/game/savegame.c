@@ -175,10 +175,6 @@ void ModifyStartInfo(int32_t level_num)
 {
     START_INFO *start = &g_GameInfo.start[level_num];
 
-    start->flags.got_pistols = 1;
-    start->gun_type = LGT_PISTOLS;
-    start->pistol_ammo = 1000;
-
     if (level_num == g_GameFlow.gym_level_num) {
         start->flags.available = 1;
         start->flags.costume = 1;
@@ -203,12 +199,15 @@ void ModifyStartInfo(int32_t level_num)
         start->num_medis = 0;
         start->num_big_medis = 0;
         start->num_scions = 0;
+        start->pistol_ammo = 1000;
         start->shotgun_ammo = 0;
         start->magnum_ammo = 0;
         start->uzi_ammo = 0;
+        start->flags.got_pistols = 1;
         start->flags.got_shotgun = 0;
         start->flags.got_magnums = 0;
         start->flags.got_uzis = 0;
+        start->gun_type = LGT_PISTOLS;
         start->gun_status = LGS_ARMLESS;
     }
 
@@ -591,20 +590,20 @@ void SaveGame_ApplySaveBuffer(GAME_INFO *game_info)
             g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_MERCENARY1 && item->hit_points <= 0) {
+        if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_UZI_ITEM)) {
                 SpawnItem(item, O_UZI_ITEM);
             }
         }
 
-        if (item->object_number == O_MERCENARY2 && item->hit_points <= 0) {
+        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
                 SpawnItem(item, O_MAGNUM_ITEM);
             }
             g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_MERCENARY3 && item->hit_points <= 0) {
+        if (item->object_number == O_BALDY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
                 SpawnItem(item, O_SHOTGUN_ITEM);
             }
