@@ -221,7 +221,7 @@ int32_t Display_Inventory(int inv_mode)
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             no_input_count = 0;
-        } else if (!g_Config.disable_demo) {
+        } else if (!g_Config.disable_demo && imo.status == RNG_OPEN) {
             no_input_count++;
             if (g_GameFlow.has_demo && no_input_count > g_GameFlow.demo_delay) {
                 start_demo = true;
