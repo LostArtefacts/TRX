@@ -53,6 +53,4 @@ void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
 
 void File_Close(MYFILE *file);
 
-int File_Delete(const char *path);
-
 bool File_Load(const char *path, char **output_data, size_t *output_size);

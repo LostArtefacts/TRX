@@ -171,11 +171,6 @@ void File_Close(MYFILE *file)
     Memory_FreePointer(&file);
 }
 
-int File_Delete(const char *path)
-{
-    return remove(path);
-}
-
 bool File_Load(const char *path, char **output_data, size_t *output_size)
 {
     MYFILE *fp = File_Open(path, FILE_OPEN_READ);
