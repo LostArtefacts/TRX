@@ -21,10 +21,9 @@ PICTURE *Picture_Create(int width, int height)
 
 PICTURE *Picture_CreateFromFile(const char *path)
 {
-    char *full_path = NULL;
+    char *full_path = File_GetFullPath(path);
     char *final_path = NULL;
 
-    File_GetFullPath(path, &full_path);
     File_GuessExtension(full_path, &final_path, m_Extensions);
 
     PICTURE *picture = S_Picture_CreateFromFile(final_path);
@@ -38,8 +37,7 @@ bool Picture_SaveToFile(const PICTURE *pic, const char *path)
     assert(pic);
     assert(path);
 
-    char *full_path = NULL;
-    File_GetFullPath(path, &full_path);
+    char *full_path = File_GetFullPath(path);
 
     bool ret = S_Picture_SaveToFile(pic, full_path);
 
