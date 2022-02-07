@@ -38,21 +38,18 @@ bool File_Exists(const char *path)
     return false;
 }
 
-void File_GetFullPath(const char *path, char **out)
+char *File_GetFullPath(const char *path)
 {
     if (!File_Exists(path) && File_IsRelative(path)) {
-        const char *game_path = File_GetGameDirectory();
-        if (game_path) {
-            size_t target_size = strlen(game_path) + 1 + strlen(path) + 1;
-            *out = Memory_Alloc(target_size);
-            strcpy(*out, game_path);
-            strcat(*out, "\\");
-            strcat(*out, path);
-            return;
+        const char *game_dir = File_GetGameDirectory();
+        if (game_dir) {
+            size_t out_size = strlen(game_dir) + strlen(path) + 2;
+            char *out = Memory_Alloc(out_size);
+            sprintf(out, "%s/%s", game_dir, path);
+            return out;
         }
     }
-    *out = Memory_Dup(path);
-    assert(*out);
+    return Memory_Dup(path);
 }
 
 void File_GuessExtension(const char *path, char **out, const char **extensions)
@@ -79,8 +76,7 @@ void File_GuessExtension(const char *path, char **out, const char **extensions)
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
-    char *full_path = NULL;
-    File_GetFullPath(path, &full_path);
+    char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     switch (mode) {
     case FILE_OPEN_WRITE:

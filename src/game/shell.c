@@ -260,8 +260,7 @@ void Shell_GetScreenshotName(char *str)
 bool Shell_MakeScreenshot()
 {
     // Screenshot folder
-    char *ss_folder_path = NULL;
-    File_GetFullPath("screenshots", &ss_folder_path);
+    char *ss_folder_path = File_GetFullPath("screenshots");
     File_CreateDirectory(ss_folder_path);
 
     // Screenshot name
