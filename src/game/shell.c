@@ -260,8 +260,7 @@ void Shell_Wait(int nticks)
 
 bool Shell_MakeScreenshot()
 {
-    char *dir = File_GetFullPath(SCREENSHOTS_DIR);
-    File_CreateDirectory(dir);
+    File_CreateDirectory(SCREENSHOTS_DIR);
 
     char *filename = Shell_GetScreenshotName(filename);
 
@@ -279,15 +278,16 @@ bool Shell_MakeScreenshot()
     }
 
     bool result = false;
-    char *full_path =
-        Memory_Alloc(strlen(dir) + strlen(filename) + strlen(ext) + 6);
-    sprintf(full_path, "%s/%s.%s", dir, filename, ext);
+    char *full_path = Memory_Alloc(
+        strlen(SCREENSHOTS_DIR) + strlen(filename) + strlen(ext) + 6);
+    sprintf(full_path, "%s/%s.%s", SCREENSHOTS_DIR, filename, ext);
     if (!File_Exists(full_path)) {
         result = Output_MakeScreenshot(full_path);
     } else {
         // name already exists, so add a number to name
         for (int i = 2; i < 100; i++) {
-            sprintf(full_path, "%s/%s_%d.%s", dir, filename, i, ext);
+            sprintf(
+                full_path, "%s/%s_%d.%s", SCREENSHOTS_DIR, filename, i, ext);
             if (!File_Exists(full_path)) {
                 result = Output_MakeScreenshot(full_path);
                 break;
@@ -296,7 +296,6 @@ bool Shell_MakeScreenshot()
     }
 
     Memory_FreePointer(&filename);
-    Memory_FreePointer(&dir);
     Memory_FreePointer(&full_path);
     return result;
 }

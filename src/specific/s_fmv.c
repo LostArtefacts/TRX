@@ -32,6 +32,7 @@
 #include "gfx/context.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
@@ -2094,7 +2095,9 @@ static VideoState *S_FMV_StreamOpen(const char *filename)
     is->video_stream = -1;
     is->audio_stream = -1;
     is->subtitle_stream = -1;
-    is->filename = av_strdup(filename);
+    char *full_path = File_GetFullPath(filename);
+    is->filename = av_strdup(full_path);
+    Memory_FreePointer(&full_path);
     if (!is->filename) {
         goto fail;
     }
