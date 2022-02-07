@@ -67,8 +67,6 @@ int32_t StopGame()
 
 int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 {
-    g_NoInputCount = 0;
-    g_StartDemo = false;
     g_OverlayFlag = 1;
     InitialiseCamera();
 

@@ -220,10 +220,6 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
         Input_Update();
 
-        if (g_StartDemo) {
-            return GF_NOP_BREAK;
-        }
-
         if (level_type == GFL_DEMO) {
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
