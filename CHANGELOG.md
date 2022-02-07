@@ -10,6 +10,7 @@
 - fixed libavcodec-related memory leaks (#389)
 - fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
 - fixed sounds playing after demo mode ends when game is minimized (#399)
+- fixed glitched floor in the Natla cutscene
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 

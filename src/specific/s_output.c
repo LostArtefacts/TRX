@@ -96,6 +96,7 @@ static void S_Output_SetHardwareVideoMode()
         m_BackSurface = GFX_2D_Surface_GetAttachedSurface(m_PrimarySurface);
 
         S_Output_ClearSurface(m_PrimarySurface);
+        S_Output_ClearSurface(m_BackSurface);
     }
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
