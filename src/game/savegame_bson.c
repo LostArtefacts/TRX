@@ -143,6 +143,8 @@ static bool SaveGame_BSON_LoadLevels(
             return false;
         }
         START_INFO *start = &game_info->start[i];
+        start->lara_hitpoints =
+            json_object_get_int(level_obj, "lara_hitpoints", LARA_HITPOINTS);
         start->pistol_ammo = json_object_get_int(level_obj, "pistol_ammo", 0);
         start->magnum_ammo = json_object_get_int(level_obj, "magnum_ammo", 0);
         start->uzi_ammo = json_object_get_int(level_obj, "uzi_ammo", 0);
@@ -571,6 +573,8 @@ static struct json_array_s *SaveGame_BSON_DumpLevels(GAME_INFO *game_info)
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         START_INFO *start = &game_info->start[i];
         struct json_object_s *level_obj = json_object_new();
+        json_object_append_int(
+            level_obj, "lara_hitpoints", start->lara_hitpoints);
         json_object_append_int(level_obj, "pistol_ammo", start->pistol_ammo);
         json_object_append_int(level_obj, "magnum_ammo", start->magnum_ammo);
         json_object_append_int(level_obj, "uzi_ammo", start->uzi_ammo);
