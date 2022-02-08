@@ -34,10 +34,12 @@ typedef struct SAVEGAME_BSON_HEADER {
 static bool SaveGame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t current_obj_num);
 static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp);
-static bool SaveGame_BSON_LoadLevels(
+static bool SaveGame_BSON_LoadStartInfo(
     struct json_array_s *levels_arr, GAME_INFO *game_info);
-static bool SaveGame_BSON_LoadStats(
-    struct json_object_s *stats_obj, GAME_INFO *game_info);
+static bool SaveGame_BSON_LoadEndInfo(
+    struct json_array_s *levels_arr, GAME_INFO *game_info);
+static bool SaveGame_BSON_LoadMisc(
+    struct json_object_s *misc_obj, GAME_INFO *game_info);
 static bool SaveGame_BSON_LoadInventory(struct json_object_s *inv_obj);
 static bool SaveGame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool SaveGame_BSON_LoadCameras(struct json_array_s *cameras_arr);
@@ -48,8 +50,9 @@ static bool SaveGame_BSON_LoadAmmo(
 static bool SaveGame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot);
 static bool SaveGame_BSON_LoadLara(
     struct json_object_s *lara_obj, LARA_INFO *lara);
-static struct json_array_s *SaveGame_BSON_DumpLevels(GAME_INFO *game_info);
-static struct json_object_s *SaveGame_BSON_DumpStats(GAME_INFO *game_info);
+static struct json_array_s *SaveGame_BSON_DumpStartInfo(GAME_INFO *game_info);
+static struct json_array_s *SaveGame_BSON_DumpEndInfo(GAME_INFO *game_info);
+static struct json_object_s *SaveGame_BSON_DumpMisc(GAME_INFO *game_info);
 static struct json_object_s *SaveGame_BSON_DumpInventory();
 static struct json_object_s *SaveGame_BSON_DumpFlipmaps();
 static struct json_array_s *SaveGame_BSON_DumpCameras();
@@ -122,68 +125,104 @@ static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp)
     return ret;
 }
 
-static bool SaveGame_BSON_LoadLevels(
-    struct json_array_s *levels_arr, GAME_INFO *game_info)
+static bool SaveGame_BSON_LoadStartInfo(
+    struct json_array_s *start_arr, GAME_INFO *game_info)
 {
     assert(game_info);
     assert(game_info->start);
-    if (!levels_arr) {
-        LOG_ERROR("Malformed save: invalid or missing levels array");
+    if (!start_arr) {
+        LOG_ERROR("Malformed save: invalid or missing start info array");
         return false;
     }
-    if ((signed)levels_arr->length != g_GameFlow.level_count) {
+    if ((signed)start_arr->length != g_GameFlow.level_count) {
         LOG_ERROR(
             "Malformed save: expected %d levels, got %d",
-            g_GameFlow.level_count, levels_arr->length);
+            g_GameFlow.level_count, start_arr->length);
         return false;
     }
-    for (int i = 0; i < (signed)levels_arr->length; i++) {
-        struct json_object_s *level_obj = json_array_get_object(levels_arr, i);
-        if (!level_obj) {
-            LOG_ERROR("Malformed save: invalid level data");
+    for (int i = 0; i < (signed)start_arr->length; i++) {
+        struct json_object_s *start_obj = json_array_get_object(start_arr, i);
+        if (!start_obj) {
+            LOG_ERROR("Malformed save: invalid start info");
             return false;
         }
         START_INFO *start = &game_info->start[i];
         start->lara_hitpoints = json_object_get_int(
-            level_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
-        start->pistol_ammo = json_object_get_int(level_obj, "pistol_ammo", 0);
-        start->magnum_ammo = json_object_get_int(level_obj, "magnum_ammo", 0);
-        start->uzi_ammo = json_object_get_int(level_obj, "uzi_ammo", 0);
-        start->shotgun_ammo = json_object_get_int(level_obj, "shotgun_ammo", 0);
-        start->num_medis = json_object_get_int(level_obj, "num_medis", 0);
+            start_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
+        start->pistol_ammo = json_object_get_int(start_obj, "pistol_ammo", 0);
+        start->magnum_ammo = json_object_get_int(start_obj, "magnum_ammo", 0);
+        start->uzi_ammo = json_object_get_int(start_obj, "uzi_ammo", 0);
+        start->shotgun_ammo = json_object_get_int(start_obj, "shotgun_ammo", 0);
+        start->num_medis = json_object_get_int(start_obj, "num_medis", 0);
         start->num_big_medis =
-            json_object_get_int(level_obj, "num_big_medis", 0);
-        start->num_scions = json_object_get_int(level_obj, "num_scions", 0);
-        start->gun_status = json_object_get_int(level_obj, "gun_status", 0);
-        start->gun_type = json_object_get_int(level_obj, "gun_type", 0);
+            json_object_get_int(start_obj, "num_big_medis", 0);
+        start->num_scions = json_object_get_int(start_obj, "num_scions", 0);
+        start->gun_status = json_object_get_int(start_obj, "gun_status", 0);
+        start->gun_type = json_object_get_int(start_obj, "gun_type", 0);
         start->flags.available =
-            json_object_get_bool(level_obj, "available", 0);
+            json_object_get_bool(start_obj, "available", 0);
         start->flags.got_pistols =
-            json_object_get_bool(level_obj, "got_pistols", 0);
+            json_object_get_bool(start_obj, "got_pistols", 0);
         start->flags.got_magnums =
-            json_object_get_bool(level_obj, "got_magnums", 0);
-        start->flags.got_uzis = json_object_get_bool(level_obj, "got_uzis", 0);
+            json_object_get_bool(start_obj, "got_magnums", 0);
+        start->flags.got_uzis = json_object_get_bool(start_obj, "got_uzis", 0);
         start->flags.got_shotgun =
-            json_object_get_bool(level_obj, "got_shotgun", 0);
-        start->flags.costume = json_object_get_bool(level_obj, "costume", 0);
+            json_object_get_bool(start_obj, "got_shotgun", 0);
+        start->flags.costume = json_object_get_bool(start_obj, "costume", 0);
     }
     return true;
 }
 
-static bool SaveGame_BSON_LoadStats(
-    struct json_object_s *stats_obj, GAME_INFO *game_info)
+static bool SaveGame_BSON_LoadEndInfo(
+    struct json_array_s *end_arr, GAME_INFO *game_info)
 {
     assert(game_info);
-    if (!stats_obj) {
-        LOG_ERROR("Malformed save: invalid or missing stats info");
+    assert(game_info->end);
+    if (!end_arr) {
+        LOG_ERROR("Malformed save: invalid or missing end info array");
         return false;
     }
-    game_info->timer = json_object_get_int(stats_obj, "timer", 0);
-    game_info->kills = json_object_get_int(stats_obj, "kills", 0);
-    game_info->secrets = json_object_get_int(stats_obj, "secrets", 0);
-    game_info->pickups = json_object_get_int(stats_obj, "pickups", 0);
-    game_info->bonus_flag =
-        json_object_get_bool(stats_obj, "bonus_flag", false);
+    if ((signed)end_arr->length != g_GameFlow.level_count) {
+        LOG_ERROR(
+            "Malformed save: expected %d levels, got %d",
+            g_GameFlow.level_count, end_arr->length);
+        return false;
+    }
+    for (int i = 0; i < (signed)end_arr->length; i++) {
+        struct json_object_s *end_obj = json_array_get_object(end_arr, i);
+        if (!end_obj) {
+            LOG_ERROR("Malformed save: invalid end info");
+            return false;
+        }
+        END_INFO *end = &game_info->end[i];
+        end->stats.timer =
+            json_object_get_int(end_obj, "timer", end->stats.timer);
+        end->stats.secret_flags =
+            json_object_get_int(end_obj, "secrets", end->stats.secret_flags);
+        end->stats.kill_count =
+            json_object_get_int(end_obj, "kills", end->stats.kill_count);
+        end->stats.pickup_count =
+            json_object_get_int(end_obj, "pickups", end->stats.pickup_count);
+        end->stats.max_secret_count = json_object_get_int(
+            end_obj, "max_secrets", end->stats.max_secret_count);
+        end->stats.max_kill_count = json_object_get_int(
+            end_obj, "max_kills", end->stats.max_kill_count);
+        end->stats.max_pickup_count = json_object_get_int(
+            end_obj, "max_pickups", end->stats.max_pickup_count);
+    }
+    game_info->stats = game_info->end[g_CurrentLevel].stats;
+    return true;
+}
+
+static bool SaveGame_BSON_LoadMisc(
+    struct json_object_s *misc_obj, GAME_INFO *game_info)
+{
+    assert(game_info);
+    if (!misc_obj) {
+        LOG_ERROR("Malformed save: invalid or missing misc info");
+        return false;
+    }
+    game_info->bonus_flag = json_object_get_int(misc_obj, "bonus_flag", 0);
     return true;
 }
 
@@ -567,50 +606,66 @@ static bool SaveGame_BSON_LoadLara(
     return true;
 }
 
-static struct json_array_s *SaveGame_BSON_DumpLevels(GAME_INFO *game_info)
+static struct json_array_s *SaveGame_BSON_DumpStartInfo(GAME_INFO *game_info)
 {
-    struct json_array_s *levels_arr = json_array_new();
+    struct json_array_s *start_arr = json_array_new();
     assert(game_info->start);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         START_INFO *start = &game_info->start[i];
-        struct json_object_s *level_obj = json_object_new();
+        struct json_object_s *start_obj = json_object_new();
         json_object_append_int(
-            level_obj, "lara_hitpoints", start->lara_hitpoints);
-        json_object_append_int(level_obj, "pistol_ammo", start->pistol_ammo);
-        json_object_append_int(level_obj, "magnum_ammo", start->magnum_ammo);
-        json_object_append_int(level_obj, "uzi_ammo", start->uzi_ammo);
-        json_object_append_int(level_obj, "shotgun_ammo", start->shotgun_ammo);
-        json_object_append_int(level_obj, "num_medis", start->num_medis);
+            start_obj, "lara_hitpoints", start->lara_hitpoints);
+        json_object_append_int(start_obj, "pistol_ammo", start->pistol_ammo);
+        json_object_append_int(start_obj, "magnum_ammo", start->magnum_ammo);
+        json_object_append_int(start_obj, "uzi_ammo", start->uzi_ammo);
+        json_object_append_int(start_obj, "shotgun_ammo", start->shotgun_ammo);
+        json_object_append_int(start_obj, "num_medis", start->num_medis);
         json_object_append_int(
-            level_obj, "num_big_medis", start->num_big_medis);
-        json_object_append_int(level_obj, "num_scions", start->num_scions);
-        json_object_append_int(level_obj, "gun_status", start->gun_status);
-        json_object_append_int(level_obj, "gun_type", start->gun_type);
-        json_object_append_bool(level_obj, "available", start->flags.available);
+            start_obj, "num_big_medis", start->num_big_medis);
+        json_object_append_int(start_obj, "num_scions", start->num_scions);
+        json_object_append_int(start_obj, "gun_status", start->gun_status);
+        json_object_append_int(start_obj, "gun_type", start->gun_type);
+        json_object_append_bool(start_obj, "available", start->flags.available);
         json_object_append_bool(
-            level_obj, "got_pistols", start->flags.got_pistols);
+            start_obj, "got_pistols", start->flags.got_pistols);
         json_object_append_bool(
-            level_obj, "got_magnums", start->flags.got_magnums);
-        json_object_append_bool(level_obj, "got_uzis", start->flags.got_uzis);
+            start_obj, "got_magnums", start->flags.got_magnums);
+        json_object_append_bool(start_obj, "got_uzis", start->flags.got_uzis);
         json_object_append_bool(
-            level_obj, "got_shotgun", start->flags.got_shotgun);
-        json_object_append_bool(level_obj, "costume", start->flags.costume);
-        json_array_append_object(levels_arr, level_obj);
+            start_obj, "got_shotgun", start->flags.got_shotgun);
+        json_object_append_bool(start_obj, "costume", start->flags.costume);
+        json_array_append_object(start_arr, start_obj);
     }
-    return levels_arr;
+    return start_arr;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpStats(GAME_INFO *game_info)
+static struct json_array_s *SaveGame_BSON_DumpEndInfo(GAME_INFO *game_info)
+{
+    struct json_array_s *end_arr = json_array_new();
+    assert(game_info->end);
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        END_INFO *end = &game_info->end[i];
+        struct json_object_s *end_obj = json_object_new();
+        json_object_append_int(end_obj, "timer", end->stats.timer);
+        json_object_append_int(end_obj, "kills", end->stats.kill_count);
+        json_object_append_int(end_obj, "secrets", end->stats.secret_flags);
+        json_object_append_int(end_obj, "pickups", end->stats.pickup_count);
+        json_object_append_int(end_obj, "max_kills", end->stats.max_kill_count);
+        json_object_append_int(
+            end_obj, "max_secrets", end->stats.max_secret_count);
+        json_object_append_int(
+            end_obj, "max_pickups", end->stats.max_pickup_count);
+        json_array_append_object(end_arr, end_obj);
+    }
+    return end_arr;
+}
+
+static struct json_object_s *SaveGame_BSON_DumpMisc(GAME_INFO *game_info)
 {
     assert(game_info);
-    // TODO: save this info for every level
-    struct json_object_s *stats_obj = json_object_new();
-    json_object_append_int(stats_obj, "timer", game_info->timer);
-    json_object_append_int(stats_obj, "kills", game_info->kills);
-    json_object_append_int(stats_obj, "secrets", game_info->secrets);
-    json_object_append_int(stats_obj, "pickups", game_info->pickups);
-    json_object_append_bool(stats_obj, "bonus_flag", game_info->bonus_flag);
-    return stats_obj;
+    struct json_object_s *misc_obj = json_object_new();
+    json_object_append_int(misc_obj, "bonus_flag", game_info->bonus_flag);
+    return misc_obj;
 }
 
 static struct json_object_s *SaveGame_BSON_DumpInventory()
@@ -872,13 +927,13 @@ bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadLevels(
-            json_object_get_array(root_obj, "levels"), game_info)) {
+    if (!SaveGame_BSON_LoadStartInfo(
+            json_object_get_array(root_obj, "start_info"), game_info)) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadStats(
-            json_object_get_object(root_obj, "stats"), game_info)) {
+    if (!SaveGame_BSON_LoadEndInfo(
+            json_object_get_array(root_obj, "end_info"), game_info)) {
         goto cleanup;
     }
 
@@ -924,10 +979,12 @@ void SaveGame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_int(root_obj, "save_counter", g_SaveCounter);
     json_object_append_int(root_obj, "level_num", g_CurrentLevel);
 
-    json_object_append_array(
-        root_obj, "levels", SaveGame_BSON_DumpLevels(game_info));
     json_object_append_object(
-        root_obj, "stats", SaveGame_BSON_DumpStats(game_info));
+        root_obj, "misc", SaveGame_BSON_DumpMisc(game_info));
+    json_object_append_array(
+        root_obj, "start_info", SaveGame_BSON_DumpStartInfo(game_info));
+    json_object_append_array(
+        root_obj, "end_info", SaveGame_BSON_DumpEndInfo(game_info));
     json_object_append_object(
         root_obj, "inventory", SaveGame_BSON_DumpInventory());
     json_object_append_object(

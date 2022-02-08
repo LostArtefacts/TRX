@@ -14,3 +14,9 @@ typedef struct SAVEGAME_INFO {
     int32_t level_num;
     char *level_title;
 } SAVEGAME_INFO;
+
+void ResetStartInfo(int level_num);
+void CreateStartInfo(int level_num);
+void ModifyStartInfo(int level_num);
+void ResetEndInfo(int level_num);
+void CreateEndInfo(int level_num);

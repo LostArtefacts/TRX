@@ -11,6 +11,7 @@
 - fixed broken poses at the end of cinematics (#390)
 - fixed libavcodec-related memory leaks (#389)
 - fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
+- fixed calling `level_stats` for different levels (#336, requires new saves)
 - fixed sounds playing after demo mode ends when game is minimized (#399)
 - fixed glitched floor in the Natla cutscene
 - fixed gun pickups disappearing in rare circumstances on save load (#406)

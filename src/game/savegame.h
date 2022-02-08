@@ -12,10 +12,9 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
+#include "game/savegame_common.h"
+
 void InitialiseStartInfo();
-void ResetStartInfo(int32_t level_num);
-void CreateStartInfo(int level_num);
-void ModifyStartInfo(int32_t level_num);
 
 int32_t SaveGame_GetLevelNumber(int32_t slot_num);
 
