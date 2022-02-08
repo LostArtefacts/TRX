@@ -14,12 +14,12 @@
 
 #include "game/savegame_common.h"
 
-void InitialiseStartInfo();
+void Savegame_InitStartEndInfo();
 
-int32_t SaveGame_GetLevelNumber(int32_t slot_num);
+int32_t Savegame_GetLevelNumber(int32_t slot_num);
 
-bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info);
-bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info);
+bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info);
+bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info);
 
-void SaveGame_ScanSavedGames();
-void SaveGame_Shutdown();
+void Savegame_ScanSavedGames();
+void Savegame_Shutdown();

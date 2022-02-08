@@ -27,7 +27,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     if (level_type == GFL_SAVED) {
         // reset start info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
-        ResetStartInfo(level_num);
+        Savegame_ResetStartInfo(level_num);
     } else {
         InitialiseLevelFlags();
     }
@@ -37,7 +37,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_SAVED) {
-        if (!SaveGame_Load(g_GameInfo.save_slot_to_load, &g_GameInfo)) {
+        if (!Savegame_Load(g_GameInfo.save_slot_to_load, &g_GameInfo)) {
             LOG_ERROR("Failed to load save file!");
             return false;
         }
@@ -48,13 +48,13 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
 int32_t StopGame()
 {
-    CreateEndInfo(g_CurrentLevel);
+    Savegame_PersistGameToEndInfo(g_CurrentLevel);
 
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
         g_GameInfo.bonus_flag = GBF_NGPLUS;
     } else {
-        CreateStartInfo(g_CurrentLevel + 1);
-        ModifyStartInfo(g_CurrentLevel + 1);
+        Savegame_PersistGameToStartInfo(g_CurrentLevel + 1);
+        Savegame_ApplyLogicToStartInfo(g_CurrentLevel + 1);
     }
 
     g_GameInfo.start[g_CurrentLevel].flags.available = 0;
@@ -103,7 +103,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                SaveGame_Save(g_InvExtraData[1], &g_GameInfo);
+                Savegame_Save(g_InvExtraData[1], &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;
@@ -118,9 +118,4 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     return ret;
-}
-
-int32_t LevelCompleteSequence(int32_t level_num)
-{
-    return GF_EXIT_TO_TITLE;
 }

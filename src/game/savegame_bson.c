@@ -31,38 +31,38 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
 
-static bool SaveGame_BSON_IsValidItemObject(
+static bool Savegame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t current_obj_num);
-static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp);
-static bool SaveGame_BSON_LoadStartInfo(
+static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp);
+static bool Savegame_BSON_LoadStartInfo(
     struct json_array_s *levels_arr, GAME_INFO *game_info);
-static bool SaveGame_BSON_LoadEndInfo(
+static bool Savegame_BSON_LoadEndInfo(
     struct json_array_s *levels_arr, GAME_INFO *game_info);
-static bool SaveGame_BSON_LoadMisc(
+static bool Savegame_BSON_LoadMisc(
     struct json_object_s *misc_obj, GAME_INFO *game_info);
-static bool SaveGame_BSON_LoadInventory(struct json_object_s *inv_obj);
-static bool SaveGame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
-static bool SaveGame_BSON_LoadCameras(struct json_array_s *cameras_arr);
-static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr);
-static bool SaveGame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
-static bool SaveGame_BSON_LoadAmmo(
+static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj);
+static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
+static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
+static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr);
+static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
+static bool Savegame_BSON_LoadAmmo(
     struct json_object_s *ammo_obj, AMMO_INFO *ammo);
-static bool SaveGame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot);
-static bool SaveGame_BSON_LoadLara(
+static bool Savegame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot);
+static bool Savegame_BSON_LoadLara(
     struct json_object_s *lara_obj, LARA_INFO *lara);
-static struct json_array_s *SaveGame_BSON_DumpStartInfo(GAME_INFO *game_info);
-static struct json_array_s *SaveGame_BSON_DumpEndInfo(GAME_INFO *game_info);
-static struct json_object_s *SaveGame_BSON_DumpMisc(GAME_INFO *game_info);
-static struct json_object_s *SaveGame_BSON_DumpInventory();
-static struct json_object_s *SaveGame_BSON_DumpFlipmaps();
-static struct json_array_s *SaveGame_BSON_DumpCameras();
-static struct json_array_s *SaveGame_BSON_DumpItems();
-static struct json_object_s *SaveGame_BSON_DumpArm(LARA_ARM *arm);
-static struct json_object_s *SaveGame_BSON_DumpAmmo(AMMO_INFO *ammo);
-static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot);
-static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara);
+static struct json_array_s *Savegame_BSON_DumpStartInfo(GAME_INFO *game_info);
+static struct json_array_s *Savegame_BSON_DumpEndInfo(GAME_INFO *game_info);
+static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info);
+static struct json_object_s *Savegame_BSON_DumpInventory();
+static struct json_object_s *Savegame_BSON_DumpFlipmaps();
+static struct json_array_s *Savegame_BSON_DumpCameras();
+static struct json_array_s *Savegame_BSON_DumpItems();
+static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
+static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
+static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
+static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
 
-static bool SaveGame_BSON_IsValidItemObject(
+static bool Savegame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t initial_obj_num)
 {
     if (saved_obj_num == initial_obj_num) {
@@ -85,7 +85,7 @@ static bool SaveGame_BSON_IsValidItemObject(
     return false;
 }
 
-static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
+static struct json_value_s *Savegame_BSON_ParseFromBuffer(
     const char *buffer, size_t buffer_size)
 {
     SAVEGAME_BSON_HEADER *header = (SAVEGAME_BSON_HEADER *)buffer;
@@ -112,7 +112,7 @@ static struct json_value_s *SaveGame_BSON_ParseFromBuffer(
     return root;
 }
 
-static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp)
+static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp)
 {
     size_t buffer_size = File_Size(fp);
     char *buffer = Memory_Alloc(buffer_size);
@@ -120,12 +120,12 @@ static struct json_value_s *SaveGame_BSON_ParseFromFile(MYFILE *fp)
     File_Read(buffer, sizeof(char), buffer_size, fp);
 
     struct json_value_s *ret =
-        SaveGame_BSON_ParseFromBuffer(buffer, buffer_size);
+        Savegame_BSON_ParseFromBuffer(buffer, buffer_size);
     Memory_FreePointer(&buffer);
     return ret;
 }
 
-static bool SaveGame_BSON_LoadStartInfo(
+static bool Savegame_BSON_LoadStartInfo(
     struct json_array_s *start_arr, GAME_INFO *game_info)
 {
     assert(game_info);
@@ -173,7 +173,7 @@ static bool SaveGame_BSON_LoadStartInfo(
     return true;
 }
 
-static bool SaveGame_BSON_LoadEndInfo(
+static bool Savegame_BSON_LoadEndInfo(
     struct json_array_s *end_arr, GAME_INFO *game_info)
 {
     assert(game_info);
@@ -214,7 +214,7 @@ static bool SaveGame_BSON_LoadEndInfo(
     return true;
 }
 
-static bool SaveGame_BSON_LoadMisc(
+static bool Savegame_BSON_LoadMisc(
     struct json_object_s *misc_obj, GAME_INFO *game_info)
 {
     assert(game_info);
@@ -226,7 +226,7 @@ static bool SaveGame_BSON_LoadMisc(
     return true;
 }
 
-static bool SaveGame_BSON_LoadInventory(struct json_object_s *inv_obj)
+static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj)
 {
     if (!inv_obj) {
         LOG_ERROR("Malformed save: invalid or missing inventory info");
@@ -254,7 +254,7 @@ static bool SaveGame_BSON_LoadInventory(struct json_object_s *inv_obj)
     return true;
 }
 
-static bool SaveGame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj)
+static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj)
 {
     if (!flipmap_obj) {
         LOG_ERROR("Malformed save: invalid or missing flipmap info");
@@ -287,7 +287,7 @@ static bool SaveGame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj)
     return true;
 }
 
-static bool SaveGame_BSON_LoadCameras(struct json_array_s *cameras_arr)
+static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr)
 {
     if (!cameras_arr) {
         LOG_ERROR("Malformed save: invalid or missing cameras array");
@@ -305,7 +305,7 @@ static bool SaveGame_BSON_LoadCameras(struct json_array_s *cameras_arr)
     return true;
 }
 
-static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
+static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 {
     if (!items_arr) {
         LOG_ERROR("Malformed save: invalid or missing items array");
@@ -330,7 +330,7 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         int obj_num = json_object_get_int(item_obj, "obj_num", -1);
-        if (!SaveGame_BSON_IsValidItemObject(obj_num, item->object_number)) {
+        if (!Savegame_BSON_IsValidItemObject(obj_num, item->object_number)) {
             LOG_ERROR(
                 "Malformed save: expected object %d, got %d",
                 item->object_number, obj_num);
@@ -420,7 +420,7 @@ static bool SaveGame_BSON_LoadItems(struct json_array_s *items_arr)
     return true;
 }
 
-static bool SaveGame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
+static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
 {
     assert(arm);
     if (!arm_obj) {
@@ -442,7 +442,7 @@ static bool SaveGame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
     return true;
 }
 
-static bool SaveGame_BSON_LoadAmmo(
+static bool Savegame_BSON_LoadAmmo(
     struct json_object_s *ammo_obj, AMMO_INFO *ammo)
 {
     assert(ammo);
@@ -457,7 +457,7 @@ static bool SaveGame_BSON_LoadAmmo(
     return true;
 }
 
-static bool SaveGame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot)
+static bool Savegame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot)
 {
     assert(lot);
     if (!lot_obj) {
@@ -486,7 +486,7 @@ static bool SaveGame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot)
     return true;
 }
 
-static bool SaveGame_BSON_LoadLara(
+static bool Savegame_BSON_LoadLara(
     struct json_object_s *lara_obj, LARA_INFO *lara)
 {
     assert(lara);
@@ -568,37 +568,37 @@ static bool SaveGame_BSON_LoadLara(
     lara->torso_z_rot =
         json_object_get_int(lara_obj, "torso_z_rot", lara->torso_z_rot);
 
-    if (!SaveGame_BSON_LoadArm(
+    if (!Savegame_BSON_LoadArm(
             json_object_get_object(lara_obj, "left_arm"), &lara->left_arm)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadArm(
+    if (!Savegame_BSON_LoadArm(
             json_object_get_object(lara_obj, "right_arm"), &lara->right_arm)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadAmmo(
+    if (!Savegame_BSON_LoadAmmo(
             json_object_get_object(lara_obj, "pistols"), &lara->pistols)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadAmmo(
+    if (!Savegame_BSON_LoadAmmo(
             json_object_get_object(lara_obj, "magnums"), &lara->magnums)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadAmmo(
+    if (!Savegame_BSON_LoadAmmo(
             json_object_get_object(lara_obj, "uzis"), &lara->uzis)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadAmmo(
+    if (!Savegame_BSON_LoadAmmo(
             json_object_get_object(lara_obj, "shotgun"), &lara->shotgun)) {
         return false;
     }
 
-    if (!SaveGame_BSON_LoadLOT(
+    if (!Savegame_BSON_LoadLOT(
             json_object_get_object(lara_obj, "lot"), &lara->LOT)) {
         return false;
     }
@@ -606,7 +606,7 @@ static bool SaveGame_BSON_LoadLara(
     return true;
 }
 
-static struct json_array_s *SaveGame_BSON_DumpStartInfo(GAME_INFO *game_info)
+static struct json_array_s *Savegame_BSON_DumpStartInfo(GAME_INFO *game_info)
 {
     struct json_array_s *start_arr = json_array_new();
     assert(game_info->start);
@@ -639,7 +639,7 @@ static struct json_array_s *SaveGame_BSON_DumpStartInfo(GAME_INFO *game_info)
     return start_arr;
 }
 
-static struct json_array_s *SaveGame_BSON_DumpEndInfo(GAME_INFO *game_info)
+static struct json_array_s *Savegame_BSON_DumpEndInfo(GAME_INFO *game_info)
 {
     struct json_array_s *end_arr = json_array_new();
     assert(game_info->end);
@@ -660,7 +660,7 @@ static struct json_array_s *SaveGame_BSON_DumpEndInfo(GAME_INFO *game_info)
     return end_arr;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpMisc(GAME_INFO *game_info)
+static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
 {
     assert(game_info);
     struct json_object_s *misc_obj = json_object_new();
@@ -668,7 +668,7 @@ static struct json_object_s *SaveGame_BSON_DumpMisc(GAME_INFO *game_info)
     return misc_obj;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpInventory()
+static struct json_object_s *Savegame_BSON_DumpInventory()
 {
     // TODO: save this info for every level
     struct json_object_s *inv_obj = json_object_new();
@@ -686,7 +686,7 @@ static struct json_object_s *SaveGame_BSON_DumpInventory()
     return inv_obj;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpFlipmaps()
+static struct json_object_s *Savegame_BSON_DumpFlipmaps()
 {
     struct json_object_s *flipmap_obj = json_object_new();
     json_object_append_bool(flipmap_obj, "status", g_FlipStatus);
@@ -700,7 +700,7 @@ static struct json_object_s *SaveGame_BSON_DumpFlipmaps()
     return flipmap_obj;
 }
 
-static struct json_array_s *SaveGame_BSON_DumpCameras()
+static struct json_array_s *Savegame_BSON_DumpCameras()
 {
     struct json_array_s *cameras_arr = json_array_new();
     for (int i = 0; i < g_NumberCameras; i++) {
@@ -709,7 +709,7 @@ static struct json_array_s *SaveGame_BSON_DumpCameras()
     return cameras_arr;
 }
 
-static struct json_array_s *SaveGame_BSON_DumpItems()
+static struct json_array_s *Savegame_BSON_DumpItems()
 {
     struct json_array_s *items_arr = json_array_new();
     for (int i = 0; i < g_LevelItemCount; i++) {
@@ -775,7 +775,7 @@ static struct json_array_s *SaveGame_BSON_DumpItems()
     return items_arr;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpArm(LARA_ARM *arm)
+static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
     struct json_object_s *arm_obj = json_object_new();
@@ -790,7 +790,7 @@ static struct json_object_s *SaveGame_BSON_DumpArm(LARA_ARM *arm)
     return arm_obj;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpAmmo(AMMO_INFO *ammo)
+static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo)
 {
     assert(ammo);
     struct json_object_s *ammo_obj = json_object_new();
@@ -800,7 +800,7 @@ static struct json_object_s *SaveGame_BSON_DumpAmmo(AMMO_INFO *ammo)
     return ammo_obj;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot)
+static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot)
 {
     assert(lot);
     struct json_object_s *lot_obj = json_object_new();
@@ -821,7 +821,7 @@ static struct json_object_s *SaveGame_BSON_DumpLOT(LOT_INFO *lot)
     return lot_obj;
 }
 
-static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara)
+static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara)
 {
     assert(lara);
     struct json_object_s *lara_obj = json_object_new();
@@ -865,24 +865,24 @@ static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara)
     json_object_append_int(lara_obj, "torso_z_rot", lara->torso_z_rot);
 
     json_object_append_object(
-        lara_obj, "left_arm", SaveGame_BSON_DumpArm(&lara->left_arm));
+        lara_obj, "left_arm", Savegame_BSON_DumpArm(&lara->left_arm));
     json_object_append_object(
-        lara_obj, "right_arm", SaveGame_BSON_DumpArm(&lara->right_arm));
+        lara_obj, "right_arm", Savegame_BSON_DumpArm(&lara->right_arm));
     json_object_append_object(
-        lara_obj, "pistols", SaveGame_BSON_DumpAmmo(&lara->pistols));
+        lara_obj, "pistols", Savegame_BSON_DumpAmmo(&lara->pistols));
     json_object_append_object(
-        lara_obj, "magnums", SaveGame_BSON_DumpAmmo(&lara->magnums));
+        lara_obj, "magnums", Savegame_BSON_DumpAmmo(&lara->magnums));
     json_object_append_object(
-        lara_obj, "uzis", SaveGame_BSON_DumpAmmo(&lara->uzis));
+        lara_obj, "uzis", Savegame_BSON_DumpAmmo(&lara->uzis));
     json_object_append_object(
-        lara_obj, "shotgun", SaveGame_BSON_DumpAmmo(&lara->shotgun));
+        lara_obj, "shotgun", Savegame_BSON_DumpAmmo(&lara->shotgun));
     json_object_append_object(
-        lara_obj, "lot", SaveGame_BSON_DumpLOT(&lara->LOT));
+        lara_obj, "lot", Savegame_BSON_DumpLOT(&lara->LOT));
 
     return lara_obj;
 }
 
-char *SaveGame_BSON_GetSaveFileName(int32_t slot)
+char *Savegame_BSON_GetSaveFileName(int32_t slot)
 {
     size_t out_size = snprintf(NULL, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
     char *out = Memory_Alloc(out_size);
@@ -890,10 +890,10 @@ char *SaveGame_BSON_GetSaveFileName(int32_t slot)
     return out;
 }
 
-bool SaveGame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
+bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
     bool ret = false;
-    struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (root_obj) {
         info->counter = json_object_get_int(root_obj, "save_counter", -1);
@@ -909,12 +909,12 @@ bool SaveGame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     return ret;
 }
 
-bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
     bool ret = false;
-    struct json_value_s *root = SaveGame_BSON_ParseFromFile(fp);
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -927,36 +927,36 @@ bool SaveGame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadStartInfo(
+    if (!Savegame_BSON_LoadStartInfo(
             json_object_get_array(root_obj, "start_info"), game_info)) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadEndInfo(
+    if (!Savegame_BSON_LoadEndInfo(
             json_object_get_array(root_obj, "end_info"), game_info)) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadInventory(
+    if (!Savegame_BSON_LoadInventory(
             json_object_get_object(root_obj, "inventory"))) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadFlipmaps(
+    if (!Savegame_BSON_LoadFlipmaps(
             json_object_get_object(root_obj, "flipmap"))) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadCameras(
+    if (!Savegame_BSON_LoadCameras(
             json_object_get_array(root_obj, "cameras"))) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadItems(json_object_get_array(root_obj, "items"))) {
+    if (!Savegame_BSON_LoadItems(json_object_get_array(root_obj, "items"))) {
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadLara(
+    if (!Savegame_BSON_LoadLara(
             json_object_get_object(root_obj, "lara"), &g_Lara)) {
         goto cleanup;
     }
@@ -968,7 +968,7 @@ cleanup:
     return ret;
 }
 
-void SaveGame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
+void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
 
@@ -980,19 +980,19 @@ void SaveGame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_int(root_obj, "level_num", g_CurrentLevel);
 
     json_object_append_object(
-        root_obj, "misc", SaveGame_BSON_DumpMisc(game_info));
+        root_obj, "misc", Savegame_BSON_DumpMisc(game_info));
     json_object_append_array(
-        root_obj, "start_info", SaveGame_BSON_DumpStartInfo(game_info));
+        root_obj, "start_info", Savegame_BSON_DumpStartInfo(game_info));
     json_object_append_array(
-        root_obj, "end_info", SaveGame_BSON_DumpEndInfo(game_info));
+        root_obj, "end_info", Savegame_BSON_DumpEndInfo(game_info));
     json_object_append_object(
-        root_obj, "inventory", SaveGame_BSON_DumpInventory());
+        root_obj, "inventory", Savegame_BSON_DumpInventory());
     json_object_append_object(
-        root_obj, "flipmap", SaveGame_BSON_DumpFlipmaps());
-    json_object_append_array(root_obj, "cameras", SaveGame_BSON_DumpCameras());
-    json_object_append_array(root_obj, "items", SaveGame_BSON_DumpItems());
+        root_obj, "flipmap", Savegame_BSON_DumpFlipmaps());
+    json_object_append_array(root_obj, "cameras", Savegame_BSON_DumpCameras());
+    json_object_append_array(root_obj, "items", Savegame_BSON_DumpItems());
     json_object_append_object(
-        root_obj, "lara", SaveGame_BSON_DumpLara(&g_Lara));
+        root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
 
     size_t uncompressed_size;
     struct json_value_s *root = json_value_from_object(root_obj);

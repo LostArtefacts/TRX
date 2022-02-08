@@ -691,7 +691,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
-                InitialiseStartInfo();
+                Savegame_InitStartEndInfo();
                 return GF_START_GAME | g_GameFlow.first_level_num;
             } else {
                 // page 3: exit game
@@ -718,10 +718,10 @@ int32_t Display_Inventory(int inv_mode)
                         g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
-                    InitialiseStartInfo();
+                    Savegame_InitStartEndInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
-                    SaveGame_Save(g_InvExtraData[1], &g_GameInfo);
+                    Savegame_Save(g_InvExtraData[1], &g_GameInfo);
                     Settings_Write();
                     return GF_NOP;
                 }

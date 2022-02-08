@@ -36,10 +36,10 @@ static REQUEST_INFO m_NewGameRequester = {
     0,
 };
 
-static char m_LoadSaveGameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = {
+static char m_LoadSavegameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = {
     0
 };
-REQUEST_INFO g_LoadSaveGameRequester = {
+REQUEST_INFO g_LoadSavegameRequester = {
     .items = 1,
     .requested = 0,
     .vis_lines = -1,
@@ -52,7 +52,7 @@ REQUEST_INFO g_LoadSaveGameRequester = {
     .z = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &m_LoadSaveGameStrings[0][0],
+    .item_texts = &m_LoadSavegameStrings[0][0],
     .item_text_len = MAX_LEVEL_NAME_LENGTH,
     0,
 };
@@ -72,9 +72,9 @@ static void InitNewGameRequester()
     req->vis_lines = MAX_GAME_MODES;
 }
 
-static void InitLoadSaveGameRequester()
+static void InitLoadSavegameRequester()
 {
-    REQUEST_INFO *req = &g_LoadSaveGameRequester;
+    REQUEST_INFO *req = &g_LoadSavegameRequester;
     InitRequester(req);
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
@@ -107,7 +107,7 @@ static void InitLoadSaveGameRequester()
         req->vis_lines = 12;
     }
 
-    SaveGame_ScanSavedGames();
+    Savegame_ScanSavedGames();
 }
 
 void Option_Passport(INVENTORY_ITEM *inv_item)
@@ -129,7 +129,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     switch (page) {
     case 0:
         if (m_PassportMode == 1) {
-            int32_t select = DisplayRequester(&g_LoadSaveGameRequester);
+            int32_t select = DisplayRequester(&g_LoadSavegameRequester);
             if (select) {
                 if (select > 0) {
                     g_InvExtraData[1] = select - 1;
@@ -162,8 +162,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     Text_Remove(g_InvItemText[IT_NAME]);
                     g_InvItemText[IT_NAME] = NULL;
 
-                    g_LoadSaveGameRequester.flags |= RIF_BLOCKABLE;
-                    InitLoadSaveGameRequester();
+                    g_LoadSavegameRequester.flags |= RIF_BLOCKABLE;
+                    InitLoadSavegameRequester();
                     m_PassportMode = 1;
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
@@ -188,7 +188,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                 g_InputDB = (INPUT_STATE) { 0 };
             }
         } else if (m_PassportMode == 1) {
-            int32_t select = DisplayRequester(&g_LoadSaveGameRequester);
+            int32_t select = DisplayRequester(&g_LoadSavegameRequester);
             if (select) {
                 if (select > 0) {
                     m_PassportMode = 0;
@@ -249,8 +249,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     Text_Remove(g_InvItemText[IT_NAME]);
                     g_InvItemText[IT_NAME] = NULL;
 
-                    g_LoadSaveGameRequester.flags &= ~RIF_BLOCKABLE;
-                    InitLoadSaveGameRequester();
+                    g_LoadSavegameRequester.flags &= ~RIF_BLOCKABLE;
+                    InitLoadSavegameRequester();
                     m_PassportMode = 1;
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
