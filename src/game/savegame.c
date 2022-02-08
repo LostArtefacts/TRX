@@ -172,13 +172,14 @@ void InitialiseStartInfo()
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         ResetStartInfo(i);
         ModifyStartInfo(i);
+        ResetEndInfo(i);
         g_GameInfo.start[i].flags.available = 0;
     }
     g_GameInfo.start[g_GameFlow.gym_level_num].flags.available = 1;
     g_GameInfo.start[g_GameFlow.first_level_num].flags.available = 1;
 }
 
-void ResetStartInfo(int32_t level_num)
+void ResetStartInfo(int level_num)
 {
     // Reset the start info to blank state.
 
@@ -187,7 +188,7 @@ void ResetStartInfo(int32_t level_num)
     ModifyStartInfo(level_num);
 }
 
-void ModifyStartInfo(int32_t level_num)
+void ModifyStartInfo(int level_num)
 {
     // Apply game mechanics to the start info.
 
@@ -316,6 +317,18 @@ void CreateStartInfo(int level_num)
     }
 }
 
+void ResetEndInfo(int level_num)
+{
+    END_INFO *end = &g_GameInfo.end[level_num];
+    memset(end, 0, sizeof(END_INFO));
+}
+
+void CreateEndInfo(int level_num)
+{
+    END_INFO *end = &g_GameInfo.end[level_num];
+    end->stats = g_GameInfo.stats;
+}
+
 int32_t SaveGame_GetLevelNumber(int32_t slot_num)
 {
     return m_SaveGameInfo[slot_num].level_num;
@@ -358,6 +371,7 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     File_CreateDirectory(SAVES_DIR);
 
     CreateStartInfo(g_CurrentLevel);
+    CreateEndInfo(g_CurrentLevel);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {

@@ -1447,6 +1447,16 @@ typedef struct LARA_INFO {
     LOT_INFO LOT;
 } LARA_INFO;
 
+typedef struct GAME_STATS {
+    uint32_t timer;
+    uint32_t kill_count;
+    uint16_t secret_flags;
+    uint8_t pickup_count;
+    uint32_t max_kill_count;
+    uint16_t max_secret_count;
+    uint8_t max_pickup_count;
+} GAME_STATS;
+
 typedef struct START_INFO {
     int32_t lara_hitpoints;
     uint16_t pistol_ammo;
@@ -1471,12 +1481,14 @@ typedef struct START_INFO {
     } flags;
 } START_INFO;
 
+typedef struct END_INFO {
+    GAME_STATS stats;
+} END_INFO;
+
 typedef struct GAME_INFO {
     START_INFO *start;
-    uint32_t timer;
-    uint32_t kills;
-    uint16_t secrets;
-    uint8_t pickups;
+    END_INFO *end;
+    GAME_STATS stats; // always for current level
     uint8_t bonus_flag;
     int32_t save_slot_to_load;
 } GAME_INFO;

@@ -270,7 +270,7 @@ int32_t Display_Inventory(int inv_mode)
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
-            g_GameInfo.timer += m_InvNFrames / 2;
+            g_GameInfo.stats.timer += m_InvNFrames / 2;
         }
 
         if (ring.rotating) {

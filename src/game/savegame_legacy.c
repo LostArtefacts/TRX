@@ -431,12 +431,17 @@ bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         SaveGame_Legacy_Read(&start->flags, sizeof(uint16_t));
     }
 
-    SaveGame_Legacy_Read(&game_info->timer, sizeof(uint32_t));
-    SaveGame_Legacy_Read(&game_info->kills, sizeof(uint32_t));
-    SaveGame_Legacy_Read(&game_info->secrets, sizeof(uint16_t));
+    SaveGame_Legacy_Read(&game_info->stats.timer, sizeof(uint32_t));
+    SaveGame_Legacy_Read(&game_info->stats.kill_count, sizeof(uint32_t));
+    SaveGame_Legacy_Read(&game_info->stats.secret_flags, sizeof(uint16_t));
     SaveGame_Legacy_Read(&g_CurrentLevel, sizeof(uint16_t));
-    SaveGame_Legacy_Read(&game_info->pickups, sizeof(uint8_t));
+    SaveGame_Legacy_Read(&game_info->stats.pickup_count, sizeof(uint8_t));
     SaveGame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        ResetEndInfo(i);
+    }
+    game_info->end[g_CurrentLevel].stats = game_info->stats;
 
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
@@ -574,11 +579,11 @@ void SaveGame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         SaveGame_Legacy_Write(&start->flags, sizeof(uint16_t));
     }
 
-    SaveGame_Legacy_Write(&game_info->timer, sizeof(uint32_t));
-    SaveGame_Legacy_Write(&game_info->kills, sizeof(uint32_t));
-    SaveGame_Legacy_Write(&game_info->secrets, sizeof(uint16_t));
+    SaveGame_Legacy_Write(&game_info->stats.timer, sizeof(uint32_t));
+    SaveGame_Legacy_Write(&game_info->stats.kill_count, sizeof(uint32_t));
+    SaveGame_Legacy_Write(&game_info->stats.secret_flags, sizeof(uint16_t));
     SaveGame_Legacy_Write(&g_CurrentLevel, sizeof(uint16_t));
-    SaveGame_Legacy_Write(&game_info->pickups, sizeof(uint8_t));
+    SaveGame_Legacy_Write(&game_info->stats.pickup_count, sizeof(uint8_t));
     SaveGame_Legacy_Write(&game_info->bonus_flag, sizeof(uint8_t));
 
     SAVEGAME_LEGACY_ITEM_STATS item_stats = {

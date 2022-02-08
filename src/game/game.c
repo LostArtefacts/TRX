@@ -48,6 +48,17 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
 int32_t StopGame()
 {
+    CreateEndInfo(g_CurrentLevel);
+
+    if (g_CurrentLevel == g_GameFlow.last_level_num) {
+        g_GameInfo.bonus_flag = GBF_NGPLUS;
+    } else {
+        CreateStartInfo(g_CurrentLevel + 1);
+        ModifyStartInfo(g_CurrentLevel + 1);
+    }
+
+    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
+
     if (g_LevelComplete) {
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
@@ -71,9 +82,9 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseCamera();
 
     Stats_CalculateStats();
-    g_GameFlow.levels[g_CurrentLevel].pickups = Stats_GetPickups();
-    g_GameFlow.levels[g_CurrentLevel].kills = Stats_GetKillables();
-    g_GameFlow.levels[g_CurrentLevel].secrets = Stats_GetSecrets();
+    g_GameInfo.stats.max_pickup_count = Stats_GetPickups();
+    g_GameInfo.stats.max_kill_count = Stats_GetKillables();
+    g_GameInfo.stats.max_secret_count = Stats_GetSecrets();
 
     bool ask_for_save = g_GameFlow.enable_save_crystals
         && level_type == GFL_NORMAL

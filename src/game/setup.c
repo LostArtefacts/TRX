@@ -155,10 +155,10 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    g_GameInfo.secrets = 0;
-    g_GameInfo.timer = 0;
-    g_GameInfo.pickups = 0;
-    g_GameInfo.kills = 0;
+    g_GameInfo.stats.timer = 0;
+    g_GameInfo.stats.secret_flags = 0;
+    g_GameInfo.stats.pickup_count = 0;
+    g_GameInfo.stats.kill_count = 0;
 }
 
 void BaddyObjects()
