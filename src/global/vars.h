@@ -120,7 +120,7 @@ extern int32_t g_SpriteInfoCount;
 extern int32_t g_SpriteCount;
 extern int32_t g_OverlapCount;
 
-extern REQUEST_INFO g_LoadSaveGameRequester;
+extern REQUEST_INFO g_LoadSavegameRequester;
 
 extern int16_t g_StoredLaraHealth;
 

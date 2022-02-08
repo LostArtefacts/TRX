@@ -34,34 +34,34 @@ typedef struct SAVEGAME_STRATEGY {
 } SAVEGAME_STRATEGY;
 
 static BOX_NODE *m_OldLaraLOTNode;
-static SAVEGAME_INFO m_SaveGameInfo[MAX_SAVE_SLOTS] = { 0 };
+static SAVEGAME_INFO m_SavegameInfo[MAX_SAVE_SLOTS] = { 0 };
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
         .allow_load = true,
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
-        .get_save_filename = SaveGame_BSON_GetSaveFileName,
-        .fill_info = SaveGame_BSON_FillInfo,
-        .load_from_file = SaveGame_BSON_LoadFromFile,
-        .save_to_file = SaveGame_BSON_SaveToFile,
+        .get_save_filename = Savegame_BSON_GetSaveFileName,
+        .fill_info = Savegame_BSON_FillInfo,
+        .load_from_file = Savegame_BSON_LoadFromFile,
+        .save_to_file = Savegame_BSON_SaveToFile,
     },
     {
         .allow_load = true,
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_filename = SaveGame_Legacy_GetSaveFileName,
-        .fill_info = SaveGame_Legacy_FillInfo,
-        .load_from_file = SaveGame_Legacy_LoadFromFile,
-        .save_to_file = SaveGame_Legacy_SaveToFile,
+        .get_save_filename = Savegame_Legacy_GetSaveFileName,
+        .fill_info = Savegame_Legacy_FillInfo,
+        .load_from_file = Savegame_Legacy_LoadFromFile,
+        .save_to_file = Savegame_Legacy_SaveToFile,
     },
     { 0 },
 };
 
-static void SaveGame_LoadPreprocess();
-static void SaveGame_LoadPostrocess();
+static void Savegame_LoadPreprocess();
+static void Savegame_LoadPostrocess();
 
-static void SaveGame_LoadPreprocess()
+static void Savegame_LoadPreprocess()
 {
     m_OldLaraLOTNode = g_Lara.LOT.node;
 
@@ -78,7 +78,7 @@ static void SaveGame_LoadPreprocess()
     }
 }
 
-static void SaveGame_LoadPostProcess()
+static void Savegame_LoadPostProcess()
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -167,31 +167,27 @@ static void SaveGame_LoadPostProcess()
     g_Lara.LOT.target_box = NO_BOX;
 }
 
-void InitialiseStartInfo()
+void Savegame_InitStartEndInfo()
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        ResetStartInfo(i);
-        ModifyStartInfo(i);
-        ResetEndInfo(i);
+        Savegame_ResetStartInfo(i);
+        Savegame_ResetEndInfo(i);
+        Savegame_ApplyLogicToStartInfo(i);
         g_GameInfo.start[i].flags.available = 0;
     }
     g_GameInfo.start[g_GameFlow.gym_level_num].flags.available = 1;
     g_GameInfo.start[g_GameFlow.first_level_num].flags.available = 1;
 }
 
-void ResetStartInfo(int level_num)
+void Savegame_ResetStartInfo(int level_num)
 {
-    // Reset the start info to blank state.
-
     START_INFO *start = &g_GameInfo.start[level_num];
     memset(start, 0, sizeof(START_INFO));
-    ModifyStartInfo(level_num);
+    Savegame_ApplyLogicToStartInfo(level_num);
 }
 
-void ModifyStartInfo(int level_num)
+void Savegame_ApplyLogicToStartInfo(int level_num)
 {
-    // Apply game mechanics to the start info.
-
     START_INFO *start = &g_GameInfo.start[level_num];
 
     if (!g_Config.disable_healing_between_levels
@@ -249,7 +245,7 @@ void ModifyStartInfo(int level_num)
     }
 }
 
-void CreateStartInfo(int level_num)
+void Savegame_PersistGameToStartInfo(int level_num)
 {
     // Persist Lara's inventory to the start info.
     // Used to carry over Lara's inventory between levels.
@@ -317,30 +313,30 @@ void CreateStartInfo(int level_num)
     }
 }
 
-void ResetEndInfo(int level_num)
+void Savegame_ResetEndInfo(int level_num)
 {
     END_INFO *end = &g_GameInfo.end[level_num];
     memset(end, 0, sizeof(END_INFO));
 }
 
-void CreateEndInfo(int level_num)
+void Savegame_PersistGameToEndInfo(int level_num)
 {
     END_INFO *end = &g_GameInfo.end[level_num];
     end->stats = g_GameInfo.stats;
 }
 
-int32_t SaveGame_GetLevelNumber(int32_t slot_num)
+int32_t Savegame_GetLevelNumber(int32_t slot_num)
 {
-    return m_SaveGameInfo[slot_num].level_num;
+    return m_SavegameInfo[slot_num].level_num;
 }
 
-bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
 {
     assert(game_info);
-    SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[slot_num];
+    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     assert(savegame_info->format);
 
-    SaveGame_LoadPreprocess();
+    Savegame_LoadPreprocess();
 
     bool ret = false;
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
@@ -357,21 +353,21 @@ bool SaveGame_Load(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        SaveGame_LoadPostProcess();
+        Savegame_LoadPostProcess();
     }
 
     return ret;
 }
 
-bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
 {
     assert(game_info);
     bool ret = true;
 
     File_CreateDirectory(SAVES_DIR);
 
-    CreateStartInfo(g_CurrentLevel);
-    CreateEndInfo(g_CurrentLevel);
+    Savegame_PersistGameToStartInfo(g_CurrentLevel);
+    Savegame_PersistGameToEndInfo(g_CurrentLevel);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
@@ -402,7 +398,7 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        REQUEST_INFO *req = &g_LoadSaveGameRequester;
+        REQUEST_INFO *req = &g_LoadSavegameRequester;
         req->item_flags[slot_num] &= ~RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->item_text_len * slot_num], "%s %d",
@@ -414,10 +410,10 @@ bool SaveGame_Save(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-void SaveGame_Shutdown()
+void Savegame_Shutdown()
 {
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
+        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
         savegame_info->format = 0;
         savegame_info->counter = -1;
         savegame_info->level_num = -1;
@@ -426,15 +422,15 @@ void SaveGame_Shutdown()
     }
 }
 
-void SaveGame_ScanSavedGames()
+void Savegame_ScanSavedGames()
 {
-    SaveGame_Shutdown();
+    Savegame_Shutdown();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
+        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
         while (strategy->format) {
@@ -475,11 +471,11 @@ void SaveGame_ScanSavedGames()
         }
     }
 
-    REQUEST_INFO *req = &g_LoadSaveGameRequester;
+    REQUEST_INFO *req = &g_LoadSavegameRequester;
 
     req->items = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SaveGameInfo[i];
+        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         if (savegame_info->level_title) {
             req->item_flags[req->items] &= ~RIF_BLOCKED;

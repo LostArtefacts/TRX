@@ -15,8 +15,8 @@ typedef struct SAVEGAME_INFO {
     char *level_title;
 } SAVEGAME_INFO;
 
-void ResetStartInfo(int level_num);
-void CreateStartInfo(int level_num);
-void ModifyStartInfo(int level_num);
-void ResetEndInfo(int level_num);
-void CreateEndInfo(int level_num);
+void Savegame_ResetStartInfo(int level_num);
+void Savegame_PersistGameToStartInfo(int level_num);
+void Savegame_ApplyLogicToStartInfo(int level_num);
+void Savegame_ResetEndInfo(int level_num);
+void Savegame_PersistGameToEndInfo(int level_num);

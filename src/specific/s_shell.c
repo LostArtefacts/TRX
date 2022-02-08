@@ -38,7 +38,7 @@ void S_Shell_Shutdown()
     GameBuf_Shutdown();
     Output_Shutdown();
     S_Audio_Shutdown();
-    SaveGame_Shutdown();
+    Savegame_Shutdown();
 }
 
 void S_Shell_SeedRandom()

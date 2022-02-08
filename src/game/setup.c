@@ -287,7 +287,7 @@ void ObjectObjects()
     SetupScionHolder(&g_Objects[O_SCION_HOLDER]);
 
     SetupLeadBar(&g_Objects[O_LEADBAR_ITEM]);
-    SetupSaveGameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
+    SetupSavegameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE1]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE2]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE3]);
