@@ -63,9 +63,6 @@ bool g_ChunkyFlag = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
 
-int16_t g_StoredLaraHealth = 0;
-int16_t g_LevelStartLaraHealth = 0;
-
 ROOM_INFO *g_RoomInfo = NULL;
 int16_t *g_FloorData = NULL;
 int16_t *g_MeshBase = NULL;

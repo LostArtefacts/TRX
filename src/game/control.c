@@ -215,9 +215,6 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
     while (m_FrameCount >= 0) {
         CheckCheatMode();
         if (g_LevelComplete) {
-            if (g_Config.disable_healing_between_levels) {
-                g_LevelStartLaraHealth = g_StoredLaraHealth;
-            }
             return GF_NOP_BREAK;
         }
 
