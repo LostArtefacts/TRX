@@ -401,9 +401,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points += LARA_HITPOINTS / 2;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -415,9 +413,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_HITPOINTS;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;

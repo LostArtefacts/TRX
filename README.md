@@ -202,6 +202,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added a fly cheat
 - added a level skip cheat
 - added a door open cheat (while in fly mode)
+- added ability to adjust Lara's starting health
 - added ability to disable all medpacks
 - added ability to disable Magnums
 - added ability to disable UZIs

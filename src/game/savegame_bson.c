@@ -1,5 +1,6 @@
 #include "game/savegame_bson.h"
 
+#include "config.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
@@ -143,8 +144,8 @@ static bool SaveGame_BSON_LoadLevels(
             return false;
         }
         START_INFO *start = &game_info->start[i];
-        start->lara_hitpoints =
-            json_object_get_int(level_obj, "lara_hitpoints", LARA_HITPOINTS);
+        start->lara_hitpoints = json_object_get_int(
+            level_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
         start->pistol_ammo = json_object_get_int(level_obj, "pistol_ammo", 0);
         start->magnum_ammo = json_object_get_int(level_obj, "magnum_ammo", 0);
         start->uzi_ammo = json_object_get_int(level_obj, "uzi_ammo", 0);

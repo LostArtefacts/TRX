@@ -196,7 +196,7 @@ void ModifyStartInfo(int32_t level_num)
     if (!g_Config.disable_healing_between_levels
         || level_num == g_GameFlow.gym_level_num
         || level_num == g_GameFlow.first_level_num) {
-        start->lara_hitpoints = LARA_HITPOINTS;
+        start->lara_hitpoints = g_Config.start_lara_hitpoints;
     }
 
     if (level_num == g_GameFlow.gym_level_num) {
