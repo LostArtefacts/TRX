@@ -111,7 +111,7 @@ static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 static void Overlay_BarSetupHealth()
 {
     m_HealthBar.type = BT_LARA_HEALTH;
-    m_HealthBar.value = LARA_HITPOINTS;
+    m_HealthBar.value = 0;
     m_HealthBar.max_value = LARA_HITPOINTS;
     m_HealthBar.show_mode = g_Config.healthbar_showing_mode;
     m_HealthBar.show = false;

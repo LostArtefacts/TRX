@@ -145,8 +145,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     SDL_LockAudioDevice(g_AudioDeviceID);
 
     int error_code;
-    char *full_path = NULL;
-    File_GetFullPath(file_path, &full_path);
+    char *full_path = File_GetFullPath(file_path);
 
     AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
 

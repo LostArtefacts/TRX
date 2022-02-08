@@ -96,7 +96,7 @@ bool InitialiseLevel(int32_t level_num)
     Text_RemoveAll();
     InitialiseGameFlags();
 
-    g_Lara.item_number = NO_ITEM;
+    InitialiseLaraLoad(NO_ITEM);
     if (level_num != g_GameFlow.title_level_num) {
         Screen_ApplyResolution();
     }
@@ -165,7 +165,7 @@ void BaddyObjects()
 {
     g_Objects[O_LARA].initialise = InitialiseLaraLoad;
     g_Objects[O_LARA].draw_routine = DrawDummyItem;
-    g_Objects[O_LARA].hit_points = LARA_HITPOINTS;
+    g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
     g_Objects[O_LARA].save_position = 1;
     g_Objects[O_LARA].save_hitpoints = 1;

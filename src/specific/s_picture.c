@@ -24,7 +24,9 @@ PICTURE *S_Picture_CreateFromFile(const char *path)
     int dst_linesize[4] = { 0 };
     PICTURE *target_pic = NULL;
 
-    error_code = avformat_open_input(&format_ctx, path, NULL, NULL);
+    char *full_path = File_GetFullPath(path);
+    error_code = avformat_open_input(&format_ctx, full_path, NULL, NULL);
+    Memory_FreePointer(&full_path);
     if (error_code != 0) {
         goto cleanup;
     }

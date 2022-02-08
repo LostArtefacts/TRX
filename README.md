@@ -202,6 +202,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added a fly cheat
 - added a level skip cheat
 - added a door open cheat (while in fly mode)
+- added ability to adjust Lara's starting health
 - added ability to disable all medpacks
 - added ability to disable Magnums
 - added ability to disable UZIs
@@ -258,6 +259,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - changed maximum textures from 2048 to 8192
 - changed maximum texture pages from 32 to 128
 - changed input method to DirectInput
+- changed saves to be put in the saves/ directory
 - fixed inability to switch Control keys during shimmy
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
@@ -294,6 +296,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed Lara switching to pistols when completing a level with other guns
 - fixed detail levels text flashing with any option change
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips
+- fixed gun pickups disappearing in rare circumstances on save load (#406)
 
 ## Showcase
 

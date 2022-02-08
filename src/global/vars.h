@@ -29,7 +29,6 @@ extern SHADOW_INFO g_ShadowInfo;
 
 extern bool g_ModeLock;
 
-extern int32_t g_NoInputCount;
 extern bool g_IDelay;
 extern int32_t g_IDCount;
 extern int32_t g_OptionSelected;
@@ -52,8 +51,6 @@ extern int32_t g_SaveCounter;
 extern int16_t g_CurrentLevel;
 extern uint32_t *g_DemoData;
 extern bool g_LevelComplete;
-extern bool g_LevelRestart;
-extern bool g_ResetFlag;
 extern bool g_ChunkyFlag;
 extern int32_t g_OverlayFlag;
 extern int32_t g_HeightType;

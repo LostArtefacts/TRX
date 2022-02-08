@@ -1,14 +1,19 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
+- changed Lara's starting health to be configurable; useful for no damage runs (#365)
+- changed saves to be put in the saves/ directory
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
 - changed fade animations to be FPS-independent
 - changed fade animations to run faster in the main menu
 - fixed detail levels text flashing with any option change (#380)
+- fixed main menu demo playing even when the passport is open (#410, regression from 2.1)
 - fixed broken poses at the end of cinematics (#390)
 - fixed libavcodec-related memory leaks (#389)
 - fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
 - fixed sounds playing after demo mode ends when game is minimized (#399)
+- fixed glitched floor in the Natla cutscene
+- fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31

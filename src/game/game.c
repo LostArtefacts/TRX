@@ -24,7 +24,11 @@
 bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
-    if (level_type != GFL_SAVED) {
+    if (level_type == GFL_SAVED) {
+        // reset start info to the defaults so that we do not do
+        // GlobalItemReplace in the inventory initialization routines too early
+        ResetStartInfo(level_num);
+    } else {
         InitialiseLevelFlags();
     }
 
@@ -65,8 +69,6 @@ int32_t StopGame()
 
 int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 {
-    g_NoInputCount = 0;
-    g_ResetFlag = false;
     g_OverlayFlag = 1;
     InitialiseCamera();
 

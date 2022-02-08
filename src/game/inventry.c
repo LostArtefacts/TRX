@@ -150,6 +150,8 @@ int32_t Display_Inventory(int inv_mode)
     bool pass_mode_open = false;
     g_InvMode = inv_mode;
 
+    int no_input_count = 0;
+    bool start_demo = false;
     m_InvNFrames = 2;
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
@@ -218,14 +220,11 @@ int32_t Display_Inventory(int inv_mode)
         Input_Update();
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
-            g_NoInputCount = 0;
-        } else {
-            if (!g_Config.disable_demo) {
-                g_NoInputCount++;
-                if (g_GameFlow.has_demo
-                    && g_NoInputCount > g_GameFlow.demo_delay) {
-                    g_ResetFlag = true;
-                }
+            no_input_count = 0;
+        } else if (!g_Config.disable_demo && imo.status == RNG_OPEN) {
+            no_input_count++;
+            if (g_GameFlow.has_demo && no_input_count > g_GameFlow.demo_delay) {
+                start_demo = true;
             }
         }
 
@@ -298,8 +297,8 @@ int32_t Display_Inventory(int inv_mode)
                 break;
             }
 
-            if ((g_ResetFlag || g_InputDB.option)
-                && (g_ResetFlag || g_InvMode != INV_TITLE_MODE)) {
+            if (start_demo
+                || (g_InputDB.option && g_InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 g_InvChosen = -1;
 
@@ -664,7 +663,9 @@ int32_t Display_Inventory(int inv_mode)
         m_VersionText = NULL;
     }
 
-    if (g_ResetFlag) {
+    if (start_demo) {
+        no_input_count = 0;
+        start_demo = false;
         return GF_START_DEMO;
     }
 
@@ -702,7 +703,6 @@ int32_t Display_Inventory(int inv_mode)
                 return GF_START_SAVED_GAME | g_InvExtraData[1];
             } else if (g_InvExtraData[0] == 1) {
                 // page 2: restart level
-                g_LevelRestart = true;
                 return GF_START_GAME | g_CurrentLevel;
             } else {
                 // page 3: exit game

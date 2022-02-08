@@ -159,7 +159,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
-
+    READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
     READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
@@ -171,6 +171,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
 
+    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
 
     if (root) {

@@ -1,4 +1,7 @@
 {
+    // Sets starting Lara's health value (max is 1000).
+    "start_lara_hitpoints": 1000,
+
     // Disables healing Lara between level reloads (for No Heal challenge runs).
     "disable_healing_between_levels": false,
 

@@ -1,5 +1,6 @@
 #include "game/savegame_bson.h"
 
+#include "config.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
@@ -75,13 +76,6 @@ static bool SaveGame_BSON_IsValidItemObject(
         case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
         case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
-        // TODO: these are not valid replacements, but they are needed
-        // because of issue #406. Once we fix that, these can be safely
-        // removed.
-        case O_PISTOLS: return initial_obj_num == O_GUN_AMMO_ITEM;
-        case O_SHOTGUN_ITEM: return initial_obj_num == O_SG_AMMO_ITEM;
-        case O_MAGNUM_ITEM: return initial_obj_num == O_MAG_AMMO_ITEM;
-        case O_UZI_ITEM: return initial_obj_num == O_UZI_AMMO_ITEM;
     }
     // clang-format on
 
@@ -150,6 +144,8 @@ static bool SaveGame_BSON_LoadLevels(
             return false;
         }
         START_INFO *start = &game_info->start[i];
+        start->lara_hitpoints = json_object_get_int(
+            level_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
         start->pistol_ammo = json_object_get_int(level_obj, "pistol_ammo", 0);
         start->magnum_ammo = json_object_get_int(level_obj, "magnum_ammo", 0);
         start->uzi_ammo = json_object_get_int(level_obj, "uzi_ammo", 0);
@@ -578,6 +574,8 @@ static struct json_array_s *SaveGame_BSON_DumpLevels(GAME_INFO *game_info)
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         START_INFO *start = &game_info->start[i];
         struct json_object_s *level_obj = json_object_new();
+        json_object_append_int(
+            level_obj, "lara_hitpoints", start->lara_hitpoints);
         json_object_append_int(level_obj, "pistol_ammo", start->pistol_ammo);
         json_object_append_int(level_obj, "magnum_ammo", start->magnum_ammo);
         json_object_append_int(level_obj, "uzi_ammo", start->uzi_ammo);
@@ -829,7 +827,7 @@ static struct json_object_s *SaveGame_BSON_DumpLara(LARA_INFO *lara)
     return lara_obj;
 }
 
-char *SaveGame_BSON_GetSavePath(int32_t slot)
+char *SaveGame_BSON_GetSaveFileName(int32_t slot)
 {
     size_t out_size = snprintf(NULL, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
     char *out = Memory_Alloc(out_size);

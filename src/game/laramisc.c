@@ -401,9 +401,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points += LARA_HITPOINTS / 2;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -415,9 +413,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_HITPOINTS;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -432,25 +428,20 @@ void ControlLaraExtra(int16_t item_num)
 void InitialiseLaraLoad(int16_t item_num)
 {
     g_Lara.item_number = item_num;
-    g_LaraItem = &g_Items[item_num];
+    if (item_num == NO_ITEM) {
+        g_LaraItem = NULL;
+    } else {
+        g_LaraItem = &g_Items[item_num];
+    }
 }
 
 void InitialiseLara()
 {
+    START_INFO *start = &g_GameInfo.start[g_CurrentLevel];
+
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
-    g_LaraItem->hit_points = LARA_HITPOINTS;
-    if (g_Config.disable_healing_between_levels && g_LevelRestart) {
-        if (g_LevelStartLaraHealth > 0) {
-            g_LaraItem->hit_points = g_LevelStartLaraHealth;
-        } else {
-            // TODO Default to full health if using an old save before feature
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
-        g_LevelRestart = false;
-    } else if (g_Config.disable_healing_between_levels) {
-        g_LaraItem->hit_points = g_StoredLaraHealth;
-    }
+    g_LaraItem->hit_points = start->lara_hitpoints;
 
     g_Lara.air = LARA_AIR;
     g_Lara.torso_y_rot = 0;
