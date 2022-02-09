@@ -20,6 +20,7 @@
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 - fixed rare audio distance glitch (#421)
 - fixed Lara not getting her pistols in Atlantis if the player finishes Natla's Mines without picking up any gun (#424)
+- fixed broken dart ricochet effect (#429)
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
 - added CHANGELOG.md
