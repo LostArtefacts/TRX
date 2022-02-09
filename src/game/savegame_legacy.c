@@ -429,7 +429,14 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Read(&start->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Read(&start->gun_status, sizeof(int8_t));
         Savegame_Legacy_Read(&start->gun_type, sizeof(int8_t));
-        Savegame_Legacy_Read(&start->flags, sizeof(uint16_t));
+        uint16_t flags;
+        Savegame_Legacy_Read(&flags, sizeof(uint16_t));
+        start->flags.available = flags & 1 ? 1 : 0;
+        start->flags.got_pistols = flags & 2 ? 1 : 0;
+        start->flags.got_magnums = flags & 4 ? 1 : 0;
+        start->flags.got_uzis = flags & 8 ? 1 : 0;
+        start->flags.got_shotgun = flags & 16 ? 1 : 0;
+        start->flags.costume = flags & 32 ? 1 : 0;
     }
 
     Savegame_Legacy_Read(&game_info->stats.timer, sizeof(uint32_t));
@@ -578,7 +585,14 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Write(&start->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Write(&start->gun_status, sizeof(int8_t));
         Savegame_Legacy_Write(&start->gun_type, sizeof(int8_t));
-        Savegame_Legacy_Write(&start->flags, sizeof(uint16_t));
+        uint16_t flags = 0;
+        flags |= start->flags.available ? 1 : 0;
+        flags |= start->flags.got_pistols ? 2 : 0;
+        flags |= start->flags.got_magnums ? 4 : 0;
+        flags |= start->flags.got_uzis ? 8 : 0;
+        flags |= start->flags.got_shotgun ? 16 : 0;
+        flags |= start->flags.costume ? 32 : 0;
+        Savegame_Legacy_Write(&flags, sizeof(uint16_t));
     }
 
     Savegame_Legacy_Write(&game_info->stats.timer, sizeof(uint32_t));
