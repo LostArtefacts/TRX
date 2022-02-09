@@ -229,8 +229,8 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if (g_Lara.death_count > DEATH_WAIT
-            || (g_Lara.death_count > DEATH_WAIT_MIN && g_Input.any
+        if (g_Lara.death_timer > DEATH_WAIT
+            || (g_Lara.death_timer > DEATH_WAIT_MIN && g_Input.any
                 && !g_Input.fly_cheat)
             || g_OverlayFlag == 2) {
             if (level_type == GFL_DEMO) {
@@ -249,7 +249,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
         if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
-            && !g_Lara.death_count) {
+            && !g_Lara.death_timer) {
             if (g_OverlayFlag > 0) {
                 if (g_Input.load) {
                     g_OverlayFlag = -1;
@@ -274,7 +274,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if (!g_Lara.death_count && g_InputDB.pause) {
+        if (!g_Lara.death_timer && g_InputDB.pause) {
             if (Control_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }

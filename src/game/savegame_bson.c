@@ -515,8 +515,8 @@ static bool Savegame_BSON_LoadLara(
     lara->air = json_object_get_int(lara_obj, "air", lara->air);
     lara->dive_timer =
         json_object_get_int(lara_obj, "dive_count", lara->dive_timer);
-    lara->death_count =
-        json_object_get_int(lara_obj, "death_count", lara->death_count);
+    lara->death_timer =
+        json_object_get_int(lara_obj, "death_count", lara->death_timer);
     lara->current_active =
         json_object_get_int(lara_obj, "current_active", lara->current_active);
 
@@ -837,7 +837,7 @@ static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara)
     json_object_append_int(lara_obj, "hit_direction", lara->hit_direction);
     json_object_append_int(lara_obj, "air", lara->air);
     json_object_append_int(lara_obj, "dive_count", lara->dive_timer);
-    json_object_append_int(lara_obj, "death_count", lara->death_count);
+    json_object_append_int(lara_obj, "death_count", lara->death_timer);
     json_object_append_int(lara_obj, "current_active", lara->current_active);
 
     json_object_append_int(
