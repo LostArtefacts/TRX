@@ -157,14 +157,17 @@ static void Savegame_LoadPostProcess()
         }
     }
 
+    g_Lara.LOT.node = m_OldLaraLOTNode;
+    g_Lara.LOT.target_box = NO_BOX;
+}
+
+void Savegame_SetCurrentPosition(int level_num)
+{
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
             g_GameInfo.start[g_CurrentLevel] = g_GameInfo.start[i];
         }
     }
-
-    g_Lara.LOT.node = m_OldLaraLOTNode;
-    g_Lara.LOT.target_box = NO_BOX;
 }
 
 void Savegame_InitStartEndInfo()

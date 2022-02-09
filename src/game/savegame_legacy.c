@@ -1,3 +1,4 @@
+#define SAVEGAME_IMPL
 #include "game/savegame_legacy.h"
 
 #include "game/control.h"
@@ -438,6 +439,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Read(&game_info->stats.pickup_count, sizeof(uint8_t));
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
 
+    Savegame_SetCurrentPosition(g_CurrentLevel);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetEndInfo(i);
     }
