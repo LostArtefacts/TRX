@@ -32,6 +32,9 @@ void DartsControl(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
             g_LaraItem->pos.y_rot, g_LaraItem->room_number);
     }
+
+    int32_t old_x = item->pos.x;
+    int32_t old_z = item->pos.z;
     AnimateItem(item);
 
     int16_t room_num = item->room_number;
@@ -47,7 +50,9 @@ void DartsControl(int16_t item_num)
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
-            fx->pos = item->pos;
+            fx->pos.x = old_x;
+            fx->pos.y = item->pos.y;
+            fx->pos.z = old_z;
             fx->speed = 0;
             fx->counter = 6;
             fx->frame_number = -3 * Random_GetControl() / 0x8000;
