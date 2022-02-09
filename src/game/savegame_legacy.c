@@ -189,7 +189,7 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
     Savegame_Legacy_Write(&lara->hit_direction, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->air, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->dive_timer, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->death_count, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->death_timer, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->current_active, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->spaz_effect_count, sizeof(int16_t));
 
@@ -284,7 +284,7 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
     Savegame_Legacy_Read(&lara->hit_direction, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->air, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->dive_timer, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->death_count, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->death_timer, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->current_active, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->spaz_effect_count, sizeof(int16_t));
 
