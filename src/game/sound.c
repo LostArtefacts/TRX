@@ -373,6 +373,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             fxslot->sound_id = S_Audio_SampleSoundPlay(
                 sfx_id, Sound_ConvertVolumeToDecibel(volume),
                 Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+
+            Sound_ClearSlotHandles(fxslot);
             return true;
         }
         fxslot->sound_id = S_Audio_SampleSoundPlay(
