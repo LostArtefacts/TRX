@@ -17,6 +17,7 @@
 - fixed sounds playing after demo mode ends when game is minimized (#399)
 - fixed glitched floor in the Natla cutscene
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
+- fixed equipping gun after loading a legacy save (#427, regression from 2.4)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 - fixed rare audio distance glitch (#421)
 - fixed Lara not getting her pistols in Atlantis if the player finishes Natla's Mines without picking up any gun (#424)
