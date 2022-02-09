@@ -59,13 +59,7 @@ int json_value_is_null(const struct json_value_s *const value)
 
 struct json_number_s *json_number_new_int(int number)
 {
-    size_t size = 1;
-    int tmp = number;
-    while (tmp) {
-        tmp /= 10;
-        size++;
-    }
-
+    size_t size = snprintf(NULL, 0, "%d", number) + 1;
     char *buf = Memory_Alloc(size);
     sprintf(buf, "%d", number);
     struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
@@ -76,7 +70,7 @@ struct json_number_s *json_number_new_int(int number)
 
 struct json_number_s *json_number_new_double(double number)
 {
-    size_t size = 30;
+    size_t size = snprintf(NULL, 0, "%f", number) + 1;
     char *buf = Memory_Alloc(size);
     sprintf(buf, "%f", number);
     struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
