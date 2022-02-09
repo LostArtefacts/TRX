@@ -42,6 +42,11 @@ typedef struct GAMEFLOW_MESH_SWAP_DATA {
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 
+typedef struct GAMEFLOW_GIVE_ITEM_DATA {
+    GAME_OBJECT_ID object_num;
+    int quantity;
+} GAMEFLOW_GIVE_ITEM_DATA;
+
 static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
 {
     static const ENUM_TO_STRING map[] = {
@@ -475,6 +480,26 @@ static bool GameFlow_LoadLevelSequence(
         } else if (!strcmp(type_str, "remove_scions")) {
             seq->type = GFS_REMOVE_SCIONS;
 
+        } else if (!strcmp(type_str, "give_item")) {
+            seq->type = GFS_GIVE_ITEM;
+
+            GAMEFLOW_GIVE_ITEM_DATA *give_item_data =
+                Memory_Alloc(sizeof(GAMEFLOW_GIVE_ITEM_DATA));
+
+            give_item_data->object_num =
+                json_object_get_int(jseq_obj, "object_id", JSON_INVALID_NUMBER);
+            if (give_item_data->object_num == JSON_INVALID_NUMBER) {
+                LOG_ERROR(
+                    "level %d, sequence %s: 'object_id' must be a number",
+                    level_num, type_str);
+                return false;
+            }
+
+            give_item_data->quantity =
+                json_object_get_int(jseq_obj, "quantity", 1);
+
+            seq->data = give_item_data;
+
         } else if (!strcmp(type_str, "play_synced_audio")) {
             seq->type = GFS_PLAY_SYNCED_AUDIO;
             int tmp =
@@ -864,6 +889,7 @@ void GameFlow_Shutdown()
                     }
                     case GFS_PLAY_FMV:
                     case GFS_MESH_SWAP:
+                    case GFS_GIVE_ITEM:
                         Memory_FreePointer(&seq->data);
                         break;
                     case GFS_END:
@@ -1132,6 +1158,27 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
         case GFS_PLAY_SYNCED_AUDIO:
             Music_Play((int32_t)seq->data);
+            break;
+
+        case GFS_GIVE_ITEM:
+            if (level_type != GFL_SAVED) {
+                const GAMEFLOW_GIVE_ITEM_DATA *give_item_data =
+                    (const GAMEFLOW_GIVE_ITEM_DATA *)seq->data;
+                Inv_AddItemNTimes(
+                    give_item_data->object_num, give_item_data->quantity);
+                if (g_Lara.gun_type == LGT_UNARMED) {
+                    if (Inv_RequestItem(O_GUN_ITEM)) {
+                        g_GameInfo.start[level_num].gun_type = LGT_PISTOLS;
+                    } else if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+                        g_GameInfo.start[level_num].gun_type = LGT_SHOTGUN;
+                    } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
+                        g_GameInfo.start[level_num].gun_type = LGT_MAGNUMS;
+                    } else if (Inv_RequestItem(O_UZI_ITEM)) {
+                        g_GameInfo.start[level_num].gun_type = LGT_UZIS;
+                    }
+                    LaraInitialiseMeshes(level_num);
+                }
+            }
             break;
 
         case GFS_REMOVE_GUNS:
