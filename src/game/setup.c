@@ -118,11 +118,6 @@ bool InitialiseLevel(int32_t level_num)
 
     Sound_ResetEffects();
 
-    // LaraGun() expects request_gun_type to be set only when it really is
-    // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
-    // times.
-    g_Lara.request_gun_type = LGT_UNARMED;
-
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 
     if (g_GameFlow.levels[g_CurrentLevel].music) {
