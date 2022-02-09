@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
+- added ability to give Lara various items in the gameflow file
 - changed Lara's starting health to be configurable; useful for no damage runs (#365)
 - changed saves to be put in the saves/ directory
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
@@ -18,6 +19,7 @@
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 - fixed rare audio distance glitch (#421)
+- fixed Lara not getting her pistols in Atlantis if the player finishes Natla's Mines without picking up any gun (#424)
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
 - added CHANGELOG.md
