@@ -8,10 +8,6 @@
 
 #include <stdio.h>
 
-#define TOP_Y -100
-#define ROW_HEIGHT 25
-#define ROW_WIDTH 225
-
 typedef enum COMPASS_TEXT {
     TEXT_TITLE = 0,
     TEXT_TITLE_BORDER = 1,
@@ -29,21 +25,35 @@ static void Option_CompassInitText();
 static void Option_CompassInitText()
 {
     char buf[100];
-    int32_t y = TOP_Y;
+    const int top_y = -100;
+    const int row_height = 25;
+    const int row_width = 225;
+    const GAME_STATS *stats = &g_GameInfo.stats;
 
+    int y = top_y;
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, y - 2, " ");
 
     sprintf(buf, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
     m_Text[TEXT_TITLE] = Text_Create(0, y, buf);
-    y += ROW_HEIGHT;
+    y += row_height;
 
-    m_Text[TEXT_TIME] = Text_Create(0, y, " ");
-    y += ROW_HEIGHT;
+    // kills
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
+        stats->max_kill_count);
+    m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
+    y += row_height;
 
-    const GAME_STATS *stats = &g_GameInfo.stats;
+    // pickups
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
+        stats->max_pickup_count);
+    m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
+    y += row_height;
 
-    int32_t secret_count = 0;
-    int32_t secret_flags = stats->secret_flags;
+    // secrets
+    int secret_count = 0;
+    int secret_flags = stats->secret_flags;
     for (int i = 0; i < MAX_SECRETS; i++) {
         if (secret_flags & 1) {
             secret_count++;
@@ -54,23 +64,15 @@ static void Option_CompassInitText()
         buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
         g_GameInfo.stats.max_secret_count);
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
-    y += ROW_HEIGHT;
+    y += row_height;
 
-    sprintf(
-        buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
-        stats->max_pickup_count);
-    m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
-    y += ROW_HEIGHT;
+    // time taken
+    m_Text[TEXT_TIME] = Text_Create(0, y, " ");
+    y += row_height;
 
-    sprintf(
-        buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
-        stats->max_kill_count);
-    m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
-    y += ROW_HEIGHT;
-
-    Text_AddBackground(m_Text[TEXT_TITLE_BORDER], ROW_WIDTH, y - TOP_Y, 0, 0);
+    Text_AddBackground(m_Text[TEXT_TITLE_BORDER], row_width, y - top_y, 0, 0);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], 1);
-    Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0);
+    Text_AddBackground(m_Text[TEXT_TITLE], row_width - 4, 0, 0, 0);
     Text_AddOutline(m_Text[TEXT_TITLE], 1);
 
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {

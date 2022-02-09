@@ -254,7 +254,7 @@ int32_t Stats_GetSecrets()
 
 void Stats_Show(int32_t level_num)
 {
-    char string[100];
+    char buf[100];
     char time_str[100];
     TEXTSTRING *txt;
 
@@ -262,31 +262,36 @@ void Stats_Show(int32_t level_num)
 
     Text_RemoveAll();
 
-    // heading
-    sprintf(string, "%s", g_GameFlow.levels[level_num].level_title);
-    txt = Text_Create(0, -50, string);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    int y = -50;
+    const int row_height = 30;
 
-    // time taken
-    int32_t seconds = stats->timer / 30;
-    int32_t hours = seconds / 3600;
-    int32_t minutes = (seconds / 60) % 60;
-    seconds %= 60;
-    if (hours) {
-        sprintf(
-            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
-            seconds / 10, seconds % 10);
-    } else {
-        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
-    }
-    sprintf(string, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    txt = Text_Create(0, 70, string);
+    // heading
+    sprintf(buf, "%s", g_GameFlow.levels[level_num].level_title);
+    txt = Text_Create(0, y, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
+    y += row_height;
+
+    // kills
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
+        stats->max_kill_count);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
+
+    // pickups
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
+        stats->max_pickup_count);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
 
     // secrets
-    int32_t secret_count = 0;
+    int secret_count = 0;
     int16_t secret_flags = stats->secret_flags;
     for (int i = 0; i < MAX_SECRETS; i++) {
         if (secret_flags & 1) {
@@ -295,27 +300,30 @@ void Stats_Show(int32_t level_num)
         secret_flags >>= 1;
     }
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
+        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
         stats->max_secret_count);
-    txt = Text_Create(0, 40, string);
+    txt = Text_Create(0, y, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
+    y += row_height;
 
-    // pickups
-    sprintf(
-        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
-        stats->max_pickup_count);
-    txt = Text_Create(0, 10, string);
+    // time taken
+    int seconds = stats->timer / 30;
+    int hours = seconds / 3600;
+    int minutes = (seconds / 60) % 60;
+    seconds %= 60;
+    if (hours) {
+        sprintf(
+            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+            seconds / 10, seconds % 10);
+    } else {
+        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
+    }
+    sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    txt = Text_Create(0, y, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
-
-    // kills
-    sprintf(
-        string, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
-        stats->max_kill_count);
-    txt = Text_Create(0, -20, string);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    y += row_height;
 
     Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
