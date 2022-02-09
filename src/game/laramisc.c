@@ -12,6 +12,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -159,6 +160,11 @@ void LaraControl(int16_t item_num)
         item->hit_points = -1;
         if (!g_Lara.death_timer) {
             Music_Stop();
+            g_GameInfo.end[g_CurrentLevel].stats.death_count++;
+            if (g_GameInfo.current_save_slot != -1) {
+                Savegame_UpdateDeathCounters(
+                    g_GameInfo.current_save_slot, &g_GameInfo);
+            }
         }
         g_Lara.death_timer++;
         // make sure the enemy healthbar is no longer rendered. If g_Lara later

@@ -17,6 +17,10 @@
     // Removes all shotgun and shotgun shells pickups.
     "disable_shotgun": false,
 
+    // Enables showing deaths counter in the compass and in the level stats.
+    // Death count is updated in the currently loaded save as soon as Lara dies.
+    "enable_deaths_counter": true,
+
     // Enables showing healthbar for the active enemy.
     "enable_enemy_healthbar": true,
 

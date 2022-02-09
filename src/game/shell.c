@@ -179,7 +179,7 @@ void Shell_Main()
                 LOG_ERROR("Corrupt save file!");
                 gf_option = GF_EXIT_TO_TITLE;
             } else {
-                g_GameInfo.save_slot_to_load = gf_param;
+                g_GameInfo.current_save_slot = gf_param;
                 gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);
             }
             break;
@@ -198,6 +198,7 @@ void Shell_Main()
             break;
 
         case GF_EXIT_TO_TITLE:
+            g_GameInfo.current_save_slot = -1;
             if (!intro_played) {
                 GameFlow_InterpretSequence(
                     g_GameFlow.title_level_num, GFL_NORMAL);

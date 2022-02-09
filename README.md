@@ -192,6 +192,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 - added proper UI and bar scaling
 - added enemy health bar
+- added deaths counter
 - added more control over when to show health bar and air bar
 - added customizability to health bar and air bar
 - added ability to set user-defined FOV

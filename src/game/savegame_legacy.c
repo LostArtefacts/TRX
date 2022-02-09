@@ -441,6 +441,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetEndInfo(i);
     }
+    game_info->death_counter_supported = false;
     game_info->end[g_CurrentLevel].stats = game_info->stats;
 
     InitialiseLaraInventory(g_CurrentLevel);
@@ -664,4 +665,9 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     File_Write(buffer, sizeof(char), m_SGBufPos, fp);
     Memory_FreePointer(&buffer);
+}
+
+bool Savegame_Legacy_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
+{
+    return false;
 }

@@ -11,6 +11,7 @@ typedef enum {
 
 typedef enum {
     FILE_OPEN_READ,
+    FILE_OPEN_READ_WRITE,
     FILE_OPEN_WRITE,
 } FILE_OPEN_MODE;
 

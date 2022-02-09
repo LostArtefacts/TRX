@@ -126,6 +126,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(disable_magnums, false);
     READ_BOOL(disable_uzis, false);
     READ_BOOL(disable_shotgun, false);
+    READ_BOOL(enable_deaths_counter, true);
     READ_BOOL(enable_enemy_healthbar, true);
     READ_BOOL(enable_enhanced_look, true);
     READ_BOOL(enable_shotgun_flash, true);
