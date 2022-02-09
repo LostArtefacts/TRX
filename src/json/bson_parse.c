@@ -481,6 +481,7 @@ static void bson_parse_array(
     while (state->offset < start_offset + size - 1) {
         struct json_array_element_s *element =
             (struct json_array_element_s *)state->dom;
+        element->ref_count = 1;
         state->dom += sizeof(struct json_array_element_s);
         if (!previous) {
             array->start = element;
@@ -561,6 +562,7 @@ static void bson_parse_object(
     while (state->offset < start_offset + size - 1) {
         struct json_object_element_s *element =
             (struct json_object_element_s *)state->dom;
+        element->ref_count = 1;
         state->dom += sizeof(struct json_object_element_s);
         if (!previous) {
             object->start = element;

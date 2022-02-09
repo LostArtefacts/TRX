@@ -45,6 +45,7 @@ struct json_object_element_s {
     struct json_string_s *name;
     struct json_value_s *value;
     struct json_object_element_s *next;
+    size_t ref_count;
 };
 
 struct json_object_s {
@@ -56,6 +57,7 @@ struct json_object_s {
 struct json_array_element_s {
     struct json_value_s *value;
     struct json_array_element_s *next;
+    size_t ref_count;
 };
 
 struct json_array_s {
@@ -89,6 +91,7 @@ void json_string_free(struct json_string_s *str);
 // arrays
 struct json_array_s *json_array_new();
 void json_array_free(struct json_array_s *arr);
+void json_array_element_free(struct json_array_element_s *element);
 
 void json_array_append(struct json_array_s *arr, struct json_value_s *value);
 void json_array_append_bool(struct json_array_s *arr, int b);
@@ -116,6 +119,7 @@ struct json_object_s *json_array_get_object(
 // objects
 struct json_object_s *json_object_new();
 void json_object_free(struct json_object_s *obj);
+void json_object_element_free(struct json_object_element_s *element);
 
 void json_object_append(
     struct json_object_s *obj, const char *key, struct json_value_s *value);
