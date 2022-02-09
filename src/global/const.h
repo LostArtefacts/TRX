@@ -92,7 +92,7 @@
 #define MAX_HEAD_ROTATION_SURF (50 * PHD_DEGREE) // = 9100
 #define MAX_HEAD_TILT_SURF (40 * PHD_DEGREE) // = 7280
 #define MIN_HEAD_TILT_SURF (-40 * PHD_DEGREE) // = -7280
-#define DIVE_COUNT 10
+#define DIVE_WAIT 10
 #define WALL_L 1024
 #define WALL_SHIFT 10
 #define STEP_L 256

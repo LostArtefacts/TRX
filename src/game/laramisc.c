@@ -105,7 +105,7 @@ void LaraControl(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
-            g_Lara.dive_count = DIVE_COUNT + 1;
+            g_Lara.dive_timer = DIVE_WAIT + 1;
             item->current_anim_state = AS_SURFTREAD;
             item->goal_anim_state = AS_SURFTREAD;
             item->anim_number = AA_SURFTREAD;
