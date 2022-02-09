@@ -113,15 +113,22 @@ struct json_array_s *json_array_new()
 
 void json_array_free(struct json_array_s *arr)
 {
+    struct json_array_element_s *elem = arr->start;
+    while (elem) {
+        struct json_array_element_s *next = elem->next;
+        json_value_free(elem->value);
+        json_array_element_free(elem);
+        elem = next;
+    }
     if (!arr->ref_count) {
-        struct json_array_element_s *elem = arr->start;
-        while (elem) {
-            struct json_array_element_s *next = elem->next;
-            json_value_free(elem->value);
-            Memory_Free(elem);
-            elem = next;
-        }
         Memory_Free(arr);
+    }
+}
+
+void json_array_element_free(struct json_array_element_s *element)
+{
+    if (!element->ref_count) {
+        Memory_FreePointer(&element);
     }
 }
 
@@ -258,16 +265,23 @@ struct json_object_s *json_object_new()
 
 void json_object_free(struct json_object_s *obj)
 {
+    struct json_object_element_s *elem = obj->start;
+    while (elem) {
+        struct json_object_element_s *next = elem->next;
+        json_string_free(elem->name);
+        json_value_free(elem->value);
+        json_object_element_free(elem);
+        elem = next;
+    }
     if (!obj->ref_count) {
-        struct json_object_element_s *elem = obj->start;
-        while (elem) {
-            struct json_object_element_s *next = elem->next;
-            json_string_free(elem->name);
-            json_value_free(elem->value);
-            Memory_Free(elem);
-            elem = next;
-        }
         Memory_Free(obj);
+    }
+}
+
+void json_object_element_free(struct json_object_element_s *element)
+{
+    if (!element->ref_count) {
+        Memory_FreePointer(&element);
     }
 }
 

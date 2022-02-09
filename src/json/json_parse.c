@@ -1267,6 +1267,7 @@ static void json_parse_object(
         }
 
         element = (struct json_object_element_s *)state->dom;
+        element->ref_count = 1;
 
         state->dom += sizeof(struct json_object_element_s);
 
@@ -1384,6 +1385,7 @@ static void json_parse_array(
         }
 
         element = (struct json_array_element_s *)state->dom;
+        element->ref_count = 1;
 
         state->dom += sizeof(struct json_array_element_s);
 
