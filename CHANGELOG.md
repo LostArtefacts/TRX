@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
+- added deaths counter (#388, requires new saves)
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
 - added ability to give Lara various items in the gameflow file

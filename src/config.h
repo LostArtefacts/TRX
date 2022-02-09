@@ -44,6 +44,7 @@ typedef struct {
     bool disable_magnums;
     bool disable_uzis;
     bool disable_shotgun;
+    bool enable_deaths_counter;
     bool enable_enemy_healthbar;
     bool enable_enhanced_look;
     bool enable_numeric_keys;

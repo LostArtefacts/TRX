@@ -1065,10 +1065,11 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_CAMERA_RIGHT,
     GS_KEYMAP_CAMERA_RESET,
 
-    GS_STATS_TIME_TAKEN_FMT,
-    GS_STATS_SECRETS_FMT,
-    GS_STATS_PICKUPS_FMT,
     GS_STATS_KILLS_FMT,
+    GS_STATS_PICKUPS_FMT,
+    GS_STATS_SECRETS_FMT,
+    GS_STATS_DEATHS_FMT,
+    GS_STATS_TIME_TAKEN_FMT,
 
     GS_PAUSE_PAUSED,
     GS_PAUSE_EXIT_TO_TITLE,
@@ -1451,6 +1452,7 @@ typedef struct LARA_INFO {
 
 typedef struct GAME_STATS {
     uint32_t timer;
+    uint32_t death_count;
     uint32_t kill_count;
     uint16_t secret_flags;
     uint8_t pickup_count;
@@ -1492,7 +1494,8 @@ typedef struct GAME_INFO {
     END_INFO *end;
     GAME_STATS stats; // always for current level
     uint8_t bonus_flag;
-    int32_t save_slot_to_load;
+    int32_t current_save_slot;
+    bool death_counter_supported;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

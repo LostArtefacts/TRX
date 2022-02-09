@@ -32,6 +32,7 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
 
+static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root);
 static bool Savegame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t current_obj_num);
 static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp);
@@ -62,6 +63,35 @@ static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
+
+static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root)
+{
+    size_t uncompressed_size;
+    char *uncompressed = bson_write(root, &uncompressed_size);
+
+    uLongf compressed_size = compressBound(uncompressed_size);
+    char *compressed = Memory_Alloc(compressed_size);
+    if (compress(
+            (Bytef *)compressed, &compressed_size, (const Bytef *)uncompressed,
+            (uLongf)uncompressed_size)
+        != Z_OK) {
+        Shell_ExitSystem("Failed to compress savegame data");
+    }
+
+    Memory_FreePointer(&uncompressed);
+
+    SAVEGAME_BSON_HEADER header = {
+        .magic = SAVEGAME_BSON_MAGIC,
+        .version = 0,
+        .compressed_size = compressed_size,
+        .uncompressed_size = uncompressed_size,
+    };
+
+    File_Write(&header, sizeof(header), 1, fp);
+    File_Write(compressed, sizeof(char), compressed_size, fp);
+
+    Memory_FreePointer(&compressed);
+}
 
 static bool Savegame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t initial_obj_num)
@@ -137,7 +167,7 @@ static bool Savegame_BSON_LoadStartInfo(
     }
     if ((signed)start_arr->length != g_GameFlow.level_count) {
         LOG_ERROR(
-            "Malformed save: expected %d levels, got %d",
+            "Malformed save: expected %d start info elements, got %d",
             g_GameFlow.level_count, start_arr->length);
         return false;
     }
@@ -185,7 +215,7 @@ static bool Savegame_BSON_LoadEndInfo(
     }
     if ((signed)end_arr->length != g_GameFlow.level_count) {
         LOG_ERROR(
-            "Malformed save: expected %d levels, got %d",
+            "Malformed save: expected %d end info elements, got %d",
             g_GameFlow.level_count, end_arr->length);
         return false;
     }
@@ -204,6 +234,8 @@ static bool Savegame_BSON_LoadEndInfo(
             json_object_get_int(end_obj, "kills", end->stats.kill_count);
         end->stats.pickup_count =
             json_object_get_int(end_obj, "pickups", end->stats.pickup_count);
+        end->stats.death_count =
+            json_object_get_int(end_obj, "deaths", end->stats.death_count);
         end->stats.max_secret_count = json_object_get_int(
             end_obj, "max_secrets", end->stats.max_secret_count);
         end->stats.max_kill_count = json_object_get_int(
@@ -211,6 +243,7 @@ static bool Savegame_BSON_LoadEndInfo(
         end->stats.max_pickup_count = json_object_get_int(
             end_obj, "max_pickups", end->stats.max_pickup_count);
     }
+    game_info->death_counter_supported = true;
     game_info->stats = game_info->end[g_CurrentLevel].stats;
     return true;
 }
@@ -651,6 +684,7 @@ static struct json_array_s *Savegame_BSON_DumpEndInfo(GAME_INFO *game_info)
         json_object_append_int(end_obj, "kills", end->stats.kill_count);
         json_object_append_int(end_obj, "secrets", end->stats.secret_flags);
         json_object_append_int(end_obj, "pickups", end->stats.pickup_count);
+        json_object_append_int(end_obj, "deaths", end->stats.death_count);
         json_object_append_int(end_obj, "max_kills", end->stats.max_kill_count);
         json_object_append_int(
             end_obj, "max_secrets", end->stats.max_secret_count);
@@ -997,31 +1031,48 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
 
-    size_t uncompressed_size;
     struct json_value_s *root = json_value_from_object(root_obj);
-    char *uncompressed = bson_write(root, &uncompressed_size);
+    SaveGame_BSON_SaveRaw(fp, root);
     json_value_free(root);
+}
 
-    uLongf compressed_size = compressBound(uncompressed_size);
-    char *compressed = Memory_Alloc(compressed_size);
-    if (compress(
-            (Bytef *)compressed, &compressed_size, (const Bytef *)uncompressed,
-            (uLongf)uncompressed_size)
-        != Z_OK) {
-        Shell_ExitSystem("Failed to compress savegame data");
+bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
+{
+    bool ret = false;
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_object_s *root_obj = json_value_as_object(root);
+    if (!root_obj) {
+        LOG_ERROR("Cannot find the root object");
+        goto cleanup;
     }
 
-    Memory_FreePointer(&uncompressed);
+    struct json_array_s *end_arr = json_object_get_array(root_obj, "end_info");
+    if (!end_arr) {
+        LOG_ERROR("Malformed save: invalid or missing end info array");
+        goto cleanup;
+    }
+    if ((signed)end_arr->length != g_GameFlow.level_count) {
+        LOG_ERROR(
+            "Malformed save: expected %d end info elements, got %d",
+            g_GameFlow.level_count, end_arr->length);
+        goto cleanup;
+    }
+    for (int i = 0; i < (signed)end_arr->length; i++) {
+        struct json_object_s *end_obj = json_array_get_object(end_arr, i);
+        if (!end_obj) {
+            LOG_ERROR("Malformed save: invalid end info");
+            goto cleanup;
+        }
+        END_INFO *end = &game_info->end[i];
+        json_object_evict_key(end_obj, "deaths");
+        json_object_append_int(end_obj, "deaths", end->stats.death_count);
+    }
 
-    SAVEGAME_BSON_HEADER header = {
-        .magic = SAVEGAME_BSON_MAGIC,
-        .version = 0,
-        .compressed_size = compressed_size,
-        .uncompressed_size = uncompressed_size,
-    };
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    SaveGame_BSON_SaveRaw(fp, root);
+    ret = true;
 
-    File_Write(&header, sizeof(header), 1, fp);
-    File_Write(compressed, sizeof(char), compressed_size, fp);
-
-    Memory_FreePointer(&compressed);
+cleanup:
+    json_value_free(root);
+    return ret;
 }

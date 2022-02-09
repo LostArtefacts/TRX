@@ -135,6 +135,8 @@ void json_object_append_array(
 void json_object_append_object(
     struct json_object_s *obj, const char *key, struct json_object_s *obj2);
 
+void json_object_evict_key(struct json_object_s *obj, const char *key);
+
 struct json_value_s *json_object_get_value(
     struct json_object_s *obj, const char *key);
 int json_object_get_bool(struct json_object_s *obj, const char *key, int d);

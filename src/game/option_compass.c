@@ -14,8 +14,9 @@ typedef enum COMPASS_TEXT {
     TEXT_TIME = 2,
     TEXT_SECRETS = 3,
     TEXT_PICKUPS = 4,
-    TEXT_KILLS = 5,
-    TEXT_NUMBER_OF = 6,
+    TEXT_DEATHS = 5,
+    TEXT_KILLS = 6,
+    TEXT_NUMBER_OF = 7,
 } COMPASS_TEXT;
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
@@ -65,6 +66,14 @@ static void Option_CompassInitText()
         g_GameInfo.stats.max_secret_count);
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
     y += row_height;
+
+    // deaths
+    if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
+        sprintf(
+            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
+        m_Text[TEXT_DEATHS] = Text_Create(0, y, buf);
+        y += row_height;
+    }
 
     // time taken
     m_Text[TEXT_TIME] = Text_Create(0, y, " ");

@@ -31,6 +31,7 @@ typedef struct SAVEGAME_STRATEGY {
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
+    bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
 static BOX_NODE *m_OldLaraLOTNode;
@@ -45,6 +46,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .fill_info = Savegame_BSON_FillInfo,
         .load_from_file = Savegame_BSON_LoadFromFile,
         .save_to_file = Savegame_BSON_SaveToFile,
+        .update_death_counters = Savegame_BSON_UpdateDeathCounters,
     },
     {
         .allow_load = true,
@@ -54,6 +56,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .fill_info = Savegame_Legacy_FillInfo,
         .load_from_file = Savegame_Legacy_LoadFromFile,
         .save_to_file = Savegame_Legacy_SaveToFile,
+        .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
     },
     { 0 },
 };
@@ -408,8 +411,33 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
         g_SavedGamesCount++;
         g_SaveCounter++;
+        game_info->current_save_slot = slot_num;
     }
 
+    return ret;
+}
+
+bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
+{
+    assert(game_info);
+    assert(slot_num >= 0);
+    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
+    assert(savegame_info->format);
+
+    bool ret = false;
+    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
+    while (strategy->format) {
+        if (savegame_info->format == strategy->format) {
+            MYFILE *fp =
+                File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
+            if (fp) {
+                ret = strategy->update_death_counters(fp, game_info);
+                File_Close(fp);
+            } else
+                break;
+        }
+        strategy++;
+    }
     return ret;
 }
 

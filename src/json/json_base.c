@@ -343,6 +343,28 @@ void json_object_append_object(
     json_object_append(obj, key, json_value_from_object(obj2));
 }
 
+void json_object_evict_key(struct json_object_s *obj, const char *key)
+{
+    if (!obj) {
+        return;
+    }
+    struct json_object_element_s *elem = obj->start;
+    struct json_object_element_s *prev = json_null;
+    while (elem) {
+        if (!strcmp(elem->name->string, key)) {
+            if (!prev) {
+                obj->start = elem->next;
+            } else {
+                prev->next = elem->next;
+            }
+            json_object_element_free(elem);
+            return;
+        }
+        prev = elem;
+        elem = elem->next;
+    }
+}
+
 struct json_value_s *json_object_get_value(
     struct json_object_s *obj, const char *key)
 {

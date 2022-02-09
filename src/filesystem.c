@@ -96,6 +96,9 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
     case FILE_OPEN_READ:
         file->fp = fopen(full_path, "rb");
         break;
+    case FILE_OPEN_READ_WRITE:
+        file->fp = fopen(full_path, "r+b");
+        break;
     default:
         file->fp = NULL;
         break;
