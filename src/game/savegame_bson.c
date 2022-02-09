@@ -1,3 +1,4 @@
+#define SAVEGAME_IMPL
 #include "game/savegame_bson.h"
 
 #include "config.h"
@@ -936,6 +937,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             json_object_get_array(root_obj, "end_info"), game_info)) {
         goto cleanup;
     }
+
+    Savegame_SetCurrentPosition(g_CurrentLevel);
 
     if (!Savegame_BSON_LoadInventory(
             json_object_get_object(root_obj, "inventory"))) {
