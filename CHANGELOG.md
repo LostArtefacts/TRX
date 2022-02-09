@@ -2,6 +2,7 @@
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
 - added ability to give Lara various items in the gameflow file
+- added restart level to passport menu on death (#48)
 - changed Lara's starting health to be configurable; useful for no damage runs (#365)
 - changed saves to be put in the saves/ directory
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)

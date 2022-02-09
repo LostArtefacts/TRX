@@ -207,18 +207,17 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                 g_InputDB = (INPUT_STATE) { 0 };
             }
         } else if (m_PassportMode == 0) {
-            if (g_InvMode == INV_DEATH_MODE) {
-                if (inv_item->anim_direction == -1) {
-                    g_InputDB = (INPUT_STATE) { 0, .left = 1 };
-                } else {
-                    g_InputDB = (INPUT_STATE) { 0, .right = 1 };
-                }
-            }
             if (!m_PassportText) {
                 if (g_InvMode == INV_TITLE_MODE
                     || g_CurrentLevel == g_GameFlow.gym_level_num) {
                     m_PassportText = Text_Create(
                         0, -16, g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
+                } else if (g_InvMode == INV_DEATH_MODE) {
+                    if (g_SavedGamesCount == 0) {
+                        g_InputDB.left = 0;
+                    }
+                    m_PassportText = Text_Create(
+                        0, -16, g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
                 } else {
                     m_PassportText = Text_Create(
                         0, -16, g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
@@ -243,6 +242,11 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     } else {
                         g_InvExtraData[1] = g_GameInfo.bonus_flag;
                     }
+                } else if (g_InvMode == INV_DEATH_MODE) {
+                    Text_Remove(g_InvRingText);
+                    g_InvRingText = NULL;
+                    Text_Remove(g_InvItemText[IT_NAME]);
+                    g_InvItemText[IT_NAME] = NULL;
                 } else {
                     Text_Remove(g_InvRingText);
                     g_InvRingText = NULL;
@@ -281,7 +285,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         true,
     };
 
-    if (g_InputDB.left && (g_InvMode != INV_DEATH_MODE || g_SavedGamesCount)) {
+    if (g_InputDB.left && (g_SavedGamesCount || page > 1)) {
         while (--page >= 0) {
             if (pages_available[page]) {
                 break;

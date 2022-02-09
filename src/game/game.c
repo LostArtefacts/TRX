@@ -70,7 +70,9 @@ int32_t StopGame()
     if (g_InvExtraData[0] == 0) {
         return GF_START_SAVED_GAME | g_InvExtraData[1];
     } else if (g_InvExtraData[0] == 1) {
-        return GF_START_GAME | g_GameFlow.first_level_num;
+        return GF_START_GAME
+            | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel
+                                           : g_GameFlow.first_level_num);
     } else {
         return GF_EXIT_TO_TITLE;
     }

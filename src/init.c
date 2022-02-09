@@ -17,6 +17,7 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_HEADING_OPTION, "OPTION" },
     { GS_HEADING_ITEMS, "ITEMS" },
     { GS_PASSPORT_SELECT_LEVEL, "Select Level" },
+    { GS_PASSPORT_RESTART_LEVEL, "Restart Level" },
     { GS_PASSPORT_SELECT_MODE, "Select Mode" },
     { GS_PASSPORT_MODE_NEW_GAME, "New Game" },
     { GS_PASSPORT_MODE_NEW_GAME_PLUS, "New Game+" },

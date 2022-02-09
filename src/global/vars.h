@@ -122,8 +122,6 @@ extern int32_t g_OverlapCount;
 
 extern REQUEST_INFO g_LoadSavegameRequester;
 
-extern int16_t g_StoredLaraHealth;
-
 extern int16_t g_InvMode;
 extern int32_t g_InvExtraData[8];
 extern int16_t g_InvChosen;
