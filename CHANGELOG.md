@@ -6,6 +6,7 @@
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
 - changed fade animations to be FPS-independent
 - changed fade animations to run faster in the main menu
+- changed compass text order to be consistent with level stats (#415)
 - fixed detail levels text flashing with any option change (#380)
 - fixed main menu demo playing even when the passport is open (#410, regression from 2.1)
 - fixed broken poses at the end of cinematics (#390)
