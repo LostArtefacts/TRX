@@ -153,8 +153,8 @@ void Shell_Main()
         return;
     }
 
-    InitialiseStartInfo();
-    SaveGame_ScanSavedGames();
+    Savegame_InitStartEndInfo();
+    Savegame_ScanSavedGames();
     Settings_Read();
 
     Screen_ApplyResolution();
@@ -174,7 +174,7 @@ void Shell_Main()
             break;
 
         case GF_START_SAVED_GAME: {
-            int16_t level_num = SaveGame_GetLevelNumber(gf_param);
+            int16_t level_num = Savegame_GetLevelNumber(gf_param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
                 gf_option = GF_EXIT_TO_TITLE;
@@ -194,7 +194,7 @@ void Shell_Main()
             break;
 
         case GF_LEVEL_COMPLETE:
-            gf_option = LevelCompleteSequence(gf_param);
+            gf_option = GF_EXIT_TO_TITLE;
             break;
 
         case GF_EXIT_TO_TITLE:

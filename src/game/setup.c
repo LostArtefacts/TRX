@@ -155,10 +155,10 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    g_GameInfo.secrets = 0;
-    g_GameInfo.timer = 0;
-    g_GameInfo.pickups = 0;
-    g_GameInfo.kills = 0;
+    g_GameInfo.stats.timer = 0;
+    g_GameInfo.stats.secret_flags = 0;
+    g_GameInfo.stats.pickup_count = 0;
+    g_GameInfo.stats.kill_count = 0;
 }
 
 void BaddyObjects()
@@ -287,7 +287,7 @@ void ObjectObjects()
     SetupScionHolder(&g_Objects[O_SCION_HOLDER]);
 
     SetupLeadBar(&g_Objects[O_LEADBAR_ITEM]);
-    SetupSaveGameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
+    SetupSavegameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE1]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE2]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE3]);

@@ -8,7 +8,7 @@
 
 // TombATI implementation of savegames.
 
-char *SaveGame_Legacy_GetSaveFileName(int32_t slot);
-bool SaveGame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-bool SaveGame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info);
-void SaveGame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info);
+char *Savegame_Legacy_GetSaveFileName(int32_t slot);
+bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
+bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info);
+void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info);

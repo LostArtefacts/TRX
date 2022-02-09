@@ -258,6 +258,8 @@ void Stats_Show(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
+    const GAME_STATS *stats = &g_GameInfo.end[level_num].stats;
+
     Text_RemoveAll();
 
     // heading
@@ -267,7 +269,7 @@ void Stats_Show(int32_t level_num)
     Text_CentreV(txt, 1);
 
     // time taken
-    int32_t seconds = g_GameInfo.timer / 30;
+    int32_t seconds = stats->timer / 30;
     int32_t hours = seconds / 3600;
     int32_t minutes = (seconds / 60) % 60;
     seconds %= 60;
@@ -284,34 +286,33 @@ void Stats_Show(int32_t level_num)
     Text_CentreV(txt, 1);
 
     // secrets
-    int32_t secrets_taken = 0;
-    int32_t secrets_total = MAX_SECRETS;
-    do {
-        if (g_GameInfo.secrets & 1) {
-            secrets_taken++;
+    int32_t secret_count = 0;
+    int16_t secret_flags = stats->secret_flags;
+    for (int i = 0; i < MAX_SECRETS; i++) {
+        if (secret_flags & 1) {
+            secret_count++;
         }
-        g_GameInfo.secrets >>= 1;
-        secrets_total--;
-    } while (secrets_total);
+        secret_flags >>= 1;
+    }
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secrets_taken,
-        g_GameFlow.levels[level_num].secrets);
+        string, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
+        stats->max_secret_count);
     txt = Text_Create(0, 40, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
     // pickups
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], g_GameInfo.pickups,
-        g_GameFlow.levels[level_num].pickups);
+        string, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
+        stats->max_pickup_count);
     txt = Text_Create(0, 10, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
 
     // kills
     sprintf(
-        string, g_GameFlow.strings[GS_STATS_KILLS_FMT], g_GameInfo.kills,
-        g_GameFlow.levels[level_num].kills);
+        string, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
+        stats->max_kill_count);
     txt = Text_Create(0, -20, string);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
@@ -337,14 +338,4 @@ void Stats_Show(int32_t level_num)
     }
 
     Output_FadeReset();
-
-    if (level_num == g_GameFlow.last_level_num) {
-        g_GameInfo.bonus_flag = GBF_NGPLUS;
-    } else {
-        CreateStartInfo(level_num + 1);
-        ModifyStartInfo(level_num + 1);
-    }
-
-    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
-    Screen_ApplyResolution();
 }

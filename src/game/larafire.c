@@ -600,7 +600,7 @@ int32_t FireWeapon(
 void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
-        g_GameInfo.kills++;
+        g_GameInfo.stats.kill_count++;
     }
     item->hit_points -= damage;
     item->hit_status = 1;

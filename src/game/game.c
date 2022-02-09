@@ -27,7 +27,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     if (level_type == GFL_SAVED) {
         // reset start info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
-        ResetStartInfo(level_num);
+        Savegame_ResetStartInfo(level_num);
     } else {
         InitialiseLevelFlags();
     }
@@ -37,7 +37,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_SAVED) {
-        if (!SaveGame_Load(g_GameInfo.save_slot_to_load, &g_GameInfo)) {
+        if (!Savegame_Load(g_GameInfo.save_slot_to_load, &g_GameInfo)) {
             LOG_ERROR("Failed to load save file!");
             return false;
         }
@@ -48,6 +48,17 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
 int32_t StopGame()
 {
+    Savegame_PersistGameToEndInfo(g_CurrentLevel);
+
+    if (g_CurrentLevel == g_GameFlow.last_level_num) {
+        g_GameInfo.bonus_flag = GBF_NGPLUS;
+    } else {
+        Savegame_PersistGameToStartInfo(g_CurrentLevel + 1);
+        Savegame_ApplyLogicToStartInfo(g_CurrentLevel + 1);
+    }
+
+    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
+
     if (g_LevelComplete) {
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
     }
@@ -73,9 +84,9 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     InitialiseCamera();
 
     Stats_CalculateStats();
-    g_GameFlow.levels[g_CurrentLevel].pickups = Stats_GetPickups();
-    g_GameFlow.levels[g_CurrentLevel].kills = Stats_GetKillables();
-    g_GameFlow.levels[g_CurrentLevel].secrets = Stats_GetSecrets();
+    g_GameInfo.stats.max_pickup_count = Stats_GetPickups();
+    g_GameInfo.stats.max_kill_count = Stats_GetKillables();
+    g_GameInfo.stats.max_secret_count = Stats_GetSecrets();
 
     bool ask_for_save = g_GameFlow.enable_save_crystals
         && level_type == GFL_NORMAL
@@ -94,7 +105,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                SaveGame_Save(g_InvExtraData[1], &g_GameInfo);
+                Savegame_Save(g_InvExtraData[1], &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;
@@ -109,9 +120,4 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     return ret;
-}
-
-int32_t LevelCompleteSequence(int32_t level_num)
-{
-    return GF_EXIT_TO_TITLE;
 }

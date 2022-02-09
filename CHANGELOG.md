@@ -12,10 +12,12 @@
 - fixed broken poses at the end of cinematics (#390)
 - fixed libavcodec-related memory leaks (#389)
 - fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
+- fixed calling `level_stats` for different levels (#336, requires new saves)
 - fixed sounds playing after demo mode ends when game is minimized (#399)
 - fixed glitched floor in the Natla cutscene
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
+- fixed rare audio distance glitch (#421)
 
 ## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
 - added CHANGELOG.md
