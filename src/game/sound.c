@@ -65,7 +65,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
 
 static int32_t Sound_ConvertVolumeToDecibel(int volume)
 {
-    return m_DecibelLUT[(volume & 0x7FFF) >> 6];
+    return m_DecibelLUT[(volume & SOUND_MAX_VOLUME) >> 6];
 }
 
 static int32_t Sound_ConvertPanToDecibel(uint16_t pan)
@@ -142,9 +142,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
         return;
     }
 
-    if (volume > 0x7FFF) {
-        volume = 0x7FFF;
-    }
+    CLAMPG(volume, SOUND_MAX_VOLUME);
 
     slot->volume = volume;
 
@@ -334,9 +332,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         sfx_id += (Random_GetDraw() * vars) / 0x8000;
     }
 
-    if (volume > SOUND_MAX_VOLUME) {
-        volume = SOUND_MAX_VOLUME;
-    }
+    CLAMPG(volume, SOUND_MAX_VOLUME);
 
     volume = (m_MasterVolume * volume) >> 6;
 
