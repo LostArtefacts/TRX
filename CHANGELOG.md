@@ -4,7 +4,7 @@
 - added new, more resilient savegame format (#277)
 - added ability to give Lara various items in the gameflow file
 - changed Lara's starting health to be configurable; useful for no damage runs (#365)
-- changed saves to be put in the saves/ directory
+- changed saves to be put in the saves/ directory (#87)
 - changed fade animations to block the main menu inventory ring like in PS1 (#379)
 - changed fade animations to be FPS-independent
 - changed fade animations to run faster in the main menu
@@ -16,7 +16,7 @@
 - fixed crash in custom levels that call `level_stats` after playing an FMV (#393, regression from 2.5)
 - fixed calling `level_stats` for different levels (#336, requires new saves)
 - fixed sounds playing after demo mode ends when game is minimized (#399)
-- fixed glitched floor in the Natla cutscene
+- fixed glitched floor in the Natla cutscene (#405)
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips (#250)
 - fixed rare audio distance glitch (#421)
