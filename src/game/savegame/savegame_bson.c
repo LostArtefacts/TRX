@@ -1224,8 +1224,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     int16_t load_track = json_object_get_int(root_obj, "music_track", -1);
 
     int32_t timestamp_arr[2];
-    timestamp_arr[0] = json_object_get_int(root_obj, "music_timestamp", -1);
-    timestamp_arr[1] = json_object_get_int(root_obj, "music_timestamp", -1);
+    timestamp_arr[0] = json_object_get_int(root_obj, "music_timestamp1", -1);
+    timestamp_arr[1] = json_object_get_int(root_obj, "music_timestamp2", -1);
     LOG_DEBUG("music_timestamp1 %d", timestamp_arr[0]);
     LOG_DEBUG("music_timestamp2 %d", timestamp_arr[1]);
     int64_t load_timestamp = *(int64_t *)timestamp_arr;
@@ -1311,7 +1311,7 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     }
     int *timestamp_arr = (int *)&save_timestamp;
     json_object_append_int(root_obj, "music_timestamp1", timestamp_arr[0]);
-    json_object_append_int(root_obj, "music_timestamp1", timestamp_arr[1]);
+    json_object_append_int(root_obj, "music_timestamp2", timestamp_arr[1]);
     LOG_DEBUG("music_timestamp1 %d", timestamp_arr[0]);
     LOG_DEBUG("music_timestamp2 %d", timestamp_arr[1]);
 
