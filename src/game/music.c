@@ -98,6 +98,8 @@ bool Music_Play(int16_t track)
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
+    LOG_DEBUG("Playing music on sound_id %d.", m_AudioStreamID);
+
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
         return false;
@@ -191,4 +193,20 @@ void Music_Unpause(void)
 int16_t Music_CurrentTrack(void)
 {
     return m_Track;
+}
+
+int64_t Music_GetTimestamp(int16_t track)
+{
+    if (m_AudioStreamID < 0) {
+        return -1;
+    }
+    return S_Audio_StreamGetTimestamp(m_AudioStreamID);
+}
+
+bool Music_SeekTimestamp(int16_t track, int64_t timestamp)
+{
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return S_Audio_StreamSeekTimestamp(m_AudioStreamID, timestamp);
 }

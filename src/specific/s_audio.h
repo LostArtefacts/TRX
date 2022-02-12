@@ -4,6 +4,7 @@
 #include <libavutil/samplefmt.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define AUDIO_MAX_SAMPLES 1000
 #define AUDIO_MAX_ACTIVE_SAMPLES 50
@@ -38,6 +39,8 @@ bool S_Audio_SampleSoundClose(int sound_id);
 bool S_Audio_SampleSoundCloseAll(void);
 bool S_Audio_SampleSoundSetPan(int sound_id, int pan);
 bool S_Audio_SampleSoundSetVolume(int sound_id, int volume);
+int64_t S_Audio_StreamGetTimestamp(int sound_id);
+bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp);
 
 #ifdef S_AUDIO_IMPL
     #include <libavformat/avformat.h>

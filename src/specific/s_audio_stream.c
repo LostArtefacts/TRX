@@ -516,3 +516,40 @@ void S_Audio_StreamSoundMix(float *dst_buffer, size_t len)
         }
     }
 }
+
+int64_t S_Audio_StreamGetTimestamp(int sound_id)
+{
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+        return -1;
+    }
+
+    if (m_StreamSounds[sound_id].is_playing) {
+        LOG_DEBUG("Getting timestamp for sound_id %d.", sound_id);
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
+        return stream->av.frame->best_effort_timestamp;
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+    }
+
+    return -1;
+}
+
+bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp)
+{
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+        return false;
+    }
+
+    if (m_StreamSounds[sound_id].is_playing) {
+        LOG_DEBUG("Seeking timestamp on sound_id %d.", sound_id);
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
+        av_seek_frame(stream->av.format_ctx, -1, timestamp, AVSEEK_FLAG_ANY);
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        return true;
+    }
+
+    return false;
+}

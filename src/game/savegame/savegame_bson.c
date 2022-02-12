@@ -7,6 +7,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
@@ -22,6 +23,7 @@
 #include <stdio.h>
 #include <zconf.h>
 #include <zlib.h>
+#include <inttypes.h>
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
@@ -1219,6 +1221,21 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
+    int16_t load_track = json_object_get_int(root_obj, "music_track", -1);
+
+    int32_t timestamp_arr[2];
+    timestamp_arr[0] = json_object_get_int(root_obj, "music_timestamp", -1);
+    timestamp_arr[1] = json_object_get_int(root_obj, "music_timestamp", -1);
+    LOG_DEBUG("music_timestamp1 %d", timestamp_arr[0]);
+    LOG_DEBUG("music_timestamp2 %d", timestamp_arr[1]);
+    int64_t load_timestamp = *(int64_t *)timestamp_arr;
+    LOG_DEBUG("load_timestamp %d", load_timestamp);
+
+    if (load_track) {
+        Music_Play(load_track);
+        Music_SeekTimestamp(load_track, load_timestamp);
+    }
+
     ret = true;
 
 cleanup:
@@ -1286,6 +1303,17 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_array(root_obj, "fx", SaveGame_BSON_DumpFx());
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
+    int16_t save_track = Music_CurrentTrack();
+    json_object_append_int(root_obj, "music_track", save_track);
+    int64_t save_timestamp = 0;
+    if (save_track) {
+        save_timestamp = Music_GetTimestamp(Music_CurrentTrack());
+    }
+    int *timestamp_arr = (int *)&save_timestamp;
+    json_object_append_int(root_obj, "music_timestamp1", timestamp_arr[0]);
+    json_object_append_int(root_obj, "music_timestamp1", timestamp_arr[1]);
+    LOG_DEBUG("music_timestamp1 %d", timestamp_arr[0]);
+    LOG_DEBUG("music_timestamp2 %d", timestamp_arr[1]);
 
     struct json_value_s *root = json_value_from_object(root_obj);
     SaveGame_BSON_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);
