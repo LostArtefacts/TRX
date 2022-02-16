@@ -308,6 +308,16 @@ void Stats_Show(int32_t level_num)
     Text_CentreV(txt, 1);
     y += row_height;
 
+    // deaths
+    if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
+        sprintf(
+            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
+        txt = Text_Create(0, y, buf);
+        Text_CentreH(txt, 1);
+        Text_CentreV(txt, 1);
+        y += row_height;
+    }
+
     // time taken
     int seconds = stats->timer / 30;
     int hours = seconds / 3600;
@@ -325,16 +335,6 @@ void Stats_Show(int32_t level_num)
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
     y += row_height;
-
-    // deaths
-    if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
-        sprintf(
-            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
-        txt = Text_Create(0, y, buf);
-        Text_CentreH(txt, 1);
-        Text_CentreV(txt, 1);
-        y += row_height;
-    }
 
     Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
