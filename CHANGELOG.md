@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.5...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6...master)
+- ...
+
+## [2.6](https://github.com/rr-/Tomb1Main/compare/2.5...2.6) - 2022-02-16
 - added deaths counter (#388, requires new saves)
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
