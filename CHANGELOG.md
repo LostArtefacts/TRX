@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6...master)
-- ...
+- fixed equipping gun after starting the game (#439, regression from 2.6)
 
 ## [2.6](https://github.com/rr-/Tomb1Main/compare/2.5...2.6) - 2022-02-16
 - added deaths counter (#388, requires new saves)

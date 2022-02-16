@@ -41,12 +41,12 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             LOG_ERROR("Failed to load save file!");
             return false;
         }
-
-        // LaraGun() expects request_gun_type to be set only when it
-        // really is needed, not at all times.
-        // https://github.com/rr-/Tomb1Main/issues/36
-        g_Lara.request_gun_type = LGT_UNARMED;
     }
+
+    // LaraGun() expects request_gun_type to be set only when it
+    // really is needed, not at all times.
+    // https://github.com/rr-/Tomb1Main/issues/36
+    g_Lara.request_gun_type = LGT_UNARMED;
 
     return true;
 }
