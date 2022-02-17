@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.1...master)
-- ...
+- fixed equipping gun after starting a demo (#440, regression from 2.6)
 
 ## [2.6.1](https://github.com/rr-/Tomb1Main/compare/2.6...2.6.1) - 2022-02-16
 - fixed equipping gun after starting the game (#439, regression from 2.6)

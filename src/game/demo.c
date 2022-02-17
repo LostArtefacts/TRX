@@ -66,6 +66,11 @@ int32_t StartDemo()
         Random_SeedDraw(0xD371F947);
         Random_SeedControl(0xD371F947);
 
+        // LaraGun() expects request_gun_type to be set only when it
+        // really is needed, not at all times.
+        // https://github.com/rr-/Tomb1Main/issues/36
+        g_Lara.request_gun_type = LGT_UNARMED;
+
         txt = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
         Text_Flash(txt, 1, 20);
         Text_AlignBottom(txt, 1);
