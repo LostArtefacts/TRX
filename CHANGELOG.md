@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.1...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.2...master)
+- ...
+
+## [2.6.2](https://github.com/rr-/Tomb1Main/compare/2.6.1...2.6.2) - 2022-02-17
 - fixed equipping gun after starting a demo (#440, regression from 2.6)
 
 ## [2.6.1](https://github.com/rr-/Tomb1Main/compare/2.6...2.6.1) - 2022-02-16
