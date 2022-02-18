@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.2...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.3...master)
+- ...
+
+## [2.6.3](https://github.com/rr-/Tomb1Main/compare/2.6.2...2.6.3) - 2022-02-18
 - fixed croc and rats breaking saves after a flipmap (#441, regression from 2.6)
 
 ## [2.6.2](https://github.com/rr-/Tomb1Main/compare/2.6.1...2.6.2) - 2022-02-17
