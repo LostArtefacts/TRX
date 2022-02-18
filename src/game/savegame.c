@@ -394,6 +394,7 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
             if (fp) {
                 strategy->save_to_file(fp, game_info);
                 savegame_info->format = strategy->format;
+                Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_Dup(File_GetPath(fp));
                 savegame_info->counter = g_SaveCounter;
                 savegame_info->level_num = g_CurrentLevel;
@@ -488,6 +489,7 @@ void Savegame_ScanSavedGames()
                 if (fp) {
                     if (strategy->fill_info(fp, savegame_info)) {
                         savegame_info->format = strategy->format;
+                        Memory_FreePointer(&savegame_info->full_path);
                         savegame_info->full_path = Memory_Dup(File_GetPath(fp));
                     }
                     File_Close(fp);
