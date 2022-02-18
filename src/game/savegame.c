@@ -381,6 +381,7 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
         }
     }
 
+    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (strategy->allow_save) {
@@ -392,6 +393,11 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
             MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp) {
                 strategy->save_to_file(fp, game_info);
+                savegame_info->format = strategy->format;
+                savegame_info->full_path = Memory_Dup(File_GetPath(fp));
+                savegame_info->counter = g_SaveCounter;
+                savegame_info->level_num = g_CurrentLevel;
+                game_info->current_save_slot = slot_num;
                 File_Close(fp);
             } else {
                 ret = false;
@@ -411,7 +417,6 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
         g_SavedGamesCount++;
         g_SaveCounter++;
-        game_info->current_save_slot = slot_num;
     }
 
     return ret;
