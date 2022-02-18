@@ -102,14 +102,21 @@ static bool Savegame_BSON_IsValidItemObject(
 
     // clang-format off
     switch (saved_obj_num) {
+        // used keyholes
         case O_PUZZLE_DONE1: return initial_obj_num == O_PUZZLE_HOLE1;
         case O_PUZZLE_DONE2: return initial_obj_num == O_PUZZLE_HOLE2;
         case O_PUZZLE_DONE3: return initial_obj_num == O_PUZZLE_HOLE3;
         case O_PUZZLE_DONE4: return initial_obj_num == O_PUZZLE_HOLE4;
+        // pickups
         case O_GUN_AMMO_ITEM: return initial_obj_num == O_PISTOLS;
         case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
         case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
+        // dual-state animals
+        case O_ALLIGATOR: return initial_obj_num == O_CROCODILE;
+        case O_CROCODILE: return initial_obj_num == O_ALLIGATOR;
+        case O_RAT: return initial_obj_num == O_VOLE;
+        case O_VOLE: return initial_obj_num == O_RAT;
     }
     // clang-format on
 

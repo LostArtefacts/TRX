@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.2...master)
-- ...
+- fixed croc and rats breaking saves after a flipmap (#441, regression from 2.6)
 
 ## [2.6.2](https://github.com/rr-/Tomb1Main/compare/2.6.1...2.6.2) - 2022-02-17
 - fixed equipping gun after starting a demo (#440, regression from 2.6)
