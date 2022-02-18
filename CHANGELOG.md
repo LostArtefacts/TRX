@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.3...master)
-- ...
+- fixed crash when loading a legacy save and saving on a new slot (#442, regression from 2.6)
 
 ## [2.6.3](https://github.com/rr-/Tomb1Main/compare/2.6.2...2.6.3) - 2022-02-18
 - fixed croc and rats breaking saves after a flipmap (#441, regression from 2.6)
