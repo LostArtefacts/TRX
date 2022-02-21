@@ -4,8 +4,8 @@
 
 #include <stdint.h>
 
-void SetupSaveGameCrystal(OBJECT_INFO *obj);
-void InitialiseSaveGameItem(int16_t item_num);
-void ControlSaveGameItem(int16_t item_num);
-void PickUpSaveGameCollision(
+void SetupSavegameCrystal(OBJECT_INFO *obj);
+void InitialiseSavegameItem(int16_t item_num);
+void ControlSavegameItem(int16_t item_num);
+void PickUpSavegameCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);

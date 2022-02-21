@@ -105,6 +105,9 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             correct = 1;
         }
         break;
+
+    default:
+        break;
     }
 
     g_InvChosen = -1;

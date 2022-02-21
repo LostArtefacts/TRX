@@ -127,6 +127,9 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
         creature->LOT.step = STEP_L * 2;
         creature->LOT.drop = -WALL_L;
         break;
+
+    default:
+        break;
     }
 
     ClearLOT(&creature->LOT);

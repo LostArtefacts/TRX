@@ -11,7 +11,20 @@
 
 struct MYFILE {
     FILE *fp;
+    const char *path;
 };
+
+static bool File_ExistsRaw(const char *path);
+
+static bool File_ExistsRaw(const char *path)
+{
+    FILE *fp = fopen(path, "rb");
+    if (fp) {
+        fclose(fp);
+        return true;
+    }
+    return false;
+}
 
 bool File_IsAbsolute(const char *path)
 {
@@ -30,64 +43,61 @@ const char *File_GetGameDirectory()
 
 bool File_Exists(const char *path)
 {
-    FILE *fp = fopen(path, "rb");
-    if (fp) {
-        fclose(fp);
-        return true;
-    }
-    return false;
+    char *full_path = File_GetFullPath(path);
+    bool ret = File_ExistsRaw(full_path);
+    Memory_FreePointer(&full_path);
+    return ret;
 }
 
-void File_GetFullPath(const char *path, char **out)
+char *File_GetFullPath(const char *path)
 {
-    if (!File_Exists(path) && File_IsRelative(path)) {
-        const char *game_path = File_GetGameDirectory();
-        if (game_path) {
-            size_t target_size = strlen(game_path) + 1 + strlen(path) + 1;
-            *out = Memory_Alloc(target_size);
-            strcpy(*out, game_path);
-            strcat(*out, "\\");
-            strcat(*out, path);
-            return;
+    if (!File_ExistsRaw(path) && File_IsRelative(path)) {
+        const char *game_dir = File_GetGameDirectory();
+        if (game_dir) {
+            size_t out_size = strlen(game_dir) + strlen(path) + 2;
+            char *out = Memory_Alloc(out_size);
+            sprintf(out, "%s/%s", game_dir, path);
+            return out;
         }
     }
-    *out = Memory_Dup(path);
-    assert(*out);
+    return Memory_Dup(path);
 }
 
-void File_GuessExtension(const char *path, char **out, const char **extensions)
+char *File_GuessExtension(const char *path, const char **extensions)
 {
     if (!File_Exists(path)) {
         const char *dot = strrchr(path, '.');
         if (dot) {
             for (const char **ext = &extensions[0]; *ext; ext++) {
-                size_t target_size = dot - path + strlen(*ext) + 1;
-                *out = Memory_Alloc(target_size);
-                strncpy(*out, path, dot - path);
+                size_t out_size = dot - path + strlen(*ext) + 1;
+                char *out = Memory_Alloc(out_size);
+                strncpy(out, path, dot - path);
                 out[dot - path] = '\0';
-                strcat(*out, *ext);
-                if (File_Exists(*out)) {
-                    return;
+                strcat(out, *ext);
+                if (File_Exists(out)) {
+                    return out;
                 }
-                Memory_FreePointer(out);
+                Memory_FreePointer(&out);
             }
         }
     }
-    *out = Memory_Dup(path);
-    assert(*out);
+    return Memory_Dup(path);
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
-    char *full_path = NULL;
-    File_GetFullPath(path, &full_path);
+    char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
+    file->path = Memory_Dup(path);
     switch (mode) {
     case FILE_OPEN_WRITE:
         file->fp = fopen(full_path, "wb");
         break;
     case FILE_OPEN_READ:
         file->fp = fopen(full_path, "rb");
+        break;
+    case FILE_OPEN_READ_WRITE:
+        file->fp = fopen(full_path, "r+b");
         break;
     default:
         file->fp = NULL;
@@ -113,7 +123,14 @@ size_t File_Write(
 
 void File_CreateDirectory(const char *path)
 {
-    S_File_CreateDirectory(path);
+    char *full_path = File_GetFullPath(path);
+    S_File_CreateDirectory(full_path);
+    Memory_FreePointer(&full_path);
+}
+
+void File_Skip(MYFILE *file, size_t bytes)
+{
+    File_Seek(file, bytes, FILE_SEEK_CUR);
 }
 
 void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
@@ -131,6 +148,11 @@ void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode)
     }
 }
 
+size_t File_Pos(MYFILE *file)
+{
+    return ftell(file->fp);
+}
+
 size_t File_Size(MYFILE *file)
 {
     size_t old = ftell(file->fp);
@@ -140,15 +162,16 @@ size_t File_Size(MYFILE *file)
     return size;
 }
 
+const char *File_GetPath(MYFILE *file)
+{
+    return file->path;
+}
+
 void File_Close(MYFILE *file)
 {
     fclose(file->fp);
+    Memory_FreePointer(&file->path);
     Memory_FreePointer(&file);
-}
-
-int File_Delete(const char *path)
-{
-    return remove(path);
 }
 
 bool File_Load(const char *path, char **output_data, size_t *output_size)

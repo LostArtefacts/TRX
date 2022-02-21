@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-int32_t ControlPhase(int32_t nframes, int32_t demo_mode);
+int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
 void AnimateItem(ITEM_INFO *item);
 int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
@@ -23,7 +23,5 @@ int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor);
 void FlipMap();
 void RemoveRoomFlipItems(ROOM_INFO *r);
 void AddRoomFlipItems(ROOM_INFO *r);
-
-int32_t GetSecretCount();
 
 bool Control_Pause();

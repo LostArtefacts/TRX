@@ -21,9 +21,9 @@
 #define READ_BOOL(opt, default_value)                                          \
     READ_PRIMITIVE(json_object_get_bool, opt, default_value)
 #define READ_INTEGER(opt, default_value)                                       \
-    READ_PRIMITIVE(json_object_get_number_int, opt, default_value)
+    READ_PRIMITIVE(json_object_get_int, opt, default_value)
 #define READ_FLOAT(opt, default_value)                                         \
-    READ_PRIMITIVE(json_object_get_number_double, opt, default_value)
+    READ_PRIMITIVE(json_object_get_double, opt, default_value)
 
 #define READ_ENUM(opt, default_value, enum_map)                                \
     do {                                                                       \
@@ -126,6 +126,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(disable_magnums, false);
     READ_BOOL(disable_uzis, false);
     READ_BOOL(disable_shotgun, false);
+    READ_BOOL(enable_deaths_counter, true);
     READ_BOOL(enable_enemy_healthbar, true);
     READ_BOOL(enable_enhanced_look, true);
     READ_BOOL(enable_shotgun_flash, true);
@@ -137,6 +138,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_compass_stats, true);
     READ_BOOL(enable_timer_in_inventory, true);
     READ_BOOL(enable_smooth_bars, true);
+    READ_BOOL(enable_fade_effects, true);
     READ_BOOL(fix_tihocan_secret_sound, true);
     READ_BOOL(fix_pyramid_secret_trigger, true);
     READ_BOOL(fix_secrets_killing_music, true);
@@ -158,7 +160,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
-
+    READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
     READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
@@ -170,6 +172,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
 
+    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
 
     if (root) {

@@ -10,6 +10,7 @@
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "log.h"
@@ -59,6 +60,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 
     GameBuf_Shutdown();
     GameBuf_Init();
+
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {
         Shell_ExitSystemFmt(
@@ -84,6 +86,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadRooms(fp)) {
         return false;
     }
+    Stats_ObserveRoomsLoad();
 
     if (!Level_LoadObjects(fp)) {
         return false;
@@ -112,6 +115,7 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadItems(fp)) {
         return false;
     }
+    Stats_ObserveItemsLoad();
 
     if (!Level_LoadDepthQ(fp)) {
         return false;
@@ -349,7 +353,7 @@ static bool Level_LoadSprites(MYFILE *fp)
 
     File_Read(&m_SpriteCount, sizeof(int32_t), 1, fp);
     for (int i = 0; i < m_SpriteCount; i++) {
-        int32_t object_num;
+        GAME_OBJECT_ID object_num;
         File_Read(&object_num, sizeof(int32_t), 1, fp);
         if (object_num < O_NUMBER_OF) {
             File_Read(&g_Objects[object_num], sizeof(int16_t), 1, fp);
@@ -358,7 +362,7 @@ static bool Level_LoadSprites(MYFILE *fp)
             g_Objects[object_num].loaded = 1;
         } else {
             int32_t static_num = object_num - O_NUMBER_OF;
-            File_Seek(fp, 2, FILE_SEEK_CUR);
+            File_Skip(fp, 2);
             File_Read(
                 &g_StaticObjects[static_num].mesh_number, sizeof(int16_t), 1,
                 fp);
@@ -424,6 +428,11 @@ static bool Level_LoadPalette(MYFILE *fp)
     palette[0].r = 0;
     palette[0].g = 0;
     palette[0].b = 0;
+    for (int i = 1; i < 256; i++) {
+        palette[i].r *= 4;
+        palette[i].g *= 4;
+        palette[i].b *= 4;
+    }
     Output_SetPalette(palette);
     return true;
 }
@@ -644,29 +653,6 @@ bool Level_Load(int level_num)
              ? g_GameFlow.levels[level_num].draw_distance_max.value
              : g_GameFlow.draw_distance_max)
         * WALL_L);
-
-    if (g_Config.disable_healing_between_levels) {
-        // check if we're in main menu by seeing if there is g_Lara item in the
-        // currently loaded level.
-        bool lara_found = false;
-        bool in_cutscene = false;
-        for (int i = 0; i < g_LevelItemCount; i++) {
-            if (g_Items[i].object_number == O_LARA) {
-                lara_found = true;
-            }
-            if (g_Items[i].object_number == O_PLAYER_1
-                || g_Items[i].object_number == O_PLAYER_2
-                || g_Items[i].object_number == O_PLAYER_3
-                || g_Items[i].object_number == O_PLAYER_4) {
-                in_cutscene = true;
-            }
-        }
-        if (!lara_found && !in_cutscene) {
-            g_StoredLaraHealth = LARA_HITPOINTS;
-        }
-    }
-
-    g_GameFlow.levels[level_num].secrets = GetSecretCount();
 
     return ret;
 }

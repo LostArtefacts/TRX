@@ -2,7 +2,6 @@
 
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -13,17 +12,17 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupSaveGameCrystal(OBJECT_INFO *obj)
+void SetupSavegameCrystal(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseSaveGameItem;
+    obj->initialise = InitialiseSavegameItem;
     if (g_GameFlow.enable_save_crystals) {
-        obj->control = ControlSaveGameItem;
-        obj->collision = PickUpSaveGameCollision;
+        obj->control = ControlSavegameItem;
+        obj->collision = PickUpSavegameCollision;
         obj->save_flags = 1;
     }
 }
 
-void InitialiseSaveGameItem(int16_t item_num)
+void InitialiseSavegameItem(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
         AddActiveItem(item_num);
@@ -32,14 +31,14 @@ void InitialiseSaveGameItem(int16_t item_num)
     }
 }
 
-void ControlSaveGameItem(int16_t item_num)
+void ControlSavegameItem(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
         AnimateItem(&g_Items[item_num]);
     }
 }
 
-void PickUpSaveGameCollision(
+void PickUpSavegameCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -64,8 +63,7 @@ void PickUpSaveGameCollision(
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
-        CreateSaveGameInfo();
-        S_SaveGame(&g_SaveGame, g_InvExtraData[1]);
+        Savegame_Save(g_InvExtraData[1], &g_GameInfo);
         Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {

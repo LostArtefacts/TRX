@@ -10,38 +10,20 @@ static const char *m_Extensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", NULL,
 };
 
-PICTURE *Picture_Create()
+PICTURE *Picture_Create(int width, int height)
 {
     PICTURE *picture = Memory_Alloc(sizeof(PICTURE));
-    picture->width = 0;
-    picture->height = 0;
-    picture->data = NULL;
+    picture->width = width;
+    picture->height = height;
+    picture->data = Memory_Alloc(width * height * sizeof(RGB888));
     return picture;
 }
 
 PICTURE *Picture_CreateFromFile(const char *path)
 {
-    bool result = false;
-    char *full_path = NULL;
-    char *final_path = NULL;
-
-    PICTURE *picture = Picture_Create();
-    if (!picture) {
-        goto cleanup;
-    }
-
-    File_GetFullPath(path, &full_path);
-    File_GuessExtension(full_path, &final_path, m_Extensions);
-
-    result = S_Picture_LoadFromFile(picture, final_path);
-
-cleanup:
-    if (!result) {
-        Memory_FreePointer(&picture);
-    }
-
+    char *final_path = File_GuessExtension(path, m_Extensions);
+    PICTURE *picture = S_Picture_CreateFromFile(final_path);
     Memory_FreePointer(&final_path);
-    Memory_FreePointer(&full_path);
     return picture;
 }
 
@@ -49,41 +31,26 @@ bool Picture_SaveToFile(const PICTURE *pic, const char *path)
 {
     assert(pic);
     assert(path);
-
-    char *full_path = NULL;
-    File_GetFullPath(path, &full_path);
-
-    bool ret = S_Picture_SaveToFile(pic, full_path);
-
-    Memory_FreePointer(&full_path);
-    return ret;
+    return S_Picture_SaveToFile(pic, path);
 }
 
-bool Picture_ScaleLetterbox(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height)
+PICTURE *Picture_ScaleLetterbox(
+    const PICTURE *source_pic, size_t target_width, size_t target_height)
 {
-    assert(target_pic);
     assert(source_pic);
-    return S_Picture_ScaleLetterbox(
-        target_pic, source_pic, target_width, target_height);
+    return S_Picture_ScaleLetterbox(source_pic, target_width, target_height);
 }
 
-bool Picture_ScaleCrop(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height)
+PICTURE *Picture_ScaleCrop(
+    const PICTURE *source_pic, size_t target_width, size_t target_height)
 {
-    assert(target_pic);
     assert(source_pic);
-    return S_Picture_ScaleCrop(
-        target_pic, source_pic, target_width, target_height);
+    return S_Picture_ScaleCrop(source_pic, target_width, target_height);
 }
 
-bool Picture_ScaleSmart(
-    PICTURE *target_pic, const PICTURE *source_pic, size_t target_width,
-    size_t target_height)
+PICTURE *Picture_ScaleSmart(
+    const PICTURE *source_pic, size_t target_width, size_t target_height)
 {
-    assert(target_pic);
     assert(source_pic);
     const float source_ratio = source_pic->width / (float)source_pic->height;
     const float target_ratio = target_width / (float)target_height;
@@ -94,19 +61,17 @@ bool Picture_ScaleSmart(
                                      : target_ratio / source_ratio)
         - 1.0f;
     if (ar_diff <= 0.1f) {
-        return S_Picture_ScaleStretch(
-            target_pic, source_pic, target_width, target_height);
+        return S_Picture_ScaleStretch(source_pic, target_width, target_height);
     }
 
     // if the viewport is too wide, center the image
     if (source_ratio <= target_ratio) {
         return S_Picture_ScaleLetterbox(
-            target_pic, source_pic, target_width, target_height);
+            source_pic, target_width, target_height);
     }
 
     // if the image is too wide, crop the image
-    return S_Picture_ScaleCrop(
-        target_pic, source_pic, target_width, target_height);
+    return S_Picture_ScaleCrop(source_pic, target_width, target_height);
 }
 
 void Picture_Free(PICTURE *picture)

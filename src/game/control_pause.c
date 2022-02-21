@@ -1,5 +1,6 @@
 #include "game/control.h"
 
+#include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -94,8 +95,8 @@ static int32_t Control_Pause_Loop()
     int32_t state = 0;
 
     while (1) {
-        Output_InitialisePolyList(0);
-        Output_CopyBufferToScreen();
+        Output_InitialisePolyList();
+        Draw_DrawScene(false);
         Control_Pause_DisplayText();
         Text_Draw();
         Output_DumpScreen();
@@ -148,22 +149,21 @@ bool Control_Pause()
 
     int old_overlay_flag = g_OverlayFlag;
     g_OverlayFlag = -3;
-    g_InvMode = INV_PAUSE_MODE;
 
     Text_RemoveAll();
-    S_FadeInInventory(1);
     Output_SetupAboveWater(false);
 
     Music_Pause();
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
 
+    Output_FadeToSemiBlack(true);
     int32_t select = Control_Pause_Loop();
+    Output_FadeToTransparent(true);
 
     Music_Unpause();
     RemoveRequester(&m_PauseRequester);
     Control_Pause_RemoveText();
-    S_FadeOutInventory(1);
     g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }

@@ -1,6 +1,7 @@
 #include "specific/s_picture.h"
 
 #include "filesystem.h"
+#include "game/picture.h"
 #include "log.h"
 #include "memory.h"
 
@@ -10,11 +11,8 @@
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 
-bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
+PICTURE *S_Picture_CreateFromFile(const char *path)
 {
-    assert(target_pic);
-    assert(!target_pic->data);
-
     int error_code;
     AVFormatContext *format_ctx = NULL;
     const AVCodec *codec = NULL;
@@ -22,19 +20,20 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
     AVFrame *frame = NULL;
     AVPacket *packet = NULL;
     struct SwsContext *sws_ctx = NULL;
+    uint8_t *dst_data[4] = { 0 };
+    int dst_linesize[4] = { 0 };
+    PICTURE *target_pic = NULL;
 
-    target_pic->width = 0;
-    target_pic->height = 0;
-    target_pic->data = NULL;
-
-    error_code = avformat_open_input(&format_ctx, path, NULL, NULL);
+    char *full_path = File_GetFullPath(path);
+    error_code = avformat_open_input(&format_ctx, full_path, NULL, NULL);
+    Memory_FreePointer(&full_path);
     if (error_code != 0) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avformat_find_stream_info(format_ctx, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     AVStream *video_stream = NULL;
@@ -47,57 +46,56 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
     }
     if (!video_stream) {
         error_code = AVERROR_STREAM_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     codec = avcodec_find_decoder(video_stream->codecpar->codec_id);
     if (!codec) {
         error_code = AVERROR_DEMUXER_NOT_FOUND;
-        goto fail;
+        goto cleanup;
     }
 
     codec_ctx = avcodec_alloc_context3(codec);
     if (!codec_ctx) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     error_code =
         avcodec_parameters_to_context(codec_ctx, video_stream->codecpar);
     if (error_code) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_open2(codec_ctx, codec, NULL);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     packet = av_packet_alloc();
     av_new_packet(packet, 0);
     error_code = av_read_frame(format_ctx, packet);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_send_packet(codec_ctx, packet);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     frame = av_frame_alloc();
     if (!frame) {
         error_code = AVERROR(ENOMEM);
-        goto fail;
+        goto cleanup;
     }
 
     error_code = avcodec_receive_frame(codec_ctx, frame);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
-    target_pic->width = frame->width;
-    target_pic->height = frame->height;
+    target_pic = Picture_Create(frame->width, frame->height);
 
     sws_ctx = sws_getContext(
         codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
@@ -107,24 +105,19 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
     if (!sws_ctx) {
         LOG_ERROR("Failed to get SWS context");
         error_code = AVERROR_EXTERNAL;
-        goto fail;
+        goto cleanup;
     }
 
-    uint8_t *dst_data[4];
-    int dst_linesize[4];
     error_code = av_image_alloc(
         dst_data, dst_linesize, target_pic->width, target_pic->height,
         AV_PIX_FMT_RGB24, 1);
     if (error_code < 0) {
-        goto fail;
+        goto cleanup;
     }
 
     sws_scale(
         sws_ctx, (const uint8_t *const *)frame->data, frame->linesize, 0,
         frame->height, dst_data, dst_linesize);
-
-    target_pic->data =
-        Memory_Alloc(target_pic->height * target_pic->width * sizeof(RGB888));
 
     av_image_copy_to_buffer(
         (uint8_t *)target_pic->data,
@@ -132,15 +125,22 @@ bool S_Picture_LoadFromFile(PICTURE *target_pic, const char *path)
         (const uint8_t *const *)dst_data, dst_linesize, AV_PIX_FMT_RGB24,
         target_pic->width, target_pic->height, 1);
 
-    return true;
+    error_code = 0;
+    goto success;
 
-fail:
-    LOG_ERROR(
-        "Error while opening picture %s: %s", path, av_err2str(error_code));
+cleanup:
+    if (target_pic) {
+        Picture_Free(target_pic);
+        target_pic = NULL;
+    }
 
-    target_pic->width = 0;
-    target_pic->height = 0;
-    Memory_FreePointer(&target_pic->data);
+    if (error_code) {
+        LOG_ERROR(
+            "Error while opening picture %s: %s", path, av_err2str(error_code));
+    }
+
+success:
+    av_freep(&dst_data[0]);
 
     if (sws_ctx) {
         sws_freeContext(sws_ctx);
@@ -164,7 +164,7 @@ fail:
         avformat_close_input(&format_ctx);
     }
 
-    return false;
+    return target_pic;
 }
 
 bool S_Picture_SaveToFile(const PICTURE *pic, const char *path)
@@ -324,15 +324,13 @@ cleanup:
     return ret;
 }
 
-bool S_Picture_ScaleLetterbox(
-    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
-    int target_height)
+PICTURE *S_Picture_ScaleLetterbox(
+    const PICTURE *source_pic, int target_width, int target_height)
 {
     assert(source_pic);
     assert(source_pic->data);
-    assert(target_pic);
-    assert(!target_pic->data);
 
+    PICTURE *target_pic = NULL;
     int source_width = source_pic->width;
     int source_height = source_pic->height;
 
@@ -349,7 +347,6 @@ bool S_Picture_ScaleLetterbox(
         target_height = new_height;
     }
 
-    bool ret = false;
     struct SwsContext *sws_ctx = sws_getContext(
         source_width, source_height, AV_PIX_FMT_RGB24, target_width,
         target_height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
@@ -359,10 +356,7 @@ bool S_Picture_ScaleLetterbox(
         goto cleanup;
     }
 
-    target_pic->width = target_width;
-    target_pic->height = target_height;
-    target_pic->data =
-        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+    target_pic = Picture_Create(target_width, target_height);
 
     uint8_t *src_planes[4];
     uint8_t *dst_planes[4];
@@ -381,31 +375,21 @@ bool S_Picture_ScaleLetterbox(
         sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
         source_height, (uint8_t *const *)dst_planes, dst_linesize);
 
-    ret = true;
-
 cleanup:
     if (sws_ctx) {
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret && target_pic) {
-        target_pic->width = 0;
-        target_pic->height = 0;
-        Memory_FreePointer(&target_pic->data);
-    }
-
-    return ret;
+    return target_pic;
 }
 
-bool S_Picture_ScaleCrop(
-    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
-    int target_height)
+PICTURE *S_Picture_ScaleCrop(
+    const PICTURE *source_pic, int target_width, int target_height)
 {
     assert(source_pic);
     assert(source_pic->data);
-    assert(target_pic);
-    assert(!target_pic->data);
 
+    PICTURE *target_pic = NULL;
     int source_width = source_pic->width;
     int source_height = source_pic->height;
 
@@ -417,7 +401,6 @@ bool S_Picture_ScaleCrop(
     int crop_height = source_ratio < target_ratio ? source_width / target_ratio
                                                   : source_height;
 
-    bool ret = false;
     struct SwsContext *sws_ctx = sws_getContext(
         crop_width, crop_height, AV_PIX_FMT_RGB24, target_width, target_height,
         AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
@@ -427,10 +410,7 @@ bool S_Picture_ScaleCrop(
         goto cleanup;
     }
 
-    target_pic->width = target_width;
-    target_pic->height = target_height;
-    target_pic->data =
-        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+    target_pic = Picture_Create(target_width, target_height);
 
     uint8_t *src_planes[4];
     uint8_t *dst_planes[4];
@@ -452,34 +432,24 @@ bool S_Picture_ScaleCrop(
         sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
         crop_height, (uint8_t *const *)dst_planes, dst_linesize);
 
-    ret = true;
-
 cleanup:
     if (sws_ctx) {
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret && target_pic) {
-        target_pic->width = 0;
-        target_pic->height = 0;
-        Memory_FreePointer(&target_pic->data);
-    }
-
-    return ret;
+    return target_pic;
 }
 
-bool S_Picture_ScaleStretch(
-    PICTURE *target_pic, const PICTURE *source_pic, int target_width,
-    int target_height)
+PICTURE *S_Picture_ScaleStretch(
+    const PICTURE *source_pic, int target_width, int target_height)
 {
     assert(source_pic);
     assert(source_pic->data);
-    assert(target_pic);
-    assert(!target_pic->data);
 
+    PICTURE *target_pic = NULL;
     int source_width = source_pic->width;
     int source_height = source_pic->height;
-    bool ret = false;
+
     struct SwsContext *sws_ctx = sws_getContext(
         source_width, source_height, AV_PIX_FMT_RGB24, target_width,
         target_height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
@@ -489,10 +459,7 @@ bool S_Picture_ScaleStretch(
         goto cleanup;
     }
 
-    target_pic->width = target_width;
-    target_pic->height = target_height;
-    target_pic->data =
-        Memory_Alloc(target_height * target_width * sizeof(RGB888));
+    target_pic = Picture_Create(target_width, target_height);
 
     uint8_t *src_planes[4];
     uint8_t *dst_planes[4];
@@ -511,18 +478,10 @@ bool S_Picture_ScaleStretch(
         sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
         source_height, (uint8_t *const *)dst_planes, dst_linesize);
 
-    ret = true;
-
 cleanup:
     if (sws_ctx) {
         sws_freeContext(sws_ctx);
     }
 
-    if (!ret && target_pic) {
-        target_pic->width = 0;
-        target_pic->height = 0;
-        Memory_FreePointer(&target_pic->data);
-    }
-
-    return ret;
+    return target_pic;
 }

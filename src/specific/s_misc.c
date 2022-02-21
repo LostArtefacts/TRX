@@ -9,26 +9,6 @@
 
 #include <string.h>
 
-void S_FadeInInventory(int32_t fade)
-{
-    if (g_CurrentLevel != g_GameFlow.title_level_num) {
-        S_Output_CopyToPicture();
-    }
-}
-
-void S_FadeOutInventory(int32_t fade)
-{
-    // not implemented in TombATI
-}
-
-void S_FinishInventory()
-{
-    if (g_InvMode != INV_TITLE_MODE) {
-        Screen_ApplyResolution();
-    }
-    g_ModeLock = false;
-}
-
 int S_GetObjectBounds(int16_t *bptr)
 {
     if (g_PhdMatrixPtr->_23 >= Output_GetFarZ()) {

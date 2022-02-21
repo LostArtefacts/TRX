@@ -6,7 +6,8 @@
     "main_menu_picture": "data\\titleh.png",
 
     // path to the savegame file
-    "savegame_fmt": "saveati.%d",
+    "savegame_fmt_legacy": "saveati.%d",
+    "savegame_fmt_bson": "save_tr1_%02d.dat",
 
     // whether to allow user to select NG/NG+/etc. modes in the new game dialog
     "enable_game_modes": true,
@@ -336,6 +337,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\pyramid.avi"},
                 {"type": "start_game"},
+                {"type": "give_item", "object_id": 84, "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "play_fmv", "fmv_path": "fmv\\prison.avi"},
@@ -432,6 +434,8 @@
             "file": "data\\cut4.phd",
             "type": "cutscene",
             "music": 0,
+            "draw_distance_fade": 12.0,
+            "draw_distance_max": 18.0,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_angle", "value": 16384},
@@ -486,6 +490,7 @@
         "HEADING_OPTION": "OPTION",
         "HEADING_ITEMS": "ITEMS",
         "PASSPORT_SELECT_LEVEL": "Select Level",
+        "PASSPORT_RESTART_LEVEL": "Restart Level",
         "PASSPORT_SELECT_MODE": "Select Mode",
         "PASSPORT_MODE_NEW_GAME": "New Game",
         "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
@@ -502,6 +507,7 @@
         "DETAIL_LEVEL_LOW": "Low",
         "DETAIL_PERSPECTIVE_FMT": "Perspective     %s",
         "DETAIL_BILINEAR_FMT": "Bilinear        %s",
+        "DETAIL_VSYNC_FMT": "VSync           %s",
         "DETAIL_BRIGHTNESS_FMT": "Brightness      %.1f",
         "DETAIL_UI_TEXT_SCALE_FMT": "UI text scale   %.1f",
         "DETAIL_UI_BAR_SCALE_FMT": "UI bar scale    %.1f",
@@ -531,10 +537,11 @@
         "KEYMAP_CAMERA_LEFT": "Camera Left",
         "KEYMAP_CAMERA_RIGHT": "Camera Right",
         "KEYMAP_CAMERA_RESET": "Reset Camera",
+        "STATS_KILLS_FMT": "KILLS %d of %d",
+        "STATS_PICKUPS_FMT": "PICKUPS %d of %d",
+        "STATS_SECRETS_FMT": "SECRETS %d of %d",
+        "STATS_DEATHS_FMT": "DEATHS %d",
         "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
-        "STATS_SECRETS_FMT": "SECRETS %d OF %d",
-        "STATS_PICKUPS_FMT": "PICKUPS %d",
-        "STATS_KILLS_FMT": "KILLS %d",
         "PAUSE_PAUSED": "Paused",
         "PAUSE_EXIT_TO_TITLE": "Exit to title?",
         "PAUSE_CONTINUE": "Continue",

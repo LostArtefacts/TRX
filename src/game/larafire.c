@@ -507,21 +507,21 @@ int32_t FireWeapon(
     switch (weapon_type) {
     case LGT_MAGNUMS:
         ammo = &g_Lara.magnums;
-        if (g_SaveGame.bonus_flag & GBF_NGPLUS) {
+        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_UZIS:
         ammo = &g_Lara.uzis;
-        if (g_SaveGame.bonus_flag & GBF_NGPLUS) {
+        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
 
     case LGT_SHOTGUN:
         ammo = &g_Lara.shotgun;
-        if (g_SaveGame.bonus_flag & GBF_NGPLUS) {
+        if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
             ammo->ammo = 1000;
         }
         break;
@@ -584,7 +584,7 @@ int32_t FireWeapon(
         vdest.z = view.z + ((bestdist * g_PhdMatrixPtr->_22) >> W2V_SHIFT);
         HitTarget(
             target, &vdest,
-            winfo->damage * (g_SaveGame.bonus_flag & GBF_JAPANESE ? 2 : 1));
+            winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
         return 1;
     }
 
@@ -600,7 +600,7 @@ int32_t FireWeapon(
 void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
-        g_SaveGame.kills++;
+        g_GameInfo.stats.kill_count++;
     }
     item->hit_points -= damage;
     item->hit_status = 1;
@@ -628,12 +628,15 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
             Sound_Effect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
             break;
 
-        case O_MERCENARY1:
+        case O_SKATEKID:
             Sound_Effect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
             break;
 
         case O_ABORTION:
             Sound_Effect(SFX_ABORTION_HIT, &item->pos, SPM_NORMAL);
+            break;
+
+        default:
             break;
         }
     }

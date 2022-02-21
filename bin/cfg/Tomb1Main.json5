@@ -1,4 +1,7 @@
 {
+    // Sets starting Lara's health value (max is 1000).
+    "start_lara_hitpoints": 1000,
+
     // Disables healing Lara between level reloads (for No Heal challenge runs).
     "disable_healing_between_levels": false,
 
@@ -13,6 +16,10 @@
 
     // Removes all shotgun and shotgun shells pickups.
     "disable_shotgun": false,
+
+    // Enables showing deaths counter in the compass and in the level stats.
+    // Death count is updated in the currently loaded save as soon as Lara dies.
+    "enable_deaths_counter": true,
 
     // Enables showing healthbar for the active enemy.
     "enable_enemy_healthbar": true,
@@ -62,6 +69,10 @@
 
     // Makes the healthbar and airbar use smooth color transitions.
     "enable_smooth_bars": true,
+
+    // Makes inventory and pause screen use fade transitions for
+    // the semitransparent backdrop, similar to PS1.
+    "enable_fade_effects": true,
 
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting

@@ -9,6 +9,38 @@
 #include "game/lara.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "src/game/collide.h"
+#include "src/game/sphere.h"
+
+static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll);
+
+static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    // OG fix: stop pushing blocks through doors
+    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
+    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
+        ITEM_INFO *item = &g_Items[item_num];
+        int32_t dx = (item->pos.x - lara_item->pos.x) >> 8;
+        int32_t dy = (item->pos.y - lara_item->pos.y) >> 8;
+        int32_t dz = (item->pos.z - lara_item->pos.z) >> 8;
+        int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+
+        if (dist > max_dist) {
+            continue;
+        }
+
+        if ((item->object_number < O_DOOR_TYPE1
+             || item->object_number > O_DOOR_TYPE8)) {
+            continue;
+        }
+
+        if (TestBoundsCollide(item, lara_item, coll->radius)
+            && TestCollision(item, lara_item)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void SetupMovableBlock(OBJECT_INFO *obj)
 {
@@ -105,6 +137,11 @@ void MovableBlockCollision(
         }
 
         if (!TestLaraPosition(g_MovingBlockBounds, item, lara_item)) {
+            return;
+        }
+
+        // OG fix: stop pushing blocks through doors
+        if (TestDoorCoveringBlock(lara_item, coll)) {
             return;
         }
 

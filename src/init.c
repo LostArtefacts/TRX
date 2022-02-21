@@ -1,4 +1,3 @@
-#include "init.h"
 #include "game/gameflow.h"
 #include "global/vars.h"
 #include "memory.h"
@@ -12,17 +11,13 @@
 
 const char *g_T1MVersion = VERSION;
 
-typedef struct {
-    GAME_STRING_ID key;
-    char *string;
-} STRING_DEF;
-
-STRING_DEF m_StringDefs[] = {
+GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_HEADING_INVENTORY, "INVENTORY" },
     { GS_HEADING_GAME_OVER, "GAME OVER" },
     { GS_HEADING_OPTION, "OPTION" },
     { GS_HEADING_ITEMS, "ITEMS" },
     { GS_PASSPORT_SELECT_LEVEL, "Select Level" },
+    { GS_PASSPORT_RESTART_LEVEL, "Restart Level" },
     { GS_PASSPORT_SELECT_MODE, "Select Mode" },
     { GS_PASSPORT_MODE_NEW_GAME, "New Game" },
     { GS_PASSPORT_MODE_NEW_GAME_PLUS, "New Game+" },
@@ -39,6 +34,7 @@ STRING_DEF m_StringDefs[] = {
     { GS_DETAIL_LEVEL_LOW, "Low" },
     { GS_DETAIL_PERSPECTIVE_FMT, "Perspective     %s" },
     { GS_DETAIL_BILINEAR_FMT, "Bilinear        %s" },
+    { GS_DETAIL_VSYNC_FMT, "VSync           %s" },
     { GS_DETAIL_BRIGHTNESS_FMT, "Brightness      %.1f" },
     { GS_DETAIL_UI_TEXT_SCALE_FMT, "UI text scale   %.1f" },
     { GS_DETAIL_UI_BAR_SCALE_FMT, "UI bar scale    %.1f" },
@@ -68,10 +64,11 @@ STRING_DEF m_StringDefs[] = {
     { GS_KEYMAP_CAMERA_LEFT, "Camera Left" },
     { GS_KEYMAP_CAMERA_RIGHT, "Camera Right" },
     { GS_KEYMAP_CAMERA_RESET, "Reset Camera" },
+    { GS_STATS_KILLS_FMT, "KILLS %d of %d" },
+    { GS_STATS_PICKUPS_FMT, "PICKUPS %d of %d" },
+    { GS_STATS_SECRETS_FMT, "SECRETS %d of %d" },
+    { GS_STATS_DEATHS_FMT, "DEATHS %d" },
     { GS_STATS_TIME_TAKEN_FMT, "TIME TAKEN %s" },
-    { GS_STATS_SECRETS_FMT, "SECRETS %d OF %d" },
-    { GS_STATS_PICKUPS_FMT, "PICKUPS %d" },
-    { GS_STATS_KILLS_FMT, "KILLS %d" },
     { GS_PAUSE_PAUSED, "Paused" },
     { GS_PAUSE_EXIT_TO_TITLE, "Exit to title?" },
     { GS_PAUSE_CONTINUE, "Continue" },
@@ -114,10 +111,3 @@ STRING_DEF m_StringDefs[] = {
     { GS_INV_ITEM_LARAS_HOME, "Lara's Home" },
     { 0, NULL },
 };
-
-void T1MInit()
-{
-    for (const STRING_DEF *def = m_StringDefs; def->string; def++) {
-        g_GameFlow.strings[def->key] = Memory_Dup(def->string);
-    }
-}

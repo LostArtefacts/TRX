@@ -44,6 +44,7 @@ typedef struct {
     bool disable_magnums;
     bool disable_uzis;
     bool disable_shotgun;
+    bool enable_deaths_counter;
     bool enable_enemy_healthbar;
     bool enable_enhanced_look;
     bool enable_numeric_keys;
@@ -55,6 +56,7 @@ typedef struct {
     bool enable_compass_stats;
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
+    bool enable_fade_effects;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
@@ -83,15 +85,17 @@ typedef struct {
     float brightness;
     bool enable_round_shadow;
     bool enable_3d_pickups;
+    int32_t start_lara_hitpoints;
 
     struct {
         int32_t layout;
     } input;
 
     struct {
-        uint32_t enable_perspective_filter : 1;
-        uint32_t enable_bilinear_filter : 1;
-        uint32_t enable_fps_counter : 1;
+        bool enable_perspective_filter;
+        bool enable_bilinear_filter;
+        bool enable_vsync;
+        bool enable_fps_counter;
         float anisotropy_filter;
     } rendering;
 

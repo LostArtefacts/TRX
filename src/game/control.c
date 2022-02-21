@@ -24,6 +24,7 @@
 #include <stddef.h>
 
 static const int32_t m_AnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
 
 static void Control_TriggerMusicTrack(
     int16_t track, int16_t flags, int16_t type);
@@ -203,16 +204,15 @@ void CheckCheatMode()
     }
 }
 
-int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
+int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    static int32_t frame_count = 0;
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
 
-    frame_count += m_AnimationRate * nframes;
-    while (frame_count >= 0) {
+    m_FrameCount += m_AnimationRate * nframes;
+    while (m_FrameCount >= 0) {
         CheckCheatMode();
         if (g_LevelComplete) {
             return GF_NOP_BREAK;
@@ -220,11 +220,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         Input_Update();
 
-        if (g_ResetFlag) {
-            return GF_NOP_BREAK;
-        }
-
-        if (demo_mode) {
+        if (level_type == GFL_DEMO) {
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
@@ -233,11 +229,11 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if (g_Lara.death_count > DEATH_WAIT
-            || (g_Lara.death_count > DEATH_WAIT_MIN && g_Input.any
+        if (g_Lara.death_timer > DEATH_WAIT
+            || (g_Lara.death_timer > DEATH_WAIT_MIN && g_Input.any
                 && !g_Input.fly_cheat)
             || g_OverlayFlag == 2) {
-            if (demo_mode) {
+            if (level_type == GFL_DEMO) {
                 return GF_EXIT_TO_TITLE;
             }
             if (g_OverlayFlag == 2) {
@@ -251,9 +247,9 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if ((g_Input.option || g_Input.save || g_Input.load
+        if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
-            && !g_Lara.death_count) {
+            && !g_Lara.death_timer) {
             if (g_OverlayFlag > 0) {
                 if (g_Input.load) {
                     g_OverlayFlag = -1;
@@ -278,7 +274,7 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
             }
         }
 
-        if (!g_Lara.death_count && g_InputDB.pause) {
+        if (!g_Lara.death_timer && g_InputDB.pause) {
             if (Control_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }
@@ -309,23 +305,10 @@ int32_t ControlPhase(int32_t nframes, int32_t demo_mode)
 
         CalculateCamera();
         Sound_UpdateEffects();
-        g_SaveGame.timer++;
+        g_GameInfo.stats.timer++;
         Overlay_BarHealthTimerTick();
 
-        if (g_Config.disable_healing_between_levels) {
-            int8_t lara_found = 0;
-            for (int i = 0; i < g_LevelItemCount; i++) {
-                if (g_Items[i].object_number == O_LARA) {
-                    lara_found = 1;
-                }
-            }
-            if (lara_found) {
-                g_StoredLaraHealth =
-                    g_LaraItem ? g_LaraItem->hit_points : LARA_HITPOINTS;
-            }
-        }
-
-        frame_count -= 0x10000;
+        m_FrameCount -= 0x10000;
     }
 
     return GF_NOP;
@@ -501,7 +484,9 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
     if ((*data & DATA_TYPE) == FT_LAVA) {
         if (!heavy && g_LaraItem->pos.y == g_LaraItem->floor) {
-            LavaBurn(g_LaraItem);
+            if (TestLavaFloor(g_LaraItem)) {
+                LavaBurn(g_LaraItem);
+            }
         }
 
         if (*data & END_BIT) {
@@ -742,10 +727,10 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((g_SaveGame.secrets & (1 << value))) {
+            if ((g_GameInfo.stats.secret_flags & (1 << value))) {
                 break;
             }
-            g_SaveGame.secrets |= 1 << value;
+            g_GameInfo.stats.secret_flags |= 1 << value;
             Music_Play(13);
             break;
         }
@@ -837,6 +822,9 @@ void RemoveRoomFlipItems(ROOM_INFO *r)
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, WALL_L * 2);
             break;
+
+        default:
+            break;
         }
     }
 }
@@ -857,6 +845,9 @@ void AddRoomFlipItems(ROOM_INFO *r)
 
         case O_ROLLING_BLOCK:
             AlterFloorHeight(item, -WALL_L * 2);
+            break;
+
+        default:
             break;
         }
     }

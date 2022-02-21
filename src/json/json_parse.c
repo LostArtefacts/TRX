@@ -1,12 +1,56 @@
-#include "json.h"
+#include "json/json_parse.h"
 
-#include "global/const.h"
+#include "memory.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+struct json_parse_state_s {
+    const char *src;
+    size_t size;
+    size_t offset;
+    size_t flags_bitset;
+    char *data;
+    char *dom;
+    size_t dom_size;
+    size_t data_size;
+    size_t line_no;
+    size_t line_offset;
+    size_t error;
+};
 
-int json_hexadecimal_digit(const char c)
+static int json_hexadecimal_digit(const char c);
+static int json_hexadecimal_value(
+    const char *c, const unsigned long size, unsigned long *result);
+
+static int json_skip_whitespace(struct json_parse_state_s *state);
+static int json_skip_c_style_comments(struct json_parse_state_s *state);
+static int json_skip_all_skippables(struct json_parse_state_s *state);
+
+static int json_get_value_size(
+    struct json_parse_state_s *state, int is_global_object);
+static int json_get_string_size(
+    struct json_parse_state_s *state, size_t is_key);
+static int is_valid_unquoted_key_char(const char c);
+static int json_get_key_size(struct json_parse_state_s *state);
+static int json_get_object_size(
+    struct json_parse_state_s *state, int is_global_object);
+static int json_get_array_size(struct json_parse_state_s *state);
+static int json_get_number_size(struct json_parse_state_s *state);
+
+static void json_parse_value(
+    struct json_parse_state_s *state, int is_global_object,
+    struct json_value_s *value);
+static void json_parse_string(
+    struct json_parse_state_s *state, struct json_string_s *string);
+static void json_parse_key(
+    struct json_parse_state_s *state, struct json_string_s *string);
+static void json_parse_object(
+    struct json_parse_state_s *state, int is_global_object,
+    struct json_object_s *object);
+static void json_parse_array(
+    struct json_parse_state_s *state, struct json_array_s *array);
+static void json_parse_number(
+    struct json_parse_state_s *state, struct json_number_s *number);
+
+static int json_hexadecimal_digit(const char c)
 {
     if ('0' <= c && c <= '9') {
         return c - '0';
@@ -20,7 +64,7 @@ int json_hexadecimal_digit(const char c)
     return -1;
 }
 
-int json_hexadecimal_value(
+static int json_hexadecimal_value(
     const char *c, const unsigned long size, unsigned long *result)
 {
     const char *p;
@@ -42,7 +86,7 @@ int json_hexadecimal_value(
     return 1;
 }
 
-int json_skip_whitespace(struct json_parse_state_s *state)
+static int json_skip_whitespace(struct json_parse_state_s *state)
 {
     size_t offset = state->offset;
     const size_t size = state->size;
@@ -84,7 +128,7 @@ int json_skip_whitespace(struct json_parse_state_s *state)
     return 1;
 }
 
-int json_skip_c_style_comments(struct json_parse_state_s *state)
+static int json_skip_c_style_comments(struct json_parse_state_s *state)
 {
     /* do we have a comment?. */
     if ('/' == state->src[state->offset]) {
@@ -148,7 +192,7 @@ int json_skip_c_style_comments(struct json_parse_state_s *state)
     return 0;
 }
 
-int json_skip_all_skippables(struct json_parse_state_s *state)
+static int json_skip_all_skippables(struct json_parse_state_s *state)
 {
     /* skip all whitespace and other skippables until there are none left. note
      * that the previous version suffered from read past errors should. the
@@ -196,7 +240,7 @@ int json_skip_all_skippables(struct json_parse_state_s *state)
     return 0;
 }
 
-int json_get_string_size(struct json_parse_state_s *state, size_t is_key)
+static int json_get_string_size(struct json_parse_state_s *state, size_t is_key)
 {
     size_t offset = state->offset;
     const size_t size = state->size;
@@ -387,14 +431,14 @@ int json_get_string_size(struct json_parse_state_s *state, size_t is_key)
     return 0;
 }
 
-int is_valid_unquoted_key_char(const char c)
+static int is_valid_unquoted_key_char(const char c)
 {
     return (
         ('0' <= c && c <= '9') || ('a' <= c && c <= 'z')
         || ('A' <= c && c <= 'Z') || ('_' == c));
 }
 
-int json_get_key_size(struct json_parse_state_s *state)
+static int json_get_key_size(struct json_parse_state_s *state)
 {
     const size_t flags_bitset = state->flags_bitset;
 
@@ -444,7 +488,8 @@ int json_get_key_size(struct json_parse_state_s *state)
     }
 }
 
-int json_get_object_size(struct json_parse_state_s *state, int is_global_object)
+static int json_get_object_size(
+    struct json_parse_state_s *state, int is_global_object)
 {
     const size_t flags_bitset = state->flags_bitset;
     const char *const src = state->src;
@@ -584,7 +629,7 @@ int json_get_object_size(struct json_parse_state_s *state, int is_global_object)
     return 0;
 }
 
-int json_get_array_size(struct json_parse_state_s *state)
+static int json_get_array_size(struct json_parse_state_s *state)
 {
     const size_t flags_bitset = state->flags_bitset;
     size_t elements = 0;
@@ -658,7 +703,7 @@ int json_get_array_size(struct json_parse_state_s *state)
     return 1;
 }
 
-int json_get_number_size(struct json_parse_state_s *state)
+static int json_get_number_size(struct json_parse_state_s *state)
 {
     const size_t flags_bitset = state->flags_bitset;
     size_t offset = state->offset;
@@ -863,7 +908,8 @@ int json_get_number_size(struct json_parse_state_s *state)
     return 0;
 }
 
-int json_get_value_size(struct json_parse_state_s *state, int is_global_object)
+static int json_get_value_size(
+    struct json_parse_state_s *state, int is_global_object)
 {
     const size_t flags_bitset = state->flags_bitset;
     const char *const src = state->src;
@@ -972,7 +1018,7 @@ int json_get_value_size(struct json_parse_state_s *state, int is_global_object)
     }
 }
 
-void json_parse_string(
+static void json_parse_string(
     struct json_parse_state_s *state, struct json_string_s *string)
 {
     size_t offset = state->offset;
@@ -1114,7 +1160,7 @@ void json_parse_string(
     state->offset = offset;
 }
 
-void json_parse_key(
+static void json_parse_key(
     struct json_parse_state_s *state, struct json_string_s *string)
 {
     if (json_parse_flags_allow_unquoted_keys & state->flags_bitset) {
@@ -1155,7 +1201,7 @@ void json_parse_key(
     }
 }
 
-void json_parse_object(
+static void json_parse_object(
     struct json_parse_state_s *state, int is_global_object,
     struct json_object_s *object)
 {
@@ -1221,6 +1267,7 @@ void json_parse_object(
         }
 
         element = (struct json_object_element_s *)state->dom;
+        element->ref_count = 1;
 
         state->dom += sizeof(struct json_object_element_s);
 
@@ -1296,7 +1343,7 @@ void json_parse_object(
     object->length = elements;
 }
 
-void json_parse_array(
+static void json_parse_array(
     struct json_parse_state_s *state, struct json_array_s *array)
 {
     const char *const src = state->src;
@@ -1338,6 +1385,7 @@ void json_parse_array(
         }
 
         element = (struct json_array_element_s *)state->dom;
+        element->ref_count = 1;
 
         state->dom += sizeof(struct json_array_element_s);
 
@@ -1387,7 +1435,7 @@ void json_parse_array(
     array->length = elements;
 }
 
-void json_parse_number(
+static void json_parse_number(
     struct json_parse_state_s *state, struct json_number_s *number)
 {
     const size_t flags_bitset = state->flags_bitset;
@@ -1480,7 +1528,7 @@ void json_parse_number(
     state->offset = offset;
 }
 
-void json_parse_value(
+static void json_parse_value(
     struct json_parse_state_s *state, int is_global_object,
     struct json_value_s *value)
 {
@@ -1665,7 +1713,7 @@ struct json_value_s *json_parse_ex(
     total_size = state.dom_size + state.data_size;
 
     if (json_null == alloc_func_ptr) {
-        allocation = malloc(total_size);
+        allocation = Memory_Alloc(total_size);
     } else {
         allocation = alloc_func_ptr(user_data, total_size);
     }
@@ -1716,1002 +1764,6 @@ struct json_value_s *json_parse_ex(
     return (struct json_value_s *)allocation;
 }
 
-struct json_string_s *json_value_as_string(struct json_value_s *const value)
-{
-    if (!value || value->type != json_type_string) {
-        return json_null;
-    }
-
-    return (struct json_string_s *)value->payload;
-}
-
-struct json_number_s *json_value_as_number(struct json_value_s *const value)
-{
-    if (!value || value->type != json_type_number) {
-        return json_null;
-    }
-
-    return (struct json_number_s *)value->payload;
-}
-
-struct json_object_s *json_value_as_object(struct json_value_s *const value)
-{
-    if (!value || value->type != json_type_object) {
-        return json_null;
-    }
-
-    return (struct json_object_s *)value->payload;
-}
-
-struct json_array_s *json_value_as_array(struct json_value_s *const value)
-{
-    if (!value || value->type != json_type_array) {
-        return json_null;
-    }
-
-    return (struct json_array_s *)value->payload;
-}
-
-int json_value_is_true(const struct json_value_s *const value)
-{
-    return value && value->type == json_type_true;
-}
-
-int json_value_is_false(const struct json_value_s *const value)
-{
-    return value && value->type == json_type_false;
-}
-
-int json_value_is_null(const struct json_value_s *const value)
-{
-    return value && value->type == json_type_null;
-}
-
-int json_write_get_number_size(const struct json_number_s *number, size_t *size)
-{
-    json_uintmax_t parsed_number;
-    size_t i;
-
-    if (number->number_size >= 2) {
-        switch (number->number[1]) {
-        case 'x':
-        case 'X':
-            /* the number is a json_parse_flags_allow_hexadecimal_numbers
-             * hexadecimal so we have to do extra work to convert it to a
-             * non-hexadecimal for JSON output. */
-            parsed_number = json_strtoumax(number->number, json_null, 0);
-
-            i = 0;
-
-            while (0 != parsed_number) {
-                parsed_number /= 10;
-                i++;
-            }
-
-            *size += i;
-            return 0;
-        }
-    }
-
-    /* check to see if the number has leading/trailing decimal point. */
-    i = 0;
-
-    /* skip any leading '+' or '-'. */
-    if ((i < number->number_size)
-        && (('+' == number->number[i]) || ('-' == number->number[i]))) {
-        i++;
-    }
-
-    /* check if we have infinity. */
-    if ((i < number->number_size) && ('I' == number->number[i])) {
-        const char *inf = "Infinity";
-        size_t k;
-
-        for (k = i; k < number->number_size; k++) {
-            const char c = *inf++;
-
-            /* Check if we found the Infinity string! */
-            if ('\0' == c) {
-                break;
-            } else if (c != number->number[k]) {
-                break;
-            }
-        }
-
-        if ('\0' == *inf) {
-            /* Inf becomes 1.7976931348623158e308 because JSON can't support it.
-             */
-            *size += 22;
-
-            /* if we had a leading '-' we need to record it in the JSON output.
-             */
-            if ('-' == number->number[0]) {
-                *size += 1;
-            }
-        }
-
-        return 0;
-    }
-
-    /* check if we have nan. */
-    if ((i < number->number_size) && ('N' == number->number[i])) {
-        const char *nan = "NaN";
-        size_t k;
-
-        for (k = i; k < number->number_size; k++) {
-            const char c = *nan++;
-
-            /* Check if we found the NaN string! */
-            if ('\0' == c) {
-                break;
-            } else if (c != number->number[k]) {
-                break;
-            }
-        }
-
-        if ('\0' == *nan) {
-            /* NaN becomes 1 because JSON can't support it. */
-            *size += 1;
-
-            return 0;
-        }
-    }
-
-    /* if we had a leading decimal point. */
-    if ((i < number->number_size) && ('.' == number->number[i])) {
-        /* 1 + because we had a leading decimal point. */
-        *size += 1;
-        goto cleanup;
-    }
-
-    for (; i < number->number_size; i++) {
-        const char c = number->number[i];
-        if (!('0' <= c && c <= '9')) {
-            break;
-        }
-    }
-
-    /* if we had a trailing decimal point. */
-    if ((i + 1 == number->number_size) && ('.' == number->number[i])) {
-        /* 1 + because we had a trailing decimal point. */
-        *size += 1;
-        goto cleanup;
-    }
-
-cleanup:
-    *size += number->number_size; /* the actual string of the number. */
-
-    /* if we had a leading '+' we don't record it in the JSON output. */
-    if ('+' == number->number[0]) {
-        *size -= 1;
-    }
-
-    return 0;
-}
-
-int json_write_get_string_size(const struct json_string_s *string, size_t *size)
-{
-    size_t i;
-    for (i = 0; i < string->string_size; i++) {
-        switch (string->string[i]) {
-        case '"':
-        case '\\':
-        case '\b':
-        case '\f':
-        case '\n':
-        case '\r':
-        case '\t':
-            *size += 2;
-            break;
-        default:
-            *size += 1;
-            break;
-        }
-    }
-
-    *size += 2; /* need to encode the surrounding '"' characters. */
-
-    return 0;
-}
-
-int json_write_minified_get_array_size(
-    const struct json_array_s *array, size_t *size)
-{
-    struct json_array_element_s *element;
-
-    *size += 2; /* '[' and ']'. */
-
-    if (1 < array->length) {
-        *size += array->length - 1; /* ','s seperate each element. */
-    }
-
-    for (element = array->start; json_null != element;
-         element = element->next) {
-        if (json_write_minified_get_value_size(element->value, size)) {
-            /* value was malformed! */
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-int json_write_minified_get_object_size(
-    const struct json_object_s *object, size_t *size)
-{
-    struct json_object_element_s *element;
-
-    *size += 2; /* '{' and '}'. */
-
-    *size += object->length; /* ':'s seperate each name/value pair. */
-
-    if (1 < object->length) {
-        *size += object->length - 1; /* ','s seperate each element. */
-    }
-
-    for (element = object->start; json_null != element;
-         element = element->next) {
-        if (json_write_get_string_size(element->name, size)) {
-            /* string was malformed! */
-            return 1;
-        }
-
-        if (json_write_minified_get_value_size(element->value, size)) {
-            /* value was malformed! */
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-int json_write_minified_get_value_size(
-    const struct json_value_s *value, size_t *size)
-{
-    switch (value->type) {
-    default:
-        /* unknown value type found! */
-        return 1;
-    case json_type_number:
-        return json_write_get_number_size(
-            (struct json_number_s *)value->payload, size);
-    case json_type_string:
-        return json_write_get_string_size(
-            (struct json_string_s *)value->payload, size);
-    case json_type_array:
-        return json_write_minified_get_array_size(
-            (struct json_array_s *)value->payload, size);
-    case json_type_object:
-        return json_write_minified_get_object_size(
-            (struct json_object_s *)value->payload, size);
-    case json_type_true:
-        *size += 4; /* the string "true". */
-        return 0;
-    case json_type_false:
-        *size += 5; /* the string "false". */
-        return 0;
-    case json_type_null:
-        *size += 4; /* the string "null". */
-        return 0;
-    }
-}
-
-char *json_write_number(const struct json_number_s *number, char *data)
-{
-    json_uintmax_t parsed_number, backup;
-    size_t i;
-
-    if (number->number_size >= 2) {
-        switch (number->number[1]) {
-        case 'x':
-        case 'X':
-            /* The number is a json_parse_flags_allow_hexadecimal_numbers
-             * hexadecimal so we have to do extra work to convert it to a
-             * non-hexadecimal for JSON output. */
-            parsed_number = json_strtoumax(number->number, json_null, 0);
-
-            /* We need a copy of parsed number twice, so take a backup of it. */
-            backup = parsed_number;
-
-            i = 0;
-
-            while (0 != parsed_number) {
-                parsed_number /= 10;
-                i++;
-            }
-
-            /* Restore parsed_number to its original value stored in the backup.
-             */
-            parsed_number = backup;
-
-            /* Now use backup to take a copy of i, or the length of the string.
-             */
-            backup = i;
-
-            do {
-                *(data + i - 1) = '0' + (char)(parsed_number % 10);
-                parsed_number /= 10;
-                i--;
-            } while (0 != parsed_number);
-
-            data += backup;
-
-            return data;
-        }
-    }
-
-    /* check to see if the number has leading/trailing decimal point. */
-    i = 0;
-
-    /* skip any leading '-'. */
-    if ((i < number->number_size)
-        && (('+' == number->number[i]) || ('-' == number->number[i]))) {
-        i++;
-    }
-
-    /* check if we have infinity. */
-    if ((i < number->number_size) && ('I' == number->number[i])) {
-        const char *inf = "Infinity";
-        size_t k;
-
-        for (k = i; k < number->number_size; k++) {
-            const char c = *inf++;
-
-            /* Check if we found the Infinity string! */
-            if ('\0' == c) {
-                break;
-            } else if (c != number->number[k]) {
-                break;
-            }
-        }
-
-        if ('\0' == *inf++) {
-            const char *dbl_max;
-
-            /* if we had a leading '-' we need to record it in the JSON output.
-             */
-            if ('-' == number->number[0]) {
-                *data++ = '-';
-            }
-
-            /* Inf becomes 1.7976931348623158e308 because JSON can't support it.
-             */
-            for (dbl_max = "1.7976931348623158e308"; '\0' != *dbl_max;
-                 dbl_max++) {
-                *data++ = *dbl_max;
-            }
-
-            return data;
-        }
-    }
-
-    /* check if we have nan. */
-    if ((i < number->number_size) && ('N' == number->number[i])) {
-        const char *nan = "NaN";
-        size_t k;
-
-        for (k = i; k < number->number_size; k++) {
-            const char c = *nan++;
-
-            /* Check if we found the NaN string! */
-            if ('\0' == c) {
-                break;
-            } else if (c != number->number[k]) {
-                break;
-            }
-        }
-
-        if ('\0' == *nan++) {
-            /* NaN becomes 0 because JSON can't support it. */
-            *data++ = '0';
-            return data;
-        }
-    }
-
-    /* if we had a leading decimal point. */
-    if ((i < number->number_size) && ('.' == number->number[i])) {
-        i = 0;
-
-        /* skip any leading '+'. */
-        if ('+' == number->number[i]) {
-            i++;
-        }
-
-        /* output the leading '-' if we had one. */
-        if ('-' == number->number[i]) {
-            *data++ = '-';
-            i++;
-        }
-
-        /* insert a '0' to fix the leading decimal point for JSON output. */
-        *data++ = '0';
-
-        /* and output the rest of the number as normal. */
-        for (; i < number->number_size; i++) {
-            *data++ = number->number[i];
-        }
-
-        return data;
-    }
-
-    for (; i < number->number_size; i++) {
-        const char c = number->number[i];
-        if (!('0' <= c && c <= '9')) {
-            break;
-        }
-    }
-
-    /* if we had a trailing decimal point. */
-    if ((i + 1 == number->number_size) && ('.' == number->number[i])) {
-        i = 0;
-
-        /* skip any leading '+'. */
-        if ('+' == number->number[i]) {
-            i++;
-        }
-
-        /* output the leading '-' if we had one. */
-        if ('-' == number->number[i]) {
-            *data++ = '-';
-            i++;
-        }
-
-        /* and output the rest of the number as normal. */
-        for (; i < number->number_size; i++) {
-            *data++ = number->number[i];
-        }
-
-        /* insert a '0' to fix the trailing decimal point for JSON output. */
-        *data++ = '0';
-
-        return data;
-    }
-
-    i = 0;
-
-    /* skip any leading '+'. */
-    if ('+' == number->number[i]) {
-        i++;
-    }
-
-    for (; i < number->number_size; i++) {
-        *data++ = number->number[i];
-    }
-
-    return data;
-}
-
-char *json_write_string(const struct json_string_s *string, char *data)
-{
-    size_t i;
-
-    *data++ = '"'; /* open the string. */
-
-    for (i = 0; i < string->string_size; i++) {
-        switch (string->string[i]) {
-        case '"':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = '"';
-            break;
-        case '\\':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = '\\';
-            break;
-        case '\b':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = 'b';
-            break;
-        case '\f':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = 'f';
-            break;
-        case '\n':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = 'n';
-            break;
-        case '\r':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = 'r';
-            break;
-        case '\t':
-            *data++ = '\\'; /* escape the control character. */
-            *data++ = 't';
-            break;
-        default:
-            *data++ = string->string[i];
-            break;
-        }
-    }
-
-    *data++ = '"'; /* close the string. */
-
-    return data;
-}
-
-char *json_write_minified_array(const struct json_array_s *array, char *data)
-{
-    struct json_array_element_s *element = json_null;
-
-    *data++ = '['; /* open the array. */
-
-    for (element = array->start; json_null != element;
-         element = element->next) {
-        if (element != array->start) {
-            *data++ = ','; /* ','s seperate each element. */
-        }
-
-        data = json_write_minified_value(element->value, data);
-
-        if (json_null == data) {
-            /* value was malformed! */
-            return json_null;
-        }
-    }
-
-    *data++ = ']'; /* close the array. */
-
-    return data;
-}
-
-char *json_write_minified_object(const struct json_object_s *object, char *data)
-{
-    struct json_object_element_s *element = json_null;
-
-    *data++ = '{'; /* open the object. */
-
-    for (element = object->start; json_null != element;
-         element = element->next) {
-        if (element != object->start) {
-            *data++ = ','; /* ','s seperate each element. */
-        }
-
-        data = json_write_string(element->name, data);
-
-        if (json_null == data) {
-            /* string was malformed! */
-            return json_null;
-        }
-
-        *data++ = ':'; /* ':'s seperate each name/value pair. */
-
-        data = json_write_minified_value(element->value, data);
-
-        if (json_null == data) {
-            /* value was malformed! */
-            return json_null;
-        }
-    }
-
-    *data++ = '}'; /* close the object. */
-
-    return data;
-}
-
-char *json_write_minified_value(const struct json_value_s *value, char *data)
-{
-    switch (value->type) {
-    default:
-        /* unknown value type found! */
-        return json_null;
-    case json_type_number:
-        return json_write_number((struct json_number_s *)value->payload, data);
-    case json_type_string:
-        return json_write_string((struct json_string_s *)value->payload, data);
-    case json_type_array:
-        return json_write_minified_array(
-            (struct json_array_s *)value->payload, data);
-    case json_type_object:
-        return json_write_minified_object(
-            (struct json_object_s *)value->payload, data);
-    case json_type_true:
-        data[0] = 't';
-        data[1] = 'r';
-        data[2] = 'u';
-        data[3] = 'e';
-        return data + 4;
-    case json_type_false:
-        data[0] = 'f';
-        data[1] = 'a';
-        data[2] = 'l';
-        data[3] = 's';
-        data[4] = 'e';
-        return data + 5;
-    case json_type_null:
-        data[0] = 'n';
-        data[1] = 'u';
-        data[2] = 'l';
-        data[3] = 'l';
-        return data + 4;
-    }
-}
-
-void *json_write_minified(const struct json_value_s *value, size_t *out_size)
-{
-    size_t size = 0;
-    char *data = json_null;
-    char *data_end = json_null;
-
-    if (json_null == value) {
-        return json_null;
-    }
-
-    if (json_write_minified_get_value_size(value, &size)) {
-        /* value was malformed! */
-        return json_null;
-    }
-
-    size += 1; /* for the '\0' null terminating character. */
-
-    data = (char *)malloc(size);
-
-    if (json_null == data) {
-        /* malloc failed! */
-        return json_null;
-    }
-
-    data_end = json_write_minified_value(value, data);
-
-    if (json_null == data_end) {
-        /* bad chi occurred! */
-        free(data);
-        return json_null;
-    }
-
-    /* null terminated the string. */
-    *data_end = '\0';
-
-    if (json_null != out_size) {
-        *out_size = size;
-    }
-
-    return data;
-}
-
-int json_write_pretty_get_array_size(
-    const struct json_array_s *array, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size)
-{
-    struct json_array_element_s *element;
-
-    *size += 1; /* '['. */
-
-    if (0 < array->length) {
-        /* if we have any elements we need to add a newline after our '['. */
-        *size += newline_size;
-
-        *size += array->length - 1; /* ','s seperate each element. */
-
-        for (element = array->start; json_null != element;
-             element = element->next) {
-            /* each element gets an indent. */
-            *size += (depth + 1) * indent_size;
-
-            if (json_write_pretty_get_value_size(
-                    element->value, depth + 1, indent_size, newline_size,
-                    size)) {
-                /* value was malformed! */
-                return 1;
-            }
-
-            /* each element gets a newline too. */
-            *size += newline_size;
-        }
-
-        /* since we wrote out some elements, need to add a newline and
-         * indentation.
-         */
-        /* to the trailing ']'. */
-        *size += depth * indent_size;
-    }
-
-    *size += 1; /* ']'. */
-
-    return 0;
-}
-
-int json_write_pretty_get_object_size(
-    const struct json_object_s *object, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size)
-{
-    struct json_object_element_s *element;
-
-    *size += 1; /* '{'. */
-
-    if (0 < object->length) {
-        *size += newline_size; /* need a newline next. */
-
-        *size += object->length - 1; /* ','s seperate each element. */
-
-        for (element = object->start; json_null != element;
-             element = element->next) {
-            /* each element gets an indent and newline. */
-            *size += (depth + 1) * indent_size;
-            *size += newline_size;
-
-            if (json_write_get_string_size(element->name, size)) {
-                /* string was malformed! */
-                return 1;
-            }
-
-            *size += 3; /* seperate each name/value pair with " : ". */
-
-            if (json_write_pretty_get_value_size(
-                    element->value, depth + 1, indent_size, newline_size,
-                    size)) {
-                /* value was malformed! */
-                return 1;
-            }
-        }
-
-        *size += depth * indent_size;
-    }
-
-    *size += 1; /* '}'. */
-
-    return 0;
-}
-
-int json_write_pretty_get_value_size(
-    const struct json_value_s *value, size_t depth, size_t indent_size,
-    size_t newline_size, size_t *size)
-{
-    switch (value->type) {
-    default:
-        /* unknown value type found! */
-        return 1;
-    case json_type_number:
-        return json_write_get_number_size(
-            (struct json_number_s *)value->payload, size);
-    case json_type_string:
-        return json_write_get_string_size(
-            (struct json_string_s *)value->payload, size);
-    case json_type_array:
-        return json_write_pretty_get_array_size(
-            (struct json_array_s *)value->payload, depth, indent_size,
-            newline_size, size);
-    case json_type_object:
-        return json_write_pretty_get_object_size(
-            (struct json_object_s *)value->payload, depth, indent_size,
-            newline_size, size);
-    case json_type_true:
-        *size += 4; /* the string "true". */
-        return 0;
-    case json_type_false:
-        *size += 5; /* the string "false". */
-        return 0;
-    case json_type_null:
-        *size += 4; /* the string "null". */
-        return 0;
-    }
-}
-
-char *json_write_pretty_array(
-    const struct json_array_s *array, size_t depth, const char *indent,
-    const char *newline, char *data)
-{
-    size_t k, m;
-    struct json_array_element_s *element;
-
-    *data++ = '['; /* open the array. */
-
-    if (0 < array->length) {
-        for (k = 0; '\0' != newline[k]; k++) {
-            *data++ = newline[k];
-        }
-
-        for (element = array->start; json_null != element;
-             element = element->next) {
-            if (element != array->start) {
-                *data++ = ','; /* ','s seperate each element. */
-
-                for (k = 0; '\0' != newline[k]; k++) {
-                    *data++ = newline[k];
-                }
-            }
-
-            for (k = 0; k < depth + 1; k++) {
-                for (m = 0; '\0' != indent[m]; m++) {
-                    *data++ = indent[m];
-                }
-            }
-
-            data = json_write_pretty_value(
-                element->value, depth + 1, indent, newline, data);
-
-            if (json_null == data) {
-                /* value was malformed! */
-                return json_null;
-            }
-        }
-
-        for (k = 0; '\0' != newline[k]; k++) {
-            *data++ = newline[k];
-        }
-
-        for (k = 0; k < depth; k++) {
-            for (m = 0; '\0' != indent[m]; m++) {
-                *data++ = indent[m];
-            }
-        }
-    }
-
-    *data++ = ']'; /* close the array. */
-
-    return data;
-}
-
-char *json_write_pretty_object(
-    const struct json_object_s *object, size_t depth, const char *indent,
-    const char *newline, char *data)
-{
-    size_t k, m;
-    struct json_object_element_s *element;
-
-    *data++ = '{'; /* open the object. */
-
-    if (0 < object->length) {
-        for (k = 0; '\0' != newline[k]; k++) {
-            *data++ = newline[k];
-        }
-
-        for (element = object->start; json_null != element;
-             element = element->next) {
-            if (element != object->start) {
-                *data++ = ','; /* ','s seperate each element. */
-
-                for (k = 0; '\0' != newline[k]; k++) {
-                    *data++ = newline[k];
-                }
-            }
-
-            for (k = 0; k < depth + 1; k++) {
-                for (m = 0; '\0' != indent[m]; m++) {
-                    *data++ = indent[m];
-                }
-            }
-
-            data = json_write_string(element->name, data);
-
-            if (json_null == data) {
-                /* string was malformed! */
-                return json_null;
-            }
-
-            /* " : "s seperate each name/value pair. */
-            *data++ = ' ';
-            *data++ = ':';
-            *data++ = ' ';
-
-            data = json_write_pretty_value(
-                element->value, depth + 1, indent, newline, data);
-
-            if (json_null == data) {
-                /* value was malformed! */
-                return json_null;
-            }
-        }
-
-        for (k = 0; '\0' != newline[k]; k++) {
-            *data++ = newline[k];
-        }
-
-        for (k = 0; k < depth; k++) {
-            for (m = 0; '\0' != indent[m]; m++) {
-                *data++ = indent[m];
-            }
-        }
-    }
-
-    *data++ = '}'; /* close the object. */
-
-    return data;
-}
-
-char *json_write_pretty_value(
-    const struct json_value_s *value, size_t depth, const char *indent,
-    const char *newline, char *data)
-{
-    switch (value->type) {
-    default:
-        /* unknown value type found! */
-        return json_null;
-    case json_type_number:
-        return json_write_number((struct json_number_s *)value->payload, data);
-    case json_type_string:
-        return json_write_string((struct json_string_s *)value->payload, data);
-    case json_type_array:
-        return json_write_pretty_array(
-            (struct json_array_s *)value->payload, depth, indent, newline,
-            data);
-    case json_type_object:
-        return json_write_pretty_object(
-            (struct json_object_s *)value->payload, depth, indent, newline,
-            data);
-    case json_type_true:
-        data[0] = 't';
-        data[1] = 'r';
-        data[2] = 'u';
-        data[3] = 'e';
-        return data + 4;
-    case json_type_false:
-        data[0] = 'f';
-        data[1] = 'a';
-        data[2] = 'l';
-        data[3] = 's';
-        data[4] = 'e';
-        return data + 5;
-    case json_type_null:
-        data[0] = 'n';
-        data[1] = 'u';
-        data[2] = 'l';
-        data[3] = 'l';
-        return data + 4;
-    }
-}
-
-void *json_write_pretty(
-    const struct json_value_s *value, const char *indent, const char *newline,
-    size_t *out_size)
-{
-    size_t size = 0;
-    size_t indent_size = 0;
-    size_t newline_size = 0;
-    char *data = json_null;
-    char *data_end = json_null;
-
-    if (json_null == value) {
-        return json_null;
-    }
-
-    if (json_null == indent) {
-        indent = "  "; /* default to two spaces. */
-    }
-
-    if (json_null == newline) {
-        newline = "\n"; /* default to linux newlines. */
-    }
-
-    while ('\0' != indent[indent_size]) {
-        ++indent_size; /* skip non-null terminating characters. */
-    }
-
-    while ('\0' != newline[newline_size]) {
-        ++newline_size; /* skip non-null terminating characters. */
-    }
-
-    if (json_write_pretty_get_value_size(
-            value, 0, indent_size, newline_size, &size)) {
-        /* value was malformed! */
-        return json_null;
-    }
-
-    size += 1; /* for the '\0' null terminating character. */
-
-    data = (char *)malloc(size);
-
-    if (json_null == data) {
-        /* malloc failed! */
-        return json_null;
-    }
-
-    data_end = json_write_pretty_value(value, 0, indent, newline, data);
-
-    if (json_null == data_end) {
-        /* bad chi occurred! */
-        free(data);
-        return json_null;
-    }
-
-    /* null terminated the string. */
-    *data_end = '\0';
-
-    if (json_null != out_size) {
-        *out_size = size;
-    }
-
-    return data;
-}
-
 const char *json_get_error_description(enum json_parse_error_e error)
 {
     switch (error) {
@@ -2751,401 +1803,5 @@ const char *json_get_error_description(enum json_parse_error_e error)
     case json_parse_error_unknown:
     default:
         return "unknown";
-    }
-}
-
-struct json_number_s *json_number_new_int(int number)
-{
-    size_t size = 1;
-    int tmp = number;
-    while (tmp) {
-        tmp /= 10;
-        size++;
-    }
-
-    char *buf = malloc(size);
-    sprintf(buf, "%d", number);
-    struct json_number_s *elem = malloc(sizeof(struct json_number_s));
-    elem->number = buf;
-    elem->number_size = strlen(buf);
-    return elem;
-}
-
-struct json_number_s *json_number_new_double(double number)
-{
-    size_t size = 30;
-    char *buf = malloc(size);
-    sprintf(buf, "%f", number);
-    struct json_number_s *elem = malloc(sizeof(struct json_number_s));
-    elem->number = buf;
-    elem->number_size = strlen(buf);
-    return elem;
-}
-
-void json_number_free(struct json_number_s *num)
-{
-    if (!num->ref_count) {
-        free(num->number);
-        free(num);
-    }
-}
-
-struct json_string_s *json_string_new(const char *string)
-{
-    struct json_string_s *str = malloc(sizeof(struct json_string_s));
-    str->string = strdup(string);
-    str->string_size = strlen(string);
-    return str;
-}
-
-void json_string_free(struct json_string_s *str)
-{
-    if (!str->ref_count) {
-        free(str->string);
-        free(str);
-    }
-}
-
-struct json_array_s *json_array_new()
-{
-    struct json_array_s *arr = malloc(sizeof(struct json_array_s));
-    arr->start = NULL;
-    arr->length = 0;
-    return arr;
-}
-
-void json_array_free(struct json_array_s *arr)
-{
-    if (!arr->ref_count) {
-        struct json_array_element_s *elem = arr->start;
-        while (elem) {
-            struct json_array_element_s *next = elem->next;
-            json_value_free(elem->value);
-            free(elem);
-            elem = next;
-        }
-        free(arr);
-    }
-}
-
-void json_array_append(struct json_array_s *arr, struct json_value_s *value)
-{
-    struct json_array_element_s *elem =
-        malloc(sizeof(struct json_array_element_s));
-    elem->value = value;
-    elem->next = NULL;
-    if (arr->start) {
-        struct json_array_element_s *target = arr->start;
-        while (target->next) {
-            target = target->next;
-        }
-        target->next = elem;
-    } else {
-        arr->start = elem;
-    }
-    arr->length++;
-}
-
-void json_array_append_bool(struct json_array_s *arr, int b)
-{
-    json_array_append(arr, json_value_from_bool(b));
-}
-
-void json_array_append_number_int(struct json_array_s *arr, int number)
-{
-    json_array_append(arr, json_value_from_number(json_number_new_int(number)));
-}
-
-void json_array_append_number_double(struct json_array_s *arr, double number)
-{
-    json_array_append(
-        arr, json_value_from_number(json_number_new_double(number)));
-}
-
-void json_array_append_array(
-    struct json_array_s *arr, struct json_array_s *arr2)
-{
-    json_array_append(arr, json_value_from_array(arr2));
-}
-
-struct json_value_s *json_array_get_value(
-    struct json_array_s *arr, const size_t idx)
-{
-    if (!arr || idx >= arr->length) {
-        return json_null;
-    }
-    struct json_array_element_s *elem = arr->start;
-    for (size_t i = 0; i < idx; i++) {
-        elem = elem->next;
-    }
-    return elem->value;
-}
-
-int json_array_get_bool(struct json_array_s *arr, const size_t idx, int d)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    if (json_value_is_true(value)) {
-        return 1;
-    } else if (json_value_is_false(value)) {
-        return 0;
-    }
-    return d;
-}
-
-int json_array_get_number_int(struct json_array_s *arr, const size_t idx, int d)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    struct json_number_s *num = json_value_as_number(value);
-    if (num) {
-        return atoi(num->number);
-    }
-    return d;
-}
-
-double json_array_get_number_double(
-    struct json_array_s *arr, const size_t idx, double d)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    struct json_number_s *num = json_value_as_number(value);
-    if (num) {
-        return atof(num->number);
-    }
-    return d;
-}
-
-const char *json_array_get_string(
-    struct json_array_s *arr, const size_t idx, const char *d)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    struct json_string_s *str = json_value_as_string(value);
-    if (str) {
-        return str->string;
-    }
-    return d;
-}
-
-struct json_array_s *json_array_get_array(
-    struct json_array_s *arr, const size_t idx)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    struct json_array_s *arr2 = json_value_as_array(value);
-    return arr2;
-}
-
-struct json_object_s *json_array_get_object(
-    struct json_array_s *arr, const size_t idx)
-{
-    struct json_value_s *value = json_array_get_value(arr, idx);
-    struct json_object_s *obj = json_value_as_object(value);
-    return obj;
-}
-
-struct json_object_s *json_object_new()
-{
-    struct json_object_s *obj = malloc(sizeof(struct json_object_s));
-    obj->start = NULL;
-    obj->length = 0;
-    return obj;
-}
-
-void json_object_free(struct json_object_s *obj)
-{
-    if (!obj->ref_count) {
-        struct json_object_element_s *elem = obj->start;
-        while (elem) {
-            struct json_object_element_s *next = elem->next;
-            json_string_free(elem->name);
-            json_value_free(elem->value);
-            free(elem);
-            elem = next;
-        }
-        free(obj);
-    }
-}
-
-void json_object_append(
-    struct json_object_s *obj, const char *key, struct json_value_s *value)
-{
-    struct json_object_element_s *elem =
-        malloc(sizeof(struct json_object_element_s));
-    elem->name = json_string_new(key);
-    elem->value = value;
-    elem->next = NULL;
-    if (obj->start) {
-        struct json_object_element_s *target = obj->start;
-        while (target->next) {
-            target = target->next;
-        }
-        target->next = elem;
-    } else {
-        obj->start = elem;
-    }
-    obj->length++;
-}
-
-void json_object_append_bool(struct json_object_s *obj, const char *key, int b)
-{
-    json_object_append(obj, key, json_value_from_bool(b));
-}
-
-void json_object_append_number_int(
-    struct json_object_s *obj, const char *key, int number)
-{
-    json_object_append(
-        obj, key, json_value_from_number(json_number_new_int(number)));
-}
-
-void json_object_append_number_double(
-    struct json_object_s *obj, const char *key, double number)
-{
-    json_object_append(
-        obj, key, json_value_from_number(json_number_new_double(number)));
-}
-
-void json_object_append_array(
-    struct json_object_s *obj, const char *key, struct json_array_s *arr)
-{
-    json_object_append(obj, key, json_value_from_array(arr));
-}
-
-struct json_value_s *json_object_get_value(
-    struct json_object_s *obj, const char *key)
-{
-    if (!obj) {
-        return json_null;
-    }
-    struct json_object_element_s *elem = obj->start;
-    while (elem) {
-        if (!strcmp(elem->name->string, key)) {
-            return elem->value;
-        }
-        elem = elem->next;
-    }
-    return json_null;
-}
-
-int json_object_get_bool(struct json_object_s *obj, const char *key, int d)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    if (json_value_is_true(value)) {
-        return 1;
-    } else if (json_value_is_false(value)) {
-        return 0;
-    }
-    return d;
-}
-
-int json_object_get_number_int(
-    struct json_object_s *obj, const char *key, int d)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    struct json_number_s *num = json_value_as_number(value);
-    if (num) {
-        return atoi(num->number);
-    }
-    return d;
-}
-
-double json_object_get_number_double(
-    struct json_object_s *obj, const char *key, double d)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    struct json_number_s *num = json_value_as_number(value);
-    if (num) {
-        return atof(num->number);
-    }
-    return d;
-}
-
-const char *json_object_get_string(
-    struct json_object_s *obj, const char *key, const char *d)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    struct json_string_s *str = json_value_as_string(value);
-    if (str) {
-        return str->string;
-    }
-    return d;
-}
-
-struct json_array_s *json_object_get_array(
-    struct json_object_s *obj, const char *key)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    struct json_array_s *arr = json_value_as_array(value);
-    return arr;
-}
-
-struct json_object_s *json_object_get_object(
-    struct json_object_s *obj, const char *key)
-{
-    struct json_value_s *value = json_object_get_value(obj, key);
-    struct json_object_s *obj2 = json_value_as_object(value);
-    return obj2;
-}
-
-struct json_value_s *json_value_from_bool(int b)
-{
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
-    value->type = b ? json_type_true : json_type_false;
-    value->payload = NULL;
-    return value;
-}
-
-struct json_value_s *json_value_from_number(struct json_number_s *num)
-{
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
-    value->type = json_type_number;
-    value->payload = num;
-    return value;
-}
-
-struct json_value_s *json_value_from_string(struct json_string_s *str)
-{
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
-    value->type = json_type_string;
-    value->payload = str;
-    return value;
-}
-
-struct json_value_s *json_value_from_array(struct json_array_s *arr)
-{
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
-    value->type = json_type_array;
-    value->payload = arr;
-    return value;
-}
-
-struct json_value_s *json_value_from_object(struct json_object_s *obj)
-{
-    struct json_value_s *value = malloc(sizeof(struct json_value_s));
-    value->type = json_type_object;
-    value->payload = obj;
-    return value;
-}
-
-void json_value_free(struct json_value_s *value)
-{
-    if (!value->ref_count) {
-        switch (value->type) {
-        case json_type_number:
-            json_number_free((struct json_number_s *)value->payload);
-            break;
-        case json_type_string:
-            json_string_free((struct json_string_s *)value->payload);
-            break;
-        case json_type_array:
-            json_array_free((struct json_array_s *)value->payload);
-            break;
-        case json_type_object:
-            json_object_free((struct json_object_s *)value->payload);
-            break;
-        case json_type_true:
-        case json_type_null:
-        case json_type_false:
-            break;
-        }
-
-        free(value);
     }
 }

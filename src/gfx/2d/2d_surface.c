@@ -106,51 +106,20 @@ bool GFX_2D_Surface_Blt(
 
         int32_t depth = surface->desc.bit_count / 8;
 
-        if (src->desc.flags.primary) {
-            // This is a somewhat ugly and slow hack to get a rescaled and
-            // converted copy of the framebuffer for the surface, which is
-            // required to display the in-game menu of Tomb Raider
-            // correctly.
-            GLint width;
-            GLint height;
-            GFX_Screenshot_CaptureToBuffer(
-                NULL, &width, &height, depth, GL_BGRA,
-                GL_UNSIGNED_INT_8_8_8_8_REV, false, true);
-            uint8_t *buffer = Memory_Alloc(width * height * depth);
-            GFX_Screenshot_CaptureToBuffer(
-                buffer, &width, &height, depth, GL_BGRA,
-                GL_UNSIGNED_INT_8_8_8_8_REV, false, true);
+        int32_t src_width = src->desc.width;
+        int32_t src_height = src->desc.height;
+        const GFX_BlitterRect default_src_rect = {
+            .left = 0, .top = 0, .right = src_width, .bottom = src_height
+        };
 
-            for (int i = 0; i < width * height * depth; i++) {
-                buffer[i] /= 2;
-            }
+        GFX_BlitterImage src_img = { src_width, src_height, depth,
+                                     src->buffer };
+        GFX_BlitterImage dst_img = { dst_width, dst_height, depth,
+                                     surface->buffer };
 
-            GFX_BlitterRect src_rect = {
-                .left = 0, .top = height, .right = width, .bottom = 0
-            };
-            GFX_BlitterImage src_img = { width, height, depth, buffer };
-            GFX_BlitterImage dst_img = { dst_width, dst_height, depth,
-                                         surface->buffer };
-            GFX_Blit(
-                &src_img, &src_rect, &dst_img,
-                dst_rect ? dst_rect : &default_dst_rect);
-            Memory_FreePointer(&buffer);
-        } else {
-            int32_t src_width = src->desc.width;
-            int32_t src_height = src->desc.height;
-            const GFX_BlitterRect default_src_rect = {
-                .left = 0, .top = 0, .right = src_width, .bottom = src_height
-            };
-
-            GFX_BlitterImage src_img = { src_width, src_height, depth,
-                                         src->buffer };
-            GFX_BlitterImage dst_img = { dst_width, dst_height, depth,
-                                         surface->buffer };
-
-            GFX_Blit(
-                &src_img, src_rect ? src_rect : &default_src_rect, &dst_img,
-                dst_rect ? dst_rect : &default_dst_rect);
-        }
+        GFX_Blit(
+            &src_img, src_rect ? src_rect : &default_src_rect, &dst_img,
+            dst_rect ? dst_rect : &default_dst_rect);
     }
 
     return true;

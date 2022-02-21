@@ -12,6 +12,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -65,7 +66,7 @@ void LaraControl(int16_t item_num)
         g_Lara.hit_frame = 0;
         g_Lara.hit_direction = -1;
         g_Lara.air = LARA_AIR;
-        g_Lara.death_count = 0;
+        g_Lara.death_timer = 0;
         g_Lara.mesh_effects = 0;
         LaraInitialiseMeshes(g_CurrentLevel);
     }
@@ -105,7 +106,7 @@ void LaraControl(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
-            g_Lara.dive_count = DIVE_COUNT + 1;
+            g_Lara.dive_timer = DIVE_WAIT + 1;
             item->current_anim_state = AS_SURFTREAD;
             item->goal_anim_state = AS_SURFTREAD;
             item->anim_number = AA_SURFTREAD;
@@ -157,10 +158,15 @@ void LaraControl(int16_t item_num)
 
     if (item->hit_points <= 0) {
         item->hit_points = -1;
-        if (!g_Lara.death_count) {
+        if (!g_Lara.death_timer) {
             Music_Stop();
+            g_GameInfo.end[g_CurrentLevel].stats.death_count++;
+            if (g_GameInfo.current_save_slot != -1) {
+                Savegame_UpdateDeathCounters(
+                    g_GameInfo.current_save_slot, &g_GameInfo);
+            }
         }
-        g_Lara.death_count++;
+        g_Lara.death_timer++;
         // make sure the enemy healthbar is no longer rendered. If g_Lara later
         // is resurrected with DOZY, she should no longer aim at the target.
         g_Lara.target = NULL;
@@ -211,7 +217,7 @@ void LaraControl(int16_t item_num)
 
     case LWS_CHEAT:
         item->hit_points = LARA_HITPOINTS;
-        g_Lara.death_count = 0;
+        g_Lara.death_timer = 0;
         LaraUnderWater(item, &coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
             int16_t wh = GetWaterHeight(
@@ -401,9 +407,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points += LARA_HITPOINTS / 2;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -415,9 +419,7 @@ void UseItem(int16_t object_num)
             return;
         }
         g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_HITPOINTS;
-        if (g_LaraItem->hit_points > LARA_HITPOINTS) {
-            g_LaraItem->hit_points = LARA_HITPOINTS;
-        }
+        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -432,17 +434,20 @@ void ControlLaraExtra(int16_t item_num)
 void InitialiseLaraLoad(int16_t item_num)
 {
     g_Lara.item_number = item_num;
-    g_LaraItem = &g_Items[item_num];
+    if (item_num == NO_ITEM) {
+        g_LaraItem = NULL;
+    } else {
+        g_LaraItem = &g_Items[item_num];
+    }
 }
 
 void InitialiseLara()
 {
+    START_INFO *start = &g_GameInfo.start[g_CurrentLevel];
+
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
-    g_LaraItem->hit_points = LARA_HITPOINTS;
-    if (g_Config.disable_healing_between_levels) {
-        g_LaraItem->hit_points = g_StoredLaraHealth;
-    }
+    g_LaraItem->hit_points = start->lara_hitpoints;
 
     g_Lara.air = LARA_AIR;
     g_Lara.torso_y_rot = 0;
@@ -455,7 +460,7 @@ void InitialiseLara()
     g_Lara.mesh_effects = 0;
     g_Lara.hit_frame = 0;
     g_Lara.hit_direction = 0;
-    g_Lara.death_count = 0;
+    g_Lara.death_timer = 0;
     g_Lara.target = NULL;
     g_Lara.spaz_effect = NULL;
     g_Lara.spaz_effect_count = 0;
@@ -495,14 +500,14 @@ void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
     g_Lara.pistols.ammo = 1000;
-    if (start->got_pistols) {
+    if (start->flags.got_pistols) {
         Inv_AddItem(O_GUN_ITEM);
     }
 
-    if (start->got_magnums) {
+    if (start->flags.got_magnums) {
         Inv_AddItem(O_MAGNUM_ITEM);
         g_Lara.magnums.ammo = start->magnum_ammo;
         GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
@@ -514,7 +519,7 @@ void InitialiseLaraInventory(int32_t level_num)
         g_Lara.magnums.ammo = 0;
     }
 
-    if (start->got_uzis) {
+    if (start->flags.got_uzis) {
         Inv_AddItem(O_UZI_ITEM);
         g_Lara.uzis.ammo = start->uzi_ammo;
         GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
@@ -526,7 +531,7 @@ void InitialiseLaraInventory(int32_t level_num)
         g_Lara.uzis.ammo = 0;
     }
 
-    if (start->got_shotgun) {
+    if (start->flags.got_shotgun) {
         Inv_AddItem(O_SHOTGUN_ITEM);
         g_Lara.shotgun.ammo = start->shotgun_ammo;
         GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
@@ -560,9 +565,9 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO *start = &g_SaveGame.start[level_num];
+    START_INFO *start = &g_GameInfo.start[level_num];
 
-    if (start->costume) {
+    if (start->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
             int32_t use_orig_mesh = i == LM_HEAD;
             g_Lara.mesh_ptrs[i] = g_Meshes
@@ -576,17 +581,13 @@ void LaraInitialiseMeshes(int32_t level_num)
         g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA].mesh_index + i];
     }
 
-    int16_t gun_type = start->gun_type;
-    if (gun_type == LGT_SHOTGUN) {
-        if (start->got_uzis || start->got_magnums || start->got_pistols) {
-            gun_type = LGT_PISTOLS;
-        } else {
-            gun_type = LGT_UNARMED;
-        }
-    }
-
-    int16_t holster_object_num = -1;
-    switch (gun_type) {
+    GAME_OBJECT_ID back_object_num = O_INVALID;
+    GAME_OBJECT_ID hands_object_num = O_INVALID;
+    GAME_OBJECT_ID holster_object_num = O_INVALID;
+    switch (start->gun_type) {
+    case LGT_SHOTGUN:
+        hands_object_num = O_SHOTGUN;
+        break;
     case LGT_PISTOLS:
         holster_object_num = O_PISTOLS;
         break;
@@ -598,19 +599,25 @@ void LaraInitialiseMeshes(int32_t level_num)
         break;
     }
 
-    int16_t back_object_num = -1;
-    if (start->got_shotgun) {
+    if (start->flags.got_shotgun) {
         back_object_num = O_SHOTGUN;
     }
 
-    if (holster_object_num != -1) {
+    if (g_Lara.gun_status != LGS_ARMLESS && hands_object_num != O_INVALID) {
+        g_Lara.mesh_ptrs[LM_HAND_L] =
+            g_Meshes[g_Objects[hands_object_num].mesh_index + LM_HAND_L];
+        g_Lara.mesh_ptrs[LM_HAND_R] =
+            g_Meshes[g_Objects[hands_object_num].mesh_index + LM_HAND_R];
+    }
+
+    if (holster_object_num != O_INVALID) {
         g_Lara.mesh_ptrs[LM_THIGH_L] =
             g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_L];
         g_Lara.mesh_ptrs[LM_THIGH_R] =
             g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_R];
     }
 
-    if (back_object_num != -1) {
+    if (back_object_num != O_INVALID) {
         g_Lara.mesh_ptrs[LM_TORSO] =
             g_Meshes[g_Objects[back_object_num].mesh_index + LM_TORSO];
     }
@@ -633,21 +640,21 @@ void LaraCheatGetStuff()
         if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
             Inv_AddItem(O_SHOTGUN_ITEM);
         }
-        g_Lara.shotgun.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+        g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
     }
 
     if (g_Objects[O_MAGNUM_OPTION].loaded) {
         if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
             Inv_AddItem(O_MAGNUM_ITEM);
         }
-        g_Lara.magnums.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+        g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
     }
 
     if (g_Objects[O_UZI_OPTION].loaded) {
         if (!Inv_RequestItem(O_UZI_ITEM)) {
             Inv_AddItem(O_UZI_ITEM);
         }
-        g_Lara.uzis.ammo = g_SaveGame.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+        g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
     }
 
     for (int i = 0; i < 10; i++) {

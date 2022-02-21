@@ -1,0 +1,88 @@
+diff --git a/src/memory.c b/src/memory.c
+index c73c24cf..fbc704f7 100644
+--- a/src/memory.c
++++ b/src/memory.c
+@@ -1,14 +1,16 @@
+ #include "memory.h"
+ 
+ #include "game/shell.h"
++#include "log.h"
+ 
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-void *Memory_Alloc(size_t size)
++void *Memory_AllocImpl(size_t size, const char *file, int line, const char *func)
+ {
+     void *result = malloc(size);
++    Log_Message(file, line, func, "Allocating memory (%d bytes): %p", size, result);
+     if (!result) {
+         Shell_ExitSystem("ERROR: Could not allocate enough memory");
+     }
+@@ -16,33 +18,35 @@ void *Memory_Alloc(size_t size)
+     return result;
+ }
+ 
+-void *Memory_Realloc(void *memory, size_t size)
++void *Memory_ReallocImpl(void *memory, size_t size, const char *file, int line, const char *func)
+ {
+     void *result = realloc(memory, size);
++    Log_Message(file, line, func, "Reallocating memory at %p (%d bytes): %p", memory, size, result);
+     if (!result) {
+         Shell_ExitSystem("ERROR: Could not allocate enough memory");
+     }
+     return result;
+ }
+ 
+-void Memory_Free(void *memory)
++void Memory_FreeImpl(void *memory, const char *file, int line, const char *func)
+ {
++    Log_Message(file, line, func, "Freeing memory at %p", memory);
+     if (memory) {
+         free(memory);
+     }
+ }
+ 
+-void Memory_FreePointer(void *arg)
++void Memory_FreePointerImpl(void *arg, const char *file, int line, const char *func)
+ {
+     void *memory;
+     memcpy(&memory, arg, sizeof(void *));
+     memcpy(arg, &(void *) { NULL }, sizeof(void *));
+-    Memory_Free(memory);
++    Memory_FreeImpl(memory, file, line, func);
+ }
+ 
+-void *Memory_Dup(const char *string)
++void *Memory_DupImpl(const char *string, const char *file, int line, const char *func)
+ {
+-    void *memory = Memory_Alloc(strlen(string) + 1);
++    void *memory = Memory_AllocImpl(strlen(string) + 1, file, line, func);
+     strcpy(memory, string);
+     return memory;
+ }
+diff --git a/src/memory.h b/src/memory.h
+index 23c23f95..3995bada 100644
+--- a/src/memory.h
++++ b/src/memory.h
+@@ -5,8 +5,14 @@
+ 
+ #include <stddef.h>
+ 
+-void *Memory_Alloc(size_t size);
+-void *Memory_Realloc(void *memory, size_t size);
+-void Memory_Free(void *memory);
+-void Memory_FreePointer(void *memory);
+-void *Memory_Dup(const char *string);
++void *Memory_AllocImpl(size_t size, const char *file, int line, const char *func);
++void *Memory_ReallocImpl(void *memory, size_t size, const char *file, int line, const char *func);
++void Memory_FreeImpl(void *memory, const char *file, int line, const char *func);
++void Memory_FreePointerImpl(void *memory, const char *file, int line, const char *func);
++void *Memory_DupImpl(const char *string, const char *file, int line, const char *func);
++
++#define Memory_Alloc(size)              (Memory_AllocImpl(size, __FILE__, __LINE__, __func__))
++#define Memory_Realloc(memory, size)    (Memory_ReallocImpl(memory, size, __FILE__, __LINE__, __func__))
++#define Memory_Free(memory)             (Memory_FreeImpl(memory, __FILE__, __LINE__, __func__))
++#define Memory_FreePointer(memory)      (Memory_FreePointerImpl(memory, __FILE__, __LINE__, __func__))
++#define Memory_Dup(string)              (Memory_DupImpl(string, __FILE__, __LINE__, __func__))

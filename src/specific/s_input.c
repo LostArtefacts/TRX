@@ -495,21 +495,21 @@ INPUT_STATE S_Input_GetCurrentState()
     }
 
     if (KEY_DOWN(DIK_F3)) {
-        g_Config.rendering.enable_bilinear_filter ^= 1;
+        g_Config.rendering.enable_bilinear_filter ^= true;
         while (KEY_DOWN(DIK_F3)) {
             S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F4)) {
-        g_Config.rendering.enable_perspective_filter ^= 1;
+        g_Config.rendering.enable_perspective_filter ^= true;
         while (KEY_DOWN(DIK_F4)) {
             S_Input_DInput_KeyboardRead();
         }
     }
 
     if (KEY_DOWN(DIK_F2)) {
-        g_Config.rendering.enable_fps_counter ^= 1;
+        g_Config.rendering.enable_fps_counter ^= true;
         while (KEY_DOWN(DIK_F2)) {
             S_Input_DInput_KeyboardRead();
         }

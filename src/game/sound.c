@@ -18,10 +18,9 @@
 #define SOUND_FLIPFLAG 0x40
 #define SOUND_UNFLIPFLAG 0x80
 #define SOUND_RANGE 8
-#define SOUND_RADIUS (SOUND_RANGE << 10)
-#define SOUND_MAX_VOLUME 0x7FFF
-#define SOUND_RANGE_MULT_CONSTANT                                              \
-    ((int32_t)((SOUND_MAX_VOLUME + 1) / SOUND_RADIUS))
+#define SOUND_RANGE_MULT_CONSTANT 4
+#define SOUND_RADIUS (SOUND_RANGE * WALL_L)
+#define SOUND_MAX_VOLUME ((SOUND_RADIUS * SOUND_RANGE_MULT_CONSTANT) - 1)
 #define SOUND_MAX_VOLUME_CHANGE 0x2000
 #define SOUND_MAX_PITCH_CHANGE 10
 #define SOUND_NOT_AUDIBLE -1
@@ -65,7 +64,9 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
 
 static int32_t Sound_ConvertVolumeToDecibel(int volume)
 {
-    return m_DecibelLUT[(volume & 0x7FFF) >> 6];
+    return m_DecibelLUT
+        [(volume & SOUND_MAX_VOLUME) * DECIBEL_LUT_SIZE
+         / (SOUND_MAX_VOLUME + 1)];
 }
 
 static int32_t Sound_ConvertPanToDecibel(uint16_t pan)
@@ -142,9 +143,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
         return;
     }
 
-    if (volume > 0x7FFF) {
-        volume = 0x7FFF;
-    }
+    CLAMPG(volume, SOUND_MAX_VOLUME);
 
     slot->volume = volume;
 
@@ -324,7 +323,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     int32_t pitch = 100;
     if (s->flags & SAMPLE_FLAG_PITCH_WIBBLE) {
-        pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 16384)
+        pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - SOUND_MAX_PITCH_CHANGE;
     }
 
@@ -334,9 +333,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         sfx_id += (Random_GetDraw() * vars) / 0x8000;
     }
 
-    if (volume > SOUND_MAX_VOLUME) {
-        volume = SOUND_MAX_VOLUME;
-    }
+    CLAMPG(volume, SOUND_MAX_VOLUME);
 
     volume = (m_MasterVolume * volume) >> 6;
 
@@ -373,6 +370,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
             fxslot->sound_id = S_Audio_SampleSoundPlay(
                 sfx_id, Sound_ConvertVolumeToDecibel(volume),
                 Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+
+            Sound_ClearSlotHandles(fxslot);
             return true;
         }
         fxslot->sound_id = S_Audio_SampleSoundPlay(

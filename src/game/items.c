@@ -113,7 +113,7 @@ void InitialiseItem(int16_t item_num)
     FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
     item->floor = floor->floor << 8;
 
-    if (g_SaveGame.bonus_flag & GBF_NGPLUS) {
+    if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
         item->hit_points *= 2;
     }
     if (object->initialise) {
@@ -171,8 +171,7 @@ void AddActiveItem(int16_t item_num)
     }
 
     if (item->active) {
-        Shell_ExitSystemFmt(
-            "Item(%d)(Obj%d) already Active\n", item_num, item->object_number);
+        return;
     }
 
     item->active = 1;

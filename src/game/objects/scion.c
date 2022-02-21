@@ -149,7 +149,7 @@ void PickUpScionCollision(
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            g_SaveGame.pickups++;
+            g_GameInfo.stats.pickup_count++;
         }
     } else if (
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS

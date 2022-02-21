@@ -50,7 +50,7 @@ void CowboyControl(int16_t item_num)
         if (item->current_anim_state != COWBOY_DEATH) {
             item->current_anim_state = COWBOY_DEATH;
             item->anim_number =
-                g_Objects[O_MERCENARY2].anim_index + COWBOY_DIE_ANIM;
+                g_Objects[O_COWBOY].anim_index + COWBOY_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_MAGNUM_ITEM);
         }

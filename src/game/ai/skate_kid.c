@@ -51,7 +51,7 @@ void SkateKidControl(int16_t item_num)
         if (item->current_anim_state != SKATE_KID_DEATH) {
             item->current_anim_state = SKATE_KID_DEATH;
             item->anim_number =
-                g_Objects[O_MERCENARY1].anim_index + SKATE_KID_DIE_ANIM;
+                g_Objects[O_SKATEKID].anim_index + SKATE_KID_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
             SpawnItem(item, O_UZI_ITEM);
         }
@@ -144,9 +144,9 @@ void DrawSkateKid(ITEM_INFO *item)
     int16_t frame = item->frame_number;
     item->object_number = O_SKATEBOARD;
     item->anim_number = anim + g_Objects[O_SKATEBOARD].anim_index
-        - g_Objects[O_MERCENARY1].anim_index;
+        - g_Objects[O_SKATEKID].anim_index;
     DrawAnimatingItem(item);
     item->anim_number = anim;
     item->frame_number = frame;
-    item->object_number = O_MERCENARY1;
+    item->object_number = O_SKATEKID;
 }

@@ -32,6 +32,7 @@
 #include "gfx/context.h"
 #include "global/vars_platform.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
@@ -2094,7 +2095,9 @@ static VideoState *S_FMV_StreamOpen(const char *filename)
     is->video_stream = -1;
     is->audio_stream = -1;
     is->subtitle_stream = -1;
-    is->filename = av_strdup(filename);
+    char *full_path = File_GetFullPath(filename);
+    is->filename = av_strdup(full_path);
+    Memory_FreePointer(&full_path);
     if (!is->filename) {
         goto fail;
     }
@@ -2148,15 +2151,13 @@ static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
     double remaining_time = 0.0;
     SDL_PumpEvents();
 
-    bool keypress = false;
     while (!is->abort_request
            && !SDL_PeepEvents(
                event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
+
         Input_Update();
-        if (g_Input.deselect) {
-            keypress = true;
-        } else if (keypress && !g_Input.deselect) {
-            is->abort_request = 1;
+        if (g_InputDB.deselect || g_InputDB.select) {
+            is->abort_request = true;
         }
 
         if (remaining_time > 0.0) {
@@ -2186,11 +2187,6 @@ static void S_FMV_EventLoop(VideoState *is)
         case SDL_KEYUP:
             if (event.key.keysym.sym == SDLK_PRINTSCREEN) {
                 Shell_MakeScreenshot();
-                break;
-            }
-
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                is->abort_request = true;
                 break;
             }
 
@@ -2255,7 +2251,6 @@ bool S_FMV_Play(const char *file_path)
         return false;
     }
 
-    GameBuf_Shutdown();
     S_Audio_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
@@ -2287,7 +2282,6 @@ cleanup:
     LOG_DEBUG("Finished playing FMV: %s", file_path);
 
     S_Audio_Init();
-    GameBuf_Init();
 
     S_Output_ApplyResolution();
 

@@ -88,25 +88,21 @@
 
 #include <stddef.h>
 
-int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+bool InitialiseLevel(int32_t level_num)
 {
     LOG_DEBUG("%d", level_num);
-    if (level_type == GFL_SAVED) {
-        g_CurrentLevel = g_SaveGame.current_level;
-    } else {
-        g_CurrentLevel = level_num;
-    }
+    g_CurrentLevel = level_num;
 
     Text_RemoveAll();
     InitialiseGameFlags();
 
-    g_Lara.item_number = NO_ITEM;
+    InitialiseLaraLoad(NO_ITEM);
     if (level_num != g_GameFlow.title_level_num) {
         Screen_ApplyResolution();
     }
 
     if (!Level_Load(g_CurrentLevel)) {
-        return 0;
+        return false;
     }
 
     if (g_Lara.item_number != NO_ITEM) {
@@ -122,22 +118,13 @@ int32_t InitialiseLevel(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     Sound_ResetEffects();
 
-    if (level_type == GFL_SAVED) {
-        ExtractSaveGameInfo();
-    }
-
-    // LaraGun() expects request_gun_type to be set only when it really is
-    // needed (see https://github.com/rr-/Tomb1Main/issues/36), not at all
-    // times.
-    g_Lara.request_gun_type = LGT_UNARMED;
-
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 
     if (g_GameFlow.levels[g_CurrentLevel].music) {
         Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
     }
     g_Camera.underwater = 0;
-    return 1;
+    return true;
 }
 
 void InitialiseGameFlags()
@@ -163,17 +150,21 @@ void InitialiseGameFlags()
 
 void InitialiseLevelFlags()
 {
-    g_SaveGame.secrets = 0;
-    g_SaveGame.timer = 0;
-    g_SaveGame.pickups = 0;
-    g_SaveGame.kills = 0;
+    // loading a save can override it to false
+    g_GameInfo.death_counter_supported = true;
+
+    g_GameInfo.stats.timer = 0;
+    g_GameInfo.stats.secret_flags = 0;
+    g_GameInfo.stats.pickup_count = 0;
+    g_GameInfo.stats.kill_count = 0;
+    g_GameInfo.stats.death_count = 0;
 }
 
 void BaddyObjects()
 {
     g_Objects[O_LARA].initialise = InitialiseLaraLoad;
     g_Objects[O_LARA].draw_routine = DrawDummyItem;
-    g_Objects[O_LARA].hit_points = LARA_HITPOINTS;
+    g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
     g_Objects[O_LARA].save_position = 1;
     g_Objects[O_LARA].save_hitpoints = 1;
@@ -203,9 +194,9 @@ void BaddyObjects()
     SetupWarrior3(&g_Objects[O_WARRIOR3]);
     SetupCentaur(&g_Objects[O_CENTAUR]);
     SetupMummy(&g_Objects[O_MUMMY]);
-    SetupSkateKid(&g_Objects[O_MERCENARY1]);
-    SetupCowboy(&g_Objects[O_MERCENARY2]);
-    SetupBaldy(&g_Objects[O_MERCENARY3]);
+    SetupSkateKid(&g_Objects[O_SKATEKID]);
+    SetupCowboy(&g_Objects[O_COWBOY]);
+    SetupBaldy(&g_Objects[O_BALDY]);
     SetupAbortion(&g_Objects[O_ABORTION]);
     SetupNatla(&g_Objects[O_NATLA]);
     SetupPod(&g_Objects[O_PODS]);
@@ -295,7 +286,7 @@ void ObjectObjects()
     SetupScionHolder(&g_Objects[O_SCION_HOLDER]);
 
     SetupLeadBar(&g_Objects[O_LEADBAR_ITEM]);
-    SetupSaveGameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
+    SetupSavegameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE1]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE2]);
     SetupKeyHole(&g_Objects[O_KEY_HOLE3]);

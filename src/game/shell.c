@@ -24,7 +24,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "init.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
@@ -37,160 +36,17 @@
 #include <stdio.h>
 #include <string.h>
 
+#define SCREENSHOTS_DIR "screenshots"
 #define LEVEL_TITLE_SIZE 25
 #define TIMESTAMP_SIZE 20
-#define EXTRA_CHARS 6
 
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
-void Shell_Main()
+static char *Shell_GetScreenshotName();
+
+static char *Shell_GetScreenshotName()
 {
-    T1MInit();
-    Config_Read();
-
-    const char *gameflow_path = m_T1MGameflowPath;
-
-    char **args = NULL;
-    int arg_count = 0;
-    S_Shell_GetCommandLine(&arg_count, &args);
-    for (int i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            gameflow_path = m_T1MGameflowGoldPath;
-        }
-    }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
-
-    S_Shell_SeedRandom();
-
-    if (!Output_Init()) {
-        Shell_ExitSystem("Could not initialise video system");
-        return;
-    }
-
-    Text_Init();
-    Clock_Init();
-    Sound_Init();
-    Music_Init();
-    Input_Init();
-    FMV_Init();
-
-    if (!GameFlow_LoadFromFile(gameflow_path)) {
-        Shell_ExitSystem("MAIN: unable to load script file");
-        return;
-    }
-
-    InitialiseStartInfo();
-    Game_ScanSavedGames();
-    Settings_Read();
-
-    Screen_ApplyResolution();
-
-    int32_t gf_option = GF_EXIT_TO_TITLE;
-    bool intro_played = false;
-
-    bool loop_continue = true;
-    while (loop_continue) {
-        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("%d %d", gf_direction, gf_param);
-
-        switch (gf_direction) {
-        case GF_START_GAME:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
-            break;
-
-        case GF_START_SAVED_GAME:
-            S_LoadGame(&g_SaveGame, gf_param);
-            gf_option =
-                GameFlow_InterpretSequence(g_SaveGame.current_level, GFL_SAVED);
-            break;
-
-        case GF_START_CINE:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
-            break;
-
-        case GF_START_DEMO:
-            gf_option = StartDemo();
-            break;
-
-        case GF_LEVEL_COMPLETE:
-            gf_option = LevelCompleteSequence(gf_param);
-            break;
-
-        case GF_EXIT_TO_TITLE:
-            if (!intro_played) {
-                GameFlow_InterpretSequence(
-                    g_GameFlow.title_level_num, GFL_NORMAL);
-                intro_played = true;
-            }
-
-            Text_RemoveAll();
-            Output_DisplayPicture(g_GameFlow.main_menu_background_path);
-            g_NoInputCount = 0;
-            if (!InitialiseLevel(g_GameFlow.title_level_num, GFL_TITLE)) {
-                gf_option = GF_EXIT_GAME;
-                break;
-            }
-
-            gf_option = Display_Inventory(INV_TITLE_MODE);
-
-            Output_FadeToBlack();
-            Music_Stop();
-            break;
-
-        case GF_EXIT_GAME:
-            loop_continue = false;
-            break;
-
-        default:
-            Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", gf_direction, gf_param);
-            return;
-        }
-    }
-
-    Settings_Write();
-    S_Shell_Shutdown();
-}
-
-void Shell_ExitSystem(const char *message)
-{
-    S_Shell_Shutdown();
-    S_Shell_ShowFatalError(message);
-}
-
-void Shell_ExitSystemFmt(const char *fmt, ...)
-{
-    va_list va;
-    va_start(va, fmt);
-    char message[150];
-    vsnprintf(message, 150, fmt, va);
-    va_end(va);
-    Shell_ExitSystem(message);
-}
-
-void Shell_Wait(int nticks)
-{
-    for (int i = 0; i < nticks; i++) {
-        Input_Update();
-        if (g_Input.any) {
-            break;
-        }
-        Clock_SyncTicks(1);
-    }
-    while (g_Input.any) {
-        Input_Update();
-    }
-}
-
-void Shell_GetScreenshotName(char *str)
-{
-    assert(str);
-
     // Get level title of unknown length
     char level_title[100];
     snprintf(
@@ -235,9 +91,7 @@ void Shell_GetScreenshotName(char *str)
 
     // If title totally invalid, name it based on level number
     if (strlen(level_title) == 0) {
-        char new_title[LEVEL_TITLE_SIZE];
-        sprintf(new_title, "Level_%d", g_CurrentLevel);
-        strcpy(level_title, new_title);
+        sprintf(level_title, "Level_%d", g_CurrentLevel);
         prev_us = false;
     }
 
@@ -255,21 +109,161 @@ void Shell_GetScreenshotName(char *str)
     Clock_GetDateTime(date_time);
 
     // Full screenshot name
-    sprintf(str, "%s_%s", date_time, level_title);
+    size_t out_size = snprintf(NULL, 0, "%s_%s", date_time, level_title) + 1;
+    char *out = Memory_Alloc(out_size);
+    snprintf(out, out_size, "%s_%s", date_time, level_title) + 1;
+    return out;
+}
+
+void Shell_Main()
+{
+    Config_Read();
+
+    const char *gameflow_path = m_T1MGameflowPath;
+
+    char **args = NULL;
+    int arg_count = 0;
+    S_Shell_GetCommandLine(&arg_count, &args);
+    for (int i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            gameflow_path = m_T1MGameflowGoldPath;
+        }
+    }
+    for (int i = 0; i < arg_count; i++) {
+        Memory_FreePointer(&args[i]);
+    }
+    Memory_FreePointer(&args);
+
+    S_Shell_SeedRandom();
+
+    if (!Output_Init()) {
+        Shell_ExitSystem("Could not initialise video system");
+        return;
+    }
+
+    Text_Init();
+    Clock_Init();
+    Sound_Init();
+    Music_Init();
+    Input_Init();
+    FMV_Init();
+
+    if (!GameFlow_LoadFromFile(gameflow_path)) {
+        Shell_ExitSystem("MAIN: unable to load script file");
+        return;
+    }
+
+    Savegame_InitStartEndInfo();
+    Savegame_ScanSavedGames();
+    Settings_Read();
+
+    Screen_ApplyResolution();
+
+    int32_t gf_option = GF_EXIT_TO_TITLE;
+    bool intro_played = false;
+
+    bool loop_continue = true;
+    while (loop_continue) {
+        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
+        int32_t gf_param = gf_option & ((1 << 6) - 1);
+        LOG_INFO("%d %d", gf_direction, gf_param);
+
+        switch (gf_direction) {
+        case GF_START_GAME:
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
+            break;
+
+        case GF_START_SAVED_GAME: {
+            int16_t level_num = Savegame_GetLevelNumber(gf_param);
+            if (level_num < 0) {
+                LOG_ERROR("Corrupt save file!");
+                gf_option = GF_EXIT_TO_TITLE;
+            } else {
+                g_GameInfo.current_save_slot = gf_param;
+                gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);
+            }
+            break;
+        }
+
+        case GF_START_CINE:
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
+            break;
+
+        case GF_START_DEMO:
+            gf_option = StartDemo();
+            break;
+
+        case GF_LEVEL_COMPLETE:
+            gf_option = GF_EXIT_TO_TITLE;
+            break;
+
+        case GF_EXIT_TO_TITLE:
+            g_GameInfo.current_save_slot = -1;
+            if (!intro_played) {
+                GameFlow_InterpretSequence(
+                    g_GameFlow.title_level_num, GFL_NORMAL);
+                intro_played = true;
+            }
+
+            Text_RemoveAll();
+            Output_DisplayPicture(g_GameFlow.main_menu_background_path);
+            if (!InitialiseLevel(g_GameFlow.title_level_num)) {
+                gf_option = GF_EXIT_GAME;
+                break;
+            }
+
+            gf_option = Display_Inventory(INV_TITLE_MODE);
+            Music_Stop();
+            break;
+
+        case GF_EXIT_GAME:
+            loop_continue = false;
+            break;
+
+        default:
+            Shell_ExitSystemFmt(
+                "MAIN: Unknown request %x %d", gf_direction, gf_param);
+            return;
+        }
+    }
+
+    Settings_Write();
+    S_Shell_Shutdown();
+}
+
+void Shell_ExitSystem(const char *message)
+{
+    S_Shell_Shutdown();
+    S_Shell_ShowFatalError(message);
+}
+
+void Shell_ExitSystemFmt(const char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    char message[150];
+    vsnprintf(message, 150, fmt, va);
+    va_end(va);
+    Shell_ExitSystem(message);
+}
+
+void Shell_Wait(int nticks)
+{
+    for (int i = 0; i < nticks; i++) {
+        Input_Update();
+        if (g_InputDB.any) {
+            break;
+        }
+        Clock_SyncTicks(1);
+    }
 }
 
 bool Shell_MakeScreenshot()
 {
-    // Screenshot folder
-    char *ss_folder_path = NULL;
-    File_GetFullPath("screenshots", &ss_folder_path);
-    File_CreateDirectory(ss_folder_path);
+    File_CreateDirectory(SCREENSHOTS_DIR);
 
-    // Screenshot name
-    char *ss_name = Memory_Alloc(TIMESTAMP_SIZE + LEVEL_TITLE_SIZE);
-    Shell_GetScreenshotName(ss_name);
+    char *filename = Shell_GetScreenshotName(filename);
 
-    // Screenshot extension
     const char *ext;
     switch (g_Config.screenshot_format) {
     case SCREENSHOT_FORMAT_JPEG:
@@ -278,28 +272,30 @@ bool Shell_MakeScreenshot()
     case SCREENSHOT_FORMAT_PNG:
         ext = "png";
         break;
+    default:
+        ext = "jpg";
+        break;
     }
 
-    // Screenshot full path
     bool result = false;
-    char *path = Memory_Alloc(
-        strlen(ss_folder_path) + strlen(ss_name) + strlen(ext) + EXTRA_CHARS);
-    sprintf(path, "%s/%s.%s", ss_folder_path, ss_name, ext);
-    if (!File_Exists(path)) {
-        result = Output_MakeScreenshot(path);
+    char *full_path = Memory_Alloc(
+        strlen(SCREENSHOTS_DIR) + strlen(filename) + strlen(ext) + 6);
+    sprintf(full_path, "%s/%s.%s", SCREENSHOTS_DIR, filename, ext);
+    if (!File_Exists(full_path)) {
+        result = Output_MakeScreenshot(full_path);
     } else {
-        // Name already exists so add number to name
+        // name already exists, so add a number to name
         for (int i = 2; i < 100; i++) {
-            sprintf(path, "%s/%s_%d.%s", ss_folder_path, ss_name, i, ext);
-            if (!File_Exists(path)) {
-                result = Output_MakeScreenshot(path);
+            sprintf(
+                full_path, "%s/%s_%d.%s", SCREENSHOTS_DIR, filename, i, ext);
+            if (!File_Exists(full_path)) {
+                result = Output_MakeScreenshot(full_path);
                 break;
             }
         }
     }
 
-    Memory_FreePointer(&ss_name);
-    Memory_FreePointer(&ss_folder_path);
-    Memory_FreePointer(&path);
+    Memory_FreePointer(&filename);
+    Memory_FreePointer(&full_path);
     return result;
 }

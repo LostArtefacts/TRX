@@ -29,7 +29,6 @@ int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
 SAMPLE_INFO *g_SampleInfos = NULL;
 uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = { 0 };
 
-int32_t g_NoInputCount = 0;
 bool g_IDelay = false;
 int32_t g_IDCount = 0;
 int32_t g_OptionSelected = 0;
@@ -54,18 +53,15 @@ bool g_ModeLock = false;
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
 CAMERA_INFO g_Camera = { 0 };
-SAVEGAME_INFO g_SaveGame = { 0 };
+GAME_INFO g_GameInfo = { 0 };
 int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
-int32_t g_CurrentLevel = -1;
+int16_t g_CurrentLevel = -1;
 uint32_t *g_DemoData = NULL;
 bool g_LevelComplete = false;
-bool g_ResetFlag = false;
 bool g_ChunkyFlag = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
-
-int16_t g_StoredLaraHealth = 0;
 
 ROOM_INFO *g_RoomInfo = NULL;
 int16_t *g_FloorData = NULL;

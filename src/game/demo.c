@@ -44,10 +44,10 @@ int32_t StartDemo()
     } while (!g_GameFlow.levels[level_num].demo);
     m_DemoLevel = level_num;
 
-    s = &g_SaveGame.start[m_DemoLevel];
+    s = &g_GameInfo.start[m_DemoLevel];
     start = *s;
-    s->available = 1;
-    s->got_pistols = 1;
+    s->flags.available = 1;
+    s->flags.got_pistols = 1;
     s->pistol_ammo = 1000;
     s->gun_status = LGS_ARMLESS;
     s->gun_type = LGT_PISTOLS;
@@ -60,23 +60,27 @@ int32_t StartDemo()
     int8_t old_enhanced_look = g_Config.enable_enhanced_look;
     g_Config.enable_enhanced_look = 0;
 
-    if (InitialiseLevel(m_DemoLevel, GFL_DEMO)) {
+    if (InitialiseLevel(m_DemoLevel)) {
         LoadLaraDemoPos();
 
         Random_SeedDraw(0xD371F947);
         Random_SeedControl(0xD371F947);
+
+        // LaraGun() expects request_gun_type to be set only when it
+        // really is needed, not at all times.
+        // https://github.com/rr-/Tomb1Main/issues/36
+        g_Lara.request_gun_type = LGT_UNARMED;
 
         txt = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
         Text_Flash(txt, 1, 20);
         Text_AlignBottom(txt, 1);
         Text_CentreH(txt, 1);
 
-        GameLoop(1);
+        GameLoop(GFL_DEMO);
 
         Text_Remove(txt);
 
         *s = start;
-        Output_FadeToBlack();
     }
 
     g_Config.enable_enhanced_look = old_enhanced_look;

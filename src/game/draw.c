@@ -17,35 +17,6 @@
 static int16_t m_InterpolatedBounds[6] = { 0 };
 static bool m_CameraUnderwater = false;
 
-int32_t DrawPhaseCinematic()
-{
-    Output_InitialisePolyList();
-    Output_ClearScreen();
-    m_CameraUnderwater = false;
-    for (int i = 0; i < g_RoomsToDrawCount; i++) {
-        int16_t room_num = g_RoomsToDraw[i];
-        ROOM_INFO *r = &g_RoomInfo[room_num];
-        r->top = 0;
-        r->left = 0;
-        r->right = ViewPort_GetMaxX();
-        r->bottom = ViewPort_GetMaxY();
-        PrintRooms(room_num);
-    }
-    g_Camera.number_frames = Output_DumpScreen();
-    Output_AnimateTextures(g_Camera.number_frames);
-    return g_Camera.number_frames;
-}
-
-int32_t DrawPhaseGame()
-{
-    Output_InitialisePolyList();
-    DrawRooms(g_Camera.pos.room_number);
-    Overlay_DrawGameInfo();
-    g_Camera.number_frames = Output_DumpScreen();
-    Output_AnimateTextures(g_Camera.number_frames);
-    return g_Camera.number_frames;
-}
-
 void DrawRooms(int16_t current_room)
 {
     g_PhdLeft = ViewPort_GetMinX();
@@ -1378,4 +1349,36 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
+}
+
+void Draw_DrawScene(bool draw_overlay)
+{
+    if (g_Objects[O_LARA].loaded) {
+        DrawRooms(g_Camera.pos.room_number);
+        if (draw_overlay) {
+            Overlay_DrawGameInfo();
+        }
+    } else {
+        // cinematic scene
+        m_CameraUnderwater = false;
+        for (int i = 0; i < g_RoomsToDrawCount; i++) {
+            int16_t room_num = g_RoomsToDraw[i];
+            ROOM_INFO *r = &g_RoomInfo[room_num];
+            r->top = 0;
+            r->left = 0;
+            r->right = ViewPort_GetMaxX();
+            r->bottom = ViewPort_GetMaxY();
+            PrintRooms(room_num);
+        }
+    }
+    Output_DrawBackdropScreen();
+}
+
+int32_t Draw_ProcessFrame()
+{
+    Output_InitialisePolyList();
+    Draw_DrawScene(true);
+    g_Camera.number_frames = Output_DumpScreen();
+    Output_AnimateTextures(g_Camera.number_frames);
+    return g_Camera.number_frames;
 }

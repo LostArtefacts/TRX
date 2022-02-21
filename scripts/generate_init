@@ -12,7 +12,6 @@ CONFIG_DIR = BIN_DIR / "cfg"
 
 
 BODY_PREFIX = """
-#include "init.h"
 #include "game/gameflow.h"
 #include "global/vars.h"
 #include "memory.h"
@@ -26,22 +25,10 @@ BODY_PREFIX = """
 
 const char *g_T1MVersion = VERSION;
 
-typedef struct {
-    GAME_STRING_ID key;
-    char *string;
-} STRING_DEF;
-
-STRING_DEF m_StringDefs[] = {"""
+GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {"""
 
 BODY_SUFFIX = """    { 0, NULL },
 };
-
-void T1MInit()
-{
-    for (const STRING_DEF *def = m_StringDefs; def->string; def++) {
-        g_GameFlow.strings[def->key] = Memory_Dup(def->string);
-    }
-}
 """
 
 
