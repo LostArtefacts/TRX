@@ -101,6 +101,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "fix_bear_ai",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "fix_descending_glitch",
           "DataType": "Bool",
           "DefaultValue": false

@@ -119,6 +119,10 @@
       "Title": "Correction de l'intelligence artficielle des aligators",
       "Description": "Corrige les alligators n'infligeant aucun dégât si Lara reste toujours dans l'eau."
     },
+    "fix_bear_ai": {
+      "Title": "Fix bear AI",
+      "Description": "Fixes bears somehow."
+    },
     "fix_descending_glitch": {
       "Title": "Correction des chutes de plaques de sol cassantes",
       "Description": "Corrige le contournement et la marche arrière sur les tuiles cassables, ce qui fait que Lara descend immédiatement vers la tuile en dessous."
