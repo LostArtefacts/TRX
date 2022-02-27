@@ -672,6 +672,16 @@ void LaraAsPickup(ITEM_INFO *item, COLL_INFO *coll)
     g_Camera.target_distance = WALL_L;
 }
 
+void LaraAsControlled(ITEM_INFO *item, COLL_INFO *coll)
+{
+    coll->enable_spaz = 0;
+    coll->enable_baddie_push = 0;
+
+    if (item->frame_number == g_Anims[item->anim_number].frame_end - 1) {
+        g_Lara.gun_status = LGS_ARMLESS;
+    }
+}
+
 void LaraAsSwitchOn(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->enable_spaz = 0;
@@ -1495,6 +1505,11 @@ void LaraColPPReady(ITEM_INFO *item, COLL_INFO *coll)
 }
 
 void LaraColPickup(ITEM_INFO *item, COLL_INFO *coll)
+{
+    LaraColDefault(item, coll);
+}
+
+void LaraColControlled(ITEM_INFO *item, COLL_INFO *coll)
 {
     LaraColDefault(item, coll);
 }

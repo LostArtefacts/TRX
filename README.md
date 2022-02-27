@@ -213,6 +213,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to disable cutscenes
 - added ability to disable healing between levels
 - added rendering of pickups on the ground as 3D meshes
+- added ability to automatically walk to pickups when nearby
 - added braid (currently only works in Lost Valley)
 - added support for displaying more than 3 pickup sprites
 - added a choice whether to play NG or NG+

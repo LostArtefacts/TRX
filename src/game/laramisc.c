@@ -31,6 +31,12 @@ void LaraControl(int16_t item_num)
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
+    if (g_Lara.interact_target.is_moving
+        && g_Lara.interact_target.move_count++ > 90) {
+        g_Lara.interact_target.is_moving = 0;
+        g_Lara.gun_status = LGS_ARMLESS;
+    }
+
     if (g_Input.level_skip_cheat) {
         g_LevelComplete = true;
     }
@@ -707,35 +713,37 @@ void LaraCheatGetStuff()
 }
 
 void (*g_LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
-    LaraAsWalk,      LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
-    LaraAsPose,      LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
-    LaraAsDeath,     LaraAsFastFall,  LaraAsHang,      LaraAsReach,
-    LaraAsSplat,     LaraAsTread,     LaraAsLand,      LaraAsCompress,
-    LaraAsBack,      LaraAsSwim,      LaraAsGlide,     LaraAsNull,
-    LaraAsFastTurn,  LaraAsStepRight, LaraAsStepLeft,  LaraAsRoll2,
-    LaraAsSlide,     LaraAsBackJump,  LaraAsRightJump, LaraAsLeftJump,
-    LaraAsUpJump,    LaraAsFallBack,  LaraAsHangLeft,  LaraAsHangRight,
-    LaraAsSlideBack, LaraAsSurfTread, LaraAsSurfSwim,  LaraAsDive,
-    LaraAsPushBlock, LaraAsPullBlock, LaraAsPPReady,   LaraAsPickup,
-    LaraAsSwitchOn,  LaraAsSwitchOff, LaraAsUseKey,    LaraAsUsePuzzle,
-    LaraAsUWDeath,   LaraAsRoll,      LaraAsSpecial,   LaraAsSurfBack,
-    LaraAsSurfLeft,  LaraAsSurfRight, LaraAsUseMidas,  LaraAsDieMidas,
-    LaraAsSwanDive,  LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
+    LaraAsWalk,       LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
+    LaraAsPose,       LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
+    LaraAsDeath,      LaraAsFastFall,  LaraAsHang,      LaraAsReach,
+    LaraAsSplat,      LaraAsTread,     LaraAsLand,      LaraAsCompress,
+    LaraAsBack,       LaraAsSwim,      LaraAsGlide,     LaraAsNull,
+    LaraAsFastTurn,   LaraAsStepRight, LaraAsStepLeft,  LaraAsRoll2,
+    LaraAsSlide,      LaraAsBackJump,  LaraAsRightJump, LaraAsLeftJump,
+    LaraAsUpJump,     LaraAsFallBack,  LaraAsHangLeft,  LaraAsHangRight,
+    LaraAsSlideBack,  LaraAsSurfTread, LaraAsSurfSwim,  LaraAsDive,
+    LaraAsPushBlock,  LaraAsPullBlock, LaraAsPPReady,   LaraAsPickup,
+    LaraAsSwitchOn,   LaraAsSwitchOff, LaraAsUseKey,    LaraAsUsePuzzle,
+    LaraAsUWDeath,    LaraAsRoll,      LaraAsSpecial,   LaraAsSurfBack,
+    LaraAsSurfLeft,   LaraAsSurfRight, LaraAsUseMidas,  LaraAsDieMidas,
+    LaraAsSwanDive,   LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
+    LaraAsControlled,
 };
 
 void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
-    LaraColWalk,      LaraColRun,       LaraColStop,      LaraColForwardJump,
-    LaraColPose,      LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
-    LaraColDeath,     LaraColFastFall,  LaraColHang,      LaraColReach,
-    LaraColSplat,     LaraColTread,     LaraColLand,      LaraColCompress,
-    LaraColBack,      LaraColSwim,      LaraColGlide,     LaraColNull,
-    LaraColFastTurn,  LaraColStepRight, LaraColStepLeft,  LaraColRoll2,
-    LaraColSlide,     LaraColBackJump,  LaraColRightJump, LaraColLeftJump,
-    LaraColUpJump,    LaraColFallBack,  LaraColHangLeft,  LaraColHangRight,
-    LaraColSlideBack, LaraColSurfTread, LaraColSurfSwim,  LaraColDive,
-    LaraColPushBlock, LaraColPullBlock, LaraColPPReady,   LaraColPickup,
-    LaraColSwitchOn,  LaraColSwitchOff, LaraColUseKey,    LaraColUsePuzzle,
-    LaraColUWDeath,   LaraColRoll,      LaraColSpecial,   LaraColSurfBack,
-    LaraColSurfLeft,  LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
-    LaraColSwanDive,  LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
+    LaraColWalk,       LaraColRun,       LaraColStop,      LaraColForwardJump,
+    LaraColPose,       LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
+    LaraColDeath,      LaraColFastFall,  LaraColHang,      LaraColReach,
+    LaraColSplat,      LaraColTread,     LaraColLand,      LaraColCompress,
+    LaraColBack,       LaraColSwim,      LaraColGlide,     LaraColNull,
+    LaraColFastTurn,   LaraColStepRight, LaraColStepLeft,  LaraColRoll2,
+    LaraColSlide,      LaraColBackJump,  LaraColRightJump, LaraColLeftJump,
+    LaraColUpJump,     LaraColFallBack,  LaraColHangLeft,  LaraColHangRight,
+    LaraColSlideBack,  LaraColSurfTread, LaraColSurfSwim,  LaraColDive,
+    LaraColPushBlock,  LaraColPullBlock, LaraColPPReady,   LaraColPickup,
+    LaraColSwitchOn,   LaraColSwitchOff, LaraColUseKey,    LaraColUsePuzzle,
+    LaraColUWDeath,    LaraColRoll,      LaraColSpecial,   LaraColSurfBack,
+    LaraColSurfLeft,   LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
+    LaraColSwanDive,   LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
+    LaraColControlled,
 };

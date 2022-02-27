@@ -86,6 +86,7 @@ typedef struct {
     bool enable_round_shadow;
     bool enable_3d_pickups;
     int32_t start_lara_hitpoints;
+    bool walk_to_pickups;
 
     struct {
         int32_t layout;
