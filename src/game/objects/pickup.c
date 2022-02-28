@@ -142,8 +142,7 @@ void PickUpCollisionAnim(
 
                 if (TestLaraPosition(m_PickUpBoundsAnim, item, lara_item)) {
                     g_PickUpPosition.y = lara_item->pos.y - item->pos.y;
-                    if (MoveLaraPositionAnim(
-                            &g_PickUpPosition, item, lara_item)) {
+                    if (MoveLaraPosition(&g_PickUpPosition, item, lara_item)) {
                         lara_item->anim_number = AA_PICKUP;
                         lara_item->current_anim_state = AS_PICKUP;
                         have_item = 1;
