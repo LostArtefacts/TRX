@@ -11,10 +11,10 @@
 #include "game/overlay.h"
 #include "global/vars.h"
 
-PHD_VECTOR g_PickUpPosition = { 0, 0, -100 };
-PHD_VECTOR g_PickUpPositionUW = { 0, -200, -350 };
+static PHD_VECTOR m_PickUpPosition = { 0, 0, -100 };
+static PHD_VECTOR m_PickUpPositionUW = { 0, -200, -350 };
 
-int16_t g_PickUpBounds[12] = {
+static int16_t m_PickUpBounds[12] = {
     -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
     0,    0,    0,    0,
 };
@@ -24,7 +24,7 @@ static int16_t m_PickUpBoundsAnim[12] = {
     0,    0,    0,    0,
 };
 
-int16_t g_PickUpBoundsUW[12] = {
+static int16_t m_PickUpBoundsUW[12] = {
     -512,
     +512,
     -512,
@@ -80,7 +80,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (g_Lara.water_status == LWS_ABOVEWATER) {
         item->pos.x_rot = 0;
-        if (!TestLaraPosition(g_PickUpBounds, item, lara_item)) {
+        if (!TestLaraPosition(m_PickUpBounds, item, lara_item)) {
             return;
         }
 
@@ -95,7 +95,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
             && !lara_item->gravity_status
             && lara_item->current_anim_state == AS_STOP) {
-            AlignLaraPosition(&g_PickUpPosition, item, lara_item);
+            AlignLaraPosition(&m_PickUpPosition, item, lara_item);
             AnimateLaraUntil(lara_item, AS_PICKUP);
             lara_item->goal_anim_state = AS_STOP;
             g_Lara.gun_status = LGS_HANDSBUSY;
@@ -103,7 +103,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
         item->pos.x_rot = -25 * PHD_DEGREE;
-        if (!TestLaraPosition(g_PickUpBoundsUW, item, lara_item)) {
+        if (!TestLaraPosition(m_PickUpBoundsUW, item, lara_item)) {
             return;
         }
 
@@ -116,7 +116,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (g_Input.action && lara_item->current_anim_state == AS_TREAD) {
-            if (!MoveLaraPosition(&g_PickUpPositionUW, item, lara_item)) {
+            if (!MoveLaraPosition(&m_PickUpPositionUW, item, lara_item)) {
                 return;
             }
             AnimateLaraUntil(lara_item, AS_PICKUP);
@@ -153,8 +153,8 @@ void PickUpCollisionAnim(
             item->pos.x_rot = 0;
 
             if (TestLaraPosition(m_PickUpBoundsAnim, item, lara_item)) {
-                g_PickUpPosition.y = lara_item->pos.y - item->pos.y;
-                if (MoveLaraPosition(&g_PickUpPosition, item, lara_item)) {
+                m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
+                if (MoveLaraPosition(&m_PickUpPosition, item, lara_item)) {
                     lara_item->anim_number = AA_PICKUP;
                     lara_item->current_anim_state = AS_PICKUP;
                     have_item = true;
@@ -192,8 +192,8 @@ void PickUpCollisionAnim(
             || (g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num)) {
 
-            if (TestLaraPosition(g_PickUpBoundsUW, item, lara_item)) {
-                if (MoveLaraPosition(&g_PickUpPositionUW, item, lara_item)) {
+            if (TestLaraPosition(m_PickUpBoundsUW, item, lara_item)) {
+                if (MoveLaraPosition(&m_PickUpPositionUW, item, lara_item)) {
                     lara_item->anim_number = AA_PICKUP_UW;
                     lara_item->current_anim_state = AS_PICKUP;
 
