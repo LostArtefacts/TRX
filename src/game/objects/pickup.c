@@ -122,7 +122,7 @@ void PickUpCollisionAnim(
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status != IS_INVISIBLE) {
-        int32_t have_item = 0;
+        bool have_item = false;
         int16_t rotx = item->pos.x_rot;
         int16_t roty = item->pos.y_rot;
         int16_t rotz = item->pos.z_rot;
@@ -137,7 +137,7 @@ void PickUpCollisionAnim(
                 || (g_Lara.interact_target.is_moving
                     && g_Lara.interact_target.item_num == item_num)) {
 
-                have_item = 0;
+                have_item = false;
                 item->pos.x_rot = 0;
 
                 if (TestLaraPosition(m_PickUpBoundsAnim, item, lara_item)) {
@@ -145,7 +145,7 @@ void PickUpCollisionAnim(
                     if (MoveLaraPosition(&g_PickUpPosition, item, lara_item)) {
                         lara_item->anim_number = AA_PICKUP;
                         lara_item->current_anim_state = AS_PICKUP;
-                        have_item = 1;
+                        have_item = true;
                     }
                     g_Lara.interact_target.item_num = item_num;
                 } else if (
