@@ -39,6 +39,27 @@ int16_t g_PickUpBoundsUW[12] = {
     +45 * PHD_DEGREE,
 };
 
+static void PickUp_GetItem(
+    int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item);
+
+static void PickUp_GetItem(
+    int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
+{
+    if (lara_item->current_anim_state == AS_PICKUP) {
+        if (item->object_number == O_SHOTGUN_ITEM) {
+            g_Lara.mesh_ptrs[LM_TORSO] =
+                g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
+        }
+        Overlay_AddPickup(item->object_number);
+        Inv_AddItem(item->object_number);
+        item->status = IS_INVISIBLE;
+        RemoveDrawnItem(item_num);
+        g_GameInfo.stats.pickup_count++;
+        g_Lara.interact_target.is_moving = 0;
+        return;
+    }
+}
+
 void SetupPickupObject(OBJECT_INFO *obj)
 {
     obj->draw_routine = DrawPickupItem;
@@ -67,15 +88,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             if (lara_item->frame_number != AF_PICKUP_ERASE) {
                 return;
             }
-            if (item->object_number == O_SHOTGUN_ITEM) {
-                g_Lara.mesh_ptrs[LM_TORSO] =
-                    g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
-            }
-            Overlay_AddPickup(item->object_number);
-            Inv_AddItem(item->object_number);
-            item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
-            g_GameInfo.stats.pickup_count++;
+            PickUp_GetItem(item_num, item, lara_item);
             return;
         }
 
@@ -98,11 +111,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             if (lara_item->frame_number != AF_PICKUP_UW) {
                 return;
             }
-            Overlay_AddPickup(item->object_number);
-            Inv_AddItem(item->object_number);
-            item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
-            g_GameInfo.stats.pickup_count++;
+            PickUp_GetItem(item_num, item, lara_item);
             return;
         }
 
@@ -171,16 +180,7 @@ void PickUpCollisionAnim(
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == AS_PICKUP) {
             if (lara_item->frame_number == AF_PICKUP_ERASE) {
-                if (item->object_number == O_SHOTGUN_ITEM) {
-                    g_Lara.mesh_ptrs[LM_TORSO] =
-                        g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
-                }
-                Overlay_AddPickup(item->object_number);
-                Inv_AddItem(item->object_number);
-                item->status = IS_INVISIBLE;
-                RemoveDrawnItem(item_num);
-                g_GameInfo.stats.pickup_count++;
-                g_Lara.interact_target.is_moving = 0;
+                PickUp_GetItem(item_num, item, lara_item);
             }
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
@@ -215,11 +215,7 @@ void PickUpCollisionAnim(
             && lara_item->current_anim_state == AS_PICKUP
             && lara_item->frame_number
                 == g_Anims[AA_PICKUP_UW].frame_base + 18) {
-            Overlay_AddPickup(item->object_number);
-            Inv_AddItem(item->object_number);
-            item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
-            g_GameInfo.stats.pickup_count++;
+            PickUp_GetItem(item_num, item, lara_item);
             return;
         }
 
