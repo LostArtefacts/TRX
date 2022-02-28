@@ -898,7 +898,7 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
     phd_PopMatrix();
 
     int32_t velocity = MOVE_SPEED;
-    if (g_Config.walk_to_pickups && g_Lara.water_status != LWS_UNDERWATER) {
+    if (g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER) {
         velocity = MOVE_ANIM_VELOCITY;
     }
 
@@ -924,7 +924,7 @@ int32_t Move3DPosTo3DPos(
         srcpos->z += (z * velocity) / dist;
     }
 
-    if (g_Config.walk_to_pickups && !g_Lara.interact_target.is_moving) {
+    if (g_Config.walk_to_items && !g_Lara.interact_target.is_moving) {
         if (g_Lara.water_status != LWS_UNDERWATER) {
             const int16_t step_to_anim_num[4] = {
                 AA_SIDESTEP_LEFT,

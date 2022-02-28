@@ -201,6 +201,6 @@
     // Enhances texture filtering at distances.
     "anisotropy_filter": 16.0,
 
-    // Lara will automatically walk and pick up items when nearby
-    "walk_to_pickups" : false,
+    // Lara walks to pickups and switches when nearby instead of teleporting
+    "walk_to_items" : false,
 }
