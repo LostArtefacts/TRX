@@ -23,6 +23,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define MOVE_TIMEOUT 90
+
 void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
@@ -32,7 +34,7 @@ void LaraControl(int16_t item_num)
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
     if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.move_count++ > 90) {
+        && g_Lara.interact_target.move_count++ > MOVE_TIMEOUT) {
         g_Lara.interact_target.is_moving = 0;
         g_Lara.gun_status = LGS_ARMLESS;
     }
