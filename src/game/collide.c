@@ -18,9 +18,9 @@
 
 #define ADJUST_ROT(source, target, rot)                                        \
     do {                                                                       \
-        if (target - source > rot) {                                           \
+        if ((int16_t)(target - source) > rot) {                                \
             source += rot;                                                     \
-        } else if (target - source < -rot) {                                   \
+        } else if ((int16_t)(target - source) < -rot) {                        \
             source -= rot;                                                     \
         } else {                                                               \
             source = target;                                                   \
