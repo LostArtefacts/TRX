@@ -943,7 +943,10 @@ int32_t Move3DPosTo3DPos(
                 (PHD_ONE
                  - phd_atan(srcpos->x - destpos->x, srcpos->z - destpos->z))
                 % PHD_ONE;
-            uint32_t quadrant = ((angle - destpos->y_rot) >> W2V_SHIFT) & 3;
+            uint32_t quadrant =
+                ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
+                  - ((uint16_t)(destpos->y_rot + PHD_45) >> W2V_SHIFT))
+                 & 0x3);
 
             lara_item->anim_number = step_to_anim_num[quadrant];
             lara_item->frame_number =
