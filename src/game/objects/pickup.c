@@ -19,7 +19,7 @@ static int16_t m_PickUpBounds[12] = {
     0,    0,    0,    0,
 };
 
-static int16_t m_PickUpBoundsAnim[12] = {
+static int16_t m_PickUpBoundsControlled[12] = {
     -256, +256, -200, +200, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
     0,    0,    0,    0,
 };
@@ -149,7 +149,7 @@ void PickUpCollisionAnim(
             have_item = false;
             item->pos.x_rot = 0;
 
-            if (TestLaraPosition(m_PickUpBoundsAnim, item, lara_item)) {
+            if (TestLaraPosition(m_PickUpBoundsControlled, item, lara_item)) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (MoveLaraPosition(&m_PickUpPosition, item, lara_item)) {
                     lara_item->anim_number = AA_PICKUP;
