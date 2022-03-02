@@ -222,11 +222,7 @@ void PickUpCollisionAnim(
             if (lara_item->frame_number != AF_PICKUP_UW) {
                 return;
             }
-            Overlay_AddPickup(item->object_number);
-            Inv_AddItem(item->object_number);
-            item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
-            g_GameInfo.stats.pickup_count++;
+            PickUp_GetItem(item_num, item, lara_item);
             return;
         }
     }
