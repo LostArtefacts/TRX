@@ -1,15 +1,18 @@
 #include "game/objects/switch.h"
 
+#include "config.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "global/vars.h"
 
-PHD_VECTOR g_Switch2Position = { 0, 0, 108 };
+static PHD_VECTOR m_SwitchPos = { 0, 0, 0 };
+static PHD_VECTOR m_Switch2Position = { 0, 0, 108 };
 
-int16_t g_Switch1Bounds[12] = {
+static int16_t m_Switch1Bounds[12] = {
     -200,
     +200,
     +0,
@@ -24,7 +27,22 @@ int16_t g_Switch1Bounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-int16_t g_Switch2Bounds[12] = {
+static int16_t m_Switch1BoundsControlled[12] = {
+    +0,
+    +0,
+    +0,
+    +0,
+    +0,
+    +0,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
+static int16_t m_Switch2Bounds[12] = {
     -WALL_L,          +WALL_L,          -WALL_L,          +WALL_L,
     -WALL_L,          +WALL_L / 2,      -80 * PHD_DEGREE, +80 * PHD_DEGREE,
     -80 * PHD_DEGREE, +80 * PHD_DEGREE, -80 * PHD_DEGREE, +80 * PHD_DEGREE,
@@ -78,6 +96,11 @@ int32_t SwitchTrigger(int16_t item_num, int16_t timer)
 
 void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
+    if (g_Config.walk_to_items) {
+        SwitchCollisionControlled(item_num, lara_item, coll);
+        return;
+    }
+
     ITEM_INFO *item = &g_Items[item_num];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
@@ -89,7 +112,7 @@ void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(g_Switch1Bounds, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch1Bounds, item, lara_item)) {
         return;
     }
 
@@ -113,6 +136,63 @@ void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
+void SwitchCollisionControlled(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+
+    if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
+         && !lara_item->gravity_status
+         && lara_item->current_anim_state == AS_STOP
+         && item->status == IS_NOT_ACTIVE)
+        || (g_Lara.interact_target.is_moving
+            && g_Lara.interact_target.item_num == item_num)) {
+        int16_t *bounds = GetBoundsAccurate(item);
+
+        m_Switch1BoundsControlled[0] = bounds[0] - 256;
+        m_Switch1BoundsControlled[1] = bounds[1] + 256;
+        m_Switch1BoundsControlled[4] = bounds[4] - 200;
+        m_Switch1BoundsControlled[5] = bounds[5] + 200;
+        m_SwitchPos.z = bounds[4] - 64;
+
+        if (TestLaraPosition(m_Switch1BoundsControlled, item, lara_item)) {
+            if (MoveLaraPosition(&m_SwitchPos, item, lara_item)) {
+                if (item->current_anim_state == SWITCH_STATE_ON) {
+                    lara_item->anim_number = AA_WALLSWITCH_DOWN;
+                    lara_item->current_anim_state = AS_SWITCHOFF;
+                    item->goal_anim_state = SWITCH_STATE_OFF;
+                } else {
+                    lara_item->anim_number = AA_WALLSWITCH_UP;
+                    lara_item->current_anim_state = AS_SWITCHON;
+                    item->goal_anim_state = SWITCH_STATE_ON;
+                }
+                g_Lara.head_x_rot = 0;
+                g_Lara.head_y_rot = 0;
+                g_Lara.torso_x_rot = 0;
+                g_Lara.torso_y_rot = 0;
+                lara_item->frame_number =
+                    g_Anims[lara_item->anim_number].frame_base;
+                g_Lara.interact_target.is_moving = false;
+                g_Lara.gun_status = LGS_HANDSBUSY;
+                AddActiveItem(item_num);
+                item->status = IS_ACTIVE;
+                AnimateItem(item);
+            } else {
+                g_Lara.interact_target.item_num = item_num;
+            }
+        } else if (
+            g_Lara.interact_target.is_moving
+            && g_Lara.interact_target.item_num == item_num) {
+            g_Lara.interact_target.is_moving = false;
+            g_Lara.gun_status = LGS_ARMLESS;
+        }
+    } else if (
+        lara_item->current_anim_state != AS_SWITCHON
+        && lara_item->current_anim_state != AS_SWITCHOFF) {
+        ObjectCollision(item_num, lara_item, coll);
+    }
+}
+
 void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -126,13 +206,13 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(g_Switch2Bounds, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch2Bounds, item, lara_item)) {
         return;
     }
 
     if (item->current_anim_state == SWITCH_STATE_ON
         || item->current_anim_state == SWITCH_STATE_OFF) {
-        if (!MoveLaraPosition(&g_Switch2Position, item, lara_item)) {
+        if (!MoveLaraPosition(&m_Switch2Position, item, lara_item)) {
             return;
         }
         lara_item->fall_speed = 0;
