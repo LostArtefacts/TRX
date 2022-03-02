@@ -9,9 +9,6 @@
 #include "game/lara.h"
 #include "global/vars.h"
 
-static PHD_VECTOR m_SwitchPos = { 0, 0, 0 };
-static PHD_VECTOR m_Switch2Position = { 0, 0, 108 };
-
 static int16_t m_Switch1Bounds[12] = {
     -200,
     +200,
@@ -153,10 +150,11 @@ void SwitchCollisionControlled(
         m_Switch1BoundsControlled[1] = bounds[1] + 256;
         m_Switch1BoundsControlled[4] = bounds[4] - 200;
         m_Switch1BoundsControlled[5] = bounds[5] + 200;
-        m_SwitchPos.z = bounds[4] - 64;
+
+        PHD_VECTOR move_vector = { 0, 0, bounds[4] - 64 };
 
         if (TestLaraPosition(m_Switch1BoundsControlled, item, lara_item)) {
-            if (MoveLaraPosition(&m_SwitchPos, item, lara_item)) {
+            if (MoveLaraPosition(&move_vector, item, lara_item)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
                     lara_item->anim_number = AA_WALLSWITCH_DOWN;
                     lara_item->current_anim_state = AS_SWITCHOFF;
@@ -212,7 +210,8 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (item->current_anim_state == SWITCH_STATE_ON
         || item->current_anim_state == SWITCH_STATE_OFF) {
-        if (!MoveLaraPosition(&m_Switch2Position, item, lara_item)) {
+        PHD_VECTOR move_vector_uw = { 0, 0, 108 };
+        if (!MoveLaraPosition(&move_vector_uw, item, lara_item)) {
             return;
         }
         lara_item->fall_speed = 0;
