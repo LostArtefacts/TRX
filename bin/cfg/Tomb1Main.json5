@@ -60,6 +60,10 @@
     // Enables braid animation. Currently works only in the Lost Valley level.
     "enable_braid": false,
 
+    // Enables showing maximum pickup count and kill count on each level.
+    // This includes unobtainable items.
+    "enable_detailed_stats": true,
+
     // Enables showing level stats when selecting compass.
     "enable_compass_stats": true,
 
