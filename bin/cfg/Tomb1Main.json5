@@ -17,10 +17,6 @@
     // Removes all shotgun and shotgun shells pickups.
     "disable_shotgun": false,
 
-    // Enables showing maximum pickup count and kill count on each level.
-    // This includes unobtainable items.
-    "enable_detailed_stats": true,
-
     // Enables showing deaths counter in the compass and in the level stats.
     // Death count is updated in the currently loaded save as soon as Lara dies.
     "enable_deaths_counter": true,
@@ -63,6 +59,10 @@
 
     // Enables braid animation. Currently works only in the Lost Valley level.
     "enable_braid": false,
+
+    // Enables showing maximum pickup count and kill count on each level.
+    // This includes unobtainable items.
+    "enable_detailed_stats": true,
 
     // Enables showing level stats when selecting compass.
     "enable_compass_stats": true,
