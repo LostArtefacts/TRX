@@ -54,11 +54,11 @@ index c73c24cf..fbc704f7 100644
 +    Memory_FreeImpl(memory, file, line, func);
  }
  
--void *Memory_Dup(const char *string)
-+void *Memory_DupImpl(const char *string, const char *file, int line, const char *func)
+-char *Memory_DupStr(const char *string)
++char *Memory_DupStrImpl(const char *string, const char *file, int line, const char *func)
  {
--    void *memory = Memory_Alloc(strlen(string) + 1);
-+    void *memory = Memory_AllocImpl(strlen(string) + 1, file, line, func);
+-    char *memory = Memory_Alloc(strlen(string) + 1);
++    char *memory = Memory_AllocImpl(strlen(string) + 1, file, line, func);
      strcpy(memory, string);
      return memory;
  }
@@ -74,15 +74,15 @@ index 23c23f95..3995bada 100644
 -void *Memory_Realloc(void *memory, size_t size);
 -void Memory_Free(void *memory);
 -void Memory_FreePointer(void *memory);
--void *Memory_Dup(const char *string);
+-char *Memory_DupStr(const char *string);
 +void *Memory_AllocImpl(size_t size, const char *file, int line, const char *func);
 +void *Memory_ReallocImpl(void *memory, size_t size, const char *file, int line, const char *func);
 +void Memory_FreeImpl(void *memory, const char *file, int line, const char *func);
 +void Memory_FreePointerImpl(void *memory, const char *file, int line, const char *func);
-+void *Memory_DupImpl(const char *string, const char *file, int line, const char *func);
++char *Memory_DupStrImpl(const char *string, const char *file, int line, const char *func);
 +
 +#define Memory_Alloc(size)              (Memory_AllocImpl(size, __FILE__, __LINE__, __func__))
 +#define Memory_Realloc(memory, size)    (Memory_ReallocImpl(memory, size, __FILE__, __LINE__, __func__))
 +#define Memory_Free(memory)             (Memory_FreeImpl(memory, __FILE__, __LINE__, __func__))
 +#define Memory_FreePointer(memory)      (Memory_FreePointerImpl(memory, __FILE__, __LINE__, __func__))
-+#define Memory_Dup(string)              (Memory_DupImpl(string, __FILE__, __LINE__, __func__))
++#define Memory_DupStr(string)           (Memory_DupStrImpl(string, __FILE__, __LINE__, __func__))

@@ -40,9 +40,9 @@ void Memory_FreePointer(void *arg)
     Memory_Free(memory);
 }
 
-void *Memory_Dup(const char *string)
+char *Memory_DupStr(const char *string)
 {
-    void *memory = Memory_Alloc(strlen(string) + 1);
+    char *memory = Memory_Alloc(strlen(string) + 1);
     strcpy(memory, string);
     return memory;
 }

@@ -943,7 +943,7 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
         const char *level_title =
             json_object_get_string(root_obj, "level_title", NULL);
         if (level_title) {
-            info->level_title = Memory_Dup(level_title);
+            info->level_title = Memory_DupStr(level_title);
         }
         ret = info->level_num != -1;
     }
