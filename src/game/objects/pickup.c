@@ -56,7 +56,6 @@ static void PickUp_GetItem(
         RemoveDrawnItem(item_num);
         g_GameInfo.stats.pickup_count++;
         g_Lara.interact_target.is_moving = false;
-        return;
     }
 }
 
