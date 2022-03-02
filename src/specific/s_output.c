@@ -164,7 +164,7 @@ static void S_Output_DrawTriangleStrip(
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
     int left = vertex_count - 2;
     for (int i = vertex_count - 3; i > 0; i--) {
-        memcpy(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
+        memmove(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
         GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
         left--;
     }
