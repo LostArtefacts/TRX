@@ -34,6 +34,7 @@ void Memory_Free(void *memory)
 
 void Memory_FreePointer(void *arg)
 {
+    assert(arg);
     void *memory;
     memcpy(&memory, arg, sizeof(void *));
     memcpy(arg, &(void *) { NULL }, sizeof(void *));
