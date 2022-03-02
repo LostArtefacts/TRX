@@ -367,7 +367,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 
     char title[SAVEGAME_LEGACY_TITLE_SIZE];
     File_Read(title, sizeof(char), SAVEGAME_LEGACY_TITLE_SIZE, fp);
-    info->level_title = Memory_Dup(title);
+    info->level_title = Memory_DupStr(title);
 
     int32_t counter;
     File_Read(&counter, sizeof(int32_t), 1, fp);

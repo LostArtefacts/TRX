@@ -177,7 +177,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'main_menu_picture' must be a string");
         return false;
     }
-    g_GameFlow.main_menu_background_path = Memory_Dup(tmp_s);
+    g_GameFlow.main_menu_background_path = Memory_DupStr(tmp_s);
 
     tmp_s =
         json_object_get_string(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
@@ -185,7 +185,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'savegame_fmt_legacy' must be a string");
         return false;
     }
-    g_GameFlow.savegame_fmt_legacy = Memory_Dup(tmp_s);
+    g_GameFlow.savegame_fmt_legacy = Memory_DupStr(tmp_s);
 
     tmp_s =
         json_object_get_string(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
@@ -193,7 +193,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'savegame_fmt_bson' must be a string");
         return false;
     }
-    g_GameFlow.savegame_fmt_bson = Memory_Dup(tmp_s);
+    g_GameFlow.savegame_fmt_bson = Memory_DupStr(tmp_s);
 
     tmp_d = json_object_get_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
@@ -273,7 +273,7 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
         if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
-            g_GameFlow.strings[key] = Memory_Dup(value->string);
+            g_GameFlow.strings[key] = Memory_DupStr(value->string);
         }
         strings_elem = strings_elem->next;
     }
@@ -281,7 +281,7 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
     for (const GAMEFLOW_DEFAULT_STRING *def = g_GameFlowDefaultStrings;
          def->string; def++) {
         if (!g_GameFlow.strings[def->key]) {
-            g_GameFlow.strings[def->key] = Memory_Dup(def->string);
+            g_GameFlow.strings[def->key] = Memory_DupStr(def->string);
         }
     }
 
@@ -352,7 +352,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = Memory_Dup(tmp_s);
+            seq->data = Memory_DupStr(tmp_s);
 
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
@@ -368,7 +368,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            data->path = Memory_Dup(tmp_s);
+            data->path = Memory_DupStr(tmp_s);
 
             double tmp_d =
                 json_object_get_double(jseq_obj, "display_time", -1.0);
@@ -616,14 +616,14 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             LOG_ERROR("level %d: 'file' must be a string", level_num);
             return false;
         }
-        cur->level_file = Memory_Dup(tmp_s);
+        cur->level_file = Memory_DupStr(tmp_s);
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'title' must be a string", level_num);
             return false;
         }
-        cur->level_title = Memory_Dup(tmp_s);
+        cur->level_title = Memory_DupStr(tmp_s);
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
@@ -713,7 +713,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup1 = Memory_Dup(tmp_s);
+                cur->pickup1 = Memory_DupStr(tmp_s);
             } else {
                 cur->pickup1 = NULL;
             }
@@ -721,7 +721,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "pickup2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup2 = Memory_Dup(tmp_s);
+                cur->pickup2 = Memory_DupStr(tmp_s);
             } else {
                 cur->pickup2 = NULL;
             }
@@ -729,7 +729,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key1 = Memory_Dup(tmp_s);
+                cur->key1 = Memory_DupStr(tmp_s);
             } else {
                 cur->key1 = NULL;
             }
@@ -737,7 +737,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key2 = Memory_Dup(tmp_s);
+                cur->key2 = Memory_DupStr(tmp_s);
             } else {
                 cur->key2 = NULL;
             }
@@ -745,7 +745,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key3 = Memory_Dup(tmp_s);
+                cur->key3 = Memory_DupStr(tmp_s);
             } else {
                 cur->key3 = NULL;
             }
@@ -753,7 +753,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key4 = Memory_Dup(tmp_s);
+                cur->key4 = Memory_DupStr(tmp_s);
             } else {
                 cur->key4 = NULL;
             }
@@ -761,7 +761,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle1 = Memory_Dup(tmp_s);
+                cur->puzzle1 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle1 = NULL;
             }
@@ -769,7 +769,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle2 = Memory_Dup(tmp_s);
+                cur->puzzle2 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle2 = NULL;
             }
@@ -777,7 +777,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle3 = Memory_Dup(tmp_s);
+                cur->puzzle3 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle3 = NULL;
             }
@@ -785,7 +785,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle4 = Memory_Dup(tmp_s);
+                cur->puzzle4 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle4 = NULL;
             }
