@@ -67,7 +67,7 @@ void SetupPickupObject(OBJECT_INFO *obj)
 void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     if (g_Config.walk_to_items) {
-        PickUpCollisionAnim(item_num, lara_item, coll);
+        PickUpCollisionControlled(item_num, lara_item, coll);
         return;
     }
 
@@ -122,7 +122,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void PickUpCollisionAnim(
+void PickUpCollisionControlled(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
