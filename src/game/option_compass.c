@@ -40,15 +40,21 @@ static void Option_CompassInitText()
 
     // kills
     sprintf(
-        buf, g_GameFlow.strings[GS_STATS_KILLS_FMT], stats->kill_count,
-        stats->max_kill_count);
+        buf,
+        g_GameFlow.strings
+            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
+                                            : GS_STATS_KILLS_BASIC_FMT],
+        stats->kill_count, stats->max_kill_count);
     m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
     y += row_height;
 
     // pickups
     sprintf(
-        buf, g_GameFlow.strings[GS_STATS_PICKUPS_FMT], stats->pickup_count,
-        stats->max_pickup_count);
+        buf,
+        g_GameFlow.strings
+            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
+                                            : GS_STATS_PICKUPS_BASIC_FMT],
+        stats->pickup_count, stats->max_pickup_count);
     m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
     y += row_height;
 
