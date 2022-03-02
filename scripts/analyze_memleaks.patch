@@ -47,6 +47,7 @@ index c73c24cf..fbc704f7 100644
 -void Memory_FreePointer(void *arg)
 +void Memory_FreePointerImpl(void *arg, const char *file, int line, const char *func)
  {
+     assert(arg);
      void *memory;
      memcpy(&memory, arg, sizeof(void *));
      memcpy(arg, &(void *) { NULL }, sizeof(void *));
