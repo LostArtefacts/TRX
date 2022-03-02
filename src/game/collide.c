@@ -956,7 +956,7 @@ int32_t Move3DPosTo3DPos(
 
             g_Lara.gun_status = LGS_HANDSBUSY;
         }
-        g_Lara.interact_target.is_moving = 1;
+        g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
     }
 

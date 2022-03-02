@@ -55,7 +55,7 @@ static void PickUp_GetItem(
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
         g_GameInfo.stats.pickup_count++;
-        g_Lara.interact_target.is_moving = 0;
+        g_Lara.interact_target.is_moving = false;
         return;
     }
 }
@@ -163,7 +163,7 @@ void PickUpCollisionAnim(
             } else if (
                 g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num) {
-                g_Lara.interact_target.is_moving = 0;
+                g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_ARMLESS;
             }
             if (have_item) {
@@ -173,7 +173,7 @@ void PickUpCollisionAnim(
                 g_Lara.torso_x_rot = 0;
                 lara_item->frame_number =
                     g_Anims[lara_item->anim_number].frame_base;
-                g_Lara.interact_target.is_moving = 0;
+                g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDSBUSY;
             }
         } else if (
@@ -200,14 +200,14 @@ void PickUpCollisionAnim(
                     lara_item->goal_anim_state = AS_TREAD;
                     lara_item->frame_number =
                         g_Anims[lara_item->anim_number].frame_base;
-                    g_Lara.interact_target.is_moving = 0;
+                    g_Lara.interact_target.is_moving = false;
                     g_Lara.gun_status = LGS_HANDSBUSY;
                 }
                 g_Lara.interact_target.item_num = item_num;
             } else if (
                 g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num) {
-                g_Lara.interact_target.is_moving = 0;
+                g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_ARMLESS;
             }
         } else if (

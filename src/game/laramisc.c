@@ -35,7 +35,7 @@ void LaraControl(int16_t item_num)
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.move_count++ > MOVE_TIMEOUT) {
-        g_Lara.interact_target.is_moving = 0;
+        g_Lara.interact_target.is_moving = false;
         g_Lara.gun_status = LGS_ARMLESS;
     }
 
