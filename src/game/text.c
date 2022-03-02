@@ -121,8 +121,7 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
         return;
     }
     size_t length = strlen(string) + 1;
-    CLAMPG(length, TEXT_MAX_STRING_SIZE);
-    strncpy(textstring->string, string, length);
+    strncpy(textstring->string, string, TEXT_MAX_STRING_SIZE - 1);
     if (length >= TEXT_MAX_STRING_SIZE) {
         textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
