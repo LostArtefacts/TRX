@@ -212,7 +212,6 @@ void PickUpCollisionControlled(
             && lara_item->current_anim_state == AS_PICKUP
             && lara_item->frame_number == AF_PICKUP_UW) {
             PickUp_GetItem(item_num, item, lara_item);
-            return;
         }
     }
     item->pos.x_rot = rotx;
