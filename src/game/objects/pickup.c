@@ -215,14 +215,6 @@ void PickUpCollisionAnim(
             PickUp_GetItem(item_num, item, lara_item);
             return;
         }
-
-        if (lara_item->current_anim_state == AS_PICKUP) {
-            if (lara_item->frame_number != AF_PICKUP_UW) {
-                return;
-            }
-            PickUp_GetItem(item_num, item, lara_item);
-            return;
-        }
     }
     item->pos.x_rot = rotx;
     item->pos.y_rot = roty;
