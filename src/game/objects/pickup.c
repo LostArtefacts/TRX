@@ -210,8 +210,7 @@ void PickUpCollisionAnim(
         } else if (
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == AS_PICKUP
-            && lara_item->frame_number
-                == g_Anims[AA_PICKUP_UW].frame_base + 18) {
+            && lara_item->frame_number == AF_PICKUP_UW) {
             PickUp_GetItem(item_num, item, lara_item);
             return;
         }
