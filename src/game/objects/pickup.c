@@ -45,18 +45,16 @@ static void PickUp_GetItem(
 static void PickUp_GetItem(
     int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
-    if (lara_item->current_anim_state == AS_PICKUP) {
-        if (item->object_number == O_SHOTGUN_ITEM) {
-            g_Lara.mesh_ptrs[LM_TORSO] =
-                g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
-        }
-        Overlay_AddPickup(item->object_number);
-        Inv_AddItem(item->object_number);
-        item->status = IS_INVISIBLE;
-        RemoveDrawnItem(item_num);
-        g_GameInfo.stats.pickup_count++;
-        g_Lara.interact_target.is_moving = false;
+    if (item->object_number == O_SHOTGUN_ITEM) {
+        g_Lara.mesh_ptrs[LM_TORSO] =
+            g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
     }
+    Overlay_AddPickup(item->object_number);
+    Inv_AddItem(item->object_number);
+    item->status = IS_INVISIBLE;
+    RemoveDrawnItem(item_num);
+    g_GameInfo.stats.pickup_count++;
+    g_Lara.interact_target.is_moving = false;
 }
 
 void SetupPickupObject(OBJECT_INFO *obj)
