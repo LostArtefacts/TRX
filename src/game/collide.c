@@ -2,17 +2,30 @@
 
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/objects/door.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "src/game/objects/door.h"
 
 #define MAX_BADDIE_COLLISION 12
+#define MOVE_ANIM_VELOCITY 12
+
+#define ADJUST_ROT(source, target, rot)                                        \
+    do {                                                                       \
+        if ((int16_t)(target - source) > rot) {                                \
+            source += rot;                                                     \
+        } else if ((int16_t)(target - source) < -rot) {                        \
+            source -= rot;                                                     \
+        } else {                                                               \
+            source = target;                                                   \
+        }                                                                      \
+    } while (0)
 
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
@@ -883,14 +896,20 @@ int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
-    return Move3DPosTo3DPos(&lara_item->pos, &dest, MOVE_SPEED, MOVE_ANG);
+
+    int32_t velocity = MOVE_SPEED;
+    if (g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER) {
+        velocity = MOVE_ANIM_VELOCITY;
+    }
+
+    return Move3DPosTo3DPos(
+        &lara_item->pos, &dest, velocity, MOVE_ANG, lara_item);
 }
 
 int32_t Move3DPosTo3DPos(
-    PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, PHD_ANGLE angadd)
+    PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t rotation,
+    ITEM_INFO *lara_item)
 {
-    PHD_ANGLE angdif;
-
     int32_t x = destpos->x - srcpos->x;
     int32_t y = destpos->y - srcpos->y;
     int32_t z = destpos->z - srcpos->z;
@@ -905,32 +924,45 @@ int32_t Move3DPosTo3DPos(
         srcpos->z += (z * velocity) / dist;
     }
 
-    angdif = destpos->x_rot - srcpos->x_rot;
-    if (angdif > angadd) {
-        srcpos->x_rot += angadd;
-    } else if (angdif < -angadd) {
-        srcpos->x_rot -= angadd;
-    } else {
-        srcpos->x_rot = destpos->x_rot;
+    if (g_Config.walk_to_items && !g_Lara.interact_target.is_moving) {
+        if (g_Lara.water_status != LWS_UNDERWATER) {
+            const int16_t step_to_anim_num[4] = {
+                AA_SIDESTEP_LEFT,
+                AA_WALK_FORWARD,
+                AA_SIDESTEP_RIGHT,
+                AA_WALK_BACK,
+            };
+            const int16_t step_to_anim_state[4] = {
+                AS_STEPLEFT,
+                AS_WALK,
+                AS_STEPRIGHT,
+                AS_BACK,
+            };
+
+            int32_t angle =
+                (PHD_ONE
+                 - phd_atan(srcpos->x - destpos->x, srcpos->z - destpos->z))
+                % PHD_ONE;
+            uint32_t quadrant =
+                ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
+                  - ((uint16_t)(destpos->y_rot + PHD_45) >> W2V_SHIFT))
+                 & 0x3);
+
+            lara_item->anim_number = step_to_anim_num[quadrant];
+            lara_item->frame_number =
+                g_Anims[lara_item->anim_number].frame_base;
+            lara_item->goal_anim_state = step_to_anim_state[quadrant];
+            lara_item->current_anim_state = step_to_anim_state[quadrant];
+
+            g_Lara.gun_status = LGS_HANDSBUSY;
+        }
+        g_Lara.interact_target.is_moving = true;
+        g_Lara.interact_target.move_count = 0;
     }
 
-    angdif = destpos->y_rot - srcpos->y_rot;
-    if (angdif > angadd) {
-        srcpos->y_rot += angadd;
-    } else if (angdif < -angadd) {
-        srcpos->y_rot -= angadd;
-    } else {
-        srcpos->y_rot = destpos->y_rot;
-    }
-
-    angdif = destpos->z_rot - srcpos->z_rot;
-    if (angdif > angadd) {
-        srcpos->z_rot += angadd;
-    } else if (angdif < -angadd) {
-        srcpos->z_rot -= angadd;
-    } else {
-        srcpos->z_rot = destpos->z_rot;
-    }
+    ADJUST_ROT(srcpos->x_rot, destpos->x_rot, rotation);
+    ADJUST_ROT(srcpos->y_rot, destpos->y_rot, rotation);
+    ADJUST_ROT(srcpos->z_rot, destpos->z_rot, rotation);
 
     return srcpos->x == destpos->x && srcpos->y == destpos->y
         && srcpos->z == destpos->z && srcpos->x_rot == destpos->x_rot

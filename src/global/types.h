@@ -578,7 +578,7 @@ typedef enum LARA_ANIMATION_FRAME {
     AF_SPIKE_DEATH = 3887,
     AF_GRABLEDGEIN = 3974,
     AF_PPREADY = 2091,
-    AF_PICKUP = 3443,
+    AF_PICKUP_ERASE = 3443,
     AF_PICKUP_UW = 2970,
     AF_PICKUPSCION = 44,
     AF_USEPUZZLE = 3372,
@@ -604,6 +604,9 @@ typedef enum LARA_GUN_ANIMATION_FRAME {
 } LARA_GUN_ANIMATION_FRAME;
 
 typedef enum LARA_ANIMATION {
+    AA_RUN = 0,
+    AA_WALK_FORWARD = 1,
+    AA_WALK_BACK = 40,
     AA_VAULT12 = 50,
     AA_VAULT34 = 42,
     AA_FASTFALL = 32,
@@ -621,6 +624,12 @@ typedef enum LARA_ANIMATION {
     AA_WALKSTEPD_RIGHT = 59,
     AA_BACKSTEPD_LEFT = 61,
     AA_BACKSTEPD_RIGHT = 62,
+    AA_WALLSWITCH_DOWN = 63,
+    AA_WALLSWITCH_UP = 64,
+    AA_SIDESTEP_LEFT = 65,
+    AA_SIDESTEP_LEFT_END = 66,
+    AA_SIDESTEP_RIGHT = 67,
+    AA_SIDESTEP_RIGHT_END = 68,
     AA_LANDFAR = 24,
     AA_GRABLEDGE = 96,
     AA_GRABLEDGE_OLD = 32,
@@ -639,6 +648,8 @@ typedef enum LARA_ANIMATION {
     AA_SURFCLIMB = 111,
     AA_JUMPIN = 112,
     AA_ROLL = 146,
+    AA_PICKUP_UW = 130,
+    AA_PICKUP = 135,
     AA_RBALL_DEATH = 139,
     AA_SPIKE_DEATH = 149,
     AA_GRABLEDGEIN = 150,
@@ -712,6 +723,7 @@ typedef enum LARA_STATE {
     AS_FASTDIVE = 53,
     AS_GYMNAST = 54,
     AS_WATEROUT = 55,
+    AS_CONTROLLED = 56,
 } LARA_STATE;
 
 typedef enum LARA_GUN_STATE {
@@ -1448,6 +1460,11 @@ typedef struct LARA_INFO {
     AMMO_INFO uzis;
     AMMO_INFO shotgun;
     LOT_INFO LOT;
+    struct {
+        int32_t item_num;
+        int32_t move_count;
+        bool is_moving;
+    } interact_target;
 } LARA_INFO;
 
 typedef struct GAME_STATS {

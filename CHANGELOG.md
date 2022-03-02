@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.4...master)
-- ...
+- added ability to automatically walk to items when nearby (#18)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
 - fixed crash when loading a legacy save and saving on a new slot (#442, regression from 2.6)

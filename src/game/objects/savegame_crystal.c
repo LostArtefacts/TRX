@@ -12,6 +12,11 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+static int16_t m_CrystalBounds[12] = {
+    -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
+    0,    0,    0,    0,
+};
+
 void SetupSavegameCrystal(OBJECT_INFO *obj)
 {
     obj->initialise = InitialiseSavegameItem;
@@ -55,7 +60,7 @@ void PickUpSavegameCollision(
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.z_rot = 0;
     item->pos.x_rot = 0;
-    if (!TestLaraPosition(g_PickUpBounds, item, lara_item)) {
+    if (!TestLaraPosition(m_CrystalBounds, item, lara_item)) {
         return;
     }
 
