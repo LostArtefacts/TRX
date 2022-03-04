@@ -301,6 +301,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed broken dart ricochet effect
+- fixed exploded mutant pods sometimes appearing unhatched on reload
 
 ## Showcase
 

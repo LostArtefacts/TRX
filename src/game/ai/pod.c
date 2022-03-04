@@ -117,6 +117,7 @@ void PodControl(int16_t item_num)
                     bug->status = IS_INVISIBLE;
                 }
             }
+            item->status = IS_DEACTIVATED;
         }
     }
 
