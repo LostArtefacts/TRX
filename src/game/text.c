@@ -13,6 +13,7 @@
 #define TEXT_BOX_OFFSET 2
 #define TEXT_MAX_STRING_SIZE 100
 #define TEXT_MAX_STRINGS 64
+#define RIGHT_ARROW_SYM 109
 
 static int16_t m_TextstringCount = 0;
 static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
@@ -38,19 +39,19 @@ static int8_t m_TextSpacing[110] = {
 };
 
 static int8_t m_TextASCIIMap[95] = {
-    0 /* */,   64 /*!*/,  66 /*"*/,  78 /*#*/, 77 /*$*/, 74 /*%*/, 78 /*&*/,
-    79 /*'*/,  69 /*(*/,  70 /*)*/,  92 /***/, 72 /*+*/, 63 /*,*/, 71 /*-*/,
-    62 /*.*/,  68 /**/,   52 /*0*/,  53 /*1*/, 54 /*2*/, 55 /*3*/, 56 /*4*/,
-    57 /*5*/,  58 /*6*/,  59 /*7*/,  60 /*8*/, 61 /*9*/, 73 /*:*/, 73 /*;*/,
-    66 /*<*/,  74 /*=*/,  75 /*>*/,  65 /*?*/, 0 /**/,   0 /*A*/,  1 /*B*/,
-    2 /*C*/,   3 /*D*/,   4 /*E*/,   5 /*F*/,  6 /*G*/,  7 /*H*/,  8 /*I*/,
-    9 /*J*/,   10 /*K*/,  11 /*L*/,  12 /*M*/, 13 /*N*/, 14 /*O*/, 15 /*P*/,
-    16 /*Q*/,  17 /*R*/,  18 /*S*/,  19 /*T*/, 20 /*U*/, 21 /*V*/, 22 /*W*/,
-    23 /*X*/,  24 /*Y*/,  25 /*Z*/,  80 /*[*/, 76 /*\*/, 81 /*]*/, 97 /*^*/,
-    98 /*_*/,  77 /*`*/,  26 /*a*/,  27 /*b*/, 28 /*c*/, 29 /*d*/, 30 /*e*/,
-    31 /*f*/,  32 /*g*/,  33 /*h*/,  34 /*i*/, 35 /*j*/, 36 /*k*/, 37 /*l*/,
-    38 /*m*/,  39 /*n*/,  40 /*o*/,  41 /*p*/, 42 /*q*/, 43 /*r*/, 44 /*s*/,
-    45 /*t*/,  46 /*u*/,  47 /*v*/,  48 /*w*/, 49 /*x*/, 50 /*y*/, 51 /*z*/,
+    0 /* */,   64 /*!*/,  66 /*"*/,  78 /*#*/, 77 /*$*/,  74 /*%*/, 78 /*&*/,
+    79 /*'*/,  69 /*(*/,  70 /*)*/,  92 /***/, 72 /*+*/,  63 /*,*/, 71 /*-*/,
+    62 /*.*/,  68 /**/,   52 /*0*/,  53 /*1*/, 54 /*2*/,  55 /*3*/, 56 /*4*/,
+    57 /*5*/,  58 /*6*/,  59 /*7*/,  60 /*8*/, 61 /*9*/,  73 /*:*/, 73 /*;*/,
+    66 /*<*/,  74 /*=*/,  75 /*>*/,  65 /*?*/, 108 /*@*/, 0 /*A*/,  1 /*B*/,
+    2 /*C*/,   3 /*D*/,   4 /*E*/,   5 /*F*/,  6 /*G*/,   7 /*H*/,  8 /*I*/,
+    9 /*J*/,   10 /*K*/,  11 /*L*/,  12 /*M*/, 13 /*N*/,  14 /*O*/, 15 /*P*/,
+    16 /*Q*/,  17 /*R*/,  18 /*S*/,  19 /*T*/, 20 /*U*/,  21 /*V*/, 22 /*W*/,
+    23 /*X*/,  24 /*Y*/,  25 /*Z*/,  80 /*[*/, 76 /*\*/,  81 /*]*/, 97 /*^*/,
+    98 /*_*/,  77 /*`*/,  26 /*a*/,  27 /*b*/, 28 /*c*/,  29 /*d*/, 30 /*e*/,
+    31 /*f*/,  32 /*g*/,  33 /*h*/,  34 /*i*/, 35 /*j*/,  36 /*k*/, 37 /*l*/,
+    38 /*m*/,  39 /*n*/,  40 /*o*/,  41 /*p*/, 42 /*q*/,  43 /*r*/, 44 /*s*/,
+    45 /*t*/,  46 /*u*/,  47 /*v*/,  48 /*w*/, 49 /*x*/,  50 /*y*/, 51 /*z*/,
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
@@ -127,6 +128,15 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
     }
 }
 
+void Text_SetPos(TEXTSTRING *textstring, int16_t x, int16_t y)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->pos.x = x;
+    textstring->pos.y = y;
+}
+
 void Text_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
 {
     if (!textstring) {
@@ -148,6 +158,14 @@ void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
     } else {
         textstring->flags.flash = 0;
     }
+}
+
+void Text_Hide(TEXTSTRING *textstring, bool enable)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->flags.hide = enable;
 }
 
 void Text_AddBackground(
@@ -291,6 +309,11 @@ void Text_Draw()
 static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
+
+    if (textstring->flags.hide) {
+        return;
+    }
+
     if (textstring->flags.flash) {
         textstring->flash.count -= (int16_t)g_Camera.number_frames;
         if (textstring->flash.count <= -textstring->flash.rate) {
@@ -336,6 +359,8 @@ static void Text_DrawText(TEXTSTRING *textstring)
         int32_t sprite_num = letter;
         if (letter >= 16) {
             sprite_num = m_TextASCIIMap[letter - 32];
+        } else if (letter == '\t') {
+            sprite_num = RIGHT_ARROW_SYM;
         } else if (letter >= 11) {
             sprite_num = letter + 91;
         } else {
