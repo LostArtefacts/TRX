@@ -43,6 +43,7 @@ void Memory_FreePointer(void *arg)
 
 char *Memory_DupStr(const char *string)
 {
+    assert(string);
     char *memory = Memory_Alloc(strlen(string) + 1);
     strcpy(memory, string);
     return memory;
