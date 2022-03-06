@@ -4,6 +4,7 @@
 - added ability to turn off detailed end of the level stats (#447)
 - added contextual arrows to passport navigation (#420)
 - added contextual arrows to sound option navigation (#459)
+- added contextual arrows to controls option navigation (#462)
 - fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
