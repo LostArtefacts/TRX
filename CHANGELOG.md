@@ -2,8 +2,9 @@
 - added ability to automatically walk to pickups when nearby (#18)
 - added ability to automatically walk to switches when nearby (#222)
 - added ability to turn off detailed end of the level stats (#447)
-- fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 - added contextual arrows to passport navigation (#420)
+- added contextual arrows to sound option navigation (#459)
+- fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
 - fixed crash when loading a legacy save and saving on a new slot (#442, regression from 2.6)
