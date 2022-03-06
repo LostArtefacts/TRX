@@ -8,6 +8,8 @@
 #include "game/text.h"
 #include "specific/s_input.h"
 
+#include <stddef.h>
+
 #define TOP_Y -60
 #define BORDER 4
 #define HEADER_HEIGHT 25
@@ -24,8 +26,9 @@ static int32_t m_KeyChange = 0;
 static TEXTSTRING *m_Text[2] = { 0 };
 static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_TextArrowLeft = NULL;
+static TEXTSTRING *m_TextArrowRight = NULL;
 
-static void Option_ControlShutdownText();
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
     { INPUT_KEY_UP, 0 },
@@ -100,6 +103,15 @@ static void Option_ControlInitText()
 
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
+
+    m_TextArrowLeft = Text_Create(
+        -75, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "@");
+    Text_CentreH(m_TextArrowLeft, 1);
+    Text_CentreV(m_TextArrowLeft, 1);
+    m_TextArrowRight = Text_Create(
+        70, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "\t");
+    Text_CentreH(m_TextArrowRight, 1);
+    Text_CentreV(m_TextArrowRight, 1);
 
     m_Text[1] = Text_Create(0, TOP_Y - BORDER, " ");
     Text_CentreH(m_Text[1], 1);
@@ -194,6 +206,10 @@ static void Option_ControlShutdownText()
     Text_Remove(m_Text[1]);
     m_Text[0] = NULL;
     m_Text[1] = NULL;
+    Text_Remove(m_TextArrowLeft);
+    m_TextArrowLeft = NULL;
+    Text_Remove(m_TextArrowRight);
+    m_TextArrowRight = NULL;
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         Text_Remove(m_TextA[i]);
         Text_Remove(m_TextB[i]);
@@ -333,11 +349,14 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
                 Text_RemoveOutline(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
-
+                Text_Hide(m_TextArrowLeft, true);
+                Text_Hide(m_TextArrowRight, true);
                 if (m_KeyChange == -1) {
                     m_KeyChange = last_col->option;
                 } else if (m_KeyChange == first_col->option) {
                     m_KeyChange = -1;
+                    Text_Hide(m_TextArrowLeft, false);
+                    Text_Hide(m_TextArrowRight, false);
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
@@ -367,11 +386,14 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
                 Text_RemoveOutline(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
-
+                Text_Hide(m_TextArrowLeft, true);
+                Text_Hide(m_TextArrowRight, true);
                 if (m_KeyChange == -1) {
                     m_KeyChange = first_col->option;
                 } else if (m_KeyChange == last_col->option) {
                     m_KeyChange = -1;
+                    Text_Hide(m_TextArrowLeft, false);
+                    Text_Hide(m_TextArrowRight, false);
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
