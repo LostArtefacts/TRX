@@ -364,3 +364,140 @@ void Stats_Show(int32_t level_num)
 
     Output_FadeReset();
 }
+
+void Stats_ShowTotal(const char *filename)
+{
+    char buf[100];
+    char time_str[100];
+    TEXTSTRING *txt;
+
+    uint32_t total_timer = 0;
+    uint32_t total_death_count = 0;
+    uint32_t total_kill_count = 0;
+    uint16_t total_secret_flags = 0;
+    uint16_t total_pickup_count = 0;
+    uint32_t total_max_kill_count = 0;
+    uint16_t total_max_secret_count = 0;
+    uint16_t total_max_pickup_count = 0;
+
+    int secret_count = 0;
+    int16_t secret_flags = 0;
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        const GAME_STATS *stats = &g_GameInfo.end[i].stats;
+
+        total_timer += stats->timer;
+        total_death_count += stats->death_count;
+        total_kill_count += stats->kill_count;
+        total_secret_flags += stats->secret_flags;
+        secret_count = 0;
+        secret_flags = stats->secret_flags;
+        for (int j = 0; j < MAX_SECRETS; j++) {
+            if (secret_flags & 1) {
+                secret_count++;
+            }
+            secret_flags >>= 1;
+        }
+        total_pickup_count += stats->pickup_count;
+        total_max_kill_count += stats->max_kill_count;
+        total_max_secret_count += stats->max_secret_count;
+        total_max_pickup_count += stats->max_pickup_count;
+    }
+
+    Text_RemoveAll();
+
+    int top_y = 55;
+    int y = 55;
+    const int row_width = 220;
+    const int row_height = 20;
+    int16_t border = 4;
+
+    // heading
+    sprintf(buf, "%s", "Final Statistics");
+    txt = Text_Create(0, y + 2, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    Text_AddBackground(txt, row_width - 4, 0, 0, 0);
+    Text_AddOutline(txt, 1);
+    y += row_height + border * 2;
+
+    // kills
+    sprintf(
+        buf,
+        g_GameFlow.strings
+            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
+                                            : GS_STATS_KILLS_BASIC_FMT],
+        total_kill_count, total_max_kill_count);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
+
+    // pickups
+    sprintf(
+        buf,
+        g_GameFlow.strings
+            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
+                                            : GS_STATS_PICKUPS_BASIC_FMT],
+        total_pickup_count, total_max_pickup_count);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
+
+    // secrets
+    sprintf(
+        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
+        total_max_secret_count);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
+
+    // deaths
+    if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
+        sprintf(
+            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], total_death_count);
+        txt = Text_Create(0, y, buf);
+        Text_CentreH(txt, 1);
+        Text_CentreV(txt, 1);
+        y += row_height;
+    }
+
+    // time taken
+    int seconds = total_timer / 30;
+    int hours = seconds / 3600;
+    int minutes = (seconds / 60) % 60;
+    seconds %= 60;
+    if (hours) {
+        sprintf(
+            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
+            seconds / 10, seconds % 10);
+    } else {
+        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
+    }
+    sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    txt = Text_Create(0, y, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    y += row_height;
+
+    int16_t height = y + border * 2 - top_y;
+    txt = Text_Create(0, top_y, " ");
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    Text_AddBackground(txt, row_width, height, 0, 0);
+    Text_AddOutline(txt, 1);
+
+    Output_DisplayPicture(filename);
+    // wait till a skip key is pressed
+    do {
+        Output_InitialisePolyList();
+        Output_CopyPictureToScreen();
+        Input_Update();
+        Text_Draw();
+        Output_DumpScreen();
+    } while (!g_InputDB.select && !g_InputDB.deselect);
+
+    Text_RemoveAll();
+}

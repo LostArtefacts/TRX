@@ -137,6 +137,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_tr3_sidesteps, true);
     READ_BOOL(enable_braid, false);
     READ_BOOL(enable_compass_stats, true);
+    READ_BOOL(enable_total_stats, true);
     READ_BOOL(enable_timer_in_inventory, true);
     READ_BOOL(enable_smooth_bars, true);
     READ_BOOL(enable_fade_effects, true);

@@ -54,6 +54,7 @@ typedef struct {
     bool enable_tr3_sidesteps;
     bool enable_braid;
     bool enable_compass_stats;
+    bool enable_total_stats;
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
     bool enable_fade_effects;
