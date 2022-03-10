@@ -26,6 +26,7 @@
                 {"type": "exit_to_level", "level_id": 1},
             ],
             "strings": {"key1": "Gold Key"},
+            "unobtainable_kills": 1,
         },
 
         // level 1
@@ -42,6 +43,7 @@
                 {"type": "exit_to_level", "level_id": 2},
             ],
             "strings": {"key1": "Ornate Key"},
+            "unobtainable_pickups": 1,
         },
 
         // level 2
@@ -58,6 +60,7 @@
                 {"type": "exit_to_level", "level_id": 3},
             ],
             "strings": {},
+            "unobtainable_kills": 1,
         },
 
         // level 3
