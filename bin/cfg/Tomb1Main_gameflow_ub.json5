@@ -80,6 +80,7 @@
                 {"type": "display_picture", "picture_path": "data\\cred1.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred2.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred3.pcx", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data\\install.pcx"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
