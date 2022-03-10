@@ -87,7 +87,7 @@ static void Option_GraphicsInitText()
 {
     char buf[OPTION_LENGTH];
 
-    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y, " ");
+    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - 2, " ");
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
 
@@ -95,7 +95,7 @@ static void Option_GraphicsInitText()
         Text_Create(0, TOP_Y, g_GameFlow.strings[GS_DETAIL_SELECT_DETAIL]);
     Text_CentreH(m_Text[TEXT_TITLE], 1);
     Text_CentreV(m_Text[TEXT_TITLE], 1);
-    Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH, 0, 0, 0);
+    Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0);
     Text_AddOutline(m_Text[TEXT_TITLE], 1);
 
     if (g_OptionSelected < TEXT_OPTION_MIN) {
