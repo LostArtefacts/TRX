@@ -726,6 +726,12 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             cur->water_color.override = false;
         }
 
+        cur->unobtainable.pickups =
+            json_object_get_int(jlvl_obj, "unobtainable_pickups", 0);
+
+        cur->unobtainable.kills =
+            json_object_get_int(jlvl_obj, "unobtainable_kills", 0);
+
         struct json_object_s *jlbl_strings_obj =
             json_object_get_object(jlvl_obj, "strings");
         if (!jlbl_strings_obj) {

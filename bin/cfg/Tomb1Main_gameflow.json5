@@ -204,6 +204,7 @@
             "strings": {
                 "puzzle1": "Gold Bar"
             },
+            "unobtainable_pickups": 1,
         },
 
         // level 8
@@ -344,6 +345,7 @@
                 {"type": "exit_to_cine", "level_id": 19},
             ],
             "strings": {},
+            "unobtainable_pickups": 3,
         },
 
         // level 15

@@ -43,6 +43,10 @@ typedef struct GAMEFLOW_LEVEL {
         bool override;
         float value;
     } draw_distance_max;
+    struct {
+        uint32_t pickups;
+        uint32_t kills;
+    } unobtainable;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
