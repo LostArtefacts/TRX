@@ -359,6 +359,7 @@
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 15},
                 {"type": "play_fmv", "fmv_path": "fmv\\end.avi"},
+                {"type": "play_synced_audio", "audio_id": 19},
                 {"type": "display_picture", "picture_path": "data\\end.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred1.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred2.pcx", "display_time": 7.5},

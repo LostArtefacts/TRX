@@ -259,6 +259,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added restart level to passport menu on death
 - added contextual arrows to menu options
 - added a final statistics screen
+- added music during the credits
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
