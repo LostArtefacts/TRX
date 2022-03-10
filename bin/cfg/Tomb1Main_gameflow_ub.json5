@@ -71,6 +71,7 @@
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 3},
+                {"type": "play_synced_audio", "audio_id": 19},
                 {"type": "display_picture", "picture_path": "data\\end.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred0.pcx", "display_time": 7.5},
                 {"type": "display_picture", "picture_path": "data\\cred1.pcx", "display_time": 7.5},
