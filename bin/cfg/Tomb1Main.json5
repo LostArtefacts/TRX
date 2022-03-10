@@ -67,6 +67,9 @@
     // Enables showing level stats when selecting compass.
     "enable_compass_stats": true,
 
+    // Enables a total game statistics screen that plays after the credits.
+    "enable_total_stats": true,
+
     // Makes the ingame timer work even while the game is showing the
     // inventory.
     "enable_timer_in_inventory": true,

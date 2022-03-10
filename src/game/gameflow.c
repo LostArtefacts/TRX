@@ -400,6 +400,26 @@ static bool GameFlow_LoadLevelSequence(
             }
             seq->data = (void *)tmp;
 
+        } else if (!strcmp(type_str, "total_stats")) {
+            seq->type = GFS_TOTAL_STATS;
+
+            GAMEFLOW_DISPLAY_PICTURE_DATA *data =
+                Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
+
+            const char *tmp_s = json_object_get_string(
+                jseq_obj, "picture_path", JSON_INVALID_STRING);
+            if (tmp_s == JSON_INVALID_STRING) {
+                LOG_ERROR(
+                    "level %d, sequence %s: 'picture_path' must be a string",
+                    level_num, type_str);
+                return false;
+            }
+            data->path = Memory_DupStr(tmp_s);
+
+            data->display_time = 0;
+
+            seq->data = data;
+
         } else if (!strcmp(type_str, "exit_to_title")) {
             seq->type = GFS_EXIT_TO_TITLE;
 
@@ -885,7 +905,8 @@ void GameFlow_Shutdown()
             if (seq) {
                 while (seq->type != GFS_END) {
                     switch (seq->type) {
-                    case GFS_DISPLAY_PICTURE: {
+                    case GFS_DISPLAY_PICTURE:
+                    case GFS_TOTAL_STATS: {
                         GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                         Memory_FreePointer(&data->path);
                         Memory_FreePointer(&data);
@@ -1057,6 +1078,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             case GFS_EXIT_TO_CINE:
             case GFS_PLAY_FMV:
             case GFS_LEVEL_STATS:
+            case GFS_TOTAL_STATS:
                 skip = false;
                 break;
             default:
@@ -1122,6 +1144,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LEVEL_STATS:
             Stats_Show((int32_t)seq->data);
+            break;
+
+        case GFS_TOTAL_STATS:
+            if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
+                GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                Stats_ShowTotal(data->path);
+            }
             break;
 
         case GFS_DISPLAY_PICTURE:

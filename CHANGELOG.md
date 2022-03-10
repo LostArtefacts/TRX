@@ -6,6 +6,7 @@
 - added contextual arrows to sound option navigation (#459)
 - added contextual arrows to controls option navigation (#461)
 - added contextual arrows to graphics option navigation (#462)
+- added a final statistics screen (#385)
 - fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
