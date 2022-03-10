@@ -8,6 +8,7 @@
 - added contextual arrows to graphics option navigation (#462)
 - added a final statistics screen (#385)
 - added music during the credits (#356)
+- added unobtainable pickups and kills stats support in the gameflow (#470)
 - fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20

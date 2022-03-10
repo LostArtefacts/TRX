@@ -260,6 +260,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added contextual arrows to menu options
 - added a final statistics screen
 - added music during the credits
+- added unobtainable pickups and kills stats support in the gameflow
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
@@ -353,39 +354,6 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     No promises here, but the game is now playable with wine (including sound
     and music) and there is planned work towards reducing the amount of
     Windows-only code.
-
-## Level kills and pickup notes
-The game can show the total number of pickups and kills in a level by checking
-the compass in the inventory or at the end of level stats screen. Due to some
-of the levels' design, some of these kills and pickups are not obtainable.
-See the table below for the discrepancies. Unreachable items are in parentheses.
-
-Tomb Raider 1:
-Level | Kills | Pickups | Secrets |
-| ----------- | ----------- | ----------- | ----------- |
-| Caves | 14 | 7 | 3 |
-| City of Vilcabamba | 29  | 13 | 3 |
-| Lost Valley | 13 | 16 | 5 |
-| Tomb of Qualopec | 8 | 8 | 3 |
-| St. Francis' Folly | 23 | 19 | 4 |
-| Colosseum | 26 | 14 | 3 |
-| Palace Midas | 43 | 23 (+1 medipack) | 3 |
-| Cistern | 34 | 28 | 3 |
-| Tomb of Tihocan | 17 | 26 | 2 |
-| City of Khamoon | 14 | 24 | 3 |
-| Obelisk of Khamoon | 16 | 38 | 3 |
-| Sanctuary of the Scion | 15 | 29 | 1 |
-| Natla's Mines | 3 | 30 | 3 |
-| Atlantis | 32 | 53 (+2 medipacks, +1 uzi ammo) | 3 |
-| The Great Pyramid | 6 | 31 | 3 |
-
-Unfinished Business:
-| Level | Kills | Pickups | Secrets |
-| ----------- | ----------- | ----------- | ----------- |
-| Return to Egypt | 42 (+1 panther) | 53 | 3 |
-| Temple of the Cat | 44 | 64 (+1 magnum ammo) | 4 |
-| Atlanetean Stronghold | 32 (+1 Centaur) | 63 | 2 |
-| The Hive | 41 | 60 | 1 |
 
 ## Current road map
 

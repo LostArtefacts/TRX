@@ -240,11 +240,13 @@ void Stats_CalculateStats()
 
 int32_t Stats_GetPickups()
 {
+    m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
     return m_LevelPickups;
 }
 
 int32_t Stats_GetKillables()
 {
+    m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;
     return m_LevelKillables;
 }
 
