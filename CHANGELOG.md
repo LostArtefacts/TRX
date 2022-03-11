@@ -8,6 +8,7 @@
 - added contextual arrows to graphics option navigation (#462)
 - added a final statistics screen (#385)
 - added music during the credits (#356)
+- added fade effects to displayed images (#476)
 - added unobtainable pickups and kills stats support in the gameflow (#470)
 - fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 

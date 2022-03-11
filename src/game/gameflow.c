@@ -1161,13 +1161,24 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
-                Output_FadeToTransparent(true);
+                Output_FadeToTransparent(true); // Fade in no black
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Output_DisplayPicture(data->path);
                 Output_InitialisePolyList();
                 Output_CopyPictureToScreen();
                 Output_DumpScreen();
-                Shell_Wait(data->display_time);
+
+                Shell_Wait(data->display_time); // Show pic with no fade effect
+                Output_FadeToBlack(true); // Fade out to black
+
+                // fade out
+                while (Output_FadeIsAnimating()) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                }
+
+                Output_FadeReset(); // Reset fade
             }
             break;
 
