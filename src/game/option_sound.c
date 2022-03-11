@@ -98,6 +98,8 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             g_Config.music_volume--;
             g_IDelay = true;
             g_IDCount = 10;
+            Music_SetVolume(g_Config.music_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
             Settings_Write();
@@ -105,14 +107,11 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
+            Music_SetVolume(g_Config.music_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
             Settings_Write();
-        }
-
-        if (g_Input.left || g_Input.right) {
-            Music_SetVolume(g_Config.music_volume);
-            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
 
         if (g_Config.music_volume == MIN_VOLUME) {
@@ -131,6 +130,8 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             g_Config.sound_volume--;
             g_IDelay = true;
             g_IDCount = 10;
+            Sound_SetMasterVolume(g_Config.sound_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
             Settings_Write();
@@ -138,14 +139,11 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;
+            Sound_SetMasterVolume(g_Config.sound_volume);
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
             Settings_Write();
-        }
-
-        if (g_Input.left || g_Input.right) {
-            Sound_SetMasterVolume(g_Config.sound_volume);
-            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
 
         if (g_Config.sound_volume == MIN_VOLUME) {
