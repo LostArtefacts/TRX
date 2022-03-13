@@ -492,6 +492,17 @@ void Stats_ShowTotal(const char *filename)
     Text_AddOutline(txt, 1);
 
     Output_DisplayPicture(filename);
+    Clock_SyncTicks(1);
+
+    Output_FadeReset();
+    Output_FadeResetToBlack();
+    Output_FadeToTransparent(true);
+    while (Output_FadeIsAnimating()) {
+        Output_InitialisePolyList();
+        Output_CopyPictureToScreen();
+        Output_DumpScreen();
+    }
+
     // wait till a skip key is pressed
     do {
         Output_InitialisePolyList();
@@ -501,5 +512,14 @@ void Stats_ShowTotal(const char *filename)
         Output_DumpScreen();
     } while (!g_InputDB.select && !g_InputDB.deselect);
 
+    // fade out
+    Output_FadeToBlack(true);
+    while (Output_FadeIsAnimating()) {
+        Output_InitialisePolyList();
+        Output_CopyPictureToScreen();
+        Output_DumpScreen();
+    }
+
+    Output_FadeReset();
     Text_RemoveAll();
 }

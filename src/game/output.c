@@ -849,18 +849,16 @@ void Output_AnimateTextures(int32_t ticks)
 
 static void Output_DrawBlackScreen(uint8_t alpha)
 {
-    if (alpha) {
-        int32_t sx = 0;
-        int32_t sy = 0;
-        int32_t sw = ViewPort_GetMaxX();
-        int32_t sh = ViewPort_GetMaxY();
+    int32_t sx = 0;
+    int32_t sy = 0;
+    int32_t sw = ViewPort_GetMaxX();
+    int32_t sh = ViewPort_GetMaxY();
 
-        RGBA8888 background = { 0, 0, 0, alpha };
-        S_Output_DisableDepthTest();
-        S_Output_ClearDepthBuffer();
-        Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
-        S_Output_EnableDepthTest();
-    }
+    RGBA8888 background = { 0, 0, 0, alpha };
+    S_Output_DisableDepthTest();
+    S_Output_ClearDepthBuffer();
+    Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+    S_Output_EnableDepthTest();
 }
 
 static void Output_FadeAnimate(int ticks)
