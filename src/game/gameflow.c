@@ -1166,7 +1166,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Output_DisplayPicture(data->path);
                 Clock_SyncTicks(1);
 
-                Output_FadeReset();
                 Output_FadeResetToBlack();
                 Output_FadeToTransparent(true);
                 while (Output_FadeIsAnimating()) {
@@ -1179,16 +1178,14 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Output_CopyPictureToScreen();
                 Output_DumpScreen();
                 Shell_Wait(data->display_time);
-                Output_FadeToBlack(true);
 
                 // fade out
+                Output_FadeToBlack(true);
                 while (Output_FadeIsAnimating()) {
                     Output_InitialisePolyList();
                     Output_CopyPictureToScreen();
                     Output_DumpScreen();
                 }
-
-                Output_FadeReset();
             }
             break;
 
