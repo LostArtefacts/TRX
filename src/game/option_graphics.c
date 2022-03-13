@@ -107,22 +107,6 @@ static void Option_GraphicsInitText()
 
     int16_t max_y = Option_GraphicsPlaceColumns(true);
 
-    sprintf(buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT], g_Config.brightness);
-    Text_ChangeText(m_Text[TEXT_BRIGHTNESS_TOGGLE], buf);
-
-    sprintf(
-        buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT], g_Config.ui.text_scale);
-    Text_ChangeText(m_Text[TEXT_UI_TEXT_SCALE_TOGGLE], buf);
-
-    sprintf(
-        buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT], g_Config.ui.bar_scale);
-    Text_ChangeText(m_Text[TEXT_UI_BAR_SCALE_TOGGLE], buf);
-
-    sprintf(
-        buf, g_GameFlow.strings[GS_DETAIL_RESOLUTION_FMT],
-        Screen_GetPendingResWidth(), Screen_GetPendingResHeight());
-    Text_ChangeText(m_Text[TEXT_RESOLUTION_TOGGLE], buf);
-
     int16_t width = ROW_WIDTH;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
     Text_AddBackground(m_Text[TEXT_TITLE_BORDER], width, height, 0, 0);
@@ -150,6 +134,14 @@ static void Option_GraphicsInitText()
     Text_CentreV(m_Text[TEXT_ROW_SELECT], 1);
     Text_AddBackground(m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0, 0);
     Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+
+    Option_GraphicsChangeTextOption(TEXT_PERSPECTIVE);
+    Option_GraphicsChangeTextOption(TEXT_BILINEAR);
+    Option_GraphicsChangeTextOption(TEXT_VSYNC);
+    Option_GraphicsChangeTextOption(TEXT_BRIGHTNESS);
+    Option_GraphicsChangeTextOption(TEXT_UI_TEXT_SCALE);
+    Option_GraphicsChangeTextOption(TEXT_UI_BAR_SCALE);
+    Option_GraphicsChangeTextOption(TEXT_RESOLUTION);
 }
 
 static void Option_GraphicsShutdownText()
