@@ -34,8 +34,8 @@ static void Option_SoundInitText()
 {
     char buf[20];
 
-    m_Text[TEXT_LEFT_ARROW] = Text_Create(-45, 0, "@");
-    m_Text[TEXT_RIGHT_ARROW] = Text_Create(40, 0, "\t");
+    m_Text[TEXT_LEFT_ARROW] = Text_Create(-45, 0, "\200");
+    m_Text[TEXT_RIGHT_ARROW] = Text_Create(40, 0, "\201");
 
     if (g_Config.music_volume > 10) {
         g_Config.music_volume = 10;

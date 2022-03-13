@@ -88,12 +88,12 @@ static void Option_PassportInitSaveRequester();
 
 static void Option_PassportInitText()
 {
-    m_Text[TEXT_LEFT_ARROW] = Text_Create(-85, -15, "@");
+    m_Text[TEXT_LEFT_ARROW] = Text_Create(-85, -15, "\200");
     Text_AlignBottom(m_Text[TEXT_LEFT_ARROW], 1);
     Text_CentreH(m_Text[TEXT_LEFT_ARROW], 1);
     Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
 
-    m_Text[TEXT_RIGHT_ARROW] = Text_Create(70, -15, "\t");
+    m_Text[TEXT_RIGHT_ARROW] = Text_Create(70, -15, "\201");
     Text_AlignBottom(m_Text[TEXT_RIGHT_ARROW], 1);
     Text_CentreH(m_Text[TEXT_RIGHT_ARROW], 1);
     Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);

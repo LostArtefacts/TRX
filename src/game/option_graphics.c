@@ -128,7 +128,7 @@ static void Option_GraphicsInitText()
     Text_AddBackground(m_Text[TEXT_TITLE_BORDER], width, height, 0, 0);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], 1);
 
-    m_Text[TEXT_LEFT_ARROW] = Text_Create(0, 0, "@");
+    m_Text[TEXT_LEFT_ARROW] = Text_Create(0, 0, "\200");
     Text_CentreV(m_Text[TEXT_LEFT_ARROW], 1);
     Text_SetPos(
         m_Text[TEXT_LEFT_ARROW], m_Text[TEXT_PERSPECTIVE_TOGGLE]->pos.x - 20,
@@ -136,7 +136,7 @@ static void Option_GraphicsInitText()
     m_HideArrowLeft =
         g_Config.rendering.enable_perspective_filter ? false : true;
 
-    m_Text[TEXT_RIGHT_ARROW] = Text_Create(0, 0, "\t");
+    m_Text[TEXT_RIGHT_ARROW] = Text_Create(0, 0, "\201");
     Text_CentreV(m_Text[TEXT_RIGHT_ARROW], 1);
     Text_SetPos(
         m_Text[TEXT_RIGHT_ARROW], m_Text[TEXT_PERSPECTIVE_TOGGLE]->pos.x + 40,

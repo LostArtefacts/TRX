@@ -105,11 +105,12 @@ static void Option_ControlInitText()
     int16_t max_y = 0;
 
     m_TextArrowLeft = Text_Create(
-        -75, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "@");
+        -75, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
+        "\200");
     Text_CentreH(m_TextArrowLeft, 1);
     Text_CentreV(m_TextArrowLeft, 1);
     m_TextArrowRight = Text_Create(
-        70, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "\t");
+        70, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "\201");
     Text_CentreH(m_TextArrowRight, 1);
     Text_CentreV(m_TextArrowRight, 1);
 
