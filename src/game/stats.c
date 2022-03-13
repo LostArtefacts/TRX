@@ -1,6 +1,7 @@
 #include "game/stats.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
