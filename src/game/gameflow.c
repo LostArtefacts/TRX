@@ -3,6 +3,7 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/cinema.h"
+#include "game/clock.h"
 #include "game/control.h"
 #include "game/fmv.h"
 #include "game/game.h"
@@ -1161,13 +1162,30 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
-                Output_FadeToTransparent(true);
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Output_DisplayPicture(data->path);
+                Clock_SyncTicks(1);
+
+                Output_FadeResetToBlack();
+                Output_FadeToTransparent(true);
+                while (Output_FadeIsAnimating()) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                }
+
                 Output_InitialisePolyList();
                 Output_CopyPictureToScreen();
                 Output_DumpScreen();
                 Shell_Wait(data->display_time);
+
+                // fade out
+                Output_FadeToBlack(true);
+                while (Output_FadeIsAnimating()) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                }
             }
             break;
 
