@@ -73,6 +73,7 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_STATS_SECRETS_FMT, "SECRETS %d of %d" },
     { GS_STATS_DEATHS_FMT, "DEATHS %d" },
     { GS_STATS_TIME_TAKEN_FMT, "TIME TAKEN %s" },
+    { GS_STATS_FINAL_STATISTICS, "Final Statistics" },
     { GS_PAUSE_PAUSED, "Paused" },
     { GS_PAUSE_EXIT_TO_TITLE, "Exit to title?" },
     { GS_PAUSE_CONTINUE, "Continue" },

@@ -416,7 +416,7 @@ void Stats_ShowTotal(const char *filename)
     int16_t border = 4;
 
     // heading
-    sprintf(buf, "%s", "Final Statistics");
+    sprintf(buf, "%s", g_GameFlow.strings[GS_STATS_FINAL_STATISTICS]);
     txt = Text_Create(0, y + 2, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
