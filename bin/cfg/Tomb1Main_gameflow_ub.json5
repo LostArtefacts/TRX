@@ -177,6 +177,7 @@
         "STATS_SECRETS_FMT": "SECRETS %d of %d",
         "STATS_DEATHS_FMT": "DEATHS %d",
         "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
+        "STATS_FINAL_STATISTICS": "Final Statistics",
         "PAUSE_PAUSED": "Paused",
         "PAUSE_EXIT_TO_TITLE": "Exit to title?",
         "PAUSE_CONTINUE": "Continue",
