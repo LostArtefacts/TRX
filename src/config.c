@@ -157,6 +157,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(disable_fmv, false);
     READ_BOOL(disable_cine, false);
     READ_BOOL(disable_music_in_menu, false);
+    READ_BOOL(disable_music_in_inventory, false);
     READ_BOOL(enable_xbox_one_controller, false);
     READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, true);

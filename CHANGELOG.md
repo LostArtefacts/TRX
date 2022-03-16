@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
-- ...
+- added the option to pause sound in the inventory screen (#309)
 
 ## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)

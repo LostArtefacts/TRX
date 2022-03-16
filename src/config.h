@@ -80,6 +80,7 @@ typedef struct {
     bool disable_fmv;
     bool disable_cine;
     bool disable_music_in_menu;
+    bool disable_music_in_inventory;
     int32_t resolution_width;
     int32_t resolution_height;
     bool enable_xbox_one_controller;
