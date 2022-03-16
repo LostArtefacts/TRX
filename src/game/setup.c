@@ -127,7 +127,7 @@ bool InitialiseLevel(int32_t level_num)
     return true;
 }
 
-void InitialiseGameFlags()
+void InitialiseGameFlags(void)
 {
     g_FlipStatus = 0;
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
@@ -148,7 +148,7 @@ void InitialiseGameFlags()
     g_PierreItemNum = NO_ITEM;
 }
 
-void InitialiseLevelFlags()
+void InitialiseLevelFlags(void)
 {
     // loading a save can override it to false
     g_GameInfo.death_counter_supported = true;
@@ -160,7 +160,7 @@ void InitialiseLevelFlags()
     g_GameInfo.stats.death_count = 0;
 }
 
-void BaddyObjects()
+void BaddyObjects(void)
 {
     g_Objects[O_LARA].initialise = InitialiseLaraLoad;
     g_Objects[O_LARA].draw_routine = DrawDummyItem;
@@ -204,7 +204,7 @@ void BaddyObjects()
     SetupStatue(&g_Objects[O_STATUE]);
 }
 
-void TrapObjects()
+void TrapObjects(void)
 {
     SetupFallingBlock(&g_Objects[O_FALLING_BLOCK]);
     SetupPendulum(&g_Objects[O_PENDULUM]);
@@ -233,7 +233,7 @@ void TrapObjects()
     SetupLavaWedge(&g_Objects[O_LAVA_WEDGE]);
 }
 
-void ObjectObjects()
+void ObjectObjects(void)
 {
     SetupCameraTarget(&g_Objects[O_CAMERA_TARGET]);
     SetupBridgeFlat(&g_Objects[O_BRIDGE_FLAT]);
@@ -335,7 +335,7 @@ void ObjectObjects()
     SetupGunShot(&g_Objects[O_GUN_FLASH]);
 }
 
-void InitialiseObjects()
+void InitialiseObjects(void)
 {
     for (int i = 0; i < O_NUMBER_OF; i++) {
         OBJECT_INFO *obj = &g_Objects[i];

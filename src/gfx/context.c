@@ -29,7 +29,7 @@ typedef struct GFX_Context {
 
 static GFX_Context m_Context = { 0 };
 
-static const char *GFX_Context_GetWindowsErrorStr()
+static const char *GFX_Context_GetWindowsErrorStr(void)
 {
     DWORD error = GetLastError();
     if (error) {
@@ -106,7 +106,7 @@ void GFX_Context_Attach(HWND hwnd)
     GFX_3D_Renderer_Init(&m_Context.renderer_3d);
 }
 
-void GFX_Context_Detach()
+void GFX_Context_Detach(void)
 {
     if (!m_Context.hwnd) {
         return;
@@ -126,7 +126,7 @@ void GFX_Context_SetVSync(bool vsync)
     wglSwapIntervalEXT(vsync);
 }
 
-bool GFX_Context_IsFullscreen()
+bool GFX_Context_IsFullscreen(void)
 {
     return m_Context.is_fullscreen;
 }
@@ -150,39 +150,39 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
     m_Context.display_height = height;
 }
 
-int32_t GFX_Context_GetDisplayWidth()
+int32_t GFX_Context_GetDisplayWidth(void)
 {
     return m_Context.display_width;
 }
 
-int32_t GFX_Context_GetDisplayHeight()
+int32_t GFX_Context_GetDisplayHeight(void)
 {
     return m_Context.display_height;
 }
 
-int32_t GFX_Context_GetWindowWidth()
+int32_t GFX_Context_GetWindowWidth(void)
 {
     return m_Context.window_width ? m_Context.window_width
                                   : m_Context.display_width;
 }
 
-int32_t GFX_Context_GetWindowHeight()
+int32_t GFX_Context_GetWindowHeight(void)
 {
     return m_Context.window_height ? m_Context.window_height
                                    : m_Context.display_height;
 }
 
-int32_t GFX_Context_GetScreenWidth()
+int32_t GFX_Context_GetScreenWidth(void)
 {
     return m_Context.screen_width;
 }
 
-int32_t GFX_Context_GetScreenHeight()
+int32_t GFX_Context_GetScreenHeight(void)
 {
     return m_Context.screen_height;
 }
 
-void GFX_Context_SetupViewport()
+void GFX_Context_SetupViewport(void)
 {
     int vp_width = m_Context.window_width;
     int vp_height = m_Context.window_height;
@@ -209,7 +209,7 @@ void GFX_Context_SetupViewport()
     glViewport(vp_x, vp_y, vp_width, vp_height);
 }
 
-void GFX_Context_SwapBuffers()
+void GFX_Context_SwapBuffers(void)
 {
     glFinish();
 
@@ -225,17 +225,17 @@ void GFX_Context_SwapBuffers()
     m_Context.is_rendered = false;
 }
 
-void GFX_Context_SetRendered()
+void GFX_Context_SetRendered(void)
 {
     m_Context.is_rendered = true;
 }
 
-bool GFX_Context_IsRendered()
+bool GFX_Context_IsRendered(void)
 {
     return m_Context.is_rendered;
 }
 
-HWND GFX_Context_GetHWnd()
+HWND GFX_Context_GetHWnd(void)
 {
     return m_Context.hwnd;
 }
@@ -245,12 +245,12 @@ void GFX_Context_ScheduleScreenshot(const char *path)
     m_Context.scheduled_screenshot_path = Memory_DupStr(path);
 }
 
-GFX_2D_Renderer *GFX_Context_GetRenderer2D()
+GFX_2D_Renderer *GFX_Context_GetRenderer2D(void)
 {
     return &m_Context.renderer_2d;
 }
 
-GFX_3D_Renderer *GFX_Context_GetRenderer3D()
+GFX_3D_Renderer *GFX_Context_GetRenderer3D(void)
 {
     return &m_Context.renderer_3d;
 }

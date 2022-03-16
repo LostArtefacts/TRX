@@ -74,7 +74,7 @@ static uint8_t Text_MapLetterToSpriteNum(char letter)
     }
 }
 
-void Text_Init()
+void Text_Init(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         m_TextstringTable[i].flags.all = 0;
@@ -294,7 +294,7 @@ void Text_Remove(TEXTSTRING *textstring)
     }
 }
 
-void Text_RemoveAll()
+void Text_RemoveAll(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
@@ -305,7 +305,7 @@ void Text_RemoveAll()
     Text_Init();
 }
 
-void Text_Draw()
+void Text_Draw(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];

@@ -21,7 +21,7 @@ bool Screen_SetResIdx(int32_t idx)
     return false;
 }
 
-bool Screen_SetPrevRes()
+bool Screen_SetPrevRes(void)
 {
     if (m_PendingResolutionIdx - 1 >= 0) {
         m_PendingResolutionIdx--;
@@ -30,7 +30,7 @@ bool Screen_SetPrevRes()
     return false;
 }
 
-bool Screen_SetNextRes()
+bool Screen_SetNextRes(void)
 {
     if (m_PendingResolutionIdx + 1 < RESOLUTIONS_SIZE) {
         m_PendingResolutionIdx++;
@@ -39,42 +39,42 @@ bool Screen_SetNextRes()
     return false;
 }
 
-int32_t Screen_GetResIdx()
+int32_t Screen_GetResIdx(void)
 {
     return m_ResolutionIdx;
 }
 
-int32_t Screen_GetResWidth()
+int32_t Screen_GetResWidth(void)
 {
     return g_AvailableResolutions[m_ResolutionIdx].width;
 }
 
-int32_t Screen_GetResHeight()
+int32_t Screen_GetResHeight(void)
 {
     return g_AvailableResolutions[m_ResolutionIdx].height;
 }
 
-int32_t Screen_GetPendingResIdx()
+int32_t Screen_GetPendingResIdx(void)
 {
     return m_PendingResolutionIdx;
 }
 
-int32_t Screen_GetPendingResWidth()
+int32_t Screen_GetPendingResWidth(void)
 {
     return g_AvailableResolutions[m_PendingResolutionIdx].width;
 }
 
-int32_t Screen_GetPendingResHeight()
+int32_t Screen_GetPendingResHeight(void)
 {
     return g_AvailableResolutions[m_PendingResolutionIdx].height;
 }
 
-int32_t Screen_GetResWidthDownscaled()
+int32_t Screen_GetResWidthDownscaled(void)
 {
     return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
 }
 
-int32_t Screen_GetResHeightDownscaled()
+int32_t Screen_GetResHeightDownscaled(void)
 {
     return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
 }
@@ -109,7 +109,7 @@ int32_t Screen_GetRenderScaleGLRage(int32_t unit)
     return round(result);
 }
 
-void Screen_ApplyResolution()
+void Screen_ApplyResolution(void)
 {
     m_ResolutionIdx = m_PendingResolutionIdx;
     Output_ApplyResolution();

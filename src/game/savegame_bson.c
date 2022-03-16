@@ -55,10 +55,10 @@ static bool Savegame_BSON_LoadLara(
 static struct json_array_s *Savegame_BSON_DumpStartInfo(GAME_INFO *game_info);
 static struct json_array_s *Savegame_BSON_DumpEndInfo(GAME_INFO *game_info);
 static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info);
-static struct json_object_s *Savegame_BSON_DumpInventory();
-static struct json_object_s *Savegame_BSON_DumpFlipmaps();
-static struct json_array_s *Savegame_BSON_DumpCameras();
-static struct json_array_s *Savegame_BSON_DumpItems();
+static struct json_object_s *Savegame_BSON_DumpInventory(void);
+static struct json_object_s *Savegame_BSON_DumpFlipmaps(void);
+static struct json_array_s *Savegame_BSON_DumpCameras(void);
+static struct json_array_s *Savegame_BSON_DumpItems(void);
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
@@ -710,7 +710,7 @@ static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
     return misc_obj;
 }
 
-static struct json_object_s *Savegame_BSON_DumpInventory()
+static struct json_object_s *Savegame_BSON_DumpInventory(void)
 {
     // TODO: save this info for every level
     struct json_object_s *inv_obj = json_object_new();
@@ -728,7 +728,7 @@ static struct json_object_s *Savegame_BSON_DumpInventory()
     return inv_obj;
 }
 
-static struct json_object_s *Savegame_BSON_DumpFlipmaps()
+static struct json_object_s *Savegame_BSON_DumpFlipmaps(void)
 {
     struct json_object_s *flipmap_obj = json_object_new();
     json_object_append_bool(flipmap_obj, "status", g_FlipStatus);
@@ -742,7 +742,7 @@ static struct json_object_s *Savegame_BSON_DumpFlipmaps()
     return flipmap_obj;
 }
 
-static struct json_array_s *Savegame_BSON_DumpCameras()
+static struct json_array_s *Savegame_BSON_DumpCameras(void)
 {
     struct json_array_s *cameras_arr = json_array_new();
     for (int i = 0; i < g_NumberCameras; i++) {
@@ -751,7 +751,7 @@ static struct json_array_s *Savegame_BSON_DumpCameras()
     return cameras_arr;
 }
 
-static struct json_array_s *Savegame_BSON_DumpItems()
+static struct json_array_s *Savegame_BSON_DumpItems(void)
 {
     struct json_array_s *items_arr = json_array_new();
     for (int i = 0; i < g_LevelItemCount; i++) {

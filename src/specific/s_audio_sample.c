@@ -370,7 +370,7 @@ cleanup:
     return ret;
 }
 
-void S_Audio_SampleSoundInit()
+void S_Audio_SampleSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
@@ -384,7 +384,7 @@ void S_Audio_SampleSoundInit()
     }
 }
 
-void S_Audio_SampleSoundShutdown()
+void S_Audio_SampleSoundShutdown(void)
 {
     if (!g_AudioDeviceID) {
         return;
@@ -393,7 +393,7 @@ void S_Audio_SampleSoundShutdown()
     S_Audio_SamplesClear();
 }
 
-bool S_Audio_SamplesClear()
+bool S_Audio_SamplesClear(void)
 {
     if (!g_AudioDeviceID) {
         return false;
@@ -501,7 +501,7 @@ bool S_Audio_SampleSoundClose(int sound_id)
     return true;
 }
 
-bool S_Audio_SampleSoundCloseAll()
+bool S_Audio_SampleSoundCloseAll(void)
 {
     if (!g_AudioDeviceID) {
         return false;

@@ -13,7 +13,7 @@ static int32_t m_IMFrac = 0;
 static PHD_MATRIX *m_IMMatrixPtr = NULL;
 static PHD_MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
 
-void phd_ResetMatrixStack()
+void phd_ResetMatrixStack(void)
 {
     g_PhdMatrixPtr = &m_MatrixStack[0];
 }
@@ -43,13 +43,13 @@ void phd_GenerateW2V(PHD_3DPOS *viewpos)
     g_W2VMatrix = m_MatrixStack[0];
 }
 
-void phd_PushMatrix()
+void phd_PushMatrix(void)
 {
     g_PhdMatrixPtr++;
     g_PhdMatrixPtr[0] = g_PhdMatrixPtr[-1];
 }
 
-void phd_PushUnitMatrix()
+void phd_PushUnitMatrix(void)
 {
     PHD_MATRIX *mptr = ++g_PhdMatrixPtr;
     mptr->_00 = W2V_SCALE;
@@ -63,7 +63,7 @@ void phd_PushUnitMatrix()
     mptr->_22 = W2V_SCALE;
 }
 
-void phd_PopMatrix()
+void phd_PopMatrix(void)
 {
     g_PhdMatrixPtr--;
 }
@@ -322,7 +322,7 @@ void InitInterpolate(int32_t frac, int32_t rate)
     m_IMMatrixPtr->_23 = g_PhdMatrixPtr->_23;
 }
 
-void InterpolateMatrix()
+void InterpolateMatrix(void)
 {
     PHD_MATRIX *mptr = g_PhdMatrixPtr;
     PHD_MATRIX *iptr = m_IMMatrixPtr;
@@ -356,7 +356,7 @@ void InterpolateMatrix()
     }
 }
 
-void InterpolateArmMatrix()
+void InterpolateArmMatrix(void)
 {
     PHD_MATRIX *mptr = g_PhdMatrixPtr;
     PHD_MATRIX *iptr = m_IMMatrixPtr;
@@ -390,7 +390,7 @@ void InterpolateArmMatrix()
     }
 }
 
-void phd_PushMatrix_I()
+void phd_PushMatrix_I(void)
 {
     phd_PushMatrix();
     m_IMMatrixPtr[1]._00 = m_IMMatrixPtr[0]._00;
@@ -408,7 +408,7 @@ void phd_PushMatrix_I()
     m_IMMatrixPtr++;
 }
 
-void phd_PopMatrix_I()
+void phd_PopMatrix_I(void)
 {
     phd_PopMatrix();
     m_IMMatrixPtr--;

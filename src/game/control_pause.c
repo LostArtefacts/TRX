@@ -40,20 +40,20 @@ static REQUEST_INFO m_PauseRequester = {
     0,
 };
 
-static void Control_Pause_RemoveText();
-static void Control_Pause_DisplayText();
+static void Control_Pause_RemoveText(void);
+static void Control_Pause_DisplayText(void);
 static int32_t Control_Pause_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static int32_t Control_Pause_Loop();
+static int32_t Control_Pause_Loop(void);
 
-static void Control_Pause_RemoveText()
+static void Control_Pause_RemoveText(void)
 {
     Text_Remove(m_PausedText);
     m_PausedText = NULL;
 }
 
-static void Control_Pause_DisplayText()
+static void Control_Pause_DisplayText(void)
 {
     if (m_PausedText == NULL) {
         m_PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
@@ -90,7 +90,7 @@ static int32_t Control_Pause_DisplayRequester(
     return select;
 }
 
-static int32_t Control_Pause_Loop()
+static int32_t Control_Pause_Loop(void)
 {
     int32_t state = 0;
 
@@ -143,7 +143,7 @@ static int32_t Control_Pause_Loop()
     return 0;
 }
 
-bool Control_Pause()
+bool Control_Pause(void)
 {
     g_OldInputDB = g_Input;
 

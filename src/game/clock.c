@@ -5,17 +5,17 @@
 #include <stdio.h>
 #include <time.h>
 
-bool Clock_Init()
+bool Clock_Init(void)
 {
     return S_Clock_Init();
 }
 
-int32_t Clock_GetMS()
+int32_t Clock_GetMS(void)
 {
     return S_Clock_GetMS();
 }
 
-int32_t Clock_Sync()
+int32_t Clock_Sync(void)
 {
     return S_Clock_Sync();
 }

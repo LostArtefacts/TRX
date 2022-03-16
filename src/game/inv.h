@@ -52,7 +52,7 @@ extern TEXTSTRING *g_InvItemText[];
 extern TEXTSTRING *g_InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
-void Construct_Inventory();
+void Construct_Inventory(void);
 void SelectMeshes(INVENTORY_ITEM *inv_item);
 bool AnimateInventoryItem(INVENTORY_ITEM *inv_item);
 void DrawInventoryItem(INVENTORY_ITEM *inv_item);
@@ -60,16 +60,16 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item);
 void RingIsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);
 void RingActive(INVENTORY_ITEM *inv_item);
-void RingNotActive();
+void RingNotActive(void);
 
 bool Inv_AddItem(int32_t item_num);
 void Inv_AddItemNTimes(int32_t item_num, int32_t qty);
 void Inv_InsertItem(INVENTORY_ITEM *inv_item);
 int32_t Inv_RequestItem(int item_num);
-void Inv_RemoveAllItems();
+void Inv_RemoveAllItems(void);
 bool Inv_RemoveItem(int32_t item_num);
 int32_t Inv_GetItemOption(int32_t item_num);
-void RemoveInventoryText();
+void RemoveInventoryText(void);
 void Inv_RingInit(
     RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
     int16_t current, IMOTION_INFO *imo);

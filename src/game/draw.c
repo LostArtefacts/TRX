@@ -1374,7 +1374,7 @@ void Draw_DrawScene(bool draw_overlay)
     Output_DrawBackdropScreen();
 }
 
-int32_t Draw_ProcessFrame()
+int32_t Draw_ProcessFrame(void)
 {
     Output_InitialisePolyList();
     Draw_DrawScene(true);

@@ -15,7 +15,7 @@
 
 const char *m_GameDir = NULL;
 
-const char *S_File_GetGameDirectory()
+const char *S_File_GetGameDirectory(void)
 {
     if (!m_GameDir) {
         m_GameDir = SDL_GetBasePath();

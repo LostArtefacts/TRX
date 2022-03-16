@@ -20,8 +20,8 @@ int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target);
 int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target);
 int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target);
 int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor);
-void FlipMap();
+void FlipMap(void);
 void RemoveRoomFlipItems(ROOM_INFO *r);
 void AddRoomFlipItems(ROOM_INFO *r);
 
-bool Control_Pause();
+bool Control_Pause(void);

@@ -78,22 +78,22 @@ static uint8_t m_DIKeys[256] = { 0 };
 
 static int32_t m_MedipackCoolDown = 0;
 
-static bool S_Input_DInput_Create();
-static void S_Input_DInput_Shutdown();
-static bool S_Input_DInput_KeyboardCreate();
-static void S_Input_DInput_KeyboardRelease();
-static bool S_Input_DInput_KeyboardRead();
+static bool S_Input_DInput_Create(void);
+static void S_Input_DInput_Shutdown(void);
+static bool S_Input_DInput_KeyboardCreate(void);
+static void S_Input_DInput_KeyboardRelease(void);
+static bool S_Input_DInput_KeyboardRead(void);
 static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_KEY key);
 
-static HRESULT S_Input_DInput_JoystickCreate();
-static void S_Input_DInput_JoystickRelease();
+static HRESULT S_Input_DInput_JoystickCreate(void);
+static void S_Input_DInput_JoystickRelease(void);
 static BOOL CALLBACK
 S_Input_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
 static BOOL CALLBACK
 S_Input_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
 
-void S_Input_Init()
+void S_Input_Init(void)
 {
     if (!S_Input_DInput_Create()) {
         Shell_ExitSystem("Fatal DirectInput error!");
@@ -110,7 +110,7 @@ void S_Input_Init()
     }
 }
 
-void InputShutdown()
+void InputShutdown(void)
 {
     S_Input_DInput_KeyboardRelease();
     if (g_Config.enable_xbox_one_controller) {
@@ -119,7 +119,7 @@ void InputShutdown()
     S_Input_DInput_Shutdown();
 }
 
-static bool S_Input_DInput_Create()
+static bool S_Input_DInput_Create(void)
 {
     HRESULT result = DirectInput8Create(
         g_TombModule, DIRECTINPUT_VERSION, &IID_IDirectInput8,
@@ -133,7 +133,7 @@ static bool S_Input_DInput_Create()
     return true;
 }
 
-static void S_Input_DInput_Shutdown()
+static void S_Input_DInput_Shutdown(void)
 {
     if (m_DInput) {
         IDirectInput_Release(m_DInput);
@@ -141,7 +141,7 @@ static void S_Input_DInput_Shutdown()
     }
 }
 
-bool S_Input_DInput_KeyboardCreate()
+bool S_Input_DInput_KeyboardCreate(void)
 {
     HRESULT result = IDirectInput8_CreateDevice(
         m_DInput, &GUID_SysKeyboard, &m_IDID_SysKeyboard, NULL);
@@ -172,7 +172,7 @@ bool S_Input_DInput_KeyboardCreate()
     return true;
 }
 
-void S_Input_DInput_KeyboardRelease()
+void S_Input_DInput_KeyboardRelease(void)
 {
     if (m_IDID_SysKeyboard) {
         IDirectInputDevice_Unacquire(m_IDID_SysKeyboard);
@@ -181,7 +181,7 @@ void S_Input_DInput_KeyboardRelease()
     }
 }
 
-static bool S_Input_DInput_KeyboardRead()
+static bool S_Input_DInput_KeyboardRead(void)
 {
     if (!m_IDID_SysKeyboard) {
         return false;
@@ -233,7 +233,7 @@ static bool S_Input_Key(INPUT_KEY key)
             && S_Input_KbdKey(key, INPUT_LAYOUT_DEFAULT));
 }
 
-S_INPUT_KEYCODE S_Input_ReadKeyCode()
+S_INPUT_KEYCODE S_Input_ReadKeyCode(void)
 {
     for (S_INPUT_KEYCODE key = 0; key < 256; key++) {
         if (KEY_DOWN(key)) {
@@ -243,7 +243,7 @@ S_INPUT_KEYCODE S_Input_ReadKeyCode()
     return -1;
 }
 
-static HRESULT S_Input_DInput_JoystickCreate()
+static HRESULT S_Input_DInput_JoystickCreate(void)
 {
     HRESULT result;
 
@@ -313,7 +313,7 @@ static HRESULT S_Input_DInput_JoystickCreate()
     return result;
 }
 
-static void S_Input_DInput_JoystickRelease()
+static void S_Input_DInput_JoystickRelease(void)
 {
     if (m_IDID_Joystick) {
         IDirectInputDevice_Unacquire(m_IDID_Joystick);
@@ -409,7 +409,7 @@ static HRESULT DInputJoystickPoll(DIJOYSTATE2 *joystate)
     return S_OK;
 }
 
-INPUT_STATE S_Input_GetCurrentState()
+INPUT_STATE S_Input_GetCurrentState(void)
 {
     S_Input_DInput_KeyboardRead();
 

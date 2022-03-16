@@ -8,13 +8,13 @@
 extern WEAPON_INFO g_Weapons[NUM_WEAPONS];
 
 void LaraControl(int16_t item_num);
-void LaraSwapMeshExtra();
+void LaraSwapMeshExtra(void);
 void AnimateLara(ITEM_INFO *item);
 void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal);
 void UseItem(int16_t object_num);
 void ControlLaraExtra(int16_t item_num);
 void InitialiseLaraLoad(int16_t item_num);
-void InitialiseLara();
+void InitialiseLara(void);
 void InitialiseLaraInventory(int32_t level_num);
 void LaraInitialiseMeshes(int32_t level_num);
 
@@ -164,8 +164,8 @@ bool LaraTestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll);
 extern void (*g_LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
 extern void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll);
 
-void LaraGun();
-void InitialiseNewWeapon();
+void LaraGun(void);
+void InitialiseNewWeapon(void);
 void LaraTargetInfo(WEAPON_INFO *winfo);
 void LaraGetNewTarget(WEAPON_INFO *winfo);
 void find_target_point(ITEM_INFO *item, GAME_VECTOR *target);
@@ -174,26 +174,26 @@ int32_t FireWeapon(
     int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles);
 void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage);
 
-void DrawShotgun();
-void UndrawShotgun();
-void DrawShotgunMeshes();
-void UndrawShotgunMeshes();
-void ReadyShotgun();
+void DrawShotgun(void);
+void UndrawShotgun(void);
+void DrawShotgunMeshes(void);
+void UndrawShotgunMeshes(void);
+void ReadyShotgun(void);
 void RifleHandler(int32_t weapon_type);
-void AnimateShotgun();
-void FireShotgun();
+void AnimateShotgun(void);
+void FireShotgun(void);
 
 void DrawPistols(int32_t weapon_type);
 void UndrawPistols(int32_t weapon_type);
-void ReadyPistols();
+void ReadyPistols(void);
 void DrawPistolMeshes(int32_t weapon_type);
 void UndrawPistolMeshLeft(int32_t weapon_type);
 void UndrawPistolMeshRight(int32_t weapon_type);
 void PistolHandler(int32_t weapon_type);
 void AnimatePistols(int32_t weapon_type);
 
-void LookLeftRight();
-void LookUpDown();
-void ResetLook();
+void LookLeftRight(void);
+void LookUpDown(void);
+void ResetLook(void);
 
-void LaraCheatGetStuff();
+void LaraCheatGetStuff(void);

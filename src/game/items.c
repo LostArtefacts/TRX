@@ -57,7 +57,7 @@ void KillItem(int16_t item_num)
     }
 }
 
-int16_t CreateItem()
+int16_t CreateItem(void)
 {
     int16_t item_num = g_NextItemFree;
     if (item_num != NO_ITEM) {
@@ -233,7 +233,7 @@ int32_t GlobalItemReplace(int32_t src_object_num, int32_t dst_object_num)
     return changed;
 }
 
-void InitialiseFXArray()
+void InitialiseFXArray(void)
 {
     g_NextFxActive = NO_ITEM;
     g_NextFxFree = 0;

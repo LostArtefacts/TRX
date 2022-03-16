@@ -107,7 +107,7 @@ static void Control_TriggerMusicTrack(
     }
 }
 
-void CheckCheatMode()
+void CheckCheatMode(void)
 {
     static int32_t cheat_mode = 0;
     static int16_t cheat_angle = 0;
@@ -775,7 +775,7 @@ int32_t TriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-void FlipMap()
+void FlipMap(void)
 {
     Sound_StopAmbientSounds();
 

@@ -2,5 +2,5 @@
 
 #include <stdbool.h>
 
-bool Settings_Read();
-bool Settings_Write();
+bool Settings_Read(void);
+bool Settings_Write(void);

@@ -256,7 +256,7 @@ cleanup:
     return ret;
 }
 
-void S_Audio_StreamSoundInit()
+void S_Audio_StreamSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
@@ -269,7 +269,7 @@ void S_Audio_StreamSoundInit()
     }
 }
 
-void S_Audio_StreamSoundShutdown()
+void S_Audio_StreamSoundShutdown(void)
 {
     if (!g_AudioDeviceID) {
         return;

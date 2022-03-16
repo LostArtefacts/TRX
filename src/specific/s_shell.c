@@ -27,9 +27,9 @@ static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_PostWindowResize();
+static void S_Shell_PostWindowResize(void);
 
-void S_Shell_Shutdown()
+void S_Shell_Shutdown(void)
 {
     while (g_Input.select) {
         Input_Update();
@@ -41,7 +41,7 @@ void S_Shell_Shutdown()
     Savegame_Shutdown();
 }
 
-void S_Shell_SeedRandom()
+void S_Shell_SeedRandom(void)
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
@@ -49,7 +49,7 @@ void S_Shell_SeedRandom()
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static void S_Shell_PostWindowResize()
+static void S_Shell_PostWindowResize(void)
 {
     int width;
     int height;
@@ -65,7 +65,7 @@ void S_Shell_ShowFatalError(const char *message)
     S_Shell_TerminateGame(1);
 }
 
-void S_Shell_ToggleFullscreen()
+void S_Shell_ToggleFullscreen(void)
 {
     m_Fullscreen = !m_Fullscreen;
     Output_SetFullscreen(m_Fullscreen);
@@ -85,7 +85,7 @@ void S_Shell_TerminateGame(int exit_code)
     exit(exit_code);
 }
 
-void S_Shell_SpinMessageLoop()
+void S_Shell_SpinMessageLoop(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
@@ -211,19 +211,19 @@ bool S_Shell_GetCommandLine(int *arg_count, char ***args)
     return true;
 }
 
-void *S_Shell_GetWindowHandle()
+void *S_Shell_GetWindowHandle(void)
 {
     return (void *)m_Window;
 }
 
-int S_Shell_GetCurrentDisplayWidth()
+int S_Shell_GetCurrentDisplayWidth(void)
 {
     SDL_DisplayMode dm;
     SDL_GetCurrentDisplayMode(0, &dm);
     return dm.w;
 }
 
-int S_Shell_GetCurrentDisplayHeight()
+int S_Shell_GetCurrentDisplayHeight(void)
 {
     SDL_DisplayMode dm;
     SDL_GetCurrentDisplayMode(0, &dm);

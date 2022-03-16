@@ -51,12 +51,12 @@ int16_t m_KillableObjs[] = {
     O_NATLA,    O_SCION_ITEM3, O_STATUE,   NO_ITEM
 };
 
-static void Stats_TraverseFloor();
+static void Stats_TraverseFloor(void);
 static void Stats_CheckTriggers(
     ROOM_INFO *r, int room_num, int x_floor, int y_floor);
 static bool Stats_IsObjectKillable(int32_t obj_num);
 
-static void Stats_TraverseFloor()
+static void Stats_TraverseFloor(void)
 {
     uint32_t secrets = 0;
 
@@ -183,7 +183,7 @@ static bool Stats_IsObjectKillable(int32_t obj_num)
     return false;
 }
 
-void Stats_ObserveRoomsLoad()
+void Stats_ObserveRoomsLoad(void)
 {
     m_CachedFloorArray =
         GameBuf_Alloc(g_RoomCount * sizeof(FLOOR_INFO *), GBUF_ROOM_FLOOR);
@@ -198,12 +198,12 @@ void Stats_ObserveRoomsLoad()
     }
 }
 
-void Stats_ObserveItemsLoad()
+void Stats_ObserveItemsLoad(void)
 {
     m_CachedItemCount = g_LevelItemCount;
 }
 
-void Stats_CalculateStats()
+void Stats_CalculateStats(void)
 {
     m_LevelPickups = 0;
     m_LevelKillables = 0;
@@ -239,19 +239,19 @@ void Stats_CalculateStats()
     Stats_TraverseFloor();
 }
 
-int32_t Stats_GetPickups()
+int32_t Stats_GetPickups(void)
 {
     m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
     return m_LevelPickups;
 }
 
-int32_t Stats_GetKillables()
+int32_t Stats_GetKillables(void)
 {
     m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;
     return m_LevelKillables;
 }
 
-int32_t Stats_GetSecrets()
+int32_t Stats_GetSecrets(void)
 {
     return m_LevelSecrets;
 }

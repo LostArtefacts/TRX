@@ -77,13 +77,13 @@ static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static bool m_HideArrowLeft = false;
 static bool m_HideArrowRight = false;
 
-static void Option_GraphicsInitText();
-static void Option_GraphicsShutdownText();
-static void Option_GraphicsUpdateArrows();
+static void Option_GraphicsInitText(void);
+static void Option_GraphicsShutdownText(void);
+static void Option_GraphicsUpdateArrows(void);
 static void Option_GraphicsChangeTextOption(int32_t option_num);
 static int16_t Option_GraphicsPlaceColumns(bool create);
 
-static void Option_GraphicsInitText()
+static void Option_GraphicsInitText(void)
 {
     char buf[OPTION_LENGTH];
 
@@ -144,7 +144,7 @@ static void Option_GraphicsInitText()
     Option_GraphicsChangeTextOption(TEXT_RESOLUTION);
 }
 
-static void Option_GraphicsShutdownText()
+static void Option_GraphicsShutdownText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -152,7 +152,7 @@ static void Option_GraphicsShutdownText()
     }
 }
 
-static void Option_GraphicsUpdateArrows()
+static void Option_GraphicsUpdateArrows(void)
 {
     int16_t resolution_offset = 0;
 

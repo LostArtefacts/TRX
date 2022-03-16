@@ -61,10 +61,10 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
     { 0 },
 };
 
-static void Savegame_LoadPreprocess();
-static void Savegame_LoadPostrocess();
+static void Savegame_LoadPreprocess(void);
+static void Savegame_LoadPostrocess(void);
 
-static void Savegame_LoadPreprocess()
+static void Savegame_LoadPreprocess(void)
 {
     m_OldLaraLOTNode = g_Lara.LOT.node;
 
@@ -81,7 +81,7 @@ static void Savegame_LoadPreprocess()
     }
 }
 
-static void Savegame_LoadPostProcess()
+static void Savegame_LoadPostProcess(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -173,7 +173,7 @@ void Savegame_SetCurrentPosition(int level_num)
     }
 }
 
-void Savegame_InitStartEndInfo()
+void Savegame_InitStartEndInfo(void)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetStartInfo(i);
@@ -447,7 +447,7 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-void Savegame_Shutdown()
+void Savegame_Shutdown(void)
 {
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
@@ -459,7 +459,7 @@ void Savegame_Shutdown()
     }
 }
 
-void Savegame_ScanSavedGames()
+void Savegame_ScanSavedGames(void)
 {
     Savegame_Shutdown();
 

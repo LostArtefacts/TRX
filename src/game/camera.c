@@ -12,7 +12,7 @@
 
 #include <stddef.h>
 
-void InitialiseCamera()
+void InitialiseCamera(void)
 {
     g_Camera.shift = g_LaraItem->pos.y - WALL_L;
 
@@ -485,7 +485,7 @@ void LookCamera(ITEM_INFO *item)
     MoveCamera(&ideal, g_Camera.speed);
 }
 
-void FixedCamera()
+void FixedCamera(void)
 {
     GAME_VECTOR ideal;
     OBJECT_VECTOR *fixed;
@@ -512,7 +512,7 @@ void FixedCamera()
     }
 }
 
-void CalculateCamera()
+void CalculateCamera(void)
 {
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
@@ -703,7 +703,7 @@ void CameraOffsetAdditionalElevation(int16_t delta)
     }
 }
 
-void CameraOffsetReset()
+void CameraOffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;

@@ -774,7 +774,7 @@ int32_t Display_Inventory(int inv_mode)
     return GF_NOP;
 }
 
-void Construct_Inventory()
+void Construct_Inventory(void)
 {
     g_PhdLeft = ViewPort_GetMinX();
     g_PhdTop = ViewPort_GetMinY();

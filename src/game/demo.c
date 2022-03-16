@@ -19,7 +19,7 @@
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;
 
-int32_t StartDemo()
+int32_t StartDemo(void)
 {
     TEXTSTRING *txt;
     START_INFO start, *s;
@@ -88,7 +88,7 @@ int32_t StartDemo()
     return GF_EXIT_TO_TITLE;
 }
 
-void LoadLaraDemoPos()
+void LoadLaraDemoPos(void)
 {
     m_DemoPtr = g_DemoData;
     ITEM_INFO *item = g_LaraItem;
@@ -109,7 +109,7 @@ void LoadLaraDemoPos()
     item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 
-bool ProcessDemoInput()
+bool ProcessDemoInput(void)
 {
     if (m_DemoPtr >= &g_DemoData[DEMO_COUNT_MAX] || (int)*m_DemoPtr == -1) {
         return false;

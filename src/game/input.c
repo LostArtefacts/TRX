@@ -38,12 +38,12 @@ INPUT_STATE Input_GetDebounced(INPUT_STATE input)
     return result;
 }
 
-void Input_Init()
+void Input_Init(void)
 {
     S_Input_Init();
 }
 
-void Input_Update()
+void Input_Update(void)
 {
     g_Input = S_Input_GetCurrentState();
     g_InputDB = Input_GetDebounced(g_Input);

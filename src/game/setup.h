@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 bool InitialiseLevel(int32_t level_num);
-void InitialiseGameFlags();
-void InitialiseLevelFlags();
+void InitialiseGameFlags(void);
+void InitialiseLevelFlags(void);
 
-void BaddyObjects();
-void TrapObjects();
-void ObjectObjects();
-void InitialiseObjects();
+void BaddyObjects(void);
+void TrapObjects(void);
+void ObjectObjects(void);
+void InitialiseObjects(void);

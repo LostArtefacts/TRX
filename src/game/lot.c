@@ -10,7 +10,7 @@
 static int32_t m_SlotsUsed = 0;
 static CREATURE_INFO *m_BaddieSlots = NULL;
 
-void InitialiseLOTArray()
+void InitialiseLOTArray(void)
 {
     m_BaddieSlots =
         GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_INFO);

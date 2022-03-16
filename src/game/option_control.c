@@ -87,11 +87,11 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { -1, -1 },
 };
 
-static void Option_ControlInitText();
-static void Option_ControlUpdateText();
-static void Option_ControlShutdownText();
+static void Option_ControlInitText(void);
+static void Option_ControlUpdateText(void);
+static void Option_ControlShutdownText(void);
 
-static void Option_ControlInitText()
+static void Option_ControlInitText(void)
 {
     m_Text[0] = Text_Create(
         0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
@@ -179,7 +179,7 @@ static void Option_ControlInitText()
     Text_AddOutline(m_Text[0], 1);
 }
 
-static void Option_ControlUpdateText()
+static void Option_ControlUpdateText(void)
 {
     Text_ChangeText(
         m_Text[0],
@@ -201,7 +201,7 @@ static void Option_ControlUpdateText()
     }
 }
 
-static void Option_ControlShutdownText()
+static void Option_ControlShutdownText(void)
 {
     Text_Remove(m_Text[0]);
     Text_Remove(m_Text[1]);
@@ -219,7 +219,7 @@ static void Option_ControlShutdownText()
     }
 }
 
-void Option_FlashConflicts()
+void Option_FlashConflicts(void)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -252,7 +252,7 @@ void Option_FlashConflicts()
     }
 }
 
-void Option_DefaultConflict()
+void Option_DefaultConflict(void)
 {
     for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
         S_INPUT_KEYCODE key_code =

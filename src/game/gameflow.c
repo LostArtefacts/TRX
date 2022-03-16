@@ -883,7 +883,7 @@ cleanup:
     return result;
 }
 
-void GameFlow_Shutdown()
+void GameFlow_Shutdown(void)
 {
     Memory_FreePointer(&g_GameFlow.main_menu_background_path);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_legacy);
@@ -1000,7 +1000,7 @@ bool GameFlow_LoadFromFile(const char *file_name)
     return result;
 }
 
-static void FixPyramidSecretTrigger()
+static void FixPyramidSecretTrigger(void)
 {
     uint32_t global_secrets = 0;
 

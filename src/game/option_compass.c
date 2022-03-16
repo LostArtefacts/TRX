@@ -21,9 +21,9 @@ typedef enum COMPASS_TEXT {
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_CompassInitText();
+static void Option_CompassInitText(void);
 
-static void Option_CompassInitText()
+static void Option_CompassInitText(void)
 {
     char buf[100];
     const int top_y = -100;
