@@ -95,7 +95,7 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
     return result;
 }
 
-bool Settings_Read()
+bool Settings_Read(void)
 {
     bool result = false;
 
@@ -117,7 +117,7 @@ cleanup:
     return result;
 }
 
-bool Settings_Write()
+bool Settings_Write(void)
 {
     LOG_INFO("Saving user settings");
 

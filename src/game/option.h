@@ -10,5 +10,5 @@ void Option_Graphics(INVENTORY_ITEM *inv_item);
 void Option_Control(INVENTORY_ITEM *inv_item);
 void Option_Sound(INVENTORY_ITEM *inv_item);
 
-void Option_FlashConflicts();
-void Option_DefaultConflict();
+void Option_FlashConflicts(void);
+void Option_DefaultConflict(void);

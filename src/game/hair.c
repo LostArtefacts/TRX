@@ -19,7 +19,7 @@ static bool m_FirstHair = false;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
-void InitialiseHair()
+void InitialiseHair(void)
 {
     m_FirstHair = true;
 
@@ -299,7 +299,7 @@ void HairControl(int in_cutscene)
     }
 }
 
-void DrawHair()
+void DrawHair(void)
 {
     if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
         return;

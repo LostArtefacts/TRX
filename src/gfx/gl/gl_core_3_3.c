@@ -8735,7 +8735,7 @@ void ProcExtsFromExtList(void)
     }
 }
 
-void ogl_CheckExtensions()
+void ogl_CheckExtensions(void)
 {
     ClearExtensionVariables();
 

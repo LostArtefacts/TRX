@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void DrawShotgun()
+void DrawShotgun(void)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
@@ -29,7 +29,7 @@ void DrawShotgun()
     g_Lara.right_arm.frame_number = ani;
 }
 
-void UndrawShotgun()
+void UndrawShotgun(void)
 {
     int16_t ani = ani = g_Lara.left_arm.frame_number;
 
@@ -76,7 +76,7 @@ void UndrawShotgun()
     g_Lara.left_arm.frame_number = ani;
 }
 
-void DrawShotgunMeshes()
+void DrawShotgunMeshes(void)
 {
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
@@ -86,7 +86,7 @@ void DrawShotgunMeshes()
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-void UndrawShotgunMeshes()
+void UndrawShotgunMeshes(void)
 {
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
@@ -96,7 +96,7 @@ void UndrawShotgunMeshes()
         g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-void ReadyShotgun()
+void ReadyShotgun(void)
 {
     g_Lara.gun_status = LGS_READY;
     g_Lara.left_arm.x_rot = 0;
@@ -141,7 +141,7 @@ void RifleHandler(int32_t weapon_type)
     AnimateShotgun();
 }
 
-void AnimateShotgun()
+void AnimateShotgun(void)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock) {
@@ -232,7 +232,7 @@ void AnimateShotgun()
     g_Lara.left_arm.frame_number = ani;
 }
 
-void FireShotgun()
+void FireShotgun(void)
 {
     int32_t fired = 0;
     PHD_ANGLE angles[2];

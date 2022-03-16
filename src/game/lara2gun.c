@@ -84,7 +84,7 @@ void UndrawPistols(int32_t weapon_type)
     g_Lara.torso_y_rot = (g_Lara.right_arm.y_rot + g_Lara.left_arm.y_rot) / 4;
 }
 
-void ReadyPistols()
+void ReadyPistols(void)
 {
     g_Lara.gun_status = LGS_READY;
     g_Lara.left_arm.x_rot = 0;

@@ -282,7 +282,7 @@ void RingActive(INVENTORY_ITEM *inv_item)
     }
 }
 
-void RingNotActive()
+void RingNotActive(void)
 {
     RemoveInventoryText();
 }
@@ -521,7 +521,7 @@ int32_t Inv_RequestItem(int item_num)
     return 0;
 }
 
-void Inv_RemoveAllItems()
+void Inv_RemoveAllItems(void)
 {
     g_InvMainObjects = 1;
     g_InvMainCurrent = 0;
@@ -681,7 +681,7 @@ int32_t Inv_GetItemOption(int32_t item_num)
     return -1;
 }
 
-void RemoveInventoryText()
+void RemoveInventoryText(void)
 {
     for (int i = 0; i < IT_NUMBER_OF; i++) {
         if (g_InvItemText[i]) {

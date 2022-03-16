@@ -38,7 +38,7 @@ typedef struct SAVEGAME_LEGACY_ITEM_STATS {
 static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
-static bool Savegame_Legacy_NeedsEvilLaraFix();
+static bool Savegame_Legacy_NeedsEvilLaraFix(char *buffer);
 
 static void Savegame_Legacy_Reset(char *buffer);
 static void Savegame_Legacy_Skip(int size);

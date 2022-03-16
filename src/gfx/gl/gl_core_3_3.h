@@ -3344,7 +3344,7 @@ extern void(CODEGEN_FUNCPTR *_ptrc_glVertexAttribP4uiv)(
     GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
 #define glVertexAttribP4uiv _ptrc_glVertexAttribP4uiv
 
-void ogl_CheckExtensions();
+void ogl_CheckExtensions(void);
 
 #ifdef __cplusplus
 }

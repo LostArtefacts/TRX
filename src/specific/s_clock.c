@@ -7,16 +7,16 @@
 static LONGLONG m_Ticks = 0;
 static double m_Frequency = 0.0;
 
-static void m_UpdateTicks();
+static void m_UpdateTicks(void);
 
-static void m_UpdateTicks()
+static void m_UpdateTicks(void)
 {
     LARGE_INTEGER counter;
     QueryPerformanceCounter(&counter);
     m_Ticks = counter.QuadPart;
 }
 
-bool S_Clock_Init()
+bool S_Clock_Init(void)
 {
     LARGE_INTEGER ticks_per_second;
     if (!QueryPerformanceFrequency(&ticks_per_second)) {
@@ -28,12 +28,12 @@ bool S_Clock_Init()
     return true;
 }
 
-int32_t S_Clock_GetMS()
+int32_t S_Clock_GetMS(void)
 {
     return GetTickCount();
 }
 
-int32_t S_Clock_Sync()
+int32_t S_Clock_Sync(void)
 {
     LONGLONG last_ticks = m_Ticks;
     m_UpdateTicks();

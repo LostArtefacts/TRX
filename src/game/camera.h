@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-void InitialiseCamera();
+void InitialiseCamera(void);
 void MoveCamera(GAME_VECTOR *ideal, int32_t speed);
 void ClipCamera(
     int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
@@ -22,9 +22,9 @@ void ChaseCamera(ITEM_INFO *item);
 int32_t ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 void CombatCamera(ITEM_INFO *item);
 void LookCamera(ITEM_INFO *item);
-void FixedCamera();
-void CalculateCamera();
+void FixedCamera(void);
+void CalculateCamera(void);
 
 void CameraOffsetAdditionalAngle(int16_t delta);
 void CameraOffsetAdditionalElevation(int16_t delta);
-void CameraOffsetReset();
+void CameraOffsetReset(void);

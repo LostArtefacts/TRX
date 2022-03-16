@@ -28,42 +28,42 @@ void ViewPort_Init(int32_t width, int32_t height)
     g_PhdBottom = ViewPort_GetMaxY();
 }
 
-int32_t ViewPort_GetMinX()
+int32_t ViewPort_GetMinX(void)
 {
     return m_MinX;
 }
 
-int32_t ViewPort_GetMinY()
+int32_t ViewPort_GetMinY(void)
 {
     return m_MinY;
 }
 
-int32_t ViewPort_GetCenterX()
+int32_t ViewPort_GetCenterX(void)
 {
     return m_CenterX;
 }
 
-int32_t ViewPort_GetCenterY()
+int32_t ViewPort_GetCenterY(void)
 {
     return m_CenterY;
 }
 
-int32_t ViewPort_GetMaxX()
+int32_t ViewPort_GetMaxX(void)
 {
     return m_MaxX;
 }
 
-int32_t ViewPort_GetMaxY()
+int32_t ViewPort_GetMaxY(void)
 {
     return m_MaxY;
 }
 
-int32_t ViewPort_GetWidth()
+int32_t ViewPort_GetWidth(void)
 {
     return m_Width;
 }
 
-int32_t ViewPort_GetHeight()
+int32_t ViewPort_GetHeight(void)
 {
     return m_Height;
 }

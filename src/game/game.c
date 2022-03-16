@@ -51,7 +51,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     return true;
 }
 
-int32_t StopGame()
+int32_t StopGame(void)
 {
     Savegame_PersistGameToEndInfo(g_CurrentLevel);
 

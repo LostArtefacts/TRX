@@ -103,7 +103,7 @@ void json_string_free(struct json_string_s *str)
     }
 }
 
-struct json_array_s *json_array_new()
+struct json_array_s *json_array_new(void)
 {
     struct json_array_s *arr = Memory_Alloc(sizeof(struct json_array_s));
     arr->start = NULL;
@@ -255,7 +255,7 @@ struct json_object_s *json_array_get_object(
     return obj;
 }
 
-struct json_object_s *json_object_new()
+struct json_object_s *json_object_new(void)
 {
     struct json_object_s *obj = Memory_Alloc(sizeof(struct json_object_s));
     obj->start = NULL;

@@ -14,10 +14,10 @@ static int m_AudioStreamID = -1;
 static int16_t m_Track = 0;
 static int16_t m_TrackLooped = -1;
 
-static void Music_StopActiveStream();
+static void Music_StopActiveStream(void);
 static void Music_StreamFinished(int stream_id, void *user_data);
 
-static void Music_StopActiveStream()
+static void Music_StopActiveStream(void)
 {
     if (m_AudioStreamID < 0) {
         return;
@@ -46,7 +46,7 @@ static void Music_StreamFinished(int stream_id, void *user_data)
     }
 }
 
-bool Music_Init()
+bool Music_Init(void)
 {
     return S_Audio_Init();
 }
@@ -126,7 +126,7 @@ bool Music_PlayLooped(int16_t track)
     return true;
 }
 
-void Music_Stop()
+void Music_Stop(void)
 {
     m_Track = 0;
     m_TrackLooped = -1;
@@ -141,7 +141,7 @@ void Music_SetVolume(int16_t volume)
     }
 }
 
-void Music_Pause()
+void Music_Pause(void)
 {
     if (m_AudioStreamID < 0) {
         return;
@@ -149,7 +149,7 @@ void Music_Pause()
     S_Audio_StreamSoundPause(m_AudioStreamID);
 }
 
-void Music_Unpause()
+void Music_Unpause(void)
 {
     if (m_AudioStreamID < 0) {
         return;
@@ -157,7 +157,7 @@ void Music_Unpause()
     S_Audio_StreamSoundUnpause(m_AudioStreamID);
 }
 
-int16_t Music_CurrentTrack()
+int16_t Music_CurrentTrack(void)
 {
     return m_Track;
 }

@@ -279,7 +279,7 @@ void GFX_3D_Renderer_SetTexturingEnabled(
         &renderer->program, renderer->loc_texturing_enabled, is_enabled);
 }
 
-void GFX_3D_Renderer_RenderEmpty()
+void GFX_3D_Renderer_RenderEmpty(void)
 {
     GFX_Context_SetRendered();
 }

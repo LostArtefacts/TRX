@@ -48,11 +48,11 @@ static GFX_2D_Surface *m_BackSurface = NULL;
 static GFX_2D_Surface *m_PictureSurface = NULL;
 static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
-static void S_Output_SetHardwareVideoMode();
-static void S_Output_SetupRenderContextAndRender();
-static void S_Output_ReleaseTextures();
-static void S_Output_ReleaseSurfaces();
-static void S_Output_FlipPrimaryBuffer();
+static void S_Output_SetHardwareVideoMode(void);
+static void S_Output_SetupRenderContextAndRender(void);
+static void S_Output_ReleaseTextures(void);
+static void S_Output_ReleaseSurfaces(void);
+static void S_Output_FlipPrimaryBuffer(void);
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count);
@@ -61,7 +61,7 @@ static int32_t S_Output_ClipVertices(
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
-static void S_Output_ReleaseTextures()
+static void S_Output_ReleaseTextures(void)
 {
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureMap[i] != GFX_NO_TEXTURE) {
@@ -71,7 +71,7 @@ static void S_Output_ReleaseTextures()
     }
 }
 
-static void S_Output_SetHardwareVideoMode()
+static void S_Output_SetHardwareVideoMode(void)
 {
     S_Output_ReleaseSurfaces();
 
@@ -110,7 +110,7 @@ static void S_Output_SetHardwareVideoMode()
     S_Output_SetupRenderContextAndRender();
 }
 
-static void S_Output_SetupRenderContextAndRender()
+static void S_Output_SetupRenderContextAndRender(void)
 {
     S_Output_RenderBegin();
     GFX_3D_Renderer_SetSmoothingEnabled(
@@ -118,7 +118,7 @@ static void S_Output_SetupRenderContextAndRender()
     S_Output_RenderToggle();
 }
 
-static void S_Output_ReleaseSurfaces()
+static void S_Output_ReleaseSurfaces(void)
 {
     if (m_PrimarySurface) {
         S_Output_ClearSurface(m_PrimarySurface);
@@ -142,7 +142,7 @@ static void S_Output_ReleaseSurfaces()
     }
 }
 
-static void S_Output_FlipPrimaryBuffer()
+static void S_Output_FlipPrimaryBuffer(void)
 {
     S_Output_RenderEnd();
     bool result = GFX_2D_Surface_Flip(m_PrimarySurface);
@@ -472,7 +472,7 @@ void S_Output_DisableDepthTest(void)
     GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
 }
 
-void S_Output_RenderBegin()
+void S_Output_RenderBegin(void)
 {
     m_IsRenderingOld = m_IsRendering;
     if (!m_IsRendering) {
@@ -481,7 +481,7 @@ void S_Output_RenderBegin()
     }
 }
 
-void S_Output_RenderEnd()
+void S_Output_RenderEnd(void)
 {
     m_IsRenderingOld = m_IsRendering;
     if (m_IsRendering) {
@@ -490,7 +490,7 @@ void S_Output_RenderEnd()
     }
 }
 
-void S_Output_RenderToggle()
+void S_Output_RenderToggle(void)
 {
     if (m_IsRenderingOld) {
         S_Output_RenderBegin();
@@ -512,30 +512,30 @@ RGB888 S_Output_GetPaletteColor(uint8_t idx)
     return m_ColorPalette[idx];
 }
 
-void S_Output_DumpScreen()
+void S_Output_DumpScreen(void)
 {
     S_Output_FlipPrimaryBuffer();
     m_SelectedTexture = -1;
 }
 
-void S_Output_ClearDepthBuffer()
+void S_Output_ClearDepthBuffer(void)
 {
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
-void S_Output_ClearBackBuffer()
+void S_Output_ClearBackBuffer(void)
 {
     S_Output_RenderEnd();
     S_Output_ClearSurface(m_BackSurface);
     S_Output_RenderToggle();
 }
 
-void S_Output_DrawEmpty()
+void S_Output_DrawEmpty(void)
 {
     GFX_3D_Renderer_RenderEmpty();
 }
 
-void S_Output_CopyFromPicture()
+void S_Output_CopyFromPicture(void)
 {
     S_Output_ClearBackBuffer();
     S_Output_RenderEnd();
@@ -931,7 +931,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
-void S_Output_ApplyResolution()
+void S_Output_ApplyResolution(void)
 {
     S_Output_SetHardwareVideoMode();
 }
@@ -946,7 +946,7 @@ void S_Output_SetFullscreen(bool fullscreen)
     GFX_Context_SetFullscreen(fullscreen);
 }
 
-bool S_Output_Init()
+bool S_Output_Init(void)
 {
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         m_TextureMap[i] = GFX_NO_TEXTURE;
@@ -963,7 +963,7 @@ bool S_Output_Init()
     return true;
 }
 
-void S_Output_Shutdown()
+void S_Output_Shutdown(void)
 {
     S_Output_ReleaseTextures();
     S_Output_ReleaseSurfaces();

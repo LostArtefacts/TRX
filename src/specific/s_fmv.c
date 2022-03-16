@@ -2231,7 +2231,7 @@ static void S_FMV_EventLoop(VideoState *is)
     }
 }
 
-bool S_FMV_Init()
+bool S_FMV_Init(void)
 {
     return true;
 }

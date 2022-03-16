@@ -78,15 +78,15 @@ REQUEST_INFO g_LoadSavegameRequester = {
     0,
 };
 
-static void Option_PassportInitText();
-static void Option_PassportShutdownText();
-static void Option_PassportShowNewGame();
-static void Option_PassportShowSaves();
-static void Option_PassportInitText();
-static void Option_PassportInitNewGameRequester();
-static void Option_PassportInitSaveRequester();
+static void Option_PassportInitText(void);
+static void Option_PassportShutdownText(void);
+static void Option_PassportShowNewGame(void);
+static void Option_PassportShowSaves(void);
+static void Option_PassportInitText(void);
+static void Option_PassportInitNewGameRequester(void);
+static void Option_PassportInitSaveRequester(void);
 
-static void Option_PassportInitText()
+static void Option_PassportInitText(void)
 {
     m_Text[TEXT_LEFT_ARROW] = Text_Create(-85, -15, "\200");
     Text_AlignBottom(m_Text[TEXT_LEFT_ARROW], 1);
@@ -106,7 +106,7 @@ static void Option_PassportInitText()
     }
 }
 
-static void Option_PassportShutdownText()
+static void Option_PassportShutdownText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -116,7 +116,7 @@ static void Option_PassportShutdownText()
     m_IsTextInit = false;
 }
 
-static void Option_PassportShowNewGame()
+static void Option_PassportShowNewGame(void)
 {
     int32_t select = DisplayRequester(&m_NewGameRequester);
     if (select) {
@@ -135,7 +135,7 @@ static void Option_PassportShowNewGame()
     }
 }
 
-static void Option_PassportShowSaves()
+static void Option_PassportShowSaves(void)
 {
     int32_t select = DisplayRequester(&g_LoadSavegameRequester);
     if (select) {
@@ -155,7 +155,7 @@ static void Option_PassportShowSaves()
     }
 }
 
-static void Option_PassportInitNewGameRequester()
+static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
     InitRequester(req);
@@ -170,7 +170,7 @@ static void Option_PassportInitNewGameRequester()
     req->vis_lines = MAX_GAME_MODES;
 }
 
-static void Option_PassportInitSaveRequester()
+static void Option_PassportInitSaveRequester(void)
 {
     REQUEST_INFO *req = &g_LoadSavegameRequester;
     InitRequester(req);

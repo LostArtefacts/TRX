@@ -13,7 +13,7 @@
 
 #include <stddef.h>
 
-void LookLeftRight()
+void LookLeftRight(void)
 {
     g_Camera.type = CAM_LOOK;
     if (g_Input.left) {
@@ -32,7 +32,7 @@ void LookLeftRight()
     }
 }
 
-void LookUpDown()
+void LookUpDown(void)
 {
     g_Camera.type = CAM_LOOK;
     if (g_Input.forward) {
@@ -51,7 +51,7 @@ void LookUpDown()
     }
 }
 
-void ResetLook()
+void ResetLook(void)
 {
     if (g_Camera.type == CAM_LOOK) {
         return;

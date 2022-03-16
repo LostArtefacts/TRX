@@ -179,7 +179,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
     }
 }
 
-bool Sound_Init()
+bool Sound_Init(void)
 {
     m_DecibelLUT[0] = -10000;
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
@@ -192,7 +192,7 @@ bool Sound_Init()
     return m_SoundIsActive;
 }
 
-void Sound_UpdateEffects()
+void Sound_UpdateEffects(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -455,7 +455,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
     return false;
 }
 
-void Sound_ResetEffects()
+void Sound_ResetEffects(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -493,7 +493,7 @@ void Sound_ResetEffects()
     }
 }
 
-void Sound_ResetAmbientLoudness()
+void Sound_ResetAmbientLoudness(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -505,7 +505,7 @@ void Sound_ResetAmbientLoudness()
     }
 }
 
-void Sound_StopAmbientSounds()
+void Sound_StopAmbientSounds(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -526,7 +526,7 @@ void Sound_LoadSamples(
     S_Audio_SamplesLoad(num_samples, sample_pointers, sizes);
 }
 
-void Sound_StopAllSamples()
+void Sound_StopAllSamples(void)
 {
     S_Audio_SampleSoundCloseAll();
 }

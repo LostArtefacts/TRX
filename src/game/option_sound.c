@@ -28,9 +28,9 @@ typedef enum SOUND_TEXT {
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_SoundInitText();
+static void Option_SoundInitText(void);
 
-static void Option_SoundInitText()
+static void Option_SoundInitText(void)
 {
     char buf[20];
 

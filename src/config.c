@@ -185,7 +185,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     return result;
 }
 
-bool Config_Read()
+bool Config_Read(void)
 {
     bool result = false;
     char *cfg_data = NULL;

@@ -89,7 +89,7 @@ struct json_string_s *json_string_new(const char *string);
 void json_string_free(struct json_string_s *str);
 
 // arrays
-struct json_array_s *json_array_new();
+struct json_array_s *json_array_new(void);
 void json_array_free(struct json_array_s *arr);
 void json_array_element_free(struct json_array_element_s *element);
 
@@ -117,7 +117,7 @@ struct json_object_s *json_array_get_object(
     struct json_array_s *arr, const size_t idx);
 
 // objects
-struct json_object_s *json_object_new();
+struct json_object_s *json_object_new(void);
 void json_object_free(struct json_object_s *obj);
 void json_object_element_free(struct json_object_element_s *element);
 

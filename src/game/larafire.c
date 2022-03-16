@@ -139,7 +139,7 @@ WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     },
 };
 
-void LaraGun()
+void LaraGun(void)
 {
     if (g_Lara.left_arm.flash_gun > 0) {
         g_Lara.left_arm.flash_gun--;
@@ -290,7 +290,7 @@ void LaraGun()
     }
 }
 
-void InitialiseNewWeapon()
+void InitialiseNewWeapon(void)
 {
     g_Lara.left_arm.x_rot = 0;
     g_Lara.left_arm.y_rot = 0;

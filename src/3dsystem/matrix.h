@@ -5,12 +5,12 @@
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 
-void phd_ResetMatrixStack();
+void phd_ResetMatrixStack(void);
 void phd_GenerateW2V(PHD_3DPOS *viewpos);
 
-void phd_PushMatrix();
-void phd_PushUnitMatrix();
-void phd_PopMatrix();
+void phd_PushMatrix(void);
+void phd_PushUnitMatrix(void);
+void phd_PopMatrix(void);
 
 void phd_RotX(PHD_ANGLE rx);
 void phd_RotY(PHD_ANGLE ry);
@@ -20,8 +20,8 @@ void phd_RotYXZpack(int32_t rots);
 void phd_TranslateRel(int32_t x, int32_t y, int32_t z);
 void phd_TranslateAbs(int32_t x, int32_t y, int32_t z);
 
-void phd_PushMatrix_I();
-void phd_PopMatrix_I();
+void phd_PushMatrix_I(void);
+void phd_PopMatrix_I(void);
 
 void phd_RotY_I(int16_t ang);
 void phd_RotX_I(int16_t ang);
@@ -34,5 +34,5 @@ void phd_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2);
 
 void InitInterpolate(int32_t frac, int32_t rate);
-void InterpolateMatrix();
-void InterpolateArmMatrix();
+void InterpolateMatrix(void);
+void InterpolateArmMatrix(void);

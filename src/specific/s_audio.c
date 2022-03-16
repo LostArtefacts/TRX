@@ -21,7 +21,7 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
     memcpy(stream_data, m_WorkingBuffer, len);
 }
 
-bool S_Audio_Init()
+bool S_Audio_Init(void)
 {
     if (g_AudioDeviceID) {
         // already initialized
@@ -67,7 +67,7 @@ bool S_Audio_Init()
     return true;
 }
 
-bool S_Audio_Shutdown()
+bool S_Audio_Shutdown(void)
 {
     S_Audio_SampleSoundShutdown();
     S_Audio_StreamSoundShutdown();

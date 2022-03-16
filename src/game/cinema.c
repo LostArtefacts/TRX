@@ -30,7 +30,7 @@ int32_t StartCinematic(int32_t level_num)
     return GF_NOP;
 }
 
-int32_t CinematicLoop()
+int32_t CinematicLoop(void)
 {
     DoCinematic(2);
     Draw_ProcessFrame();
@@ -51,7 +51,7 @@ int32_t StopCinematic(int32_t level_num)
     return level_num | GF_LEVEL_COMPLETE;
 }
 
-void InitCinematicRooms()
+void InitCinematicRooms(void)
 {
     for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
         if (g_RoomInfo[room_num].flipped_room >= 0) {
@@ -117,7 +117,7 @@ bool DoCinematic(int32_t nframes)
     return false;
 }
 
-void CalculateCinematicCamera()
+void CalculateCinematicCamera(void)
 {
     PHD_VECTOR campos;
     PHD_VECTOR camtar;
@@ -181,7 +181,7 @@ void InitialiseGenPlayer(int16_t item_num)
     g_Items[item_num].pos.y_rot = 0;
 }
 
-void InGameCinematicCamera()
+void InGameCinematicCamera(void)
 {
     g_CineFrame++;
     if (g_CineFrame >= g_NumCineFrames) {

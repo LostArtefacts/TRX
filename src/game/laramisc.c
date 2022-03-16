@@ -248,7 +248,7 @@ void LaraControl(int16_t item_num)
     }
 }
 
-void LaraSwapMeshExtra()
+void LaraSwapMeshExtra(void)
 {
     if (!g_Objects[O_LARA_EXTRA].loaded) {
         return;
@@ -449,7 +449,7 @@ void InitialiseLaraLoad(int16_t item_num)
     }
 }
 
-void InitialiseLara()
+void InitialiseLara(void)
 {
     START_INFO *start = &g_GameInfo.start[g_CurrentLevel];
 
@@ -631,7 +631,7 @@ void LaraInitialiseMeshes(int32_t level_num)
     }
 }
 
-void LaraCheatGetStuff()
+void LaraCheatGetStuff(void)
 {
     if (g_CurrentLevel == g_GameFlow.gym_level_num) {
         return;

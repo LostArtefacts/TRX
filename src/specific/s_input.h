@@ -7,11 +7,11 @@
 
 typedef int16_t S_INPUT_KEYCODE;
 
-void S_Input_Init();
+void S_Input_Init(void);
 
-INPUT_STATE S_Input_GetCurrentState();
+INPUT_STATE S_Input_GetCurrentState(void);
 
-S_INPUT_KEYCODE S_Input_ReadKeyCode();
+S_INPUT_KEYCODE S_Input_ReadKeyCode(void);
 
 const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key);
 

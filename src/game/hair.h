@@ -2,6 +2,6 @@
 
 #include <stdint.h>
 
-void InitialiseHair();
+void InitialiseHair(void);
 void HairControl(int32_t in_cutscene);
-void DrawHair();
+void DrawHair(void);

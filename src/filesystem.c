@@ -36,7 +36,7 @@ bool File_IsRelative(const char *path)
     return path && !File_IsAbsolute(path);
 }
 
-const char *File_GetGameDirectory()
+const char *File_GetGameDirectory(void)
 {
     return S_File_GetGameDirectory();
 }
