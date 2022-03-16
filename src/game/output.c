@@ -851,8 +851,8 @@ static void Output_DrawBlackScreen(uint8_t alpha)
 {
     int32_t sx = 0;
     int32_t sy = 0;
-    int32_t sw = ViewPort_GetMaxX();
-    int32_t sh = ViewPort_GetMaxY();
+    int32_t sw = ViewPort_GetWidth();
+    int32_t sh = ViewPort_GetHeight();
 
     RGBA8888 background = { 0, 0, 0, alpha };
     S_Output_DisableDepthTest();
