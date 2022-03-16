@@ -1,4 +1,7 @@
-## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
+- ...
+
+## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)
 - added ability to automatically walk to switches when nearby (#222)
 - added ability to turn off detailed end of the level stats (#447)
