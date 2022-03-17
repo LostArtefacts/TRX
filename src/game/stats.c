@@ -6,6 +6,7 @@
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/music.h"
 #include "game/output.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -523,4 +524,5 @@ void Stats_ShowTotal(const char *filename)
 
     Output_FadeReset();
     Text_RemoveAll();
+    Music_Stop();
 }
