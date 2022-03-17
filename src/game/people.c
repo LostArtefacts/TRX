@@ -27,12 +27,12 @@ bool Targetable(ITEM_INFO *item, AI_INFO *info)
     return LOS(&start, &target);
 }
 
-int32_t ShotLara(
+bool ShotLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation)
 {
-    int32_t hit;
+    bool hit;
     if (distance > PEOPLE_SHOOT_RANGE) {
-        hit = 0;
+        hit = false;
     } else {
         hit = Random_GetControl()
             < ((PEOPLE_SHOOT_RANGE - distance) / (PEOPLE_SHOOT_RANGE / 0x7FFF)
