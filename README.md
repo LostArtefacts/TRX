@@ -262,6 +262,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added music during the credits
 - added fade effects to displayed images
 - added unobtainable pickups and kills stats support in the gameflow
+- added the option to pause sound in the inventory screen
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192

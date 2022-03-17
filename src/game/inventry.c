@@ -8,6 +8,7 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
+#include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -158,8 +159,11 @@ int32_t Display_Inventory(int inv_mode)
     }
     Construct_Inventory();
 
-    Sound_StopAmbientSounds();
-    Sound_StopAllSamples();
+    if (g_Config.disable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
+        Music_Pause();
+        Sound_StopAmbientSounds();
+        Sound_StopAllSamples();
+    }
 
     switch (g_InvMode) {
     case INV_DEATH_MODE:
@@ -661,6 +665,10 @@ int32_t Display_Inventory(int inv_mode)
     if (m_VersionText) {
         Text_Remove(m_VersionText);
         m_VersionText = NULL;
+    }
+
+    if (g_Config.disable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
+        Music_Unpause();
     }
 
     if (start_demo) {
