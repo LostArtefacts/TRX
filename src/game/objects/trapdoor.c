@@ -3,9 +3,9 @@
 #include "game/control.h"
 #include "global/vars.h"
 
-static bool TrapDoor_OnTrapDoor(ITEM_INFO *item, int32_t x, int32_t z);
+static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z);
 
-static bool TrapDoor_OnTrapDoor(ITEM_INFO *item, int32_t x, int32_t z)
+static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
 {
     x >>= WALL_SHIFT;
     z >>= WALL_SHIFT;
@@ -51,7 +51,7 @@ void TrapDoor_Control(int16_t item_num)
 void TrapDoor_Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (!TrapDoor_OnTrapDoor(item, x, z)) {
+    if (!TrapDoor_StandingOn(item, x, z)) {
         return;
     }
     if (y <= item->pos.y && item->current_anim_state == DOOR_CLOSED
@@ -63,7 +63,7 @@ void TrapDoor_Floor(
 void TrapDoor_Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (!TrapDoor_OnTrapDoor(item, x, z)) {
+    if (!TrapDoor_StandingOn(item, x, z)) {
         return;
     }
     if (y > item->pos.y && item->current_anim_state == DOOR_CLOSED
