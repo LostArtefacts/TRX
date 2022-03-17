@@ -240,8 +240,8 @@ void ObjectObjects(void)
     Bridge_SetupTilt1(&g_Objects[O_BRIDGE_TILT1]);
     Bridge_SetupTilt2(&g_Objects[O_BRIDGE_TILT2]);
     Bridge_SetupDrawBridge(&g_Objects[O_DRAW_BRIDGE]);
-    Switch_Setup1(&g_Objects[O_SWITCH_TYPE1]);
-    Switch_Setup2(&g_Objects[O_SWITCH_TYPE2]);
+    Switch_Setup(&g_Objects[O_SWITCH_TYPE1]);
+    Switch_SetupUW(&g_Objects[O_SWITCH_TYPE2]);
     Door_Setup(&g_Objects[O_DOOR_TYPE1]);
     Door_Setup(&g_Objects[O_DOOR_TYPE2]);
     Door_Setup(&g_Objects[O_DOOR_TYPE3]);

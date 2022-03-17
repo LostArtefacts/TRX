@@ -9,7 +9,7 @@
 #include "game/lara.h"
 #include "global/vars.h"
 
-static int16_t m_Switch_Bounds1[12] = {
+static int16_t m_Switch_Bounds[12] = {
     -200,
     +200,
     +0,
@@ -39,13 +39,13 @@ static int16_t m_Switch_BoundsControlled[12] = {
     +10 * PHD_DEGREE,
 };
 
-static int16_t m_Switch_Bounds2[12] = {
+static int16_t m_Switch_BoundsUW[12] = {
     -WALL_L,          +WALL_L,          -WALL_L,          +WALL_L,
     -WALL_L,          +WALL_L / 2,      -80 * PHD_DEGREE, +80 * PHD_DEGREE,
     -80 * PHD_DEGREE, +80 * PHD_DEGREE, -80 * PHD_DEGREE, +80 * PHD_DEGREE,
 };
 
-void Switch_Setup1(OBJECT_INFO *obj)
+void Switch_Setup(OBJECT_INFO *obj)
 {
     obj->control = Switch_Control;
     obj->collision = Switch_Collision;
@@ -53,10 +53,10 @@ void Switch_Setup1(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void Switch_Setup2(OBJECT_INFO *obj)
+void Switch_SetupUW(OBJECT_INFO *obj)
 {
     obj->control = Switch_Control;
-    obj->collision = Switch_Collision2;
+    obj->collision = Switch_CollisionUW;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -90,7 +90,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(m_Switch_Bounds1, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch_Bounds, item, lara_item)) {
         return;
     }
 
@@ -172,7 +172,7 @@ void Switch_CollisionControlled(
     }
 }
 
-void Switch_Collision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -185,7 +185,7 @@ void Switch_Collision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(m_Switch_Bounds2, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch_BoundsUW, item, lara_item)) {
         return;
     }
 

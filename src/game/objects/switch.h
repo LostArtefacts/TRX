@@ -8,11 +8,12 @@ typedef enum {
     SWITCH_STATE_LINK = 2,
 } SWITCH_STATE;
 
-void Switch_Setup1(OBJECT_INFO *obj);
-void Switch_Setup2(OBJECT_INFO *obj);
+void Switch_Setup(OBJECT_INFO *obj);
+void Switch_SetupUW(OBJECT_INFO *obj);
 void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Switch_CollisionControlled(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-void Switch_Collision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+void Switch_CollisionUW(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Switch_Control(int16_t item_num);
 bool Switch_Trigger(int16_t item_num, int16_t timer);
