@@ -6,16 +6,16 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupCabin(OBJECT_INFO *obj)
+void Cabin_Setup(OBJECT_INFO *obj)
 {
-    obj->control = CabinControl;
+    obj->control = Cabin_Control;
     obj->draw_routine = DrawUnclippedItem;
     obj->collision = ObjectCollision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void CabinControl(int16_t item_num)
+void Cabin_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

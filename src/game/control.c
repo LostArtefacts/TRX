@@ -13,7 +13,7 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/keyhole.h"
-#include "game/objects/puzzle_hole.h"
+#include "game/objects/pickup.h"
 #include "game/objects/switch.h"
 #include "game/overlay.h"
 #include "game/sound.h"
@@ -515,7 +515,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
         switch (type) {
         case TT_SWITCH: {
             int16_t value = *data++ & VALUE_BITS;
-            if (!SwitchTrigger(value, timer)) {
+            if (!Switch_Trigger(value, timer)) {
                 return;
             }
             switch_off = g_Items[value].current_anim_state == AS_RUN;
@@ -531,7 +531,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
         case TT_KEY: {
             int16_t value = *data++ & VALUE_BITS;
-            if (!KeyTrigger(value)) {
+            if (!KeyHole_Trigger(value)) {
                 return;
             }
             break;
@@ -539,7 +539,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
 
         case TT_PICKUP: {
             int16_t value = *data++ & VALUE_BITS;
-            if (!PickupTrigger(value)) {
+            if (!Pickup_Trigger(value)) {
                 return;
             }
             break;

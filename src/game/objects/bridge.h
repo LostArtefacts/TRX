@@ -2,27 +2,30 @@
 
 #include "global/types.h"
 
-void SetupBridgeFlat(OBJECT_INFO *obj);
-void SetupBridgeTilt1(OBJECT_INFO *obj);
-void SetupBridgeTilt2(OBJECT_INFO *obj);
-void SetupDrawBridge(OBJECT_INFO *obj);
-int32_t OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
-void DrawBridgeFloor(
+void Bridge_SetupFlat(OBJECT_INFO *obj);
+void Bridge_SetupTilt1(OBJECT_INFO *obj);
+void Bridge_SetupTilt2(OBJECT_INFO *obj);
+void Bridge_SetupDrawBridge(OBJECT_INFO *obj);
+
+void Bridge_DrawBridgeFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void DrawBridgeCeiling(
+void Bridge_DrawBridgeCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void DrawBridgeCollision(
+void Bridge_DrawBridgeCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-void BridgeFlatFloor(
+void Bridge_DrawBridgeControl(int16_t item_num);
+
+void Bridge_FlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void BridgeFlatCeiling(
+void Bridge_FlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-int32_t GetOffset(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
-void BridgeTilt1Floor(
+
+void Bridge_Tilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void BridgeTilt1Ceiling(
+void Bridge_Tilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void BridgeTilt2Floor(
+
+void Bridge_Tilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void BridgeTilt2Ceiling(
+void Bridge_Tilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);

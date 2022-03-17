@@ -57,17 +57,17 @@ static void PickUp_GetItem(
     g_Lara.interact_target.is_moving = false;
 }
 
-void SetupPickupObject(OBJECT_INFO *obj)
+void Pickup_Setup(OBJECT_INFO *obj)
 {
     obj->draw_routine = DrawPickupItem;
-    obj->collision = PickUpCollision;
+    obj->collision = Pickup_Collision;
     obj->save_flags = 1;
 }
 
-void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     if (g_Config.walk_to_items) {
-        PickUpCollisionControlled(item_num, lara_item, coll);
+        Pickup_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
@@ -122,7 +122,7 @@ void PickUpCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void PickUpCollisionControlled(
+void Pickup_CollisionControlled(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -217,4 +217,14 @@ void PickUpCollisionControlled(
     item->pos.x_rot = rotx;
     item->pos.y_rot = roty;
     item->pos.z_rot = rotz;
+}
+
+bool Pickup_Trigger(int16_t item_num)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    if (item->status != IS_INVISIBLE) {
+        return false;
+    }
+    item->status = IS_DEACTIVATED;
+    return true;
 }

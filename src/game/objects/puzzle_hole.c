@@ -25,18 +25,18 @@ int16_t g_PuzzleHoleBounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-void SetupPuzzleHole(OBJECT_INFO *obj)
+void PuzzleHole_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = PuzzleHoleCollision;
+    obj->collision = PuzzleHole_Collision;
     obj->save_flags = 1;
 }
 
-void SetupPuzzleDone(OBJECT_INFO *obj)
+void PuzzleHole_SetupDone(OBJECT_INFO *obj)
 {
     obj->save_flags = 1;
 }
 
-void PuzzleHoleCollision(
+void PuzzleHole_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -160,14 +160,4 @@ void PuzzleHoleCollision(
         g_PickUpY = lara_item->pos.y;
         g_PickUpZ = lara_item->pos.z;
     }
-}
-
-int32_t PickupTrigger(int16_t item_num)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-    if (item->status != IS_INVISIBLE) {
-        return 0;
-    }
-    item->status = IS_DEACTIVATED;
-    return 1;
 }

@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/people.h"
@@ -132,7 +133,7 @@ void CowboyControl(int16_t item_num)
                     }
                 } else {
                     int16_t fx_num =
-                        CreatureEffect(item, &g_CowboyGun2, GunShot);
+                        CreatureEffect(item, &g_CowboyGun2, GunShot_Spawn);
                     if (fx_num != NO_ITEM) {
                         g_Effects[fx_num].pos.y_rot += head;
                     }

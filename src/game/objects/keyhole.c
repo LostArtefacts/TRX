@@ -28,13 +28,13 @@ int32_t g_PickUpX;
 int32_t g_PickUpY;
 int32_t g_PickUpZ;
 
-void SetupKeyHole(OBJECT_INFO *obj)
+void KeyHole_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = KeyHoleCollision;
+    obj->collision = KeyHole_Collision;
     obj->save_flags = 1;
 }
 
-void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -130,12 +130,12 @@ void KeyHoleCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-int32_t KeyTrigger(int16_t item_num)
+bool KeyHole_Trigger(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE && g_Lara.gun_status != LGS_HANDSBUSY) {
         item->status = IS_DEACTIVATED;
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }

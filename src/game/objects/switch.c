@@ -9,7 +9,7 @@
 #include "game/lara.h"
 #include "global/vars.h"
 
-static int16_t m_Switch1Bounds[12] = {
+static int16_t m_Switch_Bounds1[12] = {
     -200,
     +200,
     +0,
@@ -24,7 +24,7 @@ static int16_t m_Switch1Bounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-static int16_t m_Switch1BoundsControlled[12] = {
+static int16_t m_Switch_BoundsControlled[12] = {
     +0,
     +0,
     +0,
@@ -39,29 +39,29 @@ static int16_t m_Switch1BoundsControlled[12] = {
     +10 * PHD_DEGREE,
 };
 
-static int16_t m_Switch2Bounds[12] = {
+static int16_t m_Switch_Bounds2[12] = {
     -WALL_L,          +WALL_L,          -WALL_L,          +WALL_L,
     -WALL_L,          +WALL_L / 2,      -80 * PHD_DEGREE, +80 * PHD_DEGREE,
     -80 * PHD_DEGREE, +80 * PHD_DEGREE, -80 * PHD_DEGREE, +80 * PHD_DEGREE,
 };
 
-void SetupSwitch1(OBJECT_INFO *obj)
+void Switch_Setup1(OBJECT_INFO *obj)
 {
-    obj->control = SwitchControl;
-    obj->collision = SwitchCollision;
+    obj->control = Switch_Control;
+    obj->collision = Switch_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void SetupSwitch2(OBJECT_INFO *obj)
+void Switch_Setup2(OBJECT_INFO *obj)
 {
-    obj->control = SwitchControl;
-    obj->collision = SwitchCollision2;
+    obj->control = Switch_Control;
+    obj->collision = Switch_Collision2;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void SwitchControl(int16_t item_num)
+void Switch_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->flags |= IF_CODE_BITS;
@@ -72,29 +72,10 @@ void SwitchControl(int16_t item_num)
     AnimateItem(item);
 }
 
-int32_t SwitchTrigger(int16_t item_num, int16_t timer)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-    if (item->status != IS_DEACTIVATED) {
-        return 0;
-    }
-    if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
-        item->timer = timer;
-        if (timer != 1) {
-            item->timer *= FRAMES_PER_SECOND;
-        }
-        item->status = IS_ACTIVE;
-    } else {
-        RemoveActiveItem(item_num);
-        item->status = IS_NOT_ACTIVE;
-    }
-    return 1;
-}
-
-void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     if (g_Config.walk_to_items) {
-        SwitchCollisionControlled(item_num, lara_item, coll);
+        Switch_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
@@ -109,7 +90,7 @@ void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(m_Switch1Bounds, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch_Bounds1, item, lara_item)) {
         return;
     }
 
@@ -133,7 +114,7 @@ void SwitchCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void SwitchCollisionControlled(
+void Switch_CollisionControlled(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -146,14 +127,14 @@ void SwitchCollisionControlled(
             && g_Lara.interact_target.item_num == item_num)) {
         int16_t *bounds = GetBoundsAccurate(item);
 
-        m_Switch1BoundsControlled[0] = bounds[0] - 256;
-        m_Switch1BoundsControlled[1] = bounds[1] + 256;
-        m_Switch1BoundsControlled[4] = bounds[4] - 200;
-        m_Switch1BoundsControlled[5] = bounds[5] + 200;
+        m_Switch_BoundsControlled[0] = bounds[0] - 256;
+        m_Switch_BoundsControlled[1] = bounds[1] + 256;
+        m_Switch_BoundsControlled[4] = bounds[4] - 200;
+        m_Switch_BoundsControlled[5] = bounds[5] + 200;
 
         PHD_VECTOR move_vector = { 0, 0, bounds[4] - 64 };
 
-        if (TestLaraPosition(m_Switch1BoundsControlled, item, lara_item)) {
+        if (TestLaraPosition(m_Switch_BoundsControlled, item, lara_item)) {
             if (MoveLaraPosition(&move_vector, item, lara_item)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
                     lara_item->anim_number = AA_WALLSWITCH_DOWN;
@@ -191,7 +172,7 @@ void SwitchCollisionControlled(
     }
 }
 
-void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Switch_Collision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -204,7 +185,7 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(m_Switch2Bounds, item, lara_item)) {
+    if (!TestLaraPosition(m_Switch_Bounds2, item, lara_item)) {
         return;
     }
 
@@ -227,4 +208,23 @@ void SwitchCollision2(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         AddActiveItem(item_num);
         AnimateItem(item);
     }
+}
+
+bool Switch_Trigger(int16_t item_num, int16_t timer)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    if (item->status != IS_DEACTIVATED) {
+        return false;
+    }
+    if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
+        item->timer = timer;
+        if (timer != 1) {
+            item->timer *= FRAMES_PER_SECOND;
+        }
+        item->status = IS_ACTIVE;
+    } else {
+        RemoveActiveItem(item_num);
+        item->status = IS_NOT_ACTIVE;
+    }
+    return true;
 }
