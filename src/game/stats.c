@@ -523,4 +523,5 @@ void Stats_ShowTotal(const char *filename)
 
     Output_FadeReset();
     Text_RemoveAll();
+    Music_Stop();
 }
