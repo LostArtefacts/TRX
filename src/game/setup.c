@@ -33,6 +33,7 @@
 #include "game/effects/bubble.h"
 #include "game/effects/earthquake.h"
 #include "game/effects/explosion.h"
+#include "game/effects/gunshot.h"
 #include "game/effects/missile.h"
 #include "game/effects/ricochet.h"
 #include "game/effects/splash.h"
@@ -52,12 +53,11 @@
 #include "game/objects/cabin.h"
 #include "game/objects/cog.h"
 #include "game/objects/door.h"
-#include "game/objects/gunshot.h"
 #include "game/objects/keyhole.h"
 #include "game/objects/misc.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
-#include "game/objects/savegame_crystal.h"
+#include "game/objects/save_crystal.h"
 #include "game/objects/scion.h"
 #include "game/objects/switch.h"
 #include "game/objects/trapdoor.h"
@@ -235,74 +235,74 @@ void TrapObjects(void)
 
 void ObjectObjects(void)
 {
-    SetupCameraTarget(&g_Objects[O_CAMERA_TARGET]);
-    SetupBridgeFlat(&g_Objects[O_BRIDGE_FLAT]);
-    SetupBridgeTilt1(&g_Objects[O_BRIDGE_TILT1]);
-    SetupBridgeTilt2(&g_Objects[O_BRIDGE_TILT2]);
-    SetupDrawBridge(&g_Objects[O_DRAW_BRIDGE]);
-    SetupSwitch1(&g_Objects[O_SWITCH_TYPE1]);
-    SetupSwitch2(&g_Objects[O_SWITCH_TYPE2]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE1]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE2]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE3]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE4]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE5]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE6]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE7]);
-    SetupDoor(&g_Objects[O_DOOR_TYPE8]);
-    SetupTrapDoor(&g_Objects[O_TRAPDOOR]);
-    SetupTrapDoor(&g_Objects[O_TRAPDOOR2]);
-    SetupCog(&g_Objects[O_COG_1]);
-    SetupCog(&g_Objects[O_COG_2]);
-    SetupCog(&g_Objects[O_COG_3]);
-    SetupMovingBar(&g_Objects[O_MOVING_BAR]);
+    CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
+    Bridge_SetupFlat(&g_Objects[O_BRIDGE_FLAT]);
+    Bridge_SetupTilt1(&g_Objects[O_BRIDGE_TILT1]);
+    Bridge_SetupTilt2(&g_Objects[O_BRIDGE_TILT2]);
+    Bridge_SetupDrawBridge(&g_Objects[O_DRAW_BRIDGE]);
+    Switch_Setup1(&g_Objects[O_SWITCH_TYPE1]);
+    Switch_Setup2(&g_Objects[O_SWITCH_TYPE2]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE1]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE2]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE3]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE4]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE5]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE6]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE7]);
+    Door_Setup(&g_Objects[O_DOOR_TYPE8]);
+    TrapDoor_Setup(&g_Objects[O_TRAPDOOR]);
+    TrapDoor_Setup(&g_Objects[O_TRAPDOOR2]);
+    Cog_Setup(&g_Objects[O_COG_1]);
+    Cog_Setup(&g_Objects[O_COG_2]);
+    Cog_Setup(&g_Objects[O_COG_3]);
+    MovingBar_Setup(&g_Objects[O_MOVING_BAR]);
 
-    SetupPickupObject(&g_Objects[O_PICKUP_ITEM1]);
-    SetupPickupObject(&g_Objects[O_PICKUP_ITEM2]);
-    SetupPickupObject(&g_Objects[O_KEY_ITEM1]);
-    SetupPickupObject(&g_Objects[O_KEY_ITEM2]);
-    SetupPickupObject(&g_Objects[O_KEY_ITEM3]);
-    SetupPickupObject(&g_Objects[O_KEY_ITEM4]);
-    SetupPickupObject(&g_Objects[O_PUZZLE_ITEM1]);
-    SetupPickupObject(&g_Objects[O_PUZZLE_ITEM2]);
-    SetupPickupObject(&g_Objects[O_PUZZLE_ITEM3]);
-    SetupPickupObject(&g_Objects[O_PUZZLE_ITEM4]);
-    SetupPickupObject(&g_Objects[O_GUN_ITEM]);
-    SetupPickupObject(&g_Objects[O_SHOTGUN_ITEM]);
-    SetupPickupObject(&g_Objects[O_MAGNUM_ITEM]);
-    SetupPickupObject(&g_Objects[O_UZI_ITEM]);
-    SetupPickupObject(&g_Objects[O_GUN_AMMO_ITEM]);
-    SetupPickupObject(&g_Objects[O_SG_AMMO_ITEM]);
-    SetupPickupObject(&g_Objects[O_MAG_AMMO_ITEM]);
-    SetupPickupObject(&g_Objects[O_UZI_AMMO_ITEM]);
-    SetupPickupObject(&g_Objects[O_EXPLOSIVE_ITEM]);
-    SetupPickupObject(&g_Objects[O_MEDI_ITEM]);
-    SetupPickupObject(&g_Objects[O_BIGMEDI_ITEM]);
+    Pickup_Setup(&g_Objects[O_PICKUP_ITEM1]);
+    Pickup_Setup(&g_Objects[O_PICKUP_ITEM2]);
+    Pickup_Setup(&g_Objects[O_KEY_ITEM1]);
+    Pickup_Setup(&g_Objects[O_KEY_ITEM2]);
+    Pickup_Setup(&g_Objects[O_KEY_ITEM3]);
+    Pickup_Setup(&g_Objects[O_KEY_ITEM4]);
+    Pickup_Setup(&g_Objects[O_PUZZLE_ITEM1]);
+    Pickup_Setup(&g_Objects[O_PUZZLE_ITEM2]);
+    Pickup_Setup(&g_Objects[O_PUZZLE_ITEM3]);
+    Pickup_Setup(&g_Objects[O_PUZZLE_ITEM4]);
+    Pickup_Setup(&g_Objects[O_GUN_ITEM]);
+    Pickup_Setup(&g_Objects[O_SHOTGUN_ITEM]);
+    Pickup_Setup(&g_Objects[O_MAGNUM_ITEM]);
+    Pickup_Setup(&g_Objects[O_UZI_ITEM]);
+    Pickup_Setup(&g_Objects[O_GUN_AMMO_ITEM]);
+    Pickup_Setup(&g_Objects[O_SG_AMMO_ITEM]);
+    Pickup_Setup(&g_Objects[O_MAG_AMMO_ITEM]);
+    Pickup_Setup(&g_Objects[O_UZI_AMMO_ITEM]);
+    Pickup_Setup(&g_Objects[O_EXPLOSIVE_ITEM]);
+    Pickup_Setup(&g_Objects[O_MEDI_ITEM]);
+    Pickup_Setup(&g_Objects[O_BIGMEDI_ITEM]);
 
-    SetupScion1(&g_Objects[O_SCION_ITEM]);
-    SetupScion2(&g_Objects[O_SCION_ITEM2]);
-    SetupScion3(&g_Objects[O_SCION_ITEM3]);
-    SetupScion4(&g_Objects[O_SCION_ITEM4]);
-    SetupScionHolder(&g_Objects[O_SCION_HOLDER]);
+    Scion_Setup1(&g_Objects[O_SCION_ITEM]);
+    Scion_Setup2(&g_Objects[O_SCION_ITEM2]);
+    Scion_Setup3(&g_Objects[O_SCION_ITEM3]);
+    Scion_Setup4(&g_Objects[O_SCION_ITEM4]);
+    Scion_SetupHolder(&g_Objects[O_SCION_HOLDER]);
 
-    SetupLeadBar(&g_Objects[O_LEADBAR_ITEM]);
-    SetupSavegameCrystal(&g_Objects[O_SAVEGAME_ITEM]);
-    SetupKeyHole(&g_Objects[O_KEY_HOLE1]);
-    SetupKeyHole(&g_Objects[O_KEY_HOLE2]);
-    SetupKeyHole(&g_Objects[O_KEY_HOLE3]);
-    SetupKeyHole(&g_Objects[O_KEY_HOLE4]);
+    LeadBar_Setup(&g_Objects[O_LEADBAR_ITEM]);
+    SaveCrystal_Setup(&g_Objects[O_SAVEGAME_ITEM]);
+    KeyHole_Setup(&g_Objects[O_KEY_HOLE1]);
+    KeyHole_Setup(&g_Objects[O_KEY_HOLE2]);
+    KeyHole_Setup(&g_Objects[O_KEY_HOLE3]);
+    KeyHole_Setup(&g_Objects[O_KEY_HOLE4]);
 
-    SetupPuzzleHole(&g_Objects[O_PUZZLE_HOLE1]);
-    SetupPuzzleHole(&g_Objects[O_PUZZLE_HOLE2]);
-    SetupPuzzleHole(&g_Objects[O_PUZZLE_HOLE3]);
-    SetupPuzzleHole(&g_Objects[O_PUZZLE_HOLE4]);
-    SetupPuzzleDone(&g_Objects[O_PUZZLE_DONE1]);
-    SetupPuzzleDone(&g_Objects[O_PUZZLE_DONE2]);
-    SetupPuzzleDone(&g_Objects[O_PUZZLE_DONE3]);
-    SetupPuzzleDone(&g_Objects[O_PUZZLE_DONE4]);
+    PuzzleHole_Setup(&g_Objects[O_PUZZLE_HOLE1]);
+    PuzzleHole_Setup(&g_Objects[O_PUZZLE_HOLE2]);
+    PuzzleHole_Setup(&g_Objects[O_PUZZLE_HOLE3]);
+    PuzzleHole_Setup(&g_Objects[O_PUZZLE_HOLE4]);
+    PuzzleHole_SetupDone(&g_Objects[O_PUZZLE_DONE1]);
+    PuzzleHole_SetupDone(&g_Objects[O_PUZZLE_DONE2]);
+    PuzzleHole_SetupDone(&g_Objects[O_PUZZLE_DONE3]);
+    PuzzleHole_SetupDone(&g_Objects[O_PUZZLE_DONE4]);
 
-    SetupCabin(&g_Objects[O_PORTACABIN]);
-    SetupBoat(&g_Objects[O_BOAT]);
+    Cabin_Setup(&g_Objects[O_PORTACABIN]);
+    Boat_Setup(&g_Objects[O_BOAT]);
     SetupEarthquake(&g_Objects[O_EARTHQUAKE]);
 
     g_Objects[O_PLAYER_1].initialise = InitialisePlayer1;
@@ -332,7 +332,7 @@ void ObjectObjects(void)
     SetupNatlaGun(&g_Objects[O_MISSILE1]);
     SetupMissile(&g_Objects[O_MISSILE2]);
     SetupMissile(&g_Objects[O_MISSILE3]);
-    SetupGunShot(&g_Objects[O_GUN_FLASH]);
+    GunShot_Setup(&g_Objects[O_GUN_FLASH]);
 }
 
 void InitialiseObjects(void)

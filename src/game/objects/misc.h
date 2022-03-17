@@ -2,6 +2,6 @@
 
 #include "global/types.h"
 
-void SetupCameraTarget(OBJECT_INFO *obj);
-void SetupMovingBar(OBJECT_INFO *obj);
-void SetupLeadBar(OBJECT_INFO *obj);
+void CameraTarget_Setup(OBJECT_INFO *obj);
+void MovingBar_Setup(OBJECT_INFO *obj);
+void LeadBar_Setup(OBJECT_INFO *obj);

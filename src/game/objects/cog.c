@@ -4,13 +4,13 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupCog(OBJECT_INFO *obj)
+void Cog_Setup(OBJECT_INFO *obj)
 {
-    obj->control = CogControl;
+    obj->control = Cog_Control;
     obj->save_flags = 1;
 }
 
-void CogControl(int16_t item_num)
+void Cog_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {

@@ -5,26 +5,17 @@
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/sphere.h"
 #include "global/vars.h"
 
-static void OpenThatDoor(DOORPOS_DATA *d);
-static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item);
-static int8_t LaraDoorCollision(ITEM_INFO *item);
+static void Door_Open(DOORPOS_DATA *d);
+static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item);
+static bool Door_LaraDoorCollision(ITEM_INFO *item);
 
-void SetupDoor(OBJECT_INFO *obj)
-{
-    obj->initialise = InitialiseDoor;
-    obj->control = DoorControl;
-    obj->draw_routine = DrawUnclippedItem;
-    obj->collision = DoorCollision;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-}
-
-static int8_t LaraDoorCollision(ITEM_INFO *item)
+static bool Door_LaraDoorCollision(ITEM_INFO *item)
 {
     if (!g_LaraItem) {
-        return 0;
+        return false;
     }
     int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
     int32_t dx = ABS(item->pos.x - g_LaraItem->pos.x) >> 8;
@@ -34,14 +25,14 @@ static int8_t LaraDoorCollision(ITEM_INFO *item)
     return dist < max_dist;
 }
 
-static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item)
+static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item)
 {
     FLOOR_INFO *floor = d->floor;
     if (!floor) {
         return;
     }
 
-    if (item && LaraDoorCollision(item)) {
+    if (item && Door_LaraDoorCollision(item)) {
         return;
     }
 
@@ -58,7 +49,7 @@ static void ShutThatDoor(DOORPOS_DATA *d, ITEM_INFO *item)
     }
 }
 
-static void OpenThatDoor(DOORPOS_DATA *d)
+static void Door_Open(DOORPOS_DATA *d)
 {
     FLOOR_INFO *floor = d->floor;
     if (!floor) {
@@ -73,7 +64,17 @@ static void OpenThatDoor(DOORPOS_DATA *d)
     }
 }
 
-void InitialiseDoor(int16_t item_num)
+void Door_Setup(OBJECT_INFO *obj)
+{
+    obj->initialise = Door_Initialise;
+    obj->control = Door_Control;
+    obj->draw_routine = DrawUnclippedItem;
+    obj->collision = Door_Collision;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+}
+
+void Door_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     DOOR_DATA *door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
@@ -141,8 +142,8 @@ void InitialiseDoor(int16_t item_num)
     }
 
     room_num = GetDoor(door->d1.floor);
-    ShutThatDoor(&door->d1, NULL);
-    ShutThatDoor(&door->d1flip, NULL);
+    Door_Shut(&door->d1, NULL);
+    Door_Shut(&door->d1flip, NULL);
 
     if (room_num == NO_ROOM) {
         door->d2.floor = NULL;
@@ -192,11 +193,11 @@ void InitialiseDoor(int16_t item_num)
         door->d2flip.floor = NULL;
     }
 
-    ShutThatDoor(&door->d2, NULL);
-    ShutThatDoor(&door->d2flip, NULL);
+    Door_Shut(&door->d2, NULL);
+    Door_Shut(&door->d2flip, NULL);
 }
 
-void DoorControl(int16_t item_num)
+void Door_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     DOOR_DATA *door = item->data;
@@ -205,26 +206,46 @@ void DoorControl(int16_t item_num)
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
         } else {
-            OpenThatDoor(&door->d1);
-            OpenThatDoor(&door->d2);
-            OpenThatDoor(&door->d1flip);
-            OpenThatDoor(&door->d2flip);
+            Door_Open(&door->d1);
+            Door_Open(&door->d2);
+            Door_Open(&door->d1flip);
+            Door_Open(&door->d2flip);
         }
     } else {
         if (item->current_anim_state == DOOR_OPEN) {
             item->goal_anim_state = DOOR_CLOSED;
         } else {
-            ShutThatDoor(&door->d1, item);
-            ShutThatDoor(&door->d2, item);
-            ShutThatDoor(&door->d1flip, item);
-            ShutThatDoor(&door->d2flip, item);
+            Door_Shut(&door->d1, item);
+            Door_Shut(&door->d2, item);
+            Door_Shut(&door->d1flip, item);
+            Door_Shut(&door->d2flip, item);
         }
     }
 
     AnimateItem(item);
 }
 
-void OpenNearestDoors(ITEM_INFO *lara_item)
+void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+
+    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+    if (!TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        if (item->current_anim_state != item->goal_anim_state) {
+            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 1);
+        } else {
+            ItemPushLara(item, lara_item, coll, 0, 1);
+        }
+    }
+}
+
+void Door_OpenNearest(ITEM_INFO *lara_item)
 {
     int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
 

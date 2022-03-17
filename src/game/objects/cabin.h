@@ -12,5 +12,5 @@ typedef enum {
     CABIN_FINISH = 4,
 } CABIN_ANIM;
 
-void SetupCabin(OBJECT_INFO *obj);
-void CabinControl(int16_t item_num);
+void Cabin_Setup(OBJECT_INFO *obj);
+void Cabin_Control(int16_t item_num);

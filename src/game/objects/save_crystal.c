@@ -1,4 +1,4 @@
-#include "game/objects/savegame_crystal.h"
+#include "game/objects/save_crystal.h"
 
 #include "game/collide.h"
 #include "game/control.h"
@@ -17,17 +17,17 @@ static int16_t m_CrystalBounds[12] = {
     0,    0,    0,    0,
 };
 
-void SetupSavegameCrystal(OBJECT_INFO *obj)
+void SaveCrystal_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseSavegameItem;
+    obj->initialise = SaveCrystal_Initialise;
     if (g_GameFlow.enable_save_crystals) {
-        obj->control = ControlSavegameItem;
-        obj->collision = PickUpSavegameCollision;
+        obj->control = SaveCrystal_Control;
+        obj->collision = SaveCrystal_Collision;
         obj->save_flags = 1;
     }
 }
 
-void InitialiseSavegameItem(int16_t item_num)
+void SaveCrystal_Initialise(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
         AddActiveItem(item_num);
@@ -36,14 +36,14 @@ void InitialiseSavegameItem(int16_t item_num)
     }
 }
 
-void ControlSavegameItem(int16_t item_num)
+void SaveCrystal_Control(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
         AnimateItem(&g_Items[item_num]);
     }
 }
 
-void PickUpSavegameCollision(
+void SaveCrystal_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];

@@ -13,15 +13,6 @@
 #define PEOPLE_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define PEOPLE_MISS_CHANCE 0x2000
 
-int32_t Targetable(ITEM_INFO *item, AI_INFO *info);
-int16_t GunShot(
-    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
-    int16_t room_num);
-int16_t GunHit(
-    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
-    int16_t room_num);
-int16_t GunMiss(
-    int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
-    int16_t room_num);
+bool Targetable(ITEM_INFO *item, AI_INFO *info);
 int32_t ShotLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation);

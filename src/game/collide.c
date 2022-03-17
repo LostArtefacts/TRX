@@ -668,26 +668,6 @@ void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void DoorCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
-        return;
-    }
-    if (!TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        if (item->current_anim_state != item->goal_anim_state) {
-            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 1);
-        } else {
-            ItemPushLara(item, lara_item, coll, 0, 1);
-        }
-    }
-}
-
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];

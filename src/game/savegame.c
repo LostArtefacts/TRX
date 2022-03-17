@@ -98,7 +98,7 @@ static void Savegame_LoadPostProcess(void)
         if (obj->save_flags) {
             item->flags &= 0xFF00;
 
-            if (obj->collision == PuzzleHoleCollision
+            if (obj->collision == PuzzleHole_Collision
                 && (item->status == IS_DEACTIVATED
                     || item->status == IS_ACTIVE)) {
                 item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
@@ -109,7 +109,7 @@ static void Savegame_LoadPostProcess(void)
                 item->collidable = 0;
             }
 
-            if (obj->collision == PickUpCollision
+            if (obj->collision == Pickup_Collision
                 && item->status == IS_DEACTIVATED) {
                 RemoveDrawnItem(i);
             }

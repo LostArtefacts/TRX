@@ -11,5 +11,5 @@ typedef enum {
     BOAT_STOP = 3,
 } BOAT_ANIM;
 
-void SetupBoat(OBJECT_INFO *obj);
-void BoatControl(int16_t item_num);
+void Boat_Setup(OBJECT_INFO *obj);
+void Boat_Control(int16_t item_num);
