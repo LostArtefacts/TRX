@@ -9,11 +9,12 @@ typedef enum {
     THS_DONE = 3,
 } THOR_HAMMER_STATE;
 
-void SetupThorsHandle(OBJECT_INFO *obj);
-void SetupThorsHead(OBJECT_INFO *obj);
-void InitialiseThorsHandle(int16_t item_num);
-void ThorsHandleControl(int16_t item_num);
-void ThorsHandleCollision(
+void ThorsHandle_Setup(OBJECT_INFO *obj);
+void ThorsHandle_Initialise(int16_t item_num);
+void ThorsHandle_Control(int16_t item_num);
+void ThorsHandle_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-void ThorsHeadCollision(
+
+void ThorsHead_Setup(OBJECT_INFO *obj);
+void ThorsHead_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);

@@ -7,25 +7,25 @@
 #include "game/traps/movable_block.h"
 #include "global/vars.h"
 
-void SetupThorsHandle(OBJECT_INFO *obj)
+void ThorsHandle_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseThorsHandle;
-    obj->control = ThorsHandleControl;
+    obj->initialise = ThorsHandle_Initialise;
+    obj->control = ThorsHandle_Control;
     obj->draw_routine = DrawUnclippedItem;
-    obj->collision = ThorsHandleCollision;
+    obj->collision = ThorsHandle_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void SetupThorsHead(OBJECT_INFO *obj)
+void ThorsHead_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = ThorsHeadCollision;
+    obj->collision = ThorsHead_Collision;
     obj->draw_routine = DrawUnclippedItem;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void InitialiseThorsHandle(int16_t item_num)
+void ThorsHandle_Initialise(int16_t item_num)
 {
     ITEM_INFO *hand_item = &g_Items[item_num];
     int16_t head_item_num = CreateItem();
@@ -39,7 +39,7 @@ void InitialiseThorsHandle(int16_t item_num)
     g_LevelItemCount++;
 }
 
-void ThorsHandleControl(int16_t item_num)
+void ThorsHandle_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -147,7 +147,7 @@ void ThorsHandleControl(int16_t item_num)
     head_item->current_anim_state = item->current_anim_state;
 }
 
-void ThorsHandleCollision(
+void ThorsHandle_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -159,7 +159,8 @@ void ThorsHandleCollision(
     }
 }
 
-void ThorsHeadCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void ThorsHead_Collision(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (!TestBoundsCollide(item, lara_item, coll->radius)) {
