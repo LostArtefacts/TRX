@@ -2,16 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
-typedef enum {
-    MBS_STILL = 1,
-    MBS_PUSH = 2,
-    MBS_PULL = 3,
-} MOVABLE_BLOCK_STATE;
-
-extern int16_t g_MovingBlockBounds[12];
-
 void MovableBlock_Setup(OBJECT_INFO *obj);
 void MovableBlock_Initialise(int16_t item_num);
 void MovableBlock_Control(int16_t item_num);

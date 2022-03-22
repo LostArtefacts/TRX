@@ -5,6 +5,11 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+typedef enum {
+    DART_EMITTER_IDLE = 0,
+    DART_EMITTER_FIRE = 1,
+} DART_EMITTER_STATE;
+
 void DartEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = DartEmitter_Control;

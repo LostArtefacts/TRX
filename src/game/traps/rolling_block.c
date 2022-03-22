@@ -5,21 +5,6 @@
 #include "game/traps/movable_block.h"
 #include "global/vars.h"
 
-int16_t g_MovingBlockBounds[12] = {
-    -300,
-    +300,
-    0,
-    0,
-    -WALL_L / 2 - (LARA_RAD + 80),
-    -WALL_L / 2,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-};
-
 void RollingBlock_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = RollingBlock_Initialise;

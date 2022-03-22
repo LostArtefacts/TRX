@@ -7,6 +7,13 @@
 #include "game/traps/movable_block.h"
 #include "global/vars.h"
 
+typedef enum {
+    THS_SET = 0,
+    THS_TEASE = 1,
+    THS_ACTIVE = 2,
+    THS_DONE = 3,
+} THOR_HAMMER_STATE;
+
 void ThorsHandle_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = ThorsHandle_Initialise;

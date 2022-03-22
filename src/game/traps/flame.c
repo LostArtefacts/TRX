@@ -8,6 +8,9 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
+#define FLAME_ONFIRE_DAMAGE 5
+#define FLAME_TOONEAR_DAMAGE 3
+
 void Flame_Setup(OBJECT_INFO *obj)
 {
     obj->control = Flame_Control;

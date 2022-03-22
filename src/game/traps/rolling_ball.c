@@ -10,6 +10,8 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
+#define ROLLINGBALL_DAMAGE_AIR 100
+
 void RollingBall_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = RollingBall_Initialise;

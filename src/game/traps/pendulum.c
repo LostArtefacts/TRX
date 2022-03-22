@@ -6,6 +6,8 @@
 #include "game/random.h"
 #include "global/vars.h"
 
+#define PENDULUM_DAMAGE 100
+
 void Pendulum_Setup(OBJECT_INFO *obj)
 {
     obj->control = Pendulum_Control;
