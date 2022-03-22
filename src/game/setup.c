@@ -222,7 +222,7 @@ void TrapObjects(void)
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
     SetupThorsHandle(&g_Objects[O_THORS_HANDLE]);
     SetupThorsHead(&g_Objects[O_THORS_HEAD]);
-    SetupMidasTouch(&g_Objects[O_MIDAS_TOUCH]);
+    MidasTouch_Setup(&g_Objects[O_MIDAS_TOUCH]);
     DartEmitter_Setup(&g_Objects[O_DART_EMITTER]);
     Dart_Setup(&g_Objects[O_DARTS]);
     DartEffect_Setup(&g_Objects[O_DART_EFFECT]);
