@@ -5,12 +5,12 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void Dart_SetupEmitter(OBJECT_INFO *obj)
+void DartEmitter_Setup(OBJECT_INFO *obj)
 {
-    obj->control = DartEmitterControl;
+    obj->control = DartEmitter_Control;
 }
 
-void DartEmitterControl(int16_t item_num)
+void DartEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
