@@ -12,9 +12,9 @@
 #include "src/game/collide.h"
 #include "src/game/sphere.h"
 
-static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll);
+static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
 
-static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll)
+static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     // OG fix: stop pushing blocks through doors
     int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
@@ -42,18 +42,18 @@ static bool TestDoorCoveringBlock(ITEM_INFO *lara_item, COLL_INFO *coll)
     return false;
 }
 
-void SetupMovableBlock(OBJECT_INFO *obj)
+void MovableBlock_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseMovableBlock;
-    obj->control = MovableBlockControl;
-    obj->draw_routine = DrawMovableBlock;
-    obj->collision = MovableBlockCollision;
+    obj->initialise = MovableBlock_Initialise;
+    obj->control = MovableBlock_Control;
+    obj->draw_routine = MovableBlock_Draw;
+    obj->collision = MovableBlock_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialiseMovableBlock(int16_t item_num)
+void MovableBlock_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status != IS_INVISIBLE) {
@@ -61,7 +61,7 @@ void InitialiseMovableBlock(int16_t item_num)
     }
 }
 
-void MovableBlockControl(int16_t item_num)
+void MovableBlock_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -104,7 +104,7 @@ void MovableBlockControl(int16_t item_num)
     }
 }
 
-void MovableBlockCollision(
+void MovableBlock_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -141,7 +141,7 @@ void MovableBlockCollision(
         }
 
         // OG fix: stop pushing blocks through doors
-        if (TestDoorCoveringBlock(lara_item, coll)) {
+        if (MovableBlock_TestDoor(lara_item, coll)) {
             return;
         }
 
@@ -182,13 +182,13 @@ void MovableBlockCollision(
         }
 
         if (g_Input.forward) {
-            if (!TestBlockPush(item, 1024, quadrant)) {
+            if (!MovableBlock_TestPush(item, 1024, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PUSH;
             lara_item->goal_anim_state = AS_PUSHBLOCK;
         } else if (g_Input.back) {
-            if (!TestBlockPull(item, 1024, quadrant)) {
+            if (!MovableBlock_TestPull(item, 1024, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PULL;
@@ -205,7 +205,7 @@ void MovableBlockCollision(
     }
 }
 
-void DrawMovableBlock(ITEM_INFO *item)
+void MovableBlock_Draw(ITEM_INFO *item)
 {
     if (item->status == IS_ACTIVE) {
         DrawUnclippedItem(item);
@@ -214,7 +214,7 @@ void DrawMovableBlock(ITEM_INFO *item)
     }
 }
 
-int32_t TestBlockMovable(ITEM_INFO *item, int32_t blockhite)
+int32_t MovableBlock_Test(ITEM_INFO *item, int32_t blockhite)
 {
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
@@ -230,9 +230,10 @@ int32_t TestBlockMovable(ITEM_INFO *item, int32_t blockhite)
     return 1;
 }
 
-int32_t TestBlockPush(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
+int32_t MovableBlock_TestPush(
+    ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
-    if (!TestBlockMovable(item, blockhite)) {
+    if (!MovableBlock_Test(item, blockhite)) {
         return 0;
     }
 
@@ -276,9 +277,10 @@ int32_t TestBlockPush(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
     return 1;
 }
 
-int32_t TestBlockPull(ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
+int32_t MovableBlock_TestPull(
+    ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
-    if (!TestBlockMovable(item, blockhite)) {
+    if (!MovableBlock_Test(item, blockhite)) {
         return 0;
     }
 

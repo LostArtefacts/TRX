@@ -72,7 +72,7 @@ static void Savegame_LoadPreprocess(void)
         ITEM_INFO *item = &g_Items[i];
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
-        if (obj->control == MovableBlockControl) {
+        if (obj->control == MovableBlock_Control) {
             AlterFloorHeight(item, WALL_L);
         }
         if (obj->control == RollingBlockControl) {
@@ -115,7 +115,7 @@ static void Savegame_LoadPostProcess(void)
             }
         }
 
-        if (obj->control == MovableBlockControl
+        if (obj->control == MovableBlock_Control
             && item->status == IS_NOT_ACTIVE) {
             AlterFloorHeight(item, -WALL_L);
         }
