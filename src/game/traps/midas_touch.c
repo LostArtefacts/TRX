@@ -6,7 +6,7 @@
 #include "game/inv.h"
 #include "global/vars.h"
 
-int16_t g_MidasBounds[12] = {
+static int16_t m_MidasBounds[12] = {
     -700,
     +700,
     +384 - 100,
@@ -74,7 +74,7 @@ void MidasTouch_Collision(
         break;
     }
 
-    if (!TestLaraPosition(g_MidasBounds, item, lara_item)) {
+    if (!TestLaraPosition(m_MidasBounds, item, lara_item)) {
         return;
     }
 

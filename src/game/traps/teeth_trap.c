@@ -6,12 +6,19 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
-BITE_INFO g_Teeth1A = { -23, 0, -1718, 0 };
-BITE_INFO g_Teeth1B = { 71, 0, -1718, 1 };
-BITE_INFO g_Teeth2A = { -23, 10, -1718, 0 };
-BITE_INFO g_Teeth2B = { 71, 10, -1718, 1 };
-BITE_INFO g_Teeth3A = { -23, -10, -1718, 0 };
-BITE_INFO g_Teeth3B = { 71, -10, -1718, 1 };
+#define TEETH_TRAP_DAMAGE 400
+
+typedef enum {
+    TT_NICE = 0,
+    TT_NASTY = 1,
+} TEETH_TRAP_STATE;
+
+static BITE_INFO m_Teeth1A = { -23, 0, -1718, 0 };
+static BITE_INFO m_Teeth1B = { 71, 0, -1718, 1 };
+static BITE_INFO m_Teeth2A = { -23, 10, -1718, 0 };
+static BITE_INFO m_Teeth2B = { 71, 10, -1718, 1 };
+static BITE_INFO m_Teeth3A = { -23, -10, -1718, 0 };
+static BITE_INFO m_Teeth3B = { 71, -10, -1718, 1 };
 
 static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite);
 
@@ -42,12 +49,12 @@ void TeethTrap_Control(int16_t item_num)
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
             g_LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
             g_LaraItem->hit_status = 1;
-            BaddieBiteEffect(item, &g_Teeth1A);
-            BaddieBiteEffect(item, &g_Teeth1B);
-            BaddieBiteEffect(item, &g_Teeth2A);
-            BaddieBiteEffect(item, &g_Teeth2B);
-            BaddieBiteEffect(item, &g_Teeth3A);
-            BaddieBiteEffect(item, &g_Teeth3B);
+            BaddieBiteEffect(item, &m_Teeth1A);
+            BaddieBiteEffect(item, &m_Teeth1B);
+            BaddieBiteEffect(item, &m_Teeth2A);
+            BaddieBiteEffect(item, &m_Teeth2B);
+            BaddieBiteEffect(item, &m_Teeth3A);
+            BaddieBiteEffect(item, &m_Teeth3B);
         }
     } else {
         item->goal_anim_state = TT_NICE;

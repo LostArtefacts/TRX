@@ -9,6 +9,9 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#define LAVA_GLOB_DAMAGE 10
+#define LAVA_WEDGE_SPEED 25
+
 bool Lava_TestFloor(ITEM_INFO *item)
 {
     // OG fix: check if floor index has lava

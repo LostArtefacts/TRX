@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
 void FallingBlock_Setup(OBJECT_INFO *obj);
 void FallingBlock_Control(int16_t item_num);
 void FallingBlock_Floor(

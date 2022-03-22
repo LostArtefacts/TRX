@@ -12,6 +12,27 @@
 #include "src/game/collide.h"
 #include "src/game/sphere.h"
 
+typedef enum {
+    MBS_STILL = 1,
+    MBS_PUSH = 2,
+    MBS_PULL = 3,
+} MOVABLE_BLOCK_STATE;
+
+static int16_t m_MovingBlockBounds[12] = {
+    -300,
+    +300,
+    0,
+    0,
+    -WALL_L / 2 - (LARA_RAD + 80),
+    -WALL_L / 2,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+    -30 * PHD_DEGREE,
+    +30 * PHD_DEGREE,
+    -10 * PHD_DEGREE,
+    +10 * PHD_DEGREE,
+};
+
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
@@ -136,7 +157,7 @@ void MovableBlock_Collision(
             break;
         }
 
-        if (!TestLaraPosition(g_MovingBlockBounds, item, lara_item)) {
+        if (!TestLaraPosition(m_MovingBlockBounds, item, lara_item)) {
             return;
         }
 
@@ -177,7 +198,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        if (!TestLaraPosition(g_MovingBlockBounds, item, lara_item)) {
+        if (!TestLaraPosition(m_MovingBlockBounds, item, lara_item)) {
             return;
         }
 

@@ -5,6 +5,8 @@
 #include "game/items.h"
 #include "global/vars.h"
 
+#define FALLING_CEILING_DAMAGE 300
+
 void FallingCeiling_Setup(OBJECT_INFO *obj)
 {
     obj->control = FallingCeiling_Control;

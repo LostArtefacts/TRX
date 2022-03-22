@@ -6,6 +6,8 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
+#define SPIKE_DAMAGE 15
+
 void Spikes_Setup(OBJECT_INFO *obj)
 {
     obj->collision = Spikes_Collision;

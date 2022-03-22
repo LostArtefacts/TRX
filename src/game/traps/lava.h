@@ -2,11 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
-#define LAVA_GLOB_DAMAGE 10
-#define LAVA_WEDGE_SPEED 25
-
 bool Lava_TestFloor(ITEM_INFO *item);
 void Lava_Burn(ITEM_INFO *item);
 
