@@ -4,6 +4,6 @@
 
 #include <stdint.h>
 
-void SetupRollingBlock(OBJECT_INFO *obj);
-void InitialiseRollingBlock(int16_t item_num);
-void RollingBlockControl(int16_t item_num);
+void RollingBlock_Setup(OBJECT_INFO *obj);
+void RollingBlock_Initialise(int16_t item_num);
+void RollingBlock_Control(int16_t item_num);

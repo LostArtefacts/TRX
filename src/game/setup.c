@@ -218,7 +218,7 @@ void TrapObjects(void)
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK2]);
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK3]);
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK4]);
-    SetupRollingBlock(&g_Objects[O_ROLLING_BLOCK]);
+    RollingBlock_Setup(&g_Objects[O_ROLLING_BLOCK]);
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
     SetupThorsHandle(&g_Objects[O_THORS_HANDLE]);
     SetupThorsHead(&g_Objects[O_THORS_HEAD]);

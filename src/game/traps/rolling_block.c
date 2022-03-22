@@ -20,22 +20,22 @@ int16_t g_MovingBlockBounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-void SetupRollingBlock(OBJECT_INFO *obj)
+void RollingBlock_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseRollingBlock;
-    obj->control = RollingBlockControl;
+    obj->initialise = RollingBlock_Initialise;
+    obj->control = RollingBlock_Control;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialiseRollingBlock(int16_t item_num)
+void RollingBlock_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     AlterFloorHeight(item, -WALL_L * 2);
 }
 
-void RollingBlockControl(int16_t item_num)
+void RollingBlock_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {
