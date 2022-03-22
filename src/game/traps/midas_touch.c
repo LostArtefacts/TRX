@@ -21,13 +21,14 @@ int16_t g_MidasBounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-void SetupMidasTouch(OBJECT_INFO *obj)
+void MidasTouch_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = MidasCollision;
+    obj->collision = MidasTouch_Collision;
     obj->draw_routine = DrawDummyItem;
 }
 
-void MidasCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void MidasTouch_Collision(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
