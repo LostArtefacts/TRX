@@ -20,9 +20,9 @@ static BITE_INFO m_Teeth2B = { 71, 10, -1718, 1 };
 static BITE_INFO m_Teeth3A = { -23, -10, -1718, 0 };
 static BITE_INFO m_Teeth3B = { 71, -10, -1718, 1 };
 
-static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite);
+static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite);
 
-static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
+static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 {
     PHD_VECTOR pos;
     pos.x = bite->x;
@@ -49,12 +49,12 @@ void TeethTrap_Control(int16_t item_num)
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
             g_LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
             g_LaraItem->hit_status = 1;
-            BaddieBiteEffect(item, &m_Teeth1A);
-            BaddieBiteEffect(item, &m_Teeth1B);
-            BaddieBiteEffect(item, &m_Teeth2A);
-            BaddieBiteEffect(item, &m_Teeth2B);
-            BaddieBiteEffect(item, &m_Teeth3A);
-            BaddieBiteEffect(item, &m_Teeth3B);
+            TeethTrap_BiteEffect(item, &m_Teeth1A);
+            TeethTrap_BiteEffect(item, &m_Teeth1B);
+            TeethTrap_BiteEffect(item, &m_Teeth2A);
+            TeethTrap_BiteEffect(item, &m_Teeth2B);
+            TeethTrap_BiteEffect(item, &m_Teeth3A);
+            TeethTrap_BiteEffect(item, &m_Teeth3B);
         }
     } else {
         item->goal_anim_state = TT_NICE;
