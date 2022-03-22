@@ -7,11 +7,14 @@
 #define LAVA_GLOB_DAMAGE 10
 #define LAVA_WEDGE_SPEED 25
 
-void SetupLavaEmitter(OBJECT_INFO *obj);
-void SetupLava(OBJECT_INFO *obj);
-void SetupLavaWedge(OBJECT_INFO *obj);
-bool TestLavaFloor(ITEM_INFO *item);
-void LavaBurn(ITEM_INFO *item);
-void LavaEmitterControl(int16_t item_num);
-void LavaControl(int16_t fx_num);
-void LavaWedgeControl(int16_t item_num);
+bool Lava_TestFloor(ITEM_INFO *item);
+void Lava_Burn(ITEM_INFO *item);
+
+void Lava_Setup(OBJECT_INFO *obj);
+void Lava_Control(int16_t fx_num);
+
+void LavaEmitter_Setup(OBJECT_INFO *obj);
+void LavaEmitter_Control(int16_t item_num);
+
+void LavaWedge_Setup(OBJECT_INFO *obj);
+void LavaWedge_Control(int16_t item_num);
