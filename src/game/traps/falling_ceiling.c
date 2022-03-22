@@ -5,16 +5,16 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupFallingCeilling(OBJECT_INFO *obj)
+void FallingCeiling_Setup(OBJECT_INFO *obj)
 {
-    obj->control = FallingCeilingControl;
+    obj->control = FallingCeiling_Control;
     obj->collision = TrapCollision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void FallingCeilingControl(int16_t item_num)
+void FallingCeiling_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->current_anim_state == TRAP_SET) {

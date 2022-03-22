@@ -211,8 +211,8 @@ void TrapObjects(void)
     SetupTeethTrap(&g_Objects[O_TEETH_TRAP]);
     SetupRollingBall(&g_Objects[O_ROLLING_BALL]);
     SetupSpikes(&g_Objects[O_SPIKES]);
-    SetupFallingCeilling(&g_Objects[O_FALLING_CEILING1]);
-    SetupFallingCeilling(&g_Objects[O_FALLING_CEILING2]);
+    FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING1]);
+    FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING2]);
     DamoclesSword_Setup(&g_Objects[O_DAMOCLES_SWORD]);
     SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK]);
     SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK2]);
