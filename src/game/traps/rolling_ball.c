@@ -10,17 +10,17 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
-void SetupRollingBall(OBJECT_INFO *obj)
+void RollingBall_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseRollingBall;
-    obj->control = RollingBallControl;
-    obj->collision = RollingBallCollision;
+    obj->initialise = RollingBall_Initialise;
+    obj->control = RollingBall_Control;
+    obj->collision = RollingBall_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialiseRollingBall(int16_t item_num)
+void RollingBall_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     GAME_VECTOR *data = GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_TRAP_DATA);
@@ -31,7 +31,7 @@ void InitialiseRollingBall(int16_t item_num)
     data->room_number = item->room_number;
 }
 
-void RollingBallControl(int16_t item_num)
+void RollingBall_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
@@ -104,7 +104,7 @@ void RollingBallControl(int16_t item_num)
     }
 }
 
-void RollingBallCollision(
+void RollingBall_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];

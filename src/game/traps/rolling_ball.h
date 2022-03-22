@@ -4,8 +4,8 @@
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
-void SetupRollingBall(OBJECT_INFO *obj);
-void InitialiseRollingBall(int16_t item_num);
-void RollingBallControl(int16_t item_num);
-void RollingBallCollision(
+void RollingBall_Setup(OBJECT_INFO *obj);
+void RollingBall_Initialise(int16_t item_num);
+void RollingBall_Control(int16_t item_num);
+void RollingBall_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
