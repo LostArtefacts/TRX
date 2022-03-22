@@ -214,10 +214,10 @@ void TrapObjects(void)
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING1]);
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING2]);
     DamoclesSword_Setup(&g_Objects[O_DAMOCLES_SWORD]);
-    SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK]);
-    SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK2]);
-    SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK3]);
-    SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK4]);
+    MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK]);
+    MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK2]);
+    MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK3]);
+    MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK4]);
     SetupRollingBlock(&g_Objects[O_ROLLING_BLOCK]);
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
     SetupThorsHandle(&g_Objects[O_THORS_HANDLE]);
