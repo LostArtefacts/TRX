@@ -210,7 +210,7 @@ void TrapObjects(void)
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
     SetupTeethTrap(&g_Objects[O_TEETH_TRAP]);
     RollingBall_Setup(&g_Objects[O_ROLLING_BALL]);
-    SetupSpikes(&g_Objects[O_SPIKES]);
+    Spikes_Setup(&g_Objects[O_SPIKES]);
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING1]);
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING2]);
     DamoclesSword_Setup(&g_Objects[O_DAMOCLES_SWORD]);
