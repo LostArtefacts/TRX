@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-void SetupDart(OBJECT_INFO *obj);
-void SetupDartEffect(OBJECT_INFO *obj);
-void DartsControl(int16_t item_num);
-void DartEffectControl(int16_t fx_num);
+void Dart_Setup(OBJECT_INFO *obj);
+void Dart_Control(int16_t item_num);
+void DartEffect_Setup(OBJECT_INFO *obj);
+void DartEffect_Control(int16_t fx_num);

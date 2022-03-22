@@ -5,7 +5,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupDartEmitter(OBJECT_INFO *obj)
+void Dart_SetupEmitter(OBJECT_INFO *obj)
 {
     obj->control = DartEmitterControl;
 }

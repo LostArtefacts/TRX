@@ -223,9 +223,9 @@ void TrapObjects(void)
     SetupThorsHandle(&g_Objects[O_THORS_HANDLE]);
     SetupThorsHead(&g_Objects[O_THORS_HEAD]);
     SetupMidasTouch(&g_Objects[O_MIDAS_TOUCH]);
-    SetupDartEmitter(&g_Objects[O_DART_EMITTER]);
-    SetupDart(&g_Objects[O_DARTS]);
-    SetupDartEffect(&g_Objects[O_DART_EFFECT]);
+    Dart_SetupEmitter(&g_Objects[O_DART_EMITTER]);
+    Dart_Setup(&g_Objects[O_DARTS]);
+    DartEffect_Setup(&g_Objects[O_DART_EFFECT]);
     SetupFlameEmitter(&g_Objects[O_FLAME_EMITTER]);
     SetupFlame(&g_Objects[O_FLAME]);
     SetupLavaEmitter(&g_Objects[O_LAVA_EMITTER]);
