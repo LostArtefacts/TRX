@@ -9,28 +9,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupLavaEmitter(OBJECT_INFO *obj)
-{
-    obj->control = LavaEmitterControl;
-    obj->draw_routine = DrawDummyItem;
-    obj->collision = ObjectCollision;
-}
-
-void SetupLava(OBJECT_INFO *obj)
-{
-    obj->control = LavaControl;
-}
-
-void SetupLavaWedge(OBJECT_INFO *obj)
-{
-    obj->control = LavaWedgeControl;
-    obj->collision = CreatureCollision;
-    obj->save_position = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-}
-
-bool TestLavaFloor(ITEM_INFO *item)
+bool Lava_TestFloor(ITEM_INFO *item)
 {
     // OG fix: check if floor index has lava
     if (g_Lara.water_status == LWS_CHEAT) {
@@ -75,7 +54,7 @@ bool TestLavaFloor(ITEM_INFO *item)
     return false;
 }
 
-void LavaBurn(ITEM_INFO *item)
+void Lava_Burn(ITEM_INFO *item)
 {
     if (g_Lara.water_status == LWS_CHEAT) {
         return;
@@ -107,25 +86,12 @@ void LavaBurn(ITEM_INFO *item)
     }
 }
 
-void LavaEmitterControl(int16_t item_num)
+void Lava_Setup(OBJECT_INFO *obj)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    int16_t fx_num = CreateEffect(item->room_number);
-    if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
-        fx->pos.x = item->pos.x;
-        fx->pos.y = item->pos.y;
-        fx->pos.z = item->pos.z;
-        fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
-        fx->speed = Random_GetControl() >> 10;
-        fx->fall_speed = -Random_GetControl() / 200;
-        fx->frame_number = -4 * Random_GetControl() / 0x7FFF;
-        fx->object_number = O_LAVA;
-        Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
-    }
+    obj->control = Lava_Control;
 }
 
-void LavaControl(int16_t fx_num)
+void Lava_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
     fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
@@ -147,7 +113,41 @@ void LavaControl(int16_t fx_num)
     }
 }
 
-void LavaWedgeControl(int16_t item_num)
+void LavaEmitter_Setup(OBJECT_INFO *obj)
+{
+    obj->control = LavaEmitter_Control;
+    obj->draw_routine = DrawDummyItem;
+    obj->collision = ObjectCollision;
+}
+
+void LavaEmitter_Control(int16_t item_num)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    int16_t fx_num = CreateEffect(item->room_number);
+    if (fx_num != NO_ITEM) {
+        FX_INFO *fx = &g_Effects[fx_num];
+        fx->pos.x = item->pos.x;
+        fx->pos.y = item->pos.y;
+        fx->pos.z = item->pos.z;
+        fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
+        fx->speed = Random_GetControl() >> 10;
+        fx->fall_speed = -Random_GetControl() / 200;
+        fx->frame_number = -4 * Random_GetControl() / 0x7FFF;
+        fx->object_number = O_LAVA;
+        Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
+    }
+}
+
+void LavaWedge_Setup(OBJECT_INFO *obj)
+{
+    obj->control = LavaWedge_Control;
+    obj->collision = CreatureCollision;
+    obj->save_position = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+}
+
+void LavaWedge_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -192,7 +192,7 @@ void LavaWedgeControl(int16_t item_num)
 
     if (item->touch_bits) {
         if (g_LaraItem->hit_points > 0) {
-            LavaBurn(g_LaraItem);
+            Lava_Burn(g_LaraItem);
         }
 
         g_Camera.item = item;

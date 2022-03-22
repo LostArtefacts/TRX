@@ -228,9 +228,9 @@ void TrapObjects(void)
     DartEffect_Setup(&g_Objects[O_DART_EFFECT]);
     FlameEmitter_Setup(&g_Objects[O_FLAME_EMITTER]);
     Flame_Setup(&g_Objects[O_FLAME]);
-    SetupLavaEmitter(&g_Objects[O_LAVA_EMITTER]);
-    SetupLava(&g_Objects[O_LAVA]);
-    SetupLavaWedge(&g_Objects[O_LAVA_WEDGE]);
+    LavaEmitter_Setup(&g_Objects[O_LAVA_EMITTER]);
+    Lava_Setup(&g_Objects[O_LAVA]);
+    LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
 void ObjectObjects(void)
