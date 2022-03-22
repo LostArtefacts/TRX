@@ -206,7 +206,7 @@ void BaddyObjects(void)
 
 void TrapObjects(void)
 {
-    SetupFallingBlock(&g_Objects[O_FALLING_BLOCK]);
+    FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     SetupPendulum(&g_Objects[O_PENDULUM]);
     SetupTeethTrap(&g_Objects[O_TEETH_TRAP]);
     SetupRollingBall(&g_Objects[O_ROLLING_BALL]);
