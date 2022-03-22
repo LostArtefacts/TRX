@@ -6,16 +6,16 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-void SetupPendulum(OBJECT_INFO *obj)
+void Pendulum_Setup(OBJECT_INFO *obj)
 {
-    obj->control = PendulumControl;
+    obj->control = Pendulum_Control;
     obj->collision = TrapCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void PendulumControl(int16_t item_num)
+void Pendulum_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
