@@ -19,9 +19,9 @@ typedef struct {
     PHD_VECTOR shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
-void SetupLightningEmitter(OBJECT_INFO *obj);
-void InitialiseLightning(int16_t item_num);
-void LightningControl(int16_t item_num);
-void LightningCollision(
+void LightningEmitter_Setup(OBJECT_INFO *obj);
+void LightningEmitter_Initialise(int16_t item_num);
+void LightningEmitter_Control(int16_t item_num);
+void LightningEmitter_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-void DrawLightning(ITEM_INFO *item);
+void LightningEmitter_Draw(ITEM_INFO *item);

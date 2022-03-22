@@ -14,16 +14,16 @@
 #include "global/vars.h"
 #include "specific/s_misc.h"
 
-void SetupLightningEmitter(OBJECT_INFO *obj)
+void LightningEmitter_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseLightning;
-    obj->control = LightningControl;
-    obj->draw_routine = DrawLightning;
-    obj->collision = LightningCollision;
+    obj->initialise = LightningEmitter_Initialise;
+    obj->control = LightningEmitter_Control;
+    obj->draw_routine = LightningEmitter_Draw;
+    obj->collision = LightningEmitter_Collision;
     obj->save_flags = 1;
 }
 
-void InitialiseLightning(int16_t item_num)
+void LightningEmitter_Initialise(int16_t item_num)
 {
     LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_TRAP_DATA);
     g_Items[item_num].data = l;
@@ -40,7 +40,7 @@ void InitialiseLightning(int16_t item_num)
     l->zapped = 0;
 }
 
-void LightningControl(int16_t item_num)
+void LightningEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
@@ -129,7 +129,8 @@ void LightningControl(int16_t item_num)
     Sound_Effect(SFX_THUNDER, &item->pos, SPM_NORMAL);
 }
 
-void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void LightningEmitter_Collision(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     LIGHTNING *l = g_Items[item_num].data;
     if (!l->zapped) {
@@ -143,7 +144,7 @@ void LightningCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void DrawLightning(ITEM_INFO *item)
+void LightningEmitter_Draw(ITEM_INFO *item)
 {
     int16_t *frmptr[2];
     int32_t rate;
