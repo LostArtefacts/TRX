@@ -8,21 +8,15 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-void SetupDart(OBJECT_INFO *obj)
+void Dart_Setup(OBJECT_INFO *obj)
 {
     obj->collision = ObjectCollision;
-    obj->control = DartsControl;
+    obj->control = Dart_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
 }
 
-void SetupDartEffect(OBJECT_INFO *obj)
-{
-    obj->control = DartEffectControl;
-    obj->draw_routine = DrawSpriteItem;
-}
-
-void DartsControl(int16_t item_num)
+void Dart_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->touch_bits) {
@@ -61,7 +55,13 @@ void DartsControl(int16_t item_num)
     }
 }
 
-void DartEffectControl(int16_t fx_num)
+void DartEffect_Setup(OBJECT_INFO *obj)
+{
+    obj->control = DartEffect_Control;
+    obj->draw_routine = DrawSpriteItem;
+}
+
+void DartEffect_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
     fx->counter++;
