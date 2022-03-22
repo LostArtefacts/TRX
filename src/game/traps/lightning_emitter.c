@@ -20,13 +20,14 @@
 #define LIGHTNING_SHOOTS 2
 
 typedef struct {
-    int32_t onstate;
+    bool active;
     int32_t count;
-    int32_t zapped;
-    int32_t notarget;
+    bool zapped;
+    bool no_target;
     PHD_VECTOR target;
-    PHD_VECTOR main[LIGHTNING_STEPS], wibble[LIGHTNING_STEPS];
-    int start[LIGHTNING_SHOOTS];
+    PHD_VECTOR main[LIGHTNING_STEPS];
+    PHD_VECTOR wibble[LIGHTNING_STEPS];
+    int32_t start[LIGHTNING_SHOOTS];
     PHD_VECTOR end[LIGHTNING_SHOOTS];
     PHD_VECTOR shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
@@ -47,14 +48,14 @@ void LightningEmitter_Initialise(int16_t item_num)
 
     if (g_Objects[g_Items[item_num].object_number].nmeshes > 1) {
         g_Items[item_num].mesh_bits = 1;
-        l->notarget = 0;
+        l->no_target = false;
     } else {
-        l->notarget = 1;
+        l->no_target = true;
     }
 
-    l->onstate = 0;
+    l->active = false;
     l->count = 1;
-    l->zapped = 0;
+    l->zapped = false;
 }
 
 void LightningEmitter_Control(int16_t item_num)
@@ -64,8 +65,8 @@ void LightningEmitter_Control(int16_t item_num)
 
     if (!TriggerActive(item)) {
         l->count = 1;
-        l->onstate = 0;
-        l->zapped = 0;
+        l->active = false;
+        l->zapped = false;
 
         if (g_FlipStatus) {
             FlipMap();
@@ -81,15 +82,15 @@ void LightningEmitter_Control(int16_t item_num)
         return;
     }
 
-    if (l->onstate) {
-        l->onstate = 0;
+    if (l->active) {
+        l->active = false;
         l->count = 35 + (Random_GetControl() * 45) / 0x8000;
-        l->zapped = 0;
+        l->zapped = false;
         if (g_FlipStatus) {
             FlipMap();
         }
     } else {
-        l->onstate = 1;
+        l->active = true;
         l->count = 20;
 
         for (int i = 0; i < LIGHTNING_STEPS; i++) {
@@ -98,7 +99,7 @@ void LightningEmitter_Control(int16_t item_num)
             l->wibble[i].z = 0;
         }
 
-        int32_t radius = l->notarget ? WALL_L : WALL_L * 5 / 2;
+        int32_t radius = l->no_target ? WALL_L : WALL_L * 5 / 2;
         if (ItemNearLara(&item->pos, radius)) {
             l->target.x = g_LaraItem->pos.x;
             l->target.y = g_LaraItem->pos.y;
@@ -107,22 +108,22 @@ void LightningEmitter_Control(int16_t item_num)
             g_LaraItem->hit_points -= LIGHTNING_DAMAGE;
             g_LaraItem->hit_status = 1;
 
-            l->zapped = 1;
-        } else if (l->notarget) {
+            l->zapped = true;
+        } else if (l->no_target) {
             FLOOR_INFO *floor = GetFloor(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_number);
             int32_t h = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             l->target.x = item->pos.x;
             l->target.y = h;
             l->target.z = item->pos.z;
-            l->zapped = 0;
+            l->zapped = false;
         } else {
             l->target.x = 0;
             l->target.y = 0;
             l->target.z = 0;
             GetJointAbsPosition(
                 item, &l->target, 1 + (Random_GetControl() * 5) / 0x7FFF);
-            l->zapped = 0;
+            l->zapped = false;
         }
 
         for (int i = 0; i < LIGHTNING_SHOOTS; i++) {
@@ -192,7 +193,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     phd_PopMatrix();
 
     LIGHTNING *l = item->data;
-    if (!l->onstate) {
+    if (!l->active) {
         return;
     }
 
