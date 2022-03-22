@@ -26,15 +26,15 @@ static void BaddieBiteEffect(ITEM_INFO *item, BITE_INFO *bite)
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
 
-void SetupTeethTrap(OBJECT_INFO *obj)
+void TeethTrap_Setup(OBJECT_INFO *obj)
 {
-    obj->control = TeethTrapControl;
+    obj->control = TeethTrap_Control;
     obj->collision = TrapCollision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void TeethTrapControl(int16_t item_num)
+void TeethTrap_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (TriggerActive(item)) {
