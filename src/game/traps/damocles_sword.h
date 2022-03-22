@@ -2,8 +2,8 @@
 
 #include "global/types.h"
 
-void SetupDamoclesSword(OBJECT_INFO *obj);
-void InitialiseDamoclesSword(int16_t item_num);
-void DamoclesSwordControl(int16_t item_num);
-void DamoclesSwordCollision(
+void DamoclesSword_Setup(OBJECT_INFO *obj);
+void DamoclesSword_Initialise(int16_t item_num);
+void DamoclesSword_Control(int16_t item_num);
+void DamoclesSword_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
