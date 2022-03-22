@@ -213,7 +213,7 @@ void TrapObjects(void)
     SetupSpikes(&g_Objects[O_SPIKES]);
     SetupFallingCeilling(&g_Objects[O_FALLING_CEILING1]);
     SetupFallingCeilling(&g_Objects[O_FALLING_CEILING2]);
-    SetupDamoclesSword(&g_Objects[O_DAMOCLES_SWORD]);
+    DamoclesSword_Setup(&g_Objects[O_DAMOCLES_SWORD]);
     SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK]);
     SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK2]);
     SetupMovableBlock(&g_Objects[O_MOVABLE_BLOCK3]);

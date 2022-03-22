@@ -10,18 +10,18 @@
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
 
-void SetupDamoclesSword(OBJECT_INFO *obj)
+void DamoclesSword_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseDamoclesSword;
-    obj->control = DamoclesSwordControl;
-    obj->collision = DamoclesSwordCollision;
+    obj->initialise = DamoclesSword_Initialise;
+    obj->control = DamoclesSword_Control;
+    obj->collision = DamoclesSword_Collision;
     obj->shadow_size = UNIT_SHADOW;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialiseDamoclesSword(int16_t item_num)
+void DamoclesSword_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->pos.y_rot = Random_GetControl();
@@ -29,7 +29,7 @@ void InitialiseDamoclesSword(int16_t item_num)
     item->fall_speed = 50;
 }
 
-void DamoclesSwordControl(int16_t item_num)
+void DamoclesSword_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->gravity_status) {
@@ -61,7 +61,7 @@ void DamoclesSwordControl(int16_t item_num)
     }
 }
 
-void DamoclesSwordCollision(
+void DamoclesSword_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
