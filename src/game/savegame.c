@@ -75,7 +75,7 @@ static void Savegame_LoadPreprocess(void)
         if (obj->control == MovableBlock_Control) {
             AlterFloorHeight(item, WALL_L);
         }
-        if (obj->control == RollingBlockControl) {
+        if (obj->control == RollingBlock_Control) {
             AlterFloorHeight(item, WALL_L * 2);
         }
     }
@@ -120,7 +120,7 @@ static void Savegame_LoadPostProcess(void)
             AlterFloorHeight(item, -WALL_L);
         }
 
-        if (obj->control == RollingBlockControl
+        if (obj->control == RollingBlock_Control
             && item->current_anim_state != RBS_MOVING) {
             AlterFloorHeight(item, -WALL_L * 2);
         }
