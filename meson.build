@@ -195,7 +195,6 @@ sources = [
   'src/game/text.c',
   'src/game/traps/damocles_sword.c',
   'src/game/traps/dart.c',
-  'src/game/traps/dart_emitter.c',
   'src/game/traps/falling_block.c',
   'src/game/traps/falling_ceiling.c',
   'src/game/traps/flame.c',

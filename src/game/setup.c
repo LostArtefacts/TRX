@@ -68,7 +68,6 @@
 #include "game/text.h"
 #include "game/traps/damocles_sword.h"
 #include "game/traps/dart.h"
-#include "game/traps/dart_emitter.h"
 #include "game/traps/falling_block.h"
 #include "game/traps/falling_ceiling.h"
 #include "game/traps/flame.h"
