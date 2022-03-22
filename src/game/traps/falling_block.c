@@ -4,17 +4,17 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupFallingBlock(OBJECT_INFO *obj)
+void FallingBlock_Setup(OBJECT_INFO *obj)
 {
-    obj->control = FallingBlockControl;
-    obj->floor = FallingBlockFloor;
-    obj->ceiling = FallingBlockCeiling;
+    obj->control = FallingBlock_Control;
+    obj->floor = FallingBlock_Floor;
+    obj->ceiling = FallingBlock_Ceiling;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void FallingBlockControl(int16_t item_num)
+void FallingBlock_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -64,7 +64,7 @@ void FallingBlockControl(int16_t item_num)
     }
 }
 
-void FallingBlockFloor(
+void FallingBlock_Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y <= item->pos.y - STEP_L * 2
@@ -74,7 +74,7 @@ void FallingBlockFloor(
     }
 }
 
-void FallingBlockCeiling(
+void FallingBlock_Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y > item->pos.y - STEP_L * 2
