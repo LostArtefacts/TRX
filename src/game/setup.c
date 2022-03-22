@@ -220,8 +220,8 @@ void TrapObjects(void)
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK4]);
     RollingBlock_Setup(&g_Objects[O_ROLLING_BLOCK]);
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
-    SetupThorsHandle(&g_Objects[O_THORS_HANDLE]);
-    SetupThorsHead(&g_Objects[O_THORS_HEAD]);
+    ThorsHandle_Setup(&g_Objects[O_THORS_HANDLE]);
+    ThorsHead_Setup(&g_Objects[O_THORS_HEAD]);
     MidasTouch_Setup(&g_Objects[O_MIDAS_TOUCH]);
     DartEmitter_Setup(&g_Objects[O_DART_EMITTER]);
     Dart_Setup(&g_Objects[O_DARTS]);
