@@ -209,7 +209,7 @@ void TrapObjects(void)
     FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
     SetupTeethTrap(&g_Objects[O_TEETH_TRAP]);
-    SetupRollingBall(&g_Objects[O_ROLLING_BALL]);
+    RollingBall_Setup(&g_Objects[O_ROLLING_BALL]);
     SetupSpikes(&g_Objects[O_SPIKES]);
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING1]);
     FallingCeiling_Setup(&g_Objects[O_FALLING_CEILING2]);
