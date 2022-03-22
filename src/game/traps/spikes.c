@@ -6,12 +6,12 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
-void SetupSpikes(OBJECT_INFO *obj)
+void Spikes_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = SpikeCollision;
+    obj->collision = Spikes_Collision;
 }
 
-void SpikeCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (lara_item->hit_points < 0) {
