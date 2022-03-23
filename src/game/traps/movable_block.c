@@ -235,7 +235,7 @@ void MovableBlock_Draw(ITEM_INFO *item)
     }
 }
 
-bool MovableBlock_Test(ITEM_INFO *item, int32_t blockhite)
+bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t blockhite)
 {
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
@@ -254,7 +254,7 @@ bool MovableBlock_Test(ITEM_INFO *item, int32_t blockhite)
 bool MovableBlock_TestPush(
     ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
-    if (!MovableBlock_Test(item, blockhite)) {
+    if (!MovableBlock_TestDestination(item, blockhite)) {
         return false;
     }
 
@@ -301,7 +301,7 @@ bool MovableBlock_TestPush(
 bool MovableBlock_TestPull(
     ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
 {
-    if (!MovableBlock_Test(item, blockhite)) {
+    if (!MovableBlock_TestDestination(item, blockhite)) {
         return false;
     }
 
