@@ -212,6 +212,7 @@ void Pickup_CollisionControlled(
             && lara_item->current_anim_state == AS_PICKUP
             && lara_item->frame_number == AF_PICKUP_UW) {
             PickUp_GetItem(item_num, item, lara_item);
+            g_Lara.gun_status = LGS_ARMLESS;
         }
     }
     item->pos.x_rot = rotx;
