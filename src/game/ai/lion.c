@@ -169,7 +169,7 @@ void LionControl(int16_t item_num)
         case LION_ATTACK2:
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
-                CreatureEffect(item, &g_LionBite, DoBloodSplat);
+                CreatureEffect(item, &g_LionBite, Blood_Spawn);
                 g_LaraItem->hit_points -= LION_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = LION_STOP;

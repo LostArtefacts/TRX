@@ -605,7 +605,7 @@ void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
     item->hit_points -= damage;
     item->hit_status = 1;
 
-    DoBloodSplat(
+    Blood_Spawn(
         hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot,
         item->room_number);
 

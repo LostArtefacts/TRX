@@ -122,7 +122,7 @@ void AlligatorControl(int16_t item_num)
 
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == ALLIGATOR_EMPTY) {
-                CreatureEffect(item, &g_CrocodileBite, DoBloodSplat);
+                CreatureEffect(item, &g_CrocodileBite, Blood_Spawn);
                 g_LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = ALLIGATOR_SWIM;

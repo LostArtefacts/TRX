@@ -42,7 +42,7 @@ void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 64;
-        DoBloodSplat(x, y, z, 20, Random_GetControl(), item->room_number);
+        Blood_Spawn(x, y, z, 20, Random_GetControl(), item->room_number);
         num--;
     }
 

@@ -29,7 +29,7 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
     pos.y = bite->y;
     pos.z = bite->z;
     GetJointAbsPosition(item, &pos, bite->mesh_num);
-    DoBloodSplat(
+    Blood_Spawn(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
 
