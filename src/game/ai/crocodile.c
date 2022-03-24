@@ -122,7 +122,7 @@ void CrocControl(int16_t item_num)
 
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
-                CreatureEffect(item, &g_CrocodileBite, DoBloodSplat);
+                CreatureEffect(item, &g_CrocodileBite, Blood_Spawn);
                 g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CROCODILE_STOP;

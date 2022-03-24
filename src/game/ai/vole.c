@@ -86,7 +86,7 @@ void VoleControl(int16_t item_num)
         case VOLE_ATTACK:
             if (item->required_anim_state == VOLE_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &g_RatBite, DoBloodSplat);
+                CreatureEffect(item, &g_RatBite, Blood_Spawn);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = VOLE_SWIM;

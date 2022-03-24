@@ -167,7 +167,7 @@ void WolfControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH)) {
-                CreatureEffect(item, &g_WolfJawBite, DoBloodSplat);
+                CreatureEffect(item, &g_WolfJawBite, Blood_Spawn);
                 g_LaraItem->hit_points -= WOLF_POUNCE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_RUN;
@@ -178,7 +178,7 @@ void WolfControl(int16_t item_num)
         case WOLF_BITE:
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH) && info.ahead) {
-                CreatureEffect(item, &g_WolfJawBite, DoBloodSplat);
+                CreatureEffect(item, &g_WolfJawBite, Blood_Spawn);
                 g_LaraItem->hit_points -= WOLF_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_CROUCH;

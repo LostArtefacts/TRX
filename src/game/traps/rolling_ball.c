@@ -141,7 +141,7 @@ void RollingBall_Collision(
         x = item->pos.x + (x << WALL_SHIFT) / 2 / d;
         z = item->pos.z + (z << WALL_SHIFT) / 2 / d;
         y = item->pos.y - WALL_L / 2 + (y << WALL_SHIFT) / 2 / d;
-        DoBloodSplat(x, y, z, item->speed, item->pos.y_rot, item->room_number);
+        Blood_Spawn(x, y, z, item->speed, item->pos.y_rot, item->room_number);
     } else {
         lara_item->hit_status = 1;
         if (lara_item->hit_points > 0) {
@@ -167,7 +167,7 @@ void RollingBall_Collision(
                 z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
                 y = lara_item->pos.y - Random_GetControl() / 64;
                 d = item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
-                DoBloodSplat(x, y, z, item->speed * 2, d, item->room_number);
+                Blood_Spawn(x, y, z, item->speed * 2, d, item->room_number);
             }
         }
     }

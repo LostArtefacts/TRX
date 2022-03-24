@@ -121,7 +121,7 @@ void CentaurControl(int16_t item_num)
         case CENTAUR_WARNING:
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
-                CreatureEffect(item, &g_CentaurRear, DoBloodSplat);
+                CreatureEffect(item, &g_CentaurRear, Blood_Spawn);
                 g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CENTAUR_STOP;

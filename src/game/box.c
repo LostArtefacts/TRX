@@ -1055,7 +1055,7 @@ void CreatureHead(ITEM_INFO *item, int16_t required)
 
 int16_t CreatureEffect(
     ITEM_INFO *item, BITE_INFO *bite,
-    int16_t (*generate)(
+    int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))
 {
@@ -1064,6 +1064,6 @@ int16_t CreatureEffect(
     pos.y = bite->y;
     pos.z = bite->z;
     GetJointAbsPosition(item, &pos, bite->mesh_num);
-    return generate(
+    return spawn(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }

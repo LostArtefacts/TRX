@@ -28,7 +28,7 @@ void Dart_Control(int16_t item_num)
     if (item->touch_bits) {
         g_LaraItem->hit_points -= 50;
         g_LaraItem->hit_status = 1;
-        DoBloodSplat(
+        Blood_Spawn(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
             g_LaraItem->pos.y_rot, g_LaraItem->room_number);
     }
