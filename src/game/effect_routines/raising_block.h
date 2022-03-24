@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void RaisingBlock(ITEM_INFO *item);
+void FX_RaisingBlock(ITEM_INFO *item);
