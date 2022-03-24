@@ -6,7 +6,7 @@
 #include "game/effects/exploding_death.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/missile.h"
+#include "game/effects/gun.h"
 #include "game/people.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -111,7 +111,7 @@ void CentaurControl(int16_t item_num)
             if (item->required_anim_state == CENTAUR_EMPTY) {
                 item->required_anim_state = CENTAUR_AIM;
                 int16_t fx_num =
-                    CreatureEffect(item, &g_CentaurRocket, RocketGun);
+                    CreatureEffect(item, &g_CentaurRocket, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     centaur->neck_rotation = g_Effects[fx_num].pos.x_rot;
                 }

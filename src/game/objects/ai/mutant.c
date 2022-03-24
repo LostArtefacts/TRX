@@ -4,9 +4,9 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"
+#include "game/effects/gun.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/missile.h"
 #include "game/people.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -279,10 +279,10 @@ void FlyerControl(int16_t item_num)
         case FLYER_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                CreatureEffect(item, &g_WarriorShard, ShardGun);
+                CreatureEffect(item, &g_WarriorShard, Effect_ShardGun);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                CreatureEffect(item, &g_WarriorRocket, RocketGun);
+                CreatureEffect(item, &g_WarriorRocket, Effect_RocketGun);
             }
             break;
 
