@@ -2,9 +2,7 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
-void SetupTwinkle(OBJECT_INFO *obj);
-void Twinkle(GAME_VECTOR *pos);
-void ItemSparkle(ITEM_INFO *item, int meshmask);
-void ControlTwinkle(int16_t fx_num);
+void Twinkle_Setup(OBJECT_INFO *obj);
+void Twinkle_Control(int16_t fx_num);
+void Twinkle_Spawn(GAME_VECTOR *pos);
+void Twinkle_SparkleItem(ITEM_INFO *item, int mesh_mask);

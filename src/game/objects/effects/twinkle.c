@@ -5,12 +5,25 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 
-void SetupTwinkle(OBJECT_INFO *obj)
+void Twinkle_Setup(OBJECT_INFO *obj)
 {
-    obj->control = ControlTwinkle;
+    obj->control = Twinkle_Control;
 }
 
-void Twinkle(GAME_VECTOR *pos)
+void Twinkle_Control(int16_t fx_num)
+{
+    FX_INFO *fx = &g_Effects[fx_num];
+    fx->counter++;
+    if (fx->counter == 1) {
+        fx->counter = 0;
+        fx->frame_number--;
+        if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
+            KillEffect(fx_num);
+        }
+    }
+}
+
+void Twinkle_Spawn(GAME_VECTOR *pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {
@@ -24,7 +37,7 @@ void Twinkle(GAME_VECTOR *pos)
     }
 }
 
-void ItemSparkle(ITEM_INFO *item, int meshmask)
+void Twinkle_SparkleItem(ITEM_INFO *item, int mesh_mask)
 {
     SPHERE slist[34];
     GAME_VECTOR effect_pos;
@@ -32,7 +45,7 @@ void ItemSparkle(ITEM_INFO *item, int meshmask)
     int32_t num = GetSpheres(item, slist, 1);
     effect_pos.room_number = item->room_number;
     for (int i = 0; i < num; i++) {
-        if (meshmask & (1 << i)) {
+        if (mesh_mask & (1 << i)) {
             SPHERE *sptr = &slist[i];
             effect_pos.x =
                 sptr->x + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
@@ -40,20 +53,7 @@ void ItemSparkle(ITEM_INFO *item, int meshmask)
                 sptr->y + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             effect_pos.z =
                 sptr->z + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
-            Twinkle(&effect_pos);
-        }
-    }
-}
-
-void ControlTwinkle(int16_t fx_num)
-{
-    FX_INFO *fx = &g_Effects[fx_num];
-    fx->counter++;
-    if (fx->counter == 1) {
-        fx->counter = 0;
-        fx->frame_number--;
-        if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-            KillEffect(fx_num);
+            Twinkle_Spawn(&effect_pos);
         }
     }
 }

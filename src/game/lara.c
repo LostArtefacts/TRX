@@ -737,7 +737,7 @@ void LaraAsUseMidas(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-    ItemSparkle(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
+    Twinkle_SparkleItem(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
 }
 
 void LaraAsDieMidas(ITEM_INFO *item, COLL_INFO *coll)
@@ -833,7 +833,7 @@ void LaraAsDieMidas(ITEM_INFO *item, COLL_INFO *coll)
         break;
     }
 
-    ItemSparkle(item, g_Lara.mesh_effects);
+    Twinkle_SparkleItem(item, g_Lara.mesh_effects);
 }
 
 void LaraAsSwanDive(ITEM_INFO *item, COLL_INFO *coll)
