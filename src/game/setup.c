@@ -322,7 +322,7 @@ void ObjectObjects(void)
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
     Bubble_Setup(&g_Objects[O_BUBBLES1]);
-    SetupExplosion(&g_Objects[O_EXPLOSION1]);
+    Explosion_Setup(&g_Objects[O_EXPLOSION1]);
     SetupRicochet(&g_Objects[O_RICOCHET1]);
     SetupTwinkle(&g_Objects[O_TWINKLE]);
     SetupSplash(&g_Objects[O_SPLASH1]);
