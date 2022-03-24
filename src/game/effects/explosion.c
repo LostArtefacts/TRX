@@ -4,12 +4,12 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupExplosion(OBJECT_INFO *obj)
+void Explosion_Setup(OBJECT_INFO *obj)
 {
-    obj->control = ControlExplosion1;
+    obj->control = Explosion_Control;
 }
 
-void ControlExplosion1(int16_t fx_num)
+void Explosion_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
     fx->counter++;

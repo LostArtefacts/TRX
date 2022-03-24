@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 
-void SetupExplosion(OBJECT_INFO *obj);
-void ControlExplosion1(int16_t fx_num);
+void Explosion_Setup(OBJECT_INFO *obj);
+void Explosion_Control(int16_t fx_num);
+
 void Explosion(ITEM_INFO *item);
