@@ -25,7 +25,7 @@ void Splash_Control(int16_t fx_num)
     fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
 
-void Splash(ITEM_INFO *item)
+void Splash_Spawn(ITEM_INFO *item)
 {
     int16_t wh = GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);

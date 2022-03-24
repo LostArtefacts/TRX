@@ -108,7 +108,7 @@ void LaraControl(int16_t item_num)
         g_Lara.head_y_rot = 0;
         g_Lara.torso_x_rot = 0;
         g_Lara.torso_y_rot = 0;
-        Splash(item);
+        Splash_Spawn(item);
     } else if (g_Lara.water_status == LWS_UNDERWATER && !room_submerged) {
         int16_t wh = GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
