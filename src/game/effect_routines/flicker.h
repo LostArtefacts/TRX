@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void Flicker(ITEM_INFO *item);
+void FX_Flicker(ITEM_INFO *item);
