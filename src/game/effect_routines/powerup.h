@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void PowerUp(ITEM_INFO *item);
+void FX_PowerUp(ITEM_INFO *item);
