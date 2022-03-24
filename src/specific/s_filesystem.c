@@ -2,8 +2,8 @@
 
 #include "log.h"
 
-#include <assert.h>
 #include <SDL2/SDL.h>
+#include <assert.h>
 #include <string.h>
 
 #if defined(_WIN32)

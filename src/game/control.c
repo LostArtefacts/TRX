@@ -15,10 +15,10 @@
 #include "game/objects/keyhole.h"
 #include "game/objects/pickup.h"
 #include "game/objects/switch.h"
+#include "game/objects/traps/lava.h"
+#include "game/objects/traps/movable_block.h"
 #include "game/overlay.h"
 #include "game/sound.h"
-#include "game/traps/lava.h"
-#include "game/traps/movable_block.h"
 #include "global/vars.h"
 
 #include <stddef.h>
