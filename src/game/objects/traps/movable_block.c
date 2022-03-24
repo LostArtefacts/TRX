@@ -3,10 +3,10 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects/effects/dino_stomp.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "src/game/collide.h"
@@ -105,7 +105,7 @@ void MovableBlock_Control(int16_t item_num)
         item->gravity_status = 0;
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
-        DinoStomp(item);
+        FX_DinoStomp(item);
         Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     }
 
