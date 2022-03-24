@@ -3,8 +3,8 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -89,7 +89,7 @@ void RatControl(int16_t item_num)
         case RAT_ATTACK1:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &g_RatBite, Blood_Spawn);
+                CreatureEffect(item, &g_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_STOP;
@@ -99,7 +99,7 @@ void RatControl(int16_t item_num)
         case RAT_ATTACK2:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &g_RatBite, Blood_Spawn);
+                CreatureEffect(item, &g_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_RUN;

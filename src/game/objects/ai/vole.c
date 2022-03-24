@@ -3,9 +3,9 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/objects/ai/rat.h"
-#include "game/objects/effects/blood.h"
 #include "global/vars.h"
 
 void SetupVole(OBJECT_INFO *obj)
@@ -86,7 +86,7 @@ void VoleControl(int16_t item_num)
         case VOLE_ATTACK:
             if (item->required_anim_state == VOLE_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &g_RatBite, Blood_Spawn);
+                CreatureEffect(item, &g_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = VOLE_SWIM;

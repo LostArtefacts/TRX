@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -119,7 +119,7 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &g_RaptorBite, Blood_Spawn);
+                CreatureEffect(item, &g_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_LUNGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;
@@ -130,7 +130,7 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &g_RaptorBite, Blood_Spawn);
+                CreatureEffect(item, &g_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_RUN;
@@ -141,7 +141,7 @@ void RaptorControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &g_RaptorBite, Blood_Spawn);
+                CreatureEffect(item, &g_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;

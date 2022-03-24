@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -167,7 +167,7 @@ void WolfControl(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH)) {
-                CreatureEffect(item, &g_WolfJawBite, Blood_Spawn);
+                CreatureEffect(item, &g_WolfJawBite, Effect_Blood);
                 g_LaraItem->hit_points -= WOLF_POUNCE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_RUN;
@@ -178,7 +178,7 @@ void WolfControl(int16_t item_num)
         case WOLF_BITE:
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH) && info.ahead) {
-                CreatureEffect(item, &g_WolfJawBite, Blood_Spawn);
+                CreatureEffect(item, &g_WolfJawBite, Effect_Blood);
                 g_LaraItem->hit_points -= WOLF_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = WOLF_CROUCH;

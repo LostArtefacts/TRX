@@ -2,9 +2,9 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "game/objects/effects/body_part.h"
 #include "game/objects/effects/missile.h"
 #include "game/people.h"
@@ -230,7 +230,7 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK1:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &g_WarriorBite, Blood_Spawn);
+                CreatureEffect(item, &g_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
@@ -240,7 +240,7 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK2:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &g_WarriorBite, Blood_Spawn);
+                CreatureEffect(item, &g_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_RUN;
@@ -250,7 +250,7 @@ void FlyerControl(int16_t item_num)
         case FLYER_ATTACK3:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &g_WarriorBite, Blood_Spawn);
+                CreatureEffect(item, &g_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;

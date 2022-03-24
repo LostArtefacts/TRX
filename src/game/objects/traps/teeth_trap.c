@@ -2,7 +2,7 @@
 
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/objects/effects/blood.h"
+#include "game/effects/blood.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -29,7 +29,7 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
     pos.y = bite->y;
     pos.z = bite->z;
     GetJointAbsPosition(item, &pos, bite->mesh_num);
-    Blood_Spawn(
+    Effect_Blood(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
 
