@@ -92,6 +92,7 @@ sources = [
   'src/game/draw.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
+  'src/game/effect_routines/bubbles.c',
   'src/game/fmv.c',
   'src/game/game.c',
   'src/game/gamebuf.c',

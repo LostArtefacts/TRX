@@ -1,4 +1,4 @@
-#include "game/objects/effects/bubble.h"
+#include "game/effect_routines/bubbles.h"
 #include "game/objects/effects/chain_block.h"
 #include "game/objects/effects/dino_stomp.h"
 #include "game/objects/effects/earthquake.h"
@@ -19,7 +19,7 @@ char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
-    Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,
+    Turn180,    DinoStomp, LaraNormal,    FX_Bubbles,   FinishLevel,
     EarthQuake, Flood,     RaisingBlock,  Stairs2Slope, DropSand,
     PowerUp,    Explosion, LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
     ChainBlock, Flicker,
