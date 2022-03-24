@@ -7,9 +7,22 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupSplash(OBJECT_INFO *obj)
+void Splash_Setup(OBJECT_INFO *obj)
 {
-    obj->control = ControlSplash1;
+    obj->control = Splash_Control;
+}
+
+void Splash_Control(int16_t fx_num)
+{
+    FX_INFO *fx = &g_Effects[fx_num];
+    fx->frame_number--;
+    if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
+        KillEffect(fx_num);
+        return;
+    }
+
+    fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
 
 void Splash(ITEM_INFO *item)
@@ -34,17 +47,4 @@ void Splash(ITEM_INFO *item)
             fx->speed = Random_GetDraw() / 256;
         }
     }
-}
-
-void ControlSplash1(int16_t fx_num)
-{
-    FX_INFO *fx = &g_Effects[fx_num];
-    fx->frame_number--;
-    if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-        KillEffect(fx_num);
-        return;
-    }
-
-    fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
-    fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
