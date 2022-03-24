@@ -102,6 +102,7 @@ sources = [
   'src/game/effect_routines/lara_effects.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
+  'src/game/effects/gun.c',
   'src/game/effects/gunshot.c',
   'src/game/fmv.c',
   'src/game/game.c',
