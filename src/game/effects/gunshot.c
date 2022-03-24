@@ -57,6 +57,6 @@ int16_t Effect_GunShotMiss(
     pos.z = g_LaraItem->pos.z
         + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
     pos.room_number = g_LaraItem->room_number;
-    Ricochet(&pos);
+    Ricochet_Spawn(&pos);
     return Effect_GunShot(x, y, z, speed, y_rot, room_num);
 }
