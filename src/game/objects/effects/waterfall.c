@@ -5,6 +5,8 @@
 #include "game/random.h"
 #include "global/vars.h"
 
+#define WATERFALL_RANGE (WALL_L * 10) // = 10240
+
 void Waterfall_Setup(OBJECT_INFO *obj)
 {
     g_Objects[O_WATERFALL].control = Waterfall_Control;
