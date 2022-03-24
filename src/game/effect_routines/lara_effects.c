@@ -1,10 +1,10 @@
-#include "game/objects/effects/lara_effects.h"
+#include "game/effect_routines/lara_effects.h"
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "global/vars.h"
 
-void LaraNormal(ITEM_INFO *item)
+void FX_LaraNormal(ITEM_INFO *item)
 {
     item->current_anim_state = AS_STOP;
     item->goal_anim_state = AS_STOP;
@@ -14,12 +14,12 @@ void LaraNormal(ITEM_INFO *item)
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }
 
-void LaraHandsFree(ITEM_INFO *item)
+void FX_LaraHandsFree(ITEM_INFO *item)
 {
     g_Lara.gun_status = LGS_ARMLESS;
 }
 
-void LaraDrawRightGun(ITEM_INFO *item)
+void FX_LaraDrawRightGun(ITEM_INFO *item)
 {
     int16_t *tmp_mesh;
     OBJECT_INFO *obj = &g_Objects[item->object_number];

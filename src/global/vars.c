@@ -7,7 +7,7 @@
 #include "game/effect_routines/flicker.h"
 #include "game/effect_routines/flipmap.h"
 #include "game/effect_routines/flood.h"
-#include "game/objects/effects/lara_effects.h"
+#include "game/effect_routines/lara_effects.h"
 #include "game/objects/effects/powerup.h"
 #include "game/objects/effects/raising_block.h"
 #include "game/objects/effects/sand.h"
@@ -19,10 +19,12 @@ char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
-    Turn180,       FX_DinoStomp, LaraNormal,    FX_Bubbles,   FX_FinishLevel,
-    FX_Earthquake, FX_Flood,     RaisingBlock,  Stairs2Slope, DropSand,
-    PowerUp,       FX_Explosion, LaraHandsFree, FX_FlipMap,   LaraDrawRightGun,
-    FX_ChainBlock, FX_Flicker,
+    Turn180,          FX_DinoStomp,   FX_LaraNormal,
+    FX_Bubbles,       FX_FinishLevel, FX_Earthquake,
+    FX_Flood,         RaisingBlock,   Stairs2Slope,
+    DropSand,         PowerUp,        FX_Explosion,
+    FX_LaraHandsFree, FX_FlipMap,     FX_LaraDrawRightGun,
+    FX_ChainBlock,    FX_Flicker,
 };
 
 int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
