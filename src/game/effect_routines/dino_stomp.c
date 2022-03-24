@@ -1,10 +1,10 @@
-#include "game/objects/effects/dino_stomp.h"
+#include "game/effect_routines/dino_stomp.h"
 
 #include "global/vars.h"
 
 #define MAX_BOUNCE 100
 
-void DinoStomp(ITEM_INFO *item)
+void FX_DinoStomp(ITEM_INFO *item)
 {
     int32_t dx = item->pos.x - g_Camera.pos.x;
     int32_t dy = item->pos.y - g_Camera.pos.y;
