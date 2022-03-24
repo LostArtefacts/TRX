@@ -3,9 +3,9 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
+#include "game/effects/exploding_death.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/body_part.h"
 #include "game/objects/effects/missile.h"
 #include "game/people.h"
 #include "game/random.h"
@@ -73,7 +73,7 @@ void FlyerControl(int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
+        if (Effect_ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
             Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
             DisableBaddieAI(item_num);
             KillItem(item_num);

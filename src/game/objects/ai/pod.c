@@ -2,10 +2,10 @@
 
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/body_part.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -104,7 +104,7 @@ void PodControl(int16_t item_num)
             item->goal_anim_state = POD_EXPLODE;
             item->mesh_bits = 0xFFFFFF;
             item->collidable = 0;
-            ExplodingDeath(item_num, 0xFFFE00, 0);
+            Effect_ExplodingDeath(item_num, 0xFFFE00, 0);
 
             int16_t bug_item_num = *(int16_t *)item->data;
             ITEM_INFO *bug = &g_Items[bug_item_num];
