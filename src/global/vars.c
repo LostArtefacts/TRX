@@ -3,7 +3,7 @@
 #include "game/effect_routines/dino_stomp.h"
 #include "game/effect_routines/earthquake.h"
 #include "game/effect_routines/explosion.h"
-#include "game/objects/effects/finish_level.h"
+#include "game/effect_routines/finish_level.h"
 #include "game/objects/effects/flicker.h"
 #include "game/objects/effects/flipmap.h"
 #include "game/objects/effects/flood.h"
@@ -19,7 +19,7 @@ char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
-    Turn180,       FX_DinoStomp, LaraNormal,    FX_Bubbles,   FinishLevel,
+    Turn180,       FX_DinoStomp, LaraNormal,    FX_Bubbles,   FX_FinishLevel,
     FX_Earthquake, Flood,        RaisingBlock,  Stairs2Slope, DropSand,
     PowerUp,       FX_Explosion, LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
     FX_ChainBlock, Flicker,

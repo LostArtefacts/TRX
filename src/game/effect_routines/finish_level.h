@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void FinishLevel(ITEM_INFO *item);
+void FX_FinishLevel(ITEM_INFO *item);
