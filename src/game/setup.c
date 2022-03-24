@@ -329,8 +329,8 @@ void ObjectObjects(void)
     SetupWaterfall(&g_Objects[O_WATERFALL]);
     BodyPart_Setup(&g_Objects[O_BODY_PART]);
     SetupNatlaGun(&g_Objects[O_MISSILE1]);
-    SetupMissile(&g_Objects[O_MISSILE2]);
-    SetupMissile(&g_Objects[O_MISSILE3]);
+    Missile_Setup(&g_Objects[O_MISSILE2]);
+    Missile_Setup(&g_Objects[O_MISSILE3]);
     GunShot_Setup(&g_Objects[O_GUN_FLASH]);
 }
 

@@ -9,12 +9,12 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupMissile(OBJECT_INFO *obj)
+void Missile_Setup(OBJECT_INFO *obj)
 {
-    obj->control = ControlMissile;
+    obj->control = Missile_Control;
 }
 
-void ControlMissile(int16_t fx_num)
+void Missile_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
 
