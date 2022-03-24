@@ -1,10 +1,10 @@
-#include "game/objects/effects/flicker.h"
+#include "game/effect_routines/flicker.h"
 
 #include "game/control.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
-void Flicker(ITEM_INFO *item)
+void FX_Flicker(ITEM_INFO *item)
 {
     if (g_FlipTimer > 125) {
         FlipMap();
