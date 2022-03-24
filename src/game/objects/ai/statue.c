@@ -1,10 +1,10 @@
 #include "game/objects/ai/statue.h"
 
 #include "game/collide.h"
+#include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/body_part.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -64,7 +64,7 @@ void StatueControl(int16_t item_num)
 
     if (y > -WALL_L && y < WALL_L
         && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
-        ExplodingDeath(item_num, -1, 0);
+        Effect_ExplodingDeath(item_num, -1, 0);
         KillItem(item_num);
         item->status = IS_DEACTIVATED;
 

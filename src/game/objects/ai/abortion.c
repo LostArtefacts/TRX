@@ -4,9 +4,9 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/exploding_death.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/body_part.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -216,7 +216,7 @@ void AbortionControl(int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
+        Effect_ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);

@@ -3,9 +3,9 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
+#include "game/effects/exploding_death.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/body_part.h"
 #include "game/objects/effects/missile.h"
 #include "game/people.h"
 #include "game/random.h"
@@ -135,7 +135,7 @@ void CentaurControl(int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        ExplodingDeath(item_num, -1, CENTAUR_PART_DAMAGE);
+        Effect_ExplodingDeath(item_num, -1, CENTAUR_PART_DAMAGE);
         KillItem(item_num);
         item->status = IS_DEACTIVATED;
     }
