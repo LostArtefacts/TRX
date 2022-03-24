@@ -441,8 +441,9 @@ void Overlay_DrawAmmoInfo(void)
 void Overlay_DrawPickups(void)
 {
     static int32_t old_game_timer = 0;
-    int16_t time = g_GameInfo.stats.timer - old_game_timer;
-    old_game_timer = g_GameInfo.stats.timer;
+    int16_t time =
+        g_GameInfo.current[g_CurrentLevel].stats.timer - old_game_timer;
+    old_game_timer = g_GameInfo.current[g_CurrentLevel].stats.timer;
 
     if (time > 0 && time < 60) {
         int32_t sprite_height =

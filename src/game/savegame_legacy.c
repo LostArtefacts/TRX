@@ -417,41 +417,50 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     Savegame_Legacy_Skip(sizeof(int32_t)); // save counter
 
-    assert(game_info->start);
+    assert(game_info->current);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        START_INFO *start = &game_info->start[i];
-        Savegame_Legacy_Read(&start->pistol_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Read(&start->magnum_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Read(&start->uzi_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Read(&start->shotgun_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Read(&start->num_medis, sizeof(uint8_t));
-        Savegame_Legacy_Read(&start->num_big_medis, sizeof(uint8_t));
-        Savegame_Legacy_Read(&start->num_scions, sizeof(uint8_t));
-        Savegame_Legacy_Read(&start->gun_status, sizeof(int8_t));
-        Savegame_Legacy_Read(&start->gun_type, sizeof(int8_t));
+        RESUME_INFO *current = &game_info->current[i];
+        Savegame_Legacy_Read(&current->pistol_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->magnum_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->uzi_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->shotgun_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->num_medis, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->num_big_medis, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->num_scions, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->gun_status, sizeof(int8_t));
+        Savegame_Legacy_Read(&current->gun_type, sizeof(int8_t));
         uint16_t flags;
         Savegame_Legacy_Read(&flags, sizeof(uint16_t));
-        start->flags.available = flags & 1 ? 1 : 0;
-        start->flags.got_pistols = flags & 2 ? 1 : 0;
-        start->flags.got_magnums = flags & 4 ? 1 : 0;
-        start->flags.got_uzis = flags & 8 ? 1 : 0;
-        start->flags.got_shotgun = flags & 16 ? 1 : 0;
-        start->flags.costume = flags & 32 ? 1 : 0;
+        current->flags.available = flags & 1 ? 1 : 0;
+        current->flags.got_pistols = flags & 2 ? 1 : 0;
+        current->flags.got_magnums = flags & 4 ? 1 : 0;
+        current->flags.got_uzis = flags & 8 ? 1 : 0;
+        current->flags.got_shotgun = flags & 16 ? 1 : 0;
+        current->flags.costume = flags & 32 ? 1 : 0;
     }
 
-    Savegame_Legacy_Read(&game_info->stats.timer, sizeof(uint32_t));
-    Savegame_Legacy_Read(&game_info->stats.kill_count, sizeof(uint32_t));
-    Savegame_Legacy_Read(&game_info->stats.secret_flags, sizeof(uint16_t));
+    Savegame_Legacy_Read(
+        &game_info->current[g_CurrentLevel].stats.timer, sizeof(uint32_t));
+    Savegame_Legacy_Read(
+        &game_info->current[g_CurrentLevel].stats.kill_count, sizeof(uint32_t));
+    Savegame_Legacy_Read(
+        &game_info->current[g_CurrentLevel].stats.secret_flags,
+        sizeof(uint16_t));
     Savegame_Legacy_Read(&g_CurrentLevel, sizeof(uint16_t));
-    Savegame_Legacy_Read(&game_info->stats.pickup_count, sizeof(uint8_t));
+    Savegame_Legacy_Read(
+        &game_info->current[g_CurrentLevel].stats.pickup_count,
+        sizeof(uint8_t));
+
+    // Legacy saves don't have start and current so use current for both
+    memcpy(game_info->start, game_info->current, sizeof(RESUME_INFO));
+
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
 
     Savegame_SetCurrentPosition(g_CurrentLevel);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        Savegame_ResetEndInfo(i);
+        Savegame_ResetCurrentInfo(i);
     }
     game_info->death_counter_supported = false;
-    game_info->end[g_CurrentLevel].stats = game_info->stats;
 
     InitialiseLaraInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
@@ -574,33 +583,36 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Write(title, SAVEGAME_LEGACY_TITLE_SIZE);
     Savegame_Legacy_Write(&g_SaveCounter, sizeof(int32_t));
 
-    assert(game_info->start);
+    assert(game_info->current);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        START_INFO *start = &game_info->start[i];
-        Savegame_Legacy_Write(&start->pistol_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Write(&start->magnum_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Write(&start->uzi_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Write(&start->shotgun_ammo, sizeof(uint16_t));
-        Savegame_Legacy_Write(&start->num_medis, sizeof(uint8_t));
-        Savegame_Legacy_Write(&start->num_big_medis, sizeof(uint8_t));
-        Savegame_Legacy_Write(&start->num_scions, sizeof(uint8_t));
-        Savegame_Legacy_Write(&start->gun_status, sizeof(int8_t));
-        Savegame_Legacy_Write(&start->gun_type, sizeof(int8_t));
+        RESUME_INFO *current = &game_info->current[i];
+        Savegame_Legacy_Write(&current->pistol_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Write(&current->magnum_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Write(&current->uzi_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Write(&current->shotgun_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Write(&current->num_medis, sizeof(uint8_t));
+        Savegame_Legacy_Write(&current->num_big_medis, sizeof(uint8_t));
+        Savegame_Legacy_Write(&current->num_scions, sizeof(uint8_t));
+        Savegame_Legacy_Write(&current->gun_status, sizeof(int8_t));
+        Savegame_Legacy_Write(&current->gun_type, sizeof(int8_t));
         uint16_t flags = 0;
-        flags |= start->flags.available ? 1 : 0;
-        flags |= start->flags.got_pistols ? 2 : 0;
-        flags |= start->flags.got_magnums ? 4 : 0;
-        flags |= start->flags.got_uzis ? 8 : 0;
-        flags |= start->flags.got_shotgun ? 16 : 0;
-        flags |= start->flags.costume ? 32 : 0;
+        flags |= current->flags.available ? 1 : 0;
+        flags |= current->flags.got_pistols ? 2 : 0;
+        flags |= current->flags.got_magnums ? 4 : 0;
+        flags |= current->flags.got_uzis ? 8 : 0;
+        flags |= current->flags.got_shotgun ? 16 : 0;
+        flags |= current->flags.costume ? 32 : 0;
         Savegame_Legacy_Write(&flags, sizeof(uint16_t));
     }
 
-    Savegame_Legacy_Write(&game_info->stats.timer, sizeof(uint32_t));
-    Savegame_Legacy_Write(&game_info->stats.kill_count, sizeof(uint32_t));
-    Savegame_Legacy_Write(&game_info->stats.secret_flags, sizeof(uint16_t));
+    Savegame_Legacy_Write(&game_info->current->stats.timer, sizeof(uint32_t));
+    Savegame_Legacy_Write(
+        &game_info->current->stats.kill_count, sizeof(uint32_t));
+    Savegame_Legacy_Write(
+        &game_info->current->stats.secret_flags, sizeof(uint16_t));
     Savegame_Legacy_Write(&g_CurrentLevel, sizeof(uint16_t));
-    Savegame_Legacy_Write(&game_info->stats.pickup_count, sizeof(uint8_t));
+    Savegame_Legacy_Write(
+        &game_info->current->stats.pickup_count, sizeof(uint8_t));
     Savegame_Legacy_Write(&game_info->bonus_flag, sizeof(uint8_t));
 
     SAVEGAME_LEGACY_ITEM_STATS item_stats = {

@@ -152,11 +152,11 @@ void InitialiseLevelFlags(void)
     // loading a save can override it to false
     g_GameInfo.death_counter_supported = true;
 
-    g_GameInfo.stats.timer = 0;
-    g_GameInfo.stats.secret_flags = 0;
-    g_GameInfo.stats.pickup_count = 0;
-    g_GameInfo.stats.kill_count = 0;
-    g_GameInfo.stats.death_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
 }
 
 void BaddyObjects(void)

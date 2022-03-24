@@ -29,7 +29,7 @@ static void Option_CompassInitText(void)
     const int top_y = -100;
     const int row_height = 25;
     const int row_width = 225;
-    const GAME_STATS *stats = &g_GameInfo.stats;
+    const GAME_STATS *stats = &g_GameInfo.current[g_CurrentLevel].stats;
 
     int y = top_y;
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, y - 2, " ");
@@ -69,7 +69,7 @@ static void Option_CompassInitText(void)
     }
     sprintf(
         buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
-        g_GameInfo.stats.max_secret_count);
+        g_GameInfo.current[g_CurrentLevel].stats.max_secret_count);
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
     y += row_height;
 
@@ -106,7 +106,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
             Option_CompassInitText();
         }
 
-        int32_t seconds = g_GameInfo.stats.timer / 30;
+        int32_t seconds = g_GameInfo.current[g_CurrentLevel].stats.timer / 30;
         int32_t hours = seconds / 3600;
         int32_t minutes = (seconds / 60) % 60;
         seconds %= 60;

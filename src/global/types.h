@@ -1484,7 +1484,7 @@ typedef struct GAME_STATS {
     uint8_t max_pickup_count;
 } GAME_STATS;
 
-typedef struct START_INFO {
+typedef struct RESUME_INFO {
     int32_t lara_hitpoints;
     uint16_t pistol_ammo;
     uint16_t magnum_ammo;
@@ -1506,16 +1506,12 @@ typedef struct START_INFO {
             uint16_t costume : 1;
         };
     } flags;
-} START_INFO;
-
-typedef struct END_INFO {
     GAME_STATS stats;
-} END_INFO;
+} RESUME_INFO;
 
 typedef struct GAME_INFO {
-    START_INFO *start;
-    END_INFO *end;
-    GAME_STATS stats; // always for current level
+    RESUME_INFO *start;
+    RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;
     bool death_counter_supported;

@@ -153,7 +153,7 @@ void Shell_Main(void)
         return;
     }
 
-    Savegame_InitStartEndInfo();
+    Savegame_InitStartCurrentInfo();
     Savegame_ScanSavedGames();
     Settings_Read();
 

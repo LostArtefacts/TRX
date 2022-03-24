@@ -14,7 +14,7 @@
 
 #include "game/savegame_common.h"
 
-void Savegame_InitStartEndInfo(void);
+void Savegame_InitStartCurrentInfo(void);
 
 int32_t Savegame_GetLevelNumber(int32_t slot_num);
 

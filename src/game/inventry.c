@@ -274,7 +274,7 @@ int32_t Display_Inventory(int inv_mode)
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
-            g_GameInfo.stats.timer += m_InvNFrames / 2;
+            g_GameInfo.current[g_CurrentLevel].stats.timer += m_InvNFrames / 2;
         }
 
         if (ring.rotating) {
@@ -699,7 +699,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
-                Savegame_InitStartEndInfo();
+                Savegame_InitStartCurrentInfo();
                 return GF_START_GAME | g_GameFlow.first_level_num;
             } else {
                 // page 3: exit game
@@ -737,7 +737,7 @@ int32_t Display_Inventory(int inv_mode)
                         g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
-                    Savegame_InitStartEndInfo();
+                    Savegame_InitStartCurrentInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
                     Savegame_Save(g_InvExtraData[1], &g_GameInfo);

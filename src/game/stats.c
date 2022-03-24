@@ -263,7 +263,7 @@ void Stats_Show(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    const GAME_STATS *stats = &g_GameInfo.end[level_num].stats;
+    const GAME_STATS *stats = &g_GameInfo.current[level_num].stats;
 
     Text_RemoveAll();
 
@@ -388,7 +388,7 @@ void Stats_ShowTotal(const char *filename)
     int16_t secret_flags = 0;
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        const GAME_STATS *stats = &g_GameInfo.end[i].stats;
+        const GAME_STATS *stats = &g_GameInfo.current[i].stats;
 
         total_timer += stats->timer;
         total_death_count += stats->death_count;

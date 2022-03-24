@@ -25,6 +25,16 @@
 
 #define MOVE_TIMEOUT 90
 
+// static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
+
+// static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
+// {
+//     if (g_GameInfo.level_type == GFL_SAVED) {
+//         return &g_GameInfo.current[level_num];
+//     }
+//     return &g_GameInfo.start[level_num];
+// }
+
 void LaraControl(int16_t item_num)
 {
     COLL_INFO coll = { 0 };
@@ -168,7 +178,7 @@ void LaraControl(int16_t item_num)
         item->hit_points = -1;
         if (!g_Lara.death_timer) {
             Music_Stop();
-            g_GameInfo.end[g_CurrentLevel].stats.death_count++;
+            g_GameInfo.current[g_CurrentLevel].stats.death_count++;
             if (g_GameInfo.current_save_slot != -1) {
                 Savegame_UpdateDeathCounters(
                     g_GameInfo.current_save_slot, &g_GameInfo);
@@ -451,7 +461,7 @@ void InitialiseLaraLoad(int16_t item_num)
 
 void InitialiseLara(void)
 {
-    START_INFO *start = &g_GameInfo.start[g_CurrentLevel];
+    RESUME_INFO *start = &g_GameInfo.start[g_CurrentLevel];
 
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
@@ -508,7 +518,7 @@ void InitialiseLaraInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    START_INFO *start = &g_GameInfo.start[level_num];
+    RESUME_INFO *start = &g_GameInfo.start[level_num];
 
     g_Lara.pistols.ammo = 1000;
     if (start->flags.got_pistols) {
@@ -573,7 +583,7 @@ void InitialiseLaraInventory(int32_t level_num)
 
 void LaraInitialiseMeshes(int32_t level_num)
 {
-    START_INFO *start = &g_GameInfo.start[level_num];
+    RESUME_INFO *start = &g_GameInfo.start[level_num];
 
     if (start->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {

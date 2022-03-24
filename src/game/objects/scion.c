@@ -148,7 +148,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
             RemoveDrawnItem(item_num);
-            g_GameInfo.stats.pickup_count++;
+            g_GameInfo.current[g_CurrentLevel].stats.pickup_count++;
         }
     } else if (
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS

@@ -22,7 +22,7 @@ static uint32_t *m_DemoPtr = NULL;
 int32_t StartDemo(void)
 {
     TEXTSTRING *txt;
-    START_INFO start, *s;
+    RESUME_INFO start, *s;
 
     bool any_demos = false;
     for (int i = g_GameFlow.first_level_num; i < g_GameFlow.last_level_num;
