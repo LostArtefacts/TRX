@@ -1,9 +1,9 @@
 #define S_AUDIO_IMPL
 #include "specific/s_audio.h"
 
-#include "memory.h"
 #include "filesystem.h"
 #include "log.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <libavcodec/avcodec.h>

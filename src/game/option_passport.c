@@ -1,10 +1,10 @@
 #include "game/option.h"
 
-#include "game/savegame.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/requester.h"
+#include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"

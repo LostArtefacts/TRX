@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/control.h"
-#include "game/effects/gunshot.h"
 #include "game/items.h"
+#include "game/objects/effects/gunshot.h"
 #include "game/random.h"
 #include "global/vars.h"
 

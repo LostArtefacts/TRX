@@ -9,8 +9,8 @@
 #include "log.h"
 #include "specific/s_shell.h"
 
-#include <stdbool.h>
 #include <dinput.h>
+#include <stdbool.h>
 
 #define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
 

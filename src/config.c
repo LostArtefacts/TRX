@@ -3,10 +3,10 @@
 #include "filesystem.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 #include "json.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_shell.h"
 
 #include <string.h>
 
