@@ -1,9 +1,9 @@
-#include "game/objects/effects/flood.h"
+#include "game/effect_routines/flood.h"
 
 #include "game/sound.h"
 #include "global/vars.h"
 
-void Flood(ITEM_INFO *item)
+void FX_Flood(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
 
