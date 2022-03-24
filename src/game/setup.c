@@ -302,7 +302,7 @@ void ObjectObjects(void)
 
     Cabin_Setup(&g_Objects[O_PORTACABIN]);
     Boat_Setup(&g_Objects[O_BOAT]);
-    SetupEarthquake(&g_Objects[O_EARTHQUAKE]);
+    Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
     g_Objects[O_PLAYER_1].initialise = InitialisePlayer1;
     g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
