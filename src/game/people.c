@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/control.h"
+#include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/objects/effects/gunshot.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -41,9 +41,9 @@ bool ShotLara(
 
     int16_t fx_num;
     if (hit) {
-        fx_num = CreatureEffect(item, gun, GunShot_SpawnHit);
+        fx_num = CreatureEffect(item, gun, Effect_GunShotHit);
     } else {
-        fx_num = CreatureEffect(item, gun, GunShot_SpawnMiss);
+        fx_num = CreatureEffect(item, gun, Effect_GunShotMiss);
     }
 
     if (fx_num != NO_ITEM) {

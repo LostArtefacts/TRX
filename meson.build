@@ -101,6 +101,7 @@ sources = [
   'src/game/effect_routines/flood.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
+  'src/game/effects/gunshot.c',
   'src/game/fmv.c',
   'src/game/game.c',
   'src/game/gamebuf.c',
