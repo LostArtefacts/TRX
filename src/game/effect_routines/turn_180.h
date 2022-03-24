@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void Turn180(ITEM_INFO *item);
+void FX_Turn180(ITEM_INFO *item);
