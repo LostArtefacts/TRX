@@ -1,9 +1,9 @@
-#include "game/objects/effects/sand.h"
+#include "game/effect_routines/sand.h"
 
 #include "game/sound.h"
 #include "global/vars.h"
 
-void DropSand(ITEM_INFO *item)
+void FX_DropSand(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
     if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
