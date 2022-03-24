@@ -1,8 +1,8 @@
 #include "game/objects/traps/damocles_sword.h"
 
 #include "game/collide.h"
+#include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/objects/effects/blood.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -77,6 +77,6 @@ void DamoclesSword_Collision(
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 44;
         int32_t d = lara_item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
-        Blood_Spawn(x, y, z, lara_item->speed, d, lara_item->room_number);
+        Effect_Blood(x, y, z, lara_item->speed, d, lara_item->room_number);
     }
 }

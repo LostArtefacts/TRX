@@ -3,8 +3,8 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "global/vars.h"
 
 BITE_INFO g_CrocodileBite = { 5, -21, 467, 9 };
@@ -122,7 +122,7 @@ void CrocControl(int16_t item_num)
 
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
-                CreatureEffect(item, &g_CrocodileBite, Blood_Spawn);
+                CreatureEffect(item, &g_CrocodileBite, Effect_Blood);
                 g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CROCODILE_STOP;

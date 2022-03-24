@@ -1,7 +1,7 @@
 #include "game/objects/effects/gunshot.h"
 
+#include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/objects/effects/blood.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -55,7 +55,7 @@ int16_t GunShot_SpawnHit(
     pos.y = 0;
     pos.z = 0;
     GetJointAbsPosition(g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
-    Blood_Spawn(
+    Effect_Blood(
         pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->pos.y_rot,
         g_LaraItem->room_number);
     Sound_Effect(SFX_LARA_BULLETHIT, &g_LaraItem->pos, SPM_NORMAL);

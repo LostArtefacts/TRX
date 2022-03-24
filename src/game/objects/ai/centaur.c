@@ -2,9 +2,9 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "game/objects/effects/body_part.h"
 #include "game/objects/effects/missile.h"
 #include "game/people.h"
@@ -121,7 +121,7 @@ void CentaurControl(int16_t item_num)
         case CENTAUR_WARNING:
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
-                CreatureEffect(item, &g_CentaurRear, Blood_Spawn);
+                CreatureEffect(item, &g_CentaurRear, Effect_Blood);
                 g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CENTAUR_STOP;

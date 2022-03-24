@@ -5,8 +5,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/effects/blood.h"
 #include "global/types.h"
 #include "global/vars.h"
 
@@ -80,7 +80,7 @@ void BatControl(int16_t item_num)
 
         case BAT_ATTACK:
             if (item->touch_bits) {
-                CreatureEffect(item, &g_BatBite, Blood_Spawn);
+                CreatureEffect(item, &g_BatBite, Effect_Blood);
                 g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
             } else {

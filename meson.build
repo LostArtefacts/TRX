@@ -90,6 +90,7 @@ sources = [
   'src/game/control_util.c',
   'src/game/demo.c',
   'src/game/draw.c',
+  'src/game/effects/blood.c',
   'src/game/fmv.c',
   'src/game/game.c',
   'src/game/gamebuf.c',

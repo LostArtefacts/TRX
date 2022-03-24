@@ -3,8 +3,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/objects/effects/blood.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -28,7 +28,7 @@ void Dart_Control(int16_t item_num)
     if (item->touch_bits) {
         g_LaraItem->hit_points -= 50;
         g_LaraItem->hit_status = 1;
-        Blood_Spawn(
+        Effect_Blood(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
             g_LaraItem->pos.y_rot, g_LaraItem->room_number);
     }
