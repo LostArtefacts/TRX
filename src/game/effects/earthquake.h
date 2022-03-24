@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 
-void SetupEarthquake(OBJECT_INFO *obj);
+void Earthquake_Setup(OBJECT_INFO *obj);
+void Earthquake_Control(int16_t item_num);
+
 void EarthQuake(ITEM_INFO *item);
-void EarthQuakeControl(int16_t item_num);
