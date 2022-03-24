@@ -93,6 +93,7 @@ sources = [
   'src/game/effect_routines/bubbles.c',
   'src/game/effect_routines/chain_block.c',
   'src/game/effect_routines/dino_stomp.c',
+  'src/game/effect_routines/earthquake.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
   'src/game/fmv.c',
