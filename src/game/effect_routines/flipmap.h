@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void FxFlipMap(ITEM_INFO *item);
+void FX_FlipMap(ITEM_INFO *item);
