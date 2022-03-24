@@ -5,13 +5,13 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-void SetupWaterfall(OBJECT_INFO *obj)
+void Waterfall_Setup(OBJECT_INFO *obj)
 {
-    g_Objects[O_WATERFALL].control = ControlWaterFall;
+    g_Objects[O_WATERFALL].control = Waterfall_Control;
     g_Objects[O_WATERFALL].draw_routine = DrawDummyItem;
 }
 
-void ControlWaterFall(int16_t item_num)
+void Waterfall_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
