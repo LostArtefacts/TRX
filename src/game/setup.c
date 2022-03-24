@@ -327,7 +327,7 @@ void ObjectObjects(void)
     SetupTwinkle(&g_Objects[O_TWINKLE]);
     SetupSplash(&g_Objects[O_SPLASH1]);
     SetupWaterfall(&g_Objects[O_WATERFALL]);
-    SetupBodyPart(&g_Objects[O_BODY_PART]);
+    BodyPart_Setup(&g_Objects[O_BODY_PART]);
     SetupNatlaGun(&g_Objects[O_MISSILE1]);
     SetupMissile(&g_Objects[O_MISSILE2]);
     SetupMissile(&g_Objects[O_MISSILE3]);
