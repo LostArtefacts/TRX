@@ -1,9 +1,9 @@
-#include "game/objects/effects/powerup.h"
+#include "game/effect_routines/powerup.h"
 
 #include "game/sound.h"
 #include "global/vars.h"
 
-void PowerUp(ITEM_INFO *item)
+void FX_PowerUp(ITEM_INFO *item)
 {
     PHD_3DPOS pos;
     if (g_FlipTimer > FRAMES_PER_SECOND * 4) {

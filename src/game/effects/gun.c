@@ -1,11 +1,11 @@
 #include "game/effects/gun.h"
 
-#include "game/draw.h"
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
-#include "global/vars.h"
+#include "game/draw.h"
 #include "game/items.h"
 #include "game/random.h"
+#include "global/vars.h"
 
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220
