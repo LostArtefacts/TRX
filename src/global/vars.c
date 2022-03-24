@@ -2,7 +2,7 @@
 #include "game/effect_routines/chain_block.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/effect_routines/earthquake.h"
-#include "game/objects/effects/explosion.h"
+#include "game/effect_routines/explosion.h"
 #include "game/objects/effects/finish_level.h"
 #include "game/objects/effects/flicker.h"
 #include "game/objects/effects/flipmap.h"
@@ -21,7 +21,7 @@ int32_t g_FPSCounter = 0;
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,       FX_DinoStomp, LaraNormal,    FX_Bubbles,   FinishLevel,
     FX_Earthquake, Flood,        RaisingBlock,  Stairs2Slope, DropSand,
-    PowerUp,       Explosion,    LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
+    PowerUp,       FX_Explosion, LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
     FX_ChainBlock, Flicker,
 };
 
