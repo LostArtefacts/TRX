@@ -1,7 +1,6 @@
 #include "game/objects/effects/explosion.h"
 
 #include "game/items.h"
-#include "game/sound.h"
 #include "global/vars.h"
 
 void Explosion_Setup(OBJECT_INFO *obj)
@@ -20,11 +19,4 @@ void Explosion_Control(int16_t fx_num)
             KillEffect(fx_num);
         }
     }
-}
-
-void Explosion(ITEM_INFO *item)
-{
-    Sound_Effect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
-    g_Camera.bounce = -75;
-    g_FlipEffect = -1;
 }
