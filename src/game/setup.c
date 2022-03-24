@@ -321,7 +321,7 @@ void ObjectObjects(void)
     g_Objects[O_PLAYER_4].hit_points = 1;
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
-    SetupBubble(&g_Objects[O_BUBBLES1]);
+    Bubble_Setup(&g_Objects[O_BUBBLES1]);
     SetupExplosion(&g_Objects[O_EXPLOSION1]);
     SetupRicochet(&g_Objects[O_RICOCHET1]);
     SetupTwinkle(&g_Objects[O_TWINKLE]);
