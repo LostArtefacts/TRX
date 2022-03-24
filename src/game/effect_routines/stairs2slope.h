@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void Stairs2Slope(ITEM_INFO *item);
+void FX_Stairs2Slope(ITEM_INFO *item);

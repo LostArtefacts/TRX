@@ -11,7 +11,7 @@
 #include "game/effect_routines/powerup.h"
 #include "game/effect_routines/raising_block.h"
 #include "game/effect_routines/sand.h"
-#include "game/objects/effects/stairs2slope.h"
+#include "game/effect_routines/stairs2slope.h"
 #include "game/objects/effects/turn_180.h"
 #include "global/vars.h"
 
@@ -21,7 +21,7 @@ int32_t g_FPSCounter = 0;
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
     Turn180,          FX_DinoStomp,    FX_LaraNormal,
     FX_Bubbles,       FX_FinishLevel,  FX_Earthquake,
-    FX_Flood,         FX_RaisingBlock, Stairs2Slope,
+    FX_Flood,         FX_RaisingBlock, FX_Stairs2Slope,
     FX_DropSand,      FX_PowerUp,      FX_Explosion,
     FX_LaraHandsFree, FX_FlipMap,      FX_LaraDrawRightGun,
     FX_ChainBlock,    FX_Flicker,
