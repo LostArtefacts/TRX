@@ -324,7 +324,7 @@ void ObjectObjects(void)
     Bubble_Setup(&g_Objects[O_BUBBLES1]);
     Explosion_Setup(&g_Objects[O_EXPLOSION1]);
     Ricochet_Setup(&g_Objects[O_RICOCHET1]);
-    SetupTwinkle(&g_Objects[O_TWINKLE]);
+    Twinkle_Setup(&g_Objects[O_TWINKLE]);
     Splash_Setup(&g_Objects[O_SPLASH1]);
     Waterfall_Setup(&g_Objects[O_WATERFALL]);
     BodyPart_Setup(&g_Objects[O_BODY_PART]);
