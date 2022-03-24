@@ -19,7 +19,7 @@ void Ricochet_Control(int16_t fx_num)
     }
 }
 
-void Ricochet(GAME_VECTOR *pos)
+void Ricochet_Spawn(GAME_VECTOR *pos)
 {
     int16_t fx_num = CreateEffect(pos->room_number);
     if (fx_num != NO_ITEM) {
