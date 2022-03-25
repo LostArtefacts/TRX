@@ -1075,8 +1075,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
-    g_GameInfo.level_type = level_type;
-    LOG_DEBUG("g_GameInfo.level_type %d", g_GameInfo.level_type);
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 

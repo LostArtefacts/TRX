@@ -170,7 +170,7 @@ static bool Savegame_BSON_LoadResumeInfo(
 {
     assert(resume_info);
     if (!resume_arr) {
-        LOG_ERROR("Malformed save: invalid or missing start resume array");
+        LOG_ERROR("Malformed save: invalid or missing resume array");
         return false;
     }
     if ((signed)resume_arr->length != g_GameFlow.level_count) {
@@ -227,6 +227,7 @@ static bool Savegame_BSON_LoadResumeInfo(
             resume_obj, "max_kills", resume->stats.max_kill_count);
         resume->stats.max_pickup_count = json_object_get_int(
             resume_obj, "max_pickups", resume->stats.max_pickup_count);
+        LOG_DEBUG("i %d, resume->stats.timer %d", i, resume->stats.timer);
     }
     return true;
 }
@@ -239,7 +240,8 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
     assert(game_info);
     assert(game_info->start);
     if (!start_arr) {
-        LOG_ERROR("Malformed save: invalid or missing start resume array");
+        LOG_ERROR(
+            "Malformed save: invalid or missing discontinued start array");
         return false;
     }
     if ((signed)start_arr->length != g_GameFlow.level_count) {
@@ -251,7 +253,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
     for (int i = 0; i < (signed)start_arr->length; i++) {
         struct json_object_s *start_obj = json_array_get_object(start_arr, i);
         if (!start_obj) {
-            LOG_ERROR("Malformed save: invalid resume info");
+            LOG_ERROR("Malformed save: invalid discontinued start info");
             return false;
         }
         RESUME_INFO *start = &game_info->start[i];
@@ -730,6 +732,7 @@ static struct json_array_s *Savegame_BSON_DumpResumeInfo(
     struct json_array_s *resume_arr = json_array_new();
     assert(resume_info);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
+        LOG_DEBUG("i %d, dump resume", i);
         RESUME_INFO *resume = &resume_info[i];
         struct json_object_s *resume_obj = json_object_new();
         json_object_append_int(
@@ -1042,13 +1045,14 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "start_info"), game_info->start)) {
+        LOG_DEBUG("Failed to load start_info properly");
         goto cleanup;
     }
 
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
-        LOG_DEBUG("CHECKING LEGACY SAVES...");
+        LOG_DEBUG("Failed to load current_info properly");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!Savegame_BSON_LoadDiscontinuedStartInfo(
                 json_object_get_array(root_obj, "start_info"), game_info)) {
