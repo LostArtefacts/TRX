@@ -105,7 +105,7 @@ bool InitialiseLevel(int32_t level_num)
     }
 
     if (g_Lara.item_number != NO_ITEM) {
-        InitialiseLara();
+        InitialiseLara(level_num);
     }
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);

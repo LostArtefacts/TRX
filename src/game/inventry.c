@@ -711,7 +711,7 @@ int32_t Display_Inventory(int inv_mode)
                 return GF_START_SAVED_GAME | g_InvExtraData[1];
             } else if (g_InvExtraData[0] == 1) {
                 // page 2: restart level
-                return GF_START_GAME | g_CurrentLevel;
+                return GF_RESTART_GAME | g_CurrentLevel;
             } else {
                 // page 3: exit game
                 return GF_EXIT_TO_TITLE;

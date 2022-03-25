@@ -976,6 +976,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_CUTSCENE = 4,
     GFL_GYM = 5,
     GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
+    GFL_RESTART = 7,
 } GAMEFLOW_LEVEL_TYPE;
 
 typedef enum GAMEFLOW_OPTION {
@@ -989,6 +990,7 @@ typedef enum GAMEFLOW_OPTION {
     GF_LEVEL_COMPLETE = 5 << 6,
     GF_EXIT_GAME = 6 << 6,
     GF_START_SAVED_GAME = 7 << 6,
+    GF_RESTART_GAME = 8 << 6,
 } GAMEFLOW_OPTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
@@ -1515,6 +1517,7 @@ typedef struct GAME_INFO {
     uint8_t bonus_flag;
     int32_t current_save_slot;
     bool death_counter_supported;
+    GAMEFLOW_LEVEL_TYPE level_type;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

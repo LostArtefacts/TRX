@@ -23,6 +23,7 @@
 
 bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
+    LOG_DEBUG("level_type %d", level_type);
     g_CurrentLevel = level_num;
     if (level_type == GFL_SAVED) {
         // reset start info to the defaults so that we do not do

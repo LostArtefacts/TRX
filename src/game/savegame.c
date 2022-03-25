@@ -168,7 +168,7 @@ void Savegame_SetCurrentPosition(int level_num)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            g_GameInfo.start[g_CurrentLevel] = g_GameInfo.start[i];
+            g_GameInfo.current[g_CurrentLevel] = g_GameInfo.current[i];
         }
     }
 }
@@ -277,7 +277,7 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
         // Carry over variables from previous levels if the current level
         // has no Lara object (such as the cutscene levels)
         for (int l = level_num - 1; l >= 0; l--) {
-            RESUME_INFO *prev_current = &g_GameInfo.start[l];
+            RESUME_INFO *prev_current = &g_GameInfo.current[l];
             if (g_GameFlow.levels[l].level_type == GFL_NORMAL) {
                 current->lara_hitpoints = prev_current->lara_hitpoints;
                 break;
@@ -333,7 +333,7 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     }
 
     memcpy(
-        &current->stats, &g_GameInfo.current[g_CurrentLevel].stats,
+        &current->stats, &g_GameInfo.current[level_num].stats,
         sizeof(GAME_STATS));
 }
 

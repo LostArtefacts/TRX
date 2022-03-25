@@ -1048,6 +1048,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
+        LOG_DEBUG("CHECKING LEGACY SAVES...");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!Savegame_BSON_LoadDiscontinuedStartInfo(
                 json_object_get_array(root_obj, "start_info"), game_info)) {
