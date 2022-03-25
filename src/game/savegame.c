@@ -168,7 +168,6 @@ void Savegame_SetCurrentPosition(int level_num)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            LOG_DEBUG("g_CurrentLevel %d = %d i", g_CurrentLevel, i);
             g_GameInfo.current[g_CurrentLevel] = g_GameInfo.current[i];
         }
     }
@@ -176,7 +175,6 @@ void Savegame_SetCurrentPosition(int level_num)
 
 void Savegame_InitStartCurrentInfo(void)
 {
-    LOG_DEBUG("");
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetStartInfo(i);
         Savegame_ResetCurrentInfo(i);
@@ -189,7 +187,6 @@ void Savegame_InitStartCurrentInfo(void)
 
 void Savegame_ResetStartInfo(int level_num)
 {
-    LOG_DEBUG("");
     RESUME_INFO *start = &g_GameInfo.start[level_num];
     memset(start, 0, sizeof(RESUME_INFO));
     Savegame_ApplyLogicToStartInfo(level_num);
@@ -197,7 +194,6 @@ void Savegame_ResetStartInfo(int level_num)
 
 void Savegame_ApplyLogicToStartInfo(int level_num)
 {
-    LOG_DEBUG("");
     RESUME_INFO *start = &g_GameInfo.start[level_num];
 
     if (!g_Config.disable_healing_between_levels
@@ -257,14 +253,12 @@ void Savegame_ApplyLogicToStartInfo(int level_num)
 
 void Savegame_ResetCurrentInfo(int level_num)
 {
-    LOG_DEBUG("");
     RESUME_INFO *current = &g_GameInfo.current[level_num];
     memset(current, 0, sizeof(RESUME_INFO));
 }
 
 void Savegame_CarryCurrentInfoToStartInfo(int32_t src_level, int32_t dst_level)
 {
-    LOG_DEBUG("");
     memcpy(
         &g_GameInfo.start[dst_level], &g_GameInfo.current[src_level],
         sizeof(RESUME_INFO));
@@ -272,7 +266,6 @@ void Savegame_CarryCurrentInfoToStartInfo(int32_t src_level, int32_t dst_level)
 
 void Savegame_PersistGameToCurrentInfo(int level_num)
 {
-    LOG_DEBUG("");
     // Persist Lara's inventory to the current info.
     // Used to carry over Lara's inventory between levels.
 

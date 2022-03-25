@@ -227,7 +227,6 @@ static bool Savegame_BSON_LoadResumeInfo(
             resume_obj, "max_kills", resume->stats.max_kill_count);
         resume->stats.max_pickup_count = json_object_get_int(
             resume_obj, "max_pickups", resume->stats.max_pickup_count);
-        LOG_DEBUG("i %d, resume->stats.timer %d", i, resume->stats.timer);
     }
     return true;
 }
@@ -257,7 +256,6 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
             return false;
         }
         RESUME_INFO *start = &game_info->start[i];
-        RESUME_INFO *current = &game_info->current[i];
         start->lara_hitpoints = json_object_get_int(
             start_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
         start->pistol_ammo = json_object_get_int(start_obj, "pistol_ammo", 0);
@@ -281,7 +279,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
             json_object_get_bool(start_obj, "got_shotgun", 0);
         start->flags.costume = json_object_get_bool(start_obj, "costume", 0);
         // Start and current are the same for legacy saves.
-        memcpy(&current, &start, sizeof(RESUME_INFO));
+        memcpy(&game_info->current[i], start, sizeof(RESUME_INFO));
     }
     return true;
 }
@@ -309,26 +307,24 @@ static bool Savegame_BSON_LoadDiscontinuedEndInfo(
             LOG_ERROR("Malformed save: invalid resume info");
             return false;
         }
-        RESUME_INFO *start = &game_info->start[i];
-        RESUME_INFO *end = &game_info->current[i];
-        end->stats.timer =
-            json_object_get_int(end_obj, "timer", end->stats.timer);
-        end->stats.secret_flags =
-            json_object_get_int(end_obj, "secrets", end->stats.secret_flags);
-        end->stats.kill_count =
-            json_object_get_int(end_obj, "kills", end->stats.kill_count);
-        end->stats.pickup_count =
-            json_object_get_int(end_obj, "pickups", end->stats.pickup_count);
-        end->stats.death_count =
-            json_object_get_int(end_obj, "deaths", end->stats.death_count);
-        end->stats.max_secret_count = json_object_get_int(
-            end_obj, "max_secrets", end->stats.max_secret_count);
-        end->stats.max_kill_count = json_object_get_int(
-            end_obj, "max_kills", end->stats.max_kill_count);
-        end->stats.max_pickup_count = json_object_get_int(
-            end_obj, "max_pickups", end->stats.max_pickup_count);
+        GAME_STATS *end = &game_info->current[i].stats;
+        end->timer = json_object_get_int(end_obj, "timer", end->timer);
+        end->secret_flags =
+            json_object_get_int(end_obj, "secrets", end->secret_flags);
+        end->kill_count =
+            json_object_get_int(end_obj, "kills", end->kill_count);
+        end->pickup_count =
+            json_object_get_int(end_obj, "pickups", end->pickup_count);
+        end->death_count =
+            json_object_get_int(end_obj, "deaths", end->death_count);
+        end->max_secret_count =
+            json_object_get_int(end_obj, "max_secrets", end->max_secret_count);
+        end->max_kill_count =
+            json_object_get_int(end_obj, "max_kills", end->max_kill_count);
+        end->max_pickup_count =
+            json_object_get_int(end_obj, "max_pickups", end->max_pickup_count);
         // Start and current are the same for legacy saves.
-        memcpy(&start->stats, &end->stats, sizeof(GAME_STATS));
+        memcpy(&game_info->start[i].stats, end, sizeof(GAME_STATS));
     }
     game_info->death_counter_supported = true;
     return true;
@@ -732,7 +728,6 @@ static struct json_array_s *Savegame_BSON_DumpResumeInfo(
     struct json_array_s *resume_arr = json_array_new();
     assert(resume_info);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        LOG_DEBUG("i %d, dump resume", i);
         RESUME_INFO *resume = &resume_info[i];
         struct json_object_s *resume_obj = json_object_new();
         json_object_append_int(
@@ -1045,14 +1040,14 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "start_info"), game_info->start)) {
-        LOG_DEBUG("Failed to load start_info properly");
         goto cleanup;
     }
 
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
-        LOG_DEBUG("Failed to load current_info properly");
+        LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
+                    "save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!Savegame_BSON_LoadDiscontinuedStartInfo(
                 json_object_get_array(root_obj, "start_info"), game_info)) {
@@ -1063,8 +1058,6 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             goto cleanup;
         }
     }
-
-    Savegame_SetCurrentPosition(g_CurrentLevel);
 
     if (!Savegame_BSON_LoadInventory(
             json_object_get_object(root_obj, "inventory"))) {

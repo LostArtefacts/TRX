@@ -29,7 +29,6 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
 
 static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
 {
-    LOG_DEBUG("level_type %d", g_GameInfo.level_type);
     if (g_GameInfo.level_type == GFL_SAVED) {
         return &g_GameInfo.current[level_num];
     }
@@ -520,7 +519,6 @@ void InitialiseLaraInventory(int32_t level_num)
     Inv_RemoveAllItems();
 
     RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
-    LOG_DEBUG("level_num %d", level_num);
 
     g_Lara.pistols.ammo = 1000;
     if (resume->flags.got_pistols) {
