@@ -4,6 +4,7 @@
 - fixed music rolling over to the main menu if main menu music disabled (#490)
 - fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)
 - fixed picking up multiple underwater pickups when walk_to_items is enabled (#500)
+- refactored save games to properly support start and current states
 
 ## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)
