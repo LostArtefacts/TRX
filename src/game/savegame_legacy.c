@@ -437,6 +437,10 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         current->flags.got_uzis = flags & 8 ? 1 : 0;
         current->flags.got_shotgun = flags & 16 ? 1 : 0;
         current->flags.costume = flags & 32 ? 1 : 0;
+        // Start and current are the same for legacy saves.
+        memcpy(&game_info->start[i], current, sizeof(RESUME_INFO));
+        // Max Lara's starting HP for legacy saves instead of using current HP.
+        game_info->start[i].lara_hitpoints = LARA_HITPOINTS;
     }
 
     Savegame_Legacy_Read(
@@ -450,9 +454,6 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Read(
         &game_info->current[g_CurrentLevel].stats.pickup_count,
         sizeof(uint8_t));
-
-    // Legacy saves don't have start and current so use current for both
-    memcpy(game_info->start, game_info->current, sizeof(RESUME_INFO));
 
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
 
@@ -605,14 +606,17 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Write(&flags, sizeof(uint16_t));
     }
 
-    Savegame_Legacy_Write(&game_info->current->stats.timer, sizeof(uint32_t));
     Savegame_Legacy_Write(
-        &game_info->current->stats.kill_count, sizeof(uint32_t));
+        &game_info->current[g_CurrentLevel].stats.timer, sizeof(uint32_t));
     Savegame_Legacy_Write(
-        &game_info->current->stats.secret_flags, sizeof(uint16_t));
+        &game_info->current[g_CurrentLevel].stats.kill_count, sizeof(uint32_t));
+    Savegame_Legacy_Write(
+        &game_info->current[g_CurrentLevel].stats.secret_flags,
+        sizeof(uint16_t));
     Savegame_Legacy_Write(&g_CurrentLevel, sizeof(uint16_t));
     Savegame_Legacy_Write(
-        &game_info->current->stats.pickup_count, sizeof(uint8_t));
+        &game_info->current[g_CurrentLevel].stats.pickup_count,
+        sizeof(uint8_t));
     Savegame_Legacy_Write(&game_info->bonus_flag, sizeof(uint8_t));
 
     SAVEGAME_LEGACY_ITEM_STATS item_stats = {
