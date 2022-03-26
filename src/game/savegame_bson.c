@@ -280,6 +280,8 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
         start->flags.costume = json_object_get_bool(start_obj, "costume", 0);
         // Start and current are the same for legacy saves.
         memcpy(&game_info->current[i], start, sizeof(RESUME_INFO));
+        // Max Lara's starting HP for legacy saves instead of using current HP.
+        start->lara_hitpoints = LARA_HITPOINTS;
     }
     return true;
 }
