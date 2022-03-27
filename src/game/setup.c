@@ -192,7 +192,7 @@ void BaddyObjects(void)
     Mutant_Setup2(&g_Objects[O_WARRIOR2]);
     Mutant_Setup3(&g_Objects[O_WARRIOR3]);
     Centaur_Setup(&g_Objects[O_CENTAUR]);
-    SetupMummy(&g_Objects[O_MUMMY]);
+    Mummy_Setup(&g_Objects[O_MUMMY]);
     SetupSkateKid(&g_Objects[O_SKATEKID]);
     Cowboy_Setup(&g_Objects[O_COWBOY]);
     Baldy_Setup(&g_Objects[O_BALDY]);

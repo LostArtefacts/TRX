@@ -8,13 +8,13 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupMummy(OBJECT_INFO *obj)
+void Mummy_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseMummy;
-    obj->control = MummyControl;
+    obj->initialise = Mummy_Initialise;
+    obj->control = Mummy_Control;
     obj->collision = ObjectCollision;
     obj->hit_points = MUMMY_HITPOINTS;
     obj->save_flags = 1;
@@ -23,7 +23,7 @@ void SetupMummy(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
-void InitialiseMummy(int16_t item_num)
+void Mummy_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->touch_bits = 0;
@@ -32,7 +32,7 @@ void InitialiseMummy(int16_t item_num)
     *(int16_t *)item->data = 0;
 }
 
-void MummyControl(int16_t item_num)
+void Mummy_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     int16_t head = 0;
