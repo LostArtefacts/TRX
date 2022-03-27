@@ -49,7 +49,7 @@ void InitialisePod(int16_t item_num)
             bug->object_number = O_CENTAUR;
             break;
         case 4:
-            bug->object_number = O_ABORTION;
+            bug->object_number = O_TORSO;
             break;
         case 8:
             bug->object_number = O_WARRIOR3;

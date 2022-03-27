@@ -13,7 +13,6 @@
 #include "game/level.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/ai/abortion.h"
 #include "game/objects/ai/alligator.h"
 #include "game/objects/ai/ape.h"
 #include "game/objects/ai/baldy.h"
@@ -35,6 +34,7 @@
 #include "game/objects/ai/rat.h"
 #include "game/objects/ai/skate_kid.h"
 #include "game/objects/ai/statue.h"
+#include "game/objects/ai/torso.h"
 #include "game/objects/ai/vole.h"
 #include "game/objects/ai/wolf.h"
 #include "game/objects/boat.h"
@@ -196,7 +196,7 @@ void BaddyObjects(void)
     SetupSkateKid(&g_Objects[O_SKATEKID]);
     SetupCowboy(&g_Objects[O_COWBOY]);
     SetupBaldy(&g_Objects[O_BALDY]);
-    SetupAbortion(&g_Objects[O_ABORTION]);
+    Torso_Setup(&g_Objects[O_TORSO]);
     SetupNatla(&g_Objects[O_NATLA]);
     SetupPod(&g_Objects[O_PODS]);
     SetupBigPod(&g_Objects[O_BIG_POD]);
