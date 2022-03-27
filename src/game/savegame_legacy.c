@@ -38,7 +38,7 @@ typedef struct SAVEGAME_LEGACY_ITEM_STATS {
 static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
-static bool Savegame_Legacy_NeedsEvilLaraFix(char *buffer);
+static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer);
 
 static void Savegame_Legacy_Reset(char *buffer);
 static void Savegame_Legacy_Skip(int size);
@@ -53,18 +53,18 @@ static void Savegame_Legacy_WriteArm(LARA_ARM *arm);
 static void Savegame_Legacy_WriteLara(LARA_INFO *lara);
 static void Savegame_Legacy_WriteLOT(LOT_INFO *lot);
 
-static bool Savegame_Legacy_NeedsEvilLaraFix(char *buffer)
+static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
-    // Tomb1Main enables save_flags for Evil Lara, but OG TombATI does not. As
+    // Tomb1Main enables save_flags for Bacon Lara, but OG TombATI does not. As
     // a consequence, Atlantis saves made with OG TombATI (which includes the
     // ones available for download on Stella's website) have different layout
     // than the saves made with Tomb1Main. This was discovered after it was too
     // late to make a backwards incompatible change. At the same time, enabling
-    // save_flags for Evil Lara is desirable, as not doing this causes her to
+    // save_flags for Bacon Lara is desirable, as not doing this causes her to
     // freeze when the player reloads a save made in her room. This function is
     // used to determine whether the save about to be loaded includes
-    // save_flags for Evil Lara or not. Since savegames only contain very
+    // save_flags for Bacon Lara or not. Since savegames only contain very
     // concise information, we must make an educated guess here.
 
     assert(buffer);
@@ -408,9 +408,9 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_Read(buffer, sizeof(char), File_Size(fp), fp);
 
-    bool skip_reading_evil_lara = Savegame_Legacy_NeedsEvilLaraFix(buffer);
-    if (skip_reading_evil_lara) {
-        LOG_INFO("Enabling Evil Lara savegame fix");
+    bool skip_reading_bacon_lara = Savegame_Legacy_NeedsBaconLaraFix(buffer);
+    if (skip_reading_bacon_lara) {
+        LOG_INFO("Enabling Bacon Lara savegame fix");
     }
 
     Savegame_Legacy_Reset(buffer);
@@ -510,8 +510,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
 
         if (obj->save_flags
-            && (item->object_number != O_EVIL_LARA
-                || !skip_reading_evil_lara)) {
+            && (item->object_number != O_BACON_LARA
+                || !skip_reading_bacon_lara)) {
             Savegame_Legacy_Read(&item->flags, sizeof(int16_t));
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 

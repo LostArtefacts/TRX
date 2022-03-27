@@ -15,13 +15,13 @@
 #include "game/music.h"
 #include "game/objects/ai/alligator.h"
 #include "game/objects/ai/ape.h"
+#include "game/objects/ai/bacon_lara.h"
 #include "game/objects/ai/baldy.h"
 #include "game/objects/ai/bat.h"
 #include "game/objects/ai/bear.h"
 #include "game/objects/ai/centaur.h"
 #include "game/objects/ai/cowboy.h"
 #include "game/objects/ai/crocodile.h"
-#include "game/objects/ai/evil_lara.h"
 #include "game/objects/ai/larson.h"
 #include "game/objects/ai/lion.h"
 #include "game/objects/ai/mummy.h"
@@ -172,7 +172,7 @@ void BaddyObjects(void)
 
     g_Objects[O_LARA_EXTRA].control = ControlLaraExtra;
 
-    SetupEvilLara(&g_Objects[O_EVIL_LARA]);
+    BaconLara_Setup(&g_Objects[O_BACON_LARA]);
     SetupWolf(&g_Objects[O_WOLF]);
     Bear_Setup(&g_Objects[O_BEAR]);
     Bat_Setup(&g_Objects[O_BAT]);

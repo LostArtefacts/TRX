@@ -1,4 +1,4 @@
-#include "game/objects/ai/evil_lara.h"
+#include "game/objects/ai/bacon_lara.h"
 
 #include "game/collide.h"
 #include "game/control.h"
@@ -6,11 +6,11 @@
 #include "game/items.h"
 #include "global/vars.h"
 
-void SetupEvilLara(OBJECT_INFO *obj)
+void BaconLara_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = InitialiseEvilLara;
-    obj->control = ControlEvilLara;
-    obj->draw_routine = DrawEvilLara;
+    obj->initialise = BaconLara_Initialise;
+    obj->control = BaconLara_Control;
+    obj->draw_routine = BaconLara_Draw;
     obj->collision = CreatureCollision;
     obj->hit_points = LARA_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
@@ -19,13 +19,13 @@ void SetupEvilLara(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void InitialiseEvilLara(int16_t item_num)
+void BaconLara_Initialise(int16_t item_num)
 {
-    g_Objects[O_EVIL_LARA].frame_base = g_Objects[O_LARA].frame_base;
+    g_Objects[O_BACON_LARA].frame_base = g_Objects[O_LARA].frame_base;
     g_Items[item_num].data = NULL;
 }
 
-void ControlEvilLara(int16_t item_num)
+void BaconLara_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -100,13 +100,13 @@ void ControlEvilLara(int16_t item_num)
     }
 }
 
-void DrawEvilLara(ITEM_INFO *item)
+void BaconLara_Draw(ITEM_INFO *item)
 {
     int16_t *old_mesh_ptrs[LM_NUMBER_OF];
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         old_mesh_ptrs[i] = g_Lara.mesh_ptrs[i];
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_EVIL_LARA].mesh_index + i];
+        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_BACON_LARA].mesh_index + i];
     }
 
     DrawLara(item);
