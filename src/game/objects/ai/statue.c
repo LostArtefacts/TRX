@@ -9,19 +9,19 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupStatue(OBJECT_INFO *obj)
+void Statue_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseStatue;
-    obj->control = StatueControl;
+    obj->initialise = Statue_Initialise;
+    obj->control = Statue_Control;
     obj->collision = ObjectCollision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialiseStatue(int16_t item_num)
+void Statue_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -55,7 +55,7 @@ void InitialiseStatue(int16_t item_num)
     g_LevelItemCount++;
 }
 
-void StatueControl(int16_t item_num)
+void Statue_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     int32_t x = g_LaraItem->pos.x - item->pos.x;
