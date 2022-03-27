@@ -25,6 +25,6 @@ typedef enum {
 
 extern BITE_INFO g_BaldyGun;
 
-void SetupBaldy(OBJECT_INFO *obj);
-void InitialiseBaldy(int16_t item_num);
-void BaldyControl(int16_t item_num);
+void Baldy_Setup(OBJECT_INFO *obj);
+void Baldy_Initialise(int16_t item_num);
+void Baldy_Control(int16_t item_num);

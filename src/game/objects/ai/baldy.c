@@ -9,13 +9,13 @@
 
 BITE_INFO g_BaldyGun = { -20, 440, 20, 9 };
 
-void SetupBaldy(OBJECT_INFO *obj)
+void Baldy_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseBaldy;
-    obj->control = BaldyControl;
+    obj->initialise = Baldy_Initialise;
+    obj->control = Baldy_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BALDY_HITPOINTS;
@@ -29,13 +29,13 @@ void SetupBaldy(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
-void InitialiseBaldy(int16_t item_num)
+void Baldy_Initialise(int16_t item_num)
 {
     InitialiseCreature(item_num);
     g_Items[item_num].current_anim_state = BALDY_RUN;
 }
 
-void BaldyControl(int16_t item_num)
+void Baldy_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
