@@ -9,13 +9,13 @@
 
 BITE_INFO g_LarsonGun = { -60, 170, 0, 14 };
 
-void SetupLarson(OBJECT_INFO *obj)
+void Larson_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = LarsonControl;
+    obj->control = Larson_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LARSON_HITPOINTS;
@@ -29,7 +29,7 @@ void SetupLarson(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
 }
 
-void LarsonControl(int16_t item_num)
+void Larson_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
