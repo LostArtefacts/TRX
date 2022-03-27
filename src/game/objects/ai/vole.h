@@ -15,5 +15,5 @@ typedef enum {
     VOLE_DEATH = 3,
 } VOLE_ANIM;
 
-void SetupVole(OBJECT_INFO *obj);
-void VoleControl(int16_t item_num);
+void Vole_Setup(OBJECT_INFO *obj);
+void Vole_Control(int16_t item_num);

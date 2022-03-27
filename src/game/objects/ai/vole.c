@@ -8,13 +8,13 @@
 #include "game/objects/ai/rat.h"
 #include "global/vars.h"
 
-void SetupVole(OBJECT_INFO *obj)
+void Vole_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = VoleControl;
+    obj->control = Vole_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAT_HITPOINTS;
@@ -29,7 +29,7 @@ void SetupVole(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
 }
 
-void VoleControl(int16_t item_num)
+void Vole_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
