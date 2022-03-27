@@ -13,13 +13,13 @@ BITE_INFO g_PierreGun1 = { 60, 200, 0, 11 };
 BITE_INFO g_PierreGun2 = { -57, 200, 0, 14 };
 int16_t g_PierreItemNum = NO_ITEM;
 
-void SetupPierre(OBJECT_INFO *obj)
+void Pierre_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = PierreControl;
+    obj->control = Pierre_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PIERRE_HITPOINTS;
@@ -33,7 +33,7 @@ void SetupPierre(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
 }
 
-void PierreControl(int16_t item_num)
+void Pierre_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

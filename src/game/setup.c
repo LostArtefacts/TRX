@@ -179,7 +179,7 @@ void BaddyObjects(void)
     TRex_Setup(&g_Objects[O_TREX]);
     Raptor_Setup(&g_Objects[O_RAPTOR]);
     Larson_Setup(&g_Objects[O_LARSON]);
-    SetupPierre(&g_Objects[O_PIERRE]);
+    Pierre_Setup(&g_Objects[O_PIERRE]);
     SetupRat(&g_Objects[O_RAT]);
     SetupVole(&g_Objects[O_VOLE]);
     SetupLion(&g_Objects[O_LION]);
