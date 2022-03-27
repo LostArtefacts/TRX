@@ -11,13 +11,13 @@
 BITE_INFO g_CowboyGun1 = { 1, 200, 41, 5 };
 BITE_INFO g_CowboyGun2 = { -2, 200, 40, 8 };
 
-void SetupCowboy(OBJECT_INFO *obj)
+void Cowboy_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = CowboyControl;
+    obj->control = Cowboy_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = COWBOY_HITPOINTS;
@@ -31,7 +31,7 @@ void SetupCowboy(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
-void CowboyControl(int16_t item_num)
+void Cowboy_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
