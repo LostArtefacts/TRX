@@ -32,5 +32,5 @@ extern int16_t g_PierreItemNum;
 extern BITE_INFO g_PierreGun1;
 extern BITE_INFO g_PierreGun2;
 
-void SetupPierre(OBJECT_INFO *obj);
-void PierreControl(int16_t item_num);
+void Pierre_Setup(OBJECT_INFO *obj);
+void Pierre_Control(int16_t item_num);
