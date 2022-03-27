@@ -173,7 +173,7 @@ void BaddyObjects(void)
     g_Objects[O_LARA_EXTRA].control = ControlLaraExtra;
 
     BaconLara_Setup(&g_Objects[O_BACON_LARA]);
-    SetupWolf(&g_Objects[O_WOLF]);
+    Wolf_Setup(&g_Objects[O_WOLF]);
     Bear_Setup(&g_Objects[O_BEAR]);
     Bat_Setup(&g_Objects[O_BAT]);
     TRex_Setup(&g_Objects[O_TREX]);

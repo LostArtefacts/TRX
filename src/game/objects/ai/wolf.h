@@ -40,6 +40,6 @@ typedef enum {
 
 extern BITE_INFO g_WolfJawBite;
 
-void SetupWolf(OBJECT_INFO *obj);
-void InitialiseWolf(int16_t item_num);
-void WolfControl(int16_t item_num);
+void Wolf_Setup(OBJECT_INFO *obj);
+void Wolf_Initialise(int16_t item_num);
+void Wolf_Control(int16_t item_num);
