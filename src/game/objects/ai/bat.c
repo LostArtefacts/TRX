@@ -10,9 +10,24 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-BITE_INFO g_BatBite = { 0, 16, 45, 4 };
+#define BAT_ATTACK_DAMAGE 2
+#define BAT_TURN (20 * PHD_DEGREE) // = 3640
+#define BAT_HITPOINTS 1
+#define BAT_RADIUS (WALL_L / 10) // = 102
+#define BAT_SMARTNESS 0x400
 
-static void FixEmbeddedBatPosition(int16_t item_num);
+typedef enum {
+    BAT_EMPTY = 0,
+    BAT_STOP = 1,
+    BAT_FLY = 2,
+    BAT_ATTACK = 3,
+    BAT_FALL = 4,
+    BAT_DEATH = 5,
+} BAT_ANIM;
+
+static BITE_INFO m_BatBite = { 0, 16, 45, 4 };
+
+static void Bad_FixEmbeddedPosition(int16_t item_num);
 
 void Bat_Setup(OBJECT_INFO *obj)
 {
@@ -80,7 +95,7 @@ void Bat_Control(int16_t item_num)
 
         case BAT_ATTACK:
             if (item->touch_bits) {
-                CreatureEffect(item, &g_BatBite, Effect_Blood);
+                CreatureEffect(item, &m_BatBite, Effect_Blood);
                 g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
             } else {
@@ -101,10 +116,10 @@ void Bat_Initialise(int16_t item_num)
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down
     // by the height of their hanging animation.
-    FixEmbeddedBatPosition(item_num);
+    Bad_FixEmbeddedPosition(item_num);
 }
 
-static void FixEmbeddedBatPosition(int16_t item_num)
+static void Bad_FixEmbeddedPosition(int16_t item_num)
 {
     ITEM_INFO *item;
     FLOOR_INFO *floor;

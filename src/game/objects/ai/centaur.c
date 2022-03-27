@@ -12,8 +12,29 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-BITE_INFO g_CentaurRocket = { 11, 415, 41, 13 };
-BITE_INFO g_CentaurRear = { 50, 30, 0, 5 };
+#define CENTAUR_PART_DAMAGE 100
+#define CENTAUR_REAR_DAMAGE 200
+#define CENTAUR_TOUCH 0x30199
+#define CENTAUR_DIE_ANIM 8
+#define CENTAUR_TURN (PHD_DEGREE * 4) // = 728
+#define CENTAUR_REAR_CHANCE 96
+#define CENTAUR_REAR_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
+#define CENTAUR_HITPOINTS 120
+#define CENTAUR_RADIUS (WALL_L / 3) // = 341
+#define CENTAUR_SMARTNESS 0x7FFF
+
+typedef enum {
+    CENTAUR_EMPTY = 0,
+    CENTAUR_STOP = 1,
+    CENTAUR_SHOOT = 2,
+    CENTAUR_RUN = 3,
+    CENTAUR_AIM = 4,
+    CENTAUR_DEATH = 5,
+    CENTAUR_WARNING = 6,
+} CENTAUR_ANIM;
+
+static BITE_INFO m_CentaurRocket = { 11, 415, 41, 13 };
+static BITE_INFO m_CentaurRear = { 50, 30, 0, 5 };
 
 void Centaur_Setup(OBJECT_INFO *obj)
 {
@@ -111,7 +132,7 @@ void Centaur_Control(int16_t item_num)
             if (item->required_anim_state == CENTAUR_EMPTY) {
                 item->required_anim_state = CENTAUR_AIM;
                 int16_t fx_num =
-                    CreatureEffect(item, &g_CentaurRocket, Effect_RocketGun);
+                    CreatureEffect(item, &m_CentaurRocket, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     centaur->neck_rotation = g_Effects[fx_num].pos.x_rot;
                 }
@@ -121,7 +142,7 @@ void Centaur_Control(int16_t item_num)
         case CENTAUR_WARNING:
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
-                CreatureEffect(item, &g_CentaurRear, Effect_Blood);
+                CreatureEffect(item, &m_CentaurRear, Effect_Blood);
                 g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CENTAUR_STOP;

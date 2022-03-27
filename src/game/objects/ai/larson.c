@@ -7,7 +7,28 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO g_LarsonGun = { -60, 170, 0, 14 };
+#define LARSON_POSE_CHANCE 0x60 // = 96
+#define LARSON_SHOT_DAMAGE 50
+#define LARSON_WALK_TURN (PHD_DEGREE * 3) // = 546
+#define LARSON_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define LARSON_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
+#define LARSON_DIE_ANIM 15
+#define LARSON_HITPOINTS 50
+#define LARSON_RADIUS (WALL_L / 10) // = 102
+#define LARSON_SMARTNESS 0x7FFF
+
+typedef enum {
+    LARSON_EMPTY = 0,
+    LARSON_STOP = 1,
+    LARSON_WALK = 2,
+    LARSON_RUN = 3,
+    LARSON_AIM = 4,
+    LARSON_DEATH = 5,
+    LARSON_POSE = 6,
+    LARSON_SHOOT = 7,
+} LARSON_ANIM;
+
+static BITE_INFO m_LarsonGun = { -60, 170, 0, 14 };
 
 void Larson_Setup(OBJECT_INFO *obj)
 {
@@ -134,7 +155,7 @@ void Larson_Control(int16_t item_num)
 
         case LARSON_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &g_LarsonGun, head)) {
+                if (ShotLara(item, info.distance, &m_LarsonGun, head)) {
                     g_LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }

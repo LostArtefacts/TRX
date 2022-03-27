@@ -7,7 +7,42 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO g_ApeBite = { 0, -19, 75, 15 };
+#define APE_ATTACK_DAMAGE 200
+#define APE_TOUCH 0xFF00
+#define APE_DIE_ANIM 7
+#define APE_RUN_TURN (PHD_DEGREE * 5) // = 910
+#define APE_DISPLAY_ANGLE (PHD_DEGREE * 45) // = 8190
+#define APE_ATTACK_RANGE SQUARE(430) // = 184900
+#define APE_PANIC_RANGE SQUARE(WALL_L * 2) // = 4194304
+#define APE_JUMP_CHANCE 160
+#define APE_WARN1_CHANCE (APE_JUMP_CHANCE + 160) // = 320
+#define APE_WARN2_CHANCE (APE_WARN1_CHANCE + 160) // = 480
+#define APE_RUN_LEFT_CHANCE (APE_WARN2_CHANCE + 272) // = 752
+#define APE_ATTACK_FLAG 1
+#define APE_VAULT_ANIM 19
+#define APE_TURN_L_FLAG 2
+#define APE_TURN_R_FLAG 4
+#define APE_SHIFT 75
+#define APE_HITPOINTS 22
+#define APE_RADIUS (WALL_L / 3) // = 341
+#define APE_SMARTNESS 0x7FFF
+
+typedef enum {
+    APE_EMPTY = 0,
+    APE_STOP = 1,
+    APE_WALK = 2,
+    APE_RUN = 3,
+    APE_ATTACK1 = 4,
+    APE_DEATH = 5,
+    APE_WARNING = 6,
+    APE_WARNING2 = 7,
+    APE_RUN_LEFT = 8,
+    APE_RUN_RIGHT = 9,
+    APE_JUMP = 10,
+    APE_VAULT = 11,
+} APE_ANIM;
+
+static BITE_INFO m_ApeBite = { 0, -19, 75, 15 };
 
 void Ape_Setup(OBJECT_INFO *obj)
 {
@@ -198,7 +233,7 @@ void Ape_Control(int16_t item_num)
 
         case APE_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
-                CreatureEffect(item, &g_ApeBite, Effect_Blood);
+                CreatureEffect(item, &m_ApeBite, Effect_Blood);
                 g_LaraItem->hit_points -= APE_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = APE_STOP;

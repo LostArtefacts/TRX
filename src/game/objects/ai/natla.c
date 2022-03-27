@@ -13,7 +13,34 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-BITE_INFO g_NatlaGun = { 5, 220, 7, 4 };
+#define NATLA_SHOT_DAMAGE 100
+#define NATLA_NEAR_DEATH 200
+#define NATLA_FLY_MODE 0x8000
+#define NATLA_TIMER 0x7FFF
+#define NATLA_FIRE_ARC (PHD_DEGREE * 30) // = 5460
+#define NATLA_FLY_TURN (PHD_DEGREE * 5) // = 910
+#define NATLA_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define NATLA_LAND_CHANCE 256
+#define NATLA_DIE_TIME (FRAMES_PER_SECOND * 16) // = 480
+#define NATLA_GUN_SPEED 400
+#define NATLA_HITPOINTS 400
+#define NATLA_RADIUS (WALL_L / 5) // = 204
+#define NATLA_SMARTNESS 0x7FFF
+
+typedef enum {
+    NATLA_EMPTY = 0,
+    NATLA_STOP = 1,
+    NATLA_FLY = 2,
+    NATLA_RUN = 3,
+    NATLA_AIM = 4,
+    NATLA_SEMIDEATH = 5,
+    NATLA_SHOOT = 6,
+    NATLA_FALL = 7,
+    NATLA_STAND = 8,
+    NATLA_DEATH = 9,
+} NATLA_ANIM;
+
+static BITE_INFO m_NatlaGun = { 5, 220, 7, 4 };
 
 void Natla_Setup(OBJECT_INFO *obj)
 {
@@ -99,7 +126,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &g_NatlaGun, Effect_ShardGun);
+                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -113,7 +140,7 @@ void Natla_Control(int16_t item_num)
             tilt = angle;
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &g_NatlaGun, Effect_ShardGun);
+                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -220,7 +247,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 30) {
                 int16_t fx_num =
-                    CreatureEffect(item, &g_NatlaGun, Effect_RocketGun);
+                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -243,17 +270,17 @@ void Natla_Control(int16_t item_num)
         case NATLA_SHOOT:
             if (!item->required_anim_state) {
                 int16_t fx_num =
-                    CreatureEffect(item, &g_NatlaGun, Effect_RocketGun);
+                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
                 }
-                fx_num = CreatureEffect(item, &g_NatlaGun, Effect_RocketGun);
+                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
                 }
-                fx_num = CreatureEffect(item, &g_NatlaGun, Effect_RocketGun);
+                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;

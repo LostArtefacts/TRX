@@ -9,6 +9,13 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
+
+typedef enum {
+    POD_SET = 0,
+    POD_EXPLODE = 1,
+} POD_ANIM;
+
 void Pod_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {

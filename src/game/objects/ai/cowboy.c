@@ -8,8 +8,27 @@
 #include "game/people.h"
 #include "global/vars.h"
 
-BITE_INFO g_CowboyGun1 = { 1, 200, 41, 5 };
-BITE_INFO g_CowboyGun2 = { -2, 200, 40, 8 };
+#define COWBOY_SHOT_DAMAGE 70
+#define COWBOY_WALK_TURN (PHD_DEGREE * 3) // = 546
+#define COWBOY_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define COWBOY_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
+#define COWBOY_DIE_ANIM 7
+#define COWBOY_HITPOINTS 150
+#define COWBOY_RADIUS (WALL_L / 10) // = 102
+#define COWBOY_SMARTNESS 0x7FFF
+
+typedef enum {
+    COWBOY_EMPTY = 0,
+    COWBOY_STOP = 1,
+    COWBOY_WALK = 2,
+    COWBOY_RUN = 3,
+    COWBOY_AIM = 4,
+    COWBOY_DEATH = 5,
+    COWBOY_SHOOT = 6,
+} COWBOY_ANIM;
+
+static BITE_INFO m_CowboyGun1 = { 1, 200, 41, 5 };
+static BITE_INFO m_CowboyGun2 = { -2, 200, 40, 8 };
 
 void Cowboy_Setup(OBJECT_INFO *obj)
 {
@@ -121,19 +140,19 @@ void Cowboy_Control(int16_t item_num)
 
         case COWBOY_SHOOT:
             if (!cowboy->flags) {
-                if (ShotLara(item, info.distance, &g_CowboyGun1, head)) {
+                if (ShotLara(item, info.distance, &m_CowboyGun1, head)) {
                     g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }
             } else if (cowboy->flags == 6) {
                 if (Targetable(item, &info)) {
-                    if (ShotLara(item, info.distance, &g_CowboyGun2, head)) {
+                    if (ShotLara(item, info.distance, &m_CowboyGun2, head)) {
                         g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
                         g_LaraItem->hit_status = 1;
                     }
                 } else {
                     int16_t fx_num =
-                        CreatureEffect(item, &g_CowboyGun2, Effect_GunShot);
+                        CreatureEffect(item, &m_CowboyGun2, Effect_GunShot);
                     if (fx_num != NO_ITEM) {
                         g_Effects[fx_num].pos.y_rot += head;
                     }

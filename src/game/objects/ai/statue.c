@@ -9,6 +9,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
+
 void Statue_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
