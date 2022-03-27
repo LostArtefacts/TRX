@@ -195,7 +195,7 @@ void BaddyObjects(void)
     SetupMummy(&g_Objects[O_MUMMY]);
     SetupSkateKid(&g_Objects[O_SKATEKID]);
     SetupCowboy(&g_Objects[O_COWBOY]);
-    SetupBaldy(&g_Objects[O_BALDY]);
+    Baldy_Setup(&g_Objects[O_BALDY]);
     Torso_Setup(&g_Objects[O_TORSO]);
     SetupNatla(&g_Objects[O_NATLA]);
     SetupPod(&g_Objects[O_PODS]);
