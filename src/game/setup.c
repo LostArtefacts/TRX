@@ -191,7 +191,7 @@ void BaddyObjects(void)
     SetupWarrior(&g_Objects[O_WARRIOR1]);
     SetupWarrior2(&g_Objects[O_WARRIOR2]);
     SetupWarrior3(&g_Objects[O_WARRIOR3]);
-    SetupCentaur(&g_Objects[O_CENTAUR]);
+    Centaur_Setup(&g_Objects[O_CENTAUR]);
     SetupMummy(&g_Objects[O_MUMMY]);
     SetupSkateKid(&g_Objects[O_SKATEKID]);
     SetupCowboy(&g_Objects[O_COWBOY]);

@@ -28,5 +28,5 @@ typedef enum {
 extern BITE_INFO g_CentaurRocket;
 extern BITE_INFO g_CentaurRear;
 
-void SetupCentaur(OBJECT_INFO *obj);
-void CentaurControl(int16_t item_num);
+void Centaur_Setup(OBJECT_INFO *obj);
+void Centaur_Control(int16_t item_num);
