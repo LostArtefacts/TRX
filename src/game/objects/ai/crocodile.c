@@ -9,13 +9,13 @@
 
 BITE_INFO g_CrocodileBite = { 5, -21, 467, 9 };
 
-void SetupCrocodile(OBJECT_INFO *obj)
+void Croc_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = CrocControl;
+    obj->control = Croc_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CROCODILE_HITPOINTS;
@@ -30,7 +30,7 @@ void SetupCrocodile(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
 }
 
-void CrocControl(int16_t item_num)
+void Croc_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

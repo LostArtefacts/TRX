@@ -29,5 +29,5 @@ typedef enum {
 
 extern BITE_INFO g_CrocodileBite;
 
-void SetupCrocodile(OBJECT_INFO *obj);
-void CrocControl(int16_t item_num);
+void Croc_Setup(OBJECT_INFO *obj);
+void Croc_Control(int16_t item_num);
