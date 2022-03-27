@@ -41,6 +41,6 @@ typedef enum {
 
 extern BITE_INFO g_ApeBite;
 
-void SetupApe(OBJECT_INFO *obj);
-void ApeVault(int16_t item_num, int16_t angle);
-void ApeControl(int16_t item_num);
+void Ape_Setup(OBJECT_INFO *obj);
+void Ape_Vault(int16_t item_num, int16_t angle);
+void Ape_Control(int16_t item_num);
