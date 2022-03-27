@@ -104,7 +104,7 @@ static void Savegame_LoadPostProcess(void)
                 item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
             }
 
-            if (obj->control == PodControl && item->status == IS_DEACTIVATED) {
+            if (obj->control == Pod_Control && item->status == IS_DEACTIVATED) {
                 item->mesh_bits = 0x1FF;
                 item->collidable = 0;
             }

@@ -198,8 +198,8 @@ void BaddyObjects(void)
     Baldy_Setup(&g_Objects[O_BALDY]);
     Torso_Setup(&g_Objects[O_TORSO]);
     Natla_Setup(&g_Objects[O_NATLA]);
-    SetupPod(&g_Objects[O_PODS]);
-    SetupBigPod(&g_Objects[O_BIG_POD]);
+    Pod_Setup(&g_Objects[O_PODS]);
+    Pod_SetupBig(&g_Objects[O_BIG_POD]);
     SetupStatue(&g_Objects[O_STATUE]);
 }
 

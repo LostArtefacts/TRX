@@ -9,31 +9,31 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupPod(OBJECT_INFO *obj)
+void Pod_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialisePod;
-    obj->control = PodControl;
+    obj->initialise = Pod_Initialise;
+    obj->control = Pod_Control;
     obj->collision = ObjectCollision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void SetupBigPod(OBJECT_INFO *obj)
+void Pod_SetupBig(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialisePod;
-    obj->control = PodControl;
+    obj->initialise = Pod_Initialise;
+    obj->control = Pod_Control;
     obj->collision = ObjectCollision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void InitialisePod(int16_t item_num)
+void Pod_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -79,7 +79,7 @@ void InitialisePod(int16_t item_num)
     item->mesh_bits = 0xFF0001FF;
 }
 
-void PodControl(int16_t item_num)
+void Pod_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
