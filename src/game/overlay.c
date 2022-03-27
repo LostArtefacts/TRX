@@ -21,6 +21,7 @@ static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
+static int32_t m_OldGameTimer = 0;
 
 static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -440,10 +441,9 @@ void Overlay_DrawAmmoInfo(void)
 
 void Overlay_DrawPickups(void)
 {
-    static int32_t old_game_timer = 0;
     int16_t time =
-        g_GameInfo.current[g_CurrentLevel].stats.timer - old_game_timer;
-    old_game_timer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
+    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
 
     if (time > 0 && time < 60) {
         int32_t sprite_height =
