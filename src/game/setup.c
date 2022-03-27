@@ -182,9 +182,9 @@ void BaddyObjects(void)
     Pierre_Setup(&g_Objects[O_PIERRE]);
     Rat_Setup(&g_Objects[O_RAT]);
     Vole_Setup(&g_Objects[O_VOLE]);
-    SetupLion(&g_Objects[O_LION]);
-    SetupLioness(&g_Objects[O_LIONESS]);
-    SetupPuma(&g_Objects[O_PUMA]);
+    Lion_SetupLion(&g_Objects[O_LION]);
+    Lion_SetupLioness(&g_Objects[O_LIONESS]);
+    Lion_SetupPuma(&g_Objects[O_PUMA]);
     Croc_Setup(&g_Objects[O_CROCODILE]);
     Alligator_Setup(&g_Objects[O_ALLIGATOR]);
     Ape_Setup(&g_Objects[O_APE]);

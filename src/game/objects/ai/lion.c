@@ -9,13 +9,13 @@
 
 BITE_INFO g_LionBite = { -2, -10, 132, 21 };
 
-void SetupLion(OBJECT_INFO *obj)
+void Lion_SetupLion(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = LionControl;
+    obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LION_HITPOINTS;
@@ -30,13 +30,13 @@ void SetupLion(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
-void SetupLioness(OBJECT_INFO *obj)
+void Lion_SetupLioness(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = LionControl;
+    obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LIONESS_HITPOINTS;
@@ -51,13 +51,13 @@ void SetupLioness(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
-void SetupPuma(OBJECT_INFO *obj)
+void Lion_SetupPuma(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = LionControl;
+    obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PUMA_HITPOINTS;
@@ -72,7 +72,7 @@ void SetupPuma(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
-void LionControl(int16_t item_num)
+void Lion_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
