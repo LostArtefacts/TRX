@@ -15,14 +15,14 @@
 
 BITE_INFO g_NatlaGun = { 5, 220, 7, 4 };
 
-void SetupNatla(OBJECT_INFO *obj)
+void Natla_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->collision = CreatureCollision;
     obj->initialise = InitialiseCreature;
-    obj->control = NatlaControl;
+    obj->control = Natla_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;
     obj->radius = NATLA_RADIUS;
@@ -35,12 +35,7 @@ void SetupNatla(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
 }
 
-void SetupNatlaGun(OBJECT_INFO *obj)
-{
-    obj->control = ControlNatlaGun;
-}
-
-void NatlaControl(int16_t item_num)
+void Natla_Control(int16_t item_num)
 {
     static int16_t facing = 0;
     ITEM_INFO *item = &g_Items[item_num];
@@ -285,7 +280,12 @@ void NatlaControl(int16_t item_num)
     item->pos.y_rot += facing;
 }
 
-void ControlNatlaGun(int16_t fx_num)
+void NatlaGun_Setup(OBJECT_INFO *obj)
+{
+    obj->control = NatlaGun_Control;
+}
+
+void NatlaGun_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
     OBJECT_INFO *object = &g_Objects[fx->object_number];
