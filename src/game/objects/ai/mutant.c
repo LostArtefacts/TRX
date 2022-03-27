@@ -16,13 +16,13 @@ BITE_INFO g_WarriorBite = { -27, 98, 0, 10 };
 BITE_INFO g_WarriorRocket = { 51, 213, 0, 14 };
 BITE_INFO g_WarriorShard = { -35, 269, 0, 9 };
 
-void SetupWarrior(OBJECT_INFO *obj)
+void Mutant_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = FlyerControl;
+    obj->control = Mutant_FlyerControl;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = FLYER_HITPOINTS;
@@ -38,26 +38,26 @@ void SetupWarrior(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
-void SetupWarrior2(OBJECT_INFO *obj)
+void Mutant_Setup2(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     *obj = g_Objects[O_WARRIOR1];
-    obj->initialise = InitialiseWarrior2;
+    obj->initialise = Mutant_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
 }
 
-void SetupWarrior3(OBJECT_INFO *obj)
+void Mutant_Setup3(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     *obj = g_Objects[O_WARRIOR1];
-    obj->initialise = InitialiseWarrior2;
+    obj->initialise = Mutant_Initialise2;
 }
 
-void FlyerControl(int16_t item_num)
+void Mutant_FlyerControl(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -310,7 +310,7 @@ void FlyerControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void InitialiseWarrior2(int16_t item_num)
+void Mutant_Initialise2(int16_t item_num)
 {
     InitialiseCreature(item_num);
     g_Items[item_num].mesh_bits = 0xFFE07FFF;
