@@ -331,10 +331,6 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     } else {
         current->gun_status = LGS_ARMLESS;
     }
-
-    memcpy(
-        &current->stats, &g_GameInfo.current[level_num].stats,
-        sizeof(GAME_STATS));
 }
 
 int32_t Savegame_GetLevelNumber(int32_t slot_num)
