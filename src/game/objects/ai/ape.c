@@ -9,13 +9,13 @@
 
 BITE_INFO g_ApeBite = { 0, -19, 75, 15 };
 
-void SetupApe(OBJECT_INFO *obj)
+void Ape_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = ApeControl;
+    obj->control = Ape_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = APE_HITPOINTS;
@@ -30,7 +30,7 @@ void SetupApe(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
 }
 
-void ApeVault(int16_t item_num, int16_t angle)
+void Ape_Vault(int16_t item_num, int16_t angle)
 {
     ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *ape = item->data;
@@ -83,7 +83,7 @@ void ApeVault(int16_t item_num, int16_t angle)
     item->frame_number = g_Anims[item->anim_number].frame_base;
 }
 
-void ApeControl(int16_t item_num)
+void Ape_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -212,6 +212,6 @@ void ApeControl(int16_t item_num)
     if (item->current_anim_state == APE_VAULT) {
         CreatureAnimation(item_num, angle, 0);
     } else {
-        ApeVault(item_num, angle);
+        Ape_Vault(item_num, angle);
     }
 }

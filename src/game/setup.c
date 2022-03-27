@@ -187,7 +187,7 @@ void BaddyObjects(void)
     SetupPuma(&g_Objects[O_PUMA]);
     SetupCrocodile(&g_Objects[O_CROCODILE]);
     Alligator_Setup(&g_Objects[O_ALLIGATOR]);
-    SetupApe(&g_Objects[O_APE]);
+    Ape_Setup(&g_Objects[O_APE]);
     SetupWarrior(&g_Objects[O_WARRIOR1]);
     SetupWarrior2(&g_Objects[O_WARRIOR2]);
     SetupWarrior3(&g_Objects[O_WARRIOR3]);
