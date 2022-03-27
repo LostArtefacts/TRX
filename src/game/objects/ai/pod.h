@@ -11,7 +11,7 @@ typedef enum {
     POD_EXPLODE = 1,
 } POD_ANIM;
 
-void SetupPod(OBJECT_INFO *obj);
-void SetupBigPod(OBJECT_INFO *obj);
-void InitialisePod(int16_t item_num);
-void PodControl(int16_t item_num);
+void Pod_Setup(OBJECT_INFO *obj);
+void Pod_SetupBig(OBJECT_INFO *obj);
+void Pod_Initialise(int16_t item_num);
+void Pod_Control(int16_t item_num);
