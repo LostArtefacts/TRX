@@ -174,7 +174,7 @@ void BaddyObjects(void)
 
     SetupEvilLara(&g_Objects[O_EVIL_LARA]);
     SetupWolf(&g_Objects[O_WOLF]);
-    SetupBear(&g_Objects[O_BEAR]);
+    Bear_Setup(&g_Objects[O_BEAR]);
     Bat_Setup(&g_Objects[O_BAT]);
     SetupDino(&g_Objects[O_DINOSAUR]);
     SetupRaptor(&g_Objects[O_RAPTOR]);

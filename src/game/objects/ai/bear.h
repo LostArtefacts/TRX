@@ -37,5 +37,5 @@ typedef enum {
 
 extern BITE_INFO g_BearHeadBite;
 
-void SetupBear(OBJECT_INFO *obj);
-void BearControl(int16_t item_num);
+void Bear_Setup(OBJECT_INFO *obj);
+void Bear_Control(int16_t item_num);
