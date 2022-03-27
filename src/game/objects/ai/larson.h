@@ -27,5 +27,5 @@ typedef enum {
 
 extern BITE_INFO g_LarsonGun;
 
-void SetupLarson(OBJECT_INFO *obj);
-void LarsonControl(int16_t item_num);
+void Larson_Setup(OBJECT_INFO *obj);
+void Larson_Control(int16_t item_num);
