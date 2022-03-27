@@ -13,7 +13,6 @@
 #include "game/level.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/ai/alligator.h"
 #include "game/objects/ai/ape.h"
 #include "game/objects/ai/bacon_lara.h"
 #include "game/objects/ai/baldy.h"
@@ -35,7 +34,6 @@
 #include "game/objects/ai/statue.h"
 #include "game/objects/ai/torso.h"
 #include "game/objects/ai/trex.h"
-#include "game/objects/ai/vole.h"
 #include "game/objects/ai/wolf.h"
 #include "game/objects/boat.h"
 #include "game/objects/bridge.h"
@@ -144,7 +142,6 @@ void InitialiseGameFlags(void)
 
     g_LevelComplete = false;
     g_FlipEffect = -1;
-    g_PierreItemNum = NO_ITEM;
 }
 
 void InitialiseLevelFlags(void)

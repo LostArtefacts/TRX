@@ -8,6 +8,14 @@
 #include "game/items.h"
 #include "global/vars.h"
 
+#define MUMMY_HITPOINTS 18
+
+typedef enum {
+    MUMMY_EMPTY = 0,
+    MUMMY_STOP = 1,
+    MUMMY_DEATH = 2,
+} MUMMY_ANIM;
+
 void Mummy_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {

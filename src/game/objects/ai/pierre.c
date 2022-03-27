@@ -9,9 +9,33 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO g_PierreGun1 = { 60, 200, 0, 11 };
-BITE_INFO g_PierreGun2 = { -57, 200, 0, 14 };
-int16_t g_PierreItemNum = NO_ITEM;
+#define PIERRE_POSE_CHANCE 0x60 // = 96
+#define PIERRE_SHOT_DAMAGE 50
+#define PIERRE_WALK_TURN (PHD_DEGREE * 3) // = 546
+#define PIERRE_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define PIERRE_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
+#define PIERRE_DIE_ANIM 12
+#define PIERRE_WIMP_CHANCE 0x2000
+#define PIERRE_RUN_HITPOINTS 40
+#define PIERRE_DISAPPEAR 10
+#define PIERRE_HITPOINTS 70
+#define PIERRE_RADIUS (WALL_L / 10) // = 102
+#define PIERRE_SMARTNESS 0x7FFF
+
+typedef enum {
+    PIERRE_EMPTY = 0,
+    PIERRE_STOP = 1,
+    PIERRE_WALK = 2,
+    PIERRE_RUN = 3,
+    PIERRE_AIM = 4,
+    PIERRE_DEATH = 5,
+    PIERRE_POSE = 6,
+    PIERRE_SHOOT = 7,
+} PIERRE_ANIM;
+
+static BITE_INFO m_PierreGun1 = { 60, 200, 0, 11 };
+static BITE_INFO m_PierreGun2 = { -57, 200, 0, 14 };
+static int16_t m_PierreItemNum = NO_ITEM;
 
 void Pierre_Setup(OBJECT_INFO *obj)
 {
@@ -37,11 +61,11 @@ void Pierre_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (g_PierreItemNum == NO_ITEM) {
-        g_PierreItemNum = item_num;
-    } else if (g_PierreItemNum != item_num) {
+    if (m_PierreItemNum == NO_ITEM) {
+        m_PierreItemNum = item_num;
+    } else if (m_PierreItemNum != item_num) {
         if (item->flags & IF_ONESHOT) {
-            KillItem(g_PierreItemNum);
+            KillItem(m_PierreItemNum);
         } else {
             KillItem(item_num);
         }
@@ -161,11 +185,11 @@ void Pierre_Control(int16_t item_num)
 
         case PIERRE_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &g_PierreGun1, head)) {
+                if (ShotLara(item, info.distance, &m_PierreGun1, head)) {
                     g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
                     g_LaraItem->hit_status = 1;
                 }
-                if (ShotLara(item, info.distance, &g_PierreGun2, head)) {
+                if (ShotLara(item, info.distance, &m_PierreGun2, head)) {
                     g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
                     g_LaraItem->hit_status = 1;
                 }
@@ -201,7 +225,7 @@ void Pierre_Control(int16_t item_num)
             item->hit_points = DONT_TARGET;
             DisableBaddieAI(item_num);
             KillItem(item_num);
-            g_PierreItemNum = NO_ITEM;
+            m_PierreItemNum = NO_ITEM;
         }
     }
 
@@ -211,6 +235,6 @@ void Pierre_Control(int16_t item_num)
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
         KillItem(item_num);
-        g_PierreItemNum = NO_ITEM;
+        m_PierreItemNum = NO_ITEM;
     }
 }

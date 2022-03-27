@@ -10,8 +10,30 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-BITE_INFO g_KidGun1 = { 0, 150, 34, 7 };
-BITE_INFO g_KidGun2 = { 0, 150, 37, 4 };
+#define SKATE_KID_STOP_SHOT_DAMAGE 50
+#define SKATE_KID_SKATE_SHOT_DAMAGE 40
+#define SKATE_KID_STOP_RANGE SQUARE(WALL_L * 4) // = 16777216
+#define SKATE_KID_DONT_STOP_RANGE SQUARE(WALL_L * 5 / 2) // = 6553600
+#define SKATE_KID_TOO_CLOSE SQUARE(WALL_L) // = 1048576
+#define SKATE_KID_SKATE_TURN (PHD_DEGREE * 4) // = 728
+#define SKATE_KID_PUSH_CHANCE 0x200
+#define SKATE_KID_SKATE_CHANCE 0x400
+#define SKATE_KID_DIE_ANIM 13
+#define SKATE_KID_HITPOINTS 125
+#define SKATE_KID_RADIUS (WALL_L / 5) // = 204
+#define SKATE_KID_SMARTNESS 0x7FFF
+
+typedef enum {
+    SKATE_KID_STOP = 0,
+    SKATE_KID_SHOOT = 1,
+    SKATE_KID_SKATE = 2,
+    SKATE_KID_PUSH = 3,
+    SKATE_KID_SHOOT2 = 4,
+    SKATE_KID_DEATH = 5,
+} SKATE_KID_ANIM;
+
+static BITE_INFO m_KidGun1 = { 0, 150, 34, 7 };
+static BITE_INFO m_KidGun2 = { 0, 150, 37, 4 };
 
 void SkateKid_Setup(OBJECT_INFO *obj)
 {
@@ -107,7 +129,7 @@ void SkateKid_Control(int16_t item_num)
         case SKATE_KID_SHOOT:
         case SKATE_KID_SHOOT2:
             if (!kid->flags && Targetable(item, &info)) {
-                if (ShotLara(item, info.distance, &g_KidGun1, head)) {
+                if (ShotLara(item, info.distance, &m_KidGun1, head)) {
                     g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
@@ -115,7 +137,7 @@ void SkateKid_Control(int16_t item_num)
                     g_LaraItem->hit_status = 1;
                 }
 
-                if (ShotLara(item, info.distance, &g_KidGun2, head)) {
+                if (ShotLara(item, info.distance, &m_KidGun2, head)) {
                     g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE

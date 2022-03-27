@@ -7,7 +7,26 @@
 #include "game/people.h"
 #include "global/vars.h"
 
-BITE_INFO g_BaldyGun = { -20, 440, 20, 9 };
+#define BALDY_SHOT_DAMAGE 150
+#define BALDY_WALK_TURN (PHD_DEGREE * 3) // = 546
+#define BALDY_RUN_TURN (PHD_DEGREE * 6) // = 1092
+#define BALDY_WALK_RANGE SQUARE(WALL_L * 4) // = 16777216
+#define BALDY_DIE_ANIM 14
+#define BALDY_HITPOINTS 200
+#define BALDY_RADIUS (WALL_L / 10) // = 102
+#define BALDY_SMARTNESS 0x7FFF
+
+typedef enum {
+    BALDY_EMPTY = 0,
+    BALDY_STOP = 1,
+    BALDY_WALK = 2,
+    BALDY_RUN = 3,
+    BALDY_AIM = 4,
+    BALDY_DEATH = 5,
+    BALDY_SHOOT = 6,
+} BALDY_ANIM;
+
+static BITE_INFO m_BaldyGun = { -20, 440, 20, 9 };
 
 void Baldy_Setup(OBJECT_INFO *obj)
 {
@@ -124,7 +143,7 @@ void Baldy_Control(int16_t item_num)
 
         case BALDY_SHOOT:
             if (!baldy->flags) {
-                if (ShotLara(item, info.distance / 2, &g_BaldyGun, head)) {
+                if (ShotLara(item, info.distance / 2, &m_BaldyGun, head)) {
                     g_LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }
