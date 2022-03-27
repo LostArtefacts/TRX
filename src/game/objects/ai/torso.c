@@ -1,4 +1,4 @@
-#include "game/objects/ai/abortion.h"
+#include "game/objects/ai/torso.h"
 
 #include "3dsystem/phd_math.h"
 #include "game/box.h"
@@ -11,18 +11,18 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void SetupAbortion(OBJECT_INFO *obj)
+void Torso_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = AbortionControl;
+    obj->control = Torso_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = ABORTION_HITPOINTS;
-    obj->radius = ABORTION_RADIUS;
-    obj->smartness = ABORTION_SMARTNESS;
+    obj->hit_points = TORSO_HITPOINTS;
+    obj->radius = TORSO_RADIUS;
+    obj->smartness = TORSO_SMARTNESS;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
@@ -31,7 +31,7 @@ void SetupAbortion(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
 }
 
-void AbortionControl(int16_t item_num)
+void Torso_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -42,15 +42,14 @@ void AbortionControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *abortion = item->data;
+    CREATURE_INFO *torso = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != ABORTION_DEATH) {
-            item->current_anim_state = ABORTION_DEATH;
-            item->anim_number =
-                g_Objects[O_ABORTION].anim_index + ABORTION_DIE_ANIM;
+        if (item->current_anim_state != TORSO_DEATH) {
+            item->current_anim_state = TORSO_DEATH;
+            item->anim_number = g_Objects[O_TORSO].anim_index + TORSO_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
         }
     } else {
@@ -63,111 +62,111 @@ void AbortionControl(int16_t item_num)
 
         CreatureMood(item, &info, 1);
 
-        angle = phd_atan(
-                    abortion->target.z - item->pos.z,
-                    abortion->target.x - item->pos.x)
+        angle =
+            phd_atan(
+                torso->target.z - item->pos.z, torso->target.x - item->pos.x)
             - item->pos.y_rot;
 
         if (item->touch_bits) {
-            g_LaraItem->hit_points -= ABORTION_TOUCH_DAMAGE;
+            g_LaraItem->hit_points -= TORSO_TOUCH_DAMAGE;
             g_LaraItem->hit_status = 1;
         }
 
         switch (item->current_anim_state) {
-        case ABORTION_SET:
-            item->goal_anim_state = ABORTION_FALL;
+        case TORSO_SET:
+            item->goal_anim_state = TORSO_FALL;
             item->gravity_status = 1;
             break;
 
-        case ABORTION_STOP:
+        case TORSO_STOP:
             if (g_LaraItem->hit_points <= 0) {
                 break;
             }
 
-            abortion->flags = 0;
-            if (angle > ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_TURN_R;
-            } else if (angle < -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_TURN_L;
-            } else if (info.distance >= ABORTION_ATTACK_RANGE) {
-                item->goal_anim_state = ABORTION_FORWARD;
-            } else if (g_LaraItem->hit_points > ABORTION_ATTACK_DAMAGE) {
+            torso->flags = 0;
+            if (angle > TORSO_NEED_TURN) {
+                item->goal_anim_state = TORSO_TURN_R;
+            } else if (angle < -TORSO_NEED_TURN) {
+                item->goal_anim_state = TORSO_TURN_L;
+            } else if (info.distance >= TORSO_ATTACK_RANGE) {
+                item->goal_anim_state = TORSO_FORWARD;
+            } else if (g_LaraItem->hit_points > TORSO_ATTACK_DAMAGE) {
                 if (Random_GetControl() < 0x4000) {
-                    item->goal_anim_state = ABORTION_ATTACK1;
+                    item->goal_anim_state = TORSO_ATTACK1;
                 } else {
-                    item->goal_anim_state = ABORTION_ATTACK2;
+                    item->goal_anim_state = TORSO_ATTACK2;
                 }
-            } else if (info.distance < ABORTION_CLOSE_RANGE) {
-                item->goal_anim_state = ABORTION_ATTACK3;
+            } else if (info.distance < TORSO_CLOSE_RANGE) {
+                item->goal_anim_state = TORSO_ATTACK3;
             } else {
-                item->goal_anim_state = ABORTION_FORWARD;
+                item->goal_anim_state = TORSO_FORWARD;
             }
             break;
 
-        case ABORTION_FORWARD:
-            if (angle < -ABORTION_TURN) {
-                item->goal_anim_state -= ABORTION_TURN;
-            } else if (angle > ABORTION_TURN) {
-                item->goal_anim_state += ABORTION_TURN;
+        case TORSO_FORWARD:
+            if (angle < -TORSO_TURN) {
+                item->goal_anim_state -= TORSO_TURN;
+            } else if (angle > TORSO_TURN) {
+                item->goal_anim_state += TORSO_TURN;
             } else {
                 item->goal_anim_state += angle;
             }
 
-            if (angle > ABORTION_NEED_TURN || angle < -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
-            } else if (info.distance < ABORTION_ATTACK_RANGE) {
-                item->goal_anim_state = ABORTION_STOP;
+            if (angle > TORSO_NEED_TURN || angle < -TORSO_NEED_TURN) {
+                item->goal_anim_state = TORSO_STOP;
+            } else if (info.distance < TORSO_ATTACK_RANGE) {
+                item->goal_anim_state = TORSO_STOP;
             }
             break;
 
-        case ABORTION_TURN_L:
-            if (!abortion->flags) {
-                abortion->flags = item->frame_number;
+        case TORSO_TURN_L:
+            if (!torso->flags) {
+                torso->flags = item->frame_number;
             } else if (
-                item->frame_number - abortion->flags > 13
-                && item->frame_number - abortion->flags < 23) {
+                item->frame_number - torso->flags > 13
+                && item->frame_number - torso->flags < 23) {
                 item->pos.y_rot -= PHD_DEGREE * 9;
             }
 
-            if (angle > -ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
+            if (angle > -TORSO_NEED_TURN) {
+                item->goal_anim_state = TORSO_STOP;
             }
             break;
 
-        case ABORTION_TURN_R:
-            if (!abortion->flags) {
-                abortion->flags = item->frame_number;
+        case TORSO_TURN_R:
+            if (!torso->flags) {
+                torso->flags = item->frame_number;
             } else if (
-                item->frame_number - abortion->flags > 16
-                && item->frame_number - abortion->flags < 23) {
+                item->frame_number - torso->flags > 16
+                && item->frame_number - torso->flags < 23) {
                 item->pos.y_rot += PHD_DEGREE * 14;
             }
 
-            if (angle < ABORTION_NEED_TURN) {
-                item->goal_anim_state = ABORTION_STOP;
+            if (angle < TORSO_NEED_TURN) {
+                item->goal_anim_state = TORSO_STOP;
             }
             break;
 
-        case ABORTION_ATTACK1:
-            if (!abortion->flags && (item->touch_bits & ABORTION_TRIGHT)) {
-                g_LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
+        case TORSO_ATTACK1:
+            if (!torso->flags && (item->touch_bits & TORSO_TRIGHT)) {
+                g_LaraItem->hit_points -= TORSO_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
-                abortion->flags = 1;
+                torso->flags = 1;
             }
             break;
 
-        case ABORTION_ATTACK2:
-            if (!abortion->flags && (item->touch_bits & ABORTION_TOUCH)) {
-                g_LaraItem->hit_points -= ABORTION_ATTACK_DAMAGE;
+        case TORSO_ATTACK2:
+            if (!torso->flags && (item->touch_bits & TORSO_TOUCH)) {
+                g_LaraItem->hit_points -= TORSO_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
-                abortion->flags = 1;
+                torso->flags = 1;
             }
             break;
 
-        case ABORTION_ATTACK3:
-            if ((item->touch_bits & ABORTION_TRIGHT)
+        case TORSO_ATTACK3:
+            if ((item->touch_bits & TORSO_TRIGHT)
                 || g_LaraItem->hit_points <= 0) {
-                item->goal_anim_state = ABORTION_KILL;
+                item->goal_anim_state = TORSO_KILL;
 
                 g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
                 g_LaraItem->frame_number =
@@ -192,7 +191,7 @@ void AbortionControl(int16_t item_num)
             }
             break;
 
-        case ABORTION_KILL:
+        case TORSO_KILL:
             g_Camera.target_distance = WALL_L * 2;
             g_Camera.flags = FOLLOW_CENTRE;
             break;
@@ -201,11 +200,11 @@ void AbortionControl(int16_t item_num)
 
     CreatureHead(item, head);
 
-    if (item->current_anim_state == ABORTION_FALL) {
+    if (item->current_anim_state == TORSO_FALL) {
         AnimateItem(item);
 
         if (item->pos.y > item->floor) {
-            item->goal_anim_state = ABORTION_STOP;
+            item->goal_anim_state = TORSO_STOP;
             item->gravity_status = 0;
             item->pos.y = item->floor;
             g_Camera.bounce = 500;
@@ -216,7 +215,7 @@ void AbortionControl(int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        Effect_ExplodingDeath(item_num, -1, ABORTION_PART_DAMAGE);
+        Effect_ExplodingDeath(item_num, -1, TORSO_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);

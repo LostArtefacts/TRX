@@ -12,7 +12,6 @@ int32_t Effect_ExplodingDeath(
 {
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    int32_t abortion = item->object_number == O_ABORTION;
 
     int16_t *frame = GetBestFrame(item);
 
@@ -45,7 +44,7 @@ int32_t Effect_ExplodingDeath(
             fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
             fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
-            if (abortion) {
+            if (item->object_number == O_TORSO) {
                 fx->speed = Random_GetControl() >> 7;
                 fx->fall_speed = -Random_GetControl() >> 7;
             } else {
@@ -97,7 +96,7 @@ int32_t Effect_ExplodingDeath(
                 fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
                 fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
-                if (abortion) {
+                if (item->object_number == O_TORSO) {
                     fx->speed = Random_GetControl() >> 7;
                     fx->fall_speed = -Random_GetControl() >> 7;
                 } else {
