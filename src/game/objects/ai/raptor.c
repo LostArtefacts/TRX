@@ -9,13 +9,13 @@
 
 BITE_INFO g_RaptorBite = { 0, 66, 318, 22 };
 
-void SetupRaptor(OBJECT_INFO *obj)
+void Raptor_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = RaptorControl;
+    obj->control = Raptor_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAPTOR_HITPOINTS;
@@ -30,7 +30,7 @@ void SetupRaptor(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 84] |= BEB_ROT_Y;
 }
 
-void RaptorControl(int16_t item_num)
+void Raptor_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

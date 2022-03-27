@@ -33,5 +33,5 @@ typedef enum {
 
 extern BITE_INFO g_RaptorBite;
 
-void SetupRaptor(OBJECT_INFO *obj);
-void RaptorControl(int16_t item_num);
+void Raptor_Setup(OBJECT_INFO *obj);
+void Raptor_Control(int16_t item_num);
