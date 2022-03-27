@@ -9,13 +9,13 @@
 
 BITE_INFO g_WolfJawBite = { 0, -14, 174, 6 };
 
-void SetupWolf(OBJECT_INFO *obj)
+void Wolf_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseWolf;
-    obj->control = WolfControl;
+    obj->initialise = Wolf_Initialise;
+    obj->control = Wolf_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = WOLF_HITPOINTS;
@@ -30,13 +30,13 @@ void SetupWolf(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
 }
 
-void InitialiseWolf(int16_t item_num)
+void Wolf_Initialise(int16_t item_num)
 {
     g_Items[item_num].frame_number = WOLF_SLEEP_FRAME;
     InitialiseCreature(item_num);
 }
 
-void WolfControl(int16_t item_num)
+void Wolf_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
