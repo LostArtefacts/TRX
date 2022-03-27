@@ -15,13 +15,13 @@
 BITE_INFO g_CentaurRocket = { 11, 415, 41, 13 };
 BITE_INFO g_CentaurRear = { 50, 30, 0, 5 };
 
-void SetupCentaur(OBJECT_INFO *obj)
+void Centaur_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = CentaurControl;
+    obj->control = Centaur_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CENTAUR_HITPOINTS;
@@ -36,7 +36,7 @@ void SetupCentaur(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 40] |= 0xCu;
 }
 
-void CentaurControl(int16_t item_num)
+void Centaur_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
