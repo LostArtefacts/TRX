@@ -181,7 +181,7 @@ void BaddyObjects(void)
     Larson_Setup(&g_Objects[O_LARSON]);
     Pierre_Setup(&g_Objects[O_PIERRE]);
     Rat_Setup(&g_Objects[O_RAT]);
-    SetupVole(&g_Objects[O_VOLE]);
+    Vole_Setup(&g_Objects[O_VOLE]);
     SetupLion(&g_Objects[O_LION]);
     SetupLioness(&g_Objects[O_LIONESS]);
     SetupPuma(&g_Objects[O_PUMA]);
