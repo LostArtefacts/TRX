@@ -38,7 +38,7 @@ typedef enum {
 
 extern BITE_INFO g_LionBite;
 
-void SetupLion(OBJECT_INFO *obj);
-void SetupLioness(OBJECT_INFO *obj);
-void SetupPuma(OBJECT_INFO *obj);
-void LionControl(int16_t item_num);
+void Lion_SetupLion(OBJECT_INFO *obj);
+void Lion_SetupLioness(OBJECT_INFO *obj);
+void Lion_SetupPuma(OBJECT_INFO *obj);
+void Lion_Control(int16_t item_num);
