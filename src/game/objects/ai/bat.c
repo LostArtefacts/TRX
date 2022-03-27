@@ -14,13 +14,13 @@ BITE_INFO g_BatBite = { 0, 16, 45, 4 };
 
 static void FixEmbeddedBatPosition(int16_t item_num);
 
-void SetupBat(OBJECT_INFO *obj)
+void Bat_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseBat;
-    obj->control = BatControl;
+    obj->initialise = Bat_Initialise;
+    obj->control = Bat_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BAT_HITPOINTS;
@@ -33,7 +33,7 @@ void SetupBat(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void BatControl(int16_t item_num)
+void Bat_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -94,7 +94,7 @@ void BatControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void InitialiseBat(int16_t item_num)
+void Bat_Initialise(int16_t item_num)
 {
     InitialiseCreature(item_num);
 

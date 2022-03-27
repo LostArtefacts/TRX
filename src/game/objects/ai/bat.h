@@ -21,6 +21,6 @@ typedef enum {
 
 extern BITE_INFO g_BatBite;
 
-void SetupBat(OBJECT_INFO *obj);
-void BatControl(int16_t item_num);
-void InitialiseBat(int16_t item_num);
+void Bat_Setup(OBJECT_INFO *obj);
+void Bat_Initialise(int16_t item_num);
+void Bat_Control(int16_t item_num);
