@@ -164,15 +164,6 @@ static void Savegame_LoadPostProcess(void)
     g_Lara.LOT.target_box = NO_BOX;
 }
 
-void Savegame_SetCurrentPosition(int level_num)
-{
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            g_GameInfo.current[g_CurrentLevel] = g_GameInfo.current[i];
-        }
-    }
-}
-
 void Savegame_InitStartCurrentInfo(void)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {

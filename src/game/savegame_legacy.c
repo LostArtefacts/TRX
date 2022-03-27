@@ -47,6 +47,7 @@ static void Savegame_Legacy_Read(void *pointer, int size);
 static void Savegame_Legacy_ReadArm(LARA_ARM *arm);
 static void Savegame_Legacy_ReadLara(LARA_INFO *lara);
 static void Savegame_Legacy_ReadLOT(LOT_INFO *lot);
+static void Savegame_Legacy_SetCurrentPosition(int level_num);
 
 static void Savegame_Legacy_Write(void *pointer, int size);
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm);
@@ -352,6 +353,15 @@ static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
     Savegame_Legacy_Read(&lot->target, sizeof(PHD_VECTOR));
 }
 
+static void Savegame_Legacy_SetCurrentPosition(int level_num)
+{
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
+            g_GameInfo.current[g_CurrentLevel] = g_GameInfo.current[i];
+        }
+    }
+}
+
 char *Savegame_Legacy_GetSaveFileName(int32_t slot)
 {
     size_t out_size =
@@ -457,7 +467,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
 
-    Savegame_SetCurrentPosition(g_CurrentLevel);
+    Savegame_Legacy_SetCurrentPosition(g_CurrentLevel);
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetCurrentInfo(i);
     }
