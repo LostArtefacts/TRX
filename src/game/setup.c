@@ -200,7 +200,7 @@ void BaddyObjects(void)
     Natla_Setup(&g_Objects[O_NATLA]);
     Pod_Setup(&g_Objects[O_PODS]);
     Pod_SetupBig(&g_Objects[O_BIG_POD]);
-    SetupStatue(&g_Objects[O_STATUE]);
+    Statue_Setup(&g_Objects[O_STATUE]);
 }
 
 void TrapObjects(void)
