@@ -46,7 +46,7 @@ int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
 int16_t m_KillableObjs[] = {
     O_WOLF,     O_BEAR,        O_BAT,      O_CROCODILE, O_ALLIGATOR,
     O_LION,     O_LIONESS,     O_PUMA,     O_APE,       O_RAT,
-    O_VOLE,     O_DINOSAUR,    O_RAPTOR,   O_WARRIOR1,  O_WARRIOR2,
+    O_VOLE,     O_TREX,        O_RAPTOR,   O_WARRIOR1,  O_WARRIOR2,
     O_WARRIOR3, O_CENTAUR,     O_MUMMY,    O_TORSO,     O_DINO_WARRIOR,
     O_FISH,     O_LARSON,      O_SKATEKID, O_COWBOY,    O_BALDY,
     O_NATLA,    O_SCION_ITEM3, O_STATUE,   NO_ITEM
