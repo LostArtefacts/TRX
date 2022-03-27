@@ -1517,7 +1517,7 @@ typedef struct GAME_INFO {
     uint8_t bonus_flag;
     int32_t current_save_slot;
     bool death_counter_supported;
-    GAMEFLOW_LEVEL_TYPE level_type;
+    GAMEFLOW_LEVEL_TYPE current_level_type;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

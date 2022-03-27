@@ -29,7 +29,7 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
 
 static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
 {
-    if (g_GameInfo.level_type == GFL_SAVED) {
+    if (g_GameInfo.current_level_type == GFL_SAVED) {
         // Use current info for saved games.
         return &g_GameInfo.current[level_num];
     }
