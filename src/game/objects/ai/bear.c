@@ -10,13 +10,13 @@
 
 BITE_INFO g_BearHeadBite = { 0, 96, 335, 14 };
 
-void SetupBear(OBJECT_INFO *obj)
+void Bear_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = BearControl;
+    obj->control = Bear_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
@@ -31,7 +31,7 @@ void SetupBear(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
 }
 
-void BearControl(int16_t item_num)
+void Bear_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
