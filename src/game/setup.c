@@ -21,7 +21,6 @@
 #include "game/objects/ai/centaur.h"
 #include "game/objects/ai/cowboy.h"
 #include "game/objects/ai/crocodile.h"
-#include "game/objects/ai/dino.h"
 #include "game/objects/ai/evil_lara.h"
 #include "game/objects/ai/larson.h"
 #include "game/objects/ai/lion.h"
@@ -35,6 +34,7 @@
 #include "game/objects/ai/skate_kid.h"
 #include "game/objects/ai/statue.h"
 #include "game/objects/ai/torso.h"
+#include "game/objects/ai/trex.h"
 #include "game/objects/ai/vole.h"
 #include "game/objects/ai/wolf.h"
 #include "game/objects/boat.h"
@@ -176,7 +176,7 @@ void BaddyObjects(void)
     SetupWolf(&g_Objects[O_WOLF]);
     Bear_Setup(&g_Objects[O_BEAR]);
     Bat_Setup(&g_Objects[O_BAT]);
-    SetupDino(&g_Objects[O_DINOSAUR]);
+    TRex_Setup(&g_Objects[O_TREX]);
     SetupRaptor(&g_Objects[O_RAPTOR]);
     SetupLarson(&g_Objects[O_LARSON]);
     SetupPierre(&g_Objects[O_PIERRE]);

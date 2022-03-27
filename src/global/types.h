@@ -43,7 +43,7 @@ typedef enum GAME_OBJECT_ID {
     O_APE = 15,
     O_RAT = 16,
     O_VOLE = 17,
-    O_DINOSAUR = 18,
+    O_TREX = 18,
     O_RAPTOR = 19,
     O_WARRIOR1 = 20, // flying mutant
     O_WARRIOR2 = 21,
