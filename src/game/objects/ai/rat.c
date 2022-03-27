@@ -10,13 +10,13 @@
 
 BITE_INFO g_RatBite = { 0, -11, 108, 3 };
 
-void SetupRat(OBJECT_INFO *obj)
+void Rat_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = RatControl;
+    obj->control = Rat_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAT_HITPOINTS;
@@ -31,7 +31,7 @@ void SetupRat(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 4] |= BEB_ROT_Y;
 }
 
-void RatControl(int16_t item_num)
+void Rat_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
