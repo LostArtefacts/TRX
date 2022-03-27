@@ -13,14 +13,14 @@
 BITE_INFO g_KidGun1 = { 0, 150, 34, 7 };
 BITE_INFO g_KidGun2 = { 0, 150, 37, 4 };
 
-void SetupSkateKid(OBJECT_INFO *obj)
+void SkateKid_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseSkateKid;
-    obj->control = SkateKidControl;
-    obj->draw_routine = DrawSkateKid;
+    obj->initialise = SkateKid_Initialise;
+    obj->control = SkateKid_Control;
+    obj->draw_routine = SkateKid_Draw;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
@@ -34,13 +34,13 @@ void SetupSkateKid(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
 }
 
-void InitialiseSkateKid(int16_t item_num)
+void SkateKid_Initialise(int16_t item_num)
 {
     InitialiseCreature(item_num);
     g_Items[item_num].current_anim_state = SKATE_KID_SKATE;
 }
 
-void SkateKidControl(int16_t item_num)
+void SkateKid_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *kid = item->data;
@@ -137,7 +137,7 @@ void SkateKidControl(int16_t item_num)
     CreatureAnimation(item_num, angle, 0);
 }
 
-void DrawSkateKid(ITEM_INFO *item)
+void SkateKid_Draw(ITEM_INFO *item)
 {
     DrawAnimatingItem(item);
     int16_t anim = item->anim_number;
