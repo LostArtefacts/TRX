@@ -197,7 +197,7 @@ void BaddyObjects(void)
     Cowboy_Setup(&g_Objects[O_COWBOY]);
     Baldy_Setup(&g_Objects[O_BALDY]);
     Torso_Setup(&g_Objects[O_TORSO]);
-    SetupNatla(&g_Objects[O_NATLA]);
+    Natla_Setup(&g_Objects[O_NATLA]);
     SetupPod(&g_Objects[O_PODS]);
     SetupBigPod(&g_Objects[O_BIG_POD]);
     SetupStatue(&g_Objects[O_STATUE]);
@@ -328,7 +328,7 @@ void ObjectObjects(void)
     Splash_Setup(&g_Objects[O_SPLASH1]);
     Waterfall_Setup(&g_Objects[O_WATERFALL]);
     BodyPart_Setup(&g_Objects[O_BODY_PART]);
-    SetupNatlaGun(&g_Objects[O_MISSILE1]);
+    NatlaGun_Setup(&g_Objects[O_MISSILE1]);
     Missile_Setup(&g_Objects[O_MISSILE2]);
     Missile_Setup(&g_Objects[O_MISSILE3]);
     GunShot_Setup(&g_Objects[O_GUN_FLASH]);
