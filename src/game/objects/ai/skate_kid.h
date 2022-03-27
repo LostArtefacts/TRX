@@ -29,7 +29,7 @@ typedef enum {
 extern BITE_INFO g_KidGun1;
 extern BITE_INFO g_KidGun2;
 
-void SetupSkateKid(OBJECT_INFO *obj);
-void InitialiseSkateKid(int16_t item_num);
-void SkateKidControl(int16_t item_num);
-void DrawSkateKid(ITEM_INFO *item);
+void SkateKid_Setup(OBJECT_INFO *obj);
+void SkateKid_Initialise(int16_t item_num);
+void SkateKid_Control(int16_t item_num);
+void SkateKid_Draw(ITEM_INFO *item);
