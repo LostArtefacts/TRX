@@ -180,7 +180,7 @@ void BaddyObjects(void)
     Raptor_Setup(&g_Objects[O_RAPTOR]);
     Larson_Setup(&g_Objects[O_LARSON]);
     Pierre_Setup(&g_Objects[O_PIERRE]);
-    SetupRat(&g_Objects[O_RAT]);
+    Rat_Setup(&g_Objects[O_RAT]);
     SetupVole(&g_Objects[O_VOLE]);
     SetupLion(&g_Objects[O_LION]);
     SetupLioness(&g_Objects[O_LIONESS]);
