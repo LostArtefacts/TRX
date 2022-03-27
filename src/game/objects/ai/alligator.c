@@ -10,13 +10,13 @@
 #include "game/objects/ai/alligator.h"
 #include "global/vars.h"
 
-void SetupAlligator(OBJECT_INFO *obj)
+void Alligator_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise = InitialiseCreature;
-    obj->control = AlligatorControl;
+    obj->control = Alligator_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = ALLIGATOR_HITPOINTS;
@@ -31,7 +31,7 @@ void SetupAlligator(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
 }
 
-void AlligatorControl(int16_t item_num)
+void Alligator_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

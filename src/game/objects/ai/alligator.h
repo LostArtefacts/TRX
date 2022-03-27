@@ -20,5 +20,5 @@ typedef enum {
     ALLIGATOR_DEATH = 3,
 } ALLIGATOR_ANIM;
 
-void SetupAlligator(OBJECT_INFO *obj);
-void AlligatorControl(int16_t item_num);
+void Alligator_Setup(OBJECT_INFO *obj);
+void Alligator_Control(int16_t item_num);
