@@ -262,20 +262,7 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
 
     RESUME_INFO *current = &g_GameInfo.current[level_num];
 
-    if (g_LaraItem) {
-        current->lara_hitpoints = g_LaraItem->hit_points;
-    } else {
-        // Carry over variables from previous levels if the current level
-        // has no Lara object (such as the cutscene levels)
-        for (int l = level_num - 1; l >= 0; l--) {
-            RESUME_INFO *prev_current = &g_GameInfo.current[l];
-            if (g_GameFlow.levels[l].level_type == GFL_NORMAL) {
-                current->lara_hitpoints = prev_current->lara_hitpoints;
-                break;
-            }
-        }
-    }
-
+    current->lara_hitpoints = g_LaraItem->hit_points;
     current->flags.available = 1;
     current->flags.costume = 0;
 
