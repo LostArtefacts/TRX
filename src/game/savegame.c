@@ -79,6 +79,8 @@ static void Savegame_LoadPreprocess(void)
             AlterFloorHeight(item, WALL_L * 2);
         }
     }
+
+    Savegame_InitStartCurrentInfo();
 }
 
 static void Savegame_LoadPostProcess(void)
