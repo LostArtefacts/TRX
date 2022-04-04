@@ -303,7 +303,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         LaraControl(0);
         HairControl(0);
 
-        CalculateCamera();
+        Camera_Update();
         Sound_UpdateEffects();
         g_GameInfo.stats.timer++;
         Overlay_BarHealthTimerTick();
