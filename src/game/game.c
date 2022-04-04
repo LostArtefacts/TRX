@@ -86,7 +86,7 @@ int32_t StopGame(void)
 int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_OverlayFlag = 1;
-    InitialiseCamera();
+    Camera_Initialise();
 
     Stats_CalculateStats();
     g_GameInfo.stats.max_pickup_count = Stats_GetPickups();

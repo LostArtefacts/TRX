@@ -183,17 +183,17 @@ void LaraControl(int16_t item_num)
     int16_t camera_move_delta = PHD_45 / 30;
 
     if (g_Input.camera_left) {
-        CameraOffsetAdditionalAngle(camera_move_delta);
+        Camera_OffsetAdditionalAngle(camera_move_delta);
     } else if (g_Input.camera_right) {
-        CameraOffsetAdditionalAngle(-camera_move_delta);
+        Camera_OffsetAdditionalAngle(-camera_move_delta);
     }
     if (g_Input.camera_up) {
-        CameraOffsetAdditionalElevation(-camera_move_delta);
+        Camera_OffsetAdditionalElevation(-camera_move_delta);
     } else if (g_Input.camera_down) {
-        CameraOffsetAdditionalElevation(camera_move_delta);
+        Camera_OffsetAdditionalElevation(camera_move_delta);
     }
     if (g_Input.camera_reset) {
-        CameraOffsetReset();
+        Camera_OffsetReset();
     }
 
     switch (g_Lara.water_status) {
