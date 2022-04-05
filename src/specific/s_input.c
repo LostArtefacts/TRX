@@ -35,6 +35,7 @@ static S_INPUT_KEYCODE m_Layout[2][INPUT_KEY_NUMBER_OF] = {
         DIK_O,           // INPUT_KEY_FLY_CHEAT,
         DIK_I,           // INPUT_KEY_ITEM_CHEAT,
         DIK_L,           // INPUT_KEY_LEVEL_SKIP_CHEAT,
+        DIK_TAB,         // INPUT_KEY_TURBO_CHEAT,
         DIK_P,           // INPUT_KEY_PAUSE,
         DIK_W,           // INPUT_KEY_CAMERA_UP
         DIK_S,           // INPUT_KEY_CAMERA_DOWN
@@ -61,6 +62,7 @@ static S_INPUT_KEYCODE m_Layout[2][INPUT_KEY_NUMBER_OF] = {
         DIK_O,           // INPUT_KEY_FLY_CHEAT,
         DIK_I,           // INPUT_KEY_ITEM_CHEAT,
         DIK_L,           // INPUT_KEY_LEVEL_SKIP_CHEAT,
+        DIK_TAB,         // INPUT_KEY_TURBO_CHEAT,
         DIK_P,           // INPUT_KEY_PAUSE,
         DIK_W,           // INPUT_KEY_CAMERA_UP
         DIK_S,           // INPUT_KEY_CAMERA_DOWN
@@ -441,6 +443,7 @@ INPUT_STATE S_Input_GetCurrentState(void)
         linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
         linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
         linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
+        linput.turbo_cheat = S_Input_Key(INPUT_KEY_TURBO_CHEAT);
         linput.health_cheat = KEY_DOWN(DIK_F11);
     }
 

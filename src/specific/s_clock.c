@@ -1,5 +1,6 @@
 #include "specific/s_clock.h"
 
+#include "config.h"
 #include "global/vars.h"
 
 #include <windows.h>

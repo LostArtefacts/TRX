@@ -3,6 +3,7 @@
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/camera.h"
+#include "game/clock.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/gameflow.h"
@@ -63,6 +64,10 @@ void LaraControl(int16_t item_num)
 
     if (g_InputDB.item_cheat) {
         LaraCheatGetStuff();
+    }
+
+    if (g_InputDB.turbo_cheat) {
+        Clock_CycleTurboSpeed();
     }
 
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
