@@ -1,7 +1,7 @@
 #pragma once
 
 #include "filesystem.h"
-#include "game/savegame_common.h"
+#include "game/savegame.h"
 #include "global/types.h"
 
 #include <stdint.h>

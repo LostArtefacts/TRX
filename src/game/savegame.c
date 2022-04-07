@@ -68,18 +68,6 @@ static void Savegame_LoadPreprocess(void)
 {
     m_OldLaraLOTNode = g_Lara.LOT.node;
 
-    for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
-
-        if (obj->control == MovableBlock_Control) {
-            AlterFloorHeight(item, WALL_L);
-        }
-        if (obj->control == RollingBlock_Control) {
-            AlterFloorHeight(item, WALL_L * 2);
-        }
-    }
-
     Savegame_InitStartCurrentInfo();
 }
 
@@ -164,6 +152,21 @@ static void Savegame_LoadPostProcess(void)
 
     g_Lara.LOT.node = m_OldLaraLOTNode;
     g_Lara.LOT.target_box = NO_BOX;
+}
+
+void Savegame_PreprocessItems(void)
+{
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        if (obj->control == MovableBlock_Control) {
+            AlterFloorHeight(item, WALL_L);
+        }
+        if (obj->control == RollingBlock_Control) {
+            AlterFloorHeight(item, WALL_L * 2);
+        }
+    }
 }
 
 void Savegame_InitStartCurrentInfo(void)

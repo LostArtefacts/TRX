@@ -4,8 +4,9 @@
 - fixed ghost margins during fade animation on HiDPI screens (#438)
 - fixed music rolling over to the main menu if main menu music disabled (#490)
 - fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)
-- fixed picking up multiple underwater pickups when walk_to_items is enabled (#500)
+- fixed picking up multiple underwater pickups with walk to items enabled (#500)
 - fixed incorrect Lara health when restarting a level
+- fixed pushables breaking with flipped rooms when loading a save (#496, regression from 2.6)
 
 ## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)
