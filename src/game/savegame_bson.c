@@ -1076,6 +1076,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
+    Savegame_PreprocessItems();
+
     if (!Savegame_BSON_LoadItems(json_object_get_array(root_obj, "items"))) {
         goto cleanup;
     }
