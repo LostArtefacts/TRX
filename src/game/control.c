@@ -305,7 +305,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
         Camera_Update();
         Sound_UpdateEffects();
-        g_GameInfo.stats.timer++;
+        g_GameInfo.current[g_CurrentLevel].stats.timer++;
         Overlay_BarHealthTimerTick();
 
         m_FrameCount -= 0x10000;
@@ -727,10 +727,11 @@ void TestTriggers(int16_t *data, int32_t heavy)
             break;
 
         case TO_SECRET:
-            if ((g_GameInfo.stats.secret_flags & (1 << value))) {
+            if ((g_GameInfo.current[g_CurrentLevel].stats.secret_flags
+                 & (1 << value))) {
                 break;
             }
-            g_GameInfo.stats.secret_flags |= 1 << value;
+            g_GameInfo.current[g_CurrentLevel].stats.secret_flags |= 1 << value;
             Music_Play(13);
             break;
         }

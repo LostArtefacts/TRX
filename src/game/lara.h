@@ -14,7 +14,7 @@ void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal);
 void UseItem(int16_t object_num);
 void ControlLaraExtra(int16_t item_num);
 void InitialiseLaraLoad(int16_t item_num);
-void InitialiseLara(void);
+void InitialiseLara(int32_t level_num);
 void InitialiseLaraInventory(int32_t level_num);
 void LaraInitialiseMeshes(int32_t level_num);
 

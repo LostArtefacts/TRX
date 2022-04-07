@@ -24,6 +24,7 @@
 bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
+    g_GameInfo.current_level_type = level_type;
     if (level_type == GFL_SAVED) {
         // reset start info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
@@ -53,12 +54,13 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
 int32_t StopGame(void)
 {
-    Savegame_PersistGameToEndInfo(g_CurrentLevel);
+    Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
         g_GameInfo.bonus_flag = GBF_NGPLUS;
     } else {
-        Savegame_PersistGameToStartInfo(g_CurrentLevel + 1);
+        Savegame_CarryCurrentInfoToStartInfo(
+            g_CurrentLevel, g_CurrentLevel + 1);
         Savegame_ApplyLogicToStartInfo(g_CurrentLevel + 1);
     }
 
@@ -89,9 +91,12 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     Camera_Initialise();
 
     Stats_CalculateStats();
-    g_GameInfo.stats.max_pickup_count = Stats_GetPickups();
-    g_GameInfo.stats.max_kill_count = Stats_GetKillables();
-    g_GameInfo.stats.max_secret_count = Stats_GetSecrets();
+    g_GameInfo.current[g_CurrentLevel].stats.max_pickup_count =
+        Stats_GetPickups();
+    g_GameInfo.current[g_CurrentLevel].stats.max_kill_count =
+        Stats_GetKillables();
+    g_GameInfo.current[g_CurrentLevel].stats.max_secret_count =
+        Stats_GetSecrets();
 
     bool ask_for_save = g_GameFlow.enable_save_crystals
         && level_type == GFL_NORMAL

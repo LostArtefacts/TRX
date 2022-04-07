@@ -103,7 +103,7 @@ bool InitialiseLevel(int32_t level_num)
     }
 
     if (g_Lara.item_number != NO_ITEM) {
-        InitialiseLara();
+        InitialiseLara(level_num);
     }
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
@@ -149,11 +149,11 @@ void InitialiseLevelFlags(void)
     // loading a save can override it to false
     g_GameInfo.death_counter_supported = true;
 
-    g_GameInfo.stats.timer = 0;
-    g_GameInfo.stats.secret_flags = 0;
-    g_GameInfo.stats.pickup_count = 0;
-    g_GameInfo.stats.kill_count = 0;
-    g_GameInfo.stats.death_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
 }
 
 void BaddyObjects(void)

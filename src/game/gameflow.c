@@ -604,8 +604,8 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     int32_t level_count = jlvl_arr->length;
 
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
-    g_GameInfo.start = Memory_Alloc(sizeof(START_INFO) * level_count);
-    g_GameInfo.end = Memory_Alloc(sizeof(END_INFO) * level_count);
+    g_GameInfo.start = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
+    g_GameInfo.current = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
@@ -889,7 +889,7 @@ void GameFlow_Shutdown(void)
     Memory_FreePointer(&g_GameFlow.savegame_fmt_legacy);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_bson);
     Memory_FreePointer(&g_GameInfo.start);
-    Memory_FreePointer(&g_GameInfo.end);
+    Memory_FreePointer(&g_GameInfo.current);
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
         Memory_FreePointer(&g_GameFlow.strings[i]);

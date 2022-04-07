@@ -153,7 +153,7 @@ void Shell_Main(void)
         return;
     }
 
-    Savegame_InitStartEndInfo();
+    Savegame_InitStartCurrentInfo();
     Savegame_ScanSavedGames();
     Settings_Read();
 
@@ -182,6 +182,11 @@ void Shell_Main(void)
                 g_GameInfo.current_save_slot = gf_param;
                 gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);
             }
+            break;
+        }
+
+        case GF_RESTART_GAME: {
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_RESTART);
             break;
         }
 

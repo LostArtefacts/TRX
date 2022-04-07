@@ -54,7 +54,7 @@ static void PickUp_GetItem(
     Inv_AddItem(item->object_number);
     item->status = IS_INVISIBLE;
     RemoveDrawnItem(item_num);
-    g_GameInfo.stats.pickup_count++;
+    g_GameInfo.current[g_CurrentLevel].stats.pickup_count++;
     g_Lara.interact_target.is_moving = false;
 }
 

@@ -79,6 +79,8 @@ static void Savegame_LoadPreprocess(void)
             AlterFloorHeight(item, WALL_L * 2);
         }
     }
+
+    Savegame_InitStartCurrentInfo();
 }
 
 static void Savegame_LoadPostProcess(void)
@@ -164,20 +166,11 @@ static void Savegame_LoadPostProcess(void)
     g_Lara.LOT.target_box = NO_BOX;
 }
 
-void Savegame_SetCurrentPosition(int level_num)
-{
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            g_GameInfo.start[g_CurrentLevel] = g_GameInfo.start[i];
-        }
-    }
-}
-
-void Savegame_InitStartEndInfo(void)
+void Savegame_InitStartCurrentInfo(void)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         Savegame_ResetStartInfo(i);
-        Savegame_ResetEndInfo(i);
+        Savegame_ResetCurrentInfo(i);
         Savegame_ApplyLogicToStartInfo(i);
         g_GameInfo.start[i].flags.available = 0;
     }
@@ -187,14 +180,14 @@ void Savegame_InitStartEndInfo(void)
 
 void Savegame_ResetStartInfo(int level_num)
 {
-    START_INFO *start = &g_GameInfo.start[level_num];
-    memset(start, 0, sizeof(START_INFO));
+    RESUME_INFO *start = &g_GameInfo.start[level_num];
+    memset(start, 0, sizeof(RESUME_INFO));
     Savegame_ApplyLogicToStartInfo(level_num);
 }
 
 void Savegame_ApplyLogicToStartInfo(int level_num)
 {
-    START_INFO *start = &g_GameInfo.start[level_num];
+    RESUME_INFO *start = &g_GameInfo.start[level_num];
 
     if (!g_Config.disable_healing_between_levels
         || level_num == g_GameFlow.gym_level_num
@@ -251,84 +244,73 @@ void Savegame_ApplyLogicToStartInfo(int level_num)
     }
 }
 
-void Savegame_PersistGameToStartInfo(int level_num)
+void Savegame_ResetCurrentInfo(int level_num)
 {
-    // Persist Lara's inventory to the start info.
+    RESUME_INFO *current = &g_GameInfo.current[level_num];
+    memset(current, 0, sizeof(RESUME_INFO));
+}
+
+void Savegame_CarryCurrentInfoToStartInfo(int32_t src_level, int32_t dst_level)
+{
+    memcpy(
+        &g_GameInfo.start[dst_level], &g_GameInfo.current[src_level],
+        sizeof(RESUME_INFO));
+}
+
+void Savegame_PersistGameToCurrentInfo(int level_num)
+{
+    // Persist Lara's inventory to the current info.
     // Used to carry over Lara's inventory between levels.
 
-    START_INFO *start = &g_GameInfo.start[level_num];
+    RESUME_INFO *current = &g_GameInfo.current[level_num];
 
-    if (g_LaraItem) {
-        start->lara_hitpoints = g_LaraItem->hit_points;
-    } else {
-        // Carry over variables from previous levels if the current level
-        // has no Lara object (such as the cutscene levels)
-        for (int l = level_num - 1; l >= 0; l--) {
-            START_INFO *prev_start = &g_GameInfo.start[l];
-            if (g_GameFlow.levels[l].level_type == GFL_NORMAL) {
-                start->lara_hitpoints = prev_start->lara_hitpoints;
-                break;
-            }
-        }
-    }
+    current->lara_hitpoints = g_LaraItem->hit_points;
+    current->flags.available = 1;
+    current->flags.costume = 0;
 
-    start->flags.available = 1;
-    start->flags.costume = 0;
-
-    start->pistol_ammo = 1000;
+    current->pistol_ammo = 1000;
     if (Inv_RequestItem(O_GUN_ITEM)) {
-        start->flags.got_pistols = 1;
+        current->flags.got_pistols = 1;
     } else {
-        start->flags.got_pistols = 0;
+        current->flags.got_pistols = 0;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        start->magnum_ammo = g_Lara.magnums.ammo;
-        start->flags.got_magnums = 1;
+        current->magnum_ammo = g_Lara.magnums.ammo;
+        current->flags.got_magnums = 1;
     } else {
-        start->magnum_ammo = Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
-        start->flags.got_magnums = 0;
+        current->magnum_ammo =
+            Inv_RequestItem(O_MAG_AMMO_ITEM) * MAGNUM_AMMO_QTY;
+        current->flags.got_magnums = 0;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        start->uzi_ammo = g_Lara.uzis.ammo;
-        start->flags.got_uzis = 1;
+        current->uzi_ammo = g_Lara.uzis.ammo;
+        current->flags.got_uzis = 1;
     } else {
-        start->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
-        start->flags.got_uzis = 0;
+        current->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
+        current->flags.got_uzis = 0;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        start->shotgun_ammo = g_Lara.shotgun.ammo;
-        start->flags.got_shotgun = 1;
+        current->shotgun_ammo = g_Lara.shotgun.ammo;
+        current->flags.got_shotgun = 1;
     } else {
-        start->shotgun_ammo =
+        current->shotgun_ammo =
             Inv_RequestItem(O_SG_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
-        start->flags.got_shotgun = 0;
+        current->flags.got_shotgun = 0;
     }
 
-    start->num_medis = Inv_RequestItem(O_MEDI_ITEM);
-    start->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
-    start->num_scions = Inv_RequestItem(O_SCION_ITEM);
+    current->num_medis = Inv_RequestItem(O_MEDI_ITEM);
+    current->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
+    current->num_scions = Inv_RequestItem(O_SCION_ITEM);
 
-    start->gun_type = g_Lara.gun_type;
+    current->gun_type = g_Lara.gun_type;
     if (g_Lara.gun_status == LGS_READY) {
-        start->gun_status = LGS_READY;
+        current->gun_status = LGS_READY;
     } else {
-        start->gun_status = LGS_ARMLESS;
+        current->gun_status = LGS_ARMLESS;
     }
-}
-
-void Savegame_ResetEndInfo(int level_num)
-{
-    END_INFO *end = &g_GameInfo.end[level_num];
-    memset(end, 0, sizeof(END_INFO));
-}
-
-void Savegame_PersistGameToEndInfo(int level_num)
-{
-    END_INFO *end = &g_GameInfo.end[level_num];
-    end->stats = g_GameInfo.stats;
 }
 
 int32_t Savegame_GetLevelNumber(int32_t slot_num)
@@ -372,12 +354,11 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
 
     File_CreateDirectory(SAVES_DIR);
 
-    Savegame_PersistGameToStartInfo(g_CurrentLevel);
-    Savegame_PersistGameToEndInfo(g_CurrentLevel);
+    Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
         if (g_GameFlow.levels[i].level_type == GFL_CURRENT) {
-            game_info->start[i] = game_info->start[g_CurrentLevel];
+            game_info->current[i] = game_info->current[g_CurrentLevel];
         }
     }
 

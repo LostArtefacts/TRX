@@ -263,7 +263,7 @@ void Stats_Show(int32_t level_num)
     char time_str[100];
     TEXTSTRING *txt;
 
-    const GAME_STATS *stats = &g_GameInfo.end[level_num].stats;
+    const GAME_STATS *stats = &g_GameInfo.current[level_num].stats;
 
     Text_RemoveAll();
 
@@ -378,27 +378,25 @@ void Stats_ShowTotal(const char *filename)
     uint32_t total_timer = 0;
     uint32_t total_death_count = 0;
     uint32_t total_kill_count = 0;
-    uint16_t total_secret_flags = 0;
+    uint16_t total_secret_count = 0;
     uint16_t total_pickup_count = 0;
     uint32_t total_max_kill_count = 0;
     uint16_t total_max_secret_count = 0;
     uint16_t total_max_pickup_count = 0;
 
-    int secret_count = 0;
     int16_t secret_flags = 0;
 
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        const GAME_STATS *stats = &g_GameInfo.end[i].stats;
+    for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
+         i++) {
+        const GAME_STATS *stats = &g_GameInfo.current[i].stats;
 
         total_timer += stats->timer;
         total_death_count += stats->death_count;
         total_kill_count += stats->kill_count;
-        total_secret_flags += stats->secret_flags;
-        secret_count = 0;
         secret_flags = stats->secret_flags;
         for (int j = 0; j < MAX_SECRETS; j++) {
             if (secret_flags & 1) {
-                secret_count++;
+                total_secret_count++;
             }
             secret_flags >>= 1;
         }
@@ -451,7 +449,7 @@ void Stats_ShowTotal(const char *filename)
 
     // secrets
     sprintf(
-        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
+        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], total_secret_count,
         total_max_secret_count);
     txt = Text_Create(0, y, buf);
     Text_CentreH(txt, 1);
