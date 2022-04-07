@@ -8,6 +8,7 @@
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
+#include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/music.h"
@@ -1173,13 +1174,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 while (Output_FadeIsAnimating()) {
                     Output_InitialisePolyList();
                     Output_CopyPictureToScreen();
+                    Input_Update();
                     Output_DumpScreen();
+                    if (g_InputDB.any) {
+                        break;
+                    }
                 }
 
-                Output_InitialisePolyList();
-                Output_CopyPictureToScreen();
-                Output_DumpScreen();
-                Shell_Wait(data->display_time);
+                if (!g_InputDB.any) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                    Shell_Wait(data->display_time);
+                }
 
                 // fade out
                 Output_FadeToBlack(true);
