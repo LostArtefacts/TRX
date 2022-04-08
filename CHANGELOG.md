@@ -2,6 +2,7 @@
 - added the option to pause sound in the inventory screen (#309)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
 - added the ability to skip pictures during fade animation (#510)
+- added a cheat to increase the game speed (#135)
 - fixed ghost margins during fade animation on HiDPI screens (#438)
 - fixed music rolling over to the main menu if main menu music disabled (#490)
 - fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)

@@ -5,6 +5,19 @@
 #include <stdio.h>
 #include <time.h>
 
+#define MAX_TURBO_SPEED_MUL 3
+
+static int16_t m_TurboSpeedMul = 1;
+
+void Clock_CycleTurboSpeed(void)
+{
+    if (m_TurboSpeedMul >= MAX_TURBO_SPEED_MUL) {
+        m_TurboSpeedMul = 1;
+    } else {
+        m_TurboSpeedMul++;
+    }
+}
+
 bool Clock_Init(void)
 {
     return S_Clock_Init();
@@ -22,7 +35,7 @@ int32_t Clock_Sync(void)
 
 int32_t Clock_SyncTicks(int32_t target)
 {
-    return S_Clock_SyncTicks(target);
+    return S_Clock_SyncTicks(target) * m_TurboSpeedMul;
 }
 
 void Clock_GetDateTime(char *date_time)

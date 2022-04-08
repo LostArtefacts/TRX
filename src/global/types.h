@@ -1075,6 +1075,7 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_FLY_CHEAT,
     GS_KEYMAP_ITEM_CHEAT,
     GS_KEYMAP_LEVEL_SKIP_CHEAT,
+    GS_KEYMAP_TURBO_CHEAT,
     GS_KEYMAP_PAUSE,
     GS_KEYMAP_CAMERA_UP,
     GS_KEYMAP_CAMERA_DOWN,
@@ -1935,6 +1936,7 @@ typedef union INPUT_STATE {
         uint32_t fly_cheat : 1;
         uint32_t item_cheat : 1;
         uint32_t level_skip_cheat : 1;
+        uint32_t turbo_cheat : 1;
         uint32_t health_cheat : 1;
         uint32_t camera_up : 1;
         uint32_t camera_down : 1;
@@ -1961,13 +1963,14 @@ typedef enum INPUT_KEY {
     INPUT_KEY_FLY_CHEAT = 13,
     INPUT_KEY_ITEM_CHEAT = 14,
     INPUT_KEY_LEVEL_SKIP_CHEAT = 15,
-    INPUT_KEY_PAUSE = 16,
-    INPUT_KEY_CAMERA_UP = 17,
-    INPUT_KEY_CAMERA_DOWN = 18,
-    INPUT_KEY_CAMERA_LEFT = 19,
-    INPUT_KEY_CAMERA_RIGHT = 20,
-    INPUT_KEY_CAMERA_RESET = 21,
-    INPUT_KEY_NUMBER_OF = 22,
+    INPUT_KEY_TURBO_CHEAT = 16,
+    INPUT_KEY_PAUSE = 17,
+    INPUT_KEY_CAMERA_UP = 18,
+    INPUT_KEY_CAMERA_DOWN = 19,
+    INPUT_KEY_CAMERA_LEFT = 20,
+    INPUT_KEY_CAMERA_RIGHT = 21,
+    INPUT_KEY_CAMERA_RESET = 22,
+    INPUT_KEY_NUMBER_OF = 23,
 } INPUT_KEY;
 
 typedef enum INPUT_LAYOUT {

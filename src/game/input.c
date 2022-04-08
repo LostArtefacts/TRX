@@ -1,6 +1,7 @@
 #include "game/input.h"
 
 #include "specific/s_input.h"
+#include "src/game/clock.h"
 
 #define DELAY_FRAMES 12
 #define HOLD_FRAMES 3
@@ -47,4 +48,8 @@ void Input_Update(void)
 {
     g_Input = S_Input_GetCurrentState();
     g_InputDB = Input_GetDebounced(g_Input);
+
+    if (g_InputDB.turbo_cheat) {
+        Clock_CycleTurboSpeed();
+    }
 }
