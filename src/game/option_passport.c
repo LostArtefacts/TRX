@@ -13,20 +13,6 @@
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20
 
-typedef enum PASSPORT_PAGE {
-    PASSPORT_PAGE_FLIPPING = -1,
-    PASSPORT_PAGE_1 = 0,
-    PASSPORT_PAGE_2 = 1,
-    PASSPORT_PAGE_3 = 2,
-    PASSPORT_PAGE_COUNT = 3,
-} PASSPORT_PAGE;
-
-typedef enum PASSPORT_MODE {
-    PASSPORT_MODE_FLIP = 0,
-    PASSPORT_MODE_SHOW_SAVES = 1,
-    PASSPORT_MODE_NEW_GAME = 2,
-} PASSPORT_MODE;
-
 typedef enum PASSPORT_TEXT {
     TEXT_PAGE_NAME = 0,
     TEXT_LEFT_ARROW = 1,
@@ -121,7 +107,7 @@ static void Option_PassportShowNewGame(void)
     int32_t select = DisplayRequester(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[1] = select - 1;
+            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -140,7 +126,7 @@ static void Option_PassportShowSaves(void)
     int32_t select = DisplayRequester(&g_LoadSavegameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[1] = select - 1;
+            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
         } else {
             if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
                 && g_InvMode != INV_LOAD_MODE) {
@@ -297,7 +283,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
-                        g_InvExtraData[1] = g_GameInfo.bonus_flag;
+                        g_InvExtraData[IED_SAVEGAME_NUM] =
+                            g_GameInfo.bonus_flag;
                     }
                 } else if (
                     g_InvMode == INV_SAVE_MODE || g_InvMode == INV_GAME_MODE) {
@@ -384,7 +371,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.select) {
-        g_InvExtraData[0] = page;
+        g_InvExtraData[IED_PAGE_NUM] = page;
         if (page == PASSPORT_PAGE_2) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;

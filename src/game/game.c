@@ -74,9 +74,9 @@ int32_t StopGame(void)
         return GF_EXIT_TO_TITLE;
     }
 
-    if (g_InvExtraData[0] == 0) {
-        return GF_START_SAVED_GAME | g_InvExtraData[1];
-    } else if (g_InvExtraData[0] == 1) {
+    if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
+        return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+    } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel
                                            : g_GameFlow.first_level_num);
@@ -115,7 +115,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                Savegame_Save(g_InvExtraData[1], &g_GameInfo);
+                Savegame_Save(g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;

@@ -977,6 +977,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_GYM = 5,
     GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
     GFL_RESTART = 7,
+    GFL_SELECT = 8,
 } GAMEFLOW_LEVEL_TYPE;
 
 typedef enum GAMEFLOW_OPTION {
@@ -1161,6 +1162,26 @@ typedef enum GAME_BONUS_FLAG {
     GBF_NGPLUS = 1 << 0,
     GBF_JAPANESE = 1 << 1,
 } GAME_BONUS_FLAG;
+
+typedef enum PASSPORT_PAGE {
+    PASSPORT_PAGE_FLIPPING = -1,
+    PASSPORT_PAGE_1 = 0,
+    PASSPORT_PAGE_2 = 1,
+    PASSPORT_PAGE_3 = 2,
+    PASSPORT_PAGE_COUNT = 3,
+} PASSPORT_PAGE;
+
+typedef enum PASSPORT_MODE {
+    PASSPORT_MODE_FLIP = 0,
+    PASSPORT_MODE_SHOW_SAVES = 1,
+    PASSPORT_MODE_NEW_GAME = 2,
+} PASSPORT_MODE;
+
+typedef enum INVENTORY_EXTRA_DATA {
+    IED_PAGE_NUM = 0,
+    IED_SAVEGAME_NUM = 1,
+    IED_PASSPORT_MODE = 2,
+} INVENTORY_EXTRA_DATA;
 
 #pragma pack(push, 1)
 
