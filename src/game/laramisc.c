@@ -66,10 +66,6 @@ void LaraControl(int16_t item_num)
         LaraCheatGetStuff();
     }
 
-    if (g_InputDB.turbo_cheat) {
-        Clock_CycleTurboSpeed();
-    }
-
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
         if (g_Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
