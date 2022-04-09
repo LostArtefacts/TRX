@@ -681,9 +681,19 @@ int32_t Display_Inventory(int inv_mode)
     switch (g_InvChosen) {
     case O_PASSPORT_OPTION:
         if (g_InvMode == INV_TITLE_MODE) {
-            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
+            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SHOW_SAVES) {
                 // page 1: load game
                 return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+            } else if (
+                g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SELECT_LEVEL) {
+                // page 1: select level
+                // TODO Placeholder for select level. Do new game.
+                Savegame_InitStartCurrentInfo();
+                return GF_START_GAME | g_InvExtraData[IED_LEVEL_NUM];
             } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
                 // page 2: new game
                 switch (g_InvExtraData[IED_SAVEGAME_NUM]) {
@@ -707,9 +717,19 @@ int32_t Display_Inventory(int inv_mode)
                 return GF_EXIT_GAME;
             }
         } else if (g_InvMode == INV_DEATH_MODE) {
-            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
+            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SHOW_SAVES) {
                 // page 1: load game
                 return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+            } else if (
+                g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SELECT_LEVEL) {
+                // page 1: select level
+                // TODO Placeholder for select level. Do new game.
+                Savegame_InitStartCurrentInfo();
+                return GF_START_GAME | g_InvExtraData[IED_LEVEL_NUM];
             } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
                 // page 2: restart level
                 return GF_RESTART_GAME | g_CurrentLevel;
@@ -718,9 +738,19 @@ int32_t Display_Inventory(int inv_mode)
                 return GF_EXIT_TO_TITLE;
             }
         } else {
-            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
+            if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SHOW_SAVES) {
                 // page 1: load game
                 return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+            } else if (
+                g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+                && g_InvExtraData[IED_PASSPORT_MODE]
+                    == PASSPORT_MODE_SELECT_LEVEL) {
+                // page 1: select level
+                // TODO Placeholder for select level. Do new game.
+                Savegame_InitStartCurrentInfo();
+                return GF_START_GAME | g_InvExtraData[IED_LEVEL_NUM];
             } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
                 // page 1: save game, or new game in gym
                 if (g_CurrentLevel == g_GameFlow.gym_level_num) {
