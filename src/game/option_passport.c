@@ -148,8 +148,8 @@ static void Option_PassportInitLevelStrings(void)
 
 static void Option_PassportFreeLevelStrings(void)
 {
-    Memory_FreePointer(m_SelectLevelStrings);
-    Memory_FreePointer(m_SelectLevelData);
+    Memory_FreePointer(&m_SelectLevelStrings);
+    Memory_FreePointer(&m_SelectLevelData);
 }
 
 static void Option_PassportShowNewGame(void)
@@ -238,26 +238,15 @@ static void Option_PassportInitSelectLevelRequester(void)
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
     int32_t height = Screen_GetResHeight();
-    if (height <= 200) {
-        req->y = -32;
-        req->vis_lines = 5;
-    } else if (height <= 384) {
-        req->y = -62;
-        req->vis_lines = 8;
-    } else if (height <= 480) {
+    if (height <= 480) {
         req->y = -90;
         req->vis_lines = 10;
     } else {
         req->y = -100;
         req->vis_lines = 12;
     }
-    if (Screen_GetResHeightDownscaled() <= 240) {
-        req->y = -30;
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled() <= 384) {
-        req->y = -30;
-        req->vis_lines = 8;
-    } else if (Screen_GetResHeightDownscaled() <= 480) {
+
+    if (Screen_GetResHeightDownscaled() <= 480) {
         req->y = -80;
         req->vis_lines = 10;
     } else {
@@ -274,18 +263,12 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
     InitRequester(req);
     SetRequesterHeading(
         req,
-        page_num == PASSPORT_PAGE_1
-            ? g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]
-            : g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
+        g_GameFlow.strings
+            [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
+                                         : GS_PASSPORT_SAVE_GAME]);
 
     int32_t height = Screen_GetResHeight();
-    if (height <= 200) {
-        req->y = -32;
-        req->vis_lines = 5;
-    } else if (height <= 384) {
-        req->y = -62;
-        req->vis_lines = 8;
-    } else if (height <= 480) {
+    if (height <= 480) {
         req->y = -90;
         req->vis_lines = 10;
     } else {
@@ -293,13 +276,7 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
         req->vis_lines = 12;
     }
 
-    if (Screen_GetResHeightDownscaled() <= 240) {
-        req->y = -30;
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled() <= 384) {
-        req->y = -30;
-        req->vis_lines = 8;
-    } else if (Screen_GetResHeightDownscaled() <= 480) {
+    if (Screen_GetResHeightDownscaled() <= 480) {
         req->y = -80;
         req->vis_lines = 10;
     } else {
