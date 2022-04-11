@@ -76,6 +76,12 @@ int32_t StopGame(void)
 
     if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
         return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+    } else if (
+        g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+        && g_InvExtraData[IED_PASSPORT_MODE] == PASSPORT_MODE_SELECT_LEVEL) {
+        // TODO Placeholder for select level. Do new game.
+        Savegame_InitStartCurrentInfo();
+        return GF_START_GAME | g_InvExtraData[IED_LEVEL_NUM];
     } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel

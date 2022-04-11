@@ -395,7 +395,7 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        REQUEST_INFO *req = &g_LoadSavegameRequester;
+        REQUEST_INFO *req = &g_SavegameRequester;
         req->item_flags[slot_num] &= ~RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->item_text_len * slot_num], "%s %d",
@@ -494,7 +494,7 @@ void Savegame_ScanSavedGames(void)
         }
     }
 
-    REQUEST_INFO *req = &g_LoadSavegameRequester;
+    REQUEST_INFO *req = &g_SavegameRequester;
 
     req->items = 0;
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
@@ -527,4 +527,30 @@ void Savegame_ScanSavedGames(void)
     }
 
     g_SaveCounter++;
+}
+
+void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
+{
+    SAVEGAME_INFO *savegame_info =
+        &m_SavegameInfo[g_InvExtraData[IED_SAVEGAME_NUM]];
+    req->items = 0;
+
+    for (int i = 1; i <= g_GameFlow.last_level_num; i++) {
+        RESUME_INFO *start = &g_GameInfo.start[i];
+
+        if (i <= savegame_info->level_num) {
+            req->item_flags[req->items] &= ~RIF_BLOCKED;
+            sprintf(
+                &req->item_texts[req->items * req->item_text_len], "%s",
+                g_GameFlow.levels[i].level_title);
+        } else {
+            req->item_flags[req->items] |= RIF_BLOCKED;
+            sprintf(
+                &req->item_texts[req->items * req->item_text_len],
+                g_GameFlow.strings[GS_PASSPORT_LOCKED_LEVEL]);
+        }
+        req->items++;
+    }
+    req->requested = 0;
+    req->line_offset = 0;
 }
