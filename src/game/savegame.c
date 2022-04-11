@@ -62,7 +62,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
 };
 
 static void Savegame_LoadPreprocess(void);
-static void Savegame_LoadPostrocess(void);
+static void Savegame_LoadPostprocess(void);
 
 static void Savegame_LoadPreprocess(void)
 {
@@ -71,7 +71,7 @@ static void Savegame_LoadPreprocess(void)
     Savegame_InitStartCurrentInfo();
 }
 
-static void Savegame_LoadPostProcess(void)
+static void Savegame_LoadPostprocess(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -344,7 +344,7 @@ bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        Savegame_LoadPostProcess();
+        Savegame_LoadPostprocess();
     }
 
     return ret;

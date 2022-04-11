@@ -32,7 +32,7 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
         // Use current info for saved games.
         return &g_GameInfo.current[level_num];
     }
-    // Use start info for restart / level select.
+    // Use start info for restart / level select. GFL_RESTART
     return &g_GameInfo.start[level_num];
 }
 

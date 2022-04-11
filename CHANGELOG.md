@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
 - added the option to pause sound in the inventory screen (#309)
+- added level selection to the load game menu (#197)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
 - added the ability to skip pictures during fade animation (#510)
 - added a cheat to increase the game speed (#135)
