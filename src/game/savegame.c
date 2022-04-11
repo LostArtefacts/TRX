@@ -30,6 +30,7 @@ typedef struct SAVEGAME_STRATEGY {
     char *(*get_save_filename)(int32_t slot_num);
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
+    bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
     void (*save_to_file)(MYFILE *fp, GAME_INFO *game_info);
     bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
@@ -45,6 +46,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .get_save_filename = Savegame_BSON_GetSaveFileName,
         .fill_info = Savegame_BSON_FillInfo,
         .load_from_file = Savegame_BSON_LoadFromFile,
+        .load_only_resume_info = Savegame_BSON_LoadOnlyResumeInfo,
         .save_to_file = Savegame_BSON_SaveToFile,
         .update_death_counters = Savegame_BSON_UpdateDeathCounters,
     },
@@ -55,6 +57,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .get_save_filename = Savegame_Legacy_GetSaveFileName,
         .fill_info = Savegame_Legacy_FillInfo,
         .load_from_file = Savegame_Legacy_LoadFromFile,
+        .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
         .save_to_file = Savegame_Legacy_SaveToFile,
         .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
     },
@@ -428,6 +431,29 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
         }
         strategy++;
     }
+    return ret;
+}
+
+bool Savegame_LoadResumeInfo(int32_t slot_num, GAME_INFO *game_info)
+{
+    assert(game_info);
+    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
+    assert(savegame_info->format);
+
+    bool ret = false;
+    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
+    while (strategy->format) {
+        if (savegame_info->format == strategy->format) {
+            MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
+            if (fp) {
+                ret = strategy->load_only_resume_info(fp, game_info);
+                File_Close(fp);
+            }
+            break;
+        }
+        strategy++;
+    }
+
     return ret;
 }
 

@@ -1094,6 +1094,46 @@ cleanup:
     return ret;
 }
 
+bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+{
+    assert(game_info);
+
+    bool ret = false;
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_object_s *root_obj = json_value_as_object(root);
+    if (!root_obj) {
+        LOG_ERROR("Malformed save: cannot parse BSON data");
+        goto cleanup;
+    }
+
+    if (!Savegame_BSON_LoadResumeInfo(
+            json_object_get_array(root_obj, "start_info"), game_info->start)) {
+        goto cleanup;
+    }
+
+    if (!Savegame_BSON_LoadResumeInfo(
+            json_object_get_array(root_obj, "current_info"),
+            game_info->current)) {
+        LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
+                    "save is legacy.");
+        // Check for 2.6 and 2.7 legacy start and end info.
+        if (!Savegame_BSON_LoadDiscontinuedStartInfo(
+                json_object_get_array(root_obj, "start_info"), game_info)) {
+            goto cleanup;
+        }
+        if (!Savegame_BSON_LoadDiscontinuedEndInfo(
+                json_object_get_array(root_obj, "end_info"), game_info)) {
+            goto cleanup;
+        }
+    }
+
+    ret = true;
+
+cleanup:
+    json_value_free(root);
+    return ret;
+}
+
 void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);

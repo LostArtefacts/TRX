@@ -578,6 +578,71 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     return true;
 }
 
+bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+{
+    assert(game_info);
+
+    int8_t tmp8;
+    int16_t tmp16;
+    int32_t tmp32;
+
+    char *buffer = Memory_Alloc(File_Size(fp));
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_Read(buffer, sizeof(char), File_Size(fp), fp);
+
+    bool skip_reading_bacon_lara = Savegame_Legacy_NeedsBaconLaraFix(buffer);
+    if (skip_reading_bacon_lara) {
+        LOG_INFO("Enabling Bacon Lara savegame fix");
+    }
+
+    Savegame_Legacy_Reset(buffer);
+    Savegame_Legacy_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
+    Savegame_Legacy_Skip(sizeof(int32_t)); // save counter
+
+    assert(game_info->current);
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        RESUME_INFO *current = &game_info->current[i];
+        Savegame_Legacy_Read(&current->pistol_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->magnum_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->uzi_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->shotgun_ammo, sizeof(uint16_t));
+        Savegame_Legacy_Read(&current->num_medis, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->num_big_medis, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->num_scions, sizeof(uint8_t));
+        Savegame_Legacy_Read(&current->gun_status, sizeof(int8_t));
+        Savegame_Legacy_Read(&current->gun_type, sizeof(int8_t));
+        uint16_t flags;
+        Savegame_Legacy_Read(&flags, sizeof(uint16_t));
+        current->flags.available = flags & 1 ? 1 : 0;
+        current->flags.got_pistols = flags & 2 ? 1 : 0;
+        current->flags.got_magnums = flags & 4 ? 1 : 0;
+        current->flags.got_uzis = flags & 8 ? 1 : 0;
+        current->flags.got_shotgun = flags & 16 ? 1 : 0;
+        current->flags.costume = flags & 32 ? 1 : 0;
+        // Start and current are the same for legacy saves.
+        memcpy(&game_info->start[i], current, sizeof(RESUME_INFO));
+        // Max Lara's starting HP for legacy saves instead of using current HP.
+        game_info->start[i].lara_hitpoints = LARA_HITPOINTS;
+    }
+
+    uint32_t temp_timer = 0;
+    uint32_t temp_kill_count = 0;
+    uint16_t temp_secret_flags = 0;
+    Savegame_Legacy_Read(&temp_timer, sizeof(uint32_t));
+    Savegame_Legacy_Read(&temp_kill_count, sizeof(uint32_t));
+    Savegame_Legacy_Read(&temp_secret_flags, sizeof(uint16_t));
+    Savegame_Legacy_Read(&g_CurrentLevel, sizeof(uint16_t));
+    game_info->current[g_CurrentLevel].stats.timer = temp_timer;
+    game_info->current[g_CurrentLevel].stats.kill_count = temp_kill_count;
+    game_info->current[g_CurrentLevel].stats.secret_flags = temp_secret_flags;
+    Savegame_Legacy_Read(
+        &game_info->current[g_CurrentLevel].stats.pickup_count,
+        sizeof(uint8_t));
+
+    Memory_FreePointer(&buffer);
+    return true;
+}
+
 void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
