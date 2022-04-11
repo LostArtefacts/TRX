@@ -434,7 +434,7 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-bool Savegame_LoadResumeInfo(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
 {
     assert(game_info);
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];

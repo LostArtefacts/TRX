@@ -32,7 +32,7 @@ int32_t Savegame_GetLevelNumber(int32_t slot_num);
 bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info);
 bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info);
 bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info);
-bool Savegame_LoadResumeInfo(int32_t slot_num, GAME_INFO *game_info);
+bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info);
 
 void Savegame_ScanSavedGames(void);
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req);

@@ -34,7 +34,8 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_SELECT) {
-        Savegame_LoadResumeInfo(g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+        Savegame_LoadOnlyResumeInfo(
+            g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
         InitialiseLevelFlags();
     }
 
