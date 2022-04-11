@@ -282,7 +282,7 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
         req->vis_lines = 12;
     }
 
-    Savegame_ScanAvailableLevels(req);
+    Savegame_ScanSavedGames();
 }
 
 static void Option_PassportLoadGame(void)
