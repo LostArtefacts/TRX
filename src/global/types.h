@@ -992,6 +992,7 @@ typedef enum GAMEFLOW_OPTION {
     GF_EXIT_GAME = 6 << 6,
     GF_START_SAVED_GAME = 7 << 6,
     GF_RESTART_GAME = 8 << 6,
+    GF_SELECT_GAME = 9 << 6,
 } GAMEFLOW_OPTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {

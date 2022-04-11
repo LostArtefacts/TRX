@@ -190,6 +190,11 @@ void Shell_Main(void)
             break;
         }
 
+        case GF_SELECT_GAME: {
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
+            break;
+        }
+
         case GF_START_CINE:
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
             break;
