@@ -90,7 +90,7 @@ void GetRoomBounds(int16_t room_num)
         }
     }
     phd_PopMatrix();
-    m_RoomNumStackIdx[m_StackIdx--] = 0;
+    m_StackIdx--;
 }
 
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
