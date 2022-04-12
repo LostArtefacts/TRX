@@ -1,6 +1,8 @@
 #include "3dsystem/matrix.h"
 
 #include "3dsystem/phd_math.h"
+#include "game/draw.h"
+#include "game/shell.h"
 #include "global/vars.h"
 
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
@@ -45,12 +47,19 @@ void phd_GenerateW2V(PHD_3DPOS *viewpos)
 
 void phd_PushMatrix(void)
 {
+    if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
+        Draw_PrintRoomNumStack();
+        Shell_ExitSystem("Push matrix stack overflow.");
+    }
     g_PhdMatrixPtr++;
     g_PhdMatrixPtr[0] = g_PhdMatrixPtr[-1];
 }
 
 void phd_PushUnitMatrix(void)
 {
+    if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
+        Shell_ExitSystem("Push unit matrix stack overflow.");
+    }
     PHD_MATRIX *mptr = ++g_PhdMatrixPtr;
     mptr->_00 = W2V_SCALE;
     mptr->_01 = 0;

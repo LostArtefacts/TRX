@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 
+void Draw_PrintRoomNumStack();
 void DrawRooms(int16_t current_room);
 void GetRoomBounds(int16_t room_num);
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent);
