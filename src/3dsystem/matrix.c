@@ -49,7 +49,7 @@ void phd_PushMatrix(void)
 {
     if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         Draw_PrintRoomNumStack();
-        Shell_ExitSystem("Push matrix stack overflow.");
+        Shell_ExitSystem("Matrix stack overflow.");
     }
     g_PhdMatrixPtr++;
     g_PhdMatrixPtr[0] = g_PhdMatrixPtr[-1];
@@ -59,7 +59,7 @@ void phd_PushUnitMatrix(void)
 {
     if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         Draw_PrintRoomNumStack();
-        Shell_ExitSystem("Push unit matrix stack overflow.");
+        Shell_ExitSystem("Matrix stack overflow.");
     }
     PHD_MATRIX *mptr = ++g_PhdMatrixPtr;
     mptr->_00 = W2V_SCALE;
