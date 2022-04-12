@@ -20,7 +20,7 @@ static bool m_CameraUnderwater = false;
 static int32_t m_RoomNumStack[MAX_MATRICES + 1] = { 0 };
 static int32_t m_StackIdx = 0;
 
-void Draw_PrintRoomNumStack()
+void Draw_PrintRoomNumStack(void)
 {
     for (int i = 0; i < m_StackIdx; i++) {
         LOG_ERROR("Room Number %d", m_RoomNumStack[i]);
