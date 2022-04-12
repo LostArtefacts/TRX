@@ -17,13 +17,13 @@
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
 static bool m_CameraUnderwater = false;
-static int32_t m_RoomNumStack[MAX_MATRICES + 1] = { 0 };
+static int32_t m_RoomNumStackIdx[MAX_MATRICES + 1] = { 0 };
 static int32_t m_StackIdx = 0;
 
 void Draw_PrintRoomNumStack(void)
 {
     for (int i = 0; i < m_StackIdx; i++) {
-        LOG_ERROR("Room Number %d", m_RoomNumStack[i]);
+        LOG_ERROR("Room Number %d", m_RoomNumStackIdx[i]);
     }
 }
 
@@ -79,7 +79,7 @@ void GetRoomBounds(int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
     phd_PushMatrix();
-    m_RoomNumStack[m_StackIdx++] = room_num;
+    m_RoomNumStackIdx[m_StackIdx++] = room_num;
     phd_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
@@ -90,7 +90,7 @@ void GetRoomBounds(int16_t room_num)
         }
     }
     phd_PopMatrix();
-    m_RoomNumStack[m_StackIdx--] = 0;
+    m_RoomNumStackIdx[m_StackIdx--] = 0;
 }
 
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
