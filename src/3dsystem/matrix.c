@@ -58,6 +58,7 @@ void phd_PushMatrix(void)
 void phd_PushUnitMatrix(void)
 {
     if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
+        Draw_PrintRoomNumStack();
         Shell_ExitSystem("Push unit matrix stack overflow.");
     }
     PHD_MATRIX *mptr = ++g_PhdMatrixPtr;
