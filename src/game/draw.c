@@ -17,7 +17,7 @@
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
 static bool m_CameraUnderwater = false;
-static int32_t m_RoomNumStackIdx[MAX_MATRICES + 1] = { 0 };
+static int32_t m_RoomNumStackIdx[MAX_ROOMS_TO_DRAW] = { 0 };
 static int32_t m_StackIdx = 0;
 
 void Draw_PrintRoomNumStack(void)
