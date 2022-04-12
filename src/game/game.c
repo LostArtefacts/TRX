@@ -25,10 +25,10 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
-    if (level_type == GFL_SAVED) {
-        // reset start info to the defaults so that we do not do
+    if (level_type == GFL_SAVED || level_type == GFL_SELECT) {
+        // reset start and current info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
-        Savegame_ResetStartInfo(level_num);
+        Savegame_InitStartCurrentInfo();
     } else {
         InitialiseLevelFlags();
     }
@@ -36,6 +36,12 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     if (level_type == GFL_SELECT) {
         Savegame_LoadOnlyResumeInfo(
             g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+        // Clear info for levels passed the current level.
+        for (int i = level_num + 1; i < g_GameFlow.level_count; i++) {
+            Savegame_ResetStartInfo(i);
+            Savegame_ResetCurrentInfo(i);
+        }
+        Savegame_ResetCurrentInfo(level_num);
         InitialiseLevelFlags();
     }
 
