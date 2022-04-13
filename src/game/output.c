@@ -823,7 +823,7 @@ void Output_SetupAboveWater(bool underwater)
 
 void Output_AnimateTextures(int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + ticks) % WIBBLE_SIZE;
+    g_WibbleOffset = (g_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
 
     static int32_t tick_comp = 0;
     tick_comp += ticks;
