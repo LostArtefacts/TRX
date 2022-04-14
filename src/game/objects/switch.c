@@ -86,7 +86,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (lara_item->current_anim_state != AS_STOP) {
+    if (lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -96,17 +96,17 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     lara_item->pos.y_rot = item->pos.y_rot;
     if (item->current_anim_state == SWITCH_STATE_ON) {
-        Lara_AnimateUntil(lara_item, AS_SWITCHON);
-        lara_item->goal_anim_state = AS_STOP;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
+        lara_item->goal_anim_state = LS_STOP;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_OFF;
         AddActiveItem(item_num);
         AnimateItem(item);
     } else if (item->current_anim_state == SWITCH_STATE_OFF) {
-        Lara_AnimateUntil(lara_item, AS_SWITCHOFF);
-        lara_item->goal_anim_state = AS_STOP;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
+        lara_item->goal_anim_state = LS_STOP;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_ON;
         AddActiveItem(item_num);
@@ -121,7 +121,7 @@ void Switch_CollisionControlled(
 
     if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
          && !lara_item->gravity_status
-         && lara_item->current_anim_state == AS_STOP
+         && lara_item->current_anim_state == LS_STOP
          && item->status == IS_NOT_ACTIVE)
         || (g_Lara.interact_target.is_moving
             && g_Lara.interact_target.item_num == item_num)) {
@@ -137,12 +137,12 @@ void Switch_CollisionControlled(
         if (TestLaraPosition(m_Switch_BoundsControlled, item, lara_item)) {
             if (MoveLaraPosition(&move_vector, item, lara_item)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
-                    lara_item->anim_number = AA_WALLSWITCH_DOWN;
-                    lara_item->current_anim_state = AS_SWITCHOFF;
+                    lara_item->anim_number = LA_WALL_SWITCH_DOWN;
+                    lara_item->current_anim_state = LS_SWITCH_OFF;
                     item->goal_anim_state = SWITCH_STATE_OFF;
                 } else {
-                    lara_item->anim_number = AA_WALLSWITCH_UP;
-                    lara_item->current_anim_state = AS_SWITCHON;
+                    lara_item->anim_number = LA_WALL_SWITCH_UP;
+                    lara_item->current_anim_state = LS_SWITCH_ON;
                     item->goal_anim_state = SWITCH_STATE_ON;
                 }
                 g_Lara.head_x_rot = 0;
@@ -152,7 +152,7 @@ void Switch_CollisionControlled(
                 lara_item->frame_number =
                     g_Anims[lara_item->anim_number].frame_base;
                 g_Lara.interact_target.is_moving = false;
-                g_Lara.gun_status = LGS_HANDSBUSY;
+                g_Lara.gun_status = LGS_HANDS_BUSY;
                 AddActiveItem(item_num);
                 item->status = IS_ACTIVE;
                 AnimateItem(item);
@@ -166,8 +166,8 @@ void Switch_CollisionControlled(
             g_Lara.gun_status = LGS_ARMLESS;
         }
     } else if (
-        lara_item->current_anim_state != AS_SWITCHON
-        && lara_item->current_anim_state != AS_SWITCHOFF) {
+        lara_item->current_anim_state != LS_SWITCH_ON
+        && lara_item->current_anim_state != LS_SWITCH_OFF) {
         ObjectCollision(item_num, lara_item, coll);
     }
 }
@@ -181,7 +181,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (lara_item->current_anim_state != AS_TREAD) {
+    if (lara_item->current_anim_state != LS_TREAD) {
         return;
     }
 
@@ -196,9 +196,9 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             return;
         }
         lara_item->fall_speed = 0;
-        Lara_AnimateUntil(lara_item, AS_SWITCHON);
-        lara_item->goal_anim_state = AS_TREAD;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        Lara_AnimateUntil(lara_item, LS_SWITCH_ON);
+        lara_item->goal_anim_state = LS_TREAD;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         if (item->current_anim_state == SWITCH_STATE_ON) {
             item->goal_anim_state = SWITCH_STATE_OFF;

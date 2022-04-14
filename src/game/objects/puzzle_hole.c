@@ -41,7 +41,7 @@ void PuzzleHole_Collision(
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (lara_item->current_anim_state == AS_USEPUZZLE) {
+    if (lara_item->current_anim_state == LS_USE_PUZZLE) {
         if (!TestLaraPosition(g_PuzzleHoleBounds, item, lara_item)) {
             return;
         }
@@ -70,7 +70,7 @@ void PuzzleHole_Collision(
         }
 
         return;
-    } else if (lara_item->current_anim_state != AS_STOP) {
+    } else if (lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -145,9 +145,9 @@ void PuzzleHole_Collision(
     g_InvChosen = -1;
     if (correct) {
         AlignLaraPosition(&g_PuzzleHolePosition, item, lara_item);
-        Lara_AnimateUntil(lara_item, AS_USEPUZZLE);
-        lara_item->goal_anim_state = AS_STOP;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
+        lara_item->goal_anim_state = LS_STOP;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         g_PickUpX = lara_item->pos.x;
         g_PickUpY = lara_item->pos.y;

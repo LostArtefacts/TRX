@@ -201,8 +201,8 @@ void Torso_Control(int16_t item_num)
                 g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
                 g_LaraItem->frame_number =
                     g_Anims[g_LaraItem->anim_number].frame_base;
-                g_LaraItem->current_anim_state = AS_SPECIAL;
-                g_LaraItem->goal_anim_state = AS_SPECIAL;
+                g_LaraItem->current_anim_state = LS_SPECIAL;
+                g_LaraItem->goal_anim_state = LS_SPECIAL;
                 g_LaraItem->room_number = item->room_number;
                 g_LaraItem->pos.x = item->pos.x;
                 g_LaraItem->pos.y = item->pos.y;
@@ -213,7 +213,7 @@ void Torso_Control(int16_t item_num)
                 g_LaraItem->gravity_status = 0;
                 g_LaraItem->hit_points = -1;
                 g_Lara.air = -1;
-                g_Lara.gun_status = LGS_HANDSBUSY;
+                g_Lara.gun_status = LGS_HANDS_BUSY;
                 g_Lara.gun_type = LGT_UNARMED;
 
                 g_Camera.target_distance = WALL_L * 2;

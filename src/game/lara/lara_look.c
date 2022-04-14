@@ -19,7 +19,7 @@ void Lara_LookLeftRight(void)
             g_Lara.head_y_rot += HEAD_TURN / 2;
         }
     }
-    if (g_Lara.gun_status != LGS_HANDSBUSY) {
+    if (g_Lara.gun_status != LGS_HANDS_BUSY) {
         g_Lara.torso_y_rot = g_Lara.head_y_rot;
     }
 }
@@ -38,7 +38,7 @@ void Lara_LookUpDown(void)
             g_Lara.head_x_rot += HEAD_TURN / 2;
         }
     }
-    if (g_Lara.gun_status != LGS_HANDSBUSY) {
+    if (g_Lara.gun_status != LGS_HANDS_BUSY) {
         g_Lara.torso_x_rot = g_Lara.head_x_rot;
     }
 }

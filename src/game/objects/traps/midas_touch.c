@@ -32,19 +32,19 @@ void MidasTouch_Collision(
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (!lara_item->gravity_status && lara_item->current_anim_state == AS_STOP
+    if (!lara_item->gravity_status && lara_item->current_anim_state == LS_STOP
         && lara_item->pos.x > item->pos.x - 512
         && lara_item->pos.x < item->pos.x + 512
         && lara_item->pos.z > item->pos.z - 512
         && lara_item->pos.z < item->pos.z + 512) {
-        lara_item->current_anim_state = AS_DIEMIDAS;
-        lara_item->goal_anim_state = AS_DIEMIDAS;
+        lara_item->current_anim_state = LS_DIE_MIDAS;
+        lara_item->goal_anim_state = LS_DIE_MIDAS;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index + 1;
         lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
         lara_item->hit_points = -1;
         lara_item->gravity_status = 0;
         g_Lara.air = -1;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.gun_type = LGT_UNARMED;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
@@ -54,7 +54,7 @@ void MidasTouch_Collision(
 
     if ((g_InvChosen == -1 && !g_Input.action)
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status
-        || lara_item->current_anim_state != AS_STOP) {
+        || lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -85,10 +85,10 @@ void MidasTouch_Collision(
     if (g_InvChosen == O_LEADBAR_OPTION) {
         Inv_RemoveItem(O_LEADBAR_OPTION);
         Inv_AddItem(O_PUZZLE_ITEM1);
-        lara_item->current_anim_state = AS_USEMIDAS;
-        lara_item->goal_anim_state = AS_USEMIDAS;
+        lara_item->current_anim_state = LS_USE_MIDAS;
+        lara_item->goal_anim_state = LS_USE_MIDAS;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
         lara_item->frame_number = g_Anims[item->anim_number].frame_base;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
     }
 }

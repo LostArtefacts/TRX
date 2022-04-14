@@ -178,15 +178,15 @@ void TRex_LaraDeath(ITEM_INFO *item)
     g_LaraItem->pos.y_rot = item->pos.y_rot;
     g_LaraItem->pos.z_rot = 0;
     g_LaraItem->gravity_status = 0;
-    g_LaraItem->current_anim_state = AS_SPECIAL;
-    g_LaraItem->goal_anim_state = AS_SPECIAL;
+    g_LaraItem->current_anim_state = LS_SPECIAL;
+    g_LaraItem->goal_anim_state = LS_SPECIAL;
     g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index + 1;
     g_LaraItem->frame_number = g_Anims[g_LaraItem->anim_number].frame_base;
     Lara_SwapMeshExtra();
 
     g_LaraItem->hit_points = -1;
     g_Lara.air = -1;
-    g_Lara.gun_status = LGS_HANDSBUSY;
+    g_Lara.gun_status = LGS_HANDS_BUSY;
     g_Lara.gun_type = LGT_UNARMED;
 
     g_Camera.flags = FOLLOW_CENTRE;

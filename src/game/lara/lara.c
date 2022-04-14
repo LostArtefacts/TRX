@@ -62,9 +62,9 @@ void Lara_Control(void)
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
         if (g_Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
             item->pos.y -= 0x80;
-            item->current_anim_state = AS_SWIM;
-            item->goal_anim_state = AS_SWIM;
-            item->anim_number = AA_SWIMGLIDE;
+            item->current_anim_state = LS_SWIM;
+            item->goal_anim_state = LS_SWIM;
+            item->anim_number = LA_SWIM_GLIDE;
             item->frame_number = g_Anims[item->anim_number].frame_base;
             item->gravity_status = 0;
             item->pos.x_rot = 30 * PHD_DEGREE;
@@ -85,27 +85,27 @@ void Lara_Control(void)
         Lara_InitialiseMeshes(g_CurrentLevel);
     }
 
-    if (g_Lara.water_status == LWS_ABOVEWATER && room_submerged) {
+    if (g_Lara.water_status == LWS_ABOVE_WATER && room_submerged) {
         g_Lara.water_status = LWS_UNDERWATER;
         g_Lara.air = LARA_AIR;
         item->pos.y += 100;
         item->gravity_status = 0;
         UpdateLaraRoom(item, 0);
         Sound_StopEffect(SFX_LARA_FALL, NULL);
-        if (item->current_anim_state == AS_SWANDIVE) {
-            item->goal_anim_state = AS_DIVE;
+        if (item->current_anim_state == LS_SWAN_DIVE) {
+            item->goal_anim_state = LS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
             Lara_Animate(item);
             item->fall_speed *= 2;
-        } else if (item->current_anim_state == AS_FASTDIVE) {
-            item->goal_anim_state = AS_DIVE;
+        } else if (item->current_anim_state == LS_FAST_DIVE) {
+            item->goal_anim_state = LS_DIVE;
             item->pos.x_rot = -85 * PHD_DEGREE;
             Lara_Animate(item);
             item->fall_speed *= 2;
         } else {
-            item->current_anim_state = AS_DIVE;
-            item->goal_anim_state = AS_SWIM;
-            item->anim_number = AA_JUMPIN;
+            item->current_anim_state = LS_DIVE;
+            item->goal_anim_state = LS_SWIM;
+            item->anim_number = LA_JUMP_IN;
             item->frame_number = AF_JUMPIN;
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
@@ -121,9 +121,9 @@ void Lara_Control(void)
         if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
             g_Lara.dive_timer = DIVE_WAIT + 1;
-            item->current_anim_state = AS_SURFTREAD;
-            item->goal_anim_state = AS_SURFTREAD;
-            item->anim_number = AA_SURFTREAD;
+            item->current_anim_state = LS_SURF_TREAD;
+            item->goal_anim_state = LS_SURF_TREAD;
+            item->anim_number = LA_SURF_TREAD;
             item->frame_number = AF_SURFTREAD;
             item->fall_speed = 0;
             item->pos.y = wh + 1;
@@ -136,11 +136,11 @@ void Lara_Control(void)
             UpdateLaraRoom(item, -LARA_HITE / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
-            g_Lara.water_status = LWS_ABOVEWATER;
+            g_Lara.water_status = LWS_ABOVE_WATER;
             g_Lara.gun_status = LGS_ARMLESS;
-            item->current_anim_state = AS_FORWARDJUMP;
-            item->goal_anim_state = AS_FORWARDJUMP;
-            item->anim_number = AA_FALLDOWN;
+            item->current_anim_state = LS_JUMP_FORWARD;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->anim_number = LA_FALL_DOWN;
             item->frame_number = AF_FALLDOWN;
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
@@ -153,11 +153,11 @@ void Lara_Control(void)
             g_Lara.torso_y_rot = 0;
         }
     } else if (g_Lara.water_status == LWS_SURFACE && !room_submerged) {
-        g_Lara.water_status = LWS_ABOVEWATER;
+        g_Lara.water_status = LWS_ABOVE_WATER;
         g_Lara.gun_status = LGS_ARMLESS;
-        item->current_anim_state = AS_FORWARDJUMP;
-        item->goal_anim_state = AS_FORWARDJUMP;
-        item->anim_number = AA_FALLDOWN;
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
+        item->anim_number = LA_FALL_DOWN;
         item->frame_number = AF_FALLDOWN;
         item->speed = item->fall_speed / 4;
         item->fall_speed = 0;
@@ -203,7 +203,7 @@ void Lara_Control(void)
     }
 
     switch (g_Lara.water_status) {
-    case LWS_ABOVEWATER:
+    case LWS_ABOVE_WATER:
         g_Lara.air = LARA_AIR;
         Lara_HandleAboveWater(item, &coll);
         break;
@@ -239,8 +239,8 @@ void Lara_Control(void)
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
                 g_Lara.water_status = LWS_UNDERWATER;
             } else {
-                g_Lara.water_status = LWS_ABOVEWATER;
-                item->anim_number = AA_STOP;
+                g_Lara.water_status = LWS_ABOVE_WATER;
+                item->anim_number = LA_STOP;
                 item->frame_number = g_Anims[item->anim_number].frame_base;
                 item->pos.x_rot = item->pos.z_rot = 0;
                 g_Lara.head_x_rot = 0;
@@ -488,15 +488,15 @@ void Lara_Initialise(int32_t level_num)
     if (g_RoomInfo[g_LaraItem->room_number].flags & 1) {
         g_Lara.water_status = LWS_UNDERWATER;
         g_LaraItem->fall_speed = 0;
-        g_LaraItem->goal_anim_state = AS_TREAD;
-        g_LaraItem->current_anim_state = AS_TREAD;
-        g_LaraItem->anim_number = AA_TREAD;
+        g_LaraItem->goal_anim_state = LS_TREAD;
+        g_LaraItem->current_anim_state = LS_TREAD;
+        g_LaraItem->anim_number = LA_TREAD;
         g_LaraItem->frame_number = AF_TREAD;
     } else {
-        g_Lara.water_status = LWS_ABOVEWATER;
-        g_LaraItem->goal_anim_state = AS_STOP;
-        g_LaraItem->current_anim_state = AS_STOP;
-        g_LaraItem->anim_number = AA_STOP;
+        g_Lara.water_status = LWS_ABOVE_WATER;
+        g_LaraItem->goal_anim_state = LS_STOP;
+        g_LaraItem->current_anim_state = LS_STOP;
+        g_LaraItem->anim_number = LA_STOP;
         g_LaraItem->frame_number = AF_STOP;
     }
 

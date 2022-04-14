@@ -40,32 +40,32 @@ static void Control_TriggerMusicTrack(
     switch (track) {
     case 28:
         if ((g_MusicTrackFlags[track] & IF_ONESHOT)
-            && g_LaraItem->current_anim_state == AS_UPJUMP) {
+            && g_LaraItem->current_anim_state == LS_JUMP_UP) {
             track = 29;
         }
         break;
 
     case 37:
-        if (g_LaraItem->current_anim_state != AS_HANG) {
+        if (g_LaraItem->current_anim_state != LS_HANG) {
             return;
         }
         break;
 
     case 41:
-        if (g_LaraItem->current_anim_state != AS_HANG) {
+        if (g_LaraItem->current_anim_state != LS_HANG) {
             return;
         }
         break;
 
     case 42:
         if ((g_MusicTrackFlags[track] & IF_ONESHOT)
-            && g_LaraItem->current_anim_state == AS_HANG) {
+            && g_LaraItem->current_anim_state == LS_HANG) {
             track = 43;
         }
         break;
 
     case 49:
-        if (g_LaraItem->current_anim_state != AS_SURFTREAD) {
+        if (g_LaraItem->current_anim_state != LS_SURF_TREAD) {
             return;
         }
         break;
@@ -78,7 +78,7 @@ static void Control_TriggerMusicTrack(
                 g_LevelComplete = true;
                 gym_completion_counter = 0;
             }
-        } else if (g_LaraItem->current_anim_state != AS_WATEROUT) {
+        } else if (g_LaraItem->current_anim_state != LS_WATER_OUT) {
             return;
         }
         break;
@@ -120,37 +120,37 @@ void CheckCheatMode(void)
     LARA_STATE as = g_LaraItem->current_anim_state;
     switch (cheat_mode) {
     case 0:
-        if (as == AS_WALK) {
+        if (as == LS_WALK) {
             cheat_mode = 1;
         }
         break;
 
     case 1:
-        if (as != AS_WALK) {
-            cheat_mode = as == AS_STOP ? 2 : 0;
+        if (as != LS_WALK) {
+            cheat_mode = as == LS_STOP ? 2 : 0;
         }
         break;
 
     case 2:
-        if (as != AS_STOP) {
-            cheat_mode = as == AS_BACK ? 3 : 0;
+        if (as != LS_STOP) {
+            cheat_mode = as == LS_BACK ? 3 : 0;
         }
         break;
 
     case 3:
-        if (as != AS_BACK) {
-            cheat_mode = as == AS_STOP ? 4 : 0;
+        if (as != LS_BACK) {
+            cheat_mode = as == LS_STOP ? 4 : 0;
         }
         break;
 
     case 4:
-        if (as != AS_STOP) {
+        if (as != LS_STOP) {
             cheat_angle = g_LaraItem->pos.y_rot;
         }
         cheat_turn = 0;
-        if (as == AS_TURN_L) {
+        if (as == LS_TURN_L) {
             cheat_mode = 5;
-        } else if (as == AS_TURN_R) {
+        } else if (as == LS_TURN_R) {
             cheat_mode = 6;
         } else {
             cheat_mode = 0;
@@ -158,7 +158,7 @@ void CheckCheatMode(void)
         break;
 
     case 5:
-        if (as == AS_TURN_L || as == AS_FASTTURN) {
+        if (as == LS_TURN_L || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->pos.y_rot - cheat_angle);
             cheat_angle = g_LaraItem->pos.y_rot;
         } else {
@@ -167,7 +167,7 @@ void CheckCheatMode(void)
         break;
 
     case 6:
-        if (as == AS_TURN_R || as == AS_FASTTURN) {
+        if (as == LS_TURN_R || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->pos.y_rot - cheat_angle);
             cheat_angle = g_LaraItem->pos.y_rot;
         } else {
@@ -176,16 +176,16 @@ void CheckCheatMode(void)
         break;
 
     case 7:
-        if (as != AS_STOP) {
-            cheat_mode = as == AS_COMPRESS ? 8 : 0;
+        if (as != LS_STOP) {
+            cheat_mode = as == LS_COMPRESS ? 8 : 0;
         }
         break;
 
     case 8:
         if (g_LaraItem->fall_speed > 0) {
-            if (as == AS_FORWARDJUMP) {
+            if (as == LS_JUMP_FORWARD) {
                 g_LevelComplete = true;
-            } else if (as == AS_BACKJUMP) {
+            } else if (as == LS_JUMP_BACK) {
                 Inv_AddItem(O_SHOTGUN_ITEM);
                 Inv_AddItem(O_MAGNUM_ITEM);
                 Inv_AddItem(O_UZI_ITEM);
@@ -518,7 +518,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
             if (!Switch_Trigger(value, timer)) {
                 return;
             }
-            switch_off = g_Items[value].current_anim_state == AS_RUN;
+            switch_off = g_Items[value].current_anim_state == LS_RUN;
             break;
         }
 

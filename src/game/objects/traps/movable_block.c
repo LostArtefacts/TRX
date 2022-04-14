@@ -136,7 +136,7 @@ void MovableBlock_Collision(
     }
 
     uint16_t quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
-    if (lara_item->current_anim_state == AS_STOP) {
+    if (lara_item->current_anim_state == LS_STOP) {
         if (g_Input.forward || g_Input.back
             || g_Lara.gun_status != LGS_ARMLESS) {
             return;
@@ -186,14 +186,14 @@ void MovableBlock_Collision(
         }
 
         lara_item->pos.y_rot = item->pos.y_rot;
-        lara_item->goal_anim_state = AS_PPREADY;
+        lara_item->goal_anim_state = LS_PP_READY;
 
         Lara_Animate(lara_item);
 
-        if (lara_item->current_anim_state == AS_PPREADY) {
-            g_Lara.gun_status = LGS_HANDSBUSY;
+        if (lara_item->current_anim_state == LS_PP_READY) {
+            g_Lara.gun_status = LGS_HANDS_BUSY;
         }
-    } else if (lara_item->current_anim_state == AS_PPREADY) {
+    } else if (lara_item->current_anim_state == LS_PP_READY) {
         if (lara_item->frame_number != AF_PPREADY) {
             return;
         }
@@ -207,13 +207,13 @@ void MovableBlock_Collision(
                 return;
             }
             item->goal_anim_state = MBS_PUSH;
-            lara_item->goal_anim_state = AS_PUSHBLOCK;
+            lara_item->goal_anim_state = LS_PUSH_BLOCK;
         } else if (g_Input.back) {
             if (!MovableBlock_TestPull(item, 1024, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PULL;
-            lara_item->goal_anim_state = AS_PULLBLOCK;
+            lara_item->goal_anim_state = LS_PULL_BLOCK;
         } else {
             return;
         }

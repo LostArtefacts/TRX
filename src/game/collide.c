@@ -907,16 +907,16 @@ int32_t Move3DPosTo3DPos(
     if (g_Config.walk_to_items && !g_Lara.interact_target.is_moving) {
         if (g_Lara.water_status != LWS_UNDERWATER) {
             const int16_t step_to_anim_num[4] = {
-                AA_SIDESTEP_LEFT,
-                AA_WALK_FORWARD,
-                AA_SIDESTEP_RIGHT,
-                AA_WALK_BACK,
+                LA_SIDE_STEP_LEFT,
+                LA_WALK_FORWARD,
+                LA_SIDE_STEP_RIGHT,
+                LA_WALK_BACK,
             };
             const int16_t step_to_anim_state[4] = {
-                AS_STEPLEFT,
-                AS_WALK,
-                AS_STEPRIGHT,
-                AS_BACK,
+                LS_STEP_LEFT,
+                LS_WALK,
+                LS_STEP_RIGHT,
+                LS_BACK,
             };
 
             int32_t angle =
@@ -934,7 +934,7 @@ int32_t Move3DPosTo3DPos(
             lara_item->goal_anim_state = step_to_anim_state[quadrant];
             lara_item->current_anim_state = step_to_anim_state[quadrant];
 
-            g_Lara.gun_status = LGS_HANDSBUSY;
+            g_Lara.gun_status = LGS_HANDS_BUSY;
         }
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
