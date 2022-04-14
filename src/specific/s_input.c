@@ -475,10 +475,10 @@ INPUT_STATE S_Input_GetCurrentState(void)
             m_MedipackCoolDown--;
         } else {
             if (KEY_DOWN(DIK_8) && Inv_RequestItem(O_MEDI_OPTION)) {
-                UseItem(O_MEDI_OPTION);
+                Lara_UseItem(O_MEDI_OPTION);
                 m_MedipackCoolDown = FRAMES_PER_SECOND / 2;
             } else if (KEY_DOWN(DIK_9) && Inv_RequestItem(O_BIGMEDI_OPTION)) {
-                UseItem(O_BIGMEDI_OPTION);
+                Lara_UseItem(O_BIGMEDI_OPTION);
                 m_MedipackCoolDown = FRAMES_PER_SECOND / 2;
             }
         }

@@ -350,7 +350,7 @@ static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj)
         LOG_ERROR("Malformed save: invalid or missing inventory info");
         return false;
     }
-    InitialiseLaraInventory(g_CurrentLevel);
+    Lara_InitialiseInventory(g_CurrentLevel);
     Inv_AddItemNTimes(
         O_PICKUP_ITEM1, json_object_get_int(inv_obj, "pickup1", 0));
     Inv_AddItemNTimes(

@@ -1245,7 +1245,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                     } else if (Inv_RequestItem(O_UZI_ITEM)) {
                         g_GameInfo.start[level_num].gun_type = LGT_UZIS;
                     }
-                    LaraInitialiseMeshes(level_num);
+                    Lara_InitialiseMeshes(level_num);
                 }
             }
             break;
@@ -1259,14 +1259,14 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 g_GameInfo.start[level_num].flags.got_uzis = 0;
                 g_GameInfo.start[level_num].gun_type = LGT_UNARMED;
                 g_GameInfo.start[level_num].gun_status = LGS_ARMLESS;
-                InitialiseLaraInventory(level_num);
+                Lara_InitialiseInventory(level_num);
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
                 g_GameInfo.start[level_num].num_scions = 0;
-                InitialiseLaraInventory(level_num);
+                Lara_InitialiseInventory(level_num);
             }
             break;
 
