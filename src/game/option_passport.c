@@ -135,11 +135,11 @@ static void Option_PassportShutdownText(void)
 static void Option_PassportInitLevelStrings(void)
 {
     m_SelectLevelStrings =
-        Memory_Alloc(g_GameFlow.last_level_num * sizeof(char *));
+        Memory_Alloc(g_GameFlow.level_count * sizeof(char *));
     m_SelectLevelData = Memory_Alloc(
-        g_GameFlow.last_level_num * MAX_LEVEL_NAME_LENGTH * sizeof(char));
+        g_GameFlow.level_count * MAX_LEVEL_NAME_LENGTH * sizeof(char));
 
-    for (int i = 0; i < g_GameFlow.last_level_num; i++) {
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
         m_SelectLevelStrings[i] = &m_SelectLevelData[MAX_LEVEL_NAME_LENGTH * i];
     }
 }
@@ -175,8 +175,12 @@ static void Option_PassportShowLevelSelect(void)
     int32_t select = DisplayRequester(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
-            // Don't subtract 1 because level 0 is Gym
-            g_InvExtraData[IED_LEVEL_NUM] = select;
+            // If there's a gym level, first level starts at 1.
+            if (g_GameFlow.gym_level_num != -1) {
+                g_InvExtraData[IED_LEVEL_NUM] = select;
+            } else {
+                g_InvExtraData[IED_LEVEL_NUM] = select - 1;
+            }
             g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SELECT_LEVEL;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE

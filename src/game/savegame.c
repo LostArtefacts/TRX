@@ -561,7 +561,8 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         &m_SavegameInfo[g_InvExtraData[IED_SAVEGAME_NUM]];
     req->items = 0;
 
-    for (int i = 1; i <= g_GameFlow.last_level_num; i++) {
+    for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
+         i++) {
         RESUME_INFO *start = &g_GameInfo.start[i];
 
         if (i <= savegame_info->level_num) {
