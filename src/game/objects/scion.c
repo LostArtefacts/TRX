@@ -141,7 +141,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (lara_item->current_anim_state == AS_PICKUP) {
+    if (lara_item->current_anim_state == LS_PICKUP) {
         if (lara_item->frame_number
             == g_Anims[lara_item->anim_number].frame_base + AF_PICKUPSCION) {
             Overlay_AddPickup(item->object_number);
@@ -153,13 +153,13 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     } else if (
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
-        && lara_item->current_anim_state == AS_STOP) {
+        && lara_item->current_anim_state == LS_STOP) {
         AlignLaraPosition(&m_Scion_Position, item, lara_item);
-        lara_item->current_anim_state = AS_PICKUP;
-        lara_item->goal_anim_state = AS_PICKUP;
+        lara_item->current_anim_state = LS_PICKUP;
+        lara_item->goal_anim_state = LS_PICKUP;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
         lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
         g_CinePosition = lara_item->pos;
@@ -179,13 +179,13 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
-        && lara_item->current_anim_state == AS_STOP) {
+        && lara_item->current_anim_state == LS_STOP) {
         AlignLaraPosition(&m_Scion_Position4, item, lara_item);
-        lara_item->current_anim_state = AS_PICKUP;
-        lara_item->goal_anim_state = AS_PICKUP;
+        lara_item->current_anim_state = LS_PICKUP;
+        lara_item->goal_anim_state = LS_PICKUP;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
         lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
-        g_Lara.gun_status = LGS_HANDSBUSY;
+        g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
         g_CinePosition = lara_item->pos;

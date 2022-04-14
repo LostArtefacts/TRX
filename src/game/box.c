@@ -382,7 +382,7 @@ void CreatureMood(ITEM_INFO *item, AI_INFO *info, int32_t violent)
             LOT->target.y = g_LaraItem->pos.y;
             LOT->target.z = g_LaraItem->pos.z;
             LOT->required_box = g_LaraItem->box_number;
-            if (LOT->fly && g_Lara.water_status == LWS_ABOVEWATER) {
+            if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
                 int16_t *bounds = GetBestFrame(g_LaraItem);
                 LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
             }

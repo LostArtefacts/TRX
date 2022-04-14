@@ -62,19 +62,19 @@ void HairControl(int in_cutscene)
 
         switch (g_Lara.hit_direction) {
         case DIR_NORTH:
-            spaz = AA_SPAZ_FORWARD;
+            spaz = LA_SPAZ_FORWARD;
             break;
 
         case DIR_SOUTH:
-            spaz = AA_SPAZ_BACK;
+            spaz = LA_SPAZ_BACK;
             break;
 
         case DIR_EAST:
-            spaz = AA_SPAZ_RIGHT;
+            spaz = LA_SPAZ_RIGHT;
             break;
 
         default:
-            spaz = AA_SPAZ_LEFT;
+            spaz = LA_SPAZ_LEFT;
             break;
         }
 
@@ -227,7 +227,7 @@ void HairControl(int in_cutscene)
             m_Hair[i].z += m_HVel[i].z * 3 / 4;
 
             switch (g_Lara.water_status) {
-            case LWS_ABOVEWATER:
+            case LWS_ABOVE_WATER:
                 m_Hair[i].y += 10;
                 if (water_level != NO_HEIGHT && m_Hair[i].y > water_level)
                     m_Hair[i].y = water_level;

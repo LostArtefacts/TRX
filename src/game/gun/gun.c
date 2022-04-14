@@ -18,7 +18,7 @@ void Gun_Control(void)
     bool draw = false;
     if (g_LaraItem->hit_points <= 0) {
         g_Lara.gun_status = LGS_ARMLESS;
-    } else if (g_Lara.water_status == LWS_ABOVEWATER) {
+    } else if (g_Lara.water_status == LWS_ABOVE_WATER) {
         if (g_Lara.request_gun_type != LGT_UNARMED
             && (g_Lara.request_gun_type != g_Lara.gun_type
                 || g_Lara.gun_status == LGS_ARMLESS)) {

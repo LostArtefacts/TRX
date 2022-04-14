@@ -154,9 +154,9 @@ void RollingBall_Collision(
             lara_item->pos.z_rot = 0;
             lara_item->pos.y_rot = item->pos.y_rot;
 
-            lara_item->current_anim_state = AS_SPECIAL;
-            lara_item->goal_anim_state = AS_SPECIAL;
-            lara_item->anim_number = AA_RBALL_DEATH;
+            lara_item->current_anim_state = LS_SPECIAL;
+            lara_item->goal_anim_state = LS_SPECIAL;
+            lara_item->anim_number = LA_ROLLING_BALL_DEATH;
             lara_item->frame_number = AF_RBALL_DEATH;
 
             g_Camera.flags = FOLLOW_CENTRE;

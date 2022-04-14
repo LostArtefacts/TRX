@@ -96,9 +96,9 @@ void ThorsHandle_Control(int16_t item_num)
                 g_LaraItem->hit_points = -1;
                 g_LaraItem->pos.y = item->pos.y;
                 g_LaraItem->gravity_status = 0;
-                g_LaraItem->current_anim_state = AS_SPECIAL;
-                g_LaraItem->goal_anim_state = AS_SPECIAL;
-                g_LaraItem->anim_number = AA_RBALL_DEATH;
+                g_LaraItem->current_anim_state = LS_SPECIAL;
+                g_LaraItem->goal_anim_state = LS_SPECIAL;
+                g_LaraItem->anim_number = LA_ROLLING_BALL_DEATH;
                 g_LaraItem->frame_number = AF_RBALL_DEATH;
             }
         }

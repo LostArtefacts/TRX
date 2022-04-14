@@ -53,7 +53,7 @@ void SaveCrystal_Collision(
         return;
     }
 
-    if (lara_item->current_anim_state != AS_STOP) {
+    if (lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
