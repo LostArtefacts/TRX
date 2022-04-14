@@ -787,27 +787,27 @@ int32_t Display_Inventory(int inv_mode)
         return GF_START_GAME | g_GameFlow.gym_level_num;
 
     case O_GUN_OPTION:
-        UseItem(O_GUN_OPTION);
+        Lara_UseItem(O_GUN_OPTION);
         break;
 
     case O_SHOTGUN_OPTION:
-        UseItem(O_SHOTGUN_OPTION);
+        Lara_UseItem(O_SHOTGUN_OPTION);
         break;
 
     case O_MAGNUM_OPTION:
-        UseItem(O_MAGNUM_OPTION);
+        Lara_UseItem(O_MAGNUM_OPTION);
         break;
 
     case O_UZI_OPTION:
-        UseItem(O_UZI_OPTION);
+        Lara_UseItem(O_UZI_OPTION);
         break;
 
     case O_MEDI_OPTION:
-        UseItem(O_MEDI_OPTION);
+        Lara_UseItem(O_MEDI_OPTION);
         break;
 
     case O_BIGMEDI_OPTION:
-        UseItem(O_BIGMEDI_OPTION);
+        Lara_UseItem(O_BIGMEDI_OPTION);
         break;
     }
 

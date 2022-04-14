@@ -1,30 +1,23 @@
-#include "game/lara.h"
+#include "game/lara/lara.h"
 
 #include "3dsystem/phd_math.h"
-#include "config.h"
 #include "game/camera.h"
-#include "game/clock.h"
 #include "game/collide.h"
 #include "game/control.h"
-#include "game/gameflow.h"
+#include "game/gun.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/lara/lara_control.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/effects/splash.h"
 #include "game/savegame.h"
 #include "game/sound.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
-#include "util.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
-#define MOVE_TIMEOUT 90
+#define LARA_MOVE_TIMEOUT 90
 
 static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
 
@@ -38,7 +31,7 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
     return &g_GameInfo.start[level_num];
 }
 
-void LaraControl(int16_t item_num)
+void Lara_Control(void)
 {
     COLL_INFO coll = { 0 };
 
@@ -47,7 +40,7 @@ void LaraControl(int16_t item_num)
     int32_t room_submerged = r->flags & RF_UNDERWATER;
 
     if (g_Lara.interact_target.is_moving
-        && g_Lara.interact_target.move_count++ > MOVE_TIMEOUT) {
+        && g_Lara.interact_target.move_count++ > LARA_MOVE_TIMEOUT) {
         g_Lara.interact_target.is_moving = false;
         g_Lara.gun_status = LGS_ARMLESS;
     }
@@ -63,7 +56,7 @@ void LaraControl(int16_t item_num)
     }
 
     if (g_InputDB.item_cheat) {
-        LaraCheatGetStuff();
+        Lara_CheatGetStuff();
     }
 
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
@@ -89,7 +82,7 @@ void LaraControl(int16_t item_num)
         g_Lara.air = LARA_AIR;
         g_Lara.death_timer = 0;
         g_Lara.mesh_effects = 0;
-        LaraInitialiseMeshes(g_CurrentLevel);
+        Lara_InitialiseMeshes(g_CurrentLevel);
     }
 
     if (g_Lara.water_status == LWS_ABOVEWATER && room_submerged) {
@@ -102,12 +95,12 @@ void LaraControl(int16_t item_num)
         if (item->current_anim_state == AS_SWANDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -45 * PHD_DEGREE;
-            AnimateLara(item);
+            Lara_Animate(item);
             item->fall_speed *= 2;
         } else if (item->current_anim_state == AS_FASTDIVE) {
             item->goal_anim_state = AS_DIVE;
             item->pos.x_rot = -85 * PHD_DEGREE;
-            AnimateLara(item);
+            Lara_Animate(item);
             item->fall_speed *= 2;
         } else {
             item->current_anim_state = AS_DIVE;
@@ -212,7 +205,7 @@ void LaraControl(int16_t item_num)
     switch (g_Lara.water_status) {
     case LWS_ABOVEWATER:
         g_Lara.air = LARA_AIR;
-        LaraAboveWater(item, &coll);
+        Lara_HandleAboveWater(item, &coll);
         break;
 
     case LWS_UNDERWATER:
@@ -223,7 +216,7 @@ void LaraControl(int16_t item_num)
                 item->hit_points -= 5;
             }
         }
-        LaraUnderWater(item, &coll);
+        Lara_HandleUnderwater(item, &coll);
         break;
 
     case LWS_SURFACE:
@@ -233,13 +226,13 @@ void LaraControl(int16_t item_num)
                 g_Lara.air = LARA_AIR;
             }
         }
-        LaraSurface(item, &coll);
+        Lara_HandleSurface(item, &coll);
         break;
 
     case LWS_CHEAT:
         item->hit_points = LARA_HITPOINTS;
         g_Lara.death_timer = 0;
-        LaraUnderWater(item, &coll);
+        Lara_HandleUnderwater(item, &coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
             int16_t wh = GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -261,7 +254,7 @@ void LaraControl(int16_t item_num)
     }
 }
 
-void LaraSwapMeshExtra(void)
+void Lara_SwapMeshExtra(void)
 {
     if (!g_Objects[O_LARA_EXTRA].loaded) {
         return;
@@ -271,7 +264,7 @@ void LaraSwapMeshExtra(void)
     }
 }
 
-void AnimateLara(ITEM_INFO *item)
+void Lara_Animate(ITEM_INFO *item)
 {
     int16_t *command;
     ANIM_STRUCT *anim;
@@ -374,15 +367,15 @@ void AnimateLara(ITEM_INFO *item)
     item->pos.z += (phd_cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
-void AnimateLaraUntil(ITEM_INFO *lara_item, int32_t goal)
+void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
 {
     lara_item->goal_anim_state = goal;
     do {
-        AnimateLara(lara_item);
+        Lara_Animate(lara_item);
     } while (lara_item->current_anim_state != goal);
 }
 
-void UseItem(int16_t object_num)
+void Lara_UseItem(int16_t object_num)
 {
     LOG_INFO("%d", object_num);
     switch (object_num) {
@@ -447,12 +440,12 @@ void UseItem(int16_t object_num)
     }
 }
 
-void ControlLaraExtra(int16_t item_num)
+void Lara_ControlExtra(int16_t item_num)
 {
     AnimateItem(&g_Items[item_num]);
 }
 
-void InitialiseLaraLoad(int16_t item_num)
+void Lara_InitialiseLoad(int16_t item_num)
 {
     g_Lara.item_number = item_num;
     if (item_num == NO_ITEM) {
@@ -462,7 +455,7 @@ void InitialiseLaraLoad(int16_t item_num)
     }
 }
 
-void InitialiseLara(int32_t level_num)
+void Lara_Initialise(int32_t level_num)
 {
     RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
 
@@ -514,10 +507,10 @@ void InitialiseLara(int32_t level_num)
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;
 
-    InitialiseLaraInventory(g_CurrentLevel);
+    Lara_InitialiseInventory(g_CurrentLevel);
 }
 
-void InitialiseLaraInventory(int32_t level_num)
+void Lara_InitialiseInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
@@ -580,11 +573,11 @@ void InitialiseLaraInventory(int32_t level_num)
     g_Lara.gun_type = resume->gun_type;
     g_Lara.request_gun_type = resume->gun_type;
 
-    LaraInitialiseMeshes(level_num);
-    InitialiseNewWeapon();
+    Lara_InitialiseMeshes(level_num);
+    Gun_InitialiseNewWeapon();
 }
 
-void LaraInitialiseMeshes(int32_t level_num)
+void Lara_InitialiseMeshes(int32_t level_num)
 {
     RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
 
@@ -643,122 +636,3 @@ void LaraInitialiseMeshes(int32_t level_num)
             g_Meshes[g_Objects[back_object_num].mesh_index + LM_TORSO];
     }
 }
-
-void LaraCheatGetStuff(void)
-{
-    if (g_CurrentLevel == g_GameFlow.gym_level_num) {
-        return;
-    }
-
-    // play pistols drawing sound
-    Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-
-    if (g_Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
-        Inv_AddItem(O_GUN_ITEM);
-    }
-
-    if (g_Objects[O_SHOTGUN_OPTION].loaded) {
-        if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Inv_AddItem(O_SHOTGUN_ITEM);
-        }
-        g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
-    }
-
-    if (g_Objects[O_MAGNUM_OPTION].loaded) {
-        if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Inv_AddItem(O_MAGNUM_ITEM);
-        }
-        g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
-    }
-
-    if (g_Objects[O_UZI_OPTION].loaded) {
-        if (!Inv_RequestItem(O_UZI_ITEM)) {
-            Inv_AddItem(O_UZI_ITEM);
-        }
-        g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
-    }
-
-    for (int i = 0; i < 10; i++) {
-        if (g_Objects[O_MEDI_OPTION].loaded
-            && Inv_RequestItem(O_MEDI_ITEM) < 240) {
-            Inv_AddItem(O_MEDI_ITEM);
-        }
-        if (g_Objects[O_BIGMEDI_OPTION].loaded
-            && Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
-            Inv_AddItem(O_BIGMEDI_ITEM);
-        }
-    }
-
-    if (g_Objects[O_KEY_OPTION1].loaded && !Inv_RequestItem(O_KEY_ITEM1)) {
-        Inv_AddItem(O_KEY_ITEM1);
-    }
-    if (g_Objects[O_KEY_OPTION2].loaded && !Inv_RequestItem(O_KEY_ITEM2)) {
-        Inv_AddItem(O_KEY_ITEM2);
-    }
-    if (g_Objects[O_KEY_OPTION3].loaded && !Inv_RequestItem(O_KEY_ITEM3)) {
-        Inv_AddItem(O_KEY_ITEM3);
-    }
-    if (g_Objects[O_KEY_OPTION4].loaded && !Inv_RequestItem(O_KEY_ITEM4)) {
-        Inv_AddItem(O_KEY_ITEM4);
-    }
-    if (g_Objects[O_PUZZLE_OPTION1].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM1)) {
-        Inv_AddItem(O_PUZZLE_ITEM1);
-    }
-    if (g_Objects[O_PUZZLE_OPTION2].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM2)) {
-        Inv_AddItem(O_PUZZLE_ITEM2);
-    }
-    if (g_Objects[O_PUZZLE_OPTION3].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM3)) {
-        Inv_AddItem(O_PUZZLE_ITEM3);
-    }
-    if (g_Objects[O_PUZZLE_OPTION4].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM4)) {
-        Inv_AddItem(O_PUZZLE_ITEM4);
-    }
-    if (g_Objects[O_PICKUP_OPTION1].loaded
-        && !Inv_RequestItem(O_PICKUP_ITEM1)) {
-        Inv_AddItem(O_PICKUP_ITEM1);
-    }
-    if (g_Objects[O_PICKUP_OPTION2].loaded
-        && !Inv_RequestItem(O_PICKUP_ITEM2)) {
-        Inv_AddItem(O_PICKUP_ITEM2);
-    }
-}
-
-void (*g_LaraControlRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
-    LaraAsWalk,       LaraAsRun,       LaraAsStop,      LaraAsForwardJump,
-    LaraAsPose,       LaraAsFastBack,  LaraAsTurnR,     LaraAsTurnL,
-    LaraAsDeath,      LaraAsFastFall,  LaraAsHang,      LaraAsReach,
-    LaraAsSplat,      LaraAsTread,     LaraAsLand,      LaraAsCompress,
-    LaraAsBack,       LaraAsSwim,      LaraAsGlide,     LaraAsNull,
-    LaraAsFastTurn,   LaraAsStepRight, LaraAsStepLeft,  LaraAsRoll2,
-    LaraAsSlide,      LaraAsBackJump,  LaraAsRightJump, LaraAsLeftJump,
-    LaraAsUpJump,     LaraAsFallBack,  LaraAsHangLeft,  LaraAsHangRight,
-    LaraAsSlideBack,  LaraAsSurfTread, LaraAsSurfSwim,  LaraAsDive,
-    LaraAsPushBlock,  LaraAsPullBlock, LaraAsPPReady,   LaraAsPickup,
-    LaraAsSwitchOn,   LaraAsSwitchOff, LaraAsUseKey,    LaraAsUsePuzzle,
-    LaraAsUWDeath,    LaraAsRoll,      LaraAsSpecial,   LaraAsSurfBack,
-    LaraAsSurfLeft,   LaraAsSurfRight, LaraAsUseMidas,  LaraAsDieMidas,
-    LaraAsSwanDive,   LaraAsFastDive,  LaraAsGymnast,   LaraAsWaterOut,
-    LaraAsControlled,
-};
-
-void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
-    LaraColWalk,       LaraColRun,       LaraColStop,      LaraColForwardJump,
-    LaraColPose,       LaraColFastBack,  LaraColTurnR,     LaraColTurnL,
-    LaraColDeath,      LaraColFastFall,  LaraColHang,      LaraColReach,
-    LaraColSplat,      LaraColTread,     LaraColLand,      LaraColCompress,
-    LaraColBack,       LaraColSwim,      LaraColGlide,     LaraColNull,
-    LaraColFastTurn,   LaraColStepRight, LaraColStepLeft,  LaraColRoll2,
-    LaraColSlide,      LaraColBackJump,  LaraColRightJump, LaraColLeftJump,
-    LaraColUpJump,     LaraColFallBack,  LaraColHangLeft,  LaraColHangRight,
-    LaraColSlideBack,  LaraColSurfTread, LaraColSurfSwim,  LaraColDive,
-    LaraColPushBlock,  LaraColPullBlock, LaraColPPReady,   LaraColPickup,
-    LaraColSwitchOn,   LaraColSwitchOff, LaraColUseKey,    LaraColUsePuzzle,
-    LaraColUWDeath,    LaraColRoll,      LaraColSpecial,   LaraColSurfBack,
-    LaraColSurfLeft,   LaraColSurfRight, LaraColUseMidas,  LaraColDieMidas,
-    LaraColSwanDive,   LaraColFastDive,  LaraColGymnast,   LaraColWaterOut,
-    LaraColControlled,
-};

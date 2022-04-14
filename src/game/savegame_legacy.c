@@ -472,7 +472,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     game_info->death_counter_supported = false;
 
-    InitialiseLaraInventory(g_CurrentLevel);
+    Lara_InitialiseInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
     Savegame_Legacy_Read(&item_stats, sizeof(item_stats));
     Inv_AddItemNTimes(O_PICKUP_ITEM1, item_stats.num_pickup1);

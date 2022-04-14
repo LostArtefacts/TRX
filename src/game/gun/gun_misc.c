@@ -1,24 +1,17 @@
-#include "game/lara.h"
+#include "game/gun/gun_misc.h"
 
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
-#include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
-#include "game/input.h"
 #include "game/inv.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
-
-#include <stddef.h>
-#include <stdint.h>
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
 #define PISTOL_LOCK_YMAX (+60 * PHD_DEGREE)
@@ -139,200 +132,7 @@ WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     },
 };
 
-void LaraGun(void)
-{
-    if (g_Lara.left_arm.flash_gun > 0) {
-        g_Lara.left_arm.flash_gun--;
-    }
-    if (g_Lara.right_arm.flash_gun > 0) {
-        g_Lara.right_arm.flash_gun--;
-    }
-
-    int32_t draw = 0;
-    if (g_LaraItem->hit_points <= 0) {
-        g_Lara.gun_status = LGS_ARMLESS;
-    } else if (g_Lara.water_status == LWS_ABOVEWATER) {
-        if (g_Lara.request_gun_type != LGT_UNARMED
-            && (g_Lara.request_gun_type != g_Lara.gun_type
-                || g_Lara.gun_status == LGS_ARMLESS)) {
-            if (g_Lara.gun_status == LGS_ARMLESS) {
-                g_Lara.gun_type = g_Lara.request_gun_type;
-                InitialiseNewWeapon();
-                draw = 1;
-                g_Lara.request_gun_type = LGT_UNARMED;
-            } else if (g_Lara.gun_status == LGS_READY) {
-                draw = 1;
-            }
-        } else if (g_Input.draw) {
-            if (g_Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
-                g_Lara.gun_type = LGT_PISTOLS;
-                InitialiseNewWeapon();
-            }
-            draw = 1;
-            g_Lara.request_gun_type = LGT_UNARMED;
-        }
-    } else if (g_Lara.gun_status == LGS_READY) {
-        draw = 1;
-    }
-
-    if (draw && g_Lara.gun_type != LGT_UNARMED) {
-        switch (g_Lara.gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_UZIS:
-            if (g_Lara.gun_status == LGS_ARMLESS) {
-                g_Lara.gun_status = LGS_DRAW;
-                g_Lara.right_arm.frame_number = AF_G_AIM;
-                g_Lara.left_arm.frame_number = AF_G_AIM;
-            } else if (g_Lara.gun_status == LGS_READY) {
-                g_Lara.gun_status = LGS_UNDRAW;
-            }
-            break;
-
-        case LGT_SHOTGUN:
-            if (g_Lara.gun_status == LGS_ARMLESS) {
-                g_Lara.gun_status = LGS_DRAW;
-                g_Lara.left_arm.frame_number = AF_SG_AIM;
-                g_Lara.right_arm.frame_number = AF_SG_AIM;
-            } else if (g_Lara.gun_status == LGS_READY) {
-                g_Lara.gun_status = LGS_UNDRAW;
-            }
-            break;
-        }
-    }
-
-    switch (g_Lara.gun_status) {
-    case LGS_DRAW:
-        switch (g_Lara.gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_UZIS:
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            DrawPistols(g_Lara.gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            DrawShotgun();
-            break;
-        }
-        break;
-
-    case LGS_UNDRAW:
-        g_Lara.mesh_ptrs[LM_HEAD] =
-            g_Meshes[g_Objects[O_LARA].mesh_index + LM_HEAD];
-        switch (g_Lara.gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_UZIS:
-            UndrawPistols(g_Lara.gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-            UndrawShotgun();
-            break;
-        }
-        break;
-
-    case LGS_READY:
-        g_Lara.mesh_ptrs[LM_HEAD] =
-            g_Meshes[g_Objects[O_LARA].mesh_index + LM_HEAD];
-        switch (g_Lara.gun_type) {
-        case LGT_PISTOLS:
-            if (g_Lara.pistols.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
-            }
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            PistolHandler(g_Lara.gun_type);
-            break;
-
-        case LGT_MAGNUMS:
-            if (g_Lara.magnums.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
-            }
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            PistolHandler(g_Lara.gun_type);
-            break;
-
-        case LGT_UZIS:
-            if (g_Lara.uzis.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
-            }
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            PistolHandler(g_Lara.gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-            if (g_Lara.shotgun.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
-            }
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
-            RifleHandler(LGT_SHOTGUN);
-            break;
-        }
-        break;
-    }
-}
-
-void InitialiseNewWeapon(void)
-{
-    g_Lara.left_arm.x_rot = 0;
-    g_Lara.left_arm.y_rot = 0;
-    g_Lara.left_arm.z_rot = 0;
-    g_Lara.left_arm.lock = 0;
-    g_Lara.left_arm.flash_gun = 0;
-    g_Lara.left_arm.frame_number = AF_G_AIM;
-    g_Lara.right_arm.x_rot = 0;
-    g_Lara.right_arm.y_rot = 0;
-    g_Lara.right_arm.z_rot = 0;
-    g_Lara.right_arm.lock = 0;
-    g_Lara.right_arm.flash_gun = 0;
-    g_Lara.right_arm.frame_number = AF_G_AIM;
-    g_Lara.target = NULL;
-
-    switch (g_Lara.gun_type) {
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_UZIS:
-        g_Lara.right_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
-        if (g_Lara.gun_status != LGS_ARMLESS) {
-            DrawPistolMeshes(g_Lara.gun_type);
-        }
-        break;
-
-    case LGT_SHOTGUN:
-        g_Lara.right_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
-        if (g_Lara.gun_status != LGS_ARMLESS) {
-            DrawShotgunMeshes();
-        }
-        break;
-
-    default:
-        g_Lara.right_arm.frame_base = g_Objects[O_LARA].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_LARA].frame_base;
-        break;
-    }
-}
-
-void LaraTargetInfo(WEAPON_INFO *winfo)
+void Gun_TargetInfo(WEAPON_INFO *winfo)
 {
     if (!g_Lara.target) {
         g_Lara.right_arm.lock = 0;
@@ -348,7 +148,7 @@ void LaraTargetInfo(WEAPON_INFO *winfo)
     src.y = g_LaraItem->pos.y - 650;
     src.z = g_LaraItem->pos.z;
     src.room_number = g_LaraItem->room_number;
-    find_target_point(g_Lara.target, &target);
+    Gun_FindTargetPoint(g_Lara.target, &target);
 
     int16_t ang[2];
     phd_GetVectorAngles(
@@ -387,7 +187,7 @@ void LaraTargetInfo(WEAPON_INFO *winfo)
     g_Lara.target_angles[1] = ang[1];
 }
 
-void LaraGetNewTarget(WEAPON_INFO *winfo)
+void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
     ITEM_INFO *bestitem = NULL;
     int16_t bestyrot = 0x7FFF;
@@ -421,7 +221,7 @@ void LaraGetNewTarget(WEAPON_INFO *winfo)
         }
 
         GAME_VECTOR target;
-        find_target_point(item, &target);
+        Gun_FindTargetPoint(item, &target);
         if (!LOS(&src, &target)) {
             continue;
         }
@@ -443,10 +243,10 @@ void LaraGetNewTarget(WEAPON_INFO *winfo)
     }
 
     g_Lara.target = bestitem;
-    LaraTargetInfo(winfo);
+    Gun_TargetInfo(winfo);
 }
 
-void find_target_point(ITEM_INFO *item, GAME_VECTOR *target)
+void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
 {
     int16_t *bounds = GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
@@ -460,7 +260,7 @@ void find_target_point(ITEM_INFO *item, GAME_VECTOR *target)
     target->room_number = item->room_number;
 }
 
-void AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
+void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
 {
     PHD_ANGLE destx;
     PHD_ANGLE desty;
@@ -498,7 +298,7 @@ void AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
     arm->z_rot = 0;
 }
 
-int32_t FireWeapon(
+int32_t Gun_FireWeapon(
     int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles)
 {
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
@@ -582,7 +382,7 @@ int32_t FireWeapon(
         vdest.x = view.x + ((bestdist * g_PhdMatrixPtr->_20) >> W2V_SHIFT);
         vdest.y = view.y + ((bestdist * g_PhdMatrixPtr->_21) >> W2V_SHIFT);
         vdest.z = view.z + ((bestdist * g_PhdMatrixPtr->_22) >> W2V_SHIFT);
-        HitTarget(
+        Gun_HitTarget(
             target, &vdest,
             winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
         return 1;
@@ -597,7 +397,7 @@ int32_t FireWeapon(
     return -1;
 }
 
-void HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
+void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         g_GameInfo.current[g_CurrentLevel].stats.kill_count++;

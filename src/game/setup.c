@@ -93,7 +93,7 @@ bool InitialiseLevel(int32_t level_num)
     Text_RemoveAll();
     InitialiseGameFlags();
 
-    InitialiseLaraLoad(NO_ITEM);
+    Lara_InitialiseLoad(NO_ITEM);
     if (level_num != g_GameFlow.title_level_num) {
         Screen_ApplyResolution();
     }
@@ -103,7 +103,7 @@ bool InitialiseLevel(int32_t level_num)
     }
 
     if (g_Lara.item_number != NO_ITEM) {
-        InitialiseLara(level_num);
+        Lara_Initialise(level_num);
     }
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
@@ -158,7 +158,7 @@ void InitialiseLevelFlags(void)
 
 void BaddyObjects(void)
 {
-    g_Objects[O_LARA].initialise = InitialiseLaraLoad;
+    g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
     g_Objects[O_LARA].draw_routine = DrawDummyItem;
     g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
@@ -167,7 +167,7 @@ void BaddyObjects(void)
     g_Objects[O_LARA].save_anim = 1;
     g_Objects[O_LARA].save_flags = 1;
 
-    g_Objects[O_LARA_EXTRA].control = ControlLaraExtra;
+    g_Objects[O_LARA_EXTRA].control = Lara_ControlExtra;
 
     BaconLara_Setup(&g_Objects[O_BACON_LARA]);
     Wolf_Setup(&g_Objects[O_WOLF]);

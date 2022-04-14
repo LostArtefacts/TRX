@@ -1,17 +1,13 @@
-#include "game/lara.h"
+#include "game/gun/gun_rifle.h"
 
 #include "config.h"
+#include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
-void DrawShotgun(void)
+void Gun_Rifle_Draw(void)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
@@ -19,17 +15,17 @@ void DrawShotgun(void)
     if (ani < AF_SG_DRAW || ani > AF_SG_RECOIL) {
         ani = AF_SG_DRAW;
     } else if (ani == AF_SG_DRAW + 10) {
-        DrawShotgunMeshes();
+        Gun_Rifle_DrawMeshes();
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
     } else if (ani == AF_SG_RECOIL) {
-        ReadyShotgun();
+        Gun_Rifle_Ready();
         ani = AF_SG_AIM;
     }
     g_Lara.left_arm.frame_number = ani;
     g_Lara.right_arm.frame_number = ani;
 }
 
-void UndrawShotgun(void)
+void Gun_Rifle_Undraw(void)
 {
     int16_t ani = ani = g_Lara.left_arm.frame_number;
 
@@ -57,7 +53,7 @@ void UndrawShotgun(void)
     } else if (ani >= AF_SG_UNDRAW && ani < AF_SG_UNAIM) {
         ani++;
         if (ani == AF_SG_UNDRAW + 20) {
-            UndrawShotgunMeshes();
+            Gun_Rifle_UndrawMeshes();
             Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
         } else if (ani == AF_SG_UNAIM) {
             ani = AF_SG_AIM;
@@ -76,7 +72,7 @@ void UndrawShotgun(void)
     g_Lara.left_arm.frame_number = ani;
 }
 
-void DrawShotgunMeshes(void)
+void Gun_Rifle_DrawMeshes(void)
 {
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
@@ -86,7 +82,7 @@ void DrawShotgunMeshes(void)
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-void UndrawShotgunMeshes(void)
+void Gun_Rifle_UndrawMeshes(void)
 {
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
@@ -96,7 +92,7 @@ void UndrawShotgunMeshes(void)
         g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
 }
 
-void ReadyShotgun(void)
+void Gun_Rifle_Ready(void)
 {
     g_Lara.gun_status = LGS_READY;
     g_Lara.left_arm.x_rot = 0;
@@ -116,20 +112,20 @@ void ReadyShotgun(void)
     g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
 }
 
-void RifleHandler(int32_t weapon_type)
+void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
 {
     WEAPON_INFO *winfo = &g_Weapons[LGT_SHOTGUN];
 
     if (g_Input.action) {
-        LaraTargetInfo(winfo);
+        Gun_TargetInfo(winfo);
     } else {
         g_Lara.target = NULL;
     }
     if (!g_Lara.target) {
-        LaraGetNewTarget(winfo);
+        Gun_GetNewTarget(winfo);
     }
 
-    AimWeapon(winfo, &g_Lara.left_arm);
+    Gun_AimWeapon(winfo, &g_Lara.left_arm);
 
     if (g_Lara.left_arm.lock) {
         g_Lara.torso_y_rot = g_Lara.left_arm.y_rot / 2;
@@ -138,10 +134,10 @@ void RifleHandler(int32_t weapon_type)
         g_Lara.head_y_rot = 0;
     }
 
-    AnimateShotgun();
+    Gun_Rifle_Animate();
 }
 
-void AnimateShotgun(void)
+void Gun_Rifle_Animate(void)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock) {
@@ -152,7 +148,7 @@ void AnimateShotgun(void)
             }
         } else if (ani == AF_SG_RECOIL) {
             if (g_Input.action) {
-                FireShotgun();
+                Gun_Rifle_Fire();
                 ani++;
             }
         } else if (ani > AF_SG_RECOIL && ani < AF_SG_UNDRAW) {
@@ -199,7 +195,7 @@ void AnimateShotgun(void)
             }
         } else if (ani == AF_SG_RECOIL) {
             if (g_Input.action) {
-                FireShotgun();
+                Gun_Rifle_Fire();
                 ani++;
             } else {
                 ani = AF_SG_UNAIM;
@@ -232,9 +228,9 @@ void AnimateShotgun(void)
     g_Lara.left_arm.frame_number = ani;
 }
 
-void FireShotgun(void)
+void Gun_Rifle_Fire(void)
 {
-    int32_t fired = 0;
+    bool fired = false;
     PHD_ANGLE angles[2];
     PHD_ANGLE dangles[2];
 
@@ -246,15 +242,18 @@ void FireShotgun(void)
             + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
         dangles[1] = angles[1]
             + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
-        if (FireWeapon(LGT_SHOTGUN, g_Lara.target, g_LaraItem, dangles)) {
-            fired = 1;
+        if (Gun_FireWeapon(LGT_SHOTGUN, g_Lara.target, g_LaraItem, dangles)) {
+            fired = true;
         }
     }
-    if (fired) {
-        if (g_Config.enable_shotgun_flash) {
-            g_Lara.right_arm.flash_gun = g_Weapons[LGT_SHOTGUN].flash_time;
-        }
-        Sound_Effect(
-            g_Weapons[LGT_SHOTGUN].sample_num, &g_LaraItem->pos, SPM_NORMAL);
+
+    if (!fired) {
+        return;
     }
+
+    if (g_Config.enable_shotgun_flash) {
+        g_Lara.right_arm.flash_gun = g_Weapons[LGT_SHOTGUN].flash_time;
+    }
+    Sound_Effect(
+        g_Weapons[LGT_SHOTGUN].sample_num, &g_LaraItem->pos, SPM_NORMAL);
 }

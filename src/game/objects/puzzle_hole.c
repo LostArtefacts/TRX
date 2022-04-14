@@ -145,7 +145,7 @@ void PuzzleHole_Collision(
     g_InvChosen = -1;
     if (correct) {
         AlignLaraPosition(&g_PuzzleHolePosition, item, lara_item);
-        AnimateLaraUntil(lara_item, AS_USEPUZZLE);
+        Lara_AnimateUntil(lara_item, AS_USEPUZZLE);
         lara_item->goal_anim_state = AS_STOP;
         g_Lara.gun_status = LGS_HANDSBUSY;
         item->status = IS_ACTIVE;

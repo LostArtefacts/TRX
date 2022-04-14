@@ -300,7 +300,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             item_num = fx->next_active;
         }
 
-        LaraControl(0);
+        Lara_Control();
         HairControl(0);
 
         Camera_Update();

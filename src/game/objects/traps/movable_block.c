@@ -188,7 +188,7 @@ void MovableBlock_Collision(
         lara_item->pos.y_rot = item->pos.y_rot;
         lara_item->goal_anim_state = AS_PPREADY;
 
-        AnimateLara(lara_item);
+        Lara_Animate(lara_item);
 
         if (lara_item->current_anim_state == AS_PPREADY) {
             g_Lara.gun_status = LGS_HANDSBUSY;
@@ -222,7 +222,7 @@ void MovableBlock_Collision(
         AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
         AnimateItem(item);
-        AnimateLara(lara_item);
+        Lara_Animate(lara_item);
     }
 }
 
