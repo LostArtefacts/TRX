@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -667,4 +668,92 @@ bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
         ? LARA_MOVE_ANIM_VELOCITY
         : LARA_MOVE_SPEED;
     return Item_MovePosition(g_LaraItem, item, vec, velocity);
+}
+
+void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
+{
+    struct ITEM_INFO *lara_item = g_LaraItem;
+    int32_t x = lara_item->pos.x - item->pos.x;
+    int32_t z = lara_item->pos.z - item->pos.z;
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
+    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
+
+    int16_t *bounds = GetBestFrame(item);
+    int32_t minx = bounds[FRAME_BOUND_MIN_X];
+    int32_t maxx = bounds[FRAME_BOUND_MAX_X];
+    int32_t minz = bounds[FRAME_BOUND_MIN_Z];
+    int32_t maxz = bounds[FRAME_BOUND_MAX_Z];
+
+    if (big_push) {
+        minx -= coll->radius;
+        maxx += coll->radius;
+        minz -= coll->radius;
+        maxz += coll->radius;
+    }
+
+    if (rx >= minx && rx <= maxx && rz >= minz && rz <= maxz) {
+        int32_t l = rx - minx;
+        int32_t r = maxx - rx;
+        int32_t t = maxz - rz;
+        int32_t b = rz - minz;
+
+        if (l <= r && l <= t && l <= b) {
+            rx -= l;
+        } else if (r <= l && r <= t && r <= b) {
+            rx += r;
+        } else if (t <= l && t <= r && t <= b) {
+            rz += t;
+        } else {
+            rz -= b;
+        }
+
+        int32_t ax = (c * rx + s * rz) >> W2V_SHIFT;
+        int32_t az = (c * rz - s * rx) >> W2V_SHIFT;
+
+        lara_item->pos.x = item->pos.x + ax;
+        lara_item->pos.z = item->pos.z + az;
+
+        rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
+        rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
+        x -= (c * rx + s * rz) >> W2V_SHIFT;
+        z -= (c * rz - s * rx) >> W2V_SHIFT;
+
+        if (spaz_on) {
+            PHD_ANGLE hitang =
+                lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+            g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
+            if (!g_Lara.hit_frame) {
+                Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+            }
+
+            g_Lara.hit_frame++;
+            if (g_Lara.hit_frame > 34) {
+                g_Lara.hit_frame = 34;
+            }
+        }
+
+        coll->bad_pos = NO_BAD_POS;
+        coll->bad_neg = -STEPUP_HEIGHT;
+        coll->bad_ceiling = 0;
+
+        int16_t old_facing = coll->facing;
+        coll->facing = phd_atan(
+            lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+        GetCollisionInfo(
+            coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
+            lara_item->room_number, LARA_HITE);
+        coll->facing = old_facing;
+
+        if (coll->coll_type != COLL_NONE) {
+            lara_item->pos.x = coll->old.x;
+            lara_item->pos.z = coll->old.z;
+        } else {
+            coll->old.x = lara_item->pos.x;
+            coll->old.y = lara_item->pos.y;
+            coll->old.z = lara_item->pos.z;
+            UpdateLaraRoom(lara_item, -10);
+        }
+    }
 }

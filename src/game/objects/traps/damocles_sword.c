@@ -70,7 +70,7 @@ void DamoclesSword_Collision(
         return;
     }
     if (coll->enable_baddie_push) {
-        ItemPushLara(item, lara_item, coll, 0, 1);
+        Lara_Push(item, coll, false, true);
     }
     if (item->gravity_status) {
         lara_item->hit_points -= DAMOCLES_SWORD_DAMAGE;
