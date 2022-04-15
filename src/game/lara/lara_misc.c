@@ -659,7 +659,7 @@ bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += hdif - 5;
-    UpdateLaraRoom(item, -LARA_HITE / 2);
+    Item_UpdateRoom(item, -LARA_HITE / 2);
 
     switch (angle) {
     case 0:

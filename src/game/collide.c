@@ -452,19 +452,6 @@ int32_t CollideStaticObjects(
     return 0;
 }
 
-void UpdateLaraRoom(ITEM_INFO *item, int32_t height)
-{
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y + height;
-    int32_t z = item->pos.z;
-    int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    item->floor = GetHeight(floor, x, y, z);
-    if (item->room_number != room_num) {
-        ItemNewRoom(g_Lara.item_number, room_num);
-    }
-}
-
 void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;

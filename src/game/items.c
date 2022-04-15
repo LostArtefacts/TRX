@@ -3,12 +3,11 @@
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
+#include "game/control.h"
 #include "game/draw.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-
-#include <stdio.h>
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \
@@ -244,6 +243,19 @@ void ItemNewRoom(int16_t item_num, int16_t room_num)
     item->room_number = room_num;
     item->next_item = r->item_number;
     r->item_number = item_num;
+}
+
+void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
+{
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y + height;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    item->floor = GetHeight(floor, x, y, z);
+    if (item->room_number != room_num) {
+        ItemNewRoom(g_Lara.item_number, room_num);
+    }
 }
 
 int16_t SpawnItem(ITEM_INFO *item, int16_t object_num)
