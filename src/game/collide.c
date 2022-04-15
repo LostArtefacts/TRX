@@ -16,17 +16,6 @@
 
 #define MAX_BADDIE_COLLISION 12
 
-#define ADJUST_ROT(source, target, rot)                                        \
-    do {                                                                       \
-        if ((int16_t)(target - source) > rot) {                                \
-            source += rot;                                                     \
-        } else if ((int16_t)(target - source) < -rot) {                        \
-            source -= rot;                                                     \
-        } else {                                                               \
-            source = target;                                                   \
-        }                                                                      \
-    } while (0)
-
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight)
@@ -679,67 +668,4 @@ void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     } else if (item->status != IS_INVISIBLE) {
         ObjectCollision(item_num, lara_item, coll);
     }
-}
-
-bool Move3DPosTo3DPos(
-    PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t rotation,
-    ITEM_INFO *lara_item)
-{
-    int32_t x = destpos->x - srcpos->x;
-    int32_t y = destpos->y - srcpos->y;
-    int32_t z = destpos->z - srcpos->z;
-    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
-    if (velocity >= dist) {
-        srcpos->x = destpos->x;
-        srcpos->y = destpos->y;
-        srcpos->z = destpos->z;
-    } else {
-        srcpos->x += (x * velocity) / dist;
-        srcpos->y += (y * velocity) / dist;
-        srcpos->z += (z * velocity) / dist;
-    }
-
-    if (g_Config.walk_to_items && !g_Lara.interact_target.is_moving) {
-        if (g_Lara.water_status != LWS_UNDERWATER) {
-            const int16_t step_to_anim_num[4] = {
-                LA_SIDE_STEP_LEFT,
-                LA_WALK_FORWARD,
-                LA_SIDE_STEP_RIGHT,
-                LA_WALK_BACK,
-            };
-            const int16_t step_to_anim_state[4] = {
-                LS_STEP_LEFT,
-                LS_WALK,
-                LS_STEP_RIGHT,
-                LS_BACK,
-            };
-
-            int32_t angle =
-                (PHD_ONE
-                 - phd_atan(srcpos->x - destpos->x, srcpos->z - destpos->z))
-                % PHD_ONE;
-            uint32_t quadrant =
-                ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
-                  - ((uint16_t)(destpos->y_rot + PHD_45) >> W2V_SHIFT))
-                 & 0x3);
-
-            lara_item->anim_number = step_to_anim_num[quadrant];
-            lara_item->frame_number =
-                g_Anims[lara_item->anim_number].frame_base;
-            lara_item->goal_anim_state = step_to_anim_state[quadrant];
-            lara_item->current_anim_state = step_to_anim_state[quadrant];
-
-            g_Lara.gun_status = LGS_HANDS_BUSY;
-        }
-        g_Lara.interact_target.is_moving = true;
-        g_Lara.interact_target.move_count = 0;
-    }
-
-    ADJUST_ROT(srcpos->x_rot, destpos->x_rot, rotation);
-    ADJUST_ROT(srcpos->y_rot, destpos->y_rot, rotation);
-    ADJUST_ROT(srcpos->z_rot, destpos->z_rot, rotation);
-
-    return srcpos->x == destpos->x && srcpos->y == destpos->y
-        && srcpos->z == destpos->z && srcpos->x_rot == destpos->x_rot
-        && srcpos->y_rot == destpos->y_rot && srcpos->z_rot == destpos->z_rot;
 }
