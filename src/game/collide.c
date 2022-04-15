@@ -13,12 +13,13 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "game/room.h"
 
 #define MAX_BADDIE_COLLISION 12
 
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
-    int32_t objheight)
+    int32_t obj_height)
 {
     coll->coll_type = COLL_NONE;
     coll->shift.x = 0;
@@ -27,7 +28,7 @@ void GetCollisionInfo(
     coll->quadrant = (uint16_t)(coll->facing + PHD_45) / PHD_90;
 
     int32_t x = xpos;
-    int32_t y = ypos - objheight;
+    int32_t y = ypos - obj_height;
     int32_t z = zpos;
     int32_t ytop = y - 160;
 
@@ -47,7 +48,7 @@ void GetCollisionInfo(
     coll->mid_type = g_HeightType;
     coll->trigger = g_TriggerIndex;
 
-    int16_t tilt = GetTiltType(floor, x, g_LaraItem->pos.y, z);
+    int16_t tilt = Room_GetTiltType(floor, x, g_LaraItem->pos.y, z);
     coll->tilt_z = tilt >> 8;
     coll->tilt_x = (int8_t)tilt;
 
@@ -191,7 +192,7 @@ void GetCollisionInfo(
         coll->right_floor = 512;
     }
 
-    if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, objheight)) {
+    if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, obj_height)) {
         floor = GetFloor(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
         if (GetHeight(floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
@@ -231,12 +232,12 @@ void GetCollisionInfo(
         case DIR_NORTH:
         case DIR_SOUTH:
             coll->shift.x = coll->old.x - xpos;
-            coll->shift.z = FindGridShift(zpos + zfront, zpos);
+            coll->shift.z = Room_FindGridShift(zpos + zfront, zpos);
             break;
 
         case DIR_EAST:
         case DIR_WEST:
-            coll->shift.x = FindGridShift(xpos + xfront, xpos);
+            coll->shift.x = Room_FindGridShift(xpos + xfront, xpos);
             coll->shift.z = coll->old.z - zpos;
             break;
         }
@@ -257,12 +258,12 @@ void GetCollisionInfo(
         switch (coll->quadrant) {
         case DIR_NORTH:
         case DIR_SOUTH:
-            coll->shift.x = FindGridShift(xpos + xleft, xpos + xfront);
+            coll->shift.x = Room_FindGridShift(xpos + xleft, xpos + xfront);
             break;
 
         case DIR_EAST:
         case DIR_WEST:
-            coll->shift.z = FindGridShift(zpos + zleft, zpos + zfront);
+            coll->shift.z = Room_FindGridShift(zpos + zleft, zpos + zfront);
             break;
         }
 
@@ -275,33 +276,17 @@ void GetCollisionInfo(
         switch (coll->quadrant) {
         case DIR_NORTH:
         case DIR_SOUTH:
-            coll->shift.x = FindGridShift(xpos + xright, xpos + xfront);
+            coll->shift.x = Room_FindGridShift(xpos + xright, xpos + xfront);
             break;
 
         case DIR_EAST:
         case DIR_WEST:
-            coll->shift.z = FindGridShift(zpos + zright, zpos + zfront);
+            coll->shift.z = Room_FindGridShift(zpos + zright, zpos + zfront);
             break;
         }
 
         coll->coll_type = COLL_RIGHT;
         return;
-    }
-}
-
-int32_t FindGridShift(int32_t src, int32_t dst)
-{
-    int32_t srcw = src >> WALL_SHIFT;
-    int32_t dstw = dst >> WALL_SHIFT;
-    if (srcw == dstw) {
-        return 0;
-    }
-
-    src &= WALL_L - 1;
-    if (dstw > srcw) {
-        return WALL_L - (src - 1);
-    } else {
-        return -(src + 1);
     }
 }
 
@@ -323,7 +308,7 @@ int32_t CollideStaticObjects(
     shifter.y = 0;
     shifter.z = 0;
 
-    GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
+    Room_GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t room_num = g_RoomsToDraw[i];
@@ -467,39 +452,6 @@ int32_t CollideStaticObjects(
     return 0;
 }
 
-void GetNearByRooms(
-    int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
-{
-    g_RoomsToDrawCount = 0;
-    if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-        g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
-    }
-    GetNewRoom(x + r, y, z + r, room_num);
-    GetNewRoom(x - r, y, z + r, room_num);
-    GetNewRoom(x + r, y, z - r, room_num);
-    GetNewRoom(x - r, y, z - r, room_num);
-    GetNewRoom(x + r, y - h, z + r, room_num);
-    GetNewRoom(x - r, y - h, z + r, room_num);
-    GetNewRoom(x + r, y - h, z - r, room_num);
-    GetNewRoom(x - r, y - h, z - r, room_num);
-}
-
-void GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
-{
-    GetFloor(x, y, z, &room_num);
-
-    for (int i = 0; i < g_RoomsToDrawCount; i++) {
-        int16_t drawn_room = g_RoomsToDraw[i];
-        if (drawn_room == room_num) {
-            return;
-        }
-    }
-
-    if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-        g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
-    }
-}
-
 void ShiftItem(ITEM_INFO *item, COLL_INFO *coll)
 {
     item->pos.x += coll->shift.x;
@@ -521,31 +473,6 @@ void UpdateLaraRoom(ITEM_INFO *item, int32_t height)
     if (item->room_number != room_num) {
         ItemNewRoom(g_Lara.item_number, room_num);
     }
-}
-
-int16_t GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
-{
-    ROOM_INFO *r;
-
-    while (floor->pit_room != NO_ROOM) {
-        r = &g_RoomInfo[floor->pit_room];
-        floor = &r->floor
-                     [((z - r->z) >> WALL_SHIFT)
-                      + ((x - r->x) >> WALL_SHIFT) * r->x_size];
-    }
-
-    if (y + 512 < ((int32_t)floor->floor << 8)) {
-        return 0;
-    }
-
-    if (floor->index) {
-        int16_t *data = &g_FloorData[floor->index];
-        if ((data[0] & DATA_TYPE) == FT_TILT) {
-            return data[1];
-        }
-    }
-
-    return 0;
 }
 
 void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
