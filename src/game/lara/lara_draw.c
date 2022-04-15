@@ -132,7 +132,7 @@ void Lara_Draw(ITEM_INFO *item)
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_PhdMatrixPtr = saved_matrix;
-    DrawHair();
+    Hair_Draw();
 
     phd_PopMatrix();
 
@@ -403,7 +403,7 @@ void Lara_Draw_I(
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_PhdMatrixPtr = saved_matrix;
-    DrawHair();
+    Hair_Draw();
 
     phd_PopMatrix_I();
 
