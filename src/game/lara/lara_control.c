@@ -9,6 +9,7 @@
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
@@ -94,7 +95,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
         item->pos.y += coll->mid_floor;
         item->pos.x_rot += UW_WALLDEFLECT;
     }
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
 
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;

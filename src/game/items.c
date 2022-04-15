@@ -492,3 +492,13 @@ bool Item_MovePosition(
 
     return Item_Move3DPosTo3DPos(&src_item->pos, &dst_pos, velocity, MOVE_ANG);
 }
+
+void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
+{
+    item->pos.x += coll->shift.x;
+    item->pos.y += coll->shift.y;
+    item->pos.z += coll->shift.z;
+    coll->shift.x = 0;
+    coll->shift.y = 0;
+    coll->shift.z = 0;
+}

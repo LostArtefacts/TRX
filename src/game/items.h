@@ -25,6 +25,7 @@ void Item_AlignPosition(
 bool Item_MovePosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec,
     int32_t velocity);
+void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 
 void InitialiseFXArray(void);
 int16_t CreateEffect(int16_t room_num);

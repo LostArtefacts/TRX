@@ -5,6 +5,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
+#include "game/items.h"
 #include "game/lara/lara.h"
 #include "global/vars.h"
 
@@ -182,7 +183,7 @@ bool Lara_HitCeiling(ITEM_INFO *item, COLL_INFO *coll)
 bool Lara_DeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOPFRONT) {
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
         item->gravity_status = 0;
@@ -191,10 +192,10 @@ bool Lara_DeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (coll->coll_type == COLL_LEFT) {
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         item->pos.y_rot += LARA_DEF_ADD_EDGE;
     } else if (coll->coll_type == COLL_RIGHT) {
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         item->pos.y_rot -= LARA_DEF_ADD_EDGE;
     }
     return false;
@@ -202,7 +203,7 @@ bool Lara_DeflectEdge(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_DeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
         item->pos.y_rot += LARA_DEF_ADD_EDGE;
@@ -245,7 +246,7 @@ void Lara_DeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_SlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     switch (coll->coll_type) {
     case COLL_LEFT:
         item->pos.y_rot += LARA_DEF_ADD_EDGE;
@@ -314,7 +315,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += STEP_L * 2 + hdif;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->pos.y_rot = angle;
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         return true;
     } else if (
         hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 + STEP_L / 2) {
@@ -330,7 +331,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y += STEP_L * 3 + hdif;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->pos.y_rot = angle;
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         return true;
     } else if (
         hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
@@ -342,7 +343,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
             -(int16_t)(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         Lara_Animate(item);
         item->pos.y_rot = angle;
-        ShiftItem(item, coll);
+        Item_ShiftCol(item, coll);
         return true;
     }
 
@@ -524,7 +525,7 @@ bool Lara_TestSlide(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     PHD_ANGLE adif = ang - item->pos.y_rot;
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     if (adif >= -PHD_90 && adif <= PHD_90) {
         if (item->current_anim_state != LS_SLIDE || old_angle != ang) {
             item->goal_anim_state = LS_SLIDE;
@@ -589,7 +590,7 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
         coll, item->pos.x, item->pos.y + SURF_HITE, item->pos.z,
         item->room_number, SURF_HITE);
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
 
     if ((coll->coll_type
          & (COLL_FRONT | COLL_LEFT | COLL_RIGHT | COLL_TOP | COLL_TOPFRONT
@@ -701,7 +702,7 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
         coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
         item->room_number, UW_HITE);
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
 
     switch (coll->coll_type) {
     case COLL_FRONT:

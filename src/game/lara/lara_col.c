@@ -5,6 +5,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
+#include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lara/lara_misc.h"
 #include "game/sound.h"
@@ -234,7 +235,7 @@ void Lara_Col_Stop(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     item->pos.y += coll->mid_floor;
 }
 
@@ -349,7 +350,7 @@ void Lara_Col_Death(ITEM_INFO *item, COLL_INFO *coll)
     coll->radius = LARA_RAD * 4;
     Lara_GetCollisionInfo(item, coll);
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     item->pos.y += coll->mid_floor;
     item->hit_points = -1;
     g_Lara.air = -1;
@@ -429,7 +430,7 @@ void Lara_Col_Splat(ITEM_INFO *item, COLL_INFO *coll)
     coll->slopes_are_walls = 1;
     coll->slopes_are_pits = 1;
     Lara_GetCollisionInfo(item, coll);
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
 }
 
 void Lara_Col_Land(ITEM_INFO *item, COLL_INFO *coll)
@@ -748,7 +749,7 @@ void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     item->pos.y += coll->mid_floor;
 }
 
@@ -781,7 +782,7 @@ void Lara_Col_Roll2(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    ShiftItem(item, coll);
+    Item_ShiftCol(item, coll);
     item->pos.y += coll->mid_floor;
 }
 
