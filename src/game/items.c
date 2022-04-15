@@ -10,6 +10,45 @@
 
 #include <stdio.h>
 
+#define ITEM_ADJUST_ROT(source, target, rot)                                   \
+    do {                                                                       \
+        if ((int16_t)(target - source) > rot) {                                \
+            source += rot;                                                     \
+        } else if ((int16_t)(target - source) < -rot) {                        \
+            source -= rot;                                                     \
+        } else {                                                               \
+            source = target;                                                   \
+        }                                                                      \
+    } while (0)
+
+static bool Item_Move3DPosTo3DPos(
+    PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation);
+
+static bool Item_Move3DPosTo3DPos(
+    PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation)
+{
+    int32_t x = dst_pos->x - src_pos->x;
+    int32_t y = dst_pos->y - src_pos->y;
+    int32_t z = dst_pos->z - src_pos->z;
+    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+    if (velocity >= dist) {
+        src_pos->x = dst_pos->x;
+        src_pos->y = dst_pos->y;
+        src_pos->z = dst_pos->z;
+    } else {
+        src_pos->x += (x * velocity) / dist;
+        src_pos->y += (y * velocity) / dist;
+        src_pos->z += (z * velocity) / dist;
+    }
+
+    ITEM_ADJUST_ROT(src_pos->x_rot, dst_pos->x_rot, rotation);
+    ITEM_ADJUST_ROT(src_pos->y_rot, dst_pos->y_rot, rotation);
+    ITEM_ADJUST_ROT(src_pos->z_rot, dst_pos->z_rot, rotation);
+
+    return src_pos->x == dst_pos->x && src_pos->y == dst_pos->y
+        && src_pos->z == dst_pos->z && src_pos->x_rot == dst_pos->x_rot
+        && src_pos->y_rot == dst_pos->y_rot && src_pos->z_rot == dst_pos->z_rot;
+}
 void InitialiseItemArray(int32_t num_items)
 {
     g_NextItemActive = NO_ITEM;
@@ -432,24 +471,23 @@ void Item_AlignPosition(
 bool Item_MovePosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec, int32_t velocity)
 {
-    PHD_3DPOS dest;
-    dest.x_rot = dst_item->pos.x_rot;
-    dest.y_rot = dst_item->pos.y_rot;
-    dest.z_rot = dst_item->pos.z_rot;
+    PHD_3DPOS dst_pos;
+    dst_pos.x_rot = dst_item->pos.x_rot;
+    dst_pos.y_rot = dst_item->pos.y_rot;
+    dst_pos.z_rot = dst_item->pos.z_rot;
     phd_PushUnitMatrix();
     phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
     PHD_MATRIX *mptr = g_PhdMatrixPtr;
-    dest.x = dst_item->pos.x
+    dst_pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
-    dest.y = dst_item->pos.y
+    dst_pos.y = dst_item->pos.y
         + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
            >> W2V_SHIFT);
-    dest.z = dst_item->pos.z
+    dst_pos.z = dst_item->pos.z
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
     phd_PopMatrix();
 
-    return Move3DPosTo3DPos(
-        &src_item->pos, &dest, velocity, MOVE_ANG, src_item);
+    return Item_Move3DPosTo3DPos(&src_item->pos, &dst_pos, velocity, MOVE_ANG);
 }

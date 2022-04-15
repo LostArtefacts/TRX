@@ -667,7 +667,49 @@ bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
         g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER
         ? LARA_MOVE_ANIM_VELOCITY
         : LARA_MOVE_SPEED;
-    return Item_MovePosition(g_LaraItem, item, vec, velocity);
+
+    bool ret = Item_MovePosition(g_LaraItem, item, vec, velocity);
+
+    if (!g_Config.walk_to_items || g_Lara.interact_target.is_moving) {
+        return ret;
+    }
+
+    if (g_Lara.water_status != LWS_UNDERWATER) {
+        const int16_t step_to_anim_num[4] = {
+            LA_SIDE_STEP_LEFT,
+            LA_WALK_FORWARD,
+            LA_SIDE_STEP_RIGHT,
+            LA_WALK_BACK,
+        };
+        const int16_t step_to_anim_state[4] = {
+            LS_STEP_LEFT,
+            LS_WALK,
+            LS_STEP_RIGHT,
+            LS_BACK,
+        };
+
+        int32_t angle = (PHD_ONE
+                         - phd_atan(
+                             g_LaraItem->pos.x - item->pos.x,
+                             g_LaraItem->pos.z - item->pos.z))
+            % PHD_ONE;
+        uint32_t quadrant =
+            ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
+              - ((uint16_t)(item->pos.y_rot + PHD_45) >> W2V_SHIFT))
+             & 0x3);
+
+        g_LaraItem->anim_number = step_to_anim_num[quadrant];
+        g_LaraItem->frame_number = g_Anims[g_LaraItem->anim_number].frame_base;
+        g_LaraItem->goal_anim_state = step_to_anim_state[quadrant];
+        g_LaraItem->current_anim_state = step_to_anim_state[quadrant];
+
+        g_Lara.gun_status = LGS_HANDS_BUSY;
+    }
+
+    g_Lara.interact_target.is_moving = true;
+    g_Lara.interact_target.move_count = 0;
+
+    return ret;
 }
 
 void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)

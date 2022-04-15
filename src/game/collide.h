@@ -22,6 +22,3 @@ void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll);
 void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-bool Move3DPosTo3DPos(
-    PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t rotation,
-    ITEM_INFO *lara_item);
