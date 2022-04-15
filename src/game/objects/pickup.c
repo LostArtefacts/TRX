@@ -92,7 +92,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (g_Lara.water_status == LWS_ABOVE_WATER) {
         item->pos.x_rot = 0;
-        if (!TestLaraPosition(m_PickUpBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, m_PickUpBounds)) {
             return;
         }
 
@@ -115,7 +115,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
         item->pos.x_rot = -25 * PHD_DEGREE;
-        if (!TestLaraPosition(m_PickUpBoundsUW, item, lara_item)) {
+        if (!Lara_TestPosition(item, m_PickUpBoundsUW)) {
             return;
         }
 
@@ -164,7 +164,7 @@ void Pickup_CollisionControlled(
             have_item = false;
             item->pos.x_rot = 0;
 
-            if (TestLaraPosition(m_PickUpBoundsControlled, item, lara_item)) {
+            if (Lara_TestPosition(item, m_PickUpBoundsControlled)) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (Lara_MovePosition(item, &m_PickUpPosition)) {
                     lara_item->anim_number = LA_PICKUP;
@@ -204,7 +204,7 @@ void Pickup_CollisionControlled(
             || (g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num)) {
 
-            if (TestLaraPosition(m_PickUpBoundsUW, item, lara_item)) {
+            if (Lara_TestPosition(item, m_PickUpBoundsUW)) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
                     lara_item->anim_number = LA_PICKUP_UW;
                     lara_item->current_anim_state = LS_PICKUP;

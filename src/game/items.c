@@ -342,6 +342,45 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     return false;
 }
 
+bool Item_TestPosition(
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, int16_t *bounds)
+{
+    PHD_ANGLE xrotrel = src_item->pos.x_rot - dst_item->pos.x_rot;
+    PHD_ANGLE yrotrel = src_item->pos.y_rot - dst_item->pos.y_rot;
+    PHD_ANGLE zrotrel = src_item->pos.z_rot - dst_item->pos.z_rot;
+    if (xrotrel < bounds[6] || xrotrel > bounds[7]) {
+        return false;
+    }
+    if (yrotrel < bounds[8] || yrotrel > bounds[9]) {
+        return false;
+    }
+    if (zrotrel < bounds[10] || zrotrel > bounds[11]) {
+        return false;
+    }
+
+    int32_t x = src_item->pos.x - dst_item->pos.x;
+    int32_t y = src_item->pos.y - dst_item->pos.y;
+    int32_t z = src_item->pos.z - dst_item->pos.z;
+    phd_PushUnitMatrix();
+    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
+    int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
+    int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
+    phd_PopMatrix();
+    if (rx < bounds[0] || rx > bounds[1]) {
+        return false;
+    }
+    if (ry < bounds[2] || ry > bounds[3]) {
+        return false;
+    }
+    if (rz < bounds[4] || rz > bounds[5]) {
+        return false;
+    }
+
+    return true;
+}
+
 void Item_AlignPosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec)
 {

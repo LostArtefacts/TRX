@@ -42,7 +42,7 @@ void PuzzleHole_Collision(
     ITEM_INFO *item = &g_Items[item_num];
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!TestLaraPosition(g_PuzzleHoleBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
             return;
         }
 
@@ -79,7 +79,7 @@ void PuzzleHole_Collision(
         return;
     }
 
-    if (!TestLaraPosition(g_PuzzleHoleBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
         return;
     }
 

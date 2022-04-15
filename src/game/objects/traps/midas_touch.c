@@ -1,9 +1,9 @@
 #include "game/objects/traps/midas_touch.h"
 
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/lara.h"
 #include "global/vars.h"
 
 static int16_t m_MidasBounds[12] = {
@@ -74,7 +74,7 @@ void MidasTouch_Collision(
         break;
     }
 
-    if (!TestLaraPosition(m_MidasBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, m_MidasBounds)) {
         return;
     }
 

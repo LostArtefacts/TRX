@@ -157,7 +157,7 @@ void MovableBlock_Collision(
             break;
         }
 
-        if (!TestLaraPosition(m_MovingBlockBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, m_MovingBlockBounds)) {
             return;
         }
 
@@ -198,7 +198,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        if (!TestLaraPosition(m_MovingBlockBounds, item, lara_item)) {
+        if (!Lara_TestPosition(item, m_MovingBlockBounds)) {
             return;
         }
 
