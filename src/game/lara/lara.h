@@ -19,6 +19,7 @@ void Lara_SwapMeshExtra(void);
 bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance);
 void Lara_UseItem(int16_t object_num);
 
+bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius);
 bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds);
 void Lara_AlignPosition(ITEM_INFO *item, PHD_VECTOR *vec);
 bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec);

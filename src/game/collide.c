@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/door.h"
 #include "game/sound.h"
 #include "game/sphere.h"
@@ -635,7 +636,7 @@ void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!TestCollision(item, lara_item)) {
@@ -655,7 +656,7 @@ void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!TestCollision(item, lara_item)) {
@@ -672,7 +673,7 @@ void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_ACTIVE) {
-        if (TestBoundsCollide(item, lara_item, coll->radius)) {
+        if (Lara_TestBoundsCollide(item, coll->radius)) {
             TestCollision(item, lara_item);
         }
     } else if (item->status != IS_INVISIBLE) {
@@ -767,34 +768,6 @@ void ItemPushLara(
             UpdateLaraRoom(lara_item, -10);
         }
     }
-}
-
-int32_t TestBoundsCollide(ITEM_INFO *item, ITEM_INFO *lara_item, int32_t radius)
-{
-    int16_t *bounds = GetBestFrame(item);
-    int16_t *larabounds = GetBestFrame(lara_item);
-    if (item->pos.y + bounds[FRAME_BOUND_MAX_Y]
-            <= lara_item->pos.y + larabounds[FRAME_BOUND_MIN_Y]
-        || item->pos.y + bounds[FRAME_BOUND_MIN_Y]
-            >= lara_item->pos.y + larabounds[FRAME_BOUND_MAX_Y]) {
-        return 0;
-    }
-
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
-    int32_t x = lara_item->pos.x - item->pos.x;
-    int32_t z = lara_item->pos.z - item->pos.z;
-    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
-    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
-    int32_t minx = bounds[FRAME_BOUND_MIN_X] - radius;
-    int32_t maxx = bounds[FRAME_BOUND_MAX_X] + radius;
-    int32_t minz = bounds[FRAME_BOUND_MIN_Z] - radius;
-    int32_t maxz = bounds[FRAME_BOUND_MAX_Z] + radius;
-    if (rx >= minx && rx <= maxx && rz >= minz && rz <= maxz) {
-        return 1;
-    }
-
-    return 0;
 }
 
 bool Move3DPosTo3DPos(

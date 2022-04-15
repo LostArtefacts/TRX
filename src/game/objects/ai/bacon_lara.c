@@ -3,8 +3,8 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/lara.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "global/vars.h"
 
 void BaconLara_Setup(OBJECT_INFO *obj)

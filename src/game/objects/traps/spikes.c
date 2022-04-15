@@ -1,7 +1,7 @@
 #include "game/objects/traps/spikes.h"
 
-#include "game/collide.h"
 #include "game/effects/blood.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/sphere.h"
 #include "global/vars.h"
@@ -20,7 +20,7 @@ void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!TestCollision(item, lara_item)) {

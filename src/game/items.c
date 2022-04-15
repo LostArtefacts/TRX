@@ -1,6 +1,7 @@
 #include "game/items.h"
 
 #include "3dsystem/matrix.h"
+#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/shell.h"
@@ -340,6 +341,31 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     }
 
     return false;
+}
+
+bool Item_TestBoundsCollide(
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
+{
+    int16_t *src_bounds = GetBestFrame(src_item);
+    int16_t *dst_bounds = GetBestFrame(dst_item);
+    if (dst_item->pos.y + dst_bounds[FRAME_BOUND_MAX_Y]
+            <= src_item->pos.y + src_bounds[FRAME_BOUND_MIN_Y]
+        || dst_item->pos.y + dst_bounds[FRAME_BOUND_MIN_Y]
+            >= src_item->pos.y + src_bounds[FRAME_BOUND_MAX_Y]) {
+        return false;
+    }
+
+    int32_t c = phd_cos(dst_item->pos.y_rot);
+    int32_t s = phd_sin(dst_item->pos.y_rot);
+    int32_t x = src_item->pos.x - dst_item->pos.x;
+    int32_t z = src_item->pos.z - dst_item->pos.z;
+    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
+    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
+    int32_t minx = dst_bounds[FRAME_BOUND_MIN_X] - radius;
+    int32_t maxx = dst_bounds[FRAME_BOUND_MAX_X] + radius;
+    int32_t minz = dst_bounds[FRAME_BOUND_MIN_Z] - radius;
+    int32_t maxz = dst_bounds[FRAME_BOUND_MAX_Z] + radius;
+    return rx >= minx && rx <= maxx && rz >= minz && rz <= maxz;
 }
 
 bool Item_TestPosition(

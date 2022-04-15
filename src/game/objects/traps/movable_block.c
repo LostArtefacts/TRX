@@ -1,6 +1,5 @@
 #include "game/objects/traps/movable_block.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effect_routines/dino_stomp.h"
@@ -55,7 +54,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
             continue;
         }
 
-        if (TestBoundsCollide(item, lara_item, coll->radius)
+        if (Lara_TestBoundsCollide(item, coll->radius)
             && TestCollision(item, lara_item)) {
             return true;
         }
