@@ -126,6 +126,7 @@ sources = [
   'src/game/lara/lara.c',
   'src/game/lara/lara_col.c',
   'src/game/lara/lara_control.c',
+  'src/game/lara/lara_draw.c',
   'src/game/lara/lara_look.c',
   'src/game/lara/lara_misc.c',
   'src/game/lara/lara_state.c',
