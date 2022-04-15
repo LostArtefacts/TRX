@@ -452,16 +452,6 @@ int32_t CollideStaticObjects(
     return 0;
 }
 
-void ShiftItem(ITEM_INFO *item, COLL_INFO *coll)
-{
-    item->pos.x += coll->shift.x;
-    item->pos.y += coll->shift.y;
-    item->pos.z += coll->shift.z;
-    coll->shift.x = 0;
-    coll->shift.y = 0;
-    coll->shift.z = 0;
-}
-
 void UpdateLaraRoom(ITEM_INFO *item, int32_t height)
 {
     int32_t x = item->pos.x;

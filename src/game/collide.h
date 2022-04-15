@@ -10,7 +10,6 @@ void GetCollisionInfo(
 int32_t CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t hite);
-void ShiftItem(ITEM_INFO *item, COLL_INFO *coll);
 void UpdateLaraRoom(ITEM_INFO *item, int32_t height);
 void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll);
