@@ -206,6 +206,7 @@ sources = [
   'src/game/picture.c',
   'src/game/random.c',
   'src/game/requester.c',
+  'src/game/room.c',
   'src/game/savegame.c',
   'src/game/savegame_bson.c',
   'src/game/savegame_legacy.c',

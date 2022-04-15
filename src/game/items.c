@@ -49,6 +49,7 @@ static bool Item_Move3DPosTo3DPos(
         && src_pos->z == dst_pos->z && src_pos->x_rot == dst_pos->x_rot
         && src_pos->y_rot == dst_pos->y_rot && src_pos->z_rot == dst_pos->z_rot;
 }
+
 void InitialiseItemArray(int32_t num_items)
 {
     g_NextItemActive = NO_ITEM;
