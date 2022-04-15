@@ -340,7 +340,7 @@ void AnimateItem(ITEM_INFO *item)
             for (int i = 0; i < anim->number_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
-                    TranslateItem(item, command[0], command[1], command[2]);
+                    Item_Translate(item, command[0], command[1], command[2]);
                     command += 3;
                     break;
 
@@ -419,16 +419,6 @@ void AnimateItem(ITEM_INFO *item)
 
     item->pos.x += (phd_sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
     item->pos.z += (phd_cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
-}
-
-void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
-{
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
-
-    item->pos.x += (c * x + s * z) >> W2V_SHIFT;
-    item->pos.y += y;
-    item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
 void RefreshCamera(int16_t type, int16_t *data)
