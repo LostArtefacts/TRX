@@ -11,7 +11,6 @@ void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void RefreshCamera(int16_t type, int16_t *data);
 void TestTriggers(int16_t *data, int32_t heavy);
 int32_t TriggerActive(ITEM_INFO *item);
-int16_t GetDoor(FLOOR_INFO *floor);
 int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target);
 int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target);
 int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target);
