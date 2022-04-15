@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -27,7 +28,7 @@ void Splash_Control(int16_t fx_num)
 
 void Splash_Spawn(ITEM_INFO *item)
 {
-    int16_t wh = GetWaterHeight(
+    int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     int16_t room_num = item->room_number;
     GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);

@@ -7,6 +7,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
@@ -606,7 +607,7 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
         item->pos.y_rot -= 5 * PHD_DEGREE;
     }
 
-    int16_t wh = GetWaterHeight(
+    int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh - item->pos.y <= -100) {
         item->goal_anim_state = LS_SWIM;

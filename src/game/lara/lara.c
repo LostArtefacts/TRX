@@ -14,6 +14,7 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/effects/splash.h"
+#include "game/room.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -120,7 +121,7 @@ void Lara_Control(void)
         g_Lara.torso_y_rot = 0;
         Splash_Spawn(item);
     } else if (g_Lara.water_status == LWS_UNDERWATER && !room_submerged) {
-        int16_t wh = GetWaterHeight(
+        int16_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
@@ -238,7 +239,7 @@ void Lara_Control(void)
         g_Lara.death_timer = 0;
         Lara_HandleUnderwater(item, &coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
-            int16_t wh = GetWaterHeight(
+            int16_t wh = Room_GetWaterHeight(
                 item->pos.x, item->pos.y, item->pos.z, item->room_number);
             if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
                 g_Lara.water_status = LWS_UNDERWATER;

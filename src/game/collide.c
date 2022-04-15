@@ -8,12 +8,12 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects/door.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "game/room.h"
 
 #define MAX_BADDIE_COLLISION 12
 

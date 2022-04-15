@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lara/lara_misc.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -905,7 +906,7 @@ void Lara_Col_UWDeath(ITEM_INFO *item, COLL_INFO *coll)
     item->hit_points = -1;
     g_Lara.air = -1;
     g_Lara.gun_status = LGS_HANDS_BUSY;
-    int16_t wh = GetWaterHeight(
+    int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
         item->pos.y -= 5;

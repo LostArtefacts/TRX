@@ -7,6 +7,7 @@
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 #define PIERRE_POSE_CHANCE 0x60 // = 96
@@ -229,7 +230,7 @@ void Pierre_Control(int16_t item_num)
         }
     }
 
-    int16_t wh = GetWaterHeight(
+    int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT) {
         item->hit_points = DONT_TARGET;

@@ -7,6 +7,7 @@
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 #define CROCODILE_BITE_DAMAGE 100
@@ -245,7 +246,7 @@ void Alligator_Control(int16_t item_num)
             item->hit_points = DONT_TARGET;
         }
 
-        wh = GetWaterHeight(
+        wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_CROCODILE;
@@ -325,7 +326,7 @@ void Alligator_Control(int16_t item_num)
 
     CreatureHead(item, head);
 
-    wh = GetWaterHeight(
+    wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh == NO_HEIGHT) {
         item->object_number = O_CROCODILE;
