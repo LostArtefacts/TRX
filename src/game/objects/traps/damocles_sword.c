@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -65,7 +66,7 @@ void DamoclesSword_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (!TestBoundsCollide(item, lara_item, coll->radius)) {
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (coll->enable_baddie_push) {

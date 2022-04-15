@@ -1,9 +1,9 @@
 #include "game/lara/lara_misc.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/draw.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/draw.h"
 #include "game/input.h"
 #include "game/lara/lara.h"
 #include "global/vars.h"

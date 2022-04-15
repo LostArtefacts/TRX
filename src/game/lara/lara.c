@@ -645,6 +645,11 @@ bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
+bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius)
+{
+    return Item_TestBoundsCollide(g_LaraItem, item, radius);
+}
+
 bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds)
 {
     return Item_TestPosition(g_LaraItem, item, bounds);
