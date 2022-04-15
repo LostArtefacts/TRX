@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include <stdbool.h>
 
-void InitialiseHair(void);
-void HairControl(int32_t in_cutscene);
-void DrawHair(void);
+void Hair_Initialise(void);
+void Hair_Control(bool in_cutscene);
+void Hair_Draw(void);

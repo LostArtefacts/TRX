@@ -356,7 +356,7 @@ void InitialiseObjects(void)
     TrapObjects();
     ObjectObjects();
 
-    InitialiseHair();
+    Hair_Initialise();
 
     if (g_Config.disable_medpacks) {
         g_Objects[O_MEDI_ITEM].initialise = NULL;

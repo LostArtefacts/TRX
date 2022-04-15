@@ -301,7 +301,7 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         }
 
         Lara_Control();
-        HairControl(0);
+        Hair_Control(false);
 
         Camera_Update();
         Sound_UpdateEffects();

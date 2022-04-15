@@ -20,7 +20,7 @@ static bool m_FirstHair = false;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
-void InitialiseHair(void)
+void Hair_Initialise(void)
 {
     m_FirstHair = true;
 
@@ -41,7 +41,7 @@ void InitialiseHair(void)
     }
 }
 
-void HairControl(int in_cutscene)
+void Hair_Control(bool in_cutscene)
 {
     if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
         return;
@@ -300,7 +300,7 @@ void HairControl(int in_cutscene)
     }
 }
 
-void DrawHair(void)
+void Hair_Draw(void)
 {
     if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
         return;
