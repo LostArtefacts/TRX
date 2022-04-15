@@ -30,8 +30,6 @@ int32_t TestBoundsCollide(
 int32_t TestLaraPosition(
     int16_t *bounds, ITEM_INFO *item, ITEM_INFO *lara_item);
 void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
-int32_t MoveLaraPosition(
-    PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item);
-int32_t Move3DPosTo3DPos(
+bool Move3DPosTo3DPos(
     PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t rotation,
     ITEM_INFO *lara_item);

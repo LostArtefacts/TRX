@@ -1,5 +1,7 @@
 #include "game/items.h"
 
+#include "3dsystem/matrix.h"
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/shell.h"
 #include "global/const.h"
@@ -338,4 +340,29 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     }
 
     return false;
+}
+
+bool Item_MovePosition(
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec, int32_t velocity)
+{
+    PHD_3DPOS dest;
+    dest.x_rot = dst_item->pos.x_rot;
+    dest.y_rot = dst_item->pos.y_rot;
+    dest.z_rot = dst_item->pos.z_rot;
+    phd_PushUnitMatrix();
+    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    dest.x = dst_item->pos.x
+        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
+           >> W2V_SHIFT);
+    dest.y = dst_item->pos.y
+        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
+           >> W2V_SHIFT);
+    dest.z = dst_item->pos.z
+        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
+           >> W2V_SHIFT);
+    phd_PopMatrix();
+
+    return Move3DPosTo3DPos(
+        &src_item->pos, &dest, velocity, MOVE_ANG, src_item);
 }

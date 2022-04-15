@@ -135,7 +135,7 @@ void Switch_CollisionControlled(
         PHD_VECTOR move_vector = { 0, 0, bounds[4] - 64 };
 
         if (TestLaraPosition(m_Switch_BoundsControlled, item, lara_item)) {
-            if (MoveLaraPosition(&move_vector, item, lara_item)) {
+            if (Lara_MovePosition(&move_vector, item, lara_item)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
                     lara_item->anim_number = LA_WALL_SWITCH_DOWN;
                     lara_item->current_anim_state = LS_SWITCH_OFF;
@@ -192,7 +192,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (item->current_anim_state == SWITCH_STATE_ON
         || item->current_anim_state == SWITCH_STATE_OFF) {
         PHD_VECTOR move_vector_uw = { 0, 0, 108 };
-        if (!MoveLaraPosition(&move_vector_uw, item, lara_item)) {
+        if (!Lara_MovePosition(&move_vector_uw, item, lara_item)) {
             return;
         }
         lara_item->fall_speed = 0;
