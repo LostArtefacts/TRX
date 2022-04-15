@@ -128,7 +128,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (g_Input.action && lara_item->current_anim_state == LS_TREAD) {
-            if (!Lara_MovePosition(&m_PickUpPositionUW, item, lara_item)) {
+            if (!Lara_MovePosition(item, &m_PickUpPositionUW)) {
                 return;
             }
             Lara_AnimateUntil(lara_item, LS_PICKUP);
@@ -166,7 +166,7 @@ void Pickup_CollisionControlled(
 
             if (TestLaraPosition(m_PickUpBoundsControlled, item, lara_item)) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
-                if (Lara_MovePosition(&m_PickUpPosition, item, lara_item)) {
+                if (Lara_MovePosition(item, &m_PickUpPosition)) {
                     lara_item->anim_number = LA_PICKUP;
                     lara_item->current_anim_state = LS_PICKUP;
                     have_item = true;
@@ -205,7 +205,7 @@ void Pickup_CollisionControlled(
                 && g_Lara.interact_target.item_num == item_num)) {
 
             if (TestLaraPosition(m_PickUpBoundsUW, item, lara_item)) {
-                if (Lara_MovePosition(&m_PickUpPositionUW, item, lara_item)) {
+                if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
                     lara_item->anim_number = LA_PICKUP_UW;
                     lara_item->current_anim_state = LS_PICKUP;
 

@@ -645,7 +645,7 @@ bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
-bool Lara_MovePosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
+bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
 {
     int32_t velocity =
         g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER
