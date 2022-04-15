@@ -47,7 +47,7 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!TestLaraPosition(g_KeyHoleBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, g_KeyHoleBounds)) {
         return;
     }
 

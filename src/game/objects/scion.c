@@ -138,7 +138,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
 
-    if (!TestLaraPosition(m_Scion_Bounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, m_Scion_Bounds)) {
         return;
     }
 
@@ -174,7 +174,7 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
 
-    if (!TestLaraPosition(m_Scion_Bounds4, item, lara_item)) {
+    if (!Lara_TestPosition(item, m_Scion_Bounds4)) {
         return;
     }
 

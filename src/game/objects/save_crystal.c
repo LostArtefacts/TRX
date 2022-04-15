@@ -1,11 +1,11 @@
 #include "game/objects/save_crystal.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/pickup.h"
 #include "game/savegame.h"
 #include "game/settings.h"
@@ -60,7 +60,7 @@ void SaveCrystal_Collision(
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.z_rot = 0;
     item->pos.x_rot = 0;
-    if (!TestLaraPosition(m_CrystalBounds, item, lara_item)) {
+    if (!Lara_TestPosition(item, m_CrystalBounds)) {
         return;
     }
 
