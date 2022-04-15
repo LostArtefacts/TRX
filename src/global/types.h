@@ -1567,6 +1567,7 @@ typedef struct TEXTSTRING {
             uint32_t right : 1;
             uint32_t bottom : 1;
             uint32_t background : 1;
+            uint32_t centre_v_gradient : 1;
             uint32_t outline : 1;
             uint32_t hide : 1;
         };
@@ -1593,6 +1594,10 @@ typedef struct TEXTSTRING {
         int32_t h;
         int32_t v;
     } scale;
+    struct {
+        RGBA8888 centre;
+        RGBA8888 edge;
+    } centre_v_gradient;
     char *string;
 
     void (*on_remove)(const struct TEXTSTRING *);

@@ -12,6 +12,9 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
+RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+RGBA8888 m_EdgeColor = { 26, 10, 20, 128 };
+
 void InitRequester(REQUEST_INFO *req)
 {
     req->heading = NULL;
@@ -113,6 +116,7 @@ int32_t DisplayRequester(REQUEST_INFO *req)
             Text_AddBackground(
                 req->texts[i], req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0,
                 0, 0);
+            Text_CentreVGradient(req->texts[i], m_CenterColor, m_EdgeColor);
             Text_AddOutline(req->texts[i], 1);
         } else {
             Text_RemoveBackground(req->texts[i]);

@@ -197,12 +197,24 @@ void Text_AddBackground(
     textstring->bgnd_off.y = y;
 }
 
+void Text_CentreVGradient(
+    TEXTSTRING *textstring, RGBA8888 centre, RGBA8888 edge)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->flags.centre_v_gradient = 1;
+    textstring->centre_v_gradient.centre = centre;
+    textstring->centre_v_gradient.edge = edge;
+}
+
 void Text_RemoveBackground(TEXTSTRING *textstring)
 {
     if (!textstring) {
         return;
     }
     textstring->flags.background = 0;
+    textstring->flags.centre_v_gradient = 0;
 }
 
 void Text_AddOutline(TEXTSTRING *textstring, bool enable)
@@ -408,6 +420,24 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sv = Screen_GetRenderScale(bheight);
 
         Output_DrawScreenFBox(sx, sy, sh, sv);
+    }
+
+    if (textstring->flags.centre_v_gradient) {
+        sx = Screen_GetRenderScale(bxpos);
+        sy = Screen_GetRenderScale(bypos);
+        sh = Screen_GetRenderScale(bwidth);
+        sv = Screen_GetRenderScale(bheight);
+
+        Output_DrawScreenGradientQuad(
+            sx, sy, sh, sv / 2, textstring->centre_v_gradient.edge,
+            textstring->centre_v_gradient.edge,
+            textstring->centre_v_gradient.centre,
+            textstring->centre_v_gradient.centre);
+        Output_DrawScreenGradientQuad(
+            sx, sy + (sv / 2), sh, sv / 2, textstring->centre_v_gradient.centre,
+            textstring->centre_v_gradient.centre,
+            textstring->centre_v_gradient.edge,
+            textstring->centre_v_gradient.edge);
     }
 
     if (textstring->flags.outline) {
