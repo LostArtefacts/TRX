@@ -1,6 +1,7 @@
 #include "game/lara/lara.h"
 
 #include "3dsystem/phd_math.h"
+#include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -18,6 +19,8 @@
 #include "log.h"
 
 #define LARA_MOVE_TIMEOUT 90
+#define LARA_MOVE_ANIM_VELOCITY 12
+#define LARA_MOVE_SPEED 16
 
 static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
 
@@ -640,4 +643,13 @@ void Lara_InitialiseMeshes(int32_t level_num)
 bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
 {
     return Item_IsNearItem(g_LaraItem, pos, distance);
+}
+
+bool Lara_MovePosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
+{
+    int32_t velocity =
+        g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER
+        ? LARA_MOVE_ANIM_VELOCITY
+        : LARA_MOVE_SPEED;
+    return Item_MovePosition(g_LaraItem, item, vec, velocity);
 }

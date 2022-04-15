@@ -14,7 +14,6 @@
 #include "global/vars.h"
 
 #define MAX_BADDIE_COLLISION 12
-#define MOVE_ANIM_VELOCITY 12
 
 #define ADJUST_ROT(source, target, rot)                                        \
     do {                                                                       \
@@ -857,36 +856,7 @@ void AlignLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
     phd_PopMatrix();
 }
 
-int32_t MoveLaraPosition(PHD_VECTOR *vec, ITEM_INFO *item, ITEM_INFO *lara_item)
-{
-    PHD_3DPOS dest;
-    dest.x_rot = item->pos.x_rot;
-    dest.y_rot = item->pos.y_rot;
-    dest.z_rot = item->pos.z_rot;
-    phd_PushUnitMatrix();
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
-    dest.x = item->pos.x
-        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
-           >> W2V_SHIFT);
-    dest.y = item->pos.y
-        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
-           >> W2V_SHIFT);
-    dest.z = item->pos.z
-        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
-           >> W2V_SHIFT);
-    phd_PopMatrix();
-
-    int32_t velocity = MOVE_SPEED;
-    if (g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER) {
-        velocity = MOVE_ANIM_VELOCITY;
-    }
-
-    return Move3DPosTo3DPos(
-        &lara_item->pos, &dest, velocity, MOVE_ANG, lara_item);
-}
-
-int32_t Move3DPosTo3DPos(
+bool Move3DPosTo3DPos(
     PHD_3DPOS *srcpos, PHD_3DPOS *destpos, int32_t velocity, int16_t rotation,
     ITEM_INFO *lara_item)
 {
