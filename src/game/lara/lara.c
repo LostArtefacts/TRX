@@ -645,6 +645,11 @@ bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
 
+void Lara_AlignPosition(ITEM_INFO *item, PHD_VECTOR *vec)
+{
+    Item_AlignPosition(g_LaraItem, item, vec);
+}
+
 bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
 {
     int32_t velocity =

@@ -18,4 +18,6 @@ void Lara_InitialiseMeshes(int32_t level_num);
 void Lara_SwapMeshExtra(void);
 bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance);
 void Lara_UseItem(int16_t object_num);
+
+void Lara_AlignPosition(ITEM_INFO *item, PHD_VECTOR *vec);
 bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec);

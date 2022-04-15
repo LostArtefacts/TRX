@@ -107,7 +107,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
             && !lara_item->gravity_status
             && lara_item->current_anim_state == LS_STOP) {
-            AlignLaraPosition(&m_PickUpPosition, item, lara_item);
+            Lara_AlignPosition(item, &m_PickUpPosition);
             Lara_AnimateUntil(lara_item, LS_PICKUP);
             lara_item->goal_anim_state = LS_STOP;
             g_Lara.gun_status = LGS_HANDS_BUSY;
