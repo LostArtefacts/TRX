@@ -112,7 +112,7 @@ FLOOR_INFO *Room_GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
             break;
         }
 
-        data = GetDoor(floor);
+        data = Room_GetDoor(floor);
         if (data != NO_ROOM) {
             *room_num = data;
             r = &g_RoomInfo[data];
@@ -250,6 +250,31 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
+int16_t Room_GetDoor(FLOOR_INFO *floor)
+{
+    if (!floor->index) {
+        return NO_ROOM;
+    }
+
+    int16_t *data = &g_FloorData[floor->index];
+    int16_t type = *data++;
+
+    if (type == FT_TILT) {
+        data++;
+        type = *data++;
+    }
+
+    if (type == FT_ROOF) {
+        data++;
+        type = *data++;
+    }
+
+    if ((type & DATA_TYPE) == FT_DOOR) {
+        return *data;
+    }
+    return NO_ROOM;
+}
+
 int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     g_HeightType = HT_WALL;
@@ -378,7 +403,7 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         }
 
         floor = &r->floor[x_floor + y_floor * r->x_size];
-        data = GetDoor(floor);
+        data = Room_GetDoor(floor);
         if (data != NO_ROOM) {
             r = &g_RoomInfo[data];
         }

@@ -30,31 +30,6 @@ int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
     return 0;
 }
 
-int16_t GetDoor(FLOOR_INFO *floor)
-{
-    if (!floor->index) {
-        return NO_ROOM;
-    }
-
-    int16_t *data = &g_FloorData[floor->index];
-    int16_t type = *data++;
-
-    if (type == FT_TILT) {
-        data++;
-        type = *data++;
-    }
-
-    if (type == FT_ROOF) {
-        data++;
-        type = *data++;
-    }
-
-    if ((type & DATA_TYPE) == FT_DOOR) {
-        return *data;
-    }
-    return NO_ROOM;
-}
-
 int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target)
 {
     int32_t los1;

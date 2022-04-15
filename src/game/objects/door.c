@@ -6,6 +6,7 @@
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -104,7 +105,7 @@ void Door_Initialise(int16_t item_num)
     x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
     y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
     door->d1.floor = &r->floor[x_floor + y_floor * r->x_size];
-    room_num = GetDoor(door->d1.floor);
+    room_num = Room_GetDoor(door->d1.floor);
     if (room_num == NO_ROOM) {
         box_num = door->d1.floor->box;
     } else {
@@ -124,7 +125,7 @@ void Door_Initialise(int16_t item_num)
         x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
         y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
         door->d1flip.floor = &r->floor[x_floor + y_floor * r->x_size];
-        room_num = GetDoor(door->d1flip.floor);
+        room_num = Room_GetDoor(door->d1flip.floor);
         if (room_num == NO_ROOM) {
             box_num = door->d1flip.floor->box;
         } else {
@@ -142,7 +143,7 @@ void Door_Initialise(int16_t item_num)
         door->d1flip.floor = NULL;
     }
 
-    room_num = GetDoor(door->d1.floor);
+    room_num = Room_GetDoor(door->d1.floor);
     Door_Shut(&door->d1, NULL);
     Door_Shut(&door->d1flip, NULL);
 
@@ -156,7 +157,7 @@ void Door_Initialise(int16_t item_num)
     x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
     door->d2.floor = &r->floor[x_floor + y_floor * r->x_size];
-    room_num = GetDoor(door->d2.floor);
+    room_num = Room_GetDoor(door->d2.floor);
     if (room_num == NO_ROOM) {
         box_num = door->d2.floor->box;
     } else {
@@ -176,7 +177,7 @@ void Door_Initialise(int16_t item_num)
         x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
         y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
         door->d2flip.floor = &r->floor[x_floor + y_floor * r->x_size];
-        room_num = GetDoor(door->d2flip.floor);
+        room_num = Room_GetDoor(door->d2flip.floor);
         if (room_num == NO_ROOM) {
             box_num = door->d2flip.floor->box;
         } else {
