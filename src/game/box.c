@@ -7,6 +7,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -935,7 +936,8 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
                 item->pos.y = height;
             }
         } else {
-            int32_t ceiling = GetCeiling(floor, item->pos.x, y, item->pos.z);
+            int32_t ceiling =
+                Room_GetCeiling(floor, item->pos.x, y, item->pos.z);
 
             if (item->object_number == O_ALLIGATOR) {
                 bounds[FRAME_BOUND_MIN_Y] = 0;

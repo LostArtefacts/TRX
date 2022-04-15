@@ -7,6 +7,7 @@
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
+#include "game/room.h"
 #include "global/types.h"
 #include "global/vars.h"
 
@@ -27,7 +28,50 @@ typedef enum {
 
 static BITE_INFO m_BatBite = { 0, 16, 45, 4 };
 
-static void Bad_FixEmbeddedPosition(int16_t item_num);
+static void Bat_FixEmbeddedPosition(int16_t item_num);
+
+static void Bat_FixEmbeddedPosition(int16_t item_num)
+{
+    ITEM_INFO *item;
+    FLOOR_INFO *floor;
+    int32_t x, y, z;
+    int16_t room_number, ceiling, old_anim, old_frame, bat_height;
+    int16_t *bounds;
+
+    item = &g_Items[item_num];
+    if (item->status != IS_ACTIVE) {
+        x = item->pos.x;
+        y = item->pos.y;
+        z = item->pos.z;
+        room_number = item->room_number;
+
+        floor = GetFloor(x, y, z, &room_number);
+        GetHeight(floor, x, y, z);
+        ceiling = Room_GetCeiling(floor, x, y, z);
+
+        // The bats animation and frame have to be changed to the hanging
+        // one to properly measure them. Save it so it can be restored
+        // after.
+        old_anim = item->anim_number;
+        old_frame = item->frame_number;
+
+        item->anim_number = g_Objects[item->object_number].anim_index;
+        item->frame_number = g_Anims[item->anim_number].frame_base;
+        bounds = GetBoundsAccurate(item);
+
+        item->anim_number = old_anim;
+        item->frame_number = old_frame;
+
+        bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
+
+        // Only move the bat if it's above the calculated position,
+        // Palace Midas has many bats that aren't intended to be at
+        // ceiling level.
+        if (item->pos.y < ceiling + bat_height) {
+            item->pos.y = ceiling + bat_height;
+        }
+    }
+}
 
 void Bat_Setup(OBJECT_INFO *obj)
 {
@@ -116,48 +160,5 @@ void Bat_Initialise(int16_t item_num)
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down
     // by the height of their hanging animation.
-    Bad_FixEmbeddedPosition(item_num);
-}
-
-static void Bad_FixEmbeddedPosition(int16_t item_num)
-{
-    ITEM_INFO *item;
-    FLOOR_INFO *floor;
-    int32_t x, y, z;
-    int16_t room_number, ceiling, old_anim, old_frame, bat_height;
-    int16_t *bounds;
-
-    item = &g_Items[item_num];
-    if (item->status != IS_ACTIVE) {
-        x = item->pos.x;
-        y = item->pos.y;
-        z = item->pos.z;
-        room_number = item->room_number;
-
-        floor = GetFloor(x, y, z, &room_number);
-        GetHeight(floor, x, y, z);
-        ceiling = GetCeiling(floor, x, y, z);
-
-        // The bats animation and frame have to be changed to the hanging
-        // one to properly measure them. Save it so it can be restored
-        // after.
-        old_anim = item->anim_number;
-        old_frame = item->frame_number;
-
-        item->anim_number = g_Objects[item->object_number].anim_index;
-        item->frame_number = g_Anims[item->anim_number].frame_base;
-        bounds = GetBoundsAccurate(item);
-
-        item->anim_number = old_anim;
-        item->frame_number = old_frame;
-
-        bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
-
-        // Only move the bat if it's above the calculated position,
-        // Palace Midas has many bats that aren't intended to be at
-        // ceiling level.
-        if (item->pos.y < ceiling + bat_height) {
-            item->pos.y = ceiling + bat_height;
-        }
-    }
+    Bat_FixEmbeddedPosition(item_num);
 }

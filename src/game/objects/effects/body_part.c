@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -27,7 +28,7 @@ void BodyPart_Control(int16_t fx_num)
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
 
-    int32_t ceiling = GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    int32_t ceiling = Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     if (fx->pos.y < ceiling) {
         fx->fall_speed = -fx->fall_speed;
         fx->pos.y = ceiling;

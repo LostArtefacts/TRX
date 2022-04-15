@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -32,7 +33,8 @@ static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    return y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z);
+    return y >= GetHeight(floor, x, y, z)
+        || y <= Room_GetCeiling(floor, x, y, z);
 }
 
 static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
@@ -63,7 +65,7 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     }
 
     int32_t height = GetHeight(floor, x, y, z) - clamp;
-    int32_t ceiling = GetCeiling(floor, x, y, z) + clamp;
+    int32_t ceiling = Room_GetCeiling(floor, x, y, z) + clamp;
 
     if (height < ceiling) {
         ceiling = (height + ceiling) >> 1;
@@ -303,7 +305,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
     }
 
     int32_t ceiling =
-        GetCeiling(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
+        Room_GetCeiling(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
         + GROUND_SHIFT;
     if (height < ceiling) {
         ceiling = (height + ceiling) >> 1;

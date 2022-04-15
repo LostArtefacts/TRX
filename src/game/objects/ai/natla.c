@@ -10,6 +10,7 @@
 #include "game/music.h"
 #include "game/people.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -332,7 +333,8 @@ void NatlaGun_Control(int16_t fx_num)
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
 
-    if (y >= GetHeight(floor, x, y, z) || y <= GetCeiling(floor, x, y, z)) {
+    if (y >= GetHeight(floor, x, y, z)
+        || y <= Room_GetCeiling(floor, x, y, z)) {
         return;
     }
 
