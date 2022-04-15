@@ -3,7 +3,6 @@
 #include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -331,7 +330,7 @@ void NatlaGun_Control(int16_t fx_num)
     int32_t x = fx->pos.x + ((fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
 
     if (y >= Room_GetHeight(floor, x, y, z)
         || y <= Room_GetCeiling(floor, x, y, z)) {

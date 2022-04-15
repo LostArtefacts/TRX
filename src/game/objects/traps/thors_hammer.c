@@ -1,6 +1,5 @@
 #include "game/objects/traps/thors_hammer.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
@@ -114,7 +113,7 @@ void ThorsHandle_Control(int16_t item_num)
         int32_t old_z = z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
+        FLOOR_INFO *floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         Room_GetHeight(floor, x, item->pos.y, z);
         TestTriggers(g_TriggerIndex, 1);
 

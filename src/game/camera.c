@@ -32,7 +32,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     return y >= Room_GetHeight(floor, x, y, z)
         || y <= Room_GetCeiling(floor, x, y, z);
 }
@@ -43,7 +43,7 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     int32_t y = pos->y;
     int32_t z = pos->z;
 
-    FLOOR_INFO *floor = GetFloor(x, y, z, &pos->room_number);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &pos->room_number);
 
     BOX_INFO *box = &g_Boxes[floor->box];
     if (z < box->left + clamp
@@ -209,7 +209,7 @@ static void Camera_SmartShift(
     }
 
     if (!noclip) {
-        GetFloor(ideal->x, ideal->y, ideal->z, &ideal->room_number);
+        Room_GetFloor(ideal->x, ideal->y, ideal->z, &ideal->room_number);
     }
 }
 
@@ -287,7 +287,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
 
     g_ChunkyFlag = false;
 
-    FLOOR_INFO *floor = GetFloor(
+    FLOOR_INFO *floor = Room_GetFloor(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
         &g_Camera.pos.room_number);
     int32_t height =
@@ -296,7 +296,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
 
     if (g_Camera.pos.y >= height && ideal->y >= height) {
         LOS(&g_Camera.target, &g_Camera.pos);
-        floor = GetFloor(
+        floor = Room_GetFloor(
             g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
             &g_Camera.pos.room_number);
         height = Room_GetHeight(
@@ -340,7 +340,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         g_Camera.shift = 0;
     }
 
-    GetFloor(
+    Room_GetFloor(
         g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
         &g_Camera.pos.room_number);
 
@@ -653,7 +653,7 @@ void Camera_Update(void)
             g_Camera.fixed_camera = 0;
         }
 
-        FLOOR_INFO *floor = GetFloor(
+        FLOOR_INFO *floor = Room_GetFloor(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             &g_Camera.target.room_number);
         if (g_Camera.target.y > Room_GetHeight(

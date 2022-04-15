@@ -3,7 +3,6 @@
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/output.h"
 #include "game/room.h"
@@ -216,7 +215,7 @@ void Hair_Control(bool in_cutscene)
             m_HVel[0].z = m_Hair[i].z;
 
             if (!in_cutscene) {
-                floor = GetFloor(
+                floor = Room_GetFloor(
                     m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
                 height = Room_GetHeight(
                     floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);

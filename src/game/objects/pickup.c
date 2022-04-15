@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/inv.h"

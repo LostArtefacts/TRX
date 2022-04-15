@@ -3,7 +3,6 @@
 #include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -32,7 +31,7 @@ void GetCollisionInfo(
     int32_t z = zpos;
     int32_t ytop = y - 160;
 
-    FLOOR_INFO *floor = GetFloor(x, ytop, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, ytop, z, &room_num);
     int32_t height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
@@ -107,7 +106,7 @@ void GetCollisionInfo(
 
     x = xpos + xfront;
     z = zpos + zfront;
-    floor = GetFloor(x, ytop, z, &room_num);
+    floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
@@ -136,7 +135,7 @@ void GetCollisionInfo(
 
     x = xpos + xleft;
     z = zpos + zleft;
-    floor = GetFloor(x, ytop, z, &room_num);
+    floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
@@ -165,7 +164,7 @@ void GetCollisionInfo(
 
     x = xpos + xright;
     z = zpos + zright;
-    floor = GetFloor(x, ytop, z, &room_num);
+    floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
@@ -193,7 +192,7 @@ void GetCollisionInfo(
     }
 
     if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, obj_height)) {
-        floor = GetFloor(
+        floor = Room_GetFloor(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
         if (Room_GetHeight(
                 floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)

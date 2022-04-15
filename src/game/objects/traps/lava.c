@@ -2,7 +2,6 @@
 
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -26,7 +25,8 @@ bool Lava_TestFloor(ITEM_INFO *item)
     }
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
+    FLOOR_INFO *floor =
+        Room_GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
 
     int16_t *data = &g_FloorData[floor->index];
     int16_t type;
@@ -70,7 +70,8 @@ void Lava_Burn(ITEM_INFO *item)
     }
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
+    FLOOR_INFO *floor =
+        Room_GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
     int16_t height = Room_GetHeight(floor, item->pos.x, 32000, item->pos.z);
 
     if (item->floor != height) {
@@ -105,7 +106,8 @@ void Lava_Control(int16_t fx_num)
     fx->pos.y += fx->fall_speed;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    FLOOR_INFO *floor =
+        Room_GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     if (fx->pos.y >= Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
         || fx->pos.y
             < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
@@ -158,7 +160,7 @@ void LavaWedge_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
 
     int16_t room_num = item->room_number;
-    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (room_num != item->room_number) {
         ItemNewRoom(item_num, room_num);
     }
@@ -186,7 +188,7 @@ void LavaWedge_Control(int16_t item_num)
             break;
         }
 
-        FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
+        FLOOR_INFO *floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(floor, x, item->pos.y, z) != item->pos.y) {
             item->status = IS_DEACTIVATED;
         }

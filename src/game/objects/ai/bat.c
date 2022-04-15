@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
@@ -45,7 +44,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
         z = item->pos.z;
         room_number = item->room_number;
 
-        floor = GetFloor(x, y, z, &room_number);
+        floor = Room_GetFloor(x, y, z, &room_number);
         Room_GetHeight(floor, x, y, z);
         ceiling = Room_GetCeiling(floor, x, y, z);
 

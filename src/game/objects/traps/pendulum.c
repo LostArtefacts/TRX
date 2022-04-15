@@ -42,8 +42,8 @@ void Pendulum_Control(int16_t item_num)
         Effect_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_number);
     }
 
-    FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    FLOOR_INFO *floor = Room_GetFloor(
+        item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
     AnimateItem(item);

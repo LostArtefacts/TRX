@@ -30,78 +30,6 @@ int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim)
     return 0;
 }
 
-FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
-{
-    int16_t data;
-    FLOOR_INFO *floor;
-    ROOM_INFO *r = &g_RoomInfo[*room_num];
-    do {
-        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-
-        if (x_floor <= 0) {
-            x_floor = 0;
-            if (y_floor < 1) {
-                y_floor = 1;
-            } else if (y_floor > r->y_size - 2) {
-                y_floor = r->y_size - 2;
-            }
-        } else if (x_floor >= r->x_size - 1) {
-            x_floor = r->x_size - 1;
-            if (y_floor < 1) {
-                y_floor = 1;
-            } else if (y_floor > r->y_size - 2) {
-                y_floor = r->y_size - 2;
-            }
-        } else if (y_floor < 0) {
-            y_floor = 0;
-        } else if (y_floor >= r->y_size) {
-            y_floor = r->y_size - 1;
-        }
-
-        floor = &r->floor[x_floor + y_floor * r->x_size];
-        if (!floor->index) {
-            break;
-        }
-
-        data = GetDoor(floor);
-        if (data != NO_ROOM) {
-            *room_num = data;
-            r = &g_RoomInfo[data];
-        }
-    } while (data != NO_ROOM);
-
-    if (y >= ((int32_t)floor->floor << 8)) {
-        do {
-            if (floor->pit_room == NO_ROOM) {
-                break;
-            }
-
-            *room_num = floor->pit_room;
-
-            r = &g_RoomInfo[floor->pit_room];
-            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
-        } while (y >= ((int32_t)floor->floor << 8));
-    } else if (y < ((int32_t)floor->ceiling << 8)) {
-        do {
-            if (floor->sky_room == NO_ROOM) {
-                break;
-            }
-
-            *room_num = floor->sky_room;
-
-            r = &g_RoomInfo[floor->sky_room];
-            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
-        } while (y < ((int32_t)floor->ceiling << 8));
-    }
-
-    return floor;
-}
-
 int16_t GetDoor(FLOOR_INFO *floor)
 {
     if (!floor->index) {
@@ -145,7 +73,7 @@ int32_t LOS(GAME_VECTOR *start, GAME_VECTOR *target)
     }
 
     FLOOR_INFO *floor =
-        GetFloor(target->x, target->y, target->z, &target->room_number);
+        Room_GetFloor(target->x, target->y, target->z, &target->room_number);
 
     if (ClipTarget(start, target, floor) && los1 == 1 && los2 == 1) {
         return 1;
@@ -175,7 +103,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
         while (z > target->z) {
-            floor = GetFloor(x, y, z, &room_num);
+            floor = Room_GetFloor(x, y, z, &room_num);
             if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
@@ -187,7 +115,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
             last_room = room_num;
 
-            floor = GetFloor(x, y, z - 1, &room_num);
+            floor = Room_GetFloor(x, y, z - 1, &room_num);
             if (y > Room_GetHeight(floor, x, y, z - 1)
                 || y < Room_GetCeiling(floor, x, y, z - 1)) {
                 target->x = x;
@@ -207,7 +135,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
         while (z < target->z) {
-            floor = GetFloor(x, y, z, &room_num);
+            floor = Room_GetFloor(x, y, z, &room_num);
             if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
@@ -219,7 +147,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
             last_room = room_num;
 
-            floor = GetFloor(x, y, z + 1, &room_num);
+            floor = Room_GetFloor(x, y, z + 1, &room_num);
             if (y > Room_GetHeight(floor, x, y, z + 1)
                 || y < Room_GetCeiling(floor, x, y, z + 1)) {
                 target->x = x;
@@ -260,7 +188,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
         int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
 
         while (x > target->x) {
-            floor = GetFloor(x, y, z, &room_num);
+            floor = Room_GetFloor(x, y, z, &room_num);
             if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
@@ -272,7 +200,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
             last_room = room_num;
 
-            floor = GetFloor(x - 1, y, z, &room_num);
+            floor = Room_GetFloor(x - 1, y, z, &room_num);
             if (y > Room_GetHeight(floor, x - 1, y, z)
                 || y < Room_GetCeiling(floor, x - 1, y, z)) {
                 target->x = x;
@@ -292,7 +220,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
         int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
 
         while (x < target->x) {
-            floor = GetFloor(x, y, z, &room_num);
+            floor = Room_GetFloor(x, y, z, &room_num);
             if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
@@ -304,7 +232,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
             last_room = room_num;
 
-            floor = GetFloor(x + 1, y, z, &room_num);
+            floor = Room_GetFloor(x + 1, y, z, &room_num);
             if (y > Room_GetHeight(floor, x + 1, y, z)
                 || y < Room_GetCeiling(floor, x + 1, y, z)) {
                 target->x = x;

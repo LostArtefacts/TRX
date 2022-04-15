@@ -111,7 +111,7 @@ void LightningEmitter_Control(int16_t item_num)
 
             l->zapped = true;
         } else if (l->no_target) {
-            FLOOR_INFO *floor = GetFloor(
+            FLOOR_INFO *floor = Room_GetFloor(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_number);
             int32_t h =
                 Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);

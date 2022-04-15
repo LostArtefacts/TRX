@@ -3,6 +3,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/objects/traps/movable_block.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void RollingBlock_Setup(OBJECT_INFO *obj)
@@ -36,7 +37,7 @@ void RollingBlock_Control(int16_t item_num)
     AnimateItem(item);
 
     int16_t room_num = item->room_number;
-    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
         ItemNewRoom(item_num, room_num);
     }

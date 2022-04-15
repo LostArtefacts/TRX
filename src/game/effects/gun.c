@@ -1,7 +1,6 @@
 #include "game/effects/gun.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/random.h"
