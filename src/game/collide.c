@@ -948,22 +948,3 @@ int32_t Move3DPosTo3DPos(
         && srcpos->z == destpos->z && srcpos->x_rot == destpos->x_rot
         && srcpos->y_rot == destpos->y_rot && srcpos->z_rot == destpos->z_rot;
 }
-
-int32_t ItemNearLara(PHD_3DPOS *pos, int32_t distance)
-{
-    int32_t x = pos->x - g_LaraItem->pos.x;
-    int32_t y = pos->y - g_LaraItem->pos.y;
-    int32_t z = pos->z - g_LaraItem->pos.z;
-
-    if (x >= -distance && x <= distance && z >= -distance && z <= distance
-        && y >= -WALL_L * 3 && y <= WALL_L * 3
-        && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        int16_t *bounds = GetBoundsAccurate(g_LaraItem);
-        if (y >= bounds[FRAME_BOUND_MIN_Y]
-            && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
-            return 1;
-        }
-    }
-
-    return 0;
-}

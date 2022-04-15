@@ -1,11 +1,11 @@
 #include "game/objects/traps/lightning_emitter.h"
 
 #include "3dsystem/matrix.h"
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -100,7 +100,7 @@ void LightningEmitter_Control(int16_t item_num)
         }
 
         int32_t radius = l->no_target ? WALL_L : WALL_L * 5 / 2;
-        if (ItemNearLara(&item->pos, radius)) {
+        if (Lara_IsNearItem(&item->pos, radius)) {
             l->target.x = g_LaraItem->pos.x;
             l->target.y = g_LaraItem->pos.y;
             l->target.z = g_LaraItem->pos.z;

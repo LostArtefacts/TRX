@@ -18,3 +18,5 @@ void InitialiseFXArray(void);
 int16_t CreateEffect(int16_t room_num);
 void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
+
+bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance);
