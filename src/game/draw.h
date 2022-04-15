@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
 void Draw_PrintRoomNumStack(void);
 void DrawRooms(int16_t current_room);
 void GetRoomBounds(int16_t room_num);
@@ -15,12 +13,8 @@ void DrawDummyItem(ITEM_INFO *item);
 void DrawPickupItem(ITEM_INFO *item);
 void DrawAnimatingItem(ITEM_INFO *item);
 void DrawUnclippedItem(ITEM_INFO *item);
-void DrawLara(ITEM_INFO *item);
 void DrawGunFlash(int32_t weapon_type, int32_t clip);
 void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
-void DrawLaraInt(
-    ITEM_INFO *item, int16_t *frame1, int16_t *frame2, int32_t frac,
-    int32_t rate);
 
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int16_t *GetBoundsAccurate(ITEM_INFO *item);

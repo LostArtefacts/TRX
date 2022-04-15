@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/lara.h"
 #include "game/items.h"
 #include "global/vars.h"
 
@@ -109,7 +110,7 @@ void BaconLara_Draw(ITEM_INFO *item)
         g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_BACON_LARA].mesh_index + i];
     }
 
-    DrawLara(item);
+    Lara_Draw(item);
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         g_Lara.mesh_ptrs[i] = old_mesh_ptrs[i];
