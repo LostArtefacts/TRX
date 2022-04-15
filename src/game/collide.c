@@ -38,7 +38,7 @@ void GetCollisionInfo(
         height -= ypos;
     }
 
-    int32_t ceiling = GetCeiling(floor, x, ytop, z);
+    int32_t ceiling = Room_GetCeiling(floor, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -113,7 +113,7 @@ void GetCollisionInfo(
         height -= ypos;
     }
 
-    ceiling = GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(floor, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -142,7 +142,7 @@ void GetCollisionInfo(
         height -= ypos;
     }
 
-    ceiling = GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(floor, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -171,7 +171,7 @@ void GetCollisionInfo(
         height -= ypos;
     }
 
-    ceiling = GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(floor, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -197,7 +197,7 @@ void GetCollisionInfo(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
         if (GetHeight(floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
                 < ypos - 512
-            || GetCeiling(
+            || Room_GetCeiling(
                    floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
                 > y) {
             coll->shift.x = -coll->shift.x;

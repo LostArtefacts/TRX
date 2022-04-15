@@ -1,6 +1,7 @@
 #include "game/room.h"
 
 #include "game/control.h"
+#include "game/shell.h"
 #include "global/vars.h"
 
 int16_t Room_GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
@@ -75,6 +76,106 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
         g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
+}
+
+int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+{
+    int16_t *data;
+    int16_t type;
+    int16_t trigger;
+
+    FLOOR_INFO *f = floor;
+    while (f->sky_room != NO_ROOM) {
+        ROOM_INFO *r = &g_RoomInfo[f->sky_room];
+        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        f = &r->floor[x_floor + y_floor * r->x_size];
+    }
+
+    int16_t height = f->ceiling << 8;
+
+    if (f->index) {
+        data = &g_FloorData[f->index];
+        type = *data++ & DATA_TYPE;
+
+        if (type == FT_TILT) {
+            data++;
+            type = *data++ & DATA_TYPE;
+        }
+
+        if (type == FT_ROOF) {
+            int32_t xoff = data[0] >> 8;
+            int32_t yoff = (int8_t)data[0];
+
+            if (!g_ChunkyFlag
+                || (xoff >= -2 && xoff <= 2 && yoff >= -2 && yoff <= 2)) {
+                if (xoff < 0) {
+                    height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
+                } else {
+                    height -=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                }
+
+                if (yoff < 0) {
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                } else {
+                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
+                }
+            }
+        }
+    }
+
+    while (floor->pit_room != NO_ROOM) {
+        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
+        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        floor = &r->floor[x_floor + y_floor * r->x_size];
+    }
+
+    if (!floor->index) {
+        return height;
+    }
+
+    data = &g_FloorData[floor->index];
+    do {
+        type = *data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_DOOR:
+        case FT_TILT:
+        case FT_ROOF:
+            data++;
+            break;
+
+        case FT_LAVA:
+            break;
+
+        case FT_TRIGGER:
+            data++;
+            do {
+                trigger = *data++;
+                if (TRIG_BITS(trigger) != TO_OBJECT) {
+                    if (TRIG_BITS(trigger) == TO_CAMERA) {
+                        trigger = *data++;
+                    }
+                } else {
+                    ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &g_Objects[item->object_number];
+                    if (object->ceiling) {
+                        object->ceiling(item, x, y, z, &height);
+                    }
+                }
+            } while (!(trigger & END_BIT));
+            break;
+
+        default:
+            Shell_ExitSystem("GetCeiling(): Unknown type");
+            break;
+        }
+    } while (!(type & END_BIT));
+
+    return height;
 }
 
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)

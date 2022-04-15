@@ -3,6 +3,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/items.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void Bubble_Setup(OBJECT_INFO *obj)
@@ -27,7 +28,7 @@ void Bubble_Control(int16_t fx_num)
         return;
     }
 
-    int32_t height = GetCeiling(floor, x, y, z);
+    int32_t height = Room_GetCeiling(floor, x, y, z);
     if (height == NO_HEIGHT || y <= height) {
         KillEffect(fx_num);
         return;

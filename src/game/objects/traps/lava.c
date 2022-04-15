@@ -7,6 +7,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -106,7 +107,8 @@ void Lava_Control(int16_t fx_num)
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     if (fx->pos.y >= GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
-        || fx->pos.y < GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
+        || fx->pos.y
+            < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
         KillEffect(fx_num);
     } else if (Lara_IsNearItem(&fx->pos, 200)) {
         g_LaraItem->hit_points -= LAVA_GLOB_DAMAGE;

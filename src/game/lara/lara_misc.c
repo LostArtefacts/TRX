@@ -438,7 +438,7 @@ bool Lara_TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
 
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
     int h = GetHeight(floor, x, y, z);
-    int c = GetCeiling(floor, x, y, z);
+    int c = Room_GetCeiling(floor, x, y, z);
 
     if (h != NO_HEIGHT) {
         if ((h - y) > 0 && (c - y) < -400) {
