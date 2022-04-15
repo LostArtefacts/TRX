@@ -8,7 +8,6 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
 void AnimateItem(ITEM_INFO *item);
 int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 void TranslateItem(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
-FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num);
 void RefreshCamera(int16_t type, int16_t *data);
 void TestTriggers(int16_t *data, int32_t heavy);
 int32_t TriggerActive(ITEM_INFO *item);

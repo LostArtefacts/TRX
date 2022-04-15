@@ -29,7 +29,8 @@ void Missile_Control(int16_t fx_num)
     fx->pos.x += (speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    FLOOR_INFO *floor =
+        Room_GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     int32_t height = Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     int32_t ceiling = Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
 

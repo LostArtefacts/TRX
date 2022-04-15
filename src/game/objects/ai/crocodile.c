@@ -256,7 +256,8 @@ void Alligator_Control(int16_t item_num)
                 g_Objects[O_CROCODILE].anim_index + CROCODILE_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
             room_num = item->room_number;
-            floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+            floor =
+                Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->pos.y =
                 Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             item->pos.x_rot = 0;
@@ -272,7 +273,7 @@ void Alligator_Control(int16_t item_num)
         AnimateItem(item);
 
         room_num = item->room_number;
-        floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
             Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         if (room_num != item->room_number) {

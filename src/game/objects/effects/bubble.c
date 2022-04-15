@@ -1,7 +1,6 @@
 #include "game/objects/effects/bubble.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/control.h"
 #include "game/items.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -22,7 +21,7 @@ void Bubble_Control(int16_t fx_num)
     int32_t z = fx->pos.z + ((phd_cos(fx->pos.x_rot) * 8) >> W2V_SHIFT);
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     if (!floor || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
         KillEffect(fx_num);
         return;

@@ -103,7 +103,7 @@ void Scion_Control3(int16_t item_num)
         item->hit_points = DONT_TARGET;
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =
-            GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+            Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
         RemoveDrawnItem(item_num);

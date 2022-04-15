@@ -96,7 +96,7 @@ void MovableBlock_Control(int16_t item_num)
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     int32_t height =
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
@@ -120,7 +120,7 @@ void MovableBlock_Control(int16_t item_num)
         AlterFloorHeight(item, -WALL_L);
 
         room_num = item->room_number;
-        floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
     }
@@ -240,7 +240,7 @@ bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t blockhite)
 {
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (floor->floor == NO_HEIGHT / 256) {
         return true;
     }
@@ -279,7 +279,7 @@ bool MovableBlock_TestPush(
         break;
     }
 
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -291,7 +291,7 @@ bool MovableBlock_TestPush(
         return false;
     }
 
-    floor = GetFloor(x, y - blockhite, z, &room_num);
+    floor = Room_GetFloor(x, y - blockhite, z, &room_num);
     if (((int32_t)floor->ceiling << 8) > y - blockhite) {
         return false;
     }
@@ -328,7 +328,7 @@ bool MovableBlock_TestPull(
     int32_t z = item->pos.z + z_add;
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -340,7 +340,7 @@ bool MovableBlock_TestPull(
         return false;
     }
 
-    floor = GetFloor(x, y - blockhite, z, &room_num);
+    floor = Room_GetFloor(x, y - blockhite, z, &room_num);
     if (((int32_t)floor->ceiling << 8) > y - blockhite) {
         return false;
     }
@@ -348,13 +348,13 @@ bool MovableBlock_TestPull(
     x += x_add;
     z += z_add;
     room_num = item->room_number;
-    floor = GetFloor(x, y, z, &room_num);
+    floor = Room_GetFloor(x, y, z, &room_num);
 
     if (((int32_t)floor->floor << 8) != y) {
         return false;
     }
 
-    floor = GetFloor(x, y - LARA_HITE, z, &room_num);
+    floor = Room_GetFloor(x, y - LARA_HITE, z, &room_num);
     if (((int32_t)floor->ceiling << 8) > y - LARA_HITE) {
         return false;
     }
@@ -363,7 +363,7 @@ bool MovableBlock_TestPull(
     y = g_LaraItem->pos.y;
     z = g_LaraItem->pos.z + z_add;
     room_num = g_LaraItem->room_number;
-    floor = GetFloor(x, y, z, &room_num);
+    floor = Room_GetFloor(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
     if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HITE)) {
@@ -377,8 +377,8 @@ void AlterFloorHeight(ITEM_INFO *item, int32_t height)
 {
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    FLOOR_INFO *ceiling = GetFloor(
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    FLOOR_INFO *ceiling = Room_GetFloor(
         item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
 
     if (floor->floor == NO_HEIGHT / 256) {

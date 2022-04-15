@@ -1,6 +1,5 @@
 #include "game/objects/traps/damocles_sword.h"
 
-#include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lara.h"

@@ -247,8 +247,8 @@ void Torso_Control(int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Effect_ExplodingDeath(item_num, -1, TORSO_PART_DAMAGE);
-        FLOOR_INFO *floor =
-            GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+        FLOOR_INFO *floor = Room_GetFloor(
+            item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
 

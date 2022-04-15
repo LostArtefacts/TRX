@@ -1,7 +1,6 @@
 #include "game/demo.h"
 
 #include "config.h"
-#include "game/control.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -106,7 +105,7 @@ void LoadLaraDemoPos(void)
     }
 
     FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 

@@ -42,12 +42,12 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = 2 * 60 * WALL_L - g_LaraItem->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+        FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
         int32_t h = Room_GetHeight(floor, x, y, z);
         item->floor = h;
 
         room_num = g_LaraItem->room_number;
-        floor = GetFloor(
+        floor = Room_GetFloor(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
         int32_t lh = Room_GetHeight(
             floor, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
@@ -83,7 +83,7 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = item->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
+        FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
         int32_t h = Room_GetHeight(floor, x, y, z);
         item->floor = h;
 
@@ -91,7 +91,7 @@ void BaconLara_Control(int16_t item_num)
         if (item->pos.y >= h) {
             item->floor = h;
             item->pos.y = h;
-            floor = GetFloor(x, h, z, &room_num);
+            floor = Room_GetFloor(x, h, z, &room_num);
             Room_GetHeight(floor, x, h, z);
             TestTriggers(g_TriggerIndex, 1);
             item->gravity_status = 0;

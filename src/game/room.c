@@ -64,7 +64,7 @@ void Room_GetNearByRooms(
 
 void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    GetFloor(x, y, z, &room_num);
+    Room_GetFloor(x, y, z, &room_num);
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t drawn_room = g_RoomsToDraw[i];
@@ -76,6 +76,78 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
         g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
+}
+
+FLOOR_INFO *Room_GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
+{
+    int16_t data;
+    FLOOR_INFO *floor;
+    ROOM_INFO *r = &g_RoomInfo[*room_num];
+    do {
+        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+
+        if (x_floor <= 0) {
+            x_floor = 0;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (x_floor >= r->x_size - 1) {
+            x_floor = r->x_size - 1;
+            if (y_floor < 1) {
+                y_floor = 1;
+            } else if (y_floor > r->y_size - 2) {
+                y_floor = r->y_size - 2;
+            }
+        } else if (y_floor < 0) {
+            y_floor = 0;
+        } else if (y_floor >= r->y_size) {
+            y_floor = r->y_size - 1;
+        }
+
+        floor = &r->floor[x_floor + y_floor * r->x_size];
+        if (!floor->index) {
+            break;
+        }
+
+        data = GetDoor(floor);
+        if (data != NO_ROOM) {
+            *room_num = data;
+            r = &g_RoomInfo[data];
+        }
+    } while (data != NO_ROOM);
+
+    if (y >= ((int32_t)floor->floor << 8)) {
+        do {
+            if (floor->pit_room == NO_ROOM) {
+                break;
+            }
+
+            *room_num = floor->pit_room;
+
+            r = &g_RoomInfo[floor->pit_room];
+            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+            floor = &r->floor[x_floor + y_floor * r->x_size];
+        } while (y >= ((int32_t)floor->floor << 8));
+    } else if (y < ((int32_t)floor->ceiling << 8)) {
+        do {
+            if (floor->sky_room == NO_ROOM) {
+                break;
+            }
+
+            *room_num = floor->sky_room;
+
+            r = &g_RoomInfo[floor->sky_room];
+            int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+            int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+            floor = &r->floor[x_floor + y_floor * r->x_size];
+        } while (y < ((int32_t)floor->ceiling << 8));
+    }
+
+    return floor;
 }
 
 int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)

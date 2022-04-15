@@ -3,7 +3,6 @@
 #include "3dsystem/3d_gen.h"
 #include "3dsystem/matrix.h"
 #include "config.h"
-#include "game/control.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/output.h"
@@ -371,8 +370,8 @@ void DrawPickupItem(ITEM_INFO *item)
     // This is mostly true, but for example the 4 items in the Obelisk of
     // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
-    FLOOR_INFO *floor =
-        GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    FLOOR_INFO *floor = Room_GetFloor(
+        item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     int16_t floor_height =
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 

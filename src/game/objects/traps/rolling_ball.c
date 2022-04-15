@@ -54,7 +54,7 @@ void RollingBall_Control(int16_t item_num)
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =
-            GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+            Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_number != room_num) {
             ItemNewRoom(item_num, room_num);
         }
@@ -74,7 +74,7 @@ void RollingBall_Control(int16_t item_num)
             + (((WALL_L / 2) * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
         int32_t z = item->pos.z
             + (((WALL_L / 2) * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
-        floor = GetFloor(x, item->pos.y, z, &room_num);
+        floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
             item->pos.x = oldx;

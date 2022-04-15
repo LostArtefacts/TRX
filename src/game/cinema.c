@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/room.h"
 #include "game/setup.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -213,7 +214,7 @@ void InGameCinematicCamera(void)
     phd_LookAt(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
         g_Camera.target.y, g_Camera.target.z, roll);
-    GetFloor(
+    Room_GetFloor(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
         &g_Camera.pos.room_number);
 }

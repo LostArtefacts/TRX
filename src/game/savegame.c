@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -81,7 +80,7 @@ static void Savegame_LoadPostProcess(void)
         if (obj->save_position && obj->shadow_size) {
             int16_t room_num = item->room_number;
             FLOOR_INFO *floor =
-                GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+                Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->floor =
                 Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         }

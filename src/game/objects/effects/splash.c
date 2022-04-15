@@ -1,7 +1,6 @@
 #include "game/objects/effects/splash.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/control.h"
 #include "game/items.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -31,7 +30,7 @@ void Splash_Spawn(ITEM_INFO *item)
     int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     int16_t room_num = item->room_number;
-    GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
     Sound_Effect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
 
