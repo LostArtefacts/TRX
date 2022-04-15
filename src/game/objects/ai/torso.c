@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -248,7 +249,7 @@ void Torso_Control(int16_t item_num)
         Effect_ExplodingDeath(item_num, -1, TORSO_PART_DAMAGE);
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
 
         KillItem(item_num);

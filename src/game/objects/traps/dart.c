@@ -6,6 +6,7 @@
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -44,7 +45,7 @@ void Dart_Control(int16_t item_num)
         ItemNewRoom(item_num, room_num);
     }
 
-    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
         KillItem(item_num);
         int16_t fx_num = CreateEffect(item->room_number);

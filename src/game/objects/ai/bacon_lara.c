@@ -5,6 +5,7 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void BaconLara_Setup(OBJECT_INFO *obj)
@@ -42,13 +43,13 @@ void BaconLara_Control(int16_t item_num)
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-        int32_t h = GetHeight(floor, x, y, z);
+        int32_t h = Room_GetHeight(floor, x, y, z);
         item->floor = h;
 
         room_num = g_LaraItem->room_number;
         floor = GetFloor(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
-        int32_t lh = GetHeight(
+        int32_t lh = Room_GetHeight(
             floor, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
 
         item->anim_number = g_LaraItem->anim_number;
@@ -83,7 +84,7 @@ void BaconLara_Control(int16_t item_num)
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-        int32_t h = GetHeight(floor, x, y, z);
+        int32_t h = Room_GetHeight(floor, x, y, z);
         item->floor = h;
 
         TestTriggers(g_TriggerIndex, 1);
@@ -91,7 +92,7 @@ void BaconLara_Control(int16_t item_num)
             item->floor = h;
             item->pos.y = h;
             floor = GetFloor(x, h, z, &room_num);
-            GetHeight(floor, x, h, z);
+            Room_GetHeight(floor, x, h, z);
             TestTriggers(g_TriggerIndex, 1);
             item->gravity_status = 0;
             item->fall_speed = 0;

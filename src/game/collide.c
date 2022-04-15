@@ -33,7 +33,7 @@ void GetCollisionInfo(
     int32_t ytop = y - 160;
 
     FLOOR_INFO *floor = GetFloor(x, ytop, z, &room_num);
-    int32_t height = GetHeight(floor, x, ytop, z);
+    int32_t height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -108,7 +108,7 @@ void GetCollisionInfo(
     x = xpos + xfront;
     z = zpos + zfront;
     floor = GetFloor(x, ytop, z, &room_num);
-    height = GetHeight(floor, x, ytop, z);
+    height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -137,7 +137,7 @@ void GetCollisionInfo(
     x = xpos + xleft;
     z = zpos + zleft;
     floor = GetFloor(x, ytop, z, &room_num);
-    height = GetHeight(floor, x, ytop, z);
+    height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -166,7 +166,7 @@ void GetCollisionInfo(
     x = xpos + xright;
     z = zpos + zright;
     floor = GetFloor(x, ytop, z, &room_num);
-    height = GetHeight(floor, x, ytop, z);
+    height = Room_GetHeight(floor, x, ytop, z);
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -195,7 +195,8 @@ void GetCollisionInfo(
     if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, obj_height)) {
         floor = GetFloor(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
-        if (GetHeight(floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
+        if (Room_GetHeight(
+                floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
                 < ypos - 512
             || Room_GetCeiling(
                    floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)

@@ -102,101 +102,6 @@ FLOOR_INFO *GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
     return floor;
 }
 
-int16_t GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
-{
-    g_HeightType = HT_WALL;
-    while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
-        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-        floor = &r->floor[x_floor + y_floor * r->x_size];
-    }
-
-    int16_t height = floor->floor << 8;
-
-    g_TriggerIndex = NULL;
-
-    if (!floor->index) {
-        return height;
-    }
-
-    int16_t *data = &g_FloorData[floor->index];
-    int16_t type;
-    int16_t trigger;
-    do {
-        type = *data++;
-
-        switch (type & DATA_TYPE) {
-        case FT_TILT: {
-            int32_t xoff = data[0] >> 8;
-            int32_t yoff = (int8_t)data[0];
-
-            if (!g_ChunkyFlag || (ABS(xoff) <= 2 && ABS(yoff) <= 2)) {
-                if (ABS(xoff) > 2 || ABS(yoff) > 2) {
-                    g_HeightType = HT_BIG_SLOPE;
-                } else {
-                    g_HeightType = HT_SMALL_SLOPE;
-                }
-
-                if (xoff < 0) {
-                    height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
-                } else {
-                    height +=
-                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
-                }
-
-                if (yoff < 0) {
-                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
-                } else {
-                    height +=
-                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
-                }
-            }
-
-            data++;
-            break;
-        }
-
-        case FT_ROOF:
-        case FT_DOOR:
-            data++;
-            break;
-
-        case FT_LAVA:
-            g_TriggerIndex = data - 1;
-            break;
-
-        case FT_TRIGGER:
-            if (!g_TriggerIndex) {
-                g_TriggerIndex = data - 1;
-            }
-
-            data++;
-            do {
-                trigger = *data++;
-                if (TRIG_BITS(trigger) != TO_OBJECT) {
-                    if (TRIG_BITS(trigger) == TO_CAMERA) {
-                        trigger = *data++;
-                    }
-                } else {
-                    ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
-                    OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->floor) {
-                        object->floor(item, x, y, z, &height);
-                    }
-                }
-            } while (!(trigger & END_BIT));
-            break;
-
-        default:
-            Shell_ExitSystem("GetHeight(): Unknown type");
-            break;
-        }
-    } while (!(type & END_BIT));
-
-    return height;
-}
-
 int16_t GetDoor(FLOOR_INFO *floor)
 {
     if (!floor->index) {
@@ -271,7 +176,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
         while (z > target->z) {
             floor = GetFloor(x, y, z, &room_num);
-            if (y > GetHeight(floor, x, y, z)
+            if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -283,7 +188,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
             last_room = room_num;
 
             floor = GetFloor(x, y, z - 1, &room_num);
-            if (y > GetHeight(floor, x, y, z - 1)
+            if (y > Room_GetHeight(floor, x, y, z - 1)
                 || y < Room_GetCeiling(floor, x, y, z - 1)) {
                 target->x = x;
                 target->y = y;
@@ -303,7 +208,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
         while (z < target->z) {
             floor = GetFloor(x, y, z, &room_num);
-            if (y > GetHeight(floor, x, y, z)
+            if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -315,7 +220,7 @@ int32_t zLOS(GAME_VECTOR *start, GAME_VECTOR *target)
             last_room = room_num;
 
             floor = GetFloor(x, y, z + 1, &room_num);
-            if (y > GetHeight(floor, x, y, z + 1)
+            if (y > Room_GetHeight(floor, x, y, z + 1)
                 || y < Room_GetCeiling(floor, x, y, z + 1)) {
                 target->x = x;
                 target->y = y;
@@ -356,7 +261,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
         while (x > target->x) {
             floor = GetFloor(x, y, z, &room_num);
-            if (y > GetHeight(floor, x, y, z)
+            if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -368,7 +273,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
             last_room = room_num;
 
             floor = GetFloor(x - 1, y, z, &room_num);
-            if (y > GetHeight(floor, x - 1, y, z)
+            if (y > Room_GetHeight(floor, x - 1, y, z)
                 || y < Room_GetCeiling(floor, x - 1, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -388,7 +293,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
 
         while (x < target->x) {
             floor = GetFloor(x, y, z, &room_num);
-            if (y > GetHeight(floor, x, y, z)
+            if (y > Room_GetHeight(floor, x, y, z)
                 || y < Room_GetCeiling(floor, x, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -400,7 +305,7 @@ int32_t xLOS(GAME_VECTOR *start, GAME_VECTOR *target)
             last_room = room_num;
 
             floor = GetFloor(x + 1, y, z, &room_num);
-            if (y > GetHeight(floor, x + 1, y, z)
+            if (y > Room_GetHeight(floor, x + 1, y, z)
                 || y < Room_GetCeiling(floor, x + 1, y, z)) {
                 target->x = x;
                 target->y = y;
@@ -425,7 +330,7 @@ int32_t ClipTarget(GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
     int32_t dy = target->y - start->y;
     int32_t dz = target->z - start->z;
 
-    int32_t height = GetHeight(floor, target->x, target->y, target->z);
+    int32_t height = Room_GetHeight(floor, target->x, target->y, target->z);
     if (target->y > height && start->y < height) {
         target->y = height;
         target->x = start->x + dx * (height - start->y) / dy;

@@ -5,6 +5,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -252,7 +253,7 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     int32_t z = item->pos.z;
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    item->floor = GetHeight(floor, x, y, z);
+    item->floor = Room_GetHeight(floor, x, y, z);
     if (item->room_number != room_num) {
         ItemNewRoom(g_Lara.item_number, room_num);
     }

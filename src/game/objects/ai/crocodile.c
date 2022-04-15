@@ -258,7 +258,7 @@ void Alligator_Control(int16_t item_num)
             room_num = item->room_number;
             floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->pos.y =
-                GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             item->pos.x_rot = 0;
         } else if (item->pos.y > wh + ALLIGATOR_FLOAT_SPEED) {
             item->pos.y -= ALLIGATOR_FLOAT_SPEED;
@@ -273,7 +273,8 @@ void Alligator_Control(int16_t item_num)
 
         room_num = item->room_number;
         floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        item->floor =
+            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         if (room_num != item->room_number) {
             ItemNewRoom(item_num, room_num);
         }

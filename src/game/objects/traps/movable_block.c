@@ -6,6 +6,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "src/game/collide.h"
@@ -96,7 +97,8 @@ void MovableBlock_Control(int16_t item_num)
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    int32_t height = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    int32_t height =
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
     if (item->pos.y < height) {
         item->gravity_status = 1;
@@ -119,7 +121,7 @@ void MovableBlock_Control(int16_t item_num)
 
         room_num = item->room_number;
         floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
     }
 }

@@ -10,6 +10,7 @@
 #include "game/objects/pickup.h"
 #include "game/overlay.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -103,7 +104,7 @@ void Scion_Control3(int16_t item_num)
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =
             GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
         RemoveDrawnItem(item_num);
     }

@@ -7,6 +7,7 @@
 #include "game/lara/lara.h"
 #include "game/lara/lara_look.h"
 #include "game/objects/effects/twinkle.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -41,7 +42,7 @@ static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
     int32_t z = item->pos.z + ((phd_cos(ang) * dist) >> W2V_SHIFT);
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    int32_t height = GetHeight(floor, x, y, z);
+    int32_t height = Room_GetHeight(floor, x, y, z);
     if (height != NO_HEIGHT) {
         height -= item->pos.y;
     }

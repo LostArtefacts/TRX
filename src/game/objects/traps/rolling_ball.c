@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -58,7 +59,8 @@ void RollingBall_Control(int16_t item_num)
             ItemNewRoom(item_num, room_num);
         }
 
-        item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        item->floor =
+            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
         TestTriggers(g_TriggerIndex, 1);
 
@@ -73,7 +75,7 @@ void RollingBall_Control(int16_t item_num)
         int32_t z = item->pos.z
             + (((WALL_L / 2) * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
         floor = GetFloor(x, item->pos.y, z, &room_num);
-        if (GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
+        if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
             item->pos.x = oldx;
             item->pos.y = item->floor;

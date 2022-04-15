@@ -9,6 +9,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -373,7 +374,7 @@ void DrawPickupItem(ITEM_INFO *item)
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     int16_t floor_height =
-        GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
     // Assume this is our offset.
     int16_t offset = floor_height;

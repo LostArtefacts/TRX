@@ -11,6 +11,7 @@
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/rolling_block.h"
+#include "game/room.h"
 #include "game/savegame_bson.h"
 #include "game/savegame_legacy.h"
 #include "global/vars.h"
@@ -82,7 +83,7 @@ static void Savegame_LoadPostProcess(void)
             FLOOR_INFO *floor =
                 GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->floor =
-                GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         }
 
         if (obj->save_flags) {

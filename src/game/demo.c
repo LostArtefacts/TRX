@@ -8,6 +8,7 @@
 #include "game/items.h"
 #include "game/output.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/setup.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -106,7 +107,7 @@ void LoadLaraDemoPos(void)
 
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 }
 
 bool ProcessDemoInput(void)

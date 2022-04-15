@@ -8,6 +8,7 @@
 #include "game/lara.h"
 #include "game/output.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "game/viewport.h"
@@ -112,7 +113,8 @@ void LightningEmitter_Control(int16_t item_num)
         } else if (l->no_target) {
             FLOOR_INFO *floor = GetFloor(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-            int32_t h = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            int32_t h =
+                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
             l->target.x = item->pos.x;
             l->target.y = h;
             l->target.z = item->pos.z;

@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 #define PENDULUM_DAMAGE 100
@@ -43,7 +44,7 @@ void Pendulum_Control(int16_t item_num)
 
     FLOOR_INFO *floor =
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
     AnimateItem(item);
 }

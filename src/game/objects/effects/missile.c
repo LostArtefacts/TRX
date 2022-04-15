@@ -30,7 +30,7 @@ void Missile_Control(int16_t fx_num)
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
-    int32_t height = GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    int32_t height = Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     int32_t ceiling = Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
 
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {

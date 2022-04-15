@@ -34,7 +34,7 @@ void BodyPart_Control(int16_t fx_num)
         fx->pos.y = ceiling;
     }
 
-    int32_t height = GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    int32_t height = Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
     if (fx->pos.y >= height) {
         if (fx->counter) {
             fx->speed = 0;
