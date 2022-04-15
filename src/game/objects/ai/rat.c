@@ -7,6 +7,7 @@
 #include "game/lot.h"
 #include "game/objects/ai/rat.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 #define RAT_BITE_DAMAGE 20
@@ -151,7 +152,7 @@ void Rat_Control(int16_t item_num)
 
     CreatureHead(item, head);
 
-    int32_t wh = GetWaterHeight(
+    int32_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT) {
         item->object_number = O_VOLE;
@@ -212,7 +213,7 @@ void Vole_Control(int16_t item_num)
 
         AnimateItem(item);
 
-        int32_t wh = GetWaterHeight(
+        int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_RAT;
@@ -255,7 +256,7 @@ void Vole_Control(int16_t item_num)
 
         CreatureHead(item, head);
 
-        int32_t wh = GetWaterHeight(
+        int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_RAT;

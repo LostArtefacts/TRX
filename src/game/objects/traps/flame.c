@@ -4,6 +4,7 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
@@ -43,7 +44,7 @@ void Flame_Control(int16_t fx_num)
         GetJointAbsPosition(
             g_LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
 
-        int32_t y = GetWaterHeight(
+        int32_t y = Room_GetWaterHeight(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
             g_LaraItem->room_number);
 

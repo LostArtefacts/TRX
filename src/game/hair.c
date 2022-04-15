@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/output.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -206,7 +207,7 @@ void HairControl(int in_cutscene)
                 + (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2;
             z = g_LaraItem->pos.z
                 + (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2;
-            water_level = GetWaterHeight(x, y, z, room_number);
+            water_level = Room_GetWaterHeight(x, y, z, room_number);
         }
 
         for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
