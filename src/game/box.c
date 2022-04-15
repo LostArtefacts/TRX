@@ -925,7 +925,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
             dy = -LOT->fly;
         }
 
-        height = GetHeight(floor, item->pos.x, y, item->pos.z);
+        height = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
         if (item->pos.y + dy > height) {
             if (item->pos.y > height) {
                 item->pos.x = old.x;
@@ -956,7 +956,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
 
         item->pos.y += dy;
         floor = GetFloor(item->pos.x, y, item->pos.z, &room_num);
-        item->floor = GetHeight(floor, item->pos.x, y, item->pos.z);
+        item->floor = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
 
         angle = item->speed ? phd_atan(item->speed, -dy) : 0;
         if (angle < item->pos.x_rot - PHD_DEGREE) {
@@ -978,7 +978,8 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         item->pos.x_rot = 0;
 
         floor = GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        item->floor =
+            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     }
 
     if (item->room_number != room_num) {

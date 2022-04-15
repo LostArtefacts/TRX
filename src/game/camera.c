@@ -33,7 +33,7 @@ static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    return y >= GetHeight(floor, x, y, z)
+    return y >= Room_GetHeight(floor, x, y, z)
         || y <= Room_GetCeiling(floor, x, y, z);
 }
 
@@ -64,7 +64,7 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
         pos->x = box->bottom - clamp;
     }
 
-    int32_t height = GetHeight(floor, x, y, z) - clamp;
+    int32_t height = Room_GetHeight(floor, x, y, z) - clamp;
     int32_t ceiling = Room_GetCeiling(floor, x, y, z) + clamp;
 
     if (height < ceiling) {
@@ -291,7 +291,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
         &g_Camera.pos.room_number);
     int32_t height =
-        GetHeight(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
+        Room_GetHeight(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
         - GROUND_SHIFT;
 
     if (g_Camera.pos.y >= height && ideal->y >= height) {
@@ -299,8 +299,8 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         floor = GetFloor(
             g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
             &g_Camera.pos.room_number);
-        height =
-            GetHeight(floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
+        height = Room_GetHeight(
+                     floor, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
             - GROUND_SHIFT;
     }
 
@@ -656,7 +656,7 @@ void Camera_Update(void)
         FLOOR_INFO *floor = GetFloor(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             &g_Camera.target.room_number);
-        if (g_Camera.target.y > GetHeight(
+        if (g_Camera.target.y > Room_GetHeight(
                 floor, g_Camera.target.x, g_Camera.target.y,
                 g_Camera.target.z)) {
             g_ChunkyFlag = false;

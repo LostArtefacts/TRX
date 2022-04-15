@@ -437,7 +437,7 @@ bool Lara_TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
     }
 
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
-    int h = GetHeight(floor, x, y, z);
+    int h = Room_GetHeight(floor, x, y, z);
     int c = Room_GetCeiling(floor, x, y, z);
 
     if (h != NO_HEIGHT) {
@@ -559,8 +559,8 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
         GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
     int oy = item->pos.y;
-    int height =
-        GetHeight(floor, item->pos.x, item->pos.y - LARA_HITE, item->pos.z);
+    int height = Room_GetHeight(
+        floor, item->pos.x, item->pos.y - LARA_HITE, item->pos.z);
 
     item->floor = height;
     item->pos.y = height;

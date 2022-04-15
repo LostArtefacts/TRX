@@ -6,6 +6,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects/traps/movable_block.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 typedef enum {
@@ -114,7 +115,7 @@ void ThorsHandle_Control(int16_t item_num)
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
-        GetHeight(floor, x, item->pos.y, z);
+        Room_GetHeight(floor, x, item->pos.y, z);
         TestTriggers(g_TriggerIndex, 1);
 
         switch (item->pos.y_rot) {

@@ -2,6 +2,7 @@
 
 #include "game/control.h"
 #include "game/items.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void FallingBlock_Setup(OBJECT_INFO *obj)
@@ -53,7 +54,7 @@ void FallingBlock_Control(int16_t item_num)
         ItemNewRoom(item_num, room_num);
     }
 
-    item->floor = GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
     if (item->current_anim_state == TRAP_WORKING
         && item->pos.y >= item->floor) {

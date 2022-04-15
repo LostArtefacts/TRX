@@ -178,6 +178,101 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
     return height;
 }
 
+int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+{
+    g_HeightType = HT_WALL;
+    while (floor->pit_room != NO_ROOM) {
+        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
+        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        floor = &r->floor[x_floor + y_floor * r->x_size];
+    }
+
+    int16_t height = floor->floor << 8;
+
+    g_TriggerIndex = NULL;
+
+    if (!floor->index) {
+        return height;
+    }
+
+    int16_t *data = &g_FloorData[floor->index];
+    int16_t type;
+    int16_t trigger;
+    do {
+        type = *data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_TILT: {
+            int32_t xoff = data[0] >> 8;
+            int32_t yoff = (int8_t)data[0];
+
+            if (!g_ChunkyFlag || (ABS(xoff) <= 2 && ABS(yoff) <= 2)) {
+                if (ABS(xoff) > 2 || ABS(yoff) > 2) {
+                    g_HeightType = HT_BIG_SLOPE;
+                } else {
+                    g_HeightType = HT_SMALL_SLOPE;
+                }
+
+                if (xoff < 0) {
+                    height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
+                } else {
+                    height +=
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                }
+
+                if (yoff < 0) {
+                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
+                } else {
+                    height +=
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                }
+            }
+
+            data++;
+            break;
+        }
+
+        case FT_ROOF:
+        case FT_DOOR:
+            data++;
+            break;
+
+        case FT_LAVA:
+            g_TriggerIndex = data - 1;
+            break;
+
+        case FT_TRIGGER:
+            if (!g_TriggerIndex) {
+                g_TriggerIndex = data - 1;
+            }
+
+            data++;
+            do {
+                trigger = *data++;
+                if (TRIG_BITS(trigger) != TO_OBJECT) {
+                    if (TRIG_BITS(trigger) == TO_CAMERA) {
+                        trigger = *data++;
+                    }
+                } else {
+                    ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
+                    OBJECT_INFO *object = &g_Objects[item->object_number];
+                    if (object->floor) {
+                        object->floor(item, x, y, z, &height);
+                    }
+                }
+            } while (!(trigger & END_BIT));
+            break;
+
+        default:
+            Shell_ExitSystem("GetHeight(): Unknown type");
+            break;
+        }
+    } while (!(type & END_BIT));
+
+    return height;
+}
+
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];

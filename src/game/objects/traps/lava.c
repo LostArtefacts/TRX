@@ -71,7 +71,7 @@ void Lava_Burn(ITEM_INFO *item)
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
-    int16_t height = GetHeight(floor, item->pos.x, 32000, item->pos.z);
+    int16_t height = Room_GetHeight(floor, item->pos.x, 32000, item->pos.z);
 
     if (item->floor != height) {
         return;
@@ -106,7 +106,7 @@ void Lava_Control(int16_t fx_num)
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
-    if (fx->pos.y >= GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
+    if (fx->pos.y >= Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
         || fx->pos.y
             < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
         KillEffect(fx_num);
@@ -187,7 +187,7 @@ void LavaWedge_Control(int16_t item_num)
         }
 
         FLOOR_INFO *floor = GetFloor(x, item->pos.y, z, &room_num);
-        if (GetHeight(floor, x, item->pos.y, z) != item->pos.y) {
+        if (Room_GetHeight(floor, x, item->pos.y, z) != item->pos.y) {
             item->status = IS_DEACTIVATED;
         }
     }

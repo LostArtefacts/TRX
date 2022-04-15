@@ -46,7 +46,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
         room_number = item->room_number;
 
         floor = GetFloor(x, y, z, &room_number);
-        GetHeight(floor, x, y, z);
+        Room_GetHeight(floor, x, y, z);
         ceiling = Room_GetCeiling(floor, x, y, z);
 
         // The bats animation and frame have to be changed to the hanging

@@ -218,8 +218,8 @@ void Hair_Control(bool in_cutscene)
             if (!in_cutscene) {
                 floor = GetFloor(
                     m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
-                height =
-                    GetHeight(floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
+                height = Room_GetHeight(
+                    floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
             } else
                 height = 32767;
 

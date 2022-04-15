@@ -333,7 +333,7 @@ void NatlaGun_Control(int16_t fx_num)
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = GetFloor(x, y, z, &room_num);
 
-    if (y >= GetHeight(floor, x, y, z)
+    if (y >= Room_GetHeight(floor, x, y, z)
         || y <= Room_GetCeiling(floor, x, y, z)) {
         return;
     }
