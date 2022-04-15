@@ -163,7 +163,7 @@ void ThorsHandle_Collision(
         return;
     }
     if (coll->enable_baddie_push) {
-        ItemPushLara(item, lara_item, coll, 0, 1);
+        Lara_Push(item, coll, false, true);
     }
 }
 
@@ -175,6 +175,6 @@ void ThorsHead_Collision(
         return;
     }
     if (coll->enable_baddie_push && item->current_anim_state != THS_ACTIVE) {
-        ItemPushLara(item, lara_item, coll, 0, 1);
+        Lara_Push(item, coll, false, true);
     }
 }

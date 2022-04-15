@@ -129,7 +129,7 @@ void RollingBall_Collision(
     int32_t x, y, z, d;
     if (lara_item->gravity_status) {
         if (coll->enable_baddie_push) {
-            ItemPushLara(item, lara_item, coll, coll->enable_spaz, 1);
+            Lara_Push(item, coll, coll->enable_spaz, true);
         }
         lara_item->hit_points -= ROLLINGBALL_DAMAGE_AIR;
         x = lara_item->pos.x - item->pos.x;
