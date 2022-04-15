@@ -94,7 +94,7 @@ void Lara_Control(void)
         g_Lara.air = LARA_AIR;
         item->pos.y += 100;
         item->gravity_status = 0;
-        UpdateLaraRoom(item, 0);
+        Item_UpdateRoom(item, 0);
         Sound_StopEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == LS_SWAN_DIVE) {
             item->goal_anim_state = LS_DIVE;
@@ -137,7 +137,7 @@ void Lara_Control(void)
             g_Lara.head_y_rot = 0;
             g_Lara.torso_x_rot = 0;
             g_Lara.torso_y_rot = 0;
-            UpdateLaraRoom(item, -LARA_HITE / 2);
+            Item_UpdateRoom(item, -LARA_HITE / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             g_Lara.water_status = LWS_ABOVE_WATER;
@@ -795,7 +795,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
             coll->old.x = lara_item->pos.x;
             coll->old.y = lara_item->pos.y;
             coll->old.z = lara_item->pos.z;
-            UpdateLaraRoom(lara_item, -10);
+            Item_UpdateRoom(item, -10);
         }
     }
 }
