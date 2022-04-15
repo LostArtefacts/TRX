@@ -1,9 +1,9 @@
 #include "game/objects/traps/flame.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
@@ -62,7 +62,7 @@ void Flame_Control(int16_t fx_num)
     Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
     if (fx->counter) {
         fx->counter--;
-    } else if (ItemNearLara(&fx->pos, 600)) {
+    } else if (Lara_IsNearItem(&fx->pos, 600)) {
         if (g_Lara.water_status == LWS_CHEAT) {
             return;
         }

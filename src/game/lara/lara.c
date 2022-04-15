@@ -636,3 +636,8 @@ void Lara_InitialiseMeshes(int32_t level_num)
             g_Meshes[g_Objects[back_object_num].mesh_index + LM_TORSO];
     }
 }
+
+bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
+{
+    return Item_IsNearItem(g_LaraItem, pos, distance);
+}

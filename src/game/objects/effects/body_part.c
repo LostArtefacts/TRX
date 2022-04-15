@@ -1,9 +1,9 @@
 #include "game/objects/effects/body_part.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -47,7 +47,7 @@ void BodyPart_Control(int16_t fx_num)
         return;
     }
 
-    if (ItemNearLara(&fx->pos, fx->counter * 2)) {
+    if (Lara_IsNearItem(&fx->pos, fx->counter * 2)) {
         g_LaraItem->hit_points -= fx->counter;
         g_LaraItem->hit_status = 1;
 

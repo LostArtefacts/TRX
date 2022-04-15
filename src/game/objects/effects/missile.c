@@ -1,10 +1,10 @@
 #include "game/objects/effects/missile.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -63,7 +63,7 @@ void Missile_Control(int16_t fx_num)
         EffectNewRoom(fx_num, room_num);
     }
 
-    if (!ItemNearLara(&fx->pos, 200)) {
+    if (!Lara_IsNearItem(&fx->pos, 200)) {
         return;
     }
 

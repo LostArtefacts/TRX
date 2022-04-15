@@ -1,5 +1,6 @@
 #include "game/items.h"
 
+#include "game/draw.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -318,4 +319,23 @@ void EffectNewRoom(int16_t fx_num, int16_t room_num)
     fx->room_number = room_num;
     fx->next_fx = r->fx_number;
     r->fx_number = fx_num;
+}
+
+bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
+{
+    int32_t x = pos->x - item->pos.x;
+    int32_t y = pos->y - item->pos.y;
+    int32_t z = pos->z - item->pos.z;
+
+    if (x >= -distance && x <= distance && z >= -distance && z <= distance
+        && y >= -WALL_L * 3 && y <= WALL_L * 3
+        && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
+        int16_t *bounds = GetBoundsAccurate(item);
+        if (y >= bounds[FRAME_BOUND_MIN_Y]
+            && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
+            return true;
+        }
+    }
+
+    return false;
 }
