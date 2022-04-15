@@ -287,7 +287,7 @@ void Lara_Animate(ITEM_INFO *item)
             for (int i = 0; i < anim->number_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
-                    TranslateItem(item, command[0], command[1], command[2]);
+                    Item_Translate(item, command[0], command[1], command[2]);
                     command += 3;
                     break;
 

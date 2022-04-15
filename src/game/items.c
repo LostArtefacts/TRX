@@ -514,3 +514,12 @@ void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
     coll->shift.y = 0;
     coll->shift.z = 0;
 }
+
+void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
+{
+    int32_t c = phd_cos(item->pos.y_rot);
+    int32_t s = phd_sin(item->pos.y_rot);
+    item->pos.x += (c * x + s * z) >> W2V_SHIFT;
+    item->pos.y += y;
+    item->pos.z += (c * z - s * x) >> W2V_SHIFT;
+}
