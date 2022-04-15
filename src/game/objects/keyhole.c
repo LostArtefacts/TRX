@@ -112,7 +112,7 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     g_InvChosen = -1;
     if (correct) {
-        AlignLaraPosition(&g_KeyHolePosition, item, lara_item);
+        Lara_AlignPosition(item, &g_KeyHolePosition);
         Lara_AnimateUntil(lara_item, LS_USE_KEY);
         lara_item->goal_anim_state = LS_STOP;
         g_Lara.gun_status = LGS_HANDS_BUSY;

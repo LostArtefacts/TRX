@@ -342,6 +342,28 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     return false;
 }
 
+void Item_AlignPosition(
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec)
+{
+    src_item->pos.x_rot = dst_item->pos.x_rot;
+    src_item->pos.y_rot = dst_item->pos.y_rot;
+    src_item->pos.z_rot = dst_item->pos.z_rot;
+
+    phd_PushUnitMatrix();
+    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    src_item->pos.x = dst_item->pos.x
+        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
+           >> W2V_SHIFT);
+    src_item->pos.y = dst_item->pos.y
+        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
+           >> W2V_SHIFT);
+    src_item->pos.z = dst_item->pos.z
+        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
+           >> W2V_SHIFT);
+    phd_PopMatrix();
+}
+
 bool Item_MovePosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec, int32_t velocity)
 {

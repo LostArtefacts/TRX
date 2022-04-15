@@ -6,6 +6,7 @@
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/pickup.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -154,7 +155,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == LS_STOP) {
-        AlignLaraPosition(&m_Scion_Position, item, lara_item);
+        Lara_AlignPosition(item, &m_Scion_Position);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
@@ -180,7 +181,7 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
         && !lara_item->gravity_status
         && lara_item->current_anim_state == LS_STOP) {
-        AlignLaraPosition(&m_Scion_Position4, item, lara_item);
+        Lara_AlignPosition(item, &m_Scion_Position4);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
         lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;

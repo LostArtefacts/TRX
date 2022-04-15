@@ -20,6 +20,8 @@ void KillEffect(int16_t fx_num);
 void EffectNewRoom(int16_t fx_num, int16_t room_num);
 
 bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance);
+void Item_AlignPosition(
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec);
 bool Item_MovePosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec,
     int32_t velocity);
