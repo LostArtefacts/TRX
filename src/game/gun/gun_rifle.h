@@ -1,6 +1,9 @@
 #pragma once
 
-// Private gun routines related to rifles.
+// Private gun routines related to two-handed weapons.
+//
+// In Tomb Raider 1 this means only shotgun. Future games add more weapons such
+// as M-16, Harpoon, Grenade Launcher etc.
 
 #include "global/types.h"
 
