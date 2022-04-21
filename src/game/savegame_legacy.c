@@ -455,6 +455,9 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
+    Savegame_Legacy_SetCurrentPosition(g_CurrentLevel);
+    game_info->death_counter_supported = false;
+
     uint32_t temp_timer = 0;
     uint32_t temp_kill_count = 0;
     uint16_t temp_secret_flags = 0;
@@ -469,9 +472,6 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         &game_info->current[g_CurrentLevel].stats.pickup_count,
         sizeof(uint8_t));
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
-
-    Savegame_Legacy_SetCurrentPosition(g_CurrentLevel);
-    game_info->death_counter_supported = false;
 
     Lara_InitialiseInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
