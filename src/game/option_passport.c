@@ -175,12 +175,8 @@ static void Option_PassportShowLevelSelect(void)
     int32_t select = DisplayRequester(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
-            // If there's a gym level, first level starts at 1.
-            if (g_GameFlow.gym_level_num != -1) {
-                g_InvExtraData[IED_LEVEL_NUM] = select;
-            } else {
-                g_InvExtraData[IED_LEVEL_NUM] = select - 1;
-            }
+            g_InvExtraData[IED_LEVEL_NUM] =
+                select - 1 + g_GameFlow.first_level_num;
             g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SELECT_LEVEL;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
