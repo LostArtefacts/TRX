@@ -475,7 +475,11 @@ void Lara_Initialise(int32_t level_num)
 
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
-    g_LaraItem->hit_points = resume->lara_hitpoints;
+    if (g_Config.disable_healing_between_levels) {
+        g_LaraItem->hit_points = resume->lara_hitpoints;
+    } else {
+        g_LaraItem->hit_points = g_Config.start_lara_hitpoints;
+    }
 
     g_Lara.air = LARA_AIR;
     g_Lara.torso_y_rot = 0;

@@ -453,8 +453,6 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         if (i <= g_GameFlow.first_level_num) {
             Savegame_ApplyLogicToCurrentInfo(i);
         }
-        // Max Lara's starting HP for legacy saves.
-        game_info->current[i].lara_hitpoints = LARA_HITPOINTS;
     }
 
     uint32_t temp_timer = 0;
@@ -626,8 +624,6 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         if (i <= g_GameFlow.first_level_num) {
             Savegame_ApplyLogicToCurrentInfo(i);
         }
-        // Max Lara's starting HP for legacy saves.
-        game_info->current[i].lara_hitpoints = LARA_HITPOINTS;
     }
 
     uint32_t temp_timer = 0;
