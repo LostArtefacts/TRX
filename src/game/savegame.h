@@ -25,7 +25,7 @@ typedef struct SAVEGAME_INFO {
     char *level_title;
 } SAVEGAME_INFO;
 
-void Savegame_InitStartCurrentInfo(void);
+void Savegame_InitCurrentInfo(void);
 
 int32_t Savegame_GetLevelNumber(int32_t slot_num);
 
@@ -38,10 +38,9 @@ void Savegame_ScanSavedGames(void);
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req);
 void Savegame_Shutdown(void);
 
-void Savegame_ResetStartInfo(int level_num);
-void Savegame_ApplyLogicToStartInfo(int level_num);
+void Savegame_ApplyLogicToCurrentInfo(int level_num);
 void Savegame_ResetCurrentInfo(int level_num);
-void Savegame_CarryCurrentInfoToStartInfo(int32_t src_level, int32_t dst_level);
+void Savegame_CarryCurrentInfoToNextLevel(int32_t src_level, int32_t dst_level);
 void Savegame_PersistGameToCurrentInfo(int level_num);
 
 void Savegame_PreprocessItems(void);

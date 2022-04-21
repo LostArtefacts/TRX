@@ -71,7 +71,7 @@ static void Savegame_LoadPreprocess(void)
 {
     m_OldLaraLOTNode = g_Lara.LOT.node;
 
-    Savegame_InitStartCurrentInfo();
+    Savegame_InitCurrentInfo();
 }
 
 static void Savegame_LoadPostprocess(void)
@@ -172,81 +172,73 @@ void Savegame_PreprocessItems(void)
     }
 }
 
-void Savegame_InitStartCurrentInfo(void)
+void Savegame_InitCurrentInfo(void)
 {
     for (int i = 0; i < g_GameFlow.level_count; i++) {
-        Savegame_ResetStartInfo(i);
         Savegame_ResetCurrentInfo(i);
-        Savegame_ApplyLogicToStartInfo(i);
-        g_GameInfo.start[i].flags.available = 0;
+        Savegame_ApplyLogicToCurrentInfo(i);
+        g_GameInfo.current[i].flags.available = 0;
     }
-    g_GameInfo.start[g_GameFlow.gym_level_num].flags.available = 1;
-    g_GameInfo.start[g_GameFlow.first_level_num].flags.available = 1;
+    g_GameInfo.current[g_GameFlow.gym_level_num].flags.available = 1;
+    g_GameInfo.current[g_GameFlow.first_level_num].flags.available = 1;
 }
 
-void Savegame_ResetStartInfo(int level_num)
+void Savegame_ApplyLogicToCurrentInfo(int level_num)
 {
-    RESUME_INFO *start = &g_GameInfo.start[level_num];
-    memset(start, 0, sizeof(RESUME_INFO));
-    Savegame_ApplyLogicToStartInfo(level_num);
-}
-
-void Savegame_ApplyLogicToStartInfo(int level_num)
-{
-    RESUME_INFO *start = &g_GameInfo.start[level_num];
+    RESUME_INFO *current = &g_GameInfo.current[level_num];
 
     if (!g_Config.disable_healing_between_levels
         || level_num == g_GameFlow.gym_level_num
         || level_num == g_GameFlow.first_level_num) {
-        start->lara_hitpoints = g_Config.start_lara_hitpoints;
+        current->lara_hitpoints = g_Config.start_lara_hitpoints;
     }
 
     if (level_num == g_GameFlow.gym_level_num) {
-        start->flags.available = 1;
-        start->flags.costume = 1;
-        start->num_medis = 0;
-        start->num_big_medis = 0;
-        start->num_scions = 0;
-        start->pistol_ammo = 0;
-        start->shotgun_ammo = 0;
-        start->magnum_ammo = 0;
-        start->uzi_ammo = 0;
-        start->flags.got_pistols = 0;
-        start->flags.got_shotgun = 0;
-        start->flags.got_magnums = 0;
-        start->flags.got_uzis = 0;
-        start->gun_type = LGT_UNARMED;
-        start->gun_status = LGS_ARMLESS;
+        current->flags.available = 1;
+        current->flags.costume = 1;
+        current->num_medis = 0;
+        current->num_big_medis = 0;
+        current->num_scions = 0;
+        current->pistol_ammo = 0;
+        current->shotgun_ammo = 0;
+        current->magnum_ammo = 0;
+        current->uzi_ammo = 0;
+        current->flags.got_pistols = 0;
+        current->flags.got_shotgun = 0;
+        current->flags.got_magnums = 0;
+        current->flags.got_uzis = 0;
+        current->gun_type = LGT_UNARMED;
+        current->gun_status = LGS_ARMLESS;
     }
 
     if (level_num == g_GameFlow.first_level_num) {
-        start->flags.available = 1;
-        start->flags.costume = 0;
-        start->num_medis = 0;
-        start->num_big_medis = 0;
-        start->num_scions = 0;
-        start->pistol_ammo = 1000;
-        start->shotgun_ammo = 0;
-        start->magnum_ammo = 0;
-        start->uzi_ammo = 0;
-        start->flags.got_pistols = 1;
-        start->flags.got_shotgun = 0;
-        start->flags.got_magnums = 0;
-        start->flags.got_uzis = 0;
-        start->gun_type = LGT_PISTOLS;
-        start->gun_status = LGS_ARMLESS;
+        current->flags.available = 1;
+        current->flags.costume = 0;
+        current->num_medis = 0;
+        current->num_big_medis = 0;
+        current->num_scions = 0;
+        current->pistol_ammo = 1000;
+        current->shotgun_ammo = 0;
+        current->magnum_ammo = 0;
+        current->uzi_ammo = 0;
+        current->flags.got_pistols = 1;
+        current->flags.got_shotgun = 0;
+        current->flags.got_magnums = 0;
+        current->flags.got_uzis = 0;
+        current->gun_type = LGT_PISTOLS;
+        current->gun_status = LGS_ARMLESS;
     }
 
     if ((g_GameInfo.bonus_flag & GBF_NGPLUS)
         && level_num != g_GameFlow.gym_level_num) {
-        start->flags.got_pistols = 1;
-        start->flags.got_shotgun = 1;
-        start->flags.got_magnums = 1;
-        start->flags.got_uzis = 1;
-        start->shotgun_ammo = 1234;
-        start->magnum_ammo = 1234;
-        start->uzi_ammo = 1234;
-        start->gun_type = LGT_UZIS;
+        current->flags.got_pistols = 1;
+        current->flags.got_shotgun = 1;
+        current->flags.got_magnums = 1;
+        current->flags.got_uzis = 1;
+        current->shotgun_ammo = 1234;
+        current->magnum_ammo = 1234;
+        current->uzi_ammo = 1234;
+        current->gun_type = LGT_UZIS;
     }
 }
 
@@ -256,10 +248,10 @@ void Savegame_ResetCurrentInfo(int level_num)
     memset(current, 0, sizeof(RESUME_INFO));
 }
 
-void Savegame_CarryCurrentInfoToStartInfo(int32_t src_level, int32_t dst_level)
+void Savegame_CarryCurrentInfoToNextLevel(int32_t src_level, int32_t dst_level)
 {
     memcpy(
-        &g_GameInfo.start[dst_level], &g_GameInfo.current[src_level],
+        &g_GameInfo.current[dst_level], &g_GameInfo.current[src_level],
         sizeof(RESUME_INFO));
 }
 
@@ -563,8 +555,6 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
     for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
          i++) {
-        RESUME_INFO *start = &g_GameInfo.start[i];
-
         if (i <= savegame_info->level_num) {
             req->item_flags[req->items] &= ~RIF_BLOCKED;
             sprintf(

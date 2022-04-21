@@ -708,7 +708,7 @@ int32_t Display_Inventory(int inv_mode)
                     g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                     break;
                 }
-                Savegame_InitStartCurrentInfo();
+                Savegame_InitCurrentInfo();
                 return GF_START_GAME | g_GameFlow.first_level_num;
             } else {
                 // page 3: exit game
@@ -762,7 +762,7 @@ int32_t Display_Inventory(int inv_mode)
                         g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
                         break;
                     }
-                    Savegame_InitStartCurrentInfo();
+                    Savegame_InitCurrentInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
                 } else {
                     Savegame_Save(

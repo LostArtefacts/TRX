@@ -451,16 +451,10 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         current->flags.costume = flags & 32 ? 1 : 0;
         // Gym and first level have special starting items.
         if (i <= g_GameFlow.first_level_num) {
-            Savegame_ApplyLogicToStartInfo(i);
+            Savegame_ApplyLogicToCurrentInfo(i);
         }
-        // Use previous level's ending stats for start info.
-        if (i >= g_GameFlow.first_level_num && i < g_GameFlow.last_level_num) {
-            memcpy(&game_info->start[i + 1], current, sizeof(RESUME_INFO));
-        } else {
-            memcpy(&game_info->start[i], current, sizeof(RESUME_INFO));
-        }
-        // Max Lara's starting HP for legacy saves instead of using current HP.
-        game_info->start[i].lara_hitpoints = LARA_HITPOINTS;
+        // Max Lara's starting HP for legacy saves.
+        game_info->current[i].lara_hitpoints = LARA_HITPOINTS;
     }
 
     uint32_t temp_timer = 0;
@@ -630,16 +624,10 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         current->flags.costume = flags & 32 ? 1 : 0;
         // Gym and first level have special starting items.
         if (i <= g_GameFlow.first_level_num) {
-            Savegame_ApplyLogicToStartInfo(i);
+            Savegame_ApplyLogicToCurrentInfo(i);
         }
-        // Use previous level's ending stats for start info.
-        if (i >= g_GameFlow.first_level_num && i < g_GameFlow.last_level_num) {
-            memcpy(&game_info->start[i + 1], current, sizeof(RESUME_INFO));
-        } else {
-            memcpy(&game_info->start[i], current, sizeof(RESUME_INFO));
-        }
-        // Max Lara's starting HP for legacy saves instead of using current HP.
-        game_info->start[i].lara_hitpoints = LARA_HITPOINTS;
+        // Max Lara's starting HP for legacy saves.
+        game_info->current[i].lara_hitpoints = LARA_HITPOINTS;
     }
 
     uint32_t temp_timer = 0;

@@ -1538,7 +1538,6 @@ typedef struct RESUME_INFO {
 } RESUME_INFO;
 
 typedef struct GAME_INFO {
-    RESUME_INFO *start;
     RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;

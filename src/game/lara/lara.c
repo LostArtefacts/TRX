@@ -6,6 +6,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -32,8 +33,16 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
         // Use current info for saved games.
         return &g_GameInfo.current[level_num];
     }
-    // Use start info for GFL_RESTART / GFL_SELECT.
-    return &g_GameInfo.start[level_num];
+
+    // GFL_RESTART / GFL_SELECT.
+    if (level_num <= g_GameFlow.first_level_num) {
+        // Use empty current info for gym or level 1.
+        Savegame_InitCurrentInfo();
+        return &g_GameInfo.current[level_num];
+    } else {
+        // Use previous level's ending info to start current level.
+        return &g_GameInfo.current[level_num - 1];
+    }
 }
 
 void Lara_Control(void)

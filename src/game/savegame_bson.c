@@ -237,7 +237,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
     assert(game_info);
-    assert(game_info->start);
+    assert(game_info->current);
     if (!start_arr) {
         LOG_ERROR(
             "Malformed save: invalid or missing discontinued start array");
@@ -255,7 +255,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
             LOG_ERROR("Malformed save: invalid discontinued start info");
             return false;
         }
-        RESUME_INFO *start = &game_info->start[i];
+        RESUME_INFO *start = &game_info->current[i];
         start->lara_hitpoints = json_object_get_int(
             start_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
         start->pistol_ammo = json_object_get_int(start_obj, "pistol_ammo", 0);
@@ -325,8 +325,6 @@ static bool Savegame_BSON_LoadDiscontinuedEndInfo(
             json_object_get_int(end_obj, "max_kills", end->max_kill_count);
         end->max_pickup_count =
             json_object_get_int(end_obj, "max_pickups", end->max_pickup_count);
-        // Start and current are the same for legacy saves.
-        memcpy(&game_info->start[i].stats, end, sizeof(GAME_STATS));
     }
     game_info->death_counter_supported = true;
     return true;
@@ -1041,11 +1039,6 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!Savegame_BSON_LoadResumeInfo(
-            json_object_get_array(root_obj, "start_info"), game_info->start)) {
-        goto cleanup;
-    }
-
-    if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
         LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
@@ -1107,11 +1100,6 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!Savegame_BSON_LoadResumeInfo(
-            json_object_get_array(root_obj, "start_info"), game_info->start)) {
-        goto cleanup;
-    }
-
-    if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
         LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
@@ -1147,8 +1135,6 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     json_object_append_object(
         root_obj, "misc", Savegame_BSON_DumpMisc(game_info));
-    json_object_append_array(
-        root_obj, "start_info", Savegame_BSON_DumpResumeInfo(game_info->start));
     json_object_append_array(
         root_obj, "current_info",
         Savegame_BSON_DumpResumeInfo(game_info->current));

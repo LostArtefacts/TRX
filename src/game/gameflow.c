@@ -607,7 +607,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     int32_t level_count = jlvl_arr->length;
 
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
-    g_GameInfo.start = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
     g_GameInfo.current = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
@@ -891,7 +890,6 @@ void GameFlow_Shutdown(void)
     Memory_FreePointer(&g_GameFlow.main_menu_background_path);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_legacy);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_bson);
-    Memory_FreePointer(&g_GameInfo.start);
     Memory_FreePointer(&g_GameInfo.current);
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
@@ -1237,13 +1235,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                     give_item_data->object_num, give_item_data->quantity);
                 if (g_Lara.gun_type == LGT_UNARMED) {
                     if (Inv_RequestItem(O_GUN_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_PISTOLS;
+                        g_GameInfo.current[level_num].gun_type = LGT_PISTOLS;
                     } else if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_SHOTGUN;
+                        g_GameInfo.current[level_num].gun_type = LGT_SHOTGUN;
                     } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_MAGNUMS;
+                        g_GameInfo.current[level_num].gun_type = LGT_MAGNUMS;
                     } else if (Inv_RequestItem(O_UZI_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_UZIS;
+                        g_GameInfo.current[level_num].gun_type = LGT_UZIS;
                     }
                     Lara_InitialiseMeshes(level_num);
                 }
@@ -1253,19 +1251,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
                 && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-                g_GameInfo.start[level_num].flags.got_pistols = 0;
-                g_GameInfo.start[level_num].flags.got_shotgun = 0;
-                g_GameInfo.start[level_num].flags.got_magnums = 0;
-                g_GameInfo.start[level_num].flags.got_uzis = 0;
-                g_GameInfo.start[level_num].gun_type = LGT_UNARMED;
-                g_GameInfo.start[level_num].gun_status = LGS_ARMLESS;
+                g_GameInfo.current[level_num].flags.got_pistols = 0;
+                g_GameInfo.current[level_num].flags.got_shotgun = 0;
+                g_GameInfo.current[level_num].flags.got_magnums = 0;
+                g_GameInfo.current[level_num].flags.got_uzis = 0;
+                g_GameInfo.current[level_num].gun_type = LGT_UNARMED;
+                g_GameInfo.current[level_num].gun_status = LGS_ARMLESS;
                 Lara_InitialiseInventory(level_num);
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
-                g_GameInfo.start[level_num].num_scions = 0;
+                g_GameInfo.current[level_num].num_scions = 0;
                 Lara_InitialiseInventory(level_num);
             }
             break;
