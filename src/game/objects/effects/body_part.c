@@ -68,6 +68,6 @@ void BodyPart_Control(int16_t fx_num)
     }
 
     if (room_num != fx->room_number) {
-        EffectNewRoom(fx_num, room_num);
+        Effect_NewRoom(fx_num, room_num);
     }
 }

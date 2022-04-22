@@ -117,7 +117,7 @@ void Lava_Control(int16_t fx_num)
         g_LaraItem->hit_status = 1;
         Effect_Kill(fx_num);
     } else if (room_num != fx->room_number) {
-        EffectNewRoom(fx_num, room_num);
+        Effect_NewRoom(fx_num, room_num);
     }
 }
 
