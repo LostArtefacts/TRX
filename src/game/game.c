@@ -97,7 +97,7 @@ int32_t StopGame(void)
     } else if (
         g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
         && g_InvExtraData[IED_PASSPORT_MODE] == PASSPORT_MODE_SELECT_LEVEL) {
-        return GF_SELECT_GAME | g_InvExtraData[IED_LEVEL_NUM];
+        return GF_SELECT_GAME | g_GameInfo.select_level_num;
     } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel

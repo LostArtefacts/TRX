@@ -175,7 +175,7 @@ static void Option_PassportShowLevelSelect(void)
     int32_t select = DisplayRequester(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[IED_LEVEL_NUM] =
+            g_GameInfo.select_level_num =
                 select - 1 + g_GameFlow.first_level_num;
             g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SELECT_LEVEL;
         } else if (

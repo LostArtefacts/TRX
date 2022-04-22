@@ -1184,7 +1184,6 @@ typedef enum INVENTORY_EXTRA_DATA {
     IED_PAGE_NUM = 0,
     IED_SAVEGAME_NUM = 1,
     IED_PASSPORT_MODE = 2,
-    IED_LEVEL_NUM = 3,
 } INVENTORY_EXTRA_DATA;
 
 #pragma pack(push, 1)
@@ -1541,6 +1540,9 @@ typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;
+    PASSPORT_PAGE passport_page;
+    PASSPORT_MODE passport_mode;
+    int32_t select_level_num;
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;
 } GAME_INFO;
