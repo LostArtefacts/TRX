@@ -29,20 +29,27 @@ static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
 
 static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
 {
-    if (g_GameInfo.current_level_type == GFL_SAVED) {
-        // Use current info for saved games.
+    switch (g_GameInfo.current_level_type) {
+    case GFL_RESTART:
+    case GFL_SELECT:
+        if (level_num <= g_GameFlow.first_level_num) {
+            // Use empty current info for gym or level 1.
+            Savegame_InitCurrentInfo();
+            return &g_GameInfo.current[level_num];
+        } else {
+            // Use previous level's ending info to start current level.
+            return &g_GameInfo.current[level_num - 1];
+        }
+    case GFL_TITLE:
+    case GFL_NORMAL:
+    case GFL_SAVED:
+    case GFL_DEMO:
+    case GFL_CUTSCENE:
+    case GFL_GYM:
+    case GFL_CURRENT:
         return &g_GameInfo.current[level_num];
     }
-
-    // GFL_RESTART / GFL_SELECT.
-    if (level_num <= g_GameFlow.first_level_num) {
-        // Use empty current info for gym or level 1.
-        Savegame_InitCurrentInfo();
-        return &g_GameInfo.current[level_num];
-    } else {
-        // Use previous level's ending info to start current level.
-        return &g_GameInfo.current[level_num - 1];
-    }
+    return &g_GameInfo.current[level_num];
 }
 
 void Lara_Control(void)
@@ -471,7 +478,7 @@ void Lara_InitialiseLoad(int16_t item_num)
 
 void Lara_Initialise(int32_t level_num)
 {
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
 
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
@@ -532,7 +539,7 @@ void Lara_InitialiseInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
 
     g_Lara.pistols.ammo = 1000;
     if (resume->flags.got_pistols) {
@@ -597,7 +604,7 @@ void Lara_InitialiseInventory(int32_t level_num)
 
 void Lara_InitialiseMeshes(int32_t level_num)
 {
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
 
     if (resume->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
