@@ -91,7 +91,7 @@ void RollingBall_Control(int16_t item_num)
         item->pos.y = data->y;
         item->pos.z = data->z;
         if (item->room_number != data->room_number) {
-            RemoveDrawnItem(item_num);
+            Item_RemoveDrawn(item_num);
             ROOM_INFO *r = &g_RoomInfo[data->room_number];
             item->next_item = r->item_number;
             r->item_number = item_num;

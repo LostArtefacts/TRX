@@ -106,7 +106,7 @@ void Scion_Control3(int16_t item_num)
             Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
-        RemoveDrawnItem(item_num);
+        Item_RemoveDrawn(item_num);
     }
 
     if (counter % 10 == 0) {
@@ -149,7 +149,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
+            Item_RemoveDrawn(item_num);
             g_GameInfo.current[g_CurrentLevel].stats.pickup_count++;
         }
     } else if (
