@@ -1180,10 +1180,6 @@ typedef enum PASSPORT_MODE {
     PASSPORT_MODE_SELECT_LEVEL = 3,
 } PASSPORT_MODE;
 
-typedef enum INVENTORY_EXTRA_DATA {
-    IED_PAGE_NUM = 0,
-} INVENTORY_EXTRA_DATA;
-
 #pragma pack(push, 1)
 
 typedef struct RESOLUTION {

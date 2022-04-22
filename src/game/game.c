@@ -91,13 +91,13 @@ int32_t StopGame(void)
         return GF_EXIT_TO_TITLE;
     }
 
-    if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
+    if (g_GameInfo.passport_page == PASSPORT_PAGE_1) {
         return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
     } else if (
-        g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
+        g_GameInfo.passport_page == PASSPORT_PAGE_1
         && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
         return GF_SELECT_GAME | g_GameInfo.select_level_num;
-    } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
+    } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel
                                            : g_GameFlow.first_level_num);
