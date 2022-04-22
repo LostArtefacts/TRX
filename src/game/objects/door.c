@@ -271,7 +271,7 @@ void Door_OpenNearest(ITEM_INFO *lara_item)
         }
 
         if (!item->active) {
-            AddActiveItem(item_num);
+            Item_AddActive(item_num);
             item->flags |= IF_CODE_BITS;
         } else if (item->flags & IF_CODE_BITS) {
             item->flags &= ~IF_CODE_BITS;

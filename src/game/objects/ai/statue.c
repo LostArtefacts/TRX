@@ -73,7 +73,7 @@ void Statue_Control(int16_t item_num)
         int16_t centaur_item_num = *(int16_t *)item->data;
         ITEM_INFO *centaur = &g_Items[centaur_item_num];
         centaur->touch_bits = 0;
-        AddActiveItem(centaur_item_num);
+        Item_AddActive(centaur_item_num);
         EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 

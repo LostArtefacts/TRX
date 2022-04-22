@@ -150,7 +150,7 @@ void CalculateCinematicCamera(void)
 
 void InitialisePlayer1(int16_t item_num)
 {
-    AddActiveItem(item_num);
+    Item_AddActive(item_num);
 
     ITEM_INFO *item = &g_Items[item_num];
     g_Camera.pos.room_number = item->room_number;
@@ -178,7 +178,7 @@ void ControlCinematicPlayer4(int16_t item_num)
 
 void InitialiseGenPlayer(int16_t item_num)
 {
-    AddActiveItem(item_num);
+    Item_AddActive(item_num);
     g_Items[item_num].pos.y_rot = 0;
 }
 

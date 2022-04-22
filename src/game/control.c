@@ -587,7 +587,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                     if (item->status == IS_NOT_ACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
-                        AddActiveItem(value);
+                        Item_AddActive(value);
                         EnableBaddieAI(value, 1);
                     } else if (item->status == IS_INVISIBLE) {
                         item->touch_bits = 0;
@@ -596,12 +596,12 @@ void TestTriggers(int16_t *data, int32_t heavy)
                         } else {
                             item->status = IS_INVISIBLE;
                         }
-                        AddActiveItem(value);
+                        Item_AddActive(value);
                     }
                 } else {
                     item->touch_bits = 0;
                     item->status = IS_ACTIVE;
-                    AddActiveItem(value);
+                    Item_AddActive(value);
                 }
             }
             break;
