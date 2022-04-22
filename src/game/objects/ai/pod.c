@@ -44,7 +44,7 @@ void Pod_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    int16_t bug_item_num = CreateItem();
+    int16_t bug_item_num = Item_Create();
     if (bug_item_num != NO_ITEM) {
         ITEM_INFO *bug = &g_Items[bug_item_num];
 

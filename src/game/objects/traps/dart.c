@@ -102,7 +102,7 @@ void DartEmitter_Control(int16_t item_num)
 
     if (item->current_anim_state == DART_EMITTER_FIRE
         && item->frame_number == g_Anims[item->anim_number].frame_base) {
-        int16_t dart_item_num = CreateItem();
+        int16_t dart_item_num = Item_Create();
         if (dart_item_num != NO_ITEM) {
             ITEM_INFO *dart = &g_Items[dart_item_num];
             dart->object_number = O_DARTS;
