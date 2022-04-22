@@ -522,7 +522,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_magnums) {
         Inv_AddItem(O_MAGNUM_ITEM);
         g_Lara.magnums.ammo = resume->magnum_ammo;
-        GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
     } else {
         int32_t ammo = resume->magnum_ammo / MAGNUM_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {
@@ -534,7 +534,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_uzis) {
         Inv_AddItem(O_UZI_ITEM);
         g_Lara.uzis.ammo = resume->uzi_ammo;
-        GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
     } else {
         int32_t ammo = resume->uzi_ammo / UZI_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {
@@ -546,7 +546,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_shotgun) {
         Inv_AddItem(O_SHOTGUN_ITEM);
         g_Lara.shotgun.ammo = resume->shotgun_ammo;
-        GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
     } else {
         int32_t ammo = resume->shotgun_ammo / SHOTGUN_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {

@@ -321,7 +321,7 @@ bool Inv_AddItem(int32_t item_num)
         }
         g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
         Inv_InsertItem(&g_InvItemShotgun);
-        GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
         return false;
 
     case O_MAGNUM_ITEM:
@@ -332,7 +332,7 @@ bool Inv_AddItem(int32_t item_num)
         }
         g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
         Inv_InsertItem(&g_InvItemMagnum);
-        GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
         return false;
 
     case O_UZI_ITEM:
@@ -343,7 +343,7 @@ bool Inv_AddItem(int32_t item_num)
         }
         g_Lara.uzis.ammo += UZI_AMMO_QTY;
         Inv_InsertItem(&g_InvItemUzi);
-        GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return false;
 
     case O_SG_AMMO_ITEM:

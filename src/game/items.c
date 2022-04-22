@@ -273,7 +273,7 @@ int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
     return spawn_num;
 }
 
-int32_t GlobalItemReplace(int32_t src_object_num, int32_t dst_object_num)
+int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num)
 {
     int32_t changed = 0;
     for (int i = 0; i < g_RoomCount; i++) {
