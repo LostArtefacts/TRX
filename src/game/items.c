@@ -186,7 +186,7 @@ void Item_RemoveActive(int16_t item_num)
     }
 }
 
-void RemoveDrawnItem(int16_t item_num)
+void Item_RemoveDrawn(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
