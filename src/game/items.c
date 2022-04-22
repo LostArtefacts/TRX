@@ -144,7 +144,7 @@ void Item_Initialise(int16_t item_num)
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         item->flags -= IF_CODE_BITS;
         item->flags |= IF_REVERSE;
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         item->status = IS_ACTIVE;
     }
 
@@ -204,7 +204,7 @@ void Item_RemoveDrawn(int16_t item_num)
     }
 }
 
-void AddActiveItem(int16_t item_num)
+void Item_AddActive(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 

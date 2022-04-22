@@ -549,7 +549,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
                 item->status = IS_DEACTIVATED;
             } else {
                 if ((item->flags & 1) && !item->active) {
-                    AddActiveItem(i);
+                    Item_AddActive(i);
                 }
                 item->status = (item->flags & 6) >> 1;
                 if (item->flags & 8) {

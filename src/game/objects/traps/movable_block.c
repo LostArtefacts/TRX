@@ -219,7 +219,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
         AnimateItem(item);

@@ -30,7 +30,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
 void SaveCrystal_Initialise(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
     } else {
         g_Items[item_num].status = IS_INVISIBLE;
     }

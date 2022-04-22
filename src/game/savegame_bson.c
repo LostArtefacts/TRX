@@ -499,7 +499,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             } else {
                 if (json_object_get_bool(item_obj, "active", item->active)
                     && !item->active) {
-                    AddActiveItem(i);
+                    Item_AddActive(i);
                 }
                 item->status =
                     json_object_get_int(item_obj, "status", item->status);
