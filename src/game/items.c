@@ -110,7 +110,7 @@ int16_t Item_Create(void)
     return item_num;
 }
 
-void InitialiseItem(int16_t item_num)
+void Item_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
@@ -266,7 +266,7 @@ int16_t SpawnItem(ITEM_INFO *item, int16_t object_num)
         spawn->object_number = object_num;
         spawn->room_number = item->room_number;
         spawn->pos = item->pos;
-        InitialiseItem(spawn_num);
+        Item_Initialise(spawn_num);
         spawn->status = IS_NOT_ACTIVE;
         spawn->shade = 4096;
     }

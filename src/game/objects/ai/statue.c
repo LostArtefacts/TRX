@@ -42,7 +42,7 @@ void Statue_Initialise(int16_t item_num)
     centaur->flags = IF_NOT_VISIBLE;
     centaur->shade = -1;
 
-    InitialiseItem(centaur_item_num);
+    Item_Initialise(centaur_item_num);
 
     centaur->anim_number = g_Objects[O_CENTAUR].anim_index + 7;
     centaur->frame_number = g_Anims[centaur->anim_number].frame_base + 36;

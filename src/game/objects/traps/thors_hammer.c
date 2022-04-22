@@ -42,7 +42,7 @@ void ThorsHandle_Initialise(int16_t item_num)
     head_item->room_number = hand_item->room_number;
     head_item->pos = hand_item->pos;
     head_item->shade = hand_item->shade;
-    InitialiseItem(head_item_num);
+    Item_Initialise(head_item_num);
     hand_item->data = head_item;
     g_LevelItemCount++;
 }

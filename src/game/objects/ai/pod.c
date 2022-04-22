@@ -74,7 +74,7 @@ void Pod_Initialise(int16_t item_num)
         bug->flags = IF_NOT_VISIBLE;
         bug->shade = -1;
 
-        InitialiseItem(bug_item_num);
+        Item_Initialise(bug_item_num);
 
         item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
         *(int16_t *)item->data = bug_item_num;

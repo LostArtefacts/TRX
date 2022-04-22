@@ -130,7 +130,7 @@ void DartEmitter_Control(int16_t item_num)
 
             dart->pos.x = item->pos.x + x;
             dart->pos.z = item->pos.z + z;
-            InitialiseItem(dart_item_num);
+            Item_Initialise(dart_item_num);
             AddActiveItem(dart_item_num);
             dart->status = IS_ACTIVE;
 
