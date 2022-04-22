@@ -27,7 +27,7 @@ void Statue_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    int16_t centaur_item_num = CreateItem();
+    int16_t centaur_item_num = Item_Create();
     if (centaur_item_num == NO_ITEM) {
         Shell_ExitSystem("FATAL: Cannot create CENTAUR in STATUE");
         return;

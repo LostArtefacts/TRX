@@ -36,7 +36,7 @@ void ThorsHead_Setup(OBJECT_INFO *obj)
 void ThorsHandle_Initialise(int16_t item_num)
 {
     ITEM_INFO *hand_item = &g_Items[item_num];
-    int16_t head_item_num = CreateItem();
+    int16_t head_item_num = Item_Create();
     ITEM_INFO *head_item = &g_Items[head_item_num];
     head_item->object_number = O_THORS_HEAD;
     head_item->room_number = hand_item->room_number;

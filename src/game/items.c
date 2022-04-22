@@ -100,7 +100,7 @@ void Item_Kill(int16_t item_num)
     }
 }
 
-int16_t CreateItem(void)
+int16_t Item_Create(void)
 {
     int16_t item_num = g_NextItemFree;
     if (item_num != NO_ITEM) {
@@ -260,7 +260,7 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
 
 int16_t SpawnItem(ITEM_INFO *item, int16_t object_num)
 {
-    int16_t spawn_num = CreateItem();
+    int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
         ITEM_INFO *spawn = &g_Items[spawn_num];
         spawn->object_number = object_num;
