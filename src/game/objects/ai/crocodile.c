@@ -277,7 +277,7 @@ void Alligator_Control(int16_t item_num)
         item->floor =
             Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         if (room_num != item->room_number) {
-            ItemNewRoom(item_num, room_num);
+            Item_NewRoom(item_num, room_num);
         }
         return;
     }

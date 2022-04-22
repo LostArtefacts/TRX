@@ -56,7 +56,7 @@ void RollingBall_Control(int16_t item_num)
         FLOOR_INFO *floor =
             Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_number != room_num) {
-            ItemNewRoom(item_num, room_num);
+            Item_NewRoom(item_num, room_num);
         }
 
         item->floor =
@@ -150,7 +150,7 @@ void RollingBall_Collision(
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
             if (lara_item->room_number != item->room_number) {
-                ItemNewRoom(g_Lara.item_number, item->room_number);
+                Item_NewRoom(g_Lara.item_number, item->room_number);
             }
 
             lara_item->pos.x_rot = 0;

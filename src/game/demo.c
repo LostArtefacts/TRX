@@ -101,7 +101,7 @@ void LoadLaraDemoPos(void)
     int16_t room_num = *m_DemoPtr++;
 
     if (item->room_number != room_num) {
-        ItemNewRoom(g_Lara.item_number, room_num);
+        Item_NewRoom(g_Lara.item_number, room_num);
     }
 
     FLOOR_INFO *floor =

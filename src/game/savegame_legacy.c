@@ -522,7 +522,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->fall_speed, sizeof(int16_t));
 
             if (item->room_number != tmp16) {
-                ItemNewRoom(i, tmp16);
+                Item_NewRoom(i, tmp16);
             }
         }
 
