@@ -467,7 +467,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 
             int16_t room_num = json_object_get_int(item_obj, "room_num", -1);
             if (room_num != -1 && item->room_number != room_num) {
-                ItemNewRoom(i, room_num);
+                Item_NewRoom(i, room_num);
             }
         }
 

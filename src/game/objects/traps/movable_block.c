@@ -111,7 +111,7 @@ void MovableBlock_Control(int16_t item_num)
     }
 
     if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     if (item->status == IS_DEACTIVATED) {

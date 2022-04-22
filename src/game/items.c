@@ -222,7 +222,7 @@ void Item_AddActive(int16_t item_num)
     g_NextItemActive = item_num;
 }
 
-void ItemNewRoom(int16_t item_num, int16_t room_num)
+void Item_NewRoom(int16_t item_num, int16_t room_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
@@ -254,7 +254,7 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     item->floor = Room_GetHeight(floor, x, y, z);
     if (item->room_number != room_num) {
-        ItemNewRoom(g_Lara.item_number, room_num);
+        Item_NewRoom(g_Lara.item_number, room_num);
     }
 }
 

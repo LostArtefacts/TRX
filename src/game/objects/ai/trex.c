@@ -179,7 +179,7 @@ void TRex_LaraDeath(ITEM_INFO *item)
 {
     item->goal_anim_state = TREX_KILL;
     if (g_LaraItem->room_number != item->room_number) {
-        ItemNewRoom(g_Lara.item_number, item->room_number);
+        Item_NewRoom(g_Lara.item_number, item->room_number);
     }
 
     g_LaraItem->pos.x = item->pos.x;

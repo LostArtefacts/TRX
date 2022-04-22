@@ -983,7 +983,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
     }
 
     if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     return 1;
