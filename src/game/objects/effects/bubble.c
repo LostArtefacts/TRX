@@ -34,7 +34,7 @@ void Bubble_Control(int16_t fx_num)
     }
 
     if (fx->room_number != room_num) {
-        EffectNewRoom(fx_num, room_num);
+        Effect_NewRoom(fx_num, room_num);
     }
     fx->pos.x = x;
     fx->pos.y = y;

@@ -353,7 +353,7 @@ void Effect_Kill(int16_t fx_num)
     g_NextFxFree = fx_num;
 }
 
-void EffectNewRoom(int16_t fx_num, int16_t room_num)
+void Effect_NewRoom(int16_t fx_num, int16_t room_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
     ROOM_INFO *r = &g_RoomInfo[fx->room_number];

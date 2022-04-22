@@ -30,4 +30,4 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void Effect_InitialiseArray(void);
 int16_t Effect_Create(int16_t room_num);
 void Effect_Kill(int16_t fx_num);
-void EffectNewRoom(int16_t fx_num, int16_t room_num);
+void Effect_NewRoom(int16_t fx_num, int16_t room_num);
