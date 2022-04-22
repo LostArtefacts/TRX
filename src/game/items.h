@@ -2,9 +2,7 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
-void InitialiseItemArray(int32_t num_items);
+void Item_InitialiseArray(int32_t num_items);
 void KillItem(int16_t item_num);
 int16_t CreateItem(void);
 void InitialiseItem(int16_t item_num);
