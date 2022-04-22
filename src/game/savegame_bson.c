@@ -494,7 +494,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             item->timer = json_object_get_int(item_obj, "timer", item->timer);
 
             if (item->flags & IF_KILLED_ITEM) {
-                KillItem(i);
+                Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {
                 if (json_object_get_bool(item_obj, "active", item->active)

@@ -59,7 +59,7 @@ void Item_InitialiseArray(int32_t num_items)
     g_Items[num_items - 1].next_item = NO_ITEM;
 }
 
-void KillItem(int16_t item_num)
+void Item_Kill(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     ROOM_INFO *r = &g_RoomInfo[item->room_number];

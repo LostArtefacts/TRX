@@ -47,7 +47,7 @@ void Dart_Control(int16_t item_num)
 
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
-        KillItem(item_num);
+        Item_Kill(item_num);
         int16_t fx_num = CreateEffect(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];

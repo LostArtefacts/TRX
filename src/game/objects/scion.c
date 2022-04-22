@@ -128,7 +128,7 @@ void Scion_Control3(int16_t item_num)
 
     counter++;
     if (counter >= FRAMES_PER_SECOND * 3) {
-        KillItem(item_num);
+        Item_Kill(item_num);
     }
 }
 
