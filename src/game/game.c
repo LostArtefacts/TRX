@@ -25,8 +25,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
-    if (level_type == GFL_SAVED || level_type == GFL_SELECT
-        || level_type == GFL_RESTART) {
+    if (level_type == GFL_SAVED || level_type == GFL_SELECT) {
         // reset current info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
@@ -34,8 +33,23 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         InitialiseLevelFlags();
     }
 
-    if (level_type == GFL_SELECT || level_type == GFL_RESTART) {
+    if (level_type == GFL_SELECT) {
         Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
+        for (int i = level_num; i < g_GameFlow.level_count; i++) {
+            Savegame_ResetCurrentInfo(i);
+        }
+        if (level_num <= g_GameFlow.first_level_num) {
+            // Use empty current info for gym or level 1.
+            Savegame_InitCurrentInfo();
+        } else {
+            // Use previous level's ending info to start current level.
+            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+            Savegame_ApplyLogicToCurrentInfo(level_num);
+        }
+        InitialiseLevelFlags();
+    }
+
+    if (level_type == GFL_RESTART) {
         for (int i = level_num; i < g_GameFlow.level_count; i++) {
             Savegame_ResetCurrentInfo(i);
         }
