@@ -67,7 +67,7 @@ void Statue_Control(int16_t item_num)
     if (y > -WALL_L && y < WALL_L
         && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
         Effect_ExplodingDeath(item_num, -1, 0);
-        KillItem(item_num);
+        Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
 
         int16_t centaur_item_num = *(int16_t *)item->data;

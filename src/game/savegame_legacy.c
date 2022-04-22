@@ -545,7 +545,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 
             if (item->flags & IF_KILLED_ITEM) {
-                KillItem(i);
+                Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {
                 if ((item->flags & 1) && !item->active) {

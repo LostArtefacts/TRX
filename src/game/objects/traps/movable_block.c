@@ -88,7 +88,7 @@ void MovableBlock_Control(int16_t item_num)
 
     if (item->flags & IF_ONESHOT) {
         AlterFloorHeight(item, WALL_L);
-        KillItem(item_num);
+        Item_Kill(item_num);
         return;
     }
 

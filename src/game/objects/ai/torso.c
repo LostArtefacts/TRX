@@ -252,7 +252,7 @@ void Torso_Control(int16_t item_num)
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
 
-        KillItem(item_num);
+        Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
     }
 }

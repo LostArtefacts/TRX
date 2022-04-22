@@ -3,7 +3,7 @@
 #include "global/types.h"
 
 void Item_InitialiseArray(int32_t num_items);
-void KillItem(int16_t item_num);
+void Item_Kill(int16_t item_num);
 int16_t CreateItem(void);
 void InitialiseItem(int16_t item_num);
 void RemoveActiveItem(int16_t item_num);

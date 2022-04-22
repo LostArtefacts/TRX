@@ -66,9 +66,9 @@ void Pierre_Control(int16_t item_num)
         m_PierreItemNum = item_num;
     } else if (m_PierreItemNum != item_num) {
         if (item->flags & IF_ONESHOT) {
-            KillItem(m_PierreItemNum);
+            Item_Kill(m_PierreItemNum);
         } else {
-            KillItem(item_num);
+            Item_Kill(item_num);
         }
     }
 
@@ -225,7 +225,7 @@ void Pierre_Control(int16_t item_num)
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
             item->hit_points = DONT_TARGET;
             DisableBaddieAI(item_num);
-            KillItem(item_num);
+            Item_Kill(item_num);
             m_PierreItemNum = NO_ITEM;
         }
     }
@@ -235,7 +235,7 @@ void Pierre_Control(int16_t item_num)
     if (wh != NO_HEIGHT) {
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
-        KillItem(item_num);
+        Item_Kill(item_num);
         m_PierreItemNum = NO_ITEM;
     }
 }

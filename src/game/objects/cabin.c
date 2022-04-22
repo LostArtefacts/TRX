@@ -37,7 +37,7 @@ void Cabin_Control(int16_t item_num)
     if (item->current_anim_state == CABIN_FINISH) {
         g_FlipMapTable[3] = IF_CODE_BITS;
         FlipMap();
-        KillItem(item_num);
+        Item_Kill(item_num);
     }
 
     AnimateItem(item);

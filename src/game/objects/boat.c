@@ -24,7 +24,7 @@ void Boat_Control(int16_t item_num)
         item->goal_anim_state = BOAT_STOP;
         break;
     case BOAT_STOP:
-        KillItem(item_num);
+        Item_Kill(item_num);
         break;
     }
 
