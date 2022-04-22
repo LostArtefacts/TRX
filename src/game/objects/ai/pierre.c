@@ -96,9 +96,9 @@ void Pierre_Control(int16_t item_num)
             item->anim_number =
                 g_Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
-            SpawnItem(item, O_MAGNUM_ITEM);
-            SpawnItem(item, O_SCION_ITEM2);
-            SpawnItem(item, O_KEY_ITEM1);
+            Item_Spawn(item, O_MAGNUM_ITEM);
+            Item_Spawn(item, O_SCION_ITEM2);
+            Item_Spawn(item, O_KEY_ITEM1);
         }
     } else {
         AI_INFO info;

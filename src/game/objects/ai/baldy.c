@@ -75,7 +75,7 @@ void Baldy_Control(int16_t item_num)
             item->current_anim_state = BALDY_DEATH;
             item->anim_number = g_Objects[O_BALDY].anim_index + BALDY_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
-            SpawnItem(item, O_SHOTGUN_ITEM);
+            Item_Spawn(item, O_SHOTGUN_ITEM);
         }
     } else {
         AI_INFO info;

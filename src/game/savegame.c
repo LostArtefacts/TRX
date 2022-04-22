@@ -121,29 +121,29 @@ static void Savegame_LoadPostprocess(void)
         if (item->object_number == O_PIERRE && item->hit_points <= 0
             && (item->flags & IF_ONESHOT)) {
             if (Inv_RequestItem(O_SCION_ITEM) == 1) {
-                SpawnItem(item, O_MAGNUM_ITEM);
-                SpawnItem(item, O_SCION_ITEM2);
-                SpawnItem(item, O_KEY_ITEM1);
+                Item_Spawn(item, O_MAGNUM_ITEM);
+                Item_Spawn(item, O_SCION_ITEM2);
+                Item_Spawn(item, O_KEY_ITEM1);
             }
             g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_SKATEKID && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_UZI_ITEM)) {
-                SpawnItem(item, O_UZI_ITEM);
+                Item_Spawn(item, O_UZI_ITEM);
             }
         }
 
         if (item->object_number == O_COWBOY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
-                SpawnItem(item, O_MAGNUM_ITEM);
+                Item_Spawn(item, O_MAGNUM_ITEM);
             }
             g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
         }
 
         if (item->object_number == O_BALDY && item->hit_points <= 0) {
             if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                SpawnItem(item, O_SHOTGUN_ITEM);
+                Item_Spawn(item, O_SHOTGUN_ITEM);
             }
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
