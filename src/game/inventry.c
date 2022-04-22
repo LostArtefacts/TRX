@@ -815,10 +815,6 @@ void Construct_Inventory(void)
     g_PhdBottom = ViewPort_GetMaxY();
     g_PhdRight = ViewPort_GetMaxX();
 
-    for (int i = 0; i < 8; i++) {
-        g_InvExtraData[i] = 0;
-    }
-
     g_InvChosen = 0;
     if (g_InvMode == INV_TITLE_MODE) {
         g_InvOptionObjects = TITLE_RING_OBJECTS;
