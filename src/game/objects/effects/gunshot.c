@@ -14,7 +14,7 @@ void GunShot_Control(int16_t fx_num)
     FX_INFO *fx = &g_Effects[fx_num];
     fx->counter--;
     if (!fx->counter) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
         return;
     }
     fx->pos.z_rot = Random_GetControl();

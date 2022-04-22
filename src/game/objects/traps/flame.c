@@ -30,7 +30,7 @@ void Flame_Control(int16_t fx_num)
         if (g_Lara.water_status == LWS_CHEAT) {
             fx->counter = 0;
             Sound_StopEffect(SFX_FIRE, NULL);
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
 
         fx->pos.x = 0;
@@ -51,7 +51,7 @@ void Flame_Control(int16_t fx_num)
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
             Sound_StopEffect(SFX_FIRE, NULL);
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         } else {
             Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
             g_LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
@@ -114,7 +114,7 @@ void FlameEmitter_Control(int16_t item_num)
         }
     } else if (item->data) {
         Sound_StopEffect(SFX_FIRE, NULL);
-        KillEffect((int16_t)(size_t)item->data - 1);
+        Effect_Kill((int16_t)(size_t)item->data - 1);
         item->data = NULL;
     }
 }

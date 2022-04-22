@@ -319,7 +319,7 @@ void NatlaGun_Control(int16_t fx_num)
 
     fx->frame_number--;
     if (fx->frame_number <= object->nmeshes) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
     }
 
     if (fx->frame_number == -1) {
