@@ -289,7 +289,7 @@ int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num)
     return changed;
 }
 
-void InitialiseFXArray(void)
+void Effect_InitialiseArray(void)
 {
     g_NextFxActive = NO_ITEM;
     g_NextFxFree = 0;
@@ -299,7 +299,7 @@ void InitialiseFXArray(void)
     g_Effects[NUM_EFFECTS - 1].next_fx = NO_ITEM;
 }
 
-int16_t CreateEffect(int16_t room_num)
+int16_t Effect_Create(int16_t room_num)
 {
     int16_t fx_num = g_NextFxFree;
     if (fx_num == NO_ITEM) {

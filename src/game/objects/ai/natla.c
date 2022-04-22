@@ -337,7 +337,7 @@ void NatlaGun_Control(int16_t fx_num)
         return;
     }
 
-    fx_num = CreateEffect(room_num);
+    fx_num = Effect_Create(room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO *newfx = &g_Effects[fx_num];
         newfx->pos.x = x;

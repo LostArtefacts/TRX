@@ -107,7 +107,7 @@ bool InitialiseLevel(int32_t level_num)
     }
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
-    InitialiseFXArray();
+    Effect_InitialiseArray();
     InitialiseLOTArray();
 
     Overlay_Init();

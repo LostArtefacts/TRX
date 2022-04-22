@@ -36,7 +36,7 @@ int32_t Effect_ExplodingDeath(
 
     int32_t bit = 1;
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->room_number = item->room_number;
@@ -88,7 +88,7 @@ int32_t Effect_ExplodingDeath(
 
         bit <<= 1;
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-            int16_t fx_num = CreateEffect(item->room_number);
+            int16_t fx_num = Effect_Create(item->room_number);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->room_number = item->room_number;
