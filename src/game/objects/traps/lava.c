@@ -81,7 +81,7 @@ void Lava_Burn(ITEM_INFO *item)
     item->hit_points = -1;
     item->hit_status = 1;
     for (int i = 0; i < 10; i++) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->object_number = O_FLAME;
@@ -131,7 +131,7 @@ void LavaEmitter_Setup(OBJECT_INFO *obj)
 void LavaEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    int16_t fx_num = CreateEffect(item->room_number);
+    int16_t fx_num = Effect_Create(item->room_number);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = item->pos.x;

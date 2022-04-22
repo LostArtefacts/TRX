@@ -48,7 +48,7 @@ void Dart_Control(int16_t item_num)
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
         Item_Kill(item_num);
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = old_x;
@@ -134,7 +134,7 @@ void DartEmitter_Control(int16_t item_num)
             Item_AddActive(dart_item_num);
             dart->status = IS_ACTIVE;
 
-            int16_t fx_num = CreateEffect(dart->room_number);
+            int16_t fx_num = Effect_Create(dart->room_number);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;

@@ -26,7 +26,7 @@ void Waterfall_Control(int16_t item_num)
 
     if (ABS(x) <= WATERFALL_RANGE && ABS(z) <= WATERFALL_RANGE
         && ABS(y) <= WATERFALL_RANGE) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x
