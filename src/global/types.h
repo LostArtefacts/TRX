@@ -1182,7 +1182,6 @@ typedef enum PASSPORT_MODE {
 
 typedef enum INVENTORY_EXTRA_DATA {
     IED_PAGE_NUM = 0,
-    IED_SAVEGAME_NUM = 1,
 } INVENTORY_EXTRA_DATA;
 
 #pragma pack(push, 1)

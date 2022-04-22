@@ -155,7 +155,7 @@ static void Option_PassportShowNewGame(void)
     int32_t select = DisplayRequester(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
+            g_GameInfo.bonus_flag = select - 1;
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
@@ -196,7 +196,7 @@ static void Option_PassportShowSaves(void)
     int32_t select = DisplayRequester(&g_SavegameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
+            g_GameInfo.current_save_slot = select - 1;
             g_GameInfo.passport_mode = PASSPORT_MODE_SHOW_SAVES;
         } else {
             if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
@@ -291,7 +291,7 @@ static void Option_PassportLoadGame(void)
           & RIF_BLOCKED)
         || !(g_SavegameRequester.flags & RIF_BLOCKABLE)) {
         if (g_InputDB.right) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = g_SavegameRequester.requested;
+            g_GameInfo.current_save_slot = g_SavegameRequester.requested;
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
             RemoveRequester(&g_SavegameRequester);
             Option_PassportInitSelectLevelRequester();
@@ -443,8 +443,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
-                        g_InvExtraData[IED_SAVEGAME_NUM] =
-                            g_GameInfo.bonus_flag;
+                        g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
                     g_InvMode == INV_SAVE_MODE || g_InvMode == INV_GAME_MODE) {

@@ -35,8 +35,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_SELECT || level_type == GFL_RESTART) {
-        Savegame_LoadOnlyResumeInfo(
-            g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+        Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
         for (int i = level_num; i < g_GameFlow.level_count; i++) {
             Savegame_ResetCurrentInfo(i);
         }
@@ -93,7 +92,7 @@ int32_t StopGame(void)
     }
 
     if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
-        return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+        return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
     } else if (
         g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
         && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
@@ -137,7 +136,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                Savegame_Save(g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+                Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;

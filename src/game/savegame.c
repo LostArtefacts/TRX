@@ -377,7 +377,6 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
                 savegame_info->counter = g_SaveCounter;
                 savegame_info->level_num = g_CurrentLevel;
-                game_info->current_save_slot = slot_num;
                 File_Close(fp);
             } else {
                 ret = false;
@@ -550,7 +549,7 @@ void Savegame_ScanSavedGames(void)
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 {
     SAVEGAME_INFO *savegame_info =
-        &m_SavegameInfo[g_InvExtraData[IED_SAVEGAME_NUM]];
+        &m_SavegameInfo[g_GameInfo.current_save_slot];
     req->items = 0;
 
     for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
