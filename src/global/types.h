@@ -1225,7 +1225,7 @@ typedef struct PHD_VECTOR {
     int32_t z;
 } PHD_VECTOR;
 
-typedef struct PHD_MATRIX {
+typedef struct MATRIX {
     int32_t _00;
     int32_t _01;
     int32_t _02;
@@ -1238,7 +1238,7 @@ typedef struct PHD_MATRIX {
     int32_t _21;
     int32_t _22;
     int32_t _23;
-} PHD_MATRIX;
+} MATRIX;
 
 typedef struct PHD_3DPOS {
     int32_t x;

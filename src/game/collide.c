@@ -1,11 +1,11 @@
 #include "game/collide.h"
 
-#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/matrix.h"
 #include "game/objects/door.h"
 #include "game/room.h"
 #include "game/sound.h"

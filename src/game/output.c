@@ -1,10 +1,10 @@
 #include "game/output.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/clock.h"
+#include "game/matrix.h"
 #include "game/random.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -502,10 +502,10 @@ void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
 
 void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip)
 {
-    phd_PushMatrix();
-    InterpolateMatrix();
+    Matrix_Push();
+    Matrix_Interpolate();
     Output_DrawPolygons(obj_ptr, clip);
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 void Output_DrawRoom(const int16_t *obj_ptr)
@@ -542,9 +542,9 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         g_ShadowInfo.vertex[i].y = 0;
     }
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
-    phd_RotY(item->pos.y_rot);
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    Matrix_RotY(item->pos.y_rot);
 
     if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
         int16_t clip_and = 1;
@@ -569,7 +569,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         }
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 int32_t Output_GetDrawDistMin(void)

@@ -76,7 +76,6 @@ endif
 
 sources = [
   'src/3dsystem/3d_gen.c',
-  'src/3dsystem/matrix.c',
   'src/3dsystem/phd_math.c',
   'src/config.c',
   'src/filesystem.c',
@@ -132,6 +131,7 @@ sources = [
   'src/game/lara/lara_state.c',
   'src/game/level.c',
   'src/game/lot.c',
+  'src/game/matrix.c',
   'src/game/music.c',
   'src/game/objects/ai/ape.c',
   'src/game/objects/ai/bacon_lara.c',
