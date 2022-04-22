@@ -156,7 +156,7 @@ static void Option_PassportShowNewGame(void)
     if (select) {
         if (select > 0) {
             g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_NEW_GAME;
+            g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -177,7 +177,7 @@ static void Option_PassportShowLevelSelect(void)
         if (select > 0) {
             g_GameInfo.select_level_num =
                 select - 1 + g_GameFlow.first_level_num;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SELECT_LEVEL;
+            g_GameInfo.passport_mode = PASSPORT_MODE_SELECT_LEVEL;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -197,7 +197,7 @@ static void Option_PassportShowSaves(void)
     if (select) {
         if (select > 0) {
             g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SHOW_SAVES;
+            g_GameInfo.passport_mode = PASSPORT_MODE_SHOW_SAVES;
         } else {
             if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
                 && g_InvMode != INV_LOAD_MODE) {
