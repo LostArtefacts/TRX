@@ -23,13 +23,13 @@ void Bubble_Control(int16_t fx_num)
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     if (!floor || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
         return;
     }
 
     int32_t height = Room_GetCeiling(floor, x, y, z);
     if (height == NO_HEIGHT || y <= height) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
         return;
     }
 

@@ -44,7 +44,7 @@ void BodyPart_Control(int16_t fx_num)
             fx->object_number = O_EXPLOSION1;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
         } else {
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
         return;
     }
@@ -63,7 +63,7 @@ void BodyPart_Control(int16_t fx_num)
             g_Lara.spaz_effect_count = 5;
             g_Lara.spaz_effect = fx;
         } else {
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
     }
 

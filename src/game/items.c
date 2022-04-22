@@ -320,7 +320,7 @@ int16_t Effect_Create(int16_t room_num)
     return fx_num;
 }
 
-void KillEffect(int16_t fx_num)
+void Effect_Kill(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
 

@@ -111,11 +111,11 @@ void Lava_Control(int16_t fx_num)
     if (fx->pos.y >= Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
         || fx->pos.y
             < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
     } else if (Lara_IsNearItem(&fx->pos, 200)) {
         g_LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
         g_LaraItem->hit_status = 1;
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
     } else if (room_num != fx->room_number) {
         EffectNewRoom(fx_num, room_num);
     }
