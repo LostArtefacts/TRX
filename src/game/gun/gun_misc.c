@@ -1,12 +1,12 @@
 #include "game/gun/gun_misc.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
+#include "game/matrix.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -352,7 +352,7 @@ int32_t Gun_FireWeapon(
     view.y_rot = angles[0]
         + (winfo->shot_accuracy * (Random_GetControl() - PHD_90)) / PHD_ONE;
     view.z_rot = 0;
-    phd_GenerateW2V(&view);
+    Matrix_GenerateW2V(&view);
 
     SPHERE slist[33];
     int32_t nums = GetSpheres(target, slist, 0);

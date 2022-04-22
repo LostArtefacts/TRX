@@ -1494,7 +1494,7 @@ struct PHD_VECTOR {
     int32_t z;
 };
 
-struct PHD_MATRIX {
+struct MATRIX {
     int32_t _00;
     int32_t _01;
     int32_t _02;

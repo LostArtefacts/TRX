@@ -1,9 +1,9 @@
 #include "game/items.h"
 
-#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
+#include "game/matrix.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
@@ -439,13 +439,14 @@ bool Item_TestPosition(
     int32_t x = src_item->pos.x - dst_item->pos.x;
     int32_t y = src_item->pos.y - dst_item->pos.y;
     int32_t z = src_item->pos.z - dst_item->pos.z;
-    phd_PushUnitMatrix();
-    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    Matrix_PushUnit();
+    Matrix_RotYXZ(
+        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    MATRIX *mptr = g_PhdMatrixPtr;
     int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
     int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
     int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
-    phd_PopMatrix();
+    Matrix_Pop();
     if (rx < bounds[0] || rx > bounds[1]) {
         return false;
     }
@@ -466,9 +467,10 @@ void Item_AlignPosition(
     src_item->pos.y_rot = dst_item->pos.y_rot;
     src_item->pos.z_rot = dst_item->pos.z_rot;
 
-    phd_PushUnitMatrix();
-    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    Matrix_PushUnit();
+    Matrix_RotYXZ(
+        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    MATRIX *mptr = g_PhdMatrixPtr;
     src_item->pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -478,7 +480,7 @@ void Item_AlignPosition(
     src_item->pos.z = dst_item->pos.z
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 bool Item_MovePosition(
@@ -488,9 +490,10 @@ bool Item_MovePosition(
     dst_pos.x_rot = dst_item->pos.x_rot;
     dst_pos.y_rot = dst_item->pos.y_rot;
     dst_pos.z_rot = dst_item->pos.z_rot;
-    phd_PushUnitMatrix();
-    phd_RotYXZ(dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    Matrix_PushUnit();
+    Matrix_RotYXZ(
+        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    MATRIX *mptr = g_PhdMatrixPtr;
     dst_pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -500,7 +503,7 @@ bool Item_MovePosition(
     dst_pos.z = dst_item->pos.z
         + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
            >> W2V_SHIFT);
-    phd_PopMatrix();
+    Matrix_Pop();
 
     return Item_Move3DPosTo3DPos(&src_item->pos, &dst_pos, velocity, MOVE_ANG);
 }

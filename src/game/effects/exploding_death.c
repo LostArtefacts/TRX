@@ -1,8 +1,8 @@
 #include "game/effects/exploding_death.h"
 
-#include "3dsystem/matrix.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/matrix.h"
 #include "game/objects/effects/body_part.h"
 #include "game/random.h"
 #include "global/vars.h"
@@ -15,17 +15,17 @@ int32_t Effect_ExplodingDeath(
 
     int16_t *frame = GetBestFrame(item);
 
-    phd_PushUnitMatrix();
+    Matrix_PushUnit();
     g_PhdMatrixPtr->_03 = 0;
     g_PhdMatrixPtr->_13 = 0;
     g_PhdMatrixPtr->_23 = 0;
 
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    phd_TranslateRel(
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
-    phd_RotYXZpack(*packed_rotation++);
+    Matrix_RotYXZpack(*packed_rotation++);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
 #if 0
@@ -61,26 +61,26 @@ int32_t Effect_ExplodingDeath(
     for (int i = 1; i < object->nmeshes; i++) {
         int32_t bone_extra_flags = *bone++;
         if (bone_extra_flags & BEB_POP) {
-            phd_PopMatrix();
+            Matrix_Pop();
         }
         if (bone_extra_flags & BEB_PUSH) {
-            phd_PushMatrix();
+            Matrix_Push();
         }
 
-        phd_TranslateRel(bone[0], bone[1], bone[2]);
-        phd_RotYXZpack(*packed_rotation++);
+        Matrix_TranslateRel(bone[0], bone[1], bone[2]);
+        Matrix_RotYXZpack(*packed_rotation++);
 
 #if 0
     if (extra_rotation) {
         if (bone_extra_flags & (BEB_ROT_X | BEB_ROT_Y | BEB_ROT_Z)) {
             if (bone_extra_flags & BEB_ROT_Y) {
-                phd_RotY(*extra_rotation++);
+                Matrix_RotY(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_X) {
-                phd_RotX(*extra_rotation++);
+                Matrix_RotX(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_Z) {
-                phd_RotZ(*extra_rotation++);
+                Matrix_RotZ(*extra_rotation++);
             }
         }
     }
@@ -113,7 +113,7 @@ int32_t Effect_ExplodingDeath(
         bone += 3;
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - object->nmeshes)));
 }

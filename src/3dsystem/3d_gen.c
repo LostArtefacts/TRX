@@ -1,8 +1,8 @@
 #include "3dsystem/3d_gen.h"
 
-#include "3dsystem/matrix.h"
 #include "3dsystem/phd_math.h"
 #include "config.h"
+#include "game/matrix.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/vars.h"
@@ -23,7 +23,7 @@ void phd_LookAt(
     viewer.x_rot = angles[1];
     viewer.y_rot = angles[0];
     viewer.z_rot = roll;
-    phd_GenerateW2V(&viewer);
+    Matrix_GenerateW2V(&viewer);
 }
 
 void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
