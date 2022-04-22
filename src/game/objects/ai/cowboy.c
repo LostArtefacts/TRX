@@ -72,7 +72,7 @@ void Cowboy_Control(int16_t item_num)
             item->anim_number =
                 g_Objects[O_COWBOY].anim_index + COWBOY_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
-            SpawnItem(item, O_MAGNUM_ITEM);
+            Item_Spawn(item, O_MAGNUM_ITEM);
         }
     } else {
         AI_INFO info;

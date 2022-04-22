@@ -258,7 +258,7 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     }
 }
 
-int16_t SpawnItem(ITEM_INFO *item, int16_t object_num)
+int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
 {
     int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
