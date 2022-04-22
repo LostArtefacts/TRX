@@ -73,7 +73,7 @@ void LightningEmitter_Control(int16_t item_num)
             FlipMap();
         }
 
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_NOT_ACTIVE;
         return;
     }

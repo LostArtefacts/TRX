@@ -223,7 +223,7 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
         }
         item->status = IS_ACTIVE;
     } else {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_NOT_ACTIVE;
     }
     return true;

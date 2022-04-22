@@ -25,7 +25,7 @@ void FallingBlock_Control(int16_t item_num)
             item->goal_anim_state = TRAP_ACTIVATE;
         } else {
             item->status = IS_NOT_ACTIVE;
-            RemoveActiveItem(item_num);
+            Item_RemoveActive(item_num);
             return;
         }
         break;
@@ -43,7 +43,7 @@ void FallingBlock_Control(int16_t item_num)
 
     AnimateItem(item);
     if (item->status == IS_DEACTIVATED) {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         return;
     }
 

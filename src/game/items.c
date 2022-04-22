@@ -164,7 +164,7 @@ void Item_Initialise(int16_t item_num)
     }
 }
 
-void RemoveActiveItem(int16_t item_num)
+void Item_RemoveActive(int16_t item_num)
 {
     if (!g_Items[item_num].active) {
         Shell_ExitSystem("Item already deactive");
