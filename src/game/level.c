@@ -405,7 +405,7 @@ static bool Level_LoadItems(MYFILE *fp)
                     item->object_number, i);
             }
 
-            InitialiseItem(i);
+            Item_Initialise(i);
         }
     }
 
