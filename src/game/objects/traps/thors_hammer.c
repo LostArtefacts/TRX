@@ -56,7 +56,7 @@ void ThorsHandle_Control(int16_t item_num)
         if (TriggerActive(item)) {
             item->goal_anim_state = THS_TEASE;
         } else {
-            RemoveActiveItem(item_num);
+            Item_RemoveActive(item_num);
             item->status = IS_NOT_ACTIVE;
         }
         break;
@@ -140,7 +140,7 @@ void ThorsHandle_Control(int16_t item_num)
         item->pos.x = old_x;
         item->pos.z = old_z;
 
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_DEACTIVATED;
         break;
     }

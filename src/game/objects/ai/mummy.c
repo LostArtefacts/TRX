@@ -61,7 +61,7 @@ void Mummy_Control(int16_t item_num)
     AnimateItem(item);
 
     if (item->status == IS_DEACTIVATED) {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->hit_points = DONT_TARGET;
     }
 }

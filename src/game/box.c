@@ -757,7 +757,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         item->collidable = 0;
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         return 0;
     }
 

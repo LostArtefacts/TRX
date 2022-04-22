@@ -6,7 +6,7 @@ void Item_InitialiseArray(int32_t num_items);
 void Item_Kill(int16_t item_num);
 int16_t Item_Create(void);
 void Item_Initialise(int16_t item_num);
-void RemoveActiveItem(int16_t item_num);
+void Item_RemoveActive(int16_t item_num);
 void RemoveDrawnItem(int16_t item_num);
 void AddActiveItem(int16_t item_num);
 void ItemNewRoom(int16_t item_num, int16_t room_num);

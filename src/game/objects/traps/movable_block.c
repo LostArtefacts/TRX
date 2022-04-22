@@ -116,7 +116,7 @@ void MovableBlock_Control(int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_NOT_ACTIVE;
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         AlterFloorHeight(item, -WALL_L);
 
         room_num = item->room_number;

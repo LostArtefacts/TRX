@@ -105,7 +105,7 @@ void RollingBall_Control(int16_t item_num)
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         item->required_anim_state = TRAP_SET;
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
     }
 }
 
