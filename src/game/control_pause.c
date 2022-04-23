@@ -32,7 +32,6 @@ static REQUEST_INFO m_PauseRequester = {
     .line_height = TEXT_HEIGHT + 7,
     .x = 0,
     .y = 0,
-    .z = 0,
     .flags = 0,
     .heading_text = NULL,
     .item_texts = &m_PauseStrings[0][0],
