@@ -278,10 +278,13 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
         start->flags.got_shotgun =
             json_object_get_bool(start_obj, "got_shotgun", 0);
         start->flags.costume = json_object_get_bool(start_obj, "costume", 0);
-        // Start and current are the same for legacy saves.
-        memcpy(&game_info->current[i], start, sizeof(RESUME_INFO));
         // Max Lara's starting HP for legacy saves instead of using current HP.
         start->lara_hitpoints = LARA_HITPOINTS;
+        // Move legacy save's start info to previous level's current info.
+        if (i > g_GameFlow.first_level_num && i <= g_CurrentLevel) {
+            Savegame_CarryCurrentInfoToNextLevel(i, i - 1);
+            Savegame_ApplyLogicToCurrentInfo(i);
+        }
     }
     return true;
 }
