@@ -27,7 +27,8 @@
 
 typedef struct SAVEGAME_BSON_HEADER {
     uint32_t magic;
-    uint32_t version;
+    uint16_t initial_version;
+    uint16_t version;
     int32_t compressed_size;
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
@@ -84,7 +85,8 @@ static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root)
 
     SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
-        .version = 0,
+        .initial_version = g_GameInfo.save_initial_version,
+        .version = SAVEGAME_CURRENT_VERSION,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
@@ -146,6 +148,8 @@ static struct json_value_s *Savegame_BSON_ParseFromBuffer(
         Memory_FreePointer(&uncompressed);
         return NULL;
     }
+
+    g_GameInfo.save_initial_version = header->initial_version;
 
     struct json_value_s *root = bson_parse(uncompressed, uncompressed_size);
     Memory_FreePointer(&uncompressed);

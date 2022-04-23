@@ -157,6 +157,7 @@ static void Option_PassportShowNewGame(void)
         if (select > 0) {
             g_GameInfo.bonus_flag = select - 1;
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
+            g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -422,9 +423,15 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     m_Text[TEXT_PAGE_NAME],
                     g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
             } else if (g_InvMode == INV_DEATH_MODE) {
-                Text_ChangeText(
-                    m_Text[TEXT_PAGE_NAME],
-                    g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+                if (Savegame_RestartAvailable()) {
+                    Text_ChangeText(
+                        m_Text[TEXT_PAGE_NAME],
+                        g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+                } else {
+                    g_InputDB = inv_item->anim_direction == 1
+                        ? (INPUT_STATE) { 0, .right = 1 }
+                        : (INPUT_STATE) { 0, .left = 1 };
+                }
             } else {
                 Text_ChangeText(
                     m_Text[TEXT_PAGE_NAME],

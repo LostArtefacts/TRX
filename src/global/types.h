@@ -1031,6 +1031,8 @@ typedef enum GAME_STRING_ID {
 
     GS_PASSPORT_SELECT_LEVEL,
     GS_PASSPORT_LOCKED_LEVEL,
+    GS_PASSPORT_LEGACY_SELECT_LEVEL_1,
+    GS_PASSPORT_LEGACY_SELECT_LEVEL_2,
     GS_PASSPORT_RESTART_LEVEL,
     GS_PASSPORT_SELECT_MODE,
     GS_PASSPORT_MODE_NEW_GAME,
@@ -1534,6 +1536,7 @@ typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;
+    uint16_t save_initial_version;
     PASSPORT_PAGE passport_page;
     PASSPORT_MODE passport_mode;
     int32_t select_level_num;

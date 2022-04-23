@@ -464,6 +464,7 @@ void Savegame_ScanSavedGames(void)
 {
     Savegame_Shutdown();
 
+    uint16_t backup_initial_version = g_GameInfo.save_initial_version;
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
@@ -493,6 +494,8 @@ void Savegame_ScanSavedGames(void)
                         Memory_FreePointer(&savegame_info->full_path);
                         savegame_info->full_path =
                             Memory_DupStr(File_GetPath(fp));
+                        savegame_info->initial_version =
+                            g_GameInfo.save_initial_version;
                     }
                     File_Close(fp);
                 }
@@ -508,6 +511,17 @@ void Savegame_ScanSavedGames(void)
                 g_SaveCounter = savegame_info->counter;
             }
             g_SavedGamesCount++;
+        }
+
+        // Calculate savegame features.
+        if (savegame_info->format != SAVEGAME_FORMAT_LEGACY) {
+            savegame_info->restart = true;
+            savegame_info->select_level =
+                g_GameInfo.save_initial_version >= SAVEGAME_VERSION_1 ? true
+                                                                      : false;
+        } else {
+            savegame_info->restart = false;
+            savegame_info->select_level = false;
         }
     }
 
@@ -544,6 +558,8 @@ void Savegame_ScanSavedGames(void)
     }
 
     g_SaveCounter++;
+
+    g_GameInfo.save_initial_version = backup_initial_version;
 }
 
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
@@ -551,6 +567,22 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
     SAVEGAME_INFO *savegame_info =
         &m_SavegameInfo[g_GameInfo.current_save_slot];
     req->items = 0;
+
+    if (!savegame_info->select_level) {
+        req->item_flags[req->items] |= RIF_BLOCKED;
+        sprintf(
+            &req->item_texts[req->items * req->item_text_len],
+            g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_1]);
+        req->items++;
+        req->item_flags[req->items] |= RIF_BLOCKED;
+        sprintf(
+            &req->item_texts[req->items * req->item_text_len],
+            g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_2]);
+        req->items++;
+        req->requested = 0;
+        req->line_offset = 0;
+        return;
+    }
 
     for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
          i++) {
@@ -569,4 +601,11 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
     }
     req->requested = 0;
     req->line_offset = 0;
+}
+
+bool Savegame_RestartAvailable()
+{
+    SAVEGAME_INFO *savegame_info =
+        &m_SavegameInfo[g_GameInfo.current_save_slot];
+    return savegame_info->restart;
 }

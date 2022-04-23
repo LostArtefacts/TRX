@@ -12,6 +12,10 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
+#define SAVEGAME_VERSION_0 0
+#define SAVEGAME_VERSION_1 1
+#define SAVEGAME_CURRENT_VERSION 1
+
 typedef enum SAVEGAME_FORMAT {
     SAVEGAME_FORMAT_LEGACY = 1,
     SAVEGAME_FORMAT_BSON = 2,
@@ -23,6 +27,9 @@ typedef struct SAVEGAME_INFO {
     int32_t counter;
     int32_t level_num;
     char *level_title;
+    uint16_t initial_version;
+    bool restart;
+    bool select_level;
 } SAVEGAME_INFO;
 
 void Savegame_InitCurrentInfo(void);
@@ -36,6 +43,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info);
 
 void Savegame_ScanSavedGames(void);
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req);
+bool Savegame_RestartAvailable();
 void Savegame_Shutdown(void);
 
 void Savegame_ApplyLogicToCurrentInfo(int level_num);
