@@ -11,6 +11,8 @@
 #include "game/random.h"
 #include "global/vars.h"
 
+#include <stdio.h>
+
 #define TREX_ATTACK_RANGE SQUARE(WALL_L * 4) // = 16777216
 #define TREX_BITE_DAMAGE 10000
 #define TREX_BITE_RANGE SQUARE(1500) // = 2250000
@@ -45,7 +47,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     obj->initialise = InitialiseCreature;
     obj->control = TRex_Control;
     obj->draw_routine = DrawUnclippedItem;
-    obj->collision = CreatureCollision;
+    obj->collision = TRex_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = TREX_HITPOINTS;
     obj->pivot_length = 2000;
