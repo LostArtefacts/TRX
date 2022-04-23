@@ -84,11 +84,6 @@ void TRex_Control(int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (g_Config.disable_trex_collision) {
-            OBJECT_INFO *obj = &g_Objects[item->object_number];
-            obj->collision = NULL;
-        }
-
         if (item->current_anim_state == TREX_STOP) {
             item->goal_anim_state = TREX_DEATH;
         } else {
