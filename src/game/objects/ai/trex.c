@@ -62,7 +62,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_index + 44] |= BEB_ROT_Y;
 }
 
-void TRex_Collision(int64_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll) {
+void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll) {
     if (g_Config.disable_trex_collision && g_Items[item_num].hit_points <= 0) {
         return;
     }
