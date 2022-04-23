@@ -11,8 +11,6 @@
 #include "game/random.h"
 #include "global/vars.h"
 
-#include <stdio.h>
-
 #define TREX_ATTACK_RANGE SQUARE(WALL_L * 4) // = 16777216
 #define TREX_BITE_DAMAGE 10000
 #define TREX_BITE_RANGE SQUARE(1500) // = 2250000
