@@ -881,10 +881,10 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     }
 
     if (inv_item->sprlist) {
-        int32_t zv = g_PhdMatrixPtr->_23;
+        int32_t zv = g_MatrixPtr->_23;
         int32_t zp = zv / g_PhdPersp;
-        int32_t sx = ViewPort_GetCenterX() + g_PhdMatrixPtr->_03 / zp;
-        int32_t sy = ViewPort_GetCenterY() + g_PhdMatrixPtr->_13 / zp;
+        int32_t sx = ViewPort_GetCenterX() + g_MatrixPtr->_03 / zp;
+        int32_t sy = ViewPort_GetCenterY() + g_MatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;

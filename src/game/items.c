@@ -442,7 +442,7 @@ bool Item_TestPosition(
     Matrix_PushUnit();
     Matrix_RotYXZ(
         dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
     int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
     int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
@@ -470,7 +470,7 @@ void Item_AlignPosition(
     Matrix_PushUnit();
     Matrix_RotYXZ(
         dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     src_item->pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);
@@ -493,7 +493,7 @@ bool Item_MovePosition(
     Matrix_PushUnit();
     Matrix_RotYXZ(
         dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     dst_pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
            >> W2V_SHIFT);

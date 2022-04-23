@@ -167,15 +167,15 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
     obj_ptr++;
     int vertex_count = *obj_ptr++;
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
-            + g_PhdMatrixPtr->_01 * obj_ptr[1]
-            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
-            + g_PhdMatrixPtr->_11 * obj_ptr[1]
-            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
-            + g_PhdMatrixPtr->_21 * obj_ptr[1]
-            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double xv = g_MatrixPtr->_00 * obj_ptr[0]
+            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
+            + g_MatrixPtr->_03;
+        double yv = g_MatrixPtr->_10 * obj_ptr[0]
+            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
+            + g_MatrixPtr->_13;
+        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
+            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
+            + g_MatrixPtr->_23;
         double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
@@ -220,17 +220,17 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
         if (g_LsDivider) {
-            int32_t xv = (g_PhdMatrixPtr->_00 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_10 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_20 * g_LsVectorView.z)
+            int32_t xv = (g_MatrixPtr->_00 * g_LsVectorView.x
+                          + g_MatrixPtr->_10 * g_LsVectorView.y
+                          + g_MatrixPtr->_20 * g_LsVectorView.z)
                 / g_LsDivider;
-            int32_t yv = (g_PhdMatrixPtr->_01 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_11 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_21 * g_LsVectorView.z)
+            int32_t yv = (g_MatrixPtr->_01 * g_LsVectorView.x
+                          + g_MatrixPtr->_11 * g_LsVectorView.y
+                          + g_MatrixPtr->_21 * g_LsVectorView.z)
                 / g_LsDivider;
-            int32_t zv = (g_PhdMatrixPtr->_02 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_12 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_22 * g_LsVectorView.z)
+            int32_t zv = (g_MatrixPtr->_02 * g_LsVectorView.x
+                          + g_MatrixPtr->_12 * g_LsVectorView.y
+                          + g_MatrixPtr->_22 * g_LsVectorView.z)
                 / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
                 int16_t shade = g_LsAdder
@@ -264,15 +264,15 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
 
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
-            + g_PhdMatrixPtr->_01 * obj_ptr[1]
-            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
-            + g_PhdMatrixPtr->_11 * obj_ptr[1]
-            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
-            + g_PhdMatrixPtr->_21 * obj_ptr[1]
-            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double xv = g_MatrixPtr->_00 * obj_ptr[0]
+            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
+            + g_MatrixPtr->_03;
+        double yv = g_MatrixPtr->_10 * obj_ptr[0]
+            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
+            + g_MatrixPtr->_13;
+        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
+            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
+            + g_MatrixPtr->_23;
         double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
@@ -474,7 +474,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         phd_RotateLight(angles[1], angles[0]);
     }
 
-    int32_t distance = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
     g_LsAdder += Output_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
 }
@@ -482,7 +482,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 void Output_CalculateStaticLight(int16_t adder)
 {
     g_LsAdder = adder - 16 * 256;
-    int32_t distance = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
     g_LsAdder += Output_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
 }
@@ -736,16 +736,16 @@ void Output_DrawScreenSprite2D(
 void Output_DrawSpriteRel(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
 {
-    int32_t zv = g_PhdMatrixPtr->_20 * x + g_PhdMatrixPtr->_21 * y
-        + g_PhdMatrixPtr->_22 * z + g_PhdMatrixPtr->_23;
+    int32_t zv = g_MatrixPtr->_20 * x + g_MatrixPtr->_21 * y
+        + g_MatrixPtr->_22 * z + g_MatrixPtr->_23;
     if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
         return;
     }
 
-    int32_t xv = g_PhdMatrixPtr->_00 * x + g_PhdMatrixPtr->_01 * y
-        + g_PhdMatrixPtr->_02 * z + g_PhdMatrixPtr->_03;
-    int32_t yv = g_PhdMatrixPtr->_10 * x + g_PhdMatrixPtr->_11 * y
-        + g_PhdMatrixPtr->_12 * z + g_PhdMatrixPtr->_13;
+    int32_t xv = g_MatrixPtr->_00 * x + g_MatrixPtr->_01 * y
+        + g_MatrixPtr->_02 * z + g_MatrixPtr->_03;
+    int32_t yv = g_MatrixPtr->_10 * x + g_MatrixPtr->_11 * y
+        + g_MatrixPtr->_12 * z + g_MatrixPtr->_13;
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];

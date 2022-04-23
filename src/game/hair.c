@@ -86,9 +86,9 @@ void Hair_Control(bool in_cutscene)
         frame = GetBestFrame(g_LaraItem);
 
     Matrix_PushUnit();
-    g_PhdMatrixPtr->_03 = g_LaraItem->pos.x << W2V_SHIFT;
-    g_PhdMatrixPtr->_13 = g_LaraItem->pos.y << W2V_SHIFT;
-    g_PhdMatrixPtr->_23 = g_LaraItem->pos.z << W2V_SHIFT;
+    g_MatrixPtr->_03 = g_LaraItem->pos.x << W2V_SHIFT;
+    g_MatrixPtr->_13 = g_LaraItem->pos.y << W2V_SHIFT;
+    g_MatrixPtr->_23 = g_LaraItem->pos.z << W2V_SHIFT;
     Matrix_RotYXZ(
         g_LaraItem->pos.y_rot, g_LaraItem->pos.x_rot, g_LaraItem->pos.z_rot);
 
@@ -103,9 +103,9 @@ void Hair_Control(bool in_cutscene)
     Matrix_Push();
     objptr = g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[0].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    sphere[0].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    sphere[0].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
     sphere[0].r = (int32_t) * (objptr + 3);
     Matrix_Pop();
 
@@ -117,9 +117,9 @@ void Hair_Control(bool in_cutscene)
     objptr =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO]; // ignore shotgun
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[1].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    sphere[1].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    sphere[1].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
     sphere[1].r = (int32_t) * (objptr + 3);
     Matrix_Pop();
 
@@ -129,9 +129,9 @@ void Hair_Control(bool in_cutscene)
     Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
     objptr = g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[3].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    sphere[3].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    sphere[3].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
     sphere[3].r = (int32_t) * (objptr + 3) * 3 / 2;
     Matrix_Pop();
 
@@ -141,9 +141,9 @@ void Hair_Control(bool in_cutscene)
     Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
     objptr = g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[4].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    sphere[4].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    sphere[4].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
     sphere[4].r = (int32_t) * (objptr + 3) * 3 / 2;
     Matrix_Pop();
 
@@ -154,17 +154,17 @@ void Hair_Control(bool in_cutscene)
     Matrix_Push();
     objptr = g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[2].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    sphere[2].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    sphere[2].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
     sphere[2].r = (int32_t) * (objptr + 3);
     Matrix_Pop();
 
     Matrix_TranslateRel(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
 
-    pos.x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-    pos.y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-    pos.z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     Matrix_Pop();
 
     bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
@@ -178,15 +178,15 @@ void Hair_Control(bool in_cutscene)
 
         for (i = 0; i < HAIR_SEGMENTS; i++, bone += 4) {
             Matrix_PushUnit();
-            g_PhdMatrixPtr->_03 = m_Hair[i].x << W2V_SHIFT;
-            g_PhdMatrixPtr->_13 = m_Hair[i].y << W2V_SHIFT;
-            g_PhdMatrixPtr->_23 = m_Hair[i].z << W2V_SHIFT;
+            g_MatrixPtr->_03 = m_Hair[i].x << W2V_SHIFT;
+            g_MatrixPtr->_13 = m_Hair[i].y << W2V_SHIFT;
+            g_MatrixPtr->_23 = m_Hair[i].z << W2V_SHIFT;
             Matrix_RotYXZ(m_Hair[i].y_rot, m_Hair[i].x_rot, 0);
             Matrix_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
 
-            m_Hair[i + 1].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-            m_Hair[i + 1].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-            m_Hair[i + 1].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i + 1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i + 1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i + 1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
 
             Matrix_Pop();
         }
@@ -275,9 +275,9 @@ void Hair_Control(bool in_cutscene)
                 -phd_atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
 
             Matrix_PushUnit();
-            g_PhdMatrixPtr->_03 = m_Hair[i - 1].x << W2V_SHIFT;
-            g_PhdMatrixPtr->_13 = m_Hair[i - 1].y << W2V_SHIFT;
-            g_PhdMatrixPtr->_23 = m_Hair[i - 1].z << W2V_SHIFT;
+            g_MatrixPtr->_03 = m_Hair[i - 1].x << W2V_SHIFT;
+            g_MatrixPtr->_13 = m_Hair[i - 1].y << W2V_SHIFT;
+            g_MatrixPtr->_23 = m_Hair[i - 1].z << W2V_SHIFT;
             Matrix_RotYXZ(m_Hair[i - 1].y_rot, m_Hair[i - 1].x_rot, 0);
 
             if (i == HAIR_SEGMENTS) {
@@ -286,9 +286,9 @@ void Hair_Control(bool in_cutscene)
                 Matrix_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
             }
 
-            m_Hair[i].x = g_PhdMatrixPtr->_03 >> W2V_SHIFT;
-            m_Hair[i].y = g_PhdMatrixPtr->_13 >> W2V_SHIFT;
-            m_Hair[i].z = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i].z = g_MatrixPtr->_23 >> W2V_SHIFT;
 
             m_HVel[i].x = m_Hair[i].x - m_HVel[0].x;
             m_HVel[i].y = m_Hair[i].y - m_HVel[0].y;
