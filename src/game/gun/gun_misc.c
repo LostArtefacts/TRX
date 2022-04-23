@@ -379,9 +379,9 @@ int32_t Gun_FireWeapon(
     GAME_VECTOR vdest;
     if (best >= 0) {
         ammo->hit++;
-        vdest.x = view.x + ((bestdist * g_PhdMatrixPtr->_20) >> W2V_SHIFT);
-        vdest.y = view.y + ((bestdist * g_PhdMatrixPtr->_21) >> W2V_SHIFT);
-        vdest.z = view.z + ((bestdist * g_PhdMatrixPtr->_22) >> W2V_SHIFT);
+        vdest.x = view.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
+        vdest.y = view.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
+        vdest.z = view.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
         Gun_HitTarget(
             target, &vdest,
             winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
@@ -389,9 +389,9 @@ int32_t Gun_FireWeapon(
     }
 
     ammo->miss++;
-    vdest.x = vsrc.x + g_PhdMatrixPtr->_20;
-    vdest.y = vsrc.y + g_PhdMatrixPtr->_21;
-    vdest.z = vsrc.z + g_PhdMatrixPtr->_22;
+    vdest.x = vsrc.x + g_MatrixPtr->_20;
+    vdest.y = vsrc.y + g_MatrixPtr->_21;
+    vdest.z = vsrc.z + g_MatrixPtr->_22;
     LOS(&vsrc, &vdest);
     Ricochet_Spawn(&vdest);
     return -1;

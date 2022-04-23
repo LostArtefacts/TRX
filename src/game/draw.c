@@ -115,7 +115,7 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     int32_t z_toofar = 0;
     int32_t z_behind = 0;
 
-    const MATRIX *mptr = g_PhdMatrixPtr;
+    const MATRIX *mptr = g_MatrixPtr;
     for (int i = 0; i < 4; i++) {
         int32_t xv = mptr->_00 * objptr[0] + mptr->_01 * objptr[1]
             + mptr->_02 * objptr[2] + mptr->_03;
@@ -306,8 +306,8 @@ void DrawEffect(int16_t fxnum)
     } else {
         Matrix_Push();
         Matrix_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
-        if (g_PhdMatrixPtr->_23 > Output_GetNearZ()
-            && g_PhdMatrixPtr->_23 < Output_GetFarZ()) {
+        if (g_MatrixPtr->_23 > Output_GetNearZ()
+            && g_MatrixPtr->_23 < Output_GetFarZ()) {
             Matrix_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
             if (object->nmeshes) {
                 Output_CalculateStaticLight(fx->shade);
@@ -720,9 +720,9 @@ void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     }
 
     Matrix_PushUnit();
-    g_PhdMatrixPtr->_23 = 0;
-    g_PhdMatrixPtr->_13 = 0;
-    g_PhdMatrixPtr->_03 = 0;
+    g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_03 = 0;
 
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
     Matrix_TranslateRel(
@@ -730,9 +730,9 @@ void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
         (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
         (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
 
-    int32_t x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    int32_t y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    int32_t z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
 
     Matrix_Pop();
 

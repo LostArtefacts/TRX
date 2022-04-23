@@ -57,9 +57,9 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         y = item->pos.y;
         z = item->pos.z;
         Matrix_PushUnit();
-        g_PhdMatrixPtr->_03 = 0;
-        g_PhdMatrixPtr->_13 = 0;
-        g_PhdMatrixPtr->_23 = 0;
+        g_MatrixPtr->_03 = 0;
+        g_MatrixPtr->_13 = 0;
+        g_MatrixPtr->_23 = 0;
     } else {
         x = 0;
         y = 0;
@@ -84,9 +84,9 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     int16_t *objptr = *meshpp++;
     Matrix_Push();
     Matrix_TranslateRel(objptr[0], objptr[1], objptr[2]);
-    ptr->x = x + (g_PhdMatrixPtr->_03 >> W2V_SHIFT);
-    ptr->y = y + (g_PhdMatrixPtr->_13 >> W2V_SHIFT);
-    ptr->z = z + (g_PhdMatrixPtr->_23 >> W2V_SHIFT);
+    ptr->x = x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+    ptr->y = y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+    ptr->z = z + (g_MatrixPtr->_23 >> W2V_SHIFT);
     ptr->r = objptr[3];
     ptr++;
     Matrix_Pop();
@@ -117,9 +117,9 @@ int32_t GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         objptr = *meshpp++;
         Matrix_Push();
         Matrix_TranslateRel(objptr[0], objptr[1], objptr[2]);
-        ptr->x = x + (g_PhdMatrixPtr->_03 >> W2V_SHIFT);
-        ptr->y = y + (g_PhdMatrixPtr->_13 >> W2V_SHIFT);
-        ptr->z = z + (g_PhdMatrixPtr->_23 >> W2V_SHIFT);
+        ptr->x = x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+        ptr->y = y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+        ptr->z = z + (g_MatrixPtr->_23 >> W2V_SHIFT);
         ptr->r = objptr[3];
         Matrix_Pop();
 
@@ -136,9 +136,9 @@ void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     Matrix_PushUnit();
-    g_PhdMatrixPtr->_03 = 0;
-    g_PhdMatrixPtr->_13 = 0;
-    g_PhdMatrixPtr->_23 = 0;
+    g_MatrixPtr->_03 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_23 = 0;
 
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
@@ -178,8 +178,8 @@ void GetJointAbsPosition(ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
     }
 
     Matrix_TranslateRel(vec->x, vec->y, vec->z);
-    vec->x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    vec->y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    vec->z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    vec->x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    vec->y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    vec->z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
     Matrix_Pop();
 }

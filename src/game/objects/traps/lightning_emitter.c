@@ -185,9 +185,9 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     Matrix_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);
 
-    int32_t x1 = g_PhdMatrixPtr->_03;
-    int32_t y1 = g_PhdMatrixPtr->_13;
-    int32_t z1 = g_PhdMatrixPtr->_23;
+    int32_t x1 = g_MatrixPtr->_03;
+    int32_t y1 = g_MatrixPtr->_13;
+    int32_t z1 = g_MatrixPtr->_23;
 
     Output_DrawPolygons(
         g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
@@ -204,9 +204,9 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     Matrix_TranslateAbs(l->target.x, l->target.y, l->target.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t x2 = g_PhdMatrixPtr->_03;
-    int32_t y2 = g_PhdMatrixPtr->_13;
-    int32_t z2 = g_PhdMatrixPtr->_23;
+    int32_t x2 = g_MatrixPtr->_03;
+    int32_t y2 = g_MatrixPtr->_13;
+    int32_t z2 = g_MatrixPtr->_23;
 
     int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
     int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
@@ -255,9 +255,9 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         Matrix_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
         Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-        x2 = g_PhdMatrixPtr->_03;
-        y2 = g_PhdMatrixPtr->_13;
-        z2 = g_PhdMatrixPtr->_23;
+        x2 = g_MatrixPtr->_03;
+        y2 = g_MatrixPtr->_13;
+        z2 = g_MatrixPtr->_23;
 
         int32_t steps = LIGHTNING_STEPS - j;
         dx = (x2 - x1) / steps;

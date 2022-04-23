@@ -17,12 +17,12 @@ static MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
 
 void Matrix_ResetStack(void)
 {
-    g_PhdMatrixPtr = &m_MatrixStack[0];
+    g_MatrixPtr = &m_MatrixStack[0];
 }
 
 void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
 {
-    g_PhdMatrixPtr = &m_MatrixStack[0];
+    g_MatrixPtr = &m_MatrixStack[0];
     int32_t sx = phd_sin(viewpos->x_rot);
     int32_t cx = phd_cos(viewpos->x_rot);
     int32_t sy = phd_sin(viewpos->y_rot);
@@ -47,21 +47,21 @@ void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
 
 void Matrix_Push(void)
 {
-    if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
+    if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         Draw_PrintRoomNumStack();
         Shell_ExitSystem("Matrix stack overflow.");
     }
-    g_PhdMatrixPtr++;
-    g_PhdMatrixPtr[0] = g_PhdMatrixPtr[-1];
+    g_MatrixPtr++;
+    g_MatrixPtr[0] = g_MatrixPtr[-1];
 }
 
 void Matrix_PushUnit(void)
 {
-    if (g_PhdMatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
+    if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         Draw_PrintRoomNumStack();
         Shell_ExitSystem("Matrix stack overflow.");
     }
-    MATRIX *mptr = ++g_PhdMatrixPtr;
+    MATRIX *mptr = ++g_MatrixPtr;
     mptr->_00 = W2V_SCALE;
     mptr->_01 = 0;
     mptr->_02 = 0;
@@ -75,7 +75,7 @@ void Matrix_PushUnit(void)
 
 void Matrix_Pop(void)
 {
-    g_PhdMatrixPtr--;
+    g_MatrixPtr--;
 }
 
 void Matrix_RotX(PHD_ANGLE rx)
@@ -84,7 +84,7 @@ void Matrix_RotX(PHD_ANGLE rx)
         return;
     }
 
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t sx = phd_sin(rx);
     int32_t cx = phd_cos(rx);
 
@@ -111,7 +111,7 @@ void Matrix_RotY(PHD_ANGLE ry)
         return;
     }
 
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t sy = phd_sin(ry);
     int32_t cy = phd_cos(ry);
 
@@ -138,7 +138,7 @@ void Matrix_RotZ(PHD_ANGLE rz)
         return;
     }
 
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t sz = phd_sin(rz);
     int32_t cz = phd_cos(rz);
 
@@ -161,7 +161,7 @@ void Matrix_RotZ(PHD_ANGLE rz)
 
 void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t r0, r1;
 
     if (ry) {
@@ -227,7 +227,7 @@ void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 
 void Matrix_RotYXZpack(int32_t rots)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     int32_t r0, r1;
 
     PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
@@ -296,7 +296,7 @@ void Matrix_RotYXZpack(int32_t rots)
 
 void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     mptr->_03 += mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 += mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 += mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
@@ -304,7 +304,7 @@ void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z)
 
 void Matrix_TranslateAbs(int32_t x, int32_t y, int32_t z)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     x -= g_W2VMatrix._03;
     y -= g_W2VMatrix._13;
     z -= g_W2VMatrix._23;
@@ -318,23 +318,23 @@ void Matrix_InitInterpolate(int32_t frac, int32_t rate)
     m_IMFrac = frac;
     m_IMRate = rate;
     m_IMMatrixPtr = &m_IMMatrixStack[0];
-    m_IMMatrixPtr->_00 = g_PhdMatrixPtr->_00;
-    m_IMMatrixPtr->_01 = g_PhdMatrixPtr->_01;
-    m_IMMatrixPtr->_02 = g_PhdMatrixPtr->_02;
-    m_IMMatrixPtr->_03 = g_PhdMatrixPtr->_03;
-    m_IMMatrixPtr->_10 = g_PhdMatrixPtr->_10;
-    m_IMMatrixPtr->_11 = g_PhdMatrixPtr->_11;
-    m_IMMatrixPtr->_12 = g_PhdMatrixPtr->_12;
-    m_IMMatrixPtr->_13 = g_PhdMatrixPtr->_13;
-    m_IMMatrixPtr->_20 = g_PhdMatrixPtr->_20;
-    m_IMMatrixPtr->_21 = g_PhdMatrixPtr->_21;
-    m_IMMatrixPtr->_22 = g_PhdMatrixPtr->_22;
-    m_IMMatrixPtr->_23 = g_PhdMatrixPtr->_23;
+    m_IMMatrixPtr->_00 = g_MatrixPtr->_00;
+    m_IMMatrixPtr->_01 = g_MatrixPtr->_01;
+    m_IMMatrixPtr->_02 = g_MatrixPtr->_02;
+    m_IMMatrixPtr->_03 = g_MatrixPtr->_03;
+    m_IMMatrixPtr->_10 = g_MatrixPtr->_10;
+    m_IMMatrixPtr->_11 = g_MatrixPtr->_11;
+    m_IMMatrixPtr->_12 = g_MatrixPtr->_12;
+    m_IMMatrixPtr->_13 = g_MatrixPtr->_13;
+    m_IMMatrixPtr->_20 = g_MatrixPtr->_20;
+    m_IMMatrixPtr->_21 = g_MatrixPtr->_21;
+    m_IMMatrixPtr->_22 = g_MatrixPtr->_22;
+    m_IMMatrixPtr->_23 = g_MatrixPtr->_23;
 }
 
 void Matrix_Interpolate(void)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     MATRIX *iptr = m_IMMatrixPtr;
 
     if (m_IMRate == 2) {
@@ -368,7 +368,7 @@ void Matrix_Interpolate(void)
 
 void Matrix_InterpolateArm(void)
 {
-    MATRIX *mptr = g_PhdMatrixPtr;
+    MATRIX *mptr = g_MatrixPtr;
     MATRIX *iptr = m_IMMatrixPtr;
 
     if (m_IMRate == 2) {
@@ -427,63 +427,63 @@ void Matrix_Pop_I(void)
 void Matrix_TranslateRel_I(int32_t x, int32_t y, int32_t z)
 {
     Matrix_TranslateRel(x, y, z);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_TranslateRel(x, y, z);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_TranslateRel_ID(
     int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2)
 {
     Matrix_TranslateRel(x, y, z);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_TranslateRel(x2, y2, z2);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_RotY_I(PHD_ANGLE ang)
 {
     Matrix_RotY(ang);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotY(ang);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_RotX_I(PHD_ANGLE ang)
 {
     Matrix_RotX(ang);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotX(ang);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_RotZ_I(PHD_ANGLE ang)
 {
     Matrix_RotZ(ang);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotZ(ang);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_RotYXZ_I(PHD_ANGLE y, PHD_ANGLE x, PHD_ANGLE z)
 {
     Matrix_RotYXZ(y, x, z);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotYXZ(y, x, z);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }
 
 void Matrix_RotYXZpack_I(int32_t r1, int32_t r2)
 {
     Matrix_RotYXZpack(r1);
-    MATRIX *old_matrix = g_PhdMatrixPtr;
-    g_PhdMatrixPtr = m_IMMatrixPtr;
+    MATRIX *old_matrix = g_MatrixPtr;
+    g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotYXZpack(r2);
-    g_PhdMatrixPtr = old_matrix;
+    g_MatrixPtr = old_matrix;
 }

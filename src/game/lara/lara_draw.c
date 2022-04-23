@@ -62,7 +62,7 @@ void Lara_Draw(ITEM_INFO *item)
     }
 
     // save matrix for hair
-    saved_matrix = *g_PhdMatrixPtr;
+    saved_matrix = *g_MatrixPtr;
 
     Output_DrawShadow(object->shadow_size, frame, item);
     Matrix_Push();
@@ -131,7 +131,7 @@ void Lara_Draw(ITEM_INFO *item)
     Matrix_RotYXZ(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
-    *g_PhdMatrixPtr = saved_matrix;
+    *g_MatrixPtr = saved_matrix;
     Hair_Draw();
 
     Matrix_Pop();
@@ -184,15 +184,15 @@ void Lara_Draw(ITEM_INFO *item)
 
         Matrix_TranslateRel(bone[29], bone[30], bone[31]);
 
-        g_PhdMatrixPtr->_00 = g_PhdMatrixPtr[-2]._00;
-        g_PhdMatrixPtr->_01 = g_PhdMatrixPtr[-2]._01;
-        g_PhdMatrixPtr->_02 = g_PhdMatrixPtr[-2]._02;
-        g_PhdMatrixPtr->_10 = g_PhdMatrixPtr[-2]._10;
-        g_PhdMatrixPtr->_11 = g_PhdMatrixPtr[-2]._11;
-        g_PhdMatrixPtr->_12 = g_PhdMatrixPtr[-2]._12;
-        g_PhdMatrixPtr->_20 = g_PhdMatrixPtr[-2]._20;
-        g_PhdMatrixPtr->_21 = g_PhdMatrixPtr[-2]._21;
-        g_PhdMatrixPtr->_22 = g_PhdMatrixPtr[-2]._22;
+        g_MatrixPtr->_00 = g_MatrixPtr[-2]._00;
+        g_MatrixPtr->_01 = g_MatrixPtr[-2]._01;
+        g_MatrixPtr->_02 = g_MatrixPtr[-2]._02;
+        g_MatrixPtr->_10 = g_MatrixPtr[-2]._10;
+        g_MatrixPtr->_11 = g_MatrixPtr[-2]._11;
+        g_MatrixPtr->_12 = g_MatrixPtr[-2]._12;
+        g_MatrixPtr->_20 = g_MatrixPtr[-2]._20;
+        g_MatrixPtr->_21 = g_MatrixPtr[-2]._21;
+        g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
         packed_rotation =
             (int32_t
@@ -212,7 +212,7 @@ void Lara_Draw(ITEM_INFO *item)
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            saved_matrix = *g_PhdMatrixPtr;
+            saved_matrix = *g_MatrixPtr;
         }
 
         Matrix_Pop();
@@ -221,15 +221,15 @@ void Lara_Draw(ITEM_INFO *item)
 
         Matrix_TranslateRel(bone[41], bone[42], bone[43]);
 
-        g_PhdMatrixPtr->_00 = g_PhdMatrixPtr[-2]._00;
-        g_PhdMatrixPtr->_01 = g_PhdMatrixPtr[-2]._01;
-        g_PhdMatrixPtr->_02 = g_PhdMatrixPtr[-2]._02;
-        g_PhdMatrixPtr->_10 = g_PhdMatrixPtr[-2]._10;
-        g_PhdMatrixPtr->_11 = g_PhdMatrixPtr[-2]._11;
-        g_PhdMatrixPtr->_12 = g_PhdMatrixPtr[-2]._12;
-        g_PhdMatrixPtr->_20 = g_PhdMatrixPtr[-2]._20;
-        g_PhdMatrixPtr->_21 = g_PhdMatrixPtr[-2]._21;
-        g_PhdMatrixPtr->_22 = g_PhdMatrixPtr[-2]._22;
+        g_MatrixPtr->_00 = g_MatrixPtr[-2]._00;
+        g_MatrixPtr->_01 = g_MatrixPtr[-2]._01;
+        g_MatrixPtr->_02 = g_MatrixPtr[-2]._02;
+        g_MatrixPtr->_10 = g_MatrixPtr[-2]._10;
+        g_MatrixPtr->_11 = g_MatrixPtr[-2]._11;
+        g_MatrixPtr->_12 = g_MatrixPtr[-2]._12;
+        g_MatrixPtr->_20 = g_MatrixPtr[-2]._20;
+        g_MatrixPtr->_21 = g_MatrixPtr[-2]._21;
+        g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
         packed_rotation =
             (int32_t
@@ -252,7 +252,7 @@ void Lara_Draw(ITEM_INFO *item)
             DrawGunFlash(fire_arms, clip);
         }
         if (g_Lara.right_arm.flash_gun) {
-            *g_PhdMatrixPtr = saved_matrix;
+            *g_MatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
@@ -278,7 +278,7 @@ void Lara_Draw(ITEM_INFO *item)
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            saved_matrix = *g_PhdMatrixPtr;
+            saved_matrix = *g_MatrixPtr;
         }
 
         Matrix_Pop();
@@ -301,7 +301,7 @@ void Lara_Draw(ITEM_INFO *item)
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            *g_PhdMatrixPtr = saved_matrix;
+            *g_MatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
@@ -326,7 +326,7 @@ void Lara_Draw_I(
     OBJECT_INFO *object = &g_Objects[item->object_number];
     int16_t *bounds = GetBoundsAccurate(item);
 
-    saved_matrix = *g_PhdMatrixPtr;
+    saved_matrix = *g_MatrixPtr;
 
     Output_DrawShadow(object->shadow_size, bounds, item);
     Matrix_Push();
@@ -406,7 +406,7 @@ void Lara_Draw_I(
     Matrix_RotYXZ_I(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
-    *g_PhdMatrixPtr = saved_matrix;
+    *g_MatrixPtr = saved_matrix;
     Hair_Draw();
 
     Matrix_Pop_I();
@@ -484,7 +484,7 @@ void Lara_Draw_I(
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            saved_matrix = *g_PhdMatrixPtr;
+            saved_matrix = *g_MatrixPtr;
         }
 
         Matrix_Pop_I();
@@ -516,7 +516,7 @@ void Lara_Draw_I(
         }
 
         if (g_Lara.right_arm.flash_gun) {
-            *g_PhdMatrixPtr = saved_matrix;
+            *g_MatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
@@ -543,7 +543,7 @@ void Lara_Draw_I(
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_R], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            saved_matrix = *g_PhdMatrixPtr;
+            saved_matrix = *g_MatrixPtr;
         }
 
         Matrix_Pop();
@@ -566,7 +566,7 @@ void Lara_Draw_I(
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.right_arm.flash_gun) {
-            *g_PhdMatrixPtr = saved_matrix;
+            *g_MatrixPtr = saved_matrix;
             DrawGunFlash(fire_arms, clip);
         }
 
