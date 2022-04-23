@@ -188,8 +188,8 @@
     // Pauses sound in the inventory screen.
     "disable_music_in_inventory": false,
 
-    // Upon death of trex, remove all collision with it.
-    // This helps as something the trex's body blocks the passage out
+    // Remove all collision with TRex upon death.
+    // This helps when the TRex's body blocks the passage out.
     "disable_trex_collision": false,
 
     // Overrides game resolution. Leave at 0 or negative values to
