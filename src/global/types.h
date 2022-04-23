@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;
-typedef uint32_t SG_COL;
 
 typedef enum SAMPLE_FLAG {
     SAMPLE_FLAG_NO_PAN = 1 << 12,
@@ -1827,7 +1826,6 @@ typedef struct REQUEST_INFO {
     uint16_t line_height;
     int16_t x;
     int16_t y;
-    int16_t z; // unused
     uint16_t flags;
     const char *heading_text;
     char *item_texts;
@@ -1870,7 +1868,6 @@ typedef struct INVENTORY_SPRITE {
     int16_t z;
     int32_t param1;
     int32_t param2;
-    SG_COL *grdptr;
     int16_t sprnum;
 } INVENTORY_SPRITE;
 
