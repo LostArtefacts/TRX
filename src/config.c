@@ -164,6 +164,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
     READ_BOOL(walk_to_items, false);
+    READ_BOOL(disable_trex_collision, false);
     READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
