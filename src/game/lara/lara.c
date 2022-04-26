@@ -25,33 +25,6 @@
 #define LARA_MOVE_ANIM_VELOCITY 12
 #define LARA_MOVE_SPEED 16
 
-static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
-
-static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
-{
-    switch (g_GameInfo.current_level_type) {
-    case GFL_RESTART:
-    case GFL_SELECT:
-        if (level_num <= g_GameFlow.first_level_num) {
-            // Use empty current info for gym or level 1.
-            Savegame_InitCurrentInfo();
-            return &g_GameInfo.current[level_num];
-        } else {
-            // Use previous level's ending info to start current level.
-            return &g_GameInfo.current[level_num - 1];
-        }
-    case GFL_TITLE:
-    case GFL_NORMAL:
-    case GFL_SAVED:
-    case GFL_DEMO:
-    case GFL_CUTSCENE:
-    case GFL_GYM:
-    case GFL_CURRENT:
-        return &g_GameInfo.current[level_num];
-    }
-    return &g_GameInfo.current[level_num];
-}
-
 void Lara_Control(void)
 {
     COLL_INFO coll = { 0 };
