@@ -439,7 +439,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     m_Text[TEXT_PAGE_NAME],
                     g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
             } else if (g_InvMode == INV_DEATH_MODE) {
-                if (Savegame_RestartAvailable()) {
+                if (Savegame_RestartAvailable(g_GameInfo.current_save_slot)) {
                     Text_ChangeText(
                         m_Text[TEXT_PAGE_NAME],
                         g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);

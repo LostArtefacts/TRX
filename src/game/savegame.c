@@ -603,7 +603,7 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
     req->line_offset = 0;
 }
 
-bool Savegame_RestartAvailable()
+bool Savegame_RestartAvailable(int32_t slot_num)
 {
     SAVEGAME_INFO *savegame_info =
         &m_SavegameInfo[g_GameInfo.current_save_slot];
