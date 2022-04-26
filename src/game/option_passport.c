@@ -155,7 +155,23 @@ static void Option_PassportShowNewGame(void)
     int32_t select = DisplayRequester(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
-            g_GameInfo.bonus_flag = select - 1;
+            switch (select - 1) {
+            case 0:
+                g_GameInfo.bonus_flag = 0;
+                break;
+            case 1:
+                g_GameInfo.bonus_flag = GBF_NGPLUS;
+                break;
+            case 2:
+                g_GameInfo.bonus_flag = GBF_JAPANESE;
+                break;
+            case 3:
+                g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                break;
+            default:
+                g_GameInfo.bonus_flag = 0;
+                break;
+            }
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
             g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
         } else if (
