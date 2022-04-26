@@ -27,7 +27,7 @@
 
 typedef struct SAVEGAME_BSON_HEADER {
     uint32_t magic;
-    uint16_t initial_version;
+    int16_t initial_version;
     uint16_t version;
     int32_t compressed_size;
     int32_t uncompressed_size;

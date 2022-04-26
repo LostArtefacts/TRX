@@ -1536,7 +1536,7 @@ typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;
-    uint16_t save_initial_version;
+    int16_t save_initial_version;
     PASSPORT_PAGE passport_page;
     PASSPORT_MODE passport_mode;
     int32_t select_level_num;

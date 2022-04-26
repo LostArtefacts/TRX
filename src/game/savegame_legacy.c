@@ -450,7 +450,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     File_Read(&level_num, sizeof(int16_t), 1, fp);
     info->level_num = level_num;
 
-    info->initial_version = VERSION_0;
+    info->initial_version = VERSION_LEGACY;
     info->features.restart = false;
     info->features.select_level = false;
 

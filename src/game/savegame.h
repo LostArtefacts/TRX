@@ -15,6 +15,7 @@
 #define SAVEGAME_CURRENT_VERSION 1
 
 typedef enum SAVEGAME_VERSION {
+    VERSION_LEGACY = -1,
     VERSION_0 = 0,
     VERSION_1 = 1,
 } SAVEGAME_VERSION;
@@ -30,7 +31,7 @@ typedef struct SAVEGAME_INFO {
     int32_t counter;
     int32_t level_num;
     char *level_title;
-    uint16_t initial_version;
+    int16_t initial_version;
     struct {
         bool restart;
         bool select_level;
