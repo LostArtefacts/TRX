@@ -25,21 +25,43 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
-    if (level_type == GFL_SAVED || level_type == GFL_SELECT) {
+
+    switch (level_type) {
+    case GFL_SAVED:
         // reset current info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
-    } else {
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        if (!Savegame_Load(g_GameInfo.current_save_slot, &g_GameInfo)) {
+            LOG_ERROR("Failed to load save file!");
+            return false;
+        }
+        break;
+    case GFL_RESTART:
+        Savegame_ResetCurrentInfo(level_num);
+        if (level_num <= g_GameFlow.first_level_num) {
+            Savegame_InitCurrentInfo();
+        } else {
+            // Use previous level's ending info to start current level.
+            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+            Savegame_ApplyLogicToCurrentInfo(level_num);
+        }
         InitialiseLevelFlags();
-    }
-
-    if (level_type == GFL_SELECT) {
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        break;
+    case GFL_SELECT:
+        // reset current info to the defaults so that we do not do
+        // GlobalItemReplace in the inventory initialization routines too early
+        Savegame_InitCurrentInfo();
         Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
         for (int i = level_num; i < g_GameFlow.level_count; i++) {
             Savegame_ResetCurrentInfo(i);
         }
         if (level_num <= g_GameFlow.first_level_num) {
-            // Use empty current info for gym or level 1.
             Savegame_InitCurrentInfo();
         } else {
             // Use previous level's ending info to start current level.
@@ -47,30 +69,16 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
         InitialiseLevelFlags();
-    }
-
-    if (level_type == GFL_RESTART) {
-        Savegame_ResetCurrentInfo(level_num);
-        if (level_num <= g_GameFlow.first_level_num) {
-            // Use empty current info for gym or level 1.
-            Savegame_InitCurrentInfo();
-        } else {
-            // Use previous level's ending info to start current level.
-            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
-            Savegame_ApplyLogicToCurrentInfo(level_num);
-        }
-        InitialiseLevelFlags();
-    }
-
-    if (!InitialiseLevel(level_num)) {
-        return false;
-    }
-
-    if (level_type == GFL_SAVED) {
-        if (!Savegame_Load(g_GameInfo.current_save_slot, &g_GameInfo)) {
-            LOG_ERROR("Failed to load save file!");
+        if (!InitialiseLevel(level_num)) {
             return false;
         }
+        break;
+    default:
+        InitialiseLevelFlags();
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        break;
     }
 
     // LaraGun() expects request_gun_type to be set only when it
