@@ -451,7 +451,7 @@ void Lara_InitialiseLoad(int16_t item_num)
 
 void Lara_Initialise(int32_t level_num)
 {
-    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
@@ -505,14 +505,14 @@ void Lara_Initialise(int32_t level_num)
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;
 
-    Lara_InitialiseInventory(g_CurrentLevel);
+    Lara_InitialiseInventory(level_num);
 }
 
 void Lara_InitialiseInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     g_Lara.pistols.ammo = 1000;
     if (resume->flags.got_pistols) {
@@ -577,7 +577,7 @@ void Lara_InitialiseInventory(int32_t level_num)
 
 void Lara_InitialiseMeshes(int32_t level_num)
 {
-    RESUME_INFO *resume = &g_GameInfo.current[g_CurrentLevel];
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     if (resume->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {
