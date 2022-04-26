@@ -12,8 +12,8 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
-RGBA8888 m_EdgeColor = { 26, 10, 20, 128 };
+static RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
 
 void InitRequester(REQUEST_INFO *req)
 {

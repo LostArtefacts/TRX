@@ -28,6 +28,8 @@ static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
+static RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
@@ -97,14 +99,6 @@ static void Option_ControlShutdownText(void);
 
 static void Option_ControlInitText(void)
 {
-    m_Text[0] = Text_Create(
-        0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
-        g_GameFlow.strings
-            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
-                                   : GS_CONTROL_DEFAULT_KEYS]);
-    Text_CentreH(m_Text[0], 1);
-    Text_CentreV(m_Text[0], 1);
-
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
 
@@ -171,6 +165,14 @@ static void Option_ControlInitText(void)
         }
     }
 
+    m_Text[0] = Text_Create(
+        0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
+        g_GameFlow.strings
+            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
+                                   : GS_CONTROL_DEFAULT_KEYS]);
+    Text_CentreH(m_Text[0], 1);
+    Text_CentreV(m_Text[0], 1);
+
     int16_t width = 420;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
     Text_AddBackground(m_Text[1], width, height, 0, 0);
@@ -181,6 +183,7 @@ static void Option_ControlInitText(void)
     m_KeyChange = -1;
     Text_AddBackground(m_Text[0], 0, 0, 0, 0);
     Text_AddOutline(m_Text[0], 1);
+    Text_CentreVGradient(m_Text[0], m_CenterColor, m_EdgeColor);
 }
 
 static void Option_ControlUpdateText(void)
@@ -334,6 +337,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
                 Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
                 Text_AddOutline(m_TextA[m_KeyChange], 1);
+                Text_CentreVGradient(
+                    m_TextA[m_KeyChange], m_CenterColor, m_EdgeColor);
             }
         } else if (
             g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
@@ -349,6 +354,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 Text_AddBackground(m_TextB[m_KeyChange], 0, 0, 0, 0);
                 Text_RemoveOutline(m_TextA[m_KeyChange]);
                 Text_AddOutline(m_TextB[m_KeyChange], 1);
+                Text_CentreVGradient(
+                    m_TextB[m_KeyChange], m_CenterColor, m_EdgeColor);
             } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -386,6 +393,9 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     0, 0);
                 Text_AddOutline(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
+                Text_CentreVGradient(
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange],
+                    m_CenterColor, m_EdgeColor);
             } else if (g_InputDB.back) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -423,6 +433,9 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     0, 0);
                 Text_AddOutline(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
+                Text_CentreVGradient(
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange],
+                    m_CenterColor, m_EdgeColor);
             }
         }
         break;
@@ -444,6 +457,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Text_RemoveOutline(m_TextB[m_KeyChange]);
             Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
             Text_AddOutline(m_TextA[m_KeyChange], 1);
+            Text_CentreVGradient(
+                m_TextA[m_KeyChange], m_CenterColor, m_EdgeColor);
             m_KeyMode = 3;
             Option_FlashConflicts();
             Settings_Write();

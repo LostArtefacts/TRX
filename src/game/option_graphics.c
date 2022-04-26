@@ -76,6 +76,8 @@ static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static bool m_HideArrowLeft = false;
 static bool m_HideArrowRight = false;
+static RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
 
 static void Option_GraphicsInitText(void);
 static void Option_GraphicsShutdownText(void);
@@ -134,6 +136,7 @@ static void Option_GraphicsInitText(void)
     Text_CentreV(m_Text[TEXT_ROW_SELECT], 1);
     Text_AddBackground(m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0, 0);
     Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+    Text_CentreVGradient(m_Text[TEXT_ROW_SELECT], m_CenterColor, m_EdgeColor);
 
     Option_GraphicsChangeTextOption(TEXT_PERSPECTIVE);
     Option_GraphicsChangeTextOption(TEXT_BILINEAR);
@@ -307,6 +310,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
             ROW_HEIGHT * g_OptionSelected);
         Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+        Text_CentreVGradient(
+            m_Text[TEXT_ROW_SELECT], m_CenterColor, m_EdgeColor);
     }
 
     if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
@@ -315,6 +320,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
             ROW_HEIGHT * g_OptionSelected);
         Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+        Text_CentreVGradient(
+            m_Text[TEXT_ROW_SELECT], m_CenterColor, m_EdgeColor);
     }
 
     int32_t reset = -1;
