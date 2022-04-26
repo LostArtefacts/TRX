@@ -726,12 +726,12 @@ int32_t Display_Inventory(int inv_mode)
                 // page 1: select level
                 return GF_SELECT_GAME | g_GameInfo.select_level_num;
             } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
-                // page 2: new game in gym
                 if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+                    // page 2: new game in gym
                     Savegame_InitCurrentInfo();
                     return GF_START_GAME | g_GameFlow.first_level_num;
-                    // page 2: save game
                 } else {
+                    // page 2: save game
                     Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                     Settings_Write();
                     return GF_NOP;
