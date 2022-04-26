@@ -515,13 +515,12 @@ void Savegame_ScanSavedGames(void)
 
         // Calculate savegame features.
         if (savegame_info->format != SAVEGAME_FORMAT_LEGACY) {
-            savegame_info->restart = true;
-            savegame_info->select_level =
-                g_GameInfo.save_initial_version >= SAVEGAME_VERSION_1 ? true
-                                                                      : false;
+            savegame_info->features.restart = true;
+            savegame_info->features.select_level =
+                g_GameInfo.save_initial_version >= VERSION_1 ? true : false;
         } else {
-            savegame_info->restart = false;
-            savegame_info->select_level = false;
+            savegame_info->features.restart = false;
+            savegame_info->features.select_level = false;
         }
     }
 
@@ -568,7 +567,7 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         &m_SavegameInfo[g_GameInfo.current_save_slot];
     req->items = 0;
 
-    if (!savegame_info->select_level) {
+    if (!savegame_info->features.select_level) {
         req->item_flags[req->items] |= RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->items * req->item_text_len],
@@ -607,5 +606,5 @@ bool Savegame_RestartAvailable(int32_t slot_num)
 {
     SAVEGAME_INFO *savegame_info =
         &m_SavegameInfo[g_GameInfo.current_save_slot];
-    return savegame_info->restart;
+    return savegame_info->features.restart;
 }
