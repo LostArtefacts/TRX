@@ -342,6 +342,8 @@ bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
         Savegame_LoadPostprocess();
     }
 
+    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
+
     return ret;
 }
 
@@ -445,6 +447,8 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
         strategy++;
     }
 
+    g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;
+
     return ret;
 }
 
@@ -464,7 +468,6 @@ void Savegame_ScanSavedGames(void)
 {
     Savegame_Shutdown();
 
-    uint16_t backup_initial_version = g_GameInfo.save_initial_version;
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
@@ -494,8 +497,6 @@ void Savegame_ScanSavedGames(void)
                         Memory_FreePointer(&savegame_info->full_path);
                         savegame_info->full_path =
                             Memory_DupStr(File_GetPath(fp));
-                        savegame_info->initial_version =
-                            g_GameInfo.save_initial_version;
                     }
                     File_Close(fp);
                 }
@@ -511,16 +512,6 @@ void Savegame_ScanSavedGames(void)
                 g_SaveCounter = savegame_info->counter;
             }
             g_SavedGamesCount++;
-        }
-
-        // Calculate savegame features.
-        if (savegame_info->format != SAVEGAME_FORMAT_LEGACY) {
-            savegame_info->features.restart = true;
-            savegame_info->features.select_level =
-                g_GameInfo.save_initial_version >= VERSION_1 ? true : false;
-        } else {
-            savegame_info->features.restart = false;
-            savegame_info->features.select_level = false;
         }
     }
 
@@ -557,8 +548,6 @@ void Savegame_ScanSavedGames(void)
     }
 
     g_SaveCounter++;
-
-    g_GameInfo.save_initial_version = backup_initial_version;
 }
 
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
