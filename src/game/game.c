@@ -50,9 +50,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     if (level_type == GFL_RESTART) {
-        for (int i = level_num; i < g_GameFlow.level_count; i++) {
-            Savegame_ResetCurrentInfo(i);
-        }
+        Savegame_ResetCurrentInfo(level_num);
         if (level_num <= g_GameFlow.first_level_num) {
             // Use empty current info for gym or level 1.
             Savegame_InitCurrentInfo();
