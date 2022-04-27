@@ -1027,7 +1027,7 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
     info->initial_version = header.initial_version;
-    info->features.restart = true;
+    info->features.restart = header.initial_version >= VERSION_LEGACY;
     info->features.select_level = header.initial_version >= VERSION_1;
 
     return ret;
