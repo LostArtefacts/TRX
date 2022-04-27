@@ -593,6 +593,12 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
 bool Savegame_RestartAvailable(int32_t slot_num)
 {
+    if (slot_num == -1) {
+        return true;
+    }
+
+    Savegame_ScanSavedGames();
+
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     return savegame_info->features.restart;
 }
