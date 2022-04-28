@@ -466,6 +466,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
+                        g_GameInfo.save_initial_version =
+                            SAVEGAME_CURRENT_VERSION;
                         g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
