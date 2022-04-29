@@ -375,7 +375,6 @@ static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Read(&current->uzi_ammo, sizeof(uint16_t));
         Savegame_Legacy_Read(&current->shotgun_ammo, sizeof(uint16_t));
         Savegame_Legacy_Read(&current->num_medis, sizeof(uint8_t));
-        LOG_DEBUG("i %d num_medis %d", i, current->num_medis);
         Savegame_Legacy_Read(&current->num_big_medis, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->gun_status, sizeof(int8_t));
