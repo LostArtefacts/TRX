@@ -63,7 +63,7 @@ void Pierre_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (g_Config.fix_pierre_spawn) {
+    if (g_Config.change_pierre_spawn) {
         if (m_PierreItemNum == NO_ITEM) {
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
@@ -78,7 +78,6 @@ void Pierre_Control(int16_t item_num)
             }
         }
     } else {
-
         if (m_PierreItemNum == NO_ITEM) {
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
