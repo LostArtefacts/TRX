@@ -1,5 +1,6 @@
 #include "game/objects/ai/pierre.h"
 
+#include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -62,13 +63,30 @@ void Pierre_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (m_PierreItemNum == NO_ITEM) {
-        m_PierreItemNum = item_num;
-    } else if (m_PierreItemNum != item_num) {
-        if (item->flags & IF_ONESHOT) {
-            KillItem(m_PierreItemNum);
-        } else {
-            KillItem(item_num);
+    if (g_Config.fix_pierre_spawn) {
+        if (m_PierreItemNum == NO_ITEM) {
+            m_PierreItemNum = item_num;
+        } else if (m_PierreItemNum != item_num) {
+            ITEM_INFO *old_pierre = &g_Items[m_PierreItemNum];
+            if (old_pierre->flags & IF_ONESHOT) {
+                if (!(item->flags & IF_ONESHOT)) {
+                    KillItem(item_num);
+                }
+            } else {
+                KillItem(m_PierreItemNum);
+                m_PierreItemNum = item_num;
+            }
+        }
+    } else {
+
+        if (m_PierreItemNum == NO_ITEM) {
+            m_PierreItemNum = item_num;
+        } else if (m_PierreItemNum != item_num) {
+            if (item->flags & IF_ONESHOT) {
+                KillItem(m_PierreItemNum);
+            } else {
+                KillItem(item_num);
+            }
         }
     }
 
