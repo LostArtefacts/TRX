@@ -90,7 +90,7 @@ typedef struct {
     bool enable_detailed_stats;
     int32_t start_lara_hitpoints;
     bool walk_to_items;
-    int32_t save_slots;
+    int32_t maximum_save_slots;
 
     struct {
         int32_t layout;
