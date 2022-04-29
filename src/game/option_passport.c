@@ -27,7 +27,7 @@ static PASSPORT_MODE m_PassportMode = PASSPORT_MODE_FLIP;
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-static char m_SavegameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
+static char **m_SavegameStrings;
 static char **m_SelectLevelStrings = NULL;
 static char *m_SelectLevelData = NULL;
 
@@ -100,7 +100,7 @@ static void Option_PassportSavegameInit(void);
 
 static void Option_PassportSavegameInit(void)
 {
-
+    m_SavegameStrings = MemoryAlloc(g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
 }
 
 static void Option_PassportInitText(void)
