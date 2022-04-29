@@ -375,6 +375,7 @@ static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Read(&current->uzi_ammo, sizeof(uint16_t));
         Savegame_Legacy_Read(&current->shotgun_ammo, sizeof(uint16_t));
         Savegame_Legacy_Read(&current->num_medis, sizeof(uint8_t));
+        LOG_DEBUG("i %d num_medis %d", i, current->num_medis);
         Savegame_Legacy_Read(&current->num_big_medis, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->gun_status, sizeof(int8_t));
@@ -400,6 +401,7 @@ static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Read(&temp_kill_count, sizeof(uint32_t));
     Savegame_Legacy_Read(&temp_secret_flags, sizeof(uint16_t));
     Savegame_Legacy_Read(&g_CurrentLevel, sizeof(uint16_t));
+    Savegame_Legacy_SetCurrentPosition(g_CurrentLevel);
     game_info->current[g_CurrentLevel].stats.timer = temp_timer;
     game_info->current[g_CurrentLevel].stats.kill_count = temp_kill_count;
     game_info->current[g_CurrentLevel].stats.secret_flags = temp_secret_flags;
@@ -407,6 +409,7 @@ static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         &game_info->current[g_CurrentLevel].stats.pickup_count,
         sizeof(uint8_t));
     Savegame_Legacy_Read(&game_info->bonus_flag, sizeof(uint8_t));
+    game_info->death_counter_supported = false;
 }
 
 char *Savegame_Legacy_GetSaveFileName(int32_t slot)
