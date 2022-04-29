@@ -96,6 +96,12 @@ static void Option_PassportInitNewGameRequester(void);
 static void Option_PassportInitSaveRequester(int16_t page_num);
 static void Option_PassportLoadGame(void);
 static void Option_PassportSelectLevel(void);
+static void Option_PassportSavegameInit(void);
+
+static void Option_PassportSavegameInit(void)
+{
+
+}
 
 static void Option_PassportInitText(void)
 {

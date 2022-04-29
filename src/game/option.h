@@ -12,3 +12,5 @@ void Option_Sound(INVENTORY_ITEM *inv_item);
 
 void Option_FlashConflicts(void);
 void Option_DefaultConflict(void);
+
+static void Option_PassportSavegameInit(void);
