@@ -35,7 +35,7 @@ typedef struct SAVEGAME_STRATEGY {
 } SAVEGAME_STRATEGY;
 
 static BOX_NODE *m_OldLaraLOTNode;
-static SAVEGAME_INFO m_SavegameInfo[MAX_SAVE_SLOTS] = { 0 };
+static SAVEGAME_INFO *m_SavegameInfo = NULL;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -433,6 +433,9 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_Shutdown(void)
 {
+    m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
+
+    // still need to do this?
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
         savegame_info->format = 0;
