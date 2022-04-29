@@ -436,7 +436,7 @@ void Savegame_Shutdown(void)
     m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
 
     // still need to do this?
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
         savegame_info->format = 0;
         savegame_info->counter = -1;
@@ -453,7 +453,7 @@ void Savegame_ScanSavedGames(void)
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
@@ -500,7 +500,7 @@ void Savegame_ScanSavedGames(void)
     REQUEST_INFO *req = &g_SavegameRequester;
 
     req->items = 0;
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         if (savegame_info->level_title) {
