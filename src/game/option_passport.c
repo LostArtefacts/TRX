@@ -1,5 +1,7 @@
 #include "game/option.h"
 
+#include "config.h"
+
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -80,7 +82,7 @@ REQUEST_INFO g_SavegameRequester = {
     .z = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &m_SavegameStrings[0][0],
+    .item_texts = NULL,
     .item_text_len = MAX_LEVEL_NAME_LENGTH,
     0,
 };
@@ -100,7 +102,10 @@ static void Option_PassportSavegameInit(void);
 
 static void Option_PassportSavegameInit(void)
 {
-    m_SavegameStrings = MemoryAlloc(g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
+    m_SavegameStrings = Memory_Alloc(g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
+
+    // this is casting to a char** from a char*
+    g_SavegameRequester.item_texts = &m_SavegameStrings[0];
 }
 
 static void Option_PassportInitText(void)
