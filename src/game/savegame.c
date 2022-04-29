@@ -5,6 +5,7 @@
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/option.h"
 #include "game/objects/ai/pod.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
@@ -434,6 +435,7 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
 void Savegame_Shutdown(void)
 {
     m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
+    Option_PassportInitSavegameStrings();
 
     // still need to do this?
     for (int i = 0; i < g_Config.maximum_save_slots; i++) {
