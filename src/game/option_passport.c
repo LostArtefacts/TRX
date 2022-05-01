@@ -100,9 +100,9 @@ static void Option_PassportSelectLevel(void);
 
 void Option_PassportInitSavegameStrings(void)
 {
-    m_SavegameStrings = Memory_Alloc(g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
+    m_SavegameStrings = Memory_Alloc(g_Config.maximum_save_slots * sizeof(char *));
     for (int i = 0; i < g_Config.maximum_save_slots; i++) {
-        m_SavegameStrings[i] = Memory_Alloc(g_SavegameRequester.item_text_len);
+        m_SavegameStrings[i] = Memory_Alloc(sizeof(char *));
     }
 
     g_SavegameRequester.item_texts = &m_SavegameStrings[0][0];
