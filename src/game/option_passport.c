@@ -141,6 +141,8 @@ static void Option_PassportShutdownText(void)
     Option_PassportFreeLevelStrings();
     m_PassportMode = PASSPORT_MODE_FLIP;
     m_IsTextInit = false;
+
+    Memory_FreePointer(&m_SavegameStrings);
 }
 
 static void Option_PassportInitLevelStrings(void)
