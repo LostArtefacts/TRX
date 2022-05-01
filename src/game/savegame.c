@@ -529,10 +529,6 @@ void Savegame_ScanSavedGames(void)
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
                 savegame_info->level_title, savegame_info->counter);
-
-            if (savegame_info->counter == g_SaveCounter) {
-                req->requested = i;
-            }
         } else {
             req->item_flags[req->items] |= RIF_BLOCKED;
             sprintf(
