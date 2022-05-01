@@ -432,25 +432,27 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
+void Savegame_Init()
+{
+    m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
+    Option_PassportInitSavegameStrings();
+}
+
 void Savegame_Shutdown(void)
 {
-    if (m_SavegameInfo == NULL) {
-        m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
-        Option_PassportInitSavegameStrings();
-    } else {
-        for (int i = 0; i < g_Config.maximum_save_slots; i++) {
-            SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-            savegame_info->format = 0;
-            savegame_info->counter = -1;
-            savegame_info->level_num = -1;
-            Memory_FreePointer(&savegame_info->full_path);
-            Memory_FreePointer(&savegame_info->level_title);
-        }
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
+        savegame_info->format = 0;
+        savegame_info->counter = -1;
+        savegame_info->level_num = -1;
+        Memory_FreePointer(&savegame_info->full_path);
+        Memory_FreePointer(&savegame_info->level_title);
     }
 }
 
 void Savegame_ScanSavedGames(void)
 {
+    Savegame_Init();
     Savegame_Shutdown();
 
     g_SaveCounter = 0;
