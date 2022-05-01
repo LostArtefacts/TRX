@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
+- added the config option to change the number of save slots (#170)
 - added the option to pause sound in the inventory screen (#309)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
 - added the ability to skip pictures during fade animation (#510)
