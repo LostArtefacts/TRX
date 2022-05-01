@@ -29,7 +29,7 @@ static PASSPORT_MODE m_PassportMode = PASSPORT_MODE_FLIP;
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-static char **m_SavegameStrings;
+static char **m_SavegameStrings = NULL;
 static char **m_SelectLevelStrings = NULL;
 static char *m_SelectLevelData = NULL;
 
