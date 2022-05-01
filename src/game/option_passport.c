@@ -101,9 +101,11 @@ static void Option_PassportSelectLevel(void);
 void Option_PassportInitSavegameStrings(void)
 {
     m_SavegameStrings = Memory_Alloc(g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+        m_SavegameStrings[i] = Memory_Alloc(g_SavegameRequester.item_text_len);
+    }
 
-    // this is casting to a char** from a char*
-    g_SavegameRequester.item_texts = &m_SavegameStrings[0];
+    g_SavegameRequester.item_texts = &m_SavegameStrings[0][0];
 }
 
 static void Option_PassportInitText(void)
