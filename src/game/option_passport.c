@@ -1,7 +1,6 @@
 #include "game/option.h"
 
 #include "config.h"
-
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
