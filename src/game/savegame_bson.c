@@ -1060,6 +1060,11 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
+    if (!Savegame_BSON_LoadMisc(
+            json_object_get_object(root_obj, "misc"), game_info)) {
+        goto cleanup;
+    }
+
     if (!Savegame_BSON_LoadInventory(
             json_object_get_object(root_obj, "inventory"))) {
         goto cleanup;
