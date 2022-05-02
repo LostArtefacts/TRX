@@ -233,6 +233,7 @@ static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
     InitRequester(req);
+    req->requested = 0;
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
     AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
     AddRequesterItem(
