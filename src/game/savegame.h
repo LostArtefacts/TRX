@@ -36,7 +36,7 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info);
 void Savegame_ScanSavedGames(void);
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req);
 void Savegame_Shutdown(void);
-void Savegame_Init();
+void Savegame_Init(void);
 
 void Savegame_ResetStartInfo(int level_num);
 void Savegame_ApplyLogicToStartInfo(int level_num);

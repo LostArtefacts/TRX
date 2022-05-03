@@ -432,7 +432,7 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-void Savegame_Init()
+void Savegame_Init(void)
 {
     m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
     Option_PassportInitSavegameStrings();
