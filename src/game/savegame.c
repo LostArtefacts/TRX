@@ -434,26 +434,30 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_Init(void)
 {
-    m_SavegameInfo = Memory_Alloc(sizeof(*m_SavegameInfo) * g_Config.maximum_save_slots);
+    m_SavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * g_Config.maximum_save_slots);
     Option_PassportInitSavegameStrings();
 }
 
 void Savegame_Shutdown(void)
 {
-    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        savegame_info->format = 0;
-        savegame_info->counter = -1;
-        savegame_info->level_num = -1;
-        Memory_FreePointer(&savegame_info->full_path);
-        Memory_FreePointer(&savegame_info->level_title);
+    if (m_SavegameInfo != NULL) {
+        for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+            SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
+            savegame_info->format = 0;
+            savegame_info->counter = -1;
+            savegame_info->level_num = -1;
+            Memory_FreePointer(&savegame_info->full_path);
+            Memory_FreePointer(&savegame_info->level_title);
+        }
+
+        Memory_FreePointer(&m_SavegameInfo);
     }
 }
 
 void Savegame_ScanSavedGames(void)
 {
-    Savegame_Init();
     Savegame_Shutdown();
+    Savegame_Init();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
