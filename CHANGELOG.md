@@ -19,6 +19,7 @@
 - fixed pushables breaking with flipped rooms when loading a save (#496, regression from 2.6)
 - fixed pictures displayed before starting a level causing a black screen (custom levels only)
 - fixed underwater caustics animating at 2x speed (#109)
+- fixed new game plus infinite ammo carrying over to a loaded game (#535, regression from 2.6)
 
 ## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)
