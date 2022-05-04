@@ -153,7 +153,7 @@ void Shell_Main(void)
         return;
     }
 
-    Savegame_InitStartCurrentInfo();
+    Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
     Settings_Read();
 
@@ -187,6 +187,11 @@ void Shell_Main(void)
 
         case GF_RESTART_GAME: {
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_RESTART);
+            break;
+        }
+
+        case GF_SELECT_GAME: {
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
             break;
         }
 
