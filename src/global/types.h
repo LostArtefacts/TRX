@@ -992,6 +992,7 @@ typedef enum GAMEFLOW_OPTION {
     GF_EXIT_GAME = 6 << 6,
     GF_START_SAVED_GAME = 7 << 6,
     GF_RESTART_GAME = 8 << 6,
+    GF_SELECT_GAME = 9 << 6,
 } GAMEFLOW_OPTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
@@ -1030,6 +1031,8 @@ typedef enum GAME_STRING_ID {
 
     GS_PASSPORT_SELECT_LEVEL,
     GS_PASSPORT_LOCKED_LEVEL,
+    GS_PASSPORT_LEGACY_SELECT_LEVEL_1,
+    GS_PASSPORT_LEGACY_SELECT_LEVEL_2,
     GS_PASSPORT_RESTART_LEVEL,
     GS_PASSPORT_SELECT_MODE,
     GS_PASSPORT_MODE_NEW_GAME,
@@ -1178,13 +1181,6 @@ typedef enum PASSPORT_MODE {
     PASSPORT_MODE_NEW_GAME = 2,
     PASSPORT_MODE_SELECT_LEVEL = 3,
 } PASSPORT_MODE;
-
-typedef enum INVENTORY_EXTRA_DATA {
-    IED_PAGE_NUM = 0,
-    IED_SAVEGAME_NUM = 1,
-    IED_PASSPORT_MODE = 2,
-    IED_LEVEL_NUM = 3,
-} INVENTORY_EXTRA_DATA;
 
 #pragma pack(push, 1)
 
@@ -1537,10 +1533,13 @@ typedef struct RESUME_INFO {
 } RESUME_INFO;
 
 typedef struct GAME_INFO {
-    RESUME_INFO *start;
     RESUME_INFO *current;
     uint8_t bonus_flag;
     int32_t current_save_slot;
+    int16_t save_initial_version;
+    PASSPORT_PAGE passport_page;
+    PASSPORT_MODE passport_mode;
+    int32_t select_level_num;
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;
 } GAME_INFO;

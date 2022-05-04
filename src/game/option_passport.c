@@ -148,11 +148,11 @@ static void Option_PassportShutdownText(void)
 static void Option_PassportInitLevelStrings(void)
 {
     m_SelectLevelStrings =
-        Memory_Alloc(g_GameFlow.last_level_num * sizeof(char *));
+        Memory_Alloc(g_GameFlow.level_count * sizeof(char *));
     m_SelectLevelData = Memory_Alloc(
-        g_GameFlow.last_level_num * MAX_LEVEL_NAME_LENGTH * sizeof(char));
+        g_GameFlow.level_count * MAX_LEVEL_NAME_LENGTH * sizeof(char));
 
-    for (int i = 0; i < g_GameFlow.last_level_num; i++) {
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
         m_SelectLevelStrings[i] = &m_SelectLevelData[MAX_LEVEL_NAME_LENGTH * i];
     }
 }
@@ -168,8 +168,25 @@ static void Option_PassportShowNewGame(void)
     int32_t select = DisplayRequester(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_NEW_GAME;
+            switch (select - 1) {
+            case 0:
+                g_GameInfo.bonus_flag = 0;
+                break;
+            case 1:
+                g_GameInfo.bonus_flag = GBF_NGPLUS;
+                break;
+            case 2:
+                g_GameInfo.bonus_flag = GBF_JAPANESE;
+                break;
+            case 3:
+                g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                break;
+            default:
+                g_GameInfo.bonus_flag = 0;
+                break;
+            }
+            g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
+            g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -188,9 +205,9 @@ static void Option_PassportShowLevelSelect(void)
     int32_t select = DisplayRequester(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
-            // Don't subtract 1 because level 0 is Gym
-            g_InvExtraData[IED_LEVEL_NUM] = select;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SELECT_LEVEL;
+            g_GameInfo.select_level_num =
+                select - 1 + g_GameFlow.first_level_num;
+            g_GameInfo.passport_mode = PASSPORT_MODE_SELECT_LEVEL;
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {
@@ -209,8 +226,8 @@ static void Option_PassportShowSaves(void)
     int32_t select = DisplayRequester(&g_SavegameRequester);
     if (select) {
         if (select > 0) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = select - 1;
-            g_InvExtraData[IED_PASSPORT_MODE] = PASSPORT_MODE_SHOW_SAVES;
+            g_GameInfo.current_save_slot = select - 1;
+            g_GameInfo.passport_mode = PASSPORT_MODE_SHOW_SAVES;
         } else {
             if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
                 && g_InvMode != INV_LOAD_MODE) {
@@ -229,6 +246,7 @@ static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
     InitRequester(req);
+    req->requested = 0;
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
     AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
     AddRequesterItem(
@@ -304,7 +322,7 @@ static void Option_PassportLoadGame(void)
           & RIF_BLOCKED)
         || !(g_SavegameRequester.flags & RIF_BLOCKABLE)) {
         if (g_InputDB.right) {
-            g_InvExtraData[IED_SAVEGAME_NUM] = g_SavegameRequester.requested;
+            g_GameInfo.current_save_slot = g_SavegameRequester.requested;
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
             RemoveRequester(&g_SavegameRequester);
             Option_PassportInitSelectLevelRequester();
@@ -435,9 +453,15 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     m_Text[TEXT_PAGE_NAME],
                     g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
             } else if (g_InvMode == INV_DEATH_MODE) {
-                Text_ChangeText(
-                    m_Text[TEXT_PAGE_NAME],
-                    g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+                if (Savegame_RestartAvailable(g_GameInfo.current_save_slot)) {
+                    Text_ChangeText(
+                        m_Text[TEXT_PAGE_NAME],
+                        g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+                } else {
+                    g_InputDB = inv_item->anim_direction == 1
+                        ? (INPUT_STATE) { 0, .right = 1 }
+                        : (INPUT_STATE) { 0, .left = 1 };
+                }
             } else {
                 Text_ChangeText(
                     m_Text[TEXT_PAGE_NAME],
@@ -456,8 +480,9 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
                     } else {
-                        g_InvExtraData[IED_SAVEGAME_NUM] =
-                            g_GameInfo.bonus_flag;
+                        g_GameInfo.save_initial_version =
+                            SAVEGAME_CURRENT_VERSION;
+                        g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
                     g_InvMode == INV_SAVE_MODE || g_InvMode == INV_GAME_MODE) {
@@ -544,7 +569,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.select) {
-        g_InvExtraData[IED_PAGE_NUM] = page;
+        g_GameInfo.passport_page = page;
         if (page == PASSPORT_PAGE_2) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;

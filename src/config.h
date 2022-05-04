@@ -90,6 +90,7 @@ typedef struct {
     bool enable_detailed_stats;
     int32_t start_lara_hitpoints;
     bool walk_to_items;
+    bool disable_trex_collision;
     int32_t maximum_save_slots;
 
     struct {

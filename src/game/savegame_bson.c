@@ -27,7 +27,8 @@
 
 typedef struct SAVEGAME_BSON_HEADER {
     uint32_t magic;
-    uint32_t version;
+    int16_t initial_version;
+    uint16_t version;
     int32_t compressed_size;
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
@@ -84,7 +85,8 @@ static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root)
 
     SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
-        .version = 0,
+        .initial_version = g_GameInfo.save_initial_version,
+        .version = SAVEGAME_CURRENT_VERSION,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
@@ -237,7 +239,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
     // This function solely exists for backward compatibility with 2.6 and 2.7
     // saves.
     assert(game_info);
-    assert(game_info->start);
+    assert(game_info->current);
     if (!start_arr) {
         LOG_ERROR(
             "Malformed save: invalid or missing discontinued start array");
@@ -255,7 +257,7 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
             LOG_ERROR("Malformed save: invalid discontinued start info");
             return false;
         }
-        RESUME_INFO *start = &game_info->start[i];
+        RESUME_INFO *start = &game_info->current[i];
         start->lara_hitpoints = json_object_get_int(
             start_obj, "lara_hitpoints", g_Config.start_lara_hitpoints);
         start->pistol_ammo = json_object_get_int(start_obj, "pistol_ammo", 0);
@@ -278,10 +280,6 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
         start->flags.got_shotgun =
             json_object_get_bool(start_obj, "got_shotgun", 0);
         start->flags.costume = json_object_get_bool(start_obj, "costume", 0);
-        // Start and current are the same for legacy saves.
-        memcpy(&game_info->current[i], start, sizeof(RESUME_INFO));
-        // Max Lara's starting HP for legacy saves instead of using current HP.
-        start->lara_hitpoints = LARA_HITPOINTS;
     }
     return true;
 }
@@ -325,8 +323,6 @@ static bool Savegame_BSON_LoadDiscontinuedEndInfo(
             json_object_get_int(end_obj, "max_kills", end->max_kill_count);
         end->max_pickup_count =
             json_object_get_int(end_obj, "max_pickups", end->max_pickup_count);
-        // Start and current are the same for legacy saves.
-        memcpy(&game_info->start[i].stats, end, sizeof(GAME_STATS));
     }
     game_info->death_counter_supported = true;
     return true;
@@ -1019,6 +1015,14 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
         ret = info->level_num != -1;
     }
     json_value_free(root);
+
+    SAVEGAME_BSON_HEADER header;
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
+    info->initial_version = header.initial_version;
+    info->features.restart = header.initial_version >= VERSION_LEGACY;
+    info->features.select_level = header.initial_version >= VERSION_1;
+
     return ret;
 }
 
@@ -1041,11 +1045,6 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!Savegame_BSON_LoadResumeInfo(
-            json_object_get_array(root_obj, "start_info"), game_info->start)) {
-        goto cleanup;
-    }
-
-    if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
         LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
@@ -1059,6 +1058,11 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
                 json_object_get_array(root_obj, "end_info"), game_info)) {
             goto cleanup;
         }
+    }
+
+    if (!Savegame_BSON_LoadMisc(
+            json_object_get_object(root_obj, "misc"), game_info)) {
+        goto cleanup;
     }
 
     if (!Savegame_BSON_LoadInventory(
@@ -1094,6 +1098,41 @@ cleanup:
     return ret;
 }
 
+bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+{
+    assert(game_info);
+
+    bool ret = false;
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_object_s *root_obj = json_value_as_object(root);
+    if (!root_obj) {
+        LOG_ERROR("Malformed save: cannot parse BSON data");
+        goto cleanup;
+    }
+
+    if (!Savegame_BSON_LoadResumeInfo(
+            json_object_get_array(root_obj, "current_info"),
+            game_info->current)) {
+        LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
+                    "save is legacy.");
+        // Check for 2.6 and 2.7 legacy start and end info.
+        if (!Savegame_BSON_LoadDiscontinuedStartInfo(
+                json_object_get_array(root_obj, "start_info"), game_info)) {
+            goto cleanup;
+        }
+        if (!Savegame_BSON_LoadDiscontinuedEndInfo(
+                json_object_get_array(root_obj, "end_info"), game_info)) {
+            goto cleanup;
+        }
+    }
+
+    ret = true;
+
+cleanup:
+    json_value_free(root);
+    return ret;
+}
+
 void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 {
     assert(game_info);
@@ -1107,8 +1146,6 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     json_object_append_object(
         root_obj, "misc", Savegame_BSON_DumpMisc(game_info));
-    json_object_append_array(
-        root_obj, "start_info", Savegame_BSON_DumpResumeInfo(game_info->start));
     json_object_append_array(
         root_obj, "current_info",
         Savegame_BSON_DumpResumeInfo(game_info->current));
