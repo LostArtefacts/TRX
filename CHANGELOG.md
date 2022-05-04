@@ -9,8 +9,8 @@
 - added a cheat to increase the game speed (#135)
 - added a matrix stack overflow error check and message if GetRoomBounds runs infinitely (#506)
 - added ability to turn off trex collision (#437)
-- changed savegame requestor to remember the user's requested slot number (#514)
-- changed the new game requestor's requested to always return to new game
+- changed the savegame dialog to remember the user's requested slot number (#514)
+- changed the new game dialog to always fall back to new game
 - fixed ghost margins during fade animation on HiDPI screens (#438)
 - fixed music rolling over to the main menu if main menu music disabled (#490)
 - fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)
