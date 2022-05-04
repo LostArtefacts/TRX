@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8...master)
 - added the config option to change the number of save slots (#170)
 - fixed Tihocan chain block sound (#433)
 
