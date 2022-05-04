@@ -25,23 +25,63 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
-    if (level_type == GFL_SAVED) {
-        // reset start info to the defaults so that we do not do
+
+    switch (level_type) {
+    case GFL_SAVED:
+        // reset current info to the defaults so that we do not do
         // GlobalItemReplace in the inventory initialization routines too early
-        Savegame_ResetStartInfo(level_num);
-    } else {
-        InitialiseLevelFlags();
-    }
-
-    if (!InitialiseLevel(level_num)) {
-        return false;
-    }
-
-    if (level_type == GFL_SAVED) {
+        Savegame_InitCurrentInfo();
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
         if (!Savegame_Load(g_GameInfo.current_save_slot, &g_GameInfo)) {
             LOG_ERROR("Failed to load save file!");
             return false;
         }
+        break;
+
+    case GFL_RESTART:
+        Savegame_ResetCurrentInfo(level_num);
+        if (level_num <= g_GameFlow.first_level_num) {
+            Savegame_InitCurrentInfo();
+        } else {
+            // Use previous level's ending info to start current level.
+            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+            Savegame_ApplyLogicToCurrentInfo(level_num);
+        }
+        InitialiseLevelFlags();
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        break;
+
+    case GFL_SELECT:
+        // reset current info to the defaults so that we do not do
+        // GlobalItemReplace in the inventory initialization routines too early
+        Savegame_InitCurrentInfo();
+        Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
+        for (int i = level_num; i < g_GameFlow.level_count; i++) {
+            Savegame_ResetCurrentInfo(i);
+        }
+        if (level_num <= g_GameFlow.first_level_num) {
+            Savegame_InitCurrentInfo();
+        } else {
+            // Use previous level's ending info to start current level.
+            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+            Savegame_ApplyLogicToCurrentInfo(level_num);
+        }
+        InitialiseLevelFlags();
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        break;
+
+    default:
+        InitialiseLevelFlags();
+        if (!InitialiseLevel(level_num)) {
+            return false;
+        }
+        break;
     }
 
     // LaraGun() expects request_gun_type to be set only when it
@@ -59,12 +99,12 @@ int32_t StopGame(void)
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
         g_GameInfo.bonus_flag = GBF_NGPLUS;
     } else {
-        Savegame_CarryCurrentInfoToStartInfo(
+        Savegame_CarryCurrentInfoToNextLevel(
             g_CurrentLevel, g_CurrentLevel + 1);
-        Savegame_ApplyLogicToStartInfo(g_CurrentLevel + 1);
+        Savegame_ApplyLogicToCurrentInfo(g_CurrentLevel + 1);
     }
 
-    g_GameInfo.start[g_CurrentLevel].flags.available = 0;
+    g_GameInfo.current[g_CurrentLevel].flags.available = 0;
 
     if (g_LevelComplete) {
         return GF_LEVEL_COMPLETE | g_CurrentLevel;
@@ -74,15 +114,13 @@ int32_t StopGame(void)
         return GF_EXIT_TO_TITLE;
     }
 
-    if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1) {
-        return GF_START_SAVED_GAME | g_InvExtraData[IED_SAVEGAME_NUM];
+    if (g_GameInfo.passport_page == PASSPORT_PAGE_1) {
+        return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
     } else if (
-        g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_1
-        && g_InvExtraData[IED_PASSPORT_MODE] == PASSPORT_MODE_SELECT_LEVEL) {
-        // TODO Placeholder for select level. Do new game.
-        Savegame_InitStartCurrentInfo();
-        return GF_START_GAME | g_InvExtraData[IED_LEVEL_NUM];
-    } else if (g_InvExtraData[IED_PAGE_NUM] == PASSPORT_PAGE_2) {
+        g_GameInfo.passport_page == PASSPORT_PAGE_1
+        && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
+        return GF_SELECT_GAME | g_GameInfo.select_level_num;
+    } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel
                                            : g_GameFlow.first_level_num);
@@ -121,7 +159,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
-                Savegame_Save(g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+                Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                 Settings_Write();
             }
             ask_for_save = false;
