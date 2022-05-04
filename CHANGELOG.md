@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8...master)
+- ...
+
+## [2.8](https://github.com/rr-/Tomb1Main/compare/2.7...2.8) - 2022-05-04
 - added the option to pause sound in the inventory screen (#309)
 - added level selection to the load game menu (#197)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
