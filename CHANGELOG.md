@@ -1,10 +1,16 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.7...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8...master)
+- fixed Tihocan chain block sound (#433)
+
+## [2.8](https://github.com/rr-/Tomb1Main/compare/2.7...2.8) - 2022-05-04
 - added the option to pause sound in the inventory screen (#309)
+- added level selection to the load game menu (#197)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
 - added the ability to skip pictures during fade animation (#510)
 - added a cheat to increase the game speed (#135)
 - added a matrix stack overflow error check and message if GetRoomBounds runs infinitely (#506)
 - added ability to turn off trex collision (#437)
+- changed savegame requestor to remember the user's requested slot number (#514)
+- changed the new game requestor's requested to always return to new game
 - fixed ghost margins during fade animation on HiDPI screens (#438)
 - fixed music rolling over to the main menu if main menu music disabled (#490)
 - fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)
@@ -13,7 +19,6 @@
 - fixed pushables breaking with flipped rooms when loading a save (#496, regression from 2.6)
 - fixed pictures displayed before starting a level causing a black screen (custom levels only)
 - fixed underwater caustics animating at 2x speed (#109)
-- fixed Tihocan chain block sound (#433)
 
 ## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)

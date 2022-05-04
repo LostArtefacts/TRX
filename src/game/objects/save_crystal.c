@@ -68,7 +68,7 @@ void SaveCrystal_Collision(
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         RemoveDrawnItem(item_num);
-        Savegame_Save(g_InvExtraData[IED_SAVEGAME_NUM], &g_GameInfo);
+        Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
         Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
