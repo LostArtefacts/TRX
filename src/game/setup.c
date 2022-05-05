@@ -142,6 +142,8 @@ void InitialiseGameFlags(void)
 
     g_LevelComplete = false;
     g_FlipEffect = -1;
+
+    Pierre_Reset();
 }
 
 void InitialiseLevelFlags(void)
