@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/items.h"
+#include "game/los.h"
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/random.h"
@@ -220,7 +220,7 @@ void Pierre_Control(int16_t item_num)
         start.z = g_Camera.pos.z;
         start.room_number = g_Camera.pos.room_number;
 
-        if (LOS(&start, &target)) {
+        if (LOS_Check(&start, &target)) {
             pierre->flags = 1;
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
             item->hit_points = DONT_TARGET;

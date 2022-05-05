@@ -2,8 +2,8 @@
 
 #include "3dsystem/3d_gen.h"
 #include "game/cinema.h"
-#include "game/control.h"
 #include "game/draw.h"
+#include "game/los.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -87,7 +87,7 @@ static void Camera_SmartShift(
         int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
         int32_t left, int32_t top, int32_t right, int32_t bottom))
 {
-    LOS(&g_Camera.target, ideal);
+    LOS_Check(&g_Camera.target, ideal);
 
     ROOM_INFO *r = &g_RoomInfo[g_Camera.target.room_number];
     int32_t x_floor = (g_Camera.target.z - r->z) >> WALL_SHIFT;
@@ -295,7 +295,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         - GROUND_SHIFT;
 
     if (g_Camera.pos.y >= height && ideal->y >= height) {
-        LOS(&g_Camera.target, &g_Camera.pos);
+        LOS_Check(&g_Camera.target, &g_Camera.pos);
         floor = Room_GetFloor(
             g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
             &g_Camera.pos.room_number);
@@ -515,7 +515,7 @@ void Camera_Fixed(void)
     ideal.z = fixed->z;
     ideal.room_number = fixed->data;
 
-    if (!LOS(&g_Camera.target, &ideal)) {
+    if (!LOS_Check(&g_Camera.target, &ideal)) {
         Camera_ShiftClamp(&ideal, STEP_L);
     }
 
