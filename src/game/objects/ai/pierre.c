@@ -256,3 +256,8 @@ void Pierre_Control(int16_t item_num)
         m_PierreItemNum = NO_ITEM;
     }
 }
+
+void Pierre_Reset(void)
+{
+    m_PierreItemNum = NO_ITEM;
+}

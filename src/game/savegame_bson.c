@@ -779,7 +779,6 @@ static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
 
 static struct json_object_s *Savegame_BSON_DumpInventory(void)
 {
-    // TODO: save this info for every level
     struct json_object_s *inv_obj = json_object_new();
     json_object_append_int(inv_obj, "pickup1", Inv_RequestItem(O_PICKUP_ITEM1));
     json_object_append_int(inv_obj, "pickup2", Inv_RequestItem(O_PICKUP_ITEM2));
