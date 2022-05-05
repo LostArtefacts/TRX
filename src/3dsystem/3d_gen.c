@@ -2,10 +2,10 @@
 
 #include "3dsystem/phd_math.h"
 #include "config.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #include <math.h>
 

@@ -2,10 +2,10 @@
 
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/matrix.h"
 #include "game/objects/effects/body_part.h"
 #include "game/random.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 int32_t Effect_ExplodingDeath(
     int16_t item_num, int32_t mesh_bits, int16_t damage)

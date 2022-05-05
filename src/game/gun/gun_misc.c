@@ -6,12 +6,12 @@
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
-#include "game/matrix.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
 #define PISTOL_LOCK_YMAX (+60 * PHD_DEGREE)

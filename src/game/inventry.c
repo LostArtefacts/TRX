@@ -7,7 +7,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
-#include "game/matrix.h"
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
@@ -21,6 +20,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 #include <stdint.h>
