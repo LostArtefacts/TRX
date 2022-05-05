@@ -1,7 +1,7 @@
 #include "game/objects/effects/waterfall.h"
 
 #include "game/draw.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "global/vars.h"
 

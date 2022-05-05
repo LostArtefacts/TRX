@@ -1,7 +1,7 @@
 #include "game/effects/exploding_death.h"
 
 #include "game/draw.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/objects/effects/body_part.h"
 #include "game/random.h"
 #include "global/vars.h"

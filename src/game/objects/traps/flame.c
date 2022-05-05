@@ -2,7 +2,7 @@
 
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/lara.h"
 #include "game/room.h"
 #include "game/sound.h"

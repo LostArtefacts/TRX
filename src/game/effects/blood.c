@@ -1,6 +1,6 @@
 #include "game/effects/blood.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "global/vars.h"
 
 int16_t Effect_Blood(

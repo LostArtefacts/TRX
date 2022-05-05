@@ -1,6 +1,6 @@
 #include "game/objects/effects/twinkle.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "game/sphere.h"
 #include "global/vars.h"

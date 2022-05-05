@@ -104,6 +104,7 @@ sources = [
   'src/game/effect_routines/sand.c',
   'src/game/effect_routines/stairs2slope.c',
   'src/game/effect_routines/turn_180.c',
+  'src/game/effects.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
   'src/game/effects/gun.c',

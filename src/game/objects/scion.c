@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
