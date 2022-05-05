@@ -1,6 +1,6 @@
 #include "game/objects/effects/explosion.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "global/vars.h"
 
 void Explosion_Setup(OBJECT_INFO *obj)

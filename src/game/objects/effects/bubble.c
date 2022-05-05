@@ -1,7 +1,7 @@
 #include "game/objects/effects/bubble.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/room.h"
 #include "global/vars.h"
 

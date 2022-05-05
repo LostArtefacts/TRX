@@ -1,6 +1,6 @@
 #include "game/effect_routines/bubbles.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/objects/effects/bubble.h"
 #include "game/random.h"
 #include "game/sound.h"

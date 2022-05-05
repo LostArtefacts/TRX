@@ -3,7 +3,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/lara.h"
 #include "game/random.h"
 #include "game/room.h"

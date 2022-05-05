@@ -1,6 +1,6 @@
 #include "game/objects/effects/gunshot.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "global/vars.h"
 

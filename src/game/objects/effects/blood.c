@@ -1,7 +1,7 @@
 #include "game/objects/effects/blood.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "global/vars.h"
 
 void Blood_Setup(OBJECT_INFO *obj)

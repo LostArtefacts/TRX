@@ -1,7 +1,7 @@
 #include "game/objects/effects/splash.h"
 
 #include "3dsystem/phd_math.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"

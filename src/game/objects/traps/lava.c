@@ -3,6 +3,7 @@
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
