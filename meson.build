@@ -130,6 +130,7 @@ sources = [
   'src/game/lara/lara_misc.c',
   'src/game/lara/lara_state.c',
   'src/game/level.c',
+  'src/game/los.c',
   'src/game/lot.c',
   'src/game/music.c',
   'src/game/objects/ai/ape.c',

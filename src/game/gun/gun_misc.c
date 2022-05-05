@@ -1,10 +1,10 @@
 #include "game/gun/gun_misc.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
+#include "game/los.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -156,7 +156,7 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
     ang[0] -= g_LaraItem->pos.y_rot;
     ang[1] -= g_LaraItem->pos.x_rot;
 
-    if (LOS(&src, &target)) {
+    if (LOS_Check(&src, &target)) {
         if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
             && ang[1] >= winfo->lock_angles[2]
             && ang[1] <= winfo->lock_angles[3]) {
@@ -222,7 +222,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 
         GAME_VECTOR target;
         Gun_FindTargetPoint(item, &target);
-        if (!LOS(&src, &target)) {
+        if (!LOS_Check(&src, &target)) {
             continue;
         }
 
@@ -392,7 +392,7 @@ int32_t Gun_FireWeapon(
     vdest.x = vsrc.x + g_MatrixPtr->_20;
     vdest.y = vsrc.y + g_MatrixPtr->_21;
     vdest.z = vsrc.z + g_MatrixPtr->_22;
-    LOS(&vsrc, &vdest);
+    LOS_Check(&vsrc, &vdest);
     Ricochet_Spawn(&vdest);
     return -1;
 }

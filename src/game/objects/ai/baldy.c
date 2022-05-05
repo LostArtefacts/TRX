@@ -3,6 +3,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/items.h"
+#include "game/los.h"
 #include "game/lot.h"
 #include "game/people.h"
 #include "global/vars.h"
