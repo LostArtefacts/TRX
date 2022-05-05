@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8...master)
 - fixed Tihocan chain block sound (#433)
+- fixed floor level bridges embedding in the floor (#523)
 
 ## [2.8](https://github.com/rr-/Tomb1Main/compare/2.7...2.8) - 2022-05-04
 - added the option to pause sound in the inventory screen (#309)

@@ -4,6 +4,7 @@
 #include "game/draw.h"
 #include "game/objects/cog.h"
 #include "game/objects/door.h"
+#include "game/room.h"
 #include "global/vars.h"
 #include "src/config.h"
 
@@ -12,6 +13,7 @@ static bool Bridge_IsSameSector(
 static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
 static int32_t Bridge_GetOffset(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
+static void Bridge_FixEmbedded(int16_t item_num);
 
 static bool Bridge_IsSameSector(
     int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
@@ -72,20 +74,52 @@ static int32_t Bridge_GetOffset(
     return offset;
 }
 
+static void Bridge_FixEmbedded(int16_t item_num)
+{
+    ITEM_INFO *item;
+    FLOOR_INFO *floor;
+    int32_t x, y, z;
+    int16_t room_number, floor_height, old_anim, old_frame, bridge_height;
+    int16_t *bounds;
+
+    item = &g_Items[item_num];
+    if (item->status != IS_ACTIVE) {
+        x = item->pos.x;
+        y = item->pos.y;
+        z = item->pos.z;
+        room_number = item->room_number;
+
+        floor = Room_GetFloor(x, y, z, &room_number);
+        floor_height = Room_GetHeight(floor, x, y, z);
+
+        bounds = GetBoundsAccurate(item);
+        bridge_height =
+            ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
+
+        // Only move the bridge up if it's at floor level.
+        if (item->floor == floor_height) {
+            item->pos.y = floor_height - bridge_height;
+        }
+    }
+}
+
 void Bridge_SetupFlat(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_FixEmbedded;
     obj->floor = Bridge_FlatFloor;
     obj->ceiling = Bridge_FlatCeiling;
 }
 
 void Bridge_SetupTilt1(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_FixEmbedded;
     obj->floor = Bridge_Tilt1Floor;
     obj->ceiling = Bridge_Tilt1Ceiling;
 }
 
 void Bridge_SetupTilt2(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_FixEmbedded;
     obj->floor = Bridge_Tilt2Floor;
     obj->ceiling = Bridge_Tilt2Ceiling;
 }
