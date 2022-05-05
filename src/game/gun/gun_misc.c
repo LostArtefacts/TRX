@@ -1,7 +1,6 @@
 #include "game/gun/gun_misc.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
@@ -11,6 +10,7 @@
 #include "game/sound.h"
 #include "game/sphere.h"
 #include "global/vars.h"
+#include "math/math.h"
 #include "math/matrix.h"
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
@@ -252,8 +252,8 @@ void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
     int32_t x = (bounds[0] + bounds[1]) / 2;
     int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
     int32_t z = (bounds[5] + bounds[4]) / 2;
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->pos.y_rot);
+    int32_t s = Math_Sin(item->pos.y_rot);
     target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
     target->y = item->pos.y + y;
     target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);

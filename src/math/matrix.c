@@ -1,9 +1,9 @@
 #include "math/matrix.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/draw.h"
 #include "game/shell.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
@@ -23,12 +23,12 @@ void Matrix_ResetStack(void)
 void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
 {
     g_MatrixPtr = &m_MatrixStack[0];
-    int32_t sx = phd_sin(viewpos->x_rot);
-    int32_t cx = phd_cos(viewpos->x_rot);
-    int32_t sy = phd_sin(viewpos->y_rot);
-    int32_t cy = phd_cos(viewpos->y_rot);
-    int32_t sz = phd_sin(viewpos->z_rot);
-    int32_t cz = phd_cos(viewpos->z_rot);
+    int32_t sx = Math_Sin(viewpos->x_rot);
+    int32_t cx = Math_Cos(viewpos->x_rot);
+    int32_t sy = Math_Sin(viewpos->y_rot);
+    int32_t cy = Math_Cos(viewpos->y_rot);
+    int32_t sz = Math_Sin(viewpos->z_rot);
+    int32_t cz = Math_Cos(viewpos->z_rot);
 
     m_MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
     m_MatrixStack[0]._01 = TRIGMULT2(cx, sz);
@@ -85,8 +85,8 @@ void Matrix_RotX(PHD_ANGLE rx)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sx = phd_sin(rx);
-    int32_t cx = phd_cos(rx);
+    int32_t sx = Math_Sin(rx);
+    int32_t cx = Math_Cos(rx);
 
     int32_t r0, r1;
     r0 = mptr->_01 * cx + mptr->_02 * sx;
@@ -112,8 +112,8 @@ void Matrix_RotY(PHD_ANGLE ry)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sy = phd_sin(ry);
-    int32_t cy = phd_cos(ry);
+    int32_t sy = Math_Sin(ry);
+    int32_t cy = Math_Cos(ry);
 
     int32_t r0, r1;
     r0 = mptr->_00 * cy - mptr->_02 * sy;
@@ -139,8 +139,8 @@ void Matrix_RotZ(PHD_ANGLE rz)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sz = phd_sin(rz);
-    int32_t cz = phd_cos(rz);
+    int32_t sz = Math_Sin(rz);
+    int32_t cz = Math_Cos(rz);
 
     int32_t r0, r1;
     r0 = mptr->_00 * cz + mptr->_01 * sz;
@@ -165,8 +165,8 @@ void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
     int32_t r0, r1;
 
     if (ry) {
-        int32_t sy = phd_sin(ry);
-        int32_t cy = phd_cos(ry);
+        int32_t sy = Math_Sin(ry);
+        int32_t cy = Math_Cos(ry);
 
         r0 = mptr->_00 * cy - mptr->_02 * sy;
         r1 = mptr->_02 * cy + mptr->_00 * sy;
@@ -185,8 +185,8 @@ void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
     }
 
     if (rx) {
-        int32_t sx = phd_sin(rx);
-        int32_t cx = phd_cos(rx);
+        int32_t sx = Math_Sin(rx);
+        int32_t cx = Math_Cos(rx);
 
         r0 = mptr->_01 * cx + mptr->_02 * sx;
         r1 = mptr->_02 * cx - mptr->_01 * sx;
@@ -205,8 +205,8 @@ void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
     }
 
     if (rz) {
-        int32_t sz = phd_sin(rz);
-        int32_t cz = phd_cos(rz);
+        int32_t sz = Math_Sin(rz);
+        int32_t cz = Math_Cos(rz);
 
         r0 = mptr->_00 * cz + mptr->_01 * sz;
         r1 = mptr->_01 * cz - mptr->_00 * sz;
@@ -232,8 +232,8 @@ void Matrix_RotYXZpack(int32_t rots)
 
     PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
     if (ry) {
-        int32_t sy = phd_sin(ry);
-        int32_t cy = phd_cos(ry);
+        int32_t sy = Math_Sin(ry);
+        int32_t cy = Math_Cos(ry);
 
         r0 = mptr->_00 * cy - mptr->_02 * sy;
         r1 = mptr->_02 * cy + mptr->_00 * sy;
@@ -253,8 +253,8 @@ void Matrix_RotYXZpack(int32_t rots)
 
     PHD_ANGLE rx = EXTRACT_ROT_X(rots);
     if (rx) {
-        int32_t sx = phd_sin(rx);
-        int32_t cx = phd_cos(rx);
+        int32_t sx = Math_Sin(rx);
+        int32_t cx = Math_Cos(rx);
 
         r0 = mptr->_01 * cx + mptr->_02 * sx;
         r1 = mptr->_02 * cx - mptr->_01 * sx;
@@ -274,8 +274,8 @@ void Matrix_RotYXZpack(int32_t rots)
 
     PHD_ANGLE rz = EXTRACT_ROT_Z(rots);
     if (rz) {
-        int32_t sz = phd_sin(rz);
-        int32_t cz = phd_cos(rz);
+        int32_t sz = Math_Sin(rz);
+        int32_t cz = Math_Cos(rz);
 
         r0 = mptr->_00 * cz + mptr->_01 * sz;
         r1 = mptr->_01 * cz - mptr->_00 * sz;

@@ -1,12 +1,12 @@
 #include "game/items.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "math/math.h"
 #include "math/matrix.h"
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
@@ -29,7 +29,7 @@ static bool Item_Move3DPosTo3DPos(
     int32_t x = dst_pos->x - src_pos->x;
     int32_t y = dst_pos->y - src_pos->y;
     int32_t z = dst_pos->z - src_pos->z;
-    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
     if (velocity >= dist) {
         src_pos->x = dst_pos->x;
         src_pos->y = dst_pos->y;
@@ -320,8 +320,8 @@ bool Item_TestBoundsCollide(
         return false;
     }
 
-    int32_t c = phd_cos(dst_item->pos.y_rot);
-    int32_t s = phd_sin(dst_item->pos.y_rot);
+    int32_t c = Math_Cos(dst_item->pos.y_rot);
+    int32_t s = Math_Sin(dst_item->pos.y_rot);
     int32_t x = src_item->pos.x - dst_item->pos.x;
     int32_t z = src_item->pos.z - dst_item->pos.z;
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
@@ -433,8 +433,8 @@ void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
 
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->pos.y_rot);
+    int32_t s = Math_Sin(item->pos.y_rot);
     item->pos.x += (c * x + s * z) >> W2V_SHIFT;
     item->pos.y += y;
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;

@@ -1,6 +1,5 @@
 #include "game/lara/lara_misc.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -9,6 +8,7 @@
 #include "game/lara/lara.h"
 #include "game/room.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
@@ -234,8 +234,8 @@ void Lara_DeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
@@ -265,8 +265,8 @@ void Lara_SlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
@@ -341,7 +341,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = LA_STOP;
         item->frame_number = AF_STOP;
         g_Lara.calc_fall_speed =
-            -(int16_t)(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
+            -(int16_t)(Math_Sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         Lara_Animate(item);
         item->pos.y_rot = angle;
         Item_ShiftCol(item, coll);

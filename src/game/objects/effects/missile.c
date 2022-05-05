@@ -1,6 +1,5 @@
 #include "game/objects/effects/missile.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
@@ -9,6 +8,7 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define SHARD_DAMAGE 30
 #define ROCKET_DAMAGE 100
@@ -23,10 +23,10 @@ void Missile_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
 
-    int32_t speed = (fx->speed * phd_cos(fx->pos.x_rot)) >> W2V_SHIFT;
-    fx->pos.y += (fx->speed * phd_sin(-fx->pos.x_rot)) >> W2V_SHIFT;
-    fx->pos.z += (speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    int32_t speed = (fx->speed * Math_Cos(fx->pos.x_rot)) >> W2V_SHIFT;
+    fx->pos.y += (fx->speed * Math_Sin(-fx->pos.x_rot)) >> W2V_SHIFT;
+    fx->pos.z += (speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor =

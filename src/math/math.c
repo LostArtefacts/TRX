@@ -1,4 +1,4 @@
-#include "3dsystem/phd_math.h"
+#include "math/math.h"
 
 #include "global/const.h"
 
@@ -354,12 +354,12 @@ static int16_t m_AtanAngleTable[0x802] = {
     0x1FF3, 0x1FF6, 0x1FF8, 0x1FFB, 0x1FFD, 0x2000, 0x2000,
 };
 
-int32_t phd_cos(int32_t angle)
+int32_t Math_Cos(int32_t angle)
 {
-    return phd_sin(angle + PHD_90);
+    return Math_Sin(angle + PHD_90);
 }
 
-int32_t phd_sin(int32_t angle)
+int32_t Math_Sin(int32_t angle)
 {
     uint16_t sector = (uint16_t)angle & (PHD_180 - 1);
     if (sector > PHD_90) {
@@ -372,7 +372,7 @@ int32_t phd_sin(int32_t angle)
     return result;
 }
 
-int32_t phd_atan(int32_t x, int32_t y)
+int32_t Math_Atan(int32_t x, int32_t y)
 {
     if (x == 0 && y == 0) {
         return 0;
@@ -404,7 +404,7 @@ int32_t phd_atan(int32_t x, int32_t y)
     return result;
 }
 
-uint32_t phd_sqrt(uint32_t n)
+uint32_t Math_Sqrt(uint32_t n)
 {
     uint32_t result = 0;
     uint32_t base = 0x40000000;

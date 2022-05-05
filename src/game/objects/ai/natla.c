@@ -1,6 +1,5 @@
 #include "game/objects/ai/natla.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects.h"
@@ -12,6 +11,7 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200
@@ -326,8 +326,10 @@ void NatlaGun_Control(int16_t fx_num)
         return;
     }
 
-    int32_t z = fx->pos.z + ((fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT);
-    int32_t x = fx->pos.x + ((fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT);
+    int32_t z =
+        fx->pos.z + ((fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT);
+    int32_t x =
+        fx->pos.x + ((fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);

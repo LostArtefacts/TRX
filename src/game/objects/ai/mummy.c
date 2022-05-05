@@ -1,12 +1,12 @@
 #include "game/objects/ai/mummy.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define MUMMY_HITPOINTS 18
 
@@ -46,7 +46,7 @@ void Mummy_Control(int16_t item_num)
     int16_t head = 0;
 
     if (item->current_anim_state == MUMMY_STOP) {
-        head = phd_atan(
+        head = Math_Atan(
                    g_LaraItem->pos.z - item->pos.z,
                    g_LaraItem->pos.x - item->pos.x)
             - item->pos.y_rot;

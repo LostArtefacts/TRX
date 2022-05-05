@@ -1,6 +1,5 @@
 #include "game/hair.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/draw.h"
 #include "game/output.h"
@@ -8,6 +7,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/math.h"
 #include "math/matrix.h"
 
 #define HAIR_SEGMENTS 6
@@ -255,7 +255,7 @@ void Hair_Control(bool in_cutscene)
                 distance = x * x + y * y + z * z;
 
                 if (distance < SQUARE(sphere[j].r)) {
-                    distance = phd_sqrt(distance);
+                    distance = Math_Sqrt(distance);
 
                     if (distance == 0)
                         distance = 1;
@@ -266,13 +266,13 @@ void Hair_Control(bool in_cutscene)
                 }
             }
 
-            distance = phd_sqrt(
+            distance = Math_Sqrt(
                 SQUARE(m_Hair[i].z - m_Hair[i - 1].z)
                 + SQUARE(m_Hair[i].x - m_Hair[i - 1].x));
-            m_Hair[i - 1].y_rot = phd_atan(
+            m_Hair[i - 1].y_rot = Math_Atan(
                 m_Hair[i].z - m_Hair[i - 1].z, m_Hair[i].x - m_Hair[i - 1].x);
             m_Hair[i - 1].x_rot =
-                -phd_atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
+                -Math_Atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
 
             Matrix_PushUnit();
             g_MatrixPtr->_03 = m_Hair[i - 1].x << W2V_SHIFT;

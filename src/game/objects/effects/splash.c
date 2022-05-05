@@ -1,11 +1,11 @@
 #include "game/objects/effects/splash.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void Splash_Setup(OBJECT_INFO *obj)
 {
@@ -21,8 +21,8 @@ void Splash_Control(int16_t fx_num)
         return;
     }
 
-    fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
-    fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.z += (Math_Cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.x += (Math_Sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
 
 void Splash_Spawn(ITEM_INFO *item)
