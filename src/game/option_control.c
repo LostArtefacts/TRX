@@ -28,7 +28,7 @@ static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
-static RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+static RGBA8888 m_CenterColor = { 70, 30, 107, 255 };
 static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {

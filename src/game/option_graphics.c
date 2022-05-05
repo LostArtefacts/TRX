@@ -76,7 +76,7 @@ static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static bool m_HideArrowLeft = false;
 static bool m_HideArrowRight = false;
-static RGBA8888 m_CenterColor = { 66, 33, 115, 255 };
+static RGBA8888 m_CenterColor = { 70, 30, 107, 255 };
 static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
 
 static void Option_GraphicsInitText(void);
