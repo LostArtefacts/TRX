@@ -1,6 +1,5 @@
 #include "game/objects/traps/rolling_ball.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
@@ -11,6 +10,7 @@
 #include "game/room.h"
 #include "game/sphere.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
@@ -71,9 +71,9 @@ void RollingBall_Control(int16_t item_num)
         }
 
         int32_t x = item->pos.x
-            + (((WALL_L / 2) * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
+            + (((WALL_L / 2) * Math_Sin(item->pos.y_rot)) >> W2V_SHIFT);
         int32_t z = item->pos.z
-            + (((WALL_L / 2) * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
+            + (((WALL_L / 2) * Math_Cos(item->pos.y_rot)) >> W2V_SHIFT);
         floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
@@ -137,7 +137,7 @@ void RollingBall_Collision(
         x = lara_item->pos.x - item->pos.x;
         z = lara_item->pos.z - item->pos.z;
         y = (lara_item->pos.y - 350) - (item->pos.y - WALL_L / 2);
-        d = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+        d = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
         if (d < WALL_L / 2) {
             d = WALL_L / 2;
         }

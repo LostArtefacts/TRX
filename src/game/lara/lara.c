@@ -1,6 +1,5 @@
 #include "game/lara/lara.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
@@ -20,6 +19,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/math.h"
 
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_MOVE_ANIM_VELOCITY 12
@@ -357,8 +357,8 @@ void Lara_Animate(ITEM_INFO *item)
         item->speed = (int16_t)(speed >> 16);
     }
 
-    item->pos.x += (phd_sin(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
-    item->pos.z += (phd_cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
+    item->pos.x += (Math_Sin(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (Math_Cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
 void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
@@ -683,7 +683,7 @@ bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
         };
 
         int32_t angle = (PHD_ONE
-                         - phd_atan(
+                         - Math_Atan(
                              g_LaraItem->pos.x - item->pos.x,
                              g_LaraItem->pos.z - item->pos.z))
             % PHD_ONE;
@@ -711,8 +711,8 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     struct ITEM_INFO *lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->pos.y_rot);
+    int32_t s = Math_Sin(item->pos.y_rot);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
@@ -758,7 +758,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
 
         if (spaz_on) {
             PHD_ANGLE hitang =
-                lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+                lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
             g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
             if (!g_Lara.hit_frame) {
                 Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
@@ -775,7 +775,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         coll->bad_ceiling = 0;
 
         int16_t old_facing = coll->facing;
-        coll->facing = phd_atan(
+        coll->facing = Math_Atan(
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
         GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,

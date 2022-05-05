@@ -1,10 +1,10 @@
 #include "game/effects/gun.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/random.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220
@@ -21,9 +21,9 @@ void ShootAtLara(FX_INFO *fx)
     y += bounds[FRAME_BOUND_MAX_Y]
         + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
 
-    int32_t dist = phd_sqrt(SQUARE(x) + SQUARE(z));
-    fx->pos.x_rot = -(PHD_ANGLE)phd_atan(dist, y);
-    fx->pos.y_rot = phd_atan(z, x);
+    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
+    fx->pos.x_rot = -(PHD_ANGLE)Math_Atan(dist, y);
+    fx->pos.y_rot = Math_Atan(z, x);
     fx->pos.x_rot += (Random_GetControl() - 0x4000) / 0x40;
     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 0x40;
 }

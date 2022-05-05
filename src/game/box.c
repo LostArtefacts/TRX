@@ -1,6 +1,5 @@
 #include "game/box.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/control.h"
 #include "game/draw.h"
@@ -11,6 +10,7 @@
 #include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #include <stddef.h>
 
@@ -66,13 +66,13 @@ void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info)
     GetBestFrame(item);
 
     int32_t z = g_LaraItem->pos.z
-        - ((phd_cos(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
+        - ((Math_Cos(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;
     int32_t x = g_LaraItem->pos.x
-        - ((phd_sin(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
+        - ((Math_Sin(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.x;
 
-    PHD_ANGLE angle = phd_atan(z, x);
+    PHD_ANGLE angle = Math_Atan(z, x);
     info->distance = SQUARE(x) + SQUARE(z);
     if (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE) {
         info->distance = SQUARE(MAX_CREATURE_DISTANCE);
@@ -958,7 +958,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
         item->floor = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
 
-        angle = item->speed ? phd_atan(item->speed, -dy) : 0;
+        angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
         if (angle < item->pos.x_rot - PHD_DEGREE) {
             item->pos.x_rot -= PHD_DEGREE;
         } else if (angle > item->pos.x_rot + PHD_DEGREE) {
@@ -1002,7 +1002,7 @@ int16_t CreatureTurn(ITEM_INFO *item, int16_t maximum_turn)
 
     int32_t x = creature->target.x - item->pos.x;
     int32_t z = creature->target.z - item->pos.z;
-    int16_t angle = phd_atan(z, x) - item->pos.y_rot;
+    int16_t angle = Math_Atan(z, x) - item->pos.y_rot;
     int32_t range = (item->speed << 14) / maximum_turn;
 
     if (angle > FRONT_ARC || angle < -FRONT_ARC) {

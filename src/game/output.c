@@ -1,12 +1,12 @@
 #include "game/output.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/random.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/math.h"
 #include "math/matrix.h"
 #include "specific/s_misc.h"
 #include "specific/s_output.h"
@@ -351,8 +351,8 @@ static void Output_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        g_WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        g_ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        g_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
+        g_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
         g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
@@ -536,9 +536,9 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
         int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
         g_ShadowInfo.vertex[i].x =
-            x_mid + (x_add * 2) * phd_sin(angle) / PHD_90;
+            x_mid + (x_add * 2) * Math_Sin(angle) / PHD_90;
         g_ShadowInfo.vertex[i].z =
-            z_mid + (z_add * 2) * phd_cos(angle) / PHD_90;
+            z_mid + (z_add * 2) * Math_Cos(angle) / PHD_90;
         g_ShadowInfo.vertex[i].y = 0;
     }
 

@@ -1,6 +1,5 @@
 #include "game/objects/ai/torso.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
@@ -11,6 +10,7 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define TORSO_DIE_ANIM 13
 #define TORSO_PART_DAMAGE 250
@@ -94,7 +94,7 @@ void Torso_Control(int16_t item_num)
         CreatureMood(item, &info, 1);
 
         angle =
-            phd_atan(
+            Math_Atan(
                 torso->target.z - item->pos.z, torso->target.x - item->pos.x)
             - item->pos.y_rot;
 

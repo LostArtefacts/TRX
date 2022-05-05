@@ -76,7 +76,6 @@ endif
 
 sources = [
   'src/3dsystem/3d_gen.c',
-  'src/3dsystem/phd_math.c',
   'src/config.c',
   'src/filesystem.c',
   'src/game/box.c',
@@ -243,6 +242,7 @@ sources = [
   'src/json/json_parse.c',
   'src/json/json_write.c',
   'src/log.c',
+  'src/math/math.c',
   'src/math/matrix.c',
   'src/memory.c',
   'src/specific/s_audio.c',

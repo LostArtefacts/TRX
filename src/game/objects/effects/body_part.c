@@ -1,6 +1,5 @@
 #include "game/objects/effects/body_part.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -8,6 +7,7 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void BodyPart_Setup(OBJECT_INFO *obj)
 {
@@ -21,8 +21,8 @@ void BodyPart_Control(int16_t fx_num)
     FX_INFO *fx = &g_Effects[fx_num];
     fx->pos.x_rot += 5 * PHD_DEGREE;
     fx->pos.z_rot += 10 * PHD_DEGREE;
-    fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.z += (fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
