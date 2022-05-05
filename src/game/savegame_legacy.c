@@ -102,8 +102,6 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
     Savegame_Legacy_Skip(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
     Savegame_Legacy_Skip(g_NumberCameras * sizeof(int16_t)); // cameras
 
-    Savegame_PreprocessItems();
-
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
         OBJECT_INFO *obj = &g_Objects[item->object_number];
@@ -510,6 +508,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     for (int i = 0; i < g_NumberCameras; i++) {
         Savegame_Legacy_Read(&g_Camera.fixed[i].flags, sizeof(int16_t));
     }
+
+    Savegame_PreprocessItems();
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
