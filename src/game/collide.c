@@ -5,7 +5,6 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/matrix.h"
 #include "game/objects/door.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -13,6 +12,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #define MAX_BADDIE_COLLISION 12
 

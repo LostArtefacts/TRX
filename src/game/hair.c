@@ -3,12 +3,12 @@
 #include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/draw.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #define HAIR_SEGMENTS 6
 #define HAIR_OFFSET_X (0) // left-right

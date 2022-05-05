@@ -2,10 +2,10 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #include <math.h>
 

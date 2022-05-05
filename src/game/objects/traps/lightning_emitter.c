@@ -5,7 +5,6 @@
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -13,6 +12,7 @@
 #include "game/sphere.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 #define LIGHTNING_DAMAGE 400

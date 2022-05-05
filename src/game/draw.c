@@ -4,7 +4,6 @@
 #include "config.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -13,6 +12,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };

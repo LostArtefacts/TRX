@@ -2,10 +2,10 @@
 
 #include "game/draw.h"
 #include "game/hair.h"
-#include "game/matrix.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 void Lara_Draw(ITEM_INFO *item)

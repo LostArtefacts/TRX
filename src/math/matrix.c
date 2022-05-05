@@ -1,4 +1,4 @@
-#include "game/matrix.h"
+#include "math/matrix.h"
 
 #include "3dsystem/phd_math.h"
 #include "game/draw.h"

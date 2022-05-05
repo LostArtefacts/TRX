@@ -1,9 +1,9 @@
 #include "game/sphere.h"
 
 #include "game/draw.h"
-#include "game/matrix.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
 {

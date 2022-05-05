@@ -3,11 +3,11 @@
 #include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
-#include "game/matrix.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \
