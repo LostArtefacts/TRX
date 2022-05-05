@@ -37,7 +37,7 @@ static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
 static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((Math_Sin(ang) * dist) >> W2V_SHIFT);
-    int32_t y = item->pos.y - LARA_HITE;
+    int32_t y = item->pos.y - LARA_HEIGHT;
     int32_t z = item->pos.z + ((Math_Cos(ang) * dist) >> W2V_SHIFT);
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
