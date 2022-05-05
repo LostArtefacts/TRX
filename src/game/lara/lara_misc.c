@@ -15,7 +15,7 @@ void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
     coll->facing = g_Lara.move_angle;
     GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
-        LARA_HITE);
+        LARA_HEIGHT);
 }
 
 void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
@@ -560,7 +560,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     int oy = item->pos.y;
     int height = Room_GetHeight(
-        floor, item->pos.x, item->pos.y - LARA_HITE, item->pos.z);
+        floor, item->pos.x, item->pos.y - LARA_HEIGHT, item->pos.z);
 
     item->floor = height;
     item->pos.y = height;
@@ -588,8 +588,8 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
     coll->facing = g_Lara.move_angle;
 
     GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + SURF_HITE, item->pos.z,
-        item->room_number, SURF_HITE);
+        coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
+        item->room_number, SURF_HEIGHT);
 
     Item_ShiftCol(item, coll);
 
@@ -660,7 +660,7 @@ bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += hdif - 5;
-    Item_UpdateRoom(item, -LARA_HITE / 2);
+    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
 
     switch (angle) {
     case 0:
@@ -700,8 +700,8 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
         g_Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
     GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
-        item->room_number, UW_HITE);
+        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
+        item->room_number, UW_HEIGHT);
 
     Item_ShiftCol(item, coll);
 

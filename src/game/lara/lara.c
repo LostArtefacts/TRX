@@ -127,7 +127,7 @@ void Lara_Control(void)
             g_Lara.head_y_rot = 0;
             g_Lara.torso_x_rot = 0;
             g_Lara.torso_y_rot = 0;
-            Item_UpdateRoom(item, -LARA_HITE / 2);
+            Item_UpdateRoom(item, -LARA_HEIGHT / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             g_Lara.water_status = LWS_ABOVE_WATER;
@@ -779,7 +779,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
         GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_number, LARA_HITE);
+            lara_item->room_number, LARA_HEIGHT);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {

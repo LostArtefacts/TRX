@@ -354,8 +354,8 @@ bool MovableBlock_TestPull(
         return false;
     }
 
-    floor = Room_GetFloor(x, y - LARA_HITE, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - LARA_HITE) {
+    floor = Room_GetFloor(x, y - LARA_HEIGHT, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - LARA_HEIGHT) {
         return false;
     }
 
@@ -366,7 +366,7 @@ bool MovableBlock_TestPull(
     floor = Room_GetFloor(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HITE)) {
+    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
         return false;
     }
 

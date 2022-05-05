@@ -70,8 +70,8 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
     coll->facing = (int16_t)Math_Atan(
         item->pos.z - coll->old.z, item->pos.x - coll->old.x);
     GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
-        item->room_number, UW_HITE);
+        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
+        item->room_number, UW_HEIGHT);
 
     if (coll->coll_type == COLL_FRONT) {
         if (item->pos.x_rot > 35 * PHD_DEGREE) {
@@ -166,7 +166,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     Lara_Animate(item);
     LaraBaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
-    Item_UpdateRoom(item, -LARA_HITE / 2);
+    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
     TestTriggers(coll->trigger, 0);
 }
@@ -239,8 +239,8 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -UW_HITE;
-    coll->bad_ceiling = UW_HITE;
+    coll->bad_neg = -UW_HEIGHT;
+    coll->bad_ceiling = UW_HEIGHT;
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
