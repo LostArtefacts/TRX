@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8.1...master)
+- ...
+
+## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)
 - fixed pushables breaking with flipped rooms when loading a save (#536, regression from 2.8)
 
