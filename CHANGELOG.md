@@ -1,6 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
-- fixed Tihocan chain block sound (#433)
 - added background color gradients to selected menu text boxes (#517)
+- fixed Tihocan chain block sound (#433)
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)
