@@ -81,6 +81,9 @@
     // the semitransparent backdrop, similar to PS1.
     "enable_fade_effects": true,
 
+    // Highlight menu selections with a purple background like the PS1 version.
+    "enable_menu_effects": true,
+
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting
     //   hit, or while having weapons equipped; flash the healthbar if it's already

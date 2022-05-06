@@ -1,5 +1,6 @@
 #include "game/text.h"
 
+#include "config.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
@@ -422,7 +423,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         Output_DrawScreenFBox(sx, sy, sh, sv);
     }
 
-    if (textstring->flags.centre_v_gradient) {
+    if (g_Config.enable_menu_effects && textstring->flags.centre_v_gradient) {
         sx = Screen_GetRenderScale(bxpos);
         sy = Screen_GetRenderScale(bypos);
         sh = Screen_GetRenderScale(bwidth);

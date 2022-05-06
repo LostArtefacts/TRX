@@ -141,6 +141,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_timer_in_inventory, true);
     READ_BOOL(enable_smooth_bars, true);
     READ_BOOL(enable_fade_effects, true);
+    READ_BOOL(enable_menu_effects, true);
     READ_BOOL(fix_tihocan_secret_sound, true);
     READ_BOOL(fix_pyramid_secret_trigger, true);
     READ_BOOL(fix_secrets_killing_music, true);
