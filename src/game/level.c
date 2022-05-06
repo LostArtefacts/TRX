@@ -386,7 +386,7 @@ static bool Level_LoadItems(MYFILE *fp)
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
         g_LevelItemCount = item_count;
-        InitialiseItemArray(MAX_ITEMS);
+        Item_InitialiseArray(MAX_ITEMS);
 
         for (int i = 0; i < item_count; i++) {
             ITEM_INFO *item = &g_Items[i];
@@ -405,7 +405,7 @@ static bool Level_LoadItems(MYFILE *fp)
                     item->object_number, i);
             }
 
-            InitialiseItem(i);
+            Item_Initialise(i);
         }
     }
 

@@ -467,7 +467,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 
             int16_t room_num = json_object_get_int(item_obj, "room_num", -1);
             if (room_num != -1 && item->room_number != room_num) {
-                ItemNewRoom(i, room_num);
+                Item_NewRoom(i, room_num);
             }
         }
 
@@ -494,12 +494,12 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             item->timer = json_object_get_int(item_obj, "timer", item->timer);
 
             if (item->flags & IF_KILLED_ITEM) {
-                KillItem(i);
+                Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {
                 if (json_object_get_bool(item_obj, "active", item->active)
                     && !item->active) {
-                    AddActiveItem(i);
+                    Item_AddActive(i);
                 }
                 item->status =
                     json_object_get_int(item_obj, "status", item->status);

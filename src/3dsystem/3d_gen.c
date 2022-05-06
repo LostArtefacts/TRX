@@ -1,11 +1,11 @@
 #include "3dsystem/3d_gen.h"
 
-#include "3dsystem/matrix.h"
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "math/matrix.h"
 
 #include <math.h>
 
@@ -23,12 +23,12 @@ void phd_LookAt(
     viewer.x_rot = angles[1];
     viewer.y_rot = angles[0];
     viewer.z_rot = roll;
-    phd_GenerateW2V(&viewer);
+    Matrix_GenerateW2V(&viewer);
 }
 
 void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
 {
-    dest[0] = phd_atan(z, x);
+    dest[0] = Math_Atan(z, x);
 
     while ((int16_t)x != x || (int16_t)y != y || (int16_t)z != z) {
         x >>= 2;
@@ -36,7 +36,7 @@ void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
         z >>= 2;
     }
 
-    PHD_ANGLE pitch = phd_atan(phd_sqrt(SQUARE(x) + SQUARE(z)), y);
+    PHD_ANGLE pitch = Math_Atan(Math_Sqrt(SQUARE(x) + SQUARE(z)), y);
     if ((y > 0 && pitch > 0) || (y < 0 && pitch < 0)) {
         pitch = -pitch;
     }
@@ -63,10 +63,10 @@ int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 
 void phd_RotateLight(int16_t pitch, int16_t yaw)
 {
-    int32_t cp = phd_cos(pitch);
-    int32_t sp = phd_sin(pitch);
-    int32_t cy = phd_cos(yaw);
-    int32_t sy = phd_sin(yaw);
+    int32_t cp = Math_Cos(pitch);
+    int32_t sp = Math_Sin(pitch);
+    int32_t cy = Math_Cos(yaw);
+    int32_t sy = Math_Sin(yaw);
     int32_t ls_x = TRIGMULT2(cp, sy);
     int32_t ls_y = -sp;
     int32_t ls_z = TRIGMULT2(cp, cy);
@@ -95,7 +95,7 @@ void phd_AlterFOV(PHD_ANGLE fov)
         fov = round((fov_rad_v / M_PI) * 32760);
     }
 
-    int16_t c = phd_cos(fov / 2);
-    int16_t s = phd_sin(fov / 2);
+    int16_t c = Math_Cos(fov / 2);
+    int16_t s = Math_Sin(fov / 2);
     g_PhdPersp = ((Screen_GetResWidth() / 2) * c) / s;
 }

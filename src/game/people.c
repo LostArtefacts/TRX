@@ -1,9 +1,9 @@
 #include "game/people.h"
 
 #include "game/box.h"
-#include "game/control.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
+#include "game/los.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -24,7 +24,7 @@ bool Targetable(ITEM_INFO *item, AI_INFO *info)
     target.y = g_LaraItem->pos.y - STEP_L * 3;
     target.z = g_LaraItem->pos.z;
 
-    return LOS(&start, &target);
+    return LOS_Check(&start, &target);
 }
 
 bool ShotLara(

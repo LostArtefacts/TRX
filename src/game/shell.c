@@ -1,6 +1,5 @@
 #include "game/shell.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
@@ -25,6 +24,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/math.h"
 #include "memory.h"
 #include "specific/s_input.h"
 #include "specific/s_misc.h"

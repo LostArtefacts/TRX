@@ -16,8 +16,8 @@ extern int32_t g_PhdRight;
 extern int32_t g_PhdTop;
 extern PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES];
 extern PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES];
-extern PHD_MATRIX *g_PhdMatrixPtr;
-extern PHD_MATRIX g_W2VMatrix;
+extern MATRIX *g_MatrixPtr;
+extern MATRIX g_W2VMatrix;
 
 extern int32_t g_WibbleOffset;
 extern int32_t g_WibbleTable[WIBBLE_SIZE];

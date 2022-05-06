@@ -1,6 +1,6 @@
 #include "game/objects/effects/explosion.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "global/vars.h"
 
 void Explosion_Setup(OBJECT_INFO *obj)
@@ -16,7 +16,7 @@ void Explosion_Control(int16_t fx_num)
         fx->counter = 0;
         fx->frame_number--;
         if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
     }
 }

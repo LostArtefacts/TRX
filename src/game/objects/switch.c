@@ -101,7 +101,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_OFF;
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         AnimateItem(item);
     } else if (item->current_anim_state == SWITCH_STATE_OFF) {
         Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
@@ -109,7 +109,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_ON;
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         AnimateItem(item);
     }
 }
@@ -153,7 +153,7 @@ void Switch_CollisionControlled(
                     g_Anims[lara_item->anim_number].frame_base;
                 g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
-                AddActiveItem(item_num);
+                Item_AddActive(item_num);
                 item->status = IS_ACTIVE;
                 AnimateItem(item);
             } else {
@@ -205,7 +205,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         } else {
             item->goal_anim_state = SWITCH_STATE_ON;
         }
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         AnimateItem(item);
     }
 }
@@ -223,7 +223,7 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
         }
         item->status = IS_ACTIVE;
     } else {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_NOT_ACTIVE;
     }
     return true;

@@ -1,7 +1,6 @@
 #include "game/draw.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/inv.h"
 #include "game/lara.h"
@@ -13,6 +12,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
@@ -48,8 +48,8 @@ void DrawRooms(int16_t current_room)
 
     m_CameraUnderwater = r->flags & RF_UNDERWATER;
 
-    phd_PushMatrix();
-    phd_TranslateAbs(r->x, r->y, r->z);
+    Matrix_Push();
+    Matrix_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             DOOR_INFO *door = &r->doors->door[i];
@@ -58,7 +58,7 @@ void DrawRooms(int16_t current_room)
             }
         }
     }
-    phd_PopMatrix();
+    Matrix_Pop();
     Output_ClearScreen();
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
@@ -78,9 +78,9 @@ void DrawRooms(int16_t current_room)
 void GetRoomBounds(int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
-    phd_PushMatrix();
+    Matrix_Push();
     m_RoomNumStack[m_RoomNumStackIdx++] = room_num;
-    phd_TranslateAbs(r->x, r->y, r->z);
+    Matrix_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             DOOR_INFO *door = &r->doors->door[i];
@@ -89,7 +89,7 @@ void GetRoomBounds(int16_t room_num)
             }
         }
     }
-    phd_PopMatrix();
+    Matrix_Pop();
     m_RoomNumStackIdx--;
 }
 
@@ -115,7 +115,7 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     int32_t z_toofar = 0;
     int32_t z_behind = 0;
 
-    const PHD_MATRIX *mptr = g_PhdMatrixPtr;
+    const MATRIX *mptr = g_MatrixPtr;
     for (int i = 0; i < 4; i++) {
         int32_t xv = mptr->_00 * objptr[0] + mptr->_01 * objptr[1]
             + mptr->_02 * objptr[2] + mptr->_03;
@@ -244,8 +244,8 @@ void PrintRooms(int16_t room_number)
 
     r->bound_active = 0;
 
-    phd_PushMatrix();
-    phd_TranslateAbs(r->x, r->y, r->z);
+    Matrix_Push();
+    Matrix_TranslateAbs(r->x, r->y, r->z);
 
     g_PhdLeft = r->left;
     g_PhdRight = r->right;
@@ -264,9 +264,9 @@ void PrintRooms(int16_t room_number)
     for (int i = 0; i < r->num_meshes; i++) {
         MESH_INFO *mesh = &r->mesh[i];
         if (g_StaticObjects[mesh->static_number].flags & 2) {
-            phd_PushMatrix();
-            phd_TranslateAbs(mesh->x, mesh->y, mesh->z);
-            phd_RotY(mesh->y_rot);
+            Matrix_Push();
+            Matrix_TranslateAbs(mesh->x, mesh->y, mesh->z);
+            Matrix_RotY(mesh->y_rot);
             int clip =
                 S_GetObjectBounds(&g_StaticObjects[mesh->static_number].x_minp);
             if (clip) {
@@ -275,7 +275,7 @@ void PrintRooms(int16_t room_number)
                     g_Meshes[g_StaticObjects[mesh->static_number].mesh_number],
                     clip);
             }
-            phd_PopMatrix();
+            Matrix_Pop();
         }
     }
 
@@ -283,7 +283,7 @@ void PrintRooms(int16_t room_number)
         DrawEffect(i);
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 
     r->left = ViewPort_GetMaxX();
     r->bottom = 0;
@@ -304,11 +304,11 @@ void DrawEffect(int16_t fxnum)
             fx->pos.x, fx->pos.y, fx->pos.z,
             object->mesh_index - fx->frame_number, 4096);
     } else {
-        phd_PushMatrix();
-        phd_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
-        if (g_PhdMatrixPtr->_23 > Output_GetNearZ()
-            && g_PhdMatrixPtr->_23 < Output_GetFarZ()) {
-            phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
+        Matrix_Push();
+        Matrix_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
+        if (g_MatrixPtr->_23 > Output_GetNearZ()
+            && g_MatrixPtr->_23 < Output_GetFarZ()) {
+            Matrix_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
             if (object->nmeshes) {
                 Output_CalculateStaticLight(fx->shade);
                 Output_DrawPolygons(g_Meshes[object->mesh_index], -1);
@@ -318,7 +318,7 @@ void DrawEffect(int16_t fxnum)
                 Output_DrawPolygons(g_Meshes[fx->frame_number], -1);
             }
         }
-        phd_PopMatrix();
+        Matrix_Pop();
     }
 }
 
@@ -437,8 +437,8 @@ void DrawPickupItem(ITEM_INFO *item)
         }
     }
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, offset, item->pos.z);
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, offset, item->pos.z);
 
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -454,12 +454,12 @@ void DrawPickupItem(ITEM_INFO *item)
         int32_t *bone = &g_AnimBones[object->bone_index];
 
         if (!frac) {
-            phd_TranslateRel(
+            Matrix_TranslateRel(
                 frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
                 frmptr[0][FRAME_POS_Z]);
 
             int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
-            phd_RotYXZpack(*packed_rotation++);
+            Matrix_RotYXZpack(*packed_rotation++);
 
             if (item->mesh_bits & bit) {
                 Output_DrawPolygons(*meshpp++, clip);
@@ -468,15 +468,15 @@ void DrawPickupItem(ITEM_INFO *item)
             for (int i = 1; i < object->nmeshes; i++) {
                 int32_t bone_extra_flags = *bone;
                 if (bone_extra_flags & BEB_POP) {
-                    phd_PopMatrix();
+                    Matrix_Pop();
                 }
 
                 if (bone_extra_flags & BEB_PUSH) {
-                    phd_PushMatrix();
+                    Matrix_Push();
                 }
 
-                phd_TranslateRel(bone[1], bone[2], bone[3]);
-                phd_RotYXZpack(*packed_rotation++);
+                Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+                Matrix_RotYXZpack(*packed_rotation++);
 
                 // Extra rotation is ignored in this case as it's not needed.
 
@@ -490,14 +490,14 @@ void DrawPickupItem(ITEM_INFO *item)
             }
         } else {
             // This should never happen but is here "just in case".
-            InitInterpolate(frac, rate);
-            phd_TranslateRel_ID(
+            Matrix_InitInterpolate(frac, rate);
+            Matrix_TranslateRel_ID(
                 frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
                 frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
                 frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
             int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
             int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
-            phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+            Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
             if (item->mesh_bits & bit) {
                 Output_DrawPolygons_I(*meshpp++, clip);
@@ -506,15 +506,15 @@ void DrawPickupItem(ITEM_INFO *item)
             for (int i = 1; i < object->nmeshes; i++) {
                 int32_t bone_extra_flags = *bone;
                 if (bone_extra_flags & BEB_POP) {
-                    phd_PopMatrix_I();
+                    Matrix_Pop_I();
                 }
 
                 if (bone_extra_flags & BEB_PUSH) {
-                    phd_PushMatrix_I();
+                    Matrix_Push_I();
                 }
 
-                phd_TranslateRel_I(bone[1], bone[2], bone[3]);
-                phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+                Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
+                Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
                 // Extra rotation is ignored in this case as it's not needed.
 
@@ -529,7 +529,7 @@ void DrawPickupItem(ITEM_INFO *item)
         }
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 void DrawAnimatingItem(ITEM_INFO *item)
@@ -545,12 +545,12 @@ void DrawAnimatingItem(ITEM_INFO *item)
         Output_DrawShadow(object->shadow_size, frmptr[0], item);
     }
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
     int32_t clip = S_GetObjectBounds(frmptr[0]);
     if (!clip) {
-        phd_PopMatrix();
+        Matrix_Pop();
         return;
     }
 
@@ -562,12 +562,12 @@ void DrawAnimatingItem(ITEM_INFO *item)
     int32_t *bone = &g_AnimBones[object->bone_index];
 
     if (!frac) {
-        phd_TranslateRel(
+        Matrix_TranslateRel(
             frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
             frmptr[0][FRAME_POS_Z]);
 
         int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
-        phd_RotYXZpack(*packed_rotation++);
+        Matrix_RotYXZpack(*packed_rotation++);
 
         if (item->mesh_bits & bit) {
             Output_DrawPolygons(*meshpp++, clip);
@@ -576,24 +576,24 @@ void DrawAnimatingItem(ITEM_INFO *item)
         for (int i = 1; i < object->nmeshes; i++) {
             int32_t bone_extra_flags = *bone;
             if (bone_extra_flags & BEB_POP) {
-                phd_PopMatrix();
+                Matrix_Pop();
             }
 
             if (bone_extra_flags & BEB_PUSH) {
-                phd_PushMatrix();
+                Matrix_Push();
             }
 
-            phd_TranslateRel(bone[1], bone[2], bone[3]);
-            phd_RotYXZpack(*packed_rotation++);
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack(*packed_rotation++);
 
             if (bone_extra_flags & BEB_ROT_Y) {
-                phd_RotY(*extra_rotation++);
+                Matrix_RotY(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_X) {
-                phd_RotX(*extra_rotation++);
+                Matrix_RotX(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_Z) {
-                phd_RotZ(*extra_rotation++);
+                Matrix_RotZ(*extra_rotation++);
             }
 
             bit <<= 1;
@@ -605,14 +605,14 @@ void DrawAnimatingItem(ITEM_INFO *item)
             meshpp++;
         }
     } else {
-        InitInterpolate(frac, rate);
-        phd_TranslateRel_ID(
+        Matrix_InitInterpolate(frac, rate);
+        Matrix_TranslateRel_ID(
             frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
             frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
             frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
         int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
         int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
-        phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+        Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
         if (item->mesh_bits & bit) {
             Output_DrawPolygons_I(*meshpp++, clip);
@@ -621,24 +621,24 @@ void DrawAnimatingItem(ITEM_INFO *item)
         for (int i = 1; i < object->nmeshes; i++) {
             int32_t bone_extra_flags = *bone;
             if (bone_extra_flags & BEB_POP) {
-                phd_PopMatrix_I();
+                Matrix_Pop_I();
             }
 
             if (bone_extra_flags & BEB_PUSH) {
-                phd_PushMatrix_I();
+                Matrix_Push_I();
             }
 
-            phd_TranslateRel_I(bone[1], bone[2], bone[3]);
-            phd_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+            Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
             if (bone_extra_flags & BEB_ROT_Y) {
-                phd_RotY_I(*extra_rotation++);
+                Matrix_RotY_I(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_X) {
-                phd_RotX_I(*extra_rotation++);
+                Matrix_RotX_I(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_Z) {
-                phd_RotZ_I(*extra_rotation++);
+                Matrix_RotZ_I(*extra_rotation++);
             }
 
             bit <<= 1;
@@ -651,7 +651,7 @@ void DrawAnimatingItem(ITEM_INFO *item)
         }
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 void DrawUnclippedItem(ITEM_INFO *item)
@@ -706,8 +706,8 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip)
         break;
     }
 
-    phd_TranslateRel(0, len, off);
-    phd_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(Random_GetDraw() * 2));
+    Matrix_TranslateRel(0, len, off);
+    Matrix_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(Random_GetDraw() * 2));
     Output_CalculateStaticLight(light);
     Output_DrawPolygons(g_Meshes[g_Objects[O_GUN_FLASH].mesh_index], clip);
 }
@@ -719,22 +719,22 @@ void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
         return;
     }
 
-    phd_PushUnitMatrix();
-    g_PhdMatrixPtr->_23 = 0;
-    g_PhdMatrixPtr->_13 = 0;
-    g_PhdMatrixPtr->_03 = 0;
+    Matrix_PushUnit();
+    g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_03 = 0;
 
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    phd_TranslateRel(
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
         (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
         (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
         (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
 
-    int32_t x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    int32_t y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    int32_t z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
 
-    phd_PopMatrix();
+    Matrix_Pop();
 
     Output_CalculateLight(x, y, z, item->room_number);
 }

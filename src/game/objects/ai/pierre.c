@@ -2,8 +2,8 @@
 
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/items.h"
+#include "game/los.h"
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/random.h"
@@ -66,9 +66,9 @@ void Pierre_Control(int16_t item_num)
         m_PierreItemNum = item_num;
     } else if (m_PierreItemNum != item_num) {
         if (item->flags & IF_ONESHOT) {
-            KillItem(m_PierreItemNum);
+            Item_Kill(m_PierreItemNum);
         } else {
-            KillItem(item_num);
+            Item_Kill(item_num);
         }
     }
 
@@ -96,9 +96,9 @@ void Pierre_Control(int16_t item_num)
             item->anim_number =
                 g_Objects[O_PIERRE].anim_index + PIERRE_DIE_ANIM;
             item->frame_number = g_Anims[item->anim_number].frame_base;
-            SpawnItem(item, O_MAGNUM_ITEM);
-            SpawnItem(item, O_SCION_ITEM2);
-            SpawnItem(item, O_KEY_ITEM1);
+            Item_Spawn(item, O_MAGNUM_ITEM);
+            Item_Spawn(item, O_SCION_ITEM2);
+            Item_Spawn(item, O_KEY_ITEM1);
         }
     } else {
         AI_INFO info;
@@ -220,12 +220,12 @@ void Pierre_Control(int16_t item_num)
         start.z = g_Camera.pos.z;
         start.room_number = g_Camera.pos.room_number;
 
-        if (LOS(&start, &target)) {
+        if (LOS_Check(&start, &target)) {
             pierre->flags = 1;
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
             item->hit_points = DONT_TARGET;
             DisableBaddieAI(item_num);
-            KillItem(item_num);
+            Item_Kill(item_num);
             m_PierreItemNum = NO_ITEM;
         }
     }
@@ -235,7 +235,7 @@ void Pierre_Control(int16_t item_num)
     if (wh != NO_HEIGHT) {
         item->hit_points = DONT_TARGET;
         DisableBaddieAI(item_num);
-        KillItem(item_num);
+        Item_Kill(item_num);
         m_PierreItemNum = NO_ITEM;
     }
 }

@@ -1,7 +1,6 @@
 #include "game/inv.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/draw.h"
@@ -21,6 +20,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 #include <stdint.h>
@@ -67,12 +67,13 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 
     PHD_3DPOS viewer;
     Inv_RingGetView(ring, &viewer);
-    phd_GenerateW2V(&viewer);
+    Matrix_GenerateW2V(&viewer);
     Inv_RingLight(ring);
 
-    phd_PushMatrix();
-    phd_TranslateAbs(ring->ringpos.x, ring->ringpos.y, ring->ringpos.z);
-    phd_RotYXZ(ring->ringpos.y_rot, ring->ringpos.x_rot, ring->ringpos.z_rot);
+    Matrix_Push();
+    Matrix_TranslateAbs(ring->ringpos.x, ring->ringpos.y, ring->ringpos.z);
+    Matrix_RotYXZ(
+        ring->ringpos.y_rot, ring->ringpos.x_rot, ring->ringpos.z_rot);
 
     PHD_ANGLE angle = 0;
     for (int i = 0; i < ring->number_of_objects; i++) {
@@ -123,16 +124,16 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
             }
         }
 
-        phd_PushMatrix();
-        phd_RotYXZ(angle, 0, 0);
-        phd_TranslateRel(ring->radius, 0, 0);
-        phd_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
+        Matrix_Push();
+        Matrix_RotYXZ(angle, 0, 0);
+        Matrix_TranslateRel(ring->radius, 0, 0);
+        Matrix_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
         DrawInventoryItem(inv_item);
         angle += ring->angle_adder;
-        phd_PopMatrix();
+        Matrix_Pop();
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 int32_t Display_Inventory(int inv_mode)
@@ -870,8 +871,8 @@ void SelectMeshes(INVENTORY_ITEM *inv_item)
 
 void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 {
-    phd_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
-    phd_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
+    Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
+    Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
     OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
     if (obj->nmeshes < 0) {
@@ -880,10 +881,10 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     }
 
     if (inv_item->sprlist) {
-        int32_t zv = g_PhdMatrixPtr->_23;
+        int32_t zv = g_MatrixPtr->_23;
         int32_t zp = zv / g_PhdPersp;
-        int32_t sx = ViewPort_GetCenterX() + g_PhdMatrixPtr->_03 / zp;
-        int32_t sy = ViewPort_GetCenterY() + g_PhdMatrixPtr->_13 / zp;
+        int32_t sx = ViewPort_GetCenterX() + g_MatrixPtr->_03 / zp;
+        int32_t sy = ViewPort_GetCenterY() + g_MatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
@@ -924,14 +925,14 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     int16_t *frame =
         &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
 
-    phd_PushMatrix();
+    Matrix_Push();
 
     int32_t clip = S_GetObjectBounds(frame);
     if (clip) {
-        phd_TranslateRel(
+        Matrix_TranslateRel(
             frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
         int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
-        phd_RotYXZpack(*packed_rotation++);
+        Matrix_RotYXZpack(*packed_rotation++);
 
         int32_t mesh_num = 1;
 
@@ -945,21 +946,21 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
             int32_t bone_extra_flags = bone[0];
             if (bone_extra_flags & BEB_POP) {
-                phd_PopMatrix();
+                Matrix_Pop();
             }
             if (bone_extra_flags & BEB_PUSH) {
-                phd_PushMatrix();
+                Matrix_Push();
             }
 
-            phd_TranslateRel(bone[1], bone[2], bone[3]);
-            phd_RotYXZpack(*packed_rotation++);
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack(*packed_rotation++);
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
                 m_CompassSpeed = m_CompassSpeed * 19 / 20
                     + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle)
                         / 50;
                 m_CompassNeedle += m_CompassSpeed;
-                phd_RotY(m_CompassNeedle);
+                Matrix_RotY(m_CompassNeedle);
             }
 
             if (inv_item->drawn_meshes & mesh_num) {
@@ -969,5 +970,5 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
             bone += 4;
         }
     }
-    phd_PopMatrix();
+    Matrix_Pop();
 }

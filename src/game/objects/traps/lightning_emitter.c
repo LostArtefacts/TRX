@@ -1,6 +1,5 @@
 #include "game/objects/traps/lightning_emitter.h"
 
-#include "3dsystem/matrix.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
@@ -13,6 +12,7 @@
 #include "game/sphere.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 #include "specific/s_misc.h"
 
 #define LIGHTNING_DAMAGE 400
@@ -73,7 +73,7 @@ void LightningEmitter_Control(int16_t item_num)
             FlipMap();
         }
 
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_NOT_ACTIVE;
         return;
     }
@@ -170,43 +170,43 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     int32_t rate;
     GetFrames(item, frmptr, &rate);
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
     int32_t clip = S_GetObjectBounds(frmptr[0]);
     if (!clip) {
-        phd_PopMatrix();
+        Matrix_Pop();
         return;
     }
 
     CalculateObjectLighting(item, frmptr[0]);
 
-    phd_TranslateRel(
+    Matrix_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);
 
-    int32_t x1 = g_PhdMatrixPtr->_03;
-    int32_t y1 = g_PhdMatrixPtr->_13;
-    int32_t z1 = g_PhdMatrixPtr->_23;
+    int32_t x1 = g_MatrixPtr->_03;
+    int32_t y1 = g_MatrixPtr->_13;
+    int32_t z1 = g_MatrixPtr->_23;
 
     Output_DrawPolygons(
         g_Meshes[g_Objects[O_LIGHTNING_EMITTER].mesh_index], clip);
 
-    phd_PopMatrix();
+    Matrix_Pop();
 
     LIGHTNING *l = item->data;
     if (!l->active) {
         return;
     }
 
-    phd_PushMatrix();
+    Matrix_Push();
 
-    phd_TranslateAbs(l->target.x, l->target.y, l->target.z);
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateAbs(l->target.x, l->target.y, l->target.z);
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t x2 = g_PhdMatrixPtr->_03;
-    int32_t y2 = g_PhdMatrixPtr->_13;
-    int32_t z2 = g_PhdMatrixPtr->_23;
+    int32_t x2 = g_MatrixPtr->_03;
+    int32_t y2 = g_MatrixPtr->_13;
+    int32_t z2 = g_MatrixPtr->_23;
 
     int32_t dx = (x2 - x1) / LIGHTNING_STEPS;
     int32_t dy = (y2 - y1) / LIGHTNING_STEPS;
@@ -249,15 +249,15 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         y1 = l->main[j].y;
         z1 = l->main[j].z;
 
-        phd_PopMatrix();
-        phd_PushMatrix();
+        Matrix_Pop();
+        Matrix_Push();
 
-        phd_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
-        phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+        Matrix_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
+        Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-        x2 = g_PhdMatrixPtr->_03;
-        y2 = g_PhdMatrixPtr->_13;
-        z2 = g_PhdMatrixPtr->_23;
+        x2 = g_MatrixPtr->_03;
+        y2 = g_MatrixPtr->_13;
+        z2 = g_MatrixPtr->_23;
 
         int32_t steps = LIGHTNING_STEPS - j;
         dx = (x2 - x1) / steps;
@@ -292,5 +292,5 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         }
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }

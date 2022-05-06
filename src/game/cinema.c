@@ -1,7 +1,6 @@
 #include "game/cinema.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/phd_math.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
@@ -14,6 +13,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/math.h"
 #include "specific/s_misc.h"
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
@@ -133,8 +133,8 @@ void CalculateCinematicCamera(void)
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
 
-    int32_t c = phd_cos(g_Camera.target_angle);
-    int32_t s = phd_sin(g_Camera.target_angle);
+    int32_t c = Math_Cos(g_Camera.target_angle);
+    int32_t s = Math_Sin(g_Camera.target_angle);
 
     camtar.x = g_Camera.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
     camtar.y = g_Camera.pos.y + ty;
@@ -150,7 +150,7 @@ void CalculateCinematicCamera(void)
 
 void InitialisePlayer1(int16_t item_num)
 {
-    AddActiveItem(item_num);
+    Item_AddActive(item_num);
 
     ITEM_INFO *item = &g_Items[item_num];
     g_Camera.pos.room_number = item->room_number;
@@ -178,7 +178,7 @@ void ControlCinematicPlayer4(int16_t item_num)
 
 void InitialiseGenPlayer(int16_t item_num)
 {
-    AddActiveItem(item_num);
+    Item_AddActive(item_num);
     g_Items[item_num].pos.y_rot = 0;
 }
 
@@ -199,8 +199,8 @@ void InGameCinematicCamera(void)
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
 
-    int32_t c = phd_cos(g_CinePosition.y_rot);
-    int32_t s = phd_sin(g_CinePosition.y_rot);
+    int32_t c = Math_Cos(g_CinePosition.y_rot);
+    int32_t s = Math_Sin(g_CinePosition.y_rot);
 
     g_Camera.target.x = g_CinePosition.x + ((c * tx + s * tz) >> W2V_SHIFT);
     g_Camera.target.y = g_CinePosition.y + ty;

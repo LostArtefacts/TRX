@@ -1,6 +1,5 @@
 #include "game/control.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/camera.h"
 #include "game/demo.h"
@@ -20,6 +19,7 @@
 #include "game/overlay.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #include <stddef.h>
 
@@ -417,8 +417,8 @@ void AnimateItem(ITEM_INFO *item)
         item->pos.y += item->fall_speed;
     }
 
-    item->pos.x += (phd_sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
-    item->pos.z += (phd_cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
+    item->pos.x += (Math_Sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (Math_Cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
 }
 
 void RefreshCamera(int16_t type, int16_t *data)
@@ -587,7 +587,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
                     if (item->status == IS_NOT_ACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
-                        AddActiveItem(value);
+                        Item_AddActive(value);
                         EnableBaddieAI(value, 1);
                     } else if (item->status == IS_INVISIBLE) {
                         item->touch_bits = 0;
@@ -596,12 +596,12 @@ void TestTriggers(int16_t *data, int32_t heavy)
                         } else {
                             item->status = IS_INVISIBLE;
                         }
-                        AddActiveItem(value);
+                        Item_AddActive(value);
                     }
                 } else {
                     item->touch_bits = 0;
                     item->status = IS_ACTIVE;
-                    AddActiveItem(value);
+                    Item_AddActive(value);
                 }
             }
             break;

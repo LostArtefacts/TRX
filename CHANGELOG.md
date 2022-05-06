@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8.1...master)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - fixed Tihocan chain block sound (#433)
 - added background color gradients to selected menu text boxes (#517)
 

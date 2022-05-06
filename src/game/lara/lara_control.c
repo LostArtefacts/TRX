@@ -1,6 +1,5 @@
 #include "game/lara/lara_control.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
@@ -17,6 +16,7 @@
 #include "game/objects/door.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
@@ -67,11 +67,11 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
 
     g_Lara.current_active = 0;
 
-    coll->facing =
-        (int16_t)phd_atan(item->pos.z - coll->old.z, item->pos.x - coll->old.x);
+    coll->facing = (int16_t)Math_Atan(
+        item->pos.z - coll->old.z, item->pos.x - coll->old.x);
     GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
-        item->room_number, UW_HITE);
+        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
+        item->room_number, UW_HEIGHT);
 
     if (coll->coll_type == COLL_FRONT) {
         if (item->pos.x_rot > 35 * PHD_DEGREE) {
@@ -166,7 +166,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     Lara_Animate(item);
     LaraBaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
-    Item_UpdateRoom(item, -LARA_HITE / 2);
+    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
     TestTriggers(coll->trigger, 0);
 }
@@ -224,9 +224,9 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     Lara_Animate(item);
 
     item->pos.x +=
-        (phd_sin(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
+        (Math_Sin(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
     item->pos.z +=
-        (phd_cos(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
+        (Math_Cos(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
 
     LaraBaddieCollision(item, coll);
 
@@ -239,8 +239,8 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -UW_HITE;
-    coll->bad_ceiling = UW_HITE;
+    coll->bad_neg = -UW_HEIGHT;
+    coll->bad_ceiling = UW_HEIGHT;
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
@@ -290,14 +290,14 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     Lara_Animate(item);
 
     item->pos.y -=
-        (phd_sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
+        (Math_Sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
     item->pos.x +=
-        (((phd_sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * phd_cos(item->pos.x_rot))
+        (((Math_Sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
+         * Math_Cos(item->pos.x_rot))
         >> W2V_SHIFT;
     item->pos.z +=
-        (((phd_cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * phd_cos(item->pos.x_rot))
+        (((Math_Cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
+         * Math_Cos(item->pos.x_rot))
         >> W2V_SHIFT;
 
     if (g_Lara.water_status != LWS_CHEAT) {

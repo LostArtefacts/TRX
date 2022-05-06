@@ -60,7 +60,7 @@ void BaconLara_Control(int16_t item_num)
         item->pos.x_rot = g_LaraItem->pos.x_rot;
         item->pos.y_rot = g_LaraItem->pos.y_rot - PHD_180;
         item->pos.z_rot = g_LaraItem->pos.z_rot;
-        ItemNewRoom(item_num, g_LaraItem->room_number);
+        Item_NewRoom(item_num, g_LaraItem->room_number);
 
         if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {
             item->current_anim_state = LS_FAST_FALL;

@@ -27,7 +27,7 @@ void Statue_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    int16_t centaur_item_num = CreateItem();
+    int16_t centaur_item_num = Item_Create();
     if (centaur_item_num == NO_ITEM) {
         Shell_ExitSystem("FATAL: Cannot create CENTAUR in STATUE");
         return;
@@ -42,7 +42,7 @@ void Statue_Initialise(int16_t item_num)
     centaur->flags = IF_NOT_VISIBLE;
     centaur->shade = -1;
 
-    InitialiseItem(centaur_item_num);
+    Item_Initialise(centaur_item_num);
 
     centaur->anim_number = g_Objects[O_CENTAUR].anim_index + 7;
     centaur->frame_number = g_Anims[centaur->anim_number].frame_base + 36;
@@ -67,13 +67,13 @@ void Statue_Control(int16_t item_num)
     if (y > -WALL_L && y < WALL_L
         && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
         Effect_ExplodingDeath(item_num, -1, 0);
-        KillItem(item_num);
+        Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
 
         int16_t centaur_item_num = *(int16_t *)item->data;
         ITEM_INFO *centaur = &g_Items[centaur_item_num];
         centaur->touch_bits = 0;
-        AddActiveItem(centaur_item_num);
+        Item_AddActive(centaur_item_num);
         EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 

@@ -56,14 +56,14 @@
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
 #define LARA_RAD 100 // global radius of g_Lara
-#define LARA_HITE 762 // global height of g_Lara - less than 3/4 block
+#define LARA_HEIGHT 762 // global height of g_Lara - less than 3/4 block
 #define UW_MAXSPEED 200
 #define UW_RADIUS 300
-#define UW_HITE 400
+#define UW_HEIGHT 400
 #define UW_WALLDEFLECT (2 * PHD_DEGREE) // = 364
 #define SURF_MAXSPEED 60
 #define SURF_RADIUS 100
-#define SURF_HITE 700
+#define SURF_HEIGHT 700
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14

@@ -522,7 +522,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->fall_speed, sizeof(int16_t));
 
             if (item->room_number != tmp16) {
-                ItemNewRoom(i, tmp16);
+                Item_NewRoom(i, tmp16);
             }
         }
 
@@ -545,11 +545,11 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 
             if (item->flags & IF_KILLED_ITEM) {
-                KillItem(i);
+                Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {
                 if ((item->flags & 1) && !item->active) {
-                    AddActiveItem(i);
+                    Item_AddActive(i);
                 }
                 item->status = (item->flags & 6) >> 1;
                 if (item->flags & 8) {

@@ -1,6 +1,6 @@
 #include "game/objects/effects/twinkle.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "game/sphere.h"
 #include "global/vars.h"
@@ -18,14 +18,14 @@ void Twinkle_Control(int16_t fx_num)
         fx->counter = 0;
         fx->frame_number--;
         if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
     }
 }
 
 void Twinkle_Spawn(GAME_VECTOR *pos)
 {
-    int16_t fx_num = CreateEffect(pos->room_number);
+    int16_t fx_num = Effect_Create(pos->room_number);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = pos->x;

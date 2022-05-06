@@ -30,7 +30,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
 void SaveCrystal_Initialise(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
     } else {
         g_Items[item_num].status = IS_INVISIBLE;
     }
@@ -67,7 +67,7 @@ void SaveCrystal_Collision(
     int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
-        RemoveDrawnItem(item_num);
+        Item_RemoveDrawn(item_num);
         Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
         Settings_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);

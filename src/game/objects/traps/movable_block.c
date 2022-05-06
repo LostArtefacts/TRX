@@ -88,7 +88,7 @@ void MovableBlock_Control(int16_t item_num)
 
     if (item->flags & IF_ONESHOT) {
         AlterFloorHeight(item, WALL_L);
-        KillItem(item_num);
+        Item_Kill(item_num);
         return;
     }
 
@@ -111,12 +111,12 @@ void MovableBlock_Control(int16_t item_num)
     }
 
     if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_NOT_ACTIVE;
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         AlterFloorHeight(item, -WALL_L);
 
         room_num = item->room_number;
@@ -219,7 +219,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        AddActiveItem(item_num);
+        Item_AddActive(item_num);
         AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
         AnimateItem(item);
@@ -354,8 +354,8 @@ bool MovableBlock_TestPull(
         return false;
     }
 
-    floor = Room_GetFloor(x, y - LARA_HITE, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - LARA_HITE) {
+    floor = Room_GetFloor(x, y - LARA_HEIGHT, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - LARA_HEIGHT) {
         return false;
     }
 
@@ -366,7 +366,7 @@ bool MovableBlock_TestPull(
     floor = Room_GetFloor(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HITE)) {
+    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
         return false;
     }
 

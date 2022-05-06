@@ -29,7 +29,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     switch (level_type) {
     case GFL_SAVED:
         // reset current info to the defaults so that we do not do
-        // GlobalItemReplace in the inventory initialization routines too early
+        // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
         if (!InitialiseLevel(level_num)) {
             return false;
@@ -57,7 +57,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     case GFL_SELECT:
         // reset current info to the defaults so that we do not do
-        // GlobalItemReplace in the inventory initialization routines too early
+        // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
         Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
         for (int i = level_num; i < g_GameFlow.level_count; i++) {

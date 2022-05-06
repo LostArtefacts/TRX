@@ -11,7 +11,7 @@
 
 int S_GetObjectBounds(int16_t *bptr)
 {
-    if (g_PhdMatrixPtr->_23 >= Output_GetFarZ()) {
+    if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
         return 0;
     }
 
@@ -55,20 +55,19 @@ int S_GetObjectBounds(int16_t *bptr)
     y_max = -0x3FFFFFFF;
 
     for (int i = 0; i < 8; i++) {
-        int32_t zv = g_PhdMatrixPtr->_20 * vtx[i].x
-            + g_PhdMatrixPtr->_21 * vtx[i].y + g_PhdMatrixPtr->_22 * vtx[i].z
-            + g_PhdMatrixPtr->_23;
+        int32_t zv = g_MatrixPtr->_20 * vtx[i].x + g_MatrixPtr->_21 * vtx[i].y
+            + g_MatrixPtr->_22 * vtx[i].z + g_MatrixPtr->_23;
 
         if (zv > Output_GetNearZ() && zv < Output_GetFarZ()) {
             ++num_z;
             int32_t zp = zv / g_PhdPersp;
             int32_t xv =
-                (g_PhdMatrixPtr->_00 * vtx[i].x + g_PhdMatrixPtr->_01 * vtx[i].y
-                 + g_PhdMatrixPtr->_02 * vtx[i].z + g_PhdMatrixPtr->_03)
+                (g_MatrixPtr->_00 * vtx[i].x + g_MatrixPtr->_01 * vtx[i].y
+                 + g_MatrixPtr->_02 * vtx[i].z + g_MatrixPtr->_03)
                 / zp;
             int32_t yv =
-                (g_PhdMatrixPtr->_10 * vtx[i].x + g_PhdMatrixPtr->_11 * vtx[i].y
-                 + g_PhdMatrixPtr->_12 * vtx[i].z + g_PhdMatrixPtr->_13)
+                (g_MatrixPtr->_10 * vtx[i].x + g_MatrixPtr->_11 * vtx[i].y
+                 + g_MatrixPtr->_12 * vtx[i].z + g_MatrixPtr->_13)
                 / zp;
 
             if (x_min > xv) {

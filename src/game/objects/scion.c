@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
@@ -106,11 +107,11 @@ void Scion_Control3(int16_t item_num)
             Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
         TestTriggers(g_TriggerIndex, 1);
-        RemoveDrawnItem(item_num);
+        Item_RemoveDrawn(item_num);
     }
 
     if (counter % 10 == 0) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x + (Random_GetControl() - 0x4000) / 32;
@@ -128,7 +129,7 @@ void Scion_Control3(int16_t item_num)
 
     counter++;
     if (counter >= FRAMES_PER_SECOND * 3) {
-        KillItem(item_num);
+        Item_Kill(item_num);
     }
 }
 
@@ -149,7 +150,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;
-            RemoveDrawnItem(item_num);
+            Item_RemoveDrawn(item_num);
             g_GameInfo.current[g_CurrentLevel].stats.pickup_count++;
         }
     } else if (

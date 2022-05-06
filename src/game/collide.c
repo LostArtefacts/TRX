@@ -1,7 +1,5 @@
 #include "game/collide.h"
 
-#include "3dsystem/matrix.h"
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/draw.h"
 #include "game/items.h"
@@ -13,6 +11,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "math/matrix.h"
 
 #define MAX_BADDIE_COLLISION 12
 
@@ -59,7 +59,7 @@ void GetCollisionInfo(
     int32_t zfront;
     switch (coll->quadrant) {
     case DIR_NORTH:
-        xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
+        xfront = (Math_Sin(coll->facing) * coll->radius) >> W2V_SHIFT;
         zfront = coll->radius;
         xleft = -coll->radius;
         zleft = coll->radius;
@@ -69,7 +69,7 @@ void GetCollisionInfo(
 
     case DIR_EAST:
         xfront = coll->radius;
-        zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
+        zfront = (Math_Cos(coll->facing) * coll->radius) >> W2V_SHIFT;
         xleft = coll->radius;
         zleft = coll->radius;
         xright = coll->radius;
@@ -77,7 +77,7 @@ void GetCollisionInfo(
         break;
 
     case DIR_SOUTH:
-        xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
+        xfront = (Math_Sin(coll->facing) * coll->radius) >> W2V_SHIFT;
         zfront = -coll->radius;
         xleft = coll->radius;
         zleft = -coll->radius;
@@ -87,7 +87,7 @@ void GetCollisionInfo(
 
     case DIR_WEST:
         xfront = -coll->radius;
-        zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
+        zfront = (Math_Cos(coll->facing) * coll->radius) >> W2V_SHIFT;
         xleft = -coll->radius;
         zleft = -coll->radius;
         xright = -coll->radius;
@@ -511,7 +511,7 @@ void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
     int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
-    PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+    PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
     g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
     if (!g_Lara.hit_frame) {
         Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);

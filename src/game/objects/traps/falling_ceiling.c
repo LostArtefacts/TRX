@@ -28,7 +28,7 @@ void FallingCeiling_Control(int16_t item_num)
     }
     AnimateItem(item);
     if (item->status == IS_DEACTIVATED) {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
     } else if (
         item->current_anim_state == TRAP_ACTIVATE
         && item->pos.y >= item->floor) {

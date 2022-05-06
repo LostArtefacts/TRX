@@ -117,7 +117,7 @@ void Mutant_FlyerControl(int16_t item_num)
         if (Effect_ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
             Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
             DisableBaddieAI(item_num);
-            KillItem(item_num);
+            Item_Kill(item_num);
             item->status = IS_DEACTIVATED;
             return;
         }

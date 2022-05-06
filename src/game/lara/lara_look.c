@@ -1,9 +1,9 @@
 #include "game/lara/lara_look.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/camera.h"
 #include "game/input.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void Lara_LookLeftRight(void)
 {

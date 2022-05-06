@@ -4,11 +4,11 @@
 #include "config.h"
 #include "game/cinema.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/inv.h"
-#include "game/items.h"
 #include "game/lara.h"
 #include "game/level.h"
 #include "game/lot.h"
@@ -107,7 +107,7 @@ bool InitialiseLevel(int32_t level_num)
     }
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
-    InitialiseFXArray();
+    Effect_InitialiseArray();
     InitialiseLOTArray();
 
     Overlay_Init();

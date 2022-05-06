@@ -1,11 +1,11 @@
 #include "game/screen.h"
 
 #include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
 #include "config.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 #include <math.h>
 
@@ -118,6 +118,6 @@ void Screen_ApplyResolution(void)
     int32_t height = Screen_GetResHeight();
     ViewPort_Init(width, height);
 
-    phd_ResetMatrixStack();
+    Matrix_ResetStack();
     phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }

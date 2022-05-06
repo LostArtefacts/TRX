@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/random.h"
@@ -42,13 +43,13 @@ void Dart_Control(int16_t item_num)
     FLOOR_INFO *floor =
         Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
-        KillItem(item_num);
-        int16_t fx_num = CreateEffect(item->room_number);
+        Item_Kill(item_num);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = old_x;
@@ -76,7 +77,7 @@ void DartEffect_Control(int16_t fx_num)
         fx->counter = 0;
         fx->frame_number--;
         if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-            KillEffect(fx_num);
+            Effect_Kill(fx_num);
         }
     }
 }
@@ -102,7 +103,7 @@ void DartEmitter_Control(int16_t item_num)
 
     if (item->current_anim_state == DART_EMITTER_FIRE
         && item->frame_number == g_Anims[item->anim_number].frame_base) {
-        int16_t dart_item_num = CreateItem();
+        int16_t dart_item_num = Item_Create();
         if (dart_item_num != NO_ITEM) {
             ITEM_INFO *dart = &g_Items[dart_item_num];
             dart->object_number = O_DARTS;
@@ -130,11 +131,11 @@ void DartEmitter_Control(int16_t item_num)
 
             dart->pos.x = item->pos.x + x;
             dart->pos.z = item->pos.z + z;
-            InitialiseItem(dart_item_num);
-            AddActiveItem(dart_item_num);
+            Item_Initialise(dart_item_num);
+            Item_AddActive(dart_item_num);
             dart->status = IS_ACTIVE;
 
-            int16_t fx_num = CreateEffect(dart->room_number);
+            int16_t fx_num = Effect_Create(dart->room_number);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;

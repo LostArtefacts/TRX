@@ -36,13 +36,13 @@ void ThorsHead_Setup(OBJECT_INFO *obj)
 void ThorsHandle_Initialise(int16_t item_num)
 {
     ITEM_INFO *hand_item = &g_Items[item_num];
-    int16_t head_item_num = CreateItem();
+    int16_t head_item_num = Item_Create();
     ITEM_INFO *head_item = &g_Items[head_item_num];
     head_item->object_number = O_THORS_HEAD;
     head_item->room_number = hand_item->room_number;
     head_item->pos = hand_item->pos;
     head_item->shade = hand_item->shade;
-    InitialiseItem(head_item_num);
+    Item_Initialise(head_item_num);
     hand_item->data = head_item;
     g_LevelItemCount++;
 }
@@ -56,7 +56,7 @@ void ThorsHandle_Control(int16_t item_num)
         if (TriggerActive(item)) {
             item->goal_anim_state = THS_TEASE;
         } else {
-            RemoveActiveItem(item_num);
+            Item_RemoveActive(item_num);
             item->status = IS_NOT_ACTIVE;
         }
         break;
@@ -140,7 +140,7 @@ void ThorsHandle_Control(int16_t item_num)
         item->pos.x = old_x;
         item->pos.z = old_z;
 
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         item->status = IS_DEACTIVATED;
         break;
     }

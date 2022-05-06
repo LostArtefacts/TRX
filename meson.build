@@ -76,8 +76,6 @@ endif
 
 sources = [
   'src/3dsystem/3d_gen.c',
-  'src/3dsystem/matrix.c',
-  'src/3dsystem/phd_math.c',
   'src/config.c',
   'src/filesystem.c',
   'src/game/box.c',
@@ -105,6 +103,7 @@ sources = [
   'src/game/effect_routines/sand.c',
   'src/game/effect_routines/stairs2slope.c',
   'src/game/effect_routines/turn_180.c',
+  'src/game/effects.c',
   'src/game/effects/blood.c',
   'src/game/effects/exploding_death.c',
   'src/game/effects/gun.c',
@@ -131,6 +130,7 @@ sources = [
   'src/game/lara/lara_misc.c',
   'src/game/lara/lara_state.c',
   'src/game/level.c',
+  'src/game/los.c',
   'src/game/lot.c',
   'src/game/music.c',
   'src/game/objects/ai/ape.c',
@@ -243,6 +243,8 @@ sources = [
   'src/json/json_parse.c',
   'src/json/json_write.c',
   'src/log.c',
+  'src/math/math.c',
+  'src/math/matrix.c',
   'src/memory.c',
   'src/specific/s_audio.c',
   'src/specific/s_audio_sample.c',

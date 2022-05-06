@@ -1,14 +1,15 @@
 #include "game/objects/traps/lava.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
 #include "game/draw.h"
+#include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 #define LAVA_GLOB_DAMAGE 10
 #define LAVA_WEDGE_SPEED 25
@@ -81,7 +82,7 @@ void Lava_Burn(ITEM_INFO *item)
     item->hit_points = -1;
     item->hit_status = 1;
     for (int i = 0; i < 10; i++) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->object_number = O_FLAME;
@@ -100,8 +101,8 @@ void Lava_Setup(OBJECT_INFO *obj)
 void Lava_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    fx->pos.z += (fx->speed * phd_cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (fx->speed * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.z += (fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
@@ -111,13 +112,13 @@ void Lava_Control(int16_t fx_num)
     if (fx->pos.y >= Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z)
         || fx->pos.y
             < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
     } else if (Lara_IsNearItem(&fx->pos, 200)) {
         g_LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
         g_LaraItem->hit_status = 1;
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
     } else if (room_num != fx->room_number) {
-        EffectNewRoom(fx_num, room_num);
+        Effect_NewRoom(fx_num, room_num);
     }
 }
 
@@ -131,7 +132,7 @@ void LavaEmitter_Setup(OBJECT_INFO *obj)
 void LavaEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    int16_t fx_num = CreateEffect(item->room_number);
+    int16_t fx_num = Effect_Create(item->room_number);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = item->pos.x;
@@ -162,7 +163,7 @@ void LavaWedge_Control(int16_t item_num)
     int16_t room_num = item->room_number;
     Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (room_num != item->room_number) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     if (item->status != IS_DEACTIVATED) {

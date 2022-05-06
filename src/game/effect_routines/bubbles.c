@@ -1,6 +1,6 @@
 #include "game/effect_routines/bubbles.h"
 
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/objects/effects/bubble.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -29,7 +29,7 @@ void FX_Bubbles(ITEM_INFO *item)
     GetJointAbsPosition(item, &offset, LM_HEAD);
 
     for (int i = 0; i < count; i++) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = offset.x;
