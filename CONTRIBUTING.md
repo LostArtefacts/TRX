@@ -94,7 +94,7 @@ show you what need to be changed in case of mistakes.
 
 ## Branching
 
-We commit via pull requests and avoid committing directly to master, which is
+We commit via pull requests and avoid committing directly to `develop`, which is
 a protected branch. Each pull request should have at least one approval before
 merging. We never merge until all discussions are marked as resolved and
 generally try to test things before merging. When a remark on the code review
@@ -106,7 +106,7 @@ addressed, we should re-request a review from the interested parties.
 ## New version releases
 
 New version releases happen automatically whenever a new tag is pushed to the
-`master` branch with the help of GitHub actions.
+`stable` branch with the help of GitHub actions.
 
 ## Supported compilers
 
