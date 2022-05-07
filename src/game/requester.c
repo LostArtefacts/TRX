@@ -195,7 +195,7 @@ void Requester_ChangeItem(
     }
 }
 
-void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
+void Requester_AddItem(REQUEST_INFO *req, const char *string, uint16_t flag)
 {
     if (string) {
         strcpy(&req->item_texts[req->items * req->item_text_len], string);
