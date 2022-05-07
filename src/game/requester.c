@@ -172,7 +172,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
     return 0;
 }
 
-void SetRequesterHeading(REQUEST_INFO *req, const char *string)
+void Requester_SetHeading(REQUEST_INFO *req, const char *string)
 {
     Text_Remove(req->heading);
     req->heading = NULL;

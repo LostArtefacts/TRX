@@ -71,7 +71,7 @@ static int32_t Control_Pause_DisplayRequester(
         Requester_Init(&m_PauseRequester);
         SetRequesterSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
-        SetRequesterHeading(&m_PauseRequester, header);
+        Requester_SetHeading(&m_PauseRequester, header);
         AddRequesterItem(&m_PauseRequester, option1, 0);
         AddRequesterItem(&m_PauseRequester, option2, 0);
 
