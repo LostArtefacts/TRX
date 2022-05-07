@@ -229,7 +229,7 @@ static void Option_PassportShowSaves(void)
 static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
-    InitRequester(req);
+    Requester_Init(req);
     req->requested = 0;
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
     AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
@@ -247,7 +247,7 @@ static void Option_PassportInitSelectLevelRequester(void)
     REQUEST_INFO *req = &m_SelectLevelRequester;
     req->item_texts = &m_SelectLevelStrings[0][0];
     req->flags |= RIF_BLOCKABLE;
-    InitRequester(req);
+    Requester_Init(req);
     SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
     int32_t height = Screen_GetResHeight();
@@ -273,7 +273,7 @@ static void Option_PassportInitSelectLevelRequester(void)
 static void Option_PassportInitSaveRequester(int16_t page_num)
 {
     REQUEST_INFO *req = &g_SavegameRequester;
-    InitRequester(req);
+    Requester_Init(req);
     SetRequesterHeading(
         req,
         g_GameFlow.strings
