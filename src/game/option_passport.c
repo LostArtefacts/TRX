@@ -152,7 +152,7 @@ static void Option_PassportFreeLevelStrings(void)
 
 static void Option_PassportShowNewGame(void)
 {
-    int32_t select = DisplayRequester(&m_NewGameRequester);
+    int32_t select = Requester_Display(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
             switch (select - 1) {
@@ -189,7 +189,7 @@ static void Option_PassportShowNewGame(void)
 
 static void Option_PassportShowLevelSelect(void)
 {
-    int32_t select = DisplayRequester(&m_SelectLevelRequester);
+    int32_t select = Requester_Display(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
             g_GameInfo.select_level_num =
@@ -210,7 +210,7 @@ static void Option_PassportShowLevelSelect(void)
 
 static void Option_PassportShowSaves(void)
 {
-    int32_t select = DisplayRequester(&g_SavegameRequester);
+    int32_t select = Requester_Display(&g_SavegameRequester);
     if (select) {
         if (select > 0) {
             g_GameInfo.current_save_slot = select - 1;
