@@ -12,7 +12,7 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-void InitRequester(REQUEST_INFO *req)
+void Requester_Init(REQUEST_INFO *req)
 {
     req->heading = NULL;
     req->background = NULL;
