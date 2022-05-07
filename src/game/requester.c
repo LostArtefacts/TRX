@@ -184,7 +184,7 @@ void Requester_SetHeading(REQUEST_INFO *req, const char *string)
     }
 }
 
-void ChangeRequesterItem(
+void Requester_ChangeItem(
     REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag)
 {
     if (string) {
