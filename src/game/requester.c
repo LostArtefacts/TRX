@@ -42,7 +42,7 @@ void Requester_Remove(REQUEST_INFO *req)
     }
 }
 
-int32_t DisplayRequester(REQUEST_INFO *req)
+int32_t Requester_Display(REQUEST_INFO *req)
 {
     int32_t edge_y = req->y;
     int32_t lines_height = req->vis_lines * req->line_height;

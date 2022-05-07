@@ -79,7 +79,7 @@ static int32_t Control_Pause_DisplayRequester(
         g_Input = (INPUT_STATE) { 0 };
     }
 
-    int select = DisplayRequester(&m_PauseRequester);
+    int select = Requester_Display(&m_PauseRequester);
     if (select > 0) {
         is_pause_text_ready = false;
     } else {
