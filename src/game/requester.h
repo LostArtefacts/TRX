@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 void Requester_Init(REQUEST_INFO *req);
-void RemoveRequester(REQUEST_INFO *req);
+void Requester_Remove(REQUEST_INFO *req);
 int32_t DisplayRequester(REQUEST_INFO *req);
 void SetRequesterHeading(REQUEST_INFO *req, const char *string);
 void ChangeRequesterItem(
