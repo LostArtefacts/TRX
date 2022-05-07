@@ -162,7 +162,7 @@ bool Control_Pause(void)
     Output_FadeToTransparent(true);
 
     Music_Unpause();
-    RemoveRequester(&m_PauseRequester);
+    Requester_Remove(&m_PauseRequester);
     Control_Pause_RemoveText();
     g_OverlayFlag = old_overlay_flag;
     return select < 0;

@@ -26,7 +26,7 @@ void Requester_Init(REQUEST_INFO *req)
     req->items = 0;
 }
 
-void RemoveRequester(REQUEST_INFO *req)
+void Requester_Remove(REQUEST_INFO *req)
 {
     Text_Remove(req->heading);
     req->heading = NULL;
@@ -161,11 +161,11 @@ int32_t DisplayRequester(REQUEST_INFO *req)
             g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
-            RemoveRequester(req);
+            Requester_Remove(req);
             return req->requested + 1;
         }
     } else if (g_InputDB.deselect) {
-        RemoveRequester(req);
+        Requester_Remove(req);
         return -1;
     }
 

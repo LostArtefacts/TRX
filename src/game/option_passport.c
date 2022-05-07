@@ -311,7 +311,7 @@ static void Option_PassportLoadGame(void)
         if (g_InputDB.right) {
             g_GameInfo.current_save_slot = g_SavegameRequester.requested;
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-            RemoveRequester(&g_SavegameRequester);
+            Requester_Remove(&g_SavegameRequester);
             Option_PassportInitSelectLevelRequester();
             m_PassportMode = PASSPORT_MODE_SELECT_LEVEL;
             g_Input = (INPUT_STATE) { 0 };
@@ -348,7 +348,7 @@ static void Option_PassportSelectLevel(void)
 {
     if (g_InputDB.left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
-        RemoveRequester(&m_SelectLevelRequester);
+        Requester_Remove(&m_SelectLevelRequester);
         Option_PassportInitSaveRequester(PASSPORT_PAGE_1);
         m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
         g_Input = (INPUT_STATE) { 0 };
