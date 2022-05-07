@@ -69,7 +69,7 @@ static int32_t Control_Pause_DisplayRequester(
     static bool is_pause_text_ready = false;
     if (!is_pause_text_ready) {
         Requester_Init(&m_PauseRequester);
-        SetRequesterSize(&m_PauseRequester, 2, -48);
+        Requester_SetSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
         Requester_SetHeading(&m_PauseRequester, header);
         Requester_AddItem(&m_PauseRequester, option1, 0);
