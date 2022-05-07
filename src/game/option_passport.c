@@ -232,11 +232,11 @@ static void Option_PassportInitNewGameRequester(void)
     Requester_Init(req);
     req->requested = 0;
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
-    AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
-    AddRequesterItem(
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
+    Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
-    AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
-    AddRequesterItem(
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
+    Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
     req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;

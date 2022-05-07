@@ -71,8 +71,8 @@ static int32_t Control_Pause_DisplayRequester(
         SetRequesterSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
         Requester_SetHeading(&m_PauseRequester, header);
-        AddRequesterItem(&m_PauseRequester, option1, 0);
-        AddRequesterItem(&m_PauseRequester, option2, 0);
+        Requester_AddItem(&m_PauseRequester, option1, 0);
+        Requester_AddItem(&m_PauseRequester, option2, 0);
 
         is_pause_text_ready = true;
         g_InputDB = (INPUT_STATE) { 0 };
