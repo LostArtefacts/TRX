@@ -57,6 +57,35 @@ static int8_t m_TextASCIIMap[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
+static RGBA8888 m_MenuColorMap[] = {
+    // Purple background centre
+    { 70, 30, 107, 225 },
+    // Purple background edge
+    { 70, 30, 107, 0 },
+    // Brown background centre
+    { 91, 46, 9, 255 },
+    // Brown background edge
+    { 91, 46, 9, 0 },
+    // Grey outline centre
+    { 197, 197, 197, 255 },
+    // Grey outline edge
+    { 45, 45, 45, 255 },
+    // Grey outline top left
+    { 96, 96, 96, 255 },
+    // Grey outline top right
+    { 32, 32, 32, 255 },
+    // Grey outline bottom left
+    { 63, 63, 63, 255 },
+    // Grey outline bottom right
+    { 0, 0, 0, 255 },
+    // Black outline
+    { 0, 0, 0, 255 },
+    // Gold light
+    { 232, 192, 112, 255 },
+    // Gold dark
+    { 140, 112, 56, 255 },
+};
+
 static void Text_DrawText(TEXTSTRING *textstring);
 static uint8_t Text_MapLetterToSpriteNum(char letter);
 
@@ -73,6 +102,11 @@ static uint8_t Text_MapLetterToSpriteNum(char letter)
     } else {
         return letter + 81;
     }
+}
+
+RGBA8888 Text_GetMenuColor(MENU_COLOR color)
+{
+    return m_MenuColorMap[color];
 }
 
 void Text_Init(void)
@@ -186,7 +220,8 @@ void Text_Hide(TEXTSTRING *textstring, bool enable)
 }
 
 void Text_AddBackground(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
+    TEXT_STYLE style)
 {
     if (!textstring) {
         return;
@@ -196,17 +231,7 @@ void Text_AddBackground(
     textstring->bgnd_size.y = h;
     textstring->bgnd_off.x = x;
     textstring->bgnd_off.y = y;
-}
-
-void Text_CentreVGradient(
-    TEXTSTRING *textstring, RGBA8888 centre, RGBA8888 edge)
-{
-    if (!textstring) {
-        return;
-    }
-    textstring->flags.centre_v_gradient = 1;
-    textstring->centre_v_gradient.centre = centre;
-    textstring->centre_v_gradient.edge = edge;
+    textstring->background.style = style;
 }
 
 void Text_RemoveBackground(TEXTSTRING *textstring)
@@ -215,15 +240,15 @@ void Text_RemoveBackground(TEXTSTRING *textstring)
         return;
     }
     textstring->flags.background = 0;
-    textstring->flags.centre_v_gradient = 0;
 }
 
-void Text_AddOutline(TEXTSTRING *textstring, bool enable)
+void Text_AddOutline(TEXTSTRING *textstring, bool enable, TEXT_STYLE style)
 {
     if (!textstring) {
         return;
     }
     textstring->flags.outline = 1;
+    textstring->outline.style = style;
 }
 
 void Text_RemoveOutline(TEXTSTRING *textstring)
@@ -420,25 +445,70 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        Output_DrawScreenFBox(sx, sy, sh, sv);
-    }
+        if (g_Config.ui.menu_style == UI_STYLE_PS1) {
+            // Make sure height and width divisible by 2.
+            sh = 2 * ((sh + 1) / 2);
+            sv = 2 * ((sv + 1) / 2);
+            Output_DrawScreenFBox(sx, sy, sh, sv);
 
-    if (g_Config.enable_menu_effects && textstring->flags.centre_v_gradient) {
-        sx = Screen_GetRenderScale(bxpos);
-        sy = Screen_GetRenderScale(bypos);
-        sh = Screen_GetRenderScale(bwidth);
-        sv = Screen_GetRenderScale(bheight);
-
-        Output_DrawScreenGradientQuad(
-            sx, sy, sh, sv / 2, textstring->centre_v_gradient.edge,
-            textstring->centre_v_gradient.edge,
-            textstring->centre_v_gradient.centre,
-            textstring->centre_v_gradient.centre);
-        Output_DrawScreenGradientQuad(
-            sx, sy + (sv / 2), sh, sv / 2, textstring->centre_v_gradient.centre,
-            textstring->centre_v_gradient.centre,
-            textstring->centre_v_gradient.edge,
-            textstring->centre_v_gradient.edge);
+            if (textstring->background.style == TS_HEADING) {
+                // Top left
+                Output_DrawScreenGradientQuad(
+                    sx, sy, sh / 2, sv / 2, Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_C));
+                // Top right
+                Output_DrawScreenGradientQuad(
+                    sx + sh, sy, -sh / 2, sv / 2, Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_C));
+                // Bottom left
+                Output_DrawScreenGradientQuad(
+                    sx, sy + sv, sh / 2, -sv / 2, Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_C));
+                // Bottom right
+                Output_DrawScreenGradientQuad(
+                    sx + sh, sy + sv, -sh / 2, -sv / 2,
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_C));
+            } else if (textstring->background.style == TS_REQUESTED) {
+                // Top left
+                Output_DrawScreenGradientQuad(
+                    sx, sy, sh / 2, sv / 2, Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_C));
+                // Top right
+                Output_DrawScreenGradientQuad(
+                    sx + sh, sy, -sh / 2, sv / 2,
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_C));
+                // Bottom left
+                Output_DrawScreenGradientQuad(
+                    sx, sy + sv, sh / 2, -sv / 2,
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_C));
+                // Bottom right
+                Output_DrawScreenGradientQuad(
+                    sx + sh, sy + sv, -sh / 2, -sv / 2,
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_C));
+            }
+        } else {
+            Output_DrawScreenFBox(sx, sy, sh, sv);
+        }
     }
 
     if (textstring->flags.outline) {
@@ -446,6 +516,29 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sy = Screen_GetRenderScale(bypos);
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
-        Output_DrawScreenBox(sx, sy, sh, sv);
+
+        if (g_Config.ui.menu_style == UI_STYLE_PS1) {
+            if (textstring->outline.style == TS_HEADING) {
+                Output_DrawGradientScreenBox(
+                    sx, sy, sh, sv, Text_GetMenuColor(MC_BLACK),
+                    Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
+                    Text_GetMenuColor(MC_BLACK), 2);
+            } else if (textstring->outline.style == TS_BACKGROUND) {
+                Output_DrawGradientScreenBox(
+                    sx, sy, sh, sv, Text_GetMenuColor(MC_GREY_TL),
+                    Text_GetMenuColor(MC_GREY_TR),
+                    Text_GetMenuColor(MC_GREY_BL),
+                    Text_GetMenuColor(MC_GREY_BR), 2);
+            } else if (textstring->outline.style == TS_REQUESTED) {
+                Output_DrawCentreGradientScreenBox(
+                    sx, sy, sh, sv, Text_GetMenuColor(MC_GREY_E),
+                    Text_GetMenuColor(MC_GREY_C));
+            }
+        } else {
+            Output_DrawScreenBox(
+                sx, sy, sh, sv, Text_GetMenuColor(MC_GOLD_LIGHT), 2);
+            Output_DrawScreenBox(
+                sx - 1, sy - 1, sh, sv, Text_GetMenuColor(MC_GOLD_DARK), 2);
+        }
     }
 }

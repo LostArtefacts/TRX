@@ -28,8 +28,8 @@ static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
-static RGBA8888 m_CenterColor = { 70, 30, 107, 255 };
-static RGBA8888 m_EdgeColor = { 26, 10, 20, 155 };
+static RGBA8888 m_PurpleCentre = { 70, 30, 107, 255 };
+static RGBA8888 m_PurpleEdge = { 26, 10, 20, 155 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
@@ -175,15 +175,14 @@ static void Option_ControlInitText(void)
 
     int16_t width = 420;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
-    Text_AddBackground(m_Text[1], width, height, 0, 0);
-    Text_AddOutline(m_Text[1], 1);
+    Text_AddBackground(m_Text[1], width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(m_Text[1], true, TS_BACKGROUND);
 
     Option_FlashConflicts();
 
     m_KeyChange = -1;
-    Text_AddBackground(m_Text[0], 0, 0, 0, 0);
-    Text_AddOutline(m_Text[0], 1);
-    Text_CentreVGradient(m_Text[0], m_CenterColor, m_EdgeColor);
+    Text_AddBackground(m_Text[0], 0, 0, 0, 0, TS_REQUESTED);
+    Text_AddOutline(m_Text[0], true, TS_REQUESTED);
 }
 
 static void Option_ControlUpdateText(void)
@@ -335,10 +334,9 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
-                Text_AddOutline(m_TextA[m_KeyChange], 1);
-                Text_CentreVGradient(
-                    m_TextA[m_KeyChange], m_CenterColor, m_EdgeColor);
+                Text_AddBackground(
+                    m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+                Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
             }
         } else if (
             g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
@@ -351,11 +349,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             if (g_InputDB.select) {
                 m_KeyMode = 1;
                 Text_RemoveBackground(m_TextA[m_KeyChange]);
-                Text_AddBackground(m_TextB[m_KeyChange], 0, 0, 0, 0);
+                Text_AddBackground(
+                    m_TextB[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
                 Text_RemoveOutline(m_TextA[m_KeyChange]);
-                Text_AddOutline(m_TextB[m_KeyChange], 1);
-                Text_CentreVGradient(
-                    m_TextB[m_KeyChange], m_CenterColor, m_EdgeColor);
+                Text_AddOutline(m_TextB[m_KeyChange], true, TS_REQUESTED);
             } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -390,12 +387,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
                 Text_AddBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0);
+                    0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
-                Text_CentreVGradient(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange],
-                    m_CenterColor, m_EdgeColor);
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
+                    TS_REQUESTED);
             } else if (g_InputDB.back) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -430,12 +425,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
                 Text_AddBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0);
+                    0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
-                Text_CentreVGradient(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange],
-                    m_CenterColor, m_EdgeColor);
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
+                    TS_REQUESTED);
             }
         }
         break;
@@ -455,10 +448,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Text_ChangeText(m_TextB[m_KeyChange], scancode_name);
             Text_RemoveBackground(m_TextB[m_KeyChange]);
             Text_RemoveOutline(m_TextB[m_KeyChange]);
-            Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
-            Text_AddOutline(m_TextA[m_KeyChange], 1);
-            Text_CentreVGradient(
-                m_TextA[m_KeyChange], m_CenterColor, m_EdgeColor);
+            Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+            Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
             m_KeyMode = 3;
             Option_FlashConflicts();
             Settings_Write();

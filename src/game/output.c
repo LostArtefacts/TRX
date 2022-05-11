@@ -683,22 +683,104 @@ void Output_DrawScreenLine(
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
-void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
+void Output_DrawScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
+    int32_t thickness)
 {
-    RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
-    RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawScreenLine(sx - i, sy - i, w + 1 + (i * 2), 0, col);
+        // Right
+        Output_DrawScreenLine(w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), col);
+        // Left
+        Output_DrawScreenLine(sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, col);
+        // Bottom
+        Output_DrawScreenLine(
+            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, col);
+    }
+    // RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
+    // RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
+    // // Top
+    // Output_DrawScreenLine(sx, sy, w + 1, 0, col);
+    // Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_dark);
+    // // Right
+    // Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, col);
+    // Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_dark);
+    // // Left
+    // Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, col);
+    // Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_dark);
+    // // Bottom
+    // Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 3, 0, col);
+    // Output_DrawScreenLine(w + sx, h + sy, -w - 1, 0, rgb_border_dark);
+}
+
+void Output_DrawGradientScreenLine(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col1, RGBA8888 col2)
+{
+    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col1, col2);
+}
+
+void Output_DrawGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, int32_t thickness)
+{
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, w + 1 + (i * 2), 0, tl, tr);
+        // Right
+        Output_DrawGradientScreenLine(
+            w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), tr, br);
+        // Left
+        Output_DrawGradientScreenLine(
+            sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, bl, tl);
+        // Bottom
+        Output_DrawGradientScreenLine(
+            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, br, bl);
+    }
+}
+
+void Output_DrawCentreGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 center)
+{
     // Top
-    Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_light);
-    Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_dark);
+    Output_DrawGradientScreenLine(sx - 1, sy - 1, (w + 4) / 2, 0, edge, center);
+    Output_DrawGradientScreenLine(
+        sx - 1 + (w + 3) / 2, sy - 1, (w + 4) / 2, 0, center, edge);
+    // Thicken top
+    Output_DrawGradientScreenLine(sx, sy, (w + 2) / 2, 0, edge, center);
+    Output_DrawGradientScreenLine(
+        sx + (w + 1) / 2, sy, (w + 2) / 2, 0, center, edge);
     // Right
-    Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, rgb_border_light);
-    Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_dark);
-    // Left
-    Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_light);
-    Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_dark);
+    Output_DrawGradientScreenLine(sx + w + 1, sy, 0, (h + 2) / 2, edge, center);
+    Output_DrawGradientScreenLine(
+        sx + w + 1, sy + (h + 1) / 2, 0, (h + 2) / 2, center, edge);
+    // Thicken right
+    Output_DrawGradientScreenLine(
+        sx + w + 2, sy - 1, 0, (h + 4) / 2, edge, center);
+    Output_DrawGradientScreenLine(
+        sx + w + 2, sy - 1 + (h + 3) / 2, 0, (h + 4) / 2, center, edge);
     // Bottom
-    Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 3, 0, rgb_border_light);
-    Output_DrawScreenLine(w + sx, h + sy, -w - 1, 0, rgb_border_dark);
+    Output_DrawGradientScreenLine(
+        w + sx, h + sy, (-w - 2) / 2, 0, edge, center);
+    Output_DrawGradientScreenLine(
+        w + sx + (-w - 1) / 2, h + sy, (-w - 2) / 2, 0, center, edge);
+    // Thicken bottom
+    Output_DrawGradientScreenLine(
+        w + sx + 1, h + sy + 1, (-w - 4) / 2, 0, edge, center);
+    Output_DrawGradientScreenLine(
+        w + sx + 1 + (-w - 3) / 2, h + sy + 1, (-w - 4) / 2, 0, center, edge);
+    // Left
+    Output_DrawGradientScreenLine(
+        sx - 1, h + sy + 2, 0, (-4 - h) / 2, edge, center);
+    Output_DrawGradientScreenLine(
+        sx - 1, h + sy + 2 + (-4 - h) / 2, 0, (-3 - h) / 2, center, edge);
+    // Thicken left
+    Output_DrawGradientScreenLine(
+        sx, h + sy + 1, 0, (-2 - h) / 2, edge, center);
+    Output_DrawGradientScreenLine(
+        sx, h + sy + 1 + (-1 - h) / 2, 0, (-2 - h) / 2, center, edge);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)

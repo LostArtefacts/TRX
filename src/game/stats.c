@@ -419,8 +419,8 @@ void Stats_ShowTotal(const char *filename)
     txt = Text_Create(0, y + 2, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width - 4, 0, 0, 0);
-    Text_AddOutline(txt, 1);
+    Text_AddBackground(txt, row_width - 4, 0, 0, 0, TS_HEADING);
+    Text_AddOutline(txt, true, TS_HEADING);
     y += row_height + border * 2;
 
     // kills
@@ -488,8 +488,8 @@ void Stats_ShowTotal(const char *filename)
     txt = Text_Create(0, top_y, " ");
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width, height, 0, 0);
-    Text_AddOutline(txt, 1);
+    Text_AddBackground(txt, row_width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(txt, true, TS_BACKGROUND);
 
     Output_DisplayPicture(filename);
     Clock_SyncTicks(1);

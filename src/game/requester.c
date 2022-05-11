@@ -64,16 +64,17 @@ int32_t Requester_Display(REQUEST_INFO *req)
         Text_CentreH(req->heading, 1);
         Text_AlignBottom(req->heading, 1);
         Text_AddBackground(
-            req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0);
-        Text_AddOutline(req->heading, 1);
+            req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0, TS_HEADING);
+        Text_AddOutline(req->heading, true, TS_HEADING);
     }
 
     if (!req->background) {
         req->background = Text_Create(req->x, box_y, " ");
         Text_CentreH(req->background, 1);
         Text_AlignBottom(req->background, 1);
-        Text_AddBackground(req->background, box_width, box_height, 0, 0);
-        Text_AddOutline(req->background, 1);
+        Text_AddBackground(
+            req->background, box_width, box_height, 0, 0, TS_BACKGROUND);
+        Text_AddOutline(req->background, true, TS_BACKGROUND);
     }
 
     if (req->line_offset) {
@@ -112,9 +113,8 @@ int32_t Requester_Display(REQUEST_INFO *req)
         if (req->line_offset + i == req->requested) {
             Text_AddBackground(
                 req->texts[i], req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0,
-                0, 0);
-            Text_CentreVGradient(req->texts[i], m_CenterColor, m_EdgeColor);
-            Text_AddOutline(req->texts[i], 1);
+                0, 0, TS_REQUESTED);
+            Text_AddOutline(req->texts[i], true, TS_REQUESTED);
         } else {
             Text_RemoveBackground(req->texts[i]);
             Text_RemoveOutline(req->texts[i]);

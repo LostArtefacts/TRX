@@ -9,6 +9,11 @@ typedef enum {
 } SCREENSHOT_FORMAT;
 
 typedef enum {
+    UI_STYLE_PS1 = 0,
+    UI_STYLE_PC = 1,
+} UI_STYLE;
+
+typedef enum {
     BL_TOP_LEFT = 0,
     BL_TOP_CENTER = 1,
     BL_TOP_RIGHT = 2,
@@ -58,7 +63,6 @@ typedef struct {
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
     bool enable_fade_effects;
-    bool enable_menu_effects;
     int8_t healthbar_showing_mode;
     int8_t healthbar_location;
     int8_t healthbar_color;
@@ -108,6 +112,7 @@ typedef struct {
     struct {
         double text_scale;
         double bar_scale;
+        int8_t menu_style;
     } ui;
 
     int32_t sound_volume;
