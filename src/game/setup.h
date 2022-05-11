@@ -4,7 +4,6 @@
 
 #include <stdint.h>
 
-bool InitialiseLevel(int32_t level_num);
 void InitialiseGameFlags(void);
 
 void BaddyObjects(void);
