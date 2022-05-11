@@ -77,28 +77,6 @@
 
 #include <stddef.h>
 
-void InitialiseGameFlags(void)
-{
-    g_FlipStatus = 0;
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMapTable[i] = 0;
-    }
-
-    for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = 0;
-    }
-
-    /* Clear Object Loaded flags */
-    for (int i = 0; i < O_NUMBER_OF; i++) {
-        g_Objects[i].loaded = 0;
-    }
-
-    g_LevelComplete = false;
-    g_FlipEffect = -1;
-
-    Pierre_Reset();
-}
-
 void BaddyObjects(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
