@@ -655,3 +655,15 @@ bool Level_Load(int level_num)
 
     return ret;
 }
+
+void Level_InitialiseFlags(void)
+{
+    // loading a save can override it to false
+    g_GameInfo.death_counter_supported = true;
+
+    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
+    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
+}

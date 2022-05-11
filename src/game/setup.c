@@ -146,18 +146,6 @@ void InitialiseGameFlags(void)
     Pierre_Reset();
 }
 
-void InitialiseLevelFlags(void)
-{
-    // loading a save can override it to false
-    g_GameInfo.death_counter_supported = true;
-
-    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
-}
-
 void BaddyObjects(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
