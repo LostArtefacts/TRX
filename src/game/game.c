@@ -7,6 +7,7 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/settings.h"
@@ -49,7 +50,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
-        InitialiseLevelFlags();
+        Level_InitialiseFlags();
         if (!InitialiseLevel(level_num)) {
             return false;
         }
@@ -70,14 +71,14 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
-        InitialiseLevelFlags();
+        Level_InitialiseFlags();
         if (!InitialiseLevel(level_num)) {
             return false;
         }
         break;
 
     default:
-        InitialiseLevelFlags();
+        Level_InitialiseFlags();
         if (!InitialiseLevel(level_num)) {
             return false;
         }
