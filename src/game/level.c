@@ -10,6 +10,7 @@
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/objects/ai/pierre.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/screen.h"
@@ -670,7 +671,25 @@ bool Level_Initialise(int32_t level_num)
     g_CurrentLevel = level_num;
 
     Text_RemoveAll();
-    InitialiseGameFlags();
+
+    g_FlipStatus = 0;
+    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+        g_FlipMapTable[i] = 0;
+    }
+
+    for (int i = 0; i < MAX_CD_TRACKS; i++) {
+        g_MusicTrackFlags[i] = 0;
+    }
+
+    /* Clear Object Loaded flags */
+    for (int i = 0; i < O_NUMBER_OF; i++) {
+        g_Objects[i].loaded = 0;
+    }
+
+    g_LevelComplete = false;
+    g_FlipEffect = -1;
+
+    Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
     if (level_num != g_GameFlow.title_level_num) {
