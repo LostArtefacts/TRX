@@ -687,14 +687,18 @@ void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
     RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
-    Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
-    Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
-    Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);
-    Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, rgb_border_dark);
-    Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 1, 0, rgb_border_light);
-    Output_DrawScreenLine(w + sx + 2, h + sy + 2, -w - 3, 0, rgb_border_dark);
-    Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_light);
-    Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_dark);
+    // Top
+    Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_light);
+    Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_dark);
+    // Right
+    Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, rgb_border_light);
+    Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_dark);
+    // Left
+    Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_light);
+    Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_dark);
+    // Bottom
+    Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 3, 0, rgb_border_light);
+    Output_DrawScreenLine(w + sx, h + sy, -w - 1, 0, rgb_border_dark);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
