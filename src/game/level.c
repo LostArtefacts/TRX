@@ -1,15 +1,23 @@
 #include "game/level.h"
 
+#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "filesystem.h"
+#include "game/effects.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/items.h"
+#include "game/lara.h"
+#include "game/lot.h"
+#include "game/music.h"
 #include "game/output.h"
+#include "game/overlay.h"
+#include "game/screen.h"
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
+#include "game/text.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "log.h"
@@ -654,6 +662,45 @@ bool Level_Load(int level_num)
         * WALL_L);
 
     return ret;
+}
+
+bool Level_Initialise(int32_t level_num)
+{
+    LOG_DEBUG("%d", level_num);
+    g_CurrentLevel = level_num;
+
+    Text_RemoveAll();
+    InitialiseGameFlags();
+
+    Lara_InitialiseLoad(NO_ITEM);
+    if (level_num != g_GameFlow.title_level_num) {
+        Screen_ApplyResolution();
+    }
+
+    if (!Level_Load(g_CurrentLevel)) {
+        return false;
+    }
+
+    if (g_Lara.item_number != NO_ITEM) {
+        Lara_Initialise(level_num);
+    }
+
+    g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
+    Effect_InitialiseArray();
+    InitialiseLOTArray();
+
+    Overlay_Init();
+    Overlay_BarSetHealthTimer(100);
+
+    Sound_ResetEffects();
+
+    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+
+    if (g_GameFlow.levels[g_CurrentLevel].music) {
+        Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
+    }
+    g_Camera.underwater = 0;
+    return true;
 }
 
 void Level_InitialiseFlags(void)

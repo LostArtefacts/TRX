@@ -10,13 +10,13 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
-#include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
@@ -217,7 +217,7 @@ void Shell_Main(void)
 
             Text_RemoveAll();
             Output_DisplayPicture(g_GameFlow.main_menu_background_path);
-            if (!InitialiseLevel(g_GameFlow.title_level_num)) {
+            if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }

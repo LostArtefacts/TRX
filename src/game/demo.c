@@ -5,10 +5,10 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/items.h"
+#include "game/level.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/setup.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -60,7 +60,7 @@ int32_t StartDemo(void)
     int8_t old_enhanced_look = g_Config.enable_enhanced_look;
     g_Config.enable_enhanced_look = 0;
 
-    if (InitialiseLevel(m_DemoLevel)) {
+    if (Level_Initialise(m_DemoLevel)) {
         LoadLaraDemoPos();
 
         Random_SeedDraw(0xD371F947);
