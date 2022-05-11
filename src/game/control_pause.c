@@ -67,19 +67,19 @@ static int32_t Control_Pause_DisplayRequester(
 {
     static bool is_pause_text_ready = false;
     if (!is_pause_text_ready) {
-        InitRequester(&m_PauseRequester);
-        SetRequesterSize(&m_PauseRequester, 2, -48);
+        Requester_Init(&m_PauseRequester);
+        Requester_SetSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
-        SetRequesterHeading(&m_PauseRequester, header);
-        AddRequesterItem(&m_PauseRequester, option1, 0);
-        AddRequesterItem(&m_PauseRequester, option2, 0);
+        Requester_SetHeading(&m_PauseRequester, header);
+        Requester_AddItem(&m_PauseRequester, option1, 0);
+        Requester_AddItem(&m_PauseRequester, option2, 0);
 
         is_pause_text_ready = true;
         g_InputDB = (INPUT_STATE) { 0 };
         g_Input = (INPUT_STATE) { 0 };
     }
 
-    int select = DisplayRequester(&m_PauseRequester);
+    int select = Requester_Display(&m_PauseRequester);
     if (select > 0) {
         is_pause_text_ready = false;
     } else {
@@ -161,7 +161,7 @@ bool Control_Pause(void)
     Output_FadeToTransparent(true);
 
     Music_Unpause();
-    RemoveRequester(&m_PauseRequester);
+    Requester_Remove(&m_PauseRequester);
     Control_Pause_RemoveText();
     g_OverlayFlag = old_overlay_flag;
     return select < 0;

@@ -1,6 +1,8 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added background color gradients to selected menu text boxes (#517)
 - fixed Tihocan chain block sound (#433)
+- fixed passport menu with high UI scaling (#546, regression from 2.7)
+- fixed passport menu border being off by one pixel (#547)
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)

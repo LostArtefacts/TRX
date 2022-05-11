@@ -149,7 +149,7 @@ static void Option_PassportFreeLevelStrings(void)
 
 static void Option_PassportShowNewGame(void)
 {
-    int32_t select = DisplayRequester(&m_NewGameRequester);
+    int32_t select = Requester_Display(&m_NewGameRequester);
     if (select) {
         if (select > 0) {
             switch (select - 1) {
@@ -186,7 +186,7 @@ static void Option_PassportShowNewGame(void)
 
 static void Option_PassportShowLevelSelect(void)
 {
-    int32_t select = DisplayRequester(&m_SelectLevelRequester);
+    int32_t select = Requester_Display(&m_SelectLevelRequester);
     if (select) {
         if (select > 0) {
             g_GameInfo.select_level_num =
@@ -207,7 +207,7 @@ static void Option_PassportShowLevelSelect(void)
 
 static void Option_PassportShowSaves(void)
 {
-    int32_t select = DisplayRequester(&g_SavegameRequester);
+    int32_t select = Requester_Display(&g_SavegameRequester);
     if (select) {
         if (select > 0) {
             g_GameInfo.current_save_slot = select - 1;
@@ -229,14 +229,14 @@ static void Option_PassportShowSaves(void)
 static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
-    InitRequester(req);
+    Requester_Init(req);
     req->requested = 0;
-    SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
-    AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
-    AddRequesterItem(
+    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
+    Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
-    AddRequesterItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
-    AddRequesterItem(
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
+    Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
     req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;
@@ -247,8 +247,8 @@ static void Option_PassportInitSelectLevelRequester(void)
     REQUEST_INFO *req = &m_SelectLevelRequester;
     req->item_texts = &m_SelectLevelStrings[0][0];
     req->flags |= RIF_BLOCKABLE;
-    InitRequester(req);
-    SetRequesterHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
+    Requester_Init(req);
+    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
     int32_t height = Screen_GetResHeight();
     if (height <= 480) {
@@ -259,7 +259,13 @@ static void Option_PassportInitSelectLevelRequester(void)
         req->vis_lines = 12;
     }
 
-    if (Screen_GetResHeightDownscaled() <= 480) {
+    if (Screen_GetResHeightDownscaled() <= 240) {
+        req->y = -30;
+        req->vis_lines = 5;
+    } else if (Screen_GetResHeightDownscaled() <= 384) {
+        req->y = -30;
+        req->vis_lines = 8;
+    } else if (Screen_GetResHeightDownscaled() <= 480) {
         req->y = -80;
         req->vis_lines = 10;
     } else {
@@ -273,8 +279,8 @@ static void Option_PassportInitSelectLevelRequester(void)
 static void Option_PassportInitSaveRequester(int16_t page_num)
 {
     REQUEST_INFO *req = &g_SavegameRequester;
-    InitRequester(req);
-    SetRequesterHeading(
+    Requester_Init(req);
+    Requester_SetHeading(
         req,
         g_GameFlow.strings
             [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
@@ -289,7 +295,13 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
         req->vis_lines = 12;
     }
 
-    if (Screen_GetResHeightDownscaled() <= 480) {
+    if (Screen_GetResHeightDownscaled() <= 240) {
+        req->y = -30;
+        req->vis_lines = 5;
+    } else if (Screen_GetResHeightDownscaled() <= 384) {
+        req->y = -30;
+        req->vis_lines = 8;
+    } else if (Screen_GetResHeightDownscaled() <= 480) {
         req->y = -80;
         req->vis_lines = 10;
     } else {
@@ -308,7 +320,7 @@ static void Option_PassportLoadGame(void)
         if (g_InputDB.right) {
             g_GameInfo.current_save_slot = g_SavegameRequester.requested;
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-            RemoveRequester(&g_SavegameRequester);
+            Requester_Remove(&g_SavegameRequester);
             Option_PassportInitSelectLevelRequester();
             m_PassportMode = PASSPORT_MODE_SELECT_LEVEL;
             g_Input = (INPUT_STATE) { 0 };
@@ -345,7 +357,7 @@ static void Option_PassportSelectLevel(void)
 {
     if (g_InputDB.left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
-        RemoveRequester(&m_SelectLevelRequester);
+        Requester_Remove(&m_SelectLevelRequester);
         Option_PassportInitSaveRequester(PASSPORT_PAGE_1);
         m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
         g_Input = (INPUT_STATE) { 0 };
