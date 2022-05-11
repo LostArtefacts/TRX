@@ -7,10 +7,10 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/settings.h"
-#include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -31,7 +31,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         // reset current info to the defaults so that we do not do
         // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
-        if (!InitialiseLevel(level_num)) {
+        if (!Level_Initialise(level_num)) {
             return false;
         }
         if (!Savegame_Load(g_GameInfo.current_save_slot, &g_GameInfo)) {
@@ -49,8 +49,8 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
-        InitialiseLevelFlags();
-        if (!InitialiseLevel(level_num)) {
+        Level_InitialiseFlags();
+        if (!Level_Initialise(level_num)) {
             return false;
         }
         break;
@@ -70,15 +70,15 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
-        InitialiseLevelFlags();
-        if (!InitialiseLevel(level_num)) {
+        Level_InitialiseFlags();
+        if (!Level_Initialise(level_num)) {
             return false;
         }
         break;
 
     default:
-        InitialiseLevelFlags();
-        if (!InitialiseLevel(level_num)) {
+        Level_InitialiseFlags();
+        if (!Level_Initialise(level_num)) {
             return false;
         }
         break;

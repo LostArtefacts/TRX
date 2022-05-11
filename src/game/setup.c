@@ -1,18 +1,14 @@
 #include "game/setup.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/cinema.h"
 #include "game/draw.h"
-#include "game/effects.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/level.h"
-#include "game/lot.h"
-#include "game/music.h"
 #include "game/objects/ai/ape.h"
 #include "game/objects/ai/bacon_lara.h"
 #include "game/objects/ai/baldy.h"
@@ -74,89 +70,12 @@
 #include "game/objects/traps/spikes.h"
 #include "game/objects/traps/teeth_trap.h"
 #include "game/objects/traps/thors_hammer.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
-#include "game/screen.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 
 #include <stddef.h>
-
-bool InitialiseLevel(int32_t level_num)
-{
-    LOG_DEBUG("%d", level_num);
-    g_CurrentLevel = level_num;
-
-    Text_RemoveAll();
-    InitialiseGameFlags();
-
-    Lara_InitialiseLoad(NO_ITEM);
-    if (level_num != g_GameFlow.title_level_num) {
-        Screen_ApplyResolution();
-    }
-
-    if (!Level_Load(g_CurrentLevel)) {
-        return false;
-    }
-
-    if (g_Lara.item_number != NO_ITEM) {
-        Lara_Initialise(level_num);
-    }
-
-    g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
-    Effect_InitialiseArray();
-    InitialiseLOTArray();
-
-    Overlay_Init();
-    Overlay_BarSetHealthTimer(100);
-
-    Sound_ResetEffects();
-
-    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
-
-    if (g_GameFlow.levels[g_CurrentLevel].music) {
-        Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
-    }
-    g_Camera.underwater = 0;
-    return true;
-}
-
-void InitialiseGameFlags(void)
-{
-    g_FlipStatus = 0;
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMapTable[i] = 0;
-    }
-
-    for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = 0;
-    }
-
-    /* Clear Object Loaded flags */
-    for (int i = 0; i < O_NUMBER_OF; i++) {
-        g_Objects[i].loaded = 0;
-    }
-
-    g_LevelComplete = false;
-    g_FlipEffect = -1;
-
-    Pierre_Reset();
-}
-
-void InitialiseLevelFlags(void)
-{
-    // loading a save can override it to false
-    g_GameInfo.death_counter_supported = true;
-
-    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
-}
 
 void BaddyObjects(void)
 {

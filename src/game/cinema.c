@@ -5,10 +5,10 @@
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/room.h"
-#include "game/setup.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -21,7 +21,7 @@ static int32_t m_FrameCount = 0;
 
 int32_t StartCinematic(int32_t level_num)
 {
-    if (!InitialiseLevel(level_num)) {
+    if (!Level_Initialise(level_num)) {
         return END_ACTION;
     }
 
