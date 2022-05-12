@@ -178,7 +178,7 @@ void Raptor_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
+    Creature_Tilt(item, tilt);
     CreatureHead(item, head);
     CreatureAnimation(item_num, angle, tilt);
 }
