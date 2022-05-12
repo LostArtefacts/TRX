@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
@@ -51,7 +52,7 @@ void Baldy_Setup(OBJECT_INFO *obj)
 
 void Baldy_Initialise(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
     g_Items[item_num].current_anim_state = BALDY_RUN;
 }
 

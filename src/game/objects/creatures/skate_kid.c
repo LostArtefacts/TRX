@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -58,7 +59,7 @@ void SkateKid_Setup(OBJECT_INFO *obj)
 
 void SkateKid_Initialise(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
     g_Items[item_num].current_anim_state = SKATE_KID_SKATE;
 }
 

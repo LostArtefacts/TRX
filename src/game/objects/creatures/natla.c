@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
 #include "game/lot.h"
@@ -48,7 +49,7 @@ void Natla_Setup(OBJECT_INFO *obj)
         return;
     }
     obj->collision = CreatureCollision;
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Natla_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;

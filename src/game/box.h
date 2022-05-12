@@ -2,9 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
-void InitialiseCreature(int16_t item_num);
 void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info);
 int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion);
 int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion);

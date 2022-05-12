@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -46,7 +47,7 @@ void Bear_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Bear_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;

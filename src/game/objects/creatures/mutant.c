@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
@@ -62,7 +63,7 @@ void Mutant_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Mutant_FlyerControl;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 3;
@@ -353,6 +354,6 @@ void Mutant_FlyerControl(int16_t item_num)
 
 void Mutant_Initialise2(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
     g_Items[item_num].mesh_bits = 0xFFE07FFF;
 }

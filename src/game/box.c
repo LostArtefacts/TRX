@@ -16,15 +16,6 @@
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
-void InitialiseCreature(int16_t item_num)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    item->pos.y_rot += (PHD_ANGLE)((Random_GetControl() - PHD_90) >> 1);
-    item->collidable = 1;
-    item->data = NULL;
-}
-
 void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info)
 {
     CREATURE_INFO *creature = item->data;
