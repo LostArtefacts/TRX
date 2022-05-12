@@ -51,19 +51,19 @@ if python3.found()
   custom_target(
     'fake_init',
     output: ['fake_init'],
-    command: [python3, meson.source_root() + '/scripts/generate_init'],
+    command: [python3, meson.source_root() + '/tools/generate_init'],
     build_by_default: true
   )
   version_rc = custom_target(
     'fake_version',
     output: ['version.rc'],
-    command: [python3, meson.source_root() + '/scripts/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
+    command: [python3, meson.source_root() + '/tools/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
     build_always: true
   )
   icon_rc = custom_target(
     'fake_icon',
     output: ['icon.rc'],
-    command: [python3, meson.source_root() + '/scripts/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
+    command: [python3, meson.source_root() + '/tools/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
   )
   if host_machine.system() == 'windows'
     windows = import('windows')

@@ -3,7 +3,7 @@
 """This script can be used to analyze Tomb1Main for potential memory leaks.
 
 For the script to work, the repository needs to have applied
-scripts/analyze_memleaks.patch that logs information about every memory
+tools/analyze_memleaks.patch that logs information about every memory
 allocation and free.
 """
 
