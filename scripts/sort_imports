@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
 from pathlib import Path
+from shutil import which
 from subprocess import run
 
 TOOLS_DIR = Path(__file__).parent
@@ -14,7 +15,11 @@ def fix_imports(path: Path) -> None:
         capture_output=True,
         text=True,
     ).stderr
-    run(["iwyu-fix-includes"], input=iwyu_result, text=True)
+    run(
+        [which("fix_include") and "fix_include" or "iwyu-fix-includes"],
+        input=iwyu_result,
+        text=True,
+    )
 
 
 def sort_imports(path: Path) -> None:
