@@ -193,7 +193,7 @@ void Croc_Control(int16_t item_num)
     }
 
     if (croc) {
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
     } else {
         AnimateItem(item);
     }
@@ -347,5 +347,5 @@ void Alligator_Control(int16_t item_num)
         item->pos.y = wh + STEP_L;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }

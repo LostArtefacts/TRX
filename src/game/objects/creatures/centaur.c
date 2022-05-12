@@ -153,7 +153,7 @@ void Centaur_Control(int16_t item_num)
     }
 
     Creature_Head(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);

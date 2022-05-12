@@ -304,7 +304,7 @@ void Natla_Control(int16_t item_num)
     natla->flags |= timer & NATLA_TIMER;
 
     item->pos.y_rot -= facing;
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
     item->pos.y_rot += facing;
 }
 
