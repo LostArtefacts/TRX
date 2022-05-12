@@ -95,7 +95,7 @@ void Baldy_Control(int16_t item_num)
         case BALDY_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->goal_anim_state = BALDY_AIM;
             } else if (baldy->mood == MOOD_BORED) {
                 item->goal_anim_state = BALDY_WALK;
@@ -109,7 +109,7 @@ void Baldy_Control(int16_t item_num)
             if (baldy->mood == MOOD_ESCAPE || !info.ahead) {
                 item->required_anim_state = BALDY_RUN;
                 item->goal_anim_state = BALDY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->required_anim_state = BALDY_AIM;
                 item->goal_anim_state = BALDY_STOP;
             } else if (info.distance > BALDY_WALK_RANGE) {
@@ -122,7 +122,7 @@ void Baldy_Control(int16_t item_num)
             baldy->maximum_turn = BALDY_RUN_TURN;
             tilt = angle / 2;
             if (baldy->mood != MOOD_ESCAPE || info.ahead) {
-                if (Targetable(item, &info)) {
+                if (Creature_IsTargetable(item, &info)) {
                     item->required_anim_state = BALDY_AIM;
                     item->goal_anim_state = BALDY_STOP;
                 } else if (info.ahead && info.distance < BALDY_WALK_RANGE) {
@@ -136,7 +136,7 @@ void Baldy_Control(int16_t item_num)
             baldy->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = BALDY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->goal_anim_state = BALDY_SHOOT;
             } else {
                 item->goal_anim_state = BALDY_STOP;

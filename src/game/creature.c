@@ -4,6 +4,7 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -622,4 +623,24 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     }
 
     return true;
+}
+
+bool Creature_IsTargetable(ITEM_INFO *item, AI_INFO *info)
+{
+    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
+        return false;
+    }
+
+    GAME_VECTOR start;
+    start.x = item->pos.x;
+    start.y = item->pos.y - STEP_L * 3;
+    start.z = item->pos.z;
+    start.room_number = item->room_number;
+
+    GAME_VECTOR target;
+    target.x = g_LaraItem->pos.x;
+    target.y = g_LaraItem->pos.y - STEP_L * 3;
+    target.z = g_LaraItem->pos.z;
+
+    return LOS_Check(&start, &target);
 }

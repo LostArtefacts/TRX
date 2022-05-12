@@ -1,6 +1,11 @@
 #pragma once
 
+#include "global/const.h"
 #include "global/types.h"
+
+#define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 7) // = 51380224
+#define CREATURE_SHOT_DAMAGE 50
+#define CREATURE_MISS_CHANCE 0x2000
 
 void Creature_Initialise(int16_t item_num);
 void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info);
@@ -15,3 +20,4 @@ int16_t Creature_Effect(
         int16_t room_num));
 bool Creature_CheckBaddieOverlap(int16_t item_num);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
+bool Creature_IsTargetable(ITEM_INFO *item, AI_INFO *info);

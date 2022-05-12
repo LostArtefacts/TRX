@@ -132,7 +132,8 @@ void Mutant_FlyerControl(int16_t item_num)
 
         int32_t shoot1 = 0;
         int32_t shoot2 = 0;
-        if (item->object_number != O_WARRIOR3 && Targetable(item, &info)
+        if (item->object_number != O_WARRIOR3
+            && Creature_IsTargetable(item, &info)
             && (info.zone_number != info.enemy_zone
                 || info.distance > FLYER_ATTACK_RANGE)) {
             if (info.angle > 0 && info.angle < PHD_45) {
