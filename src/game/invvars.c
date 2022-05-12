@@ -1,4 +1,4 @@
-#include "inv.h"
+#include "game/inv.h"
 
 #include "global/vars.h"
 

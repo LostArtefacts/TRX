@@ -1,9 +1,9 @@
 #pragma once
 
+#include "global/types.h"
+
 #include <stdbool.h>
 #include <stdint.h>
-
-#include "global/types.h"
 
 // Initializes music mixer.
 bool Music_Init(void);

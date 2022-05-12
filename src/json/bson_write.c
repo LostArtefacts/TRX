@@ -1,6 +1,6 @@
 #include "json/bson_write.h"
-#include "log.h"
 
+#include "log.h"
 #include "memory.h"
 
 #include <assert.h>

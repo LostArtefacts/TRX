@@ -1,10 +1,10 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "gfx/2d/2d_renderer.h"
 #include "gfx/3d/3d_renderer.h"
+
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef struct GFX_Context GFX_Context;
 
