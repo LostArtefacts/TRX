@@ -234,7 +234,7 @@ void Ape_Control(int16_t item_num)
 
         case APE_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
-                CreatureEffect(item, &m_ApeBite, Effect_Blood);
+                Creature_Effect(item, &m_ApeBite, Effect_Blood);
                 g_LaraItem->hit_points -= APE_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = APE_STOP;

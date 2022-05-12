@@ -165,7 +165,7 @@ void Croc_Control(int16_t item_num)
 
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
-                CreatureEffect(item, &m_CrocodileBite, Effect_Blood);
+                Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
                 g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CROCODILE_STOP;
@@ -313,7 +313,7 @@ void Alligator_Control(int16_t item_num)
 
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == ALLIGATOR_EMPTY) {
-                CreatureEffect(item, &m_CrocodileBite, Effect_Blood);
+                Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
                 g_LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = ALLIGATOR_SWIM;

@@ -147,7 +147,7 @@ void Raptor_Control(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &m_RaptorBite, Effect_Blood);
+                Creature_Effect(item, &m_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_LUNGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;
@@ -158,7 +158,7 @@ void Raptor_Control(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &m_RaptorBite, Effect_Blood);
+                Creature_Effect(item, &m_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_RUN;
@@ -169,7 +169,7 @@ void Raptor_Control(int16_t item_num)
             tilt = angle;
             if (item->required_anim_state == RAPTOR_EMPTY
                 && (item->touch_bits & RAPTOR_TOUCH)) {
-                CreatureEffect(item, &m_RaptorBite, Effect_Blood);
+                Creature_Effect(item, &m_RaptorBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAPTOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAPTOR_STOP;

@@ -133,7 +133,7 @@ void Centaur_Control(int16_t item_num)
             if (item->required_anim_state == CENTAUR_EMPTY) {
                 item->required_anim_state = CENTAUR_AIM;
                 int16_t fx_num =
-                    CreatureEffect(item, &m_CentaurRocket, Effect_RocketGun);
+                    Creature_Effect(item, &m_CentaurRocket, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     centaur->neck_rotation = g_Effects[fx_num].pos.x_rot;
                 }
@@ -143,7 +143,7 @@ void Centaur_Control(int16_t item_num)
         case CENTAUR_WARNING:
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
-                CreatureEffect(item, &m_CentaurRear, Effect_Blood);
+                Creature_Effect(item, &m_CentaurRear, Effect_Blood);
                 g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CENTAUR_STOP;

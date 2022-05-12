@@ -272,7 +272,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK1:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
@@ -282,7 +282,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK2:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_RUN;
@@ -292,7 +292,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK3:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
@@ -321,10 +321,10 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                CreatureEffect(item, &m_WarriorShard, Effect_ShardGun);
+                Creature_Effect(item, &m_WarriorShard, Effect_ShardGun);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                CreatureEffect(item, &m_WarriorRocket, Effect_RocketGun);
+                Creature_Effect(item, &m_WarriorRocket, Effect_RocketGun);
             }
             break;
 

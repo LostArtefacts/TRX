@@ -138,7 +138,7 @@ void Bat_Control(int16_t item_num)
 
         case BAT_ATTACK:
             if (item->touch_bits) {
-                CreatureEffect(item, &m_BatBite, Effect_Blood);
+                Creature_Effect(item, &m_BatBite, Effect_Blood);
                 g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
             } else {

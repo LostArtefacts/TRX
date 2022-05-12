@@ -1,6 +1,6 @@
 #include "game/people.h"
 
-#include "game/box.h"
+#include "game/creature.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/los.h"
@@ -41,9 +41,9 @@ bool ShotLara(
 
     int16_t fx_num;
     if (hit) {
-        fx_num = CreatureEffect(item, gun, Effect_GunShotHit);
+        fx_num = Creature_Effect(item, gun, Effect_GunShotHit);
     } else {
-        fx_num = CreatureEffect(item, gun, Effect_GunShotMiss);
+        fx_num = Creature_Effect(item, gun, Effect_GunShotMiss);
     }
 
     if (fx_num != NO_ITEM) {

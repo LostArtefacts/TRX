@@ -127,7 +127,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -141,7 +141,7 @@ void Natla_Control(int16_t item_num)
             tilt = angle;
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -248,7 +248,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 30) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -271,17 +271,17 @@ void Natla_Control(int16_t item_num)
         case NATLA_SHOOT:
             if (!item->required_anim_state) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
                 }
-                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
                 }
-                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
