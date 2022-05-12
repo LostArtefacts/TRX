@@ -525,26 +525,6 @@ void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
     g_Lara.spaz_effect_count--;
 }
 
-void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
-        return;
-    }
-    if (!TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        if (item->hit_points <= 0) {
-            Lara_Push(item, coll, 0, 0);
-        } else {
-            Lara_Push(item, coll, coll->enable_spaz, 0);
-        }
-    }
-}
-
 void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];

@@ -5,6 +5,7 @@
 #include "game/draw.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -362,6 +363,26 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     } while (link != NO_ITEM);
 
     return false;
+}
+
+void Creature_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
+        return;
+    }
+    if (!TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        if (item->hit_points <= 0) {
+            Lara_Push(item, coll, 0, 0);
+        } else {
+            Lara_Push(item, coll, coll->enable_spaz, 0);
+        }
+    }
 }
 
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)

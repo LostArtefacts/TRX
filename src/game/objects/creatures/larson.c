@@ -37,7 +37,7 @@ void Larson_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Larson_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LARSON_HITPOINTS;
     obj->radius = LARSON_RADIUS;

@@ -13,6 +13,5 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 
 void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll);
 
-void CreatureCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);

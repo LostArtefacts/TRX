@@ -49,7 +49,7 @@ void Lion_SetupLion(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LION_HITPOINTS;
     obj->pivot_length = 400;
@@ -70,7 +70,7 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LIONESS_HITPOINTS;
     obj->pivot_length = 400;
@@ -91,7 +91,7 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PUMA_HITPOINTS;
     obj->pivot_length = 400;

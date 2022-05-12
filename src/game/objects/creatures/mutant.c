@@ -64,7 +64,7 @@ void Mutant_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Mutant_FlyerControl;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = FLYER_HITPOINTS;
     obj->pivot_length = 150;

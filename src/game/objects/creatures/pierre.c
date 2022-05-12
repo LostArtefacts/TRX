@@ -45,7 +45,7 @@ void Pierre_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Pierre_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PIERRE_HITPOINTS;
     obj->radius = PIERRE_RADIUS;

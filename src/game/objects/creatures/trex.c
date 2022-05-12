@@ -66,7 +66,7 @@ void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    CreatureCollision(item_num, lara_item, coll);
+    Creature_Collision(item_num, lara_item, coll);
 }
 
 void TRex_Control(int16_t item_num)
