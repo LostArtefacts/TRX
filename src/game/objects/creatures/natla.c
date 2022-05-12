@@ -96,7 +96,7 @@ void Natla_Control(int16_t item_num)
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         angle = CreatureTurn(item, NATLA_RUN_TURN);
 
@@ -195,7 +195,7 @@ void Natla_Control(int16_t item_num)
                 natla->flags &= ~NATLA_FLY_MODE;
             }
             if (!(natla->flags & NATLA_FLY_MODE)) {
-                CreatureMood(item, &info, 1);
+                Creature_Mood(item, &info, true);
             }
             natla->LOT.step = WALL_L * 20;
             natla->LOT.drop = -WALL_L * 20;
@@ -211,7 +211,7 @@ void Natla_Control(int16_t item_num)
 
         if (item->current_anim_state != NATLA_FLY
             || (natla->flags & NATLA_FLY_MODE)) {
-            CreatureMood(item, &info, 0);
+            Creature_Mood(item, &info, false);
         }
 
         item->pos.y_rot -= facing;

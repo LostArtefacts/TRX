@@ -102,7 +102,7 @@ void Wolf_Control(int16_t item_num)
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
         angle = CreatureTurn(item, wolf->maximum_turn);
 
