@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -670,7 +671,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
 
         item->pos.y_rot += angle;
-        CreatureTilt(item, tilt * 2);
+        Creature_Tilt(item, tilt * 2);
     }
 
     if (CreatureCreature(item_num)) {
@@ -750,17 +751,6 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
     }
 
     return 1;
-}
-
-void CreatureTilt(ITEM_INFO *item, int16_t angle)
-{
-    angle = angle * 4 - item->pos.z_rot;
-    if (angle < -MAX_TILT) {
-        angle = -MAX_TILT;
-    } else if (angle > MAX_TILT) {
-        angle = MAX_TILT;
-    }
-    item->pos.z_rot += angle;
 }
 
 void CreatureHead(ITEM_INFO *item, int16_t required)

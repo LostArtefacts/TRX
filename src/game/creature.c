@@ -275,3 +275,14 @@ int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
 
     return angle;
 }
+
+void Creature_Tilt(ITEM_INFO *item, int16_t angle)
+{
+    angle = angle * 4 - item->pos.z_rot;
+    if (angle < -MAX_TILT) {
+        angle = -MAX_TILT;
+    } else if (angle > MAX_TILT) {
+        angle = MAX_TILT;
+    }
+    item->pos.z_rot += angle;
+}

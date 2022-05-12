@@ -292,7 +292,7 @@ void Natla_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
+    Creature_Tilt(item, tilt);
 
     natla->neck_rotation = -head;
     if (gun) {
