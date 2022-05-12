@@ -36,7 +36,7 @@ void Baldy_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Baldy_Initialise;
     obj->control = Baldy_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BALDY_HITPOINTS;
     obj->radius = BALDY_RADIUS;

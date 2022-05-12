@@ -49,7 +49,7 @@ void Bear_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Bear_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
     obj->pivot_length = 500;

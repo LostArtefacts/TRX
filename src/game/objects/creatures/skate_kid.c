@@ -43,7 +43,7 @@ void SkateKid_Setup(OBJECT_INFO *obj)
     obj->initialise = SkateKid_Initialise;
     obj->control = SkateKid_Control;
     obj->draw_routine = SkateKid_Draw;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
     obj->radius = SKATE_KID_RADIUS;

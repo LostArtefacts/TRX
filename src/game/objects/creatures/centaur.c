@@ -43,7 +43,7 @@ void Centaur_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = Centaur_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CENTAUR_HITPOINTS;
     obj->pivot_length = 400;

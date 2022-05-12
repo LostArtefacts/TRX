@@ -47,7 +47,7 @@ void Natla_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->initialise = Creature_Initialise;
     obj->control = Natla_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
