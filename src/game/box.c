@@ -430,38 +430,6 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
     return TARGET_NONE;
 }
 
-int32_t CreatureCreature(int16_t item_num)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
-    int32_t radius = SQUARE(g_Objects[item->object_number].radius);
-
-    int16_t link = g_RoomInfo[item->room_number].item_number;
-    do {
-        item = &g_Items[link];
-
-        if (link == item_num) {
-            return 0;
-        }
-
-        if (item != g_LaraItem && item->status == IS_ACTIVE
-            && item->speed != 0) {
-            int32_t distance = SQUARE(item->pos.x - x) + SQUARE(item->pos.y - y)
-                + SQUARE(item->pos.z - z);
-            if (distance < radius) {
-                return 1;
-            }
-        }
-
-        link = item->next_item;
-    } while (link != NO_ITEM);
-
-    return 0;
-}
-
 int32_t BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO *LOT)
@@ -674,7 +642,7 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
         Creature_Tilt(item, tilt * 2);
     }
 
-    if (CreatureCreature(item_num)) {
+    if (Creature_CheckBaddieOverlap(item_num)) {
         item->pos.x = old.x;
         item->pos.y = old.y;
         item->pos.z = old.z;

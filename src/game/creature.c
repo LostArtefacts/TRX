@@ -325,3 +325,35 @@ int16_t Creature_Effect(
     return spawn(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
+
+bool Creature_CheckBaddieOverlap(int16_t item_num)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int32_t radius = SQUARE(g_Objects[item->object_number].radius);
+
+    int16_t link = g_RoomInfo[item->room_number].item_number;
+    do {
+        item = &g_Items[link];
+
+        if (link == item_num) {
+            return false;
+        }
+
+        if (item != g_LaraItem && item->status == IS_ACTIVE
+            && item->speed != 0) {
+            int32_t distance = SQUARE(item->pos.x - x) + SQUARE(item->pos.y - y)
+                + SQUARE(item->pos.z - z);
+            if (distance < radius) {
+                return true;
+            }
+        }
+
+        link = item->next_item;
+    } while (link != NO_ITEM);
+
+    return false;
+}
