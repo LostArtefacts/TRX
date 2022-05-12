@@ -1,4 +1,4 @@
-#include "game/objects/ai/trex.h"
+#include "game/objects/creatures/trex.h"
 
 #include "config.h"
 

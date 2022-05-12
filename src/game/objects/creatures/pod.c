@@ -1,4 +1,4 @@
-#include "game/objects/ai/pod.h"
+#include "game/objects/creatures/pod.h"
 
 #include "game/collide.h"
 #include "game/control.h"

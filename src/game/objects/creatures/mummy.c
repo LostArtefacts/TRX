@@ -1,4 +1,4 @@
-#include "game/objects/ai/mummy.h"
+#include "game/objects/creatures/mummy.h"
 
 #include "game/box.h"
 #include "game/collide.h"

@@ -1,4 +1,4 @@
-#include "game/objects/ai/skate_kid.h"
+#include "game/objects/creatures/skate_kid.h"
 
 #include "game/box.h"
 #include "game/collide.h"

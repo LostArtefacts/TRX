@@ -10,7 +10,7 @@
 #include "game/lara.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/ai/pierre.h"
+#include "game/objects/creatures/pierre.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/screen.h"
