@@ -8,7 +8,6 @@
 #include "game/effects/gun.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"

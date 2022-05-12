@@ -6,7 +6,6 @@
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -187,11 +186,13 @@ void Pierre_Control(int16_t item_num)
 
         case PIERRE_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &m_PierreGun1, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_PierreGun1, head)) {
                     g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
                     g_LaraItem->hit_status = 1;
                 }
-                if (ShotLara(item, info.distance, &m_PierreGun2, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_PierreGun2, head)) {
                     g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
                     g_LaraItem->hit_status = 1;
                 }

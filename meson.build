@@ -203,7 +203,6 @@ sources = [
   'src/game/option_sound.c',
   'src/game/output.c',
   'src/game/overlay.c',
-  'src/game/people.c',
   'src/game/picture.c',
   'src/game/random.c',
   'src/game/requester.c',
