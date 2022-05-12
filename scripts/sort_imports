@@ -2,18 +2,56 @@
 import re
 from pathlib import Path
 
+TOOLS_DIR = Path(__file__).parent
+REPO_DIR = TOOLS_DIR.parent
+SRC_PATH = REPO_DIR / "src"
+
 
 def sort_imports(path: Path) -> None:
     source = path.read_text()
+    rel_path = path.relative_to(SRC_PATH)
+    own_include = str(rel_path.with_suffix(".h"))
+    own_include = {
+        # files headers of which are not a 1:1 match with their filename
+        "game/inventry.c": "game/inv.h",
+        "game/control_pause.c": "game/control.h",
+        "game/control_util.c": "game/control.h",
+        "game/invfunc.c": "game/inv.h",
+        "game/invvars.c": "game/inv.h",
+        "game/option_compass.c": "game/option.h",
+        "game/option_control.c": "game/option.h",
+        "game/option_graphics.c": "game/option.h",
+        "game/option_passport.c": "game/option.h",
+        "game/option_sound.c": "game/option.h",
+        "specific/s_audio_sample.c": "specific/s_audio.h",
+        "specific/s_audio_stream.c": "specific/s_audio.h",
+    }.get(str(rel_path), own_include)
 
     def cb(match):
-        # print("<>" + match.group(0) + "</>")
-        return (
-            "\n".join(sorted(set(match.group("includes").splitlines()))) + "\n"
-        )
+        includes = re.findall(r'#include (["<][^"<>]+[">])', match.group(0))
+        groups = {
+            "own": set(),
+            "proj": set(),
+            "lib": set(),
+        }
+        for include in includes:
+            if include.strip('"') == own_include:
+                groups["own"].add(include)
+            elif include.startswith("<"):
+                groups["lib"].add(include)
+            else:
+                groups["proj"].add(include)
+
+        groups = {key: value for key, value in groups.items() if value}
+
+        ret = "\n\n".join(
+            "\n".join(f"#include {include}" for include in sorted(group))
+            for group in groups.values()
+        ).strip()
+        return ret
 
     source = re.sub(
-        "(?P<includes>(^#include [^\n]+\n)+)(?=\n)",
+        "^#include [^\n]+(\n*#include [^\n]+)*",
         cb,
         source,
         flags=re.M,
@@ -22,5 +60,5 @@ def sort_imports(path: Path) -> None:
         path.write_text(source)
 
 
-for path in sorted(Path().glob("**/*.[ch]")):
+for path in sorted(SRC_PATH.glob("**/*.[ch]")):
     sort_imports(path)
