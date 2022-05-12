@@ -146,7 +146,7 @@ void Lion_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, lion->maximum_turn);
+        angle = Creature_Turn(item, lion->maximum_turn);
 
         switch (item->current_anim_state) {
         case LION_STOP:

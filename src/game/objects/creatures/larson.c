@@ -84,7 +84,7 @@ void Larson_Control(int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, person->maximum_turn);
+        angle = Creature_Turn(item, person->maximum_turn);
 
         switch (item->current_anim_state) {
         case LARSON_STOP:

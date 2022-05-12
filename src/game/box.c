@@ -752,39 +752,6 @@ int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
     return 1;
 }
 
-int16_t CreatureTurn(ITEM_INFO *item, int16_t maximum_turn)
-{
-    CREATURE_INFO *creature = item->data;
-    if (!creature) {
-        return 0;
-    }
-
-    if (!item->speed || !maximum_turn) {
-        return 0;
-    }
-
-    int32_t x = creature->target.x - item->pos.x;
-    int32_t z = creature->target.z - item->pos.z;
-    int16_t angle = Math_Atan(z, x) - item->pos.y_rot;
-    int32_t range = (item->speed << 14) / maximum_turn;
-
-    if (angle > FRONT_ARC || angle < -FRONT_ARC) {
-        if (SQUARE(x) + SQUARE(z) < SQUARE(range)) {
-            maximum_turn >>= 1;
-        }
-    }
-
-    if (angle > maximum_turn) {
-        angle = maximum_turn;
-    } else if (angle < -maximum_turn) {
-        angle = -maximum_turn;
-    }
-
-    item->pos.y_rot += angle;
-
-    return angle;
-}
-
 void CreatureTilt(ITEM_INFO *item, int16_t angle)
 {
     angle = angle * 4 - item->pos.z_rot;

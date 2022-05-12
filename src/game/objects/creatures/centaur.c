@@ -90,7 +90,7 @@ void Centaur_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, CENTAUR_TURN);
+        angle = Creature_Turn(item, CENTAUR_TURN);
 
         switch (item->current_anim_state) {
         case CENTAUR_STOP:

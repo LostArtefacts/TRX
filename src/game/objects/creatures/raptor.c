@@ -91,7 +91,7 @@ void Raptor_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, raptor->maximum_turn);
+        angle = Creature_Turn(item, raptor->maximum_turn);
 
         switch (item->current_anim_state) {
         case RAPTOR_STOP:

@@ -100,7 +100,7 @@ void TRex_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, dino->maximum_turn);
+        angle = Creature_Turn(item, dino->maximum_turn);
 
         if (item->touch_bits) {
             if (item->current_anim_state == TREX_RUN) {

@@ -98,7 +98,7 @@ void Rat_Control(int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, RAT_RUN_TURN);
+        angle = Creature_Turn(item, RAT_RUN_TURN);
 
         switch (item->current_anim_state) {
         case RAT_STOP:
@@ -234,7 +234,7 @@ void Vole_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, VOLE_SWIM_TURN);
+        angle = Creature_Turn(item, VOLE_SWIM_TURN);
 
         switch (item->current_anim_state) {
         case VOLE_SWIM:
