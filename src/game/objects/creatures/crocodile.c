@@ -1,7 +1,6 @@
 #include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/creature.h"
