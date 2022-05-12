@@ -1,7 +1,6 @@
 #include "game/objects/traps/lava.h"
 
 #include "game/collide.h"
-#include "game/creature.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -151,7 +150,7 @@ void LavaEmitter_Control(int16_t item_num)
 void LavaWedge_Setup(OBJECT_INFO *obj)
 {
     obj->control = LavaWedge_Control;
-    obj->collision = Creature_Collision;
+    obj->collision = ObjectCollision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
