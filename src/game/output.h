@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 extern PHD_VECTOR g_LsVectorView;
 
 bool Output_Init(void);

@@ -4,6 +4,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void Gun_Control(void);
 void Gun_InitialiseNewWeapon(void);
 void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm);

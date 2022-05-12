@@ -2,11 +2,13 @@
 
 #include "game/control.h"
 #include "game/creature.h"
-#include "game/draw.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara_draw.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stddef.h>
 
 void BaconLara_Setup(OBJECT_INFO *obj)
 {

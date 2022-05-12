@@ -1,14 +1,17 @@
 #include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define CROCODILE_BITE_DAMAGE 100
 #define CROCODILE_BITE_RANGE SQUARE(435) // = 189225

@@ -1,5 +1,6 @@
 #include "gfx/3d/vertex_stream.h"
 
+#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
 #include "memory.h"

@@ -3,6 +3,7 @@
 #include "game/control.h"
 #include "game/items.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 void FallingBlock_Setup(OBJECT_INFO *obj)

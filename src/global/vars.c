@@ -16,6 +16,8 @@
 #include "game/effect_routines/stairs2slope.h"
 #include "game/effect_routines/turn_180.h"
 
+#include <stddef.h>
+
 char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 

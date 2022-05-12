@@ -1,14 +1,16 @@
 #include "game/objects/creatures/bat.h"
 
-#include "config.h"
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define BAT_ATTACK_DAMAGE 2
 #define BAT_TURN (20 * PHD_DEGREE) // = 3640

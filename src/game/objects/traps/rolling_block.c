@@ -4,6 +4,7 @@
 #include "game/items.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 void RollingBlock_Setup(OBJECT_INFO *obj)

@@ -4,7 +4,11 @@
 #include "log.h"
 #include "memory.h"
 
-#include <assert.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_stdinc.h>
+#include <stdint.h>
+#include <string.h>
 
 SDL_AudioDeviceID g_AudioDeviceID = 0;
 static size_t m_WorkingBufferSize = 0;

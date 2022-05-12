@@ -4,6 +4,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 void Lara_Control(void);
 
 void Lara_ControlExtra(int16_t item_num);

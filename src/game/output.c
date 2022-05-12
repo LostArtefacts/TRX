@@ -3,14 +3,18 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/clock.h"
+#include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
+#include "util.h"
+
+#include <stddef.h>
 
 PHD_VECTOR g_LsVectorView = { 0 };
 

@@ -1,13 +1,16 @@
 #include "game/objects/creatures/rat.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define RAT_BITE_DAMAGE 20
 #define RAT_CHARGE_DAMAGE 20

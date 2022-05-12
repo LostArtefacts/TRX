@@ -9,7 +9,9 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "util.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #define COLOR_STEPS 5

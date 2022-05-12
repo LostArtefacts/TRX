@@ -1,9 +1,8 @@
 #include "game/draw.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/inv.h"
-#include "game/lara.h"
+#include "game/lara/lara_draw.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -14,6 +13,7 @@
 #include "log.h"
 #include "math/matrix.h"
 #include "specific/s_misc.h"
+#include "util.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
 static bool m_CameraUnderwater = false;

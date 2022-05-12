@@ -5,12 +5,14 @@
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/lot.h"
 #include "game/shell.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
+#include "util.h"
 
 #include <assert.h>
 #include <stdio.h>

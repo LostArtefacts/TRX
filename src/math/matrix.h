@@ -1,6 +1,9 @@
 #pragma once
 
+#include "global/const.h"
 #include "global/types.h"
+
+#include <stdint.h>
 
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))

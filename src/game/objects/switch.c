@@ -6,7 +6,8 @@
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 static int16_t m_Switch_Bounds[12] = {

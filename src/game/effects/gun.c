@@ -3,8 +3,10 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
 
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220

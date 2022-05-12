@@ -3,6 +3,7 @@
 #include "util.h"
 
 #include <assert.h>
+#include <stdbool.h>
 #include <string.h>
 
 static const int32_t m_RatioBias = 16;

@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void Pod_Setup(OBJECT_INFO *obj);
 void Pod_SetupBig(OBJECT_INFO *obj);
 void Pod_Initialise(int16_t item_num);

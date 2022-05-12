@@ -1,11 +1,13 @@
 #include "json/bson_write.h"
 
+#include "json/json_base.h"
 #include "log.h"
 #include "memory.h"
 
 #include <assert.h>
 #include <float.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void Mutant_Setup(OBJECT_INFO *obj);
 void Mutant_Setup2(OBJECT_INFO *obj);
 void Mutant_Setup3(OBJECT_INFO *obj);

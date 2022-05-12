@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 bool Lava_TestFloor(ITEM_INFO *item);
 void Lava_Burn(ITEM_INFO *item);
 

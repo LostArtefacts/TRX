@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 void Item_InitialiseArray(int32_t num_items);
 void Item_Kill(int16_t item_num);
 int16_t Item_Create(void);

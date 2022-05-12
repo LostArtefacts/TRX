@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 extern int16_t g_InvKeysCurrent;

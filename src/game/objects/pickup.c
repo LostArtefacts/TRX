@@ -1,13 +1,13 @@
 #include "game/objects/pickup.h"
 
 #include "config.h"
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/overlay.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 static PHD_VECTOR m_PickUpPosition = { 0, 0, -100 };

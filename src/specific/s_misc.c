@@ -1,13 +1,9 @@
 #include "specific/s_misc.h"
 
-#include "game/gameflow.h"
 #include "game/output.h"
-#include "game/screen.h"
 #include "game/viewport.h"
+#include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_output.h"
-
-#include <string.h>
 
 int S_GetObjectBounds(int16_t *bptr)
 {

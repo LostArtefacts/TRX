@@ -1,11 +1,14 @@
 #include "game/objects/creatures/wolf.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define WOLF_SLEEP_FRAME 96
 #define WOLF_BITE_DAMAGE 100

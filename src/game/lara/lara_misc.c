@@ -7,8 +7,12 @@
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
+
+#include <stdint.h>
 
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {

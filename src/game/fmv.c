@@ -1,9 +1,10 @@
 #include "game/fmv.h"
 
 #include "filesystem.h"
-#include "global/const.h"
 #include "memory.h"
 #include "specific/s_fmv.h"
+
+#include <stddef.h>
 
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", "mpeg", ".avi", ".webm", ".rpl", NULL,

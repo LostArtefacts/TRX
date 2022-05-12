@@ -1,5 +1,7 @@
 #include "game/effects.h"
 
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 
 void Effect_InitialiseArray(void)

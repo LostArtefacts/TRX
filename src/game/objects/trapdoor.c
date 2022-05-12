@@ -1,7 +1,10 @@
 #include "game/objects/trapdoor.h"
 
 #include "game/control.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z);
 
