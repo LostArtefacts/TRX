@@ -103,7 +103,7 @@ void Croc_Control(int16_t item_num)
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         if (item->current_anim_state == CROCODILE_FASTTURN) {
             item->pos.y_rot += CROCODILE_FASTTURN_TURN;
@@ -290,7 +290,7 @@ void Alligator_Control(int16_t item_num)
         head = info.angle;
     }
 
-    CreatureMood(item, &info, 1);
+    Creature_Mood(item, &info, true);
     CreatureTurn(item, ALLIGATOR_TURN);
 
     switch (item->current_anim_state) {

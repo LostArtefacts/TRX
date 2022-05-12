@@ -119,9 +119,8 @@ void Bat_Control(int16_t item_num)
         return;
     } else {
         AI_INFO info;
-
         Creature_AIInfo(item, &info);
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
         angle = CreatureTurn(item, BAT_TURN);
 
         switch (item->current_anim_state) {

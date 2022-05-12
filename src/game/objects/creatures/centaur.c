@@ -88,7 +88,7 @@ void Centaur_Control(int16_t item_num)
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         angle = CreatureTurn(item, CENTAUR_TURN);
 

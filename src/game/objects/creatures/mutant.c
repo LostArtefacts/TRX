@@ -150,7 +150,7 @@ void Mutant_FlyerControl(int16_t item_num)
                 }
 
                 if (!(flyer->flags & FLYER_FLYMODE)) {
-                    CreatureMood(item, &info, 1);
+                    Creature_Mood(item, &info, true);
                 }
 
                 flyer->LOT.step = WALL_L * 30;
@@ -170,9 +170,9 @@ void Mutant_FlyerControl(int16_t item_num)
         }
 
         if (item->current_anim_state != FLYER_FLY) {
-            CreatureMood(item, &info, 0);
+            Creature_Mood(item, &info, false);
         } else if (flyer->flags & FLYER_FLYMODE) {
-            CreatureMood(item, &info, 1);
+            Creature_Mood(item, &info, true);
         }
 
         angle = CreatureTurn(item, flyer->maximum_turn);

@@ -113,7 +113,7 @@ void Pierre_Control(int16_t item_num)
             info.enemy_zone = -1;
             item->hit_status = 1;
         }
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
         angle = CreatureTurn(item, pierre->maximum_turn);
 

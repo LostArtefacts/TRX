@@ -87,7 +87,7 @@ void Baldy_Control(int16_t item_num)
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         angle = CreatureTurn(item, baldy->maximum_turn);
 
