@@ -340,7 +340,7 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->head_rotation = flyer->neck_rotation;
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (!(flyer->flags & FLYER_TWIST)) {
         flyer->neck_rotation = flyer->head_rotation;

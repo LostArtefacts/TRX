@@ -286,3 +286,26 @@ void Creature_Tilt(ITEM_INFO *item, int16_t angle)
     }
     item->pos.z_rot += angle;
 }
+
+void Creature_Head(ITEM_INFO *item, int16_t required)
+{
+    CREATURE_INFO *creature = item->data;
+    if (!creature) {
+        return;
+    }
+
+    int16_t change = required - creature->head_rotation;
+    if (change > MAX_HEAD_CHANGE) {
+        change = MAX_HEAD_CHANGE;
+    } else if (change < -MAX_HEAD_CHANGE) {
+        change = -MAX_HEAD_CHANGE;
+    }
+
+    creature->head_rotation += change;
+
+    if (creature->head_rotation > FRONT_ARC) {
+        creature->head_rotation = FRONT_ARC;
+    } else if (creature->head_rotation < -FRONT_ARC) {
+        creature->head_rotation = -FRONT_ARC;
+    }
+}

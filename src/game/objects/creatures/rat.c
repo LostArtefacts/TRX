@@ -151,7 +151,7 @@ void Rat_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     int32_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -210,7 +210,7 @@ void Vole_Control(int16_t item_num)
             item->frame_number = g_Anims[item->anim_number].frame_base;
         }
 
-        CreatureHead(item, head);
+        Creature_Head(item, head);
 
         AnimateItem(item);
 
@@ -255,7 +255,7 @@ void Vole_Control(int16_t item_num)
             break;
         }
 
-        CreatureHead(item, head);
+        Creature_Head(item, head);
 
         int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);

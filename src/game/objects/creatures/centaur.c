@@ -152,7 +152,7 @@ void Centaur_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
     CreatureAnimation(item_num, angle, 0);
 
     if (item->status == IS_DEACTIVATED) {
