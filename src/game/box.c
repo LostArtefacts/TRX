@@ -1,17 +1,8 @@
 #include "game/box.h"
 
-#include "config.h"
-#include "game/creature.h"
-#include "game/draw.h"
-#include "game/items.h"
-#include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "global/const.h"
 #include "global/vars.h"
-#include "math/math.h"
-
-#include <stddef.h>
 
 int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {

@@ -1,6 +1,5 @@
 #include "game/objects/creatures/natla.h"
 
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects.h"

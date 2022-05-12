@@ -1,6 +1,5 @@
 #include "game/objects/creatures/pierre.h"
 
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/creature.h"
 #include "game/items.h"

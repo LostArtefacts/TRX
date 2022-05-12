@@ -1,7 +1,6 @@
 #include "game/objects/creatures/bat.h"
 
 #include "config.h"
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/creature.h"
 #include "game/draw.h"

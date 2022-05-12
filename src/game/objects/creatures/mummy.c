@@ -1,6 +1,5 @@
 #include "game/objects/creatures/mummy.h"
 
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/creature.h"
