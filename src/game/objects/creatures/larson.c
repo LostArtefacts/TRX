@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/lot.h"
 #include "game/people.h"
 #include "game/random.h"
@@ -35,7 +36,7 @@ void Larson_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Larson_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;

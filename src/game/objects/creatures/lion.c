@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -46,7 +47,7 @@ void Lion_SetupLion(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
@@ -67,7 +68,7 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
@@ -88,7 +89,7 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;

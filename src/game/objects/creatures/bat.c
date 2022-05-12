@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
@@ -154,7 +155,7 @@ void Bat_Control(int16_t item_num)
 
 void Bat_Initialise(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
 
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down

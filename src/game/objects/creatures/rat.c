@@ -3,6 +3,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/objects/creatures/rat.h"
@@ -50,7 +51,7 @@ void Rat_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Rat_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;
@@ -172,7 +173,7 @@ void Vole_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Vole_Control;
     obj->collision = CreatureCollision;
     obj->shadow_size = UNIT_SHADOW / 2;

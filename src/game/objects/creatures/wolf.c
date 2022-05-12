@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -67,7 +68,7 @@ void Wolf_Setup(OBJECT_INFO *obj)
 void Wolf_Initialise(int16_t item_num)
 {
     g_Items[item_num].frame_number = WOLF_SLEEP_FRAME;
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
 }
 
 void Wolf_Control(int16_t item_num)

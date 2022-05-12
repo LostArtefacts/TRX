@@ -1,9 +1,9 @@
 #include "game/objects/creatures/trex.h"
 
 #include "config.h"
-
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -42,7 +42,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = TRex_Control;
     obj->draw_routine = DrawUnclippedItem;
     obj->collision = TRex_Collision;
