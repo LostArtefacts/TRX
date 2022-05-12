@@ -79,7 +79,7 @@ void Bear_Control(int16_t item_num)
     PHD_ANGLE angle = 0;
 
     if (item->hit_points <= 0) {
-        angle = CreatureTurn(item, PHD_DEGREE);
+        angle = Creature_Turn(item, PHD_DEGREE);
 
         switch (item->current_anim_state) {
         case BEAR_WALK:
@@ -119,7 +119,7 @@ void Bear_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, bear->maximum_turn);
+        angle = Creature_Turn(item, bear->maximum_turn);
 
         int dead_enemy = g_LaraItem->hit_points <= 0;
         if (item->hit_status) {

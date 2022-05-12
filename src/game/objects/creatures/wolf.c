@@ -104,7 +104,7 @@ void Wolf_Control(int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, wolf->maximum_turn);
+        angle = Creature_Turn(item, wolf->maximum_turn);
 
         switch (item->current_anim_state) {
         case WOLF_SLEEP:

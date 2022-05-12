@@ -98,7 +98,7 @@ void Natla_Control(int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, NATLA_RUN_TURN);
+        angle = Creature_Turn(item, NATLA_RUN_TURN);
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
             && info.angle < NATLA_FIRE_ARC && Targetable(item, &info);
@@ -215,7 +215,7 @@ void Natla_Control(int16_t item_num)
         }
 
         item->pos.y_rot -= facing;
-        angle = CreatureTurn(item, NATLA_FLY_TURN);
+        angle = Creature_Turn(item, NATLA_FLY_TURN);
 
         if (item->current_anim_state == NATLA_FLY) {
             if (info.angle > NATLA_FLY_TURN) {

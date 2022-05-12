@@ -115,7 +115,7 @@ void Pierre_Control(int16_t item_num)
         }
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, pierre->maximum_turn);
+        angle = Creature_Turn(item, pierre->maximum_turn);
 
         switch (item->current_anim_state) {
         case PIERRE_STOP:

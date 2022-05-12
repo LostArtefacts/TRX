@@ -151,7 +151,7 @@ void Ape_Control(int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, ape->maximum_turn);
+        angle = Creature_Turn(item, ape->maximum_turn);
 
         if (item->hit_status || info.distance < APE_PANIC_RANGE) {
             ape->flags |= APE_ATTACK_FLAG;

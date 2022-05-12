@@ -85,7 +85,7 @@ void Cowboy_Control(int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, cowboy->maximum_turn);
+        angle = Creature_Turn(item, cowboy->maximum_turn);
 
         switch (item->current_anim_state) {
         case COWBOY_STOP:
