@@ -12,4 +12,3 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT);
 int32_t BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO *LOT);
-int32_t CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt);

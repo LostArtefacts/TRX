@@ -242,7 +242,7 @@ void Torso_Control(int16_t item_num)
             g_Camera.bounce = 500;
         }
     } else {
-        CreatureAnimation(item_num, 0, 0);
+        Creature_Animate(item_num, 0, 0);
     }
 
     if (item->status == IS_DEACTIVATED) {

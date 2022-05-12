@@ -171,7 +171,7 @@ void TRex_Control(int16_t item_num)
 
     Creature_Head(item, head >> 1);
     dino->neck_rotation = dino->head_rotation;
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
     item->collidable = 1;
 }
 

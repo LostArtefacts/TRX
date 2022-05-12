@@ -349,7 +349,7 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->neck_rotation = 0;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Mutant_Initialise2(int16_t item_num)

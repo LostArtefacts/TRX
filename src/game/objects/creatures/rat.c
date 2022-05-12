@@ -165,7 +165,7 @@ void Rat_Control(int16_t item_num)
         item->pos.y = wh;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Vole_Setup(OBJECT_INFO *obj)
@@ -271,7 +271,7 @@ void Vole_Control(int16_t item_num)
         int32_t height = item->pos.y;
         item->pos.y = item->floor;
 
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
 
         if (height != NO_HEIGHT) {
             if (wh - height < -STEP_L / 8) {

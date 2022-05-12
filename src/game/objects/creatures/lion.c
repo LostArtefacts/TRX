@@ -213,5 +213,5 @@ void Lion_Control(int16_t item_num)
 
     Creature_Tilt(item, tilt);
     Creature_Head(item, head);
-    CreatureAnimation(item_num, angle, tilt);
+    Creature_Animate(item_num, angle, tilt);
 }

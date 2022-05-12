@@ -115,7 +115,7 @@ void Bat_Control(int16_t item_num)
             item->goal_anim_state = BAT_DEATH;
             item->pos.y = item->floor;
         }
-        CreatureAnimation(item_num, 0, 0);
+        Creature_Animate(item_num, 0, 0);
         return;
     } else {
         AI_INFO info;
@@ -131,7 +131,7 @@ void Bat_Control(int16_t item_num)
         case BAT_FLY:
             if (item->touch_bits) {
                 item->goal_anim_state = BAT_ATTACK;
-                CreatureAnimation(item_num, angle, 0);
+                Creature_Animate(item_num, angle, 0);
                 return;
             }
             break;
@@ -149,7 +149,7 @@ void Bat_Control(int16_t item_num)
         }
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Bat_Initialise(int16_t item_num)

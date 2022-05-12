@@ -83,7 +83,7 @@ void Ape_Vault(int16_t item_num, int16_t angle)
     int32_t yy = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 
     if (item->pos.y > y - STEP_L * 3 / 2) {
         return;
@@ -246,7 +246,7 @@ void Ape_Control(int16_t item_num)
     Creature_Head(item, head);
 
     if (item->current_anim_state == APE_VAULT) {
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
     } else {
         Ape_Vault(item_num, angle);
     }
