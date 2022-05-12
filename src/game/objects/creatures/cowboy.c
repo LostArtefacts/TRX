@@ -6,7 +6,6 @@
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "global/vars.h"
 
 #define COWBOY_SHOT_DAMAGE 70
@@ -141,13 +140,15 @@ void Cowboy_Control(int16_t item_num)
 
         case COWBOY_SHOOT:
             if (!cowboy->flags) {
-                if (ShotLara(item, info.distance, &m_CowboyGun1, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_CowboyGun1, head)) {
                     g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }
             } else if (cowboy->flags == 6) {
                 if (Creature_IsTargetable(item, &info)) {
-                    if (ShotLara(item, info.distance, &m_CowboyGun2, head)) {
+                    if (Creature_ShootAtLara(
+                            item, info.distance, &m_CowboyGun2, head)) {
                         g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
                         g_LaraItem->hit_status = 1;
                     }

@@ -7,7 +7,6 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -130,7 +129,8 @@ void SkateKid_Control(int16_t item_num)
         case SKATE_KID_SHOOT:
         case SKATE_KID_SHOOT2:
             if (!kid->flags && Creature_IsTargetable(item, &info)) {
-                if (ShotLara(item, info.distance, &m_KidGun1, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_KidGun1, head)) {
                     g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
@@ -138,7 +138,8 @@ void SkateKid_Control(int16_t item_num)
                     g_LaraItem->hit_status = 1;
                 }
 
-                if (ShotLara(item, info.distance, &m_KidGun2, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_KidGun2, head)) {
                     g_LaraItem->hit_points -=
                         item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE

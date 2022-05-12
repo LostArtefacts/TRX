@@ -6,7 +6,6 @@
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "global/vars.h"
 
 #define BALDY_SHOT_DAMAGE 150
@@ -145,7 +144,8 @@ void Baldy_Control(int16_t item_num)
 
         case BALDY_SHOOT:
             if (!baldy->flags) {
-                if (ShotLara(item, info.distance / 2, &m_BaldyGun, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance / 2, &m_BaldyGun, head)) {
                     g_LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }

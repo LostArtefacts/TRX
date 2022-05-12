@@ -4,7 +4,6 @@
 #include "game/collide.h"
 #include "game/creature.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -156,7 +155,8 @@ void Larson_Control(int16_t item_num)
 
         case LARSON_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &m_LarsonGun, head)) {
+                if (Creature_ShootAtLara(
+                        item, info.distance, &m_LarsonGun, head)) {
                     g_LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
                     g_LaraItem->hit_status = 1;
                 }

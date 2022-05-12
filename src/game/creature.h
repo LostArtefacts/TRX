@@ -21,3 +21,5 @@ int16_t Creature_Effect(
 bool Creature_CheckBaddieOverlap(int16_t item_num);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 bool Creature_IsTargetable(ITEM_INFO *item, AI_INFO *info);
+bool Creature_ShootAtLara(
+    ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation);
