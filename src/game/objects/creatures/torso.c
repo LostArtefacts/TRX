@@ -230,7 +230,7 @@ void Torso_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (item->current_anim_state == TORSO_FALL) {
         AnimateItem(item);

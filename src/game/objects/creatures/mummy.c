@@ -3,6 +3,7 @@
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "global/vars.h"
@@ -57,7 +58,7 @@ void Mummy_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
     AnimateItem(item);
 
     if (item->status == IS_DEACTIVATED) {

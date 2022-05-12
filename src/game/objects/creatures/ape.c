@@ -243,7 +243,7 @@ void Ape_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (item->current_anim_state == APE_VAULT) {
         CreatureAnimation(item_num, angle, 0);

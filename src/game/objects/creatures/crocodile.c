@@ -175,7 +175,7 @@ void Croc_Control(int16_t item_num)
     }
 
     if (croc) {
-        CreatureHead(item, head);
+        Creature_Head(item, head);
     }
 
     if (g_RoomInfo[item->room_number].flags & RF_UNDERWATER) {
@@ -327,7 +327,7 @@ void Alligator_Control(int16_t item_num)
         break;
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
