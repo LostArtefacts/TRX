@@ -120,7 +120,7 @@ void Bat_Control(int16_t item_num)
     } else {
         AI_INFO info;
 
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
         CreatureMood(item, &info, 0);
         angle = CreatureTurn(item, BAT_TURN);
 

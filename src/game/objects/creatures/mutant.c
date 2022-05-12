@@ -128,7 +128,7 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         int32_t shoot1 = 0;
         int32_t shoot2 = 0;
@@ -156,7 +156,7 @@ void Mutant_FlyerControl(int16_t item_num)
                 flyer->LOT.step = WALL_L * 30;
                 flyer->LOT.drop = -WALL_L * 30;
                 flyer->LOT.fly = STEP_L / 8;
-                CreatureAIInfo(item, &info);
+                Creature_AIInfo(item, &info);
             } else if (
                 (info.zone_number != info.enemy_zone && !shoot1 && !shoot2
                  && (!info.ahead || flyer->mood == MOOD_BORED))

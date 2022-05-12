@@ -2,7 +2,6 @@
 
 #include "global/types.h"
 
-void CreatureAIInfo(ITEM_INFO *item, AI_INFO *info);
 int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion);
 int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion);
 void TargetBox(LOT_INFO *LOT, int16_t box_number);

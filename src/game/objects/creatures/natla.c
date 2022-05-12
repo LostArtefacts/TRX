@@ -90,7 +90,7 @@ void Natla_Control(int16_t item_num)
         natla->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
@@ -185,7 +185,7 @@ void Natla_Control(int16_t item_num)
         natla->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
             && info.angle < NATLA_FIRE_ARC && Targetable(item, &info);
@@ -200,7 +200,7 @@ void Natla_Control(int16_t item_num)
             natla->LOT.step = WALL_L * 20;
             natla->LOT.drop = -WALL_L * 20;
             natla->LOT.fly = STEP_L / 8;
-            CreatureAIInfo(item, &info);
+            Creature_AIInfo(item, &info);
         } else if (!shoot) {
             natla->flags |= NATLA_FLY_MODE;
         }
