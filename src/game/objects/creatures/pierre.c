@@ -150,7 +150,7 @@ void Pierre_Control(int16_t item_num)
             } else if (pierre->mood == MOOD_ESCAPE) {
                 item->required_anim_state = PIERRE_RUN;
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->required_anim_state = PIERRE_AIM;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (!info.ahead || info.distance > PIERRE_WALK_RANGE) {
@@ -166,7 +166,7 @@ void Pierre_Control(int16_t item_num)
                 && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->required_anim_state = PIERRE_AIM;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (info.ahead && info.distance < PIERRE_WALK_RANGE) {
@@ -178,7 +178,7 @@ void Pierre_Control(int16_t item_num)
         case PIERRE_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->goal_anim_state = PIERRE_SHOOT;
             } else {
                 item->goal_anim_state = PIERRE_STOP;

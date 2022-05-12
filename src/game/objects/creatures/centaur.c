@@ -99,7 +99,7 @@ void Centaur_Control(int16_t item_num)
                 item->goal_anim_state = item->required_anim_state;
             } else if (info.bite && info.distance < CENTAUR_REAR_RANGE) {
                 item->goal_anim_state = CENTAUR_RUN;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->goal_anim_state = CENTAUR_AIM;
             } else {
                 item->goal_anim_state = CENTAUR_RUN;
@@ -110,7 +110,7 @@ void Centaur_Control(int16_t item_num)
             if (info.bite && info.distance < CENTAUR_REAR_RANGE) {
                 item->required_anim_state = CENTAUR_WARNING;
                 item->goal_anim_state = CENTAUR_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->required_anim_state = CENTAUR_AIM;
                 item->goal_anim_state = CENTAUR_STOP;
             } else if (Random_GetControl() < CENTAUR_REAR_CHANCE) {
@@ -122,7 +122,7 @@ void Centaur_Control(int16_t item_num)
         case CENTAUR_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_IsTargetable(item, &info)) {
                 item->goal_anim_state = CENTAUR_SHOOT;
             } else {
                 item->goal_anim_state = CENTAUR_STOP;
