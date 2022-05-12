@@ -1,4 +1,4 @@
-#include "game/objects/ai/bacon_lara.h"
+#include "game/objects/creatures/bacon_lara.h"
 
 #include "game/collide.h"
 #include "game/control.h"

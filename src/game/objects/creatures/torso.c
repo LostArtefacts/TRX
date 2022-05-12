@@ -1,4 +1,4 @@
-#include "game/objects/ai/torso.h"
+#include "game/objects/creatures/torso.h"
 
 #include "game/box.h"
 #include "game/collide.h"

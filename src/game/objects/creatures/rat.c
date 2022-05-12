@@ -1,11 +1,11 @@
-#include "game/objects/ai/rat.h"
+#include "game/objects/creatures/rat.h"
 
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/ai/rat.h"
+#include "game/objects/creatures/rat.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"

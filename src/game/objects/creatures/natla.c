@@ -1,4 +1,4 @@
-#include "game/objects/ai/natla.h"
+#include "game/objects/creatures/natla.h"
 
 #include "game/box.h"
 #include "game/collide.h"

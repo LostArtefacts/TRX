@@ -1,4 +1,4 @@
-#include "game/objects/ai/bat.h"
+#include "game/objects/creatures/bat.h"
 
 #include "config.h"
 #include "game/box.h"

@@ -1,4 +1,4 @@
-#include "game/objects/ai/cowboy.h"
+#include "game/objects/creatures/cowboy.h"
 
 #include "game/box.h"
 #include "game/collide.h"

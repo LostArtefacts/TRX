@@ -1,4 +1,4 @@
-#include "game/objects/ai/crocodile.h"
+#include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
 #include "game/box.h"

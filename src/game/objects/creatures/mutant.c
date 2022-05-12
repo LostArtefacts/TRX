@@ -1,4 +1,4 @@
-#include "game/objects/ai/mutant.h"
+#include "game/objects/creatures/mutant.h"
 
 #include "game/box.h"
 #include "game/collide.h"
