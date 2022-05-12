@@ -17,7 +17,6 @@
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
-#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"

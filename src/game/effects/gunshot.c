@@ -1,4 +1,4 @@
-#include "game/objects/effects/gunshot.h"
+#include "game/effects/gunshot.h"
 
 #include "game/effects.h"
 #include "game/effects/blood.h"

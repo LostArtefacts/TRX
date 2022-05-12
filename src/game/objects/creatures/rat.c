@@ -5,7 +5,6 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/creatures/rat.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"
