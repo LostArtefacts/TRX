@@ -1,11 +1,14 @@
 #include "game/objects/creatures/raptor.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define RAPTOR_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 #define RAPTOR_BITE_DAMAGE 100

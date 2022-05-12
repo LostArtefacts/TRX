@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void ThorsHandle_Setup(OBJECT_INFO *obj);
 void ThorsHandle_Initialise(int16_t item_num);
 void ThorsHandle_Control(int16_t item_num);

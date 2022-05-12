@@ -1,7 +1,9 @@
 #include "game/control.h"
 
-#include "game/shell.h"
+#include "global/types.h"
 #include "global/vars.h"
+
+#include <stdint.h>
 
 // TODO: some of these functions have side effects, make them go away
 

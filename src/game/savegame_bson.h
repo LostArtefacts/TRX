@@ -4,6 +4,7 @@
 #include "game/savegame.h"
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 // Tomb1Main implementation of savegames.

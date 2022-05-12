@@ -3,10 +3,13 @@
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 typedef enum {
     THS_SET = 0,

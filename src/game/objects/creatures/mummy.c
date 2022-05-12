@@ -5,8 +5,10 @@
 #include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
 
 #define MUMMY_HITPOINTS 18
 

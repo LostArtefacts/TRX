@@ -6,7 +6,6 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/level.h"
-#include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/text.h"
@@ -15,6 +14,7 @@
 #include "global/vars.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;

@@ -1,6 +1,5 @@
 #include "game/items.h"
 
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -8,6 +7,9 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \

@@ -1,13 +1,15 @@
 #include "game/objects/creatures/skate_kid.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/lot.h"
 #include "game/music.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define SKATE_KID_STOP_SHOT_DAMAGE 50
 #define SKATE_KID_SKATE_SHOT_DAMAGE 40

@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct GAMEFLOW_DEFUALT_STRING {

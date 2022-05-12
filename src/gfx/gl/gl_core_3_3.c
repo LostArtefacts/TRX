@@ -1,7 +1,5 @@
 #include "gfx/gl/gl_core_3_3.h"
 
-#include <stddef.h>
-#include <stdlib.h>
 #include <string.h>
 
 #if __GNUC__ || __MINGW32__

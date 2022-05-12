@@ -6,10 +6,23 @@
 #include "memory.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_id.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
+#include <libavutil/avutil.h>
+#include <libavutil/error.h>
+#include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/mem.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/rational.h>
 #include <libswscale/swscale.h>
+#include <stdint.h>
+#include <string.h>
 
 PICTURE *S_Picture_CreateFromFile(const char *path)
 {

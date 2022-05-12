@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);

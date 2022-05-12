@@ -1,14 +1,18 @@
 #include "game/objects/door.h"
 
-#include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/room.h"
 #include "game/sphere.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
+#include <stddef.h>
 
 static void Door_Open(DOORPOS_DATA *d);
 static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item);

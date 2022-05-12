@@ -4,6 +4,7 @@
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #include <stddef.h>
 

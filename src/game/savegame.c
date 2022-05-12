@@ -13,8 +13,8 @@
 #include "game/room.h"
 #include "game/savegame_bson.h"
 #include "game/savegame_legacy.h"
+#include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 #include "memory.h"
 
 #include <assert.h>

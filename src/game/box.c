@@ -2,7 +2,9 @@
 
 #include "game/random.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {

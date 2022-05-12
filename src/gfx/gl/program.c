@@ -6,6 +6,7 @@
 #include "memory.h"
 
 #include <assert.h>
+#include <stddef.h>
 
 bool GFX_GL_Program_Init(GFX_GL_Program *program)
 {

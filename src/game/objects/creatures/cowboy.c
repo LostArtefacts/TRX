@@ -1,11 +1,14 @@
 #include "game/objects/creatures/cowboy.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define COWBOY_SHOT_DAMAGE 70
 #define COWBOY_WALK_TURN (PHD_DEGREE * 3) // = 546

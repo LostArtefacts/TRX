@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void Bridge_SetupFlat(OBJECT_INFO *obj);
 void Bridge_SetupTilt1(OBJECT_INFO *obj);
 void Bridge_SetupTilt2(OBJECT_INFO *obj);

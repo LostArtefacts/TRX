@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 void Draw_PrintRoomNumStack(void);
 void DrawRooms(int16_t current_room);
 void GetRoomBounds(int16_t room_num);

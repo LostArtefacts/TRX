@@ -1,11 +1,13 @@
 #include "game/objects/creatures/baldy.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/items.h"
-#include "game/los.h"
 #include "game/lot.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define BALDY_SHOT_DAMAGE 150
 #define BALDY_WALK_TURN (PHD_DEGREE * 3) // = 546

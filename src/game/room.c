@@ -1,8 +1,11 @@
 #include "game/room.h"
 
-#include "game/control.h"
 #include "game/shell.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stddef.h>
 
 int16_t Room_GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL_audio.h>
+#include <libavutil/samplefmt.h>
 #include <stdbool.h>
 #include <stddef.h>
 

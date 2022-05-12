@@ -8,13 +8,13 @@
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/savegame.h"
-#include "game/screen.h"
-#include "game/shell.h"
 #include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 

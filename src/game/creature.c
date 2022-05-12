@@ -5,7 +5,7 @@
 #include "game/draw.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -13,6 +13,8 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
+
+#include <stddef.h>
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 

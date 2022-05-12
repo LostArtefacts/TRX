@@ -2,5 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 void Blood_Setup(OBJECT_INFO *obj);
 void Blood_Control(int16_t fx_num);

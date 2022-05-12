@@ -4,6 +4,7 @@
 #include "game/hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
 #include "specific/s_misc.h"
