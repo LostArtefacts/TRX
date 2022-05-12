@@ -21,10 +21,16 @@ jobs:
           echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main' | sudo tee -a /etc/apt/sources.list
           echo 'deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main' | sudo tee -a /etc/apt/sources.list
           sudo apt update
-          sudo apt-get install -y clang-format-12
+          sudo apt-get install -y clang-format-12 iwyu
           sudo ln -s /usr/bin/clang-format-12 /usr/local/bin/clang-format
           sudo apt-get install -y make python3-pip
           sudo python3 -m pip install pyjson5
+
+      - name: Check imports
+        run: |
+          git add -A
+          python3 scripts/sort_imports
+          git diff --exit-code || ( echo 'Please run `make imports` and commit the changes.'; exit 1 )
 
       - name: Check formatted code differences
         run: |
