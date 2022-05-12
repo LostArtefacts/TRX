@@ -26,7 +26,7 @@ clean:
 	-find build/ -mindepth 1 -empty -type d -delete
 
 imports:
-	scripts/sort_imports
+	tools/sort_imports
 
 lint:
 	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'

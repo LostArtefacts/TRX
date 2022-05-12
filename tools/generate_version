@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 
 REPO_DIR = Path(__file__).parent.parent
-SCRIPTS_BIN_DIR = REPO_DIR / "scripts" / "bin"
+RESOURCES_DIR = REPO_DIR / "tools" / "resources"
 SRC_DIR = REPO_DIR / "src"
 
 
@@ -15,10 +15,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def write_rc_template(output_path: Path, args: argparse.Namespace) -> None:
-    input_path = SCRIPTS_BIN_DIR / output_path.name
+    input_path = RESOURCES_DIR / output_path.name
     template = input_path.read_text()
     template = template.replace("{version}", args.version)
-    template = template.replace("{icon_path}", str(SCRIPTS_BIN_DIR / "icon.ico"))
+    template = template.replace("{icon_path}", str(RESOURCES_DIR / "icon.ico"))
     output_path.write_text(template)
 
 
