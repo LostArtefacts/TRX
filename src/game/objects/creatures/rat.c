@@ -125,7 +125,7 @@ void Rat_Control(int16_t item_num)
         case RAT_ATTACK1:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_STOP;
@@ -135,7 +135,7 @@ void Rat_Control(int16_t item_num)
         case RAT_ATTACK2:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_RUN;
@@ -246,7 +246,7 @@ void Vole_Control(int16_t item_num)
         case VOLE_ATTACK:
             if (item->required_anim_state == VOLE_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = VOLE_SWIM;

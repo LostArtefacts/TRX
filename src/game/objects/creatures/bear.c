@@ -216,7 +216,7 @@ void Bear_Control(int16_t item_num)
 
         case BEAR_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                CreatureEffect(item, &m_BearHeadBite, Effect_Blood);
+                Creature_Effect(item, &m_BearHeadBite, Effect_Blood);
                 g_LaraItem->hit_points -= BEAR_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = BEAR_STOP;
