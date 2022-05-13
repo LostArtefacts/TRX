@@ -1134,7 +1134,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = CinematicLoop();
+                ret = Game_Cutscene_Loop();
             }
             break;
 
