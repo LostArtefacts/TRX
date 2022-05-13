@@ -89,7 +89,7 @@ void Cowboy_Control(int16_t item_num)
         case COWBOY_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = COWBOY_AIM;
             } else if (cowboy->mood == MOOD_BORED) {
                 item->goal_anim_state = COWBOY_WALK;
@@ -103,7 +103,7 @@ void Cowboy_Control(int16_t item_num)
             if (cowboy->mood == MOOD_ESCAPE || !info.ahead) {
                 item->required_anim_state = COWBOY_RUN;
                 item->goal_anim_state = COWBOY_STOP;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = COWBOY_AIM;
                 item->goal_anim_state = COWBOY_STOP;
             } else if (info.distance > COWBOY_WALK_RANGE) {
@@ -116,7 +116,7 @@ void Cowboy_Control(int16_t item_num)
             cowboy->maximum_turn = COWBOY_RUN_TURN;
             tilt = angle / 2;
             if (cowboy->mood != MOOD_ESCAPE || info.ahead) {
-                if (Creature_IsTargetable(item, &info)) {
+                if (Creature_CanTargetEnemy(item, &info)) {
                     item->required_anim_state = COWBOY_AIM;
                     item->goal_anim_state = COWBOY_STOP;
                 } else if (info.ahead && info.distance < COWBOY_WALK_RANGE) {
@@ -130,7 +130,7 @@ void Cowboy_Control(int16_t item_num)
             cowboy->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = COWBOY_STOP;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = COWBOY_SHOOT;
             } else {
                 item->goal_anim_state = COWBOY_STOP;
@@ -143,7 +143,7 @@ void Cowboy_Control(int16_t item_num)
                     item, info.distance, &m_CowboyGun1, head,
                     COWBOY_SHOT_DAMAGE);
             } else if (cowboy->flags == 6) {
-                if (Creature_IsTargetable(item, &info)) {
+                if (Creature_CanTargetEnemy(item, &info)) {
                     Creature_ShootAtLara(
                         item, info.distance, &m_CowboyGun2, head,
                         COWBOY_SHOT_DAMAGE);
