@@ -6,7 +6,6 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stdio.h>
 #include <string.h>

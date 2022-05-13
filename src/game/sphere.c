@@ -4,6 +4,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
+#include "util.h"
 
 int32_t TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
 {

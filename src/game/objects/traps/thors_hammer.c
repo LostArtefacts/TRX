@@ -1,12 +1,13 @@
 #include "game/objects/traps/thors_hammer.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
-#include "game/lara.h"
-#include "game/objects/traps/movable_block.h"
+#include "game/lara/lara.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 typedef enum {
     THS_SET = 0,
@@ -53,7 +54,7 @@ void ThorsHandle_Control(int16_t item_num)
 
     switch (item->current_anim_state) {
     case THS_SET:
-        if (TriggerActive(item)) {
+        if (Item_IsTriggerActive(item)) {
             item->goal_anim_state = THS_TEASE;
         } else {
             Item_RemoveActive(item_num);
@@ -62,7 +63,7 @@ void ThorsHandle_Control(int16_t item_num)
         break;
 
     case THS_TEASE:
-        if (TriggerActive(item)) {
+        if (Item_IsTriggerActive(item)) {
             item->goal_anim_state = THS_ACTIVE;
         } else {
             item->goal_anim_state = THS_SET;
@@ -115,7 +116,7 @@ void ThorsHandle_Control(int16_t item_num)
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         Room_GetHeight(floor, x, item->pos.y, z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         switch (item->pos.y_rot) {
         case 0:
@@ -135,7 +136,7 @@ void ThorsHandle_Control(int16_t item_num)
         item->pos.x = x;
         item->pos.z = z;
         if (g_LaraItem->hit_points >= 0) {
-            AlterFloorHeight(item, -WALL_L * 2);
+            Room_AlterFloorHeight(item, -WALL_L * 2);
         }
         item->pos.x = old_x;
         item->pos.z = old_z;
@@ -145,7 +146,7 @@ void ThorsHandle_Control(int16_t item_num)
         break;
     }
     }
-    AnimateItem(item);
+    Item_Animate(item);
 
     ITEM_INFO *head_item = item->data;
     int32_t anim = item->anim_number - g_Objects[O_THORS_HANDLE].anim_index;

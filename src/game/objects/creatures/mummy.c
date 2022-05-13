@@ -1,12 +1,13 @@
 #include "game/objects/creatures/mummy.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
 
 #define MUMMY_HITPOINTS 18
 
@@ -58,7 +59,7 @@ void Mummy_Control(int16_t item_num)
     }
 
     Creature_Head(item, head);
-    AnimateItem(item);
+    Item_Animate(item);
 
     if (item->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);

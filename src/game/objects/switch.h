@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 typedef enum {
     SWITCH_STATE_OFF = 0,
     SWITCH_STATE_ON = 1,

@@ -1,6 +1,9 @@
-#include "inv.h"
+#include "game/inv.h"
 
-#include "global/vars.h"
+#include "global/types.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 int16_t g_InvKeysCurrent;
 int16_t g_InvKeysObjects;

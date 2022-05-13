@@ -6,9 +6,13 @@
 #include "game/screen.h"
 #include "game/settings.h"
 #include "game/text.h"
+#include "global/types.h"
 #include "specific/s_input.h"
+#include "util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define TOP_Y -60
 #define BORDER 4

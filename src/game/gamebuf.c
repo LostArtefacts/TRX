@@ -3,6 +3,8 @@
 #include "game/shell.h"
 #include "memory.h"
 
+#include <stddef.h>
+
 #define MALLOC_SIZE 0x1000000 // 16 MB
 
 static char *m_GameMemoryPointer = NULL;

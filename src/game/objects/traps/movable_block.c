@@ -1,6 +1,5 @@
 #include "game/objects/traps/movable_block.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"
@@ -78,7 +77,7 @@ void MovableBlock_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status != IS_INVISIBLE) {
-        AlterFloorHeight(item, -WALL_L);
+        Room_AlterFloorHeight(item, -WALL_L);
     }
 }
 
@@ -87,12 +86,12 @@ void MovableBlock_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->flags & IF_ONESHOT) {
-        AlterFloorHeight(item, WALL_L);
+        Room_AlterFloorHeight(item, WALL_L);
         Item_Kill(item_num);
         return;
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
@@ -117,12 +116,12 @@ void MovableBlock_Control(int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         item->status = IS_NOT_ACTIVE;
         Item_RemoveActive(item_num);
-        AlterFloorHeight(item, -WALL_L);
+        Room_AlterFloorHeight(item, -WALL_L);
 
         room_num = item->room_number;
         floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
     }
 }
 
@@ -220,9 +219,9 @@ void MovableBlock_Collision(
         }
 
         Item_AddActive(item_num);
-        AlterFloorHeight(item, WALL_L);
+        Room_AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
-        AnimateItem(item);
+        Item_Animate(item);
         Lara_Animate(lara_item);
     }
 }
@@ -371,30 +370,4 @@ bool MovableBlock_TestPull(
     }
 
     return true;
-}
-
-void AlterFloorHeight(ITEM_INFO *item, int32_t height)
-{
-    int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    FLOOR_INFO *ceiling = Room_GetFloor(
-        item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
-
-    if (floor->floor == NO_HEIGHT / 256) {
-        floor->floor = ceiling->ceiling + height / 256;
-    } else {
-        floor->floor += height / 256;
-        if (floor->floor == ceiling->ceiling) {
-            floor->floor = NO_HEIGHT / 256;
-        }
-    }
-
-    if (g_Boxes[floor->box].overlap_index & BLOCKABLE) {
-        if (height < 0) {
-            g_Boxes[floor->box].overlap_index |= BLOCKED;
-        } else {
-            g_Boxes[floor->box].overlap_index &= ~BLOCKED;
-        }
-    }
 }

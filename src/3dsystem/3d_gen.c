@@ -3,9 +3,11 @@
 #include "config.h"
 #include "game/output.h"
 #include "game/screen.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
 
 #include <math.h>
 

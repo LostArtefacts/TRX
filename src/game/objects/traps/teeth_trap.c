@@ -1,8 +1,8 @@
 #include "game/objects/traps/teeth_trap.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -44,7 +44,7 @@ void TeethTrap_Setup(OBJECT_INFO *obj)
 void TeethTrap_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
             g_LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
@@ -59,5 +59,5 @@ void TeethTrap_Control(int16_t item_num)
     } else {
         item->goal_anim_state = TT_NICE;
     }
-    AnimateItem(item);
+    Item_Animate(item);
 }

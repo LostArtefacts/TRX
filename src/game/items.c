@@ -1,13 +1,16 @@
 #include "game/items.h"
 
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/room.h"
 #include "game/shell.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \
@@ -438,4 +441,161 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.x += (c * x + s * z) >> W2V_SHIFT;
     item->pos.y += y;
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
+}
+
+void Item_Animate(ITEM_INFO *item)
+{
+    item->touch_bits = 0;
+    item->hit_status = 0;
+
+    ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+
+    item->frame_number++;
+
+    if (anim->number_changes > 0) {
+        if (Item_GetAnimChange(item, anim)) {
+            anim = &g_Anims[item->anim_number];
+            item->current_anim_state = anim->current_anim_state;
+
+            if (item->required_anim_state == item->current_anim_state) {
+                item->required_anim_state = 0;
+            }
+        }
+    }
+
+    if (item->frame_number > anim->frame_end) {
+        if (anim->number_commands > 0) {
+            int16_t *command = &g_AnimCommands[anim->command_index];
+            for (int i = 0; i < anim->number_commands; i++) {
+                switch (*command++) {
+                case AC_MOVE_ORIGIN:
+                    Item_Translate(item, command[0], command[1], command[2]);
+                    command += 3;
+                    break;
+
+                case AC_JUMP_VELOCITY:
+                    item->fall_speed = command[0];
+                    item->speed = command[1];
+                    item->gravity_status = 1;
+                    command += 2;
+                    break;
+
+                case AC_DEACTIVATE:
+                    item->status = IS_DEACTIVATED;
+                    break;
+
+                case AC_SOUND_FX:
+                case AC_EFFECT:
+                    command += 2;
+                    break;
+                }
+            }
+        }
+
+        item->anim_number = anim->jump_anim_num;
+        item->frame_number = anim->jump_frame_num;
+
+        anim = &g_Anims[item->anim_number];
+        item->current_anim_state = anim->current_anim_state;
+        item->goal_anim_state = item->current_anim_state;
+        if (item->required_anim_state == item->current_anim_state) {
+            item->required_anim_state = 0;
+        }
+    }
+
+    if (anim->number_commands > 0) {
+        int16_t *command = &g_AnimCommands[anim->command_index];
+        for (int i = 0; i < anim->number_commands; i++) {
+            switch (*command++) {
+            case AC_MOVE_ORIGIN:
+                command += 3;
+                break;
+
+            case AC_JUMP_VELOCITY:
+                command += 2;
+                break;
+
+            case AC_SOUND_FX:
+                if (item->frame_number == command[0]) {
+                    Sound_Effect(
+                        command[1], &item->pos,
+                        g_RoomInfo[item->room_number].flags);
+                }
+                command += 2;
+                break;
+
+            case AC_EFFECT:
+                if (item->frame_number == command[0]) {
+                    g_EffectRoutines[command[1]](item);
+                }
+                command += 2;
+                break;
+            }
+        }
+    }
+
+    if (!item->gravity_status) {
+        int32_t speed = anim->velocity;
+        if (anim->acceleration) {
+            speed +=
+                anim->acceleration * (item->frame_number - anim->frame_base);
+        }
+        item->speed = speed >> 16;
+    } else {
+        item->fall_speed += (item->fall_speed < FASTFALL_SPEED) ? GRAVITY : 1;
+        item->pos.y += item->fall_speed;
+    }
+
+    item->pos.x += (Math_Sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (Math_Cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
+}
+
+bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
+{
+    if (item->current_anim_state == item->goal_anim_state) {
+        return false;
+    }
+
+    for (int i = 0; i < anim->number_changes; i++) {
+        ANIM_CHANGE_STRUCT *change = &g_AnimChanges[anim->change_index + i];
+        if (change->goal_anim_state != item->goal_anim_state) {
+            for (int j = 0; j < change->number_ranges; j++) {
+                ANIM_RANGE_STRUCT *range =
+                    &g_AnimRanges[change->range_index + j];
+                if (item->frame_number >= range->start_frame
+                    && item->frame_number <= range->end_frame) {
+                    item->anim_number = range->link_anim_num;
+                    item->frame_number = range->link_frame_num;
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Item_IsTriggerActive(ITEM_INFO *item)
+{
+    bool ok = item->flags & IF_REVERSE;
+
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return !ok;
+    }
+
+    if (!item->timer) {
+        return ok;
+    }
+
+    if (item->timer == -1) {
+        return !ok;
+    }
+
+    item->timer--;
+
+    if (!item->timer) {
+        item->timer = -1;
+    }
+
+    return ok;
 }

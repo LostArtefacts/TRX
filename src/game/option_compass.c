@@ -4,8 +4,11 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
 typedef enum COMPASS_TEXT {

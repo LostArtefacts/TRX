@@ -3,6 +3,7 @@
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/sphere.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 void Twinkle_Setup(OBJECT_INFO *obj)

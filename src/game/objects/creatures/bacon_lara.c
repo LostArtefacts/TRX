@@ -1,12 +1,14 @@
 #include "game/objects/creatures/bacon_lara.h"
 
-#include "game/control.h"
 #include "game/creature.h"
-#include "game/draw.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara_draw.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
+#include <stddef.h>
 
 void BaconLara_Setup(OBJECT_INFO *obj)
 {
@@ -76,7 +78,7 @@ void BaconLara_Control(int16_t item_num)
     }
 
     if (item->data) {
-        AnimateItem(item);
+        Item_Animate(item);
 
         int32_t x = item->pos.x;
         int32_t y = item->pos.y;
@@ -87,13 +89,13 @@ void BaconLara_Control(int16_t item_num)
         int32_t h = Room_GetHeight(floor, x, y, z);
         item->floor = h;
 
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
         if (item->pos.y >= h) {
             item->floor = h;
             item->pos.y = h;
             floor = Room_GetFloor(x, h, z, &room_num);
             Room_GetHeight(floor, x, h, z);
-            TestTriggers(g_TriggerIndex, 1);
+            Room_TestTriggers(g_TriggerIndex, true);
             item->gravity_status = 0;
             item->fall_speed = 0;
             item->goal_anim_state = LS_DEATH;

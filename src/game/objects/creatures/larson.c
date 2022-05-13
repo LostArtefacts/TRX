@@ -1,10 +1,13 @@
 #include "game/objects/creatures/larson.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define LARSON_POSE_CHANCE 0x60 // = 96
 #define LARSON_SHOT_DAMAGE 50

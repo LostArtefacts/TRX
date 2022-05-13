@@ -1,3 +1,5 @@
+#include "global/vars.h"
+
 #include "game/effect_routines/bubbles.h"
 #include "game/effect_routines/chain_block.h"
 #include "game/effect_routines/dino_stomp.h"
@@ -13,7 +15,8 @@
 #include "game/effect_routines/sand.h"
 #include "game/effect_routines/stairs2slope.h"
 #include "game/effect_routines/turn_180.h"
-#include "global/vars.h"
+
+#include <stddef.h>
 
 char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;

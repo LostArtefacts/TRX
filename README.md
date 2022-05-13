@@ -391,7 +391,7 @@ Note: this section may be subject to change.
 ## Importing data to IDA
 
 This option requires IDAPython and a recent version of IDA. Install Python 3.8+
-and IDA 7.5+, then hit alt+f7, then choose `scripts/ida_import.py`.
+and IDA 7.5+, then hit alt+f7, then choose `tools/ida_import.py`.
 
 ## License
 

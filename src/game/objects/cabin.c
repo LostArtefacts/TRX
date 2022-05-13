@@ -1,9 +1,9 @@
 #include "game/objects/cabin.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
+#include "game/room.h"
 #include "global/vars.h"
 
 void Cabin_Setup(OBJECT_INFO *obj)
@@ -36,9 +36,9 @@ void Cabin_Control(int16_t item_num)
 
     if (item->current_anim_state == CABIN_FINISH) {
         g_FlipMapTable[3] = IF_CODE_BITS;
-        FlipMap();
+        Room_FlipMap();
         Item_Kill(item_num);
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

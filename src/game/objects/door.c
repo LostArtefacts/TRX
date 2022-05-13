@@ -1,14 +1,17 @@
 #include "game/objects/door.h"
 
-#include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/room.h"
 #include "game/sphere.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
+#include <stddef.h>
 
 static void Door_Open(DOORPOS_DATA *d);
 static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item);
@@ -204,7 +207,7 @@ void Door_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     DOOR_DATA *door = item->data;
 
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
         } else {
@@ -224,7 +227,7 @@ void Door_Control(int16_t item_num)
         }
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

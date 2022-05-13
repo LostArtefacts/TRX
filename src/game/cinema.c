@@ -1,7 +1,6 @@
 #include "game/cinema.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -14,7 +13,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "specific/s_misc.h"
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
@@ -168,12 +166,12 @@ void ControlCinematicPlayer(int16_t item_num)
     item->pos.x = g_Camera.pos.x;
     item->pos.y = g_Camera.pos.y;
     item->pos.z = g_Camera.pos.z;
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void ControlCinematicPlayer4(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void InitialiseGenPlayer(int16_t item_num)

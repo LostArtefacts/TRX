@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 extern PHD_VECTOR g_LsVectorView;
 
 bool Output_Init(void);
@@ -97,3 +100,5 @@ void Output_AnimateTextures(int32_t ticks);
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
 bool Output_MakeScreenshot(const char *path);
+
+int Output_GetObjectBounds(int16_t *bptr);

@@ -4,9 +4,9 @@
 #include "game/hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 
 void Lara_Draw(ITEM_INFO *item)
 {
@@ -69,7 +69,7 @@ void Lara_Draw(ITEM_INFO *item)
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t clip = S_GetObjectBounds(frame);
+    int32_t clip = Output_GetObjectBounds(frame);
     if (!clip) {
         Matrix_Pop();
         return;
@@ -333,7 +333,7 @@ void Lara_Draw_I(
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t clip = S_GetObjectBounds(frame1);
+    int32_t clip = Output_GetObjectBounds(frame1);
     if (!clip) {
         Matrix_Pop();
         return;

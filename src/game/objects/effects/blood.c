@@ -1,6 +1,7 @@
 #include "game/objects/effects/blood.h"
 
 #include "game/effects.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 

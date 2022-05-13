@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/gun.h"
@@ -265,7 +264,7 @@ void Lara_Animate(ITEM_INFO *item)
 
     item->frame_number++;
     anim = &g_Anims[item->anim_number];
-    if (anim->number_changes > 0 && GetChange(item, anim)) {
+    if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
         anim = &g_Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
     }
@@ -436,7 +435,7 @@ void Lara_UseItem(int16_t object_num)
 
 void Lara_ControlExtra(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void Lara_InitialiseLoad(int16_t item_num)

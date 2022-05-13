@@ -9,6 +9,9 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
+
+#include <stdint.h>
 
 #define HAIR_SEGMENTS 6
 #define HAIR_OFFSET_X (0) // left-right

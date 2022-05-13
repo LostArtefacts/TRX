@@ -1,11 +1,14 @@
 #include "game/objects/creatures/ape.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define APE_ATTACK_DAMAGE 200
 #define APE_TOUCH 0xFF00

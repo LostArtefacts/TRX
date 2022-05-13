@@ -13,8 +13,8 @@
 #include "game/room.h"
 #include "game/savegame_bson.h"
 #include "game/savegame_legacy.h"
+#include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 #include "memory.h"
 
 #include <assert.h>
@@ -110,12 +110,12 @@ static void Savegame_LoadPostprocess(void)
 
         if (obj->control == MovableBlock_Control
             && item->status == IS_NOT_ACTIVE) {
-            AlterFloorHeight(item, -WALL_L);
+            Room_AlterFloorHeight(item, -WALL_L);
         }
 
         if (obj->control == RollingBlock_Control
             && item->current_anim_state != RBS_MOVING) {
-            AlterFloorHeight(item, -WALL_L * 2);
+            Room_AlterFloorHeight(item, -WALL_L * 2);
         }
 
         if (item->object_number == O_PIERRE && item->hit_points <= 0
@@ -164,10 +164,10 @@ void Savegame_PreprocessItems(void)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->control == MovableBlock_Control) {
-            AlterFloorHeight(item, WALL_L);
+            Room_AlterFloorHeight(item, WALL_L);
         }
         if (obj->control == RollingBlock_Control) {
-            AlterFloorHeight(item, WALL_L * 2);
+            Room_AlterFloorHeight(item, WALL_L * 2);
         }
     }
 }

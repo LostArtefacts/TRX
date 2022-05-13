@@ -4,6 +4,8 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_SlideSlope(ITEM_INFO *item, COLL_INFO *coll);

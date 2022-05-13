@@ -1,14 +1,16 @@
 #include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
-#include "game/collide.h"
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define CROCODILE_BITE_DAMAGE 100
 #define CROCODILE_BITE_RANGE SQUARE(435) // = 189225
@@ -194,7 +196,7 @@ void Croc_Control(int16_t item_num)
     if (croc) {
         Creature_Animate(item_num, angle, 0);
     } else {
-        AnimateItem(item);
+        Item_Animate(item);
     }
 }
 
@@ -270,7 +272,7 @@ void Alligator_Control(int16_t item_num)
             }
         }
 
-        AnimateItem(item);
+        Item_Animate(item);
 
         room_num = item->room_number;
         floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);

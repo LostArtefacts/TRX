@@ -1,7 +1,6 @@
 #include "game/objects/creatures/torso.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/exploding_death.h"
 #include "game/items.h"
@@ -232,7 +231,7 @@ void Torso_Control(int16_t item_num)
     Creature_Head(item, head);
 
     if (item->current_anim_state == TORSO_FALL) {
-        AnimateItem(item);
+        Item_Animate(item);
 
         if (item->pos.y > item->floor) {
             item->goal_anim_state = TORSO_STOP;
@@ -250,7 +249,7 @@ void Torso_Control(int16_t item_num)
         FLOOR_INFO *floor = Room_GetFloor(
             item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;

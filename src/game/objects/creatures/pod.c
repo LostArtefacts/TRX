@@ -1,7 +1,6 @@
 #include "game/objects/creatures/pod.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -128,5 +127,5 @@ void Pod_Control(int16_t item_num)
         }
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

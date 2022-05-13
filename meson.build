@@ -51,19 +51,19 @@ if python3.found()
   custom_target(
     'fake_init',
     output: ['fake_init'],
-    command: [python3, meson.source_root() + '/scripts/generate_init'],
+    command: [python3, meson.source_root() + '/tools/generate_init'],
     build_by_default: true
   )
   version_rc = custom_target(
     'fake_version',
     output: ['version.rc'],
-    command: [python3, meson.source_root() + '/scripts/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
+    command: [python3, meson.source_root() + '/tools/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
     build_always: true
   )
   icon_rc = custom_target(
     'fake_icon',
     output: ['icon.rc'],
-    command: [python3, meson.source_root() + '/scripts/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
+    command: [python3, meson.source_root() + '/tools/generate_version', '--version', version_pretty, '--output', '@OUTPUT0@'],
   )
   if host_machine.system() == 'windows'
     windows = import('windows')
@@ -83,9 +83,6 @@ sources = [
   'src/game/cinema.c',
   'src/game/clock.c',
   'src/game/collide.c',
-  'src/game/control.c',
-  'src/game/control_pause.c',
-  'src/game/control_util.c',
   'src/game/creature.c',
   'src/game/demo.c',
   'src/game/draw.c',
@@ -111,6 +108,7 @@ sources = [
   'src/game/effects/gunshot.c',
   'src/game/fmv.c',
   'src/game/game.c',
+  'src/game/game_pause.c',
   'src/game/gamebuf.c',
   'src/game/gameflow.c',
   'src/game/gun/gun.c',
@@ -124,6 +122,7 @@ sources = [
   'src/game/invvars.c',
   'src/game/items.c',
   'src/game/lara/lara.c',
+  'src/game/lara/lara_cheat.c',
   'src/game/lara/lara_col.c',
   'src/game/lara/lara_control.c',
   'src/game/lara/lara_draw.c',
@@ -253,7 +252,6 @@ sources = [
   'src/specific/s_filesystem.c',
   'src/specific/s_fmv.c',
   'src/specific/s_input.c',
-  'src/specific/s_misc.c',
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',

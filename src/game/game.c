@@ -2,13 +2,16 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/control.h"
+#include "game/demo.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
+#include "game/hair.h"
 #include "game/input.h"
 #include "game/inv.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/shell.h"
@@ -17,11 +20,124 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-#include "specific/s_misc.h"
 
 #include <stdio.h>
 
-bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+static const int32_t m_AnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
+
+static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
+
+static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
+{
+    int32_t return_val = 0;
+    if (nframes > MAX_FRAMES) {
+        nframes = MAX_FRAMES;
+    }
+
+    m_FrameCount += m_AnimationRate * nframes;
+    while (m_FrameCount >= 0) {
+        Lara_CheckCheatMode();
+        if (g_LevelComplete) {
+            return GF_NOP_BREAK;
+        }
+
+        Input_Update();
+
+        if (level_type == GFL_DEMO) {
+            if (g_Input.any) {
+                return GF_EXIT_TO_TITLE;
+            }
+            if (!ProcessDemoInput()) {
+                return GF_EXIT_TO_TITLE;
+            }
+        }
+
+        if (g_Lara.death_timer > DEATH_WAIT
+            || (g_Lara.death_timer > DEATH_WAIT_MIN && g_Input.any
+                && !g_Input.fly_cheat)
+            || g_OverlayFlag == 2) {
+            if (level_type == GFL_DEMO) {
+                return GF_EXIT_TO_TITLE;
+            }
+            if (g_OverlayFlag == 2) {
+                g_OverlayFlag = 1;
+                return_val = Display_Inventory(INV_DEATH_MODE);
+                if (return_val != GF_NOP) {
+                    return return_val;
+                }
+            } else {
+                g_OverlayFlag = 2;
+            }
+        }
+
+        if ((g_InputDB.option || g_Input.save || g_Input.load
+             || g_OverlayFlag <= 0)
+            && !g_Lara.death_timer) {
+            if (g_OverlayFlag > 0) {
+                if (g_Input.load) {
+                    g_OverlayFlag = -1;
+                } else if (g_Input.save) {
+                    g_OverlayFlag = -2;
+                } else {
+                    g_OverlayFlag = 0;
+                }
+            } else {
+                if (g_OverlayFlag == -1) {
+                    return_val = Display_Inventory(INV_LOAD_MODE);
+                } else if (g_OverlayFlag == -2) {
+                    return_val = Display_Inventory(INV_SAVE_MODE);
+                } else {
+                    return_val = Display_Inventory(INV_GAME_MODE);
+                }
+
+                g_OverlayFlag = 1;
+                if (return_val != GF_NOP) {
+                    return return_val;
+                }
+            }
+        }
+
+        if (!g_Lara.death_timer && g_InputDB.pause) {
+            if (Game_Pause()) {
+                return GF_EXIT_TO_TITLE;
+            }
+        }
+
+        int16_t item_num = g_NextItemActive;
+        while (item_num != NO_ITEM) {
+            ITEM_INFO *item = &g_Items[item_num];
+            OBJECT_INFO *obj = &g_Objects[item->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = item->next_active;
+        }
+
+        item_num = g_NextFxActive;
+        while (item_num != NO_ITEM) {
+            FX_INFO *fx = &g_Effects[item_num];
+            OBJECT_INFO *obj = &g_Objects[fx->object_number];
+            if (obj->control) {
+                obj->control(item_num);
+            }
+            item_num = fx->next_active;
+        }
+
+        Lara_Control();
+        Hair_Control(false);
+
+        Camera_Update();
+        Sound_UpdateEffects();
+        g_GameInfo.current[g_CurrentLevel].stats.timer++;
+        Overlay_BarHealthTimerTick();
+
+        m_FrameCount -= 0x10000;
+    }
+
+    return GF_NOP;
+}
+bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
@@ -92,7 +208,7 @@ bool StartGame(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     return true;
 }
 
-int32_t StopGame(void)
+int32_t Game_Stop(void)
 {
     Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
@@ -129,7 +245,7 @@ int32_t StopGame(void)
     }
 }
 
-int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
+int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_OverlayFlag = 1;
     Camera_Initialise();
@@ -150,7 +266,7 @@ int32_t GameLoop(GAMEFLOW_LEVEL_TYPE level_type)
     int32_t nframes = 1;
     int32_t ret;
     while (1) {
-        ret = ControlPhase(nframes, level_type);
+        ret = Game_Control(nframes, level_type);
         if (ret != GF_NOP) {
             break;
         }

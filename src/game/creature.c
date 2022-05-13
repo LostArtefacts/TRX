@@ -1,11 +1,10 @@
 #include "game/creature.h"
 
 #include "game/box.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -13,6 +12,8 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
+
+#include <stddef.h>
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
@@ -410,7 +411,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
         item->collidable = 0;
         item->hit_points = DONT_TARGET;

@@ -1,6 +1,10 @@
 #include "game/los.h"
 
 #include "game/room.h"
+#include "global/const.h"
+#include "util.h"
+
+#include <stdint.h>
 
 static int32_t LOS_CheckX(GAME_VECTOR *start, GAME_VECTOR *target);
 static int32_t LOS_CheckZ(GAME_VECTOR *start, GAME_VECTOR *target);

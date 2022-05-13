@@ -2,11 +2,11 @@
 
 #include "config.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 static int16_t m_Switch_Bounds[12] = {
@@ -65,11 +65,11 @@ void Switch_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->flags |= IF_CODE_BITS;
-    if (!TriggerActive(item)) {
+    if (!Item_IsTriggerActive(item)) {
         item->goal_anim_state = SWITCH_STATE_ON;
         item->timer = 0;
     }
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
@@ -102,7 +102,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_OFF;
         Item_AddActive(item_num);
-        AnimateItem(item);
+        Item_Animate(item);
     } else if (item->current_anim_state == SWITCH_STATE_OFF) {
         Lara_AnimateUntil(lara_item, LS_SWITCH_OFF);
         lara_item->goal_anim_state = LS_STOP;
@@ -110,7 +110,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         item->status = IS_ACTIVE;
         item->goal_anim_state = SWITCH_STATE_ON;
         Item_AddActive(item_num);
-        AnimateItem(item);
+        Item_Animate(item);
     }
 }
 
@@ -155,7 +155,7 @@ void Switch_CollisionControlled(
                 g_Lara.gun_status = LGS_HANDS_BUSY;
                 Item_AddActive(item_num);
                 item->status = IS_ACTIVE;
-                AnimateItem(item);
+                Item_Animate(item);
             } else {
                 g_Lara.interact_target.item_num = item_num;
             }
@@ -206,7 +206,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             item->goal_anim_state = SWITCH_STATE_ON;
         }
         Item_AddActive(item_num);
-        AnimateItem(item);
+        Item_Animate(item);
     }
 }
 

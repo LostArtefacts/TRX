@@ -1,6 +1,7 @@
 #include "gfx/screenshot.h"
 
 #include "game/picture.h"
+#include "global/types.h"
 #include "memory.h"
 
 #include <assert.h>

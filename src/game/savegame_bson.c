@@ -2,23 +2,24 @@
 #include "game/savegame_bson.h"
 
 #include "config.h"
-#include "game/control.h"
 #include "game/gameflow.h"
-#include "game/inv.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/lot.h"
+#include "game/room.h"
 #include "game/shell.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "inv.h"
-#include "json.h"
-#include "lara.h"
+#include "json/bson_parse.h"
+#include "json/bson_write.h"
+#include "json/json_base.h"
 #include "log.h"
 #include "memory.h"
 
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
+#include <zconf.h>
 #include <zlib.h>
 
 #define MKTAG(a, b, c, d)                                                      \
@@ -376,7 +377,7 @@ static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj)
     }
 
     if (json_object_get_bool(flipmap_obj, "status", false)) {
-        FlipMap();
+        Room_FlipMap();
     }
 
     g_FlipEffect = json_object_get_int(flipmap_obj, "effect", 0);

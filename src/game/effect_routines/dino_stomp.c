@@ -1,6 +1,10 @@
 #include "game/effect_routines/dino_stomp.h"
 
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdint.h>
 
 #define MAX_BOUNCE 100
 

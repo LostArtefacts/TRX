@@ -1,16 +1,19 @@
 #include "game/objects/traps/rolling_ball.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sphere.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
@@ -50,7 +53,7 @@ void RollingBall_Control(int16_t item_num)
 
         int32_t oldx = item->pos.x;
         int32_t oldz = item->pos.z;
-        AnimateItem(item);
+        Item_Animate(item);
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =
@@ -62,7 +65,7 @@ void RollingBall_Control(int16_t item_num)
         item->floor =
             Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         if (item->pos.y >= item->floor - STEP_L) {
             item->gravity_status = 0;
@@ -84,7 +87,7 @@ void RollingBall_Control(int16_t item_num)
             item->fall_speed = 0;
             item->touch_bits = 0;
         }
-    } else if (item->status == IS_DEACTIVATED && !TriggerActive(item)) {
+    } else if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
         item->status = IS_NOT_ACTIVE;
         GAME_VECTOR *data = item->data;
         item->pos.x = data->x;

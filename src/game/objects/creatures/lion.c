@@ -1,11 +1,14 @@
 #include "game/objects/creatures/lion.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define LION_BITE_DAMAGE 250
 #define LION_POUNCE_DAMAGE 150

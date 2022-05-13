@@ -1,14 +1,17 @@
 #include "game/lara/lara_misc.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "util.h"
+
+#include <stdint.h>
 
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
@@ -564,7 +567,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     item->floor = height;
     item->pos.y = height;
-    TestTriggers(g_TriggerIndex, 0);
+    Room_TestTriggers(g_TriggerIndex, false);
     item->pos.y = oy;
 
     int landspeed = item->fall_speed - DAMAGE_START;

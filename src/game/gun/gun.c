@@ -6,6 +6,9 @@
 #include "game/inv.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
+#include <stddef.h>
+
 void Gun_Control(void)
 {
     if (g_Lara.left_arm.flash_gun > 0) {

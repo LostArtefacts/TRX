@@ -4,6 +4,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 extern WEAPON_INFO g_Weapons[NUM_WEAPONS];
 
 void Gun_TargetInfo(WEAPON_INFO *winfo);

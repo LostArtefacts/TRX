@@ -2,7 +2,11 @@
 
 #include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdint.h>
 
 void FX_LaraNormal(ITEM_INFO *item)
 {

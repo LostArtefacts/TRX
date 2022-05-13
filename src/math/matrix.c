@@ -5,6 +5,8 @@
 #include "global/vars.h"
 #include "math/math.h"
 
+#include <stddef.h>
+
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
 #define EXTRACT_ROT_Z(rots) ((rots & 0x3FF) << 6)

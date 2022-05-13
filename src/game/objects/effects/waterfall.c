@@ -3,7 +3,9 @@
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240
 

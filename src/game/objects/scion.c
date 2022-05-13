@@ -1,7 +1,6 @@
 #include "game/objects/scion.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/input.h"
@@ -85,7 +84,7 @@ void Scion_SetupHolder(OBJECT_INFO *obj)
 
 void Scion_Control(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void Scion_Control3(int16_t item_num)
@@ -95,7 +94,7 @@ void Scion_Control3(int16_t item_num)
 
     if (item->hit_points > 0) {
         counter = 0;
-        AnimateItem(item);
+        Item_Animate(item);
         return;
     }
 
@@ -106,7 +105,7 @@ void Scion_Control3(int16_t item_num)
         FLOOR_INFO *floor =
             Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
         Item_RemoveDrawn(item_num);
     }
 

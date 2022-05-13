@@ -2,6 +2,7 @@
 
 #include "game/effects.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 

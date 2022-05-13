@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 void Item_InitialiseArray(int32_t num_items);
 void Item_Kill(int16_t item_num);
 int16_t Item_Create(void);
@@ -26,3 +29,8 @@ bool Item_MovePosition(
     int32_t velocity);
 void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
+
+void Item_Animate(ITEM_INFO *item);
+bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
+
+bool Item_IsTriggerActive(ITEM_INFO *item);

@@ -1,6 +1,5 @@
 #include "game/objects/traps/lightning_emitter.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -13,7 +12,6 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8
@@ -64,13 +62,13 @@ void LightningEmitter_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
 
-    if (!TriggerActive(item)) {
+    if (!Item_IsTriggerActive(item)) {
         l->count = 1;
         l->active = false;
         l->zapped = false;
 
         if (g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
 
         Item_RemoveActive(item_num);
@@ -88,7 +86,7 @@ void LightningEmitter_Control(int16_t item_num)
         l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = false;
         if (g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
     } else {
         l->active = true;
@@ -142,7 +140,7 @@ void LightningEmitter_Control(int16_t item_num)
         }
 
         if (!g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
     }
 
@@ -174,7 +172,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t clip = S_GetObjectBounds(frmptr[0]);
+    int32_t clip = Output_GetObjectBounds(frmptr[0]);
     if (!clip) {
         Matrix_Pop();
         return;

@@ -2,6 +2,10 @@
 
 #include "json/json_base.h"
 
+#include <stddef.h>
+
+struct json_value_s;
+
 /* Write out a minified JSON utf-8 string. This string is an encoding of the
  * minimal string characters required to still encode the same data.
  * json_write_minified performs 1 call to malloc for the entire encoding. Return

@@ -1,12 +1,15 @@
 #include "game/objects/creatures/bear.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define BEAR_CHARGE_DAMAGE 3
 #define BEAR_SLAM_DAMAGE 200
