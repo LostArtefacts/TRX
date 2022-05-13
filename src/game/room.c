@@ -10,7 +10,32 @@
 
 #include <stddef.h>
 
+static void Room_AddFlipItems(ROOM_INFO *r);
 static void Room_RemoveFlipItems(ROOM_INFO *r);
+
+static void Room_AddFlipItems(ROOM_INFO *r)
+{
+    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+         item_num = g_Items[item_num].next_item) {
+        ITEM_INFO *item = &g_Items[item_num];
+
+        switch (item->object_number) {
+        case O_MOVABLE_BLOCK:
+        case O_MOVABLE_BLOCK2:
+        case O_MOVABLE_BLOCK3:
+        case O_MOVABLE_BLOCK4:
+            AlterFloorHeight(item, -WALL_L);
+            break;
+
+        case O_ROLLING_BLOCK:
+            AlterFloorHeight(item, -WALL_L * 2);
+            break;
+
+        default:
+            break;
+        }
+    }
+}
 
 static void Room_RemoveFlipItems(ROOM_INFO *r)
 {
@@ -490,7 +515,7 @@ void Room_FlipMap(void)
         r->item_number = flipped->item_number;
         r->fx_number = flipped->fx_number;
 
-        AddRoomFlipItems(r);
+        Room_AddFlipItems(r);
     }
 
     g_FlipStatus = !g_FlipStatus;
