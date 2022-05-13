@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/control.h"
 #include "game/demo.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
@@ -100,7 +99,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         }
 
         if (!g_Lara.death_timer && g_InputDB.pause) {
-            if (Control_Pause()) {
+            if (Game_Pause()) {
                 return GF_EXIT_TO_TITLE;
             }
         }

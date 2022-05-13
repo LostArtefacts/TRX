@@ -1,3 +1,4 @@
+#include "game/game.h"
 
 #include "game/draw.h"
 #include "game/gameflow.h"
@@ -37,20 +38,20 @@ static REQUEST_INFO m_PauseRequester = {
     0,
 };
 
-static void Control_Pause_RemoveText(void);
-static void Control_Pause_DisplayText(void);
-static int32_t Control_Pause_DisplayRequester(
+static void Game_Pause_RemoveText(void);
+static void Game_Pause_DisplayText(void);
+static int32_t Game_Pause_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static int32_t Control_Pause_Loop(void);
+static int32_t Game_Pause_Loop(void);
 
-static void Control_Pause_RemoveText(void)
+static void Game_Pause_RemoveText(void)
 {
     Text_Remove(m_PausedText);
     m_PausedText = NULL;
 }
 
-static void Control_Pause_DisplayText(void)
+static void Game_Pause_DisplayText(void)
 {
     if (m_PausedText == NULL) {
         m_PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
@@ -59,7 +60,7 @@ static void Control_Pause_DisplayText(void)
     }
 }
 
-static int32_t Control_Pause_DisplayRequester(
+static int32_t Game_Pause_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested)
 {
@@ -87,14 +88,14 @@ static int32_t Control_Pause_DisplayRequester(
     return select;
 }
 
-static int32_t Control_Pause_Loop(void)
+static int32_t Game_Pause_Loop(void)
 {
     int32_t state = 0;
 
     while (1) {
         Output_InitialisePolyList();
         Draw_DrawScene(false);
-        Control_Pause_DisplayText();
+        Game_Pause_DisplayText();
         Text_Draw();
         Output_DumpScreen();
         Input_Update();
@@ -110,7 +111,7 @@ static int32_t Control_Pause_Loop(void)
             break;
 
         case 1: {
-            int32_t choice = Control_Pause_DisplayRequester(
+            int32_t choice = Game_Pause_DisplayRequester(
                 g_GameFlow.strings[GS_PAUSE_EXIT_TO_TITLE],
                 g_GameFlow.strings[GS_PAUSE_CONTINUE],
                 g_GameFlow.strings[GS_PAUSE_QUIT], 1);
@@ -123,7 +124,7 @@ static int32_t Control_Pause_Loop(void)
         }
 
         case 2: {
-            int32_t choice = Control_Pause_DisplayRequester(
+            int32_t choice = Game_Pause_DisplayRequester(
                 g_GameFlow.strings[GS_PAUSE_ARE_YOU_SURE],
                 g_GameFlow.strings[GS_PAUSE_YES],
                 g_GameFlow.strings[GS_PAUSE_NO], 1);
@@ -140,7 +141,7 @@ static int32_t Control_Pause_Loop(void)
     return 0;
 }
 
-bool Control_Pause(void)
+bool Game_Pause(void)
 {
     g_OldInputDB = g_Input;
 
@@ -155,12 +156,12 @@ bool Control_Pause(void)
     Sound_StopAllSamples();
 
     Output_FadeToSemiBlack(true);
-    int32_t select = Control_Pause_Loop();
+    int32_t select = Game_Pause_Loop();
     Output_FadeToTransparent(true);
 
     Music_Unpause();
     Requester_Remove(&m_PauseRequester);
-    Control_Pause_RemoveText();
+    Game_Pause_RemoveText();
     g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }
