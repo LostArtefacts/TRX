@@ -37,7 +37,7 @@ void Dart_Control(int16_t item_num)
 
     int32_t old_x = item->pos.x;
     int32_t old_z = item->pos.z;
-    AnimateItem(item);
+    Item_Animate(item);
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
@@ -147,5 +147,5 @@ void DartEmitter_Control(int16_t item_num)
             }
         }
     }
-    AnimateItem(item);
+    Item_Animate(item);
 }

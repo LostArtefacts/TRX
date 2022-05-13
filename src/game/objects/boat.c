@@ -1,6 +1,5 @@
 #include "game/objects/boat.h"
 
-#include "game/control.h"
 #include "game/items.h"
 #include "global/vars.h"
 
@@ -28,5 +27,5 @@ void Boat_Control(int16_t item_num)
         break;
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

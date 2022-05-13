@@ -128,5 +128,5 @@ void Pod_Control(int16_t item_num)
         }
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

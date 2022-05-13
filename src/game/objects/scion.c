@@ -85,7 +85,7 @@ void Scion_SetupHolder(OBJECT_INFO *obj)
 
 void Scion_Control(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void Scion_Control3(int16_t item_num)
@@ -95,7 +95,7 @@ void Scion_Control3(int16_t item_num)
 
     if (item->hit_points > 0) {
         counter = 0;
-        AnimateItem(item);
+        Item_Animate(item);
         return;
     }
 

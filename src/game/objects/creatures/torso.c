@@ -232,7 +232,7 @@ void Torso_Control(int16_t item_num)
     Creature_Head(item, head);
 
     if (item->current_anim_state == TORSO_FALL) {
-        AnimateItem(item);
+        Item_Animate(item);
 
         if (item->pos.y > item->floor) {
             item->goal_anim_state = TORSO_STOP;

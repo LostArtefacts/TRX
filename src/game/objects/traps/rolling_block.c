@@ -1,6 +1,5 @@
 #include "game/objects/traps/rolling_block.h"
 
-#include "game/control.h"
 #include "game/items.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/room.h"
@@ -35,7 +34,7 @@ void RollingBlock_Control(int16_t item_num)
         AlterFloorHeight(item, WALL_L * 2);
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 
     int16_t room_num = item->room_number;
     Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);

@@ -168,12 +168,12 @@ void ControlCinematicPlayer(int16_t item_num)
     item->pos.x = g_Camera.pos.x;
     item->pos.y = g_Camera.pos.y;
     item->pos.z = g_Camera.pos.z;
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void ControlCinematicPlayer4(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void InitialiseGenPlayer(int16_t item_num)

@@ -1,6 +1,5 @@
 #include "game/objects/traps/thors_hammer.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
@@ -148,7 +147,7 @@ void ThorsHandle_Control(int16_t item_num)
         break;
     }
     }
-    AnimateItem(item);
+    Item_Animate(item);
 
     ITEM_INFO *head_item = item->data;
     int32_t anim = item->anim_number - g_Objects[O_THORS_HANDLE].anim_index;
