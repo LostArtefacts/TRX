@@ -1,7 +1,9 @@
 #include "game/game.h"
 
+#include "game/camera.h"
 #include "game/cinema.h"
 #include "game/draw.h"
+#include "game/input.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/sound.h"
@@ -10,6 +12,59 @@
 #include "global/vars.h"
 
 #include <stdint.h>
+
+static const int32_t m_CinematicAnimationRate = 0x8000;
+static int32_t m_FrameCount = 0;
+
+static bool Game_Cutscene_Control(int32_t nframes);
+
+bool Game_Cutscene_Control(int32_t nframes)
+{
+    m_FrameCount += m_CinematicAnimationRate * nframes;
+    while (m_FrameCount >= 0) {
+        if (g_CineFrame >= g_NumCineFrames - 1) {
+            return true;
+        }
+
+        Input_Update();
+        if (g_InputDB.deselect || g_InputDB.select) {
+            return true;
+        }
+
+        int16_t item_num = g_NextItemActive;
+        while (item_num != NO_ITEM) {
+            ITEM_INFO *item = &g_Items[item_num];
+            OBJECT_INFO *object = &g_Objects[item->object_number];
+            int16_t next_item_num = item->next_active;
+
+            if (object->control) {
+                object->control(item_num);
+            }
+
+            item_num = next_item_num;
+        }
+
+        int16_t fx_num = g_NextFxActive;
+        while (fx_num != NO_ITEM) {
+            FX_INFO *fx = &g_Effects[fx_num];
+            OBJECT_INFO *object = &g_Objects[fx->object_number];
+            int16_t next_fx_num = fx->next_active;
+
+            if (object->control) {
+                object->control(fx_num);
+            }
+
+            fx_num = next_fx_num;
+        }
+
+        Camera_UpdateCutscene();
+
+        g_CineFrame++;
+        m_FrameCount -= 0x10000;
+    }
+
+    return false;
+}
 
 int32_t Game_Cutscene_Start(int32_t level_num)
 {
@@ -48,11 +103,11 @@ int32_t Game_Cutscene_Stop(int32_t level_num)
 
 int32_t Game_Cutscene_Loop(void)
 {
-    DoCinematic(2);
+    Game_Cutscene_Control(2);
     Draw_ProcessFrame();
     int32_t nframes;
     do {
         nframes = Draw_ProcessFrame();
-    } while (!DoCinematic(nframes));
+    } while (!Game_Cutscene_Control(nframes));
     return GF_NOP;
 }

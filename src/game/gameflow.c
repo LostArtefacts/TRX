@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/cinema.h"
 #include "game/clock.h"
 #include "game/fmv.h"
 #include "game/game.h"
