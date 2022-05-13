@@ -1,7 +1,6 @@
 #include "game/camera.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/los.h"
 #include "game/random.h"

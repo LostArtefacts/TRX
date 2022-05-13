@@ -1,7 +1,6 @@
 #include "game/setup.h"
 
 #include "config.h"
-#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
@@ -236,7 +235,7 @@ void ObjectObjects(void)
     g_Objects[O_PLAYER_3].hit_points = 1;
 
     g_Objects[O_PLAYER_4].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
+    g_Objects[O_PLAYER_4].control = CutscenePlayer4_Control;
     g_Objects[O_PLAYER_4].hit_points = 1;
 
     Blood_Setup(&g_Objects[O_BLOOD1]);

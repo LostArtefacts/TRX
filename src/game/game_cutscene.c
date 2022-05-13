@@ -1,7 +1,6 @@
 #include "game/game.h"
 
 #include "game/camera.h"
-#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/level.h"
