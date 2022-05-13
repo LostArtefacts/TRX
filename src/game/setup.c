@@ -224,15 +224,15 @@ void ObjectObjects(void)
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
     g_Objects[O_PLAYER_1].initialise = CutscenePlayer1_Initialise;
-    g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
+    g_Objects[O_PLAYER_1].control = CutscenePlayer_Control;
     g_Objects[O_PLAYER_1].hit_points = 1;
 
     g_Objects[O_PLAYER_2].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_2].control = ControlCinematicPlayer;
+    g_Objects[O_PLAYER_2].control = CutscenePlayer_Control;
     g_Objects[O_PLAYER_2].hit_points = 1;
 
     g_Objects[O_PLAYER_3].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_3].control = ControlCinematicPlayer;
+    g_Objects[O_PLAYER_3].control = CutscenePlayer_Control;
     g_Objects[O_PLAYER_3].hit_points = 1;
 
     g_Objects[O_PLAYER_4].initialise = CutscenePlayer_Initialise;
