@@ -1,8 +1,13 @@
 #include "game/game.h"
 
+#include "game/cinema.h"
+#include "game/draw.h"
 #include "game/level.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+
+#include <stdint.h>
 
 int32_t Game_Cutscene_Start(int32_t level_num)
 {
@@ -26,5 +31,16 @@ int32_t Game_Cutscene_Start(int32_t level_num)
     }
 
     g_CineFrame = 0;
+    return GF_NOP;
+}
+
+int32_t Game_Cutscene_Loop(void)
+{
+    DoCinematic(2);
+    Draw_ProcessFrame();
+    int32_t nframes;
+    do {
+        nframes = Draw_ProcessFrame();
+    } while (!DoCinematic(nframes));
     return GF_NOP;
 }

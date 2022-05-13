@@ -18,17 +18,6 @@
 static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
-int32_t CinematicLoop(void)
-{
-    DoCinematic(2);
-    Draw_ProcessFrame();
-    int32_t nframes;
-    do {
-        nframes = Draw_ProcessFrame();
-    } while (!DoCinematic(nframes));
-    return GF_NOP;
-}
-
 int32_t StopCinematic(int32_t level_num)
 {
     Music_Stop();
