@@ -1,11 +1,40 @@
 #include "game/room.h"
 
+#include "game/control.h"
+#include "game/objects/traps/movable_block.h"
+#include "game/sound.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "util.h"
 
 #include <stddef.h>
+
+static void Room_RemoveFlipItems(ROOM_INFO *r);
+
+static void Room_RemoveFlipItems(ROOM_INFO *r)
+{
+    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+         item_num = g_Items[item_num].next_item) {
+        ITEM_INFO *item = &g_Items[item_num];
+
+        switch (item->object_number) {
+        case O_MOVABLE_BLOCK:
+        case O_MOVABLE_BLOCK2:
+        case O_MOVABLE_BLOCK3:
+        case O_MOVABLE_BLOCK4:
+            AlterFloorHeight(item, WALL_L);
+            break;
+
+        case O_ROLLING_BLOCK:
+            AlterFloorHeight(item, WALL_L * 2);
+            break;
+
+        default:
+            break;
+        }
+    }
+}
 
 int16_t Room_GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
@@ -447,7 +476,7 @@ void Room_FlipMap(void)
             continue;
         }
 
-        RemoveRoomFlipItems(r);
+        Room_RemoveFlipItems(r);
 
         ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
         ROOM_INFO temp = *r;

@@ -767,30 +767,6 @@ int32_t TriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-void RemoveRoomFlipItems(ROOM_INFO *r)
-{
-    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
-         item_num = g_Items[item_num].next_item) {
-        ITEM_INFO *item = &g_Items[item_num];
-
-        switch (item->object_number) {
-        case O_MOVABLE_BLOCK:
-        case O_MOVABLE_BLOCK2:
-        case O_MOVABLE_BLOCK3:
-        case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, WALL_L);
-            break;
-
-        case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, WALL_L * 2);
-            break;
-
-        default:
-            break;
-        }
-    }
-}
-
 void AddRoomFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_number; item_num != NO_ITEM;
