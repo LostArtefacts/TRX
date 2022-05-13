@@ -3,6 +3,8 @@
 #include "game/cinema.h"
 #include "game/draw.h"
 #include "game/level.h"
+#include "game/music.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -32,6 +34,16 @@ int32_t Game_Cutscene_Start(int32_t level_num)
 
     g_CineFrame = 0;
     return GF_NOP;
+}
+
+int32_t Game_Cutscene_Stop(int32_t level_num)
+{
+    Music_Stop();
+    Sound_StopAllSamples();
+
+    g_LevelComplete = true;
+
+    return level_num | GF_LEVEL_COMPLETE;
 }
 
 int32_t Game_Cutscene_Loop(void)
