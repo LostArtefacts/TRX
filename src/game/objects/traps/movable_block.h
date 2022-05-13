@@ -17,5 +17,3 @@ bool MovableBlock_TestPush(
     ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
 bool MovableBlock_TestPull(
     ITEM_INFO *item, int32_t blokhite, uint16_t quadrant);
-
-void AlterFloorHeight(ITEM_INFO *item, int32_t height);

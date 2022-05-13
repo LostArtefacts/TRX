@@ -3,7 +3,6 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
-#include "game/objects/traps/movable_block.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -137,7 +136,7 @@ void ThorsHandle_Control(int16_t item_num)
         item->pos.x = x;
         item->pos.z = z;
         if (g_LaraItem->hit_points >= 0) {
-            AlterFloorHeight(item, -WALL_L * 2);
+            Room_AlterFloorHeight(item, -WALL_L * 2);
         }
         item->pos.x = old_x;
         item->pos.z = old_z;

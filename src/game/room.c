@@ -8,7 +8,6 @@
 #include "game/objects/pickup.h"
 #include "game/objects/switch.h"
 #include "game/objects/traps/lava.h"
-#include "game/objects/traps/movable_block.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -109,11 +108,11 @@ static void Room_AddFlipItems(ROOM_INFO *r)
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, -WALL_L);
+            Room_AlterFloorHeight(item, -WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, -WALL_L * 2);
+            Room_AlterFloorHeight(item, -WALL_L * 2);
             break;
 
         default:
@@ -133,11 +132,11 @@ static void Room_RemoveFlipItems(ROOM_INFO *r)
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
         case O_MOVABLE_BLOCK4:
-            AlterFloorHeight(item, WALL_L);
+            Room_AlterFloorHeight(item, WALL_L);
             break;
 
         case O_ROLLING_BLOCK:
-            AlterFloorHeight(item, WALL_L * 2);
+            Room_AlterFloorHeight(item, WALL_L * 2);
             break;
 
         default:
@@ -573,6 +572,32 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             floor = &r->floor[x_floor + y_floor * r->x_size];
         }
         return NO_HEIGHT;
+    }
+}
+
+void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
+{
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor =
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    FLOOR_INFO *ceiling = Room_GetFloor(
+        item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
+
+    if (floor->floor == NO_HEIGHT / 256) {
+        floor->floor = ceiling->ceiling + height / 256;
+    } else {
+        floor->floor += height / 256;
+        if (floor->floor == ceiling->ceiling) {
+            floor->floor = NO_HEIGHT / 256;
+        }
+    }
+
+    if (g_Boxes[floor->box].overlap_index & BLOCKABLE) {
+        if (height < 0) {
+            g_Boxes[floor->box].overlap_index |= BLOCKED;
+        } else {
+            g_Boxes[floor->box].overlap_index &= ~BLOCKED;
+        }
     }
 }
 
