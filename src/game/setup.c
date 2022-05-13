@@ -4,7 +4,6 @@
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
-#include "game/hair.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/level.h"
@@ -266,7 +265,7 @@ void InitialiseObjects(void)
     TrapObjects();
     ObjectObjects();
 
-    Hair_Initialise();
+    Lara_Hair_Initialise();
 
     if (g_Config.disable_medpacks) {
         g_Objects[O_MEDI_ITEM].initialise = NULL;
