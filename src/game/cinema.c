@@ -13,7 +13,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "specific/s_misc.h"
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;

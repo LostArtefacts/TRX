@@ -252,7 +252,6 @@ sources = [
   'src/specific/s_filesystem.c',
   'src/specific/s_fmv.c',
   'src/specific/s_input.c',
-  'src/specific/s_misc.c',
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',
