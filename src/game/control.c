@@ -17,6 +17,7 @@
 #include "game/objects/traps/lava.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/overlay.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "math/math.h"
@@ -733,7 +734,7 @@ void TestTriggers(int16_t *data, int32_t heavy)
     }
 
     if (flip) {
-        FlipMap();
+        Room_FlipMap();
         if (new_effect != -1) {
             g_FlipEffect = new_effect;
             g_FlipTimer = 0;
@@ -764,36 +765,6 @@ int32_t TriggerActive(ITEM_INFO *item)
     }
 
     return ok;
-}
-
-void FlipMap(void)
-{
-    Sound_StopAmbientSounds();
-
-    for (int i = 0; i < g_RoomCount; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
-        if (r->flipped_room < 0) {
-            continue;
-        }
-
-        RemoveRoomFlipItems(r);
-
-        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
-        ROOM_INFO temp = *r;
-        *r = *flipped;
-        *flipped = temp;
-
-        r->flipped_room = flipped->flipped_room;
-        flipped->flipped_room = -1;
-
-        // XXX: is this really necessary given the assignments above?
-        r->item_number = flipped->item_number;
-        r->fx_number = flipped->fx_number;
-
-        AddRoomFlipItems(r);
-    }
-
-    g_FlipStatus = !g_FlipStatus;
 }
 
 void RemoveRoomFlipItems(ROOM_INFO *r)

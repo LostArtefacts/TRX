@@ -4,7 +4,6 @@
 #include "filesystem.h"
 #include "game/cinema.h"
 #include "game/clock.h"
-#include "game/control.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/input.h"
@@ -12,6 +11,7 @@
 #include "game/lara/lara.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -1219,7 +1219,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             g_Camera.target_angle = (int32_t)seq->data;
             break;
         case GFS_FLIP_MAP:
-            FlipMap();
+            Room_FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
             Music_Play((int32_t)seq->data);

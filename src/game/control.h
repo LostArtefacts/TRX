@@ -11,7 +11,6 @@ int32_t GetChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 void RefreshCamera(int16_t type, int16_t *data);
 void TestTriggers(int16_t *data, int32_t heavy);
 int32_t TriggerActive(ITEM_INFO *item);
-void FlipMap(void);
 void RemoveRoomFlipItems(ROOM_INFO *r);
 void AddRoomFlipItems(ROOM_INFO *r);
 

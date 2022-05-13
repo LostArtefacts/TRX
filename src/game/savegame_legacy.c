@@ -1,12 +1,12 @@
 #define SAVEGAME_IMPL
 #include "game/savegame_legacy.h"
 
-#include "game/control.h"
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lot.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -499,7 +499,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_Legacy_Read(&tmp32, sizeof(int32_t));
     if (tmp32) {
-        FlipMap();
+        Room_FlipMap();
     }
 
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
