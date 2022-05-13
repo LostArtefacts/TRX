@@ -767,8 +767,8 @@ void Camera_OffsetReset(void)
 
 void Camera_UpdateCutscene(void)
 {
-    PHD_VECTOR campos;
-    PHD_VECTOR camtar;
+    PHD_VECTOR cam_pos;
+    PHD_VECTOR cam_tar;
 
     int16_t *ptr = &g_Cine[8 * g_CineFrame];
     int32_t tx = ptr[0];
@@ -783,16 +783,16 @@ void Camera_UpdateCutscene(void)
     int32_t c = Math_Cos(g_Camera.target_angle);
     int32_t s = Math_Sin(g_Camera.target_angle);
 
-    camtar.x = g_Camera.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
-    camtar.y = g_Camera.pos.y + ty;
-    camtar.z = g_Camera.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
-    campos.x = g_Camera.pos.x + ((cz * s + cx * c) >> W2V_SHIFT);
-    campos.y = g_Camera.pos.y + cy;
-    campos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
+    cam_tar.x = g_Camera.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
+    cam_tar.y = g_Camera.pos.y + ty;
+    cam_tar.z = g_Camera.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
+    cam_pos.x = g_Camera.pos.x + ((cz * s + cx * c) >> W2V_SHIFT);
+    cam_pos.y = g_Camera.pos.y + cy;
+    cam_pos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
 
     phd_AlterFOV(fov);
     phd_LookAt(
-        campos.x, campos.y, campos.z, camtar.x, camtar.y, camtar.z, roll);
+        cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z, roll);
 }
 
 void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
