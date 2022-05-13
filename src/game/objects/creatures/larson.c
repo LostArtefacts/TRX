@@ -154,11 +154,9 @@ void Larson_Control(int16_t item_num)
 
         case LARSON_SHOOT:
             if (!item->required_anim_state) {
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_LarsonGun, head)) {
-                    g_LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_LarsonGun, head,
+                    LARSON_SHOT_DAMAGE);
                 item->required_anim_state = LARSON_AIM;
             }
             if (person->mood == MOOD_ESCAPE) {

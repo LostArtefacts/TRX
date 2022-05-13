@@ -185,16 +185,12 @@ void Pierre_Control(int16_t item_num)
 
         case PIERRE_SHOOT:
             if (!item->required_anim_state) {
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_PierreGun1, head)) {
-                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    g_LaraItem->hit_status = 1;
-                }
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_PierreGun2, head)) {
-                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_PierreGun1, head,
+                    PIERRE_SHOT_DAMAGE / 2);
+                Creature_ShootAtLara(
+                    item, info.distance, &m_PierreGun2, head,
+                    PIERRE_SHOT_DAMAGE / 2);
                 item->required_anim_state = PIERRE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE

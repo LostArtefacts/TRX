@@ -143,11 +143,9 @@ void Baldy_Control(int16_t item_num)
 
         case BALDY_SHOOT:
             if (!baldy->flags) {
-                if (Creature_ShootAtLara(
-                        item, info.distance / 2, &m_BaldyGun, head)) {
-                    g_LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance / 2, &m_BaldyGun, head,
+                    BALDY_SHOT_DAMAGE);
                 baldy->flags = 1;
             }
             if (baldy->mood == MOOD_ESCAPE) {

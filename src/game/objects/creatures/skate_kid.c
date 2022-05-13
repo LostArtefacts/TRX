@@ -128,23 +128,17 @@ void SkateKid_Control(int16_t item_num)
         case SKATE_KID_SHOOT:
         case SKATE_KID_SHOOT2:
             if (!kid->flags && Creature_IsTargetable(item, &info)) {
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_KidGun1, head)) {
-                    g_LaraItem->hit_points -=
-                        item->current_anim_state == SKATE_KID_SHOOT
+                Creature_ShootAtLara(
+                    item, info.distance, &m_KidGun1, head,
+                    item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
-                        : SKATE_KID_SKATE_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                        : SKATE_KID_SKATE_SHOT_DAMAGE);
 
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_KidGun2, head)) {
-                    g_LaraItem->hit_points -=
-                        item->current_anim_state == SKATE_KID_SHOOT
+                Creature_ShootAtLara(
+                    item, info.distance, &m_KidGun2, head,
+                    item->current_anim_state == SKATE_KID_SHOOT
                         ? SKATE_KID_STOP_SHOT_DAMAGE
-                        : SKATE_KID_SKATE_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                        : SKATE_KID_SKATE_SHOT_DAMAGE);
 
                 kid->flags = 1;
             }
