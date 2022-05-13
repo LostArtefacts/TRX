@@ -30,7 +30,6 @@ def sort_imports(path: Path) -> None:
         # files headers of which are not a 1:1 match with their filename
         "game/inventry.c": "game/inv.h",
         "game/control_pause.c": "game/control.h",
-        "game/control_util.c": "game/control.h",
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",
         "game/option_compass.c": "game/option.h",

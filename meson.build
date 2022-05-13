@@ -85,7 +85,6 @@ sources = [
   'src/game/collide.c',
   'src/game/control.c',
   'src/game/control_pause.c',
-  'src/game/control_util.c',
   'src/game/creature.c',
   'src/game/demo.c',
   'src/game/draw.c',
