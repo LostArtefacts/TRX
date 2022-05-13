@@ -1,6 +1,7 @@
 #include "game/objects/creatures/cutscene_player.h"
 
 #include "game/items.h"
+#include "global/types.h"
 #include "global/vars.h"
 
 void CutscenePlayer_Initialise(int16_t item_num)
@@ -30,4 +31,9 @@ void CutscenePlayer1_Initialise(int16_t item_num)
     g_Camera.pos.z = item->pos.z;
     g_Camera.target_angle = 0;
     item->pos.y_rot = 0;
+}
+
+void CutscenePlayer4_Control(int16_t item_num)
+{
+    Item_Animate(&g_Items[item_num]);
 }
