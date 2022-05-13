@@ -647,7 +647,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     return true;
 }
 
-bool Creature_IsTargetable(ITEM_INFO *item, AI_INFO *info)
+bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info)
 {
     if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
         return false;

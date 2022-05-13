@@ -97,7 +97,7 @@ void SkateKid_Control(int16_t item_num)
             kid->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = SKATE_KID_SHOOT;
             } else {
                 item->goal_anim_state = SKATE_KID_SKATE;
@@ -108,7 +108,7 @@ void SkateKid_Control(int16_t item_num)
             kid->flags = 0;
             if (Random_GetControl() < SKATE_KID_PUSH_CHANCE) {
                 item->goal_anim_state = SKATE_KID_PUSH;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 if (info.distance > SKATE_KID_DONT_STOP_RANGE
                     && info.distance < SKATE_KID_STOP_RANGE
                     && kid->mood != MOOD_ESCAPE) {
@@ -127,7 +127,7 @@ void SkateKid_Control(int16_t item_num)
 
         case SKATE_KID_SHOOT:
         case SKATE_KID_SHOOT2:
-            if (!kid->flags && Creature_IsTargetable(item, &info)) {
+            if (!kid->flags && Creature_CanTargetEnemy(item, &info)) {
                 Creature_ShootAtLara(
                     item, info.distance, &m_KidGun1, head,
                     item->current_anim_state == SKATE_KID_SHOOT

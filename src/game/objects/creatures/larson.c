@@ -117,7 +117,7 @@ void Larson_Control(int16_t item_num)
             } else if (person->mood == MOOD_ESCAPE) {
                 item->required_anim_state = LARSON_RUN;
                 item->goal_anim_state = LARSON_STOP;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = LARSON_AIM;
                 item->goal_anim_state = LARSON_STOP;
             } else if (!info.ahead || info.distance > LARSON_WALK_RANGE) {
@@ -133,7 +133,7 @@ void Larson_Control(int16_t item_num)
                 && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = LARSON_AIM;
                 item->goal_anim_state = LARSON_STOP;
             } else if (info.ahead && info.distance < LARSON_WALK_RANGE) {
@@ -145,7 +145,7 @@ void Larson_Control(int16_t item_num)
         case LARSON_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Creature_IsTargetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = LARSON_SHOOT;
             } else {
                 item->goal_anim_state = LARSON_STOP;

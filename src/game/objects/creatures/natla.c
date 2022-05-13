@@ -100,7 +100,7 @@ void Natla_Control(int16_t item_num)
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
             && info.angle < NATLA_FIRE_ARC
-            && Creature_IsTargetable(item, &info);
+            && Creature_CanTargetEnemy(item, &info);
 
         if (facing) {
             item->pos.y_rot += facing;
@@ -188,7 +188,7 @@ void Natla_Control(int16_t item_num)
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
             && info.angle < NATLA_FIRE_ARC
-            && Creature_IsTargetable(item, &info);
+            && Creature_CanTargetEnemy(item, &info);
         if (item->current_anim_state == NATLA_FLY
             && (natla->flags & NATLA_FLY_MODE)) {
             if (shoot && Random_GetControl() < NATLA_LAND_CHANCE) {
