@@ -1,13 +1,11 @@
-#include "game/control.h"
+#include "game/lara/lara_cheat.h"
 
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
-#include <stddef.h>
-
-void CheckCheatMode(void)
+void Lara_CheckCheatMode(void)
 {
     static int32_t cheat_mode = 0;
     static int16_t cheat_angle = 0;

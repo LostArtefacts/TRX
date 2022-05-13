@@ -38,7 +38,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
     m_FrameCount += m_AnimationRate * nframes;
     while (m_FrameCount >= 0) {
-        CheckCheatMode();
+        Lara_CheckCheatMode();
         if (g_LevelComplete) {
             return GF_NOP_BREAK;
         }
