@@ -29,7 +29,7 @@ def sort_imports(path: Path) -> None:
     own_include = {
         # files headers of which are not a 1:1 match with their filename
         "game/inventry.c": "game/inv.h",
-        "game/control_pause.c": "game/control.h",
+        "game/game_pause.c": "game/game.h",
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",
         "game/option_compass.c": "game/option.h",
