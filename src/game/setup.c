@@ -222,21 +222,10 @@ void ObjectObjects(void)
     Boat_Setup(&g_Objects[O_BOAT]);
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
-    g_Objects[O_PLAYER_1].initialise = CutscenePlayer1_Initialise;
-    g_Objects[O_PLAYER_1].control = CutscenePlayer_Control;
-    g_Objects[O_PLAYER_1].hit_points = 1;
-
-    g_Objects[O_PLAYER_2].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_2].control = CutscenePlayer_Control;
-    g_Objects[O_PLAYER_2].hit_points = 1;
-
-    g_Objects[O_PLAYER_3].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_3].control = CutscenePlayer_Control;
-    g_Objects[O_PLAYER_3].hit_points = 1;
-
-    g_Objects[O_PLAYER_4].initialise = CutscenePlayer_Initialise;
-    g_Objects[O_PLAYER_4].control = CutscenePlayer4_Control;
-    g_Objects[O_PLAYER_4].hit_points = 1;
+    CutscenePlayer1_Setup(&g_Objects[O_PLAYER_1]);
+    CutscenePlayer2_Setup(&g_Objects[O_PLAYER_2]);
+    CutscenePlayer3_Setup(&g_Objects[O_PLAYER_3]);
+    CutscenePlayer4_Setup(&g_Objects[O_PLAYER_4]);
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
     Bubble_Setup(&g_Objects[O_BUBBLES1]);

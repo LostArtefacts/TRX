@@ -1,8 +1,35 @@
 #include "game/objects/creatures/cutscene_player.h"
 
 #include "game/items.h"
-#include "global/types.h"
 #include "global/vars.h"
+
+void CutscenePlayer1_Setup(OBJECT_INFO *obj)
+{
+    obj->initialise = CutscenePlayer1_Initialise;
+    obj->control = CutscenePlayer_Control;
+    obj->hit_points = 1;
+}
+
+void CutscenePlayer2_Setup(OBJECT_INFO *obj)
+{
+    obj->initialise = CutscenePlayer_Initialise;
+    obj->control = CutscenePlayer_Control;
+    obj->hit_points = 1;
+}
+
+void CutscenePlayer3_Setup(OBJECT_INFO *obj)
+{
+    obj->initialise = CutscenePlayer_Initialise;
+    obj->control = CutscenePlayer_Control;
+    obj->hit_points = 1;
+}
+
+void CutscenePlayer4_Setup(OBJECT_INFO *obj)
+{
+    obj->initialise = CutscenePlayer_Initialise;
+    obj->control = CutscenePlayer4_Control;
+    obj->hit_points = 1;
+}
 
 void CutscenePlayer_Initialise(int16_t item_num)
 {
