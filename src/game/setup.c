@@ -21,6 +21,7 @@
 #include "game/objects/creatures/centaur.h"
 #include "game/objects/creatures/cowboy.h"
 #include "game/objects/creatures/crocodile.h"
+#include "game/objects/creatures/cutscene_player.h"
 #include "game/objects/creatures/larson.h"
 #include "game/objects/creatures/lion.h"
 #include "game/objects/creatures/mummy.h"
@@ -222,7 +223,7 @@ void ObjectObjects(void)
     Boat_Setup(&g_Objects[O_BOAT]);
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
-    g_Objects[O_PLAYER_1].initialise = InitialisePlayer1;
+    g_Objects[O_PLAYER_1].initialise = CutscenePlayer1_Initialise;
     g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
     g_Objects[O_PLAYER_1].hit_points = 1;
 
